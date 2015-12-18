@@ -4,7 +4,7 @@ TEMPLATE = app
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 QT      += core gui
 
-CONFIG  += thread rtti exceptions warn_on
+CONFIG  += thread rtti exceptions printsupport warn_on
 CONFIG  += c++11
 CONFIG(devel): DEFINES += "DEVEL=1"
 
@@ -24,7 +24,8 @@ SOURCES += \
     panes/normalization.cpp \
     panes/pane.cpp \
     panes/reflectioninfo.cpp \
-    panes/reflections.cpp
+    panes/reflections.cpp \
+    3rd/qcustomplot.cpp
 HEADERS += \
     defs.h \
     app.h \
@@ -41,4 +42,5 @@ HEADERS += \
     panes/pane.h \
     panes/reflectioninfo.h \
     panes/reflections.h \
-    panes/panes.h
+    panes/panes.h \
+    3rd/qcustomplot.h

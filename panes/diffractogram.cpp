@@ -1,6 +1,7 @@
 #include "diffractogram.h"
 #include <QVBoxLayout>
 #include <QCheckBox>
+#include <QPixmap>
 
 Diffractogram::Diffractogram(): super("Diffractogram") {
   auto v = new VBox();
