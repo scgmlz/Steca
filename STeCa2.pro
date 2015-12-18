@@ -40,4 +40,5 @@ HEADERS += \
     panes/normalization.h \
     panes/pane.h \
     panes/reflectioninfo.h \
-    panes/reflections.h
+    panes/reflections.h \
+    panes/panes.h

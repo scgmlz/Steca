@@ -3,6 +3,8 @@
 
 #include "pane.h"
 
+class QTreeWidget;
+
 class Files: public Pane {
   SUPER(Files,Pane) Q_OBJECT
 public:
@@ -11,6 +13,9 @@ public:
 signals:
 
 public slots:
+
+private:
+  QTreeWidget *w;
 };
 
 #endif

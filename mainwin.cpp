@@ -9,7 +9,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGridLayout>
-#include "panes/files.h"
+#include "panes/panes.h"
 
 MainWin::MainWin() {
   init();
@@ -24,21 +24,31 @@ void MainWin::init() {
   initStatus();
 }
 
-#include <QPushButton>
 void MainWin::initLayout() {
-  typedef QHBoxLayout HL;
-  typedef QVBoxLayout VL;
-  auto w = new QWidget();
-  setCentralWidget(w);
-  HL *h = new HL(w);
-  VL *v1, *v2, *v3;
-  h->addLayout(v1=new VL());
-  h->addLayout(v2=new VL());
-  h->addLayout(v3=new VL());
-  v1->addWidget(new QPushButton("A"));
-  v1->addWidget(new QPushButton("B"));
-  v1->addWidget(new QPushButton("C"));
-  v2->addWidget(new Files());
+  auto ctrWgt = new QWidget();
+  setCentralWidget(ctrWgt);
+
+  // three columns
+  auto *h  = new QHBoxLayout(ctrWgt);
+  auto *v1 = new QVBoxLayout();
+  auto *v2 = new QVBoxLayout();
+  auto *v3 = new QVBoxLayout();
+
+  h->addLayout(v1);
+  h->addLayout(v2);
+  h->addLayout(v3);
+
+  // panes
+  v1->addWidget(new Files());
+  v1->addWidget(new Detector());
+  v1->addWidget(new Background());
+
+  v2->addWidget(new Images());
+  v2->addWidget(new Diffractogram());
+
+  v3->addWidget(new ImageInfo());
+  v3->addWidget(new ReflectionInfo());
+  v3->addWidget(new Normalization());
 }
 
 void MainWin::initActionsAndMenus() {
@@ -116,7 +126,7 @@ void MainWin::initActionsAndMenus() {
 
   if (!menuBar()->isNativeMenuBar()) {
     menuView->addAction(
-      actViewMenubar    = toggle("Menubar",    true, Settings::KEY_VIEW_MENU)
+      actViewMenubar    = toggle("Menubar",    true, Settings::KEY_VIEW_MENU) // TODO actions owned elsewhere
     );
   }
 

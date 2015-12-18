@@ -9,11 +9,11 @@ class App: public QApplication {
 public:
   App(int& argc, char* argv[]);
 
-  int run();
+  int exec();
 
 protected:
-  virtual bool init();
-  virtual void done();
+  void init();
+  void done();
 
 protected:
   bool notify(QObject*, QEvent*);

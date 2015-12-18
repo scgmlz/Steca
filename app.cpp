@@ -1,11 +1,19 @@
 #include "app.h"
 #include <iostream>
+#include <QStyleFactory>
 
 App::App(int &argc, char *argv[])
 : super(argc,argv)
 {
   setApplicationName("STeCa2"); setApplicationVersion("0.1");
-// TODO setOrganizationName();  setOrganizationDomain();
+  // TODO setOrganizationName();  setOrganizationDomain();
+}
+
+int App::exec() {
+  init();
+  int res = super::exec();
+  done();
+  return res;
 }
 
 static QtMessageHandler oldHandler;
@@ -25,9 +33,9 @@ static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr 
   }
 }
 
-bool App::init() {
+void App::init() {
   oldHandler = qInstallMessageHandler(messageHandler);
-  return true;
+  setStyle(QStyleFactory::create("Fusion"));
 }
 
 void App::done() {
