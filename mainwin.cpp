@@ -6,6 +6,10 @@
 #include <QStatusBar>
 #include <QAction>
 #include <QCloseEvent>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QGridLayout>
+#include "panes/files.h"
 
 MainWin::MainWin() {
   init();
@@ -15,8 +19,26 @@ MainWin::~MainWin() {
 }
 
 void MainWin::init() {
+  initLayout();
   initActionsAndMenus();
   initStatus();
+}
+
+#include <QPushButton>
+void MainWin::initLayout() {
+  typedef QHBoxLayout HL;
+  typedef QVBoxLayout VL;
+  auto w = new QWidget();
+  setCentralWidget(w);
+  HL *h = new HL(w);
+  VL *v1, *v2, *v3;
+  h->addLayout(v1=new VL());
+  h->addLayout(v2=new VL());
+  h->addLayout(v3=new VL());
+  v1->addWidget(new QPushButton("A"));
+  v1->addWidget(new QPushButton("B"));
+  v1->addWidget(new QPushButton("C"));
+  v2->addWidget(new Files());
 }
 
 void MainWin::initActionsAndMenus() {

@@ -14,10 +14,30 @@ SOURCES += \
     app.cpp \
     mainwin.cpp \
     settings.cpp \
-    action.cpp
+    action.cpp \
+    panes/background.cpp \
+    panes/detector.cpp \
+    panes/diffractogram.cpp \
+    panes/files.cpp \
+    panes/imageinfo.cpp \
+    panes/images.cpp \
+    panes/normalization.cpp \
+    panes/pane.cpp \
+    panes/reflectioninfo.cpp \
+    panes/reflections.cpp
 HEADERS += \
     defs.h \
     app.h \
     mainwin.h \
     settings.h \
-    action.h
+    action.h \
+    panes/background.h \
+    panes/detector.h \
+    panes/diffractogram.h \
+    panes/files.h \
+    panes/imageinfo.h \
+    panes/images.h \
+    panes/normalization.h \
+    panes/pane.h \
+    panes/reflectioninfo.h \
+    panes/reflections.h

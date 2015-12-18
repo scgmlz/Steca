@@ -14,6 +14,8 @@ public:
 
 private:
   void init();
+
+  void initLayout();
   void initActionsAndMenus();
   void initStatus();
 
