@@ -2,8 +2,13 @@
 #define FILES_H
 
 #include "pane.h"
+#include <QListWidget>
 
-class QTreeWidget;
+class FileList: public QListWidget {
+  SUPER(FileList,QListWidget)
+public:
+  FileList();
+};
 
 class Files: public Pane {
   SUPER(Files,Pane) Q_OBJECT
@@ -15,7 +20,7 @@ signals:
 public slots:
 
 private:
-  QTreeWidget *w;
+  FileList *l;
 };
 
 #endif

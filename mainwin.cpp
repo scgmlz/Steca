@@ -28,16 +28,15 @@ void MainWin::initLayout() {
   // layout helpers
   typedef QHBoxLayout HBox;
   typedef QVBoxLayout VBox;
-  typedef QGridLayout Grid;
 
   auto ctrWgt = new QWidget();
   setCentralWidget(ctrWgt);
 
   // three columns
   auto *hl = new HBox(ctrWgt);
-  auto *v1 = new VBox();
-  auto *v2 = new VBox();
-  auto *v3 = new VBox();
+  auto *v1 = new VBox;
+  auto *v2 = new VBox;
+  auto *v3 = new VBox;
 
   hl->addLayout(v1,0);
   hl->addLayout(v2,1);
@@ -49,13 +48,15 @@ void MainWin::initLayout() {
   v1->addWidget(new Background());
   v1->addWidget(new Reflections());
 
-  auto *v2h = new HBox();
-  v2->addLayout(v2h);
+  auto *v2h = new HBox;
+  v2->addLayout(v2h,1);
 
   v2h->addWidget(new Images());
   v2h->addWidget(new Image());
 
-  v2->addWidget(new Diffractogram());
+  v2h = new HBox;
+  v2->addLayout(v2h,1);
+  v2h->addWidget(new Diffractogram());
 
   v3->addWidget(new ImageInfo());
   v3->addWidget(new ReflectionInfo());

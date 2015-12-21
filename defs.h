@@ -78,6 +78,7 @@ void CRITICAL_ERROR(rcstr msg) throw (CriticalError);
 #define NOT_HERE          Q_ASSERT_X(false, "Here" , "not be!");
 
 // to mark not yet implemented features
+class QObject;
 void warn(QObject*, rcstr msg, rcstr more = nullstr);
 inline void warn(rcstr msg, rcstr more = nullstr) { warn(nullptr,msg,more); }
 void notYet(rcstr = nullstr);

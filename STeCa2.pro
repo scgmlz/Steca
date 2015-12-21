@@ -26,7 +26,11 @@ SOURCES += \
     panes/reflectioninfo.cpp \
     panes/reflections.cpp \
     3rd/qcustomplot.cpp \
-    panes/image.cpp
+    panes/image.cpp \
+    widgets/iconbutton.cpp \
+    widgets/editcell.cpp \
+    widgets/metrics.cpp
+
 HEADERS += \
     defs.h \
     app.h \
@@ -45,4 +49,10 @@ HEADERS += \
     panes/reflections.h \
     panes/panes.h \
     3rd/qcustomplot.h \
-    panes/image.h
+    panes/image.h \
+    widgets/iconbutton.h \
+    widgets/editcell.h \
+    widgets/metrics.h
+
+RESOURCES += \
+    rsrc.qrc
