@@ -2,14 +2,19 @@
 #define REFLECTIONS_H
 
 #include "pane.h"
-#include <QListWidget>
+#include <QTreeWidget>
 
-class ReflectionList: public QListWidget {
-  SUPER(ReflectionList,QListWidget)
+class ReflectionList: public QTreeWidget {
+  SUPER(ReflectionList,QTreeWidget)
 public:
   ReflectionList();
 };
 
+class ReflectionItem: public QTreeWidgetItem {
+  SUPER(ReflectionItem,QTreeWidgetItem)
+public:
+  ReflectionItem();
+};
 
 class Reflections: public Pane {
   SUPER(Reflections,Pane) Q_OBJECT
