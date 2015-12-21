@@ -25,25 +25,36 @@ void MainWin::init() {
 }
 
 void MainWin::initLayout() {
+  // layout helpers
+  typedef QHBoxLayout HBox;
+  typedef QVBoxLayout VBox;
+  typedef QGridLayout Grid;
+
   auto ctrWgt = new QWidget();
   setCentralWidget(ctrWgt);
 
   // three columns
-  auto *h  = new QHBoxLayout(ctrWgt);
-  auto *v1 = new QVBoxLayout();
-  auto *v2 = new QVBoxLayout();
-  auto *v3 = new QVBoxLayout();
+  auto *hl = new HBox(ctrWgt);
+  auto *v1 = new VBox();
+  auto *v2 = new VBox();
+  auto *v3 = new VBox();
 
-  h->addLayout(v1);
-  h->addLayout(v2);
-  h->addLayout(v3);
+  hl->addLayout(v1,0);
+  hl->addLayout(v2,1);
+  hl->addLayout(v3,0);
 
   // panes
   v1->addWidget(new Files());
   v1->addWidget(new Detector());
   v1->addWidget(new Background());
+  v1->addWidget(new Reflections());
 
-  v2->addWidget(new Images());
+  auto *v2h = new HBox();
+  v2->addLayout(v2h);
+
+  v2h->addWidget(new Images());
+  v2h->addWidget(new Image());
+
   v2->addWidget(new Diffractogram());
 
   v3->addWidget(new ImageInfo());
@@ -164,7 +175,7 @@ void MainWin::initActionsAndMenus() {
   NOT_YET(actExportImagesWithMargins);
   NOT_YET(actExportImagesWithoutMargins);
 
-  NOT_YET(actQuit);
+  connect(actQuit, &QAction::triggered, [&](){ close(); });
 
   NOT_YET(actUndo);
   NOT_YET(actRedo);

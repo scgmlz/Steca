@@ -2,9 +2,9 @@ TARGET = STeCa2
 
 TEMPLATE = app
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-QT      += core gui
+QT      += core gui printsupport
 
-CONFIG  += thread rtti exceptions printsupport warn_on
+CONFIG  += thread rtti exceptions warn_on
 CONFIG  += c++11
 CONFIG(devel): DEFINES += "DEVEL=1"
 
@@ -25,7 +25,8 @@ SOURCES += \
     panes/pane.cpp \
     panes/reflectioninfo.cpp \
     panes/reflections.cpp \
-    3rd/qcustomplot.cpp
+    3rd/qcustomplot.cpp \
+    panes/image.cpp
 HEADERS += \
     defs.h \
     app.h \
@@ -43,4 +44,5 @@ HEADERS += \
     panes/reflectioninfo.h \
     panes/reflections.h \
     panes/panes.h \
-    3rd/qcustomplot.h
+    3rd/qcustomplot.h \
+    panes/image.h

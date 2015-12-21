@@ -7,6 +7,7 @@
 #include "detector.h"
 #include "background.h"
 #include "reflections.h"
+#include "image.h"
 #include "images.h"
 #include "diffractogram.h"
 #include "imageinfo.h"

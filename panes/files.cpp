@@ -3,6 +3,10 @@
 #include <QVBoxLayout>
 
 Files::Files(): super("Files") {
+  auto sp = sizePolicy();
+  sp.setVerticalStretch(1);
+  setSizePolicy(sp);
+
   auto v = new VBox();
   setLayout(v);
 
