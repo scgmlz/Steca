@@ -7,7 +7,7 @@
 class QHBoxLayout; class QVBoxLayout; class QGridLayout;
 
 class Pane: public QGroupBox {
-  SUPER(Pane,QGroupBox) Q_OBJECT
+  SUPER(Pane,QGroupBox)
 public:
   Pane(rcstr title);
   virtual ~Pane();

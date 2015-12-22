@@ -20,7 +20,7 @@ public:
 };
 
 class Files: public Pane {
-  SUPER(Files,Pane) Q_OBJECT
+  SUPER(Files,Pane)
 public:
   Files();
 

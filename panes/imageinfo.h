@@ -20,7 +20,7 @@ public:
 };
 
 class ImageInfo: public Pane {
-  SUPER(ImageInfo,Pane) Q_OBJECT
+  SUPER(ImageInfo,Pane)
 public:
   ImageInfo();
 

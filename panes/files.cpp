@@ -1,5 +1,4 @@
 #include "files.h"
-#include "widgets/metrics.h"
 #include "widgets/iconbutton.h"
 #include "widgets/delegates.h"
 #include <QVBoxLayout>
@@ -8,7 +7,7 @@
 #include <QPushButton>
 
 FileList::FileList() {
-  setMaximumWidth(textWidth("mmmmmmmmmmmmmm"));
+//  setMaximumWidth(textWidth("mmmmmmmmmmmmmm"));
   setColumnCount(3);
   hideColumn(0);
   setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

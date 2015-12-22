@@ -1,16 +1,21 @@
 #include "mainwin.h"
-#include "app.h"
-#include "action.h"
 #include "settings.h"
-#include <QMenuBar>
-#include <QStatusBar>
-#include <QPushButton>
-#include <QAction>
+#include "dock_files.h"
+#include "dock_info.h"
+#include "mainimagewidget.h"
+
 #include <QCloseEvent>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QGridLayout>
-#include "panes/panes.h"
+
+//#include "app.h"
+//#include <QMenuBar>
+//#include <QStatusBar>
+//#include <QPushButton>
+//#include <QAction>
+//#include <QCloseEvent>
+//#include <QHBoxLayout>
+//#include <QVBoxLayout>
+//#include <QGridLayout>
+//#include "panes/panes.h"
 
 MainWin::MainWin() {
   init();
@@ -23,15 +28,26 @@ void MainWin::init() {
   initLayout();
   initActionsAndMenus();
   initStatus();
+  readSettings();
 }
 
 void MainWin::initLayout() {
+  auto ctrWgt = new MainImageWidget;
+  setCentralWidget(ctrWgt);
+
+  addDockWidget(Qt::LeftDockWidgetArea,  (filesDock = new DockFiles));
+  filesDock->setFeatures(QDockWidget::DockWidgetMovable);
+  filesDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+  addDockWidget(Qt::RightDockWidgetArea, (infoDock  = new DockInfo));
+  infoDock->setFeatures(QDockWidget::DockWidgetMovable);
+  infoDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+  /*
   // layout helpers
   typedef QHBoxLayout HBox;
   typedef QVBoxLayout VBox;
 
-  auto ctrWgt = new QWidget();
-  setCentralWidget(ctrWgt);
 
   // three columns
   auto *hl = new HBox(ctrWgt);
@@ -68,10 +84,10 @@ void MainWin::initLayout() {
 
   v3h->addWidget(new QPushButton("Pole figure..."));
   v3h->addWidget(new QPushButton("Diagram..."));
-}
+*/}
 
 void MainWin::initActionsAndMenus() {
-  typedef QKeySequence QKey;
+/*  typedef QKeySequence QKey;
 
   auto action = [&](rcstr text, bool checkable, bool checked, QKey shortcut) {
     auto act = new QAction(text,this);
@@ -209,6 +225,7 @@ void MainWin::initActionsAndMenus() {
   connect(actFullscreen, &QAction::toggled, [&](bool on) {
     if (on) showFullScreen(); else showNormal();
   });
+*/
 }
 
 void MainWin::initStatus() {

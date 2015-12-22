@@ -1,6 +1,5 @@
 #include "reflections.h"
 #include "widgets/iconbutton.h"
-#include "widgets/metrics.h"
 #include "widgets/delegates.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -9,7 +8,7 @@
 #include <QResizeEvent>
 
 ReflectionList::ReflectionList() {
-  setMaximumWidth(textWidth("mmmmmmmmmmmmmm"));
+//  setMaximumWidth(textWidth("mmmmmmmmmmmmmm"));
   setColumnCount(6);
   hideColumn(0);
   setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

@@ -1,11 +1,18 @@
-#include "detector.h"
-#include "widgets/editcell.h"
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QGridLayout>
-#include <QCheckBox>
-#include <QLabel>
+#include "panel_detector.h"
+#include "layout_helpers.h"
 
+//#include "widgets/editcell.h"
+//#include <QHBoxLayout>
+//#include <QVBoxLayout>
+//#include <QGridLayout>
+//#include <QCheckBox>
+//#include <QLabel>
+
+PanelDetector::PanelDetector() {
+  groupBox("Detector");
+}
+
+/*
 Detector::Detector(): super("Detector") {
   auto sp = sizePolicy();
   sp.setVerticalStretch(0);
@@ -34,5 +41,5 @@ Detector::Detector(): super("Detector") {
   h->addWidget(new EditCell());
   h->addWidget(new QLabel("pix"));
 }
-
+*/
 // eof

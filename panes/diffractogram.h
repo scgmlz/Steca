@@ -4,7 +4,7 @@
 #include "pane.h"
 
 class Diffractogram: public Pane {
-  SUPER(Diffractogram,Pane) Q_OBJECT
+  SUPER(Diffractogram,Pane)
 public:
   Diffractogram();
 

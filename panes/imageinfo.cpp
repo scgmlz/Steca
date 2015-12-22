@@ -1,5 +1,4 @@
 #include "imageinfo.h"
-#include "widgets/metrics.h"
 #include "widgets/delegates.h"
 #include <QHeaderView>
 #include <QResizeEvent>

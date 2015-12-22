@@ -4,10 +4,11 @@
 #include "defs.h"
 #include <QMainWindow>
 
+class QDockWidget;
 class QMenu; class QAction;
 
 class MainWin: public QMainWindow {
-  SUPER(MainWin,QMainWindow) Q_OBJECT
+  SUPER(MainWin,QMainWindow)
 public:
   MainWin();
  ~MainWin();
@@ -18,6 +19,8 @@ private:
   void initLayout();
   void initActionsAndMenus();
   void initStatus();
+
+  QDockWidget *filesDock, *infoDock;
 
   QMenu *menuFile, *menuEdit, *menuView, *menuOpts, *menuHelp;
 

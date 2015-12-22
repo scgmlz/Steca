@@ -4,7 +4,7 @@
 #include "pane.h"
 
 class Background: public Pane {
-  SUPER(Background,Pane) Q_OBJECT
+  SUPER(Background,Pane)
 public:
   Background();
 

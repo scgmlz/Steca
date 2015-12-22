@@ -5,7 +5,7 @@
 #include <QApplication>
 
 class App: public QApplication {
-  SUPER(App,QApplication) Q_OBJECT
+  SUPER(App,QApplication)
 public:
   App(int& argc, char* argv[]);
 

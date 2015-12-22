@@ -4,7 +4,7 @@
 #include "pane.h"
 
 class ReflectionInfo: public Pane {
-  SUPER(ReflectionInfo,Pane) Q_OBJECT
+  SUPER(ReflectionInfo,Pane)
 public:
   ReflectionInfo();
 

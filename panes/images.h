@@ -11,7 +11,7 @@ public:
 };
 
 class Images: public Pane {
-  SUPER(Images,Pane) Q_OBJECT
+  SUPER(Images,Pane)
 public:
   Images();
 

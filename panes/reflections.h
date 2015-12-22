@@ -20,7 +20,7 @@ public:
 };
 
 class Reflections: public Pane {
-  SUPER(Reflections,Pane) Q_OBJECT
+  SUPER(Reflections,Pane)
 public:
   Reflections();
 
