@@ -4,6 +4,7 @@
 #include "settings.h"
 #include <QMenuBar>
 #include <QStatusBar>
+#include <QPushButton>
 #include <QAction>
 #include <QCloseEvent>
 #include <QHBoxLayout>
@@ -61,6 +62,12 @@ void MainWin::initLayout() {
   v3->addWidget(new ImageInfo());
   v3->addWidget(new ReflectionInfo());
   v3->addWidget(new Normalization());
+
+  auto *v3h = new HBox;
+  v3->addLayout(v3h);
+
+  v3h->addWidget(new QPushButton("Pole figure..."));
+  v3h->addWidget(new QPushButton("Diagram..."));
 }
 
 void MainWin::initActionsAndMenus() {

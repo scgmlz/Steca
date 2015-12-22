@@ -29,7 +29,8 @@ SOURCES += \
     panes/image.cpp \
     widgets/iconbutton.cpp \
     widgets/editcell.cpp \
-    widgets/metrics.cpp
+    widgets/metrics.cpp \
+    widgets/delegates.cpp
 
 HEADERS += \
     defs.h \
@@ -52,7 +53,8 @@ HEADERS += \
     panes/image.h \
     widgets/iconbutton.h \
     widgets/editcell.h \
-    widgets/metrics.h
+    widgets/metrics.h \
+    widgets/delegates.h
 
 RESOURCES += \
     rsrc.qrc

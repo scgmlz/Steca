@@ -13,5 +13,6 @@
         <file alias="turnright">rsrc/turnright.svg</file>
         <file alias="updown">rsrc/updown.svg</file>
         <file alias="link">rsrc/link.svg</file>
+        <file alias="add">rsrc/add.svg</file>
     </qresource>
 </RCC>

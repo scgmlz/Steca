@@ -8,6 +8,9 @@ class ReflectionList: public QTreeWidget {
   SUPER(ReflectionList,QTreeWidget)
 public:
   ReflectionList();
+
+protected:
+  void resizeEvent(QResizeEvent*);
 };
 
 class ReflectionItem: public QTreeWidgetItem {
