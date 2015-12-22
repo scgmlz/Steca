@@ -162,6 +162,7 @@ void MainWin::initActionsAndMenus() {
 
   menuHelp->addActions({
     actPdfManual  = simple("Pdf manual (German)"),
+    separator(),
     actAbout      = simple("About..."),
   });
 
