@@ -6,7 +6,7 @@
 class PanelFiles: public Panel {
   SUPER(PanelFiles,Panel)
 public:
-  PanelFiles();
+  PanelFiles(MainWin&);
 };
 
 #endif

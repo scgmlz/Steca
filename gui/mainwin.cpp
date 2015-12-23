@@ -35,11 +35,11 @@ void MainWin::initLayout() {
   auto ctrWgt = new MainImageWidget;
   setCentralWidget(ctrWgt);
 
-  addDockWidget(Qt::LeftDockWidgetArea,  (filesDock = new DockFiles));
+  addDockWidget(Qt::LeftDockWidgetArea,  (filesDock = new DockFiles(*this)));
   filesDock->setFeatures(QDockWidget::DockWidgetMovable);
   filesDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-  addDockWidget(Qt::RightDockWidgetArea, (infoDock  = new DockInfo));
+  addDockWidget(Qt::RightDockWidgetArea, (infoDock  = new DockInfo(*this)));
   infoDock->setFeatures(QDockWidget::DockWidgetMovable);
   infoDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 

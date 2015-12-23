@@ -8,8 +8,8 @@
 //#include <QCheckBox>
 //#include <QLabel>
 
-PanelDetector::PanelDetector() {
-  groupBox("Detector");
+PanelDetector::PanelDetector(MainWin& mainWin): super(mainWin) {
+  addGroupBox("Detector");
 }
 
 /*

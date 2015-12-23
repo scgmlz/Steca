@@ -6,11 +6,7 @@
 class PanelDetector: public Panel {
   SUPER(PanelDetector,Panel)
 public:
-  PanelDetector();
-
-signals:
-
-public slots:
+  PanelDetector(MainWin&);
 };
 
 #endif

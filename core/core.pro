@@ -1,13 +1,18 @@
 TARGET   = core
 TEMPLATE = lib
 
-CONFIG   = static thread stl exceptions c++11
+DEFINES += BUILDING_LIBRARY
+
+CONFIG  += thread rtti stl exceptions c++11
 CONFIG  += silent warn_on
 
-QT -= core gui
+QT -= gui
 
 HEADERS += \
     core.h
 
 SOURCES += \
     core.cpp
+
+DISTFILES += \
+    README

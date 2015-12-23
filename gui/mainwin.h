@@ -4,6 +4,8 @@
 #include "defs.h"
 #include <QMainWindow>
 
+#include "core.h"
+
 class QDockWidget;
 class QMenu; class QAction;
 
@@ -57,6 +59,12 @@ private:
 
   void readSettings();
   void saveSettings();
+
+private:
+  Core core;  // the STeCa core instance owned by the window
+
+public:
+  Core& getCore() { return core; }
 };
 
 #endif

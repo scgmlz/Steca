@@ -1,7 +1,7 @@
 TARGET   = STeCa2
 TEMPLATE = app
 
-CONFIG  += thread exceptions c++11
+CONFIG  += thread rtti exceptions c++11
 CONFIG  += silent warn_on
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -37,3 +37,11 @@ SOURCES += \
     settings.cpp
 
 RESOURCES += \
+
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../core/release/ -lcore
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../core/debug/ -lcore
+else:unix: LIBS += -L$$OUT_PWD/../core/ -lcore
+
+INCLUDEPATH += $$PWD/../core
+DEPENDPATH += $$PWD/../core

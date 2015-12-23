@@ -1,8 +1,8 @@
 #include "panel_normalization.h"
 #include "layout_helpers.h"
 
-PanelNormalization::PanelNormalization() {
-  groupBox("Normalization");
+PanelNormalization::PanelNormalization(MainWin& mainWin): super(mainWin) {
+  addGroupBox("Normalization");
 //  auto sp = sizePolicy();
 //  sp.setVerticalStretch(0);
 //  setSizePolicy(sp);

@@ -6,11 +6,7 @@
 class PanelNormalization: public Panel {
   SUPER(PanelNormalization,Panel)
 public:
-  PanelNormalization();
-
-signals:
-
-public slots:
+  PanelNormalization(MainWin&);
 };
 
 #endif

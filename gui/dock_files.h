@@ -4,10 +4,12 @@
 #include "defs.h"
 #include <QDockWidget>
 
+class MainWin;
+
 class DockFiles: public QDockWidget {
   SUPER(DockFiles,QDockWidget)
 public:
-  DockFiles();
+  DockFiles(MainWin&);
 };
 
 #endif

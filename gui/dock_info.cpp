@@ -1,6 +1,6 @@
 #include "dock_info.h"
 
-DockInfo::DockInfo() {
+DockInfo::DockInfo(MainWin&) {
   setObjectName("DockInfo");
   setWindowTitle("Info");
 

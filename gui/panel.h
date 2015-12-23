@@ -4,15 +4,17 @@
 #include "defs.h"
 #include <QWidget>
 
+class MainWin;
 class QVBoxLayout;
 
 class Panel: public QWidget {
 public:
-  Panel();
+  Panel(MainWin&);
 
-  void groupBox(rcstr title);
+  void addGroupBox(rcstr title);
 
 protected:
+  MainWin &mainWin;
   QVBoxLayout *v;
 };
 

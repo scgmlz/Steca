@@ -6,7 +6,7 @@
 
 #include <QLabel>
 
-DockFiles::DockFiles() {
+DockFiles::DockFiles(MainWin& mainWin) {
   setObjectName("DockFiles");
   setWindowTitle("Files");
 
@@ -16,9 +16,9 @@ DockFiles::DockFiles() {
   auto v = vbox();
   w->setLayout(v);
 
-  v->addWidget(new PanelFiles);
-  v->addWidget(new PanelDetector);
-  v->addWidget(new PanelNormalization);
+  v->addWidget(new PanelFiles(mainWin));
+  v->addWidget(new PanelDetector(mainWin));
+  v->addWidget(new PanelNormalization(mainWin));
 }
 
 // eof
