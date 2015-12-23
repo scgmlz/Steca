@@ -60,11 +60,8 @@ private:
   void readSettings();
   void saveSettings();
 
-private:
-  Core core;  // the STeCa core instance owned by the window
-
 public:
-  Core& getCore() { return core; }
+  Core core;  // the STeCa core instance owned by the window
 };
 
 #endif

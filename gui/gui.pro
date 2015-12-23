@@ -37,6 +37,7 @@ SOURCES += \
     settings.cpp
 
 RESOURCES += \
+    resources.qrc
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../core/release/ -lcore
@@ -45,3 +46,6 @@ else:unix: LIBS += -L$$OUT_PWD/../core/ -lcore
 
 INCLUDEPATH += $$PWD/../core
 DEPENDPATH += $$PWD/../core
+
+DISTFILES += \
+    stash.txt

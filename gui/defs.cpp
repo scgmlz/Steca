@@ -19,9 +19,9 @@ Exc::Exc(rcstr msg_): msg(msg_) {
 Exc::~Exc() throw () {
 }
 
-char const* Exc::what() const throw () {
-  return PCSTR(msg);
-}
+//char const* Exc::what() const throw () {
+//  return msg.toLocal8Bit().constData();
+//}
 
 void Exc::warn() const {
   qWarning() << msg;

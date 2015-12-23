@@ -20,13 +20,18 @@ public:
   typedef std::string const& rcstr;
 
   void  addFile(rcstr fileName);
-  int   numFiles() const;
-  str   fileName(uint i);
+  uint  numFiles()          const;
+  str   fileName(uint i)    const;  // if (i==numFiles()) -> correctionFile()
+
+  bool  hasCorrectionFile() const;
+  void  setCorrectionFile(rcstr fileName); // fileName may be empty
+  str   correctionFile()    const;
 
 private:
   typedef std::vector<str> str_vec;
 
   str_vec files;
+  str     corrFile;
 };
 
 #endif

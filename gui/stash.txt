@@ -1,0 +1,36 @@
+  class Delegate: public QStyledItemDelegate {
+    SUPER(Delegate,QStyledItemDelegate)
+  public:
+    Delegate(FileList&);
+
+    QPoint iconPos(QStyleOptionViewItem const&) const;
+    void paint(QPainter*, QStyleOptionViewItem const&, QModelIndex const&) const;
+
+  private:
+    FileList &fileList;
+    QPixmap  icon;p
+  };
+
+  setMouseTracking(true);
+
+//-----------------------------------------------------------------------------
+
+FileList::Delegate::Delegate(FileList& fileList_): fileList(fileList_) {
+  auto height = sizeHint(QStyleOptionViewItem(),QModelIndex()).height();
+  icon = QPixmap(":/icon/remove").scaledToHeight(height,Qt::SmoothTransformation);
+}
+
+QPoint FileList::Delegate::iconPos(QStyleOptionViewItem const& option) const {
+  WT(option.rect) WT(fileList.size())
+
+  return QPoint(fileList.geometry().right() - icon.width(), option.rect.center().y() - icon.height()/2);
+}
+
+void FileList::Delegate::paint(QPainter* painter,
+  QStyleOptionViewItem const& option, QModelIndex const& index) const
+{
+  super::paint(painter,option,index);
+  if (option.state & QStyle::State_MouseOver)
+    painter->drawPixmap(iconPos(option), icon);
+}
+

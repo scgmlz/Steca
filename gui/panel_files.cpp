@@ -2,73 +2,106 @@
 #include "mainwin.h"
 #include "layout_helpers.h"
 
-#include <QListView>
-#include <QHeaderView>
+#include <QPainter>
 
-class FileList: public QListView {
-  SUPER(FileList,QListView)
-public:
-  FileList(MainWin&);
+//-----------------------------------------------------------------------------
 
-protected:
-  void resizeEvent(QResizeEvent*);
-};
-
-FileList::FileList(MainWin&) {
-//  setMaximumWidth(textWidth("mmmmmmmmmmmmmm"));
-//  setColumnCount(3);
-//  hideColumn(0);
-//  setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-//  header()->hide();
-//  setItemDelegateForColumn(2,new IconDelegate(":/icon/remove",false));
+FileList::FileList(Core& core): model(core), delegate(*this) {
+  setModel(&model);
+  setItemDelegate(&delegate);
 }
 
-void FileList::resizeEvent(QResizeEvent*) {
-//  int w = e->size().width();
-//  setColumnWidth(1,w-20);
-//  setColumnWidth(2,20);
+void FileList::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
+  super::selectionChanged(selected,deselected);
+
+  str fileName;
+
+  auto indexes = selected.indexes();
+  if (!indexes.isEmpty())
+    fileName = model.data(indexes.first(),Qt::DisplayRole).toString();
+
+  emit selectedFile(fileName);
 }
 
-class FileModel: public QAbstractListModel {
-  SUPER(FileModel,QAbstractListModel)
-public:
-  FileModel(Core&);
-
-  int rowCount(QModelIndex const&)      const;
-  QVariant data(QModelIndex const&,int) const;
-
-private:
-  Core &core;
-};
-
-FileModel::FileModel(Core& core_): core(core_) {
+void FileList::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
+  super::currentChanged(current,previous);
 }
 
-int FileModel::rowCount(QModelIndex const& parent) const {
-  if (parent.isValid()) return 0;
-  return core.numFiles();
+//-----------------------------------------------------------------------------
+
+// TODO see http://cep.xray.aps.anl.gov/software/qt4-x11-4.8.6-browser/d1/ded/qstringlistmodel_8cpp_source.html
+FileList::Model::Model(Core& core_): core(core_) {
 }
 
-QVariant FileModel::data(QModelIndex const& index,int role) const {
-  auto row = index.row();
-  if (row < 0 || row >= core.numFiles()) goto def;
+int FileList::Model::rowCount(QModelIndex const&) const {
+  return core.numFiles() + (core.hasCorrectionFile() ? 1 : 0);
+}
+
+enum { IsCorrectionFileRole = Qt::UserRole };
+
+QVariant FileList::Model::data(QModelIndex const& index,int role) const {
+  auto row = index.row(), cnt = rowCount(index);
+  if (row < 0 || row >= cnt) return QVariant();
+
+  bool isCorrectionFile = core.hasCorrectionFile() && row+1 == cnt;
 
   switch (role) {
-    case Qt::DisplayRole:
-    case Qt::EditRole:
-      return core.fileName(row).data(); // converts std::string to QVariant
+    case IsCorrectionFileRole:
+      return isCorrectionFile;
+    case Qt::DisplayRole: {
+      auto fileName = core.fileName(row);
+      char const* data = fileName.data();
+      static str Corr("Corr: ");
+      return isCorrectionFile ? Corr + data : data;
+    }
     default:
-      goto def;
+      return QVariant();
   }
-
-def:
-  return QVariant();
 }
+
+//-----------------------------------------------------------------------------
+
+FileList::Delegate::Delegate(FileList& fileList_): fileList(fileList_) {
+}
+
+void FileList::Delegate::paint(QPainter* painter,
+  QStyleOptionViewItem const& option, QModelIndex const& index) const
+{
+  bool isCorrectionFile = index.data(IsCorrectionFileRole).toBool();
+  if(isCorrectionFile) {
+    QStyleOptionViewItem o = option;
+    auto &font = o.font;
+    font.setItalic(true);
+    font.setBold(true);
+    super::paint(painter,o,index);
+  } else {
+    super::paint(painter,option,index);
+  }
+}
+
+//-----------------------------------------------------------------------------
 
 PanelFiles::PanelFiles(MainWin& mainWin): super(mainWin) {
-  auto l = new FileList(mainWin);
-  l->setModel(new FileModel(mainWin.getCore()));
-  v->addWidget(l);
+  v->addWidget((fileList = new FileList(mainWin.core)));
+
+  auto h = hbox(); v->addLayout(h);
+
+  btnAddCorrectionFile  = new Button("Corr. file...","add or replace correction file");
+  btnAddFile            = new IconButton(":/icon/add","add file");
+  btnRemoveFile         = new IconButton(":/icon/remove","remove selected file");
+
+  btnRemoveFile->setEnabled(false);
+
+  h->addWidget(btnAddCorrectionFile);
+  h->addStretch();
+  h->addWidget(btnAddFile);
+  h->addWidget(btnRemoveFile);
+
+  connect(fileList, &FileList::selectedFile, [&](rcstr s) {
+    btnRemoveFile->setEnabled(!s.isEmpty());
+  });
 }
+
+//-----------------------------------------------------------------------------
 
 // eof

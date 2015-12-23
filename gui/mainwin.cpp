@@ -82,8 +82,8 @@ void MainWin::initLayout() {
   auto *v3h = new HBox;
   v3->addLayout(v3h);
 
-  v3h->addWidget(new QPushButton("Pole figure..."));
-  v3h->addWidget(new QPushButton("Diagram..."));
+  v3h->addWidget(new PushButton("Pole figure..."));
+  v3h->addWidget(new PushButton("Diagram..."));
 */}
 
 void MainWin::initActionsAndMenus() {

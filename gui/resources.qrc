@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/icon">
+        <file alias="remove">icons/remove.svg</file>
+        <file alias="curve">icons/curve.svg</file>
+        <file alias="eye">icons/eye.svg</file>
+        <file alias="background">icons/background.svg</file>
+        <file alias="integral">icons/integral.svg</file>
+        <file alias="peak">icons/peak.svg</file>
+        <file alias="reflect">icons/reflect.svg</file>
+        <file alias="width">icons/width.svg</file>
+        <file alias="leftright">icons/leftright.svg</file>
+        <file alias="turnleft">icons/turnleft.svg</file>
+        <file alias="turnright">icons/turnright.svg</file>
+        <file alias="updown">icons/updown.svg</file>
+        <file alias="link">icons/link.svg</file>
+        <file alias="add">icons/add.svg</file>
+    </qresource>
+</RCC>

@@ -16,8 +16,6 @@ extern  str const   nullstr;
 
 typedef QStringList   str_lst;
 
-#define PCSTR(str)    str.toLocal8Bit().constData()
-
 // a class definition helper: this class and superclass access
 #define SUPER(cls,sup)  typedef cls ThisCls; typedef sup super;
 
@@ -33,7 +31,7 @@ public:
  ~Exc() throw ();
 
   str msg;
-  char const* what() const throw ();
+//  char const* what() const throw ();
 
   void warn() const;
 };
