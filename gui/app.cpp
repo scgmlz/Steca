@@ -1,5 +1,5 @@
 #include "app.h"
-#include "manifest.h"
+#include "../manifest.h"
 #include <iostream>
 
 App::App(int &argc, char *argv[])

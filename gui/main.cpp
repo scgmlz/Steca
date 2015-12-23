@@ -1,5 +1,5 @@
-#include "gui/app.h"
-#include "gui/mainwin.h"
+#include "app.h"
+#include "mainwin.h"
 
 int main(int argc, char *argv[]) {
     App app(argc, argv);

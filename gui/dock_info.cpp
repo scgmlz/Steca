@@ -2,7 +2,10 @@
 
 DockInfo::DockInfo() {
   setObjectName("DockInfo");
-  setWidget(new QWidget());
+  setWindowTitle("Info");
+
+  auto w = new QWidget;
+  setWidget(w);
 }
 
 // eof
