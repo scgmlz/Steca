@@ -1,39 +1,35 @@
 #ifndef PANEL_H
 #define PANEL_H
 
-#include "defs.h"
+#include "gui_helpers.h"
 #include <QWidget>
-#include <QPushButton>
+#include <QDockWidget>
 
-class MainWin; class Core;
-class QVBoxLayout;
+// optional dock widget
+class Docking: public QDockWidget {
+  SUPER(Docking,QDockWidget)
+public:
+  Docking(rcstr objectName, rcstr windowTitle);
+protected:
+  QBoxLayout *box;
+};
 
 // abstract panel
+class MainWin;
 
 class Panel: public QWidget {
 public:
-  Panel(MainWin&);
+  Panel(MainWin&,Qt::Orientation);
+  Panel(MainWin&,Qt::Orientation,rcstr groupBoxTitle);
 
-  void addGroupBox(rcstr title);
+  void setStretchFactors(int horizontal, int vertical);
+
+private:
+  Panel(MainWin&,Qt::Orientation,str const* groupBoxTitle);
 
 protected:
   MainWin &mainWin;
-  QVBoxLayout *v;
-};
-
-// custom widgets
-
-class Button: public QPushButton {
-  SUPER(Button,QPushButton)
-public:
-  Button(rcstr text, rcstr toolTip);
-  Button(QIcon const&, rcstr toolTip);
-};
-
-class IconButton: public Button {
-  SUPER(IconButton,Button)
-public:
-  IconButton(rcstr fileName, rcstr toolTip);
+  QBoxLayout *box;
 };
 
 #endif

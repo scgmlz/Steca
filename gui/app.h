@@ -4,6 +4,34 @@
 #include "defs.h"
 #include <QApplication>
 
+class Core;
+
+// Core + signals
+class CoreProxy: public QObject {
+  Q_OBJECT
+public:
+  CoreProxy();
+ ~CoreProxy();
+
+  void addFile(rcstr fileName);
+  void addFiles(str_lst fileNames);
+  bool hasFile(rcstr fileName);
+  uint numFiles(bool withCorrection=false);
+  str  fileName(uint i);
+  void removeFile(uint i);
+  bool hasCorrectionFile();
+  void setCorrectionFile(rcstr fileName);
+  str  correctionFileName();
+
+signals:
+  void  filesChanged();
+
+private:
+  Core *core;
+};
+
+class MainWin;
+
 class App: public QApplication {
   SUPER(App,QApplication)
 public:
@@ -11,12 +39,14 @@ public:
 
   int exec();
 
-protected:
-  void init();
-  void done();
+  CoreProxy coreProxy;
 
-protected:
+private:
+  MainWin *mainWin;
+
   bool notify(QObject*, QEvent*);
 };
+
+extern App *app;
 
 #endif

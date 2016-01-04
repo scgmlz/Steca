@@ -1,13 +1,10 @@
 #ifndef DOCK_INFO_H
 #define DOCK_INFO_H
 
-#include "defs.h"
-#include <QDockWidget>
+#include "panel.h"
 
-class MainWin;
-
-class DockInfo: public QDockWidget {
-  SUPER(DockInfo,QDockWidget)
+class DockInfo: public Docking {
+  SUPER(DockInfo,Docking)
 public:
   DockInfo(MainWin&);
 };

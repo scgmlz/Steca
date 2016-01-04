@@ -5,40 +5,39 @@
 #include <QListView>
 #include <QStyledItemDelegate>
 
+class CoreProxy;
+
 class FileList: public QListView {
   SUPER(FileList,QListView) Q_OBJECT
 public:
-  FileList(Core&);
-
-signals:
-  void selectedFile(str fileName); // fileName may be empty (no file)
+  FileList(CoreProxy&);
 
 protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);
-  void currentChanged(QModelIndex const&, QModelIndex const&);
+signals:
+  void selectedFile(str fileName); // fileName may be empty (no file)
+public:
+  void removeSelectedFile();
 
 private:
   class Model: public QAbstractListModel {
     SUPER(Model,QAbstractListModel)
   public:
-    Model(Core&);
+    Model(CoreProxy&);
 
     int rowCount(QModelIndex const&)      const;
     QVariant data(QModelIndex const&,int) const;
 
   private:
-    Core &core;
+    CoreProxy &coreProxy;
   };
 
   class Delegate: public QStyledItemDelegate {
     SUPER(Delegate,QStyledItemDelegate)
   public:
-    Delegate(FileList&);
+    Delegate();
 
     void paint(QPainter*, QStyleOptionViewItem const&, QModelIndex const&) const;
-
-  private:
-    FileList &fileList;
   };
 
   Model    model;
@@ -52,7 +51,8 @@ public:
 
 private:
   FileList *fileList;
-  Button *btnAddCorrectionFile, *btnAddFile, *btnRemoveFile;
+  PushButton *btnAddCorrectionFile;
+  IconButton *btnAddFiles, *btnRemoveFile;
 };
 
 #endif

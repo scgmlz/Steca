@@ -1,13 +1,10 @@
 #ifndef DOCK_FILES_H
 #define DOCK_FILES_H
 
-#include "defs.h"
-#include <QDockWidget>
+#include "panel.h"
 
-class MainWin;
-
-class DockFiles: public QDockWidget {
-  SUPER(DockFiles,QDockWidget)
+class DockFiles: public Docking {
+  SUPER(DockFiles,Docking)
 public:
   DockFiles(MainWin&);
 };

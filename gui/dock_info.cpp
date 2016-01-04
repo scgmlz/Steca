@@ -1,11 +1,6 @@
 #include "dock_info.h"
 
-DockInfo::DockInfo(MainWin&) {
-  setObjectName("DockInfo");
-  setWindowTitle("Info");
-
-  auto w = new QWidget;
-  setWidget(w);
+DockInfo::DockInfo(MainWin&): super("DockInfo","Info") {
 }
 
 // eof

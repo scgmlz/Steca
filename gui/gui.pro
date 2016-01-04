@@ -12,14 +12,22 @@ HEADERS += \
     defs.h \
     dock_files.h \
     dock_info.h \
-    layout_helpers.h \
-    mainimagewidget.h \
     mainwin.h \
     panel.h \
     panel_detector.h \
     panel_files.h \
     panel_normalization.h \
-    settings.h
+    settings.h \
+    images.h \
+    imageinfo.h \
+    reflectioninfo.h \
+    reflections.h \
+    panel_images.h \
+    panel_diffractogram.h \
+    delegates.h \
+    gui_helpers.h \
+    ../3rd/qcustomplot.h \
+    panel_background.h
 
 SOURCES += \
     main.cpp \
@@ -27,14 +35,22 @@ SOURCES += \
     defs.cpp \
     dock_files.cpp \
     dock_info.cpp \
-    layout_helpers.cpp \
-    mainimagewidget.cpp \
     mainwin.cpp \
     panel.cpp \
     panel_detector.cpp \
     panel_files.cpp \
     panel_normalization.cpp \
-    settings.cpp
+    settings.cpp \
+    images.cpp \
+    imageinfo.cpp \
+    reflectioninfo.cpp \
+    reflections.cpp \
+    panel_images.cpp \
+    panel_diffractogram.cpp \
+    delegates.cpp \
+    gui_helpers.cpp \
+    ../3rd/qcustomplot.cpp \
+    panel_background.cpp
 
 RESOURCES += \
     resources.qrc

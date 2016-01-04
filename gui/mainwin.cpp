@@ -1,39 +1,175 @@
 #include "mainwin.h"
+#include "app.h"
 #include "settings.h"
 #include "dock_files.h"
 #include "dock_info.h"
-#include "mainimagewidget.h"
+#include "panel_images.h"
+#include "panel_diffractogram.h"
 
 #include <QCloseEvent>
+#include <QMenuBar>
+#include <QSplitter>
+#include <QStatusBar>
 
-//#include "app.h"
-//#include <QMenuBar>
-//#include <QStatusBar>
-//#include <QPushButton>
-//#include <QAction>
-//#include <QCloseEvent>
-//#include <QHBoxLayout>
-//#include <QVBoxLayout>
-//#include <QGridLayout>
-//#include "panes/panes.h"
+#include <QFileDialog>
 
 MainWin::MainWin() {
-  init();
+  dataFilesDir = QDir::homePath();
+
+  initActions();
+  initMenus();
+  initLayout();
+  initStatus();
+  connectActions();
+
+  readSettings();
 }
 
 MainWin::~MainWin() {
 }
 
-void MainWin::init() {
-  initLayout();
-  initActionsAndMenus();
-  initStatus();
-  readSettings();
+void MainWin::initActions() {
+  typedef QKeySequence QKey;
+
+  auto action = [&](pcstr text, bool checkable, pcstr iconFile, QKey shortcut) {
+    ASSERT(text)
+    pcstr tip = text;
+    auto act = new QAction(text,this);
+    act->setToolTip(tip);
+    act->setCheckable(checkable);
+    if (iconFile && *iconFile) act->setIcon(QIcon(iconFile));
+    act->setShortcut(shortcut);
+    return act;
+  };
+
+  auto simple = [&](pcstr text, pcstr iconFile = nullptr, QKey shortcut = QKey::UnknownKey) {
+    ASSERT(text)
+    return action(text,false,iconFile,shortcut);
+  };
+
+  auto toggle = [&](pcstr text, pcstr iconFile = nullptr, QKey shortcut = QKey::UnknownKey) {
+    return action(text,true,iconFile,shortcut);
+  };
+
+  Keys keys;
+
+  actAddFiles           = simple("Add files...",          ":/icon/add",     keys.keyAddFiles);
+  actRemoveFile         = simple("Remove selected file",  ":/icon/remove", keys.keyDeleteFile);
+  actSetCorrectionFile  = simple("Set correction file...","",               keys.keySetCorrectionFile);
+  actOpenSession        = simple("Open session...");
+  actSaveSession        = simple("Save session...");
+
+  actExportDiffractogramCurrent           = simple("Current only...");
+  actExportDiffractogramAllSeparateFiles  = simple("All to separate files...");
+  actExportDiffractogramSingleFile        = simple("All to a single file...");
+
+  actExportImagesWithMargins              = simple("With margins...");
+  actExportImagesWithoutMargins           = simple("Without margins...");
+
+  actQuit  = simple("Quit",  "", QKey::Quit);
+
+  actUndo  = simple("Undo",  "", QKey::Undo);
+  actRedo  = simple("Redo",  "", QKey::Redo);
+  actCut   = simple("Cut",   "", QKey::Cut);
+  actCopy  = simple("Copy",  "", QKey::Copy);
+  actPaste = simple("Paste", "", QKey::Paste);
+
+  actViewFiles     = toggle("Files",     "", keys.keyViewFiles);
+  actViewInfo      = toggle("Info",      "", keys.keyViewInfo);
+  actViewStatusbar = toggle("Statusbar", "", keys.keyViewStatusbar);
+#ifndef Q_OS_OSX
+  actFullscreen    = toggle("Fullscreen", "", keys.keyFullscreen);
+#endif
+  actViewReset     = simple("Reset");
+
+  actPreferences        = simple("Preferences...");
+  actFitErrorParameters = simple("Fit error parameters...");
+
+  actPdfManual  = simple("Pdf manual (German)");
+  actAbout      = simple("About...");
+}
+
+void MainWin::initMenus() {
+  auto separator = [&]() {
+    auto act = new QAction(this);
+    act->setSeparator(true);
+    return act;
+  };
+
+  auto *mbar = menuBar();
+
+  menuFile = mbar->addMenu("&File");
+  menuEdit = mbar->addMenu("&Edit");
+  menuView = mbar->addMenu("&View");
+  menuOpts = mbar->addMenu("&Options");
+  menuHelp = mbar->addMenu("&Help");
+
+  menuFile->addActions({
+    actAddFiles, actRemoveFile,
+    separator(),
+    actSetCorrectionFile,
+    separator(),
+    actOpenSession, actSaveSession,
+  });
+
+  QMenu *menuExportDiffractograms = new QMenu("Export diffractograms");
+  menuExportDiffractograms->addActions({
+    actExportDiffractogramCurrent,
+    actExportDiffractogramAllSeparateFiles,
+    actExportDiffractogramSingleFile,
+  });
+
+  menuFile->addAction(separator());
+  menuFile->addMenu(menuExportDiffractograms);
+
+  QMenu *menuExportImages = new QMenu("Export images");
+  menuExportImages->addActions({
+    actExportImagesWithMargins,
+    actExportImagesWithoutMargins,
+  });
+
+  menuFile->addMenu(menuExportImages);
+
+  menuFile->addActions({
+  #ifndef Q_OS_OSX  // Mac puts Quit into the Apple menu
+    separator(),
+  #endif
+    actQuit,
+  });
+
+  menuEdit->addActions({
+    actUndo, actRedo,
+    separator(),
+    actCut, actCopy, actPaste,
+  });
+
+  menuView->addActions({
+    actViewFiles, actViewInfo,
+    separator(),
+    actViewStatusbar,
+  #ifndef Q_OS_OSX
+    actFullscreen,
+  #endif
+    separator(),
+    actViewReset,
+  });
+
+  menuOpts->addActions({
+    actPreferences, actFitErrorParameters,
+  });
+
+  menuHelp->addActions({
+    actPdfManual,
+  #ifndef Q_OS_OSX // Mac puts About into the Apple menu
+    separator(),
+  #endif
+    actAbout,
+  });
 }
 
 void MainWin::initLayout() {
-  auto ctrWgt = new MainImageWidget;
-  setCentralWidget(ctrWgt);
+  auto splitter = new QSplitter(Qt::Vertical);
+  setCentralWidget(splitter);
 
   addDockWidget(Qt::LeftDockWidgetArea,  (filesDock = new DockFiles(*this)));
   filesDock->setFeatures(QDockWidget::DockWidgetMovable);
@@ -43,22 +179,20 @@ void MainWin::initLayout() {
   infoDock->setFeatures(QDockWidget::DockWidgetMovable);
   infoDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
+  splitter->addWidget(new PanelImages(*this));
+  splitter->addWidget(new PanelDiffractogram(*this));
+
+//  auto h = hbox();
+//  imageWidget->setLayout(h);
+//  h->addWidget()
+
+//  auto w = new QWidget;
+//  setWidget(w);
+
+//  auto v = vbox();
+//  w->setLayout(v);
+
   /*
-  // layout helpers
-  typedef QHBoxLayout HBox;
-  typedef QVBoxLayout VBox;
-
-
-  // three columns
-  auto *hl = new HBox(ctrWgt);
-  auto *v1 = new VBox;
-  auto *v2 = new VBox;
-  auto *v3 = new VBox;
-
-  hl->addLayout(v1,0);
-  hl->addLayout(v2,1);
-  hl->addLayout(v3,0);
-
   // panes
   v1->addWidget(new Files());
   v1->addWidget(new Detector());
@@ -84,112 +218,28 @@ void MainWin::initLayout() {
 
   v3h->addWidget(new PushButton("Pole figure..."));
   v3h->addWidget(new PushButton("Diagram..."));
-*/}
+*/
+}
 
-void MainWin::initActionsAndMenus() {
-/*  typedef QKeySequence QKey;
+void MainWin::initStatus() {
+  statusBar();
+}
 
-  auto action = [&](rcstr text, bool checkable, bool checked, QKey shortcut) {
-    auto act = new QAction(text,this);
-    act->setCheckable(checkable);
-    act->setChecked(checked);
-    act->setShortcut(shortcut);
-    return act;
+void MainWin::connectActions() {
+  auto onTrigger = [&](QAction* action, void (MainWin::*fun)()) {
+    QObject::connect(action, &QAction::triggered, this, fun);
   };
 
-  auto simple = [&](rcstr text, QKey shortcut = QKey::UnknownKey) {
-    return action(text,false,false,shortcut);
+  auto onToggle = [&](QAction* action, void (MainWin::*fun)(bool)) {
+    QObject::connect(action, &QAction::toggled, this, fun);
   };
 
-  auto toggle = [&](rcstr text, bool checked, QKey shortcut = QKey::UnknownKey) {
-    return action(text,true,checked,shortcut);
+  auto NOT_YET = [&](QAction* action) {
+    QObject::connect(action, &QAction::triggered, []() { notYet(); });
   };
 
-  auto separator = [&]() {
-    auto act = new QAction(this);
-    act->setSeparator(true);
-    return act;
-  };
-
-  QMenuBar *mbar = menuBar();
-
-  menuFile = mbar->addMenu("&File");
-  menuEdit = mbar->addMenu("&Edit");
-  menuView = mbar->addMenu("&View");
-  menuOpts = mbar->addMenu("&Options");
-  menuHelp = mbar->addMenu("&Help");
-
-  menuFile->addActions({
-     actAddFiles             = simple("Add files..."),
-     actOpenCorrectionFile   = simple("Open correction file..."),
-     separator(),
-     actOpenSession          = simple("Open session..."),
-     actSaveSession          = simple("Save session..."),
-  });
-
-  QMenu *menuExportDiffractograms = new QMenu("Export diffractograms");
-  menuExportDiffractograms->addActions({
-    actExportDiffractogramCurrent           = simple("Current only..."),
-    actExportDiffractogramAllSeparateFiles  = simple("All to separate files..."),
-    actExportDiffractogramSingleFile        = simple("All to a single file..."),
-  });
-
-  menuFile->addAction(separator());
-  menuFile->addMenu(menuExportDiffractograms);
-
-  QMenu *menuExportImages = new QMenu("Export images");
-  menuExportImages->addActions({
-    actExportImagesWithMargins              = simple("With margins..."),
-    actExportImagesWithoutMargins           = simple("Without margins..."),
-  });
-
-  menuFile->addMenu(menuExportImages);
-
-  menuFile->addActions({
-    separator(),
-    actQuit = simple("Quit",QKey::Quit),
-  });
-
-  menuEdit->addActions({
-    actUndo  = simple("Undo",  QKey::Undo),
-    actRedo  = simple("Redo",  QKey::Redo),
-    separator(),
-    actCut   = simple("Cut",   QKey::Cut),
-    actCopy  = simple("Copy",  QKey::Copy),
-    actPaste = simple("Paste", QKey::Paste),
-  });
-
-  if (!menuBar()->isNativeMenuBar()) {
-    menuView->addAction(
-      actViewMenubar    = toggle("Menubar",    true, Settings::KEY_VIEW_MENU) // TODO actions owned elsewhere
-    );
-  }
-
-  menuView->addActions({
-    actViewStatusbar  = toggle("Statusbar",  true,           Settings::KEY_VIEW_STATUS),
-    actFullscreen     = toggle("Fullscreen", isFullScreen(), Settings::KEY_VIEW_FULLSCREEN),
-  });
-
-  menuOpts->addActions({
-    actPreferences        = simple("Preferences..."),
-    actFitErrorParameters = simple("Fit error parameters..."),
-  });
-
-
-  menuHelp->addActions({
-    actPdfManual  = simple("Pdf manual (German)"),
-    separator(),
-    actAbout      = simple("About..."),
-  });
-
-  //--- connections ------------------------------------------------------------------
-
-  auto NOT_YET = [](QAction* act) {
-    connect(act, &QAction::triggered, [&]() { notYet(); });
-  };
-
-  NOT_YET(actAddFiles);
-  NOT_YET(actOpenCorrectionFile);
+  onTrigger(actAddFiles,           &MainWin::addFiles);
+  onTrigger(actSetCorrectionFile,  &MainWin::setCorrectionFile);
 
   NOT_YET(actOpenSession);
   NOT_YET(actSaveSession);
@@ -200,7 +250,7 @@ void MainWin::initActionsAndMenus() {
   NOT_YET(actExportImagesWithMargins);
   NOT_YET(actExportImagesWithoutMargins);
 
-  connect(actQuit, &QAction::triggered, [&](){ close(); });
+  onTrigger(actQuit, &MainWin::close);
 
   NOT_YET(actUndo);
   NOT_YET(actRedo);
@@ -214,22 +264,44 @@ void MainWin::initActionsAndMenus() {
   NOT_YET(actPdfManual);
   NOT_YET(actAbout);
 
-  connect(actViewMenubar, &QAction::toggled, [&](bool on) {
-    menuBar()->setVisible(on);
-  });
-
-  connect(actViewStatusbar, &QAction::toggled, [&](bool on) {
-    statusBar()->setVisible(on);
-  });
-
-  connect(actFullscreen, &QAction::toggled, [&](bool on) {
-    if (on) showFullScreen(); else showNormal();
-  });
-*/
+  onToggle(actViewFiles,     &MainWin::viewFiles);
+  onToggle(actViewInfo,      &MainWin::viewInfo);
+  onToggle(actViewStatusbar, &MainWin::viewStatusbar);
+#ifndef Q_OS_OSX
+  onToggle(actFullscreen,    &MainWin::viewFullscreen);
+#endif
+  onTrigger(actViewReset,    &MainWin::viewReset);
 }
 
-void MainWin::initStatus() {
-  statusBar();
+void MainWin::show() {
+  super::show();
+  checkActions();
+}
+
+void MainWin::close() {
+  super::close();
+}
+
+void MainWin::addFiles() {
+  str_lst fileNames = QFileDialog::getOpenFileNames(this,
+      "Add files", dataFilesDir, "Data files (*.dat);;All files (*.*)");
+
+  if (!fileNames.isEmpty()) {
+    // remember the directory for the next time
+    dataFilesDir = QFileInfo(fileNames.first()).canonicalPath();
+    app->coreProxy.addFiles(fileNames);
+  }
+}
+
+void MainWin::setCorrectionFile() {
+  str fileName = QFileDialog::getOpenFileName(this,
+      "Set correction file", dataFilesDir, "Data files (*.dat);;All files (*.*)");
+
+  if (!fileName.isEmpty()) {
+    // remember the directory for the next time
+    dataFilesDir = QFileInfo(fileName).canonicalPath();
+    app->coreProxy.setCorrectionFile(fileName);
+  }
 }
 
 void MainWin::closeEvent(QCloseEvent* event) {
@@ -263,6 +335,45 @@ void MainWin::saveSettings() {
   s.setValue(VALUE_GEOMETRY,	saveGeometry());
   s.setValue(VALUE_STATE,		saveState());
   s.endGroup();
+}
+
+void MainWin::checkActions() {
+  actViewFiles->setChecked(filesDock->isVisible());
+  actViewInfo->setChecked(infoDock->isVisible());
+  actViewStatusbar->setChecked(statusBar()->isVisible());
+#ifndef Q_OS_OSX
+  actFullscreen->setChecked(isFullScreen());
+#endif
+}
+
+void MainWin::viewFiles(bool on) {
+  filesDock->setVisible(on);
+  actViewFiles->setChecked(on);
+}
+
+void MainWin::viewInfo(bool on) {
+  infoDock->setVisible(on);
+  actViewInfo->setChecked(on);
+}
+
+void MainWin::viewStatusbar(bool on) {
+  statusBar()->setVisible(on);
+  actViewStatusbar->setChecked(on);
+}
+
+void MainWin::viewFullscreen(bool on) {
+  if (on) showFullScreen(); else showNormal();
+#ifndef Q_OS_OSX
+  actFullscreen->setChecked(on);
+#endif
+}
+
+void MainWin::viewReset() {
+  restoreState(initialState);
+  viewFiles(true);
+  viewInfo(true);
+  viewStatusbar(true);
+  viewFullscreen(false);
 }
 
 // eof

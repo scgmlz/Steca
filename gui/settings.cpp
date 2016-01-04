@@ -1,5 +1,4 @@
 #include "settings.h"
-#include <QKeySequence>
 
 Settings::Settings(rcstr group_): super(), group(group_) {
   setFallbacksEnabled(false);
@@ -18,8 +17,17 @@ void Settings::saveStr(rcstr key, rcstr val) {
   endGroup();
 }
 
-QKeySequence const Settings::KEY_VIEW_MENU(Qt::SHIFT|Qt::META|Qt::Key_F12);
-QKeySequence const Settings::KEY_VIEW_STATUS(Qt::SHIFT|Qt::META|Qt::Key_F10);
-QKeySequence const Settings::KEY_VIEW_FULLSCREEN(Qt::SHIFT|Qt::META|Qt::Key_F11);
+Keys::Keys() {
+  keyAddFiles          = Qt::CTRL|Qt::Key_O;
+  keyDeleteFile        = QKey::Delete;
+  keySetCorrectionFile = Qt::SHIFT|Qt::CTRL|Qt::Key_O;
+
+  keyViewFiles         = Qt::Key_F9;
+  keyViewInfo          = Qt::Key_F10;
+  keyViewStatusbar     = Qt::Key_F11;
+#ifndef Q_OS_OSX
+  keyFullscreen        = Qt::Key_F12;
+#endif
+}
 
 // eof

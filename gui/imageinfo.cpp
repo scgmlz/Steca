@@ -1,4 +1,4 @@
-#include "imageinfo.h"
+/*#include "imageinfo.h"
 #include "widgets/delegates.h"
 #include <QHeaderView>
 #include <QResizeEvent>
@@ -38,5 +38,5 @@ ImageInfo::ImageInfo(): super("ImageInfo") {
   l->addTopLevelItem(new ImageInfoItem("Ф: 34.8°"));
 //  l->setCurrentItem(fi);
 }
-
+*/
 // eof

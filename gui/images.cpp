@@ -1,4 +1,4 @@
-#include "images.h"
+/*#include "images.h"
 #include <QVBoxLayout>
 #include <QPushButton>
 
@@ -26,3 +26,4 @@ Images::Images(): super("Images") {
 }
 
 // eof
+*/

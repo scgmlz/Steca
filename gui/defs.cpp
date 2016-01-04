@@ -5,8 +5,6 @@
 
 static_assert (QT_VERSION >= 0x050501,"written for Qt >= 5.5");
 
-str const nullstr("");
-
 //------------------------------------------------------------------------------
 
 #ifdef QT_NO_EXCEPTIONS
@@ -19,17 +17,11 @@ Exc::Exc(rcstr msg_): msg(msg_) {
 Exc::~Exc() throw () {
 }
 
-//char const* Exc::what() const throw () {
-//  return msg.toLocal8Bit().constData();
-//}
-
 void Exc::warn() const {
   qWarning() << msg;
 }
 
 void CRITICAL_ERROR(rcstr msg) throw (CriticalError) {
-
-
   qCritical() << "Critical: " << msg; // TODO test
   CriticalError(msg).raise();
 }

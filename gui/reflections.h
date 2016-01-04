@@ -1,7 +1,7 @@
 #ifndef REFLECTIONS_H
 #define REFLECTIONS_H
 
-#include "pane.h"
+/*#include "pane.h"
 #include <QTreeWidget>
 
 class ReflectionList: public QTreeWidget {
@@ -24,12 +24,8 @@ class Reflections: public Pane {
 public:
   Reflections();
 
-signals:
-
-public slots:
-
 private:
   ReflectionList *l;
 };
-
+*/
 #endif

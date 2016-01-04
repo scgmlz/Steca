@@ -9,29 +9,44 @@
 #define QSHARED_EXPORT Q_DECL_IMPORT
 #endif
 
-#include <string>
-#include <vector>
+#include <QString>
+#include <QVector>
+#include <QFileInfo>
 
 class QSHARED_EXPORT Core {
 public:
+  typedef QString    str;
+  typedef str const& rcstr;
+
+  class QSHARED_EXPORT File {
+  public:
+    File();
+    File(rcstr fileName);
+
+    QFileInfo info;
+  };
+
+public:
   Core();
+ ~Core();
 
-  typedef std::string        str;
-  typedef std::string const& rcstr;
+  void addFile(rcstr fileName);
+  bool hasFile(rcstr fileName);
 
-  void  addFile(rcstr fileName);
-  uint  numFiles()          const;
-  str   fileName(uint i)    const;  // if (i==numFiles()) -> correctionFile()
+  uint numFiles()            const;
+  // i between 0..numFiles(); if (i==numFiles()) -> correctionFileName()
+  str  fileName(uint i)      const;
+  void removeFile(uint i);
 
-  bool  hasCorrectionFile() const;
-  void  setCorrectionFile(rcstr fileName); // fileName may be empty
-  str   correctionFile()    const;
+  bool hasCorrectionFile()   const;
+  void setCorrectionFile(rcstr fileName); // fileName may be empty
+  str  correctionFileName()  const;
 
 private:
-  typedef std::vector<str> str_vec;
+  typedef QVector<File*> file_vec;
 
-  str_vec files;
-  str     corrFile;
+  file_vec dataFiles;
+  File     corrFile;
 };
 
 #endif

@@ -1,7 +1,7 @@
 #ifndef IMAGES_H
 #define IMAGES_H
 
-#include "pane.h"
+/*#include "pane.h"
 #include <QListWidget>
 
 class ImageList: public QListWidget {
@@ -15,12 +15,8 @@ class Images: public Pane {
 public:
   Images();
 
-signals:
-
-public slots:
-
 private:
   ImageList *l;
-};
+};*/
 
 #endif

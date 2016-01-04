@@ -4,30 +4,46 @@
 #include "defs.h"
 #include <QMainWindow>
 
-#include "core.h"
-
-class QDockWidget;
-class QMenu; class QAction;
+class QAction;
+class QMenu;
+class Panel;
+class Docking;
 
 class MainWin: public QMainWindow {
-  SUPER(MainWin,QMainWindow)
+  SUPER(MainWin,QMainWindow) Q_OBJECT
 public:
   MainWin();
  ~MainWin();
 
 private:
-  void init();
-
+  void initActions();
+  void initMenus();
   void initLayout();
-  void initActionsAndMenus();
   void initStatus();
+  void connectActions();
 
-  QDockWidget *filesDock, *infoDock;
+public:
+  void show();
+  void close();
 
+  void addFiles();
+  void setCorrectionFile();
+
+private:
+  str  dataFilesDir;  // where to begin to look for data files
+
+private:
+  void closeEvent(QCloseEvent*);
+  bool onClose();
+
+private:
+  Docking *filesDock, *infoDock;
   QMenu *menuFile, *menuEdit, *menuView, *menuOpts, *menuHelp;
 
+public:
   QAction
-    *actAddFiles, *actOpenCorrectionFile,
+    *actAddFiles, *actRemoveFile,
+    *actSetCorrectionFile,
     *actOpenSession, *actSaveSession,
 
     *actExportDiffractogramCurrent,
@@ -41,9 +57,12 @@ private:
     *actUndo, *actRedo,
     *actCut,  *actCopy, *actPaste,
 
-    *actViewMenubar,
+    *actViewFiles, *actViewInfo,
     *actViewStatusbar,
+#ifndef Q_OS_OSX // Mac has its own
     *actFullscreen,
+#endif
+    *actViewReset,
 
     *actPreferences,
     *actFitErrorParameters,
@@ -51,17 +70,19 @@ private:
     *actPdfManual,
     *actAbout;
 
-  void closeEvent(QCloseEvent*);
-  bool onClose();
-
 private:
   QByteArray initialState;
 
   void readSettings();
   void saveSettings();
 
-public:
-  Core core;  // the STeCa core instance owned by the window
+  void checkActions();
+
+  void viewFiles(bool);
+  void viewInfo(bool);
+  void viewStatusbar(bool);
+  void viewFullscreen(bool);
+  void viewReset();
 };
 
 #endif

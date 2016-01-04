@@ -1,7 +1,7 @@
 #ifndef IMAGEINFO_H
 #define IMAGEINFO_H
 
-#include "pane.h"
+/*#include "pane.h"
 #include <QTreeWidget>
 
 class ImageInfoList: public QTreeWidget {
@@ -24,12 +24,8 @@ class ImageInfo: public Pane {
 public:
   ImageInfo();
 
-signals:
-
-public slots:
-
 private:
   ImageInfoList *l;
-};
+};*/
 
 #endif

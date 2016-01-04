@@ -3,6 +3,8 @@
 #ifndef DEFS_H
 #define DEFS_H
 
+#define DEVEL
+
 #include <QtGlobal>
 #include <QException>
 
@@ -12,16 +14,28 @@
 
 typedef QString     str;
 typedef str const&  rcstr;
-extern  str const   nullstr;
+typedef char const* pcstr;
 
 typedef QStringList   str_lst;
 
 // a class definition helper: this class and superclass access
-#define SUPER(cls,sup)  typedef cls ThisCls; typedef sup super;
+#define SUPER(cls,sup)  typedef cls thisCls; typedef sup super;
 
 // a class to with inherited constructors
 #define INHERIT_SUPER(cls,ns,sup) SUPER(cls,ns::sup)  \
   public: using super::sup; private:
+
+// iteration
+#define for_i(num)          for (int i=0, iEnd=(num); i<iEnd; ++i)
+#define for_i_reverse(num)  for (int i=(num); i-->0; )
+
+// own pointer
+template <typename T> struct own {
+  own(T* p_): p(p_) {}
+ ~own() { delete p; }
+
+  T* p;
+};
 
 // exceptions
 
@@ -31,7 +45,6 @@ public:
  ~Exc() throw ();
 
   str msg;
-//  char const* what() const throw ();
 
   void warn() const;
 };
@@ -49,14 +62,8 @@ public:                             \
   }                                 \
 };
 
-//------------------------------------------------------------------------------
-
 DECLARE_EXCEPTION(CriticalError)
 void CRITICAL_ERROR(rcstr msg) throw (CriticalError);
-
-// iteration
-#define for_i(num)          for (int i=0, iEnd=(num); i<iEnd; ++i)
-#define for_i_reverse(num)  for (int i=(num); i-->0; )
 
 // debug support
 #define ASSERT(cond)      Q_ASSERT(cond);
@@ -77,8 +84,8 @@ void CRITICAL_ERROR(rcstr msg) throw (CriticalError);
 
 // to mark not yet implemented features
 class QObject;
-void warn(QObject*, rcstr msg, rcstr more = nullstr);
-inline void warn(rcstr msg, rcstr more = nullstr) { warn(nullptr,msg,more); }
-void notYet(rcstr = nullstr);
+void warn(QObject*, rcstr msg, rcstr more = str::null);
+inline void warn(rcstr msg, rcstr more = str::null) { warn(nullptr,msg,more); }
+void notYet(rcstr = str::null);
 
 #endif

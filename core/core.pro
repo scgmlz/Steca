@@ -3,10 +3,10 @@ TEMPLATE = lib
 
 DEFINES += BUILDING_LIBRARY
 
-CONFIG  += thread rtti stl exceptions c++11
+CONFIG  += thread rtti exceptions c++11
 CONFIG  += silent warn_on
 
-QT -= gui
+QT      += core
 
 HEADERS += \
     core.h

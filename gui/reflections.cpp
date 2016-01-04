@@ -1,9 +1,6 @@
-#include "reflections.h"
+/*#include "reflections.h"
 #include "widgets/iconbutton.h"
 #include "widgets/delegates.h"
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QLabel>
 #include <QHeaderView>
 #include <QResizeEvent>
 
@@ -42,10 +39,10 @@ Reflections::Reflections(): super("Reflections") {
   auto h = new HBox;
   v->addLayout(h);
 
-  h->addWidget(new QLabel("Output:"));
-  h->addWidget(new IconButton(":/icon/peak"));
-  h->addWidget(new IconButton(":/icon/reflect"));
-  h->addWidget(new IconButton(":/icon/width"));
+  h->addWidget(label("Output:"));
+  h->addWidget(iconButton(":/icon/peak"));
+  h->addWidget(iconButton(":/icon/reflect"));
+  h->addWidget(iconButton(":/icon/width"));
   h->addStretch();
 
   v->addWidget(l = new ReflectionList());
@@ -60,5 +57,5 @@ Reflections::Reflections(): super("Reflections") {
   h->addStretch();
   h->addWidget(new IconButton(":/icon/add"));
 }
-
+*/
 // eof

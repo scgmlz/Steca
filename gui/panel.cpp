@@ -1,38 +1,54 @@
 #include "panel.h"
 #include "mainwin.h"
-#include "layout_helpers.h"
-
-#include <QLayout>
+#include "gui_helpers.h"
 #include <QGroupBox>
+#include <QToolButton>
+
+Docking::Docking(rcstr objectName, rcstr windowTitle) {
+  setObjectName(objectName);
+  setWindowTitle(windowTitle);
+
+  auto w = new QWidget;
+  setWidget(w);
+
+  box = vbox(MARGIN);
+  w->setLayout(box);
+}
 
 //-----------------------------------------------------------------------------
 
-Panel::Panel(MainWin& mainWin_): mainWin(mainWin_) {
-  setLayout((v = vbox()));
+Panel::Panel(MainWin& mainWin_,Qt::Orientation orientation)
+: Panel(mainWin_, orientation, nullptr) {
+}
+
+Panel::Panel(MainWin& mainWin_, Qt::Orientation orientation, rcstr groupBox)
+  : Panel(mainWin_, orientation, &groupBox) {
+}
+
+void Panel::setStretchFactors(int horizontal, int vertical) {
+  auto sp = sizePolicy();
+  sp.setHorizontalStretch(horizontal);
+  sp.setVerticalStretch(vertical);
+  setSizePolicy(sp);
+}
+
+Panel::Panel(MainWin& mainWin_, Qt::Orientation orientation, const str* groupBox)
+: mainWin(mainWin_) {
+
+  setStretchFactors(0,0);
+
+  box = boxLayout(orientation);
   // white space around panels provided elsewhere
-  v->setContentsMargins(0,0,0,0);
-}
+  box->setContentsMargins(0,0,0,0);
 
-void Panel::addGroupBox(rcstr title) {
-  v->addWidget(new QGroupBox(title));
-}
-
-//-----------------------------------------------------------------------------
-
-Button::Button(rcstr text, rcstr toolTip): super(text) {
-  setToolTip(toolTip);
-}
-
-Button::Button(QIcon const& icon, rcstr toolTip): super(icon,nullstr) {
-  setToolTip(toolTip);
-}
-
-IconButton::IconButton(rcstr fileName, rcstr toolTip): super(QIcon(fileName),toolTip) {
-  // make square
-  int h = super::sizeHint().height();
-  setMaximumSize(h,h);
-
-  if (!toolTip.isEmpty()) setToolTip(toolTip);
+  if (groupBox) {
+    setLayout(vbox());
+    auto gr = new QGroupBox(*groupBox);
+    layout()->addWidget(gr);
+    gr->setLayout(box);
+  } else {
+    setLayout(box);
+  }
 }
 
 // eof

@@ -1,20 +1,14 @@
 #include "panel_normalization.h"
-#include "layout_helpers.h"
+#include "gui_helpers.h"
 
-PanelNormalization::PanelNormalization(MainWin& mainWin): super(mainWin) {
-  addGroupBox("Normalization");
-//  auto sp = sizePolicy();
-//  sp.setVerticalStretch(0);
-//  setSizePolicy(sp);
+PanelNormalization::PanelNormalization(MainWin& mainWin)
+: super(mainWin,Qt::Vertical,"Normalization") {
 
-//  auto v = new VBox;
-//  setLayout(v);
-
-//  v->addWidget(new QRadioButton("None"));
-//  v->addWidget(new QRadioButton("To deltatime"));
-//  v->addWidget(new QRadioButton("To deltaMonitor"));
-//  v->addWidget(new QRadioButton("To background"));
-//  v->addStretch();
+  box->addWidget(radioButton("None"));
+  box->addWidget(radioButton("To deltatime"));
+  box->addWidget(radioButton("To deltaMonitor"));
+  box->addWidget(radioButton("To background"));
+  box->addStretch();
 }
 
 // eof
