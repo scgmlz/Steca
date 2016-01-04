@@ -2,16 +2,15 @@
 #include "app.h"
 #include "settings.h"
 #include "split_files.h"
-#include "split_info.h"
-#include "panels/images.h"
-#include "panels/image.h"
-#include "panels/reflections.h"
-#include "panels/diffractogram.h"
+#include "split_image.h"
+#include "split_images.h"
+#include "split_reflections.h"
+#include "split_diffractogram.h"
 
 #include <QCloseEvent>
 #include <QMenuBar>
-#include <QSplitter>
 #include <QStatusBar>
+#include <QSplitter>
 
 #include <QFileDialog>
 
@@ -96,7 +95,7 @@ void MainWin::initActions() {
   actReflectionAdd      = simple("Width",     ":/icon/add");
 
   actImagesCombine      = simple("Combine...");
-  actImagesLink         = simple("UpDown",    ":/icon/link");
+  actImagesLink         = simple("UpDocore guiwn",    ":/icon/link");
   actImagesEye          = simple("UpDown",    ":/icon/eye");
   actImagesUpDown       = simple("UpDown",    ":/icon/updown");
   actImagesLeftRight    = simple("LeftRight", ":/icon/leftright");
@@ -186,88 +185,31 @@ void MainWin::initMenus() {
 }
 
 void MainWin::initLayout() {
-  auto spl0 = new QSplitter(Qt::Horizontal);
-  spl0->setChildrenCollapsible(false);
+  auto splMain = new QSplitter(Qt::Horizontal);
+  splMain->setChildrenCollapsible(false);
 
-  auto spl1 = new QSplitter(Qt::Vertical);
-  spl1->setChildrenCollapsible(false);
+  setCentralWidget(splMain);
 
-  auto spl2 = new QSplitter(Qt::Horizontal);
-  spl2->setChildrenCollapsible(false);
+  auto splOther = new QSplitter(Qt::Vertical);
+  splOther->setChildrenCollapsible(false);
 
-  auto spl3 = new QSplitter(Qt::Horizontal);
-  spl3->setChildrenCollapsible(false);
+  auto splImages = new QSplitter(Qt::Horizontal);
+  splImages->setChildrenCollapsible(false);
 
-  setCentralWidget(spl0);
+  auto splReflections = new QSplitter(Qt::Horizontal);
+  splReflections->setChildrenCollapsible(false);
 
-  spl0->addWidget(new SplitFiles(*this));
-  spl0->addWidget(spl1);
-  spl0->addWidget(new SplitInfo(*this));
+  splMain->addWidget(new SplitFiles(*this));
+  splMain->addWidget(splOther);
 
-  spl1->addWidget(spl2);
-  spl1->addWidget(spl3);
+  splOther->addWidget(splImages);
+  splOther->addWidget(splReflections);
 
-  spl2->addWidget(new panel::Images(*this));
-  spl2->addWidget(new panel::Image(*this));
-  spl3->addWidget(new panel::Reflections(*this));
-  spl3->addWidget(new panel::Diffractogram(*this));
-/*
-  hSplitter->addWidget(new PanelImageList(*this));
-  hSplitter->addWidget(new PanelImages(*this));
+  splImages->addWidget(new SplitImages(*this));
+  splImages->addWidget(new SplitImage(*this));
 
-  hSplitter = new QSplitter(Qt::Horizontal);
-  spl0->addWidget(hSplitter);
-
-  auto w = new QWidget;
-  auto v = vbox();
-  w->setLayout(v);
-
-  hSplitter->addWidget(w);
-  v->addWidget(new PanelBackground(*this));
-  v->addWidget(new PanelReflections(*this));
-
-  auto panelDiffractogram = new PanelDiffractogram(*this);
-  panelDiffractogram->setStretchFactors(1,0);
-  hSplitter->addWidget(panelDiffractogram);
-*/
-
-//  auto h = hbox();
-//  imageWidget->setLayout(h);
-//  h->addWidget()
-
-//  auto w = new QWidget;
-//  setWidget(w);
-
-//  auto v = vbox();
-//  w->setLayout(v);
-
-  /*
-  // panes
-  v1->addWidget(new Files());
-  v1->addWidget(new Detector());
-  v1->addWidget(new Background());
-  v1->addWidget(new Reflections());
-
-  auto *v2h = new HBox;
-  v2->addLayout(v2h,1);
-
-  v2h->addWidget(new Images());
-  v2h->addWidget(new Image());
-
-  v2h = new HBox;
-  v2->addLayout(v2h,1);
-  v2h->addWidget(new Diffractogram());
-
-  v3->addWidget(new ImageInfo());
-  v3->addWidget(new ReflectionInfo());
-  v3->addWidget(new Normalization());
-
-  auto *v3h = new HBox;
-  v3->addLayout(v3h);
-
-  v3h->addWidget(new PushButton("Pole figure..."));
-  v3h->addWidget(new PushButton("Diagram..."));
-*/
+  splReflections->addWidget(new SplitReflections(*this));
+  splReflections->addWidget(new SplitDiffractogram(*this));
 }
 
 void MainWin::initStatus() {

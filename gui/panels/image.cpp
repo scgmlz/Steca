@@ -8,16 +8,15 @@ ImageWidget::ImageWidget() {
 
 QSize ImageWidget::sizeHint() const {
   QSize s = size();
-  lastHeight = s.height();
-  s.setWidth(lastHeight);
+  lastSize = s.height();
+  s.setWidth(lastSize);
   s.setHeight(super::sizeHint().height());
   return s;
 }
 
 void ImageWidget::resizeEvent(QResizeEvent* e) {
   super::resizeEvent(e);
-
-  if (lastHeight!=height()) updateGeometry();
+  if (lastSize!=height()) updateGeometry();
 }
 
 //------------------------------------------------------------------------------
@@ -40,8 +39,6 @@ Image::Image(MainWin& mainWin): super(mainWin,"",Qt::Horizontal) {
   v2->addWidget(editCell());
   v2->addWidget(label("Right:"));
   v2->addWidget(editCell());
-
-  v2->addStretch();
 
   v2->addWidget(iconButton(mainWin.actImagesLink));
   v2->addWidget(iconButton(mainWin.actImagesEye));
