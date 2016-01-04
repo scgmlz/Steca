@@ -1,10 +1,7 @@
-#include "panel_images.h"
-//#include "widgets/iconbutton.h"
-//#include "widgets/editcell.h"
-//#include <QPainter>
-//#include <QStylePainter>
-//#include <QStyleOptionFrame>
-//#include <QResizeEvent>
+#include "image.h"
+#include "mainwin.h"
+
+namespace panel {
 
 ImageWidget::ImageWidget() {
 }
@@ -25,25 +22,12 @@ void ImageWidget::resizeEvent(QResizeEvent* e) {
 
 //------------------------------------------------------------------------------
 
-PanelImages::PanelImages(MainWin& mainWin): super(mainWin,Qt::Horizontal) {
-//  auto sp = sizePolicy();
-//  sp.setHorizontalStretch(1);
-//  sp.setVerticalStretch(1);
-//  setSizePolicy(sp);
+Image::Image(MainWin& mainWin): super(mainWin,"",Qt::Horizontal) {
 
   auto v1 = vbox();
   box->addLayout(v1);
 
   v1->addWidget(w = new ImageWidget());
-
-  auto hIcons = hbox();
-  v1->addLayout(hIcons);
-
-  hIcons->addWidget(iconButton(":/icon/updown"));
-  hIcons->addWidget(iconButton(":/icon/leftright"));
-  hIcons->addWidget(iconButton(":/icon/turnright"));
-  hIcons->addWidget(iconButton(":/icon/turnleft"));
-  hIcons->addStretch();
 
   auto v2 = vbox();
   box->addLayout(v2);
@@ -57,14 +41,21 @@ PanelImages::PanelImages(MainWin& mainWin): super(mainWin,Qt::Horizontal) {
   v2->addWidget(label("Right:"));
   v2->addWidget(editCell());
 
-  auto v2h = hbox();
-  v2->addLayout(v2h);
-  v2h->addWidget(iconButton(":/icon/link"));
-  v2h->addWidget(iconButton(":/icon/eye"));
-  v2h->addStretch();
+  v2->addStretch();
+
+  v2->addWidget(iconButton(mainWin.actImagesLink));
+  v2->addWidget(iconButton(mainWin.actImagesEye));
 
   v2->addStretch();
+
+  v2->addWidget(iconButton(mainWin.actImagesUpDown));
+  v2->addWidget(iconButton(mainWin.actImagesLeftRight));
+  v2->addWidget(iconButton(mainWin.actImagesTurnRight));
+  v2->addWidget(iconButton(mainWin.actImagesTurnLeft));
+
   box->addStretch();
+}
+
 }
 
 // eof

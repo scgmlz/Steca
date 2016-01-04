@@ -1,7 +1,9 @@
-#include "panel_detector.h"
+#include "detector.h"
 #include "gui_helpers.h"
 
-PanelDetector::PanelDetector(MainWin& mainWin): super(mainWin,Qt::Vertical,"Detector") {
+namespace panel {
+
+Detector::Detector(MainWin& mainWin): super(mainWin,"Detector",Qt::Vertical) {
   auto g = grid();
   box->addLayout(g);
 
@@ -21,6 +23,8 @@ PanelDetector::PanelDetector(MainWin& mainWin): super(mainWin,Qt::Vertical,"Dete
   h->addWidget(label("Y"));
   h->addWidget(editCell());
   h->addWidget(label("pix"));
+}
+
 }
 
 // eof

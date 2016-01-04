@@ -1,7 +1,7 @@
-#ifndef REFLECTIONS_H
-#define REFLECTIONS_H
+#ifndef PANEL_REFLECTIONS_H
+#define PANEL_REFLECTIONS_H
 
-/*#include "pane.h"
+#include "panel.h"
 #include <QTreeWidget>
 
 class ReflectionList: public QTreeWidget {

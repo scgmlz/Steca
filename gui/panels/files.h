@@ -1,16 +1,15 @@
-#ifndef PANEL_FILES_H
-#define PANEL_FILES_H
+#ifndef FILES_H
+#define FILES_H
 
 #include "panel.h"
-#include <QListView>
 #include <QStyledItemDelegate>
 
-class CoreProxy;
+namespace panel {
 
-class FileList: public QListView {
-  SUPER(FileList,QListView) Q_OBJECT
+class FileList: public ListView {
+  SUPER(FileList,ListView) Q_OBJECT
 public:
-  FileList(CoreProxy&);
+  FileList();
 
 protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);
@@ -23,13 +22,10 @@ private:
   class Model: public QAbstractListModel {
     SUPER(Model,QAbstractListModel)
   public:
-    Model(CoreProxy&);
+    Model();
 
     int rowCount(QModelIndex const&)      const;
     QVariant data(QModelIndex const&,int) const;
-
-  private:
-    CoreProxy &coreProxy;
   };
 
   class Delegate: public QStyledItemDelegate {
@@ -44,15 +40,15 @@ private:
   Delegate delegate;
 };
 
-class PanelFiles: public Panel {
-  SUPER(PanelFiles,Panel)
+class Files: public Panel {
+  SUPER(Files,Panel)
 public:
-  PanelFiles(MainWin&);
+  Files(MainWin&);
 
 private:
   FileList *fileList;
-  PushButton *btnAddCorrectionFile;
-  IconButton *btnAddFiles, *btnRemoveFile;
 };
+
+}
 
 #endif

@@ -3,67 +3,35 @@
 
 #include "defs.h"
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QGridLayout>
+#include <QBoxLayout>
+#include <QLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QPushButton>
-#include <QToolButton>
 #include <QCheckBox>
 #include <QRadioButton>
+#include <QToolButton>
+#include <QListView>
 
-uint const MARGIN = 4;
+QBoxLayout*   hbox(uint margin = 0);
+QBoxLayout*   vbox(uint margin = 0);
+QBoxLayout*   boxLayout(Qt::Orientation, uint margin = 0);
 
-QHBoxLayout* hbox(uint margin = 0);
-QVBoxLayout* vbox(uint margin = 0);
-QBoxLayout*  boxLayout(Qt::Orientation, uint margin = 0);
+QGridLayout*  grid(uint margin = 0);
 
-QGridLayout* grid(uint margin = 0);
+QLabel*       label(rcstr);
+QLineEdit*    editCell();
+QCheckBox*    check(rcstr text);
 
-QLabel* label(rcstr);
-
-int textWidth(rcstr);
-int textHeight();
-
-class EditCell: public QLineEdit {
-  SUPER(EditCell,QLineEdit)
-public:
-  EditCell();
-};
-
-EditCell* editCell();
-QCheckBox* check(rcstr text);
-
-class PushButton: public QPushButton {
-  SUPER(PushButton,QPushButton)
-public:
-  PushButton(rcstr text);
-  PushButton(QIcon const&);
-  PushButton(QIcon const&, rcstr text);
-
-  void setAction(QAction*);
-  // dis/enables the button and its action, thus possibly also a menu item
-  void enable(bool);
-
-private:
-  QAction *action;
-};
-
-PushButton* pushButton(rcstr text);
-PushButton* pushButton(QIcon const&);
-PushButton* pushButton(QIcon const&, rcstr);
-
-class IconButton: public QToolButton {
-  SUPER(IconButton,QToolButton)
-public:
-  IconButton(QIcon const&);
-  IconButton(rcstr iconFile);
-};
-
-IconButton* iconButton(QIcon const&);
-IconButton* iconButton(rcstr);
+QToolButton*  textButton(QAction*);
+QToolButton*  iconButton(QAction*);
 
 QRadioButton* radioButton(rcstr text);
+
+// abstract list widget
+class ListView: public QListView {
+  SUPER(ListView,QListView) Q_OBJECT
+public:
+  ListView();
+};
 
 #endif

@@ -8,49 +8,51 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 QT      += core gui printsupport
 
 HEADERS += \
+    ../3rd/qcustomplot.h \
     app.h \
     defs.h \
-    dock_files.h \
-    dock_info.h \
-    mainwin.h \
-    panel.h \
-    panel_detector.h \
-    panel_files.h \
-    panel_normalization.h \
-    settings.h \
-    images.h \
-    imageinfo.h \
-    reflectioninfo.h \
-    reflections.h \
-    panel_images.h \
-    panel_diffractogram.h \
     delegates.h \
     gui_helpers.h \
-    ../3rd/qcustomplot.h \
-    panel_background.h
+    mainwin.h \
+    settings.h \
+    panels/panel.h \
+    panels/background.h \
+    panels/detector.h \
+    panels/diffractogram.h \
+    panels/reflections.h \
+    panels/reflectioninfo.h \
+    panels/files.h \
+    panels/imageinfo.h \
+    panels/normalization.h \
+    panels/image.h \
+    panels/images.h \
+    split_files.h \
+    split.h \
+    split_info.h
 
 SOURCES += \
-    main.cpp \
+    ../3rd/qcustomplot.cpp \
     app.cpp \
     defs.cpp \
-    dock_files.cpp \
-    dock_info.cpp \
-    mainwin.cpp \
-    panel.cpp \
-    panel_detector.cpp \
-    panel_files.cpp \
-    panel_normalization.cpp \
-    settings.cpp \
-    images.cpp \
-    imageinfo.cpp \
-    reflectioninfo.cpp \
-    reflections.cpp \
-    panel_images.cpp \
-    panel_diffractogram.cpp \
     delegates.cpp \
     gui_helpers.cpp \
-    ../3rd/qcustomplot.cpp \
-    panel_background.cpp
+    main.cpp \
+    mainwin.cpp \
+    settings.cpp \
+    panels/panel.cpp \
+    panels/background.cpp \
+    panels/detector.cpp \
+    panels/diffractogram.cpp \
+    panels/imageinfo.cpp \
+    panels/normalization.cpp \
+    panels/files.cpp \
+    panels/reflectioninfo.cpp \
+    panels/reflections.cpp \
+    panels/image.cpp \
+    panels/images.cpp \
+    split_files.cpp \
+    split.cpp \
+    split_info.cpp
 
 RESOURCES += \
     resources.qrc

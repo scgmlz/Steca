@@ -1,8 +1,10 @@
-#ifndef PANEL_IMAGES_H
-#define PANEL_IMAGES_H
+#ifndef IMAGE_H
+#define IMAGE_H
 
 #include "panel.h"
 #include <QOpenGLWidget>  // TODO not GL
+
+namespace panel {
 
 class ImageWidget: public QOpenGLWidget {
   SUPER(ImageWidget,QOpenGLWidget)
@@ -16,13 +18,15 @@ protected:
   mutable int lastHeight; // keep square
 };
 
-class PanelImages: public Panel {
-  SUPER(PanelImages,Panel)
+class Image: public Panel {
+  SUPER(Image,Panel)
 public:
-  PanelImages(MainWin&);
+  Image(MainWin&);
 
 private:
   ImageWidget *w;
 };
+
+}
 
 #endif

@@ -1,6 +1,7 @@
 #include "app.h"
 #include "../manifest.h"
 #include "mainwin.h"
+#include <QStyleFactory>
 #include <iostream>
 
 #include "core.h"
@@ -65,6 +66,14 @@ App::App(int &argc, char *argv[])
   setApplicationVersion(APPLICATION_VERSION);
   setOrganizationName(ORGANIZATION_NAME);
   setOrganizationDomain(ORGANIZATION_DOMAIN);
+
+#if defined(Q_OS_OSX)
+  setStyle(QStyleFactory::create("Macintosh"));
+#elif defined(Q_OS_WIN)
+  setStyle(QStyleFactory::create("Windows"));
+#else
+  setStyle(QStyleFactory::create("Fusion"));
+#endif
 
   app = this;
 }

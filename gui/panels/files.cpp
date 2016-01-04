@@ -1,4 +1,4 @@
-#include "panel_files.h"
+#include "files.h"
 #include "app.h"
 #include "mainwin.h"
 #include "gui_helpers.h"
@@ -6,12 +6,13 @@
 #include <QAction>
 #include <QPainter>
 
+namespace panel {
+
 //-----------------------------------------------------------------------------
 
-FileList::FileList(CoreProxy& coreProxy): model(coreProxy) {
+FileList::FileList(): model() {
   setModel(&model);
   setItemDelegate(&delegate);
-  setAlternatingRowColors(true);
 }
 
 void FileList::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
@@ -40,11 +41,11 @@ void FileList::removeSelectedFile() {
 
 //-----------------------------------------------------------------------------
 
-FileList::Model::Model(CoreProxy& coreProxy_): coreProxy(coreProxy_) {
+FileList::Model::Model() {
 }
 
 int FileList::Model::rowCount(QModelIndex const&) const {
-  return coreProxy.numFiles(true);
+  return app->coreProxy.numFiles(true);
 }
 
 enum { IsCorrectionFileRole = Qt::UserRole };
@@ -53,13 +54,13 @@ QVariant FileList::Model::data(QModelIndex const& index,int role) const {
   auto row = index.row(), cnt = rowCount(index);
   if (row < 0 || row >= cnt) return QVariant();
 
-  bool isCorrectionFile = coreProxy.hasCorrectionFile() && row+1 == cnt;
+  bool isCorrectionFile = app->coreProxy.hasCorrectionFile() && row+1 == cnt;
 
   switch (role) {
     case IsCorrectionFileRole:
       return isCorrectionFile;
     case Qt::DisplayRole: {
-      str s = coreProxy.fileName(row);
+      str s = app->coreProxy.fileName(row);
       static str Corr("Corr: ");
       if (isCorrectionFile) s = Corr + s;
       return s;
@@ -91,28 +92,21 @@ void FileList::Delegate::paint(QPainter* painter,
 
 //-----------------------------------------------------------------------------
 
-PanelFiles::PanelFiles(MainWin& mainWin): super(mainWin,Qt::Vertical) {
-  box->addWidget((fileList = new FileList(app->coreProxy)));
+Files::Files(MainWin& mainWin): super(mainWin,"Files",Qt::Vertical) {
+  box->addWidget((fileList = new FileList));
 
   auto h = hbox(); box->addLayout(h);
 
-  btnAddCorrectionFile = pushButton("Corr...");
-  btnAddFiles          = iconButton(":/icon/add");
-  btnRemoveFile        = iconButton(":/icon/remove");
-
-  btnAddCorrectionFile->setAction(mainWin.actSetCorrectionFile);
-  btnAddFiles->setDefaultAction(mainWin.actAddFiles);
-  btnRemoveFile->setDefaultAction(mainWin.actRemoveFile);
-
-//  btnRemoveFile->enable(false);
-
-  h->addWidget(btnAddCorrectionFile);
+  h->addWidget(textButton(mainWin.actSetCorrectionFile));
   h->addStretch();
-  h->addWidget(btnAddFiles);
-  h->addWidget(btnRemoveFile);
+  h->addWidget(iconButton(mainWin.actAddFiles));
+  h->addWidget(iconButton(mainWin.actRemoveFile));
+
+  mainWin.actRemoveFile->setEnabled(false);
+
 
   connect(fileList, &FileList::selectedFile, [&](rcstr s) {
-//    btnRemoveFile->enable(!s.isEmpty());
+    mainWin.actRemoveFile->setEnabled(!s.isEmpty());
   });
 
   connect(mainWin.actRemoveFile, &QAction::triggered, [&]() {
@@ -122,6 +116,8 @@ PanelFiles::PanelFiles(MainWin& mainWin): super(mainWin,Qt::Vertical) {
   connect(&app->coreProxy, &CoreProxy::filesChanged, [&]() {
     fileList->reset();
   });
+}
+
 }
 
 // eof

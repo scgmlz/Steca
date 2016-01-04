@@ -68,7 +68,13 @@ public:
     *actFitErrorParameters,
 
     *actPdfManual,
-    *actAbout;
+    *actAbout,
+
+  // more actions, probably not in the menu
+    *actReflectionPeak, *actReflectionReflect, *actReflectionWidth, *actReflectionAdd,
+    *actImagesCombine, *actImagesLink, *actImagesEye,
+    *actImagesUpDown, *actImagesLeftRight, *actImagesTurnRight, *actImagesTurnLeft,
+    *actBackgroundBackground, *actBackgroundEye;
 
 private:
   QByteArray initialState;

@@ -39,7 +39,7 @@ void warn(QObject* parent, rcstr msg, rcstr more) {
 }
 
 void notYet(rcstr msg) {
-  warn("Not yet implemented: " + msg);
+  warn("Not yet: " + msg);
 }
 
 // eof

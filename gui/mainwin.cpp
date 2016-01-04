@@ -1,10 +1,12 @@
 #include "mainwin.h"
 #include "app.h"
 #include "settings.h"
-#include "dock_files.h"
-#include "dock_info.h"
-#include "panel_images.h"
-#include "panel_diffractogram.h"
+#include "split_files.h"
+#include "split_info.h"
+#include "panels/images.h"
+#include "panels/image.h"
+#include "panels/reflections.h"
+#include "panels/diffractogram.h"
 
 #include <QCloseEvent>
 #include <QMenuBar>
@@ -87,6 +89,22 @@ void MainWin::initActions() {
 
   actPdfManual  = simple("Pdf manual (German)");
   actAbout      = simple("About...");
+
+  actReflectionPeak     = simple("Peak",      ":/icon/peak");
+  actReflectionReflect  = simple("Reflect",   ":/icon/reflect");
+  actReflectionWidth    = simple("Width",     ":/icon/width");
+  actReflectionAdd      = simple("Width",     ":/icon/add");
+
+  actImagesCombine      = simple("Combine...");
+  actImagesLink         = simple("UpDown",    ":/icon/link");
+  actImagesEye          = simple("UpDown",    ":/icon/eye");
+  actImagesUpDown       = simple("UpDown",    ":/icon/updown");
+  actImagesLeftRight    = simple("LeftRight", ":/icon/leftright");
+  actImagesTurnRight    = simple("TurnRight", ":/icon/turnright");
+  actImagesTurnLeft     = simple("TurnLeft",  ":/icon/turnleft");
+
+  actBackgroundBackground = simple("Background",    ":/icon/background");
+  actBackgroundEye        = simple("BackgroundEye", ":/icon/eye");
 }
 
 void MainWin::initMenus() {
@@ -168,19 +186,50 @@ void MainWin::initMenus() {
 }
 
 void MainWin::initLayout() {
-  auto splitter = new QSplitter(Qt::Vertical);
-  setCentralWidget(splitter);
+  auto spl0 = new QSplitter(Qt::Horizontal);
+  spl0->setChildrenCollapsible(false);
 
-  addDockWidget(Qt::LeftDockWidgetArea,  (filesDock = new DockFiles(*this)));
-  filesDock->setFeatures(QDockWidget::DockWidgetMovable);
-  filesDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+  auto spl1 = new QSplitter(Qt::Vertical);
+  spl1->setChildrenCollapsible(false);
 
-  addDockWidget(Qt::RightDockWidgetArea, (infoDock  = new DockInfo(*this)));
-  infoDock->setFeatures(QDockWidget::DockWidgetMovable);
-  infoDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+  auto spl2 = new QSplitter(Qt::Horizontal);
+  spl2->setChildrenCollapsible(false);
 
-  splitter->addWidget(new PanelImages(*this));
-  splitter->addWidget(new PanelDiffractogram(*this));
+  auto spl3 = new QSplitter(Qt::Horizontal);
+  spl3->setChildrenCollapsible(false);
+
+  setCentralWidget(spl0);
+
+  spl0->addWidget(new SplitFiles(*this));
+  spl0->addWidget(spl1);
+  spl0->addWidget(new SplitInfo(*this));
+
+  spl1->addWidget(spl2);
+  spl1->addWidget(spl3);
+
+  spl2->addWidget(new panel::Images(*this));
+  spl2->addWidget(new panel::Image(*this));
+  spl3->addWidget(new panel::Reflections(*this));
+  spl3->addWidget(new panel::Diffractogram(*this));
+/*
+  hSplitter->addWidget(new PanelImageList(*this));
+  hSplitter->addWidget(new PanelImages(*this));
+
+  hSplitter = new QSplitter(Qt::Horizontal);
+  spl0->addWidget(hSplitter);
+
+  auto w = new QWidget;
+  auto v = vbox();
+  w->setLayout(v);
+
+  hSplitter->addWidget(w);
+  v->addWidget(new PanelBackground(*this));
+  v->addWidget(new PanelReflections(*this));
+
+  auto panelDiffractogram = new PanelDiffractogram(*this);
+  panelDiffractogram->setStretchFactors(1,0);
+  hSplitter->addWidget(panelDiffractogram);
+*/
 
 //  auto h = hbox();
 //  imageWidget->setLayout(h);
@@ -338,8 +387,8 @@ void MainWin::saveSettings() {
 }
 
 void MainWin::checkActions() {
-  actViewFiles->setChecked(filesDock->isVisible());
-  actViewInfo->setChecked(infoDock->isVisible());
+//  actViewFiles->setChecked(filesDock->isVisible());
+//  actViewInfo->setChecked(infoDock->isVisible());
   actViewStatusbar->setChecked(statusBar()->isVisible());
 #ifndef Q_OS_OSX
   actFullscreen->setChecked(isFullScreen());
@@ -347,12 +396,12 @@ void MainWin::checkActions() {
 }
 
 void MainWin::viewFiles(bool on) {
-  filesDock->setVisible(on);
+//  filesDock->setVisible(on);
   actViewFiles->setChecked(on);
 }
 
 void MainWin::viewInfo(bool on) {
-  infoDock->setVisible(on);
+//  infoDock->setVisible(on);
   actViewInfo->setChecked(on);
 }
 
