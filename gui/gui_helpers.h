@@ -12,9 +12,9 @@
 #include <QToolButton>
 #include <QListView>
 
-QBoxLayout*   hbox(uint margin = 0);
-QBoxLayout*   vbox(uint margin = 0);
-QBoxLayout*   boxLayout(Qt::Orientation, uint margin = 0);
+QBoxLayout*   hbox();
+QBoxLayout*   vbox();
+QBoxLayout*   boxLayout(Qt::Orientation);
 
 QGridLayout*  grid(uint margin = 0);
 

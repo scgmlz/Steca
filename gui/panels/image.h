@@ -15,7 +15,7 @@ public:
 
 protected:
   void resizeEvent(QResizeEvent*);
-  mutable int lastSize; // keep square
+  mutable int lastHeight; // keep square
 };
 
 class Image: public Panel {

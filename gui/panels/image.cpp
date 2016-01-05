@@ -8,15 +8,15 @@ ImageWidget::ImageWidget() {
 
 QSize ImageWidget::sizeHint() const {
   QSize s = size();
-  lastSize = s.height();
-  s.setWidth(lastSize);
+  lastHeight = s.height();
+  s.setWidth(lastHeight);
   s.setHeight(super::sizeHint().height());
   return s;
 }
 
 void ImageWidget::resizeEvent(QResizeEvent* e) {
   super::resizeEvent(e);
-  if (lastSize!=height()) updateGeometry();
+  if (lastHeight!=height()) updateGeometry();
 }
 
 //------------------------------------------------------------------------------

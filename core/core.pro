@@ -9,10 +9,14 @@ CONFIG  += silent warn_on
 QT      += core
 
 HEADERS += \
-    core.h
+    core.h \
+    loaders/Caress/car_datatypes.h \
+    loaders/Caress/car_globals.h \
+    loaders/Caress/raw.h
 
 SOURCES += \
-    core.cpp
+    core.cpp \
+    loaders/Caress/raw.cpp
 
 DISTFILES += \
     README

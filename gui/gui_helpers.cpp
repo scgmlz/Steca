@@ -1,25 +1,19 @@
 #include "gui_helpers.h"
 
-QBoxLayout *hbox(uint margin) {
-  auto box = new QHBoxLayout;
-//  box->setMargin(margin); TODO
-//  box->setSpacing(0);
-  return box;
+QBoxLayout *hbox() {
+  return new QHBoxLayout;
 }
 
-QBoxLayout *vbox(uint margin) {
-  auto box = new QVBoxLayout;
-//  box->setMargin(margin); TODO
-//  box->setSpacing(0);
-  return box;
+QBoxLayout *vbox() {
+  return new QVBoxLayout;
 }
 
-QBoxLayout *boxLayout(Qt::Orientation orientation, uint margin) {
+QBoxLayout *boxLayout(Qt::Orientation orientation) {
   switch (orientation) {
   case Qt::Horizontal:
-    return hbox(margin);
+    return hbox();
   case Qt::Vertical:
-    return vbox(margin);
+    return vbox();
   }
   NOT_HERE
 }
