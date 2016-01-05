@@ -13,7 +13,7 @@ ReflectionList::ReflectionList() {
 //  setItemDelegateForColumn(2,new RadioDelegate);
 //  setItemDelegateForColumn(3,new ComboBoxDelegate);
 //  setItemDelegateForColumn(4,new IconDelegate(":/icon/eye",true));
-//  setItemDelegateForColumn(5,new IconDelegate(":/icon/remove",false));
+//  setItemDelegateForColumn(5,new IconDelegate(":/icon/rem",false));
 }
 
 //-----------------------------------------------------------------------------

@@ -9,7 +9,7 @@ namespace panel {
 class FileList: public ListView {
   SUPER(FileList,ListView) Q_OBJECT
 public:
-  FileList();
+  FileList(Session&);
 
 protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);
@@ -22,10 +22,12 @@ private:
   class Model: public QAbstractListModel {
     SUPER(Model,QAbstractListModel)
   public:
-    Model();
+    Model(Session&);
 
     int rowCount(QModelIndex const&)      const;
     QVariant data(QModelIndex const&,int) const;
+
+    Session &session;
   };
 
   class Delegate: public QStyledItemDelegate {

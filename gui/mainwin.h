@@ -2,6 +2,7 @@
 #define MAINWIN_H
 
 #include "defs.h"
+#include "session.h"
 #include <QMainWindow>
 
 class QAction;
@@ -35,6 +36,9 @@ private:
 private:
   void closeEvent(QCloseEvent*);
   bool onClose();
+
+public:
+  Session session;
 
 private:
   Docking *filesDock, *infoDock;

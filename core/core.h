@@ -1,7 +1,13 @@
 #ifndef CORE_H
 #define CORE_H
 
-#include <QtCore/qglobal.h>
+#include <QtGlobal>
+#include <QString>
+#include <QStringBuilder>
+#include <QException>
+
+typedef QString     str;
+typedef str const&  rcstr;
 
 #ifdef BUILDING_LIBRARY
 #define QSHARED_EXPORT Q_DECL_EXPORT
@@ -9,44 +15,64 @@
 #define QSHARED_EXPORT Q_DECL_IMPORT
 #endif
 
-#include <QString>
 #include <QVector>
 #include <QFileInfo>
 
-class QSHARED_EXPORT Core {
-public:
-  typedef QString    str;
-  typedef str const& rcstr;
+namespace core {
 
-  class QSHARED_EXPORT File {
+class QSHARED_EXPORT Exception: public QException {
+public:
+  Exception(rcstr msg_): msg(msg_) {}
+
+  const char* what() const throw() {
+    return msg.toLocal8Bit().data();
+  }
+
+  str msg;
+};
+
+void raiseError(rcstr msg) throw(Exception);
+
+class QSHARED_EXPORT Session final {
+public:
+
+  class QSHARED_EXPORT File final {
   public:
     File();
     File(rcstr fileName);
 
+    str name() const { return info.fileName(); }
+
+    void load() throw(Exception);
+
+  private:
+    friend class Session;
     QFileInfo info;
   };
 
+  class QSHARED_EXPORT Files final: public QVector<File*> {
+  public:
+  };
+
 public:
-  Core();
- ~Core();
+  Session();
+ ~Session();
 
-  void addFile(rcstr fileName);
+  void addFile(rcstr fileName) throw(Exception);
   bool hasFile(rcstr fileName);
+  void remFile(uint i);
 
-  uint numFiles()            const;
-  // i between 0..numFiles(); if (i==numFiles()) -> correctionFileName()
-  str  fileName(uint i)      const;
-  void removeFile(uint i);
+  bool hasCorrFile()   const;
+  void setCorrFile(rcstr fileName); // fileName may be empty -> unsets
 
-  bool hasCorrectionFile()   const;
-  void setCorrectionFile(rcstr fileName); // fileName may be empty
-  str  correctionFileName()  const;
+  Files const& getDataFiles() const { return dataFiles; }
+  File  const& getCorrFile()  const { return corrFile; }
 
 private:
-  typedef QVector<File*> file_vec;
-
-  file_vec dataFiles;
-  File     corrFile;
+  Files dataFiles;
+  File  corrFile;
 };
+
+}
 
 #endif

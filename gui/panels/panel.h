@@ -6,6 +6,7 @@
 
 // abstract panel
 class MainWin;
+class Session;
 
 class Panel: public QGroupBox {
   SUPER(Panel,QGroupBox)

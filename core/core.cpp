@@ -1,61 +1,58 @@
 #include "core.h"
+#include <memory>
 
-Core::File::File(): File("") {
+namespace core {
+
+void raiseError(rcstr msg) throw (Exception) {
+  throw Exception(msg);
 }
 
-Core::File::File(Core::rcstr fileName): info(fileName) {
+Session::Session() {
 }
 
-//------------------------------------------------------------------------------
-
-Core::Core() {
+Session::~Session() {
+  for (auto file: dataFiles) delete file;
 }
 
-Core::~Core() {
-  for (auto& file: dataFiles)
-    delete file;
+Session::File::File(): File("") {
 }
 
-void Core::addFile(rcstr fileName) {
-  if (!QFileInfo(fileName).exists()) return;
-  if (hasFile(fileName))             return;
-
-  dataFiles.append(new File(fileName));
+Session::File::File(rcstr fileName): info(fileName) {
 }
 
-bool Core::hasFile(rcstr fileName) {
+void Session::File::load() throw (Exception) {
+  if (!info.exists())
+    raiseError("File " % info.filePath() % " does not exist");
+}
+
+void Session::addFile(rcstr fileName) throw(Exception) {
+  if (hasFile(fileName)) return;
+
+  std::unique_ptr<File> file(new File(fileName));
+  file->load();
+
+  dataFiles.append(file.release());
+}
+
+bool Session::hasFile(rcstr fileName) {
   QFileInfo fileInfo(fileName);
   for (auto& file: dataFiles)
     if (fileInfo == file->info) return true;
   return false;
 }
 
-uint Core::numFiles() const {
-  return dataFiles.size();
+void Session::remFile(uint i) {
+  dataFiles.remove(i);
 }
 
-Core::str Core::fileName(uint i) const {
-  if (i == numFiles()) return correctionFileName();
-  return dataFiles.at(i)->info.fileName();
+bool Session::hasCorrFile() const {
+  return !corrFile.name().isEmpty();
 }
 
-void Core::removeFile(uint i) {
-  if (i == numFiles())
-    setCorrectionFile("");
-  else
-    dataFiles.remove(i);
-}
-
-bool Core::hasCorrectionFile() const {
-  return !correctionFileName().isEmpty();
-}
-
-void Core::setCorrectionFile(rcstr fileName) {
+void Session::setCorrFile(rcstr fileName) {
   corrFile = fileName;
 }
 
-Core::str Core::correctionFileName() const {
-  return corrFile.info.fileName();
 }
 
 // eof

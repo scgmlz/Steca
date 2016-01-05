@@ -21,21 +21,9 @@ typedef QStringList   str_lst;
 // a class definition helper: this class and superclass access
 #define SUPER(cls,sup)  typedef cls thisCls; typedef sup super;
 
-// a class to with inherited constructors
-#define INHERIT_SUPER(cls,ns,sup) SUPER(cls,ns::sup)  \
-  public: using super::sup; private:
-
 // iteration
 #define for_i(num)          for (int i=0, iEnd=(num); i<iEnd; ++i)
 #define for_i_reverse(num)  for (int i=(num); i-->0; )
-
-// own pointer
-template <typename T> struct own {
-  own(T* p_): p(p_) {}
- ~own() { delete p; }
-
-  T* p;
-};
 
 // exceptions
 

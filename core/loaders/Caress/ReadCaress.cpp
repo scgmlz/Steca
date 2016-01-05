@@ -19,11 +19,13 @@ using std::string;
 #include <cmath>
 using std::sqrt;
 
+/*
+
 #include "basic_math.h"
 #include "ReadData.h"
 #include "Dataset.h"
 #include "Setup.h"
-#include "../Loaders/Caress/raw.h" // Caress IO
+#include "raw.h" // Caress IO
 
 string ReadData::readCommentCaress(string path)
 {
@@ -610,7 +612,7 @@ void ReadData::readDatasetCaress(string path, Setup& setup, std::vector<Dataset*
                     int start_item = 1;
                     int tempNumItems, ret_val;
                     int remaining_items = d_number;
-                    do /* read area detector array in MAXNUMBEROFCHANNELS blocks */
+                    do /* read area detector array in MAXNUMBEROFCHANNELS blocks * /
                     {
                         if (remaining_items >= MAXNUMBEROFCHANNELS)
                             tempNumItems = MAXNUMBEROFCHANNELS;
@@ -639,3 +641,4 @@ void ReadData::readDatasetCaress(string path, Setup& setup, std::vector<Dataset*
     if (vectorDataset.size() < 1)
         throw "no data read";
 }
+*/

@@ -31,7 +31,8 @@ HEADERS += \
     split_reflections.h \
     split_images.h \
     split_image.h \
-    split_diffractogram.h
+    split_diffractogram.h \
+    session.h
 
 SOURCES += \
     ../3rd/qcustomplot.cpp \
@@ -58,7 +59,8 @@ SOURCES += \
     split_reflections.cpp \
     split_images.cpp \
     split_image.cpp \
-    split_diffractogram.cpp
+    split_diffractogram.cpp \
+    session.cpp
 
 RESOURCES += \
     resources.qrc

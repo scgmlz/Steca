@@ -54,9 +54,9 @@ void MainWin::initActions() {
 
   Keys keys;
 
-  actAddFiles           = simple("Add files...",          ":/icon/add",     keys.keyAddFiles);
-  actRemoveFile         = simple("Remove selected file",  ":/icon/remove", keys.keyDeleteFile);
-  actSetCorrectionFile  = simple("Set correction file...","",               keys.keySetCorrectionFile);
+  actAddFiles           = simple("Add files...",          ":/icon/add", keys.keyAddFiles);
+  actRemoveFile         = simple("Remove selected file",  ":/icon/rem", keys.keyDeleteFile);
+  actSetCorrectionFile  = simple("Set correction file...","",           keys.keySetCorrectionFile);
   actOpenSession        = simple("Open session...");
   actSaveSession        = simple("Save session...");
 
@@ -267,6 +267,9 @@ void MainWin::connectActions() {
 void MainWin::show() {
   super::show();
   checkActions();
+#ifdef DEVEL
+  session.addFile("../../data/SS15/m280578.dat");
+#endif
 }
 
 void MainWin::close() {
@@ -280,7 +283,7 @@ void MainWin::addFiles() {
   if (!fileNames.isEmpty()) {
     // remember the directory for the next time
     dataFilesDir = QFileInfo(fileNames.first()).canonicalPath();
-    app->coreProxy.addFiles(fileNames);
+    session.addFiles(fileNames);
   }
 }
 
@@ -291,7 +294,7 @@ void MainWin::setCorrectionFile() {
   if (!fileName.isEmpty()) {
     // remember the directory for the next time
     dataFilesDir = QFileInfo(fileName).canonicalPath();
-    app->coreProxy.setCorrectionFile(fileName);
+    session.setCorrFile(fileName);
   }
 }
 

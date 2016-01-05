@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/icon">
-        <file alias="remove">icons/remove.svg</file>
+        <file alias="rem">icons/rem.svg</file>
         <file alias="curve">icons/curve.svg</file>
         <file alias="eye">icons/eye.svg</file>
         <file alias="background">icons/background.svg</file>

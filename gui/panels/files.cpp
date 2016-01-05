@@ -10,7 +10,7 @@ namespace panel {
 
 //-----------------------------------------------------------------------------
 
-FileList::FileList(): model() {
+FileList::FileList(Session& session): model(session) {
   setModel(&model);
   setItemDelegate(&delegate);
 }
@@ -32,20 +32,20 @@ void FileList::removeSelectedFile() {
   if (!index.isValid()) return;
 
   uint row = index.row();
-  index = (row+1 < app->coreProxy.numFiles(true))
+  index = (row+1 < model.session.numFiles(true))
     ? index : index.sibling(row-1,0);
-  app->coreProxy.removeFile(row);
+  model.session.remFile(row);
   emit selectedFile(str::null);
   setCurrentIndex(index);
 }
 
 //-----------------------------------------------------------------------------
 
-FileList::Model::Model() {
+FileList::Model::Model(Session& session_): session(session_) {
 }
 
 int FileList::Model::rowCount(QModelIndex const&) const {
-  return app->coreProxy.numFiles(true);
+  return session.numFiles(true);
 }
 
 enum { IsCorrectionFileRole = Qt::UserRole };
@@ -54,13 +54,13 @@ QVariant FileList::Model::data(QModelIndex const& index,int role) const {
   auto row = index.row(), cnt = rowCount(index);
   if (row < 0 || row >= cnt) return QVariant();
 
-  bool isCorrectionFile = app->coreProxy.hasCorrectionFile() && row+1 == cnt;
+  bool isCorrectionFile = session.hasCorrFile() && row+1 == cnt;
 
   switch (role) {
     case IsCorrectionFileRole:
       return isCorrectionFile;
     case Qt::DisplayRole: {
-      str s = app->coreProxy.fileName(row);
+      str s = session.fileName(row);
       static str Corr("Corr: ");
       if (isCorrectionFile) s = Corr + s;
       return s;
@@ -93,7 +93,7 @@ void FileList::Delegate::paint(QPainter* painter,
 //-----------------------------------------------------------------------------
 
 Files::Files(MainWin& mainWin): super(mainWin,"Files",Qt::Vertical) {
-  box->addWidget((fileList = new FileList));
+  box->addWidget((fileList = new FileList(mainWin.session)));
 
   auto h = hbox(); box->addLayout(h);
 
@@ -113,7 +113,7 @@ Files::Files(MainWin& mainWin): super(mainWin,"Files",Qt::Vertical) {
     fileList->removeSelectedFile();
   });
 
-  connect(&app->coreProxy, &CoreProxy::filesChanged, [&]() {
+  connect(&mainWin.session, &Session::filesChanged, [&]() {
     fileList->reset();
   });
 }

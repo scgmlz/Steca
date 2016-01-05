@@ -17,7 +17,7 @@
 
 FileList::Delegate::Delegate(FileList& fileList_): fileList(fileList_) {
   auto height = sizeHint(QStyleOptionViewItem(),QModelIndex()).height();
-  icon = QPixmap(":/icon/remove").scaledToHeight(height,Qt::SmoothTransformation);
+  icon = QPixmap(":/icon/rem").scaledToHeight(height,Qt::SmoothTransformation);
 }
 
 QPoint FileList::Delegate::iconPos(QStyleOptionViewItem const& option) const {
