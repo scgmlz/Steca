@@ -12,14 +12,12 @@
 //! @authors   Scientific Computing Group at MLZ Garching
 //
 //***************************************************************************************************
-
+/*
 #include <sstream>
 #include <string>
 using std::string;
 #include <cmath>
 using std::sqrt;
-
-/*
 
 #include "basic_math.h"
 #include "ReadData.h"
@@ -240,7 +238,7 @@ void ReadData::readDatasetCaress(string path, Setup& setup, std::vector<Dataset*
             if (intens != NULL) {
                 if (calcDiff) {
                     // Calculate difference of data
-                    //****************************
+                    // ****************************
                     // Set last to zero if, it is the first dataset
                     if (lastIntens == NULL) {
                         lastMon = 0;
@@ -612,7 +610,7 @@ void ReadData::readDatasetCaress(string path, Setup& setup, std::vector<Dataset*
                     int start_item = 1;
                     int tempNumItems, ret_val;
                     int remaining_items = d_number;
-                    do /* read area detector array in MAXNUMBEROFCHANNELS blocks * /
+                    do / * read area detector array in MAXNUMBEROFCHANNELS blocks * /
                     {
                         if (remaining_items >= MAXNUMBEROFCHANNELS)
                             tempNumItems = MAXNUMBEROFCHANNELS;
@@ -641,4 +639,5 @@ void ReadData::readDatasetCaress(string path, Setup& setup, std::vector<Dataset*
     if (vectorDataset.size() < 1)
         throw "no data read";
 }
+
 */

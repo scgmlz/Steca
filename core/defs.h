@@ -6,10 +6,8 @@
 #define DEVEL
 
 #include <QtGlobal>
-#include <QException>
-
-// strings
 #include <QString>
+#include <QStringBuilder>
 
 typedef QString     str;
 typedef str const&  rcstr;
