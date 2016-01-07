@@ -16,6 +16,7 @@ public:
   bool hasFile(rcstr filePath);
   void remFile(uint i);
   uint numFiles(bool withCorr=false);
+  core::File const& getFile(uint i);
   str  fileName(uint i);
   bool hasCorrFile();
   void setCorrFile(rcstr filePath);

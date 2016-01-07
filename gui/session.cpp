@@ -36,11 +36,15 @@ uint Session::numFiles(bool withCorr) {
       + (withCorr && hasCorrFile() ? 1 : 0);
 }
 
-str Session::fileName(uint i) {
+core::File const& Session::getFile(uint i) {
   auto &files = coreSession->getDataFiles();
   return ((uint)files.count() == i)
-    ? coreSession->getCorrFile().name()
+    ? coreSession->getCorrFile()
     : files.at(i)->name();
+}
+
+str Session::fileName(uint i) {
+  return getFile(i).name();
 }
 
 bool Session::hasCorrFile() {

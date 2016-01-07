@@ -1,5 +1,5 @@
-#ifndef IMAGE_H
-#define IMAGE_H
+#ifndef CORE_IMAGE_H
+#define CORE_IMAGE_H
 
 #include "coredefs.h"
 #include <QSize>
@@ -9,13 +9,11 @@ namespace core {
 
 class QSHARED_EXPORT Image {
 public:
-  typedef float type;
-
-  Image(QSize const&,type const* intensities) THROWS;
+  Image(QSize const&,int const* intensities) THROWS;
 
 private:
   QSize size;
-  QVector<type> intensities;
+  QVector<int> intensities;
 };
 
 }

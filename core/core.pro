@@ -17,7 +17,8 @@ HEADERS += \
     image.h \
     dataset.h \
     debug.h \
-    coredefs.h
+    coredefs.h \
+    file.h
 
 SOURCES += \
     core.cpp \
@@ -26,7 +27,9 @@ SOURCES += \
     defs.cpp \
     loadcaress.cpp \
     image.cpp \
-    dataset.cpp
+    dataset.cpp \
+    file.cpp \
+    coredefs.cpp
 
 DISTFILES += \
     README \

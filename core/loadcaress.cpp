@@ -1,13 +1,13 @@
 #include "loadcaress.h"
 #include "dataset.h"
+#include <memory>
 #include "loaders/Caress/raw.h"
 
 #include <sstream>
 
 // Taken from the original STeCa, modified.
 
-void loadCaress(core::rcstr filePath, core::Datasets& vectorDataset) throw (core::Exception) {
-  bool const calcDiff = false, rebindTo256 = false; // TODO args
+void loadCaress(core::rcstr filePath,core::Datasets& datasets) throw (core::Exception) {
 
   if (0 != open_data_file(filePath.toLocal8Bit().data(),nullptr))
     core::raiseError("Cannot open data file " + filePath);
@@ -24,11 +24,10 @@ void loadCaress(core::rcstr filePath, core::Datasets& vectorDataset) throw (core
         pstAxis = 0, sstAxis = 0, omgmAxis = 0;
 
     int *intens = NULL;
-    int *lastIntens = NULL;
+    QVector<int> lastIntens;
     int imageSize = 0;
 
     int mon = 0, tim1 = 0;
-    int lastMon = 0, lastTim1 = 0;
 
     std::string s_date, s_comment;
     char* c_comment;
@@ -115,38 +114,6 @@ void loadCaress(core::rcstr filePath, core::Datasets& vectorDataset) throw (core
 
         // Objekt inizialisieren
         if (intens != NULL) {
-          if (calcDiff) {
-            // Calculate difference of data
-            // ****************************
-            // Set last to zero if, it is the first dataset
-            if (lastIntens == NULL) {
-              lastMon = 0;
-              lastTim1 = 0;
-              lastIntens = new int[imageSize];
-              memset(lastIntens, 0, sizeof(int) * imageSize);
-            }
-            // Create tmp values for the corrected information
-            int tmpMon = mon - lastMon;
-            int tmpTim1 = tim1 - lastTim1;
-            int* tmpIntens = new int[imageSize];
-            for (int k = 0; k < imageSize; k++)
-              tmpIntens[k] = intens[k] - lastIntens[k];
-
-            // Copy current to last
-            memcpy(lastIntens, intens, sizeof(int) * imageSize);
-            lastMon = mon;
-            lastTim1 = tim1;
-
-            // Copy corrected to current
-            memcpy(intens, tmpIntens, sizeof(int) * imageSize);
-            mon = tmpMon;
-            tim1 = tmpTim1;
-
-            // Delete tmp
-            delete tmpIntens;
-          }
-
-          core::Dataset* dataset;
           int d, y;
           char c_m[5];
           std::string s_m;
@@ -171,64 +138,13 @@ void loadCaress(core::rcstr filePath, core::Datasets& vectorDataset) throw (core
           detRel.setHeight((int)sqrt((double)imageSize));
           detRel.setWidth((int)sqrt((double)imageSize));
 
-          int* intensRebind = NULL;
-          if (rebindTo256 && ((detRel.height() > 256) || (detRel.width() > 256))) {
-            // Rebind data to 256 x 256
-            int factor = (int)(detRel.height() / 256.0);
-//            if ((factor * 256) != detRel.height)
-//              std::cout << "Attention: The Images can't be rebind to 256x256."
-//                        << std::endl;
-
-            intensRebind = new int[256 * 256];
-            std::fill_n(intensRebind, 256 * 256, 0);
-
-            int x = 0;
-            int y = 0;
-            int oldY = 0;
-            int subCounterY = 0;
-            while (y < 256) {
-              int oldX = 0;
-              int subCounterX = 0;
-              while (x < 256) {
-                intensRebind[y * 256 + x] += intens[oldY * detRel.width() + oldX];
-                oldX++;
-                subCounterX++;
-                if (subCounterX == factor) {
-                  subCounterX = 0;
-                  x++;
-                }
-              }
-              oldY++;
-              if (subCounterY == factor) {
-                subCounterY = 0;
-                y++;
-              }
-            }
-
-            detRel.setHeight(256);
-            detRel.setWidth(256);
-
-            // Delete intens
-            delete[] intens;
-            intens = NULL;
-          } else {
-            intensRebind = intens;
-            intens = NULL;
-          }
           // Objekt inizialisieren
-          float* tmpImage = new float[detRel.height() * detRel.width()];
-          for (int i = 0; i < (detRel.height() * detRel.width()); i++)
-            tmpImage[i] = (float)intensRebind[i];
           constexpr double deg2rad = 3.1415926535897932384626433832795 / 180;
-          dataset = new core::Dataset(detRel, tmpImage, core::str::fromStdString(s_comment), xAxis, yAxis, zAxis, omgAxis * deg2rad,
+          datasets.append(new core::Dataset(detRel, intens, core::str::fromStdString(s_comment), xAxis, yAxis, zAxis, omgAxis * deg2rad,
                                 tthAxis * deg2rad, phiAxis * deg2rad, chiAxis * deg2rad,
                                 (double)mon, tempTime, /*tmpImage, detRel.height() * detRel.width(),*/
-                                pstAxis, sstAxis, omgmAxis * deg2rad);
-          vectorDataset.append(dataset);
-
-          delete[] tmpImage;
-          delete[] intensRebind;
-          intensRebind = NULL;
+                                pstAxis, sstAxis, omgmAxis * deg2rad));
+          delete[] intens; intens = NULL;
           imageSize = 0;
         }
       }
@@ -508,19 +424,10 @@ void loadCaress(core::rcstr filePath, core::Datasets& vectorDataset) throw (core
         }
       }
     }
-
   } catch (...) {
     close_data_file();
     throw;
   }
-
-//      if (lastIntens != NULL)
-//          delete lastIntens;
-
-//      if (vectorDataset.size() < 1)
-//          throw "no data read";
-//  }
-
 }
 
 //

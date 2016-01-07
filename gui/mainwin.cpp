@@ -129,7 +129,7 @@ void MainWin::initMenus() {
     actOpenSession, actSaveSession,
   });
 
-  QMenu *menuExportDiffractograms = new QMenu("Export diffractograms");
+  QMenu *menuExportDiffractograms = new QMenu("Export diffractograms",this);
   menuExportDiffractograms->addActions({
     actExportDiffractogramCurrent,
     actExportDiffractogramAllSeparateFiles,
@@ -139,7 +139,7 @@ void MainWin::initMenus() {
   menuFile->addAction(separator());
   menuFile->addMenu(menuExportDiffractograms);
 
-  QMenu *menuExportImages = new QMenu("Export images");
+  QMenu *menuExportImages = new QMenu("Export images",this);
   menuExportImages->addActions({
     actExportImagesWithMargins,
     actExportImagesWithoutMargins,

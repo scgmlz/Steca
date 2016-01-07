@@ -2,7 +2,7 @@
 
 namespace core {
 
-Dataset::Dataset(QSize const& size_, Image::type const* intensities_,
+Dataset::Dataset(QSize const& size_, int const* intensities_,
   rcstr comment_,
   float motorXT_,  float motorYT_,  float motorZT_, float motorOmg_, float motorTth_,
   float motorPhi_, float motorChi_,
@@ -14,6 +14,14 @@ Dataset::Dataset(QSize const& size_, Image::type const* intensities_,
 , motorPhi(motorPhi_), motorChi(motorChi_), motorPST(motorPST_), motorSST(motorSST_), motorOMGM(motorOMGM_)
 , mon(mon_), deltaTime(deltaTime_) {
 
+}
+
+Datasets::Datasets() {
+}
+
+Datasets::~Datasets() {
+  for (auto dataset: *this)
+    delete dataset;
 }
 
 }

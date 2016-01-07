@@ -1,16 +1,18 @@
 #include "image.h"
-#include "debug.h"
 
 namespace core {
 
-Image::Image(QSize const& size_,type const* intensities_) THROWS
+Image::Image(QSize const& size_,int const* src) THROWS
 : size(size_) {
 
-  CHECK(size.isValid(),"Invalid image size")
+  RUNTIME_CHECK(size.isValid(),"Invalid image size")
 
   int count = size.width() * size.height();
   intensities.resize(count);
-  memcpy(intensities.data(),intensities_,count * sizeof(type));
+
+  auto dest = intensities.data();
+  while(count-- > 0)
+    *dest++ = *src++;
 }
 
 }

@@ -48,7 +48,7 @@ int FileList::Model::rowCount(QModelIndex const&) const {
   return session.numFiles(true);
 }
 
-enum { IsCorrectionFileRole = Qt::UserRole };
+enum { IsCorrectionFileRole = Qt::UserRole, GetFileRole };
 
 QVariant FileList::Model::data(QModelIndex const& index,int role) const {
   auto row = index.row(), cnt = rowCount(index);
@@ -65,6 +65,8 @@ QVariant FileList::Model::data(QModelIndex const& index,int role) const {
       if (isCorrectionFile) s = Corr + s;
       return s;
     }
+    case GetFileRole:
+      return &(session.getFile(row));
     default:
       return QVariant();
   }

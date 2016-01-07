@@ -1,5 +1,5 @@
-#ifndef DATASET_H
-#define DATASET_H
+#ifndef CORE_DATASET_H
+#define CORE_DATASET_H
 
 #include "coredefs.h"
 #include "image.h"
@@ -10,7 +10,7 @@ namespace core {
 
 class QSHARED_EXPORT Dataset {
 public:
-  Dataset(QSize const&, Image::type const* intensities,
+  Dataset(QSize const&, int const* intensities,
           rcstr comment,
           float motorXT,  float motorYT,  float motorZT, float motorOmg, float motorTth,
           float motorPhi, float motorChi,
@@ -27,7 +27,11 @@ private:
   double mon, deltaTime;
 };
 
-typedef QVector<Dataset*> Datasets;
+class QSHARED_EXPORT Datasets final: public QVector<Dataset*> {
+public:
+  Datasets();
+ ~Datasets();
+};
 
 }
 
