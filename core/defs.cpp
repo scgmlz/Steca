@@ -1,4 +1,4 @@
-#include "defs.h"
+#include "coredefs.h"
 
 static_assert (QT_VERSION >= 0x050501,"written for Qt >= 5.5");
 

@@ -1,16 +1,13 @@
 #include "loadcaress.h"
+#include "dataset.h"
 #include "loaders/Caress/raw.h"
 
 #include <sstream>
 
-// Taken from the original STeCa, modified only a little
+// Taken from the original STeCa, modified.
 
-//  void ReadData::readDatasetCaress(string path, Setup& setup, std::vector<Dataset*>& vectorDataset,
-//                                   bool calcDiff, bool rebindTo256)
-void loadCaress(rcstr filePath) throw (core::Exception) {
-  bool const calcDiff = false, rebindTo256 = false; core::Setup setup;
-  QVector<core::Dataset*> vectorDataset;
-  // TODO args
+void loadCaress(core::rcstr filePath, core::Datasets& vectorDataset) throw (core::Exception) {
+  bool const calcDiff = false, rebindTo256 = false; // TODO args
 
   if (0 != open_data_file(filePath.toLocal8Bit().data(),nullptr))
     core::raiseError("Cannot open data file " + filePath);
@@ -169,18 +166,15 @@ void loadCaress(rcstr filePath) throw (core::Exception) {
             tempTime = (double)tim1;
           }
 
-          struct {
-            int width;
-            int height;
-          } detRel;
+          QSize detRel;
 
-          detRel.height = (int)sqrt((double)imageSize);
-          detRel.width = (int)sqrt((double)imageSize);
+          detRel.setHeight((int)sqrt((double)imageSize));
+          detRel.setWidth((int)sqrt((double)imageSize));
 
           int* intensRebind = NULL;
-          if (rebindTo256 && ((detRel.height > 256) || (detRel.width > 256))) {
+          if (rebindTo256 && ((detRel.height() > 256) || (detRel.width() > 256))) {
             // Rebind data to 256 x 256
-            int factor = (int)(detRel.height / 256.0);
+            int factor = (int)(detRel.height() / 256.0);
 //            if ((factor * 256) != detRel.height)
 //              std::cout << "Attention: The Images can't be rebind to 256x256."
 //                        << std::endl;
@@ -196,7 +190,7 @@ void loadCaress(rcstr filePath) throw (core::Exception) {
               int oldX = 0;
               int subCounterX = 0;
               while (x < 256) {
-                intensRebind[y * 256 + x] += intens[oldY * detRel.width + oldX];
+                intensRebind[y * 256 + x] += intens[oldY * detRel.width() + oldX];
                 oldX++;
                 subCounterX++;
                 if (subCounterX == factor) {
@@ -211,8 +205,8 @@ void loadCaress(rcstr filePath) throw (core::Exception) {
               }
             }
 
-            detRel.height = 256;
-            detRel.width = 256;
+            detRel.setHeight(256);
+            detRel.setWidth(256);
 
             // Delete intens
             delete[] intens;
@@ -222,16 +216,15 @@ void loadCaress(rcstr filePath) throw (core::Exception) {
             intens = NULL;
           }
           // Objekt inizialisieren
-          float* tmpImage = new float[detRel.height * detRel.width];
-          for (int i = 0; i < (detRel.height * detRel.width); i++)
+          float* tmpImage = new float[detRel.height() * detRel.width()];
+          for (int i = 0; i < (detRel.height() * detRel.width()); i++)
             tmpImage[i] = (float)intensRebind[i];
-          setup.setPixFul(detRel.width, detRel.height, 0, 0);
           constexpr double deg2rad = 3.1415926535897932384626433832795 / 180;
-          dataset = new core::Dataset(setup, s_comment, xAxis, yAxis, zAxis, omgAxis * deg2rad,
+          dataset = new core::Dataset(detRel, tmpImage, core::str::fromStdString(s_comment), xAxis, yAxis, zAxis, omgAxis * deg2rad,
                                 tthAxis * deg2rad, phiAxis * deg2rad, chiAxis * deg2rad,
-                                (double)mon, tempTime, tmpImage, detRel.height * detRel.width,
-                                false, pstAxis, sstAxis, omgmAxis * deg2rad);
-          vectorDataset.push_back(dataset);
+                                (double)mon, tempTime, /*tmpImage, detRel.height() * detRel.width(),*/
+                                pstAxis, sstAxis, omgmAxis * deg2rad);
+          vectorDataset.append(dataset);
 
           delete[] tmpImage;
           delete[] intensRebind;
@@ -247,7 +240,7 @@ void loadCaress(rcstr filePath) throw (core::Exception) {
       if (!strncmp(element, "COM ", 4)) {
         c_comment = new char[d_number + 1];
         if (get_data_unit(c_comment) != 0)
-          s_comment = "no comment\0";
+          s_comment = "no comment";
         else {
           c_comment[d_number] = '\0'; // terminiere Char-Array
           s_comment = c_comment;
@@ -258,7 +251,7 @@ void loadCaress(rcstr filePath) throw (core::Exception) {
         char* c_date = NULL;
         c_date = new char[d_number + 1];
         if (get_data_unit(c_date) != 0)
-          s_date = "unknown\0";
+          s_date = "unknown";
         else {
           c_date[d_number] = '\0'; // terminiere Char-Array
           s_date = c_date;

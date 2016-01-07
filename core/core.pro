@@ -13,15 +13,20 @@ HEADERS += \
     loaders/Caress/car_datatypes.h \
     loaders/Caress/car_globals.h \
     loaders/Caress/raw.h \
-    defs.h \
-    loadcaress.h
+    loadcaress.h \
+    image.h \
+    dataset.h \
+    debug.h \
+    coredefs.h
 
 SOURCES += \
     core.cpp \
     loaders/Caress/raw.cpp \
     loaders/Caress/ReadCaress.cpp \
     defs.cpp \
-    loadcaress.cpp
+    loadcaress.cpp \
+    image.cpp \
+    dataset.cpp
 
 DISTFILES += \
     README \
