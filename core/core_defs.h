@@ -1,7 +1,7 @@
 // common and useful definitions
 
-#ifndef CORE_COREDEFS_H
-#define CORE_COREDEFS_H
+#ifndef CORE_DEFS_H
+#define CORE_DEFS_H
 
 #define DEVEL
 
@@ -40,6 +40,6 @@ void raiseError(rcstr msg) THROWS;
 
 }
 
-#include "debug.h"
+#include "core_debug.h"
 
 #endif

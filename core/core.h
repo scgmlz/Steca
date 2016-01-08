@@ -1,8 +1,8 @@
 #ifndef CORE_CORE_H
 #define CORE_CORE_H
 
-#include "coredefs.h"
-#include "file.h"
+#include "core_defs.h"
+#include "core_file.h"
 
 namespace core {
 

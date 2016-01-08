@@ -229,7 +229,12 @@ void MainWin::connectActions() {
     QObject::connect(action, &QAction::triggered, []() { notYet(); });
   };
 
-  onTrigger(actAddFiles,           &MainWin::addFiles);
+  onTrigger(actAddFiles, &MainWin::addFiles);
+  actRemoveFile->setEnabled(false);
+  connect(&session, &Session::selectedFile, this, [&](pcCoreFile file) {
+    actRemoveFile->setEnabled(nullptr!=file);
+  });
+
   onTrigger(actSetCorrectionFile,  &MainWin::setCorrectionFile);
 
   NOT_YET(actOpenSession);

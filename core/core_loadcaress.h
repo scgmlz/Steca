@@ -1,8 +1,8 @@
 #ifndef CORE_LOADCARESS_H
 #define CORE_LOADCARESS_H
 
-#include "coredefs.h"
-#include "dataset.h"
+#include "core_defs.h"
+#include "core_dataset.h"
 
 void loadCaress(core::rcstr filePath,core::Datasets&) throw (core::Exception);
 

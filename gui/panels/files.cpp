@@ -10,66 +10,36 @@ namespace panel {
 
 //-----------------------------------------------------------------------------
 
-FileList::FileList(Session& session): model(session) {
-  setModel(&model);
+FileList::FileList(Session& session_): session(session_) {
+  setModel(&session.fileListModel);
   setItemDelegate(&delegate);
 }
 
 void FileList::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
   super::selectionChanged(selected,deselected);
 
-  str fileName;
+  auto& model  = session.fileListModel;
 
   auto indexes = selected.indexes();
-  if (!indexes.isEmpty())
-    fileName = model.data(indexes.first(),Qt::DisplayRole).toString();
-
-  emit selectedFile(fileName);
+  QVariant v = model.data(indexes.first(), Session::FileListModel::GetFileRole);
+  auto p = v.value<pcCoreFile>();
+  model.session.emitSelectedFile(indexes.isEmpty()
+                                 ? nullptr
+                                 : model.data(indexes.first(), Session::FileListModel::GetFileRole).value<pcCoreFile>());
 }
 
 void FileList::removeSelectedFile() {
   auto index = currentIndex();
   if (!index.isValid()) return;
 
+  auto& model  = session.fileListModel;
+
   uint row = index.row();
   index = (row+1 < model.session.numFiles(true))
     ? index : index.sibling(row-1,0);
   model.session.remFile(row);
-  emit selectedFile(str::null);
+  model.session.emitSelectedFile(nullptr);
   setCurrentIndex(index);
-}
-
-//-----------------------------------------------------------------------------
-
-FileList::Model::Model(Session& session_): session(session_) {
-}
-
-int FileList::Model::rowCount(QModelIndex const&) const {
-  return session.numFiles(true);
-}
-
-enum { IsCorrectionFileRole = Qt::UserRole, GetFileRole };
-
-QVariant FileList::Model::data(QModelIndex const& index,int role) const {
-  auto row = index.row(), cnt = rowCount(index);
-  if (row < 0 || row >= cnt) return QVariant();
-
-  bool isCorrectionFile = session.hasCorrFile() && row+1 == cnt;
-
-  switch (role) {
-    case IsCorrectionFileRole:
-      return isCorrectionFile;
-    case Qt::DisplayRole: {
-      str s = session.fileName(row);
-      static str Corr("Corr: ");
-      if (isCorrectionFile) s = Corr + s;
-      return s;
-    }
-    case GetFileRole:
-      return &(session.getFile(row));
-    default:
-      return QVariant();
-  }
 }
 
 //-----------------------------------------------------------------------------
@@ -80,7 +50,7 @@ FileList::Delegate::Delegate() {
 void FileList::Delegate::paint(QPainter* painter,
   QStyleOptionViewItem const& option, QModelIndex const& index) const
 {
-  bool isCorrectionFile = index.data(IsCorrectionFileRole).toBool();
+  bool isCorrectionFile = index.data(Session::FileListModel::IsCorrectionFileRole).toBool();
   if(isCorrectionFile) {
     QStyleOptionViewItem o = option;
     auto &font = o.font;
@@ -103,13 +73,6 @@ Files::Files(MainWin& mainWin): super(mainWin,"Files",Qt::Vertical) {
   h->addStretch();
   h->addWidget(iconButton(mainWin.actAddFiles));
   h->addWidget(iconButton(mainWin.actRemoveFile));
-
-  mainWin.actRemoveFile->setEnabled(false);
-
-
-  connect(fileList, &FileList::selectedFile, [&](rcstr s) {
-    mainWin.actRemoveFile->setEnabled(!s.isEmpty());
-  });
 
   connect(mainWin.actRemoveFile, &QAction::triggered, [&]() {
     fileList->removeSelectedFile();

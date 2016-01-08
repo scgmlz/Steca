@@ -1,8 +1,8 @@
 #ifndef CORE_DATASET_H
 #define CORE_DATASET_H
 
-#include "coredefs.h"
-#include "image.h"
+#include "core_defs.h"
+#include "core_image.h"
 #include <QSize>
 #include <QVector>
 

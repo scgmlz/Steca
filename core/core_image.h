@@ -1,7 +1,7 @@
 #ifndef CORE_IMAGE_H
 #define CORE_IMAGE_H
 
-#include "coredefs.h"
+#include "core_defs.h"
 #include <QSize>
 #include <QVector>
 

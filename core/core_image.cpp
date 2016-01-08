@@ -1,4 +1,4 @@
-#include "image.h"
+#include "core_image.h"
 
 namespace core {
 

@@ -1,6 +1,6 @@
 #include "session.h"
 
-Session::Session(): coreSession(new core::Session) {
+Session::Session(): coreSession(new core::Session), fileListModel(*this) {
 }
 
 Session::~Session(){
@@ -40,7 +40,7 @@ core::File const& Session::getFile(uint i) {
   auto &files = coreSession->getDataFiles();
   return ((uint)files.count() == i)
     ? coreSession->getCorrFile()
-    : files.at(i)->name();
+    : *files.at(i);
 }
 
 str Session::fileName(uint i) {
@@ -58,6 +58,41 @@ void Session::setCorrFile(rcstr filePath) {
 
 str Session::corrFileName() {
   return coreSession->getCorrFile().name();
+}
+
+void Session::emitSelectedFile(pcCoreFile file) {
+  emit selectedFile(file);
+}
+
+//-----------------------------------------------------------------------------
+
+Session::FileListModel::FileListModel(Session& session_): session(session_) {
+}
+
+int Session::FileListModel::rowCount(QModelIndex const&) const {
+  return session.numFiles(true);
+}
+
+QVariant Session::FileListModel::data(QModelIndex const& index,int role) const {
+  auto row = index.row(), cnt = rowCount(index);
+  if (row < 0 || row >= cnt) return QVariant();
+
+  bool isCorrectionFile = session.hasCorrFile() && row+1 == cnt;
+
+  switch (role) {
+    case IsCorrectionFileRole:
+      return isCorrectionFile;
+    case Qt::DisplayRole: {
+      str s = session.fileName(row);
+      static str Corr("Corr: ");
+      if (isCorrectionFile) s = Corr + s;
+      return s;
+    }
+    case GetFileRole:
+      return QVariant::fromValue<core::File const*>(&(session.getFile(row)));
+    default:
+      return QVariant();
+  }
 }
 
 // eof

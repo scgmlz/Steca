@@ -1,8 +1,8 @@
 #ifndef CORE_FILE_H
 #define CORE_FILE_H
 
-#include "coredefs.h"
-#include "dataset.h"
+#include "core_defs.h"
+#include "core_dataset.h"
 #include <QVector>
 #include <QFileInfo>
 
@@ -30,5 +30,9 @@ public:
 };
 
 }
+
+// used in signals
+typedef core::File const *pcCoreFile;
+Q_DECLARE_METATYPE(pcCoreFile)
 
 #endif

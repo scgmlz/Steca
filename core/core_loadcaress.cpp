@@ -1,5 +1,5 @@
-#include "loadcaress.h"
-#include "dataset.h"
+#include "core_loadcaress.h"
+#include "core_dataset.h"
 #include <memory>
 #include "loaders/Caress/raw.h"
 

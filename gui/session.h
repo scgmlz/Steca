@@ -3,10 +3,14 @@
 
 #include "defs.h"
 #include "core.h"
+#include <QAbstractListModel>
 
-// Core session + signals
+// A proxy for access to core::Session
+// Models and signals also here
+
 class Session: public QObject {
   Q_OBJECT
+  core::Session *coreSession;
 public:
   Session();
  ~Session();
@@ -22,11 +26,27 @@ public:
   void setCorrFile(rcstr filePath);
   str  corrFileName();
 
-signals:
-  void  filesChanged();
+  void emitSelectedFile(pcCoreFile);
 
-private:
-  core::Session *coreSession;
+signals:
+  void filesChanged();
+  void selectedFile(pcCoreFile);
+
+public:
+  class FileListModel: public QAbstractListModel {
+    SUPER(FileListModel,QAbstractListModel)
+  public:
+    FileListModel(Session&);
+
+    enum { IsCorrectionFileRole = Qt::UserRole, GetFileRole };
+
+    int rowCount(QModelIndex const&)      const;
+    QVariant data(QModelIndex const&,int) const;
+
+    Session &session;
+  };
+
+  FileListModel fileListModel;
 };
 
 #endif
