@@ -9,7 +9,7 @@ Dataset::Dataset(QSize const& size_, int const* intensities_,
   double mon_, double deltaTime_,
   float motorPST_, float motorSST_, float motorOMGM_)
 
-: comment(comment_), intensities(size_,intensities_)
+: comment(comment_), image(size_,intensities_)
 , motorXT(motorXT_), motorYT(motorYT_), motorZT(motorZT_), motorOmg(motorOmg_), motorTth(motorTth_)
 , motorPhi(motorPhi_), motorChi(motorChi_), motorPST(motorPST_), motorSST(motorSST_), motorOMGM(motorOMGM_)
 , mon(mon_), deltaTime(deltaTime_) {

@@ -1,6 +1,8 @@
 #include "session.h"
 
-Session::Session(): coreSession(new core::Session), fileListModel(*this) {
+Session::Session(): coreSession(new core::Session)
+, selectedFile(nullptr)
+, fileListModel(*this), datasetListModel(*this) {
 }
 
 Session::~Session(){
@@ -16,10 +18,6 @@ void Session::addFiles(str_lst filePaths) {
   for (auto& filePath: filePaths)
     coreSession->addFile(filePath);
   emit filesChanged();
-}
-
-bool Session::hasFile(rcstr filePath) {
-  return coreSession->hasFile(filePath);
 }
 
 void Session::remFile(uint i) {
@@ -60,8 +58,19 @@ str Session::corrFileName() {
   return coreSession->getCorrFile().name();
 }
 
-void Session::emitSelectedFile(pcCoreFile file) {
-  emit selectedFile(file);
+void Session::setSelectedFile(pcCoreFile file) {
+  setSelectedDataset(nullptr);
+  emit fileSelected((selectedFile = file));
+}
+
+void Session::setSelectedDataset(pcCoreDataset dataset) {
+  emit datasetSelected((selectedDataset = dataset));
+}
+
+core::Dataset const&Session::getDataset(uint i) {
+  pcCoreFile file = selectedFile;
+  ASSERT(file)
+  return *(file->getDatasets().at(i));
 }
 
 //-----------------------------------------------------------------------------
@@ -89,7 +98,36 @@ QVariant Session::FileListModel::data(QModelIndex const& index,int role) const {
       return s;
     }
     case GetFileRole:
-      return QVariant::fromValue<core::File const*>(&(session.getFile(row)));
+      return QVariant::fromValue<pcCoreFile>(&(session.getFile(row)));
+    default:
+      return QVariant();
+  }
+}
+
+//-----------------------------------------------------------------------------
+
+Session::DatasetListModel::DatasetListModel(Session& session_): session(session_) {
+}
+
+int Session::DatasetListModel::rowCount(QModelIndex const&) const {
+  pcCoreFile file = session.selectedFile;
+  return file ? file->getDatasets().count() : 0;
+}
+
+QVariant Session::DatasetListModel::data(QModelIndex const& index,int role) const {
+  pcCoreFile file = session.selectedFile;
+  if (!file) return QVariant();
+
+  auto row = index.row(), cnt = rowCount(index);
+  if (row < 0 || row >= cnt) return QVariant();
+
+  switch (role) {
+    case Qt::DisplayRole: {
+      str s = str("%1 ").arg(row) % file->getDatasets().at(row)->getComment();
+      return s;
+    }
+    case GetFileRole:
+      return QVariant::fromValue<pcCoreDataset>(&(session.getDataset(row)));
     default:
       return QVariant();
   }

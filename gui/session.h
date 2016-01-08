@@ -17,7 +17,6 @@ public:
 
   void addFile(rcstr filePath);
   void addFiles(str_lst filePaths);
-  bool hasFile(rcstr filePath);
   void remFile(uint i);
   uint numFiles(bool withCorr=false);
   core::File const& getFile(uint i);
@@ -26,11 +25,19 @@ public:
   void setCorrFile(rcstr filePath);
   str  corrFileName();
 
-  void emitSelectedFile(pcCoreFile);
+  void setSelectedFile(pcCoreFile);
+  void setSelectedDataset(pcCoreDataset);
+
+  core::Dataset const& getDataset(uint i);
+
+private:
+  pcCoreFile    selectedFile;
+  pcCoreDataset selectedDataset;
 
 signals:
   void filesChanged();
-  void selectedFile(pcCoreFile);
+  void fileSelected(pcCoreFile);
+  void datasetSelected(pcCoreDataset);
 
 public:
   class FileListModel: public QAbstractListModel {
@@ -38,7 +45,7 @@ public:
   public:
     FileListModel(Session&);
 
-    enum { IsCorrectionFileRole = Qt::UserRole, GetFileRole };
+    enum { GetFileRole = Qt::UserRole, IsCorrectionFileRole };
 
     int rowCount(QModelIndex const&)      const;
     QVariant data(QModelIndex const&,int) const;
@@ -47,6 +54,22 @@ public:
   };
 
   FileListModel fileListModel;
+
+public:
+  class DatasetListModel: public QAbstractListModel {
+    SUPER(DatasetListModel,QAbstractListModel)
+  public:
+    DatasetListModel(Session&);
+
+    enum { GetFileRole = Qt::UserRole };
+
+    int rowCount(QModelIndex const&)      const;
+    QVariant data(QModelIndex const&,int) const;
+
+    Session &session;
+  };
+
+  DatasetListModel datasetListModel;
 };
 
 #endif

@@ -10,15 +10,19 @@ namespace core {
 
 class QSHARED_EXPORT Dataset {
 public:
-  Dataset(QSize const&, int const* intensities,
+  Dataset(QSize const&, int const* image,
           rcstr comment,
           float motorXT,  float motorYT,  float motorZT, float motorOmg, float motorTth,
           float motorPhi, float motorChi,
           double mon, double deltaTime,
           float motorPST, float motorSST, float motorOMGM);
+
+  rcstr        getComment() const { return comment; }
+  Image const& getImage()   const { return image;   }
+
 private:
-  str comment;
-  Image intensities;
+  str   comment;
+  Image image;
 
   float
     motorXT,  motorYT,  motorZT,  motorOmg, motorTth,
@@ -34,5 +38,9 @@ public:
 };
 
 }
+
+// used in signals
+typedef core::Dataset const *pcCoreDataset;
+Q_DECLARE_METATYPE(pcCoreDataset)
 
 #endif

@@ -18,6 +18,8 @@ public:
 
   void load() THROWS;
 
+  Datasets const& getDatasets() const { return datasets; }
+
 private:
   QFileInfo info;
   Datasets  datasets;

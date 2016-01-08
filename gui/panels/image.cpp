@@ -1,5 +1,6 @@
 #include "image.h"
 #include "mainwin.h"
+#include <QResizeEvent>
 
 namespace panel {
 
@@ -12,6 +13,12 @@ QSize ImageWidget::sizeHint() const {
   s.setWidth(lastHeight);
   s.setHeight(super::sizeHint().height());
   return s;
+}
+
+void ImageWidget::setPixmap(QPixmap const& pixmap) {
+  original = pixmap;
+  scaled = original.isNull() ? original : original.scaled(size(),Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+  super::setPixmap(scaled);
 }
 
 void ImageWidget::resizeEvent(QResizeEvent* e) {
@@ -51,6 +58,45 @@ Image::Image(MainWin& mainWin): super(mainWin,"",Qt::Horizontal) {
   v2->addWidget(iconButton(mainWin.actImagesTurnLeft));
 
   box->addStretch();
+
+  connect(&mainWin.session, &Session::datasetSelected, this, [&](pcCoreDataset dataset) {
+    w->setPixmap(dataset ? pixmapFromCoreImage(dataset->getImage()) : QPixmap());
+  });
+}
+
+QPixmap Image::pixmapFromCoreImage(core::Image const& coreImage) {
+  int count = coreImage.dataCount();
+  if (count < 1) return QPixmap();
+
+  QSize const &size = coreImage.getSize();
+  uint  width = size.width(), height = size.height();
+
+  int maximum = coreImage.intensity(0);
+  for_i(count) maximum = qMax(maximum,coreImage.intensity(i));
+
+  QImage image(size, QImage::Format_RGB32);
+
+  for (uint y = 0; y < height; ++y) {
+    for (uint x = 0; x < width; ++x) {
+      double intens = (double)coreImage.intensity(x,y) / (double)maximum;
+      if (intens < 0.25) {
+        image.setPixel(x, y, qRgb((int)floor(0xff * intens * 4), 0, 0));
+        continue;
+      }
+      if (intens < 0.5) {
+        image.setPixel(x, y, qRgb(0xff, (int)floor(0xff * (intens - 0.25) * 4), 0));
+        continue;
+      }
+      if (intens < 0.75) {
+        image.setPixel(x, y, qRgb(0xff - (int)floor(0xff * (intens - 0.5) * 4), 0xff,
+                                  (int)floor(0xff * (intens - 0.5) * 4)));
+        continue;
+      } else
+        image.setPixel(x, y, qRgb((int)floor(0xff * (intens - 0.75) * 4), 0xff, 0xff));
+    }
+  }
+
+  return QPixmap::fromImage(image);
 }
 
 }

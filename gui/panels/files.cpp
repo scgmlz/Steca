@@ -21,9 +21,7 @@ void FileList::selectionChanged(QItemSelection const& selected, QItemSelection c
   auto& model  = session.fileListModel;
 
   auto indexes = selected.indexes();
-  QVariant v = model.data(indexes.first(), Session::FileListModel::GetFileRole);
-  auto p = v.value<pcCoreFile>();
-  model.session.emitSelectedFile(indexes.isEmpty()
+  model.session.setSelectedFile(indexes.isEmpty()
                                  ? nullptr
                                  : model.data(indexes.first(), Session::FileListModel::GetFileRole).value<pcCoreFile>());
 }
@@ -35,10 +33,10 @@ void FileList::removeSelectedFile() {
   auto& model  = session.fileListModel;
 
   uint row = index.row();
-  index = (row+1 < model.session.numFiles(true))
-    ? index : index.sibling(row-1,0);
+  index = (row+1 < model.session.numFiles(true)) ? index
+                                                 : index.sibling(row-1,0);
   model.session.remFile(row);
-  model.session.emitSelectedFile(nullptr);
+  model.session.setSelectedFile(nullptr);
   setCurrentIndex(index);
 }
 

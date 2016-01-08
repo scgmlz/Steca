@@ -15,6 +15,14 @@ Image::Image(QSize const& size_,int const* src) THROWS
     *dest++ = *src++;
 }
 
+int Image::intensity(uint index) const {
+  return intensities[index];
+}
+
+int Image::intensity(uint x, uint y) const {
+  return intensities[x + y*size.width()];
+}
+
 }
 
 // eof

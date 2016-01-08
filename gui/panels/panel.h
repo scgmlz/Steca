@@ -1,5 +1,5 @@
-#ifndef H
-#define H
+#ifndef PANEL_H
+#define PANEL_H
 
 #include "gui_helpers.h"
 #include <QGroupBox>
