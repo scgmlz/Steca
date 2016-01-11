@@ -27,6 +27,7 @@ bool Session::hasFile(rcstr fileName) {
 }
 
 void Session::remFile(uint i) {
+  delete dataFiles.at(i);
   dataFiles.remove(i);
 }
 

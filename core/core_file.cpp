@@ -9,6 +9,11 @@ File::File(): File(str::null) {
 }
 
 File::File(rcstr fileName): info(fileName) {
+  TR(" f" << this)
+}
+
+File::~File() {
+  TR("~f" << this)
 }
 
 void File::load() THROWS {

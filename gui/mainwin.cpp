@@ -57,8 +57,8 @@ void MainWin::initActions() {
   actAddFiles           = simple("Add files...",          ":/icon/add", keys.keyAddFiles);
   actRemoveFile         = simple("Remove selected file",  ":/icon/rem", keys.keyDeleteFile);
   actSetCorrectionFile  = simple("Set correction file...","",           keys.keySetCorrectionFile);
-  actOpenSession        = simple("Open session...",       "", QKey::Open);
-  actSaveSession        = simple("Save session...",       "", QKey::Save);
+  actOpenSession        = simple("Open session...");
+  actSaveSession        = simple("Save session...");
 
   actExportDiffractogramCurrent           = simple("Current only...");
   actExportDiffractogramAllSeparateFiles  = simple("All to separate files...");
@@ -313,7 +313,7 @@ void MainWin::loadSession() {
   QFile file(info.filePath());
   RUNTIME_CHECK(file.open(QIODevice::ReadOnly), "File cannot be opened");
 
-  Session::load(file.readAll());
+  session.load(file.readAll());
 }
 
 void MainWin::saveSession() {

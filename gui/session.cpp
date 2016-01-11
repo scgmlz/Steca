@@ -2,7 +2,6 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
-#include <memory>
 
 Session::Session(): coreSession(new core::Session)
 , selectedFile(nullptr)
@@ -13,23 +12,21 @@ Session::~Session(){
   delete coreSession;
 }
 
-Session* Session::load(QByteArray const& json) THROWS {
-  std::unique_ptr<Session> session(new Session);
-
+void Session::load(QByteArray const& json) THROWS {
   QJsonParseError parseError;
   QJsonDocument doc(QJsonDocument::fromJson(json,&parseError));
   RUNTIME_CHECK(QJsonParseError::NoError==parseError.error, "Error parsing file");
+
+  while (numFiles(true)>0) remFile(0);
 
   auto top   = doc.object();
   auto files = top["files"].toArray();
 
   for (auto file: files) {
-    session->addFile(file.toString());
+    addFile(file.toString());
   }
 
-  session->setCorrFile(top["corr.file"].toString());
-
-  return session.release();
+  setCorrFile(top["corr.file"].toString());
 }
 
 QByteArray Session::save() const {

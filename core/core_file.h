@@ -13,6 +13,7 @@ class File final {
 public:
   File();
   File(rcstr fileName);
+ ~File();
 
   str name()                 const { return info.fileName(); }
   QFileInfo const& getInfo() const { return info;            }

@@ -15,7 +15,7 @@ public:
   Session();
  ~Session();
 
-  static Session* load(QByteArray const& json) THROWS;
+  void load(QByteArray const& json) THROWS;
   QByteArray save() const;
 
   void addFile(rcstr filePath);
