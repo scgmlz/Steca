@@ -5,12 +5,6 @@
 
 // #define DEVEL
 
-#ifdef BUILDING_LIBRARY
-#define QSHARED_EXPORT Q_DECL_EXPORT
-#else
-#define QSHARED_EXPORT Q_DECL_IMPORT
-#endif
-
 #include <QtGlobal>
 
 // strings
@@ -27,7 +21,7 @@ typedef QStringList   str_lst;
 
 namespace core {
 
-class QSHARED_EXPORT Exception: public QException {
+class Exception: public QException {
 public:
   Exception(rcstr msg_): msg(msg_) {}
 

@@ -1,8 +1,6 @@
 #ifndef CORE_DEBUG_H
 #define CORE_DEBUG_H
 
-#define DEVEL
-
 // debug support
 #ifndef QT_NO_DEBUG
 

@@ -7,7 +7,7 @@
 
 namespace core {
 
-class QSHARED_EXPORT Image {
+class Image {
 public:
   Image(QSize const&,int const* intensities) THROWS;
 

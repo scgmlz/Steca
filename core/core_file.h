@@ -9,7 +9,7 @@
 
 namespace core {
 
-class QSHARED_EXPORT File final {
+class File final {
 public:
   File();
   File(rcstr fileName);
@@ -26,7 +26,7 @@ private:
   Datasets  datasets;
 };
 
-class QSHARED_EXPORT Files final: public QVector<File*> {
+class Files final: public QVector<File*> {
 public:
   Files();
  ~Files();

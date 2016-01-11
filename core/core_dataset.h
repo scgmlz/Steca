@@ -9,7 +9,7 @@
 
 namespace core {
 
-class QSHARED_EXPORT Dataset {
+class Dataset {
 public:
   Dataset(QSize const&, int const* image,
           rcstr comment,
@@ -32,7 +32,7 @@ private:
   double mon, deltaTime;
 };
 
-class QSHARED_EXPORT Datasets final: public QVector<Dataset*> {
+class Datasets final: public QVector<Dataset*> {
 public:
   Datasets();
  ~Datasets();

@@ -3,7 +3,8 @@ CONFIG += ordered
 
 SUBDIRS = core gui
 
-gui.depends = core
+gui.depends =
+core
 
 OTHER_FILES = \
   README.md \

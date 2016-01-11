@@ -6,7 +6,7 @@
 
 namespace core {
 
-class QSHARED_EXPORT Session final {
+class Session final {
 public:
   Session();
  ~Session();
