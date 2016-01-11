@@ -19,8 +19,6 @@ typedef QStringList   str_lst;
 
 #include <QException>
 
-namespace core {
-
 class Exception: public QException {
 public:
   Exception(rcstr msg_): msg(msg_) {}
@@ -29,12 +27,10 @@ public:
 };
 
 #define THROWS throw (Exception)
+#define THROW(msg) raiseError(msg)
+#define RUNTIME_CHECK(test,msg)  if (!(test)) THROW(msg)
 
 void raiseError(rcstr msg) THROWS;
-
-#define THROW(msg) raiseError(msg);
-
-}
 
 #include "core_debug.h"
 

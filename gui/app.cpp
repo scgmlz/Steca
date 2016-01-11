@@ -62,6 +62,8 @@ bool App::notify(QObject* receiver, QEvent* event) {
     return super::notify(receiver, event);
   } catch(CriticalError const& e) {
     qCritical("CriticalError: %s", e.what());
+  } catch(Exception const& e) {
+    qWarning("%s", e.msg.toLocal8Bit().constData());
   } catch(std::exception const& e) {
     qWarning("Error: %s", e.what());
   }

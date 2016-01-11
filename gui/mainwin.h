@@ -31,7 +31,8 @@ public:
   void saveSession();
 
 private:
-  str  dataFilesDir;  // where to begin to look for data files
+  // where to look for files
+  str  sessionDir, dataDir;
 
 private:
   void closeEvent(QCloseEvent*);

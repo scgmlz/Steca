@@ -5,15 +5,14 @@
 
 namespace core {
 
-File::File(): File("") {
+File::File(): File(str::null) {
 }
 
 File::File(rcstr fileName): info(fileName) {
 }
 
 void File::load() THROWS {
-  if (!info.exists())
-    raiseError("File " % info.filePath() % " does not exist");
+  RUNTIME_CHECK(info.exists(), "File " % info.filePath() % " does not exist");
   loadCaress(info.filePath(),datasets);
 }
 

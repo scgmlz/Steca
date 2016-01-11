@@ -4,6 +4,6 @@
 #include "core_defs.h"
 #include "core_dataset.h"
 
-void loadCaress(rcstr filePath,core::Datasets&) throw (core::Exception);
+void loadCaress(rcstr filePath,core::Datasets&) THROWS;
 
 #endif

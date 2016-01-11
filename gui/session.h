@@ -15,6 +15,9 @@ public:
   Session();
  ~Session();
 
+  static Session* load(QByteArray const& json) THROWS;
+  QByteArray save() const;
+
   void addFile(rcstr filePath);
   void addFiles(str_lst filePaths);
   void remFile(uint i);
@@ -23,7 +26,6 @@ public:
   str  fileName(uint i);
   bool hasCorrFile();
   void setCorrFile(rcstr filePath);
-  str  corrFileName();
 
   void setSelectedFile(pcCoreFile);
   void setSelectedDataset(pcCoreDataset);

@@ -19,6 +19,4 @@
 
 #define WT(what)          TR(#what":" << what) // WT: short for 'watch'
 
-#define RUNTIME_CHECK(test,msg)  if (!(test)) THROW(msg)
-
 #endif

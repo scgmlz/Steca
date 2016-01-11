@@ -15,7 +15,7 @@
 #include <QFileDialog>
 
 MainWin::MainWin() {
-  dataFilesDir = QDir::homePath();
+  sessionDir = dataDir = QDir::homePath();
 
   initActions();
   initMenus();
@@ -57,8 +57,8 @@ void MainWin::initActions() {
   actAddFiles           = simple("Add files...",          ":/icon/add", keys.keyAddFiles);
   actRemoveFile         = simple("Remove selected file",  ":/icon/rem", keys.keyDeleteFile);
   actSetCorrectionFile  = simple("Set correction file...","",           keys.keySetCorrectionFile);
-  actOpenSession        = simple("Open session...");
-  actSaveSession        = simple("Save session...");
+  actOpenSession        = simple("Open session...",       "", QKey::Open);
+  actSaveSession        = simple("Save session...",       "", QKey::Save);
 
   actExportDiffractogramCurrent           = simple("Current only...");
   actExportDiffractogramAllSeparateFiles  = simple("All to separate files...");
@@ -93,8 +93,8 @@ void MainWin::initActions() {
   actReflectionAdd      = simple("Width",     ":/icon/add");
 
   actImagesCombine      = simple("Combine...");
-  actImagesLink         = simple("UpDocore guiwn",    ":/icon/link");
-  actImagesEye          = simple("UpDown",    ":/icon/eye");
+  actImagesLink         = simple("Link",      ":/icon/link");
+  actImagesEye          = simple("eye",       ":/icon/eye");
   actImagesUpDown       = simple("UpDown",    ":/icon/updown");
   actImagesLeftRight    = simple("LeftRight", ":/icon/leftright");
   actImagesTurnRight    = simple("TurnRight", ":/icon/turnright");
@@ -124,7 +124,7 @@ void MainWin::initMenus() {
     separator(),
     actSetCorrectionFile,
     separator(),
-    actOpenSession, actSaveSession,
+    actOpenSession, actSaveSession,actOpenSession
   });
 
   QMenu *menuExportDiffractograms = new QMenu("Export diffractograms",this);
@@ -280,34 +280,56 @@ void MainWin::close() {
 
 void MainWin::addFiles() {
   str_lst fileNames = QFileDialog::getOpenFileNames(this,
-    "Add files", dataFilesDir, "Data files (*.dat);;All files (*.*)");
+    "Add files", dataDir, "Data files (*.dat);;All files (*.*)");
 
   if (!fileNames.isEmpty()) {
     // remember the directory for the next time
-    dataFilesDir = QFileInfo(fileNames.first()).canonicalPath();
+    dataDir = QFileInfo(fileNames.first()).absolutePath();
     session.addFiles(fileNames);
   }
 }
 
 void MainWin::setCorrectionFile() {
   str fileName = QFileDialog::getOpenFileName(this,
-      "Set correction file", dataFilesDir, "Data files (*.dat);;All files (*.*)");
+      "Set correction file", dataDir, "Data files (*.dat);;All files (*.*)");
 
   if (!fileName.isEmpty()) {
     // remember the directory for the next time
-    dataFilesDir = QFileInfo(fileName).canonicalPath();
+    dataDir = QFileInfo(fileName).absolutePath();
     session.setCorrFile(fileName);
   }
 }
 
-void MainWin::loadSession()
-{
+static str const STE(".ste");
 
+void MainWin::loadSession() {
+  str fileName = QFileDialog::getOpenFileName(this,
+      "Load session", sessionDir, "Session files (*"%STE%");;All files (*.*)");
+  if (fileName.isEmpty()) return;
+
+  QFileInfo info(fileName);
+  sessionDir = info.absolutePath();
+
+  QFile file(info.filePath());
+  RUNTIME_CHECK(file.open(QIODevice::ReadOnly), "File cannot be opened");
+
+  Session::load(file.readAll());
 }
 
-void MainWin::saveSession()
-{
+void MainWin::saveSession() {
+  str fileName = QFileDialog::getSaveFileName(this,
+      "Save session", sessionDir, "Session files (*"%STE%");;All files (*.*)");
+  if (fileName.isEmpty()) return;
 
+  if (!fileName.endsWith(STE)) fileName += STE;
+  QFileInfo info(fileName);
+  sessionDir = info.absolutePath();
+
+  QFile file(info.filePath());
+  RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File cannot be opened");
+
+  auto written = file.write(session.save());
+  RUNTIME_CHECK(written >= 0, "Could not write session");
 }
 
 void MainWin::closeEvent(QCloseEvent* event) {

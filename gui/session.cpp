@@ -1,4 +1,8 @@
 #include "session.h"
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <memory>
 
 Session::Session(): coreSession(new core::Session)
 , selectedFile(nullptr)
@@ -7,6 +11,43 @@ Session::Session(): coreSession(new core::Session)
 
 Session::~Session(){
   delete coreSession;
+}
+
+Session* Session::load(QByteArray const& json) THROWS {
+  std::unique_ptr<Session> session(new Session);
+
+  QJsonParseError parseError;
+  QJsonDocument doc(QJsonDocument::fromJson(json,&parseError));
+  RUNTIME_CHECK(QJsonParseError::NoError==parseError.error, "Error parsing file");
+
+  auto top   = doc.object();
+  auto files = top["files"].toArray();
+
+  for (auto file: files) {
+    session->addFile(file.toString());
+  }
+
+  session->setCorrFile(top["corr.file"].toString());
+
+  return session.release();
+}
+
+QByteArray Session::save() const {
+  QByteArray json;
+
+  QJsonArray files;
+
+  for (core::File* file: coreSession->getDataFiles()) {
+    files.append(file->getInfo().absoluteFilePath());
+  }
+
+  QJsonObject top;
+  top["files"] = files;
+  top["corr.file"] = coreSession->getCorrFile().getInfo().absoluteFilePath();
+
+
+  QJsonDocument doc(top);
+  return doc.toJson();
 }
 
 void Session::addFile(rcstr filePath) {
@@ -52,10 +93,6 @@ bool Session::hasCorrFile() {
 void Session::setCorrFile(rcstr filePath) {
   coreSession->setCorrFile(filePath);
   emit filesChanged();
-}
-
-str Session::corrFileName() {
-  return coreSession->getCorrFile().name();
 }
 
 void Session::setSelectedFile(pcCoreFile file) {

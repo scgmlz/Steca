@@ -5,7 +5,7 @@ namespace core {
 Image::Image(QSize const& size_,int const* src) THROWS
 : size(size_) {
 
-  RUNTIME_CHECK(size.isValid(),"Invalid image size")
+  RUNTIME_CHECK(size.isValid(),"Invalid image size");
 
   int count = size.width() * size.height();
   intensities.resize(count);

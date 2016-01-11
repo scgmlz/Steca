@@ -14,7 +14,7 @@
 
 // exceptions
 
-class CriticalError: public core::Exception {
+class CriticalError: public Exception {
 };
 
 class QObject;

@@ -7,11 +7,10 @@
 
 // Taken from the original STeCa, modified.
 
-void loadCaress(rcstr filePath,core::Datasets& datasets) throw (core::Exception) {
+void loadCaress(rcstr filePath,core::Datasets& datasets) THROWS {
 
-  if (0 != open_data_file(filePath.toLocal8Bit().data(),nullptr))
-    core::raiseError("Cannot open data file " + filePath);
-
+  RUNTIME_CHECK(0 == open_data_file(filePath.toLocal8Bit().data(),nullptr),
+                "Cannot open data file " + filePath);
   try {
     bool newObject = false;
     bool workAfterStep = false;
