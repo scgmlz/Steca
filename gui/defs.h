@@ -3,20 +3,7 @@
 #ifndef DEFS_H
 #define DEFS_H
 
-#include "core_debug.h"
-
-#include <QtGlobal>
-#include <QException>
-
-// strings
-#include <QString>
-#include <QStringBuilder>
-
-typedef QString     str;
-typedef str const&  rcstr;
-typedef char const* pcstr;
-
-typedef QStringList   str_lst;
+#include "core_defs.h"
 
 // a class definition helper: this class and superclass access
 #define SUPER(cls,sup)  typedef cls thisCls; typedef sup super;
@@ -27,32 +14,10 @@ typedef QStringList   str_lst;
 
 // exceptions
 
-class Exc: public QException {
-public:
-  Exc(rcstr msg);
- ~Exc() throw ();
-
-  str msg;
-
-  void warn() const;
+class CriticalError: public core::Exception {
 };
 
-#define DECLARE_EXCEPTION(ExcCls)   \
-class ExcCls: public Exc {          \
-public:                             \
-  ExcCls(rcstr msg): Exc(msg) {}    \
- ~ExcCls() throw ()           {}    \
-  ExcCls* clone() const {           \
-    return new ExcCls(*this);       \
-  }                                 \
-  void raise() const {              \
-      throw *this;                  \
-  }                                 \
-};
-
-DECLARE_EXCEPTION(CriticalError)
-void CRITICAL_ERROR(rcstr msg) throw (CriticalError);
-
+class QObject;
 void warn(QObject*, rcstr msg, rcstr more = str::null);
 
 #endif

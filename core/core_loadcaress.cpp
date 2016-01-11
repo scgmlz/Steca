@@ -7,7 +7,7 @@
 
 // Taken from the original STeCa, modified.
 
-void loadCaress(core::rcstr filePath,core::Datasets& datasets) throw (core::Exception) {
+void loadCaress(rcstr filePath,core::Datasets& datasets) throw (core::Exception) {
 
   if (0 != open_data_file(filePath.toLocal8Bit().data(),nullptr))
     core::raiseError("Cannot open data file " + filePath);
@@ -140,7 +140,7 @@ void loadCaress(core::rcstr filePath,core::Datasets& datasets) throw (core::Exce
 
           // Objekt inizialisieren
           constexpr double deg2rad = 3.1415926535897932384626433832795 / 180;
-          datasets.append(new core::Dataset(detRel, intens, core::str::fromStdString(s_comment), xAxis, yAxis, zAxis, omgAxis * deg2rad,
+          datasets.append(new core::Dataset(detRel, intens, str::fromStdString(s_comment), xAxis, yAxis, zAxis, omgAxis * deg2rad,
                                 tthAxis * deg2rad, phiAxis * deg2rad, chiAxis * deg2rad,
                                 (double)mon, tempTime, /*tmpImage, detRel.height() * detRel.width(),*/
                                 pstAxis, sstAxis, omgmAxis * deg2rad));

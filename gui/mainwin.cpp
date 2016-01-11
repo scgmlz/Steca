@@ -236,8 +236,8 @@ void MainWin::connectActions() {
 
   onTrigger(actSetCorrectionFile,  &MainWin::setCorrectionFile);
 
-  NOT_YET(actOpenSession);
-  NOT_YET(actSaveSession);
+  onTrigger(actOpenSession, &MainWin::loadSession);
+  onTrigger(actSaveSession, &MainWin::saveSession);
 
   NOT_YET(actExportDiffractogramCurrent);
   NOT_YET(actExportDiffractogramAllSeparateFiles);
@@ -298,6 +298,16 @@ void MainWin::setCorrectionFile() {
     dataFilesDir = QFileInfo(fileName).canonicalPath();
     session.setCorrFile(fileName);
   }
+}
+
+void MainWin::loadSession()
+{
+
+}
+
+void MainWin::saveSession()
+{
+
 }
 
 void MainWin::closeEvent(QCloseEvent* event) {

@@ -27,6 +27,9 @@ public:
   void addFiles();
   void setCorrectionFile();
 
+  void loadSession();
+  void saveSession();
+
 private:
   str  dataFilesDir;  // where to begin to look for data files
 

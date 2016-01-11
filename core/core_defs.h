@@ -12,22 +12,24 @@
 #endif
 
 #include <QtGlobal>
+
+// strings
 #include <QString>
 #include <QStringBuilder>
+
+typedef QString     str;
+typedef str const&  rcstr;
+typedef char const* pcstr;
+
+typedef QStringList   str_lst;
+
 #include <QException>
 
 namespace core {
 
-typedef QString     str;
-typedef str const&  rcstr;
-
 class QSHARED_EXPORT Exception: public QException {
 public:
   Exception(rcstr msg_): msg(msg_) {}
-
-  const char* what() const throw () {
-    return msg.toLocal8Bit().data();
-  }
 
   str msg;
 };
