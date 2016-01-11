@@ -28,11 +28,11 @@ HEADERS += \
     split_files.h \
     split.h \
     split_reflections.h \
-    split_images.h \
     split_image.h \
     split_diffractogram.h \
     session.h \
-    panels/datasets.h
+    panels/datasets.h \
+    split_datasets.h
 
 SOURCES += \
     ../3rd/qcustomplot.cpp \
@@ -56,11 +56,11 @@ SOURCES += \
     split_files.cpp \
     split.cpp \
     split_reflections.cpp \
-    split_images.cpp \
     split_image.cpp \
     split_diffractogram.cpp \
     session.cpp \
-    panels/datasets.cpp
+    panels/datasets.cpp \
+    split_datasets.cpp
 
 RESOURCES += \
     resources.qrc

@@ -5,10 +5,7 @@
 #include "session.h"
 #include <QMainWindow>
 
-class QAction;
-class QMenu;
-class Panel;
-class Docking;
+class Split;
 
 class MainWin: public QMainWindow {
   SUPER(MainWin,QMainWindow) Q_OBJECT
@@ -41,7 +38,6 @@ public:
   Session session;
 
 private:
-  Docking *filesDock, *infoDock;
   QMenu *menuFile, *menuEdit, *menuView, *menuOpts, *menuHelp;
 
 public:
@@ -61,7 +57,6 @@ public:
     *actUndo, *actRedo,
     *actCut,  *actCopy, *actPaste,
 
-    *actViewFiles, *actViewInfo,
     *actViewStatusbar,
 #ifndef Q_OS_OSX // Mac has its own
     *actFullscreen,
@@ -81,6 +76,9 @@ public:
     *actBackgroundBackground, *actBackgroundEye;
 
 private:
+  Split *splitFiles, *splitDatasets, *splitImage, *splitReflections, *splitDiffractogram;
+
+private:
   QByteArray initialState;
 
   void readSettings();
@@ -88,8 +86,6 @@ private:
 
   void checkActions();
 
-  void viewFiles(bool);
-  void viewInfo(bool);
   void viewStatusbar(bool);
   void viewFullscreen(bool);
   void viewReset();

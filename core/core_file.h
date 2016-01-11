@@ -5,6 +5,7 @@
 #include "core_dataset.h"
 #include <QVector>
 #include <QFileInfo>
+#include <QMetaType>
 
 namespace core {
 

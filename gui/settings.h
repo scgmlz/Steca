@@ -24,7 +24,7 @@ public:
 
   QKey
     keyAddFiles, keyDeleteFile, keySetCorrectionFile,
-    keyViewFiles, keyViewInfo, keyViewStatusbar
+    keyViewStatusbar
   #ifndef Q_OS_OSX
     , keyFullscreen
   #endif

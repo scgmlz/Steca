@@ -3,7 +3,7 @@
 #include "settings.h"
 #include "split_files.h"
 #include "split_image.h"
-#include "split_images.h"
+#include "split_datasets.h"
 #include "split_reflections.h"
 #include "split_diffractogram.h"
 
@@ -75,8 +75,6 @@ void MainWin::initActions() {
   actCopy  = simple("Copy",  "", QKey::Copy);
   actPaste = simple("Paste", "", QKey::Paste);
 
-  actViewFiles     = toggle("Files",     "", keys.keyViewFiles);
-  actViewInfo      = toggle("Info",      "", keys.keyViewInfo);
   actViewStatusbar = toggle("Statusbar", "", keys.keyViewStatusbar);
 #ifndef Q_OS_OSX
   actFullscreen    = toggle("Fullscreen", "", keys.keyFullscreen);
@@ -161,8 +159,6 @@ void MainWin::initMenus() {
   });
 
   menuView->addActions({
-    actViewFiles, actViewInfo,
-    separator(),
     actViewStatusbar,
   #ifndef Q_OS_OSX
     actFullscreen,
@@ -199,17 +195,20 @@ void MainWin::initLayout() {
   auto splReflections = new QSplitter(Qt::Horizontal);
   splReflections->setChildrenCollapsible(false);
 
-  splMain->addWidget(new SplitFiles(*this));
+  splMain->addWidget((splitFiles = new SplitFiles(*this)));
   splMain->addWidget(splOther);
+  splMain->setSizes({0,INT16_MAX});
 
   splOther->addWidget(splImages);
   splOther->addWidget(splReflections);
 
-  splImages->addWidget(new SplitImages(*this));
-  splImages->addWidget(new SplitImage(*this));
+  splImages->addWidget((splitDatasets = new SplitDatasets(*this)));
+  splImages->addWidget((splitImage = new SplitImage(*this)));
 
-  splReflections->addWidget(new SplitReflections(*this));
-  splReflections->addWidget(new SplitDiffractogram(*this));
+  splReflections->addWidget((splitReflections = new SplitReflections(*this)));
+  splReflections->addWidget((splitDiffractogram = new SplitDiffractogram(*this)));
+  splReflections->setStretchFactor(0,1);
+  splReflections->setStretchFactor(1,3);
 }
 
 void MainWin::initStatus() {
@@ -226,7 +225,7 @@ void MainWin::connectActions() {
   };
 
   auto NOT_YET = [&](QAction* action) {
-    QObject::connect(action, &QAction::triggered, []() { notYet(); });
+    action->setEnabled(false);
   };
 
   onTrigger(actAddFiles, &MainWin::addFiles);
@@ -260,8 +259,6 @@ void MainWin::connectActions() {
   NOT_YET(actPdfManual);
   NOT_YET(actAbout);
 
-  onToggle(actViewFiles,     &MainWin::viewFiles);
-  onToggle(actViewInfo,      &MainWin::viewInfo);
   onToggle(actViewStatusbar, &MainWin::viewStatusbar);
 #ifndef Q_OS_OSX
   onToggle(actFullscreen,    &MainWin::viewFullscreen);
@@ -283,7 +280,7 @@ void MainWin::close() {
 
 void MainWin::addFiles() {
   str_lst fileNames = QFileDialog::getOpenFileNames(this,
-      "Add files", dataFilesDir, "Data files (*.dat);;All files (*.*)");
+    "Add files", dataFilesDir, "Data files (*.dat);;All files (*.*)");
 
   if (!fileNames.isEmpty()) {
     // remember the directory for the next time
@@ -337,22 +334,10 @@ void MainWin::saveSettings() {
 }
 
 void MainWin::checkActions() {
-//  actViewFiles->setChecked(filesDock->isVisible());
-//  actViewInfo->setChecked(infoDock->isVisible());
   actViewStatusbar->setChecked(statusBar()->isVisible());
 #ifndef Q_OS_OSX
   actFullscreen->setChecked(isFullScreen());
 #endif
-}
-
-void MainWin::viewFiles(bool on) {
-//  filesDock->setVisible(on);
-  actViewFiles->setChecked(on);
-}
-
-void MainWin::viewInfo(bool on) {
-//  infoDock->setVisible(on);
-  actViewInfo->setChecked(on);
 }
 
 void MainWin::viewStatusbar(bool on) {
@@ -369,8 +354,6 @@ void MainWin::viewFullscreen(bool on) {
 
 void MainWin::viewReset() {
   restoreState(initialState);
-  viewFiles(true);
-  viewInfo(true);
   viewStatusbar(true);
   viewFullscreen(false);
 }

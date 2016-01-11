@@ -10,12 +10,13 @@ QBoxLayout *vbox() {
 
 QBoxLayout *boxLayout(Qt::Orientation orientation) {
   switch (orientation) {
+  default:
+    NOT_HERE
   case Qt::Horizontal:
     return hbox();
   case Qt::Vertical:
     return vbox();
   }
-  NOT_HERE
 }
 
 QGridLayout *grid(uint margin) {

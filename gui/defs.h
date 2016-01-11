@@ -3,7 +3,7 @@
 #ifndef DEFS_H
 #define DEFS_H
 
-#define DEVEL
+#include "core_debug.h"
 
 #include <QtGlobal>
 #include <QException>
@@ -37,13 +37,13 @@ public:
   void warn() const;
 };
 
-#define DECLARE_EXCEPTION(ExcCls)    \
+#define DECLARE_EXCEPTION(ExcCls)   \
 class ExcCls: public Exc {          \
 public:                             \
   ExcCls(rcstr msg): Exc(msg) {}    \
  ~ExcCls() throw ()           {}    \
   ExcCls* clone() const {           \
-    return new ExcCls(*this);        \
+    return new ExcCls(*this);       \
   }                                 \
   void raise() const {              \
       throw *this;                  \
@@ -53,27 +53,6 @@ public:                             \
 DECLARE_EXCEPTION(CriticalError)
 void CRITICAL_ERROR(rcstr msg) throw (CriticalError);
 
-// debug support
-#define ASSERT(cond)      Q_ASSERT(cond);
-
-#ifndef QT_NO_DEBUG
-#include <QDebug>
-#define TR(what)          { qDebug() << what; } // TR: short for 'trace'
-#define DEBUG_CODE(code)  code
-#define VERIFY(cond)      Q_ASSERT(cond);
-#else
-#define TR(what)          { }
-#define DEBUG_CODE(code)
-#define VERIFY(cond)      (cond);
-#endif
-
-#define WT(what)          TR(#what":" << what) // WT: short for 'watch'
-#define NOT_HERE          Q_ASSERT_X(false, "Here" , "not be!");
-
-// to mark not yet implemented features
-class QObject;
 void warn(QObject*, rcstr msg, rcstr more = str::null);
-inline void warn(rcstr msg, rcstr more = str::null) { warn(nullptr,msg,more); }
-void notYet(rcstr = str::null);
 
 #endif

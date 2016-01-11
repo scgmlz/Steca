@@ -3,7 +3,7 @@
 #ifndef CORE_DEFS_H
 #define CORE_DEFS_H
 
-#define DEVEL
+// #define DEVEL
 
 #ifdef BUILDING_LIBRARY
 #define QSHARED_EXPORT Q_DECL_EXPORT

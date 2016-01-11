@@ -38,8 +38,4 @@ void warn(QObject* parent, rcstr msg, rcstr more) {
   QMessageBox::warning(dynamic_cast<QWidget*>(parent), qAppName(), s);
 }
 
-void notYet(rcstr msg) {
-  warn("Not yet: " + msg);
-}
-
 // eof

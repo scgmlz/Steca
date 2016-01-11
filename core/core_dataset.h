@@ -5,6 +5,7 @@
 #include "core_image.h"
 #include <QSize>
 #include <QVector>
+#include <QMetaType>
 
 namespace core {
 
