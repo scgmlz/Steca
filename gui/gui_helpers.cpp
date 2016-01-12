@@ -36,9 +36,11 @@ QLineEdit* editCell() {
   return cell;
 }
 
-QSpinBox* spinCell() {
+QSpinBox* spinCell(int min,int max) {
   auto cell = new QSpinBox;
   cell->setMaximumWidth(cell->sizeHint().height() * 2);
+  cell->setMinimum(min);
+  cell->setMaximum(max);
   return cell;
 }
 

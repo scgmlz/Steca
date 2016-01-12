@@ -3,7 +3,7 @@
 namespace core {
 
 Image::Image(QSize const& size_,int const* src) THROWS
-: size(size_) {
+: size(size_), maxIntensity(0) {
 
   RUNTIME_CHECK(size.isValid(),"Invalid image size");
 
@@ -12,7 +12,7 @@ Image::Image(QSize const& size_,int const* src) THROWS
 
   auto dest = intensities.data();
   while(count-- > 0)
-    *dest++ = *src++;
+    maxIntensity = qMax(*dest++ = *src++, maxIntensity);
 }
 
 int Image::intensity(uint index) const {

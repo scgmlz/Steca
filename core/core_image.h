@@ -16,10 +16,12 @@ public:
 
   int intensity(uint index)        const;
   int intensity(uint x, uint y)    const;
+  int maximumIntensity()           const { return maxIntensity; }
 
 private:
   QSize        size;
   QVector<int> intensities;
+  int          maxIntensity;
 };
 
 }

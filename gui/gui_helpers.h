@@ -21,7 +21,7 @@ QGridLayout*  grid(uint margin = 0);
 
 QLabel*       label(rcstr);
 QLineEdit*    editCell();
-QSpinBox*     spinCell();
+QSpinBox*     spinCell(int min,int max);
 QCheckBox*    check(rcstr text);
 
 QToolButton*  textButton(QAction*);

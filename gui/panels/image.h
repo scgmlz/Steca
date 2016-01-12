@@ -17,6 +17,10 @@ public:
   QSize sizeHint() const;
 
   void setPixmap(QPixmap const&);
+  void setUpDown(bool);
+  void setLeftRight(bool);
+  void setTurnRight(bool);
+  void setTurnLeft(bool);
 
 protected:
   Image &image;
@@ -26,9 +30,15 @@ protected:
 
   void paintEvent(QPaintEvent*);
 
-  QPixmap original;
-  mutable QPixmap scaled;
-  mutable QPointF scale;
+  QPixmap original, scaled;
+  QPointF scale;
+
+  bool upDown, leftRight, turnRight, turnLeft;
+  bool retransform;
+  QTransform transform;
+
+public:
+  void update();
 };
 
 class Image: public Panel {
@@ -36,7 +46,7 @@ class Image: public Panel {
 public:
   Image(MainWin&);
 
-  static QPixmap pixmapFromCoreImage(core::Image const&);
+  static QPixmap pixmapFromCoreImage(core::Image const&, int maximumIntensity);
 
   Session::imagecut_t const& getCut() const;
 

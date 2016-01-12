@@ -2,10 +2,15 @@
 #include "mainwin.h"
 #include <QResizeEvent>
 #include <QPainter>
+#include <QPainter>
+#include <QAction>
 
 namespace panel {
 
-ImageWidget::ImageWidget(Image& image_): image(image_) {
+ImageWidget::ImageWidget(Image& image_)
+: image(image_)
+, upDown(false), leftRight(false), turnRight(false), turnLeft(false)
+, retransform(true) {
 }
 
 QSize ImageWidget::sizeHint() const {
@@ -18,7 +23,27 @@ QSize ImageWidget::sizeHint() const {
 }
 
 void ImageWidget::setPixmap(QPixmap const& pixmap) {
-  original = pixmap; scaled = QPixmap();
+  original = pixmap;
+  update();
+}
+
+void ImageWidget::setUpDown(bool on) {
+  upDown = on;
+  update();
+}
+
+void ImageWidget::setLeftRight(bool on) {
+  leftRight = on;
+  update();
+}
+
+void ImageWidget::setTurnRight(bool on) {
+  turnRight = on;
+  update();
+}
+
+void ImageWidget::setTurnLeft(bool on) {
+  turnLeft = on;
   update();
 }
 
@@ -26,19 +51,33 @@ void ImageWidget::resizeEvent(QResizeEvent* e) {
   super::resizeEvent(e);
   if (lastHeight!=height()) {
     updateGeometry();
-    scaled = QPixmap();
     update();
   }
 }
 
 void ImageWidget::paintEvent(QPaintEvent*) {
-  if (scaled.isNull() && !original.isNull()) {
+  if (retransform) {
+    retransform = false;
+
     scaled = original.scaled(width()-2,height()-2,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
-    scale.setX((qreal)scaled.width()  / original.width());
-    scale.setY((qreal)scaled.height() / original.height());
+
+    auto h = scaled.height(), w = scaled.width();
+
+    scale.setX((qreal)w  / original.width());
+    scale.setY((qreal)h / original.height());
+
+    transform = QTransform();
+    transform.translate(w/2,h/2);
+
+    if (upDown)     transform.scale(1,-1);
+    if (leftRight)  transform.scale(-1,1);
+    if (turnRight)  transform.rotate(90);
+    if (turnLeft)   transform.rotate(-90);
+
+    transform.translate(-w/2,-h/2);
   }
 
-  QPainter painter(this);
+  QPainter painter(this); painter.setTransform(transform);
 
   QRect r = rect();
   r.adjust(0,0,-1,-1);
@@ -59,6 +98,11 @@ void ImageWidget::paintEvent(QPaintEvent*) {
   painter.drawRect(r);
 }
 
+void ImageWidget::update() {
+  retransform = true;
+  super::update();
+}
+
 //------------------------------------------------------------------------------
 
 Image::Image(MainWin& mainWin): super(mainWin,"",Qt::Horizontal) {
@@ -72,13 +116,13 @@ Image::Image(MainWin& mainWin): super(mainWin,"",Qt::Horizontal) {
   box->addLayout(v2);
 
   v2->addWidget(label("Top:"));
-  v2->addWidget((cutTop = spinCell()));
+  v2->addWidget((cutTop = spinCell(0,999)));
   v2->addWidget(label("Bottom:"));
-  v2->addWidget((cutBottom = spinCell()));
+  v2->addWidget((cutBottom = spinCell(0,999)));
   v2->addWidget(label("Left:"));
-  v2->addWidget((cutLeft = spinCell()));
+  v2->addWidget((cutLeft = spinCell(0,999)));
   v2->addWidget(label("Right:"));
-  v2->addWidget((cutRight = spinCell()));
+  v2->addWidget((cutRight = spinCell(0,999)));
 
   connect(cutTop, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [&](int) {
     setCutFromGui();
@@ -102,6 +146,7 @@ Image::Image(MainWin& mainWin): super(mainWin,"",Qt::Horizontal) {
 
   v2->addWidget(iconButton(mainWin.actImagesLink));
   v2->addWidget(iconButton(mainWin.actImagesEye));
+  v2->addWidget(iconButton(mainWin.actImagesGlobalNorm));
 
   v2->addStretch();
 
@@ -113,25 +158,51 @@ Image::Image(MainWin& mainWin): super(mainWin,"",Qt::Horizontal) {
   box->addStretch();
 
   connect(&mainWin.session, &Session::datasetSelected, [&](pcCoreDataset dataset) {
-    imageWidget->setPixmap(dataset ? pixmapFromCoreImage(dataset->getImage()) : QPixmap());
+    QPixmap pixMap;
+    if (dataset) {
+      auto image = dataset->getImage();
+      pixMap = pixmapFromCoreImage(image,image.maximumIntensity());
+    }
+    imageWidget->setPixmap(pixMap);
+  });
+
+//  connect(mainWin.actImagesGlobalNorm, &QAction::toggled, [&](bool on) {
+//  });
+
+  connect(mainWin.actImagesUpDown, &QAction::toggled, [&](bool on) {
+    imageWidget->setUpDown(on);
+  });
+
+  connect(mainWin.actImagesLeftRight, &QAction::toggled, [&](bool on) {
+    imageWidget->setLeftRight(on);
+  });
+
+  connect(mainWin.actImagesTurnRight, &QAction::toggled, [&](bool on) {
+    if (on) mainWin.actImagesTurnLeft->setChecked(false);
+    imageWidget->setTurnRight(on);
+  });
+
+  connect(mainWin.actImagesTurnLeft, &QAction::toggled, [&](bool on) {
+    if (on) mainWin.actImagesTurnRight->setChecked(false);
+    imageWidget->setTurnLeft(on);
   });
 }
 
-QPixmap Image::pixmapFromCoreImage(core::Image const& coreImage) {
+QPixmap Image::pixmapFromCoreImage(core::Image const& coreImage, int maximumIntensity) {
   int count = coreImage.dataCount();
   if (count < 1) return QPixmap();
 
   QSize const &size = coreImage.getSize();
   uint  width = size.width(), height = size.height();
 
-  int maximum = coreImage.intensity(0);
-  for_i(count) maximum = qMax(maximum,coreImage.intensity(i));
+  if (maximumIntensity <= 0) maximumIntensity = 1;  // sanity
+  qreal maximum = maximumIntensity;
 
   QImage image(size, QImage::Format_RGB32);
 
   for (uint y = 0; y < height; ++y) {
     for (uint x = 0; x < width; ++x) {
-      double intens = (double)coreImage.intensity(x,y) / (double)maximum;
+      qreal intens = (qreal)coreImage.intensity(x,y) / maximum;
       if (intens < 0.25) {
         image.setPixel(x, y, qRgb((int)floor(0xff * intens * 4), 0, 0));
         continue;
