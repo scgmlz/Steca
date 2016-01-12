@@ -1,6 +1,7 @@
 #include "image.h"
 #include "mainwin.h"
 #include <QResizeEvent>
+#include <QPainter>
 
 namespace panel {
 
@@ -10,20 +11,35 @@ ImageWidget::ImageWidget() {
 QSize ImageWidget::sizeHint() const {
   QSize s = size();
   lastHeight = s.height();
+  // together with the resizeEvent keeps the widget square if possible TODO better solution?
   s.setWidth(lastHeight);
   s.setHeight(super::sizeHint().height());
   return s;
 }
 
 void ImageWidget::setPixmap(QPixmap const& pixmap) {
-  original = pixmap;
-  scaled = original.isNull() ? original : original.scaled(size(),Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
-  super::setPixmap(scaled);
+  original = pixmap; scaled = QPixmap();
+  update();
 }
 
 void ImageWidget::resizeEvent(QResizeEvent* e) {
   super::resizeEvent(e);
-  if (lastHeight!=height()) updateGeometry();
+  if (lastHeight!=height()) {
+    updateGeometry();
+    scaled = QPixmap();
+    update();
+  }
+}
+
+void ImageWidget::paintEvent(QPaintEvent*) {
+  if (scaled.isNull() && !original.isNull())
+    scaled = original.scaled(size(),Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+
+  QPainter painter(this);
+  QRect r = rect();
+  r.adjust(0,0,-1,-1);
+  painter.drawRect(r);
+  painter.drawPixmap(0,0,scaled);
 }
 
 //------------------------------------------------------------------------------

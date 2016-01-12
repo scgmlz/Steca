@@ -6,8 +6,8 @@
 
 namespace panel {
 
-class ImageWidget: public QLabel {
-  SUPER(ImageWidget,QLabel)
+class ImageWidget: public QWidget {
+  SUPER(ImageWidget,QWidget)
 public:
   ImageWidget();
 
@@ -19,7 +19,11 @@ protected:
   void resizeEvent(QResizeEvent*);
   mutable int lastHeight; // keep square
 
-  QPixmap original, scaled;
+  void paintEvent(QPaintEvent*);
+
+  QPixmap original;
+  mutable QPixmap scaled;
+
 };
 
 class Image: public Panel {
