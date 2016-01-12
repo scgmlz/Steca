@@ -6,7 +6,6 @@
 #define DEVEL
 
 #include <QtGlobal>
-#include <QSharedPointer>
 
 // strings
 #include <QString>
@@ -33,6 +32,9 @@ public:
 #define RUNTIME_CHECK(test,msg)  if (!(test)) THROW(msg)
 
 void raiseError(rcstr msg) THROWS;
+
+// autoptr
+#include <QSharedPointer>
 
 // debug support
 #include "core_debug.h"

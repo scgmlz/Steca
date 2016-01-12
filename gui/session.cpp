@@ -55,7 +55,8 @@ QByteArray Session::save() const {
 
   QJsonObject top;
   top["files"] = files;
-  top["corr.file"] = coreSession->getCorrFile().getInfo().absoluteFilePath();
+  auto corrFile = coreSession->getCorrFile();
+  if (!corrFile.name().isEmpty()) top["corr.file"] = corrFile.getInfo().absoluteFilePath();
 
   QJsonObject cut;
 

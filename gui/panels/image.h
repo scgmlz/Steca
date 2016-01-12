@@ -45,6 +45,7 @@ private:
   QSpinBox *cutTop, *cutBottom, *cutLeft, *cutRight;
 
   void setCutFromGui() const;
+  void setGuiFromCut() const;
 };
 
 }

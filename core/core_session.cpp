@@ -42,8 +42,8 @@ bool Session::hasCorrFile() const {
 }
 
 void Session::setCorrFile(rcstr fileName) {
-  corrFile = fileName;
-  corrFile.load();
+  corrFile = File(fileName);
+  if (!fileName.isEmpty()) corrFile.load();
 }
 
 }

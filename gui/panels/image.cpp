@@ -55,7 +55,7 @@ void ImageWidget::paintEvent(QPaintEvent*) {
   r.adjust(qRound(scale.x()*cut.left),  qRound(scale.y()*cut.top),
           -qRound(scale.x()*cut.right),-qRound(scale.y()*cut.bottom));
 
-  painter.setPen(Qt::green);
+  painter.setPen(Qt::blue);
   painter.drawRect(r);
 }
 
@@ -94,6 +94,10 @@ Image::Image(MainWin& mainWin): super(mainWin,"",Qt::Horizontal) {
 
   connect(cutRight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [&](int) {
     setCutFromGui();
+  });
+
+  connect(&mainWin.session, &Session::imageCutChanged, [&]() {
+    setGuiFromCut();
   });
 
   v2->addWidget(iconButton(mainWin.actImagesLink));
@@ -153,7 +157,17 @@ const Session::imagecut_t &Image::getCut() const {
 }
 
 void Image::setCutFromGui() const {
-  mainWin.session.setImageCut(cutLeft->value(), cutTop->value(), cutRight->value(), cutBottom->value());
+  mainWin.session.setImageCut(cutTop->value(), cutBottom->value(), cutLeft->value(), cutRight->value());
+}
+
+void Image::setGuiFromCut() const {
+  auto cut = mainWin.session.getImageCut();
+  cutTop    ->setValue(cut.top);
+  cutBottom ->setValue(cut.bottom);
+  cutLeft   ->setValue(cut.left);
+  cutRight  ->setValue(cut.right);
+
+  imageWidget->update();
 }
 
 }
