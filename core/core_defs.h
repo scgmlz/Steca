@@ -3,9 +3,10 @@
 #ifndef CORE_DEFS_H
 #define CORE_DEFS_H
 
-// #define DEVEL
+#define DEVEL
 
 #include <QtGlobal>
+#include <QSharedPointer>
 
 // strings
 #include <QString>
@@ -17,6 +18,7 @@ typedef char const* pcstr;
 
 typedef QStringList   str_lst;
 
+// error handling
 #include <QException>
 
 class Exception: public QException {
@@ -32,6 +34,7 @@ public:
 
 void raiseError(rcstr msg) THROWS;
 
+// debug support
 #include "core_debug.h"
 
 #endif

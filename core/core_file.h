@@ -27,10 +27,9 @@ private:
   Datasets  datasets;
 };
 
-class Files final: public QVector<File*> {
+class Files final: public QVector<QSharedPointer<File>> {
 public:
   Files();
- ~Files();
 };
 
 }

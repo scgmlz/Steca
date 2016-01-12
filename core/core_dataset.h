@@ -32,10 +32,9 @@ private:
   double mon, deltaTime;
 };
 
-class Datasets final: public QVector<Dataset*> {
+class Datasets final: public QVector<QSharedPointer<Dataset>> {
 public:
   Datasets();
- ~Datasets();
 };
 
 }

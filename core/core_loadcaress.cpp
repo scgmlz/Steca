@@ -1,6 +1,5 @@
 #include "core_loadcaress.h"
 #include "core_dataset.h"
-#include <memory>
 #include "loaders/Caress/raw.h"
 
 #include <sstream>
@@ -139,10 +138,10 @@ void loadCaress(rcstr filePath,core::Datasets& datasets) THROWS {
 
           // Objekt inizialisieren
           constexpr double deg2rad = 3.1415926535897932384626433832795 / 180;
-          datasets.append(new core::Dataset(detRel, intens, str::fromStdString(s_comment), xAxis, yAxis, zAxis, omgAxis * deg2rad,
+          datasets.append(QSharedPointer<core::Dataset>(new core::Dataset(detRel, intens, str::fromStdString(s_comment), xAxis, yAxis, zAxis, omgAxis * deg2rad,
                                 tthAxis * deg2rad, phiAxis * deg2rad, chiAxis * deg2rad,
                                 (double)mon, tempTime, /*tmpImage, detRel.height() * detRel.width(),*/
-                                pstAxis, sstAxis, omgmAxis * deg2rad));
+                                pstAxis, sstAxis, omgmAxis * deg2rad)));
           delete[] intens; intens = NULL;
           imageSize = 0;
         }

@@ -26,6 +26,7 @@ Datasets::Datasets(MainWin& mainWin): super(mainWin,"Datasets",Qt::Vertical) {
 
   connect(&mainWin.session, &Session::fileSelected, this, [&](pcCoreFile) {
     datasetList->reset();
+    datasetList->setCurrentIndex(mainWin.session.datasetListModel.index(0)); // TODO untangle
   });
 }
 

@@ -12,4 +12,12 @@ void warn(QObject* parent, rcstr msg, rcstr more) {
   QMessageBox::warning(dynamic_cast<QWidget*>(parent), qAppName(), s);
 }
 
+WaitCursor::WaitCursor() {
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+}
+
+WaitCursor::~WaitCursor() {
+  QApplication::restoreOverrideCursor();
+}
+
 // eof

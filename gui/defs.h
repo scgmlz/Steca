@@ -20,4 +20,12 @@ class CriticalError: public Exception {
 class QObject;
 void warn(QObject*, rcstr msg, rcstr more = str::null);
 
+// TODO temporary wait solution
+
+class WaitCursor {
+public:
+  WaitCursor();
+ ~WaitCursor();
+};
+
 #endif

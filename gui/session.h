@@ -10,11 +10,12 @@
 
 class Session: public QObject {
   Q_OBJECT
-  core::Session *coreSession;
+  QSharedPointer<core::Session> coreSession;
 public:
   Session();
  ~Session();
 
+  void load(QFileInfo const&)       THROWS;
   void load(QByteArray const& json) THROWS;
   QByteArray save() const;
 

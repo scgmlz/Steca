@@ -19,11 +19,6 @@ Dataset::Dataset(QSize const& size_, int const* intensities_,
 Datasets::Datasets() {
 }
 
-Datasets::~Datasets() {
-  for (auto dataset: *this)
-    delete dataset;
-}
-
 }
 
 // eof

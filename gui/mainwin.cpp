@@ -270,7 +270,7 @@ void MainWin::show() {
   super::show();
   checkActions();
 #ifdef DEVEL
-  session.addFile("../../data/SS15/m280578.dat");
+  session.load(QFileInfo("/home/jan/q.ste"));
 #endif
 }
 
@@ -307,13 +307,9 @@ void MainWin::loadSession() {
       "Load session", sessionDir, "Session files (*"%STE%");;All files (*.*)");
   if (fileName.isEmpty()) return;
 
-  QFileInfo info(fileName);
-  sessionDir = info.absolutePath();
-
-  QFile file(info.filePath());
-  RUNTIME_CHECK(file.open(QIODevice::ReadOnly), "File cannot be opened");
-
-  session.load(file.readAll());
+  QFileInfo fileInfo(fileName);
+  sessionDir = fileInfo.absolutePath();
+  session.load(fileInfo);
 }
 
 void MainWin::saveSession() {

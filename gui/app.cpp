@@ -45,15 +45,13 @@ static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr 
 }
 
 int App::exec() {
-  oldHandler = qInstallMessageHandler(messageHandler);
-
-  mainWin = new MainWin;
+  QSharedPointer<MainWin> mainWin(new MainWin);
   mainWin->show();
 
+  oldHandler = qInstallMessageHandler(messageHandler);
   int res = super::exec();
-  delete mainWin; mainWin = nullptr;
-
   qInstallMessageHandler(nullptr);
+
   return res;
 }
 

@@ -9,13 +9,20 @@ Session::Session(): coreSession(new core::Session)
 }
 
 Session::~Session(){
-  delete coreSession;
+}
+
+void Session::load(QFileInfo const& fileInfo) THROWS {
+  QFile file(fileInfo.absoluteFilePath());
+  RUNTIME_CHECK(file.open(QIODevice::ReadOnly), "File cannot be opened");
+  load(file.readAll());
 }
 
 void Session::load(QByteArray const& json) THROWS {
   QJsonParseError parseError;
   QJsonDocument doc(QJsonDocument::fromJson(json,&parseError));
   RUNTIME_CHECK(QJsonParseError::NoError==parseError.error, "Error parsing file");
+
+  WaitCursor __;
 
   while (numFiles(true)>0) remFile(0);
 
@@ -34,7 +41,7 @@ QByteArray Session::save() const {
 
   QJsonArray files;
 
-  for (core::File* file: coreSession->getDataFiles()) {
+  for (auto file: coreSession->getDataFiles()) {
     files.append(file->getInfo().absoluteFilePath());
   }
 
@@ -48,11 +55,15 @@ QByteArray Session::save() const {
 }
 
 void Session::addFile(rcstr filePath) {
+  WaitCursor __;
+
   coreSession->addFile(filePath);
   emit filesChanged();
 }
 
 void Session::addFiles(str_lst filePaths) {
+  WaitCursor __;
+
   for (auto& filePath: filePaths)
     coreSession->addFile(filePath);
   emit filesChanged();

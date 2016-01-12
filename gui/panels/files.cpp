@@ -53,7 +53,6 @@ void FileList::Delegate::paint(QPainter* painter,
     QStyleOptionViewItem o = option;
     auto &font = o.font;
     font.setItalic(true);
-    font.setBold(true);
     super::paint(painter,o,index);
   } else {
     super::paint(painter,option,index);
@@ -78,6 +77,7 @@ Files::Files(MainWin& mainWin): super(mainWin,"Files",Qt::Vertical) {
 
   connect(&mainWin.session, &Session::filesChanged, [&]() {
     fileList->reset();
+    fileList->setCurrentIndex(mainWin.session.fileListModel.index(0)); // TODO untangle
   });
 }
 
