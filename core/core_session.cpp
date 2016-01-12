@@ -14,6 +14,15 @@ void Session::addFile(rcstr fileName) THROWS {
   QSharedPointer<File> file(new File(fileName));
   file->load();
 
+  auto size = file->getImageSize();
+  if (size.isEmpty())
+    THROW(fileName % " inconsistent image size");
+
+  if (imageSize.isEmpty())
+    imageSize = size;
+  else if (imageSize != size)
+    THROW(fileName % " session-inconsistent image size");
+
   dataFiles.append(file);
 }
 

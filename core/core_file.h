@@ -22,6 +22,8 @@ public:
 
   Datasets const& getDatasets() const { return datasets; }
 
+  QSize getImageSize() const; // returns QSize() if inconsistent
+
 private:
   QFileInfo info;
   Datasets  datasets;

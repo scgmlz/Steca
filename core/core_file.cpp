@@ -17,6 +17,18 @@ void File::load() THROWS {
   loadCaress(info.filePath(),datasets);
 }
 
+QSize File::getImageSize() const {
+  QSize size;
+  for (auto dataset: datasets) {
+    auto imageSize = dataset->getImage().getSize();
+    if (size.isEmpty())
+      size = imageSize;
+    else if (size != imageSize)
+      return QSize();
+  }
+  return size;
+}
+
 Files::Files() {
 }
 

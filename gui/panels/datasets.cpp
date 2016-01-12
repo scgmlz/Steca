@@ -24,7 +24,7 @@ Datasets::Datasets(MainWin& mainWin): super(mainWin,"Datasets",Qt::Vertical) {
   box->addWidget((datasetList = new DatasetList(mainWin.session)));
   box->addWidget(textButton(mainWin.actImagesCombine));
 
-  connect(&mainWin.session, &Session::fileSelected, this, [&](pcCoreFile) {
+  connect(&mainWin.session, &Session::fileSelected, [&](pcCoreFile) {
     datasetList->reset();
     datasetList->setCurrentIndex(mainWin.session.datasetListModel.index(0)); // TODO untangle
   });

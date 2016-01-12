@@ -36,7 +36,8 @@ void FileList::removeSelectedFile() {
   index = (row+1 < model.session.numFiles(true)) ? index
                                                  : index.sibling(row-1,0);
   model.session.remFile(row);
-  model.session.setSelectedFile(nullptr);
+  if (0>=model.session.numFiles(true))
+    model.session.setSelectedFile(nullptr);
   setCurrentIndex(index);
 }
 

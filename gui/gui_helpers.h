@@ -7,6 +7,7 @@
 #include <QLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QSpinBox>
 #include <QCheckBox>
 #include <QRadioButton>
 #include <QToolButton>
@@ -20,6 +21,7 @@ QGridLayout*  grid(uint margin = 0);
 
 QLabel*       label(rcstr);
 QLineEdit*    editCell();
+QSpinBox*     spinCell();
 QCheckBox*    check(rcstr text);
 
 QToolButton*  textButton(QAction*);

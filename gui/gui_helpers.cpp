@@ -31,9 +31,15 @@ QLabel* label(rcstr text) {
 }
 
 QLineEdit* editCell() {
-  auto e = new QLineEdit;
-  e->setMaximumWidth(e->sizeHint().height() * 2);
-  return e;
+  auto cell = new QLineEdit;
+  cell->setMaximumWidth(cell->sizeHint().height() * 2);
+  return cell;
+}
+
+QSpinBox* spinCell() {
+  auto cell = new QSpinBox;
+  cell->setMaximumWidth(cell->sizeHint().height() * 2);
+  return cell;
 }
 
 QCheckBox* check(rcstr text) {

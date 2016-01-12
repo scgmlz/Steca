@@ -5,7 +5,7 @@
 
 namespace panel {
 
-ImageWidget::ImageWidget() {
+ImageWidget::ImageWidget(Image& image_): image(image_) {
 }
 
 QSize ImageWidget::sizeHint() const {
@@ -32,14 +32,31 @@ void ImageWidget::resizeEvent(QResizeEvent* e) {
 }
 
 void ImageWidget::paintEvent(QPaintEvent*) {
-  if (scaled.isNull() && !original.isNull())
-    scaled = original.scaled(size(),Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+  if (scaled.isNull() && !original.isNull()) {
+    scaled = original.scaled(width()-2,height()-2,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+    scale.setX((qreal)scaled.width()  / original.width());
+    scale.setY((qreal)scaled.height() / original.height());
+  }
 
   QPainter painter(this);
+
   QRect r = rect();
   r.adjust(0,0,-1,-1);
+
+  // frame
+  painter.setPen(Qt::black);
   painter.drawRect(r);
-  painter.drawPixmap(0,0,scaled);
+
+  // image
+  painter.drawPixmap(1,1,scaled);
+
+  // cut
+  auto cut = image.getCut();
+  r.adjust(qRound(scale.x()*cut.left),  qRound(scale.y()*cut.top),
+          -qRound(scale.x()*cut.right),-qRound(scale.y()*cut.bottom));
+
+  painter.setPen(Qt::green);
+  painter.drawRect(r);
 }
 
 //------------------------------------------------------------------------------
@@ -49,19 +66,35 @@ Image::Image(MainWin& mainWin): super(mainWin,"",Qt::Horizontal) {
   auto v1 = vbox();
   box->addLayout(v1);
 
-  v1->addWidget(w = new ImageWidget());
+  v1->addWidget(imageWidget = new ImageWidget(*this));
 
   auto v2 = vbox();
   box->addLayout(v2);
 
   v2->addWidget(label("Top:"));
-  v2->addWidget(editCell());
+  v2->addWidget((cutTop = spinCell()));
   v2->addWidget(label("Bottom:"));
-  v2->addWidget(editCell());
+  v2->addWidget((cutBottom = spinCell()));
   v2->addWidget(label("Left:"));
-  v2->addWidget(editCell());
+  v2->addWidget((cutLeft = spinCell()));
   v2->addWidget(label("Right:"));
-  v2->addWidget(editCell());
+  v2->addWidget((cutRight = spinCell()));
+
+  connect(cutTop, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [&](int) {
+    setCutFromGui();
+  });
+
+  connect(cutBottom, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [&](int) {
+    setCutFromGui();
+  });
+
+  connect(cutLeft, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [&](int) {
+    setCutFromGui();
+  });
+
+  connect(cutRight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [&](int) {
+    setCutFromGui();
+  });
 
   v2->addWidget(iconButton(mainWin.actImagesLink));
   v2->addWidget(iconButton(mainWin.actImagesEye));
@@ -75,8 +108,8 @@ Image::Image(MainWin& mainWin): super(mainWin,"",Qt::Horizontal) {
 
   box->addStretch();
 
-  connect(&mainWin.session, &Session::datasetSelected, this, [&](pcCoreDataset dataset) {
-    w->setPixmap(dataset ? pixmapFromCoreImage(dataset->getImage()) : QPixmap());
+  connect(&mainWin.session, &Session::datasetSelected, [&](pcCoreDataset dataset) {
+    imageWidget->setPixmap(dataset ? pixmapFromCoreImage(dataset->getImage()) : QPixmap());
   });
 }
 
@@ -113,6 +146,14 @@ QPixmap Image::pixmapFromCoreImage(core::Image const& coreImage) {
   }
 
   return QPixmap::fromImage(image);
+}
+
+const Session::imagecut_t &Image::getCut() const {
+  return mainWin.session.getImageCut();
+}
+
+void Image::setCutFromGui() const {
+  mainWin.session.setImageCut(cutLeft->value(), cutTop->value(), cutRight->value(), cutBottom->value());
 }
 
 }

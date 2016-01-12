@@ -19,11 +19,15 @@ public:
   void setCorrFile(rcstr fileName); // fileName may be empty -> unsets
 
   Files const& getDataFiles() const { return dataFiles; }
-  File  const& getCorrFile()  const { return corrFile; }
+  File  const& getCorrFile()  const { return corrFile;  }
+
+  QSize const& getImageSize() const { return imageSize; }
 
 private:
   Files dataFiles;
   File  corrFile;
+
+  QSize imageSize;
 };
 
 }

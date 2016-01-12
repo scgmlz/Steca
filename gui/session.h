@@ -19,8 +19,8 @@ public:
   void load(QByteArray const& json) THROWS;
   QByteArray save() const;
 
-  void addFile(rcstr filePath);
-  void addFiles(str_lst filePaths);
+  void addFile(rcstr filePath)      THROWS;
+  void addFiles(str_lst filePaths)  THROWS;
   void remFile(uint i);
   uint numFiles(bool withCorr=false);
   core::File const& getFile(uint i);
@@ -33,14 +33,27 @@ public:
 
   core::Dataset const& getDataset(uint i);
 
+  struct imagecut_t {
+    imagecut_t(int top = 0, int bottom = 0, int left = 0, int right = 0);
+    int top, bottom, left, right;
+  };
+
+  imagecut_t const& getImageCut() const;
+
+  void setImageCut(imagecut_t const&);
+  void setImageCut(int top, int bottom, int left, int right);
+
 private:
   pcCoreFile    selectedFile;
   pcCoreDataset selectedDataset;
+
+  imagecut_t    imageCut;
 
 signals:
   void filesChanged();
   void fileSelected(pcCoreFile);
   void datasetSelected(pcCoreDataset);
+  void imageCutChanged();
 
 public:
   class FileListModel: public QAbstractListModel {
