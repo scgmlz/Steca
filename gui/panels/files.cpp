@@ -62,7 +62,7 @@ void FileList::Delegate::paint(QPainter* painter,
 
 //-----------------------------------------------------------------------------
 
-Files::Files(MainWin& mainWin): super(mainWin,"Files",Qt::Vertical) {
+Files::Files(MainWin& mainWin_): super(mainWin_,"Files",Qt::Vertical) {
   box->addWidget((fileList = new FileList(mainWin.session)));
 
   auto h = hbox(); box->addLayout(h);
@@ -76,7 +76,7 @@ Files::Files(MainWin& mainWin): super(mainWin,"Files",Qt::Vertical) {
     fileList->removeSelectedFile();
   });
 
-  connect(&mainWin.session, &Session::filesChanged, [this,&mainWin]() {
+  connect(&mainWin.session, &Session::filesChanged, [this]() {
     fileList->reset();
     fileList->setCurrentIndex(mainWin.session.fileListModel.index(0)); // TODO untangle
   });

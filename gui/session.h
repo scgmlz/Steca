@@ -40,8 +40,8 @@ public:
 
   imagecut_t const& getImageCut() const;
 
-  void setImageCut(imagecut_t const&);
-  void setImageCut(int top, int bottom, int left, int right);
+  void setImageCut(bool topLeft, imagecut_t const&);
+  void setImageCut(bool topLeft, int top, int bottom, int left, int right);
 
 private:
   pcCoreFile    selectedFile;

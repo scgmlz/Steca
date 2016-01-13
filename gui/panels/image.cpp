@@ -118,24 +118,35 @@ Image::Image(MainWin& mainWin_): super(mainWin_,"",Qt::Horizontal) {
   v2->addWidget(label("Right:"));
   v2->addWidget((cutRight = spinCell(0,999)));
 
-  connect(cutTop, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int) {
-    setCutFromGui();
+  auto setCutFromGui = [this](bool topLeft){
+    mainWin.session.setImageCut(topLeft, cutTop->value(), cutBottom->value(), cutLeft->value(), cutRight->value());
+  };
+
+  connect(cutTop, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setCutFromGui](int) {
+    setCutFromGui(true);
   });
 
-  connect(cutBottom, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int) {
-    setCutFromGui();
+  connect(cutBottom, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setCutFromGui](int) {
+    setCutFromGui(false);
   });
 
-  connect(cutLeft, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int) {
-    setCutFromGui();
+  connect(cutLeft, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setCutFromGui](int) {
+    setCutFromGui(true);
   });
 
-  connect(cutRight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int) {
-    setCutFromGui();
+  connect(cutRight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setCutFromGui](int) {
+    setCutFromGui(false);
   });
 
   connect(&mainWin.session, &Session::imageCutChanged, [this]() {
-    setGuiFromCut();
+    // set GUI from cut values
+    auto cut = mainWin.session.getImageCut();
+    cutTop    ->setValue(cut.top);
+    cutBottom ->setValue(cut.bottom);
+    cutLeft   ->setValue(cut.left);
+    cutRight  ->setValue(cut.right);
+
+    imageWidget->update();
   });
 
   v2->addWidget(iconButton(mainWin.actImagesLink));
@@ -222,20 +233,6 @@ QPixmap Image::pixmapFromCoreImage(core::Image const& coreImage, int maximumInte
 
 const Session::imagecut_t &Image::getCut() const {
   return mainWin.session.getImageCut();
-}
-
-void Image::setCutFromGui() const {
-  mainWin.session.setImageCut(cutTop->value(), cutBottom->value(), cutLeft->value(), cutRight->value());
-}
-
-void Image::setGuiFromCut() const {
-  auto cut = mainWin.session.getImageCut();
-  cutTop    ->setValue(cut.top);
-  cutBottom ->setValue(cut.bottom);
-  cutLeft   ->setValue(cut.left);
-  cutRight  ->setValue(cut.right);
-
-  imageWidget->update();
 }
 
 }

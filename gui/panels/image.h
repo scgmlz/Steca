@@ -52,9 +52,6 @@ public:
 private:
   ImageWidget *imageWidget;
   QSpinBox *cutTop, *cutBottom, *cutLeft, *cutRight;
-
-  void setCutFromGui() const;
-  void setGuiFromCut() const;
 };
 
 }

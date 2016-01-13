@@ -43,12 +43,12 @@ void MainWin::initActions() {
     return act;
   };
 
-  auto simple = [&action](pcstr text, pcstr iconFile = nullptr, QKey shortcut = QKey::UnknownKey) {
+  auto simple = [action](pcstr text, pcstr iconFile = nullptr, QKey shortcut = QKey::UnknownKey) {
     ASSERT(text)
     return action(text,false,iconFile,shortcut);
   };
 
-  auto toggle = [&action](pcstr text, pcstr iconFile = nullptr, QKey shortcut = QKey::UnknownKey) {
+  auto toggle = [action](pcstr text, pcstr iconFile = nullptr, QKey shortcut = QKey::UnknownKey) {
     return action(text,true,iconFile,shortcut);
   };
 

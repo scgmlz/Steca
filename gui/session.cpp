@@ -41,7 +41,7 @@ void Session::load(QByteArray const& json) THROWS {
   int x1 = cut["left"].toInt();
   int x2 = cut["right"].toInt();
 
-  setImageCut(x1,y1,x2,y2);
+  setImageCut(true,x1,y1,x2,y2);
 }
 
 QByteArray Session::save() const {
@@ -94,7 +94,7 @@ void Session::remFile(uint i) {
     coreSession->remFile(i);
 
   if (0==numFiles(true))
-    setImageCut(imagecut_t());
+    setImageCut(true,imagecut_t());
 
   emit filesChanged();
 }
@@ -147,24 +147,32 @@ const Session::imagecut_t &Session::getImageCut() const {
   return imageCut;
 }
 
-void Session::setImageCut(imagecut_t const& imageCut_) {
+void Session::setImageCut(bool topLeft, imagecut_t const& imageCut_) {
   auto size = coreSession->getImageSize();
   if (size.isEmpty())
     imageCut = imagecut_t();
   else {
+    auto limit = [](int &thisOne, int &thatOne, int maxTogether) {
+      thisOne = qMin(thisOne, qMax(maxTogether - thatOne - 1, 0));
+      thatOne = qMin(thatOne, qMax(maxTogether - thisOne - 1, 0));
+    };
+
     imageCut = imageCut_;
-    // make sure that cut is valid
-    imageCut.top    = qMin(imageCut.top,    qMax(size.height() - imageCut.bottom - 1, 0));
-    imageCut.bottom = qMin(imageCut.bottom, qMax(size.height() - imageCut.top    - 1, 0));
-    imageCut.left   = qMin(imageCut.left,   qMax(size.width()  - imageCut.right  - 1, 0));
-    imageCut.right  = qMin(imageCut.right,  qMax(size.width()  - imageCut.left   - 1, 0));
+    // make sure that cut values are valid; in the right order
+    if (topLeft) {
+      limit(imageCut.top,   imageCut.bottom,  size.height());
+      limit(imageCut.left,  imageCut.right,   size.width());
+    } else {
+      limit(imageCut.bottom,imageCut.top,     size.height());
+      limit(imageCut.right, imageCut.left,    size.width());
+    }
   }
 
   emit imageCutChanged();
 }
 
-void Session::setImageCut(int top, int bottom, int left, int right) {
-  setImageCut(imagecut_t(top,bottom,left,right));
+void Session::setImageCut(bool topLeft, int top, int bottom, int left, int right) {
+  setImageCut(topLeft,imagecut_t(top,bottom,left,right));
 }
 
 //-----------------------------------------------------------------------------
