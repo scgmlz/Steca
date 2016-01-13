@@ -8,9 +8,8 @@
 namespace panel {
 
 ImageWidget::ImageWidget(Image& image_)
-: image(image_)
-, upDown(false), leftRight(false), turnDegrees(0)
-, retransform(true) {
+: image(image_), upDown(false), leftRight(false), turnDegrees(0) {
+  setMinimumSize(16,16);  // so it does not completely disappear
 }
 
 QSize ImageWidget::sizeHint() const {
@@ -51,15 +50,16 @@ void ImageWidget::resizeEvent(QResizeEvent* e) {
 }
 
 void ImageWidget::paintEvent(QPaintEvent*) {
-  if (retransform) {
-    retransform = false;
+  if (lastPaintSize!=size()) {
+    lastPaintSize!=size();
 
+    // retransform
     scaled = original.scaled(width()-2,height()-2,Qt::IgnoreAspectRatio,Qt::FastTransformation);
 
     auto h = scaled.height(), w = scaled.width();
 
     scale.setX((qreal)w  / original.width());
-    scale.setY((qreal)h / original.height());
+    scale.setY((qreal)h  / original.height());
 
     transform = QTransform();
     transform.translate(w/2,h/2);
@@ -93,30 +93,32 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 }
 
 void ImageWidget::update() {
-  retransform = true;
+  lastPaintSize = QSize();
   super::update();
 }
 
 //------------------------------------------------------------------------------
 
-Image::Image(MainWin& mainWin_): super(mainWin_,"",Qt::Horizontal) {
+Image::Image(MainWin& mainWin_): super(mainWin_,"") {
 
-  auto v1 = vbox();
-  box->addLayout(v1);
+  grid->addWidget(imageWidget = new ImageWidget(*this),0,0);
 
-  v1->addWidget(imageWidget = new ImageWidget(*this));
+  auto vb = vbox();
+  grid->addLayout(vb,0,1);
+  grid->setColumnStretch(2,0);
 
-  auto v2 = vbox();
-  box->addLayout(v2);
+  auto hb = hbox();
+  grid->addLayout(hb,1,0);
+  grid->setRowStretch(2,0);
 
-  v2->addWidget(label("Top:"));
-  v2->addWidget((cutTop = spinCell(0,999)));
-  v2->addWidget(label("Bottom:"));
-  v2->addWidget((cutBottom = spinCell(0,999)));
-  v2->addWidget(label("Left:"));
-  v2->addWidget((cutLeft = spinCell(0,999)));
-  v2->addWidget(label("Right:"));
-  v2->addWidget((cutRight = spinCell(0,999)));
+  vb->addWidget(label("Top:"));
+  vb->addWidget((cutTop = spinCell(0,999)));
+  vb->addWidget(label("Bottom:"));
+  vb->addWidget((cutBottom = spinCell(0,999)));
+  vb->addWidget(label("Left:"));
+  vb->addWidget((cutLeft = spinCell(0,999)));
+  vb->addWidget(label("Right:"));
+  vb->addWidget((cutRight = spinCell(0,999)));
 
   auto setCutFromGui = [this](bool topLeft){
     mainWin.session.setImageCut(topLeft, cutTop->value(), cutBottom->value(), cutLeft->value(), cutRight->value());
@@ -149,18 +151,16 @@ Image::Image(MainWin& mainWin_): super(mainWin_,"",Qt::Horizontal) {
     imageWidget->update();
   });
 
-  v2->addWidget(iconButton(mainWin.actImagesLink));
-  v2->addWidget(iconButton(mainWin.actImagesEye));
-  v2->addWidget(iconButton(mainWin.actImagesGlobalNorm));
+  vb->addWidget(iconButton(mainWin.actImagesLink));
+  vb->addWidget(iconButton(mainWin.actImagesEye));
+  vb->addWidget(iconButton(mainWin.actImagesGlobalNorm));
 
-  v2->addStretch();
+  vb->addStretch();
 
-  v2->addWidget(iconButton(mainWin.actImagesUpDown));
-  v2->addWidget(iconButton(mainWin.actImagesLeftRight));
-  v2->addWidget(iconButton(mainWin.actImagesTurnRight));
-  v2->addWidget(iconButton(mainWin.actImagesTurnLeft));
-
-  box->addStretch();
+  vb->addWidget(iconButton(mainWin.actImagesUpDown));
+  vb->addWidget(iconButton(mainWin.actImagesLeftRight));
+  vb->addWidget(iconButton(mainWin.actImagesTurnRight));
+  vb->addWidget(iconButton(mainWin.actImagesTurnLeft));
 
   connect(&mainWin.session, &Session::datasetSelected, [this](pcCoreDataset dataset) {
     QPixmap pixMap;

@@ -33,15 +33,15 @@ protected:
   QPointF scale;
 
   bool upDown, leftRight; int turnDegrees;
-  bool retransform;
+  QSize lastPaintSize;
   QTransform transform;
 
 public:
   void update();
 };
 
-class Image: public Panel {
-  SUPER(Image,Panel)
+class Image: public GridPanel {
+  SUPER(Image,GridPanel)
 public:
   Image(MainWin&);
 

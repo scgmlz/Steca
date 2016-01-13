@@ -5,8 +5,8 @@
 
 namespace panel {
 
-class Detector: public Panel {
-  SUPER(Detector,Panel)
+class Detector: public BoxPanel {
+  SUPER(Detector,BoxPanel)
 public:
   Detector(MainWin&);
 };

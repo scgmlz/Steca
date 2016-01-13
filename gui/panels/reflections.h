@@ -12,8 +12,8 @@ public:
   ReflectionList();
 };
 
-class Reflections: public Panel {
-  SUPER(Reflections,Panel)
+class Reflections: public BoxPanel {
+  SUPER(Reflections,BoxPanel)
 public:
   Reflections(MainWin&);
 

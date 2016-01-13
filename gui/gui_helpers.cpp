@@ -19,11 +19,11 @@ QBoxLayout *boxLayout(Qt::Orientation orientation) {
   }
 }
 
-QGridLayout *grid(uint margin) {
-  auto box = new QGridLayout;
-  box->setMargin(margin);
-  box->setSpacing(0);
-  return box;
+QGridLayout *gridLayout(uint margin) {
+  auto grid = new QGridLayout;
+  grid->setMargin(margin);
+  grid->setSpacing(0);
+  return grid;
 }
 
 QLabel* label(rcstr text) {

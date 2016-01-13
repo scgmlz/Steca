@@ -6,8 +6,8 @@
 
 namespace panel {
 
-class ImageInfo: public Panel {
-  SUPER(ImageInfo,Panel)
+class ImageInfo: public BoxPanel {
+  SUPER(ImageInfo,BoxPanel)
 public:
   ImageInfo(MainWin&);
 };

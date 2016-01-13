@@ -4,7 +4,7 @@
 namespace panel {
 
 Detector::Detector(MainWin& mainWin): super(mainWin,"Detector",Qt::Vertical) {
-  auto g = grid();
+  auto g = gridLayout();
   box->addLayout(g);
 
   g->addWidget(label("Detector dist."),0,0);

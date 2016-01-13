@@ -5,8 +5,8 @@
 
 namespace panel {
 
-class ReflectionInfo: public Panel {
-  SUPER(ReflectionInfo,Panel)
+class ReflectionInfo: public BoxPanel {
+  SUPER(ReflectionInfo,BoxPanel)
 public:
   ReflectionInfo(MainWin&);
 };

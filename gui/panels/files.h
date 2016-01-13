@@ -31,8 +31,8 @@ private:
   Delegate delegate;
 };
 
-class Files: public Panel {
-  SUPER(Files,Panel)
+class Files: public BoxPanel {
+  SUPER(Files,BoxPanel)
 public:
   Files(MainWin&);
 

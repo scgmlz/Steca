@@ -17,8 +17,8 @@ private:
   Session &session;
 };
 
-class Datasets: public Panel {
-  SUPER(Datasets,Panel)
+class Datasets: public BoxPanel {
+  SUPER(Datasets,BoxPanel)
 public:
   Datasets(MainWin&);
 

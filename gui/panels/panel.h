@@ -8,10 +8,10 @@
 class MainWin;
 class Session;
 
-class Panel: public QGroupBox {
-  SUPER(Panel,QGroupBox)
+class BasicPanel: public QGroupBox {
+  SUPER(BasicPanel,QGroupBox)
 public:
-  Panel(MainWin&,rcstr title,Qt::Orientation);
+  BasicPanel(MainWin&,rcstr title);
 
   void setHorizontalStretch(int);
   void setVerticalStretch(int);
@@ -19,7 +19,24 @@ public:
 
 protected:
   MainWin &mainWin;
+};
+
+class BoxPanel: public BasicPanel {
+  SUPER(BoxPanel,BasicPanel)
+public:
+  BoxPanel(MainWin&,rcstr title,Qt::Orientation);
+
+protected:
   QBoxLayout *box;
+};
+
+class GridPanel: public BasicPanel {
+  SUPER(GridPanel,BasicPanel)
+public:
+  GridPanel(MainWin&,rcstr title);
+
+protected:
+  QGridLayout *grid;
 };
 
 #endif
