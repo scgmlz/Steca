@@ -41,7 +41,7 @@ void Session::load(QByteArray const& json) THROWS {
   int x1 = cut["left"].toInt();
   int x2 = cut["right"].toInt();
 
-  setImageCut(true,x1,y1,x2,y2);
+  setImageCut(true,false,x1,y1,x2,y2);
 }
 
 QByteArray Session::save() const {
@@ -94,7 +94,7 @@ void Session::remFile(uint i) {
     coreSession->remFile(i);
 
   if (0==numFiles(true))
-    setImageCut(true,imagecut_t());
+    setImageCut(true,false,imagecut_t());
 
   emit filesChanged();
 }
@@ -147,14 +147,18 @@ const Session::imagecut_t &Session::getImageCut() const {
   return imageCut;
 }
 
-void Session::setImageCut(bool topLeft, imagecut_t const& imageCut_) {
+void Session::setImageCut(bool topLeft, bool linked, imagecut_t const& imageCut_) {
   auto size = coreSession->getImageSize();
   if (size.isEmpty())
     imageCut = imagecut_t();
   else {
-    auto limit = [](int &thisOne, int &thatOne, int maxTogether) {
-      thisOne = qMin(thisOne, qMax(maxTogether - thatOne - 1, 0));
-      thatOne = qMin(thatOne, qMax(maxTogether - thisOne - 1, 0));
+    auto limit = [linked](int &thisOne, int &thatOne, int maxTogether) {
+      if (linked && thisOne+thatOne>=maxTogether) {
+        thisOne = thatOne = (maxTogether-1) / 2;
+      } else {
+        thisOne = qMin(thisOne, qMax(maxTogether - thatOne - 1, 0));
+        thatOne = qMin(thatOne, qMax(maxTogether - thisOne - 1, 0));
+      }
     };
 
     imageCut = imageCut_;
@@ -171,8 +175,8 @@ void Session::setImageCut(bool topLeft, imagecut_t const& imageCut_) {
   emit imageCutChanged();
 }
 
-void Session::setImageCut(bool topLeft, int top, int bottom, int left, int right) {
-  setImageCut(topLeft,imagecut_t(top,bottom,left,right));
+void Session::setImageCut(bool topLeft, bool linked, int top, int bottom, int left, int right) {
+  setImageCut(topLeft,linked,imagecut_t(top,bottom,left,right));
 }
 
 //-----------------------------------------------------------------------------

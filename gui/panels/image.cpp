@@ -18,7 +18,7 @@ QSize ImageWidget::sizeHint() const {
   // together with the resizeEvent keeps the widget square if possible TODO better solution?
   s.setWidth(lastHeight);
   s.setHeight(super::sizeHint().height());
-  return s;
+  return QSize(lastHeight,lastHeight);
 }
 
 void ImageWidget::setPixmap(QPixmap const& pixmap) {
@@ -43,9 +43,12 @@ void ImageWidget::setTurn(int degrees) {
 
 void ImageWidget::resizeEvent(QResizeEvent* e) {
   super::resizeEvent(e);
-  if (lastHeight!=height()) {
-    updateGeometry();
-    update();
+
+  QRect r = geometry();
+  if (r.height() != r.width()) {
+    auto m = qMin(r.height(),r.width());
+    r.setWidth(m); r.setWidth(m);
+    setGeometry(r);
   }
 }
 
@@ -64,9 +67,9 @@ void ImageWidget::paintEvent(QPaintEvent*) {
     transform = QTransform();
     transform.translate(w/2,h/2);
 
+    transform.rotate(turnDegrees);
     if (upDown)     transform.scale(1,-1);
     if (leftRight)  transform.scale(-1,1);
-    transform.rotate(turnDegrees);
 
     transform.translate(-w/2,-h/2);
   }
@@ -111,33 +114,42 @@ Image::Image(MainWin& mainWin_): super(mainWin_,"") {
   grid->addLayout(hb,1,0);
   grid->setRowStretch(2,0);
 
-  vb->addWidget(label("Top:"));
-  vb->addWidget((cutTop = spinCell(0,999)));
-  vb->addWidget(label("Bottom:"));
-  vb->addWidget((cutBottom = spinCell(0,999)));
-  vb->addWidget(label("Left:"));
-  vb->addWidget((cutLeft = spinCell(0,999)));
-  vb->addWidget(label("Right:"));
-  vb->addWidget((cutRight = spinCell(0,999)));
+  hb->addWidget(icon(":/icon/top"));
+  hb->addWidget((cutTop = spinCell(0,999)));
+  hb->addWidget(icon(":/icon/bottom"));
+  hb->addWidget((cutBottom = spinCell(0,999)));
+  hb->addWidget(icon(":/icon/left"));
+  hb->addWidget((cutLeft = spinCell(0,999)));
+  hb->addWidget(icon(":/icon/right"));
+  hb->addWidget((cutRight = spinCell(0,999)));
 
-  auto setCutFromGui = [this](bool topLeft){
-    mainWin.session.setImageCut(topLeft, cutTop->value(), cutBottom->value(), cutLeft->value(), cutRight->value());
+  hb->addWidget(iconButton(mainWin.actImagesLink));
+  hb->addStretch();
+
+  hb->addWidget(iconButton(mainWin.actImagesEye));
+  hb->addWidget(iconButton(mainWin.actImagesGlobalNorm));
+
+  auto setCutFromGui = [this](bool topLeft, int value){
+    if (mainWin.actImagesLink->isChecked())
+      mainWin.session.setImageCut(topLeft, true, value, value, value, value);
+    else
+      mainWin.session.setImageCut(topLeft, false, cutTop->value(), cutBottom->value(), cutLeft->value(), cutRight->value());
   };
 
-  connect(cutTop, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setCutFromGui](int) {
-    setCutFromGui(true);
+  connect(cutTop, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setCutFromGui](int value) {
+    setCutFromGui(true,value);
   });
 
-  connect(cutBottom, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setCutFromGui](int) {
-    setCutFromGui(false);
+  connect(cutBottom, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setCutFromGui](int value) {
+    setCutFromGui(false,value);
   });
 
-  connect(cutLeft, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setCutFromGui](int) {
-    setCutFromGui(true);
+  connect(cutLeft, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setCutFromGui](int value) {
+    setCutFromGui(true,value);
   });
 
-  connect(cutRight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setCutFromGui](int) {
-    setCutFromGui(false);
+  connect(cutRight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setCutFromGui](int value) {
+    setCutFromGui(false,value);
   });
 
   connect(&mainWin.session, &Session::imageCutChanged, [this]() {
@@ -151,12 +163,7 @@ Image::Image(MainWin& mainWin_): super(mainWin_,"") {
     imageWidget->update();
   });
 
-  vb->addWidget(iconButton(mainWin.actImagesLink));
-  vb->addWidget(iconButton(mainWin.actImagesEye));
-  vb->addWidget(iconButton(mainWin.actImagesGlobalNorm));
-
   vb->addStretch();
-
   vb->addWidget(iconButton(mainWin.actImagesUpDown));
   vb->addWidget(iconButton(mainWin.actImagesLeftRight));
   vb->addWidget(iconButton(mainWin.actImagesTurnRight));
@@ -166,7 +173,7 @@ Image::Image(MainWin& mainWin_): super(mainWin_,"") {
     QPixmap pixMap;
     if (dataset) {
       auto image = dataset->getImage();
-      pixMap = pixmapFromCoreImage(image,image.maximumIntensity());
+      pixMap = image.pixmap(image.maximumIntensity());
     }
     imageWidget->setPixmap(pixMap);
   });
@@ -195,40 +202,6 @@ Image::Image(MainWin& mainWin_): super(mainWin_,"") {
   connect(mainWin.actImagesTurnLeft, &QAction::triggered, [this,&setTurn]() {
     setTurn(imageWidget, mainWin.actImagesTurnLeft, mainWin.actImagesTurnRight, -90);
   });
-}
-
-QPixmap Image::pixmapFromCoreImage(core::Image const& coreImage, int maximumIntensity) {
-  int count = coreImage.dataCount();
-  if (count < 1) return QPixmap();
-
-  QSize const &size = coreImage.getSize();
-  uint  width = size.width(), height = size.height();
-  ASSERT(width>0 && height>0) // true because count >= 1
-
-  if (maximumIntensity <= 0) maximumIntensity = 1;  // sanity
-  qreal const maximum = maximumIntensity;
-
-  QImage image(size, QImage::Format_RGB32);
-
-  for (uint y = 0; y < height; ++y) {
-    for (uint x = 0; x < width; ++x) {
-      qreal intens = (qreal)coreImage.intensity(x,y) / maximum;
-
-      QRgb rgb;
-      if (intens < 0.25)
-        rgb = qRgb(floor(0xff * intens * 4), 0, 0);
-      else if (intens < 0.5)
-        rgb = qRgb(0xff, floor(0xff * (intens - 0.25) * 4), 0);
-      else if (intens < 0.75)
-        rgb = qRgb(0xff - floor(0xff * (intens - 0.5) * 4), 0xff, floor(0xff * (intens - 0.5) * 4));
-      else
-        rgb = qRgb((int)floor(0xff * (intens - 0.75) * 4), 0xff, 0xff);
-
-      image.setPixel(x, y, rgb);
-    }
-  }
-
-  return QPixmap::fromImage(image);
 }
 
 const Session::imagecut_t &Image::getCut() const {

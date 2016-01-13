@@ -26,6 +26,13 @@ QGridLayout *gridLayout(uint margin) {
   return grid;
 }
 
+QLabel *icon(rcstr fileName) {
+  auto label = new QLabel;
+  auto h = label->sizeHint().height();
+  label->setPixmap(QIcon(fileName).pixmap(QSize(h,h)));
+  return label;
+}
+
 QLabel* label(rcstr text) {
   return new QLabel(text);
 }

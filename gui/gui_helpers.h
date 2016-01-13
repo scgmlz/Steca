@@ -19,6 +19,7 @@ QBoxLayout*   boxLayout(Qt::Orientation);
 
 QGridLayout*  gridLayout(uint margin = 0);
 
+QLabel*       icon(rcstr);
 QLabel*       label(rcstr);
 QLineEdit*    editCell();
 QSpinBox*     spinCell(int min,int max);

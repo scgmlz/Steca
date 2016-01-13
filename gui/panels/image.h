@@ -45,8 +45,6 @@ class Image: public GridPanel {
 public:
   Image(MainWin&);
 
-  static QPixmap pixmapFromCoreImage(core::Image const&, int maximumIntensity);
-
   Session::imagecut_t const& getCut() const;
 
 private:

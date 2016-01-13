@@ -14,5 +14,10 @@
         <file alias="updown">icons/updown.svg</file>
         <file alias="link">icons/link.svg</file>
         <file alias="add">icons/add.svg</file>
+        <file alias="top">icons/top.svg</file>
+        <file alias="right">icons/right.svg</file>
+        <file alias="left">icons/left.svg</file>
+        <file alias="bottom">icons/bottom.svg</file>
     </qresource>
+    <qresource prefix="/"/>
 </RCC>

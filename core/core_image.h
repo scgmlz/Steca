@@ -18,6 +18,8 @@ public:
   int intensity(uint x, uint y)    const;
   int maximumIntensity()           const { return maxIntensity; }
 
+  QPixmap pixmap(int maximumIntensity);
+
 private:
   QSize        size;
   QVector<int> intensities;
