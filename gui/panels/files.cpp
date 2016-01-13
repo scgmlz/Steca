@@ -72,11 +72,11 @@ Files::Files(MainWin& mainWin): super(mainWin,"Files",Qt::Vertical) {
   h->addWidget(iconButton(mainWin.actAddFiles));
   h->addWidget(iconButton(mainWin.actRemoveFile));
 
-  connect(mainWin.actRemoveFile, &QAction::triggered, [&]() {
+  connect(mainWin.actRemoveFile, &QAction::triggered, [this]() {
     fileList->removeSelectedFile();
   });
 
-  connect(&mainWin.session, &Session::filesChanged, [&]() {
+  connect(&mainWin.session, &Session::filesChanged, [this,&mainWin]() {
     fileList->reset();
     fileList->setCurrentIndex(mainWin.session.fileListModel.index(0)); // TODO untangle
   });

@@ -32,7 +32,7 @@ MainWin::~MainWin() {
 void MainWin::initActions() {
   typedef QKeySequence QKey;
 
-  auto action = [&](pcstr text, bool checkable, pcstr iconFile, QKey shortcut) {
+  auto action = [this](pcstr text, bool checkable, pcstr iconFile, QKey shortcut) {
     ASSERT(text)
     pcstr tip = text;
     auto act = new QAction(text,this);
@@ -43,12 +43,12 @@ void MainWin::initActions() {
     return act;
   };
 
-  auto simple = [&](pcstr text, pcstr iconFile = nullptr, QKey shortcut = QKey::UnknownKey) {
+  auto simple = [&action](pcstr text, pcstr iconFile = nullptr, QKey shortcut = QKey::UnknownKey) {
     ASSERT(text)
     return action(text,false,iconFile,shortcut);
   };
 
-  auto toggle = [&](pcstr text, pcstr iconFile = nullptr, QKey shortcut = QKey::UnknownKey) {
+  auto toggle = [&action](pcstr text, pcstr iconFile = nullptr, QKey shortcut = QKey::UnknownKey) {
     return action(text,true,iconFile,shortcut);
   };
 
@@ -106,7 +106,7 @@ void MainWin::initActions() {
 }
 
 void MainWin::initMenus() {
-  auto separator = [&]() {
+  auto separator = [this]() {
     auto act = new QAction(this);
     act->setSeparator(true);
     return act;
@@ -217,21 +217,21 @@ void MainWin::initStatus() {
 }
 
 void MainWin::connectActions() {
-  auto onTrigger = [&](QAction* action, void (MainWin::*fun)()) {
+  auto onTrigger = [this](QAction* action, void (MainWin::*fun)()) {
     QObject::connect(action, &QAction::triggered, this, fun);
   };
 
-  auto onToggle = [&](QAction* action, void (MainWin::*fun)(bool)) {
+  auto onToggle = [this](QAction* action, void (MainWin::*fun)(bool)) {
     QObject::connect(action, &QAction::toggled, this, fun);
   };
 
-  auto NOT_YET = [&](QAction* action) {
+  auto NOT_YET = [this](QAction* action) {
     action->setEnabled(false);
   };
 
   onTrigger(actAddFiles, &MainWin::addFiles);
   actRemoveFile->setEnabled(false);
-  connect(&session, &Session::fileSelected, this, [&](pcCoreFile file) {
+  connect(&session, &Session::fileSelected, this, [this](pcCoreFile file) {
     actRemoveFile->setEnabled(nullptr!=file);
   });
 

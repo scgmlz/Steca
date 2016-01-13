@@ -118,23 +118,23 @@ Image::Image(MainWin& mainWin_): super(mainWin_,"",Qt::Horizontal) {
   v2->addWidget(label("Right:"));
   v2->addWidget((cutRight = spinCell(0,999)));
 
-  connect(cutTop, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [&](int) {
+  connect(cutTop, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int) {
     setCutFromGui();
   });
 
-  connect(cutBottom, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [&](int) {
+  connect(cutBottom, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int) {
     setCutFromGui();
   });
 
-  connect(cutLeft, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [&](int) {
+  connect(cutLeft, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int) {
     setCutFromGui();
   });
 
-  connect(cutRight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [&](int) {
+  connect(cutRight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int) {
     setCutFromGui();
   });
 
-  connect(&mainWin.session, &Session::imageCutChanged, [&]() {
+  connect(&mainWin.session, &Session::imageCutChanged, [this]() {
     setGuiFromCut();
   });
 
@@ -151,7 +151,7 @@ Image::Image(MainWin& mainWin_): super(mainWin_,"",Qt::Horizontal) {
 
   box->addStretch();
 
-  connect(&mainWin.session, &Session::datasetSelected, [&](pcCoreDataset dataset) {
+  connect(&mainWin.session, &Session::datasetSelected, [this](pcCoreDataset dataset) {
     QPixmap pixMap;
     if (dataset) {
       auto image = dataset->getImage();
@@ -160,11 +160,11 @@ Image::Image(MainWin& mainWin_): super(mainWin_,"",Qt::Horizontal) {
     imageWidget->setPixmap(pixMap);
   });
 
-  connect(mainWin.actImagesUpDown, &QAction::toggled, [&](bool on) {
+  connect(mainWin.actImagesUpDown, &QAction::toggled, [this](bool on) {
     imageWidget->setUpDown(on);
   });
 
-  connect(mainWin.actImagesLeftRight, &QAction::toggled, [&](bool on) {
+  connect(mainWin.actImagesLeftRight, &QAction::toggled, [this](bool on) {
     imageWidget->setLeftRight(on);
   });
 
@@ -177,11 +177,11 @@ Image::Image(MainWin& mainWin_): super(mainWin_,"",Qt::Horizontal) {
     imageWidget->setTurn(on ? degrees : 0);
   };
 
-  connect(mainWin.actImagesTurnRight, &QAction::triggered, [&]() {
+  connect(mainWin.actImagesTurnRight, &QAction::triggered, [this,&setTurn]() {
     setTurn(imageWidget, mainWin.actImagesTurnRight, mainWin.actImagesTurnLeft, +90);
   });
 
-  connect(mainWin.actImagesTurnLeft, &QAction::triggered, [&]() {
+  connect(mainWin.actImagesTurnLeft, &QAction::triggered, [this,&setTurn]() {
     setTurn(imageWidget, mainWin.actImagesTurnLeft, mainWin.actImagesTurnRight, -90);
   });
 }
