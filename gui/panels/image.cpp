@@ -9,7 +9,7 @@ namespace panel {
 
 ImageWidget::ImageWidget(Image& image_)
 : image(image_)
-, upDown(false), leftRight(false), turnRight(false), turnLeft(false)
+, upDown(false), leftRight(false), turnDegrees(0)
 , retransform(true) {
 }
 
@@ -37,13 +37,8 @@ void ImageWidget::setLeftRight(bool on) {
   update();
 }
 
-void ImageWidget::setTurnRight(bool on) {
-  turnRight = on;
-  update();
-}
-
-void ImageWidget::setTurnLeft(bool on) {
-  turnLeft = on;
+void ImageWidget::setTurn(int degrees) {
+  turnDegrees = degrees;
   update();
 }
 
@@ -59,7 +54,7 @@ void ImageWidget::paintEvent(QPaintEvent*) {
   if (retransform) {
     retransform = false;
 
-    scaled = original.scaled(width()-2,height()-2,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+    scaled = original.scaled(width()-2,height()-2,Qt::IgnoreAspectRatio,Qt::FastTransformation);
 
     auto h = scaled.height(), w = scaled.width();
 
@@ -71,8 +66,7 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 
     if (upDown)     transform.scale(1,-1);
     if (leftRight)  transform.scale(-1,1);
-    if (turnRight)  transform.rotate(90);
-    if (turnLeft)   transform.rotate(-90);
+    transform.rotate(turnDegrees);
 
     transform.translate(-w/2,-h/2);
   }
@@ -94,7 +88,7 @@ void ImageWidget::paintEvent(QPaintEvent*) {
   r.adjust(qRound(scale.x()*cut.left),  qRound(scale.y()*cut.top),
           -qRound(scale.x()*cut.right),-qRound(scale.y()*cut.bottom));
 
-  painter.setPen(Qt::blue);
+  painter.setPen(Qt::lightGray);
   painter.drawRect(r);
 }
 
@@ -105,7 +99,7 @@ void ImageWidget::update() {
 
 //------------------------------------------------------------------------------
 
-Image::Image(MainWin& mainWin): super(mainWin,"",Qt::Horizontal) {
+Image::Image(MainWin& mainWin_): super(mainWin_,"",Qt::Horizontal) {
 
   auto v1 = vbox();
   box->addLayout(v1);
@@ -166,9 +160,6 @@ Image::Image(MainWin& mainWin): super(mainWin,"",Qt::Horizontal) {
     imageWidget->setPixmap(pixMap);
   });
 
-//  connect(mainWin.actImagesGlobalNorm, &QAction::toggled, [&](bool on) {
-//  });
-
   connect(mainWin.actImagesUpDown, &QAction::toggled, [&](bool on) {
     imageWidget->setUpDown(on);
   });
@@ -177,14 +168,21 @@ Image::Image(MainWin& mainWin): super(mainWin,"",Qt::Horizontal) {
     imageWidget->setLeftRight(on);
   });
 
-  connect(mainWin.actImagesTurnRight, &QAction::toggled, [&](bool on) {
-    if (on) mainWin.actImagesTurnLeft->setChecked(false);
-    imageWidget->setTurnRight(on);
+  // the two buttons work almost as radio buttons, in a way
+  // to uncheck one, press the other one
+  auto setTurn = [](ImageWidget *imageWidget, QAction *thisAct, QAction *thatAct, int degrees) {
+    bool on = !thatAct->isChecked();
+    thisAct->setChecked(on);
+    thatAct->setChecked(false);
+    imageWidget->setTurn(on ? degrees : 0);
+  };
+
+  connect(mainWin.actImagesTurnRight, &QAction::triggered, [&]() {
+    setTurn(imageWidget, mainWin.actImagesTurnRight, mainWin.actImagesTurnLeft, +90);
   });
 
-  connect(mainWin.actImagesTurnLeft, &QAction::toggled, [&](bool on) {
-    if (on) mainWin.actImagesTurnRight->setChecked(false);
-    imageWidget->setTurnLeft(on);
+  connect(mainWin.actImagesTurnLeft, &QAction::triggered, [&]() {
+    setTurn(imageWidget, mainWin.actImagesTurnLeft, mainWin.actImagesTurnRight, -90);
   });
 }
 

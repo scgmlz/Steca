@@ -19,8 +19,7 @@ public:
   void setPixmap(QPixmap const&);
   void setUpDown(bool);
   void setLeftRight(bool);
-  void setTurnRight(bool);
-  void setTurnLeft(bool);
+  void setTurn(int degrees);
 
 protected:
   Image &image;
@@ -33,7 +32,7 @@ protected:
   QPixmap original, scaled;
   QPointF scale;
 
-  bool upDown, leftRight, turnRight, turnLeft;
+  bool upDown, leftRight; int turnDegrees;
   bool retransform;
   QTransform transform;
 

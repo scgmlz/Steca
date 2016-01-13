@@ -22,9 +22,9 @@ Keys::Keys() {
   keyDeleteFile        = QKey::Delete;
   keySetCorrectionFile = Qt::SHIFT|Qt::CTRL|Qt::Key_O;
 
-  keyViewStatusbar     = Qt::Key_F11;
+  keyViewStatusbar     = Qt::Key_F12;
 #ifndef Q_OS_OSX
-  keyFullscreen        = Qt::Key_F12;
+  keyFullscreen        = Qt::Key_F11;
 #endif
 }
 
