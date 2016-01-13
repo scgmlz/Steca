@@ -8,7 +8,7 @@
 namespace panel {
 
 ImageWidget::ImageWidget(Image& image_)
-: image(image_), upDown(false), leftRight(false), turnDegrees(0) {
+: image(image_), upDown(false), leftRight(false), turnDegrees(0), showOverlay(false) {
   setMinimumSize(16,16);  // so it does not completely disappear
 }
 
@@ -41,6 +41,11 @@ void ImageWidget::setTurn(int degrees) {
   update();
 }
 
+void ImageWidget::setShowOverlay(bool on) {
+  showOverlay = on;
+  update();
+}
+
 void ImageWidget::resizeEvent(QResizeEvent* e) {
   super::resizeEvent(e);
 
@@ -56,22 +61,28 @@ void ImageWidget::paintEvent(QPaintEvent*) {
   if (lastPaintSize!=size()) {
     lastPaintSize!=size();
 
-    // retransform
-    scaled = original.scaled(width()-2,height()-2,Qt::IgnoreAspectRatio,Qt::FastTransformation);
-
-    auto h = scaled.height(), w = scaled.width();
-
-    scale.setX((qreal)w  / original.width());
-    scale.setY((qreal)h  / original.height());
-
     transform = QTransform();
-    transform.translate(w/2,h/2);
 
-    transform.rotate(turnDegrees);
-    if (upDown)     transform.scale(1,-1);
-    if (leftRight)  transform.scale(-1,1);
+    if (original.isNull()) {
+      scaled = original;
+      scale.setX(0); scale.setY(0);
+    } else {
+      // retransform
+      scaled = original.scaled(width()-2,height()-2,Qt::IgnoreAspectRatio,Qt::FastTransformation);
 
-    transform.translate(-w/2,-h/2);
+      auto h = scaled.height(), w = scaled.width();
+
+      scale.setX((qreal)w  / original.width());
+      scale.setY((qreal)h  / original.height());
+
+      transform.translate(w/2,h/2);
+
+      transform.rotate(turnDegrees);
+      if (upDown)     transform.scale(1,-1);
+      if (leftRight)  transform.scale(-1,1);
+
+      transform.translate(-w/2,-h/2);
+    }
   }
 
   QPainter painter(this); painter.setTransform(transform);
@@ -85,6 +96,9 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 
   // image
   painter.drawPixmap(1,1,scaled);
+
+  // overlay
+  if (!showOverlay) return;
 
   // cut
   auto cut = image.getCut();
@@ -102,17 +116,18 @@ void ImageWidget::update() {
 
 //------------------------------------------------------------------------------
 
-Image::Image(MainWin& mainWin_): super(mainWin_,"") {
+Image::Image(MainWin& mainWin_): super(mainWin_,"",Qt::Horizontal), dataset(nullptr) {
+
+  auto grid = gridLayout();
+  box->addLayout(grid);
+  box->addStretch(INT_MAX);
 
   grid->addWidget(imageWidget = new ImageWidget(*this),0,0);
 
-  auto vb = vbox();
-  grid->addLayout(vb,0,1);
-  grid->setColumnStretch(2,0);
-
   auto hb = hbox();
   grid->addLayout(hb,1,0);
-  grid->setRowStretch(2,0);
+
+  hb->addWidget(check("gl. normalize",mainWin.actImagesGlobalNorm));
 
   hb->addWidget(icon(":/icon/top"));
   hb->addWidget((cutTop = spinCell(0,999)));
@@ -127,7 +142,15 @@ Image::Image(MainWin& mainWin_): super(mainWin_,"") {
   hb->addStretch();
 
   hb->addWidget(iconButton(mainWin.actImagesEye));
-  hb->addWidget(iconButton(mainWin.actImagesGlobalNorm));
+
+  auto vb = vbox();
+  grid->addLayout(vb,0,1);
+
+  vb->addStretch();
+  vb->addWidget(iconButton(mainWin.actImagesUpDown));
+  vb->addWidget(iconButton(mainWin.actImagesLeftRight));
+  vb->addWidget(iconButton(mainWin.actImagesTurnRight));
+  vb->addWidget(iconButton(mainWin.actImagesTurnLeft));
 
   auto setCutFromGui = [this](bool topLeft, int value){
     if (mainWin.actImagesLink->isChecked())
@@ -163,19 +186,18 @@ Image::Image(MainWin& mainWin_): super(mainWin_,"") {
     imageWidget->update();
   });
 
-  vb->addStretch();
-  vb->addWidget(iconButton(mainWin.actImagesUpDown));
-  vb->addWidget(iconButton(mainWin.actImagesLeftRight));
-  vb->addWidget(iconButton(mainWin.actImagesTurnRight));
-  vb->addWidget(iconButton(mainWin.actImagesTurnLeft));
+  connect(mainWin.actImagesEye, &QAction::toggled, [this](bool on) {
+    imageWidget->setShowOverlay(on);
+  });
+
+  mainWin.actImagesEye->setChecked(true);
+
+  connect(mainWin.actImagesGlobalNorm, &QAction::toggled, [this](bool on) {
+    TR(on)
+  });
 
   connect(&mainWin.session, &Session::datasetSelected, [this](pcCoreDataset dataset) {
-    QPixmap pixMap;
-    if (dataset) {
-      auto image = dataset->getImage();
-      pixMap = image.pixmap(image.maximumIntensity());
-    }
-    imageWidget->setPixmap(pixMap);
+    setDataset(dataset);
   });
 
   connect(mainWin.actImagesUpDown, &QAction::toggled, [this](bool on) {
@@ -202,6 +224,16 @@ Image::Image(MainWin& mainWin_): super(mainWin_,"") {
   connect(mainWin.actImagesTurnLeft, &QAction::triggered, [this,&setTurn]() {
     setTurn(imageWidget, mainWin.actImagesTurnLeft, mainWin.actImagesTurnRight, -90);
   });
+}
+
+void Image::setDataset(pcCoreDataset dataset_) {
+  dataset = dataset_;
+  QPixmap pixMap;
+  if (dataset) {
+    auto image = dataset->getImage();
+    pixMap = image.pixmap(image.maximumIntensity());
+  }
+  imageWidget->setPixmap(pixMap);
 }
 
 const Session::imagecut_t &Image::getCut() const {

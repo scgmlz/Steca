@@ -1,4 +1,5 @@
 #include "gui_helpers.h"
+#include <QAction>
 
 QBoxLayout *hbox() {
   return new QHBoxLayout;
@@ -51,8 +52,12 @@ QSpinBox* spinCell(int min,int max) {
   return cell;
 }
 
-QCheckBox* check(rcstr text) {
-  return new QCheckBox(text);
+QCheckBox* check(rcstr text, QAction* action) {
+  auto ch = new QCheckBox(text);
+  if (action) QObject::connect(ch,&QCheckBox::toggled,[action](bool on) {
+    action->setChecked(on);
+  });
+  return ch;
 }
 
 QToolButton* textButton(QAction* action) {

@@ -21,6 +21,8 @@ public:
   void setLeftRight(bool);
   void setTurn(int degrees);
 
+  void setShowOverlay(bool);
+
 protected:
   Image &image;
 
@@ -32,7 +34,7 @@ protected:
   QPixmap original, scaled;
   QPointF scale;
 
-  bool upDown, leftRight; int turnDegrees;
+  bool upDown, leftRight; int turnDegrees; bool showOverlay;
   QSize lastPaintSize;
   QTransform transform;
 
@@ -40,13 +42,17 @@ public:
   void update();
 };
 
-class Image: public GridPanel {
-  SUPER(Image,GridPanel)
+class Image: public BoxPanel {
+  SUPER(Image,BoxPanel)
 public:
   Image(MainWin&);
 
-  Session::imagecut_t const& getCut() const;
+private:
+  void setDataset(pcCoreDataset);
+  pcCoreDataset dataset;
 
+public:
+  Session::imagecut_t const& getCut() const;
 private:
   ImageWidget *imageWidget;
   QSpinBox *cutTop, *cutBottom, *cutLeft, *cutRight;

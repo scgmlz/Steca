@@ -23,7 +23,7 @@ QLabel*       icon(rcstr);
 QLabel*       label(rcstr);
 QLineEdit*    editCell();
 QSpinBox*     spinCell(int min,int max);
-QCheckBox*    check(rcstr text);
+QCheckBox*    check(rcstr text, QAction* = nullptr);
 
 QToolButton*  textButton(QAction*);
 QToolButton*  iconButton(QAction*);

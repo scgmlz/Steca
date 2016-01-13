@@ -2,7 +2,7 @@
 
 namespace core {
 
-Session::Session() {
+Session::Session(): corrFile(new File) {
 }
 
 Session::~Session() {
@@ -14,14 +14,7 @@ void Session::addFile(rcstr fileName) THROWS {
   QSharedPointer<File> file(new File(fileName));
   file->load();
 
-  auto size = file->getImageSize();
-  if (size.isEmpty())
-    THROW(fileName % " inconsistent image size");
-
-  if (imageSize.isEmpty())
-    imageSize = size;
-  else if (imageSize != size)
-    THROW(fileName % " session-inconsistent image size");
+  setImageSize(file->getImageSize());
 
   dataFiles.append(file);
 }
@@ -35,15 +28,36 @@ bool Session::hasFile(rcstr fileName) {
 
 void Session::remFile(uint i) {
   dataFiles.remove(i);
+  setImageSize();
 }
 
 bool Session::hasCorrFile() const {
-  return !corrFile.name().isEmpty();
+  return !corrFile->name().isEmpty();
 }
 
 void Session::setCorrFile(rcstr fileName) {
-  corrFile = File(fileName);
-  if (!fileName.isEmpty()) corrFile.load();
+  QSharedPointer<File> file(new File(fileName));
+  if (!fileName.isEmpty()) {
+    file->load();
+    setImageSize(file->getImageSize());
+  } else {
+    setImageSize();
+  }
+  corrFile = file;
+}
+
+void Session::setImageSize(QSize const& size) THROWS {
+  if (size.isEmpty())
+    THROW(" inconsistent image size");
+  if (imageSize.isEmpty())
+    imageSize = size;
+  else if (imageSize != size)
+    THROW(" session-inconsistent image size");
+}
+
+void Session::setImageSize() {
+  if (dataFiles.isEmpty() && !hasCorrFile())
+    imageSize = QSize();
 }
 
 }

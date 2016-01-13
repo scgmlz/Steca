@@ -154,10 +154,10 @@ void Session::setImageCut(bool topLeft, bool linked, imagecut_t const& imageCut_
   else {
     auto limit = [linked](int &thisOne, int &thatOne, int maxTogether) {
       if (linked && thisOne+thatOne>=maxTogether) {
-        thisOne = thatOne = (maxTogether-1) / 2;
+        thisOne = thatOne = qMax(0, (maxTogether-1) / 2);
       } else {
-        thisOne = qMin(thisOne, qMax(maxTogether - thatOne - 1, 0));
-        thatOne = qMin(thatOne, qMax(maxTogether - thisOne - 1, 0));
+        thisOne = qMax(qMin(thisOne, maxTogether - thatOne - 1), 0);
+        thatOne = qMax(qMin(thatOne, maxTogether - thisOne - 1), 0);
       }
     };
 

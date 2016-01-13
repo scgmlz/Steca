@@ -94,8 +94,8 @@ void MainWin::initActions() {
 
   actImagesCombine      = simple("Combine...");
   actImagesLink         = toggle("Link",      ":/icon/link");
-  actImagesEye          = simple("eye",       ":/icon/eye");
-  actImagesGlobalNorm   = toggle("global nm.",":/icon/norm");
+  actImagesEye          = toggle("eye",       ":/icon/eye");
+  actImagesGlobalNorm   = toggle("global nm.");
   actImagesUpDown       = toggle("UpDown",    ":/icon/updown");
   actImagesLeftRight    = toggle("LeftRight", ":/icon/leftright");
   actImagesTurnRight    = toggle("TurnRight", ":/icon/turnright");

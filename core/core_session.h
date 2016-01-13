@@ -18,16 +18,19 @@ public:
   bool hasCorrFile()   const;
   void setCorrFile(rcstr fileName); // fileName may be empty -> unsets
 
-  Files const& getDataFiles() const { return dataFiles; }
-  File  const& getCorrFile()  const { return corrFile;  }
+  Files const& getDataFiles() const { return dataFiles;  }
+  File  const& getCorrFile()  const { return *corrFile;  }
 
   QSize const& getImageSize() const { return imageSize; }
 
 private:
   Files dataFiles;
-  File  corrFile;
+  QSharedPointer<File> corrFile;
 
   QSize imageSize;
+
+  void setImageSize(QSize const&) THROWS;
+  void setImageSize();
 };
 
 }
