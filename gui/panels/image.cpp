@@ -192,29 +192,28 @@ QPixmap Image::pixmapFromCoreImage(core::Image const& coreImage, int maximumInte
 
   QSize const &size = coreImage.getSize();
   uint  width = size.width(), height = size.height();
+  ASSERT(width>0 && height>0) // true because count >= 1
 
   if (maximumIntensity <= 0) maximumIntensity = 1;  // sanity
-  qreal maximum = maximumIntensity;
+  qreal const maximum = maximumIntensity;
 
   QImage image(size, QImage::Format_RGB32);
 
   for (uint y = 0; y < height; ++y) {
     for (uint x = 0; x < width; ++x) {
       qreal intens = (qreal)coreImage.intensity(x,y) / maximum;
-      if (intens < 0.25) {
-        image.setPixel(x, y, qRgb((int)floor(0xff * intens * 4), 0, 0));
-        continue;
-      }
-      if (intens < 0.5) {
-        image.setPixel(x, y, qRgb(0xff, (int)floor(0xff * (intens - 0.25) * 4), 0));
-        continue;
-      }
-      if (intens < 0.75) {
-        image.setPixel(x, y, qRgb(0xff - (int)floor(0xff * (intens - 0.5) * 4), 0xff,
-                                  (int)floor(0xff * (intens - 0.5) * 4)));
-        continue;
-      } else
-        image.setPixel(x, y, qRgb((int)floor(0xff * (intens - 0.75) * 4), 0xff, 0xff));
+
+      QRgb rgb;
+      if (intens < 0.25)
+        rgb = qRgb(floor(0xff * intens * 4), 0, 0);
+      else if (intens < 0.5)
+        rgb = qRgb(0xff, floor(0xff * (intens - 0.25) * 4), 0);
+      else if (intens < 0.75)
+        rgb = qRgb(0xff - floor(0xff * (intens - 0.5) * 4), 0xff, floor(0xff * (intens - 0.5) * 4));
+      else
+        rgb = qRgb((int)floor(0xff * (intens - 0.75) * 4), 0xff, 0xff);
+
+      image.setPixel(x, y, rgb);
     }
   }
 
