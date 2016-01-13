@@ -9,9 +9,10 @@
 
 namespace core {
 
+class File;
 class Dataset {
 public:
-  Dataset(QSize const&, int const* image,
+  Dataset(File&,QSize const&, int const* image,
           rcstr comment,
           float motorXT,  float motorYT,  float motorZT, float motorOmg, float motorTth,
           float motorPhi, float motorChi,
@@ -20,8 +21,10 @@ public:
 
   rcstr        getComment() const { return comment; }
   Image const& getImage()   const { return image;   }
+  File  const& getFile()    const { return file;    }
 
 private:
+  File &file;
   str   comment;
   Image image;
 

@@ -6,7 +6,7 @@ namespace core {
 File::File(): File(str::null) {
 }
 
-File::File(rcstr fileName): info(fileName) {
+File::File(rcstr fileName): info(fileName), maxIntensity(0) {
 }
 
 File::~File() {
@@ -14,7 +14,9 @@ File::~File() {
 
 void File::load() THROWS {
   RUNTIME_CHECK(info.exists(), "File " % info.filePath() % " does not exist");
-  loadCaress(info.filePath(),datasets);
+  loadCaress(info.filePath(),*this,datasets);
+  for (auto &dataset: datasets)
+    maxIntensity = qMax(maxIntensity, dataset->getImage().maximumIntensity());
 }
 
 QSize File::getImageSize() const {

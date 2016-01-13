@@ -50,6 +50,7 @@ public:
 private:
   void setDataset(pcCoreDataset);
   pcCoreDataset dataset;
+  bool globalNorm;
 
 public:
   Session::imagecut_t const& getCut() const;

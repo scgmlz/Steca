@@ -116,7 +116,7 @@ void ImageWidget::update() {
 
 //------------------------------------------------------------------------------
 
-Image::Image(MainWin& mainWin_): super(mainWin_,"",Qt::Horizontal), dataset(nullptr) {
+Image::Image(MainWin& mainWin_): super(mainWin_,"",Qt::Horizontal), dataset(nullptr), globalNorm(false) {
 
   auto grid = gridLayout();
   box->addLayout(grid);
@@ -193,7 +193,8 @@ Image::Image(MainWin& mainWin_): super(mainWin_,"",Qt::Horizontal), dataset(null
   mainWin.actImagesEye->setChecked(true);
 
   connect(mainWin.actImagesGlobalNorm, &QAction::toggled, [this](bool on) {
-    TR(on)
+    globalNorm = on;
+    setDataset(dataset);
   });
 
   connect(&mainWin.session, &Session::datasetSelected, [this](pcCoreDataset dataset) {
@@ -231,7 +232,7 @@ void Image::setDataset(pcCoreDataset dataset_) {
   QPixmap pixMap;
   if (dataset) {
     auto image = dataset->getImage();
-    pixMap = image.pixmap(image.maximumIntensity());
+    pixMap = image.pixmap(globalNorm ? dataset->getFile().maximumIntensity() : image.maximumIntensity());
   }
   imageWidget->setPixmap(pixMap);
 }

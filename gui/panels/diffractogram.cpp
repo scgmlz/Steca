@@ -6,8 +6,8 @@ namespace panel {
 Diffractogram::Diffractogram(MainWin& mainWin)
 : super(mainWin,"Diffractogram",Qt::Vertical) {
 
-  box->addWidget(check("From all images"));
   box->addWidget(new QCustomPlot());
+  box->addWidget(check("From all images"));
 }
 
 }
