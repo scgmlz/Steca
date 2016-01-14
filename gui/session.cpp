@@ -229,7 +229,7 @@ QVariant Session::DatasetListModel::data(QModelIndex const& index,int role) cons
 
   switch (role) {
     case Qt::DisplayRole: {
-      str s = str("%1 ").arg(row) % file->getDatasets().at(row)->getComment();
+      str s = str("%1 ").arg(row);//TODO % file->getDatasets().at(row)->getComment();
       return s;
     }
     case GetFileRole:

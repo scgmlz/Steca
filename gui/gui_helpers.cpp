@@ -20,12 +20,9 @@ QBoxLayout *boxLayout(Qt::Orientation orientation) {
   }
 }
 
-QGridLayout *gridLayout(uint margin) {
-  auto grid = new QGridLayout;
-  grid->setMargin(margin);
-  grid->setSpacing(0);
-  return grid;
-}
+QGridLayout *gridLayout() {
+  return new QGridLayout;
+  }
 
 QLabel *icon(rcstr fileName) {
   auto label = new QLabel;

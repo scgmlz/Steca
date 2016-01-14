@@ -126,7 +126,7 @@ void loadCaress(rcstr filePath,core::File& file,core::Datasets& datasets) THROWS
           double tempTime = 0;
           if ((y < 2015) ||
               ((y == 2015) && ((s_m.compare("Jan") == 0) || (s_m.compare("Feb") == 0)))) {
-            tempTime = (double)tim1 / 100;
+            tempTime = (double)tim1 / 100; // TODO verify how deltaTime is used!!
           } else {
             tempTime = (double)tim1;
           }
@@ -138,10 +138,13 @@ void loadCaress(rcstr filePath,core::File& file,core::Datasets& datasets) THROWS
 
           // Objekt inizialisieren
           constexpr double deg2rad = 3.1415926535897932384626433832795 / 180;
-          datasets.append(QSharedPointer<core::Dataset>(new core::Dataset(file,detRel, intens, str::fromStdString(s_comment), xAxis, yAxis, zAxis, omgAxis * deg2rad,
-                                tthAxis * deg2rad, phiAxis * deg2rad, chiAxis * deg2rad,
-                                (double)mon, tempTime, /*tmpImage, detRel.height() * detRel.width(),*/
-                                pstAxis, sstAxis, omgmAxis * deg2rad)));
+          datasets.append(QSharedPointer<core::Dataset>(new core::Dataset(
+            file, str::fromStdString(s_date), str::fromStdString(s_comment),
+            xAxis, yAxis, zAxis, omgAxis * deg2rad,
+            tthAxis * deg2rad, phiAxis * deg2rad, chiAxis * deg2rad,
+            mon, tempTime,
+            pstAxis, sstAxis, omgmAxis * deg2rad,
+            detRel, intens)));
           delete[] intens; intens = NULL;
           imageSize = 0;
         }

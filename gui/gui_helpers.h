@@ -17,7 +17,7 @@ QBoxLayout*   hbox();
 QBoxLayout*   vbox();
 QBoxLayout*   boxLayout(Qt::Orientation);
 
-QGridLayout*  gridLayout(uint margin = 0);
+QGridLayout*  gridLayout();
 
 QLabel*       icon(rcstr);
 QLabel*       label(rcstr);
