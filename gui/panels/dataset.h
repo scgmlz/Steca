@@ -7,14 +7,13 @@
 
 namespace panel {
 
-class Image;
+class Dataset;
 
 class ImageWidget: public QWidget {
   SUPER(ImageWidget,QWidget)
 public:
-  ImageWidget(Image&);
+  ImageWidget(Dataset&);
 
-  QSize sizeHint() const;
 
   void setPixmap(QPixmap const&);
   void setUpDown(bool);
@@ -23,8 +22,10 @@ public:
 
   void setShowOverlay(bool);
 
+  QSize sizeHint() const;
+
 protected:
-  Image &image;
+  Dataset &image;
 
   void resizeEvent(QResizeEvent*);
   mutable int lastHeight; // keep square
@@ -42,10 +43,10 @@ public:
   void update();
 };
 
-class Image: public BoxPanel {
-  SUPER(Image,BoxPanel)
+class Dataset: public BoxPanel {
+  SUPER(Dataset,BoxPanel)
 public:
-  Image(MainWin&);
+  Dataset(MainWin&);
 
 private:
   void setDataset(pcCoreDataset);

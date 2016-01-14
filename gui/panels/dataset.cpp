@@ -1,4 +1,4 @@
-#include "image.h"
+#include "dataset.h"
 #include "mainwin.h"
 #include <QResizeEvent>
 #include <QPainter>
@@ -7,18 +7,9 @@
 
 namespace panel {
 
-ImageWidget::ImageWidget(Image& image_)
+ImageWidget::ImageWidget(Dataset& image_)
 : image(image_), upDown(false), leftRight(false), turnDegrees(0), showOverlay(false) {
   setMinimumSize(16,16);  // so it does not completely disappear
-}
-
-QSize ImageWidget::sizeHint() const {
-  QSize s = size();
-  lastHeight = s.height();
-  // together with the resizeEvent keeps the widget square if possible TODO better solution?
-  s.setWidth(lastHeight);
-  s.setHeight(super::sizeHint().height());
-  return QSize(lastHeight,lastHeight);
 }
 
 void ImageWidget::setPixmap(QPixmap const& pixmap) {
@@ -46,14 +37,19 @@ void ImageWidget::setShowOverlay(bool on) {
   update();
 }
 
+QSize ImageWidget::sizeHint() const {
+  lastHeight = height();
+  return QSize(lastHeight,lastHeight);
+}
+
 void ImageWidget::resizeEvent(QResizeEvent* e) {
   super::resizeEvent(e);
-
-  QRect r = geometry();
-  if (r.height() != r.width()) {
-    auto m = qMin(r.height(),r.width());
-    r.setWidth(m); r.setWidth(m);
+  auto h = height();
+  if (h != lastHeight) {
+    auto r = geometry();
+    r.setWidth(h);
     setGeometry(r);
+    updateGeometry();
   }
 }
 
@@ -78,8 +74,8 @@ void ImageWidget::paintEvent(QPaintEvent*) {
       transform.translate(w/2,h/2);
 
       transform.rotate(turnDegrees);
-      if (upDown)     transform.scale(1,-1);
       if (leftRight)  transform.scale(-1,1);
+      if (upDown)     transform.scale(1,-1);
 
       transform.translate(-w/2,-h/2);
     }
@@ -116,63 +112,59 @@ void ImageWidget::update() {
 
 //------------------------------------------------------------------------------
 
-Image::Image(MainWin& mainWin_): super(mainWin_,"",Qt::Horizontal), dataset(nullptr), globalNorm(false) {
+Dataset::Dataset(MainWin& mainWin_): super(mainWin_,"",Qt::Vertical), dataset(nullptr), globalNorm(false) {
 
-  auto grid = gridLayout();
-  box->addLayout(grid);
-  box->addStretch(INT_MAX);
+  auto bb = hbox(); // (b)ottom (b)uttons
 
-  grid->addWidget(imageWidget = new ImageWidget(*this),0,0);
+  bb->addWidget(check("gl. normalize",mainWin.actImagesGlobalNorm));
+  bb->addWidget(icon(":/icon/top"));
+  bb->addWidget((cutTop = spinCell(0,999)));
+  bb->addWidget(icon(":/icon/bottom"));
+  bb->addWidget((cutBottom = spinCell(0,999)));
+  bb->addWidget(icon(":/icon/left"));
+  bb->addWidget((cutLeft = spinCell(0,999)));
+  bb->addWidget(icon(":/iqt ctcon/right"));
+  bb->addWidget((cutRight = spinCell(0,999)));
+  bb->addWidget(iconButton(mainWin.actImagesLink));
+  bb->addStretch();
+  bb->addWidget(iconButton(mainWin.actImagesEye));
+
+  auto sb = vbox(); // (s)ide   (b)uttons
+
+  sb->addStretch();
+  sb->addWidget(iconButton(mainWin.actImagesUpDown));
+  sb->addWidget(iconButton(mainWin.actImagesLeftRight));
+  sb->addWidget(iconButton(mainWin.actImagesTurnRight));
+  sb->addWidget(iconButton(mainWin.actImagesTurnLeft));
 
   auto hb = hbox();
-  grid->addLayout(hb,1,0);
+  hb->addWidget(imageWidget = new ImageWidget(*this),0,0);
+  hb->addLayout(sb);
 
-  hb->addWidget(check("gl. normalize",mainWin.actImagesGlobalNorm));
+  box->addLayout(hb);
+  box->addLayout(bb);
 
-  hb->addWidget(icon(":/icon/top"));
-  hb->addWidget((cutTop = spinCell(0,999)));
-  hb->addWidget(icon(":/icon/bottom"));
-  hb->addWidget((cutBottom = spinCell(0,999)));
-  hb->addWidget(icon(":/icon/left"));
-  hb->addWidget((cutLeft = spinCell(0,999)));
-  hb->addWidget(icon(":/icon/right"));
-  hb->addWidget((cutRight = spinCell(0,999)));
-
-  hb->addWidget(iconButton(mainWin.actImagesLink));
-  hb->addStretch();
-
-  hb->addWidget(iconButton(mainWin.actImagesEye));
-
-  auto vb = vbox();
-  grid->addLayout(vb,0,1);
-
-  vb->addStretch();
-  vb->addWidget(iconButton(mainWin.actImagesUpDown));
-  vb->addWidget(iconButton(mainWin.actImagesLeftRight));
-  vb->addWidget(iconButton(mainWin.actImagesTurnRight));
-  vb->addWidget(iconButton(mainWin.actImagesTurnLeft));
-
-  auto setCutFromGui = [this](bool topLeft, int value){
+  auto setImageCut = [this](bool topLeft, int value) {
     if (mainWin.actImagesLink->isChecked())
       mainWin.session.setImageCut(topLeft, true, value, value, value, value);
     else
       mainWin.session.setImageCut(topLeft, false, cutTop->value(), cutBottom->value(), cutLeft->value(), cutRight->value());
   };
 
-  connect(cutTop, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setCutFromGui](int value) {
-    setCutFromGui(true,value);
+  connect(cutTop, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
+    setImageCut(true,value);
   });
 
-  connect(cutBottom, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setCutFromGui](int value) {
-    setCutFromGui(false,value);
+  connect(cutBottom, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
+    setImageCut(false,value);
   });
 
-  connect(cutLeft, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setCutFromGui](int value) {
-    setCutFromGui(true,value);
+  connect(cutLeft, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
+    setImageCut(true,value);
   });
 
-  connect(cutRight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setCutFromGui](int value) {
-    setCutFromGui(false,value);
+  connect(cutRight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
+    setImageCut(false,value);
   });
 
   connect(&mainWin.session, &Session::imageCutChanged, [this]() {
@@ -209,12 +201,11 @@ Image::Image(MainWin& mainWin_): super(mainWin_,"",Qt::Horizontal), dataset(null
     imageWidget->setLeftRight(on);
   });
 
-  // the two buttons work almost as radio buttons, in a way
-  // to uncheck one, press the other one
-  auto setTurn = [](ImageWidget *imageWidget, QAction *thisAct, QAction *thatAct, int degrees) {
-    bool on = !thatAct->isChecked();
-    thisAct->setChecked(on);
-    thatAct->setChecked(false);
+  // the two buttons work, in a way, together
+  auto setTurn = [](ImageWidget *imageWidget, QAction *clicked, QAction *other, int degrees) {
+    bool on = clicked->isChecked() && !other->isChecked();
+    other->setChecked(false);
+    clicked->setChecked(on);
     imageWidget->setTurn(on ? degrees : 0);
   };
 
@@ -227,7 +218,7 @@ Image::Image(MainWin& mainWin_): super(mainWin_,"",Qt::Horizontal), dataset(null
   });
 }
 
-void Image::setDataset(pcCoreDataset dataset_) {
+void Dataset::setDataset(pcCoreDataset dataset_) {
   dataset = dataset_;
   QPixmap pixMap;
   if (dataset) {
@@ -237,7 +228,7 @@ void Image::setDataset(pcCoreDataset dataset_) {
   imageWidget->setPixmap(pixMap);
 }
 
-const Session::imagecut_t &Image::getCut() const {
+const Session::imagecut_t &Dataset::getCut() const {
   return mainWin.session.getImageCut();
 }
 

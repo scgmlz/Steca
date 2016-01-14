@@ -22,9 +22,7 @@ HEADERS += \
     panels/reflections.h \
     panels/reflectioninfo.h \
     panels/files.h \
-    panels/imageinfo.h \
     panels/normalization.h \
-    panels/image.h \
     split_files.h \
     split.h \
     split_reflections.h \
@@ -32,7 +30,9 @@ HEADERS += \
     split_diffractogram.h \
     session.h \
     panels/datasets.h \
-    split_datasets.h
+    split_datasets.h \
+    panels/datasetinfo.h \
+    panels/dataset.h
 
 SOURCES += \
     ../3rd/qcustomplot.cpp \
@@ -47,12 +47,10 @@ SOURCES += \
     panels/background.cpp \
     panels/detector.cpp \
     panels/diffractogram.cpp \
-    panels/imageinfo.cpp \
     panels/normalization.cpp \
     panels/files.cpp \
     panels/reflectioninfo.cpp \
     panels/reflections.cpp \
-    panels/image.cpp \
     split_files.cpp \
     split.cpp \
     split_reflections.cpp \
@@ -60,7 +58,9 @@ SOURCES += \
     split_diffractogram.cpp \
     session.cpp \
     panels/datasets.cpp \
-    split_datasets.cpp
+    split_datasets.cpp \
+    panels/datasetinfo.cpp \
+    panels/dataset.cpp
 
 RESOURCES += \
     resources.qrc
