@@ -14,11 +14,11 @@ class Dataset {
 public:
   Dataset(File&,
           rcstr date, rcstr comment,
-          float motorXT,  float motorYT,  float motorZT, float motorOmg, float motorTth,
-          float motorPhi, float motorChi,
-          int mon, double deltaTime,
-          float motorPST, float motorSST, float motorOMGM,
-          QSize const&, int const* intensities);
+          qreal motorXT,  qreal motorYT,  qreal motorZT,
+          qreal motorOmg, qreal motorTth, qreal motorPhi, qreal motorChi,
+          qreal motorPST, qreal motorSST, qreal motorOMGM,
+          qreal mon, qreal deltaTime,
+          QSize const&, Image::intensity_t const* intensities);
 
   Image const& getImage()   const { return image;   }
   File  const& getFile()    const { return file;    }
@@ -27,12 +27,11 @@ private:
   File &file;
   str   date, comment;
 
-  float
+  qreal
     motorXT,  motorYT,  motorZT,  motorOmg, motorTth,
     motorPhi, motorChi, motorPST, motorSST, motorOMGM;
 
-  int mon;
-  double deltaTime;
+  qreal mon, deltaTime;
 
   Image image;
 };

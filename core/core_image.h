@@ -9,21 +9,23 @@ namespace core {
 
 class Image {
 public:
-  Image(QSize const&,int const* intensities) THROWS;
+  typedef float intensity_t;
+
+  Image(QSize const&, intensity_t const* intensities) THROWS;
 
   QSize    const& getSize()        const { return size; }
   uint            dataCount()      const { return size.width() * size.height(); }
 
-  int intensity(uint index)        const;
-  int intensity(uint x, uint y)    const;
-  int maximumIntensity()           const { return maxIntensity; }
+  intensity_t intensity(uint index)     const;
+  intensity_t intensity(uint x, uint y) const;
+  intensity_t maximumIntensity()        const { return maxIntensity; }
 
-  QPixmap pixmap(int maximumIntensity);
+  QPixmap pixmap(intensity_t maximumIntensity);
 
 private:
-  QSize        size;
-  QVector<int> intensities;
-  int          maxIntensity;
+  QSize size;
+  QVector<intensity_t> intensities;
+  intensity_t          maxIntensity;
 };
 
 }

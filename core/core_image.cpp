@@ -3,7 +3,7 @@
 
 namespace core {
 
-Image::Image(QSize const& size_,int const* src) THROWS
+Image::Image(QSize const& size_, intensity_t const* src) THROWS
 : size(size_), maxIntensity(0) {
 
   RUNTIME_CHECK(size.isValid(),"Invalid image size");
@@ -16,15 +16,15 @@ Image::Image(QSize const& size_,int const* src) THROWS
     maxIntensity = qMax(*dest++ = *src++, maxIntensity);
 }
 
-int Image::intensity(uint index) const {
+Image::intensity_t Image::intensity(uint index) const {
   return intensities[index];
 }
 
-int Image::intensity(uint x, uint y) const {
+Image::intensity_t Image::intensity(uint x, uint y) const {
   return intensities[x + y*size.width()];
 }
 
-QPixmap Image::pixmap(int maximumIntensity) {
+QPixmap Image::pixmap(intensity_t maximumIntensity) {
   int count = dataCount();
   if (count < 1) return QPixmap();
 
