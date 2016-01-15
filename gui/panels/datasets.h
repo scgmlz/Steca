@@ -5,10 +5,10 @@
 
 namespace panel {
 
-class DatasetList: public ListView {
-  SUPER(DatasetList,ListView)
+class DatasetView: public ListView {
+  SUPER(DatasetView,ListView)
 public:
-  DatasetList(Session&); // TODO Session will be broadcast, eventually
+  DatasetView(Session&); // TODO Session will be broadcast, eventually
 
 protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);
@@ -23,7 +23,7 @@ public:
   Datasets(MainWin&);
 
 private:
-  DatasetList *datasetList;
+  DatasetView *datasetView;
 };
 
 }

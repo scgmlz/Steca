@@ -3,7 +3,7 @@
 
 namespace panel {
 
-ReflectionList::ReflectionList() {
+ReflectionView::ReflectionView() {
 //  TODO
 //  setColumnCount(6);
 //  hideColumn(0);
@@ -28,7 +28,7 @@ Reflections::Reflections(MainWin& mainWin): super(mainWin,"Reflections",Qt::Vert
   h->addWidget(iconButton(mainWin.actReflectionWidth));
   h->addStretch();
 
-  box->addWidget(reflectionList = new ReflectionList());
+  box->addWidget(reflectionView = new ReflectionView());
 
   h = hbox();
   box->addLayout(h);

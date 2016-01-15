@@ -6,10 +6,10 @@
 
 namespace panel {
 
-class FileList: public ListView {
-  SUPER(FileList,ListView) Q_OBJECT
+class FileView: public ListView {
+  SUPER(FileView,ListView) Q_OBJECT
 public:
-  FileList(Session&); // TODO Session will be broadcast, eventually
+  FileView(Session&); // TODO Session will be broadcast, eventually
 
 protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);
@@ -37,7 +37,7 @@ public:
   Files(MainWin&);
 
 private:
-  FileList *fileList;
+  FileView *fileView;
 };
 
 }

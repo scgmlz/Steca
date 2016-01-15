@@ -10,12 +10,12 @@ namespace panel {
 
 //-----------------------------------------------------------------------------
 
-FileList::FileList(Session& session_): session(session_) {
+FileView::FileView(Session& session_): session(session_) {
   setModel(&session.fileListModel);
   setItemDelegate(&delegate);
 }
 
-void FileList::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
+void FileView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
   super::selectionChanged(selected,deselected);
 
   auto& model  = session.fileListModel;
@@ -26,7 +26,7 @@ void FileList::selectionChanged(QItemSelection const& selected, QItemSelection c
                                  : model.data(indexes.first(), Session::FileListModel::GetFileRole).value<pcCoreFile>());
 }
 
-void FileList::removeSelectedFile() {
+void FileView::removeSelectedFile() {
   auto index = currentIndex();
   if (!index.isValid()) return;
 
@@ -43,10 +43,10 @@ void FileList::removeSelectedFile() {
 
 //-----------------------------------------------------------------------------
 
-FileList::Delegate::Delegate() {
+FileView::Delegate::Delegate() {
 }
 
-void FileList::Delegate::paint(QPainter* painter,
+void FileView::Delegate::paint(QPainter* painter,
   QStyleOptionViewItem const& option, QModelIndex const& index) const
 {
   bool isCorrectionFile = index.data(Session::FileListModel::IsCorrectionFileRole).toBool();
@@ -63,7 +63,7 @@ void FileList::Delegate::paint(QPainter* painter,
 //-----------------------------------------------------------------------------
 
 Files::Files(MainWin& mainWin_): super(mainWin_,"Files",Qt::Vertical) {
-  box->addWidget((fileList = new FileList(mainWin.session)));
+  box->addWidget((fileView = new FileView(mainWin.session)));
 
   auto h = hbox(); box->addLayout(h);
 
@@ -73,12 +73,12 @@ Files::Files(MainWin& mainWin_): super(mainWin_,"Files",Qt::Vertical) {
   h->addWidget(iconButton(mainWin.actRemoveFile));
 
   connect(mainWin.actRemoveFile, &QAction::triggered, [this]() {
-    fileList->removeSelectedFile();
+    fileView->removeSelectedFile();
   });
 
   connect(&mainWin.session, &Session::filesChanged, [this]() {
-    fileList->reset();
-    fileList->setCurrentIndex(mainWin.session.fileListModel.index(0)); // TODO untangle
+    fileView->reset();
+    fileView->setCurrentIndex(mainWin.session.fileListModel.index(0)); // TODO untangle
   });
 }
 

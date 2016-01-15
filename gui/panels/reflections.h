@@ -6,10 +6,10 @@
 
 namespace panel {
 
-class ReflectionList: public ListView {
-  SUPER(ReflectionList,ListView) Q_OBJECT
+class ReflectionView: public ListView {
+  SUPER(ReflectionView,ListView) Q_OBJECT
 public:
-  ReflectionList();
+  ReflectionView();
 };
 
 class Reflections: public BoxPanel {
@@ -18,7 +18,7 @@ public:
   Reflections(MainWin&);
 
 private:
-  ReflectionList *reflectionList;
+  ReflectionView *reflectionView;
 };
 
 }
