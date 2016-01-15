@@ -13,7 +13,7 @@
 
 #define TR(what)          { }
 #define ASSERT(cond)
-#define NOT_HERE
+#define NOT_HERE          ;
 
 #endif
 

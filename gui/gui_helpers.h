@@ -21,7 +21,8 @@ QGridLayout*  gridLayout();
 
 QLabel*       icon(rcstr);
 QLabel*       label(rcstr);
-QLineEdit*    editCell();
+QLineEdit*    editCell(uint emWidth = 0);
+QLineEdit*    readCell(uint emWidth = 0);
 QSpinBox*     spinCell(int min,int max);
 QCheckBox*    check(rcstr text, QAction* = nullptr);
 

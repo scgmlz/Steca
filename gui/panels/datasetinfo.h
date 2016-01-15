@@ -2,6 +2,7 @@
 #define DATASETINFO_H
 
 #include "panel.h"
+#include "core_dataset.h"
 #include <QTreeWidget>
 
 class QCheckBox;
@@ -15,7 +16,7 @@ public:
   DatasetInfo(MainWin&);
 
   struct infoitem_t {
-    str tag; QCheckBox *cb; QLabel *text;
+    str tag; QCheckBox *cb; QLineEdit *text;
   };
   typedef QVector<infoitem_t> InfoItems;
 
@@ -24,8 +25,8 @@ public:
   public:
     Info(InfoItems&);
 
-  private:
     QGridLayout *grid;
+  private:
   };
 
 private:

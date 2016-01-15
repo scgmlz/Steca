@@ -23,6 +23,16 @@ public:
   Image const& getImage()   const { return image;   }
   File  const& getFile()    const { return file;    }
 
+  enum enumAttribute {
+    DATE, COMMENT,
+    MOTOR_X, MOTOR_Y, MOTOR_Z, MOTOR_OMG, MOTOR_TTH, MOTOR_PHI, MOTOR_CHI,
+    MOTOR_PST, MOTOR_SST, MOTOR_OMGM, MON, DELTA_TIME,
+    NUM_ATTRIBUTES
+  };
+
+  str getAttributeStrValue(int /*as: enumAttribute*/) const;
+  static str const attributeTag[NUM_ATTRIBUTES];
+
 private:
   File &file;
   str   date, comment;

@@ -35,9 +35,18 @@ QLabel* label(rcstr text) {
   return new QLabel(text);
 }
 
-QLineEdit* editCell() {
+QLineEdit* editCell(uint emWidth) {
   auto cell = new QLineEdit;
-  cell->setMaximumWidth(cell->sizeHint().height() * 2);
+  int maxWidth = emWidth > 0
+    ? emWidth*cell->fontMetrics().width('m')
+    : cell->sizeHint().height() * 2;
+  cell->setMaximumWidth(maxWidth);
+  return cell;
+}
+
+QLineEdit* readCell(uint emWidth) {
+  auto cell = editCell(emWidth);
+  cell->setReadOnly(true);
   return cell;
 }
 
