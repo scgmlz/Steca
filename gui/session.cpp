@@ -5,7 +5,7 @@
 
 Session::Session(): coreSession(new core::Session)
 , selectedFile(nullptr)
-, fileListModel(*this), datasetListModel(*this) {
+, fileViewModel(*this), datasetViewModel(*this) {
 }
 
 Session::~Session(){
@@ -181,14 +181,14 @@ void Session::setImageCut(bool topLeft, bool linked, int top, int bottom, int le
 
 //-----------------------------------------------------------------------------
 
-Session::FileListModel::FileListModel(Session& session_): session(session_) {
+Session::FileViewModel::FileViewModel(Session& session_): session(session_) {
 }
 
-int Session::FileListModel::rowCount(QModelIndex const&) const {
+int Session::FileViewModel::rowCount(QModelIndex const&) const {
   return session.numFiles(true);
 }
 
-QVariant Session::FileListModel::data(QModelIndex const& index,int role) const {
+QVariant Session::FileViewModel::data(QModelIndex const& index,int role) const {
   auto row = index.row(), cnt = rowCount(index);
   if (row < 0 || row >= cnt) return QVariant();
 
@@ -212,15 +212,20 @@ QVariant Session::FileListModel::data(QModelIndex const& index,int role) const {
 
 //-----------------------------------------------------------------------------
 
-Session::DatasetListModel::DatasetListModel(Session& session_): session(session_) {
+Session::DatasetViewModel::DatasetViewModel(Session& session_)
+: session(session_), numAttributes(0) {
 }
 
-int Session::DatasetListModel::rowCount(QModelIndex const&) const {
+int Session::DatasetViewModel::columnCount(const QModelIndex &) const {
+  return numAttributes + 1;
+}
+
+int Session::DatasetViewModel::rowCount(QModelIndex const&) const {
   pcCoreFile file = session.selectedFile;
   return file ? file->getDatasets().count() : 0;
 }
 
-QVariant Session::DatasetListModel::data(QModelIndex const& index,int role) const {
+QVariant Session::DatasetViewModel::data(QModelIndex const& index,int role) const {
   pcCoreFile file = session.selectedFile;
   if (!file) return QVariant();
 
@@ -232,11 +237,15 @@ QVariant Session::DatasetListModel::data(QModelIndex const& index,int role) cons
       str s = str("%1 ").arg(row);//TODO % file->getDatasets().at(row)->getComment();
       return s;
     }
-    case GetFileRole:
+    case GetDatasetRole:
       return QVariant::fromValue<pcCoreDataset>(&(session.getDataset(row)));
     default:
       return QVariant();
   }
+}
+
+void Session::DatasetViewModel::setNumAttributes(int n) {
+  numAttributes = n;
 }
 
 // eof

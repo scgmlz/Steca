@@ -5,8 +5,8 @@
 
 namespace panel {
 
-class DatasetView: public ListView {
-  SUPER(DatasetView,ListView)
+class DatasetView: public TreeListView {
+  SUPER(DatasetView,TreeListView)
 public:
   DatasetView(Session&); // TODO Session will be broadcast, eventually
 

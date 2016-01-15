@@ -11,26 +11,26 @@ namespace panel {
 //-----------------------------------------------------------------------------
 
 FileView::FileView(Session& session_): session(session_) {
-  setModel(&session.fileListModel);
+  setModel(&session.fileViewModel);
   setItemDelegate(&delegate);
 }
 
 void FileView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
   super::selectionChanged(selected,deselected);
 
-  auto& model  = session.fileListModel;
+  auto& model  = session.fileViewModel;
 
   auto indexes = selected.indexes();
   model.session.setSelectedFile(indexes.isEmpty()
                                  ? nullptr
-                                 : model.data(indexes.first(), Session::FileListModel::GetFileRole).value<pcCoreFile>());
+                                 : model.data(indexes.first(), Session::FileViewModel::GetFileRole).value<pcCoreFile>());
 }
 
 void FileView::removeSelectedFile() {
   auto index = currentIndex();
   if (!index.isValid()) return;
 
-  auto& model  = session.fileListModel;
+  auto& model  = session.fileViewModel;
 
   uint row = index.row();
   index = (row+1 < model.session.numFiles(true)) ? index
@@ -49,7 +49,7 @@ FileView::Delegate::Delegate() {
 void FileView::Delegate::paint(QPainter* painter,
   QStyleOptionViewItem const& option, QModelIndex const& index) const
 {
-  bool isCorrectionFile = index.data(Session::FileListModel::IsCorrectionFileRole).toBool();
+  bool isCorrectionFile = index.data(Session::FileViewModel::IsCorrectionFileRole).toBool();
   if(isCorrectionFile) {
     QStyleOptionViewItem o = option;
     auto &font = o.font;
@@ -78,7 +78,7 @@ Files::Files(MainWin& mainWin_): super(mainWin_,"Files",Qt::Vertical) {
 
   connect(&mainWin.session, &Session::filesChanged, [this]() {
     fileView->reset();
-    fileView->setCurrentIndex(mainWin.session.fileListModel.index(0)); // TODO untangle
+    fileView->setCurrentIndex(mainWin.session.fileViewModel.index(0)); // TODO untangle
   });
 }
 

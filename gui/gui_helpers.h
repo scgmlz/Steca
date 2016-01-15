@@ -12,6 +12,7 @@
 #include <QRadioButton>
 #include <QToolButton>
 #include <QListView>
+#include <QTreeView>
 
 QBoxLayout*   hbox();
 QBoxLayout*   vbox();
@@ -36,6 +37,23 @@ class ListView: public QListView {
   SUPER(ListView,QListView) Q_OBJECT
 public:
   ListView();
+};
+
+// abstract tree widget
+class TreeView: public QTreeView {
+  SUPER(TreeView,QTreeView) Q_OBJECT
+public:
+  TreeView();
+};
+
+// abstract tree widget used as a list
+class TreeListView: public TreeView {
+  SUPER(TreeListView,TreeView) Q_OBJECT
+public:
+  TreeListView();
+
+protected:
+  void setModel(QAbstractItemModel*);
 };
 
 #endif

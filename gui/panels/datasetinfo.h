@@ -32,8 +32,13 @@ public:
 private:
   Info *info;
   InfoItems infoItems;
+
+  void selectionChanged();
+  int numColumns;
 };
 
 }
+
+// used in signals
 
 #endif

@@ -88,4 +88,16 @@ ListView::ListView() {
   setAlternatingRowColors(true);
 }
 
+TreeView::TreeView() {
+  setAlternatingRowColors(true);
+}
+
+TreeListView::TreeListView() {
+}
+
+void TreeListView::setModel(QAbstractItemModel* model) {
+  super::setModel(model);
+//  hideColumn(0);  // this should look like a tree
+}
+
 // eof

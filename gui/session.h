@@ -4,9 +4,10 @@
 #include "defs.h"
 #include "core.h"
 #include <QAbstractListModel>
+#include <QAbstractTableModel>
 
 // A proxy for access to core::Session
-// Models and signals also here
+// Models and signals are also here
 
 class Session: public QObject {
   Q_OBJECT
@@ -54,12 +55,13 @@ signals:
   void fileSelected(pcCoreFile);
   void datasetSelected(pcCoreDataset);
   void imageCutChanged();
+  void infoItemsChanged();
 
 public:
-  class FileListModel: public QAbstractListModel {
-    SUPER(FileListModel,QAbstractListModel)
+  class FileViewModel: public QAbstractListModel {
+    SUPER(FileViewModel,QAbstractListModel)
   public:
-    FileListModel(Session&);
+    FileViewModel(Session&);
 
     enum { GetFileRole = Qt::UserRole, IsCorrectionFileRole };
 
@@ -69,23 +71,29 @@ public:
     Session &session;
   };
 
-  FileListModel fileListModel;
+  FileViewModel fileViewModel;
 
 public:
-  class DatasetListModel: public QAbstractListModel {
-    SUPER(DatasetListModel,QAbstractListModel)
+  class DatasetViewModel: public QAbstractTableModel {
+    SUPER(DatasetViewModel,QAbstractTableModel)
   public:
-    DatasetListModel(Session&);
+    DatasetViewModel(Session&);
 
-    enum { GetFileRole = Qt::UserRole };
+    enum { GetDatasetRole = Qt::UserRole };
 
+    int columnCount(QModelIndex const&)   const;
     int rowCount(QModelIndex const&)      const;
     QVariant data(QModelIndex const&,int) const;
 
-    Session &session;
+    Session &session; // TODO hide
+
+    void setNumAttributes(int);
+
+  private:
+    int numAttributes;
   };
 
-  DatasetListModel datasetListModel;
+  DatasetViewModel datasetViewModel;
 };
 
 #endif

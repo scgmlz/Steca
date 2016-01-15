@@ -26,6 +26,16 @@ DatasetInfo::DatasetInfo(MainWin& mainWin)
       infoItems[i].text->setText(dataset ? dataset->getAttributeStrValue(i) : str::null);
     }
   });
+
+  for (auto &item: infoItems)
+    connect(item.cb, &QCheckBox::clicked, this, &thisCls::selectionChanged);
+}
+
+void DatasetInfo::selectionChanged() {
+  int numAttributes = 0;
+  for (auto &item: infoItems)
+    if (item.cb->isChecked()) ++numAttributes;
+  mainWin.session.datasetViewModel.setNumAttributes(numAttributes);
 }
 
 DatasetInfo::Info::Info(DatasetInfo::InfoItems& items) {
