@@ -18,6 +18,7 @@ public:
   struct infoitem_t {
     str tag; QCheckBox *cb; QLineEdit *text;
   };
+
   typedef QVector<infoitem_t> InfoItems;
 
   class Info: public QWidget {

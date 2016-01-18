@@ -21,49 +21,56 @@ str Dataset::getAttributeStrValue(int e) const {
   qreal value;
 
   switch (e) {
-  case DATE:
+  case Datasets::DATE:
     return date;
-  case COMMENT:
+  case Datasets::COMMENT:
     return comment;
 
-  case MOTOR_X:
+  case Datasets::MOTOR_X:
     value = motorXT;    break;
-  case MOTOR_Y:
+  case Datasets::MOTOR_Y:
     value = motorYT;    break;
-  case MOTOR_Z:
+  case Datasets::MOTOR_Z:
     value = motorZT;    break;
-  case MOTOR_OMG:
+  case Datasets::MOTOR_OMG:
     value = motorOmg;   break;
-  case MOTOR_TTH:
+  case Datasets::MOTOR_TTH:
     value = motorTth;   break;
-  case MOTOR_PHI:
+  case Datasets::MOTOR_PHI:
     value = motorPhi;   break;
-  case MOTOR_CHI:
+  case Datasets::MOTOR_CHI:
     value = motorChi;   break;
-  case MOTOR_PST:
+  case Datasets::MOTOR_PST:
     value = motorPST;   break;
-  case MOTOR_SST:
+  case Datasets::MOTOR_SST:
     value = motorSST;   break;
-  case MOTOR_OMGM:
+  case Datasets::MOTOR_OMGM:
     value = motorOMGM;  break;
-  case MON:
+  case Datasets::MON:
     value = mon;        break;
-  case DELTA_TIME:
+  case Datasets::DELTA_TIME:
     value = deltaTime;  break;
-  case NUM_ATTRIBUTES:
+  case Datasets::NUM_ATTRIBUTES:
     NOT_HERE
   }
   return QString().setNum(value);
 }
 
-str const Dataset::attributeTag[NUM_ATTRIBUTES] = {
+Datasets::Datasets() {
+}
+
+rcstr Datasets::getAttributeTag(int i) {
+  if (i < 0 || i >= NUM_ATTRIBUTES)
+    return NULL_STR;
+  else
+    return attributeTag[i];
+}
+
+str const Datasets::attributeTag[NUM_ATTRIBUTES] = {
   "date", "comment",
   "X", "Y", "Z", "ω", "2θ", "φ", "χ",
   "PST", "SST", "ΩM", "monitor", "Δt",
 };
-
-Datasets::Datasets() {
-}
 
 }
 

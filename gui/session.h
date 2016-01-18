@@ -6,6 +6,8 @@
 #include <QAbstractListModel>
 #include <QAbstractTableModel>
 
+#include "panels/datasetinfo.h" // TODO this is quite brutal in order to get InfoItems; refactor?
+
 // A proxy for access to core::Session
 // Models and signals are also here
 
@@ -77,20 +79,25 @@ public:
   class DatasetViewModel: public QAbstractTableModel {
     SUPER(DatasetViewModel,QAbstractTableModel)
   public:
-    DatasetViewModel(Session&);
+    DatasetViewModel();
 
     enum { GetDatasetRole = Qt::UserRole };
 
     int columnCount(QModelIndex const&)   const;
     int rowCount(QModelIndex const&)      const;
     QVariant data(QModelIndex const&,int) const;
+    QVariant headerData(int,Qt::Orientation,int) const;
 
-    Session &session; // TODO hide
-
-    void setNumAttributes(int);
+    void setCoreFile(pcCoreFile);
+    void setInfoItems(panel::DatasetInfo::InfoItems const*);
 
   private:
-    int numAttributes;
+    core::Dataset& getDataset(int row)    const;
+
+  private:
+    pcCoreFile coreFile;
+    panel::DatasetInfo::InfoItems const* infoItems; // TODO make better
+    QVector<int> attributeNums;
   };
 
   DatasetViewModel datasetViewModel;

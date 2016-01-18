@@ -9,7 +9,7 @@ namespace panel {
 class FileView: public ListView {
   SUPER(FileView,ListView) Q_OBJECT
 public:
-  FileView(Session&); // TODO Session will be broadcast, eventually
+  FileView(Session&);
 
 protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);

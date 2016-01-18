@@ -23,15 +23,7 @@ public:
   Image const& getImage()   const { return image;   }
   File  const& getFile()    const { return file;    }
 
-  enum enumAttribute {
-    DATE, COMMENT,
-    MOTOR_X, MOTOR_Y, MOTOR_Z, MOTOR_OMG, MOTOR_TTH, MOTOR_PHI, MOTOR_CHI,
-    MOTOR_PST, MOTOR_SST, MOTOR_OMGM, MON, DELTA_TIME,
-    NUM_ATTRIBUTES
-  };
-
   str getAttributeStrValue(int /*as: enumAttribute*/) const;
-  static str const attributeTag[NUM_ATTRIBUTES];
 
 private:
   File &file;
@@ -49,6 +41,21 @@ private:
 class Datasets final: public QVector<QSharedPointer<Dataset>> {
 public:
   Datasets();
+
+  // declared here, because it must be the same for each individual dataset
+  // might eventually be dependend on the file format, made dynamic,
+  // or otherwise amended
+  enum enumAttribute {
+    DATE, COMMENT,
+    MOTOR_X, MOTOR_Y, MOTOR_Z, MOTOR_OMG, MOTOR_TTH, MOTOR_PHI, MOTOR_CHI,
+    MOTOR_PST, MOTOR_SST, MOTOR_OMGM, MON, DELTA_TIME,
+    NUM_ATTRIBUTES
+  };
+
+  static rcstr getAttributeTag(int);
+
+private:
+  static str const attributeTag[NUM_ATTRIBUTES];
 };
 
 }

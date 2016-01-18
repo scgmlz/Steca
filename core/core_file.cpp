@@ -3,7 +3,7 @@
 
 namespace core {
 
-File::File(): File(str::null) {
+File::File(): File(NULL_STR) {
 }
 
 File::File(rcstr fileName): info(fileName), maxIntensity(0) {

@@ -5,7 +5,7 @@
 
 Session::Session(): coreSession(new core::Session)
 , selectedFile(nullptr)
-, fileViewModel(*this), datasetViewModel(*this) {
+, fileViewModel(*this), datasetViewModel() {
 }
 
 Session::~Session(){
@@ -89,7 +89,7 @@ void Session::addFiles(str_lst filePaths) THROWS {
 void Session::remFile(uint i) {
   auto &files = coreSession->getDataFiles();
   if ((uint)files.count() == i)
-    coreSession->setCorrFile(str::null);
+    coreSession->setCorrFile(NULL_STR);
   else
     coreSession->remFile(i);
 
@@ -212,40 +212,75 @@ QVariant Session::FileViewModel::data(QModelIndex const& index,int role) const {
 
 //-----------------------------------------------------------------------------
 
-Session::DatasetViewModel::DatasetViewModel(Session& session_)
-: session(session_), numAttributes(0) {
+Session::DatasetViewModel::DatasetViewModel()
+: coreFile(nullptr), infoItems(nullptr) {
 }
 
 int Session::DatasetViewModel::columnCount(const QModelIndex &) const {
-  return numAttributes + 1;
+  return attributeNums.count() + 2; // 1 for the hidden 0-th column, 1 for the sequence number
 }
 
 int Session::DatasetViewModel::rowCount(QModelIndex const&) const {
-  pcCoreFile file = session.selectedFile;
-  return file ? file->getDatasets().count() : 0;
+  return coreFile ? coreFile->getDatasets().count() : 0;
 }
 
 QVariant Session::DatasetViewModel::data(QModelIndex const& index,int role) const {
-  pcCoreFile file = session.selectedFile;
-  if (!file) return QVariant();
+  if (!coreFile) return QVariant();
 
-  auto row = index.row(), cnt = rowCount(index);
-  if (row < 0 || row >= cnt) return QVariant();
+  int row = index.row(), col = index.column(), cnt = rowCount(index);
+  if (row < 0 || row >= cnt || col < 0 || col-2 >= attributeNums.count()) return QVariant();
 
   switch (role) {
     case Qt::DisplayRole: {
-      str s = str("%1 ").arg(row);//TODO % file->getDatasets().at(row)->getComment();
-      return s;
+      switch (col) {
+      case 0:
+        return QVariant();
+      case 1:
+        return str().setNum(row+1);
+      default:
+        return getDataset(row).getAttributeStrValue(attributeNums[col-2]);
+      }
     }
     case GetDatasetRole:
-      return QVariant::fromValue<pcCoreDataset>(&(session.getDataset(row)));
+      return QVariant::fromValue<pcCoreDataset>(&getDataset(row));
     default:
       return QVariant();
   }
 }
 
-void Session::DatasetViewModel::setNumAttributes(int n) {
-  numAttributes = n;
+QVariant Session::DatasetViewModel::headerData(int section, Qt::Orientation orientation, int role) const {
+  if (Qt::Horizontal != orientation || Qt::DisplayRole != role
+      || section < 1 || section-2 >= attributeNums.count())
+    return QVariant();
+
+  switch (section) {
+  case 1:
+    return "#";
+  default:
+    return core::Datasets::getAttributeTag(attributeNums[section-2]);
+  }
+}
+
+void Session::DatasetViewModel::setCoreFile(pcCoreFile coreFile_) {
+  beginResetModel();
+  coreFile = coreFile_;
+  endResetModel();
+}
+
+void Session::DatasetViewModel::setInfoItems(panel::DatasetInfo::InfoItems const* infoItems_) {
+  beginResetModel();
+  infoItems = infoItems_;
+  attributeNums.clear();
+  if (infoItems) for_i(infoItems->count()) {
+    auto &item = infoItems->at(i);
+    if (item.cb->isChecked())
+      attributeNums.append(i);
+  }
+  endResetModel();
+}
+
+core::Dataset &Session::DatasetViewModel::getDataset(int row) const {
+  return *coreFile->getDatasets().at(row);
 }
 
 // eof

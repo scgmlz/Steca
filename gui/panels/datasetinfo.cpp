@@ -13,8 +13,8 @@ DatasetInfo::DatasetInfo(MainWin& mainWin)
 
   scrollArea->setFrameStyle(QFrame::NoFrame);
 
-  for_i(core::Dataset::NUM_ATTRIBUTES) {
-      infoitem_t item; item.tag = core::Dataset::attributeTag[i];
+  for_i(core::Datasets::NUM_ATTRIBUTES) {
+      infoitem_t item; item.tag = core::Datasets::getAttributeTag(i);
       infoItems.append(item);
   }
 
@@ -22,8 +22,8 @@ DatasetInfo::DatasetInfo(MainWin& mainWin)
   scrollArea->setWidget(info);
 
   connect(&mainWin.session, &Session::datasetSelected, [this](pcCoreDataset dataset) {
-    for_i(core::Dataset::NUM_ATTRIBUTES) {
-      infoItems[i].text->setText(dataset ? dataset->getAttributeStrValue(i) : str::null);
+    for_i(core::Datasets::NUM_ATTRIBUTES) {
+      infoItems[i].text->setText(dataset ? dataset->getAttributeStrValue(i) : NULL_STR);
     }
   });
 
@@ -32,10 +32,7 @@ DatasetInfo::DatasetInfo(MainWin& mainWin)
 }
 
 void DatasetInfo::selectionChanged() {
-  int numAttributes = 0;
-  for (auto &item: infoItems)
-    if (item.cb->isChecked()) ++numAttributes;
-  mainWin.session.datasetViewModel.setNumAttributes(numAttributes);
+  mainWin.session.datasetViewModel.setInfoItems(&infoItems);
 }
 
 DatasetInfo::Info::Info(DatasetInfo::InfoItems& items) {

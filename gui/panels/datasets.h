@@ -8,7 +8,7 @@ namespace panel {
 class DatasetView: public TreeListView {
   SUPER(DatasetView,TreeListView)
 public:
-  DatasetView(Session&); // TODO Session will be broadcast, eventually
+  DatasetView(Session&);
 
 protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);

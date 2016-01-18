@@ -44,6 +44,8 @@ class TreeView: public QTreeView {
   SUPER(TreeView,QTreeView) Q_OBJECT
 public:
   TreeView();
+
+  int sizeHintForColumn(int) const; // make narrow columns
 };
 
 // abstract tree widget used as a list

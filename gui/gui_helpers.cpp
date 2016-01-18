@@ -92,12 +92,16 @@ TreeView::TreeView() {
   setAlternatingRowColors(true);
 }
 
+int TreeView::sizeHintForColumn(int) const {
+  return 3 * fontMetrics().width('m');
+}
+
 TreeListView::TreeListView() {
 }
 
 void TreeListView::setModel(QAbstractItemModel* model) {
   super::setModel(model);
-//  hideColumn(0);  // this should look like a tree
+  hideColumn(0);  // this should look like a list; 0th column is tree-like
 }
 
 // eof

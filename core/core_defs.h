@@ -15,7 +15,9 @@ typedef QString     str;
 typedef str const&  rcstr;
 typedef char const* pcstr;
 
-typedef QStringList   str_lst;
+typedef QStringList str_lst;
+
+extern  str const NULL_STR;
 
 // error handling
 #include <QException>

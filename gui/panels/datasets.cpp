@@ -5,17 +5,27 @@ namespace panel {
 
 DatasetView::DatasetView(Session& session_): session(session_) {
   setModel(&session.datasetViewModel);
+
+  connect(&session, &Session::fileSelected, [this](pcCoreFile coreFile) {
+    auto& model  = session.datasetViewModel;
+    model.setCoreFile(coreFile);
+    setCurrentIndex(model.index(0,0));
+  });
+
+  connect(model(), &QAbstractItemModel::modelReset, [this]() {
+    for_i(model()->columnCount())
+      resizeColumnToContents(i);
+  });
 }
 
 void DatasetView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
   super::selectionChanged(selected,deselected);
 
-  auto& model  = session.datasetViewModel;
-
   auto indexes = selected.indexes();
-  model.session.setSelectedDataset(indexes.isEmpty()
+  session.setSelectedDataset(indexes.isEmpty()
     ? nullptr
-    : model.data(indexes.first(), Session::DatasetViewModel::GetDatasetRole).value<pcCoreDataset>());
+    : session.datasetViewModel.data(indexes.first(),
+        Session::DatasetViewModel::GetDatasetRole).value<pcCoreDataset>());
 }
 
 //------------------------------------------------------------------------------
@@ -27,11 +37,6 @@ Datasets::Datasets(MainWin& mainWin_): super(mainWin_,"Datasets",Qt::Vertical) {
   h->addWidget(label("Combine:"));
   h->addWidget(spinCell(1,9));
   h->addStretch();
-
-  connect(&mainWin.session, &Session::fileSelected, [this](pcCoreFile) {
-    datasetView->reset();
-    datasetView->setCurrentIndex(mainWin.session.datasetViewModel.index(0,0)); // TODO untangle
-  });
 }
 
 }
