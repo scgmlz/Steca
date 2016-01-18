@@ -22,7 +22,11 @@ void DatasetView::selectionChanged(QItemSelection const& selected, QItemSelectio
 
 Datasets::Datasets(MainWin& mainWin_): super(mainWin_,"Datasets",Qt::Vertical) {
   box->addWidget((datasetView = new DatasetView(mainWin.session)));
-  box->addWidget(textButton(mainWin.actImagesCombine));
+  auto h = hbox();
+  box->addLayout(h);
+  h->addWidget(label("Combine:"));
+  h->addWidget(spinCell(1,9));
+  h->addStretch();
 
   connect(&mainWin.session, &Session::fileSelected, [this](pcCoreFile) {
     datasetView->reset();

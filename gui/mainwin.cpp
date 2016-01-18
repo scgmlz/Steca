@@ -92,7 +92,6 @@ void MainWin::initActions() {
   actReflectionWidth    = simple("Width",     ":/icon/width");
   actReflectionAdd      = simple("Width",     ":/icon/add");
 
-  actImagesCombine      = simple("Combine...");
   actImagesLink         = toggle("Link",      ":/icon/link");
   actImagesEye          = toggle("eye",       ":/icon/eye");
   actImagesGlobalNorm   = toggle("global nm.");

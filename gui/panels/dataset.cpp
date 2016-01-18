@@ -71,13 +71,21 @@ void ImageWidget::paintEvent(QPaintEvent*) {
       scale.setX((qreal)w  / original.width());
       scale.setY((qreal)h  / original.height());
 
-      transform.translate(w/2,h/2);
+      int transX = w/2, transY = h/2;
+
+      transform.translate(transX,transY);
 
       transform.rotate(turnDegrees);
-      if (leftRight)  transform.scale(-1,1);
-      if (upDown)     transform.scale(1,-1);
+      if (leftRight) {
+        transform.scale(-1,1);
+        transX += 1; // adjustment; TODO verify - it is still not quite perfect
+      }
+      if (upDown) {
+        transform.scale(1,-1);
+        transY += 1; // adjustment; TODO verify - it is still not quite perfect
+      }
 
-      transform.translate(-w/2,-h/2);
+      transform.translate(-transX,-transY);
     }
   }
 
@@ -123,7 +131,7 @@ Dataset::Dataset(MainWin& mainWin_): super(mainWin_,"",Qt::Vertical), dataset(nu
   bb->addWidget((cutBottom = spinCell(0,999)));
   bb->addWidget(icon(":/icon/left"));
   bb->addWidget((cutLeft = spinCell(0,999)));
-  bb->addWidget(icon(":/iqt ctcon/right"));
+  bb->addWidget(icon(":/icon/right"));
   bb->addWidget((cutRight = spinCell(0,999)));
   bb->addWidget(iconButton(mainWin.actImagesLink));
   bb->addStretch();
