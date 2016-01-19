@@ -3,8 +3,4 @@
 
 #include "core_session.h"
 
-namespace core {
-
-}
-
 #endif

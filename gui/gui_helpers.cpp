@@ -35,12 +35,13 @@ QLabel* label(rcstr text) {
   return new QLabel(text);
 }
 
+static void setEmWidth(QWidget* w, uint emWidth) {
+  w->setMaximumWidth(emWidth*w->fontMetrics().width('m'));
+}
+
 QLineEdit* editCell(uint emWidth) {
   auto cell = new QLineEdit;
-  int maxWidth = emWidth > 0
-    ? emWidth*cell->fontMetrics().width('m')
-    : cell->sizeHint().height() * 2;
-  cell->setMaximumWidth(maxWidth);
+  setEmWidth(cell,emWidth);
   return cell;
 }
 
@@ -50,11 +51,19 @@ QLineEdit* readCell(uint emWidth) {
   return cell;
 }
 
-QSpinBox* spinCell(int min,int max) {
+QSpinBox* spinCell(uint emWidth,int min,int max) {
   auto cell = new QSpinBox;
-  cell->setMaximumWidth(cell->sizeHint().height() * 2);
+  setEmWidth(cell,emWidth);
   cell->setMinimum(min);
-  cell->setMaximum(max);
+  cell->setMaximum(max>INT_MIN ? max : INT_MAX);
+  return cell;
+}
+
+QDoubleSpinBox *spinCell(uint emWidth,qreal min, qreal max) {
+  auto cell = new QDoubleSpinBox;
+  setEmWidth(cell,emWidth);
+  cell->setMinimum(min);
+  cell->setMaximum(max>INT_MIN ? max : INT_MAX);
   return cell;
 }
 

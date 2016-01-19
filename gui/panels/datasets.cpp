@@ -35,7 +35,7 @@ Datasets::Datasets(MainWin& mainWin_): super(mainWin_,"Datasets",Qt::Vertical) {
   auto h = hbox();
   box->addLayout(h);
   h->addWidget(label("Combine:"));
-  h->addWidget(spinCell(1,9));
+  h->addWidget(spinCell(4,1));
   h->addStretch();
 }
 

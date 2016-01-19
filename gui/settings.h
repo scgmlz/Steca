@@ -5,15 +5,27 @@
 #include <QSettings>
 #include <QKeySequence>
 
+class QCheckBox;
+class QSpinBox;
+class QDoubleSpinBox;
+
 class Settings: public QSettings {
   SUPER(Settings, QSettings)
 public:
   Settings(rcstr group = "");
+ ~Settings();
 
-  str group;
+  QVariant readVariant(rcstr key, QVariant const& def);
+  void     saveVariant(rcstr key, QVariant const& val);
 
-  str   readStr(rcstr key, rcstr def);
-  void  saveStr(rcstr key, rcstr val);
+  void read(rcstr key, QCheckBox*, bool def);
+  void save(rcstr key, QCheckBox*);
+
+  void read(rcstr key, QSpinBox*, int def);
+  void save(rcstr key, QSpinBox*);
+
+  void read(rcstr key, QDoubleSpinBox*, qreal def);
+  void save(rcstr key, QDoubleSpinBox*);
 };
 
 class Keys {

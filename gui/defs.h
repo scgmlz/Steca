@@ -28,4 +28,14 @@ public:
  ~WaitCursor();
 };
 
+// TODO is it built in?
+
+class BoolGuard {
+public:
+  BoolGuard(bool &);
+ ~BoolGuard();
+private:
+  bool &b;
+};
+
 #endif

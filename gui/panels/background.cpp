@@ -8,7 +8,7 @@ Background::Background(MainWin& mainWin)
 
   box->addWidget(iconButton(mainWin.actBackgroundBackground));
   box->addWidget(label("Degree:"));
-  box->addWidget(editCell());
+  box->addWidget(editCell(4));
   box->addWidget(iconButton(mainWin.actBackgroundEye));
 }
 

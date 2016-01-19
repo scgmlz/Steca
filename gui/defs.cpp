@@ -20,4 +20,12 @@ WaitCursor::~WaitCursor() {
   QApplication::restoreOverrideCursor();
 }
 
+BoolGuard::BoolGuard(bool& b_): b(b_) {
+  b = true;
+}
+
+BoolGuard::~BoolGuard() {
+  b = false;
+}
+
 // eof

@@ -3,6 +3,8 @@
 
 #include "core_defs.h"
 #include "core_file.h"
+#include <QSize>
+#include <QPointF>
 
 namespace core {
 

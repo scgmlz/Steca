@@ -46,18 +46,28 @@ public:
   void setImageCut(bool topLeft, bool linked, imagecut_t const&);
   void setImageCut(bool topLeft, bool linked, int top, int bottom, int left, int right);
 
+  struct detector_t {
+    detector_t();
+    qreal   distance, pixelSize;
+    bool    isBeamOffset;
+    QPointF beamOffset;
+  };
+
 private:
   pcCoreFile    selectedFile;
   pcCoreDataset selectedDataset;
 
   imagecut_t    imageCut;
 
+public:
+  detector_t    detector;
+
 signals:
+  void sessionLoaded();
   void filesChanged();
   void fileSelected(pcCoreFile);
   void datasetSelected(pcCoreDataset);
   void imageCutChanged();
-  void infoItemsChanged();
 
 public:
   class FileViewModel: public QAbstractListModel {

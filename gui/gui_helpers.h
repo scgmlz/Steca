@@ -8,29 +8,31 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QSpinBox>
+#include <QDoubleSpinBox>
 #include <QCheckBox>
 #include <QRadioButton>
 #include <QToolButton>
 #include <QListView>
 #include <QTreeView>
 
-QBoxLayout*   hbox();
-QBoxLayout*   vbox();
-QBoxLayout*   boxLayout(Qt::Orientation);
+QBoxLayout*     hbox();
+QBoxLayout*     vbox();
+QBoxLayout*     boxLayout(Qt::Orientation);
 
-QGridLayout*  gridLayout();
+QGridLayout*    gridLayout();
 
-QLabel*       icon(rcstr);
-QLabel*       label(rcstr);
-QLineEdit*    editCell(uint emWidth = 0);
-QLineEdit*    readCell(uint emWidth = 0);
-QSpinBox*     spinCell(int min,int max);
-QCheckBox*    check(rcstr text, QAction* = nullptr);
+QLabel*         icon(rcstr);
+QLabel*         label(rcstr);
+QLineEdit*      editCell(uint emWidth);
+QLineEdit*      readCell(uint emWidth);
+QSpinBox*       spinCell(uint emWidth,int min,int max = INT_MIN);
+QDoubleSpinBox* spinCell(uint emWidth,qreal min,qreal max = INT_MIN);
+QCheckBox*      check(rcstr text, QAction* = nullptr);
 
-QToolButton*  textButton(QAction*);
-QToolButton*  iconButton(QAction*);
+QToolButton*    textButton(QAction*);
+QToolButton*    iconButton(QAction*);
 
-QRadioButton* radioButton(rcstr text);
+QRadioButton*   radioButton(rcstr text);
 
 // abstract list widget
 class ListView: public QListView {

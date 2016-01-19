@@ -126,13 +126,13 @@ Dataset::Dataset(MainWin& mainWin_): super(mainWin_,"",Qt::Vertical), dataset(nu
 
   bb->addWidget(check("gl. normalize",mainWin.actImagesGlobalNorm));
   bb->addWidget(icon(":/icon/top"));
-  bb->addWidget((cutTop = spinCell(0,999)));
+  bb->addWidget((cutTop = spinCell(4,0)));
   bb->addWidget(icon(":/icon/bottom"));
-  bb->addWidget((cutBottom = spinCell(0,999)));
+  bb->addWidget((cutBottom = spinCell(4,0)));
   bb->addWidget(icon(":/icon/left"));
-  bb->addWidget((cutLeft = spinCell(0,999)));
+  bb->addWidget((cutLeft = spinCell(4,0)));
   bb->addWidget(icon(":/icon/right"));
-  bb->addWidget((cutRight = spinCell(0,999)));
+  bb->addWidget((cutRight = spinCell(4,0)));
   bb->addWidget(iconButton(mainWin.actImagesLink));
   bb->addStretch();
   bb->addWidget(iconButton(mainWin.actImagesEye));

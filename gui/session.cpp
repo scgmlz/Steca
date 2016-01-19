@@ -17,6 +17,8 @@ void Session::load(QFileInfo const& fileInfo) THROWS {
   load(file.readAll());
 }
 
+// TODO merge load / save, DRY
+
 void Session::load(QByteArray const& json) THROWS {
   QJsonParseError parseError;
   QJsonDocument doc(QJsonDocument::fromJson(json,&parseError));
@@ -42,10 +44,33 @@ void Session::load(QByteArray const& json) THROWS {
   int x2 = cut["right"].toInt();
 
   setImageCut(true,false,x1,y1,x2,y2);
+
+  auto det = top["detector"].toObject();
+
+  detector.distance     = det["distance"].toDouble();
+  detector.pixelSize    = det["pixelsize"].toDouble();
+  detector.isBeamOffset = det["isbeamoffset"].toBool();
+  WT(detector.isBeamOffset)
+  detector.beamOffset.setX(det["offset_x"].toDouble());
+  detector.beamOffset.setY(det["offset_y"].toDouble());
+
+  emit sessionLoaded();
 }
 
 QByteArray Session::save() const {
   QByteArray json;
+
+  QJsonObject top;
+
+  QJsonObject det;
+
+  det["distance"]     = detector.distance;
+  det["pixel size"]   = detector.pixelSize;
+  det["isbeamoffset"] = detector.isBeamOffset;
+  det["offset_x"]     = detector.beamOffset.x();
+  det["offset_y"]     = detector.beamOffset.y();
+
+  top["detector"] = det;
 
   QJsonArray files;
 
@@ -53,7 +78,6 @@ QByteArray Session::save() const {
     files.append(file->getInfo().absoluteFilePath());
   }
 
-  QJsonObject top;
   top["files"] = files;
   auto corrFile = coreSession->getCorrFile();
   if (!corrFile.name().isEmpty()) top["corr.file"] = corrFile.getInfo().absoluteFilePath();
@@ -177,6 +201,10 @@ void Session::setImageCut(bool topLeft, bool linked, imagecut_t const& imageCut_
 
 void Session::setImageCut(bool topLeft, bool linked, int top, int bottom, int left, int right) {
   setImageCut(topLeft,linked,imagecut_t(top,bottom,left,right));
+}
+
+Session::detector_t::detector_t()
+: distance(0), pixelSize(0), isBeamOffset(false), beamOffset() {
 }
 
 //-----------------------------------------------------------------------------

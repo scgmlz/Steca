@@ -270,7 +270,7 @@ void MainWin::show() {
   super::show();
   checkActions();
 #ifdef DEVEL
-  session.load(QFileInfo("/home/jan/q.ste"));
+//  session.load(QFileInfo("/home/jan/q.ste"));
 #endif
 }
 
@@ -340,25 +340,21 @@ bool MainWin::onClose() {
   return true;
 }
 
-static str const GROUP_MAINWIN("MainWin");
-static str const VALUE_GEOMETRY("geometry");
-static str const VALUE_STATE("state");
+static str GROUP_MAINWIN("MainWin");
+static str KEY_GEOMETRY("geometry");
+static str KEY_STATE("state");
 
 void MainWin::readSettings() {
   if (initialState.isEmpty()) initialState = saveState();
-  Settings s;
-  s.beginGroup(GROUP_MAINWIN);
-  restoreGeometry(s.value(VALUE_GEOMETRY).toByteArray());
-  restoreState(s.value(VALUE_STATE).toByteArray());
-  s.endGroup();
+  Settings s(GROUP_MAINWIN);
+  restoreGeometry(s.value(KEY_GEOMETRY).toByteArray());
+  restoreState(s.value(KEY_STATE).toByteArray());
 }
 
 void MainWin::saveSettings() {
-  Settings s;
-  s.beginGroup(GROUP_MAINWIN);
-  s.setValue(VALUE_GEOMETRY,	saveGeometry());
-  s.setValue(VALUE_STATE,		saveState());
-  s.endGroup();
+  Settings s(GROUP_MAINWIN);
+  s.setValue(KEY_GEOMETRY, saveGeometry());
+  s.setValue(KEY_STATE,    saveState());
 }
 
 void MainWin::checkActions() {
