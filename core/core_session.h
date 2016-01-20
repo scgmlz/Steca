@@ -33,7 +33,14 @@ protected:
   void setImageSize(QSize const&) THROWS;
   void updateImageSize();
 
-public:
+public: // detector TODO make a structure; rename variables
+  qreal pixSpan;            // size of the detector pixel
+  qreal sampleDetectorSpan; // the distance between sample - detector
+  bool  hasBeamOffset;
+  int   middlePixXOffset;
+  int   middlePixYOffset;
+
+public: // image
   struct imagecut_t {
     imagecut_t(int top = 0, int bottom = 0, int left = 0, int right = 0);
     int top, bottom, left, right;

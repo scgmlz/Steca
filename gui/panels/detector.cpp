@@ -87,35 +87,30 @@ Detector::~Detector() {
 void Detector::setTo(Session& session) {
   if (isSetting) return;
 
-  auto& detector = session.detector;
-  detector.distance     = spinDistance->value();
-  detector.pixelSize    = spinPixelSize->value();
-  detector.beamOffset.setX(spinOffsetX->value());
-  detector.beamOffset.setY(spinOffsetY->value());
-  detector.isBeamOffset = checkIsBeamOffset->isChecked();
+  session.sampleDetectorSpan = spinDistance->value();
+  session.pixSpan            = spinPixelSize->value();
+  session.middlePixXOffset   = spinOffsetX->value();
+  session.middlePixYOffset   = spinOffsetY->value();
+  session.hasBeamOffset      = checkIsBeamOffset->isChecked();
 }
 
 void Detector::setFrom(Session& session) {
   BoolGuard _(isSetting);
 
-  auto& detector = session.detector;
-  spinDistance->setValue(detector.distance);
-  spinPixelSize->setValue(detector.pixelSize);
-  spinOffsetX->setValue(detector.beamOffset.x());
-  spinOffsetY->setValue(detector.beamOffset.y());
-  WT(detector.isBeamOffset)
-  checkIsBeamOffset->setChecked(detector.isBeamOffset);
+  spinDistance->setValue(session.sampleDetectorSpan);
+  spinPixelSize->setValue(session.pixSpan);
+  spinOffsetX->setValue(session.middlePixXOffset);
+  spinOffsetY->setValue(session.middlePixYOffset);
+  checkIsBeamOffset->setChecked(session.hasBeamOffset);
 }
 
 void Detector::readSettings(Session& session) {
-  auto& detector = session.detector;
-
   Settings s(GROUP_DETECTOR);
-  s.read(KEY_DISTANCE,    spinDistance,     detector.distance);
-  s.read(KEY_PIXEL_SIZE,  spinPixelSize,    detector.pixelSize);
-  s.read(KEY_IS_OFFSET,   checkIsBeamOffset,detector.isBeamOffset);
-  s.read(KEY_OFFSET_X,    spinOffsetX,      detector.beamOffset.x());
-  s.read(KEY_OFFSET_Y,    spinOffsetY,      detector.beamOffset.y());
+  s.read(KEY_DISTANCE,    spinDistance,     session.sampleDetectorSpan);
+  s.read(KEY_PIXEL_SIZE,  spinPixelSize,    session.pixSpan);
+  s.read(KEY_IS_OFFSET,   checkIsBeamOffset,session.hasBeamOffset);
+  s.read(KEY_OFFSET_X,    spinOffsetX,      session.middlePixXOffset);
+  s.read(KEY_OFFSET_Y,    spinOffsetY,      session.middlePixYOffset);
 }
 
 void Detector::saveSettings() {

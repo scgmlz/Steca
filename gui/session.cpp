@@ -46,12 +46,11 @@ void Session::load(QByteArray const& json) THROWS {
 
   auto det = top["detector"].toObject();
 
-  detector.distance     = det["distance"].toDouble();
-  detector.pixelSize    = det["pixelsize"].toDouble();
-  detector.isBeamOffset = det["isbeamoffset"].toBool();
-  WT(detector.isBeamOffset)
-  detector.beamOffset.setX(det["offset_x"].toDouble());
-  detector.beamOffset.setY(det["offset_y"].toDouble());
+  sampleDetectorSpan = det["distance"].toDouble();
+  pixSpan            = det["pixelsize"].toDouble();
+  hasBeamOffset      = det["hasbeamoffset"].toBool();
+  middlePixXOffset   = det["offset_x"].toDouble();
+  middlePixYOffset   = det["offset_y"].toDouble();
 
   emit sessionLoaded();
 }
@@ -63,11 +62,11 @@ QByteArray Session::save() const {
 
   QJsonObject det;
 
-  det["distance"]     = detector.distance;
-  det["pixel size"]   = detector.pixelSize;
-  det["isbeamoffset"] = detector.isBeamOffset;
-  det["offset_x"]     = detector.beamOffset.x();
-  det["offset_y"]     = detector.beamOffset.y();
+  det["distance"]     = sampleDetectorSpan;
+  det["pixel size"]   = pixSpan;
+  det["isbeamoffset"] = hasBeamOffset;
+  det["offset_x"]     = middlePixXOffset;
+  det["offset_y"]     = middlePixYOffset;
 
   top["detector"] = det;
 
@@ -138,15 +137,6 @@ void Session::setSelectedDataset(pcCoreDataset dataset) {
 void Session::setImageCut(bool topLeft, bool linked, imagecut_t const& imageCut) {
   super::setImageCut(topLeft,linked,imageCut);
   emit imageCutChanged();
-}
-
-//void Session::setImageCut(bool topLeft, bool linked, int top, int bottom, int left, int right)
-//{
-//  setImageCut(topLeft,linked,imagecut_t(top,bottom,left,right));
-//}
-
-Session::detector_t::detector_t()
-: distance(0), pixelSize(0), isBeamOffset(false), beamOffset() {
 }
 
 //-----------------------------------------------------------------------------

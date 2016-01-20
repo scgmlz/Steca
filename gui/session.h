@@ -32,19 +32,9 @@ public:
 
   void setImageCut(bool topLeft, bool linked, imagecut_t const&);
 
-  struct detector_t {
-    detector_t();
-    qreal   distance, pixelSize;
-    bool    isBeamOffset;
-    QPointF beamOffset;
-  };
-
 private:
   pcCoreFile    selectedFile;
   pcCoreDataset selectedDataset;
-
-public:
-  detector_t    detector;
 
 signals:
   void sessionLoaded();
