@@ -6,7 +6,7 @@
 class SplitFiles: public Split {
   SUPER(SplitFiles,Split)
 public:
-  SplitFiles(MainWin&);
+  SplitFiles(MainWin&,Session&);
 };
 
 #endif

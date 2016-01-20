@@ -20,7 +20,7 @@ private:
 class Datasets: public BoxPanel {
   SUPER(Datasets,BoxPanel)
 public:
-  Datasets(MainWin&);
+  Datasets(MainWin&,Session&);
 
 private:
   DatasetView *datasetView;

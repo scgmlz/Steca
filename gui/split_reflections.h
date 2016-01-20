@@ -6,7 +6,7 @@
 class SplitReflections: public Split {
   SUPER(SplitReflections,Split)
 public:
-  SplitReflections(MainWin&);
+  SplitReflections(MainWin&,Session&);
 };
 
 #endif

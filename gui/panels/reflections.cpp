@@ -18,7 +18,8 @@ ReflectionView::ReflectionView() {
 
 //-----------------------------------------------------------------------------
 
-Reflections::Reflections(MainWin& mainWin): super(mainWin,"Reflections",Qt::Vertical) {
+Reflections::Reflections(MainWin& mainWin,Session& session)
+: super("Reflections",mainWin,session,Qt::Vertical) {
   auto h = hbox();
   box->addLayout(h);
 

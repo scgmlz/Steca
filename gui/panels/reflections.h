@@ -15,7 +15,7 @@ public:
 class Reflections: public BoxPanel {
   SUPER(Reflections,BoxPanel)
 public:
-  Reflections(MainWin&);
+  Reflections(MainWin&,Session&);
 
 private:
   ReflectionView *reflectionView;

@@ -38,10 +38,8 @@ private:
   void closeEvent(QCloseEvent*);
   bool onClose();
 
-public:
-  Session session;
-
 private:
+  Session session;
   QMenu *menuFile, *menuEdit, *menuView, *menuOpts, *menuHelp;
 
 public:

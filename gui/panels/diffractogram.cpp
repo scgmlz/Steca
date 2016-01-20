@@ -3,9 +3,8 @@
 
 namespace panel {
 
-Diffractogram::Diffractogram(MainWin& mainWin)
-: super(mainWin,"Diffractogram",Qt::Vertical) {
-
+Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
+: super("Diffractogram",mainWin,session,Qt::Vertical) {
   box->addWidget(new QCustomPlot());
   box->addWidget(check("From all images"));
 }

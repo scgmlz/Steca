@@ -13,7 +13,7 @@ namespace panel {
 class DatasetInfo: public BoxPanel {
   SUPER(DatasetInfo,BoxPanel)
 public:
-  DatasetInfo(MainWin&);
+  DatasetInfo(MainWin&,Session&);
 
   struct infoitem_t {
     str tag; QCheckBox *cb; QLineEdit *text;

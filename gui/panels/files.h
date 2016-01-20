@@ -34,7 +34,7 @@ private:
 class Files: public BoxPanel {
   SUPER(Files,BoxPanel)
 public:
-  Files(MainWin&);
+  Files(MainWin&,Session&);
 
 private:
   FileView *fileView;

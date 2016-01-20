@@ -106,7 +106,7 @@ void ImageWidget::paintEvent(QPaintEvent*) {
   if (!showOverlay) return;
 
   // cut
-  auto cut = image.getCut();
+  auto cut = image.getSession().getImageCut();
   r.adjust(qRound(scale.x()*cut.left),  qRound(scale.y()*cut.top),
           -qRound(scale.x()*cut.right),-qRound(scale.y()*cut.bottom));
 
@@ -121,8 +121,8 @@ void ImageWidget::update() {
 
 //------------------------------------------------------------------------------
 
-Dataset::Dataset(MainWin& mainWin_): super(mainWin_,"",Qt::Vertical), dataset(nullptr), globalNorm(false) {
-
+Dataset::Dataset(MainWin& mainWin_, Session& session_)
+: super("",mainWin_,session_,Qt::Vertical), dataset(nullptr), globalNorm(false) {
   auto bb = hbox(); // (b)ottom (b)uttons
 
   bb->addWidget(check("gl. normalize",mainWin.actImagesGlobalNorm));
@@ -155,9 +155,9 @@ Dataset::Dataset(MainWin& mainWin_): super(mainWin_,"",Qt::Vertical), dataset(nu
 
   auto setImageCut = [this](bool topLeft, int value) {
     if (mainWin.actImagesLink->isChecked())
-      mainWin.session.setImageCut(topLeft, true, Session::imagecut_t(value,value,value,value));
+      session.setImageCut(topLeft, true, Session::imagecut_t(value,value,value,value));
     else
-      mainWin.session.setImageCut(topLeft, false, Session::imagecut_t(cutTop->value(), cutBottom->value(), cutLeft->value(), cutRight->value()));
+      session.setImageCut(topLeft, false, Session::imagecut_t(cutTop->value(), cutBottom->value(), cutLeft->value(), cutRight->value()));
   };
 
   connect(cutTop, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
@@ -176,9 +176,9 @@ Dataset::Dataset(MainWin& mainWin_): super(mainWin_,"",Qt::Vertical), dataset(nu
     setImageCut(false,value);
   });
 
-  connect(&mainWin.session, &Session::imageCutChanged, [this]() {
+  connect(&session_, &Session::imageCutChanged, [this]() {
     // set GUI from cut values
-    auto cut = mainWin.session.getImageCut();
+    auto cut = session.getImageCut();
     cutTop    ->setValue(cut.top);
     cutBottom ->setValue(cut.bottom);
     cutLeft   ->setValue(cut.left);
@@ -198,7 +198,7 @@ Dataset::Dataset(MainWin& mainWin_): super(mainWin_,"",Qt::Vertical), dataset(nu
     setDataset(dataset);
   });
 
-  connect(&mainWin.session, &Session::datasetSelected, [this](pcCoreDataset dataset) {
+  connect(&session, &Session::datasetSelected, [this](pcCoreDataset dataset) {
     setDataset(dataset);
   });
 
@@ -235,10 +235,6 @@ void Dataset::setDataset(pcCoreDataset dataset_) {
     pixMap = image.pixmap(globalNorm ? dataset->getFile().maximumIntensity() : image.maximumIntensity());
   }
   imageWidget->setPixmap(pixMap);
-}
-
-const Session::imagecut_t &Dataset::getCut() const {
-  return mainWin.session.getImageCut();
 }
 
 }

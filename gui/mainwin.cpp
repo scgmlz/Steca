@@ -195,18 +195,18 @@ void MainWin::initLayout() {
   auto splReflections = new QSplitter(Qt::Horizontal);
   splReflections->setChildrenCollapsible(false);
 
-  splMain->addWidget((splitFiles = new SplitFiles(*this)));
+  splMain->addWidget((splitFiles = new SplitFiles(*this,session)));
   splMain->addWidget(splOther);
   splMain->setSizes({0,INT16_MAX});
 
   splOther->addWidget(splImages);
   splOther->addWidget(splReflections);
 
-  splImages->addWidget((splitDatasets = new SplitDatasets(*this)));
-  splImages->addWidget((splitImage = new SplitImage(*this)));
+  splImages->addWidget((splitDatasets = new SplitDatasets(*this,session)));
+  splImages->addWidget((splitImage = new SplitImage(*this,session)));
 
-  splReflections->addWidget((splitReflections = new SplitReflections(*this)));
-  splReflections->addWidget((splitDiffractogram = new SplitDiffractogram(*this)));
+  splReflections->addWidget((splitReflections = new SplitReflections(*this,session)));
+  splReflections->addWidget((splitDiffractogram = new SplitDiffractogram(*this,session)));
   splReflections->setStretchFactor(0,1);
   splReflections->setStretchFactor(1,3);
 }

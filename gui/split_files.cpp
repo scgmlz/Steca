@@ -4,12 +4,12 @@
 #include "panels/detector.h"
 #include "panels/normalization.h"
 
-SplitFiles::SplitFiles(MainWin& mainWin): super(Qt::Vertical) {
-  auto panelFiles = new panel::Files(mainWin);
+SplitFiles::SplitFiles(MainWin& mainWin,Session& session): super(Qt::Vertical) {
+  auto panelFiles = new panel::Files(mainWin,session);
   panelFiles->setVerticalStretch(1);
   box->addWidget(panelFiles);
-  box->addWidget(new panel::Detector(mainWin));
-  box->addWidget(new panel::Normalization(mainWin));
+  box->addWidget(new panel::Detector(mainWin,session));
+  box->addWidget(new panel::Normalization(mainWin,session));
 }
 
 // eof

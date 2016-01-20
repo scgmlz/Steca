@@ -10,7 +10,7 @@ namespace panel {
 class Detector: public GridPanel {
   SUPER(Detector,GridPanel)
 public:
-  Detector(MainWin&);
+  Detector(MainWin&,Session&);
  ~Detector();
 
 private:

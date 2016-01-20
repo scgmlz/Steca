@@ -62,8 +62,9 @@ void FileView::Delegate::paint(QPainter* painter,
 
 //-----------------------------------------------------------------------------
 
-Files::Files(MainWin& mainWin_): super(mainWin_,"Files",Qt::Vertical) {
-  box->addWidget((fileView = new FileView(mainWin.session)));
+Files::Files(MainWin& mainWin_,Session& session_)
+: super("Files",mainWin_,session_,Qt::Vertical) {
+  box->addWidget((fileView = new FileView(session)));
 
   auto h = hbox(); box->addLayout(h);
 
@@ -76,9 +77,9 @@ Files::Files(MainWin& mainWin_): super(mainWin_,"Files",Qt::Vertical) {
     fileView->removeSelectedFile();
   });
 
-  connect(&mainWin.session, &Session::filesChanged, [this]() {
+  connect(&session, &Session::filesChanged, [this]() {
     fileView->reset();
-    fileView->setCurrentIndex(mainWin.session.fileViewModel.index(0)); // TODO untangle
+    fileView->setCurrentIndex(session.fileViewModel.index(0)); // TODO untangle
   });
 }
 

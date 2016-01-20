@@ -12,7 +12,7 @@ static str KEY_IS_OFFSET("is_offset");
 static str KEY_OFFSET_X("offset_x");
 static str KEY_OFFSET_Y("offset_y");
 
-Detector::Detector(MainWin& mainWin_): super(mainWin_,"Detector")
+Detector::Detector(MainWin& mainWin_,Session& session_): super("Detector",mainWin_,session_)
 , spinDistance(nullptr), spinPixelSize(nullptr)
 , checkIsBeamOffset(nullptr), spinOffsetX(nullptr), spinOffsetY(nullptr)
 , isSetting(false) {
@@ -53,30 +53,30 @@ Detector::Detector(MainWin& mainWin_): super(mainWin_,"Detector")
   });
 
   setEnabled();
-  readSettings(mainWin.session);
+  readSettings(session);
 
-  connect(&mainWin.session, &Session::sessionLoaded, [this]() {
-    setFrom(mainWin.session);
+  connect(&session, &Session::sessionLoaded, [this]() {
+    setFrom(session);
   });
 
   connect(spinDistance, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
-    setTo(mainWin.session);
+    setTo(session);
   });
 
   connect(spinPixelSize, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
-    setTo(mainWin.session);
+    setTo(session);
   });
 
   connect(checkIsBeamOffset, &QCheckBox::toggled, [this]() {
-    setTo(mainWin.session);
+    setTo(session);
   });
 
   connect(spinOffsetX, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this]() {
-    setTo(mainWin.session);
+    setTo(session);
   });
 
   connect(spinOffsetY, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this]() {
-    setTo(mainWin.session);
+    setTo(session);
   });
 }
 

@@ -1,8 +1,8 @@
 #include "panel.h"
 #include "mainwin.h"
 
-BasicPanel::BasicPanel(MainWin& mainWin_, rcstr title)
-: super(title), mainWin(mainWin_) {
+BasicPanel::BasicPanel(rcstr title, MainWin& mainWin_, Session& session_)
+: super(title), mainWin(mainWin_), session(session_) {
 }
 
 void BasicPanel::setHorizontalStretch(int stretch) {
@@ -24,13 +24,13 @@ void BasicPanel::setStretch(int horizontal, int vertical) {
   setSizePolicy(sp);
 }
 
-BoxPanel::BoxPanel(MainWin& mainWin, rcstr title, Qt::Orientation orientation)
-: super(mainWin,title) {
+BoxPanel::BoxPanel(rcstr title,MainWin& mainWin,Session& session, Qt::Orientation orientation)
+: super(title,mainWin,session) {
   setLayout((box = boxLayout(orientation)));
 }
 
-GridPanel::GridPanel(MainWin& mainWin, rcstr title)
-: super(mainWin,title) {
+GridPanel::GridPanel(rcstr title,MainWin& mainWin,Session& session)
+: super(title,mainWin,session) {
   setLayout((grid = gridLayout()));
 }
 

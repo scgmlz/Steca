@@ -6,7 +6,7 @@
 class SplitDiffractogram: public Split {
   SUPER(SplitDiffractogram,Split)
 public:
-  SplitDiffractogram(MainWin&);
+  SplitDiffractogram(MainWin&,Session&);
 };
 
 #endif

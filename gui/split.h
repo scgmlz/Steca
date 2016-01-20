@@ -3,7 +3,7 @@
 
 #include "gui_helpers.h"
 
-class MainWin;
+class MainWin; class Session;
 
 class Split: public QWidget {
 public:

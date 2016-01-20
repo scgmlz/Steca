@@ -8,7 +8,7 @@ namespace panel {
 class Background: public BoxPanel {
   SUPER(Background,BoxPanel)
 public:
-  Background(MainWin&);
+  Background(MainWin&,Session&);
 };
 
 }

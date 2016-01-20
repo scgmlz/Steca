@@ -3,11 +3,11 @@
 #include "panels/diffractogram.h"
 #include "panels/reflectioninfo.h"
 
-SplitDiffractogram::SplitDiffractogram(MainWin& mainWin): super(Qt::Horizontal) {
-  auto diffractogram = new panel::Diffractogram(mainWin);
+SplitDiffractogram::SplitDiffractogram(MainWin& mainWin,Session& session): super(Qt::Horizontal) {
+  auto diffractogram = new panel::Diffractogram(mainWin,session);
   diffractogram->setHorizontalStretch(1);
   box->addWidget(diffractogram);
-  box->addWidget(new panel::ReflectionInfo(mainWin));
+  box->addWidget(new panel::ReflectionInfo(mainWin,session));
 }
 
 // eof

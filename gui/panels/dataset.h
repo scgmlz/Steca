@@ -46,16 +46,13 @@ public:
 class Dataset: public BoxPanel {
   SUPER(Dataset,BoxPanel)
 public:
-  Dataset(MainWin&);
+  Dataset(MainWin&,Session&);
 
 private:
   void setDataset(pcCoreDataset);
   pcCoreDataset dataset;
   bool globalNorm;
 
-public:
-  Session::imagecut_t const& getCut() const;
-private:
   ImageWidget *imageWidget;
   QSpinBox *cutTop, *cutBottom, *cutLeft, *cutRight;
 };

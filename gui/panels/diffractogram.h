@@ -8,7 +8,7 @@ namespace panel {
 class Diffractogram: public BoxPanel {
   SUPER(Diffractogram,BoxPanel)
 public:
-  Diffractogram(MainWin&);
+  Diffractogram(MainWin&,Session&);
 };
 
 }

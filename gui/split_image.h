@@ -6,7 +6,7 @@
 class SplitImage: public Split {
   SUPER(SplitImage,Split)
 public:
-  SplitImage(MainWin&);
+  SplitImage(MainWin&,Session&);
 };
 
 #endif

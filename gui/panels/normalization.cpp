@@ -3,9 +3,8 @@
 
 namespace panel {
 
-Normalization::Normalization(MainWin& mainWin)
-: super(mainWin,"Normalization",Qt::Vertical) {
-
+Normalization::Normalization(MainWin& mainWin,Session& session)
+: super("Normalization",mainWin,session,Qt::Vertical) {
   box->addWidget(radioButton("None"));
   box->addWidget(radioButton("To deltatime"));
   box->addWidget(radioButton("To deltaMonitor"));

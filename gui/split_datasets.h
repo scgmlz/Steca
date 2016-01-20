@@ -6,7 +6,7 @@
 class SplitDatasets: public Split {
   SUPER(SplitDatasets,Split)
 public:
-  SplitDatasets(MainWin&);
+  SplitDatasets(MainWin&,Session&);
 };
 
 #endif

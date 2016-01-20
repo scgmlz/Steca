@@ -2,8 +2,8 @@
 
 namespace panel {
 
-ReflectionInfo::ReflectionInfo(MainWin& mainWin)
-: super(mainWin,"Reflection info",Qt::Vertical) {
+ReflectionInfo::ReflectionInfo(MainWin& mainWin,Session& session)
+: super("Reflection info",mainWin,session,Qt::Vertical) {
 }
 
 }

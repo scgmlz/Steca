@@ -30,8 +30,9 @@ void DatasetView::selectionChanged(QItemSelection const& selected, QItemSelectio
 
 //------------------------------------------------------------------------------
 
-Datasets::Datasets(MainWin& mainWin_): super(mainWin_,"Datasets",Qt::Vertical) {
-  box->addWidget((datasetView = new DatasetView(mainWin.session)));
+Datasets::Datasets(MainWin& mainWin_,Session& session_)
+: super("Datasets",mainWin_,session_,Qt::Vertical) {
+  box->addWidget((datasetView = new DatasetView(session)));
   auto h = hbox();
   box->addLayout(h);
   h->addWidget(label("Combine:"));

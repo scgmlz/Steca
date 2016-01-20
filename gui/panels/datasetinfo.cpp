@@ -5,8 +5,8 @@
 
 namespace panel {
 
-DatasetInfo::DatasetInfo(MainWin& mainWin)
-: super(mainWin,"Dataset Info",Qt::Vertical) {
+DatasetInfo::DatasetInfo(MainWin& mainWin,Session& session)
+: super("Dataset Info",mainWin,session,Qt::Vertical) {
   box->setMargin(0);
   auto scrollArea = new QScrollArea;
   box->addWidget(scrollArea);
@@ -21,7 +21,7 @@ DatasetInfo::DatasetInfo(MainWin& mainWin)
   info = new Info(infoItems);
   scrollArea->setWidget(info);
 
-  connect(&mainWin.session, &Session::datasetSelected, [this](pcCoreDataset dataset) {
+  connect(&session, &Session::datasetSelected, [this](pcCoreDataset dataset) {
     for_i(core::Datasets::NUM_ATTRIBUTES) {
       infoItems[i].text->setText(dataset ? dataset->getAttributeStrValue(i) : NULL_STR);
     }
@@ -32,7 +32,7 @@ DatasetInfo::DatasetInfo(MainWin& mainWin)
 }
 
 void DatasetInfo::selectionChanged() {
-  mainWin.session.datasetViewModel.setInfoItems(&infoItems);
+  session.datasetViewModel.setInfoItems(&infoItems);
 }
 
 DatasetInfo::Info::Info(DatasetInfo::InfoItems& items) {

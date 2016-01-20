@@ -8,7 +8,7 @@ namespace panel {
 class Normalization: public BoxPanel {
   SUPER(Normalization,BoxPanel)
 public:
-  Normalization(MainWin&);
+  Normalization(MainWin&,Session&);
 };
 
 }
