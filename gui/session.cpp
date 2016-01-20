@@ -42,7 +42,7 @@ void Session::load(QByteArray const& json) THROWS {
   int x1 = cut["left"].toInt();
   int x2 = cut["right"].toInt();
 
-  setImageCut(true,false,x1,y1,x2,y2);
+  setImageCut(true,false,Session::imagecut_t(x1,y1,x2,y2));
 
   auto det = top["detector"].toObject();
 
@@ -121,15 +121,6 @@ void Session::remFile(uint i) {
   emit filesChanged();
 }
 
-uint Session::numFiles(bool withCorr) {
-  return dataFiles.count()
-      + (withCorr && hasCorrFile() ? 1 : 0);
-}
-
-str Session::fileName(uint i) {
-  return getFile(i).name();
-}
-
 void Session::setCorrFile(rcstr filePath) {
   super::setCorrFile(filePath);
   emit filesChanged();
@@ -144,50 +135,15 @@ void Session::setSelectedDataset(pcCoreDataset dataset) {
   emit datasetSelected((selectedDataset = dataset));
 }
 
-core::Dataset const&Session::getDataset(uint i) {
-  pcCoreFile file = selectedFile;
-  ASSERT(file)
-      return *(file->getDatasets().at(i));
-}
-
-Session::imagecut_t::imagecut_t(int top_, int bottom_, int left_, int right_)
-: top(top_), bottom(bottom_), left(left_), right(right_) {
-}
-
-const Session::imagecut_t &Session::getImageCut() const {
-  return imageCut;
-}
-
-void Session::setImageCut(bool topLeft, bool linked, imagecut_t const& imageCut_) {
-  if (imageSize.isEmpty())
-    imageCut = imagecut_t();
-  else {
-    auto limit = [linked](int &thisOne, int &thatOne, int maxTogether) {
-      if (linked && thisOne+thatOne>=maxTogether) {
-        thisOne = thatOne = qMax(0, (maxTogether-1) / 2);
-      } else {
-        thisOne = qMax(qMin(thisOne, maxTogether - thatOne - 1), 0);
-        thatOne = qMax(qMin(thatOne, maxTogether - thisOne - 1), 0);
-      }
-    };
-
-    imageCut = imageCut_;
-    // make sure that cut values are valid; in the right order
-    if (topLeft) {
-      limit(imageCut.top,   imageCut.bottom,  imageSize.height());
-      limit(imageCut.left,  imageCut.right,   imageSize.width());
-    } else {
-      limit(imageCut.bottom,imageCut.top,     imageSize.height());
-      limit(imageCut.right, imageCut.left,    imageSize.width());
-    }
-  }
-
+void Session::setImageCut(bool topLeft, bool linked, imagecut_t const& imageCut) {
+  super::setImageCut(topLeft,linked,imageCut);
   emit imageCutChanged();
 }
 
-void Session::setImageCut(bool topLeft, bool linked, int top, int bottom, int left, int right) {
-  setImageCut(topLeft,linked,imagecut_t(top,bottom,left,right));
-}
+//void Session::setImageCut(bool topLeft, bool linked, int top, int bottom, int left, int right)
+//{
+//  setImageCut(topLeft,linked,imagecut_t(top,bottom,left,right));
+//}
 
 Session::detector_t::detector_t()
 : distance(0), pixelSize(0), isBeamOffset(false), beamOffset() {
@@ -212,7 +168,7 @@ QVariant Session::FileViewModel::data(QModelIndex const& index,int role) const {
     case IsCorrectionFileRole:
       return isCorrectionFile;
     case Qt::DisplayRole: {
-      str s = session.fileName(row);
+      str s = session.getFile(row).name();
       static str Corr("Corr: ");
       if (isCorrectionFile) s = Corr + s;
       return s;

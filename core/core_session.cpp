@@ -8,6 +8,10 @@ Session::Session() {
 Session::~Session() {
 }
 
+uint Session::numFiles(bool withCorr) {
+  return dataFiles.count() + (withCorr && hasCorrFile() ? 1 : 0);
+}
+
 void Session::addFile(rcstr fileName) THROWS {
   if (hasFile(fileName)) return;
 
@@ -37,7 +41,7 @@ File const& Session::getFile(uint i) {
 
 void Session::remFile(uint i) {
   dataFiles.remove(i);
-  setImageSize();
+  updateImageSize();
 }
 
 bool Session::hasCorrFile() const {
@@ -52,7 +56,7 @@ void Session::setCorrFile(rcstr fileName) {
     setImageSize(file->getImageSize());
   } else {
     corrFile.clear();
-    setImageSize();
+    updateImageSize();
   }
 }
 
@@ -65,9 +69,39 @@ void Session::setImageSize(QSize const& size) THROWS {
     THROW(" session-inconsistent image size");
 }
 
-void Session::setImageSize() {
+void Session::updateImageSize() {
   if (dataFiles.isEmpty() && !hasCorrFile())
     imageSize = QSize();
+}
+
+Session::imagecut_t::imagecut_t(int top_, int bottom_, int left_, int right_)
+: top(top_), bottom(bottom_), left(left_), right(right_) {
+}
+
+void Session::setImageCut(bool topLeft, bool linked, imagecut_t const& imageCut_) {
+  if (imageSize.isEmpty())
+    imageCut = imagecut_t();
+  else {
+    auto limit = [linked](int &thisOne, int &thatOne, int maxTogether) {
+      if (linked && thisOne+thatOne>=maxTogether) {
+        thisOne = thatOne = qMax(0, (maxTogether-1) / 2);
+      } else {
+        thisOne = qMax(qMin(thisOne, maxTogether - thatOne - 1), 0);
+        thatOne = qMax(qMin(thatOne, maxTogether - thisOne - 1), 0);
+      }
+    };
+
+    imageCut = imageCut_;
+    // make sure that cut values are valid; in the right order
+    if (topLeft) {
+      limit(imageCut.top,   imageCut.bottom,  imageSize.height());
+      limit(imageCut.left,  imageCut.right,   imageSize.width());
+    } else {
+      limit(imageCut.bottom,imageCut.top,     imageSize.height());
+      limit(imageCut.right, imageCut.left,    imageSize.width());
+    }
+  }
+
 }
 
 }

@@ -8,8 +8,7 @@
 
 #include "panels/datasetinfo.h" // TODO this is quite brutal in order to get InfoItems; refactor?
 
-// A proxy for access to core::Session
-// Models and signals are also here
+// As core::Session, with models and signals
 
 class Session: public QObject, public core::Session {
   SUPER(Session,core::Session) Q_OBJECT
@@ -23,25 +22,15 @@ public:
 
   void addFile(rcstr filePath)      THROWS;
   void addFiles(str_lst filePaths)  THROWS;
+
   void remFile(uint i);
-  uint numFiles(bool withCorr=false);
-  str  fileName(uint i);
+
   void setCorrFile(rcstr filePath);
 
   void setSelectedFile(pcCoreFile);
   void setSelectedDataset(pcCoreDataset);
 
-  core::Dataset const& getDataset(uint i);
-
-  struct imagecut_t {
-    imagecut_t(int top = 0, int bottom = 0, int left = 0, int right = 0);
-    int top, bottom, left, right;
-  };
-
-  imagecut_t const& getImageCut() const;
-
   void setImageCut(bool topLeft, bool linked, imagecut_t const&);
-  void setImageCut(bool topLeft, bool linked, int top, int bottom, int left, int right);
 
   struct detector_t {
     detector_t();
@@ -53,8 +42,6 @@ public:
 private:
   pcCoreFile    selectedFile;
   pcCoreDataset selectedDataset;
-
-  imagecut_t    imageCut;
 
 public:
   detector_t    detector;

@@ -155,9 +155,9 @@ Dataset::Dataset(MainWin& mainWin_): super(mainWin_,"",Qt::Vertical), dataset(nu
 
   auto setImageCut = [this](bool topLeft, int value) {
     if (mainWin.actImagesLink->isChecked())
-      mainWin.session.setImageCut(topLeft, true, value, value, value, value);
+      mainWin.session.setImageCut(topLeft, true, Session::imagecut_t(value,value,value,value));
     else
-      mainWin.session.setImageCut(topLeft, false, cutTop->value(), cutBottom->value(), cutLeft->value(), cutRight->value());
+      mainWin.session.setImageCut(topLeft, false, Session::imagecut_t(cutTop->value(), cutBottom->value(), cutLeft->value(), cutRight->value()));
   };
 
   connect(cutTop, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
