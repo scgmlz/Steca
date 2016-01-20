@@ -3,9 +3,8 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
-Session::Session(): coreSession(new core::Session)
-, selectedFile(nullptr)
-, fileViewModel(*this), datasetViewModel() {
+Session::Session()
+: selectedFile(nullptr), fileViewModel(*this), datasetViewModel() {
 }
 
 Session::~Session(){
@@ -74,13 +73,12 @@ QByteArray Session::save() const {
 
   QJsonArray files;
 
-  for (auto file: coreSession->getDataFiles()) {
+  for (auto file: dataFiles) {
     files.append(file->getInfo().absoluteFilePath());
   }
 
   top["files"] = files;
-  auto corrFile = coreSession->getCorrFile();
-  if (!corrFile.name().isEmpty()) top["corr.file"] = corrFile.getInfo().absoluteFilePath();
+  if (!corrFile->name().isEmpty()) top["corr.file"] = corrFile->getInfo().absoluteFilePath();
 
   QJsonObject cut;
 
@@ -98,7 +96,7 @@ QByteArray Session::save() const {
 void Session::addFile(rcstr filePath) THROWS {
   WaitCursor __;
 
-  coreSession->addFile(filePath);
+  super::addFile(filePath);
   emit filesChanged();
 }
 
@@ -106,16 +104,15 @@ void Session::addFiles(str_lst filePaths) THROWS {
   WaitCursor __;
 
   for (auto& filePath: filePaths)
-    coreSession->addFile(filePath);
+    super::addFile(filePath);
   emit filesChanged();
 }
 
 void Session::remFile(uint i) {
-  auto &files = coreSession->getDataFiles();
-  if ((uint)files.count() == i)
-    coreSession->setCorrFile(NULL_STR);
+  if ((uint)dataFiles.count() == i)
+    super::setCorrFile(NULL_STR);
   else
-    coreSession->remFile(i);
+    super::remFile(i);
 
   if (0==numFiles(true))
     setImageCut(true,false,imagecut_t());
@@ -124,27 +121,16 @@ void Session::remFile(uint i) {
 }
 
 uint Session::numFiles(bool withCorr) {
-  return coreSession->getDataFiles().count()
+  return dataFiles.count()
       + (withCorr && hasCorrFile() ? 1 : 0);
-}
-
-core::File const& Session::getFile(uint i) {
-  auto &files = coreSession->getDataFiles();
-  return ((uint)files.count() == i)
-    ? coreSession->getCorrFile()
-    : *files.at(i);
 }
 
 str Session::fileName(uint i) {
   return getFile(i).name();
 }
 
-bool Session::hasCorrFile() {
-  return coreSession->hasCorrFile();
-}
-
 void Session::setCorrFile(rcstr filePath) {
-  coreSession->setCorrFile(filePath);
+  super::setCorrFile(filePath);
   emit filesChanged();
 }
 
@@ -172,8 +158,7 @@ const Session::imagecut_t &Session::getImageCut() const {
 }
 
 void Session::setImageCut(bool topLeft, bool linked, imagecut_t const& imageCut_) {
-  auto size = coreSession->getImageSize();
-  if (size.isEmpty())
+  if (imageSize.isEmpty())
     imageCut = imagecut_t();
   else {
     auto limit = [linked](int &thisOne, int &thatOne, int maxTogether) {
@@ -188,11 +173,11 @@ void Session::setImageCut(bool topLeft, bool linked, imagecut_t const& imageCut_
     imageCut = imageCut_;
     // make sure that cut values are valid; in the right order
     if (topLeft) {
-      limit(imageCut.top,   imageCut.bottom,  size.height());
-      limit(imageCut.left,  imageCut.right,   size.width());
+      limit(imageCut.top,   imageCut.bottom,  imageSize.height());
+      limit(imageCut.left,  imageCut.right,   imageSize.width());
     } else {
-      limit(imageCut.bottom,imageCut.top,     size.height());
-      limit(imageCut.right, imageCut.left,    size.width());
+      limit(imageCut.bottom,imageCut.top,     imageSize.height());
+      limit(imageCut.right, imageCut.left,    imageSize.width());
     }
   }
 

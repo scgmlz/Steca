@@ -270,7 +270,7 @@ void MainWin::show() {
   super::show();
   checkActions();
 #ifdef DEVEL
-//  session.load(QFileInfo("/home/jan/q.ste"));
+  session.load(QFileInfo("/home/jan/q.ste"));
 #endif
 }
 

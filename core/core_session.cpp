@@ -26,6 +26,12 @@ bool Session::hasFile(rcstr fileName) {
   return false;
 }
 
+File const& Session::getFile(uint i) {
+  return ((uint)dataFiles.count() == i)
+    ? *corrFile
+    : *dataFiles.at(i);
+}
+
 void Session::remFile(uint i) {
   dataFiles.remove(i);
   setImageSize();

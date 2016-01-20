@@ -8,24 +8,21 @@
 
 namespace core {
 
-class Session final {
+class Session {
 public:
   Session();
  ~Session();
 
   void addFile(rcstr fileName) THROWS;
   bool hasFile(rcstr fileName);
+
+  File const& getFile(uint i);
   void remFile(uint i);
 
   bool hasCorrFile()   const;
   void setCorrFile(rcstr fileName); // fileName may be empty -> unsets
 
-  Files const& getDataFiles() const { return dataFiles;  }
-  File  const& getCorrFile()  const { return *corrFile;  }
-
-  QSize const& getImageSize() const { return imageSize; }
-
-private:
+protected:
   Files dataFiles;
   QSharedPointer<File> corrFile;
 

@@ -73,6 +73,7 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 
       int transX = w/2, transY = h/2;
 
+      // TODO if transformed, there is a light (one-pix?) column on the side of the image
       transform.translate(transX,transY);
 
       transform.rotate(turnDegrees);

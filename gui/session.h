@@ -2,7 +2,7 @@
 #define SESSION_H
 
 #include "defs.h"
-#include "core.h"
+#include "core_session.h"
 #include <QAbstractListModel>
 #include <QAbstractTableModel>
 
@@ -11,9 +11,8 @@
 // A proxy for access to core::Session
 // Models and signals are also here
 
-class Session: public QObject {
-  Q_OBJECT
-  QSharedPointer<core::Session> coreSession;
+class Session: public QObject, public core::Session {
+  SUPER(Session,core::Session) Q_OBJECT
 public:
   Session();
  ~Session();
@@ -26,9 +25,7 @@ public:
   void addFiles(str_lst filePaths)  THROWS;
   void remFile(uint i);
   uint numFiles(bool withCorr=false);
-  core::File const& getFile(uint i);
   str  fileName(uint i);
-  bool hasCorrFile();
   void setCorrFile(rcstr filePath);
 
   void setSelectedFile(pcCoreFile);

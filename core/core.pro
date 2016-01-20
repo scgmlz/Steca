@@ -8,7 +8,6 @@ CONFIG  += silent warn_on
 QT      += core
 
 HEADERS += \
-    core.h \
     loaders/Caress/car_datatypes.h \
     loaders/Caress/car_globals.h \
     loaders/Caress/raw.h \
@@ -21,7 +20,6 @@ HEADERS += \
     core_session.h
 
 SOURCES += \
-    core.cpp \
     loaders/Caress/raw.cpp \
     loaders/Caress/ReadCaress.cpp \
     coredefs.cpp \
