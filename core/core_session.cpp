@@ -2,7 +2,7 @@
 
 namespace core {
 
-Session::Session(): corrFile(new File) {
+Session::Session() {
 }
 
 Session::~Session() {
@@ -27,9 +27,12 @@ bool Session::hasFile(rcstr fileName) {
 }
 
 File const& Session::getFile(uint i) {
-  return ((uint)dataFiles.count() == i)
-    ? *corrFile
-    : *dataFiles.at(i);
+  if ((uint)dataFiles.count() == i) {
+    ASSERT(!corrFile.isNull())
+    return *corrFile;
+  } else {
+    return *dataFiles.at(i);
+  }
 }
 
 void Session::remFile(uint i) {
@@ -38,18 +41,19 @@ void Session::remFile(uint i) {
 }
 
 bool Session::hasCorrFile() const {
-  return !corrFile->name().isEmpty();
+  return !corrFile.isNull();
 }
 
 void Session::setCorrFile(rcstr fileName) {
-  QSharedPointer<File> file(new File(fileName));
   if (!fileName.isEmpty()) {
+    QSharedPointer<File> file(new File(fileName));
     file->load();
+    corrFile = file;
     setImageSize(file->getImageSize());
   } else {
+    corrFile.clear();
     setImageSize();
   }
-  corrFile = file;
 }
 
 void Session::setImageSize(QSize const& size) THROWS {

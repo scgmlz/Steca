@@ -78,7 +78,8 @@ QByteArray Session::save() const {
   }
 
   top["files"] = files;
-  if (!corrFile->name().isEmpty()) top["corr.file"] = corrFile->getInfo().absoluteFilePath();
+  if (!corrFile.isNull())
+    top["corr.file"] = corrFile->getInfo().absoluteFilePath();
 
   QJsonObject cut;
 
