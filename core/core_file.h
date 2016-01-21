@@ -18,6 +18,8 @@ public:
   str name()                 const { return info.fileName(); }
   QFileInfo const& getInfo() const { return info;            }
 
+  QByteArray peek(uint maxLen); // first maxLen bytes
+
   void load() THROWS;
 
   Datasets const& getDatasets() const { return datasets; }
