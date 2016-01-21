@@ -2,7 +2,7 @@
 
 namespace core {
 
-Dataset::Dataset(File& file_,
+Dataset::Dataset(Datasets& datasets_,
   rcstr date_, rcstr comment_,
   qreal motorXT_, qreal motorYT_, qreal motorZT_,
   qreal motorOmg_, qreal motorTth_, qreal motorPhi_, qreal motorChi_,
@@ -10,7 +10,7 @@ Dataset::Dataset(File& file_,
   qreal mon_, qreal deltaTime_,
   QSize const& size_, Image::intensity_t const* intensities_)
 
-: file(file_), date(date_), comment(comment_)
+: datasets(datasets_), date(date_), comment(comment_)
 , motorXT(motorXT_), motorYT(motorYT_), motorZT(motorZT_), motorOmg(motorOmg_), motorTth(motorTth_)
 , motorPhi(motorPhi_), motorChi(motorChi_), motorPST(motorPST_), motorSST(motorSST_), motorOMGM(motorOMGM_)
 , mon(mon_), deltaTime(deltaTime_)
@@ -59,18 +59,30 @@ str Dataset::getAttributeStrValue(int e) const {
 Datasets::Datasets() {
 }
 
-rcstr Datasets::getAttributeTag(int i) {
-  if (i < 0 || i >= NUM_ATTRIBUTES)
-    return NULL_STR;
-  else
-    return attributeTag[i];
-}
-
-str const Datasets::attributeTag[NUM_ATTRIBUTES] = {
+QVector<str> const Datasets::attributeTags = {
   "date", "comment",
   "X", "Y", "Z", "ω", "2θ", "φ", "χ",
   "PST", "SST", "ΩM", "monitor", "Δt",
 };
+
+QSize Datasets::getImageSize() const {
+  QSize size;
+  for (auto dataset: *this) {
+    auto imageSize = dataset->getImage().getSize();
+    if (size.isEmpty())
+      size = imageSize;
+    else if (size != imageSize)
+      return QSize();
+  }
+  return size;
+}
+
+Image::intensity_t Datasets::getMaximumIntensity() const {
+  Image::intensity_t max = 0;
+  for (auto dataset: *this)
+    max = qMax(max,dataset->getImage().maximumIntensity());
+  return max;
+}
 
 }
 

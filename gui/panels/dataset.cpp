@@ -232,7 +232,7 @@ void Dataset::setDataset(pcCoreDataset dataset_) {
   QPixmap pixMap;
   if (dataset) {
     auto image = dataset->getImage();
-    pixMap = image.pixmap(globalNorm ? dataset->getFile().maximumIntensity() : image.maximumIntensity());
+    pixMap = image.pixmap(globalNorm ? dataset->getDatasets().getMaximumIntensity() : image.maximumIntensity());
   }
   imageWidget->setPixmap(pixMap);
 }

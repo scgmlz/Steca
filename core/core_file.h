@@ -22,13 +22,9 @@ public:
 
   Datasets const& getDatasets() const { return datasets; }
 
-  QSize getImageSize()                   const; // returns QSize() if inconsistent
-  Image::intensity_t maximumIntensity()  const { return maxIntensity; }
-
 private:
   QFileInfo info;
   Datasets  datasets;
-  Image::intensity_t maxIntensity;
 };
 
 class Files final: public QVector<QSharedPointer<File>> {

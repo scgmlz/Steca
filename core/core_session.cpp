@@ -18,7 +18,7 @@ void Session::addFile(rcstr fileName) THROWS {
   QSharedPointer<File> file(new File(fileName));
   file->load();
 
-  setImageSize(file->getImageSize());
+  setImageSize(file->getDatasets().getImageSize());
 
   dataFiles.append(file);
 }
@@ -53,7 +53,7 @@ void Session::setCorrFile(rcstr fileName) {
     QSharedPointer<File> file(new File(fileName));
     file->load();
     corrFile = file;
-    setImageSize(file->getImageSize());
+    setImageSize(file->getDatasets().getImageSize());
   } else {
     corrFile.clear();
     updateImageSize();

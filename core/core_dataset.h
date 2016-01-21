@@ -9,10 +9,11 @@
 
 namespace core {
 
-class File;
+class Datasets;
+
 class Dataset {
 public:
-  Dataset(File&,
+  Dataset(Datasets&,
           rcstr date, rcstr comment,
           qreal motorXT,  qreal motorYT,  qreal motorZT,
           qreal motorOmg, qreal motorTth, qreal motorPhi, qreal motorChi,
@@ -20,20 +21,23 @@ public:
           qreal mon, qreal deltaTime,
           QSize const&, Image::intensity_t const* intensities);
 
-  Image const& getImage()   const { return image;   }
-  File  const& getFile()    const { return file;    }
+  Datasets const& getDatasets() const { return datasets;  }
+  Image    const& getImage()    const { return image;     }
 
   str getAttributeStrValue(int /*as: enumAttribute*/) const;
 
 private:
-  File &file;
-  str   date, comment;
+  Datasets &datasets;
+
+  str
+    date, comment;
 
   qreal
     motorXT,  motorYT,  motorZT,  motorOmg, motorTth,
     motorPhi, motorChi, motorPST, motorSST, motorOMGM;
 
-  qreal mon, deltaTime;
+  qreal
+    mon, deltaTime;
 
   Image image;
 };
@@ -52,10 +56,14 @@ public:
     NUM_ATTRIBUTES
   };
 
-  static rcstr getAttributeTag(int);
-
 private:
-  static str const attributeTag[NUM_ATTRIBUTES];
+  static QVector<str> const attributeTags; // [NUM_ATTRIBUTES];
+
+public:
+  static rcstr getAttributeTag(int i) { return attributeTags.at(i); }
+
+  QSize getImageSize() const; // returns QSize() if inconsistent
+  Image::intensity_t getMaximumIntensity() const;
 };
 
 }

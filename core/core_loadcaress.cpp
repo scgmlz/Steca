@@ -6,7 +6,7 @@
 
 // Taken from the original STeCa, modified.
 
-void loadCaress(rcstr filePath,core::File& file,core::Datasets& datasets) THROWS {
+void loadCaress(rcstr filePath,core::Datasets& datasets) THROWS {
 
   RUNTIME_CHECK(0 == open_data_file(filePath.toLocal8Bit().data(),nullptr),
                 "Cannot open data file " + filePath);
@@ -142,7 +142,7 @@ void loadCaress(rcstr filePath,core::File& file,core::Datasets& datasets) THROWS
           // Objekt inizialisieren
           constexpr double deg2rad = 3.1415926535897932384626433832795 / 180;
           datasets.append(QSharedPointer<core::Dataset>(new core::Dataset(
-            file, str::fromStdString(s_date), str::fromStdString(s_comment),
+            datasets, str::fromStdString(s_date), str::fromStdString(s_comment),
             xAxis, yAxis, zAxis,
             omgAxis * deg2rad, tthAxis * deg2rad, phiAxis * deg2rad, chiAxis * deg2rad,
             pstAxis, sstAxis, omgmAxis * deg2rad,
