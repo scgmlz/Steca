@@ -41,4 +41,29 @@ void raiseError(rcstr msg) THROWS;
 // debug support
 #include "core_debug.h"
 
+// core-specific
+
+namespace core {
+
+struct interval_t { // closed interval
+  interval_t(qreal low = 0, qreal hig = 0);
+  qreal low, hig;
+
+  void set(qreal);
+  void set(qreal,qreal);
+  void safeSet(qreal,qreal);  // in the right order
+
+  void include(qreal);
+  bool contains(qreal val) const { return low <= val && val <= hig; }
+};
+
+struct borders_t {
+  interval_t
+    gamma,
+    tth_regular,
+    tth_gamma0; // at gamma=0
+};
+
+}
+
 #endif

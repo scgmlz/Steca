@@ -13,8 +13,10 @@ public:
 
   Image(QSize const&, intensity_t const* intensities) THROWS;
 
-  QSize    const& getSize()        const { return size; }
-  uint            dataCount()      const { return size.width() * size.height(); }
+  QSize const& getSize()   const { return size; }
+  uint         pixCount()  const { return size.width() * size.height(); }
+
+  uint index(uint x, uint y) const { return x + y*size.width(); };
 
   intensity_t intensity(uint index)     const;
   intensity_t intensity(uint x, uint y) const;

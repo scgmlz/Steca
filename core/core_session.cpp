@@ -74,6 +74,95 @@ void Session::updateImageSize() {
     imageSize = QSize();
 }
 
+QPoint Session::getPixMiddle(Image const& image) const {
+  auto size = image.getSize();
+  QPoint middle(
+    size.width()  / 2 + middlePixXOffset,
+    size.height() / 2 + middlePixYOffset);
+  // TODO was: if ((tempPixMiddleX *[<=]* 0) || (tempPixMiddleX >= getWidth()))
+  RUNTIME_CHECK(interval_t(0,size.width()).contains(middle.x()), "bad pixMiddle");
+  RUNTIME_CHECK(interval_t(0,size.height()).contains(middle.y()), "bad pixMiddle");
+  return middle;
+}
+
+// TODO this is a slightly modified original code; be careful; eventually refactor
+void Session::createAngleCorrArray(Image const& image, qreal tthMitte) {
+  auto size = image.getSize();
+  ASSERT(!size.isEmpty())
+
+  int sizeX = size.width(), sizeY = size.height();
+
+  angleCorrArray.resize(image.pixCount());
+
+  auto angleCorr = [this,&image](int x, int y) {
+    return angleCorrArray[image.index(x,y)];
+  };
+
+  ful.tth_regular.set(tthMitte);
+  ful.tth_gamma0.set(tthMitte);
+  ful.gamma.set(0);
+
+  QPoint pixMiddle = getPixMiddle(image);
+
+  auto length = [](qreal x, qreal y) { return sqrt(x*x + y*y); };
+
+  // Fill the Array
+  for (int i = 0; i < sizeY; i++) {
+    int abstandInPixVertical = pixMiddle.y() - i;
+    qreal y = abstandInPixVertical * pixSpan;
+    for (int j = 0; j < sizeX; j++) {
+      // TTH des Pixels berechnen
+      int abstandInPixHorizontal = - pixMiddle.x() + j;
+      qreal x = abstandInPixHorizontal * pixSpan;
+      qreal z = length(x,y);
+      qreal detektorAbstandPixel = length(z,sampleDetectorSpan);
+      qreal tthHorAktuell = tthMitte + atan(x / sampleDetectorSpan);
+      qreal detektorAbstandHorPixel = length(x,sampleDetectorSpan);
+      qreal h = cos(tthHorAktuell) * detektorAbstandHorPixel;
+      qreal tthNeu = acos(h / detektorAbstandPixel);
+
+      // Gamma des Pixels berechnen
+      qreal r = sqrt((detektorAbstandPixel * detektorAbstandPixel) - (h * h));
+      qreal gamma = asin(y / r);
+
+      // Check: if tthNeu negativ
+      if (tthHorAktuell < 0) {
+        tthNeu *= -1;
+        gamma *= -1;
+      }
+
+      // Maxima und minima setzen
+      ful.gamma.include(gamma);
+      ful.tth_regular.include(tthNeu);
+      ful.tth_gamma0.include(tthHorAktuell);
+
+      // Write angle in array
+      angleCorr(j,i) = Pixpos(gamma,tthNeu);
+    }
+  }
+
+  // Calculate Gamma and TTH after cut
+  // TODO the original code called setPixCut - is used elsewhere?
+  // TODO refactor
+  int arrayMiddleX = imageCut.left + (sizeX - imageCut.left - imageCut.right)  / 2;
+  int arrayMiddleY = imageCut.top  + (sizeY - imageCut.top  - imageCut.bottom) / 2;
+
+  Pixpos middlePoint = angleCorr(arrayMiddleX,arrayMiddleY);
+  cut.gamma.set(middlePoint.gammaPix);
+  cut.tth_regular.set(middlePoint.tthPix);
+  cut.tth_gamma0.safeSet(
+    angleCorr(size.width() - 1 - imageCut.right,pixMiddle.y()).tthPix,
+    angleCorr(imageCut.left,pixMiddle.y()).tthPix);
+
+  for (int i = imageCut.left; i < sizeX - imageCut.right; i++) {
+    for (int j = imageCut.top; j < sizeY - imageCut.bottom; j++) {
+      auto ac = angleCorr(i,j);
+      cut.gamma.include(ac.gammaPix);
+      cut.tth_regular.include(ac.tthPix);
+    }
+  }
+}
+
 Session::imagecut_t::imagecut_t(int top_, int bottom_, int left_, int right_)
 : top(top_), bottom(bottom_), left(left_), right(right_) {
 }

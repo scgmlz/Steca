@@ -35,10 +35,28 @@ protected:
 
 public: // detector TODO make a structure; rename variables
   qreal pixSpan;            // size of the detector pixel
-  qreal sampleDetectorSpan; // the distance between sample - detector
+  qreal sampleDetectorSpan; // the distance between sample - detector // TODO verify: in adhoc has at least three names: sampleDetectorSpan, detectorSampleSpan, detectorSampleDistance
   bool  hasBeamOffset;
   int   middlePixXOffset;
   int   middlePixYOffset;
+
+protected:  // corrections
+  struct Pixpos {  // TODO bad names
+    Pixpos(): Pixpos(0,0) {}
+    Pixpos(qreal gamma, qreal tth): gammaPix(gamma), tthPix(tth) {}
+    qreal gammaPix;
+    qreal tthPix;
+  };
+
+  // TODO rename; TODO share these by (tth,image size)
+  QVector<Pixpos>      angleCorrArray;
+  borders_t            ful, cut;
+
+  QPoint  getPixMiddle(Image const&) const;  // TODO rename, was getPixMiddleX/Y
+  void    createAngleCorrArray(Image const&,qreal);  // TODO rename; TODO if too slow, cache
+
+  float** intensCorrArray = NULL;
+  float** intensCorrArrayNotStandardized = NULL;
 
 public: // image
   struct imagecut_t {

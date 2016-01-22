@@ -25,7 +25,7 @@ Image::intensity_t Image::intensity(uint x, uint y) const {
 }
 
 QPixmap Image::pixmap(intensity_t maximumIntensity) {
-  int count = dataCount();
+  int count = pixCount();
   if (count < 1) return QPixmap();
 
   QSize const &size = getSize();
@@ -57,7 +57,6 @@ QPixmap Image::pixmap(intensity_t maximumIntensity) {
 
   return QPixmap::fromImage(image);
 }
-
 
 }
 
