@@ -63,7 +63,7 @@ protected: // corrections
   borders_t            ful, cut;
 
   QPoint  getPixMiddle(Image const&) const;  // TODO rename, was getPixMiddleX/Y
-  void    createAngleCorrArray(Image const&,qreal);  // TODO rename; TODO if too slow, cache
+  void    createAngleCorrArray(Image const&,qreal);  // TODO rename to "map"; TODO if too slow, cache
 
   float** intensCorrArray = NULL;
   float** intensCorrArrayNotStandardized = NULL;

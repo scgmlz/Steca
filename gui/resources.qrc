@@ -9,8 +9,8 @@
         <file alias="reflect">icons/reflect.svg</file>
         <file alias="width">icons/width.svg</file>
         <file alias="leftright">icons/leftright.svg</file>
-        <file alias="turnleft">icons/turnleft.svg</file>
-        <file alias="turnright">icons/turnright.svg</file>
+        <file alias="rotatecounter">icons/rotatecounter.svg</file>
+        <file alias="rotateclock">icons/rotateclock.svg</file>
         <file alias="updown">icons/updown.svg</file>
         <file alias="link">icons/link.svg</file>
         <file alias="add">icons/add.svg</file>

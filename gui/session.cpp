@@ -1,4 +1,6 @@
 #include "session.h"
+#include "mainwin.h"
+#include <QAction>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -10,15 +12,14 @@ Session::Session()
 Session::~Session(){
 }
 
-void Session::load(QFileInfo const& fileInfo) THROWS {
+void Session::load(MainWin const& mainWin,QFileInfo const& fileInfo) THROWS {
   QFile file(fileInfo.absoluteFilePath());
   RUNTIME_CHECK(file.open(QIODevice::ReadOnly), "File cannot be opened");
-  load(file.readAll());
+  load(mainWin,file.readAll());
 }
 
 // TODO merge load / save, DRY
-
-void Session::load(QByteArray const& json) THROWS {
+void Session::load(MainWin const& mainWin,QByteArray const& json) THROWS {
   QJsonParseError parseError;
   QJsonDocument doc(QJsonDocument::fromJson(json,&parseError));
   RUNTIME_CHECK(QJsonParseError::NoError==parseError.error, "Error parsing file");
@@ -52,10 +53,23 @@ void Session::load(QByteArray const& json) THROWS {
   middlePixXOffset   = det["offset_x"].toDouble();
   middlePixYOffset   = det["offset_y"].toDouble();
 
+  auto transform = top["transform"].toObject();
+
+  bool on;  // TODO make better
+  mainWin.actImagesUpDown->setChecked(on=transform["updown"].toBool());
+  setUpDown(on);
+  mainWin.actImagesLeftRight->setChecked(on=transform["leftright"].toBool());
+  setLeftRight(on);
+  mainWin.actImagesRotateClock->setChecked(on=transform["rotateclock"].toBool());
+  if (on) setTurnClock(on);
+  mainWin.actImagesRotateCounter->setChecked(on=transform["rotatecounter"].toBool());
+  if (on) setTurnCounter(on);
+
   emit sessionLoaded();
 }
 
-QByteArray Session::save() const {
+// TODO mainwin passed to access transformation actions - rethink
+QByteArray Session::save(MainWin const& mainWin) const {
   QByteArray json;
 
   QJsonObject top;
@@ -88,6 +102,14 @@ QByteArray Session::save() const {
   cut["right"]  = (int)imageCut.right;
 
   top["cut"] = cut;
+
+  QJsonObject transform;
+  transform["updown"]         = mainWin.actImagesUpDown->isChecked();
+  transform["leftright"]      = mainWin.actImagesLeftRight->isChecked();
+  transform["rotateclock"]    = mainWin.actImagesRotateClock->isChecked();
+  transform["rotatecounter"]  = mainWin.actImagesRotateCounter->isChecked();
+
+  top["transform"] = transform;
 
   QJsonDocument doc(top);
   return doc.toJson();

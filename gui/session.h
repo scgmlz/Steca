@@ -16,9 +16,9 @@ public:
   Session();
  ~Session();
 
-  void load(QFileInfo const&)       THROWS;
-  void load(QByteArray const& json) THROWS;
-  QByteArray save() const;
+  void load(MainWin const&,QFileInfo const&)       THROWS;
+  void load(MainWin const&,QByteArray const& json) THROWS;
+  QByteArray save(MainWin const&) const;
 
   void addFile(rcstr filePath)      THROWS;
   void addFiles(str_lst filePaths)  THROWS;

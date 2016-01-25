@@ -109,8 +109,8 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
   sb->addStretch();
   sb->addWidget(iconButton(mainWin.actImagesUpDown));
   sb->addWidget(iconButton(mainWin.actImagesLeftRight));
-  sb->addWidget(iconButton(mainWin.actImagesTurnClock));
-  sb->addWidget(iconButton(mainWin.actImagesTurnCounter));
+  sb->addWidget(iconButton(mainWin.actImagesRotateClock));
+  sb->addWidget(iconButton(mainWin.actImagesRotateCounter));
 
   auto hb = hbox();
   hb->addWidget(imageWidget = new ImageWidget(*this),0,0);
@@ -186,14 +186,14 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
     return on;
   };
 
-  connect(mainWin.actImagesTurnClock, &QAction::triggered, [this,&setTurn]() {
-    bool on = setTurn(mainWin.actImagesTurnClock, mainWin.actImagesTurnCounter);
+  connect(mainWin.actImagesRotateClock, &QAction::triggered, [this,&setTurn]() {
+    bool on = setTurn(mainWin.actImagesRotateClock, mainWin.actImagesRotateCounter);
     session.setTurnClock(on);
     refresh();
   });
 
-  connect(mainWin.actImagesTurnCounter, &QAction::triggered, [this,&setTurn]() {
-    bool on = setTurn(mainWin.actImagesTurnCounter, mainWin.actImagesTurnClock);
+  connect(mainWin.actImagesRotateCounter, &QAction::triggered, [this,&setTurn]() {
+    bool on = setTurn(mainWin.actImagesRotateCounter, mainWin.actImagesRotateClock);
     session.setTurnCounter(on);
     refresh();
   });

@@ -81,24 +81,24 @@ void MainWin::initActions() {
 #endif
   actViewReset     = simple("Reset");
 
-  actPreferences        = simple("Preferences...");
-  actFitErrorParameters = simple("Fit error parameters...");
+  actPreferences          = simple("Preferences...");
+  actFitErrorParameters   = simple("Fit error parameters...");
 
   actPdfManual  = simple("Pdf manual (German)");
   actAbout      = simple("About...");
 
-  actReflectionPeak     = simple("Peak",      ":/icon/peak");
-  actReflectionReflect  = simple("Reflect",   ":/icon/reflect");
-  actReflectionWidth    = simple("Width",     ":/icon/width");
-  actReflectionAdd      = simple("Width",     ":/icon/add");
+  actReflectionPeak       = simple("Peak",          ":/icon/peak");
+  actReflectionReflect    = simple("Reflect",       ":/icon/reflect");
+  actReflectionWidth      = simple("Width",         ":/icon/width");
+  actReflectionAdd        = simple("Width",         ":/icon/add");
 
-  actImagesLink         = toggle("Link",      ":/icon/link");
-  actImagesEye          = toggle("eye",       ":/icon/eye");
-  actImagesGlobalNorm   = toggle("global nm.");
-  actImagesUpDown       = toggle("UpDown",    ":/icon/updown");
-  actImagesLeftRight    = toggle("LeftRight", ":/icon/leftright");
-  actImagesTurnClock    = toggle("TurnRight", ":/icon/turnright");
-  actImagesTurnCounter     = toggle("TurnLeft",  ":/icon/turnleft");
+  actImagesLink           = toggle("Link",          ":/icon/link");
+  actImagesEye            = toggle("eye",           ":/icon/eye");
+  actImagesGlobalNorm     = toggle("global nm.");
+  actImagesUpDown         = toggle("UpDown",        ":/icon/updown");
+  actImagesLeftRight      = toggle("LeftRight",     ":/icon/leftright");
+  actImagesRotateClock    = toggle("RotateClock",   ":/icon/rotateclock");
+  actImagesRotateCounter  = toggle("RotateCounter", ":/icon/rotatecounter");
 
   actBackgroundBackground = simple("Background",    ":/icon/background");
   actBackgroundEye        = simple("BackgroundEye", ":/icon/eye");
@@ -270,7 +270,7 @@ void MainWin::show() {
   super::show();
   checkActions();
 #ifdef DEVEL
-  session.load(QFileInfo("/home/jan/q.ste"));
+  session.load(*this,QFileInfo("/home/jan/q.ste"));
 #endif
 }
 
@@ -309,7 +309,7 @@ void MainWin::loadSession() {
 
   QFileInfo fileInfo(fileName);
   sessionDir = fileInfo.absolutePath();
-  session.load(fileInfo);
+  session.load(*this,fileInfo);
 }
 
 void MainWin::saveSession() {
@@ -324,7 +324,7 @@ void MainWin::saveSession() {
   QFile file(info.filePath());
   RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File cannot be opened");
 
-  auto written = file.write(session.save());
+  auto written = file.write(session.save(*this));
   RUNTIME_CHECK(written >= 0, "Could not write session");
 }
 
