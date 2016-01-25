@@ -130,10 +130,9 @@ void loadCaress(rcstr filePath,core::Datasets& datasets) THROWS {
             tempTime = (double)tim1;
           }
 
-          QSize detRel;
+          uint detRel;
 
-          detRel.setHeight((int)sqrt((double)imageSize));
-          detRel.setWidth((int)sqrt((double)imageSize));
+          detRel = (uint)sqrt(imageSize); // TODO (also compare with original code) this is hairy
 
           QVector<core::Image::intensity_t> convertedIntens(imageSize);
           for (int i=0; i<imageSize; ++i)

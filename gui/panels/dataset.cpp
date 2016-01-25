@@ -203,18 +203,16 @@ QPixmap Dataset::makePixmap(core::Image const& image, core::Image::intensity_t m
 
   QPixmap pixmap;
 
-  QSize const &size = image.getSize();
+  uint size = image.getSize();
 
-  if (!size.isEmpty()) {
-    uint  width = size.width(), height = size.height();
-
+  if (0 < size) {
     qreal mi = maxIntensity;
     if (mi <= 0) mi = 1;  // sanity
 
-    QImage qimage(size, QImage::Format_RGB32);
+    QImage qimage(QSize(size,size), QImage::Format_RGB32);
 
-    for (uint y = 0; y < height; ++y) {
-      for (uint x = 0; x < width; ++x) {
+    for (uint y = 0; y < size; ++y) {
+      for (uint x = 0; x < size; ++x) {
         qreal intens = image.intensity(session,x,y) / mi;
 
         QRgb rgb;

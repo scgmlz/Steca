@@ -4,12 +4,12 @@
 
 namespace core {
 
-Image::Image(QSize const& size_, intensity_t const* src) THROWS
+Image::Image(uint size_, intensity_t const* src) THROWS
 : size(size_), maxIntensity(0) {
 
-  RUNTIME_CHECK(size.isValid(),"Invalid image size");
+  RUNTIME_CHECK(size > 0,"Invalid image size");
 
-  int count = size.width() * size.height();
+  int count = size * size;
   intensities.resize(count);
 
   auto dest = intensities.data();
@@ -18,19 +18,23 @@ Image::Image(QSize const& size_, intensity_t const* src) THROWS
 }
 
 uint Image::index(Session const& session, uint x, uint y) const {
+  auto flip = [this](uint &index) { index = size - 1 - index; };
+
   if (session.turnClock) {
-    qSwap(x,y); y = size.width() - 1 - y;
+    qSwap(x,y); flip(y);
   }
   else if (session.turnCounter) {
-    qSwap(x,y); x = size.height() - 1 - x;
+    qSwap(x,y); flip(x);
   }
+
   if (session.upDown) {
-    y = size.height() - 1 - y;
+    flip(y);
   }
   if (session.leftRight) {
-    x = size.width() - 1 - x;
+    flip(x);
   }
-  return x + y*size.width();
+
+  return x + y * size;
 }
 
 Image::intensity_t Image::intensity(uint index) const {

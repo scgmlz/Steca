@@ -13,10 +13,10 @@ class Image {
 public:
   typedef float intensity_t;
 
-  Image(QSize const&, intensity_t const* intensities) THROWS;
+  Image(uint, intensity_t const* intensities) THROWS;
 
-  QSize const& getSize()   const { return size; }
-  uint         pixCount()  const { return size.width() * size.height(); }
+  uint getSize()  const { return size; }
+  uint pixCount() const { return size * size; }
 
   // Session -> transform
   uint index(Session const&,uint x, uint y) const;
@@ -26,7 +26,7 @@ public:
   intensity_t maximumIntensity()        const { return maxIntensity; }
 
 private:
-  QSize size;
+  uint size; // TODO for now a smplification: square images
   QVector<intensity_t> intensities;
   intensity_t          maxIntensity;
 };

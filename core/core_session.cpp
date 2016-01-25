@@ -2,7 +2,9 @@
 
 namespace core {
 
-Session::Session(): upDown(false), leftRight(false), turnClock(false), turnCounter(false) {
+Session::Session()
+: imageSize(0)
+, upDown(false), leftRight(false), turnClock(false), turnCounter(false) {
 }
 
 Session::~Session() {
@@ -60,10 +62,10 @@ void Session::setCorrFile(rcstr fileName) {
   }
 }
 
-void Session::setImageSize(QSize const& size) THROWS {
-  if (size.isEmpty())
-    THROW(" inconsistent image size");
-  if (imageSize.isEmpty())
+void Session::setImageSize(uint size) THROWS {
+  if (0 == size)
+    THROW("inconsistent image size");
+  if (0 == imageSize)
     imageSize = size;
   else if (imageSize != size)
     THROW(" session-inconsistent image size");
@@ -71,7 +73,7 @@ void Session::setImageSize(QSize const& size) THROWS {
 
 void Session::updateImageSize() {
   if (dataFiles.isEmpty() && !hasCorrFile())
-    imageSize = QSize();
+    imageSize = 0;
 }
 
 void Session::setUpDown(bool on) {
@@ -93,20 +95,17 @@ void Session::setTurnCounter(bool on) {
 QPoint Session::getPixMiddle(Image const& image) const {
   auto size = image.getSize();
   QPoint middle(
-    size.width()  / 2 + middlePixXOffset,
-    size.height() / 2 + middlePixYOffset);
+    size / 2 + middlePixXOffset,
+    size / 2 + middlePixYOffset);
   // TODO was: if ((tempPixMiddleX *[<=]* 0) || (tempPixMiddleX >= getWidth()))
-  RUNTIME_CHECK(interval_t(0,size.width()).contains(middle.x()), "bad pixMiddle");
-  RUNTIME_CHECK(interval_t(0,size.height()).contains(middle.y()), "bad pixMiddle");
+  RUNTIME_CHECK(interval_t(0,size).contains(middle.x()), "bad pixMiddle");
+  RUNTIME_CHECK(interval_t(0,size).contains(middle.y()), "bad pixMiddle");
   return middle;
 }
 
 // TODO this is a slightly modified original code; be careful; eventually refactor
 void Session::createAngleCorrArray(Image const& image, qreal tthMitte) {
-  auto size = image.getSize();
-  ASSERT(!size.isEmpty())
-
-  int sizeX = size.width(), sizeY = size.height();
+  uint size = image.getSize();
 
   angleCorrArray.resize(image.pixCount());
 
@@ -123,10 +122,10 @@ void Session::createAngleCorrArray(Image const& image, qreal tthMitte) {
   auto length = [](qreal x, qreal y) { return sqrt(x*x + y*y); };
 
   // Fill the Array
-  for (int i = 0; i < sizeY; i++) {
+  for (uint i = 0; i < size; i++) {
     int abstandInPixVertical = pixMiddle.y() - i;
     qreal y = abstandInPixVertical * pixSpan;
-    for (int j = 0; j < sizeX; j++) {
+    for (uint j = 0; j < size; j++) {
       // TTH des Pixels berechnen
       int abstandInPixHorizontal = - pixMiddle.x() + j;
       qreal x = abstandInPixHorizontal * pixSpan;
@@ -160,18 +159,18 @@ void Session::createAngleCorrArray(Image const& image, qreal tthMitte) {
   // Calculate Gamma and TTH after cut
   // TODO the original code called setPixCut - is used elsewhere?
   // TODO refactor
-  int arrayMiddleX = imageCut.left + (sizeX - imageCut.left - imageCut.right)  / 2;
-  int arrayMiddleY = imageCut.top  + (sizeY - imageCut.top  - imageCut.bottom) / 2;
+  int arrayMiddleX = imageCut.left + (size - imageCut.left - imageCut.right)  / 2;
+  int arrayMiddleY = imageCut.top  + (size - imageCut.top  - imageCut.bottom) / 2;
 
   Pixpos middlePoint = angleCorr(arrayMiddleX,arrayMiddleY);
   cut.gamma.set(middlePoint.gammaPix);
   cut.tth_regular.set(middlePoint.tthPix);
   cut.tth_gamma0.safeSet(
-    angleCorr(size.width() - 1 - imageCut.right,pixMiddle.y()).tthPix,
+    angleCorr(size - 1 - imageCut.right,pixMiddle.y()).tthPix,
     angleCorr(imageCut.left,pixMiddle.y()).tthPix);
 
-  for (int i = imageCut.left; i < sizeX - imageCut.right; i++) {
-    for (int j = imageCut.top; j < sizeY - imageCut.bottom; j++) {
+  for (uint i = imageCut.left; i < size - imageCut.right; i++) {
+    for (uint j = imageCut.top; j < size - imageCut.bottom; j++) {
       auto ac = angleCorr(i,j);
       cut.gamma.include(ac.gammaPix);
       cut.tth_regular.include(ac.tthPix);
@@ -179,31 +178,31 @@ void Session::createAngleCorrArray(Image const& image, qreal tthMitte) {
   }
 }
 
-Session::imagecut_t::imagecut_t(int top_, int bottom_, int left_, int right_)
+Session::imagecut_t::imagecut_t(uint top_, uint bottom_, uint left_, uint right_)
 : top(top_), bottom(bottom_), left(left_), right(right_) {
 }
 
 void Session::setImageCut(bool topLeft, bool linked, imagecut_t const& imageCut_) {
-  if (imageSize.isEmpty())
+  if (0 == imageSize)
     imageCut = imagecut_t();
   else {
-    auto limit = [linked](int &thisOne, int &thatOne, int maxTogether) {
+    auto limit = [linked](uint &thisOne, uint &thatOne, uint maxTogether) {
       if (linked && thisOne+thatOne>=maxTogether) {
-        thisOne = thatOne = qMax(0, (maxTogether-1) / 2);
+        thisOne = thatOne = qMax(0u, (maxTogether-1) / 2);
       } else {
-        thisOne = qMax(qMin(thisOne, maxTogether - thatOne - 1), 0);
-        thatOne = qMax(qMin(thatOne, maxTogether - thisOne - 1), 0);
+        thisOne = qMax(qMin(thisOne, maxTogether - thatOne - 1), 0u);
+        thatOne = qMax(qMin(thatOne, maxTogether - thisOne - 1), 0u);
       }
     };
 
     imageCut = imageCut_;
     // make sure that cut values are valid; in the right order
     if (topLeft) {
-      limit(imageCut.top,   imageCut.bottom,  imageSize.height());
-      limit(imageCut.left,  imageCut.right,   imageSize.width());
+      limit(imageCut.top,   imageCut.bottom,  imageSize);
+      limit(imageCut.left,  imageCut.right,   imageSize);
     } else {
-      limit(imageCut.bottom,imageCut.top,     imageSize.height());
-      limit(imageCut.right, imageCut.left,    imageSize.width());
+      limit(imageCut.bottom,imageCut.top,     imageSize);
+      limit(imageCut.right, imageCut.left,    imageSize);
     }
   }
 

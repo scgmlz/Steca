@@ -8,7 +8,7 @@ Dataset::Dataset(Datasets& datasets_,
   qreal motorOmg_, qreal motorTth_, qreal motorPhi_, qreal motorChi_,
   qreal motorPST_, qreal motorSST_, qreal motorOMGM_,
   qreal mon_, qreal deltaTime_,
-  QSize const& size_, Image::intensity_t const* intensities_)
+  uint size_, Image::intensity_t const* intensities_)
 
 : datasets(datasets_), date(date_), comment(comment_)
 , motorXT(motorXT_), motorYT(motorYT_), motorZT(motorZT_), motorOmg(motorOmg_), motorTth(motorTth_)
@@ -65,14 +65,14 @@ QVector<str> const Datasets::attributeTags = {
   "PST", "SST", "ΩM", "monitor", "Δt",
 };
 
-QSize Datasets::getImageSize() const {
-  QSize size;
+uint Datasets::getImageSize() const {
+  uint size = 0;
   for (auto dataset: *this) {
-    auto imageSize = dataset->getImage().getSize();
-    if (size.isEmpty())
+    uint imageSize = dataset->getImage().getSize();
+    if (0 == size)
       size = imageSize;
     else if (size != imageSize)
-      return QSize();
+      return 0;
   }
   return size;
 }

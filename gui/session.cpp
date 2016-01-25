@@ -37,10 +37,10 @@ void Session::load(QByteArray const& json) THROWS {
   setCorrFile(top["corr.file"].toString());
 
   auto cut = top["cut"].toObject();
-  int y1 = cut["top"].toInt();
-  int y2 = cut["bottom"].toInt();
-  int x1 = cut["left"].toInt();
-  int x2 = cut["right"].toInt();
+  int y1 = qMax(0,cut["top"].toInt());
+  int y2 = qMax(0,cut["bottom"].toInt());
+  int x1 = qMax(0,cut["left"].toInt());
+  int x2 = qMax(0,cut["right"].toInt());
 
   setImageCut(true,false,Session::imagecut_t(x1,y1,x2,y2));
 
@@ -82,10 +82,10 @@ QByteArray Session::save() const {
 
   QJsonObject cut;
 
-  cut["top"]    = imageCut.top;
-  cut["bottom"] = imageCut.bottom;
-  cut["left"]   = imageCut.left;
-  cut["right"]  = imageCut.right;
+  cut["top"]    = (int)imageCut.top;
+  cut["bottom"] = (int)imageCut.bottom;
+  cut["left"]   = (int)imageCut.left;
+  cut["right"]  = (int)imageCut.right;
 
   top["cut"] = cut;
 

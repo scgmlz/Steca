@@ -28,9 +28,9 @@ protected:
   Files dataFiles;
   QSharedPointer<File> corrFile;
 
-  QSize imageSize;
+  uint imageSize;
 
-  void setImageSize(QSize const&) THROWS;
+  void setImageSize(uint) THROWS;
   void updateImageSize();
 
 public: // detector TODO make a structure; rename variables
@@ -70,8 +70,8 @@ protected: // corrections
 
 public: // image
   struct imagecut_t {
-    imagecut_t(int top = 0, int bottom = 0, int left = 0, int right = 0);
-    int top, bottom, left, right;
+    imagecut_t(uint top = 0, uint bottom = 0, uint left = 0, uint right = 0);
+    uint top, bottom, left, right;
   };
 
   imagecut_t const& getImageCut() const { return imageCut; }

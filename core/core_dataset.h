@@ -19,7 +19,7 @@ public:
           qreal motorOmg, qreal motorTth, qreal motorPhi, qreal motorChi,
           qreal motorPST, qreal motorSST, qreal motorOMGM,
           qreal mon, qreal deltaTime,
-          QSize const&, Image::intensity_t const* intensities);
+          uint size, Image::intensity_t const* intensities);
 
   Datasets const& getDatasets() const { return datasets;  }
   Image    const& getImage()    const { return image;     }
@@ -62,7 +62,7 @@ private:
 public:
   static rcstr getAttributeTag(int i) { return attributeTags.at(i); }
 
-  QSize getImageSize() const; // returns QSize() if inconsistent
+  uint getImageSize() const; // returns 0 if inconsistent
   Image::intensity_t getMaximumIntensity() const;
 };
 
