@@ -7,6 +7,8 @@
 
 namespace core {
 
+class Session;
+
 class Image {
 public:
   typedef float intensity_t;
@@ -16,13 +18,12 @@ public:
   QSize const& getSize()   const { return size; }
   uint         pixCount()  const { return size.width() * size.height(); }
 
-  uint index(uint x, uint y) const { return x + y*size.width(); };
+  // Session -> transform
+  uint index(Session const&,uint x, uint y) const;
 
   intensity_t intensity(uint index)     const;
-  intensity_t intensity(uint x, uint y) const;
+  intensity_t intensity(Session const&, uint x, uint y) const;
   intensity_t maximumIntensity()        const { return maxIntensity; }
-
-  QPixmap pixmap(intensity_t maximumIntensity);
 
 private:
   QSize size;

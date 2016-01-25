@@ -1,4 +1,5 @@
 #include "core_image.h"
+#include "core_session.h"
 #include <QPixmap>
 
 namespace core {
@@ -16,46 +17,28 @@ Image::Image(QSize const& size_, intensity_t const* src) THROWS
     maxIntensity = qMax(*dest++ = *src++, maxIntensity);
 }
 
+uint Image::index(Session const& session, uint x, uint y) const {
+  if (session.turnClock) {
+    qSwap(x,y); y = size.width() - 1 - y;
+  }
+  else if (session.turnCounter) {
+    qSwap(x,y); x = size.height() - 1 - x;
+  }
+  if (session.upDown) {
+    y = size.height() - 1 - y;
+  }
+  if (session.leftRight) {
+    x = size.width() - 1 - x;
+  }
+  return x + y*size.width();
+}
+
 Image::intensity_t Image::intensity(uint index) const {
   return intensities[index];
 }
 
-Image::intensity_t Image::intensity(uint x, uint y) const {
-  return intensities[x + y*size.width()];
-}
-
-QPixmap Image::pixmap(intensity_t maximumIntensity) {
-  int count = pixCount();
-  if (count < 1) return QPixmap();
-
-  QSize const &size = getSize();
-  uint  width = size.width(), height = size.height();
-  ASSERT(width>0 && height>0) // true because count >= 1
-
-  if (maximumIntensity <= 0) maximumIntensity = 1;  // sanity
-  qreal const maximum = maximumIntensity;
-
-  QImage image(size, QImage::Format_RGB32);
-
-  for (uint y = 0; y < height; ++y) {
-    for (uint x = 0; x < width; ++x) {
-      qreal intens = (qreal)intensity(x,y) / maximum;
-
-      QRgb rgb;
-      if (intens < 0.25)
-        rgb = qRgb(floor(0xff * intens * 4), 0, 0);
-      else if (intens < 0.5)
-        rgb = qRgb(0xff, floor(0xff * (intens - 0.25) * 4), 0);
-      else if (intens < 0.75)
-        rgb = qRgb(0xff - floor(0xff * (intens - 0.5) * 4), 0xff, floor(0xff * (intens - 0.5) * 4));
-      else
-        rgb = qRgb((int)floor(0xff * (intens - 0.75) * 4), 0xff, 0xff);
-
-      image.setPixel(x, y, rgb);
-    }
-  }
-
-  return QPixmap::fromImage(image);
+Image::intensity_t Image::intensity(Session const& session,uint x, uint y) const {
+  return intensities[index(session,x,y)];
 }
 
 }

@@ -97,8 +97,8 @@ void MainWin::initActions() {
   actImagesGlobalNorm   = toggle("global nm.");
   actImagesUpDown       = toggle("UpDown",    ":/icon/updown");
   actImagesLeftRight    = toggle("LeftRight", ":/icon/leftright");
-  actImagesTurnRight    = toggle("TurnRight", ":/icon/turnright");
-  actImagesTurnLeft     = toggle("TurnLeft",  ":/icon/turnleft");
+  actImagesTurnClock    = toggle("TurnRight", ":/icon/turnright");
+  actImagesTurnCounter     = toggle("TurnLeft",  ":/icon/turnleft");
 
   actBackgroundBackground = simple("Background",    ":/icon/background");
   actBackgroundEye        = simple("BackgroundEye", ":/icon/eye");

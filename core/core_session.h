@@ -40,7 +40,17 @@ public: // detector TODO make a structure; rename variables
   int   middlePixXOffset;
   int   middlePixYOffset;
 
-protected:  // corrections
+public: // image transform
+  void setUpDown(bool);
+  void setLeftRight(bool);
+  void setTurnClock(bool);
+  void setTurnCounter(bool);
+
+private:
+  friend class Image; // TODO this is for Image::index(), do better
+  bool upDown, leftRight, turnClock, turnCounter;
+
+protected: // corrections
   struct Pixpos {  // TODO bad names
     Pixpos(): Pixpos(0,0) {}
     Pixpos(qreal gamma, qreal tth): gammaPix(gamma), tthPix(tth) {}

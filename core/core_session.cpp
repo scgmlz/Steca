@@ -2,7 +2,7 @@
 
 namespace core {
 
-Session::Session() {
+Session::Session(): upDown(false), leftRight(false), turnClock(false), turnCounter(false) {
 }
 
 Session::~Session() {
@@ -74,6 +74,22 @@ void Session::updateImageSize() {
     imageSize = QSize();
 }
 
+void Session::setUpDown(bool on) {
+  upDown = on;
+}
+
+void Session::setLeftRight(bool on) {
+  leftRight = on;
+}
+
+void Session::setTurnClock(bool on) {
+  turnClock = on; turnCounter = false;
+}
+
+void Session::setTurnCounter(bool on) {
+  turnClock = false; turnCounter = on;
+}
+
 QPoint Session::getPixMiddle(Image const& image) const {
   auto size = image.getSize();
   QPoint middle(
@@ -95,7 +111,7 @@ void Session::createAngleCorrArray(Image const& image, qreal tthMitte) {
   angleCorrArray.resize(image.pixCount());
 
   auto angleCorr = [this,&image](int x, int y) {
-    return angleCorrArray[image.index(x,y)];
+    return angleCorrArray[image.index(*this,x,y)];
   };
 
   ful.tth_regular.set(tthMitte);

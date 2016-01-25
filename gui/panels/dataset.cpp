@@ -7,28 +7,13 @@
 
 namespace panel {
 
-ImageWidget::ImageWidget(Dataset& image_)
-: image(image_), upDown(false), leftRight(false), turnDegrees(0), showOverlay(false) {
+ImageWidget::ImageWidget(Dataset& dataset_)
+: dataset(dataset_), showOverlay(false) {
   setMinimumSize(16,16);  // so it does not completely disappear
 }
 
 void ImageWidget::setPixmap(QPixmap const& pixmap) {
   original = pixmap;
-  update();
-}
-
-void ImageWidget::setUpDown(bool on) {
-  upDown = on;
-  update();
-}
-
-void ImageWidget::setLeftRight(bool on) {
-  leftRight = on;
-  update();
-}
-
-void ImageWidget::setTurn(int degrees) {
-  turnDegrees = degrees;
   update();
 }
 
@@ -57,8 +42,6 @@ void ImageWidget::paintEvent(QPaintEvent*) {
   if (lastPaintSize!=size()) {
     lastPaintSize!=size();
 
-    transform = QTransform();
-
     if (original.isNull()) {
       scaled = original;
       scale.setX(0); scale.setY(0);
@@ -70,27 +53,10 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 
       scale.setX((qreal)w  / original.width());
       scale.setY((qreal)h  / original.height());
-
-      int transX = w/2, transY = h/2;
-
-      // TODO if transformed, there is a light (one-pix?) column on the side of the image
-      transform.translate(transX,transY);
-
-      transform.rotate(turnDegrees);
-      if (leftRight) {
-        transform.scale(-1,1);
-        transX += 1; // adjustment; TODO verify - it is still not quite perfect
-      }
-      if (upDown) {
-        transform.scale(1,-1);
-        transY += 1; // adjustment; TODO verify - it is still not quite perfect
-      }
-
-      transform.translate(-transX,-transY);
     }
   }
 
-  QPainter painter(this); painter.setTransform(transform);
+  QPainter painter(this);
 
   QRect r = rect();
   r.adjust(0,0,-1,-1);
@@ -106,7 +72,7 @@ void ImageWidget::paintEvent(QPaintEvent*) {
   if (!showOverlay) return;
 
   // cut
-  auto cut = image.getSession().getImageCut();
+  auto cut = dataset.getSession().getImageCut();
   r.adjust(qRound(scale.x()*cut.left),  qRound(scale.y()*cut.top),
           -qRound(scale.x()*cut.right),-qRound(scale.y()*cut.bottom));
 
@@ -143,8 +109,8 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
   sb->addStretch();
   sb->addWidget(iconButton(mainWin.actImagesUpDown));
   sb->addWidget(iconButton(mainWin.actImagesLeftRight));
-  sb->addWidget(iconButton(mainWin.actImagesTurnRight));
-  sb->addWidget(iconButton(mainWin.actImagesTurnLeft));
+  sb->addWidget(iconButton(mainWin.actImagesTurnClock));
+  sb->addWidget(iconButton(mainWin.actImagesTurnCounter));
 
   auto hb = hbox();
   hb->addWidget(imageWidget = new ImageWidget(*this),0,0);
@@ -195,7 +161,7 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
 
   connect(mainWin.actImagesGlobalNorm, &QAction::toggled, [this](bool on) {
     globalNorm = on;
-    setDataset(dataset);
+    refresh();
   });
 
   connect(&session, &Session::datasetSelected, [this](pcCoreDataset dataset) {
@@ -203,28 +169,72 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
   });
 
   connect(mainWin.actImagesUpDown, &QAction::toggled, [this](bool on) {
-    imageWidget->setUpDown(on);
+    session.setUpDown(on);
+    refresh();
   });
 
   connect(mainWin.actImagesLeftRight, &QAction::toggled, [this](bool on) {
-    imageWidget->setLeftRight(on);
+    session.setLeftRight(on);
+    refresh();
   });
 
   // the two buttons work, in a way, together
-  auto setTurn = [](ImageWidget *imageWidget, QAction *clicked, QAction *other, int degrees) {
+  auto setTurn = [](QAction *clicked, QAction *other) {
     bool on = clicked->isChecked() && !other->isChecked();
     other->setChecked(false);
     clicked->setChecked(on);
-    imageWidget->setTurn(on ? degrees : 0);
+    return on;
   };
 
-  connect(mainWin.actImagesTurnRight, &QAction::triggered, [this,&setTurn]() {
-    setTurn(imageWidget, mainWin.actImagesTurnRight, mainWin.actImagesTurnLeft, +90);
+  connect(mainWin.actImagesTurnClock, &QAction::triggered, [this,&setTurn]() {
+    bool on = setTurn(mainWin.actImagesTurnClock, mainWin.actImagesTurnCounter);
+    session.setTurnClock(on);
+    refresh();
   });
 
-  connect(mainWin.actImagesTurnLeft, &QAction::triggered, [this,&setTurn]() {
-    setTurn(imageWidget, mainWin.actImagesTurnLeft, mainWin.actImagesTurnRight, -90);
+  connect(mainWin.actImagesTurnCounter, &QAction::triggered, [this,&setTurn]() {
+    bool on = setTurn(mainWin.actImagesTurnCounter, mainWin.actImagesTurnClock);
+    session.setTurnCounter(on);
+    refresh();
   });
+}
+
+QPixmap Dataset::makePixmap(core::Image const& image, core::Image::intensity_t maxIntensity) {
+
+  QPixmap pixmap;
+
+  QSize const &size = image.getSize();
+
+  if (!size.isEmpty()) {
+    uint  width = size.width(), height = size.height();
+
+    qreal mi = maxIntensity;
+    if (mi <= 0) mi = 1;  // sanity
+
+    QImage qimage(size, QImage::Format_RGB32);
+
+    for (uint y = 0; y < height; ++y) {
+      for (uint x = 0; x < width; ++x) {
+        qreal intens = image.intensity(session,x,y) / mi;
+
+        QRgb rgb;
+        if (intens < 0.25)
+          rgb = qRgb(floor(0xff * intens * 4), 0, 0);
+        else if (intens < 0.5)
+          rgb = qRgb(0xff, floor(0xff * (intens - 0.25) * 4), 0);
+        else if (intens < 0.75)
+          rgb = qRgb(0xff - floor(0xff * (intens - 0.5) * 4), 0xff, floor(0xff * (intens - 0.5) * 4));
+        else
+          rgb = qRgb((int)floor(0xff * (intens - 0.75) * 4), 0xff, 0xff);
+
+        qimage.setPixel(x, y, rgb);
+      }
+    }
+
+    pixmap = QPixmap::fromImage(qimage);
+  }
+
+  return pixmap;
 }
 
 void Dataset::setDataset(pcCoreDataset dataset_) {
@@ -232,7 +242,7 @@ void Dataset::setDataset(pcCoreDataset dataset_) {
   QPixmap pixMap;
   if (dataset) {
     auto image = dataset->getImage();
-    pixMap = image.pixmap(globalNorm ? dataset->getDatasets().getMaximumIntensity() : image.maximumIntensity());
+    pixMap = makePixmap(image, globalNorm ? dataset->getDatasets().getMaximumIntensity() : image.maximumIntensity());
   }
   imageWidget->setPixmap(pixMap);
 }

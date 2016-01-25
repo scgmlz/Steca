@@ -14,18 +14,14 @@ class ImageWidget: public QWidget {
 public:
   ImageWidget(Dataset&);
 
-
   void setPixmap(QPixmap const&);
-  void setUpDown(bool);
-  void setLeftRight(bool);
-  void setTurn(int degrees);
 
   void setShowOverlay(bool);
 
   QSize sizeHint() const;
 
 protected:
-  Dataset &image;
+  Dataset &dataset;
 
   void resizeEvent(QResizeEvent*);
   mutable int lastHeight; // keep square
@@ -35,9 +31,8 @@ protected:
   QPixmap original, scaled;
   QPointF scale;
 
-  bool upDown, leftRight; int turnDegrees; bool showOverlay;
+  bool showOverlay;
   QSize lastPaintSize;
-  QTransform transform;
 
 public:
   void update();
@@ -49,7 +44,10 @@ public:
   Dataset(MainWin&,Session&);
 
 private:
+  QPixmap makePixmap(core::Image const&,core::Image::intensity_t maxIntensity);
   void setDataset(pcCoreDataset);
+  void refresh() { setDataset(dataset); }
+
   pcCoreDataset dataset;
   bool globalNorm;
 
