@@ -29,6 +29,14 @@ void File::load() THROWS {
     THROW("unknown file type");
   }
 
+  RUNTIME_CHECK(!datasets.isEmpty(), "File " % info.filePath() % " is empty");
+}
+
+void File::sumDatasets() {
+  while (datasets.count() > 1) {
+    datasets[0]->image.sumIntensities(datasets.last()->image.getData());
+    datasets.removeLast();
+  }
 }
 
 Files::Files() {

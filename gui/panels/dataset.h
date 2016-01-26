@@ -44,9 +44,9 @@ public:
   Dataset(MainWin&,Session&);
 
 private:
-  QPixmap makePixmap(core::Image const&,core::Image::intensity_t maxIntensity);
+  QPixmap makePixmap(core::Image const&,core::Image::intensity_t maxIntensity,core::Intensities* corr);
   void setDataset(pcCoreDataset);
-  void refresh() { setDataset(dataset); }
+  void refresh();
 
   pcCoreDataset dataset;
   bool globalNorm;

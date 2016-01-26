@@ -4,7 +4,8 @@ namespace core {
 
 Session::Session()
 : imageSize(0)
-, upDown(false), leftRight(false), turnClock(false), turnCounter(false) {
+, upDown(false), leftRight(false), turnClock(false), turnCounter(false)
+, lastCalcTthMitte(0) {
 }
 
 Session::~Session() {
@@ -50,12 +51,14 @@ bool Session::hasCorrFile() const {
   return !corrFile.isNull();
 }
 
-void Session::setCorrFile(rcstr fileName) {
+void Session::loadCorrFile(rcstr fileName) {
   if (!fileName.isEmpty()) {
     QSharedPointer<File> file(new File(fileName));
     file->load();
+    file->sumDatasets();
     corrFile = file;
     setImageSize(file->getDatasets().getImageSize());
+    calcIntensCorrArray();
   } else {
     corrFile.clear();
     updateImageSize();
@@ -92,47 +95,53 @@ void Session::setTurnCounter(bool on) {
   turnClock = false; turnCounter = on;
 }
 
-QPoint Session::getPixMiddle(Image const& image) const {
-  auto size = image.getSize();
+QPoint Session::getPixMiddle(uint imageSize) const {
   QPoint middle(
-    size / 2 + middlePixXOffset,
-    size / 2 + middlePixYOffset);
+    imageSize / 2 + middlePixXOffset,
+    imageSize / 2 + middlePixYOffset);
   // TODO was: if ((tempPixMiddleX *[<=]* 0) || (tempPixMiddleX >= getWidth()))
-  RUNTIME_CHECK(interval_t(0,size).contains(middle.x()), "bad pixMiddle");
-  RUNTIME_CHECK(interval_t(0,size).contains(middle.y()), "bad pixMiddle");
+  // TODO this limitation could be maybe lifted (think small angle X-ray scattering?)
+  RUNTIME_CHECK(interval_t(0,imageSize).contains(middle.x()), "bad pixMiddle");
+  RUNTIME_CHECK(interval_t(0,imageSize).contains(middle.y()), "bad pixMiddle");
   return middle;
 }
 
 // TODO this is a slightly modified original code; be careful; eventually refactor
-void Session::createAngleCorrArray(Image const& image, qreal tthMitte) {
-  uint size = image.getSize();
+void Session::calcAngleCorrArray(qreal tthMitte) {
 
-  angleCorrArray.resize(image.pixCount());
+  uint count = imageSize * imageSize;
+  QPoint pixMiddle = getPixMiddle(imageSize);
 
-  auto angleCorr = [this,&image](int x, int y) {
-    return angleCorrArray[image.index(*this,x,y)];
+  if (angleCorrArray.count() == (int)count
+      && lastCalcTthMitte==tthMitte && lastPixMiddle == pixMiddle
+      && lastPixSpan == pixSpan && lastSampleDetectorSpan == sampleDetectorSpan
+      && lastImageCut == imageCut)
+    return;
+
+  angleCorrArray.resize(count);
+  lastCalcTthMitte = tthMitte; lastPixMiddle = pixMiddle;
+  lastPixSpan = pixSpan; lastSampleDetectorSpan = sampleDetectorSpan;
+  lastImageCut = imageCut;
+  auto angleCorr = [this](int x, int y) {
+    return angleCorrArray[Image::index(imageSize,x,y)];
   };
 
   ful.tth_regular.set(tthMitte);
   ful.tth_gamma0.set(tthMitte);
   ful.gamma.set(0);
 
-  QPoint pixMiddle = getPixMiddle(image);
-
-  auto length = [](qreal x, qreal y) { return sqrt(x*x + y*y); };
-
   // Fill the Array
-  for (uint i = 0; i < size; i++) {
+  for (uint i = 0; i < imageSize; i++) {
     int abstandInPixVertical = pixMiddle.y() - i;
     qreal y = abstandInPixVertical * pixSpan;
-    for (uint j = 0; j < size; j++) {
+    for (uint j = 0; j < imageSize; j++) {
       // TTH des Pixels berechnen
       int abstandInPixHorizontal = - pixMiddle.x() + j;
       qreal x = abstandInPixHorizontal * pixSpan;
-      qreal z = length(x,y);
-      qreal detektorAbstandPixel = length(z,sampleDetectorSpan);
+      qreal z = hypot(x,y);
+      qreal detektorAbstandPixel = hypot(z,sampleDetectorSpan);
       qreal tthHorAktuell = tthMitte + atan(x / sampleDetectorSpan);
-      qreal detektorAbstandHorPixel = length(x,sampleDetectorSpan);
+      qreal detektorAbstandHorPixel = hypot(x,sampleDetectorSpan);
       qreal h = cos(tthHorAktuell) * detektorAbstandHorPixel;
       qreal tthNeu = acos(h / detektorAbstandPixel);
 
@@ -159,18 +168,18 @@ void Session::createAngleCorrArray(Image const& image, qreal tthMitte) {
   // Calculate Gamma and TTH after cut
   // TODO the original code called setPixCut - is used elsewhere?
   // TODO refactor
-  int arrayMiddleX = imageCut.left + (size - imageCut.left - imageCut.right)  / 2;
-  int arrayMiddleY = imageCut.top  + (size - imageCut.top  - imageCut.bottom) / 2;
+  int arrayMiddleX = imageCut.left + (imageSize - imageCut.left - imageCut.right)  / 2;
+  int arrayMiddleY = imageCut.top  + (imageSize - imageCut.top  - imageCut.bottom) / 2;
 
   Pixpos middlePoint = angleCorr(arrayMiddleX,arrayMiddleY);
   cut.gamma.set(middlePoint.gammaPix);
   cut.tth_regular.set(middlePoint.tthPix);
   cut.tth_gamma0.safeSet(
-    angleCorr(size - 1 - imageCut.right,pixMiddle.y()).tthPix,
+    angleCorr(imageSize - 1 - imageCut.right,pixMiddle.y()).tthPix,
     angleCorr(imageCut.left,pixMiddle.y()).tthPix);
 
-  for (uint i = imageCut.left; i < size - imageCut.right; i++) {
-    for (uint j = imageCut.top; j < size - imageCut.bottom; j++) {
+  for (uint i = imageCut.left; i < imageSize - imageCut.right; i++) {
+    for (uint j = imageCut.top; j < imageSize - imageCut.bottom; j++) {
       auto ac = angleCorr(i,j);
       cut.gamma.include(ac.gammaPix);
       cut.tth_regular.include(ac.tthPix);
@@ -178,8 +187,38 @@ void Session::createAngleCorrArray(Image const& image, qreal tthMitte) {
   }
 }
 
+void Session::calcIntensCorrArray() {
+  if (!hasCorrFile()) {
+    intensCorrArray.set(1,0);
+    return;
+  }
+
+  ASSERT(1 == corrFile->getDatasets().count()) // no need to sum
+  Image const& image = corrFile->getDatasets().first()->getImage();
+
+  qreal sum = 0; uint n = 0;
+  for (uint x=imageCut.left; x<imageSize-imageCut.right; ++x)
+    for (uint y=imageCut.top; y<imageSize-imageCut.bottom; ++y) {
+      sum += image.intensity(*this,x,y);
+      ++n; // TODO aren't we lazy
+    }
+
+  ASSERT(n>0)
+  qreal avg = sum / n;
+
+  intensCorrArray.set(1,imageSize);
+  for (uint x=imageCut.left; x<imageSize-imageCut.right; ++x)
+    for (uint y=imageCut.top; y<imageSize-imageCut.bottom; ++y) {
+      intensCorrArray.intensity(*this,x,y) = avg / image.intensity(*this,x,y); // TODO /0 -> inf -> nan
+    }
+}
+
 Session::imagecut_t::imagecut_t(uint top_, uint bottom_, uint left_, uint right_)
-: top(top_), bottom(bottom_), left(left_), right(right_) {
+  : top(top_), bottom(bottom_), left(left_), right(right_) {
+}
+
+bool Session::imagecut_t::operator==(Session::imagecut_t const& that) {
+  return top==that.top && bottom==that.bottom && left==that.left && right==that.right;
 }
 
 void Session::setImageCut(bool topLeft, bool linked, imagecut_t const& imageCut_) {
@@ -205,7 +244,6 @@ void Session::setImageCut(bool topLeft, bool linked, imagecut_t const& imageCut_
       limit(imageCut.right, imageCut.left,    imageSize);
     }
   }
-
 }
 
 }

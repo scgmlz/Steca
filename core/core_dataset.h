@@ -12,6 +12,7 @@ namespace core {
 class Datasets;
 
 class Dataset {
+  friend class File;
 public:
   Dataset(Datasets&,
           rcstr date, rcstr comment,

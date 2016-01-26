@@ -21,6 +21,7 @@ public:
   QByteArray peek(uint maxLen); // first maxLen bytes
 
   void load() THROWS;
+  void sumDatasets();
 
   Datasets const& getDatasets() const { return datasets; }
 

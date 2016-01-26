@@ -106,6 +106,7 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
 
   auto sb = vbox(); // (s)ide   (b)uttons
 
+  sb->addWidget(iconButton(mainWin.actImagesShowRaw));
   sb->addStretch();
   sb->addWidget(iconButton(mainWin.actImagesUpDown));
   sb->addWidget(iconButton(mainWin.actImagesLeftRight));
@@ -118,6 +119,17 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
 
   box->addLayout(hb);
   box->addLayout(bb);
+
+  connect(&session, &Session::filesChanged, [this](){
+    bool on  = session.hasCorrFile();
+    auto act = mainWin.actImagesShowRaw;
+    if (!on) act->setChecked(false);
+    act->setEnabled(on);
+  });
+
+  connect(mainWin.actImagesShowRaw, &QAction::toggled, [this](bool) {
+    refresh();
+  });
 
   auto setImageCut = [this](bool topLeft, int value) {
     if (mainWin.actImagesLink->isChecked())
@@ -150,7 +162,7 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
     cutLeft   ->setValue(cut.left);
     cutRight  ->setValue(cut.right);
 
-    imageWidget->update();
+    refresh();
   });
 
   connect(mainWin.actImagesEye, &QAction::toggled, [this](bool on) {
@@ -199,10 +211,9 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
   });
 }
 
-QPixmap Dataset::makePixmap(core::Image const& image, core::Image::intensity_t maxIntensity) {
-
+QPixmap Dataset::makePixmap(core::Image const& image, core::Image::intensity_t maxIntensity,
+                            core::Intensities* corr) {
   QPixmap pixmap;
-
   uint size = image.getSize();
 
   if (0 < size) {
@@ -214,6 +225,7 @@ QPixmap Dataset::makePixmap(core::Image const& image, core::Image::intensity_t m
     for (uint y = 0; y < size; ++y) {
       for (uint x = 0; x < size; ++x) {
         qreal intens = image.intensity(session,x,y) / mi;
+        if (corr) intens *= corr->intensity(session,x,y);
 
         QRgb rgb;
         if (intens < 0.25)
@@ -240,9 +252,16 @@ void Dataset::setDataset(pcCoreDataset dataset_) {
   QPixmap pixMap;
   if (dataset) {
     auto image = dataset->getImage();
-    pixMap = makePixmap(image, globalNorm ? dataset->getDatasets().getMaximumIntensity() : image.maximumIntensity());
+    core::Intensities *corr = nullptr;
+    if (session.hasCorrFile() && !mainWin.actImagesShowRaw->isChecked())
+      corr = &session.intensCorrArray;
+    pixMap = makePixmap(image, globalNorm ? dataset->getDatasets().getMaximumIntensity() : image.maximumIntensity(), corr);
   }
   imageWidget->setPixmap(pixMap);
+}
+
+void Dataset::refresh() {
+  setDataset(dataset);
 }
 
 }

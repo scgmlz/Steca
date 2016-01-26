@@ -56,7 +56,7 @@ void MainWin::initActions() {
 
   actAddFiles           = simple("Add files...",          ":/icon/add", keys.keyAddFiles);
   actRemoveFile         = simple("Remove selected file",  ":/icon/rem", keys.keyDeleteFile);
-  actSetCorrectionFile  = simple("Set correction file...","",           keys.keySetCorrectionFile);
+  actLoadCorrectionFile = simple("load correction file...","",          keys.keyLoadCorrectionFile);
   actOpenSession        = simple("Open session...");
   actSaveSession        = simple("Save session...");
 
@@ -95,6 +95,7 @@ void MainWin::initActions() {
   actImagesLink           = toggle("Link",          ":/icon/link");
   actImagesEye            = toggle("eye",           ":/icon/eye");
   actImagesGlobalNorm     = toggle("global nm.");
+  actImagesShowRaw        = toggle("show w/o corr", ":/icon/eye");  // TODO different icon
   actImagesUpDown         = toggle("UpDown",        ":/icon/updown");
   actImagesLeftRight      = toggle("LeftRight",     ":/icon/leftright");
   actImagesRotateClock    = toggle("RotateClock",   ":/icon/rotateclock");
@@ -122,7 +123,7 @@ void MainWin::initMenus() {
   menuFile->addActions({
     actAddFiles, actRemoveFile,
     separator(),
-    actSetCorrectionFile,
+    actLoadCorrectionFile,
     separator(),
     actOpenSession, actSaveSession,actOpenSession
   });
@@ -234,7 +235,7 @@ void MainWin::connectActions() {
     actRemoveFile->setEnabled(nullptr!=file);
   });
 
-  onTrigger(actSetCorrectionFile,  &MainWin::setCorrectionFile);
+  onTrigger(actLoadCorrectionFile,  &MainWin::loadCorrectionFile);
 
   onTrigger(actOpenSession, &MainWin::loadSession);
   onTrigger(actSaveSession, &MainWin::saveSession);
@@ -289,14 +290,14 @@ void MainWin::addFiles() {
   }
 }
 
-void MainWin::setCorrectionFile() {
+void MainWin::loadCorrectionFile() {
   str fileName = QFileDialog::getOpenFileName(this,
       "Set correction file", dataDir, "Data files (*.dat);;All files (*.*)");
 
   if (!fileName.isEmpty()) {
     // remember the directory for the next time
     dataDir = QFileInfo(fileName).absolutePath();
-    session.setCorrFile(fileName);
+    session.loadCorrFile(fileName);
   }
 }
 

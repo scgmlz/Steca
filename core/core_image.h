@@ -9,26 +9,44 @@ namespace core {
 
 class Session;
 
-class Image {
+class Intensities {
 public:
   typedef float intensity_t;
+
+  Intensities(uint size = 0);
+  void set(intensity_t defValue, uint size);
+
+  uint getSize()  const   { return size; }
+  uint getCount() const   { return size * size; }
+  intensity_t* getData()  { return intensities.data(); } // TODO perhaps too open
+  intensity_t const* getData() const { return intensities.data(); } // TODO perhaps too open
+
+  // Session -> transform
+  uint index(Session const&,uint x, uint y) const;
+  static inline uint index(uint size,uint x, uint y) { return x + y * size; }
+
+  intensity_t& intensity(uint index);
+  intensity_t& intensity(Session const&, uint x, uint y);
+  intensity_t const& intensity(Session const&, uint x, uint y) const;
+
+protected:
+  uint size; // TODO for now a smplification: square images
+  QVector<intensity_t> intensities;
+};
+
+class Image: public Intensities {
+public:
 
   Image(uint, intensity_t const* intensities) THROWS;
 
   uint getSize()  const { return size; }
-  uint pixCount() const { return size * size; }
 
-  // Session -> transform
-  uint index(Session const&,uint x, uint y) const;
+  intensity_t maximumIntensity() const { return maxIntensity; }
 
-  intensity_t intensity(uint index)     const;
-  intensity_t intensity(Session const&, uint x, uint y) const;
-  intensity_t maximumIntensity()        const { return maxIntensity; }
+  void sumIntensities(intensity_t const*);
 
 private:
-  uint size; // TODO for now a smplification: square images
-  QVector<intensity_t> intensities;
-  intensity_t          maxIntensity;
+  intensity_t maxIntensity;
 };
 
 }

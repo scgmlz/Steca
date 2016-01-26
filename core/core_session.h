@@ -22,11 +22,10 @@ public:
   void remFile(uint i);
 
   bool hasCorrFile()   const;
-  void setCorrFile(rcstr fileName); // fileName may be empty -> unsets TODO
+  void loadCorrFile(rcstr fileName); // fileName may be empty -> unsets TODO
 
 protected:
   Files dataFiles;
-  QSharedPointer<File> corrFile;
 
   uint imageSize;
 
@@ -46,8 +45,15 @@ public: // image transform
   void setTurnClock(bool);
   void setTurnCounter(bool);
 
+public: // image
+  struct imagecut_t {
+    imagecut_t(uint top = 0, uint bottom = 0, uint left = 0, uint right = 0);
+    bool operator==(imagecut_t const&);
+    uint top, bottom, left, right;
+  };
+
 private:
-  friend class Image; // TODO this is for Image::index(), do better
+  friend class Intensities; // TODO this is for Image::index(), do better
   bool upDown, leftRight, turnClock, turnCounter;
 
 protected: // corrections
@@ -58,22 +64,26 @@ protected: // corrections
     qreal tthPix;
   };
 
-  // TODO rename; TODO share these by (tth,image size)
+  // TODO rename;
   QVector<Pixpos>      angleCorrArray;
   borders_t            ful, cut;
 
-  QPoint  getPixMiddle(Image const&) const;  // TODO rename, was getPixMiddleX/Y
-  void    createAngleCorrArray(Image const&,qreal);  // TODO rename to "map"; TODO if too slow, cache
+  QPoint  getPixMiddle(uint imageSize) const;  // TODO rename, was getPixMiddleX/Y
 
-  float** intensCorrArray = NULL;
-  float** intensCorrArrayNotStandardized = NULL;
+  // TODO cashing of calcAngle...
+  qreal lastCalcTthMitte; QPoint lastPixMiddle;
+  qreal lastPixSpan, lastSampleDetectorSpan;
+  imagecut_t lastImageCut;
+
+  void calcAngleCorrArray(qreal tthMitte);  // TODO rename; TODO if too slow, cache
+
+  QSharedPointer<File> corrFile;
+
+public: // TODO not public
+  Intensities intensCorrArray;  // summed corrFile intensities
+  void calcIntensCorrArray();
 
 public: // image
-  struct imagecut_t {
-    imagecut_t(uint top = 0, uint bottom = 0, uint left = 0, uint right = 0);
-    uint top, bottom, left, right;
-  };
-
   imagecut_t const& getImageCut() const { return imageCut; }
   void setImageCut(bool topLeft, bool linked, imagecut_t const&);
 

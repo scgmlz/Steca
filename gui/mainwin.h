@@ -25,7 +25,7 @@ public:
   void close();
 
   void addFiles();
-  void setCorrectionFile();
+  void loadCorrectionFile();
 
   void loadSession();
   void saveSession();
@@ -45,7 +45,7 @@ private:
 public:
   QAction
     *actAddFiles, *actRemoveFile,
-    *actSetCorrectionFile,
+    *actLoadCorrectionFile,
     *actOpenSession, *actSaveSession,
 
     *actExportDiffractogramCurrent,
@@ -73,7 +73,7 @@ public:
 
   // more actions, probably not in the menu
     *actReflectionPeak, *actReflectionReflect, *actReflectionWidth, *actReflectionAdd,
-    *actImagesLink, *actImagesEye, *actImagesGlobalNorm,
+    *actImagesLink, *actImagesEye, *actImagesGlobalNorm, *actImagesShowRaw,
     *actImagesUpDown, *actImagesLeftRight, *actImagesRotateClock, *actImagesRotateCounter,
     *actBackgroundBackground, *actBackgroundEye;
 

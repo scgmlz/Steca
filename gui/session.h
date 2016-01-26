@@ -25,7 +25,7 @@ public:
 
   void remFile(uint i);
 
-  void setCorrFile(rcstr filePath);
+  void loadCorrFile(rcstr filePath);
 
   void setSelectedFile(pcCoreFile);
   void setSelectedDataset(pcCoreDataset);

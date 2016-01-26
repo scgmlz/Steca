@@ -35,7 +35,7 @@ void Session::load(MainWin const& mainWin,QByteArray const& json) THROWS {
     addFile(file.toString());
   }
 
-  setCorrFile(top["corr.file"].toString());
+  loadCorrFile(top["corr.file"].toString());
 
   auto cut = top["cut"].toObject();
   int y1 = qMax(0,cut["top"].toInt());
@@ -132,18 +132,19 @@ void Session::addFiles(str_lst filePaths) THROWS {
 
 void Session::remFile(uint i) {
   if ((uint)dataFiles.count() == i)
-    super::setCorrFile(NULL_STR);
+    super::loadCorrFile(NULL_STR);
   else
     super::remFile(i);
 
+  setSelectedFile(nullptr);
+  emit filesChanged();
+
   if (0==numFiles(true))
     setImageCut(true,false,imagecut_t());
-
-  emit filesChanged();
 }
 
-void Session::setCorrFile(rcstr filePath) {
-  super::setCorrFile(filePath);
+void Session::loadCorrFile(rcstr filePath) {
+  super::loadCorrFile(filePath);
   emit filesChanged();
 }
 
@@ -158,6 +159,7 @@ void Session::setSelectedDataset(pcCoreDataset dataset) {
 
 void Session::setImageCut(bool topLeft, bool linked, imagecut_t const& imageCut) {
   super::setImageCut(topLeft,linked,imageCut);
+  calcIntensCorrArray();
   emit imageCutChanged();
 }
 

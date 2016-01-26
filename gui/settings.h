@@ -35,7 +35,7 @@ public:
   typedef QKeySequence QKey;
 
   QKey
-    keyAddFiles, keyDeleteFile, keySetCorrectionFile,
+    keyAddFiles, keyDeleteFile, keyLoadCorrectionFile,
     keyViewStatusbar
   #ifndef Q_OS_OSX
     , keyFullscreen

@@ -48,7 +48,7 @@ void Settings::save(rcstr key, QDoubleSpinBox* box) {
 Keys::Keys() {
   keyAddFiles          = Qt::CTRL|Qt::Key_O;
   keyDeleteFile        = QKey::Delete;
-  keySetCorrectionFile = Qt::SHIFT|Qt::CTRL|Qt::Key_O;
+  keyLoadCorrectionFile = Qt::SHIFT|Qt::CTRL|Qt::Key_O;
 
   keyViewStatusbar     = Qt::Key_F12;
 #ifndef Q_OS_OSX
