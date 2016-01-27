@@ -139,7 +139,6 @@ void loadCaress(rcstr filePath,core::Datasets& datasets) THROWS {
             convertedIntens[i] = intens[i];
 
           // Objekt inizialisieren
-          constexpr double deg2rad = 3.1415926535897932384626433832795 / 180;
           datasets.append(QSharedPointer<core::Dataset>(new core::Dataset(
             datasets, str::fromStdString(s_date), str::fromStdString(s_comment),
             xAxis, yAxis, zAxis,

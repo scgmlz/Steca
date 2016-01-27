@@ -5,13 +5,13 @@
 namespace panel {
 
 void Dgram::clear() {
-  super::clear();
+  tth.clear(); inten.clear();
   maxInten = 0;
 }
 
-void Dgram::append(TthInt const& ti) {
-  super::append(ti);
-  maxInten = qMax(maxInten,ti.inten);
+void Dgram::append(qreal tth_,qreal inten_) {
+  tth.append(tth_/deg2rad); inten.append(inten_);
+  maxInten = qMax(maxInten,inten_);
 }
 
 DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& plot)
@@ -64,9 +64,10 @@ void DiffractogramPlot::plot(Dgram const& dgram) {
     xAxis->setRange(0,1);
     yAxis->setRange(0,1);
   } else {
-    xAxis->setRange(dgram.first().tth,dgram.last().tth);
+    xAxis->setRange(dgram.tth.first(),dgram.tth.last());
     yAxis->setRange(0,dgram.maxInten);
     auto graph = addGraph();
+    graph->setData(dgram.tth,dgram.inten);
   }
   replot();
 }
@@ -124,25 +125,24 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   // TODO bad! no iteration by floats
   ASSERT(deltaTTH>0) // TODO
   for (qreal tt = TTHMin + deltaTTH / 2; tt <= TTHMax - deltaTTH / 2; tt += deltaTTH) {
-    TthInt ti;
-    ti.inten = 0;
-    ti.tth = tt;
+    qreal inten = 0;
+    qreal tth = tt;
     int countPixPerColumn = 0;
 
     for_i(pixTotal) { // TODO inefficient
       qreal tthPix = angles[i].tthPix;
       if ((tthPix > tt - deltaTTH / 2) && (tthPix <= tt + deltaTTH / 2)) {
-        auto inten = intens[i];
-        if (corr) inten *= corr[i];
-        ti.inten += inten;
+        auto in = intens[i];
+        if (corr) in *= corr[i];
+        inten += in;
         countPixPerColumn++;
       }
     }
 
     if (countPixPerColumn > 0)
-      ti.inten /= countPixPerColumn;
+      inten /= countPixPerColumn;
 
-    dgram.append(ti);
+    dgram.append(tth,inten);
   }
 }
 

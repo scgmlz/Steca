@@ -7,16 +7,11 @@
 
 namespace panel {
 
-struct TthInt { // TODO rename 2 tthint_t
-  qreal inten, tth;
-};
-
-struct Dgram: QVector<TthInt> { // TODO rename
-  SUPER(Dgram,QVector<TthInt>)
-  qreal maxInten;
-
+struct Dgram { // TODO rename
+  QVector<qreal> tth,inten; qreal maxInten;
   void clear();
-  void append(TthInt const&);
+  bool isEmpty() const { return tth.isEmpty(); }
+  void append(qreal tth,qreal inten);
 };
 
 class DiffractogramPlot;

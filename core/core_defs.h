@@ -72,4 +72,6 @@ struct borders_t {
 
 }
 
+constexpr double deg2rad = 3.1415926535897932384626433832795 / 180; // TODO OUT
+
 #endif

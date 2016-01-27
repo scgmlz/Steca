@@ -48,7 +48,7 @@ void Session::load(MainWin const& mainWin,QByteArray const& json) THROWS {
   auto det = top["detector"].toObject();
 
   sampleDetectorSpan = det["distance"].toDouble();
-  pixSpan            = det["pixelsize"].toDouble();
+  pixSpan            = det["pixel_size"].toDouble();
   hasBeamOffset      = det["hasbeamoffset"].toBool();
   middlePixXOffset   = det["offset_x"].toDouble();
   middlePixYOffset   = det["offset_y"].toDouble();
@@ -77,7 +77,7 @@ QByteArray Session::save(MainWin const& mainWin) const {
   QJsonObject det;
 
   det["distance"]     = sampleDetectorSpan;
-  det["pixel size"]   = pixSpan;
+  det["pixel_size"]   = pixSpan;
   det["isbeamoffset"] = hasBeamOffset;
   det["offset_x"]     = middlePixXOffset;
   det["offset_y"]     = middlePixYOffset;

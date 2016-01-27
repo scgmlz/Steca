@@ -24,7 +24,7 @@ Detector::Detector(MainWin& mainWin_,Session& session_): super("Detector",mainWi
 
   ++row;
   grid->addWidget(label("Pixel size"),row,0);
-  grid->addWidget((spinPixelSize = spinCell(8,0.0)),row,1);
+  grid->addWidget((spinPixelSize = spinCell(8,0.01)),row,1);
   grid->addWidget(label("mm"),row,2);
 
   ++row;
