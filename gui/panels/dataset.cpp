@@ -225,15 +225,24 @@ QPixmap Dataset::makePixmap(core::Image const& image, core::Image::intensity_t m
     for (uint y = 0; y < size; ++y) {
       for (uint x = 0; x < size; ++x) {
         qreal intens = image.intensity(session,x,y) / mi;
-        if (corr) intens *= corr->intensity(session,x,y);
+        bool isNan = false; // TODO temporary fix
+        if (corr) {
+          auto factor = corr->intensity(session,x,y);
+          if (qIsFinite(factor))
+            intens *= factor;
+          else
+            isNan = true;
+        }
 
         QRgb rgb;
-        if (intens < 0.25)
-          rgb = qRgb(floor(0xff * intens * 4), 0, 0);
+        if (isNan)
+          rgb = qRgb(0xff,0xff,0xff);
+        else if (intens < 0.25)
+          rgb = qRgb((int)floor(0xff * intens * 4), 0, 0);
         else if (intens < 0.5)
-          rgb = qRgb(0xff, floor(0xff * (intens - 0.25) * 4), 0);
+          rgb = qRgb(0xff, (int)floor(0xff * (intens - 0.25) * 4), 0);
         else if (intens < 0.75)
-          rgb = qRgb(0xff - floor(0xff * (intens - 0.5) * 4), 0xff, floor(0xff * (intens - 0.5) * 4));
+          rgb = qRgb(0xff - (int)floor(0xff * (intens - 0.5) * 4), 0xff, (int)floor(0xff * (intens - 0.5) * 4));
         else
           rgb = qRgb((int)floor(0xff * (intens - 0.75) * 4), 0xff, 0xff);
 

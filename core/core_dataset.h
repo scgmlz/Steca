@@ -27,6 +27,8 @@ public:
 
   str getAttributeStrValue(int /*as: enumAttribute*/) const;
 
+  qreal tthMitte() const { return motorTth; } // TODO ? is mitte
+
 private:
   Datasets &datasets;
 

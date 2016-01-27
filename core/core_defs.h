@@ -7,6 +7,9 @@
 
 #include <QtGlobal>
 
+// a class definition helper: this class and superclass access
+#define SUPER(cls,sup)  typedef cls thisCls; typedef sup super;
+
 // strings
 #include <QString>
 #include <QStringBuilder>
@@ -18,6 +21,9 @@ typedef char const* pcstr;
 typedef QStringList str_lst;
 
 extern  str const NULL_STR;
+
+// iteration
+#define for_i(num) for (int i=0, iEnd=(num); i<iEnd; ++i)
 
 // error handling
 #include <QException>

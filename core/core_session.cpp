@@ -4,6 +4,7 @@ namespace core {
 
 Session::Session()
 : imageSize(0)
+, pixSpan(0.01), sampleDetectorSpan(1.0) // TODO these must be reasonable limited
 , upDown(false), leftRight(false), turnClock(false), turnCounter(false)
 , lastCalcTthMitte(0) {
 }
@@ -107,7 +108,7 @@ QPoint Session::getPixMiddle(uint imageSize) const {
 }
 
 // TODO this is a slightly modified original code; be careful; eventually refactor
-void Session::calcAngleCorrArray(qreal tthMitte) {
+QVector<Session::Pixpos> const& Session::calcAngleCorrArray(qreal tthMitte) {
 
   uint count = imageSize * imageSize;
   QPoint pixMiddle = getPixMiddle(imageSize);
@@ -116,19 +117,23 @@ void Session::calcAngleCorrArray(qreal tthMitte) {
       && lastCalcTthMitte==tthMitte && lastPixMiddle == pixMiddle
       && lastPixSpan == pixSpan && lastSampleDetectorSpan == sampleDetectorSpan
       && lastImageCut == imageCut)
-    return;
+    return angleCorrArray;
 
   angleCorrArray.resize(count);
   lastCalcTthMitte = tthMitte; lastPixMiddle = pixMiddle;
   lastPixSpan = pixSpan; lastSampleDetectorSpan = sampleDetectorSpan;
   lastImageCut = imageCut;
+
   auto angleCorr = [this](int x, int y) {
-    return angleCorrArray[Image::index(imageSize,x,y)];
+    return &angleCorrArray[Image::index(imageSize,x,y)];
   };
 
   ful.tth_regular.set(tthMitte);
   ful.tth_gamma0.set(tthMitte);
   ful.gamma.set(0);
+
+  ASSERT(pixSpan>0) // TODO
+  ASSERT(sampleDetectorSpan>0) // TODO
 
   // Fill the Array
   for (uint i = 0; i < imageSize; i++) {
@@ -161,30 +166,32 @@ void Session::calcAngleCorrArray(qreal tthMitte) {
       ful.tth_gamma0.include(tthHorAktuell);
 
       // Write angle in array
-      angleCorr(j,i) = Pixpos(gamma,tthNeu);
+      *angleCorr(j,i) = Pixpos(gamma,tthNeu);
     }
   }
 
   // Calculate Gamma and TTH after cut
   // TODO the original code called setPixCut - is used elsewhere?
   // TODO refactor
-  int arrayMiddleX = imageCut.left + (imageSize - imageCut.left - imageCut.right)  / 2;
-  int arrayMiddleY = imageCut.top  + (imageSize - imageCut.top  - imageCut.bottom) / 2;
+  int arrayMiddleX = imageCut.left + imageCut.getWidth(imageSize)  / 2;
+  int arrayMiddleY = imageCut.top  + imageCut.getHeight(imageSize) / 2;
 
-  Pixpos middlePoint = angleCorr(arrayMiddleX,arrayMiddleY);
+  Pixpos middlePoint = *angleCorr(arrayMiddleX,arrayMiddleY);
   cut.gamma.set(middlePoint.gammaPix);
   cut.tth_regular.set(middlePoint.tthPix);
   cut.tth_gamma0.safeSet(
-    angleCorr(imageSize - 1 - imageCut.right,pixMiddle.y()).tthPix,
-    angleCorr(imageCut.left,pixMiddle.y()).tthPix);
+    angleCorr(imageSize - 1 - imageCut.right,pixMiddle.y())->tthPix,
+    angleCorr(imageCut.left,pixMiddle.y())->tthPix);
 
   for (uint i = imageCut.left; i < imageSize - imageCut.right; i++) {
     for (uint j = imageCut.top; j < imageSize - imageCut.bottom; j++) {
       auto ac = angleCorr(i,j);
-      cut.gamma.include(ac.gammaPix);
-      cut.tth_regular.include(ac.tthPix);
+      cut.gamma.include(ac->gammaPix);
+      cut.tth_regular.include(ac->tthPix);
     }
   }
+
+  return angleCorrArray;
 }
 
 void Session::calcIntensCorrArray() {
@@ -209,7 +216,9 @@ void Session::calcIntensCorrArray() {
   intensCorrArray.set(1,imageSize);
   for (uint x=imageCut.left; x<imageSize-imageCut.right; ++x)
     for (uint y=imageCut.top; y<imageSize-imageCut.bottom; ++y) {
-      intensCorrArray.intensity(*this,x,y) = avg / image.intensity(*this,x,y); // TODO /0 -> inf -> nan
+      qreal val = avg / image.intensity(*this,x,y); // TODO /0 -> inf -> nan
+      if (qIsInf(val)) val = 1; // TODO verify
+      intensCorrArray.intensity(*this,x,y) = val;
     }
 }
 
@@ -219,6 +228,18 @@ Session::imagecut_t::imagecut_t(uint top_, uint bottom_, uint left_, uint right_
 
 bool Session::imagecut_t::operator==(Session::imagecut_t const& that) {
   return top==that.top && bottom==that.bottom && left==that.left && right==that.right;
+}
+
+uint Session::imagecut_t::getWidth(uint imageSize) const {
+  return imageSize - left - right;
+}
+
+uint Session::imagecut_t::getHeight(uint imageSize) const {
+  return imageSize - top - bottom;
+}
+
+uint Session::imagecut_t::getCount(uint imageSize) const {
+  return getWidth(imageSize) * getHeight(imageSize);
 }
 
 void Session::setImageCut(bool topLeft, bool linked, imagecut_t const& imageCut_) {

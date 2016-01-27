@@ -50,6 +50,10 @@ public: // image
     imagecut_t(uint top = 0, uint bottom = 0, uint left = 0, uint right = 0);
     bool operator==(imagecut_t const&);
     uint top, bottom, left, right;
+
+    uint getWidth(uint imageSize) const;
+    uint getHeight(uint imageSize) const;
+    uint getCount(uint imageSize) const;
   };
 
 private:
@@ -75,13 +79,16 @@ protected: // corrections
   qreal lastPixSpan, lastSampleDetectorSpan;
   imagecut_t lastImageCut;
 
-  void calcAngleCorrArray(qreal tthMitte);  // TODO rename; TODO if too slow, cache
-
   QSharedPointer<File> corrFile;
+
+public:
+  QVector<Pixpos> const& calcAngleCorrArray(qreal tthMitte);  // TODO rename; TODO if too slow, cache
 
 public: // TODO not public
   Intensities intensCorrArray;  // summed corrFile intensities
   void calcIntensCorrArray();
+
+  borders_t const& getCut() const { return cut; }
 
 public: // image
   imagecut_t const& getImageCut() const { return imageCut; }
