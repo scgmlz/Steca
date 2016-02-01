@@ -1,11 +1,18 @@
+/** \file
+ * Macros that support debugging.
+ *
+ * TR (TRace) and WT (WaTch) are for trace prints;
+ * ASSERT for debug-time assertions;
+ * NOT_HERE for marking unreachable code
+ */
+
 #ifndef CORE_DEBUG_H
 #define CORE_DEBUG_H
 
-// debug support
 #ifndef QT_NO_DEBUG
 
 #include <QDebug>
-#define TR(what)          { qDebug() << what; } // TR: short for 'trace'
+#define TR(what)          { qDebug() << what; }
 #define ASSERT(cond)      Q_ASSERT(cond);
 #define NOT_HERE          Q_ASSERT_X(false, "Here" , "not be!");
 
@@ -17,6 +24,6 @@
 
 #endif
 
-#define WT(what)          TR(#what":" << what) // WT: short for 'watch'
+#define WT(what)          TR(#what":" << what)
 
 #endif

@@ -1,4 +1,5 @@
 #include "core_defs.h"
+#include <math.h>
 
 static_assert (QT_VERSION >= 0x050501,"written for Qt >= 5.5");
 
@@ -6,32 +7,18 @@ static_assert (QT_VERSION >= 0x050501,"written for Qt >= 5.5");
 #error needs exception handling
 #endif
 
-str const NULL_STR;
+str const EMPTY_STR;
 
-namespace core {
-
-interval_t::interval_t(qreal low_, qreal hig_): low(low_), hig(hig_) {
+void Exception::raise(rcstr msg) THROWS {
+  throw Exception(msg);
 }
 
-void interval_t::set(qreal val) {
-  set(val,val);
+qreal deg_rad(qreal rad) {
+  return rad * (180 / M_PI);
 }
 
-void interval_t::set(qreal low_, qreal hig_) {
-  low = low_; hig = hig_;
-}
-
-void interval_t::safeSet(qreal v1, qreal v2) {
-  if (v1 < v2)
-    set(v1,v2);
-  else
-    set(v2,v1);
-}
-
-void interval_t::include(qreal val) {
-  low = qMin(low,val); hig = qMax(hig,val);
-}
-
+qreal rad_deg(qreal deg) {
+  return deg * (M_PI / 180);
 }
 
 // eof

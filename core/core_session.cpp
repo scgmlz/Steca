@@ -1,10 +1,34 @@
 #include "core_session.h"
+#include <cmath>
 
 namespace core {
 
+interval_t::interval_t(qreal low_, qreal hig_): low(low_), hig(hig_) {
+}
+
+void interval_t::set(qreal val) {
+  set(val,val);
+}
+
+void interval_t::set(qreal low_, qreal hig_) {
+  low = low_; hig = hig_;
+}
+
+void interval_t::safeSet(qreal v1, qreal v2) {
+  if (v1 < v2)
+    set(v1,v2);
+  else
+    set(v2,v1);
+}
+
+void interval_t::include(qreal val) {
+  low = qMin(low,val); hig = qMax(hig,val);
+}
+
 Session::Session()
-: imageSize(0)
+: dataFiles(), imageSize(0)
 , pixSpan(0.01), sampleDetectorSpan(1.0) // TODO these must be reasonable limited
+, hasBeamOffset(false), middlePixXOffset(0), middlePixYOffset(0)
 , upDown(false), leftRight(false), turnClock(false), turnCounter(false)
 , lastCalcTthMitte(0) {
 }
@@ -97,7 +121,7 @@ void Session::setTurnCounter(bool on) {
 }
 
 QPoint Session::getPixMiddle(uint imageSize) const {
-  QPoint middle(
+  QPoint middle( // TODO hasBeamOffset
     imageSize / 2 + middlePixXOffset,
     imageSize / 2 + middlePixYOffset);
   // TODO was: if ((tempPixMiddleX *[<=]* 0) || (tempPixMiddleX >= getWidth()))

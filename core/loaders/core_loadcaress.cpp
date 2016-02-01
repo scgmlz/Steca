@@ -3,6 +3,7 @@
 #include "loaders/Caress/raw.h"
 
 #include <sstream>
+#include <cmath>
 
 // Taken from the original STeCa, modified.
 
@@ -142,8 +143,8 @@ void loadCaress(rcstr filePath,core::Datasets& datasets) THROWS {
           datasets.append(QSharedPointer<core::Dataset>(new core::Dataset(
             datasets, str::fromStdString(s_date), str::fromStdString(s_comment),
             xAxis, yAxis, zAxis,
-            omgAxis * deg2rad, tthAxis * deg2rad, phiAxis * deg2rad, chiAxis * deg2rad,
-            pstAxis, sstAxis, omgmAxis * deg2rad,
+            rad_deg(omgAxis), rad_deg(tthAxis), rad_deg(phiAxis), rad_deg(chiAxis),
+            pstAxis, sstAxis, rad_deg(omgmAxis),
             mon, tempTime,
             detRel, convertedIntens.constData())));
           delete[] intens; intens = NULL;

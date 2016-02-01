@@ -10,7 +10,7 @@ class CriticalError: public Exception {
 };
 
 class QObject;
-void warn(QObject*, rcstr msg, rcstr more = NULL_STR);
+void warn(QObject*, rcstr msg, rcstr more = EMPTY_STR);
 
 // TODO temporary wait solution
 

@@ -132,7 +132,7 @@ void Session::addFiles(str_lst filePaths) THROWS {
 
 void Session::remFile(uint i) {
   if ((uint)dataFiles.count() == i)
-    super::loadCorrFile(NULL_STR);
+    super::loadCorrFile(EMPTY_STR);
   else
     super::remFile(i);
 

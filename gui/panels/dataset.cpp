@@ -34,7 +34,7 @@ void ImageWidget::resizeEvent(QResizeEvent* e) {
     auto r = geometry();
     r.setWidth(h);
     setGeometry(r);
-    updateGeometry();
+    updateGeometry(); // TODO on Mac stays a while, then changes
   }
 }
 
@@ -238,13 +238,13 @@ QPixmap Dataset::makePixmap(core::Image const& image, core::Image::intensity_t m
         if (isNan)
           rgb = qRgb(0xff,0xff,0xff);
         else if (intens < 0.25)
-          rgb = qRgb((int)floor(0xff * intens * 4), 0, 0);
+          rgb = qRgb(0xff * intens * 4, 0, 0);
         else if (intens < 0.5)
-          rgb = qRgb(0xff, (int)floor(0xff * (intens - 0.25) * 4), 0);
+          rgb = qRgb(0xff, 0xff * (intens - 0.25) * 4, 0);
         else if (intens < 0.75)
-          rgb = qRgb(0xff - (int)floor(0xff * (intens - 0.5) * 4), 0xff, (int)floor(0xff * (intens - 0.5) * 4));
+          rgb = qRgb(0xff - (0xff * (intens - 0.5) * 4), 0xff, (0xff * (intens - 0.5) * 4));
         else
-          rgb = qRgb((int)floor(0xff * (intens - 0.75) * 4), 0xff, 0xff);
+          rgb = qRgb(0xff * (intens - 0.75) * 4, 0xff, 0xff);
 
         qimage.setPixel(x, y, rgb);
       }

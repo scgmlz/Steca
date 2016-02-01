@@ -10,7 +10,7 @@ void Dgram::clear() {
 }
 
 void Dgram::append(qreal tth_,qreal inten_) {
-  tth.append(tth_/deg2rad); inten.append(inten_);
+  tth.append(deg_rad(tth_)); inten.append(inten_);
   maxInten = qMax(maxInten,inten_);
 }
 

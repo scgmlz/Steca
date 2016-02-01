@@ -23,7 +23,7 @@ DatasetInfo::DatasetInfo(MainWin& mainWin,Session& session)
 
   connect(&session, &Session::datasetSelected, [this](pcCoreDataset dataset) {
     for_i(core::Datasets::NUM_ATTRIBUTES) {
-      infoItems[i].text->setText(dataset ? dataset->getAttributeStrValue(i) : NULL_STR);
+      infoItems[i].text->setText(dataset ? dataset->getAttributeStrValue(i) : EMPTY_STR);
     }
   });
 

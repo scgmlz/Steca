@@ -270,8 +270,8 @@ void MainWin::connectActions() {
 void MainWin::show() {
   super::show();
   checkActions();
-#ifdef DEVEL
-  session.load(*this,QFileInfo("/home/jan/q.ste"));
+#ifdef DEVELOPMENT
+  session.load(*this,QFileInfo("/Users/igb/Q/STeCa/data/q.ste"));
 #endif
 }
 

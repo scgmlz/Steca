@@ -8,4 +8,5 @@ core
 
 OTHER_FILES = \
   README.md \
-  manifest.h
+  manifest.h \
+  Doxyfile

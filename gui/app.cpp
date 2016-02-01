@@ -44,6 +44,7 @@ static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr 
   }
 }
 
+// TODO icon
 int App::exec() {
   QSharedPointer<MainWin> mainWin(new MainWin);
   mainWin->show();

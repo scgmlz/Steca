@@ -1,77 +1,59 @@
-// common and useful definitions
+/** \file
+ * Commonly used or very useful definitions.
+ */
 
 #ifndef CORE_DEFS_H
 #define CORE_DEFS_H
 
-#define DEVEL
+/// Define this macro to enable development-related shortcuts.
+/// Undefine it for a release!
+#define DEVELOPMENT
 
 #include <QtGlobal>
 
-// a class definition helper: this class and superclass access
+/// A class definition helper: this class (thisCls) and superclass (super) access.
 #define SUPER(cls,sup)  typedef cls thisCls; typedef sup super;
 
-// strings
 #include <QString>
 #include <QStringBuilder>
 
-typedef QString     str;
-typedef str const&  rcstr;
-typedef char const* pcstr;
+typedef QString     str;      ///< a short alias for the string class
+typedef str const&  rcstr;    ///< a reference to a string constant
+typedef char const* pcstr;    ///< zero-terminated C-style string
 
-typedef QStringList str_lst;
+typedef QStringList str_lst;  ///< a short alias
 
-extern  str const NULL_STR;
+extern  str const EMPTY_STR;  ///< an empty string that can be returned by reference
 
-// iteration
-#define for_i(num) for (int i=0, iEnd=(num); i<iEnd; ++i)
+/// the idiomatic iteration over *n* items
+#define for_i(n) for (int i=0, iEnd=(n); i<iEnd; ++i)
 
-// error handling
 #include <QException>
 
+#define THROWS throw (Exception)    ///< exception annotation macro
+
+/// An exception that carries a message.
+/// (Error handling is preferably to be done with exceptions.)
 class Exception: public QException {
 public:
   Exception(rcstr msg_): msg(msg_) {}
-
   str msg;
+
+  static void raise(rcstr msg) THROWS;
 };
 
-#define THROWS throw (Exception)
-#define THROW(msg) raiseError(msg)
-#define RUNTIME_CHECK(test,msg)  if (!(test)) THROW(msg)
+#define THROW(msg) Exception::raise(msg)  ///< raise an exception
+#define RUNTIME_CHECK(test,msg) \
+  if (!(test)) THROW(msg)                 ///< run-time condition checking
 
-void raiseError(rcstr msg) THROWS;
-
-// autoptr
+// we use shared pointer in many places
 #include <QSharedPointer>
+
+// math
+qreal deg_rad(qreal);   ///< degrees <= radians
+qreal rad_deg(qreal);   ///< radians <= degrees
 
 // debug support
 #include "core_debug.h"
-
-// core-specific
-
-namespace core {
-
-struct interval_t { // closed interval
-  interval_t(qreal low = 0, qreal hig = 0);
-  qreal low, hig;
-
-  void set(qreal);
-  void set(qreal,qreal);
-  void safeSet(qreal,qreal);  // in the right order
-
-  void include(qreal);
-  bool contains(qreal val) const { return low <= val && val <= hig; }
-};
-
-struct borders_t {
-  interval_t
-    gamma,
-    tth_regular,
-    tth_gamma0; // at gamma=0
-};
-
-}
-
-constexpr double deg2rad = 3.1415926535897932384626433832795 / 180; // TODO OUT
 
 #endif

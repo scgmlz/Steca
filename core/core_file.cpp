@@ -1,9 +1,9 @@
 #include "core_file.h"
-#include "core_loadcaress.h"
+#include "loaders/core_loadcaress.h"
 
 namespace core {
 
-File::File(): File(NULL_STR) {
+File::File(): File(EMPTY_STR) {
 }
 
 File::File(rcstr fileName): info(fileName) {
