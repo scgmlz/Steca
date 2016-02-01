@@ -4,18 +4,24 @@
 
 namespace core {
 
-Intensities::Intensities(uint size_): size(0) {
-  set(0,size_);
+Image::Image(uint size_, intensity_t const* src)
+: size(0), maxIntensity(0) {
+  fill(0,size_);
+  addIntensities(src);
 }
 
-void Intensities::set(Intensities::intensity_t defValue, uint size_) {
+void Image::clear() {
+  fill(0,0);
+}
+
+void Image::fill(Image::intensity_t defValue, uint size_) {
   size = size_;
 
   int count = size * size;
   intensities.fill(defValue,count);
 }
 
-uint Intensities::index(Session const& session, uint x, uint y) const {
+uint Image::index(Session const& session, uint x, uint y) const {
   auto flip = [this](uint &index) { index = size - 1 - index; };
 
   if (session.turnClock) {
@@ -36,33 +42,26 @@ uint Intensities::index(Session const& session, uint x, uint y) const {
   return index(size,x,y);
 }
 
-Intensities::intensity_t& Intensities::intensity(uint index) {
+Image::intensity_t& Image::intensity(uint index) {
   return intensities[index];
 }
 
-Intensities::intensity_t& Intensities::intensity(Session const& session,uint x, uint y) {
+Image::intensity_t& Image::intensity(Session const& session,uint x, uint y) {
   return intensities[index(session,x,y)];
 }
 
-Intensities::intensity_t const& Intensities::intensity(Session const& session,uint x, uint y) const {
+Image::intensity_t const& Image::intensity(Session const& session,uint x, uint y) const {
   return intensities[index(session,x,y)];
 }
 
-Image::Image(uint size, intensity_t const* src) THROWS
-: Intensities(size), maxIntensity(0) {
-  auto dest = intensities.data();
-  uint count = size * size;
-  while(count-- > 0)
-    maxIntensity = qMax(*dest++ = *src++, maxIntensity);
-}
-
-void Image::sumIntensities(Intensities::intensity_t const* src) {
-  ASSERT(src)
-  maxIntensity = 0;
-  auto dest = intensities.data();
-  uint count = size * size;
-  while(count-- > 0)
-    maxIntensity = qMax(*dest++ = *src++, maxIntensity);
+void Image::addIntensities(intensity_t const* src) {
+  if (src) {
+    maxIntensity = 0;
+    auto data = intensities.data();
+    uint count = getCount();
+    while(count-- > 0)
+      maxIntensity = qMax((*data++ += *src++), maxIntensity);
+  }
 }
 
 }

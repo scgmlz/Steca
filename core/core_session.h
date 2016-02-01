@@ -66,7 +66,7 @@ public: // image
   };
 
 private:
-  friend class Intensities; // TODO this is for Image::index(), do better
+  friend class Image; // TODO this is for Image::index(), do better
   bool upDown, leftRight, turnClock, turnCounter;
 
 protected: // corrections
@@ -94,7 +94,7 @@ public:
   QVector<Pixpos> const& calcAngleCorrArray(qreal tthMitte);  // TODO rename; TODO if too slow, cache
 
 public: // TODO not public
-  Intensities intensCorrArray;  // summed corrFile intensities
+  Image intensCorrArray;  // summed corrFile intensities
   void calcIntensCorrArray();
 
   borders_t const& getCut() const { return cut; }

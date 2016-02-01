@@ -8,15 +8,18 @@ namespace core {
 
 class Session;
 
-class Intensities {
+class Image {
 public:
   typedef float intensity_t;
 
-  Intensities(uint size = 0);
-  void set(intensity_t defValue, uint size);
+  Image(uint size = 0, intensity_t const* = nullptr);
+
+  void clear();
+  void fill(intensity_t defValue, uint size);
 
   uint getSize()  const   { return size; }
   uint getCount() const   { return size * size; }
+
   intensity_t* getData()  { return intensities.data(); } // TODO perhaps too open
   intensity_t const* getData() const { return intensities.data(); } // TODO perhaps too open
 
@@ -28,23 +31,15 @@ public:
   intensity_t& intensity(Session const&, uint x, uint y);
   intensity_t const& intensity(Session const&, uint x, uint y) const;
 
-protected:
-  uint size; // TODO a simplification - square images; make rect
-  QVector<intensity_t> intensities;
-};
+  void addIntensities(intensity_t const*);
 
-class Image: public Intensities {
-public:
-
-  Image(uint, intensity_t const* intensities) THROWS;
-
-  uint getSize()  const { return size; }
-
-  intensity_t maximumIntensity() const { return maxIntensity; }
-
-  void sumIntensities(intensity_t const*);
+  intensity_t maximumIntensity() const {
+    return maxIntensity;
+  }
 
 private:
+  uint size; // TODO a simplification - square images; make rect
+  QVector<intensity_t> intensities;
   intensity_t maxIntensity;
 };
 

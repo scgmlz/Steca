@@ -212,7 +212,7 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
 }
 
 QPixmap Dataset::makePixmap(core::Image const& image, core::Image::intensity_t maxIntensity,
-                            core::Intensities* corr) {
+                            core::Image* corr) {
   QPixmap pixmap;
   uint size = image.getSize();
 
@@ -261,7 +261,7 @@ void Dataset::setDataset(pcCoreDataset dataset_) {
   QPixmap pixMap;
   if (dataset) {
     auto image = dataset->getImage();
-    core::Intensities *corr = nullptr;
+    core::Image *corr = nullptr;
     if (session.hasCorrFile() && !mainWin.actImagesShowRaw->isChecked())
       corr = &session.intensCorrArray;
     pixMap = makePixmap(image, globalNorm ? dataset->getDatasets().getMaximumIntensity() : image.maximumIntensity(), corr);

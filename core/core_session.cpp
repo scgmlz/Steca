@@ -198,7 +198,7 @@ QVector<Session::Pixpos> const& Session::calcAngleCorrArray(qreal tthMitte) {
 
 void Session::calcIntensCorrArray() {
   if (!hasCorrFile()) {
-    intensCorrArray.set(1,0);
+    intensCorrArray.clear();
     return;
   }
 
@@ -215,7 +215,7 @@ void Session::calcIntensCorrArray() {
   ASSERT(n>0)
   qreal avg = sum / n;
 
-  intensCorrArray.set(1,imageSize);
+  intensCorrArray.fill(1,imageSize);
   for (uint x=imageCut.left; x<imageSize-imageCut.right; ++x)
     for (uint y=imageCut.top; y<imageSize-imageCut.bottom; ++y) {
       qreal val = avg / image.intensity(*this,x,y); // TODO /0 -> inf -> nan

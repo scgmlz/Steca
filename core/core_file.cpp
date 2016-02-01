@@ -34,7 +34,7 @@ void File::load() THROWS {
 
 void File::sumDatasets() {
   while (datasets.count() > 1) {
-    datasets[0]->image.sumIntensities(datasets.last()->image.getData());
+    datasets[0]->image.addIntensities(datasets.last()->image.getData());
     datasets.removeLast();
   }
 }
