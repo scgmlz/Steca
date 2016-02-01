@@ -24,7 +24,7 @@ void File::load() THROWS {
   static QByteArray const caressHead("\020\012DEFCMD DAT");
   if (caressHead == peek(caressHead.size())) {
     // looks like Caress
-    loadCaress(info.filePath(),datasets);
+    datasets = loadCaress(info.filePath());
   } else {
     THROW("unknown file type");
   }

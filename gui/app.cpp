@@ -8,8 +8,7 @@
 
 App *app;
 
-App::App(int &argc, char *argv[])
-  : super(argc,argv), mainWin(nullptr)
+App::App(int &argc, char *argv[]): super(argc,argv)
 {
   setApplicationName(APPLICATION_NAME);
   setApplicationVersion(APPLICATION_VERSION);

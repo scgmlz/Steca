@@ -1,16 +1,19 @@
 #include "core_loadcaress.h"
-#include "core_dataset.h"
+#include "core_lib.h"
 #include "loaders/Caress/raw.h"
 
 #include <sstream>
 #include <cmath>
 
-// Taken from the original STeCa, modified.
+namespace core {
 
-void loadCaress(rcstr filePath,core::Datasets& datasets) THROWS {
+// Code taken from the original STeCa, slightly modified.
 
+Datasets loadCaress(rcstr filePath) THROWS {
   RUNTIME_CHECK(0 == open_data_file(filePath.toLocal8Bit().data(),nullptr),
                 "Cannot open data file " + filePath);
+  Datasets datasets;
+
   try {
     bool newObject = false;
     bool workAfterStep = false;
@@ -135,15 +138,16 @@ void loadCaress(rcstr filePath,core::Datasets& datasets) THROWS {
 
           detRel = (uint)sqrt(imageSize); // TODO (also compare with original code) this is hairy
 
-          QVector<core::Image::intensity_t> convertedIntens(imageSize);
+          QVector<Image::intensity_t> convertedIntens(imageSize);
           for (int i=0; i<imageSize; ++i)
             convertedIntens[i] = intens[i];
 
           // Objekt inizialisieren
-          datasets.append(QSharedPointer<core::Dataset>(new core::Dataset(
+          datasets.append(QSharedPointer<Dataset>(new Dataset(
             datasets, str::fromStdString(s_date), str::fromStdString(s_comment),
             xAxis, yAxis, zAxis,
-            rad_deg(omgAxis), rad_deg(tthAxis), rad_deg(phiAxis), rad_deg(chiAxis),
+            rad_deg(omgAxis), rad_deg(tthAxis),
+            rad_deg(phiAxis), rad_deg(chiAxis),
             pstAxis, sstAxis, rad_deg(omgmAxis),
             mon, tempTime,
             detRel, convertedIntens.constData())));
@@ -426,6 +430,10 @@ void loadCaress(rcstr filePath,core::Datasets& datasets) THROWS {
     close_data_file();
     throw;
   }
+
+  return datasets;
+}
+
 }
 
 //

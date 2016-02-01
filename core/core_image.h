@@ -3,7 +3,6 @@
 
 #include "core_defs.h"
 #include <QSize>
-#include <QVector>
 
 namespace core {
 
@@ -30,7 +29,7 @@ public:
   intensity_t const& intensity(Session const&, uint x, uint y) const;
 
 protected:
-  uint size; // TODO for now a smplification: square images
+  uint size; // TODO a simplification - square images; make rect
   QVector<intensity_t> intensities;
 };
 

@@ -40,7 +40,7 @@ void ImageWidget::resizeEvent(QResizeEvent* e) {
 
 void ImageWidget::paintEvent(QPaintEvent*) {
   if (lastPaintSize!=size()) {
-    lastPaintSize!=size();
+    lastPaintSize = size();
 
     if (original.isNull()) {
       scaled = original;

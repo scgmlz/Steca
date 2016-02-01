@@ -3,28 +3,6 @@
 
 namespace core {
 
-interval_t::interval_t(qreal low_, qreal hig_): low(low_), hig(hig_) {
-}
-
-void interval_t::set(qreal val) {
-  set(val,val);
-}
-
-void interval_t::set(qreal low_, qreal hig_) {
-  low = low_; hig = hig_;
-}
-
-void interval_t::safeSet(qreal v1, qreal v2) {
-  if (v1 < v2)
-    set(v1,v2);
-  else
-    set(v2,v1);
-}
-
-void interval_t::include(qreal val) {
-  low = qMin(low,val); hig = qMax(hig,val);
-}
-
 Session::Session()
 : dataFiles(), imageSize(0)
 , pixSpan(0.01), sampleDetectorSpan(1.0) // TODO these must be reasonable limited
@@ -126,8 +104,8 @@ QPoint Session::getPixMiddle(uint imageSize) const {
     imageSize / 2 + middlePixYOffset);
   // TODO was: if ((tempPixMiddleX *[<=]* 0) || (tempPixMiddleX >= getWidth()))
   // TODO this limitation could be maybe lifted (think small angle X-ray scattering?)
-  RUNTIME_CHECK(interval_t(0,imageSize).contains(middle.x()), "bad pixMiddle");
-  RUNTIME_CHECK(interval_t(0,imageSize).contains(middle.y()), "bad pixMiddle");
+  RUNTIME_CHECK(Interval(0,imageSize).contains(middle.x()), "bad pixMiddle");
+  RUNTIME_CHECK(Interval(0,imageSize).contains(middle.y()), "bad pixMiddle");
   return middle;
 }
 
@@ -185,9 +163,9 @@ QVector<Session::Pixpos> const& Session::calcAngleCorrArray(qreal tthMitte) {
       }
 
       // Maxima und minima setzen
-      ful.gamma.include(gamma);
-      ful.tth_regular.include(tthNeu);
-      ful.tth_gamma0.include(tthHorAktuell);
+      ful.gamma.extend(gamma);
+      ful.tth_regular.extend(tthNeu);
+      ful.tth_gamma0.extend(tthHorAktuell);
 
       // Write angle in array
       *angleCorr(j,i) = Pixpos(gamma,tthNeu);
@@ -210,8 +188,8 @@ QVector<Session::Pixpos> const& Session::calcAngleCorrArray(qreal tthMitte) {
   for (uint i = imageCut.left; i < imageSize - imageCut.right; i++) {
     for (uint j = imageCut.top; j < imageSize - imageCut.bottom; j++) {
       auto ac = angleCorr(i,j);
-      cut.gamma.include(ac->gammaPix);
-      cut.tth_regular.include(ac->tthPix);
+      cut.gamma.extend(ac->gammaPix);
+      cut.tth_regular.extend(ac->tthPix);
     }
   }
 

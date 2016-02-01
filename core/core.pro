@@ -17,7 +17,8 @@ HEADERS += \
     core_image.h \
     core_debug.h \
     core_defs.h \
-    core_session.h
+    core_session.h \
+    core_lib.h
 
 SOURCES += \
     loaders/Caress/raw.cpp \
@@ -27,7 +28,8 @@ SOURCES += \
     core_defs.cpp \
     core_file.cpp \
     core_image.cpp \
-    core_session.cpp
+    core_session.cpp \
+    core_lib.cpp
 
 DISTFILES += \
     README \

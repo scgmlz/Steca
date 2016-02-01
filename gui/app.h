@@ -14,8 +14,6 @@ public:
   int exec();
 
 private:
-  MainWin *mainWin;
-
   bool notify(QObject*, QEvent*);
 };
 

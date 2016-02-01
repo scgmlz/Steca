@@ -1,7 +1,7 @@
 #ifndef CORE_SESSION_H
 #define CORE_SESSION_H
 
-#include "core_defs.h"
+#include "core_lib.h"
 #include "core_file.h"
 #include <QSize>
 #include <QPointF>
@@ -9,20 +9,9 @@
 namespace core {
 
 // TODO goes elsewhere
-struct interval_t { // closed interval
-  interval_t(qreal low = 0, qreal hig = 0);
-  qreal low, hig;
-
-  void set(qreal);
-  void set(qreal,qreal);
-  void safeSet(qreal,qreal);  // in the right order
-
-  void include(qreal);
-  bool contains(qreal val) const { return low <= val && val <= hig; }
-};
 
 struct borders_t {
-  interval_t
+  Interval
     gamma,
     tth_regular,
     tth_gamma0; // at gamma=0

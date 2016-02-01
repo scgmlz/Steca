@@ -10,7 +10,7 @@ void Dgram::clear() {
 }
 
 void Dgram::append(qreal tth_,qreal inten_) {
-  tth.append(deg_rad(tth_)); inten.append(inten_);
+  tth.append(core::deg_rad(tth_)); inten.append(inten_);
   maxInten = qMax(maxInten,inten_);
 }
 
@@ -115,8 +115,8 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   uint pixTotal = imageCut.getCount(image.getSize());
 
   auto cut = session.getCut();
-  qreal TTHMin = cut.tth_regular.low;
-  qreal TTHMax = cut.tth_regular.hig;
+  qreal TTHMin = cut.tth_regular.min;
+  qreal TTHMax = cut.tth_regular.max;
   qreal deltaTTH = (TTHMax - TTHMin) / width;
 
   auto intens = image.getData();

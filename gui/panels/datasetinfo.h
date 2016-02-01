@@ -35,7 +35,6 @@ private:
   InfoItems infoItems;
 
   void selectionChanged();
-  int numColumns;
 };
 
 }

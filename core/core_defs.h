@@ -9,7 +9,10 @@
 /// Undefine it for a release!
 #define DEVELOPMENT
 
+// common QT includes - used in many places
 #include <QtGlobal>
+#include <QSharedPointer>
+#include <QVector>
 
 /// A class definition helper: this class (thisCls) and superclass (super) access.
 #define SUPER(cls,sup)  typedef cls thisCls; typedef sup super;
@@ -45,13 +48,6 @@ public:
 #define THROW(msg) Exception::raise(msg)  ///< raise an exception
 #define RUNTIME_CHECK(test,msg) \
   if (!(test)) THROW(msg)                 ///< run-time condition checking
-
-// we use shared pointer in many places
-#include <QSharedPointer>
-
-// math
-qreal deg_rad(qreal);   ///< degrees <= radians
-qreal rad_deg(qreal);   ///< radians <= degrees
 
 // debug support
 #include "core_debug.h"
