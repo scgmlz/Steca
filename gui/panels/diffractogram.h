@@ -54,10 +54,10 @@ public:
   Diffractogram(MainWin&,Session&);
 
 private:
-  void setDataset(pcCoreDataset);
+  void setDataset(core::shp_Dataset);
   void refresh();
 
-  pcCoreDataset dataset;
+  core::shp_Dataset dataset;
 
   DiffractogramPlot *plot;
 

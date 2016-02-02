@@ -22,7 +22,7 @@ public:
   void addFile(rcstr fileName) THROWS;  ///< Add an ordinary file.
   bool hasFile(rcstr fileName);         ///< Is there this ordinary file?
 
-  File const& getFile(uint i);          ///< Access the i-th file, including the correction file.
+  shp_File const& getFile(uint i);      ///< Access the i-th file, including the correction file.
   void remFile(uint i);                 ///< Remove the i-th file, including the correction file.
 
   bool hasCorrFile() const;

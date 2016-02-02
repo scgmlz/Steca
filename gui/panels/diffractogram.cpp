@@ -85,13 +85,13 @@ Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
   box->addWidget((plot = new DiffractogramPlot));
   box->addWidget(check("From all images"));
 
-  connect(&session, &Session::datasetSelected, [this](pcCoreDataset dataset) {
+  connect(&session, &Session::datasetSelected, [this](core::shp_Dataset dataset) {
     setDataset(dataset);
     // TODO trace - multiple unnecessary calls here?
   });
 }
 
-void Diffractogram::setDataset(pcCoreDataset dataset_) {
+void Diffractogram::setDataset(core::shp_Dataset dataset_) {
   dataset = dataset_;
   calcDgram();
   plot->plot(dgram);

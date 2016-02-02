@@ -174,7 +174,7 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
     refresh();
   });
 
-  connect(&session, &Session::datasetSelected, [this](pcCoreDataset dataset) {
+  connect(&session, &Session::datasetSelected, [this](core::shp_Dataset dataset) {
     setDataset(dataset);
   });
 
@@ -234,7 +234,7 @@ QPixmap Dataset::makePixmap(core::Image const& image, core::Image::intens_t maxI
   return pixmap;
 }
 
-void Dataset::setDataset(pcCoreDataset dataset_) {
+void Dataset::setDataset(core::shp_Dataset dataset_) {
   dataset = dataset_;
   QPixmap pixMap;
   if (dataset) {

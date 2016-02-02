@@ -22,8 +22,8 @@ void FileView::selectionChanged(QItemSelection const& selected, QItemSelection c
 
   auto indexes = selected.indexes();
   model.session.setSelectedFile(indexes.isEmpty()
-                                 ? nullptr
-                                 : model.data(indexes.first(), Session::FileViewModel::GetFileRole).value<pcCoreFile>());
+                                 ? core::shp_File()
+                                 : model.data(indexes.first(), Session::FileViewModel::GetFileRole).value<core::shp_File>());
 }
 
 void FileView::removeSelectedFile() {
@@ -37,7 +37,7 @@ void FileView::removeSelectedFile() {
                                                  : index.sibling(row-1,0);
   model.session.remFile(row);
   if (0>=model.session.numFiles(true))
-    model.session.setSelectedFile(nullptr);
+    model.session.setSelectedFile(core::shp_File());
   setCurrentIndex(index);
 }
 

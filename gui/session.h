@@ -27,8 +27,8 @@ public:
 
   void loadCorrFile(rcstr filePath);
 
-  void setSelectedFile(pcCoreFile);
-  void setSelectedDataset(pcCoreDataset);
+  void setSelectedFile(core::shp_File);
+  void setSelectedDataset(core::shp_Dataset);
 
   void setImageCut(bool topLeft, bool linked, imagecut_t const&);
 
@@ -39,14 +39,14 @@ public:
   void nextRotate();
 
 private:
-  pcCoreFile    selectedFile;
-  pcCoreDataset selectedDataset;
+  core::shp_File    selectedFile;
+  core::shp_Dataset selectedDataset;
 
 signals:
   void sessionLoaded();
   void filesChanged();
-  void fileSelected(pcCoreFile);
-  void datasetSelected(pcCoreDataset);
+  void fileSelected(core::shp_File);
+  void datasetSelected(core::shp_Dataset);
   void imageCutChanged();
 
 public:
@@ -78,14 +78,14 @@ public:
     QVariant data(QModelIndex const&,int) const;
     QVariant headerData(int,Qt::Orientation,int) const;
 
-    void setCoreFile(pcCoreFile);
+    void setCoreFile(core::shp_File);
     void setInfoItems(panel::DatasetInfo::InfoItems const*);
 
   private:
-    core::Dataset const& getDataset(int row)    const;
+    core::shp_Dataset const& getDataset(int row) const;
 
   private:
-    pcCoreFile coreFile;
+    core::shp_File coreFile;
     panel::DatasetInfo::InfoItems const* infoItems; // TODO make better
     QVector<int> attributeNums;
   };

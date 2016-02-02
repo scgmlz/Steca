@@ -234,7 +234,7 @@ void MainWin::connectActions() {
 
   onTrigger(actAddFiles, &MainWin::addFiles);
   actRemoveFile->setEnabled(false);
-  connect(&session, &Session::fileSelected, this, [this](pcCoreFile file) {
+  connect(&session, &Session::fileSelected, this, [this](core::shp_File file) {
     actRemoveFile->setEnabled(nullptr!=file);
   });
 

@@ -6,7 +6,7 @@ namespace panel {
 DatasetView::DatasetView(Session& session_): session(session_) {
   setModel(&session.datasetViewModel);
 
-  connect(&session, &Session::fileSelected, [this](pcCoreFile coreFile) {
+  connect(&session, &Session::fileSelected, [this](core::shp_File coreFile) {
     auto& model  = session.datasetViewModel;
     model.setCoreFile(coreFile);
     setCurrentIndex(model.index(0,0));
@@ -23,9 +23,9 @@ void DatasetView::selectionChanged(QItemSelection const& selected, QItemSelectio
 
   auto indexes = selected.indexes();
   session.setSelectedDataset(indexes.isEmpty()
-    ? nullptr
+    ? core::shp_Dataset()
     : session.datasetViewModel.data(indexes.first(),
-        Session::DatasetViewModel::GetDatasetRole).value<pcCoreDataset>());
+        Session::DatasetViewModel::GetDatasetRole).value<core::shp_Dataset>());
 }
 
 //------------------------------------------------------------------------------

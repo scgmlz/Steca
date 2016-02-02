@@ -56,8 +56,6 @@ typedef QSharedPointer<Dataset> shp_Dataset;
 typedef QVector<shp_Dataset> Dataset_vec;
 }
 
-
-typedef core::Dataset const *pcCoreDataset; // TODO use shp_Dataset
-Q_DECLARE_METATYPE(pcCoreDataset)
+Q_DECLARE_METATYPE(core::shp_Dataset)
 
 #endif

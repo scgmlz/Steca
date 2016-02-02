@@ -28,8 +28,9 @@ public:
   void load() THROWS; ///< load disk file content
   void fold();        ///< collapse datasets into one
 
-  uint           numDatasets()      const { return datasets.count(); }
-  Dataset const& getDataset(uint i) const { return *datasets.at(i);  }
+  uint numDatasets() const { return datasets.count(); }
+
+  shp_Dataset const& getDataset(uint i) const { return datasets.at(i); }
 
   uint getImageSize() const;
 
@@ -42,7 +43,6 @@ typedef QSharedPointer<File> shp_File;
 
 }
 
-typedef core::File const *pcCoreFile;
-Q_DECLARE_METATYPE(pcCoreFile)  // TODO use shp_File
+Q_DECLARE_METATYPE(core::shp_File)
 
 #endif

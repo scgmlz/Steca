@@ -45,10 +45,10 @@ public:
 
 private:
   QPixmap makePixmap(core::Image const&,core::Image::intens_t maxIntensity,core::Image* corr);
-  void setDataset(pcCoreDataset);
+  void setDataset(core::shp_Dataset);
   void refresh();
 
-  pcCoreDataset dataset;
+  core::shp_Dataset dataset;
   bool globalNorm;
 
   ImageWidget *imageWidget;

@@ -21,7 +21,7 @@ DatasetInfo::DatasetInfo(MainWin& mainWin,Session& session)
   info = new Info(infoItems);
   scrollArea->setWidget(info);
 
-  connect(&session, &Session::datasetSelected, [this](pcCoreDataset dataset) {
+  connect(&session, &Session::datasetSelected, [this](core::shp_Dataset dataset) {
     for_i(core::Dataset::NUM_ATTRIBUTES) {
       infoItems[i].text->setText(dataset ? dataset->getAttributeStrValue(i) : EMPTY_STR);
     }

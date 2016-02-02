@@ -116,7 +116,7 @@ void Session::addFiles(str_lst filePaths) THROWS {
 void Session::remFile(uint i) {
   super::remFile(i);
 
-  setSelectedFile(nullptr);
+  setSelectedFile(core::shp_File());
   emit filesChanged();
 
   if (0==numFiles(true))
@@ -128,12 +128,12 @@ void Session::loadCorrFile(rcstr filePath) {
   emit filesChanged();
 }
 
-void Session::setSelectedFile(pcCoreFile file) {
-  setSelectedDataset(nullptr);
+void Session::setSelectedFile(core::shp_File file) {
+  setSelectedDataset(core::shp_Dataset());
   emit fileSelected((selectedFile = file));
 }
 
-void Session::setSelectedDataset(pcCoreDataset dataset) {
+void Session::setSelectedDataset(core::shp_Dataset dataset) {
   emit datasetSelected((selectedDataset = dataset));
 }
 
@@ -197,13 +197,13 @@ QVariant Session::FileViewModel::data(QModelIndex const& index,int role) const {
     case IsCorrectionFileRole:
       return isCorrectionFile;
     case Qt::DisplayRole: {
-      str s = session.getFile(row).getName();
+      str s = session.getFile(row)->getName();
       static str Corr("Corr: ");
       if (isCorrectionFile) s = Corr + s;
       return s;
     }
     case GetFileRole:
-      return QVariant::fromValue<pcCoreFile>(&(session.getFile(row)));
+      return QVariant::fromValue<core::shp_File>(session.getFile(row));
     default:
       return QVariant();
   }
@@ -237,11 +237,11 @@ QVariant Session::DatasetViewModel::data(QModelIndex const& index,int role) cons
       case 1:
         return str().setNum(row+1);
       default:
-        return getDataset(row).getAttributeStrValue(attributeNums[col-2]);
+        return getDataset(row)->getAttributeStrValue(attributeNums[col-2]);
       }
     }
     case GetDatasetRole:
-      return QVariant::fromValue<pcCoreDataset>(&getDataset(row));
+      return QVariant::fromValue<core::shp_Dataset>(getDataset(row));
     default:
       return QVariant();
   }
@@ -260,7 +260,7 @@ QVariant Session::DatasetViewModel::headerData(int section, Qt::Orientation orie
   }
 }
 
-void Session::DatasetViewModel::setCoreFile(pcCoreFile coreFile_) {
+void Session::DatasetViewModel::setCoreFile(core::shp_File coreFile_) {
   beginResetModel();
   coreFile = coreFile_;
   endResetModel();
@@ -278,7 +278,7 @@ void Session::DatasetViewModel::setInfoItems(panel::DatasetInfo::InfoItems const
   endResetModel();
 }
 
-core::Dataset const& Session::DatasetViewModel::getDataset(int row) const {
+core::shp_Dataset const& Session::DatasetViewModel::getDataset(int row) const {
   return coreFile->getDataset(row);
 }
 

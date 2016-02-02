@@ -36,12 +36,12 @@ bool Session::hasFile(rcstr fileName) {
   return false;
 }
 
-File const& Session::getFile(uint i) {
+shp_File const& Session::getFile(uint i) {
   if ((uint)dataFiles.count() == i) {
     ASSERT(!corrFile.isNull())
-    return *corrFile;
+    return corrFile;
   } else {
-    return *dataFiles.at(i);
+    return dataFiles.at(i);
   }
 }
 
@@ -197,7 +197,7 @@ void Session::calcIntensCorrArray() {
   }
 
   ASSERT(1 == corrFile->numDatasets()) // no need to sum
-  Image const& image = corrFile->getDataset(0).getImage();
+  Image const& image = corrFile->getDataset(0)->getImage();
 
   qreal sum = 0; uint n = 0;
   for (uint x=imageCut.left; x<imageSize-imageCut.right; ++x)
