@@ -24,18 +24,23 @@ void Image::fill(Image::intensity_t defValue, uint size_) {
 uint Image::index(Session const& session, uint x, uint y) const {
   auto flip = [this](uint &index) { index = size - 1 - index; };
 
-  if (session.turnClock) {
+  switch (session.rotate) {
+  case 0:
+    break;
+  case 1:
     qSwap(x,y); flip(y);
-  }
-  else if (session.turnCounter) {
+    break;
+  case 2:
+    flip(x); flip(y);
+    break;
+  case 3:
     qSwap(x,y); flip(x);
+    break;
+  default:
+    NOT_HERE
   }
 
-  if (session.upDown) {
-    flip(y);
-  }
-
-  if (session.leftRight) {
+  if (session.mirror) {
     flip(x);
   }
 

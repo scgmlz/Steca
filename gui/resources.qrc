@@ -8,10 +8,12 @@
         <file alias="peak">icons/peak.svg</file>
         <file alias="reflect">icons/reflect.svg</file>
         <file alias="width">icons/width.svg</file>
-        <file alias="leftright">icons/leftright.svg</file>
-        <file alias="rotatecounter">icons/rotatecounter.svg</file>
-        <file alias="rotateclock">icons/rotateclock.svg</file>
-        <file alias="updown">icons/updown.svg</file>
+        <file alias="mirror_horz">icons/mirror_horz.svg</file>
+        <file alias="mirror_vert">icons/mirror_vert.svg</file>
+        <file alias="rotate0">icons/rotate0.svg</file>
+        <file alias="rotate1">icons/rotate1.svg</file>
+        <file alias="rotate2">icons/rotate2.svg</file>
+        <file alias="rotate3">icons/rotate3.svg</file>
         <file alias="link">icons/link.svg</file>
         <file alias="add">icons/add.svg</file>
         <file alias="top">icons/top.svg</file>

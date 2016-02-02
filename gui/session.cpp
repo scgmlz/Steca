@@ -12,14 +12,14 @@ Session::Session()
 Session::~Session(){
 }
 
-void Session::load(MainWin const& mainWin,QFileInfo const& fileInfo) THROWS {
+void Session::load(QFileInfo const& fileInfo) THROWS {
   QFile file(fileInfo.absoluteFilePath());
   RUNTIME_CHECK(file.open(QIODevice::ReadOnly), "File cannot be opened");
-  load(mainWin,file.readAll());
+  load(file.readAll());
 }
 
 // TODO merge load / save, DRY
-void Session::load(MainWin const& mainWin,QByteArray const& json) THROWS {
+void Session::load(QByteArray const& json) THROWS {
   QJsonParseError parseError;
   QJsonDocument doc(QJsonDocument::fromJson(json,&parseError));
   RUNTIME_CHECK(QJsonParseError::NoError==parseError.error, "Error parsing file");
@@ -55,21 +55,14 @@ void Session::load(MainWin const& mainWin,QByteArray const& json) THROWS {
 
   auto transform = top["transform"].toObject();
 
-  bool on;  // TODO make better
-  mainWin.actImagesUpDown->setChecked(on=transform["updown"].toBool());
-  setUpDown(on);
-  mainWin.actImagesLeftRight->setChecked(on=transform["leftright"].toBool());
-  setLeftRight(on);
-  mainWin.actImagesRotateClock->setChecked(on=transform["rotateclock"].toBool());
-  if (on) setTurnClock(on);
-  mainWin.actImagesRotateCounter->setChecked(on=transform["rotatecounter"].toBool());
-  if (on) setTurnCounter(on);
+  setMirror(transform["mirror"].toBool());
+  setRotate(qBound(0,transform["rotate"].toInt(),3));
 
   emit sessionLoaded();
 }
 
 // TODO mainwin passed to access transformation actions - rethink
-QByteArray Session::save(MainWin const& mainWin) const {
+QByteArray Session::save() const {
   QByteArray json;
 
   QJsonObject top;
@@ -104,10 +97,8 @@ QByteArray Session::save(MainWin const& mainWin) const {
   top["cut"] = cut;
 
   QJsonObject transform;
-  transform["updown"]         = mainWin.actImagesUpDown->isChecked();
-  transform["leftright"]      = mainWin.actImagesLeftRight->isChecked();
-  transform["rotateclock"]    = mainWin.actImagesRotateClock->isChecked();
-  transform["rotatecounter"]  = mainWin.actImagesRotateCounter->isChecked();
+  transform["mirror"]      = mirror;
+  transform["rotate"]      = (int)rotate;
 
   top["transform"] = transform;
 
@@ -161,6 +152,43 @@ void Session::setImageCut(bool topLeft, bool linked, imagecut_t const& imageCut)
   super::setImageCut(topLeft,linked,imageCut);
   calcIntensCorrArray();
   emit imageCutChanged();
+}
+
+void Session::setMirror(bool on) {
+  actImageMirror->setChecked(on);
+  super::setMirror(on);
+}
+
+void Session::setRotate(uint a) {
+  pcstr rotateIconFile, mirrorIconFile;
+  switch (a) {
+  case 0:
+    rotateIconFile = ":/icon/rotate0";
+    mirrorIconFile = ":/icon/mirror_horz";
+    break;
+  case 1:
+    rotateIconFile = ":/icon/rotate1";
+    mirrorIconFile = ":/icon/mirror_vert";
+    break;
+  case 2:
+    rotateIconFile = ":/icon/rotate2";
+    mirrorIconFile = ":/icon/mirror_horz";
+    break;
+  case 3:
+    rotateIconFile = ":/icon/rotate3";
+    mirrorIconFile = ":/icon/mirror_vert";
+    break;
+  default:
+    NOT_HERE
+  }
+
+  actImageRotate->setIcon(QIcon(rotateIconFile));
+  actImageMirror->setIcon(QIcon(mirrorIconFile));
+  super::setRotate(a);
+}
+
+void Session::nextRotate() {
+  setRotate((rotate+1) % 4);
 }
 
 //-----------------------------------------------------------------------------

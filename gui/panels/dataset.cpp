@@ -108,10 +108,8 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
 
   sb->addWidget(iconButton(mainWin.actImagesShowRaw));
   sb->addStretch();
-  sb->addWidget(iconButton(mainWin.actImagesUpDown));
-  sb->addWidget(iconButton(mainWin.actImagesLeftRight));
-  sb->addWidget(iconButton(mainWin.actImagesRotateClock));
-  sb->addWidget(iconButton(mainWin.actImagesRotateCounter));
+  sb->addWidget(iconButton(session.actImageMirror));
+  sb->addWidget(iconButton(session.actImageRotate));
 
   auto hb = hbox();
   hb->addWidget(imageWidget = new ImageWidget(*this),0,0);
@@ -180,33 +178,13 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
     setDataset(dataset);
   });
 
-  connect(mainWin.actImagesUpDown, &QAction::toggled, [this](bool on) {
-    session.setUpDown(on);
+  connect(session.actImageMirror, &QAction::toggled, [this](bool on) {
+    session.setMirror(on);
     refresh();
   });
 
-  connect(mainWin.actImagesLeftRight, &QAction::toggled, [this](bool on) {
-    session.setLeftRight(on);
-    refresh();
-  });
-
-  // the two buttons work, in a way, together
-  auto setTurn = [](QAction *clicked, QAction *other) {
-    bool on = clicked->isChecked() && !other->isChecked();
-    other->setChecked(false);
-    clicked->setChecked(on);
-    return on;
-  };
-
-  connect(mainWin.actImagesRotateClock, &QAction::triggered, [this,&setTurn]() {
-    bool on = setTurn(mainWin.actImagesRotateClock, mainWin.actImagesRotateCounter);
-    session.setTurnClock(on);
-    refresh();
-  });
-
-  connect(mainWin.actImagesRotateCounter, &QAction::triggered, [this,&setTurn]() {
-    bool on = setTurn(mainWin.actImagesRotateCounter, mainWin.actImagesRotateClock);
-    session.setTurnCounter(on);
+  connect(session.actImageRotate, &QAction::triggered, [this]() {
+    session.nextRotate();
     refresh();
   });
 }

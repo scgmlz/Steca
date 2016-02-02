@@ -96,10 +96,8 @@ void MainWin::initActions() {
   actImagesEye            = toggle("eye",           ":/icon/eye");
   actImagesGlobalNorm     = toggle("global nm.");
   actImagesShowRaw        = toggle("show w/o corr", ":/icon/eye");  // TODO different icon
-  actImagesUpDown         = toggle("UpDown",        ":/icon/updown");
-  actImagesLeftRight      = toggle("LeftRight",     ":/icon/leftright");
-  actImagesRotateClock    = toggle("RotateClock",   ":/icon/rotateclock");
-  actImagesRotateCounter  = toggle("RotateCounter", ":/icon/rotatecounter");
+  session.actImageRotate  = simple("Rotate", ":/icon/rotate0");
+  session.actImageMirror  = toggle("Mirror", ":/icon/mirror_horz");
 
   actBackgroundBackground = simple("Background",    ":/icon/background");
   actBackgroundEye        = simple("BackgroundEye", ":/icon/eye");
@@ -114,11 +112,12 @@ void MainWin::initMenus() {
 
   auto *mbar = menuBar();
 
-  menuFile = mbar->addMenu("&File");
-  menuEdit = mbar->addMenu("&Edit");
-  menuView = mbar->addMenu("&View");
-  menuOpts = mbar->addMenu("&Options");
-  menuHelp = mbar->addMenu("&Help");
+  menuFile  = mbar->addMenu("&File");
+  menuEdit  = mbar->addMenu("&Edit");
+  menuView  = mbar->addMenu("&View");
+  menuImage = mbar->addMenu("&Image");
+  menuOpts  = mbar->addMenu("&Options");
+  menuHelp  = mbar->addMenu("&Help");
 
   menuFile->addActions({
     actAddFiles, actRemoveFile,
@@ -166,6 +165,10 @@ void MainWin::initMenus() {
   #endif
     separator(),
     actViewReset,
+  });
+
+  menuImage->addActions({
+    session.actImageRotate, session.actImageMirror,
   });
 
   menuOpts->addActions({
@@ -271,7 +274,7 @@ void MainWin::show() {
   super::show();
   checkActions();
 #ifdef DEVELOPMENT
-  session.load(*this,QFileInfo("/Users/igb/Q/STeCa/data/q.ste"));
+  session.load(QFileInfo("/Users/igb/Q/STeCa/data/q.ste"));
 #endif
 }
 
@@ -310,7 +313,7 @@ void MainWin::loadSession() {
 
   QFileInfo fileInfo(fileName);
   sessionDir = fileInfo.absolutePath();
-  session.load(*this,fileInfo);
+  session.load(fileInfo);
 }
 
 void MainWin::saveSession() {
@@ -325,7 +328,7 @@ void MainWin::saveSession() {
   QFile file(info.filePath());
   RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File cannot be opened");
 
-  auto written = file.write(session.save(*this));
+  auto written = file.write(session.save());
   RUNTIME_CHECK(written >= 0, "Could not write session");
 }
 

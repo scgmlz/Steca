@@ -3,7 +3,7 @@
  *
  * TR (TRace) and WT (WaTch) are for trace prints;
  * ASSERT for debug-time assertions;
- * NOT_HERE for marking unreachable code
+ * NOT_HERE for marking unreachable code; debug-time assert
  */
 
 #ifndef CORE_DEBUG_H

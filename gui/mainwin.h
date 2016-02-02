@@ -40,7 +40,7 @@ private:
 
 private:
   Session session;
-  QMenu *menuFile, *menuEdit, *menuView, *menuOpts, *menuHelp;
+  QMenu *menuFile, *menuEdit, *menuView, *menuImage, *menuOpts, *menuHelp;
 
 public:
   QAction
@@ -74,7 +74,6 @@ public:
   // more actions, probably not in the menu
     *actReflectionPeak, *actReflectionReflect, *actReflectionWidth, *actReflectionAdd,
     *actImagesLink, *actImagesEye, *actImagesGlobalNorm, *actImagesShowRaw,
-    *actImagesUpDown, *actImagesLeftRight, *actImagesRotateClock, *actImagesRotateCounter,
     *actBackgroundBackground, *actBackgroundEye;
 
 private:

@@ -7,7 +7,7 @@ Session::Session()
 : dataFiles(), imageSize(0)
 , pixSpan(0.01), sampleDetectorSpan(1.0) // TODO these must be reasonable limited
 , hasBeamOffset(false), middlePixXOffset(0), middlePixYOffset(0)
-, upDown(false), leftRight(false), turnClock(false), turnCounter(false)
+, mirror(false), rotate(0)
 , lastCalcTthMitte(0) {
 }
 
@@ -82,20 +82,12 @@ void Session::updateImageSize() {
     imageSize = 0;
 }
 
-void Session::setUpDown(bool on) {
-  upDown = on;
+void Session::setMirror(bool on) {
+  mirror = on;
 }
 
-void Session::setLeftRight(bool on) {
-  leftRight = on;
-}
-
-void Session::setTurnClock(bool on) {
-  turnClock = on; turnCounter = false;
-}
-
-void Session::setTurnCounter(bool on) {
-  turnClock = false; turnCounter = on;
+void Session::setRotate(uint a) {
+  rotate = a;
 }
 
 QPoint Session::getPixMiddle(uint imageSize) const {

@@ -49,10 +49,8 @@ public: // detector TODO make a structure; rename variables
   int   middlePixYOffset;
 
 public: // image transform
-  void setUpDown(bool);
-  void setLeftRight(bool);
-  void setTurnClock(bool);
-  void setTurnCounter(bool);
+  void setMirror(bool);
+  void setRotate(uint);
 
 public: // image
   struct imagecut_t {
@@ -65,9 +63,9 @@ public: // image
     uint getCount(uint imageSize) const;
   };
 
-private:
+protected:
   friend class Image; // TODO this is for Image::index(), do better
-  bool upDown, leftRight, turnClock, turnCounter;
+  bool mirror; uint rotate;
 
 protected: // corrections
   struct Pixpos {  // TODO bad names
