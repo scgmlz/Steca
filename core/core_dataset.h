@@ -1,3 +1,7 @@
+/** \file
+ * Dataset = a collection of images + metadata.
+ */
+
 #ifndef CORE_DATASET_H
 #define CORE_DATASET_H
 
@@ -19,7 +23,7 @@ public:
           qreal motorOmg, qreal motorTth, qreal motorPhi, qreal motorChi,
           qreal motorPST, qreal motorSST, qreal motorOMGM,
           qreal mon, qreal deltaTime,
-          uint size, Image::intensity_t const* intensities);
+          uint size, Image::intens_t const* intensities);
 
   Datasets const& getDatasets() const { return datasets;  }
   Image    const& getImage()    const { return image;     }
@@ -51,7 +55,7 @@ public:
   // declared here, because it must be the same for each individual dataset
   // might eventually be dependend on the file format, made dynamic,
   // or otherwise amended
-  enum enumAttribute {
+  enum {
     DATE, COMMENT,
     MOTOR_X, MOTOR_Y, MOTOR_Z, MOTOR_OMG, MOTOR_TTH, MOTOR_PHI, MOTOR_CHI,
     MOTOR_PST, MOTOR_SST, MOTOR_OMGM, MON, DELTA_TIME,
@@ -65,7 +69,7 @@ public:
   static rcstr getAttributeTag(int i) { return attributeTags.at(i); }
 
   uint getImageSize() const; // returns 0 if inconsistent
-  Image::intensity_t getMaximumIntensity() const;
+  Image::intens_t getMaximumIntensity() const;
 };
 
 }

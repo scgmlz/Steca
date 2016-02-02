@@ -34,7 +34,7 @@ public:
   void loadCorrFile(rcstr fileName); // fileName may be empty -> unsets TODO
 
 protected:
-  Files dataFiles;
+  QVector<QSharedPointer<File>> dataFiles;
 
   uint imageSize;
 
@@ -50,7 +50,7 @@ public: // detector TODO make a structure; rename variables
 
 public: // image transform
   void setMirror(bool);
-  void setRotate(uint);
+  void setRotate(core::Image::Transform);
 
 public: // image
   struct imagecut_t {
@@ -63,9 +63,7 @@ public: // image
     uint getCount(uint imageSize) const;
   };
 
-protected:
-  friend class Image; // TODO this is for Image::index(), do better
-  bool mirror; uint rotate;
+  Image::Transform imageTransform; // TODO hide
 
 protected: // corrections
   struct Pixpos {  // TODO bad names

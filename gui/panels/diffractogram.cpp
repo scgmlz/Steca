@@ -119,8 +119,8 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   qreal TTHMax = cut.tth_regular.max;
   qreal deltaTTH = (TTHMax - TTHMin) / width;
 
-  auto intens = image.getData();
-  auto corr   = session.hasCorrFile() ? session.intensCorrArray.getData() : nullptr;
+  auto intens = image.getIntensities();
+  auto corr   = session.hasCorrFile() ? session.intensCorrArray.getIntensities() : nullptr;
 
   // TODO bad! no iteration by floats
   ASSERT(deltaTTH>0) // TODO

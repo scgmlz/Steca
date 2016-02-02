@@ -8,7 +8,7 @@ Dataset::Dataset(Datasets& datasets_,
   qreal motorOmg_, qreal motorTth_, qreal motorPhi_, qreal motorChi_,
   qreal motorPST_, qreal motorSST_, qreal motorOMGM_,
   qreal mon_, qreal deltaTime_,
-  uint size_, Image::intensity_t const* intensities_)
+  uint size_, Image::intens_t const* intensities_)
 
 : datasets(datasets_), date(date_), comment(comment_)
 , motorXT(motorXT_), motorYT(motorYT_), motorZT(motorZT_), motorOmg(motorOmg_), motorTth(motorTth_)
@@ -77,10 +77,10 @@ uint Datasets::getImageSize() const {
   return size;
 }
 
-Image::intensity_t Datasets::getMaximumIntensity() const {
-  Image::intensity_t max = 0;
+Image::intens_t Datasets::getMaximumIntensity() const {
+  Image::intens_t max = 0;
   for (auto dataset: *this)
-    max = qMax(max,dataset->getImage().maximumIntensity());
+    max = qMax(max,dataset->getImage().getMaxIntens());
   return max;
 }
 

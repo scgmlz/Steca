@@ -1,5 +1,6 @@
-#include "core_loadcaress.h"
+#include "core_loaders.h"
 #include "core_lib.h"
+
 #include "loaders/Caress/raw.h"
 
 #include <sstream>
@@ -10,6 +11,7 @@ namespace core {
 // Code taken from the original STeCa, slightly modified.
 
 Datasets loadCaress(rcstr filePath) THROWS {
+
   RUNTIME_CHECK(0 == open_data_file(filePath.toLocal8Bit().data(),nullptr),
                 "Cannot open data file " + filePath);
   Datasets datasets;
@@ -138,7 +140,7 @@ Datasets loadCaress(rcstr filePath) THROWS {
 
           detRel = (uint)sqrt(imageSize); // TODO (also compare with original code) this is hairy
 
-          QVector<Image::intensity_t> convertedIntens(imageSize);
+          QVector<Image::intens_t> convertedIntens(imageSize);
           for (int i=0; i<imageSize; ++i)
             convertedIntens[i] = intens[i];
 

@@ -4,8 +4,23 @@
 
 namespace core {
 
-Image::Image(uint size_, intensity_t const* src)
-: size(0), maxIntensity(0) {
+Image::Transform::Transform(int val_): val((e)(val_ & 7)) {
+}
+
+Image::Transform Image::Transform::mirror(bool on) const {
+  return on ? Transform(val |  MIRROR)
+            : Transform(val & ~MIRROR);
+}
+
+Image::Transform Image::Transform::rotateTo(Transform rot) const {
+  return Transform((val & MIRROR) | (rot.val & 3));
+}
+
+Image::Transform Image::Transform::rotate() const {
+  return rotateTo(val+1);
+}
+
+Image::Image(uint size_, intens_t const* src): size(0) {
   fill(0,size_);
   addIntensities(src);
 }
@@ -14,59 +29,69 @@ void Image::clear() {
   fill(0,0);
 }
 
-void Image::fill(Image::intensity_t defValue, uint size_) {
+void Image::fill(Image::intens_t defValue, uint size_) {
   size = size_;
 
-  int count = size * size;
+  uint count = size * size;
   intensities.fill(defValue,count);
 }
 
-uint Image::index(Session const& session, uint x, uint y) const {
+uint Image::index(Transform transform, uint x, uint y) const {
   auto flip = [this](uint &index) { index = size - 1 - index; };
 
-  switch (session.rotate) {
-  case 0:
+  switch (transform.val) {
+  case Transform::NONE:
     break;
-  case 1:
+  case Transform::ROTATE_1:
     qSwap(x,y); flip(y);
     break;
-  case 2:
+  case Transform::ROTATE_2:
     flip(x); flip(y);
     break;
-  case 3:
+  case Transform::ROTATE_3:
     qSwap(x,y); flip(x);
     break;
-  default:
-    NOT_HERE
-  }
-
-  if (session.mirror) {
+  case Transform::MIRROR:
     flip(x);
+    break;
+  case Transform::MIRROR_ROTATE_1:
+    qSwap(x,y); flip(x); flip(y);
+    break;
+  case Transform::MIRROR_ROTATE_2:
+    flip(y);
+    break;
+  case Transform::MIRROR_ROTATE_3:
+    qSwap(x,y);
+    break;
   }
 
   return index(size,x,y);
 }
 
-Image::intensity_t& Image::intensity(uint index) {
-  return intensities[index];
+Image::intens_t const& Image::intensity(Transform transform,uint x, uint y) const {
+  return intensities[index(transform,x,y)];
 }
 
-Image::intensity_t& Image::intensity(Session const& session,uint x, uint y) {
-  return intensities[index(session,x,y)];
+void Image::setIntensity(Transform transform,uint x, uint y, intens_t val) {
+  intensities[index(transform,x,y)] = val;
 }
 
-Image::intensity_t const& Image::intensity(Session const& session,uint x, uint y) const {
-  return intensities[index(session,x,y)];
-}
-
-void Image::addIntensities(intensity_t const* src) {
+void Image::addIntensities(intens_t const* src) {
   if (src) {
-    maxIntensity = 0;
-    auto data = intensities.data();
-    uint count = getCount();
-    while(count-- > 0)
-      maxIntensity = qMax((*data++ += *src++), maxIntensity);
+    auto data  = intensities.data();
+    uint count = size * size;
+    while(count-- > 0) *data++ += *src++;
   }
+}
+
+Image::intens_t Image::getMaxIntens() const {
+  intens_t max = 0;
+  auto data    = intensities.data();
+  uint count   = size * size;
+
+  while(count-- > 0) max = qMax(*data++, max);
+
+  return max;
 }
 
 }

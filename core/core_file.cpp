@@ -1,5 +1,5 @@
 #include "core_file.h"
-#include "loaders/core_loadcaress.h"
+#include "loaders/core_loaders.h"
 
 namespace core {
 
@@ -34,12 +34,9 @@ void File::load() THROWS {
 
 void File::sumDatasets() {
   while (datasets.count() > 1) {
-    datasets[0]->image.addIntensities(datasets.last()->image.getData());
+    datasets[0]->image.addIntensities(datasets.last()->image.getIntensities());
     datasets.removeLast();
   }
-}
-
-Files::Files() {
 }
 
 }

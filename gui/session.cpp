@@ -53,10 +53,7 @@ void Session::load(QByteArray const& json) THROWS {
   middlePixXOffset   = det["offset_x"].toDouble();
   middlePixYOffset   = det["offset_y"].toDouble();
 
-  auto transform = top["transform"].toObject();
-
-  setMirror(transform["mirror"].toBool());
-  setRotate(qBound(0,transform["rotate"].toInt(),3));
+  setRotate(core::Image::Transform(top["transform"].toInt()));
 
   emit sessionLoaded();
 }
@@ -95,12 +92,7 @@ QByteArray Session::save() const {
   cut["right"]  = (int)imageCut.right;
 
   top["cut"] = cut;
-
-  QJsonObject transform;
-  transform["mirror"]      = mirror;
-  transform["rotate"]      = (int)rotate;
-
-  top["transform"] = transform;
+  top["transform"] = imageTransform.val;
 
   QJsonDocument doc(top);
   return doc.toJson();
@@ -159,9 +151,9 @@ void Session::setMirror(bool on) {
   super::setMirror(on);
 }
 
-void Session::setRotate(uint a) {
+void Session::setRotate(core::Image::Transform rot) {
   pcstr rotateIconFile, mirrorIconFile;
-  switch (a) {
+  switch (rot.val & 3) {
   case 0:
     rotateIconFile = ":/icon/rotate0";
     mirrorIconFile = ":/icon/mirror_horz";
@@ -178,17 +170,15 @@ void Session::setRotate(uint a) {
     rotateIconFile = ":/icon/rotate3";
     mirrorIconFile = ":/icon/mirror_vert";
     break;
-  default:
-    NOT_HERE
   }
 
   actImageRotate->setIcon(QIcon(rotateIconFile));
   actImageMirror->setIcon(QIcon(mirrorIconFile));
-  super::setRotate(a);
+  super::setRotate(rot);
 }
 
 void Session::nextRotate() {
-  setRotate((rotate+1) % 4);
+  setRotate(imageTransform.rotate());
 }
 
 //-----------------------------------------------------------------------------
@@ -210,7 +200,7 @@ QVariant Session::FileViewModel::data(QModelIndex const& index,int role) const {
     case IsCorrectionFileRole:
       return isCorrectionFile;
     case Qt::DisplayRole: {
-      str s = session.getFile(row).name();
+      str s = session.getFile(row).getName();
       static str Corr("Corr: ");
       if (isCorrectionFile) s = Corr + s;
       return s;

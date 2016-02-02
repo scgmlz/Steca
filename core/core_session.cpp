@@ -7,7 +7,7 @@ Session::Session()
 : dataFiles(), imageSize(0)
 , pixSpan(0.01), sampleDetectorSpan(1.0) // TODO these must be reasonable limited
 , hasBeamOffset(false), middlePixXOffset(0), middlePixYOffset(0)
-, mirror(false), rotate(0)
+, imageTransform(Image::Transform::NONE)
 , lastCalcTthMitte(0) {
 }
 
@@ -83,11 +83,11 @@ void Session::updateImageSize() {
 }
 
 void Session::setMirror(bool on) {
-  mirror = on;
+  imageTransform = imageTransform.mirror(on);
 }
 
-void Session::setRotate(uint a) {
-  rotate = a;
+void Session::setRotate(core::Image::Transform rot) {
+  imageTransform = imageTransform.rotateTo(rot);
 }
 
 QPoint Session::getPixMiddle(uint imageSize) const {
@@ -200,7 +200,7 @@ void Session::calcIntensCorrArray() {
   qreal sum = 0; uint n = 0;
   for (uint x=imageCut.left; x<imageSize-imageCut.right; ++x)
     for (uint y=imageCut.top; y<imageSize-imageCut.bottom; ++y) {
-      sum += image.intensity(*this,x,y);
+      sum += image.intensity(imageTransform,x,y);
       ++n; // TODO aren't we lazy
     }
 
@@ -210,9 +210,9 @@ void Session::calcIntensCorrArray() {
   intensCorrArray.fill(1,imageSize);
   for (uint x=imageCut.left; x<imageSize-imageCut.right; ++x)
     for (uint y=imageCut.top; y<imageSize-imageCut.bottom; ++y) {
-      qreal val = avg / image.intensity(*this,x,y); // TODO /0 -> inf -> nan
+      qreal val = avg / image.intensity(imageTransform,x,y); // TODO /0 -> inf -> nan
       if (qIsInf(val)) val = 1; // TODO verify
-      intensCorrArray.intensity(*this,x,y) = val;
+      intensCorrArray.setIntensity(imageTransform,x,y,val);
     }
 }
 

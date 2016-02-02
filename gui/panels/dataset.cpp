@@ -189,7 +189,7 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
   });
 }
 
-QPixmap Dataset::makePixmap(core::Image const& image, core::Image::intensity_t maxIntensity,
+QPixmap Dataset::makePixmap(core::Image const& image, core::Image::intens_t maxIntensity,
                             core::Image* corr) {
   QPixmap pixmap;
   uint size = image.getSize();
@@ -202,10 +202,10 @@ QPixmap Dataset::makePixmap(core::Image const& image, core::Image::intensity_t m
 
     for (uint y = 0; y < size; ++y) {
       for (uint x = 0; x < size; ++x) {
-        qreal intens = image.intensity(session,x,y) / mi;
+        qreal intens = image.intensity(session.imageTransform,x,y) / mi;
         bool isNan = false; // TODO temporary fix
         if (corr) {
-          auto factor = corr->intensity(session,x,y);
+          auto factor = corr->intensity(session.imageTransform,x,y);
           if (qIsFinite(factor))
             intens *= factor;
           else
@@ -242,7 +242,7 @@ void Dataset::setDataset(pcCoreDataset dataset_) {
     core::Image *corr = nullptr;
     if (session.hasCorrFile() && !mainWin.actImagesShowRaw->isChecked())
       corr = &session.intensCorrArray;
-    pixMap = makePixmap(image, globalNorm ? dataset->getDatasets().getMaximumIntensity() : image.maximumIntensity(), corr);
+    pixMap = makePixmap(image, globalNorm ? dataset->getDatasets().getMaximumIntensity() : image.getMaxIntens(), corr);
   }
   imageWidget->setPixmap(pixMap);
 }

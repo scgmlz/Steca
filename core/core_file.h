@@ -1,3 +1,7 @@
+/** \file
+ * Files with datasets.
+ */
+
 #ifndef CORE_FILE_H
 #define CORE_FILE_H
 
@@ -8,16 +12,17 @@
 
 namespace core {
 
+/// A single file with a number of datasets.
 class File final {
 public:
   File();
   File(rcstr fileName);
  ~File();
 
-  str name()                 const { return info.fileName(); }
+  str getName()              const { return info.fileName(); }
   QFileInfo const& getInfo() const { return info;            }
 
-  QByteArray peek(uint maxLen); // first maxLen bytes
+  QByteArray peek(uint maxLen); ///< peek at first up to maxLen bytes
 
   void load() THROWS;
   void sumDatasets();
@@ -29,14 +34,9 @@ private:
   Datasets  datasets;
 };
 
-class Files final: public QVector<QSharedPointer<File>> {
-public:
-  Files();
-};
-
 }
 
-// used in signals
+/// a pointer that is used in signals
 typedef core::File const *pcCoreFile;
 Q_DECLARE_METATYPE(pcCoreFile)
 
