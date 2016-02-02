@@ -82,7 +82,7 @@ public:
     void setInfoItems(panel::DatasetInfo::InfoItems const*);
 
   private:
-    core::Dataset& getDataset(int row)    const;
+    core::Dataset const& getDataset(int row)    const;
 
   private:
     pcCoreFile coreFile;

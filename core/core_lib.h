@@ -24,6 +24,14 @@ struct Interval {
   bool contains(qreal val) const;
 };
 
+// TODO see if all three*two are needed, disassemble?
+struct Borders {
+  Interval
+    gamma,
+    tth_regular,
+    tth_gamma0; // at gamma=0
+};
+
 // conversion
 qreal deg_rad(qreal rad);         ///< conversion: degrees <= radians
 qreal rad_deg(qreal deg);         ///< conversion: radians <= degrees

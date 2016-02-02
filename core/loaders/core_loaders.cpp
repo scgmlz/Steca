@@ -10,11 +10,11 @@ namespace core {
 
 // Code taken from the original STeCa, slightly modified.
 
-Datasets loadCaress(rcstr filePath) THROWS {
+Dataset_vec loadCaress(rcstr filePath) THROWS {
 
   RUNTIME_CHECK(0 == open_data_file(filePath.toLocal8Bit().data(),nullptr),
                 "Cannot open data file " + filePath);
-  Datasets datasets;
+  Dataset_vec datasets;
 
   try {
     bool newObject = false;
@@ -145,8 +145,8 @@ Datasets loadCaress(rcstr filePath) THROWS {
             convertedIntens[i] = intens[i];
 
           // Objekt inizialisieren
-          datasets.append(QSharedPointer<Dataset>(new Dataset(
-            datasets, str::fromStdString(s_date), str::fromStdString(s_comment),
+          datasets.append(shp_Dataset(new Dataset(
+            str::fromStdString(s_date), str::fromStdString(s_comment),
             xAxis, yAxis, zAxis,
             rad_deg(omgAxis), rad_deg(tthAxis),
             rad_deg(phiAxis), rad_deg(chiAxis),

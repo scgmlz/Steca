@@ -242,7 +242,8 @@ void Dataset::setDataset(pcCoreDataset dataset_) {
     core::Image *corr = nullptr;
     if (session.hasCorrFile() && !mainWin.actImagesShowRaw->isChecked())
       corr = &session.intensCorrArray;
-    pixMap = makePixmap(image, globalNorm ? dataset->getDatasets().getMaximumIntensity() : image.getMaxIntens(), corr);
+// TODO add back, cached intensity?
+//    pixMap = makePixmap(image, globalNorm ? dataset->getDatasets().getMaximumIntensity() : image.getMaxIntens(), corr);
   }
   imageWidget->setPixmap(pixMap);
 }

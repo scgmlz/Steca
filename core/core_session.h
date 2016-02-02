@@ -1,45 +1,41 @@
+/** \file
+ * Session that can compute all and needs no GUI.
+ */
+
 #ifndef CORE_SESSION_H
 #define CORE_SESSION_H
 
 #include "core_lib.h"
 #include "core_file.h"
-#include <QSize>
-#include <QPointF>
+#include <QPoint>
 
 namespace core {
-
-// TODO goes elsewhere
-
-struct borders_t {
-  Interval
-    gamma,
-    tth_regular,
-    tth_gamma0; // at gamma=0
-};
 
 class Session {
 public:
   Session();
- ~Session();
+  virtual ~Session();
 
+  /// How many files has, optionally also counting the correction file.
   uint numFiles(bool withCorr=false);
 
-  void addFile(rcstr fileName) THROWS;
-  bool hasFile(rcstr fileName);
+  void addFile(rcstr fileName) THROWS;  ///< Add an ordinary file.
+  bool hasFile(rcstr fileName);         ///< Is there this ordinary file?
 
-  File const& getFile(uint i);
-  void remFile(uint i);
+  File const& getFile(uint i);          ///< Access the i-th file, including the correction file.
+  void remFile(uint i);                 ///< Remove the i-th file, including the correction file.
 
-  bool hasCorrFile()   const;
-  void loadCorrFile(rcstr fileName); // fileName may be empty -> unsets TODO
+  bool hasCorrFile() const;
+  void loadCorrFile(rcstr fileName);    ///< Load a correction file.
 
 protected:
-  QVector<QSharedPointer<File>> dataFiles;
+  QVector<shp_File> dataFiles;
 
-  uint imageSize;
+private:
+  uint imageSize; ///< All files have images of the same size; this is a cached value
 
-  void setImageSize(uint) THROWS;
-  void updateImageSize();
+  void setImageSize(uint) THROWS;       ///< Ensures that all images have the same size.
+  void updateImageSize();               ///< Clears image size if there are no more images.
 
 public: // detector TODO make a structure; rename variables
   qreal pixSpan;            // size of the detector pixel
@@ -75,7 +71,7 @@ protected: // corrections
 
   // TODO rename;
   QVector<Pixpos>      angleCorrArray;
-  borders_t            ful, cut;
+  Borders            ful, cut;
 
   QPoint  getPixMiddle(uint imageSize) const;  // TODO rename, was getPixMiddleX/Y
 
@@ -84,7 +80,7 @@ protected: // corrections
   qreal lastPixSpan, lastSampleDetectorSpan;
   imagecut_t lastImageCut;
 
-  QSharedPointer<File> corrFile;
+  shp_File corrFile;
 
 public:
   QVector<Pixpos> const& calcAngleCorrArray(qreal tthMitte);  // TODO rename; TODO if too slow, cache
@@ -93,7 +89,7 @@ public: // TODO not public
   Image intensCorrArray;  // summed corrFile intensities
   void calcIntensCorrArray();
 
-  borders_t const& getCut() const { return cut; }
+  Borders const& getCut() const { return cut; }
 
 public: // image
   imagecut_t const& getImageCut() const { return imageCut; }

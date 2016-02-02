@@ -23,20 +23,32 @@ void File::load() THROWS {
 
   static QByteArray const caressHead("\020\012DEFCMD DAT");
   if (caressHead == peek(caressHead.size())) {
-    // looks like Caress
+    // looks like Caress, so try to load
     datasets = loadCaress(info.filePath());
   } else {
     THROW("unknown file type");
   }
 
-  RUNTIME_CHECK(!datasets.isEmpty(), "File " % info.filePath() % " is empty");
+  RUNTIME_CHECK(!datasets.isEmpty(), "File " % info.filePath() % " has no datasets");
+
+  uint size = datasets.first()->getImage().getSize();
+
+  for (auto const& dataset: datasets)
+    if (dataset->getImage().getSize() != size)
+      THROW("Inconsistent image size");
 }
 
-void File::sumDatasets() {
+void File::fold() {
   while (datasets.count() > 1) {
     datasets[0]->image.addIntensities(datasets.last()->image.getIntensities());
     datasets.removeLast();
   }
+}
+
+uint File::getImageSize() const {
+  if (datasets.isEmpty()) return 0;
+  // guaranteed that all images have the same size
+  return datasets.first()->getImage().getSize();
 }
 
 }

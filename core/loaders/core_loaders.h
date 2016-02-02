@@ -9,7 +9,7 @@
 
 namespace core {
 
-Datasets loadCaress(rcstr filePath) THROWS;
+Dataset_vec loadCaress(rcstr filePath) THROWS;
 
 }
 

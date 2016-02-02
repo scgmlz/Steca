@@ -22,22 +22,27 @@ public:
   str getName()              const { return info.fileName(); }
   QFileInfo const& getInfo() const { return info;            }
 
-  QByteArray peek(uint maxLen); ///< peek at first up to maxLen bytes
+  /// peek at up to maxLen bytes (to establish the file type)
+  QByteArray peek(uint maxLen);
 
-  void load() THROWS;
-  void sumDatasets();
+  void load() THROWS; ///< load disk file content
+  void fold();        ///< collapse datasets into one
 
-  Datasets const& getDatasets() const { return datasets; }
+  uint           numDatasets()      const { return datasets.count(); }
+  Dataset const& getDataset(uint i) const { return *datasets.at(i);  }
+
+  uint getImageSize() const;
 
 private:
   QFileInfo info;
-  Datasets  datasets;
+  Dataset_vec datasets;
 };
+
+typedef QSharedPointer<File> shp_File;
 
 }
 
-/// a pointer that is used in signals
 typedef core::File const *pcCoreFile;
-Q_DECLARE_METATYPE(pcCoreFile)
+Q_DECLARE_METATYPE(pcCoreFile)  // TODO use shp_File
 
 #endif

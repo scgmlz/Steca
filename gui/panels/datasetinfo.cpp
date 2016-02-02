@@ -13,8 +13,8 @@ DatasetInfo::DatasetInfo(MainWin& mainWin,Session& session)
 
   scrollArea->setFrameStyle(QFrame::NoFrame);
 
-  for_i(core::Datasets::NUM_ATTRIBUTES) {
-      infoitem_t item; item.tag = core::Datasets::getAttributeTag(i);
+  for_i(core::Dataset::NUM_ATTRIBUTES) {
+      infoitem_t item; item.tag = core::Dataset::getAttributeTag(i);
       infoItems.append(item);
   }
 
@@ -22,7 +22,7 @@ DatasetInfo::DatasetInfo(MainWin& mainWin,Session& session)
   scrollArea->setWidget(info);
 
   connect(&session, &Session::datasetSelected, [this](pcCoreDataset dataset) {
-    for_i(core::Datasets::NUM_ATTRIBUTES) {
+    for_i(core::Dataset::NUM_ATTRIBUTES) {
       infoItems[i].text->setText(dataset ? dataset->getAttributeStrValue(i) : EMPTY_STR);
     }
   });

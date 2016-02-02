@@ -21,10 +21,10 @@ uint Session::numFiles(bool withCorr) {
 void Session::addFile(rcstr fileName) THROWS {
   if (hasFile(fileName)) return;
 
-  QSharedPointer<File> file(new File(fileName));
+  shp_File file(new File(fileName));
   file->load();
 
-  setImageSize(file->getDatasets().getImageSize());
+  setImageSize(file->getImageSize());
 
   dataFiles.append(file);
 }
@@ -46,7 +46,12 @@ File const& Session::getFile(uint i) {
 }
 
 void Session::remFile(uint i) {
-  dataFiles.remove(i);
+  if ((uint)dataFiles.count() == i) {
+    corrFile.clear();
+  } else {
+    dataFiles.remove(i);
+  }
+
   updateImageSize();
 }
 
@@ -55,17 +60,14 @@ bool Session::hasCorrFile() const {
 }
 
 void Session::loadCorrFile(rcstr fileName) {
-  if (!fileName.isEmpty()) {
-    QSharedPointer<File> file(new File(fileName));
-    file->load();
-    file->sumDatasets();
-    corrFile = file;
-    setImageSize(file->getDatasets().getImageSize());
-    calcIntensCorrArray();
-  } else {
-    corrFile.clear();
-    updateImageSize();
-  }
+  if (fileName.isEmpty()) return;
+
+  shp_File file(new File(fileName));
+  file->load();
+  file->fold();
+  corrFile = file;
+  setImageSize(file->getImageSize());
+  calcIntensCorrArray();
 }
 
 void Session::setImageSize(uint size) THROWS {
@@ -194,8 +196,8 @@ void Session::calcIntensCorrArray() {
     return;
   }
 
-  ASSERT(1 == corrFile->getDatasets().count()) // no need to sum
-  Image const& image = corrFile->getDatasets().first()->getImage();
+  ASSERT(1 == corrFile->numDatasets()) // no need to sum
+  Image const& image = corrFile->getDataset(0).getImage();
 
   qreal sum = 0; uint n = 0;
   for (uint x=imageCut.left; x<imageSize-imageCut.right; ++x)

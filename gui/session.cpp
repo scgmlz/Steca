@@ -114,10 +114,7 @@ void Session::addFiles(str_lst filePaths) THROWS {
 }
 
 void Session::remFile(uint i) {
-  if ((uint)dataFiles.count() == i)
-    super::loadCorrFile(EMPTY_STR);
-  else
-    super::remFile(i);
+  super::remFile(i);
 
   setSelectedFile(nullptr);
   emit filesChanged();
@@ -223,7 +220,7 @@ int Session::DatasetViewModel::columnCount(const QModelIndex &) const {
 }
 
 int Session::DatasetViewModel::rowCount(QModelIndex const&) const {
-  return coreFile ? coreFile->getDatasets().count() : 0;
+  return coreFile ? coreFile->numDatasets() : 0;
 }
 
 QVariant Session::DatasetViewModel::data(QModelIndex const& index,int role) const {
@@ -259,7 +256,7 @@ QVariant Session::DatasetViewModel::headerData(int section, Qt::Orientation orie
   case 1:
     return "#";
   default:
-    return core::Datasets::getAttributeTag(attributeNums[section-2]);
+    return core::Dataset::getAttributeTag(attributeNums[section-2]);
   }
 }
 
@@ -281,8 +278,8 @@ void Session::DatasetViewModel::setInfoItems(panel::DatasetInfo::InfoItems const
   endResetModel();
 }
 
-core::Dataset &Session::DatasetViewModel::getDataset(int row) const {
-  return *coreFile->getDatasets().at(row);
+core::Dataset const& Session::DatasetViewModel::getDataset(int row) const {
+  return coreFile->getDataset(row);
 }
 
 // eof
