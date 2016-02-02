@@ -1,5 +1,6 @@
 #include "core_loaders.h"
 #include "core_lib.h"
+#include "core_file.h"
 
 #include "loaders/Caress/raw.h"
 
@@ -10,7 +11,8 @@ namespace core {
 
 // Code taken from the original STeCa, slightly modified.
 
-Dataset_vec loadCaress(rcstr filePath) THROWS {
+Dataset_vec loadCaress(File &file) THROWS {
+  str filePath = file.getInfo().filePath();
 
   RUNTIME_CHECK(0 == open_data_file(filePath.toLocal8Bit().data(),nullptr),
                 "Cannot open data file " + filePath);
@@ -145,7 +147,7 @@ Dataset_vec loadCaress(rcstr filePath) THROWS {
             convertedIntens[i] = intens[i];
 
           // Objekt inizialisieren
-          datasets.append(shp_Dataset(new Dataset(
+          datasets.append(shp_Dataset(new Dataset(file,
             str::fromStdString(s_date), str::fromStdString(s_comment),
             xAxis, yAxis, zAxis,
             rad_deg(omgAxis), rad_deg(tthAxis),

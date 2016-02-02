@@ -11,16 +11,21 @@ namespace core {
 
 ///< closed interval
 struct Interval {
-  Interval(qreal val = 0);
+  Interval();
+  Interval(qreal val);
   Interval(qreal min, qreal max);
 
   qreal min, max;
+
+  void clear();                   ///< make NaN
+  bool isClear() const;
 
   void set(qreal val);            ///< both min and max = val
   void set(qreal min,qreal max);  ///< must be: min<=max
   void safeSet(qreal,qreal);      ///< will be set in the right order min/max
 
   void extend(qreal val);         ///< extend the interval to include val
+  void extend(Interval const&);   ///< union, filling potential hole
   bool contains(qreal val) const;
 };
 

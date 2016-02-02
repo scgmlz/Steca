@@ -5,7 +5,7 @@
 #ifndef CORE_IMAGE_H
 #define CORE_IMAGE_H
 
-#include "core_defs.h"
+#include "core_lib.h"
 #include <QSize>
 
 namespace core {
@@ -58,12 +58,13 @@ public:
   /// Sum all intensities
   void addIntensities(intens_t const*);
 
-  /// Calculate the maximum intensity.
-  intens_t getMaxIntens() const;
+  /// Calculate the interval of intensities.
+  Interval const& getIntIntens() const;
 
 private:
   uint size; // TODO a simplification - square images; make rect
   QVector<intens_t> intensities;
+  mutable Interval intIntens;
 };
 
 }

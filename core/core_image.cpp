@@ -27,6 +27,7 @@ Image::Image(uint size_, intens_t const* src): size(0) {
 
 void Image::clear() {
   fill(0,0);
+  intIntens.clear();
 }
 
 void Image::fill(Image::intens_t defValue, uint size_) {
@@ -34,6 +35,7 @@ void Image::fill(Image::intens_t defValue, uint size_) {
 
   uint count = size * size;
   intensities.fill(defValue,count);
+  intIntens.set(defValue);
 }
 
 uint Image::index(Transform transform, uint x, uint y) const {
@@ -74,6 +76,7 @@ Image::intens_t const& Image::intensity(Transform transform,uint x, uint y) cons
 
 void Image::setIntensity(Transform transform,uint x, uint y, intens_t val) {
   intensities[index(transform,x,y)] = val;
+  intIntens.clear();
 }
 
 void Image::addIntensities(intens_t const* src) {
@@ -81,17 +84,18 @@ void Image::addIntensities(intens_t const* src) {
     auto data  = intensities.data();
     uint count = size * size;
     while(count-- > 0) *data++ += *src++;
+    intIntens.clear();
   }
 }
 
-Image::intens_t Image::getMaxIntens() const {
-  intens_t max = 0;
-  auto data    = intensities.data();
-  uint count   = size * size;
+Interval const& Image::getIntIntens() const {
+  if (intIntens.isClear()) {
+    auto data    = intensities.data();
+    uint count   = size * size;
+    while(count-- > 0) intIntens.extend(*data++);
+  }
 
-  while(count-- > 0) max = qMax(*data++, max);
-
-  return max;
+  return intIntens;
 }
 
 }

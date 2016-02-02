@@ -11,6 +11,8 @@
 
 namespace core {
 
+class File;
+
 class Dataset {
   friend class File;
 
@@ -26,7 +28,7 @@ public:
 
   static rcstr getAttributeTag(int i);
 
-  Dataset(rcstr date, rcstr comment,
+  Dataset(File const&, rcstr date, rcstr comment,
           qreal motorXT,  qreal motorYT,  qreal motorZT,
           qreal motorOmg, qreal motorTth, qreal motorPhi, qreal motorChi,
           qreal motorPST, qreal motorSST, qreal motorOMGM,
@@ -36,9 +38,12 @@ public:
   str getAttributeStrValue(int /*as: enumAttribute TODO */) const;
   qreal tthMitte() const { return motorTth; } // TODO ? is mitte
 
+  File  const& getFile()  const { return file;  }
   Image const& getImage() const { return image; }
 
 private:
+  File const &file;
+
   str
     date, comment;
 

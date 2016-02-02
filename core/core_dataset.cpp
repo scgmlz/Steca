@@ -12,7 +12,7 @@ rcstr Dataset::getAttributeTag(int i) {
   return attributeTags.at(i);
 }
 
-Dataset::Dataset(
+Dataset::Dataset(File const& file_,
   rcstr date_, rcstr comment_,
   qreal motorXT_, qreal motorYT_, qreal motorZT_,
   qreal motorOmg_, qreal motorTth_, qreal motorPhi_, qreal motorChi_,
@@ -20,7 +20,8 @@ Dataset::Dataset(
   qreal mon_, qreal deltaTime_,
   uint size_, Image::intens_t const* intensities_)
 
-: date(date_), comment(comment_)
+: file(file_)
+, date(date_), comment(comment_)
 , motorXT(motorXT_), motorYT(motorYT_), motorZT(motorZT_), motorOmg(motorOmg_), motorTth(motorTth_)
 , motorPhi(motorPhi_), motorChi(motorChi_), motorPST(motorPST_), motorSST(motorSST_), motorOMGM(motorOMGM_)
 , mon(mon_), deltaTime(deltaTime_)

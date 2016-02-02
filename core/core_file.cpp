@@ -24,7 +24,8 @@ void File::load() THROWS {
   static QByteArray const caressHead("\020\012DEFCMD DAT");
   if (caressHead == peek(caressHead.size())) {
     // looks like Caress, so try to load
-    datasets = loadCaress(info.filePath());
+    ASSERT(datasets.isEmpty())  // load only once
+    datasets = loadCaress(*this);
   } else {
     THROW("unknown file type");
   }
@@ -36,6 +37,8 @@ void File::load() THROWS {
   for (auto const& dataset: datasets)
     if (dataset->getImage().getSize() != size)
       THROW("Inconsistent image size");
+
+  intIntens.clear();
 }
 
 void File::fold() {
@@ -43,12 +46,23 @@ void File::fold() {
     datasets[0]->image.addIntensities(datasets.last()->image.getIntensities());
     datasets.removeLast();
   }
+
+  intIntens.clear();
 }
 
 uint File::getImageSize() const {
   if (datasets.isEmpty()) return 0;
   // guaranteed that all images have the same size
   return datasets.first()->getImage().getSize();
+}
+
+const Interval&File::getIntIntens() const {
+  if (intIntens.isClear()) {
+    for (auto const& dataset: datasets)
+      intIntens.extend(dataset->getImage().getIntIntens());
+  }
+
+  return intIntens;
 }
 
 }

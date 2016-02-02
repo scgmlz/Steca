@@ -189,13 +189,13 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
   });
 }
 
-QPixmap Dataset::makePixmap(core::Image const& image, core::Image::intens_t maxIntensity,
+QPixmap Dataset::makePixmap(core::Image const& image, core::Interval intIntens,
                             core::Image* corr) {
   QPixmap pixmap;
   uint size = image.getSize();
 
   if (0 < size) {
-    qreal mi = maxIntensity;
+    qreal mi = intIntens.max;
     if (mi <= 0) mi = 1;  // sanity
 
     QImage qimage(QSize(size,size), QImage::Format_RGB32);
@@ -242,8 +242,7 @@ void Dataset::setDataset(core::shp_Dataset dataset_) {
     core::Image *corr = nullptr;
     if (session.hasCorrFile() && !mainWin.actImagesShowRaw->isChecked())
       corr = &session.intensCorrArray;
-// TODO add back, cached intensity?
-//    pixMap = makePixmap(image, globalNorm ? dataset->getDatasets().getMaximumIntensity() : image.getMaxIntens(), corr);
+    pixMap = makePixmap(image, globalNorm ? dataset->getFile().getIntIntens() : image.getIntIntens(), corr);
   }
   imageWidget->setPixmap(pixMap);
 }

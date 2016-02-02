@@ -33,10 +33,12 @@ public:
   shp_Dataset const& getDataset(uint i) const { return datasets.at(i); }
 
   uint getImageSize() const;
+  Interval const& getIntIntens() const;
 
 private:
   QFileInfo info;
   Dataset_vec datasets;
+  mutable Interval intIntens;
 };
 
 typedef QSharedPointer<File> shp_File;
