@@ -39,13 +39,16 @@ extern  str const EMPTY_STR;  ///< an empty string that can be returned by refer
 /// (Error handling is preferably to be done with exceptions.)
 class Exception: public QException {
 public:
-  Exception(rcstr msg_): msg(msg_) {}
-  str msg;
+  Exception(rcstr msg_) throw(): msg(msg_) {}
+ ~Exception() throw() {}
 
-  static void raise(rcstr msg) THROWS;
+//  void raise() const;
+//  Exception *clone() const;
+
+  str msg;
 };
 
-#define THROW(msg) Exception::raise(msg)  ///< raise an exception
+#define THROW(msg) throw Exception(msg)   ///< raise an exception
 #define RUNTIME_CHECK(test,msg) \
   if (!(test)) THROW(msg)                 ///< run-time condition checking
 
