@@ -33,7 +33,7 @@ public:
   shp_Dataset const& getDataset(uint i) const { return datasets.at(i); }
 
   /// all datasets contain images of the same size
-  uint getImageSize() const;
+  QSize getImageSize() const;
   /// the range of all intensities in all datasets
   Range const& getRgeIntens() const;
 

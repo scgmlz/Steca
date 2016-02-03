@@ -32,7 +32,7 @@ public:
           qreal motorOmg, qreal motorTth, qreal motorPhi, qreal motorChi,
           qreal motorPST, qreal motorSST, qreal motorOMGM,
           qreal mon, qreal deltaTime,
-          uint size, Image::intens_t const* intensities);
+          QSize const& size, intens_t const* intensities);
 
   str getAttributeStrValue(int /*as: enumAttribute TODO */) const;
   qreal tthMitte() const { return motorTth; } // TODO ? is mitte

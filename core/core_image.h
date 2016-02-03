@@ -6,11 +6,14 @@
 #define CORE_IMAGE_H
 
 #include "core_lib.h"
-#include <QSize>
+#include "core_array2d.h"
 
 namespace core {
 
-class Image final {
+using intens_t = float; ///< short for intensity. float should suffice
+
+class Image final: public Array2D<intens_t> {
+  SUPER(Image,Array2D<intens_t>)
 public:
   /// Image transform - rotation and mirroring
   struct Transform {
@@ -33,18 +36,11 @@ public:
     Transform nextRotate()        const;  ///< rotates by one quarter-turn
   };
 
-  using intens_t = float; ///< short for intensity. float should suffice
-
   /// Image as vector of intensities, filled with 0 or given intensities.
-  Image(uint size = 0, intens_t const* = nullptr);
+  Image(QSize const& = QSize(), intens_t const* = nullptr);
 
-  void clear();                             ///< make empty
-  void fill(intens_t defValue, uint size);  ///< allocate with default value
-  uint getSize()  const { return size; }    ///< 2D image size
-  uint getCount() const;                    ///< number of pixels
-
-  /// Calculate the 1D index of a pixel, no transform.
-  static inline uint index(uint size,uint x, uint y) { return x + y * size; }
+  void clear();
+  void fill(intens_t val, QSize const&);
 
   /// Calculate the 1D index of a pixel, with transform.
   uint index(Transform,uint x, uint y) const;
@@ -55,7 +51,7 @@ public:
   void setIntensity(Transform, uint x, uint y, intens_t);
 
   /// Access the whole 1D intensity array, getCount() values.
-  intens_t const* getIntensities() const { return intensities.data(); }
+  intens_t const* getIntensities() const { return getData(); }
   /// Sum all getCount() intensities with new ones.
   void addIntensities(intens_t const*);
 
@@ -63,8 +59,6 @@ public:
   Range const& getRgeIntens() const;
 
 private:
-  uint size; // TODO a simplification - square images; make rect
-  QVector<intens_t> intensities;
   mutable Range rgeIntens;
 };
 

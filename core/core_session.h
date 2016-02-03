@@ -7,6 +7,7 @@
 
 #include "core_lib.h"
 #include "core_file.h"
+#include "core_array2d.h"
 #include <QPoint>
 
 namespace core {
@@ -32,10 +33,10 @@ protected:
   QVector<shp_File> dataFiles;
 
 private:
-  uint imageSize; ///< All files must have images of the same size; this is a cached value
+  QSize imageSize; ///< All files must have images of the same size; this is a cached value
 
-  void setImageSize(uint) THROWS;       ///< Ensures that all images have the same size.
-  void updateImageSize();               ///< Clears the image size if there are no files in the session.
+  void setImageSize(QSize const&) THROWS; ///< Ensures that all images have the same size.
+  void updateImageSize();                 ///< Clears the image size if there are no files in the session.
 
 public: // detector TODO make a structure; rename variables
   qreal pixSpan;            // size of the detector pixel
@@ -59,10 +60,11 @@ protected: // corrections
   };
 
   // TODO rename;
-  QVector<Pixpos> angleCorrArray;
-  Borders         ful, cut;
+  typedef core::Array2D<Pixpos> AngleCorrArray;
+  AngleCorrArray angleCorrArray;
+  Borders        ful, cut;
 
-  QPoint  getPixMiddle(uint imageSize) const;  // TODO rename, was getPixMiddleX/Y
+  QPoint  getPixMiddle(QSize const& imageSize) const;  // TODO rename, was getPixMiddleX/Y
 
   // TODO cashing of calcAngle...
   qreal lastCalcTthMitte; QPoint lastPixMiddle;
@@ -72,7 +74,7 @@ protected: // corrections
   shp_File corrFile;
 
 public:
-  QVector<Pixpos> const& calcAngleCorrArray(qreal tthMitte);  // TODO rename; TODO if too slow, cache
+  AngleCorrArray const& calcAngleCorrArray(qreal tthMitte);  // TODO rename; TODO if too slow, cache
 
 public: // TODO not public
   Image intensCorrArray;  // summed corrFile intensities

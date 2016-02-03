@@ -4,7 +4,7 @@
 namespace core {
 
 Session::Session()
-: dataFiles(), imageSize(0)
+: dataFiles(), imageSize()
 , pixSpan(0.01), sampleDetectorSpan(1.0) // TODO these must be reasonable limited
 , hasBeamOffset(false), middlePixXOffset(0), middlePixYOffset(0)
 , imageTransform(Image::Transform::NONE)
@@ -70,9 +70,9 @@ bool Session::hasCorrFile() const {
   return !corrFile.isNull();
 }
 
-void Session::setImageSize(uint size) THROWS {
-  RUNTIME_CHECK (0 != size, "bad image size");
-  if (0 == imageSize) // the first one
+void Session::setImageSize(QSize const& size) THROWS {
+  RUNTIME_CHECK (!size.isEmpty(), "bad image size");
+  if (imageSize.isEmpty()) // the first one
     imageSize = size;
   else if (imageSize != size)
     THROW("inconsistent image size");
@@ -80,7 +80,7 @@ void Session::setImageSize(uint size) THROWS {
 
 void Session::updateImageSize() {
   if (0 == numFiles(true))
-    imageSize = 0;
+    imageSize = QSize();
 }
 
 void Session::setImageMirror(bool on) {
@@ -91,37 +91,33 @@ void Session::setImageRotate(core::Image::Transform rot) {
   imageTransform = imageTransform.rotateTo(rot);
 }
 
-QPoint Session::getPixMiddle(uint imageSize) const {
+QPoint Session::getPixMiddle(QSize const& imageSize) const {
   QPoint middle( // TODO hasBeamOffset
-    imageSize / 2 + middlePixXOffset,
-    imageSize / 2 + middlePixYOffset);
+    imageSize.width()  / 2 + middlePixXOffset,
+    imageSize.height() / 2 + middlePixYOffset);
   // TODO was: if ((tempPixMiddleX *[<=]* 0) || (tempPixMiddleX >= getWidth()))
   // TODO this limitation could be maybe lifted (think small angle X-ray scattering?)
-  RUNTIME_CHECK(Range(0,imageSize).contains(middle.x()), "bad pixMiddle");
-  RUNTIME_CHECK(Range(0,imageSize).contains(middle.y()), "bad pixMiddle");
+  RUNTIME_CHECK(Range(0,imageSize.width()).contains(middle.x()), "bad pixMiddle");
+  RUNTIME_CHECK(Range(0,imageSize.height()).contains(middle.y()), "bad pixMiddle");
   return middle;
 }
 
 // TODO this is a slightly modified original code; be careful; eventually refactor
-QVector<Session::Pixpos> const& Session::calcAngleCorrArray(qreal tthMitte) {
+Session::AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
 
-  uint count = imageSize * imageSize;
   QPoint pixMiddle = getPixMiddle(imageSize);
 
-  if (angleCorrArray.count() == (int)count
+  if (angleCorrArray.getSize() == imageSize
       && lastCalcTthMitte==tthMitte && lastPixMiddle == pixMiddle
       && lastPixSpan == pixSpan && lastSampleDetectorSpan == sampleDetectorSpan
       && lastImageCut == imageCut)
     return angleCorrArray;
 
-  angleCorrArray.resize(count);
+  angleCorrArray.fill(imageSize);
+
   lastCalcTthMitte = tthMitte; lastPixMiddle = pixMiddle;
   lastPixSpan = pixSpan; lastSampleDetectorSpan = sampleDetectorSpan;
   lastImageCut = imageCut;
-
-  auto angleCorr = [this](int x, int y) {
-    return &angleCorrArray[Image::index(imageSize,x,y)];
-  };
 
   ful.tth_regular.set(tthMitte);
   ful.tth_gamma0.set(tthMitte);
@@ -131,10 +127,10 @@ QVector<Session::Pixpos> const& Session::calcAngleCorrArray(qreal tthMitte) {
   ASSERT(sampleDetectorSpan>0) // TODO
 
   // Fill the Array
-  for (uint i = 0; i < imageSize; i++) {
+  for (int i = 0; i < imageSize.height(); i++) {
     int abstandInPixVertical = pixMiddle.y() - i;
     qreal y = abstandInPixVertical * pixSpan;
-    for (uint j = 0; j < imageSize; j++) {
+    for (int j = 0; j < imageSize.width(); j++) {
       // TTH des Pixels berechnen
       int abstandInPixHorizontal = - pixMiddle.x() + j;
       qreal x = abstandInPixHorizontal * pixSpan;
@@ -161,28 +157,28 @@ QVector<Session::Pixpos> const& Session::calcAngleCorrArray(qreal tthMitte) {
       ful.tth_gamma0.extend(tthHorAktuell);
 
       // Write angle in array
-      *angleCorr(j,i) = Pixpos(gamma,tthNeu);
+      angleCorrArray.setAt(j,i,Pixpos(gamma,tthNeu));
     }
   }
 
   // Calculate Gamma and TTH after cut
   // TODO the original code called setPixCut - is used elsewhere?
   // TODO refactor
-  int arrayMiddleX = imageCut.left + imageCut.getWidth(imageSize)  / 2;
-  int arrayMiddleY = imageCut.top  + imageCut.getHeight(imageSize) / 2;
+  int arrayMiddleX = imageCut.left + imageCut.getWidth(imageSize.width())   / 2;
+  int arrayMiddleY = imageCut.top  + imageCut.getHeight(imageSize.height()) / 2;
 
-  Pixpos middlePoint = *angleCorr(arrayMiddleX,arrayMiddleY);
+  auto middlePoint = angleCorrArray.at(arrayMiddleX,arrayMiddleY);
   cut.gamma.set(middlePoint.gammaPix);
   cut.tth_regular.set(middlePoint.tthPix);
   cut.tth_gamma0.safeSet(
-    angleCorr(imageSize - 1 - imageCut.right,pixMiddle.y())->tthPix,
-    angleCorr(imageCut.left,pixMiddle.y())->tthPix);
+    angleCorrArray.at(imageSize.width() - 1 - imageCut.right,pixMiddle.y()).tthPix,
+    angleCorrArray.at(imageCut.left,pixMiddle.y()).tthPix);
 
-  for (uint i = imageCut.left; i < imageSize - imageCut.right; i++) {
-    for (uint j = imageCut.top; j < imageSize - imageCut.bottom; j++) {
-      auto ac = angleCorr(i,j);
-      cut.gamma.extend(ac->gammaPix);
-      cut.tth_regular.extend(ac->tthPix);
+  for (uint i = imageCut.left; i < imageSize.width() - imageCut.right; i++) {
+    for (uint j = imageCut.top; j < imageSize.height() - imageCut.bottom; j++) {
+      auto ac = angleCorrArray.at(i,j);
+      cut.gamma.extend(ac.gammaPix);
+      cut.tth_regular.extend(ac.tthPix);
     }
   }
 
@@ -199,8 +195,8 @@ void Session::calcIntensCorrArray() {
   Image const& image = corrFile->getDataset(0)->getImage();
 
   qreal sum = 0; uint n = 0;
-  for (uint x=imageCut.left; x<imageSize-imageCut.right; ++x)
-    for (uint y=imageCut.top; y<imageSize-imageCut.bottom; ++y) {
+  for (uint x=imageCut.left; x<imageSize.width()-imageCut.right; ++x)
+    for (uint y=imageCut.top; y<imageSize.height()-imageCut.bottom; ++y) {
       sum += image.intensity(imageTransform,x,y);
       ++n; // TODO aren't we lazy
     }
@@ -209,8 +205,8 @@ void Session::calcIntensCorrArray() {
   qreal avg = sum / n;
 
   intensCorrArray.fill(1,imageSize);
-  for (uint x=imageCut.left; x<imageSize-imageCut.right; ++x)
-    for (uint y=imageCut.top; y<imageSize-imageCut.bottom; ++y) {
+  for (uint x=imageCut.left; x<imageSize.width()-imageCut.right; ++x)
+    for (uint y=imageCut.top; y<imageSize.height()-imageCut.bottom; ++y) {
       qreal val = avg / image.intensity(imageTransform,x,y); // TODO /0 -> inf -> nan
       if (qIsInf(val)) val = 1; // TODO verify
       intensCorrArray.setIntensity(imageTransform,x,y,val);
@@ -218,7 +214,7 @@ void Session::calcIntensCorrArray() {
 }
 
 void Session::setImageCut(bool topLeft, bool linked, ImageCut const& imageCut_) {
-  if (0 == imageSize)
+  if (imageSize.isEmpty())
     imageCut = ImageCut();
   else {
     auto limit = [linked](uint &thisOne, uint &thatOne, uint maxTogether) {
@@ -233,11 +229,11 @@ void Session::setImageCut(bool topLeft, bool linked, ImageCut const& imageCut_) 
     imageCut = imageCut_;
     // make sure that cut values are valid; in the right order
     if (topLeft) {
-      limit(imageCut.top,   imageCut.bottom,  imageSize);
-      limit(imageCut.left,  imageCut.right,   imageSize);
+      limit(imageCut.top,   imageCut.bottom,  imageSize.height());
+      limit(imageCut.left,  imageCut.right,   imageSize.width());
     } else {
-      limit(imageCut.bottom,imageCut.top,     imageSize);
-      limit(imageCut.right, imageCut.left,    imageSize);
+      limit(imageCut.bottom,imageCut.top,     imageSize.height());
+      limit(imageCut.right, imageCut.left,    imageSize.width());
     }
   }
 }

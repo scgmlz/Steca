@@ -20,71 +20,66 @@ Image::Transform Image::Transform::nextRotate() const {
   return rotateTo(val+1);
 }
 
-Image::Image(uint size_, intens_t const* src): size(0) {
-  fill(0,size_);
+Image::Image(QSize const& size, intens_t const* src) {
+  fill(0,size);
   addIntensities(src);
 }
 
 void Image::clear() {
-  fill(0,0);
+  super::clear();
   rgeIntens.invalidate();
 }
 
-void Image::fill(Image::intens_t defValue, uint size_) {
-  size = size_;
-
-  intensities.fill(defValue,getCount());
-  rgeIntens.set(defValue);
-}
-
-uint Image::getCount() const {
-  return size * size;
+void Image::fill(intens_t val, QSize const& size) {
+  super::fill(val,size);
+  rgeIntens.set(val);
 }
 
 uint Image::index(Transform transform, uint x, uint y) const {
-  auto flip = [this](uint &index) { index = size - 1 - index; };
+  auto flip_x = [this](uint &x) { x = size.width()  - 1 - x; };
+  auto flip_y = [this](uint &y) { y = size.height() - 1 - y; };
 
   switch (transform.val) {
   case Transform::ROTATE_0:
     break;
   case Transform::ROTATE_1:
-    qSwap(x,y); flip(y);
+    qSwap(x,y); flip_y(y);
     break;
   case Transform::ROTATE_2:
-    flip(x); flip(y);
+    flip_x(x); flip_y(y);
     break;
   case Transform::ROTATE_3:
-    qSwap(x,y); flip(x);
+    qSwap(x,y); flip_x(x);
     break;
   case Transform::MIRROR_ROTATE_0:
-    flip(x);
+    flip_x(x);
     break;
   case Transform::MIRROR_ROTATE_1:
-    qSwap(x,y); flip(x); flip(y);
+    qSwap(x,y); flip_x(x); flip_y(y);
     break;
   case Transform::MIRROR_ROTATE_2:
-    flip(y);
+    flip_y(y);
     break;
   case Transform::MIRROR_ROTATE_3:
     qSwap(x,y);
     break;
   }
 
-  return index(size,x,y);
+  return super::index(x,y);
 }
 
-Image::intens_t const& Image::intensity(Transform transform,uint x, uint y) const {
-  return intensities[index(transform,x,y)];
+intens_t const& Image::intensity(Transform transform,uint x, uint y) const {
+  return ts[index(transform,x,y)];
 }
 
 void Image::setIntensity(Transform transform,uint x, uint y, intens_t val) {
-  intensities[index(transform,x,y)] = val;
+  ts[index(transform,x,y)] = val;
   rgeIntens.invalidate();
 }
 
 void Image::addIntensities(intens_t const* src) {
   if (src) {
-    auto data  = intensities.data();
+    auto data  = getData();
     uint count = getCount();
     while(count-- > 0) *data++ += *src++;
     rgeIntens.invalidate();
@@ -93,7 +88,7 @@ void Image::addIntensities(intens_t const* src) {
 
 Range const& Image::getRgeIntens() const {
   if (rgeIntens.isInvalid()) {
-    auto data    = intensities.data();
+    auto data    = getData();
     uint count   = getCount();
     while(count-- > 0) rgeIntens.extend(*data++);
   }

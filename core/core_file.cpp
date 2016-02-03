@@ -35,7 +35,7 @@ void File::load() THROWS {
   RUNTIME_CHECK(!datasets.isEmpty(), "File " % info.filePath() % " contains no datasets");
 
   // ensure that all datasets have images of the same size
-  uint size = datasets.first()->getImage().getSize();
+  QSize size = datasets.first()->getImage().getSize();
 
   for (auto const& dataset: datasets)
     if (dataset->getImage().getSize() != size)
@@ -53,8 +53,8 @@ void File::fold() {
   rgeIntens.invalidate();
 }
 
-uint File::getImageSize() const {
-  if (datasets.isEmpty()) return 0;
+QSize File::getImageSize() const {
+  if (datasets.isEmpty()) return QSize();
   // guaranteed that all images have the same size; simply take the first one
   return datasets.first()->getImage().getSize();
 }

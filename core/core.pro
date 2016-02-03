@@ -18,7 +18,8 @@ HEADERS += \
     core_defs.h \
     core_session.h \
     core_lib.h \
-    loaders/core_loaders.h
+    loaders/core_loaders.h \
+    core_array2d.h
 
 SOURCES += \
     loaders/Caress/raw.cpp \
@@ -29,7 +30,8 @@ SOURCES += \
     core_image.cpp \
     core_session.cpp \
     core_lib.cpp \
-    loaders/core_loaders.cpp
+    loaders/core_loaders.cpp \
+    core_array2d.cpp
 
 DISTFILES += \
     README \

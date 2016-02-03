@@ -18,7 +18,7 @@ Dataset::Dataset(File const& file_,
   qreal motorOmg_, qreal motorTth_, qreal motorPhi_, qreal motorChi_,
   qreal motorPST_, qreal motorSST_, qreal motorOMGM_,
   qreal mon_, qreal deltaTime_,
-  uint size_, Image::intens_t const* intensities_)
+  QSize const& size_, intens_t const* intensities_)
 
 : file(file_)
 , date(date_), comment(comment_)

@@ -191,21 +191,23 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
 QPixmap Dataset::makePixmap(core::Image const& image, core::Range rgeIntens,
                             core::Image* corr) {
   QPixmap pixmap;
-  uint size = image.getSize();
+  auto size = image.getSize();
 
-  if (0 < size) {
+  if (!size.isEmpty()) {
     qreal mi = rgeIntens.max;
     if (mi <= 0) mi = 1;  // sanity
 
-    QImage qimage(QSize(size,size), QImage::Format_RGB32);
+    QImage qimage(size,QImage::Format_RGB32);
 
-    for (uint y = 0; y < size; ++y) {
-      for (uint x = 0; x < size; ++x) {
+    for_i(size.height()) {
+      auto y = i;
+      for_i(size.width()) {
+        auto x = i;
         qreal intens = image.intensity(session.imageTransform,x,y) / mi;
         bool isNan = false; // TODO temporary fix
         if (corr) {
           auto factor = corr->intensity(session.imageTransform,x,y);
-          if (qIsFinite(factor))
+          if (qIsFinite(factor)) // TODO still actual?
             intens *= factor;
           else
             isNan = true;

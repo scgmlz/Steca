@@ -111,8 +111,8 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
 
   auto image    = dataset->getImage();
   auto imageCut = session.getImageCut();
-  uint width    = imageCut.getWidth(image.getSize());
-  uint pixTotal = imageCut.getCount(image.getSize());
+  uint width    = imageCut.getWidth(image.getSize().width());
+  uint pixTotal = imageCut.getCount(image.getSize().height());
 
   auto cut = session.getCut();
   qreal TTHMin = cut.tth_regular.min;
@@ -130,7 +130,7 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
     int countPixPerColumn = 0;
 
     for_i(pixTotal) { // TODO inefficient
-      qreal tthPix = angles[i].tthPix;
+      qreal tthPix = angles.getData()[i].tthPix;
       if ((tthPix > tt - deltaTTH / 2) && (tthPix <= tt + deltaTTH / 2)) {
         auto in = intens[i];
         if (corr) in *= corr[i];
