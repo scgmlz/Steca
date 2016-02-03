@@ -65,7 +65,7 @@ void Session::load(QByteArray const& json) THROWS {
   middlePixXOffset   = det["offset_x"].toDouble();
   middlePixYOffset   = det["offset_y"].toDouble();
 
-  setImageRotate(core::Image::Transform(top["transform"].toInt()));
+  setImageRotate(core::ImageTransform(top["transform"].toInt()));
 
   emit sessionLoaded();
 }
@@ -160,7 +160,7 @@ void Session::setImageMirror(bool on) {
   super::setImageMirror(on);
 }
 
-void Session::setImageRotate(core::Image::Transform rot) {
+void Session::setImageRotate(core::ImageTransform rot) {
   pcstr rotateIconFile, mirrorIconFile;
   switch (rot.val & 3) {
   case 0:

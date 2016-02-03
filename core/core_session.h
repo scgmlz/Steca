@@ -46,10 +46,10 @@ public: // detector TODO make a structure; rename variables
   int   middlePixYOffset;
 
 public: // image transform
-  Image::Transform imageTransform;
+  ImageTransform imageTransform;
 
   void setImageMirror(bool);
-  void setImageRotate(core::Image::Transform);
+  void setImageRotate(core::ImageTransform);
 
 protected: // corrections
   struct Pixpos {  // TODO bad names

@@ -29,7 +29,7 @@ void Range::set(qreal val) {
 }
 
 void Range::set(qreal min_, qreal max_) {
-  ASSERT(qIsNaN(min_) && qIsNaN(max_) || min_ <= max_)
+  ASSERT((qIsNaN(min_) && qIsNaN(max_)) || min_ <= max_)
   min = min_; max = max_;
 }
 
@@ -71,6 +71,22 @@ uint ImageCut::getHeight(uint imageSize) const {
 
 uint ImageCut::getCount(uint imageSize) const {
   return getWidth(imageSize) * getHeight(imageSize);
+}
+
+ImageTransform::ImageTransform(int val_): val((e)(val_ & 7)) {
+}
+
+ImageTransform ImageTransform::mirror(bool on) const {
+  return on ? ImageTransform(val |  MIRROR)
+            : ImageTransform(val & ~MIRROR);
+}
+
+ImageTransform ImageTransform::rotateTo(ImageTransform rot) const {
+  return ImageTransform((val & MIRROR) | (rot.val & 3));
+}
+
+ImageTransform ImageTransform::nextRotate() const {
+  return rotateTo(val+1);
 }
 
 qreal deg_rad(qreal rad) {

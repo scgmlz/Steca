@@ -34,7 +34,7 @@ public:
   QAction *actImageRotate, *actImageMirror;
 
   void setImageMirror(bool);
-  void setImageRotate(core::Image::Transform);
+  void setImageRotate(core::ImageTransform);
   void nextImageRotate();
 
 signals:

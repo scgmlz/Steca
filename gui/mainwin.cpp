@@ -277,7 +277,14 @@ void MainWin::show() {
   super::show();
   checkActions();
 #ifdef DEVELOPMENT
-  session->load(QFileInfo("/Users/igb/Q/STeCa/data/q.ste"));
+  try {
+    session->load(QFileInfo("/Users/igb/Q/STeCa/data/q.ste"));
+  } catch (...) {
+    try {
+      session->load(QFileInfo("/home/jan/q.ste"));
+    } catch (...) {
+    }
+  }
 #endif
 }
 

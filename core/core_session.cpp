@@ -7,7 +7,7 @@ Session::Session()
 : dataFiles(), imageSize()
 , pixSpan(0.01), sampleDetectorSpan(1.0) // TODO these must be reasonable limited
 , hasBeamOffset(false), middlePixXOffset(0), middlePixYOffset(0)
-, imageTransform(Image::Transform::NONE)
+, imageTransform(ImageTransform::NONE)
 , lastCalcTthMitte(0) {
 }
 
@@ -87,7 +87,7 @@ void Session::setImageMirror(bool on) {
   imageTransform = imageTransform.mirror(on);
 }
 
-void Session::setImageRotate(core::Image::Transform rot) {
+void Session::setImageRotate(core::ImageTransform rot) {
   imageTransform = imageTransform.rotateTo(rot);
 }
 
