@@ -52,13 +52,6 @@ public: // image transform
   void setImageRotate(core::ImageTransform);
 
 protected: // corrections
-  struct Pixpos {  // TODO bad names
-    Pixpos(): Pixpos(0,0) {}
-    Pixpos(qreal gamma, qreal tth): gammaPix(gamma), tthPix(tth) {}
-    qreal gammaPix;
-    qreal tthPix;
-  };
-
   // TODO rename;
   typedef core::Array2D<Pixpos> AngleCorrArray;
   AngleCorrArray angleCorrArray;

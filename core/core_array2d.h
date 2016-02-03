@@ -67,6 +67,11 @@ public:
     return ts.data();
   }
 
+  /// 1D access
+  T const& operator[](int i) const {
+    return ts[i];
+  }
+
 protected:
   QSize size;
   QVector<T> ts;

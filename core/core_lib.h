@@ -9,7 +9,7 @@
 
 namespace core {
 
-///< a range of values (a closed interval)
+///< a range of values (a closed interval) // TODO make it right-open?
 struct Range {
   Range();
   Range(qreal val);
@@ -29,7 +29,7 @@ struct Range {
   bool contains(qreal val) const;
 };
 
-// TODO see if all three-times-two are needed, disassemble?
+// TODO see if all three-times-two are needed, diskcassemble?
 struct Borders {
   Range
     gamma,
@@ -46,6 +46,14 @@ struct ImageCut {
   uint getWidth(uint imageSize) const;
   uint getHeight(uint imageSize) const;
   uint getCount(uint imageSize) const;
+};
+
+// angle mapping
+struct Pixpos {  // TODO bad name
+  Pixpos(): Pixpos(0,0) {}
+  Pixpos(qreal gamma, qreal tth): gammaPix(gamma), tthPix(tth) {}
+  qreal gammaPix;
+  qreal tthPix;
 };
 
 /// Image transform - rotation and mirroring

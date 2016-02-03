@@ -111,7 +111,7 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
 
   auto image    = dataset->getImage();
   auto imageCut = session.getImageCut();
-  uint width    = imageCut.getWidth(image.getSize().width());
+  int  width    = imageCut.getWidth(image.getSize().width());
   uint pixTotal = imageCut.getCount(image.getSize().height());
 
   auto cut = session.getCut();
@@ -122,27 +122,24 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   auto intens = image.getIntensities();
   auto corr   = session.hasCorrFile() ? session.intensCorrArray.getIntensities() : nullptr;
 
-  // TODO bad! no iteration by floats
-  ASSERT(deltaTTH>0) // TODO
-  for (qreal tt = TTHMin + deltaTTH / 2; tt <= TTHMax - deltaTTH / 2; tt += deltaTTH) {
-    qreal inten = 0;
-    qreal tth = tt;
-    int countPixPerColumn = 0;
+  QVector<qreal> intens_vec(width);
+  QVector<uint>  counts_vec(width,0);
 
-    for_i(pixTotal) { // TODO inefficient
-      qreal tthPix = angles.getData()[i].tthPix;
-      if ((tthPix > tt - deltaTTH / 2) && (tthPix <= tt + deltaTTH / 2)) {
-        auto in = intens[i];
-        if (corr) in *= corr[i];
-        inten += in;
-        countPixPerColumn++;
-      }
-    }
+  for_i(pixTotal) {
+    auto tthPix = angles[i].tthPix;
+    int bin = (tthPix==TTHMax) ? width-1 : qFloor((tthPix - TTHMin) / deltaTTH);
 
-    if (countPixPerColumn > 0)
-      inten /= countPixPerColumn;
+    if(bin<0 || width<=bin) continue;  // outside of the cut
 
-    dgram.append(tth,inten);
+    auto in = intens[i]; if (corr) in *= corr[i];
+    intens_vec[bin] += in;
+    counts_vec[bin]++;
+  }
+
+  for_i(width) {
+    auto in = intens_vec[i]; auto cnt = counts_vec[i];
+    if (cnt > 0) in /= cnt;
+    dgram.append(TTHMin + deltaTTH*i,in);
   }
 }
 
