@@ -1,6 +1,8 @@
 #include "panel.h"
 #include "mainwin.h"
 
+namespace panel {
+
 BasicPanel::BasicPanel(rcstr title, MainWin& mainWin_, Session& session_)
 : super(title), mainWin(mainWin_), session(session_) {
 }
@@ -32,6 +34,8 @@ BoxPanel::BoxPanel(rcstr title,MainWin& mainWin,Session& session, Qt::Orientatio
 GridPanel::GridPanel(rcstr title,MainWin& mainWin,Session& session)
 : super(title,mainWin,session) {
   setLayout((grid = gridLayout()));
+}
+
 }
 
 // eof

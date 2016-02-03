@@ -1,10 +1,15 @@
+/** \file
+ */
+
 #ifndef SPLIT_REFLECTIONS_H
 #define SPLIT_REFLECTIONS_H
 
-#include "split.h"
+#include "gui_helpers.h"
 
-class SplitReflections: public Split {
-  SUPER(SplitReflections,Split)
+class MainWin; class Session;
+
+class SplitReflections: public BoxWidget {
+  SUPER(SplitReflections,BoxWidget)
 public:
   SplitReflections(MainWin&,Session&);
 };

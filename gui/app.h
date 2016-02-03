@@ -1,10 +1,11 @@
+/** \file
+ */
+
 #ifndef APP_H
 #define APP_H
 
 #include "defs.h"
 #include <QApplication>
-
-class MainWin;
 
 class App: public QApplication {
   SUPER(App,QApplication)
@@ -16,7 +17,5 @@ public:
 private:
   bool notify(QObject*, QEvent*);
 };
-
-extern App *app;
 
 #endif

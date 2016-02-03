@@ -1,15 +1,23 @@
+/** \file
+ */
+
 #ifndef FILES_H
 #define FILES_H
 
 #include "panel.h"
-#include <QStyledItemDelegate>
+
+namespace model {
+class FileViewModel;
+}
 
 namespace panel {
 
 class FileView: public ListView {
-  SUPER(FileView,ListView) Q_OBJECT
+  SUPER(FileView,ListView)
 public:
-  FileView(Session&);
+  using Model = model::FileViewModel;
+
+  FileView(Model&);
 
 protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);
@@ -18,17 +26,7 @@ public:
   void removeSelectedFile();
 
 private:
-  Session &session;
-
-  class Delegate: public QStyledItemDelegate {
-    SUPER(Delegate,QStyledItemDelegate)
-  public:
-    Delegate();
-
-    void paint(QPainter*, QStyleOptionViewItem const&, QModelIndex const&) const;
-  };
-
-  Delegate delegate;
+  Model &model;
 };
 
 class Files: public BoxPanel {

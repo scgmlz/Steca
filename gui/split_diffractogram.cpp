@@ -1,7 +1,8 @@
 #include "split_diffractogram.h"
 #include "mainwin.h"
-#include "panels/diffractogram.h"
-#include "panels/reflectioninfo.h"
+#include "session.h"
+#include "panel/diffractogram.h"
+#include "panel/reflectioninfo.h"
 
 SplitDiffractogram::SplitDiffractogram(MainWin& mainWin,Session& session): super(Qt::Horizontal) {
   auto diffractogram = new panel::Diffractogram(mainWin,session);

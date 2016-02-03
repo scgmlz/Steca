@@ -1,7 +1,6 @@
 #include "dataset.h"
 #include "mainwin.h"
-#include <QResizeEvent>
-#include <QPainter>
+#include "session.h"
 #include <QPainter>
 #include <QAction>
 

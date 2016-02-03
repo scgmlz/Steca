@@ -1,9 +1,9 @@
 #include "mainwin.h"
-#include "app.h"
+#include "session.h"
 #include "settings.h"
 #include "split_files.h"
-#include "split_image.h"
 #include "split_datasets.h"
+#include "split_image.h"
 #include "split_reflections.h"
 #include "split_diffractogram.h"
 
@@ -13,8 +13,10 @@
 #include <QSplitter>
 
 #include <QFileDialog>
+#include <QDir>
+#include <QAction>
 
-MainWin::MainWin() {
+MainWin::MainWin(): session(new Session){
   sessionDir = dataDir = QDir::homePath();
 
   initActions();
@@ -27,6 +29,7 @@ MainWin::MainWin() {
 }
 
 MainWin::~MainWin() {
+  delete session;
 }
 
 void MainWin::initActions() {
@@ -96,8 +99,8 @@ void MainWin::initActions() {
   actImagesEye            = toggle("eye",           ":/icon/eye");
   actImagesGlobalNorm     = toggle("global nm.");
   actImagesShowRaw        = toggle("show w/o corr", ":/icon/eye");  // TODO different icon
-  session.actImageRotate  = simple("Rotate", ":/icon/rotate0");
-  session.actImageMirror  = toggle("Mirror", ":/icon/mirror_horz");
+  session->actImageRotate = simple("Rotate", ":/icon/rotate0");
+  session->actImageMirror = toggle("Mirror", ":/icon/mirror_horz");
 
   actBackgroundBackground = simple("Background",    ":/icon/background");
   actBackgroundEye        = simple("BackgroundEye", ":/icon/eye");
@@ -168,7 +171,7 @@ void MainWin::initMenus() {
   });
 
   menuImage->addActions({
-    session.actImageRotate, session.actImageMirror,
+    session->actImageRotate, session->actImageMirror,
   });
 
   menuOpts->addActions({
@@ -199,18 +202,18 @@ void MainWin::initLayout() {
   auto splReflections = new QSplitter(Qt::Horizontal);
   splReflections->setChildrenCollapsible(false);
 
-  splMain->addWidget((splitFiles = new SplitFiles(*this,session)));
+  splMain->addWidget((splitFiles = new SplitFiles(*this,*session)));
   splMain->addWidget(splOther);
   splMain->setSizes({0,INT16_MAX});
 
   splOther->addWidget(splImages);
   splOther->addWidget(splReflections);
 
-  splImages->addWidget((splitDatasets = new SplitDatasets(*this,session)));
-  splImages->addWidget((splitImage = new SplitImage(*this,session)));
+  splImages->addWidget((splitDatasets = new SplitDatasets(*this,*session)));
+  splImages->addWidget((splitImage = new SplitImage(*this,*session)));
 
-  splReflections->addWidget((splitReflections = new SplitReflections(*this,session)));
-  splReflections->addWidget((splitDiffractogram = new SplitDiffractogram(*this,session)));
+  splReflections->addWidget((splitReflections = new SplitReflections(*this,*session)));
+  splReflections->addWidget((splitDiffractogram = new SplitDiffractogram(*this,*session)));
   splReflections->setStretchFactor(0,1);
   splReflections->setStretchFactor(1,3);
 }
@@ -234,7 +237,7 @@ void MainWin::connectActions() {
 
   onTrigger(actAddFiles, &MainWin::addFiles);
   actRemoveFile->setEnabled(false);
-  connect(&session, &Session::fileSelected, this, [this](core::shp_File file) {
+  connect(session, &Session::fileSelected, this, [this](core::shp_File file) {
     actRemoveFile->setEnabled(nullptr!=file);
   });
 
@@ -274,7 +277,7 @@ void MainWin::show() {
   super::show();
   checkActions();
 #ifdef DEVELOPMENT
-  session.load(QFileInfo("/Users/igb/Q/STeCa/data/q.ste"));
+  session->load(QFileInfo("/Users/igb/Q/STeCa/data/q.ste"));
 #endif
 }
 
@@ -289,7 +292,7 @@ void MainWin::addFiles() {
   if (!fileNames.isEmpty()) {
     // remember the directory for the next time
     dataDir = QFileInfo(fileNames.first()).absolutePath();
-    session.addFiles(fileNames);
+    session->addFiles(fileNames);
   }
 }
 
@@ -300,7 +303,7 @@ void MainWin::loadCorrectionFile() {
   if (!fileName.isEmpty()) {
     // remember the directory for the next time
     dataDir = QFileInfo(fileName).absolutePath();
-    session.loadCorrFile(fileName);
+    session->loadCorrFile(fileName);
   }
 }
 
@@ -313,7 +316,7 @@ void MainWin::loadSession() {
 
   QFileInfo fileInfo(fileName);
   sessionDir = fileInfo.absolutePath();
-  session.load(fileInfo);
+  session->load(fileInfo);
 }
 
 void MainWin::saveSession() {
@@ -328,7 +331,7 @@ void MainWin::saveSession() {
   QFile file(info.filePath());
   RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File cannot be opened");
 
-  auto written = file.write(session.save());
+  auto written = file.write(session->save());
   RUNTIME_CHECK(written >= 0, "Could not write session");
 }
 

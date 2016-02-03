@@ -1,3 +1,7 @@
+/** \file
+ * Helpful utilities for making Gui.
+ */
+
 #ifndef GUI_HELPERS_H
 #define GUI_HELPERS_H
 
@@ -41,7 +45,7 @@ public:
   ListView();
 };
 
-// abstract tree widget
+/// abstract tree widget
 class TreeView: public QTreeView {
   SUPER(TreeView,QTreeView) Q_OBJECT
 public:
@@ -50,7 +54,7 @@ public:
   int sizeHintForColumn(int) const; // make narrow columns
 };
 
-// abstract tree widget used as a list
+/// abstract tree widget used as a list
 class TreeListView: public TreeView {
   SUPER(TreeListView,TreeView) Q_OBJECT
 public:
@@ -58,6 +62,15 @@ public:
 
 protected:
   void setModel(QAbstractItemModel*);
+};
+
+// a widget with a box layout
+class BoxWidget: public QWidget {
+public:
+  BoxWidget(Qt::Orientation);
+
+protected:
+  QBoxLayout *box;
 };
 
 #endif

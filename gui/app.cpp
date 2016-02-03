@@ -2,14 +2,12 @@
 #include "../manifest.h"
 #include "mainwin.h"
 #include <QStyleFactory>
+#include <QMessageBox>
 #include <iostream>
 
 //------------------------------------------------------------------------------
 
-App *app;
-
-App::App(int &argc, char *argv[]): super(argc,argv)
-{
+App::App(int &argc, char *argv[]): super(argc,argv) {
   setApplicationName(APPLICATION_NAME);
   setApplicationVersion(APPLICATION_VERSION);
   setOrganizationName(ORGANIZATION_NAME);
@@ -22,23 +20,22 @@ App::App(int &argc, char *argv[]): super(argc,argv)
 #else
   setStyle(QStyleFactory::create("Fusion"));
 #endif
-
-  app = this;
 }
 
 static QtMessageHandler oldHandler;
+static MainWin *pMainWin;
 
-static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr s) {
+static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg) {
   switch (type) {
   case QtDebugMsg:
-    std::cerr << "TR " << s.toStdString() // TR for TRace
+    std::cerr << "TR " << msg.toStdString() // TR for TRace
               << "\t[" << ctx.function << ']' << std::endl;
     break;
   case QtWarningMsg:
-    warn(qApp, s);
+    QMessageBox::warning(pMainWin, qAppName(), msg);
     break;
   default:
-    oldHandler(type,ctx,s);
+    oldHandler(type,ctx,msg);
     break;
   }
 }
@@ -48,6 +45,7 @@ int App::exec() {
   MainWin mainWin;
   mainWin.show();
 
+  pMainWin = &mainWin;
   oldHandler = qInstallMessageHandler(messageHandler);
   int res = super::exec();
   qInstallMessageHandler(nullptr);
@@ -58,8 +56,6 @@ int App::exec() {
 bool App::notify(QObject* receiver, QEvent* event) {
   try {
     return super::notify(receiver, event);
-  } catch(CriticalError const& e) {
-    qCritical("CriticalError: %s", e.what());
   } catch(Exception const& e) {
     qWarning("%s", e.msg.toLocal8Bit().constData());
   } catch(std::exception const& e) {

@@ -1,7 +1,7 @@
 #include "detector.h"
 #include "mainwin.h"
+#include "session.h"
 #include "settings.h"
-#include "gui_helpers.h"
 
 namespace panel {
 
@@ -85,6 +85,7 @@ Detector::~Detector() {
 }
 
 void Detector::setTo(Session& session) {
+  ASSERT(!isSetting) // TODO if passes, remove isSetting
   if (isSetting) return;
 
   session.sampleDetectorSpan = spinDistance->value();
@@ -95,13 +96,15 @@ void Detector::setTo(Session& session) {
 }
 
 void Detector::setFrom(Session& session) {
-  BoolGuard _(isSetting);
+  isSetting = true;
 
   spinDistance->setValue(session.sampleDetectorSpan);
   spinPixelSize->setValue(session.pixSpan);
   spinOffsetX->setValue(session.middlePixXOffset);
   spinOffsetY->setValue(session.middlePixYOffset);
   checkIsBeamOffset->setChecked(session.hasBeamOffset);
+
+  isSetting = false;
 }
 
 void Detector::readSettings(Session& session) {

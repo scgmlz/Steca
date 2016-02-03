@@ -4,9 +4,21 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QApplication>
+
+class WaitCursor {
+public:
+  WaitCursor() {
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+  }
+
+ ~WaitCursor() {
+    QApplication::restoreOverrideCursor();
+  }
+};
 
 Session::Session()
-: selectedFile(nullptr), fileViewModel(*this), datasetViewModel() {
+: fileViewModel(*this), datasetViewModel(*this) {
 }
 
 Session::~Session(){
@@ -130,11 +142,11 @@ void Session::loadCorrFile(rcstr filePath) {
 
 void Session::setSelectedFile(core::shp_File file) {
   setSelectedDataset(core::shp_Dataset());
-  emit fileSelected((selectedFile = file));
+  emit fileSelected(file);
 }
 
 void Session::setSelectedDataset(core::shp_Dataset dataset) {
-  emit datasetSelected((selectedDataset = dataset));
+  emit datasetSelected(dataset);
 }
 
 void Session::setImageCut(bool topLeft, bool linked, core::ImageCut const& imageCut) {
@@ -176,110 +188,6 @@ void Session::setImageRotate(core::Image::Transform rot) {
 
 void Session::nextImageRotate() {
   setImageRotate(imageTransform.nextRotate());
-}
-
-//-----------------------------------------------------------------------------
-
-Session::FileViewModel::FileViewModel(Session& session_): session(session_) {
-}
-
-int Session::FileViewModel::rowCount(QModelIndex const&) const {
-  return session.numFiles(true);
-}
-
-QVariant Session::FileViewModel::data(QModelIndex const& index,int role) const {
-  auto row = index.row(), cnt = rowCount(index);
-  if (row < 0 || row >= cnt) return QVariant();
-
-  bool isCorrectionFile = session.hasCorrFile() && row+1 == cnt;
-
-  switch (role) {
-    case IsCorrectionFileRole:
-      return isCorrectionFile;
-    case Qt::DisplayRole: {
-      str s = session.getFile(row)->getName();
-      static str Corr("Corr: ");
-      if (isCorrectionFile) s = Corr + s;
-      return s;
-    }
-    case GetFileRole:
-      return QVariant::fromValue<core::shp_File>(session.getFile(row));
-    default:
-      return QVariant();
-  }
-}
-
-//-----------------------------------------------------------------------------
-
-Session::DatasetViewModel::DatasetViewModel()
-: coreFile(nullptr), infoItems(nullptr) {
-}
-
-int Session::DatasetViewModel::columnCount(const QModelIndex &) const {
-  return attributeNums.count() + 2; // 1 for the hidden 0-th column, 1 for the sequence number
-}
-
-int Session::DatasetViewModel::rowCount(QModelIndex const&) const {
-  return coreFile ? coreFile->numDatasets() : 0;
-}
-
-QVariant Session::DatasetViewModel::data(QModelIndex const& index,int role) const {
-  if (!coreFile) return QVariant();
-
-  int row = index.row(), col = index.column(), cnt = rowCount(index);
-  if (row < 0 || row >= cnt || col < 0 || col-2 >= attributeNums.count()) return QVariant();
-
-  switch (role) {
-    case Qt::DisplayRole: {
-      switch (col) {
-      case 0:
-        return QVariant();
-      case 1:
-        return str().setNum(row+1);
-      default:
-        return getDataset(row)->getAttributeStrValue(attributeNums[col-2]);
-      }
-    }
-    case GetDatasetRole:
-      return QVariant::fromValue<core::shp_Dataset>(getDataset(row));
-    default:
-      return QVariant();
-  }
-}
-
-QVariant Session::DatasetViewModel::headerData(int section, Qt::Orientation orientation, int role) const {
-  if (Qt::Horizontal != orientation || Qt::DisplayRole != role
-      || section < 1 || section-2 >= attributeNums.count())
-    return QVariant();
-
-  switch (section) {
-  case 1:
-    return "#";
-  default:
-    return core::Dataset::getAttributeTag(attributeNums[section-2]);
-  }
-}
-
-void Session::DatasetViewModel::setCoreFile(core::shp_File coreFile_) {
-  beginResetModel();
-  coreFile = coreFile_;
-  endResetModel();
-}
-
-void Session::DatasetViewModel::setInfoItems(panel::DatasetInfo::InfoItems const* infoItems_) {
-  beginResetModel();
-  infoItems = infoItems_;
-  attributeNums.clear();
-  if (infoItems) for_i(infoItems->count()) {
-    auto &item = infoItems->at(i);
-    if (item.cb->isChecked())
-      attributeNums.append(i);
-  }
-  endResetModel();
-}
-
-core::shp_Dataset const& Session::DatasetViewModel::getDataset(int row) const {
-  return coreFile->getDataset(row);
 }
 
 // eof

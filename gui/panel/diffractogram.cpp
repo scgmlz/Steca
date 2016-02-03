@@ -1,6 +1,6 @@
 #include "diffractogram.h"
-#include <QPainter>
-#include <QLineF>
+#include "mainwin.h"
+#include "session.h"
 
 namespace panel {
 

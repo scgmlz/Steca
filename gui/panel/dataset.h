@@ -1,9 +1,12 @@
+/** \file
+ */
+
 #ifndef IMAGE_H
 #define IMAGE_H
 
 #include "panel.h"
 #include "core_image.h"
-#include "session.h"
+#include "core_dataset.h"
 
 namespace panel {
 

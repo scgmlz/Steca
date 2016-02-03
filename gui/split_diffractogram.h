@@ -1,10 +1,15 @@
+/** \file
+ */
+
 #ifndef SPLIT_DIFFRACTOGRAM_H
 #define SPLIT_DIFFRACTOGRAM_H
 
-#include "split.h"
+#include "gui_helpers.h"
 
-class SplitDiffractogram: public Split {
-  SUPER(SplitDiffractogram,Split)
+class MainWin; class Session;
+
+class SplitDiffractogram: public BoxWidget {
+  SUPER(SplitDiffractogram,BoxWidget)
 public:
   SplitDiffractogram(MainWin&,Session&);
 };

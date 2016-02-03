@@ -1,3 +1,6 @@
+/** \file
+ */
+
 #ifndef NORMALIZATION_H
 #define NORMALIZATION_H
 

@@ -1,11 +1,14 @@
+/** \file
+ */
+
 #ifndef MAINWIN_H
 #define MAINWIN_H
 
 #include "defs.h"
-#include "session.h"
 #include <QMainWindow>
 
-class Split;
+class Session;
+class BoxWidget;
 
 class MainWin: public QMainWindow {
   SUPER(MainWin,QMainWindow) Q_OBJECT
@@ -39,8 +42,8 @@ private:
   bool onClose();
 
 private:
-  Session session;
-  QMenu *menuFile, *menuEdit, *menuView, *menuImage, *menuOpts, *menuHelp;
+  Session *session;
+  QMenu   *menuFile, *menuEdit, *menuView, *menuImage, *menuOpts, *menuHelp;
 
 public:
   QAction
@@ -77,7 +80,7 @@ public:
     *actBackgroundBackground, *actBackgroundEye;
 
 private:
-  Split *splitFiles, *splitDatasets, *splitImage, *splitReflections, *splitDiffractogram;
+  BoxWidget *splitFiles, *splitDatasets, *splitImage, *splitReflections, *splitDiffractogram;
 
 private:
   QByteArray initialState;

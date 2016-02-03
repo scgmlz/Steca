@@ -1,8 +1,10 @@
+/** \file
+ */
+
 #ifndef REFLECTIONS_H
 #define REFLECTIONS_H
 
 #include "panel.h"
-#include <QListView>
 
 namespace panel {
 

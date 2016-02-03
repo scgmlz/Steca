@@ -1,7 +1,8 @@
 #include "split_image.h"
 #include "mainwin.h"
-#include "panels/dataset.h"
-#include "panels/datasetinfo.h"
+#include "session.h"
+#include "panel/dataset.h"
+#include "panel/datasetinfo.h"
 
 SplitImage::SplitImage(MainWin& mainWin,Session& session): super(Qt::Horizontal) {
   box->addWidget(new panel::Dataset(mainWin,session));

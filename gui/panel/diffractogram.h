@@ -1,8 +1,11 @@
+/** \file
+ */
+
 #ifndef DIFFRACTOGRAM_H
 #define DIFFRACTOGRAM_H
 
 #include "panel.h"
-#include "session.h"
+#include "core_dataset.h"
 #include "../3rd/qcustomplot.h"
 
 namespace panel {

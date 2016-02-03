@@ -1,10 +1,15 @@
+/** \file
+ */
+
 #ifndef SPLIT_FILES_H
 #define SPLIT_FILES_H
 
-#include "split.h"
+#include "gui_helpers.h"
 
-class SplitFiles: public Split {
-  SUPER(SplitFiles,Split)
+class MainWin; class Session;
+
+class SplitFiles: public BoxWidget {
+  SUPER(SplitFiles,BoxWidget)
 public:
   SplitFiles(MainWin&,Session&);
 };

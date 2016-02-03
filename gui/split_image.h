@@ -1,10 +1,15 @@
+/** \file
+ */
+
 #ifndef SPLIT_IMAGE_H
 #define SPLIT_IMAGE_H
 
-#include "split.h"
+#include "gui_helpers.h"
 
-class SplitImage: public Split {
-  SUPER(SplitImage,Split)
+class MainWin; class Session;
+
+class SplitImage: public BoxWidget {
+  SUPER(SplitImage,BoxWidget)
 public:
   SplitImage(MainWin&,Session&);
 };

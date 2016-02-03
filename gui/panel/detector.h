@@ -1,9 +1,10 @@
+/** \file
+ */
+
 #ifndef DETECTOR_H
 #define DETECTOR_H
 
 #include "panel.h"
-
-class Session;
 
 namespace panel {
 

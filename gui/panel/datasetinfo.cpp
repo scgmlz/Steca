@@ -1,6 +1,6 @@
 #include "datasetinfo.h"
 #include "mainwin.h"
-#include "dataset.h"
+#include "session.h"
 #include <QScrollArea>
 
 namespace panel {
@@ -14,7 +14,7 @@ DatasetInfo::DatasetInfo(MainWin& mainWin,Session& session)
   scrollArea->setFrameStyle(QFrame::NoFrame);
 
   for_i(core::Dataset::NUM_ATTRIBUTES) {
-      infoitem_t item; item.tag = core::Dataset::getAttributeTag(i);
+      InfoItem item; item.tag = core::Dataset::getAttributeTag(i);
       infoItems.append(item);
   }
 
@@ -35,7 +35,7 @@ void DatasetInfo::selectionChanged() {
   session.datasetViewModel.setInfoItems(&infoItems);
 }
 
-DatasetInfo::Info::Info(DatasetInfo::InfoItems& items) {
+DatasetInfo::Info::Info(InfoItems& items) {
   setLayout((grid = gridLayout()));
 
   for (auto &item: items) {

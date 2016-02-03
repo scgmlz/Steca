@@ -15,52 +15,51 @@ HEADERS += \
     gui_helpers.h \
     mainwin.h \
     settings.h \
-    panels/panel.h \
-    panels/background.h \
-    panels/detector.h \
-    panels/diffractogram.h \
-    panels/reflections.h \
-    panels/reflectioninfo.h \
-    panels/files.h \
-    panels/normalization.h \
+    panel/panel.h \
+    panel/background.h \
+    panel/detector.h \
+    panel/diffractogram.h \
+    panel/reflections.h \
+    panel/reflectioninfo.h \
+    panel/files.h \
+    panel/normalization.h \
     split_files.h \
-    split.h \
     split_reflections.h \
     split_image.h \
     split_diffractogram.h \
     session.h \
-    panels/datasets.h \
+    panel/datasets.h \
     split_datasets.h \
-    panels/datasetinfo.h \
-    panels/dataset.h
+    panel/datasetinfo.h \
+    panel/dataset.h \
+    models.h
 
 SOURCES += \
     ../3rd/qcustomplot.cpp \
     app.cpp \
-    defs.cpp \
     delegates.cpp \
     gui_helpers.cpp \
     main.cpp \
     mainwin.cpp \
     settings.cpp \
-    panels/panel.cpp \
-    panels/background.cpp \
-    panels/detector.cpp \
-    panels/diffractogram.cpp \
-    panels/normalization.cpp \
-    panels/files.cpp \
-    panels/reflectioninfo.cpp \
-    panels/reflections.cpp \
+    panel/panel.cpp \
+    panel/background.cpp \
+    panel/detector.cpp \
+    panel/diffractogram.cpp \
+    panel/normalization.cpp \
+    panel/files.cpp \
+    panel/reflectioninfo.cpp \
+    panel/reflections.cpp \
     split_files.cpp \
-    split.cpp \
     split_reflections.cpp \
     split_image.cpp \
     split_diffractogram.cpp \
     session.cpp \
-    panels/datasets.cpp \
+    panel/datasets.cpp \
     split_datasets.cpp \
-    panels/datasetinfo.cpp \
-    panels/dataset.cpp
+    panel/datasetinfo.cpp \
+    panel/dataset.cpp \
+    models.cpp
 
 RESOURCES += \
     resources.qrc

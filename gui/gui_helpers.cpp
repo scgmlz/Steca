@@ -113,4 +113,8 @@ void TreeListView::setModel(QAbstractItemModel* model) {
   hideColumn(0);  // this should look like a list; 0th column is tree-like
 }
 
+BoxWidget::BoxWidget(Qt::Orientation orientation) {
+  setLayout((box = boxLayout(orientation)));
+}
+
 // eof

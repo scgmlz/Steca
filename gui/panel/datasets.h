@@ -1,20 +1,29 @@
+/** \file
+ */
+
 #ifndef DATASETS_H
 #define DATASETS_H
 
 #include "panel.h"
+
+namespace model {
+class DatasetViewModel;
+}
 
 namespace panel {
 
 class DatasetView: public TreeListView {
   SUPER(DatasetView,TreeListView)
 public:
-  DatasetView(Session&);
+  using Model = model::DatasetViewModel;
+
+  DatasetView(Model&);
 
 protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);
 
 private:
-  Session &session;
+  Model &model;
 };
 
 class Datasets: public BoxPanel {

@@ -1,3 +1,6 @@
+/** \file
+ */
+
 #ifndef DELEGATES_H
 #define DELEGATES_H
 

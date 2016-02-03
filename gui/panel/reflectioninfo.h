@@ -1,3 +1,6 @@
+/** \file
+ */
+
 #ifndef REFLECTIONINFO_H
 #define REFLECTIONINFO_H
 
