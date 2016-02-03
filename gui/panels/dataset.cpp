@@ -131,9 +131,9 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
 
   auto setImageCut = [this](bool topLeft, int value) {
     if (mainWin.actImagesLink->isChecked())
-      session.setImageCut(topLeft, true, Session::imagecut_t(value,value,value,value));
+      session.setImageCut(topLeft, true, core::ImageCut(value,value,value,value));
     else
-      session.setImageCut(topLeft, false, Session::imagecut_t(cutTop->value(), cutBottom->value(), cutLeft->value(), cutRight->value()));
+      session.setImageCut(topLeft, false, core::ImageCut(cutTop->value(), cutBottom->value(), cutLeft->value(), cutRight->value()));
   };
 
   connect(cutTop, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
@@ -179,23 +179,23 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
   });
 
   connect(session.actImageMirror, &QAction::toggled, [this](bool on) {
-    session.setMirror(on);
+    session.setImageMirror(on);
     refresh();
   });
 
   connect(session.actImageRotate, &QAction::triggered, [this]() {
-    session.nextRotate();
+    session.nextImageRotate();
     refresh();
   });
 }
 
-QPixmap Dataset::makePixmap(core::Image const& image, core::Interval intIntens,
+QPixmap Dataset::makePixmap(core::Image const& image, core::Range rgeIntens,
                             core::Image* corr) {
   QPixmap pixmap;
   uint size = image.getSize();
 
   if (0 < size) {
-    qreal mi = intIntens.max;
+    qreal mi = rgeIntens.max;
     if (mi <= 0) mi = 1;  // sanity
 
     QImage qimage(QSize(size,size), QImage::Format_RGB32);
@@ -242,7 +242,7 @@ void Dataset::setDataset(core::shp_Dataset dataset_) {
     core::Image *corr = nullptr;
     if (session.hasCorrFile() && !mainWin.actImagesShowRaw->isChecked())
       corr = &session.intensCorrArray;
-    pixMap = makePixmap(image, globalNorm ? dataset->getFile().getIntIntens() : image.getIntIntens(), corr);
+    pixMap = makePixmap(image, globalNorm ? dataset->getFile().getRgeIntens() : image.getRgeIntens(), corr);
   }
   imageWidget->setPixmap(pixMap);
 }

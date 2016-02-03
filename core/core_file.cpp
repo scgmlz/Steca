@@ -15,54 +15,57 @@ File::~File() {
 QByteArray File::peek(uint maxLen) {
   QFile file(info.filePath());
   file.open(QFile::ReadOnly);
-  return file.read(maxLen); // returns an empty QByteArray if there is an error
+  return file.read(maxLen); // on error returns an empty QByteArray; that's good
 }
 
 void File::load() THROWS {
+  ASSERT(datasets.isEmpty())  // load only once
+
   RUNTIME_CHECK(info.exists(), "File " % info.filePath() % " does not exist");
 
+  // apparently all Caress files begin this way
   static QByteArray const caressHead("\020\012DEFCMD DAT");
   if (caressHead == peek(caressHead.size())) {
     // looks like Caress, so try to load
-    ASSERT(datasets.isEmpty())  // load only once
     datasets = loadCaress(*this);
   } else {
     THROW("unknown file type");
   }
 
-  RUNTIME_CHECK(!datasets.isEmpty(), "File " % info.filePath() % " has no datasets");
+  RUNTIME_CHECK(!datasets.isEmpty(), "File " % info.filePath() % " contains no datasets");
 
+  // ensure that all datasets have images of the same size
   uint size = datasets.first()->getImage().getSize();
 
   for (auto const& dataset: datasets)
     if (dataset->getImage().getSize() != size)
       THROW("Inconsistent image size");
 
-  intIntens.clear();
+  rgeIntens.invalidate();
 }
 
 void File::fold() {
   while (datasets.count() > 1) {
-    datasets[0]->image.addIntensities(datasets.last()->image.getIntensities());
+    datasets.first()->addIntensities(*datasets.last());
     datasets.removeLast();
   }
 
-  intIntens.clear();
+  rgeIntens.invalidate();
 }
 
 uint File::getImageSize() const {
   if (datasets.isEmpty()) return 0;
-  // guaranteed that all images have the same size
+  // guaranteed that all images have the same size; simply take the first one
   return datasets.first()->getImage().getSize();
 }
 
-const Interval&File::getIntIntens() const {
-  if (intIntens.isClear()) {
+Range const& File::getRgeIntens() const {
+  if (rgeIntens.isInvalid()) {
     for (auto const& dataset: datasets)
-      intIntens.extend(dataset->getImage().getIntIntens());
+      rgeIntens.extend(dataset->getImage().getRgeIntens());
   }
 
-  return intIntens;
+  return rgeIntens;
 }
 
 }

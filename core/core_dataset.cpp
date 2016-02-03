@@ -52,6 +52,11 @@ str Dataset::getAttributeStrValue(int e) const {
   return QString().setNum(value);
 }
 
+void Dataset::addIntensities(Dataset const& that) {
+  ASSERT(image.getCount() == that.image.getCount())
+  image.addIntensities(that.image.getIntensities());
+}
+
 }
 
 // eof

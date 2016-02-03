@@ -12,15 +12,15 @@
 
 namespace core {
 
-/// A single file with a number of datasets.
+/// A file (loaded from a disk file) that contains a number of datasets.
 class File final {
 public:
   File();
   File(rcstr fileName);
  ~File();
 
-  str getName()              const { return info.fileName(); }
   QFileInfo const& getInfo() const { return info;            }
+  str getName()              const { return info.fileName(); }
 
   /// peek at up to maxLen bytes (to establish the file type)
   QByteArray peek(uint maxLen);
@@ -32,13 +32,15 @@ public:
 
   shp_Dataset const& getDataset(uint i) const { return datasets.at(i); }
 
+  /// all datasets contain images of the same size
   uint getImageSize() const;
-  Interval const& getIntIntens() const;
+  /// the range of all intensities in all datasets
+  Range const& getRgeIntens() const;
 
 private:
   QFileInfo info;
-  Dataset_vec datasets;
-  mutable Interval intIntens;
+  QVector<shp_Dataset> datasets;
+  mutable Range rgeIntens;
 };
 
 typedef QSharedPointer<File> shp_File;

@@ -9,14 +9,14 @@
 
 namespace core {
 
-// Code taken from the original STeCa, slightly modified.
+// Code taken from the original STeCa, only slightly modified.
 
-Dataset_vec loadCaress(File &file) THROWS {
+QVector<shp_Dataset> loadCaress(File &file) THROWS {
   str filePath = file.getInfo().filePath();
-
   RUNTIME_CHECK(0 == open_data_file(filePath.toLocal8Bit().data(),nullptr),
                 "Cannot open data file " + filePath);
-  Dataset_vec datasets;
+
+  QVector<shp_Dataset> datasets;
 
   try {
     bool newObject = false;
@@ -440,4 +440,4 @@ Dataset_vec loadCaress(File &file) THROWS {
 
 }
 
-//
+// eof

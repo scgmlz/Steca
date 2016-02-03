@@ -19,23 +19,23 @@ public:
   /// How many files has, optionally also counting the correction file.
   uint numFiles(bool withCorr=false);
 
-  void addFile(rcstr fileName) THROWS;  ///< Add an ordinary file.
+  void addFile(rcstr fileName) THROWS;  ///< Add an ordinary file to the session.
   bool hasFile(rcstr fileName);         ///< Is there this ordinary file?
 
   shp_File const& getFile(uint i);      ///< Access the i-th file, including the correction file.
   void remFile(uint i);                 ///< Remove the i-th file, including the correction file.
 
-  bool hasCorrFile() const;
   void loadCorrFile(rcstr fileName);    ///< Load a correction file.
+  bool hasCorrFile() const;
 
 protected:
   QVector<shp_File> dataFiles;
 
 private:
-  uint imageSize; ///< All files have images of the same size; this is a cached value
+  uint imageSize; ///< All files must have images of the same size; this is a cached value
 
   void setImageSize(uint) THROWS;       ///< Ensures that all images have the same size.
-  void updateImageSize();               ///< Clears image size if there are no more images.
+  void updateImageSize();               ///< Clears the image size if there are no files in the session.
 
 public: // detector TODO make a structure; rename variables
   qreal pixSpan;            // size of the detector pixel
@@ -45,21 +45,10 @@ public: // detector TODO make a structure; rename variables
   int   middlePixYOffset;
 
 public: // image transform
-  void setMirror(bool);
-  void setRotate(core::Image::Transform);
+  Image::Transform imageTransform;
 
-public: // image
-  struct imagecut_t {
-    imagecut_t(uint top = 0, uint bottom = 0, uint left = 0, uint right = 0);
-    bool operator==(imagecut_t const&);
-    uint top, bottom, left, right;
-
-    uint getWidth(uint imageSize) const;
-    uint getHeight(uint imageSize) const;
-    uint getCount(uint imageSize) const;
-  };
-
-  Image::Transform imageTransform; // TODO hide
+  void setImageMirror(bool);
+  void setImageRotate(core::Image::Transform);
 
 protected: // corrections
   struct Pixpos {  // TODO bad names
@@ -70,15 +59,15 @@ protected: // corrections
   };
 
   // TODO rename;
-  QVector<Pixpos>      angleCorrArray;
-  Borders            ful, cut;
+  QVector<Pixpos> angleCorrArray;
+  Borders         ful, cut;
 
   QPoint  getPixMiddle(uint imageSize) const;  // TODO rename, was getPixMiddleX/Y
 
   // TODO cashing of calcAngle...
   qreal lastCalcTthMitte; QPoint lastPixMiddle;
   qreal lastPixSpan, lastSampleDetectorSpan;
-  imagecut_t lastImageCut;
+  ImageCut lastImageCut;
 
   shp_File corrFile;
 
@@ -91,12 +80,12 @@ public: // TODO not public
 
   Borders const& getCut() const { return cut; }
 
-public: // image
-  imagecut_t const& getImageCut() const { return imageCut; }
-  void setImageCut(bool topLeft, bool linked, imagecut_t const&);
+public: // image cut
+  ImageCut const& getImageCut() const { return imageCut; }
+  void setImageCut(bool topLeft, bool linked, ImageCut const&);
 
 protected:
-  imagecut_t imageCut;
+  ImageCut imageCut;
 };
 
 }

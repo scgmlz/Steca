@@ -10,7 +10,7 @@
 
 namespace core {
 
-class Image {
+class Image final {
 public:
   /// Image transform - rotation and mirroring
   struct Transform {
@@ -30,7 +30,7 @@ public:
     Transform(int val);                   ///< clamps val appropriately
     Transform mirror(bool on)     const;  ///< adds/removes the mirror flag
     Transform rotateTo(Transform) const;  ///< rotates, but keeps the mirror flag
-    Transform rotate()            const;  ///< rotates by one quarter
+    Transform nextRotate()        const;  ///< rotates by one quarter-turn
   };
 
   using intens_t = float; ///< short for intensity. float should suffice
@@ -40,7 +40,8 @@ public:
 
   void clear();                             ///< make empty
   void fill(intens_t defValue, uint size);  ///< allocate with default value
-  uint getSize()  const { return size; }
+  uint getSize()  const { return size; }    ///< 2D image size
+  uint getCount() const;                    ///< number of pixels
 
   /// Calculate the 1D index of a pixel, no transform.
   static inline uint index(uint size,uint x, uint y) { return x + y * size; }
@@ -53,18 +54,18 @@ public:
   /// Set single intensity.
   void setIntensity(Transform, uint x, uint y, intens_t);
 
-  /// Access the whole 1D intensity array.
+  /// Access the whole 1D intensity array, getCount() values.
   intens_t const* getIntensities() const { return intensities.data(); }
-  /// Sum all intensities
+  /// Sum all getCount() intensities with new ones.
   void addIntensities(intens_t const*);
 
-  /// Calculate the interval of intensities.
-  Interval const& getIntIntens() const;
+  /// Calculate the range of intensity values; cache the result
+  Range const& getRgeIntens() const;
 
 private:
   uint size; // TODO a simplification - square images; make rect
   QVector<intens_t> intensities;
-  mutable Interval intIntens;
+  mutable Range rgeIntens;
 };
 
 }

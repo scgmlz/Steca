@@ -9,7 +9,7 @@
 
 namespace core {
 
-Dataset_vec loadCaress(File&) THROWS;
+QVector<shp_Dataset> loadCaress(File&) THROWS;
 
 }
 

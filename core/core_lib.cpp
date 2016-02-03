@@ -4,53 +4,73 @@
 
 namespace core {
 
-Interval::Interval() {
-  clear();
+Range::Range() {
+  invalidate();
 }
 
-Interval::Interval(qreal val) {
+Range::Range(qreal val) {
   set(val);
 }
 
-Interval::Interval(qreal min, qreal max) {
+Range::Range(qreal min, qreal max) {
   set(min,max);
 }
 
-void Interval::clear() {
+void Range::invalidate() {
   set(qSNaN());
 }
 
-bool Interval::isClear() const {
+bool Range::isInvalid() const {
   return qIsNaN(min) || qIsNaN(max);
 }
 
-void Interval::set(qreal val) {
+void Range::set(qreal val) {
   set(val,val);
 }
 
-void Interval::set(qreal min_, qreal max_) {
+void Range::set(qreal min_, qreal max_) {
   ASSERT(qIsNaN(min_) && qIsNaN(max_) || min_ <= max_)
   min = min_; max = max_;
 }
 
-void Interval::safeSet(qreal v1, qreal v2) {
+void Range::safeSet(qreal v1, qreal v2) {
   if (v1 < v2)
     set(v1,v2);
   else
     set(v2,v1);
 }
 
-void Interval::extend(qreal val) {
+void Range::extend(qreal val) {
   min = qIsNaN(min) ? val : qMin(min,val);
   max = qIsNaN(max) ? val : qMax(max,val);
 }
 
-void Interval::extend(Interval const& that) {
+void Range::extend(Range const& that) {
   extend(that.min); extend(that.max);
 }
 
-bool Interval::contains(qreal val) const {
+bool Range::contains(qreal val) const {
   return min <= val && val <= max;
+}
+
+ImageCut::ImageCut(uint top_, uint bottom_, uint left_, uint right_)
+: top(top_), bottom(bottom_), left(left_), right(right_) {
+}
+
+bool ImageCut::operator==(ImageCut const& that) {
+  return top==that.top && bottom==that.bottom && left==that.left && right==that.right;
+}
+
+uint ImageCut::getWidth(uint imageSize) const {
+  return imageSize - left - right;
+}
+
+uint ImageCut::getHeight(uint imageSize) const {
+  return imageSize - top - bottom;
+}
+
+uint ImageCut::getCount(uint imageSize) const {
+  return getWidth(imageSize) * getHeight(imageSize);
 }
 
 qreal deg_rad(qreal rad) {

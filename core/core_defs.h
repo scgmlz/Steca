@@ -9,7 +9,7 @@
 /// Undefine it for a release!
 #define DEVELOPMENT
 
-// common QT includes - used in many places
+// common QT includes - used all the time
 #include <QtGlobal>
 #include <QSharedPointer>
 #include <QVector>
@@ -26,24 +26,25 @@ typedef char const* pcstr;    ///< zero-terminated C-style string
 
 typedef QStringList str_lst;  ///< a short alias
 
-extern  str const EMPTY_STR;  ///< an empty string that can be returned by reference
+extern  str const EMPTY_STR;  ///< an empty string (that can be returned by reference!)
 
 /// the idiomatic iteration over *n* items
 #define for_i(n) for (int i=0, iEnd=(n); i<iEnd; ++i)
 
+// exceptions
 #include <QException>
 
 #define THROWS throw (Exception)    ///< exception annotation macro
 
 /// An exception that carries a message.
-/// (Error handling is preferably to be done with exceptions.)
 class Exception: public QException {
 public:
-  Exception(rcstr msg_) throw(): msg(msg_) {}
- ~Exception() throw() {}
+  Exception(rcstr msg_)             throw(): msg(msg_)      {}
+  Exception(Exception const& that)  throw(): msg(that.msg)  {}
+ ~Exception()                       throw()                 {}
 
-//  void raise() const;
-//  Exception *clone() const;
+  Exception *clone() const;
+  void raise() const;
 
   str msg;
 };

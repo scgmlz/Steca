@@ -8,4 +8,12 @@ static_assert (QT_VERSION >= 0x050501,"written for Qt >= 5.5");
 
 str const EMPTY_STR;
 
+Exception* Exception::clone() const {
+  return new Exception(*this);
+}
+
+void Exception::raise() const {
+  throw *this;
+}
+
 // eof

@@ -1,9 +1,13 @@
 /** \file
  * Macros that support debugging.
  *
- * TR (TRace) and WT (WaTch) are for trace prints;
+ * TR (TRace) and WT (WaTch) are for trace prints; e.g.
+ * TR(var) TR("name" << var1 << 2+3)
+ * WT(var)
+ *
  * ASSERT for debug-time assertions;
- * NOT_HERE for marking unreachable code; debug-time assert
+ * NOT_HERE for marking unreachable code, sometimes to satisfy the compiler;
+ *          debug-time assert
  */
 
 #ifndef CORE_DEBUG_H

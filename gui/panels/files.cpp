@@ -18,7 +18,7 @@ FileView::FileView(Session& session_): session(session_) {
 void FileView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
   super::selectionChanged(selected,deselected);
 
-  auto& model  = session.fileViewModel;
+  auto &model  = session.fileViewModel;
 
   auto indexes = selected.indexes();
   model.session.setSelectedFile(indexes.isEmpty()
@@ -30,7 +30,7 @@ void FileView::removeSelectedFile() {
   auto index = currentIndex();
   if (!index.isValid()) return;
 
-  auto& model  = session.fileViewModel;
+  auto &model  = session.fileViewModel;
 
   uint row = index.row();
   index = (row+1 < model.session.numFiles(true)) ? index

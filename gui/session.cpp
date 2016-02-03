@@ -43,7 +43,7 @@ void Session::load(QByteArray const& json) THROWS {
   int x1 = qMax(0,cut["left"].toInt());
   int x2 = qMax(0,cut["right"].toInt());
 
-  setImageCut(true,false,Session::imagecut_t(x1,y1,x2,y2));
+  setImageCut(true,false,core::ImageCut(x1,y1,x2,y2));
 
   auto det = top["detector"].toObject();
 
@@ -53,7 +53,7 @@ void Session::load(QByteArray const& json) THROWS {
   middlePixXOffset   = det["offset_x"].toDouble();
   middlePixYOffset   = det["offset_y"].toDouble();
 
-  setRotate(core::Image::Transform(top["transform"].toInt()));
+  setImageRotate(core::Image::Transform(top["transform"].toInt()));
 
   emit sessionLoaded();
 }
@@ -108,7 +108,7 @@ void Session::addFile(rcstr filePath) THROWS {
 void Session::addFiles(str_lst filePaths) THROWS {
   WaitCursor __;
 
-  for (auto& filePath: filePaths)
+  for (auto &filePath: filePaths)
     super::addFile(filePath);
   emit filesChanged();
 }
@@ -120,7 +120,7 @@ void Session::remFile(uint i) {
   emit filesChanged();
 
   if (0==numFiles(true))
-    setImageCut(true,false,imagecut_t());
+    setImageCut(true,false,core::ImageCut());
 }
 
 void Session::loadCorrFile(rcstr filePath) {
@@ -137,18 +137,18 @@ void Session::setSelectedDataset(core::shp_Dataset dataset) {
   emit datasetSelected((selectedDataset = dataset));
 }
 
-void Session::setImageCut(bool topLeft, bool linked, imagecut_t const& imageCut) {
+void Session::setImageCut(bool topLeft, bool linked, core::ImageCut const& imageCut) {
   super::setImageCut(topLeft,linked,imageCut);
   calcIntensCorrArray();
   emit imageCutChanged();
 }
 
-void Session::setMirror(bool on) {
+void Session::setImageMirror(bool on) {
   actImageMirror->setChecked(on);
-  super::setMirror(on);
+  super::setImageMirror(on);
 }
 
-void Session::setRotate(core::Image::Transform rot) {
+void Session::setImageRotate(core::Image::Transform rot) {
   pcstr rotateIconFile, mirrorIconFile;
   switch (rot.val & 3) {
   case 0:
@@ -171,11 +171,11 @@ void Session::setRotate(core::Image::Transform rot) {
 
   actImageRotate->setIcon(QIcon(rotateIconFile));
   actImageMirror->setIcon(QIcon(mirrorIconFile));
-  super::setRotate(rot);
+  super::setImageRotate(rot);
 }
 
-void Session::nextRotate() {
-  setRotate(imageTransform.rotate());
+void Session::nextImageRotate() {
+  setImageRotate(imageTransform.nextRotate());
 }
 
 //-----------------------------------------------------------------------------

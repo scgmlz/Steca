@@ -19,7 +19,7 @@ uint Session::numFiles(bool withCorr) {
 }
 
 void Session::addFile(rcstr fileName) THROWS {
-  if (hasFile(fileName)) return;
+  if (fileName.isEmpty() || hasFile(fileName)) return; // be safe
 
   shp_File file(new File(fileName));
   file->load();
@@ -31,7 +31,7 @@ void Session::addFile(rcstr fileName) THROWS {
 
 bool Session::hasFile(rcstr fileName) {
   QFileInfo fileInfo(fileName);
-  for (auto& file: dataFiles)
+  for (auto &file: dataFiles)
     if (fileInfo == file->getInfo()) return true;
   return false;
 }
@@ -55,12 +55,8 @@ void Session::remFile(uint i) {
   updateImageSize();
 }
 
-bool Session::hasCorrFile() const {
-  return !corrFile.isNull();
-}
-
 void Session::loadCorrFile(rcstr fileName) {
-  if (fileName.isEmpty()) return;
+  if (fileName.isEmpty()) return; // be safe
 
   shp_File file(new File(fileName));
   file->load();
@@ -70,25 +66,28 @@ void Session::loadCorrFile(rcstr fileName) {
   calcIntensCorrArray();
 }
 
+bool Session::hasCorrFile() const {
+  return !corrFile.isNull();
+}
+
 void Session::setImageSize(uint size) THROWS {
-  if (0 == size)
-    THROW("inconsistent image size");
-  if (0 == imageSize)
+  RUNTIME_CHECK (0 != size, "bad image size");
+  if (0 == imageSize) // the first one
     imageSize = size;
   else if (imageSize != size)
-    THROW(" session-inconsistent image size");
+    THROW("inconsistent image size");
 }
 
 void Session::updateImageSize() {
-  if (dataFiles.isEmpty() && !hasCorrFile())
+  if (0 == numFiles(true))
     imageSize = 0;
 }
 
-void Session::setMirror(bool on) {
+void Session::setImageMirror(bool on) {
   imageTransform = imageTransform.mirror(on);
 }
 
-void Session::setRotate(core::Image::Transform rot) {
+void Session::setImageRotate(core::Image::Transform rot) {
   imageTransform = imageTransform.rotateTo(rot);
 }
 
@@ -98,8 +97,8 @@ QPoint Session::getPixMiddle(uint imageSize) const {
     imageSize / 2 + middlePixYOffset);
   // TODO was: if ((tempPixMiddleX *[<=]* 0) || (tempPixMiddleX >= getWidth()))
   // TODO this limitation could be maybe lifted (think small angle X-ray scattering?)
-  RUNTIME_CHECK(Interval(0,imageSize).contains(middle.x()), "bad pixMiddle");
-  RUNTIME_CHECK(Interval(0,imageSize).contains(middle.y()), "bad pixMiddle");
+  RUNTIME_CHECK(Range(0,imageSize).contains(middle.x()), "bad pixMiddle");
+  RUNTIME_CHECK(Range(0,imageSize).contains(middle.y()), "bad pixMiddle");
   return middle;
 }
 
@@ -218,29 +217,9 @@ void Session::calcIntensCorrArray() {
     }
 }
 
-Session::imagecut_t::imagecut_t(uint top_, uint bottom_, uint left_, uint right_)
-  : top(top_), bottom(bottom_), left(left_), right(right_) {
-}
-
-bool Session::imagecut_t::operator==(Session::imagecut_t const& that) {
-  return top==that.top && bottom==that.bottom && left==that.left && right==that.right;
-}
-
-uint Session::imagecut_t::getWidth(uint imageSize) const {
-  return imageSize - left - right;
-}
-
-uint Session::imagecut_t::getHeight(uint imageSize) const {
-  return imageSize - top - bottom;
-}
-
-uint Session::imagecut_t::getCount(uint imageSize) const {
-  return getWidth(imageSize) * getHeight(imageSize);
-}
-
-void Session::setImageCut(bool topLeft, bool linked, imagecut_t const& imageCut_) {
+void Session::setImageCut(bool topLeft, bool linked, ImageCut const& imageCut_) {
   if (0 == imageSize)
-    imageCut = imagecut_t();
+    imageCut = ImageCut();
   else {
     auto limit = [linked](uint &thisOne, uint &thatOne, uint maxTogether) {
       if (linked && thisOne+thatOne>=maxTogether) {

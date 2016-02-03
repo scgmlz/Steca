@@ -16,7 +16,7 @@ Image::Transform Image::Transform::rotateTo(Transform rot) const {
   return Transform((val & MIRROR) | (rot.val & 3));
 }
 
-Image::Transform Image::Transform::rotate() const {
+Image::Transform Image::Transform::nextRotate() const {
   return rotateTo(val+1);
 }
 
@@ -27,22 +27,25 @@ Image::Image(uint size_, intens_t const* src): size(0) {
 
 void Image::clear() {
   fill(0,0);
-  intIntens.clear();
+  rgeIntens.invalidate();
 }
 
 void Image::fill(Image::intens_t defValue, uint size_) {
   size = size_;
 
-  uint count = size * size;
-  intensities.fill(defValue,count);
-  intIntens.set(defValue);
+  intensities.fill(defValue,getCount());
+  rgeIntens.set(defValue);
+}
+
+uint Image::getCount() const {
+  return size * size;
 }
 
 uint Image::index(Transform transform, uint x, uint y) const {
   auto flip = [this](uint &index) { index = size - 1 - index; };
 
   switch (transform.val) {
-  case Transform::NONE:
+  case Transform::ROTATE_0:
     break;
   case Transform::ROTATE_1:
     qSwap(x,y); flip(y);
@@ -53,7 +56,7 @@ uint Image::index(Transform transform, uint x, uint y) const {
   case Transform::ROTATE_3:
     qSwap(x,y); flip(x);
     break;
-  case Transform::MIRROR:
+  case Transform::MIRROR_ROTATE_0:
     flip(x);
     break;
   case Transform::MIRROR_ROTATE_1:
@@ -76,26 +79,26 @@ Image::intens_t const& Image::intensity(Transform transform,uint x, uint y) cons
 
 void Image::setIntensity(Transform transform,uint x, uint y, intens_t val) {
   intensities[index(transform,x,y)] = val;
-  intIntens.clear();
+  rgeIntens.invalidate();
 }
 
 void Image::addIntensities(intens_t const* src) {
   if (src) {
     auto data  = intensities.data();
-    uint count = size * size;
+    uint count = getCount();
     while(count-- > 0) *data++ += *src++;
-    intIntens.clear();
+    rgeIntens.invalidate();
   }
 }
 
-Interval const& Image::getIntIntens() const {
-  if (intIntens.isClear()) {
+Range const& Image::getRgeIntens() const {
+  if (rgeIntens.isInvalid()) {
     auto data    = intensities.data();
-    uint count   = size * size;
-    while(count-- > 0) intIntens.extend(*data++);
+    uint count   = getCount();
+    while(count-- > 0) rgeIntens.extend(*data++);
   }
 
-  return intIntens;
+  return rgeIntens;
 }
 
 }

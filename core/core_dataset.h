@@ -13,13 +13,11 @@ namespace core {
 
 class File;
 
-class Dataset {
-  friend class File;
-
+class Dataset final {
 private:
   static QVector<str> const attributeTags;
 public:
-  enum {
+  enum eAttributes {
     DATE, COMMENT,
     MOTOR_X, MOTOR_Y, MOTOR_Z, MOTOR_OMG, MOTOR_TTH, MOTOR_PHI, MOTOR_CHI,
     MOTOR_PST, MOTOR_SST, MOTOR_OMGM, MON, DELTA_TIME,
@@ -28,6 +26,7 @@ public:
 
   static rcstr getAttributeTag(int i);
 
+public:
   Dataset(File const&, rcstr date, rcstr comment,
           qreal motorXT,  qreal motorYT,  qreal motorZT,
           qreal motorOmg, qreal motorTth, qreal motorPhi, qreal motorChi,
@@ -41,8 +40,11 @@ public:
   File  const& getFile()  const { return file;  }
   Image const& getImage() const { return image; }
 
+  /// used for correction files
+  void addIntensities(Dataset const&);
+
 private:
-  File const &file;
+  File const &file; ///< the parent file
 
   str
     date, comment;
@@ -58,7 +60,7 @@ private:
 };
 
 typedef QSharedPointer<Dataset> shp_Dataset;
-typedef QVector<shp_Dataset> Dataset_vec;
+
 }
 
 Q_DECLARE_METATYPE(core::shp_Dataset)

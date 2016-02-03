@@ -7,7 +7,7 @@ DatasetView::DatasetView(Session& session_): session(session_) {
   setModel(&session.datasetViewModel);
 
   connect(&session, &Session::fileSelected, [this](core::shp_File coreFile) {
-    auto& model  = session.datasetViewModel;
+    auto &model  = session.datasetViewModel;
     model.setCoreFile(coreFile);
     setCurrentIndex(model.index(0,0));
   });

@@ -30,13 +30,13 @@ public:
   void setSelectedFile(core::shp_File);
   void setSelectedDataset(core::shp_Dataset);
 
-  void setImageCut(bool topLeft, bool linked, imagecut_t const&);
+  void setImageCut(bool topLeft, bool linked, core::ImageCut const&);
 
   QAction *actImageRotate, *actImageMirror;
 
-  void setMirror(bool);
-  void setRotate(core::Image::Transform);
-  void nextRotate();
+  void setImageMirror(bool);
+  void setImageRotate(core::Image::Transform);
+  void nextImageRotate();
 
 private:
   core::shp_File    selectedFile;
