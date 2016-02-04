@@ -6,7 +6,7 @@ namespace core {
 Session::Session()
 : dataFiles(), corrFile(), imageSize(), geometry()
 , imageTransform(ImageTransform::NONE)
-, lastCalcTthMitte(0) {
+, lastCalcTthMitte(0), hasNaNs(false) {
 }
 
 Session::~Session() {

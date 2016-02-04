@@ -87,7 +87,14 @@ Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
 
   connect(&session, &Session::datasetSelected, [this](core::shp_Dataset dataset) {
     setDataset(dataset);
-    // TODO trace - multiple unnecessary calls here?
+  });
+
+  connect(&session, &Session::geometryChanged, [this]() {
+    this->refresh();
+  });
+
+  connect(&session, &Session::imageCutChanged, [this]() {
+    this->refresh();
   });
 }
 
@@ -131,7 +138,12 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
 
     if(bin<0 || width<=bin) continue;  // outside of the cut
 
-    auto in = intens[i]; if (corr) in *= corr[i];
+    auto in = intens[i];
+    if (corr) {
+      auto factor = corr[i];
+      if (qIsNaN(factor)) continue;  // skip these pixels
+      in *= factor;
+    }
     intens_vec[bin] += in;
     counts_vec[bin]++;
   }
