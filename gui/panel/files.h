@@ -24,6 +24,7 @@ protected:
 
 public:
   void removeSelectedFile();
+  void update();
 
 private:
   Model &model;

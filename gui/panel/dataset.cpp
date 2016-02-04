@@ -117,8 +117,8 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
   box->addLayout(hb);
   box->addLayout(bb);
 
-  connect(&session, &Session::filesChanged, [this](){
-    bool on  = session.hasCorrFile();
+  connect(&session, &Session::corrFileSet, [this](core::shp_File file){
+    bool on  = !file.isNull();
     auto act = mainWin.actImagesShowRaw;
     if (!on) act->setChecked(false);
     act->setEnabled(on);
@@ -152,8 +152,8 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
   });
 
   connect(&session_, &Session::imageCutChanged, [this]() {
-    // set GUI from cut values
     auto cut = session.getImageCut();
+
     cutTop    ->setValue(cut.top);
     cutBottom ->setValue(cut.bottom);
     cutLeft   ->setValue(cut.left);

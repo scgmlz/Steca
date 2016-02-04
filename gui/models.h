@@ -40,6 +40,8 @@ public:
 
   int rowCount(QModelIndex const&)      const;
   QVariant data(QModelIndex const&,int) const;
+
+  void signalReset();
 };
 
 class DatasetViewModel: public QAbstractTableModel, public SessionModel {

@@ -14,8 +14,7 @@ static str KEY_OFFSET_Y("offset_y");
 
 Detector::Detector(MainWin& mainWin_,Session& session_): super("Detector",mainWin_,session_)
 , spinDistance(nullptr), spinPixelSize(nullptr)
-, checkIsBeamOffset(nullptr), spinOffsetX(nullptr), spinOffsetY(nullptr)
-, isSetting(false) {
+, checkIsBeamOffset(nullptr), spinOffsetX(nullptr), spinOffsetY(nullptr) {
 
   int row = 0;
   grid->addWidget(label("Distance"),row,0);
@@ -55,7 +54,7 @@ Detector::Detector(MainWin& mainWin_,Session& session_): super("Detector",mainWi
   setEnabled();
   readSettings(session);
 
-  connect(&session, &Session::sessionLoaded, [this]() {
+  connect(&session, &Session::geometryChanged, [this]() {
     setFrom(session);
   });
 
@@ -85,35 +84,32 @@ Detector::~Detector() {
 }
 
 void Detector::setTo(Session& session) {
-  ASSERT(!isSetting) // TODO if passes, remove isSetting
-  if (isSetting) return;
-
-  session.sampleDetectorSpan = spinDistance->value();
-  session.pixSpan            = spinPixelSize->value();
-  session.middlePixXOffset   = spinOffsetX->value();
-  session.middlePixYOffset   = spinOffsetY->value();
-  session.hasBeamOffset      = checkIsBeamOffset->isChecked();
+  session.setGeometry(
+    spinDistance->value(),
+    spinPixelSize->value(),
+    checkIsBeamOffset->isChecked(),
+    QPoint(spinOffsetX->value(),spinOffsetY->value()));
 }
 
 void Detector::setFrom(Session& session) {
-  isSetting = true;
+  auto const& g = session.getGeometry();
 
-  spinDistance->setValue(session.sampleDetectorSpan);
-  spinPixelSize->setValue(session.pixSpan);
-  spinOffsetX->setValue(session.middlePixXOffset);
-  spinOffsetY->setValue(session.middlePixYOffset);
-  checkIsBeamOffset->setChecked(session.hasBeamOffset);
-
-  isSetting = false;
+  spinDistance->setValue(g.sampleDetectorSpan);
+  spinPixelSize->setValue(g.pixSpan);
+  checkIsBeamOffset->setChecked(g.hasBeamOffset);
+  spinOffsetX->setValue(g.middlePixOffset.x());
+  spinOffsetY->setValue(g.middlePixOffset.y());
 }
 
 void Detector::readSettings(Session& session) {
   Settings s(GROUP_DETECTOR);
-  s.read(KEY_DISTANCE,    spinDistance,     session.sampleDetectorSpan);
-  s.read(KEY_PIXEL_SIZE,  spinPixelSize,    session.pixSpan);
-  s.read(KEY_IS_OFFSET,   checkIsBeamOffset,session.hasBeamOffset);
-  s.read(KEY_OFFSET_X,    spinOffsetX,      session.middlePixXOffset);
-  s.read(KEY_OFFSET_Y,    spinOffsetY,      session.middlePixYOffset);
+  auto const& g = session.getGeometry();
+
+  s.read(KEY_DISTANCE,    spinDistance,     g.sampleDetectorSpan);
+  s.read(KEY_PIXEL_SIZE,  spinPixelSize,    g.pixSpan);
+  s.read(KEY_IS_OFFSET,   checkIsBeamOffset,g.hasBeamOffset);
+  s.read(KEY_OFFSET_X,    spinOffsetX,      g.middlePixOffset.x());
+  s.read(KEY_OFFSET_Y,    spinOffsetY,      g.middlePixOffset.y());
 }
 
 void Detector::saveSettings() {

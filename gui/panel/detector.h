@@ -19,7 +19,6 @@ private:
   QCheckBox      *checkIsBeamOffset;
   QSpinBox       *spinOffsetX, *spinOffsetY;
 
-  bool isSetting;
   void setTo(Session&);
   void setFrom(Session&);
 

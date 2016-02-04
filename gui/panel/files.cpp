@@ -49,6 +49,13 @@ void FileView::removeSelectedFile() {
   setCurrentIndex(index);
 }
 
+void FileView::update() {
+  auto index = currentIndex();
+  model.signalReset();
+  // keep the current index, or select the first item
+  setCurrentIndex(index.isValid() ? index : model.index(0));
+}
+
 //-----------------------------------------------------------------------------
 
 Files::Files(MainWin& mainWin_,Session& session_)
@@ -67,8 +74,7 @@ Files::Files(MainWin& mainWin_,Session& session_)
   });
 
   connect(&session, &Session::filesChanged, [this]() {
-    fileView->reset();
-    fileView->setCurrentIndex(session.fileViewModel.index(0)); // TODO untangle
+    fileView->update();
   });
 }
 

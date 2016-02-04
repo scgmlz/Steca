@@ -59,89 +59,91 @@ void Session::load(QByteArray const& json) THROWS {
 
   auto det = top["detector"].toObject();
 
-  sampleDetectorSpan = det["distance"].toDouble();
-  pixSpan            = det["pixel_size"].toDouble();
-  hasBeamOffset      = det["hasbeamoffset"].toBool();
-  middlePixXOffset   = det["offset_x"].toDouble();
-  middlePixYOffset   = det["offset_y"].toDouble();
+  setGeometry(
+    det["distance"].toDouble(),
+    det["pixel_size"].toDouble(),
+    det["hasbeamoffset"].toBool(),
+    QPoint(det["offset_x"].toDouble(),det["offset_y"].toDouble()));
 
   setImageRotate(core::ImageTransform(top["transform"].toInt()));
-
-  emit sessionLoaded();
 }
 
-// TODO mainwin passed to access transformation actions - rethink
 QByteArray Session::save() const {
-  QByteArray json;
 
-  QJsonObject top;
-
-  QJsonObject det;
-
-  det["distance"]     = sampleDetectorSpan;
-  det["pixel_size"]   = pixSpan;
-  det["isbeamoffset"] = hasBeamOffset;
-  det["offset_x"]     = middlePixXOffset;
-  det["offset_y"]     = middlePixYOffset;
-
-  top["detector"] = det;
+  auto const &g = getGeometry();
+  QJsonObject det {
+    { "distance",     g.sampleDetectorSpan  },
+    { "pixel_size",   g.pixSpan             },
+    { "isbeamoffset", g.hasBeamOffset       },
+    { "offset_x",     g.middlePixOffset.x() },
+    { "offset_y",     g.middlePixOffset.y() },
+  };
 
   QJsonArray files;
-
-  for (auto file: dataFiles) {
-    files.append(file->getInfo().absoluteFilePath());
+  for_i(numFiles()) {
+    files.append(getFile(i)->getInfo().absoluteFilePath());
   }
 
-  top["files"] = files;
-  if (!corrFile.isNull())
-    top["corr.file"] = corrFile->getInfo().absoluteFilePath();
+  auto const &ic = getImageCut();
+  QJsonObject cut {
+    { "top",    (int)ic.top     },
+    { "bottom", (int)ic.bottom  },
+    { "left",   (int)ic.left    },
+    { "right",  (int)ic.right   },
+  };
 
-  QJsonObject cut;
+  QJsonObject top {
+    { "detector",   det                 },
+    { "cut",        cut                 },
+    { "transform",  imageTransform.val  },
+    { "files",      files               },
+    { "corr.file",  hasCorrFile() ? getCorrFile()->getInfo().absoluteFilePath() : "" },
+  };
 
-  cut["top"]    = (int)imageCut.top;
-  cut["bottom"] = (int)imageCut.bottom;
-  cut["left"]   = (int)imageCut.left;
-  cut["right"]  = (int)imageCut.right;
-
-  top["cut"] = cut;
-  top["transform"] = imageTransform.val;
-
-  QJsonDocument doc(top);
-  return doc.toJson();
+  return QJsonDocument(top).toJson();
 }
 
 void Session::addFile(rcstr filePath) THROWS {
   WaitCursor __;
 
-  super::addFile(filePath);
-  emit filesChanged();
+  core::shp_File file = super::addFile(filePath);
+  if (!file.isNull()) {
+    emit fileAdded(file);
+    emit filesChanged();
+  }
 }
 
 void Session::addFiles(str_lst filePaths) THROWS {
   WaitCursor __;
 
   for (auto &filePath: filePaths)
-    super::addFile(filePath);
-  emit filesChanged();
+    addFile(filePath);
 }
 
 void Session::remFile(uint i) {
-  super::remFile(i);
+  if (hasCorrFile() && numFiles(true) == i+1) {
+    super::remCorrFile();
+    emit corrFileSet(core::shp_File());
+    emit filesChanged();
+  } else {
+    auto file = super::remFile(i);
+    emit fileRemoved(file);
+    emit filesChanged();
+  }
 
-  setSelectedFile(core::shp_File());
-  emit filesChanged();
-
-  if (0==numFiles(true))
+  if (0==numFiles(true)) {
     setImageCut(true,false,core::ImageCut());
+    setSelectedDataset(core::shp_Dataset());
+  }
 }
 
 void Session::loadCorrFile(rcstr filePath) {
-  super::loadCorrFile(filePath);
+  auto file = super::loadCorrFile(filePath);
+  emit corrFileSet(file);
   emit filesChanged();
 }
 
 void Session::setSelectedFile(core::shp_File file) {
-  setSelectedDataset(core::shp_Dataset());
   emit fileSelected(file);
 }
 
@@ -153,6 +155,11 @@ void Session::setImageCut(bool topLeft, bool linked, core::ImageCut const& image
   super::setImageCut(topLeft,linked,imageCut);
   calcIntensCorrArray();
   emit imageCutChanged();
+}
+
+void Session::setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset) {
+  super::setGeometry(sampleDetectorSpan,pixSpan,hasBeamOffset,middlePixOffset);
+  emit geometryChanged();
 }
 
 void Session::setImageMirror(bool on) {

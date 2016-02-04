@@ -4,9 +4,7 @@
 namespace core {
 
 Session::Session()
-: dataFiles(), imageSize()
-, pixSpan(0.01), sampleDetectorSpan(1.0) // TODO these must be reasonable limited
-, hasBeamOffset(false), middlePixXOffset(0), middlePixYOffset(0)
+: dataFiles(), corrFile(), imageSize(), geometry()
 , imageTransform(ImageTransform::NONE)
 , lastCalcTthMitte(0) {
 }
@@ -14,19 +12,29 @@ Session::Session()
 Session::~Session() {
 }
 
-uint Session::numFiles(bool withCorr) {
-  return dataFiles.count() + (withCorr && hasCorrFile() ? 1 : 0);
+uint Session::numFiles(bool withCorr) const {
+  return dataFiles.count() + (withCorr && !corrFile.isNull() ? 1 : 0);
 }
 
-void Session::addFile(rcstr fileName) THROWS {
-  if (fileName.isEmpty() || hasFile(fileName)) return; // be safe
+shp_File Session::addFile(rcstr fileName) THROWS {
+  if (fileName.isEmpty() || hasFile(fileName))
+    return shp_File(); // nichts zu tun
 
   shp_File file(new File(fileName));
   file->load();
 
   setImageSize(file->getImageSize());
 
+  // all ok
   dataFiles.append(file);
+  return file;
+}
+
+shp_File Session::remFile(uint i) {
+  shp_File file = dataFiles.at(i);
+  dataFiles.remove(i);
+  updateImageSize();
+  return file;
 }
 
 bool Session::hasFile(rcstr fileName) {
@@ -36,7 +44,7 @@ bool Session::hasFile(rcstr fileName) {
   return false;
 }
 
-shp_File const& Session::getFile(uint i) {
+shp_File Session::getFile(uint i) const {
   if ((uint)dataFiles.count() == i) {
     ASSERT(!corrFile.isNull())
     return corrFile;
@@ -45,29 +53,31 @@ shp_File const& Session::getFile(uint i) {
   }
 }
 
-void Session::remFile(uint i) {
-  if ((uint)dataFiles.count() == i) {
-    corrFile.clear();
-  } else {
-    dataFiles.remove(i);
+shp_File Session::loadCorrFile(rcstr fileName) {
+  if (fileName.isEmpty()) {
+    remCorrFile();
+    return shp_File();
   }
-
-  updateImageSize();
-}
-
-void Session::loadCorrFile(rcstr fileName) {
-  if (fileName.isEmpty()) return; // be safe
 
   shp_File file(new File(fileName));
   file->load();
   file->fold();
-  corrFile = file;
+
   setImageSize(file->getImageSize());
+
+  // all ok
+  corrFile = file;
   calcIntensCorrArray();
+  return file;
 }
 
-bool Session::hasCorrFile() const {
-  return !corrFile.isNull();
+void Session::remCorrFile() {
+  corrFile.clear();
+  updateImageSize();
+}
+
+shp_File Session::getCorrFile() const {
+  return corrFile;
 }
 
 void Session::setImageSize(QSize const& size) THROWS {
@@ -83,6 +93,20 @@ void Session::updateImageSize() {
     imageSize = QSize();
 }
 
+Session::Geometry::Geometry() {
+  sampleDetectorSpan  = 1.0;
+  pixSpan             = 0.01; // TODO these must be reasonable limited
+  hasBeamOffset       = false;
+  middlePixOffset     = QPoint();
+}
+
+void Session::setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset) {
+  geometry.sampleDetectorSpan = sampleDetectorSpan;
+  geometry.pixSpan            = pixSpan;
+  geometry.hasBeamOffset      = hasBeamOffset;
+  geometry.middlePixOffset    = middlePixOffset;
+}
+
 void Session::setImageMirror(bool on) {
   imageTransform = imageTransform.mirror(on);
 }
@@ -93,8 +117,8 @@ void Session::setImageRotate(core::ImageTransform rot) {
 
 QPoint Session::getPixMiddle(QSize const& imageSize) const {
   QPoint middle( // TODO hasBeamOffset
-    imageSize.width()  / 2 + middlePixXOffset,
-    imageSize.height() / 2 + middlePixYOffset);
+    imageSize.width()  / 2 + geometry.middlePixOffset.x(),
+    imageSize.height() / 2 + geometry.middlePixOffset.y());
   // TODO was: if ((tempPixMiddleX *[<=]* 0) || (tempPixMiddleX >= getWidth()))
   // TODO this limitation could be maybe lifted (think small angle X-ray scattering?)
   RUNTIME_CHECK(Range(0,imageSize.width()).contains(middle.x()), "bad pixMiddle");
@@ -109,35 +133,35 @@ Session::AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
 
   if (angleCorrArray.getSize() == imageSize
       && lastCalcTthMitte==tthMitte && lastPixMiddle == pixMiddle
-      && lastPixSpan == pixSpan && lastSampleDetectorSpan == sampleDetectorSpan
+      && lastPixSpan == geometry.pixSpan && lastSampleDetectorSpan == geometry.sampleDetectorSpan
       && lastImageCut == imageCut)
     return angleCorrArray;
 
   angleCorrArray.fill(imageSize);
 
   lastCalcTthMitte = tthMitte; lastPixMiddle = pixMiddle;
-  lastPixSpan = pixSpan; lastSampleDetectorSpan = sampleDetectorSpan;
+  lastPixSpan = geometry.pixSpan; lastSampleDetectorSpan = geometry.sampleDetectorSpan;
   lastImageCut = imageCut;
 
   ful.tth_regular.set(tthMitte);
   ful.tth_gamma0.set(tthMitte);
   ful.gamma.set(0);
 
-  ASSERT(pixSpan>0) // TODO
-  ASSERT(sampleDetectorSpan>0) // TODO
+  ASSERT(geometry.pixSpan>0) // TODO
+  ASSERT(geometry.sampleDetectorSpan>0) // TODO
 
   // Fill the Array
   for (int i = 0; i < imageSize.height(); i++) {
     int abstandInPixVertical = pixMiddle.y() - i;
-    qreal y = abstandInPixVertical * pixSpan;
+    qreal y = abstandInPixVertical * geometry.pixSpan;
     for (int j = 0; j < imageSize.width(); j++) {
       // TTH des Pixels berechnen
       int abstandInPixHorizontal = - pixMiddle.x() + j;
-      qreal x = abstandInPixHorizontal * pixSpan;
+      qreal x = abstandInPixHorizontal * geometry.pixSpan;
       qreal z = hypot(x,y);
-      qreal detektorAbstandPixel = hypot(z,sampleDetectorSpan);
-      qreal tthHorAktuell = tthMitte + atan(x / sampleDetectorSpan);
-      qreal detektorAbstandHorPixel = hypot(x,sampleDetectorSpan);
+      qreal detektorAbstandPixel = hypot(z,geometry.sampleDetectorSpan);
+      qreal tthHorAktuell = tthMitte + atan(x / geometry.sampleDetectorSpan);
+      qreal detektorAbstandHorPixel = hypot(x,geometry.sampleDetectorSpan);
       qreal h = cos(tthHorAktuell) * detektorAbstandHorPixel;
       qreal tthNeu = acos(h / detektorAbstandPixel);
 
@@ -186,7 +210,7 @@ Session::AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
 }
 
 void Session::calcIntensCorrArray() {
-  if (!hasCorrFile()) {
+  if (corrFile.isNull()) {
     intensCorrArray.clear();
     return;
   }

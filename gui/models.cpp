@@ -54,6 +54,11 @@ QVariant FileViewModel::data(QModelIndex const& index,int role) const {
   }
 }
 
+void FileViewModel::signalReset() {
+  beginResetModel();
+  endResetModel();    // emits a signal to connected views
+}
+
 //------------------------------------------------------------------------------
 
 DatasetViewModel::DatasetViewModel(Session& session)
