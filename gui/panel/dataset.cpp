@@ -151,7 +151,7 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
     setImageCut(false,value);
   });
 
-  connect(&session_, &Session::imageCutChanged, [this]() {
+  connect(&session_, &Session::geometryChanged, [this]() {
     auto cut = session.getImageCut();
 
     cutTop    ->setValue(cut.top);

@@ -40,8 +40,7 @@ public:
 
 // Session is the only one emitting signals (besides Qt gui widgets)
 signals:
-  void geometryChanged();
-  void imageCutChanged();
+  void geometryChanged();             // detector geometry, image cut, image rotation
 
   void corrFileSet(core::shp_File);   // may be null
 

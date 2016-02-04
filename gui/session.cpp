@@ -154,7 +154,7 @@ void Session::setSelectedDataset(core::shp_Dataset dataset) {
 void Session::setImageCut(bool topLeft, bool linked, core::ImageCut const& imageCut) {
   super::setImageCut(topLeft,linked,imageCut);
   calcIntensCorrArray();
-  emit imageCutChanged();
+  emit geometryChanged();
 }
 
 void Session::setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset) {
@@ -165,6 +165,7 @@ void Session::setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamO
 void Session::setImageMirror(bool on) {
   actImageMirror->setChecked(on);
   super::setImageMirror(on);
+  emit geometryChanged();
 }
 
 void Session::setImageRotate(core::ImageTransform rot) {
@@ -191,6 +192,7 @@ void Session::setImageRotate(core::ImageTransform rot) {
   actImageRotate->setIcon(QIcon(rotateIconFile));
   actImageMirror->setIcon(QIcon(mirrorIconFile));
   super::setImageRotate(rot);
+  emit geometryChanged();
 }
 
 void Session::nextImageRotate() {

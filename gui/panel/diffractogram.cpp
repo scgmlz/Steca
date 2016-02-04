@@ -92,10 +92,6 @@ Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
   connect(&session, &Session::geometryChanged, [this]() {
     this->refresh();
   });
-
-  connect(&session, &Session::imageCutChanged, [this]() {
-    this->refresh();
-  });
 }
 
 void Diffractogram::setDataset(core::shp_Dataset dataset_) {
