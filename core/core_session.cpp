@@ -100,6 +100,14 @@ Session::Geometry::Geometry() {
   middlePixOffset     = QPoint();
 }
 
+bool Session::Geometry::operator ==(Geometry const& that) const {
+  return
+    sampleDetectorSpan == that.sampleDetectorSpan &&
+    pixSpan            == that.pixSpan &&
+    hasBeamOffset      == that.hasBeamOffset &&
+    middlePixOffset    == that.middlePixOffset;
+}
+
 void Session::setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset) {
   geometry.sampleDetectorSpan = sampleDetectorSpan;
   geometry.pixSpan            = pixSpan;
@@ -133,14 +141,13 @@ Session::AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
 
   if (angleCorrArray.getSize() == imageSize
       && lastCalcTthMitte==tthMitte && lastPixMiddle == pixMiddle
-      && lastPixSpan == geometry.pixSpan && lastSampleDetectorSpan == geometry.sampleDetectorSpan
-      && lastImageCut == imageCut)
+      && lastGeometry == geometry && lastImageCut == imageCut)
     return angleCorrArray;
 
   angleCorrArray.fill(imageSize);
 
   lastCalcTthMitte = tthMitte; lastPixMiddle = pixMiddle;
-  lastPixSpan = geometry.pixSpan; lastSampleDetectorSpan = geometry.sampleDetectorSpan;
+  lastGeometry = geometry;
   lastImageCut = imageCut;
 
   ful.tth_regular.set(tthMitte);

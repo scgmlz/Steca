@@ -44,6 +44,8 @@ private:
 public: // detector geometry
   struct Geometry {
     Geometry();
+    bool operator ==(Geometry const&) const;
+
     // TODO rename "span" -> ...
     qreal sampleDetectorSpan; // the distance between sample - detector // TODO verify: in adhoc has at least three names: sampleDetectorSpan, detectorSampleSpan, detectorSampleDistance
     qreal pixSpan;            // size of the detector pixel
@@ -73,7 +75,7 @@ protected: // corrections TODO make private
 
   // TODO cashing of calcAngle...
   qreal lastCalcTthMitte; QPoint lastPixMiddle;
-  qreal lastPixSpan, lastSampleDetectorSpan;
+  Geometry lastGeometry;
   ImageCut lastImageCut;
 
 public:
