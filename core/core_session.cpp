@@ -210,6 +210,8 @@ Session::AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
 }
 
 void Session::calcIntensCorrArray() {
+  hasNaNs = false;
+
   if (corrFile.isNull()) {
     intensCorrArray.clear();
     return;
@@ -231,8 +233,15 @@ void Session::calcIntensCorrArray() {
   intensCorrArray.fill(1,imageSize);
   for (uint x=imageCut.left; x<imageSize.width()-imageCut.right; ++x)
     for (uint y=imageCut.top; y<imageSize.height()-imageCut.bottom; ++y) {
-      qreal val = avg / image.intensity(imageTransform,x,y); // TODO /0 -> inf -> nan
-      if (qIsInf(val)) val = 1; // TODO verify
+      auto intens = image.intensity(imageTransform,x,y);
+      qreal val;
+
+      if (intens>0) {
+        val = avg / intens;
+      } else {
+        val = qQNaN(); hasNaNs = true;
+      }
+
       intensCorrArray.setIntensity(imageTransform,x,y,val);
     }
 }

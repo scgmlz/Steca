@@ -81,7 +81,8 @@ public:
 
 public: // TODO not public
   Image intensCorrArray;  // summed corrFile intensities
-  void calcIntensCorrArray();
+  bool  hasNaNs;
+  void  calcIntensCorrArray();
 
   Borders const& getCut() const { return cut; }
 

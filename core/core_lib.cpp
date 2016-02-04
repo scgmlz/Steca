@@ -17,7 +17,7 @@ Range::Range(qreal min, qreal max) {
 }
 
 void Range::invalidate() {
-  set(qSNaN());
+  set(qQNaN());
 }
 
 bool Range::isInvalid() const {
