@@ -54,15 +54,21 @@ void DiffractogramPlotOverlay::updateCursorRegion() {
 
 DiffractogramPlot::DiffractogramPlot() {
   overlay = new DiffractogramPlotOverlay(*this);
-  xAxis->setLabel("2θ");
-  yAxis->setLabel("I");
+
+  QFontMetrics fm(font());
+  int em = fm.width('M'), a = fm.ascent();
+
+  auto *ar = axisRect();
+  ar->setAutoMargins(QCP::msNone);
+  ar->setMargins(QMargins(3*em,a,em,2*a));
 }
 
 void DiffractogramPlot::plot(Dgram const& dgram) {
   clearGraphs();
   if (dgram.isEmpty()) {
-    this->clearPlottables();
+    setVisible(false);
   } else {
+    setVisible(true);
     xAxis->setRange(dgram.tth.first(),dgram.tth.last());
     yAxis->setRange(0,dgram.maxInten);
     auto graph = addGraph();

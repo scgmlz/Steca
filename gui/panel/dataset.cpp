@@ -9,7 +9,6 @@ namespace panel {
 
 ImageWidget::ImageWidget(Dataset& dataset_)
 : dataset(dataset_), showOverlay(false) {
-//  setMinimumSize(16,16);  // so it does not completely disappear
   setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 }
 
@@ -26,17 +25,6 @@ void ImageWidget::setShowOverlay(bool on) {
 
 QSize ImageWidget::sizeHint() const {
   return scaled.size();
-}
-
-void ImageWidget::resizeEvent(QResizeEvent* e) {
-  super::resizeEvent(e);
-//  auto h = height();
-//  if (h != lastHeight) {
-//    auto r = geometry();
-//    r.setWidth(h);
-//    setGeometry(r);
-//    updateGeometry(); // TODO on Mac stays a while, then changes
-//  }
 }
 
 void ImageWidget::paintEvent(QPaintEvent*) {

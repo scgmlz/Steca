@@ -25,7 +25,6 @@ public:
 protected:
   Dataset &dataset;
 
-  void resizeEvent(QResizeEvent*);
   void paintEvent(QPaintEvent*);
 
   QPixmap original, scaled;
