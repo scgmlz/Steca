@@ -60,7 +60,7 @@ void MainWin::initActions() {
   actAddFiles           = simple("Add files...",          ":/icon/add", keys.keyAddFiles);
   actRemoveFile         = simple("Remove selected file",  ":/icon/rem", keys.keyDeleteFile);
   actLoadCorrectionFile = simple("load correction file...","",          keys.keyLoadCorrectionFile);
-  actOpenSession        = simple("Open session...");
+  actLoadSession        = simple("Load session...");
   actSaveSession        = simple("Save session...");
 
   actExportDiffractogramCurrent           = simple("Current only...");
@@ -143,7 +143,7 @@ void MainWin::initMenus() {
     separator(),
     actLoadCorrectionFile,
     separator(),
-    actOpenSession, actSaveSession,actOpenSession
+    actLoadSession, actSaveSession,actLoadSession
   });
 
   QMenu *menuExportDiffractograms = new QMenu("Export diffractograms",this);
@@ -259,7 +259,7 @@ void MainWin::connectActions() {
 
   onTrigger(actLoadCorrectionFile,  &MainWin::loadCorrectionFile);
 
-  onTrigger(actOpenSession, &MainWin::loadSession);
+  onTrigger(actLoadSession, &MainWin::loadSession);
   onTrigger(actSaveSession, &MainWin::saveSession);
 
   NOT_YET(actExportDiffractogramCurrent);

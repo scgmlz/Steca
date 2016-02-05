@@ -55,25 +55,33 @@ void DiffractogramPlotOverlay::updateCursorRegion() {
 DiffractogramPlot::DiffractogramPlot() {
   overlay = new DiffractogramPlotOverlay(*this);
 
-  QFontMetrics fm(font());
-  int em = fm.width('M'), a = fm.ascent();
+  // allocate margins
+  QFontMetrics fontMetrics(font());
+  int em = fontMetrics.width('M'), ascent = fontMetrics.ascent();
 
-  auto *ar = axisRect();
-  ar->setAutoMargins(QCP::msNone);
-  ar->setMargins(QMargins(3*em,a,em,2*a));
+  auto *r = axisRect();
+  r->setAutoMargins(QCP::msNone);
+  r->setMargins(QMargins(3*em,ascent,em,2*ascent));
+
+  // one graph
+  graph = addGraph();
 }
 
 void DiffractogramPlot::plot(Dgram const& dgram) {
-  clearGraphs();
   if (dgram.isEmpty()) {
-    setVisible(false);
+    xAxis->setVisible(false);
+    yAxis->setVisible(false);
+
+    graph->clearData();
   } else {
-    setVisible(true);
     xAxis->setRange(dgram.tth.first(),dgram.tth.last());
     yAxis->setRange(0,dgram.maxInten);
-    auto graph = addGraph();
+    xAxis->setVisible(true);
+    yAxis->setVisible(true);
+
     graph->setData(dgram.tth,dgram.inten);
   }
+
   replot();
 }
 

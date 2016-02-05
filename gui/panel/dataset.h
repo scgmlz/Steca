@@ -19,29 +19,32 @@ public:
 
   void setPixmap(QPixmap const&);
   void setShowOverlay(bool);
+  void setScale(uint);
 
   QSize sizeHint() const;
 
 protected:
   Dataset &dataset;
+  bool showOverlay;
+  QPixmap original, scaled;
+  uint scale;
 
   void paintEvent(QPaintEvent*);
-
-  QPixmap original, scaled;
-  QPointF scale;
-
-  bool showOverlay;
 };
 
 class DatasetOptions: public BoxPanel {
-  SUPER(DatasetOptions,BoxPanel)
+  SUPER(DatasetOptions,BoxPanel) Q_OBJECT
 public:
   DatasetOptions(MainWin&,Session&);
 
+signals:
+  void imageScale(uint);
+
 private:
-  QSpinBox  *cutTop, *cutBottom, *cutLeft, *cutRight;
-  QCheckBox *checkIsBeamOffset;
-  QSpinBox  *spinOffsetX, *spinOffsetY;
+  QSpinBox      *cutTop, *cutBottom, *cutLeft, *cutRight;
+  QCheckBox     *checkIsBeamOffset;
+  QSpinBox      *spinOffsetX, *spinOffsetY;
+  QRadioButton  *scale1, *scale2, *scale3;
 
   void setTo(Session&);
   void setFrom(Session&);
@@ -54,6 +57,8 @@ class Dataset: public BoxPanel {
   SUPER(Dataset,BoxPanel)
 public:
   Dataset(MainWin&,Session&);
+
+  void setImageScale(uint);
 
 private:
   QPixmap makePixmap(core::Image const&,core::Range rgeIntens,core::Image* corr);

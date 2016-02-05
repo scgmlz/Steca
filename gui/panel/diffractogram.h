@@ -48,6 +48,7 @@ protected:
   void resizeEvent(QResizeEvent*);
 
 private:
+  QCPGraph *graph;
   DiffractogramPlotOverlay *overlay;
 };
 

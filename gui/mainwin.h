@@ -49,7 +49,7 @@ public:
   QAction
     *actAddFiles, *actRemoveFile,
     *actLoadCorrectionFile,
-    *actOpenSession, *actSaveSession,
+    *actLoadSession, *actSaveSession,
 
     *actExportDiffractogramCurrent,
     *actExportDiffractogramAllSeparateFiles,

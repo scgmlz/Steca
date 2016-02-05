@@ -8,14 +8,13 @@
 namespace panel {
 
 ImageWidget::ImageWidget(Dataset& dataset_)
-: dataset(dataset_), showOverlay(false) {
+: dataset(dataset_), showOverlay(false), scale(2) {
   setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 }
 
 void ImageWidget::setPixmap(QPixmap const& pixmap) {
-  scaled = original = pixmap;
-  updateGeometry();
-  update();
+  original = pixmap;
+  setScale(scale);
 }
 
 void ImageWidget::setShowOverlay(bool on) {
@@ -23,47 +22,37 @@ void ImageWidget::setShowOverlay(bool on) {
   update();
 }
 
+void ImageWidget::setScale(uint scale_) {
+  ASSERT(scale_ > 0)
+  scale = scale_;
+
+  scaled = original.scaled(original.size()*scale);
+  updateGeometry();
+  update();
+}
+
 QSize ImageWidget::sizeHint() const {
-  return scaled.size();
+  return scaled.size() + QSize(2,2);
 }
 
 void ImageWidget::paintEvent(QPaintEvent*) {
-//  if (lastPaintSize!=size()) {
-//    lastPaintSize = size();
-
-//    if (original.isNull()) {
-//      scaled = original;
-//      scale.setX(0); scale.setY(0);
-//    } else {
-//      // retransform
-//      scaled = original.scaled(width()-2,height()-2,Qt::IgnoreAspectRatio,Qt::FastTransformation);
-
-//      auto h = scaled.height(), w = scaled.width();
-
-//      scale.setX((qreal)w  / original.width());
-//      scale.setY((qreal)h  / original.height());
-//    }
-//  }
-
   QPainter painter(this);
-
-  QRect r = rect();
-  r.adjust(0,0,-1,-1);
 
   // frame
   painter.setPen(Qt::black);
-  painter.drawRect(r);
+  painter.drawRect(rect().adjusted(0,0,-1,-1));
 
   // image
   painter.drawPixmap(1,1,scaled);
 
-  // overlay
+  // overlay follows
   if (!showOverlay) return;
 
   // cut
   auto cut = dataset.getSession().getImageCut();
-  r.adjust(qRound(scale.x()*cut.left),  qRound(scale.y()*cut.top),
-          -qRound(scale.x()*cut.right),-qRound(scale.y()*cut.bottom));
+  QRect r = rect()
+    .adjusted(1,1,-2,-2)
+    .adjusted(scale*cut.left,scale*cut.top,-scale*cut.right,-scale*cut.bottom);
 
   painter.setPen(Qt::lightGray);
   painter.drawRect(r);
@@ -113,6 +102,14 @@ DatasetOptions::DatasetOptions(MainWin& mainWin_, Session& session_)
   go->setColumnStretch(3,1);
 
   box->addLayout(go);
+
+  auto sz = hbox();
+  sz->addWidget((scale1 = radioButton("1")));
+  sz->addWidget((scale2 = radioButton("2")));
+  sz->addWidget((scale3 = radioButton("3")));
+
+  box->addLayout(sz);
+
   box->addStretch();
 
   auto setImageCut = [this](bool topLeft, int value) {
@@ -169,6 +166,18 @@ DatasetOptions::DatasetOptions(MainWin& mainWin_, Session& session_)
 
   connect(spinOffsetY, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this]() {
     setTo(session);
+  });
+
+  connect(scale1, &QRadioButton::clicked, [this]() {
+    emit imageScale(1);
+  });
+
+  connect(scale2, &QRadioButton::clicked, [this]() {
+    emit imageScale(2);
+  });
+
+  connect(scale3, &QRadioButton::clicked, [this]() {
+    emit imageScale(3);
   });
 }
 
@@ -237,6 +246,10 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
   connect(&session, &Session::geometryChanged, [this]() {
     refresh();
   });
+}
+
+void Dataset::setImageScale(uint scale) {
+  imageWidget->setScale(scale);
 }
 
 QPixmap Dataset::makePixmap(core::Image const& image, core::Range rgeIntens,
