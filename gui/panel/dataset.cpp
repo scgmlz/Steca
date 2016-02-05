@@ -1,6 +1,7 @@
 #include "dataset.h"
 #include "mainwin.h"
 #include "session.h"
+#include "settings.h"
 #include <QPainter>
 #include <QAction>
 
@@ -8,11 +9,13 @@ namespace panel {
 
 ImageWidget::ImageWidget(Dataset& dataset_)
 : dataset(dataset_), showOverlay(false) {
-  setMinimumSize(16,16);  // so it does not completely disappear
+//  setMinimumSize(16,16);  // so it does not completely disappear
+  setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 }
 
 void ImageWidget::setPixmap(QPixmap const& pixmap) {
-  original = pixmap;
+  scaled = original = pixmap;
+  updateGeometry();
   update();
 }
 
@@ -22,38 +25,37 @@ void ImageWidget::setShowOverlay(bool on) {
 }
 
 QSize ImageWidget::sizeHint() const {
-  lastHeight = height();
-  return QSize(lastHeight,lastHeight);
+  return scaled.size();
 }
 
 void ImageWidget::resizeEvent(QResizeEvent* e) {
   super::resizeEvent(e);
-  auto h = height();
-  if (h != lastHeight) {
-    auto r = geometry();
-    r.setWidth(h);
-    setGeometry(r);
-    updateGeometry(); // TODO on Mac stays a while, then changes
-  }
+//  auto h = height();
+//  if (h != lastHeight) {
+//    auto r = geometry();
+//    r.setWidth(h);
+//    setGeometry(r);
+//    updateGeometry(); // TODO on Mac stays a while, then changes
+//  }
 }
 
 void ImageWidget::paintEvent(QPaintEvent*) {
-  if (lastPaintSize!=size()) {
-    lastPaintSize = size();
+//  if (lastPaintSize!=size()) {
+//    lastPaintSize = size();
 
-    if (original.isNull()) {
-      scaled = original;
-      scale.setX(0); scale.setY(0);
-    } else {
-      // retransform
-      scaled = original.scaled(width()-2,height()-2,Qt::IgnoreAspectRatio,Qt::FastTransformation);
+//    if (original.isNull()) {
+//      scaled = original;
+//      scale.setX(0); scale.setY(0);
+//    } else {
+//      // retransform
+//      scaled = original.scaled(width()-2,height()-2,Qt::IgnoreAspectRatio,Qt::FastTransformation);
 
-      auto h = scaled.height(), w = scaled.width();
+//      auto h = scaled.height(), w = scaled.width();
 
-      scale.setX((qreal)w  / original.width());
-      scale.setY((qreal)h  / original.height());
-    }
-  }
+//      scale.setX((qreal)w  / original.width());
+//      scale.setY((qreal)h  / original.height());
+//    }
+//  }
 
   QPainter painter(this);
 
@@ -79,54 +81,51 @@ void ImageWidget::paintEvent(QPaintEvent*) {
   painter.drawRect(r);
 }
 
-void ImageWidget::update() {
-  lastPaintSize = QSize();
-  super::update();
-}
-
 //------------------------------------------------------------------------------
 
-Dataset::Dataset(MainWin& mainWin_, Session& session_)
-: super("",mainWin_,session_,Qt::Vertical), dataset(nullptr), globalNorm(false) {
-  auto bb = hbox(); // (b)ottom (b)uttons
-
-  bb->addWidget(check("gl. normalize",mainWin.actImagesGlobalNorm));
-  bb->addWidget(icon(":/icon/top"));
-  bb->addWidget((cutTop = spinCell(4,0)));
-  bb->addWidget(icon(":/icon/bottom"));
-  bb->addWidget((cutBottom = spinCell(4,0)));
-  bb->addWidget(icon(":/icon/left"));
-  bb->addWidget((cutLeft = spinCell(4,0)));
-  bb->addWidget(icon(":/icon/right"));
-  bb->addWidget((cutRight = spinCell(4,0)));
-  bb->addWidget(iconButton(mainWin.actImagesLink));
-  bb->addStretch();
-  bb->addWidget(iconButton(mainWin.actImagesEye));
-
-  auto sb = vbox(); // (s)ide   (b)uttons
-
-  sb->addWidget(iconButton(mainWin.actImagesShowRaw));
-  sb->addStretch();
-  sb->addWidget(iconButton(session.actImageMirror));
-  sb->addWidget(iconButton(session.actImageRotate));
+DatasetOptions::DatasetOptions(MainWin& mainWin_, Session& session_)
+: super ("Options",mainWin_,session_,Qt::Vertical) {
 
   auto hb = hbox();
-  hb->addWidget(imageWidget = new ImageWidget(*this),0,0);
-  hb->addLayout(sb);
+
+  hb->addWidget(iconButton(session.actImageRotate));
+  hb->addWidget(iconButton(session.actImageMirror));
+  hb->addSpacing(1);
+  hb->addWidget(iconButton(mainWin.actImagesShowRaw));
+  hb->addWidget(iconButton(mainWin.actImageOverlay));
+  hb->addStretch();
+
+  auto gc = gridLayout();
+
+  gc->addWidget(icon(":/icon/top"),                 0,0);
+  gc->addWidget((cutTop = spinCell(4,0)),           0,1);
+  gc->addWidget(icon(":/icon/bottom"),              1,0);
+  gc->addWidget((cutBottom = spinCell(4,0)),        1,1);
+  gc->addWidget(icon(":/icon/left"),                2,0);
+  gc->addWidget((cutLeft = spinCell(4,0)),          2,1);
+  gc->addWidget(icon(":/icon/right"),               3,0);
+  gc->addWidget((cutRight = spinCell(4,0)),         3,1);
+  gc->addWidget(iconButton(mainWin.actImagesLink),  4,0);
+  gc->setColumnStretch(2,1);
 
   box->addLayout(hb);
-  box->addLayout(bb);
+  box->addLayout(gc);
 
-  connect(&session, &Session::corrFileSet, [this](core::shp_File file){
-    bool on  = !file.isNull();
-    auto act = mainWin.actImagesShowRaw;
-    if (!on) act->setChecked(false);
-    act->setEnabled(on);
-  });
+  box->addWidget(check("gl. norm.",mainWin.actImagesGlobalNorm));
 
-  connect(mainWin.actImagesShowRaw, &QAction::toggled, [this](bool) {
-    refresh();
-  });
+  box->addWidget((checkIsBeamOffset = check("Beamctr. offset")));
+
+  auto go = gridLayout();
+  go->addWidget(label("X"),                         0,0);
+  go->addWidget((spinOffsetX = spinCell(4,0)),      0,1);
+  go->addWidget(label("pix"),                       0,2);
+  go->addWidget(label("Y"),                         1,0);
+  go->addWidget((spinOffsetY = spinCell(4,0)),      1,1);
+  go->addWidget(label("pix"),                       1,2);
+  go->setColumnStretch(3,1);
+
+  box->addLayout(go);
+  box->addStretch();
 
   auto setImageCut = [this](bool topLeft, int value) {
     if (mainWin.actImagesLink->isChecked())
@@ -151,22 +150,92 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
     setImageCut(false,value);
   });
 
-  connect(&session_, &Session::geometryChanged, [this]() {
+  connect(&session, &Session::geometryChanged, [this]() {
     auto cut = session.getImageCut();
 
     cutTop    ->setValue(cut.top);
     cutBottom ->setValue(cut.bottom);
     cutLeft   ->setValue(cut.left);
     cutRight  ->setValue(cut.right);
+  });
 
+  auto setEnabled = [this]() {
+    bool on = checkIsBeamOffset->isChecked();
+    spinOffsetX->setEnabled(on);
+    spinOffsetY->setEnabled(on);
+  };
+
+  connect(checkIsBeamOffset, &QCheckBox::toggled, [setEnabled]() {
+    setEnabled();
+  });
+
+  setEnabled();
+
+  connect(checkIsBeamOffset, &QCheckBox::toggled, [this]() {
+    setTo(session);
+  });
+
+  connect(spinOffsetX, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this]() {
+    setTo(session);
+  });
+
+  connect(spinOffsetY, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this]() {
+    setTo(session);
+  });
+}
+
+void DatasetOptions::setTo(Session& session) {
+  session.setBeamGeometry(
+    checkIsBeamOffset->isChecked(),
+    QPoint(spinOffsetX->value(),spinOffsetY->value()));
+}
+
+void DatasetOptions::setFrom(Session& session) {
+  auto const& g = session.getGeometry();
+
+  checkIsBeamOffset->setChecked(g.hasBeamOffset);
+  spinOffsetX->setValue(g.middlePixOffset.x());
+  spinOffsetY->setValue(g.middlePixOffset.y());
+}
+
+static str GROUP_BEAM("Beam");
+static str KEY_IS_OFFSET("is_offset");
+static str KEY_OFFSET_X("offset_x");
+static str KEY_OFFSET_Y("offset_y");
+
+void DatasetOptions::readSettings(Session& session) {
+  Settings s(GROUP_BEAM);
+  auto const& g = session.getGeometry();
+
+  s.read(KEY_IS_OFFSET,   checkIsBeamOffset,g.hasBeamOffset);
+  s.read(KEY_OFFSET_X,    spinOffsetX,      g.middlePixOffset.x());
+  s.read(KEY_OFFSET_Y,    spinOffsetY,      g.middlePixOffset.y());
+}
+
+void DatasetOptions::saveSettings() {
+  Settings s(GROUP_BEAM);
+
+  s.save(KEY_IS_OFFSET,   checkIsBeamOffset);
+  s.save(KEY_OFFSET_X,    spinOffsetX);
+  s.save(KEY_OFFSET_Y,    spinOffsetY);
+}
+
+//------------------------------------------------------------------------------
+
+Dataset::Dataset(MainWin& mainWin_, Session& session_)
+: super("",mainWin_,session_,Qt::Vertical), dataset(nullptr), globalNorm(false) {
+
+  box->addWidget(imageWidget = new ImageWidget(*this),0,Qt::AlignCenter);
+
+  connect(mainWin.actImagesShowRaw, &QAction::toggled, [this](bool) {
     refresh();
   });
 
-  connect(mainWin.actImagesEye, &QAction::toggled, [this](bool on) {
+  connect(mainWin.actImageOverlay, &QAction::toggled, [this](bool on) {
     imageWidget->setShowOverlay(on);
   });
 
-  mainWin.actImagesEye->setChecked(true);
+  mainWin.actImageOverlay->setChecked(true);
 
   connect(mainWin.actImagesGlobalNorm, &QAction::toggled, [this](bool on) {
     globalNorm = on;
@@ -177,13 +246,7 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
     setDataset(dataset);
   });
 
-  connect(session.actImageMirror, &QAction::toggled, [this](bool on) {
-    session.setImageMirror(on);
-    refresh();
-  });
-
-  connect(session.actImageRotate, &QAction::triggered, [this]() {
-    session.nextImageRotate();
+  connect(&session, &Session::geometryChanged, [this]() {
     refresh();
   });
 }

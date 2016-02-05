@@ -96,7 +96,7 @@ void MainWin::initActions() {
   actReflectionAdd        = simple("Width",         ":/icon/add");
 
   actImagesLink           = toggle("Link",          ":/icon/link");
-  actImagesEye            = toggle("eye",           ":/icon/eye");
+  actImageOverlay         = toggle("overlay",       ":/icon/eye");
   actImagesGlobalNorm     = toggle("global nm.");
   actImagesShowRaw        = toggle("show w/o corr", ":/icon/eye");  // TODO different icon
   session->actImageRotate = simple("Rotate", ":/icon/rotate0");
@@ -104,6 +104,22 @@ void MainWin::initActions() {
 
   actBackgroundBackground = simple("Background",    ":/icon/background");
   actBackgroundEye        = simple("BackgroundEye", ":/icon/eye");
+
+  // TODO where to best put these actions updates?
+  connect(session, &Session::corrFileSet, [this](core::shp_File file){
+    bool on  = !file.isNull();
+    auto act = actImagesShowRaw;
+    if (!on) act->setChecked(false);
+    act->setEnabled(on);
+  });
+
+  connect(session->actImageMirror, &QAction::toggled, [this](bool on) {
+    session->setImageMirror(on);
+  });
+
+  connect(session->actImageRotate, &QAction::triggered, [this]() {
+    session->nextImageRotate();
+  });
 }
 
 void MainWin::initMenus() {

@@ -28,7 +28,7 @@ public:
 
   /// make empty
   void clear() {
-    fill(T(),QSize());
+    fill(T(),QSize(0,0));
   }
 
   /// allocate with a value

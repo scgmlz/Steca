@@ -90,7 +90,7 @@ void Session::setImageSize(QSize const& size) THROWS {
 
 void Session::updateImageSize() {
   if (0 == numFiles(true))
-    imageSize = QSize();
+    imageSize = QSize(0,0);
 }
 
 Session::Geometry::Geometry() {
@@ -108,9 +108,12 @@ bool Session::Geometry::operator ==(Geometry const& that) const {
     middlePixOffset    == that.middlePixOffset;
 }
 
-void Session::setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset) {
+void Session::setDetectorGeometry(qreal sampleDetectorSpan, qreal pixSpan) {
   geometry.sampleDetectorSpan = sampleDetectorSpan;
   geometry.pixSpan            = pixSpan;
+}
+
+void Session::setBeamGeometry(bool hasBeamOffset, QPoint const& middlePixOffset) {
   geometry.hasBeamOffset      = hasBeamOffset;
   geometry.middlePixOffset    = middlePixOffset;
 }
@@ -154,62 +157,69 @@ Session::AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
   ful.tth_gamma0.set(tthMitte);
   ful.gamma.set(0);
 
-  ASSERT(geometry.pixSpan>0) // TODO
-  ASSERT(geometry.sampleDetectorSpan>0) // TODO
+  if (imageSize.isEmpty()) {
+    // TODO set to something - needed? or invalidate() ?
+    cut.gamma.set(0);
+    cut.tth_regular.set(0);
+    cut.tth_gamma0.set(0);
+  } else {
+    ASSERT(geometry.pixSpan>0) // TODO
+    ASSERT(geometry.sampleDetectorSpan>0) // TODO
 
-  // Fill the Array
-  for (int i = 0; i < imageSize.height(); i++) {
-    int abstandInPixVertical = pixMiddle.y() - i;
-    qreal y = abstandInPixVertical * geometry.pixSpan;
-    for (int j = 0; j < imageSize.width(); j++) {
-      // TTH des Pixels berechnen
-      int abstandInPixHorizontal = - pixMiddle.x() + j;
-      qreal x = abstandInPixHorizontal * geometry.pixSpan;
-      qreal z = hypot(x,y);
-      qreal detektorAbstandPixel = hypot(z,geometry.sampleDetectorSpan);
-      qreal tthHorAktuell = tthMitte + atan(x / geometry.sampleDetectorSpan);
-      qreal detektorAbstandHorPixel = hypot(x,geometry.sampleDetectorSpan);
-      qreal h = cos(tthHorAktuell) * detektorAbstandHorPixel;
-      qreal tthNeu = acos(h / detektorAbstandPixel);
+    // Fill the Array
+    for (int i = 0; i < imageSize.height(); i++) {
+      int abstandInPixVertical = pixMiddle.y() - i;
+      qreal y = abstandInPixVertical * geometry.pixSpan;
+      for (int j = 0; j < imageSize.width(); j++) {
+        // TTH des Pixels berechnen
+        int abstandInPixHorizontal = - pixMiddle.x() + j;
+        qreal x = abstandInPixHorizontal * geometry.pixSpan;
+        qreal z = hypot(x,y);
+        qreal detektorAbstandPixel = hypot(z,geometry.sampleDetectorSpan);
+        qreal tthHorAktuell = tthMitte + atan(x / geometry.sampleDetectorSpan);
+        qreal detektorAbstandHorPixel = hypot(x,geometry.sampleDetectorSpan);
+        qreal h = cos(tthHorAktuell) * detektorAbstandHorPixel;
+        qreal tthNeu = acos(h / detektorAbstandPixel);
 
-      // Gamma des Pixels berechnen
-      qreal r = sqrt((detektorAbstandPixel * detektorAbstandPixel) - (h * h));
-      qreal gamma = asin(y / r);
+        // Gamma des Pixels berechnen
+        qreal r = sqrt((detektorAbstandPixel * detektorAbstandPixel) - (h * h));
+        qreal gamma = asin(y / r);
 
-      // Check: if tthNeu negativ
-      if (tthHorAktuell < 0) {
-        tthNeu *= -1;
-        gamma *= -1;
+        // Check: if tthNeu negativ
+        if (tthHorAktuell < 0) {
+          tthNeu *= -1;
+          gamma *= -1;
+        }
+
+        // Maxima und minima setzen
+        ful.gamma.extend(gamma);
+        ful.tth_regular.extend(tthNeu);
+        ful.tth_gamma0.extend(tthHorAktuell);
+
+        // Write angle in array
+        angleCorrArray.setAt(j,i,Pixpos(gamma,tthNeu));
       }
-
-      // Maxima und minima setzen
-      ful.gamma.extend(gamma);
-      ful.tth_regular.extend(tthNeu);
-      ful.tth_gamma0.extend(tthHorAktuell);
-
-      // Write angle in array
-      angleCorrArray.setAt(j,i,Pixpos(gamma,tthNeu));
     }
-  }
 
-  // Calculate Gamma and TTH after cut
-  // TODO the original code called setPixCut - is used elsewhere?
-  // TODO refactor
-  int arrayMiddleX = imageCut.left + imageCut.getWidth(imageSize.width())   / 2;
-  int arrayMiddleY = imageCut.top  + imageCut.getHeight(imageSize.height()) / 2;
+    // Calculate Gamma and TTH after cut
+    // TODO the original code called setPixCut - is used elsewhere?
+    // TODO refactor
+    int arrayMiddleX = imageCut.left + imageCut.getWidth(imageSize.width())   / 2;
+    int arrayMiddleY = imageCut.top  + imageCut.getHeight(imageSize.height()) / 2;
 
-  auto middlePoint = angleCorrArray.at(arrayMiddleX,arrayMiddleY);
-  cut.gamma.set(middlePoint.gammaPix);
-  cut.tth_regular.set(middlePoint.tthPix);
-  cut.tth_gamma0.safeSet(
-    angleCorrArray.at(imageSize.width() - 1 - imageCut.right,pixMiddle.y()).tthPix,
-    angleCorrArray.at(imageCut.left,pixMiddle.y()).tthPix);
+    auto middlePoint = angleCorrArray.at(arrayMiddleX,arrayMiddleY);
+    cut.gamma.set(middlePoint.gammaPix);
+    cut.tth_regular.set(middlePoint.tthPix);
+    cut.tth_gamma0.safeSet(
+      angleCorrArray.at(imageSize.width() - 1 - imageCut.right,pixMiddle.y()).tthPix,
+      angleCorrArray.at(imageCut.left,pixMiddle.y()).tthPix);
 
-  for (uint i = imageCut.left; i < imageSize.width() - imageCut.right; i++) {
-    for (uint j = imageCut.top; j < imageSize.height() - imageCut.bottom; j++) {
-      auto ac = angleCorrArray.at(i,j);
-      cut.gamma.extend(ac.gammaPix);
-      cut.tth_regular.extend(ac.tthPix);
+    for (uint i = imageCut.left; i < imageSize.width() - imageCut.right; i++) {
+      for (uint j = imageCut.top; j < imageSize.height() - imageCut.bottom; j++) {
+        auto ac = angleCorrArray.at(i,j);
+        cut.gamma.extend(ac.gammaPix);
+        cut.tth_regular.extend(ac.tthPix);
+      }
     }
   }
 

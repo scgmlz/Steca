@@ -61,8 +61,7 @@ DiffractogramPlot::DiffractogramPlot() {
 void DiffractogramPlot::plot(Dgram const& dgram) {
   clearGraphs();
   if (dgram.isEmpty()) {
-    xAxis->setRange(0,1);
-    yAxis->setRange(0,1);
+    this->clearPlottables();
   } else {
     xAxis->setRange(dgram.tth.first(),dgram.tth.last());
     yAxis->setRange(0,dgram.maxInten);

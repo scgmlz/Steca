@@ -1,6 +1,9 @@
 TARGET   = tests
 TEMPLATE = app
 
+CONFIG  += thread rtti exceptions c++11
+CONFIG  += silent warn_on
+
 QT += testlib
 
 SOURCES += \

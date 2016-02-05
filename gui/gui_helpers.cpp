@@ -22,7 +22,7 @@ QBoxLayout *boxLayout(Qt::Orientation orientation) {
 
 QGridLayout *gridLayout() {
   return new QGridLayout;
-  }
+}
 
 QLabel *icon(rcstr fileName) {
   auto label = new QLabel;

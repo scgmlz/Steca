@@ -30,7 +30,8 @@ public:
   void setSelectedDataset(core::shp_Dataset);
 
   void setImageCut(bool topLeft, bool linked, core::ImageCut const&);
-  void setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset);
+  void setDetectorGeometry(qreal sampleDetectorSpan, qreal pixSpan);
+  void setBeamGeometry(bool hasBeamOffset, QPoint const& middlePixOffset);
 
   QAction *actImageRotate, *actImageMirror;
 

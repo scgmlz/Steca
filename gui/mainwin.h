@@ -76,7 +76,7 @@ public:
 
   // more actions, probably not in the menu
     *actReflectionPeak, *actReflectionReflect, *actReflectionWidth, *actReflectionAdd,
-    *actImagesLink, *actImagesEye, *actImagesGlobalNorm, *actImagesShowRaw,
+    *actImagesLink, *actImageOverlay, *actImagesGlobalNorm, *actImagesShowRaw,
     *actBackgroundBackground, *actBackgroundEye;
 
 private:

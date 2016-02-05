@@ -18,7 +18,6 @@ public:
   ImageWidget(Dataset&);
 
   void setPixmap(QPixmap const&);
-
   void setShowOverlay(bool);
 
   QSize sizeHint() const;
@@ -27,18 +26,29 @@ protected:
   Dataset &dataset;
 
   void resizeEvent(QResizeEvent*);
-  mutable int lastHeight; // keep square
-
   void paintEvent(QPaintEvent*);
 
   QPixmap original, scaled;
   QPointF scale;
 
   bool showOverlay;
-  QSize lastPaintSize;
+};
 
+class DatasetOptions: public BoxPanel {
+  SUPER(DatasetOptions,BoxPanel)
 public:
-  void update();
+  DatasetOptions(MainWin&,Session&);
+
+private:
+  QSpinBox  *cutTop, *cutBottom, *cutLeft, *cutRight;
+  QCheckBox *checkIsBeamOffset;
+  QSpinBox  *spinOffsetX, *spinOffsetY;
+
+  void setTo(Session&);
+  void setFrom(Session&);
+
+  void readSettings(Session&);
+  void saveSettings();
 };
 
 class Dataset: public BoxPanel {
@@ -55,7 +65,6 @@ private:
   bool globalNorm;
 
   ImageWidget *imageWidget;
-  QSpinBox *cutTop, *cutBottom, *cutLeft, *cutRight;
 };
 
 }

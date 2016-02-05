@@ -5,6 +5,7 @@
 #include "panel/datasetinfo.h"
 
 SplitImage::SplitImage(MainWin& mainWin,Session& session): super(Qt::Horizontal) {
+  box->addWidget(new panel::DatasetOptions(mainWin,session));
   box->addWidget(new panel::Dataset(mainWin,session));
   box->addWidget(new panel::DatasetInfo(mainWin,session));
   box->setStretch(1,1);

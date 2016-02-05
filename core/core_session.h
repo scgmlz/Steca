@@ -54,7 +54,8 @@ public: // detector geometry
   };
 
   Geometry const& getGeometry() const { return geometry; }
-  void setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset);
+  void setDetectorGeometry(qreal sampleDetectorSpan, qreal pixSpan);
+  void setBeamGeometry(bool hasBeamOffset, QPoint const& middlePixOffset);
 
 private:
   Geometry geometry;

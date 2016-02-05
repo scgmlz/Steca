@@ -59,9 +59,11 @@ void Session::load(QByteArray const& json) THROWS {
 
   auto det = top["detector"].toObject();
 
-  setGeometry(
+  setDetectorGeometry(
     det["distance"].toDouble(),
-    det["pixel_size"].toDouble(),
+    det["pixel_size"].toDouble());
+
+  setBeamGeometry(
     det["hasbeamoffset"].toBool(),
     QPoint(det["offset_x"].toDouble(),det["offset_y"].toDouble()));
 
@@ -132,8 +134,8 @@ void Session::remFile(uint i) {
   }
 
   if (0==numFiles(true)) {
-    setImageCut(true,false,core::ImageCut());
     setSelectedDataset(core::shp_Dataset());
+    setImageCut(true,false,core::ImageCut());
   }
 }
 
@@ -157,8 +159,13 @@ void Session::setImageCut(bool topLeft, bool linked, core::ImageCut const& image
   emit geometryChanged();
 }
 
-void Session::setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset) {
-  super::setGeometry(sampleDetectorSpan,pixSpan,hasBeamOffset,middlePixOffset);
+void Session::setDetectorGeometry(qreal sampleDetectorSpan, qreal pixSpan) {
+  super::setDetectorGeometry(sampleDetectorSpan,pixSpan);
+  emit geometryChanged();
+}
+
+void Session::setBeamGeometry(bool hasBeamOffset, QPoint const& middlePixOffset) {
+  super::setBeamGeometry(hasBeamOffset,middlePixOffset);
   emit geometryChanged();
 }
 
