@@ -17,7 +17,6 @@ HEADERS += \
     settings.h \
     panel/panel.h \
     panel/background.h \
-    panel/detector.h \
     panel/diffractogram.h \
     panel/reflections.h \
     panel/reflectioninfo.h \
@@ -29,7 +28,6 @@ HEADERS += \
     split_diffractogram.h \
     session.h \
     panel/datasets.h \
-    split_datasets.h \
     panel/datasetinfo.h \
     panel/dataset.h \
     models.h
@@ -44,7 +42,6 @@ SOURCES += \
     settings.cpp \
     panel/panel.cpp \
     panel/background.cpp \
-    panel/detector.cpp \
     panel/diffractogram.cpp \
     panel/normalization.cpp \
     panel/files.cpp \
@@ -56,7 +53,6 @@ SOURCES += \
     split_diffractogram.cpp \
     session.cpp \
     panel/datasets.cpp \
-    split_datasets.cpp \
     panel/datasetinfo.cpp \
     panel/dataset.cpp \
     models.cpp

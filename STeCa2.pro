@@ -2,10 +2,10 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS  = core gui
-SUBDIRS += tests
+#SUBDIRS += tests
 
 gui.depends = core
-tests.depends = core
+#tests.depends = core
 
 OTHER_FILES = \
   README.md \

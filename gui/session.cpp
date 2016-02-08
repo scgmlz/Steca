@@ -206,4 +206,12 @@ void Session::nextImageRotate() {
   setImageRotate(imageTransform.nextRotate());
 }
 
+void Session::doSaveSettings() {
+  emit saveSettings();
+}
+
+void Session::doReadSettings() {
+  emit readSettings();
+}
+
 // eof

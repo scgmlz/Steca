@@ -74,13 +74,14 @@ public:
     *actPdfManual,
     *actAbout,
 
-  // more actions, probably not in the menu
+  // more actions, some not in the menu
     *actReflectionPeak, *actReflectionReflect, *actReflectionWidth, *actReflectionAdd,
     *actImagesLink, *actImageOverlay, *actImagesGlobalNorm, *actImagesShowRaw,
-    *actBackgroundBackground, *actBackgroundEye;
+    *actBackgroundBackground, *actBackgroundEye,
+    *actHasBeamOffset;
 
 private:
-  BoxWidget *splitFiles, *splitDatasets, *splitImage, *splitReflections, *splitDiffractogram;
+  BoxWidget *splitFiles, *splitImage, *splitReflections, *splitDiffractogram;
 
 private:
   QByteArray initialState;

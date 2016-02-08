@@ -2,7 +2,6 @@
 #include "session.h"
 #include "settings.h"
 #include "split_files.h"
-#include "split_datasets.h"
 #include "split_image.h"
 #include "split_reflections.h"
 #include "split_diffractogram.h"
@@ -26,6 +25,7 @@ MainWin::MainWin(): session(new Session){
   connectActions();
 
   readSettings();
+  session->doReadSettings();
 }
 
 MainWin::~MainWin() {
@@ -97,13 +97,15 @@ void MainWin::initActions() {
 
   actImagesLink           = toggle("Link",          ":/icon/link");
   actImageOverlay         = toggle("overlay",       ":/icon/eye");
-  actImagesGlobalNorm     = toggle("global nm.");
+  actImagesGlobalNorm     = toggle("global norm.",  ":/icon/eye");  // TODO different icon
   actImagesShowRaw        = toggle("show w/o corr", ":/icon/eye");  // TODO different icon
   session->actImageRotate = simple("Rotate", ":/icon/rotate0");
   session->actImageMirror = toggle("Mirror", ":/icon/mirror_horz");
 
   actBackgroundBackground = simple("Background",    ":/icon/background");
   actBackgroundEye        = simple("BackgroundEye", ":/icon/eye");
+
+  actHasBeamOffset        = toggle("Beam centre offset", ":/icon/eye"); // TODO icon
 
   // TODO where to best put these actions updates?
   connect(session, &Session::corrFileSet, [this](core::shp_File file){
@@ -225,7 +227,6 @@ void MainWin::initLayout() {
   splOther->addWidget(splImages);
   splOther->addWidget(splReflections);
 
-  splImages->addWidget((splitDatasets = new SplitDatasets(*this,*session)));
   splImages->addWidget((splitImage = new SplitImage(*this,*session)));
 
   splReflections->addWidget((splitReflections = new SplitReflections(*this,*session)));
@@ -366,6 +367,7 @@ void MainWin::closeEvent(QCloseEvent* event) {
 }
 
 bool MainWin::onClose() {
+  session->doSaveSettings();
   saveSettings();
   return true;
 }

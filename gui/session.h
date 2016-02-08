@@ -53,9 +53,15 @@ signals:
 
   void datasetSelected(core::shp_Dataset);  // may be null
 
+  void saveSettings();  // TODO for now; eventually move things to save to Session
+  void readSettings();  // TODO for now; eventually move things to read to Session
+
 public:
-  model::FileViewModel    fileViewModel;
+  model::FileViewModel    fileViewModel;    // TODO not public
   model::DatasetViewModel datasetViewModel;
+
+  void doSaveSettings(); // TODO temp.
+  void doReadSettings(); // TODO temp.
 };
 
 #endif

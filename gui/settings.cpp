@@ -1,5 +1,5 @@
 #include "settings.h"
-#include <QCheckBox>
+#include <QAction>
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 
@@ -21,12 +21,14 @@ void Settings::saveVariant(rcstr key, const QVariant &val) {
   setValue(key,val);
 }
 
-void Settings::read(rcstr key, QCheckBox* box, bool def) {
-  if (box) box->setChecked(readVariant(key,def).toBool());
+void Settings::read(rcstr key, QAction* act, bool def) {
+  ASSERT(act->isCheckable())
+  if (act) act->setChecked(readVariant(key,def).toBool());
 }
 
-void Settings::save(rcstr key, QCheckBox* box) {
-  if (box) saveVariant(key,box->isChecked());
+void Settings::save(rcstr key, QAction* act) {
+  ASSERT(act->isCheckable())
+  if (act) saveVariant(key,act->isChecked());
 }
 
 void Settings::read(rcstr key, QSpinBox* box, int def) {

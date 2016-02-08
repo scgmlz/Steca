@@ -41,14 +41,15 @@ signals:
   void imageScale(uint);
 
 private:
-  QSpinBox      *cutTop, *cutBottom, *cutLeft, *cutRight;
-  QCheckBox     *checkIsBeamOffset;
-  QSpinBox      *spinOffsetX, *spinOffsetY;
-  QRadioButton  *scale1, *scale2, *scale3;
+  QSpinBox       *cutTop, *cutBottom, *cutLeft, *cutRight;
+  QSpinBox       *spinOffsetX, *spinOffsetY;
+  QSpinBox       *spinImageScale;
+  QDoubleSpinBox *spinDistance, *spinPixelSize;
 
   void setTo(Session&);
   void setFrom(Session&);
 
+  // TODO to Session() of MainWin()
   void readSettings(Session&);
   void saveSettings();
 };

@@ -8,7 +8,7 @@
 #include <QSettings>
 #include <QKeySequence>
 
-class QCheckBox;
+class QAction;
 class QSpinBox;
 class QDoubleSpinBox;
 
@@ -21,8 +21,8 @@ public:
   QVariant readVariant(rcstr key, QVariant const& def);
   void     saveVariant(rcstr key, QVariant const& val);
 
-  void read(rcstr key, QCheckBox*, bool def);
-  void save(rcstr key, QCheckBox*);
+  void read(rcstr key, QAction*, bool def);
+  void save(rcstr key, QAction*);
 
   void read(rcstr key, QSpinBox*, int def);
   void save(rcstr key, QSpinBox*);
