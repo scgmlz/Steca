@@ -142,7 +142,6 @@ QVector<shp_Dataset> loadCaress(File &file) THROWS {
 
           detRel = (uint)sqrt(imageSize); // TODO (also compare with original code) this is hairy
           RUNTIME_CHECK(imageSize>0 && (uint)imageSize == detRel*detRel, "bad image size");
-          // TODO fake non-square image and verify processing
 
           QVector<intens_t> convertedIntens(imageSize);
           for (int i=0; i<imageSize; ++i)
@@ -156,7 +155,7 @@ QVector<shp_Dataset> loadCaress(File &file) THROWS {
             rad_deg(phiAxis), rad_deg(chiAxis),
             pstAxis, sstAxis, rad_deg(omgmAxis),
             mon, tempTime,
-            QSize(detRel,detRel), convertedIntens.constData())));
+            QSize(detRel,detRel-80), convertedIntens.constData())));
           delete[] intens; intens = NULL;
           imageSize = 0;
         }

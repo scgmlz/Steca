@@ -67,7 +67,7 @@ void Session::load(QByteArray const& json) THROWS {
     det["hasbeamoffset"].toBool(),
     QPoint(det["offset_x"].toDouble(),det["offset_y"].toDouble()));
 
-  setImageRotate(core::ImageTransform(top["transform"].toInt()));
+  setImageRotate(ImageTransform(top["transform"].toInt()));
 }
 
 QByteArray Session::save() const {
@@ -175,7 +175,7 @@ void Session::setImageMirror(bool on) {
   emit geometryChanged();
 }
 
-void Session::setImageRotate(core::ImageTransform rot) {
+void Session::setImageRotate(ImageTransform rot) {
   pcstr rotateIconFile, mirrorIconFile;
   switch (rot.val & 3) {
   case 0:
@@ -199,6 +199,7 @@ void Session::setImageRotate(core::ImageTransform rot) {
   actImageRotate->setIcon(QIcon(rotateIconFile));
   actImageMirror->setIcon(QIcon(mirrorIconFile));
   super::setImageRotate(rot);
+  setImageCut(true,false,getImageCut()); // TODO make makeSafeCut()
   emit geometryChanged();
 }
 

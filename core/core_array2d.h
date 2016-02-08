@@ -48,11 +48,19 @@ public:
   }
 
   /// Access
+  T const& at(uint i) const {
+    return ts.at(i);
+  }
+
   T const& at(uint x,uint y) const {
     return ts.at(index(x,y));
   }
 
   /// Access
+  void setAt(uint i, T const& val) {
+    ts[i] = val;
+  }
+
   void setAt(uint x, uint y, T const& val) {
     ts[index(x,y)] = val;
   }

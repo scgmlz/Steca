@@ -43,9 +43,9 @@ struct ImageCut {
   bool operator==(ImageCut const&);
   uint top, bottom, left, right;
 
-  uint getWidth(uint imageSize) const;
-  uint getHeight(uint imageSize) const;
-  uint getCount(uint imageSize) const;
+  uint getWidth(QSize const&) const;
+  uint getHeight(QSize const&) const;
+  uint getCount(QSize const&) const;
 };
 
 // angle mapping
@@ -54,27 +54,6 @@ struct Pixpos {  // TODO bad name
   Pixpos(qreal gamma, qreal tth): gammaPix(gamma), tthPix(tth) {}
   qreal gammaPix;
   qreal tthPix;
-};
-
-/// Image transform - rotation and mirroring
-struct ImageTransform {
-  enum e {
-    NONE            = 0,
-    ROTATE_0        = 0,  // no rotation, same as NONE
-    ROTATE_1        = 1,  // one quarter
-    ROTATE_2        = 2,  // two quarters
-    ROTATE_3        = 3,  // three quarters
-    MIRROR          = 4,
-    MIRROR_ROTATE_0 = MIRROR | ROTATE_0,
-    MIRROR_ROTATE_1 = MIRROR | ROTATE_1,
-    MIRROR_ROTATE_2 = MIRROR | ROTATE_2,
-    MIRROR_ROTATE_3 = MIRROR | ROTATE_3,
-  } val;
-
-  ImageTransform(int val);                   ///< clamps val appropriately
-  ImageTransform mirror(bool on)     const;  ///< adds/removes the mirror flag
-  ImageTransform rotateTo(ImageTransform) const;  ///< rotates, but keeps the mirror flag
-  ImageTransform nextRotate()        const;  ///< rotates by one quarter-turn
 };
 
 // conversion

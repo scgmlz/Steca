@@ -19,7 +19,10 @@ HEADERS += \
     core_session.h \
     core_lib.h \
     loaders/core_loaders.h \
-    core_array2d.h
+    core_array2d.h \
+    loaders/Mar/mar300_header.h \
+    loaders/Mar/mar345_header.h \
+    loaders/Mar/MarReader.h
 
 SOURCES += \
     loaders/Caress/raw.cpp \

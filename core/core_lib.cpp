@@ -1,5 +1,6 @@
 #include "core_lib.h"
 
+#include <QSize>
 #include <math.h>
 
 namespace core {
@@ -61,32 +62,16 @@ bool ImageCut::operator==(ImageCut const& that) {
   return top==that.top && bottom==that.bottom && left==that.left && right==that.right;
 }
 
-uint ImageCut::getWidth(uint imageSize) const {
-  return imageSize - left - right;
+uint ImageCut::getWidth(QSize const& fullSize) const {
+  return fullSize.width() - left - right;
 }
 
-uint ImageCut::getHeight(uint imageSize) const {
-  return imageSize - top - bottom;
+uint ImageCut::getHeight(QSize const& fullSize) const {
+  return fullSize.height() - top - bottom;
 }
 
-uint ImageCut::getCount(uint imageSize) const {
-  return getWidth(imageSize) * getHeight(imageSize);
-}
-
-ImageTransform::ImageTransform(int val_): val((e)(val_ & 7)) {
-}
-
-ImageTransform ImageTransform::mirror(bool on) const {
-  return on ? ImageTransform(val |  MIRROR)
-            : ImageTransform(val & ~MIRROR);
-}
-
-ImageTransform ImageTransform::rotateTo(ImageTransform rot) const {
-  return ImageTransform((val & MIRROR) | (rot.val & 3));
-}
-
-ImageTransform ImageTransform::nextRotate() const {
-  return rotateTo(val+1);
+uint ImageCut::getCount(QSize const& fullSize) const {
+  return getWidth(fullSize) * getHeight(fullSize);
 }
 
 qreal deg_rad(qreal rad) {

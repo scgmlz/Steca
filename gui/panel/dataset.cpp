@@ -317,7 +317,7 @@ void Dataset::setImageScale(uint scale) {
 QPixmap Dataset::makePixmap(core::Image const& image, core::Range rgeIntens,
                             core::Image* corr) {
   QPixmap pixmap;
-  auto size = image.getSize();
+  auto size = session.getImageSize();
 
   if (!size.isEmpty()) {
     qreal mi = rgeIntens.max;
@@ -329,10 +329,10 @@ QPixmap Dataset::makePixmap(core::Image const& image, core::Range rgeIntens,
       auto y = i;
       for_i(size.width()) {
         auto x = i;
-        qreal intens = image.intensity(session.imageTransform,x,y) / mi;
+        qreal intens = image.intensity(session.pixIndex(x,y)) / mi;
         bool isNan = false; // TODO temporary fix
         if (corr) {
-          auto factor = corr->intensity(session.imageTransform,x,y);
+          auto factor = corr->intensity(session.pixIndex(x,y));
           if (qIsNaN(factor)) // TODO still actual?
             isNan = true;
           else

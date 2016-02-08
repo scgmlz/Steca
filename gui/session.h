@@ -36,7 +36,7 @@ public:
   QAction *actImageRotate, *actImageMirror;
 
   void setImageMirror(bool);
-  void setImageRotate(core::ImageTransform);
+  void setImageRotate(ImageTransform);
   void nextImageRotate();
 
 // Session is the only one emitting signals (besides Qt gui widgets)

@@ -118,15 +118,72 @@ void Session::setBeamGeometry(bool hasBeamOffset, QPoint const& middlePixOffset)
   geometry.middlePixOffset    = middlePixOffset;
 }
 
+Session::ImageTransform::ImageTransform(int val_): val((e)(val_ & 7)) {
+}
+
+Session::ImageTransform Session::ImageTransform::mirror(bool on) const {
+  return on ? ImageTransform(val |  MIRROR)
+            : ImageTransform(val & ~MIRROR);
+}
+
+Session::ImageTransform Session::ImageTransform::rotateTo(ImageTransform rot) const {
+  return ImageTransform((val & MIRROR) | (rot.val & 3));
+}
+
+Session::ImageTransform Session::ImageTransform::nextRotate() const {
+  return rotateTo(val+1);
+}
+
 void Session::setImageMirror(bool on) {
   imageTransform = imageTransform.mirror(on);
 }
 
-void Session::setImageRotate(core::ImageTransform rot) {
+void Session::setImageRotate(ImageTransform rot) {
   imageTransform = imageTransform.rotateTo(rot);
 }
 
-QPoint Session::getPixMiddle(QSize const& imageSize) const {
+uint Session::pixIndex(uint x, uint y) const {
+
+  // imageSize is not transformed
+  uint w = imageSize.width(), h = imageSize.height();
+
+  switch (imageTransform.val) {
+  case ImageTransform::ROTATE_0:
+    return x + y * w;
+  case ImageTransform::ROTATE_1:
+    x = h - x - 1;
+    return y + x * w;
+  case ImageTransform::ROTATE_2:
+    x = w - x - 1;
+    y = h - y - 1;
+    return x + y * w;
+  case ImageTransform::ROTATE_3:
+    y = w - y - 1;
+    return y + x * w;
+  case ImageTransform::MIRROR_ROTATE_0:
+    x = w - x - 1;
+    return x + y * w;
+  case ImageTransform::MIRROR_ROTATE_1:
+    x = h - x - 1;
+    y = w - y - 1;
+    return y + x * w;
+  case ImageTransform::MIRROR_ROTATE_2:
+    y = h - y - 1;
+    return x + y * w;
+  case ImageTransform::MIRROR_ROTATE_3:
+    return y + x * w;
+  }
+  NOT_HERE
+}
+
+QSize Session::getImageSize() const {
+  return imageTransform.isTransposed()
+    ? imageSize.transposed() : imageSize;
+}
+
+
+QPoint Session::getPixMiddle() const {
+  auto imageSize = getImageSize();
   QPoint middle( // TODO hasBeamOffset
     imageSize.width()  / 2 + geometry.middlePixOffset.x(),
     imageSize.height() / 2 + geometry.middlePixOffset.y());
@@ -140,24 +197,27 @@ QPoint Session::getPixMiddle(QSize const& imageSize) const {
 // TODO this is a slightly modified original code; be careful; eventually refactor
 Session::AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
 
-  QPoint pixMiddle = getPixMiddle(imageSize);
+  QPoint pixMiddle = getPixMiddle();
+  auto size   = getImageSize();
 
-  if (angleCorrArray.getSize() == imageSize
+  if (angleCorrArray.getSize() == size
       && lastCalcTthMitte==tthMitte && lastPixMiddle == pixMiddle
-      && lastGeometry == geometry && lastImageCut == imageCut)
+      && lastGeometry == geometry && lastImageCut == imageCut
+      && lastImageTransform == imageTransform)
     return angleCorrArray;
 
-  angleCorrArray.fill(imageSize);
+  angleCorrArray.fill(size);
 
   lastCalcTthMitte = tthMitte; lastPixMiddle = pixMiddle;
   lastGeometry = geometry;
   lastImageCut = imageCut;
+  lastImageTransform = imageTransform;
 
   ful.tth_regular.set(tthMitte);
   ful.tth_gamma0.set(tthMitte);
   ful.gamma.set(0);
 
-  if (imageSize.isEmpty()) {
+  if (size.isEmpty()) {
     // TODO set to something - needed? or invalidate() ?
     cut.gamma.set(0);
     cut.tth_regular.set(0);
@@ -167,10 +227,10 @@ Session::AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
     ASSERT(geometry.sampleDetectorSpan>0) // TODO
 
     // Fill the Array
-    for (int i = 0; i < imageSize.height(); i++) {
+    for (int i = 0; i < size.height(); i++) {
       int abstandInPixVertical = pixMiddle.y() - i;
       qreal y = abstandInPixVertical * geometry.pixSpan;
-      for (int j = 0; j < imageSize.width(); j++) {
+      for (int j = 0; j < size.width(); j++) {
         // TTH des Pixels berechnen
         int abstandInPixHorizontal = - pixMiddle.x() + j;
         qreal x = abstandInPixHorizontal * geometry.pixSpan;
@@ -197,25 +257,25 @@ Session::AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
         ful.tth_gamma0.extend(tthHorAktuell);
 
         // Write angle in array
-        angleCorrArray.setAt(j,i,Pixpos(gamma,tthNeu));
+        angleCorrArray.setAt(pixIndex(j,i),Pixpos(gamma,tthNeu));
       }
     }
 
     // Calculate Gamma and TTH after cut
     // TODO the original code called setPixCut - is used elsewhere?
     // TODO refactor
-    int arrayMiddleX = imageCut.left + imageCut.getWidth(imageSize.width())   / 2;
-    int arrayMiddleY = imageCut.top  + imageCut.getHeight(imageSize.height()) / 2;
+    int arrayMiddleX = imageCut.left + imageCut.getWidth(size)   / 2;
+    int arrayMiddleY = imageCut.top  + imageCut.getHeight(size) / 2;
 
     auto middlePoint = angleCorrArray.at(arrayMiddleX,arrayMiddleY);
     cut.gamma.set(middlePoint.gammaPix);
     cut.tth_regular.set(middlePoint.tthPix);
     cut.tth_gamma0.safeSet(
-      angleCorrArray.at(imageSize.width() - 1 - imageCut.right,pixMiddle.y()).tthPix,
+      angleCorrArray.at(size.width() - 1 - imageCut.right,pixMiddle.y()).tthPix,
       angleCorrArray.at(imageCut.left,pixMiddle.y()).tthPix);
 
-    for (uint i = imageCut.left; i < imageSize.width() - imageCut.right; i++) {
-      for (uint j = imageCut.top; j < imageSize.height() - imageCut.bottom; j++) {
+    for (uint i = imageCut.left; i < size.width() - imageCut.right; i++) {
+      for (uint j = imageCut.top; j < size.height() - imageCut.bottom; j++) {
         auto ac = angleCorrArray.at(i,j);
         cut.gamma.extend(ac.gammaPix);
         cut.tth_regular.extend(ac.tthPix);
@@ -237,20 +297,20 @@ void Session::calcIntensCorrArray() {
   ASSERT(1 == corrFile->numDatasets()) // no need to sum
   Image const& image = corrFile->getDataset(0)->getImage();
 
-  qreal sum = 0; uint n = 0;
-  for (uint x=imageCut.left; x<imageSize.width()-imageCut.right; ++x)
-    for (uint y=imageCut.top; y<imageSize.height()-imageCut.bottom; ++y) {
-      sum += image.intensity(imageTransform,x,y);
+  qreal sum = 0; uint n = 0; auto size = getImageSize();
+  for (uint x=imageCut.left; x<size.width()-imageCut.right; ++x)
+    for (uint y=imageCut.top; y<size.height()-imageCut.bottom; ++y) {
+      sum += image.intensity(pixIndex(x,y));
       ++n; // TODO aren't we lazy
     }
 
   ASSERT(n>0)
   qreal avg = sum / n;
 
-  intensCorrArray.fill(1,imageSize);
-  for (uint x=imageCut.left; x<imageSize.width()-imageCut.right; ++x)
-    for (uint y=imageCut.top; y<imageSize.height()-imageCut.bottom; ++y) {
-      auto intens = image.intensity(imageTransform,x,y);
+  intensCorrArray.fill(1,size);
+  for (uint x=imageCut.left; x<size.width()-imageCut.right; ++x)
+    for (uint y=imageCut.top; y<size.height()-imageCut.bottom; ++y) {
+      auto intens = image.intensity(pixIndex(x,y));
       qreal val;
 
       if (intens>0) {
@@ -259,12 +319,14 @@ void Session::calcIntensCorrArray() {
         val = qQNaN(); hasNaNs = true;
       }
 
-      intensCorrArray.setIntensity(imageTransform,x,y,val);
+      intensCorrArray.setIntensity(pixIndex(x,y),val);
     }
 }
 
 void Session::setImageCut(bool topLeft, bool linked, ImageCut const& imageCut_) {
-  if (imageSize.isEmpty())
+  auto size = getImageSize();
+
+  if (size.isEmpty())
     imageCut = ImageCut();
   else {
     auto limit = [linked](uint &thisOne, uint &thatOne, uint maxTogether) {
@@ -279,11 +341,11 @@ void Session::setImageCut(bool topLeft, bool linked, ImageCut const& imageCut_) 
     imageCut = imageCut_;
     // make sure that cut values are valid; in the right order
     if (topLeft) {
-      limit(imageCut.top,   imageCut.bottom,  imageSize.height());
-      limit(imageCut.left,  imageCut.right,   imageSize.width());
+      limit(imageCut.top,   imageCut.bottom,  size.height());
+      limit(imageCut.left,  imageCut.right,   size.width());
     } else {
-      limit(imageCut.bottom,imageCut.top,     imageSize.height());
-      limit(imageCut.right, imageCut.left,    imageSize.width());
+      limit(imageCut.bottom,imageCut.top,     size.height());
+      limit(imageCut.right, imageCut.left,    size.width());
     }
   }
 }

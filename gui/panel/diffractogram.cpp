@@ -103,7 +103,7 @@ Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
   });
 
   connect(&session, &Session::geometryChanged, [this]() {
-    this->refresh();
+    refresh();
   });
 }
 
@@ -127,8 +127,8 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
 
   auto image    = dataset->getImage();
   auto imageCut = session.getImageCut();
-  int  width    = imageCut.getWidth(image.getSize().width());
-  uint pixTotal = imageCut.getCount(image.getSize().height());
+  int  width    = imageCut.getWidth(session.getImageSize());
+  uint pixTotal = imageCut.getCount(session.getImageSize());
 
   auto cut = session.getCut();
   qreal TTHMin = cut.tth_regular.min;

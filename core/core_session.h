@@ -61,10 +61,42 @@ private:
   Geometry geometry;
 
 public: // image transform
+  /// Image transform - rotation and mirroring
+  struct ImageTransform {
+    enum e {
+      NONE            = 0,
+      ROTATE_0        = 0,  // no rotation, same as NONE
+      ROTATE_1        = 1,  // one quarter
+      ROTATE_2        = 2,  // two quarters
+      ROTATE_3        = 3,  // three quarters
+      MIRROR          = 4,
+      MIRROR_ROTATE_0 = MIRROR | ROTATE_0,
+      MIRROR_ROTATE_1 = MIRROR | ROTATE_1,
+      MIRROR_ROTATE_2 = MIRROR | ROTATE_2,
+      MIRROR_ROTATE_3 = MIRROR | ROTATE_3,
+    } val;
+
+    ImageTransform(int val = NONE);            ///< clamps val appropriately
+    ImageTransform mirror(bool on)     const;  ///< adds/removes the mirror flag
+    ImageTransform rotateTo(ImageTransform) const;  ///< rotates, but keeps the mirror flag
+    ImageTransform nextRotate()        const;  ///< rotates by one quarter-turn
+
+    bool isTransposed() const { return 0 != (val&1); }
+
+    bool operator ==(ImageTransform const& that) const { return val == that.val; }
+  };
+
+protected:
   ImageTransform imageTransform;
 
+public:
   void setImageMirror(bool);
-  void setImageRotate(core::ImageTransform);
+  void setImageRotate(ImageTransform);
+
+  /// Calculate the 1D index of a pixel, with transform.
+  uint pixIndex(uint x, uint y) const;
+
+  QSize getImageSize() const;
 
 protected: // corrections TODO make private
   // TODO rename;
@@ -72,12 +104,13 @@ protected: // corrections TODO make private
   AngleCorrArray angleCorrArray;
   Borders        ful, cut;
 
-  QPoint  getPixMiddle(QSize const& imageSize) const;  // TODO rename, was getPixMiddleX/Y
+  QPoint  getPixMiddle() const;  // TODO rename, was getPixMiddleX/Y
 
   // TODO cashing of calcAngle...
   qreal lastCalcTthMitte; QPoint lastPixMiddle;
   Geometry lastGeometry;
   ImageCut lastImageCut;
+  ImageTransform lastImageTransform;
 
 public:
   AngleCorrArray const& calcAngleCorrArray(qreal tthMitte);  // TODO rename; TODO if too slow, cache

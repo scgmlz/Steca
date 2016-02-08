@@ -21,13 +21,13 @@ public:
   void clear();
   void fill(intens_t val, QSize const&);
 
-  /// Calculate the 1D index of a pixel, with transform.
-  uint index(ImageTransform,uint x, uint y) const;
-
   /// Access single intensity.
-  intens_t const& intensity(ImageTransform, uint x, uint y) const;
+  intens_t const& intensity(uint i) const {
+    return super::at(i);
+  }
+
   /// Set single intensity.
-  void setIntensity(ImageTransform, uint x, uint y, intens_t);
+  void setIntensity(uint i, intens_t);
 
   /// Access the whole 1D intensity array, getCount() values.
   intens_t const* getIntensities() const { return getData(); }
