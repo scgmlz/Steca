@@ -201,12 +201,10 @@ DatasetOptions::DatasetOptions(MainWin& mainWin_, Session& session_)
 }
 
 void DatasetOptions::setTo(Session& session) {
-  session.setBeamGeometry(
+  session.setGeometry(
+    spinDistance->value(), spinPixelSize->value(),
     mainWin.actHasBeamOffset->isChecked(),
     QPoint(spinOffsetX->value(),spinOffsetY->value()));
-  session.setDetectorGeometry(
-    spinDistance->value(),
-    spinPixelSize->value());
 }
 
 void DatasetOptions::setFrom(Session& session) {

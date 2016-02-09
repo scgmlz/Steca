@@ -18,7 +18,7 @@ struct Range {
   qreal min, max;
 
   void invalidate();              ///< make NaN
-  bool isInvalid() const;
+  bool isValid() const;
 
   void set(qreal val);            ///< both min and max = val
   void set(qreal min,qreal max);  ///< must be: min<=max
@@ -35,6 +35,9 @@ struct Borders {
     gamma,
     tth_regular,
     tth_gamma0; // at gamma=0
+
+  void invalidate();
+  bool isValid() const;
 };
 
 // cut

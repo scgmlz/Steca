@@ -60,7 +60,7 @@ QSize File::getImageSize() const {
 }
 
 Range const& File::getRgeIntens() const {
-  if (rgeIntens.isInvalid()) {
+  if (!rgeIntens.isValid()) {
     for (auto const& dataset: datasets)
       rgeIntens.extend(dataset->getImage().getRgeIntens());
   }

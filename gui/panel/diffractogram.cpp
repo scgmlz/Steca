@@ -127,8 +127,8 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
 
   auto image    = dataset->getImage();
   auto imageCut = session.getImageCut();
-  int  width    = imageCut.getWidth(session.getImageSize());
-  uint pixTotal = imageCut.getCount(session.getImageSize());
+  uint width    = imageCut.getWidth(session.getImageSize());
+  uint height   = imageCut.getHeight(session.getImageSize());
 
   auto cut = session.getCut();
   qreal TTHMin = cut.tth_regular.min;
@@ -141,20 +141,27 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   QVector<qreal> intens_vec(width);
   QVector<uint>  counts_vec(width,0);
 
-  for_i(pixTotal) {
-    auto tthPix = angles[i].tthPix;
-    int bin = (tthPix==TTHMax) ? width-1 : qFloor((tthPix - TTHMin) / deltaTTH);
+  for_i(height) {
+    auto &iy = i;
+    for_i(width) {
+      auto &ix = i;
 
-    if(bin<0 || width<=bin) continue;  // outside of the cut
+      // TODO angles can be arranged for a single loop for_i(pixTotal) [last in commit 98413db71cd38ebaa54b6337a6c6e670483912ef]
+      auto tthPix = angles.at(session.pixIndexNoTransform(ix,iy)).tthPix;
 
-    auto in = intens[i];
-    if (corr) {
-      auto factor = corr[i];
-      if (qIsNaN(factor)) continue;  // skip these pixels
-      in *= factor;
+      int bin = (tthPix==TTHMax) ? width-1 : qFloor((tthPix - TTHMin) / deltaTTH);
+      if (bin<0 || (int)width<=bin) continue;  // outside of the cut
+
+      auto pixIndex = session.pixIndex(ix,iy);
+      auto in = intens[pixIndex];
+      if (corr) {
+        auto factor = corr[pixIndex];
+        if (qIsNaN(factor)) continue;  // skip these pixels
+        in *= factor;
+      }
+      intens_vec[bin] += in;
+      counts_vec[bin]++;
     }
-    intens_vec[bin] += in;
-    counts_vec[bin]++;
   }
 
   for_i(width) {

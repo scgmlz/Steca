@@ -34,7 +34,7 @@ void Image::addIntensities(intens_t const* src) {
 }
 
 Range const& Image::getRgeIntens() const {
-  if (rgeIntens.isInvalid()) {
+  if (!rgeIntens.isValid()) {
     auto data    = getData();
     uint count   = getCount();
     while(count-- > 0) rgeIntens.extend(*data++);

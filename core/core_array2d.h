@@ -13,6 +13,8 @@ namespace core {
 template<typename T>
 class Array2D {
 public:
+  using vector_t = QVector<T>;
+
   Array2D() {
   }
 
@@ -56,6 +58,12 @@ public:
     return ts.at(index(x,y));
   }
 
+#ifdef DEVELOPMENT
+  vector_t const& asVector() const {
+    return ts;
+  }
+#endif
+
   /// Access
   void setAt(uint i, T const& val) {
     ts[i] = val;
@@ -81,8 +89,8 @@ public:
   }
 
 protected:
-  QSize size;
-  QVector<T> ts;
+  QSize    size;
+  vector_t ts;
 };
 
 }

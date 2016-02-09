@@ -21,8 +21,8 @@ void Range::invalidate() {
   set(qQNaN());
 }
 
-bool Range::isInvalid() const {
-  return qIsNaN(min) || qIsNaN(max);
+bool Range::isValid() const {
+  return ! (qIsNaN(min) || qIsNaN(max));
 }
 
 void Range::set(qreal val) {
@@ -80,6 +80,16 @@ qreal deg_rad(qreal rad) {
 
 qreal rad_deg(qreal deg) {
   return deg * (M_PI / 180);
+}
+
+void Borders::invalidate() {
+  gamma.invalidate();
+  tth_regular.invalidate();
+  tth_gamma0.invalidate();
+}
+
+bool Borders::isValid() const {
+  return gamma.isValid() && tth_regular.isValid() && tth_gamma0.isValid();
 }
 
 }

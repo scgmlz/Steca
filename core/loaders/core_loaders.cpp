@@ -147,6 +147,11 @@ QVector<shp_Dataset> loadCaress(File &file) THROWS {
           for (int i=0; i<imageSize; ++i)
             convertedIntens[i] = intens[i];
 
+          QSize size(detRel,detRel);
+        #ifdef DEVELOPMENT
+          size.rheight() /= 2;
+        #endif
+
           // Objekt inizialisieren
           datasets.append(shp_Dataset(new Dataset(file,
             str::fromStdString(s_date), str::fromStdString(s_comment),
@@ -155,7 +160,7 @@ QVector<shp_Dataset> loadCaress(File &file) THROWS {
             rad_deg(phiAxis), rad_deg(chiAxis),
             pstAxis, sstAxis, rad_deg(omgmAxis),
             mon, tempTime,
-            QSize(detRel,detRel-80), convertedIntens.constData())));
+            size, convertedIntens.constData())));
           delete[] intens; intens = NULL;
           imageSize = 0;
         }

@@ -108,12 +108,9 @@ bool Session::Geometry::operator ==(Geometry const& that) const {
     middlePixOffset    == that.middlePixOffset;
 }
 
-void Session::setDetectorGeometry(qreal sampleDetectorSpan, qreal pixSpan) {
+void Session::setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset) {
   geometry.sampleDetectorSpan = sampleDetectorSpan;
   geometry.pixSpan            = pixSpan;
-}
-
-void Session::setBeamGeometry(bool hasBeamOffset, QPoint const& middlePixOffset) {
   geometry.hasBeamOffset      = hasBeamOffset;
   geometry.middlePixOffset    = middlePixOffset;
 }
@@ -143,7 +140,6 @@ void Session::setImageRotate(ImageTransform rot) {
 }
 
 uint Session::pixIndex(uint x, uint y) const {
-
   // imageSize is not transformed
   uint w = imageSize.width(), h = imageSize.height();
 
@@ -176,6 +172,12 @@ uint Session::pixIndex(uint x, uint y) const {
   NOT_HERE
 }
 
+uint Session::pixIndexNoTransform(uint x, uint y) const {
+  uint w = imageTransform.isTransposed()
+    ? imageSize.height() : imageSize.width();
+  return x + y * w;
+}
+
 QSize Session::getImageSize() const {
   return imageTransform.isTransposed()
     ? imageSize.transposed() : imageSize;
@@ -206,33 +208,26 @@ Session::AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
       && lastImageTransform == imageTransform)
     return angleCorrArray;
 
-  angleCorrArray.fill(size);
-
   lastCalcTthMitte = tthMitte; lastPixMiddle = pixMiddle;
   lastGeometry = geometry;
   lastImageCut = imageCut;
   lastImageTransform = imageTransform;
 
-  ful.tth_regular.set(tthMitte);
-  ful.tth_gamma0.set(tthMitte);
-  ful.gamma.set(0);
+  angleCorrArray.fill(size);
+  ful.invalidate();
+  cut.invalidate();
 
-  if (size.isEmpty()) {
-    // TODO set to something - needed? or invalidate() ?
-    cut.gamma.set(0);
-    cut.tth_regular.set(0);
-    cut.tth_gamma0.set(0);
-  } else {
+  if (!size.isEmpty()) {
     ASSERT(geometry.pixSpan>0) // TODO
     ASSERT(geometry.sampleDetectorSpan>0) // TODO
 
     // Fill the Array
-    for (int i = 0; i < size.height(); i++) {
-      int abstandInPixVertical = pixMiddle.y() - i;
+    for (int iy = 0; iy < size.height(); ++iy) {
+      int abstandInPixVertical = pixMiddle.y() - iy;
       qreal y = abstandInPixVertical * geometry.pixSpan;
-      for (int j = 0; j < size.width(); j++) {
+      for (int ix = 0; ix < size.width(); ++ix) {
         // TTH des Pixels berechnen
-        int abstandInPixHorizontal = - pixMiddle.x() + j;
+        int abstandInPixHorizontal = - pixMiddle.x() + ix;
         qreal x = abstandInPixHorizontal * geometry.pixSpan;
         qreal z = hypot(x,y);
         qreal detektorAbstandPixel = hypot(z,geometry.sampleDetectorSpan);
@@ -247,8 +242,8 @@ Session::AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
 
         // Check: if tthNeu negativ
         if (tthHorAktuell < 0) {
-          tthNeu *= -1;
-          gamma *= -1;
+          tthNeu = -tthNeu;
+          gamma  = -gamma;
         }
 
         // Maxima und minima setzen
@@ -257,30 +252,31 @@ Session::AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
         ful.tth_gamma0.extend(tthHorAktuell);
 
         // Write angle in array
-        angleCorrArray.setAt(pixIndex(j,i),Pixpos(gamma,tthNeu));
+        angleCorrArray.setAt(pixIndexNoTransform(ix,iy),Pixpos(gamma,tthNeu));
       }
     }
+
+    ASSERT(ful.isValid())
 
     // Calculate Gamma and TTH after cut
     // TODO the original code called setPixCut - is used elsewhere?
     // TODO refactor
-    int arrayMiddleX = imageCut.left + imageCut.getWidth(size)   / 2;
-    int arrayMiddleY = imageCut.top  + imageCut.getHeight(size) / 2;
+    ASSERT(imageCut.getCount(size) > 0)
 
-    auto middlePoint = angleCorrArray.at(arrayMiddleX,arrayMiddleY);
-    cut.gamma.set(middlePoint.gammaPix);
-    cut.tth_regular.set(middlePoint.tthPix);
     cut.tth_gamma0.safeSet(
       angleCorrArray.at(size.width() - 1 - imageCut.right,pixMiddle.y()).tthPix,
       angleCorrArray.at(imageCut.left,pixMiddle.y()).tthPix);
 
-    for (uint i = imageCut.left; i < size.width() - imageCut.right; i++) {
-      for (uint j = imageCut.top; j < size.height() - imageCut.bottom; j++) {
-        auto ac = angleCorrArray.at(i,j);
+    // TODO loop through cut - abstract
+    for (uint ix = imageCut.left; ix < size.width() - imageCut.right; ++ix) {
+      for (uint iy = imageCut.top; iy < size.height() - imageCut.bottom; ++iy) {
+        auto ac = angleCorrArray.at(ix,iy);
         cut.gamma.extend(ac.gammaPix);
         cut.tth_regular.extend(ac.tthPix);
       }
     }
+
+    ASSERT(cut.isValid())
   }
 
   return angleCorrArray;

@@ -54,8 +54,7 @@ public: // detector geometry
   };
 
   Geometry const& getGeometry() const { return geometry; }
-  void setDetectorGeometry(qreal sampleDetectorSpan, qreal pixSpan);
-  void setBeamGeometry(bool hasBeamOffset, QPoint const& middlePixOffset);
+  void setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset);
 
 private:
   Geometry geometry;
@@ -95,6 +94,8 @@ public:
 
   /// Calculate the 1D index of a pixel, with transform.
   uint pixIndex(uint x, uint y) const;
+  /// Calculate the 1D index of a pixel, no transform, only size considered.
+  uint pixIndexNoTransform(uint x, uint y) const;
 
   QSize getImageSize() const;
 
