@@ -23,16 +23,21 @@ class DiffractogramPlotOverlay: public QWidget {
   SUPER(DiffractogramPlotOverlay,QWidget)
 public:
   DiffractogramPlotOverlay(DiffractogramPlot&);
+private:
+  DiffractogramPlot& plot;
+  QColor addColor, remColor, color;
 
 protected:
   void enterEvent(QEvent*);
   void leaveEvent(QEvent*);
+  void mousePressEvent(QMouseEvent*);
+  void mouseReleaseEvent(QMouseEvent*);
   void mouseMoveEvent(QMouseEvent*);
 
   void paintEvent(QPaintEvent*);
 
-  bool  hasCursor;
-  int   cursorPos;
+  bool  hasCursor, mouseDown;
+  int   cursorPos, mouseDownPos;
 
   void updateCursorRegion();
 };
@@ -44,12 +49,20 @@ public:
 
   void plot(Dgram const&);
 
+  core::Range fromPixels(int,int);
+  void addBg(core::Range const&);
+  void remBg(core::Range const&);
+  void clearBg();
+
 protected:
   void resizeEvent(QResizeEvent*);
 
 private:
   QCPGraph *graph;
   DiffractogramPlotOverlay *overlay;
+
+  void updateBg();
+  core::Ranges bg;
 };
 
 class Diffractogram: public BoxPanel {

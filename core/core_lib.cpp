@@ -41,6 +41,11 @@ void Range::safeSet(qreal v1, qreal v2) {
     set(v2,v1);
 }
 
+Range Range::safeFrom(qreal v1, qreal v2) {
+  Range range; range.safeSet(v1,v2);
+  return range;
+}
+
 void Range::extend(qreal val) {
   min = qIsNaN(min) ? val : qMin(min,val);
   max = qIsNaN(max) ? val : qMax(max,val);
@@ -51,7 +56,71 @@ void Range::extend(Range const& that) {
 }
 
 bool Range::contains(qreal val) const {
+  ASSERT(isValid())
   return min <= val && val <= max;
+}
+
+bool Range::contains(Range const& that) const {
+  ASSERT(isValid() && that.isValid())
+  return min <= that.min && that.max <= max;
+}
+
+bool Range::intersects(Range const& that) const {
+  ASSERT(isValid() && that.isValid())
+  return min <= that.max && that.min <= max;
+}
+
+Ranges::Ranges() {
+}
+
+bool Ranges::add(Range const& range) {
+  ranges_t newRanges;
+
+  auto newRange = range;
+  for (auto &r: ranges) {
+    if (r.contains(range))
+      return false;
+    if (!range.contains(r)) {
+      if (range.intersects(r))
+        newRange.extend(r);
+      else
+        newRanges.append(r);
+    }
+  }
+
+  newRanges.append(newRange);
+  ranges = newRanges;
+  return true;
+}
+
+bool Ranges::rem(Range const& range) {
+  ranges_t newRanges;
+
+  bool change = false;
+  for (auto &r: ranges) {
+    if (r.intersects(range)) {
+      change = true;
+      if (r.min < range.min)
+        newRanges.append(Range(r.min,range.min));
+      if (r.max > range.max)
+        newRanges.append(Range(range.max,r.max));
+    } else {
+      newRanges.append(r);
+    }
+  }
+
+  if (change) ranges = newRanges;
+  return change;
+}
+
+static bool lessThan(Range const& r1, Range const& r2) {
+  if (r1.min < r2.min) return true;
+  if (r1.min > r2.min) return true;
+  return r1.max < r2.max;
+}
+
+void Ranges::sort() {
+  std::sort(ranges.begin(),ranges.end(),lessThan);
 }
 
 ImageCut::ImageCut(uint top_, uint bottom_, uint left_, uint right_)

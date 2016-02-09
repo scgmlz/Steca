@@ -14,9 +14,12 @@ void Dgram::append(qreal tth_,qreal inten_) {
   maxInten = qMax(maxInten,inten_);
 }
 
-DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& plot)
-  : super(&plot), hasCursor(false), cursorPos(0) {
+DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& plot_)
+: super(&plot_), plot(plot_), hasCursor(false), mouseDown(false), cursorPos(0)
+, mouseDownPos(0) {
   setMouseTracking(true);
+  addColor = QColor(0xff,0xf0,0xf0,0x80);
+  remColor = QColor(0xf0,0xf0,0xff,0x80);
 }
 
 void DiffractogramPlotOverlay::enterEvent(QEvent*) {
@@ -29,15 +32,41 @@ void DiffractogramPlotOverlay::leaveEvent(QEvent*) {
   updateCursorRegion();
 }
 
+void DiffractogramPlotOverlay::mousePressEvent(QMouseEvent* e) {
+  mouseDownPos = cursorPos;
+  mouseDown = true;
+  color = Qt::LeftButton == e->button() ? addColor : remColor;
+  update();
+}
+
+void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
+  mouseDown = false;
+  update();
+
+  core::Range range(plot.fromPixels(mouseDownPos,cursorPos));
+  if (Qt::LeftButton == e->button())
+    plot.addBg(range);
+  else
+    plot.remBg(range);
+}
+
 void DiffractogramPlotOverlay::mouseMoveEvent(QMouseEvent* e) {
   updateCursorRegion();
   cursorPos = e->x();
   updateCursorRegion();
+  if (mouseDown) update();
 }
 
 void DiffractogramPlotOverlay::paintEvent(QPaintEvent*) {
   QPainter painter(this);
-  auto g = geometry();
+  QRect g = geometry();
+
+  if (mouseDown) {
+    g.setLeft(qMin(mouseDownPos,cursorPos));
+    g.setRight(qMax(mouseDownPos,cursorPos));
+
+    painter.fillRect(g,color);
+  }
 
   if (hasCursor) {
     QLineF cursor(cursorPos,g.top(),cursorPos,g.bottom());
@@ -55,16 +84,24 @@ void DiffractogramPlotOverlay::updateCursorRegion() {
 DiffractogramPlot::DiffractogramPlot() {
   overlay = new DiffractogramPlotOverlay(*this);
 
-  // allocate margins
+  auto *ar = axisRect();
+
+  // fix margins
   QFontMetrics fontMetrics(font());
   int em = fontMetrics.width('M'), ascent = fontMetrics.ascent();
 
-  auto *r = axisRect();
-  r->setAutoMargins(QCP::msNone);
-  r->setMargins(QMargins(3*em,ascent,em,2*ascent));
+  ar->setAutoMargins(QCP::msNone);
+  ar->setMargins(QMargins(3*em,ascent,em,2*ascent));
 
-  // one graph
+  // colours
+  setBackground(palette().background().color());
+  ar->setBackground(Qt::white);
+
+  // one graph in the "main" layer
   graph = addGraph();
+
+  // background regions
+  addLayer("bg",layer("background"),QCustomPlot::limAbove);
 }
 
 void DiffractogramPlot::plot(Dgram const& dgram) {
@@ -85,10 +122,46 @@ void DiffractogramPlot::plot(Dgram const& dgram) {
   replot();
 }
 
+core::Range DiffractogramPlot::fromPixels(int pix1, int pix2) {
+  return core::Range::safeFrom(
+    xAxis->pixelToCoord(pix1),
+    xAxis->pixelToCoord(pix2));
+}
+
+void DiffractogramPlot::addBg(core::Range const& range) {
+  if (bg.add(range)) updateBg();
+}
+
+void DiffractogramPlot::remBg(core::Range const& range) {
+  if (bg.rem(range)) updateBg();
+}
+
 void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
   super::resizeEvent(e);
   auto size = e->size();
   overlay->setGeometry(0,0,size.width(),size.height());
+}
+
+void DiffractogramPlot::updateBg() {
+  clearItems();
+
+  setCurrentLayer("bg");
+
+  auto bgColor = QColor(0xff,0xf8,0xf8);
+  for (auto const& r: bg.getData()) {
+    auto ir = new QCPItemRect(this);
+    ir->setPen(QPen(bgColor));
+    ir->setBrush(QBrush(bgColor));
+    auto br = ir->bottomRight;
+    br->setTypeY(QCPItemPosition::ptViewportRatio);
+    br->setCoords(r.max,1);
+    auto tl = ir->topLeft;
+    tl->setTypeY(QCPItemPosition::ptViewportRatio);
+    tl->setCoords(r.min,0);
+    addItem(ir);
+  }
+
+  replot();
 }
 
 //------------------------------------------------------------------------------

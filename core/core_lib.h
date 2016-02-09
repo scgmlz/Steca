@@ -9,7 +9,7 @@
 
 namespace core {
 
-///< a range of values (a closed interval) // TODO make it right-open?
+/// a range of values (a closed interval) // TODO make it right-open?
 struct Range {
   Range();
   Range(qreal val);
@@ -23,13 +23,36 @@ struct Range {
   void set(qreal val);            ///< both min and max = val
   void set(qreal min,qreal max);  ///< must be: min<=max
   void safeSet(qreal,qreal);      ///< will be set in the right order min/max
+  static Range safeFrom(qreal,qreal);
 
   void extend(qreal val);         ///< extend to include val
   void extend(Range const&);      ///< extend to include the other range
-  bool contains(qreal val) const;
+
+  bool contains(qreal val)      const;
+  bool contains(Range const&)   const;
+  bool intersects(Range const&) const;
 };
 
-// TODO see if all three-times-two are needed, diskcassemble?
+/// A set of non-overlapping ranges
+class Ranges {
+public:
+  Ranges();
+  typedef QVector<Range> ranges_t;
+
+  ranges_t const& getData() const {
+    return ranges;
+  }
+
+  bool add(Range const&);
+  bool rem(Range const&);
+
+  void sort();
+
+private:
+  ranges_t ranges;
+};
+
+// TODO see if all three-times-two are needed, disassemble?
 struct Borders {
   Range
     gamma,
