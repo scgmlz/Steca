@@ -6,16 +6,10 @@
 
 #include "panel.h"
 #include "core_dataset.h"
+#include "core_lib.h"
 #include "../3rd/qcustomplot.h"
 
 namespace panel {
-
-struct Dgram { // TODO rename
-  QVector<qreal> tth,inten; qreal maxInten;
-  void clear();
-  bool isEmpty() const { return tth.isEmpty(); }
-  void append(qreal tth,qreal inten);
-};
 
 class DiffractogramPlot;
 
@@ -23,9 +17,13 @@ class DiffractogramPlotOverlay: public QWidget {
   SUPER(DiffractogramPlotOverlay,QWidget)
 public:
   DiffractogramPlotOverlay(DiffractogramPlot&);
+
+  void setMargins(int left,int right);
+
 private:
   DiffractogramPlot& plot;
   QColor addColor, remColor, color;
+  int marginLeft, marginRight;
 
 protected:
   void enterEvent(QEvent*);
@@ -36,8 +34,8 @@ protected:
 
   void paintEvent(QPaintEvent*);
 
-  bool  hasCursor, mouseDown;
-  int   cursorPos, mouseDownPos;
+  bool hasCursor, mouseDown;
+  int  cursorPos, mouseDownPos;
 
   void updateCursorRegion();
 };
@@ -45,9 +43,16 @@ protected:
 class DiffractogramPlot: public QCustomPlot {
   SUPER(DiffractogramPlot,QCustomPlot)
 public:
-  DiffractogramPlot();
+  enum Tool {
+    TOOL_NONE,
+    TOOL_BACKGROUND,
+  };
 
-  void plot(Dgram const&);
+  DiffractogramPlot();
+  void setTool(Tool);
+  Tool getTool() const { return tool; }
+
+  void plot(core::TI_Data const&);
 
   core::Range fromPixels(int,int);
   void addBg(core::Range const&);
@@ -58,6 +63,7 @@ protected:
   void resizeEvent(QResizeEvent*);
 
 private:
+  Tool tool;
   QCPGraph *graph;
   DiffractogramPlotOverlay *overlay;
 
@@ -78,7 +84,7 @@ private:
 
   DiffractogramPlot *plot;
 
-  Dgram dgram;
+  core::TI_Data dgram;
   void calcDgram();
 };
 

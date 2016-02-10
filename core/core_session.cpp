@@ -5,8 +5,12 @@ namespace core {
 
 Session::Session()
 : dataFiles(), corrFile(), imageSize(), geometry()
-, imageTransform(ImageTransform::NONE)
+, imageTransform(ImageTransform::ROTATE_0)
 , lastCalcTthMitte(0), hasNaNs(false) {
+
+#ifdef DEVELOPMENT
+   calcBGCorrectionPolynomial(core::Ranges(),core::TI_Data());
+#endif
 }
 
 Session::~Session() {
@@ -280,6 +284,36 @@ Session::AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
   }
 
   return angleCorrArray;
+}
+
+Polynomial Session::calcBGCorrectionPolynomial(Ranges const& ranges,TI_Data const& vecSpec) {
+  if (ranges.isEmpty())
+    return Polynomial();
+
+  Curve curve;
+
+  ASSERT(vecSpec.isOrdered())
+
+  auto tth   = vecSpec.getTth();
+  auto inten = vecSpec.getInten();
+
+  uint i = 0, count = tth.count();
+  for (auto const& range: ranges.getData()) {
+    while (i<count && tth[i] <  range.min)
+      ++i;
+    while (i<count && tth[i] <= range.max) {
+      curve.addPoint(Curve::Point(tth[i],inten[i]));
+      ++i;
+    }
+  }
+
+//  ApproximationTools::FittingLevenbergMarquardt approximation;
+//  approximation.addFunction(dynamic_cast<ApproximationTools::Function*>(&polynomial));
+//  approximation.setApproximationCompareWithLastAccepted(false);
+//  approximation.fitWithoutCheck(curve);
+//  polynomial = *(dynamic_cast<ApproximationTools::Polynomial*>(approximation.getFunction()));
+
+//  return true;
 }
 
 void Session::calcIntensCorrArray() {

@@ -8,6 +8,7 @@
 #include "core_lib.h"
 #include "core_file.h"
 #include "core_array2d.h"
+#include "core_approximation.h"
 #include <QPoint>
 
 namespace core {
@@ -63,8 +64,7 @@ public: // image transform
   /// Image transform - rotation and mirroring
   struct ImageTransform {
     enum e {
-      NONE            = 0,
-      ROTATE_0        = 0,  // no rotation, same as NONE
+      ROTATE_0        = 0,  // no transform
       ROTATE_1        = 1,  // one quarter
       ROTATE_2        = 2,  // two quarters
       ROTATE_3        = 3,  // three quarters
@@ -75,10 +75,10 @@ public: // image transform
       MIRROR_ROTATE_3 = MIRROR | ROTATE_3,
     } val;
 
-    ImageTransform(int val = NONE);            ///< clamps val appropriately
-    ImageTransform mirror(bool on)     const;  ///< adds/removes the mirror flag
+    ImageTransform(int val = ROTATE_0);             ///< clamps val appropriately
+    ImageTransform mirror(bool on)          const;  ///< adds/removes the mirror flag
     ImageTransform rotateTo(ImageTransform) const;  ///< rotates, but keeps the mirror flag
-    ImageTransform nextRotate()        const;  ///< rotates by one quarter-turn
+    ImageTransform nextRotate()             const;  ///< rotates by one quarter-turn
 
     bool isTransposed() const { return 0 != (val&1); }
 
@@ -101,7 +101,7 @@ public:
 
 protected: // corrections TODO make private
   // TODO rename;
-  typedef core::Array2D<Pixpos> AngleCorrArray;
+  typedef Array2D<Pixpos> AngleCorrArray;
   AngleCorrArray angleCorrArray;
   Borders        ful, cut;
 
@@ -115,6 +115,9 @@ protected: // corrections TODO make private
 
 public:
   AngleCorrArray const& calcAngleCorrArray(qreal tthMitte);  // TODO rename; TODO if too slow, cache
+
+public:
+  Polynomial calcBGCorrectionPolynomial(Ranges const&,TI_Data const&);
 
 public: // TODO not public
   Image intensCorrArray;  // summed corrFile intensities

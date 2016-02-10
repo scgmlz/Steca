@@ -20,6 +20,8 @@ struct Range {
   void invalidate();              ///< make NaN
   bool isValid() const;
 
+  void maximize();                ///< make -inf .. + inf
+
   void set(qreal val);            ///< both min and max = val
   void set(qreal min,qreal max);  ///< must be: min<=max
   void safeSet(qreal,qreal);      ///< will be set in the right order min/max
@@ -33,11 +35,13 @@ struct Range {
   bool intersects(Range const&) const;
 };
 
-/// A set of non-overlapping ranges
+/// A set of *sorted* non-overlapping ranges
 class Ranges {
 public:
   Ranges();
   typedef QVector<Range> ranges_t;
+
+  bool isEmpty() const;
 
   ranges_t const& getData() const {
     return ranges;
@@ -46,9 +50,8 @@ public:
   bool add(Range const&);
   bool rem(Range const&);
 
-  void sort();
-
 private:
+  void sort();
   ranges_t ranges;
 };
 
@@ -85,6 +88,31 @@ struct Pixpos {  // TODO bad name
 // conversion
 qreal deg_rad(qreal rad);         ///< conversion: degrees <= radians
 qreal rad_deg(qreal deg);         ///< conversion: radians <= degrees
+
+/// A set of datapoints.
+// TODO better name!
+class TI_Data {
+public:
+  TI_Data();
+
+  typedef QVector<qreal> data_t;
+
+  void clear();
+  bool isEmpty() const;
+  bool isOrdered() const;
+
+  void append(qreal tth,qreal inten);
+
+  data_t const& getTth()        const { return tth;   }
+  data_t const& getInten()      const { return inten; }
+
+  Range const&  getTthRange()   const { return tthRange;   }
+  Range const&  getIntenRange() const { return intenRange; }
+
+private:
+  data_t tth, inten;  // always the same count()
+  Range tthRange, intenRange;
+};
 
 }
 

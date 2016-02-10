@@ -102,7 +102,7 @@ void MainWin::initActions() {
   session->actImageRotate = simple("Rotate", ":/icon/rotate0");
   session->actImageMirror = toggle("Mirror", ":/icon/mirror_horz");
 
-  actBackgroundBackground = simple("Background",    ":/icon/background");
+  actBackgroundBackground = toggle("Background",    ":/icon/background");
   actBackgroundEye        = simple("BackgroundEye", ":/icon/eye");
 
   actHasBeamOffset        = toggle("Beam centre offset", ":/icon/eye"); // TODO icon
@@ -294,14 +294,11 @@ void MainWin::show() {
   super::show();
   checkActions();
 #ifdef DEVELOPMENT
-  try {
-    session->load(QFileInfo("/Users/igb/Q/STeCa/data/q.ste"));
-  } catch (...) {
-    try {
-      session->load(QFileInfo("/home/jan/q.ste"));
-    } catch (...) {
-    }
-  }
+#ifdef Q_OS_OSX
+  session->load(QFileInfo("/Users/igb/Q/STeCa/data/q.ste"));
+#else
+  session->load(QFileInfo("/home/jan/q.ste"));
+#endif
 #endif
 }
 

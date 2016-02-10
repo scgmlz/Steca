@@ -4,22 +4,19 @@
 
 namespace panel {
 
-void Dgram::clear() {
-  tth.clear(); inten.clear();
-  maxInten = 0;
-}
-
-void Dgram::append(qreal tth_,qreal inten_) {
-  tth.append(core::deg_rad(tth_)); inten.append(inten_);
-  maxInten = qMax(maxInten,inten_);
-}
-
 DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& plot_)
 : super(&plot_), plot(plot_), hasCursor(false), mouseDown(false), cursorPos(0)
 , mouseDownPos(0) {
+
   setMouseTracking(true);
+  setMargins(0,0);
+
   addColor = QColor(0xff,0xf0,0xf0,0x80);
   remColor = QColor(0xf0,0xf0,0xff,0x80);
+}
+
+void DiffractogramPlotOverlay::setMargins(int left, int right) {
+  marginLeft = left; marginRight = right;
 }
 
 void DiffractogramPlotOverlay::enterEvent(QEvent*) {
@@ -44,15 +41,21 @@ void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
   update();
 
   core::Range range(plot.fromPixels(mouseDownPos,cursorPos));
-  if (Qt::LeftButton == e->button())
-    plot.addBg(range);
-  else
-    plot.remBg(range);
+  switch (plot.getTool()) {
+  case DiffractogramPlot::TOOL_BACKGROUND: {
+    if (Qt::LeftButton == e->button())
+      plot.addBg(range);
+    else
+      plot.remBg(range);
+  }
+  default:
+    break;
+  }
 }
 
 void DiffractogramPlotOverlay::mouseMoveEvent(QMouseEvent* e) {
   updateCursorRegion();
-  cursorPos = e->x();
+  cursorPos = qBound(marginLeft,e->x(),width()-marginRight);
   updateCursorRegion();
   if (mouseDown) update();
 }
@@ -90,8 +93,10 @@ DiffractogramPlot::DiffractogramPlot() {
   QFontMetrics fontMetrics(font());
   int em = fontMetrics.width('M'), ascent = fontMetrics.ascent();
 
+  QMargins margins(3*em,ascent,em,2*ascent);
   ar->setAutoMargins(QCP::msNone);
-  ar->setMargins(QMargins(3*em,ascent,em,2*ascent));
+  ar->setMargins(margins);
+  overlay->setMargins(margins.left(),margins.right());
 
   // colours
   setBackground(palette().background().color());
@@ -102,21 +107,29 @@ DiffractogramPlot::DiffractogramPlot() {
 
   // background regions
   addLayer("bg",layer("background"),QCustomPlot::limAbove);
+
+  setTool(TOOL_NONE);
 }
 
-void DiffractogramPlot::plot(Dgram const& dgram) {
+void DiffractogramPlot::setTool(Tool tool_) {
+  tool = tool_;
+}
+
+void DiffractogramPlot::plot(core::TI_Data const& dgram) {
   if (dgram.isEmpty()) {
     xAxis->setVisible(false);
     yAxis->setVisible(false);
 
     graph->clearData();
   } else {
-    xAxis->setRange(dgram.tth.first(),dgram.tth.last());
-    yAxis->setRange(0,dgram.maxInten);
+    auto tthRange   = dgram.getTthRange();
+    auto intenRange = dgram.getIntenRange();
+    xAxis->setRange(tthRange.min,tthRange.max);
+    yAxis->setRange(intenRange.min,intenRange.max);
     xAxis->setVisible(true);
     yAxis->setVisible(true);
 
-    graph->setData(dgram.tth,dgram.inten);
+    graph->setData(dgram.getTth(),dgram.getInten());
   }
 
   replot();
@@ -178,6 +191,11 @@ Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
   connect(&session, &Session::geometryChanged, [this]() {
     refresh();
   });
+
+  connect(mainWin.actBackgroundBackground, &QAction::toggled, [this](bool on) {
+    // TODO clear background ?!
+    plot->setTool(on ? DiffractogramPlot::TOOL_BACKGROUND : DiffractogramPlot::TOOL_NONE);
+  });
 }
 
 void Diffractogram::setDataset(core::shp_Dataset dataset_) {
@@ -196,7 +214,7 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   if (!dataset) return;
 
   // do this first! (e.g. before getCut())
-  auto angles = session.calcAngleCorrArray(dataset->tthMitte());
+  auto angles   = session.calcAngleCorrArray(dataset->tthMitte());
 
   auto image    = dataset->getImage();
   auto imageCut = session.getImageCut();
@@ -240,7 +258,7 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   for_i(width) {
     auto in = intens_vec[i]; auto cnt = counts_vec[i];
     if (cnt > 0) in /= cnt;
-    dgram.append(TTHMin + deltaTTH*i,in);
+    dgram.append(core::deg_rad(TTHMin + deltaTTH*i),in);
   }
 }
 

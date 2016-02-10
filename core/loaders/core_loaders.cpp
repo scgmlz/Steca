@@ -148,7 +148,7 @@ QVector<shp_Dataset> loadCaress(File &file) THROWS {
             convertedIntens[i] = intens[i];
 
           QSize size(detRel,detRel);
-        #ifdef DEVELOPMENT
+        #ifdef DEVELOPMENT_FAKE
           size.rheight() /= 2;
         #endif
 

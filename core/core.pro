@@ -22,7 +22,8 @@ HEADERS += \
     core_array2d.h \
     loaders/Mar/mar300_header.h \
     loaders/Mar/mar345_header.h \
-    loaders/Mar/MarReader.h
+    loaders/Mar/MarReader.h \
+    core_approximation.h
 
 SOURCES += \
     loaders/Caress/raw.cpp \
@@ -34,7 +35,8 @@ SOURCES += \
     core_session.cpp \
     core_lib.cpp \
     loaders/core_loaders.cpp \
-    core_array2d.cpp
+    core_array2d.cpp \
+    core_approximation.cpp
 
 DISTFILES += \
     README \

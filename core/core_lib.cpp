@@ -1,11 +1,13 @@
 #include "core_lib.h"
 
 #include <QSize>
-#include <math.h>
+#include <qmath.h>
+#include <numeric>
 
 namespace core {
 
 Range::Range() {
+  std::numeric_limits<qreal>::max();
   invalidate();
 }
 
@@ -23,6 +25,10 @@ void Range::invalidate() {
 
 bool Range::isValid() const {
   return ! (qIsNaN(min) || qIsNaN(max));
+}
+
+void Range::maximize() {
+  set(-qInf(), +qInf());
 }
 
 void Range::set(qreal val) {
@@ -73,6 +79,10 @@ bool Range::intersects(Range const& that) const {
 Ranges::Ranges() {
 }
 
+bool Ranges::isEmpty() const {
+  return ranges.isEmpty();
+}
+
 bool Ranges::add(Range const& range) {
   ranges_t newRanges;
 
@@ -90,6 +100,8 @@ bool Ranges::add(Range const& range) {
 
   newRanges.append(newRange);
   ranges = newRanges;
+  sort();
+
   return true;
 }
 
@@ -159,6 +171,38 @@ void Borders::invalidate() {
 
 bool Borders::isValid() const {
   return gamma.isValid() && tth_regular.isValid() && tth_gamma0.isValid();
+}
+
+TI_Data::TI_Data() {
+}
+
+void TI_Data::clear() {
+  tth.clear();
+  inten.clear();
+  tthRange.invalidate(); intenRange.invalidate();
+}
+
+bool TI_Data::isEmpty() const {
+  ASSERT(tth.count() == inten.count())
+  return tth.isEmpty();
+}
+
+void TI_Data::append(qreal tth_, qreal inten_) {
+  tth.append(tth_);
+  inten.append(inten_);
+
+  tthRange.extend(tth_);
+  intenRange.extend(inten_);
+}
+
+bool TI_Data::isOrdered() const {
+  qreal lastVal = -qInf();
+  for (qreal val: tth) {
+    if (lastVal >= val) return false;
+    lastVal = val;
+  }
+
+  return true;
 }
 
 }
