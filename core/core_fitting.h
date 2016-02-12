@@ -89,20 +89,19 @@ protected:
 
 protected:
   void _createParameterArrays(reals_t &parameter, reals_t &parameterMaxLimit, reals_t &parameterMinLimit) const;
-  bool _readParameterArray(reals_t &parameter, reals_t &parameterError);
-  bool _readParameterArrayWithoutCheck(reals_t &parameter, reals_t &parameterError);
+  bool _readParameterArray(qreal *parameter);
+  void _readParameterArrayWithoutCheck(qreal *parameter);
 
 protected:
   virtual void _approximation(qreal *parameter /*IO*/,
                               qreal *parameterLimitMax /*I*/,
                               qreal *parameterLimitMin /*I*/,
-                              qreal *parameterError /*O*/,
                               uint numberOfParameter /*I*/,
                               qreal *yValues /*I*/,
                               uint numberOfDataPoints /*I*/);
 
 private:
-//  void __functionLLS(reals_t &parameter, reals_t &data, int parameterLength, int dataLength, void *adata);
+  void __functionLLS(qreal *parameter, qreal *data, int parameterLength, int dataLength, void *adata);
 
 protected:
   //Temporary member for the optimization routine.
@@ -131,7 +130,6 @@ protected:
   void _approximation(qreal *parameter /*IO*/,
                               qreal *parameterLimitMax /*I*/,
                               qreal *parameterLimitMin /*I*/,
-                              qreal *parameterError /*O*/,
                               uint numberOfParameter /*I*/,
                               qreal *yValues /*I*/,
                               uint numberOfDataPoints /*I*/);

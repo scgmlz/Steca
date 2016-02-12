@@ -19,9 +19,8 @@ public:
     qreal getValue() const;
     Range getRange() const;
 
-    bool checkValue(qreal);
-
-//    bool setValue(qreal, bool force=false);
+    bool  checkValue(qreal);
+    bool  setValue(qreal, bool force=false);
 
     //    void setName(std::string name);
   //    bool setValue(qreal value
@@ -72,9 +71,15 @@ public:
   void setParameterCount(uint);
   uint getParameterCount() const;
 
-  parameters_t const& getParameters() const {
+  parameters_t& getParameters() {
     return parameters;
   }
+
+  parameters_t const& getParameters() const {
+    return const_cast<Function*>(this)->getParameters();
+  }
+
+  virtual qreal __calculateY(qreal x) = 0;
 
 protected:
   parameters_t parameters;
@@ -137,11 +142,6 @@ protected:
   //This FIT Function do not have the mathematical code, because of the inline replacement.
   //The implementation must be done inside the child's to allow the compiler the inline replacement of the private calc function from the child's.
 //  virtual qreal _getY(const qreal &x /*I: x value of the data point*/, const std::vector<qreal> &parameter /*I: parameter of the function*/) = 0;
-//  virtual bool _addY(const qreal *x /*I: x values of the curve*/,
-//                     const unsigned int &xLength /*I: number of data points of the curve*/,
-//                     const std::vector<qreal> &parameter /*I: parameter of the function*/,
-//                     qreal *y /*O: calculated values of the curve*/,
-//                     const unsigned int &yLength /*size of the allocated y array*/) = 0;
 
 //  virtual std::vector<qreal> _getDyda(const qreal &x /*I: x value of the data point*/, const std::vector<qreal> &parameter /*I: parameter of the function*/) = 0;
 //  virtual bool _addDyda(const qreal *x /*I: x values of the curve*/,
@@ -171,11 +171,6 @@ private:
   //This FIT Function can't be moved to the abstract father, because of the inline replacement.
   //The implementation must be done here to allow the compiler the inline replacement of the private calc function.
 //  qreal _getY(const qreal &x /*I: x value of the data point*/, const std::vector<qreal> &parameter /*I: parameter of the function*/);
-//  bool _addY(const qreal *x /*I: x values of the curve*/,
-//             const unsigned int &xLength /*I: number of data points of the curve*/,
-//             const std::vector<qreal> &parameter /*I: parameter of the function*/,
-//             qreal *y /*O: calculated values of the curve*/,
-//             const unsigned int &yLength /*size of the allocated y array*/);
 
 //  std::vector<qreal> _getDyda(const qreal &x /*I: x value of the data point*/, const std::vector<qreal> &parameter /*I: parameter of the function*/);
 //  bool _addDyda(const qreal *x /*I: x values of the curve*/,
@@ -187,7 +182,7 @@ private:
 //                const unsigned int &jacobianLength /*size of the allocated jacobian matrix*/);
 
   //Implementation of the calculation
-//  qreal __calculateY(const qreal &x /*I: x value of the data point*/, const std::vector<qreal> &parameter /*I: parameter of the function*/);
+  qreal __calculateY(qreal x);
 //  bool __calculateDyda(const qreal &x /*I: x value of the data point*/, const std::vector<qreal> &parameter /*I: parameter of the function*/,
 //                       const unsigned int &positionInsideTarget /*I: Position where the values are written. e.g.: If it is the second function and the first has 3 parameter, this value must be 3.*/,
 //                       qreal *target /*O: calculated jacobian matrix*/,

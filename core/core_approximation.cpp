@@ -74,18 +74,20 @@ bool Function::Parameter::checkValue(qreal v) {
   return true;
 }
 
+bool Function::Parameter::setValue(qreal value_, bool force) {
+  if (!force && !checkValue(value_))
+    return false;
+
+  value = value_;
+  return true;
+}
+
 //void FunctionParameter::setName(std::string name)
 //{
 //    this->_name = name;
 //}
 
-//bool FunctionParameter::setValue(qreal value)
-//{
-//    if (!this->checkValueWithCurrentSideCondition(value))
-//        return false;
-//    this->_value = value;
-//    return true;
-//}
+
 //bool FunctionParameter::setValue(qreal value, qreal errorAbsolute)
 //{
 //    if (!this->checkValueWithCurrentSideCondition(value))
@@ -310,17 +312,7 @@ Polynomial::Polynomial(uint degree) {
 //{
 //    return this->__calculateY(x, parameter);
 //}
-//bool Polynomial::_addY(const qreal *x, const uint &xLength, const std::vector<qreal> &parameter, qreal *y, const uint &yLength)
-//{
-//    if (xLength != yLength)
-//        return false;
 
-//    for (uint i=0; i<xLength; i++)
-//    {
-//        y[i] += this->__calculateY(x[i], parameter);
-//    }
-//    return true;
-//}
 //std::vector<qreal> Polynomial::_getDyda(const qreal &x, const std::vector<qreal> &parameter)
 //{
 //    qreal *jacobianPart = new qreal[parameter.size()];
@@ -359,17 +351,14 @@ Polynomial::Polynomial(uint degree) {
 
 //    //return false;
 //}
-//#ifdef _MSC_VER
-//__forceinline qreal Polynomial::__calculateY(const qreal &x, const std::vector<qreal> &parameter)
-//#else
-//inline  qreal Polynomial::__calculateY(const qreal &x, const std::vector<qreal> &parameter)
-//#endif
-//{
-//    qreal value = 0;
-//    for (uint i=0; i<parameter.size(); i++)
-//        value += parameter[i] * pow(x, (int)i);
-//    return value;
-//}
+
+qreal Polynomial::__calculateY(qreal x) {
+  qreal value = 0;
+  for_i(parameters.count())
+    value += parameters[i].getValue() * pow(x,i);
+  return value;
+}
+
 //#ifdef _MSC_VER
 //__forceinline bool Polynomial::__calculateDyda(const qreal &x, const std::vector<qreal> &parameter, const uint &positionInsideTarget, qreal *target, const uint &targetLength)
 //#else

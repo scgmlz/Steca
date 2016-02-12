@@ -184,20 +184,20 @@ bool FittingLinearLeastSquare::_fit(Curve &curve, bool sideConditionCheckIsActiv
     curve.getCurve(_workingXValues, workingYValues, toleranz);
 
     //Create temporary working parameter arrays
-    reals_t parameter, parameterLimitMax, parameterLimitMin, parameterError;
+    reals_t parameter, parameterLimitMax, parameterLimitMin;
     _createParameterArrays(parameter, parameterLimitMax, parameterLimitMin);
 
     //Run Fit
     uint parameterCount = getParameterCount();
-    _approximation(parameter.data(), parameterLimitMax.data(), parameterLimitMin.data(), parameterError.data(), parameterCount, workingYValues.data(), curve.getCurveSize());
+    _approximation(parameter.data(), parameterLimitMax.data(), parameterLimitMin.data(), parameterCount, workingYValues.data(), curve.getCurveSize());
 
     //Read final parameter and check the limits of the new calculated Parameters
     if (sideConditionCheckIsActive) {
-      if (_readParameterArray(parameter, parameterError))
+      if (_readParameterArray(parameter.data()))
         return true;
     } else {
-      if (_readParameterArrayWithoutCheck(parameter, parameterError))
-        return true;
+      _readParameterArrayWithoutCheck(parameter.data());
+      return true;
     }
 
     return false;
@@ -207,7 +207,7 @@ void FittingLinearLeastSquare::_createParameterArrays(reals_t &parameter, reals_
   // TODO make type Parameter: val, Range
   parameter.clear(); parameterMaxLimit.clear(); parameterMinLimit.clear();
   for (auto const& fun: functions) {
-    for (auto par: fun.getParameters()) {
+    for (auto const& par: fun.getParameters()) {
       parameter.append(par.getValue());
       auto range = par.getRange();
       parameterMinLimit.append(range.min);
@@ -216,65 +216,38 @@ void FittingLinearLeastSquare::_createParameterArrays(reals_t &parameter, reals_
   }
 }
 
-bool FittingLinearLeastSquare::_readParameterArray(reals_t &parameter, reals_t &parameterError) {
-//  //Read Result of the Fit
-//  bool error = false;
-//  uint arrayCounter = 0;
-//  for (uint i=0; i<this->_functionVecWorkingCopy.size(); i++)
-//  {
-//    for (uint j=0; j<this->_functionVecWorkingCopy[i]->getParameterNumber(); j++)
-//    {
-//      //Ckeck erfolgt beim setzen
-//      if (!this->_functionVecWorkingCopy[i]->setParameterWithConditionalCheck(parameter[arrayCounter], j)) error = true;
-//      if (!this->_functionVecWorkingCopy[i]->setParameterErrorAbsoluteWithConditionalCheck(parameterError[arrayCounter], parameter[arrayCounter], j)) error = true;
-//      arrayCounter++;
-//      if (arrayCounter > numberOfParameters)
-//        return false;
-//    }
-//  }
+bool FittingLinearLeastSquare::_readParameterArray(qreal *parameter) {
+  functions_t fs = functions;
+  for (auto &f: fs) {
+    for (auto &par: f.getParameters()) {
+      if (!par.setValue(*parameter++))
+        return false;
+    }
+  }
 
-//  if (error)
-//  {
-//    //cout << "LM::getParameter(): parameter was not accepted" << endl;
-//    return false;
-//  }
+  functions = fs;
   return true;
 }
 
-bool FittingLinearLeastSquare::_readParameterArrayWithoutCheck(reals_t &parameter, reals_t &parameterError) {
-//  //Read Result of the Fit
-//  uint arrayCounter = 0;
-//  for (uint i=0; i<this->_functionVecWorkingCopy.size(); i++)
-//  {
-//    for (uint j=0; j<this->_functionVecWorkingCopy[i]->getParameterNumber(); j++)
-//    {
-//      this->_functionVecWorkingCopy[i]->setParameter(parameter[arrayCounter], j);
-//      this->_functionVecWorkingCopy[i]->setParameterErrorAbsolute(parameterError[arrayCounter], j);
-//      arrayCounter++;
-//      if (arrayCounter > numberOfParameters)
-//        return false;
-//    }
-//  }
-  return true;
+void FittingLinearLeastSquare::_readParameterArrayWithoutCheck(qreal *parameter) {
+  for (auto &f: functions) {
+    for (auto &par: f.getParameters()) {
+      par.setValue(*parameter++,true);
+    }
+  }
 }
 
 void FittingLinearLeastSquare::_approximation(qreal *parameter,
                                                                  qreal *parameterLimitMax,
                                                                  qreal *parameterLimitMin,
-                                                                 qreal *parameterError,
                                                                  uint numberOfParameter,
                                                                  qreal *yValues,
                                                                  uint numberOfDataPoints)
 {
-//    //Start measurement of the calculation time
-//#if defined(_MSC_VER)
-//    StartTimer();
-//#endif
+  reals_t covar(numberOfParameter*numberOfParameter);
+  qreal info[LM_INFO_SZ];
 
-//    //Fit
-//    qreal *covar = new qreal[numberOfParameter*numberOfParameter];
-//    qreal info[LM_INFO_SZ];
-//    DelegateCalculationDbl function(this, &FittingLinearLeastSquare::__functionLLS);
+  DelegateCalculationDbl function(this, &FittingLinearLeastSquare::__functionLLS);
 //    dlevmar_bc_dif( &function					/* Function */,
 //                                      parameter					/* I/O: initial parameter estimates. On output has the estimated solution */,
 //                                      yValues					/* Input: measurement vector. NULL implies a zero vector */,
@@ -326,28 +299,11 @@ void FittingLinearLeastSquare::_approximation(qreal *parameter,
 //    //********** END ***********
 //    //*** Write Error Values ***
 
-//    ////*** Debug Infos ***
-//    ////***** START *******
-//    ////Print Info
-//    //printf("returned in %g iterations, reason %g, sumsq %g [%g]\n", info[5], info[6], info[1], info[0]);
-
-
-//    //Delete temporary values
-//    delete covar;
-
-//    //Measure the calculation time and number of calls
-//    uint time=0;
-//#if defined(_MSC_VER)
-//    time = GetDeltaTime();
-//#endif
-//    this->_numberOfCalls++;
-//    this->_usedTime += time;
-
 //    return true;
 }
 
-//void FittingLinearLeastSquare::__functionLLS(qreal *parameter, qreal *data, int parameterLength, int dataLength, void *adata)
-//{
+void FittingLinearLeastSquare::__functionLLS(qreal *parameter, qreal *data, int parameterLength, int dataLength, void *adata)
+{
 //    // Option A (fastest)
 //    //*******************
 //    //Prepare the parameter vectors for every function
@@ -412,19 +368,16 @@ void FittingLinearLeastSquare::_approximation(qreal *parameter,
 //    //	}
 //    //	data[i] = y;
 //    //}
-//}
-////*** End FittingLinearLeastSquare ***
+}
 
 ////*** FittingLevenbergMarquardt ***
 void FittingLevenbergMarquardt::_approximation( qreal *parameter /*IO*/,
                                                 qreal *parameterLimitMax /*I*/,
                                                 qreal *parameterLimitMin /*I*/,
-                                                qreal *parameterError /*O*/,
                                                 uint numberOfParameter /*I*/,
                                                 qreal *yValues /*I*/,
                                                 uint numberOfDataPoints /*I*/)
 {
-    //Fit
     reals_t covar(numberOfParameter*numberOfParameter);
     qreal info[LM_INFO_SZ], opts[LM_OPTS_SZ];
     opts[0] = LM_INIT_MU;
@@ -468,151 +421,63 @@ void FittingLevenbergMarquardt::_approximation( qreal *parameter /*IO*/,
       ); // with analytic Jacobian
 }
 
-void FittingLevenbergMarquardt::__functionLM(qreal *parameter, qreal *data, int parameterLength, int dataLength, void *adata) {
-//    // Option A (fastest)
-//    //*******************
-//    //Prepare the parameter vectors for every function
-//    uint numberOfFunctions = (uint)this->_functionVecWorkingCopy.size();
-//    int parameterCounter=0;
-//    std::vector<std::vector<qreal> > functionParameterVector;
-//    for (uint j=0; j<numberOfFunctions; j++)
-//    {
-//        std::vector<qreal> tempParameter;
-//        for (uint k=0; k<this->_functionVecWorkingCopy[j]->getParameterNumber(); k++)
-//            tempParameter.push_back(parameter[parameterCounter++]);
-//        functionParameterVector.push_back(tempParameter);
-//        if (parameterCounter > parameterLength)
-//            return;
-//    }
-//    //Calculate y
-//    memset(data, 0, dataLength * sizeof(qreal));
-//    for (uint j=0; j<numberOfFunctions; j++)
-//    {
-//        if (!this->_functionVecWorkingCopy[j]->_addY(this->_workingXValues, dataLength, functionParameterVector[j], data, dataLength))
-//            return;
-//    }
+void FittingLevenbergMarquardt::__functionLM(qreal *parameter, qreal *data, int parameterLength, int dataLength, void*) {
+//  uint numberOfFunctions = (uint)this->_functionVecWorkingCopy.size();
+//  int parameterCounter=0;
+//  std::vector<std::vector<qreal> > functionParameterVector;
+//  for (uint j=0; j<numberOfFunctions; j++)
+//  {
+//    std::vector<qreal> tempParameter;
+//    for (uint k=0; k<this->_functionVecWorkingCopy[j]->getParameterNumber(); k++)
+//      tempParameter.push_back(parameter[parameterCounter++]);
+//    functionParameterVector.push_back(tempParameter);
+//    if (parameterCounter > parameterLength)
+//      return;
+//  }
 
-//    //// Option B (fast)
-//    ////******************
-//    ////Prepare the parameter vectors for every function
-//    //uint numberOfFunctions = (uint)this->_functionVecWorkingCopy.size();
-//    //int parameterCounter=0;
-//    //std::vector<std::vector<qreal>> functionParameterVector;
-//    //for (uint j=0; j<numberOfFunctions; j++)
-//    //{
-//    //	std::vector<qreal> tempParameter;
-//    //	for (uint k=0; k<this->_functionVecWorkingCopy[j]->getParameterNumber(); k++)
-//    //		tempParameter.push_back(parameter[parameterCounter++]);
-//    //	functionParameterVector.push_back(tempParameter);
-//    //}
-//    ////Calculate y
-//    //for(int i=0; i<dataLength; i++)
-//    //{
-//    //	qreal y=0;
-//    //	for (uint j=0; j<numberOfFunctions; j++)
-//    //	{
-//    //		y+=this->_functionVecWorkingCopy[j]->_getY(this->_workingXValues[i], functionParameterVector[j]);
-//    //	}
-//    //	data[i] = y;
-//    //}
+  //Calculate y
+  memset(data, 0, dataLength * sizeof(qreal));
+  for_i (functions.count()) {
+//    ecah workingxval x
+    data[i] += functions[i].__calculateY(x);
+  }
 
-//    //// Option C (normal)
-//    ////******************
-//    ////Calculate y
-//    //for(int i=0; i<dataLength; i++)
-//    //{
-//    //	int counter=0;
-//    //	qreal y=0;
-//    //	for (uint j=0; j<this->_functionVecWorkingCopy.size(); j++)
-//    //	{
-//    //		std::vector<qreal> tempParameter;
-//    //		for (uint k=0; k<this->_functionVecWorkingCopy[j]->getParameterNumber(); k++)
-//    //			tempParameter.push_back(parameter[counter++]);
-
-//    //		y+=this->_functionVecWorkingCopy[j]->_getY(this->_workingXValues[i], tempParameter);
-//    //	}
-//    //	data[i] = y;
-//    //}
+  for (uint j=0; j<numberOfFunctions; j++)
+  {
+    if (!this->_functionVecWorkingCopy[j]->_addY(_workingXValues, functionParameterVector[j], data))
+      return;
+  }
 }
-void FittingLevenbergMarquardt::__functionJacobianLM(qreal *parameter, qreal *jacobian, int parameterLength, int dataLength, void *adata) {
-//    // Option A (fastest)
-//    //*******************
-//    //Prepare the parameter vectors for every function
-//    uint numberOfFunctions = (uint)this->_functionVecWorkingCopy.size();
-//    int parameterCounter=0;
-//    std::vector<std::vector<qreal> > functionParameterVector;
-//    for (uint j=0; j<numberOfFunctions; j++)
-//    {
-//        std::vector<qreal> tempParameter;
-//        for (uint k=0; k<this->_functionVecWorkingCopy[j]->getParameterNumber(); k++)
-//            tempParameter.push_back(parameter[parameterCounter++]);
-//        functionParameterVector.push_back(tempParameter);
-//    }
-//    //Calculate dyda
-//    memset(jacobian, 0, dataLength * parameterLength * sizeof(qreal));
-//    uint counterFunctionParameterLength = 0;
-//    for (uint j=0; j<numberOfFunctions; j++)
-//    {
-//        if (!this->_functionVecWorkingCopy[j]->_addDyda(this->_workingXValues			/*x values of the data curve*/,
-//                                                        dataLength						/*number of x values*/,
-//                                                        functionParameterVector[j]		/*parameter vector of all functions*/,
-//                                                        counterFunctionParameterLength	/*index inside the parameter vector fir the current function*/,
-//                                                        parameterCounter				/*number of all parameter of all functions*/,
-//                                                        jacobian						/*jacobian matrix*/,
-//                                                        dataLength * parameterLength	/*size of the jacobian matrix*/))
-//            return;
-//        counterFunctionParameterLength += (uint)functionParameterVector[j].size();
-//    }
 
-//    //// Option B (fast)
-//    ////******************
-//    ////Prepare the parameter vectors for every function
-//    //uint numberOfFunctions = (uint)this->_functionVecWorkingCopy.size();
-//    //int parameterCounter=0;
-//    //std::vector<std::vector<qreal>> functionParameterVector;
-//    //for (uint j=0; j<numberOfFunctions; j++)
-//    //{
-//    //	std::vector<qreal> tempParameter;
-//    //	for (uint k=0; k<this->_functionVecWorkingCopy[j]->getParameterNumber(); k++)
-//    //		tempParameter.push_back(parameter[parameterCounter++]);
-//    //	functionParameterVector.push_back(tempParameter);
-//    //}
-//    ////Calculate dyda
-//    //int counterDyDaOutput = 0;
-//    //for(int i=0; i<dataLength; i++)
-//    //{
-//    //	std::vector<qreal> tempDydaVec;
-//    //	for (uint j=0; j<numberOfFunctions; j++)
-//    //	{
-//    //		tempDydaVec = this->_functionVecWorkingCopy[j]->_getDyda(this->_workingXValues[i], functionParameterVector[j]);
-
-//    //		for (uint k=0; k<tempDydaVec.size(); k++)
-//    //			jacobian[counterDyDaOutput++] = tempDydaVec[k];
-//    //	}
-//    //}
-
-//    //// Option C (normal)
-//    ////******************
-//    ////Calculate dyda
-//    //int counterDyDaOutput = 0;
-//    //for(int i=0; i<dataLength; i++)
-//    //{
-//    //	std::vector<qreal> tempDydaVec;
-//    //	uint counter=0;
-//    //	for (uint j=0; j<this->_functionVecWorkingCopy.size(); j++)
-//    //	{
-//    //		std::vector<qreal> tempParameter;
-//    //		for (uint k=0; k<this->_functionVecWorkingCopy[j]->getParameterNumber(); k++)
-//    //			tempParameter.push_back(parameter[counter++]);
-
-//    //		tempDydaVec = this->_functionVecWorkingCopy[j]->_getDyda(this->_workingXValues[i], tempParameter);
-
-//    //		for (uint k=0; k<tempDydaVec.size(); k++)
-//    //			jacobian[counterDyDaOutput++] = tempDydaVec[k];
-//    //	}
-//    //}
-
-//    return;
+void FittingLevenbergMarquardt::__functionJacobianLM(qreal *parameter, qreal *jacobian, int parameterLength, int dataLength, void*) {
+  // Option A (fastest)
+  //*******************
+  //Prepare the parameter vectors for every function
+  uint numberOfFunctions = (uint)this->_functionVecWorkingCopy.size();
+  int parameterCounter=0;
+  std::vector<std::vector<qreal> > functionParameterVector;
+  for (uint j=0; j<numberOfFunctions; j++)
+  {
+    std::vector<qreal> tempParameter;
+    for (uint k=0; k<this->_functionVecWorkingCopy[j]->getParameterNumber(); k++)
+      tempParameter.push_back(parameter[parameterCounter++]);
+    functionParameterVector.push_back(tempParameter);
+  }
+  //Calculate dyda
+  memset(jacobian, 0, dataLength * parameterLength * sizeof(qreal));
+  uint counterFunctionParameterLength = 0;
+  for (uint j=0; j<numberOfFunctions; j++)
+  {
+    if (!this->_functionVecWorkingCopy[j]->_addDyda(this->_workingXValues			/*x values of the data curve*/,
+                                                    dataLength						/*number of x values*/,
+                                                    functionParameterVector[j]		/*parameter vector of all functions*/,
+                                                    counterFunctionParameterLength	/*index inside the parameter vector fir the current function*/,
+                                                    parameterCounter				/*number of all parameter of all functions*/,
+                                                    jacobian						/*jacobian matrix*/,
+                                                    dataLength * parameterLength	/*size of the jacobian matrix*/))
+      return;
+    counterFunctionParameterLength += (uint)functionParameterVector[j].size();
+  }
 }
 
 }
