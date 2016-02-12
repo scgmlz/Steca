@@ -3,12 +3,7 @@
 
 namespace core {
 
-// TODO
-#define DBL_MIN -1000
-#define DBL_MAX +1000
-
-FunctionParameter::FunctionParameter()
-{
+Function::Parameter::Parameter(): value(0) {
 //    this->_name = "unknown";
 //    this->_value = 0;
 //    this->_errorAbsolute = 0;
@@ -28,20 +23,70 @@ FunctionParameter::FunctionParameter()
 //    this->errorAbsolutMaxIsUsed = false;
 
 //    this->errorPercentMax = DBL_MAX;
-//    this->errorPercentMaxIsUsed = false;
+  //    this->errorPercentMaxIsUsed = false;
 }
+
+qreal Function::Parameter::getValue() const {
+  return value;
+}
+
+Range Function::Parameter::getRange() const {
+  return range.isValid() ? range : Range(value);
+}
+
+bool Function::Parameter::checkValue(qreal v) {
+  if (range.isValid()) {
+    if (!range.contains(v)) return false;
+  }
+
+//  if (this->valueDeltaMaxAbsoluteIsUsed)
+//  {
+//    if (qAbs(value - this->_value) > this->valueDeltaMaxAbsolute)
+//    {
+//      //std::cout << "Parameter \""
+//      //		  << this->_name.c_str()
+//      //		  << "\" is out of definition: fitted diffrent is "
+//      //		  << std::fabs(value - this->_value)
+//      //		  << ", Max different is "
+//      //		  << this->valueDeltaMaxAbsolute
+//      //		  << std::endl;
+//      return false;
+//    }
+//  }
+
+//  if (this->valueDeltaMaxPercentIsUsed)
+//  {
+//    qreal deltaPercent = qAbs(this->_value - value) / this->_value * 100;
+//    if (deltaPercent > this->valueDeltaMaxPercent)
+//    {
+//      //std::cout << "Parameter \""
+//      //		  << this->_name.c_str()
+//      //		  << "\" is out of definition: different is "
+//      //		  << deltaPercent
+//      //		  << "%, Max different is "
+//      //		  << this->valueDeltaMaxPercent
+//      //		  << "%"
+//      //		  << std::endl;
+//      return false;
+//    }
+//  }
+
+  return true;
+}
+
 //void FunctionParameter::setName(std::string name)
 //{
 //    this->_name = name;
 //}
-//bool FunctionParameter::setValue(double value)
+
+//bool FunctionParameter::setValue(qreal value)
 //{
 //    if (!this->checkValueWithCurrentSideCondition(value))
 //        return false;
 //    this->_value = value;
 //    return true;
 //}
-//bool FunctionParameter::setValue(double value, double errorAbsolute)
+//bool FunctionParameter::setValue(qreal value, qreal errorAbsolute)
 //{
 //    if (!this->checkValueWithCurrentSideCondition(value))
 //        return false;
@@ -51,14 +96,14 @@ FunctionParameter::FunctionParameter()
 //    this->_errorAbsolute = errorAbsolute;
 //    return true;
 //}
-//bool FunctionParameter::setErrorAbsolute(double errorAbsolute)
+//bool FunctionParameter::setErrorAbsolute(qreal errorAbsolute)
 //{
 //    if (!this->checkErrorAbsoluteWithCurrentSideCondition(errorAbsolute, this->_value))
 //        return false;
 //    this->_errorAbsolute = errorAbsolute;
 //    return true;
 //}
-//bool FunctionParameter::checkValueWithCurrentSideCondition(double value)
+//bool FunctionParameter::checkValueWithCurrentSideCondition(qreal value)
 //{
 //    if (this->valueLimitsIsUsed)
 //    {
@@ -94,7 +139,7 @@ FunctionParameter::FunctionParameter()
 
 //    if (this->valueDeltaMaxPercentIsUsed)
 //    {
-//        double deltaPercent = qAbs(this->_value - value) / this->_value * 100;
+//        qreal deltaPercent = qAbs(this->_value - value) / this->_value * 100;
 //        if (deltaPercent > this->valueDeltaMaxPercent)
 //        {
 //            //std::cout << "Parameter \""
@@ -111,7 +156,7 @@ FunctionParameter::FunctionParameter()
 
 //    return true;
 //}
-//bool FunctionParameter::checkErrorAbsoluteWithCurrentSideCondition(double errorAbsolute, double value/*needed to check against relativ errors*/)
+//bool FunctionParameter::checkErrorAbsoluteWithCurrentSideCondition(qreal errorAbsolute, qreal value/*needed to check against relativ errors*/)
 //{
 //    if (this->errorAbsolutMaxIsUsed)
 //    {
@@ -130,7 +175,7 @@ FunctionParameter::FunctionParameter()
 
 //    if (this->errorPercentMaxIsUsed)
 //    {
-//        double errorPercent = errorAbsolute / value * 100;
+//        qreal errorPercent = errorAbsolute / value * 100;
 //        if (errorPercent > this->errorPercentMax)
 //        {
 //            //std::cout << "Error of parameter \""
@@ -152,20 +197,29 @@ Function::Function() {
 
 //Function::Function(Function const& other)
 //{
-//    this->_parameterVector = other._parameterVector;
+//    this->parameters = other.parameters;
 //}
 Function::~Function()
 {
 }
-//void Function::_createVectors(unsigned int size)
+
+void Function::setParameterCount(uint n) {
+  parameters.fill(Parameter(),n);
+}
+
+uint Function::getParameterCount() const {
+  return parameters.count();
+}
+
+//void Function::_createVectors(uint size)
 //{
-//    this->_parameterVector.assign(size, FunctionParameter());
+//    this->parameters.assign(size, FunctionParameter());
 //}
-//void Function::_resizeVectors(unsigned int size)
+//void Function::_resizeVectors(uint size)
 //{
-//    this->_parameterVector.resize(size, FunctionParameter());
+//    this->parameters.resize(size, FunctionParameter());
 //}
-//bool Function::setParameterWithConditionalCheck(qreal value, unsigned int parameter)
+//bool Function::setParameterWithConditionalCheck(qreal value, uint parameter)
 //{
 //    if (checkParameterForCurrentSideCondition(value, parameter))
 //    {
@@ -177,7 +231,7 @@ Function::~Function()
 //        return false;
 //    }
 //}
-//bool Function::setParameterErrorAbsoluteWithConditionalCheck(qreal errorAbsolute, qreal value, unsigned int parameter)
+//bool Function::setParameterErrorAbsoluteWithConditionalCheck(qreal errorAbsolute, qreal value, uint parameter)
 //{
 //    if (checkParameterErrorAbsoluteForCurrentSideCondition(errorAbsolute, value, parameter))
 //    {
@@ -189,30 +243,30 @@ Function::~Function()
 //        return false;
 //    }
 //}
-//bool Function::getParameterAbsoluteLimitIsUsed(unsigned int parameter)
+//bool Function::getParameterAbsoluteLimitIsUsed(uint parameter)
 //{
-//    if (parameter < this->_parameterVector.size())
-//        return this->_parameterVector[parameter].valueLimitsIsUsed;
+//    if (parameter < this->parameters.size())
+//        return this->parameters[parameter].valueLimitsIsUsed;
 //    else
 //        return false;
 //}
-//qreal Function::getParameterAbsoluteLimitMin(unsigned int parameter)
+//qreal Function::getParameterAbsoluteLimitMin(uint parameter)
 //{
 //    qreal limit = -DBL_MAX;
-//    if (parameter < this->_parameterVector.size())
+//    if (parameter < this->parameters.size())
 //    {
 //        if (this->getParameterAbsoluteLimitIsUsed(parameter))
-//            limit = this->_parameterVector[parameter].valueLimits.min;
+//            limit = this->parameters[parameter].valueLimits.min;
 //    }
 //    return limit;
 //}
-//qreal Function::getParameterAbsoluteLimitMax(unsigned int parameter)
+//qreal Function::getParameterAbsoluteLimitMax(uint parameter)
 //{
 //    qreal limit = DBL_MAX;
-//    if (parameter < this->_parameterVector.size())
+//    if (parameter < this->parameters.size())
 //    {
 //        if (this->getParameterAbsoluteLimitIsUsed(parameter))
-//            limit = this->_parameterVector[parameter].valueLimits.max;
+//            limit = this->parameters[parameter].valueLimits.max;
 //    }
 //    return limit;
 //}
@@ -220,7 +274,7 @@ Function::~Function()
 //{
 //    std::vector<qreal> values;
 
-//    for (unsigned int i=0; i<this->getParameterNumber(); i++)
+//    for (uint i=0; i<this->getParameterNumber(); i++)
 //        values.push_back(this->getParameter(i));
 
 //    return values;
@@ -233,44 +287,35 @@ Function::~Function()
 //{
 //    return this->_getDyda(x, this->getParameterValueVector());
 //}
-//bool Function::checkParameterForCurrentSideCondition(qreal value, unsigned int parameter)
+//bool Function::checkParameterForCurrentSideCondition(qreal value, uint parameter)
 //{
-//    if (parameter >= this->_parameterVector.size())
+//    if (parameter >= this->parameters.size())
 //        return false;
 
-//    return this->_parameterVector[parameter].checkValueWithCurrentSideCondition(value);
+//    return this->parameters[parameter].checkValueWithCurrentSideCondition(value);
 //}
-//bool Function::checkParameterErrorAbsoluteForCurrentSideCondition(qreal errorAbsolute, qreal value/*needed to check against relativ errors*/, unsigned int parameter)
+//bool Function::checkParameterErrorAbsoluteForCurrentSideCondition(qreal errorAbsolute, qreal value/*needed to check against relativ errors*/, uint parameter)
 //{
-//    if (parameter >= this->_parameterVector.size())
+//    if (parameter >= this->parameters.size())
 //        return false;
 
-//    return this->_parameterVector[parameter].checkErrorAbsoluteWithCurrentSideCondition(errorAbsolute, value);
+//    return this->parameters[parameter].checkErrorAbsoluteWithCurrentSideCondition(errorAbsolute, value);
 //}
 
-Polynomial::Polynomial() {
-  setDegree(0);
+Polynomial::Polynomial(uint degree) {
+  setDegree(degree);
 }
 
-Polynomial::Polynomial(const Polynomial& other) : Function(other)
-{
-    //this->_clone(this, polynomial);
-}
-//Function* Polynomial::clone()
-//{
-//    Polynomial *tempPolynomial = new Polynomial(*this);
-//    return (Function*)tempPolynomial;
-//}
 //qreal Polynomial::_getY(const qreal &x, const std::vector<qreal> &parameter)
 //{
 //    return this->__calculateY(x, parameter);
 //}
-//bool Polynomial::_addY(const qreal *x, const unsigned int &xLength, const std::vector<qreal> &parameter, qreal *y, const unsigned int &yLength)
+//bool Polynomial::_addY(const qreal *x, const uint &xLength, const std::vector<qreal> &parameter, qreal *y, const uint &yLength)
 //{
 //    if (xLength != yLength)
 //        return false;
 
-//    for (unsigned int i=0; i<xLength; i++)
+//    for (uint i=0; i<xLength; i++)
 //    {
 //        y[i] += this->__calculateY(x[i], parameter);
 //    }
@@ -281,10 +326,10 @@ Polynomial::Polynomial(const Polynomial& other) : Function(other)
 //    qreal *jacobianPart = new qreal[parameter.size()];
 //    memset(jacobianPart, 0, parameter.size() * sizeof(qreal));
 
-//    if (this->__calculateDyda(x, parameter, 0, jacobianPart, (unsigned int)parameter.size()))
+//    if (this->__calculateDyda(x, parameter, 0, jacobianPart, (uint)parameter.size()))
 //    {
 //        std::vector<qreal> tempVec(this->getParameterNumber());
-//        for (unsigned int i=0; i<this->getParameterNumber(); i++)
+//        for (uint i=0; i<this->getParameterNumber(); i++)
 //            tempVec[i] = jacobianPart[i];
 //        return tempVec;
 //    }
@@ -297,12 +342,12 @@ Polynomial::Polynomial(const Polynomial& other) : Function(other)
 //    //std::vector<qreal> tempVec;
 //    //return tempVec;
 //}
-//bool Polynomial::_addDyda(const qreal *x, const unsigned int &xLength, const std::vector<qreal> &parameter, const unsigned int &parameterStartIndex, const unsigned int &parameterDeltaIndex, qreal *jacobian, const unsigned int &jacobianLength)
+//bool Polynomial::_addDyda(const qreal *x, const uint &xLength, const std::vector<qreal> &parameter, const uint &parameterStartIndex, const uint &parameterDeltaIndex, qreal *jacobian, const uint &jacobianLength)
 //{
 //    if ((xLength * parameterDeltaIndex) != jacobianLength)
 //        return false;
 
-//    for (unsigned int xIndex=0, jacobianIndex=parameterStartIndex; xIndex<xLength; xIndex++, jacobianIndex+=parameterDeltaIndex)
+//    for (uint xIndex=0, jacobianIndex=parameterStartIndex; xIndex<xLength; xIndex++, jacobianIndex+=parameterDeltaIndex)
 //    {
 //        if (!this->__calculateDyda(x[xIndex], parameter, jacobianIndex, jacobian, jacobianLength))
 //            return false;
@@ -321,20 +366,20 @@ Polynomial::Polynomial(const Polynomial& other) : Function(other)
 //#endif
 //{
 //    qreal value = 0;
-//    for (unsigned int i=0; i<parameter.size(); i++)
+//    for (uint i=0; i<parameter.size(); i++)
 //        value += parameter[i] * pow(x, (int)i);
 //    return value;
 //}
 //#ifdef _MSC_VER
-//__forceinline bool Polynomial::__calculateDyda(const qreal &x, const std::vector<qreal> &parameter, const unsigned int &positionInsideTarget, qreal *target, const unsigned int &targetLength)
+//__forceinline bool Polynomial::__calculateDyda(const qreal &x, const std::vector<qreal> &parameter, const uint &positionInsideTarget, qreal *target, const uint &targetLength)
 //#else
-//inline bool Polynomial::__calculateDyda(const qreal &x, const std::vector<qreal> &parameter, const unsigned int &positionInsideTarget, qreal *target, const unsigned int &targetLength)
+//inline bool Polynomial::__calculateDyda(const qreal &x, const std::vector<qreal> &parameter, const uint &positionInsideTarget, qreal *target, const uint &targetLength)
 //#endif
 //{
 //    if ((positionInsideTarget + parameter.size()) > targetLength)
 //        return false;
 
-//    for (unsigned int i=0; i<parameter.size(); i++)
+//    for (uint i=0; i<parameter.size(); i++)
 //        target[positionInsideTarget + i] = pow(x, (int)i);		//Ableitung ai
 
 //    return true;
@@ -356,29 +401,15 @@ Polynomial::Polynomial(const Polynomial& other) : Function(other)
 //    return !(lhs == rhs);
 //}
 
-//unsigned int Curve::getCurve(ApproximationTools::Curve &curve, double *x, double *y, double *tolerance, const unsigned int size)
-//{
-//    unsigned int counter;
-//    for (counter = 0; counter<size; counter++)
-//    {
-//        CurvePoint point;
-//        if (curve.getPoint(point, counter))
-//        {
-//            if (x != NULL)
-//                x[counter] = point.getX();
-//            if (y != NULL)
-//                y[counter] = point.getY();
-//            if (tolerance != NULL)
-//                tolerance[counter] = point.getToleranz();
-//        }
-//        else
-//        {
-//            break;
-//        }
-//    }
-
-//    return counter;
-//}
+void Curve::getCurve(reals_t &x, reals_t &y, reals_t &tolerance) const {
+  x.clear(); y.clear(); tolerance.clear();
+  for_i(curve.size()) {
+    auto point = curve.at(i);
+    x.append(point.x);
+    y.append(point.y);
+    tolerance.append(point.tolerance);
+  }
+}
 
 Curve::Point::Point(qreal x_, qreal y_, qreal tolerance_)
 : x(x_), y(y_), tolerance(tolerance_) {
@@ -393,7 +424,7 @@ void Curve::addPoint(Point const& point) {
   curve.append(point);
 }
 
-//bool Curve::getPoint(ApproximationTools::CurvePoint &point, unsigned int index/*=0*/)
+//bool Curve::getPoint(ApproximationTools::CurvePoint &point, uint index/*=0*/)
 //{
 //    if (index < this->__curveVector.size())
 //    {
@@ -406,14 +437,14 @@ void Curve::addPoint(Point const& point) {
 //{
 //    this->deleteCurve();
 //    this->__curveVector = curveVector;
-//    for (unsigned int i=0; i<curveVector.size(); i++)
+//    for (uint i=0; i<curveVector.size(); i++)
 //        this->__redefineDomain(curveVector[i]);
 //}
 //std::vector<CurvePoint> Curve::getCurve()
 //{
 //    return this->__curveVector;
 //}
-//unsigned int Curve::getCurve(double *x, double *y, double *tolerance, const unsigned int size)
+//uint Curve::getCurve(qreal *x, qreal *y, qreal *tolerance, const uint size)
 //{
 //    return Curve::getCurve(*this, x, y, tolerance, size);
 //}
@@ -424,14 +455,6 @@ void Curve::addPoint(Point const& point) {
 //    this->__domainX.max = DBL_MIN;
 //    this->__domainX.min = DBL_MAX;
 //    this->__domainX.max = DBL_MIN;
-//}
-//unsigned int Curve::getCurveSize()
-//{
-//    return (unsigned int)this->__curveVector.size();
-//}
-//bool Curve::isCurveEmpty()
-//{
-//    return this->__curveVector.empty();
 //}
 //ApproximationTools::Limits Curve::getDomainX()
 //{
@@ -461,7 +484,7 @@ void Curve::addPoint(Point const& point) {
 //    if(((ApproximationTools::Curve&)lhs).getCurveSize() != ((ApproximationTools::Curve&)rhs).getCurveSize())
 //        return false;
 
-//    for (unsigned int i=0; i<((ApproximationTools::Curve&)lhs).getCurveSize(); i++)
+//    for (uint i=0; i<((ApproximationTools::Curve&)lhs).getCurveSize(); i++)
 //    {
 //        if(((ApproximationTools::Curve&)lhs).getCurve()[i] != ((ApproximationTools::Curve&)rhs).getCurve()[i])
 //            return false;

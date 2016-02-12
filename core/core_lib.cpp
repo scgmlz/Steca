@@ -7,7 +7,6 @@
 namespace core {
 
 Range::Range() {
-  std::numeric_limits<qreal>::max();
   invalidate();
 }
 

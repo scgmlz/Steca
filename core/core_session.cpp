@@ -1,4 +1,5 @@
 #include "core_session.h"
+#include "core_fitting.h"
 #include <cmath>
 
 namespace core {
@@ -9,7 +10,13 @@ Session::Session()
 , lastCalcTthMitte(0), hasNaNs(false) {
 
 #ifdef DEVELOPMENT
-   calcBGCorrectionPolynomial(core::Ranges(),core::TI_Data());
+  core::Ranges ranges;
+  ranges.add(Range(-1000,1000));
+  core::TI_Data tiData;
+  tiData.append(0,0);
+  tiData.append(1,1);
+  tiData.append(2,0);
+  calcBGCorrectionPolynomial(ranges,tiData);
 #endif
 }
 
@@ -307,13 +314,14 @@ Polynomial Session::calcBGCorrectionPolynomial(Ranges const& ranges,TI_Data cons
     }
   }
 
-//  ApproximationTools::FittingLevenbergMarquardt approximation;
-//  approximation.addFunction(dynamic_cast<ApproximationTools::Function*>(&polynomial));
-//  approximation.setApproximationCompareWithLastAccepted(false);
-//  approximation.fitWithoutCheck(curve);
-//  polynomial = *(dynamic_cast<ApproximationTools::Polynomial*>(approximation.getFunction()));
+  Polynomial polynomial;
 
-//  return true;
+  core::FittingLevenbergMarquardt approximation;
+  approximation.addFunction(polynomial);
+  approximation.setApproximationCompareWithLastAccepted(false);
+  approximation.fitWithoutCheck(curve);
+
+  return polynomial; //Polynomial(approximation.getFunction());
 }
 
 void Session::calcIntensCorrArray() {

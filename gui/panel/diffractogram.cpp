@@ -229,8 +229,8 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   auto intens = image.getIntensities();
   auto corr   = session.hasCorrFile() ? session.intensCorrArray.getIntensities() : nullptr;
 
-  QVector<qreal> intens_vec(width);
-  QVector<uint>  counts_vec(width,0);
+  core::reals_t intens_vec(width);
+  core::uints_t counts_vec(width,0);
 
   for_i(height) {
     auto &iy = i;

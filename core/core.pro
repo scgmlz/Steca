@@ -23,7 +23,13 @@ HEADERS += \
     loaders/Mar/mar300_header.h \
     loaders/Mar/mar345_header.h \
     loaders/Mar/MarReader.h \
-    core_approximation.h
+    core_approximation.h \
+    core_fitting.h \
+    LevMar/levmar.h \
+    LevMar/compiler.h \
+    LevMar/misc.h \
+    LevMar/FastDelegate/FastDelegate.h \
+    LevMar/FastDelegate/FastDelegateBind.h
 
 SOURCES += \
     loaders/Caress/raw.cpp \
@@ -36,7 +42,22 @@ SOURCES += \
     core_lib.cpp \
     loaders/core_loaders.cpp \
     core_array2d.cpp \
-    core_approximation.cpp
+    core_approximation.cpp \
+    core_fitting.cpp \
+    LevMar/Axb.cpp \
+    LevMar/Axb_core.cpp \
+    LevMar/lm.cpp \
+    LevMar/lmbc.cpp \
+    LevMar/lmbc_core.cpp \
+    LevMar/lmblec.cpp \
+    LevMar/lmblec_core.cpp \
+    LevMar/lmbleic.cpp \
+    LevMar/lmbleic_core.cpp \
+    LevMar/lm_core.cpp \
+    LevMar/lmlec.cpp \
+    LevMar/lmlec_core.cpp \
+    LevMar/misc.cpp \
+    LevMar/misc_core.cpp
 
 DISTFILES += \
     README \

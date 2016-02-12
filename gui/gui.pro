@@ -8,7 +8,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 QT      += core gui printsupport
 
 HEADERS += \
-    ../3rd/qcustomplot.h \
+    QCP/qcustomplot.h \
     app.h \
     defs.h \
     delegates.h \
@@ -33,7 +33,7 @@ HEADERS += \
     models.h
 
 SOURCES += \
-    ../3rd/qcustomplot.cpp \
+    QCP/qcustomplot.cpp \
     app.cpp \
     delegates.cpp \
     gui_helpers.cpp \

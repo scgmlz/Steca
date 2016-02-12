@@ -89,13 +89,15 @@ struct Pixpos {  // TODO bad name
 qreal deg_rad(qreal rad);         ///< conversion: degrees <= radians
 qreal rad_deg(qreal deg);         ///< conversion: radians <= degrees
 
+// vectors
+typedef QVector<qreal> reals_t;
+typedef QVector<uint>  uints_t;
+
 /// A set of datapoints.
 // TODO better name!
 class TI_Data {
 public:
   TI_Data();
-
-  typedef QVector<qreal> data_t;
 
   void clear();
   bool isEmpty() const;
@@ -103,14 +105,14 @@ public:
 
   void append(qreal tth,qreal inten);
 
-  data_t const& getTth()        const { return tth;   }
-  data_t const& getInten()      const { return inten; }
+  reals_t const& getTth()        const { return tth;   }
+  reals_t const& getInten()      const { return inten; }
 
-  Range const&  getTthRange()   const { return tthRange;   }
-  Range const&  getIntenRange() const { return intenRange; }
+  Range   const& getTthRange()   const { return tthRange;   }
+  Range   const& getIntenRange() const { return intenRange; }
 
 private:
-  data_t tth, inten;  // always the same count()
+  reals_t tth, inten;  // always the same count()
   Range tthRange, intenRange;
 };
 

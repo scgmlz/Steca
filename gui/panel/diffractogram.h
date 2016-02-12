@@ -7,7 +7,7 @@
 #include "panel.h"
 #include "core_dataset.h"
 #include "core_lib.h"
-#include "../3rd/qcustomplot.h"
+#include "QCP/qcustomplot.h"
 
 namespace panel {
 
