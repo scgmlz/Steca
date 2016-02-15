@@ -439,45 +439,45 @@ void FittingLevenbergMarquardt::__functionLM(qreal *parameter, qreal *data, int 
   memset(data, 0, dataLength * sizeof(qreal));
   for_i (functions.count()) {
 //    ecah workingxval x
-    data[i] += functions[i].__calculateY(x);
+//    data[i] += functions[i].__calculateY(x);
   }
 
-  for (uint j=0; j<numberOfFunctions; j++)
-  {
-    if (!this->_functionVecWorkingCopy[j]->_addY(_workingXValues, functionParameterVector[j], data))
-      return;
-  }
+//  for (uint j=0; j<numberOfFunctions; j++)
+//  {
+//    if (!this->_functionVecWorkingCopy[j]->_addY(_workingXValues, functionParameterVector[j], data))
+//      return;
+//  }
 }
 
 void FittingLevenbergMarquardt::__functionJacobianLM(qreal *parameter, qreal *jacobian, int parameterLength, int dataLength, void*) {
   // Option A (fastest)
   //*******************
   //Prepare the parameter vectors for every function
-  uint numberOfFunctions = (uint)this->_functionVecWorkingCopy.size();
-  int parameterCounter=0;
-  std::vector<std::vector<qreal> > functionParameterVector;
-  for (uint j=0; j<numberOfFunctions; j++)
-  {
-    std::vector<qreal> tempParameter;
-    for (uint k=0; k<this->_functionVecWorkingCopy[j]->getParameterNumber(); k++)
-      tempParameter.push_back(parameter[parameterCounter++]);
-    functionParameterVector.push_back(tempParameter);
-  }
+//  uint numberOfFunctions = (uint)this->_functionVecWorkingCopy.size();
+//  int parameterCounter=0;
+//  std::vector<std::vector<qreal> > functionParameterVector;
+//  for (uint j=0; j<numberOfFunctions; j++)
+//  {
+//    std::vector<qreal> tempParameter;
+//    for (uint k=0; k<this->_functionVecWorkingCopy[j]->getParameterNumber(); k++)
+//      tempParameter.push_back(parameter[parameterCounter++]);
+//    functionParameterVector.push_back(tempParameter);
+//  }
   //Calculate dyda
   memset(jacobian, 0, dataLength * parameterLength * sizeof(qreal));
   uint counterFunctionParameterLength = 0;
-  for (uint j=0; j<numberOfFunctions; j++)
-  {
-    if (!this->_functionVecWorkingCopy[j]->_addDyda(this->_workingXValues			/*x values of the data curve*/,
-                                                    dataLength						/*number of x values*/,
-                                                    functionParameterVector[j]		/*parameter vector of all functions*/,
-                                                    counterFunctionParameterLength	/*index inside the parameter vector fir the current function*/,
-                                                    parameterCounter				/*number of all parameter of all functions*/,
-                                                    jacobian						/*jacobian matrix*/,
-                                                    dataLength * parameterLength	/*size of the jacobian matrix*/))
-      return;
-    counterFunctionParameterLength += (uint)functionParameterVector[j].size();
-  }
+//  for (uint j=0; j<numberOfFunctions; j++)
+//  {
+//    if (!this->_functionVecWorkingCopy[j]->_addDyda(this->_workingXValues			/*x values of the data curve*/,
+//                                                    dataLength						/*number of x values*/,
+//                                                    functionParameterVector[j]		/*parameter vector of all functions*/,
+//                                                    counterFunctionParameterLength	/*index inside the parameter vector fir the current function*/,
+//                                                    parameterCounter				/*number of all parameter of all functions*/,
+//                                                    jacobian						/*jacobian matrix*/,
+//                                                    dataLength * parameterLength	/*size of the jacobian matrix*/))
+//      return;
+//    counterFunctionParameterLength += (uint)functionParameterVector[j].size();
+//  }
 }
 
 }

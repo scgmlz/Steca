@@ -79,7 +79,9 @@ public:
     return const_cast<Function*>(this)->getParameters();
   }
 
-  virtual qreal __calculateY(qreal x) = 0;
+  virtual qreal __calculateY(qreal x) {
+    return 0; // TODO =0
+  }
 
 protected:
   parameters_t parameters;
@@ -151,8 +153,6 @@ protected:
 //                        const unsigned int &parameterDeltaIndex /*I: Number of parameter of all functions.*/,
 //                        qreal *jacobian /*O: calculated jacobian matrix*/,
 //                        const unsigned int &jacobianLength /*size of the allocated jacobian matrix*/) = 0;
-
-protected:
 };
 
 class Polynomial: public Function {

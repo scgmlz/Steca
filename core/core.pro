@@ -29,7 +29,8 @@ HEADERS += \
     LevMar/compiler.h \
     LevMar/misc.h \
     LevMar/FastDelegate/FastDelegate.h \
-    LevMar/FastDelegate/FastDelegateBind.h
+    LevMar/FastDelegate/FastDelegateBind.h \
+    approx/approx_function.h
 
 SOURCES += \
     loaders/Caress/raw.cpp \
@@ -57,7 +58,8 @@ SOURCES += \
     LevMar/lmlec.cpp \
     LevMar/lmlec_core.cpp \
     LevMar/misc.cpp \
-    LevMar/misc_core.cpp
+    LevMar/misc_core.cpp \
+    approx/approx_function.cpp
 
 DISTFILES += \
     README \
