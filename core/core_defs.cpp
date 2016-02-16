@@ -1,6 +1,6 @@
 #include "core_defs.h"
 
-static_assert (QT_VERSION >= 0x050501,"written for Qt >= 5.5");
+static_assert (QT_VERSION >= QT_VERSION_CHECK(5,4,0),"written for Qt >= 5.4, have " QT_VERSION_STR);
 
 #ifdef QT_NO_EXCEPTIONS
 #error needs exception handling
