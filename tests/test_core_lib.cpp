@@ -2,6 +2,7 @@
 #include <core_lib.h>
 #include <core_array2d.h>
 #include <core_debug.h>
+#include <core_image.h>
 
 class TestCoreLib: public QObject {
   Q_OBJECT
@@ -136,7 +137,6 @@ void TestCoreLib::testLib(){
     QVERIFY(R.isEmpty());
     qreal min = 0, max=3;
     for(int i = 0; i<length;++i){
-      WT(min << max)
       R.add(core::Range(min,max));
       min = max +1;
       max = 2*max+1;
@@ -162,21 +162,103 @@ void TestCoreLib::testLib(){
 
   //Tests for imageCut Struct
   {
+    {
+      QSize q(10,100);
+      core::ImageCut c;//default Constructor
+      QCOMPARE(c.getWidth(q),(uint)10);
+      QCOMPARE(c.getHeight(q),(uint)100);
+      QCOMPARE(c.getCount(q),(uint) q.width()*q.height());
+    }
+
+    {
+      uint top=20,bottom=60,left=5,right=5;
+      QSize q(10,100);
+      core::ImageCut c(top,bottom,left,right);
+      QVERIFY( c == core::ImageCut(top,bottom,left,right));
+      QCOMPARE(c.getWidth(q),(uint)0);
+      QCOMPARE(c.getHeight(q),(uint)20);
+    }
+  }
+  //Tests for Borders struct
+  {
+    {
+      qreal min = 0, max =10;
+      core::Borders b;
+      b.gamma.set(min,max);
+      b.tth_gamma0.set(min,max);
+      b.tth_regular.set(min,max);
+      QVERIFY(b.isValid());
+      b.invalidate();
+      QVERIFY(!b.isValid());
+    }
+  }
+  //Tests for TI_Data
+  {
+    {
+      qreal tth = 1.2, inten=3.14;
+      core::TI_Data t;
+      // testing default Constructor, All data is NaN
+      {
+        QVERIFY(t.isEmpty());
+        QVERIFY(t.getTth().isEmpty());
+        QVERIFY(t.getInten().isEmpty());
+        QVERIFY(qIsNaN(t.getTthRange().min));
+        QVERIFY(qIsNaN(t.getTthRange().max));
+        QVERIFY(qIsNaN(t.getIntenRange().min));
+        QVERIFY(qIsNaN(t.getIntenRange().max));
+      }
+      {//testing if input of data is correct
+        t.append(tth,inten);
+        QCOMPARE(t.getTth().at(0),tth);
+        QCOMPARE(t.getInten().at(0),inten);
+        QCOMPARE(t.getTthRange().min,tth);
+        QCOMPARE(t.getTthRange().max,tth);
+        QCOMPARE(t.getIntenRange().min,inten);
+        QCOMPARE(t.getIntenRange().max,inten);
+        t.append(2*tth,0);
+        QCOMPARE(t.getTth().at(1),2*tth);
+        QCOMPARE(t.getInten().at(1),(qreal)0);
+        QCOMPARE(t.getTthRange().min,(qreal)tth);
+        QCOMPARE(t.getTthRange().max,(qreal)2*tth);
+        QCOMPARE(t.getIntenRange().min,(qreal)0);
+        QCOMPARE(t.getIntenRange().max,(qreal)inten);
+        QVERIFY(t.isOrdered());
+        t.clear();
+        QVERIFY(t.isEmpty());
+      }
+    }
+  }
+
+
+}
+
+
+
+void TestCoreLib::testImage(){
+
+  {
+    //int max =1;
     QSize q(10,100);
-    core::ImageCut c;//default Constructor
-    QCOMPARE(c.getWidth(q),(uint)10);
-    QCOMPARE(c.getHeight(q),(uint)100);
-    QCOMPARE(c.getCount(q),(uint) q.width()*q.height());
+    float intents = 1.24;
+    core::Image im;
+    im.fill(intents+2,q);
+    QCOMPARE(*(im.getIntensities()),intents+2);
+
+
+
+
+
+
+
 
 
 
 
   }
 
-}
+  {
 
-void TestCoreLib::testImage(){
-
+  }
 
 
 }
