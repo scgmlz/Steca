@@ -19,13 +19,22 @@ public:
 
   private:
     qreal value;
-    /// Constraint; if !isValid() -> same as <value,value>
-    Range range;
+    Range range;  ///< Constraint; if !isValid() -> same as <value,value>
   };
 
 public:
   Function();
   virtual ~Function();
+
+  virtual uint getParameterCount() const = 0;
+  virtual qreal y(qreal x) const = 0;
+};
+
+class SingleFunction: public Function {
+  SUPER(SingleFunction,Function)
+public:
+public:
+  SingleFunction();
 
   typedef QVector<Parameter> parameters_t;
 
@@ -37,7 +46,7 @@ public:
   }
 
   parameters_t const& getParameters() const {
-    return const_cast<Function*>(this)->getParameters();
+    return const_cast<thisCls*>(this)->getParameters();
   }
 
   virtual qreal y(qreal x) const = 0;
@@ -46,30 +55,33 @@ protected:
   parameters_t parameters;
 };
 
-class Functions final {
-public:
-  Functions();
- ~Functions();
-
-  typedef QVector<Function*> functions_t;
-
-  functions_t const& getFunctions() const {
-    return functions;
-  }
-
-private:
-  functions_t functions;
-};
-
 class SumFunctions: public Function {
   SUPER(SumFunctions,Function)
 public:
   SumFunctions();
+ ~SumFunctions();
+
+  typedef QVector<Function*> functions_t;
+  void addFunction(Function*);            ///< takes ownership
+
+  uint getParameterCount() const;
 
   qreal y(qreal x) const;
 
 protected:
-  Functions functions;
+  functions_t functions;
+};
+
+class Polynomial: public SingleFunction {
+  SUPER(Polynomial,SingleFunction)
+public:
+  Polynomial(uint degree = 0);
+
+  void setDegree(uint degree) {
+    super::setParameterCount(degree+1);
+  }
+
+  qreal y(qreal x) const;
 };
 
 }}

@@ -1,5 +1,5 @@
 #include "core_session.h"
-#include "core_fitting.h"
+#include "approx/approx_methods.h"
 #include <cmath>
 
 namespace core {
@@ -293,11 +293,11 @@ Session::AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
   return angleCorrArray;
 }
 
-Polynomial Session::calcBGCorrectionPolynomial(Ranges const& ranges,TI_Data const& vecSpec) {
+approx::Polynomial Session::calcBGCorrectionPolynomial(Ranges const& ranges,TI_Data const& vecSpec) {
   if (ranges.isEmpty())
-    return Polynomial();
+    return approx::Polynomial();
 
-  Curve curve;
+  approx::Curve curve;
 
   ASSERT(vecSpec.isOrdered())
 
@@ -309,19 +309,17 @@ Polynomial Session::calcBGCorrectionPolynomial(Ranges const& ranges,TI_Data cons
     while (i<count && tth[i] <  range.min)
       ++i;
     while (i<count && tth[i] <= range.max) {
-      curve.addPoint(Curve::Point(tth[i],inten[i]));
+      curve.addPoint(approx::Curve::Point(tth[i],inten[i]));
       ++i;
     }
   }
 
-  Polynomial polynomial;
+  approx::Polynomial polynomial;
 
-  core::FittingLevenbergMarquardt approximation;
-  approximation.addFunction(polynomial);
-  approximation.setApproximationCompareWithLastAccepted(false);
+  approx::FittingLevenbergMarquardt approximation(polynomial);
   approximation.fitWithoutCheck(curve);
 
-  return polynomial; //Polynomial(approximation.getFunction());
+  return polynomial;
 }
 
 void Session::calcIntensCorrArray() {
