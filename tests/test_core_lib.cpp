@@ -1,8 +1,13 @@
 #include <QtTest/QtTest>
+
+#define TEST_SUITE
+
 #include <core_lib.h>
 #include <core_array2d.h>
 #include <core_debug.h>
 #include <core_image.h>
+#include <core_file.h>
+#include <core_session.h>
 
 class TestCoreLib: public QObject {
   Q_OBJECT
@@ -12,6 +17,9 @@ private slots:
   void testLib();
   void testImage();
   void conversions();
+  void testFile();
+  void testDataset();
+  void testSession();
 };
 
 void TestCoreLib::testArray2d(){
@@ -34,7 +42,7 @@ void TestCoreLib::testArray2d(){
     QCOMPARE(size,a.getSize());
     for (int x=0; x<xSize; ++x) {
       for (int y=0; y<ySize; ++y) {
-        QCOMPARE(val ,a.at(a.index(x,y)));
+        QCOMPARE(a.at(a.index(x,y)),val);
       }
     }
 
@@ -46,7 +54,7 @@ void TestCoreLib::testArray2d(){
 
     for (int x=0; x<xSize; ++x) {
       for (int y=0; y<ySize; ++y) {
-        QCOMPARE((qreal)(x + y*xSize),a.at(a.index(x,y)));
+        QCOMPARE(a.at(a.index(x,y)),(qreal)(x + y*xSize));
       }
     }
 
@@ -232,35 +240,35 @@ void TestCoreLib::testLib(){
 
 }
 
-
-
 void TestCoreLib::testImage(){
-
+  //Testing if Data is corectly added and can be accessed again
   {
-    //int max =1;
     QSize q(10,100);
+    uint pos =42;
     float intents = 1.24;
     core::Image im;
-    im.fill(intents+2,q);
-    QCOMPARE(*(im.getIntensities()),intents+2);
+    im.fill(intents,q);
+    auto data = im.getIntensities();
+    for(int i=0;i<1000;++i){
+      auto d = *data;
+      QCOMPARE(d,intents);
+      data++;
+    }
+    im.setIntensity(pos,3*intents);
+    QCOMPARE(*(im.getIntensities()+pos),3*intents);
+    QCOMPARE(im.getRgeIntens().min,core::Range(intents,3*intents).min);
+    QCOMPARE(im.getRgeIntens().max,core::Range(intents,3*intents).max);
+    //checking if intensitys are corect
+    for(int x=0;x<10;++x){
+      for(int y=0;y<100;++y){
+        if(x!=2 && y!=4){
+          QCOMPARE(im.at(1,2),intents);
+        }
+        QCOMPARE(im.at(2,4),3*intents);
+      }
 
-
-
-
-
-
-
-
-
-
-
+    }
   }
-
-  {
-
-  }
-
-
 }
 
 void TestCoreLib::conversions() {
@@ -270,6 +278,80 @@ void TestCoreLib::conversions() {
     QCOMPARE((qreal)i,core::deg_rad(core::rad_deg(i)));
 }
 
+void TestCoreLib::testFile(){
+
+  {//using default Constructor
+    core::File f;
+    QByteArray b;
+    QCOMPARE(f.getImageSize(),QSize(0,0));
+
+
+
+
+  }
+
+
+}
+
+void TestCoreLib::testDataset(){
+
+
+
+}
+
+void TestCoreLib::testSession(){
+  //Image transform
+  {
+    uint const w=10, h=20;
+    QSize size(w,h);
+
+    core::Array2D<int> a;
+    a.fill(0,size);
+
+    a.setAt(a.index(0,0),1);
+    a.setAt(a.index(w-1,0),2);
+    a.setAt(a.index(w-1,h-1),3);
+    a.setAt(a.index(0,h-1),4);
+
+    core::Session s;
+    s.setImageSize(size);
+
+    QCOMPARE(a.at(s.pixIndex(0,0)),1);
+    QCOMPARE(a.at(s.pixIndex(w-1,0)),2);
+    QCOMPARE(a.at(s.pixIndex(w-1,h-1)),3);
+    QCOMPARE(a.at(s.pixIndex(0,h-1)),4);
+
+    s.setImageMirror(true);
+    QCOMPARE(a.at(s.pixIndex(0,0)),2);
+    QCOMPARE(a.at(s.pixIndex(w-1,0)),1);
+    QCOMPARE(a.at(s.pixIndex(w-1,h-1)),4);
+    QCOMPARE(a.at(s.pixIndex(0,h-1)),3);
+  }
+
+  //Session
+  {
+    core::Session s;
+    s.addFile("");//expect no exception because filename not given
+    rcstr name = "TestFile";
+    core::File f(name);
+    //Filetype is not know, expected to throw
+    bool check = false;
+    try{
+      s.addFile(name);
+    }
+    catch(Exception e){
+        check=true;
+    }
+    QVERIFY(check);
+
+    s.setImageSize(QSize(10,20));
+
+    //core::Session::Geometry g;
+
+  }
+
+
+}
 
 
 QTEST_MAIN(TestCoreLib)

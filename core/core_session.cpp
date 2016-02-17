@@ -91,17 +91,17 @@ shp_File Session::getCorrFile() const {
   return corrFile;
 }
 
+void Session::updateImageSize() {
+  if (0 == numFiles(true))
+    imageSize = QSize(0,0);
+}
+
 void Session::setImageSize(QSize const& size) THROWS {
   RUNTIME_CHECK (!size.isEmpty(), "bad image size");
   if (imageSize.isEmpty()) // the first one
     imageSize = size;
   else if (imageSize != size)
     THROW("inconsistent image size");
-}
-
-void Session::updateImageSize() {
-  if (0 == numFiles(true))
-    imageSize = QSize(0,0);
 }
 
 Session::Geometry::Geometry() {

@@ -39,8 +39,13 @@ private:
 private:
   QSize imageSize; ///< All files must have images of the same size; this is a cached value
 
-  void setImageSize(QSize const&) THROWS; ///< Ensures that all images have the same size.
   void updateImageSize();                 ///< Clears the image size if there are no files in the session.
+#ifdef TEST_SUITE
+public:
+#else
+private:
+#endif
+  void setImageSize(QSize const&) THROWS; ///< Ensures that all images have the same size.
 
 public: // detector geometry
   struct Geometry {
