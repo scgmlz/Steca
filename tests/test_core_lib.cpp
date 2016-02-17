@@ -302,9 +302,30 @@ void TestCoreLib::testDataset(){
 void TestCoreLib::testSession(){
   //Image transform
   {
-    core::Session::ImageTransform t;
+    uint const w=10, h=20;
+    QSize size(w,h);
 
+    core::Array2D<int> a;
+    a.fill(0,size);
 
+    a.setAt(a.index(0,0),1);
+    a.setAt(a.index(w-1,0),2);
+    a.setAt(a.index(w-1,h-1),3);
+    a.setAt(a.index(0,h-1),4);
+
+    core::Session s;
+    s.setImageSize(size);
+
+    QCOMPARE(a.at(s.pixIndex(0,0)),1);
+    QCOMPARE(a.at(s.pixIndex(w-1,0)),2);
+    QCOMPARE(a.at(s.pixIndex(w-1,h-1)),3);
+    QCOMPARE(a.at(s.pixIndex(0,h-1)),4);
+
+    s.setImageMirror(true);
+    QCOMPARE(a.at(s.pixIndex(0,0)),2);
+    QCOMPARE(a.at(s.pixIndex(w-1,0)),1);
+    QCOMPARE(a.at(s.pixIndex(w-1,h-1)),4);
+    QCOMPARE(a.at(s.pixIndex(0,h-1)),3);
   }
 
   //Session
@@ -319,7 +340,7 @@ void TestCoreLib::testSession(){
       s.addFile(name);
     }
     catch(Exception e){
-//        check=true;
+        check=true;
     }
     QVERIFY(check);
 
