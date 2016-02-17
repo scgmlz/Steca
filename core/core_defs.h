@@ -7,7 +7,7 @@
 
 /// Define this macros to enable development-related shortcuts.
 /// Undefine it for a release!
-#define DEVELOPMENT
+// #define DEVELOPMENT
 #ifdef DEVELOPMENT
 //#define DEVELOPMENT_FAKE
 #endif

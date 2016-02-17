@@ -126,7 +126,7 @@ bool Ranges::rem(Range const& range) {
 
 static bool lessThan(Range const& r1, Range const& r2) {
   if (r1.min < r2.min) return true;
-  if (r1.min > r2.min) return true;
+  if (r1.min > r2.min) return false;
   return r1.max < r2.max;
 }
 

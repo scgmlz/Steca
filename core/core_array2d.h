@@ -15,7 +15,7 @@ class Array2D {
 public:
   using vector_t = QVector<T>;
 
-  Array2D() {
+  Array2D(): size(0,0) {
   }
 
   /// 2D image size
