@@ -29,9 +29,10 @@ public:
   virtual uint parameterCount() const = 0;
   virtual Parameter const& getParameter(uint) const = 0;
 
+  /// value of the function
   virtual qreal y(qreal x) const = 0;
-  // TODO: review a lot
-  virtual bool __calculateDyda(qreal x, uint positionInsideTarget, reals_t target) const = 0;
+  /// partial derivative / parameter
+  virtual qreal dy(qreal x, int parameterIndex) const = 0;
 };
 
 class SingleFunction: public Function {
@@ -71,6 +72,7 @@ public:
   Parameter const& getParameter(uint) const;
 
   qreal y(qreal x) const;
+  qreal dy(qreal x, int parameterIndex) const;
 
 protected:
   functions_t functions;
@@ -88,7 +90,7 @@ public:
   }
 
   qreal y(qreal x) const;
-  bool __calculateDyda(qreal x, uint positionInsideTarget, reals_t target) const;
+  qreal dy(qreal x, int parameterIndex) const;
 };
 
 class Curve {

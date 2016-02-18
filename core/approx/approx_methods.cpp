@@ -46,9 +46,7 @@ bool FittingMethod::fit(Function& function_, Curve& curve_, bool sideConditionCh
 //  //Run Fit
 //  bool returnValue = false;
 
-  __xs = xValues.data();
-
-  if (approximate(parValue.data(),parMin.data(),parMax.data(),parError.data(),parCount,yValues.data(),pointCount)) {
+  if (approximate(parValue.data(),parMin.data(),parMax.data(),parError.data(),parCount,xValues.data(),yValues.data(),pointCount)) {
   }
 
   //  if (this->_approximation(parameter, parameterLimitMax , parameterLimitMin, parameterError, parameterArraySize, workingYValues, curve.getCurveSize()))
@@ -92,6 +90,7 @@ bool FittingLevenbergMarquardt::approximate(qreal *parameter /*IO*/,
                                             qreal *parameterLimitMin /*I*/,
                                             qreal *parameterError /*O*/,
                                             uint   numberOfParameter /*I*/,
+                                            qreal *xValues /*I*/,
                                             qreal *yValues /*I*/,
                                             uint   numberOfDataPoints /*I*/) {
 
@@ -136,7 +135,7 @@ bool FittingLevenbergMarquardt::approximate(qreal *parameter /*IO*/,
                                                                */
                                     NULL  /* working memory: If !=NULL, it is assumed to point to a memory chunk at least LM_DER_WORKSZ(m, n)*sizeof(double) bytes long */,
                                     covar /* Output: Covariance matrix corresponding to LS solution; mxm. Set to NULL if not needed. */,
-                                    NULL  /* Pointer to possibly additional data, passed uninterpreted to func & jacf. Set to NULL if not needed. */
+                                    xValues  /* Pointer to possibly additional data, passed uninterpreted to func & jacf. Set to NULL if not needed. */
                                     ); // with analytic Jacobian
 
   for (uint i=0; i<numberOfParameter; i++)
@@ -145,12 +144,18 @@ bool FittingLevenbergMarquardt::approximate(qreal *parameter /*IO*/,
   return true;
 }
 
-void FittingLevenbergMarquardt::__functionLM(qreal* /*parameter*/, qreal* data, int parameterLength, int dataLength, void*) {
-  for_i (dataLength)
-    data[i] = function->y(__xs[i]);
+void FittingLevenbergMarquardt::__functionLM(qreal* /*parameter*/, qreal* yValues, int parameterLength, int xLength, void* xValues) {
+  for_i (xLength) {
+    yValues[i] = function->y(((qreal*)xValues)[i]);
+  }
 }
 
-void FittingLevenbergMarquardt::__functionJacobianLM(qreal* parameter, qreal* jacobian, int parameterLength, int dataLength, void* adata) {
+void FittingLevenbergMarquardt::__functionJacobianLM(qreal* parameter, qreal* jacobian, int parameterLength, int xLength, void* xValues) {
+  for_i (xLength) {
+    for_i (parameterLength) {
+      *jacobian++ = function->dy(((qreal*)xValues)[i],i);
+    }
+  }
 }
 
 }}

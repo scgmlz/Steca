@@ -10,13 +10,13 @@ Session::Session()
 , lastCalcTthMitte(0), hasNaNs(false) {
 
 #ifdef DEVELOPMENT
-//  core::Ranges ranges;
-//  ranges.add(Range(-1000,1000));
-//  core::TI_Data tiData;
-//  tiData.append(0,0);
-//  tiData.append(1,1);
-//  tiData.append(2,0);
-//  calcBGCorrectionPolynomial(ranges,tiData);
+  core::Ranges ranges;
+  ranges.add(Range(-1000,1000));
+  core::TI_Data tiData;
+  tiData.append(0,0);
+  tiData.append(1,1);
+  tiData.append(2,0);
+  calcBGCorrectionPolynomial(ranges,tiData);
 #endif
 }
 
