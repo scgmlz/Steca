@@ -6,7 +6,7 @@
  * WT(var)
  *
  * ASSERT for debug-time assertions;
- * NOT_HERE for marking unreachable code, sometimes to satisfy the compiler;
+ * NEVER_HERE for marking unreachable code, sometimes to satisfy the compiler;
  *          debug-time assert
  */
 
@@ -18,13 +18,13 @@
 #include <QDebug>
 #define TR(what)          { qDebug() << what; }
 #define ASSERT(cond)      Q_ASSERT(cond);
-#define NOT_HERE          Q_ASSERT_X(false, "Here" , "not be!");
+#define NEVER_HERE        Q_ASSERT_X(false, "Here" , "not be!");
 
 #else
 
 #define TR(what)          { }
 #define ASSERT(cond)
-#define NOT_HERE          ;
+#define NEVER_HERE        ;
 
 #endif
 

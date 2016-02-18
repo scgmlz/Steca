@@ -80,7 +80,7 @@ QByteArray Session::save() const {
   };
 
   QJsonArray files;
-  for_i(numFiles()) {
+  for_i (numFiles()) {
     files.append(getFile(i)->getInfo().absoluteFilePath());
   }
 

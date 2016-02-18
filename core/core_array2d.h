@@ -58,12 +58,6 @@ public:
     return ts.at(index(x,y));
   }
 
-#ifdef DEVELOPMENT
-  vector_t const& asVector() const {
-    return ts;
-  }
-#endif
-
   /// Access
   void setAt(uint i, T const& val) {
     ts[i] = val;

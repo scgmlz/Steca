@@ -8,7 +8,7 @@
 #include "core_lib.h"
 #include "core_file.h"
 #include "core_array2d.h"
-#include "core_approximation.h"
+#include "approx/approx_functions.h"
 #include <QPoint>
 
 namespace core {
@@ -122,7 +122,7 @@ public:
   AngleCorrArray const& calcAngleCorrArray(qreal tthMitte);  // TODO rename; TODO if too slow, cache
 
 public:
-  Polynomial calcBGCorrectionPolynomial(Ranges const&,TI_Data const&);
+  approx::Polynomial calcBGCorrectionPolynomial(Ranges const&,TI_Data const&);
 
 public: // TODO not public
   Image intensCorrArray;  // summed corrFile intensities
