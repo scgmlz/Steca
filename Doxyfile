@@ -14,7 +14,7 @@ WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = NO
 WARN_IF_DOC_ERROR      = YES
 
-INPUT                  = core core/loaders gui
+INPUT                  = core core/loaders core/approx gui gui/panel
 RECURSIVE              = NO
 
 SOURCE_BROWSER         = YES

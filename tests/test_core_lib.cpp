@@ -1,26 +1,4 @@
-#include <QtTest/QtTest>
-
-#define TEST_SUITE
-
-#include <core_lib.h>
-#include <core_array2d.h>
-#include <core_debug.h>
-#include <core_image.h>
-#include <core_file.h>
-#include <core_session.h>
-
-class TestCoreLib: public QObject {
-  Q_OBJECT
-
-private slots:
-  void testArray2d();
-  void testLib();
-  void testImage();
-  void conversions();
-  void testFile();
-  void testDataset();
-  void testSession();
-};
+#include "test_core_lib.h"
 
 void TestCoreLib::testArray2d(){
   core::Array2D<qreal> a; // default constructor
@@ -284,48 +262,111 @@ void TestCoreLib::testFile(){
     core::File f;
     QByteArray b;
     QCOMPARE(f.getImageSize(),QSize(0,0));
-
-
-
-
   }
-
-
 }
 
-void TestCoreLib::testDataset(){
+void TestCoreLib::rotationHelper(uint w, uint h){
+    QSize size(w,h);
+    core::Array2D<int>a;
+    a.fill(0,size);
+    a.setAt(a.index(0,0),1);
+    a.setAt(a.index(w-1,0),2);
+    a.setAt(a.index(w-1,h-1),3);
+    a.setAt(a.index(0,h-1),4);
+    core::Session s;
+    s.setImageSize(size);
 
+    {
+      //only rotation
+      auto tb = core::Session::ImageTransform(0);
+      s.setImageRotate(tb);
+      //rotate_0
+      QCOMPARE(a.at(s.pixIndex(0,0)),1);
+      QCOMPARE(a.at(s.pixIndex(w-1,0)),2);
+      QCOMPARE(a.at(s.pixIndex(w-1,h-1)),3);
+      QCOMPARE(a.at(s.pixIndex(0,h-1)),4);
+      //rotate_2
+      tb = core::Session::ImageTransform(2);
+      s.setImageRotate(tb);
+      QCOMPARE(a.at(s.pixIndex(0,0)),3);
+      QCOMPARE(a.at(s.pixIndex(w-1,0)),4);
+      QCOMPARE(a.at(s.pixIndex(w-1,h-1)),1);
+      QCOMPARE(a.at(s.pixIndex(0,h-1)),2);
 
+      transposeWH(&w,&h);//flip w and h
+      //rotate_1
+      tb.val = tb.MIRROR_ROTATE_1;
+      s.setImageRotate(tb);
+      QCOMPARE(a.at(s.pixIndex(0,0)),4);
+      QCOMPARE(a.at(s.pixIndex(w-1,0)),1);
+      QCOMPARE(a.at(s.pixIndex(w-1,h-1)),2);
+      QCOMPARE(a.at(s.pixIndex(0,h-1)),3);
+      //rotate_3
+      tb.val = tb.MIRROR_ROTATE_3;
+      s.setImageRotate(tb);
+      QCOMPARE(a.at(s.pixIndex(0,0)),2);
+      QCOMPARE(a.at(s.pixIndex(w-1,0)),3);
+      QCOMPARE(a.at(s.pixIndex(w-1,h-1)),4);
+      QCOMPARE(a.at(s.pixIndex(0,h-1)),1);
+    }
 
+    transposeWH(&w,&h);
+    {
+      //mirror and rotation
+      //mirror_rotate_0
+      s.setImageMirror(true);
+      auto tb = core::Session::ImageTransform(0);
+      s.setImageRotate(tb);
+      QCOMPARE(a.at(s.pixIndex(0,0)),2);
+      QCOMPARE(a.at(s.pixIndex(w-1,0)),1);
+      QCOMPARE(a.at(s.pixIndex(w-1,h-1)),4);
+      QCOMPARE(a.at(s.pixIndex(0,h-1)),3);
+
+      //mirror_rotate_2
+      tb.val = tb.MIRROR_ROTATE_2;
+      s.setImageRotate(tb);
+      QCOMPARE(a.at(s.pixIndex(0,0)),4);
+      QCOMPARE(a.at(s.pixIndex(w-1,0)),3);
+      QCOMPARE(a.at(s.pixIndex(w-1,h-1)),2);
+      QCOMPARE(a.at(s.pixIndex(0,h-1)),1);
+
+      transposeWH(&w,&h); //flip w and h
+      //mirror_rotate_1
+      tb.val = tb.MIRROR_ROTATE_1;
+      s.setImageRotate(tb);
+      QCOMPARE(a.at(s.pixIndex(0,0)),3);
+      QCOMPARE(a.at(s.pixIndex(w-1,0)),2);
+      QCOMPARE(a.at(s.pixIndex(w-1,h-1)),1);
+      QCOMPARE(a.at(s.pixIndex(0,h-1)),4);
+      //mirror_rotate_3
+      tb.val = tb.MIRROR_ROTATE_3;
+      s.setImageRotate(tb);
+      QCOMPARE(a.at(s.pixIndex(0,0)),1);
+      QCOMPARE(a.at(s.pixIndex(w-1,0)),4);
+      QCOMPARE(a.at(s.pixIndex(w-1,h-1)),3);
+      QCOMPARE(a.at(s.pixIndex(0,h-1)),2);
+    }
+}
+
+void TestCoreLib::transposeWH(uint* w, uint* h){
+    int hOrig = *h;
+    int wOrig = *w;
+    *w = hOrig;
+    *h = wOrig;
 }
 
 void TestCoreLib::testSession(){
   //Image transform
   {
-    uint const w=10, h=20;
-    QSize size(w,h);
+    //Rectangle
+    rotationHelper(10,20);
 
-    core::Array2D<int> a;
-    a.fill(0,size);
+    //Square
+    rotationHelper(10,10);
 
-    a.setAt(a.index(0,0),1);
-    a.setAt(a.index(w-1,0),2);
-    a.setAt(a.index(w-1,h-1),3);
-    a.setAt(a.index(0,h-1),4);
+    //Square
+    rotationHelper(2,10);
 
-    core::Session s;
-    s.setImageSize(size);
-
-    QCOMPARE(a.at(s.pixIndex(0,0)),1);
-    QCOMPARE(a.at(s.pixIndex(w-1,0)),2);
-    QCOMPARE(a.at(s.pixIndex(w-1,h-1)),3);
-    QCOMPARE(a.at(s.pixIndex(0,h-1)),4);
-
-    s.setImageMirror(true);
-    QCOMPARE(a.at(s.pixIndex(0,0)),2);
-    QCOMPARE(a.at(s.pixIndex(w-1,0)),1);
-    QCOMPARE(a.at(s.pixIndex(w-1,h-1)),4);
-    QCOMPARE(a.at(s.pixIndex(0,h-1)),3);
   }
 
   //Session
@@ -344,15 +385,8 @@ void TestCoreLib::testSession(){
     }
     QVERIFY(check);
 
-    s.setImageSize(QSize(10,20));
-
-    //core::Session::Geometry g;
-
   }
-
 
 }
 
-
-QTEST_MAIN(TestCoreLib)
-#include "test_core_lib.moc"
+//#include "test_core_lib.moc"

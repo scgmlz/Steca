@@ -46,12 +46,12 @@ void MainWin::initActions() {
     return act;
   };
 
-  auto simple = [action](pcstr text, pcstr iconFile = nullptr, QKey shortcut = QKey::UnknownKey) {
+  auto simple = [&action](pcstr text, pcstr iconFile = nullptr, QKey shortcut = QKey::UnknownKey) {
     ASSERT(text)
     return action(text,false,iconFile,shortcut);
   };
 
-  auto toggle = [action](pcstr text, pcstr iconFile = nullptr, QKey shortcut = QKey::UnknownKey) {
+  auto toggle = [&action](pcstr text, pcstr iconFile = nullptr, QKey shortcut = QKey::UnknownKey) {
     return action(text,true,iconFile,shortcut);
   };
 
@@ -108,7 +108,7 @@ void MainWin::initActions() {
   actHasBeamOffset        = toggle("Beam centre offset", ":/icon/eye"); // TODO icon
 
   // TODO where to best put these actions updates?
-  connect(session, &Session::corrFileSet, [this](core::shp_File file){
+  connect(session, &Session::corrFileSet, [this](core::shp_File file) {
     bool on  = !file.isNull();
     auto act = actImagesShowRaw;
     if (!on) act->setChecked(false);

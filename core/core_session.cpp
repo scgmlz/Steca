@@ -150,6 +150,7 @@ void Session::setImageRotate(ImageTransform rot) {
   imageTransform = imageTransform.rotateTo(rot);
 }
 
+/// calculate Index of transformed Image
 uint Session::pixIndex(uint x, uint y) const {
   // imageSize is not transformed
   uint w = imageSize.width(), h = imageSize.height();
