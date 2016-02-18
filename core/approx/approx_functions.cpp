@@ -82,6 +82,10 @@ qreal SumFunctions::y(qreal x) const {
   return sum;
 }
 
+qreal SumFunctions::dy(qreal x, int parameterIndex) const {
+  // TODO
+}
+
 Polynomial::Polynomial(uint degree) {
   setDegree(degree);
 }
@@ -96,16 +100,8 @@ qreal Polynomial::y(qreal x) const {
   return value;
 }
 
-bool Polynomial::__calculateDyda(qreal x, uint positionInsideTarget, reals_t target) const {
-  if ((positionInsideTarget + parameterCount()) >= target.size()) {
-    NEVER_HERE // TODO unnecessary check and bool return ?
-    return false;
-  }
-
-  for_i (parameterCount())
-    target[positionInsideTarget + i] = pow(x,i);
-
-  return true;
+qreal Polynomial::dy(qreal x, int i) const {
+  return pow(x,i);
 }
 
 Curve::Point::Point(qreal x_, qreal y_, qreal tolerance_)

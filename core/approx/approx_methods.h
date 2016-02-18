@@ -14,11 +14,10 @@ public:
 
 protected:
   bool fit(Function&,Curve&, bool sideConditionCheckIsActive);
-  virtual bool approximate(qreal*,qreal*,qreal*,qreal*,uint,qreal*,uint) = 0;
+  virtual bool approximate(qreal*,qreal*,qreal*,qreal*,uint,qreal*,qreal*,uint) = 0;
 
   Function *function; ///< set during fit()
   Curve    *curve;    ///< set during fit()
-  qreal    *__xs;     // TODO review - should be in callback
 };
 
 class FittingLinearLeastSquare: public FittingMethod {
@@ -36,7 +35,7 @@ public:
   FittingLevenbergMarquardt();
 
 protected:
-  bool approximate(qreal*,qreal*,qreal*,qreal*,uint,qreal*,uint);
+  bool approximate(qreal*,qreal*,qreal*,qreal*,uint,qreal*,qreal*,uint);
 
 private:
   void __functionLM(qreal*,qreal*,int,int,void*);
