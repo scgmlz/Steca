@@ -5,54 +5,42 @@
 
 namespace core { namespace approx {
 
-class Curve {
-public:
-  struct Point {
-    Point(qreal x=0, qreal y=0, qreal tolerance=0.001);
-    qreal x, y, tolerance;
-  };
-
-public:
-  Curve();
-
-  typedef QVector<Point> curve_t;
-
-  void addPoint(Point const&);
-
-private:
-  curve_t curve;
-  Range domainX, domainY;
-};
-
 class FittingMethod {
 public:
-  FittingMethod(Function&);
+  FittingMethod();
   virtual ~FittingMethod();
 
-  bool fitWithoutCheck(Curve&);
+  bool fitWithoutCheck(Function&,Curve&);
 
 protected:
-  Function &function;
+  bool fit(Function&,Curve&, bool sideConditionCheckIsActive);
+  virtual bool approximate(qreal*,qreal*,qreal*,qreal*,uint,qreal*,uint) = 0;
 
-  virtual bool fit(Curve&, bool sideConditionCheckIsActive) = 0;
+  Function *function; ///< set during fit()
+  Curve    *curve;    ///< set during fit()
+  qreal    *__xs;     // TODO review - should be in callback
 };
 
 class FittingLinearLeastSquare: public FittingMethod {
   SUPER(FittingLinearLeastSquare,FittingMethod)
 public:
-  FittingLinearLeastSquare(Function&);
+  FittingLinearLeastSquare();
 
 protected:
-  bool fit(Curve&, bool sideConditionCheckIsActive);
+  bool approximate(qreal*,qreal*,qreal*,qreal*,uint,qreal*,uint);
 };
 
 class FittingLevenbergMarquardt: public FittingLinearLeastSquare {
   SUPER(FittingLevenbergMarquardt,FittingLinearLeastSquare)
 public:
-  FittingLevenbergMarquardt(Function&);
+  FittingLevenbergMarquardt();
 
 protected:
-  bool fit(Curve&, bool sideConditionCheckIsActive);
+  bool approximate(qreal*,qreal*,qreal*,qreal*,uint,qreal*,uint);
+
+private:
+  void __functionLM(qreal*,qreal*,int,int,void*);
+  void __functionJacobianLM(qreal*,qreal*,int,int,void*);
 };
 
 }}

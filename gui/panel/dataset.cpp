@@ -323,9 +323,9 @@ QPixmap Dataset::makePixmap(core::Image const& image, core::Range rgeIntens,
 
     QImage qimage(size,QImage::Format_RGB32);
 
-    for_i(size.height()) {
+    for_i (size.height()) {
       auto y = i;
-      for_i(size.width()) {
+      for_i (size.width()) {
         auto x = i;
         qreal intens = image.intensity(session.pixIndex(x,y)) / mi;
         bool isNan = false; // TODO temporary fix

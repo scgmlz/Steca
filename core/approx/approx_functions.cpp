@@ -43,11 +43,15 @@ void SingleFunction::setParameterCount(uint count) {
   parameters.fill(Parameter(),count);
 }
 
-uint SingleFunction::getParameterCount() const {
+uint SingleFunction::parameterCount() const {
   return parameters.count();
 }
 
-SumFunctions::SumFunctions() {
+Function::Parameter const& SingleFunction::getParameter(uint i) const {
+  return parameters.at(i);
+}
+
+SumFunctions::SumFunctions(): parCount(0) {
 }
 
 SumFunctions::~SumFunctions() {
@@ -57,14 +61,18 @@ SumFunctions::~SumFunctions() {
 
 void SumFunctions::addFunction(Function* function) {
   ASSERT(function)
-      functions.append(function);
+  functions.append(function);
+  parCount += function->parameterCount();
+  for_i (function->parameterCount())
+    parameters.append(&function->getParameter(i));
 }
 
-uint SumFunctions::getParameterCount() const {
-  uint count = 0;
-  for (auto f: functions)
-    count += f->getParameterCount();
-  return count;
+uint SumFunctions::parameterCount() const {
+  return parCount;
+}
+
+Function::Parameter const& SumFunctions::getParameter(uint i) const {
+  return *parameters.at(i);
 }
 
 qreal SumFunctions::y(qreal x) const {
@@ -86,6 +94,43 @@ qreal Polynomial::y(qreal x) const {
     powX *= x;
   }
   return value;
+}
+
+bool Polynomial::__calculateDyda(qreal x, uint positionInsideTarget, reals_t target) const {
+  if ((positionInsideTarget + parameterCount()) >= target.size()) {
+    NEVER_HERE // TODO unnecessary check and bool return ?
+    return false;
+  }
+
+  for_i (parameterCount())
+    target[positionInsideTarget + i] = pow(x,i);
+
+  return true;
+}
+
+Curve::Point::Point(qreal x_, qreal y_, qreal tolerance_)
+: x(x_), y(y_), tolerance(tolerance_) {
+}
+
+Curve::Curve() {
+}
+
+bool Curve::isEmpty() const {
+  return points.isEmpty();
+}
+
+void Curve::addPoint(Point const& point) {
+  domainX.extend(point.x);
+  domainY.extend(point.y);
+  points.append(point);
+}
+
+uint Curve::pointCount() const {
+  return points.count();
+}
+
+const Curve::Point &Curve::getPoint(uint i) const {
+  return points.at(i);
 }
 
 }}

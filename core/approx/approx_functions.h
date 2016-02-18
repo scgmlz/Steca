@@ -26,8 +26,12 @@ public:
   Function();
   virtual ~Function();
 
-  virtual uint getParameterCount() const = 0;
+  virtual uint parameterCount() const = 0;
+  virtual Parameter const& getParameter(uint) const = 0;
+
   virtual qreal y(qreal x) const = 0;
+  // TODO: review a lot
+  virtual bool __calculateDyda(qreal x, uint positionInsideTarget, reals_t target) const = 0;
 };
 
 class SingleFunction: public Function {
@@ -39,7 +43,8 @@ public:
   typedef QVector<Parameter> parameters_t;
 
   void setParameterCount(uint);
-  uint getParameterCount() const;
+  uint parameterCount() const;
+  Parameter const& getParameter(uint) const;
 
   parameters_t& getParameters() {
     return parameters;
@@ -48,8 +53,6 @@ public:
   parameters_t const& getParameters() const {
     return const_cast<thisCls*>(this)->getParameters();
   }
-
-  virtual qreal y(qreal x) const = 0;
 
 protected:
   parameters_t parameters;
@@ -64,12 +67,15 @@ public:
   typedef QVector<Function*> functions_t;
   void addFunction(Function*);            ///< takes ownership
 
-  uint getParameterCount() const;
+  uint parameterCount() const;
+  Parameter const& getParameter(uint) const;
 
   qreal y(qreal x) const;
 
 protected:
   functions_t functions;
+  uint parCount;
+  QVector<Parameter const*> parameters;
 };
 
 class Polynomial: public SingleFunction {
@@ -82,6 +88,30 @@ public:
   }
 
   qreal y(qreal x) const;
+  bool __calculateDyda(qreal x, uint positionInsideTarget, reals_t target) const;
+};
+
+class Curve {
+public:
+  struct Point {
+    Point(qreal x=0, qreal y=0, qreal tolerance=0.001);
+    qreal x, y, tolerance;
+  };
+
+public:
+  Curve();
+
+  bool isEmpty() const;
+
+  typedef QVector<Point> points_t;
+
+  void addPoint(Point const&);
+  uint pointCount() const;
+  Point const& getPoint(uint) const;
+
+private:
+  points_t points;
+  Range domainX, domainY;
 };
 
 }}

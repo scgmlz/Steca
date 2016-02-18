@@ -10,13 +10,13 @@ Session::Session()
 , lastCalcTthMitte(0), hasNaNs(false) {
 
 #ifdef DEVELOPMENT
-  core::Ranges ranges;
-  ranges.add(Range(-1000,1000));
-  core::TI_Data tiData;
-  tiData.append(0,0);
-  tiData.append(1,1);
-  tiData.append(2,0);
-  calcBGCorrectionPolynomial(ranges,tiData);
+//  core::Ranges ranges;
+//  ranges.add(Range(-1000,1000));
+//  core::TI_Data tiData;
+//  tiData.append(0,0);
+//  tiData.append(1,1);
+//  tiData.append(2,0);
+//  calcBGCorrectionPolynomial(ranges,tiData);
 #endif
 }
 
@@ -180,7 +180,7 @@ uint Session::pixIndex(uint x, uint y) const {
   case ImageTransform::MIRROR_ROTATE_3:
     return y + x * w;
   }
-  NOT_HERE
+  NEVER_HERE
 }
 
 uint Session::pixIndexNoTransform(uint x, uint y) const {
@@ -299,11 +299,12 @@ approx::Polynomial Session::calcBGCorrectionPolynomial(Ranges const& ranges,TI_D
 
   approx::Curve curve;
 
-  ASSERT(vecSpec.isOrdered())
-
   auto tth   = vecSpec.getTth();
   auto inten = vecSpec.getInten();
 
+  // The following adds points that are in ranges to the curve
+  // it works because both ranges and vecSpec are ordered and ranges are non-overlapping
+  ASSERT(vecSpec.isOrdered())
   uint i = 0, count = tth.count();
   for (auto const& range: ranges.getData()) {
     while (i<count && tth[i] <  range.min)
@@ -316,8 +317,7 @@ approx::Polynomial Session::calcBGCorrectionPolynomial(Ranges const& ranges,TI_D
 
   approx::Polynomial polynomial;
 
-  approx::FittingLevenbergMarquardt approximation(polynomial);
-  approximation.fitWithoutCheck(curve);
+  approx::FittingLevenbergMarquardt().fitWithoutCheck(polynomial,curve);
 
   return polynomial;
 }

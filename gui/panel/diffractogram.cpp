@@ -232,12 +232,12 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   core::reals_t intens_vec(width);
   core::uints_t counts_vec(width,0);
 
-  for_i(height) {
+  for_i (height) {
     auto &iy = i;
-    for_i(width) {
+    for_i (width) {
       auto &ix = i;
 
-      // TODO angles can be arranged for a single loop for_i(pixTotal) [last in commit 98413db71cd38ebaa54b6337a6c6e670483912ef]
+      // TODO angles can be arranged for a single loop for_i (pixTotal) [last in commit 98413db71cd38ebaa54b6337a6c6e670483912ef]
       auto tthPix = angles.at(session.pixIndexNoTransform(ix,iy)).tthPix;
 
       int bin = (tthPix==TTHMax) ? width-1 : qFloor((tthPix - TTHMin) / deltaTTH);
@@ -255,7 +255,7 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
     }
   }
 
-  for_i(width) {
+  for_i (width) {
     auto in = intens_vec[i]; auto cnt = counts_vec[i];
     if (cnt > 0) in /= cnt;
     dgram.append(core::deg_rad(TTHMin + deltaTTH*i),in);

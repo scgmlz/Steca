@@ -14,7 +14,7 @@ DatasetView::DatasetView(Model& model_): model(model_) {
   });
 
   connect(&model, &QAbstractItemModel::modelReset, [this]() {
-    for_i(model.columnCount(QModelIndex()))
+    for_i (model.columnCount(QModelIndex()))
       resizeColumnToContents(i);
   });
 }

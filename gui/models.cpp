@@ -120,7 +120,7 @@ void DatasetViewModel::setInfoItems(panel::InfoItems const* infoItems_) {
   beginResetModel();
   infoItems = infoItems_;
   attributeNums.clear();
-  if (infoItems) for_i(infoItems->count()) {
+  if (infoItems) for_i (infoItems->count()) {
     auto &item = infoItems->at(i);
     if (item.cb->isChecked())
       attributeNums.append(i);
