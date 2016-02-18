@@ -9,7 +9,9 @@ QT += testlib
 SOURCES += \
     test_core_lib.cpp \
     test_core_array2d.cpp \
-    tests_main.cpp
+    tests_main.cpp \
+    test_core_image.cpp \
+    test_core_range.cpp
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../core/release/ -lcore
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../core/debug/ -lcore
@@ -26,4 +28,6 @@ else:unix: PRE_TARGETDEPS += $$OUT_PWD/../core/libcore.a
 
 HEADERS += \
     test_core_array2d.h \
-    test_core_lib.h
+    test_core_lib.h \
+    test_core_image.h \
+    test_core_range.h

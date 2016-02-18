@@ -5,12 +5,13 @@
 
 #define TEST_SUITE
 #include <core_lib.h>
+#include <core_array2d.h>
 
 class TestCoreArray2d: public QObject {
   Q_OBJECT
 
 private slots:
-  void q();
+  void testArray2d();
 };
 
 #endif
