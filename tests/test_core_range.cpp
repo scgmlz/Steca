@@ -99,7 +99,6 @@ void TestCoreRange::testRange() {
       QCOMPARE(c.getHeight(q), 100u);
       QCOMPARE((int)c.getCount(q),  q.width()*q.height());
     }
-
     {
       uint top=20,bottom=60,left=5,right=5;
       QSize q(10,100);
@@ -166,8 +165,6 @@ void TestCoreRange::testRange() {
       }
     }
   }
-
-
 }
 
 // eof

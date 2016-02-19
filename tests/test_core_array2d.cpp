@@ -57,8 +57,8 @@ void TestCoreArray2d::testArray2d() {
   //Testing if Array is reset to default after clear
   {
     a.clear();
-    QCOMPARE(QSize(0,0),a.getSize());
-    QCOMPARE((uint)0,a.getCount());
+    QCOMPARE(a.getSize(),QSize(0,0));
+    QCOMPARE(a.getCount(),(uint)0);
   }
 }
 
