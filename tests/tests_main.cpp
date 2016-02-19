@@ -17,3 +17,5 @@ int main(int argc, char *argv[]) {
   TEST_GROUP(TestCoreImage)
   TEST_GROUP(TestCoreRange)
 }
+
+// eof

@@ -1,8 +1,10 @@
 #include "test_core_array2d.h"
 
+#include <core_array2d.h>
 
-void TestCoreArray2d::testArray2d(){
+void TestCoreArray2d::testArray2d() {
   core::Array2D<qreal> a; // default constructor
+
   //Basic Test
   {
     auto aSize = a.getSize();
@@ -12,6 +14,7 @@ void TestCoreArray2d::testArray2d(){
     a.fill(size);
     QCOMPARE(size,a.getSize());
   }
+
   //Testing Methods for Data input and access
   {
     int const xSize = 10, ySize = 20;
@@ -19,6 +22,7 @@ void TestCoreArray2d::testArray2d(){
     QSize size(xSize,ySize);
     a.fill(val,size);
     QCOMPARE(size,a.getSize());
+
     for (int x=0; x<xSize; ++x) {
       for (int y=0; y<ySize; ++y) {
         QCOMPARE(a.at(a.index(x,y)),val);
@@ -38,17 +42,18 @@ void TestCoreArray2d::testArray2d(){
     }
 
     int const iSize = xSize * ySize;
-    QCOMPARE((uint)iSize,a.getCount());
+    QCOMPARE(iSize,(int)a.getCount());
 
-    for (int i=0; i<iSize; ++i) {
+    for_i (iSize) {
       QCOMPARE(a[i],(qreal)i);
     }
 
     auto data = a.getData();
-    for (int i=0; i<iSize; ++i) {
+    for_i (iSize) {
       QCOMPARE(data[i],(qreal)i);
     }
   }
+
   //Testing if Array is reset to default after clear
   {
     a.clear();
@@ -57,5 +62,4 @@ void TestCoreArray2d::testArray2d(){
   }
 }
 
-
-
+// eof

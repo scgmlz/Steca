@@ -21,7 +21,7 @@ Session::Session()
 : fileViewModel(*this), datasetViewModel(*this) {
 }
 
-Session::~Session(){
+Session::~Session() {
 }
 
 void Session::load(QFileInfo const& fileInfo) THROWS {
