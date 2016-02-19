@@ -38,14 +38,11 @@ public:
     return const_cast<Function*>(this)->getParameter(i);
   }
 
-  /// the value of the function, own parameter values
-  virtual qreal y(qreal x) const = 0;
-  /// the value of the function, outside parameter values
-  virtual qreal y(qreal x, qreal const* parameterValues) const = 0;
+  /// the value of the function, outside or own parameter values
+  virtual qreal y(qreal x, qreal const* parameterValues = nullptr) const = 0;
 
   /// partial derivative / parameter
-  virtual qreal dy(qreal x, int parameterIndex) const = 0;
-  virtual qreal dy(qreal x, int parameterIndex, qreal const* parameterValues) const = 0;
+  virtual qreal dy(qreal x, int parameterIndex, qreal const* parameterValues = nullptr) const = 0;
 };
 
 #ifndef QT_NO_DEBUG
@@ -87,16 +84,13 @@ public:
   uint parameterCount() const;
   Parameter& getParameter(uint);
 
-  qreal y(qreal x) const;
-  qreal y(qreal x, qreal const* parameterValues) const;
-
-  qreal dy(qreal x, int parameterIndex) const;
-  qreal dy(qreal x, int parameterIndex, qreal const* parameterValues) const;
+  qreal y(qreal x, qreal const* parameterValues = nullptr) const;
+  qreal dy(qreal x, int parameterIndex, qreal const* parameterValues = nullptr) const;
 
 protected:
-  functions_t functions;
-  uint parCount;
+  functions_t functions, functionForParameterIndex;
   QVector<Parameter*> parameters;
+  QVector<uint> parameterStartForParameterIndex;
 };
 
 class Polynomial: public SingleFunction {
@@ -108,11 +102,8 @@ public:
     super::setParameterCount(degree+1);
   }
 
-  qreal y(qreal x) const;
-  qreal y(qreal x, qreal const* parameterValues) const;
-
-  qreal dy(qreal x, int parameterIndex) const;
-  qreal dy(qreal x, int parameterIndex, qreal const* parameterValues) const;
+  qreal y(qreal x, qreal const* parameterValues = nullptr) const;
+  qreal dy(qreal x, int parameterIndex, qreal const* parameterValues = nullptr) const;
 };
 
 class Curve {

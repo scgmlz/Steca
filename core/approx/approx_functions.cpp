@@ -84,7 +84,7 @@ Function::Parameter& SingleFunction::getParameter(uint i) {
   return parameters[i];
 }
 
-SumFunctions::SumFunctions(): parCount(0) {
+SumFunctions::SumFunctions() {
 }
 
 SumFunctions::~SumFunctions() {
@@ -93,43 +93,38 @@ SumFunctions::~SumFunctions() {
 }
 
 void SumFunctions::addFunction(Function* function) {
+  // Can you figure out what this does and why?
   ASSERT(function)
-  functions.append(function);
-  parCount += function->parameterCount();
-  for_i (function->parameterCount())
+
+  for_i (function->parameterCount()) {
     parameters.append(&function->getParameter(i));
+    functionForParameterIndex.append(function);
+    parameterStartForParameterIndex.append(parameterCount());
+  }
+
+  functions.append(function);
 }
 
 uint SumFunctions::parameterCount() const {
-  return parCount;
+  return parameters.count();
 }
 
 Function::Parameter& SumFunctions::getParameter(uint i) {
   return *parameters.at(i);
 }
 
-qreal SumFunctions::y(qreal x) const {
-  qreal sum = 0;
-  for (auto f: functions)
-    sum += f->y(x);
-  return sum;
-}
-
 qreal SumFunctions::y(qreal x, const qreal *parVals) const {
   qreal sum = 0;
   for (auto f: functions) {
     sum += f->y(x,parVals);
-    parVals += f->parameterCount(); // advance to next function
+    if (parVals)
+      parVals += f->parameterCount(); // advance to next function
   }
   return sum;
 }
 
-qreal SumFunctions::dy(qreal, int) const {
-  NOT_YET return 0; // TODO
-}
-
-qreal SumFunctions::dy(qreal, int, qreal const*) const {
-  NOT_YET return 0;
+qreal SumFunctions::dy(qreal x, int parIndex, qreal const* parValues) const {
+  return functionForParameterIndex.at(parIndex)->dy(x,parIndex - parameterStartForParameterIndex[parIndex], parValues);
 }
 
 Polynomial::Polynomial(uint degree) {
@@ -142,20 +137,13 @@ static qreal pow_n(qreal x, uint n) {
   return value;
 }
 
-qreal Polynomial::y(qreal x) const {
-  qreal value = 0;
-  for_i (parameters.count()) value += parameters[i].getValue() * pow_n(x,i);
-  return value;
-}
-
 qreal Polynomial::y(qreal x, const qreal *parVals) const {
   qreal value = 0;
-  for_i (parameters.count()) value += parVals[i] * pow_n(x,i);
+  for_i (parameters.count()) {
+    qreal parVal = parVals ? parVals[i] : parameters[i].getValue();
+    value += parVal * pow_n(x,i);
+  }
   return value;
-}
-
-qreal Polynomial::dy(qreal x, int i) const {
-  return pow_n(x,i);
 }
 
 qreal Polynomial::dy(qreal x, int i, qreal const*) const {
