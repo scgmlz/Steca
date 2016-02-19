@@ -293,7 +293,7 @@ void MainWin::connectActions() {
 void MainWin::show() {
   super::show();
   checkActions();
-#ifdef DEVELOPMENT
+#ifdef DEVELOPMENT_JAN
 #ifdef Q_OS_OSX
   session->load(QFileInfo("/Users/igb/Q/STeCa/data/q.ste"));
 #else

@@ -14,12 +14,17 @@ public:
     qreal getValue() const;
     Range getRange() const;
 
-    bool  checkValue(qreal);
-    bool  setValue(qreal, bool force=false);
+    bool  checkValue(qreal value, qreal error=0);
+    bool  setValue(qreal value, qreal error=0, bool force=false);
 
   private:
     qreal value;
-    Range range;  ///< Constraint; if !isValid() -> same as <value,value>
+    // constraints; TODO maybe not all needed?
+    Range range;            ///< allowed range of values; if !isValid() -> same as <value,value>, i.e. fixed value
+    qreal maxDelta;         ///< maximum change allowed; NaN -> no check
+    qreal maxDeltaPercent;
+    qreal maxError;         ///< maximum error allowed; NaN -> no check
+    qreal maxErrorPercent;
   };
 
 public:
@@ -27,7 +32,7 @@ public:
   virtual ~Function();
 
   virtual uint parameterCount() const = 0;
-  virtual Parameter const& getParameter(uint) const = 0;
+  virtual Parameter& getParameter(uint) = 0;
 
   /// value of the function
   virtual qreal y(qreal x) const = 0;
@@ -45,7 +50,7 @@ public:
 
   void setParameterCount(uint);
   uint parameterCount() const;
-  Parameter const& getParameter(uint) const;
+  Parameter& getParameter(uint);
 
   parameters_t& getParameters() {
     return parameters;
@@ -69,7 +74,7 @@ public:
   void addFunction(Function*);            ///< takes ownership
 
   uint parameterCount() const;
-  Parameter const& getParameter(uint) const;
+  Parameter& getParameter(uint);
 
   qreal y(qreal x) const;
   qreal dy(qreal x, int parameterIndex) const;
@@ -77,7 +82,7 @@ public:
 protected:
   functions_t functions;
   uint parCount;
-  QVector<Parameter const*> parameters;
+  QVector<Parameter*> parameters;
 };
 
 class Polynomial: public SingleFunction {

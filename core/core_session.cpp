@@ -9,7 +9,7 @@ Session::Session()
 , imageTransform(ImageTransform::ROTATE_0)
 , lastCalcTthMitte(0), hasNaNs(false) {
 
-#ifdef DEVELOPMENT
+#ifdef DEVELOPMENT_JAN
   core::Ranges ranges;
   ranges.add(Range(-1000,1000));
   core::TI_Data tiData;
