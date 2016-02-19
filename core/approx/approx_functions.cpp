@@ -148,7 +148,6 @@ qreal Polynomial::y(qreal x) const {
 
 qreal Polynomial::y(qreal x, const qreal *parVals) const {
   qreal value = 0;
-  TR('P' << parVals[0] << parVals[1])
   for_i (parameters.count()) value += parVals[i] * pow_n(x,i);
   return value;
 }

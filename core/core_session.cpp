@@ -315,7 +315,7 @@ approx::Polynomial Session::calcBGCorrectionPolynomial(Ranges const& ranges,TI_D
     }
   }
 
-  approx::Polynomial polynomial(3);
+  approx::Polynomial polynomial(4);
 
   approx::FittingLevenbergMarquardt().fitWithoutCheck(polynomial,curve);
 
