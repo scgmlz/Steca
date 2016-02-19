@@ -57,6 +57,7 @@ Function::Function() {
 Function::~Function() {
 }
 
+#ifndef QT_NO_DEBUG
 QDebug& operator<<(QDebug& os, Function const& f) {
   auto parCount = f.parameterCount();
   os << '[' << parCount << ']';
@@ -66,6 +67,7 @@ QDebug& operator<<(QDebug& os, Function const& f) {
 
   return os;
 }
+#endif
 
 SingleFunction::SingleFunction() {
 }
@@ -123,11 +125,11 @@ qreal SumFunctions::y(qreal x, const qreal *parVals) const {
 }
 
 qreal SumFunctions::dy(qreal, int) const {
-  NOT_YET // TODO
+  NOT_YET return 0; // TODO
 }
 
 qreal SumFunctions::dy(qreal, int, qreal const*) const {
-  NOT_YET
+  NOT_YET return 0;
 }
 
 Polynomial::Polynomial(uint degree) {
@@ -148,7 +150,6 @@ qreal Polynomial::y(qreal x) const {
 
 qreal Polynomial::y(qreal x, const qreal *parVals) const {
   qreal value = 0;
-  TR('P' << parVals[0] << parVals[1])
   for_i (parameters.count()) value += parVals[i] * pow_n(x,i);
   return value;
 }

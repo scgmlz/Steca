@@ -55,7 +55,7 @@ FittingLinearLeastSquare::FittingLinearLeastSquare() {
 }
 
 bool FittingLinearLeastSquare::approximate(qreal*,qreal const*,qreal const*,qreal*,uint,qreal const*,qreal const*,uint) {
-  NEVER_HERE // TODO
+  NEVER_HERE return false; // TODO
 }
 
 FittingLevenbergMarquardt::FittingLevenbergMarquardt() {
@@ -105,19 +105,15 @@ bool FittingLevenbergMarquardt::approximate(
 }
 
 void FittingLevenbergMarquardt::__functionLM(qreal* parameterValues, qreal* yValues, int /*parameterLength*/, int xLength, void* xValues) {
-  TR("LM")
   for_i (xLength) {
     yValues[i] = function->y(((qreal*)xValues)[i], parameterValues);
-//    TR(i << ((qreal*)xValues)[i] << yValues[i])
   }
 }
 
 void FittingLevenbergMarquardt::__functionJacobianLM(qreal* parameterValues, qreal* jacobian, int parameterLength, int xLength, void* xValues) {
-  TR("JacLM")
   for_i (xLength) {
     int &xi = i;
     for_i (parameterLength) {
-//      TR(xi << i << ((qreal*)xValues)[xi] << function->dy(((qreal*)xValues)[xi],i,parameterValues))
       *jacobian++ = function->dy(((qreal*)xValues)[xi],i,parameterValues);
     }
   }

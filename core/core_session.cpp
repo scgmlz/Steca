@@ -179,8 +179,9 @@ uint Session::pixIndex(uint x, uint y) const {
     return x + y * w;
   case ImageTransform::MIRROR_ROTATE_3:
     return y + x * w;
+  default:
+    NEVER_HERE return 0;
   }
-  NEVER_HERE
 }
 
 uint Session::pixIndexNoTransform(uint x, uint y) const {
@@ -315,7 +316,7 @@ approx::Polynomial Session::calcBGCorrectionPolynomial(Ranges const& ranges,TI_D
     }
   }
 
-  approx::Polynomial polynomial(3);
+  approx::Polynomial polynomial(4);
 
   approx::FittingLevenbergMarquardt().fitWithoutCheck(polynomial,curve);
 
