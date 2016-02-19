@@ -51,11 +51,47 @@ bool FittingMethod::fit(Function& function_, Curve& curve, bool sideConditionChe
   return true;
 }
 
+void FittingMethod::__functionY(qreal* parameterValues, qreal* yValues, int /*parameterLength*/, int xLength, void* xValues) {
+  for_i (xLength) {
+    yValues[i] = function->y(((qreal*)xValues)[i], parameterValues);
+  }
+}
+
 FittingLinearLeastSquare::FittingLinearLeastSquare() {
 }
 
-bool FittingLinearLeastSquare::approximate(qreal*,qreal const*,qreal const*,qreal*,uint,qreal const*,qreal const*,uint) {
-  NEVER_HERE return false; // TODO
+bool FittingLinearLeastSquare::approximate(
+  qreal*        parameter,          // IO initial parameter estimates -> estimated solution
+  qreal const*  parameterLimitMin,  // I
+  qreal const*  parameterLimitMax,  // I
+  qreal*        parameterError,     // O
+  uint          numberOfParameter,  // I
+  qreal const*  xValues,            // I
+  qreal const*  yValues,            // I
+  uint          numberOfDataPoints) // I
+{
+  DelegateCalculationDbl function(this, &FittingLevenbergMarquardt::__functionY);
+
+  // information regarding the minimization
+  double info[LM_INFO_SZ];
+
+  // output covariance matrix
+  QVector<qreal> covar(numberOfParameter*numberOfParameter);
+
+  uint const maxIterations = 1000;
+
+  dlevmar_bc_dif(
+    &function,
+    parameter, (qreal*)yValues, numberOfParameter, numberOfDataPoints,
+    (qreal*)parameterLimitMin, (qreal*)parameterLimitMax,
+    NULL, maxIterations, NULL, info, NULL, covar.data(),
+    (qreal*)xValues  // additional data - TODO differently?
+  );
+
+  for (uint i=0; i<numberOfParameter; i++)
+    parameterError[i] = sqrt(covar[i*numberOfParameter + i]); // diagonal
+
+  return true;
 }
 
 FittingLevenbergMarquardt::FittingLevenbergMarquardt() {
@@ -71,7 +107,7 @@ bool FittingLevenbergMarquardt::approximate(
   qreal const*  yValues,            // I
   uint          numberOfDataPoints) // I
 {
-  DelegateCalculationDbl function(this, &FittingLevenbergMarquardt::__functionLM);
+  DelegateCalculationDbl function(this, &FittingLevenbergMarquardt::__functionY);
   // Function to fill the Jacobian Matrix
   DelegateCalculationDbl functionJacobian(this, &FittingLevenbergMarquardt::__functionJacobianLM);
 
@@ -102,12 +138,6 @@ bool FittingLevenbergMarquardt::approximate(
     parameterError[i] = sqrt(covar[i*numberOfParameter + i]); // diagonal
 
   return true;
-}
-
-void FittingLevenbergMarquardt::__functionLM(qreal* parameterValues, qreal* yValues, int /*parameterLength*/, int xLength, void* xValues) {
-  for_i (xLength) {
-    yValues[i] = function->y(((qreal*)xValues)[i], parameterValues);
-  }
 }
 
 void FittingLevenbergMarquardt::__functionJacobianLM(qreal* parameterValues, qreal* jacobian, int parameterLength, int xLength, void* xValues) {

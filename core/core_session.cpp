@@ -8,15 +8,6 @@ Session::Session()
 : dataFiles(), corrFile(), imageSize(), geometry()
 , imageTransform(ImageTransform::ROTATE_0)
 , lastCalcTthMitte(0), hasNaNs(false) {
-
-#ifdef DEVELOPMENT_JAN
-  core::Ranges ranges;
-  ranges.add(Range(-1000,1000));
-  core::TI_Data tiData;
-  for_i (200)
-    tiData.append(i/3.,i/12.);
-  calcBGCorrectionPolynomial(ranges,tiData);
-#endif
 }
 
 Session::~Session() {
@@ -316,12 +307,8 @@ approx::Polynomial Session::calcBGCorrectionPolynomial(Ranges const& ranges,TI_D
     }
   }
 
-  approx::Polynomial polynomial(4);
-
+  approx::Polynomial polynomial(4); // TODO connect with Gui
   approx::FittingLevenbergMarquardt().fitWithoutCheck(polynomial,curve);
-
-  WT(polynomial)
-
   return polynomial;
 }
 

@@ -11,12 +11,12 @@ QBoxLayout *vbox() {
 
 QBoxLayout *boxLayout(Qt::Orientation orientation) {
   switch (orientation) {
-  default:
-    NEVER_HERE
   case Qt::Horizontal:
     return hbox();
   case Qt::Vertical:
     return vbox();
+  default:
+    NEVER_HERE
   }
 }
 

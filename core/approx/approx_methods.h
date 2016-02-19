@@ -17,6 +17,9 @@ protected:
   virtual bool approximate(qreal*,qreal const*,qreal const*,qreal*,uint,qreal const*,qreal const*,uint) = 0;
 
   Function *function; ///< valid during fit()
+
+protected:
+  void __functionY(qreal*,qreal*,int,int,void*);
 };
 
 class FittingLinearLeastSquare: public FittingMethod {
@@ -37,7 +40,6 @@ protected:
   bool approximate(qreal*,qreal const*,qreal const*,qreal*,uint,qreal const*,qreal const*,uint);
 
 private:
-  void __functionLM(qreal*,qreal*,int,int,void*);
   void __functionJacobianLM(qreal*,qreal*,int,int,void*);
 };
 

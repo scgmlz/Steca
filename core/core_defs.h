@@ -7,7 +7,7 @@
 
 /// Macros that enable development-related shortcuts.
 /// Undefine for a release!
-#define DEVELOPMENT_JAN
+//#define DEVELOPMENT_JAN
 //#define DEVELOPMENT_FAKE_NON_SQUARE_IMAGE
 
 // common QT includes - used all the time
