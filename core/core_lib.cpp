@@ -18,16 +18,16 @@ Range::Range(qreal min, qreal max) {
   set(min,max);
 }
 
+Range Range::infinite() {
+  return Range(-qInf(), +qInf());
+}
+
 void Range::invalidate() {
   set(qQNaN());
 }
 
 bool Range::isValid() const {
   return ! (qIsNaN(min) || qIsNaN(max));
-}
-
-void Range::maximize() {
-  set(-qInf(), +qInf());
 }
 
 void Range::set(qreal val) {

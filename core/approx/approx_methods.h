@@ -16,8 +16,7 @@ protected:
   bool fit(Function&,Curve&, bool sideConditionCheckIsActive);
   virtual bool approximate(qreal*,qreal const*,qreal const*,qreal*,uint,qreal const*,qreal const*,uint) = 0;
 
-  Function *function; ///< set during fit()
-  Curve    *curve;    ///< set during fit()
+  Function *function; ///< valid during fit()
 };
 
 class FittingLinearLeastSquare: public FittingMethod {

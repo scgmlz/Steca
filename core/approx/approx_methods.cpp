@@ -13,11 +13,10 @@ bool FittingMethod::fitWithoutCheck(Function& function, Curve& curve) {
   return fit(function, curve, false);
 }
 
-bool FittingMethod::fit(Function& function_, Curve& curve_, bool sideConditionCheckIsActive) {
+bool FittingMethod::fit(Function& function_, Curve& curve, bool sideConditionCheckIsActive) {
   function = &function_; // TODO perhaps not needed and could be handle by the callback data?
-  curve    = &curve_;
 
-  if (curve->isEmpty()) return false;
+  if (curve.isEmpty()) return false;
 
   // prepare data in a required format
   uint parCount = function->parameterCount();
@@ -31,11 +30,11 @@ bool FittingMethod::fit(Function& function_, Curve& curve_, bool sideConditionCh
     parMax[i]   = rge.max;
   }
 
-  uint pointCount = curve->pointCount();
+  uint pointCount = curve.pointCount();
   reals_t xValues(pointCount), yValues(pointCount);
 
   for_i (pointCount) {
-    auto point = curve->getPoint(i);
+    auto point = curve.getPoint(i);
     xValues[i] = point.x;
     yValues[i] = point.y;
   }
@@ -64,8 +63,8 @@ FittingLevenbergMarquardt::FittingLevenbergMarquardt() {
 
 bool FittingLevenbergMarquardt::approximate(
   qreal*        parameter,          // IO initial parameter estimates -> estimated solution
-  qreal const*  parameterLimitMax,  // I
   qreal const*  parameterLimitMin,  // I
+  qreal const*  parameterLimitMax,  // I
   qreal*        parameterError,     // O
   uint          numberOfParameter,  // I
   qreal const*  xValues,            // I
@@ -78,10 +77,10 @@ bool FittingLevenbergMarquardt::approximate(
 
   // minim. options mu, epsilon1, epsilon2, epsilon3
   double opts[LM_OPTS_SZ];
-  opts[0]=LM_INIT_MU;
-  opts[1]=1E-12;
-  opts[2]=1E-12;
-  opts[3]=1E-18;
+  opts[0] = LM_INIT_MU;
+  opts[1] = 1e-12;
+  opts[2] = 1e-12;
+  opts[3] = 1e-18;
 
   // information regarding the minimization
   double info[LM_INFO_SZ];
@@ -105,16 +104,21 @@ bool FittingLevenbergMarquardt::approximate(
   return true;
 }
 
-void FittingLevenbergMarquardt::__functionLM(qreal* /*parameter*/, qreal* yValues, int /*parameterLength*/, int xLength, void* xValues) {
+void FittingLevenbergMarquardt::__functionLM(qreal* parameterValues, qreal* yValues, int /*parameterLength*/, int xLength, void* xValues) {
+  TR("LM")
   for_i (xLength) {
-    yValues[i] = function->y(((qreal*)xValues)[i]);
+    yValues[i] = function->y(((qreal*)xValues)[i], parameterValues);
+//    TR(i << ((qreal*)xValues)[i] << yValues[i])
   }
 }
 
-void FittingLevenbergMarquardt::__functionJacobianLM(qreal* /*parameter*/, qreal* jacobian, int parameterLength, int xLength, void* xValues) {
+void FittingLevenbergMarquardt::__functionJacobianLM(qreal* parameterValues, qreal* jacobian, int parameterLength, int xLength, void* xValues) {
+  TR("JacLM")
   for_i (xLength) {
+    int &xi = i;
     for_i (parameterLength) {
-      *jacobian++ = function->dy(((qreal*)xValues)[i],i);
+//      TR(xi << i << ((qreal*)xValues)[xi] << function->dy(((qreal*)xValues)[xi],i,parameterValues))
+      *jacobian++ = function->dy(((qreal*)xValues)[xi],i,parameterValues);
     }
   }
 }

@@ -248,7 +248,7 @@ void MainWin::connectActions() {
     QObject::connect(action, &QAction::toggled, this, fun);
   };
 
-  auto NOT_YET = [this](QAction* action) {
+  auto notYet = [this](QAction* action) {
     action->setEnabled(false);
   };
 
@@ -263,25 +263,25 @@ void MainWin::connectActions() {
   onTrigger(actLoadSession, &MainWin::loadSession);
   onTrigger(actSaveSession, &MainWin::saveSession);
 
-  NOT_YET(actExportDiffractogramCurrent);
-  NOT_YET(actExportDiffractogramAllSeparateFiles);
-  NOT_YET(actExportDiffractogramSingleFile);
-  NOT_YET(actExportImagesWithMargins);
-  NOT_YET(actExportImagesWithoutMargins);
+  notYet(actExportDiffractogramCurrent);
+  notYet(actExportDiffractogramAllSeparateFiles);
+  notYet(actExportDiffractogramSingleFile);
+  notYet(actExportImagesWithMargins);
+  notYet(actExportImagesWithoutMargins);
 
   onTrigger(actQuit, &MainWin::close);
 
-  NOT_YET(actUndo);
-  NOT_YET(actRedo);
-  NOT_YET(actCut);
-  NOT_YET(actCopy);
-  NOT_YET(actPaste);
+  notYet(actUndo);
+  notYet(actRedo);
+  notYet(actCut);
+  notYet(actCopy);
+  notYet(actPaste);
 
-  NOT_YET(actPreferences);
-  NOT_YET(actFitErrorParameters);
+  notYet(actPreferences);
+  notYet(actFitErrorParameters);
 
-  NOT_YET(actPdfManual);
-  NOT_YET(actAbout);
+  notYet(actPdfManual);
+  notYet(actAbout);
 
   onToggle(actViewStatusbar, &MainWin::viewStatusbar);
 #ifndef Q_OS_OSX

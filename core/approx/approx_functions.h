@@ -34,11 +34,23 @@ public:
   virtual uint parameterCount() const = 0;
   virtual Parameter& getParameter(uint) = 0;
 
-  /// value of the function
+  virtual Parameter const& getParameter(uint i) const {
+    return const_cast<Function*>(this)->getParameter(i);
+  }
+
+  /// the value of the function, own parameter values
   virtual qreal y(qreal x) const = 0;
+  /// the value of the function, outside parameter values
+  virtual qreal y(qreal x, qreal const* parameterValues) const = 0;
+
   /// partial derivative / parameter
   virtual qreal dy(qreal x, int parameterIndex) const = 0;
+  virtual qreal dy(qreal x, int parameterIndex, qreal const* parameterValues) const = 0;
 };
+
+#ifndef QT_NO_DEBUG
+QDebug& operator<<(QDebug&,Function const&);
+#endif
 
 class SingleFunction: public Function {
   SUPER(SingleFunction,Function)
@@ -76,7 +88,10 @@ public:
   Parameter& getParameter(uint);
 
   qreal y(qreal x) const;
+  qreal y(qreal x, qreal const* parameterValues) const;
+
   qreal dy(qreal x, int parameterIndex) const;
+  qreal dy(qreal x, int parameterIndex, qreal const* parameterValues) const;
 
 protected:
   functions_t functions;
@@ -94,7 +109,10 @@ public:
   }
 
   qreal y(qreal x) const;
+  qreal y(qreal x, qreal const* parameterValues) const;
+
   qreal dy(qreal x, int parameterIndex) const;
+  qreal dy(qreal x, int parameterIndex, qreal const* parameterValues) const;
 };
 
 class Curve {

@@ -16,18 +16,19 @@
 #ifndef QT_NO_DEBUG
 
 #include <QDebug>
-#define TR(what)          { qDebug() << what; }
-#define ASSERT(cond)      Q_ASSERT(cond);
-#define NEVER_HERE        Q_ASSERT_X(false, "Here" , "not be!");
+#define TR(what)      { qDebug() << what; }
+#define ASSERT(cond)  Q_ASSERT(cond);
+#define NEVER_HERE    Q_ASSERT_X(false, "Here", "not be!");
 
 #else
 
-#define TR(what)          { }
+#define TR(what)      { }
 #define ASSERT(cond)
-#define NEVER_HERE        ;
+#define NEVER_HERE    ;
 
 #endif
 
-#define WT(what)          TR(#what":" << what)
+#define WT(what)      TR(#what":" << what)
+#define NOT_YET       Q_ASSERT_X(false, "Done", "this is not.");
 
 #endif

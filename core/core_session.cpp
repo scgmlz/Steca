@@ -13,9 +13,8 @@ Session::Session()
   core::Ranges ranges;
   ranges.add(Range(-1000,1000));
   core::TI_Data tiData;
-  tiData.append(0,0);
-  tiData.append(1,1);
-  tiData.append(2,0);
+  for_i (200)
+    tiData.append(i/3.,i/12.);
   calcBGCorrectionPolynomial(ranges,tiData);
 #endif
 }
@@ -316,9 +315,11 @@ approx::Polynomial Session::calcBGCorrectionPolynomial(Ranges const& ranges,TI_D
     }
   }
 
-  approx::Polynomial polynomial;
+  approx::Polynomial polynomial(3);
 
   approx::FittingLevenbergMarquardt().fitWithoutCheck(polynomial,curve);
+
+  WT(polynomial)
 
   return polynomial;
 }

@@ -15,7 +15,7 @@ void TestCoreRange::testRange() {
     core::Range r(val1);
     QVERIFY(r.isValid());
 
-    r.maximize();
+    r = core::Range::infinite();
     QVERIFY(r.isValid());
 
     r.set(val2);

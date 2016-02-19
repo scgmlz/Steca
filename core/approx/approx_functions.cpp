@@ -3,9 +3,9 @@
 namespace core { namespace approx {
 
 Function::Parameter::Parameter()
-: value(0), range()
-, maxDelta(qSNaN()), maxDeltaPercent(qSNaN())
-, maxError(qSNaN()), maxErrorPercent(qSNaN()) {
+  : value(0), range(Range::infinite())
+  , maxDelta(qSNaN()), maxDeltaPercent(qSNaN())
+  , maxError(qSNaN()), maxErrorPercent(qSNaN()) {
 }
 
 qreal Function::Parameter::getValue() const {
@@ -57,6 +57,16 @@ Function::Function() {
 Function::~Function() {
 }
 
+QDebug& operator<<(QDebug& os, Function const& f) {
+  auto parCount = f.parameterCount();
+  os << '[' << parCount << ']';
+  for_i (parCount) {
+    os << i << ':' << f.getParameter(i).getValue();
+  }
+
+  return os;
+}
+
 SingleFunction::SingleFunction() {
 }
 
@@ -103,26 +113,52 @@ qreal SumFunctions::y(qreal x) const {
   return sum;
 }
 
+qreal SumFunctions::y(qreal x, const qreal *parVals) const {
+  qreal sum = 0;
+  for (auto f: functions) {
+    sum += f->y(x,parVals);
+    parVals += f->parameterCount(); // advance to next function
+  }
+  return sum;
+}
+
 qreal SumFunctions::dy(qreal, int) const {
-  NEVER_HERE // TODO
+  NOT_YET // TODO
+}
+
+qreal SumFunctions::dy(qreal, int, qreal const*) const {
+  NOT_YET
 }
 
 Polynomial::Polynomial(uint degree) {
   setDegree(degree);
 }
 
+static qreal pow_n(qreal x, uint n) {
+  qreal value = 1;
+  while (n-- > 0) value *= x;
+  return value;
+}
+
 qreal Polynomial::y(qreal x) const {
-  qreal value = 0, powX = 1;
-  for (int i=0, iCount = parameters.count();;) {
-    value += parameters[i].getValue() * powX;
-    if (++i >= iCount) break;
-    powX *= x;
-  }
+  qreal value = 0;
+  for_i (parameters.count()) value += parameters[i].getValue() * pow_n(x,i);
+  return value;
+}
+
+qreal Polynomial::y(qreal x, const qreal *parVals) const {
+  qreal value = 0;
+  TR('P' << parVals[0] << parVals[1])
+  for_i (parameters.count()) value += parVals[i] * pow_n(x,i);
   return value;
 }
 
 qreal Polynomial::dy(qreal x, int i) const {
-  return pow(x,i);
+  return pow_n(x,i);
+}
+
+qreal Polynomial::dy(qreal x, int i, qreal const*) const {
+  return pow_n(x,i);
 }
 
 Curve::Point::Point(qreal x_, qreal y_, qreal tolerance_)

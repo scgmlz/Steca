@@ -15,12 +15,12 @@ struct Range {
   Range(qreal val);
   Range(qreal min, qreal max);
 
+  static Range infinite();
+
   qreal min, max;
 
   void invalidate();              ///< make NaN
   bool isValid() const;
-
-  void maximize();                ///< make -inf .. + inf
 
   void set(qreal val);            ///< both min and max = val
   void set(qreal min,qreal max);  ///< must be: min<=max
