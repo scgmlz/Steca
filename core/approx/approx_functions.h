@@ -38,7 +38,6 @@ public:
 class SingleFunction: public Function {
   SUPER(SingleFunction,Function)
 public:
-public:
   SingleFunction();
 
   typedef QVector<Parameter> parameters_t;
@@ -59,7 +58,7 @@ protected:
   parameters_t parameters;
 };
 
-class SumFunctions: public Function {
+class SumFunctions final: public Function {
   SUPER(SumFunctions,Function)
 public:
   SumFunctions();

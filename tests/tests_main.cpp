@@ -12,6 +12,7 @@
 int main(int argc, char *argv[]) {
   QCoreApplication app(argc, argv);
 
+  //Test classes
   TEST_GROUP(TestCoreLib)
   TEST_GROUP(TestCoreArray2d)
   TEST_GROUP(TestCoreImage)

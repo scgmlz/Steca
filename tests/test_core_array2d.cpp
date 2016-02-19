@@ -1,6 +1,5 @@
 #include "test_core_array2d.h"
 
-
 void TestCoreArray2d::testArray2d(){
   core::Array2D<qreal> a; // default constructor
   //Basic Test
@@ -49,11 +48,11 @@ void TestCoreArray2d::testArray2d(){
       QCOMPARE(data[i],(qreal)i);
     }
   }
-  //Testing if Array is reset to default after clear
+  //Testing if Array is reset to default after clearing
   {
     a.clear();
-    QCOMPARE(QSize(0,0),a.getSize());
-    QCOMPARE((uint)0,a.getCount());
+    QCOMPARE(a.getSize(),QSize(0,0));
+    QCOMPARE(a.getCount(),(uint)0);
   }
 }
 

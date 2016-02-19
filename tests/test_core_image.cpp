@@ -1,7 +1,5 @@
 #include "test_core_image.h"
 
-
-
 void TestCoreImage::testImage(){
   //Testing if Data is corectly added and can be accessed again
   {

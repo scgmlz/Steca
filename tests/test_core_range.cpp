@@ -24,7 +24,6 @@ void TestCoreRange::testRange(){
     r.extend(val1);
     QCOMPARE(r.min, val1);
     QCOMPARE(r.max, val2);
-
   }
 
   //Basic Tests using two Argument constructor
@@ -58,10 +57,9 @@ void TestCoreRange::testRange(){
   }
 
   //Tests for Ranges
-  //default Constructor
   {
     int length = 3;
-    core::Ranges R;
+    core::Ranges R; //default Constructor
     QVERIFY(R.isEmpty());
     qreal min = 0, max=3;
     for(int i = 0; i<length;++i){
@@ -85,7 +83,6 @@ void TestCoreRange::testRange(){
     QVERIFY(R.add(core::Range(min,max+1000)));
     QCOMPARE(R.getData().at(0).min,(qreal)0);
     QCOMPARE(R.getData().at(0).max,(qreal)max+1000);
-
   }
 
   //Tests for imageCut Struct
@@ -97,7 +94,6 @@ void TestCoreRange::testRange(){
       QCOMPARE(c.getHeight(q),(uint)100);
       QCOMPARE(c.getCount(q),(uint) q.width()*q.height());
     }
-
     {
       uint top=20,bottom=60,left=5,right=5;
       QSize q(10,100);
@@ -156,6 +152,4 @@ void TestCoreRange::testRange(){
       }
     }
   }
-
-
 }

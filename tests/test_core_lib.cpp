@@ -41,7 +41,7 @@ void TestCoreLib::testSession(){
   }
 }
 
-#define DATA_SET(p1,p2,p3,p4) \
+#define TEST_DATA(p1,p2,p3,p4) \
   QCOMPARE(a.at(s.pixIndex(0,0)),p1); \
   QCOMPARE(a.at(s.pixIndex(w-1,0)),p2);\
   QCOMPARE(a.at(s.pixIndex(w-1,h-1)),p3);\
@@ -57,49 +57,47 @@ void TestCoreLib::rotationHelper(uint w, uint h){
     a.setAt(a.index(0,h-1),4);
     core::Session s;
     s.setImageSize(size);
-
     {
       //only rotation
       auto tb = core::Session::ImageTransform(0);
       s.setImageRotate(tb);
       //rotate_0
-      DATA_SET(1,2,3,4)
+      TEST_DATA(1,2,3,4)
       //rotate_2
       tb = core::Session::ImageTransform(2);
       s.setImageRotate(tb);
-      DATA_SET(3,4,1,2)
+      TEST_DATA(3,4,1,2)
       transposeWH(&w,&h);//flip w and h
       //rotate_1
       tb = core::Session::ImageTransform(1);
       s.setImageRotate(tb);
-      DATA_SET(4,1,2,3)
+      TEST_DATA(4,1,2,3)
       //rotate_3
       tb = core::Session::ImageTransform(3);
       s.setImageRotate(tb);
-      DATA_SET(2,3,4,1)
+      TEST_DATA(2,3,4,1)
     }
-
-    transposeWH(&w,&h);
+    transposeWH(&w,&h);//reset w and h
     {
       //mirror and rotation
       //mirror_rotate_0
       s.setImageMirror(true);
       auto tb = core::Session::ImageTransform(0);
       s.setImageRotate(tb);
-      DATA_SET(2,1,4,3)
+      TEST_DATA(2,1,4,3)
       //mirror_rotate_2
       tb = core::Session::ImageTransform(2);
       s.setImageRotate(tb);
-      DATA_SET(4,3,2,1)
+      TEST_DATA(4,3,2,1)
       transposeWH(&w,&h); //flip w and h
       //mirror_rotate_1
       tb = core::Session::ImageTransform(1);
       s.setImageRotate(tb);
-      DATA_SET(3,2,1,4)
+      TEST_DATA(3,2,1,4)
       //mirror_rotate_3
       tb = core::Session::ImageTransform(3);
       s.setImageRotate(tb);
-      DATA_SET(1,4,3,2)
+      TEST_DATA(1,4,3,2)
     }
 }
 
