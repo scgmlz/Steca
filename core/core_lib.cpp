@@ -82,6 +82,10 @@ bool Ranges::isEmpty() const {
   return ranges.isEmpty();
 }
 
+void Ranges::clear() {
+  ranges.clear();
+}
+
 bool Ranges::add(Range const& range) {
   ranges_t newRanges;
 
@@ -202,6 +206,11 @@ bool TI_Data::isOrdered() const {
   }
 
   return true;
+}
+
+uint TI_Data::count() const {
+  ASSERT(tth.count() == inten.count())
+  return tth.count();
 }
 
 }

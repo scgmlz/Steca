@@ -8,7 +8,8 @@ Background::Background(MainWin& mainWin,Session& session)
 
   box->addWidget(iconButton(mainWin.actBackgroundBackground));
   box->addWidget(label("Degree:"));
-  box->addWidget(editCell(4));
+  box->addWidget(spinCell(4,0,99));
+  box->addStretch();
   box->addWidget(iconButton(mainWin.actBackgroundEye));
 }
 

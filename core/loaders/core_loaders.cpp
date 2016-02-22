@@ -148,9 +148,9 @@ QVector<shp_Dataset> loadCaress(File &file) THROWS {
             convertedIntens[i] = intens[i];
 
           QSize size(detRel,detRel);
-        #ifdef DEVELOPMENT_FAKE_NON_SQUARE_IMAGE
-          size.rheight() /= 2;
-        #endif
+//        #ifdef DEVELOPMENT_FAKE_NON_SQUARE_IMAGE
+//          size.rheight() /= 2;
+//        #endif
 
           // Objekt inizialisieren
           datasets.append(shp_Dataset(new Dataset(file,

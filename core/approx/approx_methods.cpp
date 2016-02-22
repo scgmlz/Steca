@@ -70,7 +70,7 @@ bool FittingLinearLeastSquare::approximate(
   qreal const*  yValues,            // I
   uint          numberOfDataPoints) // I
 {
-  DelegateCalculationDbl function(this, &FittingLevenbergMarquardt::__functionY);
+  DelegateCalculationDbl function(this, &thisCls::__functionY);
 
   // information regarding the minimization
   double info[LM_INFO_SZ];
@@ -107,9 +107,9 @@ bool FittingLevenbergMarquardt::approximate(
   qreal const*  yValues,            // I
   uint          numberOfDataPoints) // I
 {
-  DelegateCalculationDbl function(this, &FittingLevenbergMarquardt::__functionY);
+  DelegateCalculationDbl function(this, &thisCls::__functionY);
   // Function to fill the Jacobian Matrix
-  DelegateCalculationDbl functionJacobian(this, &FittingLevenbergMarquardt::__functionJacobianLM);
+  DelegateCalculationDbl functionJacobian(this, &thisCls::__functionJacobianLM);
 
   // minim. options mu, epsilon1, epsilon2, epsilon3
   double opts[LM_OPTS_SZ];

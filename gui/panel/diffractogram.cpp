@@ -84,7 +84,7 @@ void DiffractogramPlotOverlay::updateCursorRegion() {
   update(cursorPos,g.top(),1,g.height());
 }
 
-DiffractogramPlot::DiffractogramPlot() {
+DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram_): diffractogram(diffractogram_) {
   overlay = new DiffractogramPlotOverlay(*this);
 
   auto *ar = axisRect();
@@ -104,6 +104,7 @@ DiffractogramPlot::DiffractogramPlot() {
 
   // one graph in the "main" layer
   graph = addGraph();
+  background = addGraph();
 
   // background regions
   addLayer("bg",layer("background"),QCustomPlot::limAbove);
@@ -115,21 +116,22 @@ void DiffractogramPlot::setTool(Tool tool_) {
   tool = tool_;
 }
 
-void DiffractogramPlot::plot(core::TI_Data const& dgram) {
+void DiffractogramPlot::plot(core::TI_Data const& dgram,core::TI_Data const& bg) {
   if (dgram.isEmpty()) {
     xAxis->setVisible(false);
     yAxis->setVisible(false);
-
     graph->clearData();
+    background->clearData();
   } else {
     auto tthRange   = dgram.getTthRange();
     auto intenRange = dgram.getIntenRange();
     xAxis->setRange(tthRange.min,tthRange.max);
-    yAxis->setRange(intenRange.min,intenRange.max);
+    yAxis->setRange(qMin(0.,intenRange.min),intenRange.max);
     xAxis->setVisible(true);
     yAxis->setVisible(true);
 
     graph->setData(dgram.getTth(),dgram.getInten());
+    background->setData(bg.getTth(),bg.getInten());
   }
 
   replot();
@@ -139,6 +141,11 @@ core::Range DiffractogramPlot::fromPixels(int pix1, int pix2) {
   return core::Range::safeFrom(
     xAxis->pixelToCoord(pix1),
     xAxis->pixelToCoord(pix2));
+}
+
+void DiffractogramPlot::clearBg() {
+  bg.clear();
+  updateBg();
 }
 
 void DiffractogramPlot::addBg(core::Range const& range) {
@@ -174,6 +181,7 @@ void DiffractogramPlot::updateBg() {
     addItem(ir);
   }
 
+  diffractogram.calcBg();
   replot();
 }
 
@@ -181,7 +189,7 @@ void DiffractogramPlot::updateBg() {
 
 Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
 : super("Diffractogram",mainWin,session,Qt::Vertical), dataset(nullptr) {
-  box->addWidget((plot = new DiffractogramPlot));
+  box->addWidget((plot = new DiffractogramPlot(*this)));
   box->addWidget(check("From all images"));
 
   connect(&session, &Session::datasetSelected, [this](core::shp_Dataset dataset) {
@@ -193,15 +201,15 @@ Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
   });
 
   connect(mainWin.actBackgroundBackground, &QAction::toggled, [this](bool on) {
-    // TODO clear background ?!
+    if (on) plot->clearBg();
     plot->setTool(on ? DiffractogramPlot::TOOL_BACKGROUND : DiffractogramPlot::TOOL_NONE);
   });
 }
 
 void Diffractogram::setDataset(core::shp_Dataset dataset_) {
   dataset = dataset_;
-  calcDgram();
-  plot->plot(dgram);
+  calcDgram(); calcBg();
+  plot->plot(dgram,bg);
 }
 
 void Diffractogram::refresh() {
@@ -259,6 +267,17 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
     auto in = intens_vec[i]; auto cnt = counts_vec[i];
     if (cnt > 0) in /= cnt;
     dgram.append(core::deg_rad(TTHMin + deltaTTH*i),in);
+  }
+}
+
+void Diffractogram::calcBg() {
+  bg.clear();
+
+  // core::approx::FittingLevenbergMarquardt().fitWithoutCheck(bgPolynomial,Curve)
+
+  for_i (dgram.count()) {
+    auto tth = dgram.getTth()[i];
+    bg.append(tth,bgPolynomial.y(tth));
   }
 }
 

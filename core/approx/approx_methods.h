@@ -24,15 +24,15 @@ protected:
 
 class FittingLinearLeastSquare: public FittingMethod {
   SUPER(FittingLinearLeastSquare,FittingMethod)
-public:
+public: // TODO is needed?
   FittingLinearLeastSquare();
 
 protected:
   bool approximate(qreal*,qreal const*,qreal const*,qreal*,uint,qreal const*,qreal const*,uint);
 };
 
-class FittingLevenbergMarquardt: public FittingLinearLeastSquare {
-  SUPER(FittingLevenbergMarquardt,FittingLinearLeastSquare)
+class FittingLevenbergMarquardt: public FittingMethod {
+  SUPER(FittingLevenbergMarquardt,FittingMethod)
 public:
   FittingLevenbergMarquardt();
 

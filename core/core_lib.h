@@ -47,6 +47,8 @@ public:
     return ranges;
   }
 
+  void clear();
+
   bool add(Range const&);
   bool rem(Range const&);
 
@@ -102,6 +104,8 @@ public:
   void clear();
   bool isEmpty() const;
   bool isOrdered() const;
+
+  uint count() const;
 
   void append(qreal tth,qreal inten);
 
