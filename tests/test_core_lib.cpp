@@ -42,7 +42,7 @@ void TestCoreLib::testSession() {
       s.addFile(name);
     }
     catch(Exception e) {
-        check=true;
+      check=true;
     }
     QVERIFY(check);
   }

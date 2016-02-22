@@ -300,6 +300,10 @@ void MainWin::show() {
   session->load(QFileInfo("/home/jan/q.ste"));
 #endif
 #endif
+
+#ifdef DEVELOPMENT_REBECCA
+  session->load(QFileInfo("/home/rebeccapc/SCG/STeCa/1.ste"));
+#endif
 }
 
 void MainWin::close() {
