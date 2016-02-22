@@ -5,11 +5,6 @@
 #ifndef CORE_DEFS_H
 #define CORE_DEFS_H
 
-/// Macros that enable development-related shortcuts.
-/// Undefine for a release!
-//#define DEVELOPMENT_JAN
-//#define DEVELOPMENT_FAKE_NON_SQUARE_IMAGE
-
 // common QT includes - used all the time
 #include <QtGlobal>
 #include <QSharedPointer>
