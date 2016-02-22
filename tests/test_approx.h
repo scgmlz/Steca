@@ -7,7 +7,7 @@
 
 class TestApprox: public QObject {
   Q_OBJECT
-
+bool nearlyEqual(qreal a, qreal b, qreal precision);
 private slots:
   void testApproxFunction();
 };

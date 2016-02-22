@@ -124,11 +124,11 @@ void TestCoreRange::testRange() {
     }
   }
 
-  //Tests for TI_Data
+  //Tests for TI_Curve
   {
     {
       qreal tth = 1.2, inten = 3.14;
-      core::TI_Data t;
+      core::TI_Curve t;
 
       // testing default Constructor, All data is NaN
       {
