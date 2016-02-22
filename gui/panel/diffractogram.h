@@ -56,7 +56,7 @@ public:
   void setTool(Tool);
   Tool getTool() const { return tool; }
 
-  void plot(core::TI_Data const&,core::TI_Data const&);
+  void plot(core::TI_Curve const&,core::TI_Curve const&);
 
   core::Range fromPixels(int,int);
 
@@ -90,8 +90,8 @@ private:
 
   DiffractogramPlot *plot;
 
-  core::TI_Data dgram;
-  core::TI_Data bg;
+  core::TI_Curve dgram;
+  core::TI_Curve bg;
   core::approx::Polynomial bgPolynomial;
 
 public:

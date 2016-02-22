@@ -96,27 +96,42 @@ typedef QVector<qreal> reals_t;
 typedef QVector<uint>  uints_t;
 
 /// A set of datapoints.
-// TODO better name!
-class TI_Data {
+class Curve {
 public:
-  TI_Data();
+  Curve();
+  virtual ~Curve();
 
-  void clear();
+  virtual void clear();
+
   bool isEmpty() const;
+  uint count()   const;
   bool isOrdered() const;
 
-  uint count() const;
+  virtual void append(qreal x, qreal y);
+
+  reals_t const& getXs() const { return xs; }
+  reals_t const& getYs() const { return ys; }
+
+private:
+  reals_t xs, ys;
+};
+
+class TI_Curve: public Curve {
+  SUPER(TI_Curve,Curve)
+public:
+  TI_Curve();
+
+  void clear();
 
   void append(qreal tth,qreal inten);
 
-  reals_t const& getTth()        const { return tth;   }
-  reals_t const& getInten()      const { return inten; }
+  reals_t const& getTth()        const { return getXs(); }
+  reals_t const& getInten()      const { return getYs(); }
 
   Range   const& getTthRange()   const { return tthRange;   }
   Range   const& getIntenRange() const { return intenRange; }
 
 private:
-  reals_t tth, inten;  // always the same count()
   Range tthRange, intenRange;
 };
 

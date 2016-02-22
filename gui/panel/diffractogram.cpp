@@ -116,7 +116,7 @@ void DiffractogramPlot::setTool(Tool tool_) {
   tool = tool_;
 }
 
-void DiffractogramPlot::plot(core::TI_Data const& dgram,core::TI_Data const& bg) {
+void DiffractogramPlot::plot(core::TI_Curve const& dgram,core::TI_Curve const& bg) {
   if (dgram.isEmpty()) {
     xAxis->setVisible(false);
     yAxis->setVisible(false);

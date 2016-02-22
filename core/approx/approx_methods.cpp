@@ -30,16 +30,10 @@ bool FittingMethod::fit(Function& function_, Curve& curve, bool sideConditionChe
     parMax[i]   = rge.max;
   }
 
-  uint pointCount = curve.pointCount();
-  reals_t xValues(pointCount), yValues(pointCount);
+  uint pointCount = curve.count();
 
-  for_i (pointCount) {
-    auto point = curve.getPoint(i);
-    xValues[i] = point.x;
-    yValues[i] = point.y;
-  }
-
-  if (!approximate(parValue.data(),parMin.data(),parMax.data(),parError.data(),parCount,xValues.data(),yValues.data(),pointCount))
+  if (!approximate(parValue.data(),parMin.data(),parMax.data(),parError.data(),parCount,
+                   curve.getXs().data(),curve.getYs().data(),pointCount))
     return false;
 
   // read data

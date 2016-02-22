@@ -106,29 +106,6 @@ public:
   qreal dy(qreal x, int parameterIndex, qreal const* parameterValues = nullptr) const;
 };
 
-class Curve {
-public:
-  struct Point {
-    Point(qreal x=0, qreal y=0, qreal tolerance=0.001);
-    qreal x, y, tolerance;
-  };
-
-public:
-  Curve();
-
-  bool isEmpty() const;
-
-  typedef QVector<Point> points_t;
-
-  void addPoint(Point const&);
-  uint pointCount() const;
-  Point const& getPoint(uint) const;
-
-private:
-  points_t points;
-  Range domainX, domainY;
-};
-
 }}
 
 #endif

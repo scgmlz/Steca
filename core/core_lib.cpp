@@ -176,41 +176,53 @@ bool Borders::isValid() const {
   return gamma.isValid() && tth_regular.isValid() && tth_gamma0.isValid();
 }
 
-TI_Data::TI_Data() {
+Curve::Curve() {
 }
 
-void TI_Data::clear() {
-  tth.clear();
-  inten.clear();
-  tthRange.invalidate(); intenRange.invalidate();
+Curve::~Curve() {
 }
 
-bool TI_Data::isEmpty() const {
-  ASSERT(tth.count() == inten.count())
-  return tth.isEmpty();
+void Curve::clear() {
+  xs.clear(); ys.clear();
 }
 
-void TI_Data::append(qreal tth_, qreal inten_) {
-  tth.append(tth_);
-  inten.append(inten_);
-
-  tthRange.extend(tth_);
-  intenRange.extend(inten_);
+bool Curve::isEmpty() const {
+  return xs.isEmpty();
 }
 
-bool TI_Data::isOrdered() const {
-  qreal lastVal = -qInf();
-  for (qreal val: tth) {
-    if (lastVal >= val) return false;
-    lastVal = val;
+uint Curve::count() const {
+  ASSERT(xs.count() == ys.count())
+  return xs.count();
+}
+
+bool Curve::isOrdered() const {
+  qreal lastX = -qInf();
+  for (qreal x: xs) {
+    if (lastX >= x) return false;
+    lastX = x;
   }
 
   return true;
 }
 
-uint TI_Data::count() const {
-  ASSERT(tth.count() == inten.count())
-  return tth.count();
+void Curve::append(qreal x, qreal y) {
+  xs.append(x);
+  ys.append(y);
+}
+
+TI_Curve::TI_Curve() {
+}
+
+void TI_Curve::clear() {
+  super::clear();
+  tthRange.invalidate();
+  intenRange.invalidate();
+}
+
+void TI_Curve::append(qreal tth_, qreal inten_) {
+  super::append(tth_,inten_);
+  tthRange.extend(tth_);
+  intenRange.extend(inten_);
 }
 
 }

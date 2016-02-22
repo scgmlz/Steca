@@ -150,31 +150,6 @@ qreal Polynomial::dy(qreal x, int i, qreal const*) const {
   return pow_n(x,i);
 }
 
-Curve::Point::Point(qreal x_, qreal y_, qreal tolerance_)
-: x(x_), y(y_), tolerance(tolerance_) {
-}
-
-Curve::Curve() {
-}
-
-bool Curve::isEmpty() const {
-  return points.isEmpty();
-}
-
-void Curve::addPoint(Point const& point) {
-  domainX.extend(point.x);
-  domainY.extend(point.y);
-  points.append(point);
-}
-
-uint Curve::pointCount() const {
-  return points.count();
-}
-
-const Curve::Point &Curve::getPoint(uint i) const {
-  return points.at(i);
-}
-
 }}
 
 // eof

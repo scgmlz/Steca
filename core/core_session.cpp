@@ -285,11 +285,11 @@ Session::AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
   return angleCorrArray;
 }
 
-approx::Polynomial Session::calcBGCorrectionPolynomial(Ranges const& ranges,TI_Data const& vecSpec) {
+approx::Polynomial Session::calcBGCorrectionPolynomial(Ranges const& ranges,TI_Curve const& vecSpec) {
   if (ranges.isEmpty())
     return approx::Polynomial();
 
-  approx::Curve curve;
+  Curve curve;
 
   auto tth   = vecSpec.getTth();
   auto inten = vecSpec.getInten();
@@ -302,7 +302,7 @@ approx::Polynomial Session::calcBGCorrectionPolynomial(Ranges const& ranges,TI_D
     while (i<count && tth[i] <  range.min)
       ++i;
     while (i<count && tth[i] <= range.max) {
-      curve.addPoint(approx::Curve::Point(tth[i],inten[i]));
+      curve.append(tth[i],inten[i]);
       ++i;
     }
   }
