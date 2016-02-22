@@ -9,9 +9,12 @@
 namespace panel {
 
 class Background: public BoxPanel {
-  SUPER(Background,BoxPanel)
+  SUPER(Background,BoxPanel) Q_OBJECT
 public:
   Background(MainWin&,Session&);
+
+private:
+  QSpinBox *spinDegree;
 };
 
 }

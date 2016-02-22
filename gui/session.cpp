@@ -200,6 +200,10 @@ void Session::nextImageRotate() {
   setImageRotate(imageTransform.nextRotate());
 }
 
+void Session::setBackgroundPolynomDegree(uint degree) {
+  emit backgroundPolynomDegree(degree);
+}
+
 void Session::doSaveSettings() {
   emit saveSettings();
 }

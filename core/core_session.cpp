@@ -285,33 +285,6 @@ Session::AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
   return angleCorrArray;
 }
 
-approx::Polynomial Session::calcBGCorrectionPolynomial(Ranges const& ranges,TI_Curve const& vecSpec) {
-  if (ranges.isEmpty())
-    return approx::Polynomial();
-
-  Curve curve;
-
-  auto tth   = vecSpec.getTth();
-  auto inten = vecSpec.getInten();
-
-  // The following adds points that are in ranges to the curve
-  // it works because both ranges and vecSpec are ordered and ranges are non-overlapping
-  ASSERT(vecSpec.isOrdered())
-  uint i = 0, count = tth.count();
-  for (auto const& range: ranges.getData()) {
-    while (i<count && tth[i] <  range.min)
-      ++i;
-    while (i<count && tth[i] <= range.max) {
-      curve.append(tth[i],inten[i]);
-      ++i;
-    }
-  }
-
-  approx::Polynomial polynomial(4); // TODO connect with Gui
-  approx::FittingLevenbergMarquardt().fitWithoutCheck(polynomial,curve);
-  return polynomial;
-}
-
 void Session::calcIntensCorrArray() {
   hasNaNs = false;
 

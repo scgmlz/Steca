@@ -60,9 +60,9 @@ Function::~Function() {
 #ifndef QT_NO_DEBUG
 QDebug& operator<<(QDebug& os, Function const& f) {
   auto parCount = f.parameterCount();
-  os << '[' << parCount << ']';
+  os << str("[%1]").arg(parCount);
   for_i (parCount) {
-    os << i << ':' << f.getParameter(i).getValue();
+    os << str("%1: %2").arg(i).arg(f.getParameter(i).getValue());
   }
 
   return os;

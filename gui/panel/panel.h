@@ -23,7 +23,7 @@ public:
   void setVerticalStretch(int);
   void setStretch(int horizontal, int vertical);
 
-  Session const& getSession() const { return session; }
+  Session& getSession() const { return session; }
 
 protected:
   MainWin &mainWin;
