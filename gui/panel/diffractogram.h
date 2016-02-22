@@ -56,7 +56,8 @@ public:
   void setTool(Tool);
   Tool getTool() const { return tool; }
 
-  void plot(core::TI_Curve const&,core::TI_Curve const&);
+  void plotDgram(core::TI_Curve const&);
+  void plotBg(core::TI_Curve const&);
 
   core::Range fromPixels(int,int);
 
@@ -74,11 +75,11 @@ private:
   DiffractogramPlotOverlay *overlay;
 
   void updateBg();
-  core::Ranges bg;
 };
 
 class Diffractogram: public BoxPanel {
   SUPER(Diffractogram,BoxPanel)
+  friend class DiffractogramPlot;
 public:
   Diffractogram(MainWin&,Session&);
 
@@ -92,6 +93,7 @@ private:
 
   core::TI_Curve dgram;
   core::TI_Curve bg;
+  core::Ranges   bgRanges;
   core::approx::Polynomial bgPolynomial;
 
 public:

@@ -116,12 +116,11 @@ void DiffractogramPlot::setTool(Tool tool_) {
   tool = tool_;
 }
 
-void DiffractogramPlot::plot(core::TI_Curve const& dgram,core::TI_Curve const& bg) {
+void DiffractogramPlot::plotDgram(core::TI_Curve const& dgram) {
   if (dgram.isEmpty()) {
     xAxis->setVisible(false);
     yAxis->setVisible(false);
     graph->clearData();
-    background->clearData();
   } else {
     auto tthRange   = dgram.getTthRange();
     auto intenRange = dgram.getIntenRange();
@@ -131,6 +130,15 @@ void DiffractogramPlot::plot(core::TI_Curve const& dgram,core::TI_Curve const& b
     yAxis->setVisible(true);
 
     graph->setData(dgram.getTth(),dgram.getInten());
+  }
+
+  replot();
+}
+
+void DiffractogramPlot::plotBg(core::TI_Curve const& bg) {
+  if (bg.isEmpty()) {
+    background->clearData();
+  } else {
     background->setData(bg.getTth(),bg.getInten());
   }
 
@@ -144,16 +152,16 @@ core::Range DiffractogramPlot::fromPixels(int pix1, int pix2) {
 }
 
 void DiffractogramPlot::clearBg() {
-  bg.clear();
+  diffractogram.bgRanges.clear();
   updateBg();
 }
 
 void DiffractogramPlot::addBg(core::Range const& range) {
-  if (bg.add(range)) updateBg();
+  if (diffractogram.bgRanges.add(range)) updateBg();
 }
 
 void DiffractogramPlot::remBg(core::Range const& range) {
-  if (bg.rem(range)) updateBg();
+  if (diffractogram.bgRanges.rem(range)) updateBg();
 }
 
 void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
@@ -168,7 +176,7 @@ void DiffractogramPlot::updateBg() {
   setCurrentLayer("bg");
 
   auto bgColor = QColor(0xff,0xf8,0xf8);
-  for (auto const& r: bg.getData()) {
+  for (auto const& r: diffractogram.bgRanges.getData()) {
     auto ir = new QCPItemRect(this);
     ir->setPen(QPen(bgColor));
     ir->setBrush(QBrush(bgColor));
@@ -182,7 +190,7 @@ void DiffractogramPlot::updateBg() {
   }
 
   diffractogram.calcBg();
-  replot();
+  plotBg(diffractogram.bg);
 }
 
 //------------------------------------------------------------------------------
@@ -200,6 +208,11 @@ Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
     refresh();
   });
 
+  connect(&session, &Session::backgroundPolynomDegree, [this](uint degree) {
+    bgPolynomial.setDegree(degree);
+    refresh();
+  });
+
   connect(mainWin.actBackgroundBackground, &QAction::toggled, [this](bool on) {
     if (on) plot->clearBg();
     plot->setTool(on ? DiffractogramPlot::TOOL_BACKGROUND : DiffractogramPlot::TOOL_NONE);
@@ -208,8 +221,10 @@ Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
 
 void Diffractogram::setDataset(core::shp_Dataset dataset_) {
   dataset = dataset_;
-  calcDgram(); calcBg();
-  plot->plot(dgram,bg);
+  calcDgram();
+  plot->plotDgram(dgram);
+  calcBg();
+  plot->plotBg(bg);
 }
 
 void Diffractogram::refresh() {
@@ -273,7 +288,30 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
 void Diffractogram::calcBg() {
   bg.clear();
 
-  // core::approx::FittingLevenbergMarquardt().fitWithoutCheck(bgPolynomial,Curve)
+  // TODO this calculation move to core
+  core::Curve curve;
+
+  // The following adds points that are in ranges to the curve
+  // it works because both ranges and vecSpec are ordered and ranges are non-overlapping
+  ASSERT(dgram.isOrdered())
+
+  auto tth   = dgram.getTth();
+  auto inten = dgram.getInten();
+
+  uint i = 0, count = dgram.count();
+  for (auto const& range: bgRanges.getData()) {
+    while (i<count && tth[i] <  range.min)
+      ++i;
+    while (i<count && tth[i] <= range.max) {
+      curve.append(tth[i],inten[i]);
+      ++i;
+    }
+  }
+
+  if (curve.isEmpty()) return;
+
+  core::approx::FittingLevenbergMarquardt().fitWithoutCheck(bgPolynomial,curve);
+  TR("bg" << bgPolynomial)
 
   for_i (dgram.count()) {
     auto tth = dgram.getTth()[i];

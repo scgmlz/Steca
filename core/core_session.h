@@ -121,9 +121,6 @@ protected: // corrections TODO make private
 public:
   AngleCorrArray const& calcAngleCorrArray(qreal tthMitte);  // TODO rename; TODO if too slow, cache
 
-public:
-  approx::Polynomial calcBGCorrectionPolynomial(Ranges const&,TI_Curve const&);
-
 public: // TODO not public
   Image intensCorrArray;  // summed corrFile intensities
   bool  hasNaNs;

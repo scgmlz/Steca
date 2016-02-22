@@ -38,7 +38,9 @@ public:
   void setImageRotate(ImageTransform);
   void nextImageRotate();
 
-// Session is the only one emitting signals (besides Qt gui widgets)
+  void setBackgroundPolynomDegree(uint);
+
+// Session emits most signals
 signals:
   void geometryChanged();             // detector geometry, image cut, image rotation
 
@@ -54,6 +56,8 @@ signals:
 
   void saveSettings();  // TODO for now; eventually move things to save to Session
   void readSettings();  // TODO for now; eventually move things to read to Session
+
+  void backgroundPolynomDegree(uint);
 
 public:
   model::FileViewModel    fileViewModel;    // TODO not public
