@@ -9,7 +9,7 @@
 namespace panel {
 
 class Background: public BoxPanel {
-  SUPER(Background,BoxPanel) Q_OBJECT
+  SUPER(Background,BoxPanel)
 public:
   Background(MainWin&,Session&);
 
