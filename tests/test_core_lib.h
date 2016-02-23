@@ -12,7 +12,7 @@ class TestCoreLib: public QObject {
 
 private slots:
 
-  void conversions();
+  void testConversions();
   void testFile();
   void testSession();
 };

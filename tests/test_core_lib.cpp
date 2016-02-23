@@ -4,7 +4,7 @@
 #include <core_file.h>
 #include <core_session.h>
 
-void TestCoreLib::conversions() {
+void TestCoreLib::testConversions() {
   QCOMPARE(M_PI,core::rad_deg(180));
   QCOMPARE(90.0,core::deg_rad(M_PI_2));
 
@@ -59,10 +59,10 @@ void TestCoreLib::rotationHelper(uint w, uint h) {
   core::Array2D<int> a;
 
   a.fill(0,size);
-  a.setAt(a.index(0,0),1);
-  a.setAt(a.index(w-1,0),2);
-  a.setAt(a.index(w-1,h-1),3);
-  a.setAt(a.index(0,h-1),4);
+  a.setAt(a.index(0,0),     1);
+  a.setAt(a.index(w-1,0),   2);
+  a.setAt(a.index(w-1,h-1), 3);
+  a.setAt(a.index(0,h-1),   4);
 
   core::Session s;
   s.setImageSize(size);

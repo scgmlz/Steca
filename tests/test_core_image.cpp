@@ -1,35 +1,48 @@
 #include "test_core_image.h"
 #include <core_image.h>
 
-void TestCoreImage::testImage() {
-  //Testing if Data is corectly added and can be accessed again
-  {
-    QSize q(10,100);
-    uint pos = 42;
-    float intens = 1.24;
+void TestCoreImage::testImage(uint w, uint h) {
+    //Testing if Data is corectly added and can be accessed again
+    uint const specialX = qMin(2u,w-1), specialY = qMin(4u,h-1); // that's 42!
+
+    ASSERT(specialX<w && specialY<h)
+
+    QSize q(w,h);
+    uint pos = specialX + w*specialY;
+    float intens = 1.24, specialIntens = 3*intens;
     core::Image im;
     im.fill(intens,q);
 
     auto data = im.getIntensities();
-    for_i (1000) {
+    QCOMPARE(im.getCount(),w*h);
+    for_i (im.getCount()) {
       QCOMPARE(*data++,intens);
     }
 
-    im.setIntensity(pos,3*intens);
-    QCOMPARE(*(im.getIntensities()+pos),3*intens);
-    QCOMPARE(im.getRgeIntens().min,core::Range(intens,3*intens).min);
-    QCOMPARE(im.getRgeIntens().max,core::Range(intens,3*intens).max);
+    im.setIntensity(pos,specialIntens);
+    QCOMPARE(*(im.getIntensities()+pos),specialIntens);
 
-    //checking if intensities are corect
-    for (int x=0;x<10;++x) {
-      for (int y=0;y<100;++y) {
-        if(x!=2 && y!=4) {
-          QCOMPARE(im.at(1,2),intens);
+    auto rgeActual = im.getRgeIntens();
+    auto rgeExpect = core::Range(intens,specialIntens);
+    QCOMPARE(rgeActual.min, rgeExpect.min);
+    QCOMPARE(rgeActual.max, rgeExpect.max);
+
+    // checking if intensities are correct
+    for (uint x=0; x<w; ++x) {
+      for (uint y=0; y<h; ++y) {
+        if (x==specialX && y==specialY) {
+          QCOMPARE(im.at(x,y),specialIntens);
+        } else {
+          QCOMPARE(im.at(x,y),intens);
         }
-        QCOMPARE(im.at(2,4),3*intens);
       }
     }
-  }
+}
+
+void TestCoreImage::testImage() {
+  testImage(10,100);
+  testImage(256,256);
+  testImage(256,25);
 }
 
 // eof

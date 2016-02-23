@@ -302,7 +302,7 @@ void MainWin::show() {
 #endif
 
 #ifdef DEVELOPMENT_REBECCA
-  session->load(QFileInfo("/home/rebeccapc/SCG/STeCa/1.ste"));
+  session->load(QFileInfo("/home/rebecca/SCG/STeCa-Data/1.ste"));
 #endif
 }
 

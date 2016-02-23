@@ -8,6 +8,8 @@
 class TestCoreImage: public QObject {
   Q_OBJECT
 
+  void testImage(uint w, uint h);
+
 private slots:
 
   void testImage();

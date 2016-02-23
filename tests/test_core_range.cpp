@@ -67,8 +67,8 @@ void TestCoreRange::testRange() {
     qreal min = 0, max = 3;
     for (int i = 0; i<length; ++i) {
       rs.add(core::Range(min,max));
-      min = max +1;
-      max = 2*max+1;
+      min = max + 1;
+      max = 2*max + 1;
     }
 
     min = 0; max= 3;
@@ -80,11 +80,11 @@ void TestCoreRange::testRange() {
     QCOMPARE(rs.getData().at(2).min, 8.);
 
     QVERIFY(rs.rem(core::Range(min+1,max)));
-    QCOMPARE(rs.getData().at(0).min,(qreal)0);
-    QCOMPARE(rs.getData().at(0).max,(qreal)1);
+    QCOMPARE(rs.getData().at(0).min, 0.);
+    QCOMPARE(rs.getData().at(0).max, 1.);
 
     QVERIFY(!rs.add(core::Range(0., 1.)));
-    QVERIFY(rs.add(core::Range(min, max+1000.)));
+    QVERIFY(rs.add(core::Range(min,  max+1000.)));
     QCOMPARE(rs.getData().at(0).min, 0.);
     QCOMPARE(rs.getData().at(0).max, max+1000.);
   }
@@ -97,10 +97,10 @@ void TestCoreRange::testRange() {
 
       QCOMPARE(c.getWidth(q),   10u);
       QCOMPARE(c.getHeight(q), 100u);
-      QCOMPARE((int)c.getCount(q),  q.width()*q.height());
+      QCOMPARE((int)c.getCount(q), q.width()*q.height());
     }
     {
-      uint top=20,bottom=60,left=5,right=5;
+      uint top=20, bottom=60, left=5, right=5;
       QSize q(10,100);
       core::ImageCut c(top,bottom,left,right);
 
