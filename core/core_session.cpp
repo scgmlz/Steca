@@ -110,6 +110,7 @@ bool Session::Geometry::operator ==(Geometry const& that) const {
 }
 
 void Session::setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset) {
+  ASSERT(sampleDetectorSpan>0 && pixSpan>0) // TODO better than assert
   geometry.sampleDetectorSpan = sampleDetectorSpan;
   geometry.pixSpan            = pixSpan;
   geometry.hasBeamOffset      = hasBeamOffset;
@@ -221,8 +222,8 @@ Session::AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
   cut.invalidate();
 
   if (!size.isEmpty()) {
-    ASSERT(geometry.pixSpan>0) // TODO
-    ASSERT(geometry.sampleDetectorSpan>0) // TODO
+    ASSERT(geometry.pixSpan>0) // TODO better than asserts
+    ASSERT(geometry.sampleDetectorSpan>0)
 
     // Fill the Array
     for (int iy = 0; iy < size.height(); ++iy) {

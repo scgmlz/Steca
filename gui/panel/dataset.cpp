@@ -115,12 +115,12 @@ DatasetOptions::DatasetOptions(MainWin& mainWin_, Session& session_)
 
   auto gd = gridLayout();
 
-  gd->addWidget(label("Distance"),                  0,0);
-  gd->addWidget((spinDistance = spinCell(6,0.0)),   0,1);
-  gd->addWidget(label("mm"),                        0,2);
-  gd->addWidget(label("Pixel size"),                1,0);
-  gd->addWidget((spinPixelSize = spinCell(6,0.01)), 1,1);
-  gd->addWidget(label("mm"),                        1,2);
+  gd->addWidget(label("Distance"),                            0,0);
+  gd->addWidget((spinDistance = spinCell(6,MIN_DISTANCE)),    0,1);
+  gd->addWidget(label("mm"),                                  0,2);
+  gd->addWidget(label("Pixel size"),                          1,0);
+  gd->addWidget((spinPixelSize = spinCell(6,MIN_PIXEL_SIZE)), 1,1);
+  gd->addWidget(label("mm"),                                  1,2);
   gd->setColumnStretch(3,1);
 
   box->addWidget(label("Detector"));

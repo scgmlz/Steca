@@ -1,5 +1,10 @@
+#pragma GCC diagnostic ignored "-Wall"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wdeprecated-register"
+
 #include "approx_methods.h"
 #include "LevMar/levmar.h"
+#include <cmath>
 
 namespace core { namespace approx {
 

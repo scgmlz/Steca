@@ -311,7 +311,6 @@ void Diffractogram::calcBg() {
   if (curve.isEmpty()) return;
 
   core::approx::FittingLevenbergMarquardt().fitWithoutCheck(bgPolynomial,curve);
-  TR("bg" << bgPolynomial)
 
   for_i (dgram.count()) {
     auto tth = dgram.getTth()[i];
