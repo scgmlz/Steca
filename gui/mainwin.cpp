@@ -295,7 +295,7 @@ void MainWin::show() {
   checkActions();
 #ifdef DEVELOPMENT_JAN
 #ifdef Q_OS_OSX
-  session->load(QFileInfo("/Users/igb/Q/STeCa/data/q.ste"));
+  session->load(QFileInfo("/Users/igb/P/+scg/STeCa/data/q.ste"));
 #else
   session->load(QFileInfo("/home/jan/q.ste"));
 #endif

@@ -40,6 +40,10 @@ public:
 signals:
   void imageScale(uint);
 
+public:
+  qreal const MIN_DISTANCE   = 1.;  // mm
+  qreal const MIN_PIXEL_SIZE = .01; // mm
+
 private:
   QSpinBox       *cutTop, *cutBottom, *cutLeft, *cutRight;
   QSpinBox       *spinOffsetX, *spinOffsetY;

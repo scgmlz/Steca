@@ -1,3 +1,6 @@
+#pragma GCC diagnostic ignored "-Wall"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wdeprecated-register"
 /////////////////////////////////////////////////////////////////////////////////
 //
 //  Levenberg - Marquardt non-linear minimization algorithm
