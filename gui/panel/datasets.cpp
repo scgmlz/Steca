@@ -4,6 +4,7 @@
 #include "models.h"
 
 namespace panel {
+//------------------------------------------------------------------------------
 
 DatasetView::DatasetView(Model& model_): model(model_) {
   setModel(&model);
@@ -40,6 +41,6 @@ Datasets::Datasets(MainWin& mainWin_,Session& session_)
   h->addStretch();
 }
 
+//------------------------------------------------------------------------------
 }
-
 // eof

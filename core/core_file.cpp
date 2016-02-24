@@ -2,6 +2,7 @@
 #include "loaders/core_loaders.h"
 
 namespace core {
+//------------------------------------------------------------------------------
 
 File::File(): File(EMPTY_STR) {
 }
@@ -68,6 +69,6 @@ Range const& File::getRgeIntens() const {
   return rgeIntens;
 }
 
+//------------------------------------------------------------------------------
 }
-
 // eof

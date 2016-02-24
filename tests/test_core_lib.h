@@ -3,7 +3,7 @@
 
 #include <QtTest/QtTest>
 
-#define TEST_SUITE
+#define TEST_UNIT_TESTS
 
 class TestCoreLib: public QObject {
   Q_OBJECT
@@ -11,7 +11,6 @@ class TestCoreLib: public QObject {
   void rotationHelper(uint w, uint h);
 
 private slots:
-
   void testConversions();
   void testFile();
   void testSession();

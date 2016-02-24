@@ -11,6 +11,7 @@
 #include <QMetaType>
 
 namespace core {
+//------------------------------------------------------------------------------
 
 /// A file (loaded from a disk file) that contains a number of datasets.
 class File final {
@@ -45,6 +46,7 @@ private:
 
 typedef QSharedPointer<File> shp_File;
 
+//------------------------------------------------------------------------------
 }
 
 Q_DECLARE_METATYPE(core::shp_File)

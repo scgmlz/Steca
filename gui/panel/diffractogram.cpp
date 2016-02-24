@@ -3,6 +3,22 @@
 #include "session.h"
 
 namespace panel {
+//------------------------------------------------------------------------------
+
+TI_Curve::TI_Curve() {
+}
+
+void TI_Curve::clear() {
+  super::clear();
+  tthRange.invalidate();
+  intenRange.invalidate();
+}
+
+void TI_Curve::append(qreal tth_, qreal inten_) {
+  super::append(tth_,inten_);
+  tthRange.extend(tth_);
+  intenRange.extend(inten_);
+}
 
 DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& plot_)
 : super(&plot_), plot(plot_), hasCursor(false), mouseDown(false), cursorPos(0)
@@ -116,7 +132,7 @@ void DiffractogramPlot::setTool(Tool tool_) {
   tool = tool_;
 }
 
-void DiffractogramPlot::plotDgram(core::TI_Curve const& dgram) {
+void DiffractogramPlot::plotDgram(TI_Curve const& dgram) {
   if (dgram.isEmpty()) {
     xAxis->setVisible(false);
     yAxis->setVisible(false);
@@ -135,7 +151,7 @@ void DiffractogramPlot::plotDgram(core::TI_Curve const& dgram) {
   replot();
 }
 
-void DiffractogramPlot::plotBg(core::TI_Curve const& bg) {
+void DiffractogramPlot::plotBg(TI_Curve const& bg) {
   if (bg.isEmpty()) {
     background->clearData();
   } else {
@@ -176,7 +192,9 @@ void DiffractogramPlot::updateBg() {
   setCurrentLayer("bg");
 
   auto bgColor = QColor(0xff,0xf8,0xf8);
-  for (auto const& r: diffractogram.bgRanges.getData()) {
+  auto const& rs = diffractogram.bgRanges;
+  for_i (rs.count()) {
+    auto const& r = rs.at(i);
     auto ir = new QCPItemRect(this);
     ir->setPen(QPen(bgColor));
     ir->setBrush(QBrush(bgColor));
@@ -252,8 +270,8 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   auto intens = image.getIntensities();
   auto corr   = session.hasCorrFile() ? session.intensCorrArray.getIntensities() : nullptr;
 
-  core::reals_t intens_vec(width);
-  core::uints_t counts_vec(width,0);
+  reals_t intens_vec(width);
+  uints_t counts_vec(width,0);
 
   for_i (height) {
     auto iy = i + imageCut.top;
@@ -298,13 +316,14 @@ void Diffractogram::calcBg() {
   auto tth   = dgram.getTth();
   auto inten = dgram.getInten();
 
-  uint i = 0, count = dgram.count();
-  for (auto const& range: bgRanges.getData()) {
-    while (i<count && tth[i] <  range.min)
-      ++i;
-    while (i<count && tth[i] <= range.max) {
-      curve.append(tth[i],inten[i]);
-      ++i;
+  uint di = 0, count = dgram.count();
+  for_i (bgRanges.count()) {
+    auto const& range = bgRanges.at(i);
+    while (di<count && tth[di] <  range.min)
+      ++di;
+    while (di<count && tth[di] <= range.max) {
+      curve.append(tth[di],inten[di]);
+      ++di;
     }
   }
 
@@ -318,6 +337,6 @@ void Diffractogram::calcBg() {
   }
 }
 
+//------------------------------------------------------------------------------
 }
-
 // eof

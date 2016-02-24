@@ -1,6 +1,3 @@
-#pragma GCC diagnostic ignored "-Wall"
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#pragma GCC diagnostic ignored "-Wdeprecated-register"
 /////////////////////////////////////////////////////////////////////////////////
 //
 //  Solution of linear systems involved in the Levenberg - Marquardt
@@ -26,6 +23,8 @@
  * code is used with appropriate #defines to derive single and double precision
  * solver versions, see also Axb_core.c
  ********************************************************************************/
+
+#pragma GCC diagnostic ignored "-Wdeprecated-register"
 
 #include <stdio.h>
 #include <stdlib.h>

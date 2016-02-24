@@ -65,4 +65,5 @@ bool App::notify(QObject* receiver, QEvent* event) {
   return false;
 }
 
+//------------------------------------------------------------------------------
 // eof

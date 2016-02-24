@@ -6,6 +6,9 @@
 #include <QJsonObject>
 #include <QApplication>
 
+//------------------------------------------------------------------------------
+
+// TODO handle long operations asynchronously
 class WaitCursor {
 public:
   WaitCursor() {
@@ -16,6 +19,8 @@ public:
     QApplication::restoreOverrideCursor();
   }
 };
+
+//------------------------------------------------------------------------------
 
 Session::Session()
 : fileViewModel(*this), datasetViewModel(*this) {
@@ -55,7 +60,7 @@ void Session::load(QByteArray const& json) THROWS {
   int x1 = qMax(0,cut["left"].toInt());
   int x2 = qMax(0,cut["right"].toInt());
 
-  setImageCut(true,false,core::ImageCut(x1,y1,x2,y2));
+  setImageCut(true,false,ImageCut(x1,y1,x2,y2));
 
   auto det = top["detector"].toObject();
 
@@ -133,7 +138,7 @@ void Session::remFile(uint i) {
 
   if (0==numFiles(true)) {
     setSelectedDataset(core::shp_Dataset());
-    setImageCut(true,false,core::ImageCut());
+    setImageCut(true,false,ImageCut());
   }
 }
 
@@ -151,7 +156,7 @@ void Session::setSelectedDataset(core::shp_Dataset dataset) {
   emit datasetSelected(dataset);
 }
 
-void Session::setImageCut(bool topLeft, bool linked, core::ImageCut const& imageCut) {
+void Session::setImageCut(bool topLeft, bool linked, ImageCut const& imageCut) {
   super::setImageCut(topLeft,linked,imageCut);
   calcIntensCorrArray();
   emit geometryChanged();
@@ -212,4 +217,5 @@ void Session::doReadSettings() {
   emit readSettings();
 }
 
+//------------------------------------------------------------------------------
 // eof

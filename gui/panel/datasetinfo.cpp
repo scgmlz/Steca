@@ -4,6 +4,7 @@
 #include <QScrollArea>
 
 namespace panel {
+//------------------------------------------------------------------------------
 
 DatasetInfo::DatasetInfo(MainWin& mainWin,Session& session)
 : super("Dataset Info",mainWin,session,Qt::Vertical) {
@@ -45,6 +46,6 @@ DatasetInfo::Info::Info(InfoItems& items) {
   }
 }
 
+//------------------------------------------------------------------------------
 }
-
 // eof

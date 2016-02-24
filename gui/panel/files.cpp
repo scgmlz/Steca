@@ -6,7 +6,6 @@
 #include <QAction>
 
 namespace panel {
-
 //-----------------------------------------------------------------------------
 
 class FileViewDelegate: public QStyledItemDelegate {
@@ -78,6 +77,6 @@ Files::Files(MainWin& mainWin_,Session& session_)
   });
 }
 
+//------------------------------------------------------------------------------
 }
-
 // eof

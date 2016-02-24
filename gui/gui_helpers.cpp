@@ -1,6 +1,8 @@
 #include "gui_helpers.h"
 #include <QAction>
 
+//------------------------------------------------------------------------------
+
 QBoxLayout *hbox() {
   return new QHBoxLayout;
 }
@@ -93,9 +95,13 @@ QRadioButton* radioButton(rcstr text) {
   return new QRadioButton(text);
 }
 
+//------------------------------------------------------------------------------
+
 ListView::ListView() {
   setAlternatingRowColors(true);
 }
+
+//------------------------------------------------------------------------------
 
 TreeView::TreeView() {
   setAlternatingRowColors(true);
@@ -105,6 +111,8 @@ int TreeView::sizeHintForColumn(int) const {
   return 3 * fontMetrics().width('m');
 }
 
+//------------------------------------------------------------------------------
+
 TreeListView::TreeListView() {
 }
 
@@ -113,8 +121,11 @@ void TreeListView::setModel(QAbstractItemModel* model) {
   hideColumn(0);  // this should look like a list; 0th column is tree-like
 }
 
+//------------------------------------------------------------------------------
+
 BoxWidget::BoxWidget(Qt::Orientation orientation) {
   setLayout((box = boxLayout(orientation)));
 }
 
+//------------------------------------------------------------------------------
 // eof

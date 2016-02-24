@@ -2,6 +2,7 @@
 #include "gui_helpers.h"
 
 namespace panel {
+//------------------------------------------------------------------------------
 
 Normalization::Normalization(MainWin& mainWin,Session& session)
 : super("Normalization",mainWin,session,Qt::Vertical) {
@@ -12,6 +13,6 @@ Normalization::Normalization(MainWin& mainWin,Session& session)
   box->addStretch();
 }
 
+//------------------------------------------------------------------------------
 }
-
 // eof

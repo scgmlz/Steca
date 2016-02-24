@@ -4,6 +4,8 @@
 #include "panel/diffractogram.h"
 #include "panel/reflectioninfo.h"
 
+//------------------------------------------------------------------------------
+
 SplitDiffractogram::SplitDiffractogram(MainWin& mainWin,Session& session): super(Qt::Horizontal) {
   auto diffractogram = new panel::Diffractogram(mainWin,session);
   diffractogram->setHorizontalStretch(1);
@@ -11,4 +13,5 @@ SplitDiffractogram::SplitDiffractogram(MainWin& mainWin,Session& session): super
   box->addWidget(new panel::ReflectionInfo(mainWin,session));
 }
 
+//------------------------------------------------------------------------------
 // eof

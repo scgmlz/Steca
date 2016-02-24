@@ -12,6 +12,7 @@ class MainWin;
 class Session;
 
 namespace panel {
+//------------------------------------------------------------------------------
 
 /// Just a plain panel
 class BasicPanel: public QGroupBox {
@@ -57,6 +58,6 @@ struct InfoItem {
 
 typedef QVector<InfoItem> InfoItems;
 
+//------------------------------------------------------------------------------
 }
-
 #endif

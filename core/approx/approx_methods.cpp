@@ -1,12 +1,9 @@
-#pragma GCC diagnostic ignored "-Wall"
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#pragma GCC diagnostic ignored "-Wdeprecated-register"
-
 #include "approx_methods.h"
 #include "LevMar/levmar.h"
 #include <cmath>
 
 namespace core { namespace approx {
+//------------------------------------------------------------------------------
 
 FittingMethod::FittingMethod() {
 }
@@ -19,9 +16,10 @@ bool FittingMethod::fitWithoutCheck(Function& function, Curve& curve) {
 }
 
 bool FittingMethod::fit(Function& function_, Curve& curve, bool sideConditionCheckIsActive) {
-  function = &function_; // TODO perhaps not needed and could be handle by the callback data?
-
   if (curve.isEmpty()) return false;
+
+  function = &function_;
+  xValues  = curve.getXs().data();
 
   // prepare data in a required format
   uint parCount = function->parameterCount();
@@ -38,7 +36,7 @@ bool FittingMethod::fit(Function& function_, Curve& curve, bool sideConditionChe
   uint pointCount = curve.count();
 
   if (!approximate(parValue.data(),parMin.data(),parMax.data(),parError.data(),parCount,
-                   curve.getXs().data(),curve.getYs().data(),pointCount))
+                   curve.getYs().data(),pointCount))
     return false;
 
   // read data
@@ -50,11 +48,13 @@ bool FittingMethod::fit(Function& function_, Curve& curve, bool sideConditionChe
   return true;
 }
 
-void FittingMethod::__functionY(qreal* parameterValues, qreal* yValues, int /*parameterLength*/, int xLength, void* xValues) {
+void FittingMethod::__functionY(qreal* parameterValues, qreal* yValues, int /*parameterLength*/, int xLength, void*) {
   for_i (xLength) {
-    yValues[i] = function->y(((qreal*)xValues)[i], parameterValues);
+    yValues[i] = function->y(xValues[i], parameterValues);
   }
 }
+
+//------------------------------------------------------------------------------
 
 FittingLinearLeastSquare::FittingLinearLeastSquare() {
 }
@@ -65,7 +65,6 @@ bool FittingLinearLeastSquare::approximate(
   qreal const*  parameterLimitMax,  // I
   qreal*        parameterError,     // O
   uint          numberOfParameter,  // I
-  qreal const*  xValues,            // I
   qreal const*  yValues,            // I
   uint          numberOfDataPoints) // I
 {
@@ -84,14 +83,15 @@ bool FittingLinearLeastSquare::approximate(
     parameter, (qreal*)yValues, numberOfParameter, numberOfDataPoints,
     (qreal*)parameterLimitMin, (qreal*)parameterLimitMax,
     NULL, maxIterations, NULL, info, NULL, covar.data(),
-    (qreal*)xValues  // additional data - TODO differently?
-  );
+    NULL);
 
   for (uint i=0; i<numberOfParameter; i++)
     parameterError[i] = sqrt(covar[i*numberOfParameter + i]); // diagonal
 
   return true;
 }
+
+//------------------------------------------------------------------------------
 
 FittingLevenbergMarquardt::FittingLevenbergMarquardt() {
 }
@@ -102,7 +102,6 @@ bool FittingLevenbergMarquardt::approximate(
   qreal const*  parameterLimitMax,  // I
   qreal*        parameterError,     // O
   uint          numberOfParameter,  // I
-  qreal const*  xValues,            // I
   qreal const*  yValues,            // I
   uint          numberOfDataPoints) // I
 {
@@ -130,8 +129,7 @@ bool FittingLevenbergMarquardt::approximate(
     parameter, (qreal*)yValues, numberOfParameter, numberOfDataPoints,
     (qreal*)parameterLimitMin, (qreal*)parameterLimitMax,
     NULL, maxIterations, opts, info, NULL, covar.data(),
-    (qreal*)xValues  // additional data - TODO differently?
-  );
+    NULL);
 
   for (uint i=0; i<numberOfParameter; i++)
     parameterError[i] = sqrt(covar[i*numberOfParameter + i]); // diagonal
@@ -139,15 +137,15 @@ bool FittingLevenbergMarquardt::approximate(
   return true;
 }
 
-void FittingLevenbergMarquardt::__functionJacobianLM(qreal* parameterValues, qreal* jacobian, int parameterLength, int xLength, void* xValues) {
+void FittingLevenbergMarquardt::__functionJacobianLM(qreal* parameterValues, qreal* jacobian, int parameterLength, int xLength, void*) {
   for_i (xLength) {
     int &xi = i;
     for_i (parameterLength) {
-      *jacobian++ = function->dy(((qreal*)xValues)[xi],i,parameterValues);
+      *jacobian++ = function->dy(xValues[xi],i,parameterValues);
     }
   }
 }
 
+//------------------------------------------------------------------------------
 }}
-
 // eof

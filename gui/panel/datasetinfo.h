@@ -7,6 +7,7 @@
 #include "panel.h"
 
 namespace panel {
+//------------------------------------------------------------------------------
 
 class DatasetInfo: public BoxPanel {
   SUPER(DatasetInfo,BoxPanel)
@@ -27,8 +28,6 @@ private:
   void selectionChanged();
 };
 
+//------------------------------------------------------------------------------
 }
-
-// used in signals
-
 #endif

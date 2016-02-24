@@ -1,4 +1,3 @@
-#pragma GCC diagnostic ignored "-Wall"
 /////////////////////////////////////////////////////////////////////////////////
 //
 //  Solution of linear systems involved in the Levenberg - Marquardt

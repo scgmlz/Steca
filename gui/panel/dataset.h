@@ -9,6 +9,7 @@
 #include "core_dataset.h"
 
 namespace panel {
+//------------------------------------------------------------------------------
 
 class Dataset;
 
@@ -31,6 +32,8 @@ protected:
 
   void paintEvent(QPaintEvent*);
 };
+
+//------------------------------------------------------------------------------
 
 class DatasetOptions: public BoxPanel {
   SUPER(DatasetOptions,BoxPanel) Q_OBJECT
@@ -58,6 +61,8 @@ private:
   void saveSettings();
 };
 
+//------------------------------------------------------------------------------
+
 class Dataset: public BoxPanel {
   SUPER(Dataset,BoxPanel)
 public:
@@ -76,6 +81,6 @@ private:
   ImageWidget *imageWidget;
 };
 
+//------------------------------------------------------------------------------
 }
-
 #endif

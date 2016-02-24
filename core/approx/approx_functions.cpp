@@ -1,55 +1,52 @@
 #include "approx_functions.h"
 
 namespace core { namespace approx {
+//------------------------------------------------------------------------------
 
 Function::Parameter::Parameter()
   : value(0), range(Range::infinite())
-  , maxDelta(qSNaN()), maxDeltaPercent(qSNaN())
-  , maxError(qSNaN()), maxErrorPercent(qSNaN()) {
-}
-
-qreal Function::Parameter::getValue() const {
-  return value;
+  , maxDelta(qQNaN()), maxDeltaPercent(qQNaN())
+  , maxError(qQNaN()), maxErrorPercent(qQNaN()) {
 }
 
 Range Function::Parameter::getRange() const {
   return range.isValid() ? range : Range(value);
 }
 
-bool Function::Parameter::checkValue(qreal v, qreal error) {
+bool Function::Parameter::checkValue(qreal newValue, qreal newError) {
   if (range.isValid()) {
-    if (!range.contains(v)) return false;
+    if (!range.contains(newValue)) return false;
   }
 
-  if (qIsFinite(maxDelta)) {
-    if (qAbs(value - v) > maxDelta) return false;
+  if (!qIsNaN(maxDelta)) {
+    if (qAbs(value - newValue) > maxDelta) return false;
   }
 
-  if (qIsFinite(maxDeltaPercent)) {
+  if (!qIsNaN(maxDeltaPercent)) {
     if (0 == value) return false;
-    if (qAbs((value - v) / value) * 100 > maxDeltaPercent) return false;
+    if (qAbs((value - newValue) / value) * 100 > maxDeltaPercent) return false;
   }
 
-  if (qIsFinite(maxError)) {
-    if (error > maxError) return false;
+  if (!qIsNaN(maxError)) {
+    if (newError > maxError) return false;
   }
 
-  if (qIsFinite(maxErrorPercent)) {
+  if (!qIsNaN(maxErrorPercent)) {
     if (0 == value) return false;
-    if (qAbs(error / value) * 100 > maxDeltaPercent) return false;
+    if (qAbs(newError / value) * 100 > maxDeltaPercent) return false;
   }
 
   return true;
 }
 
 bool Function::Parameter::setValue(qreal value, qreal error, bool force) {
-  if (force || checkValue(value, error)) {
-    this->value = value;
-    return true;
-  }
+  if (!force && !checkValue(value, error)) return false;
 
-  return false;
+  this->value = value;
+  return true;
 }
+
+//------------------------------------------------------------------------------
 
 Function::Function() {
 }
@@ -64,45 +61,50 @@ QDebug& operator<<(QDebug& os, Function const& f) {
   for_i (parCount) {
     os << str("%1: %2").arg(i).arg(f.getParameter(i).getValue());
   }
-
   return os;
 }
 #endif
 
-SingleFunction::SingleFunction() {
+//------------------------------------------------------------------------------
+
+SimpleFunction::SimpleFunction() {
 }
 
-void SingleFunction::setParameterCount(uint count) {
+void SimpleFunction::setParameterCount(uint count) {
   parameters.fill(Parameter(),count);
 }
 
-uint SingleFunction::parameterCount() const {
+uint SimpleFunction::parameterCount() const {
   return parameters.count();
 }
 
-Function::Parameter& SingleFunction::getParameter(uint i) {
+Function::Parameter& SimpleFunction::getParameter(uint i) {
   return parameters[i];
 }
+
+//------------------------------------------------------------------------------
 
 SumFunctions::SumFunctions() {
 }
 
 SumFunctions::~SumFunctions() {
-  for (auto f: functions)
-    delete f;
+  // dispose of the Functions that were added
+  for (Function *f: functions) delete f;
 }
 
 void SumFunctions::addFunction(Function* function) {
-  // Can you figure out what this does and why?
   ASSERT(function)
 
-  for_i (function->parameterCount()) {
-    parameters.append(&function->getParameter(i));
-    functionForParameterIndex.append(function);
-    parameterStartForParameterIndex.append(parameterCount());
-  }
-
+  uint parIndex = parameterCount();
   functions.append(function);
+
+  for_i (function->parameterCount()) {
+    // aggregate parameter list
+    parameters.append(&function->getParameter(i));
+    // lookup helpers
+    function_parIndex.append(function);
+    firstParIndex_parIndex.append(parIndex);
+  }
 }
 
 uint SumFunctions::parameterCount() const {
@@ -113,24 +115,38 @@ Function::Parameter& SumFunctions::getParameter(uint i) {
   return *parameters.at(i);
 }
 
-qreal SumFunctions::y(qreal x, const qreal *parVals) const {
+qreal SumFunctions::y(qreal x, const qreal *parValues) const {
   qreal sum = 0;
-  for (auto f: functions) {
-    sum += f->y(x,parVals);
-    if (parVals)
-      parVals += f->parameterCount(); // advance to next function
+  for (Function *f: functions) {
+    sum += f->y(x,parValues);
+    if (parValues)
+      parValues += f->parameterCount(); // advance to next function
   }
   return sum;
 }
 
-qreal SumFunctions::dy(qreal x, int parIndex, qreal const* parValues) const {
-  return functionForParameterIndex.at(parIndex)->dy(x,parIndex - parameterStartForParameterIndex[parIndex], parValues);
+qreal SumFunctions::dy(qreal x, uint parIndex, qreal const* parValues) const {
+  Function *f = function_parIndex.at(parIndex); // aggregate parIndex refers to function f
+
+  // offset parameter index
+  uint firstIndex = firstParIndex_parIndex[parIndex];
+  if (parValues) parValues += firstIndex;
+
+  ASSERT(firstIndex <= parIndex)
+  parIndex -= firstIndex;
+
+  ASSERT(parIndex < f->parameterCount())
+
+  return f->dy(x, parIndex, parValues);
 }
+
+//------------------------------------------------------------------------------
 
 Polynomial::Polynomial(uint degree) {
   setDegree(degree);
 }
 
+// the power with *uint* exponent
 static qreal pow_n(qreal x, uint n) {
   qreal value = 1;
   while (n-- > 0) value *= x;
@@ -146,10 +162,10 @@ qreal Polynomial::y(qreal x, const qreal *parVals) const {
   return value;
 }
 
-qreal Polynomial::dy(qreal x, int i, qreal const*) const {
+qreal Polynomial::dy(qreal x, uint i, qreal const*) const {
   return pow_n(x,i);
 }
 
+//------------------------------------------------------------------------------
 }}
-
 // eof

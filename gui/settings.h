@@ -4,13 +4,15 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include "defs.h"
+#include "core_defs.h"
 #include <QSettings>
 #include <QKeySequence>
 
 class QAction;
 class QSpinBox;
 class QDoubleSpinBox;
+
+//------------------------------------------------------------------------------
 
 class Settings: public QSettings {
   SUPER(Settings, QSettings)
@@ -31,6 +33,8 @@ public:
   void save(rcstr key, QDoubleSpinBox*);
 };
 
+//------------------------------------------------------------------------------
+
 class Keys {
 public:
   Keys();
@@ -46,4 +50,5 @@ public:
     ;
 };
 
+//------------------------------------------------------------------------------
 #endif

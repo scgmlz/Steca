@@ -15,6 +15,8 @@
 #include <QDir>
 #include <QAction>
 
+//------------------------------------------------------------------------------
+
 MainWin::MainWin(): session(new Session){
   sessionDir = dataDir = QDir::homePath();
 
@@ -293,6 +295,7 @@ void MainWin::connectActions() {
 void MainWin::show() {
   super::show();
   checkActions();
+
 #ifdef DEVELOPMENT_JAN
 #ifdef Q_OS_OSX
   session->load(QFileInfo("/Users/igb/P/+scg/STeCa/data/q.ste"));
@@ -415,4 +418,5 @@ void MainWin::viewReset() {
   viewFullscreen(false);
 }
 
+//------------------------------------------------------------------------------
 // eof

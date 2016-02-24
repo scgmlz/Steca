@@ -3,14 +3,13 @@
 
 #include <QtTest/QtTest>
 
-#define TEST_SUITE
+#define TEST_UNIT_TESTS
 
 class TestApprox: public QObject {
   Q_OBJECT
-bool nearlyEqual(qreal a, qreal b, qreal precision);
+
 private slots:
   void testApproxFunction();
 };
-
 
 #endif

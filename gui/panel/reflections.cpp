@@ -2,6 +2,7 @@
 #include "mainwin.h"
 
 namespace panel {
+//------------------------------------------------------------------------------
 
 ReflectionView::ReflectionView() {
 //  TODO
@@ -37,6 +38,6 @@ Reflections::Reflections(MainWin& mainWin,Session& session)
   h->addWidget(iconButton(mainWin.actReflectionAdd));
 }
 
+//------------------------------------------------------------------------------
 }
-
 // eof

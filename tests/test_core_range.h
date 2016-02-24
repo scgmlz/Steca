@@ -3,13 +3,12 @@
 
 #include <QtTest/QtTest>
 
-#define TEST_SUITE
+#define TEST_UNIT_TESTS
 
 class TestCoreRange: public QObject {
   Q_OBJECT
 
 private slots:
-
   void testRange();
 };
 
