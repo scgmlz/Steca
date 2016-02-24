@@ -256,9 +256,9 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   core::uints_t counts_vec(width,0);
 
   for_i (height) {
-    auto &iy = i;
+    auto iy = i + imageCut.top;
     for_i (width) {
-      auto &ix = i;
+      auto ix = i + imageCut.left;
 
       // TODO angles can be arranged for a single loop for_i (pixTotal) [last in commit 98413db71cd38ebaa54b6337a6c6e670483912ef]
       auto tthPix = angles.at(session.pixIndexNoTransform(ix,iy)).tthPix;
