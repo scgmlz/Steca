@@ -7,6 +7,7 @@
 #include "panel.h"
 
 namespace panel {
+//------------------------------------------------------------------------------
 
 class Normalization: public BoxPanel {
   SUPER(Normalization,BoxPanel)
@@ -14,6 +15,6 @@ public:
   Normalization(MainWin&,Session&);
 };
 
+//------------------------------------------------------------------------------
 }
-
 #endif

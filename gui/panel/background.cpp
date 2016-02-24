@@ -3,6 +3,7 @@
 #include "session.h"
 
 namespace panel {
+//------------------------------------------------------------------------------
 
 Background::Background(MainWin& mainWin,Session& session)
 : super("Background",mainWin,session,Qt::Horizontal) {
@@ -18,6 +19,6 @@ Background::Background(MainWin& mainWin,Session& session)
   });
 }
 
+//------------------------------------------------------------------------------
 }
-
 // eof

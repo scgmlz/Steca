@@ -10,6 +10,7 @@
 #include <QMetaType>
 
 namespace core {
+//------------------------------------------------------------------------------
 
 class File;
 
@@ -61,6 +62,7 @@ private:
 
 typedef QSharedPointer<Dataset> shp_Dataset;
 
+//------------------------------------------------------------------------------
 }
 
 Q_DECLARE_METATYPE(core::shp_Dataset)

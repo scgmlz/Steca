@@ -11,6 +11,7 @@ class DatasetViewModel;
 }
 
 namespace panel {
+//------------------------------------------------------------------------------
 
 class DatasetView: public TreeListView {
   SUPER(DatasetView,TreeListView)
@@ -35,6 +36,6 @@ private:
   DatasetView *datasetView;
 };
 
+//------------------------------------------------------------------------------
 }
-
 #endif

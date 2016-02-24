@@ -17,7 +17,6 @@ HEADERS += \
     core_debug.h \
     core_defs.h \
     core_session.h \
-    core_lib.h \
     loaders/core_loaders.h \
     core_array2d.h \
     loaders/Mar/mar300_header.h \
@@ -29,7 +28,8 @@ HEADERS += \
     LevMar/FastDelegate/FastDelegate.h \
     LevMar/FastDelegate/FastDelegateBind.h \
     approx/approx_functions.h \
-    approx/approx_methods.h
+    approx/approx_methods.h \
+    core_types.h
 
 SOURCES += \
     loaders/Caress/raw.cpp \
@@ -39,7 +39,6 @@ SOURCES += \
     core_file.cpp \
     core_image.cpp \
     core_session.cpp \
-    core_lib.cpp \
     loaders/core_loaders.cpp \
     core_array2d.cpp \
     LevMar/Axb.cpp \
@@ -57,8 +56,8 @@ SOURCES += \
     LevMar/misc.cpp \
     LevMar/misc_core.cpp \
     approx/approx_functions.cpp \
-    approx/approx_methods.cpp
+    approx/approx_methods.cpp \
+    core_types.cpp
 
 DISTFILES += \
-    README \
     loaders/Caress/README

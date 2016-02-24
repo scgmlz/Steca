@@ -7,6 +7,7 @@
 #include "panel.h"
 
 namespace panel {
+//------------------------------------------------------------------------------
 
 class ReflectionView: public ListView {
   SUPER(ReflectionView,ListView) Q_OBJECT
@@ -23,6 +24,6 @@ private:
   ReflectionView *reflectionView;
 };
 
+//------------------------------------------------------------------------------
 }
-
 #endif

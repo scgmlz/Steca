@@ -2,9 +2,9 @@
 #include "session.h"
 
 namespace model {
+//------------------------------------------------------------------------------
 
 SessionModel::SessionModel(Session& session_): session(session_) {
-
 }
 
 uint SessionModel::numFiles(bool withCorr) {
@@ -132,6 +132,6 @@ core::shp_Dataset const& DatasetViewModel::getDataset(int row) const {
   return coreFile->getDataset(row);
 }
 
+//------------------------------------------------------------------------------
 }
-
 // eof

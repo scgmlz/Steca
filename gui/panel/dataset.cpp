@@ -6,6 +6,7 @@
 #include <QAction>
 
 namespace panel {
+//------------------------------------------------------------------------------
 
 ImageWidget::ImageWidget(Dataset& dataset_)
 : dataset(dataset_), showOverlay(false), scale(2) {
@@ -130,9 +131,9 @@ DatasetOptions::DatasetOptions(MainWin& mainWin_, Session& session_)
 
   auto setImageCut = [this](bool topLeft, int value) {
     if (mainWin.actImagesLink->isChecked())
-      session.setImageCut(topLeft, true, core::ImageCut(value,value,value,value));
+      session.setImageCut(topLeft, true, Session::ImageCut(value,value,value,value));
     else
-      session.setImageCut(topLeft, false, core::ImageCut(cutTop->value(), cutBottom->value(), cutLeft->value(), cutRight->value()));
+      session.setImageCut(topLeft, false, Session::ImageCut(cutTop->value(), cutBottom->value(), cutLeft->value(), cutRight->value()));
   };
 
   connect(cutTop, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
@@ -376,6 +377,6 @@ void Dataset::refresh() {
   setDataset(dataset);
 }
 
+//------------------------------------------------------------------------------
 }
-
 // eof

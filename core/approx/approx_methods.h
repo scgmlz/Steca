@@ -1,9 +1,14 @@
+/** \file
+ * Approximation methods
+ */
+
 #ifndef APPROX_METHODS_H
 #define APPROX_METHODS_H
 
 #include "approx_functions.h"
 
 namespace core { namespace approx {
+//------------------------------------------------------------------------------
 
 class FittingMethod {
 public:
@@ -22,14 +27,19 @@ protected:
   void __functionY(qreal*,qreal*,int,int,void*);
 };
 
+//------------------------------------------------------------------------------
+
+// TODO is needed?
 class FittingLinearLeastSquare: public FittingMethod {
   SUPER(FittingLinearLeastSquare,FittingMethod)
-public: // TODO is needed?
+public:
   FittingLinearLeastSquare();
 
 protected:
   bool approximate(qreal*,qreal const*,qreal const*,qreal*,uint,qreal const*,qreal const*,uint);
 };
+
+//------------------------------------------------------------------------------
 
 class FittingLevenbergMarquardt: public FittingMethod {
   SUPER(FittingLevenbergMarquardt,FittingMethod)
@@ -43,6 +53,6 @@ private:
   void __functionJacobianLM(qreal*,qreal*,int,int,void*);
 };
 
+//------------------------------------------------------------------------------
 }}
-
 #endif

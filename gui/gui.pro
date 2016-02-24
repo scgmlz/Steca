@@ -10,7 +10,6 @@ QT      += core gui printsupport
 HEADERS += \
     QCP/qcustomplot.h \
     app.h \
-    defs.h \
     delegates.h \
     gui_helpers.h \
     mainwin.h \
@@ -60,8 +59,7 @@ SOURCES += \
 RESOURCES += \
     resources.qrc
 
-DISTFILES += \
-    stash.txt
+DISTFILES +=
 
 # core library
 

@@ -1,10 +1,21 @@
-#include "core_lib.h"
+#include "core_types.h"
 
 #include <QSize>
 #include <qmath.h>
 #include <numeric>
 
 namespace core {
+//------------------------------------------------------------------------------
+
+qreal deg_rad(qreal rad) {
+  return rad * (180 / M_PI);
+}
+
+qreal rad_deg(qreal deg) {
+  return deg * (M_PI / 180);
+}
+
+//------------------------------------------------------------------------------
 
 Range::Range() {
   invalidate();
@@ -27,7 +38,7 @@ void Range::invalidate() {
 }
 
 bool Range::isValid() const {
-  return ! (qIsNaN(min) || qIsNaN(max));
+  return !qIsNaN(min) && !qIsNaN(max);
 }
 
 void Range::set(qreal val) {
@@ -40,10 +51,8 @@ void Range::set(qreal min_, qreal max_) {
 }
 
 void Range::safeSet(qreal v1, qreal v2) {
-  if (v1 < v2)
-    set(v1,v2);
-  else
-    set(v2,v1);
+  if (v1 < v2) set(v1,v2);
+  else         set(v2,v1);
 }
 
 Range Range::safeFrom(qreal v1, qreal v2) {
@@ -75,11 +84,9 @@ bool Range::intersects(Range const& that) const {
   return min <= that.max && that.min <= max;
 }
 
-Ranges::Ranges() {
-}
+//------------------------------------------------------------------------------
 
-bool Ranges::isEmpty() const {
-  return ranges.isEmpty();
+Ranges::Ranges() {
 }
 
 void Ranges::clear() {
@@ -87,7 +94,7 @@ void Ranges::clear() {
 }
 
 bool Ranges::add(Range const& range) {
-  ranges_t newRanges;
+  QVector<Range> newRanges;
 
   auto newRange = range;
   for (auto &r: ranges) {
@@ -109,7 +116,7 @@ bool Ranges::add(Range const& range) {
 }
 
 bool Ranges::rem(Range const& range) {
-  ranges_t newRanges;
+  QVector<Range> newRanges;
 
   bool change = false;
   for (auto &r: ranges) {
@@ -138,43 +145,7 @@ void Ranges::sort() {
   std::sort(ranges.begin(),ranges.end(),lessThan);
 }
 
-ImageCut::ImageCut(uint top_, uint bottom_, uint left_, uint right_)
-: top(top_), bottom(bottom_), left(left_), right(right_) {
-}
-
-bool ImageCut::operator==(ImageCut const& that) {
-  return top==that.top && bottom==that.bottom && left==that.left && right==that.right;
-}
-
-uint ImageCut::getWidth(QSize const& fullSize) const {
-  return fullSize.width() - left - right;
-}
-
-uint ImageCut::getHeight(QSize const& fullSize) const {
-  return fullSize.height() - top - bottom;
-}
-
-uint ImageCut::getCount(QSize const& fullSize) const {
-  return getWidth(fullSize) * getHeight(fullSize);
-}
-
-qreal deg_rad(qreal rad) {
-  return rad * (180 / M_PI);
-}
-
-qreal rad_deg(qreal deg) {
-  return deg * (M_PI / 180);
-}
-
-void Borders::invalidate() {
-  gamma.invalidate();
-  tth_regular.invalidate();
-  tth_gamma0.invalidate();
-}
-
-bool Borders::isValid() const {
-  return gamma.isValid() && tth_regular.isValid() && tth_gamma0.isValid();
-}
+//------------------------------------------------------------------------------
 
 Curve::Curve() {
 }
@@ -210,21 +181,6 @@ void Curve::append(qreal x, qreal y) {
   ys.append(y);
 }
 
-TI_Curve::TI_Curve() {
+//------------------------------------------------------------------------------
 }
-
-void TI_Curve::clear() {
-  super::clear();
-  tthRange.invalidate();
-  intenRange.invalidate();
-}
-
-void TI_Curve::append(qreal tth_, qreal inten_) {
-  super::append(tth_,inten_);
-  tthRange.extend(tth_);
-  intenRange.extend(inten_);
-}
-
-}
-
 // eof

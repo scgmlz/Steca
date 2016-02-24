@@ -4,10 +4,11 @@
 #ifndef DELEGATES_H
 #define DELEGATES_H
 
-#include "defs.h"
+#include "core_defs.h"
 #include <QItemDelegate>
 #include <QStyledItemDelegate>
 
+//------------------------------------------------------------------------------
 // http://stackoverflow.com/questions/7175333/howto-create-delegate-for-qtreewidget#7178024
 class IconDelegate: public QStyledItemDelegate {
   SUPER(IconDelegate,QStyledItemDelegate)
@@ -22,6 +23,8 @@ private:
   mutable QPixmap icon; mutable bool scaled = false; bool showAlways;
 };
 
+//------------------------------------------------------------------------------
+
 class CheckDelegate: public QItemDelegate {
     SUPER(CheckDelegate,QItemDelegate)
 public:
@@ -35,6 +38,8 @@ private:
     bool springy;	// mouse button up same as button down
 };
 
+//------------------------------------------------------------------------------
+
 class RadioDelegate: public QItemDelegate {
     SUPER(RadioDelegate,QItemDelegate)
 public:
@@ -44,6 +49,8 @@ public:
     bool editorEvent(QEvent*, QAbstractItemModel*, QStyleOptionViewItem const&, QModelIndex const&);
     void paint(QPainter*, QStyleOptionViewItem const&, QModelIndex const&) const;
 };
+
+//------------------------------------------------------------------------------
 
 class ComboBoxDelegate: public QItemDelegate {
   SUPER(ComboBoxDelegate,QItemDelegate)
@@ -116,9 +123,7 @@ private:
     int min,max;
 };
 
-//------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 */
-
 #endif

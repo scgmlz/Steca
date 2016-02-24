@@ -4,11 +4,13 @@
 #ifndef SESSION_H
 #define SESSION_H
 
-#include "defs.h"
+#include "core_defs.h"
 #include "core_session.h"
 #include "models.h"
 
+//------------------------------------------------------------------------------
 /// As core::Session, with models and signals
+
 class Session: public QObject, public core::Session {
   SUPER(Session,core::Session) Q_OBJECT
 public:
@@ -29,7 +31,7 @@ public:
   void setSelectedFile(core::shp_File);
   void setSelectedDataset(core::shp_Dataset);
 
-  void setImageCut(bool topLeft, bool linked, core::ImageCut const&);
+  void setImageCut(bool topLeft, bool linked, ImageCut const&);
   void setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset);
 
   QAction *actImageRotate, *actImageMirror;
@@ -67,4 +69,5 @@ public:
   void doReadSettings(); // TODO temp.
 };
 
+//------------------------------------------------------------------------------
 #endif

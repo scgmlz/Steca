@@ -9,12 +9,11 @@
 #include <QSize>
 
 namespace core {
+//------------------------------------------------------------------------------
 
 template<typename T>
 class Array2D {
 public:
-  using vector_t = QVector<T>;
-
   Array2D(): size(0,0) {
   }
 
@@ -83,10 +82,10 @@ public:
   }
 
 protected:
-  QSize    size;
-  vector_t ts;
+  QSize      size;
+  QVector<T> ts;
 };
 
+//------------------------------------------------------------------------------
 }
-
 #endif

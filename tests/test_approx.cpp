@@ -3,12 +3,8 @@
 #include <approx/approx_functions.h>
 #include <approx/approx_methods.h>
 
-//check if two qreals are equal for wanted precision
-bool TestApprox::nearlyEqual(qreal a, qreal b, qreal precision) {
-  return qAbs(a-b) < precision;
-}
-
-#define QALMOST_COMPARE(a,b) QVERIFY(nearlyEqual(a, b, 1E-3))
+// check if two qreals are equal for wanted precision
+#define QALMOST_COMPARE(a,b) QVERIFY(qAbs(a-b) < 1E-3)
 
 void TestApprox::testApproxFunction() {
 //approximation using LinearLeastSquare

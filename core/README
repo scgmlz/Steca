@@ -1,3 +1,0 @@
-STeCa core.
-
-No Qt used (except import/export macros), only stdc++ (for now).

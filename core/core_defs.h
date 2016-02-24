@@ -27,6 +27,10 @@ extern  str const EMPTY_STR;  ///< an empty string (that can be returned by refe
 /// the idiomatic iteration over *n* items
 #define for_i(n) for (int i=0, iEnd=(n); i<iEnd; ++i)
 
+// useful vectors
+typedef QVector<qreal> reals_t;
+typedef QVector<uint>  uints_t;
+
 // exceptions
 #include <QException>
 

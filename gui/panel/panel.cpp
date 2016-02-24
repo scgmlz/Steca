@@ -2,6 +2,7 @@
 #include "mainwin.h"
 
 namespace panel {
+//------------------------------------------------------------------------------
 
 BasicPanel::BasicPanel(rcstr title, MainWin& mainWin_, Session& session_)
 : super(title), mainWin(mainWin_), session(session_) {
@@ -36,6 +37,6 @@ GridPanel::GridPanel(rcstr title,MainWin& mainWin,Session& session)
   setLayout((grid = gridLayout()));
 }
 
+//------------------------------------------------------------------------------
 }
-
 // eof

@@ -3,6 +3,7 @@
 #include <QPixmap>
 
 namespace core {
+//------------------------------------------------------------------------------
 
 Image::Image(QSize const& size, intens_t const* src) {
   fill(0,size);
@@ -43,6 +44,6 @@ Range const& Image::getRgeIntens() const {
   return rgeIntens;
 }
 
+//------------------------------------------------------------------------------
 }
-
 // eof

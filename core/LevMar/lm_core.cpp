@@ -1,4 +1,3 @@
-#pragma GCC diagnostic ignored "-Wall"
 /////////////////////////////////////////////////////////////////////////////////
 //
 //  Levenberg - Marquardt non-linear minimization algorithm
@@ -22,6 +21,7 @@
 #error This file should not be compiled directly!
 #endif
 
+#pragma GCC diagnostic ignored "-Wdeprecated-register"
 
 /* precision-specific definitions */
 #define LEVMAR_DER LM_ADD_PREFIX(levmar_der)

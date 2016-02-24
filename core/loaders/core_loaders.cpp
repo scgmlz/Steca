@@ -1,5 +1,5 @@
 #include "core_loaders.h"
-#include "core_lib.h"
+#include "core_types.h"
 #include "core_file.h"
 
 #include "loaders/Caress/raw.h"
@@ -8,7 +8,7 @@
 #include <cmath>
 
 namespace core {
-
+//------------------------------------------------------------------------------
 // Code taken from the original STeCa, only slightly modified.
 
 QVector<shp_Dataset> loadCaress(File &file) THROWS {
@@ -148,6 +148,8 @@ QVector<shp_Dataset> loadCaress(File &file) THROWS {
             convertedIntens[i] = intens[i];
 
           QSize size(detRel,detRel);
+
+// this was for testing of a non-square image
 //        #ifdef DEVELOPMENT_FAKE_NON_SQUARE_IMAGE
 //          size.rheight() /= 2;
 //        #endif
@@ -444,6 +446,6 @@ QVector<shp_Dataset> loadCaress(File &file) THROWS {
   return datasets;
 }
 
+//------------------------------------------------------------------------------
 }
-
 // eof

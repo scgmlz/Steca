@@ -11,6 +11,7 @@ class FileViewModel;
 }
 
 namespace panel {
+//------------------------------------------------------------------------------
 
 class FileView: public ListView {
   SUPER(FileView,ListView)
@@ -39,6 +40,6 @@ private:
   FileView *fileView;
 };
 
+//------------------------------------------------------------------------------
 }
-
 #endif

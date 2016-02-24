@@ -8,10 +8,13 @@
 
 class MainWin; class Session;
 
+//------------------------------------------------------------------------------
+
 class SplitReflections: public BoxWidget {
   SUPER(SplitReflections,BoxWidget)
 public:
   SplitReflections(MainWin&,Session&);
 };
 
+//------------------------------------------------------------------------------
 #endif

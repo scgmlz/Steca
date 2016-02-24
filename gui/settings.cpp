@@ -3,6 +3,8 @@
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 
+//------------------------------------------------------------------------------
+
 Settings::Settings(rcstr group) {
   setFallbacksEnabled(false);
   beginGroup(group);
@@ -47,6 +49,8 @@ void Settings::save(rcstr key, QDoubleSpinBox* box) {
   if (box) saveVariant(key,box->value());
 }
 
+//------------------------------------------------------------------------------
+
 Keys::Keys() {
   keyAddFiles          = Qt::CTRL|Qt::Key_O;
   keyDeleteFile        = QKey::Delete;
@@ -58,4 +62,5 @@ Keys::Keys() {
 #endif
 }
 
+//------------------------------------------------------------------------------
 // eof

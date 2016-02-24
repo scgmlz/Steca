@@ -6,9 +6,10 @@
 #include <QApplication>
 #include <QMouseEvent>
 
+//------------------------------------------------------------------------------
+
 IconDelegate::IconDelegate(rcstr iconFile, bool showAlways_)
-  : super(), icon(iconFile), showAlways(showAlways_)
-{
+  : super(), icon(iconFile), showAlways(showAlways_) {
 }
 
 QSize IconDelegate::sizeHint(QStyleOptionViewItem const& option, QModelIndex const& index) const {
@@ -32,6 +33,8 @@ void IconDelegate::paint(QPainter *painter, QStyleOptionViewItem const& option, 
   if(showAlways || option.state & QStyle::State_MouseOver)
     painter->drawPixmap(iconPos(option), icon);
 }
+
+//------------------------------------------------------------------------------
 
 CheckDelegate::CheckDelegate(bool springy_): springy(springy_) {
 }
@@ -87,6 +90,8 @@ void CheckDelegate::paint(QPainter *painter,
     QApplication::style()->drawControl(QStyle::CE_CheckBox, &sob, painter);
 }
 
+//------------------------------------------------------------------------------
+
 RadioDelegate::RadioDelegate() {
 }
 
@@ -137,16 +142,16 @@ void RadioDelegate::paint(QPainter *painter,
     QApplication::style()->drawControl(QStyle::CE_RadioButton, &sob, painter);
 }
 
-ComboBoxDelegate::ComboBoxDelegate()
-{
+//------------------------------------------------------------------------------
+
+ComboBoxDelegate::ComboBoxDelegate() {
   Items.push_back("Integral");
   Items.push_back("Lorentzian");
   Items.push_back("Gaussian");
 }
 
 
-QWidget *ComboBoxDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/* option */, const QModelIndex &/* index */) const
-{
+QWidget *ComboBoxDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/* option */, const QModelIndex &/* index */) const {
   QComboBox* editor = new QComboBox(parent);
   for(unsigned int i = 0; i < Items.size(); ++i)
     {
@@ -155,26 +160,22 @@ QWidget *ComboBoxDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
   return editor;
 }
 
-void ComboBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
-{
+void ComboBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const {
   QComboBox *comboBox = static_cast<QComboBox*>(editor);
   int value = index.model()->data(index, Qt::EditRole).toUInt();
   comboBox->setCurrentIndex(value);
 }
 
-void ComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
-{
+void ComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const {
   QComboBox *comboBox = static_cast<QComboBox*>(editor);
   model->setData(index, comboBox->currentIndex(), Qt::EditRole);
 }
 
-void ComboBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
-{
+void ComboBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const {
   editor->setGeometry(option.rect);
 }
 
-void ComboBoxDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
-{
+void ComboBoxDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const {
   QStyleOptionViewItemV4 myOption = option;
   QString text = Items[index.row()].c_str();
 
@@ -316,6 +317,42 @@ void IntDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QMode
 }
 
 //------------------------------------------------------------------------------
+
+  class Delegate: public QStyledItemDelegate {
+    SUPER(Delegate,QStyledItemDelegate)
+  public:
+    Delegate(FileList&);
+
+    QPoint iconPos(QStyleOptionViewItem const&) const;
+    void paint(QPainter*, QStyleOptionViewItem const&, QModelIndex const&) const;
+
+  private:
+    FileList &fileList;
+    QPixmap  icon;p
+  };
+
+  setMouseTracking(true);
+
+//-----------------------------------------------------------------------------
+
+FileList::Delegate::Delegate(FileList& fileList_): fileList(fileList_) {
+  auto height = sizeHint(QStyleOptionViewItem(),QModelIndex()).height();
+  icon = QPixmap(":/icon/rem").scaledToHeight(height,Qt::SmoothTransformation);
+}
+
+QPoint FileList::Delegate::iconPos(QStyleOptionViewItem const& option) const {
+  WT(option.rect) WT(fileList.size())
+
+  return QPoint(fileList.geometry().right() - icon.width(), option.rect.center().y() - icon.height()/2);
+}
+
+void FileList::Delegate::paint(QPainter* painter,
+  QStyleOptionViewItem const& option, QModelIndex const& index) const
+{
+  super::paint(painter,option,index);
+  if (option.state & QStyle::State_MouseOver)
+    painter->drawPixmap(iconPos(option), icon);
+}
 
 
 //------------------------------------------------------------------------------

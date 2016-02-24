@@ -7,6 +7,7 @@
 #include "panel.h"
 
 namespace panel {
+//------------------------------------------------------------------------------
 
 class Background: public BoxPanel {
   SUPER(Background,BoxPanel)
@@ -17,6 +18,6 @@ private:
   QSpinBox *spinDegree;
 };
 
+//------------------------------------------------------------------------------
 }
-
 #endif

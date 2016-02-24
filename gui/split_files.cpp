@@ -5,6 +5,8 @@
 #include "panel/datasets.h"
 #include "panel/normalization.h"
 
+//------------------------------------------------------------------------------
+
 SplitFiles::SplitFiles(MainWin& mainWin,Session& session): super(Qt::Vertical) {
   auto panelFiles    = new panel::Files(mainWin,session);
   auto panelDatasets = new panel::Datasets(mainWin,session);
@@ -15,4 +17,5 @@ SplitFiles::SplitFiles(MainWin& mainWin,Session& session): super(Qt::Vertical) {
   box->addWidget(new panel::Normalization(mainWin,session));
 }
 
+//------------------------------------------------------------------------------
 // eof

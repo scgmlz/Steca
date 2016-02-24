@@ -1,12 +1,9 @@
-#pragma GCC diagnostic ignored "-Wall"
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#pragma GCC diagnostic ignored "-Wdeprecated-register"
-
 #include "approx_methods.h"
 #include "LevMar/levmar.h"
 #include <cmath>
 
 namespace core { namespace approx {
+//------------------------------------------------------------------------------
 
 FittingMethod::FittingMethod() {
 }
@@ -56,6 +53,8 @@ void FittingMethod::__functionY(qreal* parameterValues, qreal* yValues, int /*pa
   }
 }
 
+//------------------------------------------------------------------------------
+
 FittingLinearLeastSquare::FittingLinearLeastSquare() {
 }
 
@@ -92,6 +91,8 @@ bool FittingLinearLeastSquare::approximate(
 
   return true;
 }
+
+//------------------------------------------------------------------------------
 
 FittingLevenbergMarquardt::FittingLevenbergMarquardt() {
 }
@@ -148,6 +149,6 @@ void FittingLevenbergMarquardt::__functionJacobianLM(qreal* parameterValues, qre
   }
 }
 
+//------------------------------------------------------------------------------
 }}
-
 // eof

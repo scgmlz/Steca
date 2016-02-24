@@ -5,13 +5,14 @@
 #ifndef CORE_SESSION_H
 #define CORE_SESSION_H
 
-#include "core_lib.h"
+#include "core_types.h"
 #include "core_file.h"
 #include "core_array2d.h"
 #include "approx/approx_functions.h"
 #include <QPoint>
 
 namespace core {
+//------------------------------------------------------------------------------
 
 class Session {
 public:
@@ -40,7 +41,7 @@ private:
   QSize imageSize; ///< All files must have images of the same size; this is a cached value
 
   void updateImageSize();                 ///< Clears the image size if there are no files in the session.
-#ifdef TEST_SUITE
+#ifdef TEST_UNIT_TESTS
 public:
 #else
 private:
@@ -105,9 +106,34 @@ public:
   QSize getImageSize() const;
 
 protected: // corrections TODO make private
+  struct Pixpos {  // TODO bad name
+    Pixpos(): Pixpos(0,0) {}
+    Pixpos(qreal gamma, qreal tth): gammaPix(gamma), tthPix(tth) {}
+    qreal gammaPix;
+    qreal tthPix;
+  };
+
   // TODO rename;
   typedef Array2D<Pixpos> AngleCorrArray;
   AngleCorrArray angleCorrArray;
+
+  struct Borders {
+    Range
+      gamma,
+      tth_regular,
+      tth_gamma0; // at gamma=0
+
+    void invalidate() {
+      gamma.invalidate();
+      tth_regular.invalidate();
+      tth_gamma0.invalidate();
+    }
+
+    bool isValid() const {
+      return gamma.isValid() && tth_regular.isValid() && tth_gamma0.isValid();
+    }
+  };
+
   Borders        ful, cut;
 
   QPoint  getPixMiddle() const;  // TODO rename, was getPixMiddleX/Y
@@ -115,6 +141,19 @@ protected: // corrections TODO make private
   // TODO cashing of calcAngle...
   qreal lastCalcTthMitte; QPoint lastPixMiddle;
   Geometry lastGeometry;
+
+public:
+  struct ImageCut {
+    ImageCut(uint top = 0, uint bottom = 0, uint left = 0, uint right = 0);
+    bool operator==(ImageCut const&);
+    uint top, bottom, left, right;
+
+    uint getWidth(QSize const&) const;
+    uint getHeight(QSize const&) const;
+    uint getCount(QSize const&) const;
+  };
+
+protected:
   ImageCut lastImageCut;
   ImageTransform lastImageTransform;
 
@@ -136,6 +175,6 @@ private:
   ImageCut imageCut;
 };
 
+//------------------------------------------------------------------------------
 }
-
 #endif

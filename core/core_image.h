@@ -5,10 +5,11 @@
 #ifndef CORE_IMAGE_H
 #define CORE_IMAGE_H
 
-#include "core_lib.h"
+#include "core_types.h"
 #include "core_array2d.h"
 
 namespace core {
+//------------------------------------------------------------------------------
 
 using intens_t = float; ///< short for intensity. float should suffice
 
@@ -41,6 +42,6 @@ private:
   mutable Range rgeIntens;
 };
 
+//------------------------------------------------------------------------------
 }
-
 #endif

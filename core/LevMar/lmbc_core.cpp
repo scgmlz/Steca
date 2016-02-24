@@ -1,6 +1,3 @@
-#pragma GCC diagnostic ignored "-Wall"
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#pragma GCC diagnostic ignored "-Wdeprecated-register"
 /////////////////////////////////////////////////////////////////////////////////
 //
 //  Levenberg - Marquardt non-linear minimization algorithm
@@ -23,6 +20,9 @@
 #ifndef LM_REAL // not included by lmbc.c
 #error This file should not be compiled directly!
 #endif
+
+#pragma GCC diagnostic ignored "-Wdeprecated-register"
+#pragma GCC diagnostic ignored "-Wunused-variable"
 
 /* precision-specific definitions */
 #define FUNC_STATE LM_ADD_PREFIX(func_state)
@@ -451,7 +451,7 @@ int nLMsteps=0, nLSsteps=0, nPGsteps=0, gprevtaken=0;
 int numactive;
 int (*linsolver)(LM_REAL *A, LM_REAL *B, LM_REAL *x, int m)=NULL;
 
-  mu=jacTe_inf=t=0.0;  tmin=tmin; /* -Wall */
+  mu=jacTe_inf=t=0.0;
 
   if(n<m){
     fprintf(stderr, LCAT(LEVMAR_BC_DER, "(): cannot solve a problem with fewer measurements [%d] than unknowns [%d]\n"), n, m);

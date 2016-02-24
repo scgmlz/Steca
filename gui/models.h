@@ -5,7 +5,7 @@
 #ifndef MODELS_H
 #define MODELS_H
 
-#include "defs.h"
+#include "core_defs.h"
 #include "panel/panel.h"  // TODO remove
 #include "core_file.h"
 #include <QAbstractListModel>
@@ -14,6 +14,7 @@
 class Session;
 
 namespace model {
+//------------------------------------------------------------------------------
 
 class SessionModel {
 public:
@@ -68,6 +69,6 @@ private:
   QVector<int> attributeNums;
 };
 
+//------------------------------------------------------------------------------
 }
-
 #endif

@@ -1,6 +1,7 @@
 #include "core_dataset.h"
 
 namespace core {
+//------------------------------------------------------------------------------
 
 QVector<str> const Dataset::attributeTags = {
   "date", "comment",
@@ -57,6 +58,6 @@ void Dataset::addIntensities(Dataset const& that) {
   image.addIntensities(that.image.getIntensities());
 }
 
+//------------------------------------------------------------------------------
 }
-
 // eof

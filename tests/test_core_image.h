@@ -3,7 +3,7 @@
 
 #include <QtTest/QtTest>
 
-#define TEST_SUITE
+#define TEST_UNIT_TESTS
 
 class TestCoreImage: public QObject {
   Q_OBJECT
@@ -11,7 +11,6 @@ class TestCoreImage: public QObject {
   void testImage(uint w, uint h);
 
 private slots:
-
   void testImage();
 };
 

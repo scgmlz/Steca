@@ -5,7 +5,7 @@
 #ifndef GUI_HELPERS_H
 #define GUI_HELPERS_H
 
-#include "defs.h"
+#include "core_defs.h"
 
 #include <QBoxLayout>
 #include <QLayout>
@@ -18,6 +18,8 @@
 #include <QToolButton>
 #include <QListView>
 #include <QTreeView>
+
+//------------------------------------------------------------------------------
 
 QBoxLayout*     hbox();
 QBoxLayout*     vbox();
@@ -38,14 +40,18 @@ QToolButton*    iconButton(QAction*);
 
 QRadioButton*   radioButton(rcstr text);
 
-// abstract list widget
+//------------------------------------------------------------------------------
+/// abstract list widget
+
 class ListView: public QListView {
   SUPER(ListView,QListView) Q_OBJECT
 public:
   ListView();
 };
 
+//------------------------------------------------------------------------------
 /// abstract tree widget
+
 class TreeView: public QTreeView {
   SUPER(TreeView,QTreeView) Q_OBJECT
 public:
@@ -54,7 +60,9 @@ public:
   int sizeHintForColumn(int) const; // make narrow columns
 };
 
+//------------------------------------------------------------------------------
 /// abstract tree widget used as a list
+
 class TreeListView: public TreeView {
   SUPER(TreeListView,TreeView) Q_OBJECT
 public:
@@ -64,7 +72,9 @@ protected:
   void setModel(QAbstractItemModel*);
 };
 
-// a widget with a box layout
+//------------------------------------------------------------------------------
+/// a widget with a box layout
+
 class BoxWidget: public QWidget {
 public:
   BoxWidget(Qt::Orientation);
@@ -73,4 +83,5 @@ protected:
   QBoxLayout *box;
 };
 
+//------------------------------------------------------------------------------
 #endif

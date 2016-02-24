@@ -7,6 +7,7 @@
 #include "panel.h"
 
 namespace panel {
+//------------------------------------------------------------------------------
 
 class ReflectionInfo: public BoxPanel {
   SUPER(ReflectionInfo,BoxPanel)
@@ -14,6 +15,6 @@ public:
   ReflectionInfo(MainWin&,Session&);
 };
 
+//------------------------------------------------------------------------------
 }
-
 #endif

@@ -4,6 +4,8 @@
 #include "panel/dataset.h"
 #include "panel/datasetinfo.h"
 
+//------------------------------------------------------------------------------
+
 SplitImage::SplitImage(MainWin& mainWin,Session& session): super(Qt::Horizontal) {
   auto *options = new panel::DatasetOptions(mainWin,session);
   auto *dataset = new panel::Dataset(mainWin,session);
@@ -14,4 +16,5 @@ SplitImage::SplitImage(MainWin& mainWin,Session& session): super(Qt::Horizontal)
   box->setStretch(1,1);
 }
 
+//------------------------------------------------------------------------------
 // eof

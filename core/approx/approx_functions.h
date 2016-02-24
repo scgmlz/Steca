@@ -1,9 +1,15 @@
-#ifndef APPROX_FUNCTION_H
-#define APPROX_FUNCTION_H
+/** \file
+ * Functions for data approximation
+ */
 
-#include <core_lib.h>
+#ifndef APPROX_FUNCTIONS_H
+#define APPROX_FUNCTIONS_H
+
+#include <core_types.h>
 
 namespace core { namespace approx {
+//------------------------------------------------------------------------------
+/// Abstract function
 
 class Function {
 public:
@@ -11,19 +17,29 @@ public:
   public:
     Parameter();
 
-    qreal getValue() const;
-    Range getRange() const;
+    qreal getValue() const  { return value; }
+    Range getRange() const; ///< the allowed range
 
+    /// checks whether a new value/error pair would pass the constraints
     bool  checkValue(qreal value, qreal error=0);
+    /// conditionally sets the new value/error pair
     bool  setValue(qreal value, qreal error=0, bool force=false);
 
   private:
     qreal value;
+
     // constraints; TODO maybe not all needed?
-    Range range;            ///< allowed range of values; if !isValid() -> same as <value,value>, i.e. fixed value
-    qreal maxDelta;         ///< maximum change allowed; NaN -> no check
+
+    /// allowed range of values
+    /// if !isValid() -> means the same as <value,value>, i.e. fixed value
+    Range range;
+
+    /// maximum change allowed; NaN -> no check
+    qreal maxDelta;
     qreal maxDeltaPercent;
-    qreal maxError;         ///< maximum error allowed; NaN -> no check
+
+    /// maximum error allowed; NaN -> no check
+    qreal maxError;
     qreal maxErrorPercent;
   };
 
@@ -31,46 +47,43 @@ public:
   Function();
   virtual ~Function();
 
-  virtual uint parameterCount() const = 0;
-  virtual Parameter& getParameter(uint) = 0;
+  virtual uint parameterCount() const   = 0;
 
+  virtual Parameter& getParameter(uint) = 0;
   virtual Parameter const& getParameter(uint i) const {
     return const_cast<Function*>(this)->getParameter(i);
   }
 
-  /// the value of the function, outside or own parameter values
+  /// evaluate the function y = f(x), with given (parameterValues) or own parameters
   virtual qreal y(qreal x, qreal const* parameterValues = nullptr) const = 0;
 
-  /// partial derivative / parameter
-  virtual qreal dy(qreal x, int parameterIndex, qreal const* parameterValues = nullptr) const = 0;
+  /// partial derivative / parameter, with given (parameterValues) or own parameters
+  virtual qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const = 0;
 };
 
 #ifndef QT_NO_DEBUG
+// debug prints
 QDebug& operator<<(QDebug&,Function const&);
 #endif
 
-class SingleFunction: public Function {
-  SUPER(SingleFunction,Function)
-public:
-  SingleFunction();
+//------------------------------------------------------------------------------
+/// abstract function with parameters
 
-  typedef QVector<Parameter> parameters_t;
+class SimpleFunction: public Function {
+  SUPER(SimpleFunction,Function)
+public:
+  SimpleFunction();
 
   void setParameterCount(uint);
   uint parameterCount() const;
   Parameter& getParameter(uint);
 
-  parameters_t& getParameters() {
-    return parameters;
-  }
-
-  parameters_t const& getParameters() const {
-    return const_cast<thisCls*>(this)->getParameters();
-  }
-
 protected:
-  parameters_t parameters;
+  QVector<Parameter> parameters;
 };
+
+//------------------------------------------------------------------------------
+/// concrete function that is a sum of other functions
 
 class SumFunctions final: public Function {
   SUPER(SumFunctions,Function)
@@ -78,23 +91,32 @@ public:
   SumFunctions();
  ~SumFunctions();
 
-  typedef QVector<Function*> functions_t;
-  void addFunction(Function*);            ///< takes ownership
+  /// add a (new) Function instance, take its ownership (for delete)
+  void addFunction(Function*);
 
+  /// aggregate parameter list for all added functions
   uint parameterCount() const;
   Parameter& getParameter(uint);
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
-  qreal dy(qreal x, int parameterIndex, qreal const* parameterValues = nullptr) const;
+  qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
 protected:
-  functions_t functions, functionForParameterIndex;
+  /// summed functions
+  QVector<Function*>  functions;
+  /// the aggregate parameter list
   QVector<Parameter*> parameters;
-  QVector<uint> parameterStartForParameterIndex;
+  /// look up the original function for a given aggregate parameter index
+  QVector<Function*>  function_parIndex;
+  /// the starting index of parameters of a summed function, given the aggregate parameter index
+  QVector<uint> firstParIndex_parIndex;
 };
 
-class Polynomial: public SingleFunction {
-  SUPER(Polynomial,SingleFunction)
+//------------------------------------------------------------------------------
+/// a polynomial
+
+class Polynomial: public SimpleFunction {
+  SUPER(Polynomial,SimpleFunction)
 public:
   Polynomial(uint degree = 0);
 
@@ -103,9 +125,9 @@ public:
   }
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
-  qreal dy(qreal x, int parameterIndex, qreal const* parameterValues = nullptr) const;
+  qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 };
 
+//------------------------------------------------------------------------------
 }}
-
 #endif

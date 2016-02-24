@@ -3,6 +3,7 @@
 #include <cmath>
 
 namespace core {
+//------------------------------------------------------------------------------
 
 Session::Session()
 : dataFiles(), corrFile(), imageSize(), geometry()
@@ -200,6 +201,26 @@ QPoint Session::getPixMiddle() const {
   return middle;
 }
 
+Session::ImageCut::ImageCut(uint top_, uint bottom_, uint left_, uint right_)
+: top(top_), bottom(bottom_), left(left_), right(right_) {
+}
+
+bool Session::ImageCut::operator==(ImageCut const& that) {
+  return top==that.top && bottom==that.bottom && left==that.left && right==that.right;
+}
+
+uint Session::ImageCut::getWidth(QSize const& fullSize) const {
+  return fullSize.width() - left - right;
+}
+
+uint Session::ImageCut::getHeight(QSize const& fullSize) const {
+  return fullSize.height() - top - bottom;
+}
+
+uint Session::ImageCut::getCount(QSize const& fullSize) const {
+  return getWidth(fullSize) * getHeight(fullSize);
+}
+
 // TODO this is a slightly modified original code; be careful; eventually refactor
 Session::AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
 
@@ -350,6 +371,6 @@ void Session::setImageCut(bool topLeft, bool linked, ImageCut const& imageCut_) 
   }
 }
 
+//------------------------------------------------------------------------------
 }
-
 // eof

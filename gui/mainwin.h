@@ -4,11 +4,13 @@
 #ifndef MAINWIN_H
 #define MAINWIN_H
 
-#include "defs.h"
+#include "core_defs.h"
 #include <QMainWindow>
 
 class Session;
 class BoxWidget;
+
+//------------------------------------------------------------------------------
 
 class MainWin: public QMainWindow {
   SUPER(MainWin,QMainWindow) Q_OBJECT
@@ -96,4 +98,5 @@ private:
   void viewReset();
 };
 
+//------------------------------------------------------------------------------
 #endif

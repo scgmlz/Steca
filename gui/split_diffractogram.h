@@ -8,10 +8,13 @@
 
 class MainWin; class Session;
 
+//------------------------------------------------------------------------------
+
 class SplitDiffractogram: public BoxWidget {
   SUPER(SplitDiffractogram,BoxWidget)
 public:
   SplitDiffractogram(MainWin&,Session&);
 };
 
+//------------------------------------------------------------------------------
 #endif
