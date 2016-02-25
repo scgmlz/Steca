@@ -1,8 +1,8 @@
 /** \file
  */
 
-#ifndef REFLECTIONS_H
-#define REFLECTIONS_H
+#ifndef FITTING_H
+#define FITTING_H
 
 #include "panel.h"
 
@@ -15,12 +15,15 @@ public:
   ReflectionView();
 };
 
-class Reflections: public BoxPanel {
-  SUPER(Reflections,BoxPanel)
+//------------------------------------------------------------------------------
+
+class Fitting: public BoxPanel {
+  SUPER(Fitting,BoxPanel)
 public:
-  Reflections(MainWin&,Session&);
+  Fitting(MainWin&,Session&);
 
 private:
+  QSpinBox *spinDegree;
   ReflectionView *reflectionView;
 };
 

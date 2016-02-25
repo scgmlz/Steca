@@ -15,13 +15,12 @@ HEADERS += \
     mainwin.h \
     settings.h \
     panel/panel.h \
-    panel/background.h \
     panel/diffractogram.h \
-    panel/reflections.h \
     session.h \
     panel/dataset.h \
     models.h \
-    mainwin_parts.h
+    mainwin_parts.h \
+    panel/fitting.h
 
 SOURCES += \
     QCP/qcustomplot.cpp \
@@ -32,13 +31,12 @@ SOURCES += \
     mainwin.cpp \
     settings.cpp \
     panel/panel.cpp \
-    panel/background.cpp \
     panel/diffractogram.cpp \
-    panel/reflections.cpp \
     session.cpp \
     panel/dataset.cpp \
     models.cpp \
-    mainwin_parts.cpp
+    mainwin_parts.cpp \
+    panel/fitting.cpp
 
 RESOURCES += \
     resources.qrc

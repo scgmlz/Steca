@@ -2,8 +2,7 @@
 #include "mainwin.h"
 #include "session.h"
 #include "panel/dataset.h"
-#include "panel/background.h"
-#include "panel/reflections.h"
+#include "panel/fitting.h"
 #include "panel/diffractogram.h"
 
 namespace panel {
@@ -131,9 +130,8 @@ SplitImage::SplitImage(MainWin& mainWin,Session& session): super(Qt::Horizontal)
 
 //------------------------------------------------------------------------------
 
-SplitReflections::SplitReflections(MainWin& mainWin,Session& session): super(Qt::Vertical) {
-  box->addWidget(new panel::Background(mainWin,session));
-  box->addWidget(new panel::Reflections(mainWin,session));
+SplitFitting::SplitFitting(MainWin& mainWin,Session& session): super(Qt::Vertical) {
+  box->addWidget(new panel::Fitting(mainWin,session));
 }
 
 //------------------------------------------------------------------------------

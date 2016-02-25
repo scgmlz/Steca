@@ -77,10 +77,10 @@ public:
 
 //------------------------------------------------------------------------------
 
-class SplitReflections: public BoxWidget {
-  SUPER(SplitReflections,BoxWidget)
+class SplitFitting: public BoxWidget {
+  SUPER(SplitFitting,BoxWidget)
 public:
-  SplitReflections(MainWin&,Session&);
+  SplitFitting(MainWin&,Session&);
 };
 
 //------------------------------------------------------------------------------
