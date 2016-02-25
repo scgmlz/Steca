@@ -15,6 +15,9 @@
 #include <QDir>
 #include <QAction>
 
+#ifdef DEVELOPMENT_REBECCA
+#include "io/core_io.h"
+#endif
 //------------------------------------------------------------------------------
 
 MainWin::MainWin(): session(new Session){
@@ -306,6 +309,7 @@ void MainWin::show() {
 
 #ifdef DEVELOPMENT_REBECCA
   session->load(QFileInfo("/home/rebecca/SCG/STeCa-Data/2.ste"));
+  core::io::saveTiffs(*session->getFile(0),"/home/rebecca/SCG/STeCa-Data/savedtiffs/test");
 #endif
 }
 
