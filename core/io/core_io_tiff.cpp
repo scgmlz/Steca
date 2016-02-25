@@ -5,7 +5,7 @@
 #include "core_session.h"
 #include "io/Caress/raw.h"
 
-
+#include <QTextStream>
 #include <QDir>
 #include <sstream>
 #include <cmath>
@@ -27,7 +27,6 @@ void saveTiffs(File const& file, rcstr fileName) THROWS {
   RUNTIME_CHECK(diskFile.open(QIODevice::WriteOnly),"cannot ...");
 
   QTextStream out(&diskFile);
-  QVector<Dataset> datasets; // not from here
 
   for_i (file.numDatasets()) {
     Dataset dataset = *file.getDataset(i);
@@ -40,20 +39,10 @@ void saveTiffs(File const& file, rcstr fileName) THROWS {
 
     out << "\n"; out.flush();
   }
+
+
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //------------------------------------------------------------------------------
