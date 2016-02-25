@@ -35,22 +35,16 @@ protected:
 
 //------------------------------------------------------------------------------
 
-class DatasetOptions: public BoxPanel {
-  SUPER(DatasetOptions,BoxPanel) Q_OBJECT
+class DatasetOptions1: public BoxPanel {
+  SUPER(DatasetOptions1,BoxPanel) Q_OBJECT
 public:
-  DatasetOptions(MainWin&,Session&);
+  DatasetOptions1(MainWin&,Session&);
 
-signals:
-  void imageScale(uint);
-
-public:
   qreal const MIN_DISTANCE   = 1.;  // mm
   qreal const MIN_PIXEL_SIZE = .01; // mm
 
 private:
-  QSpinBox       *cutTop, *cutBottom, *cutLeft, *cutRight;
   QSpinBox       *spinOffsetX, *spinOffsetY;
-  QSpinBox       *spinImageScale;
   QDoubleSpinBox *spinDistance, *spinPixelSize;
 
   void setTo(Session&);
@@ -58,6 +52,24 @@ private:
 
   // TODO to Session() of MainWin()
   void readSettings(Session&);
+  void saveSettings();
+};
+
+class DatasetOptions2: public BoxPanel {
+  SUPER(DatasetOptions2,BoxPanel) Q_OBJECT
+public:
+  DatasetOptions2(MainWin&,Session&);
+
+signals:
+  void imageScale(uint);
+
+private:
+  QSpinBox       *cutTop, *cutBottom, *cutLeft, *cutRight;
+  QSpinBox       *spinImageScale;
+
+  void setFrom(Session&);
+
+  void readSettings();
   void saveSettings();
 };
 

@@ -214,9 +214,8 @@ void DiffractogramPlot::updateBg() {
 //------------------------------------------------------------------------------
 
 Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
-: super("Diffractogram",mainWin,session,Qt::Vertical), dataset(nullptr) {
+: super(EMPTY_STR,mainWin,session,Qt::Vertical), dataset(nullptr) {
   box->addWidget((plot = new DiffractogramPlot(*this)));
-  box->addWidget(check("From all images"));
 
   connect(&session, &Session::datasetSelected, [this](core::shp_Dataset dataset) {
     setDataset(dataset);

@@ -62,41 +62,8 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 
 //------------------------------------------------------------------------------
 
-DatasetOptions::DatasetOptions(MainWin& mainWin_, Session& session_)
-: super ("Options",mainWin_,session_,Qt::Vertical) {
-
-  // TODO clean up the layout
-
-  box->addWidget(label("Image"));
-  auto hb = hbox();
-  box->addLayout(hb);
-
-  hb->addWidget((spinImageScale = spinCell(4,1,4)));
-
-  hb->addWidget(iconButton(session.actImageRotate));
-  hb->addWidget(iconButton(session.actImageMirror));
-  hb->addSpacing(1);
-  hb->addWidget(iconButton(mainWin.actImagesShowCorr));
-  hb->addWidget(iconButton(mainWin.actImageOverlay));
-  hb->addWidget(iconButton(mainWin.actImagesGlobalNorm));
-  hb->addStretch();
-
-  box->addWidget(label("Cut"));
-  auto gc = gridLayout();
-  box->addLayout(gc);
-
-  gc->addWidget(icon(":/icon/top"),                 0,0);
-  gc->addWidget((cutTop = spinCell(4,0)),           0,1);
-  gc->addWidget(icon(":/icon/bottom"),              0,2);
-  gc->addWidget((cutBottom = spinCell(4,0)),        0,3);
-
-  gc->addWidget(iconButton(mainWin.actImagesLink),  0,5);
-
-  gc->addWidget(icon(":/icon/left"),                1,0);
-  gc->addWidget((cutLeft = spinCell(4,0)),          1,1);
-  gc->addWidget(icon(":/icon/right"),               1,2);
-  gc->addWidget((cutRight = spinCell(4,0)),         1,3);
-  gc->setColumnStretch(4,1);
+DatasetOptions1::DatasetOptions1(MainWin& mainWin_, Session& session_)
+: super (EMPTY_STR,mainWin_,session_,Qt::Vertical) {
 
   box->addWidget(label("Beam offset"));
   auto ho = hbox();
@@ -131,6 +98,151 @@ DatasetOptions::DatasetOptions(MainWin& mainWin_, Session& session_)
 
   box->addStretch();
 
+  // TODO separate geometryChanged into more signals?
+  connect(&session, &Session::geometryChanged, [this]() {
+    setFrom(session);
+  });
+
+  auto setEnabled = [this]() {
+    bool on = mainWin.actHasBeamOffset->isChecked();
+    spinOffsetX->setEnabled(on);
+    spinOffsetY->setEnabled(on);
+  };
+
+  setEnabled();
+
+  // TODO split setTo() ?
+  connect(mainWin.actHasBeamOffset, &QAction::toggled, [this,setEnabled]() {
+    setEnabled();
+    setTo(session);
+  });
+
+  connect(spinOffsetX, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this]() {
+    setTo(session);
+  });
+
+  connect(spinOffsetY, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this]() {
+    setTo(session);
+  });
+
+  connect(spinDistance, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
+    setTo(session);
+  });
+
+  connect(spinPixelSize, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
+    setTo(session);
+  });
+
+  // TODO handle in Session() ?
+  connect(&session, &Session::readSettings, [this]() {
+    readSettings(session);
+  });
+
+  connect(&session, &Session::saveSettings, [this]() {
+    saveSettings();
+  });
+}
+
+void DatasetOptions1::setTo(Session& session) {
+  session.setGeometry(
+    spinDistance->value(), spinPixelSize->value(),
+    mainWin.actHasBeamOffset->isChecked(),
+    QPoint(spinOffsetX->value(),spinOffsetY->value()));
+}
+
+void DatasetOptions1::setFrom(Session& session) {
+  auto const& g = session.getGeometry();
+
+  mainWin.actHasBeamOffset->setChecked(g.hasBeamOffset);
+  spinOffsetX->setValue(g.middlePixOffset.x());
+  spinOffsetY->setValue(g.middlePixOffset.y());
+
+  spinDistance->setValue(g.sampleDetectorSpan);
+  spinPixelSize->setValue(g.pixSpan);
+}
+
+static str GROUP_OPTIONS("Options");
+static str KEY_IMAGE_SCALE("image_scale");
+
+static str GROUP_BEAM("Beam");
+static str KEY_IS_OFFSET("is_offset");
+static str KEY_OFFSET_X("offset_x");
+static str KEY_OFFSET_Y("offset_y");
+
+static str GROUP_DETECTOR("Detector");
+static str KEY_DISTANCE("distance");
+static str KEY_PIXEL_SIZE("pixel_size");
+
+void DatasetOptions1::readSettings(Session& session) {
+  {
+    Settings s(GROUP_BEAM);
+    auto const& g = session.getGeometry();
+    s.read(KEY_IS_OFFSET,   mainWin.actHasBeamOffset,g.hasBeamOffset);
+    s.read(KEY_OFFSET_X,    spinOffsetX,      g.middlePixOffset.x());
+    s.read(KEY_OFFSET_Y,    spinOffsetY,      g.middlePixOffset.y());
+  }
+  {
+    Settings s(GROUP_DETECTOR);
+    auto const& g = session.getGeometry();
+    s.read(KEY_DISTANCE,    spinDistance,     g.sampleDetectorSpan);
+    s.read(KEY_PIXEL_SIZE,  spinPixelSize,    g.pixSpan);
+  }
+}
+
+void DatasetOptions1::saveSettings() {
+  {
+    Settings s(GROUP_BEAM);
+    s.save(KEY_IS_OFFSET,   mainWin.actHasBeamOffset);
+    s.save(KEY_OFFSET_X,    spinOffsetX);
+    s.save(KEY_OFFSET_Y,    spinOffsetY);
+  }
+  {
+    Settings s(GROUP_DETECTOR);
+    s.save(KEY_DISTANCE,    spinDistance);
+    s.save(KEY_PIXEL_SIZE,  spinPixelSize);
+  }
+}
+
+//------------------------------------------------------------------------------
+
+DatasetOptions2::DatasetOptions2(MainWin& mainWin_, Session& session_)
+: super (EMPTY_STR,mainWin_,session_,Qt::Vertical) {
+
+  // TODO clean up the layout
+
+  box->addWidget(label("Image"));
+  auto hb = hbox();
+  box->addLayout(hb);
+
+  hb->addWidget((spinImageScale = spinCell(4,1,4)));
+
+  hb->addWidget(iconButton(session.actImageRotate));
+  hb->addWidget(iconButton(session.actImageMirror));
+  hb->addSpacing(1);
+  hb->addWidget(iconButton(mainWin.actImagesShowCorr));
+  hb->addWidget(iconButton(mainWin.actImageOverlay));
+  hb->addWidget(iconButton(mainWin.actImagesGlobalNorm));
+  hb->addStretch();
+
+  box->addWidget(label("Cut"));
+  auto gc = gridLayout();
+  box->addLayout(gc);
+
+  gc->addWidget(icon(":/icon/top"),                 0,0);
+  gc->addWidget((cutTop = spinCell(4,0)),           0,1);
+  gc->addWidget(icon(":/icon/bottom"),              0,2);
+  gc->addWidget((cutBottom = spinCell(4,0)),        0,3);
+
+  gc->addWidget(iconButton(mainWin.actImagesLink),  0,5);
+
+  gc->addWidget(icon(":/icon/left"),                1,0);
+  gc->addWidget((cutLeft = spinCell(4,0)),          1,1);
+  gc->addWidget(icon(":/icon/right"),               1,2);
+  gc->addWidget((cutRight = spinCell(4,0)),         1,3);
+  gc->setColumnStretch(4,1);
+
+  box->addStretch();
+
   auto setImageCut = [this](bool topLeft, int value) {
     if (mainWin.actImagesLink->isChecked())
       session.setImageCut(topLeft, true, Session::ImageCut(value,value,value,value));
@@ -159,43 +271,13 @@ DatasetOptions::DatasetOptions(MainWin& mainWin_, Session& session_)
     setFrom(session);
   });
 
-  auto setEnabled = [this]() {
-    bool on = mainWin.actHasBeamOffset->isChecked();
-    spinOffsetX->setEnabled(on);
-    spinOffsetY->setEnabled(on);
-  };
-
-  setEnabled();
-
-  // TODO split setTo() ?
-  connect(mainWin.actHasBeamOffset, &QAction::toggled, [this,setEnabled]() {
-    setEnabled();
-    setTo(session);
-  });
-
-  connect(spinOffsetX, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this]() {
-    setTo(session);
-  });
-
-  connect(spinOffsetY, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this]() {
-    setTo(session);
-  });
-
   connect(spinImageScale, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int scale) {
     emit imageScale(scale);
   });
 
-  connect(spinDistance, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
-    setTo(session);
-  });
-
-  connect(spinPixelSize, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
-    setTo(session);
-  });
-
   // TODO handle in Session() ?
   connect(&session, &Session::readSettings, [this]() {
-    readSettings(session);
+    readSettings();
   });
 
   connect(&session, &Session::saveSettings, [this]() {
@@ -203,23 +285,7 @@ DatasetOptions::DatasetOptions(MainWin& mainWin_, Session& session_)
   });
 }
 
-void DatasetOptions::setTo(Session& session) {
-  session.setGeometry(
-    spinDistance->value(), spinPixelSize->value(),
-    mainWin.actHasBeamOffset->isChecked(),
-    QPoint(spinOffsetX->value(),spinOffsetY->value()));
-}
-
-void DatasetOptions::setFrom(Session& session) {
-  auto const& g = session.getGeometry();
-
-  mainWin.actHasBeamOffset->setChecked(g.hasBeamOffset);
-  spinOffsetX->setValue(g.middlePixOffset.x());
-  spinOffsetY->setValue(g.middlePixOffset.y());
-
-  spinDistance->setValue(g.sampleDetectorSpan);
-  spinPixelSize->setValue(g.pixSpan);
-
+void DatasetOptions2::setFrom(Session& session) {
   auto cut = session.getImageCut();
 
   cutTop    ->setValue(cut.top);
@@ -228,55 +294,19 @@ void DatasetOptions::setFrom(Session& session) {
   cutRight  ->setValue(cut.right);
 }
 
-static str GROUP_OPTIONS("Options");
-static str KEY_IMAGE_SCALE("image_scale");
-
-static str GROUP_BEAM("Beam");
-static str KEY_IS_OFFSET("is_offset");
-static str KEY_OFFSET_X("offset_x");
-static str KEY_OFFSET_Y("offset_y");
-
-static str GROUP_DETECTOR("Detector");
-static str KEY_DISTANCE("distance");
-static str KEY_PIXEL_SIZE("pixel_size");
-
-void DatasetOptions::readSettings(Session& session) {
+void DatasetOptions2::readSettings() {
   {
     Settings s(GROUP_OPTIONS);
     s.read(KEY_IMAGE_SCALE, spinImageScale, 4);
-  }
-  {
-    Settings s(GROUP_BEAM);
-    auto const& g = session.getGeometry();
-    s.read(KEY_IS_OFFSET,   mainWin.actHasBeamOffset,g.hasBeamOffset);
-    s.read(KEY_OFFSET_X,    spinOffsetX,      g.middlePixOffset.x());
-    s.read(KEY_OFFSET_Y,    spinOffsetY,      g.middlePixOffset.y());
-  }
-  {
-    Settings s(GROUP_DETECTOR);
-    auto const& g = session.getGeometry();
-    s.read(KEY_DISTANCE,    spinDistance,     g.sampleDetectorSpan);
-    s.read(KEY_PIXEL_SIZE,  spinPixelSize,    g.pixSpan);
   }
 
   emit imageScale(spinImageScale->value()); // TODO review
 }
 
-void DatasetOptions::saveSettings() {
+void DatasetOptions2::saveSettings() {
   {
     Settings s(GROUP_OPTIONS);
     s.save(KEY_IMAGE_SCALE, spinImageScale);
-  }
-  {
-    Settings s(GROUP_BEAM);
-    s.save(KEY_IS_OFFSET,   mainWin.actHasBeamOffset);
-    s.save(KEY_OFFSET_X,    spinOffsetX);
-    s.save(KEY_OFFSET_Y,    spinOffsetY);
-  }
-  {
-    Settings s(GROUP_DETECTOR);
-    s.save(KEY_DISTANCE,    spinDistance);
-    s.save(KEY_PIXEL_SIZE,  spinPixelSize);
   }
 }
 

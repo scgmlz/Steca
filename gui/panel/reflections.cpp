@@ -24,7 +24,6 @@ Reflections::Reflections(MainWin& mainWin,Session& session)
   auto h = hbox();
   box->addLayout(h);
 
-  h->addWidget(label("Output:"));
   h->addWidget(iconButton(mainWin.actReflectionPeak));
   h->addWidget(iconButton(mainWin.actReflectionReflect));
   h->addWidget(iconButton(mainWin.actReflectionWidth));

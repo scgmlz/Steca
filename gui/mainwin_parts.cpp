@@ -119,12 +119,14 @@ DockDatasets::DockDatasets(MainWin&,Session& session)
 //------------------------------------------------------------------------------
 
 SplitImage::SplitImage(MainWin& mainWin,Session& session): super(Qt::Horizontal) {
-  auto *options = new panel::DatasetOptions(mainWin,session);
+  auto *options1 = new panel::DatasetOptions1(mainWin,session);
+  auto *options2 = new panel::DatasetOptions2(mainWin,session);
   auto *dataset = new panel::Dataset(mainWin,session);
-  connect(options, &panel::DatasetOptions::imageScale, dataset, &panel::Dataset::setImageScale);
-  box->addWidget(options);
+  connect(options2, &panel::DatasetOptions2::imageScale, dataset, &panel::Dataset::setImageScale);
+  box->addWidget(options1);
+  box->addWidget(options2);
   box->addWidget(dataset);
-  box->setStretch(1,1);
+  box->setStretch(2,1);
 }
 
 //------------------------------------------------------------------------------
