@@ -146,7 +146,7 @@
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------*/
 
-#pragma GCC diagnostic ignored "-Wpragmas"
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
 #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 

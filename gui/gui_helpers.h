@@ -8,6 +8,7 @@
 #include "core_defs.h"
 
 #include <QBoxLayout>
+#include <QDockWidget>
 #include <QLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -76,8 +77,21 @@ protected:
 /// a widget with a box layout
 
 class BoxWidget: public QWidget {
+  SUPER(BoxWidget,QWidget)
 public:
   BoxWidget(Qt::Orientation);
+
+protected:
+  QBoxLayout *box;
+};
+
+//------------------------------------------------------------------------------
+/// a dock widget that acts as BoxWidget
+
+class DockWidget: public QDockWidget {
+  SUPER(DockWidget,QDockWidget)
+public:
+  DockWidget(rcstr name,rcstr objectName,Qt::Orientation);
 
 protected:
   QBoxLayout *box;

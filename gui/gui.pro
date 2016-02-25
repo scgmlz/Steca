@@ -18,18 +18,10 @@ HEADERS += \
     panel/background.h \
     panel/diffractogram.h \
     panel/reflections.h \
-    panel/reflectioninfo.h \
-    panel/files.h \
-    panel/normalization.h \
-    split_files.h \
-    split_reflections.h \
-    split_image.h \
-    split_diffractogram.h \
     session.h \
-    panel/datasets.h \
-    panel/datasetinfo.h \
     panel/dataset.h \
-    models.h
+    models.h \
+    mainwin_parts.h
 
 SOURCES += \
     QCP/qcustomplot.cpp \
@@ -42,19 +34,11 @@ SOURCES += \
     panel/panel.cpp \
     panel/background.cpp \
     panel/diffractogram.cpp \
-    panel/normalization.cpp \
-    panel/files.cpp \
-    panel/reflectioninfo.cpp \
     panel/reflections.cpp \
-    split_files.cpp \
-    split_reflections.cpp \
-    split_image.cpp \
-    split_diffractogram.cpp \
     session.cpp \
-    panel/datasets.cpp \
-    panel/datasetinfo.cpp \
     panel/dataset.cpp \
-    models.cpp
+    models.cpp \
+    mainwin_parts.cpp
 
 RESOURCES += \
     resources.qrc

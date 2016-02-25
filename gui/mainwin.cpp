@@ -1,10 +1,7 @@
 #include "mainwin.h"
 #include "session.h"
 #include "settings.h"
-#include "split_files.h"
-#include "split_image.h"
-#include "split_reflections.h"
-#include "split_diffractogram.h"
+#include "mainwin_parts.h"
 
 #include <QCloseEvent>
 #include <QMenuBar>
@@ -211,13 +208,13 @@ void MainWin::initMenus() {
 }
 
 void MainWin::initLayout() {
-  auto splMain = new QSplitter(Qt::Horizontal);
+  addDockWidget(Qt::LeftDockWidgetArea, new panel::DockFiles(*this,*session));
+  addDockWidget(Qt::LeftDockWidgetArea, new panel::DockDatasets(*this,*session));
+  addDockWidget(Qt::RightDockWidgetArea,new panel::DockDatasetInfo(*this,*session));
+
+  auto splMain = new QSplitter(Qt::Vertical);
   splMain->setChildrenCollapsible(false);
-
   setCentralWidget(splMain);
-
-  auto splOther = new QSplitter(Qt::Vertical);
-  splOther->setChildrenCollapsible(false);
 
   auto splImages = new QSplitter(Qt::Horizontal);
   splImages->setChildrenCollapsible(false);
@@ -225,17 +222,13 @@ void MainWin::initLayout() {
   auto splReflections = new QSplitter(Qt::Horizontal);
   splReflections->setChildrenCollapsible(false);
 
-  splMain->addWidget((splitFiles = new SplitFiles(*this,*session)));
-  splMain->addWidget(splOther);
-  splMain->setSizes({0,INT16_MAX});
+  splMain->addWidget(splImages);
+  splMain->addWidget(splReflections);
 
-  splOther->addWidget(splImages);
-  splOther->addWidget(splReflections);
+  splImages->addWidget((splitImage = new panel::SplitImage(*this,*session)));
 
-  splImages->addWidget((splitImage = new SplitImage(*this,*session)));
-
-  splReflections->addWidget((splitReflections = new SplitReflections(*this,*session)));
-  splReflections->addWidget((splitDiffractogram = new SplitDiffractogram(*this,*session)));
+  splReflections->addWidget((splitReflections   = new panel::SplitReflections(*this,*session)));
+  splReflections->addWidget((splitDiffractogram = new panel::SplitDiffractogram(*this,*session)));
   splReflections->setStretchFactor(0,1);
   splReflections->setStretchFactor(1,3);
 }

@@ -83,7 +83,7 @@ public:
     *actHasBeamOffset;
 
 private:
-  BoxWidget *splitFiles, *splitImage, *splitReflections, *splitDiffractogram;
+  BoxWidget *splitImage, *splitReflections, *splitDiffractogram;
 
 private:
   QByteArray initialState;

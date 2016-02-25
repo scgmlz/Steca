@@ -128,4 +128,15 @@ BoxWidget::BoxWidget(Qt::Orientation orientation) {
 }
 
 //------------------------------------------------------------------------------
+
+DockWidget::DockWidget(rcstr name,rcstr objectName,Qt::Orientation orientation) {
+  setFeatures(NoDockWidgetFeatures);
+  setWidget(new QWidget);
+  widget()->setLayout((box = boxLayout(orientation)));
+
+  setWindowTitle(name);
+  setObjectName(objectName);
+}
+
+//------------------------------------------------------------------------------
 // eof

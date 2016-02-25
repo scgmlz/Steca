@@ -67,7 +67,11 @@ DatasetOptions::DatasetOptions(MainWin& mainWin_, Session& session_)
 
   // TODO clean up the layout
 
+  box->addWidget(label("Image"));
   auto hb = hbox();
+  box->addLayout(hb);
+
+  hb->addWidget((spinImageScale = spinCell(4,1,4)));
 
   hb->addWidget(iconButton(session.actImageRotate));
   hb->addWidget(iconButton(session.actImageMirror));
@@ -77,55 +81,53 @@ DatasetOptions::DatasetOptions(MainWin& mainWin_, Session& session_)
   hb->addWidget(iconButton(mainWin.actImagesGlobalNorm));
   hb->addStretch();
 
-  auto sz = hbox();
-  sz->addWidget(label("scale"));
-  sz->addWidget((spinImageScale = spinCell(4,1,4)));
-  sz->addStretch();
-
+  box->addWidget(label("Cut"));
   auto gc = gridLayout();
+  box->addLayout(gc);
 
   gc->addWidget(icon(":/icon/top"),                 0,0);
   gc->addWidget((cutTop = spinCell(4,0)),           0,1);
-  gc->addWidget(iconButton(mainWin.actImagesLink),  0,2);
-  gc->addWidget(icon(":/icon/bottom"),              1,0);
-  gc->addWidget((cutBottom = spinCell(4,0)),        1,1);
-  gc->addWidget(icon(":/icon/left"),                2,0);
-  gc->addWidget((cutLeft = spinCell(4,0)),          2,1);
-  gc->addWidget(icon(":/icon/right"),               3,0);
-  gc->addWidget((cutRight = spinCell(4,0)),         3,1);
-  gc->setColumnStretch(3,1);
+  gc->addWidget(icon(":/icon/bottom"),              0,2);
+  gc->addWidget((cutBottom = spinCell(4,0)),        0,3);
 
-  box->addWidget(label("Image"));
-  box->addLayout(hb);
-  box->addLayout(sz);
-  box->addWidget(label("Cut"));
-  box->addLayout(gc);
+  gc->addWidget(iconButton(mainWin.actImagesLink),  0,5);
 
-  auto go = gridLayout();
-  go->addWidget(iconButton(mainWin.actHasBeamOffset),0,0);
-  go->addWidget(label("X"),                         0,1);
-  go->addWidget((spinOffsetX = spinCell(4,0)),      0,2);
-  go->addWidget(label("pix"),                       0,3);
-  go->addWidget(label("Y"),                         1,1);
-  go->addWidget((spinOffsetY = spinCell(4,0)),      1,2);
-  go->addWidget(label("pix"),                       1,3);
-  go->setColumnStretch(3,1);
+  gc->addWidget(icon(":/icon/left"),                1,0);
+  gc->addWidget((cutLeft = spinCell(4,0)),          1,1);
+  gc->addWidget(icon(":/icon/right"),               1,2);
+  gc->addWidget((cutRight = spinCell(4,0)),         1,3);
+  gc->setColumnStretch(4,1);
 
   box->addWidget(label("Beam offset"));
-  box->addLayout(go);
+  auto ho = hbox();
+  box->addLayout(ho);
 
-  auto gd = gridLayout();
-
-  gd->addWidget(label("Distance"),                            0,0);
-  gd->addWidget((spinDistance = spinCell(6,MIN_DISTANCE)),    0,1);
-  gd->addWidget(label("mm"),                                  0,2);
-  gd->addWidget(label("Pixel size"),                          1,0);
-  gd->addWidget((spinPixelSize = spinCell(6,MIN_PIXEL_SIZE)), 1,1);
-  gd->addWidget(label("mm"),                                  1,2);
-  gd->setColumnStretch(3,1);
+  ho->addWidget(iconButton(mainWin.actHasBeamOffset));
+  ho->addWidget(label("X"));
+  ho->addWidget((spinOffsetX = spinCell(4,0)));
+  ho->addWidget(label("Y"));
+  ho->addWidget((spinOffsetY = spinCell(4,0)));
+  ho->addWidget(label("pix"));
+  ho->addStretch();
 
   box->addWidget(label("Detector"));
+  auto gd = gridLayout();
   box->addLayout(gd);
+
+  gd->addWidget((spinDistance = spinCell(6,MIN_DISTANCE)),    0,0);
+  gd->addWidget(label("distance mm"),                         0,1);
+  gd->addWidget((spinPixelSize = spinCell(6,MIN_PIXEL_SIZE)), 1,0);
+  gd->addWidget(label("pixel size mm"),                       1,1);
+  gd->setColumnStretch(2,1);
+
+  box->addWidget(label("Normalization"));
+  auto vn = vbox();
+  box->addLayout(vn);
+
+  vn->addWidget(radioButton("none"));
+  vn->addWidget(radioButton("to deltatime"));
+  vn->addWidget(radioButton("to deltaMonitor"));
+  vn->addWidget(radioButton("to background"));
 
   box->addStretch();
 
