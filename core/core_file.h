@@ -16,22 +16,18 @@ namespace core {
 /// A file (loaded from a disk file) that contains a number of datasets.
 class File final {
 public:
-  File();
   File(rcstr fileName);
  ~File();
 
   QFileInfo const& getInfo() const { return info;            }
   str getName()              const { return info.fileName(); }
 
-  /// peek at up to maxLen bytes (to establish the file type)
-  QByteArray peek(uint maxLen);
-
-  void load() THROWS; ///< load disk file content
   void fold();        ///< collapse datasets into one
 
   uint numDatasets() const { return datasets.count(); }
 
   shp_Dataset const& getDataset(uint i) const { return datasets.at(i); }
+  void appendDataset(Dataset* dataset); ///< takes ownership of dataset
 
   /// all datasets contain images of the same size
   QSize getImageSize() const;

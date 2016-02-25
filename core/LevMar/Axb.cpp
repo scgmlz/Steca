@@ -24,6 +24,7 @@
  * solver versions, see also Axb_core.c
  ********************************************************************************/
 
+#pragma GCC diagnostic ignored "-Wpragmas"
 #pragma GCC diagnostic ignored "-Wdeprecated-register"
 
 #include <stdio.h>

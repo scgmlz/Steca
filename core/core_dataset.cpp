@@ -13,7 +13,7 @@ rcstr Dataset::getAttributeTag(int i) {
   return attributeTags.at(i);
 }
 
-Dataset::Dataset(File const& file_,
+Dataset::Dataset(
   rcstr date_, rcstr comment_,
   qreal motorXT_, qreal motorYT_, qreal motorZT_,
   qreal motorOmg_, qreal motorTth_, qreal motorPhi_, qreal motorChi_,
@@ -21,7 +21,7 @@ Dataset::Dataset(File const& file_,
   qreal mon_, qreal deltaTime_,
   QSize const& size_, intens_t const* intensities_)
 
-: file(file_)
+: file(nullptr)
 , date(date_), comment(comment_)
 , motorXT(motorXT_), motorYT(motorYT_), motorZT(motorZT_), motorOmg(motorOmg_), motorTth(motorTth_)
 , motorPhi(motorPhi_), motorChi(motorChi_), motorPST(motorPST_), motorSST(motorSST_), motorOMGM(motorOMGM_)
@@ -51,6 +51,11 @@ str Dataset::getAttributeStrValue(int e) const {
   }
 
   return QString().setNum(value);
+}
+
+File const& Dataset::getFile() const {
+  ASSERT(file)
+  return *file;
 }
 
 void Dataset::addIntensities(Dataset const& that) {

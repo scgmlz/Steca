@@ -78,7 +78,7 @@ public:
 
   // more actions, some not in the menu
     *actReflectionPeak, *actReflectionReflect, *actReflectionWidth, *actReflectionAdd,
-    *actImagesLink, *actImageOverlay, *actImagesGlobalNorm, *actImagesShowRaw,
+    *actImagesLink, *actImageOverlay, *actImagesGlobalNorm, *actImagesShowCorr,
     *actBackgroundBackground, *actBackgroundEye,
     *actHasBeamOffset;
 

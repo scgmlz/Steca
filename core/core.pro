@@ -58,7 +58,8 @@ SOURCES += \
     approx/approx_methods.cpp \
     core_types.cpp \
     io/core_io_caress.cpp \
-    io/core_io_tiff.cpp
+    io/core_io_tiff.cpp \
+    io/core_io.cpp
 
 DISTFILES += \
     io/Caress/README

@@ -28,7 +28,7 @@ public:
   static rcstr getAttributeTag(int i);
 
 public:
-  Dataset(File const&, rcstr date, rcstr comment,
+  Dataset(rcstr date, rcstr comment,
           qreal motorXT,  qreal motorYT,  qreal motorZT,
           qreal motorOmg, qreal motorTth, qreal motorPhi, qreal motorChi,
           qreal motorPST, qreal motorSST, qreal motorOMGM,
@@ -38,14 +38,15 @@ public:
   str getAttributeStrValue(int /*as: enumAttribute TODO */) const;
   qreal tthMitte() const { return motorTth; } // TODO ? is mitte
 
-  File  const& getFile()  const { return file;  }
+  File  const& getFile()  const;
   Image const& getImage() const { return image; }
 
   /// used for correction files
   void addIntensities(Dataset const&);
 
 private:
-  File const &file; ///< the parent file
+  friend class File;
+  File const *file; ///< the parent file
 
   str
     date, comment;

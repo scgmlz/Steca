@@ -11,13 +11,11 @@ namespace core { namespace io {
 //------------------------------------------------------------------------------
 // Code taken from the original STeCa, only slightly modified.
 
-QVector<shp_Dataset> loadCaress(File &file) THROWS {
-  str filePath = file.getInfo().filePath();
+shp_File loadCaress(rcstr filePath) THROWS {
+  shp_File file(new File(filePath));
+
   RUNTIME_CHECK(0 == open_data_file(filePath.toLocal8Bit().data(),nullptr),
                 "Cannot open data file " + filePath);
-
-  QVector<shp_Dataset> datasets;
-
   try {
     bool newObject = false;
     bool workAfterStep = false;
@@ -155,14 +153,14 @@ QVector<shp_Dataset> loadCaress(File &file) THROWS {
 //        #endif
 
           // Objekt inizialisieren
-          datasets.append(shp_Dataset(new Dataset(file,
+          file->appendDataset(new Dataset(
             str::fromStdString(s_date), str::fromStdString(s_comment),
             xAxis, yAxis, zAxis,
             rad_deg(omgAxis), rad_deg(tthAxis),
             rad_deg(phiAxis), rad_deg(chiAxis),
             pstAxis, sstAxis, rad_deg(omgmAxis),
             mon, tempTime,
-            size, convertedIntens.constData())));
+            size, convertedIntens.constData()));
           delete[] intens; intens = NULL;
           imageSize = 0;
         }
@@ -443,7 +441,7 @@ QVector<shp_Dataset> loadCaress(File &file) THROWS {
     throw;
   }
 
-  return datasets;
+  return file;
 }
 
 //------------------------------------------------------------------------------

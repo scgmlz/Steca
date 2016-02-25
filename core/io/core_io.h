@@ -2,19 +2,21 @@
  * Dataset loaders.
  */
 
-#ifndef CORE_LOADERS_H
-#define CORE_LOADERS_H
+#ifndef CORE_IO_H
+#define CORE_IO_H
 
-#include <core_dataset.h>
+#include <core_file.h>
 #include <QFileInfo>
 
 namespace core { namespace io {
 //------------------------------------------------------------------------------
 
-QVector<shp_Dataset> loadCaress(File&) THROWS;
+shp_File load(rcstr filePath) THROWS;
+
+shp_File loadCaress(rcstr filePath) THROWS;
 // void saveCaress(File&) THROWS;
 
-QVector<shp_Dataset> loadTiffs(File&) THROWS;
+shp_File loadTiffs(rcstr filePath) THROWS;
 void saveTiffs(File const&, QFileInfo const& path);
 
 //------------------------------------------------------------------------------

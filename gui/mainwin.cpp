@@ -99,8 +99,8 @@ void MainWin::initActions() {
 
   actImagesLink           = toggle("Link",          ":/icon/link");
   actImageOverlay         = toggle("overlay",       ":/icon/eye");
-  actImagesGlobalNorm     = toggle("global norm.",  ":/icon/eye");  // TODO different icon
-  actImagesShowRaw        = toggle("show w/o corr", ":/icon/eye");  // TODO different icon
+  actImagesGlobalNorm     = toggle("global norm.",  ":/icon/eye");    // TODO different icon
+  actImagesShowCorr        = toggle("show with corr", ":/icon/eye");   // TODO different icon
   session->actImageRotate = simple("Rotate", ":/icon/rotate0");
   session->actImageMirror = toggle("Mirror", ":/icon/mirror_horz");
 
@@ -112,7 +112,7 @@ void MainWin::initActions() {
   // TODO where to best put these actions updates?
   connect(session, &Session::corrFileSet, [this](core::shp_File file) {
     bool on  = !file.isNull();
-    auto act = actImagesShowRaw;
+    auto act = actImagesShowCorr;
     if (!on) act->setChecked(false);
     act->setEnabled(on);
   });

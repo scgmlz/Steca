@@ -21,6 +21,7 @@
 #error This file should not be compiled directly!
 #endif
 
+#pragma GCC diagnostic ignored "-Wpragmas"
 #pragma GCC diagnostic ignored "-Wdeprecated-register"
 #pragma GCC diagnostic ignored "-Wunused-variable"
 

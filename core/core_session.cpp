@@ -1,4 +1,5 @@
 #include "core_session.h"
+#include "io/core_io.h"
 #include "approx/approx_methods.h"
 #include <cmath>
 
@@ -22,8 +23,7 @@ shp_File Session::addFile(rcstr fileName) THROWS {
   if (fileName.isEmpty() || hasFile(fileName))
     return shp_File(); // nichts zu tun
 
-  shp_File file(new File(fileName));
-  file->load();
+  shp_File file = io::load(fileName);
 
   setImageSize(file->getImageSize());
 
@@ -61,8 +61,7 @@ shp_File Session::loadCorrFile(rcstr fileName) {
     return shp_File();
   }
 
-  shp_File file(new File(fileName));
-  file->load();
+  shp_File file = io::load(fileName);
   file->fold();
 
   setImageSize(file->getImageSize());

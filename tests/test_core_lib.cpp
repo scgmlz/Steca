@@ -14,7 +14,7 @@ void TestCoreLib::testConversions() {
 
 void TestCoreLib::testFile() {
   {//using default Constructor
-    core::File f;
+    core::File f(EMPTY_STR);
     QByteArray b;
     QCOMPARE(f.getImageSize(),QSize(0,0));
   }
