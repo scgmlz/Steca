@@ -18,7 +18,7 @@ QBoxLayout *boxLayout(Qt::Orientation orientation) {
   case Qt::Vertical:
     return vbox();
   default:
-    NEVER_HERE
+    NEVER_HERE return nullptr;
   }
 }
 

@@ -146,6 +146,10 @@
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------*/
 
+#pragma GCC diagnostic ignored "-Wpragmas"
+#pragma GCC diagnostic ignored "-Wstrict-aliasing"
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+
 #include "raw.h"
 #ifdef RAW_ONLINE
 #include "mutex_lock.h"
