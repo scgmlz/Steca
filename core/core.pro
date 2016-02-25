@@ -8,20 +8,19 @@ CONFIG  += silent warn_on
 QT      += core
 
 HEADERS += \
-    loaders/Caress/car_datatypes.h \
-    loaders/Caress/car_globals.h \
-    loaders/Caress/raw.h \
+    io/Caress/car_datatypes.h \
+    io/Caress/car_globals.h \
+    io/Caress/raw.h \
     core_file.h \
     core_dataset.h \
     core_image.h \
     core_debug.h \
     core_defs.h \
     core_session.h \
-    loaders/core_loaders.h \
     core_array2d.h \
-    loaders/Mar/mar300_header.h \
-    loaders/Mar/mar345_header.h \
-    loaders/Mar/MarReader.h \
+    io/Mar/mar300_header.h \
+    io/Mar/mar345_header.h \
+    io/Mar/MarReader.h \
     LevMar/levmar.h \
     LevMar/compiler.h \
     LevMar/misc.h \
@@ -30,17 +29,16 @@ HEADERS += \
     approx/approx_functions.h \
     approx/approx_methods.h \
     core_types.h \
-    loaders/core_loaders_tiff.h
+    io/core_io.h
 
 SOURCES += \
-    loaders/Caress/raw.cpp \
-    loaders/Caress/ReadCaress.cpp \
+    io/Caress/raw.cpp \
+    io/Caress/ReadCaress.cpp \
     core_dataset.cpp \
     core_defs.cpp \
     core_file.cpp \
     core_image.cpp \
     core_session.cpp \
-    loaders/core_loaders.cpp \
     core_array2d.cpp \
     LevMar/Axb.cpp \
     LevMar/Axb_core.cpp \
@@ -59,7 +57,8 @@ SOURCES += \
     approx/approx_functions.cpp \
     approx/approx_methods.cpp \
     core_types.cpp \
-    loaders/core_loaders_tiff.cpp
+    io/core_io_caress.cpp \
+    io/core_io_tiff.cpp
 
 DISTFILES += \
-    loaders/Caress/README
+    io/Caress/README

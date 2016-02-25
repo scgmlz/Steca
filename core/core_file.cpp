@@ -1,5 +1,5 @@
 #include "core_file.h"
-#include "loaders/core_loaders.h"
+#include "io/core_io.h"
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -28,7 +28,7 @@ void File::load() THROWS {
   static QByteArray const caressHead("\020\012DEFCMD DAT");
   if (caressHead == peek(caressHead.size())) {
     // looks like Caress, so try to load
-    datasets = loadCaress(*this);
+    datasets = io::loadCaress(*this);
   } else {
     THROW("unknown file type");
   }

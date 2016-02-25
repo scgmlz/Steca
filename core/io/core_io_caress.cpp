@@ -1,13 +1,13 @@
-#include "core_loaders.h"
+#include "core_io.h"
 #include "core_types.h"
 #include "core_file.h"
 
-#include "loaders/Caress/raw.h"
+#include "io/Caress/raw.h"
 
 #include <sstream>
 #include <cmath>
 
-namespace core {
+namespace core { namespace io {
 //------------------------------------------------------------------------------
 // Code taken from the original STeCa, only slightly modified.
 
@@ -447,5 +447,5 @@ QVector<shp_Dataset> loadCaress(File &file) THROWS {
 }
 
 //------------------------------------------------------------------------------
-}
+}}
 // eof
