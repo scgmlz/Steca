@@ -29,7 +29,8 @@ HEADERS += \
     LevMar/FastDelegate/FastDelegateBind.h \
     approx/approx_functions.h \
     approx/approx_methods.h \
-    core_types.h
+    core_types.h \
+    loaders/core_loaders_tiff.h
 
 SOURCES += \
     loaders/Caress/raw.cpp \
@@ -57,7 +58,8 @@ SOURCES += \
     LevMar/misc_core.cpp \
     approx/approx_functions.cpp \
     approx/approx_methods.cpp \
-    core_types.cpp
+    core_types.cpp \
+    loaders/core_loaders_tiff.cpp
 
 DISTFILES += \
     loaders/Caress/README
