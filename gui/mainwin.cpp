@@ -109,12 +109,13 @@ void MainWin::initActions() {
 
   actHasBeamOffset        = toggle("Beam centre offset", "Enable beam center offset (for X-ray instruments)", ":/icon/eye"); // TODO icon
 
-  // TODO where to best put these actions updates?
-  connect(session, &Session::corrFileSet, [this](core::shp_File file) {
-    bool on  = !file.isNull();
-    auto act = actImagesEnableCorr;
-    act->setChecked(on);
-    act->setEnabled(on);
+  connect(session, &Session::correctionEnabled, [this](bool on) {
+    actImagesEnableCorr->setChecked(on);
+    actImagesEnableCorr->setEnabled(session->hasCorrFile());
+  });
+
+  connect(actImagesEnableCorr, &QAction::toggled, [this](bool on) {
+    session->enableCorrection(on);
   });
 
   connect(actImageMirror, &QAction::toggled, [this](bool on) {

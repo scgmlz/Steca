@@ -344,8 +344,7 @@ void Dataset::setImageScale(uint scale) {
   imageWidget->setScale(scale);
 }
 
-QPixmap Dataset::makePixmap(core::Image const& image, core::Range rgeIntens,
-                            core::Image* corr) {
+QPixmap Dataset::makePixmap(core::Image const& image, core::Range rgeIntens) {
   QPixmap pixmap;
   auto size = session.getImageSize();
 
@@ -359,18 +358,10 @@ QPixmap Dataset::makePixmap(core::Image const& image, core::Range rgeIntens,
       auto y = i;
       for_i (size.width()) {
         auto x = i;
-        qreal intens = image.intensity(session.pixIndex(x,y)) / mi;
-        bool isNan = false; // TODO temporary fix
-        if (corr) {
-          auto factor = corr->intensity(session.pixIndex(x,y));
-          if (qIsNaN(factor)) // TODO still actual?
-            isNan = true;
-          else
-            intens *= factor;
-        }
+        qreal intens = session.pixIntensity(image,x,y) / mi;
 
         QRgb rgb;
-        if (isNan)
+        if (qIsNaN(intens))
           rgb = qRgb(0x00,0xff,0xff);
         else if (intens < 0.25)
           rgb = qRgb(0xff * intens * 4, 0, 0);
@@ -396,10 +387,7 @@ void Dataset::setDataset(core::shp_Dataset dataset_) {
   QPixmap pixMap;
   if (dataset) {
     auto image = dataset->getImage();
-    core::Image *corr = nullptr;
-    if (session.hasCorrFile() && mainWin.actImagesEnableCorr->isChecked())
-      corr = &session.intensCorrArray;
-    pixMap = makePixmap(image, globalNorm ? dataset->getFile().getRgeIntens() : image.getRgeIntens(), corr);
+    pixMap = makePixmap(image, globalNorm ? dataset->getFile().getRgeIntens() : image.getRgeIntens());
   }
   imageWidget->setPixmap(pixMap);
 }

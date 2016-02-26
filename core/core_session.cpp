@@ -7,7 +7,7 @@ namespace core {
 //------------------------------------------------------------------------------
 
 Session::Session()
-: dataFiles(), corrFile(), imageSize(), geometry()
+: dataFiles(), corrFile(), corrEnabled(false), imageSize(), geometry()
 , imageTransform(ImageTransform::ROTATE_0)
 , lastCalcTthMitte(0), hasNaNs(false) {
 }
@@ -67,18 +67,24 @@ shp_File Session::loadCorrFile(rcstr fileName) {
   setImageSize(file->getImageSize());
 
   // all ok
-  corrFile = file;
+  corrFile    = file;
+  corrEnabled = true;
   calcIntensCorrArray();
   return file;
 }
 
 void Session::remCorrFile() {
   corrFile.clear();
+  corrEnabled = false;
   updateImageSize();
 }
 
 shp_File Session::getCorrFile() const {
   return corrFile;
+}
+
+void Session::enableCorrection(bool on) {
+  corrEnabled = on && hasCorrFile();
 }
 
 void Session::updateImageSize() {
@@ -180,6 +186,19 @@ uint Session::pixIndexNoTransform(uint x, uint y) const {
   uint w = imageTransform.isTransposed()
     ? imageSize.height() : imageSize.width();
   return x + y * w;
+}
+
+intens_t Session::pixIntensity(Image const& image, uint x, uint y) const {
+  uint index = pixIndex(x,y);
+  intens_t intens = image.intensity(index);
+  if (corrEnabled) {
+    auto factor = intensCorrArray.intensity(index);
+    if (!qIsNaN(factor))
+      intens *= factor;
+    else
+      intens = qQNaN();
+  }
+  return intens;
 }
 
 QSize Session::getImageSize() const {

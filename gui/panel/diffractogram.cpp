@@ -225,6 +225,10 @@ Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
     refresh();
   });
 
+  connect(&session, &Session::correctionEnabled, [this]() {
+    refresh();
+  });
+
   connect(&session, &Session::backgroundPolynomDegree, [this](uint degree) {
     bgPolynomial.setDegree(degree);
     refresh();
@@ -266,9 +270,6 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   qreal TTHMax = cut.tth_regular.max;
   qreal deltaTTH = (TTHMax - TTHMin) / width;
 
-  auto intens = image.getIntensities();
-  auto corr   = session.hasCorrFile() ? session.intensCorrArray.getIntensities() : nullptr;
-
   reals_t intens_vec(width);
   uints_t counts_vec(width,0);
 
@@ -283,15 +284,11 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
       int bin = (tthPix==TTHMax) ? width-1 : qFloor((tthPix - TTHMin) / deltaTTH);
       if (bin<0 || (int)width<=bin) continue;  // outside of the cut
 
-      auto pixIndex = session.pixIndex(ix,iy);
-      auto in = intens[pixIndex];
-      if (corr) {
-        auto factor = corr[pixIndex];
-        if (qIsNaN(factor)) continue;  // skip these pixels
-        in *= factor;
+      auto in = session.pixIntensity(image,ix,iy);
+      if (!qIsNaN(in)) {
+        intens_vec[bin] += in;
+        counts_vec[bin]++;
       }
-      intens_vec[bin] += in;
-      counts_vec[bin]++;
     }
   }
 

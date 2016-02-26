@@ -128,7 +128,7 @@ void Session::addFiles(str_lst filePaths) THROWS {
 void Session::remFile(uint i) {
   if (hasCorrFile() && numFiles(true) == i+1) {
     super::remCorrFile();
-    emit corrFileSet(core::shp_File());
+    emit correctionEnabled(super::isCorrEnabled());
     emit filesChanged();
   } else {
     auto file = super::remFile(i);
@@ -144,8 +144,13 @@ void Session::remFile(uint i) {
 
 void Session::loadCorrFile(rcstr filePath) {
   auto file = super::loadCorrFile(filePath);
-  emit corrFileSet(file);
+  emit correctionEnabled(super::isCorrEnabled());
   emit filesChanged();
+}
+
+void Session::enableCorrection(bool on) {
+  super::enableCorrection(on);
+  emit correctionEnabled(super::isCorrEnabled());
 }
 
 void Session::setSelectedFile(core::shp_File file) {

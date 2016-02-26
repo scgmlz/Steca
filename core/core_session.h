@@ -30,12 +30,15 @@ public:
 
   shp_File loadCorrFile(rcstr fileName);    ///< Load or remove a correction file.
   void     remCorrFile();
-  shp_File getCorrFile() const;
-  bool     hasCorrFile() const { return !getCorrFile().isNull(); }
+  shp_File getCorrFile()   const;
+  bool     hasCorrFile()   const  { return !getCorrFile().isNull(); }
+  void     enableCorrection(bool);
+  bool     isCorrEnabled() const  { return corrEnabled;             }
 
 private:
   QVector<shp_File> dataFiles;
   shp_File corrFile;
+  bool     corrEnabled;
 
 private:
   QSize imageSize; ///< All files must have images of the same size; this is a cached value
@@ -102,6 +105,9 @@ public:
   uint pixIndex(uint x, uint y) const;
   /// Calculate the 1D index of a pixel, no transform, only size considered.
   uint pixIndexNoTransform(uint x, uint y) const;
+
+  /// Get intensity with/without correction; may return NaN
+  intens_t pixIntensity(Image const&, uint x, uint y) const;
 
   QSize getImageSize() const;
 

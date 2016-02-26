@@ -83,7 +83,7 @@ public:
   void setImageScale(uint);
 
 private:
-  QPixmap makePixmap(core::Image const&,core::Range rgeIntens,core::Image* corr);
+  QPixmap makePixmap(core::Image const&,core::Range rgeIntens);
   void setDataset(core::shp_Dataset);
   void refresh();
 

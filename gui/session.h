@@ -31,6 +31,7 @@ public:
   void remFile(uint i); ///< Remove the i-th file, INCLUDING the correction file
 
   void loadCorrFile(rcstr filePath);
+  void enableCorrection(bool);
 
   void setSelectedFile(core::shp_File);
   void setSelectedDataset(core::shp_Dataset);
@@ -48,7 +49,7 @@ public:
 signals:
   void geometryChanged();             // detector geometry, image cut, image rotation
 
-  void corrFileSet(core::shp_File);   // may be null
+  void correctionEnabled(bool);
 
   void fileAdded(core::shp_File);     // not null
   void fileRemoved(core::shp_File);   // not null
