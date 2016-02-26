@@ -63,8 +63,8 @@ void MainWin::initActions() {
   actRemoveFile         = simple("Remove selected file",    "Remove selected file", ":/icon/rem", keys.keyDeleteFile);
   actLoadCorrectionFile = simple("Load correction file...", "Load correction file", "",          keys.keyLoadCorrectionFile);
   actImagesEnableCorr   = toggle("Enable correction file",  "Enable correction by correction file", ":/icon/eye");   // TODO different icon
-  actLoadSession        = simple("Load session...",         "Test");
-  actSaveSession        = simple("Save session...",         "Test");
+  actLoadSession        = simple("Load session...");
+  actSaveSession        = simple("Save session...");
 
   actExportDiffractogramCurrent           = simple("Current only...");
   actExportDiffractogramAllSeparateFiles  = simple("All to separate files...");

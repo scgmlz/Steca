@@ -164,6 +164,7 @@ DockDatasetInfo::DockDatasetInfo(MainWin&,Session& session)
   connect(&session, &Session::datasetSelected, [this](core::shp_Dataset dataset) {
     for_i (core::Dataset::NUM_ATTRIBUTES) {
       infoItems[i].text->setText(dataset ? dataset->getAttributeStrValue(i) : EMPTY_STR);
+      infoItems[i].cb->setToolTip("Show value in Datasets list");
     }
   });
 
