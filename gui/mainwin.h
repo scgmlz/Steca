@@ -41,7 +41,7 @@ private:
 
 private:
   void closeEvent(QCloseEvent*);
-  bool onClose();
+  void onClose();
 
 private:
   Session *session;
@@ -81,9 +81,6 @@ public:
     *actImagesLink, *actImageOverlay, *actImagesGlobalNorm, *actImagesShowCorr,
     *actBackgroundBackground, *actBackgroundEye,
     *actHasBeamOffset;
-
-private:
-  BoxWidget *splitImage, *splitReflections, *splitDiffractogram;
 
 private:
   QByteArray initialState;

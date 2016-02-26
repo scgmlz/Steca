@@ -60,6 +60,7 @@ Keys::Keys() {
 #ifndef Q_OS_OSX
   keyFullscreen        = Qt::Key_F11;
 #endif
+  keyRotateImage       = Qt::CTRL|Qt::Key_R;
 }
 
 //------------------------------------------------------------------------------

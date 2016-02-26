@@ -43,7 +43,7 @@ public:
 
   QKey
     keyAddFiles, keyDeleteFile, keyLoadCorrectionFile,
-    keyViewStatusbar
+    keyViewStatusbar, keyRotateImage
   #ifndef Q_OS_OSX
     , keyFullscreen
   #endif

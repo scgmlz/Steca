@@ -101,7 +101,7 @@ void MainWin::initActions() {
   actImageOverlay         = toggle("overlay",       ":/icon/eye");
   actImagesGlobalNorm     = toggle("global norm.",  ":/icon/eye");    // TODO different icon
   actImagesShowCorr        = toggle("show with corr", ":/icon/eye");   // TODO different icon
-  session->actImageRotate = simple("Rotate", ":/icon/rotate0");
+  session->actImageRotate = simple("Rotate",        ":/icon/rotate0", keys.keyRotateImage);
   session->actImageMirror = toggle("Mirror", ":/icon/mirror_horz");
 
   actBackgroundBackground = toggle("Background",    ":/icon/background");
@@ -225,10 +225,10 @@ void MainWin::initLayout() {
   splMain->addWidget(splImages);
   splMain->addWidget(splReflections);
 
-  splImages->addWidget((splitImage = new panel::SplitImage(*this,*session)));
+  splImages->addWidget(new panel::SplitImage(*this,*session));
 
-  splReflections->addWidget((splitReflections   = new panel::SplitFitting(*this,*session)));
-  splReflections->addWidget((splitDiffractogram = new panel::SplitDiffractogram(*this,*session)));
+  splReflections->addWidget(new panel::SplitFitting(*this,*session));
+  splReflections->addWidget(new panel::SplitDiffractogram(*this,*session));
   splReflections->setStretchFactor(0,1);
   splReflections->setStretchFactor(1,3);
 }
@@ -238,11 +238,11 @@ void MainWin::initStatus() {
 }
 
 void MainWin::connectActions() {
-  auto onTrigger = [this](QAction* action, void (MainWin::*fun)()) {
+  auto onTrigger = [this](QAction* action, void (thisCls::*fun)()) {
     QObject::connect(action, &QAction::triggered, this, fun);
   };
 
-  auto onToggle = [this](QAction* action, void (MainWin::*fun)(bool)) {
+  auto onToggle = [this](QAction* action, void (thisCls::*fun)(bool)) {
     QObject::connect(action, &QAction::toggled, this, fun);
   };
 
@@ -250,16 +250,16 @@ void MainWin::connectActions() {
     action->setEnabled(false);
   };
 
-  onTrigger(actAddFiles, &MainWin::addFiles);
+  onTrigger(actAddFiles, &thisCls::addFiles);
   actRemoveFile->setEnabled(false);
   connect(session, &Session::fileSelected, this, [this](core::shp_File file) {
     actRemoveFile->setEnabled(nullptr!=file);
   });
 
-  onTrigger(actLoadCorrectionFile,  &MainWin::loadCorrectionFile);
+  onTrigger(actLoadCorrectionFile,  &thisCls::loadCorrectionFile);
 
-  onTrigger(actLoadSession, &MainWin::loadSession);
-  onTrigger(actSaveSession, &MainWin::saveSession);
+  onTrigger(actLoadSession, &thisCls::loadSession);
+  onTrigger(actSaveSession, &thisCls::saveSession);
 
   notYet(actExportDiffractogramCurrent);
   notYet(actExportDiffractogramAllSeparateFiles);
@@ -267,7 +267,7 @@ void MainWin::connectActions() {
   notYet(actExportImagesWithMargins);
   notYet(actExportImagesWithoutMargins);
 
-  onTrigger(actQuit, &MainWin::close);
+  onTrigger(actQuit, &thisCls::close);
 
   notYet(actUndo);
   notYet(actRedo);
@@ -281,11 +281,11 @@ void MainWin::connectActions() {
   notYet(actPdfManual);
   notYet(actAbout);
 
-  onToggle(actViewStatusbar, &MainWin::viewStatusbar);
+  onToggle(actViewStatusbar, &thisCls::viewStatusbar);
 #ifndef Q_OS_OSX
-  onToggle(actFullscreen,    &MainWin::viewFullscreen);
+  onToggle(actFullscreen,    &thisCls::viewFullscreen);
 #endif
-  onTrigger(actViewReset,    &MainWin::viewReset);
+  onTrigger(actViewReset,    &thisCls::viewReset);
 }
 
 void MainWin::show() {
@@ -302,7 +302,7 @@ void MainWin::show() {
 
 #ifdef DEVELOPMENT_REBECCA
   session->load(QFileInfo("/home/rebecca/SCG/STeCa-Data/2.ste"));
-  core::io::saveTiffs(*session->getFile(0),"/home/rebecca/SCG/STeCa-Data/savedtiffs/test");
+  //core::io::saveTiffs(*session->getFile(0),"/home/rebecca/SCG/STeCa-Data/savedtiffs/test");
 #endif
 }
 
@@ -361,16 +361,13 @@ void MainWin::saveSession() {
 }
 
 void MainWin::closeEvent(QCloseEvent* event) {
-  if (onClose())
-    event->accept();
-  else
-    event->ignore();
+  onClose();
+  event->accept();
 }
 
-bool MainWin::onClose() {
+void MainWin::onClose() {
   session->doSaveSettings();
   saveSettings();
-  return true;
 }
 
 static str GROUP_MAINWIN("MainWin");
