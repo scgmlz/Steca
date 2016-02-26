@@ -37,9 +37,9 @@ MainWin::~MainWin() {
 void MainWin::initActions() {
   typedef QKeySequence QKey;
 
-  auto action = [this](pcstr text, bool checkable, pcstr iconFile, QKey shortcut) {
+  auto action = [this](pcstr text, pcstr tip, bool checkable, pcstr iconFile, QKey shortcut) {
     ASSERT(text)
-    pcstr tip = text;
+    ASSERT(tip)
     auto act = new QAction(text,this);
     act->setToolTip(tip);
     act->setCheckable(checkable);
@@ -48,23 +48,23 @@ void MainWin::initActions() {
     return act;
   };
 
-  auto simple = [&action](pcstr text, pcstr iconFile = nullptr, QKey shortcut = QKey::UnknownKey) {
+  auto simple = [&action](pcstr text, pcstr tip = "", pcstr iconFile = nullptr, QKey shortcut = QKey::UnknownKey) {
     ASSERT(text)
-    return action(text,false,iconFile,shortcut);
+    return action(text,tip,false,iconFile,shortcut);
   };
 
-  auto toggle = [&action](pcstr text, pcstr iconFile = nullptr, QKey shortcut = QKey::UnknownKey) {
-    return action(text,true,iconFile,shortcut);
+  auto toggle = [&action](pcstr text, pcstr tip = "", pcstr iconFile = nullptr, QKey shortcut = QKey::UnknownKey) {
+    return action(text,tip,true,iconFile,shortcut);
   };
 
   Keys keys;
 
-  actAddFiles           = simple("Add files...",          ":/icon/add", keys.keyAddFiles);
-  actRemoveFile         = simple("Remove selected file",  ":/icon/rem", keys.keyDeleteFile);
-  actLoadCorrectionFile = simple("Load correction file...","",          keys.keyLoadCorrectionFile);
-  actImagesEnableCorr   = toggle("Enable correction file", ":/icon/eye");   // TODO different icon
-  actLoadSession        = simple("Load session...");
-  actSaveSession        = simple("Save session...");
+  actAddFiles           = simple("Add files...",            "Add files", ":/icon/add", keys.keyAddFiles);
+  actRemoveFile         = simple("Remove selected file",    "Remove selected file", ":/icon/rem", keys.keyDeleteFile);
+  actLoadCorrectionFile = simple("Load correction file...", "Load correction file", "",          keys.keyLoadCorrectionFile);
+  actImagesEnableCorr   = toggle("Enable correction file",  "Enable correction by correction file", ":/icon/eye");   // TODO different icon
+  actLoadSession        = simple("Load session...",         "Test");
+  actSaveSession        = simple("Save session...",         "Test");
 
   actExportDiffractogramCurrent           = simple("Current only...");
   actExportDiffractogramAllSeparateFiles  = simple("All to separate files...");
@@ -73,19 +73,19 @@ void MainWin::initActions() {
   actExportImagesWithMargins              = simple("With margins...");
   actExportImagesWithoutMargins           = simple("Without margins...");
 
-  actQuit  = simple("Quit",  "", QKey::Quit);
+  actQuit  = simple("Quit", "",  "", QKey::Quit);
 
-  actUndo  = simple("Undo",  "", QKey::Undo);
-  actRedo  = simple("Redo",  "", QKey::Redo);
-  actCut   = simple("Cut",   "", QKey::Cut);
-  actCopy  = simple("Copy",  "", QKey::Copy);
-  actPaste = simple("Paste", "", QKey::Paste);
+  actUndo  = simple("Undo",  "", "", QKey::Undo);
+  actRedo  = simple("Redo",  "", "", QKey::Redo);
+  actCut   = simple("Cut",   "", "", QKey::Cut);
+  actCopy  = simple("Copy",  "", "", QKey::Copy);
+  actPaste = simple("Paste", "", "", QKey::Paste);
 
-  actViewStatusbar = toggle("Statusbar", "", keys.keyViewStatusbar);
+  actViewStatusbar = toggle("Statusbar",  "", "", keys.keyViewStatusbar);
 #ifndef Q_OS_OSX
-  actFullscreen    = toggle("Fullscreen", "", keys.keyFullscreen);
+  actFullscreen    = toggle("Fullscreen", "", "", keys.keyFullscreen);
 #endif
-  actViewReset     = simple("Reset");
+  actViewReset     = simple("Reset", "");
 
   actPreferences          = simple("Preferences...");
   actFitErrorParameters   = simple("Fit error parameters...");
@@ -93,21 +93,21 @@ void MainWin::initActions() {
 
   actAbout      = simple("About...");
 
-  actReflectionPeak       = simple("Peak",          ":/icon/peak");
-  actReflectionReflect    = simple("Reflect",       ":/icon/reflect");
-  actReflectionWidth      = simple("Width",         ":/icon/width");
-  actReflectionAdd        = simple("Width",         ":/icon/add");
+  actReflectionPeak       = simple("Peak",    "Peak",      ":/icon/peak");
+  actReflectionReflect    = simple("Reflect", "Reflect",      ":/icon/reflect");
+  actReflectionWidth      = simple("Width",   "Width",      ":/icon/width");
+  actReflectionAdd        = simple("Width",   "Width",      ":/icon/add");
 
-  actImagesLink           = toggle("Link",          ":/icon/link");
-  actImageOverlay         = toggle("overlay",       ":/icon/eye");
-  actImagesGlobalNorm     = toggle("global norm.",  ":/icon/eye");    // TODO different icon
-  actImageRotate          = simple("Rotate",        ":/icon/rotate0", keys.keyRotateImage);
-  actImageMirror          = toggle("Mirror", ":/icon/mirror_horz");
+  actImagesLink           = toggle("Link",         "Use the same value for all cuts", ":/icon/link");
+  actImageOverlay         = toggle("overlay",      "Show cut", ":/icon/eye");
+  actImagesGlobalNorm     = toggle("global norm.", "Display data using a global intensity scale", ":/icon/eye");    // TODO different icon
+  actImageRotate          = simple("Rotate",       "Rotate 90° clockwise", ":/icon/rotate0", keys.keyRotateImage);
+  actImageMirror          = toggle("Mirror",       "Mirror image", ":/icon/mirror_horz");
 
-  actBackgroundBackground = toggle("Background",    ":/icon/background");
-  actBackgroundEye        = simple("BackgroundEye", ":/icon/eye");
+  actBackgroundBackground = toggle("Background",    "Select regions for background fitting", ":/icon/background");
+  actBackgroundEye        = simple("BackgroundEye", "Show background fit", ":/icon/eye");
 
-  actHasBeamOffset        = toggle("Beam centre offset", ":/icon/eye"); // TODO icon
+  actHasBeamOffset        = toggle("Beam centre offset", "Enable beam center offset (for X-ray instruments)", ":/icon/eye"); // TODO icon
 
   // TODO where to best put these actions updates?
   connect(session, &Session::corrFileSet, [this](core::shp_File file) {
