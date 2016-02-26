@@ -21,9 +21,6 @@
 #error This file should not be compiled directly!
 #endif
 
-#pragma GCC diagnostic ignored "-Wunknown-pragmas"
-#pragma GCC diagnostic ignored "-Wdeprecated-register"
-
 /* precision-specific definitions */
 #define LEVMAR_CHKJAC LM_ADD_PREFIX(levmar_chkjac)
 #define LEVMAR_FDIF_FORW_JAC_APPROX LM_ADD_PREFIX(levmar_fdif_forw_jac_approx)

@@ -24,9 +24,6 @@
  * solver versions, see also Axb_core.c
  ********************************************************************************/
 
-#pragma GCC diagnostic ignored "-Wunknown-pragmas"
-#pragma GCC diagnostic ignored "-Wdeprecated-register"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,7 +35,6 @@
 #if !defined(LM_DBL_PREC) && !defined(LM_SNGL_PREC)
 #error At least one of LM_DBL_PREC, LM_SNGL_PREC should be defined!
 #endif
-
 
 #ifdef LM_DBL_PREC
 /* double precision definitions */
