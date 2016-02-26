@@ -113,7 +113,7 @@ void MainWin::initActions() {
   connect(session, &Session::corrFileSet, [this](core::shp_File file) {
     bool on  = !file.isNull();
     auto act = actImagesEnableCorr;
-    if (!on) act->setChecked(false);
+    act->setChecked(on);
     act->setEnabled(on);
   });
 
