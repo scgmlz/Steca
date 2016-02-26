@@ -61,8 +61,8 @@ void MainWin::initActions() {
 
   actAddFiles           = simple("Add files...",          ":/icon/add", keys.keyAddFiles);
   actRemoveFile         = simple("Remove selected file",  ":/icon/rem", keys.keyDeleteFile);
-  actLoadCorrectionFile = simple("load correction file...","",          keys.keyLoadCorrectionFile);
-  actImagesEnableCorr   = toggle("Enable corretion file", ":/icon/eye");   // TODO different icon
+  actLoadCorrectionFile = simple("Load correction file...","",          keys.keyLoadCorrectionFile);
+  actImagesEnableCorr   = toggle("Enable correction file", ":/icon/eye");   // TODO different icon
   actLoadSession        = simple("Load session...");
   actSaveSession        = simple("Save session...");
 
