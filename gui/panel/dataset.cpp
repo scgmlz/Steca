@@ -312,7 +312,7 @@ void DatasetOptions2::saveSettings() {
 //------------------------------------------------------------------------------
 
 Dataset::Dataset(MainWin& mainWin_, Session& session_)
-: super("",mainWin_,session_,Qt::Vertical), dataset(nullptr), globalNorm(false) {
+: super("",mainWin_,session_,Qt::Vertical), dataset(nullptr) {
 
   box->addWidget(imageWidget = new ImageWidget(*this),0,Qt::AlignCenter);
 
@@ -326,8 +326,7 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
 
   mainWin.actImageOverlay->setChecked(true);
 
-  connect(mainWin.actImagesGlobalNorm, &QAction::toggled, [this](bool on) {
-    globalNorm = on;
+  connect(&session, &Session::displayChange, [this]() {
     refresh();
   });
 
@@ -387,7 +386,7 @@ void Dataset::setDataset(core::shp_Dataset dataset_) {
   QPixmap pixMap;
   if (dataset) {
     auto image = dataset->getImage();
-    pixMap = makePixmap(image, globalNorm ? dataset->getFile().getRgeIntens() : image.getRgeIntens());
+    pixMap = makePixmap(image, dataset->getRgeIntens(session.isGlobalNorm()));
   }
   imageWidget->setPixmap(pixMap);
 }

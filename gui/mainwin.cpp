@@ -118,6 +118,10 @@ void MainWin::initActions() {
     session->enableCorrection(on);
   });
 
+  connect(actImagesGlobalNorm, &QAction::toggled, [this](bool on) {
+    session->setGlobalNorm(on);
+  });
+
   connect(actImageMirror, &QAction::toggled, [this](bool on) {
     session->setImageMirror(on);
   });

@@ -41,6 +41,8 @@ public:
   File  const& getFile()  const;
   Image const& getImage() const { return image; }
 
+  Range getRgeIntens(bool global) const;
+
   /// used for correction files
   void addIntensities(Dataset const&);
 

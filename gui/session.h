@@ -45,11 +45,18 @@ public:
 
   void setBackgroundPolynomDegree(uint);
 
+private:
+  bool globalNorm;
+public:
+  void setGlobalNorm(bool);
+  bool isGlobalNorm() const { return globalNorm; }
+
 // Session emits most signals
 signals:
   void geometryChanged();             // detector geometry, image cut, image rotation
 
   void correctionEnabled(bool);
+  void displayChange();               // TODO this signal
 
   void fileAdded(core::shp_File);     // not null
   void fileRemoved(core::shp_File);   // not null

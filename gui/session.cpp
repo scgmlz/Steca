@@ -23,7 +23,7 @@ public:
 //------------------------------------------------------------------------------
 
 Session::Session(MainWin& mainWin_)
-: mainWin(mainWin_), fileViewModel(*this), datasetViewModel(*this) {
+: mainWin(mainWin_), globalNorm(false), fileViewModel(*this), datasetViewModel(*this) {
 }
 
 Session::~Session() {
@@ -212,6 +212,11 @@ void Session::nextImageRotate() {
 
 void Session::setBackgroundPolynomDegree(uint degree) {
   emit backgroundPolynomDegree(degree);
+}
+
+void Session::setGlobalNorm(bool on) {
+  globalNorm = on;
+  emit displayChange();
 }
 
 void Session::doSaveSettings() {

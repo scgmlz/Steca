@@ -88,7 +88,6 @@ private:
   void refresh();
 
   core::shp_Dataset dataset;
-  bool globalNorm;
 
   ImageWidget *imageWidget;
 };

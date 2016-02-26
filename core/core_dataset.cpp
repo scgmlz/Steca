@@ -1,4 +1,5 @@
 #include "core_dataset.h"
+#include "core_file.h"
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -55,7 +56,11 @@ str Dataset::getAttributeStrValue(int e) const {
 
 File const& Dataset::getFile() const {
   ASSERT(file)
-  return *file;
+      return *file;
+}
+
+Range Dataset::getRgeIntens(bool global) const {
+  return global ? getFile().getRgeIntens() : getImage().getRgeIntens();
 }
 
 void Dataset::addIntensities(Dataset const& that) {
