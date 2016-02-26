@@ -62,6 +62,7 @@ void MainWin::initActions() {
   actAddFiles           = simple("Add files...",          ":/icon/add", keys.keyAddFiles);
   actRemoveFile         = simple("Remove selected file",  ":/icon/rem", keys.keyDeleteFile);
   actLoadCorrectionFile = simple("load correction file...","",          keys.keyLoadCorrectionFile);
+  actImagesEnableCorr   = toggle("Enable corretion file", ":/icon/eye");   // TODO different icon
   actLoadSession        = simple("Load session...");
   actSaveSession        = simple("Save session...");
 
@@ -89,7 +90,7 @@ void MainWin::initActions() {
   actPreferences          = simple("Preferences...");
   actFitErrorParameters   = simple("Fit error parameters...");
 
-  actPdfManual  = simple("Pdf manual (German)");
+
   actAbout      = simple("About...");
 
   actReflectionPeak       = simple("Peak",          ":/icon/peak");
@@ -100,7 +101,6 @@ void MainWin::initActions() {
   actImagesLink           = toggle("Link",          ":/icon/link");
   actImageOverlay         = toggle("overlay",       ":/icon/eye");
   actImagesGlobalNorm     = toggle("global norm.",  ":/icon/eye");    // TODO different icon
-  actImagesShowCorr        = toggle("show with corr", ":/icon/eye");   // TODO different icon
   session->actImageRotate = simple("Rotate",        ":/icon/rotate0", keys.keyRotateImage);
   session->actImageMirror = toggle("Mirror", ":/icon/mirror_horz");
 
@@ -112,7 +112,7 @@ void MainWin::initActions() {
   // TODO where to best put these actions updates?
   connect(session, &Session::corrFileSet, [this](core::shp_File file) {
     bool on  = !file.isNull();
-    auto act = actImagesShowCorr;
+    auto act = actImagesEnableCorr;
     if (!on) act->setChecked(false);
     act->setEnabled(on);
   });
@@ -199,7 +199,6 @@ void MainWin::initMenus() {
   });
 
   menuHelp->addActions({
-    actPdfManual,
   #ifndef Q_OS_OSX // Mac puts About into the Apple menu
     separator(),
   #endif
@@ -278,7 +277,6 @@ void MainWin::connectActions() {
   notYet(actPreferences);
   notYet(actFitErrorParameters);
 
-  notYet(actPdfManual);
   notYet(actAbout);
 
   onToggle(actViewStatusbar, &thisCls::viewStatusbar);

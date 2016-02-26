@@ -219,7 +219,6 @@ DatasetOptions2::DatasetOptions2(MainWin& mainWin_, Session& session_)
   hb->addWidget(iconButton(session.actImageRotate));
   hb->addWidget(iconButton(session.actImageMirror));
   hb->addSpacing(1);
-  hb->addWidget(iconButton(mainWin.actImagesShowCorr));
   hb->addWidget(iconButton(mainWin.actImageOverlay));
   hb->addWidget(iconButton(mainWin.actImagesGlobalNorm));
   hb->addStretch();
@@ -317,7 +316,7 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
 
   box->addWidget(imageWidget = new ImageWidget(*this),0,Qt::AlignCenter);
 
-  connect(mainWin.actImagesShowCorr, &QAction::toggled, [this](bool) {
+  connect(mainWin.actImagesEnableCorr, &QAction::toggled, [this](bool) {
     refresh();
   });
 
@@ -398,7 +397,7 @@ void Dataset::setDataset(core::shp_Dataset dataset_) {
   if (dataset) {
     auto image = dataset->getImage();
     core::Image *corr = nullptr;
-    if (session.hasCorrFile() && mainWin.actImagesShowCorr->isChecked())
+    if (session.hasCorrFile() && mainWin.actImagesEnableCorr->isChecked())
       corr = &session.intensCorrArray;
     pixMap = makePixmap(image, globalNorm ? dataset->getFile().getRgeIntens() : image.getRgeIntens(), corr);
   }

@@ -66,6 +66,7 @@ DockFiles::DockFiles(MainWin& mainWin,Session& session)
   auto h = hbox(); box->addLayout(h);
 
   h->addWidget(textButton(mainWin.actLoadCorrectionFile));
+  h->addWidget(iconButton(mainWin.actImagesEnableCorr));
   h->addStretch();
   h->addWidget(iconButton(mainWin.actAddFiles));
   h->addWidget(iconButton(mainWin.actRemoveFile));

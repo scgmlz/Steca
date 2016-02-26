@@ -73,12 +73,11 @@ public:
     *actPreferences,
     *actFitErrorParameters,
 
-    *actPdfManual,
     *actAbout,
 
   // more actions, some not in the menu
     *actReflectionPeak, *actReflectionReflect, *actReflectionWidth, *actReflectionAdd,
-    *actImagesLink, *actImageOverlay, *actImagesGlobalNorm, *actImagesShowCorr,
+    *actImagesLink, *actImageOverlay, *actImagesGlobalNorm, *actImagesEnableCorr,
     *actBackgroundBackground, *actBackgroundEye,
     *actHasBeamOffset;
 
