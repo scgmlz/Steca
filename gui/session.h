@@ -14,9 +14,13 @@
 class Session: public QObject, public core::Session {
   SUPER(Session,core::Session) Q_OBJECT
 public:
-  Session();
+  Session(MainWin&);
  ~Session();
 
+private:
+  MainWin &mainWin;
+
+public:
   void load(QFileInfo const&)       THROWS;
   void load(QByteArray const& json) THROWS;
   QByteArray save() const;
@@ -33,8 +37,6 @@ public:
 
   void setImageCut(bool topLeft, bool linked, ImageCut const&);
   void setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset);
-
-  QAction *actImageRotate, *actImageMirror;
 
   void setImageMirror(bool);
   void setImageRotate(ImageTransform);

@@ -22,8 +22,8 @@ public:
 
 //------------------------------------------------------------------------------
 
-Session::Session()
-: fileViewModel(*this), datasetViewModel(*this) {
+Session::Session(MainWin& mainWin_)
+: mainWin(mainWin_), fileViewModel(*this), datasetViewModel(*this) {
 }
 
 Session::~Session() {
@@ -168,7 +168,7 @@ void Session::setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamO
 }
 
 void Session::setImageMirror(bool on) {
-  actImageMirror->setChecked(on);
+  mainWin.actImageMirror->setChecked(on);
   super::setImageMirror(on);
   emit geometryChanged();
 }
@@ -194,8 +194,8 @@ void Session::setImageRotate(ImageTransform rot) {
     break;
   }
 
-  actImageRotate->setIcon(QIcon(rotateIconFile));
-  actImageMirror->setIcon(QIcon(mirrorIconFile));
+  mainWin.actImageRotate->setIcon(QIcon(rotateIconFile));
+  mainWin.actImageMirror->setIcon(QIcon(mirrorIconFile));
   super::setImageRotate(rot);
   setImageCut(true,false,getImageCut()); // TODO make makeSafeCut()
   emit geometryChanged();

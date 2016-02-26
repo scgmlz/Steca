@@ -216,8 +216,8 @@ DatasetOptions2::DatasetOptions2(MainWin& mainWin_, Session& session_)
 
   hb->addWidget((spinImageScale = spinCell(4,1,4)));
 
-  hb->addWidget(iconButton(session.actImageRotate));
-  hb->addWidget(iconButton(session.actImageMirror));
+  hb->addWidget(iconButton(mainWin.actImageRotate));
+  hb->addWidget(iconButton(mainWin.actImageMirror));
   hb->addSpacing(1);
   hb->addWidget(iconButton(mainWin.actImageOverlay));
   hb->addWidget(iconButton(mainWin.actImagesGlobalNorm));

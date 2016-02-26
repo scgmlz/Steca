@@ -17,7 +17,7 @@
 #endif
 //------------------------------------------------------------------------------
 
-MainWin::MainWin(): session(new Session){
+MainWin::MainWin(): session(new Session(*this)){
   sessionDir = dataDir = QDir::homePath();
 
   initActions();
@@ -101,8 +101,8 @@ void MainWin::initActions() {
   actImagesLink           = toggle("Link",          ":/icon/link");
   actImageOverlay         = toggle("overlay",       ":/icon/eye");
   actImagesGlobalNorm     = toggle("global norm.",  ":/icon/eye");    // TODO different icon
-  session->actImageRotate = simple("Rotate",        ":/icon/rotate0", keys.keyRotateImage);
-  session->actImageMirror = toggle("Mirror", ":/icon/mirror_horz");
+  actImageRotate          = simple("Rotate",        ":/icon/rotate0", keys.keyRotateImage);
+  actImageMirror          = toggle("Mirror", ":/icon/mirror_horz");
 
   actBackgroundBackground = toggle("Background",    ":/icon/background");
   actBackgroundEye        = simple("BackgroundEye", ":/icon/eye");
@@ -117,11 +117,11 @@ void MainWin::initActions() {
     act->setEnabled(on);
   });
 
-  connect(session->actImageMirror, &QAction::toggled, [this](bool on) {
+  connect(actImageMirror, &QAction::toggled, [this](bool on) {
     session->setImageMirror(on);
   });
 
-  connect(session->actImageRotate, &QAction::triggered, [this]() {
+  connect(actImageRotate, &QAction::triggered, [this]() {
     session->nextImageRotate();
   });
 }
@@ -191,7 +191,7 @@ void MainWin::initMenus() {
   });
 
   menuImage->addActions({
-    session->actImageRotate, session->actImageMirror,
+    actImageRotate, actImageMirror,
   });
 
   menuOpts->addActions({
