@@ -84,9 +84,9 @@ void LEVMAR_FDIF_FORW_JAC_APPROX(
     int n,
     void *adata)
 {
-register int i, j;
+/*register*/ int i, j;
 LM_REAL tmp;
-register LM_REAL d;
+/*register*/ LM_REAL d;
 
   for(j=0; j<m; ++j){
     /* determine d=max(1E-04*|p[j]|, delta), see HZ */
@@ -123,9 +123,9 @@ void LEVMAR_FDIF_CENT_JAC_APPROX(
     int n,
     void *adata)
 {
-register int i, j;
+/*register*/ int i, j;
 LM_REAL tmp;
-register LM_REAL d;
+/*register*/ LM_REAL d;
 
   for(j=0; j<m; ++j){
     /* determine d=max(1E-04*|p[j]|, delta), see HZ */
@@ -198,7 +198,7 @@ LM_REAL one=LM_CNST(1.0);
 LM_REAL zero=LM_CNST(0.0);
 LM_REAL *fvec, *fjac, *pp, *fvecp, *buf;
 
-register int i, j;
+/*register*/ int i, j;
 LM_REAL eps, epsf, temp, epsmch;
 LM_REAL epslog;
 int fvec_sz=n, fjac_sz=n*m, pp_sz=m, fvecp_sz=n;
@@ -282,8 +282,8 @@ LM_REAL alpha=LM_CNST(1.0), beta=LM_CNST(0.0);
 
 #else /* no LAPACK, use blocking-based multiply */
 
-register int i, j, k, jj, kk;
-register LM_REAL sum, *bim, *akm;
+/*register*/ int i, j, k, jj, kk;
+/*register*/ LM_REAL sum, *bim, *akm;
 const int bsize=__BLOCKSZ__;
 
 #define __MIN__(x, y) (((x)<=(y))? (x) : (y))
@@ -340,7 +340,7 @@ LM_REAL *buf=NULL;
 int buf_sz=0;
 static LM_REAL eps=LM_CNST(-1.0);
 
-register int i, j;
+/*register*/ int i, j;
 LM_REAL *a, *u, *s, *vt, *work;
 int a_sz, u_sz, s_sz, vt_sz, tot_sz;
 LM_REAL thresh, one_over_denom;
@@ -431,7 +431,7 @@ static int LEVMAR_LUINVERSE(LM_REAL *A, LM_REAL *B, int m)
 LM_REAL *buf=NULL;
 // int buf_sz=0;
 
-register int i, j, k, l;
+/*register*/ int i, j, k, l;
 int *idx, maxi=-1, idx_sz, a_sz, x_sz, work_sz, tot_sz;
 LM_REAL *a, *x, *work, max, sum, tmp;
 
@@ -566,7 +566,7 @@ LM_REAL *a, *x, *work, max, sum, tmp;
  */
 int LEVMAR_COVAR(LM_REAL *JtJ, LM_REAL *C, LM_REAL sumsq, int m, int n)
 {
-register int i;
+/*register*/ int i;
 int rnk;
 LM_REAL fact;
 
@@ -621,8 +621,8 @@ LM_REAL LEVMAR_R2(
                   //void (*func)(LM_REAL *p, LM_REAL *hx, int m, int n, void *adata),
                   LM_REAL *p, LM_REAL *x, int m, int n, void *adata)
 {
-register int i;
-register LM_REAL tmp;
+/*register*/ int i;
+/*register*/ LM_REAL tmp;
 LM_REAL SSerr,  // sum of squared errors, i.e. residual sum of squares \sum_i (x_i-hx_i)^2
         SStot, // \sum_i (x_i-xavg)^2
         *hx, xavg;
@@ -665,7 +665,7 @@ LM_REAL SSerr,  // sum of squared errors, i.e. residual sum of squares \sum_i (x
 /* check box constraints for consistency */
 int LEVMAR_BOX_CHECK(LM_REAL *lb, LM_REAL *ub, int m)
 {
-register int i;
+/*register*/ int i;
 
   if(!lb || !ub) return 1;
 
@@ -680,7 +680,7 @@ register int i;
 /* compute the Cholesky decomposition of C in W, s.t. C=W^t W and W is upper triangular */
 int LEVMAR_CHOLESKY(LM_REAL *C, LM_REAL *W, int m)
 {
-register int i, j;
+/*register*/ int i, j;
 int info;
 
   /* copy weights array C to W so that LAPACK won't destroy it;
@@ -726,10 +726,10 @@ int info;
 LM_REAL LEVMAR_L2NRMXMY(LM_REAL *e, LM_REAL *x, LM_REAL *y, int n)
 {
 const int blocksize=8, bpwr=3; /* 8=2^3 */
-register int i;
+/*register*/ int i;
 int j1, j2, j3, j4, j5, j6, j7;
 int blockn;
-register LM_REAL sum0=0.0, sum1=0.0, sum2=0.0, sum3=0.0;
+/*register*/ LM_REAL sum0=0.0, sum1=0.0, sum2=0.0, sum3=0.0;
 
   /* n may not be divisible by blocksize,
    * go as near as we can first, then tidy up.

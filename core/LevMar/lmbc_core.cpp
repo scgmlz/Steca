@@ -71,7 +71,7 @@ extern "C" {
  */
 static void BOXPROJECT(LM_REAL *p, LM_REAL *lb, LM_REAL *ub, int m)
 {
-register int i;
+/*register*/ int i;
 
   if(!lb){ /* no lower bounds */
     if(!ub) /* no upper bounds */
@@ -97,7 +97,7 @@ register int i;
  */
 static void BOXSCALE(LM_REAL *lb, LM_REAL *ub, LM_REAL *scl, int m, int div)
 {
-register int i;
+/*register*/ int i;
 
   if(!lb){ /* no lower bounds */
     if(!ub) /* no upper bounds */
@@ -157,7 +157,7 @@ int one=1;
   return NRM2(&n, x, &one);
 #undef NRM2
 #else // no LAPACK, use the simple method described by Blue in TOMS78
-register int i;
+/*register*/ int i;
 LM_REAL max, sum, tmp;
 
   for(i=n, max=0.0; i-->0; )
@@ -226,7 +226,7 @@ LNSRCH(int m, LM_REAL *x, LM_REAL f, LM_REAL *g, LM_REAL *p, LM_REAL alpha, LM_R
  *	rln		 relative length of newton step
 */
 
-    register int i, j;
+    /*register*/ int i, j;
     int firstback = 1;
     LM_REAL disc;
     LM_REAL a3, b;
@@ -416,7 +416,7 @@ int LEVMAR_BC_DER(
                       * Set to NULL if not needed
                       */
 {
-register int i, j, k, l;
+/*register*/ int i, j, k, l;
 int worksz, freework=0, issolved;
 /* temp work arrays */
 LM_REAL *e,          /* nx1 */
@@ -429,7 +429,7 @@ LM_REAL *e,          /* nx1 */
        *pDp,        /* p + Dp, mx1 */
    *sp_pDp=NULL;    /* dscl*p or dscl*pDp, mx1 */
 
-register LM_REAL mu;  /* damping constant */
+/*register*/ LM_REAL mu;  /* damping constant */
          LM_REAL tmp; /* mainly used in matrix & vector multiplications */
 LM_REAL p_eL2, jacTe_inf, pDp_eL2; /* ||e(p)||_2, ||J^T e||_inf, ||e(p+Dp)||_2 */
 LM_REAL p_L2, Dp_L2=LM_REAL_MAX, dF, dL;
@@ -574,7 +574,7 @@ int (*linsolver)(LM_REAL *A, LM_REAL *B, LM_REAL *x, int m)=NULL;
 
       /* compute jac*D */
       for(i=n; i-->0; ){
-        register LM_REAL *jacim;
+        /*register*/ LM_REAL *jacim;
 
         jacim=jac+i*m;
         for(j=m; j-->0; )
@@ -602,7 +602,7 @@ int (*linsolver)(LM_REAL *A, LM_REAL *B, LM_REAL *x, int m)=NULL;
        * Note that the non-blocking algorithm is faster on small
        * problems since in this case it avoids the overheads of blocking.
        */
-      register LM_REAL alpha, *jaclm, *jacTjacim;
+      /*register*/ LM_REAL alpha, *jaclm, *jacTjacim;
 
       /* looping downwards saves a few computations */
       for(i=m*m; i-->0; )
@@ -637,7 +637,7 @@ int (*linsolver)(LM_REAL *A, LM_REAL *B, LM_REAL *x, int m)=NULL;
         jacTe[i]=0.0;
 
       for(i=0; i<n; ++i){
-        register LM_REAL *jacrow;
+        /*register*/ LM_REAL *jacrow;
 
         for(l=0, jacrow=jac+i*m, tmp=e[i]; l<m; ++l)
           jacTe[l]+=jacrow[l]*tmp;

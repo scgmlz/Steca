@@ -1142,7 +1142,7 @@ int AX_EQ_B_LU(LM_REAL *A, LM_REAL *B, LM_REAL *x, int m)
 __STATIC__ LM_REAL *buf=NULL;
 __STATIC__ int buf_sz=0;
 
-register int i, j, k;
+/*register*/ int i, j, k;
 int *idx, maxi=-1, idx_sz, a_sz, work_sz, tot_sz;
 LM_REAL *a, *work, max, sum, tmp;
 

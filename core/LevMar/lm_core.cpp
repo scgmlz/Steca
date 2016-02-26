@@ -95,7 +95,7 @@ int LEVMAR_DER(
                       * Set to NULL if not needed
                       */
 {
-register int i, j, k, l;
+/*register*/ int i, j, k, l;
 int worksz, freework=0, issolved;
 /* temp work arrays */
 LM_REAL *e,          /* nx1 */
@@ -107,7 +107,7 @@ LM_REAL *e,          /* nx1 */
    *diag_jacTjac,   /* diagonal of J^T J, mx1 */
        *pDp;        /* p + Dp, mx1 */
 
-register LM_REAL mu,  /* damping constant */
+/*register*/ LM_REAL mu,  /* damping constant */
                 tmp; /* mainly used in matrix & vector multiplications */
 LM_REAL p_eL2, jacTe_inf, pDp_eL2; /* ||e(p)||_2, ||J^T e||_inf, ||e(p+Dp)||_2 */
 LM_REAL p_L2, Dp_L2=LM_REAL_MAX, dF, dL;
@@ -216,8 +216,8 @@ int (*linsolver)(LM_REAL *A, LM_REAL *B, LM_REAL *x, int m)=NULL;
        */
 
       /* looping downwards saves a few computations */
-      register int l;
-      register LM_REAL alpha, *jaclm, *jacTjacim;
+      /*register*/ int l;
+      /*register*/ LM_REAL alpha, *jaclm, *jacTjacim;
 
       for(i=m*m; i-->0; )
         jacTjac[i]=0.0;
@@ -252,7 +252,7 @@ int (*linsolver)(LM_REAL *A, LM_REAL *B, LM_REAL *x, int m)=NULL;
         jacTe[i]=0.0;
 
       for(i=0; i<n; ++i){
-        register LM_REAL *jacrow;
+        /*register*/ LM_REAL *jacrow;
 
         for(l=0, jacrow=jac+i*m, tmp=e[i]; l<m; ++l)
           jacTe[l]+=jacrow[l]*tmp;
@@ -472,7 +472,7 @@ int LEVMAR_DIF(
                       * Set to NULL if not needed
                       */
 {
-register int i, j, k, l;
+/*register*/ int i, j, k, l;
 int worksz, freework=0, issolved;
 
 /* temp work arrays */
@@ -489,8 +489,8 @@ LM_REAL	*e,				/* nx1 */
 
 int using_ffdif=1;
 
-register LM_REAL mu;					/* damping constant */
-register LM_REAL tmp;					/* mainly used in matrix & vector multiplications */
+/*register*/ LM_REAL mu;					/* damping constant */
+/*register*/ LM_REAL tmp;					/* mainly used in matrix & vector multiplications */
 LM_REAL p_eL2, jacTe_inf, pDp_eL2;		/* ||e(p)||_2, ||J^T e||_inf, ||e(p+Dp)||_2 */
 LM_REAL p_L2, Dp_L2=LM_REAL_MAX, dF, dL;
 LM_REAL tau, eps1, eps2, eps2_sq, eps3, delta;
@@ -645,8 +645,8 @@ int (*linsolver)(LM_REAL *A, LM_REAL *B, LM_REAL *x, int m)=NULL;
                  * Note that the non-blocking algorithm is faster on small
                  * problems since in this case it avoids the overheads of blocking.
                  */
-                register int l;
-                register LM_REAL alpha, *jaclm, *jacTjacim;
+                /*register*/ int l;
+                /*register*/ LM_REAL alpha, *jaclm, *jacTjacim;
 
                 /* looping downwards saves a few computations */
                 for(i=m*m; i-->0; )
@@ -685,7 +685,7 @@ int (*linsolver)(LM_REAL *A, LM_REAL *B, LM_REAL *x, int m)=NULL;
 
                 for(i=0; i<n; ++i)
                 {
-                    register LM_REAL *jacrow;
+                    /*register*/ LM_REAL *jacrow;
 
                     for(l=0, jacrow=jac+i*m, tmp=e[i]; l<m; ++l)
                         jacTe[l]+=jacrow[l]*tmp;
