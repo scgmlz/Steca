@@ -104,7 +104,7 @@ public:
 
 private:
   void setDataset(core::shp_Dataset);
-  void refresh();
+  void renderDataset();
 
   core::shp_Dataset dataset;
 

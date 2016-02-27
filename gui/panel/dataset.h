@@ -1,8 +1,8 @@
 /** \file
  */
 
-#ifndef IMAGE_H
-#define IMAGE_H
+#ifndef DATASET_H
+#define DATASET_H
 
 #include "panel.h"
 #include "core_image.h"
@@ -85,7 +85,7 @@ public:
 private:
   QPixmap makePixmap(core::Image const&,core::Range rgeIntens);
   void setDataset(core::shp_Dataset);
-  void refresh();
+  void renderDataset();
 
   core::shp_Dataset dataset;
 

@@ -106,7 +106,7 @@ public:
   /// Calculate the 1D index of a pixel, no transform, only size considered.
   uint pixIndexNoTransform(uint x, uint y) const;
 
-  /// Get intensity with/without correction; may return NaN
+  /// Get intensity from an image with/without correction; *may return NaN*
   intens_t pixIntensity(Image const&, uint x, uint y) const;
 
   QSize getImageSize() const;

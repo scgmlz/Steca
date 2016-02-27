@@ -233,8 +233,7 @@ void MainWin::initLayout() {
 
   splReflections->addWidget(new panel::SplitFitting(*this,*session));
   splReflections->addWidget(new panel::SplitDiffractogram(*this,*session));
-  splReflections->setStretchFactor(0,1);
-  splReflections->setStretchFactor(1,3);
+  splReflections->setStretchFactor(1,1);
 }
 
 void MainWin::initStatus() {

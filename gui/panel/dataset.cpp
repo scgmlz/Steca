@@ -317,7 +317,7 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
   box->addWidget(imageWidget = new ImageWidget(*this),0,Qt::AlignCenter);
 
   connect(mainWin.actImagesEnableCorr, &QAction::toggled, [this](bool) {
-    refresh();
+    renderDataset();
   });
 
   connect(mainWin.actImageOverlay, &QAction::toggled, [this](bool on) {
@@ -327,7 +327,7 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
   mainWin.actImageOverlay->setChecked(true);
 
   connect(&session, &Session::displayChange, [this]() {
-    refresh();
+    renderDataset();
   });
 
   connect(&session, &Session::datasetSelected, [this](core::shp_Dataset dataset) {
@@ -335,7 +335,7 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
   });
 
   connect(&session, &Session::geometryChanged, [this]() {
-    refresh();
+    renderDataset();
   });
 }
 
@@ -383,16 +383,16 @@ QPixmap Dataset::makePixmap(core::Image const& image, core::Range rgeIntens) {
 
 void Dataset::setDataset(core::shp_Dataset dataset_) {
   dataset = dataset_;
+  renderDataset();
+}
+
+void Dataset::renderDataset() {
   QPixmap pixMap;
   if (dataset) {
     auto image = dataset->getImage();
     pixMap = makePixmap(image, dataset->getRgeIntens(session.isGlobalNorm()));
   }
   imageWidget->setPixmap(pixMap);
-}
-
-void Dataset::refresh() {
-  setDataset(dataset);
 }
 
 //------------------------------------------------------------------------------

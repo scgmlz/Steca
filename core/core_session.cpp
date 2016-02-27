@@ -147,9 +147,10 @@ void Session::setImageRotate(ImageTransform rot) {
   imageTransform = imageTransform.rotateTo(rot);
 }
 
-/// calculate Index of transformed Image
+/// calculate the index of a pixel in a transformed image
 uint Session::pixIndex(uint x, uint y) const {
-  // imageSize is not transformed
+  // imageSize is not transformed,
+  // therefore w and h are swapped in the odd cases below
   uint w = imageSize.width(), h = imageSize.height();
 
   switch (imageTransform.val) {
@@ -205,7 +206,6 @@ QSize Session::getImageSize() const {
   return imageTransform.isTransposed()
     ? imageSize.transposed() : imageSize;
 }
-
 
 QPoint Session::getPixMiddle() const {
   auto imageSize = getImageSize();

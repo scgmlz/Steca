@@ -139,7 +139,13 @@ void DiffractogramPlot::plotDgram(TI_Curve const& dgram) {
     graph->clearData();
   } else {
     auto tthRange   = dgram.getTthRange();
-    auto intenRange = dgram.getIntenRange();
+    bool globalNorm = diffractogram.session.isGlobalNorm();
+    auto intenRange = globalNorm
+                        // TODO to calculate this global range precisely
+                        // would require all diagram recomputation
+                        ? diffractogram.dataset->getRgeIntens(true)
+                        : dgram.getIntenRange();
+    if (globalNorm) intenRange = core::Range(intenRange.min,intenRange.max / 3);
     xAxis->setRange(tthRange.min,tthRange.max);
     yAxis->setRange(qMin(0.,intenRange.min),intenRange.max);
     xAxis->setVisible(true);
@@ -222,16 +228,20 @@ Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
   });
 
   connect(&session, &Session::geometryChanged, [this]() {
-    refresh();
+    renderDataset();
   });
 
   connect(&session, &Session::correctionEnabled, [this]() {
-    refresh();
+    renderDataset();
+  });
+
+  connect(&session, &Session::displayChange, [this]() {
+    renderDataset();
   });
 
   connect(&session, &Session::backgroundPolynomDegree, [this](uint degree) {
     bgPolynomial.setDegree(degree);
-    refresh();
+    renderDataset();
   });
 
   connect(mainWin.actBackgroundBackground, &QAction::toggled, [this](bool on) {
@@ -242,14 +252,14 @@ Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
 
 void Diffractogram::setDataset(core::shp_Dataset dataset_) {
   dataset = dataset_;
+  renderDataset();
+}
+
+void Diffractogram::renderDataset() {
   calcDgram();
   plot->plotDgram(dgram);
   calcBg();
   plot->plotBg(bg);
-}
-
-void Diffractogram::refresh() {
-  setDataset(dataset);
 }
 
 void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, normalize==false
