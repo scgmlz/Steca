@@ -95,6 +95,14 @@ QRadioButton* radioButton(rcstr text) {
   return new QRadioButton(text);
 }
 
+QComboBox* comboBox(QVector<QString> options) {
+  auto comboBox = new QComboBox();
+  for_i (options.size()) {
+    comboBox->addItem(options.at(i));
+  }
+  return comboBox;
+}
+
 //------------------------------------------------------------------------------
 
 ListView::ListView() {

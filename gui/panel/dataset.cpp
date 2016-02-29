@@ -72,8 +72,10 @@ DatasetOptions1::DatasetOptions1(MainWin& mainWin_, Session& session_)
   ho->addWidget(iconButton(mainWin.actHasBeamOffset));
   ho->addWidget(label("X"));
   ho->addWidget((spinOffsetX = spinCell(4,0)));
+  spinOffsetX->setToolTip("Horizontal offset from image center");
   ho->addWidget(label("Y"));
   ho->addWidget((spinOffsetY = spinCell(4,0)));
+  spinOffsetY->setToolTip("Vertical offset from image center");
   ho->addWidget(label("pix"));
   ho->addStretch();
 
@@ -82,8 +84,10 @@ DatasetOptions1::DatasetOptions1(MainWin& mainWin_, Session& session_)
   box->addLayout(gd);
 
   gd->addWidget((spinDistance = spinCell(6,MIN_DISTANCE)),    0,0);
+  spinDistance->setToolTip("Sample to detector distance");
   gd->addWidget(label("distance mm"),                         0,1);
   gd->addWidget((spinPixelSize = spinCell(6,MIN_PIXEL_SIZE)), 1,0);
+  spinPixelSize->setToolTip("Physical pixel size");
   gd->addWidget(label("pixel size mm"),                       1,1);
   gd->setColumnStretch(2,1);
 
@@ -91,11 +95,13 @@ DatasetOptions1::DatasetOptions1(MainWin& mainWin_, Session& session_)
   auto vn = vbox();
   box->addLayout(vn);
 
-  vn->addWidget(radioButton("none"));
-  vn->addWidget(radioButton("to deltatime"));
-  vn->addWidget(radioButton("to deltaMonitor"));
-  vn->addWidget(radioButton("to background"));
+  QVector<QString> options;
+  options.append("Disable normalization");
+  options.append("Normalize to measurement time");
+  options.append("Normalize to moitor counts");
+  options.append("Normalize to background level");
 
+  vn->addWidget(comboBox(options));
   box->addStretch();
 
   // TODO separate geometryChanged into more signals?

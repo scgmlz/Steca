@@ -161,10 +161,13 @@ DockDatasetInfo::DockDatasetInfo(MainWin&,Session& session)
   info = new Info(infoItems);
   scrollArea->setWidget(info);
 
+  for_i (core::Dataset::NUM_ATTRIBUTES) {
+      infoItems[i].cb->setToolTip("Show value in Datasets list");
+  }
+
   connect(&session, &Session::datasetSelected, [this](core::shp_Dataset dataset) {
     for_i (core::Dataset::NUM_ATTRIBUTES) {
       infoItems[i].text->setText(dataset ? dataset->getAttributeStrValue(i) : EMPTY_STR);
-      infoItems[i].cb->setToolTip("Show value in Datasets list");
     }
   });
 

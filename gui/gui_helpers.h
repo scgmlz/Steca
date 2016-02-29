@@ -19,6 +19,7 @@
 #include <QToolButton>
 #include <QListView>
 #include <QTreeView>
+#include <QComboBox>
 
 //------------------------------------------------------------------------------
 
@@ -40,6 +41,8 @@ QToolButton*    textButton(QAction*);
 QToolButton*    iconButton(QAction*);
 
 QRadioButton*   radioButton(rcstr text);
+
+QComboBox*      comboBox(QVector<QString> options);
 
 //------------------------------------------------------------------------------
 /// abstract list widget
