@@ -221,6 +221,7 @@ DatasetOptions2::DatasetOptions2(MainWin& mainWin_, Session& session_)
   box->addLayout(hb);
 
   hb->addWidget((spinImageScale = spinCell(4,1,4)));
+  spinImageScale->setToolTip("Image scale");
 
   hb->addWidget(iconButton(mainWin.actImageRotate));
   hb->addWidget(iconButton(mainWin.actImageMirror));
@@ -235,15 +236,19 @@ DatasetOptions2::DatasetOptions2(MainWin& mainWin_, Session& session_)
 
   gc->addWidget(icon(":/icon/top"),                 0,0);
   gc->addWidget((cutTop = spinCell(4,0)),           0,1);
+  cutTop->setToolTip("Top cut");
   gc->addWidget(icon(":/icon/bottom"),              0,2);
   gc->addWidget((cutBottom = spinCell(4,0)),        0,3);
+  cutBottom->setToolTip("Bottom cut");
 
   gc->addWidget(iconButton(mainWin.actImagesLink),  0,5);
 
   gc->addWidget(icon(":/icon/left"),                1,0);
   gc->addWidget((cutLeft = spinCell(4,0)),          1,1);
+  cutLeft->setToolTip("Left cut");
   gc->addWidget(icon(":/icon/right"),               1,2);
   gc->addWidget((cutRight = spinCell(4,0)),         1,3);
+  cutRight->setToolTip("Right cut");
   gc->setColumnStretch(4,1);
 
   box->addStretch();
