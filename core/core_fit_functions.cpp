@@ -146,6 +146,16 @@ Polynomial::Polynomial(uint degree) {
   setDegree(degree);
 }
 
+uint Polynomial::getDegree() const {
+  uint parCount = super::parameterCount();
+  ASSERT(parCount > 0)
+  return parCount - 1;
+}
+
+void Polynomial::setDegree(uint degree) {
+  super::setParameterCount(degree+1);
+}
+
 // the power with *uint* exponent
 static qreal pow_n(qreal x, uint n) {
   qreal value = 1;

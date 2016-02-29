@@ -120,9 +120,8 @@ class Polynomial: public SimpleFunction {
 public:
   Polynomial(uint degree = 0);
 
-  void setDegree(uint degree) {
-    super::setParameterCount(degree+1);
-  }
+  uint getDegree() const;
+  void setDegree(uint);
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;

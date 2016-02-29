@@ -5,16 +5,11 @@
 namespace core { namespace fit {
 //------------------------------------------------------------------------------
 
-TI_Curve fitBackground(TI_Curve const& dgram, core::Ranges const& bgRanges, uint degree) {
-  degree = qMin(degree,MAX_BACKGROUND_POLYNOMIAL_DEGREE);
-
-  TI_Curve bgCurve;
-
-  // TODO this calculation move to core
+Polynomial fitBackground(TI_Curve const& dgram, core::Ranges const& bgRanges, uint degree) {
   core::Curve curve;
 
   // The following adds points that are in ranges to the curve
-  // it works because both ranges and vecSpec are ordered and ranges are non-overlapping
+  // it works because both ranges and dgram are ordered and ranges are non-overlapping
   ASSERT(dgram.isOrdered())
 
   auto tth   = dgram.getTth();
@@ -31,17 +26,10 @@ TI_Curve fitBackground(TI_Curve const& dgram, core::Ranges const& bgRanges, uint
     }
   }
 
-  if (!curve.isEmpty()) {
-    Polynomial bgPolynomial(degree);
-    core::fit::FittingLevenbergMarquardt().fitWithoutCheck(bgPolynomial,curve);
+  Polynomial bgPolynomial(qMin(degree,MAX_BACKGROUND_POLYNOMIAL_DEGREE));
+  FittingLevenbergMarquardt().fitWithoutCheck(bgPolynomial,curve);
 
-    for_i (dgram.count()) {
-      auto tth = dgram.getTth()[i];
-      bgCurve.append(tth,bgPolynomial.y(tth));
-    }
-  }
-
-  return bgCurve;
+  return bgPolynomial;
 }
 
 //------------------------------------------------------------------------------

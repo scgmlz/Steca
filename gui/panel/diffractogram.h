@@ -57,14 +57,14 @@ public:
   void setTool(Tool);
   Tool getTool() const { return tool; }
 
-  void plotDgram(core::TI_Curve const&);
-  void plotBg(core::TI_Curve const&);
+  void plot(core::TI_Curve const&,core::TI_Curve const&, core::TI_Curve const&);
 
   core::Range fromPixels(int,int);
 
   void clearBg();
   void addBg(core::Range const&);
   void remBg(core::Range const&);
+  void updateBg();
 
 protected:
   void resizeEvent(QResizeEvent*);
@@ -72,10 +72,9 @@ protected:
 private:
   Diffractogram &diffractogram;
   Tool tool;
-  QCPGraph *graph, *background;
+  QCPGraph *bgGraph, *dgramGraph, *dgramBgFittedGraph;
   DiffractogramPlotOverlay *overlay;
 
-  void updateBg();
 };
 
 class Diffractogram: public BoxPanel {
@@ -92,13 +91,14 @@ private:
 
   DiffractogramPlot *plot;
 
-  core::TI_Curve dgram, bg;
-  core::Ranges   bgRanges;
-  uint           bgPolynomialDegree;
+  core::TI_Curve dgram, dgramBgFitted, bg;
+  core::Ranges bgRanges;
+  core::fit::Polynomial bgPolynomial;
+  bool showBgFit;
 
 public:
   void calcDgram();
-  void fitBackground();
+  void calcBackground();
 };
 
 //------------------------------------------------------------------------------

@@ -79,7 +79,7 @@ public:
     *actReflectionPeak, *actReflectionReflect, *actReflectionWidth, *actReflectionAdd,
     *actImageRotate, *actImageMirror,
     *actImagesLink, *actImageOverlay, *actImagesGlobalNorm, *actImagesEnableCorr,
-    *actBackgroundBackground, *actBackgroundEye,
+    *actBackgroundBackground, *actBackgroundShowFit,
     *actHasBeamOffset;
 
 private:

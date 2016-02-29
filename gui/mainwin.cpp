@@ -105,7 +105,7 @@ void MainWin::initActions() {
   actImageMirror          = toggle("Mirror",       "Mirror image", ":/icon/mirror_horz");
 
   actBackgroundBackground = toggle("Background",    "Select regions for background fitting", ":/icon/background");
-  actBackgroundEye        = simple("BackgroundEye", "Show background fit", ":/icon/eye");
+  actBackgroundShowFit    = toggle("BackgroundEye", "Show background fit", ":/icon/eye");
 
   actHasBeamOffset        = toggle("Beam centre offset", "Enable beam center offset (for X-ray instruments)", ":/icon/eye"); // TODO icon
 

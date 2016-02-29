@@ -104,9 +104,14 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram_): diffractogr
   setBackground(palette().background().color());
   ar->setBackground(Qt::white);
 
-  // one graph in the "main" layer
-  graph = addGraph();
-  background = addGraph();
+  // graphs in the "main" layer; in the display order
+  bgGraph             = addGraph();
+  dgramGraph          = addGraph();
+  dgramBgFittedGraph  = addGraph();
+
+  bgGraph->setPen(QPen(Qt::green,0));
+  dgramGraph->setPen(QPen(Qt::gray));
+  dgramBgFittedGraph->setPen(QPen(Qt::blue,2));
 
   // background regions
   addLayer("bg",layer("background"),QCustomPlot::limAbove);
@@ -118,36 +123,45 @@ void DiffractogramPlot::setTool(Tool tool_) {
   tool = tool_;
 }
 
-void DiffractogramPlot::plotDgram(core::TI_Curve const& dgram) {
+void DiffractogramPlot::plot(
+  core::TI_Curve const& dgram, core::TI_Curve const& dgramBgFitted, core::TI_Curve const& bg)
+{
   if (dgram.isEmpty()) {
     xAxis->setVisible(false);
     yAxis->setVisible(false);
-    graph->clearData();
+
+    bgGraph->clearData();
+    dgramGraph->clearData();
+    dgramBgFittedGraph->clearData();
+
   } else {
     auto tthRange   = dgram.getTthRange();
     bool globalNorm = diffractogram.session.isGlobalNorm();
-    auto intenRange = globalNorm
-                        // TODO to calculate this global range precisely
-                        // would require all diagram recomputation
-                        ? diffractogram.dataset->getRgeIntens(true)
-                        : dgram.getIntenRange();
-    if (globalNorm) intenRange = core::Range(intenRange.min,intenRange.max / 3);
+
+    core::Range intenRange;
+    if (globalNorm) {
+      auto max = diffractogram.dataset->getRgeIntens(true).max;
+      // heuristics; to calculate this precisely would require much more computation
+      intenRange = core::Range(-max/30,max/3);
+    } else {
+      intenRange = dgramBgFitted.getIntenRange();
+      if (diffractogram.showBgFit)
+        intenRange.extend(dgram.getIntenRange());
+    }
+
     xAxis->setRange(tthRange.min,tthRange.max);
     yAxis->setRange(qMin(0.,intenRange.min),intenRange.max);
     xAxis->setVisible(true);
     yAxis->setVisible(true);
 
-    graph->setData(dgram.getTth(),dgram.getInten());
-  }
-
-  replot();
-}
-
-void DiffractogramPlot::plotBg(core::TI_Curve const& bg) {
-  if (bg.isEmpty()) {
-    background->clearData();
-  } else {
-    background->setData(bg.getTth(),bg.getInten());
+    if (diffractogram.showBgFit) {
+      bgGraph->setData(bg.getTth(),bg.getInten());
+      dgramGraph->setData(dgram.getTth(),dgram.getInten());
+    } else {
+      bgGraph->clearData();
+      dgramGraph->clearData();
+    }
+    dgramBgFittedGraph->setData(dgramBgFitted.getTth(),dgramBgFitted.getInten());
   }
 
   replot();
@@ -172,41 +186,43 @@ void DiffractogramPlot::remBg(core::Range const& range) {
   if (diffractogram.bgRanges.rem(range)) updateBg();
 }
 
+void DiffractogramPlot::updateBg() {
+  clearItems();
+
+  if (diffractogram.showBgFit) {
+    setCurrentLayer("bg");
+
+    auto bgColor = QColor(0xff,0xf0,0xf0);
+    auto const& rs = diffractogram.bgRanges;
+    for_i (rs.count()) {
+      auto const& r = rs.at(i);
+      auto ir = new QCPItemRect(this);
+      ir->setPen(QPen(bgColor));
+      ir->setBrush(QBrush(bgColor));
+      auto br = ir->bottomRight;
+      br->setTypeY(QCPItemPosition::ptViewportRatio);
+      br->setCoords(r.max,1);
+      auto tl = ir->topLeft;
+      tl->setTypeY(QCPItemPosition::ptViewportRatio);
+      tl->setCoords(r.min,0);
+      addItem(ir);
+    }
+  }
+
+  diffractogram.renderDataset();
+}
+
 void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
   super::resizeEvent(e);
   auto size = e->size();
   overlay->setGeometry(0,0,size.width(),size.height());
 }
 
-void DiffractogramPlot::updateBg() {
-  clearItems();
-
-  setCurrentLayer("bg");
-
-  auto bgColor = QColor(0xff,0xf8,0xf8);
-  auto const& rs = diffractogram.bgRanges;
-  for_i (rs.count()) {
-    auto const& r = rs.at(i);
-    auto ir = new QCPItemRect(this);
-    ir->setPen(QPen(bgColor));
-    ir->setBrush(QBrush(bgColor));
-    auto br = ir->bottomRight;
-    br->setTypeY(QCPItemPosition::ptViewportRatio);
-    br->setCoords(r.max,1);
-    auto tl = ir->topLeft;
-    tl->setTypeY(QCPItemPosition::ptViewportRatio);
-    tl->setCoords(r.min,0);
-    addItem(ir);
-  }
-
-  diffractogram.fitBackground();
-  plotBg(diffractogram.bg);
-}
-
 //------------------------------------------------------------------------------
 
 Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
-: super(EMPTY_STR,mainWin,session,Qt::Vertical), dataset(nullptr), bgPolynomialDegree(0) {
+: super(EMPTY_STR,mainWin,session,Qt::Vertical), dataset(nullptr), bgPolynomial(0)
+, showBgFit(false) {
   box->addWidget((plot = new DiffractogramPlot(*this)));
 
   connect(&session, &Session::datasetSelected, [this](core::shp_Dataset dataset) {
@@ -226,7 +242,7 @@ Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
   });
 
   connect(&session, &Session::backgroundPolynomialDegree, [this](uint degree) {
-    bgPolynomialDegree = degree;
+    bgPolynomial.setDegree(degree);
     renderDataset();
   });
 
@@ -234,6 +250,13 @@ Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
     if (on) plot->clearBg();
     plot->setTool(on ? DiffractogramPlot::TOOL_BACKGROUND : DiffractogramPlot::TOOL_NONE);
   });
+
+  connect(mainWin.actBackgroundShowFit, &QAction::toggled, [this](bool on) {
+    showBgFit = on;
+    plot->updateBg();
+  });
+
+  mainWin.actBackgroundShowFit->setChecked(true);
 }
 
 void Diffractogram::setDataset(core::shp_Dataset dataset_) {
@@ -243,9 +266,8 @@ void Diffractogram::setDataset(core::shp_Dataset dataset_) {
 
 void Diffractogram::renderDataset() {
   calcDgram();
-  plot->plotDgram(dgram);
-  fitBackground();
-  plot->plotBg(bg);
+  calcBackground();
+  plot->plot(dgram,dgramBgFitted,bg);
 }
 
 void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, normalize==false
@@ -295,8 +317,17 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   }
 }
 
-void Diffractogram::fitBackground() {
-  bg = core::fit::fitBackground(dgram,bgRanges,bgPolynomialDegree);
+void Diffractogram::calcBackground() {
+  bg.clear(); dgramBgFitted.clear();
+
+  bgPolynomial = core::fit::fitBackground(dgram,bgRanges,bgPolynomial.getDegree());
+  auto tth   = dgram.getTth();
+  auto inten = dgram.getInten();
+  for_i (dgram.count()) {
+    qreal x = tth[i], y = bgPolynomial.y(x);
+    bg.append(x,y);
+    dgramBgFitted.append(x,inten[i] - y);
+  }
 }
 
 //------------------------------------------------------------------------------
