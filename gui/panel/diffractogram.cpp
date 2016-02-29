@@ -246,8 +246,11 @@ Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
     renderDataset();
   });
 
+  connect(mainWin.actBackgroundClear, &QAction::triggered, [this]() {
+    plot->clearBg();
+  });
+
   connect(mainWin.actBackgroundBackground, &QAction::toggled, [this](bool on) {
-    if (on) plot->clearBg();
     plot->setTool(on ? DiffractogramPlot::TOOL_BACKGROUND : DiffractogramPlot::TOOL_NONE);
   });
 

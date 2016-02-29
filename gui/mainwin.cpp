@@ -104,6 +104,7 @@ void MainWin::initActions() {
   actImageRotate          = simple("Rotate",       "Rotate 90° clockwise", ":/icon/rotate0", keys.keyRotateImage);
   actImageMirror          = toggle("Mirror",       "Mirror image", ":/icon/mirror_horz");
 
+  actBackgroundClear      = simple("Background",    "Clear regions for background fitting", ":/icon/link");
   actBackgroundBackground = toggle("Background",    "Select regions for background fitting", ":/icon/background");
   actBackgroundShowFit    = toggle("BackgroundEye", "Show background fit", ":/icon/eye");
 

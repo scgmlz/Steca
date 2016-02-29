@@ -32,6 +32,7 @@ Fitting::Fitting(MainWin& mainWin,Session& session)
   hb->addWidget(label("Degree:"));
   hb->addWidget((spinDegree = spinCell(4,0,core::fit::MAX_BACKGROUND_POLYNOMIAL_DEGREE)));
   hb->addWidget(iconButton(mainWin.actBackgroundShowFit));
+  hb->addWidget(iconButton(mainWin.actBackgroundClear));
   hb->addStretch();
 
   connect(spinDegree, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int degree) {
