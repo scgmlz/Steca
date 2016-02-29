@@ -1,13 +1,13 @@
 /** \file
- * Functions for data approximation
+ * Functions for data fitting (was: approximation)
  */
 
-#ifndef APPROX_FUNCTIONS_H
-#define APPROX_FUNCTIONS_H
+#ifndef CORE_FIT_FUNCTIONS_H
+#define CORE_FIT_FUNCTIONS_H
 
 #include <core_types.h>
 
-namespace core { namespace approx {
+namespace core { namespace fit {
 //------------------------------------------------------------------------------
 /// Abstract function
 

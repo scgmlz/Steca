@@ -7,29 +7,11 @@
 #include "panel.h"
 #include "core_dataset.h"
 #include "core_types.h"
-#include "approx/approx_methods.h"
+#include "core_fit_methods.h"
 #include "QCP/qcustomplot.h"
 
 namespace panel {
 //------------------------------------------------------------------------------
-
-class TI_Curve: public core::Curve {
-  SUPER(TI_Curve,core::Curve)
-public:
-  TI_Curve();
-
-  void clear();
-  void append(qreal tth,qreal inten);
-
-  reals_t const& getTth()        const { return getXs(); }
-  reals_t const& getInten()      const { return getYs(); }
-
-  core::Range const& getTthRange()   const { return tthRange;   }
-  core::Range const& getIntenRange() const { return intenRange; }
-
-private:
-  core::Range tthRange, intenRange;
-};
 
 class DiffractogramPlot;
 
@@ -75,8 +57,8 @@ public:
   void setTool(Tool);
   Tool getTool() const { return tool; }
 
-  void plotDgram(TI_Curve const&);
-  void plotBg(TI_Curve const&);
+  void plotDgram(core::TI_Curve const&);
+  void plotBg(core::TI_Curve const&);
 
   core::Range fromPixels(int,int);
 
@@ -110,14 +92,13 @@ private:
 
   DiffractogramPlot *plot;
 
-  TI_Curve dgram;
-  TI_Curve bg;
+  core::TI_Curve dgram, bg;
   core::Ranges   bgRanges;
-  core::approx::Polynomial bgPolynomial;
+  uint           bgPolynomialDegree;
 
 public:
   void calcDgram();
-  void calcBg();
+  void fitBackground();
 };
 
 //------------------------------------------------------------------------------

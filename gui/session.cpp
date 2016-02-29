@@ -210,8 +210,8 @@ void Session::nextImageRotate() {
   setImageRotate(imageTransform.nextRotate());
 }
 
-void Session::setBackgroundPolynomDegree(uint degree) {
-  emit backgroundPolynomDegree(degree);
+void Session::setBackgroundPolynomialDegree(uint degree) {
+  emit backgroundPolynomialDegree(degree);
 }
 
 void Session::setGlobalNorm(bool on) {

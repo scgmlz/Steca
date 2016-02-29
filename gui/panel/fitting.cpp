@@ -1,6 +1,7 @@
 #include "fitting.h"
 #include "mainwin.h"
 #include "session.h"
+#include "core_fit_limits.h"
 
 namespace panel {
 //------------------------------------------------------------------------------
@@ -29,12 +30,12 @@ Fitting::Fitting(MainWin& mainWin,Session& session)
 
   hb->addWidget(iconButton(mainWin.actBackgroundBackground));
   hb->addWidget(label("Degree:"));
-  hb->addWidget((spinDegree = spinCell(4,0,99)));
+  hb->addWidget((spinDegree = spinCell(4,0,core::fit::MAX_BACKGROUND_POLYNOMIAL_DEGREE)));
   hb->addWidget(iconButton(mainWin.actBackgroundEye));
   hb->addStretch();
 
   connect(spinDegree, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int degree) {
-    getSession().setBackgroundPolynomDegree(degree);
+    getSession().setBackgroundPolynomialDegree(degree);
   });
 
   box->addWidget(label("Reflections"));

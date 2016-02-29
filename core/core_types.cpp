@@ -182,5 +182,22 @@ void Curve::append(qreal x, qreal y) {
 }
 
 //------------------------------------------------------------------------------
+
+TI_Curve::TI_Curve() {
+}
+
+void TI_Curve::clear() {
+  super::clear();
+  tthRange.invalidate();
+  intenRange.invalidate();
+}
+
+void TI_Curve::append(qreal tth_, qreal inten_) {
+  super::append(tth_,inten_);
+  tthRange.extend(tth_);
+  intenRange.extend(inten_);
+}
+
+//------------------------------------------------------------------------------
 }
 // eof

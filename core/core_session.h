@@ -8,7 +8,7 @@
 #include "core_types.h"
 #include "core_file.h"
 #include "core_array2d.h"
-#include "approx/approx_functions.h"
+#include "core_fit_functions.h"
 #include <QPoint>
 
 namespace core {

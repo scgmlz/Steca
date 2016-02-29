@@ -1,24 +1,10 @@
 #include "diffractogram.h"
 #include "mainwin.h"
 #include "session.h"
+#include "core_fit_fitting.h"
 
 namespace panel {
 //------------------------------------------------------------------------------
-
-TI_Curve::TI_Curve() {
-}
-
-void TI_Curve::clear() {
-  super::clear();
-  tthRange.invalidate();
-  intenRange.invalidate();
-}
-
-void TI_Curve::append(qreal tth_, qreal inten_) {
-  super::append(tth_,inten_);
-  tthRange.extend(tth_);
-  intenRange.extend(inten_);
-}
 
 DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& plot_)
 : super(&plot_), plot(plot_), hasCursor(false), mouseDown(false), cursorPos(0)
@@ -132,7 +118,7 @@ void DiffractogramPlot::setTool(Tool tool_) {
   tool = tool_;
 }
 
-void DiffractogramPlot::plotDgram(TI_Curve const& dgram) {
+void DiffractogramPlot::plotDgram(core::TI_Curve const& dgram) {
   if (dgram.isEmpty()) {
     xAxis->setVisible(false);
     yAxis->setVisible(false);
@@ -157,7 +143,7 @@ void DiffractogramPlot::plotDgram(TI_Curve const& dgram) {
   replot();
 }
 
-void DiffractogramPlot::plotBg(TI_Curve const& bg) {
+void DiffractogramPlot::plotBg(core::TI_Curve const& bg) {
   if (bg.isEmpty()) {
     background->clearData();
   } else {
@@ -213,14 +199,14 @@ void DiffractogramPlot::updateBg() {
     addItem(ir);
   }
 
-  diffractogram.calcBg();
+  diffractogram.fitBackground();
   plotBg(diffractogram.bg);
 }
 
 //------------------------------------------------------------------------------
 
 Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
-: super(EMPTY_STR,mainWin,session,Qt::Vertical), dataset(nullptr) {
+: super(EMPTY_STR,mainWin,session,Qt::Vertical), dataset(nullptr), bgPolynomialDegree(0) {
   box->addWidget((plot = new DiffractogramPlot(*this)));
 
   connect(&session, &Session::datasetSelected, [this](core::shp_Dataset dataset) {
@@ -239,8 +225,8 @@ Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
     renderDataset();
   });
 
-  connect(&session, &Session::backgroundPolynomDegree, [this](uint degree) {
-    bgPolynomial.setDegree(degree);
+  connect(&session, &Session::backgroundPolynomialDegree, [this](uint degree) {
+    bgPolynomialDegree = degree;
     renderDataset();
   });
 
@@ -258,7 +244,7 @@ void Diffractogram::setDataset(core::shp_Dataset dataset_) {
 void Diffractogram::renderDataset() {
   calcDgram();
   plot->plotDgram(dgram);
-  calcBg();
+  fitBackground();
   plot->plotBg(bg);
 }
 
@@ -309,38 +295,8 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   }
 }
 
-void Diffractogram::calcBg() {
-  bg.clear();
-
-  // TODO this calculation move to core
-  core::Curve curve;
-
-  // The following adds points that are in ranges to the curve
-  // it works because both ranges and vecSpec are ordered and ranges are non-overlapping
-  ASSERT(dgram.isOrdered())
-
-  auto tth   = dgram.getTth();
-  auto inten = dgram.getInten();
-
-  uint di = 0, count = dgram.count();
-  for_i (bgRanges.count()) {
-    auto const& range = bgRanges.at(i);
-    while (di<count && tth[di] <  range.min)
-      ++di;
-    while (di<count && tth[di] <= range.max) {
-      curve.append(tth[di],inten[di]);
-      ++di;
-    }
-  }
-
-  if (curve.isEmpty()) return;
-
-  core::approx::FittingLevenbergMarquardt().fitWithoutCheck(bgPolynomial,curve);
-
-  for_i (dgram.count()) {
-    auto tth = dgram.getTth()[i];
-    bg.append(tth,bgPolynomial.y(tth));
-  }
+void Diffractogram::fitBackground() {
+  bg = core::fit::fitBackground(dgram,bgRanges,bgPolynomialDegree);
 }
 
 //------------------------------------------------------------------------------

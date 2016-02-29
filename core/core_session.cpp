@@ -1,6 +1,6 @@
 #include "core_session.h"
 #include "io/core_io.h"
-#include "approx/approx_methods.h"
+#include "core_fit_methods.h"
 #include <cmath>
 
 namespace core {

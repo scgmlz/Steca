@@ -1,6 +1,6 @@
-#include "approx_functions.h"
+#include "core_fit_functions.h"
 
-namespace core { namespace approx {
+namespace core { namespace fit {
 //------------------------------------------------------------------------------
 
 Function::Parameter::Parameter()

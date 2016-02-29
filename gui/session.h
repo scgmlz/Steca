@@ -43,7 +43,7 @@ public:
   void setImageRotate(ImageTransform);
   void nextImageRotate();
 
-  void setBackgroundPolynomDegree(uint);
+  void setBackgroundPolynomialDegree(uint);
 
 private:
   bool globalNorm;
@@ -69,7 +69,7 @@ signals:
   void saveSettings();  // TODO for now; eventually move things to save to Session
   void readSettings();  // TODO for now; eventually move things to read to Session
 
-  void backgroundPolynomDegree(uint);
+  void backgroundPolynomialDegree(uint);
 
 public:
   model::FileViewModel    fileViewModel;    // TODO not public

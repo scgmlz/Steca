@@ -1,8 +1,8 @@
-#include "approx_methods.h"
+#include "core_fit_methods.h"
 #include "LevMar/levmar.h"
 #include <cmath>
 
-namespace core { namespace approx {
+namespace core { namespace fit {
 //------------------------------------------------------------------------------
 
 FittingMethod::FittingMethod() {

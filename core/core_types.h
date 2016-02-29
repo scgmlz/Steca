@@ -86,5 +86,26 @@ private:
 };
 
 //------------------------------------------------------------------------------
+/// 2theta -> intensity curve
+
+class TI_Curve: public Curve {
+  SUPER(TI_Curve,Curve)
+public:
+  TI_Curve();
+
+  void clear();
+  void append(qreal tth,qreal inten);
+
+  reals_t const& getTth()             const { return getXs();     }
+  reals_t const& getInten()           const { return getYs();     }
+
+  core::Range const& getTthRange()    const { return tthRange;    }
+  core::Range const& getIntenRange()  const { return intenRange;  }
+
+private:
+  core::Range tthRange, intenRange;
+};
+
+//------------------------------------------------------------------------------
 }
 #endif

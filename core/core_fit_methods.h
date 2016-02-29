@@ -1,13 +1,13 @@
 /** \file
- * Approximation methods
+ * Fitting (was: approximation) methods
  */
 
-#ifndef APPROX_METHODS_H
-#define APPROX_METHODS_H
+#ifndef CORE_FIT_METHODS_H
+#define CORE_FIT_METHODS_H
 
-#include "approx_functions.h"
+#include "core_fit_functions.h"
 
-namespace core { namespace approx {
+namespace core { namespace fit {
 //------------------------------------------------------------------------------
 
 class FittingMethod {

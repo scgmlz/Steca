@@ -26,10 +26,12 @@ HEADERS += \
     LevMar/misc.h \
     LevMar/FastDelegate/FastDelegate.h \
     LevMar/FastDelegate/FastDelegateBind.h \
-    approx/approx_functions.h \
-    approx/approx_methods.h \
     core_types.h \
-    io/core_io.h
+    io/core_io.h \
+    core_fit_functions.h \
+    core_fit_methods.h \
+    core_fit_fitting.h \
+    core_fit_limits.h
 
 SOURCES += \
     io/Caress/raw.cpp \
@@ -54,12 +56,13 @@ SOURCES += \
     LevMar/lmlec_core.cpp \
     LevMar/misc.cpp \
     LevMar/misc_core.cpp \
-    approx/approx_functions.cpp \
-    approx/approx_methods.cpp \
     core_types.cpp \
     io/core_io_caress.cpp \
     io/core_io_tiff.cpp \
-    io/core_io.cpp
+    io/core_io.cpp \
+    core_fit_functions.cpp \
+    core_fit_methods.cpp \
+    core_fit_fitting.cpp
 
 DISTFILES += \
     io/Caress/README
