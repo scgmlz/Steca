@@ -46,7 +46,7 @@ public:
   void setBackgroundPolynomialDegree(uint);
 
 private:
-  bool globalNorm;
+  bool globalNorm;  // TODO rename this and related to fixedIntensityScale
 public:
   void setGlobalNorm(bool);
   bool isGlobalNorm() const { return globalNorm; }
@@ -72,8 +72,9 @@ signals:
   void backgroundPolynomialDegree(uint);
 
 public:
-  model::FileViewModel    fileViewModel;    // TODO not public
-  model::DatasetViewModel datasetViewModel;
+  model::FileViewModel       fileViewModel;    // TODO not public
+  model::DatasetViewModel    datasetViewModel;
+  model::ReflectionViewModel reflectionViewModel;
 
   void doSaveSettings(); // TODO temp.
   void doReadSettings(); // TODO temp.

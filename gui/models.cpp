@@ -7,18 +7,6 @@ namespace model {
 SessionModel::SessionModel(Session& session_): session(session_) {
 }
 
-uint SessionModel::numFiles(bool withCorr) {
-  return session.numFiles(withCorr);
-}
-
-void SessionModel::remFile(uint i) {
-  session.remFile(i);
-}
-
-void SessionModel::setSelectedFile(core::shp_File file) {
-  session.setSelectedFile(file);
-}
-
 void SessionModel::setSelectedDataset(core::shp_Dataset dataset) {
   session.setSelectedDataset(dataset);
 }
@@ -26,6 +14,18 @@ void SessionModel::setSelectedDataset(core::shp_Dataset dataset) {
 //------------------------------------------------------------------------------
 
 FileViewModel::FileViewModel(Session& session): SessionModel(session) {
+}
+
+uint FileViewModel::numFiles(bool withCorr) {
+  return session.numFiles(withCorr);
+}
+
+void FileViewModel::remFile(uint i) {
+  session.remFile(i);
+}
+
+void FileViewModel::setSelectedFile(core::shp_File file) {
+  session.setSelectedFile(file);
 }
 
 int FileViewModel::rowCount(QModelIndex const&) const {
@@ -130,6 +130,31 @@ void DatasetViewModel::setInfoItems(panel::InfoItems const* infoItems_) {
 
 core::shp_Dataset const& DatasetViewModel::getDataset(int row) const {
   return coreFile->getDataset(row);
+}
+
+//------------------------------------------------------------------------------
+
+ReflectionViewModel::ReflectionViewModel(Session& session): SessionModel(session) {
+}
+
+int ReflectionViewModel::columnCount(const QModelIndex&) const {
+  return 3;
+}
+
+int ReflectionViewModel::rowCount(const QModelIndex&) const {
+  return reflections.count();
+}
+
+QVariant ReflectionViewModel::data(const QModelIndex&, int) const {
+  return QVariant();
+}
+
+QVariant ReflectionViewModel::headerData(int, Qt::Orientation, int) const {
+  return QVariant();
+}
+
+void ReflectionViewModel::addReflection() {
+  reflections.append(8);
 }
 
 //------------------------------------------------------------------------------

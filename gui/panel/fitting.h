@@ -6,13 +6,24 @@
 
 #include "panel.h"
 
+namespace model {
+class ReflectionViewModel;
+}
+
 namespace panel {
 //------------------------------------------------------------------------------
 
 class ReflectionView: public ListView {
   SUPER(ReflectionView,ListView) Q_OBJECT
 public:
-  ReflectionView();
+  using Model = model::ReflectionViewModel;
+
+  ReflectionView(Model&);
+
+  void addReflection();
+
+private:
+  Model &model;
 };
 
 //------------------------------------------------------------------------------

@@ -76,7 +76,7 @@ public:
     *actAbout,
 
   // more actions, some not in the menu
-    *actReflectionPeak, *actReflectionReflect, *actReflectionWidth, *actReflectionAdd,
+    *actReflectionPeak, *actReflectionWidth, *actReflectionAdd, *actReflectionRemove,
     *actImageRotate, *actImageMirror,
     *actImagesLink, *actImageOverlay, *actImagesGlobalNorm, *actImagesEnableCorr,
     *actBackgroundClear, *actBackgroundBackground, *actBackgroundShowFit,

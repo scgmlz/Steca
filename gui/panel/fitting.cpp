@@ -2,11 +2,12 @@
 #include "mainwin.h"
 #include "session.h"
 #include "core_fit_limits.h"
+#include <QAction>
 
 namespace panel {
 //------------------------------------------------------------------------------
 
-ReflectionView::ReflectionView() {
+ReflectionView::ReflectionView(Model& model_): model(model_) {
 //  TODO
 //  setColumnCount(6);
 //  hideColumn(0);
@@ -16,7 +17,11 @@ ReflectionView::ReflectionView() {
 //  setItemDelegateForColumn(2,new RadioDelegate);
 //  setItemDelegateForColumn(3,new ComboBoxDelegate);
 //  setItemDelegateForColumn(4,new IconDelegate(":/icon/eye",true));
-//  setItemDelegateForColumn(5,new IconDelegate(":/icon/rem",false));
+  //  setItemDelegateForColumn(5,new IconDelegate(":/icon/rem",false));
+}
+
+void ReflectionView::addReflection() {
+  model.addReflection();
 }
 
 //------------------------------------------------------------------------------
@@ -40,22 +45,26 @@ Fitting::Fitting(MainWin& mainWin,Session& session)
   });
 
   box->addWidget(label("Reflections"));
-  box->addWidget(reflectionView = new ReflectionView());
+  box->addWidget(reflectionView = new ReflectionView(session.reflectionViewModel));
 
   auto hr = hbox();
   box->addLayout(hr);
 
   hr->addWidget(iconButton(mainWin.actReflectionPeak));
-  hr->addWidget(iconButton(mainWin.actReflectionReflect));
   hr->addWidget(iconButton(mainWin.actReflectionWidth));
   hr->addStretch();
   hr->addWidget(iconButton(mainWin.actReflectionAdd));
+  hr->addWidget(iconButton(mainWin.actReflectionRemove));
 
   auto vb = vbox();
   box->addLayout(vb);
   vb->addWidget(label("info1"));
   vb->addWidget(label("info2"));
   vb->addWidget(label("info3"));
+
+  connect(mainWin.actReflectionAdd, &QAction::triggered, [this]() {
+    reflectionView->addReflection();
+  });
 }
 
 //------------------------------------------------------------------------------

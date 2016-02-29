@@ -93,10 +93,10 @@ void MainWin::initActions() {
 
   actAbout      = simple("About...");
 
-  actReflectionPeak       = simple("Peak",    "Peak",      ":/icon/peak");
-  actReflectionReflect    = simple("Reflect", "Reflect",      ":/icon/reflect");
-  actReflectionWidth      = simple("Width",   "Width",      ":/icon/width");
-  actReflectionAdd        = simple("Width",   "Width",      ":/icon/add");
+  actReflectionPeak       = simple("Peak",  "Set reflection peak",  ":/icon/peak");
+  actReflectionWidth      = simple("Width", "Set reflection width", ":/icon/width");
+  actReflectionAdd        = simple("Add",   "Add reflection",       ":/icon/add");
+  actReflectionRemove     = simple("Remove","Remove reflection",    ":/icon/rem");
 
   actImagesLink           = toggle("Link",         "Use the same value for all cuts", ":/icon/link");
   actImageOverlay         = toggle("overlay",      "Show cut", ":/icon/eye");

@@ -23,7 +23,8 @@ public:
 //------------------------------------------------------------------------------
 
 Session::Session(MainWin& mainWin_)
-: mainWin(mainWin_), globalNorm(false), fileViewModel(*this), datasetViewModel(*this) {
+: mainWin(mainWin_), globalNorm(false)
+, fileViewModel(*this), datasetViewModel(*this), reflectionViewModel(*this) {
 }
 
 Session::~Session() {

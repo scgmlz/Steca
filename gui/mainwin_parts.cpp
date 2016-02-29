@@ -171,10 +171,11 @@ DockDatasetInfo::DockDatasetInfo(MainWin&,Session& session)
     }
   });
 
-  for (auto &item: infoItems)
+  for (auto &item: infoItems) {
     connect(item.cb, &QCheckBox::clicked, this, [this,&session]() {
       session.datasetViewModel.setInfoItems(&infoItems);
     });
+  }
 }
 
 DockDatasetInfo::Info::Info(InfoItems& items) {

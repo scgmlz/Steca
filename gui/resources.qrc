@@ -6,7 +6,7 @@
         <file alias="background">icons/background.svg</file>
         <file alias="integral">icons/integral.svg</file>
         <file alias="peak">icons/peak.svg</file>
-        <file alias="reflect">icons/reflect.svg</file>
+        <file alias="reflect (currently not used)">icons/reflect.svg</file>
         <file alias="width">icons/width.svg</file>
         <file alias="mirror_horz">icons/mirror_horz.svg</file>
         <file alias="mirror_vert">icons/mirror_vert.svg</file>
@@ -21,5 +21,4 @@
         <file alias="left">icons/left.svg</file>
         <file alias="bottom">icons/bottom.svg</file>
     </qresource>
-    <qresource prefix="/"/>
 </RCC>
