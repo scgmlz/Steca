@@ -145,18 +145,15 @@ void RadioDelegate::paint(QPainter *painter,
 //------------------------------------------------------------------------------
 
 ComboBoxDelegate::ComboBoxDelegate() {
-  Items.push_back("Integral");
-  Items.push_back("Lorentzian");
-  Items.push_back("Gaussian");
+  items.push_back("Integral");
+  items.push_back("Lorentzian");
+  items.push_back("Gaussian");
 }
 
 
 QWidget *ComboBoxDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/* option */, const QModelIndex &/* index */) const {
   QComboBox* editor = new QComboBox(parent);
-  for(unsigned int i = 0; i < Items.size(); ++i)
-    {
-    editor->addItem(Items[i].c_str());
-    }
+  for (auto item: items) editor->addItem(item.c_str());
   return editor;
 }
 
@@ -177,7 +174,7 @@ void ComboBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionV
 
 void ComboBoxDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const {
   QStyleOptionViewItemV4 myOption = option;
-  QString text = Items[index.row()].c_str();
+  QString text = items[index.row()].c_str();
 
   myOption.text = text;
 

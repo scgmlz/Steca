@@ -114,7 +114,6 @@ void Session::addFile(rcstr filePath) THROWS {
 
   core::shp_File file = super::addFile(filePath);
   if (!file.isNull()) {
-    emit fileAdded(file);
     emit filesChanged();
   }
 }
@@ -132,8 +131,7 @@ void Session::remFile(uint i) {
     emit correctionEnabled(super::isCorrEnabled());
     emit filesChanged();
   } else {
-    auto file = super::remFile(i);
-    emit fileRemoved(file);
+    super::remFile(i);
     emit filesChanged();
   }
 

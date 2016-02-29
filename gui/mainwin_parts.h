@@ -28,7 +28,7 @@ protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);
 
 public:
-  void removeSelectedFile();
+  void removeSelected();
   void update();
 
 private:

@@ -1,27 +1,55 @@
 #include "fitting.h"
 #include "mainwin.h"
 #include "session.h"
+#include "delegates.h"
 #include "core_fit_limits.h"
 #include <QAction>
 
 namespace panel {
 //------------------------------------------------------------------------------
 
-ReflectionView::ReflectionView(Model& model_): model(model_) {
-//  TODO
-//  setColumnCount(6);
-//  hideColumn(0);
-//  setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-//  header()->hide();
-//  setItemDelegateForColumn(1,new IconDelegate(":/icon/integral",true));
-//  setItemDelegateForColumn(2,new RadioDelegate);
-//  setItemDelegateForColumn(3,new ComboBoxDelegate);
-//  setItemDelegateForColumn(4,new IconDelegate(":/icon/eye",true));
-  //  setItemDelegateForColumn(5,new IconDelegate(":/icon/rem",false));
+ReflectionView::ReflectionView(Fitting& fitting_,Model& model_)
+: fitting(fitting_), model(model_) {
+  setModel(&model);
+  setItemDelegateForColumn(2,new ComboBoxDelegate);
+
+  for_i (model.columnCount())
+    resizeColumnToContents(i);
 }
 
 void ReflectionView::addReflection() {
   model.addReflection();
+  update();
+}
+
+void ReflectionView::removeSelected() {
+  auto index = currentIndex();
+  if (!index.isValid()) return;
+
+  uint row = index.row();
+  index = ((int)row < model.rowCount()) ? index : index.sibling(row-1,0);
+
+  model.remReflection(row);
+  update();
+}
+
+void ReflectionView::update() {
+  model.signalReset();
+  auto index = currentIndex();
+  // keep the current index, or select the last item
+  setCurrentIndex(index.isValid()
+    ? index
+    : model.index(qMax(0,model.rowCount()-1),0));
+
+  fitting.mainWin.actReflectionRemove->setEnabled(model.rowCount() > 0);
+}
+
+void ReflectionView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
+  super::selectionChanged(selected,deselected);
+//  auto indexes = selected.indexes();
+//  model.setSelectedDataset(indexes.isEmpty()
+//    ? core::shp_Dataset()
+//    : model.data(indexes.first(), Model::GetDatasetRole).value<core::shp_Dataset>());
 }
 
 //------------------------------------------------------------------------------
@@ -45,7 +73,7 @@ Fitting::Fitting(MainWin& mainWin,Session& session)
   });
 
   box->addWidget(label("Reflections"));
-  box->addWidget(reflectionView = new ReflectionView(session.reflectionViewModel));
+  box->addWidget((reflectionView = new ReflectionView(*this,session.reflectionViewModel)));
 
   auto hr = hbox();
   box->addLayout(hr);
@@ -64,6 +92,10 @@ Fitting::Fitting(MainWin& mainWin,Session& session)
 
   connect(mainWin.actReflectionAdd, &QAction::triggered, [this]() {
     reflectionView->addReflection();
+  });
+
+  connect(mainWin.actReflectionRemove, &QAction::triggered, [this]() {
+    reflectionView->removeSelected();
   });
 }
 

@@ -228,11 +228,11 @@ bool Session::ImageCut::operator==(ImageCut const& that) {
 }
 
 uint Session::ImageCut::getWidth(QSize const& fullSize) const {
-  return fullSize.width() - left - right;
+  return qMax(fullSize.width() - (int)left - (int)right, 0);
 }
 
 uint Session::ImageCut::getHeight(QSize const& fullSize) const {
-  return fullSize.height() - top - bottom;
+  return qMax(fullSize.height() - (int)top - (int)bottom, 0);
 }
 
 uint Session::ImageCut::getCount(QSize const& fullSize) const {

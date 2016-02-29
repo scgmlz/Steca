@@ -58,10 +58,7 @@ signals:
   void correctionEnabled(bool);
   void displayChange();               // TODO this signal
 
-  void fileAdded(core::shp_File);     // not null
-  void fileRemoved(core::shp_File);   // not null
   void fileSelected(core::shp_File);  // may be null
-
   void filesChanged();                // emited after corrFileSet, fileAdded, fileRemoved
 
   void datasetSelected(core::shp_Dataset);  // may be null

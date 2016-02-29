@@ -97,8 +97,8 @@ QVariant DatasetViewModel::data(QModelIndex const& index,int role) const {
   }
 }
 
-QVariant DatasetViewModel::headerData(int section, Qt::Orientation orientation, int role) const {
-  if (Qt::Horizontal != orientation || Qt::DisplayRole != role
+QVariant DatasetViewModel::headerData(int section, Qt::Orientation, int role) const {
+  if (Qt::DisplayRole != role
       || section < 1 || section-2 >= attributeNums.count())
     return QVariant();
 
@@ -137,24 +137,58 @@ core::shp_Dataset const& DatasetViewModel::getDataset(int row) const {
 ReflectionViewModel::ReflectionViewModel(Session& session): SessionModel(session) {
 }
 
-int ReflectionViewModel::columnCount(const QModelIndex&) const {
+int ReflectionViewModel::columnCount(QModelIndex const&) const {
   return 3;
 }
 
-int ReflectionViewModel::rowCount(const QModelIndex&) const {
+int ReflectionViewModel::rowCount(QModelIndex const&) const {
   return reflections.count();
 }
 
-QVariant ReflectionViewModel::data(const QModelIndex&, int) const {
-  return QVariant();
+QVariant ReflectionViewModel::data(QModelIndex const& index, int role) const {
+  int row = index.row(), col = index.column(), rowCnt = rowCount(index), colCnt = columnCount(index);
+  if (row < 0 || row >= rowCnt || col < 0 || col >= colCnt) return QVariant();
+
+  switch (role) {
+    case Qt::DisplayRole: {
+      switch (col) {
+      case 0:
+        return QVariant();
+      case 1:
+        return str().setNum(row+1);
+      default:
+        return "A";
+      }
+    }
+    default:
+      return QVariant();
+  }
 }
 
-QVariant ReflectionViewModel::headerData(int, Qt::Orientation, int) const {
+QVariant ReflectionViewModel::headerData(int section, Qt::Orientation, int role) const {
+  if (Qt::DisplayRole == role) {
+    switch (section) {
+    case 1:
+      return "#";
+    default:
+      break;
+    }
+  }
+
   return QVariant();
 }
 
 void ReflectionViewModel::addReflection() {
   reflections.append(8);
+}
+
+void ReflectionViewModel::remReflection(uint i) {
+  reflections.remove(i);
+}
+
+void ReflectionViewModel::signalReset() {
+  beginResetModel();
+  endResetModel();    // emits a signal to connected views
 }
 
 //------------------------------------------------------------------------------

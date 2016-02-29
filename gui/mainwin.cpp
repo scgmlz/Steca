@@ -97,6 +97,7 @@ void MainWin::initActions() {
   actReflectionWidth      = simple("Width", "Set reflection width", ":/icon/width");
   actReflectionAdd        = simple("Add",   "Add reflection",       ":/icon/add");
   actReflectionRemove     = simple("Remove","Remove reflection",    ":/icon/rem");
+  actReflectionRemove->setEnabled(false);
 
   actImagesLink           = toggle("Link",         "Use the same value for all cuts", ":/icon/link");
   actImageOverlay         = toggle("overlay",      "Show cut", ":/icon/eye");

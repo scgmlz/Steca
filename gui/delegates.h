@@ -64,7 +64,7 @@ public:
   void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
 private:
-  std::vector<std::string> Items;
+  std::vector<std::string> items;
 
 };
 

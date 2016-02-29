@@ -38,7 +38,7 @@ public:
 
   enum { GetFileRole = Qt::UserRole, IsCorrectionFileRole };
 
-  int rowCount(QModelIndex const&)      const;
+  int rowCount(QModelIndex const& = QModelIndex())      const;
   QVariant data(QModelIndex const&,int) const;
 
   void signalReset();
@@ -51,8 +51,8 @@ public:
 
   enum { GetDatasetRole = Qt::UserRole };
 
-  int columnCount(QModelIndex const&)   const;
-  int rowCount(QModelIndex const&)      const;
+  int columnCount(QModelIndex const& = QModelIndex())   const;
+  int rowCount(QModelIndex const& = QModelIndex())      const;
   QVariant data(QModelIndex const&,int) const;
   QVariant headerData(int,Qt::Orientation,int) const;
 
@@ -73,12 +73,15 @@ class ReflectionViewModel: public QAbstractTableModel, public SessionModel {
 public:
   ReflectionViewModel(Session&);
 
-  int columnCount(QModelIndex const&)   const;
-  int rowCount(QModelIndex const&)      const;
+  int columnCount(QModelIndex const& = QModelIndex())   const;
+  int rowCount(QModelIndex const& = QModelIndex())      const;
   QVariant data(QModelIndex const&,int) const;
   QVariant headerData(int,Qt::Orientation,int) const;
 
   void addReflection();
+  void remReflection(uint);
+
+  void signalReset();
 
 private:
   QVector<int> reflections;

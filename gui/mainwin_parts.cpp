@@ -38,15 +38,17 @@ void FileView::selectionChanged(QItemSelection const& selected, QItemSelection c
     : model.data(indexes.first(), Model::GetFileRole).value<core::shp_File>());
 }
 
-void FileView::removeSelectedFile() {
+void FileView::removeSelected() {
   auto index = currentIndex();
   if (!index.isValid()) return;
 
   uint row = index.row();
-  index = (row+1 < model.numFiles(true)) ? index : index.sibling(row-1,0);
+  index = ((int)(row+1) < model.rowCount()) ? index : index.sibling(row-1,0);
+
   model.remFile(row);
-  if (0>=model.numFiles(true))
+  if (0>=model.rowCount()) // no more files
     model.setSelectedFile(core::shp_File());
+
   setCurrentIndex(index);
 }
 
@@ -72,7 +74,7 @@ DockFiles::DockFiles(MainWin& mainWin,Session& session)
   h->addWidget(iconButton(mainWin.actRemoveFile));
 
   connect(mainWin.actRemoveFile, &QAction::triggered, [this]() {
-    fileView->removeSelectedFile();
+    fileView->removeSelected();
   });
 
   connect(&session, &Session::filesChanged, [this]() {
@@ -91,7 +93,7 @@ DatasetView::DatasetView(Model& model_): model(model_) {
   });
 
   connect(&model, &QAbstractItemModel::modelReset, [this]() {
-    for_i (model.columnCount(QModelIndex()))
+    for_i (model.columnCount())
       resizeColumnToContents(i);
   });
 }
