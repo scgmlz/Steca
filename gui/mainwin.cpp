@@ -99,17 +99,17 @@ void MainWin::initActions() {
   actReflectionRemove     = simple("Remove","Remove reflection",    ":/icon/rem");
   actReflectionRemove->setEnabled(false);
 
-  actImagesLink           = toggle("Link",         "Use the same value for all cuts", ":/icon/link");
-  actImageOverlay         = toggle("overlay",      "Show cut", ":/icon/eye");
-  actImagesGlobalNorm     = toggle("global norm.", "Display data using a global intensity scale", ":/icon/eye");    // TODO different icon
+  actImagesLink           = toggle("Link",         "Use the same value for all cuts", ":/icon/linkNew");
+  actImageOverlay         = toggle("overlay",      "Show cut", ":/icon/imageCrop");
+  actImagesGlobalNorm     = toggle("global norm.", "Display data using a fixed intensity scale", ":/icon/eye");    // TODO different icon
   actImageRotate          = simple("Rotate",       "Rotate 90° clockwise", ":/icon/rotate0", keys.keyRotateImage);
   actImageMirror          = toggle("Mirror",       "Mirror image", ":/icon/mirror_horz");
 
   actBackgroundClear      = simple("Background",    "Clear regions for background fitting", ":/icon/link");
-  actBackgroundBackground = toggle("Background",    "Select regions for background fitting", ":/icon/background");
+  actBackgroundBackground = toggle("Background",    "Select regions for background fitting", ":/icon/pekBackground");
   actBackgroundShowFit    = toggle("BackgroundEye", "Show background fit", ":/icon/eye");
 
-  actHasBeamOffset        = toggle("Beam centre offset", "Enable beam center offset (for X-ray instruments)", ":/icon/eye"); // TODO icon
+  actHasBeamOffset        = toggle("Beam centre offset", "Enable beam center offset (for X-ray instruments)", ":/icon/beam");
 
   connect(session, &Session::correctionEnabled, [this](bool on) {
     actImagesEnableCorr->setChecked(on);

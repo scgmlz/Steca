@@ -96,10 +96,10 @@ DatasetOptions1::DatasetOptions1(MainWin& mainWin_, Session& session_)
   box->addLayout(vn);
 
   QVector<QString> options;
-  options.append("Disable normalization");
-  options.append("Normalize to measurement time");
-  options.append("Normalize to moitor counts");
-  options.append("Normalize to background level");
+  options.append("Disable");
+  options.append("Measurement time");
+  options.append("Moitor counts");
+  options.append("Background level");
 
   vn->addWidget(comboBox(options));
   box->addStretch();
@@ -226,7 +226,6 @@ DatasetOptions2::DatasetOptions2(MainWin& mainWin_, Session& session_)
   hb->addWidget(iconButton(mainWin.actImageRotate));
   hb->addWidget(iconButton(mainWin.actImageMirror));
   hb->addSpacing(1);
-  hb->addWidget(iconButton(mainWin.actImageOverlay));
   hb->addWidget(iconButton(mainWin.actImagesGlobalNorm));
   hb->addStretch();
 
@@ -234,19 +233,21 @@ DatasetOptions2::DatasetOptions2(MainWin& mainWin_, Session& session_)
   auto gc = gridLayout();
   box->addLayout(gc);
 
-  gc->addWidget(icon(":/icon/top"),                 0,0);
+  gc->addWidget(icon(":/icon/cutTopU"),           0,0);
   gc->addWidget((cutTop = spinCell(4,0)),           0,1);
   cutTop->setToolTip("Top cut");
-  gc->addWidget(icon(":/icon/bottom"),              0,2);
+  gc->addWidget(icon(":/icon/cutBottomU"),          0,2);
   gc->addWidget((cutBottom = spinCell(4,0)),        0,3);
   cutBottom->setToolTip("Bottom cut");
 
-  gc->addWidget(iconButton(mainWin.actImagesLink),  0,5);
 
-  gc->addWidget(icon(":/icon/left"),                1,0);
+  gc->addWidget(iconButton(mainWin.actImagesLink),  0,5);
+  gc->addWidget(iconButton(mainWin.actImageOverlay), 1,5);
+
+  gc->addWidget(icon(":/icon/cutLeftU"),            1,0);
   gc->addWidget((cutLeft = spinCell(4,0)),          1,1);
   cutLeft->setToolTip("Left cut");
-  gc->addWidget(icon(":/icon/right"),               1,2);
+  gc->addWidget(icon(":/icon/cutRightU"),           1,2);
   gc->addWidget((cutRight = spinCell(4,0)),         1,3);
   cutRight->setToolTip("Right cut");
   gc->setColumnStretch(4,1);

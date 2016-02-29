@@ -20,5 +20,13 @@
         <file alias="right">icons/right.svg</file>
         <file alias="left">icons/left.svg</file>
         <file alias="bottom">icons/bottom.svg</file>
+        <file alias="beam">icons/beamOffset.svg</file>
+        <file alias="cutBottomU">icons/cutBottomU.svg</file>
+        <file alias="linkNew">icons/linkNew.svg</file>
+        <file alias="cutLeftU">icons/cutLeftU.svg</file>
+        <file alias="cutRightU">icons/cutRightU.svg</file>
+        <file alias="cutTopU">icons/cutTopU.svg</file>
+        <file alias="imageCrop">icons/imageCrop.svg</file>
+        <file alias="pekBackground">icons/pekBackground.svg</file>
     </qresource>
 </RCC>
