@@ -32,6 +32,39 @@ Polynomial fitBackground(TI_Curve const& dgram, core::Ranges const& bgRanges, ui
   return bgPolynomial;
 }
 
+Gaussian fitPeak(TI_Curve const& dgram, core::Range const& range) {
+  core::Curve curve;
+  ASSERT(dgram.isOrdered())
+
+  auto tth   = dgram.getTth();
+  auto inten = dgram.getInten();
+
+  qreal peakTth = 0, peakIntens = 0, fwhm = qQNaN();
+  uint di = 0, count = dgram.count();
+  while (di<count && tth[di] <  range.min)
+    ++di;
+  while (di<count && tth[di] <= range.max) {
+    qreal t = tth[di], in = inten[di];
+    curve.append(t,in);
+    ++di;
+
+    if (peakIntens < in) {
+      peakTth = t; peakIntens = in;
+    }
+
+    if (in > peakIntens/2)
+      fwhm = 2 * (t - peakTth);
+  }
+
+  Gaussian gaussian;
+  gaussian.setPeak(peakTth,peakIntens);
+  gaussian.setFWHM(fwhm);
+
+  FittingLevenbergMarquardt().fitWithoutCheck(gaussian,curve);
+
+  return gaussian;
+}
+
 //------------------------------------------------------------------------------
 }}
 // eof

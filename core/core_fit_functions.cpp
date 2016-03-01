@@ -13,6 +13,10 @@ Range Function::Parameter::getRange() const {
   return range.isValid() ? range : Range(value);
 }
 
+void Function::Parameter::setRange(qreal min, qreal max) {
+  range.set(min,max);
+}
+
 bool Function::Parameter::checkValue(qreal newValue, qreal newError) {
   if (range.isValid()) {
     if (!range.contains(newValue)) return false;
@@ -80,6 +84,14 @@ uint SimpleFunction::parameterCount() const {
 
 Function::Parameter& SimpleFunction::getParameter(uint i) {
   return parameters[i];
+}
+
+qreal SimpleFunction::parValue(uint i, const qreal *parameterValues) const {
+  return parameterValues ? parameterValues[i] : parameters[i].getValue();
+}
+
+void SimpleFunction::setValue(uint i, qreal val) {
+  parameters[i].setValue(val);
 }
 
 //------------------------------------------------------------------------------
@@ -163,17 +175,77 @@ static qreal pow_n(qreal x, uint n) {
   return value;
 }
 
-qreal Polynomial::y(qreal x, const qreal *parVals) const {
+qreal Polynomial::y(qreal x, const qreal *parameterValues) const {
   qreal value = 0;
-  for_i (parameters.count()) {
-    qreal parVal = parVals ? parVals[i] : parameters[i].getValue();
-    value += parVal * pow_n(x,i);
-  }
+  for_i (parameters.count())
+    value += parValue(i,parameterValues) * pow_n(x,i);
   return value;
 }
 
 qreal Polynomial::dy(qreal x, uint i, qreal const*) const {
   return pow_n(x,i);
+}
+
+//------------------------------------------------------------------------------
+
+PeakFunction::PeakFunction() {
+}
+
+//------------------------------------------------------------------------------
+
+Gaussian::Gaussian(qreal ampl, qreal mu, qreal sigma) {
+  setParameterCount(3);
+
+  auto &parAmpl  = parameters[parAMPL];
+  auto &parMu    = parameters[parMU];
+  auto &parSigma = parameters[parSIGMA];
+
+  parAmpl.setValue(ampl);
+  parAmpl.setRange(0,qInf());
+
+  parMu.setValue(mu);
+
+  parSigma.setValue(sigma);
+  parSigma.setRange(0,qInf());
+}
+
+qreal Gaussian::y(qreal x, const qreal *parameterValues) const {
+  qreal ampl  = parValue(parAMPL,  parameterValues);
+  qreal mu    = parValue(parMU,    parameterValues);
+  qreal sigma = parValue(parSIGMA, parameterValues);
+
+  qreal arg = (x - mu) / sigma;
+  return ampl * exp(-0.5 * arg * arg);
+}
+
+qreal Gaussian::dy(qreal x, uint parameterIndex, const qreal *parameterValues) const {
+  qreal ampl  = parValue(parAMPL,  parameterValues);
+  qreal mu    = parValue(parMU,    parameterValues);
+  qreal sigma = parValue(parSIGMA, parameterValues);
+
+  qreal arg = (x - mu) / sigma;
+  qreal ex  = exp(-0.5 * arg * arg);
+
+  switch (parameterIndex) {
+  case parAMPL: // ampl
+    return ex;
+  case parMU: // mu
+    return ampl * ex * (x-mu)/(sigma*sigma);
+  case parSIGMA: // sigma
+    return ampl * ex * ((x-mu)*(x-mu))/(sigma*sigma*sigma);
+  default:
+    NEVER_HERE return 0;
+  }
+}
+
+void Gaussian::setPeak(qreal tth, qreal intens) {
+  setValue(parAMPL, intens);
+  setValue(parMU,   tth);
+}
+
+void Gaussian::setFWHM(qreal val) {
+  // sigma = FWHM * 1/4 * (SQRT(2)/SQRT(ln(2))) = FWHM * 0.424661
+  setValue(parSIGMA, val * 0.424661);
 }
 
 //------------------------------------------------------------------------------

@@ -50,29 +50,33 @@ public:
   enum Tool {
     TOOL_NONE,
     TOOL_BACKGROUND,
+    TOOL_PEAK_REGION,
   };
 
   DiffractogramPlot(Diffractogram&);
 
+public:
   void setTool(Tool);
   Tool getTool() const { return tool; }
 
-  void plot(core::TI_Curve const&,core::TI_Curve const&, core::TI_Curve const&);
+  void plot(core::TI_Curve const&,core::TI_Curve const&, core::TI_Curve const&, core::TI_Curve const&);
 
   core::Range fromPixels(int,int);
 
   void clearBg();
   void addBg(core::Range const&);
   void remBg(core::Range const&);
+  void setPeakRange(core::Range const&);
   void updateBg();
 
 protected:
+  void addBgItem(core::Range const&);
   void resizeEvent(QResizeEvent*);
 
 private:
   Diffractogram &diffractogram;
   Tool tool;
-  QCPGraph *bgGraph, *dgramGraph, *dgramBgFittedGraph;
+  QCPGraph *bgGraph, *dgramGraph, *dgramBgFittedGraph, *dgramPeak;
   DiffractogramPlotOverlay *overlay;
 
 };
@@ -91,14 +95,17 @@ private:
 
   DiffractogramPlot *plot;
 
-  core::TI_Curve dgram, dgramBgFitted, bg;
+  core::TI_Curve dgram, dgramBgFitted, bg, peak;
   core::Ranges bgRanges;
   core::fit::Polynomial bgPolynomial;
   bool showBgFit;
 
+  core::Range peakRange;
+
 public:
   void calcDgram();
   void calcBackground();
+  void calcPeak();  // TODO temporary for development, fitting one Gaussian peak
 };
 
 //------------------------------------------------------------------------------

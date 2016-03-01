@@ -20,6 +20,8 @@ public:
     qreal getValue() const  { return value; }
     Range getRange() const; ///< the allowed range
 
+    void setRange(qreal min,qreal max);
+
     /// checks whether a new value/error pair would pass the constraints
     bool  checkValue(qreal value, qreal error=0);
     /// conditionally sets the new value/error pair
@@ -80,6 +82,8 @@ public:
 
 protected:
   QVector<Parameter> parameters;
+  qreal parValue(uint parIndex, qreal const* parameterValues) const;
+  void  setValue(uint parIndex, qreal val);
 };
 
 //------------------------------------------------------------------------------
@@ -125,6 +129,63 @@ public:
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
+};
+
+//------------------------------------------------------------------------------
+/// Abstract peak function
+
+class PeakFunction: public SimpleFunction {
+  SUPER(PeakFunction,SimpleFunction)
+public:
+  PeakFunction();
+
+public:
+//  virtual qreal getArea()                           = 0;
+//  virtual qreal getAreaErrorAbsolute()              = 0;
+//  virtual qreal getAreaErrorRelativInPercent()      = 0;
+//  virtual void  setFWHM(qreal value)                = 0;
+//  virtual void  setFWHMIsFixed(bool isFixed)        = 0;
+//  virtual void  setFWHMAbsoluteLimit(qreal min, qreal max) = 0;
+//  virtual qreal getFWHM()                           = 0;
+//  virtual qreal getFWHMErrorAbsolute()              = 0;
+//  virtual qreal getFWHMErrorRelativInPercent()      = 0;
+//  virtual bool  getFWHMIsFixed()                    = 0;
+//  virtual qreal getFWHMAbsoluteLimitMin()           = 0;
+//  virtual qreal getFWHMAbsoluteLimitMax()           = 0;
+//  virtual void  setMax(qreal value)                 = 0;
+//  virtual void  setMaxIsFixed(bool)                 = 0;
+//  virtual void  setMaxAbsoluteLimit(qreal min, qreal max) = 0;
+//  virtual qreal getMax()                            = 0;
+//  virtual qreal getMaxErrorAbsolute()               = 0;
+//  virtual qreal getMaxErrorRelativInPercent()       = 0;
+//  virtual bool  getMaxIsFixed()                     = 0;
+//  virtual qreal getMaxAbsoluteLimitMin()            = 0;
+//  virtual qreal getMaxAbsoluteLimitMax()            = 0;
+//  virtual void  setPositionOfMax(qreal)             = 0;
+//  virtual void  setPositionOfMaxIsFixed(bool)       = 0;
+//  virtual void  setPositionOfMaxAbsoluteLimit(qreal min, qreal max) = 0;
+//  virtual qreal getPositionOfMax()                  = 0;
+//  virtual qreal getPositionOfMaxErrorAbsolute()     = 0;
+//  virtual qreal getPositionOfMaxErrorRelativInPercent() = 0;
+//  virtual bool  getPositionOfMaxIsFixed()           = 0;
+//  virtual qreal getPositionOfMaxAbsoluteLimitMin()  = 0;
+//  virtual qreal getPositionOfMaxAbsoluteLimitMax()  = 0;
+};
+
+//------------------------------------------------------------------------------
+
+class Gaussian: public PeakFunction {
+  SUPER(Gaussian,PeakFunction)
+public:
+  enum { parAMPL, parMU, parSIGMA };
+
+  Gaussian(qreal ampl=1, qreal mu=0, qreal sigma=1);
+
+  qreal y(qreal x, qreal const* parameterValues = nullptr) const;
+  qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
+
+  void setPeak(qreal tth, qreal intens);
+  void setFWHM(qreal);
 };
 
 //------------------------------------------------------------------------------

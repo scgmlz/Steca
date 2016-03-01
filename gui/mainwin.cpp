@@ -95,7 +95,7 @@ void MainWin::initActions() {
 
   actAbout      = simple("About...");
 
-  actSelectPeak           = simple("Select Peak", "Select Peak", ":/icon/selectPeak");
+  actSelectPeak           = toggle("Select Peak", "Select Peak", ":/icon/selectPeak");
   actReflectionPeak       = simple("Peak",  "Set reflection peak",  ":/icon/peak");
   actReflectionWidth      = simple("Width", "Set reflection width", ":/icon/width");
   actReflectionAdd        = simple("Add",   "Add reflection",       ":/icon/add");

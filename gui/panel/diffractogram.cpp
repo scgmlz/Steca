@@ -44,12 +44,16 @@ void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
 
   core::Range range(plot.fromPixels(mouseDownPos,cursorPos));
   switch (plot.getTool()) {
-  case DiffractogramPlot::TOOL_BACKGROUND: {
+  case DiffractogramPlot::TOOL_BACKGROUND:
     if (Qt::LeftButton == e->button())
       plot.addBg(range);
     else
       plot.remBg(range);
-  }
+    break;
+
+  case DiffractogramPlot::TOOL_PEAK_REGION:
+    plot.setPeakRange(range);
+
   default:
     break;
   }
@@ -108,23 +112,26 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram_): diffractogr
   bgGraph             = addGraph();
   dgramGraph          = addGraph();
   dgramBgFittedGraph  = addGraph();
+  dgramPeak           = addGraph();
 
   bgGraph->setPen(QPen(Qt::green,0));
   dgramGraph->setPen(QPen(Qt::gray));
   dgramBgFittedGraph->setPen(QPen(Qt::blue,2));
+  dgramPeak->setPen(QPen(Qt::black,3));
 
   // background regions
   addLayer("bg",layer("background"),QCustomPlot::limAbove);
 
-  setTool(TOOL_NONE);
+  tool = TOOL_NONE;
 }
 
 void DiffractogramPlot::setTool(Tool tool_) {
   tool = tool_;
+  updateBg();
 }
 
 void DiffractogramPlot::plot(
-  core::TI_Curve const& dgram, core::TI_Curve const& dgramBgFitted, core::TI_Curve const& bg)
+  core::TI_Curve const& dgram, core::TI_Curve const& dgramBgFitted, core::TI_Curve const& bg, core::TI_Curve const& peak)
 {
   if (dgram.isEmpty()) {
     xAxis->setVisible(false);
@@ -145,8 +152,7 @@ void DiffractogramPlot::plot(
       intenRange = core::Range(-max/30,max/3);
     } else {
       intenRange = dgramBgFitted.getIntenRange();
-      if (diffractogram.showBgFit)
-        intenRange.extend(dgram.getIntenRange());
+      intenRange.extend(dgram.getIntenRange());
     }
 
     xAxis->setRange(tthRange.min,tthRange.max);
@@ -156,12 +162,12 @@ void DiffractogramPlot::plot(
 
     if (diffractogram.showBgFit) {
       bgGraph->setData(bg.getTth(),bg.getInten());
-      dgramGraph->setData(dgram.getTth(),dgram.getInten());
     } else {
       bgGraph->clearData();
-      dgramGraph->clearData();
     }
+    dgramGraph->setData(dgram.getTth(),dgram.getInten());
     dgramBgFittedGraph->setData(dgramBgFitted.getTth(),dgramBgFitted.getInten());
+    dgramPeak->setData(peak.getTth(),peak.getInten());
   }
 
   replot();
@@ -186,30 +192,44 @@ void DiffractogramPlot::remBg(core::Range const& range) {
   if (diffractogram.bgRanges.rem(range)) updateBg();
 }
 
+void DiffractogramPlot::setPeakRange(core::Range const& range) {
+  diffractogram.peakRange = range;
+  updateBg();
+}
+
 void DiffractogramPlot::updateBg() {
   clearItems();
 
-  if (diffractogram.showBgFit) {
-    setCurrentLayer("bg");
-
-    auto bgColor = QColor(0xff,0xf0,0xf0);
-    auto const& rs = diffractogram.bgRanges;
-    for_i (rs.count()) {
-      auto const& r = rs.at(i);
-      auto ir = new QCPItemRect(this);
-      ir->setPen(QPen(bgColor));
-      ir->setBrush(QBrush(bgColor));
-      auto br = ir->bottomRight;
-      br->setTypeY(QCPItemPosition::ptViewportRatio);
-      br->setCoords(r.max,1);
-      auto tl = ir->topLeft;
-      tl->setTypeY(QCPItemPosition::ptViewportRatio);
-      tl->setCoords(r.min,0);
-      addItem(ir);
-    }
+  switch (tool) {
+  default:
+    break;
+  case TOOL_BACKGROUND: {
+    core::Ranges const& rs = diffractogram.bgRanges;
+    for_i (rs.count()) addBgItem(rs.at(i));
+    break;
+  }
+  case TOOL_PEAK_REGION:
+    addBgItem(diffractogram.peakRange);
+    break;
   }
 
   diffractogram.renderDataset();
+}
+
+void DiffractogramPlot::addBgItem(core::Range const& range) {
+  setCurrentLayer("bg");
+  auto bgColor = QColor(0xff,0xf0,0xf0);
+
+  auto ir = new QCPItemRect(this);
+  ir->setPen(QPen(bgColor));
+  ir->setBrush(QBrush(bgColor));
+  auto br = ir->bottomRight;
+  br->setTypeY(QCPItemPosition::ptViewportRatio);
+  br->setCoords(range.max,1);
+  auto tl = ir->topLeft;
+  tl->setTypeY(QCPItemPosition::ptViewportRatio);
+  tl->setCoords(range.min,0);
+  addItem(ir);
 }
 
 void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
@@ -246,17 +266,24 @@ Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
     renderDataset();
   });
 
+  // TODO clean up the below connects
   connect(mainWin.actBackgroundClear, &QAction::triggered, [this]() {
     plot->clearBg();
   });
 
-  connect(mainWin.actBackgroundBackground, &QAction::toggled, [this](bool on) {
+  connect(mainWin.actBackgroundBackground, &QAction::toggled, [this,&mainWin](bool on) {
+    if (on) mainWin.actSelectPeak->setChecked(false); // works as radio
     plot->setTool(on ? DiffractogramPlot::TOOL_BACKGROUND : DiffractogramPlot::TOOL_NONE);
   });
 
   connect(mainWin.actBackgroundShowFit, &QAction::toggled, [this](bool on) {
     showBgFit = on;
     plot->updateBg();
+  });
+
+  connect(mainWin.actSelectPeak, &QAction::toggled, [this,&mainWin](bool on) {
+    if (on) mainWin.actBackgroundBackground->setChecked(false); // works as radio
+    plot->setTool(on ? DiffractogramPlot::TOOL_PEAK_REGION : DiffractogramPlot::TOOL_NONE);
   });
 
   mainWin.actBackgroundShowFit->setChecked(true);
@@ -270,7 +297,8 @@ void Diffractogram::setDataset(core::shp_Dataset dataset_) {
 void Diffractogram::renderDataset() {
   calcDgram();
   calcBackground();
-  plot->plot(dgram,dgramBgFitted,bg);
+  calcPeak();
+  plot->plot(dgram,dgramBgFitted,bg,peak);
 }
 
 void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, normalize==false
@@ -330,6 +358,21 @@ void Diffractogram::calcBackground() {
     qreal x = tth[i], y = bgPolynomial.y(x);
     bg.append(x,y);
     dgramBgFitted.append(x,inten[i] - y);
+  }
+}
+
+void Diffractogram::calcPeak() {
+  peak.clear();
+  if (peakRange.min < peakRange.max) {
+    auto gaussian = core::fit::fitPeak(dgramBgFitted,peakRange);
+    auto tth   = dgramBgFitted.getTth();
+    auto inten = dgramBgFitted.getInten();
+    for_i (dgramBgFitted.count()) {
+      qreal x = tth[i];
+      if (peakRange.contains(x)) {
+        peak.append(x,gaussian.y(x));
+      }
+    }
   }
 }
 
