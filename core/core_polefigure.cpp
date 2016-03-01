@@ -10,7 +10,7 @@ using matrix3d = Eigen::Matrix<qreal,3,3>;
 using vector3d = Eigen::Matrix<qreal,3,1>;
 
 // Returns a clockwise rotation matrix around the x axis.
-matrix3d rotationCWx(const qreal angle)  {
+matrix3d rotationCWx(const qreal angle) {
   matrix3d m;
   m <<  1,       0,                0
        ,0, std::cos(angle), -std::sin(angle)
