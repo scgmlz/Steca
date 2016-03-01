@@ -2,6 +2,6 @@
  <g>
   <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_2" y2="95" x2="50" y1="5" x1="50" stroke-width="8" stroke="#000" fill="none"/>
   <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_2" y2="50" x2="95" y1="50" x1="5" stroke-width="8" stroke="#000" fill="none"/>
-<ellipse ry="4" rx="4" cy="22" cx="77" stroke-width="10" stroke="#ff0000" fill="#ff0000"/>
+<ellipse ry="4" rx="4" cy="22" cx="77" stroke-width="10" stroke="#000000" fill="#000000"/>
  </g>
 </svg>

@@ -98,7 +98,7 @@ DatasetOptions1::DatasetOptions1(MainWin& mainWin_, Session& session_)
   QVector<QString> options;
   options.append("Disable");
   options.append("Measurement time");
-  options.append("Moitor counts");
+  options.append("Monitor counts");
   options.append("Background level");
 
   vn->addWidget(comboBox(options));
@@ -239,7 +239,6 @@ DatasetOptions2::DatasetOptions2(MainWin& mainWin_, Session& session_)
   gc->addWidget(icon(":/icon/cutBottomU"),          0,2);
   gc->addWidget((cutBottom = spinCell(4,0)),        0,3);
   cutBottom->setToolTip("Bottom cut");
-
 
   gc->addWidget(iconButton(mainWin.actImagesLink),  0,5);
   gc->addWidget(iconButton(mainWin.actImageOverlay), 1,5);

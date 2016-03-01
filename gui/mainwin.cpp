@@ -96,8 +96,8 @@ void MainWin::initActions() {
   actAbout      = simple("About...");
 
   actSelectPeak           = toggle("Select Peak", "Select Peak", ":/icon/selectPeak");
-  actReflectionPeak       = simple("Peak",  "Set reflection peak",  ":/icon/peak");
-  actReflectionWidth      = simple("Width", "Set reflection width", ":/icon/width");
+  actReflectionPeak       = simple("Peak",  "Set reflection peak",  ":/icon/selectHight");
+  actReflectionWidth      = simple("Width", "Set reflection width", ":/icon/selectWidth");
   actReflectionAdd        = simple("Add",   "Add reflection",       ":/icon/add");
   actReflectionRemove     = simple("Remove","Remove reflection",    ":/icon/rem");
   actReflectionRemove->setEnabled(false);
@@ -110,7 +110,7 @@ void MainWin::initActions() {
 
   actBackgroundClear      = simple("Background",    "Clear regions for background fitting", ":/icon/clearBackground");
   actBackgroundBackground = toggle("Background",    "Select regions for background fitting", ":/icon/pekBackground");
-  actBackgroundShowFit    = toggle("BackgroundEye", "Show background fit", ":/icon/eye");
+  actBackgroundShowFit    = toggle("BackgroundEye", "Show background fit", ":/icon/showBackground");
 
   actHasBeamOffset        = toggle("Beam centre offset", "Enable beam center offset (for X-ray instruments)", ":/icon/beam");
 

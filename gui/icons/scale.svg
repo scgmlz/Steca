@@ -1,9 +1,10 @@
 <svg width="100" height="100">
  <g>
-  <line y2="90.166522" x2="40.666745" y1="12.500155" x1="40.666745" stroke-width="8" stroke="#000" fill="none"/>
-  <line stroke="#000" y2="44.333307" x2="67.666677" y1="44.333307" x1="41.333414" stroke-width="6" fill="none"/>
-  <line stroke="#000" y2="67.499833" x2="67.500009" y1="67.499833" x1="39.833417" stroke-width="6" fill="none"/>
-  <path stroke="#000" d="m37.53676,19.579084l3.166653,-6.333309l3.166653,6.333309l-6.333306,0z" stroke-width="10" fill="none"/>
-  <line stroke="#000" y2="88.999733" x2="68.00001" y1="88.999733" x1="36.833442" stroke-width="6" fill="none"/>
+  <line  y2="94.916569" x2="26.500019" y1="8.750095" x1="26.500019" stroke-width="8" stroke="#000" fill="none"/>
+  <line stroke="#000" y2="6.750103" x2="76.999938" y1="6.750103" x1="22.500062" stroke-width="10" fill="none"/>
+  <line stroke="#000" y2="93.749905" x2="76.999938" y1="93.749905" x1="22.500062" stroke-width="10" fill="none"/>
+  <line stroke="#000" y2="28.750055" x2="58.833312" y1="28.750055" x1="25.833388" stroke-width="6" fill="none"/>
+  <line stroke="#000" y2="51.91667" x2="58.499979" y1="51.91667" x1="25.500055" stroke-width="6" fill="none"/>
+  <line stroke="#000" y2="72.083306" x2="59.999974" y1="72.083306" x1="27.00005" stroke-width="6" fill="none"/>
  </g>
 </svg>

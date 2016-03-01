@@ -32,5 +32,8 @@
         <file alias="scale">icons/scale.svg</file>
         <file alias="selectPeak">icons/selectPeak.svg</file>
         <file alias="useCorrection">icons/useCorrection.svg</file>
+        <file alias="selectHight">icons/selectHight.svg</file>
+        <file alias="showBackground">icons/showBackground.svg</file>
+        <file alias="selectWidth">icons/selectWidth.svg</file>
     </qresource>
 </RCC>
