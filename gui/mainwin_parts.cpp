@@ -14,8 +14,9 @@ public:
   void paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const {
     QStyleOptionViewItem o = option;
     bool isCorrectionFile = index.data(FileView::Model::IsCorrectionFileRole).toBool();
-    if(isCorrectionFile)
-      o.font.setItalic(true);
+    if(isCorrectionFile) {
+      o.font.setItalic(true);   // TODO make correction file stand out!
+    }
     super::paint(painter,o,index);
   }
 };

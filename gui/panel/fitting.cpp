@@ -78,6 +78,7 @@ Fitting::Fitting(MainWin& mainWin,Session& session)
   auto hr = hbox();
   box->addLayout(hr);
 
+  hr->addWidget(iconButton(mainWin.actSelectPeak));
   hr->addWidget(iconButton(mainWin.actReflectionPeak));
   hr->addWidget(iconButton(mainWin.actReflectionWidth));
   hr->addStretch();

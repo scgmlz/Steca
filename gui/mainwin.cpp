@@ -61,8 +61,10 @@ void MainWin::initActions() {
 
   actAddFiles           = simple("Add files...",            "Add files", ":/icon/add", keys.keyAddFiles);
   actRemoveFile         = simple("Remove selected file",    "Remove selected file", ":/icon/rem", keys.keyDeleteFile);
+  actRemoveFile->setEnabled(false);
   actLoadCorrectionFile = simple("Load correction file...", "Load correction file", "",          keys.keyLoadCorrectionFile);
-  actImagesEnableCorr   = toggle("Enable correction file",  "Enable correction by correction file", ":/icon/eye");   // TODO different icon
+  actImagesEnableCorr   = toggle("Enable correction file",  "Enable correction by correction file", ":/icon/useCorrection");   // TODO different icon
+  actImagesEnableCorr->setEnabled(false);
   actLoadSession        = simple("Load session...");
   actSaveSession        = simple("Save session...");
 
@@ -93,6 +95,7 @@ void MainWin::initActions() {
 
   actAbout      = simple("About...");
 
+  actSelectPeak           = simple("Select Peak", "Select Peak", ":/icon/selectPeak");
   actReflectionPeak       = simple("Peak",  "Set reflection peak",  ":/icon/peak");
   actReflectionWidth      = simple("Width", "Set reflection width", ":/icon/width");
   actReflectionAdd        = simple("Add",   "Add reflection",       ":/icon/add");
@@ -101,11 +104,11 @@ void MainWin::initActions() {
 
   actImagesLink           = toggle("Link",         "Use the same value for all cuts", ":/icon/linkNew");
   actImageOverlay         = toggle("overlay",      "Show cut", ":/icon/imageCrop");
-  actImagesGlobalNorm     = toggle("global norm.", "Display data using a fixed intensity scale", ":/icon/eye");    // TODO different icon
+  actImagesGlobalNorm     = toggle("global norm.", "Display data using a fixed intensity scale", ":/icon/scale");    // TODO different icon
   actImageRotate          = simple("Rotate",       "Rotate 90° clockwise", ":/icon/rotate0", keys.keyRotateImage);
   actImageMirror          = toggle("Mirror",       "Mirror image", ":/icon/mirror_horz");
 
-  actBackgroundClear      = simple("Background",    "Clear regions for background fitting", ":/icon/link");
+  actBackgroundClear      = simple("Background",    "Clear regions for background fitting", ":/icon/clearBackground");
   actBackgroundBackground = toggle("Background",    "Select regions for background fitting", ":/icon/pekBackground");
   actBackgroundShowFit    = toggle("BackgroundEye", "Show background fit", ":/icon/eye");
 
@@ -256,7 +259,7 @@ void MainWin::connectActions() {
   };
 
   onTrigger(actAddFiles, &thisCls::addFiles);
-  actRemoveFile->setEnabled(false);
+
   connect(session, &Session::fileSelected, this, [this](core::shp_File file) {
     actRemoveFile->setEnabled(nullptr!=file);
   });
@@ -305,8 +308,7 @@ void MainWin::show() {
 #endif
 
 #ifdef DEVELOPMENT_REBECCA
-  session->load(QFileInfo("/home/rebecca/SCG/STeCa-Data/2.ste"));
-  //core::io::saveTiffs(*session->getFile(0),"/home/rebecca/SCG/STeCa-Data/savedtiffs/test");
+  session->load(QFileInfo("/home/rebecca/SCG/STeCa-Data/1.ste"));
 #endif
 }
 
