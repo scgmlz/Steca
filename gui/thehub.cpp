@@ -1,5 +1,7 @@
 #include "thehub.h"
 
+#include <QSpinBox>
+#include <QDoubleSpinBox>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -39,6 +41,52 @@ PushAction::PushAction(rcstr text, rcstr tip, rcstr iconFile, QObject* parent)
 ToggleAction::ToggleAction(rcstr text, rcstr tip, rcstr iconFile, QObject* parent)
 : super(text,tip,iconFile,parent) {
   setCheckable(true);
+}
+
+//------------------------------------------------------------------------------
+
+Settings::Settings(rcstr group) {
+  setFallbacksEnabled(false);
+  beginGroup(group);
+}
+
+Settings::~Settings() {
+  endGroup();
+}
+
+QVariant Settings::readVariant(rcstr key, const QVariant &def) {
+  auto val = value(key,def);
+  return val;
+}
+
+void Settings::saveVariant(rcstr key, const QVariant &val) {
+  setValue(key,val);
+}
+
+void Settings::read(rcstr key, QAction* act, bool def) {
+  ASSERT(act->isCheckable())
+  if (act) act->setChecked(readVariant(key,def).toBool());
+}
+
+void Settings::save(rcstr key, QAction* act) {
+  ASSERT(act->isCheckable())
+  if (act) saveVariant(key,act->isChecked());
+}
+
+void Settings::read(rcstr key, QSpinBox* box, int def) {
+  if (box) box->setValue(readVariant(key,def).toInt());
+}
+
+void Settings::save(rcstr key, QSpinBox* box) {
+  if (box) saveVariant(key,box->value());
+}
+
+void Settings::read(rcstr key, QDoubleSpinBox* box, qreal def) {
+  if (box) box->setValue(readVariant(key,def).toDouble());
+}
+
+void Settings::save(rcstr key, QDoubleSpinBox* box) {
+  if (box) saveVariant(key,box->value());
 }
 
 //------------------------------------------------------------------------------
@@ -151,7 +199,7 @@ void TheHub::configActions() {
   });
 
   connect(actImageMirror, &QAction::toggled, [this](bool on) {
-    session->setImageMirror(on);
+    setImageMirror(on);
   });
 
   connect(actImageRotate, &QAction::triggered, [this]() {
@@ -388,6 +436,12 @@ void TheHub::setImageRotate(core::ImageTransform rot) {
   actImageMirror->setIcon(QIcon(mirrorIconFile));
   session->setImageRotate(rot);
   setImageCut(true,false,session->getImageCut()); // TODO make makeSafeCut()
+  emit geometryChanged();
+}
+
+void TheHub::setImageMirror(bool on) {
+  actImageMirror->setChecked(on);
+  session->setImageMirror(on);
   emit geometryChanged();
 }
 

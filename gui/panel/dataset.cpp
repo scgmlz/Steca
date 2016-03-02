@@ -1,6 +1,5 @@
 #include "dataset.h"
 #include "thehub.h"
-#include "settings.h"
 #include <QPainter>
 #include <QAction>
 

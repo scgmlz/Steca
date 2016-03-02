@@ -1,5 +1,4 @@
 #include "mainwin.h"
-#include "settings.h"
 #include "mainwin_parts.h"
 
 #include <QCloseEvent>

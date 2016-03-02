@@ -13,7 +13,6 @@ HEADERS += \
     delegates.h \
     gui_helpers.h \
     mainwin.h \
-    settings.h \
     panel/panel.h \
     panel/diffractogram.h \
     panel/dataset.h \
@@ -29,10 +28,8 @@ SOURCES += \
     gui_helpers.cpp \
     main.cpp \
     mainwin.cpp \
-    settings.cpp \
     panel/panel.cpp \
     panel/diffractogram.cpp \
-    session.cpp \
     panel/dataset.cpp \
     models.cpp \
     mainwin_parts.cpp \

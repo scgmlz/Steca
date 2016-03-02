@@ -5,9 +5,12 @@
 #define THEHUB_H
 
 #include "core_defs.h"
-#include <QAction>
 #include "models.h"
 #include "core_session.h"
+#include <QAction>
+#include <QSettings>
+class QSpinBox;
+class QDoubleSpinBox;
 
 //------------------------------------------------------------------------------
 
@@ -27,6 +30,27 @@ class ToggleAction: public Action {
   SUPER(ToggleAction,Action)
 public:
   ToggleAction(rcstr text, rcstr tip, rcstr iconFile, QObject*);
+};
+
+//------------------------------------------------------------------------------
+
+class Settings: public QSettings {
+  SUPER(Settings, QSettings)
+public:
+  Settings(rcstr group = "");
+ ~Settings();
+
+  QVariant readVariant(rcstr key, QVariant const& def);
+  void     saveVariant(rcstr key, QVariant const& val);
+
+  void read(rcstr key, QAction*, bool def);
+  void save(rcstr key, QAction*);
+
+  void read(rcstr key, QSpinBox*, int def);
+  void save(rcstr key, QSpinBox*);
+
+  void read(rcstr key, QDoubleSpinBox*, qreal def);
+  void save(rcstr key, QDoubleSpinBox*);
 };
 
 //------------------------------------------------------------------------------
@@ -134,6 +158,7 @@ public:
 
 private:
   void setImageRotate(core::ImageTransform);
+  void setImageMirror(bool);
 
 signals:
   void readSettings();
