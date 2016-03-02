@@ -23,11 +23,8 @@ public:
 //------------------------------------------------------------------------------
 
 Session::Session(MainWin& mainWin_)
-: mainWin(mainWin_), globalNorm(false)
-, fileViewModel(*this), datasetViewModel(*this), reflectionViewModel(*this) {
-}
-
-Session::~Session() {
+:
+ {
 }
 
 void Session::load(QFileInfo const& fileInfo) THROWS {
@@ -125,22 +122,6 @@ void Session::addFiles(str_lst filePaths) THROWS {
     addFile(filePath);
 }
 
-void Session::remFile(uint i) {
-  if (hasCorrFile() && numFiles(true) == i+1) {
-    super::remCorrFile();
-    emit correctionEnabled(super::isCorrEnabled());
-    emit filesChanged();
-  } else {
-    super::remFile(i);
-    emit filesChanged();
-  }
-
-  if (0==numFiles(true)) {
-    setSelectedDataset(core::shp_Dataset());
-    setImageCut(true,false,ImageCut());
-  }
-}
-
 void Session::loadCorrFile(rcstr filePath) {
   auto file = super::loadCorrFile(filePath);
   emit correctionEnabled(super::isCorrEnabled());
@@ -150,14 +131,6 @@ void Session::loadCorrFile(rcstr filePath) {
 void Session::enableCorrection(bool on) {
   super::enableCorrection(on);
   emit correctionEnabled(super::isCorrEnabled());
-}
-
-void Session::setSelectedFile(core::shp_File file) {
-  emit fileSelected(file);
-}
-
-void Session::setSelectedDataset(core::shp_Dataset dataset) {
-  emit datasetSelected(dataset);
 }
 
 void Session::setImageCut(bool topLeft, bool linked, ImageCut const& imageCut) {

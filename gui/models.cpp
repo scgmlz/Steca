@@ -1,54 +1,54 @@
 #include "models.h"
-#include "session.h"
+#include "thehub.h"
 
 namespace model {
 //------------------------------------------------------------------------------
 
-SessionModel::SessionModel(Session& session_): session(session_) {
+ModelBase::ModelBase(TheHub& theHub_): theHub(theHub_) {
 }
 
-void SessionModel::setSelectedDataset(core::shp_Dataset dataset) {
-  session.setSelectedDataset(dataset);
-}
+//void Model::setSelectedDataset(core::shp_Dataset dataset) {
+//  session.setSelectedDataset(dataset);
+//}
 
 //------------------------------------------------------------------------------
 
-FileViewModel::FileViewModel(Session& session): SessionModel(session) {
+FileViewModel::FileViewModel(TheHub& theHub): ModelBase(theHub) {
 }
 
 uint FileViewModel::numFiles(bool withCorr) {
-  return session.numFiles(withCorr);
+  return theHub.numFiles(withCorr);
 }
 
 void FileViewModel::remFile(uint i) {
-  session.remFile(i);
+  theHub.remFile(i);
 }
 
 void FileViewModel::setSelectedFile(core::shp_File file) {
-  session.setSelectedFile(file);
+  theHub.setSelectedFile(file);
 }
 
 int FileViewModel::rowCount(QModelIndex const&) const {
-  return session.numFiles(true);
+  return theHub.numFiles(true);
 }
 
 QVariant FileViewModel::data(QModelIndex const& index,int role) const {
   auto row = index.row(), cnt = rowCount(index);
   if (row < 0 || row >= cnt) return QVariant();
 
-  bool isCorrectionFile = session.hasCorrFile() && row+1 == cnt;
+  bool isCorrectionFile = theHub.hasCorrFile() && row+1 == cnt;
 
   switch (role) {
     case IsCorrectionFileRole:
       return isCorrectionFile;
     case Qt::DisplayRole: {
-      str s = session.getFile(row)->getName();
+      str s = theHub.fileName(row);
       static str Corr("Corr: ");
       if (isCorrectionFile) s = Corr + s;
       return s;
     }
     case GetFileRole:
-      return QVariant::fromValue<core::shp_File>(session.getFile(row));
+      return QVariant::fromValue<core::shp_File>(theHub.getFile(row));
     default:
       return QVariant();
   }
@@ -61,8 +61,8 @@ void FileViewModel::signalReset() {
 
 //------------------------------------------------------------------------------
 
-DatasetViewModel::DatasetViewModel(Session& session)
-: SessionModel(session), coreFile(nullptr), infoItems(nullptr) {
+DatasetViewModel::DatasetViewModel(TheHub& theHub)
+: ModelBase(theHub), coreFile(nullptr), infoItems(nullptr) {
 }
 
 int DatasetViewModel::columnCount(QModelIndex const&) const {
@@ -134,7 +134,7 @@ core::shp_Dataset const& DatasetViewModel::getDataset(int row) const {
 
 //------------------------------------------------------------------------------
 
-ReflectionViewModel::ReflectionViewModel(Session& session): SessionModel(session) {
+ReflectionViewModel::ReflectionViewModel(TheHub& theHub): SessionModel(theHub) {
 }
 
 int ReflectionViewModel::columnCount(QModelIndex const&) const {

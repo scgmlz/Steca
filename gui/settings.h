@@ -34,21 +34,4 @@ public:
 };
 
 //------------------------------------------------------------------------------
-
-class Keys {
-public:
-  Keys();
-
-  typedef QKeySequence QKey;
-
-  QKey
-    keyAddFiles, keyDeleteFile, keyLoadCorrectionFile,
-    keyViewStatusbar, keyRotateImage
-  #ifndef Q_OS_OSX
-    , keyFullscreen
-  #endif
-    ;
-};
-
-//------------------------------------------------------------------------------
 #endif

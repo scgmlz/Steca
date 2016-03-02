@@ -50,18 +50,4 @@ void Settings::save(rcstr key, QDoubleSpinBox* box) {
 }
 
 //------------------------------------------------------------------------------
-
-Keys::Keys() {
-  keyAddFiles          = Qt::CTRL|Qt::Key_O;
-  keyDeleteFile        = QKey::Delete;
-  keyLoadCorrectionFile = Qt::SHIFT|Qt::CTRL|Qt::Key_O;
-
-  keyViewStatusbar     = Qt::Key_F12;
-#ifndef Q_OS_OSX
-  keyFullscreen        = Qt::Key_F11;
-#endif
-  keyRotateImage       = Qt::CTRL|Qt::Key_R;
-}
-
-//------------------------------------------------------------------------------
 // eof

@@ -17,7 +17,7 @@
 #endif
 //------------------------------------------------------------------------------
 
-MainWin::MainWin(): session(new Session(*this)){
+MainWin::MainWin() {
   sessionDir = dataDir = QDir::homePath();
 
   initActions();
@@ -31,98 +31,9 @@ MainWin::MainWin(): session(new Session(*this)){
 }
 
 MainWin::~MainWin() {
-  delete session;
 }
 
 void MainWin::initActions() {
-  typedef QKeySequence QKey;
-
-  auto action = [this](pcstr text, pcstr tip, bool checkable, pcstr iconFile, QKey shortcut) {
-    ASSERT(text)
-    ASSERT(tip)
-    auto act = new QAction(text,this);
-    act->setToolTip(tip);
-    act->setCheckable(checkable);
-    if (iconFile && *iconFile) act->setIcon(QIcon(iconFile));
-    act->setShortcut(shortcut);
-    return act;
-  };
-
-  auto simple = [&action](pcstr text, pcstr tip = "", pcstr iconFile = nullptr, QKey shortcut = QKey::UnknownKey) {
-    ASSERT(text)
-    return action(text,tip,false,iconFile,shortcut);
-  };
-
-  auto toggle = [&action](pcstr text, pcstr tip = "", pcstr iconFile = nullptr, QKey shortcut = QKey::UnknownKey) {
-    return action(text,tip,true,iconFile,shortcut);
-  };
-
-  Keys keys;
-
-  actAddFiles           = simple("Add files...",            "Add files", ":/icon/add", keys.keyAddFiles);
-  actRemoveFile         = simple("Remove selected file",    "Remove selected file", ":/icon/rem", keys.keyDeleteFile);
-  actRemoveFile->setEnabled(false);
-  actLoadCorrectionFile = simple("Load correction file...", "Load correction file", "",          keys.keyLoadCorrectionFile);
-  actImagesEnableCorr   = toggle("Enable correction file",  "Enable correction by correction file", ":/icon/useCorrection");   // TODO different icon
-  actImagesEnableCorr->setEnabled(false);
-  actLoadSession        = simple("Load session...");
-  actSaveSession        = simple("Save session...");
-
-  actExportDiffractogramCurrent           = simple("Current only...");
-  actExportDiffractogramAllSeparateFiles  = simple("All to separate files...");
-  actExportDiffractogramSingleFile        = simple("All to a single file...");
-
-  actExportImagesWithMargins              = simple("With margins...");
-  actExportImagesWithoutMargins           = simple("Without margins...");
-
-  actQuit  = simple("Quit", "",  "", QKey::Quit);
-
-  actUndo  = simple("Undo",  "", "", QKey::Undo);
-  actRedo  = simple("Redo",  "", "", QKey::Redo);
-  actCut   = simple("Cut",   "", "", QKey::Cut);
-  actCopy  = simple("Copy",  "", "", QKey::Copy);
-  actPaste = simple("Paste", "", "", QKey::Paste);
-
-  actViewStatusbar = toggle("Statusbar",  "", "", keys.keyViewStatusbar);
-#ifndef Q_OS_OSX
-  actFullscreen    = toggle("Fullscreen", "", "", keys.keyFullscreen);
-#endif
-  actViewReset     = simple("Reset", "");
-
-  actPreferences          = simple("Preferences...");
-  actFitErrorParameters   = simple("Fit error parameters...");
-
-
-  actAbout      = simple("About...");
-
-  actSelectPeak           = toggle("Select Peak", "Select Peak", ":/icon/selectPeak");
-  actReflectionPeak       = simple("Peak",  "Set reflection peak",  ":/icon/selectHight");
-  actReflectionWidth      = simple("Width", "Set reflection width", ":/icon/selectWidth");
-  actReflectionAdd        = simple("Add",   "Add reflection",       ":/icon/add");
-  actReflectionRemove     = simple("Remove","Remove reflection",    ":/icon/rem");
-  actReflectionRemove->setEnabled(false);
-  actReflexionSelectRegion = simple("Select reflexion fit region");
-
-  actCalculatePolefigures = simple("Calculate polefigures...");
-  actCalculateHistograms  = simple("Calculate histograms..");
-
-  actImagesLink           = toggle("Link",         "Use the same value for all cuts", ":/icon/linkNew");
-  actImageOverlay         = toggle("overlay",      "Show cut", ":/icon/imageCrop");
-  actImagesGlobalNorm     = toggle("global norm.", "Display data using a fixed intensity scale", ":/icon/scale");    // TODO different icon
-  actImageRotate          = simple("Rotate",       "Rotate 90° clockwise", ":/icon/rotate0", keys.keyRotateImage);
-  actImageMirror          = toggle("Mirror",       "Mirror image", ":/icon/mirror_horz");
-
-  actBackgroundClear      = simple("Clear background fit regions",    "Clear regions for background fitting", ":/icon/clearBackground");
-  actBackgroundBackground = toggle("Select background fit regions",    "Select regions for background fitting", ":/icon/pekBackground");
-  actBackgroundShowFit    = toggle("BackgroundEye", "Show background fit", ":/icon/showBackground");
-
-  actHasBeamOffset        = toggle("Beam centre offset", "Enable beam center offset (for X-ray instruments)", ":/icon/beam");
-
-  actNormalizationDisable     = simple("Disable");
-  actNormalizationMeasureTime = simple("Measurement Time");
-  actNormalizationMonitor     = simple("Monitor counts");
-  actNormalizationBackground  = simple("Background level");
-
 
   connect(session, &Session::correctionEnabled, [this](bool on) {
     actImagesEnableCorr->setChecked(on);

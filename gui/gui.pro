@@ -20,7 +20,8 @@ HEADERS += \
     panel/dataset.h \
     models.h \
     mainwin_parts.h \
-    panel/fitting.h
+    panel/fitting.h \
+    thehub.h
 
 SOURCES += \
     QCP/qcustomplot.cpp \
@@ -36,7 +37,8 @@ SOURCES += \
     panel/dataset.cpp \
     models.cpp \
     mainwin_parts.cpp \
-    panel/fitting.cpp
+    panel/fitting.cpp \
+    thehub.cpp
 
 RESOURCES += \
     resources.qrc

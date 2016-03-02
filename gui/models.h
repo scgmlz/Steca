@@ -6,31 +6,31 @@
 #define MODELS_H
 
 #include "core_defs.h"
-#include "panel/panel.h"  // TODO remove
+#include "panel/panel.h"  // TODO remove ?
 #include "core_file.h"
 #include <QAbstractListModel>
 #include <QAbstractTableModel>
 
-class Session;
+class TheHub;
 
 namespace model {
 //------------------------------------------------------------------------------
 
-class SessionModel {
+class ModelBase {
 public:
-  SessionModel(Session&);
+  ModelBase(TheHub&);
 
-  Session const& getSession() const { return session ; }
-  void setSelectedDataset(core::shp_Dataset);
+//  TheHub const& getTheHub() const { return TheHub ; }
+//  void setSelectedDataset(core::shp_Dataset);
 
 protected:
-  Session &session;
+  TheHub &theHub;
 };
 
-class FileViewModel: public QAbstractListModel, public SessionModel {
+class FileViewModel: public QAbstractListModel, public ModelBase {
   SUPER(FileViewModel,QAbstractListModel)
 public:
-  FileViewModel(Session&);
+  FileViewModel(TheHub&);
 
   uint numFiles(bool withCorr=false);
   void remFile(uint i);
@@ -44,10 +44,10 @@ public:
   void signalReset();
 };
 
-class DatasetViewModel: public QAbstractTableModel, public SessionModel {
+class DatasetViewModel: public QAbstractTableModel, public ModelBase {
   SUPER(DatasetViewModel,QAbstractTableModel)
 public:
-  DatasetViewModel(Session&);
+  DatasetViewModel(TheHub&);
 
   enum { GetDatasetRole = Qt::UserRole };
 
@@ -68,10 +68,10 @@ private:
   QVector<int> attributeNums;
 };
 
-class ReflectionViewModel: public QAbstractTableModel, public SessionModel {
+class ReflectionViewModel: public QAbstractTableModel, public ModelBase {
   SUPER(ReflectionViewModel,QAbstractTableModel)
 public:
-  ReflectionViewModel(Session&);
+  ReflectionViewModel(TheHub&);
 
   int columnCount(QModelIndex const& = QModelIndex())   const;
   int rowCount(QModelIndex const& = QModelIndex())      const;
