@@ -101,6 +101,10 @@ void MainWin::initActions() {
   actReflectionAdd        = simple("Add",   "Add reflection",       ":/icon/add");
   actReflectionRemove     = simple("Remove","Remove reflection",    ":/icon/rem");
   actReflectionRemove->setEnabled(false);
+  actReflexionSelectRegion = simple("Select reflexion fit region");
+
+  actCalculatePolefigures = simple("Calculate polefigures...");
+  actCalculateHistograms  = simple("Calculate histograms..");
 
   actImagesLink           = toggle("Link",         "Use the same value for all cuts", ":/icon/linkNew");
   actImageOverlay         = toggle("overlay",      "Show cut", ":/icon/imageCrop");
@@ -108,11 +112,17 @@ void MainWin::initActions() {
   actImageRotate          = simple("Rotate",       "Rotate 90° clockwise", ":/icon/rotate0", keys.keyRotateImage);
   actImageMirror          = toggle("Mirror",       "Mirror image", ":/icon/mirror_horz");
 
-  actBackgroundClear      = simple("Background",    "Clear regions for background fitting", ":/icon/clearBackground");
-  actBackgroundBackground = toggle("Background",    "Select regions for background fitting", ":/icon/pekBackground");
+  actBackgroundClear      = simple("Clear background fit regions",    "Clear regions for background fitting", ":/icon/clearBackground");
+  actBackgroundBackground = toggle("Select background fit regions",    "Select regions for background fitting", ":/icon/pekBackground");
   actBackgroundShowFit    = toggle("BackgroundEye", "Show background fit", ":/icon/showBackground");
 
   actHasBeamOffset        = toggle("Beam centre offset", "Enable beam center offset (for X-ray instruments)", ":/icon/beam");
+
+  actNormalizationDisable     = simple("Disable");
+  actNormalizationMeasureTime = simple("Measurement Time");
+  actNormalizationMonitor     = simple("Monitor counts");
+  actNormalizationBackground  = simple("Background level");
+
 
   connect(session, &Session::correctionEnabled, [this](bool on) {
     actImagesEnableCorr->setChecked(on);
@@ -148,8 +158,8 @@ void MainWin::initMenus() {
   menuFile  = mbar->addMenu("&File");
   menuEdit  = mbar->addMenu("&Edit");
   menuView  = mbar->addMenu("&View");
-  menuImage = mbar->addMenu("&Image");
-  menuOpts  = mbar->addMenu("&Options");
+  menuDatasets = mbar->addMenu("&Datasets");
+  menuReflect  = mbar->addMenu("&Reflections");
   menuHelp  = mbar->addMenu("&Help");
 
   menuFile->addActions({
@@ -192,6 +202,11 @@ void MainWin::initMenus() {
   });
 
   menuView->addActions({
+    actImagesGlobalNorm,
+    actImageOverlay,
+    separator(),
+    actBackgroundShowFit,
+    separator(),
     actViewStatusbar,
   #ifndef Q_OS_OSX
     actFullscreen,
@@ -200,12 +215,33 @@ void MainWin::initMenus() {
     actViewReset,
   });
 
-  menuImage->addActions({
-    actImageRotate, actImageMirror,
+  menuDatasets->addActions({
+    actImageRotate,actImageMirror,
+    separator(),
+    actImagesEnableCorr,
+    separator(),
   });
 
-  menuOpts->addActions({
-    actPreferences, actFitErrorParameters,
+  QMenu *menuNormalization = new QMenu("Normalizaiton",this);
+  menuNormalization->addActions({
+    actNormalizationDisable, actNormalizationMeasureTime,
+    actNormalizationMonitor, actNormalizationBackground
+  });
+
+  menuDatasets->addMenu(menuNormalization);
+
+  menuDatasets->addActions({
+    separator(),
+    actBackgroundBackground,
+    actBackgroundClear
+  });
+
+  menuReflect->addActions({
+    actReflectionAdd, actReflectionRemove, actReflexionSelectRegion,
+    separator(),
+    actCalculatePolefigures, actCalculateHistograms,
+    separator(),
+    actFitErrorParameters
   });
 
   menuHelp->addActions({
@@ -284,7 +320,16 @@ void MainWin::connectActions() {
   notYet(actPaste);
 
   notYet(actPreferences);
+  notYet(actReflexionSelectRegion);
   notYet(actFitErrorParameters);
+
+  notYet(actCalculatePolefigures);
+  notYet(actCalculateHistograms);
+
+  notYet(actNormalizationDisable);
+  notYet(actNormalizationMeasureTime);
+  notYet(actNormalizationMonitor);
+  notYet(actNormalizationBackground);
 
   notYet(actAbout);
 

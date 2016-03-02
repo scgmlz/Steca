@@ -69,7 +69,6 @@ DatasetOptions1::DatasetOptions1(MainWin& mainWin_, Session& session_)
   auto ho = hbox();
   box->addLayout(ho);
 
-  ho->addWidget(iconButton(mainWin.actHasBeamOffset));
   ho->addWidget(label("X"));
   ho->addWidget((spinOffsetX = spinCell(4,0)));
   spinOffsetX->setToolTip("Horizontal offset from image center");
@@ -77,6 +76,7 @@ DatasetOptions1::DatasetOptions1(MainWin& mainWin_, Session& session_)
   ho->addWidget((spinOffsetY = spinCell(4,0)));
   spinOffsetY->setToolTip("Vertical offset from image center");
   ho->addWidget(label("pix"));
+  ho->addWidget(iconButton(mainWin.actHasBeamOffset));
   ho->addStretch();
 
   box->addWidget(label("Detector"));
@@ -220,20 +220,26 @@ DatasetOptions2::DatasetOptions2(MainWin& mainWin_, Session& session_)
   auto hb = hbox();
   box->addLayout(hb);
 
-  hb->addWidget((spinImageScale = spinCell(4,1,4)));
-  spinImageScale->setToolTip("Image scale");
-
   hb->addWidget(iconButton(mainWin.actImageRotate));
+  hb->addSpacing(5);
   hb->addWidget(iconButton(mainWin.actImageMirror));
-  hb->addSpacing(1);
+  hb->addSpacing(5);
   hb->addWidget(iconButton(mainWin.actImagesGlobalNorm));
   hb->addStretch();
+
+  auto sc = hbox();
+  box->addLayout(sc);
+  sc->addWidget(label("Scaling"));
+  sc->addSpacing(5);
+  sc->addWidget((spinImageScale = spinCell(4,1,4)));
+  spinImageScale->setToolTip("Image scale");
+  sc->addStretch();
 
   box->addWidget(label("Cut"));
   auto gc = gridLayout();
   box->addLayout(gc);
 
-  gc->addWidget(icon(":/icon/cutTopU"),           0,0);
+  gc->addWidget(icon(":/icon/cutTopU"),             0,0);
   gc->addWidget((cutTop = spinCell(4,0)),           0,1);
   cutTop->setToolTip("Top cut");
   gc->addWidget(icon(":/icon/cutBottomU"),          0,2);

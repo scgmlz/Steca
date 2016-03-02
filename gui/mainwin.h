@@ -45,7 +45,7 @@ private:
 
 private:
   Session *session;
-  QMenu   *menuFile, *menuEdit, *menuView, *menuImage, *menuOpts, *menuHelp;
+  QMenu   *menuFile, *menuEdit, *menuView, *menuDatasets, *menuReflect, *menuHelp;
 
 public:
   QAction
@@ -70,6 +70,9 @@ public:
 #endif
     *actViewReset,
 
+    *actReflexionSelectRegion,
+    *actCalculatePolefigures,
+    *actCalculateHistograms,
     *actPreferences,
     *actFitErrorParameters,
 
@@ -80,7 +83,8 @@ public:
     *actImageRotate, *actImageMirror,
     *actImagesLink, *actImageOverlay, *actImagesGlobalNorm, *actImagesEnableCorr,
     *actBackgroundClear, *actBackgroundBackground, *actBackgroundShowFit,
-    *actHasBeamOffset;
+    *actHasBeamOffset,
+    *actNormalizationDisable, *actNormalizationMeasureTime, *actNormalizationMonitor, *actNormalizationBackground;
 
 private:
   QByteArray initialState;
