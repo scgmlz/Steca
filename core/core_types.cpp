@@ -181,6 +181,70 @@ void Curve::append(qreal x, qreal y) {
   ys.append(y);
 }
 
+Curve Curve::intersect(Range const& range) const {
+  Curve res;
+
+  ASSERT(isOrdered())
+
+  uint xi = 0, cnt = count();
+  auto minX = range.min, maxX = range.max;
+  while (xi<cnt && xs[xi] < minX)
+    ++xi;
+  while (xi<cnt && xs[xi] <= maxX) {
+    res.append(xs[xi],ys[xi]);
+    ++xi;
+  }
+
+  return res;
+}
+
+Curve Curve::intersect(Ranges const& ranges) const {
+  Curve res;
+
+  // collect points that are in ranges
+  // it works because both curve points and ranges are ordered and ranges are non-overlapping
+  ASSERT(isOrdered())
+
+  uint xi = 0, cnt = count();
+  for_i (ranges.count()) {
+    Range const& range = ranges.at(i);
+    auto minX = range.min, maxX = range.max;
+    while (xi<cnt && xs[xi] < minX)
+      ++xi;
+    while (xi<cnt && xs[xi] <= maxX) {
+      res.append(xs[xi],ys[xi]);
+      ++xi;
+    }
+  }
+
+  return res;
+}
+
+Curve Curve::smooth() const {
+  // moving average, 3 points
+  Curve res;
+
+  for (int i = 1, cnt = count(); i+1 < cnt; ++i) {
+    res.append(xs[i], (ys[i-1] + ys[i] + ys[i+1])/3.);
+  }
+
+  return res;
+}
+
+uint Curve::maxYindex() const {
+  if (isEmpty()) return 0;
+
+  auto yMax = ys[0]; uint index = 0;
+  for_i (count()) {
+    auto y = ys[i];
+    if (y > yMax) {
+      yMax = y; index = i;
+    }
+  }
+
+  return index;
+}
+
 //------------------------------------------------------------------------------
 
 TI_Curve::TI_Curve() {

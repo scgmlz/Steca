@@ -15,10 +15,10 @@ public:
   FittingMethod();
   virtual ~FittingMethod();
 
-  bool fitWithoutCheck(Function&,Curve&);
+  bool fitWithoutCheck(Function&, Curve const&);
 
 protected:
-  bool fit(Function&,Curve&, bool sideConditionCheckIsActive);
+  bool fit(Function&, Curve const&, bool sideConditionCheckIsActive);
   virtual bool approximate(qreal*,qreal const*,qreal const*,qreal*,uint,qreal const*,uint) = 0;
 
   /// valid during fit()

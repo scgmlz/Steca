@@ -81,6 +81,15 @@ public:
   reals_t const& getXs() const { return xs; }
   reals_t const& getYs() const { return ys; }
 
+  qreal x(uint i) const { return xs[i]; }
+  qreal y(uint i) const { return ys[i]; }
+
+  Curve intersect(Range const&)  const;
+  Curve intersect(Ranges const&) const;
+
+  Curve smooth()    const;
+  uint  maxYindex() const;
+
 private:
   reals_t xs, ys;
 };

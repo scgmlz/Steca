@@ -11,11 +11,11 @@ FittingMethod::FittingMethod() {
 FittingMethod::~FittingMethod() {
 }
 
-bool FittingMethod::fitWithoutCheck(Function& function, Curve& curve) {
+bool FittingMethod::fitWithoutCheck(Function& function, Curve const& curve) {
   return fit(function, curve, false);
 }
 
-bool FittingMethod::fit(Function& function_, Curve& curve, bool sideConditionCheckIsActive) {
+bool FittingMethod::fit(Function& function_, Curve const& curve, bool sideConditionCheckIsActive) {
   if (curve.isEmpty()) return false;
 
   function = &function_;

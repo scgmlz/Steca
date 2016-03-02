@@ -6,59 +6,38 @@ namespace core { namespace fit {
 //------------------------------------------------------------------------------
 
 Polynomial fitBackground(TI_Curve const& dgram, core::Ranges const& bgRanges, uint degree) {
-  core::Curve curve;
-
-  // The following adds points that are in ranges to the curve
-  // it works because both ranges and dgram are ordered and ranges are non-overlapping
-  ASSERT(dgram.isOrdered())
-
-  auto tth   = dgram.getTth();
-  auto inten = dgram.getInten();
-
-  uint di = 0, count = dgram.count();
-  for_i (bgRanges.count()) {
-    auto const& range = bgRanges.at(i);
-    while (di<count && tth[di] <  range.min)
-      ++di;
-    while (di<count && tth[di] <= range.max) {
-      curve.append(tth[di],inten[di]);
-      ++di;
-    }
-  }
-
   Polynomial bgPolynomial(qMin(degree,MAX_BACKGROUND_POLYNOMIAL_DEGREE));
-  FittingLevenbergMarquardt().fitWithoutCheck(bgPolynomial,curve);
-
+  FittingLevenbergMarquardt().fitWithoutCheck(bgPolynomial,dgram.intersect(bgRanges));
   return bgPolynomial;
 }
 
 Gaussian fitPeak(TI_Curve const& dgram, core::Range const& range) {
-  core::Curve curve;
-  ASSERT(dgram.isOrdered())
+  Gaussian gaussian;
 
-  auto tth   = dgram.getTth();
-  auto inten = dgram.getInten();
+  core::Curve curve = dgram.intersect(range);
+  if (curve.isEmpty()) return gaussian;
 
-  qreal peakTth = 0, peakIntens = 0, fwhm = qQNaN();
-  uint di = 0, count = dgram.count();
-  while (di<count && tth[di] <  range.min)
-    ++di;
-  while (di<count && tth[di] <= range.max) {
-    qreal t = tth[di], in = inten[di];
-    curve.append(t,in);
-    ++di;
+  uint peakIndex  = curve.maxYindex();
+  auto peakTth    = curve.x(peakIndex);
+  auto peakIntens = curve.y(peakIndex);
 
-    if (peakIntens < in) {
-      peakTth = t; peakIntens = in;
-    }
+  // half-maximum indices
+  uint hmi1 = peakIndex, hmi2 = peakIndex;
 
-    if (in > peakIntens/2)
-      fwhm = 2 * (t - peakTth);
+  // left
+  for (uint i=peakIndex; i-- > 0; ) {
+    hmi1 = i;
+    if (curve.y(i) < peakIntens/2) break;
   }
 
-  Gaussian gaussian;
+  // right
+  for (uint i=peakIndex, iCnt=curve.count(); i < iCnt; ++i) {
+    hmi2 = i;
+    if (curve.y(i) < peakIntens/2) break;
+  }
+
   gaussian.setPeak(peakTth,peakIntens);
-  gaussian.setFWHM(fwhm);
+  gaussian.setFWHM(curve.x(hmi2) - curve.x(hmi1));
 
   FittingLevenbergMarquardt().fitWithoutCheck(gaussian,curve);
 
