@@ -85,7 +85,7 @@ class Diffractogram: public BoxPanel {
   SUPER(Diffractogram,BoxPanel)
   friend class DiffractogramPlot;
 public:
-  Diffractogram(MainWin&,Session&);
+  Diffractogram(TheHub&);
 
 private:
   void setDataset(core::shp_Dataset);

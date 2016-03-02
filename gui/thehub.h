@@ -7,12 +7,7 @@
 #include "core_defs.h"
 #include <QAction>
 #include "models.h"
-
-//------------------------------------------------------------------------------
-
-namespace core {
-class Session;
-}
+#include "core_session.h"
 
 //------------------------------------------------------------------------------
 
@@ -37,18 +32,22 @@ public:
 //------------------------------------------------------------------------------
 
 class TheHub: public QObject {
-  SUPER(TheHub,QObject)
+  SUPER(TheHub,QObject) Q_OBJECT
 public:
   TheHub();
  ~TheHub();
 
 private:
   void initActions();
+  void configActions();
 
 private:
   core::Session *session;
+
+public:
   bool globalNorm;  // TODO rename this and related to fixedIntensityScale
-  model::FileViewModel       fileViewModel;    // TODO not public
+
+  model::FileViewModel       fileViewModel;
   model::DatasetViewModel    datasetViewModel;
   model::ReflectionViewModel reflectionViewModel;
 
@@ -103,6 +102,40 @@ public: // files
 
   void setSelectedFile(core::shp_File);
   void setSelectedDataset(core::shp_Dataset);
+
+public:
+  void load(QFileInfo const&)       THROWS;
+  void load(QByteArray const& json) THROWS;
+  QByteArray save() const;
+
+  void addFile(rcstr filePath)      THROWS;
+  void addFiles(str_lst filePaths)  THROWS;
+  void loadCorrFile(rcstr filePath);
+
+  void enableCorrection(bool);
+
+  core::ImageCut const& getImageCut() const;
+  void setImageCut(bool topLeft, bool linked, core::ImageCut const&);
+
+  core::Geometry const& getGeometry() const;
+  void setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset);
+
+  void setBackgroundPolynomialDegree(uint);
+
+private:
+  void setImageRotate(core::ImageTransform);
+
+signals:
+  void filesChanged();
+  void correctionEnabled(bool);
+
+  void fileSelected(core::shp_File);
+  void datasetSelected(core::shp_Dataset);
+
+  void displayChange();
+  void geometryChanged();
+
+  void backgroundPolynomialDegree(uint);
 };
 
 //------------------------------------------------------------------------------

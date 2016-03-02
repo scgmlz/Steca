@@ -14,13 +14,59 @@
 namespace core {
 //------------------------------------------------------------------------------
 
+/// Image transform - rotation and mirroring
+struct ImageTransform {
+  enum e {
+    ROTATE_0        = 0,  // no transform
+    ROTATE_1        = 1,  // one quarter
+    ROTATE_2        = 2,  // two quarters
+    ROTATE_3        = 3,  // three quarters
+    MIRROR          = 4,
+    MIRROR_ROTATE_0 = MIRROR | ROTATE_0,
+    MIRROR_ROTATE_1 = MIRROR | ROTATE_1,
+    MIRROR_ROTATE_2 = MIRROR | ROTATE_2,
+    MIRROR_ROTATE_3 = MIRROR | ROTATE_3,
+  } val;
+
+  ImageTransform(int val = ROTATE_0);             ///< clamps val appropriately
+  ImageTransform mirror(bool on)          const;  ///< adds/removes the mirror flag
+  ImageTransform rotateTo(ImageTransform) const;  ///< rotates, but keeps the mirror flag
+  ImageTransform nextRotate()             const;  ///< rotates by one quarter-turn
+
+  bool isTransposed() const { return 0 != (val&1); }
+
+  bool operator ==(ImageTransform const& that) const { return val == that.val; }
+};
+
+struct ImageCut {
+  ImageCut(uint top = 0, uint bottom = 0, uint left = 0, uint right = 0);
+  bool operator==(ImageCut const&);
+  uint top, bottom, left, right;
+
+  uint getWidth(QSize const&) const;
+  uint getHeight(QSize const&) const;
+  uint getCount(QSize const&) const;
+};
+
+/// detector geometry
+struct Geometry {
+  Geometry();
+  bool operator ==(Geometry const&) const;
+
+  // TODO rename "span" -> ...
+  qreal sampleDetectorSpan; // the distance between sample - detector // TODO verify: in adhoc has at least three names: sampleDetectorSpan, detectorSampleSpan, detectorSampleDistance
+  qreal pixSpan;            // size of the detector pixel
+  bool  hasBeamOffset;
+  QPoint middlePixOffset;
+};
+
 class Session {
 public:
   Session();
   virtual ~Session();
 
   /// How many files has, optionally also counting the correction file.
-  uint     numFiles(bool withCorr=false) const;
+  uint     numFiles(bool withCorr) const;
 
   shp_File addFile(rcstr fileName) THROWS;  ///< Add an ordinary file to the session.
   shp_File remFile(uint i);                 ///< Remove the i-th file, NOT including the correction file.
@@ -51,17 +97,7 @@ private:
 #endif
   void setImageSize(QSize const&) THROWS; ///< Ensures that all images have the same size.
 
-public: // detector geometry
-  struct Geometry {
-    Geometry();
-    bool operator ==(Geometry const&) const;
-
-    // TODO rename "span" -> ...
-    qreal sampleDetectorSpan; // the distance between sample - detector // TODO verify: in adhoc has at least three names: sampleDetectorSpan, detectorSampleSpan, detectorSampleDistance
-    qreal pixSpan;            // size of the detector pixel
-    bool  hasBeamOffset;
-    QPoint middlePixOffset;
-  };
+public:
 
   Geometry const& getGeometry() const { return geometry; }
   void setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset);
@@ -69,37 +105,14 @@ public: // detector geometry
 private:
   Geometry geometry;
 
-public: // image transform
-  /// Image transform - rotation and mirroring
-  struct ImageTransform {
-    enum e {
-      ROTATE_0        = 0,  // no transform
-      ROTATE_1        = 1,  // one quarter
-      ROTATE_2        = 2,  // two quarters
-      ROTATE_3        = 3,  // three quarters
-      MIRROR          = 4,
-      MIRROR_ROTATE_0 = MIRROR | ROTATE_0,
-      MIRROR_ROTATE_1 = MIRROR | ROTATE_1,
-      MIRROR_ROTATE_2 = MIRROR | ROTATE_2,
-      MIRROR_ROTATE_3 = MIRROR | ROTATE_3,
-    } val;
-
-    ImageTransform(int val = ROTATE_0);             ///< clamps val appropriately
-    ImageTransform mirror(bool on)          const;  ///< adds/removes the mirror flag
-    ImageTransform rotateTo(ImageTransform) const;  ///< rotates, but keeps the mirror flag
-    ImageTransform nextRotate()             const;  ///< rotates by one quarter-turn
-
-    bool isTransposed() const { return 0 != (val&1); }
-
-    bool operator ==(ImageTransform const& that) const { return val == that.val; }
-  };
-
 protected:
   ImageTransform imageTransform;
 
 public:
   void setImageMirror(bool);
   void setImageRotate(ImageTransform);
+
+  ImageTransform getImageTransform() const;
 
   /// Calculate the 1D index of a pixel, with transform.
   uint pixIndex(uint x, uint y) const;
@@ -147,17 +160,6 @@ protected: // corrections TODO make private
   // TODO caching of calcAngle...
   qreal lastCalcTthMitte; QPoint lastPixMiddle;
   Geometry lastGeometry;
-
-public:
-  struct ImageCut {
-    ImageCut(uint top = 0, uint bottom = 0, uint left = 0, uint right = 0);
-    bool operator==(ImageCut const&);
-    uint top, bottom, left, right;
-
-    uint getWidth(QSize const&) const;
-    uint getHeight(QSize const&) const;
-    uint getCount(QSize const&) const;
-  };
 
 protected:
   ImageCut lastImageCut;

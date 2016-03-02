@@ -16,7 +16,6 @@ HEADERS += \
     settings.h \
     panel/panel.h \
     panel/diffractogram.h \
-    session.h \
     panel/dataset.h \
     models.h \
     mainwin_parts.h \

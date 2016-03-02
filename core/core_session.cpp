@@ -4,6 +4,64 @@
 #include <cmath>
 
 namespace core {
+
+//------------------------------------------------------------------------------
+
+ImageTransform::ImageTransform(int val_): val((e)(val_ & 7)) {
+}
+
+ImageTransform ImageTransform::mirror(bool on) const {
+  return on ? ImageTransform(val |  MIRROR)
+            : ImageTransform(val & ~MIRROR);
+}
+
+ImageTransform ImageTransform::rotateTo(ImageTransform rot) const {
+  return ImageTransform((val & MIRROR) | (rot.val & 3));
+}
+
+ImageTransform ImageTransform::nextRotate() const {
+  return rotateTo(val+1);
+}
+
+//------------------------------------------------------------------------------
+
+ImageCut::ImageCut(uint top_, uint bottom_, uint left_, uint right_)
+: top(top_), bottom(bottom_), left(left_), right(right_) {
+}
+
+bool ImageCut::operator==(ImageCut const& that) {
+  return top==that.top && bottom==that.bottom && left==that.left && right==that.right;
+}
+
+uint ImageCut::getWidth(QSize const& fullSize) const {
+  return qMax(fullSize.width() - (int)left - (int)right, 0);
+}
+
+uint ImageCut::getHeight(QSize const& fullSize) const {
+  return qMax(fullSize.height() - (int)top - (int)bottom, 0);
+}
+
+uint ImageCut::getCount(QSize const& fullSize) const {
+  return getWidth(fullSize) * getHeight(fullSize);
+}
+
+//------------------------------------------------------------------------------
+
+Geometry::Geometry() {
+  sampleDetectorSpan  = 1.0;
+  pixSpan             = 0.01; // TODO these must be reasonable limited
+  hasBeamOffset       = false;
+  middlePixOffset     = QPoint();
+}
+
+bool Geometry::operator ==(Geometry const& that) const {
+  return
+    sampleDetectorSpan == that.sampleDetectorSpan &&
+    pixSpan            == that.pixSpan &&
+    hasBeamOffset      == that.hasBeamOffset &&
+    middlePixOffset    == that.middlePixOffset;
+}
+
 //------------------------------------------------------------------------------
 
 Session::Session()
@@ -100,21 +158,6 @@ void Session::setImageSize(QSize const& size) THROWS {
     THROW("inconsistent image size");
 }
 
-Session::Geometry::Geometry() {
-  sampleDetectorSpan  = 1.0;
-  pixSpan             = 0.01; // TODO these must be reasonable limited
-  hasBeamOffset       = false;
-  middlePixOffset     = QPoint();
-}
-
-bool Session::Geometry::operator ==(Geometry const& that) const {
-  return
-    sampleDetectorSpan == that.sampleDetectorSpan &&
-    pixSpan            == that.pixSpan &&
-    hasBeamOffset      == that.hasBeamOffset &&
-    middlePixOffset    == that.middlePixOffset;
-}
-
 void Session::setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset) {
   ASSERT(sampleDetectorSpan>0 && pixSpan>0) // TODO better than assert
   geometry.sampleDetectorSpan = sampleDetectorSpan;
@@ -123,28 +166,16 @@ void Session::setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamO
   geometry.middlePixOffset    = middlePixOffset;
 }
 
-Session::ImageTransform::ImageTransform(int val_): val((e)(val_ & 7)) {
-}
-
-Session::ImageTransform Session::ImageTransform::mirror(bool on) const {
-  return on ? ImageTransform(val |  MIRROR)
-            : ImageTransform(val & ~MIRROR);
-}
-
-Session::ImageTransform Session::ImageTransform::rotateTo(ImageTransform rot) const {
-  return ImageTransform((val & MIRROR) | (rot.val & 3));
-}
-
-Session::ImageTransform Session::ImageTransform::nextRotate() const {
-  return rotateTo(val+1);
-}
-
 void Session::setImageMirror(bool on) {
   imageTransform = imageTransform.mirror(on);
 }
 
 void Session::setImageRotate(ImageTransform rot) {
   imageTransform = imageTransform.rotateTo(rot);
+}
+
+ImageTransform Session::getImageTransform() const {
+  return imageTransform;
 }
 
 /// calculate the index of a pixel in a transformed image
@@ -217,26 +248,6 @@ QPoint Session::getPixMiddle() const {
   RUNTIME_CHECK(Range(0,imageSize.width()).contains(middle.x()), "bad pixMiddle");
   RUNTIME_CHECK(Range(0,imageSize.height()).contains(middle.y()), "bad pixMiddle");
   return middle;
-}
-
-Session::ImageCut::ImageCut(uint top_, uint bottom_, uint left_, uint right_)
-: top(top_), bottom(bottom_), left(left_), right(right_) {
-}
-
-bool Session::ImageCut::operator==(ImageCut const& that) {
-  return top==that.top && bottom==that.bottom && left==that.left && right==that.right;
-}
-
-uint Session::ImageCut::getWidth(QSize const& fullSize) const {
-  return qMax(fullSize.width() - (int)left - (int)right, 0);
-}
-
-uint Session::ImageCut::getHeight(QSize const& fullSize) const {
-  return qMax(fullSize.height() - (int)top - (int)bottom, 0);
-}
-
-uint Session::ImageCut::getCount(QSize const& fullSize) const {
-  return getWidth(fullSize) * getHeight(fullSize);
 }
 
 // TODO this is a slightly modified original code; be careful; eventually refactor

@@ -16,7 +16,7 @@ class Dataset;
 class ImageWidget: public QWidget {
   SUPER(ImageWidget,QWidget)
 public:
-  ImageWidget(Dataset&);
+  ImageWidget(TheHub&,Dataset&);
 
   void setPixmap(QPixmap const&);
   void setShowOverlay(bool);
@@ -25,6 +25,7 @@ public:
   QSize sizeHint() const;
 
 protected:
+  TheHub  &theHub;
   Dataset &dataset;
   bool showOverlay;
   QPixmap original, scaled;
@@ -38,7 +39,7 @@ protected:
 class DatasetOptions1: public BoxPanel {
   SUPER(DatasetOptions1,BoxPanel) Q_OBJECT
 public:
-  DatasetOptions1(MainWin&,Session&);
+  DatasetOptions1(TheHub&);
 
   qreal const MIN_DISTANCE   = 1.;  // mm
   qreal const MIN_PIXEL_SIZE = .01; // mm
@@ -47,18 +48,19 @@ private:
   QSpinBox       *spinOffsetX, *spinOffsetY;
   QDoubleSpinBox *spinDistance, *spinPixelSize;
 
-  void setTo(Session&);
-  void setFrom(Session&);
+  // TODO review
+  void setTo(TheHub&);
+  void setFrom(TheHub&);
 
-  // TODO to Session() of MainWin()
-  void readSettings(Session&);
+  // TODO review
+  void readSettings(TheHub&);
   void saveSettings();
 };
 
 class DatasetOptions2: public BoxPanel {
   SUPER(DatasetOptions2,BoxPanel) Q_OBJECT
 public:
-  DatasetOptions2(MainWin&,Session&);
+  DatasetOptions2(TheHub&);
 
 signals:
   void imageScale(uint);
@@ -67,7 +69,7 @@ private:
   QSpinBox       *cutTop, *cutBottom, *cutLeft, *cutRight;
   QSpinBox       *spinImageScale;
 
-  void setFrom(Session&);
+  void setFrom(TheHub&);
 
   void readSettings();
   void saveSettings();
@@ -78,7 +80,7 @@ private:
 class Dataset: public BoxPanel {
   SUPER(Dataset,BoxPanel)
 public:
-  Dataset(MainWin&,Session&);
+  Dataset(TheHub&);
 
   void setImageScale(uint);
 

@@ -7,10 +7,6 @@ namespace model {
 ModelBase::ModelBase(TheHub& theHub_): theHub(theHub_) {
 }
 
-//void Model::setSelectedDataset(core::shp_Dataset dataset) {
-//  session.setSelectedDataset(dataset);
-//}
-
 //------------------------------------------------------------------------------
 
 FileViewModel::FileViewModel(TheHub& theHub): ModelBase(theHub) {
@@ -134,7 +130,7 @@ core::shp_Dataset const& DatasetViewModel::getDataset(int row) const {
 
 //------------------------------------------------------------------------------
 
-ReflectionViewModel::ReflectionViewModel(TheHub& theHub): SessionModel(theHub) {
+ReflectionViewModel::ReflectionViewModel(TheHub& theHub): ModelBase(theHub) {
 }
 
 int ReflectionViewModel::columnCount(QModelIndex const&) const {

@@ -8,8 +8,7 @@
 #include "gui_helpers.h"
 #include <QGroupBox>
 
-class MainWin;
-class Session;
+class TheHub;
 
 namespace panel {
 //------------------------------------------------------------------------------
@@ -18,24 +17,21 @@ namespace panel {
 class BasicPanel: public QGroupBox {
   SUPER(BasicPanel,QGroupBox)
 public:
-  BasicPanel(rcstr title,MainWin&,Session&);
+  BasicPanel(rcstr title,TheHub&);
 
   void setHorizontalStretch(int);
   void setVerticalStretch(int);
   void setStretch(int horizontal, int vertical);
 
-  Session& getSession() const { return session; }
-
 protected:
-  MainWin &mainWin;
-  Session &session;
+  TheHub &theHub;
 };
 
 /// A panel with a box layout
 class BoxPanel: public BasicPanel {
   SUPER(BoxPanel,BasicPanel)
 public:
-  BoxPanel(rcstr title,MainWin&,Session&,Qt::Orientation);
+  BoxPanel(rcstr title,TheHub&,Qt::Orientation);
 
 protected:
   QBoxLayout *box;
@@ -45,7 +41,7 @@ protected:
 class GridPanel: public BasicPanel {
   SUPER(GridPanel,BasicPanel)
 public:
-  GridPanel(rcstr title,MainWin&,Session&);
+  GridPanel(rcstr title,TheHub&);
 
 protected:
   QGridLayout *grid;

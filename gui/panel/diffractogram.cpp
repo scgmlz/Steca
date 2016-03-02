@@ -1,6 +1,4 @@
 #include "diffractogram.h"
-#include "mainwin.h"
-#include "session.h"
 #include "core_fit_fitting.h"
 
 namespace panel {

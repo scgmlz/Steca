@@ -1,5 +1,4 @@
 #include "mainwin.h"
-#include "session.h"
 #include "settings.h"
 #include "mainwin_parts.h"
 
@@ -20,41 +19,15 @@
 MainWin::MainWin() {
   sessionDir = dataDir = QDir::homePath();
 
-  initActions();
   initMenus();
   initLayout();
   initStatus();
   connectActions();
 
   readSettings();
-  session->doReadSettings();
 }
 
 MainWin::~MainWin() {
-}
-
-void MainWin::initActions() {
-
-  connect(session, &Session::correctionEnabled, [this](bool on) {
-    actImagesEnableCorr->setChecked(on);
-    actImagesEnableCorr->setEnabled(session->hasCorrFile());
-  });
-
-  connect(actImagesEnableCorr, &QAction::toggled, [this](bool on) {
-    session->enableCorrection(on);
-  });
-
-  connect(actImagesGlobalNorm, &QAction::toggled, [this](bool on) {
-    session->setGlobalNorm(on);
-  });
-
-  connect(actImageMirror, &QAction::toggled, [this](bool on) {
-    session->setImageMirror(on);
-  });
-
-  connect(actImageRotate, &QAction::triggered, [this]() {
-    session->nextImageRotate();
-  });
 }
 
 void MainWin::initMenus() {
@@ -74,18 +47,18 @@ void MainWin::initMenus() {
   menuHelp  = mbar->addMenu("&Help");
 
   menuFile->addActions({
-    actAddFiles, actRemoveFile,
+    theHub.actAddFiles, theHub.actRemoveFile,
     separator(),
-    actLoadCorrectionFile,
+    theHub.actLoadCorrectionFile,
     separator(),
-    actLoadSession, actSaveSession,actLoadSession
+    theHub.actLoadSession, theHub.actSaveSession, theHub.actLoadSession
   });
 
   QMenu *menuExportDiffractograms = new QMenu("Export diffractograms",this);
   menuExportDiffractograms->addActions({
-    actExportDiffractogramCurrent,
-    actExportDiffractogramAllSeparateFiles,
-    actExportDiffractogramSingleFile,
+    theHub.actExportDiffractogramCurrent,
+    theHub.actExportDiffractogramAllSeparateFiles,
+    theHub.actExportDiffractogramSingleFile,
   });
 
   menuFile->addAction(separator());
@@ -93,8 +66,8 @@ void MainWin::initMenus() {
 
   QMenu *menuExportImages = new QMenu("Export images",this);
   menuExportImages->addActions({
-    actExportImagesWithMargins,
-    actExportImagesWithoutMargins,
+    theHub.actExportImagesWithMargins,
+    theHub.actExportImagesWithoutMargins,
   });
 
   menuFile->addMenu(menuExportImages);
@@ -103,70 +76,70 @@ void MainWin::initMenus() {
   #ifndef Q_OS_OSX  // Mac puts Quit into the Apple menu
     separator(),
   #endif
-    actQuit,
+    theHub.actQuit,
   });
 
   menuEdit->addActions({
-    actUndo, actRedo,
+    theHub.actUndo, theHub.actRedo,
     separator(),
-    actCut, actCopy, actPaste,
+    theHub.actCut, theHub.actCopy, theHub.actPaste,
   });
 
   menuView->addActions({
-    actImagesGlobalNorm,
-    actImageOverlay,
+    theHub.actImagesGlobalNorm,
+    theHub.actImageOverlay,
     separator(),
-    actBackgroundShowFit,
+    theHub.actBackgroundShowFit,
     separator(),
-    actViewStatusbar,
+    theHub.actViewStatusbar,
   #ifndef Q_OS_OSX
-    actFullscreen,
+    theHub.actFullscreen,
   #endif
     separator(),
-    actViewReset,
+    theHub.actViewReset,
   });
 
   menuDatasets->addActions({
-    actImageRotate,actImageMirror,
+    theHub.actImageRotate, theHub.actImageMirror,
     separator(),
-    actImagesEnableCorr,
+    theHub.actImagesEnableCorr,
     separator(),
   });
 
   QMenu *menuNormalization = new QMenu("Normalizaiton",this);
   menuNormalization->addActions({
-    actNormalizationDisable, actNormalizationMeasureTime,
-    actNormalizationMonitor, actNormalizationBackground
+    theHub.actNormalizationDisable, theHub.actNormalizationMeasureTime,
+    theHub.actNormalizationMonitor, theHub.actNormalizationBackground
   });
 
   menuDatasets->addMenu(menuNormalization);
 
   menuDatasets->addActions({
     separator(),
-    actBackgroundBackground,
-    actBackgroundClear
+    theHub.actBackgroundBackground,
+    theHub.actBackgroundClear
   });
 
   menuReflect->addActions({
-    actReflectionAdd, actReflectionRemove, actReflexionSelectRegion,
+    theHub.actReflectionAdd, theHub.actReflectionRemove, theHub.actReflectionSelectRegion,
     separator(),
-    actCalculatePolefigures, actCalculateHistograms,
+    theHub.actCalculatePolefigures, theHub.actCalculateHistograms,
     separator(),
-    actFitErrorParameters
+    theHub.actFitErrorParameters
   });
 
   menuHelp->addActions({
   #ifndef Q_OS_OSX // Mac puts About into the Apple menu
     separator(),
   #endif
-    actAbout,
+    theHub.actAbout,
   });
 }
 
 void MainWin::initLayout() {
-  addDockWidget(Qt::LeftDockWidgetArea, new panel::DockFiles(*this,*session));
-  addDockWidget(Qt::LeftDockWidgetArea, new panel::DockDatasets(*this,*session));
-  addDockWidget(Qt::RightDockWidgetArea,new panel::DockDatasetInfo(*this,*session));
+  addDockWidget(Qt::LeftDockWidgetArea, new panel::DockFiles(theHub));
+  addDockWidget(Qt::LeftDockWidgetArea, new panel::DockDatasets(theHub));
+  addDockWidget(Qt::RightDockWidgetArea,new panel::DockDatasetInfo(theHub));
 
   auto splMain = new QSplitter(Qt::Vertical);
   splMain->setChildrenCollapsible(false);
@@ -181,10 +154,10 @@ void MainWin::initLayout() {
   splMain->addWidget(splImages);
   splMain->addWidget(splReflections);
 
-  splImages->addWidget(new panel::SplitImage(*this,*session));
+  splImages->addWidget(new panel::SplitImage(theHub));
 
-  splReflections->addWidget(new panel::SplitFitting(*this,*session));
-  splReflections->addWidget(new panel::SplitDiffractogram(*this,*session));
+  splReflections->addWidget(new panel::SplitFitting(theHub));
+  splReflections->addWidget(new panel::SplitDiffractogram(theHub));
   splReflections->setStretchFactor(1,1);
 }
 
@@ -205,50 +178,45 @@ void MainWin::connectActions() {
     action->setEnabled(false);
   };
 
-  onTrigger(actAddFiles, &thisCls::addFiles);
+  onTrigger(theHub.actAddFiles,            &thisCls::addFiles);
+  onTrigger(theHub.actLoadCorrectionFile,  &thisCls::loadCorrectionFile);
 
-  connect(session, &Session::fileSelected, this, [this](core::shp_File file) {
-    actRemoveFile->setEnabled(nullptr!=file);
-  });
+  onTrigger(theHub.actLoadSession, &thisCls::loadSession);
+  onTrigger(theHub.actSaveSession, &thisCls::saveSession);
 
-  onTrigger(actLoadCorrectionFile,  &thisCls::loadCorrectionFile);
+  notYet(theHub.actExportDiffractogramCurrent);
+  notYet(theHub.actExportDiffractogramAllSeparateFiles);
+  notYet(theHub.actExportDiffractogramSingleFile);
+  notYet(theHub.actExportImagesWithMargins);
+  notYet(theHub.actExportImagesWithoutMargins);
 
-  onTrigger(actLoadSession, &thisCls::loadSession);
-  onTrigger(actSaveSession, &thisCls::saveSession);
+  onTrigger(theHub.actQuit, &thisCls::close);
 
-  notYet(actExportDiffractogramCurrent);
-  notYet(actExportDiffractogramAllSeparateFiles);
-  notYet(actExportDiffractogramSingleFile);
-  notYet(actExportImagesWithMargins);
-  notYet(actExportImagesWithoutMargins);
+  notYet(theHub.actUndo);
+  notYet(theHub.actRedo);
+  notYet(theHub.actCut);
+  notYet(theHub.actCopy);
+  notYet(theHub.actPaste);
 
-  onTrigger(actQuit, &thisCls::close);
+  notYet(theHub.actPreferences);
+  notYet(theHub.actReflectionSelectRegion);
+  notYet(theHub.actFitErrorParameters);
 
-  notYet(actUndo);
-  notYet(actRedo);
-  notYet(actCut);
-  notYet(actCopy);
-  notYet(actPaste);
+  notYet(theHub.actCalculatePolefigures);
+  notYet(theHub.actCalculateHistograms);
 
-  notYet(actPreferences);
-  notYet(actReflexionSelectRegion);
-  notYet(actFitErrorParameters);
+  notYet(theHub.actNormalizationDisable);
+  notYet(theHub.actNormalizationMeasureTime);
+  notYet(theHub.actNormalizationMonitor);
+  notYet(theHub.actNormalizationBackground);
 
-  notYet(actCalculatePolefigures);
-  notYet(actCalculateHistograms);
+  notYet(theHub.actAbout);
 
-  notYet(actNormalizationDisable);
-  notYet(actNormalizationMeasureTime);
-  notYet(actNormalizationMonitor);
-  notYet(actNormalizationBackground);
-
-  notYet(actAbout);
-
-  onToggle(actViewStatusbar, &thisCls::viewStatusbar);
+  onToggle(theHub.actViewStatusbar, &thisCls::viewStatusbar);
 #ifndef Q_OS_OSX
-  onToggle(actFullscreen,    &thisCls::viewFullscreen);
+  onToggle(theHub.actFullscreen,    &thisCls::viewFullscreen);
 #endif
-  onTrigger(actViewReset,    &thisCls::viewReset);
+  onTrigger(theHub.actViewReset,    &thisCls::viewReset);
 }
 
 void MainWin::show() {

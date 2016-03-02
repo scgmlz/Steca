@@ -7,7 +7,7 @@
 #include "gui_helpers.h"
 #include "panel/panel.h"
 
-class MainWin; class Session;
+class TheHub;
 
 namespace model {
 class FileViewModel;
@@ -22,7 +22,7 @@ class FileView: public ListView {
 public:
   using Model = model::FileViewModel;
 
-  FileView(Model&);
+  FileView(TheHub&);
 
 protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);
@@ -38,7 +38,7 @@ private:
 class DockFiles: public DockWidget {
   SUPER(DockFiles,DockWidget)
 public:
-  DockFiles(MainWin&,Session&);
+  DockFiles(TheHub&);
 private:
   FileView *fileView;
 };
@@ -50,19 +50,20 @@ class DatasetView: public TreeListView {
 public:
   using Model = model::DatasetViewModel;
 
-  DatasetView(Model&);
+  DatasetView(TheHub&);
 
 protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);
 
 private:
-  Model &model;
+  TheHub &theHub;
+  Model  &model;
 };
 
 class DockDatasets: public DockWidget {
   SUPER(DockDatasets,DockWidget)
 public:
-  DockDatasets(MainWin&,Session&);
+  DockDatasets(TheHub&);
 private:
   DatasetView *datasetView;
 };
@@ -72,7 +73,7 @@ private:
 class SplitImage: public BoxWidget {
   SUPER(SplitImage,BoxWidget)
 public:
-  SplitImage(MainWin&,Session&);
+  SplitImage(TheHub&);
 };
 
 //------------------------------------------------------------------------------
@@ -80,7 +81,7 @@ public:
 class SplitFitting: public BoxWidget {
   SUPER(SplitFitting,BoxWidget)
 public:
-  SplitFitting(MainWin&,Session&);
+  SplitFitting(TheHub&);
 };
 
 //------------------------------------------------------------------------------
@@ -88,7 +89,7 @@ public:
 class SplitDiffractogram: public BoxWidget {
   SUPER(SplitDiffractogram,BoxWidget)
 public:
-  SplitDiffractogram(MainWin&,Session&);
+  SplitDiffractogram(TheHub&);
 };
 
 //------------------------------------------------------------------------------
@@ -96,7 +97,7 @@ public:
 class DockDatasetInfo: public DockWidget {
   SUPER(DockDatasetInfo,DockWidget)
 public:
-  DockDatasetInfo(MainWin&,Session&);
+  DockDatasetInfo(TheHub&);
 
 private:
   class Info: public QWidget {

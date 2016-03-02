@@ -4,8 +4,8 @@
 namespace panel {
 //------------------------------------------------------------------------------
 
-BasicPanel::BasicPanel(rcstr title, MainWin& mainWin_, Session& session_)
-: super(title), mainWin(mainWin_), session(session_) {
+BasicPanel::BasicPanel(rcstr title, TheHub& theHub_)
+: super(title), theHub(theHub_) {
 }
 
 void BasicPanel::setHorizontalStretch(int stretch) {
@@ -27,13 +27,13 @@ void BasicPanel::setStretch(int horizontal, int vertical) {
   setSizePolicy(sp);
 }
 
-BoxPanel::BoxPanel(rcstr title,MainWin& mainWin,Session& session, Qt::Orientation orientation)
-: super(title,mainWin,session) {
+BoxPanel::BoxPanel(rcstr title, TheHub& theHub, Qt::Orientation orientation)
+: super(title,theHub) {
   setLayout((box = boxLayout(orientation)));
 }
 
-GridPanel::GridPanel(rcstr title,MainWin& mainWin,Session& session)
-: super(title,mainWin,session) {
+GridPanel::GridPanel(rcstr title, TheHub& theHub)
+: super(title,theHub) {
   setLayout((grid = gridLayout()));
 }
 

@@ -1,6 +1,5 @@
 #include "mainwin_parts.h"
 #include "mainwin.h"
-#include "session.h"
 #include "panel/dataset.h"
 #include "panel/fitting.h"
 #include "panel/diffractogram.h"
@@ -23,7 +22,7 @@ public:
 
 //------------------------------------------------------------------------------
 
-FileView::FileView(Model& model_): model(model_) {
+FileView::FileView(TheHub& theHub): model(theHub.fileViewModel) {
   setModel(&model);
 
   static FileViewDelegate delegate;
@@ -62,33 +61,33 @@ void FileView::update() {
 
 //------------------------------------------------------------------------------
 
-DockFiles::DockFiles(MainWin& mainWin,Session& session)
+DockFiles::DockFiles(TheHub& theHub)
 : super("Files","dock-files",Qt::Vertical) {
-  box->addWidget((fileView = new FileView(session.fileViewModel)));
+  box->addWidget((fileView = new FileView(theHub)));
 
   auto h = hbox(); box->addLayout(h);
 
-  h->addWidget(textButton(mainWin.actLoadCorrectionFile));
-  h->addWidget(iconButton(mainWin.actImagesEnableCorr));
+  h->addWidget(textButton(theHub.actLoadCorrectionFile));
+  h->addWidget(iconButton(theHub.actImagesEnableCorr));
   h->addStretch();
-  h->addWidget(iconButton(mainWin.actAddFiles));
-  h->addWidget(iconButton(mainWin.actRemoveFile));
+  h->addWidget(iconButton(theHub.actAddFiles));
+  h->addWidget(iconButton(theHub.actRemoveFile));
 
-  connect(mainWin.actRemoveFile, &QAction::triggered, [this]() {
+  connect(theHub.actRemoveFile, &QAction::triggered, [this]() {
     fileView->removeSelected();
   });
 
-  connect(&session, &Session::filesChanged, [this]() {
+  connect(&theHub, &TheHub::filesChanged, [this]() {
     fileView->update();
   });
 }
 
 //------------------------------------------------------------------------------
 
-DatasetView::DatasetView(Model& model_): model(model_) {
+DatasetView::DatasetView(TheHub& theHub_): theHub(theHub_), model(theHub.datasetViewModel) {
   setModel(&model);
 
-  connect(&model.getSession(), &Session::fileSelected, [this](core::shp_File coreFile) {
+  connect(&theHub, &TheHub::fileSelected, [this](core::shp_File coreFile) {
     model.setCoreFile(coreFile);
     setCurrentIndex(model.index(0,0));
   });
@@ -103,16 +102,16 @@ void DatasetView::selectionChanged(QItemSelection const& selected, QItemSelectio
   super::selectionChanged(selected,deselected);
 
   auto indexes = selected.indexes();
-  model.setSelectedDataset(indexes.isEmpty()
+  theHub.setSelectedDataset(indexes.isEmpty()
     ? core::shp_Dataset()
     : model.data(indexes.first(), Model::GetDatasetRole).value<core::shp_Dataset>());
 }
 
 //------------------------------------------------------------------------------
 
-DockDatasets::DockDatasets(MainWin&,Session& session)
+DockDatasets::DockDatasets(TheHub& theHub)
 : super("Datasets","dock-datasets",Qt::Vertical) {
-  box->addWidget((datasetView = new DatasetView(session.datasetViewModel)));
+  box->addWidget((datasetView = new DatasetView(theHub)));
   auto h = hbox();
   box->addLayout(h);
   h->addWidget(label("Combine:"));
@@ -121,7 +120,7 @@ DockDatasets::DockDatasets(MainWin&,Session& session)
 
 //------------------------------------------------------------------------------
 
-SplitImage::SplitImage(MainWin& mainWin,Session& session): super(Qt::Horizontal) {
+SplitImage::SplitImage(TheHub& theHub): super(Qt::Horizontal) {
   auto *options1 = new panel::DatasetOptions1(mainWin,session);
   auto *options2 = new panel::DatasetOptions2(mainWin,session);
   auto *dataset = new panel::Dataset(mainWin,session);
@@ -148,7 +147,7 @@ SplitDiffractogram::SplitDiffractogram(MainWin& mainWin,Session& session): super
 
 //------------------------------------------------------------------------------
 
-DockDatasetInfo::DockDatasetInfo(MainWin&,Session& session)
+DockDatasetInfo::DockDatasetInfo(TheHub& theHub)
 : super("Dataset info","dock-dataset-info",Qt::Vertical) {
   box->setMargin(0);
   auto scrollArea = new QScrollArea;

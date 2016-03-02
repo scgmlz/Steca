@@ -19,7 +19,6 @@ public:
  ~MainWin();
 
 private:
-  void initActions();
   void initMenus();
   void initLayout();
   void initStatus();

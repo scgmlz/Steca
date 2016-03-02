@@ -1,6 +1,5 @@
 #include "dataset.h"
-#include "mainwin.h"
-#include "session.h"
+#include "thehub.h"
 #include "settings.h"
 #include <QPainter>
 #include <QAction>
@@ -8,8 +7,8 @@
 namespace panel {
 //------------------------------------------------------------------------------
 
-ImageWidget::ImageWidget(Dataset& dataset_)
-: dataset(dataset_), showOverlay(false), scale(2) {
+ImageWidget::ImageWidget(TheHub& theHub_,Dataset& dataset_)
+: theHub(theHub_), dataset(dataset_), showOverlay(false), scale(2) {
   setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 }
 
@@ -51,7 +50,7 @@ void ImageWidget::paintEvent(QPaintEvent*) {
   if (!showOverlay) return;
 
   // cut
-  auto cut = dataset.getSession().getImageCut();
+  auto cut = theHub.getImageCut();
   QRect r = rect()
     .adjusted(1,1,-2,-2)
     .adjusted(scale*cut.left,scale*cut.top,-scale*cut.right,-scale*cut.bottom);
@@ -62,8 +61,8 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 
 //------------------------------------------------------------------------------
 
-DatasetOptions1::DatasetOptions1(MainWin& mainWin_, Session& session_)
-: super (EMPTY_STR,mainWin_,session_,Qt::Vertical) {
+DatasetOptions1::DatasetOptions1(TheHub& theHub_)
+: super(EMPTY_STR,theHub_,Qt::Vertical) {
 
   box->addWidget(label("Beam offset"));
   auto ho = hbox();
@@ -76,7 +75,7 @@ DatasetOptions1::DatasetOptions1(MainWin& mainWin_, Session& session_)
   ho->addWidget((spinOffsetY = spinCell(4,0)));
   spinOffsetY->setToolTip("Vertical offset from image center");
   ho->addWidget(label("pix"));
-  ho->addWidget(iconButton(mainWin.actHasBeamOffset));
+  ho->addWidget(iconButton(theHub.actHasBeamOffset));
   ho->addStretch();
 
   box->addWidget(label("Detector"));
@@ -105,12 +104,12 @@ DatasetOptions1::DatasetOptions1(MainWin& mainWin_, Session& session_)
   box->addStretch();
 
   // TODO separate geometryChanged into more signals?
-  connect(&session, &Session::geometryChanged, [this]() {
-    setFrom(session);
+  connect(&theHub, &TheHub::geometryChanged, [this]() {
+    setFrom(theHub);
   });
 
   auto setEnabled = [this]() {
-    bool on = mainWin.actHasBeamOffset->isChecked();
+    bool on = theHub.actHasBeamOffset->isChecked();
     spinOffsetX->setEnabled(on);
     spinOffsetY->setEnabled(on);
   };
@@ -118,48 +117,48 @@ DatasetOptions1::DatasetOptions1(MainWin& mainWin_, Session& session_)
   setEnabled();
 
   // TODO split setTo() ?
-  connect(mainWin.actHasBeamOffset, &QAction::toggled, [this,setEnabled]() {
+  connect(theHub.actHasBeamOffset, &QAction::toggled, [this,setEnabled]() {
     setEnabled();
-    setTo(session);
+    setTo(theHub);
   });
 
   connect(spinOffsetX, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this]() {
-    setTo(session);
+    setTo(theHub);
   });
 
   connect(spinOffsetY, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this]() {
-    setTo(session);
+    setTo(theHub);
   });
 
   connect(spinDistance, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
-    setTo(session);
+    setTo(theHub);
   });
 
   connect(spinPixelSize, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
-    setTo(session);
+    setTo(theHub);
   });
 
-  // TODO handle in Session() ?
-  connect(&session, &Session::readSettings, [this]() {
-    readSettings(session);
+  // TODO handle in TheHub() ?
+  connect(&theHub, &TheHub::readSettings, [this]() {
+    readSettings(theHub);
   });
 
-  connect(&session, &Session::saveSettings, [this]() {
+  connect(&theHub, &TheHub::saveSettings, [this]() {
     saveSettings();
   });
 }
 
-void DatasetOptions1::setTo(Session& session) {
-  session.setGeometry(
+void DatasetOptions1::setTo(TheHub& theHub) {
+  theHub.setGeometry(
     spinDistance->value(), spinPixelSize->value(),
-    mainWin.actHasBeamOffset->isChecked(),
+    theHub.actHasBeamOffset->isChecked(),
     QPoint(spinOffsetX->value(),spinOffsetY->value()));
 }
 
-void DatasetOptions1::setFrom(Session& session) {
-  auto const& g = session.getGeometry();
+void DatasetOptions1::setFrom(TheHub& theHub) {
+  auto const& g = theHub.getGeometry();
 
-  mainWin.actHasBeamOffset->setChecked(g.hasBeamOffset);
+  theHub.actHasBeamOffset->setChecked(g.hasBeamOffset);
   spinOffsetX->setValue(g.middlePixOffset.x());
   spinOffsetY->setValue(g.middlePixOffset.y());
 
@@ -179,17 +178,17 @@ static str GROUP_DETECTOR("Detector");
 static str KEY_DISTANCE("distance");
 static str KEY_PIXEL_SIZE("pixel_size");
 
-void DatasetOptions1::readSettings(Session& session) {
+void DatasetOptions1::readSettings(TheHub& theHub) {
   {
     Settings s(GROUP_BEAM);
-    auto const& g = session.getGeometry();
-    s.read(KEY_IS_OFFSET,   mainWin.actHasBeamOffset,g.hasBeamOffset);
+    auto const& g = theHub.getGeometry();
+    s.read(KEY_IS_OFFSET,   theHub.actHasBeamOffset,g.hasBeamOffset);
     s.read(KEY_OFFSET_X,    spinOffsetX,      g.middlePixOffset.x());
     s.read(KEY_OFFSET_Y,    spinOffsetY,      g.middlePixOffset.y());
   }
   {
     Settings s(GROUP_DETECTOR);
-    auto const& g = session.getGeometry();
+    auto const& g = theHub.getGeometry();
     s.read(KEY_DISTANCE,    spinDistance,     g.sampleDetectorSpan);
     s.read(KEY_PIXEL_SIZE,  spinPixelSize,    g.pixSpan);
   }
@@ -198,7 +197,7 @@ void DatasetOptions1::readSettings(Session& session) {
 void DatasetOptions1::saveSettings() {
   {
     Settings s(GROUP_BEAM);
-    s.save(KEY_IS_OFFSET,   mainWin.actHasBeamOffset);
+    s.save(KEY_IS_OFFSET,   theHub.actHasBeamOffset);
     s.save(KEY_OFFSET_X,    spinOffsetX);
     s.save(KEY_OFFSET_Y,    spinOffsetY);
   }
@@ -211,8 +210,8 @@ void DatasetOptions1::saveSettings() {
 
 //------------------------------------------------------------------------------
 
-DatasetOptions2::DatasetOptions2(MainWin& mainWin_, Session& session_)
-: super (EMPTY_STR,mainWin_,session_,Qt::Vertical) {
+DatasetOptions2::DatasetOptions2(TheHub& theHub_)
+: super (EMPTY_STR,theHub_,Qt::Vertical) {
 
   // TODO clean up the layout
 
@@ -220,11 +219,11 @@ DatasetOptions2::DatasetOptions2(MainWin& mainWin_, Session& session_)
   auto hb = hbox();
   box->addLayout(hb);
 
-  hb->addWidget(iconButton(mainWin.actImageRotate));
+  hb->addWidget(iconButton(theHub.actImageRotate));
   hb->addSpacing(5);
-  hb->addWidget(iconButton(mainWin.actImageMirror));
+  hb->addWidget(iconButton(theHub.actImageMirror));
   hb->addSpacing(5);
-  hb->addWidget(iconButton(mainWin.actImagesGlobalNorm));
+  hb->addWidget(iconButton(theHub.actImagesGlobalNorm));
   hb->addStretch();
 
   auto sc = hbox();
@@ -246,8 +245,8 @@ DatasetOptions2::DatasetOptions2(MainWin& mainWin_, Session& session_)
   gc->addWidget((cutBottom = spinCell(4,0)),        0,3);
   cutBottom->setToolTip("Bottom cut");
 
-  gc->addWidget(iconButton(mainWin.actImagesLink),  0,5);
-  gc->addWidget(iconButton(mainWin.actImageOverlay), 1,5);
+  gc->addWidget(iconButton(theHub.actImagesLink),  0,5);
+  gc->addWidget(iconButton(theHub.actImageOverlay), 1,5);
 
   gc->addWidget(icon(":/icon/cutLeftU"),            1,0);
   gc->addWidget((cutLeft = spinCell(4,0)),          1,1);
@@ -260,10 +259,10 @@ DatasetOptions2::DatasetOptions2(MainWin& mainWin_, Session& session_)
   box->addStretch();
 
   auto setImageCut = [this](bool topLeft, int value) {
-    if (mainWin.actImagesLink->isChecked())
-      session.setImageCut(topLeft, true, Session::ImageCut(value,value,value,value));
+    if (theHub.actImagesLink->isChecked())
+      theHub.setImageCut(topLeft, true, core::ImageCut(value,value,value,value));
     else
-      session.setImageCut(topLeft, false, Session::ImageCut(cutTop->value(), cutBottom->value(), cutLeft->value(), cutRight->value()));
+      theHub.setImageCut(topLeft, false, core::ImageCut(cutTop->value(), cutBottom->value(), cutLeft->value(), cutRight->value()));
   };
 
   connect(cutTop, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
@@ -283,8 +282,8 @@ DatasetOptions2::DatasetOptions2(MainWin& mainWin_, Session& session_)
   });
 
   // TODO separate geometryChanged into more signals?
-  connect(&session, &Session::geometryChanged, [this]() {
-    setFrom(session);
+  connect(&theHub, &TheHub::geometryChanged, [this]() {
+    setFrom(theHub);
   });
 
   connect(spinImageScale, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int scale) {
@@ -292,17 +291,17 @@ DatasetOptions2::DatasetOptions2(MainWin& mainWin_, Session& session_)
   });
 
   // TODO handle in Session() ?
-  connect(&session, &Session::readSettings, [this]() {
+  connect(&theHub, &TheHub::readSettings, [this]() {
     readSettings();
   });
 
-  connect(&session, &Session::saveSettings, [this]() {
+  connect(&theHub, &TheHub::saveSettings, [this]() {
     saveSettings();
   });
 }
 
-void DatasetOptions2::setFrom(Session& session) {
-  auto cut = session.getImageCut();
+void DatasetOptions2::setFrom(TheHub& theHub) {
+  auto cut = theHub.getImageCut();
 
   cutTop    ->setValue(cut.top);
   cutBottom ->setValue(cut.bottom);
@@ -328,12 +327,12 @@ void DatasetOptions2::saveSettings() {
 
 //------------------------------------------------------------------------------
 
-Dataset::Dataset(MainWin& mainWin_, Session& session_)
-: super("",mainWin_,session_,Qt::Vertical), dataset(nullptr) {
+Dataset::Dataset(TheHub& theHub_)
+: super("",theHub_,Qt::Vertical), dataset(nullptr) {
 
   box->addWidget(imageWidget = new ImageWidget(*this),0,Qt::AlignCenter);
 
-  connect(mainWin.actImagesEnableCorr, &QAction::toggled, [this](bool) {
+  connect(theHub.actImagesEnableCorr, &QAction::toggled, [this](bool) {
     renderDataset();
   });
 
@@ -343,15 +342,15 @@ Dataset::Dataset(MainWin& mainWin_, Session& session_)
 
   mainWin.actImageOverlay->setChecked(true);
 
-  connect(&session, &Session::displayChange, [this]() {
+  connect(&theHub, &TheHub::displayChange, [this]() {
     renderDataset();
   });
 
-  connect(&session, &Session::datasetSelected, [this](core::shp_Dataset dataset) {
+  connect(&theHub, &TheHub::datasetSelected, [this](core::shp_Dataset dataset) {
     setDataset(dataset);
   });
 
-  connect(&session, &Session::geometryChanged, [this]() {
+  connect(&theHub, &TheHub::geometryChanged, [this]() {
     renderDataset();
   });
 }
@@ -362,7 +361,7 @@ void Dataset::setImageScale(uint scale) {
 
 QPixmap Dataset::makePixmap(core::Image const& image, core::Range rgeIntens) {
   QPixmap pixmap;
-  auto size = session.getImageSize();
+  auto size = theHub.getImageSize();
 
   if (!size.isEmpty()) {
     qreal mi = rgeIntens.max;

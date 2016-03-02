@@ -20,7 +20,7 @@ class ReflectionView: public TreeListView {
 public:
   using Model = model::ReflectionViewModel;
 
-  ReflectionView(Fitting&,Model&);
+  ReflectionView(TheHub&);
 
   void addReflection();
   void removeSelected();
@@ -30,8 +30,8 @@ protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);
 
 private:
-  Fitting &fitting;
-  Model   &model;
+  TheHub &theHub;
+  Model  &model;
 };
 
 //------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ class Fitting: public BoxPanel {
   SUPER(Fitting,BoxPanel)
   friend class ReflectionView;
 public:
-  Fitting(MainWin&,Session&);
+  Fitting(TheHub&);
 
 private:
   QSpinBox *spinDegree;

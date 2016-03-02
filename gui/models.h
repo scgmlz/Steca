@@ -19,10 +19,6 @@ namespace model {
 class ModelBase {
 public:
   ModelBase(TheHub&);
-
-//  TheHub const& getTheHub() const { return TheHub ; }
-//  void setSelectedDataset(core::shp_Dataset);
-
 protected:
   TheHub &theHub;
 };
