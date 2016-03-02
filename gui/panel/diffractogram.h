@@ -53,7 +53,7 @@ public:
     TOOL_PEAK_REGION,
   };
 
-  DiffractogramPlot(Diffractogram&);
+  DiffractogramPlot(TheHub&,Diffractogram&);
 
 public:
   void setTool(Tool);
@@ -74,6 +74,7 @@ protected:
   void resizeEvent(QResizeEvent*);
 
 private:
+  TheHub        &theHub;
   Diffractogram &diffractogram;
   Tool tool;
   QCPGraph *bgGraph, *dgramGraph, *dgramBgFittedGraph, *dgramPeak;

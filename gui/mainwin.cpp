@@ -25,6 +25,7 @@ MainWin::MainWin() {
   connectActions();
 
   readSettings();
+  theHub.doReadSettings(); // TODO review
 }
 
 MainWin::~MainWin() {
@@ -225,14 +226,14 @@ void MainWin::show() {
 
 #ifdef DEVELOPMENT_JAN
 #ifdef Q_OS_OSX
-  session->load(QFileInfo("/Users/igb/P/+scg/STeCa/data/q.ste"));
+  theHub.load(QFileInfo("/Users/igb/P/+scg/STeCa/data/q.ste"));
 #else
-  session->load(QFileInfo("/home/jan/q.ste"));
+  theHub.load(QFileInfo("/home/jan/q.ste"));
 #endif
 #endif
 
 #ifdef DEVELOPMENT_REBECCA
-  session->load(QFileInfo("/home/rebecca/SCG/STeCa-Data/1.ste"));
+  theHub.load(QFileInfo("/home/rebecca/SCG/STeCa-Data/1.ste"));
 #endif
 }
 
@@ -247,7 +248,7 @@ void MainWin::addFiles() {
   if (!fileNames.isEmpty()) {
     // remember the directory for the next time
     dataDir = QFileInfo(fileNames.first()).absolutePath();
-    session->addFiles(fileNames);
+    theHub.addFiles(fileNames);
   }
 }
 
@@ -258,7 +259,7 @@ void MainWin::loadCorrectionFile() {
   if (!fileName.isEmpty()) {
     // remember the directory for the next time
     dataDir = QFileInfo(fileName).absolutePath();
-    session->loadCorrFile(fileName);
+    theHub.loadCorrFile(fileName);
   }
 }
 
@@ -271,7 +272,7 @@ void MainWin::loadSession() {
 
   QFileInfo fileInfo(fileName);
   sessionDir = fileInfo.absolutePath();
-  session->load(fileInfo);
+  theHub.load(fileInfo);
 }
 
 void MainWin::saveSession() {
@@ -286,7 +287,7 @@ void MainWin::saveSession() {
   QFile file(info.filePath());
   RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File cannot be opened");
 
-  auto written = file.write(session->save());
+  auto written = file.write(theHub.save());
   RUNTIME_CHECK(written >= 0, "Could not write session");
 }
 
@@ -296,7 +297,7 @@ void MainWin::closeEvent(QCloseEvent* event) {
 }
 
 void MainWin::onClose() {
-  session->doSaveSettings();
+  theHub.doSaveSettings();
   saveSettings();
 }
 
@@ -318,21 +319,21 @@ void MainWin::saveSettings() {
 }
 
 void MainWin::checkActions() {
-  actViewStatusbar->setChecked(statusBar()->isVisible());
+  theHub.actViewStatusbar->setChecked(statusBar()->isVisible());
 #ifndef Q_OS_OSX
-  actFullscreen->setChecked(isFullScreen());
+  theHub.actFullscreen->setChecked(isFullScreen());
 #endif
 }
 
 void MainWin::viewStatusbar(bool on) {
   statusBar()->setVisible(on);
-  actViewStatusbar->setChecked(on);
+  theHub.actViewStatusbar->setChecked(on);
 }
 
 void MainWin::viewFullscreen(bool on) {
   if (on) showFullScreen(); else showNormal();
 #ifndef Q_OS_OSX
-  actFullscreen->setChecked(on);
+  theHub.actFullscreen->setChecked(on);
 #endif
 }
 

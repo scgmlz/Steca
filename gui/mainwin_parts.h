@@ -107,6 +107,7 @@ private:
     QGridLayout *grid;
   };
 
+  TheHub &theHub;
   Info *info;
   InfoItems infoItems;
 };

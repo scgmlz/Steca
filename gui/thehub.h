@@ -117,15 +117,28 @@ public:
   core::ImageCut const& getImageCut() const;
   void setImageCut(bool topLeft, bool linked, core::ImageCut const&);
 
+  QSize getImageSize() const;
+  uint  pixIndexNoTransform(uint x, uint y) const;
+  core::intens_t pixIntensity(core::Image const&, uint x, uint y) const; // TODO review (and remove?!)
+
+  core::AngleCorrArray const& calcAngleCorrArray(qreal tthMitte);
+  core::Borders const& getCut() const; // TODO somehow hide
+
   core::Geometry const& getGeometry() const;
   void setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset);
 
   void setBackgroundPolynomialDegree(uint);
 
+  void doReadSettings();  // TODO review
+  void doSaveSettings();
+
 private:
   void setImageRotate(core::ImageTransform);
 
 signals:
+  void readSettings();
+  void saveSettings();
+
   void filesChanged();
   void correctionEnabled(bool);
 

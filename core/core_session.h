@@ -60,6 +60,33 @@ struct Geometry {
   QPoint middlePixOffset;
 };
 
+struct Pixpos {  // TODO bad name
+  Pixpos(): Pixpos(0,0) {}
+  Pixpos(qreal gamma, qreal tth): gammaPix(gamma), tthPix(tth) {}
+  qreal gammaPix;
+  qreal tthPix;
+};
+
+// TODO rename;
+typedef Array2D<Pixpos> AngleCorrArray;
+
+struct Borders { // TODO bad name, hide
+  Range
+    gamma,
+    tth_regular,
+    tth_gamma0; // at gamma=0
+
+  void invalidate() {
+    gamma.invalidate();
+    tth_regular.invalidate();
+    tth_gamma0.invalidate();
+  }
+
+  bool isValid() const {
+    return gamma.isValid() && tth_regular.isValid() && tth_gamma0.isValid();
+  }
+};
+
 class Session {
 public:
   Session();
@@ -124,34 +151,8 @@ public:
 
   QSize getImageSize() const;
 
-protected: // corrections TODO make private
-  struct Pixpos {  // TODO bad name
-    Pixpos(): Pixpos(0,0) {}
-    Pixpos(qreal gamma, qreal tth): gammaPix(gamma), tthPix(tth) {}
-    qreal gammaPix;
-    qreal tthPix;
-  };
-
-  // TODO rename;
-  typedef Array2D<Pixpos> AngleCorrArray;
+private: // corrections
   AngleCorrArray angleCorrArray;
-
-  struct Borders {
-    Range
-      gamma,
-      tth_regular,
-      tth_gamma0; // at gamma=0
-
-    void invalidate() {
-      gamma.invalidate();
-      tth_regular.invalidate();
-      tth_gamma0.invalidate();
-    }
-
-    bool isValid() const {
-      return gamma.isValid() && tth_regular.isValid() && tth_gamma0.isValid();
-    }
-  };
 
   Borders        ful, cut;
 

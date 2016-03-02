@@ -46,6 +46,8 @@ ToggleAction::ToggleAction(rcstr text, rcstr tip, rcstr iconFile, QObject* paren
 TheHub::TheHub(): session(new core::Session())
 , globalNorm(false)
 , fileViewModel(*this), datasetViewModel(*this), reflectionViewModel(*this) {
+  initActions();
+  configActions();
 }
 
 TheHub::~TheHub() {
@@ -55,7 +57,7 @@ TheHub::~TheHub() {
 #define PUSH_ACTION(act,text,tip,icon) \
   lastAction = act = new PushAction(text,tip,icon,this);
 #define TOGL_ACTION(act,text,tip,icon) \
-  lastAction = act  = new PushAction(text,tip,icon,this);
+  lastAction = act  = new ToggleAction(text,tip,icon,this);
 #define ACTION_KEY(key) \
   lastAction->setShortcut(key);
 
@@ -320,6 +322,26 @@ void TheHub::setImageCut(bool topLeft, bool linked, core::ImageCut const& imageC
   emit geometryChanged();
 }
 
+QSize TheHub::getImageSize() const {
+  return session->getImageSize();
+}
+
+uint TheHub::pixIndexNoTransform(uint x, uint y) const {
+  return session->pixIndexNoTransform(x,y);
+}
+
+core::intens_t TheHub::pixIntensity(core::Image const& image, uint x, uint y) const {
+  return session->pixIntensity(image, x, y);
+}
+
+core::AngleCorrArray const& TheHub::calcAngleCorrArray(qreal tthMitte) {
+  return session->calcAngleCorrArray(tthMitte);
+}
+
+core::Borders const& TheHub::getCut() const {
+  return session->getCut();
+}
+
 const core::Geometry &TheHub::getGeometry() const {
   return session->getGeometry();
 }
@@ -331,6 +353,14 @@ void TheHub::setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOf
 
 void TheHub::setBackgroundPolynomialDegree(uint degree) {
   emit backgroundPolynomialDegree(degree);
+}
+
+void TheHub::doReadSettings() {
+  emit readSettings();
+}
+
+void TheHub::doSaveSettings() {
+  emit saveSettings();
 }
 
 void TheHub::setImageRotate(core::ImageTransform rot) {

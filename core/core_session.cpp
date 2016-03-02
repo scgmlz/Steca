@@ -251,8 +251,7 @@ QPoint Session::getPixMiddle() const {
 }
 
 // TODO this is a slightly modified original code; be careful; eventually refactor
-Session::AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
-
+AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
   QPoint pixMiddle = getPixMiddle();
   auto size   = getImageSize();
 

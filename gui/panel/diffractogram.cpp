@@ -1,4 +1,5 @@
 #include "diffractogram.h"
+#include "thehub.h"
 #include "core_fit_fitting.h"
 
 namespace panel {
@@ -88,7 +89,8 @@ void DiffractogramPlotOverlay::updateCursorRegion() {
   update(cursorPos,g.top(),1,g.height());
 }
 
-DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram_): diffractogram(diffractogram_) {
+DiffractogramPlot::DiffractogramPlot(TheHub& theHub_,Diffractogram& diffractogram_)
+: theHub(theHub_), diffractogram(diffractogram_) {
   overlay = new DiffractogramPlotOverlay(*this);
 
   auto *ar = axisRect();
@@ -141,7 +143,7 @@ void DiffractogramPlot::plot(
 
   } else {
     auto tthRange   = dgram.getTthRange();
-    bool globalNorm = diffractogram.session.isGlobalNorm();
+    bool globalNorm = theHub.globalNorm;
 
     core::Range intenRange;
     if (globalNorm) {
@@ -238,53 +240,53 @@ void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
 
 //------------------------------------------------------------------------------
 
-Diffractogram::Diffractogram(MainWin& mainWin,Session& session)
-: super(EMPTY_STR,mainWin,session,Qt::Vertical), dataset(nullptr), bgPolynomial(0)
+Diffractogram::Diffractogram(TheHub& theHub_)
+: super(EMPTY_STR,theHub_,Qt::Vertical), dataset(nullptr), bgPolynomial(0)
 , showBgFit(false) {
-  box->addWidget((plot = new DiffractogramPlot(*this)));
+  box->addWidget((plot = new DiffractogramPlot(theHub,*this)));
 
-  connect(&session, &Session::datasetSelected, [this](core::shp_Dataset dataset) {
+  connect(&theHub, &TheHub::datasetSelected, [this](core::shp_Dataset dataset) {
     setDataset(dataset);
   });
 
-  connect(&session, &Session::geometryChanged, [this]() {
+  connect(&theHub, &TheHub::geometryChanged, [this]() {
     renderDataset();
   });
 
-  connect(&session, &Session::correctionEnabled, [this]() {
+  connect(&theHub, &TheHub::correctionEnabled, [this]() {
     renderDataset();
   });
 
-  connect(&session, &Session::displayChange, [this]() {
+  connect(&theHub, &TheHub::displayChange, [this]() {
     renderDataset();
   });
 
-  connect(&session, &Session::backgroundPolynomialDegree, [this](uint degree) {
+  connect(&theHub, &TheHub::backgroundPolynomialDegree, [this](uint degree) {
     bgPolynomial.setDegree(degree);
     renderDataset();
   });
 
   // TODO clean up the below connects
-  connect(mainWin.actBackgroundClear, &QAction::triggered, [this]() {
+  connect(theHub.actBackgroundClear, &QAction::triggered, [this]() {
     plot->clearBg();
   });
 
-  connect(mainWin.actBackgroundBackground, &QAction::toggled, [this,&mainWin](bool on) {
-    if (on) mainWin.actSelectPeak->setChecked(false); // works as radio
+  connect(theHub.actBackgroundBackground, &QAction::toggled, [this](bool on) {
+    if (on) theHub.actSelectPeak->setChecked(false); // works as radio
     plot->setTool(on ? DiffractogramPlot::TOOL_BACKGROUND : DiffractogramPlot::TOOL_NONE);
   });
 
-  connect(mainWin.actBackgroundShowFit, &QAction::toggled, [this](bool on) {
+  connect(theHub.actBackgroundShowFit, &QAction::toggled, [this](bool on) {
     showBgFit = on;
     plot->updateBg();
   });
 
-  connect(mainWin.actSelectPeak, &QAction::toggled, [this,&mainWin](bool on) {
-    if (on) mainWin.actBackgroundBackground->setChecked(false); // works as radio
+  connect(theHub.actSelectPeak, &QAction::toggled, [this](bool on) {
+    if (on) theHub.actBackgroundBackground->setChecked(false); // works as radio
     plot->setTool(on ? DiffractogramPlot::TOOL_PEAK_REGION : DiffractogramPlot::TOOL_NONE);
   });
 
-  mainWin.actBackgroundShowFit->setChecked(true);
+  theHub.actBackgroundShowFit->setChecked(true);
 }
 
 void Diffractogram::setDataset(core::shp_Dataset dataset_) {
@@ -305,14 +307,14 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   if (!dataset) return;
 
   // do this first! (e.g. before getCut())
-  auto angles   = session.calcAngleCorrArray(dataset->tthMitte());
+  auto angles   = theHub.calcAngleCorrArray(dataset->tthMitte());
 
   auto image    = dataset->getImage();
-  auto imageCut = session.getImageCut();
-  uint width    = imageCut.getWidth(session.getImageSize());
-  uint height   = imageCut.getHeight(session.getImageSize());
+  auto imageCut = theHub.getImageCut();
+  uint width    = imageCut.getWidth(theHub.getImageSize());
+  uint height   = imageCut.getHeight(theHub.getImageSize());
 
-  auto cut = session.getCut();
+  auto cut = theHub.getCut();
   qreal TTHMin = cut.tth_regular.min;
   qreal TTHMax = cut.tth_regular.max;
   qreal deltaTTH = (TTHMax - TTHMin) / width;
@@ -326,12 +328,12 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
       auto ix = i + imageCut.left;
 
       // TODO angles can be arranged for a single loop for_i (pixTotal) [last in commit 98413db71cd38ebaa54b6337a6c6e670483912ef]
-      auto tthPix = angles.at(session.pixIndexNoTransform(ix,iy)).tthPix;
+      auto tthPix = angles.at(theHub.pixIndexNoTransform(ix,iy)).tthPix;
 
       int bin = (tthPix==TTHMax) ? width-1 : qFloor((tthPix - TTHMin) / deltaTTH);
       if (bin<0 || (int)width<=bin) continue;  // outside of the cut
 
-      auto in = session.pixIntensity(image,ix,iy);
+      auto in = theHub.pixIntensity(image,ix,iy);
       if (!qIsNaN(in)) {
         intens_vec[bin] += in;
         counts_vec[bin]++;

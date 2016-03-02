@@ -121,9 +121,9 @@ DockDatasets::DockDatasets(TheHub& theHub)
 //------------------------------------------------------------------------------
 
 SplitImage::SplitImage(TheHub& theHub): super(Qt::Horizontal) {
-  auto *options1 = new panel::DatasetOptions1(mainWin,session);
-  auto *options2 = new panel::DatasetOptions2(mainWin,session);
-  auto *dataset = new panel::Dataset(mainWin,session);
+  auto *options1 = new panel::DatasetOptions1(theHub);
+  auto *options2 = new panel::DatasetOptions2(theHub);
+  auto *dataset = new panel::Dataset(theHub);
   connect(options2, &panel::DatasetOptions2::imageScale, dataset, &panel::Dataset::setImageScale);
   box->addWidget(options1);
   box->addWidget(options2);
@@ -133,22 +133,22 @@ SplitImage::SplitImage(TheHub& theHub): super(Qt::Horizontal) {
 
 //------------------------------------------------------------------------------
 
-SplitFitting::SplitFitting(MainWin& mainWin,Session& session): super(Qt::Vertical) {
-  box->addWidget(new panel::Fitting(mainWin,session));
+SplitFitting::SplitFitting(TheHub& theHub): super(Qt::Vertical) {
+  box->addWidget(new panel::Fitting(theHub));
 }
 
 //------------------------------------------------------------------------------
 
-SplitDiffractogram::SplitDiffractogram(MainWin& mainWin,Session& session): super(Qt::Horizontal) {
-  auto diffractogram = new panel::Diffractogram(mainWin,session);
+SplitDiffractogram::SplitDiffractogram(TheHub& theHub): super(Qt::Horizontal) {
+  auto diffractogram = new panel::Diffractogram(theHub);
   diffractogram->setHorizontalStretch(1);
   box->addWidget(diffractogram);
 }
 
 //------------------------------------------------------------------------------
 
-DockDatasetInfo::DockDatasetInfo(TheHub& theHub)
-: super("Dataset info","dock-dataset-info",Qt::Vertical) {
+DockDatasetInfo::DockDatasetInfo(TheHub& theHub_)
+: super("Dataset info","dock-dataset-info",Qt::Vertical), theHub(theHub_) {
   box->setMargin(0);
   auto scrollArea = new QScrollArea;
   box->addWidget(scrollArea);
@@ -167,15 +167,15 @@ DockDatasetInfo::DockDatasetInfo(TheHub& theHub)
       infoItems[i].cb->setToolTip("Show value in Datasets list");
   }
 
-  connect(&session, &Session::datasetSelected, [this](core::shp_Dataset dataset) {
+  connect(&theHub, &TheHub::datasetSelected, [this](core::shp_Dataset dataset) {
     for_i (core::Dataset::NUM_ATTRIBUTES) {
       infoItems[i].text->setText(dataset ? dataset->getAttributeStrValue(i) : EMPTY_STR);
     }
   });
 
   for (auto &item: infoItems) {
-    connect(item.cb, &QCheckBox::clicked, this, [this,&session]() {
-      session.datasetViewModel.setInfoItems(&infoItems);
+    connect(item.cb, &QCheckBox::clicked, this, [this]() {
+      theHub.datasetViewModel.setInfoItems(&infoItems);
     });
   }
 }

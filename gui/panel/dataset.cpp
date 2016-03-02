@@ -330,17 +330,17 @@ void DatasetOptions2::saveSettings() {
 Dataset::Dataset(TheHub& theHub_)
 : super("",theHub_,Qt::Vertical), dataset(nullptr) {
 
-  box->addWidget(imageWidget = new ImageWidget(*this),0,Qt::AlignCenter);
+  box->addWidget(imageWidget = new ImageWidget(theHub,*this),0,Qt::AlignCenter);
 
   connect(theHub.actImagesEnableCorr, &QAction::toggled, [this](bool) {
     renderDataset();
   });
 
-  connect(mainWin.actImageOverlay, &QAction::toggled, [this](bool on) {
+  connect(theHub.actImageOverlay, &QAction::toggled, [this](bool on) {
     imageWidget->setShowOverlay(on);
   });
 
-  mainWin.actImageOverlay->setChecked(true);
+  theHub.actImageOverlay->setChecked(true);
 
   connect(&theHub, &TheHub::displayChange, [this]() {
     renderDataset();
@@ -373,7 +373,7 @@ QPixmap Dataset::makePixmap(core::Image const& image, core::Range rgeIntens) {
       auto y = i;
       for_i (size.width()) {
         auto x = i;
-        qreal intens = session.pixIntensity(image,x,y) / mi;
+        qreal intens = theHub.pixIntensity(image,x,y) / mi;
 
         QRgb rgb;
         if (qIsNaN(intens))
@@ -406,7 +406,7 @@ void Dataset::renderDataset() {
   QPixmap pixMap;
   if (dataset) {
     auto image = dataset->getImage();
-    pixMap = makePixmap(image, dataset->getRgeIntens(session.isGlobalNorm()));
+    pixMap = makePixmap(image, dataset->getRgeIntens(theHub.globalNorm));
   }
   imageWidget->setPixmap(pixMap);
 }

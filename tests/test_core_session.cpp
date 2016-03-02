@@ -4,7 +4,7 @@
 void TestCoreSession::testSession() {
   //Tests for imageCut Struct
   {
-    using ImageCut = core::Session::ImageCut;
+    using ImageCut = core::ImageCut;
 
     {
       QSize q(10,100);
