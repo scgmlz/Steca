@@ -74,14 +74,18 @@ Fitting::Fitting(MainWin& mainWin,Session& session)
   });
 
   box->addWidget(label("Reflections"));
+  auto hs = hbox();
+  box->addLayout(hs);
+
+  hs->addWidget(iconButton(mainWin.actSelectPeak));
+  hs->addWidget(iconButton(mainWin.actReflectionPeak));
+  hs->addWidget(iconButton(mainWin.actReflectionWidth));
+  hs->addStretch();
+
   box->addWidget((reflectionView = new ReflectionView(*this,session.reflectionViewModel)));
 
   auto hr = hbox();
   box->addLayout(hr);
-
-  hr->addWidget(iconButton(mainWin.actSelectPeak));
-  hr->addWidget(iconButton(mainWin.actReflectionPeak));
-  hr->addWidget(iconButton(mainWin.actReflectionWidth));
   hr->addStretch();
   hr->addWidget(iconButton(mainWin.actReflectionAdd));
   hr->addWidget(iconButton(mainWin.actReflectionRemove));
