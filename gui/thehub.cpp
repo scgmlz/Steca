@@ -6,6 +6,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QApplication>
+#include <QActionEvent>
 
 //------------------------------------------------------------------------------
 
@@ -27,7 +28,7 @@ Action::Action(rcstr text, rcstr tip, rcstr iconFile, QObject* parent): super(te
   setToolTip(tip);
 
   if (!iconFile.isEmpty())
-    setIcon(QIcon(iconFile));
+      setIcon(QIcon(iconFile));
 }
 
 //------------------------------------------------------------------------------
@@ -38,10 +39,21 @@ PushAction::PushAction(rcstr text, rcstr tip, rcstr iconFile, QObject* parent)
 
 //------------------------------------------------------------------------------
 
-ToggleAction::ToggleAction(rcstr text, rcstr tip, rcstr iconFile, QObject* parent)
-: super(text,tip,iconFile,parent) {
+ToggleAction::ToggleAction(rcstr text1_, rcstr text2_, rcstr tip1_, rcstr tip2_, rcstr iconFile, QObject* parent)
+: super(text1_,tip1_,iconFile,parent), text1(text1_), text2(text2_), tip1(tip1_), tip2(tip2_) {
   setCheckable(true);
+
+  connect(this,&thisCls::toggled,[this](bool on) {
+    setText(on ? text2 : text1);
+    setToolTip(on ? tip2 : tip1);
+  });
 }
+
+
+ToggleAction::ToggleAction(rcstr text1, rcstr tip1, rcstr iconFile, QObject* parent)
+: ToggleAction(text1,text1,tip1,tip1,iconFile,parent) {
+}
+
 
 //------------------------------------------------------------------------------
 
@@ -106,6 +118,8 @@ TheHub::~TheHub() {
   lastAction = act = new PushAction(text,tip,icon,this);
 #define TOGL_ACTION(act,text,tip,icon) \
   lastAction = act  = new ToggleAction(text,tip,icon,this);
+#define TOGL_ACTION2(act,text1,text2,tip1,tip2,icon) \
+  lastAction = act  = new ToggleAction(text1,text2,tip1,tip2,icon,this);
 #define ACTION_KEY(key) \
   lastAction->setShortcut(key);
 
@@ -116,7 +130,7 @@ void TheHub::initActions() {
   PUSH_ACTION(actRemoveFile,  "Remove selected file","Remove selected file",":/icon/rem")     ACTION_KEY(QKey::Delete);
 
   PUSH_ACTION(actLoadCorrectionFile,"Load correction file...", "Load correction file", "")    ACTION_KEY(Qt::SHIFT|Qt::CTRL|Qt::Key_O);
-  TOGL_ACTION(actImagesEnableCorr,  "Enable correction file",  "Enable correction by correction file", ":/icon/useCorrection")
+  TOGL_ACTION2(actImagesEnableCorr,  "Enable correction file", "Disable correction file", "Enable correction by correction file", "Disable correction by correction file", ":/icon/useCorrection")
 
   PUSH_ACTION(actLoadSession,"Load session...","","")
   PUSH_ACTION(actSaveSession,"Save session...","","")
@@ -147,7 +161,7 @@ void TheHub::initActions() {
 
   PUSH_ACTION(actAbout     ,"About...","","")
 
-  TOGL_ACTION(actSelectPeak           ,"Select Peak", "Select Peak", ":/icon/selectPeak")
+  TOGL_ACTION2(actSelectPeak         ,"Select Peak", "Deselect Peak","Select Peak", "Deselect Peak", ":/icon/selectPeak")
   PUSH_ACTION(actReflectionPeak      ,"Peak",  "Set reflection peak",  ":/icon/selectHight")
   PUSH_ACTION(actReflectionWidth     ,"Width", "Set reflection width", ":/icon/selectWidth")
   PUSH_ACTION(actReflectionAdd       ,"Add",   "Add reflection",       ":/icon/add")
@@ -157,22 +171,22 @@ void TheHub::initActions() {
   PUSH_ACTION(actCalculatePolefigures,"Calculate polefigures...","","") // TODO polefigure or pole figure?
   PUSH_ACTION(actCalculateHistograms ,"Calculate histograms..","","")
 
-  TOGL_ACTION(actImagesLink           ,"Link",         "Use the same value for all cuts", ":/icon/linkNew")
-  TOGL_ACTION(actImageOverlay         ,"overlay",      "Show cut", ":/icon/imageCrop")
-  TOGL_ACTION(actImagesGlobalNorm     ,"global norm.", "Display data using a fixed intensity scale", ":/icon/scale")
-  PUSH_ACTION(actImageRotate         ,"Rotate",       "Rotate 90° clockwise", ":/icon/rotate0") ACTION_KEY(Qt::CTRL|Qt::Key_R)
+  TOGL_ACTION2(actImagesLink           ,"Link", "Unlink",         "Use the same value for all cuts","Use different value for all cuts", ":/icon/linkNew")
+  TOGL_ACTION2(actImageOverlay         ,"overlay", "overlay",     "Show cut", "Hide cut", ":/icon/imageCrop")
+  TOGL_ACTION2(actImagesGlobalNorm     ,"global norm.", "global norm.", "Display data using a fixed intensity scale", "Display data using non-fixed intensity scale",":/icon/scale")
+  PUSH_ACTION(actImageRotate           ,"Rotate",       "Rotate 90° clockwise", ":/icon/rotate0") ACTION_KEY(Qt::CTRL|Qt::Key_R)
   TOGL_ACTION(actImageMirror          ,"Mirror",       "Mirror image", ":/icon/mirror_horz")
 
   PUSH_ACTION(actBackgroundClear     ,"Clear background fit regions",    "Clear regions for background fitting", ":/icon/clearBackground")
   TOGL_ACTION(actBackgroundBackground ,"Select background fit regions",    "Select regions for background fitting", ":/icon/pekBackground")
-  TOGL_ACTION(actBackgroundShowFit    ,"BackgroundEye", "Show background fit", ":/icon/showBackground")
+  TOGL_ACTION2(actBackgroundShowFit    ,"BackgroundEye", "BackgroundEye","Show background fit","Hide background fit", ":/icon/showBackground")
 
-  TOGL_ACTION(actHasBeamOffset        ,"Beam centre offset", "Enable beam center offset (for X-ray instruments)", ":/icon/beam")
+  TOGL_ACTION2(actHasBeamOffset        ,"Beam centre offset", "Beam centre offset","Enable beam center offset (for X-ray instruments)", "Disable beam center offset",":/icon/beam")
 
   PUSH_ACTION(actNormalizationDisable    ,"Disable","","")
   PUSH_ACTION(actNormalizationMeasureTime,"Measurement Time","","")
   PUSH_ACTION(actNormalizationMonitor    ,"Monitor counts","","")
-      PUSH_ACTION(actNormalizationBackground ,"Background level","","")
+  PUSH_ACTION(actNormalizationBackground ,"Background level","","")
 }
 
 void TheHub::configActions() {

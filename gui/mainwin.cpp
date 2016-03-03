@@ -17,6 +17,7 @@
 
 MainWin::MainWin() {
   sessionDir = dataDir = QDir::homePath();
+  setWindowIcon(QIcon(":/icon/STeCa2"));
 
   initMenus();
   initLayout();

@@ -29,7 +29,11 @@ public:
 class ToggleAction: public Action {
   SUPER(ToggleAction,Action)
 public:
-  ToggleAction(rcstr text, rcstr tip, rcstr iconFile, QObject*);
+  ToggleAction(rcstr text1, rcstr text2, rcstr tip1, rcstr tip2, rcstr iconFile, QObject*);
+  ToggleAction(rcstr text1, rcstr tip1, rcstr iconFile, QObject*);
+
+protected:
+  str text1, text2, tip1, tip2;
 };
 
 //------------------------------------------------------------------------------

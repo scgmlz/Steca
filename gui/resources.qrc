@@ -35,5 +35,6 @@
         <file alias="selectHight">icons/selectHight.svg</file>
         <file alias="showBackground">icons/showBackground.svg</file>
         <file alias="selectWidth">icons/selectWidth.svg</file>
+        <file alias="STeCa2">icons/STeCa2.bmp</file>
     </qresource>
 </RCC>

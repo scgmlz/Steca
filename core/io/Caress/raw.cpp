@@ -1044,7 +1044,7 @@ int32 get_data_partition_r(struct raw_infovars* pVars, void* addr, int32 section
     char* current_poi;
     int32 remaining_length;
     int64 i, j, k;
-    int32 f_status;
+    int32 f_status = 0;
     int32 istatus;
     int32 bConvertInt64ToDouble = 0;
 
@@ -1682,7 +1682,7 @@ Get a new data.
 
 static int32 data(struct raw_infovars* pVars)
 {
-    char* addr;
+    char* addr = 0;
     int32 istatus;
 
     istatus = OK;
