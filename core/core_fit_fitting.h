@@ -14,7 +14,7 @@ namespace core { namespace fit {
 Polynomial fitBackground(TI_Curve const& dgram, core::Ranges const&, uint degree);
 
 /// Peak fit
-Gaussian fitPeak(TI_Curve const&, core::Range const&);
+void fitPeak(PeakFunction&, TI_Curve const&, core::Range const&);
 
 //------------------------------------------------------------------------------
 }}

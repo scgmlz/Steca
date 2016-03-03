@@ -364,7 +364,8 @@ void Diffractogram::calcBackground() {
 void Diffractogram::calcPeak() {
   peak.clear();
   if (peakRange.min < peakRange.max) {
-    auto gaussian = core::fit::fitPeak(dgramBgFitted,peakRange);
+    core::fit::Gaussian gaussian;
+    core::fit::fitPeak(gaussian,dgramBgFitted,peakRange);
     auto tth   = dgramBgFitted.getTth();
     auto inten = dgramBgFitted.getInten();
     for_i (dgramBgFitted.count()) {

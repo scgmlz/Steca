@@ -80,6 +80,8 @@ public:
   uint parameterCount() const;
   Parameter& getParameter(uint);
 
+  void reset();
+
 protected:
   QVector<Parameter> parameters;
   qreal parValue(uint parIndex, qreal const* parameterValues) const;
@@ -139,37 +141,8 @@ class PeakFunction: public SimpleFunction {
 public:
   PeakFunction();
 
-public:
-//  virtual qreal getArea()                           = 0;
-//  virtual qreal getAreaErrorAbsolute()              = 0;
-//  virtual qreal getAreaErrorRelativInPercent()      = 0;
-//  virtual void  setFWHM(qreal value)                = 0;
-//  virtual void  setFWHMIsFixed(bool isFixed)        = 0;
-//  virtual void  setFWHMAbsoluteLimit(qreal min, qreal max) = 0;
-//  virtual qreal getFWHM()                           = 0;
-//  virtual qreal getFWHMErrorAbsolute()              = 0;
-//  virtual qreal getFWHMErrorRelativInPercent()      = 0;
-//  virtual bool  getFWHMIsFixed()                    = 0;
-//  virtual qreal getFWHMAbsoluteLimitMin()           = 0;
-//  virtual qreal getFWHMAbsoluteLimitMax()           = 0;
-//  virtual void  setMax(qreal value)                 = 0;
-//  virtual void  setMaxIsFixed(bool)                 = 0;
-//  virtual void  setMaxAbsoluteLimit(qreal min, qreal max) = 0;
-//  virtual qreal getMax()                            = 0;
-//  virtual qreal getMaxErrorAbsolute()               = 0;
-//  virtual qreal getMaxErrorRelativInPercent()       = 0;
-//  virtual bool  getMaxIsFixed()                     = 0;
-//  virtual qreal getMaxAbsoluteLimitMin()            = 0;
-//  virtual qreal getMaxAbsoluteLimitMax()            = 0;
-//  virtual void  setPositionOfMax(qreal)             = 0;
-//  virtual void  setPositionOfMaxIsFixed(bool)       = 0;
-//  virtual void  setPositionOfMaxAbsoluteLimit(qreal min, qreal max) = 0;
-//  virtual qreal getPositionOfMax()                  = 0;
-//  virtual qreal getPositionOfMaxErrorAbsolute()     = 0;
-//  virtual qreal getPositionOfMaxErrorRelativInPercent() = 0;
-//  virtual bool  getPositionOfMaxIsFixed()           = 0;
-//  virtual qreal getPositionOfMaxAbsoluteLimitMin()  = 0;
-//  virtual qreal getPositionOfMaxAbsoluteLimitMax()  = 0;
+  virtual void setPeak(qreal tth, qreal intens) = 0;
+  virtual void setFWHM(qreal)                   = 0;
 };
 
 //------------------------------------------------------------------------------
@@ -180,6 +153,54 @@ public:
   enum { parAMPL, parMU, parSIGMA };
 
   Gaussian(qreal ampl=1, qreal mu=0, qreal sigma=1);
+
+  qreal y(qreal x, qreal const* parameterValues = nullptr) const;
+  qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
+
+  void setPeak(qreal tth, qreal intens);
+  void setFWHM(qreal);
+};
+
+//------------------------------------------------------------------------------
+
+class CauchyLorentz: public PeakFunction {
+  SUPER(CauchyLorentz,PeakFunction)
+public:
+  enum { parAMPL, parTTH0, parGAMMA };
+
+  CauchyLorentz(qreal ampl=1, qreal tth=0, qreal gamma=1);
+
+  qreal y(qreal x, qreal const* parameterValues = nullptr) const;
+  qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
+
+  void setPeak(qreal tth, qreal intens);
+  void setFWHM(qreal);
+};
+
+//------------------------------------------------------------------------------
+
+class PseudoVoigt1: public PeakFunction {
+  SUPER(PseudoVoigt1,PeakFunction)
+public:
+  enum { parAMPL, parMU, parHWHM, parETA };
+
+  PseudoVoigt1(qreal ampl=1, qreal mu=0, qreal hwhm=1, qreal eta=0.1);
+
+  qreal y(qreal x, qreal const* parameterValues = nullptr) const;
+  qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
+
+  void setPeak(qreal tth, qreal intens);
+  void setFWHM(qreal);
+};
+
+//------------------------------------------------------------------------------
+
+class PseudoVoigt2: public PeakFunction {
+  SUPER(PseudoVoigt2,PeakFunction)
+public:
+  enum { parAMPL, parMU, parHWHMG, parHWHML, parETA };
+
+  PseudoVoigt2(qreal ampl=1, qreal mu=0, qreal hwhmG=1, qreal hwhmL=1, qreal eta=0.1);
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;

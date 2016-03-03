@@ -81,7 +81,12 @@ bool Range::contains(Range const& that) const {
 
 bool Range::intersects(Range const& that) const {
   ASSERT(isValid() && that.isValid())
-  return min <= that.max && that.min <= max;
+      return min <= that.max && that.min <= max;
+}
+
+qreal Range::bound(qreal value) const {
+  if (isValid()) value = qBound(min,value,max);
+  return value;
 }
 
 //------------------------------------------------------------------------------

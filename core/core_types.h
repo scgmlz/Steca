@@ -40,6 +40,8 @@ struct Range {
   bool contains(qreal val)      const;
   bool contains(Range const&)   const;
   bool intersects(Range const&) const;
+
+  qreal bound(qreal value)      const;
 };
 
 //------------------------------------------------------------------------------

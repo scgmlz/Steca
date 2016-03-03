@@ -11,11 +11,11 @@ Polynomial fitBackground(TI_Curve const& dgram, core::Ranges const& bgRanges, ui
   return bgPolynomial;
 }
 
-Gaussian fitPeak(TI_Curve const& dgram, core::Range const& range) {
-  Gaussian gaussian;
+void fitPeak(PeakFunction& peakFunction, TI_Curve const& dgram, core::Range const& range) {
+  peakFunction.reset();
 
   core::Curve curve = dgram.intersect(range);
-  if (curve.isEmpty()) return gaussian;
+  if (curve.isEmpty()) return;
 
   uint peakIndex  = curve.maxYindex();
   auto peakTth    = curve.x(peakIndex);
@@ -36,12 +36,10 @@ Gaussian fitPeak(TI_Curve const& dgram, core::Range const& range) {
     if (curve.y(i) < peakIntens/2) break;
   }
 
-  gaussian.setPeak(peakTth,peakIntens);
-  gaussian.setFWHM(curve.x(hmi2) - curve.x(hmi1));
+  peakFunction.setPeak(peakTth,peakIntens);
+  peakFunction.setFWHM(curve.x(hmi2) - curve.x(hmi1));
 
-  FittingLevenbergMarquardt().fitWithoutCheck(gaussian,curve);
-
-  return gaussian;
+  FittingLevenbergMarquardt().fitWithoutCheck(peakFunction,curve);
 }
 
 //------------------------------------------------------------------------------
