@@ -462,14 +462,13 @@ LM_REAL *a, *x, *work, max, sum, tmp;
         max=0.0;
         for(j=0; j<m; ++j)
             if((tmp=FABS(a[i*m+j]))>max)
-        max=tmp;
-          if(max==0.0){
-        fprintf(stderr, RCAT("Singular matrix A in ", LEVMAR_LUINVERSE) "()!\n");
-        free(buf);
-
-        return 0;
-      }
-          work[i]=LM_CNST(1.0)/max;
+              max=tmp;
+        if(max==0.0) {
+          /* DISABLED MESSAGE fprintf(stderr, RCAT("Singular matrix A in ", LEVMAR_LUINVERSE) "()!\n"); */
+          free(buf);
+          return 0;
+        }
+        work[i]=LM_CNST(1.0)/max;
     }
 
     for(j=0; j<m; ++j){
