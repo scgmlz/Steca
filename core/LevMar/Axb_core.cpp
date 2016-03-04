@@ -1198,16 +1198,15 @@ LM_REAL *a, *work, max, sum, tmp;
         max=0.0;
         for(j=0; j<m; ++j)
             if((tmp=FABS(a[i*m+j]))>max)
-        max=tmp;
-          if(max==0.0){
-        fprintf(stderr, RCAT("Singular matrix A in ", AX_EQ_B_LU) "()!\n");
+                max=tmp;
+        if(max==0.0) {
+          /* DISABLED MESSAGE fprintf(stderr, RCAT("Singular matrix A in ", AX_EQ_B_LU) "()!\n"); */
 #ifndef LINSOLVERS_RETAIN_MEMORY
-        free(buf);
+          free(buf);
 #endif
-
-        return 0;
-      }
-          work[i]=LM_CNST(1.0)/max;
+          return 0;
+        }
+        work[i]=LM_CNST(1.0)/max;
     }
 
     for(j=0; j<m; ++j){
