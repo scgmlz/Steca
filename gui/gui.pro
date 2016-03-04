@@ -10,7 +10,6 @@ QT      += core gui printsupport
 HEADERS += \
     QCP/qcustomplot.h \
     app.h \
-    delegates.h \
     gui_helpers.h \
     mainwin.h \
     panel/panel.h \
@@ -24,7 +23,6 @@ HEADERS += \
 SOURCES += \
     QCP/qcustomplot.cpp \
     app.cpp \
-    delegates.cpp \
     gui_helpers.cpp \
     main.cpp \
     mainwin.cpp \

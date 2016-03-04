@@ -67,12 +67,22 @@ private:
 class ReflectionViewModel: public QAbstractTableModel, public ModelBase {
   SUPER(ReflectionViewModel,QAbstractTableModel)
 public:
+  enum {
+    COLUMN_0,
+    COLUMN_ID,
+    COLUMN_TYPE,
+    NUM_COLUMNS
+  };
+
   ReflectionViewModel(TheHub&);
 
-  int columnCount(QModelIndex const& = QModelIndex())   const;
-  int rowCount(QModelIndex const& = QModelIndex())      const;
+  int columnCount(QModelIndex const& = QModelIndex()) const;
+  int rowCount(QModelIndex const& = QModelIndex())    const;
+  Qt::ItemFlags flags(QModelIndex const&)             const;
+  QVariant headerData(int,Qt::Orientation,int)        const;
+
   QVariant data(QModelIndex const&,int) const;
-  QVariant headerData(int,Qt::Orientation,int) const;
+  bool setData(QModelIndex const&, QVariant const&, int role = Qt::EditRole);
 
   void addReflection();
   void remReflection(uint);

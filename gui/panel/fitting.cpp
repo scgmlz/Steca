@@ -1,16 +1,64 @@
 #include "fitting.h"
 #include "thehub.h"
-#include "delegates.h"
 #include "core_fit_limits.h"
+#include <QStyledItemDelegate>
 #include <QAction>
+#include <QApplication>
 
 namespace panel {
 //------------------------------------------------------------------------------
 
+class ReflectionTypeDelegate: public QStyledItemDelegate {
+  SUPER(ReflectionTypeDelegate,QStyledItemDelegate)
+public:
+  ReflectionTypeDelegate();
+
+  QWidget *createEditor(QWidget*, QStyleOptionViewItem const&, QModelIndex const&)      const;
+  void setEditorData(QWidget*, QModelIndex const&)                                      const;
+  void setModelData(QWidget*, QAbstractItemModel*, QModelIndex const&)                  const;
+  void updateEditorGeometry(QWidget*, QStyleOptionViewItem const&, QModelIndex const&)  const;
+  void paint(QPainter*, QStyleOptionViewItem const&, QModelIndex const&)                const;
+
+protected:
+  str_lst items;
+};
+
+ReflectionTypeDelegate::ReflectionTypeDelegate() {
+  items << "Integral" << "Gaussian" << "Lorentzian" << "PseudoVoigt1" << "PseudoVoigt2";
+}
+
+QWidget* ReflectionTypeDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const&, QModelIndex const&) const {
+  auto editor = new QComboBox(parent);
+  editor->addItems(items);
+  return editor;
+}
+
+void ReflectionTypeDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const {
+  auto comboBox = static_cast<QComboBox*>(editor);
+  comboBox->setCurrentIndex(index.model()->data(index).toInt());
+}
+
+void ReflectionTypeDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const {
+  auto comboBox = static_cast<QComboBox*>(editor);
+  model->setData(index, comboBox->currentIndex());
+}
+
+void ReflectionTypeDelegate::updateEditorGeometry(QWidget* editor, QStyleOptionViewItem const& option, QModelIndex const&) const {
+  editor->setGeometry(option.rect);
+}
+
+void ReflectionTypeDelegate::paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const {
+  auto myOption = option;
+  uint i = qBound(0, index.model()->data(index).toInt(), items.count()-1);
+  myOption.text = items[i];
+  QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &myOption, painter);
+}
+
 ReflectionView::ReflectionView(TheHub& theHub_)
 : theHub(theHub_), model(theHub.reflectionViewModel) {
+
   setModel(&model);
-  setItemDelegateForColumn(2,new ComboBoxDelegate);
+  setItemDelegateForColumn(Model::COLUMN_TYPE, new ReflectionTypeDelegate);
 
   for_i (model.columnCount())
     resizeColumnToContents(i);
@@ -25,9 +73,8 @@ void ReflectionView::removeSelected() {
   auto index = currentIndex();
   if (!index.isValid()) return;
 
-  uint row = index.row();
-  index = ((int)row < model.rowCount()) ? index : index.sibling(row-1,0);
-
+  int row = index.row();
+  index = (row < model.rowCount()) ? index : index.sibling(row-1,0);
   model.remReflection(row);
   update();
 }

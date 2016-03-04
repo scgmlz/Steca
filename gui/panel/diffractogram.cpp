@@ -86,7 +86,9 @@ void DiffractogramPlotOverlay::paintEvent(QPaintEvent*) {
 
 void DiffractogramPlotOverlay::updateCursorRegion() {
   auto g = geometry();
-  update(cursorPos,g.top(),1,g.height());
+  // TODO review; was update(cursorPos,g.top(),1,g.height());
+  // on Mac needed one pixel more (or only one pixel to the left?
+  update(cursorPos-1,g.top(),2,g.height());
 }
 
 DiffractogramPlot::DiffractogramPlot(TheHub& theHub_,Diffractogram& diffractogram_)

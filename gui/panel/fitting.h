@@ -13,8 +13,6 @@ class ReflectionViewModel;
 namespace panel {
 //------------------------------------------------------------------------------
 
-class Fitting;
-
 class ReflectionView: public TreeListView {
   SUPER(ReflectionView,TreeListView)
 public:

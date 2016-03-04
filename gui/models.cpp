@@ -134,37 +134,23 @@ ReflectionViewModel::ReflectionViewModel(TheHub& theHub): ModelBase(theHub) {
 }
 
 int ReflectionViewModel::columnCount(QModelIndex const&) const {
-  return 3;
+  return NUM_COLUMNS;
 }
 
 int ReflectionViewModel::rowCount(QModelIndex const&) const {
   return reflections.count();
 }
 
-QVariant ReflectionViewModel::data(QModelIndex const& index, int role) const {
-  int row = index.row(), col = index.column(), rowCnt = rowCount(index), colCnt = columnCount(index);
-  if (row < 0 || row >= rowCnt || col < 0 || col >= colCnt) return QVariant();
-
-  switch (role) {
-    case Qt::DisplayRole: {
-      switch (col) {
-      case 0:
-        return QVariant();
-      case 1:
-        return str().setNum(row+1);
-      default:
-        return "A";
-      }
-    }
-    default:
-      return QVariant();
-  }
+Qt::ItemFlags ReflectionViewModel::flags(QModelIndex const& index) const {
+  auto fs = super::flags(index);
+  if (COLUMN_TYPE==index.column()) fs |= Qt::ItemIsEditable;
+  return fs;
 }
 
 QVariant ReflectionViewModel::headerData(int section, Qt::Orientation, int role) const {
   if (Qt::DisplayRole == role) {
     switch (section) {
-    case 1:
+    case COLUMN_ID:
       return "#";
     default:
       break;
@@ -174,8 +160,34 @@ QVariant ReflectionViewModel::headerData(int section, Qt::Orientation, int role)
   return QVariant();
 }
 
+QVariant ReflectionViewModel::data(QModelIndex const& index, int role) const {
+  int row = index.row(), col = index.column(), rowCnt = rowCount(index);
+  if (row < 0 || row >= rowCnt || col < 0 || col >= NUM_COLUMNS) return QVariant();
+
+  switch (col) {
+  case COLUMN_ID:
+    if (Qt::DisplayRole==role) return str().setNum(row+1);
+    break;
+  case COLUMN_TYPE:
+    return reflections[row];
+  default:
+    break;
+  }
+
+  return QVariant();
+}
+
+bool ReflectionViewModel::setData(QModelIndex const& index, QVariant const& value, int role) {
+  int row = index.row(), col = index.column(), rowCnt = rowCount(index);
+  if (row >= 0 && row < rowCnt && COLUMN_TYPE==col) {
+    reflections[row] = value.toUInt();
+    return true;
+  }
+  return super::setData(index,value,role);
+}
+
 void ReflectionViewModel::addReflection() {
-  reflections.append(8);
+  reflections.append(1);
 }
 
 void ReflectionViewModel::remReflection(uint i) {
