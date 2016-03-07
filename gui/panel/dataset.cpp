@@ -7,7 +7,7 @@ namespace panel {
 //------------------------------------------------------------------------------
 
 ImageWidget::ImageWidget(TheHub& theHub_,Dataset& dataset_)
-: theHub(theHub_), dataset(dataset_), showOverlay(false), scale(2) {
+: theHub(theHub_), dataset(dataset_), showOverlay(false), scale(1) {
   setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 }
 

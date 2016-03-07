@@ -77,20 +77,20 @@ QVariant DatasetViewModel::data(QModelIndex const& index,int role) const {
   if (row < 0 || row >= cnt || col < 0 || col-2 >= attributeNums.count()) return QVariant();
 
   switch (role) {
-    case Qt::DisplayRole: {
-      switch (col) {
-      case 0:
-        return QVariant();
-      case 1:
-        return str().setNum(row+1);
-      default:
-        return getDataset(row)->getAttributeStrValue(attributeNums[col-2]);
-      }
-    }
-    case GetDatasetRole:
-      return QVariant::fromValue<core::shp_Dataset>(getDataset(row));
-    default:
+  case Qt::DisplayRole: {
+    switch (col) {
+    case 0:
       return QVariant();
+    case 1:
+      return str().setNum(row+1);
+    default:
+      return getDataset(row)->getAttributeStrValue(attributeNums[col-2]);
+    }
+  }
+  case GetDatasetRole:
+    return QVariant::fromValue<core::shp_Dataset>(getDataset(row));
+  default:
+    return QVariant();
   }
 }
 
@@ -139,22 +139,28 @@ int ReflectionViewModel::columnCount(QModelIndex const&) const {
 }
 
 int ReflectionViewModel::rowCount(QModelIndex const&) const {
-  return reflections.count();
+  return reflections().count();
 }
 
 QVariant ReflectionViewModel::data(QModelIndex const& index, int role) const {
   int row = index.row(), col = index.column(), rowCnt = rowCount(index);
   if (row < 0 || row >= rowCnt || col < 0 || col >= NUM_COLUMNS) return QVariant();
 
-  if (Qt::DisplayRole==role) {
+  switch (role) {
+  case Qt::DisplayRole: {
     switch (col) {
     case COLUMN_ID:
       return str().setNum(row+1);
     case COLUMN_TYPE:
-      return core::Reflection::peakTypes()[reflections[row]];
+      return core::Reflection::reflTypes()[reflections()[row].getType()];
     default:
-      break;
+      return QVariant();
     }
+  }
+  case GetDatasetRole:
+    return QVariant::fromValue<core::Reflection*>(&reflections()[row]);
+  default:
+    return QVariant();
   }
 
   return QVariant();
@@ -168,16 +174,20 @@ QVariant ReflectionViewModel::headerData(int section, Qt::Orientation, int role)
 }
 
 void ReflectionViewModel::addReflection() {
-  reflections.append(1);
+  reflections().append(core::Reflection(theHub.getReflType()));
 }
 
 void ReflectionViewModel::remReflection(uint i) {
-  reflections.remove(i);
+  reflections().remove(i);
 }
 
 void ReflectionViewModel::signalReset() {
   beginResetModel();
   endResetModel();    // emits a signal to connected views
+}
+
+core::Reflections& ReflectionViewModel::reflections() const {
+  return theHub.getReflections();
 }
 
 //------------------------------------------------------------------------------

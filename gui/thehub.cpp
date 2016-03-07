@@ -104,7 +104,8 @@ void Settings::save(rcstr key, QDoubleSpinBox* box) {
 
 TheHub::TheHub(): session(new core::Session())
 , fixedIntensityScale(false)
-, fileViewModel(*this), datasetViewModel(*this), reflectionViewModel(*this) {
+, fileViewModel(*this), datasetViewModel(*this), reflectionViewModel(*this)
+, reflType(core::Reflection::REFL_GAUSSIAN) {
   initActions();
   configActions();
 }
@@ -266,6 +267,10 @@ void TheHub::setSelectedFile(core::shp_File file) {
 
 void TheHub::setSelectedDataset(core::shp_Dataset dataset) {
   emit datasetSelected(dataset);
+}
+
+void TheHub::setSelectedReflection(core::Reflection* reflection) {
+  emit reflectionSelected(reflection);
 }
 
 void TheHub::load(QFileInfo const& fileInfo) THROWS {
@@ -437,6 +442,10 @@ void TheHub::setGeometry(qreal detectorDistance, qreal pixSize, bool hasBeamOffs
 
 void TheHub::setBackgroundPolynomialDegree(uint degree) {
   emit backgroundPolynomialDegree(degree);
+}
+
+void TheHub::setReflType(uint index) {
+  reflType = (core::Reflection::eType)index;
 }
 
 void TheHub::setImageRotate(core::ImageTransform rot) {

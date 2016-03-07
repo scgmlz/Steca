@@ -86,8 +86,7 @@ void DiffractogramPlotOverlay::paintEvent(QPaintEvent*) {
 
 void DiffractogramPlotOverlay::updateCursorRegion() {
   auto g = geometry();
-  // REVIEW; was update(cursorPos,g.top(),1,g.height());
-  // on Mac needed one pixel more (or only one pixel to the left?
+  // updating 2 pixels seems to work both on Linux & Mac
   update(cursorPos-1,g.top(),2,g.height());
 }
 

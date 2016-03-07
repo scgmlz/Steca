@@ -8,6 +8,7 @@
 #include "core_defs.h"
 #include "panel/panel.h"
 #include "core_file.h"
+#include "core_reflection.h"
 #include <QAbstractListModel>
 #include <QAbstractTableModel>
 
@@ -76,6 +77,8 @@ public:
 
   ReflectionViewModel(TheHub&);
 
+  enum { GetDatasetRole = Qt::UserRole };
+
   int columnCount(QModelIndex const& = QModelIndex()) const;
   int rowCount(QModelIndex const& = QModelIndex())    const;
   QVariant data(QModelIndex const&,int)               const;
@@ -87,8 +90,7 @@ public:
   void signalReset();
 
 private:
-  // TODO will become Reflection, go to Session and also properly destroy
-  QVector<int> reflections;
+  core::Reflections& reflections() const;
 };
 
 //------------------------------------------------------------------------------

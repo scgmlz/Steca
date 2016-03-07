@@ -44,10 +44,11 @@ void ReflectionView::update() {
 
 void ReflectionView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
   super::selectionChanged(selected,deselected);
-//  auto indexes = selected.indexes();
-//  model.setSelectedDataset(indexes.isEmpty()
-//    ? core::shp_Dataset()
-//    : model.data(indexes.first(), Model::GetDatasetRole).value<core::shp_Dataset>());
+
+  auto indexes = selected.indexes();
+  theHub.setSelectedReflection(indexes.isEmpty()
+    ? nullptr
+    : model.data(indexes.first(), Model::GetDatasetRole).value<core::Reflection*>());
 }
 
 //------------------------------------------------------------------------------
@@ -85,7 +86,7 @@ Fitting::Fitting(TheHub& theHub_)
   auto hr = hbox();
   box->addLayout(hr);
 
-  hr->addWidget(comboBox(core::Reflection::peakTypes()));
+  hr->addWidget((comboReflType = comboBox(core::Reflection::reflTypes())));
   hr->addStretch();
   hr->addWidget(iconButton(theHub.actReflectionAdd));
   hr->addWidget(iconButton(theHub.actReflectionRemove));
@@ -93,8 +94,14 @@ Fitting::Fitting(TheHub& theHub_)
   auto vb = vbox();
   box->addLayout(vb);
 
-  vb->addWidget(label("info2"));
-  vb->addWidget(label("info3"));
+  auto rb = hbox();
+  vb->addLayout(rb);
+
+  rb->addWidget(label("min"));
+  rb->addWidget((spinRangeMin = spinCell(6,.0)));
+  rb->addWidget(label("max"));
+  rb->addWidget((spinRangeMax = spinCell(6,.0)));
+  rb->addStretch();
 
   connect(theHub.actReflectionAdd, &QAction::triggered, [this]() {
     reflectionView->addReflection();
@@ -102,6 +109,11 @@ Fitting::Fitting(TheHub& theHub_)
 
   connect(theHub.actReflectionRemove, &QAction::triggered, [this]() {
     reflectionView->removeSelected();
+  });
+
+  connect(comboReflType, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this](int index) {
+    if (index >= 0)
+      theHub.setReflType((uint)index);
   });
 }
 

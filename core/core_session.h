@@ -9,6 +9,7 @@
 #include "core_file.h"
 #include "core_array2d.h"
 #include "core_fit_functions.h"
+#include "core_reflection.h"
 #include <QPoint>
 
 namespace core {
@@ -185,10 +186,13 @@ private:
 public:
   Ranges&           getBgRanges()     { return bgRanges;     }
   fit::Polynomial&  getBgPolynomial() { return bgPolynomial; }
+  Reflections&      getReflections()  { return reflections;  }
 
 private:
   Ranges          bgRanges;
   fit::Polynomial bgPolynomial;
+
+  Reflections     reflections;
 };
 
 //------------------------------------------------------------------------------

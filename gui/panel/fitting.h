@@ -36,13 +36,14 @@ private:
 
 class Fitting: public BoxPanel {
   SUPER(Fitting,BoxPanel)
-  friend class ReflectionView;
 public:
   Fitting(TheHub&);
 
 private:
-  QSpinBox *spinDegree;
+  QSpinBox  *spinDegree;
+  QComboBox *comboReflType;
   ReflectionView *reflectionView;
+  QDoubleSpinBox *spinRangeMin, *spinRangeMax;
 };
 
 //------------------------------------------------------------------------------

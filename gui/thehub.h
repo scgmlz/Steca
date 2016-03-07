@@ -130,6 +130,7 @@ public: // files
 
   void setSelectedFile(core::shp_File);
   void setSelectedDataset(core::shp_Dataset);
+  void setSelectedReflection(core::Reflection*);
 
 public:
   void load(QFileInfo const&)       THROWS;
@@ -157,6 +158,12 @@ public:
 
   void setBackgroundPolynomialDegree(uint);
 
+  core::Reflection::eType getReflType() const { return reflType; }
+  void setReflType(uint);
+
+private:
+  core::Reflection::eType reflType;
+
 private:
   void setImageRotate(core::ImageTransform);
   void setImageMirror(bool);
@@ -170,6 +177,7 @@ signals:
 
   void fileSelected(core::shp_File);
   void datasetSelected(core::shp_Dataset);
+  void reflectionSelected(core::Reflection*);
 
   void displayChange();
   void geometryChanged();
@@ -179,6 +187,7 @@ signals:
 public:
   core::Ranges&           getBgRanges()     { return session->getBgRanges();     }
   core::fit::Polynomial&  getBgPolynomial() { return session->getBgPolynomial(); }
+  core::Reflections&      getReflections()  { return session->getReflections();  }
 };
 
 //------------------------------------------------------------------------------
