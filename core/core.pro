@@ -31,7 +31,8 @@ HEADERS += \
     core_fit_functions.h \
     core_fit_methods.h \
     core_fit_fitting.h \
-    core_fit_limits.h
+    core_fit_limits.h \
+    core_reflection.h
 
 SOURCES += \
     io/Caress/raw.cpp \
@@ -62,7 +63,8 @@ SOURCES += \
     io/core_io.cpp \
     core_fit_functions.cpp \
     core_fit_methods.cpp \
-    core_fit_fitting.cpp
+    core_fit_fitting.cpp \
+    core_reflection.cpp
 
 DISTFILES += \
     io/Caress/README

@@ -42,7 +42,7 @@ QToolButton*    iconButton(QAction*);
 
 QRadioButton*   radioButton(rcstr text);
 
-QComboBox*      comboBox(QVector<QString> options);
+QComboBox*      comboBox(str_lst const&);
 
 //------------------------------------------------------------------------------
 /// abstract list widget

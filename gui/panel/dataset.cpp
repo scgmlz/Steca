@@ -93,11 +93,8 @@ DatasetOptions1::DatasetOptions1(TheHub& theHub_)
   auto vn = vbox();
   box->addLayout(vn);
 
-  QVector<QString> options;
-  options.append("Disable");
-  options.append("Measurement time");
-  options.append("Monitor counts");
-  options.append("Background level");
+  str_lst options;
+  options << "Disable" << "Measurement time" << "Monitor counts" << "Background level";
 
   vn->addWidget(comboBox(options));
   box->addStretch();

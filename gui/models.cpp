@@ -1,5 +1,6 @@
 #include "models.h"
 #include "thehub.h"
+#include "core_reflection.h"
 
 namespace model {
 //------------------------------------------------------------------------------
@@ -141,17 +142,16 @@ int ReflectionViewModel::rowCount(QModelIndex const&) const {
   return reflections.count();
 }
 
-Qt::ItemFlags ReflectionViewModel::flags(QModelIndex const& index) const {
-  auto fs = super::flags(index);
-  if (COLUMN_TYPE==index.column()) fs |= Qt::ItemIsEditable;
-  return fs;
-}
+QVariant ReflectionViewModel::data(QModelIndex const& index, int role) const {
+  int row = index.row(), col = index.column(), rowCnt = rowCount(index);
+  if (row < 0 || row >= rowCnt || col < 0 || col >= NUM_COLUMNS) return QVariant();
 
-QVariant ReflectionViewModel::headerData(int section, Qt::Orientation, int role) const {
-  if (Qt::DisplayRole == role) {
-    switch (section) {
+  if (Qt::DisplayRole==role) {
+    switch (col) {
     case COLUMN_ID:
-      return "#";
+      return str().setNum(row+1);
+    case COLUMN_TYPE:
+      return core::Reflection::peakTypes()[reflections[row]];
     default:
       break;
     }
@@ -160,30 +160,11 @@ QVariant ReflectionViewModel::headerData(int section, Qt::Orientation, int role)
   return QVariant();
 }
 
-QVariant ReflectionViewModel::data(QModelIndex const& index, int role) const {
-  int row = index.row(), col = index.column(), rowCnt = rowCount(index);
-  if (row < 0 || row >= rowCnt || col < 0 || col >= NUM_COLUMNS) return QVariant();
-
-  switch (col) {
-  case COLUMN_ID:
-    if (Qt::DisplayRole==role) return str().setNum(row+1);
-    break;
-  case COLUMN_TYPE:
-    return reflections[row];
-  default:
-    break;
-  }
+QVariant ReflectionViewModel::headerData(int section, Qt::Orientation, int role) const {
+  if (Qt::DisplayRole == role && COLUMN_ID==section)
+    return "#";
 
   return QVariant();
-}
-
-bool ReflectionViewModel::setData(QModelIndex const& index, QVariant const& value, int role) {
-  int row = index.row(), col = index.column(), rowCnt = rowCount(index);
-  if (row >= 0 && row < rowCnt && COLUMN_TYPE==col) {
-    reflections[row] = value.toUInt();
-    return true;
-  }
-  return super::setData(index,value,role);
 }
 
 void ReflectionViewModel::addReflection() {

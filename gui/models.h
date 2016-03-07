@@ -78,11 +78,8 @@ public:
 
   int columnCount(QModelIndex const& = QModelIndex()) const;
   int rowCount(QModelIndex const& = QModelIndex())    const;
-  Qt::ItemFlags flags(QModelIndex const&)             const;
+  QVariant data(QModelIndex const&,int)               const;
   QVariant headerData(int,Qt::Orientation,int)        const;
-
-  QVariant data(QModelIndex const&,int) const;
-  bool setData(QModelIndex const&, QVariant const&, int role = Qt::EditRole);
 
   void addReflection();
   void remReflection(uint);
@@ -90,6 +87,7 @@ public:
   void signalReset();
 
 private:
+  // TODO will become Reflection, go to Session and also properly destroy
   QVector<int> reflections;
 };
 
