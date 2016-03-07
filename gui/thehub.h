@@ -73,7 +73,7 @@ private:
   core::Session *session;
 
 public:
-  bool globalNorm;  // TODO rename this and related to fixedIntensityScale
+  bool fixedIntensityScale;  // TODO rename this and related to fixedIntensityScale
 
   model::FileViewModel       fileViewModel;
   model::DatasetViewModel    datasetViewModel;
@@ -113,7 +113,7 @@ public:
   // more actions, some not in the menu
     *actSelectPeak, *actReflectionPeak, *actReflectionWidth, *actReflectionAdd, *actReflectionRemove,
     *actImageRotate, *actImageMirror,
-    *actImagesLink, *actImageOverlay, *actImagesGlobalNorm, *actImagesEnableCorr,
+    *actImagesLink, *actImageOverlay, *actImagesFixedIntensity, *actImagesEnableCorr,
     *actBackgroundClear, *actBackgroundBackground, *actBackgroundShowFit,
     *actHasBeamOffset,
     *actNormalizationDisable, *actNormalizationMeasureTime, *actNormalizationMonitor, *actNormalizationBackground;
@@ -153,12 +153,9 @@ public:
   core::Borders const& getCut() const; // TODO somehow hide
 
   core::Geometry const& getGeometry() const;
-  void setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset);
+  void setGeometry(qreal detectorDistance, qreal pixSize, bool hasBeamOffset, QPoint const& middlePixOffset);
 
   void setBackgroundPolynomialDegree(uint);
-
-  void doReadSettings();  // TODO review
-  void doSaveSettings();
 
 private:
   void setImageRotate(core::ImageTransform);

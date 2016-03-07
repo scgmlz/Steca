@@ -25,7 +25,7 @@ MainWin::MainWin() {
   connectActions();
 
   readSettings();
-  theHub.doReadSettings(); // TODO review
+
 }
 
 MainWin::~MainWin() {
@@ -87,7 +87,7 @@ void MainWin::initMenus() {
   });
 
   menuView->addActions({
-    theHub.actImagesGlobalNorm,
+    theHub.actImagesFixedIntensity,
     theHub.actImageOverlay,
     separator(),
     theHub.actBackgroundShowFit,
@@ -297,25 +297,33 @@ void MainWin::closeEvent(QCloseEvent* event) {
 }
 
 void MainWin::onClose() {
-  theHub.doSaveSettings();
   saveSettings();
 }
 
 static str GROUP_MAINWIN("MainWin");
 static str KEY_GEOMETRY("geometry");
 static str KEY_STATE("state");
+static str KEY_DATADIR("dataDir");
+static str KEY_SESSION_DIR("sessionDir");
 
 void MainWin::readSettings() {
   if (initialState.isEmpty()) initialState = saveState();
   Settings s(GROUP_MAINWIN);
   restoreGeometry(s.value(KEY_GEOMETRY).toByteArray());
   restoreState(s.value(KEY_STATE).toByteArray());
+
+  QDir savedDataDir(s.value(KEY_DATADIR).toString());
+  if (savedDataDir.exists()) dataDir = savedDataDir.absolutePath();
+  QDir savedSessionDir(s.value(KEY_SESSION_DIR).toString());
+  if (savedSessionDir.exists()) sessionDir = savedSessionDir.absolutePath();
 }
 
 void MainWin::saveSettings() {
   Settings s(GROUP_MAINWIN);
   s.setValue(KEY_GEOMETRY, saveGeometry());
   s.setValue(KEY_STATE,    saveState());
+  s.setValue(KEY_DATADIR,    dataDir);
+  s.setValue(KEY_SESSION_DIR, sessionDir);
 }
 
 void MainWin::checkActions() {

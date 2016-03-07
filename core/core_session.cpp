@@ -47,17 +47,20 @@ uint ImageCut::getCount(QSize const& fullSize) const {
 
 //------------------------------------------------------------------------------
 
+qreal const Geometry::MIN_DETECTOR_DISTANCE   = 1000;
+qreal const Geometry::MIN_DETECTOR_PIXEL_SIZE = 1;
+
 Geometry::Geometry() {
-  sampleDetectorSpan  = 1.0;
-  pixSpan             = 0.01; // TODO these must be reasonable limited
+  detectorDistance  = MIN_DETECTOR_DISTANCE;
+  pixSize             = MIN_DETECTOR_PIXEL_SIZE;
   hasBeamOffset       = false;
   middlePixOffset     = QPoint();
 }
 
 bool Geometry::operator ==(Geometry const& that) const {
   return
-    sampleDetectorSpan == that.sampleDetectorSpan &&
-    pixSpan            == that.pixSpan &&
+    detectorDistance == that.detectorDistance &&
+    pixSize            == that.pixSize &&
     hasBeamOffset      == that.hasBeamOffset &&
     middlePixOffset    == that.middlePixOffset;
 }
@@ -158,10 +161,10 @@ void Session::setImageSize(QSize const& size) THROWS {
     THROW("inconsistent image size");
 }
 
-void Session::setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset) {
-  ASSERT(sampleDetectorSpan>0 && pixSpan>0) // TODO better than assert
-  geometry.sampleDetectorSpan = sampleDetectorSpan;
-  geometry.pixSpan            = pixSpan;
+void Session::setGeometry(qreal detectorDistance, qreal pixSize, bool hasBeamOffset, QPoint const& middlePixOffset) {
+  ASSERT(detectorDistance>0 && pixSize>0) // TODO better than assert
+  geometry.detectorDistance = detectorDistance;
+  geometry.pixSize            = pixSize;
   geometry.hasBeamOffset      = hasBeamOffset;
   geometry.middlePixOffset    = middlePixOffset;
 }
@@ -271,21 +274,21 @@ AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
   cut.invalidate();
 
   if (!size.isEmpty()) {
-    ASSERT(geometry.pixSpan>0) // TODO better than asserts
-    ASSERT(geometry.sampleDetectorSpan>0)
+    ASSERT(geometry.pixSize>0) // TODO better than asserts
+    ASSERT(geometry.detectorDistance>0)
 
     // Fill the Array
     for (int iy = 0; iy < size.height(); ++iy) {
       int abstandInPixVertical = pixMiddle.y() - iy;
-      qreal y = abstandInPixVertical * geometry.pixSpan;
+      qreal y = abstandInPixVertical * geometry.pixSize;
       for (int ix = 0; ix < size.width(); ++ix) {
         // TTH des Pixels berechnen
         int abstandInPixHorizontal = - pixMiddle.x() + ix;
-        qreal x = abstandInPixHorizontal * geometry.pixSpan;
+        qreal x = abstandInPixHorizontal * geometry.pixSize;
         qreal z = hypot(x,y);
-        qreal detektorAbstandPixel = hypot(z,geometry.sampleDetectorSpan);
-        qreal tthHorAktuell = tthMitte + atan(x / geometry.sampleDetectorSpan);
-        qreal detektorAbstandHorPixel = hypot(x,geometry.sampleDetectorSpan);
+        qreal detektorAbstandPixel = hypot(z,geometry.detectorDistance);
+        qreal tthHorAktuell = tthMitte + atan(x / geometry.detectorDistance);
+        qreal detektorAbstandHorPixel = hypot(x,geometry.detectorDistance);
         qreal h = cos(tthHorAktuell) * detektorAbstandHorPixel;
         qreal tthNeu = acos(h / detektorAbstandPixel);
 

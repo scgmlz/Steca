@@ -145,10 +145,10 @@ void DiffractogramPlot::plot(
 
   } else {
     auto tthRange   = dgram.getTthRange();
-    bool globalNorm = theHub.globalNorm;
+    bool fixedIntensityScale = theHub.fixedIntensityScale;
 
     core::Range intenRange;
-    if (globalNorm) {
+    if (fixedIntensityScale) {
       auto max = diffractogram.dataset->getRgeIntens(true).max;
       // heuristics; to calculate this precisely would require much more computation
       intenRange = core::Range(-max/30,max/3);

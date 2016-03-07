@@ -104,7 +104,7 @@ void Settings::save(rcstr key, QDoubleSpinBox* box) {
 //------------------------------------------------------------------------------
 
 TheHub::TheHub(): session(new core::Session())
-, globalNorm(false)
+, fixedIntensityScale(false)
 , fileViewModel(*this), datasetViewModel(*this), reflectionViewModel(*this) {
   initActions();
   configActions();
@@ -126,21 +126,21 @@ TheHub::~TheHub() {
 void TheHub::initActions() {
   typedef QKeySequence QKey; QAction *lastAction;
 
-  PUSH_ACTION(actAddFiles,    "Add files...","Add files",":/icon/add")                        ACTION_KEY(Qt::CTRL|Qt::Key_O)
+  PUSH_ACTION(actAddFiles,    "Add files…","Add files",":/icon/add")                        ACTION_KEY(Qt::CTRL|Qt::Key_O)
   PUSH_ACTION(actRemoveFile,  "Remove selected file","Remove selected file",":/icon/rem")     ACTION_KEY(QKey::Delete);
 
-  PUSH_ACTION(actLoadCorrectionFile,"Load correction file...", "Load correction file", "")    ACTION_KEY(Qt::SHIFT|Qt::CTRL|Qt::Key_O);
+  PUSH_ACTION(actLoadCorrectionFile,"Load correction file…", "Load correction file", "")    ACTION_KEY(Qt::SHIFT|Qt::CTRL|Qt::Key_O);
   TOGL_ACTION2(actImagesEnableCorr,  "Enable correction file", "Disable correction file", "Enable correction by correction file", "Disable correction by correction file", ":/icon/useCorrection")
 
-  PUSH_ACTION(actLoadSession,"Load session...","","")
-  PUSH_ACTION(actSaveSession,"Save session...","","")
+  PUSH_ACTION(actLoadSession,"Load session…","","")
+  PUSH_ACTION(actSaveSession,"Save session…","","")
 
-  PUSH_ACTION(actExportDiffractogramCurrent,"Current only...","","")
-  PUSH_ACTION(actExportDiffractogramAllSeparateFiles,"All to separate files...","","")
-  PUSH_ACTION(actExportDiffractogramSingleFile,"All to a single file...","","")
+  PUSH_ACTION(actExportDiffractogramCurrent,"Current only…","","")
+  PUSH_ACTION(actExportDiffractogramAllSeparateFiles,"All to separate files…","","")
+  PUSH_ACTION(actExportDiffractogramSingleFile,"All to a single file…","","")
 
-  PUSH_ACTION(actExportImagesWithMargins,"With margins...","","")
-  PUSH_ACTION(actExportImagesWithoutMargins,"Without margins...","","")
+  PUSH_ACTION(actExportImagesWithMargins,"With margins…","","")
+  PUSH_ACTION(actExportImagesWithoutMargins,"Without margins…","","")
 
   PUSH_ACTION(actQuit ,"Quit", "",  "") ACTION_KEY(QKey::Quit)
 
@@ -157,9 +157,9 @@ void TheHub::initActions() {
   PUSH_ACTION(actViewReset    ,"Reset", "","")
 
   PUSH_ACTION(actPreferences         ,"Preferences...","","")
-  PUSH_ACTION(actFitErrorParameters  ,"Fit error parameters...","","")
+  PUSH_ACTION(actFitErrorParameters  ,"Fit error parameters…","","")
 
-  PUSH_ACTION(actAbout     ,"About...","","")
+  PUSH_ACTION(actAbout     ,"About…","","")
 
   TOGL_ACTION2(actSelectPeak         ,"Select Peak", "Deselect Peak","Select Peak", "Deselect Peak", ":/icon/selectPeak")
   PUSH_ACTION(actReflectionPeak      ,"Peak",  "Set reflection peak",  ":/icon/selectHight")
@@ -168,12 +168,12 @@ void TheHub::initActions() {
   PUSH_ACTION(actReflectionRemove    ,"Remove","Remove reflection",    ":/icon/rem")
   PUSH_ACTION(actReflectionSelectRegion,"Select reflection fit region","","")
 
-  PUSH_ACTION(actCalculatePolefigures,"Calculate polefigures...","","") // TODO polefigure or pole figure?
-  PUSH_ACTION(actCalculateHistograms ,"Calculate histograms..","","")
+  PUSH_ACTION(actCalculatePolefigures,"Calculate pole figures…","","")
+  PUSH_ACTION(actCalculateHistograms ,"Calculate histograms…","","")
 
   TOGL_ACTION2(actImagesLink           ,"Link", "Unlink",         "Use the same value for all cuts","Use different value for all cuts", ":/icon/linkNew")
   TOGL_ACTION2(actImageOverlay         ,"overlay", "overlay",     "Show cut", "Hide cut", ":/icon/imageCrop")
-  TOGL_ACTION2(actImagesGlobalNorm     ,"global norm.", "global norm.", "Display data using a fixed intensity scale", "Display data using non-fixed intensity scale",":/icon/scale")
+  TOGL_ACTION2(actImagesFixedIntensity ,"fixed Intensity", "fixed Intensity", "Display data using a fixed intensity scale", "Display data using non-fixed intensity scale",":/icon/scale")
   PUSH_ACTION(actImageRotate           ,"Rotate",       "Rotate 90° clockwise", ":/icon/rotate0") ACTION_KEY(Qt::CTRL|Qt::Key_R)
   TOGL_ACTION(actImageMirror          ,"Mirror",       "Mirror image", ":/icon/mirror_horz")
 
@@ -207,8 +207,8 @@ void TheHub::configActions() {
     enableCorrection(on);
   });
 
-  connect(actImagesGlobalNorm, &QAction::toggled, [this](bool on) {
-    globalNorm = on;
+  connect(actImagesFixedIntensity, &QAction::toggled, [this](bool on) {
+    fixedIntensityScale = on;
     emit displayChange();
   });
 
@@ -275,6 +275,22 @@ void TheHub::load(QFileInfo const& fileInfo) THROWS {
   load(file.readAll());
 }
 
+static str KEY_FILES("files");
+static str KEY_CORR_FILES("corr.files");
+static str KEY_CUT("cut");
+static str KEY_TOP("top");
+static str KEY_BOTTOM("bottom");
+static str KEY_LEFT("left");
+static str KEY_RIGHT("right");
+static str KEY_DETECTOR("detector");
+static str KEY_DISTANCE("distance");
+static str KEY_PIXEL_SIZE("pixel_size");
+static str KEY_BEAM_OFFSET("hasbeamoffset");
+static str KEY_OFFSET_X("offset_x");
+static str KEY_OFFSET_Y("offset_y");
+static str KEY_TRANSFORM("transform");
+
+
 // TODO merge load / save, DRY
 void TheHub::load(QByteArray const& json) THROWS {
   QJsonParseError parseError;
@@ -283,44 +299,48 @@ void TheHub::load(QByteArray const& json) THROWS {
 
   WaitCursor __;
 
+  // TODO consider throwing out the old Session and making a new one instead
+  // of emptying it
   while (numFiles(true)>0) remFile(0);
 
   auto top   = doc.object();
-  auto files = top["files"].toArray();
+  auto files = top[KEY_FILES].toArray();
 
   for (auto file: files) {
     addFile(file.toString());
   }
 
-  loadCorrFile(top["corr.file"].toString());
+  loadCorrFile(top[KEY_CORR_FILES].toString());
 
-  auto cut = top["cut"].toObject();
-  int y1 = qMax(0,cut["top"].toInt());
-  int y2 = qMax(0,cut["bottom"].toInt());
-  int x1 = qMax(0,cut["left"].toInt());
-  int x2 = qMax(0,cut["right"].toInt());
+  auto cut = top[KEY_CUT].toObject();
+  uint y1 = qMax(0,cut[KEY_TOP].toInt());
+  uint y2 = qMax(0,cut[KEY_BOTTOM].toInt());
+  uint x1 = qMax(0,cut[KEY_LEFT].toInt());
+  uint x2 = qMax(0,cut[KEY_RIGHT].toInt());
 
   setImageCut(true,false,core::ImageCut(x1,y1,x2,y2));
 
-  auto det = top["detector"].toObject();
+  auto det = top[KEY_DETECTOR].toObject();
 
   setGeometry(
-    det["distance"].toDouble(),
-    det["pixel_size"].toDouble(),
-    det["hasbeamoffset"].toBool(),
-    QPoint(det["offset_x"].toDouble(),det["offset_y"].toDouble()));
+    det[KEY_DISTANCE].toDouble(),
+    det[KEY_PIXEL_SIZE].toDouble(),
+    det[KEY_BEAM_OFFSET].toBool(),
+    QPoint(det[KEY_OFFSET_X].toInt(),det[KEY_OFFSET_Y].toInt()));
 
-  setImageRotate(core::ImageTransform(top["transform"].toInt()));
+  setImageRotate(core::ImageTransform(top[KEY_TRANSFORM].toInt()));
 }
 
 QByteArray TheHub::save() const {
+
   auto const &g = session->getGeometry();
+
   QJsonObject det {
-    { "distance",     g.sampleDetectorSpan  },
-    { "pixel_size",   g.pixSpan             },
-    { "isbeamoffset", g.hasBeamOffset       },
-    { "offset_x",     g.middlePixOffset.x() },
-    { "offset_y",     g.middlePixOffset.y() },
+    { KEY_DISTANCE,     g.detectorDistance  },
+    { KEY_PIXEL_SIZE,   g.pixSize             },
+    { KEY_BEAM_OFFSET,  g.hasBeamOffset       },
+    { KEY_OFFSET_X,     g.middlePixOffset.x() },
+    { KEY_OFFSET_Y,     g.middlePixOffset.y() },
   };
 
   QJsonArray files;
@@ -330,19 +350,21 @@ QByteArray TheHub::save() const {
 
   auto const &ic = session->getImageCut();
   QJsonObject cut {
-    { "top",    (int)ic.top     },
-    { "bottom", (int)ic.bottom  },
-    { "left",   (int)ic.left    },
-    { "right",  (int)ic.right   },
+    { KEY_TOP,    (int)ic.top     },
+    { KEY_BOTTOM, (int)ic.bottom  },
+    { KEY_LEFT,   (int)ic.left    },
+    { KEY_RIGHT,  (int)ic.right   },
   };
 
   QJsonObject top {
-    { "detector",   det                 },
-    { "cut",        cut                 },
-    { "transform",  session->getImageTransform().val  },
-    { "files",      files               },
-    { "corr.file",  hasCorrFile() ? session->getCorrFile()->getInfo().absoluteFilePath() : "" },
+    { KEY_DETECTOR,   det                 },
+    { KEY_CUT,        cut                 },
+    { KEY_TRANSFORM,  session->getImageTransform().val  },
+    { KEY_FILES,      files               },
+    { KEY_CORR_FILES,  hasCorrFile() ? session->getCorrFile()->getInfo().absoluteFilePath() : "" },
   };
+
+  //TODO create saveYourSelfToJSON /loadYourSelfFromJSON
 
   return QJsonDocument(top).toJson();
 }
@@ -408,21 +430,13 @@ const core::Geometry &TheHub::getGeometry() const {
   return session->getGeometry();
 }
 
-void TheHub::setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset) {
-  session->setGeometry(sampleDetectorSpan,pixSpan,hasBeamOffset,middlePixOffset);
+void TheHub::setGeometry(qreal detectorDistance, qreal pixSize, bool hasBeamOffset, QPoint const& middlePixOffset) {
+  session->setGeometry(detectorDistance,pixSize,hasBeamOffset,middlePixOffset);
   emit geometryChanged();
 }
 
 void TheHub::setBackgroundPolynomialDegree(uint degree) {
   emit backgroundPolynomialDegree(degree);
-}
-
-void TheHub::doReadSettings() {
-  emit readSettings();
-}
-
-void TheHub::doSaveSettings() {
-  emit saveSettings();
 }
 
 void TheHub::setImageRotate(core::ImageTransform rot) {

@@ -50,12 +50,15 @@ struct ImageCut {
 
 /// detector geometry
 struct Geometry {
+  static qreal const MIN_DETECTOR_DISTANCE;
+  static qreal const MIN_DETECTOR_PIXEL_SIZE;
+
   Geometry();
   bool operator ==(Geometry const&) const;
 
   // TODO rename "span" -> ...
-  qreal sampleDetectorSpan; // the distance between sample - detector // TODO verify: in adhoc has at least three names: sampleDetectorSpan, detectorSampleSpan, detectorSampleDistance
-  qreal pixSpan;            // size of the detector pixel
+  qreal detectorDistance; // the distance between sample - detector // TODO verify: in adhoc has at least three names: sampleDetectorSpan, detectorSampleSpan, detectorSampleDistance
+  qreal pixSize;            // size of the detector pixel
   bool  hasBeamOffset;
   QPoint middlePixOffset;
 };
@@ -127,7 +130,7 @@ private:
 public:
 
   Geometry const& getGeometry() const { return geometry; }
-  void setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset);
+  void setGeometry(qreal detectorDistance, qreal pixSize, bool hasBeamOffset, QPoint const& middlePixOffset);
 
 private:
   Geometry geometry;

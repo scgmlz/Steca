@@ -81,10 +81,10 @@ DatasetOptions1::DatasetOptions1(TheHub& theHub_)
   auto gd = gridLayout();
   box->addLayout(gd);
 
-  gd->addWidget((spinDistance = spinCell(6,MIN_DISTANCE)),    0,0);
+  gd->addWidget((spinDistance = spinCell(6,core::Geometry::MIN_DETECTOR_DISTANCE)),    0,0);
   spinDistance->setToolTip("Sample to detector distance");
   gd->addWidget(label("distance mm"),                         0,1);
-  gd->addWidget((spinPixelSize = spinCell(6,MIN_PIXEL_SIZE)), 1,0);
+  gd->addWidget((spinPixelSize = spinCell(6,core::Geometry::MIN_DETECTOR_PIXEL_SIZE)), 1,0);
   spinPixelSize->setToolTip("Physical pixel size");
   gd->addWidget(label("pixel size mm"),                       1,1);
   gd->setColumnStretch(2,1);
@@ -137,14 +137,6 @@ DatasetOptions1::DatasetOptions1(TheHub& theHub_)
     setTo(theHub);
   });
 
-  // TODO handle in TheHub() ?
-  connect(&theHub, &TheHub::readSettings, [this]() {
-    readSettings(theHub);
-  });
-
-  connect(&theHub, &TheHub::saveSettings, [this]() {
-    saveSettings();
-  });
 }
 
 void DatasetOptions1::setTo(TheHub& theHub) {
@@ -161,8 +153,8 @@ void DatasetOptions1::setFrom(TheHub& theHub) {
   spinOffsetX->setValue(g.middlePixOffset.x());
   spinOffsetY->setValue(g.middlePixOffset.y());
 
-  spinDistance->setValue(g.sampleDetectorSpan);
-  spinPixelSize->setValue(g.pixSpan);
+  spinDistance->setValue(g.detectorDistance);
+  spinPixelSize->setValue(g.pixSize);
 }
 
 static str GROUP_OPTIONS("Options");
@@ -177,35 +169,6 @@ static str GROUP_DETECTOR("Detector");
 static str KEY_DISTANCE("distance");
 static str KEY_PIXEL_SIZE("pixel_size");
 
-void DatasetOptions1::readSettings(TheHub& theHub) {
-  {
-    Settings s(GROUP_BEAM);
-    auto const& g = theHub.getGeometry();
-    s.read(KEY_IS_OFFSET,   theHub.actHasBeamOffset,g.hasBeamOffset);
-    s.read(KEY_OFFSET_X,    spinOffsetX,      g.middlePixOffset.x());
-    s.read(KEY_OFFSET_Y,    spinOffsetY,      g.middlePixOffset.y());
-  }
-  {
-    Settings s(GROUP_DETECTOR);
-    auto const& g = theHub.getGeometry();
-    s.read(KEY_DISTANCE,    spinDistance,     g.sampleDetectorSpan);
-    s.read(KEY_PIXEL_SIZE,  spinPixelSize,    g.pixSpan);
-  }
-}
-
-void DatasetOptions1::saveSettings() {
-  {
-    Settings s(GROUP_BEAM);
-    s.save(KEY_IS_OFFSET,   theHub.actHasBeamOffset);
-    s.save(KEY_OFFSET_X,    spinOffsetX);
-    s.save(KEY_OFFSET_Y,    spinOffsetY);
-  }
-  {
-    Settings s(GROUP_DETECTOR);
-    s.save(KEY_DISTANCE,    spinDistance);
-    s.save(KEY_PIXEL_SIZE,  spinPixelSize);
-  }
-}
 
 //------------------------------------------------------------------------------
 
@@ -222,7 +185,7 @@ DatasetOptions2::DatasetOptions2(TheHub& theHub_)
   hb->addSpacing(5);
   hb->addWidget(iconButton(theHub.actImageMirror));
   hb->addSpacing(5);
-  hb->addWidget(iconButton(theHub.actImagesGlobalNorm));
+  hb->addWidget(iconButton(theHub.actImagesFixedIntensity));
   hb->addStretch();
 
   auto sc = hbox();
@@ -288,15 +251,6 @@ DatasetOptions2::DatasetOptions2(TheHub& theHub_)
   connect(spinImageScale, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int scale) {
     emit imageScale(scale);
   });
-
-  // TODO handle in Session() ?
-  connect(&theHub, &TheHub::readSettings, [this]() {
-    readSettings();
-  });
-
-  connect(&theHub, &TheHub::saveSettings, [this]() {
-    saveSettings();
-  });
 }
 
 void DatasetOptions2::setFrom(TheHub& theHub) {
@@ -306,22 +260,6 @@ void DatasetOptions2::setFrom(TheHub& theHub) {
   cutBottom ->setValue(cut.bottom);
   cutLeft   ->setValue(cut.left);
   cutRight  ->setValue(cut.right);
-}
-
-void DatasetOptions2::readSettings() {
-  {
-    Settings s(GROUP_OPTIONS);
-    s.read(KEY_IMAGE_SCALE, spinImageScale, 4);
-  }
-
-  emit imageScale(spinImageScale->value()); // TODO review
-}
-
-void DatasetOptions2::saveSettings() {
-  {
-    Settings s(GROUP_OPTIONS);
-    s.save(KEY_IMAGE_SCALE, spinImageScale);
-  }
 }
 
 //------------------------------------------------------------------------------
@@ -405,7 +343,7 @@ void Dataset::renderDataset() {
   QPixmap pixMap;
   if (dataset) {
     auto image = dataset->getImage();
-    pixMap = makePixmap(image, dataset->getRgeIntens(theHub.globalNorm));
+    pixMap = makePixmap(image, dataset->getRgeIntens(theHub.fixedIntensityScale));
   }
   imageWidget->setPixmap(pixMap);
 }

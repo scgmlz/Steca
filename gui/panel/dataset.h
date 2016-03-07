@@ -41,9 +41,6 @@ class DatasetOptions1: public BoxPanel {
 public:
   DatasetOptions1(TheHub&);
 
-  qreal const MIN_DISTANCE   = 1.;  // mm
-  qreal const MIN_PIXEL_SIZE = .01; // mm
-
 private:
   QSpinBox       *spinOffsetX, *spinOffsetY;
   QDoubleSpinBox *spinDistance, *spinPixelSize;
