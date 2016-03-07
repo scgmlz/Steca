@@ -131,14 +131,14 @@ shp_File loadCaress(rcstr filePath) THROWS {
           double tempTime = 0;
           if ((y < 2015) ||
               ((y == 2015) && ((s_m.compare("Jan") == 0) || (s_m.compare("Feb") == 0)))) {
-            tempTime = (double)tim1 / 100; // TODO verify how deltaTime is used!!
+            tempTime = (double)tim1 / 100; // HACK REVIEW how deltaTime is used!!
           } else {
             tempTime = (double)tim1;
           }
 
           uint detRel;
 
-          detRel = (uint)sqrt(imageSize); // TODO (also compare with original code) this is hairy
+          detRel = (uint)sqrt(imageSize);
           RUNTIME_CHECK(imageSize>0 && (uint)imageSize == detRel*detRel, "bad image size");
 
           QVector<intens_t> convertedIntens(imageSize);

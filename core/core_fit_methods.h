@@ -31,7 +31,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-// TODO is needed?
+// REVIEW is needed?
 class FittingLinearLeastSquare: public FittingMethod {
   SUPER(FittingLinearLeastSquare,FittingMethod)
 public:

@@ -45,13 +45,9 @@ private:
   QSpinBox       *spinOffsetX, *spinOffsetY;
   QDoubleSpinBox *spinDistance, *spinPixelSize;
 
-  // TODO review
+  // REVIEW
   void setTo(TheHub&);
   void setFrom(TheHub&);
-
-  // TODO review
-  void readSettings(TheHub&);
-  void saveSettings();
 };
 
 class DatasetOptions2: public BoxPanel {
@@ -67,9 +63,6 @@ private:
   QSpinBox       *spinImageScale;
 
   void setFrom(TheHub&);
-
-  void readSettings();
-  void saveSettings();
 };
 
 //------------------------------------------------------------------------------

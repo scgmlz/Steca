@@ -73,7 +73,7 @@ private:
   core::Session *session;
 
 public:
-  bool fixedIntensityScale;  // TODO rename this and related to fixedIntensityScale
+  bool fixedIntensityScale;
 
   model::FileViewModel       fileViewModel;
   model::DatasetViewModel    datasetViewModel;
@@ -147,7 +147,7 @@ public:
 
   QSize getImageSize() const;
   uint  pixIndexNoTransform(uint x, uint y) const;
-  core::intens_t pixIntensity(core::Image const&, uint x, uint y) const; // TODO review (and remove?!)
+  core::intens_t pixIntensity(core::Image const&, uint x, uint y) const; // REVIEW
 
   core::AngleCorrArray const& calcAngleCorrArray(qreal tthMitte);
   core::Borders const& getCut() const; // TODO somehow hide

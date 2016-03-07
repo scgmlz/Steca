@@ -40,7 +40,6 @@ static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr 
   }
 }
 
-// TODO icon
 int App::exec() {
   MainWin mainWin;
   mainWin.show();

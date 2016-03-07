@@ -53,11 +53,12 @@ bool Function::Parameter::setValue(qreal value, qreal error, bool force) {
 }
 
 void Function::Parameter::loadFrom(QJsonObject const& obj) {
-  value = obj["tag"].toDouble(); // TODO etc.
+  value = obj["value"].toDouble(); // TODO etc.
+
 }
 
 void Function::Parameter::saveTo(QJsonObject& obj) const {
-  obj["tag"] = value; // TODO etc..
+  obj["value"] = value; // TODO etc..
 }
 
 //------------------------------------------------------------------------------
@@ -68,14 +69,21 @@ Function::Function() {
 Function::~Function() {
 }
 
-void Function::loadFrom(QJsonObject const& obj) {
-  for_i (parameterCount()) getParameter(i).loadFrom(obj);
+void Function::loadFrom(QJsonObject const& obj) /*TODO: THROWS*/ {
+  // RUNTIME_CHECK par.count
+  for_i (parameterCount()) {
+    getParameter(i).loadFrom(obj[str("p")+(i+1)].toObject());
+  }
 }
 
 void Function::saveTo(QJsonObject& obj) const {
   auto parCount = parameterCount();
   obj["??"] = (int)parCount;
-  for_i (parCount) getParameter(i).saveTo(obj);
+  for_i (parCount) {
+    QJsonObject pObj;
+    getParameter(i).saveTo(pObj);
+    obj[str("p")+(i+1)] = pObj;
+  }
 }
 
 #ifndef QT_NO_DEBUG
@@ -238,7 +246,7 @@ void Polynomial::loadFrom(QJsonObject const&) {
 }
 
 void Polynomial::saveTo(QJsonObject&) const {
-  // obj["type"] = "polynomial"
+  // obj["type"] = "polynomial" ; super::saveTo
 }
 
 //------------------------------------------------------------------------------

@@ -6,7 +6,7 @@
 #define MODELS_H
 
 #include "core_defs.h"
-#include "panel/panel.h"  // TODO remove ?
+#include "panel/panel.h"
 #include "core_file.h"
 #include <QAbstractListModel>
 #include <QAbstractTableModel>

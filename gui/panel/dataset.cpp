@@ -102,7 +102,6 @@ DatasetOptions1::DatasetOptions1(TheHub& theHub_)
   vn->addWidget(comboBox(options));
   box->addStretch();
 
-  // TODO separate geometryChanged into more signals?
   connect(&theHub, &TheHub::geometryChanged, [this]() {
     setFrom(theHub);
   });
@@ -115,7 +114,6 @@ DatasetOptions1::DatasetOptions1(TheHub& theHub_)
 
   setEnabled();
 
-  // TODO split setTo() ?
   connect(theHub.actHasBeamOffset, &QAction::toggled, [this,setEnabled]() {
     setEnabled();
     setTo(theHub);
@@ -175,8 +173,6 @@ static str KEY_PIXEL_SIZE("pixel_size");
 DatasetOptions2::DatasetOptions2(TheHub& theHub_)
 : super (EMPTY_STR,theHub_,Qt::Vertical) {
 
-  // TODO clean up the layout
-
   box->addWidget(label("Image"));
   auto hb = hbox();
   box->addLayout(hb);
@@ -207,7 +203,7 @@ DatasetOptions2::DatasetOptions2(TheHub& theHub_)
   gc->addWidget((cutBottom = spinCell(4,0)),        0,3);
   cutBottom->setToolTip("Bottom cut");
 
-  gc->addWidget(iconButton(theHub.actImagesLink),  0,5);
+  gc->addWidget(iconButton(theHub.actImagesLink),   0,5);
   gc->addWidget(iconButton(theHub.actImageOverlay), 1,5);
 
   gc->addWidget(icon(":/icon/cutLeftU"),            1,0);
@@ -243,7 +239,6 @@ DatasetOptions2::DatasetOptions2(TheHub& theHub_)
     setImageCut(false,value);
   });
 
-  // TODO separate geometryChanged into more signals?
   connect(&theHub, &TheHub::geometryChanged, [this]() {
     setFrom(theHub);
   });

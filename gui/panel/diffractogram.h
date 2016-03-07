@@ -97,8 +97,8 @@ private:
   DiffractogramPlot *plot;
 
   core::TI_Curve dgram, dgramBgFitted, bg, peak;
-  core::Ranges bgRanges;
-  core::fit::Polynomial bgPolynomial;
+  core::Ranges bgRanges;                // TODO move to core::Session; access trough theHub
+  core::fit::Polynomial bgPolynomial;   // ditto
   bool showBgFit;
 
   core::Range peakRange;
@@ -106,7 +106,7 @@ private:
 public:
   void calcDgram();
   void calcBackground();
-  void calcPeak();  // TODO temporary for development, fitting one Gaussian peak
+  void calcPeak();  // REMOVE temporary for development, fitting one Gaussian peak
 };
 
 //------------------------------------------------------------------------------

@@ -89,48 +89,47 @@ void TestCoreRange::testRange() {
     QCOMPARE(rs.at(0).max, max+1000.);
   }
 
-  // TODO
-//  //Tests for TI_Curve
-//  {
-//    {
-//      qreal tth = 1.2, inten = 3.14;
-//      core::TI_Curve t;
+  //Tests for TI_Curve
+  {
+    {
+      qreal tth = 1.2, inten = 3.14;
+      core::TI_Curve t;
 
-//      // testing default Constructor, All data is NaN
-//      {
-//        QVERIFY(t.isEmpty());
-//        QVERIFY(t.getTth().isEmpty());
-//        QVERIFY(t.getInten().isEmpty());
-//        QVERIFY(qIsNaN(t.getTthRange().min));
-//        QVERIFY(qIsNaN(t.getTthRange().max));
-//        QVERIFY(qIsNaN(t.getIntenRange().min));
-//        QVERIFY(qIsNaN(t.getIntenRange().max));
-//      }
+      // testing default Constructor, All data is NaN
+      {
+        QVERIFY(t.isEmpty());
+        QVERIFY(t.getTth().isEmpty());
+        QVERIFY(t.getInten().isEmpty());
+        QVERIFY(qIsNaN(t.getTthRange().min));
+        QVERIFY(qIsNaN(t.getTthRange().max));
+        QVERIFY(qIsNaN(t.getIntenRange().min));
+        QVERIFY(qIsNaN(t.getIntenRange().max));
+      }
 
-//      //testing if input of data is correct
-//      {
-//        t.append(tth,inten);
-//        QCOMPARE(t.getTth().at(0),tth);
-//        QCOMPARE(t.getInten().at(0),inten);
-//        QCOMPARE(t.getTthRange().min,tth);
-//        QCOMPARE(t.getTthRange().max,tth);
-//        QCOMPARE(t.getIntenRange().min,inten);
-//        QCOMPARE(t.getIntenRange().max,inten);
+      //testing if input of data is correct
+      {
+        t.append(tth,inten);
+        QCOMPARE(t.getTth().at(0),tth);
+        QCOMPARE(t.getInten().at(0),inten);
+        QCOMPARE(t.getTthRange().min,tth);
+        QCOMPARE(t.getTthRange().max,tth);
+        QCOMPARE(t.getIntenRange().min,inten);
+        QCOMPARE(t.getIntenRange().max,inten);
 
-//        t.append(2*tth,0);
-//        QCOMPARE(t.getTth().at(1),      2*tth);
-//        QCOMPARE(t.getInten().at(1),    0.);
-//        QCOMPARE(t.getTthRange().min,   tth);
-//        QCOMPARE(t.getTthRange().max,   2*tth);
-//        QCOMPARE(t.getIntenRange().min, 0.);
-//        QCOMPARE(t.getIntenRange().max, inten);
-//        QVERIFY(t.isOrdered());
+        t.append(2*tth,0);
+        QCOMPARE(t.getTth().at(1),      2*tth);
+        QCOMPARE(t.getInten().at(1),    0.);
+        QCOMPARE(t.getTthRange().min,   tth);
+        QCOMPARE(t.getTthRange().max,   2*tth);
+        QCOMPARE(t.getIntenRange().min, 0.);
+        QCOMPARE(t.getIntenRange().max, inten);
+        QVERIFY(t.isOrdered());
 
-//        t.clear();
-//        QVERIFY(t.isEmpty());
-//      }
-//    }
-//  }
+        t.clear();
+        QVERIFY(t.isEmpty());
+      }
+    }
+  }
 }
 
 // eof

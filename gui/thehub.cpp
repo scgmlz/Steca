@@ -10,7 +10,6 @@
 
 //------------------------------------------------------------------------------
 
-// TODO handle long operations asynchronously
 class WaitCursor {
 public:
   WaitCursor() {
@@ -291,7 +290,6 @@ static str KEY_OFFSET_Y("offset_y");
 static str KEY_TRANSFORM("transform");
 
 
-// TODO merge load / save, DRY
 void TheHub::load(QByteArray const& json) THROWS {
   QJsonParseError parseError;
   QJsonDocument doc(QJsonDocument::fromJson(json,&parseError));
@@ -363,8 +361,6 @@ QByteArray TheHub::save() const {
     { KEY_FILES,      files               },
     { KEY_CORR_FILES,  hasCorrFile() ? session->getCorrFile()->getInfo().absoluteFilePath() : "" },
   };
-
-  //TODO create saveYourSelfToJSON /loadYourSelfFromJSON
 
   return QJsonDocument(top).toJson();
 }

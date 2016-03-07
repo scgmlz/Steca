@@ -56,24 +56,22 @@ struct Geometry {
   Geometry();
   bool operator ==(Geometry const&) const;
 
-  // TODO rename "span" -> ...
-  qreal detectorDistance; // the distance between sample - detector // TODO verify: in adhoc has at least three names: sampleDetectorSpan, detectorSampleSpan, detectorSampleDistance
+  qreal detectorDistance;   // the distance from the sample to the detector
   qreal pixSize;            // size of the detector pixel
   bool  hasBeamOffset;
   QPoint middlePixOffset;
 };
 
-struct Pixpos {  // TODO bad name
+struct Pixpos {  // RENAME
   Pixpos(): Pixpos(0,0) {}
   Pixpos(qreal gamma, qreal tth): gammaPix(gamma), tthPix(tth) {}
   qreal gammaPix;
   qreal tthPix;
 };
 
-// TODO rename;
-typedef Array2D<Pixpos> AngleCorrArray;
+typedef Array2D<Pixpos> AngleCorrArray; // RENAME - ask Antti
 
-struct Borders { // TODO bad name, hide
+struct Borders { // REVIEW bad name, hide, remove?
   Range
     gamma,
     tth_regular,
@@ -157,11 +155,10 @@ public:
 private: // corrections
   AngleCorrArray angleCorrArray;
 
-  Borders        ful, cut;
+  Borders        ful, cut;      // REVIEW ful - remove?
 
-  QPoint  getPixMiddle() const;  // TODO rename, was getPixMiddleX/Y
+  QPoint  getPixMiddle() const;  // REVIEW / RENAME
 
-  // TODO caching of calcAngle...
   qreal lastCalcTthMitte; QPoint lastPixMiddle;
   Geometry lastGeometry;
 
@@ -170,11 +167,13 @@ protected:
   ImageTransform lastImageTransform;
 
 public:
-  AngleCorrArray const& calcAngleCorrArray(qreal tthMitte);  // TODO rename; TODO if too slow, cache
+  AngleCorrArray const& calcAngleCorrArray(qreal tthMitte);
 
-public: // TODO not public
+private:
   Image intensCorrArray;  // summed corrFile intensities
-  bool  hasNaNs;
+  bool  hasNaNs;           // TODO warn on the statusbar
+
+public:
   void  calcIntensCorrArray();
 
   Borders const& getCut() const { return cut; }

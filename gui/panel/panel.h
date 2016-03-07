@@ -52,7 +52,7 @@ struct InfoItem {
   str tag; QCheckBox *cb; QLineEdit *text;
 };
 
-typedef QVector<InfoItem> InfoItems;
+typedef QVector<InfoItem> InfoItems; // REVIEW
 
 //------------------------------------------------------------------------------
 }

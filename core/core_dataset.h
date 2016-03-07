@@ -25,7 +25,7 @@ public:
     NUM_ATTRIBUTES
   };
 
-  static rcstr getAttributeTag(int i);
+  static rcstr getAttributeTag(int i); // TODO uint
 
 public:
   Dataset(rcstr date, rcstr comment,
@@ -35,8 +35,8 @@ public:
           qreal mon, qreal deltaTime,
           QSize const& size, intens_t const* intensities);
 
-  str getAttributeStrValue(int /*as: enumAttribute TODO */) const;
-  qreal tthMitte() const { return motorTth; } // TODO ? is mitte
+  str getAttributeStrValue(int) const; // TODO uint
+  qreal tthMitte() const { return motorTth; } // RENAME
 
   File  const& getFile()  const;
   Image const& getImage() const { return image; }

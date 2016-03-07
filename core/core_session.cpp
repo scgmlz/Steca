@@ -162,7 +162,7 @@ void Session::setImageSize(QSize const& size) THROWS {
 }
 
 void Session::setGeometry(qreal detectorDistance, qreal pixSize, bool hasBeamOffset, QPoint const& middlePixOffset) {
-  ASSERT(detectorDistance>0 && pixSize>0) // TODO better than assert
+  ASSERT(detectorDistance>0 && pixSize>0) // TODO use MIN_DETECTOR_DISTANCE ...
   geometry.detectorDistance = detectorDistance;
   geometry.pixSize            = pixSize;
   geometry.hasBeamOffset      = hasBeamOffset;
@@ -243,7 +243,7 @@ QSize Session::getImageSize() const {
 
 QPoint Session::getPixMiddle() const {
   auto imageSize = getImageSize();
-  QPoint middle( // TODO hasBeamOffset
+  QPoint middle( // REVIEW TODO when hasBeamOffset
     imageSize.width()  / 2 + geometry.middlePixOffset.x(),
     imageSize.height() / 2 + geometry.middlePixOffset.y());
   // TODO was: if ((tempPixMiddleX *[<=]* 0) || (tempPixMiddleX >= getWidth()))
@@ -253,8 +253,8 @@ QPoint Session::getPixMiddle() const {
   return middle;
 }
 
-// TODO this is a slightly modified original code; be careful; eventually refactor
-AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
+AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) { // RENAME
+  // REFACTOR
   QPoint pixMiddle = getPixMiddle();
   auto size   = getImageSize();
 
@@ -315,15 +315,13 @@ AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
     ASSERT(ful.isValid())
 
     // Calculate Gamma and TTH after cut
-    // TODO the original code called setPixCut - is used elsewhere?
-    // TODO refactor
     ASSERT(imageCut.getCount(size) > 0)
 
     cut.tth_gamma0.safeSet(
       angleCorrArray.at(size.width() - 1 - imageCut.right,pixMiddle.y()).tthPix,
       angleCorrArray.at(imageCut.left,pixMiddle.y()).tthPix);
 
-    // TODO loop through cut - make abstract?
+    // TODO loop through cut - make abstract (see below), REFACTOR
     for (uint ix = imageCut.left; ix < size.width() - imageCut.right; ++ix) {
       for (uint iy = imageCut.top; iy < size.height() - imageCut.bottom; ++iy) {
         auto ac = angleCorrArray.at(ix,iy);
@@ -349,14 +347,15 @@ void Session::calcIntensCorrArray() {
   ASSERT(1 == corrFile->numDatasets()) // no need to sum
   Image const& image = corrFile->getDataset(0)->getImage();
 
+  // REVIEW
   qreal sum = 0; uint n = 0; auto size = getImageSize();
   for (uint x=imageCut.left; x<size.width()-imageCut.right; ++x)
     for (uint y=imageCut.top; y<size.height()-imageCut.bottom; ++y) {
       sum += image.intensity(pixIndex(x,y));
-      ++n; // TODO aren't we lazy
+      ++n;
     }
 
-  ASSERT(n>0)
+  ASSERT(n>0) // TODO div. by 0 ?
   qreal avg = sum / n;
 
   intensCorrArray.fill(1,size);
