@@ -52,13 +52,33 @@ bool Function::Parameter::setValue(qreal value, qreal error, bool force) {
   return true;
 }
 
-void Function::Parameter::loadFrom(QJsonObject const& obj) {
-  value = obj["value"].toDouble(); // TODO etc.
+static str KEY_VALUE("value");
+static str KEY_RANGE_MIN("range_min");
+static str KEY_RANGE_MAX("range_max");
+static str KEY_MAX_DELTA("maxDelta");
+static str KEY_MAX_DELTA_PERCENT("maxDeltaPercent");
+static str KEY_MAX_ERROR("maxError");
+static str KEY_MAX_ERROR_PERCENT("maxErrorPercent");
 
+void Function::Parameter::loadFrom(QJsonObject const& obj) {
+  value           = obj[KEY_VALUE].toDouble();
+  qreal min       = obj[KEY_RANGE_MIN].toDouble();
+  qreal max       = obj[KEY_RANGE_MAX].toDouble();
+  range.set(min,max);
+  maxDelta        = obj[KEY_MAX_DELTA].toDouble();
+  maxDeltaPercent = obj[KEY_MAX_DELTA_PERCENT].toDouble();
+  maxError        = obj[KEY_MAX_ERROR].toDouble();
+  maxErrorPercent = obj[KEY_MAX_DELTA_PERCENT].toDouble();
 }
 
 void Function::Parameter::saveTo(QJsonObject& obj) const {
-  obj["value"] = value; // TODO etc..
+  obj[KEY_VALUE]             = value;
+  obj[KEY_RANGE_MIN]         = range.min;
+  obj[KEY_RANGE_MAX]         = range.max;
+  obj[KEY_MAX_DELTA]         = maxDelta;
+  obj[KEY_MAX_DELTA_PERCENT] = maxDeltaPercent;
+  obj[KEY_MAX_ERROR]         = maxError;
+  obj[KEY_MAX_ERROR_PERCENT] = maxErrorPercent;
 }
 
 //------------------------------------------------------------------------------
@@ -69,20 +89,25 @@ Function::Function() {
 Function::~Function() {
 }
 
+static str KEY_PAR_COUNT("parCount");
+static str KEY_PARAMETER("p");
+
 void Function::loadFrom(QJsonObject const& obj) /*TODO: THROWS*/ {
-  // RUNTIME_CHECK par.count
+  auto parCount = obj[KEY_PAR_COUNT].toInt();
+  RUNTIME_CHECK(parameterCount() == (uint) parCount,"parameter count not the same");
+
   for_i (parameterCount()) {
-    getParameter(i).loadFrom(obj[str("p")+(i+1)].toObject());
+    getParameter(i).loadFrom(obj[str(KEY_PARAMETER)+(i+1)].toObject());
   }
 }
 
 void Function::saveTo(QJsonObject& obj) const {
   auto parCount = parameterCount();
-  obj["??"] = (int)parCount;
+  obj[KEY_PAR_COUNT] = (int)parCount;
   for_i (parCount) {
     QJsonObject pObj;
     getParameter(i).saveTo(pObj);
-    obj[str("p")+(i+1)] = pObj;
+    obj[str(KEY_PARAMETER)+(i+1)] = pObj;
   }
 }
 
@@ -121,9 +146,10 @@ void SimpleFunction::reset() {
   }
 }
 
+
 void SimpleFunction::loadFrom(QJsonObject const& obj) {
-  int parCount = obj["??"].toInt();
-//  RUNTIME_CHECK(parCount>0)
+  int parCount = obj[KEY_PAR_COUNT].toInt();
+  RUNTIME_CHECK(parCount > 0,"parameter count not valid");
   setParameterCount(parCount);
   super::loadFrom(obj);
 }
@@ -199,12 +225,49 @@ qreal SumFunctions::dy(qreal x, uint parIndex, qreal const* parValues) const {
       return f->dy(x, parIndex, parValues);
 }
 
-void SumFunctions::loadFrom(QJsonObject const&) {
+static str KEY_PARAMETERS("parameters");
+static str KEY_FUNCTIONS("functions");
+static str KEY_FUNCTION("f");
+static str KEY_FUNCTIONS_COUNT("functionsCount");
+
+void SumFunctions::loadFrom(QJsonObject const& obj) {
+  // RUNTIME_CHECK for ... ?
+  QJsonObject parametersObj = obj[KEY_PARAMETERS].toObject();
+  RUNTIME_CHECK((uint) parametersObj.count() == parameterCount(),"parameter count not matching");
+
+  for_i (parameterCount()) {
+    QJsonObject pObj = parametersObj[KEY_PARAMETER + i].toObject();
+    getParameter(i).loadFrom(pObj);
+  }
+
+  int functionsCount = obj[KEY_FUNCTIONS_COUNT].toInt();
+  RUNTIME_CHECK(functionsCount == functions.count(),"incorrect number of functions");
+  QJsonObject functionsObj = obj[KEY_FUNCTIONS].toObject();
+  for_i (functionsCount) {
+    QJsonObject fObj = functionsObj[KEY_FUNCTION + i].toObject();
+    functions.at(i)->loadFrom(fObj);
+  }
+
   // load number of functions; for (n) addFunction/loadFrom
 }
 
-void SumFunctions::saveTo(QJsonObject&) const {
-  //
+void SumFunctions::saveTo(QJsonObject& obj) const {
+  QJsonObject parametersObj;
+  for_i (parameterCount()) {
+    QJsonObject pObj;
+    parameters.at(i)->saveTo(pObj);
+    parametersObj[KEY_PARAMETER + i] = pObj;
+  }
+  obj[KEY_PARAMETERS] = parametersObj;
+
+  obj[KEY_FUNCTIONS_COUNT] = functions.count();
+  QJsonObject functionsObj;
+  for_i (functions.count()) {
+    QJsonObject fObj;
+    functions.at(i)->saveTo(fObj);
+    functionsObj[KEY_FUNCTION + i] = fObj;
+  }
+  obj[KEY_FUNCTIONS] = functionsObj;
 }
 
 //------------------------------------------------------------------------------
@@ -241,12 +304,24 @@ qreal Polynomial::dy(qreal x, uint i, qreal const*) const {
   return pow_n(x,i);
 }
 
-void Polynomial::loadFrom(QJsonObject const&) {
-  // RUNTIME_CHECK obj["type"] == "polynomial"
+static str KEY_TYPE("type");
+static str KEY_POLYNOMIAL("polynomial");
+static str KEY_DEGREE("degree");
+
+void Polynomial::loadFrom(QJsonObject const& obj) {
+  str type = obj[KEY_TYPE].toString();
+  RUNTIME_CHECK(type == KEY_POLYNOMIAL, "incorrect type");
+  int degree = obj[KEY_DEGREE].toInt();
+  RUNTIME_CHECK(degree > 0, "degree not valid");
+  setDegree((uint) degree);
+  super::loadFrom(obj);
 }
 
-void Polynomial::saveTo(QJsonObject&) const {
-  // obj["type"] = "polynomial" ; super::saveTo
+void Polynomial::saveTo(QJsonObject& obj) const {
+  obj[KEY_TYPE] = KEY_POLYNOMIAL;
+  int degree = getDegree();
+  obj[KEY_DEGREE] = degree;
+  super::saveTo(obj);
 }
 
 //------------------------------------------------------------------------------

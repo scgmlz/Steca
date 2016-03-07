@@ -88,7 +88,7 @@ struct Borders { // REVIEW bad name, hide, remove?
   }
 };
 
-class Session {
+class Session final {
 public:
   Session();
   virtual ~Session();
@@ -131,9 +131,7 @@ public:
   void setGeometry(qreal detectorDistance, qreal pixSize, bool hasBeamOffset, QPoint const& middlePixOffset);
 
 private:
-  Geometry geometry;
-
-protected:
+  Geometry       geometry;
   ImageTransform imageTransform;
 
 public:
@@ -162,7 +160,6 @@ private: // corrections
   qreal lastCalcTthMitte; QPoint lastPixMiddle;
   Geometry lastGeometry;
 
-protected:
   ImageCut lastImageCut;
   ImageTransform lastImageTransform;
 
@@ -184,6 +181,14 @@ public: // image cut
 
 private:
   ImageCut imageCut;
+
+public:
+  Ranges&           getBgRanges()     { return bgRanges;     }
+  fit::Polynomial&  getBgPolynomial() { return bgPolynomial; }
+
+private:
+  Ranges          bgRanges;
+  fit::Polynomial bgPolynomial;
 };
 
 //------------------------------------------------------------------------------

@@ -288,7 +288,7 @@ static str KEY_BEAM_OFFSET("hasbeamoffset");
 static str KEY_OFFSET_X("offset_x");
 static str KEY_OFFSET_Y("offset_y");
 static str KEY_TRANSFORM("transform");
-
+static str KEY_POLYNOMIAL("polynomial");
 
 void TheHub::load(QByteArray const& json) THROWS {
   QJsonParseError parseError;
@@ -353,6 +353,10 @@ QByteArray TheHub::save() const {
     { KEY_LEFT,   (int)ic.left    },
     { KEY_RIGHT,  (int)ic.right   },
   };
+
+//  QJsonObject polynomial {
+//    { KEY_POLYNOMIAL, }
+//  }
 
   QJsonObject top {
     { KEY_DETECTOR,   det                 },

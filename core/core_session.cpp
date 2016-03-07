@@ -70,7 +70,7 @@ bool Geometry::operator ==(Geometry const& that) const {
 Session::Session()
 : dataFiles(), corrFile(), corrEnabled(false), imageSize(), geometry()
 , imageTransform(ImageTransform::ROTATE_0)
-, lastCalcTthMitte(0), hasNaNs(false) {
+, lastCalcTthMitte(0), hasNaNs(false), bgPolynomial(0) {
 }
 
 Session::~Session() {

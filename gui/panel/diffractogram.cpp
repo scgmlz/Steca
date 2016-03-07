@@ -182,16 +182,16 @@ core::Range DiffractogramPlot::fromPixels(int pix1, int pix2) {
 }
 
 void DiffractogramPlot::clearBg() {
-  diffractogram.bgRanges.clear();
+  theHub.getBgRanges().clear();
   updateBg();
 }
 
 void DiffractogramPlot::addBg(core::Range const& range) {
-  if (diffractogram.bgRanges.add(range)) updateBg();
+  if (theHub.getBgRanges().add(range)) updateBg();
 }
 
 void DiffractogramPlot::remBg(core::Range const& range) {
-  if (diffractogram.bgRanges.rem(range)) updateBg();
+  if (theHub.getBgRanges().rem(range)) updateBg();
 }
 
 void DiffractogramPlot::setPeakRange(core::Range const& range) {
@@ -206,7 +206,7 @@ void DiffractogramPlot::updateBg() {
   default:
     break;
   case TOOL_BACKGROUND: {
-    core::Ranges const& rs = diffractogram.bgRanges;
+    core::Ranges const& rs = theHub.getBgRanges();
     for_i (rs.count()) addBgItem(rs.at(i));
     break;
   }
@@ -243,7 +243,7 @@ void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
 //------------------------------------------------------------------------------
 
 Diffractogram::Diffractogram(TheHub& theHub_)
-: super(EMPTY_STR,theHub_,Qt::Vertical), dataset(nullptr), bgPolynomial(0)
+: super(EMPTY_STR,theHub_,Qt::Vertical), dataset(nullptr)
 , showBgFit(false) {
   box->addWidget((plot = new DiffractogramPlot(theHub,*this)));
 
@@ -264,7 +264,7 @@ Diffractogram::Diffractogram(TheHub& theHub_)
   });
 
   connect(&theHub, &TheHub::backgroundPolynomialDegree, [this](uint degree) {
-    bgPolynomial.setDegree(degree);
+    theHub.getBgPolynomial().setDegree(degree);
     renderDataset();
   });
 
@@ -352,6 +352,9 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
 
 void Diffractogram::calcBackground() {
   bg.clear(); dgramBgFitted.clear();
+
+  auto &bgPolynomial = theHub.getBgPolynomial();  // not very nice REVIEW
+  auto &bgRanges     = theHub.getBgRanges();      // not very nice REVIEW
 
   bgPolynomial = core::fit::fitBackground(dgram,bgRanges,bgPolynomial.getDegree());
   auto tth   = dgram.getTth();

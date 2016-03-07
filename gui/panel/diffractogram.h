@@ -97,8 +97,8 @@ private:
   DiffractogramPlot *plot;
 
   core::TI_Curve dgram, dgramBgFitted, bg, peak;
-  core::Ranges bgRanges;                // TODO move to core::Session; access trough theHub
-  core::fit::Polynomial bgPolynomial;   // ditto
+//  core::Ranges bgRanges;                // TODO move to core::Session; access trough theHub
+//  core::fit::Polynomial bgPolynomial;   // ditto
   bool showBgFit;
 
   core::Range peakRange;

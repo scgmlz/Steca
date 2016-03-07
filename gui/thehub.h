@@ -175,6 +175,10 @@ signals:
   void geometryChanged();
 
   void backgroundPolynomialDegree(uint);
+
+public:
+  core::Ranges&           getBgRanges()     { return session->getBgRanges();     }
+  core::fit::Polynomial&  getBgPolynomial() { return session->getBgPolynomial(); }
 };
 
 //------------------------------------------------------------------------------
