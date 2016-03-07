@@ -7,6 +7,8 @@
 
 #include <core_types.h>
 
+class QJsonObject;
+
 namespace core { namespace fit {
 //------------------------------------------------------------------------------
 /// Abstract function
@@ -26,6 +28,10 @@ public:
     bool  checkValue(qreal value, qreal error=0);
     /// conditionally sets the new value/error pair
     bool  setValue(qreal value, qreal error=0, bool force=false);
+
+  public:
+    void loadFrom(QJsonObject const&);
+    void saveTo(QJsonObject&) const;
 
   private:
     qreal value;
@@ -61,6 +67,10 @@ public:
 
   /// partial derivative / parameter, with given (parameterValues) or own parameters
   virtual qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const = 0;
+
+public:
+  virtual void loadFrom(QJsonObject const&);
+  virtual void saveTo(QJsonObject&) const;
 };
 
 #ifndef QT_NO_DEBUG
@@ -81,6 +91,10 @@ public:
   Parameter& getParameter(uint);
 
   void reset();
+
+public:
+  void loadFrom(QJsonObject const&);
+  void saveTo(QJsonObject&) const;
 
 protected:
   QVector<Parameter> parameters;
@@ -107,6 +121,10 @@ public:
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
+public:
+  void loadFrom(QJsonObject const&);
+  void saveTo(QJsonObject&) const;
+
 protected:
   /// summed functions
   QVector<Function*>  functions;
@@ -131,6 +149,10 @@ public:
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
+
+public:
+  void loadFrom(QJsonObject const&);
+  void saveTo(QJsonObject&) const;
 };
 
 //------------------------------------------------------------------------------

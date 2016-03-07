@@ -1,4 +1,5 @@
 #include "core_fit_functions.h"
+#include <QJsonObject>
 #include <cmath>
 
 namespace core { namespace fit {
@@ -51,12 +52,30 @@ bool Function::Parameter::setValue(qreal value, qreal error, bool force) {
   return true;
 }
 
+void Function::Parameter::loadFrom(QJsonObject const& obj) {
+  value = obj["tag"].toDouble(); // TODO etc.
+}
+
+void Function::Parameter::saveTo(QJsonObject& obj) const {
+  obj["tag"] = value; // TODO etc..
+}
+
 //------------------------------------------------------------------------------
 
 Function::Function() {
 }
 
 Function::~Function() {
+}
+
+void Function::loadFrom(QJsonObject const& obj) {
+  for_i (parameterCount()) getParameter(i).loadFrom(obj);
+}
+
+void Function::saveTo(QJsonObject& obj) const {
+  auto parCount = parameterCount();
+  obj["??"] = (int)parCount;
+  for_i (parCount) getParameter(i).saveTo(obj);
 }
 
 #ifndef QT_NO_DEBUG
@@ -92,6 +111,18 @@ void SimpleFunction::reset() {
     auto &p = parameters[i];
     p.setValue(p.getRange().bound(0));
   }
+}
+
+void SimpleFunction::loadFrom(QJsonObject const& obj) {
+  int parCount = obj["??"].toInt();
+//  RUNTIME_CHECK(parCount>0)
+  setParameterCount(parCount);
+  super::loadFrom(obj);
+}
+
+void SimpleFunction::saveTo(QJsonObject& obj) const {
+  super::saveTo(obj);
+  // nothing else to do here
 }
 
 qreal SimpleFunction::parValue(uint i, const qreal *parameterValues) const {
@@ -157,7 +188,15 @@ qreal SumFunctions::dy(qreal x, uint parIndex, qreal const* parValues) const {
 
   ASSERT(parIndex < f->parameterCount())
 
-  return f->dy(x, parIndex, parValues);
+      return f->dy(x, parIndex, parValues);
+}
+
+void SumFunctions::loadFrom(QJsonObject const&) {
+  // load number of functions; for (n) addFunction/loadFrom
+}
+
+void SumFunctions::saveTo(QJsonObject&) const {
+  //
 }
 
 //------------------------------------------------------------------------------
@@ -192,6 +231,14 @@ qreal Polynomial::y(qreal x, const qreal *parameterValues) const {
 
 qreal Polynomial::dy(qreal x, uint i, qreal const*) const {
   return pow_n(x,i);
+}
+
+void Polynomial::loadFrom(QJsonObject const&) {
+  // RUNTIME_CHECK obj["type"] == "polynomial"
+}
+
+void Polynomial::saveTo(QJsonObject&) const {
+  // obj["type"] = "polynomial"
 }
 
 //------------------------------------------------------------------------------
