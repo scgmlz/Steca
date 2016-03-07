@@ -172,14 +172,14 @@ public:
 class Gaussian: public PeakFunction {
   SUPER(Gaussian,PeakFunction)
 public:
-  enum { parAMPL, parMU, parSIGMA };
+  enum { parAMPL, parXSHIFT, parSIGMA };
 
-  Gaussian(qreal ampl=1, qreal mu=0, qreal sigma=1);
+  Gaussian(qreal ampl=1, qreal xShift=0, qreal sigma=1);
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
-  void setPeak(qreal tth, qreal intens);
+  void setPeak(qreal x, qreal y);
   void setFWHM(qreal);
 };
 
@@ -188,9 +188,9 @@ public:
 class CauchyLorentz: public PeakFunction {
   SUPER(CauchyLorentz,PeakFunction)
 public:
-  enum { parAMPL, parTTH0, parGAMMA };
+  enum { parAMPL, parXSHIFT, parGAMMA };
 
-  CauchyLorentz(qreal ampl=1, qreal tth=0, qreal gamma=1);
+  CauchyLorentz(qreal ampl=1, qreal xShift=0, qreal gamma=1);
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
@@ -204,14 +204,14 @@ public:
 class PseudoVoigt1: public PeakFunction {
   SUPER(PseudoVoigt1,PeakFunction)
 public:
-  enum { parAMPL, parMU, parHWHM, parETA };
+  enum { parAMPL, parXSHIFT, parSIGMAGAMMA, parETA };
 
-  PseudoVoigt1(qreal ampl=1, qreal mu=0, qreal hwhm=1, qreal eta=0.1);
+  PseudoVoigt1(qreal ampl=1, qreal xShift=0, qreal sigmaGamma=1, qreal eta=0.1);
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
-  void setPeak(qreal tth, qreal intens);
+  void setPeak(qreal x, qreal y);
   void setFWHM(qreal);
 };
 
@@ -220,14 +220,14 @@ public:
 class PseudoVoigt2: public PeakFunction {
   SUPER(PseudoVoigt2,PeakFunction)
 public:
-  enum { parAMPL, parMU, parHWHMG, parHWHML, parETA };
+  enum { parAMPL, parXSHIFT, parSIGMA, parGAMMA, parETA };
 
-  PseudoVoigt2(qreal ampl=1, qreal mu=0, qreal hwhmG=1, qreal hwhmL=1, qreal eta=0.1);
+  PseudoVoigt2(qreal ampl=1, qreal xShift=0, qreal sigma=1, qreal gamma=1, qreal eta=0.1);
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
-  void setPeak(qreal tth, qreal intens);
+  void setPeak(qreal x, qreal y);
   void setFWHM(qreal);
 };
 

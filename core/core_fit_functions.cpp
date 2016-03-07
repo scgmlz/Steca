@@ -256,54 +256,56 @@ PeakFunction::PeakFunction() {
 
 //------------------------------------------------------------------------------
 
-Gaussian::Gaussian(qreal ampl, qreal mu, qreal sigma) {
+Gaussian::Gaussian(qreal ampl, qreal xShift, qreal sigma) {
   setParameterCount(3);
 
-  auto &parAmpl  = parameters[parAMPL];
-  auto &parMu    = parameters[parMU];
-  auto &parSigma = parameters[parSIGMA];
+  auto &parAmpl   = parameters[parAMPL];
+  auto &parXShift = parameters[parXSHIFT];
+  auto &parSigma  = parameters[parSIGMA];
 
   parAmpl.setRange(0,qInf());
   parAmpl.setValue(ampl);
 
-  parMu.setValue(mu);
+  parXShift.setValue(xShift);
 
   parSigma.setRange(0,qInf());
   parSigma.setValue(sigma);
 }
 
 qreal Gaussian::y(qreal x, const qreal *parameterValues) const {
-  qreal ampl  = parValue(parAMPL,  parameterValues);
-  qreal mu    = parValue(parMU,    parameterValues);
-  qreal sigma = parValue(parSIGMA, parameterValues);
+  qreal ampl   = parValue(parAMPL,   parameterValues);
+  qreal xShift = parValue(parXSHIFT, parameterValues);
+  qreal sigma  = parValue(parSIGMA,  parameterValues);
 
-  qreal arg = (x - mu) / sigma;
-  return ampl * exp(-0.5 * arg * arg);
+  qreal arg = (x - xShift) / sigma;
+  qreal exa = exp(-0.5 * arg * arg);
+
+  return ampl * exa;
 }
 
 qreal Gaussian::dy(qreal x, uint parameterIndex, const qreal *parameterValues) const {
-  qreal ampl  = parValue(parAMPL,  parameterValues);
-  qreal mu    = parValue(parMU,    parameterValues);
-  qreal sigma = parValue(parSIGMA, parameterValues);
+  qreal ampl   = parValue(parAMPL,   parameterValues);
+  qreal xShift = parValue(parXSHIFT, parameterValues);
+  qreal sigma  = parValue(parSIGMA,  parameterValues);
 
-  qreal arg = (x - mu) / sigma;
-  qreal ex  = exp(-0.5 * arg * arg);
+  qreal arg = (x - xShift) / sigma;
+  qreal exa = exp(-0.5 * arg * arg);
 
   switch (parameterIndex) {
-  case parAMPL: // ampl
-    return ex;
-  case parMU: // mu
-    return ampl * ex * (x-mu)/(sigma*sigma);
-  case parSIGMA: // sigma
-    return ampl * ex * ((x-mu)*(x-mu))/(sigma*sigma*sigma);
+  case parAMPL:
+    return exa;
+  case parXSHIFT:
+    return ampl * exa * (x-xShift)/(sigma*sigma);
+  case parSIGMA:
+    return ampl * exa * ((x-xShift)*(x-xShift))/(sigma*sigma*sigma);
   default:
     NEVER_HERE return 0;
   }
 }
 
-void Gaussian::setPeak(qreal tth, qreal intens) {
-  setValue(parAMPL, intens);
-  setValue(parMU,   tth);
+void Gaussian::setPeak(qreal x, qreal y) {
+  setValue(parXSHIFT, x);
+  setValue(parAMPL,   y);
 }
 
 void Gaussian::setFWHM(qreal val) {
@@ -313,55 +315,55 @@ void Gaussian::setFWHM(qreal val) {
 
 //------------------------------------------------------------------------------
 
-CauchyLorentz::CauchyLorentz(qreal ampl, qreal tth0, qreal gamma) {
+CauchyLorentz::CauchyLorentz(qreal ampl, qreal xShift, qreal gamma) {
   setParameterCount(3);
 
-  auto &parAmpl  = parameters[parAMPL];
-  auto &parTth0  = parameters[parTTH0];
-  auto &parGamma = parameters[parGAMMA];
+  auto &parAmpl   = parameters[parAMPL];
+  auto &parXShift = parameters[parXSHIFT];
+  auto &parGamma  = parameters[parGAMMA];
 
   parAmpl.setRange(0,qInf());
   parAmpl.setValue(ampl);
 
-  parTth0.setValue(tth0);
+  parXShift.setValue(xShift);
 
   parGamma.setRange(0,qInf());
   parGamma.setValue(gamma);
 }
 
 qreal CauchyLorentz::y(qreal x, const qreal *parameterValues) const {
-  qreal ampl  = parValue(parAMPL,  parameterValues);
-  qreal tth0  = parValue(parTTH0,  parameterValues);
-  qreal gamma = parValue(parGAMMA, parameterValues);
+  qreal ampl   = parValue(parAMPL,   parameterValues);
+  qreal xShift = parValue(parXSHIFT, parameterValues);
+  qreal gamma  = parValue(parGAMMA,  parameterValues);
 
-  qreal arg = (x - tth0) / gamma;
+  qreal arg = (x - xShift) / gamma;
   return ampl / (1 + arg * arg);
 }
 
 qreal CauchyLorentz::dy(qreal x, uint parameterIndex, const qreal *parameterValues) const {
-  qreal ampl  = parValue(parAMPL,  parameterValues);
-  qreal tth0  = parValue(parTTH0,  parameterValues);
-  qreal gamma = parValue(parGAMMA, parameterValues);
+  qreal ampl   = parValue(parAMPL,   parameterValues);
+  qreal xShift = parValue(parXSHIFT, parameterValues);
+  qreal gamma  = parValue(parGAMMA,  parameterValues);
 
-  qreal arg1 = (x - tth0) / gamma;
+  qreal arg1 = (x - xShift) / gamma;
   qreal arg2 = arg1 * arg1;
   qreal arg3 = (1 + arg2) * (1 + arg2);
 
   switch (parameterIndex) {
   case parAMPL:
     return 1 / (1 + arg2);
-  case parTTH0:
-    return  2 * ampl * (x-tth0) / (arg3 * gamma * gamma);
+  case parXSHIFT:
+    return  2 * ampl * (x-xShift) / (arg3 * gamma * gamma);
   case parGAMMA:
-    return  2 * ampl * (x-tth0) * (x-tth0) / (arg3 * gamma * gamma * gamma);
+    return  2 * ampl * (x-xShift) * (x-xShift) / (arg3 * gamma * gamma * gamma);
   default:
     NEVER_HERE return 0;
   }
 }
 
-void CauchyLorentz::setPeak(qreal tth0, qreal intens) {
-  setValue(parAMPL, intens);
-  setValue(parTTH0, tth0);
+void CauchyLorentz::setPeak(qreal x, qreal y) {
+  setValue(parXSHIFT, x);
+  setValue(parAMPL,   y);
 }
 
 void CauchyLorentz::setFWHM(qreal val) {
@@ -371,47 +373,47 @@ void CauchyLorentz::setFWHM(qreal val) {
 
 //------------------------------------------------------------------------------
 
-PseudoVoigt1::PseudoVoigt1(qreal ampl, qreal mu, qreal hwhm, qreal eta) {
+PseudoVoigt1::PseudoVoigt1(qreal ampl, qreal xShift, qreal sigmaGamma, qreal eta) {
   setParameterCount(4);
 
-  auto &parAmpl = parameters[parAMPL];
-  auto &parMu   = parameters[parMU];
-  auto &parHwhm = parameters[parHWHM];
-  auto &parEta  = parameters[parETA];
+  auto &parAmpl       = parameters[parAMPL];
+  auto &parXShift     = parameters[parXSHIFT];
+  auto &parSigmaGamma = parameters[parSIGMAGAMMA];
+  auto &parEta        = parameters[parETA];
 
   parAmpl.setRange(0,qInf());
   parAmpl.setValue(ampl);
 
-  parMu.setValue(mu);
+  parXShift.setValue(xShift);
 
-  parHwhm.setRange(0,qInf());
-  parHwhm.setValue(hwhm);
+  parSigmaGamma.setRange(0,qInf());
+  parSigmaGamma.setValue(sigmaGamma);
 
   parEta.setRange(0,1);
   parEta.setValue(eta);
 }
 
 qreal PseudoVoigt1::y(qreal x, const qreal* parameterValues) const {
-  qreal ampl = parValue(parAMPL, parameterValues);
-  qreal mu   = parValue(parMU,   parameterValues);
-  qreal hwhm = parValue(parHWHM, parameterValues);
-  qreal eta  = parValue(parETA,  parameterValues);
+  qreal ampl       = parValue(parAMPL,       parameterValues);
+  qreal xShift     = parValue(parXSHIFT,     parameterValues);
+  qreal sigmaGamma = parValue(parSIGMAGAMMA, parameterValues);
+  qreal eta        = parValue(parETA,        parameterValues);
 
-  qreal arg      = (x - mu) / hwhm;
+  qreal arg      = (x - xShift) / sigmaGamma;
   qreal arg2     = arg * arg;
   qreal gaussian = ampl * exp(-arg2 * log(2.0));
   qreal lorentz  = ampl / (1 + arg2);
 
-  return eta * lorentz + (1-eta) * gaussian;
+  return (1-eta) * gaussian + eta * lorentz;
 }
 
 qreal PseudoVoigt1::dy(qreal x, uint parameterIndex, const qreal* parameterValues) const {
-  qreal ampl = parValue(parAMPL, parameterValues);
-  qreal mu   = parValue(parMU,   parameterValues);
-  qreal hwhm = parValue(parHWHM, parameterValues);
-  qreal eta  = parValue(parETA,  parameterValues);
+  qreal ampl       = parValue(parAMPL,       parameterValues);
+  qreal xShift     = parValue(parXSHIFT,     parameterValues);
+  qreal sigmaGamma = parValue(parSIGMAGAMMA, parameterValues);
+  qreal eta        = parValue(parETA,        parameterValues);
 
-  qreal arg1 = (x - mu) / hwhm;
+  qreal arg1 = (x - xShift) / sigmaGamma;
   qreal arg2 = arg1 * arg1;
   qreal arg3 = exp(-arg2 * log(2.0));
   qreal arg4 = 1 + arg2;
@@ -419,12 +421,12 @@ qreal PseudoVoigt1::dy(qreal x, uint parameterIndex, const qreal* parameterValue
   switch (parameterIndex) {
   case parAMPL:
     return eta / arg4 + (1 - eta) * arg3;
-  case parMU:
-    return eta * 2 * ampl * (x-mu) / (arg4*arg4 * hwhm*hwhm)
-        + (1-eta) * 2 * ampl * (x-mu) * log(2.0) * arg3 / (hwhm*hwhm);
-  case parHWHM:
-    return eta * 2 * ampl * (x-mu) * (x-mu) / (arg4*arg4 * hwhm*hwhm*hwhm)
-        + (1-eta) * 2 * ampl * (x-mu) * (x-mu) * log(2.0) * arg3 / (hwhm*hwhm*hwhm);
+  case parXSHIFT:
+    return eta * 2 * ampl * (x-xShift) / (arg4*arg4 * sigmaGamma*sigmaGamma)
+        + (1-eta) * 2 * ampl * (x-xShift) * log(2.0) * arg3 / (sigmaGamma*sigmaGamma);
+  case parSIGMAGAMMA:
+    return eta * 2 * ampl * (x-xShift) * (x-xShift) / (arg4*arg4 * sigmaGamma*sigmaGamma*sigmaGamma)
+        + (1-eta) * 2 * ampl * (x-xShift) * (x-xShift) * log(2.0) * arg3 / (sigmaGamma*sigmaGamma*sigmaGamma);
   case parETA:
     return ampl/arg4 - ampl*arg3;
   default:
@@ -432,13 +434,13 @@ qreal PseudoVoigt1::dy(qreal x, uint parameterIndex, const qreal* parameterValue
   }
 }
 
-void PseudoVoigt1::setPeak(qreal tth, qreal intens) {
-  setValue(parAMPL, intens);
-  setValue(parMU,   tth);
+void PseudoVoigt1::setPeak(qreal x, qreal y) {
+  setValue(parXSHIFT, x);
+  setValue(parAMPL,   y);
 }
 
 void PseudoVoigt1::setFWHM(qreal val) {
-  setValue(parHWHM, val / 2);
+  setValue(parSIGMAGAMMA, val / 2);
 }
 
 //------------------------------------------------------------------------------
@@ -447,9 +449,9 @@ PseudoVoigt2::PseudoVoigt2(qreal ampl, qreal mu, qreal hwhmG, qreal hwhmL, qreal
   setParameterCount(5);
 
   auto &parAmpl  = parameters[parAMPL];
-  auto &parMu    = parameters[parMU];
-  auto &parHwhmG = parameters[parHWHMG];
-  auto &parHwhmL = parameters[parHWHML];
+  auto &parMu    = parameters[parXSHIFT];
+  auto &parHwhmG = parameters[parSIGMA];
+  auto &parHwhmL = parameters[parGAMMA];
   auto &parEta   = parameters[parETA];
 
   parAmpl.setRange(0,qInf());
@@ -468,63 +470,63 @@ PseudoVoigt2::PseudoVoigt2(qreal ampl, qreal mu, qreal hwhmG, qreal hwhmL, qreal
 }
 
 qreal PseudoVoigt2::y(qreal x, const qreal* parameterValues) const {
-  qreal ampl  = parValue(parAMPL,  parameterValues);
-  qreal mu    = parValue(parMU,    parameterValues);
-  qreal hwhmG = parValue(parHWHMG, parameterValues);
-  qreal hwhmL = parValue(parHWHML, parameterValues);
-  qreal eta   = parValue(parETA,   parameterValues);
+  qreal ampl   = parValue(parAMPL,   parameterValues);
+  qreal xShift = parValue(parXSHIFT, parameterValues);
+  qreal sigma  = parValue(parSIGMA,  parameterValues);
+  qreal gamma  = parValue(parGAMMA,  parameterValues);
+  qreal eta    = parValue(parETA,    parameterValues);
 
-  qreal gaussianARG   = (x - mu) / hwhmG;
-  qreal gaussianARG2  = gaussianARG * gaussianARG;
-  qreal gaussian      = ampl * exp(-gaussianARG2 * log(2.0));
+  qreal argG     = (x - xShift) / sigma;
+  qreal argG2    = argG * argG;
+  qreal gaussian = ampl * exp(-argG2 * log(2.0));
 
-  qreal lorentzARG    = (x - mu) / hwhmL;
-  qreal lorentzARG2   = lorentzARG * lorentzARG;
-  qreal lorentz       = ampl / (1 + lorentzARG2);
+  qreal argL     = (x - xShift) / gamma;
+  qreal argL2    = argL * argL;
+  qreal lorentz  = ampl / (1 + argL2);
 
   return (1-eta) * gaussian + eta * lorentz;
 }
 
 qreal PseudoVoigt2::dy(qreal x, uint parameterIndex, const qreal* parameterValues) const {
-  qreal ampl  = parValue(parAMPL,  parameterValues);
-  qreal mu    = parValue(parMU,    parameterValues);
-  qreal hwhmG = parValue(parHWHMG, parameterValues);
-  qreal hwhmL = parValue(parHWHML, parameterValues);
-  qreal eta   = parValue(parETA,   parameterValues);
+  qreal ampl   = parValue(parAMPL,   parameterValues);
+  qreal xShift = parValue(parXSHIFT, parameterValues);
+  qreal sigma  = parValue(parSIGMA,  parameterValues);
+  qreal gamma  = parValue(parGAMMA,  parameterValues);
+  qreal eta    = parValue(parETA,    parameterValues);
 
-  qreal gaussianARG  = (x - mu) / hwhmG;
-  qreal gaussianARG2 = gaussianARG * gaussianARG;
-  qreal gaussianARG3 = exp(-gaussianARG2 * log(2.0));
+  qreal argG1 = (x - xShift) / sigma;
+  qreal argG2 = argG1 * argG1;
+  qreal argG3 = exp(-argG2 * log(2.0));
 
-  qreal lorentzARG   = (x - mu) / hwhmL;
-  qreal lorentzARG2  = lorentzARG * lorentzARG;
-  qreal lorentzARG3  = 1 + lorentzARG2;
+  qreal argL1 = (x - xShift) / gamma;
+  qreal argL2 = argL1 * argL1;
+  qreal argL3 = 1 + argL2;
 
   switch (parameterIndex) {
   case parAMPL:
-    return eta / lorentzARG3 + (1 - eta) * gaussianARG3;
-  case parMU:
-    return eta * 2 * ampl * (x-mu) / (lorentzARG3*lorentzARG3 * hwhmL*hwhmL)
-        + (1-eta) * 2 * ampl * (x-mu) * log(2.0) * gaussianARG3 / (hwhmG*hwhmG);
-  case parHWHMG:
-    return (1-eta) * 2 * ampl * (x-mu) * (x-mu) * log(2.0) * gaussianARG3 / (hwhmG*hwhmG*hwhmG);
-  case parHWHML:
-    return eta * 2 * ampl * (x-mu) * (x-mu) / (lorentzARG3*lorentzARG3 * hwhmL*hwhmL*hwhmL);
+    return eta / argL3 + (1 - eta) * argG3;
+  case parXSHIFT:
+    return eta * 2 * ampl * (x-xShift) / (argL3*argL3 * gamma*gamma)
+        + (1-eta) * 2 * ampl * (x-xShift) * log(2.0) * argG3 / (sigma*sigma);
+  case parSIGMA:
+    return (1-eta) * 2 * ampl * (x-xShift) * (x-xShift) * log(2.0) * argG3 / (sigma*sigma*sigma);
+  case parGAMMA:
+    return eta * 2 * ampl * (x-xShift) * (x-xShift) / (argL3*argL3 * gamma*gamma*gamma);
   case parETA:
-    return ampl/lorentzARG3 - ampl*gaussianARG3;
+    return ampl/argL3 - ampl*argG3;
   default:
     NEVER_HERE return 0;
   }
 }
 
-void PseudoVoigt2::setPeak(qreal tth, qreal intens) {
-  setValue(parAMPL, intens);
-  setValue(parMU,   tth);
+void PseudoVoigt2::setPeak(qreal x, qreal y) {
+  setValue(parXSHIFT, x);
+  setValue(parAMPL,   y);
 }
 
 void PseudoVoigt2::setFWHM(qreal val) {
-  setValue(parHWHMG, val / 2);
-  setValue(parHWHML, val / 2);
+  setValue(parSIGMA, val * 0.424661);
+  setValue(parGAMMA, val / 2);
 }
 
 //------------------------------------------------------------------------------
