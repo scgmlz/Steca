@@ -14,8 +14,8 @@ public:
     QStyleOptionViewItem o = option;
     bool isCorrectionFile = index.data(FileView::Model::IsCorrectionFileRole).toBool();
     if(isCorrectionFile) {
-      o.palette.setColor(QPalette::Base,Qt::green);
-      o.font.setItalic(true);   // TODO make correction file stand out!
+      o.font.setItalic(true);
+      o.font.setBold(true);
     }
     super::paint(painter,o,index);
   }

@@ -3,6 +3,7 @@
 #include <QSize>
 #include <qmath.h>
 #include <numeric>
+#include <QJsonObject>
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -89,6 +90,23 @@ qreal Range::bound(qreal value) const {
   return value;
 }
 
+static str KEY_RANGE_MIN("range_min");
+static str KEY_RANGE_MAX("range_max");
+static str KEY_RANGE("range");
+
+void Range::loadFrom(QJsonObject const& obj) {
+  QJsonObject rObj = obj[KEY_RANGE].toObject();
+  min = rObj[KEY_RANGE_MIN].toDouble();
+  max = rObj[KEY_RANGE_MAX].toDouble();
+}
+
+void Range::saveTo(QJsonObject& obj) const {
+  QJsonObject rObj;
+  rObj[KEY_RANGE_MIN] = min;
+  rObj[KEY_RANGE_MAX] = max;
+  obj[KEY_RANGE] = rObj;
+}
+
 //------------------------------------------------------------------------------
 
 Ranges::Ranges() {
@@ -148,6 +166,33 @@ static bool lessThan(Range const& r1, Range const& r2) {
 
 void Ranges::sort() {
   std::sort(ranges.begin(),ranges.end(),lessThan);
+}
+
+static str KEY_RANGE_NUM("r%1");
+static str KEY_RANGES("ranges");
+static str KEY_RANGE_COUNT("rangeCount");
+
+void Ranges::loadFrom(QJsonObject const& obj) {
+  QJsonObject rsObj = obj[KEY_RANGES].toObject();
+  int size = rsObj[KEY_RANGE_COUNT].toInt();
+  for_i (size) {
+    QJsonObject rObj;
+    rObj = rsObj[str(KEY_RANGE_NUM).arg(i+1)].toObject();
+    Range r;
+    r.loadFrom(rObj);
+    ranges.append(r);
+  }
+}
+
+void Ranges::saveTo(QJsonObject& obj) const {
+  QJsonObject rsObj;
+  rsObj[KEY_RANGE_COUNT] = ranges.size();
+  for_i (ranges.size()) {
+    QJsonObject rObj;
+    ranges.at(i).saveTo(rObj);
+    rsObj[str(KEY_RANGE_NUM).arg(i+1)] = rObj;
+  }
+  obj[KEY_RANGES] = rsObj;
 }
 
 //------------------------------------------------------------------------------
@@ -266,7 +311,14 @@ void TI_Curve::append(qreal tth_, qreal inten_) {
   tthRange.extend(tth_);
   intenRange.extend(inten_);
 }
+//------------------------------------------------------------------------------
 
+qreal loadReal(QJsonObject const& obj, rcstr tag) {
+  if(obj[tag] == QJsonValue::Undefined){
+    return qQNaN();
+  }
+  return obj[tag].toDouble();
+}
 //------------------------------------------------------------------------------
 }
 // eof

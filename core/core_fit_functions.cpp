@@ -53,32 +53,34 @@ bool Function::Parameter::setValue(qreal value, qreal error, bool force) {
 }
 
 static str KEY_VALUE("value");
-static str KEY_RANGE_MIN("range_min");
-static str KEY_RANGE_MAX("range_max");
+static str KEY_RANGE("range");
 static str KEY_MAX_DELTA("maxDelta");
 static str KEY_MAX_DELTA_PERCENT("maxDeltaPercent");
 static str KEY_MAX_ERROR("maxError");
 static str KEY_MAX_ERROR_PERCENT("maxErrorPercent");
 
+
 void Function::Parameter::loadFrom(QJsonObject const& obj) {
-  value           = obj[KEY_VALUE].toDouble();
-  qreal min       = obj[KEY_RANGE_MIN].toDouble();
-  qreal max       = obj[KEY_RANGE_MAX].toDouble();
-  range.set(min,max);
-  maxDelta        = obj[KEY_MAX_DELTA].toDouble();
-  maxDeltaPercent = obj[KEY_MAX_DELTA_PERCENT].toDouble();
-  maxError        = obj[KEY_MAX_ERROR].toDouble();
-  maxErrorPercent = obj[KEY_MAX_DELTA_PERCENT].toDouble();
+  value           = loadReal(obj,KEY_VALUE);
+  range.loadFrom(obj);
+  maxDelta        = loadReal(obj,KEY_MAX_DELTA);
+  maxDeltaPercent = loadReal(obj,KEY_MAX_DELTA_PERCENT);
+  maxError        = loadReal(obj,KEY_MAX_ERROR);
+  maxErrorPercent = loadReal(obj,KEY_MAX_ERROR_PERCENT);
 }
 
+#define SAVE_IF_FINITE(key,val) \
+  if (qIsFinite(val)) {    \
+    obj[key] = val;        \
+  }
+
 void Function::Parameter::saveTo(QJsonObject& obj) const {
-  obj[KEY_VALUE]             = value;
-  obj[KEY_RANGE_MIN]         = range.min;
-  obj[KEY_RANGE_MAX]         = range.max;
-  obj[KEY_MAX_DELTA]         = maxDelta;
-  obj[KEY_MAX_DELTA_PERCENT] = maxDeltaPercent;
-  obj[KEY_MAX_ERROR]         = maxError;
-  obj[KEY_MAX_ERROR_PERCENT] = maxErrorPercent;
+  SAVE_IF_FINITE(KEY_VALUE,value)
+  SAVE_IF_FINITE(KEY_MAX_DELTA,maxDelta)
+  SAVE_IF_FINITE(KEY_MAX_DELTA_PERCENT,maxDeltaPercent)
+  SAVE_IF_FINITE(KEY_MAX_ERROR,maxError)
+  SAVE_IF_FINITE(KEY_MAX_ERROR_PERCENT,maxErrorPercent)
+  range.saveTo(obj);
 }
 
 //------------------------------------------------------------------------------
@@ -90,7 +92,7 @@ Function::~Function() {
 }
 
 static str KEY_PAR_COUNT("parCount");
-static str KEY_PARAMETER("p");
+static str KEY_PARAMETER("p%1");
 
 void Function::loadFrom(QJsonObject const& obj) /*TODO: THROWS*/ {
   auto parCount = obj[KEY_PAR_COUNT].toInt();
@@ -107,7 +109,7 @@ void Function::saveTo(QJsonObject& obj) const {
   for_i (parCount) {
     QJsonObject pObj;
     getParameter(i).saveTo(pObj);
-    obj[str(KEY_PARAMETER)+(i+1)] = pObj;
+    obj[str(KEY_PARAMETER).arg(i+1)] = pObj;
   }
 }
 
@@ -256,7 +258,7 @@ void SumFunctions::saveTo(QJsonObject& obj) const {
   for_i (parameterCount()) {
     QJsonObject pObj;
     parameters.at(i)->saveTo(pObj);
-    parametersObj[KEY_PARAMETER + i] = pObj;
+    parametersObj[str(KEY_PARAMETER).arg(i+1)] = pObj;
   }
   obj[KEY_PARAMETERS] = parametersObj;
 
@@ -265,7 +267,7 @@ void SumFunctions::saveTo(QJsonObject& obj) const {
   for_i (functions.count()) {
     QJsonObject fObj;
     functions.at(i)->saveTo(fObj);
-    functionsObj[KEY_FUNCTION + i] = fObj;
+    functionsObj[str(KEY_FUNCTION).arg(i+1)] = fObj;
   }
   obj[KEY_FUNCTIONS] = functionsObj;
 }

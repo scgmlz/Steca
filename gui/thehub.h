@@ -136,6 +136,7 @@ public:
   void load(QByteArray const& json) THROWS;
   QByteArray save() const;
 
+public:
   void addFile(rcstr filePath)      THROWS;
   void addFiles(str_lst filePaths)  THROWS;
   void loadCorrFile(rcstr filePath);
@@ -191,8 +192,8 @@ signals:
 
 public:
   // TODO instead of exposing the objects, provide an interface
-  core::Ranges&           getBgRanges()     { return session->getBgRanges();     }
-  core::fit::Polynomial&  getBgPolynomial() { return session->getBgPolynomial(); }
+  core::Ranges&           getBgRanges()     const { return session->getBgRanges();     }
+  core::fit::Polynomial&  getBgPolynomial() const { return session->getBgPolynomial(); }
   core::Reflections&      getReflections()  { return session->getReflections();  }
 };
 

@@ -280,7 +280,7 @@ void TheHub::load(QFileInfo const& fileInfo) THROWS {
 }
 
 static str KEY_FILES("files");
-static str KEY_CORR_FILES("corr.files");
+static str KEY_CORR_FILE("correction_file");
 static str KEY_CUT("cut");
 static str KEY_TOP("top");
 static str KEY_BOTTOM("bottom");
@@ -293,7 +293,7 @@ static str KEY_BEAM_OFFSET("hasbeamoffset");
 static str KEY_OFFSET_X("offset_x");
 static str KEY_OFFSET_Y("offset_y");
 static str KEY_TRANSFORM("transform");
-static str KEY_POLYNOMIAL("polynomial");
+static str KEY_POLYNOMIAL("background_polynomial");
 
 void TheHub::load(QByteArray const& json) THROWS {
   QJsonParseError parseError;
@@ -313,7 +313,7 @@ void TheHub::load(QByteArray const& json) THROWS {
     addFile(file.toString());
   }
 
-  loadCorrFile(top[KEY_CORR_FILES].toString());
+  loadCorrFile(top[KEY_CORR_FILE].toString());
 
   auto cut = top[KEY_CUT].toObject();
   uint y1 = qMax(0,cut[KEY_TOP].toInt());
@@ -359,16 +359,17 @@ QByteArray TheHub::save() const {
     { KEY_RIGHT,  (int)ic.right   },
   };
 
-//  QJsonObject polynomial {
-//    { KEY_POLYNOMIAL, }
-//  }
+  QJsonObject bgPolynomial;
+  getBgPolynomial().saveTo(bgPolynomial);
 
   QJsonObject top {
     { KEY_DETECTOR,   det                 },
     { KEY_CUT,        cut                 },
     { KEY_TRANSFORM,  session->getImageTransform().val  },
     { KEY_FILES,      files               },
-    { KEY_CORR_FILES,  hasCorrFile() ? session->getCorrFile()->getInfo().absoluteFilePath() : "" },
+    { KEY_CORR_FILE,  hasCorrFile() ? session->getCorrFile()->getInfo().absoluteFilePath() : "" },
+    { KEY_POLYNOMIAL, bgPolynomial },
+      //TODO save Ranges
   };
 
   return QJsonDocument(top).toJson();

@@ -7,6 +7,8 @@
 #ifndef CORE_TYPES_H
 #define CORE_TYPES_H
 
+class QJsonObject;
+
 namespace core {
 //------------------------------------------------------------------------------
 // conversions
@@ -42,6 +44,9 @@ struct Range {
   bool intersects(Range const&) const;
 
   qreal bound(qreal value)      const;
+
+  void loadFrom(QJsonObject const&);
+  void saveTo(QJsonObject&) const;
 };
 
 //------------------------------------------------------------------------------
@@ -62,6 +67,10 @@ public:
 private:
   void sort();
   QVector<Range> ranges;
+
+public:
+  void loadFrom(QJsonObject const&);
+  void saveTo(QJsonObject&) const;
 };
 
 //------------------------------------------------------------------------------
@@ -116,6 +125,11 @@ public:
 private:
   core::Range tthRange, intenRange;
 };
+
+//------------------------------------------------------------------------------
+// load / save helpers
+
+qreal loadReal(QJsonObject const&, rcstr tag);
 
 //------------------------------------------------------------------------------
 }
