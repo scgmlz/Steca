@@ -48,7 +48,8 @@ QComboBox*      comboBox(QVector<QString> options);
 /// abstract list widget
 
 class ListView: public QListView {
-  SUPER(ListView,QListView) Q_OBJECT
+  SUPER(ListView,QListView)
+  Q_OBJECT
 public:
   ListView();
 };
@@ -57,7 +58,8 @@ public:
 /// abstract tree widget
 
 class TreeView: public QTreeView {
-  SUPER(TreeView,QTreeView) Q_OBJECT
+  SUPER(TreeView,QTreeView)
+  Q_OBJECT
 public:
   TreeView();
 
@@ -68,7 +70,8 @@ public:
 /// abstract tree widget used as a list
 
 class TreeListView: public TreeView {
-  SUPER(TreeListView,TreeView) Q_OBJECT
+  SUPER(TreeListView,TreeView)
+  Q_OBJECT
 public:
   TreeListView();
 

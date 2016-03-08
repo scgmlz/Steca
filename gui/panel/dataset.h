@@ -37,7 +37,8 @@ protected:
 //------------------------------------------------------------------------------
 
 class DatasetOptions1: public BoxPanel {
-  SUPER(DatasetOptions1,BoxPanel) Q_OBJECT
+  SUPER(DatasetOptions1,BoxPanel)
+  Q_OBJECT
 public:
   DatasetOptions1(TheHub&);
 
@@ -58,7 +59,8 @@ private:
 };
 
 class DatasetOptions2: public BoxPanel {
-  SUPER(DatasetOptions2,BoxPanel) Q_OBJECT
+  SUPER(DatasetOptions2,BoxPanel)
+  Q_OBJECT
 public:
   DatasetOptions2(TheHub&);
 

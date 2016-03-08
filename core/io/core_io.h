@@ -7,7 +7,6 @@
 
 #include <core_file.h>
 #include <QFileInfo>
-#include <QImage>
 
 namespace core { namespace io {
 //------------------------------------------------------------------------------

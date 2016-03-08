@@ -13,7 +13,8 @@ class BoxWidget;
 //------------------------------------------------------------------------------
 
 class MainWin: public QMainWindow {
-  SUPER(MainWin,QMainWindow) Q_OBJECT
+  SUPER(MainWin,QMainWindow)
+  Q_OBJECT
 public:
   MainWin();
  ~MainWin();
