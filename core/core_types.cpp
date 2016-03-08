@@ -96,14 +96,14 @@ static str KEY_RANGE("range");
 
 void Range::loadFrom(QJsonObject const& obj) {
   QJsonObject rObj = obj[KEY_RANGE].toObject();
-  min = rObj[KEY_RANGE_MIN].toDouble();
-  max = rObj[KEY_RANGE_MAX].toDouble();
+  LOAD_HANDLER(KEY_RANGE_MIN,min,rObj)
+  LOAD_HANDLER(KEY_RANGE_MAX,max,rObj)
 }
 
 void Range::saveTo(QJsonObject& obj) const {
   QJsonObject rObj;
-  rObj[KEY_RANGE_MIN] = min;
-  rObj[KEY_RANGE_MAX] = max;
+  SAVE_HANDLER(KEY_RANGE_MIN, min, rObj)
+  SAVE_HANDLER(KEY_RANGE_MAX, max, rObj)
   obj[KEY_RANGE] = rObj;
 }
 
@@ -187,7 +187,7 @@ void Ranges::loadFrom(QJsonObject const& obj) {
 void Ranges::saveTo(QJsonObject& obj) const {
   QJsonObject rsObj;
   rsObj[KEY_RANGE_COUNT] = ranges.size();
-  for_i (ranges.size()) {
+  for_i (ranges.count()) {
     QJsonObject rObj;
     ranges.at(i).saveTo(rObj);
     rsObj[str(KEY_RANGE_NUM).arg(i+1)] = rObj;
@@ -319,6 +319,7 @@ qreal loadReal(QJsonObject const& obj, rcstr tag) {
   }
   return obj[tag].toDouble();
 }
+
 //------------------------------------------------------------------------------
 }
 // eof

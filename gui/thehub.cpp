@@ -293,7 +293,8 @@ static str KEY_BEAM_OFFSET("hasbeamoffset");
 static str KEY_OFFSET_X("offset_x");
 static str KEY_OFFSET_Y("offset_y");
 static str KEY_TRANSFORM("transform");
-static str KEY_POLYNOMIAL("background_polynomial");
+static str KEY_BG_POLYNOMIAL("background_polynomial");
+static str KEY_BG_RANGES("background_ranges");
 
 void TheHub::load(QByteArray const& json) THROWS {
   QJsonParseError parseError;
@@ -332,6 +333,13 @@ void TheHub::load(QByteArray const& json) THROWS {
     QPoint(det[KEY_OFFSET_X].toInt(),det[KEY_OFFSET_Y].toInt()));
 
   setImageRotate(core::ImageTransform(top[KEY_TRANSFORM].toInt()));
+
+  QJsonObject bgPolynomial = top[KEY_BG_POLYNOMIAL].toObject();
+  getBgPolynomial().loadFrom(bgPolynomial);
+
+  QJsonObject bgRanges = top[KEY_BG_RANGES].toObject();
+  getBgRanges().loadFrom(bgRanges);
+
 }
 
 QByteArray TheHub::save() const {
@@ -339,7 +347,7 @@ QByteArray TheHub::save() const {
   auto const &g = session->getGeometry();
 
   QJsonObject det {
-    { KEY_DISTANCE,     g.detectorDistance  },
+    { KEY_DISTANCE,     g.detectorDistance    },
     { KEY_PIXEL_SIZE,   g.pixSize             },
     { KEY_BEAM_OFFSET,  g.hasBeamOffset       },
     { KEY_OFFSET_X,     g.middlePixOffset.x() },
@@ -362,14 +370,17 @@ QByteArray TheHub::save() const {
   QJsonObject bgPolynomial;
   getBgPolynomial().saveTo(bgPolynomial);
 
+  QJsonObject bgRanges;
+  getBgRanges().saveTo(bgRanges);
+
   QJsonObject top {
     { KEY_DETECTOR,   det                 },
     { KEY_CUT,        cut                 },
     { KEY_TRANSFORM,  session->getImageTransform().val  },
     { KEY_FILES,      files               },
     { KEY_CORR_FILE,  hasCorrFile() ? session->getCorrFile()->getInfo().absoluteFilePath() : "" },
-    { KEY_POLYNOMIAL, bgPolynomial },
-      //TODO save Ranges
+    { KEY_BG_POLYNOMIAL, bgPolynomial        },
+    { KEY_BG_RANGES,  bgRanges            },
   };
 
   return QJsonDocument(top).toJson();

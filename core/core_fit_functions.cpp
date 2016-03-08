@@ -2,6 +2,7 @@
 #include <QJsonObject>
 #include <cmath>
 
+
 namespace core { namespace fit {
 //------------------------------------------------------------------------------
 
@@ -61,25 +62,20 @@ static str KEY_MAX_ERROR_PERCENT("maxErrorPercent");
 
 
 void Function::Parameter::loadFrom(QJsonObject const& obj) {
-  value           = loadReal(obj,KEY_VALUE);
+  LOAD_HANDLER(KEY_VALUE,             value,           obj)
+  LOAD_HANDLER(KEY_MAX_DELTA,         maxDelta,        obj)
+  LOAD_HANDLER(KEY_MAX_DELTA_PERCENT, maxDeltaPercent, obj)
+  LOAD_HANDLER(KEY_MAX_ERROR,         maxError,        obj)
+  LOAD_HANDLER(KEY_MAX_ERROR_PERCENT, maxErrorPercent, obj)
   range.loadFrom(obj);
-  maxDelta        = loadReal(obj,KEY_MAX_DELTA);
-  maxDeltaPercent = loadReal(obj,KEY_MAX_DELTA_PERCENT);
-  maxError        = loadReal(obj,KEY_MAX_ERROR);
-  maxErrorPercent = loadReal(obj,KEY_MAX_ERROR_PERCENT);
 }
 
-#define SAVE_IF_FINITE(key,val) \
-  if (qIsFinite(val)) {    \
-    obj[key] = val;        \
-  }
-
 void Function::Parameter::saveTo(QJsonObject& obj) const {
-  SAVE_IF_FINITE(KEY_VALUE,value)
-  SAVE_IF_FINITE(KEY_MAX_DELTA,maxDelta)
-  SAVE_IF_FINITE(KEY_MAX_DELTA_PERCENT,maxDeltaPercent)
-  SAVE_IF_FINITE(KEY_MAX_ERROR,maxError)
-  SAVE_IF_FINITE(KEY_MAX_ERROR_PERCENT,maxErrorPercent)
+  SAVE_HANDLER(KEY_VALUE,             value,           obj)
+  SAVE_HANDLER(KEY_MAX_DELTA,         maxDelta,        obj)
+  SAVE_HANDLER(KEY_MAX_DELTA_PERCENT, maxDeltaPercent, obj)
+  SAVE_HANDLER(KEY_MAX_ERROR,         maxError,        obj)
+  SAVE_HANDLER(KEY_MAX_ERROR_PERCENT, maxErrorPercent, obj)
   range.saveTo(obj);
 }
 
@@ -314,7 +310,7 @@ void Polynomial::loadFrom(QJsonObject const& obj) {
   str type = obj[KEY_TYPE].toString();
   RUNTIME_CHECK(type == KEY_POLYNOMIAL, "incorrect type");
   int degree = obj[KEY_DEGREE].toInt();
-  RUNTIME_CHECK(degree > 0, "degree not valid");
+  RUNTIME_CHECK(degree >= 0, "degree not valid");
   setDegree((uint) degree);
   super::loadFrom(obj);
 }
