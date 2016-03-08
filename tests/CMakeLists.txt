@@ -4,6 +4,7 @@
 
 include_directories(
   ${CMAKE_HOME_DIRECTORY}/core
+  ${CMAKE_HOME_DIRECTORY}/gui
 )
 
 set(source_files
@@ -13,6 +14,7 @@ set(source_files
   test_core_lib.cpp
   test_core_range.cpp
   test_core_session.cpp
+  test_save_load_json.cpp
   tests_main.cpp
 )
 
@@ -24,6 +26,7 @@ target_link_libraries(tests
   Qt5::Test
   STeCaCore
   STeCaCoreIO
+  STeCaGUI
 )
 
 set_property(TARGET tests PROPERTY CXX_STANDARD 11)

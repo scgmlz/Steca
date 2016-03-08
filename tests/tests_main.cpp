@@ -3,6 +3,7 @@
 #include "test_core_image.h"
 #include "test_core_range.h"
 #include "test_core_session.h"
+#include "test_save_load_json.h"
 #include "test_approx.h"
 
 #define TEST_SUITE(TestClass) {    \
@@ -20,6 +21,7 @@ int main(int argc, char *argv[]) {
   TEST_SUITE(TestCoreRange)
   TEST_SUITE(TestCoreSession)
   TEST_SUITE(TestApprox)
+  TEST_SUITE(TestSaveLoadJson)
 }
 
 // eof
