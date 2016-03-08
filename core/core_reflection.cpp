@@ -31,6 +31,19 @@ void Reflection::setRange(Range const& range_) {
   range = range_;
 }
 
+fit::PeakFunction* Reflection::peakFunction() const {
+  switch (type) {
+  case REFL_GAUSSIAN:
+    return new fit::Gaussian();
+  case REFL_LORENTZIAN:
+    return new fit::CauchyLorentz();
+  case REFL_PSEUDOVOIGT1:
+    return new fit::PseudoVoigt1();
+  case REFL_PSEUDOVOIGT2:
+    return new fit::PseudoVoigt2();
+  }
+}
+
 //------------------------------------------------------------------------------
 }
 // eof

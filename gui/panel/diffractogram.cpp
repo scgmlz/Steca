@@ -288,7 +288,7 @@ Diffractogram::Diffractogram(TheHub& theHub_)
   });
 
   connect(&theHub, &TheHub::reflectionSelected, [this](core::shp_Reflection reflection) {
-    setReflRange(reflection ? reflection->getRange() : core::Range());
+    currentReflection = reflection;
     plot->updateBg();
   });
 
@@ -381,16 +381,18 @@ core::Range Diffractogram::reflRange() const {
 
 void Diffractogram::calcReflection() {
   reflection.clear();
+  if (!currentReflection) return;
+
   auto range = reflRange();
   if (range.min < range.max) {
-    core::fit::Gaussian gaussian;
-    core::fit::fitPeak(gaussian,dgramBgFitted,range);
+    QSharedPointer<core::fit::PeakFunction> fun(currentReflection->peakFunction());
+    core::fit::fitPeak(*fun,dgramBgFitted,range);
     auto tth   = dgramBgFitted.getTth();
     auto inten = dgramBgFitted.getInten();
     for_i (dgramBgFitted.count()) {
       qreal x = tth[i];
       if (range.contains(x)) {
-        reflection.append(x,gaussian.y(x));
+        reflection.append(x,fun->y(x));
       }
     }
   }

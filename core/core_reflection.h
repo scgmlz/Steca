@@ -7,6 +7,7 @@
 
 #include "core_types.h"
 #include "core_array2d.h"
+#include "core_fit_functions.h"
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -26,6 +27,9 @@ public:
 
   Range const& getRange() const;
   void         setRange(Range const&);
+
+  /// a factory to make a function for fitting
+  fit::PeakFunction* peakFunction() const;
 
 private:
   eType type;
