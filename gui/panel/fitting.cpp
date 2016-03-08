@@ -32,8 +32,8 @@ void ReflectionView::removeSelected() {
 }
 
 void ReflectionView::update() {
-  model.signalReset();
   auto index = currentIndex();
+  model.signalReset();
   // keep the current index, or select the last item
   setCurrentIndex(index.isValid()
     ? index
@@ -121,6 +121,10 @@ Fitting::Fitting(TheHub& theHub_)
 
   connect(comboReflType, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this](int index) {
     theHub.setReflType((core::Reflection::eType)index);
+  });
+
+  connect(&theHub, &TheHub::reflectionSelected, [this](core::shp_Reflection reflection) {
+    if (reflection) comboReflType->setCurrentIndex(reflection->getType());
   });
 }
 

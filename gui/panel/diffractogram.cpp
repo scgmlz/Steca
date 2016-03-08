@@ -51,7 +51,7 @@ void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
     break;
 
   case DiffractogramPlot::TOOL_PEAK_REGION:
-    plot.setPeakRange(range);
+    plot.setReflRange(range);
 
   default:
     break;
@@ -193,8 +193,8 @@ void DiffractogramPlot::remBg(core::Range const& range) {
   if (theHub.getBgRanges().rem(range)) updateBg();
 }
 
-void DiffractogramPlot::setPeakRange(core::Range const& range) {
-  diffractogram.peakRange = range;
+void DiffractogramPlot::setReflRange(core::Range const& range) {
+  diffractogram.setReflRange(range);
   updateBg();
 }
 
@@ -210,7 +210,7 @@ void DiffractogramPlot::updateBg() {
     break;
   }
   case TOOL_PEAK_REGION:
-    addBgItem(diffractogram.peakRange);
+    addBgItem(diffractogram.reflRange());
     break;
   }
 
@@ -267,7 +267,7 @@ Diffractogram::Diffractogram(TheHub& theHub_)
     renderDataset();
   });
 
-  // TODO clean up the below connects
+  // REVIEW all these connects
   connect(theHub.actBackgroundClear, &QAction::triggered, [this]() {
     plot->clearBg();
   });
@@ -287,6 +287,11 @@ Diffractogram::Diffractogram(TheHub& theHub_)
     plot->setTool(on ? DiffractogramPlot::TOOL_PEAK_REGION : DiffractogramPlot::TOOL_NONE);
   });
 
+  connect(&theHub, &TheHub::reflectionSelected, [this](core::shp_Reflection reflection) {
+    setReflRange(reflection ? reflection->getRange() : core::Range());
+    plot->updateBg();
+  });
+
   theHub.actBackgroundShowFit->setChecked(true);
 }
 
@@ -298,8 +303,9 @@ void Diffractogram::setDataset(core::shp_Dataset dataset_) {
 void Diffractogram::renderDataset() {
   calcDgram();
   calcBackground();
-  calcPeak();
-  plot->plot(dgram,dgramBgFitted,bg,peak);
+  calcReflection();
+
+  plot->plot(dgram,dgramBgFitted,bg,reflection);
 }
 
 void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, normalize==false
@@ -365,17 +371,26 @@ void Diffractogram::calcBackground() {
   }
 }
 
-void Diffractogram::calcPeak() {
-  peak.clear();
-  if (peakRange.min < peakRange.max) {
+void Diffractogram::setReflRange(core::Range const& range) {
+  if (currentReflection) currentReflection->setRange(range);
+}
+
+core::Range Diffractogram::reflRange() const {
+  return currentReflection ? currentReflection->getRange() : core::Range();
+}
+
+void Diffractogram::calcReflection() {
+  reflection.clear();
+  auto range = reflRange();
+  if (range.min < range.max) {
     core::fit::Gaussian gaussian;
-    core::fit::fitPeak(gaussian,dgramBgFitted,peakRange);
+    core::fit::fitPeak(gaussian,dgramBgFitted,range);
     auto tth   = dgramBgFitted.getTth();
     auto inten = dgramBgFitted.getInten();
     for_i (dgramBgFitted.count()) {
       qreal x = tth[i];
-      if (peakRange.contains(x)) {
-        peak.append(x,gaussian.y(x));
+      if (range.contains(x)) {
+        reflection.append(x,gaussian.y(x));
       }
     }
   }

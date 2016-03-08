@@ -1,4 +1,5 @@
 #include "core_reflection.h"
+#include <QStringList>
 
 namespace core {
 
@@ -20,6 +21,14 @@ Reflection::eType Reflection::getType() const {
 
 void Reflection::setType(Reflection::eType type_) {
   type = type_;
+}
+
+Range const& Reflection::getRange() const {
+  return range;
+}
+
+void Reflection::setRange(Range const& range_) {
+  range = range_;
 }
 
 //------------------------------------------------------------------------------

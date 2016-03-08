@@ -6,6 +6,7 @@
 
 #include "panel.h"
 #include "core_dataset.h"
+#include "core_reflection.h"
 #include "core_types.h"
 #include "core_fit_methods.h"
 #include "QCP/qcustomplot.h"
@@ -66,7 +67,7 @@ public:
   void clearBg();
   void addBg(core::Range const&);
   void remBg(core::Range const&);
-  void setPeakRange(core::Range const&);
+  void setReflRange(core::Range const&);
   void updateBg();
 
 protected:
@@ -84,7 +85,7 @@ private:
 
 class Diffractogram: public BoxPanel {
   SUPER(Diffractogram,BoxPanel)
-  friend class DiffractogramPlot;
+  friend class DiffractogramPlot; // TODO remove
 public:
   Diffractogram(TheHub&);
 
@@ -96,17 +97,18 @@ private:
 
   DiffractogramPlot *plot;
 
-  core::TI_Curve dgram, dgramBgFitted, bg, peak;
-//  core::Ranges bgRanges;                // TODO move to core::Session; access trough theHub
-//  core::fit::Polynomial bgPolynomial;   // ditto
+  core::TI_Curve dgram, dgramBgFitted, bg, reflection;
   bool showBgFit;
 
-  core::Range peakRange;
+  core::shp_Reflection currentReflection;
 
 public:
   void calcDgram();
   void calcBackground();
-  void calcPeak();  // REMOVE temporary for development, fitting one Gaussian peak
+  void calcReflection();
+
+  void setReflRange(core::Range const&);
+  core::Range reflRange() const;
 };
 
 //------------------------------------------------------------------------------

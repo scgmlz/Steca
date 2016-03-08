@@ -24,9 +24,12 @@ public:
   eType getType() const;
   void  setType(eType);
 
+  Range const& getRange() const;
+  void         setRange(Range const&);
+
 private:
   eType type;
-  core::Range range;
+  Range range;
 };
 
 typedef QSharedPointer<Reflection> shp_Reflection;
