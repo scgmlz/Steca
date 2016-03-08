@@ -3,10 +3,12 @@
 #include "core_file.h"
 #include "core_dataset.h"
 #include "core_session.h"
-#include "io/Caress/raw.h"
 
 #include <QTextStream>
+#include <QImage>
 #include <QImageWriter>
+
+#include "io/Caress/raw.h" // Must be included after QImage.
 
 #include <QDir>
 #include <sstream>

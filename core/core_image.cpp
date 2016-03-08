@@ -1,6 +1,5 @@
 #include "core_image.h"
 #include "core_session.h"
-#include <QPixmap>
 
 namespace core {
 //------------------------------------------------------------------------------

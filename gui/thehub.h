@@ -60,7 +60,8 @@ public:
 //------------------------------------------------------------------------------
 
 class TheHub: public QObject {
-  SUPER(TheHub,QObject) Q_OBJECT
+  SUPER(TheHub,QObject)
+  Q_OBJECT
 public:
   TheHub();
  ~TheHub();
