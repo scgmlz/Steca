@@ -13,6 +13,7 @@ set(STeCa_VERSION_PATCH 0)
 
 # --- Global settings ---
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # --- Check for required packages ---

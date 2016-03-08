@@ -13,7 +13,6 @@ set(source_files
   panel/diffractogram.cpp
   panel/fitting.cpp
   panel/panel.cpp
-  resources.qrc
 )
 
 set(QCustomPlot_source_files
@@ -44,6 +43,7 @@ set_property(TARGET STeCaGUI PROPERTY CXX_STANDARD_REQUIRED ON)
 
 add_executable(STeCa
   main.cpp
+  resources.qrc
 )
 
 target_link_libraries(STeCa
