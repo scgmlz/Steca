@@ -39,7 +39,11 @@ void ReflectionView::update() {
     ? index
     : model.index(qMax(0,model.rowCount()-1),0));
 
-  theHub.actReflectionRemove->setEnabled(model.rowCount() > 0);
+  bool hasReflections = model.rowCount() > 0;
+  theHub.actReflectionRemove->setEnabled(hasReflections);
+  theHub.actReflectionRegion->setEnabled(hasReflections);
+  if (!hasReflections)
+    theHub.actReflectionRegion->setChecked(false);
 }
 
 void ReflectionView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
@@ -47,8 +51,8 @@ void ReflectionView::selectionChanged(QItemSelection const& selected, QItemSelec
 
   auto indexes = selected.indexes();
   theHub.setSelectedReflection(indexes.isEmpty()
-    ? nullptr
-    : model.data(indexes.first(), Model::GetDatasetRole).value<core::Reflection*>());
+    ? core::shp_Reflection()
+    : model.data(indexes.first(), Model::GetDatasetRole).value<core::shp_Reflection>());
 }
 
 //------------------------------------------------------------------------------
@@ -76,7 +80,7 @@ Fitting::Fitting(TheHub& theHub_)
   auto hs = hbox();
   box->addLayout(hs);
 
-  hs->addWidget(iconButton(theHub.actSelectPeak));
+  hs->addWidget(iconButton(theHub.actReflectionRegion));
   hs->addWidget(iconButton(theHub.actReflectionPeak));
   hs->addWidget(iconButton(theHub.actReflectionWidth));
   hs->addStretch();
@@ -111,9 +115,12 @@ Fitting::Fitting(TheHub& theHub_)
     reflectionView->removeSelected();
   });
 
+  connect(&theHub, &TheHub::reflectionsChanged, [this]() {
+    reflectionView->update();
+  });
+
   connect(comboReflType, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this](int index) {
-    if (index >= 0)
-      theHub.setReflType((uint)index);
+    theHub.setReflType((core::Reflection::eType)index);
   });
 }
 

@@ -88,9 +88,6 @@ public:
   void remReflection(uint);
 
   void signalReset();
-
-private:
-  core::Reflections& reflections() const;
 };
 
 //------------------------------------------------------------------------------

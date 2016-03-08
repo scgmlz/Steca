@@ -273,7 +273,7 @@ Diffractogram::Diffractogram(TheHub& theHub_)
   });
 
   connect(theHub.actBackgroundBackground, &QAction::toggled, [this](bool on) {
-    if (on) theHub.actSelectPeak->setChecked(false); // works as radio
+    if (on) theHub.actReflectionRegion->setChecked(false); // works as radio
     plot->setTool(on ? DiffractogramPlot::TOOL_BACKGROUND : DiffractogramPlot::TOOL_NONE);
   });
 
@@ -282,7 +282,7 @@ Diffractogram::Diffractogram(TheHub& theHub_)
     plot->updateBg();
   });
 
-  connect(theHub.actSelectPeak, &QAction::toggled, [this](bool on) {
+  connect(theHub.actReflectionRegion, &QAction::toggled, [this](bool on) {
     if (on) theHub.actBackgroundBackground->setChecked(false); // works as radio
     plot->setTool(on ? DiffractogramPlot::TOOL_PEAK_REGION : DiffractogramPlot::TOOL_NONE);
   });

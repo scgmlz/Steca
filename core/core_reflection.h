@@ -29,11 +29,12 @@ private:
   core::Range range;
 };
 
-typedef QVector<Reflection> Reflections;
+typedef QSharedPointer<Reflection> shp_Reflection;
+typedef QVector<shp_Reflection>    Reflections;
 
 //------------------------------------------------------------------------------
 }
 
-Q_DECLARE_METATYPE(core::Reflection*)
+Q_DECLARE_METATYPE(core::shp_Reflection)
 
 #endif

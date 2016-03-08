@@ -161,12 +161,11 @@ void TheHub::initActions() {
 
   PUSH_ACTION(actAbout     ,"About…","","")
 
-  TOGL_ACTION2(actSelectPeak         ,"Select Peak", "Deselect Peak","Select Peak", "Deselect Peak", ":/icon/selectPeak")
+  TOGL_ACTION(actReflectionRegion          ,"Reflection region", "Select reflection region", ":/icon/selectPeak")
   PUSH_ACTION(actReflectionPeak      ,"Peak",  "Set reflection peak",  ":/icon/selectHight")
   PUSH_ACTION(actReflectionWidth     ,"Width", "Set reflection width", ":/icon/selectWidth")
   PUSH_ACTION(actReflectionAdd       ,"Add",   "Add reflection",       ":/icon/add")
   PUSH_ACTION(actReflectionRemove    ,"Remove","Remove reflection",    ":/icon/rem")
-  PUSH_ACTION(actReflectionSelectRegion,"Select reflection fit region","","")
 
   PUSH_ACTION(actCalculatePolefigures,"Calculate pole figures…","","")
   PUSH_ACTION(actCalculateHistograms ,"Calculate histograms…","","")
@@ -193,6 +192,7 @@ void TheHub::configActions() {
   actRemoveFile->setEnabled(false);
   actImagesEnableCorr->setEnabled(false);
   actReflectionRemove->setEnabled(false);
+  actReflectionRegion->setEnabled(false);
 
   connect(this, &thisCls::correctionEnabled, [this](bool on) {
     actImagesEnableCorr->setChecked(on);
@@ -269,8 +269,8 @@ void TheHub::setSelectedDataset(core::shp_Dataset dataset) {
   emit datasetSelected(dataset);
 }
 
-void TheHub::setSelectedReflection(core::Reflection* reflection) {
-  emit reflectionSelected(reflection);
+void TheHub::setSelectedReflection(core::shp_Reflection reflection) {
+  emit reflectionSelected((selectedReflection = reflection));
 }
 
 void TheHub::load(QFileInfo const& fileInfo) THROWS {
@@ -444,8 +444,26 @@ void TheHub::setBackgroundPolynomialDegree(uint degree) {
   emit backgroundPolynomialDegree(degree);
 }
 
-void TheHub::setReflType(uint index) {
-  reflType = (core::Reflection::eType)index;
+void TheHub::setReflType(core::Reflection::eType type) {
+  reflType = type;
+  if (selectedReflection) {
+    selectedReflection->setType(reflType);
+    emit reflectionsChanged();
+  }
+}
+
+void TheHub::addReflection() {
+  getReflections().append(core::shp_Reflection(new core::Reflection(reflType)));
+  emit reflectionsChanged();
+}
+
+void TheHub::remReflection(uint i) {
+  auto &rs = getReflections();
+  rs.remove(i);
+  if (rs.isEmpty())
+    emit setSelectedReflection(core::shp_Reflection());
+
+  emit reflectionsChanged();
 }
 
 void TheHub::setImageRotate(core::ImageTransform rot) {

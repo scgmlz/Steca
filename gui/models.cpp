@@ -139,7 +139,7 @@ int ReflectionViewModel::columnCount(QModelIndex const&) const {
 }
 
 int ReflectionViewModel::rowCount(QModelIndex const&) const {
-  return reflections().count();
+  return theHub.getReflections().count();
 }
 
 QVariant ReflectionViewModel::data(QModelIndex const& index, int role) const {
@@ -152,13 +152,13 @@ QVariant ReflectionViewModel::data(QModelIndex const& index, int role) const {
     case COLUMN_ID:
       return str().setNum(row+1);
     case COLUMN_TYPE:
-      return core::Reflection::reflTypes()[reflections()[row].getType()];
+      return core::Reflection::reflTypes()[theHub.getReflections()[row]->getType()];
     default:
       return QVariant();
     }
   }
   case GetDatasetRole:
-    return QVariant::fromValue<core::Reflection*>(&reflections()[row]);
+    return QVariant::fromValue<core::shp_Reflection>(theHub.getReflections()[row]);
   default:
     return QVariant();
   }
@@ -174,20 +174,16 @@ QVariant ReflectionViewModel::headerData(int section, Qt::Orientation, int role)
 }
 
 void ReflectionViewModel::addReflection() {
-  reflections().append(core::Reflection(theHub.getReflType()));
+  theHub.addReflection();
 }
 
 void ReflectionViewModel::remReflection(uint i) {
-  reflections().remove(i);
+  theHub.remReflection(i);
 }
 
 void ReflectionViewModel::signalReset() {
   beginResetModel();
   endResetModel();    // emits a signal to connected views
-}
-
-core::Reflections& ReflectionViewModel::reflections() const {
-  return theHub.getReflections();
 }
 
 //------------------------------------------------------------------------------

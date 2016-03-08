@@ -122,7 +122,7 @@ void MainWin::initMenus() {
   });
 
   menuReflect->addActions({
-    theHub.actReflectionAdd, theHub.actReflectionRemove, theHub.actReflectionSelectRegion,
+    theHub.actReflectionAdd, theHub.actReflectionRemove,
     separator(),
     theHub.actCalculatePolefigures, theHub.actCalculateHistograms,
     separator(),
@@ -200,7 +200,6 @@ void MainWin::connectActions() {
   notYet(theHub.actPaste);
 
   notYet(theHub.actPreferences);
-  notYet(theHub.actReflectionSelectRegion);
   notYet(theHub.actFitErrorParameters);
 
   notYet(theHub.actCalculatePolefigures);
@@ -226,7 +225,7 @@ void MainWin::show() {
 
 #ifdef DEVELOPMENT_JAN
 #ifdef Q_OS_OSX
-  theHub.load(QFileInfo("/Users/igb/P/+scg/STeCa/data/q.ste"));
+  theHub.load(QFileInfo("/Users/igb/P/+scg/data/q.ste"));
 #else
   theHub.load(QFileInfo("/home/jan/q.ste"));
 #endif

@@ -102,7 +102,6 @@ public:
 #endif
     *actViewReset,
 
-    *actReflectionSelectRegion,
     *actCalculatePolefigures,
     *actCalculateHistograms,
     *actPreferences,
@@ -111,7 +110,7 @@ public:
     *actAbout,
 
   // more actions, some not in the menu
-    *actSelectPeak, *actReflectionPeak, *actReflectionWidth, *actReflectionAdd, *actReflectionRemove,
+    *actReflectionRegion, *actReflectionPeak, *actReflectionWidth, *actReflectionAdd, *actReflectionRemove,
     *actImageRotate, *actImageMirror,
     *actImagesLink, *actImageOverlay, *actImagesFixedIntensity, *actImagesEnableCorr,
     *actBackgroundClear, *actBackgroundBackground, *actBackgroundShowFit,
@@ -125,12 +124,12 @@ public: // files
   str  fileName(uint index)    const;
   str  filePath(uint index)    const;
 
-  core::shp_File getFile(uint i)  const;
-  void remFile(uint i);
+  core::shp_File getFile(uint) const;
+  void remFile(uint);
 
   void setSelectedFile(core::shp_File);
   void setSelectedDataset(core::shp_Dataset);
-  void setSelectedReflection(core::Reflection*);
+  void setSelectedReflection(core::shp_Reflection);
 
 public:
   void load(QFileInfo const&)       THROWS;
@@ -159,9 +158,13 @@ public:
   void setBackgroundPolynomialDegree(uint);
 
   core::Reflection::eType getReflType() const { return reflType; }
-  void setReflType(uint);
+  void setReflType(core::Reflection::eType);
+
+  void addReflection();
+  void remReflection(uint);
 
 private:
+  core::shp_Reflection    selectedReflection;
   core::Reflection::eType reflType;
 
 private:
@@ -177,7 +180,9 @@ signals:
 
   void fileSelected(core::shp_File);
   void datasetSelected(core::shp_Dataset);
-  void reflectionSelected(core::Reflection*);
+
+  void reflectionsChanged();
+  void reflectionSelected(core::shp_Reflection);
 
   void displayChange();
   void geometryChanged();
@@ -185,6 +190,7 @@ signals:
   void backgroundPolynomialDegree(uint);
 
 public:
+  // TODO instead of exposing the objects, provide an interface
   core::Ranges&           getBgRanges()     { return session->getBgRanges();     }
   core::fit::Polynomial&  getBgPolynomial() { return session->getBgPolynomial(); }
   core::Reflections&      getReflections()  { return session->getReflections();  }
