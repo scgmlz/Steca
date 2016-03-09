@@ -163,8 +163,15 @@ class PeakFunction: public SimpleFunction {
 public:
   PeakFunction();
 
-  virtual void setPeak(qreal tth, qreal intens) = 0;
-  virtual void setFWHM(qreal)                   = 0;
+  virtual void setPeak(XY const&);
+  virtual void setFWHM(qreal);
+
+  XY const&    getPeak()  { return peak; }
+  qreal        getFWHM()  { return fwhm; }
+
+private:
+  // guesses
+  XY peak; qreal fwhm;
 };
 
 //------------------------------------------------------------------------------
@@ -179,7 +186,7 @@ public:
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
-  void setPeak(qreal x, qreal y);
+  void setPeak(XY const&);
   void setFWHM(qreal);
 };
 
@@ -195,7 +202,7 @@ public:
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
-  void setPeak(qreal tth, qreal intens);
+  void setPeak(XY const&);
   void setFWHM(qreal);
 };
 
@@ -211,7 +218,7 @@ public:
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
-  void setPeak(qreal x, qreal y);
+  void setPeak(XY const&);
   void setFWHM(qreal);
 };
 
@@ -227,7 +234,7 @@ public:
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
-  void setPeak(qreal x, qreal y);
+  void setPeak(XY const&);
   void setFWHM(qreal);
 };
 

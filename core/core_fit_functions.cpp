@@ -324,7 +324,15 @@ void Polynomial::saveTo(QJsonObject& obj) const {
 
 //------------------------------------------------------------------------------
 
-PeakFunction::PeakFunction() {
+PeakFunction::PeakFunction(): peak(), fwhm(qQNaN()) {
+}
+
+void PeakFunction::setPeak(XY const& peak_) {
+  peak = peak_;
+}
+
+void PeakFunction::setFWHM(qreal fwhm_) {
+  fwhm = fwhm_;
 }
 
 //------------------------------------------------------------------------------
@@ -376,12 +384,14 @@ qreal Gaussian::dy(qreal x, uint parameterIndex, const qreal *parameterValues) c
   }
 }
 
-void Gaussian::setPeak(qreal x, qreal y) {
-  setValue(parXSHIFT, x);
-  setValue(parAMPL,   y);
+void Gaussian::setPeak(XY const& xy) {
+  super::setPeak(xy);
+  setValue(parXSHIFT, xy.x);
+  setValue(parAMPL,   xy.y);
 }
 
 void Gaussian::setFWHM(qreal val) {
+  super::setFWHM(val);
   // sigma = FWHM * 1/4 * (SQRT(2)/SQRT(ln(2))) = FWHM * 0.424661
   setValue(parSIGMA, val * 0.424661);
 }
@@ -434,12 +444,14 @@ qreal CauchyLorentz::dy(qreal x, uint parameterIndex, const qreal *parameterValu
   }
 }
 
-void CauchyLorentz::setPeak(qreal x, qreal y) {
-  setValue(parXSHIFT, x);
-  setValue(parAMPL,   y);
+void CauchyLorentz::setPeak(XY const& xy) {
+  super::setPeak(xy);
+  setValue(parXSHIFT, xy.x);
+  setValue(parAMPL,   xy.y);
 }
 
 void CauchyLorentz::setFWHM(qreal val) {
+  super::setFWHM(val);
   // gamma = HWHM = FWHM / 2
   setValue(parGAMMA, val / 2);
 }
@@ -507,12 +519,14 @@ qreal PseudoVoigt1::dy(qreal x, uint parameterIndex, const qreal* parameterValue
   }
 }
 
-void PseudoVoigt1::setPeak(qreal x, qreal y) {
-  setValue(parXSHIFT, x);
-  setValue(parAMPL,   y);
+void PseudoVoigt1::setPeak(XY const& xy) {
+  super::setPeak(xy);
+  setValue(parXSHIFT, xy.x);
+  setValue(parAMPL,   xy.y);
 }
 
 void PseudoVoigt1::setFWHM(qreal val) {
+  super::setFWHM(val);
   setValue(parSIGMAGAMMA, val / 2);
 }
 
@@ -592,12 +606,14 @@ qreal PseudoVoigt2::dy(qreal x, uint parameterIndex, const qreal* parameterValue
   }
 }
 
-void PseudoVoigt2::setPeak(qreal x, qreal y) {
-  setValue(parXSHIFT, x);
-  setValue(parAMPL,   y);
+void PseudoVoigt2::setPeak(XY const& xy) {
+  super::setPeak(xy);
+  setValue(parXSHIFT, xy.x);
+  setValue(parAMPL,   xy.y);
 }
 
 void PseudoVoigt2::setFWHM(qreal val) {
+  super::setFWHM(val);
   setValue(parSIGMA, val * 0.424661);
   setValue(parGAMMA, val / 2);
 }

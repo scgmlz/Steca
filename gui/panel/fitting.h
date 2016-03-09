@@ -5,6 +5,7 @@
 #define FITTING_H
 
 #include "panel.h"
+#include "core_reflection.h"
 
 namespace model {
 class ReflectionViewModel;
@@ -22,6 +23,8 @@ public:
 
   void addReflection();
   void removeSelected();
+  bool hasReflections() const;
+
   void update();
 
 protected:
@@ -43,7 +46,12 @@ private:
   QSpinBox  *spinDegree;
   QComboBox *comboReflType;
   ReflectionView *reflectionView;
-  QDoubleSpinBox *spinRangeMin, *spinRangeMax;
+  QDoubleSpinBox *spinRangeMin, *spinRangeMax,
+                 *spinPeakX, *spinPeakY, *spinFwhm;
+  bool silentSpin;
+
+  void enableReflControls(bool);
+  void setReflControls(core::shp_Reflection const&);
 };
 
 //------------------------------------------------------------------------------

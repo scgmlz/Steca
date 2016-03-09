@@ -17,6 +17,18 @@ qreal deg_rad(qreal rad);         ///< conversion: degrees <= radians
 qreal rad_deg(qreal deg);         ///< conversion: radians <= degrees
 
 //------------------------------------------------------------------------------
+/// a point
+
+struct XY {
+  XY();
+  XY(qreal, qreal);
+
+  bool isDefined() const;
+
+  qreal x, y;
+};
+
+//------------------------------------------------------------------------------
 /// a range of values (a closed interval)
 
 struct Range {

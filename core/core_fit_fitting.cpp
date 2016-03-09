@@ -17,27 +17,29 @@ void fitPeak(PeakFunction& peakFunction, TI_Curve const& dgram, core::Range cons
   core::Curve curve = dgram.intersect(range);
   if (curve.isEmpty()) return;
 
-  uint peakIndex  = curve.maxYindex();
-  auto peakTth    = curve.x(peakIndex);
-  auto peakIntens = curve.y(peakIndex);
+  if (!peakFunction.getPeak().isDefined()) { // calculate guesses
+    uint peakIndex  = curve.maxYindex();
+    auto peakTth    = curve.x(peakIndex);
+    auto peakIntens = curve.y(peakIndex);
 
-  // half-maximum indices
-  uint hmi1 = peakIndex, hmi2 = peakIndex;
+    // half-maximum indices
+    uint hmi1 = peakIndex, hmi2 = peakIndex;
 
-  // left
-  for (uint i=peakIndex; i-- > 0; ) {
-    hmi1 = i;
-    if (curve.y(i) < peakIntens/2) break;
+    // left
+    for (uint i=peakIndex; i-- > 0; ) {
+      hmi1 = i;
+      if (curve.y(i) < peakIntens/2) break;
+    }
+
+    // right
+    for (uint i=peakIndex, iCnt=curve.count(); i < iCnt; ++i) {
+      hmi2 = i;
+      if (curve.y(i) < peakIntens/2) break;
+    }
+
+    peakFunction.setPeak(XY(peakTth,peakIntens));
+    peakFunction.setFWHM(curve.x(hmi2) - curve.x(hmi1));
   }
-
-  // right
-  for (uint i=peakIndex, iCnt=curve.count(); i < iCnt; ++i) {
-    hmi2 = i;
-    if (curve.y(i) < peakIntens/2) break;
-  }
-
-  peakFunction.setPeak(peakTth,peakIntens);
-  peakFunction.setFWHM(curve.x(hmi2) - curve.x(hmi1));
 
   FittingLevenbergMarquardt().fitWithoutCheck(peakFunction,curve);
 }

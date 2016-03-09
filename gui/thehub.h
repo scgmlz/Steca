@@ -131,6 +131,8 @@ public: // files
   void setSelectedFile(core::shp_File);
   void setSelectedDataset(core::shp_Dataset);
   void setSelectedReflection(core::shp_Reflection);
+  void setReflectionData(core::shp_Reflection);
+  void newReflectionData(core::Range const&,core::XY const&,qreal);
 
 public:
   void load(QFileInfo const&)       THROWS;
@@ -185,6 +187,8 @@ signals:
 
   void reflectionsChanged();
   void reflectionSelected(core::shp_Reflection);
+  void reflectionData(core::shp_Reflection);
+  void reflectionValues(core::Range const&, core::XY const&, qreal);
 
   void displayChange();
   void geometryChanged();

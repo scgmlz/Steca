@@ -273,6 +273,14 @@ void TheHub::setSelectedReflection(core::shp_Reflection reflection) {
   emit reflectionSelected((selectedReflection = reflection));
 }
 
+void TheHub::setReflectionData(core::shp_Reflection reflection) {
+  emit reflectionData(reflection);
+}
+
+void TheHub::newReflectionData(core::Range const& range, core::XY const& peak, qreal fwhm) {
+  emit reflectionValues(range, peak, fwhm);
+}
+
 void TheHub::load(QFileInfo const& fileInfo) THROWS {
   QFile file(fileInfo.absoluteFilePath());
   RUNTIME_CHECK(file.open(QIODevice::ReadOnly), "File cannot be opened");
@@ -334,12 +342,13 @@ void TheHub::load(QByteArray const& json) THROWS {
 
   setImageRotate(core::ImageTransform(top[KEY_TRANSFORM].toInt()));
 
+#ifndef DEVELOPMENT_JAN
   QJsonObject bgPolynomial = top[KEY_BG_POLYNOMIAL].toObject();
   getBgPolynomial().loadFrom(bgPolynomial);
 
   QJsonObject bgRanges = top[KEY_BG_RANGES].toObject();
   getBgRanges().loadFrom(bgRanges);
-
+#endif
 }
 
 QByteArray TheHub::save() const {

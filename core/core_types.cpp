@@ -18,6 +18,18 @@ qreal rad_deg(qreal deg) {
 
 //------------------------------------------------------------------------------
 
+XY::XY(): x(qQNaN()), y(qQNaN()) {
+}
+
+XY::XY(qreal x_, qreal y_): x(x_), y(y_) {
+}
+
+bool XY::isDefined() const {
+  return !qIsNaN(x) && !qIsNaN(y);
+}
+
+//------------------------------------------------------------------------------
+
 Range::Range() {
   invalidate();
 }

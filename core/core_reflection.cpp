@@ -13,6 +13,7 @@ str_lst const& Reflection::reflTypes() {
 }
 
 Reflection::Reflection(eType type_): type(type_) {
+  setRange(Range());
 }
 
 Reflection::eType Reflection::getType() const {
@@ -23,12 +24,11 @@ void Reflection::setType(Reflection::eType type_) {
   type = type_;
 }
 
-Range const& Reflection::getRange() const {
-  return range;
-}
-
 void Reflection::setRange(Range const& range_) {
   range = range_;
+  // invalidate guesses
+  peak  = XY();
+  fwhm  = qQNaN();
 }
 
 fit::PeakFunction* Reflection::peakFunction() const {

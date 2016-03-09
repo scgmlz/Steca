@@ -25,8 +25,14 @@ public:
   eType getType() const;
   void  setType(eType);
 
-  Range const& getRange() const;
+  Range const& getRange() const { return range; }
   void         setRange(Range const&);
+
+  XY const&    getPeak() const      { return peak;  }
+  void         setPeak(XY peak_)    { peak = peak_; }
+
+  qreal        getFWHM() const      { return fwhm;  }
+  void         setFWHM(qreal fwhm_) { fwhm = fwhm_; }
 
   /// a factory to make a function for fitting
   fit::PeakFunction* peakFunction() const;
@@ -34,6 +40,8 @@ public:
 private:
   eType type;
   Range range;
+  XY    peak;
+  qreal fwhm;
 };
 
 typedef QSharedPointer<Reflection> shp_Reflection;

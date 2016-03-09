@@ -52,6 +52,7 @@ void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
 
   case DiffractogramPlot::TOOL_PEAK_REGION:
     plot.setReflRange(range);
+    break;
 
   default:
     break;
@@ -387,6 +388,11 @@ void Diffractogram::calcReflection() {
   if (range.min < range.max) {
     QSharedPointer<core::fit::PeakFunction> fun(currentReflection->peakFunction());
     core::fit::fitPeak(*fun,dgramBgFitted,range);
+    currentReflection->setPeak(fun->getPeak());
+    currentReflection->setFWHM(fun->getFWHM());
+
+    theHub.setReflectionData(currentReflection);
+
     auto tth   = dgramBgFitted.getTth();
     auto inten = dgramBgFitted.getInten();
     for_i (dgramBgFitted.count()) {
