@@ -1,7 +1,7 @@
 #include "core_polefigure.h"
 
 #include <cmath>
-#include <Eigen/Dense>
+#include <Eigen/Core>
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -75,6 +75,58 @@ void calculateAlphaBeta(const qreal omgDet, const qreal phiDet,
   // Keep beta between 0 and 2pi.
   if (beta < 0)
     beta += 2 * M_PI;
+}
+
+qreal deltaBeta(const qreal beta1, const qreal beta2) noexcept {
+  qreal deltaBeta = beta1 - beta2;
+  qreal tempDelta = deltaBeta - 2 * M_PI;
+  if (std::abs(tempDelta) < std::abs(deltaBeta)) deltaBeta = tempDelta;
+  tempDelta = deltaBeta + 2 * M_PI;
+  if (std::abs(tempDelta) < std::abs(deltaBeta)) deltaBeta = tempDelta;
+  return deltaBeta;
+}
+
+// Calculates the angle between two points on a unit sphere.
+qreal angle(const qreal alpha1, const qreal alpha2,
+            const qreal deltaBeta) noexcept {
+  return std::acos(
+      std::cos(alpha1) * std::cos(alpha2)
+    + std::sin(alpha1) * std::sin(alpha2) * std::cos(deltaBeta)
+  );
+}
+
+// Checks if (alpha,beta) is inside radius from (centerAlpha,centerBeta).
+bool inRadius(const qreal alpha, const qreal beta,
+              const qreal centerAlpha, const qreal centerBeta,
+              const qreal radius) noexcept {
+  return   std::abs(angle(alpha, centerAlpha, deltaBeta(beta, centerBeta)))
+         < radius;
+}
+
+namespace Quadrant {
+  enum Quadrant {
+    NORTHEAST,
+    SOUTHEAST,
+    SOUTHWEST,
+    NORTHWEST,
+    MAX_QUADRANTS
+  };
+}
+
+bool inQuadrant(const int quadrant,
+                const qreal deltaAlpha, const qreal deltaBeta) noexcept {
+  switch (quadrant) {
+  case Quadrant::NORTHEAST:
+    return deltaAlpha >= 0 && deltaBeta >= 0;
+  case Quadrant::SOUTHEAST:
+    return deltaAlpha >= 0 && deltaBeta < 0;
+  case Quadrant::SOUTHWEST:
+    return deltaAlpha < 0 && deltaBeta < 0;
+  case Quadrant::NORTHWEST:
+    return deltaAlpha < 0 && deltaBeta >= 0;
+  default:
+    NEVER_HERE return false;
+  }
 }
 
 //------------------------------------------------------------------------------
