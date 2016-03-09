@@ -12,7 +12,15 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-class Reflection {
+struct ReflectionData {
+  ReflectionData();
+
+  Range range;
+  XY    peak;
+  qreal fwhm;
+};
+
+class Reflection: private ReflectionData {
 public:
   enum eType {
     REFL_GAUSSIAN, REFL_LORENTZIAN, REFL_PSEUDOVOIGT1, REFL_PSEUDOVOIGT2,
@@ -39,9 +47,6 @@ public:
 
 private:
   eType type;
-  Range range;
-  XY    peak;
-  qreal fwhm;
 };
 
 typedef QSharedPointer<Reflection> shp_Reflection;

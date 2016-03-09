@@ -60,7 +60,7 @@ public:
   void setTool(Tool);
   Tool getTool() const { return tool; }
 
-  void plot(core::TI_Curve const&,core::TI_Curve const&, core::TI_Curve const&, core::TI_Curve const&);
+  void plot(core::TI_Curve const&,core::TI_Curve const&, core::TI_Curve const&, core::TI_Curves const&);
 
   core::Range fromPixels(int,int);
 
@@ -70,6 +70,8 @@ public:
   void setReflRange(core::Range const&);
   void updateBg();
 
+  void clearReflLayer();
+
 protected:
   void addBgItem(core::Range const&);
   void resizeEvent(QResizeEvent*);
@@ -78,9 +80,9 @@ private:
   TheHub        &theHub;
   Diffractogram &diffractogram;
   Tool tool;
-  QCPGraph *bgGraph, *dgramGraph, *dgramBgFittedGraph, *dgramPeak;
+  QCPGraph *bgGraph, *dgramGraph, *dgramBgFittedGraph;
+  QVector<QCPGraph*> reflGraph;
   DiffractogramPlotOverlay *overlay;
-
 };
 
 class Diffractogram: public BoxPanel {
@@ -97,7 +99,9 @@ private:
 
   DiffractogramPlot *plot;
 
-  core::TI_Curve dgram, dgramBgFitted, bg, reflection;
+  core::TI_Curve  dgram, dgramBgFitted, bg;
+  core::TI_Curves refls; uint currReflIndex;
+
   bool showBgFit;
 
   core::shp_Reflection currentReflection;
@@ -105,10 +109,10 @@ private:
 public:
   void calcDgram();
   void calcBackground();
-  void calcReflection();
+  void calcReflections();
 
-  void setReflRange(core::Range const&);
-  core::Range reflRange() const;
+  void setCurrReflRange(core::Range const&);
+  core::Range currReflRange() const;
 };
 
 //------------------------------------------------------------------------------

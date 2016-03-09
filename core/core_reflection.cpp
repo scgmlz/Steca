@@ -5,6 +5,11 @@ namespace core {
 
 //------------------------------------------------------------------------------
 
+ReflectionData::ReflectionData(): range(), peak(), fwhm(0) {
+}
+
+//------------------------------------------------------------------------------
+
 str_lst const& Reflection::reflTypes() {
   static str_lst types;
   if (types.isEmpty())

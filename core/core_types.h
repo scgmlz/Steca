@@ -140,6 +140,8 @@ private:
   core::Range tthRange, intenRange;
 };
 
+typedef QVector<TI_Curve> TI_Curves;
+
 //------------------------------------------------------------------------------
 // load / save helpers
 

@@ -161,7 +161,7 @@ void TheHub::initActions() {
 
   PUSH_ACTION(actAbout     ,"About…","","")
 
-  TOGL_ACTION(actReflectionRegion          ,"Reflection region", "Select reflection region", ":/icon/selectPeak")
+  TOGL_ACTION(actReflectionRegion    ,"Reflection region", "Select reflection region", ":/icon/selectPeak")
   PUSH_ACTION(actReflectionPeak      ,"Peak",  "Set reflection peak",  ":/icon/selectHight")
   PUSH_ACTION(actReflectionWidth     ,"Width", "Set reflection width", ":/icon/selectWidth")
   PUSH_ACTION(actReflectionAdd       ,"Add",   "Add reflection",       ":/icon/add")
@@ -174,10 +174,10 @@ void TheHub::initActions() {
   TOGL_ACTION2(actImageOverlay         ,"overlay", "overlay",     "Show cut", "Hide cut", ":/icon/imageCrop")
   TOGL_ACTION2(actImagesFixedIntensity ,"fixed Intensity", "fixed Intensity", "Display data using a fixed intensity scale", "Display data using non-fixed intensity scale",":/icon/scale")
   PUSH_ACTION(actImageRotate           ,"Rotate",       "Rotate 90° clockwise", ":/icon/rotate0") ACTION_KEY(Qt::CTRL|Qt::Key_R)
-  TOGL_ACTION(actImageMirror          ,"Mirror",       "Mirror image", ":/icon/mirror_horz")
+  TOGL_ACTION(actImageMirror           ,"Mirror",       "Mirror image", ":/icon/mirror_horz")
 
-  PUSH_ACTION(actBackgroundClear     ,"Clear background fit regions",    "Clear regions for background fitting", ":/icon/clearBackground")
-  TOGL_ACTION(actBackgroundBackground ,"Select background fit regions",    "Select regions for background fitting", ":/icon/pekBackground")
+  PUSH_ACTION(actBackgroundClear       ,"Clear background fit regions",    "Clear regions for background fitting", ":/icon/clearBackground")
+  TOGL_ACTION(actBackgroundBackground  ,"Select background fit regions",    "Select regions for background fitting", ":/icon/pekBackground")
   TOGL_ACTION2(actBackgroundShowFit    ,"BackgroundEye", "BackgroundEye","Show background fit","Hide background fit", ":/icon/showBackground")
 
   TOGL_ACTION2(actHasBeamOffset        ,"Beam centre offset", "Beam centre offset","Enable beam center offset (for X-ray instruments)", "Disable beam center offset",":/icon/beam")
@@ -193,6 +193,8 @@ void TheHub::configActions() {
   actImagesEnableCorr->setEnabled(false);
   actReflectionRemove->setEnabled(false);
   actReflectionRegion->setEnabled(false);
+  actReflectionPeak->setEnabled(false);
+  actReflectionWidth->setEnabled(false);
 
   connect(this, &thisCls::correctionEnabled, [this](bool on) {
     actImagesEnableCorr->setChecked(on);

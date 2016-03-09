@@ -199,7 +199,7 @@ public:
   // TODO instead of exposing the objects, provide an interface
   core::Ranges&           getBgRanges()     const { return session->getBgRanges();     }
   core::fit::Polynomial&  getBgPolynomial() const { return session->getBgPolynomial(); }
-  core::Reflections&      getReflections()  { return session->getReflections();  }
+  core::Reflections&      getReflections()        { return session->getReflections();  }
 };
 
 //------------------------------------------------------------------------------
