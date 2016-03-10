@@ -19,7 +19,7 @@ public:
 
   static str_lst const& reflTypes();
 
-  Reflection(eType);
+  Reflection(eType = eType::PEAK_GAUSSIAN);
  ~Reflection();
 
   eType getType() const;
@@ -31,6 +31,7 @@ public:
   PeakFunction& getPeakFunction() const;
 
   void invalidateGuesses();
+
   void setGuessPeak(XY const& xy) { peakFunction->setGuessPeak(xy);   }
   void setGuessFWHM(qreal fwhm)   { peakFunction->setGuessFWHM(fwhm); }
 
@@ -38,7 +39,12 @@ private:
   Range range;
 
   void setPeakFunction(eType);
+  void setPeakFunction(PeakFunction*);
   PeakFunction *peakFunction;
+
+public:
+  void loadFrom(QJsonObject const&) THROWS;
+  void saveTo(QJsonObject&) const;
 };
 
 typedef QSharedPointer<Reflection> shp_Reflection;

@@ -122,7 +122,7 @@ Fitting::Fitting(TheHub& theHub_)
   gb->addWidget((spinGuessFwhm  = spinCell(6,.0)),  2, 1);
   spinGuessFwhm->setSingleStep(.1);
 
-  gb->addWidget(label("fit x"),                    3, 0);
+  gb->addWidget(label("fit x"),                     3, 0);
   gb->addWidget((readFitPeakX   = readCell(6)),     3, 1);
   gb->addWidget(label("y"),                         3, 2);
   gb->addWidget((readFitPeakY   = readCell(6)),     3, 3);
@@ -132,20 +132,21 @@ Fitting::Fitting(TheHub& theHub_)
 
   gb->setColumnStretch(4,1);
 
-  enableReflControls(false);
+  updateReflectionControls();
 
   connect(theHub.actReflectionAdd, &QAction::triggered, [this]() {
     reflectionView->addReflection(comboReflType->currentIndex());
-    enableReflControls(true);
+    updateReflectionControls();
   });
 
   connect(theHub.actReflectionRemove, &QAction::triggered, [this]() {
     reflectionView->removeSelected();
-    enableReflControls(false);
+    updateReflectionControls();
   });
 
   connect(&theHub, &TheHub::reflectionsChanged, [this]() {
     reflectionView->update();
+    updateReflectionControls();
   });
 
   connect(comboReflType, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this](int index) {
@@ -238,6 +239,10 @@ void Fitting::setReflControls(core::shp_Reflection const& reflection) {
   }
 
   silentSpin = false;
+}
+
+void Fitting::updateReflectionControls() {
+  reflectionView->hasReflections() ? enableReflControls(true) : enableReflControls(false);
 }
 
 //------------------------------------------------------------------------------

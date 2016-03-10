@@ -192,6 +192,10 @@ public:
 
   void reset();
 
+public:
+  void loadFrom(QJsonObject const&) THROWS;
+  void saveTo(QJsonObject&) const;
+
 private:
   XY guessPeak; qreal guessFwhm;
 };

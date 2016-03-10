@@ -1,4 +1,6 @@
 #include "thehub.h"
+#include "mainwin.h"
+#include "panel/fitting.h"
 
 #include <QSpinBox>
 #include <QDoubleSpinBox>
@@ -7,6 +9,7 @@
 #include <QJsonObject>
 #include <QApplication>
 #include <QActionEvent>
+#include <QDir>
 
 //------------------------------------------------------------------------------
 
@@ -285,6 +288,7 @@ void TheHub::newReflectionData(core::Range const& range, core::XY const& peak, q
 void TheHub::load(QFileInfo const& fileInfo) THROWS {
   QFile file(fileInfo.absoluteFilePath());
   RUNTIME_CHECK(file.open(QIODevice::ReadOnly), "File cannot be opened");
+  QDir::setCurrent(fileInfo.absolutePath());
   load(file.readAll());
 }
 
@@ -304,6 +308,8 @@ static str KEY_OFFSET_Y("offset_y");
 static str KEY_TRANSFORM("transform");
 static str KEY_BG_POLYNOMIAL("background_polynomial");
 static str KEY_BG_RANGES("background_ranges");
+static str KEY_REFLECTIONS("reflections");
+static str KEY_REF_COUNT("reflections_count");
 
 void TheHub::load(QByteArray const& json) THROWS {
   QJsonParseError parseError;
@@ -312,15 +318,15 @@ void TheHub::load(QByteArray const& json) THROWS {
 
   WaitCursor __;
 
-  // TODO consider throwing out the old Session and making a new one instead
-  // of emptying it
-  while (numFiles(true)>0) remFile(0);
+  session->clear();
 
   auto top   = doc.object();
   auto files = top[KEY_FILES].toArray();
 
   for (auto file: files) {
-    addFile(file.toString());
+    QDir dir(file.toString());
+    RUNTIME_CHECK(dir.makeAbsolute(),"count not create session path");
+    addFile(dir.absolutePath());
   }
 
   loadCorrFile(top[KEY_CORR_FILE].toString());
@@ -343,13 +349,30 @@ void TheHub::load(QByteArray const& json) THROWS {
 
   setImageRotate(core::ImageTransform(top[KEY_TRANSFORM].toInt()));
 
-#ifndef DEVELOPMENT_JAN
   QJsonObject bgPolynomial = top[KEY_BG_POLYNOMIAL].toObject();
   getBgPolynomial().loadFrom(bgPolynomial);
 
   QJsonObject bgRanges = top[KEY_BG_RANGES].toObject();
   getBgRanges().loadFrom(bgRanges);
-#endif
+
+  QJsonObject reflectionsObj = top[KEY_REFLECTIONS].toObject();
+  int refCount = reflectionsObj[KEY_REF_COUNT].toInt();
+  for_i (refCount) {
+    core::shp_Reflection reflection(new core::Reflection);
+    reflection->loadFrom(reflectionsObj);
+    session->getReflections().append(reflection);
+  }
+
+  emit reflectionsChanged();
+}
+
+void TheHub::save(QFileInfo const& fileInfo) const {
+  QFile file(fileInfo.filePath());
+  RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File cannot be opened");
+
+  QDir::setCurrent(fileInfo.absolutePath());
+  auto written = file.write(save());
+  RUNTIME_CHECK(written >= 0, "Could not write session");
 }
 
 QByteArray TheHub::save() const {
@@ -363,10 +386,12 @@ QByteArray TheHub::save() const {
     { KEY_OFFSET_X,     g.middlePixOffset.x() },
     { KEY_OFFSET_Y,     g.middlePixOffset.y() },
   };
-
+  // save file path relative to location of session
   QJsonArray files;
   for_i (numFiles(false)) {
-    files.append(getFile(i)->getInfo().absoluteFilePath());
+    str absoluteFilePath = getFile(i)->getInfo().absoluteFilePath();
+    str relativFilePath = QDir::current().relativeFilePath(absoluteFilePath);
+    files.append(relativFilePath);
   }
 
   auto const &ic = session->getImageCut();
@@ -383,14 +408,22 @@ QByteArray TheHub::save() const {
   QJsonObject bgRanges;
   getBgRanges().saveTo(bgRanges);
 
+  QJsonObject reflections;
+  auto ref = getReflections();
+  reflections[KEY_REF_COUNT] = ref.count();
+  for_i (ref.count()) {
+     ref.at(i)->saveTo(reflections);
+  }
+
   QJsonObject top {
     { KEY_DETECTOR,   det                 },
     { KEY_CUT,        cut                 },
     { KEY_TRANSFORM,  session->getImageTransform().val  },
     { KEY_FILES,      files               },
     { KEY_CORR_FILE,  hasCorrFile() ? session->getCorrFile()->getInfo().absoluteFilePath() : "" },
-    { KEY_BG_POLYNOMIAL, bgPolynomial        },
-    { KEY_BG_RANGES,  bgRanges            },
+    { KEY_BG_POLYNOMIAL, bgPolynomial     },
+    { KEY_BG_RANGES,     bgRanges         },
+    { KEY_REFLECTIONS,   reflections      },
   };
 
   return QJsonDocument(top).toJson();

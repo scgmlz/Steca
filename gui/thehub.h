@@ -137,7 +137,9 @@ public: // files
 public:
   void load(QFileInfo const&)       THROWS;
   void load(QByteArray const& json) THROWS;
-  QByteArray save() const;
+
+  void save(QFileInfo const&) const;
+  QByteArray save()           const;
 
 public:
   void addFile(rcstr filePath)      THROWS;
@@ -197,7 +199,7 @@ public:
   // TODO instead of exposing the objects, provide an interface
   core::Ranges&           getBgRanges()     const { return session->getBgRanges();     }
   core::fit::Polynomial&  getBgPolynomial() const { return session->getBgPolynomial(); }
-  core::Reflections&      getReflections()        { return session->getReflections();  }
+  core::Reflections&      getReflections()  const { return session->getReflections();  }
 };
 
 //------------------------------------------------------------------------------

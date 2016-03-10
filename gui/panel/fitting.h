@@ -51,8 +51,10 @@ private:
   QLineEdit      *readFitPeakX,   *readFitPeakY,   *readFitFwhm;
   bool silentSpin;
 
-  void enableReflControls(bool);
   void setReflControls(core::shp_Reflection const&);
+  void updateReflectionControls();
+private:
+  void enableReflControls(bool); // TODO REVIEW
 };
 
 //------------------------------------------------------------------------------

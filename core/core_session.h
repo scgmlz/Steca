@@ -94,6 +94,8 @@ public:
   Session();
   virtual ~Session();
 
+  void clear();
+
   /// How many files has, optionally also counting the correction file.
   uint     numFiles(bool withCorr) const;
 

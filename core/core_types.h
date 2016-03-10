@@ -26,6 +26,9 @@ struct XY {
   bool isDefined() const;
 
   qreal x, y;
+
+  void loadFrom(QJsonObject const&) THROWS;
+  void saveTo(QJsonObject& obj) const;
 };
 
 //------------------------------------------------------------------------------

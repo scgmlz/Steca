@@ -70,6 +70,7 @@ static str KEY_GAUSSIAN("Gaussian");
 static str KEY_LORENTZIAN("CauchyLorentz");
 static str KEY_PSEUDOVOIGT1("PseudoVoigt1");
 static str KEY_PSEUDOVOIGT2("PseudoVoigt2");
+static str KEY_GUESS_FWHM("guess_fwhm");
 
 void Function::Parameter::loadFrom(QJsonObject const& obj) THROWS {
   value = loadReal(obj,KEY_VALUE);
@@ -327,6 +328,7 @@ void Polynomial::saveTo(QJsonObject& obj) const {
   super::saveTo(obj);
   obj[KEY_TYPE] = KEY_POLYNOMIAL;
 }
+
 //------------------------------------------------------------------------------
 
 PeakFunction *PeakFunction::factory(eType type) {
@@ -359,6 +361,18 @@ void PeakFunction::reset() {
   super::reset();
   setGuessPeak(getGuessPeak());
   setGuessFWHM(getGuessFWHM());
+}
+
+void PeakFunction::loadFrom(QJsonObject const& obj) THROWS {
+  super::loadFrom(obj);
+  guessPeak.loadFrom(obj);
+  guessFwhm = loadReal(obj,KEY_GUESS_FWHM);
+}
+
+void PeakFunction::saveTo(QJsonObject& obj) const {
+  super::saveTo(obj);
+  guessPeak.saveTo(obj);
+  saveReal(obj,KEY_GUESS_FWHM,guessFwhm);
 }
 
 //------------------------------------------------------------------------------
