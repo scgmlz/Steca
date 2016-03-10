@@ -16,6 +16,9 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+# --- Enable compiler warnings ---
+add_compile_options("-Wall")
+
 # --- Check for required packages ---
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
