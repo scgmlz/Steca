@@ -96,7 +96,7 @@ void Function::Parameter::saveTo(QJsonObject& obj) const {
 
 //------------------------------------------------------------------------------
 
-Function *Function::factory(rcstr type) {
+Function* Function::factory(rcstr type) {
   if (KEY_SUM_FUNCTIONS == type)
     return new SumFunctions();
   if (KEY_POLYNOMIAL == type)
@@ -329,15 +329,36 @@ void Polynomial::saveTo(QJsonObject& obj) const {
 }
 //------------------------------------------------------------------------------
 
-PeakFunction::PeakFunction(): peak(), fwhm(qQNaN()) {
+PeakFunction *PeakFunction::factory(eType type) {
+  switch (type) {
+  case PEAK_GAUSSIAN:
+    return new Gaussian();
+  case PEAK_LORENTZIAN:
+    return new CauchyLorentz();
+  case PEAK_PSEUDOVOIGT1:
+    return new PseudoVoigt1();
+  case PEAK_PSEUDOVOIGT2:
+    return new PseudoVoigt2();
+  default:
+    NEVER_HERE
+  }
 }
 
-void PeakFunction::setPeak(XY const& peak_) {
-  peak = peak_;
+PeakFunction::PeakFunction(): guessPeak(), guessFwhm(qQNaN()) {
 }
 
-void PeakFunction::setFWHM(qreal fwhm_) {
-  fwhm = fwhm_;
+void PeakFunction::setGuessPeak(XY const& peak_) {
+  guessPeak = peak_;
+}
+
+void PeakFunction::setGuessFWHM(qreal fwhm_) {
+  guessFwhm = fwhm_;
+}
+
+void PeakFunction::reset() {
+  super::reset();
+  setGuessPeak(getGuessPeak());
+  setGuessFWHM(getGuessFWHM());
 }
 
 //------------------------------------------------------------------------------
@@ -389,16 +410,24 @@ qreal Gaussian::dy(qreal x, uint parameterIndex, const qreal *parameterValues) c
   }
 }
 
-void Gaussian::setPeak(XY const& xy) {
-  super::setPeak(xy);
+void Gaussian::setGuessPeak(XY const& xy) {
+  super::setGuessPeak(xy);
   setValue(parXSHIFT, xy.x);
   setValue(parAMPL,   xy.y);
 }
 
-void Gaussian::setFWHM(qreal val) {
-  super::setFWHM(val);
+void Gaussian::setGuessFWHM(qreal val) {
+  super::setGuessFWHM(val);
   // sigma = FWHM * 1/4 * (SQRT(2)/SQRT(ln(2))) = FWHM * 0.424661
   setValue(parSIGMA, val * 0.424661);
+}
+
+XY Gaussian::getFitPeak() {
+  return XY(parameters[parXSHIFT].getValue(),parameters[parAMPL].getValue());
+}
+
+qreal Gaussian::getFitFWHM() {
+  return parameters[parSIGMA].getValue() / 0.424661;
 }
 
 void Gaussian::saveTo(QJsonObject& obj) const {
@@ -454,16 +483,24 @@ qreal CauchyLorentz::dy(qreal x, uint parameterIndex, const qreal *parameterValu
   }
 }
 
-void CauchyLorentz::setPeak(XY const& xy) {
-  super::setPeak(xy);
+void CauchyLorentz::setGuessPeak(XY const& xy) {
+  super::setGuessPeak(xy);
   setValue(parXSHIFT, xy.x);
   setValue(parAMPL,   xy.y);
 }
 
-void CauchyLorentz::setFWHM(qreal val) {
-  super::setFWHM(val);
+void CauchyLorentz::setGuessFWHM(qreal val) {
+  super::setGuessFWHM(val);
   // gamma = HWHM = FWHM / 2
   setValue(parGAMMA, val / 2);
+}
+
+XY CauchyLorentz::getFitPeak() {
+  return XY(parameters[parXSHIFT].getValue(),parameters[parAMPL].getValue());
+}
+
+qreal CauchyLorentz::getFitFWHM() {
+  return parameters[parGAMMA].getValue() * 2;
 }
 
 void CauchyLorentz::saveTo(QJsonObject& obj) const {
@@ -534,15 +571,23 @@ qreal PseudoVoigt1::dy(qreal x, uint parameterIndex, const qreal* parameterValue
   }
 }
 
-void PseudoVoigt1::setPeak(XY const& xy) {
-  super::setPeak(xy);
+void PseudoVoigt1::setGuessPeak(XY const& xy) {
+  super::setGuessPeak(xy);
   setValue(parXSHIFT, xy.x);
   setValue(parAMPL,   xy.y);
 }
 
-void PseudoVoigt1::setFWHM(qreal val) {
-  super::setFWHM(val);
+void PseudoVoigt1::setGuessFWHM(qreal val) {
+  super::setGuessFWHM(val);
   setValue(parSIGMAGAMMA, val / 2);
+}
+
+XY PseudoVoigt1::getFitPeak() {
+  return XY(parameters[parXSHIFT].getValue(),parameters[parAMPL].getValue());
+}
+
+qreal PseudoVoigt1::getFitFWHM() {
+  return parameters[parSIGMAGAMMA].getValue() * 2;
 }
 
 void PseudoVoigt1::saveTo(QJsonObject& obj) const {
@@ -626,16 +671,28 @@ qreal PseudoVoigt2::dy(qreal x, uint parameterIndex, const qreal* parameterValue
   }
 }
 
-void PseudoVoigt2::setPeak(XY const& xy) {
-  super::setPeak(xy);
+void PseudoVoigt2::setGuessPeak(XY const& xy) {
+  super::setGuessPeak(xy);
   setValue(parXSHIFT, xy.x);
   setValue(parAMPL,   xy.y);
 }
 
-void PseudoVoigt2::setFWHM(qreal val) {
-  super::setFWHM(val);
+void PseudoVoigt2::setGuessFWHM(qreal val) {
+  super::setGuessFWHM(val);
   setValue(parSIGMA, val * 0.424661);
   setValue(parGAMMA, val / 2);
+}
+
+XY PseudoVoigt2::getFitPeak() {
+  return XY(parameters[parXSHIFT].getValue(),parameters[parAMPL].getValue());
+}
+
+qreal PseudoVoigt2::getFitFWHM() {
+  qreal eta = parameters[parETA].getValue();
+  return
+    ((1-eta) * parameters[parSIGMA].getValue() / 0.424661
+     + eta * parameters[parGAMMA].getValue() * 2)
+    / 2;
 }
 
 void PseudoVoigt2::saveTo(QJsonObject& obj) const {

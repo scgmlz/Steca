@@ -104,8 +104,7 @@ void Settings::save(rcstr key, QDoubleSpinBox* box) {
 
 TheHub::TheHub(): session(new core::Session())
 , fixedIntensityScale(false)
-, fileViewModel(*this), datasetViewModel(*this), reflectionViewModel(*this)
-, reflType(core::Reflection::REFL_GAUSSIAN) {
+, fileViewModel(*this), datasetViewModel(*this), reflectionViewModel(*this) {
   initActions();
   configActions();
 }
@@ -468,15 +467,14 @@ void TheHub::setBackgroundPolynomialDegree(uint degree) {
 }
 
 void TheHub::setReflType(core::Reflection::eType type) {
-  reflType = type;
   if (selectedReflection) {
-    selectedReflection->setType(reflType);
+    selectedReflection->setType(type);
     emit reflectionsChanged();
   }
 }
 
-void TheHub::addReflection() {
-  getReflections().append(core::shp_Reflection(new core::Reflection(reflType)));
+void TheHub::addReflection(core::Reflection::eType type) {
+  getReflections().append(core::shp_Reflection(new core::Reflection(type)));
   emit reflectionsChanged();
 }
 

@@ -173,8 +173,8 @@ QVariant ReflectionViewModel::headerData(int section, Qt::Orientation, int role)
   return QVariant();
 }
 
-void ReflectionViewModel::addReflection() {
-  theHub.addReflection();
+void ReflectionViewModel::addReflection(core::Reflection::eType type) {
+  theHub.addReflection(type);
 }
 
 void ReflectionViewModel::remReflection(uint i) {

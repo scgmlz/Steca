@@ -12,23 +12,15 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-struct ReflectionData {
-  ReflectionData();
-
-  Range range;
-  XY    peak;
-  qreal fwhm;
-};
-
-class Reflection: private ReflectionData {
+class Reflection {
 public:
-  enum eType {
-    REFL_GAUSSIAN, REFL_LORENTZIAN, REFL_PSEUDOVOIGT1, REFL_PSEUDOVOIGT2,
-  };
+  using PeakFunction = core::fit::PeakFunction;
+  using eType        = PeakFunction::eType;
 
   static str_lst const& reflTypes();
 
-  Reflection(eType = REFL_GAUSSIAN);
+  Reflection(eType);
+ ~Reflection();
 
   eType getType() const;
   void  setType(eType);
@@ -36,17 +28,16 @@ public:
   Range const& getRange() const { return range; }
   void         setRange(Range const&);
 
-  XY const&    getPeak() const      { return peak;  }
-  void         setPeak(XY peak_)    { peak = peak_; }
+  PeakFunction& getPeakFunction() const;
 
-  qreal        getFWHM() const      { return fwhm;  }
-  void         setFWHM(qreal fwhm_) { fwhm = fwhm_; }
-
-  /// a factory to make a function for fitting
-  fit::PeakFunction* peakFunction() const;
+  void setGuessPeak(XY const& xy) { peakFunction->setGuessPeak(xy);   }
+  void setGuessFWHM(qreal fwhm)   { peakFunction->setGuessFWHM(fwhm); }
 
 private:
-  eType type;
+  Range range;
+
+  void setPeakFunction(eType);
+  PeakFunction *peakFunction;
 };
 
 typedef QSharedPointer<Reflection> shp_Reflection;

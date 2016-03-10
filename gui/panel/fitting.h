@@ -21,7 +21,7 @@ public:
 
   ReflectionView(TheHub&);
 
-  void addReflection();
+  void addReflection(int type);
   void removeSelected();
   bool hasReflections() const;
 
@@ -46,8 +46,9 @@ private:
   QSpinBox  *spinDegree;
   QComboBox *comboReflType;
   ReflectionView *reflectionView;
-  QDoubleSpinBox *spinRangeMin, *spinRangeMax,
-                 *spinPeakX, *spinPeakY, *spinFwhm;
+  QDoubleSpinBox *spinRangeMin, *spinRangeMax;
+  QDoubleSpinBox *spinGuessPeakX, *spinGuessPeakY, *spinGuessFwhm;
+  QLineEdit      *readFitPeakX,   *readFitPeakY,   *readFitFwhm;
   bool silentSpin;
 
   void enableReflControls(bool);

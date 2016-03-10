@@ -93,7 +93,7 @@ public:
   uint parameterCount() const;
   Parameter& getParameter(uint);
 
-  void reset();
+  virtual void reset();
 
 public:
   void loadFrom(QJsonObject const&) THROWS;
@@ -170,18 +170,30 @@ public:
 class PeakFunction: public SimpleFunction {
   SUPER(PeakFunction,SimpleFunction)
 public:
+  enum eType {
+    PEAK_GAUSSIAN, PEAK_LORENTZIAN, PEAK_PSEUDOVOIGT1, PEAK_PSEUDOVOIGT2,
+    NUM_PEAK_TYPES
+  };
+
+  static PeakFunction* factory(eType);
+
   PeakFunction();
 
-  virtual void setPeak(XY const&);
-  virtual void setFWHM(qreal);
+  virtual eType type() const = 0;
 
-  XY const&    getPeak()  { return peak; }
-  qreal        getFWHM()  { return fwhm; }
+  virtual void  setGuessPeak(XY const&);
+  virtual void  setGuessFWHM(qreal);
+
+  XY const&     getGuessPeak()  { return guessPeak; }
+  qreal         getGuessFWHM()  { return guessFwhm; }
+
+  virtual XY    getFitPeak() = 0;
+  virtual qreal getFitFWHM() = 0;
+
+  void reset();
 
 private:
-  // guesses
-  XY peak; qreal fwhm;
-
+  XY guessPeak; qreal guessFwhm;
 };
 
 //------------------------------------------------------------------------------
@@ -193,11 +205,16 @@ public:
 
   Gaussian(qreal ampl=1, qreal xShift=0, qreal sigma=1);
 
+  eType type() const { return PEAK_GAUSSIAN; }
+
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
-  void setPeak(XY const&);
-  void setFWHM(qreal);
+  void  setGuessPeak(XY const&);
+  void  setGuessFWHM(qreal);
+
+  XY    getFitPeak();
+  qreal getFitFWHM();
 
 public:
   void saveTo(QJsonObject&) const;
@@ -212,11 +229,16 @@ public:
 
   CauchyLorentz(qreal ampl=1, qreal xShift=0, qreal gamma=1);
 
+  eType type() const { return PEAK_LORENTZIAN; }
+
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
-  void setPeak(XY const&);
-  void setFWHM(qreal);
+  void setGuessPeak(XY const&);
+  void setGuessFWHM(qreal);
+
+  XY    getFitPeak();
+  qreal getFitFWHM();
 
 public:
   void saveTo(QJsonObject&) const;
@@ -231,11 +253,16 @@ public:
 
   PseudoVoigt1(qreal ampl=1, qreal xShift=0, qreal sigmaGamma=1, qreal eta=0.1);
 
+  eType type() const { return PEAK_PSEUDOVOIGT1; }
+
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
-  void setPeak(XY const&);
-  void setFWHM(qreal);
+  void setGuessPeak(XY const&);
+  void setGuessFWHM(qreal);
+
+  XY    getFitPeak();
+  qreal getFitFWHM();
 
 public:
   void saveTo(QJsonObject&) const;
@@ -250,11 +277,16 @@ public:
 
   PseudoVoigt2(qreal ampl=1, qreal xShift=0, qreal sigma=1, qreal gamma=1, qreal eta=0.1);
 
+  eType type() const { return PEAK_PSEUDOVOIGT2; }
+
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
-  void setPeak(XY const&);
-  void setFWHM(qreal);
+  void setGuessPeak(XY const&);
+  void setGuessFWHM(qreal);
+
+  XY    getFitPeak();
+  qreal getFitFWHM();
 
 public:
   void saveTo(QJsonObject&) const;

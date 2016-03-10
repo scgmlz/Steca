@@ -5,11 +5,6 @@ namespace core {
 
 //------------------------------------------------------------------------------
 
-ReflectionData::ReflectionData(): range(), peak(), fwhm(0) {
-}
-
-//------------------------------------------------------------------------------
-
 str_lst const& Reflection::reflTypes() {
   static str_lst types;
   if (types.isEmpty())
@@ -17,38 +12,38 @@ str_lst const& Reflection::reflTypes() {
   return types;
 }
 
-Reflection::Reflection(eType type_): type(type_) {
+Reflection::Reflection(eType type): peakFunction(nullptr) /*>>>type(type_)*/ {
+  setPeakFunction(type);
   setRange(Range());
 }
 
-Reflection::eType Reflection::getType() const {
-  return type;
+Reflection::~Reflection() {
+  delete peakFunction;
 }
 
-void Reflection::setType(Reflection::eType type_) {
-  type = type_;
+Reflection::eType Reflection::getType() const {
+  return peakFunction->type();
+}
+
+void Reflection::setType(eType type) {
+  setPeakFunction(type);
 }
 
 void Reflection::setRange(Range const& range_) {
   range = range_;
   // invalidate guesses
-  peak  = XY();
-  fwhm  = qQNaN();
+  peakFunction->setGuessPeak(XY());
+  peakFunction->setGuessFWHM(qQNaN());
 }
 
-fit::PeakFunction* Reflection::peakFunction() const {
-  switch (type) {
-  case REFL_GAUSSIAN:
-    return new fit::Gaussian();
-  case REFL_LORENTZIAN:
-    return new fit::CauchyLorentz();
-  case REFL_PSEUDOVOIGT1:
-    return new fit::PseudoVoigt1();
-  case REFL_PSEUDOVOIGT2:
-    return new fit::PseudoVoigt2();
-  default:
-    NEVER_HERE
-  }
+Reflection::PeakFunction &Reflection::getPeakFunction() const {
+  ASSERT(peakFunction)
+  return *peakFunction;
+}
+
+void Reflection::setPeakFunction(eType type) {
+  delete peakFunction;
+  peakFunction = PeakFunction::factory(type);
 }
 
 //------------------------------------------------------------------------------

@@ -257,7 +257,7 @@ void DatasetOptions2::setFrom(TheHub& theHub) {
 //------------------------------------------------------------------------------
 
 Dataset::Dataset(TheHub& theHub_)
-: super("",theHub_,Qt::Vertical), dataset(nullptr) {
+: super(EMPTY_STR,theHub_,Qt::Vertical), dataset(nullptr) {
 
   box->addWidget(imageWidget = new ImageWidget(theHub,*this),0,Qt::AlignCenter);
 

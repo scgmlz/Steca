@@ -84,7 +84,7 @@ public:
   QVariant data(QModelIndex const&,int)               const;
   QVariant headerData(int,Qt::Orientation,int)        const;
 
-  void addReflection();
+  void addReflection(core::Reflection::eType);
   void remReflection(uint);
 
   void signalReset();

@@ -15,8 +15,9 @@ ReflectionView::ReflectionView(TheHub& theHub_)
     resizeColumnToContents(i);
 }
 
-void ReflectionView::addReflection() {
-  model.addReflection();
+void ReflectionView::addReflection(int type) {
+  using eType = core::Reflection::eType;
+  model.addReflection((eType)qBound(0,type,(int)eType::NUM_PEAK_TYPES)); // make safe
   update();
 }
 
@@ -103,25 +104,33 @@ Fitting::Fitting(TheHub& theHub_)
   auto gb = gridLayout();
   vb->addLayout(gb);
 
-  gb->addWidget(label("min"),                     0, 0);
-  gb->addWidget((spinRangeMin = spinCell(6,.0)),  0, 1);
-  gb->addWidget(label("max"),                     0, 2);
-  gb->addWidget((spinRangeMax = spinCell(6,.0)),  0, 3);
+  gb->addWidget(label("min"),                       0, 0);
+  gb->addWidget((spinRangeMin   = spinCell(6,.0)),  0, 1);
+  gb->addWidget(label("max"),                       0, 2);
+  gb->addWidget((spinRangeMax   = spinCell(6,.0)),  0, 3);
 
-  gb->addWidget(label("peak x"),                  1, 0);
-  gb->addWidget((spinPeakX    = spinCell(6,.0)),  1, 1);
-  gb->addWidget(label("y"),                       1, 2);
-  gb->addWidget((spinPeakY    = spinCell(6,.0)),  1, 3);
+  gb->addWidget(label("guess x"),                    1, 0);
+  gb->addWidget((spinGuessPeakX = spinCell(6,.0)),  1, 1);
+  gb->addWidget(label("y"),                         1, 2);
+  gb->addWidget((spinGuessPeakY = spinCell(6,.0)),  1, 3);
 
-  gb->addWidget(label("fwhm"),                    2, 0);
-  gb->addWidget((spinFwhm     = spinCell(6,.0)),  2, 1);
+  gb->addWidget(label("fwhm"),                      2, 0);
+  gb->addWidget((spinGuessFwhm  = spinCell(6,.0)),  2, 1);
+
+  gb->addWidget(label("fit x"),                    3, 0);
+  gb->addWidget((readFitPeakX   = readCell(6)),     3, 1);
+  gb->addWidget(label("y"),                         3, 2);
+  gb->addWidget((readFitPeakY   = readCell(6)),     3, 3);
+
+  gb->addWidget(label("fwhm"),                      4, 0);
+  gb->addWidget((readFitFwhm    = readCell(6)),     4, 1);
 
   gb->setColumnStretch(4,1);
 
   enableReflControls(false);
 
   connect(theHub.actReflectionAdd, &QAction::triggered, [this]() {
-    reflectionView->addReflection();
+    reflectionView->addReflection(comboReflType->currentIndex());
     enableReflControls(true);
   });
 
@@ -150,30 +159,37 @@ Fitting::Fitting(TheHub& theHub_)
     if (!silentSpin) {
       theHub.newReflectionData(
         core::Range::safeFrom(spinRangeMin->value(),spinRangeMax->value()),
-        core::XY(spinPeakX->value(),spinPeakY->value()),
-        spinFwhm->value());
+        core::XY(spinGuessPeakX->value(),spinGuessPeakY->value()),
+        spinGuessFwhm->value());
     }
   };
 
-  connect(spinRangeMin, static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),newReflData);
-  connect(spinRangeMax, static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),newReflData);
-  connect(spinPeakX,    static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),newReflData);
-  connect(spinPeakY,    static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),newReflData);
-  connect(spinFwhm,     static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),newReflData);
+  connect(spinRangeMin,   static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),newReflData);
+  connect(spinRangeMax,   static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),newReflData);
+  connect(spinGuessPeakX, static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),newReflData);
+  connect(spinGuessPeakY, static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),newReflData);
+  connect(spinGuessFwhm,  static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),newReflData);
 }
 
 void Fitting::enableReflControls(bool on) {
   spinRangeMin->setEnabled(on);
   spinRangeMax->setEnabled(on);
-  spinPeakX->setEnabled(on);
-  spinPeakY->setEnabled(on);
-  spinFwhm->setEnabled(on);
+  spinGuessPeakX->setEnabled(on);
+  spinGuessPeakY->setEnabled(on);
+  spinGuessFwhm->setEnabled(on);
+  readFitPeakX->setEnabled(on);
+  readFitPeakY->setEnabled(on);
+  readFitFwhm->setEnabled(on);
 }
 
 // TODO move to core_types ?
 
 static qreal safeReal(qreal val) {
   return qIsFinite(val) ? val : 0.0;
+}
+
+static str safeRealText(qreal val) {
+  return qIsFinite(val) ? str("%1").arg(val) : EMPTY_STR;
 }
 
 void Fitting::setReflControls(core::shp_Reflection const& reflection) {
@@ -183,17 +199,29 @@ void Fitting::setReflControls(core::shp_Reflection const& reflection) {
     // do not set comboReflType - we want it to stay as it is
     spinRangeMin->setValue(0);
     spinRangeMax->setValue(0);
-    spinPeakX->setValue(0);
-    spinPeakY->setValue(0);
-    spinFwhm->setValue(0);
+    spinGuessPeakX->setValue(0);
+    spinGuessPeakY->setValue(0);
+    spinGuessFwhm->setValue(0);
+    readFitPeakX->clear();
+    readFitPeakY->clear();
+    readFitFwhm->clear();
   } else {
     comboReflType->setCurrentIndex(reflection->getType());
-    auto range = reflection->getRange();
+
+    auto &range = reflection->getRange();
     spinRangeMin->setValue(safeReal(range.min));
     spinRangeMax->setValue(safeReal(range.max));
-    spinPeakX->setValue(safeReal(reflection->getPeak().x));
-    spinPeakY->setValue(safeReal(reflection->getPeak().y));
-    spinFwhm->setValue(safeReal(reflection->getFWHM()));
+
+    auto &peakFun = reflection->getPeakFunction();
+    auto &guessPeak = peakFun.getGuessPeak();
+    spinGuessPeakX->setValue(safeReal(guessPeak.x));
+    spinGuessPeakY->setValue(safeReal(guessPeak.y));
+    spinGuessFwhm->setValue(safeReal(peakFun.getGuessFWHM()));
+
+    auto fitPeak = peakFun.getFitPeak();
+    readFitPeakX->setText(safeRealText(fitPeak.x));
+    readFitPeakY->setText(safeRealText(fitPeak.y));
+    readFitFwhm->setText(safeRealText(peakFun.getFitFWHM()));
   }
 
   silentSpin = false;

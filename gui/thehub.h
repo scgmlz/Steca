@@ -41,7 +41,7 @@ protected:
 class Settings: public QSettings {
   SUPER(Settings, QSettings)
 public:
-  Settings(rcstr group = "");
+  Settings(rcstr group = EMPTY_STR);
  ~Settings();
 
   QVariant readVariant(rcstr key, QVariant const& def);
@@ -161,15 +161,13 @@ public:
 
   void setBackgroundPolynomialDegree(uint);
 
-  core::Reflection::eType getReflType() const { return reflType; }
   void setReflType(core::Reflection::eType);
 
-  void addReflection();
+  void addReflection(core::Reflection::eType);
   void remReflection(uint);
 
 private:
   core::shp_Reflection    selectedReflection;
-  core::Reflection::eType reflType;
 
 private:
   void setImageRotate(core::ImageTransform);

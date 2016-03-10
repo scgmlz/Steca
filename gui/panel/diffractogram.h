@@ -60,7 +60,7 @@ public:
   void setTool(Tool);
   Tool getTool() const { return tool; }
 
-  void plot(core::TI_Curve const&,core::TI_Curve const&, core::TI_Curve const&, core::TI_Curves const&);
+  void plot(core::TI_Curve const&,core::TI_Curve const&, core::TI_Curve const&, core::TI_Curves const&, uint);
 
   core::Range fromPixels(int,int);
 
