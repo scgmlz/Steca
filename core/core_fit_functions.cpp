@@ -111,6 +111,7 @@ Function* Function::factory(rcstr type) {
   if (KEY_PSEUDOVOIGT2 == type)
     return new PseudoVoigt2();
   NEVER_HERE
+    return nullptr;
 }
 
 Function::Function() {
@@ -343,6 +344,7 @@ PeakFunction *PeakFunction::factory(eType type) {
     return new PseudoVoigt2();
   default:
     NEVER_HERE
+    return nullptr;
   }
 }
 
