@@ -109,6 +109,7 @@ Function *Function::factory(rcstr type) {
     return new PseudoVoigt1();
   if (KEY_PSEUDOVOIGT2 == type)
     return new PseudoVoigt2();
+  NEVER_HERE
 }
 
 Function::Function() {
@@ -120,11 +121,11 @@ Function::~Function() {
 static str KEY_PAR_COUNT("parCount");
 static str KEY_PARAMETER("p%1");
 
-void Function::loadFrom(QJsonObject const& obj) THROWS {
+void Function::loadFrom(QJsonObject const&) THROWS {
   // nothing to see here; move along
 }
 
-void Function::saveTo(QJsonObject& obj) const {
+void Function::saveTo(QJsonObject&) const {
   // nothing to do
 }
 

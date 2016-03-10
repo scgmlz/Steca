@@ -46,6 +46,8 @@ fit::PeakFunction* Reflection::peakFunction() const {
     return new fit::PseudoVoigt1();
   case REFL_PSEUDOVOIGT2:
     return new fit::PseudoVoigt2();
+  default:
+    NEVER_HERE
   }
 }
 

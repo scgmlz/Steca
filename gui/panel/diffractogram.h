@@ -100,10 +100,11 @@ private:
   DiffractogramPlot *plot;
 
   core::TI_Curve  dgram, dgramBgFitted, bg;
-  core::TI_Curves refls; uint currReflIndex;
+  core::TI_Curves refls;
 
   bool showBgFit;
 
+  uint currReflIndex;
   core::shp_Reflection currentReflection;
 
 public:

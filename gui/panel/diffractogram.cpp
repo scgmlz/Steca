@@ -133,7 +133,7 @@ void DiffractogramPlot::setTool(Tool tool_) {
 }
 
 void DiffractogramPlot::plot(
-  core::TI_Curve const& dgram, core::TI_Curve const& dgramBgFitted, core::TI_Curve const& bg, core::TI_Curves const& reflections
+  core::TI_Curve const& dgram, core::TI_Curve const& dgramBgFitted, core::TI_Curve const& bg, core::TI_Curves const& refls
 ) {
   if (dgram.isEmpty()) {
     xAxis->setVisible(false);
@@ -176,10 +176,10 @@ void DiffractogramPlot::plot(
     clearReflLayer();
     setCurrentLayer("refl");
 
-    for_i (diffractogram.refls.count()) {
-      auto r = diffractogram.refls[i];
+    for_i (refls.count()) {
+      auto r = refls[i];
       auto graph = addGraph(); reflGraph.append(graph);
-      graph->setPen(QPen(Qt::black,i==diffractogram.currReflIndex ? 3 : 1));
+      graph->setPen(QPen(Qt::black,i==(int)diffractogram.currReflIndex ? 3 : 1));
       graph->setData(r.getTth(),r.getInten());
     }
   }
