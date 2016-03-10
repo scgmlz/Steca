@@ -114,15 +114,15 @@ DiffractogramPlot::DiffractogramPlot(TheHub& theHub_,Diffractogram& diffractogra
   bgGraph             = addGraph();
   dgramGraph          = addGraph();
   dgramBgFittedGraph  = addGraph();
-  dgramPeak           = addGraph();
 
   bgGraph->setPen(QPen(Qt::green,0));
   dgramGraph->setPen(QPen(Qt::gray));
   dgramBgFittedGraph->setPen(QPen(Qt::blue,2));
-  dgramPeak->setPen(QPen(Qt::black,3));
 
   // background regions
   addLayer("bg",layer("background"),QCustomPlot::limAbove);
+  // reflections
+  addLayer("refl",layer("main"),QCustomPlot::limAbove);
 
   tool = TOOL_NONE;
 }
@@ -133,8 +133,8 @@ void DiffractogramPlot::setTool(Tool tool_) {
 }
 
 void DiffractogramPlot::plot(
-  core::TI_Curve const& dgram, core::TI_Curve const& dgramBgFitted, core::TI_Curve const& bg, core::TI_Curve const& peak)
-{
+  core::TI_Curve const& dgram, core::TI_Curve const& dgramBgFitted, core::TI_Curve const& bg, core::TI_Curves const& reflections
+) {
   if (dgram.isEmpty()) {
     xAxis->setVisible(false);
     yAxis->setVisible(false);
@@ -142,6 +142,8 @@ void DiffractogramPlot::plot(
     bgGraph->clearData();
     dgramGraph->clearData();
     dgramBgFittedGraph->clearData();
+
+    clearReflLayer();
 
   } else {
     auto tthRange   = dgram.getTthRange();
@@ -167,9 +169,19 @@ void DiffractogramPlot::plot(
     } else {
       bgGraph->clearData();
     }
+
     dgramGraph->setData(dgram.getTth(),dgram.getInten());
     dgramBgFittedGraph->setData(dgramBgFitted.getTth(),dgramBgFitted.getInten());
-    dgramPeak->setData(peak.getTth(),peak.getInten());
+
+    clearReflLayer();
+    setCurrentLayer("refl");
+
+    for_i (diffractogram.refls.count()) {
+      auto r = diffractogram.refls[i];
+      auto graph = addGraph(); reflGraph.append(graph);
+      graph->setPen(QPen(Qt::black,i==diffractogram.currReflIndex ? 3 : 1));
+      graph->setData(r.getTth(),r.getInten());
+    }
   }
 
   replot();
@@ -195,7 +207,7 @@ void DiffractogramPlot::remBg(core::Range const& range) {
 }
 
 void DiffractogramPlot::setReflRange(core::Range const& range) {
-  diffractogram.setReflRange(range);
+  diffractogram.setCurrReflRange(range);
   updateBg();
 }
 
@@ -211,11 +223,16 @@ void DiffractogramPlot::updateBg() {
     break;
   }
   case TOOL_PEAK_REGION:
-    addBgItem(diffractogram.reflRange());
+    addBgItem(diffractogram.currReflRange());
     break;
   }
 
   diffractogram.renderDataset();
+}
+
+void DiffractogramPlot::clearReflLayer() {
+  for (auto g: reflGraph) removeGraph(g);
+  reflGraph.clear();
 }
 
 void DiffractogramPlot::addBgItem(core::Range const& range) {
@@ -244,7 +261,7 @@ void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
 
 Diffractogram::Diffractogram(TheHub& theHub_)
 : super(EMPTY_STR,theHub_,Qt::Vertical), dataset(nullptr)
-, showBgFit(false) {
+, showBgFit(false), currReflIndex(-1) {
   box->addWidget((plot = new DiffractogramPlot(theHub,*this)));
 
   connect(&theHub, &TheHub::datasetSelected, [this](core::shp_Dataset dataset) {
@@ -293,6 +310,15 @@ Diffractogram::Diffractogram(TheHub& theHub_)
     plot->updateBg();
   });
 
+  connect(&theHub, &TheHub::reflectionValues, [this](core::Range const& range, core::XY const& peak, qreal fwhm) {
+    if (currentReflection) {
+      currentReflection->setRange(range);
+      currentReflection->setPeak(peak);
+      currentReflection->setFWHM(fwhm);
+      plot->updateBg();
+    }
+  });
+
   theHub.actBackgroundShowFit->setChecked(true);
 }
 
@@ -304,9 +330,9 @@ void Diffractogram::setDataset(core::shp_Dataset dataset_) {
 void Diffractogram::renderDataset() {
   calcDgram();
   calcBackground();
-  calcReflection();
+  calcReflections();
 
-  plot->plot(dgram,dgramBgFitted,bg,reflection);
+  plot->plot(dgram,dgramBgFitted,bg,refls);
 }
 
 void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, normalize==false
@@ -372,36 +398,47 @@ void Diffractogram::calcBackground() {
   }
 }
 
-void Diffractogram::setReflRange(core::Range const& range) {
+void Diffractogram::setCurrReflRange(core::Range const& range) {
   if (currentReflection) currentReflection->setRange(range);
 }
 
-core::Range Diffractogram::reflRange() const {
+core::Range Diffractogram::currReflRange() const {
   return currentReflection ? currentReflection->getRange() : core::Range();
 }
 
-void Diffractogram::calcReflection() {
-  reflection.clear();
-  if (!currentReflection) return;
+void Diffractogram::calcReflections() {
+  refls.clear(); currReflIndex = -1;
 
-  auto range = reflRange();
-  if (range.min < range.max) {
-    QSharedPointer<core::fit::PeakFunction> fun(currentReflection->peakFunction());
-    core::fit::fitPeak(*fun,dgramBgFitted,range);
-    currentReflection->setPeak(fun->getPeak());
-    currentReflection->setFWHM(fun->getFWHM());
+  auto rs = theHub.getReflections();
+  for_i (rs.count()) {
+    auto r = rs[i];
+    if (r == currentReflection)
+      currReflIndex = i;
 
-    theHub.setReflectionData(currentReflection);
+    auto range = r->getRange();
+    if (range.min < range.max) {
+      QSharedPointer<core::fit::PeakFunction> fun(r->peakFunction());
+      core::fit::fitPeak(*fun,dgramBgFitted,range);
+      r->setPeak(fun->getPeak());
+      r->setFWHM(fun->getFWHM());
 
-    auto tth   = dgramBgFitted.getTth();
-    auto inten = dgramBgFitted.getInten();
-    for_i (dgramBgFitted.count()) {
-      qreal x = tth[i];
-      if (range.contains(x)) {
-        reflection.append(x,fun->y(x));
+      auto tth   = dgramBgFitted.getTth();
+      auto inten = dgramBgFitted.getInten();
+
+      core::TI_Curve c;
+
+      for_i (dgramBgFitted.count()) {
+        qreal x = tth[i];
+        if (range.contains(x)) {
+          c.append(x,fun->y(x));
+        }
       }
+
+      refls.append(c);
     }
   }
+
+  theHub.setReflectionData(currentReflection);
 }
 
 //------------------------------------------------------------------------------

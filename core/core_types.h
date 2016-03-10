@@ -36,6 +36,8 @@ struct Range {
   Range(qreal val);
   Range(qreal min, qreal max);
 
+  qreal width() const;
+
   static Range infinite();        ///< -inf .. +inf
 
   qreal min, max;                 ///< this is the range
@@ -138,34 +140,14 @@ private:
   core::Range tthRange, intenRange;
 };
 
+typedef QVector<TI_Curve> TI_Curves;
+
 //------------------------------------------------------------------------------
 // load / save helpers
-static str INF_P("plus_Infinity");
-static str INF_M("minus_Infinity");
 
-#define SAVE_HANDLER(tag,val,obj) \
-  if (qIsFinite(val)) {     \
-    obj[tag] = val;         \
-  }                         \
-  else if (qIsInf(val)) {   \
-    if (val < 0) {          \
-      obj[tag] = INF_M;     \
-    }                       \
-    obj[tag] = INF_P;       \
-  }
-
-#define LOAD_HANDLER(tag,val,obj)         \
-  if (obj[tag].toString() == INF_P) {     \
-    val = +qInf();                        \
-  }                                       \
-  else if(obj[tag].toString() == INF_M) { \
-    val = -qInf();                        \
-  }                                       \
-  else {                                  \
-    val = loadReal(obj,tag);              \
-  }
-
-qreal loadReal(QJsonObject const&, rcstr tag);
+qreal loadReal(QJsonObject const&, rcstr tag) THROWS;
+void  saveReal(QJsonObject&, rcstr tag, qreal);
+bool  areEqual(qreal,qreal);
 
 //------------------------------------------------------------------------------
 }

@@ -30,7 +30,7 @@ public:
     bool  setValue(qreal value, qreal error=0, bool force=false);
 
   public:
-    void loadFrom(QJsonObject const&);
+    void loadFrom(QJsonObject const&) THROWS;
     void saveTo(QJsonObject&) const;
 
   private:
@@ -52,6 +52,8 @@ public:
   };
 
 public:
+  static Function* factory(rcstr);
+
   Function();
   virtual ~Function();
 
@@ -69,8 +71,9 @@ public:
   virtual qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const = 0;
 
 public:
-  virtual void loadFrom(QJsonObject const&);
+  virtual void loadFrom(QJsonObject const&) THROWS;
   virtual void saveTo(QJsonObject&) const;
+
 };
 
 #ifndef QT_NO_DEBUG
@@ -93,13 +96,18 @@ public:
   void reset();
 
 public:
-  void loadFrom(QJsonObject const&);
+  void loadFrom(QJsonObject const&) THROWS;
   void saveTo(QJsonObject&) const;
 
+#ifdef TEST_UNIT_TESTS
+public:
+#else
 protected:
+#endif
   QVector<Parameter> parameters;
   qreal parValue(uint parIndex, qreal const* parameterValues) const;
   void  setValue(uint parIndex, qreal val);
+
 };
 
 //------------------------------------------------------------------------------
@@ -122,7 +130,7 @@ public:
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
 public:
-  void loadFrom(QJsonObject const&);
+  void loadFrom(QJsonObject const&) THROWS;
   void saveTo(QJsonObject&) const;
 
 protected:
@@ -134,6 +142,7 @@ protected:
   QVector<Function*>  function_parIndex;
   /// the starting index of parameters of a summed function, given the aggregate parameter index
   QVector<uint> firstParIndex_parIndex;
+
 };
 
 //------------------------------------------------------------------------------
@@ -151,7 +160,7 @@ public:
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
 public:
-  void loadFrom(QJsonObject const&);
+  void loadFrom(QJsonObject const&) THROWS;
   void saveTo(QJsonObject&) const;
 };
 
@@ -172,6 +181,7 @@ public:
 private:
   // guesses
   XY peak; qreal fwhm;
+
 };
 
 //------------------------------------------------------------------------------
@@ -188,6 +198,9 @@ public:
 
   void setPeak(XY const&);
   void setFWHM(qreal);
+
+public:
+  void saveTo(QJsonObject&) const;
 };
 
 //------------------------------------------------------------------------------
@@ -204,6 +217,9 @@ public:
 
   void setPeak(XY const&);
   void setFWHM(qreal);
+
+public:
+  void saveTo(QJsonObject&) const;
 };
 
 //------------------------------------------------------------------------------
@@ -220,6 +236,9 @@ public:
 
   void setPeak(XY const&);
   void setFWHM(qreal);
+
+public:
+  void saveTo(QJsonObject&) const;
 };
 
 //------------------------------------------------------------------------------
@@ -236,6 +255,9 @@ public:
 
   void setPeak(XY const&);
   void setFWHM(qreal);
+
+public:
+  void saveTo(QJsonObject&) const;
 };
 
 //------------------------------------------------------------------------------

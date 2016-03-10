@@ -42,6 +42,10 @@ Range::Range(qreal min, qreal max) {
   set(min,max);
 }
 
+qreal Range::width() const {
+  return isValid() ? max-min : qQNaN();
+}
+
 Range Range::infinite() {
   return Range(-qInf(), +qInf());
 }
@@ -102,21 +106,17 @@ qreal Range::bound(qreal value) const {
   return value;
 }
 
-static str KEY_RANGE_MIN("range_min");
-static str KEY_RANGE_MAX("range_max");
-static str KEY_RANGE("range");
+static str KEY_RANGE_MIN("min");
+static str KEY_RANGE_MAX("max");
 
 void Range::loadFrom(QJsonObject const& obj) {
-  QJsonObject rObj = obj[KEY_RANGE].toObject();
-  LOAD_HANDLER(KEY_RANGE_MIN,min,rObj)
-  LOAD_HANDLER(KEY_RANGE_MAX,max,rObj)
+  min = loadReal(obj, KEY_RANGE_MIN);
+  max = loadReal(obj, KEY_RANGE_MAX);
 }
 
 void Range::saveTo(QJsonObject& obj) const {
-  QJsonObject rObj;
-  SAVE_HANDLER(KEY_RANGE_MIN, min, rObj)
-  SAVE_HANDLER(KEY_RANGE_MAX, max, rObj)
-  obj[KEY_RANGE] = rObj;
+  saveReal(obj, KEY_RANGE_MIN, min);
+  saveReal(obj, KEY_RANGE_MAX, max);
 }
 
 //------------------------------------------------------------------------------
@@ -323,14 +323,43 @@ void TI_Curve::append(qreal tth_, qreal inten_) {
   tthRange.extend(tth_);
   intenRange.extend(inten_);
 }
+
 //------------------------------------------------------------------------------
 
-qreal loadReal(QJsonObject const& obj, rcstr tag) {
-  if(obj[tag] == QJsonValue::Undefined){
+static str const INF_P("+inf"), INF_M("-inf");
+
+qreal loadReal(QJsonObject const& obj, rcstr tag) THROWS {
+  auto val = obj[tag];
+
+  switch (val.type()) {
+  case QJsonValue::Undefined:
     return qQNaN();
+  case QJsonValue::String: {
+    auto s = val.toString();
+    if (INF_P == s) return +qInf();
+    if (INF_M == s) return -qInf();
+    THROW("bad number format");
   }
-  return obj[tag].toDouble();
+  default:
+    return val.toDouble();
+  }
 }
+
+void saveReal(QJsonObject& obj, rcstr tag, qreal num) {
+  if (qIsNaN(num)) return; // do not save anything
+
+  auto val = obj[tag];
+  if (qIsInf(num))
+    val = (num < 0) ? INF_M : INF_P;
+  else
+    val = num;
+}
+
+bool areEqual(qreal r1, qreal r2) {
+  return
+    (qIsNaN(r1) && qIsNaN(r2)) || r1 == r2;
+}
+
 
 //------------------------------------------------------------------------------
 }

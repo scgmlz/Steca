@@ -139,7 +139,6 @@ Fitting::Fitting(TheHub& theHub_)
   });
 
   connect(&theHub, &TheHub::reflectionSelected, [this](core::shp_Reflection reflection) {
-    if (reflection) comboReflType->setCurrentIndex(reflection->getType());
     setReflControls(reflection);
   });
 
@@ -148,11 +147,12 @@ Fitting::Fitting(TheHub& theHub_)
   });
 
   auto newReflData = [this](qreal) {
-    if (!silentSpin)
+    if (!silentSpin) {
       theHub.newReflectionData(
-        core::Range(spinRangeMin->value(),spinRangeMax->value()),
+        core::Range::safeFrom(spinRangeMin->value(),spinRangeMax->value()),
         core::XY(spinPeakX->value(),spinPeakY->value()),
         spinFwhm->value());
+    }
   };
 
   connect(spinRangeMin, static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),newReflData);
@@ -179,19 +179,21 @@ static qreal safeReal(qreal val) {
 void Fitting::setReflControls(core::shp_Reflection const& reflection) {
   silentSpin = true;
 
-  if (reflection) {
+  if (reflection.isNull()) {
+    // do not set comboReflType - we want it to stay as it is
+    spinRangeMin->setValue(0);
+    spinRangeMax->setValue(0);
+    spinPeakX->setValue(0);
+    spinPeakY->setValue(0);
+    spinFwhm->setValue(0);
+  } else {
+    comboReflType->setCurrentIndex(reflection->getType());
     auto range = reflection->getRange();
     spinRangeMin->setValue(safeReal(range.min));
     spinRangeMax->setValue(safeReal(range.max));
     spinPeakX->setValue(safeReal(reflection->getPeak().x));
     spinPeakY->setValue(safeReal(reflection->getPeak().y));
     spinFwhm->setValue(safeReal(reflection->getFWHM()));
-  } else {
-    spinRangeMin->setValue(0);
-    spinRangeMax->setValue(0);
-    spinPeakX->setValue(0);
-    spinPeakY->setValue(0);
-    spinFwhm->setValue(0);
   }
 
   silentSpin = false;
