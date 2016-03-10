@@ -278,8 +278,8 @@ void TheHub::setReflectionData(core::shp_Reflection reflection) {
   emit reflectionData(reflection);
 }
 
-void TheHub::newReflectionData(core::Range const& range, core::XY const& peak, qreal fwhm) {
-  emit reflectionValues(range, peak, fwhm);
+void TheHub::newReflectionData(core::Range const& range, core::XY const& peak, qreal fwhm, bool withGuesses) {
+  emit reflectionValues(range, peak, fwhm, withGuesses);
 }
 
 void TheHub::load(QFileInfo const& fileInfo) THROWS {

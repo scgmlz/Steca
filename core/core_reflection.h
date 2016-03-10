@@ -30,6 +30,7 @@ public:
 
   PeakFunction& getPeakFunction() const;
 
+  void invalidateGuesses();
   void setGuessPeak(XY const& xy) { peakFunction->setGuessPeak(xy);   }
   void setGuessFWHM(qreal fwhm)   { peakFunction->setGuessFWHM(fwhm); }
 

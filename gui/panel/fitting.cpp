@@ -106,16 +106,21 @@ Fitting::Fitting(TheHub& theHub_)
 
   gb->addWidget(label("min"),                       0, 0);
   gb->addWidget((spinRangeMin   = spinCell(6,.0)),  0, 1);
+  spinRangeMin->setSingleStep(.1);
   gb->addWidget(label("max"),                       0, 2);
   gb->addWidget((spinRangeMax   = spinCell(6,.0)),  0, 3);
+  spinRangeMax->setSingleStep(.1);
 
   gb->addWidget(label("guess x"),                    1, 0);
   gb->addWidget((spinGuessPeakX = spinCell(6,.0)),  1, 1);
+  spinGuessPeakX->setSingleStep(.1);
   gb->addWidget(label("y"),                         1, 2);
   gb->addWidget((spinGuessPeakY = spinCell(6,.0)),  1, 3);
+  spinGuessPeakY->setSingleStep(.1);
 
   gb->addWidget(label("fwhm"),                      2, 0);
   gb->addWidget((spinGuessFwhm  = spinCell(6,.0)),  2, 1);
+  spinGuessFwhm->setSingleStep(.1);
 
   gb->addWidget(label("fit x"),                    3, 0);
   gb->addWidget((readFitPeakX   = readCell(6)),     3, 1);
@@ -155,20 +160,28 @@ Fitting::Fitting(TheHub& theHub_)
     setReflControls(reflection);
   });
 
-  auto newReflData = [this](qreal) {
+  auto newReflData = [this](bool invalidateGuesses) {
     if (!silentSpin) {
       theHub.newReflectionData(
         core::Range::safeFrom(spinRangeMin->value(),spinRangeMax->value()),
         core::XY(spinGuessPeakX->value(),spinGuessPeakY->value()),
-        spinGuessFwhm->value());
+        spinGuessFwhm->value(), invalidateGuesses);
     }
   };
 
-  connect(spinRangeMin,   static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),newReflData);
-  connect(spinRangeMax,   static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),newReflData);
-  connect(spinGuessPeakX, static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),newReflData);
-  connect(spinGuessPeakY, static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),newReflData);
-  connect(spinGuessFwhm,  static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),newReflData);
+  auto changeReflData0 = [newReflData](qreal) {
+    newReflData(false);
+  };
+
+  auto changeReflData1 = [newReflData](qreal) {
+    newReflData(true);
+  };
+
+  connect(spinRangeMin,   static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),changeReflData1);
+  connect(spinRangeMax,   static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),changeReflData1);
+  connect(spinGuessPeakX, static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),changeReflData0);
+  connect(spinGuessPeakY, static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),changeReflData0);
+  connect(spinGuessFwhm,  static_cast<void(QDoubleSpinBox::*)(qreal)>(&QDoubleSpinBox::valueChanged),changeReflData0);
 }
 
 void Fitting::enableReflControls(bool on) {

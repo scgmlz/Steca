@@ -31,14 +31,16 @@ void Reflection::setType(eType type) {
 
 void Reflection::setRange(Range const& range_) {
   range = range_;
-  // invalidate guesses
-  peakFunction->setGuessPeak(XY());
-  peakFunction->setGuessFWHM(qQNaN());
 }
 
 Reflection::PeakFunction &Reflection::getPeakFunction() const {
   ASSERT(peakFunction)
-  return *peakFunction;
+      return *peakFunction;
+}
+
+void Reflection::invalidateGuesses() {
+  peakFunction->setGuessPeak(XY());
+  peakFunction->setGuessFWHM(qQNaN());
 }
 
 void Reflection::setPeakFunction(eType type) {

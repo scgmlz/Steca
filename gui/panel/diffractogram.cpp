@@ -51,7 +51,7 @@ void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
     break;
 
   case DiffractogramPlot::TOOL_PEAK_REGION:
-    plot.setReflRange(range);
+    plot.setNewReflRange(range);
     break;
 
   default:
@@ -123,6 +123,40 @@ DiffractogramPlot::DiffractogramPlot(TheHub& theHub_,Diffractogram& diffractogra
   addLayer("bg",layer("background"),QCustomPlot::limAbove);
   // reflections
   addLayer("refl",layer("main"),QCustomPlot::limAbove);
+  // reflections
+  addLayer("marks",layer("refl"),QCustomPlot::limAbove);
+
+  setCurrentLayer("marks");
+
+  guesses = addGraph();
+  guesses->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 8));
+  guesses->setLineStyle(QCPGraph::lsNone);
+  guesses->setPen(QPen(Qt::darkGray));
+
+  fits = addGraph();
+  fits->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 8));
+  fits->setLineStyle(QCPGraph::lsNone);
+  fits->setPen(QPen(Qt::red));
+
+  connect(&theHub, &TheHub::reflectionData, [this](core::shp_Reflection reflection) {
+    guesses->clearData();
+    fits->clearData();
+    if (reflection) {
+      auto &fun = reflection->getPeakFunction();
+
+      auto gp = fun.getGuessPeak();
+      guesses->addData(gp.x,gp.y);
+      auto gw2 = fun.getGuessFWHM() / 2;
+      guesses->addData(gp.x-gw2,gp.y/2);
+      guesses->addData(gp.x+gw2,gp.y/2);
+
+      auto fp = fun.getFitPeak();
+      fits->addData(fp.x,fp.y);
+      auto fw2 = fun.getFitFWHM() / 2;
+      fits->addData(fp.x-fw2,fp.y/2);
+      fits->addData(fp.x+fw2,fp.y/2);
+    }
+  });
 
   tool = TOOL_NONE;
 }
@@ -207,8 +241,8 @@ void DiffractogramPlot::remBg(core::Range const& range) {
   if (theHub.getBgRanges().rem(range)) updateBg();
 }
 
-void DiffractogramPlot::setReflRange(core::Range const& range) {
-  diffractogram.setCurrReflRange(range);
+void DiffractogramPlot::setNewReflRange(core::Range const& range) {
+  diffractogram.setCurrReflNewRange(range);
   updateBg();
 }
 
@@ -311,11 +345,15 @@ Diffractogram::Diffractogram(TheHub& theHub_)
     plot->updateBg();
   });
 
-  connect(&theHub, &TheHub::reflectionValues, [this](core::Range const& range, core::XY const& peak, qreal fwhm) {
+  connect(&theHub, &TheHub::reflectionValues, [this](core::Range const& range, core::XY const& peak, qreal fwhm, bool withGuesses) {
     if (currentReflection) {
       currentReflection->setRange(range);
-      currentReflection->setGuessPeak(peak);
-      currentReflection->setGuessFWHM(fwhm);
+      if (withGuesses)
+        currentReflection->invalidateGuesses();
+      else {
+        currentReflection->setGuessPeak(peak);
+        currentReflection->setGuessFWHM(fwhm);
+      }
       plot->updateBg();
     }
   });
@@ -399,8 +437,11 @@ void Diffractogram::calcBackground() {
   }
 }
 
-void Diffractogram::setCurrReflRange(core::Range const& range) {
-  if (currentReflection) currentReflection->setRange(range);
+void Diffractogram::setCurrReflNewRange(core::Range const& range) {
+  if (currentReflection) {
+    currentReflection->setRange(range);
+    currentReflection->invalidateGuesses();
+  }
 }
 
 core::Range Diffractogram::currReflRange() const {

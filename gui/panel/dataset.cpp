@@ -85,6 +85,7 @@ DatasetOptions1::DatasetOptions1(TheHub& theHub_)
   spinDistance->setToolTip("Sample to detector distance");
   gd->addWidget(label("distance mm"),                         0,1);
   gd->addWidget((spinPixelSize = spinCell(6,core::Geometry::MIN_DETECTOR_PIXEL_SIZE)), 1,0);
+  spinPixelSize->setSingleStep(.1);
   spinPixelSize->setToolTip("Physical pixel size");
   gd->addWidget(label("pixel size mm"),                       1,1);
   gd->setColumnStretch(2,1);
