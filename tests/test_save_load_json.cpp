@@ -66,50 +66,49 @@ void TestSaveLoadJson::testSaveLoadJson() {
     cauchySave.setValue(0,val1);
     cauchySave.setValue(1,val2);
 
-    // TODO FIX TESTS
-//    cauchySave.saveTo(cObj);
-//    cauchyLoad.loadFrom(cObj);
+    cauchySave.saveTo(cObj);
+    cauchyLoad.loadFrom(cObj);
 
-//    QCOMPARE(cauchyLoad.parameterCount(),3u);
-//    QCOMPARE(cauchyLoad.getParameter(0).getValue(),val1);
+    QCOMPARE(cauchyLoad.parameterCount(),3u);
+    QCOMPARE(cauchyLoad.getParameter(0).getValue(),val1);
 
-//    core::fit::PseudoVoigt1 pseudoSave, pseudoLoad;
-//    QJsonObject psObj;
-//    pseudoSave.setValue(0,val4);
+    core::fit::PseudoVoigt1 pseudoSave, pseudoLoad;
+    QJsonObject psObj;
+    pseudoSave.setValue(0,val4);
 
-//    pseudoSave.saveTo(psObj);
-//    pseudoLoad.loadFrom(psObj);
+    pseudoSave.saveTo(psObj);
+    pseudoLoad.loadFrom(psObj);
 
-//    QCOMPARE(pseudoLoad.parameterCount(),4u);
-//    QCOMPARE(pseudoLoad.getParameter(0).getValue(),val4);
-//    bool verify = false;
-//    auto max = pseudoLoad.getParameter(0).getRange().max;
-//    if ( qIsInf(max))
-//      verify = (max > 0) ? true : false;
+    QCOMPARE(pseudoLoad.parameterCount(),4u);
+    QCOMPARE(pseudoLoad.getParameter(0).getValue(),val4);
+    bool verify = false;
+    auto max = pseudoLoad.getParameter(0).getRange().max;
+    if ( qIsInf(max))
+      verify = (max > 0) ? true : false;
 
-//    QVERIFY(verify);
+    QVERIFY(verify);
 
-//    // testing saveTo/loadFrom Gaussian
+    // testing saveTo/loadFrom Gaussian
 
-//    core::fit::Gaussian gSave, gLoad;
-//    QJsonObject gObj;
-//    gSave.setValue(0,val3);
+    core::fit::Gaussian gSave, gLoad;
+    QJsonObject gObj;
+    gSave.setValue(0,val3);
 
-//    // Testing saveTo/loadFrom SumFunctions
+    // Testing saveTo/loadFrom SumFunctions
 
-//    QJsonObject sumObj;
+    QJsonObject sumObj;
 
-//    core::fit::SumFunctions sumSave, sumLoad;
-//    Polynomial *p1 = new Polynomial, *p2 = new Polynomial;
+    core::fit::SumFunctions sumSave, sumLoad;
+    Polynomial *p1 = new Polynomial, *p2 = new Polynomial;
 
-//    p1->loadFrom(polyObj);
-//    p2->loadFrom(polyObj);
+    p1->loadFrom(polyObj);
+    p2->loadFrom(polyObj);
 
-//    sumSave.addFunction(p1);
-//    sumSave.addFunction(p2);
+    sumSave.addFunction(p1);
+    sumSave.addFunction(p2);
 
-//    sumSave.saveTo(sumObj);
-//    sumLoad.loadFrom(sumObj);
+    sumSave.saveTo(sumObj);
+    sumLoad.loadFrom(sumObj);
 
   }
 
