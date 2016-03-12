@@ -14,6 +14,9 @@ set(source_files
   core_fit_functions.cpp
   core_fit_methods.cpp
   core_image.cpp
+  core_image_cut.cpp
+  core_image_transform.cpp
+  core_lens.cpp
   core_reflection.cpp
   core_session.cpp
   core_types.cpp

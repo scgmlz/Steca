@@ -283,6 +283,10 @@ void TheHub::newReflectionData(core::Range const& range, core::XY const& peak, q
   emit reflectionValues(range, peak, fwhm);
 }
 
+core::shp_LensSystem TheHub::allLenses(core::Image const& image) {
+  return session->allLenses(image);
+}
+
 void TheHub::load(QFileInfo const& fileInfo) THROWS {
   QFile file(fileInfo.absoluteFilePath());
   RUNTIME_CHECK(file.open(QIODevice::ReadOnly), "File cannot be opened");

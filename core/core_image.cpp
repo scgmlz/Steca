@@ -1,5 +1,4 @@
 #include "core_image.h"
-#include "core_session.h"
 
 namespace core {
 //------------------------------------------------------------------------------

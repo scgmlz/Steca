@@ -343,10 +343,10 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   // do this first! (e.g. before getCut())
   auto angles   = theHub.calcAngleCorrArray(dataset->tthMitte());
 
-  auto image    = dataset->getImage();
-  auto imageCut = theHub.getImageCut();
-  uint width    = imageCut.getWidth(theHub.getImageSize());
-  uint height   = imageCut.getHeight(theHub.getImageSize());
+  auto lensSystem = theHub.allLenses(dataset->getImage());
+  auto size     = lensSystem->getSize();
+  uint width    = size.width();
+  uint height   = size.height();
 
   auto cut = theHub.getCut();
   qreal TTHMin = cut.tth_regular.min;
@@ -356,10 +356,8 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   reals_t intens_vec(width);
   uints_t counts_vec(width,0);
 
-  for_i (height) {
-    auto iy = i + imageCut.top;
-    for_i (width) {
-      auto ix = i + imageCut.left;
+  for(uint iy = 0; iy < height; ++iy) {
+    for(uint ix = 0; ix < width; ++ix) {
 
       // TODO angles can be arranged for a single loop for_i (pixTotal) [last in commit 98413db71cd38ebaa54b6337a6c6e670483912ef]
       auto tthPix = angles.at(theHub.pixIndexNoTransform(ix,iy)).tthPix;
@@ -367,7 +365,7 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
       int bin = (tthPix==TTHMax) ? width-1 : qFloor((tthPix - TTHMin) / deltaTTH);
       if (bin<0 || (int)width<=bin) continue;  // outside of the cut
 
-      auto in = theHub.pixIntensity(image,ix,iy);
+      auto in = lensSystem->getIntensity(ix, iy);
       if (!qIsNaN(in)) {
         intens_vec[bin] += in;
         counts_vec[bin]++;

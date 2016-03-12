@@ -4,47 +4,6 @@
 #include <cmath>
 
 namespace core {
-
-//------------------------------------------------------------------------------
-
-ImageTransform::ImageTransform(int val_): val((e)(val_ & 7)) {
-}
-
-ImageTransform ImageTransform::mirror(bool on) const {
-  return on ? ImageTransform(val |  MIRROR)
-            : ImageTransform(val & ~MIRROR);
-}
-
-ImageTransform ImageTransform::rotateTo(ImageTransform rot) const {
-  return ImageTransform((val & MIRROR) | (rot.val & 3));
-}
-
-ImageTransform ImageTransform::nextRotate() const {
-  return rotateTo(val+1);
-}
-
-//------------------------------------------------------------------------------
-
-ImageCut::ImageCut(uint top_, uint bottom_, uint left_, uint right_)
-: top(top_), bottom(bottom_), left(left_), right(right_) {
-}
-
-bool ImageCut::operator==(ImageCut const& that) {
-  return top==that.top && bottom==that.bottom && left==that.left && right==that.right;
-}
-
-uint ImageCut::getWidth(QSize const& fullSize) const {
-  return qMax(fullSize.width() - (int)left - (int)right, 0);
-}
-
-uint ImageCut::getHeight(QSize const& fullSize) const {
-  return qMax(fullSize.height() - (int)top - (int)bottom, 0);
-}
-
-uint ImageCut::getCount(QSize const& fullSize) const {
-  return getWidth(fullSize) * getHeight(fullSize);
-}
-
 //------------------------------------------------------------------------------
 
 qreal const Geometry::MIN_DETECTOR_DISTANCE   = 1000;
@@ -239,6 +198,17 @@ intens_t Session::pixIntensity(Image const& image, uint x, uint y) const {
 QSize Session::getImageSize() const {
   return imageTransform.isTransposed()
     ? imageSize.transposed() : imageSize;
+}
+
+shp_LensSystem Session::allLenses(Image const& image) {
+  auto lenses = makeLensSystem(image);
+  lenses << shp_LensSystem(new TransformationLens(imageTransform))
+         << shp_LensSystem(new ROILens(imageCut));
+  return lenses;
+}
+
+shp_LensSystem Session::plainLens(Image const& image) {
+  return makeLensSystem(image);
 }
 
 QPoint Session::getPixMiddle() const {

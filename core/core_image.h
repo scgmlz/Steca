@@ -11,8 +11,6 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-using intens_t = float; ///< short for intensity. float should suffice
-
 class Image final: public Array2D<intens_t> {
   SUPER(Image,Array2D<intens_t>)
 public:

@@ -135,6 +135,9 @@ public: // files
   void newReflectionData(core::Range const&,core::XY const&,qreal);
 
 public:
+  core::shp_LensSystem allLenses(core::Image const& image);
+
+public:
   void load(QFileInfo const&)       THROWS;
   void load(QByteArray const& json) THROWS;
   QByteArray save() const;

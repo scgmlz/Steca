@@ -10,6 +10,9 @@
 class QJsonObject;
 
 namespace core {
+
+using intens_t = float; ///< short for intensity. float should suffice
+
 //------------------------------------------------------------------------------
 // conversions
 
