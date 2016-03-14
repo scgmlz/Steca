@@ -108,43 +108,6 @@ public:
 };
 
 //------------------------------------------------------------------------------
-/// A set of datapoints.
-
-class Curve final {
-public:
-  Curve();
-
-  void clear();
-
-  bool isEmpty() const;
-  uint count()   const;
-  bool isOrdered() const;
-
-  void append(qreal x, qreal y);
-
-  reals_t const& getXs() const { return xs; }
-  reals_t const& getYs() const { return ys; }
-
-  qreal x(uint i) const { return xs[i]; }
-  qreal y(uint i) const { return ys[i]; }
-
-  Range const& getXRange() const { return xRange; }
-  Range const& getYRange() const { return yRange; }
-
-  Curve intersect(Range const&)  const;
-  Curve intersect(Ranges const&) const;
-
-  Curve smooth()    const;
-  uint  maxYindex() const;
-
-private:
-  reals_t xs, ys;
-  core::Range xRange, yRange;
-};
-
-using Curves = QVector<Curve>;
-
-//------------------------------------------------------------------------------
 // load / save helpers
 
 qreal loadReal(QJsonObject const&, rcstr tag) THROWS;

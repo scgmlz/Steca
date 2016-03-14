@@ -1,5 +1,6 @@
 #include "test_approx.h"
 
+#include <core_curve.h>
 #include <core_fit_functions.h>
 #include <core_fit_methods.h>
 

@@ -7,14 +7,18 @@
 
 #include "core_fit_functions.h"
 
-namespace core { namespace fit {
+namespace core {
+
+class Curve;
+
+namespace fit {
 //------------------------------------------------------------------------------
 
 /// Polynomial fit
-Polynomial fitBackground(Curve const& dgram, core::Ranges const&, uint degree);
+Polynomial fitBackground(core::Curve const& dgram, core::Ranges const&, uint degree);
 
 /// Peak fit
-void fitPeak(PeakFunction&, Curve const&, core::Range const&);
+void fitPeak(PeakFunction&, core::Curve const&, core::Range const&);
 
 //------------------------------------------------------------------------------
 }}

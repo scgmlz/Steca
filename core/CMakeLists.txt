@@ -8,6 +8,7 @@ add_subdirectory(LevMar)
 set(header_files
   core_angle_map_array.h
   core_array2d.h
+  core_curve.h
   core_dataset.h
   core_defs.h
   core_file.h
@@ -22,10 +23,11 @@ set(header_files
   core_reflection.h
   core_session.h
   core_types.h
-  )
+)
 
 set(source_files
   core_array2d.cpp
+  core_curve.cpp
   core_dataset.cpp
   core_defs.cpp
   core_file.cpp

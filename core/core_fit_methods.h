@@ -7,7 +7,11 @@
 
 #include "core_fit_functions.h"
 
-namespace core { namespace fit {
+namespace core {
+
+class Curve;
+
+namespace fit {
 //------------------------------------------------------------------------------
 
 class FittingMethod {
@@ -15,10 +19,10 @@ public:
   FittingMethod();
   virtual ~FittingMethod();
 
-  bool fitWithoutCheck(Function&, Curve const&);
+  bool fitWithoutCheck(Function&, core::Curve const&);
 
 protected:
-  bool fit(Function&, Curve const&, bool sideConditionCheckIsActive);
+  bool fit(Function&, core::Curve const&, bool sideConditionCheckIsActive);
   virtual bool approximate(qreal*,qreal const*,qreal const*,qreal*,uint,qreal const*,uint) = 0;
 
   /// valid during fit()

@@ -5,6 +5,7 @@
 #define DIFFRACTOGRAM_H
 
 #include "panel.h"
+#include "core_curve.h"
 #include "core_dataset.h"
 #include "core_reflection.h"
 #include "core_types.h"

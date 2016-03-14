@@ -1,4 +1,6 @@
 #include "core_fit_methods.h"
+
+#include "core_curve.h"
 #include "LevMar/levmar.h"
 #include <cmath>
 
@@ -11,11 +13,11 @@ FittingMethod::FittingMethod() {
 FittingMethod::~FittingMethod() {
 }
 
-bool FittingMethod::fitWithoutCheck(Function& function, Curve const& curve) {
+bool FittingMethod::fitWithoutCheck(Function& function, core::Curve const& curve) {
   return fit(function, curve, false);
 }
 
-bool FittingMethod::fit(Function& function_, Curve const& curve, bool sideConditionCheckIsActive) {
+bool FittingMethod::fit(Function& function_, core::Curve const& curve, bool sideConditionCheckIsActive) {
   if (curve.isEmpty()) return false;
 
   function = &function_;

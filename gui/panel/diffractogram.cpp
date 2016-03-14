@@ -379,44 +379,10 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
 
   if (!dataset) return;
 
-  auto lensSystem = theHub.allLenses(*dataset);
-  auto size     = lensSystem->getSize();
-  uint width    = size.width();
-  uint height   = size.height();
-
-  auto cut = theHub.getCut();
-  qreal TTHMin = cut.tth_regular.min;
-  qreal TTHMax = cut.tth_regular.max;
-  qreal deltaTTH = (TTHMax - TTHMin) / width;
-
-  reals_t intens_vec(width);
-  uints_t counts_vec(width,0);
-
-  for(uint iy = 0; iy < height; ++iy) {
-    for(uint ix = 0; ix < width; ++ix) {
-
-      // TODO angles can be arranged for a single loop for_i (pixTotal) [last in commit 98413db71cd38ebaa54b6337a6c6e670483912ef]
-      auto tthPix = lensSystem->getAngles(ix, iy).tth;
-
-      int bin = (tthPix==TTHMax) ? width-1 : qFloor((tthPix - TTHMin) / deltaTTH);
-      if (bin<0 || (int)width<=bin) {
-          TR("TTH bin outside cut?")
-          continue;  // outside of the cut
-      }
-
-      auto in = lensSystem->getIntensity(ix, iy);
-      if (!qIsNaN(in)) {
-        intens_vec[bin] += in;
-        counts_vec[bin]++;
-      }
-    }
-  }
-
-  for_i (width) {
-    auto in = intens_vec[i]; auto cnt = counts_vec[i];
-    if (cnt > 0) in /= cnt;
-    dgram.append(core::deg_rad(TTHMin + deltaTTH*i),in);
-  }
+  const auto cut = theHub.getCut();
+  dgram = makeCurve(theHub.allLenses(*dataset),
+                    cut.gamma, cut.tth_regular);
+  std::for_each(dgram.getXs().begin(), dgram.getXs().end(), core::deg_rad);
 }
 
 void Diffractogram::calcBackground() {
