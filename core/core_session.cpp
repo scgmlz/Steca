@@ -150,61 +150,6 @@ ImageTransform Session::getImageTransform() const {
   return imageTransform;
 }
 
-/// calculate the index of a pixel in a transformed image
-uint Session::pixIndex(uint x, uint y) const {
-  // imageSize is not transformed,
-  // therefore w and h are swapped in the odd cases below
-  uint w = imageSize.width(), h = imageSize.height();
-
-  switch (imageTransform.val) {
-  case ImageTransform::ROTATE_0:
-    return x + y * w;
-  case ImageTransform::ROTATE_1:
-    x = h - x - 1;
-    return y + x * w;
-  case ImageTransform::ROTATE_2:
-    x = w - x - 1;
-    y = h - y - 1;
-    return x + y * w;
-  case ImageTransform::ROTATE_3:
-    y = w - y - 1;
-    return y + x * w;
-  case ImageTransform::MIRROR_ROTATE_0:
-    x = w - x - 1;
-    return x + y * w;
-  case ImageTransform::MIRROR_ROTATE_1:
-    x = h - x - 1;
-    y = w - y - 1;
-    return y + x * w;
-  case ImageTransform::MIRROR_ROTATE_2:
-    y = h - y - 1;
-    return x + y * w;
-  case ImageTransform::MIRROR_ROTATE_3:
-    return y + x * w;
-  default:
-    NEVER_HERE return 0;
-  }
-}
-
-uint Session::pixIndexNoTransform(uint x, uint y) const {
-  uint w = imageTransform.isTransposed()
-    ? imageSize.height() : imageSize.width();
-  return x + y * w;
-}
-
-intens_t Session::pixIntensity(Image const& image, uint x, uint y) const {
-  uint index = pixIndex(x,y);
-  intens_t intens = image.intensity(index);
-  if (corrEnabled) {
-    auto factor = intensCorrArray.intensity(index);
-    if (!qIsNaN(factor))
-      intens *= factor;
-    else
-      intens = qQNaN();
-  }
-  return intens;
-}
-
 QSize Session::getImageSize() const {
   return imageTransform.isTransposed()
     ? imageSize.transposed() : imageSize;
@@ -310,8 +255,7 @@ AngleMapArray const& Session::calcAngleMap(qreal tthMitte) { // RENAME
         ful.tth_gamma0.extend(tthHorAktuell);
 
         // Write angle in array
-        angleMapArray.setAt(pixIndexNoTransform(ix,iy),
-                            DiffractionAngles(gamma,tthNeu));
+        angleMapArray.setAt(ix, iy, DiffractionAngles(gamma,tthNeu));
       }
     }
 
@@ -348,23 +292,26 @@ void Session::calcIntensCorrArray() {
   }
 
   ASSERT(1 == corrFile->numDatasets()) // no need to sum
-  Image const& image = corrFile->getDataset(0)->getImage();
+  auto lenses = plainLens(*corrFile->getDataset(0));
+  lenses << shp_LensSystem(new ROILens(imageCut));
 
   // REVIEW
-  qreal sum = 0; uint n = 0; auto size = getImageSize();
-  for (uint x=imageCut.left; x<size.width()-imageCut.right; ++x)
-    for (uint y=imageCut.top; y<size.height()-imageCut.bottom; ++y) {
-      sum += image.intensity(pixIndex(x,y));
+  qreal sum = 0; uint n = 0;
+  auto size = lenses->getSize();
+  for (int iy = 0; iy < size.height(); ++iy) {
+    for (int ix = 0; ix < size.width(); ++ix) {
+      sum += lenses->getIntensity(ix, iy);
       ++n;
     }
+  }
 
   ASSERT(n>0) // TODO div. by 0 ?
   qreal avg = sum / n;
 
-  intensCorrArray.fill(1,size);
-  for (uint x=imageCut.left; x<size.width()-imageCut.right; ++x)
-    for (uint y=imageCut.top; y<size.height()-imageCut.bottom; ++y) {
-      auto intens = image.intensity(pixIndex(x,y));
+  intensCorrArray.fill(1,imageSize);
+  for (int iy = 0; iy < size.height(); ++iy)
+    for (int ix = 0; ix < size.width(); ++ix) {
+      auto intens = lenses->getIntensity(ix, iy);
       qreal val;
 
       if (intens>0) {
@@ -373,7 +320,7 @@ void Session::calcIntensCorrArray() {
         val = qQNaN(); hasNaNs = true;
       }
 
-      intensCorrArray.setIntensity(pixIndex(x,y),val);
+      intensCorrArray.setAt(ix + imageCut.left, iy + imageCut.top, val);
     }
 }
 

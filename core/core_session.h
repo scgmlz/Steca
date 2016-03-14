@@ -102,14 +102,6 @@ public:
 
   ImageTransform getImageTransform() const;
 
-  /// Calculate the 1D index of a pixel, with transform.
-  uint pixIndex(uint x, uint y) const;
-  /// Calculate the 1D index of a pixel, no transform, only size considered.
-  uint pixIndexNoTransform(uint x, uint y) const;
-
-  /// Get intensity from an image with/without correction; *may return NaN*
-  intens_t pixIntensity(Image const&, uint x, uint y) const;
-
   QSize getImageSize() const;
 
   shp_LensSystem allLenses(Dataset const& dataset,
@@ -135,7 +127,7 @@ public:
   AngleMapArray const& calcAngleMap(qreal tthMitte);
 
 private:
-  Image intensCorrArray;  // summed corrFile intensities
+  Array2D<qreal> intensCorrArray;  // summed corrFile intensities
   bool  hasNaNs;           // TODO warn on the statusbar
 
 public:

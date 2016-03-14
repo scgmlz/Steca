@@ -478,14 +478,6 @@ QSize TheHub::getImageSize() const {
   return session->getImageSize();
 }
 
-uint TheHub::pixIndexNoTransform(uint x, uint y) const {
-  return session->pixIndexNoTransform(x,y);
-}
-
-core::intens_t TheHub::pixIntensity(core::Image const& image, uint x, uint y) const {
-  return session->pixIntensity(image, x, y);
-}
-
 core::AngleMapArray const& TheHub::calcAngleMap(qreal tthMitte) {
   return session->calcAngleMap(tthMitte);
 }

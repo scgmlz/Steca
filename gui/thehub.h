@@ -156,8 +156,6 @@ public:
   void setImageCut(bool topLeft, bool linked, core::ImageCut const&);
 
   QSize getImageSize() const;
-  uint  pixIndexNoTransform(uint x, uint y) const;
-  core::intens_t pixIntensity(core::Image const&, uint x, uint y) const; // REVIEW
 
   core::AngleMapArray const& calcAngleMap(qreal tthMitte);
   core::Borders const& getCut() const; // TODO somehow hide

@@ -11,9 +11,9 @@ namespace core {
 namespace LensPriority {
 enum LensPriority {
     INTENSITY_RANGE,
+    NORMALIZATION,
     ROI,
     TRANSFORMATION,
-    NORMALIZATION,
     SENSITIVITY_CORRECTION,
     PLAIN
 };
@@ -103,7 +103,7 @@ class SensitivityCorrectionLens final : public Lens {
 public:
   const static uint PRIORITY = LensPriority::SENSITIVITY_CORRECTION;
 
-  SensitivityCorrectionLens(Image const& sensitivityCorrection);
+  SensitivityCorrectionLens(Array2D<qreal> const& sensitivityCorrection);
 
   uint getPriority() const override;
 
@@ -113,7 +113,7 @@ public:
   QSize getSize() const override;
 
 private:
-  Image const* correction;
+  Array2D<qreal> const* correction;
 };
 
 //------------------------------------------------------------------------------

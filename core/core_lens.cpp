@@ -158,7 +158,7 @@ QSize ROILens::getSize() const {
 //------------------------------------------------------------------------------
 
 SensitivityCorrectionLens::SensitivityCorrectionLens(
-  Image const& sensitivityCorrection)
+  Array2D<qreal> const& sensitivityCorrection)
   : correction(&sensitivityCorrection)
 {
 }
