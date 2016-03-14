@@ -210,17 +210,32 @@ QSize Session::getImageSize() const {
     ? imageSize.transposed() : imageSize;
 }
 
-shp_LensSystem Session::allLenses(Dataset const& dataset) {
-  auto lenses = noROILenses(dataset);
+shp_LensSystem Session::allLenses(Dataset const& dataset,
+                                  bool const globalIntensityScale) {
+  auto lenses = plainLens(dataset);
+  lenses << shp_LensSystem(new TransformationLens(imageTransform));
   lenses << shp_LensSystem(new ROILens(imageCut));
+  if (corrEnabled)
+    lenses << shp_LensSystem(new SensitivityCorrectionLens(intensCorrArray));
+  if (globalIntensityScale)
+    lenses << shp_LensSystem(
+        new GlobalIntensityRangeLens(dataset.getFile().getRgeIntens()));
+  else
+    lenses << shp_LensSystem(new IntensityRangeLens());
   return lenses;
 }
 
-shp_LensSystem Session::noROILenses(Dataset const& dataset) {
+shp_LensSystem Session::noROILenses(Dataset const& dataset,
+                                    bool const globalIntensityScale) {
   auto lenses = plainLens(dataset);
   lenses << shp_LensSystem(new TransformationLens(imageTransform));
   if (corrEnabled)
     lenses << shp_LensSystem(new SensitivityCorrectionLens(intensCorrArray));
+  if (globalIntensityScale)
+    lenses << shp_LensSystem(
+        new GlobalIntensityRangeLens(dataset.getFile().getRgeIntens()));
+  else
+    lenses << shp_LensSystem(new IntensityRangeLens());
   return lenses;
 }
 

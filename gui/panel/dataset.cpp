@@ -336,7 +336,7 @@ void Dataset::renderDataset() {
   QPixmap pixMap;
   if (dataset) {
     auto lenses = theHub.noROILenses(*dataset);
-    pixMap = makePixmap(lenses, dataset->getRgeIntens(theHub.fixedIntensityScale));
+    pixMap = makePixmap(lenses, lenses->getIntensityRange());
   }
   imageWidget->setPixmap(pixMap);
 }

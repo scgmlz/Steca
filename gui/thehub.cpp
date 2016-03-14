@@ -286,11 +286,11 @@ void TheHub::newReflectionData(core::Range const& range, core::XY const& peak, q
 }
 
 core::shp_LensSystem TheHub::allLenses(core::Dataset const& dataset) const {
-  return session->allLenses(dataset);
+  return session->allLenses(dataset, fixedIntensityScale);
 }
 
 core::shp_LensSystem TheHub::noROILenses(core::Dataset const& dataset) const {
-  return session->noROILenses(dataset);
+  return session->noROILenses(dataset, fixedIntensityScale);
 }
 
 void TheHub::load(QFileInfo const& fileInfo) THROWS {

@@ -10,6 +10,7 @@ namespace core {
 
 namespace LensPriority {
 enum LensPriority {
+    INTENSITY_RANGE,
     ROI,
     TRANSFORMATION,
     NORMALIZATION,
@@ -24,6 +25,7 @@ class Lens : public ChainLink<Lens> {
 public:
   virtual DiffractionAngles getAngles(uint x, uint y) const = 0;
   virtual intens_t getIntensity(uint x, uint y) const = 0;
+  virtual Range getIntensityRange() const = 0;
   virtual QSize getSize() const = 0;
 
 protected:
@@ -44,10 +46,12 @@ public:
 
   DiffractionAngles getAngles(uint x, uint y) const override;
   intens_t getIntensity(uint x, uint y) const override;
+  Range getIntensityRange() const override;
   QSize getSize() const override;
 
 private:
   AngleMapArray const* angleMap;
+  Range const* intensityRange;
   Image const* rawImage;
 };
 
@@ -65,6 +69,7 @@ public:
 
   DiffractionAngles getAngles(uint x, uint y) const override;
   intens_t getIntensity(uint x, uint y) const override;
+  Range getIntensityRange() const override;
   QSize getSize() const override;
 
 private:
@@ -85,6 +90,7 @@ public:
 
   DiffractionAngles getAngles(uint x, uint y) const override;
   intens_t getIntensity(uint x, uint y) const override;
+  Range getIntensityRange() const override;
   QSize getSize() const override;
 
 private:
@@ -103,10 +109,54 @@ public:
 
   DiffractionAngles getAngles(uint x, uint y) const override;
   intens_t getIntensity(uint x, uint y) const override;
+  Range getIntensityRange() const override;
   QSize getSize() const override;
 
 private:
   Image const* correction;
+};
+
+//------------------------------------------------------------------------------
+
+class IntensityRangeLens final : public Lens {
+public:
+  const static uint PRIORITY = LensPriority::INTENSITY_RANGE;
+
+  IntensityRangeLens();
+
+  uint getPriority() const override;
+
+  DiffractionAngles getAngles(uint x, uint y) const override;
+  intens_t getIntensity(uint x, uint y) const override;
+  Range getIntensityRange() const override;
+  QSize getSize() const override;
+
+protected:
+  void nextChangedImpl() override;
+
+private:
+  Range range;
+
+  void updateRange();
+};
+
+//------------------------------------------------------------------------------
+
+class GlobalIntensityRangeLens final : public Lens {
+public:
+  const static uint PRIORITY = LensPriority::INTENSITY_RANGE;
+
+  GlobalIntensityRangeLens(Range const& intensityRange);
+
+  uint getPriority() const override;
+
+  DiffractionAngles getAngles(uint x, uint y) const override;
+  intens_t getIntensity(uint x, uint y) const override;
+  Range getIntensityRange() const override;
+  QSize getSize() const override;
+
+private:
+  Range const* range;
 };
 
 //------------------------------------------------------------------------------

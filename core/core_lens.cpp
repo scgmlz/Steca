@@ -15,6 +15,7 @@ void Lens::nextChangedImpl() {
 PlainLens::PlainLens(Image const& image, AngleMapArray const& angleMapArray)
   :  Lens()
     ,angleMap(&angleMapArray)
+    ,intensityRange(&image.getRgeIntens())
     ,rawImage(&image)
 {
 }
@@ -29,6 +30,10 @@ uint PlainLens::getPriority() const {
 
 intens_t PlainLens::getIntensity(uint x, uint y) const {
   return rawImage->at(x, y);
+}
+
+Range PlainLens::getIntensityRange() const {
+  return *intensityRange;
 }
 
 QSize PlainLens::getSize() const {
@@ -92,6 +97,9 @@ intens_t TransformationLens::getIntensity(uint x, uint y) const {
   return next->getIntensity(x, y);
 }
 
+Range TransformationLens::getIntensityRange() const {
+  return next->getIntensityRange();
+}
 
 QSize TransformationLens::getSize() const {
   auto s = next->getSize();
@@ -136,6 +144,10 @@ intens_t ROILens::getIntensity(uint x, uint y) const {
   return next->getIntensity(x, y);
 }
 
+Range ROILens::getIntensityRange() const {
+  return next->getIntensityRange();
+}
+
 QSize ROILens::getSize() const {
   auto s = next->getSize();
   s.rwidth() -= cut->left + cut->right;
@@ -165,7 +177,80 @@ intens_t SensitivityCorrectionLens::getIntensity(uint x, uint y) const {
   return qIsNaN(corr) ? qQNaN() : in * corr;
 }
 
+Range SensitivityCorrectionLens::getIntensityRange() const {
+  return next->getIntensityRange();
+}
+
 QSize SensitivityCorrectionLens::getSize() const {
+  return next->getSize();
+}
+
+//------------------------------------------------------------------------------
+
+IntensityRangeLens::IntensityRangeLens()
+  :  Lens()
+    ,range()
+{
+  nextChangedImpl();
+}
+
+uint IntensityRangeLens::getPriority() const {
+  return PRIORITY;
+}
+
+DiffractionAngles IntensityRangeLens::getAngles(uint x, uint y) const {
+  return next->getAngles(x, y);
+}
+
+intens_t IntensityRangeLens::getIntensity(uint x, uint y) const {
+  return next->getIntensity(x, y);
+}
+
+Range IntensityRangeLens::getIntensityRange() const {
+  return range;
+}
+
+QSize IntensityRangeLens::getSize() const {
+  return next->getSize();
+}
+
+void IntensityRangeLens::nextChangedImpl() {
+  range.invalidate();
+  if (!next) return;
+
+  auto s = getSize();
+  for (int iy = 0; iy < s.height(); ++iy) {
+    for (int ix = 0; ix < s.width(); ++ix) {
+      range.extend(getIntensity(ix, iy));
+    }
+  }
+}
+
+//------------------------------------------------------------------------------
+
+GlobalIntensityRangeLens::GlobalIntensityRangeLens(Range const& intensityRange)
+  :  Lens()
+    ,range(&intensityRange)
+{
+}
+
+uint GlobalIntensityRangeLens::getPriority() const {
+  return PRIORITY;
+}
+
+DiffractionAngles GlobalIntensityRangeLens::getAngles(uint x, uint y) const {
+  return next->getAngles(x, y);
+}
+
+intens_t GlobalIntensityRangeLens::getIntensity(uint x, uint y) const {
+  return next->getIntensity(x, y);
+}
+
+Range GlobalIntensityRangeLens::getIntensityRange() const {
+  return *range;
+}
+
+QSize GlobalIntensityRangeLens::getSize() const {
   return next->getSize();
 }
 
