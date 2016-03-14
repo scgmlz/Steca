@@ -8,6 +8,18 @@
 namespace core {
 //------------------------------------------------------------------------------
 
+namespace LensPriority {
+enum LensPriority {
+    NORMALIZATION,
+    SENSITIVITY_CORRECTION,
+    ROI,
+    TRANSFORMATION,
+    PLAIN
+};
+}
+
+//------------------------------------------------------------------------------
+
 class Lens : public ChainLink<Lens> {
 public:
   virtual DiffractionAngles getAngles(uint x, uint y) const = 0;
@@ -24,7 +36,7 @@ class Image;
 
 class PlainLens final : public Lens {
 public:
-  const static uint PRIORITY = 2;
+  const static uint PRIORITY = LensPriority::PLAIN;
 
   PlainLens(Image const& image, AngleMapArray const& angleMapArray);
 
@@ -45,7 +57,7 @@ class ImageTransform;
 
 class TransformationLens final : public Lens {
 public:
-  const static uint PRIORITY = 1;
+  const static uint PRIORITY = LensPriority::TRANSFORMATION;
 
   TransformationLens(ImageTransform const& transformation);
 
@@ -65,7 +77,7 @@ class ImageCut;
 
 class ROILens final : public Lens {
 public:
-  const static uint PRIORITY = 0;
+  const static uint PRIORITY = LensPriority::ROI;
 
   ROILens(ImageCut const& imageCut);
 
