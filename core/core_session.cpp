@@ -37,6 +37,14 @@ Session::Session()
 Session::~Session() {
 }
 
+void Session::clear() {
+  // TODO REVIEW
+  reflections.empty();
+  enableCorrection(false);
+  remCorrFile();
+  while (numFiles(false)) remFile(0);
+}
+
 uint Session::numFiles(bool withCorr) const {
   return dataFiles.count() + (withCorr && !corrFile.isNull() ? 1 : 0);
 }

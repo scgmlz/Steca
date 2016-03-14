@@ -1,12 +1,9 @@
 #include "core_reflection.h"
+#include "core_types.h"
 #include <QStringList>
+#include <QJsonObject>
 
 namespace core {
-
-//------------------------------------------------------------------------------
-
-ReflectionData::ReflectionData(): range(), peak(), fwhm(0) {
-}
 
 //------------------------------------------------------------------------------
 
@@ -17,36 +14,70 @@ str_lst const& Reflection::reflTypes() {
   return types;
 }
 
-Reflection::Reflection(eType type_): type(type_) {
+Reflection::Reflection(eType type): peakFunction(nullptr) {
+  setPeakFunction(type);
   setRange(Range());
 }
 
-Reflection::eType Reflection::getType() const {
-  return type;
+Reflection::~Reflection() {
+  delete peakFunction;
 }
 
-void Reflection::setType(Reflection::eType type_) {
-  type = type_;
+Reflection::eType Reflection::getType() const {
+  return peakFunction->type();
+}
+
+void Reflection::setType(eType type) {
+  setPeakFunction(type);
 }
 
 void Reflection::setRange(Range const& range_) {
   range = range_;
-  // invalidate guesses
-  peak  = XY();
-  fwhm  = qQNaN();
 }
 
-fit::PeakFunction* Reflection::peakFunction() const {
-  switch (type) {
-  case REFL_GAUSSIAN:
-    return new fit::Gaussian();
-  case REFL_LORENTZIAN:
-    return new fit::CauchyLorentz();
-  case REFL_PSEUDOVOIGT1:
-    return new fit::PseudoVoigt1();
-  case REFL_PSEUDOVOIGT2:
-    return new fit::PseudoVoigt2();
-  }
+Reflection::PeakFunction &Reflection::getPeakFunction() const {
+  ASSERT(peakFunction)
+  return *peakFunction;
+}
+
+void Reflection::invalidateGuesses() {
+  peakFunction->setGuessPeak(XY());
+  peakFunction->setGuessFWHM(qQNaN());
+}
+
+void Reflection::setPeakFunction(eType type) {
+  setPeakFunction(PeakFunction::factory(type));
+}
+
+void Reflection::setPeakFunction(PeakFunction* f) {
+  delete peakFunction;
+  peakFunction = f;
+}
+
+static str KEY_FWHM("fwhm");
+static str KEY_TYPE("type");
+static str KEY_RANGE("range");
+static str KEY_PEAK("peak");
+
+void Reflection::loadFrom(QJsonObject const& obj) THROWS {
+  range.loadFrom(obj[KEY_RANGE].toObject());
+
+  QJsonObject pObj = obj[KEY_PEAK].toObject();
+  QScopedPointer<fit::Function> f(fit::Function::factory(pObj[KEY_TYPE].toString()));
+  f->loadFrom(pObj);
+
+  RUNTIME_CHECK(dynamic_cast<PeakFunction*>(f.data()),"must be a peak function");
+  setPeakFunction(static_cast<PeakFunction*>(f.take()));
+}
+
+void Reflection::saveTo(QJsonObject& obj) const {
+  QJsonObject rObj;
+  getRange().saveTo(rObj);
+  obj[KEY_RANGE] = rObj;
+
+  QJsonObject pObj;
+  peakFunction->saveTo(pObj);
+  obj[KEY_PEAK] = pObj;
 }
 
 //------------------------------------------------------------------------------

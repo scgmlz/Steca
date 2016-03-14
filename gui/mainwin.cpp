@@ -16,7 +16,6 @@
 //------------------------------------------------------------------------------
 
 MainWin::MainWin() {
-  sessionDir = dataDir = QDir::homePath();
   setWindowIcon(QIcon(":/icon/STeCa2"));
 
   initMenus();
@@ -223,14 +222,6 @@ void MainWin::show() {
   super::show();
   checkActions();
 
-#ifdef DEVELOPMENT_JAN
-#ifdef Q_OS_OSX
-  theHub.load(QFileInfo("/Users/igb/P/+scg/data/q.ste"));
-#else
-  theHub.load(QFileInfo("/home/jan/q.ste"));
-#endif
-#endif
-
 #ifdef DEVELOPMENT_REBECCA
   theHub.load(QFileInfo("/home/rebecca/SCG/STeCa-Data/1.ste"));
 #endif
@@ -242,22 +233,18 @@ void MainWin::close() {
 
 void MainWin::addFiles() {
   str_lst fileNames = QFileDialog::getOpenFileNames(this,
-    "Add files", dataDir, "Data files (*.dat);;All files (*.*)");
+    "Add files", QDir::current().absolutePath(), "Data files (*.dat);;All files (*.*)");
 
   if (!fileNames.isEmpty()) {
-    // remember the directory for the next time
-    dataDir = QFileInfo(fileNames.first()).absolutePath();
     theHub.addFiles(fileNames);
   }
 }
 
 void MainWin::loadCorrectionFile() {
   str fileName = QFileDialog::getOpenFileName(this,
-      "Set correction file", dataDir, "Data files (*.dat);;All files (*.*)");
+      "Set correction file", QDir::current().absolutePath(), "Data files (*.dat);;All files (*.*)");
 
   if (!fileName.isEmpty()) {
-    // remember the directory for the next time
-    dataDir = QFileInfo(fileName).absolutePath();
     theHub.loadCorrFile(fileName);
   }
 }
@@ -266,28 +253,19 @@ static str const STE(".ste");
 
 void MainWin::loadSession() {
   str fileName = QFileDialog::getOpenFileName(this,
-      "Load session", sessionDir, "Session files (*"%STE%");;All files (*.*)");
+      "Load session", QDir::current().absolutePath(), "Session files (*"%STE%");;All files (*.*)");
   if (fileName.isEmpty()) return;
 
-  QFileInfo fileInfo(fileName);
-  sessionDir = fileInfo.absolutePath();
-  theHub.load(fileInfo);
+  theHub.load(QFileInfo(fileName));
 }
 
 void MainWin::saveSession() {
   str fileName = QFileDialog::getSaveFileName(this,
-      "Save session", sessionDir, "Session files (*"%STE%");;All files (*.*)");
+      "Save session", QDir::current().absolutePath(), "Session files (*"%STE%");;All files (*.*)");
   if (fileName.isEmpty()) return;
-
   if (!fileName.endsWith(STE)) fileName += STE;
-  QFileInfo info(fileName);
-  sessionDir = info.absolutePath();
 
-  QFile file(info.filePath());
-  RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File cannot be opened");
-
-  auto written = file.write(theHub.save());
-  RUNTIME_CHECK(written >= 0, "Could not write session");
+  theHub.save(QFileInfo(fileName));
 }
 
 void MainWin::closeEvent(QCloseEvent* event) {
@@ -302,27 +280,18 @@ void MainWin::onClose() {
 static str GROUP_MAINWIN("MainWin");
 static str KEY_GEOMETRY("geometry");
 static str KEY_STATE("state");
-static str KEY_DATADIR("dataDir");
-static str KEY_SESSION_DIR("sessionDir");
 
 void MainWin::readSettings() {
   if (initialState.isEmpty()) initialState = saveState();
   Settings s(GROUP_MAINWIN);
   restoreGeometry(s.value(KEY_GEOMETRY).toByteArray());
   restoreState(s.value(KEY_STATE).toByteArray());
-
-  QDir savedDataDir(s.value(KEY_DATADIR).toString());
-  if (savedDataDir.exists()) dataDir = savedDataDir.absolutePath();
-  QDir savedSessionDir(s.value(KEY_SESSION_DIR).toString());
-  if (savedSessionDir.exists()) sessionDir = savedSessionDir.absolutePath();
 }
 
 void MainWin::saveSettings() {
   Settings s(GROUP_MAINWIN);
   s.setValue(KEY_GEOMETRY, saveGeometry());
   s.setValue(KEY_STATE,    saveState());
-  s.setValue(KEY_DATADIR,    dataDir);
-  s.setValue(KEY_SESSION_DIR, sessionDir);
 }
 
 void MainWin::checkActions() {

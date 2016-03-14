@@ -36,8 +36,6 @@ public:
   void saveSession();
 
 private:
-  // where to look for files
-  str  sessionDir, dataDir;
   // the hub
   TheHub theHub;
 

@@ -41,7 +41,7 @@ protected:
 class Settings: public QSettings {
   SUPER(Settings, QSettings)
 public:
-  Settings(rcstr group = "");
+  Settings(rcstr group = EMPTY_STR);
  ~Settings();
 
   QVariant readVariant(rcstr key, QVariant const& def);
@@ -132,7 +132,7 @@ public: // files
   void setSelectedDataset(core::shp_Dataset);
   void setSelectedReflection(core::shp_Reflection);
   void setReflectionData(core::shp_Reflection);
-  void newReflectionData(core::Range const&,core::XY const&,qreal);
+  void newReflectionData(core::Range const&,core::XY const&,qreal,bool);
 
 public:
   core::shp_LensSystem allLenses(core::Dataset const& dataset);
@@ -140,7 +140,9 @@ public:
 public:
   void load(QFileInfo const&)       THROWS;
   void load(QByteArray const& json) THROWS;
-  QByteArray save() const;
+
+  void save(QFileInfo const&) const;
+  QByteArray save()           const;
 
 public:
   void addFile(rcstr filePath)      THROWS;
@@ -164,15 +166,13 @@ public:
 
   void setBackgroundPolynomialDegree(uint);
 
-  core::Reflection::eType getReflType() const { return reflType; }
   void setReflType(core::Reflection::eType);
 
-  void addReflection();
+  void addReflection(core::Reflection::eType);
   void remReflection(uint);
 
 private:
   core::shp_Reflection    selectedReflection;
-  core::Reflection::eType reflType;
 
 private:
   void setImageRotate(core::ImageTransform);
@@ -191,7 +191,7 @@ signals:
   void reflectionsChanged();
   void reflectionSelected(core::shp_Reflection);
   void reflectionData(core::shp_Reflection);
-  void reflectionValues(core::Range const&, core::XY const&, qreal);
+  void reflectionValues(core::Range const&, core::XY const&, qreal, bool);
 
   void displayChange();
   void geometryChanged();
@@ -202,7 +202,7 @@ public:
   // TODO instead of exposing the objects, provide an interface
   core::Ranges&           getBgRanges()     const { return session->getBgRanges();     }
   core::fit::Polynomial&  getBgPolynomial() const { return session->getBgPolynomial(); }
-  core::Reflections&      getReflections()        { return session->getReflections();  }
+  core::Reflections&      getReflections()  const { return session->getReflections();  }
 };
 
 //------------------------------------------------------------------------------

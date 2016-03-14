@@ -60,14 +60,14 @@ public:
   void setTool(Tool);
   Tool getTool() const { return tool; }
 
-  void plot(core::TI_Curve const&,core::TI_Curve const&, core::TI_Curve const&, core::TI_Curves const&);
+  void plot(core::TI_Curve const&,core::TI_Curve const&, core::TI_Curve const&, core::TI_Curves const&, uint);
 
   core::Range fromPixels(int,int);
 
   void clearBg();
   void addBg(core::Range const&);
   void remBg(core::Range const&);
-  void setReflRange(core::Range const&);
+  void setNewReflRange(core::Range const&);
   void updateBg();
 
   void clearReflLayer();
@@ -80,7 +80,7 @@ private:
   TheHub        &theHub;
   Diffractogram &diffractogram;
   Tool tool;
-  QCPGraph *bgGraph, *dgramGraph, *dgramBgFittedGraph;
+  QCPGraph *bgGraph, *dgramGraph, *dgramBgFittedGraph, *guesses, *fits;
   QVector<QCPGraph*> reflGraph;
   DiffractogramPlotOverlay *overlay;
 };
@@ -100,10 +100,11 @@ private:
   DiffractogramPlot *plot;
 
   core::TI_Curve  dgram, dgramBgFitted, bg;
-  core::TI_Curves refls; uint currReflIndex;
+  core::TI_Curves refls;
 
   bool showBgFit;
 
+  uint currReflIndex;
   core::shp_Reflection currentReflection;
 
 public:
@@ -111,7 +112,7 @@ public:
   void calcBackground();
   void calcReflections();
 
-  void setCurrReflRange(core::Range const&);
+  void setCurrReflNewRange(core::Range const&);
   core::Range currReflRange() const;
 };
 

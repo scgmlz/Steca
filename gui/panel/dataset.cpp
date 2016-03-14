@@ -85,6 +85,7 @@ DatasetOptions1::DatasetOptions1(TheHub& theHub_)
   spinDistance->setToolTip("Sample to detector distance");
   gd->addWidget(label("distance mm"),                         0,1);
   gd->addWidget((spinPixelSize = spinCell(6,core::Geometry::MIN_DETECTOR_PIXEL_SIZE)), 1,0);
+  spinPixelSize->setSingleStep(.1);
   spinPixelSize->setToolTip("Physical pixel size");
   gd->addWidget(label("pixel size mm"),                       1,1);
   gd->setColumnStretch(2,1);
@@ -257,7 +258,7 @@ void DatasetOptions2::setFrom(TheHub& theHub) {
 //------------------------------------------------------------------------------
 
 Dataset::Dataset(TheHub& theHub_)
-: super("",theHub_,Qt::Vertical), dataset(nullptr) {
+: super(EMPTY_STR,theHub_,Qt::Vertical), dataset(nullptr) {
 
   box->addWidget(imageWidget = new ImageWidget(theHub,*this),0,Qt::AlignCenter);
 

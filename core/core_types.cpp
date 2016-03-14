@@ -28,6 +28,19 @@ bool XY::isDefined() const {
   return !qIsNaN(x) && !qIsNaN(y);
 }
 
+static str KEY_X("X");
+static str KEY_Y("Y");
+
+void XY::loadFrom(QJsonObject const& obj) THROWS {
+  x = loadReal(obj,KEY_X);
+  y = loadReal(obj,KEY_Y);
+}
+
+void XY::saveTo(QJsonObject &obj) const {
+  obj[KEY_X] = x;
+  obj[KEY_Y] = y;
+}
+
 //------------------------------------------------------------------------------
 
 Range::Range() {

@@ -1,13 +1,9 @@
 #include "test_save_load_json.h"
 #include "core_fit_functions.h"
 #include "core_types.h"
-#include "thehub.h"
 
 void TestSaveLoadJson::testSaveLoadJson() {
-
-  int bgdegree = 2;
   int error = 5;
-  qreal r0 = 0;
   qreal r1 = 42;
   qreal val0 = 0;
   qreal val1 = 1;
@@ -97,11 +93,6 @@ void TestSaveLoadJson::testSaveLoadJson() {
     core::fit::Gaussian gSave, gLoad;
     QJsonObject gObj;
     gSave.setValue(0,val3);
-
-
-
-
-
 
     // Testing saveTo/loadFrom SumFunctions
 
