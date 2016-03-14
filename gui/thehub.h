@@ -135,8 +135,8 @@ public: // files
   void newReflectionData(core::Range const&,core::XY const&,qreal,bool);
 
 public:
-  core::shp_LensSystem allLenses(core::Dataset const& dataset);
-  core::shp_LensSystem noROILenses(core::Dataset const& dataset);
+  core::shp_LensSystem allLenses(core::Dataset const& dataset) const;
+  core::shp_LensSystem noROILenses(core::Dataset const& dataset) const;
 
 public:
   void load(QFileInfo const&)       THROWS;

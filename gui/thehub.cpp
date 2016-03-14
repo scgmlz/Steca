@@ -285,11 +285,11 @@ void TheHub::newReflectionData(core::Range const& range, core::XY const& peak, q
   emit reflectionValues(range, peak, fwhm, withGuesses);
 }
 
-core::shp_LensSystem TheHub::allLenses(core::Dataset const& dataset) {
+core::shp_LensSystem TheHub::allLenses(core::Dataset const& dataset) const {
   return session->allLenses(dataset);
 }
 
-core::shp_LensSystem TheHub::noROILenses(core::Dataset const& dataset) {
+core::shp_LensSystem TheHub::noROILenses(core::Dataset const& dataset) const {
   return session->noROILenses(dataset);
 }
 
