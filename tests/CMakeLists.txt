@@ -7,6 +7,17 @@ include_directories(
   ${CMAKE_HOME_DIRECTORY}/gui
 )
 
+set(header_files
+  test_approx.cpp
+  test_core_array2d.cpp
+  test_core_image.cpp
+  test_core_lib.cpp
+  test_core_range.cpp
+  test_core_session.cpp
+  test_save_load_json.cpp
+  test_link.cpp
+ )
+
 set(source_files
   test_approx.cpp
   test_core_array2d.cpp
@@ -15,6 +26,7 @@ set(source_files
   test_core_range.cpp
   test_core_session.cpp
   test_save_load_json.cpp
+  test_link.cpp
   tests_main.cpp
 )
 

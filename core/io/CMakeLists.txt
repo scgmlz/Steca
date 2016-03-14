@@ -2,11 +2,21 @@
 # CMakeLists.txt for building STeCaCoreIO
 ############################################################################
 
+set(header_files
+  core_io.h
+ )
+
 set(source_files
   core_io.cpp
   core_io_caress.cpp
   core_io_tiff.cpp
-)
+ )
+
+set(caress_header_files
+  Caress/car_datatypes.h
+  Caress/car_globals.h
+  Caress/raw.h
+ )
 
 set(caress_source_files
   Caress/ReadCaress.cpp
@@ -18,7 +28,9 @@ include_directories(
 )
 
 add_library(STeCaCoreIO
+  ${header_files}
   ${source_files}
+  ${caress_header_files}
   ${caress_source_files}
 )
 
