@@ -29,7 +29,9 @@ bool Geometry::operator ==(Geometry const& that) const {
 Session::Session()
 : dataFiles(), corrFile(), corrEnabled(false), imageSize(), geometry()
 , imageTransform(ImageTransform::ROTATE_0)
-, lastCalcTthMitte(0), hasNaNs(false), bgPolynomial(0) {
+, angleMapArray()
+, lastCalcTthMitte(0)
+, hasNaNs(false), bgPolynomial(0) {
 }
 
 Session::~Session() {
@@ -200,15 +202,15 @@ QSize Session::getImageSize() const {
     ? imageSize.transposed() : imageSize;
 }
 
-shp_LensSystem Session::allLenses(Image const& image) {
-  auto lenses = makeLensSystem(image);
+shp_LensSystem Session::allLenses(Dataset const& dataset) {
+  auto lenses = plainLens(dataset);
   lenses << shp_LensSystem(new TransformationLens(imageTransform))
          << shp_LensSystem(new ROILens(imageCut));
   return lenses;
 }
 
-shp_LensSystem Session::plainLens(Image const& image) {
-  return makeLensSystem(image);
+shp_LensSystem Session::plainLens(Dataset const& dataset) {
+  return makeLensSystem(dataset, calcAngleMap(dataset.tthMitte()));
 }
 
 QPoint Session::getPixMiddle() const {
@@ -223,23 +225,23 @@ QPoint Session::getPixMiddle() const {
   return middle;
 }
 
-AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) { // RENAME
+AngleMapArray const& Session::calcAngleMap(qreal tthMitte) { // RENAME
   // REFACTOR
   QPoint pixMiddle = getPixMiddle();
   auto size   = getImageSize();
 
-  if (angleCorrArray.getSize() == size
+  if (angleMapArray.getSize() == size
       && lastCalcTthMitte==tthMitte && lastPixMiddle == pixMiddle
       && lastGeometry == geometry && lastImageCut == imageCut
       && lastImageTransform == imageTransform)
-    return angleCorrArray;
+    return angleMapArray;
 
   lastCalcTthMitte = tthMitte; lastPixMiddle = pixMiddle;
   lastGeometry = geometry;
   lastImageCut = imageCut;
   lastImageTransform = imageTransform;
 
-  angleCorrArray.fill(size);
+  angleMapArray.fill(size);
   ful.invalidate();
   cut.invalidate();
 
@@ -278,7 +280,8 @@ AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) { // RENAME
         ful.tth_gamma0.extend(tthHorAktuell);
 
         // Write angle in array
-        angleCorrArray.setAt(pixIndexNoTransform(ix,iy),Pixpos(gamma,tthNeu));
+        angleMapArray.setAt(pixIndexNoTransform(ix,iy),
+                            DiffractionAngles(gamma,tthNeu));
       }
     }
 
@@ -288,22 +291,22 @@ AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) { // RENAME
     ASSERT(imageCut.getCount(size) > 0)
 
     cut.tth_gamma0.safeSet(
-      angleCorrArray.at(size.width() - 1 - imageCut.right,pixMiddle.y()).tthPix,
-      angleCorrArray.at(imageCut.left,pixMiddle.y()).tthPix);
+      angleMapArray.at(size.width() - 1 - imageCut.right,pixMiddle.y()).tth,
+      angleMapArray.at(imageCut.left,pixMiddle.y()).tth);
 
     // TODO loop through cut - make abstract (see below), REFACTOR
     for (uint ix = imageCut.left; ix < size.width() - imageCut.right; ++ix) {
       for (uint iy = imageCut.top; iy < size.height() - imageCut.bottom; ++iy) {
-        auto ac = angleCorrArray.at(ix,iy);
-        cut.gamma.extend(ac.gammaPix);
-        cut.tth_regular.extend(ac.tthPix);
+        auto ac = angleMapArray.at(ix,iy);
+        cut.gamma.extend(ac.gamma);
+        cut.tth_regular.extend(ac.tth);
       }
     }
 
     ASSERT(cut.isValid())
   }
 
-  return angleCorrArray;
+  return angleMapArray;
 }
 
 void Session::calcIntensCorrArray() {

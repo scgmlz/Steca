@@ -77,7 +77,6 @@ QSharedPointer<T>& operator <<(QSharedPointer<T>& firstLink,
   }
 
   if (link->getPriority() < firstLink->getPriority()) {
-    TR("Insert as first");
     // Insert as first.
     firstLink.swap(link);
     link->setPrevious(firstLink);

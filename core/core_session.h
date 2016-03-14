@@ -5,12 +5,13 @@
 #ifndef CORE_SESSION_H
 #define CORE_SESSION_H
 
-#include "core_types.h"
+#include "core_angle_map_array.h"
 #include "core_file.h"
-#include "core_array2d.h"
 #include "core_fit_functions.h"
 #include "core_lens.h"
 #include "core_reflection.h"
+#include "core_image_cut.h"
+#include "core_image_transform.h"
 #include <QPoint>
 
 namespace core {
@@ -29,15 +30,6 @@ struct Geometry {
   bool  hasBeamOffset;
   QPoint middlePixOffset;
 };
-
-struct Pixpos {  // RENAME
-  Pixpos(): Pixpos(0,0) {}
-  Pixpos(qreal gamma, qreal tth): gammaPix(gamma), tthPix(tth) {}
-  qreal gammaPix;
-  qreal tthPix;
-};
-
-typedef Array2D<Pixpos> AngleCorrArray; // RENAME - ask Antti
 
 struct Borders { // REVIEW bad name, hide, remove?
   Range
@@ -118,11 +110,11 @@ public:
 
   QSize getImageSize() const;
 
-  shp_LensSystem allLenses(Image const& image);
-  shp_LensSystem plainLens(Image const& image);
+  shp_LensSystem allLenses(Dataset const& dataset);
+  shp_LensSystem plainLens(Dataset const& dataset);
 
 private: // corrections
-  AngleCorrArray angleCorrArray;
+  AngleMapArray angleMapArray;
 
   Borders        ful, cut;      // REVIEW ful - remove?
 
@@ -135,7 +127,7 @@ private: // corrections
   ImageTransform lastImageTransform;
 
 public:
-  AngleCorrArray const& calcAngleCorrArray(qreal tthMitte);
+  AngleMapArray const& calcAngleMap(qreal tthMitte);
 
 private:
   Image intensCorrArray;  // summed corrFile intensities

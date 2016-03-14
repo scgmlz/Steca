@@ -135,7 +135,7 @@ public: // files
   void newReflectionData(core::Range const&,core::XY const&,qreal);
 
 public:
-  core::shp_LensSystem allLenses(core::Image const& image);
+  core::shp_LensSystem allLenses(core::Dataset const& dataset);
 
 public:
   void load(QFileInfo const&)       THROWS;
@@ -156,7 +156,7 @@ public:
   uint  pixIndexNoTransform(uint x, uint y) const;
   core::intens_t pixIntensity(core::Image const&, uint x, uint y) const; // REVIEW
 
-  core::AngleCorrArray const& calcAngleCorrArray(qreal tthMitte);
+  core::AngleMapArray const& calcAngleMap(qreal tthMitte);
   core::Borders const& getCut() const; // TODO somehow hide
 
   core::Geometry const& getGeometry() const;

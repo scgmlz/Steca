@@ -2,21 +2,15 @@
 #define CORE_LENS_H
 
 #include "core_types.h"
-#include "core_image_cut.h"
-#include "core_image_transform.h"
 #include "core_priority_chain.h"
+#include "core_angle_map_array.h"
 
 namespace core {
 //------------------------------------------------------------------------------
 
-class Lens;
-
-using shp_LensSystem = QSharedPointer<Lens>;
-
-//------------------------------------------------------------------------------
-
 class Lens : public ChainLink<Lens> {
 public:
+  virtual DiffractionAngles getAngles(uint x, uint y) const = 0;
   virtual intens_t getIntensity(uint x, uint y) const = 0;
   virtual QSize getSize() const = 0;
 
@@ -32,18 +26,22 @@ class PlainLens final : public Lens {
 public:
   const static uint PRIORITY = 2;
 
-  PlainLens(Image const& image);
+  PlainLens(Image const& image, AngleMapArray const& angleMapArray);
 
   uint getPriority() const override;
 
+  DiffractionAngles getAngles(uint x, uint y) const override;
   intens_t getIntensity(uint x, uint y) const override;
   QSize getSize() const override;
 
 private:
+  AngleMapArray const* angleMap;
   Image const* rawImage;
 };
 
 //------------------------------------------------------------------------------
+
+class ImageTransform;
 
 class TransformationLens final : public Lens {
 public:
@@ -53,14 +51,17 @@ public:
 
   uint getPriority() const override;
 
+  DiffractionAngles getAngles(uint x, uint y) const override;
   intens_t getIntensity(uint x, uint y) const override;
   QSize getSize() const override;
 
 private:
-  ImageTransform transform;
+  ImageTransform const* transform;
 };
 
 //------------------------------------------------------------------------------
+
+class ImageCut;
 
 class ROILens final : public Lens {
 public:
@@ -70,16 +71,20 @@ public:
 
   uint getPriority() const override;
 
+  DiffractionAngles getAngles(uint x, uint y) const override;
   intens_t getIntensity(uint x, uint y) const override;
   QSize getSize() const override;
 
 private:
-  ImageCut cut;
+  ImageCut const* cut;
 };
 
 //------------------------------------------------------------------------------
 
-shp_LensSystem makeLensSystem(Image const& image);
+class Dataset;
+
+shp_LensSystem makeLensSystem(Dataset const& dataset,
+                              AngleMapArray const& angleMap);
 
 //------------------------------------------------------------------------------
 }

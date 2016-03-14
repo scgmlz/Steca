@@ -340,10 +340,7 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
 
   if (!dataset) return;
 
-  // do this first! (e.g. before getCut())
-  auto angles   = theHub.calcAngleCorrArray(dataset->tthMitte());
-
-  auto lensSystem = theHub.allLenses(dataset->getImage());
+  auto lensSystem = theHub.allLenses(*dataset);
   auto size     = lensSystem->getSize();
   uint width    = size.width();
   uint height   = size.height();
@@ -360,10 +357,13 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
     for(uint ix = 0; ix < width; ++ix) {
 
       // TODO angles can be arranged for a single loop for_i (pixTotal) [last in commit 98413db71cd38ebaa54b6337a6c6e670483912ef]
-      auto tthPix = angles.at(theHub.pixIndexNoTransform(ix,iy)).tthPix;
+      auto tthPix = lensSystem->getAngles(ix, iy).tth;
 
       int bin = (tthPix==TTHMax) ? width-1 : qFloor((tthPix - TTHMin) / deltaTTH);
-      if (bin<0 || (int)width<=bin) continue;  // outside of the cut
+      if (bin<0 || (int)width<=bin) {
+          TR("TTH bin outside cut?")
+          continue;  // outside of the cut
+      }
 
       auto in = lensSystem->getIntensity(ix, iy);
       if (!qIsNaN(in)) {

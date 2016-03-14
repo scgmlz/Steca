@@ -283,8 +283,8 @@ void TheHub::newReflectionData(core::Range const& range, core::XY const& peak, q
   emit reflectionValues(range, peak, fwhm);
 }
 
-core::shp_LensSystem TheHub::allLenses(core::Image const& image) {
-  return session->allLenses(image);
+core::shp_LensSystem TheHub::allLenses(core::Dataset const& dataset) {
+  return session->allLenses(dataset);
 }
 
 void TheHub::load(QFileInfo const& fileInfo) THROWS {
@@ -450,8 +450,8 @@ core::intens_t TheHub::pixIntensity(core::Image const& image, uint x, uint y) co
   return session->pixIntensity(image, x, y);
 }
 
-core::AngleCorrArray const& TheHub::calcAngleCorrArray(qreal tthMitte) {
-  return session->calcAngleCorrArray(tthMitte);
+core::AngleMapArray const& TheHub::calcAngleMap(qreal tthMitte) {
+  return session->calcAngleMap(tthMitte);
 }
 
 core::Borders const& TheHub::getCut() const {

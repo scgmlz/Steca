@@ -1,6 +1,8 @@
 #include "core_lens.h"
 
-#include "core_image.h"
+#include "core_dataset.h"
+#include "core_image_cut.h"
+#include "core_image_transform.h"
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -10,9 +12,15 @@ void Lens::nextChangedImpl() {
 
 //------------------------------------------------------------------------------
 
-PlainLens::PlainLens(Image const& image)
-  : rawImage(&image)
+PlainLens::PlainLens(Image const& image, AngleMapArray const& angleMapArray)
+  :  Lens()
+    ,angleMap(&angleMapArray)
+    ,rawImage(&image)
 {
+}
+
+DiffractionAngles PlainLens::getAngles(uint x, uint y) const {
+  return angleMap->at(x, y);
 }
 
 uint PlainLens::getPriority() const {
@@ -30,7 +38,8 @@ QSize PlainLens::getSize() const {
 //------------------------------------------------------------------------------
 
 TransformationLens::TransformationLens(ImageTransform const& transformation)
-  : transform(transformation)
+  :  Lens()
+    ,transform(&transformation)
 {
 }
 
@@ -38,12 +47,16 @@ uint TransformationLens::getPriority() const {
   return PRIORITY;
 }
 
+DiffractionAngles TransformationLens::getAngles(uint x, uint y) const {
+  return next->getAngles(x, y);
+}
+
 intens_t TransformationLens::getIntensity(uint x, uint y) const {
   auto s = getSize();
   const uint w = s.width();
   const uint h = s.height();
 
-  switch (transform.val) {
+  switch (transform->val) {
   case ImageTransform::ROTATE_0:
     break;
   case ImageTransform::ROTATE_1:
@@ -82,7 +95,7 @@ intens_t TransformationLens::getIntensity(uint x, uint y) const {
 
 QSize TransformationLens::getSize() const {
   auto s = next->getSize();
-  switch (transform.val) {
+  switch (transform->val) {
   case ImageTransform::ROTATE_0:
   case ImageTransform::ROTATE_2:
   case ImageTransform::MIRROR_ROTATE_0:
@@ -102,7 +115,8 @@ QSize TransformationLens::getSize() const {
 //------------------------------------------------------------------------------
 
 ROILens::ROILens(ImageCut const& imageCut)
-  : cut(imageCut)
+  :  Lens()
+    ,cut(&imageCut)
 {
 }
 
@@ -110,23 +124,30 @@ uint ROILens::getPriority() const {
   return PRIORITY;
 }
 
+DiffractionAngles ROILens::getAngles(uint x, uint y) const {
+  x += cut->left;
+  y += cut->top;
+  return next->getAngles(x, y);
+}
+
 intens_t ROILens::getIntensity(uint x, uint y) const {
-  x += cut.left;
-  y += cut.top;
+  x += cut->left;
+  y += cut->top;
   return next->getIntensity(x, y);
 }
 
 QSize ROILens::getSize() const {
   auto s = next->getSize();
-  s.rwidth() -= cut.left + cut.right;
-  s.rheight() -= cut.top + cut.bottom;
+  s.rwidth() -= cut->left + cut->right;
+  s.rheight() -= cut->top + cut->bottom;
   return s;
 }
 
 //------------------------------------------------------------------------------
 
-shp_LensSystem makeLensSystem(Image const& image) {
-    return shp_LensSystem(new PlainLens(image));
+shp_LensSystem makeLensSystem(Dataset const& dataset,
+                              AngleMapArray const& angleMap) {
+    return shp_LensSystem(new PlainLens(dataset.getImage(), angleMap));
 }
 
 //------------------------------------------------------------------------------

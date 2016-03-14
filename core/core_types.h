@@ -13,6 +13,11 @@ namespace core {
 
 using intens_t = float; ///< short for intensity. float should suffice
 
+class Lens;
+
+using shp_LensSystem = QSharedPointer<Lens>;
+
+
 //------------------------------------------------------------------------------
 // conversions
 
@@ -29,6 +34,15 @@ struct XY {
   bool isDefined() const;
 
   qreal x, y;
+};
+
+//------------------------------------------------------------------------------
+
+struct DiffractionAngles {
+  DiffractionAngles(): DiffractionAngles(0,0) {}
+  DiffractionAngles(qreal gamma_, qreal tth_): gamma(gamma_), tth(tth_) {}
+  qreal gamma;
+  qreal tth;
 };
 
 //------------------------------------------------------------------------------
