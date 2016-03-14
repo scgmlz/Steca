@@ -211,9 +211,14 @@ QSize Session::getImageSize() const {
 }
 
 shp_LensSystem Session::allLenses(Dataset const& dataset) {
+  auto lenses = noROILenses(dataset);
+  lenses << shp_LensSystem(new ROILens(imageCut));
+  return lenses;
+}
+
+shp_LensSystem Session::noROILenses(Dataset const& dataset) {
   auto lenses = plainLens(dataset);
-  lenses << shp_LensSystem(new TransformationLens(imageTransform))
-         << shp_LensSystem(new ROILens(imageCut));
+  lenses << shp_LensSystem(new TransformationLens(imageTransform));
   if (corrEnabled)
     lenses << shp_LensSystem(new SensitivityCorrectionLens(intensCorrArray));
   return lenses;

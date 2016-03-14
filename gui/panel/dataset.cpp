@@ -289,9 +289,9 @@ void Dataset::setImageScale(uint scale) {
   imageWidget->setScale(scale);
 }
 
-QPixmap Dataset::makePixmap(core::Image const& image, core::Range rgeIntens) {
+QPixmap Dataset::makePixmap(core::shp_LensSystem lenses, core::Range rgeIntens) {
   QPixmap pixmap;
-  auto size = theHub.getImageSize();
+  auto size = lenses->getSize();
 
   if (!size.isEmpty()) {
     qreal mi = rgeIntens.max;
@@ -303,7 +303,7 @@ QPixmap Dataset::makePixmap(core::Image const& image, core::Range rgeIntens) {
       auto y = i;
       for_i (size.width()) {
         auto x = i;
-        qreal intens = theHub.pixIntensity(image,x,y) / mi;
+        qreal intens = lenses->getIntensity(x,y) / mi;
 
         QRgb rgb;
         if (qIsNaN(intens))
@@ -335,8 +335,8 @@ void Dataset::setDataset(core::shp_Dataset dataset_) {
 void Dataset::renderDataset() {
   QPixmap pixMap;
   if (dataset) {
-    auto image = dataset->getImage();
-    pixMap = makePixmap(image, dataset->getRgeIntens(theHub.fixedIntensityScale));
+    auto lenses = theHub.noROILenses(*dataset);
+    pixMap = makePixmap(lenses, dataset->getRgeIntens(theHub.fixedIntensityScale));
   }
   imageWidget->setPixmap(pixMap);
 }

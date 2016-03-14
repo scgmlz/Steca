@@ -289,6 +289,10 @@ core::shp_LensSystem TheHub::allLenses(core::Dataset const& dataset) {
   return session->allLenses(dataset);
 }
 
+core::shp_LensSystem TheHub::noROILenses(core::Dataset const& dataset) {
+  return session->noROILenses(dataset);
+}
+
 void TheHub::load(QFileInfo const& fileInfo) THROWS {
   QFile file(fileInfo.absoluteFilePath());
   RUNTIME_CHECK(file.open(QIODevice::ReadOnly), "File cannot be opened");

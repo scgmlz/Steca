@@ -8,6 +8,7 @@
 #include "core_image.h"
 #include "core_dataset.h"
 
+
 namespace panel {
 //------------------------------------------------------------------------------
 
@@ -77,7 +78,7 @@ public:
   void setImageScale(uint);
 
 private:
-  QPixmap makePixmap(core::Image const&,core::Range rgeIntens);
+  QPixmap makePixmap(core::shp_LensSystem lenses,core::Range rgeIntens);
   void setDataset(core::shp_Dataset);
   void renderDataset();
 

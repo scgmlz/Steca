@@ -113,6 +113,7 @@ public:
   QSize getImageSize() const;
 
   shp_LensSystem allLenses(Dataset const& dataset);
+  shp_LensSystem noROILenses(Dataset const& dataset);
   shp_LensSystem plainLens(Dataset const& dataset);
 
 private: // corrections

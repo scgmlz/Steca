@@ -136,6 +136,7 @@ public: // files
 
 public:
   core::shp_LensSystem allLenses(core::Dataset const& dataset);
+  core::shp_LensSystem noROILenses(core::Dataset const& dataset);
 
 public:
   void load(QFileInfo const&)       THROWS;
