@@ -1,5 +1,6 @@
 #include "core_types.h"
 
+#include <algorithm>
 #include <QSize>
 #include <qmath.h>
 #include <numeric>
@@ -222,14 +223,12 @@ void Ranges::saveTo(QJsonObject& obj) const {
 
 //------------------------------------------------------------------------------
 
-Curve::Curve() {
-}
-
-Curve::~Curve() {
-}
+Curve::Curve() = default;
 
 void Curve::clear() {
   xs.clear(); ys.clear();
+  xRange.invalidate();
+  yRange.invalidate();
 }
 
 bool Curve::isEmpty() const {
@@ -242,18 +241,14 @@ uint Curve::count() const {
 }
 
 bool Curve::isOrdered() const {
-  qreal lastX = -qInf();
-  for (qreal x: xs) {
-    if (lastX >= x) return false;
-    lastX = x;
-  }
-
-  return true;
+  return std::is_sorted(xs.cbegin(), xs.cend());
 }
 
 void Curve::append(qreal x, qreal y) {
   xs.append(x);
   ys.append(y);
+  xRange.extend(x);
+  yRange.extend(y);
 }
 
 Curve Curve::intersect(Range const& range) const {
@@ -318,23 +313,6 @@ uint Curve::maxYindex() const {
   }
 
   return index;
-}
-
-//------------------------------------------------------------------------------
-
-TI_Curve::TI_Curve() {
-}
-
-void TI_Curve::clear() {
-  super::clear();
-  tthRange.invalidate();
-  intenRange.invalidate();
-}
-
-void TI_Curve::append(qreal tth_, qreal inten_) {
-  super::append(tth_,inten_);
-  tthRange.extend(tth_);
-  intenRange.extend(inten_);
 }
 
 //------------------------------------------------------------------------------

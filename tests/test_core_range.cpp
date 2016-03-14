@@ -89,40 +89,40 @@ void TestCoreRange::testRange() {
     QCOMPARE(rs.at(0).max, max+1000.);
   }
 
-  //Tests for TI_Curve
+  //Tests for Curve
   {
     {
       qreal tth = 1.2, inten = 3.14;
-      core::TI_Curve t;
+      core::Curve t;
 
       // testing default Constructor, All data is NaN
       {
         QVERIFY(t.isEmpty());
-        QVERIFY(t.getTth().isEmpty());
-        QVERIFY(t.getInten().isEmpty());
-        QVERIFY(qIsNaN(t.getTthRange().min));
-        QVERIFY(qIsNaN(t.getTthRange().max));
-        QVERIFY(qIsNaN(t.getIntenRange().min));
-        QVERIFY(qIsNaN(t.getIntenRange().max));
+        QVERIFY(t.getXs().isEmpty());
+        QVERIFY(t.getYs().isEmpty());
+        QVERIFY(qIsNaN(t.getXRange().min));
+        QVERIFY(qIsNaN(t.getXRange().max));
+        QVERIFY(qIsNaN(t.getYRange().min));
+        QVERIFY(qIsNaN(t.getYRange().max));
       }
 
       //testing if input of data is correct
       {
         t.append(tth,inten);
-        QCOMPARE(t.getTth().at(0),tth);
-        QCOMPARE(t.getInten().at(0),inten);
-        QCOMPARE(t.getTthRange().min,tth);
-        QCOMPARE(t.getTthRange().max,tth);
-        QCOMPARE(t.getIntenRange().min,inten);
-        QCOMPARE(t.getIntenRange().max,inten);
+        QCOMPARE(t.getXs().at(0),tth);
+        QCOMPARE(t.getYs().at(0),inten);
+        QCOMPARE(t.getXRange().min,tth);
+        QCOMPARE(t.getXRange().max,tth);
+        QCOMPARE(t.getYRange().min,inten);
+        QCOMPARE(t.getYRange().max,inten);
 
         t.append(2*tth,0);
-        QCOMPARE(t.getTth().at(1),      2*tth);
-        QCOMPARE(t.getInten().at(1),    0.);
-        QCOMPARE(t.getTthRange().min,   tth);
-        QCOMPARE(t.getTthRange().max,   2*tth);
-        QCOMPARE(t.getIntenRange().min, 0.);
-        QCOMPARE(t.getIntenRange().max, inten);
+        QCOMPARE(t.getXs().at(1),   2*tth);
+        QCOMPARE(t.getYs().at(1),   0.);
+        QCOMPARE(t.getXRange().min, tth);
+        QCOMPARE(t.getXRange().max, 2*tth);
+        QCOMPARE(t.getYRange().min, 0.);
+        QCOMPARE(t.getYRange().max, inten);
         QVERIFY(t.isOrdered());
 
         t.clear();

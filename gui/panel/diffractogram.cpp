@@ -167,8 +167,8 @@ void DiffractogramPlot::setTool(Tool tool_) {
 }
 
 void DiffractogramPlot::plot(
-  core::TI_Curve const& dgram, core::TI_Curve const& dgramBgFitted, core::TI_Curve const& bg,
-  core::TI_Curves const& refls, uint currReflIndex
+  core::Curve const& dgram, core::Curve const& dgramBgFitted, core::Curve const& bg,
+  core::Curves const& refls, uint currReflIndex
 ) {
   if (dgram.isEmpty()) {
     xAxis->setVisible(false);
@@ -181,7 +181,7 @@ void DiffractogramPlot::plot(
     clearReflLayer();
 
   } else {
-    auto tthRange   = dgram.getTthRange();
+    auto tthRange   = dgram.getXRange();
     bool fixedIntensityScale = theHub.fixedIntensityScale;
 
     core::Range intenRange;
@@ -190,8 +190,8 @@ void DiffractogramPlot::plot(
       // heuristics; to calculate this precisely would require much more computation
       intenRange = core::Range(-max/30,max/3);
     } else {
-      intenRange = dgramBgFitted.getIntenRange();
-      intenRange.extend(dgram.getIntenRange());
+      intenRange = dgramBgFitted.getYRange();
+      intenRange.extend(dgram.getYRange());
     }
 
     xAxis->setRange(tthRange.min,tthRange.max);
@@ -200,13 +200,13 @@ void DiffractogramPlot::plot(
     yAxis->setVisible(true);
 
     if (diffractogram.showBgFit) {
-      bgGraph->setData(bg.getTth(),bg.getInten());
+      bgGraph->setData(bg.getXs(), bg.getYs());
     } else {
       bgGraph->clearData();
     }
 
-    dgramGraph->setData(dgram.getTth(),dgram.getInten());
-    dgramBgFittedGraph->setData(dgramBgFitted.getTth(),dgramBgFitted.getInten());
+    dgramGraph->setData(dgram.getXs(), dgram.getYs());
+    dgramBgFittedGraph->setData(dgramBgFitted.getXs(), dgramBgFitted.getYs());
 
     clearReflLayer();
     setCurrentLayer("refl");
@@ -215,7 +215,7 @@ void DiffractogramPlot::plot(
       auto &r = refls[i];
       auto *graph = addGraph(); reflGraph.append(graph);
       graph->setPen(QPen(Qt::green,i==(int)currReflIndex ? 2 : 1));
-      graph->setData(r.getTth(),r.getInten());
+      graph->setData(r.getXs(), r.getYs());
     }
   }
 
@@ -426,8 +426,8 @@ void Diffractogram::calcBackground() {
   auto &bgRanges     = theHub.getBgRanges();      // not very nice REVIEW
 
   bgPolynomial = core::fit::fitBackground(dgram,bgRanges,bgPolynomial.getDegree());
-  auto tth   = dgram.getTth();
-  auto inten = dgram.getInten();
+  auto& tth   = dgram.getXs();
+  auto& inten = dgram.getYs();
   for_i (dgram.count()) {
     qreal x = tth[i], y = bgPolynomial.y(x);
     bg.append(x,y);
@@ -460,10 +460,9 @@ void Diffractogram::calcReflections() {
       auto &fun = r->getPeakFunction();
       core::fit::fitPeak(fun,dgramBgFitted,range);
 
-      auto tth   = dgramBgFitted.getTth();
-      auto inten = dgramBgFitted.getInten();
+      auto &tth   = dgramBgFitted.getXs();
 
-      core::TI_Curve c;
+      core::Curve c;
 
       for_i (dgramBgFitted.count()) {
         qreal x = tth[i];

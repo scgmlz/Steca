@@ -5,13 +5,13 @@
 namespace core { namespace fit {
 //------------------------------------------------------------------------------
 
-Polynomial fitBackground(TI_Curve const& dgram, core::Ranges const& bgRanges, uint degree) {
+Polynomial fitBackground(Curve const& dgram, core::Ranges const& bgRanges, uint degree) {
   Polynomial bgPolynomial(qMin(degree,MAX_BACKGROUND_POLYNOMIAL_DEGREE));
   FittingLevenbergMarquardt().fitWithoutCheck(bgPolynomial,dgram.intersect(bgRanges));
   return bgPolynomial;
 }
 
-void fitPeak(PeakFunction& peakFunction, TI_Curve const& dgram, core::Range const& range) {
+void fitPeak(PeakFunction& peakFunction, Curve const& dgram, core::Range const& range) {
   peakFunction.reset();
 
   core::Curve curve = dgram.intersect(range);

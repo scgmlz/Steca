@@ -11,10 +11,10 @@ namespace core { namespace fit {
 //------------------------------------------------------------------------------
 
 /// Polynomial fit
-Polynomial fitBackground(TI_Curve const& dgram, core::Ranges const&, uint degree);
+Polynomial fitBackground(Curve const& dgram, core::Ranges const&, uint degree);
 
 /// Peak fit
-void fitPeak(PeakFunction&, TI_Curve const&, core::Range const&);
+void fitPeak(PeakFunction&, Curve const&, core::Range const&);
 
 //------------------------------------------------------------------------------
 }}

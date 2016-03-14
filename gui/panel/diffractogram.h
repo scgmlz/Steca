@@ -60,7 +60,7 @@ public:
   void setTool(Tool);
   Tool getTool() const { return tool; }
 
-  void plot(core::TI_Curve const&,core::TI_Curve const&, core::TI_Curve const&, core::TI_Curves const&, uint);
+  void plot(core::Curve const&,core::Curve const&, core::Curve const&, core::Curves const&, uint);
 
   core::Range fromPixels(int,int);
 
@@ -99,8 +99,8 @@ private:
 
   DiffractogramPlot *plot;
 
-  core::TI_Curve  dgram, dgramBgFitted, bg;
-  core::TI_Curves refls;
+  core::Curve  dgram, dgramBgFitted, bg;
+  core::Curves refls;
 
   bool showBgFit;
 

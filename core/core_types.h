@@ -110,24 +110,26 @@ public:
 //------------------------------------------------------------------------------
 /// A set of datapoints.
 
-class Curve {
+class Curve final {
 public:
   Curve();
-  virtual ~Curve();
 
-  virtual void clear();
+  void clear();
 
   bool isEmpty() const;
   uint count()   const;
   bool isOrdered() const;
 
-  virtual void append(qreal x, qreal y);
+  void append(qreal x, qreal y);
 
   reals_t const& getXs() const { return xs; }
   reals_t const& getYs() const { return ys; }
 
   qreal x(uint i) const { return xs[i]; }
   qreal y(uint i) const { return ys[i]; }
+
+  Range const& getXRange() const { return xRange; }
+  Range const& getYRange() const { return yRange; }
 
   Curve intersect(Range const&)  const;
   Curve intersect(Ranges const&) const;
@@ -137,30 +139,10 @@ public:
 
 private:
   reals_t xs, ys;
+  core::Range xRange, yRange;
 };
 
-//------------------------------------------------------------------------------
-/// 2theta -> intensity curve
-
-class TI_Curve: public Curve {
-  SUPER(TI_Curve,Curve)
-public:
-  TI_Curve();
-
-  void clear();
-  void append(qreal tth,qreal inten);
-
-  reals_t const& getTth()             const { return getXs();     }
-  reals_t const& getInten()           const { return getYs();     }
-
-  core::Range const& getTthRange()    const { return tthRange;    }
-  core::Range const& getIntenRange()  const { return intenRange;  }
-
-private:
-  core::Range tthRange, intenRange;
-};
-
-typedef QVector<TI_Curve> TI_Curves;
+using Curves = QVector<Curve>;
 
 //------------------------------------------------------------------------------
 // load / save helpers
