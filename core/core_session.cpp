@@ -214,6 +214,8 @@ shp_LensSystem Session::allLenses(Dataset const& dataset) {
   auto lenses = plainLens(dataset);
   lenses << shp_LensSystem(new TransformationLens(imageTransform))
          << shp_LensSystem(new ROILens(imageCut));
+  if (corrEnabled)
+    lenses << shp_LensSystem(new SensitivityCorrectionLens(intensCorrArray));
   return lenses;
 }
 

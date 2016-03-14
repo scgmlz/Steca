@@ -145,6 +145,32 @@ QSize ROILens::getSize() const {
 
 //------------------------------------------------------------------------------
 
+SensitivityCorrectionLens::SensitivityCorrectionLens(
+  Image const& sensitivityCorrection)
+  : correction(&sensitivityCorrection)
+{
+}
+
+uint SensitivityCorrectionLens::getPriority() const {
+  return PRIORITY;
+}
+
+DiffractionAngles SensitivityCorrectionLens::getAngles(uint x, uint y) const {
+  return next->getAngles(x, y);
+}
+
+intens_t SensitivityCorrectionLens::getIntensity(uint x, uint y) const {
+  const auto in = next->getIntensity(x, y);
+  const auto corr = correction->at(x, y);
+  return qIsNaN(corr) ? qQNaN() : in * corr;
+}
+
+QSize SensitivityCorrectionLens::getSize() const {
+  return next->getSize();
+}
+
+//------------------------------------------------------------------------------
+
 shp_LensSystem makeLensSystem(Dataset const& dataset,
                               AngleMapArray const& angleMap) {
     return shp_LensSystem(new PlainLens(dataset.getImage(), angleMap));

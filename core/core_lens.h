@@ -10,10 +10,10 @@ namespace core {
 
 namespace LensPriority {
 enum LensPriority {
-    NORMALIZATION,
-    SENSITIVITY_CORRECTION,
     ROI,
     TRANSFORMATION,
+    NORMALIZATION,
+    SENSITIVITY_CORRECTION,
     PLAIN
 };
 }
@@ -89,6 +89,24 @@ public:
 
 private:
   ImageCut const* cut;
+};
+
+//------------------------------------------------------------------------------
+
+class SensitivityCorrectionLens final : public Lens {
+public:
+  const static uint PRIORITY = LensPriority::SENSITIVITY_CORRECTION;
+
+  SensitivityCorrectionLens(Image const& sensitivityCorrection);
+
+  uint getPriority() const override;
+
+  DiffractionAngles getAngles(uint x, uint y) const override;
+  intens_t getIntensity(uint x, uint y) const override;
+  QSize getSize() const override;
+
+private:
+  Image const* correction;
 };
 
 //------------------------------------------------------------------------------
