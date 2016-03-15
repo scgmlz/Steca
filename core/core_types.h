@@ -56,6 +56,7 @@ struct Range {
   Range(qreal val);
   Range(qreal min, qreal max);
 
+  qreal center() const;
   qreal width() const;
 
   static Range infinite();        ///< -inf .. +inf

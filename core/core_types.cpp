@@ -56,6 +56,10 @@ Range::Range(qreal min, qreal max) {
   set(min,max);
 }
 
+qreal Range::center() const {
+    return isValid() ? width() / 2 : qQNaN();
+}
+
 qreal Range::width() const {
   return isValid() ? max-min : qQNaN();
 }
