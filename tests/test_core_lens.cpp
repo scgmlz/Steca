@@ -57,7 +57,7 @@ void TestCoreLens::testLensSystem() {
 
   lensSystem << shp_LensSystem(new TransformationLens(ImageTransform(3)));
 
-  // checkIntensity(lensSystem,inten,specialInten,0,1);
+  checkIntensity(lensSystem,inten,specialInten,0,1);
 
 }
 
