@@ -68,6 +68,10 @@ void ChainLink<T>::nextChanged() {
 template<typename T>
 QSharedPointer<T>& operator <<(QSharedPointer<T>& firstLink,
                                QSharedPointer<T> link) {
+  if (link->hasNext()) {
+      // More than one link? Lets recurse.
+      firstLink << link->getNext();
+  }
   if (!link) return firstLink;
   if (!firstLink) {
     link->setPrevious(QSharedPointer<T>());
