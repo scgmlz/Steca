@@ -2,15 +2,13 @@
 # CMakeLists.txt for building STeCaCoreIO
 ############################################################################
 
-set(header_files
-  core_io.h
- )
+file(GLOB header_files
+  "*.h"
+)
 
-set(source_files
-  core_io.cpp
-  core_io_caress.cpp
-  core_io_tiff.cpp
- )
+file(GLOB source_files
+  "*.cpp"
+)
 
 set(caress_header_files
   Caress/car_datatypes.h

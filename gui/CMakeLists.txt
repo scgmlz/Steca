@@ -2,34 +2,16 @@
 # CMakeLists.txt for building STeCaGUI
 ############################################################################
 
-set(header_files
-  app.h
-  gui_helpers.h
-  mainwin.h
-  mainwin_parts.h
-  models.h
-  thehub.h
-  panel/dataset.h
-  panel/diffractogram.h
-  panel/fitting.h
-  panel/panel.h
- )
-
-set(source_files
-  app.cpp
-  gui_helpers.cpp
-  mainwin.cpp
-  mainwin_parts.cpp
-  models.cpp
-  thehub.cpp
-  panel/dataset.cpp
-  panel/diffractogram.cpp
-  panel/fitting.cpp
-  panel/panel.cpp
+file(GLOB header_files
+  "*.h"
+  "panel/*.h"
+  "QCP/*.h"
 )
 
-set(QCustomPlot_source_files
-  QCP/qcustomplot.cpp
+file(GLOB source_files
+  "*.cpp"
+  "panel/*.cpp"
+  "QCP/*.cpp"
 )
 
 include_directories(
@@ -40,7 +22,6 @@ include_directories(
 add_library(STeCaGUI
   ${header_files}
   ${source_files}
-  ${QCustomPlot_source_files}
 )
 
 target_link_libraries(STeCaGUI

@@ -5,42 +5,12 @@
 add_subdirectory(io)
 add_subdirectory(LevMar)
 
-set(header_files
-  core_angle_map_array.h
-  core_array2d.h
-  core_curve.h
-  core_dataset.h
-  core_defs.h
-  core_file.h
-  core_fit_fitting.h
-  core_fit_functions.h
-  core_fit_methods.h
-  core_image.h
-  core_image_cut.h
-  core_image_transform.h
-  core_lens.h
-  core_priority_chain.h
-  core_reflection.h
-  core_session.h
-  core_types.h
+file(GLOB header_files
+  "*.h"
 )
 
-set(source_files
-  core_array2d.cpp
-  core_curve.cpp
-  core_dataset.cpp
-  core_defs.cpp
-  core_file.cpp
-  core_fit_fitting.cpp
-  core_fit_functions.cpp
-  core_fit_methods.cpp
-  core_image.cpp
-  core_image_cut.cpp
-  core_image_transform.cpp
-  core_lens.cpp
-  core_reflection.cpp
-  core_session.cpp
-  core_types.cpp
+file(GLOB source_files
+  "*.cpp"
 )
 
 include_directories(
