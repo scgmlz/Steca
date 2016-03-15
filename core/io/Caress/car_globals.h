@@ -29,6 +29,11 @@ update history:
 
 #include "car_datatypes.h"
 
+#if defined(_MSC_VER) && !defined(WINVER)
+// Visual Studio no longer defines WINVER
+#define WINVER
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
