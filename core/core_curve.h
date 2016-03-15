@@ -1,7 +1,7 @@
 #ifndef CORE_CURVE_H
 #define CORE_CURVE_H
 
-#include "core_types.h"
+#include "core_fit_functions.h"
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -32,6 +32,8 @@ public:
 
   Curve intersect(Range const&)  const;
   Curve intersect(Ranges const&) const;
+
+  void operator -=(fit::Function const& f);
 
   Curve smooth()    const;
   uint  maxYindex() const;
