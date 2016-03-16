@@ -59,7 +59,7 @@ private:
 
 class ImageTransform;
 
-class TransformationLens final : public Lens {
+class TransformationLens /*final*/ : public Lens {
 public:
   const static uint PRIORITY = LensPriority::TRANSFORMATION;
 
