@@ -35,6 +35,7 @@ public:
           qreal mon, qreal deltaTime,
           QSize const& size, intens_t const* intensities);
 
+  qreal getNumericalAttributeValue(eAttributes const tag) const;
   str getAttributeStrValue(int) const; // TODO uint
   qreal tthMitte() const { return motorTth; } // RENAME
 

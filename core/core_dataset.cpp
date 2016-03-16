@@ -30,6 +30,24 @@ Dataset::Dataset(
 , image(size_,intensities_) {
 }
 
+qreal Dataset::getNumericalAttributeValue(eAttributes const tag) const {
+  switch (tag) {
+  case MOTOR_X:       return motorXT;
+  case MOTOR_Y:       return motorYT;
+  case MOTOR_Z:       return motorZT;
+  case MOTOR_OMG:     return motorOmg; 
+  case MOTOR_TTH:     return motorTth; 
+  case MOTOR_PHI:     return motorPhi; 
+  case MOTOR_CHI:     return motorChi; 
+  case MOTOR_PST:     return motorPST; 
+  case MOTOR_SST:     return motorSST; 
+  case MOTOR_OMGM:    return motorOMGM;
+  case MON:           return mon;
+  case DELTA_TIME:    return deltaTime;
+  default: NEVER_HERE return qQNaN();
+  }
+}
+
 str Dataset::getAttributeStrValue(int e) const {
   qreal value = 0;
 
