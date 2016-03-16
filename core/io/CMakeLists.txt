@@ -10,6 +10,7 @@ file(GLOB source_files
   "*.cpp"
 )
 
+# TODO globbing
 set(caress_header_files
   Caress/car_datatypes.h
   Caress/car_globals.h

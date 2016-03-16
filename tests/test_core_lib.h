@@ -3,8 +3,6 @@
 
 #include <QtTest/QtTest>
 
-#define TEST_UNIT_TESTS
-
 class TestCoreLib: public QObject {
   Q_OBJECT
 

@@ -16,7 +16,7 @@ extern "C" {
 
 /* x64/x86_64: 64 bit, little endian */
 #if !defined(PLATFORM) &&                                                                          \
-    (defined(__amd64) || defined(__amd64__) || defined(__x86_64) || defined(__x86_64__))
+    (defined(__amd64) || defined(__amd64__) || defined(__x86_64) || defined(__x86_64__) || defined(_WIN64))
 #define LITTLE_ENDIAN 1
 #define PLATFORM "x86_64"
 #define NATIVE_DATAWIDTH 64
@@ -31,7 +31,7 @@ typedef unsigned long uint64;
 #endif
 
 /* x86: 32 bit, little endian */
-#if (!defined(PLATFORM)) && (defined(i386) || defined(__x86__))
+#if (!defined(PLATFORM)) && (defined(i386) || defined(__x86__) || defined(_WIN32))
 #define LITTLE_ENDIAN 1
 #define PLATFORM "x86"
 #define NATIVE_DATAWIDTH 32

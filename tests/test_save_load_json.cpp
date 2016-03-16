@@ -2,6 +2,20 @@
 #include "core_fit_functions.h"
 #include "core_types.h"
 
+// make non-public methods public
+#define TEST_FIT_CLASS(cls)                 \
+  class Test##cls: public core::fit::cls {  \
+public:                                     \
+  void setValue(uint parIndex, qreal val) { \
+    core::fit::cls::setValue(parIndex,val); \
+  }                                         \
+};
+
+TEST_FIT_CLASS(Polynomial)
+TEST_FIT_CLASS(Gaussian)
+TEST_FIT_CLASS(CauchyLorentz)
+TEST_FIT_CLASS(PseudoVoigt1)
+
 void TestSaveLoadJson::testSaveLoadJson() {
   int error = 5;
   qreal r1 = 42;
@@ -33,10 +47,9 @@ void TestSaveLoadJson::testSaveLoadJson() {
     QCOMPARE(p4.getValue(), val1);
   }
 
-  using Polynomial = core::fit::Polynomial;
   { // testing saveTo/loadFrom Polynomial
-    Polynomial polyLoad;
-    Polynomial polySave;
+    TestPolynomial polyLoad;
+    TestPolynomial polySave;
 
     polySave.setDegree(3);
     polySave.setParameterCount(4);
@@ -61,7 +74,7 @@ void TestSaveLoadJson::testSaveLoadJson() {
 
 
     // testing saveTo/loadFrom CauchyLorentz
-    core::fit::CauchyLorentz cauchySave, cauchyLoad;
+    TestCauchyLorentz cauchySave, cauchyLoad;
     QJsonObject cObj;
     cauchySave.setValue(0,val1);
     cauchySave.setValue(1,val2);
@@ -72,7 +85,7 @@ void TestSaveLoadJson::testSaveLoadJson() {
     QCOMPARE(cauchyLoad.parameterCount(),3u);
     QCOMPARE(cauchyLoad.getParameter(0).getValue(),val1);
 
-    core::fit::PseudoVoigt1 pseudoSave, pseudoLoad;
+    TestPseudoVoigt1 pseudoSave, pseudoLoad;
     QJsonObject psObj;
     pseudoSave.setValue(0,val4);
 
@@ -90,7 +103,7 @@ void TestSaveLoadJson::testSaveLoadJson() {
 
     // testing saveTo/loadFrom Gaussian
 
-    core::fit::Gaussian gSave, gLoad;
+    TestGaussian gSave, gLoad;
     QJsonObject gObj;
     gSave.setValue(0,val3);
 
@@ -99,7 +112,7 @@ void TestSaveLoadJson::testSaveLoadJson() {
     QJsonObject sumObj;
 
     core::fit::SumFunctions sumSave, sumLoad;
-    Polynomial *p1 = new Polynomial, *p2 = new Polynomial;
+    TestPolynomial *p1 = new TestPolynomial, *p2 = new TestPolynomial;
 
     p1->loadFrom(polyObj);
     p2->loadFrom(polyObj);

@@ -99,15 +99,10 @@ public:
   void loadFrom(QJsonObject const&) THROWS;
   void saveTo(QJsonObject&) const;
 
-#ifdef TEST_UNIT_TESTS
-public:
-#else
 protected:
-#endif
   QVector<Parameter> parameters;
   qreal parValue(uint parIndex, qreal const* parameterValues) const;
   void  setValue(uint parIndex, qreal val);
-
 };
 
 //------------------------------------------------------------------------------

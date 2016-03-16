@@ -74,6 +74,7 @@ intens_t TransformationLens::getIntensity(uint x, uint y) const {
     break;
   case ImageTransform::ROTATE_3:
     std::swap(x, y);
+    x = h - x - 1;
     break;
   case ImageTransform::MIRROR_ROTATE_0:
     x = w - x - 1;
