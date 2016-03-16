@@ -6,7 +6,6 @@
 
 #include <QtTest/QtTest>
 
-#define TEST_UNIT_TESTS
 //------------------------------------------------------------------------------
 
 using namespace core;

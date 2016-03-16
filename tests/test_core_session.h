@@ -3,8 +3,6 @@
 
 #include <QtTest/QtTest>
 
-#define TEST_UNIT_TESTS
-
 class TestCoreSession: public QObject {
   Q_OBJECT
 

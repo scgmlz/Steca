@@ -80,11 +80,8 @@ private:
   QSize imageSize; ///< All files must have images of the same size; this is a cached value
 
   void updateImageSize();                 ///< Clears the image size if there are no files in the session.
-#ifdef TEST_UNIT_TESTS
-public:
-#else
+
 private:
-#endif
   void setImageSize(QSize const&) THROWS; ///< Ensures that all images have the same size.
 
 public:

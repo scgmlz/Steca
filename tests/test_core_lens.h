@@ -7,8 +7,6 @@
 
 #include <QtTest/QtTest>
 
-#define TEST_UNIT_TESTS
-
 class TestCoreLens: public QObject {
   Q_OBJECT
 public:

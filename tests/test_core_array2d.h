@@ -3,8 +3,6 @@
 
 #include <QtTest/QtTest>
 
-#define TEST_UNIT_TESTS
-
 class TestCoreArray2d: public QObject {
   Q_OBJECT
 
