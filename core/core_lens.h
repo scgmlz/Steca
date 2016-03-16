@@ -8,20 +8,17 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-namespace LensPriority {
-enum LensPriority {
-    INTENSITY_RANGE,
-    NORMALIZATION,
-    ROI,
-    TRANSFORMATION,
-    SENSITIVITY_CORRECTION,
-    PLAIN
-};
-}
-
-//------------------------------------------------------------------------------
-
 class Lens : public ChainLink<Lens> {
+public:
+  enum {
+    PRIORITY_INTENSITY_RANGE,
+    PRIORITY_NORMALIZATION,
+    PRIORITY_ROI,
+    PRIORITY_TRANSFORMATION,
+    PRIORITY_SENSITIVITY_CORRECTION,
+    PRIORITY_PLAIN
+  };
+
 public:
   virtual DiffractionAngles getAngles(uint x, uint y) const = 0;
   virtual intens_t getIntensity(uint x, uint y) const = 0;
@@ -38,8 +35,6 @@ class Image;
 
 class PlainLens final : public Lens {
 public:
-  const static uint PRIORITY = LensPriority::PLAIN;
-
   PlainLens(Image const& image, AngleMapArray const& angleMapArray);
 
   uint getPriority() const override;
@@ -61,8 +56,6 @@ class ImageTransform;
 
 class TransformationLens /*final*/ : public Lens {
 public:
-  const static uint PRIORITY = LensPriority::TRANSFORMATION;
-
   TransformationLens(ImageTransform const& transformation);
 
   uint getPriority() const override;
@@ -82,8 +75,6 @@ class ImageCut;
 
 class ROILens final : public Lens {
 public:
-  const static uint PRIORITY = LensPriority::ROI;
-
   ROILens(ImageCut const& imageCut);
 
   uint getPriority() const override;
@@ -101,8 +92,6 @@ private:
 
 class SensitivityCorrectionLens final : public Lens {
 public:
-  const static uint PRIORITY = LensPriority::SENSITIVITY_CORRECTION;
-
   SensitivityCorrectionLens(Array2D<qreal> const& sensitivityCorrection);
 
   uint getPriority() const override;
@@ -120,8 +109,6 @@ private:
 
 class IntensityRangeLens final : public Lens {
 public:
-  const static uint PRIORITY = LensPriority::INTENSITY_RANGE;
-
   IntensityRangeLens();
 
   uint getPriority() const override;
@@ -144,8 +131,6 @@ private:
 
 class GlobalIntensityRangeLens final : public Lens {
 public:
-  const static uint PRIORITY = LensPriority::INTENSITY_RANGE;
-
   GlobalIntensityRangeLens(Range const& intensityRange);
 
   uint getPriority() const override;

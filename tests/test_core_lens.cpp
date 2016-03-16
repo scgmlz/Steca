@@ -33,7 +33,7 @@ using namespace core;
 void TestCoreLens::testTransformationLens() {
   TEST_DATA
 
-  QCOMPARE(lensSystem->getPriority(), (uint) LensPriority::PLAIN);
+  QCOMPARE(lensSystem->getPriority(), (uint) Lens::PRIORITY_PLAIN);
   checkIntensity(lensSystem,inten,specialInten,0,0);
   auto imTrans = ImageTransform(0);
   CHECK_TRANSFORM(1,2,0);

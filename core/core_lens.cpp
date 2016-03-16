@@ -25,7 +25,7 @@ DiffractionAngles PlainLens::getAngles(uint x, uint y) const {
 }
 
 uint PlainLens::getPriority() const {
-  return PRIORITY;
+  return Lens::PRIORITY_PLAIN;
 }
 
 intens_t PlainLens::getIntensity(uint x, uint y) const {
@@ -49,7 +49,7 @@ TransformationLens::TransformationLens(ImageTransform const& transformation)
 }
 
 uint TransformationLens::getPriority() const {
-  return PRIORITY;
+  return Lens::PRIORITY_TRANSFORMATION;
 }
 
 DiffractionAngles TransformationLens::getAngles(uint x, uint y) const {
@@ -129,7 +129,7 @@ ROILens::ROILens(ImageCut const& imageCut)
 }
 
 uint ROILens::getPriority() const {
-  return PRIORITY;
+  return Lens::PRIORITY_ROI;
 }
 
 DiffractionAngles ROILens::getAngles(uint x, uint y) const {
@@ -164,7 +164,7 @@ SensitivityCorrectionLens::SensitivityCorrectionLens(
 }
 
 uint SensitivityCorrectionLens::getPriority() const {
-  return PRIORITY;
+  return Lens::PRIORITY_SENSITIVITY_CORRECTION;
 }
 
 DiffractionAngles SensitivityCorrectionLens::getAngles(uint x, uint y) const {
@@ -195,7 +195,7 @@ IntensityRangeLens::IntensityRangeLens()
 }
 
 uint IntensityRangeLens::getPriority() const {
-  return PRIORITY;
+  return Lens::PRIORITY_INTENSITY_RANGE;
 }
 
 DiffractionAngles IntensityRangeLens::getAngles(uint x, uint y) const {
@@ -235,7 +235,7 @@ GlobalIntensityRangeLens::GlobalIntensityRangeLens(Range const& intensityRange)
 }
 
 uint GlobalIntensityRangeLens::getPriority() const {
-  return PRIORITY;
+  return Lens::PRIORITY_INTENSITY_RANGE;
 }
 
 DiffractionAngles GlobalIntensityRangeLens::getAngles(uint x, uint y) const {
