@@ -1,7 +1,14 @@
 #include "core_polefigure.h"
 
+#include "core_curve.h"
+#include "core_fit_fitting.h"
+#include "core_session.h"
+
+#include <algorithm>
 #include <cmath>
 #include <Eigen/Core>
+#include <QLinkedList>
+#include <QtMath>
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -77,7 +84,7 @@ void calculateAlphaBeta(const qreal omgDet, const qreal phiDet,
     beta += 2 * M_PI;
 }
 
-qreal deltaBeta(const qreal beta1, const qreal beta2) noexcept {
+qreal calculateDeltaBeta(const qreal beta1, const qreal beta2) noexcept {
   qreal deltaBeta = beta1 - beta2;
   qreal tempDelta = deltaBeta - 2 * M_PI;
   if (std::abs(tempDelta) < std::abs(deltaBeta)) deltaBeta = tempDelta;
@@ -99,7 +106,7 @@ qreal angle(const qreal alpha1, const qreal alpha2,
 bool inRadius(const qreal alpha, const qreal beta,
               const qreal centerAlpha, const qreal centerBeta,
               const qreal radius) noexcept {
-  return   std::abs(angle(alpha, centerAlpha, deltaBeta(beta, centerBeta)))
+  return   std::abs(angle(alpha, centerAlpha, calculateDeltaBeta(beta, centerBeta)))
          < radius;
 }
 
@@ -126,6 +133,299 @@ bool inQuadrant(const int quadrant,
     return deltaAlpha < 0 && deltaBeta >= 0;
   default:
     NEVER_HERE return false;
+  }
+}
+
+Quadrant::Quadrant remapQuadrant(Quadrant::Quadrant const Q) {
+  switch(Q) {
+  case Quadrant::NORTHEAST: return Quadrant::NORTHWEST;
+  case Quadrant::SOUTHEAST: return Quadrant::SOUTHWEST;
+  case Quadrant::SOUTHWEST: return Quadrant::NORTHEAST;
+  case Quadrant::NORTHWEST: return Quadrant::SOUTHEAST;
+  default: NEVER_HERE return Quadrant::MAX_QUADRANTS;
+  }
+}
+
+Range gammaRange(shp_LensSystem lenses, qreal const tth) {
+  const auto s = lenses->getSize();
+  RUNTIME_CHECK(s.width() > 0 && s.height() > 0, "invalid image size");
+  Range r;
+  auto angles = lenses->getAngles(0, 0);
+  auto nextAngles = lenses->getAngles(1, 0);
+  for (int iy = 0; iy < s.height(); ++iy) {
+    for (int ix = 0; ix < s.width() - 1; ++ix) {
+      if (tth >= angles.tth && tth < nextAngles.tth) {
+        r.extend(angles.gamma);
+      }
+      angles = nextAngles;
+      nextAngles = lenses->getAngles(ix + 1, iy);
+    }
+  }
+  return r;
+}
+
+template<typename Container>
+qreal idw4(Container const& distances, Container const& values) {
+  RUNTIME_CHECK(distances.size() == Quadrant::MAX_QUADRANTS,
+                "distances size should be 4");
+  RUNTIME_CHECK(values.size() == Quadrant::MAX_QUADRANTS,
+                "values size should be 4");
+  Container inverseDistances;
+  for (const auto& d : distances) inverseDistances.push_back(1 / d);
+  const qreal inverseDistanceSum
+    = std::accumulate(inverseDistances.cbegin(), inverseDistances.cend(), 0.0);
+  return std::inner_product(values.begin(),
+                            values.end(),
+                            inverseDistances.begin(),
+                            0.0)
+            / inverseDistanceSum;
+}
+
+template<typename Container>
+void searchPoints(qreal const alpha,
+                  qreal const beta,
+                  qreal const radius,
+                  QVector<QVector<Polefigure::Point>> const& points,
+                  Container &peakOffsets,
+                  Container &peakHeights,
+                  Container &FWHMs) {
+  for (int i = 0; i < 10; i++) { // Why 10 and not NUM_BETAS? Noone knows.
+    for (int j=0; j < points[i].size(); j++) {
+      if (inRadius(points[i][j].alpha, points[i][j].beta, alpha, beta, radius)) {
+        peakOffsets.push_back(points[i][j].peakPosition.x);
+        peakHeights.push_back(points[i][j].peakPosition.y);
+        FWHMs.push_back(points[i][j].FWHM);
+      }
+    }
+  }
+}
+
+bool searchPointsInQuadrant(int const quadrant,
+                            qreal const deltaAlpha,
+                            qreal const deltaBeta,
+                            Polefigure::Point const& point,
+                            qreal &peakOffset,
+                            qreal &peakHeight,
+                            qreal &peakFWHM) {
+  if (inQuadrant(quadrant, deltaAlpha, deltaBeta)) {
+    peakOffset = point.peakPosition.x;
+    peakHeight = point.peakPosition.y;
+    peakFWHM = point.FWHM;
+    return true;
+  }
+  return false;
+}
+
+void searchPointsInAllQuadrants(qreal const alpha,
+                                qreal const beta,
+                                QVector<QVector<Polefigure::Point>> const& points,
+                                qreal &peakOffset,
+                                qreal &peakHeight,
+                                qreal &peakFWHM) {
+  const int iBegin = qFloor(deg_rad(beta) / Polefigure::NUM_BETAS - 1);
+  const int iEnd = iBegin + 3; // A magic number.
+
+  for (int i = iBegin; i < iEnd; ++i) {
+    // REVIEW Index magick. Is the number 10 linked to searchPoints()?
+    int j;
+    if (i >= 10) j = i - 10;
+    else if (i < 0) j = i + 10;
+    else j = i;
+    
+    for (int k = 0; k < points[j].size(); ++k) {
+      const auto deltaAlpha = points[j][k].alpha - alpha;
+      const auto deltaBeta = calculateDeltaBeta(points[j][k].beta, beta);
+      const auto deltaZ = angle(alpha, points[j][k].alpha, deltaBeta);
+      QVector<qreal> tempDeltaZs(Quadrant::MAX_QUADRANTS);
+      QVector<qreal> tempPeakOffsets(Quadrant::MAX_QUADRANTS);
+      QVector<qreal> tempPeakHeights(Quadrant::MAX_QUADRANTS);
+      QVector<qreal> tempPeakFWHMs(Quadrant::MAX_QUADRANTS);
+      for (int iQ = 0; iQ < Quadrant::MAX_QUADRANTS; ++iQ) {
+        tempDeltaZs[iQ] = deltaZ;
+        if (!searchPointsInQuadrant(iQ,
+                                    deltaAlpha,
+                                    deltaBeta,
+                                    points[j][k],
+                                    tempPeakOffsets[iQ],
+                                    tempPeakHeights[iQ],
+                                    tempPeakFWHMs[iQ])) {
+          // Try another quadrant.
+          const int newQ = remapQuadrant(static_cast<Quadrant::Quadrant>(iQ));
+          const double newAlpha = M_PI - alpha;
+          const qreal newBeta = beta < M_PI ? beta + M_PI : beta - M_PI;
+          const auto newDeltaAlpha = points[j][k].alpha - newAlpha;
+          const auto newDeltaBeta = calculateDeltaBeta(points[j][k].beta, newBeta);
+          tempDeltaZs[iQ] = angle(newAlpha, points[j][k].alpha, newDeltaBeta);
+          searchPointsInQuadrant(newQ,
+                                 newDeltaAlpha,
+                                 newDeltaBeta,
+                                 points[j][k],
+                                 tempPeakOffsets[iQ],
+                                 tempPeakHeights[iQ],
+                                 tempPeakFWHMs[iQ]);
+        }
+      }
+      peakOffset = idw4(tempDeltaZs, tempPeakOffsets);
+      peakHeight = idw4(tempDeltaZs, tempPeakHeights);
+      peakFWHM = idw4(tempDeltaZs, tempPeakFWHMs);
+    }
+  }
+}
+
+//------------------------------------------------------------------------------
+
+Polefigure::Point::Point(qreal const alpha_,
+                         qreal const beta_,
+                         XY const& peak,
+                         qreal const FWHM_,
+                         qreal const bg)
+  :  alpha(alpha_)
+    ,beta(beta_)
+    ,peakPosition(peak)
+    ,FWHM(FWHM_)
+    ,background(bg)
+{
+}
+
+Polefigure::Polefigure(Session &session,
+                       shp_File file,
+                       Reflection const& reflection_,
+                       qreal const alphaStep_,
+                       qreal const betaStep_,
+                       Range gammaRge)
+: alphaStep(alphaStep_)
+ ,betaStep(betaStep_)
+ ,FWHMs()
+ ,peakPositions()
+ ,points(NUM_BETAS)
+ ,reflection(&reflection_)
+{
+  // Fill the points lists.
+  for (uint i = 0; i < file->numDatasets(); ++i) {
+    auto dataset = file->getDataset(i);
+    auto lenses = session.allLenses(*dataset, false);
+    if (!gammaRge.isValid()) {
+      const auto& reflectionRange = reflection->getRange();
+      gammaRge = gammaRange(lenses, reflectionRange.center());
+    }
+
+    const auto numGammaRows = static_cast<uint>((gammaRge.width() / betaStep) + 1);
+    const auto gammaStep = gammaRge.width() / numGammaRows;
+
+    const auto curve = makeCurve(lenses, gammaRge, session.getCut().tth_regular);
+    const fit::Polynomial fullBg
+        = fit::fitBackground(curve, session.getBgRanges(),
+                             session.getBgPolynomial().getDegree());
+
+    for (uint j = 0; j < numGammaRows; ++j) {
+      Range gammaStripe;
+      gammaStripe.min = gammaRge.min + j * gammaStep;
+      gammaStripe.max = gammaStripe.min + gammaStep;
+      auto gammaCutCurve = makeCurve(lenses,
+                                     gammaStripe,
+                                     session.getCut().tth_regular);
+      const fit::Polynomial stripeBg
+        = fit::fitBackground(gammaCutCurve, session.getBgRanges(),
+                             session.getBgPolynomial().getDegree());
+      gammaCutCurve -= stripeBg;
+      // REVIEW should we rather clone the reflection's peak function?
+      fit::fitPeak(reflection->getPeakFunction(),
+                   gammaCutCurve,
+                   reflection->getRange());
+      const auto bg = fullBg.y(reflection->getRange().center()); // For point
+      qreal alpha;
+      qreal beta;
+      calculateAlphaBeta(
+        dataset->getNumericalAttributeValue(Dataset::MOTOR_OMG),
+        dataset->getNumericalAttributeValue(Dataset::MOTOR_PHI),
+        dataset->getNumericalAttributeValue(Dataset::MOTOR_CHI),
+        reflection->getRange().center(),
+        gammaStripe.center(),
+        alpha,
+        beta
+      );
+      const uint iBeta = static_cast<uint>(deg_rad(beta) / 36);
+      // TODO in reality, the point should contain a lot more information.
+      Point point(alpha,
+                  beta,
+                  reflection->getPeakFunction().getFitPeak(),
+                  reflection->getPeakFunction().getFitFWHM(),
+                  bg);
+      points[iBeta].push_back(point);
+
+    }
+  }
+}
+
+void Polefigure::generate(qreal const centerRadius,
+                          qreal const centerSearchRadius,
+                          qreal const intensityTreshold) {
+  FWHMs.clear();
+  peakPositions.clear();
+
+  for (int i = 0; i < qCeil(M_PI / 2 / alphaStep); ++i) {
+    const auto alpha = i * alphaStep;
+    for (int j = 0; j < qCeil(2 * M_PI / betaStep); ++j) {
+      const auto beta = j * betaStep;
+      if (alpha <= centerRadius) {
+        QList<qreal> tempPeakOffsets;
+        QList<qreal> tempPeakHeights;
+        QList<qreal> tempPeakFWHMs;
+        searchPoints(alpha,
+                     beta,
+                     centerSearchRadius,
+                     points,
+                     tempPeakOffsets,
+                     tempPeakHeights,
+                     tempPeakFWHMs);
+        if (!tempPeakOffsets.empty()) {
+          // REVIEW Does the sorting make sense? Should the offsets and FWHMs
+          // be sorted according to heights?
+          std::sort(tempPeakOffsets.begin(), tempPeakOffsets.end());
+          std::sort(tempPeakHeights.begin(), tempPeakHeights.end());
+          std::sort(tempPeakFWHMs.begin(), tempPeakFWHMs.end());
+          qreal peakOffset = 0;
+          qreal peakHeight = 0;
+          qreal peakFWHM = 0;
+          auto iterPeakOffsets = tempPeakOffsets.begin();
+          auto iterPeakHeights = tempPeakHeights.begin();
+          auto iterPeakFWHMs = tempPeakFWHMs.begin();
+          int kTreshold = qRound(  tempPeakOffsets.size()
+                                 - tempPeakOffsets.size() * intensityTreshold);
+          if (kTreshold >= tempPeakOffsets.size())
+            kTreshold = tempPeakOffsets.size() - 1;
+          for (int k = 0; k < tempPeakOffsets.size(); ++k) {
+            if (k >= kTreshold) {
+              peakOffset += *iterPeakOffsets;
+              peakHeight += *iterPeakHeights;
+              peakFWHM += *iterPeakFWHMs;
+            }
+            ++iterPeakOffsets;
+            ++iterPeakHeights;
+            ++iterPeakFWHMs;
+          }
+          peakOffset /= tempPeakOffsets.size() - kTreshold;
+          peakHeight /= tempPeakHeights.size() - kTreshold;
+          peakFWHM /= tempPeakFWHMs.size() - kTreshold;
+          FWHMs.push_back(peakFWHM);
+          peakPositions.push_back(XY(peakOffset, peakHeight));
+
+          continue;
+        }
+      }
+      // No points were found for the polefigure center.
+      qreal peakOffset;
+      qreal peakHeight;
+      qreal peakFWHM;
+      searchPointsInAllQuadrants(alpha,
+                                 beta,
+                                 points,
+                                 peakOffset,
+                                 peakHeight,
+                                 peakFWHM);
+      peakPositions.push_back(XY(peakOffset, peakHeight));
+      FWHMs.push_back(peakFWHM);
+    }
   }
 }
 
