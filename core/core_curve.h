@@ -33,7 +33,7 @@ public:
   Curve intersect(Range const&)  const;
   Curve intersect(Ranges const&) const;
 
-  void operator -=(fit::Function const& f);
+  void subtractFunction(fit::Function const& f);
 
   Curve smooth()    const;
   uint  maxYindex() const;

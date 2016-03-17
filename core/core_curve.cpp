@@ -74,7 +74,7 @@ Curve Curve::intersect(Ranges const& ranges) const {
   return res;
 }
 
-void Curve::operator -=(fit::Function const& f) {
+void Curve::subtractFunction(fit::Function const& f) {
   for (int i = 0; i < xs.size(); ++i)
     ys[i] -= f.y(xs[i]);
 }

@@ -264,7 +264,7 @@ Polefigure::Polefigure(Session &session,
       const fit::Polynomial stripeBg
         = fit::fitBackground(gammaCutCurve, session.getBgRanges(),
                              session.getBgPolynomial().getDegree());
-      gammaCutCurve -= stripeBg;
+      gammaCutCurve.subtractFunction(stripeBg);
       // REVIEW should we rather clone the reflection's peak function?
       fit::fitPeak(reflection->getPeakFunction(),
                    gammaCutCurve,
