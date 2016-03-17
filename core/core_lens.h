@@ -9,6 +9,7 @@ namespace core {
 //------------------------------------------------------------------------------
 
 class Lens : public ChainLink<Lens> {
+  SUPER(Lens, ChainLink<Lens>)
 public:
   enum {
     PRIORITY_INTENSITY_RANGE,
@@ -34,6 +35,7 @@ protected:
 class Image;
 
 class PlainLens final : public Lens {
+  SUPER(PlainLens, Lens)
 public:
   PlainLens(Image const& image, AngleMapArray const& angleMapArray);
 
@@ -55,6 +57,7 @@ private:
 class ImageTransform;
 
 class TransformationLens /*final*/ : public Lens {
+  SUPER(TransformationLens, Lens)
 public:
   TransformationLens(ImageTransform const& transformation);
 
@@ -74,6 +77,7 @@ private:
 class ImageCut;
 
 class ROILens final : public Lens {
+  SUPER(ROILens, Lens)
 public:
   ROILens(ImageCut const& imageCut);
 
@@ -91,6 +95,7 @@ private:
 //------------------------------------------------------------------------------
 
 class SensitivityCorrectionLens final : public Lens {
+  SUPER(SensitivityCorrectionLens, Lens)
 public:
   SensitivityCorrectionLens(Array2D<qreal> const& sensitivityCorrection);
 
@@ -108,6 +113,7 @@ private:
 //------------------------------------------------------------------------------
 
 class IntensityRangeLens final : public Lens {
+  SUPER(IntensityRangeLens, Lens)
 public:
   IntensityRangeLens();
 
@@ -130,6 +136,7 @@ private:
 //------------------------------------------------------------------------------
 
 class GlobalIntensityRangeLens final : public Lens {
+  SUPER(GlobalIntensityRangeLens, Lens)
 public:
   GlobalIntensityRangeLens(Range const& intensityRange);
 
