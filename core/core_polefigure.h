@@ -48,6 +48,14 @@ private:
   QVector<XY> peakPositions;
   QVector<QVector<Point>> points;
   Reflection const* reflection;
+
+  void searchPointsInAllQuadrants(qreal const alpha,
+                                  qreal const beta,
+                                  qreal const searchRadius,
+                                  qreal &peakOffset,
+                                  qreal &peakHeight,
+                                  qreal &peakFWHM) const;
+
 };
 
 }

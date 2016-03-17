@@ -225,65 +225,6 @@ bool searchPointsInQuadrant(int const quadrant,
   return false;
 }
 
-void searchPointsInAllQuadrants(qreal const alpha,
-                                qreal const beta,
-                                QVector<QVector<Polefigure::Point>> const& points,
-                                qreal const searchRadius,
-                                qreal &peakOffset,
-                                qreal &peakHeight,
-                                qreal &peakFWHM) {
-  const int iBegin = qFloor(deg_rad(beta) / Polefigure::NUM_BETAS - 1);
-  const int iEnd = iBegin + 3; // A magic number.
-
-  for (int i = iBegin; i < iEnd; ++i) {
-    // REVIEW Index magick. Is the number 10 linked to searchPoints()?
-    int j;
-    if (i >= 10) j = i - 10;
-    else if (i < 0) j = i + 10;
-    else j = i;
-    
-    for (int k = 0; k < points[j].size(); ++k) {
-      const auto deltaAlpha = points[j][k].alpha - alpha;
-      const auto deltaBeta = calculateDeltaBeta(points[j][k].beta, beta);
-      const auto deltaZ = angle(alpha, points[j][k].alpha, deltaBeta);
-      QVector<qreal> tempDeltaZs(Quadrant::MAX_QUADRANTS);
-      QVector<qreal> tempPeakOffsets(Quadrant::MAX_QUADRANTS);
-      QVector<qreal> tempPeakHeights(Quadrant::MAX_QUADRANTS);
-      QVector<qreal> tempPeakFWHMs(Quadrant::MAX_QUADRANTS);
-      for (int iQ = 0; iQ < Quadrant::MAX_QUADRANTS; ++iQ) {
-        tempDeltaZs[iQ] = deltaZ;
-        if (!searchPointsInQuadrant(iQ,
-                                    deltaAlpha,
-                                    deltaBeta,
-                                    points[j][k],
-                                    tempPeakOffsets[iQ],
-                                    tempPeakHeights[iQ],
-                                    tempPeakFWHMs[iQ])) {
-          // Try another quadrant.
-          const int newQ = remapQuadrant(static_cast<Quadrant::Quadrant>(iQ));
-          const double newAlpha = M_PI - alpha;
-          const qreal newBeta = beta < M_PI ? beta + M_PI : beta - M_PI;
-          const auto newDeltaAlpha = points[j][k].alpha - newAlpha;
-          const auto newDeltaBeta = calculateDeltaBeta(points[j][k].beta, newBeta);
-          tempDeltaZs[iQ] = angle(newAlpha, points[j][k].alpha, newDeltaBeta);
-          searchPointsInQuadrant(newQ,
-                                 newDeltaAlpha,
-                                 newDeltaBeta,
-                                 points[j][k],
-                                 tempPeakOffsets[iQ],
-                                 tempPeakHeights[iQ],
-                                 tempPeakFWHMs[iQ]);
-        }
-      }
-      if (qIsNaN(searchRadius) || inSearchRadius(searchRadius, tempDeltaZs)) {
-        peakOffset = idw4(tempDeltaZs, tempPeakOffsets);
-        peakHeight = idw4(tempDeltaZs, tempPeakHeights);
-        peakFWHM = idw4(tempDeltaZs, tempPeakFWHMs);
-      }
-    }
-  }
-}
-
 //------------------------------------------------------------------------------
 
 Polefigure::Point::Point(qreal const alpha_,
@@ -439,7 +380,6 @@ void Polefigure::generate(qreal const centerRadius,
       qreal peakFWHM   = -1;
       searchPointsInAllQuadrants(alpha,
                                  beta,
-                                 points,
                                  searchRadius,
                                  peakOffset,
                                  peakHeight,
@@ -449,6 +389,66 @@ void Polefigure::generate(qreal const centerRadius,
     }
   }
 }
+
+void Polefigure::searchPointsInAllQuadrants(qreal const alpha,
+                                            qreal const beta,
+                                            qreal const searchRadius,
+                                            qreal &peakOffset,
+                                            qreal &peakHeight,
+                                            qreal &peakFWHM) const {
+  const int iBegin = qFloor(deg_rad(beta) / Polefigure::NUM_BETAS - 1);
+  const int iEnd = iBegin + 3; // A magic number.
+
+  for (int i = iBegin; i < iEnd; ++i) {
+    // REVIEW Index magick. Is the number 10 linked to searchPoints()?
+    int j;
+    if (i >= 10) j = i - 10;
+    else if (i < 0) j = i + 10;
+    else j = i;
+    
+    for (int k = 0; k < points[j].size(); ++k) {
+      const auto deltaAlpha = points[j][k].alpha - alpha;
+      const auto deltaBeta = calculateDeltaBeta(points[j][k].beta, beta);
+      const auto deltaZ = angle(alpha, points[j][k].alpha, deltaBeta);
+      QVector<qreal> tempDeltaZs(Quadrant::MAX_QUADRANTS);
+      QVector<qreal> tempPeakOffsets(Quadrant::MAX_QUADRANTS);
+      QVector<qreal> tempPeakHeights(Quadrant::MAX_QUADRANTS);
+      QVector<qreal> tempPeakFWHMs(Quadrant::MAX_QUADRANTS);
+      for (int iQ = 0; iQ < Quadrant::MAX_QUADRANTS; ++iQ) {
+        tempDeltaZs[iQ] = deltaZ;
+        if (!searchPointsInQuadrant(iQ,
+                                    deltaAlpha,
+                                    deltaBeta,
+                                    points[j][k],
+                                    tempPeakOffsets[iQ],
+                                    tempPeakHeights[iQ],
+                                    tempPeakFWHMs[iQ])) {
+          // Try another quadrant.
+          const int newQ = remapQuadrant(static_cast<Quadrant::Quadrant>(iQ));
+          const double newAlpha = M_PI - alpha;
+          const qreal newBeta = beta < M_PI ? beta + M_PI : beta - M_PI;
+          const auto newDeltaAlpha = points[j][k].alpha - newAlpha;
+          const auto newDeltaBeta = calculateDeltaBeta(points[j][k].beta, newBeta);
+          tempDeltaZs[iQ] = angle(newAlpha, points[j][k].alpha, newDeltaBeta);
+          searchPointsInQuadrant(newQ,
+                                 newDeltaAlpha,
+                                 newDeltaBeta,
+                                 points[j][k],
+                                 tempPeakOffsets[iQ],
+                                 tempPeakHeights[iQ],
+                                 tempPeakFWHMs[iQ]);
+        }
+      }
+      if (qIsNaN(searchRadius) || inSearchRadius(searchRadius, tempDeltaZs)) {
+        peakOffset = idw4(tempDeltaZs, tempPeakOffsets);
+        peakHeight = idw4(tempDeltaZs, tempPeakHeights);
+        peakFWHM = idw4(tempDeltaZs, tempPeakFWHMs);
+      }
+    }
+  }
+}
+
+
 
 //------------------------------------------------------------------------------
 }
