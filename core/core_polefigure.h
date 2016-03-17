@@ -39,7 +39,8 @@ public:
 
   void generate(qreal const centerRadius,
                 qreal const centerSearchRadius,
-                qreal const intensityTreshold);
+                qreal const intensityTreshold,
+                qreal const searchRadius = qQNaN());
 private:
   qreal alphaStep;
   qreal betaStep;

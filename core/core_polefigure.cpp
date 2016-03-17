@@ -200,6 +200,15 @@ void searchPoints(qreal const alpha,
   }
 }
 
+template<typename Container>
+bool inSearchRadius(qreal const radius, Container const& deltaZs) {
+  RUNTIME_CHECK(deltaZs.size() == Quadrant::MAX_QUADRANTS,
+                "incorrect container size");
+  return std::all_of(deltaZs.cbegin(), deltaZs.cend(), [radius](qreal deltaZ) {
+    return deltaZ <= radius;
+  });
+}
+
 bool searchPointsInQuadrant(int const quadrant,
                             qreal const deltaAlpha,
                             qreal const deltaBeta,
@@ -219,6 +228,7 @@ bool searchPointsInQuadrant(int const quadrant,
 void searchPointsInAllQuadrants(qreal const alpha,
                                 qreal const beta,
                                 QVector<QVector<Polefigure::Point>> const& points,
+                                qreal const searchRadius,
                                 qreal &peakOffset,
                                 qreal &peakHeight,
                                 qreal &peakFWHM) {
@@ -265,9 +275,11 @@ void searchPointsInAllQuadrants(qreal const alpha,
                                  tempPeakFWHMs[iQ]);
         }
       }
-      peakOffset = idw4(tempDeltaZs, tempPeakOffsets);
-      peakHeight = idw4(tempDeltaZs, tempPeakHeights);
-      peakFWHM = idw4(tempDeltaZs, tempPeakFWHMs);
+      if (qIsNaN(searchRadius) || inSearchRadius(searchRadius, tempDeltaZs)) {
+        peakOffset = idw4(tempDeltaZs, tempPeakOffsets);
+        peakHeight = idw4(tempDeltaZs, tempPeakHeights);
+        peakFWHM = idw4(tempDeltaZs, tempPeakFWHMs);
+      }
     }
   }
 }
@@ -359,7 +371,8 @@ Polefigure::Polefigure(Session &session,
 
 void Polefigure::generate(qreal const centerRadius,
                           qreal const centerSearchRadius,
-                          qreal const intensityTreshold) {
+                          qreal const intensityTreshold,
+                          qreal const searchRadius) {
   FWHMs.clear();
   peakPositions.clear();
 
@@ -412,6 +425,12 @@ void Polefigure::generate(qreal const centerRadius,
 
           continue;
         }
+        if (!qIsNaN(searchRadius)) {
+          FWHMs.push_back(-1);
+          peakPositions.push_back(XY(-1, -1));
+
+          continue;
+        }
       }
       // No points were found for the polefigure center.
       // If no points are found at all, the output values will be negative.
@@ -421,6 +440,7 @@ void Polefigure::generate(qreal const centerRadius,
       searchPointsInAllQuadrants(alpha,
                                  beta,
                                  points,
+                                 searchRadius,
                                  peakOffset,
                                  peakHeight,
                                  peakFWHM);
