@@ -414,9 +414,10 @@ void Polefigure::generate(qreal const centerRadius,
         }
       }
       // No points were found for the polefigure center.
-      qreal peakOffset;
-      qreal peakHeight;
-      qreal peakFWHM;
+      // If no points are found at all, the output values will be negative.
+      qreal peakOffset = -1;
+      qreal peakHeight = -1;
+      qreal peakFWHM   = -1;
       searchPointsInAllQuadrants(alpha,
                                  beta,
                                  points,
