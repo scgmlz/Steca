@@ -185,25 +185,6 @@ qreal inverseDistanceWeighing(Container const& distances,
 }
 
 template<typename Container>
-void searchPoints(qreal const alpha,
-                  qreal const beta,
-                  qreal const radius,
-                  QVector<QVector<Polefigure::Point>> const& points,
-                  Container &peakOffsets,
-                  Container &peakHeights,
-                  Container &FWHMs) {
-  for (int i = 0; i < 10; i++) { // Why 10 and not NUM_BETAS? Noone knows.
-    for (int j=0; j < points[i].size(); j++) {
-      if (inRadius(points[i][j].alpha, points[i][j].beta, alpha, beta, radius)) {
-        peakOffsets.push_back(points[i][j].peakPosition.x);
-        peakHeights.push_back(points[i][j].peakPosition.y);
-        FWHMs.push_back(points[i][j].FWHM);
-      }
-    }
-  }
-}
-
-template<typename Container>
 bool inSearchRadius(qreal const radius, Container const& deltaZs) {
   RUNTIME_CHECK(deltaZs.size() == Quadrant::MAX_QUADRANTS,
                 "incorrect container size");
@@ -331,7 +312,6 @@ void Polefigure::generate(qreal const centerRadius,
         searchPoints(alpha,
                      beta,
                      centerSearchRadius,
-                     points,
                      tempPeakOffsets,
                      tempPeakHeights,
                      tempPeakFWHMs);
@@ -393,6 +373,24 @@ void Polefigure::generate(qreal const centerRadius,
     }
   }
 }
+
+void Polefigure::searchPoints(qreal const alpha,
+                              qreal const beta,
+                              qreal const radius,
+                              QList<qreal> &peakOffsets,
+                              QList<qreal> &peakHeights,
+                              QList<qreal> &FWHMs) const {
+  for (int i = 0; i < 10; i++) { // Why 10 and not NUM_BETAS? Noone knows.
+    for (int j=0; j < points[i].size(); j++) {
+      if (inRadius(points[i][j].alpha, points[i][j].beta, alpha, beta, radius)) {
+        peakOffsets.push_back(points[i][j].peakPosition.x);
+        peakHeights.push_back(points[i][j].peakPosition.y);
+        FWHMs.push_back(points[i][j].FWHM);
+      }
+    }
+  }
+}
+
 
 void Polefigure::searchPointsInAllQuadrants(qreal const alpha,
                                             qreal const beta,

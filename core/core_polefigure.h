@@ -49,6 +49,12 @@ private:
   QVector<QVector<Point>> points;
   Reflection const* reflection;
 
+  void searchPoints(qreal const alpha,
+                    qreal const beta,
+                    qreal const radius,
+                    QList<qreal> &peakOffsets,
+                    QList<qreal> &peakHeights,
+                    QList<qreal> &FWHMs) const;
   void searchPointsInAllQuadrants(qreal const alpha,
                                   qreal const beta,
                                   qreal const searchRadius,
