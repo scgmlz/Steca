@@ -17,7 +17,10 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # --- Enable compiler warnings ---
-add_compile_options("-Wall")
+if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+  # -Wdeprecated-declarations turned off due to the Eigen library.
+  add_compile_options("-Wall" "-Wno-deprecated-declarations")
+endif()
 
 # --- Check for required packages ---
 find_package(Qt5Core REQUIRED)
