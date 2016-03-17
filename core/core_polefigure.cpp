@@ -165,7 +165,10 @@ Range gammaRange(shp_LensSystem lenses, qreal const tth) {
 }
 
 template<typename Container>
-qreal idw4(Container const& distances, Container const& values) {
+qreal inverseDistanceWeighing(Container const& distances,
+                              Container const& values) {
+  // Generally, only distances.size() == values.size() > 0 is needed for this
+  // algorithm. However, in this context we expect exactly the following:
   RUNTIME_CHECK(distances.size() == Quadrant::MAX_QUADRANTS,
                 "distances size should be 4");
   RUNTIME_CHECK(values.size() == Quadrant::MAX_QUADRANTS,
@@ -374,7 +377,8 @@ void Polefigure::generate(qreal const centerRadius,
         }
       }
       // No points were found for the polefigure center.
-      // If no points are found at all, the output values will be negative.
+      // If no points are found at all, the output values will be negative
+      // as some analysis software treat -1 as an unmeasured area.
       qreal peakOffset = -1;
       qreal peakHeight = -1;
       qreal peakFWHM   = -1;
@@ -423,7 +427,8 @@ void Polefigure::searchPointsInAllQuadrants(qreal const alpha,
                                     tempPeakOffsets[iQ],
                                     tempPeakHeights[iQ],
                                     tempPeakFWHMs[iQ])) {
-          // Try another quadrant.
+          // Try another quadrant. See [J.Appl.Cryst.(2011),44,641] for the
+          // angle mapping and quadrant mirroring.
           const int newQ = remapQuadrant(static_cast<Quadrant::Quadrant>(iQ));
           const double newAlpha = M_PI - alpha;
           const qreal newBeta = beta < M_PI ? beta + M_PI : beta - M_PI;
@@ -440,9 +445,9 @@ void Polefigure::searchPointsInAllQuadrants(qreal const alpha,
         }
       }
       if (qIsNaN(searchRadius) || inSearchRadius(searchRadius, tempDeltaZs)) {
-        peakOffset = idw4(tempDeltaZs, tempPeakOffsets);
-        peakHeight = idw4(tempDeltaZs, tempPeakHeights);
-        peakFWHM = idw4(tempDeltaZs, tempPeakFWHMs);
+        peakOffset = inverseDistanceWeighing(tempDeltaZs, tempPeakOffsets);
+        peakHeight = inverseDistanceWeighing(tempDeltaZs, tempPeakHeights);
+        peakFWHM   = inverseDistanceWeighing(tempDeltaZs, tempPeakFWHMs);
       }
     }
   }
