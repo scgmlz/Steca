@@ -47,3 +47,5 @@ target_link_libraries(STeCa
 
 set_property(TARGET STeCa PROPERTY CXX_STANDARD 11)
 set_property(TARGET STeCa PROPERTY CXX_STANDARD_REQUIRED ON)
+
+install(TARGETS STeCa RUNTIME DESTINATION bin)
