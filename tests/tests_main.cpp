@@ -7,6 +7,7 @@
 #include "test_link.h"
 #include "test_approx.h"
 #include "test_core_lens.h"
+#include "test_core_polefigure.h"
 #include <QTextStream>
 
 #define TEST_SUITE(TestClass) {    \
@@ -35,6 +36,8 @@ int main(int argc, char *argv[]) {
   TEST_SUITE(TestCoreSession)
   QTextStream(stdout) << "" << endl;
   TEST_SUITE(TestSaveLoadJson)
+  QTextStream(stdout) << "" << endl;
+  TEST_SUITE(TestPolefigure)
 }
 
 // eof
