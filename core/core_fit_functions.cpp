@@ -438,11 +438,11 @@ void Gaussian::setGuessFWHM(qreal val) {
   setValue(parSIGMA, val * 0.424661);
 }
 
-XY Gaussian::getFitPeak() {
+XY Gaussian::getFitPeak() const {
   return XY(parameters[parXSHIFT].getValue(),parameters[parAMPL].getValue());
 }
 
-qreal Gaussian::getFitFWHM() {
+qreal Gaussian::getFitFWHM() const {
   return parameters[parSIGMA].getValue() / 0.424661;
 }
 
@@ -511,11 +511,11 @@ void CauchyLorentz::setGuessFWHM(qreal val) {
   setValue(parGAMMA, val / 2);
 }
 
-XY CauchyLorentz::getFitPeak() {
+XY CauchyLorentz::getFitPeak() const {
   return XY(parameters[parXSHIFT].getValue(),parameters[parAMPL].getValue());
 }
 
-qreal CauchyLorentz::getFitFWHM() {
+qreal CauchyLorentz::getFitFWHM() const {
   return parameters[parGAMMA].getValue() * 2;
 }
 
@@ -598,11 +598,11 @@ void PseudoVoigt1::setGuessFWHM(qreal val) {
   setValue(parSIGMAGAMMA, val / 2);
 }
 
-XY PseudoVoigt1::getFitPeak() {
+XY PseudoVoigt1::getFitPeak() const {
   return XY(parameters[parXSHIFT].getValue(),parameters[parAMPL].getValue());
 }
 
-qreal PseudoVoigt1::getFitFWHM() {
+qreal PseudoVoigt1::getFitFWHM() const {
   return parameters[parSIGMAGAMMA].getValue() * 2;
 }
 
@@ -699,11 +699,11 @@ void PseudoVoigt2::setGuessFWHM(qreal val) {
   setValue(parGAMMA, val / 2);
 }
 
-XY PseudoVoigt2::getFitPeak() {
+XY PseudoVoigt2::getFitPeak() const {
   return XY(parameters[parXSHIFT].getValue(),parameters[parAMPL].getValue());
 }
 
-qreal PseudoVoigt2::getFitFWHM() {
+qreal PseudoVoigt2::getFitFWHM() const {
   qreal eta = parameters[parETA].getValue();
   return
     ((1-eta) * parameters[parSIGMA].getValue() / 0.424661

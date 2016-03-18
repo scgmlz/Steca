@@ -179,11 +179,11 @@ public:
   virtual void  setGuessPeak(XY const&);
   virtual void  setGuessFWHM(qreal);
 
-  XY const&     getGuessPeak()  { return guessPeak; }
-  qreal         getGuessFWHM()  { return guessFwhm; }
+  XY const&     getGuessPeak() const { return guessPeak; }
+  qreal         getGuessFWHM() const { return guessFwhm; }
 
-  virtual XY    getFitPeak() = 0;
-  virtual qreal getFitFWHM() = 0;
+  virtual XY    getFitPeak() const = 0;
+  virtual qreal getFitFWHM() const = 0;
 
   void reset();
 
@@ -209,11 +209,11 @@ public:
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
-  void  setGuessPeak(XY const&);
-  void  setGuessFWHM(qreal);
+  void  setGuessPeak(XY const&) override;
+  void  setGuessFWHM(qreal) override;
 
-  XY    getFitPeak();
-  qreal getFitFWHM();
+  XY    getFitPeak() const override;
+  qreal getFitFWHM() const override;
 
 public:
   void saveTo(QJsonObject&) const;
@@ -233,11 +233,11 @@ public:
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
-  void setGuessPeak(XY const&);
-  void setGuessFWHM(qreal);
+  void setGuessPeak(XY const&) override;
+  void setGuessFWHM(qreal) override;
 
-  XY    getFitPeak();
-  qreal getFitFWHM();
+  XY    getFitPeak() const override;
+  qreal getFitFWHM() const override;
 
 public:
   void saveTo(QJsonObject&) const;
@@ -257,11 +257,11 @@ public:
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
-  void setGuessPeak(XY const&);
-  void setGuessFWHM(qreal);
+  void setGuessPeak(XY const&) override;
+  void setGuessFWHM(qreal) override;
 
-  XY    getFitPeak();
-  qreal getFitFWHM();
+  XY    getFitPeak() const override;
+  qreal getFitFWHM() const override;
 
 public:
   void saveTo(QJsonObject&) const;
@@ -281,11 +281,11 @@ public:
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
-  void setGuessPeak(XY const&);
-  void setGuessFWHM(qreal);
+  void setGuessPeak(XY const&) override;
+  void setGuessFWHM(qreal) override;
 
-  XY    getFitPeak();
-  qreal getFitFWHM();
+  XY    getFitPeak() const override;
+  qreal getFitFWHM() const override;
 
 public:
   void saveTo(QJsonObject&) const;
