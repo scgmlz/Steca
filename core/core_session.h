@@ -140,9 +140,11 @@ private:
   ImageCut imageCut;
 
 public:
-  Ranges&           getBgRanges()     { return bgRanges;     }
-  fit::Polynomial&  getBgPolynomial() { return bgPolynomial; }
-  Reflections&      getReflections()  { return reflections;  }
+  Ranges&                getBgRanges()           { return bgRanges;     }
+  Ranges const&          getBgRanges() const     { return bgRanges;     }
+  fit::Polynomial&       getBgPolynomial()       { return bgPolynomial; }
+  fit::Polynomial const& getBgPolynomial() const { return bgPolynomial; }
+  Reflections&           getReflections()        { return reflections;  }
 
 private:
   Ranges          bgRanges;
