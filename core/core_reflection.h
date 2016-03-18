@@ -9,6 +9,8 @@
 #include "core_array2d.h"
 #include "core_fit_functions.h"
 
+#include <memory>
+
 namespace core {
 //------------------------------------------------------------------------------
 
@@ -28,7 +30,9 @@ public:
   Range const& getRange() const { return range; }
   void         setRange(Range const&);
 
-  PeakFunction& getPeakFunction() const;
+  std::unique_ptr<PeakFunction> makePeakFunction() const;
+  PeakFunction & getPeakFunction();
+  PeakFunction const& getPeakFunction() const;
 
   void invalidateGuesses();
 

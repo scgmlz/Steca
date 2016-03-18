@@ -35,7 +35,19 @@ void Reflection::setRange(Range const& range_) {
   range = range_;
 }
 
-Reflection::PeakFunction &Reflection::getPeakFunction() const {
+std::unique_ptr<fit::PeakFunction> Reflection::makePeakFunction() const {
+  std::unique_ptr<fit::PeakFunction> f(fit::PeakFunction::factory(getType()));
+  f->setGuessPeak(peakFunction->getGuessPeak());
+  f->setGuessFWHM(peakFunction->getGuessFWHM());
+  return f;
+}
+
+Reflection::PeakFunction& Reflection::getPeakFunction() {
+  ASSERT(peakFunction)
+  return *peakFunction;
+}
+
+Reflection::PeakFunction const& Reflection::getPeakFunction() const {
   ASSERT(peakFunction)
   return *peakFunction;
 }

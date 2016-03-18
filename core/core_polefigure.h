@@ -13,22 +13,25 @@ class Polefigure final {
 public:
   struct Point final {
     Point() = default;
-    Point(qreal const alpha,
-          qreal const beta,
-          XY const& peak,
-          qreal const FWHM_,
-          qreal const bg);
+    Point(qreal const alpha_,
+          qreal const beta_,
+          XY const& position,
+          qreal const FWHM);
 
     qreal alpha;
     qreal beta;
     XY peakPosition;
-    qreal FWHM;
-    qreal background;
+    qreal peakFWHM;
   };
 
 public:
   const static int NUM_BETAS = 360 / 10; // Beta bin width 10 degrees.
 
+  static Point makePoint(Session const& session,
+                         Dataset const& dataset,
+                         shp_LensSystem lenses,
+                         Reflection const& reflection,
+                         Range const& gammaStripe);
 public:
   Polefigure(Session &session,
              shp_File file,

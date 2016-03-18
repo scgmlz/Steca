@@ -203,7 +203,7 @@ bool searchPointsInQuadrant(int const quadrant,
   if (inQuadrant(quadrant, deltaAlpha, deltaBeta)) {
     peakOffset = point.peakPosition.x;
     peakHeight = point.peakPosition.y;
-    peakFWHM = point.FWHM;
+    peakFWHM = point.peakFWHM;
     return true;
   }
   return false;
@@ -213,16 +213,48 @@ bool searchPointsInQuadrant(int const quadrant,
 
 Polefigure::Point::Point(qreal const alpha_,
                          qreal const beta_,
-                         XY const& peak,
-                         qreal const FWHM_,
-                         qreal const bg)
+                         XY const& position,
+                         qreal const FWHM)
   :  alpha(alpha_)
     ,beta(beta_)
-    ,peakPosition(peak)
-    ,FWHM(FWHM_)
-    ,background(bg)
+    ,peakPosition(position)
+    ,peakFWHM(FWHM)
 {
 }
+
+Polefigure::Point Polefigure::makePoint(Session const& session,
+                                        Dataset const& dataset,
+                                        shp_LensSystem lenses,
+                                        Reflection const& reflection,
+                                        Range const& gammaStripe) {
+  auto gammaCutCurve = makeCurve(lenses,
+                                 gammaStripe,
+                                 session.getCut().tth_regular);
+  const fit::Polynomial stripeBg
+    = fit::fitBackground(gammaCutCurve, session.getBgRanges(),
+                         session.getBgPolynomial().getDegree());
+  gammaCutCurve.subtractFunction(stripeBg);
+  auto peakFunction = reflection.makePeakFunction();
+  fit::fitPeak(*peakFunction,
+               gammaCutCurve,
+               reflection.getRange());
+  qreal alpha;
+  qreal beta;
+  calculateAlphaBeta(
+    dataset.getNumericalAttributeValue(Dataset::MOTOR_OMG),
+    dataset.getNumericalAttributeValue(Dataset::MOTOR_PHI),
+    dataset.getNumericalAttributeValue(Dataset::MOTOR_CHI),
+    reflection.getRange().center(),
+    gammaStripe.center(),
+    alpha,
+    beta
+  );
+  return Point(alpha,
+               beta,
+               peakFunction->getFitPeak(),
+               peakFunction->getFitFWHM());
+}
+
 
 Polefigure::Polefigure(Session &session,
                        shp_File file,
@@ -246,50 +278,20 @@ Polefigure::Polefigure(Session &session,
       gammaRge = gammaRange(lenses, reflectionRange.center());
     }
 
-    const auto numGammaRows = static_cast<uint>((gammaRge.width() / betaStep) + 1);
+    const auto numGammaRows = qCeil(gammaRge.width() / betaStep);
     const auto gammaStep = gammaRge.width() / numGammaRows;
 
-    const auto curve = makeCurve(lenses, gammaRge, session.getCut().tth_regular);
-    const fit::Polynomial fullBg
-        = fit::fitBackground(curve, session.getBgRanges(),
-                             session.getBgPolynomial().getDegree());
-
-    for (uint j = 0; j < numGammaRows; ++j) {
+    for (int j = 0; j < numGammaRows; ++j) {
       Range gammaStripe;
       gammaStripe.min = gammaRge.min + j * gammaStep;
       gammaStripe.max = gammaStripe.min + gammaStep;
-      auto gammaCutCurve = makeCurve(lenses,
-                                     gammaStripe,
-                                     session.getCut().tth_regular);
-      const fit::Polynomial stripeBg
-        = fit::fitBackground(gammaCutCurve, session.getBgRanges(),
-                             session.getBgPolynomial().getDegree());
-      gammaCutCurve.subtractFunction(stripeBg);
-      // REVIEW should we rather clone the reflection's peak function?
-      fit::fitPeak(reflection->getPeakFunction(),
-                   gammaCutCurve,
-                   reflection->getRange());
-      const auto bg = fullBg.y(reflection->getRange().center()); // For point
-      qreal alpha;
-      qreal beta;
-      calculateAlphaBeta(
-        dataset->getNumericalAttributeValue(Dataset::MOTOR_OMG),
-        dataset->getNumericalAttributeValue(Dataset::MOTOR_PHI),
-        dataset->getNumericalAttributeValue(Dataset::MOTOR_CHI),
-        reflection->getRange().center(),
-        gammaStripe.center(),
-        alpha,
-        beta
-      );
-      const uint iBeta = static_cast<uint>(deg_rad(beta) / 36);
-      // TODO in reality, the point should contain a lot more information.
-      Point point(alpha,
-                  beta,
-                  reflection->getPeakFunction().getFitPeak(),
-                  reflection->getPeakFunction().getFitFWHM(),
-                  bg);
-      points[iBeta].push_back(point);
-
+      const auto p = makePoint(session,
+                               *dataset,
+                               lenses,
+                               *reflection,
+                               gammaStripe);
+      const uint iBeta = qFloor(deg_rad(p.beta) / NUM_BETAS);
+      points[iBeta].push_back(p);
     }
   }
 }
@@ -385,7 +387,7 @@ void Polefigure::searchPoints(qreal const alpha,
       if (inRadius(points[i][j].alpha, points[i][j].beta, alpha, beta, radius)) {
         peakOffsets.push_back(points[i][j].peakPosition.x);
         peakHeights.push_back(points[i][j].peakPosition.y);
-        FWHMs.push_back(points[i][j].FWHM);
+        FWHMs.push_back(points[i][j].peakFWHM);
       }
     }
   }
