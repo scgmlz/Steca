@@ -11,19 +11,30 @@
 
 #include <QtTest/QtTest>
 
+//struct TestContainer {
+//  qreal data1, data2, data3, data4;
+
+//  int size() const { return 4; }
+
+
+//};
+
+typedef QVector<qreal> TestContainer;
+
+template<TestContainer *container> qreal inverseDistanceWeighing(TestContainer const& distances,
+                                             TestContainer const& values);
+
+
 class TestPolefigure : public QObject {
   Q_OBJECT
-
-
 
 private slots:
   void testPolefigure();
   void testRotation();
   void testCalcAlphaBeta();
   void testInQuadrant();
-  void testRemapQuadrant();
   void testGamaRange();
-  void inverseDistanceWeighing();
+  void testInverseDistanceWeighing();
 
 };
 
