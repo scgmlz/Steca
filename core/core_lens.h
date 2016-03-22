@@ -56,7 +56,7 @@ private:
 
 class ImageTransform;
 
-class TransformationLens /*final*/ : public Lens {
+class TransformationLens final : public Lens {
   SUPER(TransformationLens, Lens)
 public:
   TransformationLens(ImageTransform const& transformation);
@@ -150,7 +150,6 @@ public:
 private:
   Range const* range;
 };
-
 //------------------------------------------------------------------------------
 
 class Dataset;

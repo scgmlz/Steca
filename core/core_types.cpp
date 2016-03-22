@@ -261,6 +261,11 @@ bool areEqual(qreal r1, qreal r2) {
     (qIsNaN(r1) && qIsNaN(r2)) || r1 == r2;
 }
 
+//------------------------------------------------------------------------------
+
+str_lst getStringListNormalization() {
+  return str_lst{"Disable","Mesurment time","Monitor counts","Background level"};
+}
 
 //------------------------------------------------------------------------------
 }

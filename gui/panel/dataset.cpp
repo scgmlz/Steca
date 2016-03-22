@@ -1,5 +1,6 @@
 #include "dataset.h"
 #include "thehub.h"
+#include "core_types.h"
 #include <QPainter>
 #include <QAction>
 
@@ -94,8 +95,7 @@ DatasetOptions1::DatasetOptions1(TheHub& theHub_)
   auto vn = vbox();
   box->addLayout(vn);
 
-  str_lst options;
-  options << "Disable" << "Measurement time" << "Monitor counts" << "Background level";
+  str_lst options = core::getStringListNormalization();
 
   vn->addWidget(comboBox(options));
   box->addStretch();
