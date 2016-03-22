@@ -351,6 +351,30 @@ void Session::setImageCut(bool topLeft, bool linked, ImageCut const& imageCut_) 
   }
 }
 
+NormalizationLens Session::makeNormalizationLens(Dataset const& dataset) {
+  File parentFile = dataset.getFile();
+  qreal normVal = 0;
+  qreal average = 0;
+  qreal current = 1;
+  switch (Normalization::NUM_NORM_TYPES) {
+  case Normalization::DELTA_TIME:
+    average = parentFile.calAverageDeltaTime();
+    current = dataset.getNumericalAttributeValue(core::Dataset::eAttributes::DELTA_TIME);
+    break;
+  case Normalization::MON_COUNTS:
+    average = parentFile.calAverageMonitor();
+    current = dataset.getNumericalAttributeValue(core::Dataset::eAttributes::MON);
+    break;
+  case Normalization::BG_LEVEL:
+    
+    break;
+  default:
+    NEVER_HERE
+  }
+  normVal = average/current;
+  return NormalizationLens(normVal);
+}
+
 //------------------------------------------------------------------------------
 }
 // eof

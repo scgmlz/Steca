@@ -151,6 +151,9 @@ private:
   fit::Polynomial bgPolynomial;
 
   Reflections     reflections;
+  
+private:
+  NormalizationLens makeNormalizationLens(Dataset const& dataset);
 };
 
 //------------------------------------------------------------------------------
