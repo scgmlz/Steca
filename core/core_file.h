@@ -40,8 +40,6 @@ private:
   mutable Range rgeIntens;
 };
 
-typedef QSharedPointer<File> shp_File;
-
 //------------------------------------------------------------------------------
 }
 

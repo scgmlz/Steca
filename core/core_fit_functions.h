@@ -7,8 +7,6 @@
 
 #include <core_types.h>
 
-class QJsonObject;
-
 namespace core { namespace fit {
 //------------------------------------------------------------------------------
 /// Abstract function
@@ -30,8 +28,8 @@ public:
     bool  setValue(qreal value, qreal error=0, bool force=false);
 
   public:
-    void loadFrom(QJsonObject const&) THROWS;
-    void saveTo(QJsonObject&) const;
+    void loadFrom(rcJsonObj) THROWS;
+    void saveTo(rJsonObj) const;
 
   private:
     qreal value;
@@ -71,8 +69,8 @@ public:
   virtual qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const = 0;
 
 public:
-  virtual void loadFrom(QJsonObject const&) THROWS;
-  virtual void saveTo(QJsonObject&) const;
+  virtual void loadFrom(rcJsonObj) THROWS;
+  virtual void saveTo(rJsonObj) const;
 
 };
 
@@ -96,8 +94,8 @@ public:
   virtual void reset();
 
 public:
-  void loadFrom(QJsonObject const&) THROWS;
-  void saveTo(QJsonObject&) const;
+  void loadFrom(rcJsonObj) THROWS;
+  void saveTo(rJsonObj) const;
 
 protected:
   QVector<Parameter> parameters;
@@ -125,8 +123,8 @@ public:
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
 public:
-  void loadFrom(QJsonObject const&) THROWS;
-  void saveTo(QJsonObject&) const;
+  void loadFrom(rcJsonObj) THROWS;
+  void saveTo(rJsonObj) const;
 
 protected:
   /// summed functions
@@ -155,8 +153,8 @@ public:
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
 public:
-  void loadFrom(QJsonObject const&) THROWS;
-  void saveTo(QJsonObject&) const;
+  void loadFrom(rcJsonObj) THROWS;
+  void saveTo(rJsonObj) const;
 };
 
 //------------------------------------------------------------------------------
@@ -188,8 +186,8 @@ public:
   void reset();
 
 public:
-  void loadFrom(QJsonObject const&) THROWS;
-  void saveTo(QJsonObject&) const;
+  void loadFrom(rcJsonObj) THROWS;
+  void saveTo(rJsonObj) const;
 
 private:
   XY guessPeak; qreal guessFwhm;
@@ -216,7 +214,7 @@ public:
   qreal getFitFWHM() const override;
 
 public:
-  void saveTo(QJsonObject&) const;
+  void saveTo(rJsonObj) const;
 };
 
 //------------------------------------------------------------------------------
@@ -240,7 +238,7 @@ public:
   qreal getFitFWHM() const override;
 
 public:
-  void saveTo(QJsonObject&) const;
+  void saveTo(rJsonObj) const;
 };
 
 //------------------------------------------------------------------------------
@@ -264,7 +262,7 @@ public:
   qreal getFitFWHM() const override;
 
 public:
-  void saveTo(QJsonObject&) const;
+  void saveTo(rJsonObj) const;
 };
 
 //------------------------------------------------------------------------------
@@ -288,7 +286,7 @@ public:
   qreal getFitFWHM() const override;
 
 public:
-  void saveTo(QJsonObject&) const;
+  void saveTo(rJsonObj) const;
 };
 
 //------------------------------------------------------------------------------

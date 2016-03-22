@@ -1,3 +1,17 @@
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_types.cpp
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
 #include "core_types.h"
 
 #include <algorithm>
@@ -7,6 +21,37 @@
 #include <QJsonObject>
 
 namespace core {
+//------------------------------------------------------------------------------
+
+static str const INF_P("+inf"), INF_M("-inf");
+
+qreal loadRealFrom(rcJsonObj obj, rcstr tag) THROWS {
+  auto val = obj[tag];
+
+  switch (val.type()) {
+  case QJsonValue::Undefined:
+    return qQNaN();                   // not present means not a number
+  case QJsonValue::String: {          // infinities stored as strings
+    auto s = val.toString();
+    if (INF_P == s) return +qInf();
+    if (INF_M == s) return -qInf();
+    THROW("bad number format");
+  }
+  default:
+    return val.toDouble();
+  }
+}
+
+void saveRealTo(rJsonObj obj, rcstr tag, qreal num) {
+  if (qIsNaN(num)) return;            // do not save anything
+
+  auto val = obj[tag];
+  if (qIsInf(num))
+    val = (num < 0) ? INF_M : INF_P;  // infinity as string
+  else
+    val = num;                        // else as a number
+}
+
 //------------------------------------------------------------------------------
 
 qreal deg_rad(qreal rad) {
@@ -29,17 +74,22 @@ bool XY::isDefined() const {
   return !qIsNaN(x) && !qIsNaN(y);
 }
 
-static str KEY_X("X");
-static str KEY_Y("Y");
+static str const TAG_X("X"), TAG_Y("Y");
 
-void XY::loadFrom(QJsonObject const& obj) THROWS {
-  x = loadReal(obj,KEY_X);
-  y = loadReal(obj,KEY_Y);
+void XY::loadFrom(rcJsonObj obj) THROWS {
+  x = loadRealFrom(obj, TAG_X);
+  y = loadRealFrom(obj, TAG_Y);
 }
 
-void XY::saveTo(QJsonObject &obj) const {
-  obj[KEY_X] = x;
-  obj[KEY_Y] = y;
+void XY::saveTo(rJsonObj obj) const {
+  saveRealTo(obj, TAG_X, x);
+  saveRealTo(obj, TAG_Y, y);
+}
+
+//------------------------------------------------------------------------------
+
+DiffractionAngles::DiffractionAngles(qreal gamma_, qreal tth_)
+: gamma(gamma_), tth(tth_) {
 }
 
 //------------------------------------------------------------------------------
@@ -56,14 +106,6 @@ Range::Range(qreal min, qreal max) {
   set(min,max);
 }
 
-qreal Range::center() const {
-    return isValid() ? width() / 2 : qQNaN();
-}
-
-qreal Range::width() const {
-  return isValid() ? max-min : qQNaN();
-}
-
 Range Range::infinite() {
   return Range(-qInf(), +qInf());
 }
@@ -74,6 +116,14 @@ void Range::invalidate() {
 
 bool Range::isValid() const {
   return !qIsNaN(min) && !qIsNaN(max);
+}
+
+qreal Range::width() const {
+  return isValid() ? max-min : qQNaN();
+}
+
+qreal Range::center() const {
+  return isValid() ? width() / 2 : qQNaN();
 }
 
 void Range::set(qreal val) {
@@ -116,7 +166,7 @@ bool Range::contains(Range const& that) const {
 
 bool Range::intersects(Range const& that) const {
   ASSERT(isValid() && that.isValid())
-      return min <= that.max && that.min <= max;
+  return min <= that.max && that.min <= max;
 }
 
 qreal Range::bound(qreal value) const {
@@ -124,17 +174,16 @@ qreal Range::bound(qreal value) const {
   return value;
 }
 
-static str KEY_RANGE_MIN("min");
-static str KEY_RANGE_MAX("max");
+static str const TAG_MIN("min"), TAG_MAX("max");
 
-void Range::loadFrom(QJsonObject const& obj) {
-  min = loadReal(obj, KEY_RANGE_MIN);
-  max = loadReal(obj, KEY_RANGE_MAX);
+void Range::loadFrom(rcJsonObj obj) {
+  min = loadRealFrom(obj, TAG_MIN);
+  max = loadRealFrom(obj, TAG_MAX);
 }
 
-void Range::saveTo(QJsonObject& obj) const {
-  saveReal(obj, KEY_RANGE_MIN, min);
-  saveReal(obj, KEY_RANGE_MAX, max);
+void Range::saveTo(rJsonObj obj) const {
+  saveRealTo(obj, TAG_MIN, min);
+  saveRealTo(obj, TAG_MAX, max);
 }
 
 //------------------------------------------------------------------------------
@@ -146,46 +195,58 @@ void Ranges::clear() {
   ranges.clear();
 }
 
+bool Ranges::isEmpty() const {
+  return ranges.isEmpty();
+}
+
+uint Ranges::count() const {
+  return ranges.count();
+}
+
+Range const& Ranges::at(uint i) const {
+  return ranges.at(i);
+}
+
 bool Ranges::add(Range const& range) {
   QVector<Range> newRanges;
 
-  auto newRange = range;
-  for (auto &r: ranges) {
+  auto addRange = range;
+  for (Range const& r: ranges) {
     if (r.contains(range))
       return false;
     if (!range.contains(r)) {
       if (range.intersects(r))
-        newRange.extend(r);
+        addRange.extend(r);
       else
         newRanges.append(r);
     }
   }
 
-  newRanges.append(newRange);
+  newRanges.append(addRange);
   ranges = newRanges;
   sort();
 
   return true;
 }
 
-bool Ranges::rem(Range const& range) {
+bool Ranges::rem(Range const& remRange) {
   QVector<Range> newRanges;
+  bool changed = false;
 
-  bool change = false;
-  for (auto &r: ranges) {
-    if (r.intersects(range)) {
-      change = true;
-      if (r.min < range.min)
-        newRanges.append(Range(r.min,range.min));
-      if (r.max > range.max)
-        newRanges.append(Range(range.max,r.max));
+  for (Range const& r: ranges) {
+    if (r.intersects(remRange)) {
+      changed = true;
+      if (r.min < remRange.min)
+        newRanges.append(Range(r.min,remRange.min));
+      if (r.max > remRange.max)
+        newRanges.append(Range(remRange.max,r.max));
     } else {
       newRanges.append(r);
     }
   }
 
-  if (change) ranges = newRanges;
-  return change;
+  if (changed) ranges = newRanges;
+  return changed;
 }
 
 static bool lessThan(Range const& r1, Range const& r2) {
@@ -198,69 +259,33 @@ void Ranges::sort() {
   std::sort(ranges.begin(),ranges.end(),lessThan);
 }
 
-static str KEY_RANGE_NUM("r%1");
-static str KEY_RANGES("ranges");
-static str KEY_RANGE_COUNT("rangeCount");
+static str const
+  TAG_RANGE_NUM("r%1"),
+  TAG_RANGES("ranges"),
+  TAG_RANGE_COUNT("rangeCount");
 
-void Ranges::loadFrom(QJsonObject const& obj) {
-  QJsonObject rsObj = obj[KEY_RANGES].toObject();
-  int size = rsObj[KEY_RANGE_COUNT].toInt();
+void Ranges::loadFrom(rcJsonObj obj) { // REVIEW (dispose of TAG_RANGES?)
+  JsonObj rsObj = obj[TAG_RANGES].toObject();
+  int size = rsObj[TAG_RANGE_COUNT].toInt();
   for_i (size) {
-    QJsonObject rObj;
-    rObj = rsObj[str(KEY_RANGE_NUM).arg(i+1)].toObject();
+    JsonObj rObj;
+    rObj = rsObj[str(TAG_RANGE_NUM).arg(i+1)].toObject();
     Range r;
     r.loadFrom(rObj);
     ranges.append(r);
   }
 }
 
-void Ranges::saveTo(QJsonObject& obj) const {
-  QJsonObject rsObj;
-  rsObj[KEY_RANGE_COUNT] = ranges.size();
+void Ranges::saveTo(rJsonObj obj) const { // REVIEW
+  JsonObj rsObj;
+  rsObj[TAG_RANGE_COUNT] = ranges.size();
   for_i (ranges.count()) {
-    QJsonObject rObj;
+    JsonObj rObj;
     ranges.at(i).saveTo(rObj);
-    rsObj[str(KEY_RANGE_NUM).arg(i+1)] = rObj;
+    rsObj[str(TAG_RANGE_NUM).arg(i+1)] = rObj;
   }
-  obj[KEY_RANGES] = rsObj;
+  obj[TAG_RANGES] = rsObj;
 }
-
-//------------------------------------------------------------------------------
-
-static str const INF_P("+inf"), INF_M("-inf");
-
-qreal loadReal(QJsonObject const& obj, rcstr tag) THROWS {
-  auto val = obj[tag];
-
-  switch (val.type()) {
-  case QJsonValue::Undefined:
-    return qQNaN();
-  case QJsonValue::String: {
-    auto s = val.toString();
-    if (INF_P == s) return +qInf();
-    if (INF_M == s) return -qInf();
-    THROW("bad number format");
-  }
-  default:
-    return val.toDouble();
-  }
-}
-
-void saveReal(QJsonObject& obj, rcstr tag, qreal num) {
-  if (qIsNaN(num)) return; // do not save anything
-
-  auto val = obj[tag];
-  if (qIsInf(num))
-    val = (num < 0) ? INF_M : INF_P;
-  else
-    val = num;
-}
-
-bool areEqual(qreal r1, qreal r2) {
-  return
-    (qIsNaN(r1) && qIsNaN(r2)) || r1 == r2;
-}
-
 
 //------------------------------------------------------------------------------
 }

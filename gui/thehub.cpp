@@ -359,13 +359,13 @@ void TheHub::load(QByteArray const& json) THROWS {
 
   setImageRotate(core::ImageTransform(top[KEY_TRANSFORM].toInt()));
 
-  QJsonObject bgPolynomial = top[KEY_BG_POLYNOMIAL].toObject();
+  core::JsonObj bgPolynomial = top[KEY_BG_POLYNOMIAL].toObject();
   getBgPolynomial().loadFrom(bgPolynomial);
 
-  QJsonObject bgRanges = top[KEY_BG_RANGES].toObject();
+  core::JsonObj bgRanges = top[KEY_BG_RANGES].toObject();
   getBgRanges().loadFrom(bgRanges);
 
-  QJsonObject reflectionsObj = top[KEY_REFLECTIONS].toObject();
+  core::JsonObj reflectionsObj = top[KEY_REFLECTIONS].toObject();
   int refCount = reflectionsObj[KEY_REF_COUNT].toInt();
   for_i (refCount) {
     core::shp_Reflection reflection(new core::Reflection);
@@ -389,7 +389,7 @@ QByteArray TheHub::save() const {
 
   auto const &g = session->getGeometry();
 
-  QJsonObject det {
+  core::JsonObj det {
     { KEY_DISTANCE,     g.detectorDistance    },
     { KEY_PIXEL_SIZE,   g.pixSize             },
     { KEY_BEAM_OFFSET,  g.hasBeamOffset       },
@@ -405,27 +405,27 @@ QByteArray TheHub::save() const {
   }
 
   auto const &ic = session->getImageCut();
-  QJsonObject cut {
+  core::JsonObj cut {
     { KEY_TOP,    (int)ic.top     },
     { KEY_BOTTOM, (int)ic.bottom  },
     { KEY_LEFT,   (int)ic.left    },
     { KEY_RIGHT,  (int)ic.right   },
   };
 
-  QJsonObject bgPolynomial;
+  core::JsonObj bgPolynomial;
   getBgPolynomial().saveTo(bgPolynomial);
 
-  QJsonObject bgRanges;
+  core::JsonObj bgRanges;
   getBgRanges().saveTo(bgRanges);
 
-  QJsonObject reflections;
+  core::JsonObj reflections;
   auto ref = getReflections();
   reflections[KEY_REF_COUNT] = ref.count();
   for_i (ref.count()) {
      ref.at(i)->saveTo(reflections);
   }
 
-  QJsonObject top {
+  core::JsonObj top {
     { KEY_DETECTOR,   det                 },
     { KEY_CUT,        cut                 },
     { KEY_TRANSFORM,  session->getImageTransform().val  },

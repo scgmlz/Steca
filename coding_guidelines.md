@@ -110,6 +110,8 @@ and other resources is preferable. In particular, use Qt collections (`QVector`,
 functions (`qMin`,`qBound`), types (`qreal`, `quint16`), etc.,
 rather than the corresponding `std::` counterparts.
 
+A notable exception is `std::sort` (and perhaps other std algorithms.
+
 ### QtCreator
 
 Qt Creator - a modern IDE that supports Qt development - provides syntax-aware coloring, block highlight, fast switching between header and source files, fast navigation through code, type hierarchy and usage of symbols, integration with the debugger, etc. All that improves productivity and allows code formatting with less whitespace and ornamentation, such as:
@@ -190,8 +192,11 @@ int foo(int n) {
 - Variables: camel case, begin with lowercase. Descriptive names, the longer the
   scope and life span, the longer the name. Permissible one-two-three letter
   names, if established or obvious meaning: `i`, `n`, `x`, `y`, `min`, `max`,
-  `res` (result), `val` (value), `msg` (message), `fun` (that's what we have;
+  `res` (result), `val` (value), `msg` (message),
+  `add`, `rem` (remove), `del` (delete), `fun` (that's what we have;
   kidding, function) etc.
+- Plurals: name classes and variables of collection (list, vector, etc.) types in plural
+  form (`Range range`, `Ranges ranges`)
 
 ### member variables
   - no need to prefix member variables (with m_ and such)
@@ -293,3 +298,14 @@ Exceptions happen; therefore write exception-safe code (did we mention `QScopedP
 - lists: `_lst`, e.g. `typedef QStringList str_lst;`
 - vectors: `_vec`, e.g.  `typedef QVector<qreal> qreal_vec;`, `typedef QVector<uint> uint_vec;`
 - typedefs of primitive types: `_t`, e.g. `typedef float intens_t;`
+- reference typedefs prefix with `r`, e.g. `rJson`
+- reference const typedefs prefix with `rc`, e.g. `rcJson`
+
+## `typedef` & `using`
+
+Use `typedef` to type-define types (globally). Use `using` for local-scope aliases.
+
+## auto
+
+Be careful with `auto` (copy) v. `auto &` (reference).
+Also use `auto const&` to make the point.

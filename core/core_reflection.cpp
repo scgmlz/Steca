@@ -71,10 +71,10 @@ static str KEY_TYPE("type");
 static str KEY_RANGE("range");
 static str KEY_PEAK("peak");
 
-void Reflection::loadFrom(QJsonObject const& obj) THROWS {
+void Reflection::loadFrom(rcJsonObj obj) THROWS {
   range.loadFrom(obj[KEY_RANGE].toObject());
 
-  QJsonObject pObj = obj[KEY_PEAK].toObject();
+  JsonObj pObj = obj[KEY_PEAK].toObject();
   QScopedPointer<fit::Function> f(fit::Function::factory(pObj[KEY_TYPE].toString()));
   f->loadFrom(pObj);
 
@@ -82,12 +82,12 @@ void Reflection::loadFrom(QJsonObject const& obj) THROWS {
   setPeakFunction(static_cast<PeakFunction*>(f.take()));
 }
 
-void Reflection::saveTo(QJsonObject& obj) const {
-  QJsonObject rObj;
+void Reflection::saveTo(rJsonObj obj) const {
+  JsonObj rObj;
   getRange().saveTo(rObj);
   obj[KEY_RANGE] = rObj;
 
-  QJsonObject pObj;
+  JsonObj pObj;
   peakFunction->saveTo(pObj);
   obj[KEY_PEAK] = pObj;
 }

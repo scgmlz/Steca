@@ -36,7 +36,7 @@ typedef QStringList str_lst;  ///< a short alias for QStringList
 extern  str const EMPTY_STR;  ///< an empty string (that can be returned by reference!)
 
 /// A class definition helper that defines aliases for this and super class.
-#define SUPER(cls,sup)  typedef cls thisClass; typedef sup super;
+#define SUPER(cls,sup)  using thisClass = cls; using super = sup;
 
 /// the idiomatic iteration over *n* items
 #define for_int(var,n) for (int var=0, var##End=(n); var<var##End; ++var)

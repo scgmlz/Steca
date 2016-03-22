@@ -21,13 +21,27 @@
 class QJsonObject;
 
 namespace core {
+//------------------------------------------------------------------------------
+// for saving / loading the session file
 
-using intens_t = float; ///< short for intensity. float should suffice
+typedef QJsonObject   JsonObj;
+typedef JsonObj       &rJsonObj;
+typedef JsonObj const &rcJsonObj;
 
-class Lens;
+// load / save helpers
 
-using shp_LensSystem = QSharedPointer<Lens>;
+qreal loadRealFrom(rcJsonObj, rcstr tag) THROWS;
+void  saveRealTo(rJsonObj,  rcstr tag, qreal);
 
+//------------------------------------------------------------------------------
+// typedefs
+
+typedef float intens_t;   ///< short for intensity. float should suffice
+
+class Lens;       typedef QSharedPointer<Lens>        shp_LensSystem; // RENAME to shp_LensSystem
+class File;       typedef QSharedPointer<File>        shp_File;
+class Dataset;    typedef QSharedPointer<Dataset>     shp_Dataset;
+class Reflection; typedef QSharedPointer<Reflection>  shp_Reflection;
 
 //------------------------------------------------------------------------------
 // conversions
@@ -36,63 +50,66 @@ qreal deg_rad(qreal rad);   ///< conversion: degrees <= radians
 qreal rad_deg(qreal deg);   ///< conversion: radians <= degrees
 
 //------------------------------------------------------------------------------
-/// a point
+/// 2D point
 
 struct XY {
   XY();
   XY(qreal, qreal);
 
-  bool isDefined() const;
-
   qreal x, y;
 
-  void loadFrom(QJsonObject const&) THROWS;
-  void saveTo(QJsonObject& obj) const;
+  bool isDefined() const;
+
+  void loadFrom(rcJsonObj) THROWS;
+  void saveTo(rJsonObj) const;
 };
 
 //------------------------------------------------------------------------------
+/// Diffraction angles pair
 
 struct DiffractionAngles {
-  DiffractionAngles(): DiffractionAngles(0,0) {}
-  DiffractionAngles(qreal gamma_, qreal tth_): gamma(gamma_), tth(tth_) {}
-  qreal gamma;
-  qreal tth;
+  DiffractionAngles(qreal gamma = 0, qreal tth = 0);
+
+  qreal gamma, tth;
 };
 
 //------------------------------------------------------------------------------
-/// a range of values (a closed interval)
+/// range of values as a closed interval
 
 struct Range {
-  Range();
-  Range(qreal val);
-  Range(qreal min, qreal max);
+  Range();                        ///< invalid (NaN)
+  Range(qreal val);               ///< singular, min == max
+  Range(qreal min, qreal max);    ///< normal
 
+  static Range infinite();        ///< factory: -inf .. +inf
+
+  void  invalidate();             ///< make invalid
+  bool  isValid() const;          ///< is not NaN
+
+  qreal width()  const;
   qreal center() const;
-  qreal width() const;
-
-  static Range infinite();        ///< -inf .. +inf
 
   qreal min, max;                 ///< this is the range
 
-  void invalidate();              ///< make NaN
-  bool isValid() const;           ///< not NaN
+  void  set(qreal val);           ///< make singular
+  void  set(qreal min,qreal max); ///< must be: min <= max
+  void  safeSet(qreal,qreal);     ///< will be set in the right order min/max
 
-  void set(qreal val);            ///< both min and max = val
-  void set(qreal min,qreal max);  ///< must be: min <= max
-  void safeSet(qreal,qreal);      ///< will be set in the right order min-max
-  static Range safeFrom(qreal,qreal);
+  static Range safeFrom(qreal,qreal); ///< safe factory
 
-  void extend(qreal val);         ///< extend to include val
-  void extend(Range const&);      ///< extend to include the other range
+  void  extend(qreal);            ///< extend to include the number
+  void  extend(Range const&);     ///< extend to include the range
 
-  bool contains(qreal val)      const;
-  bool contains(Range const&)   const;
-  bool intersects(Range const&) const;
+  // these may be called only on valid intervals
+  bool  contains(qreal val)      const;
+  bool  contains(Range const&)   const;
+  bool  intersects(Range const&) const;
 
-  qreal bound(qreal value)      const;
+  /// limit the number to the interval, as qBound woul
+  qreal bound(qreal)             const;
 
-  void loadFrom(QJsonObject const&);
-  void saveTo(QJsonObject&) const;
+  void loadFrom(rcJsonObj);
+  void saveTo(rJsonObj) const;
 };
 
 //------------------------------------------------------------------------------
@@ -102,12 +119,15 @@ class Ranges {
 public:
   Ranges();
 
-  bool isEmpty()          const { return ranges.isEmpty(); }
-  uint count()            const { return ranges.count();   }
-  Range const& at(uint i) const { return ranges.at(i);     }
-
   void clear();
+  bool isEmpty()          const;
+  uint count()            const;
+
+  Range const& at(uint i) const;
+
+  /// collapses overlapping ranges to one; returns whether there was a change
   bool add(Range const&);
+  /// removes (cuts out) a range; returns whether there was a change
   bool rem(Range const&);
 
 private:
@@ -115,16 +135,9 @@ private:
   QVector<Range> ranges;
 
 public:
-  void loadFrom(QJsonObject const&);
-  void saveTo(QJsonObject&) const;
+  void loadFrom(rcJsonObj);
+  void saveTo(rJsonObj) const;
 };
-
-//------------------------------------------------------------------------------
-// load / save helpers
-
-qreal loadReal(QJsonObject const&, rcstr tag) THROWS;
-void  saveReal(QJsonObject&, rcstr tag, qreal);
-bool  areEqual(qreal,qreal);
 
 //------------------------------------------------------------------------------
 }

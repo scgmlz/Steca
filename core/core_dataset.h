@@ -64,8 +64,6 @@ private:
   Image image;
 };
 
-typedef QSharedPointer<Dataset> shp_Dataset;
-
 //------------------------------------------------------------------------------
 }
 

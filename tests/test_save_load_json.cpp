@@ -26,7 +26,7 @@ void TestSaveLoadJson::testSaveLoadJson() {
   qreal val4 = 4;
 
   {
-    QJsonObject pObj;
+    core::JsonObj pObj;
     core::fit::Function::Parameter p1;
     p1.setRange(r1,r1); // finite,finite
     p1.setValue(val1,error,true);
@@ -58,7 +58,7 @@ void TestSaveLoadJson::testSaveLoadJson() {
     polySave.setValue(2,val3);
     polySave.setValue(3,val4);
 
-    QJsonObject polyObj;
+    core::JsonObj polyObj;
 
     polySave.saveTo(polyObj);
 
@@ -75,7 +75,7 @@ void TestSaveLoadJson::testSaveLoadJson() {
 
     // testing saveTo/loadFrom CauchyLorentz
     TestCauchyLorentz cauchySave, cauchyLoad;
-    QJsonObject cObj;
+    core::JsonObj cObj;
     cauchySave.setValue(0,val1);
     cauchySave.setValue(1,val2);
 
@@ -86,7 +86,7 @@ void TestSaveLoadJson::testSaveLoadJson() {
     QCOMPARE(cauchyLoad.getParameter(0).getValue(),val1);
 
     TestPseudoVoigt1 pseudoSave, pseudoLoad;
-    QJsonObject psObj;
+    core::JsonObj psObj;
     pseudoSave.setValue(0,val4);
 
     pseudoSave.saveTo(psObj);
@@ -104,12 +104,12 @@ void TestSaveLoadJson::testSaveLoadJson() {
     // testing saveTo/loadFrom Gaussian
 
     TestGaussian gSave, gLoad;
-    QJsonObject gObj;
+    core::JsonObj gObj;
     gSave.setValue(0,val3);
 
     // Testing saveTo/loadFrom SumFunctions
 
-    QJsonObject sumObj;
+    core::JsonObj sumObj;
 
     core::fit::SumFunctions sumSave, sumLoad;
     TestPolynomial *p1 = new TestPolynomial, *p2 = new TestPolynomial;
