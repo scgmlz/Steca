@@ -16,7 +16,8 @@
 #ifndef CORE_DEFS_H
 #define CORE_DEFS_H
 
-// common QT includes - used all the time
+// common QT includes - everyone needs them
+
 #include <QtGlobal>
 #include <QSharedPointer>
 #include <QVector>
@@ -24,15 +25,17 @@
 #include <QString>
 #include <QStringBuilder>
 
-typedef QString     str;      //!< a short alias for the QString class
-typedef str const&  rcstr;    //!< a reference to a string constant
-typedef char const* pcstr;    //!< C-style (zero-byte-terminated) string
+// string support
+
+typedef QString     str;      ///< a short alias for the QString class
+typedef str const&  rcstr;    ///< a reference to a string constant
+typedef char const* pcstr;    ///< C-style (zero-byte-terminated) string
 
 typedef QStringList str_lst;  ///< a short alias for QStringList
 
 extern  str const EMPTY_STR;  ///< an empty string (that can be returned by reference!)
 
-//! A class definition helper that defines aliases for this and super class.
+/// A class definition helper that defines aliases for this and super class.
 #define SUPER(cls,sup)  typedef cls thisClass; typedef sup super;
 
 /// the idiomatic iteration over *n* items
@@ -40,13 +43,14 @@ extern  str const EMPTY_STR;  ///< an empty string (that can be returned by refe
 #define for_i(n) for_int(i,n)
 
 // useful vectors
-typedef QVector<qreal> reals_t;
-typedef QVector<uint>  uints_t;
+typedef QVector<qreal> qreal_vec;
+typedef QVector<uint>  uint_vec;
 
 // exceptions
 #include <QException>
 
-#define THROWS throw (Exception)    ///< exception annotation macro
+/// exception specification macro
+#define THROWS throw (Exception)
 
 /// An exception that carries a message.
 class Exception: public QException {
@@ -56,14 +60,16 @@ public:
  ~Exception()                       throw()                 {}
 
   Exception *clone() const;
-  void raise() const;
+  void raise()       const;
 
   str msg;
 };
 
-#define THROW(msg) throw Exception(msg)   ///< raise an exception
-#define RUNTIME_CHECK(test,msg) \
-  if (!(test)) THROW(msg)                 ///< run-time condition checking
+/// raise an exception
+#define THROW(msg)  throw Exception(msg)
+
+/// run-time condition checking
+#define RUNTIME_CHECK(test,msg)   if (!(test)) THROW(msg)
 
 // debug support
 #include "core_debug.h"

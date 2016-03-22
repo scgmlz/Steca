@@ -19,10 +19,10 @@ public:
 
   void append(qreal x, qreal y);
 
-  reals_t const& getXs() const { return xs; }
-  reals_t &getXs() { return xs; }
-  reals_t const& getYs() const { return ys; }
-  reals_t &getYs() { return ys; }
+  qreal_vec const& getXs() const { return xs; }
+  qreal_vec &getXs() { return xs; }
+  qreal_vec const& getYs() const { return ys; }
+  qreal_vec &getYs() { return ys; }
 
   qreal x(uint i) const { return xs[i]; }
   qreal y(uint i) const { return ys[i]; }
@@ -39,7 +39,7 @@ public:
   uint  maxYindex() const;
 
 private:
-  reals_t xs, ys;
+  qreal_vec xs, ys;
   core::Range xRange, yRange;
 };
 

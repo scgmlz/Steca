@@ -1,5 +1,20 @@
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_debug.h
+//! @brief     Macros for debugging support.
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
 /** \file
- * Macros that support debugging.
+ *
  *
  * TR (TRace) and WT (WaTch) are for trace prints; e.g.
  * TR(var) TR("name" << var1 << 2+3)
@@ -16,8 +31,18 @@
 #ifndef QT_NO_DEBUG
 
 #include <QDebug>
+
+/** TRace: trace prints; takes several things separated by << e.g.
+ *  TR(var)
+ *  TR("name" << var1 << 2+3)
+ *  Note: there must be an available QDebug& operator<<
+ */
 #define TR(what)      { qDebug() << what; }
+
+/// Assert redefined, to include (or not) the ';'
 #define ASSERT(cond)  Q_ASSERT(cond);
+
+/// Mark code that should not be reached, typically 'switch' branches
 #define NEVER_HERE    Q_ASSERT_X(false, "Here", "not be!");
 
 #else
@@ -28,7 +53,7 @@
 
 #endif
 
+/// WaTch: same as TR, also prints stringized version (what is being printed)
 #define WT(what)      TR(#what":" << what)
-#define NOT_YET       Q_ASSERT_X(false, "Done", "this is not.");
 
-#endif
+#endif // CORE_DEBUG_H

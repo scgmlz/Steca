@@ -126,7 +126,9 @@ TheHub::~TheHub() {
   lastAction->setShortcut(key);
 
 void TheHub::initActions() {
-  typedef QKeySequence QKey; QAction *lastAction;
+  using QKey = QKeySequence;
+
+  QAction *lastAction;
 
   PUSH_ACTION(actAddFiles,    "Add files…","Add files",":/icon/add")                        ACTION_KEY(Qt::CTRL|Qt::Key_O)
   PUSH_ACTION(actRemoveFile,  "Remove selected file","Remove selected file",":/icon/rem")     ACTION_KEY(QKey::Delete);

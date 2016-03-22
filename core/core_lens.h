@@ -160,4 +160,5 @@ shp_LensSystem makeLensSystem(Dataset const& dataset,
 
 //------------------------------------------------------------------------------
 }
+
 #endif

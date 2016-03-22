@@ -25,7 +25,7 @@ bool FittingMethod::fit(Function& function_, core::Curve const& curve, bool side
 
   // prepare data in a required format
   uint parCount = function->parameterCount();
-  reals_t parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
+  qreal_vec parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
 
   for_i (parCount) {
     auto par = function->getParameter(i);

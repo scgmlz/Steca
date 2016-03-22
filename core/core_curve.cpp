@@ -115,8 +115,8 @@ Curve makeCurve(shp_LensSystem const lenses,
 
   const qreal deltaTTH = tthRange.width() / width;
 
-  reals_t intens_vec(width);
-  uints_t counts_vec(width,0);
+  qreal_vec intens_vec(width);
+  uint_vec counts_vec(width,0);
 
   for(uint iy = 0; iy < height; ++iy) {
     for(uint ix = 0; ix < width; ++ix) {

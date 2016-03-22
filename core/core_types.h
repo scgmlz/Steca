@@ -1,6 +1,17 @@
-/** \file
- * Common core types.
- */
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_types.h
+//! @brief     Commonly uses types.
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
 
 #include "core_defs.h"
 
@@ -21,8 +32,8 @@ using shp_LensSystem = QSharedPointer<Lens>;
 //------------------------------------------------------------------------------
 // conversions
 
-qreal deg_rad(qreal rad);         ///< conversion: degrees <= radians
-qreal rad_deg(qreal deg);         ///< conversion: radians <= degrees
+qreal deg_rad(qreal rad);   ///< conversion: degrees <= radians
+qreal rad_deg(qreal deg);   ///< conversion: radians <= degrees
 
 //------------------------------------------------------------------------------
 /// a point
@@ -117,4 +128,5 @@ bool  areEqual(qreal,qreal);
 
 //------------------------------------------------------------------------------
 }
-#endif
+
+#endif // CORE_TYPES_H
