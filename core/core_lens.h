@@ -151,6 +151,23 @@ private:
   Range const* range;
 };
 //------------------------------------------------------------------------------
+class NormalizationLens final : public Lens {
+  SUPER(NormalizationLens, Lens)
+public:
+  NormalizationLens(qreal normVal_);
+  
+  uint getPriority() const override;
+  
+  DiffractionAngles getAngles(uint x, uint y) const override;
+  intens_t getIntensity(uint x, uint y) const override;
+  Range getIntensityRange() const override;
+  QSize getSize() const override;
+  
+private:
+  qreal normVal;
+};
+
+//------------------------------------------------------------------------------
 
 class Dataset;
 

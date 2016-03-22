@@ -253,6 +253,32 @@ Range GlobalIntensityRangeLens::getIntensityRange() const {
 QSize GlobalIntensityRangeLens::getSize() const {
   return next->getSize();
 }
+//------------------------------------------------------------------------------
+
+NormalizationLens::NormalizationLens(qreal normVal_) : normVal(normVal_){
+  
+}
+
+uint NormalizationLens::getPriority() const {
+  return Lens::PRIORITY_NORMALIZATION;
+}
+
+DiffractionAngles NormalizationLens::getAngles(uint x, uint y) const {
+  return next->getAngles(x,y);
+}
+
+intens_t NormalizationLens::getIntensity(uint x, uint y) const {
+  return getIntensity(x,y)*normVal;
+}
+
+Range NormalizationLens::getIntensityRange() const {
+  auto range = next->getIntensityRange();
+  return Range(range.min * normVal, range.max * normVal);
+}
+
+QSize NormalizationLens::getSize() const {
+  return next->getSize();
+}
 
 //------------------------------------------------------------------------------
 
