@@ -46,8 +46,8 @@ public:
 
   /// allocate and fill with a value
   void fill(T const& val, QSize const& size) {
+    xySize = size;  // set size first
     ts.fill(val,getCount());
-    xySize = size;
   }
 
   /// allocate and fill with a default value

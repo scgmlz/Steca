@@ -13,25 +13,16 @@
 //
 // ************************************************************************** //
 
-#include "core_defs.h"
-
 #ifndef CORE_TYPES_H
 #define CORE_TYPES_H
 
-class QJsonObject;
+#include "core_defs.h"
 
 namespace core {
 //------------------------------------------------------------------------------
-// for saving / loading the session file
+// for saving / loading
 
-typedef QJsonObject   JsonObj;
-typedef JsonObj       &rJsonObj;
-typedef JsonObj const &rcJsonObj;
-
-// load / save helpers
-
-qreal loadRealFrom(rcJsonObj, rcstr tag) THROWS;
-void  saveRealTo(rJsonObj,  rcstr tag, qreal);
+class JsonObj; typedef JsonObj const &rcJsonObj;
 
 //------------------------------------------------------------------------------
 // typedefs
@@ -60,8 +51,8 @@ struct XY {
 
   bool isDefined() const;
 
-  void loadFrom(rcJsonObj) THROWS;
-  void saveTo(rJsonObj) const;
+  void    loadJson(rcJsonObj) THROWS;
+  JsonObj saveJson() const;
 };
 
 //------------------------------------------------------------------------------
@@ -108,8 +99,8 @@ struct Range {
   /// limit the number to the interval, as qBound woul
   qreal bound(qreal)             const;
 
-  void loadFrom(rcJsonObj);
-  void saveTo(rJsonObj) const;
+  void    loadJson(rcJsonObj) THROWS;
+  JsonObj saveJson() const;
 };
 
 //------------------------------------------------------------------------------
@@ -135,11 +126,10 @@ private:
   QVector<Range> ranges;
 
 public:
-  void loadFrom(rcJsonObj);
-  void saveTo(rJsonObj) const;
+  void    loadJson(rcJsonObj) THROWS;
+  JsonObj saveJson() const;
 };
 
 //------------------------------------------------------------------------------
 }
-
 #endif // CORE_TYPES_H

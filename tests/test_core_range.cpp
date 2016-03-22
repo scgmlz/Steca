@@ -1,6 +1,6 @@
 #include "test_core_range.h"
 #include <core_curve.h>
-#include <core_types.h>
+#include "core_types.h"
 
 void TestCoreRange::testRange() {
   // Tests for Range

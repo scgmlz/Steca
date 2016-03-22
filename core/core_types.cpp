@@ -13,45 +13,14 @@
 // ************************************************************************** //
 
 #include "core_types.h"
+#include "core_json.h"
 
 #include <algorithm>
 #include <QSize>
 #include <qmath.h>
 #include <numeric>
-#include <QJsonObject>
 
 namespace core {
-//------------------------------------------------------------------------------
-
-static str const INF_P("+inf"), INF_M("-inf");
-
-qreal loadRealFrom(rcJsonObj obj, rcstr tag) THROWS {
-  auto val = obj[tag];
-
-  switch (val.type()) {
-  case QJsonValue::Undefined:
-    return qQNaN();                   // not present means not a number
-  case QJsonValue::String: {          // infinities stored as strings
-    auto s = val.toString();
-    if (INF_P == s) return +qInf();
-    if (INF_M == s) return -qInf();
-    THROW("bad number format");
-  }
-  default:
-    return val.toDouble();
-  }
-}
-
-void saveRealTo(rJsonObj obj, rcstr tag, qreal num) {
-  if (qIsNaN(num)) return;            // do not save anything
-
-  auto val = obj[tag];
-  if (qIsInf(num))
-    val = (num < 0) ? INF_M : INF_P;  // infinity as string
-  else
-    val = num;                        // else as a number
-}
-
 //------------------------------------------------------------------------------
 
 qreal deg_rad(qreal rad) {
@@ -74,16 +43,18 @@ bool XY::isDefined() const {
   return !qIsNaN(x) && !qIsNaN(y);
 }
 
-static str const TAG_X("X"), TAG_Y("Y");
+static str const KEY_X("X"), KEY_Y("Y");
 
-void XY::loadFrom(rcJsonObj obj) THROWS {
-  x = loadRealFrom(obj, TAG_X);
-  y = loadRealFrom(obj, TAG_Y);
+void XY::loadJson(rcJsonObj obj) THROWS {
+  x = obj.loadReal(KEY_X);
+  y = obj.loadReal(KEY_Y);
 }
 
-void XY::saveTo(rJsonObj obj) const {
-  saveRealTo(obj, TAG_X, x);
-  saveRealTo(obj, TAG_Y, y);
+JsonObj XY::saveJson() const {
+  JsonObj obj;
+  obj.saveReal(KEY_X, x);
+  obj.saveReal(KEY_Y, y);
+  return obj;
 }
 
 //------------------------------------------------------------------------------
@@ -174,16 +145,18 @@ qreal Range::bound(qreal value) const {
   return value;
 }
 
-static str const TAG_MIN("min"), TAG_MAX("max");
+static str const KEY_MIN("min"), KEY_MAX("max");
 
-void Range::loadFrom(rcJsonObj obj) {
-  min = loadRealFrom(obj, TAG_MIN);
-  max = loadRealFrom(obj, TAG_MAX);
+void Range::loadJson(rcJsonObj obj) THROWS {
+  min = obj.loadReal(KEY_MIN);
+  max = obj.loadReal(KEY_MAX);
 }
 
-void Range::saveTo(rJsonObj obj) const {
-  saveRealTo(obj, TAG_MIN, min);
-  saveRealTo(obj, TAG_MAX, max);
+JsonObj Range::saveJson() const {
+  JsonObj obj;
+  obj.saveReal(KEY_MIN, min);
+  obj.saveReal(KEY_MAX, max);
+  return obj;
 }
 
 //------------------------------------------------------------------------------
@@ -260,31 +233,31 @@ void Ranges::sort() {
 }
 
 static str const
-  TAG_RANGE_NUM("r%1"),
-  TAG_RANGES("ranges"),
-  TAG_RANGE_COUNT("rangeCount");
+  KEY_RANGE_NUM("r%1"),
+  KEY_RANGES("ranges"),
+  KEY_RANGE_COUNT("rangeCount");
 
-void Ranges::loadFrom(rcJsonObj obj) { // REVIEW (dispose of TAG_RANGES?)
-  JsonObj rsObj = obj[TAG_RANGES].toObject();
-  int size = rsObj[TAG_RANGE_COUNT].toInt();
+void Ranges::loadJson(rcJsonObj obj) THROWS { // REVIEW (dispose of KEY_RANGES?)
+  JsonObj rsObj = obj[KEY_RANGES].toObject();
+  int size = rsObj[KEY_RANGE_COUNT].toInt();
   for_i (size) {
     JsonObj rObj;
-    rObj = rsObj[str(TAG_RANGE_NUM).arg(i+1)].toObject();
+    rObj = rsObj[KEY_RANGE_NUM.arg(i+1)].toObject();
     Range r;
-    r.loadFrom(rObj);
+    r.loadJson(rObj);
     ranges.append(r);
   }
 }
 
-void Ranges::saveTo(rJsonObj obj) const { // REVIEW
-  JsonObj rsObj;
-  rsObj[TAG_RANGE_COUNT] = ranges.size();
-  for_i (ranges.count()) {
-    JsonObj rObj;
-    ranges.at(i).saveTo(rObj);
-    rsObj[str(TAG_RANGE_NUM).arg(i+1)] = rObj;
-  }
-  obj[TAG_RANGES] = rsObj;
+JsonObj Ranges::saveJson() const { // REVIEW
+  JsonObj obj;
+
+  obj[KEY_RANGE_COUNT] = ranges.size();
+  for_i (ranges.count())
+    obj[KEY_RANGE_NUM.arg(i+1)] = ranges.at(i).saveJson();
+  obj[KEY_RANGES] = obj;
+
+  return obj;
 }
 
 //------------------------------------------------------------------------------

@@ -1,12 +1,12 @@
 #include "thehub.h"
 #include "mainwin.h"
 #include "panel/fitting.h"
+#include "core_json.h"
 
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 #include <QJsonDocument>
 #include <QJsonArray>
-#include <QJsonObject>
 #include <QApplication>
 #include <QActionEvent>
 #include <QDir>
@@ -360,16 +360,16 @@ void TheHub::load(QByteArray const& json) THROWS {
   setImageRotate(core::ImageTransform(top[KEY_TRANSFORM].toInt()));
 
   core::JsonObj bgPolynomial = top[KEY_BG_POLYNOMIAL].toObject();
-  getBgPolynomial().loadFrom(bgPolynomial);
+  getBgPolynomial().loadJson(bgPolynomial);
 
   core::JsonObj bgRanges = top[KEY_BG_RANGES].toObject();
-  getBgRanges().loadFrom(bgRanges);
+  getBgRanges().loadJson(bgRanges);
 
   core::JsonObj reflectionsObj = top[KEY_REFLECTIONS].toObject();
   int refCount = reflectionsObj[KEY_REF_COUNT].toInt();
   for_i (refCount) {
     core::shp_Reflection reflection(new core::Reflection);
-    reflection->loadFrom(reflectionsObj);
+    reflection->loadJson(reflectionsObj);
     session->getReflections().append(reflection);
   }
 
@@ -389,13 +389,14 @@ QByteArray TheHub::save() const {
 
   auto const &g = session->getGeometry();
 
-  core::JsonObj det {
+  QJsonObject det {
     { KEY_DISTANCE,     g.detectorDistance    },
     { KEY_PIXEL_SIZE,   g.pixSize             },
     { KEY_BEAM_OFFSET,  g.hasBeamOffset       },
     { KEY_OFFSET_X,     g.middlePixOffset.x() },
     { KEY_OFFSET_Y,     g.middlePixOffset.y() },
   };
+
   // save file path relative to location of session
   QJsonArray files;
   for_i (numFiles(false)) {
@@ -405,27 +406,25 @@ QByteArray TheHub::save() const {
   }
 
   auto const &ic = session->getImageCut();
-  core::JsonObj cut {
+  QJsonObject cut {
     { KEY_TOP,    (int)ic.top     },
     { KEY_BOTTOM, (int)ic.bottom  },
     { KEY_LEFT,   (int)ic.left    },
     { KEY_RIGHT,  (int)ic.right   },
   };
 
-  core::JsonObj bgPolynomial;
-  getBgPolynomial().saveTo(bgPolynomial);
+  core::JsonObj bgPolynomial = getBgPolynomial().saveJson();
 
-  core::JsonObj bgRanges;
-  getBgRanges().saveTo(bgRanges);
+  core::JsonObj bgRanges = getBgRanges().saveJson();
 
   core::JsonObj reflections;
   auto ref = getReflections();
   reflections[KEY_REF_COUNT] = ref.count();
   for_i (ref.count()) {
-     ref.at(i)->saveTo(reflections);
+     reflections += ref.at(i)->saveJson();
   }
 
-  core::JsonObj top {
+  QJsonObject top {
     { KEY_DETECTOR,   det                 },
     { KEY_CUT,        cut                 },
     { KEY_TRANSFORM,  session->getImageTransform().val  },

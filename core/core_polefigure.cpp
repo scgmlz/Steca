@@ -232,7 +232,7 @@ Polefigure::Point Polefigure::makePoint(Session const& session,
                                  session.getCut().tth_regular);
   const fit::Polynomial stripeBg
     = fit::fitBackground(gammaCutCurve, session.getBgRanges(),
-                         session.getBgPolynomial().getDegree());
+                         session.getBgPolynomial().degree());
   gammaCutCurve.subtractFunction(stripeBg);
   auto peakFunction = reflection.makePeakFunction();
   fit::fitPeak(*peakFunction,

@@ -47,8 +47,8 @@ private:
   PeakFunction *peakFunction;
 
 public:
-  void loadFrom(rcJsonObj) THROWS;
-  void saveTo(rJsonObj) const;
+  void    loadJson(rcJsonObj) THROWS;
+  JsonObj saveJson() const;
 };
 
 typedef QVector<shp_Reflection>    Reflections;

@@ -28,9 +28,9 @@ bool FittingMethod::fit(Function& function_, core::Curve const& curve, bool side
   qreal_vec parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
 
   for_i (parCount) {
-    auto par = function->getParameter(i);
-    auto rge = par.getRange();
-    parValue[i] = par.getValue();
+    auto par = function->parameterAt(i);
+    auto rge = par.valueRange();
+    parValue[i] = par.value();
     parMin[i]   = rge.min;
     parMax[i]   = rge.max;
   }
@@ -43,7 +43,7 @@ bool FittingMethod::fit(Function& function_, core::Curve const& curve, bool side
 
   // read data
   for_i (parCount) {
-    if (!function->getParameter(i).setValue(parValue[i], parError[i], !sideConditionCheckIsActive))
+    if (!function->parameterAt(i).setValue(parValue[i], parError[i], !sideConditionCheckIsActive))
       return false;
   }
 

@@ -1,6 +1,7 @@
 #include "test_save_load_json.h"
 #include "core_fit_functions.h"
 #include "core_types.h"
+#include "core_json.h"
 
 // make non-public methods public
 #define TEST_FIT_CLASS(cls)                 \
@@ -26,28 +27,27 @@ void TestSaveLoadJson::testSaveLoadJson() {
   qreal val4 = 4;
 
   {
-    core::JsonObj pObj;
     core::fit::Function::Parameter p1;
-    p1.setRange(r1,r1); // finite,finite
+    p1.setValueRange(r1,r1); // finite,finite
     p1.setValue(val1,error,true);
-    p1.saveTo(pObj);
+    core::JsonObj pObj = p1.saveJson();
     core::fit::Function::Parameter p3;
-    p3.loadFrom(pObj);
-    QCOMPARE(p3.getRange().min, r1);
-    QCOMPARE(p3.getRange().max, r1);
-    QCOMPARE(p3.getValue(), val1);
+    p3.loadJson(pObj);
+    QCOMPARE(p3.valueRange().min, r1);
+    QCOMPARE(p3.valueRange().max, r1);
+    QCOMPARE(p3.value(), val1);
 
     core::fit::Function::Parameter p2;
     p2.setValue(val1,error,true);
-    p2.saveTo(pObj);
+    pObj = p2.saveJson();
     core::fit::Function::Parameter p4;
-    p4.loadFrom(pObj);
-    QVERIFY(qIsInf(p4.getRange().min));
-    QVERIFY(qIsInf(p4.getRange().max));
-    QCOMPARE(p4.getValue(), val1);
+    p4.loadJson(pObj);
+    QVERIFY(qIsInf(p4.valueRange().min));
+    QVERIFY(qIsInf(p4.valueRange().max));
+    QCOMPARE(p4.value(), val1);
   }
 
-  { // testing saveTo/loadFrom Polynomial
+  { // testing saveJson/loadJson Polynomial
     TestPolynomial polyLoad;
     TestPolynomial polySave;
 
@@ -58,73 +58,65 @@ void TestSaveLoadJson::testSaveLoadJson() {
     polySave.setValue(2,val3);
     polySave.setValue(3,val4);
 
-    core::JsonObj polyObj;
+    core::JsonObj polyObj = polySave.saveJson();
 
-    polySave.saveTo(polyObj);
-
-    QCOMPARE(polyLoad.getDegree(),0u);
+    QCOMPARE(polyLoad.degree(),0u);
     QCOMPARE(polyLoad.parameterCount(),1u);
-    QCOMPARE(polyLoad.getParameter(0).getValue(),val0);
+    QCOMPARE(polyLoad.parameterAt(0).value(),val0);
 
-    polyLoad.loadFrom(polyObj);
+    polyLoad.loadJson(polyObj);
 
-    QCOMPARE(polyLoad.getDegree(),3u);
+    QCOMPARE(polyLoad.degree(),3u);
     QCOMPARE(polyLoad.parameterCount(),4u);
-    QCOMPARE(polyLoad.getParameter(0).getValue(),val1);
+    QCOMPARE(polyLoad.parameterAt(0).value(),val1);
 
 
-    // testing saveTo/loadFrom CauchyLorentz
+    // testing saveJson/loadJson CauchyLorentz
     TestCauchyLorentz cauchySave, cauchyLoad;
-    core::JsonObj cObj;
     cauchySave.setValue(0,val1);
     cauchySave.setValue(1,val2);
 
-    cauchySave.saveTo(cObj);
-    cauchyLoad.loadFrom(cObj);
+    core::JsonObj cObj = cauchySave.saveJson();
+    cauchyLoad.loadJson(cObj);
 
     QCOMPARE(cauchyLoad.parameterCount(),3u);
-    QCOMPARE(cauchyLoad.getParameter(0).getValue(),val1);
+    QCOMPARE(cauchyLoad.parameterAt(0).value(),val1);
 
     TestPseudoVoigt1 pseudoSave, pseudoLoad;
-    core::JsonObj psObj;
     pseudoSave.setValue(0,val4);
 
-    pseudoSave.saveTo(psObj);
-    pseudoLoad.loadFrom(psObj);
+    core::JsonObj psObj = pseudoSave.saveJson();
+    pseudoLoad.loadJson(psObj);
 
     QCOMPARE(pseudoLoad.parameterCount(),4u);
-    QCOMPARE(pseudoLoad.getParameter(0).getValue(),val4);
+    QCOMPARE(pseudoLoad.parameterAt(0).value(),val4);
     bool verify = false;
-    auto max = pseudoLoad.getParameter(0).getRange().max;
+    auto max = pseudoLoad.parameterAt(0).valueRange().max;
     if ( qIsInf(max))
       verify = (max > 0) ? true : false;
 
     QVERIFY(verify);
 
-    // testing saveTo/loadFrom Gaussian
+    // testing saveJson/loadJson Gaussian
 
     TestGaussian gSave, gLoad;
     core::JsonObj gObj;
     gSave.setValue(0,val3);
 
-    // Testing saveTo/loadFrom SumFunctions
-
-    core::JsonObj sumObj;
+    // Testing saveJson/loadJson SumFunctions
 
     core::fit::SumFunctions sumSave, sumLoad;
     TestPolynomial *p1 = new TestPolynomial, *p2 = new TestPolynomial;
 
-    p1->loadFrom(polyObj);
-    p2->loadFrom(polyObj);
+    p1->loadJson(polyObj);
+    p2->loadJson(polyObj);
 
     sumSave.addFunction(p1);
     sumSave.addFunction(p2);
 
-    sumSave.saveTo(sumObj);
-    sumLoad.loadFrom(sumObj);
-
+    core::JsonObj sumObj = sumSave.saveJson();
+    sumLoad.loadJson(sumObj);
   }
-
 }
 
 // eof

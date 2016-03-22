@@ -391,7 +391,7 @@ void Diffractogram::calcBackground() {
   auto &bgPolynomial = theHub.getBgPolynomial();  // not very nice REVIEW
   auto &bgRanges     = theHub.getBgRanges();      // not very nice REVIEW
 
-  bgPolynomial = core::fit::fitBackground(dgram,bgRanges,bgPolynomial.getDegree());
+  bgPolynomial = core::fit::fitBackground(dgram,bgRanges,bgPolynomial.degree());
   auto& tth   = dgram.getXs();
   auto& inten = dgram.getYs();
   for_i (dgram.count()) {
