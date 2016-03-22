@@ -38,6 +38,10 @@ private:
   QFileInfo info;
   QVector<shp_Dataset> datasets;
   mutable Range rgeIntens;
+
+public:
+  qreal const calAverageMonitor();
+  qreal const calAverageDeltaTime();
 };
 
 typedef QSharedPointer<File> shp_File;

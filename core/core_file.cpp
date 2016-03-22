@@ -39,6 +39,24 @@ Range const& File::getRgeIntens() const {
   return rgeIntens;
 }
 
+const qreal File::calAverageMonitor() {
+  qreal averMon;
+  for (auto const& dataset: datasets) {
+    averMon += dataset->getNumericalAttributeValue(core::Dataset::eAttributes::MON);
+  }
+  averMon = averMon/datasets.count();
+  return averMon;
+}
+
+const qreal File::calAverageDeltaTime() {
+  qreal averDTime;
+  for (auto const& dataset: datasets) {
+    averDTime += dataset->getNumericalAttributeValue(core::Dataset::eAttributes::DELTA_TIME);
+  }
+  averDTime = averDTime/datasets.count();
+  return averDTime;
+}
+
 //------------------------------------------------------------------------------
 }
 // eof
