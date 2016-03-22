@@ -188,24 +188,62 @@ void TestPolefigure::testInQuadrant() {
 }
 
 void TestPolefigure::testGamaRange() {
-  TEST_DATA
-  Dataset dataset = test.testDataset(width,height,inten,specialInten,posIntensArray);
-  AngleMapArray angleMapArray = test.testAngleMapArray(gamma,gammaSpecial,
-                                                  tth,tthSpecial,
-                                                  width,height,
-                                                  anglePosX,anglePosY);
+  
+  { // simple test
+    TEST_DATA
+    Dataset dataset = test.testDataset(width,height,inten,specialInten,posIntensArray);
+    AngleMapArray angleMapArray = test.testAngleMapArray(gamma,gammaSpecial,
+                                                    tth,tthSpecial,
+                                                    width,height,
+                                                    anglePosX,anglePosY);
+  
+    qreal tthNext   = 3.0;
+    qreal gammaNext = 8.0;
+    angleMapArray.setAt(1,0,DiffractionAngles(gammaNext,tthNext));
+    auto lensSystem = makeLensSystem(dataset, angleMapArray);
+    qreal testTth = 4.0;
+    Range extendRange = Range(gammaNext);
+    auto range = gammaRange(lensSystem,testTth);
+  
+    QCOMPARE(range.max, extendRange.max);
+    QCOMPARE(range.min, extendRange.min);
+  }
 
-  qreal tthNext   = 3.0;
-  qreal gammaNext = 8.0;
-  angleMapArray.setAt(1,0,DiffractionAngles(gammaNext,tthNext));
-  auto lensSystem = makeLensSystem(dataset, angleMapArray);
-  qreal testTth = 4.0;
-  Range extendRange = Range(gammaNext);
-  auto range = gammaRange(lensSystem,testTth);
+  { // extensiv test with full test data
+    int width = 11;
+    int height = 11;
+    qreal fillVal = 0;
+    int posVal = 0;
+    TestCoreLens test;
+    Dataset dataset = test.testDataset(width,height,fillVal,fillVal,posVal);
+    AngleMapArray angleMapArray = test.testAngleMapArray(fillVal,fillVal,
+                                                    fillVal,fillVal,
+                                                    width,height,
+                                                    posVal,posVal);  
+    qreal gamma = 5.0;
+    for (int y = 0; y < height; ++y) {
+      if (y > 0 && y <= 5) gamma = gamma - 1;
+      else ++gamma;
+      for (int x = 0; x < width; ++x) {
+        angleMapArray.setAt(x,y,DiffractionAngles(gamma,(x+1)*(y+1)));
+        angleMapArray.setAt(x,y,DiffractionAngles(gamma,(x+1)*(y+1)));
+      }
+    } 
+    auto lensSystem = makeLensSystem(dataset,angleMapArray);
+    qreal testTth = 42;
+    // min = gamma val minus 5  max = gamma val of last row
+    Range extendRange = Range(gamma-5,gamma); 
+    auto range = gammaRange(lensSystem,testTth);
+    
+    QCOMPARE(range.max, extendRange.max);
+    QCOMPARE(range.min, extendRange.min);
+  }
 
-  QCOMPARE(range.max, extendRange.max);
-  QCOMPARE(range.max, extendRange.min);
+  { // test for x-ray images
+    
 
+
+  }
 
 }
 
