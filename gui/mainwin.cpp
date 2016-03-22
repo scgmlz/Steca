@@ -166,11 +166,11 @@ void MainWin::initStatus() {
 }
 
 void MainWin::connectActions() {
-  auto onTrigger = [this](QAction* action, void (thisCls::*fun)()) {
+  auto onTrigger = [this](QAction* action, void (thisClass::*fun)()) {
     QObject::connect(action, &QAction::triggered, this, fun);
   };
 
-  auto onToggle = [this](QAction* action, void (thisCls::*fun)(bool)) {
+  auto onToggle = [this](QAction* action, void (thisClass::*fun)(bool)) {
     QObject::connect(action, &QAction::toggled, this, fun);
   };
 
@@ -178,11 +178,11 @@ void MainWin::connectActions() {
     action->setEnabled(false);
   };
 
-  onTrigger(theHub.actAddFiles,            &thisCls::addFiles);
-  onTrigger(theHub.actLoadCorrectionFile,  &thisCls::loadCorrectionFile);
+  onTrigger(theHub.actAddFiles,            &thisClass::addFiles);
+  onTrigger(theHub.actLoadCorrectionFile,  &thisClass::loadCorrectionFile);
 
-  onTrigger(theHub.actLoadSession, &thisCls::loadSession);
-  onTrigger(theHub.actSaveSession, &thisCls::saveSession);
+  onTrigger(theHub.actLoadSession, &thisClass::loadSession);
+  onTrigger(theHub.actSaveSession, &thisClass::saveSession);
 
   notYet(theHub.actExportDiffractogramCurrent);
   notYet(theHub.actExportDiffractogramAllSeparateFiles);
@@ -190,7 +190,7 @@ void MainWin::connectActions() {
   notYet(theHub.actExportImagesWithMargins);
   notYet(theHub.actExportImagesWithoutMargins);
 
-  onTrigger(theHub.actQuit, &thisCls::close);
+  onTrigger(theHub.actQuit, &thisClass::close);
 
   notYet(theHub.actUndo);
   notYet(theHub.actRedo);
@@ -211,11 +211,11 @@ void MainWin::connectActions() {
 
   notYet(theHub.actAbout);
 
-  onToggle(theHub.actViewStatusbar, &thisCls::viewStatusbar);
+  onToggle(theHub.actViewStatusbar, &thisClass::viewStatusbar);
 #ifndef Q_OS_OSX
-  onToggle(theHub.actFullscreen,    &thisCls::viewFullscreen);
+  onToggle(theHub.actFullscreen,    &thisClass::viewFullscreen);
 #endif
-  onTrigger(theHub.actViewReset,    &thisCls::viewReset);
+  onTrigger(theHub.actViewReset,    &thisClass::viewReset);
 }
 
 void MainWin::show() {

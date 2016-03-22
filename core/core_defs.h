@@ -1,6 +1,17 @@
-/** \file
- * Commonly used or very useful definitions.
- */
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_defs.h
+//! @brief     Globally used definitions and includes.
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
 
 #ifndef CORE_DEFS_H
 #define CORE_DEFS_H
@@ -10,22 +21,23 @@
 #include <QSharedPointer>
 #include <QVector>
 
-/// A class definition helper: this class (thisCls) and superclass (super) access.
-#define SUPER(cls,sup)  typedef cls thisCls; typedef sup super;
-
 #include <QString>
 #include <QStringBuilder>
 
-typedef QString     str;      ///< a short alias for the string class
-typedef str const&  rcstr;    ///< a reference to a string constant
-typedef char const* pcstr;    ///< zero-terminated C-style string
+typedef QString     str;      //!< a short alias for the QString class
+typedef str const&  rcstr;    //!< a reference to a string constant
+typedef char const* pcstr;    //!< C-style (zero-byte-terminated) string
 
-typedef QStringList str_lst;  ///< a short alias
+typedef QStringList str_lst;  ///< a short alias for QStringList
 
 extern  str const EMPTY_STR;  ///< an empty string (that can be returned by reference!)
 
+//! A class definition helper that defines aliases for this and super class.
+#define SUPER(cls,sup)  typedef cls thisClass; typedef sup super;
+
 /// the idiomatic iteration over *n* items
-#define for_i(n) for (int i=0, iEnd=(n); i<iEnd; ++i)
+#define for_int(var,n) for (int var=0, var##End=(n); var<var##End; ++var)
+#define for_i(n) for_int(i,n)
 
 // useful vectors
 typedef QVector<qreal> reals_t;
@@ -56,4 +68,4 @@ public:
 // debug support
 #include "core_debug.h"
 
-#endif
+#endif // CORE_DEFS_H

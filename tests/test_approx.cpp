@@ -13,7 +13,7 @@ void TestApprox::testApproxFunction() {
     core::fit::FittingLinearLeastSquare fm;
     core::Curve c;
 
-    for_i(3) {
+    for_i (3) {
       c.append(i,i);
     }
 
@@ -80,7 +80,7 @@ void TestApprox::testApproxFunction() {
   {
     core::fit::FittingLevenbergMarquardt fm;
     core::Curve c;
-    for_i(3){
+    for_i (3) {
       c.append(i,i);
     }
     core::fit::Polynomial p(1);

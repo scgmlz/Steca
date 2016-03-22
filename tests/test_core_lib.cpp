@@ -8,7 +8,7 @@ void TestCoreLib::testConversions() {
   QCOMPARE(M_PI,core::rad_deg(180));
   QCOMPARE(90.0,core::deg_rad(M_PI_2));
 
-  for_i(720)
+  for_i (720)
     QCOMPARE((qreal)i,core::deg_rad(core::rad_deg(i)));
 }
 

@@ -45,7 +45,7 @@ ToggleAction::ToggleAction(rcstr text1_, rcstr text2_, rcstr tip1_, rcstr tip2_,
 : super(text1_,tip1_,iconFile,parent), text1(text1_), text2(text2_), tip1(tip1_), tip2(tip2_) {
   setCheckable(true);
 
-  connect(this,&thisCls::toggled,[this](bool on) {
+  connect(this,&thisClass::toggled,[this](bool on) {
     setText(on ? text2 : text1);
     setToolTip(on ? tip2 : tip1);
   });
@@ -198,12 +198,12 @@ void TheHub::configActions() {
   actReflectionPeak->setEnabled(false);
   actReflectionWidth->setEnabled(false);
 
-  connect(this, &thisCls::correctionEnabled, [this](bool on) {
+  connect(this, &thisClass::correctionEnabled, [this](bool on) {
     actImagesEnableCorr->setChecked(on);
     actImagesEnableCorr->setEnabled(hasCorrFile());
   });
 
-  connect(this, &thisCls::fileSelected, this, [this](core::shp_File file) {
+  connect(this, &thisClass::fileSelected, this, [this](core::shp_File file) {
     actRemoveFile->setEnabled(!file.isNull());
   });
 
