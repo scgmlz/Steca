@@ -35,12 +35,12 @@ qreal Dataset::getNumericalAttributeValue(eAttributes const tag) const {
   case MOTOR_X:       return motorXT;
   case MOTOR_Y:       return motorYT;
   case MOTOR_Z:       return motorZT;
-  case MOTOR_OMG:     return motorOmg; 
-  case MOTOR_TTH:     return motorTth; 
-  case MOTOR_PHI:     return motorPhi; 
-  case MOTOR_CHI:     return motorChi; 
-  case MOTOR_PST:     return motorPST; 
-  case MOTOR_SST:     return motorSST; 
+  case MOTOR_OMG:     return motorOmg;
+  case MOTOR_TTH:     return motorTth;
+  case MOTOR_PHI:     return motorPhi;
+  case MOTOR_CHI:     return motorChi;
+  case MOTOR_PST:     return motorPST;
+  case MOTOR_SST:     return motorSST;
   case MOTOR_OMGM:    return motorOMGM;
   case MON:           return mon;
   case DELTA_TIME:    return deltaTime;

@@ -190,17 +190,20 @@ int foo(int n) {
 
 - Classes: camel case, begin with uppercase.
 - Variables: camel case, begin with lowercase. Descriptive names, the longer the
-  scope and life span, the longer the name. Permissible one-two-three letter
-  names, if established or obvious meaning: `i`, `n`, `x`, `y`, `min`, `max`,
-  `res` (result), `val` (value), `msg` (message),
-  `add`, `rem` (remove), `del` (delete), `fun` (that's what we have;
-  kidding, function) etc.
+  scope and life span, the longer the name.
+- Permissible one-letter names: `i`, `n`, `x`, `y` etc.
+- Permissible two-letter names: `sz` (size)
+- Permissible three-letter names (or parts of names):
+  `min`, `max`, `res` (result), `val` (value), `msg` (message), `add`,
+  `rem` (remove), `del` (delete), `fun` (that's what we have; kidding, function)
+  etc.
 - Plurals: name classes and variables of collection (list, vector, etc.) types in plural
   form (`Range range`, `Ranges ranges`)
 
 ### member variables
   - no need to prefix member variables (with m_ and such)
   - no need to mark overriden virtual methods as `virtual`
+    (nor `override`)
 
 ## code
 
@@ -309,3 +312,9 @@ Use `typedef` to type-define types (globally). Use `using` for local-scope alias
 
 Be careful with `auto` (copy) v. `auto &` (reference).
 Also use `auto const&` to make the point.
+
+## class getter methods
+
+Name getSomething() if they must calculate that something,
+or if they should be used with caution;
+else prefer to call plain accessors just something()

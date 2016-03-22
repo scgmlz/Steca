@@ -28,10 +28,10 @@ shp_File load(rcstr filePath) THROWS {
   RUNTIME_CHECK(file->numDatasets() > 0, "File " % info.filePath() % " contains no datasets");
 
   // ensure that all datasets have images of the same size
-  QSize size = file->getDataset(0)->getImage().getSize();
+  QSize size = file->getDataset(0)->getImage().size();
 
   for_i (file->numDatasets())
-    if (file->getDataset(i)->getImage().getSize() != size)
+    if (file->getDataset(i)->getImage().size() != size)
       THROW("Inconsistent image size");
 
   return file;
