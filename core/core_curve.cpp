@@ -75,8 +75,11 @@ Curve Curve::intersect(Ranges const& ranges) const {
 }
 
 void Curve::subtractFunction(fit::Function const& f) {
-  for (int i = 0; i < xs.size(); ++i)
+  yRange.invalidate();
+  for (int i = 0; i < xs.size(); ++i) {
     ys[i] -= f.y(xs[i]);
+    yRange.extend(ys[i]);
+  }
 }
 
 Curve Curve::smooth() const {

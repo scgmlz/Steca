@@ -386,7 +386,9 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   const auto cut = theHub.getCut();
   dgram = makeCurve(theHub.allLenses(*dataset),
                     cut.gamma, cut.tth_regular);
-  std::for_each(dgram.getXs().begin(), dgram.getXs().end(), core::deg_rad);
+  dgram.for_each_x([](qreal& x) {
+    x = core::deg_rad(x);
+  });
 }
 
 void Diffractogram::calcBackground() {
