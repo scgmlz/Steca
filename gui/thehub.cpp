@@ -1,12 +1,12 @@
 #include "thehub.h"
 #include "mainwin.h"
 #include "panel/fitting.h"
+#include "core_json.h"
 
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 #include <QJsonDocument>
 #include <QJsonArray>
-#include <QJsonObject>
 #include <QApplication>
 #include <QActionEvent>
 #include <QDir>
@@ -126,7 +126,9 @@ TheHub::~TheHub() {
   lastAction->setShortcut(key);
 
 void TheHub::initActions() {
-  typedef QKeySequence QKey; QAction *lastAction;
+  using QKey = QKeySequence;
+
+  QAction *lastAction;
 
   PUSH_ACTION(actAddFiles,    "Add files…","Add files",":/icon/add")                        ACTION_KEY(Qt::CTRL|Qt::Key_O)
   PUSH_ACTION(actRemoveFile,  "Remove selected file","Remove selected file",":/icon/rem")     ACTION_KEY(QKey::Delete);
@@ -357,17 +359,17 @@ void TheHub::load(QByteArray const& json) THROWS {
 
   setImageRotate(core::ImageTransform(top[KEY_TRANSFORM].toInt()));
 
-  QJsonObject bgPolynomial = top[KEY_BG_POLYNOMIAL].toObject();
-  getBgPolynomial().loadFrom(bgPolynomial);
+  core::JsonObj bgPolynomial = top[KEY_BG_POLYNOMIAL].toObject();
+  getBgPolynomial().loadJson(bgPolynomial);
 
-  QJsonObject bgRanges = top[KEY_BG_RANGES].toObject();
-  getBgRanges().loadFrom(bgRanges);
+  core::JsonObj bgRanges = top[KEY_BG_RANGES].toObject();
+  getBgRanges().loadJson(bgRanges);
 
-  QJsonObject reflectionsObj = top[KEY_REFLECTIONS].toObject();
+  core::JsonObj reflectionsObj = top[KEY_REFLECTIONS].toObject();
   int refCount = reflectionsObj[KEY_REF_COUNT].toInt();
   for_i (refCount) {
     core::shp_Reflection reflection(new core::Reflection);
-    reflection->loadFrom(reflectionsObj);
+    reflection->loadJson(reflectionsObj);
     session->getReflections().append(reflection);
   }
 
@@ -394,6 +396,7 @@ QByteArray TheHub::save() const {
     { KEY_OFFSET_X,     g.middlePixOffset.x() },
     { KEY_OFFSET_Y,     g.middlePixOffset.y() },
   };
+
   // save file path relative to location of session
   QJsonArray files;
   for_i (numFiles(false)) {
@@ -410,17 +413,15 @@ QByteArray TheHub::save() const {
     { KEY_RIGHT,  (int)ic.right   },
   };
 
-  QJsonObject bgPolynomial;
-  getBgPolynomial().saveTo(bgPolynomial);
+  core::JsonObj bgPolynomial = getBgPolynomial().saveJson();
 
-  QJsonObject bgRanges;
-  getBgRanges().saveTo(bgRanges);
+  core::JsonObj bgRanges = getBgRanges().saveJson();
 
-  QJsonObject reflections;
+  core::JsonObj reflections;
   auto ref = getReflections();
   reflections[KEY_REF_COUNT] = ref.count();
   for_i (ref.count()) {
-     ref.at(i)->saveTo(reflections);
+     reflections += ref.at(i)->saveJson();
   }
 
   QJsonObject top {

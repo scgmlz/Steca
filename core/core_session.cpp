@@ -209,7 +209,7 @@ AngleMapArray const& Session::calcAngleMap(qreal tthMitte) { // RENAME
   QPoint pixMiddle = getPixMiddle();
   auto size   = getImageSize();
 
-  if (angleMapArray.getSize() == size
+  if (angleMapArray.size() == size
       && lastCalcTthMitte==tthMitte && lastPixMiddle == pixMiddle
       && lastGeometry == geometry && lastImageCut == imageCut
       && lastImageTransform == imageTransform)

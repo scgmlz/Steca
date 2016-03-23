@@ -57,7 +57,7 @@ void saveTiffs(File const& file, rcstr fileName) THROWS {
 
     QImage tiffImage(dataset.getFile().getImageSize(),QImage::Format_RGB32);
     Image image = dataset.getImage();
-    auto size = image.getSize();
+    auto size = image.size();
 
     for_i (size.height()) {
       auto y = i;

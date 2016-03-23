@@ -47,11 +47,10 @@ private:
   PeakFunction *peakFunction;
 
 public:
-  void loadFrom(QJsonObject const&) THROWS;
-  void saveTo(QJsonObject&) const;
+  void    loadJson(rcJsonObj) THROWS;
+  JsonObj saveJson() const;
 };
 
-typedef QSharedPointer<Reflection> shp_Reflection;
 typedef QVector<shp_Reflection>    Reflections;
 
 //------------------------------------------------------------------------------

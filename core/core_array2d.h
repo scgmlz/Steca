@@ -1,6 +1,17 @@
-/** \file
- * 2D array.
- */
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_array2d.h
+//! @brief     2-D array
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
 
 #ifndef CORE_ARRAY2D_H
 #define CORE_ARRAY2D_H
@@ -14,17 +25,18 @@ namespace core {
 template<typename T>
 class Array2D {
 public:
-  Array2D(): size(0,0) {
+  /// empty array
+  Array2D(): xySize(0,0) {
   }
 
   /// 2D image size
-  QSize const& getSize() const {
-    return size;
+  QSize const& size() const {
+    return xySize;
   }
 
   /// number of elements
   uint getCount() const {
-    return size.height() * size.width();
+    return xySize.height() * xySize.width();
   }
 
   /// make empty
@@ -32,60 +44,67 @@ public:
     fill(T(),QSize(0,0));
   }
 
-  /// allocate with a value
-  void fill(T val, QSize const& size_) {
-    size = size_;
+  /// allocate and fill with a value
+  void fill(T const& val, QSize const& size) {
+    xySize = size;  // set size first
     ts.fill(val,getCount());
   }
 
-  /// allocate with a default value
+  /// allocate and fill with a default value
   void fill(QSize const& size) {
     fill(T(),size);
   }
 
-  /// Calculate the 1D index of a pixel.
+  /// Calculate the 1D index of an element. Row by row.
   uint index(uint x, uint y) const {
-    return x + y * size.width();
+    return x + y * xySize.width();
   }
 
-  /// Access
+  /// access using 1D index
   T const& at(uint i) const {
     return ts.at(i);
   }
 
+  /// access using 2D index
   T const& at(uint x,uint y) const {
     return ts.at(index(x,y));
   }
 
-  /// Access
+  /// set using 1D index
   void setAt(uint i, T const& val) {
     ts[i] = val;
   }
 
+  /// set using 2D index
   void setAt(uint x, uint y, T const& val) {
     ts[index(x,y)] = val;
   }
 
-  /// Raw access
+  /// raw access
   T* getData() {
     return ts.data();
   }
 
-  /// Raw access
+  /// raw access
   T const* getData() const {
     return ts.data();
   }
 
-  /// 1D access
-  T const& operator[](int i) const {
+  /// subscript operator
+  T& operator[](uint i) {
+    return ts[i];
+  }
+
+  /// subscript operator
+  T const& operator[](uint i) const {
     return ts[i];
   }
 
 protected:
-  QSize      size;
+  QSize      xySize;
   QVector<T> ts;
 };
 
 //------------------------------------------------------------------------------
 }
-#endif
+#endif // CORE_ARRAY2D_H

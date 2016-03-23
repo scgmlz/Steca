@@ -6,7 +6,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <Eigen/Core>
 #include <QLinkedList>
 #include <QtMath>
 
@@ -27,124 +26,6 @@ using namespace core;
   TestCoreLens test;\
 
 void TestPolefigure::testPolefigure() {
-
-}
-
-void TestPolefigure::testRotation() {
-  {
-    const qreal phiDet = 0;
-    const qreal chiDet = 0;
-
-
-    auto m1 = rotationCWz(phiDet);
-    matrix3d cmpMatrix;
-    cmpMatrix << 1 , 0 , 0,
-        0 , 1 , 0,
-        0 , 0 , 1;
-
-    QCOMPARE(m1, cmpMatrix);
-
-    auto m2 = rotationCWx(chiDet);
-    QCOMPARE(m2, cmpMatrix);
-  }
-
-}
-
-#define TEST_ANGLES(val1,val2,val3,val4,val5) \
-  const qreal omgDet = val1;   \
-  const qreal phiDet = val2;   \
-  const qreal chiDet = val3;   \
-  const qreal tthRef = val4;   \
-  const qreal gammaRef = val5; \
-
-void TestPolefigure::testCalcAlphaBeta() {
-  {
-    TEST_ANGLES(0,0,0,0,0)
-
-    qreal alpha;
-    qreal beta;
-
-    calculateAlphaBeta(omgDet,phiDet,chiDet,tthRef,gammaRef,alpha,beta);
-
-    QCOMPARE(alpha,acos(0));
-    QCOMPARE(beta,atan2(0,1));
-  }
-
-  {
-    TEST_ANGLES(M_PI/2,0,0,0,0)
-
-    qreal alpha;
-    qreal beta;
-
-    calculateAlphaBeta(omgDet,phiDet,chiDet,tthRef,gammaRef,alpha,beta);
-    // rotated = -1,0,0
-    QCOMPARE(alpha,acos(0));
-    QCOMPARE(beta,atan2(-1,0) + 2 * M_PI);
-  }
-
-  {
-    TEST_ANGLES(0,(M_PI/2),0,0,0)
-
-    qreal alpha;
-    qreal beta;
-
-    calculateAlphaBeta(omgDet,phiDet,chiDet,tthRef,gammaRef,alpha,beta);
-    // rotated = -1,0,0
-    QCOMPARE(alpha,acos(0));
-    QCOMPARE(beta,atan2(-1,0) + 2*M_PI);
-  }
-
-  {
-    TEST_ANGLES(0,0,(M_PI/2),0,0)
-
-    qreal alpha;
-    qreal beta;
-
-    calculateAlphaBeta(omgDet,phiDet,chiDet,tthRef,gammaRef,alpha,beta);
-    // rotated = 0,0,1
-    QCOMPARE(alpha,acos(1));
-    QCOMPARE(beta,atan2(0,0));
-  }
-
-  {
-    TEST_ANGLES(0,0,0,(M_PI/2),0)
-
-    qreal alpha;
-    qreal beta;
-
-    calculateAlphaBeta(omgDet,phiDet,chiDet,tthRef,gammaRef,alpha,beta);
-    // rotated = 0,-1,0
-    QCOMPARE(alpha,acos(0));
-    QCOMPARE(beta,atan2(sin(M_PI/4),cos(M_PI/4)));
-  }
-
-  {
-    TEST_ANGLES(0,0,0,0,(M_PI/2))
-
-    qreal alpha;
-    qreal beta;
-
-    calculateAlphaBeta(omgDet,phiDet,chiDet,tthRef,gammaRef,alpha,beta);
-    // rotated = 0,0,1
-    QCOMPARE(alpha,acos(1));
-    QCOMPARE(beta,atan2(0,0));
-  }
-
-  {
-    const qreal omgDet = M_PI;
-    const qreal phiDet = M_PI;
-    const qreal chiDet = M_PI;
-    const qreal tthRef = 4*M_PI;
-    const qreal gammaRef = M_PI;
-
-    qreal alpha;
-    qreal beta;
-
-    calculateAlphaBeta(omgDet,phiDet,chiDet,tthRef,gammaRef,alpha,beta);
-
-    QCOMPARE(alpha,acos(0));
-    // QCOMPARE(beta,atan2(0,1));
-  }
 
 }
 
@@ -203,7 +84,7 @@ void TestPolefigure::testGamaRange() {
     auto lensSystem = makeLensSystem(dataset, angleMapArray);
     qreal testTth = 4.0;
     Range extendRange = Range(gammaNext);
-    auto range = gammaRange(lensSystem,testTth);
+    auto range = gammaRangeAt(lensSystem,testTth);
   
     QCOMPARE(range.max, extendRange.max);
     QCOMPARE(range.min, extendRange.min);
@@ -233,7 +114,7 @@ void TestPolefigure::testGamaRange() {
     qreal testTth = 42;
     // min = gamma val minus 5  max = gamma val of last row
     Range extendRange = Range(gamma-5,gamma); 
-    auto range = gammaRange(lensSystem,testTth);
+    auto range = gammaRangeAt(lensSystem,testTth);
     
     QCOMPARE(range.max, extendRange.max);
     QCOMPARE(range.min, extendRange.min);

@@ -139,8 +139,8 @@ public:
   core::shp_LensSystem noROILenses(core::Dataset const& dataset) const;
 
 public:
-  void load(QFileInfo const&)       THROWS;
-  void load(QByteArray const& json) THROWS;
+  void load(QFileInfo const&)  THROWS;
+  void load(QByteArray const&) THROWS;
 
   void save(QFileInfo const&) const;
   QByteArray save()           const;

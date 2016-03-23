@@ -21,10 +21,10 @@ void TestApprox::testApproxFunction() {
     QVERIFY(fm.fitWithoutCheck(p,c));   // test if fitting succesfull
 
     //test if calculated parameters are aproximatly the same
-    core::fit::Function::Parameter parameter = p.getParameter(0);
-    QALMOST_COMPARE(parameter.getValue(),0.);
-    parameter = p.getParameter(1);
-    QALMOST_COMPARE(parameter.getValue(),1.);
+    core::fit::Function::Parameter parameter = p.parameterAt(0);
+    QALMOST_COMPARE(parameter.value(),0.);
+    parameter = p.parameterAt(1);
+    QALMOST_COMPARE(parameter.value(),1.);
   }
 
   { // 1.Order Function
@@ -35,10 +35,10 @@ void TestApprox::testApproxFunction() {
     c.append(3,8);
     core::fit::Polynomial p(1);
     QVERIFY(fm.fitWithoutCheck(p,c));
-    core::fit::Function::Parameter parameter = p.getParameter(0);
-    QALMOST_COMPARE(parameter.getValue(),2.);
-    parameter = p.getParameter(1);
-    QALMOST_COMPARE(parameter.getValue(),2.);
+    core::fit::Function::Parameter parameter = p.parameterAt(0);
+    QALMOST_COMPARE(parameter.value(),2.);
+    parameter = p.parameterAt(1);
+    QALMOST_COMPARE(parameter.value(),2.);
   }
 
   {// 2.Order
@@ -49,12 +49,12 @@ void TestApprox::testApproxFunction() {
     c.append(3,33);
     core::fit::Polynomial p(2);
     QVERIFY(fm.fitWithoutCheck(p,c));
-    core::fit::Function::Parameter parameter = p.getParameter(0);
-    QALMOST_COMPARE(parameter.getValue(),6.);
-    parameter = p.getParameter(1);
-    QALMOST_COMPARE(parameter.getValue(),3.);
-    parameter = p.getParameter(2);
-    QALMOST_COMPARE(parameter.getValue(),2.);
+    core::fit::Function::Parameter parameter = p.parameterAt(0);
+    QALMOST_COMPARE(parameter.value(),6.);
+    parameter = p.parameterAt(1);
+    QALMOST_COMPARE(parameter.value(),3.);
+    parameter = p.parameterAt(2);
+    QALMOST_COMPARE(parameter.value(),2.);
   }
 
   {// 3.Order
@@ -66,14 +66,14 @@ void TestApprox::testApproxFunction() {
     c.append(3,52.5);
     core::fit::Polynomial p(3);
     QVERIFY(fm.fitWithoutCheck(p,c));
-    core::fit::Function::Parameter parameter = p.getParameter(0);
-    QALMOST_COMPARE(parameter.getValue(),42.);
-    parameter = p.getParameter(1);
-    QALMOST_COMPARE(parameter.getValue(),0.2);
-    parameter = p.getParameter(2);
-    QALMOST_COMPARE(parameter.getValue(),0.8);
-    parameter = p.getParameter(3);
-    QALMOST_COMPARE(parameter.getValue(),0.1);
+    core::fit::Function::Parameter parameter = p.parameterAt(0);
+    QALMOST_COMPARE(parameter.value(),42.);
+    parameter = p.parameterAt(1);
+    QALMOST_COMPARE(parameter.value(),0.2);
+    parameter = p.parameterAt(2);
+    QALMOST_COMPARE(parameter.value(),0.8);
+    parameter = p.parameterAt(3);
+    QALMOST_COMPARE(parameter.value(),0.1);
   }
 
 //Approximation using LevenbergMarquardt
@@ -86,10 +86,10 @@ void TestApprox::testApproxFunction() {
     core::fit::Polynomial p(1);
     QVERIFY(fm.fitWithoutCheck(p,c));//test if fitting succesfull
     //test if calculated parameters are aproximatly the same
-    core::fit::Function::Parameter parameter = p.getParameter(0);
-    QALMOST_COMPARE(parameter.getValue(),0.);
-    parameter = p.getParameter(1);
-    QALMOST_COMPARE(parameter.getValue(),1.);
+    core::fit::Function::Parameter parameter = p.parameterAt(0);
+    QALMOST_COMPARE(parameter.value(),0.);
+    parameter = p.parameterAt(1);
+    QALMOST_COMPARE(parameter.value(),1.);
   }
 
   { // 1.Order Function
@@ -100,10 +100,10 @@ void TestApprox::testApproxFunction() {
     c.append(3,8);
     core::fit::Polynomial p(1);
     QVERIFY(fm.fitWithoutCheck(p,c));
-    core::fit::Function::Parameter parameter = p.getParameter(0);
-    QALMOST_COMPARE(parameter.getValue(),2.);
-    parameter = p.getParameter(1);
-    QALMOST_COMPARE(parameter.getValue(),2.);
+    core::fit::Function::Parameter parameter = p.parameterAt(0);
+    QALMOST_COMPARE(parameter.value(),2.);
+    parameter = p.parameterAt(1);
+    QALMOST_COMPARE(parameter.value(),2.);
   }
 
 
@@ -115,12 +115,12 @@ void TestApprox::testApproxFunction() {
     c.append(3,33);
     core::fit::Polynomial p(2);
     QVERIFY(fm.fitWithoutCheck(p,c));
-    core::fit::Function::Parameter parameter = p.getParameter(0);
-    QALMOST_COMPARE(parameter.getValue(),6.);
-    parameter = p.getParameter(1);
-    QALMOST_COMPARE(parameter.getValue(),3.);
-    parameter = p.getParameter(2);
-    QALMOST_COMPARE(parameter.getValue(),2.);
+    core::fit::Function::Parameter parameter = p.parameterAt(0);
+    QALMOST_COMPARE(parameter.value(),6.);
+    parameter = p.parameterAt(1);
+    QALMOST_COMPARE(parameter.value(),3.);
+    parameter = p.parameterAt(2);
+    QALMOST_COMPARE(parameter.value(),2.);
   }
 
   {// 3.Order
@@ -132,14 +132,14 @@ void TestApprox::testApproxFunction() {
     c.append(3,52.5);
     core::fit::Polynomial p(3);
     QVERIFY(fm.fitWithoutCheck(p,c));
-    core::fit::Function::Parameter parameter = p.getParameter(0);
-    QALMOST_COMPARE(parameter.getValue(),42.);
-    parameter = p.getParameter(1);
-    QALMOST_COMPARE(parameter.getValue(),0.2);
-    parameter = p.getParameter(2);
-    QALMOST_COMPARE(parameter.getValue(),0.8);
-    parameter = p.getParameter(3);
-    QALMOST_COMPARE(parameter.getValue(),0.1);
+    core::fit::Function::Parameter parameter = p.parameterAt(0);
+    QALMOST_COMPARE(parameter.value(),42.);
+    parameter = p.parameterAt(1);
+    QALMOST_COMPARE(parameter.value(),0.2);
+    parameter = p.parameterAt(2);
+    QALMOST_COMPARE(parameter.value(),0.8);
+    parameter = p.parameterAt(3);
+    QALMOST_COMPARE(parameter.value(),0.1);
   }
   { // 4.Order
     core::fit::FittingLevenbergMarquardt fm;
@@ -151,16 +151,16 @@ void TestApprox::testApproxFunction() {
     c.append(4,437.2);
     core::fit::Polynomial p(4);
     QVERIFY(fm.fitWithoutCheck(p,c));
-    core::fit::Function::Parameter parameter = p.getParameter(0);
-    QALMOST_COMPARE(parameter.getValue(),42.);
-    parameter = p.getParameter(1);
-    QALMOST_COMPARE(parameter.getValue(),5.6);
-    parameter = p.getParameter(2);
-    QALMOST_COMPARE(parameter.getValue(),1.7);
-    parameter = p.getParameter(3);
-    QALMOST_COMPARE(parameter.getValue(),4.2);
-    parameter = p.getParameter(4);
-    QALMOST_COMPARE(parameter.getValue(),0.3);
+    core::fit::Function::Parameter parameter = p.parameterAt(0);
+    QALMOST_COMPARE(parameter.value(),42.);
+    parameter = p.parameterAt(1);
+    QALMOST_COMPARE(parameter.value(),5.6);
+    parameter = p.parameterAt(2);
+    QALMOST_COMPARE(parameter.value(),1.7);
+    parameter = p.parameterAt(3);
+    QALMOST_COMPARE(parameter.value(),4.2);
+    parameter = p.parameterAt(4);
+    QALMOST_COMPARE(parameter.value(),0.3);
   }
 }
 

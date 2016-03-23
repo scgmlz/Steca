@@ -2,7 +2,8 @@
 //
 //  STeCa2:    StressTexCalculator ver. 2
 //
-//! @file      core_array2d.h
+//! @file      core_json.h
+//! @brief     Json load / save helper.
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
@@ -12,13 +13,28 @@
 //
 // ************************************************************************** //
 
-#include "core_array2d.h"
+#ifndef CORE_JSON_H
+#define CORE_JSON_H
+
+#include "core_defs.h"
+#include <QJsonObject>
 
 namespace core {
 //------------------------------------------------------------------------------
 
-// nothing here
+class JsonObj: public QJsonObject {
+  SUPER(JsonObj,QJsonObject)
+public:
+  JsonObj();
+  JsonObj(QJsonObject const&);
+
+  qreal loadReal(rcstr key) const THROWS;
+  void  saveReal(rcstr key, qreal);
+
+  JsonObj& operator+= (JsonObj const&);
+  JsonObj  operator+  (JsonObj const&) const;
+};
 
 //------------------------------------------------------------------------------
 }
-// eof
+#endif // CORE_JSON_H

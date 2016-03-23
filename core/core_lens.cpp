@@ -37,7 +37,7 @@ Range PlainLens::getIntensityRange() const {
 }
 
 QSize PlainLens::getSize() const {
-  return rawImage->getSize();
+  return rawImage->size();
 }
 
 //------------------------------------------------------------------------------

@@ -1,13 +1,22 @@
-/** \file
- * Functions for data fitting (was: approximation)
- */
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_fit_functions.h
+//! @brief     Functions for data fitting
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
 
 #ifndef CORE_FIT_FUNCTIONS_H
 #define CORE_FIT_FUNCTIONS_H
 
-#include <core_types.h>
-
-class QJsonObject;
+#include "core_types.h"
 
 namespace core { namespace fit {
 //------------------------------------------------------------------------------
@@ -19,22 +28,22 @@ public:
   public:
     Parameter();
 
-    qreal getValue() const  { return value; }
-    Range getRange() const; ///< the allowed range
+    qreal value()  const  { return val; }
 
-    void setRange(qreal min,qreal max);
+    Range valueRange() const; ///< allowed range of values
+    void  setValueRange(qreal min,qreal max);
 
-    /// checks whether a new value/error pair would pass the constraints
-    bool  checkValue(qreal value, qreal error=0);
+    /// checks whether a value/error pair would pass the constraints
+    bool  checkConstraints(qreal val, qreal error=0);
     /// conditionally sets the new value/error pair
-    bool  setValue(qreal value, qreal error=0, bool force=false);
+    bool  setValue(qreal val, qreal error=0, bool force=false);
 
   public:
-    void loadFrom(QJsonObject const&) THROWS;
-    void saveTo(QJsonObject&) const;
+    void    loadJson(rcJsonObj) THROWS;
+    JsonObj saveJson() const;
 
   private:
-    qreal value;
+    qreal val;
 
     // constraints; TODO maybe not all needed?
 
@@ -44,11 +53,11 @@ public:
 
     /// maximum change allowed; NaN -> no check
     qreal maxDelta;
-    qreal maxDeltaPercent;
+    qreal maxDeltaPercent;  // REVIEW - needed?
 
     /// maximum error allowed; NaN -> no check
     qreal maxError;
-    qreal maxErrorPercent;
+    qreal maxErrorPercent;  // REVIEW - needed?
   };
 
 public:
@@ -59,9 +68,9 @@ public:
 
   virtual uint parameterCount() const   = 0;
 
-  virtual Parameter& getParameter(uint) = 0;
-  virtual Parameter const& getParameter(uint i) const {
-    return const_cast<Function*>(this)->getParameter(i);
+  virtual Parameter& parameterAt(uint) = 0;
+  virtual Parameter const& parameterAt(uint i) const {
+    return const_cast<Function*>(this)->parameterAt(i);
   }
 
   /// evaluate the function y = f(x), with given (parameterValues) or own parameters
@@ -71,9 +80,8 @@ public:
   virtual qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const = 0;
 
 public:
-  virtual void loadFrom(QJsonObject const&) THROWS;
-  virtual void saveTo(QJsonObject&) const;
-
+  virtual void    loadJson(rcJsonObj) THROWS;
+  virtual JsonObj saveJson() const;
 };
 
 #ifndef QT_NO_DEBUG
@@ -91,13 +99,13 @@ public:
 
   void setParameterCount(uint);
   uint parameterCount() const;
-  Parameter& getParameter(uint);
+  Parameter& parameterAt(uint);
 
   virtual void reset();
 
 public:
-  void loadFrom(QJsonObject const&) THROWS;
-  void saveTo(QJsonObject&) const;
+  void    loadJson(rcJsonObj) THROWS;
+  JsonObj saveJson() const;
 
 protected:
   QVector<Parameter> parameters;
@@ -119,14 +127,14 @@ public:
 
   /// aggregate parameter list for all added functions
   uint parameterCount() const;
-  Parameter& getParameter(uint);
+  Parameter& parameterAt(uint);
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
 public:
-  void loadFrom(QJsonObject const&) THROWS;
-  void saveTo(QJsonObject&) const;
+  void    loadJson(rcJsonObj) THROWS;
+  JsonObj saveJson() const;
 
 protected:
   /// summed functions
@@ -148,15 +156,15 @@ class Polynomial: public SimpleFunction {
 public:
   Polynomial(uint degree = 0);
 
-  uint getDegree() const;
+  uint degree() const;
   void setDegree(uint);
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
 public:
-  void loadFrom(QJsonObject const&) THROWS;
-  void saveTo(QJsonObject&) const;
+  void    loadJson(rcJsonObj) THROWS;
+  JsonObj saveJson() const;
 };
 
 //------------------------------------------------------------------------------
@@ -188,8 +196,8 @@ public:
   void reset();
 
 public:
-  void loadFrom(QJsonObject const&) THROWS;
-  void saveTo(QJsonObject&) const;
+  void    loadJson(rcJsonObj) THROWS;
+  JsonObj saveJson() const;
 
 private:
   XY guessPeak; qreal guessFwhm;
@@ -216,7 +224,7 @@ public:
   qreal getFitFWHM() const override;
 
 public:
-  void saveTo(QJsonObject&) const;
+  JsonObj saveJson() const;
 };
 
 //------------------------------------------------------------------------------
@@ -240,7 +248,7 @@ public:
   qreal getFitFWHM() const override;
 
 public:
-  void saveTo(QJsonObject&) const;
+  JsonObj saveJson() const;
 };
 
 //------------------------------------------------------------------------------
@@ -264,7 +272,7 @@ public:
   qreal getFitFWHM() const override;
 
 public:
-  void saveTo(QJsonObject&) const;
+  JsonObj saveJson() const;
 };
 
 //------------------------------------------------------------------------------
@@ -288,9 +296,9 @@ public:
   qreal getFitFWHM() const override;
 
 public:
-  void saveTo(QJsonObject&) const;
+  JsonObj saveJson() const;
 };
 
 //------------------------------------------------------------------------------
 }}
-#endif
+#endif // CORE_FIT_FUNCTIONS_H

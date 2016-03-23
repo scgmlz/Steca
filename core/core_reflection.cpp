@@ -1,7 +1,6 @@
 #include "core_reflection.h"
-#include "core_types.h"
+#include "core_json.h"
 #include <QStringList>
-#include <QJsonObject>
 
 namespace core {
 
@@ -71,25 +70,22 @@ static str KEY_TYPE("type");
 static str KEY_RANGE("range");
 static str KEY_PEAK("peak");
 
-void Reflection::loadFrom(QJsonObject const& obj) THROWS {
-  range.loadFrom(obj[KEY_RANGE].toObject());
+void Reflection::loadJson(rcJsonObj obj) THROWS {
+  range.loadJson(obj[KEY_RANGE].toObject());
 
-  QJsonObject pObj = obj[KEY_PEAK].toObject();
+  JsonObj pObj = obj[KEY_PEAK].toObject();
   QScopedPointer<fit::Function> f(fit::Function::factory(pObj[KEY_TYPE].toString()));
-  f->loadFrom(pObj);
+  f->loadJson(pObj);
 
   RUNTIME_CHECK(dynamic_cast<PeakFunction*>(f.data()),"must be a peak function");
   setPeakFunction(static_cast<PeakFunction*>(f.take()));
 }
 
-void Reflection::saveTo(QJsonObject& obj) const {
-  QJsonObject rObj;
-  getRange().saveTo(rObj);
-  obj[KEY_RANGE] = rObj;
-
-  QJsonObject pObj;
-  peakFunction->saveTo(pObj);
-  obj[KEY_PEAK] = pObj;
+JsonObj Reflection::saveJson() const {
+  JsonObj obj;
+  obj[KEY_RANGE] = getRange().saveJson();
+  obj[KEY_PEAK]  = peakFunction->saveJson();
+  return obj;
 }
 
 //------------------------------------------------------------------------------

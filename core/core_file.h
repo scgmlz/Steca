@@ -44,8 +44,6 @@ public:
   qreal const calAverageDeltaTime();
 };
 
-typedef QSharedPointer<File> shp_File;
-
 //------------------------------------------------------------------------------
 }
 

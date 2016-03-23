@@ -27,7 +27,7 @@ void File::appendDataset(Dataset *dataset) {
 QSize File::getImageSize() const {
   if (datasets.isEmpty()) return QSize(0,0);
   // guaranteed that all images have the same size; simply take the first one
-  return datasets.first()->getImage().getSize();
+  return datasets.first()->getImage().size();
 }
 
 Range const& File::getRgeIntens() const {
