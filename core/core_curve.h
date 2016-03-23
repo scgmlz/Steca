@@ -33,7 +33,7 @@ public:
 
   /// Apply unary function to each x.
   template<typename T>
-  void for_each_x(T f);
+  void forEachX(T f);
   void subtractFunction(fit::Function const& f);
 
   Curve smooth()    const;
@@ -45,7 +45,7 @@ private:
 };
 
 template<typename T>
-void Curve::for_each_x(T f) {
+void Curve::forEachX(T f) {
   xRange.invalidate();
   for(auto& x : xs) {
     f(x);
