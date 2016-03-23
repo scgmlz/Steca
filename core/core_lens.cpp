@@ -268,7 +268,7 @@ DiffractionAngles NormalizationLens::getAngles(uint x, uint y) const {
 }
 
 intens_t NormalizationLens::getIntensity(uint x, uint y) const {
-  return getIntensity(x,y)*normVal;
+  return next->getIntensity(x,y)*normVal;
 }
 
 Range NormalizationLens::getIntensityRange() const {

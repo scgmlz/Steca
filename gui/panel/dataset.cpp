@@ -96,14 +96,14 @@ DatasetOptions1::DatasetOptions1(TheHub& theHub_)
   box->addLayout(vn);
 
   str_lst options = core::getStringListNormalization();
-
-  vn->addWidget(comboBox(options));
+  
+  vn->addWidget(comboNormType = comboBox(options));
   box->addStretch();
 
   connect(&theHub, &TheHub::geometryChanged, [this]() {
     setFrom(theHub);
   });
-
+  
   auto setEnabled = [this]() {
     bool on = theHub.actHasBeamOffset->isChecked();
     spinOffsetX->setEnabled(on);
@@ -131,6 +131,10 @@ DatasetOptions1::DatasetOptions1(TheHub& theHub_)
 
   connect(spinPixelSize, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
     setTo(theHub);
+  });
+  
+  connect(comboNormType, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),[this](int index) {
+    theHub.setNormType((core::Normalization)index);
   });
 
 }

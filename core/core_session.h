@@ -70,7 +70,7 @@ public:
   bool     hasCorrFile()   const  { return !getCorrFile().isNull(); }
   void     enableCorrection(bool);
   bool     isCorrEnabled() const  { return corrEnabled;             }
-
+  
 private:
   QVector<shp_File> dataFiles;
   shp_File corrFile;
@@ -153,7 +153,14 @@ private:
   Reflections     reflections;
   
 private:
-  NormalizationLens makeNormalizationLens(Dataset const& dataset);
+  QSharedPointer<Lens> makeNormalizationLens(Dataset const& dataset);
+
+public:  
+  Normalization type;
+  
+  bool isNormEnabled() const  { return (Normalization::DISABLE == type) ? false : true;}
+  void setNormType(Normalization type_);
+  
 };
 
 //------------------------------------------------------------------------------

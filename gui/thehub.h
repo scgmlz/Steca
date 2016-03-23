@@ -196,12 +196,17 @@ signals:
   void geometryChanged();
 
   void backgroundPolynomialDegree(uint);
-
+  
+  void normChanged();
+  
 public:
   // TODO instead of exposing the objects, provide an interface
   core::Ranges&           getBgRanges()     const { return session->getBgRanges();     }
   core::fit::Polynomial&  getBgPolynomial() const { return session->getBgPolynomial(); }
   core::Reflections&      getReflections()  const { return session->getReflections();  }
+  
+public:
+  void setNormType(core::Normalization type);
 };
 
 //------------------------------------------------------------------------------

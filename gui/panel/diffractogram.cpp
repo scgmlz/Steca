@@ -319,6 +319,10 @@ Diffractogram::Diffractogram(TheHub& theHub_)
     theHub.getBgPolynomial().setDegree(degree);
     renderDataset();
   });
+  
+  connect(&theHub, &TheHub::normChanged, [this]() {
+    renderDataset();
+  });
 
   // REVIEW all these connects
   connect(theHub.actBackgroundClear, &QAction::triggered, [this]() {

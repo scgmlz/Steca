@@ -47,10 +47,11 @@ public:
 private:
   QSpinBox       *spinOffsetX, *spinOffsetY;
   QDoubleSpinBox *spinDistance, *spinPixelSize;
-
+  QComboBox      *comboNormType;
+  
   // REVIEW
   void setTo(TheHub&);
-  void setFrom(TheHub&);
+  void setFrom(TheHub&); 
 };
 
 class DatasetOptions2: public BoxPanel {
@@ -65,7 +66,7 @@ signals:
 private:
   QSpinBox       *cutTop, *cutBottom, *cutLeft, *cutRight;
   QSpinBox       *spinImageScale;
-
+ 
   void setFrom(TheHub&);
 };
 

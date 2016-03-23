@@ -31,7 +31,7 @@ Session::Session()
 , imageTransform(ImageTransform::ROTATE_0)
 , angleMapArray()
 , lastCalcTthMitte(0)
-, hasNaNs(false), bgPolynomial(0) {
+, hasNaNs(false), bgPolynomial(0), type(Normalization::DISABLE) {
 }
 
 Session::~Session() {
@@ -165,6 +165,8 @@ shp_LensSystem Session::allLenses(Dataset const& dataset,
   if (globalIntensityScale)
     lenses << shp_LensSystem(
         new GlobalIntensityRangeLens(dataset.getFile().getRgeIntens()));
+  if (isNormEnabled())
+     lenses << shp_LensSystem(makeNormalizationLens(dataset));
   else
     lenses << shp_LensSystem(new IntensityRangeLens());
   return lenses;
@@ -179,6 +181,8 @@ shp_LensSystem Session::noROILenses(Dataset const& dataset,
   if (globalIntensityScale)
     lenses << shp_LensSystem(
         new GlobalIntensityRangeLens(dataset.getFile().getRgeIntens()));
+  if (isNormEnabled())
+    lenses << shp_LensSystem(makeNormalizationLens(dataset));
   else
     lenses << shp_LensSystem(new IntensityRangeLens());
   return lenses;
@@ -351,12 +355,12 @@ void Session::setImageCut(bool topLeft, bool linked, ImageCut const& imageCut_) 
   }
 }
 
-NormalizationLens Session::makeNormalizationLens(Dataset const& dataset) {
+QSharedPointer<Lens> Session::makeNormalizationLens(Dataset const& dataset) {
   File parentFile = dataset.getFile();
   qreal normVal = 0;
   qreal average = 0;
   qreal current = 1;
-  switch (Normalization::NUM_NORM_TYPES) {
+  switch (type) {
   case Normalization::DELTA_TIME:
     average = parentFile.calAverageDeltaTime();
     current = dataset.getNumericalAttributeValue(core::Dataset::eAttributes::DELTA_TIME);
@@ -366,13 +370,16 @@ NormalizationLens Session::makeNormalizationLens(Dataset const& dataset) {
     current = dataset.getNumericalAttributeValue(core::Dataset::eAttributes::MON);
     break;
   case Normalization::BG_LEVEL:
-    
     break;
   default:
     NEVER_HERE
   }
   normVal = average/current;
-  return NormalizationLens(normVal);
+  return QSharedPointer<Lens>(new NormalizationLens(normVal));
+}
+
+void Session::setNormType(Normalization type_) {
+  type = type_;
 }
 
 //------------------------------------------------------------------------------
