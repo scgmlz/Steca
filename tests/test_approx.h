@@ -8,6 +8,7 @@ class TestApprox: public QObject {
 
 private slots:
   void testApproxFunction();
+  void testPolynomial();
 };
 
 #endif

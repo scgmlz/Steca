@@ -3,9 +3,25 @@
 #include <core_curve.h>
 #include <core_fit_functions.h>
 #include <core_fit_methods.h>
+#include <core_types.h>
 
 // check if two qreals are equal for wanted precision
 #define QALMOST_COMPARE(a,b) QVERIFY(qAbs(a-b) < 1E-3)
+
+void TestApprox::testPolynomial() {
+    { // TODO move test test_core_polynomial or rename test class 
+    core::fit::FittingLevenbergMarquardt fm;
+    core::Curve curve;
+    curve.append(1,1);
+    curve.append(2,2);
+    core::fit::Polynomial p(1);
+    fm.fitWithoutCheck(p,curve);
+    core::Range r(0,2);
+    qreal average = p.calAverageValue(r);
+    
+    QALMOST_COMPARE(average,1.0);
+  }
+}
 
 void TestApprox::testApproxFunction() {
 //approximation using LinearLeastSquare

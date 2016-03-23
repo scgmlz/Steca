@@ -30,6 +30,7 @@ private slots:
   void testSensitivityCorrectionLens();
   void testIntensityRangeLens();
   void testGlobalIntensityRangeLens();
+  void testNormalizationLens();
 };
 
 

@@ -133,7 +133,19 @@ void TestCoreLens::testGlobalIntensityRangeLens() {
 
   QCOMPARE(range.max, globMax);
   QCOMPARE(range.min, globMin);
+  
+}
 
+void TestCoreLens::testNormalizationLens() {
+  { // basic Test
+    TEST_DATA
+    intens_t normVal = 2;
+    lensSystem << shp_LensSystem(new NormalizationLens(normVal));
+    intens_t val = normVal * inten;
+    intens_t valS = normVal * specialInten;
+    checkIntensity(lensSystem,val,valS,0,0);
+  }
+  
 }
 
 
