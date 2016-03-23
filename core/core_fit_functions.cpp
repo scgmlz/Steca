@@ -13,6 +13,7 @@
 //
 // ************************************************************************** //
 
+#include "core_fit_fitting.h"
 #include "core_fit_functions.h"
 #include "core_json.h"
 #include <QScopedPointer>
@@ -324,6 +325,19 @@ qreal Polynomial::y(qreal x, const qreal *parameterValues) const {
 
 qreal Polynomial::dy(qreal x, uint i, qreal const*) const {
   return pow_n(x,i);
+}
+
+qreal Polynomial::calAverageValue(Range tth) {
+  qreal average = 0;
+  qreal lower = 0;
+  qreal upper = 0;
+  for_i(parameters.count()) {
+    lower += parameterAt(i).value() * pow_n(tth.min,i+1);
+    upper += parameterAt(i).value() * pow_n(tth.max,i+1);
+  }
+  average = (1/tth.max)*(upper-lower);
+  
+  return average;
 }
 
 void Polynomial::loadJson(rcJsonObj obj) THROWS {

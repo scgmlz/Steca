@@ -1,6 +1,8 @@
 #include "core_session.h"
 #include "io/core_io.h"
 #include "core_fit_methods.h"
+#include "core_fit_fitting.h"
+#include "core_curve.h"
 #include <cmath>
 
 namespace core {
@@ -359,7 +361,7 @@ QSharedPointer<Lens> Session::makeNormalizationLens(Dataset const& dataset) {
   File parentFile = dataset.getFile();
   qreal normVal = 0;
   qreal average = 0;
-  qreal current = 1;
+  qreal current = 0;
   switch (type) {
   case Normalization::DELTA_TIME:
     average = parentFile.calAverageDeltaTime();
@@ -370,6 +372,13 @@ QSharedPointer<Lens> Session::makeNormalizationLens(Dataset const& dataset) {
     current = dataset.getNumericalAttributeValue(core::Dataset::eAttributes::MON);
     break;
   case Normalization::BG_LEVEL:
+    if (getBgRanges().isEmpty()) { 
+      average = 1; 
+      current = 1; // bg not set -> use 1 as normVal
+    } else  {
+      average = calGlobalBGAverage(dataset); 
+      current = calAverageBG(dataset); 
+    }
     break;
   default:
     NEVER_HERE
@@ -380,6 +389,33 @@ QSharedPointer<Lens> Session::makeNormalizationLens(Dataset const& dataset) {
 
 void Session::setNormType(Normalization type_) {
   type = type_;
+}
+
+qreal Session::calAverageBG(Dataset const& dataset) {
+  auto lenses = plainLens(dataset);
+  lenses << shp_LensSystem(new TransformationLens(imageTransform));
+  lenses << shp_LensSystem(new ROILens(imageCut));
+  if (corrEnabled)
+    lenses << shp_LensSystem(new SensitivityCorrectionLens(intensCorrArray));
+  
+  auto gammaCurve = makeCurve(lenses, 
+                              getCut().gamma, 
+                              getCut().tth_regular);
+  
+  fit::Polynomial bgPoly = fit::fitBackground(gammaCurve,
+                                              getBgRanges(),
+                                              getBgPolynomial().degree());
+  
+  return bgPoly.calAverageValue(getCut().tth_regular);
+}
+
+qreal Session::calGlobalBGAverage(Dataset const& dataset) {
+  File parentFile = dataset.getFile();
+  qreal val = 0;
+  for_i(parentFile.numDatasets()) {
+    val += calAverageBG(*parentFile.getDataset(i).data());
+  }
+  return val;
 }
 
 //------------------------------------------------------------------------------

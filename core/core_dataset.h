@@ -52,7 +52,7 @@ public:
   ReflectionInfo makeReflectionInfo(Session & session,
                                     Reflection const& reflection,
                                     Range const& gammaSector) const;
-
+  
 private:
   friend class File;
   File const *file; ///< the parent file

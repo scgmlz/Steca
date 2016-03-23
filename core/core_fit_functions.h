@@ -161,6 +161,7 @@ public:
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
+  qreal calAverageValue(Range tth);
 
 public:
   void    loadJson(rcJsonObj) THROWS;

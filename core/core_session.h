@@ -161,6 +161,10 @@ public:
   bool isNormEnabled() const  { return (Normalization::DISABLE == type) ? false : true;}
   void setNormType(Normalization type_);
   
+private:
+  qreal calAverageBG(Dataset const& dataset);
+  qreal calGlobalBGAverage(Dataset const& dataset);
+  
 };
 
 //------------------------------------------------------------------------------
