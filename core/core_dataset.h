@@ -5,14 +5,16 @@
 #ifndef CORE_DATASET_H
 #define CORE_DATASET_H
 
-#include "core_defs.h"
 #include "core_image.h"
+#include "core_reflection_info.h"
 #include <QMetaType>
 
 namespace core {
 //------------------------------------------------------------------------------
 
 class File;
+class Reflection;
+class Session;
 
 class Dataset final {
 private:
@@ -46,6 +48,10 @@ public:
 
   /// used for correction files
   void addIntensities(Dataset const&);
+
+  ReflectionInfo makeReflectionInfo(Session & session,
+                                    Reflection const& reflection,
+                                    Range const& gammaSector) const;
 
 private:
   friend class File;

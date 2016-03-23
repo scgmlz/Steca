@@ -1,5 +1,6 @@
 #include "test_core_lib.h"
 #include "test_core_array2d.h"
+#include "test_core_dataset.h"
 #include "test_core_image.h"
 #include "test_core_range.h"
 #include "test_core_session.h"
@@ -22,6 +23,8 @@ int main(int argc, char *argv[]) {
   TEST_SUITE(TestApprox)
   QTextStream(stdout) << "" << endl;
   TEST_SUITE(TestCoreArray2d)
+  QTextStream(stdout) << "" << endl;
+  TEST_SUITE(TestCoreDataset)
   QTextStream(stdout) << "" << endl;
   TEST_SUITE(TestCoreImage)
   QTextStream(stdout) << "" << endl;

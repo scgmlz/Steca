@@ -11,34 +11,15 @@ class Session;
 
 class Polefigure final {
 public:
-  struct Point final {
-    Point() = default;
-    Point(qreal const alpha_,
-          qreal const beta_,
-          XY const& position,
-          qreal const FWHM);
-
-    qreal alpha;
-    qreal beta;
-    XY peakPosition;
-    qreal peakFWHM;
-  };
-
-public:
   const static int NUM_BETAS = 360 / 10; // Beta bin width 10 degrees.
 
-  static Point makePoint(Session const& session,
-                         Dataset const& dataset,
-                         shp_LensSystem lenses,
-                         Reflection const& reflection,
-                         Range const& gammaStripe);
 public:
   Polefigure(Session &session,
              shp_File file,
              Reflection const& reflection_,
              qreal const alphaStep_,
              qreal const betaStep_,
-             Range gammaRge = Range());
+             Range gammaRange = Range()); // If no range specified, use the full range specified by the cuts.
 
   void generate(qreal const centerRadius,
                 qreal const centerSearchRadius,
@@ -49,7 +30,7 @@ private:
   qreal betaStep;
   QVector<qreal> FWHMs;
   QVector<XY> peakPositions;
-  QVector<QVector<Point>> points;
+  QVector<QVector<ReflectionInfo>> reflectionInfos;
   Reflection const* reflection;
 
   void searchPoints(qreal const alpha,

@@ -30,8 +30,6 @@ class TestPolefigure : public QObject {
 
 private slots:
   void testPolefigure();
-  void testRotation();
-  void testCalcAlphaBeta();
   void testInQuadrant();
   void testGamaRange();
   void testInverseDistanceWeighing();
