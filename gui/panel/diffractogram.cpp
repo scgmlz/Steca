@@ -1,6 +1,7 @@
 #include "diffractogram.h"
 #include "thehub.h"
 #include "core_fit_fitting.h"
+#include "core_types.h"
 
 namespace panel {
 //------------------------------------------------------------------------------
@@ -316,7 +317,8 @@ Diffractogram::Diffractogram(TheHub& theHub_)
   });
 
   connect(&theHub, &TheHub::backgroundPolynomialDegree, [this](uint degree) {
-    theHub.getBgPolynomial().setDegree(degree);
+    theHub.getBgPolynomialDegree() = degree; // keep session up-to-date
+    bgPolynomial.setDegree(degree);
     renderDataset();
   });
   
@@ -387,17 +389,17 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   dgram = makeCurve(theHub.allLenses(*dataset),
                     cut.gamma, cut.tth_regular);
   dgram.for_each_x([](qreal& x) {
-    x = core::deg_rad(x);
+    x = core::radToDeg(x);
   });
 }
 
 void Diffractogram::calcBackground() {
   bg.clear(); dgramBgFitted.clear();
 
-  auto &bgPolynomial = theHub.getBgPolynomial();  // not very nice REVIEW
+  auto bgPolynomialDegree = theHub.getBgPolynomialDegree();  // not very nice REVIEW
   auto &bgRanges     = theHub.getBgRanges();      // not very nice REVIEW
 
-  bgPolynomial = core::fit::fitBackground(dgram,bgRanges,bgPolynomial.degree());
+  bgPolynomial = core::fit::fitBackground(dgram,bgRanges,bgPolynomialDegree);
   auto& tth   = dgram.getXs();
   auto& inten = dgram.getYs();
   for_i (dgram.count()) {

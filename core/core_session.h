@@ -140,20 +140,19 @@ private:
   ImageCut imageCut;
 
 public:
-  Ranges&                getBgRanges()           { return bgRanges;     }
-  Ranges const&          getBgRanges() const     { return bgRanges;     }
-  fit::Polynomial&       getBgPolynomial()       { return bgPolynomial; }
-  fit::Polynomial const& getBgPolynomial() const { return bgPolynomial; }
-  Reflections&           getReflections()        { return reflections;  }
+  Ranges&                getBgRanges()                 { return bgRanges; }
+  int&                   getBgPolynomialDegree()       { return bgPolynomialDegree; }
+  int const&             getBgPolynomialDegree() const { return bgPolynomialDegree; }
+  Reflections&           getReflections()              { return reflections;        }
 
 private:
   Ranges          bgRanges;
-  fit::Polynomial bgPolynomial;
+  int             bgPolynomialDegree;
 
   Reflections     reflections;
   
 private:
-  QSharedPointer<Lens> makeNormalizationLens(Dataset const& dataset);
+  shp_LensSystem makeNormalizationLens(Dataset const& dataset);
 
 public:  
   Normalization type;

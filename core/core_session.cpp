@@ -33,7 +33,7 @@ Session::Session()
 , imageTransform(ImageTransform::ROTATE_0)
 , angleMapArray()
 , lastCalcTthMitte(0)
-, hasNaNs(false), bgPolynomial(0), type(Normalization::DISABLE) {
+, hasNaNs(false), bgPolynomialDegree(0), type(Normalization::DISABLE) {
 }
 
 Session::~Session() {
@@ -167,10 +167,10 @@ shp_LensSystem Session::allLenses(Dataset const& dataset,
   if (globalIntensityScale)
     lenses << shp_LensSystem(
         new GlobalIntensityRangeLens(dataset.getFile().getRgeIntens()));
-  if (isNormEnabled())
-     lenses << shp_LensSystem(makeNormalizationLens(dataset));
   else
     lenses << shp_LensSystem(new IntensityRangeLens());
+  if (isNormEnabled())
+     lenses << makeNormalizationLens(dataset);
   return lenses;
 }
 
@@ -183,10 +183,10 @@ shp_LensSystem Session::noROILenses(Dataset const& dataset,
   if (globalIntensityScale)
     lenses << shp_LensSystem(
         new GlobalIntensityRangeLens(dataset.getFile().getRgeIntens()));
-  if (isNormEnabled())
-    lenses << shp_LensSystem(makeNormalizationLens(dataset));
   else
     lenses << shp_LensSystem(new IntensityRangeLens());
+  if (isNormEnabled())
+    lenses << makeNormalizationLens(dataset);
   return lenses;
 }
 
@@ -357,8 +357,8 @@ void Session::setImageCut(bool topLeft, bool linked, ImageCut const& imageCut_) 
   }
 }
 
-QSharedPointer<Lens> Session::makeNormalizationLens(Dataset const& dataset) {
-  File parentFile = dataset.getFile();
+shp_LensSystem Session::makeNormalizationLens(Dataset const& dataset) {
+  auto const& parentFile = dataset.getFile();
   qreal normVal = 0;
   qreal average = 0;
   qreal current = 0;
@@ -384,7 +384,8 @@ QSharedPointer<Lens> Session::makeNormalizationLens(Dataset const& dataset) {
     NEVER_HERE
   }
   normVal = average/current;
-  return QSharedPointer<Lens>(new NormalizationLens(normVal));
+  RUNTIME_CHECK(normVal > 0, "normVal negative");
+  return shp_LensSystem(new NormalizationLens(normVal));
 }
 
 void Session::setNormType(Normalization type_) {
@@ -398,24 +399,24 @@ qreal Session::calAverageBG(Dataset const& dataset) {
   if (corrEnabled)
     lenses << shp_LensSystem(new SensitivityCorrectionLens(intensCorrArray));
   
-  auto gammaCurve = makeCurve(lenses, 
+  Curve const& gammaCurve = makeCurve(lenses, 
                               getCut().gamma, 
                               getCut().tth_regular);
   
   fit::Polynomial bgPoly = fit::fitBackground(gammaCurve,
                                               getBgRanges(),
-                                              getBgPolynomial().degree());
+                                              getBgPolynomialDegree());
   
   return bgPoly.calAverageValue(getCut().tth_regular);
 }
 
 qreal Session::calGlobalBGAverage(Dataset const& dataset) {
-  File parentFile = dataset.getFile();
+  auto const& parentFile = dataset.getFile();
   qreal val = 0;
   for_i(parentFile.numDatasets()) {
     val += calAverageBG(*parentFile.getDataset(i).data());
   }
-  return val;
+  return val/parentFile.numDatasets();
 }
 
 //------------------------------------------------------------------------------

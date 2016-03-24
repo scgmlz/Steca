@@ -331,11 +331,15 @@ qreal Polynomial::calAverageValue(Range tth) {
   qreal average = 0;
   qreal lower = 0;
   qreal upper = 0;
+  int pow   = 1;
   for_i(parameters.count()) {
-    lower += parameterAt(i).value() * pow_n(tth.min,i+1);
-    upper += parameterAt(i).value() * pow_n(tth.max,i+1);
+    auto val = parameterAt(i).value();
+    qreal powFac = (1/(qreal)pow);
+    lower += powFac*val * pow_n(tth.min,pow);
+    upper += powFac*val * pow_n(tth.max,pow);
+    pow++;
   }
-  average = (1/tth.max)*(upper-lower);
+  average = (1/tth.width())*(upper-lower);
   
   return average;
 }

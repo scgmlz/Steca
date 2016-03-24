@@ -153,7 +153,7 @@ ReflectionInfo Dataset::makeReflectionInfo(Session & session,
   const fit::Polynomial sectorBg
     = fit::fitBackground(gammaCutCurve,
                          session.getBgRanges(),
-                         session.getBgPolynomial().degree());
+                         session.getBgPolynomialDegree());
   gammaCutCurve.subtractFunction(sectorBg);
   auto peakFunction = reflection.makePeakFunction();
   fit::fitPeak(*peakFunction,

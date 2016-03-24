@@ -171,7 +171,7 @@ Polefigure::Polefigure(Session &session,
       const auto info = dataset->makeReflectionInfo(session,
                                                     *reflection,
                                                     gammaStripe);
-      const uint iBeta = qFloor(deg_rad(info.getBeta()) / NUM_BETAS);
+      const uint iBeta = qFloor(radToDeg(info.getBeta()) / NUM_BETAS);
       reflectionInfos[iBeta].push_back(info);
     }
   }
@@ -285,7 +285,7 @@ void Polefigure::searchPointsInAllQuadrants(qreal const alpha,
                                             qreal &peakOffset,
                                             qreal &peakHeight,
                                             qreal &peakFWHM) const {
-  const int iBegin = qFloor(deg_rad(beta) / Polefigure::NUM_BETAS - 1);
+  const int iBegin = qFloor(radToDeg(beta) / Polefigure::NUM_BETAS - 1);
   const int iEnd = iBegin + 3; // A magic number.
 
   for (int i = iBegin; i < iEnd; ++i) {

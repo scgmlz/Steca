@@ -359,9 +359,8 @@ void TheHub::load(QByteArray const& json) THROWS {
 
   setImageRotate(core::ImageTransform(top[KEY_TRANSFORM].toInt()));
 
-  core::JsonObj bgPolynomial = top[KEY_BG_POLYNOMIAL].toObject();
-  getBgPolynomial().loadJson(bgPolynomial);
-
+  getBgPolynomialDegree() = top[KEY_BG_POLYNOMIAL].toInt();
+  
   core::JsonObj bgRanges = top[KEY_BG_RANGES].toObject();
   getBgRanges().loadJson(bgRanges);
 
@@ -413,8 +412,6 @@ QByteArray TheHub::save() const {
     { KEY_RIGHT,  (int)ic.right   },
   };
 
-  core::JsonObj bgPolynomial = getBgPolynomial().saveJson();
-
   core::JsonObj bgRanges = getBgRanges().saveJson();
 
   core::JsonObj reflections;
@@ -430,9 +427,9 @@ QByteArray TheHub::save() const {
     { KEY_TRANSFORM,  session->getImageTransform().val  },
     { KEY_FILES,      files               },
     { KEY_CORR_FILE,  hasCorrFile() ? session->getCorrFile()->getInfo().absoluteFilePath() : "" },
-    { KEY_BG_POLYNOMIAL, bgPolynomial     },
-    { KEY_BG_RANGES,     bgRanges         },
-    { KEY_REFLECTIONS,   reflections      },
+    { KEY_BG_POLYNOMIAL, getBgPolynomialDegree() },
+    { KEY_BG_RANGES,     bgRanges                },
+    { KEY_REFLECTIONS,   reflections             },
   };
 
   return QJsonDocument(top).toJson();

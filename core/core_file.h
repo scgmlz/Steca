@@ -40,8 +40,8 @@ private:
   mutable Range rgeIntens;
 
 public:
-  qreal const calAverageMonitor();
-  qreal const calAverageDeltaTime();
+  qreal const calAverageMonitor() const;
+  qreal const calAverageDeltaTime() const;
 };
 
 //------------------------------------------------------------------------------

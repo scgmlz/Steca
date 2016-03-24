@@ -35,12 +35,6 @@ class Dataset;    typedef QSharedPointer<Dataset>     shp_Dataset;
 class Reflection; typedef QSharedPointer<Reflection>  shp_Reflection;
 
 //------------------------------------------------------------------------------
-// conversions
-
-qreal deg_rad(qreal rad);   ///< conversion: degrees <= radians
-qreal rad_deg(qreal deg);   ///< conversion: radians <= degrees
-
-//------------------------------------------------------------------------------
 /// 2D point
 
 struct XY {
@@ -130,6 +124,17 @@ public:
   JsonObj saveJson() const;
 };
 
+//------------------------------------------------------------------------------
+// conversions
+
+qreal radToDeg(qreal rad);   ///< conversion: degrees <= radians
+qreal degToRad(qreal deg);   ///< conversion: radians <= degrees
+
+Range radToDeg(Range range);
+Range degToRad(Range range);
+
+Ranges radToDeg(Ranges ranges);
+Ranges degToRad(Ranges ranges);
 //------------------------------------------------------------------------------
 
 enum class Normalization { 
