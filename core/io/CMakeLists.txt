@@ -18,7 +18,6 @@ set(caress_header_files
  )
 
 set(caress_source_files
-  Caress/ReadCaress.cpp
   Caress/raw.cpp
 )
 

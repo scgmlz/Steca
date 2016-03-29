@@ -225,6 +225,9 @@ void MainWin::show() {
 #ifdef DEVELOPMENT_REBECCA
   theHub.load(QFileInfo("/home/rebecca/SCG/STeCa-Data/1.ste"));
 #endif
+#ifdef DEVELOPMENT_JAN
+  theHub.load(QFileInfo("/home/jan/SCG/s.ste"));
+#endif
 }
 
 void MainWin::close() {

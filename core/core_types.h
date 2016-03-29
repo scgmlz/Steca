@@ -131,14 +131,9 @@ public:
 qreal radToDeg(qreal rad);   ///< conversion: degrees <= radians
 qreal degToRad(qreal deg);   ///< conversion: radians <= degrees
 
-Range radToDeg(Range range);
-Range degToRad(Range range);
-
-Ranges radToDeg(Ranges ranges);
-Ranges degToRad(Ranges ranges);
 //------------------------------------------------------------------------------
 
-enum class Normalization { 
+enum class Normalization {
   DISABLE,DELTA_TIME,MON_COUNTS,BG_LEVEL,NUM_NORM_TYPES
 };
 

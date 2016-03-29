@@ -165,9 +165,8 @@ shp_File loadCaress(rcstr filePath) THROWS {
           file->appendDataset(new Dataset(
             str::fromStdString(s_date), str::fromStdString(s_comment),
             xAxis, yAxis, zAxis,
-            degToRad(omgAxis), degToRad(tthAxis),
-            degToRad(phiAxis), degToRad(chiAxis),
-            pstAxis, sstAxis, degToRad(omgmAxis),
+            omgAxis, tthAxis, phiAxis, chiAxis,
+            pstAxis, sstAxis, omgmAxis,
             deltaMon, deltaTime,
             size, convertedIntens.constData()));
           delete[] intens; intens = NULL;

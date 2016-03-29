@@ -240,7 +240,7 @@ AngleMapArray const& Session::calcAngleMap(qreal tthMitte) { // RENAME
         qreal x = abstandInPixHorizontal * geometry.pixSize;
         qreal z = hypot(x,y);
         qreal detektorAbstandPixel = hypot(z,geometry.detectorDistance);
-        qreal tthHorAktuell = tthMitte + atan(x / geometry.detectorDistance);
+        qreal tthHorAktuell = degToRad(tthMitte) + atan(x / geometry.detectorDistance);
         qreal detektorAbstandHorPixel = hypot(x,geometry.detectorDistance);
         qreal h = cos(tthHorAktuell) * detektorAbstandHorPixel;
         qreal tthNeu = acos(h / detektorAbstandPixel);
@@ -256,12 +256,12 @@ AngleMapArray const& Session::calcAngleMap(qreal tthMitte) { // RENAME
         }
 
         // Maxima und minima setzen
-        ful.gamma.extend(gamma);
-        ful.tth_regular.extend(tthNeu);
-        ful.tth_gamma0.extend(tthHorAktuell);
+        ful.gamma.extend(radToDeg(gamma));
+        ful.tth_regular.extend(radToDeg(tthNeu));
+        ful.tth_gamma0.extend(radToDeg(tthHorAktuell));
 
         // Write angle in array
-        angleMapArray.setAt(ix, iy, DiffractionAngles(gamma,tthNeu));
+        angleMapArray.setAt(ix, iy, DiffractionAngles(radToDeg(gamma),radToDeg(tthNeu)));
       }
     }
 
@@ -365,19 +365,19 @@ shp_LensSystem Session::makeNormalizationLens(Dataset const& dataset) {
   switch (type) {
   case Normalization::DELTA_TIME:
     average = parentFile.calAverageDeltaTime();
-    current = dataset.getNumericalAttributeValue(core::Dataset::eAttributes::DELTA_TIME);
+    current = dataset.getDeltaTime();
     break;
   case Normalization::MON_COUNTS:
     average = parentFile.calAverageMonitor();
-    current = dataset.getNumericalAttributeValue(core::Dataset::eAttributes::MON);
+    current = dataset.getMon();
     break;
   case Normalization::BG_LEVEL:
-    if (getBgRanges().isEmpty()) { 
-      average = 1; 
+    if (getBgRanges().isEmpty()) {
+      average = 1;
       current = 1; // bg not set -> use 1 as normVal
     } else  {
-      average = calGlobalBGAverage(dataset); 
-      current = calAverageBG(dataset); 
+      average = calGlobalBGAverage(dataset);
+      current = calAverageBG(dataset);
     }
     break;
   default:
@@ -398,15 +398,15 @@ qreal Session::calAverageBG(Dataset const& dataset) {
   lenses << shp_LensSystem(new ROILens(imageCut));
   if (corrEnabled)
     lenses << shp_LensSystem(new SensitivityCorrectionLens(intensCorrArray));
-  
-  Curve const& gammaCurve = makeCurve(lenses, 
-                              getCut().gamma, 
+
+  Curve const& gammaCurve = makeCurve(lenses,
+                              getCut().gamma,
                               getCut().tth_regular);
-  
+
   fit::Polynomial bgPoly = fit::fitBackground(gammaCurve,
                                               getBgRanges(),
                                               getBgPolynomialDegree());
-  
+
   return bgPoly.calAverageValue(getCut().tth_regular);
 }
 

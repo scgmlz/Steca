@@ -32,8 +32,6 @@ public:
   Curve intersect(Ranges const&) const;
 
   /// Apply unary function to each x.
-  template<typename T>
-  void forEachX(T f);
   void subtractFunction(fit::Function const& f);
 
   Curve smooth()    const;
@@ -43,15 +41,6 @@ private:
   qreal_vec xs, ys;
   core::Range xRange, yRange;
 };
-
-template<typename T>
-void Curve::forEachX(T f) {
-  xRange.invalidate();
-  for(auto& x : xs) {
-    f(x);
-    xRange.extend(x);
-  }
-}
 
 using Curves = QVector<Curve>;
 

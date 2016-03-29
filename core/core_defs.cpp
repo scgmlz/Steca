@@ -30,8 +30,4 @@ void Exception::raise() const {
   throw *this;
 }
 
-class C {
-  const int * const f() const;
-};
-
 // eof

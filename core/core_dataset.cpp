@@ -35,24 +35,6 @@ Dataset::Dataset(
 , image(size_,intensities_) {
 }
 
-qreal Dataset::getNumericalAttributeValue(eAttributes const tag) const {
-  switch (tag) {
-  case MOTOR_X:       return motorXT;
-  case MOTOR_Y:       return motorYT;
-  case MOTOR_Z:       return motorZT;
-  case MOTOR_OMG:     return motorOmg;
-  case MOTOR_TTH:     return motorTth;
-  case MOTOR_PHI:     return motorPhi;
-  case MOTOR_CHI:     return motorChi;
-  case MOTOR_PST:     return motorPST;
-  case MOTOR_SST:     return motorSST;
-  case MOTOR_OMGM:    return motorOMGM;
-  case MON:           return mon;
-  case DELTA_TIME:    return deltaTime;
-  default: NEVER_HERE return qQNaN();
-  }
-}
-
 str Dataset::getAttributeStrValue(int e) const {
   qreal value = 0;
 
@@ -119,10 +101,15 @@ matrix3d rotationCCWz(const qreal angle) {
 
 // Calculates the polefigure coordinates alpha and beta with regards to
 // sample orientation and diffraction angles.
-void calculateAlphaBeta(const qreal omgDet, const qreal phiDet,
-                        const qreal chiDet,
-                        const qreal tthRef, const qreal gammaRef,
+void calculateAlphaBeta(qreal omgDet, qreal phiDet, qreal chiDet, qreal tthRef, qreal gammaRef,
                         qreal& alpha, qreal& beta) {
+
+  omgDet   = degToRad(omgDet);
+  phiDet   = degToRad(phiDet);
+  chiDet   = degToRad(chiDet);
+  tthRef   = degToRad(tthRef);
+  gammaRef = degToRad(gammaRef);
+
   // Note that the rotations here do not correspond to C. Randau's dissertation.
   // The rotations given in [J. Appl. Cryst. (2012) 44, 641-644] are incorrect.
   const vector3d rotated =   rotationCWz (phiDet)
@@ -141,6 +128,9 @@ void calculateAlphaBeta(const qreal omgDet, const qreal phiDet,
   // Keep beta between 0 and 2pi.
   if (beta < 0)
     beta += 2 * M_PI;
+
+  alpha = radToDeg(alpha);
+  beta  = radToDeg(beta);
 }
 
 ReflectionInfo Dataset::makeReflectionInfo(Session & session,
@@ -161,10 +151,7 @@ ReflectionInfo Dataset::makeReflectionInfo(Session & session,
                reflection.getRange());
   qreal alpha;
   qreal beta;
-  calculateAlphaBeta(
-    getNumericalAttributeValue(Dataset::MOTOR_OMG),
-    getNumericalAttributeValue(Dataset::MOTOR_PHI),
-    getNumericalAttributeValue(Dataset::MOTOR_CHI),
+  calculateAlphaBeta(motorOmg, motorPhi, motorChi,
     reflection.getRange().center(),
     gammaSector.center(),
     alpha,

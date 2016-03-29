@@ -320,7 +320,7 @@ Diffractogram::Diffractogram(TheHub& theHub_)
     theHub.getBgPolynomialDegree() = degree; // keep session up-to-date
     renderDataset();
   });
-  
+
   connect(&theHub, &TheHub::normChanged, [this]() {
     renderDataset();
   });
@@ -387,10 +387,6 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   const auto cut = theHub.getCut();
   dgram = makeCurve(theHub.allLenses(*dataset),
                     cut.gamma, cut.tth_regular);
-                    
-  dgram.forEachX([](qreal& x) {
-    x = core::radToDeg(x);
-  });
 }
 
 void Diffractogram::calcBackground() {

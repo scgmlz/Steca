@@ -37,7 +37,6 @@ public:
           qreal mon, qreal deltaTime,
           QSize const& size, intens_t const* intensities);
 
-  qreal getNumericalAttributeValue(eAttributes const tag) const;
   str getAttributeStrValue(int) const; // TODO uint
   qreal tthMitte() const { return motorTth; } // RENAME
 
@@ -46,13 +45,17 @@ public:
 
   Range getRgeIntens(bool global) const;
 
+  // TODO RENAME
+  qreal getMon() const { return mon; }
+  qreal getDeltaTime() const { return deltaTime; }
+
   /// used for correction files
   void addIntensities(Dataset const&);
 
   ReflectionInfo makeReflectionInfo(Session & session,
                                     Reflection const& reflection,
                                     Range const& gammaSector) const;
-  
+
 private:
   friend class File;
   File const *file; ///< the parent file
@@ -60,6 +63,7 @@ private:
   str
     date, comment;
 
+  // all stored angles in degrees
   qreal
     motorXT,  motorYT,  motorZT,  motorOmg, motorTth,
     motorPhi, motorChi, motorPST, motorSST, motorOMGM;

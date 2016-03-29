@@ -39,19 +39,19 @@ Range const& File::getRgeIntens() const {
   return rgeIntens;
 }
 
-const qreal File::calAverageMonitor() const {
+qreal File::calAverageMonitor() const {
   qreal averMon = 0;
   for (auto const& dataset: datasets) {
-    averMon += dataset->getNumericalAttributeValue(core::Dataset::eAttributes::MON);
+    averMon += dataset->getMon();
   }
   averMon = averMon/datasets.count();
   return averMon;
 }
 
-const qreal File::calAverageDeltaTime() const {
+qreal File::calAverageDeltaTime() const {
   qreal averDTime = 0;
   for (auto const& dataset: datasets) {
-    averDTime += dataset->getNumericalAttributeValue(core::Dataset::eAttributes::DELTA_TIME);
+    averDTime += dataset->getDeltaTime();
   }
   averDTime = averDTime/datasets.count();
   return averDTime;

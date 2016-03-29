@@ -262,34 +262,6 @@ qreal degToRad(qreal deg) {
   return deg * (M_PI / 180);
 }
 
-Range radToDeg(Range range) {
-  Range degRange;
-  degRange.max = radToDeg(range.max);
-  degRange.min = radToDeg(range.min);
-  return degRange;
-}
-
-Range degToRad(Range range) {
-  Range radRange;
-  radRange.max = degToRad(range.max);
-  radRange.min = degToRad(range.min);
-  return radRange;
-}
-
-Ranges radToDeg(Ranges ranges) {
-  Ranges degRanges;
-  for_i(ranges.count())
-    degRanges.add(radToDeg(ranges.at(i)));
-  return ranges;
-}
-
-Ranges degToRad(Ranges ranges) {
-  Ranges radRanges;
-  for_i(ranges.count())
-    radRanges.add(degToRad(ranges.at(i)));
-  return ranges;
-}
-
 //------------------------------------------------------------------------------
 
 str_lst getStringListNormalization() {
