@@ -273,8 +273,8 @@ intens_t NormalizationLens::getIntensity(uint x, uint y) const {
 
 Range NormalizationLens::getIntensityRange() const {
   auto range = next->getIntensityRange();
-  range.min * normVal; 
-  range.max * normVal;
+  range.min = range.min * normVal; 
+  range.max = range.max * normVal;
   return range;
 }
 

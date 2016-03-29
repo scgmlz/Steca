@@ -102,7 +102,6 @@ private:
 
   core::Curve  dgram, dgramBgFitted, bg;
   core::Curves refls;
-  core::fit::Polynomial bgPolynomial;
   bool showBgFit;
 
   uint currReflIndex;

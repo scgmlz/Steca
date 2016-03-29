@@ -553,8 +553,9 @@ void TheHub::setImageMirror(bool on) {
 }
 
 void TheHub::setNormType(core::Normalization type) {
-  session->setNormType(type); 
+  session->setNormType(type);
   emit normChanged();
+  emit geometryChanged();
 }
 
 //------------------------------------------------------------------------------

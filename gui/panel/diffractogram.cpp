@@ -318,7 +318,6 @@ Diffractogram::Diffractogram(TheHub& theHub_)
 
   connect(&theHub, &TheHub::backgroundPolynomialDegree, [this](uint degree) {
     theHub.getBgPolynomialDegree() = degree; // keep session up-to-date
-    bgPolynomial.setDegree(degree);
     renderDataset();
   });
   
@@ -399,7 +398,7 @@ void Diffractogram::calcBackground() {
   auto bgPolynomialDegree = theHub.getBgPolynomialDegree();  // not very nice REVIEW
   auto &bgRanges     = theHub.getBgRanges();      // not very nice REVIEW
 
-  bgPolynomial = core::fit::fitBackground(dgram,bgRanges,bgPolynomialDegree);
+  auto bgPolynomial = core::fit::fitBackground(dgram,bgRanges,bgPolynomialDegree);
   auto& tth   = dgram.getXs();
   auto& inten = dgram.getYs();
   for_i (dgram.count()) {
