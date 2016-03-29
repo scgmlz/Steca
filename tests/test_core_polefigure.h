@@ -25,7 +25,7 @@ template<TestContainer *container> qreal inverseDistanceWeighing(TestContainer c
                                              TestContainer const& values);
 
 
-class TestPolefigure : public QObject {
+class TestCorePolefigure : public QObject {
   Q_OBJECT
 
 private slots:

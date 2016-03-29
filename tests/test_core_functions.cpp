@@ -1,4 +1,4 @@
-#include "test_approx.h"
+#include "test_core_functions.h"
 
 #include <core_curve.h>
 #include <core_fit_functions.h>
@@ -8,7 +8,7 @@
 // check if two qreals are equal for wanted precision
 #define QALMOST_COMPARE(a,b) QVERIFY(qAbs(a-b) < 1E-3)
 
-void TestApprox::testPolynomial() {
+void TestCoreApprox::testPolynomial() {
     { // TODO move test test_core_polynomial or rename test class 
     core::fit::FittingLevenbergMarquardt fm;
     core::Curve curve;
@@ -23,7 +23,7 @@ void TestApprox::testPolynomial() {
   }
 }
 
-void TestApprox::testApproxFunction() {
+void TestCoreApprox::testApproxFunction() {
 //approximation using LinearLeastSquare
   { // simple 1.Order Function
     core::fit::FittingLinearLeastSquare fm;
@@ -179,4 +179,3 @@ void TestApprox::testApproxFunction() {
     QALMOST_COMPARE(parameter.value(),0.3);
   }
 }
-

@@ -1,4 +1,4 @@
-#include "test_link.h"
+#include "test_core_link.h"
 
 using namespace core;
 using shp_TestLinkSystem = QSharedPointer<TestLink>;
@@ -47,7 +47,7 @@ uint DummyLink3::getPriority() const {
   return PRIO;
 }
 
-void TestPriorityChain::testRecursiv1() {
+void TestCorePriorityChain::testRecursiv1() {
   auto dummyChain = shp_TestLinkSystem(new DummyLink1());
   dummyChain << shp_TestLinkSystem(new DummyLink2());
   auto testChain = shp_TestLinkSystem(new TestLink());
@@ -60,7 +60,7 @@ void TestPriorityChain::testRecursiv1() {
 
 }
 
-void TestPriorityChain::testRecursiv2() {
+void TestCorePriorityChain::testRecursiv2() {
   auto dummyChain = shp_TestLinkSystem(new DummyLink3());
   dummyChain << shp_TestLinkSystem(new DummyLink1());
 
@@ -85,7 +85,7 @@ void TestPriorityChain::testRecursiv2() {
 
 }
 
-void TestPriorityChain::testReplaceFirst() {
+void TestCorePriorityChain::testReplaceFirst() {
   { // priority of link == firstLink
     auto testChain = shp_TestLinkSystem(new TestLink());
     testChain << shp_TestLinkSystem(new TestLink());
@@ -95,7 +95,7 @@ void TestPriorityChain::testReplaceFirst() {
   }
 }
 
-void TestPriorityChain::testReOrder() {
+void TestCorePriorityChain::testReOrder() {
   // priority of link > firstLink
 
   { // replace link
@@ -143,7 +143,7 @@ void TestPriorityChain::testReOrder() {
 
 }
 
-void TestPriorityChain::testInsertAsFirst() {
+void TestCorePriorityChain::testInsertAsFirst() {
   // priority of link < firstLink
   auto testChain = shp_TestLinkSystem(new TestLink());
   testChain << shp_TestLinkSystem(new DummyLink1());
@@ -156,7 +156,7 @@ void TestPriorityChain::testInsertAsFirst() {
   QVERIFY(prev == nullptr);
 }
 
-void TestPriorityChain::testChainLink() {
+void TestCorePriorityChain::testChainLink() {
   {
     auto testChain = shp_TestLinkSystem(nullptr);
     testChain << shp_TestLinkSystem(new TestLink());
@@ -182,5 +182,3 @@ void TestPriorityChain::testChainLink() {
     QCOMPARE(prev->getPriority(),    (uint) TestLinkPriority::PRIO2);
   }
 }
-
-

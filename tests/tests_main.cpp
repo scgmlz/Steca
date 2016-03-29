@@ -5,8 +5,8 @@
 #include "test_core_range.h"
 #include "test_core_session.h"
 #include "test_save_load_json.h"
-#include "test_link.h"
-#include "test_approx.h"
+#include "test_core_link.h"
+#include "test_core_functions.h"
 #include "test_core_lens.h"
 #include "test_core_polefigure.h"
 #include <QTextStream>
@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
   QCoreApplication app(argc, argv);
 
   // test suites
-  TEST_SUITE(TestApprox)
+  TEST_SUITE(TestCoreApprox)
   QTextStream(stdout) << "" << endl;
   TEST_SUITE(TestCoreArray2d)
   QTextStream(stdout) << "" << endl;
@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
   QTextStream(stdout) << "" << endl;
   TEST_SUITE(TestCoreLens)
   QTextStream(stdout) << "" << endl;
-  TEST_SUITE(TestPriorityChain)
+  TEST_SUITE(TestCorePriorityChain)
   QTextStream(stdout) << "" << endl;
   TEST_SUITE(TestCoreLib)
   QTextStream(stdout) << "" << endl;
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
   QTextStream(stdout) << "" << endl;
   TEST_SUITE(TestSaveLoadJson)
   QTextStream(stdout) << "" << endl;
-  TEST_SUITE(TestPolefigure)
+  TEST_SUITE(TestCorePolefigure)
 }
 
 // eof

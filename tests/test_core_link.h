@@ -1,9 +1,7 @@
-#ifndef TEST_LINK_H
-#define TEST_LINK_H
+#ifndef TEST_CORE_LINK_H
+#define TEST_CORE_LINK_H
 
 #include "core_priority_chain.h"
-
-
 #include <QtTest/QtTest>
 
 //------------------------------------------------------------------------------
@@ -72,7 +70,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-class TestPriorityChain: public QObject {
+class TestCorePriorityChain: public QObject {
   Q_OBJECT
 
 private slots:
@@ -87,4 +85,4 @@ private slots:
 
 //------------------------------------------------------------------------------
 
-#endif
+#endif // TEST_CORE_LINK_H

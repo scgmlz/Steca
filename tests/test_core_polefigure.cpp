@@ -25,11 +25,11 @@ using namespace core;
   int anglePosY         = 2;\
   TestCoreLens test;\
 
-void TestPolefigure::testPolefigure() {
+void TestCorePolefigure::testPolefigure() {
 
 }
 
-void TestPolefigure::testInQuadrant() {
+void TestCorePolefigure::testInQuadrant() {
   qreal deltaAlpha;
   qreal deltaBeta;
 
@@ -68,7 +68,7 @@ void TestPolefigure::testInQuadrant() {
 
 }
 
-void TestPolefigure::testGamaRange() {
+void TestCorePolefigure::testGamaRange() {
   
   { // simple test
     TEST_DATA
@@ -128,7 +128,7 @@ void TestPolefigure::testGamaRange() {
 
 }
 
-void TestPolefigure::testInverseDistanceWeighing() {
+void TestCorePolefigure::testInverseDistanceWeighing() {
 
   TestContainer distances;
   distances.append(1.0);
