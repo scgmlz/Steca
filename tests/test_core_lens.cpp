@@ -35,14 +35,14 @@ void TestCoreLens::testTransformationLens() {
 
   QCOMPARE(lensSystem->getPriority(), (uint) Lens::PRIORITY_PLAIN);
   checkIntensity(lensSystem,inten,specialInten,0,0);
-  auto imTrans = ImageTransform(0);
-  CHECK_TRANSFORM(1,2,0);
-  CHECK_TRANSFORM(2,1,2);
-  CHECK_TRANSFORM(3,0,1);
-  CHECK_TRANSFORM(4,1,0);
-  CHECK_TRANSFORM(5,2,1);
-  CHECK_TRANSFORM(6,0,2);
-  CHECK_TRANSFORM(7,0,0);
+  auto imTrans = ImageTransform(ImageTransform::ROTATE_0);
+  CHECK_TRANSFORM(ImageTransform::ROTATE_1,2,0);
+  CHECK_TRANSFORM(ImageTransform::ROTATE_2,1,2);
+  CHECK_TRANSFORM(ImageTransform::ROTATE_3,0,1);
+  CHECK_TRANSFORM(ImageTransform::MIRROR_ROTATE_0,1,0);
+  CHECK_TRANSFORM(ImageTransform::MIRROR_ROTATE_1,2,1);
+  CHECK_TRANSFORM(ImageTransform::MIRROR_ROTATE_2,0,2);
+  CHECK_TRANSFORM(ImageTransform::MIRROR_ROTATE_3,0,0);
 
 }
 

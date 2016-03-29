@@ -1,6 +1,6 @@
 #include "test_core_polefigure.h"
 #include "core_polefigure.h"
-#include "core_polefigure.cpp"
+
 #include "test_core_lens.h"
 #include "core_dataset.h"
 
@@ -24,7 +24,7 @@ using namespace core;
   int anglePosX         = 1;\
   int anglePosY         = 2;\
   TestCoreLens test;\
-
+    
 void TestCorePolefigure::testPolefigure() {
 
 }
@@ -35,7 +35,7 @@ void TestCorePolefigure::testInQuadrant() {
 
   {
     deltaAlpha = 0; deltaBeta = 0;
-
+    
     QVERIFY(inQuadrant(Quadrant::NORTHEAST,deltaAlpha,deltaBeta));
     QVERIFY(!inQuadrant(Quadrant::NORTHWEST,deltaAlpha,deltaBeta));
     QVERIFY(!inQuadrant(Quadrant::SOUTHWEST,deltaAlpha,deltaBeta));
@@ -120,16 +120,9 @@ void TestCorePolefigure::testGamaRange() {
     QCOMPARE(range.min, extendRange.min);
   }
 
-  { // test for x-ray images
-    
-
-
-  }
-
 }
 
 void TestCorePolefigure::testInverseDistanceWeighing() {
-
   TestContainer distances;
   distances.append(1.0);
   distances.append(2.0);
