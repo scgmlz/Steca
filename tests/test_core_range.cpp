@@ -101,10 +101,10 @@ void TestCoreRange::testRange() {
         QVERIFY(t.isEmpty());
         QVERIFY(t.getXs().isEmpty());
         QVERIFY(t.getYs().isEmpty());
-        QVERIFY(qIsNaN(t.getXRange().min));
-        QVERIFY(qIsNaN(t.getXRange().max));
-        QVERIFY(qIsNaN(t.getYRange().min));
-        QVERIFY(qIsNaN(t.getYRange().max));
+        QVERIFY(qIsNaN(t.XRange().min));
+        QVERIFY(qIsNaN(t.XRange().max));
+        QVERIFY(qIsNaN(t.YRange().min));
+        QVERIFY(qIsNaN(t.YRange().max));
       }
 
       //testing if input of data is correct
@@ -112,18 +112,18 @@ void TestCoreRange::testRange() {
         t.append(tth,inten);
         QCOMPARE(t.getXs().at(0),tth);
         QCOMPARE(t.getYs().at(0),inten);
-        QCOMPARE(t.getXRange().min,tth);
-        QCOMPARE(t.getXRange().max,tth);
-        QCOMPARE(t.getYRange().min,inten);
-        QCOMPARE(t.getYRange().max,inten);
+        QCOMPARE(t.XRange().min,tth);
+        QCOMPARE(t.XRange().max,tth);
+        QCOMPARE(t.YRange().min,inten);
+        QCOMPARE(t.YRange().max,inten);
 
         t.append(2*tth,0);
         QCOMPARE(t.getXs().at(1),   2*tth);
         QCOMPARE(t.getYs().at(1),   0.);
-        QCOMPARE(t.getXRange().min, tth);
-        QCOMPARE(t.getXRange().max, 2*tth);
-        QCOMPARE(t.getYRange().min, 0.);
-        QCOMPARE(t.getYRange().max, inten);
+        QCOMPARE(t.XRange().min, tth);
+        QCOMPARE(t.XRange().max, 2*tth);
+        QCOMPARE(t.YRange().min, 0.);
+        QCOMPARE(t.YRange().max, inten);
         QVERIFY(t.isOrdered());
 
         t.clear();

@@ -61,7 +61,7 @@ public:
   void setTool(Tool);
   Tool getTool() const { return tool; }
 
-  void plot(core::Curve const&,core::Curve const&, core::Curve const&, core::Curves const&, uint);
+  void plot(core::Curve const&,core::Curve const&, core::Curve const&, core::curve_vec const&, uint);
 
   core::Range fromPixels(int,int);
 
@@ -101,7 +101,7 @@ private:
   DiffractogramPlot *plot;
 
   core::Curve  dgram, dgramBgFitted, bg;
-  core::Curves refls;
+  core::curve_vec refls;
   bool showBgFit;
 
   uint currReflIndex;

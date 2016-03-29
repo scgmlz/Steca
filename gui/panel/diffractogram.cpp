@@ -169,7 +169,7 @@ void DiffractogramPlot::setTool(Tool tool_) {
 
 void DiffractogramPlot::plot(
   core::Curve const& dgram, core::Curve const& dgramBgFitted, core::Curve const& bg,
-  core::Curves const& refls, uint currReflIndex
+  core::curve_vec const& refls, uint currReflIndex
 ) {
   if (dgram.isEmpty()) {
     xAxis->setVisible(false);
@@ -182,7 +182,7 @@ void DiffractogramPlot::plot(
     clearReflLayer();
 
   } else {
-    auto tthRange   = dgram.getXRange();
+    auto tthRange   = dgram.XRange();
     bool fixedIntensityScale = theHub.fixedIntensityScale;
 
     core::Range intenRange;
@@ -191,8 +191,8 @@ void DiffractogramPlot::plot(
       // heuristics; to calculate this precisely would require much more computation
       intenRange = core::Range(-max/30,max/3);
     } else {
-      intenRange = dgramBgFitted.getYRange();
-      intenRange.extend(dgram.getYRange());
+      intenRange = dgramBgFitted.YRange();
+      intenRange.extend(dgram.YRange());
     }
 
     xAxis->setRange(tthRange.min,tthRange.max);

@@ -3,7 +3,6 @@
 
 #include "core_lens.h"
 #include "core_dataset.h"
-#include "core_angle_map_array.h"
 
 #include <QtTest/QtTest>
 

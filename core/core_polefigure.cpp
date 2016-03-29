@@ -264,7 +264,7 @@ void Polefigure::searchPoints(qreal const alpha,
                               QList<qreal> &peakHeights,
                               QList<qreal> &FWHMs) const {
   for (int i = 0; i < 10; i++) { // Why 10 and not NUM_BETAS? Noone knows.
-    for (int j=0; j < reflectionInfos[i].size(); j++) {
+    for (int j=0; j < reflectionInfos[i].count(); j++) {
       if (inRadius(reflectionInfos[i][j].getAlpha(),
                    reflectionInfos[i][j].getBeta(),
                    alpha,
@@ -294,8 +294,8 @@ void Polefigure::searchPointsInAllQuadrants(qreal const alpha,
     if (i >= 10) j = i - 10;
     else if (i < 0) j = i + 10;
     else j = i;
-    
-    for (int k = 0; k < reflectionInfos[j].size(); ++k) {
+
+    for (int k = 0; k < reflectionInfos[j].count(); ++k) {
       const auto deltaAlpha = reflectionInfos[j][k].getAlpha() - alpha;
       const auto deltaBeta
         = calculateDeltaBeta(reflectionInfos[j][k].getBeta(), beta);

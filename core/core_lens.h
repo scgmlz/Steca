@@ -2,10 +2,14 @@
 #define CORE_LENS_H
 
 #include "core_types.h"
+#include "core_array2d.h"
 #include "core_priority_chain.h"
-#include "core_angle_map_array.h"
 
 namespace core {
+//------------------------------------------------------------------------------
+
+typedef Array2D<DiffractionAngles> AngleMapArray;
+
 //------------------------------------------------------------------------------
 
 class Lens : public ChainLink<Lens> {
@@ -155,14 +159,14 @@ class NormalizationLens final : public Lens {
   SUPER(NormalizationLens, Lens)
 public:
   NormalizationLens(qreal normVal_);
-  
+
   uint getPriority() const override;
-  
+
   DiffractionAngles getAngles(uint x, uint y) const override;
   intens_t getIntensity(uint x, uint y) const override;
   Range getIntensityRange() const override;
   QSize getSize() const override;
-  
+
 private:
   qreal normVal;
 };

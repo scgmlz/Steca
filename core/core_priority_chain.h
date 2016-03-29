@@ -29,7 +29,8 @@ private:
 };
 
 template<typename T>
-ChainLink<T>::~ChainLink() = default;
+ChainLink<T>::~ChainLink() {
+};
 
 template<typename T>
 QSharedPointer<T> ChainLink<T>::getNext() {

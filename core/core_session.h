@@ -5,7 +5,6 @@
 #ifndef CORE_SESSION_H
 #define CORE_SESSION_H
 
-#include "core_angle_map_array.h"
 #include "core_file.h"
 #include "core_fit_functions.h"
 #include "core_lens.h"
@@ -70,7 +69,7 @@ public:
   bool     hasCorrFile()   const  { return !getCorrFile().isNull(); }
   void     enableCorrection(bool);
   bool     isCorrEnabled() const  { return corrEnabled;             }
-  
+
 private:
   QVector<shp_File> dataFiles;
   shp_File corrFile;
@@ -150,20 +149,20 @@ private:
   int             bgPolynomialDegree;
 
   Reflections     reflections;
-  
+
 private:
   shp_LensSystem makeNormalizationLens(Dataset const& dataset);
 
-public:  
+public:
   Normalization type;
-  
+
   bool isNormEnabled() const  { return (Normalization::DISABLE == type) ? false : true;}
   void setNormType(Normalization type_);
-  
+
 private:
   qreal calAverageBG(Dataset const& dataset);
   qreal calGlobalBGAverage(Dataset const& dataset);
-  
+
 };
 
 //------------------------------------------------------------------------------

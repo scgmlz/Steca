@@ -8,7 +8,7 @@ namespace core {
 
 class ReflectionInfo final {
 public:
-  ReflectionInfo() = default;
+  ReflectionInfo();
   ReflectionInfo(qreal const alpha_,
                  qreal const beta_,
                  Range const& gammaRange_,

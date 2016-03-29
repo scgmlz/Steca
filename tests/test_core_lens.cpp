@@ -1,6 +1,5 @@
 #include "test_core_lens.h"
 #include "core_dataset.h"
-#include "core_angle_map_array.h"
 #include "core_image_transform.h"
 #include "core_image_cut.h"
 
@@ -133,7 +132,7 @@ void TestCoreLens::testGlobalIntensityRangeLens() {
 
   QCOMPARE(range.max, globMax);
   QCOMPARE(range.min, globMin);
-  
+
 }
 
 void TestCoreLens::testNormalizationLens() {
@@ -145,7 +144,7 @@ void TestCoreLens::testNormalizationLens() {
     intens_t valS = normVal * specialInten;
     checkIntensity(lensSystem,val,valS,0,0);
   }
-  
+
 }
 
 

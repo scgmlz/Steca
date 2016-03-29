@@ -38,8 +38,8 @@ shp_File loadCaress(rcstr filePath) THROWS {
     double prevTempTime = 0;
     int deltaMon = 0;
     int prevMon = 0;
-    
-    
+
+
     bool end = false;
     while (!end) {
       int e_number, e_type, d_type, d_number;
@@ -144,14 +144,14 @@ shp_File loadCaress(rcstr filePath) THROWS {
           prevTempTime = tempTime;
           deltaMon = mon - prevMon;
           prevMon = mon;
-          
+
           uint detRel;
 
           detRel = (uint)sqrt(imageSize);
           RUNTIME_CHECK(imageSize>0 && (uint)imageSize == detRel*detRel, "bad image size");
 
           QVector<intens_t> convertedIntens(imageSize);
-          for (int i=0; i<imageSize; ++i)
+          for_i (imageSize)
             convertedIntens[i] = intens[i];
 
           QSize size(detRel,detRel);

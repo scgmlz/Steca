@@ -3,6 +3,9 @@
 namespace core{
 //------------------------------------------------------------------------------
 
+ReflectionInfo::ReflectionInfo() {
+}
+
 ReflectionInfo::ReflectionInfo(qreal const alpha_,
                                qreal const beta_,
                                Range const& gammaRange_,

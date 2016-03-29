@@ -231,10 +231,10 @@ AngleMapArray const& Session::calcAngleMap(qreal tthMitte) { // RENAME
     ASSERT(geometry.detectorDistance>0)
 
     // Fill the Array
-    for (int iy = 0; iy < size.height(); ++iy) {
+    for_int (iy, size.height()) {
       int abstandInPixVertical = pixMiddle.y() - iy;
       qreal y = abstandInPixVertical * geometry.pixSize;
-      for (int ix = 0; ix < size.width(); ++ix) {
+      for_int (ix, size.width()) {
         // TTH des Pixels berechnen
         int abstandInPixHorizontal = - pixMiddle.x() + ix;
         qreal x = abstandInPixHorizontal * geometry.pixSize;
@@ -304,8 +304,8 @@ void Session::calcIntensCorrArray() {
   // REVIEW
   qreal sum = 0; uint n = 0;
   auto size = lenses->getSize();
-  for (int iy = 0; iy < size.height(); ++iy) {
-    for (int ix = 0; ix < size.width(); ++ix) {
+  for_int (iy, size.height()) {
+    for_int (ix, size.width()) {
       sum += lenses->getIntensity(ix, iy);
       ++n;
     }
@@ -315,8 +315,8 @@ void Session::calcIntensCorrArray() {
   qreal avg = sum / n;
 
   intensCorrArray.fill(1,imageSize);
-  for (int iy = 0; iy < size.height(); ++iy)
-    for (int ix = 0; ix < size.width(); ++ix) {
+  for_int (iy, size.height())
+    for_int (ix, size.width()) {
       auto intens = lenses->getIntensity(ix, iy);
       qreal val;
 

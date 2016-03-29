@@ -244,7 +244,7 @@ void Ranges::loadJson(rcJsonObj obj) THROWS { // REVIEW (dispose of KEY_RANGES?)
 JsonObj Ranges::saveJson() const { // REVIEW
   JsonObj obj;
 
-  obj[KEY_RANGE_COUNT] = ranges.size();
+  obj[KEY_RANGE_COUNT] = ranges.count();
   for_i (ranges.count())
     obj[KEY_RANGE_NUM.arg(i+1)] = ranges.at(i).saveJson();
   obj[KEY_RANGES] = obj;

@@ -31,7 +31,7 @@ shp_File loadTiffs(rcstr filePath) THROWS {
     str line = in.readLine();
 
     QVector<str> dataFromFile;
-    for (int i = 0; i < line.size(); ++i) {
+    for_i (line.size()) {
       dataFromFile.append(line.section(',',i,i));
     }
 

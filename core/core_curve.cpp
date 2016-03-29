@@ -1,5 +1,19 @@
-#include "core_curve.h"
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_curve.cpp
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
 
+#include "core_curve.h"
+#include "core_fit_functions.h"
 #include "core_lens.h"
 
 #include <qmath.h>
@@ -7,7 +21,8 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-Curve::Curve() = default;
+Curve::Curve() {
+}
 
 void Curve::clear() {
   xs.clear(); ys.clear();
@@ -74,21 +89,20 @@ Curve Curve::intersect(Ranges const& ranges) const {
   return res;
 }
 
-void Curve::subtractFunction(fit::Function const& f) {
-  yRange.invalidate();
-  for (int i = 0; i < xs.size(); ++i) {
-    ys[i] -= f.y(xs[i]);
-    yRange.extend(ys[i]);
-  }
-}
-
-Curve Curve::smooth() const {
-  // moving average, 3 points
+Curve Curve::subtract(fit::Function const& f) const {
   Curve res;
 
-  for (int i = 1, cnt = count(); i+1 < cnt; ++i) {
-    res.append(xs[i], (ys[i-1] + ys[i] + ys[i+1])/3.);
-  }
+  for_i (xs.count())
+    res.append(xs[i], ys[i] - f.y(xs[i]));
+
+  return res;
+}
+
+Curve Curve::smooth3() const {
+  Curve res;
+
+  for (int i = 1, cnt = count(); i + 1 < cnt; ++i)
+    res.append(xs[i], (ys[i - 1] + ys[i] + ys[i + 1]) / 3.);
 
   return res;
 }
@@ -97,6 +111,7 @@ uint Curve::maxYindex() const {
   if (isEmpty()) return 0;
 
   auto yMax = ys[0]; uint index = 0;
+
   for_i (count()) {
     auto y = ys[i];
     if (y > yMax) {
@@ -107,33 +122,33 @@ uint Curve::maxYindex() const {
   return index;
 }
 
-Curve makeCurve(shp_LensSystem const lenses,
-                Range const& gammaRange,
-                Range const& tthRange) {
-  Curve c;
+Curve makeCurve(shp_LensSystem lenses,
+    Range const& gammaRange, Range const& tthRange) {
 
-  const auto size     = lenses->getSize();
-  const uint width    = size.width();
-  const uint height   = size.height();
+  Curve res;
+
+  auto size   = lenses->getSize();
+  int width = size.width(), height = size.height();
 
   const qreal deltaTTH = tthRange.width() / width;
 
   qreal_vec intens_vec(width);
-  uint_vec counts_vec(width,0);
+  uint_vec  counts_vec(width, 0);
 
-  for(uint iy = 0; iy < height; ++iy) {
-    for(uint ix = 0; ix < width; ++ix) {
-
+  for_int (iy, height) {
+    for_int (ix, width) {
       // TODO angles can be arranged for a single loop for_i (pixTotal)
       // [last in commit 98413db71cd38ebaa54b6337a6c6e670483912ef]
-      const auto angles = lenses->getAngles(ix, iy);
+      auto angles = lenses->getAngles(ix, iy);
       if (!gammaRange.contains(angles.gamma)) continue;
 
-      const int bin = (angles.tth == tthRange.max)
-        ? width - 1 : qFloor((angles.tth - tthRange.min) / deltaTTH);
-      if (bin < 0 || static_cast<int> (width) <= bin) {
-          TR("TTH bin outside cut?")
-          continue;  // outside of the cut
+      int bin = (angles.tth == tthRange.max)
+                ? width - 1
+                : qFloor((angles.tth - tthRange.min) / deltaTTH);
+
+      if (bin < 0 || width <= bin) {
+        TR("TTH bin outside cut?")
+        continue; // outside of the cut
       }
 
       const auto in = lenses->getIntensity(ix, iy);
@@ -145,13 +160,13 @@ Curve makeCurve(shp_LensSystem const lenses,
   }
 
   for_i (width) {
-    auto in = intens_vec[i];
-    const auto cnt = counts_vec[i];
+    auto in  = intens_vec[i];
+    auto cnt = counts_vec[i];
     if (cnt > 0) in /= cnt;
-    c.append(tthRange.min + deltaTTH * i, in);
+    res.append(tthRange.min + deltaTTH * i, in);
   }
 
-  return c;
+  return res;
 }
 
 //------------------------------------------------------------------------------
