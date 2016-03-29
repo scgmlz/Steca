@@ -15,7 +15,7 @@ public:
   core::Dataset const testDataset(int width, int height, core::intens_t inten,
                                      core::intens_t specialInten,int posArray);
 
-  core::AngleMapArray const testAngleMapArray(qreal valGamma, qreal gammaS,
+  core::DiffractionAnglesMap const testAngleMapArray(qreal valGamma, qreal gammaS,
                                               qreal valTth, qreal tthS,
                                               int width, int height,
                                               int posX, int posY);

@@ -8,7 +8,11 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-typedef Array2D<DiffractionAngles> AngleMapArray;
+// TODO make smart caching
+class DiffractionAnglesMap: public Array2D<DiffractionAngles> {
+  SUPER(DiffractionAnglesMap,Array2D<DiffractionAngles>)
+public:
+};
 
 //------------------------------------------------------------------------------
 
@@ -41,7 +45,7 @@ class Image;
 class PlainLens final : public Lens {
   SUPER(PlainLens, Lens)
 public:
-  PlainLens(Image const& image, AngleMapArray const& angleMapArray);
+  PlainLens(Image const&, DiffractionAnglesMap const&);
 
   uint getPriority() const override;
 
@@ -51,7 +55,7 @@ public:
   QSize getSize() const override;
 
 private:
-  AngleMapArray const* angleMap;
+  DiffractionAnglesMap const* angleMap; // TODO dangling
   Range const* intensityRange;
   Image const* rawImage;
 };
@@ -175,8 +179,7 @@ private:
 
 class Dataset;
 
-shp_LensSystem makeLensSystem(Dataset const& dataset,
-                              AngleMapArray const& angleMap);
+shp_LensSystem makeLensSystem(Dataset const&, DiffractionAnglesMap const&);
 
 //------------------------------------------------------------------------------
 }

@@ -1,21 +1,54 @@
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_dataset.h
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
 #include "core_dataset.h"
 
 #include "core_curve.h"
 #include "core_fit_fitting.h"
 #include "core_session.h"
+#include "core_reflection_info.h"
 
 #include <Eigen/Core>
 
 namespace core {
 //------------------------------------------------------------------------------
 
-QVector<str> const Dataset::attributeTags = {
-  "date", "comment",
-  "X", "Y", "Z", "ω", "2θ", "φ", "χ",
-  "PST", "SST", "ΩM", "monitor", "Δt",
+// datase attributes
+enum {
+  attrDATE, attrCOMMENT,
+
+  attrMOTOR_XT, attrMOTOR_YT, attrMOTOR_ZT,
+  attrMOTOR_OMG, attrMOTOR_TTH, attrMOTOR_PHI, attrMOTOR_CHI,
+  attrMOTOR_PST, attrMOTOR_SST, attrMOTOR_OMGM,
+  attrDELTA_MON_COUNT, attrDELTA_TIME,
+
+  NUM_ATTRIBUTES
 };
 
-rcstr Dataset::getAttributeTag(int i) {
+static QVector<str> const attributeTags = {
+  "date", "comment",
+  "X", "Y", "Z",
+  "ω", "2θ", "φ", "χ",
+  "PST", "SST", "ΩM",
+  "Δmon", "Δt",
+};
+
+uint Dataset::numAttributes() {
+  return NUM_ATTRIBUTES;
+}
+
+rcstr Dataset::getAttributeTag(uint i) {
   return attributeTags.at(i);
 }
 
@@ -24,48 +57,61 @@ Dataset::Dataset(
   qreal motorXT_, qreal motorYT_, qreal motorZT_,
   qreal motorOmg_, qreal motorTth_, qreal motorPhi_, qreal motorChi_,
   qreal motorPST_, qreal motorSST_, qreal motorOMGM_,
-  qreal mon_, qreal deltaTime_,
+  qreal monCount_, qreal dTime_,
   QSize const& size_, intens_t const* intensities_)
 
 : file(nullptr)
 , date(date_), comment(comment_)
-, motorXT(motorXT_), motorYT(motorYT_), motorZT(motorZT_), motorOmg(motorOmg_), motorTth(motorTth_)
-, motorPhi(motorPhi_), motorChi(motorChi_), motorPST(motorPST_), motorSST(motorSST_), motorOMGM(motorOMGM_)
-, mon(mon_), deltaTime(deltaTime_)
+, motorXT(motorXT_), motorYT(motorYT_), motorZT(motorZT_)
+, motorOmg(motorOmg_), motorTth(motorTth_), motorPhi(motorPhi_), motorChi(motorChi_)
+, motorPST(motorPST_), motorSST(motorSST_), motorOMGM(motorOMGM_)
+, monCount(monCount_), dTime(dTime_)
 , image(size_,intensities_) {
 }
 
-str Dataset::getAttributeStrValue(int e) const {
+str Dataset::getAttributeStrValue(uint i) const {
   qreal value = 0;
 
-  switch (e) {
-  case DATE:        return date;
-  case COMMENT:     return comment;
+  switch (i) {
+  case attrDATE:            return date;
+  case attrCOMMENT:         return comment;
 
-  case MOTOR_X:     value = motorXT;    break;
-  case MOTOR_Y:     value = motorYT;    break;
-  case MOTOR_Z:     value = motorZT;    break;
-  case MOTOR_OMG:   value = motorOmg;   break;
-  case MOTOR_TTH:   value = motorTth;   break;
-  case MOTOR_PHI:   value = motorPhi;   break;
-  case MOTOR_CHI:   value = motorChi;   break;
-  case MOTOR_PST:   value = motorPST;   break;
-  case MOTOR_SST:   value = motorSST;   break;
-  case MOTOR_OMGM:  value = motorOMGM;  break;
-  case MON:         value = mon;        break;
-  case DELTA_TIME:  value = deltaTime;  break;
+  case attrMOTOR_XT:        value = motorXT;    break;
+  case attrMOTOR_YT:        value = motorYT;    break;
+  case attrMOTOR_ZT:        value = motorZT;    break;
+  case attrMOTOR_OMG:       value = motorOmg;   break;
+  case attrMOTOR_TTH:       value = motorTth;   break;
+  case attrMOTOR_PHI:       value = motorPhi;   break;
+  case attrMOTOR_CHI:       value = motorChi;   break;
+  case attrMOTOR_PST:       value = motorPST;   break;
+  case attrMOTOR_SST:       value = motorSST;   break;
+  case attrMOTOR_OMGM:      value = motorOMGM;  break;
+  case attrDELTA_MON_COUNT: value = monCount;   break;
+  case attrDELTA_TIME:      value = dTime;      break;
   }
 
   return QString().setNum(value);
 }
 
-File const& Dataset::getFile() const {
-  ASSERT(file)
-      return *file;
+qreal Dataset::middleTth() const {
+  return motorTth;
 }
 
-Range Dataset::getRgeIntens(bool global) const {
-  return global ? getFile().getRgeIntens() : getImage().getRgeIntens();
+qreal Dataset::monitorCount() const {
+  return monCount;
+}
+
+qreal Dataset::deltaTime() const {
+  return dTime;
+}
+
+File const& Dataset::parentFile() const {
+  ASSERT(file)
+  return *file;
+}
+
+Range Dataset::intensRange(bool global) const {
+  return global ? parentFile().intensRange() : image.intensRange();
 }
 
 void Dataset::addIntensities(Dataset const& that) {
@@ -133,7 +179,7 @@ void calculateAlphaBeta(qreal omgDet, qreal phiDet, qreal chiDet, qreal tthRef, 
   beta  = radToDeg(beta);
 }
 
-ReflectionInfo Dataset::makeReflectionInfo(Session & session,
+ReflectionInfo Dataset::makeReflectionInfo(Session const& session,
                                            Reflection const& reflection,
                                            Range const& gammaSector) const {
   auto lenses = session.allLenses(*this, false);

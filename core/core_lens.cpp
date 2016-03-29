@@ -12,10 +12,10 @@ void Lens::nextChangedImpl() {
 
 //------------------------------------------------------------------------------
 
-PlainLens::PlainLens(Image const& image, AngleMapArray const& angleMapArray)
+PlainLens::PlainLens(Image const& image, DiffractionAnglesMap const& map)
   :  Lens()
-    ,angleMap(&angleMapArray)
-    ,intensityRange(&image.getRgeIntens())
+    ,angleMap(&map)
+    ,intensityRange(&image.intensRange())
     ,rawImage(&image)
 {
 }
@@ -256,7 +256,7 @@ QSize GlobalIntensityRangeLens::getSize() const {
 //------------------------------------------------------------------------------
 
 NormalizationLens::NormalizationLens(qreal normVal_) : normVal(normVal_){
-  
+
 }
 
 uint NormalizationLens::getPriority() const {
@@ -273,7 +273,7 @@ intens_t NormalizationLens::getIntensity(uint x, uint y) const {
 
 Range NormalizationLens::getIntensityRange() const {
   auto range = next->getIntensityRange();
-  range.min = range.min * normVal; 
+  range.min = range.min * normVal;
   range.max = range.max * normVal;
   return range;
 }
@@ -285,7 +285,7 @@ QSize NormalizationLens::getSize() const {
 //------------------------------------------------------------------------------
 
 shp_LensSystem makeLensSystem(Dataset const& dataset,
-                              AngleMapArray const& angleMap) {
+                              DiffractionAnglesMap const& angleMap) {
     return shp_LensSystem(new PlainLens(dataset.getImage(), angleMap));
 }
 

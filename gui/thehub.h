@@ -157,7 +157,7 @@ public:
 
   QSize getImageSize() const;
 
-  core::AngleMapArray const& calcAngleMap(qreal tthMitte);
+  core::DiffractionAnglesMap const& calcAngleMap(qreal tthMitte);
   core::Borders const& getCut() const; // TODO somehow hide
 
   core::Geometry const& getGeometry() const;
@@ -196,15 +196,15 @@ signals:
   void geometryChanged();
 
   void backgroundPolynomialDegree(uint);
-  
+
   void normChanged();
-  
+
 public:
   // TODO instead of exposing the objects, provide an interface
   core::Ranges&       getBgRanges()           const { return session->getBgRanges(); }
   int&                getBgPolynomialDegree() const { return session->getBgPolynomialDegree(); }
   core::Reflections&  getReflections()        const { return session->getReflections();  }
-  
+
 public:
   void setNormType(core::Normalization type);
 };

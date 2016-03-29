@@ -24,7 +24,7 @@ using namespace core;
   int anglePosX         = 1;\
   int anglePosY         = 2;\
   TestCoreLens test;\
-    
+
 void TestCorePolefigure::testPolefigure() {
 
 }
@@ -35,7 +35,7 @@ void TestCorePolefigure::testInQuadrant() {
 
   {
     deltaAlpha = 0; deltaBeta = 0;
-    
+
     QVERIFY(inQuadrant(Quadrant::NORTHEAST,deltaAlpha,deltaBeta));
     QVERIFY(!inQuadrant(Quadrant::NORTHWEST,deltaAlpha,deltaBeta));
     QVERIFY(!inQuadrant(Quadrant::SOUTHWEST,deltaAlpha,deltaBeta));
@@ -69,15 +69,15 @@ void TestCorePolefigure::testInQuadrant() {
 }
 
 void TestCorePolefigure::testGamaRange() {
-  
+
   { // simple test
     TEST_DATA
     Dataset dataset = test.testDataset(width,height,inten,specialInten,posIntensArray);
-    AngleMapArray angleMapArray = test.testAngleMapArray(gamma,gammaSpecial,
+    DiffractionAnglesMap angleMapArray = test.testAngleMapArray(gamma,gammaSpecial,
                                                     tth,tthSpecial,
                                                     width,height,
                                                     anglePosX,anglePosY);
-  
+
     qreal tthNext   = 3.0;
     qreal gammaNext = 8.0;
     angleMapArray.setAt(1,0,DiffractionAngles(gammaNext,tthNext));
@@ -85,7 +85,7 @@ void TestCorePolefigure::testGamaRange() {
     qreal testTth = 4.0;
     Range extendRange = Range(gammaNext);
     auto range = gammaRangeAt(lensSystem,testTth);
-  
+
     QCOMPARE(range.max, extendRange.max);
     QCOMPARE(range.min, extendRange.min);
   }
@@ -97,10 +97,10 @@ void TestCorePolefigure::testGamaRange() {
     int posVal = 0;
     TestCoreLens test;
     Dataset dataset = test.testDataset(width,height,fillVal,fillVal,posVal);
-    AngleMapArray angleMapArray = test.testAngleMapArray(fillVal,fillVal,
+    DiffractionAnglesMap angleMapArray = test.testAngleMapArray(fillVal,fillVal,
                                                     fillVal,fillVal,
                                                     width,height,
-                                                    posVal,posVal);  
+                                                    posVal,posVal);
     qreal gamma = 5.0;
     for (int y = 0; y < height; ++y) {
       if (y > 0 && y <= 5) gamma = gamma - 1;
@@ -109,13 +109,13 @@ void TestCorePolefigure::testGamaRange() {
         angleMapArray.setAt(x,y,DiffractionAngles(gamma,(x+1)*(y+1)));
         angleMapArray.setAt(x,y,DiffractionAngles(gamma,(x+1)*(y+1)));
       }
-    } 
+    }
     auto lensSystem = makeLensSystem(dataset,angleMapArray);
     qreal testTth = 42;
     // min = gamma val minus 5  max = gamma val of last row
-    Range extendRange = Range(gamma-5,gamma); 
+    Range extendRange = Range(gamma-5,gamma);
     auto range = gammaRangeAt(lensSystem,testTth);
-    
+
     QCOMPARE(range.max, extendRange.max);
     QCOMPARE(range.min, extendRange.min);
   }

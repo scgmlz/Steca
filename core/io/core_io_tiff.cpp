@@ -55,7 +55,7 @@ void saveTiffs(File const& file, rcstr fileName) THROWS {
     Dataset dataset = *file.getDataset(i);
     str fileName = info.absoluteFilePath() + QString(".%1.tiff").arg(i,3,10,QChar('0'));
 
-    QImage tiffImage(dataset.getFile().getImageSize(),QImage::Format_RGB32);
+    QImage tiffImage(dataset.parentFile().getImageSize(),QImage::Format_RGB32);
     Image image = dataset.getImage();
     auto size = image.size();
 
@@ -71,7 +71,7 @@ void saveTiffs(File const& file, rcstr fileName) THROWS {
     tiffImage.save(fileName,"tiff");
 
     out << fileName;
-    for_i (Dataset::NUM_ATTRIBUTES) {
+    for_i (Dataset::numAttributes()) {
       out << ", " << dataset.getAttributeStrValue(i);
     }
     out << "\n"; out.flush();

@@ -3,6 +3,7 @@
 #include "core_curve.h"
 #include "core_fit_fitting.h"
 #include "core_session.h"
+#include "core_reflection_info.h"
 
 #include <algorithm>
 #include <cmath>

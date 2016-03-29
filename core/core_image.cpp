@@ -32,7 +32,7 @@ void Image::addIntensities(intens_t const* src) {
   }
 }
 
-Range const& Image::getRgeIntens() const {
+Range const& Image::intensRange() const {
   if (!rgeIntens.isValid()) {
     auto data    = getData();
     uint count   = getCount();

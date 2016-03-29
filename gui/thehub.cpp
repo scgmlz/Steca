@@ -360,7 +360,7 @@ void TheHub::load(QByteArray const& json) THROWS {
   setImageRotate(core::ImageTransform(top[KEY_TRANSFORM].toInt()));
 
   getBgPolynomialDegree() = top[KEY_BG_POLYNOMIAL].toInt();
-  
+
   core::JsonObj bgRanges = top[KEY_BG_RANGES].toObject();
   getBgRanges().loadJson(bgRanges);
 
@@ -476,7 +476,7 @@ QSize TheHub::getImageSize() const {
   return session->getImageSize();
 }
 
-core::AngleMapArray const& TheHub::calcAngleMap(qreal tthMitte) {
+core::DiffractionAnglesMap const& TheHub::calcAngleMap(qreal tthMitte) {
   return session->calcAngleMap(tthMitte);
 }
 

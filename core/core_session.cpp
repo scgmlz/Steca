@@ -158,7 +158,7 @@ QSize Session::getImageSize() const {
 }
 
 shp_LensSystem Session::allLenses(Dataset const& dataset,
-                                  bool const globalIntensityScale) {
+                                  bool const globalIntensityScale) const {
   auto lenses = plainLens(dataset);
   lenses << shp_LensSystem(new TransformationLens(imageTransform));
   lenses << shp_LensSystem(new ROILens(imageCut));
@@ -166,7 +166,7 @@ shp_LensSystem Session::allLenses(Dataset const& dataset,
     lenses << shp_LensSystem(new SensitivityCorrectionLens(intensCorrArray));
   if (globalIntensityScale)
     lenses << shp_LensSystem(
-        new GlobalIntensityRangeLens(dataset.getFile().getRgeIntens()));
+        new GlobalIntensityRangeLens(dataset.parentFile().intensRange()));
   else
     lenses << shp_LensSystem(new IntensityRangeLens());
   if (isNormEnabled())
@@ -175,14 +175,14 @@ shp_LensSystem Session::allLenses(Dataset const& dataset,
 }
 
 shp_LensSystem Session::noROILenses(Dataset const& dataset,
-                                    bool const globalIntensityScale) {
+                                    bool const globalIntensityScale) const {
   auto lenses = plainLens(dataset);
   lenses << shp_LensSystem(new TransformationLens(imageTransform));
   if (corrEnabled)
     lenses << shp_LensSystem(new SensitivityCorrectionLens(intensCorrArray));
   if (globalIntensityScale)
     lenses << shp_LensSystem(
-        new GlobalIntensityRangeLens(dataset.getFile().getRgeIntens()));
+        new GlobalIntensityRangeLens(dataset.parentFile().intensRange()));
   else
     lenses << shp_LensSystem(new IntensityRangeLens());
   if (isNormEnabled())
@@ -190,8 +190,9 @@ shp_LensSystem Session::noROILenses(Dataset const& dataset,
   return lenses;
 }
 
-shp_LensSystem Session::plainLens(Dataset const& dataset) {
-  return makeLensSystem(dataset, calcAngleMap(dataset.tthMitte()));
+shp_LensSystem Session::plainLens(Dataset const& dataset) const {
+  Session *This = const_cast<Session*>(this); // TODO remove, make calcAngleMap const
+  return makeLensSystem(dataset, This->calcAngleMap(dataset.middleTth()));
 }
 
 QPoint Session::getPixMiddle() const {
@@ -206,7 +207,7 @@ QPoint Session::getPixMiddle() const {
   return middle;
 }
 
-AngleMapArray const& Session::calcAngleMap(qreal tthMitte) { // RENAME
+DiffractionAnglesMap const& Session::calcAngleMap(qreal tthMitte) { // RENAME
   // REFACTOR
   QPoint pixMiddle = getPixMiddle();
   auto size   = getImageSize();
@@ -223,7 +224,6 @@ AngleMapArray const& Session::calcAngleMap(qreal tthMitte) { // RENAME
   lastImageTransform = imageTransform;
 
   angleMapArray.fill(size);
-  ful.invalidate();
   cut.invalidate();
 
   if (!size.isEmpty()) {
@@ -254,11 +254,6 @@ AngleMapArray const& Session::calcAngleMap(qreal tthMitte) { // RENAME
           tthNeu = -tthNeu;
           gamma  = -gamma;
         }
-
-        // Maxima und minima setzen
-        ful.gamma.extend(radToDeg(gamma));
-        ful.tth_regular.extend(radToDeg(tthNeu));
-        ful.tth_gamma0.extend(radToDeg(tthHorAktuell));
 
         // Write angle in array
         angleMapArray.setAt(ix, iy, DiffractionAngles(radToDeg(gamma),radToDeg(tthNeu)));
@@ -357,19 +352,19 @@ void Session::setImageCut(bool topLeft, bool linked, ImageCut const& imageCut_) 
   }
 }
 
-shp_LensSystem Session::makeNormalizationLens(Dataset const& dataset) {
-  auto const& parentFile = dataset.getFile();
+shp_LensSystem Session::makeNormalizationLens(Dataset const& dataset) const {
+  auto const& parentFile = dataset.parentFile();
   qreal normVal = 0;
   qreal average = 0;
   qreal current = 0;
   switch (type) {
   case Normalization::DELTA_TIME:
     average = parentFile.calAverageDeltaTime();
-    current = dataset.getDeltaTime();
+    current = dataset.deltaTime();
     break;
   case Normalization::MON_COUNTS:
     average = parentFile.calAverageMonitor();
-    current = dataset.getMon();
+    current = dataset.monitorCount();
     break;
   case Normalization::BG_LEVEL:
     if (getBgRanges().isEmpty()) {
@@ -392,7 +387,7 @@ void Session::setNormType(Normalization type_) {
   type = type_;
 }
 
-qreal Session::calAverageBG(Dataset const& dataset) {
+qreal Session::calAverageBG(Dataset const& dataset) const {
   auto lenses = plainLens(dataset);
   lenses << shp_LensSystem(new TransformationLens(imageTransform));
   lenses << shp_LensSystem(new ROILens(imageCut));
@@ -410,8 +405,8 @@ qreal Session::calAverageBG(Dataset const& dataset) {
   return bgPoly.calAverageValue(getCut().tth_regular);
 }
 
-qreal Session::calGlobalBGAverage(Dataset const& dataset) {
-  auto const& parentFile = dataset.getFile();
+qreal Session::calGlobalBGAverage(Dataset const& dataset) const {
+  auto const& parentFile = dataset.parentFile();
   qreal val = 0;
   for_i(parentFile.numDatasets()) {
     val += calAverageBG(*parentFile.getDataset(i).data());

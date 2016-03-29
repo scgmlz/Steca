@@ -30,10 +30,10 @@ QSize File::getImageSize() const {
   return datasets.first()->getImage().size();
 }
 
-Range const& File::getRgeIntens() const {
+Range const& File::intensRange() const {
   if (!rgeIntens.isValid()) {
     for (auto const& dataset: datasets)
-      rgeIntens.extend(dataset->getImage().getRgeIntens());
+      rgeIntens.extend(dataset->getImage().intensRange());
   }
 
   return rgeIntens;
@@ -42,7 +42,7 @@ Range const& File::getRgeIntens() const {
 qreal File::calAverageMonitor() const {
   qreal averMon = 0;
   for (auto const& dataset: datasets) {
-    averMon += dataset->getMon();
+    averMon += dataset->monitorCount();
   }
   averMon = averMon/datasets.count();
   return averMon;
@@ -51,7 +51,7 @@ qreal File::calAverageMonitor() const {
 qreal File::calAverageDeltaTime() const {
   qreal averDTime = 0;
   for (auto const& dataset: datasets) {
-    averDTime += dataset->getDeltaTime();
+    averDTime += dataset->deltaTime();
   }
   averDTime = averDTime/datasets.count();
   return averDTime;

@@ -8,7 +8,6 @@
 #include "core_defs.h"
 #include "core_dataset.h"
 #include <QFileInfo>
-#include <QMetaType>
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -32,7 +31,7 @@ public:
   /// all datasets contain images of the same size
   QSize getImageSize() const;
   /// the range of all intensities in all datasets
-  Range const& getRgeIntens() const;
+  Range const& intensRange() const;
 
 private:
   QFileInfo info;

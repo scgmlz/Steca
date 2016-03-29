@@ -101,15 +101,15 @@ public:
   QSize getImageSize() const;
 
   shp_LensSystem allLenses(Dataset const& dataset,
-                           bool const globalIntensityScale);
+                           bool const globalIntensityScale) const;
   shp_LensSystem noROILenses(Dataset const& dataset,
-                             bool const globalIntensityScale);
-  shp_LensSystem plainLens(Dataset const& dataset);
+                             bool const globalIntensityScale) const;
+  shp_LensSystem plainLens(Dataset const& dataset) const;
 
 private: // corrections
-  AngleMapArray angleMapArray;
+  DiffractionAnglesMap angleMapArray;
 
-  Borders        ful, cut;      // REVIEW ful - remove?
+  Borders cut;      // REVIEW ful - remove?
 
   QPoint  getPixMiddle() const;  // REVIEW / RENAME
 
@@ -120,7 +120,8 @@ private: // corrections
   ImageTransform lastImageTransform;
 
 public:
-  AngleMapArray const& calcAngleMap(qreal tthMitte);
+  // TODO move caching into DiffractionAnglesMap, make const
+  DiffractionAnglesMap const& calcAngleMap(qreal tthMitte);
 
 private:
   Array2D<qreal> intensCorrArray;  // summed corrFile intensities
@@ -140,6 +141,7 @@ private:
 
 public:
   Ranges&                getBgRanges()                 { return bgRanges; }
+  Ranges const&          getBgRanges() const           { return bgRanges; }
   int&                   getBgPolynomialDegree()       { return bgPolynomialDegree; }
   int const&             getBgPolynomialDegree() const { return bgPolynomialDegree; }
   Reflections&           getReflections()              { return reflections;        }
@@ -151,7 +153,7 @@ private:
   Reflections     reflections;
 
 private:
-  shp_LensSystem makeNormalizationLens(Dataset const& dataset);
+  shp_LensSystem makeNormalizationLens(Dataset const& dataset) const;
 
 public:
   Normalization type;
@@ -160,8 +162,8 @@ public:
   void setNormType(Normalization type_);
 
 private:
-  qreal calAverageBG(Dataset const& dataset);
-  qreal calGlobalBGAverage(Dataset const& dataset);
+  qreal calAverageBG(Dataset const& dataset) const;
+  qreal calGlobalBGAverage(Dataset const& dataset) const;
 
 };
 

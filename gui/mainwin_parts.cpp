@@ -156,7 +156,7 @@ DockDatasetInfo::DockDatasetInfo(TheHub& theHub_)
 
   scrollArea->setFrameStyle(QFrame::NoFrame);
 
-  for_i (core::Dataset::NUM_ATTRIBUTES) {
+  for_i (core::Dataset::numAttributes()) {
       InfoItem item; item.tag = core::Dataset::getAttributeTag(i);
       infoItems.append(item);
   }
@@ -164,12 +164,12 @@ DockDatasetInfo::DockDatasetInfo(TheHub& theHub_)
   info = new Info(infoItems);
   scrollArea->setWidget(info);
 
-  for_i (core::Dataset::NUM_ATTRIBUTES) {
+  for_i (core::Dataset::numAttributes()) {
       infoItems[i].cb->setToolTip("Show value in Datasets list");
   }
 
   connect(&theHub, &TheHub::datasetSelected, [this](core::shp_Dataset dataset) {
-    for_i (core::Dataset::NUM_ATTRIBUTES) {
+    for_i (core::Dataset::numAttributes()) {
       infoItems[i].text->setText(dataset ? dataset->getAttributeStrValue(i) : EMPTY_STR);
     }
   });

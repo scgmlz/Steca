@@ -34,7 +34,7 @@ public:
   void addIntensities(intens_t const*);
 
   /// Calculate the range of intensity values; cache the result
-  Range const& getRgeIntens() const;
+  Range const& intensRange() const;
 
 private:
   mutable Range rgeIntens;

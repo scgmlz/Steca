@@ -21,7 +21,7 @@
   int anglePosX         = 1;\
   int anglePosY         = 2;\
   Dataset dataset = testDataset(width,height,inten,specialInten,posIntensArray);\
-  AngleMapArray angleMapArray = testAngleMapArray(gamma,gammaSpecial,\
+  DiffractionAnglesMap angleMapArray = testAngleMapArray(gamma,gammaSpecial,\
                                                   tth,tthSpecial,\
                                                   width,height,\
                                                   anglePosX,anglePosY); \
@@ -148,12 +148,12 @@ void TestCoreLens::testNormalizationLens() {
 }
 
 
-AngleMapArray const TestCoreLens::testAngleMapArray(qreal valGamma, qreal gammaS,
+DiffractionAnglesMap const TestCoreLens::testAngleMapArray(qreal valGamma, qreal gammaS,
                                                     qreal valTth, qreal tthS,
                                                     int width, int height,
                                                     int posX, int posY) {
   QSize size(width,height);
-  AngleMapArray angleMapArray;
+  DiffractionAnglesMap angleMapArray;
   angleMapArray.fill(DiffractionAngles(valGamma,valTth),size);
   angleMapArray.setAt(posX,posY,DiffractionAngles(gammaS,tthS));
   return angleMapArray;

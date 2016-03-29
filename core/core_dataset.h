@@ -1,58 +1,61 @@
-/** \file
- * Dataset = a collection of images + metadata.
- */
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_dataset.h
+//! @brief     Dataset = a collection of images + metadata.
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
 
 #ifndef CORE_DATASET_H
 #define CORE_DATASET_H
 
 #include "core_image.h"
-#include "core_reflection_info.h"
-#include <QMetaType>
 
 namespace core {
 //------------------------------------------------------------------------------
 
 class File;
 class Reflection;
+class ReflectionInfo;
 class Session;
 
 class Dataset final {
-private:
-  static QVector<str> const attributeTags;
 public:
-  enum eAttributes {
-    DATE, COMMENT,
-    MOTOR_X, MOTOR_Y, MOTOR_Z, MOTOR_OMG, MOTOR_TTH, MOTOR_PHI, MOTOR_CHI,
-    MOTOR_PST, MOTOR_SST, MOTOR_OMGM, MON, DELTA_TIME,
-    NUM_ATTRIBUTES
-  };
-
-  static rcstr getAttributeTag(int i); // TODO uint
+  // attribute list - will be dynamic
+  static uint  numAttributes();
+  static rcstr getAttributeTag(uint);
 
 public:
   Dataset(rcstr date, rcstr comment,
           qreal motorXT,  qreal motorYT,  qreal motorZT,
           qreal motorOmg, qreal motorTth, qreal motorPhi, qreal motorChi,
           qreal motorPST, qreal motorSST, qreal motorOMGM,
-          qreal mon, qreal deltaTime,
+          qreal monCount, qreal dTime,
           QSize const& size, intens_t const* intensities);
 
-  str getAttributeStrValue(int) const; // TODO uint
-  qreal tthMitte() const { return motorTth; } // RENAME
+  str getAttributeStrValue(uint) const;
 
-  File  const& getFile()  const;
-  Image const& getImage() const { return image; }
+  qreal middleTth()     const;
+  qreal monitorCount()  const;
+  qreal deltaTime()     const;
 
-  Range getRgeIntens(bool global) const;
+  File  const& parentFile() const;
+  Image const& getImage()   const { return image; }
 
-  // TODO RENAME
-  qreal getMon() const { return mon; }
-  qreal getDeltaTime() const { return deltaTime; }
+  Range intensRange(bool global) const;
 
-  /// used for correction files
+
+  /// used for correction files if there are more than one image
   void addIntensities(Dataset const&);
 
-  ReflectionInfo makeReflectionInfo(Session & session,
+  ReflectionInfo makeReflectionInfo(Session const& session,
                                     Reflection const& reflection,
                                     Range const& gammaSector) const;
 
@@ -69,7 +72,7 @@ private:
     motorPhi, motorChi, motorPST, motorSST, motorOMGM;
 
   qreal
-    mon, deltaTime;
+    monCount, dTime;
 
   Image image;
 };
@@ -79,4 +82,4 @@ private:
 
 Q_DECLARE_METATYPE(core::shp_Dataset)
 
-#endif
+#endif // CORE_DATASET_H

@@ -187,7 +187,7 @@ void DiffractogramPlot::plot(
 
     core::Range intenRange;
     if (fixedIntensityScale) {
-      auto max = diffractogram.dataset->getRgeIntens(true).max;
+      auto max = diffractogram.dataset->intensRange(true).max;
       // heuristics; to calculate this precisely would require much more computation
       intenRange = core::Range(-max/30,max/3);
     } else {
