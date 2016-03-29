@@ -34,7 +34,12 @@ shp_File loadCaress(rcstr filePath) THROWS {
 
     std::string s_date, s_comment;
     char* c_comment;
-
+    double deltaTime = 0;
+    double prevTempTime = 0;
+    int deltaMon = 0;
+    int prevMon = 0;
+    
+    
     bool end = false;
     while (!end) {
       int e_number, e_type, d_type, d_number;
@@ -135,7 +140,11 @@ shp_File loadCaress(rcstr filePath) THROWS {
           } else {
             tempTime = (double)tim1;
           }
-
+          deltaTime = tempTime - prevTempTime;
+          prevTempTime = tempTime;
+          deltaMon = mon - prevMon;
+          prevMon = mon;
+          
           uint detRel;
 
           detRel = (uint)sqrt(imageSize);
@@ -159,7 +168,7 @@ shp_File loadCaress(rcstr filePath) THROWS {
             degToRad(omgAxis), degToRad(tthAxis),
             degToRad(phiAxis), degToRad(chiAxis),
             pstAxis, sstAxis, degToRad(omgmAxis),
-            mon, tempTime,
+            deltaMon, deltaTime,
             size, convertedIntens.constData()));
           delete[] intens; intens = NULL;
           imageSize = 0;
