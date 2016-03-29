@@ -387,7 +387,8 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   const auto cut = theHub.getCut();
   dgram = makeCurve(theHub.allLenses(*dataset),
                     cut.gamma, cut.tth_regular);
-  dgram.for_each_x([](qreal& x) {
+                    
+  dgram.forEachX([](qreal& x) {
     x = core::radToDeg(x);
   });
 }
