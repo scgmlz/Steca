@@ -17,6 +17,7 @@
 #define CORE_TYPES_H
 
 #include "core_defs.h"
+#include <QStringList>
 
 namespace core {
 //------------------------------------------------------------------------------

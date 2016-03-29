@@ -19,6 +19,7 @@
 #include <QSize>
 #include <qmath.h>
 #include <numeric>
+#include <QStringList>
 
 namespace core {
 
