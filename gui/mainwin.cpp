@@ -16,10 +16,13 @@
 #include "mainwin_parts.h"
 #include "out/out_polefigures.h"
 
+#include <QApplication>
 #include <QCloseEvent>
 #include <QMenuBar>
 #include <QStatusBar>
 #include <QSplitter>
+#include <QMessageBox>
+#include <QDate>
 
 #include <QFileDialog>
 #include <QDir>
@@ -212,13 +215,43 @@ void MainWin::connectActions() {
   notYet(theHub.actNormalizationMonitor);
   notYet(theHub.actNormalizationBackground);
 
-  notYet(theHub.actAbout);
+  onTrigger(theHub.actAbout, &thisClass::about);
 
   onToggle(theHub.actViewStatusbar, &thisClass::viewStatusbar);
 #ifndef Q_OS_OSX
   onToggle(theHub.actFullscreen, &thisClass::viewFullscreen);
 #endif
   onTrigger(theHub.actViewReset, &thisClass::viewReset);
+}
+
+void MainWin::about() {
+  str appName = qApp->applicationDisplayName();
+  str version = qApp->applicationVersion();
+
+  str title = str("About %1").arg(appName);
+  str text  = str("<h4>%1 ver. %2</h4>").arg(appName,version);
+  str info  = str(
+      "StressTexCalculator\n"
+      "\n"
+      "Copyright: Forschungszentrum Jülich GmbH %1").arg(QDate::currentDate().toString("yyyy"));
+
+  str detailed =
+      "Version 1 written by Christian Randau "
+      "(Randau, Garbe, Brokmeier, J Appl Cryst 44, 641 (2011)).\n"
+      "\n"
+      "Version 2 written by Antti Soininen, Jan Burle, Rebecca Brydon.\n";
+
+  auto box = new QMessageBox(this);
+  box->setAttribute(Qt::WA_DeleteOnClose);
+
+  box->setWindowTitle(title);
+  box->setText(text);
+  box->setInformativeText(info);
+  box->setDetailedText(detailed);
+
+  auto pm = QPixmap(":/icon/STeCa2").scaled(64,64,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+  box->setIconPixmap(pm);
+  box->exec();
 }
 
 void MainWin::show() {
@@ -291,7 +324,6 @@ void MainWin::onShow() {
 #endif
 #ifdef DEVELOPMENT_JAN
   theHub.load(QFileInfo("/home/jan/SCG/s.ste"));
-  outputPoleFigures();
 #endif
 }
 

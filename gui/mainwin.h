@@ -36,6 +36,8 @@ private:
   void connectActions();
 
 public:
+  void about();
+
   void show();
   void close();
 
