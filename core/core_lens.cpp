@@ -58,8 +58,8 @@ DiffractionAngles TransformationLens::getAngles(uint x, uint y) const {
 
 intens_t TransformationLens::getIntensity(uint x, uint y) const {
   auto s = getSize();
-  const uint w = s.width();
-  const uint h = s.height();
+  uint w = s.width();
+  uint h = s.height();
 
   switch (transform->val) {
   case ImageTransform::ROTATE_0:

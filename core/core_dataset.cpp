@@ -19,8 +19,6 @@
 #include "core_session.h"
 #include "core_reflection_info.h"
 
-#include <Eigen/Core>
-
 namespace core {
 //------------------------------------------------------------------------------
 
@@ -119,30 +117,25 @@ void Dataset::addIntensities(Dataset const& that) {
   image.addIntensities(that.image.getIntensities());
 }
 
-using matrix3d = Eigen::Matrix<qreal,3,3>;
-using vector3d = Eigen::Matrix<qreal,3,1>;
-
 // Returns a clockwise rotation matrix around the x axis.
-matrix3d rotationCWx(const qreal angle) {
-  matrix3d m;
-  m <<  1,       0,                0
-       ,0, std::cos(angle), -std::sin(angle)
-       ,0, std::sin(angle),  std::cos(angle);
-  return m;
+matrix3d rotationCWx(qreal angle) {
+  return matrix3d(1, 0,           0,
+                  0, cos(angle), -sin(angle),
+                  0, sin(angle),  cos(angle));
 }
 
 // Returns a clockwise rotation matrix around the z axis.
-matrix3d rotationCWz(const qreal angle) {
-  matrix3d m;
-  m <<   std::cos(angle), -std::sin(angle), 0
-        ,std::sin(angle),  std::cos(angle), 0
-        ,      0        ,        0        , 1;
-  return m;
+matrix3d rotationCWz(qreal angle) {
+  return matrix3d(cos(angle), -sin(angle), 0,
+                  sin(angle),  cos(angle), 0,
+                  0,           0,          1);
 }
 
 // Returns a counterclockwise rotation matrix around the z axis.
-matrix3d rotationCCWz(const qreal angle) {
-    return rotationCWz(angle).transpose();
+matrix3d rotationCCWz(qreal angle) {
+  matrix3d m = rotationCWz(angle);
+  m.transpose();
+  return m;
 }
 
 // Calculates the polefigure coordinates alpha and beta with regards to
@@ -164,8 +157,8 @@ void calculateAlphaBeta(qreal omgDet, qreal phiDet, qreal chiDet, qreal tthRef, 
                            * rotationCWx (gammaRef)
                            * rotationCCWz(tthRef / 2)
                            * vector3d(0,1,0);
-  alpha = std::acos(rotated(2,0));
-  beta  = std::atan2(rotated(0,0), rotated(1,0));
+  alpha = std::acos(rotated._2);
+  beta  = std::atan2(rotated._0, rotated._1);
   // Mirror angles.
   if (alpha > M_PI / 2) {
     alpha = std::abs(alpha - M_PI);

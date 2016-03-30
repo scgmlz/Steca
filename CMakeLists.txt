@@ -18,8 +18,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # --- Enable compiler warnings ---
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-  # -Wdeprecated-declarations turned off due to the Eigen library.
-  add_compile_options("-Wall" "-Wno-deprecated-declarations")
+  add_compile_options("-Wall")
 endif()
 
 # --- Check for required packages ---

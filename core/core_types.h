@@ -141,5 +141,28 @@ enum class Normalization {
 str_lst getStringListNormalization();
 
 //------------------------------------------------------------------------------
+
+struct vector3d {
+  qreal _0, _1, _2;
+
+  vector3d(qreal,qreal,qreal);
+};
+
+struct matrix3d {
+  qreal _00, _01, _02,
+        _10, _11, _12,
+        _20, _21, _22;
+
+  matrix3d(qreal,qreal,qreal,qreal,qreal,qreal,qreal,qreal,qreal);
+
+  void transpose();
+
+  matrix3d operator *(matrix3d const&) const;
+  vector3d operator *(vector3d const&) const;
+
+  bool operator ==(matrix3d const&) const;
+};
+
+//------------------------------------------------------------------------------
 }
 #endif // CORE_TYPES_H

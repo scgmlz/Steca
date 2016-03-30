@@ -13,7 +13,7 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-qreal calculateDeltaBeta(const qreal beta1, const qreal beta2) noexcept {
+qreal calculateDeltaBeta(qreal beta1, qreal beta2) noexcept {
   qreal deltaBeta = beta1 - beta2;
   qreal tempDelta = deltaBeta - 2 * M_PI;
   if (std::abs(tempDelta) < std::abs(deltaBeta)) deltaBeta = tempDelta;
@@ -23,18 +23,18 @@ qreal calculateDeltaBeta(const qreal beta1, const qreal beta2) noexcept {
 }
 
 // Calculates the angle between two points on a unit sphere.
-qreal angle(const qreal alpha1, const qreal alpha2,
-            const qreal deltaBeta) noexcept {
+qreal angle(qreal alpha1, qreal alpha2,
+            qreal deltaBeta) noexcept {
   return std::acos(
-      std::cos(alpha1) * std::cos(alpha2)
-    + std::sin(alpha1) * std::sin(alpha2) * std::cos(deltaBeta)
+      cos(alpha1) * cos(alpha2)
+    + sin(alpha1) * sin(alpha2) * cos(deltaBeta)
   );
 }
 
 // Checks if (alpha,beta) is inside radius from (centerAlpha,centerBeta).
-bool inRadius(const qreal alpha, const qreal beta,
-              const qreal centerAlpha, const qreal centerBeta,
-              const qreal radius) noexcept {
+bool inRadius(qreal alpha, qreal beta,
+              qreal centerAlpha, qreal centerBeta,
+              qreal radius) noexcept {
   return   std::abs(angle(alpha, centerAlpha, calculateDeltaBeta(beta, centerBeta)))
          < radius;
 }
@@ -49,8 +49,8 @@ namespace Quadrant {
   };
 }
 
-bool inQuadrant(const int quadrant,
-                const qreal deltaAlpha, const qreal deltaBeta) noexcept {
+bool inQuadrant(int quadrant,
+                qreal deltaAlpha, qreal deltaBeta) noexcept {
   switch (quadrant) {
   case Quadrant::NORTHEAST:
     return deltaAlpha >= 0 && deltaBeta >= 0;
@@ -104,7 +104,7 @@ qreal inverseDistanceWeighing(Container const& distances,
                 "values size should be 4");
   Container inverseDistances;
   for (const auto& d : distances) inverseDistances.push_back(1 / d);
-  const qreal inverseDistanceSum
+  qreal const inverseDistanceSum
     = std::accumulate(inverseDistances.cbegin(), inverseDistances.cend(), 0.0);
   return std::inner_product(values.begin(),
                             values.end(),
@@ -172,16 +172,16 @@ Polefigure::Polefigure(Session &session,
       const auto info = dataset->makeReflectionInfo(session,
                                                     *reflection,
                                                     gammaStripe);
-      const uint iBeta = qFloor(radToDeg(info.getBeta()) / NUM_BETAS);
+      uint iBeta = qFloor(radToDeg(info.getBeta()) / NUM_BETAS);
       reflectionInfos[iBeta].push_back(info);
     }
   }
 }
 
-void Polefigure::generate(qreal const centerRadius,
-                          qreal const centerSearchRadius,
-                          qreal const intensityTreshold,
-                          qreal const searchRadius) {
+void Polefigure::generate(qreal centerRadius,
+                          qreal centerSearchRadius,
+                          qreal intensityTreshold,
+                          qreal searchRadius) {
   FWHMs.clear();
   peakPositions.clear();
 
@@ -286,8 +286,8 @@ void Polefigure::searchPointsInAllQuadrants(qreal const alpha,
                                             qreal &peakOffset,
                                             qreal &peakHeight,
                                             qreal &peakFWHM) const {
-  const int iBegin = qFloor(radToDeg(beta) / Polefigure::NUM_BETAS - 1);
-  const int iEnd = iBegin + 3; // A magic number.
+  int const iBegin = qFloor(radToDeg(beta) / Polefigure::NUM_BETAS - 1);
+  int const iEnd = iBegin + 3; // A magic number.
 
   for (int i = iBegin; i < iEnd; ++i) {
     // REVIEW Index magick. Is the number 10 linked to searchPoints()?
@@ -317,9 +317,9 @@ void Polefigure::searchPointsInAllQuadrants(qreal const alpha,
                                     tempPeakFWHMs[iQ])) {
           // Try another quadrant. See [J.Appl.Cryst.(2011),44,641] for the
           // angle mapping and quadrant mirroring.
-          const int newQ = remapQuadrant(static_cast<Quadrant::Quadrant>(iQ));
-          const double newAlpha = M_PI - alpha;
-          const qreal newBeta = beta < M_PI ? beta + M_PI : beta - M_PI;
+          int   const newQ = remapQuadrant(static_cast<Quadrant::Quadrant>(iQ));
+          qreal const newAlpha = M_PI - alpha;
+          qreal const newBeta = beta < M_PI ? beta + M_PI : beta - M_PI;
           const auto newDeltaAlpha
             = reflectionInfos[j][k].getAlpha() - newAlpha;
           const auto newDeltaBeta

@@ -16,15 +16,15 @@ public:
 public:
   Polefigure(Session &session,
              shp_File file,
-             Reflection const& reflection_,
-             qreal const alphaStep_,
-             qreal const betaStep_,
+             Reflection const& reflection,
+             qreal alphaStep,
+             qreal betaStep,
              Range gammaRange = Range()); // If no range specified, use the full range specified by the cuts.
 
-  void generate(qreal const centerRadius,
-                qreal const centerSearchRadius,
-                qreal const intensityTreshold,
-                qreal const searchRadius = qQNaN());
+  void generate(qreal centerRadius,
+                qreal centerSearchRadius,
+                qreal intensityTreshold,
+                qreal searchRadius = qQNaN());
 private:
   qreal alphaStep;
   qreal betaStep;

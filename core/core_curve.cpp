@@ -130,7 +130,7 @@ Curve makeCurve(shp_LensSystem lenses,
   auto size   = lenses->getSize();
   int width = size.width(), height = size.height();
 
-  const qreal deltaTTH = tthRange.width() / width;
+  qreal const deltaTTH = tthRange.width() / width;
 
   qreal_vec intens_vec(width);
   uint_vec  counts_vec(width, 0);

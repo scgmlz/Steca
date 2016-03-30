@@ -1,20 +1,17 @@
 #include "test_core_dataset.h"
 #include "core_types.h"
 
-#include <Eigen/Core>
 #include <cmath>
 
 namespace core {
-using matrix3d = Eigen::Matrix<qreal,3,3>;
-using vector3d = Eigen::Matrix<qreal,3,1>;
 
-matrix3d rotationCWx(const qreal angle);
-matrix3d rotationCWz(const qreal angle);
-matrix3d rotationCCWz(const qreal angle);
+matrix3d rotationCWx(qreal angle);
+matrix3d rotationCWz(qreal angle);
+matrix3d rotationCCWz(qreal angle);
 
-void calculateAlphaBeta(const qreal omgDet, const qreal phiDet,
-                        const qreal chiDet,
-                        const qreal tthRef, const qreal gammaRef,
+void calculateAlphaBeta(qreal omgDet, qreal phiDet,
+                        qreal chiDet,
+                        qreal tthRef, qreal gammaRef,
                         qreal& alpha, qreal& beta);
 }
 
@@ -22,15 +19,14 @@ using namespace core;
 
 void TestCoreDataset::testRotation() {
   {
-    const qreal phiDet = 0;
-    const qreal chiDet = 0;
+    qreal phiDet = 0;
+    qreal chiDet = 0;
 
 
     auto m1 = rotationCWz(phiDet);
-    matrix3d cmpMatrix;
-    cmpMatrix << 1 , 0 , 0,
-        0 , 1 , 0,
-        0 , 0 , 1;
+    matrix3d cmpMatrix(1, 0, 0,
+                       0, 1, 0,
+                       0, 0, 1);
 
     QCOMPARE(m1, cmpMatrix);
 
@@ -41,11 +37,11 @@ void TestCoreDataset::testRotation() {
 }
 
 #define TEST_ANGLES(val1,val2,val3,val4,val5) \
-  const qreal omgDet = val1;   \
-  const qreal phiDet = val2;   \
-  const qreal chiDet = val3;   \
-  const qreal tthRef = val4;   \
-  const qreal gammaRef = val5; \
+  qreal omgDet = val1;   \
+  qreal phiDet = val2;   \
+  qreal chiDet = val3;   \
+  qreal tthRef = val4;   \
+  qreal gammaRef = val5; \
 
 void TestCoreDataset::testCalcAlphaBeta() {
   {
@@ -121,11 +117,11 @@ void TestCoreDataset::testCalcAlphaBeta() {
   }
 
   {
-    const qreal omgDet = radToDeg(M_PI);
-    const qreal phiDet = radToDeg(M_PI);
-    const qreal chiDet = radToDeg(M_PI);
-    const qreal tthRef = 4*radToDeg(M_PI);
-    const qreal gammaRef = radToDeg(M_PI);
+    qreal const omgDet = radToDeg(M_PI);
+    qreal const phiDet = radToDeg(M_PI);
+    qreal const chiDet = radToDeg(M_PI);
+    qreal const tthRef = 4*radToDeg(M_PI);
+    qreal const gammaRef = radToDeg(M_PI);
 
     qreal alpha;
     qreal beta;
