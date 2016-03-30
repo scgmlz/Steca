@@ -3,6 +3,7 @@
 #include "panel/dataset.h"
 #include "panel/fitting.h"
 #include "panel/diffractogram.h"
+#include <QStyledItemDelegate>
 
 namespace panel {
 //-----------------------------------------------------------------------------
@@ -13,7 +14,7 @@ public:
   void paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const {
     QStyleOptionViewItem o = option;
     bool isCorrectionFile = index.data(FileView::Model::IsCorrectionFileRole).toBool();
-    if(isCorrectionFile) {
+    if (isCorrectionFile) {
       o.font.setItalic(true);
       o.font.setBold(true);
     }

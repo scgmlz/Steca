@@ -1,15 +1,21 @@
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      gui_helpers.cpp
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
 #include "gui_helpers.h"
 #include <QAction>
 
 //------------------------------------------------------------------------------
-
-QBoxLayout *hbox() {
-  return new QHBoxLayout;
-}
-
-QBoxLayout *vbox() {
-  return new QVBoxLayout;
-}
 
 QBoxLayout *boxLayout(Qt::Orientation orientation) {
   switch (orientation) {
@@ -20,6 +26,14 @@ QBoxLayout *boxLayout(Qt::Orientation orientation) {
   default:
     NEVER_HERE return nullptr;
   }
+}
+
+QBoxLayout *hbox() {
+  return new QHBoxLayout;
+}
+
+QBoxLayout *vbox() {
+  return new QVBoxLayout;
 }
 
 QGridLayout *gridLayout() {
@@ -71,7 +85,7 @@ QDoubleSpinBox *spinCell(uint emWidth,qreal min, qreal max) {
 
 QCheckBox* check(rcstr text, QAction* action) {
   auto ch = new QCheckBox(text);
-  if (action) QObject::connect(ch,&QCheckBox::toggled,[action](bool on) {
+  if (action) QObject::connect(ch, &QCheckBox::toggled,[action](bool on) {
     action->setChecked(on);
   });
   return ch;

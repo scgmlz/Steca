@@ -1,7 +1,6 @@
 #include "fitting.h"
 #include "thehub.h"
 #include "core_fit_limits.h"
-#include <QStyledItemDelegate>
 #include <QAction>
 #include <QApplication>
 

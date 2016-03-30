@@ -209,8 +209,6 @@ OutTable::OutTable(uint numDataColumns) {
 
   header()->setSectionResizeMode(0,QHeaderView::Fixed);
 
-  // TODO if the collapse marker in the first column can be hidden,
-  // or a delegate used, the width can be narrower
   int w = QFontMetrics(header()->font()).width("000000000");
   setColumnWidth(0,w);
 }
