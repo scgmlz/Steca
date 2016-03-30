@@ -23,9 +23,9 @@ void TestCoreArray2d::testArray2d() {
     a.fill(val,size);
     QCOMPARE(size,a.size());
 
-    for (int x=0; x<xSize; ++x) {
-      for (int y=0; y<ySize; ++y) {
-        QCOMPARE(a.at(a.index(x,y)),val);
+    for (int x = 0; x < xSize; ++x) {
+      for (int y = 0; y < ySize; ++y) {
+        QCOMPARE(a.at(a.index(x, y)), val);
       }
     }
 

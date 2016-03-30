@@ -265,7 +265,7 @@ qreal degToRad(qreal deg) {
 //------------------------------------------------------------------------------
 
 str_lst getStringListNormalization() {
-  return str_lst{"Disable","Mesurment time","Monitor counts","Background level"};
+  return str_lst{"Disable","Measurement time","Monitor counts","Background level"};
 }
 
 //------------------------------------------------------------------------------

@@ -11,20 +11,6 @@
 
 using namespace core;
 
-#define TEST_DATA \
-  int width             = 2;\
-  int height            = 3;\
-  intens_t inten        = 42.0f;\
-  intens_t specialInten = 150.0f;\
-  int posIntensArray    = 0;\
-  qreal gamma           = 6.7;\
-  qreal gammaSpecial    = 44.0;\
-  qreal tth             = 4.2;\
-  qreal tthSpecial      = 88.0;\
-  int anglePosX         = 1;\
-  int anglePosY         = 2;\
-  TestCoreLens test;\
-
 void TestCorePolefigure::testPolefigure() {
 
 }
@@ -70,8 +56,20 @@ void TestCorePolefigure::testInQuadrant() {
 
 void TestCorePolefigure::testGamaRange() {
 
+    int width             = 2;
+    int height            = 3;
+    intens_t inten        = 42.0f;
+    intens_t specialInten = 150.0f;
+    int posIntensArray    = 0;
+    qreal gamma           = 6.7;
+    qreal gammaSpecial    = 44.0;
+    qreal tth             = 4.2;
+    qreal tthSpecial      = 88.0;
+    int anglePosX         = 1;
+    int anglePosY         = 2;
+    
   { // simple test
-    TEST_DATA
+    TestCoreLens test;
     Dataset dataset = test.testDataset(width,height,inten,specialInten,posIntensArray);
     DiffractionAnglesMap angleMapArray = test.testAngleMapArray(gamma,gammaSpecial,
                                                     tth,tthSpecial,

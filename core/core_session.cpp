@@ -369,7 +369,7 @@ shp_LensSystem Session::makeNormalizationLens(Dataset const& dataset) const {
   case Normalization::BG_LEVEL:
     if (getBgRanges().isEmpty()) {
       average = 1;
-      current = 1; // bg not set -> use 1 as normVal
+      current = 1; // bg not set -> use 1 as normVal, warn user!
     } else  {
       average = calGlobalBGAverage(dataset);
       current = calAverageBG(dataset);
@@ -379,7 +379,7 @@ shp_LensSystem Session::makeNormalizationLens(Dataset const& dataset) const {
     NEVER_HERE
   }
   normVal = average/current;
-  RUNTIME_CHECK(normVal > 0, "normVal negative");
+  RUNTIME_CHECK(normVal > 0, "Normalization value is negative");
   return shp_LensSystem(new NormalizationLens(normVal));
 }
 
