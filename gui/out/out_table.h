@@ -61,7 +61,6 @@ int cmp_date(QVariant const&, QVariant const&);
 
 class OutTableWidget: public QWidget {
   SUPER(OutTableWidget,QWidget)
-  Q_OBJECT
 public:
   // Must have the right number of headers and comparators
   OutTableWidget(TheHub&,
@@ -71,9 +70,6 @@ public:
   OutTable& table() const {
     return *outTable;
   }
-
-signals:
-  void calculate();
 
 private:
   struct ShowItem {

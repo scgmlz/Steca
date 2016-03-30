@@ -247,6 +247,7 @@ OutTableWidget::OutTableWidget(TheHub& theHub_,
 
   QBoxLayout *box;
   setLayout((box = vbox()));
+  box->setMargin(0);
 
   auto split = new QSplitter(Qt::Horizontal);
   box->addWidget(split);
@@ -307,10 +308,9 @@ OutWindow::OutWindow(rcstr title, QWidget* parent): super(parent, Qt::Dialog) {
 void OutWindow::setWidgets(panel::BasicPanel* p, OutTableWidget* tw) {
   box->addWidget((panel       = p));
   box->addWidget((tableWidget = tw));
-  connect(tableWidget, &OutTableWidget::calculate, this, &thisClass::calculate);
-
   auto bbox = hbox();
   box->addLayout(bbox);
+  box->setStretch(1,1);
 
   auto actClose = new PushAction("Close", "Close...", "", this);
   connect(actClose, &QAction::triggered, [this]() {
@@ -322,7 +322,7 @@ void OutWindow::setWidgets(panel::BasicPanel* p, OutTableWidget* tw) {
 
   auto actCalculate = new PushAction("Calculate", "Calculate...", "", this);
   connect(actCalculate, &QAction::triggered, [this]() {
-    emit calculate();
+    calculate();
   });
   bbox->addWidget(textButton(actCalculate));
 
