@@ -54,14 +54,14 @@ public:
   QVariant headerData(int,Qt::Orientation,int) const;
 
   void setCoreFile(core::shp_File);
-  void setInfoItems(panel::InfoItems const*);
+  void setInfoItems(panel::infoitem_vec const*);
 
 private:
   core::shp_Dataset const& getDataset(int row) const;
 
 private:
   core::shp_File coreFile;
-  panel::InfoItems const* infoItems; // TODO make better; remove #include panel.h then
+  panel::infoitem_vec const* infoItems; // TODO make better; remove #include panel.h then
   QVector<int> attributeNums;
 };
 

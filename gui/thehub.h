@@ -103,8 +103,8 @@ public:
 #endif
     *actViewReset,
 
-    *actCalculatePolefigures,
-    *actCalculateHistograms,
+    *actOutputPolefigures,
+    *actOutputHistograms,
     *actPreferences,
     *actFitErrorParameters,
 

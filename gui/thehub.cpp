@@ -171,8 +171,8 @@ void TheHub::initActions() {
   PUSH_ACTION(actReflectionAdd       ,"Add",   "Add reflection",       ":/icon/add")
   PUSH_ACTION(actReflectionRemove    ,"Remove","Remove reflection",    ":/icon/rem")
 
-  PUSH_ACTION(actCalculatePolefigures,"Calculate pole figures…","","")
-  PUSH_ACTION(actCalculateHistograms ,"Calculate histograms…","","")
+  PUSH_ACTION(actOutputPolefigures    , "Pole figures…","","")
+  PUSH_ACTION(actOutputHistograms     , "Histograms…","","")
 
   TOGL_ACTION2(actImagesLink           ,"Link", "Unlink",         "Use the same value for all cuts","Use different value for all cuts", ":/icon/linkNew")
   TOGL_ACTION2(actImageOverlay         ,"overlay", "overlay",     "Show cut", "Hide cut", ":/icon/imageCrop")
@@ -302,24 +302,24 @@ void TheHub::load(QFileInfo const& fileInfo) THROWS {
   load(file.readAll());
 }
 
-static str KEY_FILES("files");
-static str KEY_CORR_FILE("correction_file");
-static str KEY_CUT("cut");
-static str KEY_TOP("top");
-static str KEY_BOTTOM("bottom");
-static str KEY_LEFT("left");
-static str KEY_RIGHT("right");
-static str KEY_DETECTOR("detector");
-static str KEY_DISTANCE("distance");
-static str KEY_PIXEL_SIZE("pixel_size");
-static str KEY_BEAM_OFFSET("hasbeamoffset");
-static str KEY_OFFSET_X("offset_x");
-static str KEY_OFFSET_Y("offset_y");
-static str KEY_TRANSFORM("transform");
-static str KEY_BG_POLYNOMIAL("background_polynomial");
-static str KEY_BG_RANGES("background_ranges");
-static str KEY_REFLECTIONS("reflections");
-static str KEY_REF_COUNT("reflections_count");
+static str const KEY_FILES("files");
+static str const KEY_CORR_FILE("correction_file");
+static str const KEY_CUT("cut");
+static str const KEY_TOP("top");
+static str const KEY_BOTTOM("bottom");
+static str const KEY_LEFT("left");
+static str const KEY_RIGHT("right");
+static str const KEY_DETECTOR("detector");
+static str const KEY_DISTANCE("distance");
+static str const KEY_PIXEL_SIZE("pixel_size");
+static str const KEY_BEAM_OFFSET("hasbeamoffset");
+static str const KEY_OFFSET_X("offset_x");
+static str const KEY_OFFSET_Y("offset_y");
+static str const KEY_TRANSFORM("transform");
+static str const KEY_BG_POLYNOMIAL("background_polynomial");
+static str const KEY_BG_RANGES("background_ranges");
+static str const KEY_REFLECTIONS("reflections");
+static str const KEY_REF_COUNT("reflections_count");
 
 void TheHub::load(QByteArray const& json) THROWS {
   QJsonParseError parseError;

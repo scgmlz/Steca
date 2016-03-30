@@ -20,6 +20,7 @@
 #include <QListView>
 #include <QTreeView>
 #include <QComboBox>
+#include <QFrame>
 
 //------------------------------------------------------------------------------
 

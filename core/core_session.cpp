@@ -41,7 +41,7 @@ Session::~Session() {
 
 void Session::clear() {
   // TODO REVIEW
-  reflections.empty();
+  reflections.clear();
   enableCorrection(false);
   remCorrFile();
   while (numFiles(false)) remFile(0);
@@ -259,8 +259,6 @@ DiffractionAnglesMap const& Session::calcAngleMap(qreal tthMitte) { // RENAME
         angleMapArray.setAt(ix, iy, DiffractionAngles(radToDeg(gamma),radToDeg(tthNeu)));
       }
     }
-
-    ASSERT(ful.isValid())
 
     // Calculate Gamma and TTH after cut
     ASSERT(imageCut.getCount(size) > 0)

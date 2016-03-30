@@ -96,14 +96,14 @@ DatasetOptions1::DatasetOptions1(TheHub& theHub_)
   box->addLayout(vn);
 
   str_lst options = core::getStringListNormalization();
-  
+
   vn->addWidget(comboNormType = comboBox(options));
   box->addStretch();
 
   connect(&theHub, &TheHub::geometryChanged, [this]() {
     setFrom(theHub);
   });
-  
+
   auto setEnabled = [this]() {
     bool on = theHub.actHasBeamOffset->isChecked();
     spinOffsetX->setEnabled(on);
@@ -132,7 +132,7 @@ DatasetOptions1::DatasetOptions1(TheHub& theHub_)
   connect(spinPixelSize, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
     setTo(theHub);
   });
-  
+
   connect(comboNormType, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),[this](int index) {
     theHub.setNormType((core::Normalization)index);
   });
@@ -157,17 +157,17 @@ void DatasetOptions1::setFrom(TheHub& theHub) {
   spinPixelSize->setValue(g.pixSize);
 }
 
-static str GROUP_OPTIONS("Options");
-static str KEY_IMAGE_SCALE("image_scale");
+static str const GROUP_OPTIONS("Options");
+static str const KEY_IMAGE_SCALE("image_scale");
 
-static str GROUP_BEAM("Beam");
-static str KEY_IS_OFFSET("is_offset");
-static str KEY_OFFSET_X("offset_x");
-static str KEY_OFFSET_Y("offset_y");
+static str const GROUP_BEAM("Beam");
+static str const KEY_IS_OFFSET("is_offset");
+static str const KEY_OFFSET_X("offset_x");
+static str const KEY_OFFSET_Y("offset_y");
 
-static str GROUP_DETECTOR("Detector");
-static str KEY_DISTANCE("distance");
-static str KEY_PIXEL_SIZE("pixel_size");
+static str const GROUP_DETECTOR("Detector");
+static str const KEY_DISTANCE("distance");
+static str const KEY_PIXEL_SIZE("pixel_size");
 
 
 //------------------------------------------------------------------------------

@@ -199,7 +199,7 @@ void Polefigure::generate(qreal const centerRadius,
                      tempPeakOffsets,
                      tempPeakHeights,
                      tempPeakFWHMs);
-        if (!tempPeakOffsets.empty()) {
+        if (!tempPeakOffsets.isEmpty()) {
           // REVIEW Does the sorting make sense? Should the offsets and FWHMs
           // be sorted according to heights?
           std::sort(tempPeakOffsets.begin(), tempPeakOffsets.end());

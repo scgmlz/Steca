@@ -5,12 +5,14 @@
 file(GLOB header_files
   "*.h"
   "panel/*.h"
+  "out/*.h"
   "QCP/*.h"
 )
 
 file(GLOB source_files
   "*.cpp"
   "panel/*.cpp"
+  "out/*.cpp"
   "QCP/*.cpp"
 )
 

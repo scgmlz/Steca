@@ -181,7 +181,7 @@ DockDatasetInfo::DockDatasetInfo(TheHub& theHub_)
   }
 }
 
-DockDatasetInfo::Info::Info(InfoItems& items) {
+DockDatasetInfo::Info::Info(infoitem_vec& items) {
   setLayout((grid = gridLayout()));
 
   for (auto &item: items) {

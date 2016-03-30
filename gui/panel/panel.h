@@ -31,7 +31,7 @@ protected:
 class BoxPanel: public BasicPanel {
   SUPER(BoxPanel,BasicPanel)
 public:
-  BoxPanel(rcstr title,TheHub&,Qt::Orientation);
+  BoxPanel(rcstr title, TheHub&, Qt::Orientation);
 
 protected:
   QBoxLayout *box;
@@ -52,7 +52,7 @@ struct InfoItem {
   str tag; QCheckBox *cb; QLineEdit *text;
 };
 
-typedef QVector<InfoItem> InfoItems; // REVIEW
+typedef QVector<InfoItem> infoitem_vec;
 
 //------------------------------------------------------------------------------
 }

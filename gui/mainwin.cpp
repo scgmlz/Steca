@@ -1,5 +1,20 @@
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_curve.cpp
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
 #include "mainwin.h"
 #include "mainwin_parts.h"
+#include "out/out_polefigures.h"
 
 #include <QCloseEvent>
 #include <QMenuBar>
@@ -13,6 +28,7 @@
 #ifdef DEVELOPMENT_REBECCA
 #include "io/core_io.h"
 #endif
+
 //------------------------------------------------------------------------------
 
 MainWin::MainWin() {
@@ -24,13 +40,12 @@ MainWin::MainWin() {
   connectActions();
 
   readSettings();
-
 }
 
-MainWin::~MainWin() {
-}
+MainWin::~MainWin() {}
 
 void MainWin::initMenus() {
+
   auto separator = [this]() {
     auto act = new QAction(this);
     act->setSeparator(true);
@@ -39,107 +54,97 @@ void MainWin::initMenus() {
 
   auto *mbar = menuBar();
 
-  menuFile  = mbar->addMenu("&File");
-  menuEdit  = mbar->addMenu("&Edit");
-  menuView  = mbar->addMenu("&View");
+  menuFile     = mbar->addMenu("&File");
+  menuEdit     = mbar->addMenu("&Edit");
+  menuView     = mbar->addMenu("&View");
   menuDatasets = mbar->addMenu("&Datasets");
   menuReflect  = mbar->addMenu("&Reflections");
-  menuHelp  = mbar->addMenu("&Help");
+  menuOutput   = mbar->addMenu("&Output");
+  menuHelp     = mbar->addMenu("&Help");
 
   menuFile->addActions({
-    theHub.actAddFiles, theHub.actRemoveFile,
-    separator(),
-    theHub.actLoadCorrectionFile,
-    separator(),
-    theHub.actLoadSession, theHub.actSaveSession, theHub.actLoadSession
+      theHub.actAddFiles, theHub.actRemoveFile, separator(),
+      theHub.actLoadCorrectionFile, separator(),
+      theHub.actLoadSession, theHub.actSaveSession, theHub.actLoadSession,
   });
 
-  QMenu *menuExportDiffractograms = new QMenu("Export diffractograms",this);
+  QMenu *menuExportDiffractograms = new QMenu("Export diffractograms");
   menuExportDiffractograms->addActions({
-    theHub.actExportDiffractogramCurrent,
-    theHub.actExportDiffractogramAllSeparateFiles,
-    theHub.actExportDiffractogramSingleFile,
+      theHub.actExportDiffractogramCurrent,
+      theHub.actExportDiffractogramAllSeparateFiles,
+      theHub.actExportDiffractogramSingleFile,
   });
 
   menuFile->addAction(separator());
   menuFile->addMenu(menuExportDiffractograms);
 
-  QMenu *menuExportImages = new QMenu("Export images",this);
+  QMenu *menuExportImages = new QMenu("Export images");
   menuExportImages->addActions({
-    theHub.actExportImagesWithMargins,
-    theHub.actExportImagesWithoutMargins,
+      theHub.actExportImagesWithMargins, theHub.actExportImagesWithoutMargins,
   });
 
   menuFile->addMenu(menuExportImages);
 
   menuFile->addActions({
-  #ifndef Q_OS_OSX  // Mac puts Quit into the Apple menu
-    separator(),
-  #endif
-    theHub.actQuit,
+#ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
+      separator(),
+#endif
+      theHub.actQuit,
   });
 
   menuEdit->addActions({
-    theHub.actUndo, theHub.actRedo,
-    separator(),
-    theHub.actCut, theHub.actCopy, theHub.actPaste,
+      theHub.actUndo, theHub.actRedo, separator(),
+      theHub.actCut, theHub.actCopy, theHub.actPaste,
   });
 
   menuView->addActions({
-    theHub.actImagesFixedIntensity,
-    theHub.actImageOverlay,
-    separator(),
-    theHub.actBackgroundShowFit,
-    separator(),
-    theHub.actViewStatusbar,
-  #ifndef Q_OS_OSX
-    theHub.actFullscreen,
-  #endif
-    separator(),
-    theHub.actViewReset,
+      theHub.actImagesFixedIntensity, theHub.actImageOverlay, separator(),
+      theHub.actBackgroundShowFit, separator(),
+      theHub.actViewStatusbar,
+#ifndef Q_OS_OSX
+      theHub.actFullscreen,
+#endif
+      separator(),
+      theHub.actViewReset,
   });
 
   menuDatasets->addActions({
-    theHub.actImageRotate, theHub.actImageMirror,
-    separator(),
-    theHub.actImagesEnableCorr,
-    separator(),
+      theHub.actImageRotate, theHub.actImageMirror, separator(),
+      theHub.actImagesEnableCorr, separator(),
   });
 
-  QMenu *menuNormalization = new QMenu("Normalizaiton",this);
-  menuNormalization->addActions({
-    theHub.actNormalizationDisable, theHub.actNormalizationMeasureTime,
-    theHub.actNormalizationMonitor, theHub.actNormalizationBackground
-  });
+  QMenu *menuNormalization = new QMenu("Normalization");
+  menuNormalization->addActions(
+      {theHub.actNormalizationDisable, theHub.actNormalizationMeasureTime,
+          theHub.actNormalizationMonitor, theHub.actNormalizationBackground});
 
   menuDatasets->addMenu(menuNormalization);
 
   menuDatasets->addActions({
-    separator(),
-    theHub.actBackgroundBackground,
-    theHub.actBackgroundClear
+      separator(), theHub.actBackgroundBackground, theHub.actBackgroundClear
   });
 
   menuReflect->addActions({
-    theHub.actReflectionAdd, theHub.actReflectionRemove,
-    separator(),
-    theHub.actCalculatePolefigures, theHub.actCalculateHistograms,
-    separator(),
-    theHub.actFitErrorParameters
+      theHub.actReflectionAdd, theHub.actReflectionRemove, separator(),
+      theHub.actFitErrorParameters
+  });
+
+  menuOutput->addActions({
+      theHub.actOutputPolefigures, theHub.actOutputHistograms
   });
 
   menuHelp->addActions({
-  #ifndef Q_OS_OSX // Mac puts About into the Apple menu
-    separator(),
-  #endif
-    theHub.actAbout,
+#ifndef Q_OS_OSX // Mac puts About into the Apple menu
+      separator(),
+#endif
+      theHub.actAbout,
   });
 }
 
 void MainWin::initLayout() {
-  addDockWidget(Qt::LeftDockWidgetArea, new panel::DockFiles(theHub));
-  addDockWidget(Qt::LeftDockWidgetArea, new panel::DockDatasets(theHub));
-  addDockWidget(Qt::RightDockWidgetArea,new panel::DockDatasetInfo(theHub));
+  addDockWidget(Qt::LeftDockWidgetArea,  new panel::DockFiles(theHub));
+  addDockWidget(Qt::LeftDockWidgetArea,  new panel::DockDatasets(theHub));
+  addDockWidget(Qt::RightDockWidgetArea, new panel::DockDatasetInfo(theHub));
 
   auto splMain = new QSplitter(Qt::Vertical);
   splMain->setChildrenCollapsible(false);
@@ -158,7 +163,7 @@ void MainWin::initLayout() {
 
   splReflections->addWidget(new panel::SplitFitting(theHub));
   splReflections->addWidget(new panel::SplitDiffractogram(theHub));
-  splReflections->setStretchFactor(1,1);
+  splReflections->setStretchFactor(1, 1);
 }
 
 void MainWin::initStatus() {
@@ -174,15 +179,13 @@ void MainWin::connectActions() {
     QObject::connect(action, &QAction::toggled, this, fun);
   };
 
-  auto notYet = [this](QAction* action) {
-    action->setEnabled(false);
-  };
+  auto notYet = [this](QAction* action) { action->setEnabled(false); };
 
-  onTrigger(theHub.actAddFiles,            &thisClass::addFiles);
-  onTrigger(theHub.actLoadCorrectionFile,  &thisClass::loadCorrectionFile);
+  onTrigger(theHub.actAddFiles,           &thisClass::addFiles);
+  onTrigger(theHub.actLoadCorrectionFile, &thisClass::loadCorrectionFile);
 
-  onTrigger(theHub.actLoadSession, &thisClass::loadSession);
-  onTrigger(theHub.actSaveSession, &thisClass::saveSession);
+  onTrigger(theHub.actLoadSession,        &thisClass::loadSession);
+  onTrigger(theHub.actSaveSession,        &thisClass::saveSession);
 
   notYet(theHub.actExportDiffractogramCurrent);
   notYet(theHub.actExportDiffractogramAllSeparateFiles);
@@ -201,8 +204,8 @@ void MainWin::connectActions() {
   notYet(theHub.actPreferences);
   notYet(theHub.actFitErrorParameters);
 
-  notYet(theHub.actCalculatePolefigures);
-  notYet(theHub.actCalculateHistograms);
+  onTrigger(theHub.actOutputPolefigures, &thisClass::outputPoleFigures);
+  notYet(theHub.actOutputHistograms);
 
   notYet(theHub.actNormalizationDisable);
   notYet(theHub.actNormalizationMeasureTime);
@@ -213,21 +216,14 @@ void MainWin::connectActions() {
 
   onToggle(theHub.actViewStatusbar, &thisClass::viewStatusbar);
 #ifndef Q_OS_OSX
-  onToggle(theHub.actFullscreen,    &thisClass::viewFullscreen);
+  onToggle(theHub.actFullscreen, &thisClass::viewFullscreen);
 #endif
-  onTrigger(theHub.actViewReset,    &thisClass::viewReset);
+  onTrigger(theHub.actViewReset, &thisClass::viewReset);
 }
 
 void MainWin::show() {
   super::show();
-  checkActions();
-
-#ifdef DEVELOPMENT_REBECCA
-  theHub.load(QFileInfo("/home/rebecca/SCG/STeCa-Data/1.ste"));
-#endif
-#ifdef DEVELOPMENT_JAN
-  theHub.load(QFileInfo("/home/jan/SCG/s.ste"));
-#endif
+  onShow();
 }
 
 void MainWin::close() {
@@ -235,40 +231,51 @@ void MainWin::close() {
 }
 
 void MainWin::addFiles() {
-  str_lst fileNames = QFileDialog::getOpenFileNames(this,
-    "Add files", QDir::current().absolutePath(), "Data files (*.dat);;All files (*.*)");
+  str_lst fileNames = QFileDialog::getOpenFileNames(this, "Add files",
+      QDir::current().absolutePath(), "Data files (*.dat);;All files (*.*)");
 
-  if (!fileNames.isEmpty()) {
+  if (!fileNames.isEmpty())
     theHub.addFiles(fileNames);
-  }
 }
 
 void MainWin::loadCorrectionFile() {
-  str fileName = QFileDialog::getOpenFileName(this,
-      "Set correction file", QDir::current().absolutePath(), "Data files (*.dat);;All files (*.*)");
+  str fileName = QFileDialog::getOpenFileName(this, "Set correction file",
+      QDir::current().absolutePath(), "Data files (*.dat);;All files (*.*)");
 
-  if (!fileName.isEmpty()) {
+  if (!fileName.isEmpty())
     theHub.loadCorrFile(fileName);
-  }
 }
 
 static str const STE(".ste");
 
 void MainWin::loadSession() {
-  str fileName = QFileDialog::getOpenFileName(this,
-      "Load session", QDir::current().absolutePath(), "Session files (*"%STE%");;All files (*.*)");
-  if (fileName.isEmpty()) return;
+  str fileName = QFileDialog::getOpenFileName(this, "Load session",
+      QDir::current().absolutePath(),
+      "Session files (*" % STE % ");;All files (*.*)");
+
+  if (fileName.isEmpty())
+    return;
 
   theHub.load(QFileInfo(fileName));
 }
 
 void MainWin::saveSession() {
-  str fileName = QFileDialog::getSaveFileName(this,
-      "Save session", QDir::current().absolutePath(), "Session files (*"%STE%");;All files (*.*)");
-  if (fileName.isEmpty()) return;
-  if (!fileName.endsWith(STE)) fileName += STE;
+  str fileName = QFileDialog::getSaveFileName(this, "Save session",
+      QDir::current().absolutePath(),
+      "Session files (*" % STE % ");;All files (*.*)");
+
+  if (fileName.isEmpty())
+    return;
+
+  if (!fileName.endsWith(STE))
+    fileName += STE;
 
   theHub.save(QFileInfo(fileName));
+}
+
+void MainWin::outputPoleFigures() {
+  auto popup = new OutPoleFigures("Pole Figures",theHub,this);
+  popup->show();
 }
 
 void MainWin::closeEvent(QCloseEvent* event) {
@@ -276,16 +283,30 @@ void MainWin::closeEvent(QCloseEvent* event) {
   event->accept();
 }
 
+void MainWin::onShow() {
+  checkActions();
+
+#ifdef DEVELOPMENT_REBECCA
+  theHub.load(QFileInfo("/home/rebecca/SCG/STeCa-Data/1.ste"));
+#endif
+#ifdef DEVELOPMENT_JAN
+  theHub.load(QFileInfo("/home/jan/SCG/s.ste"));
+  outputPoleFigures();
+#endif
+}
+
 void MainWin::onClose() {
   saveSettings();
 }
 
-static str GROUP_MAINWIN("MainWin");
-static str KEY_GEOMETRY("geometry");
-static str KEY_STATE("state");
+static str const GROUP_MAINWIN("MainWin");
+static str const KEY_GEOMETRY("geometry");
+static str const KEY_STATE("state");
 
 void MainWin::readSettings() {
-  if (initialState.isEmpty()) initialState = saveState();
+  if (initialState.isEmpty())
+    initialState = saveState();
+
   Settings s(GROUP_MAINWIN);
   restoreGeometry(s.value(KEY_GEOMETRY).toByteArray());
   restoreState(s.value(KEY_STATE).toByteArray());
@@ -299,6 +320,7 @@ void MainWin::saveSettings() {
 
 void MainWin::checkActions() {
   theHub.actViewStatusbar->setChecked(statusBar()->isVisible());
+
 #ifndef Q_OS_OSX
   theHub.actFullscreen->setChecked(isFullScreen());
 #endif
@@ -310,7 +332,11 @@ void MainWin::viewStatusbar(bool on) {
 }
 
 void MainWin::viewFullscreen(bool on) {
-  if (on) showFullScreen(); else showNormal();
+  if (on)
+    showFullScreen();
+  else
+    showNormal();
+
 #ifndef Q_OS_OSX
   theHub.actFullscreen->setChecked(on);
 #endif

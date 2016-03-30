@@ -65,10 +65,10 @@ void Reflection::setPeakFunction(PeakFunction* f) {
   peakFunction = f;
 }
 
-static str KEY_FWHM("fwhm");
-static str KEY_TYPE("type");
-static str KEY_RANGE("range");
-static str KEY_PEAK("peak");
+static str const KEY_FWHM("fwhm");
+static str const KEY_TYPE("type");
+static str const KEY_RANGE("range");
+static str const KEY_PEAK("peak");
 
 void Reflection::loadJson(rcJsonObj obj) THROWS {
   range.loadJson(obj[KEY_RANGE].toObject());

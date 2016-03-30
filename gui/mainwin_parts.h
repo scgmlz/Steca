@@ -103,13 +103,13 @@ private:
   class Info: public QWidget {
     SUPER(Info,QWidget)
   public:
-    Info(InfoItems&);
+    Info(infoitem_vec&);
     QGridLayout *grid;
   };
 
   TheHub &theHub;
   Info *info;
-  InfoItems infoItems;
+  infoitem_vec infoItems;
 };
 
 //------------------------------------------------------------------------------

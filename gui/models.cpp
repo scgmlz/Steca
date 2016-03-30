@@ -40,7 +40,7 @@ QVariant FileViewModel::data(QModelIndex const& index,int role) const {
       return isCorrectionFile;
     case Qt::DisplayRole: {
       str s = theHub.fileName(row);
-      static str Corr("Corr: ");
+      static str const Corr("Corr: ");
       if (isCorrectionFile) s = Corr + s;
       return s;
     }
@@ -113,7 +113,7 @@ void DatasetViewModel::setCoreFile(core::shp_File coreFile_) {
   endResetModel();
 }
 
-void DatasetViewModel::setInfoItems(panel::InfoItems const* infoItems_) {
+void DatasetViewModel::setInfoItems(panel::infoitem_vec const* infoItems_) {
   beginResetModel();
   infoItems = infoItems_;
   attributeNums.clear();
