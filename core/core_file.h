@@ -1,6 +1,17 @@
-/** \file
- * Files with datasets.
- */
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_file.h
+//! @brief     File with datasets.
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
 
 #ifndef CORE_FILE_H
 #define CORE_FILE_H
@@ -18,12 +29,11 @@ public:
   File(rcstr fileName);
  ~File();
 
-  QFileInfo const& getInfo() const { return info;            }
-  str getName()              const { return info.fileName(); }
+  QFileInfo const& fileInfo() const { return info;              }
+  str  fileName()             const { return info.fileName();   }
+  uint numDatasets()          const { return datasets.count();  }
 
-  void fold();        ///< collapse datasets into one
-
-  uint numDatasets() const { return datasets.count(); }
+  void fold(); ///< collapse datasets into one (for correction files)
 
   shp_Dataset const& getDataset(uint i) const { return datasets.at(i); }
   void appendDataset(Dataset* dataset); ///< takes ownership of dataset
@@ -48,4 +58,4 @@ public:
 
 Q_DECLARE_METATYPE(core::shp_File)
 
-#endif
+#endif // CORE_FILE_H

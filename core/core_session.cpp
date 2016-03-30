@@ -74,7 +74,7 @@ shp_File Session::remFile(uint i) {
 bool Session::hasFile(rcstr fileName) {
   QFileInfo fileInfo(fileName);
   for (auto &file: dataFiles)
-    if (fileInfo == file->getInfo()) return true;
+    if (fileInfo == file->fileInfo()) return true;
   return false;
 }
 

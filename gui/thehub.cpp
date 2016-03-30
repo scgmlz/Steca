@@ -240,11 +240,11 @@ bool TheHub::isCorrFile(uint index) const {
 }
 
 str TheHub::fileName(uint index) const {
-  return getFile(index)->getName();
+  return getFile(index)->fileName();
 }
 
 str TheHub::filePath(uint index) const {
-  return getFile(index)->getInfo().absoluteFilePath();
+  return getFile(index)->fileInfo().absoluteFilePath();
 }
 
 core::shp_File TheHub::getFile(uint index) const {
@@ -399,7 +399,7 @@ QByteArray TheHub::save() const {
   // save file path relative to location of session
   QJsonArray files;
   for_i (numFiles(false)) {
-    str absoluteFilePath = getFile(i)->getInfo().absoluteFilePath();
+    str absoluteFilePath = getFile(i)->fileInfo().absoluteFilePath();
     str relativFilePath = QDir::current().relativeFilePath(absoluteFilePath);
     files.append(relativFilePath);
   }
@@ -426,7 +426,7 @@ QByteArray TheHub::save() const {
     { KEY_CUT,        cut                 },
     { KEY_TRANSFORM,  session->getImageTransform().val  },
     { KEY_FILES,      files               },
-    { KEY_CORR_FILE,  hasCorrFile() ? session->getCorrFile()->getInfo().absoluteFilePath() : "" },
+    { KEY_CORR_FILE,  hasCorrFile() ? session->getCorrFile()->fileInfo().absoluteFilePath() : "" },
     { KEY_BG_POLYNOMIAL, getBgPolynomialDegree() },
     { KEY_BG_RANGES,     bgRanges                },
     { KEY_REFLECTIONS,   reflections             },
