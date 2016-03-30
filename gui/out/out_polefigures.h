@@ -24,11 +24,7 @@ class OutPoleFigures: public OutWindow {
   SUPER(OutPoleFigures,OutWindow)
 public:
   OutPoleFigures(rcstr title,TheHub&,QWidget*);
-
   void calculate();
-
-private:
-  QWidget        *topWidget;
 };
 
 //------------------------------------------------------------------------------
