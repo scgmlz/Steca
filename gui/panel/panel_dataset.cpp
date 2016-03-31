@@ -1,10 +1,91 @@
-#include "dataset.h"
+#include "panel_dataset.h"
 #include "thehub.h"
 #include "core_types.h"
 #include <QPainter>
 #include <QAction>
 
 namespace panel {
+//------------------------------------------------------------------------------
+
+DatasetView::DatasetView(TheHub& theHub): super(theHub), model(theHub.datasetViewModel) {
+  setModel(&model);
+
+  connect(&theHub, &TheHub::fileSelected, [this](core::shp_File coreFile) {
+    model.setCoreFile(coreFile);
+    setCurrentIndex(model.index(0,0));
+  });
+
+  connect(&model, &QAbstractItemModel::modelReset, [this]() {
+    for_i (model.columnCount())
+      resizeColumnToContents(i);
+  });
+}
+
+void DatasetView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
+  super::selectionChanged(selected,deselected);
+
+  auto indexes = selected.indexes();
+  theHub.setSelectedDataset(indexes.isEmpty()
+    ? core::shp_Dataset()
+    : model.data(indexes.first(), Model::GetDatasetRole).value<core::shp_Dataset>());
+}
+
+//------------------------------------------------------------------------------
+
+DockDatasets::DockDatasets(TheHub& theHub)
+: super("Datasets","dock-datasets",Qt::Vertical) {
+  box->addWidget((datasetView = new DatasetView(theHub)));
+  auto h = hbox();
+  box->addLayout(h);
+  h->addWidget(label("Combine:"));
+  h->addWidget(spinCell(4,1));
+}
+
+//------------------------------------------------------------------------------
+
+DockDatasetInfo::DockDatasetInfo(TheHub& theHub_)
+: super("Dataset info","dock-dataset-info",Qt::Vertical), theHub(theHub_) {
+  box->setMargin(0);
+  auto scrollArea = new QScrollArea;
+  box->addWidget(scrollArea);
+
+  scrollArea->setFrameStyle(QFrame::NoFrame);
+
+  for_i (core::Dataset::numAttributes()) {
+      InfoItem item; item.tag = core::Dataset::getAttributeTag(i);
+      infoItems.append(item);
+  }
+
+  info = new Info(infoItems);
+  scrollArea->setWidget(info);
+
+  for_i (core::Dataset::numAttributes()) {
+      infoItems[i].cb->setToolTip("Show value in Datasets list");
+  }
+
+  connect(&theHub, &TheHub::datasetSelected, [this](core::shp_Dataset dataset) {
+    for_i (core::Dataset::numAttributes()) {
+      infoItems[i].text->setText(dataset ? dataset->getAttributeStrValue(i) : EMPTY_STR);
+    }
+  });
+
+  for (auto &item: infoItems) {
+    connect(item.cb, &QCheckBox::clicked, this, [this]() {
+      theHub.datasetViewModel.setInfoItems(&infoItems);
+    });
+  }
+}
+
+DockDatasetInfo::Info::Info(infoitem_vec& items) {
+  setLayout((grid = gridLayout()));
+
+  for (auto &item: items) {
+    int row = grid->rowCount();
+    grid->addWidget((item.cb   = check(item.tag)), row, 0);
+    grid->addWidget((item.text = readCell(16)),    row, 1);
+  }
+}
+
 //------------------------------------------------------------------------------
 
 ImageWidget::ImageWidget(TheHub& theHub_,Dataset& dataset_)

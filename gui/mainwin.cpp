@@ -13,7 +13,10 @@
 // ************************************************************************** //
 
 #include "mainwin.h"
-#include "mainwin_parts.h"
+#include "panel/panel_dataset.h"
+#include "panel/panel_diffractogram.h"
+#include "panel/panel_fitting.h"
+#include "panel/panel_file.h"
 #include "out/out_polefigures.h"
 
 #include <QApplication>
@@ -31,6 +34,51 @@
 #ifdef DEVELOPMENT_REBECCA
 #include "io/core_io.h"
 #endif
+
+//------------------------------------------------------------------------------
+
+class SplitImage: public BoxWidget {
+  SUPER(SplitImage,BoxWidget)
+public:
+  SplitImage(TheHub&);
+};
+
+SplitImage::SplitImage(TheHub& theHub): super(Qt::Horizontal) {
+  auto *options1 = new panel::DatasetOptions1(theHub);
+  auto *options2 = new panel::DatasetOptions2(theHub);
+  auto *dataset = new panel::Dataset(theHub);
+  connect(options2, &panel::DatasetOptions2::imageScale, dataset, &panel::Dataset::setImageScale);
+  box->addWidget(options1);
+  box->addWidget(options2);
+  box->addWidget(dataset);
+  box->setStretch(2,1);
+}
+
+//------------------------------------------------------------------------------
+
+class SplitFitting: public BoxWidget {
+  SUPER(SplitFitting,BoxWidget)
+public:
+  SplitFitting(TheHub&);
+};
+
+SplitFitting::SplitFitting(TheHub& theHub): super(Qt::Vertical) {
+  box->addWidget(new panel::Fitting(theHub));
+}
+
+//------------------------------------------------------------------------------
+
+class SplitDiffractogram: public BoxWidget {
+  SUPER(SplitDiffractogram,BoxWidget)
+public:
+  SplitDiffractogram(TheHub&);
+};
+
+SplitDiffractogram::SplitDiffractogram(TheHub& theHub): super(Qt::Horizontal) {
+  auto diffractogram = new panel::Diffractogram(theHub);
+  diffractogram->setHorizontalStretch(1);
+  box->addWidget(diffractogram);
+}
 
 //------------------------------------------------------------------------------
 
@@ -162,10 +210,10 @@ void MainWin::initLayout() {
   splMain->addWidget(splImages);
   splMain->addWidget(splReflections);
 
-  splImages->addWidget(new panel::SplitImage(theHub));
+  splImages->addWidget(new SplitImage(theHub));
 
-  splReflections->addWidget(new panel::SplitFitting(theHub));
-  splReflections->addWidget(new panel::SplitDiffractogram(theHub));
+  splReflections->addWidget(new SplitFitting(theHub));
+  splReflections->addWidget(new SplitDiffractogram(theHub));
   splReflections->setStretchFactor(1, 1);
 }
 

@@ -2,6 +2,11 @@
 #include "mainwin.h"
 
 namespace panel {
+//-----------------------------------------------------------------------------
+
+HubListView::HubListView(TheHub& theHub_): theHub(theHub_) {
+}
+
 //------------------------------------------------------------------------------
 
 BasicPanel::BasicPanel(rcstr title, TheHub& theHub_)

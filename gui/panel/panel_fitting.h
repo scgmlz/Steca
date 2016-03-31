@@ -1,8 +1,8 @@
 /** \file
  */
 
-#ifndef FITTING_H
-#define FITTING_H
+#ifndef PANEL_FITTING_H
+#define PANEL_FITTING_H
 
 #include "panel.h"
 #include "core_reflection.h"
@@ -14,8 +14,8 @@ class ReflectionViewModel;
 namespace panel {
 //------------------------------------------------------------------------------
 
-class ReflectionView: public TreeListView {
-  SUPER(ReflectionView,TreeListView)
+class ReflectionView: public HubListView {
+  SUPER(ReflectionView,HubListView)
 public:
   using Model = model::ReflectionViewModel;
 
@@ -31,7 +31,6 @@ protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);
 
 private:
-  TheHub &theHub;
   Model  &model;
 };
 

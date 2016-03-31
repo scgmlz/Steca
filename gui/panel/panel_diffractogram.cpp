@@ -1,4 +1,4 @@
-#include "diffractogram.h"
+#include "panel_diffractogram.h"
 #include "thehub.h"
 #include "core_fit_fitting.h"
 #include "core_types.h"

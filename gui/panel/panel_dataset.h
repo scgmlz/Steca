@@ -1,16 +1,67 @@
 /** \file
  */
 
-#ifndef DATASET_H
-#define DATASET_H
+#ifndef PANEL_DATASET_H
+#define PANEL_DATASET_H
 
 #include "panel.h"
 #include "core_image.h"
 #include "core_dataset.h"
 #include "core_types.h"
 
+#include <QScrollArea>
+
+namespace model {
+class DatasetViewModel;
+}
 
 namespace panel {
+//------------------------------------------------------------------------------
+
+class DatasetView: public HubListView {
+  SUPER(DatasetView,HubListView)
+public:
+  using Model = model::DatasetViewModel;
+
+  DatasetView(TheHub&);
+
+protected:
+  void selectionChanged(QItemSelection const&, QItemSelection const&);
+
+private:
+  Model &model;
+};
+
+//------------------------------------------------------------------------------
+
+class DockDatasets: public DockWidget {
+  SUPER(DockDatasets,DockWidget)
+public:
+  DockDatasets(TheHub&);
+private:
+  DatasetView *datasetView;
+};
+
+//------------------------------------------------------------------------------
+
+class DockDatasetInfo: public DockWidget {
+  SUPER(DockDatasetInfo,DockWidget)
+public:
+  DockDatasetInfo(TheHub&);
+
+private:
+  class Info: public QWidget {
+    SUPER(Info,QWidget)
+  public:
+    Info(infoitem_vec&);
+    QGridLayout *grid;
+  };
+
+  TheHub &theHub;
+  Info *info;
+  infoitem_vec infoItems;
+};
+
 //------------------------------------------------------------------------------
 
 class Dataset;
@@ -48,10 +99,10 @@ private:
   QSpinBox       *spinOffsetX, *spinOffsetY;
   QDoubleSpinBox *spinDistance, *spinPixelSize;
   QComboBox      *comboNormType;
-  
+
   // REVIEW
   void setTo(TheHub&);
-  void setFrom(TheHub&); 
+  void setFrom(TheHub&);
 };
 
 class DatasetOptions2: public BoxPanel {
@@ -66,7 +117,7 @@ signals:
 private:
   QSpinBox       *cutTop, *cutBottom, *cutLeft, *cutRight;
   QSpinBox       *spinImageScale;
- 
+
   void setFrom(TheHub&);
 };
 

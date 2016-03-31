@@ -33,7 +33,6 @@ public:
 
   uint numFiles(bool withCorr=false);
   void remFile(uint i);
-  void setSelectedFile(core::shp_File);
 
   int columnCount(QModelIndex const& = QModelIndex())   const;
   int rowCount(QModelIndex const& = QModelIndex())      const;

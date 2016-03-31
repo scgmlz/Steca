@@ -12,6 +12,18 @@ class TheHub;
 
 namespace panel {
 //------------------------------------------------------------------------------
+/// A (tree-)list view with a reference to the hub.
+
+class HubListView: public TreeListView {
+  SUPER(HubListView,TreeListView)
+public:
+  HubListView(TheHub&);
+
+protected:
+  TheHub &theHub;
+};
+
+//------------------------------------------------------------------------------
 
 /// Just a plain panel
 class BasicPanel: public QGroupBox {

@@ -21,10 +21,6 @@ void FileViewModel::remFile(uint i) {
   theHub.remFile(i);
 }
 
-void FileViewModel::setSelectedFile(core::shp_File file) {
-  theHub.setSelectedFile(file);
-}
-
 int FileViewModel::columnCount(QModelIndex const&) const {
   return 2; // +1 for the hidden 0-th column
 }

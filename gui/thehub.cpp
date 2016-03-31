@@ -1,6 +1,5 @@
 #include "thehub.h"
 #include "mainwin.h"
-#include "panel/fitting.h"
 #include "core_json.h"
 
 #include <QSpinBox>
@@ -181,7 +180,7 @@ void TheHub::initActions() {
   TOGL_ACTION(actImageMirror           ,"Mirror",       "Mirror image", ":/icon/mirror_horz")
 
   PUSH_ACTION(actBackgroundClear       ,"Clear background fit regions",    "Clear regions for background fitting", ":/icon/clearBackground")
-  TOGL_ACTION(actBackgroundBackground  ,"Select background fit regions",    "Select regions for background fitting", ":/icon/pekBackground")
+  TOGL_ACTION(actBackgroundBackground  ,"Select background fit regions",    "Select regions for background fitting", ":/icon/peakBackground")
   TOGL_ACTION2(actBackgroundShowFit    ,"BackgroundEye", "BackgroundEye","Show background fit","Hide background fit", ":/icon/showBackground")
 
   TOGL_ACTION2(actHasBeamOffset        ,"Beam centre offset", "Beam centre offset","Enable beam center offset (for X-ray instruments)", "Disable beam center offset",":/icon/beam")

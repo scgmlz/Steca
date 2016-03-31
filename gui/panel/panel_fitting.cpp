@@ -1,4 +1,4 @@
-#include "fitting.h"
+#include "panel_fitting.h"
 #include "thehub.h"
 #include "core_fit_limits.h"
 #include <QAction>
@@ -7,8 +7,8 @@
 namespace panel {
 //------------------------------------------------------------------------------
 
-ReflectionView::ReflectionView(TheHub& theHub_)
-: theHub(theHub_), model(theHub.reflectionViewModel) {
+ReflectionView::ReflectionView(TheHub& theHub)
+: super(theHub), model(theHub.reflectionViewModel) {
   setModel(&model);
   for_i (model.columnCount())
     resizeColumnToContents(i);

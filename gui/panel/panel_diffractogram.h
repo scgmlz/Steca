@@ -1,8 +1,8 @@
 /** \file
  */
 
-#ifndef DIFFRACTOGRAM_H
-#define DIFFRACTOGRAM_H
+#ifndef PANEL_DIFFRACTOGRAM_H
+#define PANEL_DIFFRACTOGRAM_H
 
 #include "panel.h"
 #include "core_curve.h"
