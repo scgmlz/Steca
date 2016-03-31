@@ -19,11 +19,7 @@
 #include "panel.h"
 #include "core_image.h"
 #include "core_dataset.h"
-#include "core_types.h"
-
-namespace model {
-class FileViewModel;
-}
+#include "models.h"
 
 namespace panel {
 //------------------------------------------------------------------------------

@@ -6,10 +6,7 @@
 
 #include "panel.h"
 #include "core_reflection.h"
-
-namespace model {
-class ReflectionViewModel;
-}
+#include "models.h"
 
 namespace panel {
 //------------------------------------------------------------------------------

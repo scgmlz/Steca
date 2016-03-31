@@ -6,15 +6,24 @@
 #define MODELS_H
 
 #include "core_defs.h"
-#include "panel/panel.h"
 #include "core_file.h"
 #include "core_reflection.h"
 #include <QAbstractListModel>
 #include <QAbstractTableModel>
 
 class TheHub;
+class QCheckBox;
+class QLineEdit;
 
 namespace model {
+//------------------------------------------------------------------------------
+
+struct InfoItem {
+  str tag; QCheckBox *cb; QLineEdit *text;
+};
+
+typedef QVector<InfoItem> infoitem_vec;
+
 //------------------------------------------------------------------------------
 
 class ModelBase {
@@ -54,14 +63,14 @@ public:
   QVariant headerData(int,Qt::Orientation,int)          const;
 
   void setCoreFile(core::shp_File);
-  void setInfoItems(panel::infoitem_vec const*);
+  void setInfoItems(infoitem_vec const*);
 
 private:
   core::shp_Dataset const& getDataset(int row) const;
 
 private:
   core::shp_File coreFile;
-  panel::infoitem_vec const* infoItems; // TODO make better; remove #include panel.h then
+  infoitem_vec const* infoItems;
   QVector<int> attributeNums;
 };
 

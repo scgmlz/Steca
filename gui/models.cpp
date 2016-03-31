@@ -1,6 +1,7 @@
 #include "models.h"
 #include "thehub.h"
 #include "core_reflection.h"
+#include <QCheckBox>
 
 namespace model {
 //------------------------------------------------------------------------------
@@ -113,7 +114,7 @@ void DatasetViewModel::setCoreFile(core::shp_File coreFile_) {
   endResetModel();
 }
 
-void DatasetViewModel::setInfoItems(panel::infoitem_vec const* infoItems_) {
+void DatasetViewModel::setInfoItems(infoitem_vec const* infoItems_) {
   beginResetModel();
   infoItems = infoItems_;
   attributeNums.clear();

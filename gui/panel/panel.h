@@ -1,6 +1,17 @@
-/** \file
- * Gui panels
- */
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      panel.h
+//! @brief     Gui panels (in the main window).
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
 
 #ifndef PANEL_H
 #define PANEL_H
@@ -59,13 +70,6 @@ protected:
   QGridLayout *grid;
 };
 
-/// An information-selection item
-struct InfoItem {
-  str tag; QCheckBox *cb; QLineEdit *text;
-};
-
-typedef QVector<InfoItem> infoitem_vec;
-
 //------------------------------------------------------------------------------
 }
-#endif
+#endif // PANEL_H

@@ -52,7 +52,7 @@ DockDatasetInfo::DockDatasetInfo(TheHub& theHub_)
   scrollArea->setFrameStyle(QFrame::NoFrame);
 
   for_i (core::Dataset::numAttributes()) {
-      InfoItem item; item.tag = core::Dataset::getAttributeTag(i);
+      model::InfoItem item; item.tag = core::Dataset::getAttributeTag(i);
       infoItems.append(item);
   }
 
@@ -76,7 +76,7 @@ DockDatasetInfo::DockDatasetInfo(TheHub& theHub_)
   }
 }
 
-DockDatasetInfo::Info::Info(infoitem_vec& items) {
+DockDatasetInfo::Info::Info(model::infoitem_vec& items) {
   setLayout((grid = gridLayout()));
 
   for (auto &item: items) {

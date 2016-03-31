@@ -7,13 +7,13 @@
 #include "panel.h"
 #include "core_image.h"
 #include "core_dataset.h"
-#include "core_types.h"
+#include "models.h"
 
 #include <QScrollArea>
 
-namespace model {
-class DatasetViewModel;
-}
+//namespace model {
+//class DatasetViewModel;
+//}
 
 namespace panel {
 //------------------------------------------------------------------------------
@@ -51,15 +51,14 @@ public:
 
 private:
   class Info: public QWidget {
-    SUPER(Info,QWidget)
   public:
-    Info(infoitem_vec&);
+    Info(model::infoitem_vec&);
     QGridLayout *grid;
   };
 
   TheHub &theHub;
   Info *info;
-  infoitem_vec infoItems;
+  model::infoitem_vec infoItems;
 };
 
 //------------------------------------------------------------------------------
