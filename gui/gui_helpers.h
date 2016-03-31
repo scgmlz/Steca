@@ -58,16 +58,6 @@ QRadioButton*   radioButton(rcstr text);
 QComboBox*      comboBox(str_lst const&);
 
 //------------------------------------------------------------------------------
-/// abstract list widget
-
-class ListView: public QListView {
-  SUPER(ListView,QListView)
-  Q_OBJECT
-public:
-  ListView();
-};
-
-//------------------------------------------------------------------------------
 /// abstract tree widget
 
 class TreeView: public QTreeView {

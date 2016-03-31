@@ -27,6 +27,8 @@ public:
 FileView::FileView(TheHub& theHub): model(theHub.fileViewModel) {
   setModel(&model);
 
+  header()->hide();
+
   static FileViewDelegate delegate;
   setItemDelegate(&delegate);
 }
@@ -58,7 +60,7 @@ void FileView::update() {
   auto index = currentIndex();
   model.signalReset();
   // keep the current index, or select the first item
-  setCurrentIndex(index.isValid() ? index : model.index(0));
+  setCurrentIndex(index.isValid() ? index : model.index(0,1));
 }
 
 //------------------------------------------------------------------------------

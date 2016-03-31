@@ -117,12 +117,6 @@ QComboBox* comboBox(str_lst const& items) {
 
 //------------------------------------------------------------------------------
 
-ListView::ListView() {
-  setAlternatingRowColors(true);
-}
-
-//------------------------------------------------------------------------------
-
 TreeView::TreeView() {
   setAlternatingRowColors(true);
 }

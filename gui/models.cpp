@@ -25,12 +25,16 @@ void FileViewModel::setSelectedFile(core::shp_File file) {
   theHub.setSelectedFile(file);
 }
 
+int FileViewModel::columnCount(QModelIndex const&) const {
+  return 2; // +1 for the hidden 0-th column
+}
+
 int FileViewModel::rowCount(QModelIndex const&) const {
   return theHub.numFiles(true);
 }
 
 QVariant FileViewModel::data(QModelIndex const& index,int role) const {
-  auto row = index.row(), cnt = rowCount(index);
+  auto row = index.row(), col = index.column(), cnt = rowCount(index);
   if (row < 0 || row >= cnt) return QVariant();
 
   bool isCorrectionFile = theHub.hasCorrFile() && row+1 == cnt;

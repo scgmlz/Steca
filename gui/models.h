@@ -24,19 +24,20 @@ protected:
   TheHub &theHub;
 };
 
-class FileViewModel: public QAbstractListModel, public ModelBase {
-  SUPER(FileViewModel,QAbstractListModel)
+class FileViewModel: public QAbstractTableModel, public ModelBase {
+  SUPER(FileViewModel,QAbstractTableModel)
 public:
   FileViewModel(TheHub&);
+
+  enum { GetFileRole = Qt::UserRole, IsCorrectionFileRole };
 
   uint numFiles(bool withCorr=false);
   void remFile(uint i);
   void setSelectedFile(core::shp_File);
 
-  enum { GetFileRole = Qt::UserRole, IsCorrectionFileRole };
-
+  int columnCount(QModelIndex const& = QModelIndex())   const;
   int rowCount(QModelIndex const& = QModelIndex())      const;
-  QVariant data(QModelIndex const&,int) const;
+  QVariant data(QModelIndex const&,int)                 const;
 
   void signalReset();
 };
@@ -50,8 +51,8 @@ public:
 
   int columnCount(QModelIndex const& = QModelIndex())   const;
   int rowCount(QModelIndex const& = QModelIndex())      const;
-  QVariant data(QModelIndex const&,int) const;
-  QVariant headerData(int,Qt::Orientation,int) const;
+  QVariant data(QModelIndex const&,int)                 const;
+  QVariant headerData(int,Qt::Orientation,int)          const;
 
   void setCoreFile(core::shp_File);
   void setInfoItems(panel::infoitem_vec const*);

@@ -17,8 +17,8 @@ class DatasetViewModel;
 namespace panel {
 //------------------------------------------------------------------------------
 
-class FileView: public ListView {
-  SUPER(FileView,ListView)
+class FileView: public TreeListView {
+  SUPER(FileView,TreeListView)
 public:
   using Model = model::FileViewModel;
 
