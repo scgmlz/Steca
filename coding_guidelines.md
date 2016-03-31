@@ -318,3 +318,14 @@ Also use `auto const&` to make the point.
 Name getSomething() if they must calculate that something,
 or if they should be used with caution;
 else prefer to call plain accessors just something()
+
+## Refactoring
+
+Consider:
+
+- abstraction is good, unless it has an undue impact on performance
+- eliminate clutter of all sorts
+- descriptive names
+- enforce consistency
+- simplify, simplify, simplify
+- discard, discard, discard

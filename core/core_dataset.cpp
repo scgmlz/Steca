@@ -18,6 +18,7 @@
 #include "core_fit_fitting.h"
 #include "core_session.h"
 #include "core_reflection_info.h"
+#include <cmath>
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -51,6 +52,7 @@ rcstr Dataset::getAttributeTag(uint i) {
 }
 
 Dataset::Dataset(
+  File const* file_,
   rcstr date_, rcstr comment_,
   qreal motorXT_, qreal motorYT_, qreal motorZT_,
   qreal motorOmg_, qreal motorTth_, qreal motorPhi_, qreal motorChi_,
@@ -58,7 +60,7 @@ Dataset::Dataset(
   qreal monCount_, qreal dTime_,
   QSize const& size_, intens_t const* intensities_)
 
-: file(nullptr)
+: file(file_)
 , date(date_), comment(comment_)
 , motorXT(motorXT_), motorYT(motorYT_), motorZT(motorZT_)
 , motorOmg(motorOmg_), motorTth(motorTth_), motorPhi(motorPhi_), motorChi(motorChi_)

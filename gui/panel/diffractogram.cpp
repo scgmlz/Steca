@@ -93,7 +93,7 @@ void DiffractogramPlotOverlay::updateCursorRegion() {
 }
 
 DiffractogramPlot::DiffractogramPlot(TheHub& theHub_,Diffractogram& diffractogram_)
-: theHub(theHub_), diffractogram(diffractogram_) {
+: theHub(theHub_), diffractogram(diffractogram_), showBgFit(false) {
   overlay = new DiffractogramPlotOverlay(*this);
 
   auto *ar = axisRect();
@@ -159,6 +159,11 @@ DiffractogramPlot::DiffractogramPlot(TheHub& theHub_,Diffractogram& diffractogra
     }
   });
 
+  connect(theHub.actBackgroundShowFit, &QAction::toggled, [this](bool on) {
+    showBgFit = on;
+    updateBg();
+  });
+
   tool = TOOL_NONE;
 }
 
@@ -187,7 +192,7 @@ void DiffractogramPlot::plot(
 
     core::Range intenRange;
     if (fixedIntensityScale) {
-      auto max = diffractogram.dataset->intensRange(true).max;
+      auto max = diffractogram.getDataset()->intensRange(true).max;
       // heuristics; to calculate this precisely would require much more computation
       intenRange = core::Range(-max/30,max/3);
     } else {
@@ -200,7 +205,7 @@ void DiffractogramPlot::plot(
     xAxis->setVisible(true);
     yAxis->setVisible(true);
 
-    if (diffractogram.showBgFit) {
+    if (showBgFit) {
       bgGraph->setData(bg.getXs(), bg.getYs());
     } else {
       bgGraph->clearData();
@@ -297,7 +302,7 @@ void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
 
 Diffractogram::Diffractogram(TheHub& theHub_)
 : super(EMPTY_STR,theHub_,Qt::Vertical), dataset(nullptr)
-, showBgFit(false), currReflIndex(-1) {
+, currReflIndex(-1) {
   box->addWidget((plot = new DiffractogramPlot(theHub,*this)));
 
   connect(&theHub, &TheHub::datasetSelected, [this](core::shp_Dataset dataset) {
@@ -335,11 +340,6 @@ Diffractogram::Diffractogram(TheHub& theHub_)
     plot->setTool(on ? DiffractogramPlot::TOOL_BACKGROUND : DiffractogramPlot::TOOL_NONE);
   });
 
-  connect(theHub.actBackgroundShowFit, &QAction::toggled, [this](bool on) {
-    showBgFit = on;
-    plot->updateBg();
-  });
-
   connect(theHub.actReflectionRegion, &QAction::toggled, [this](bool on) {
     if (on) theHub.actBackgroundBackground->setChecked(false); // works as radio
     plot->setTool(on ? DiffractogramPlot::TOOL_PEAK_REGION : DiffractogramPlot::TOOL_NONE);
@@ -366,17 +366,17 @@ Diffractogram::Diffractogram(TheHub& theHub_)
   theHub.actBackgroundShowFit->setChecked(true);
 }
 
-void Diffractogram::setDataset(core::shp_Dataset dataset_) {
-  dataset = dataset_;
-  renderDataset();
-}
-
 void Diffractogram::renderDataset() {
   calcDgram();
   calcBackground();
   calcReflections();
 
   plot->plot(dgram,dgramBgFitted,bg,refls,currReflIndex);
+}
+
+void Diffractogram::setDataset(core::shp_Dataset dataset_) {
+  dataset = dataset_;
+  renderDataset();
 }
 
 void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, normalize==false

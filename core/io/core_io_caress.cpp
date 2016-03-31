@@ -162,7 +162,7 @@ shp_File loadCaress(rcstr filePath) THROWS {
 //        #endif
 
           // Objekt inizialisieren
-          file->appendDataset(new Dataset(
+          file->appendDataset(new Dataset(file.data(),
             str::fromStdString(s_date), str::fromStdString(s_comment),
             xAxis, yAxis, zAxis,
             omgAxis, tthAxis, phiAxis, chiAxis,

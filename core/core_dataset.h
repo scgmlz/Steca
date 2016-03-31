@@ -26,6 +26,7 @@ class Reflection;
 class ReflectionInfo;
 class Session;
 
+/// Dataset = image + metadata
 class Dataset final {
 public:
   // attribute list - will be dynamic
@@ -33,7 +34,8 @@ public:
   static rcstr getAttributeTag(uint);
 
 public:
-  Dataset(rcstr date, rcstr comment,
+  Dataset(File const*,
+          rcstr date, rcstr comment,
           qreal motorXT,  qreal motorYT,  qreal motorZT,
           qreal motorOmg, qreal motorTth, qreal motorPhi, qreal motorChi,
           qreal motorPST, qreal motorSST, qreal motorOMGM,
@@ -51,16 +53,14 @@ public:
 
   Range intensRange(bool global) const;
 
-
   /// used for correction files if there are more than one image
   void addIntensities(Dataset const&);
 
   ReflectionInfo makeReflectionInfo(Session const& session,
                                     Reflection const& reflection,
                                     Range const& gammaSector) const;
-
 private:
-  friend class File;
+  // TODO remove; datasets should not relate to their files of origin
   File const *file; ///< the parent file
 
   str

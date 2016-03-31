@@ -20,7 +20,6 @@ void File::fold() {
 
 void File::appendDataset(Dataset *dataset) {
   ASSERT(dataset)
-  dataset->file = this;
   datasets.append(shp_Dataset(dataset));
 }
 

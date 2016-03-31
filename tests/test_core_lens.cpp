@@ -192,7 +192,7 @@ Dataset const TestCoreLens::testDataset(int width, int height, intens_t inten,
   intenVector.insert(posArray,specialInten);
   intens_t const* intensities = intenVector.constData();
 
-  return  Dataset (date,comment,
+  return Dataset (nullptr,date,comment,
                      motorXT,motorYT,motorZT,
                      motorOmg,motorTth,motorPhi,motorChi,
                      motorPST,motorSST,motorOMGM,

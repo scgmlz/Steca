@@ -323,7 +323,11 @@ void MainWin::onShow() {
   theHub.load(QFileInfo("/home/rebecca/SCG/STeCa-Data/1.ste"));
 #endif
 #ifdef DEVELOPMENT_JAN
+#if defined(Q_OS_OSX)
+  theHub.load(QFileInfo("/Users/igb/P/+scg/data/s.ste"));
+#else
   theHub.load(QFileInfo("/home/jan/SCG/s.ste"));
+#endif
 #endif
 }
 

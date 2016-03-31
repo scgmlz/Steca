@@ -84,17 +84,19 @@ private:
   QCPGraph *bgGraph, *dgramGraph, *dgramBgFittedGraph, *guesses, *fits;
   QVector<QCPGraph*> reflGraph;
   DiffractogramPlotOverlay *overlay;
+  bool showBgFit;
 };
 
 class Diffractogram: public BoxPanel {
   SUPER(Diffractogram,BoxPanel)
-  friend class DiffractogramPlot; // TODO remove
 public:
   Diffractogram(TheHub&);
 
+  core::shp_Dataset const& getDataset() const { return dataset; }
+  void renderDataset(); // TODO move to DiffractogramPlot (?)
+
 private:
   void setDataset(core::shp_Dataset);
-  void renderDataset();
 
   core::shp_Dataset dataset;
 
@@ -102,7 +104,6 @@ private:
 
   core::Curve  dgram, dgramBgFitted, bg;
   core::curve_vec refls;
-  bool showBgFit;
 
   uint currReflIndex;
   core::shp_Reflection currentReflection;

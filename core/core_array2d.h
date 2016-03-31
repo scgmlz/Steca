@@ -22,6 +22,7 @@
 namespace core {
 //------------------------------------------------------------------------------
 
+/// 2D (x/y) array
 template<typename T>
 class Array2D {
 public:
