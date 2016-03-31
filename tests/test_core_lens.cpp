@@ -1,7 +1,6 @@
 #include "test_core_lens.h"
 #include "core_dataset.h"
 #include "core_image_transform.h"
-#include "core_image_cut.h"
 
 #define CHECK_TRANSFORM(transformNum, posX, posY) \
   imTrans = ImageTransform(transformNum);\
@@ -47,10 +46,8 @@ void TestCoreLens::testTransformationLens() {
 
 void TestCoreLens::testROILens() {
   TEST_DATA
-  int cutLeft = 1;
-  int cut     = 0;
-  auto imageCut = ImageCut(cut,cut,cutLeft,cut);
-  lensSystem << shp_LensSystem(new ROILens(imageCut));
+  auto imageMargins = QMargins(1,0,0,0);
+  lensSystem << shp_LensSystem(new ROILens(imageMargins));
   auto lensSize = lensSystem->getSize(); // top and bottom cut change
   QCOMPARE(lensSize, QSize(1,3));
 
@@ -61,7 +58,6 @@ void TestCoreLens::testROILens() {
         QCOMPARE(angles.tth, tthSpecial);
       }
   }
-
 }
 
 void TestCoreLens::testSensitivityCorrectionLens() {
@@ -87,8 +83,6 @@ void TestCoreLens::testSensitivityCorrectionLens() {
 
 void TestCoreLens::testIntensityRangeLens() {
   TEST_DATA
-  int cutLeft = 1;
-  int cut     = 0;
   // tests for nextChangeImpl()
   lensSystem << shp_LensSystem(new IntensityRangeLens());
   auto intensityRange = lensSystem->getIntensityRange();
@@ -96,8 +90,8 @@ void TestCoreLens::testIntensityRangeLens() {
   QCOMPARE(intensityRange.max,specialInten);
   QCOMPARE(intensityRange.min,inten);
 
-  auto imageCut = ImageCut(cut,cut,cutLeft,cut);
-  lensSystem << shp_LensSystem(new ROILens(imageCut));
+  auto imageMargins = QMargins(1,0,0,0);
+  lensSystem << shp_LensSystem(new ROILens(imageMargins));
   intensityRange = lensSystem->getIntensityRange();
 
   QCOMPARE(intensityRange.max,inten);

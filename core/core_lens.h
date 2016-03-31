@@ -4,6 +4,7 @@
 #include "core_types.h"
 #include "core_array2d.h"
 #include "core_priority_chain.h"
+#include <QMargins>
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -82,12 +83,10 @@ private:
 
 //------------------------------------------------------------------------------
 
-class ImageCut;
-
 class ROILens final : public Lens {
   SUPER(ROILens, Lens)
 public:
-  ROILens(ImageCut const& imageCut);
+  ROILens(QMargins const& imageMargins);
 
   uint getPriority() const override;
 
@@ -97,7 +96,7 @@ public:
   QSize getSize() const override;
 
 private:
-  ImageCut const* cut;
+  QMargins const &cut;
 };
 
 //------------------------------------------------------------------------------

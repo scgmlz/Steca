@@ -9,9 +9,9 @@
 #include "core_fit_functions.h"
 #include "core_lens.h"
 #include "core_reflection.h"
-#include "core_image_cut.h"
 #include "core_image_transform.h"
 #include <QPoint>
+#include <QMargins>
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -116,7 +116,7 @@ private: // corrections
   qreal lastCalcTthMitte; QPoint lastPixMiddle;
   Geometry lastGeometry;
 
-  ImageCut lastImageCut;
+  QMargins lastImageMargins;
   ImageTransform lastImageTransform;
 
 public:
@@ -133,11 +133,11 @@ public:
   Borders const& getCut() const { return cut; }
 
 public: // image cut
-  ImageCut const& getImageCut() const { return imageCut; }
-  void setImageCut(bool topLeft, bool linked, ImageCut const&);
+  QMargins const& getImageMargins() const { return imageMargins; }
+  void setImageMargins(bool topLeft, bool linked, QMargins const&);
 
 private:
-  ImageCut imageCut;
+  QMargins imageMargins;
 
 public:
   Ranges&                getBgRanges()                 { return bgRanges; }

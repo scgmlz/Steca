@@ -262,7 +262,7 @@ void TheHub::remFile(uint i) {
 
   if (0==numFiles(true)) {
     setSelectedDataset(core::shp_Dataset());
-    setImageCut(true,false,core::ImageCut());
+    setImageMargins(true, false, QMargins());
   }
 }
 
@@ -341,12 +341,12 @@ void TheHub::load(QByteArray const& json) THROWS {
   loadCorrFile(top[KEY_CORR_FILE].toString());
 
   auto cut = top[KEY_CUT].toObject();
-  uint y1 = qMax(0,cut[KEY_TOP].toInt());
-  uint y2 = qMax(0,cut[KEY_BOTTOM].toInt());
   uint x1 = qMax(0,cut[KEY_LEFT].toInt());
+  uint y1 = qMax(0,cut[KEY_TOP].toInt());
   uint x2 = qMax(0,cut[KEY_RIGHT].toInt());
+  uint y2 = qMax(0,cut[KEY_BOTTOM].toInt());
 
-  setImageCut(true,false,core::ImageCut(x1,y1,x2,y2));
+  setImageMargins(true,false,QMargins(x1,y1,x2,y2));
 
   auto det = top[KEY_DETECTOR].toObject();
 
@@ -403,12 +403,12 @@ QByteArray TheHub::save() const {
     files.append(relativFilePath);
   }
 
-  auto const &ic = session->getImageCut();
+  auto const &margins = session->getImageMargins();
   QJsonObject cut {
-    { KEY_TOP,    (int)ic.top     },
-    { KEY_BOTTOM, (int)ic.bottom  },
-    { KEY_LEFT,   (int)ic.left    },
-    { KEY_RIGHT,  (int)ic.right   },
+    { KEY_TOP,    margins.top()     },
+    { KEY_BOTTOM, margins.bottom()  },
+    { KEY_LEFT,   margins.left()    },
+    { KEY_RIGHT,  margins.right()   },
   };
 
   core::JsonObj bgRanges = getBgRanges().saveJson();
@@ -461,12 +461,12 @@ void TheHub::enableCorrection(bool on) {
   emit correctionEnabled(session->isCorrEnabled());
 }
 
-const core::ImageCut &TheHub::getImageCut() const {
-  return session->getImageCut();
+QMargins const& TheHub::getImageMargins() const {
+  return session->getImageMargins();
 }
 
-void TheHub::setImageCut(bool topLeft, bool linked, core::ImageCut const& imageCut) {
-  session->setImageCut(topLeft,linked,imageCut);
+void TheHub::setImageMargins(bool topLeft, bool linked, QMargins const& margins) {
+  session->setImageMargins(topLeft,linked,margins);
   session->calcIntensCorrArray();
   emit geometryChanged();
 }
@@ -541,7 +541,7 @@ void TheHub::setImageRotate(core::ImageTransform rot) {
   actImageRotate->setIcon(QIcon(rotateIconFile));
   actImageMirror->setIcon(QIcon(mirrorIconFile));
   session->setImageRotate(rot);
-  setImageCut(true,false,session->getImageCut()); // TODO make makeSafeCut()
+  setImageMargins(true,false,session->getImageMargins()); // TODO make makeSafeCut(?)
   emit geometryChanged();
 }
 

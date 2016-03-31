@@ -161,7 +161,7 @@ shp_LensSystem Session::allLenses(Dataset const& dataset,
                                   bool const globalIntensityScale) const {
   auto lenses = plainLens(dataset);
   lenses << shp_LensSystem(new TransformationLens(imageTransform));
-  lenses << shp_LensSystem(new ROILens(imageCut));
+  lenses << shp_LensSystem(new ROILens(imageMargins));
   if (corrEnabled)
     lenses << shp_LensSystem(new SensitivityCorrectionLens(intensCorrArray));
   if (globalIntensityScale)
@@ -214,13 +214,13 @@ DiffractionAnglesMap const& Session::calcAngleMap(qreal tthMitte) { // RENAME
 
   if (angleMapArray.size() == size
       && lastCalcTthMitte==tthMitte && lastPixMiddle == pixMiddle
-      && lastGeometry == geometry && lastImageCut == imageCut
+      && lastGeometry == geometry && lastImageMargins == imageMargins
       && lastImageTransform == imageTransform)
     return angleMapArray;
 
   lastCalcTthMitte = tthMitte; lastPixMiddle = pixMiddle;
   lastGeometry = geometry;
-  lastImageCut = imageCut;
+  lastImageMargins = imageMargins;
   lastImageTransform = imageTransform;
 
   angleMapArray.fill(size);
@@ -260,16 +260,13 @@ DiffractionAnglesMap const& Session::calcAngleMap(qreal tthMitte) { // RENAME
       }
     }
 
-    // Calculate Gamma and TTH after cut
-    ASSERT(imageCut.getCount(size) > 0)
-
     cut.tth_gamma0.safeSet(
-      angleMapArray.at(size.width() - 1 - imageCut.right,pixMiddle.y()).tth,
-      angleMapArray.at(imageCut.left,pixMiddle.y()).tth);
+      angleMapArray.at(size.width() - 1 - imageMargins.right(),pixMiddle.y()).tth,
+      angleMapArray.at(imageMargins.left(),pixMiddle.y()).tth);
 
     // TODO loop through cut - make abstract (see below), REFACTOR
-    for (uint ix = imageCut.left; ix < size.width() - imageCut.right; ++ix) {
-      for (uint iy = imageCut.top; iy < size.height() - imageCut.bottom; ++iy) {
+    for (uint ix = imageMargins.left(); ix < size.width() - imageMargins.right(); ++ix) {
+      for (uint iy = imageMargins.top(); iy < size.height() - imageMargins.bottom(); ++iy) {
         auto ac = angleMapArray.at(ix,iy);
         cut.gamma.extend(ac.gamma);
         cut.tth_regular.extend(ac.tth);
@@ -292,7 +289,7 @@ void Session::calcIntensCorrArray() {
 
   ASSERT(1 == corrFile->numDatasets()) // no need to sum
   auto lenses = plainLens(*corrFile->getDataset(0));
-  lenses << shp_LensSystem(new ROILens(imageCut));
+  lenses << shp_LensSystem(new ROILens(imageMargins));
 
   // REVIEW
   qreal sum = 0; uint n = 0;
@@ -319,34 +316,37 @@ void Session::calcIntensCorrArray() {
         val = qQNaN(); hasNaNs = true;
       }
 
-      intensCorrArray.setAt(ix + imageCut.left, iy + imageCut.top, val);
+      intensCorrArray.setAt(ix + imageMargins.left(), iy + imageMargins.top(), val);
     }
 }
 
-void Session::setImageCut(bool topLeft, bool linked, ImageCut const& imageCut_) {
+void Session::setImageMargins(bool topLeft, bool linked, QMargins const& margins) {
   auto size = getImageSize();
 
   if (size.isEmpty())
-    imageCut = ImageCut();
+    imageMargins = QMargins();
   else {
-    auto limit = [linked](uint &thisOne, uint &thatOne, uint maxTogether) {
-      if (linked && thisOne+thatOne>=maxTogether) {
-        thisOne = thatOne = qMax(0u, (maxTogether-1) / 2);
+    auto limit = [linked](int& m1, int& m2, int maxTogether) {
+      if (linked && m1+m2 >= maxTogether) {
+        m1 = m2 = qMax(0, (maxTogether-1) / 2);
       } else {
-        thisOne = qMax(qMin(thisOne, maxTogether - thatOne - 1), 0u);
-        thatOne = qMax(qMin(thatOne, maxTogether - thisOne - 1), 0u);
+        m1 = qMax(qMin(m1, maxTogether - m2 - 1), 0);
+        m2 = qMax(qMin(m2, maxTogether - m1 - 1), 0);
       }
     };
 
-    imageCut = imageCut_;
     // make sure that cut values are valid; in the right order
+    int left  = margins.left(),  top = margins.top(),
+        right = margins.right(), bottom = margins.bottom();
     if (topLeft) {
-      limit(imageCut.top,   imageCut.bottom,  size.height());
-      limit(imageCut.left,  imageCut.right,   size.width());
+      limit(top,  bottom, size.height());
+      limit(left, right,  size.width());
     } else {
-      limit(imageCut.bottom,imageCut.top,     size.height());
-      limit(imageCut.right, imageCut.left,    size.width());
+      limit(bottom, top,  size.height());
+      limit(right,  left, size.width());
     }
+
+    imageMargins = QMargins(left,top,right,bottom);
   }
 }
 
@@ -388,7 +388,7 @@ void Session::setNormType(Normalization type_) {
 qreal Session::calAverageBG(Dataset const& dataset) const {
   auto lenses = plainLens(dataset);
   lenses << shp_LensSystem(new TransformationLens(imageTransform));
-  lenses << shp_LensSystem(new ROILens(imageCut));
+  lenses << shp_LensSystem(new ROILens(imageMargins));
   if (corrEnabled)
     lenses << shp_LensSystem(new SensitivityCorrectionLens(intensCorrArray));
 

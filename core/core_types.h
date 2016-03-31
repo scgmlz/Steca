@@ -137,7 +137,6 @@ enum class Normalization {
   DISABLE,DELTA_TIME,MON_COUNTS,BG_LEVEL,NUM_NORM_TYPES
 };
 
-
 str_lst getStringListNormalization();
 
 //------------------------------------------------------------------------------

@@ -114,8 +114,8 @@ signals:
   void imageScale(uint);
 
 private:
-  QSpinBox       *cutTop, *cutBottom, *cutLeft, *cutRight;
-  QSpinBox       *spinImageScale;
+  QSpinBox  *marginLeft, *marginTop, *marginRight, *marginBottom;
+  QSpinBox  *spinImageScale;
 
   void setFrom(TheHub&);
 };

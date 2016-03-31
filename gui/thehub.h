@@ -152,8 +152,8 @@ public:
 
   void enableCorrection(bool);
 
-  core::ImageCut const& getImageCut() const;
-  void setImageCut(bool topLeft, bool linked, core::ImageCut const&);
+  QMargins const& getImageMargins() const;
+  void setImageMargins(bool topLeft, bool linked, QMargins const&);
 
   QSize getImageSize() const;
 

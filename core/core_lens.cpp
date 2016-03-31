@@ -1,7 +1,6 @@
 #include "core_lens.h"
 
 #include "core_dataset.h"
-#include "core_image_cut.h"
 #include "core_image_transform.h"
 
 namespace core {
@@ -122,10 +121,7 @@ QSize TransformationLens::getSize() const {
 
 //------------------------------------------------------------------------------
 
-ROILens::ROILens(ImageCut const& imageCut)
-  :  Lens()
-    ,cut(&imageCut)
-{
+ROILens::ROILens(QMargins const& imageMargins): cut(imageMargins) {
 }
 
 uint ROILens::getPriority() const {
@@ -133,14 +129,14 @@ uint ROILens::getPriority() const {
 }
 
 DiffractionAngles ROILens::getAngles(uint x, uint y) const {
-  x += cut->left;
-  y += cut->top;
+  x += cut.left();
+  y += cut.top();
   return next->getAngles(x, y);
 }
 
 intens_t ROILens::getIntensity(uint x, uint y) const {
-  x += cut->left;
-  y += cut->top;
+  x += cut.left();
+  y += cut.top();
   return next->getIntensity(x, y);
 }
 
@@ -150,8 +146,8 @@ Range ROILens::getIntensityRange() const {
 
 QSize ROILens::getSize() const {
   auto s = next->getSize();
-  s.rwidth() -= cut->left + cut->right;
-  s.rheight() -= cut->top + cut->bottom;
+  s.rwidth()  -= cut.left() + cut.right();
+  s.rheight() -= cut.top()  + cut.bottom();
   return s;
 }
 

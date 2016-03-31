@@ -131,10 +131,11 @@ void ImageWidget::paintEvent(QPaintEvent*) {
   if (!showOverlay) return;
 
   // cut
-  auto cut = theHub.getImageCut();
+  auto margins = theHub.getImageMargins();
   QRect r = rect()
     .adjusted(1,1,-2,-2)
-    .adjusted(scale*cut.left,scale*cut.top,-scale*cut.right,-scale*cut.bottom);
+    .adjusted(scale*margins.left(),  scale*margins.top(),
+             -scale*margins.right(),-scale*margins.bottom());
 
   painter.setPen(Qt::lightGray);
   painter.drawRect(r);
@@ -280,45 +281,45 @@ DatasetOptions2::DatasetOptions2(TheHub& theHub_)
   box->addLayout(gc);
 
   gc->addWidget(icon(":/icon/cutTopU"),             0,0);
-  gc->addWidget((cutTop = spinCell(4,0)),           0,1);
-  cutTop->setToolTip("Top cut");
+  gc->addWidget((marginTop = spinCell(4,0)),           0,1);
+  marginTop->setToolTip("Top cut");
   gc->addWidget(icon(":/icon/cutBottomU"),          0,2);
-  gc->addWidget((cutBottom = spinCell(4,0)),        0,3);
-  cutBottom->setToolTip("Bottom cut");
+  gc->addWidget((marginBottom = spinCell(4,0)),        0,3);
+  marginBottom->setToolTip("Bottom cut");
 
   gc->addWidget(iconButton(theHub.actImagesLink),   0,5);
   gc->addWidget(iconButton(theHub.actImageOverlay), 1,5);
 
   gc->addWidget(icon(":/icon/cutLeftU"),            1,0);
-  gc->addWidget((cutLeft = spinCell(4,0)),          1,1);
-  cutLeft->setToolTip("Left cut");
+  gc->addWidget((marginLeft = spinCell(4,0)),          1,1);
+  marginLeft->setToolTip("Left cut");
   gc->addWidget(icon(":/icon/cutRightU"),           1,2);
-  gc->addWidget((cutRight = spinCell(4,0)),         1,3);
-  cutRight->setToolTip("Right cut");
+  gc->addWidget((marginRight = spinCell(4,0)),         1,3);
+  marginRight->setToolTip("Right cut");
   gc->setColumnStretch(4,1);
 
   box->addStretch();
 
   auto setImageCut = [this](bool topLeft, int value) {
     if (theHub.actImagesLink->isChecked())
-      theHub.setImageCut(topLeft, true, core::ImageCut(value,value,value,value));
+      theHub.setImageMargins(topLeft, true, QMargins(value,value,value,value));
     else
-      theHub.setImageCut(topLeft, false, core::ImageCut(cutTop->value(), cutBottom->value(), cutLeft->value(), cutRight->value()));
+      theHub.setImageMargins(topLeft, false, QMargins(marginLeft->value(), marginTop->value(), marginRight->value(), marginBottom->value()));
   };
 
-  connect(cutTop, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
+  connect(marginLeft, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
     setImageCut(true,value);
   });
 
-  connect(cutBottom, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
+  connect(marginTop, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
+    setImageCut(true,value);
+  });
+
+  connect(marginRight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
     setImageCut(false,value);
   });
 
-  connect(cutLeft, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
-    setImageCut(true,value);
-  });
-
-  connect(cutRight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
+  connect(marginBottom, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
     setImageCut(false,value);
   });
 
@@ -332,12 +333,12 @@ DatasetOptions2::DatasetOptions2(TheHub& theHub_)
 }
 
 void DatasetOptions2::setFrom(TheHub& theHub) {
-  auto cut = theHub.getImageCut();
+  auto margins = theHub.getImageMargins();
 
-  cutTop    ->setValue(cut.top);
-  cutBottom ->setValue(cut.bottom);
-  cutLeft   ->setValue(cut.left);
-  cutRight  ->setValue(cut.right);
+  marginLeft   ->setValue(margins.left());
+  marginTop    ->setValue(margins.top());
+  marginRight  ->setValue(margins.right());
+  marginBottom ->setValue(margins.bottom());
 }
 
 //------------------------------------------------------------------------------
