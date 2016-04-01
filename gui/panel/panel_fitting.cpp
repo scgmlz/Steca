@@ -15,8 +15,8 @@ ReflectionView::ReflectionView(TheHub& theHub)
 }
 
 void ReflectionView::addReflection(int type) {
-  using eType = core::Reflection::eType;
-  model.addReflection((eType)qBound(0,type,(int)eType::NUM_PEAK_TYPES)); // make safe
+  using eType = core::ePeakType;
+  model.addReflection((eType)qBound(0,type,(int)eType::NUM_TYPES)); // make safe
   update();
 }
 
@@ -149,7 +149,7 @@ Fitting::Fitting(TheHub& theHub_)
   });
 
   connect(comboReflType, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this](int index) {
-    theHub.setReflType((core::Reflection::eType)index);
+    theHub.setReflType((core::ePeakType)index);
   });
 
   connect(&theHub, &TheHub::reflectionSelected, [this](core::shp_Reflection reflection) {
@@ -219,7 +219,7 @@ void Fitting::setReflControls(core::shp_Reflection const& reflection) {
     readFitPeakY->clear();
     readFitFwhm->clear();
   } else {
-    comboReflType->setCurrentIndex(reflection->getType());
+    comboReflType->setCurrentIndex((int)reflection->getType());
 
     auto &range = reflection->getRange();
     spinRangeMin->setValue(safeReal(range.min));

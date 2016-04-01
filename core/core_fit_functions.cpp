@@ -352,15 +352,15 @@ void Polynomial::loadJson(rcJsonObj obj) THROWS {
 
 //------------------------------------------------------------------------------
 
-PeakFunction* PeakFunction::factory(eType type) {
+PeakFunction* PeakFunction::factory(ePeakType type) {
   switch (type) {
-  case PEAK_GAUSSIAN:
+  case ePeakType::GAUSSIAN:
     return new Gaussian();
-  case PEAK_LORENTZIAN:
+  case ePeakType::LORENTZIAN:
     return new CauchyLorentz();
-  case PEAK_PSEUDOVOIGT1:
+  case ePeakType::PSEUDOVOIGT1:
     return new PseudoVoigt1();
-  case PEAK_PSEUDOVOIGT2:
+  case ePeakType::PSEUDOVOIGT2:
     return new PseudoVoigt2();
   default:
     NEVER_HERE

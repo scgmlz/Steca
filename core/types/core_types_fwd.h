@@ -46,11 +46,14 @@ class File;       typedef QSharedPointer<File>        shp_File;
 class Dataset;    typedef QSharedPointer<Dataset>     shp_Dataset;
 class Reflection; typedef QSharedPointer<Reflection>  shp_Reflection;
 
-namespace fit {
+enum class ePeakType {
+  GAUSSIAN, LORENTZIAN, PSEUDOVOIGT1, PSEUDOVOIGT2,
+  NUM_TYPES
+};
 
+namespace fit {
 class Function;
 class PeakFunction;
-
 }
 
 //------------------------------------------------------------------------------

@@ -496,14 +496,14 @@ void TheHub::setBackgroundPolynomialDegree(uint degree) {
   emit backgroundPolynomialDegree(degree);
 }
 
-void TheHub::setReflType(core::Reflection::eType type) {
+void TheHub::setReflType(core::ePeakType type) {
   if (selectedReflection) {
     selectedReflection->setType(type);
     emit reflectionsChanged();
   }
 }
 
-void TheHub::addReflection(core::Reflection::eType type) {
+void TheHub::addReflection(core::ePeakType type) {
   getReflections().append(core::shp_Reflection(new core::Reflection(type)));
   emit reflectionsChanged();
 }

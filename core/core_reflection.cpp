@@ -7,13 +7,15 @@ namespace core {
 //------------------------------------------------------------------------------
 
 str_lst const& Reflection::reflTypes() {
-  static str_lst types;
-  if (types.isEmpty())
-    types << "Gaussian" << "Lorentzian" << "PseudoVoigt1" << "PseudoVoigt2";
+  static str_lst types {"Gaussian","Lorentzian","PseudoVoigt1","PseudoVoigt2"};
   return types;
 }
 
-Reflection::Reflection(eType type): peakFunction(nullptr) {
+rcstr Reflection::reflType(ePeakType type) {
+  return reflTypes()[(int)type];
+}
+
+Reflection::Reflection(ePeakType type): peakFunction(nullptr) {
   setPeakFunction(type);
   setRange(Range());
 }
@@ -22,11 +24,11 @@ Reflection::~Reflection() {
   delete peakFunction;
 }
 
-Reflection::eType Reflection::getType() const {
+ePeakType Reflection::getType() const {
   return peakFunction->type();
 }
 
-void Reflection::setType(eType type) {
+void Reflection::setType(ePeakType type) {
   setPeakFunction(type);
 }
 
@@ -56,7 +58,7 @@ void Reflection::invalidateGuesses() {
   peakFunction->setGuessFWHM(qQNaN());
 }
 
-void Reflection::setPeakFunction(eType type) {
+void Reflection::setPeakFunction(ePeakType type) {
   setPeakFunction(fit::PeakFunction::factory(type));
 }
 

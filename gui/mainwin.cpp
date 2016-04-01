@@ -374,7 +374,7 @@ void MainWin::onShow() {
 #if defined(Q_OS_OSX)
   theHub.load(QFileInfo("/Users/igb/P/+scg/data/s.ste"));
 #else
-  theHub.load(QFileInfo("/home/jan/SCG/s.ste"));
+//  theHub.load(QFileInfo("/home/jan/SCG/s.ste"));
 #endif
 #endif
 }

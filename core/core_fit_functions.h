@@ -175,16 +175,11 @@ public:
 class PeakFunction: public SimpleFunction {
   SUPER(PeakFunction,SimpleFunction)
 public:
-  enum eType {
-    PEAK_GAUSSIAN, PEAK_LORENTZIAN, PEAK_PSEUDOVOIGT1, PEAK_PSEUDOVOIGT2,
-    NUM_PEAK_TYPES
-  };
-
-  static PeakFunction* factory(eType);
+  static PeakFunction* factory(ePeakType);
 
   PeakFunction();
 
-  virtual eType type() const = 0;
+  virtual ePeakType type() const = 0;
 
   virtual void  setGuessPeak(XY const&);
   virtual void  setGuessFWHM(qreal);
@@ -214,7 +209,7 @@ public:
 
   Gaussian(qreal ampl=1, qreal xShift=0, qreal sigma=1);
 
-  eType type() const { return PEAK_GAUSSIAN; }
+  ePeakType type() const { return ePeakType::GAUSSIAN; }
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
@@ -238,7 +233,7 @@ public:
 
   CauchyLorentz(qreal ampl=1, qreal xShift=0, qreal gamma=1);
 
-  eType type() const { return PEAK_LORENTZIAN; }
+  ePeakType type() const { return ePeakType::LORENTZIAN; }
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
@@ -262,7 +257,7 @@ public:
 
   PseudoVoigt1(qreal ampl=1, qreal xShift=0, qreal sigmaGamma=1, qreal eta=0.1);
 
-  eType type() const { return PEAK_PSEUDOVOIGT1; }
+  ePeakType type() const { return ePeakType::PSEUDOVOIGT1; }
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
@@ -286,7 +281,7 @@ public:
 
   PseudoVoigt2(qreal ampl=1, qreal xShift=0, qreal sigma=1, qreal gamma=1, qreal eta=0.1);
 
-  eType type() const { return PEAK_PSEUDOVOIGT2; }
+  ePeakType type() const { return ePeakType::PSEUDOVOIGT2; }
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;

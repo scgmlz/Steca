@@ -13,15 +13,14 @@ namespace core {
 
 class Reflection {
 public:
-  using eType = fit::PeakFunction::eType;
-
   static str_lst const& reflTypes();
+  static rcstr          reflType(ePeakType);
 
-  Reflection(eType = eType::PEAK_GAUSSIAN);
+  Reflection(ePeakType = ePeakType::GAUSSIAN);
  ~Reflection();
 
-  eType getType() const;
-  void  setType(eType);
+  ePeakType getType() const;
+  void  setType(ePeakType);
 
   Range const& getRange() const { return range; }
   void         setRange(Range const&);
@@ -39,7 +38,7 @@ public:
 private:
   Range range;
 
-  void setPeakFunction(eType);
+  void setPeakFunction(ePeakType);
   void setPeakFunction(fit::PeakFunction*);
   fit::PeakFunction *peakFunction;
 

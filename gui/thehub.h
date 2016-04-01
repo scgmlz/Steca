@@ -165,9 +165,9 @@ public:
 
   void setBackgroundPolynomialDegree(uint);
 
-  void setReflType(core::Reflection::eType);
+  void setReflType(core::ePeakType);
 
-  void addReflection(core::Reflection::eType);
+  void addReflection(core::ePeakType);
   void remReflection(uint);
 
 private:
