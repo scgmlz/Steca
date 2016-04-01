@@ -1,7 +1,7 @@
-#include "core_curve.h"
 #include "core_fit_fitting.h"
 #include "core_fit_methods.h"
 #include "core_fit_limits.h"
+#include "types/core_type_curve.h"
 
 namespace core { namespace fit {
 //------------------------------------------------------------------------------
@@ -18,7 +18,7 @@ void fitPeak(PeakFunction& peakFunction, core::Curve const& dgram, core::Range c
   core::Curve curve = dgram.intersect(range);
   if (curve.isEmpty()) return;
 
-  if (!peakFunction.getGuessPeak().isDefined()) { // calculate guesses
+  if (!peakFunction.getGuessPeak().isValid()) { // calculate guesses
     uint peakIndex  = curve.maxYindex();
     auto peakTth    = curve.x(peakIndex);
     auto peakIntens = curve.y(peakIndex);

@@ -1,5 +1,4 @@
 #include "core_io.h"
-#include "core_types.h"
 #include "core_file.h"
 #include "core_dataset.h"
 #include "core_session.h"
@@ -12,7 +11,6 @@
 
 #include <QDir>
 #include <sstream>
-#include <cmath>
 
 namespace core { namespace io {
 //------------------------------------------------------------------------------

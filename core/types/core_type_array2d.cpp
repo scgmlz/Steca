@@ -2,7 +2,7 @@
 //
 //  STeCa2:    StressTexCalculator ver. 2
 //
-//! @file      core_defs.cpp
+//! @file      core_type_array2d.cpp
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
@@ -12,31 +12,13 @@
 //
 // ************************************************************************** //
 
-#include "core_defs.h"
-#include <qmath.h>
+#include "core_type_array2d.h"
 
-static_assert (QT_VERSION >= QT_VERSION_CHECK(5,4,0),"written for Qt >= 5.4, have " QT_VERSION_STR);
+namespace core {
+//------------------------------------------------------------------------------
 
-qreal radToDeg(qreal rad) {
-  return rad * (180 / M_PI);
+// nothing here
+
+//------------------------------------------------------------------------------
 }
-
-qreal degToRad(qreal deg) {
-  return deg * (M_PI / 180);
-}
-
-#ifdef QT_NO_EXCEPTIONS
-#error needs exception handling
-#endif
-
-str const EMPTY_STR;
-
-Exception* Exception::clone() const {
-  return new Exception(*this);
-}
-
-void Exception::raise() const {
-  throw *this;
-}
-
 // eof

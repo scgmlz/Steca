@@ -1,8 +1,9 @@
 #ifndef CORE_POLEFIGURE_H
 #define CORE_POLEFIGURE_H
 
-#include "core_file.h"
-#include "core_types.h"
+#include "types/core_types_fwd.h"
+#include "types/core_type_range.h"
+#include "core_reflection_info.h"
 
 namespace core {
 

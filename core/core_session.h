@@ -9,12 +9,18 @@
 #include "core_fit_functions.h"
 #include "core_lens.h"
 #include "core_reflection.h"
-#include "core_image_transform.h"
+#include "types/core_type_image_transform.h"
 #include <QPoint>
 #include <QMargins>
 
 namespace core {
 //------------------------------------------------------------------------------
+
+enum class Normalization {
+  DISABLE,DELTA_TIME,MON_COUNTS,BG_LEVEL,NUM_NORM_TYPES
+};
+
+str_lst const& getStringListNormalization();
 
 /// detector geometry
 struct Geometry {

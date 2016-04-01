@@ -1,7 +1,6 @@
 #include "panel_diffractogram.h"
 #include "thehub.h"
 #include "core_fit_fitting.h"
-#include "core_types.h"
 
 namespace panel {
 //------------------------------------------------------------------------------
@@ -197,7 +196,7 @@ void DiffractogramPlot::plot(
       intenRange = core::Range(-max/30,max/3);
     } else {
       intenRange = dgramBgFitted.YRange();
-      intenRange.extend(dgram.YRange());
+      intenRange.extendBy(dgram.YRange());
     }
 
     xAxis->setRange(tthRange.min,tthRange.max);

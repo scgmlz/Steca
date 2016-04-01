@@ -1,8 +1,8 @@
 #ifndef CORE_LENS_H
 #define CORE_LENS_H
 
-#include "core_types.h"
-#include "core_array2d.h"
+#include "types/core_type_array2d.h"
+#include "types/core_type_range.h"
 #include "core_priority_chain.h"
 #include <QMargins>
 
@@ -62,8 +62,6 @@ private:
 };
 
 //------------------------------------------------------------------------------
-
-class ImageTransform;
 
 class TransformationLens final : public Lens {
   SUPER(TransformationLens, Lens)

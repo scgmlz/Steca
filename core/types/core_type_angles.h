@@ -2,8 +2,8 @@
 //
 //  STeCa2:    StressTexCalculator ver. 2
 //
-//! @file      panel_file.h
-//! @brief     File panel.
+//! @file      core_type_angles.h
+//! @brief     Diffraction angles pair etc.
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
@@ -13,41 +13,22 @@
 //
 // ************************************************************************** //
 
-#ifndef PANEL_FILE_H
-#define PANEL_FILE_H
+#ifndef CORE_TYPE_ANGLES_H
+#define CORE_TYPE_ANGLES_H
 
-#include "panel.h"
-#include "models.h"
+#include "core_defs.h"
+#include "core_types_fwd.h"
 
-namespace panel {
+namespace core {
 //------------------------------------------------------------------------------
+/// Diffraction angles pair
 
-class FileView: public HubListView {
-  SUPER(FileView,HubListView)
-public:
-  using Model = model::FileViewModel;
+struct DiffractionAngles {
+  DiffractionAngles(qreal gamma = 0, qreal tth = 0);
 
-  FileView(TheHub&);
-
-protected:
-  void selectionChanged(QItemSelection const&, QItemSelection const&);
-
-public:
-  void removeSelected();
-  void update();
-
-private:
-  Model &model;
-};
-
-class DockFiles: public DockWidget {
-  SUPER(DockFiles,DockWidget)
-public:
-  DockFiles(TheHub&);
-private:
-  FileView *fileView;
+  qreal gamma, tth;
 };
 
 //------------------------------------------------------------------------------
 }
-#endif
+#endif // CORE_TYPE_ANGLES_H

@@ -2,8 +2,7 @@
 //
 //  STeCa2:    StressTexCalculator ver. 2
 //
-//! @file      panel_file.h
-//! @brief     File panel.
+//! @file      core_type_xy.cpp
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
@@ -13,41 +12,42 @@
 //
 // ************************************************************************** //
 
-#ifndef PANEL_FILE_H
-#define PANEL_FILE_H
+#include "core_type_xy.h"
+#include "types/core_type_range.h"
+#include "types/core_json.h"
 
-#include "panel.h"
-#include "models.h"
-
-namespace panel {
+namespace core {
 //------------------------------------------------------------------------------
 
-class FileView: public HubListView {
-  SUPER(FileView,HubListView)
-public:
-  using Model = model::FileViewModel;
+XY::XY() {
+  invalidate();
+}
 
-  FileView(TheHub&);
+XY::XY(qreal x_, qreal y_): x(x_), y(y_) {
+}
 
-protected:
-  void selectionChanged(QItemSelection const&, QItemSelection const&);
+void XY::invalidate() {
+  x = y = qQNaN();
+}
 
-public:
-  void removeSelected();
-  void update();
+bool XY::isValid() const {
+  return !qIsNaN(x) && !qIsNaN(y);
+}
 
-private:
-  Model &model;
-};
+static str const KEY_X("x"), KEY_Y("y");
 
-class DockFiles: public DockWidget {
-  SUPER(DockFiles,DockWidget)
-public:
-  DockFiles(TheHub&);
-private:
-  FileView *fileView;
-};
+void XY::loadJson(rcJsonObj obj) THROWS {
+  x = obj.loadReal(KEY_X);
+  y = obj.loadReal(KEY_Y);
+}
+
+JsonObj XY::saveJson() const {
+  JsonObj obj;
+  obj.saveReal(KEY_X, x);
+  obj.saveReal(KEY_Y, y);
+  return obj;
+}
 
 //------------------------------------------------------------------------------
 }
-#endif
+// eof

@@ -5,11 +5,10 @@
 #define PANEL_DIFFRACTOGRAM_H
 
 #include "panel.h"
-#include "core_curve.h"
 #include "core_dataset.h"
 #include "core_reflection.h"
-#include "core_types.h"
 #include "core_fit_methods.h"
+#include "types/core_type_curve.h"
 #include "QCP/qcustomplot.h"
 
 namespace panel {

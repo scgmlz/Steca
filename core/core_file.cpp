@@ -32,7 +32,7 @@ QSize File::getImageSize() const {
 Range const& File::intensRange() const {
   if (!rgeIntens.isValid()) {
     for (auto const& dataset: datasets)
-      rgeIntens.extend(dataset->getImage().intensRange());
+      rgeIntens.extendBy(dataset->getImage().intensRange());
   }
 
   return rgeIntens;

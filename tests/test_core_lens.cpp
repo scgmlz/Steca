@@ -1,6 +1,8 @@
 #include "test_core_lens.h"
+
 #include "core_dataset.h"
-#include "core_image_transform.h"
+#include "types/core_type_angles.h"
+#include "types/core_type_image_transform.h"
 
 #define CHECK_TRANSFORM(transformNum, posX, posY) \
   imTrans = ImageTransform(transformNum);\
@@ -41,7 +43,6 @@ void TestCoreLens::testTransformationLens() {
   CHECK_TRANSFORM(ImageTransform::MIRROR_ROTATE_1,2,1);
   CHECK_TRANSFORM(ImageTransform::MIRROR_ROTATE_2,0,2);
   CHECK_TRANSFORM(ImageTransform::MIRROR_ROTATE_3,0,0);
-
 }
 
 void TestCoreLens::testROILens() {

@@ -14,11 +14,13 @@
 
 #include "core_dataset.h"
 
-#include "core_curve.h"
-#include "core_fit_fitting.h"
+#include "core_file.h"
 #include "core_session.h"
 #include "core_reflection_info.h"
-#include <cmath>
+#include "core_fit_fitting.h"
+#include "types/core_type_matrix.h"
+#include "types/core_type_curve.h"
+#include <qmath.h>
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -159,11 +161,11 @@ void calculateAlphaBeta(qreal omgDet, qreal phiDet, qreal chiDet, qreal tthRef, 
                            * rotationCWx (gammaRef)
                            * rotationCCWz(tthRef / 2)
                            * vector3d(0,1,0);
-  alpha = std::acos(rotated._2);
-  beta  = std::atan2(rotated._0, rotated._1);
+  alpha = acos(rotated._2);
+  beta  = atan2(rotated._0, rotated._1);
   // Mirror angles.
   if (alpha > M_PI / 2) {
-    alpha = std::abs(alpha - M_PI);
+    alpha = abs(alpha - M_PI);
     beta += beta < 0 ? M_PI : -M_PI;
   }
   // Keep beta between 0 and 2pi.

@@ -5,7 +5,7 @@
 #ifndef CORE_IO_H
 #define CORE_IO_H
 
-#include <core_file.h>
+#include "core_file.h"
 #include <QFileInfo>
 
 namespace core { namespace io {

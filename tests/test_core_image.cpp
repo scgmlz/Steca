@@ -1,5 +1,5 @@
 #include "test_core_image.h"
-#include <core_image.h>
+#include "types/core_type_image.h"
 
 void TestCoreImage::testImage(uint w, uint h) {
     //Testing if Data is corectly added and can be accessed again

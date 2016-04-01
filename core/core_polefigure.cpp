@@ -1,12 +1,11 @@
 #include "core_polefigure.h"
 
-#include "core_curve.h"
+#include "types/core_type_angles.h"
 #include "core_fit_fitting.h"
 #include "core_session.h"
 #include "core_reflection_info.h"
 
 #include <algorithm>
-#include <cmath>
 #include <QLinkedList>
 #include <QtMath>
 
@@ -16,16 +15,16 @@ namespace core {
 qreal calculateDeltaBeta(qreal beta1, qreal beta2) noexcept {
   qreal deltaBeta = beta1 - beta2;
   qreal tempDelta = deltaBeta - 2 * M_PI;
-  if (std::abs(tempDelta) < std::abs(deltaBeta)) deltaBeta = tempDelta;
+  if (qAbs(tempDelta) < qAbs(deltaBeta)) deltaBeta = tempDelta;
   tempDelta = deltaBeta + 2 * M_PI;
-  if (std::abs(tempDelta) < std::abs(deltaBeta)) deltaBeta = tempDelta;
+  if (qAbs(tempDelta) < qAbs(deltaBeta)) deltaBeta = tempDelta;
   return deltaBeta;
 }
 
 // Calculates the angle between two points on a unit sphere.
 qreal angle(qreal alpha1, qreal alpha2,
             qreal deltaBeta) noexcept {
-  return std::acos(
+  return acos(
       cos(alpha1) * cos(alpha2)
     + sin(alpha1) * sin(alpha2) * cos(deltaBeta)
   );
@@ -35,7 +34,7 @@ qreal angle(qreal alpha1, qreal alpha2,
 bool inRadius(qreal alpha, qreal beta,
               qreal centerAlpha, qreal centerBeta,
               qreal radius) noexcept {
-  return   std::abs(angle(alpha, centerAlpha, calculateDeltaBeta(beta, centerBeta)))
+  return   qAbs(angle(alpha, centerAlpha, calculateDeltaBeta(beta, centerBeta)))
          < radius;
 }
 
@@ -84,7 +83,7 @@ Range gammaRangeAt(shp_LensSystem lenses, qreal const tth) {
   for (int iy = 0; iy < s.height(); ++iy) {
     for (int ix = 0; ix < s.width() - 1; ++ix) {
       if (tth >= angles.tth && tth < nextAngles.tth) {
-        r.extend(angles.gamma);
+        r.extendBy(angles.gamma);
       }
       angles = nextAngles;
       nextAngles = lenses->getAngles(ix + 1, iy);

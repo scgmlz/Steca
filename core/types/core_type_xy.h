@@ -2,8 +2,8 @@
 //
 //  STeCa2:    StressTexCalculator ver. 2
 //
-//! @file      panel_file.h
-//! @brief     File panel.
+//! @file      core_type_xy.h
+//! @brief     2D coordinate point
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
@@ -13,41 +13,29 @@
 //
 // ************************************************************************** //
 
-#ifndef PANEL_FILE_H
-#define PANEL_FILE_H
+#ifndef CORE_TYPE_XY_H
+#define CORE_TYPE_XY_H
 
-#include "panel.h"
-#include "models.h"
+#include "core_defs.h"
+#include "core_types_fwd.h"
 
-namespace panel {
+namespace core {
 //------------------------------------------------------------------------------
+/// 2D point
 
-class FileView: public HubListView {
-  SUPER(FileView,HubListView)
-public:
-  using Model = model::FileViewModel;
+struct XY {
+  XY();                   ///< invalid (NaN)
+  XY(qreal,qreal);
 
-  FileView(TheHub&);
+  qreal x, y;
 
-protected:
-  void selectionChanged(QItemSelection const&, QItemSelection const&);
+  void  invalidate();     ///< make invalid
+  bool  isValid() const;  ///< is not NaN
 
-public:
-  void removeSelected();
-  void update();
-
-private:
-  Model &model;
-};
-
-class DockFiles: public DockWidget {
-  SUPER(DockFiles,DockWidget)
-public:
-  DockFiles(TheHub&);
-private:
-  FileView *fileView;
+  void    loadJson(rcJsonObj) THROWS;
+  JsonObj saveJson() const;
 };
 
 //------------------------------------------------------------------------------
 }
-#endif
+#endif // CORE_TYPE_XY_H

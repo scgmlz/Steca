@@ -1,7 +1,6 @@
 #include "test_core_dataset.h"
-#include "core_types.h"
 
-#include <cmath>
+#include "types/core_type_matrix.h"
 
 namespace core {
 

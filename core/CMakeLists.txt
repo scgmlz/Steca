@@ -7,10 +7,12 @@ add_subdirectory(LevMar)
 
 file(GLOB header_files
   "*.h"
+  "types/*.h"
 )
 
 file(GLOB source_files
   "*.cpp"
+  "types/*.cpp"
 )
 
 include_directories(

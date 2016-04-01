@@ -4,7 +4,6 @@
 #include "core_polefigure.h"
 
 #include <algorithm>
-#include <cmath>
 #include <QLinkedList>
 #include <QtMath>
 #include <QtTest/QtTest>

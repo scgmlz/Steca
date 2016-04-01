@@ -2,8 +2,8 @@
 //
 //  STeCa2:    StressTexCalculator ver. 2
 //
-//! @file      core_array2d.h
-//! @brief     2-D array
+//! @file      core_type_array2d.h
+//! @brief     2D array
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
@@ -13,10 +13,11 @@
 //
 // ************************************************************************** //
 
-#ifndef CORE_ARRAY2D_H
-#define CORE_ARRAY2D_H
+#ifndef CORE_TYPE_ARRAY2D_H
+#define CORE_TYPE_ARRAY2D_H
 
 #include "core_defs.h"
+#include "core_types_fwd.h"
 #include <QSize>
 
 namespace core {
@@ -108,4 +109,4 @@ protected:
 
 //------------------------------------------------------------------------------
 }
-#endif // CORE_ARRAY2D_H
+#endif // CORE_TYPE_ARRAY2D_H

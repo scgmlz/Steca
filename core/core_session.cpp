@@ -2,11 +2,18 @@
 #include "io/core_io.h"
 #include "core_fit_methods.h"
 #include "core_fit_fitting.h"
-#include "core_curve.h"
-#include <cmath>
+#include "types/core_type_angles.h"
+#include "types/core_type_curve.h"
+#include <qmath.h>
 
 namespace core {
 //------------------------------------------------------------------------------
+
+str_lst const& getStringListNormalization() {
+  static str_lst sl{"Disable","Measurement time","Monitor counts","Background level"};
+  return sl;
+}
+
 
 qreal const Geometry::MIN_DETECTOR_DISTANCE   = 1000;
 qreal const Geometry::MIN_DETECTOR_PIXEL_SIZE = 1;
@@ -268,8 +275,8 @@ DiffractionAnglesMap const& Session::calcAngleMap(qreal tthMitte) { // RENAME
     for (uint ix = imageMargins.left(); ix < size.width() - imageMargins.right(); ++ix) {
       for (uint iy = imageMargins.top(); iy < size.height() - imageMargins.bottom(); ++iy) {
         auto ac = angleMapArray.at(ix,iy);
-        cut.gamma.extend(ac.gamma);
-        cut.tth_regular.extend(ac.tth);
+        cut.gamma.extendBy(ac.gamma);
+        cut.tth_regular.extendBy(ac.tth);
       }
     }
 

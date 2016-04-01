@@ -1,8 +1,8 @@
 #include "core_fit_methods.h"
 
-#include "core_curve.h"
+#include "types/core_type_curve.h"
 #include "LevMar/levmar.h"
-#include <cmath>
+#include <qmath.h>
 
 namespace core { namespace fit {
 //------------------------------------------------------------------------------

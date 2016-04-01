@@ -1,6 +1,6 @@
 #include "test_core_array2d.h"
 
-#include <core_array2d.h>
+#include "types/core_type_array2d.h"
 
 void TestCoreArray2d::testArray2d() {
   core::Array2D<qreal> a; // default constructor

@@ -5,19 +5,15 @@
 #ifndef CORE_REFLECTION_H
 #define CORE_REFLECTION_H
 
-#include "core_types.h"
-#include "core_array2d.h"
+#include "types/core_types_fwd.h"
 #include "core_fit_functions.h"
-
-#include <memory>
 
 namespace core {
 //------------------------------------------------------------------------------
 
 class Reflection {
 public:
-  using PeakFunction = core::fit::PeakFunction;
-  using eType        = PeakFunction::eType;
+  using eType = fit::PeakFunction::eType;
 
   static str_lst const& reflTypes();
 
@@ -30,9 +26,10 @@ public:
   Range const& getRange() const { return range; }
   void         setRange(Range const&);
 
-  std::unique_ptr<PeakFunction> makePeakFunction() const;
-  PeakFunction & getPeakFunction();
-  PeakFunction const& getPeakFunction() const;
+  fit::PeakFunction* makePeakFunction() const;
+
+  fit::PeakFunction& getPeakFunction();
+  fit::PeakFunction const& getPeakFunction() const;
 
   void invalidateGuesses();
 
@@ -43,8 +40,8 @@ private:
   Range range;
 
   void setPeakFunction(eType);
-  void setPeakFunction(PeakFunction*);
-  PeakFunction *peakFunction;
+  void setPeakFunction(fit::PeakFunction*);
+  fit::PeakFunction *peakFunction;
 
 public:
   void    loadJson(rcJsonObj) THROWS;

@@ -2,8 +2,7 @@
 //
 //  STeCa2:    StressTexCalculator ver. 2
 //
-//! @file      core_json.h
-//! @brief     Json load / save helper.
+//! @file      core_type_angles.cpp
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
@@ -13,28 +12,15 @@
 //
 // ************************************************************************** //
 
-#ifndef CORE_JSON_H
-#define CORE_JSON_H
-
-#include "core_defs.h"
-#include <QJsonObject>
+#include "core_type_angles.h"
 
 namespace core {
 //------------------------------------------------------------------------------
 
-class JsonObj: public QJsonObject {
-  SUPER(JsonObj,QJsonObject)
-public:
-  JsonObj();
-  JsonObj(QJsonObject const&);
-
-  qreal loadReal(rcstr key) const THROWS;
-  void  saveReal(rcstr key, qreal);
-
-  JsonObj& operator+= (JsonObj const&);
-  JsonObj  operator+  (JsonObj const&) const;
-};
+DiffractionAngles::DiffractionAngles(qreal gamma_, qreal tth_)
+: gamma(gamma_), tth(tth_) {
+}
 
 //------------------------------------------------------------------------------
 }
-#endif // CORE_JSON_H
+// eof

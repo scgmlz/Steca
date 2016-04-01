@@ -2,8 +2,8 @@
 //
 //  STeCa2:    StressTexCalculator ver. 2
 //
-//! @file      panel_file.h
-//! @brief     File panel.
+//! @file      core_json.h
+//! @brief     Json load / save helper.
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
@@ -13,41 +13,34 @@
 //
 // ************************************************************************** //
 
-#ifndef PANEL_FILE_H
-#define PANEL_FILE_H
+#ifndef CORE_JSON_H
+#define CORE_JSON_H
 
-#include "panel.h"
-#include "models.h"
+#include "core_defs.h"
+#include <QJsonObject>
 
-namespace panel {
+namespace core {
 //------------------------------------------------------------------------------
 
-class FileView: public HubListView {
-  SUPER(FileView,HubListView)
+class JsonObj: public QJsonObject {
+  SUPER(JsonObj,QJsonObject)
 public:
-  using Model = model::FileViewModel;
+  JsonObj();
+  JsonObj(QJsonObject const&);
 
-  FileView(TheHub&);
+  int      loadInt(rcstr key) const THROWS;
+  JsonObj& saveInt(rcstr key, int);
 
-protected:
-  void selectionChanged(QItemSelection const&, QItemSelection const&);
+  uint     loadUint(rcstr key) const THROWS;
+  JsonObj& saveUint(rcstr key, uint);
 
-public:
-  void removeSelected();
-  void update();
+  qreal    loadReal(rcstr key) const THROWS;
+  JsonObj& saveReal(rcstr key, qreal);
 
-private:
-  Model &model;
-};
-
-class DockFiles: public DockWidget {
-  SUPER(DockFiles,DockWidget)
-public:
-  DockFiles(TheHub&);
-private:
-  FileView *fileView;
+  JsonObj& operator+= (JsonObj const&);
+  JsonObj  operator+  (JsonObj const&) const;
 };
 
 //------------------------------------------------------------------------------
 }
-#endif
+#endif // CORE_JSON_H

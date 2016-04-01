@@ -1,6 +1,7 @@
 #include "test_core_range.h"
-#include <core_curve.h>
-#include "core_types.h"
+
+#include "types/core_type_curve.h"
+#include "types/core_type_range.h"
 
 void TestCoreRange::testRange() {
   // Tests for Range
@@ -23,7 +24,7 @@ void TestCoreRange::testRange() {
     QVERIFY(r.contains(val2));
     QVERIFY(!r.contains(val1));
 
-    r.extend(val1);
+    r.extendBy(val1);
     QCOMPARE(r.min, val1);
     QCOMPARE(r.max, val2);
   }
@@ -53,7 +54,7 @@ void TestCoreRange::testRange() {
     QCOMPARE(r.safeFrom(max,min).min,core::Range(min,max).min);
     QCOMPARE(r.safeFrom(max,min).max,core::Range(min,max).max);
 
-    r.extend(core::Range(min-max,max+min));
+    r.extendBy(core::Range(min-max,max+min));
     QVERIFY(r.contains(core::Range(-40,44)));
     QVERIFY(r.intersects(core::Range(min,max+100)));
   }

@@ -2,8 +2,8 @@
 //
 //  STeCa2:    StressTexCalculator ver. 2
 //
-//! @file      core_curve.h
-//! @brief     The x-y curve class
+//! @file      core_type_curve.h
+//! @brief     An x-y curve
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
@@ -13,17 +13,14 @@
 //
 // ************************************************************************** //
 
-#ifndef CORE_CURVE_H
-#define CORE_CURVE_H
+#ifndef CORE_TYPE_CURVE_H
+#define CORE_TYPE_CURVE_H
 
-#include "core_types.h"
+#include "core_defs.h"
+#include "core_types_fwd.h"
+#include "types/core_type_range.h"
 
 namespace core {
-
-namespace fit {
-class Function;
-}
-
 //------------------------------------------------------------------------------
 /// A set of datapoints.
 
@@ -68,4 +65,4 @@ Curve makeCurve(shp_LensSystem, Range const& gammaRange, Range const& tthRange);
 
 //------------------------------------------------------------------------------
 }
-#endif // CORE_CURVE_H
+#endif // CORE_TYPE_CURVE_H

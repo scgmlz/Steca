@@ -1,7 +1,7 @@
 #include "test_save_load_json.h"
+
 #include "core_fit_functions.h"
-#include "core_types.h"
-#include "core_json.h"
+#include "types/core_json.h"
 
 // make non-public methods public
 #define TEST_FIT_CLASS(cls)                 \

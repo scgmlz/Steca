@@ -1,12 +1,23 @@
-/** \file
- * Detector images.
- */
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_type_image.h
+//! @brief     Detector image
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
 
-#ifndef CORE_IMAGE_H
-#define CORE_IMAGE_H
+#ifndef CORE_TYPE_IMAGE_H
+#define CORE_TYPE_IMAGE_H
 
-#include "core_types.h"
-#include "core_array2d.h"
+#include "core_type_array2d.h"
+#include "core_type_range.h"
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -42,4 +53,4 @@ private:
 
 //------------------------------------------------------------------------------
 }
-#endif
+#endif // CORE_TYPE_IMAGE_H

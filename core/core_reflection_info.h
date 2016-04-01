@@ -1,7 +1,8 @@
 #ifndef REFLECTION_INFO_H
 #define REFLECTION_INFO_H
 
-#include "core_types.h"
+#include "types/core_type_xy.h"
+#include "types/core_type_range.h"
 
 namespace core {
 //------------------------------------------------------------------------------

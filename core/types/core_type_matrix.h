@@ -2,8 +2,8 @@
 //
 //  STeCa2:    StressTexCalculator ver. 2
 //
-//! @file      panel_file.h
-//! @brief     File panel.
+//! @file      core_type_matrix.h
+//! @brief     3D matrix and vector operations
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
@@ -13,41 +13,39 @@
 //
 // ************************************************************************** //
 
-#ifndef PANEL_FILE_H
-#define PANEL_FILE_H
+#ifndef CORE_TYPE_MATRIX_H
+#define CORE_TYPE_MATRIX_H
 
-#include "panel.h"
-#include "models.h"
+#include "core_defs.h"
+#include "core_types_fwd.h"
 
-namespace panel {
+namespace core {
 //------------------------------------------------------------------------------
 
-class FileView: public HubListView {
-  SUPER(FileView,HubListView)
-public:
-  using Model = model::FileViewModel;
+struct vector3d {
+  qreal _0, _1, _2;
 
-  FileView(TheHub&);
-
-protected:
-  void selectionChanged(QItemSelection const&, QItemSelection const&);
-
-public:
-  void removeSelected();
-  void update();
-
-private:
-  Model &model;
+  vector3d(qreal,qreal,qreal);
 };
 
-class DockFiles: public DockWidget {
-  SUPER(DockFiles,DockWidget)
-public:
-  DockFiles(TheHub&);
-private:
-  FileView *fileView;
+struct matrix3d {
+  qreal _00, _01, _02,
+        _10, _11, _12,
+        _20, _21, _22;
+
+  matrix3d(qreal, qreal, qreal,
+           qreal, qreal, qreal,
+           qreal, qreal, qreal);
+
+  void     transpose();
+  matrix3d transposed() const;
+
+  matrix3d operator *(matrix3d const&) const;
+  vector3d operator *(vector3d const&) const;
+
+  bool operator ==(matrix3d const&) const;
 };
 
 //------------------------------------------------------------------------------
 }
-#endif
+#endif // CORE_TYPE_MATRIX_H

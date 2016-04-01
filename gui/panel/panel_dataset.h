@@ -5,7 +5,6 @@
 #define PANEL_DATASET_H
 
 #include "panel.h"
-#include "core_image.h"
 #include "core_dataset.h"
 #include "models.h"
 

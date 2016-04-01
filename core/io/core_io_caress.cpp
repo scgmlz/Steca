@@ -1,11 +1,10 @@
 #include "core_io.h"
-#include "core_types.h"
 #include "core_file.h"
 
 #include "io/Caress/raw.h"
 
 #include <sstream>
-#include <cmath>
+#include <qmath.h>
 
 namespace core { namespace io {
 //------------------------------------------------------------------------------

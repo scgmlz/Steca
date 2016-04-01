@@ -1,6 +1,6 @@
 #include "thehub.h"
 #include "mainwin.h"
-#include "core_json.h"
+#include "types/core_json.h"
 
 #include <QSpinBox>
 #include <QDoubleSpinBox>
@@ -425,7 +425,7 @@ QByteArray TheHub::save() const {
     { KEY_CUT,        cut                 },
     { KEY_TRANSFORM,  session->getImageTransform().val  },
     { KEY_FILES,      files               },
-    { KEY_CORR_FILE,  hasCorrFile() ? session->getCorrFile()->fileInfo().absoluteFilePath() : "" },
+    { KEY_CORR_FILE,  hasCorrFile() ? QDir::current().relativeFilePath(session->getCorrFile()->fileInfo().absoluteFilePath()) : "" },
     { KEY_BG_POLYNOMIAL, getBgPolynomialDegree() },
     { KEY_BG_RANGES,     bgRanges                },
     { KEY_REFLECTIONS,   reflections             },

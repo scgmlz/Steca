@@ -1,5 +1,5 @@
 #include "core_reflection.h"
-#include "core_json.h"
+#include "types/core_json.h"
 #include <QStringList>
 
 namespace core {
@@ -34,19 +34,19 @@ void Reflection::setRange(Range const& range_) {
   range = range_;
 }
 
-std::unique_ptr<fit::PeakFunction> Reflection::makePeakFunction() const {
-  std::unique_ptr<fit::PeakFunction> f(fit::PeakFunction::factory(getType()));
+fit::PeakFunction* Reflection::makePeakFunction() const {
+  QScopedPointer<fit::PeakFunction> f(fit::PeakFunction::factory(getType()));
   f->setGuessPeak(peakFunction->getGuessPeak());
   f->setGuessFWHM(peakFunction->getGuessFWHM());
-  return f;
+  return f.take();
 }
 
-Reflection::PeakFunction& Reflection::getPeakFunction() {
+fit::PeakFunction& Reflection::getPeakFunction() {
   ASSERT(peakFunction)
   return *peakFunction;
 }
 
-Reflection::PeakFunction const& Reflection::getPeakFunction() const {
+fit::PeakFunction const& Reflection::getPeakFunction() const {
   ASSERT(peakFunction)
   return *peakFunction;
 }
@@ -57,10 +57,10 @@ void Reflection::invalidateGuesses() {
 }
 
 void Reflection::setPeakFunction(eType type) {
-  setPeakFunction(PeakFunction::factory(type));
+  setPeakFunction(fit::PeakFunction::factory(type));
 }
 
-void Reflection::setPeakFunction(PeakFunction* f) {
+void Reflection::setPeakFunction(fit::PeakFunction* f) {
   delete peakFunction;
   peakFunction = f;
 }
@@ -77,8 +77,8 @@ void Reflection::loadJson(rcJsonObj obj) THROWS {
   QScopedPointer<fit::Function> f(fit::Function::factory(pObj[KEY_TYPE].toString()));
   f->loadJson(pObj);
 
-  RUNTIME_CHECK(dynamic_cast<PeakFunction*>(f.data()),"must be a peak function");
-  setPeakFunction(static_cast<PeakFunction*>(f.take()));
+  RUNTIME_CHECK(dynamic_cast<fit::PeakFunction*>(f.data()),"must be a peak function");
+  setPeakFunction(static_cast<fit::PeakFunction*>(f.take()));
 }
 
 JsonObj Reflection::saveJson() const {

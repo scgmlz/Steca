@@ -15,9 +15,9 @@
 
 #include "core_fit_fitting.h"
 #include "core_fit_functions.h"
-#include "core_json.h"
+#include "types/core_json.h"
 #include <QScopedPointer>
-#include <cmath>
+#include <qmath.h>
 
 namespace core { namespace fit {
 //------------------------------------------------------------------------------
@@ -340,7 +340,7 @@ qreal Polynomial::calAverageValue(Range tth) {
     pow++;
   }
   average = (1/tth.width())*(upper-lower);
-  
+
   return average;
 }
 

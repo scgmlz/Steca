@@ -46,6 +46,11 @@ extern  str const EMPTY_STR;  ///< an empty string (that can be returned by refe
 typedef QVector<qreal> qreal_vec;
 typedef QVector<uint>  uint_vec;
 
+// conversions
+
+qreal radToDeg(qreal rad);
+qreal degToRad(qreal deg);
+
 // exceptions
 #include <QException>
 

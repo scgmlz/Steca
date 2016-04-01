@@ -3,9 +3,9 @@
 
 #include "test_core_lens.h"
 #include "core_dataset.h"
+#include "types/core_type_angles.h"
 
 #include <algorithm>
-#include <cmath>
 #include <QLinkedList>
 #include <QtMath>
 
@@ -67,7 +67,7 @@ void TestCorePolefigure::testGamaRange() {
     qreal tthSpecial      = 88.0;
     int anglePosX         = 1;
     int anglePosY         = 2;
-    
+
   { // simple test
     TestCoreLens test;
     Dataset dataset = test.testDataset(width,height,inten,specialInten,posIntensArray);

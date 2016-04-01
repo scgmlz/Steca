@@ -1,6 +1,6 @@
 #include "panel_dataset.h"
 #include "thehub.h"
-#include "core_types.h"
+
 #include <QPainter>
 #include <QAction>
 

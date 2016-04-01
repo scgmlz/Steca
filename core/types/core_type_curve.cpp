@@ -2,7 +2,7 @@
 //
 //  STeCa2:    StressTexCalculator ver. 2
 //
-//! @file      core_curve.cpp
+//! @file      core_type_curve.cpp
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
@@ -12,10 +12,10 @@
 //
 // ************************************************************************** //
 
-#include "core_curve.h"
+#include "core_type_curve.h"
 #include "core_fit_functions.h"
 #include "core_lens.h"
-
+#include "types/core_type_angles.h"
 #include <qmath.h>
 
 namespace core {
@@ -46,8 +46,8 @@ bool Curve::isOrdered() const {
 void Curve::append(qreal x, qreal y) {
   xs.append(x);
   ys.append(y);
-  xRange.extend(x);
-  yRange.extend(y);
+  xRange.extendBy(x);
+  yRange.extendBy(y);
 }
 
 Curve Curve::intersect(Range const& range) const {
@@ -171,5 +171,4 @@ Curve makeCurve(shp_LensSystem lenses,
 
 //------------------------------------------------------------------------------
 }
-
 // eof

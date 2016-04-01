@@ -24,6 +24,32 @@ JsonObj::JsonObj() {
 JsonObj::JsonObj(QJsonObject const& obj): super(obj) {
 }
 
+int JsonObj::loadInt(rcstr key) const THROWS {
+  auto val = value(key);
+
+  switch (val.type()) {
+  case QJsonValue::Double:
+    return qRound(val.toDouble());
+  default:
+    THROW("bad number format");
+  }
+}
+
+JsonObj& JsonObj::saveInt(rcstr key, int num) {
+  insert(key, num);
+  return *this;
+}
+
+uint JsonObj::loadUint(rcstr key) const THROWS {
+  int num = loadInt(key);
+  if (num < 0) THROW("bad number format");
+  return (uint)num;
+}
+
+JsonObj& JsonObj::saveUint(rcstr key, uint num) {
+  return saveInt(key,num);
+}
+
 static str const INF_P("+inf"), INF_M("-inf");
 
 qreal JsonObj::loadReal(rcstr key) const THROWS {
@@ -43,13 +69,16 @@ qreal JsonObj::loadReal(rcstr key) const THROWS {
   }
 }
 
-void JsonObj::saveReal(rcstr key, qreal num) {
-  if (qIsNaN(num)) return;      // do not save anything
-
-  if (qIsInf(num))
+JsonObj& JsonObj::saveReal(rcstr key, qreal num) {
+  if (qIsNaN(num)) {
+    // do not save anything for NaNs
+  } else if (qIsInf(num)) {
     insert(key, num < 0 ? INF_M : INF_P);
-  else
+  } else {
     insert(key, num);
+  }
+
+  return *this;
 }
 
 JsonObj& JsonObj::operator+= (JsonObj const& that) {

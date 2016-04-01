@@ -1,10 +1,28 @@
-#ifndef CORE_IMAGE_TRANSFORM_H
-#define CORE_IMAGE_TRANSFORM_H
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_type_image_transform.h
+//! @brief     The transform type
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
+#ifndef CORE_TYPE_IMAGE_TRANSFORM_H
+#define CORE_TYPE_IMAGE_TRANSFORM_H
+
+#include "core_defs.h"
+#include "core_types_fwd.h"
 
 namespace core {
 //------------------------------------------------------------------------------
+/// Image transform type - rotation and mirroring (bit-map)
 
-/// Image transform - rotation and mirroring
 struct ImageTransform {
   enum e {
     ROTATE_0        = 0,  // no transform
@@ -30,4 +48,4 @@ struct ImageTransform {
 
 //------------------------------------------------------------------------------
 }
-#endif
+#endif // CORE_TYPE_IMAGE_TRANSFORM_H

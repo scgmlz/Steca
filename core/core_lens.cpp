@@ -1,7 +1,9 @@
 #include "core_lens.h"
 
 #include "core_dataset.h"
-#include "core_image_transform.h"
+#include "types/core_type_angles.h"
+#include "types/core_type_image.h"
+#include "types/core_type_image_transform.h"
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -64,7 +66,7 @@ intens_t TransformationLens::getIntensity(uint x, uint y) const {
   case ImageTransform::ROTATE_0:
     break;
   case ImageTransform::ROTATE_1:
-    std::swap(x, y);
+    qSwap(x, y);
     y = w - y - 1;
     break;
   case ImageTransform::ROTATE_2:
@@ -72,7 +74,7 @@ intens_t TransformationLens::getIntensity(uint x, uint y) const {
     y = h - y - 1;
     break;
   case ImageTransform::ROTATE_3:
-    std::swap(x, y);
+    qSwap(x, y);
     x = h - x - 1;
     break;
   case ImageTransform::MIRROR_ROTATE_0:
@@ -80,14 +82,14 @@ intens_t TransformationLens::getIntensity(uint x, uint y) const {
     break;
   case ImageTransform::MIRROR_ROTATE_1:
     y = h - y - 1;
-    std::swap(x, y);
+    qSwap(x, y);
     y = w - y - 1;
     break;
   case ImageTransform::MIRROR_ROTATE_2:
     y = h - y - 1;
     break;
   case ImageTransform::MIRROR_ROTATE_3:
-    std::swap(x, y);
+    qSwap(x, y);
     break;
   default:
     NEVER_HERE;
@@ -217,7 +219,7 @@ void IntensityRangeLens::nextChangedImpl() {
   auto s = getSize();
   for (int iy = 0; iy < s.height(); ++iy) {
     for (int ix = 0; ix < s.width(); ++ix) {
-      range.extend(getIntensity(ix, iy));
+      range.extendBy(getIntensity(ix, iy));
     }
   }
 }

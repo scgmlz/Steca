@@ -1,15 +1,15 @@
 #include "test_core_lib.h"
 
-#include "core_types.h"
-#include <core_file.h>
-#include <core_session.h>
+#include "core_defs.h"
+#include "core_file.h"
+#include "core_session.h"
 
 void TestCoreLib::testConversions() {
-  QCOMPARE(M_PI,core::degToRad(180));
-  QCOMPARE(90.0,core::radToDeg(M_PI_2));
+  QCOMPARE(M_PI,degToRad(180));
+  QCOMPARE(90.0,radToDeg(M_PI_2));
 
   for_i (720)
-    QCOMPARE((qreal)i,core::radToDeg(core::degToRad(i)));
+    QCOMPARE((qreal)i,radToDeg(degToRad(i)));
 }
 
 void TestCoreLib::testFile() {

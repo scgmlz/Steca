@@ -16,7 +16,7 @@
 #ifndef CORE_DATASET_H
 #define CORE_DATASET_H
 
-#include "core_image.h"
+#include "types/core_type_image.h"
 
 namespace core {
 //------------------------------------------------------------------------------
