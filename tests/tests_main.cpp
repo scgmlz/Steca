@@ -11,9 +11,13 @@
 #include "test_core_polefigure.h"
 #include <QTextStream>
 
-#define TEST_SUITE(TestClass) {    \
-  TestClass test;                  \
-  QTest::qExec(&test, argc, argv); \
+bool failed = false;
+
+#define TEST_SUITE(TestClass)                              \
+{                                                          \
+    TestClass test;                                        \
+    bool success = (0 == QTest::qExec(&test, argc, argv)); \
+    failed       = failed || !success;                     \
 }
 
 int main(int argc, char *argv[]) {
@@ -41,6 +45,9 @@ int main(int argc, char *argv[]) {
   TEST_SUITE(TestSaveLoadJson)
   QTextStream(stdout) << "" << endl;
   TEST_SUITE(TestCorePolefigure)
+
+  if (failed) qDebug() << "!! Some tests failed !!";
+  return failed ? -1 : 0;
 }
 
 // eof
