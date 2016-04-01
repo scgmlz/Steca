@@ -55,8 +55,8 @@ struct Range {
   /// limit the number to the interval, as qBound would
   qreal bound(qreal)             const;
 
-  void    loadJson(rcJsonObj) THROWS;
   JsonObj saveJson() const;
+  void    loadJson(rcJsonObj) THROWS;
 };
 
 //------------------------------------------------------------------------------
@@ -83,8 +83,8 @@ private:
   QVector<Range> ranges;
 
 public:
-  void    loadJson(rcJsonObj) THROWS;
   JsonObj saveJson() const;
+  void    loadJson(rcJsonObj) THROWS;
 };
 
 //------------------------------------------------------------------------------

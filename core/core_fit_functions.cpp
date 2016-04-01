@@ -70,9 +70,20 @@ static str const
   KEY_MAX_DELTA("maxDelta"), KEY_MAX_DELTA_PERCENT("maxDeltaPercent"),
   KEY_MAX_ERROR("maxError"), KEY_MAX_ERROR_PERCENT("maxErrorPercent");
 
+JsonObj Function::Parameter::saveJson() const {
+  return JsonObj()
+    .saveReal(KEY_VALUE,  val)
+    .saveRange(KEY_RANGE, range)
+
+    .saveReal(KEY_MAX_DELTA,         maxDelta)
+    .saveReal(KEY_MAX_DELTA_PERCENT, maxDeltaPercent)
+    .saveReal(KEY_MAX_ERROR,         maxError)
+    .saveReal(KEY_MAX_ERROR_PERCENT, maxErrorPercent);
+}
+
 void Function::Parameter::loadJson(rcJsonObj obj) THROWS {
-  val = obj.loadReal(KEY_VALUE);
-  range.loadJson(obj[KEY_RANGE].toObject());
+  val   = obj.loadReal(KEY_VALUE);
+  range = obj.loadRange(KEY_RANGE);
 
   maxDelta        = obj.loadReal(KEY_MAX_DELTA);
   maxDeltaPercent = obj.loadReal(KEY_MAX_DELTA_PERCENT);
@@ -80,23 +91,10 @@ void Function::Parameter::loadJson(rcJsonObj obj) THROWS {
   maxErrorPercent = obj.loadReal(KEY_MAX_ERROR_PERCENT);
 }
 
-JsonObj Function::Parameter::saveJson() const {
-  JsonObj obj;
-  obj.saveReal(KEY_VALUE, val);
-  obj[KEY_RANGE] = range.saveJson();
-
-  obj.saveReal(KEY_MAX_DELTA,         maxDelta);
-  obj.saveReal(KEY_MAX_DELTA_PERCENT, maxDeltaPercent);
-  obj.saveReal(KEY_MAX_ERROR,         maxError);
-  obj.saveReal(KEY_MAX_ERROR_PERCENT, maxErrorPercent);
-
-  return obj;
-}
-
 //------------------------------------------------------------------------------
 
 static str const
-  KEY_SUM_FUNCTIONS("SumFunctions"),
+  KEY_SUM_FUNCTIONS("Sum of functions"),
   KEY_POLYNOMIAL("polynomial"),
   KEY_GAUSSIAN("Gaussian"), KEY_LORENTZIAN("Lorentzian"),
   KEY_PSEUDOVOIGT1("PseudoVoigt1"), KEY_PSEUDOVOIGT2("PseudoVoigt2");
@@ -124,13 +122,13 @@ Function::Function() {
 Function::~Function() {
 }
 
-void Function::loadJson(rcJsonObj) THROWS {
-  // nothing to do
-}
-
 JsonObj Function::saveJson() const {
   // nothing to do
   return JsonObj();
+}
+
+void Function::loadJson(rcJsonObj) THROWS {
+  // nothing to do
 }
 
 #ifndef QT_NO_DEBUG
@@ -171,29 +169,28 @@ void SimpleFunction::reset() {
 
 
 static str const
-  KEY_PAR_COUNT("parCount"), KEY_PARAMETER("p%1");
-
-void SimpleFunction::loadJson(rcJsonObj obj) THROWS {
-  super::loadJson(obj);
-
-  int parCount = obj[KEY_PAR_COUNT].toInt();
-  RUNTIME_CHECK(parCount > 0,"parameter count not valid");
-  setParameterCount(parCount);
-  for_i (parCount) {
-    parameters[i].loadJson(obj[KEY_PARAMETER.arg(i+1)].toObject());
-  }
-}
+  KEY_PAR_COUNT("paramater count"), KEY_PARAMETER("p%1");
 
 JsonObj SimpleFunction::saveJson() const {
   JsonObj obj;
 
   auto parCount = parameters.count();
-  obj[KEY_PAR_COUNT] = parCount;
-  for_i (parCount) {
-    obj[KEY_PARAMETER.arg(i+1)] = parameters[i].saveJson();
-  }
+  obj.saveUint(KEY_PAR_COUNT,parCount);
+
+  for_i (parCount)
+    obj.saveObj(KEY_PARAMETER.arg(i+1), parameters[i].saveJson());
 
   return super::saveJson() + obj;
+}
+
+void SimpleFunction::loadJson(rcJsonObj obj) THROWS {
+  super::loadJson(obj);
+
+  uint parCount = obj.loadUint(KEY_PAR_COUNT);
+  setParameterCount(parCount);
+
+  for_i (parCount)
+    parameters[i].loadJson(obj.loadObj(KEY_PARAMETER.arg(i+1)));
 }
 
 qreal SimpleFunction::parValue(uint i, qreal const* parameterValues) const {
@@ -262,35 +259,34 @@ qreal SumFunctions::dy(qreal x, uint parIndex, qreal const* parValues) const {
 }
 
 static str const
-  KEY_FUNCTIONS_COUNT("functionsCount"), KEY_FUNCTION("f%1"), KEY_TYPE("type");
+  KEY_FUNCTIONS_COUNT("function count"), KEY_FUNCTION("f%1"), KEY_TYPE("type");
+
+JsonObj SumFunctions::saveJson() const {
+  JsonObj obj;
+  obj.saveString(KEY_TYPE, KEY_SUM_FUNCTIONS);
+
+  uint funCount = functions.count();
+  obj.saveUint(KEY_FUNCTIONS_COUNT,funCount);
+
+  for_i (funCount)
+    obj.saveObj(KEY_FUNCTION.arg(i+1), functions[i]->saveJson());
+
+  return super::saveJson() + obj;
+}
 
 void SumFunctions::loadJson(rcJsonObj obj) THROWS {
   RUNTIME_CHECK(functions.isEmpty(),"non-empty sum of functions; cannot load twice");
 
   super::loadJson(obj);
 
-  int funCount = obj[KEY_FUNCTIONS_COUNT].toInt();
-  RUNTIME_CHECK(funCount >= 0,"function count not valid");
+  uint funCount = obj.loadUint(KEY_FUNCTIONS_COUNT);
 
   for_i (funCount) {
-    auto fObj = obj[KEY_FUNCTION.arg(i+1)].toObject();
-    QScopedPointer<Function> f(Function::factory(fObj[KEY_TYPE].toString()));
-    f->loadJson(fObj);
+    auto funObj = obj.loadObj(KEY_FUNCTION.arg(i+1));
+    QScopedPointer<Function> f(Function::factory(funObj.loadString(KEY_TYPE)));
+    f->loadJson(funObj);
     addFunction(f.take());
   }
-}
-
-JsonObj SumFunctions::saveJson() const {
-  JsonObj obj;
-  obj[KEY_TYPE] = KEY_SUM_FUNCTIONS;
-
-  auto funCount = functions.count();
-  obj[KEY_FUNCTIONS_COUNT] = funCount;
-  for_i (funCount) {
-    obj[KEY_FUNCTION.arg(i+1)] = functions[i]->saveJson();
-  }
-
-  return super::saveJson() + obj;
 }
 
 //------------------------------------------------------------------------------
@@ -344,14 +340,14 @@ qreal Polynomial::calAverageValue(Range tth) {
   return average;
 }
 
-void Polynomial::loadJson(rcJsonObj obj) THROWS {
-  super::loadJson(obj);
-}
-
 JsonObj Polynomial::saveJson() const {
   JsonObj obj;
-  obj[KEY_TYPE] = KEY_POLYNOMIAL;
+  obj.saveString(KEY_TYPE, KEY_POLYNOMIAL);
   return super::saveJson() + obj;
+}
+
+void Polynomial::loadJson(rcJsonObj obj) THROWS {
+  super::loadJson(obj);
 }
 
 //------------------------------------------------------------------------------
@@ -391,16 +387,15 @@ void PeakFunction::reset() {
 
 static str const KEY_GUESS_FWHM("guess_fwhm");
 
+JsonObj PeakFunction::saveJson() const {
+  return super::saveJson()
+      + guessPeak.saveJson().saveReal(KEY_GUESS_FWHM,guessFwhm);
+}
+
 void PeakFunction::loadJson(rcJsonObj obj) THROWS {
   super::loadJson(obj);
   guessPeak.loadJson(obj);
   guessFwhm = obj.loadReal(KEY_GUESS_FWHM);
-}
-
-JsonObj PeakFunction::saveJson() const {
-  JsonObj obj = guessPeak.saveJson();
-  obj.saveReal(KEY_GUESS_FWHM,guessFwhm);
-  return super::saveJson() + obj;
 }
 
 //------------------------------------------------------------------------------
@@ -473,9 +468,7 @@ qreal Gaussian::getFitFWHM() const {
 }
 
 JsonObj Gaussian::saveJson() const {
-  JsonObj obj;
-  obj[KEY_TYPE] = KEY_GAUSSIAN;
-  return super::saveJson() + obj;
+  return super::saveJson().saveString(KEY_TYPE, KEY_GAUSSIAN);
 }
 
 //------------------------------------------------------------------------------
@@ -547,9 +540,7 @@ qreal CauchyLorentz::getFitFWHM() const {
 }
 
 JsonObj CauchyLorentz::saveJson() const {
-  JsonObj obj;
-  obj[KEY_TYPE] = KEY_LORENTZIAN;
-  return super::saveJson() + obj;
+  return super::saveJson().saveString(KEY_TYPE, KEY_LORENTZIAN);
 }
 
 //------------------------------------------------------------------------------
@@ -635,9 +626,7 @@ qreal PseudoVoigt1::getFitFWHM() const {
 }
 
 JsonObj PseudoVoigt1::saveJson() const {
-  JsonObj obj;
-  obj[KEY_TYPE] = KEY_PSEUDOVOIGT1;
-  return super::saveJson() + obj;
+  return super::saveJson().saveString(KEY_TYPE, KEY_PSEUDOVOIGT1);
 }
 
 //------------------------------------------------------------------------------
@@ -741,9 +730,7 @@ qreal PseudoVoigt2::getFitFWHM() const {
 }
 
 JsonObj PseudoVoigt2::saveJson() const {
-  JsonObj obj;
-  obj[KEY_TYPE] = KEY_PSEUDOVOIGT2;
-  return super::saveJson() + obj;
+  return super::saveJson().saveString(KEY_TYPE, KEY_PSEUDOVOIGT2);
 }
 
 //------------------------------------------------------------------------------

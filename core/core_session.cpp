@@ -4,6 +4,7 @@
 #include "core_fit_fitting.h"
 #include "types/core_type_angles.h"
 #include "types/core_type_curve.h"
+#include <QStringList>
 #include <qmath.h>
 
 namespace core {
@@ -272,8 +273,8 @@ DiffractionAnglesMap const& Session::calcAngleMap(qreal tthMitte) { // RENAME
       angleMapArray.at(imageMargins.left(),pixMiddle.y()).tth);
 
     // TODO loop through cut - make abstract (see below), REFACTOR
-    for (uint ix = imageMargins.left(); ix < size.width() - imageMargins.right(); ++ix) {
-      for (uint iy = imageMargins.top(); iy < size.height() - imageMargins.bottom(); ++iy) {
+    for (int ix = imageMargins.left(); ix < size.width() - imageMargins.right(); ++ix) {
+      for (int iy = imageMargins.top(); iy < size.height() - imageMargins.bottom(); ++iy) {
         auto ac = angleMapArray.at(ix,iy);
         cut.gamma.extendBy(ac.gamma);
         cut.tth_regular.extendBy(ac.tth);

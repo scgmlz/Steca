@@ -65,27 +65,24 @@ void Reflection::setPeakFunction(fit::PeakFunction* f) {
   peakFunction = f;
 }
 
-static str const KEY_FWHM("fwhm");
-static str const KEY_TYPE("type");
-static str const KEY_RANGE("range");
-static str const KEY_PEAK("peak");
+static str const
+  KEY_FWHM("fwhm"), KEY_TYPE("type"), KEY_RANGE("range"), KEY_PEAK("peak");
+
+JsonObj Reflection::saveJson() const {
+  return JsonObj()
+    .saveRange(KEY_RANGE, getRange())
+    .saveObj(KEY_PEAK, peakFunction->saveJson());
+}
 
 void Reflection::loadJson(rcJsonObj obj) THROWS {
-  range.loadJson(obj[KEY_RANGE].toObject());
+  range = obj.loadRange(KEY_RANGE);
 
-  JsonObj pObj = obj[KEY_PEAK].toObject();
-  QScopedPointer<fit::Function> f(fit::Function::factory(pObj[KEY_TYPE].toString()));
-  f->loadJson(pObj);
+  JsonObj peakObj = obj.loadObj(KEY_PEAK);
+  QScopedPointer<fit::Function> f(fit::Function::factory(peakObj.loadString(KEY_TYPE)));
+  f->loadJson(peakObj);
 
   RUNTIME_CHECK(dynamic_cast<fit::PeakFunction*>(f.data()),"must be a peak function");
   setPeakFunction(static_cast<fit::PeakFunction*>(f.take()));
-}
-
-JsonObj Reflection::saveJson() const {
-  JsonObj obj;
-  obj[KEY_RANGE] = getRange().saveJson();
-  obj[KEY_PEAK]  = peakFunction->saveJson();
-  return obj;
 }
 
 //------------------------------------------------------------------------------

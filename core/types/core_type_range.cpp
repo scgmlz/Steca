@@ -100,15 +100,15 @@ qreal Range::bound(qreal value) const {
 
 static str const KEY_MIN("min"), KEY_MAX("max");
 
-void Range::loadJson(rcJsonObj obj) THROWS {
-  min = obj.loadReal(KEY_MIN);
-  max = obj.loadReal(KEY_MAX);
-}
-
 JsonObj Range::saveJson() const {
   return JsonObj()
     .saveReal(KEY_MIN, min)
     .saveReal(KEY_MAX, max);
+}
+
+void Range::loadJson(rcJsonObj obj) THROWS {
+  min = obj.loadReal(KEY_MIN);
+  max = obj.loadReal(KEY_MAX);
 }
 
 //------------------------------------------------------------------------------
@@ -170,15 +170,6 @@ void Ranges::sort() {
 
 static str const KEY_NUM("%1"), KEY_COUNT("count");
 
-void Ranges::loadJson(rcJsonObj obj) THROWS {
-  uint count = obj.loadUint(KEY_COUNT);
-  for_i (count) {
-    Range r;
-    r.loadJson(obj[KEY_NUM.arg(i+1)].toObject());
-    ranges.append(r);
-  }
-}
-
 JsonObj Ranges::saveJson() const {
   JsonObj obj;
 
@@ -186,9 +177,15 @@ JsonObj Ranges::saveJson() const {
   obj.saveUint(KEY_COUNT,count);
 
   for_i (count)
-    obj[KEY_NUM.arg(i+1)] = ranges.at(i).saveJson();
+    obj.saveRange(KEY_NUM.arg(i+1), ranges.at(i));
 
   return obj;
+}
+
+void Ranges::loadJson(rcJsonObj obj) THROWS {
+  uint count = obj.loadUint(KEY_COUNT);
+  for_i (count)
+    ranges.append(obj.loadRange(KEY_NUM.arg(i+1)));
 }
 
 //------------------------------------------------------------------------------

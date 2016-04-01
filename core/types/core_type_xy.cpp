@@ -36,16 +36,15 @@ bool XY::isValid() const {
 
 static str const KEY_X("x"), KEY_Y("y");
 
+JsonObj XY::saveJson() const {
+  return JsonObj()
+    .saveReal(KEY_X,x)
+    .saveReal(KEY_Y,y);
+}
+
 void XY::loadJson(rcJsonObj obj) THROWS {
   x = obj.loadReal(KEY_X);
   y = obj.loadReal(KEY_Y);
-}
-
-JsonObj XY::saveJson() const {
-  JsonObj obj;
-  obj.saveReal(KEY_X, x);
-  obj.saveReal(KEY_Y, y);
-  return obj;
 }
 
 //------------------------------------------------------------------------------

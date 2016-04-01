@@ -40,8 +40,8 @@ public:
     bool  setValue(qreal val, qreal error=0, bool force=false);
 
   public:
-    void    loadJson(rcJsonObj) THROWS;
     JsonObj saveJson() const;
+    void    loadJson(rcJsonObj) THROWS;
 
   private:
     qreal val;
@@ -81,8 +81,8 @@ public:
   virtual qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const = 0;
 
 public:
-  virtual void    loadJson(rcJsonObj) THROWS;
   virtual JsonObj saveJson() const;
+  virtual void    loadJson(rcJsonObj) THROWS;
 };
 
 #ifndef QT_NO_DEBUG
@@ -105,8 +105,8 @@ public:
   virtual void reset();
 
 public:
-  void    loadJson(rcJsonObj) THROWS;
   JsonObj saveJson() const;
+  void    loadJson(rcJsonObj) THROWS;
 
 protected:
   QVector<Parameter> parameters;
@@ -134,8 +134,8 @@ public:
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
 public:
-  void    loadJson(rcJsonObj) THROWS;
   JsonObj saveJson() const;
+  void    loadJson(rcJsonObj) THROWS;
 
 protected:
   /// summed functions
@@ -165,8 +165,8 @@ public:
   qreal calAverageValue(Range tth);
 
 public:
-  void    loadJson(rcJsonObj) THROWS;
   JsonObj saveJson() const;
+  void    loadJson(rcJsonObj) THROWS;
 };
 
 //------------------------------------------------------------------------------
@@ -198,8 +198,8 @@ public:
   void reset();
 
 public:
-  void    loadJson(rcJsonObj) THROWS;
   JsonObj saveJson() const;
+  void    loadJson(rcJsonObj) THROWS;
 
 private:
   XY guessPeak; qreal guessFwhm;

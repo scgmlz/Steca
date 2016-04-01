@@ -44,8 +44,8 @@ private:
   fit::PeakFunction *peakFunction;
 
 public:
-  void    loadJson(rcJsonObj) THROWS;
   JsonObj saveJson() const;
+  void    loadJson(rcJsonObj) THROWS;
 };
 
 typedef QVector<shp_Reflection>    Reflections;

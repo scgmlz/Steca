@@ -32,8 +32,8 @@ struct XY {
   void  invalidate();     ///< make invalid
   bool  isValid() const;  ///< is not NaN
 
-  void    loadJson(rcJsonObj) THROWS;
   JsonObj saveJson() const;
+  void    loadJson(rcJsonObj) THROWS;
 };
 
 //------------------------------------------------------------------------------

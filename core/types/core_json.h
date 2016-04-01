@@ -17,6 +17,7 @@
 #define CORE_JSON_H
 
 #include "core_defs.h"
+#include "core_types_fwd.h"
 #include <QJsonObject>
 
 namespace core {
@@ -28,14 +29,23 @@ public:
   JsonObj();
   JsonObj(QJsonObject const&);
 
-  int      loadInt(rcstr key) const THROWS;
+  JsonObj& saveObj(rcstr key, QJsonObject const&);
+  JsonObj  loadObj(rcstr key) const THROWS;
+
   JsonObj& saveInt(rcstr key, int);
+  int      loadInt(rcstr key) const THROWS;
 
-  uint     loadUint(rcstr key) const THROWS;
   JsonObj& saveUint(rcstr key, uint);
+  uint     loadUint(rcstr key) const THROWS;
 
-  qreal    loadReal(rcstr key) const THROWS;
   JsonObj& saveReal(rcstr key, qreal);
+  qreal    loadReal(rcstr key) const THROWS;
+
+  JsonObj& saveString(rcstr key, rcstr);
+  str      loadString(rcstr key) const THROWS;
+
+  JsonObj& saveRange(rcstr key, Range const&);
+  Range    loadRange(rcstr key) const THROWS;
 
   JsonObj& operator+= (JsonObj const&);
   JsonObj  operator+  (JsonObj const&) const;
