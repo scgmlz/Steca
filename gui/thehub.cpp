@@ -25,36 +25,51 @@ public:
 
 //------------------------------------------------------------------------------
 
-Action::Action(rcstr text, rcstr tip, rcstr iconFile, QObject* parent): super(text,parent) {
-  setToolTip(tip);
+Action::Action(rcstr text, rcstr tip, QObject* parent): super(text,parent) {
+  setToolTip(tip.isEmpty() ? text : tip);
+}
 
-  if (!iconFile.isEmpty())
-      setIcon(QIcon(iconFile));
+Action&Action::dialog() {
+  setText(text() + "…");
+  return *this;
+}
+
+Action& Action::key(QKeySequence key) {
+  setShortcut(key);
+  return *this;
+}
+
+Action& Action::icon(rcstr iconFile) {
+  setIcon(QIcon(iconFile));
+  return *this;
+}
+
+Action& Action::alt(rcstr text2, rcstr tip2) {
+  return *this;
 }
 
 //------------------------------------------------------------------------------
 
-PushAction::PushAction(rcstr text, rcstr tip, rcstr iconFile, QObject* parent)
-: super(text,tip,iconFile,parent) {
+TriggerAction::TriggerAction(rcstr text, rcstr tip, QObject* parent)
+: super(text,tip,parent) {
 }
 
 //------------------------------------------------------------------------------
 
-ToggleAction::ToggleAction(rcstr text1_, rcstr text2_, rcstr tip1_, rcstr tip2_, rcstr iconFile, QObject* parent)
-: super(text1_,tip1_,iconFile,parent), text1(text1_), text2(text2_), tip1(tip1_), tip2(tip2_) {
+ToggleAction::ToggleAction(rcstr text, rcstr tip, QObject* parent)
+  : super(text,tip,parent), text1(text), tip1(tip.isEmpty() ? text : tip) {
   setCheckable(true);
+}
 
+Action& ToggleAction::alt(rcstr text2_, rcstr tip2_) {
+  text2 = text2_; tip2 = tip2_.isEmpty() ? text2_ : tip2_;
   connect(this,&thisClass::toggled,[this](bool on) {
     setText(on ? text2 : text1);
     setToolTip(on ? tip2 : tip1);
   });
+
+  return super::alt(text2_, tip2_);
 }
-
-
-ToggleAction::ToggleAction(rcstr text1, rcstr tip1, rcstr iconFile, QObject* parent)
-: ToggleAction(text1,text1,tip1,tip1,iconFile,parent) {
-}
-
 
 //------------------------------------------------------------------------------
 
@@ -115,100 +130,123 @@ TheHub::~TheHub() {
   delete session;
 }
 
-#define PUSH_ACTION(act,text,tip,icon) \
-  lastAction = act = new PushAction(text,tip,icon,this);
-#define TOGL_ACTION(act,text,tip,icon) \
-  lastAction = act  = new ToggleAction(text,tip,icon,this);
-#define TOGL_ACTION2(act,text1,text2,tip1,tip2,icon) \
-  lastAction = act  = new ToggleAction(text1,text2,tip1,tip2,icon,this);
-#define ACTION_KEY(key) \
-  lastAction->setShortcut(key);
+#define TRIG(act,text,tip) (*(Action*)(act = new TriggerAction(text,tip,this)))
+#define TOGL(act,text,tip) (*(Action*)(act = new ToggleAction(text,tip,this)))
 
-void TheHub::initActions() {
+void TheHub::initActions() { // REVIEW all action texts and tips and icons
   using QKey = QKeySequence;
 
-  QAction *lastAction;
+  TRIG(actAddFiles, "Add files", "")
+      .icon(":/icon/add").key(Qt::CTRL|Qt::Key_O)
+      .dialog();
+  TRIG(actRemoveFile, "Remove file", "Remove selected file")
+      .icon(":/icon/rem").key(QKey::Delete);
 
-  PUSH_ACTION(actAddFiles,    "Add files…","Add files",":/icon/add")                        ACTION_KEY(Qt::CTRL|Qt::Key_O)
-  PUSH_ACTION(actRemoveFile,  "Remove selected file","Remove selected file",":/icon/rem")     ACTION_KEY(QKey::Delete);
+  TRIG(actLoadCorrFile, "Load correction file", "")
+      .key(Qt::SHIFT|Qt::CTRL|Qt::Key_O).dialog();
+  TOGL(actEnableCorr, "Enable correction file", "Enable correction by correction file")
+      .alt("Disable correction file", "Disable correction by correction file")
+      .icon(":/icon/useCorrection");
 
-  PUSH_ACTION(actLoadCorrFile,"Load correction file…", "Load correction file", "")    ACTION_KEY(Qt::SHIFT|Qt::CTRL|Qt::Key_O);
-  TOGL_ACTION2(actImagesEnableCorr,  "Enable correction file", "Disable correction file", "Enable correction by correction file", "Disable correction by correction file", ":/icon/useCorrection")
+  TRIG(actLoadSession, "Load session", "")
+      .dialog();
+  TRIG(actSaveSession, "Save session", "")
+      .dialog();
 
-  PUSH_ACTION(actLoadSession,"Load session…","","")
-  PUSH_ACTION(actSaveSession,"Save session…","","")
+  TRIG(actExportDiffractogramCurrent, "Current only", "")
+      .dialog();
+  TRIG(actExportDiffractogramAllSeparateFiles, "All to separate files", "")
+      .dialog();
+  TRIG(actExportDiffractogramSingleFile, "All to a single file", "")
+      .dialog();
 
-  PUSH_ACTION(actExportDiffractogramCurrent,"Current only…","","")
-  PUSH_ACTION(actExportDiffractogramAllSeparateFiles,"All to separate files…","","")
-  PUSH_ACTION(actExportDiffractogramSingleFile,"All to a single file…","","")
+  TRIG(actExportImagesWithMargins, "With margins", "")
+      .dialog();
+  TRIG(actExportImagesWithoutMargins,"Without margin", "")
+      .dialog();
 
-  PUSH_ACTION(actExportImagesWithMargins,"With margins…","","")
-  PUSH_ACTION(actExportImagesWithoutMargins,"Without margins…","","")
+  TRIG(actQuit, "Quit", "")
+      .key(QKey::Quit);
 
-  PUSH_ACTION(actQuit ,"Quit", "",  "") ACTION_KEY(QKey::Quit)
+  TRIG(actUndo, "Undo", "")
+      .key(QKey::Undo);
+  TRIG(actRedo, "Redo", "")
+      .key(QKey::Redo);
+  TRIG(actCut, "Cut",   "")
+      .key(QKey::Cut);
+  TRIG(actCopy, "Copy", "")
+      .key(QKey::Copy);
+  TRIG(actPaste, "Paste", "")
+      .key(QKey::Paste);
 
-  PUSH_ACTION(actUndo ,"Undo",  "", "") ACTION_KEY(QKey::Undo)
-  PUSH_ACTION(actRedo ,"Redo",  "", "") ACTION_KEY(QKey::Redo)
-  PUSH_ACTION(actCut  ,"Cut",   "", "") ACTION_KEY(QKey::Cut)
-  PUSH_ACTION(actCopy ,"Copy",  "", "") ACTION_KEY(QKey::Copy)
-  PUSH_ACTION(actPaste,"Paste", "", "") ACTION_KEY(QKey::Paste)
-
-  TOGL_ACTION(actViewStatusbar ,"Statusbar",  "", "") ACTION_KEY(Qt::Key_F12)
+  TOGL(actViewStatusbar, "Statusbar",  "")
+      .key(Qt::Key_F12);
 #ifndef Q_OS_OSX
-  TOGL_ACTION(actFullscreen    ,"Fullscreen", "", "") ACTION_KEY(Qt::Key_F11)
+  TOGL(actFullscreen, "Fullscreen", "")
+      .key(Qt::Key_F11);
 #endif
-  PUSH_ACTION(actViewReset    ,"Reset", "","")
+  TRIG(actViewReset, "Reset", "");
 
-  PUSH_ACTION(actPreferences         ,"Preferences...","","")
-  PUSH_ACTION(actFitErrorParameters  ,"Fit error parameters…","","")
+  TRIG(actPreferences, "Preferences", "")
+      .dialog();
+  TRIG(actFitErrorParameters, "Fit error parameters", "")
+      .dialog();
 
-  PUSH_ACTION(actAbout     ,"About…","","")
+  TRIG(actAbout, "About", "")
+      .dialog();
 
-  TOGL_ACTION(actReflectionRegion    ,"Reflection region", "Select reflection region", ":/icon/selectPeak")
-  PUSH_ACTION(actReflectionPeak      ,"Peak",  "Set reflection peak",  ":/icon/selectHight")
-  PUSH_ACTION(actReflectionWidth     ,"Width", "Set reflection width", ":/icon/selectWidth")
-  PUSH_ACTION(actReflectionAdd       ,"Add",   "Add reflection",       ":/icon/add")
-  PUSH_ACTION(actReflectionRemove    ,"Remove","Remove reflection",    ":/icon/rem")
+  TRIG(actReflectionAdd, "Add", "Add reflection")
+      .icon(":/icon/add");
+  TRIG(actReflectionRemove, "Remove", "Remove reflection")
+       .icon(":/icon/rem");
 
-  PUSH_ACTION(actOutputPolefigures    , "Pole figures…","","")
-  PUSH_ACTION(actOutputHistograms     , "Histograms…","","")
+  TRIG(actOutputPolefigures, "Pole figures", "")
+      .dialog();
+  TRIG(actOutputHistograms, "Histograms", "")
+      .dialog();
 
-  TOGL_ACTION2(actImagesLink           ,"Link", "Unlink",         "Use the same value for all cuts","Use different value for all cuts", ":/icon/linkNew")
-  TOGL_ACTION2(actImageOverlay         ,"overlay", "overlay",     "Show cut", "Hide cut", ":/icon/imageCrop")
-  TOGL_ACTION2(actImagesFixedIntensity ,"fixed Intensity", "fixed Intensity", "Display data using a fixed intensity scale", "Display data using non-fixed intensity scale",":/icon/scale")
-  PUSH_ACTION(actImageRotate           ,"Rotate",       "Rotate 90° clockwise", ":/icon/rotate0") ACTION_KEY(Qt::CTRL|Qt::Key_R)
-  TOGL_ACTION(actImageMirror           ,"Mirror",       "Mirror image", ":/icon/mirror_horz")
+  TOGL(actImagesLink, "Link", "Use the same value for all cuts")
+      .alt("Unlink", "Use different value for cuts")
+      .icon(":/icon/linkNew");
+  TOGL(actImageOverlay, "overlay", "Show cut")
+      .alt("overlay", "Hide cut")
+      .icon(":/icon/imageCrop");
+  TOGL(actImagesFixedIntensity, "fixed Intensity", "Display data using a fixed intensity scale")
+      .alt("fixed Intensity", "Display data using non-fixed intensity scale")
+      .icon(":/icon/scale");
+  TRIG(actImageRotate, "Rotate", "Rotate 90° clockwise")
+      .icon(":/icon/rotate0").key(Qt::CTRL|Qt::Key_R);
+  TOGL(actImageMirror, "Mirror", "Mirror image")
+      .icon(":/icon/mirror_horz");
 
-  PUSH_ACTION(actBackgroundClear       ,"Clear background fit regions",    "Clear regions for background fitting", ":/icon/clearBackground")
-  TOGL_ACTION(actBackgroundBackground  ,"Select background fit regions",    "Select regions for background fitting", ":/icon/peakBackground")
-  TOGL_ACTION2(actBackgroundShowFit    ,"BackgroundEye", "BackgroundEye","Show background fit","Hide background fit", ":/icon/showBackground")
+  TOGL(actFitTool, "Select background fit regions", "Select regions for background fitting")
+      .icon(":/icon/peakBackground");
+  TRIG(actFitBgClear, "Clear background fit regions", "Clear regions for background fitting")
+      .icon(":/icon/clearBackground");
+  TOGL(actFitShow, "BackgroundEye", "Show background fit")
+      .alt("BackgroundEye", "Hide background fit")
+      .icon(":/icon/showBackground");
 
-  TOGL_ACTION2(actHasBeamOffset        ,"Beam centre offset", "Beam centre offset","Enable beam center offset (for X-ray instruments)", "Disable beam center offset",":/icon/beam")
-
-  PUSH_ACTION(actNormalizationDisable    ,"Disable","","")
-  PUSH_ACTION(actNormalizationMeasureTime,"Measurement Time","","")
-  PUSH_ACTION(actNormalizationMonitor    ,"Monitor counts","","")
-  PUSH_ACTION(actNormalizationBackground ,"Background level","","")
+  TOGL(actHasBeamOffset, "Beam centre offset", "Enable beam center offset (for X-ray instruments)")
+      .alt("Beam centre offset", "Disable beam center offset")
+      .icon(":/icon/beam");
 }
 
 void TheHub::configActions() {
   actRemoveFile->setEnabled(false);
-  actImagesEnableCorr->setEnabled(false);
+  actEnableCorr->setEnabled(false);
   actReflectionRemove->setEnabled(false);
-  actReflectionRegion->setEnabled(false);
-  actReflectionPeak->setEnabled(false);
-  actReflectionWidth->setEnabled(false);
 
   connect(this, &thisClass::correctionEnabled, [this](bool on) {
-    actImagesEnableCorr->setChecked(on);
-    actImagesEnableCorr->setEnabled(hasCorrFile());
+    actEnableCorr->setChecked(on);
+    actEnableCorr->setEnabled(hasCorrFile());
   });
 
   connect(this, &thisClass::fileSelected, this, [this](core::shp_File file) {
     actRemoveFile->setEnabled(!file.isNull());
   });
 
-  connect(actImagesEnableCorr, &QAction::toggled, [this](bool on) {
+  connect(actEnableCorr, &QAction::toggled, [this](bool on) {
     enableCorrection(on);
   });
 
@@ -515,6 +553,10 @@ void TheHub::remReflection(uint i) {
     emit setSelectedReflection(core::shp_Reflection());
 
   emit reflectionsChanged();
+}
+
+void TheHub::setFittingTab(int index) {
+  emit fittingTab((fittingTab__=index));
 }
 
 void TheHub::setImageRotate(core::ImageTransform rot) {

@@ -61,5 +61,20 @@ GridPanel::GridPanel(rcstr title, TheHub& theHub)
 }
 
 //------------------------------------------------------------------------------
+
+TabsPanel::Tab::Tab(Qt::Orientation orientation) {
+  setLayout((box = boxLayout(orientation)));
+}
+
+TabsPanel::TabsPanel(TheHub& theHub): RefHub(theHub) {
+}
+
+TabsPanel::Tab& TabsPanel::addTab(rcstr title, Qt::Orientation orientation) {
+  auto tab = new Tab(orientation);
+  super::addTab(tab,title);
+  return *tab;
+}
+
+//------------------------------------------------------------------------------
 }
 // eof

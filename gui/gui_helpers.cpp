@@ -29,15 +29,21 @@ QBoxLayout *boxLayout(Qt::Orientation orientation) {
 }
 
 QBoxLayout *hbox() {
-  return new QHBoxLayout;
+  auto box = new QHBoxLayout;
+  box->setSpacing(2);
+  return box;
 }
 
 QBoxLayout *vbox() {
-  return new QVBoxLayout;
+  auto box = new QVBoxLayout;
+  box->setSpacing(2);
+  return box;
 }
 
 QGridLayout *gridLayout() {
-  return new QGridLayout;
+  auto grid = new QGridLayout;
+  grid->setSpacing(2);
+  return grid;
 }
 
 QLabel *icon(rcstr fileName) {

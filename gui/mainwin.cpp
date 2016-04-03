@@ -114,16 +114,16 @@ void MainWin::initMenus() {
   menuHelp     = mbar->addMenu("&Help");
 
   menuFile->addActions({
-      theHub.actAddFiles, theHub.actRemoveFile, separator(),
-      theHub.actLoadCorrFile, separator(),
-      theHub.actLoadSession, theHub.actSaveSession, theHub.actLoadSession,
+    theHub.actAddFiles, theHub.actRemoveFile, separator(),
+    theHub.actLoadCorrFile, separator(),
+    theHub.actLoadSession, theHub.actSaveSession, theHub.actLoadSession,
   });
 
   QMenu *menuExportDiffractograms = new QMenu("Export diffractograms");
   menuExportDiffractograms->addActions({
-      theHub.actExportDiffractogramCurrent,
-      theHub.actExportDiffractogramAllSeparateFiles,
-      theHub.actExportDiffractogramSingleFile,
+    theHub.actExportDiffractogramCurrent,
+    theHub.actExportDiffractogramAllSeparateFiles,
+    theHub.actExportDiffractogramSingleFile,
   });
 
   menuFile->addAction(separator());
@@ -131,64 +131,53 @@ void MainWin::initMenus() {
 
   QMenu *menuExportImages = new QMenu("Export images");
   menuExportImages->addActions({
-      theHub.actExportImagesWithMargins, theHub.actExportImagesWithoutMargins,
+    theHub.actExportImagesWithMargins, theHub.actExportImagesWithoutMargins,
   });
 
   menuFile->addMenu(menuExportImages);
 
   menuFile->addActions({
 #ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
-      separator(),
+    separator(),
 #endif
-      theHub.actQuit,
+    theHub.actQuit,
   });
 
   menuEdit->addActions({
-      theHub.actUndo, theHub.actRedo, separator(),
-      theHub.actCut, theHub.actCopy, theHub.actPaste,
+    theHub.actUndo, theHub.actRedo, separator(),
+    theHub.actCut, theHub.actCopy, theHub.actPaste,
   });
 
   menuView->addActions({
-      theHub.actImagesFixedIntensity, theHub.actImageOverlay, separator(),
-      theHub.actBackgroundShowFit, separator(),
-      theHub.actViewStatusbar,
+    theHub.actImagesFixedIntensity, theHub.actImageOverlay, separator(),
+    theHub.actFitTool, theHub.actFitBgClear, theHub.actFitShow, separator(),
+    theHub.actViewStatusbar,
 #ifndef Q_OS_OSX
-      theHub.actFullscreen,
+    theHub.actFullscreen,
 #endif
-      separator(),
-      theHub.actViewReset,
+    separator(),
+    theHub.actViewReset,
   });
 
   menuDatasets->addActions({
-      theHub.actImageRotate, theHub.actImageMirror, separator(),
-      theHub.actImagesEnableCorr, separator(),
-  });
-
-  QMenu *menuNormalization = new QMenu("Normalization");
-  menuNormalization->addActions(
-      {theHub.actNormalizationDisable, theHub.actNormalizationMeasureTime,
-          theHub.actNormalizationMonitor, theHub.actNormalizationBackground});
-
-  menuDatasets->addMenu(menuNormalization);
-
-  menuDatasets->addActions({
-      separator(), theHub.actBackgroundBackground, theHub.actBackgroundClear
+    theHub.actImageRotate, theHub.actImageMirror, separator(),
+    theHub.actEnableCorr, separator(),
   });
 
   menuReflect->addActions({
-      theHub.actReflectionAdd, theHub.actReflectionRemove, separator(),
-      theHub.actFitErrorParameters
+    theHub.actReflectionAdd, theHub.actReflectionRemove, separator(),
+    theHub.actFitErrorParameters
   });
 
   menuOutput->addActions({
-      theHub.actOutputPolefigures, theHub.actOutputHistograms
+    theHub.actOutputPolefigures, theHub.actOutputHistograms
   });
 
   menuHelp->addActions({
 #ifndef Q_OS_OSX // Mac puts About into the Apple menu
-      separator(),
+    separator(),
 #endif
-      theHub.actAbout,
+    theHub.actAbout,
   });
 }
 
@@ -257,11 +246,6 @@ void MainWin::connectActions() {
 
   onTrigger(theHub.actOutputPolefigures, &thisClass::outputPoleFigures);
   notYet(theHub.actOutputHistograms);
-
-  notYet(theHub.actNormalizationDisable);
-  notYet(theHub.actNormalizationMeasureTime);
-  notYet(theHub.actNormalizationMonitor);
-  notYet(theHub.actNormalizationBackground);
 
   onTrigger(theHub.actAbout, &thisClass::about);
 

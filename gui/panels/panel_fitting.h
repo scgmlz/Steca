@@ -33,8 +33,8 @@ private:
 
 //------------------------------------------------------------------------------
 
-class Fitting: public BoxPanel {
-  SUPER(Fitting,BoxPanel)
+class Fitting: public TabsPanel {
+  SUPER(Fitting,TabsPanel)
 public:
   Fitting(TheHub&);
 
@@ -49,6 +49,7 @@ private:
 
   void setReflControls(core::shp_Reflection const&);
   void updateReflectionControls();
+
 private:
   void enableReflControls(bool); // TODO REVIEW
 };

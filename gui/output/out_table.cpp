@@ -312,7 +312,8 @@ void OutWindow::setWidgets(panel::BasicPanel* p, OutTableWidget* tw) {
   box->addLayout(bbox);
   box->setStretch(1,1);
 
-  auto actClose = new PushAction("Close", "Close...", "", this);
+  auto actClose = new TriggerAction("Close", "Close", this);
+  actClose->dialog();
   connect(actClose, &QAction::triggered, [this]() {
     close();
   });
@@ -320,13 +321,15 @@ void OutWindow::setWidgets(panel::BasicPanel* p, OutTableWidget* tw) {
 
   bbox->addStretch();
 
-  auto actCalculate = new PushAction("Calculate", "Calculate...", "", this);
+  auto actCalculate = new TriggerAction("Calculate", "Calculate", this);
+  actCalculate->dialog();
   connect(actCalculate, &QAction::triggered, [this]() {
     calculate();
   });
   bbox->addWidget(textButton(actCalculate));
 
-  auto actSave = new PushAction("Save...", "Save...", "", this);
+  auto actSave = new TriggerAction("Save", "Save", this);
+  actSave->dialog();
   bbox->addWidget(textButton(actSave));
 }
 

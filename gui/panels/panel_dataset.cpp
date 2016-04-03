@@ -79,6 +79,8 @@ DockDatasetInfo::DockDatasetInfo(TheHub& theHub_)
 DockDatasetInfo::Info::Info(models::checkedinfo_vec& metaInfo) {
   setLayout((grid = gridLayout()));
 
+  grid->setSpacing(-1);
+
   for (auto &item: metaInfo) {
     int row = grid->rowCount();
     grid->addWidget(label(item.tag),                    row, 0);
@@ -349,7 +351,7 @@ Dataset::Dataset(TheHub& theHub_)
 
   box->addWidget(imageWidget = new ImageWidget(theHub,*this),0,Qt::AlignCenter);
 
-  connect(theHub.actImagesEnableCorr, &QAction::toggled, [this](bool) {
+  connect(theHub.actEnableCorr, &QAction::toggled, [this](bool) {
     renderDataset();
   });
 
@@ -381,16 +383,14 @@ QPixmap Dataset::makePixmap(core::shp_LensSystem lenses, core::Range rgeIntens) 
   auto size = lenses->getSize();
 
   if (!size.isEmpty()) {
-    qreal mi = rgeIntens.max;
-    if (mi <= 0) mi = 1;  // sanity
+    qreal maxIntens = rgeIntens.max;
+    if (maxIntens <= 0) maxIntens = 1;  // sanity
 
     QImage qimage(size,QImage::Format_RGB32);
 
-    for_i (size.height()) {
-      auto y = i;
-      for_i (size.width()) {
-        auto x = i;
-        qreal intens = lenses->getIntensity(x,y) / mi;
+    for_int (y, size.height()) {
+      for_int (x, size.width()) {
+        qreal intens = lenses->getIntensity(x,y) / maxIntens;
 
         QRgb rgb;
         if (qIsNaN(intens))

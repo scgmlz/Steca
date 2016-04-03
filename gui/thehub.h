@@ -17,20 +17,26 @@ class QDoubleSpinBox;
 class Action: public QAction {
   SUPER(Action,QAction)
 public:
-  Action(rcstr text, rcstr tip, rcstr iconFile, QObject*);
+  Action(rcstr text, rcstr tip, QObject*);
+
+  Action& dialog();
+  Action& key(QKeySequence);
+  Action& icon(rcstr);
+
+  virtual Action& alt(rcstr text2, rcstr tip2);
 };
 
-class PushAction: public Action {
-  SUPER(PushAction,Action)
+class TriggerAction: public Action {
+  SUPER(TriggerAction,Action)
 public:
-  PushAction(rcstr text, rcstr tip, rcstr iconFile, QObject*);
+  TriggerAction(rcstr text, rcstr tip, QObject*);
 };
 
 class ToggleAction: public Action {
   SUPER(ToggleAction,Action)
 public:
-  ToggleAction(rcstr text1, rcstr text2, rcstr tip1, rcstr tip2, rcstr iconFile, QObject*);
-  ToggleAction(rcstr text1, rcstr tip1, rcstr iconFile, QObject*);
+  ToggleAction(rcstr text, rcstr tip, QObject*);
+  Action& alt(rcstr text2, rcstr tip2);
 
 protected:
   str text1, text2, tip1, tip2;
@@ -111,12 +117,11 @@ public:
     *actAbout,
 
   // more actions, some not in the menu
-    *actReflectionRegion, *actReflectionPeak, *actReflectionWidth, *actReflectionAdd, *actReflectionRemove,
+    *actReflectionAdd, *actReflectionRemove,
     *actImageRotate, *actImageMirror,
-    *actImagesLink, *actImageOverlay, *actImagesFixedIntensity, *actImagesEnableCorr,
-    *actBackgroundClear, *actBackgroundBackground, *actBackgroundShowFit,
-    *actHasBeamOffset,
-    *actNormalizationDisable, *actNormalizationMeasureTime, *actNormalizationMonitor, *actNormalizationBackground;
+    *actImagesLink, *actImageOverlay, *actImagesFixedIntensity, *actEnableCorr,
+    *actFitTool, *actFitBgClear, *actFitShow,
+    *actHasBeamOffset;
 
 public: // files
   uint numFiles(bool withCorr) const;
@@ -170,6 +175,14 @@ public:
   void addReflection(core::ePeakType);
   void remReflection(uint);
 
+  enum {
+    TAB_BACKGROUND,
+    TAB_REFLECTIONS,
+  };
+
+  int fittingTab__; // TODO
+  void setFittingTab(int);
+
 private:
   core::shp_Reflection    selectedReflection;
 
@@ -198,6 +211,8 @@ signals:
   void backgroundPolynomialDegree(uint);
 
   void normChanged();
+
+  void fittingTab(int);
 
 public:
   // TODO instead of exposing the objects, provide an interface

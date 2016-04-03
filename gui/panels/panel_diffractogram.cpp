@@ -158,7 +158,7 @@ DiffractogramPlot::DiffractogramPlot(TheHub& theHub_,Diffractogram& diffractogra
     }
   });
 
-  connect(theHub.actBackgroundShowFit, &QAction::toggled, [this](bool on) {
+  connect(theHub.actFitShow, &QAction::toggled, [this](bool on) {
     showBgFit = on;
     updateBg();
   });
@@ -330,18 +330,24 @@ Diffractogram::Diffractogram(TheHub& theHub_)
   });
 
   // REVIEW all these connects
-  connect(theHub.actBackgroundClear, &QAction::triggered, [this]() {
+  connect(theHub.actFitBgClear, &QAction::triggered, [this]() {
     plot->clearBg();
   });
 
-  connect(theHub.actBackgroundBackground, &QAction::toggled, [this](bool on) {
-    if (on) theHub.actReflectionRegion->setChecked(false); // works as radio
-    plot->setTool(on ? DiffractogramPlot::TOOL_BACKGROUND : DiffractogramPlot::TOOL_NONE);
+  connect(&theHub, &TheHub::fittingTab, [this](int index) {
+    bool on = theHub.actFitTool->isChecked();
+    switch (index) {
+    case TheHub::TAB_BACKGROUND:
+      plot->setTool(on ? DiffractogramPlot::TOOL_BACKGROUND : DiffractogramPlot::TOOL_NONE);
+      break;
+    case TheHub::TAB_REFLECTIONS:
+      plot->setTool(on ? DiffractogramPlot::TOOL_PEAK_REGION : DiffractogramPlot::TOOL_NONE);
+      break;
+    }
   });
 
-  connect(theHub.actReflectionRegion, &QAction::toggled, [this](bool on) {
-    if (on) theHub.actBackgroundBackground->setChecked(false); // works as radio
-    plot->setTool(on ? DiffractogramPlot::TOOL_PEAK_REGION : DiffractogramPlot::TOOL_NONE);
+  connect(theHub.actFitTool, &QAction::toggled, [this](bool on) {
+    plot->setTool(on ? (0==theHub.fittingTab__ ? DiffractogramPlot::TOOL_BACKGROUND:DiffractogramPlot::TOOL_PEAK_REGION) : DiffractogramPlot::TOOL_NONE);
   });
 
   connect(&theHub, &TheHub::reflectionSelected, [this](core::shp_Reflection reflection) {
@@ -362,7 +368,7 @@ Diffractogram::Diffractogram(TheHub& theHub_)
     }
   });
 
-  theHub.actBackgroundShowFit->setChecked(true);
+  theHub.actFitShow->setChecked(true);
 }
 
 void Diffractogram::renderDataset() {

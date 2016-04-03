@@ -147,7 +147,7 @@ Curve makeCurve(shp_LensSystem lenses,
                 : qFloor((angles.tth - tthRange.min) / deltaTTH);
 
       if (bin < 0 || width <= bin) {
-        TR("TTH bin outside cut?")
+//        TR("TTH bin outside cut?")
         continue; // outside of the cut
       }
 

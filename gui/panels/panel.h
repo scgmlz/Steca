@@ -66,5 +66,23 @@ protected:
 };
 
 //------------------------------------------------------------------------------
+
+/// A tabbed panel
+class TabsPanel: public QTabWidget, protected RefHub {
+  SUPER(TabsPanel,QTabWidget)
+public:
+  TabsPanel(TheHub&);
+
+protected:
+  class Tab: public QWidget {
+  public:
+    Tab(Qt::Orientation);
+    QBoxLayout *box;
+  };
+
+  Tab& addTab(rcstr title,Qt::Orientation);
+};
+
+//------------------------------------------------------------------------------
 }
 #endif // PANEL_H

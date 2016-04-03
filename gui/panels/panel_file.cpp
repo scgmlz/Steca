@@ -85,7 +85,7 @@ DockFiles::DockFiles(TheHub& theHub)
   auto h = hbox(); box->addLayout(h);
 
   h->addWidget(textButton(theHub.actLoadCorrFile));
-  h->addWidget(iconButton(theHub.actImagesEnableCorr));
+  h->addWidget(iconButton(theHub.actEnableCorr));
   h->addStretch();
   h->addWidget(iconButton(theHub.actAddFiles));
   h->addWidget(iconButton(theHub.actRemoveFile));
