@@ -185,6 +185,12 @@ void TheHub::initActions() { // REVIEW all action texts and tips and icons
   TOGL(actFullscreen, "Fullscreen", "")
       .key(Qt::Key_F11);
 #endif
+  TOGL(actViewDockFiles,       "Files", "")
+      .key(Qt::Key_F8);
+  TOGL(actViewDockDatasets,    "Datasets", "")
+      .key(Qt::Key_F9);
+  TOGL(actViewDockDatasetInfo, "Dataset info", "")
+      .key(Qt::Key_F10);
   TRIG(actViewReset, "Reset", "");
 
   TRIG(actPreferences, "Preferences", "")

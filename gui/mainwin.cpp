@@ -156,6 +156,10 @@ void MainWin::initMenus() {
     theHub.actFullscreen,
 #endif
     separator(),
+    theHub.actViewDockFiles,
+    theHub.actViewDockDatasets,
+    theHub.actViewDockDatasetInfo,
+    separator(),
     theHub.actViewReset,
   });
 
@@ -182,9 +186,9 @@ void MainWin::initMenus() {
 }
 
 void MainWin::initLayout() {
-  addDockWidget(Qt::LeftDockWidgetArea,  new panel::DockFiles(theHub));
-  addDockWidget(Qt::LeftDockWidgetArea,  new panel::DockDatasets(theHub));
-  addDockWidget(Qt::RightDockWidgetArea, new panel::DockDatasetInfo(theHub));
+  addDockWidget(Qt::LeftDockWidgetArea,  (dockFiles      = new panel::DockFiles(theHub)));
+  addDockWidget(Qt::LeftDockWidgetArea,  (dockDatasets   = new panel::DockDatasets(theHub)));
+  addDockWidget(Qt::RightDockWidgetArea, (dockDataseInfo  = new panel::DockDatasetInfo(theHub)));
 
   auto splMain = new QSplitter(Qt::Vertical);
   splMain->setChildrenCollapsible(false);
@@ -253,6 +257,11 @@ void MainWin::connectActions() {
 #ifndef Q_OS_OSX
   onToggle(theHub.actFullscreen, &thisClass::viewFullscreen);
 #endif
+
+  onTrigger(theHub.actViewDockFiles,       &thisClass::viewDockFiles);
+  onTrigger(theHub.actViewDockDatasets,    &thisClass::viewDockDatasets);
+  onTrigger(theHub.actViewDockDatasetInfo, &thisClass::viewDockDatasetInfo);
+
   onTrigger(theHub.actViewReset, &thisClass::viewReset);
 }
 
@@ -408,6 +417,18 @@ void MainWin::viewFullscreen(bool on) {
 #ifndef Q_OS_OSX
   theHub.actFullscreen->setChecked(on);
 #endif
+}
+
+void MainWin::viewDockFiles() {
+  dockFiles->setVisible(theHub.actViewDockFiles->isChecked());
+}
+
+void MainWin::viewDockDatasets() {
+  dockDatasets->setVisible(theHub.actViewDockDatasets->isChecked());
+}
+
+void MainWin::viewDockDatasetInfo() {
+  dockDataseInfo->setVisible(theHub.actViewDockDatasetInfo->isChecked());
 }
 
 void MainWin::viewReset() {

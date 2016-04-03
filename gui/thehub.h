@@ -107,6 +107,7 @@ public:
 #ifndef Q_OS_OSX // Mac has its own
     *actFullscreen,
 #endif
+    *actViewDockFiles, *actViewDockDatasets, *actViewDockDatasetInfo,
     *actViewReset,
 
     *actOutputPolefigures,
