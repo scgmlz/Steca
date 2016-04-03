@@ -3,7 +3,7 @@
 //  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      panel_file.h
-//! @brief     File panel.
+//! @brief     File selection panel.
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016

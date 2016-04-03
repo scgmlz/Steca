@@ -14,7 +14,7 @@
 
 #include "out_polefigures.h"
 #include "out_table.h"
-#include "panel/panel.h"
+#include "panels/panel.h"
 #include <QDate>
 
 //------------------------------------------------------------------------------

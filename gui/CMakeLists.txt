@@ -4,15 +4,15 @@
 
 file(GLOB header_files
   "*.h"
-  "panel/*.h"
-  "out/*.h"
+  "panels/*.h"
+  "output/*.h"
   "QCP/*.h"
 )
 
 file(GLOB source_files
   "*.cpp"
-  "panel/*.cpp"
-  "out/*.cpp"
+  "panels/*.cpp"
+  "output/*.cpp"
   "QCP/*.cpp"
 )
 

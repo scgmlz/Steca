@@ -13,11 +13,11 @@
 // ************************************************************************** //
 
 #include "mainwin.h"
-#include "panel/panel_dataset.h"
-#include "panel/panel_diffractogram.h"
-#include "panel/panel_fitting.h"
-#include "panel/panel_file.h"
-#include "out/out_polefigures.h"
+#include "panels/panel_dataset.h"
+#include "panels/panel_diffractogram.h"
+#include "panels/panel_fitting.h"
+#include "panels/panel_file.h"
+#include "output/out_polefigures.h"
 
 #include <QApplication>
 #include <QCloseEvent>

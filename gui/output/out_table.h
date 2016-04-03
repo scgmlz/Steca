@@ -17,7 +17,7 @@
 #define OUT_TABLE_H
 
 #include "gui_helpers.h"
-#include "panel/panel.h"
+#include "panels/panel.h"
 
 class TheHub;
 
