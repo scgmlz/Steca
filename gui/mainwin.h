@@ -42,7 +42,7 @@ public:
   void close();
 
   void addFiles();
-  void loadCorrectionFile();
+  void loadCorrFile();
 
   void loadSession();
   void saveSession();

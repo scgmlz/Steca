@@ -19,13 +19,12 @@
 namespace panel {
 //-----------------------------------------------------------------------------
 
-HubListView::HubListView(TheHub& theHub_): theHub(theHub_) {
+HubListView::HubListView(TheHub& theHub): RefHub(theHub) {
 }
 
 //------------------------------------------------------------------------------
 
-BasicPanel::BasicPanel(rcstr title, TheHub& theHub_)
-: super(title), theHub(theHub_) {
+BasicPanel::BasicPanel(rcstr title, TheHub& theHub): super(title), RefHub(theHub) {
 }
 
 void BasicPanel::setHorizontalStretch(int stretch) {

@@ -11,7 +11,7 @@ DatasetView::DatasetView(TheHub& theHub): super(theHub), model(theHub.datasetVie
   setModel(&model);
 
   connect(&theHub, &TheHub::fileSelected, [this](core::shp_File coreFile) {
-    model.setCoreFile(coreFile);
+    model.setFile(coreFile);
     setCurrentIndex(model.index(0,0));
   });
 
@@ -44,52 +44,53 @@ DockDatasets::DockDatasets(TheHub& theHub)
 //------------------------------------------------------------------------------
 
 DockDatasetInfo::DockDatasetInfo(TheHub& theHub_)
-: super("Dataset info","dock-dataset-info",Qt::Vertical), theHub(theHub_) {
+: super("Dataset info", "dock-dataset-info", Qt::Vertical), RefHub(theHub_) {
+
+  using Dataset     = core::Dataset;
+  using shp_Dataset = core::shp_Dataset;
+
   box->setMargin(0);
+
   auto scrollArea = new QScrollArea;
   box->addWidget(scrollArea);
 
   scrollArea->setFrameStyle(QFrame::NoFrame);
 
-  for_i (core::Dataset::numAttributes()) {
-      model::InfoItem item; item.tag = core::Dataset::getAttributeTag(i);
-      infoItems.append(item);
-  }
+  for_i (Dataset::numAttributes())
+    metaInfo.append(models::CheckedInfo(Dataset::getAttributeTag(i)));
 
-  info = new Info(infoItems);
-  scrollArea->setWidget(info);
+  scrollArea->setWidget((info = new Info(metaInfo)));
 
-  for_i (core::Dataset::numAttributes()) {
-      infoItems[i].cb->setToolTip("Show value in Datasets list");
-  }
+  for_i (Dataset::numAttributes())
+    metaInfo[i].cb->setToolTip("Show value in Datasets list");
 
-  connect(&theHub, &TheHub::datasetSelected, [this](core::shp_Dataset dataset) {
-    for_i (core::Dataset::numAttributes()) {
-      infoItems[i].text->setText(dataset ? dataset->getAttributeStrValue(i) : EMPTY_STR);
-    }
+  connect(&theHub, &TheHub::datasetSelected, [this](shp_Dataset dataset) {
+    for_i (Dataset::numAttributes())
+      metaInfo[i].setText(dataset ? dataset->getAttributeStrValue(i) : EMPTY_STR);
   });
 
-  for (auto &item: infoItems) {
+  for (auto &item: metaInfo) {
     connect(item.cb, &QCheckBox::clicked, this, [this]() {
-      theHub.datasetViewModel.setInfoItems(&infoItems);
+      theHub.datasetViewModel.showMetaInfo(metaInfo);
     });
   }
 }
 
-DockDatasetInfo::Info::Info(model::infoitem_vec& items) {
+DockDatasetInfo::Info::Info(models::checkedinfo_vec& metaInfo) {
   setLayout((grid = gridLayout()));
 
-  for (auto &item: items) {
+  for (auto &item: metaInfo) {
     int row = grid->rowCount();
-    grid->addWidget((item.cb   = check(item.tag)), row, 0);
-    grid->addWidget((item.text = readCell(16)),    row, 1);
+    grid->addWidget(label(item.tag),                    row, 0);
+    grid->addWidget((item.cb       = check(EMPTY_STR)), row, 1);
+    grid->addWidget((item.infoText = readCell(16)), row, 2);
   }
 }
 
 //------------------------------------------------------------------------------
 
-ImageWidget::ImageWidget(TheHub& theHub_,Dataset& dataset_)
-: theHub(theHub_), dataset(dataset_), showOverlay(false), scale(1) {
+ImageWidget::ImageWidget(TheHub& theHub,Dataset& dataset_)
+: RefHub(theHub), dataset(dataset_), showOverlay(false), scale(1) {
   setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 }
 

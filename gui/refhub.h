@@ -2,8 +2,8 @@
 //
 //  STeCa2:    StressTexCalculator ver. 2
 //
-//! @file      panel_file.h
-//! @brief     File selection panel.
+//! @file      refhub.h
+//! @brief     Reference to The Hub.
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
@@ -13,41 +13,22 @@
 //
 // ************************************************************************** //
 
-#ifndef PANEL_FILE_H
-#define PANEL_FILE_H
+#ifndef REFHUB_H
+#define REFHUB_H
 
-#include "panel.h"
-#include "models.h"
+#include "core_defs.h"
 
-namespace panel {
+class TheHub;
+
 //------------------------------------------------------------------------------
+/// The base class that refers to the hub + support methods.
 
-class FileView: public HubListView {
-  SUPER(FileView,HubListView)
+class RefHub {
 public:
-  using Model = models::FileViewModel;
-
-  FileView(TheHub&);
-
+  RefHub(TheHub&);
 protected:
-  void selectionChanged(QItemSelection const&, QItemSelection const&);
-
-public:
-  void removeSelected();
-  void update();
-
-private:
-  Model &model;
-};
-
-class DockFiles: public DockWidget {
-  SUPER(DockFiles,DockWidget)
-public:
-  DockFiles(TheHub&);
-private:
-  FileView *fileView;
+  TheHub &theHub;
 };
 
 //------------------------------------------------------------------------------
-}
-#endif
+#endif // REFHUB_H

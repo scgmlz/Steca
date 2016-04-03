@@ -76,14 +76,14 @@ private:
 public:
   bool fixedIntensityScale;
 
-  model::FileViewModel       fileViewModel;
-  model::DatasetViewModel    datasetViewModel;
-  model::ReflectionViewModel reflectionViewModel;
+  models::FileViewModel       fileViewModel;
+  models::DatasetViewModel    datasetViewModel;
+  models::ReflectionViewModel reflectionViewModel;
 
 public:
   QAction
     *actAddFiles, *actRemoveFile,
-    *actLoadCorrectionFile,
+    *actLoadCorrFile,
     *actLoadSession, *actSaveSession,
 
     *actExportDiffractogramCurrent,

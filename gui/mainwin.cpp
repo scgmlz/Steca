@@ -115,7 +115,7 @@ void MainWin::initMenus() {
 
   menuFile->addActions({
       theHub.actAddFiles, theHub.actRemoveFile, separator(),
-      theHub.actLoadCorrectionFile, separator(),
+      theHub.actLoadCorrFile, separator(),
       theHub.actLoadSession, theHub.actSaveSession, theHub.actLoadSession,
   });
 
@@ -233,7 +233,7 @@ void MainWin::connectActions() {
   auto notYet = [this](QAction* action) { action->setEnabled(false); };
 
   onTrigger(theHub.actAddFiles,           &thisClass::addFiles);
-  onTrigger(theHub.actLoadCorrectionFile, &thisClass::loadCorrectionFile);
+  onTrigger(theHub.actLoadCorrFile, &thisClass::loadCorrFile);
 
   onTrigger(theHub.actLoadSession,        &thisClass::loadSession);
   onTrigger(theHub.actSaveSession,        &thisClass::saveSession);
@@ -319,7 +319,7 @@ void MainWin::addFiles() {
     theHub.addFiles(fileNames);
 }
 
-void MainWin::loadCorrectionFile() {
+void MainWin::loadCorrFile() {
   str fileName = QFileDialog::getOpenFileName(this, "Set correction file",
       QDir::current().absolutePath(), "Data files (*.dat);;All files (*.*)");
 

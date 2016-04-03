@@ -132,7 +132,7 @@ void TheHub::initActions() {
   PUSH_ACTION(actAddFiles,    "Add files…","Add files",":/icon/add")                        ACTION_KEY(Qt::CTRL|Qt::Key_O)
   PUSH_ACTION(actRemoveFile,  "Remove selected file","Remove selected file",":/icon/rem")     ACTION_KEY(QKey::Delete);
 
-  PUSH_ACTION(actLoadCorrectionFile,"Load correction file…", "Load correction file", "")    ACTION_KEY(Qt::SHIFT|Qt::CTRL|Qt::Key_O);
+  PUSH_ACTION(actLoadCorrFile,"Load correction file…", "Load correction file", "")    ACTION_KEY(Qt::SHIFT|Qt::CTRL|Qt::Key_O);
   TOGL_ACTION2(actImagesEnableCorr,  "Enable correction file", "Disable correction file", "Enable correction by correction file", "Disable correction by correction file", ":/icon/useCorrection")
 
   PUSH_ACTION(actLoadSession,"Load session…","","")

@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "out_table.h"
+#include "types/type_models.h"
 #include "thehub.h"
 
 #include <QAbstractTableModel>
@@ -24,15 +25,16 @@
 
 //------------------------------------------------------------------------------
 
-class OutTableModel: public QAbstractTableModel {
-  SUPER(OutTableModel,QAbstractTableModel)
+class OutTableModel: public models::TableModel {
+  SUPER(OutTableModel,models::TableModel)
 
 public:
-  OutTableModel(uint numColumns);
+  OutTableModel(TheHub&, uint numColumns);
 
-  int columnCount(QModelIndex const&)             const;
-  int rowCount(QModelIndex const&)                const;
-  QVariant data(QModelIndex const&,int)           const;
+  int columnCount(rcIndex = models::ANY_INDEX) const;
+  int rowCount(rcIndex    = models::ANY_INDEX) const;
+
+  QVariant data(rcIndex,int) const;
   QVariant headerData(int, Qt::Orientation, int)  const;
 
   void moveColumn(uint from, uint to);
@@ -57,25 +59,26 @@ private:
 
 //------------------------------------------------------------------------------
 
-OutTableModel::OutTableModel(uint numColumns_): numColumns(numColumns_) {
+OutTableModel::OutTableModel(TheHub& theHub, uint numColumns_)
+: models::TableModel(theHub), numColumns(numColumns_) {
   colIndexMap.resize(numColumns);
   for_i (numColumns)
     colIndexMap[i] = i;
 }
 
-int OutTableModel::columnCount(QModelIndex const&) const {
+int OutTableModel::columnCount(rcIndex) const {
   return numColumns + 1;
 }
 
-int OutTableModel::rowCount(QModelIndex const&) const {
+int OutTableModel::rowCount(rcIndex) const {
   return printDatasets.count();
 }
 
 // The first column contains row numbers. The rest numCols columns contain data.
 
-QVariant OutTableModel::data(QModelIndex const& index, int role) const {
+QVariant OutTableModel::data(rcIndex index, int role) const {
   int indexRow = index.row(), indexCol = index.column();
-  int numRows  = rowCount(QModelIndex()), numCols   = columnCount(QModelIndex());
+  int numRows = rowCount(), numCols = columnCount();
 
   if (indexCol < 0 || indexRow < 0)
     return QVariant();
@@ -203,9 +206,9 @@ OutTableHeaderView::OutTableHeaderView(): super(Qt::Horizontal) {
 
 //------------------------------------------------------------------------------
 
-OutTable::OutTable(uint numDataColumns) {
+OutTable::OutTable(TheHub& theHub, uint numDataColumns) {
   setHeader(new OutTableHeaderView);
-  setModel((model = new OutTableModel(numDataColumns)));
+  setModel((model = new OutTableModel(theHub,numDataColumns)));
 
   header()->setSectionResizeMode(0,QHeaderView::Fixed);
 
@@ -236,10 +239,9 @@ void OutTable::addRow(OutTable::row_t const& row) {
 
 //------------------------------------------------------------------------------
 
-OutTableWidget::OutTableWidget(TheHub& theHub_,
+OutTableWidget::OutTableWidget(TheHub& theHub,
                                str_lst const& headers, OutTable::cmp_vec const& cmps)
-: theHub(theHub_) {
-
+{
   ASSERT(headers.count() == cmps.count())
   uint numDataColumns = headers.count();
 
@@ -251,7 +253,7 @@ OutTableWidget::OutTableWidget(TheHub& theHub_,
   box->addWidget(split);
 
   split->setChildrenCollapsible(false);
-  split->addWidget((outTable = new OutTable(numDataColumns)));
+  split->addWidget((outTable = new OutTable(theHub,numDataColumns)));
 
   outTable->setHeaders(headers);
   outTable->setCmpFuns(cmps);

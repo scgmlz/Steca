@@ -45,7 +45,7 @@ protected:
 
 class Diffractogram;
 
-class DiffractogramPlot: public QCustomPlot {
+class DiffractogramPlot: public QCustomPlot, protected RefHub {
   SUPER(DiffractogramPlot,QCustomPlot)
 public:
   enum Tool {
@@ -77,7 +77,6 @@ protected:
   void resizeEvent(QResizeEvent*);
 
 private:
-  TheHub        &theHub;
   Diffractogram &diffractogram;
   Tool tool;
   QCPGraph *bgGraph, *dgramGraph, *dgramBgFittedGraph, *guesses, *fits;

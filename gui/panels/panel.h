@@ -16,6 +16,7 @@
 #ifndef PANEL_H
 #define PANEL_H
 
+#include "refhub.h"
 #include "gui_helpers.h"
 #include <QGroupBox>
 
@@ -25,19 +26,16 @@ namespace panel {
 //------------------------------------------------------------------------------
 /// A (tree-)list view with a reference to the hub.
 
-class HubListView: public TreeListView {
+class HubListView: public TreeListView, protected RefHub {
   SUPER(HubListView,TreeListView)
 public:
   HubListView(TheHub&);
-
-protected:
-  TheHub &theHub;
 };
 
 //------------------------------------------------------------------------------
 
 /// Just a plain panel
-class BasicPanel: public QGroupBox {
+class BasicPanel: public QGroupBox, protected RefHub {
   SUPER(BasicPanel,QGroupBox)
 public:
   BasicPanel(rcstr title,TheHub&);
@@ -45,9 +43,6 @@ public:
   void setHorizontalStretch(int);
   void setVerticalStretch(int);
   void setStretch(int horizontal, int vertical);
-
-protected:
-  TheHub &theHub;
 };
 
 /// A panel with a box layout

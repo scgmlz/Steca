@@ -10,17 +10,13 @@
 
 #include <QScrollArea>
 
-//namespace model {
-//class DatasetViewModel;
-//}
-
 namespace panel {
 //------------------------------------------------------------------------------
 
 class DatasetView: public HubListView {
   SUPER(DatasetView,HubListView)
 public:
-  using Model = model::DatasetViewModel;
+  using Model = models::DatasetViewModel;
 
   DatasetView(TheHub&);
 
@@ -43,7 +39,7 @@ private:
 
 //------------------------------------------------------------------------------
 
-class DockDatasetInfo: public DockWidget {
+class DockDatasetInfo: public DockWidget, protected RefHub {
   SUPER(DockDatasetInfo,DockWidget)
 public:
   DockDatasetInfo(TheHub&);
@@ -51,20 +47,19 @@ public:
 private:
   class Info: public QWidget {
   public:
-    Info(model::infoitem_vec&);
+    Info(models::checkedinfo_vec&);
     QGridLayout *grid;
   };
 
-  TheHub &theHub;
   Info *info;
-  model::infoitem_vec infoItems;
+  models::checkedinfo_vec metaInfo;
 };
 
 //------------------------------------------------------------------------------
 
 class Dataset;
 
-class ImageWidget: public QWidget {
+class ImageWidget: public QWidget, protected RefHub {
   SUPER(ImageWidget,QWidget)
 public:
   ImageWidget(TheHub&,Dataset&);
@@ -76,7 +71,6 @@ public:
   QSize sizeHint() const;
 
 protected:
-  TheHub  &theHub;
   Dataset &dataset;
   bool showOverlay;
   QPixmap original, scaled;

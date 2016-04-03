@@ -92,7 +92,7 @@ void DiffractogramPlotOverlay::updateCursorRegion() {
 }
 
 DiffractogramPlot::DiffractogramPlot(TheHub& theHub_,Diffractogram& diffractogram_)
-: theHub(theHub_), diffractogram(diffractogram_), showBgFit(false) {
+: RefHub(theHub_), diffractogram(diffractogram_), showBgFit(false) {
   overlay = new DiffractogramPlotOverlay(*this);
 
   auto *ar = axisRect();

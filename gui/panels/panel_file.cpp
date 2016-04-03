@@ -24,10 +24,10 @@ namespace panel {
 class FileViewDelegate: public QStyledItemDelegate {
   SUPER(FileViewDelegate,QStyledItemDelegate)
 public:
-  void paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const {
+  void paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex index) const {
     QStyleOptionViewItem o = option;
-    bool isCorrectionFile = index.data(FileView::Model::IsCorrectionFileRole).toBool();
-    if (isCorrectionFile) {
+    bool isCorrFile = index.data(FileView::Model::IsCorrFileRole).toBool();
+    if (isCorrFile) {
       o.font.setItalic(true);
       o.font.setBold(true);
     }
@@ -84,7 +84,7 @@ DockFiles::DockFiles(TheHub& theHub)
 
   auto h = hbox(); box->addLayout(h);
 
-  h->addWidget(textButton(theHub.actLoadCorrectionFile));
+  h->addWidget(textButton(theHub.actLoadCorrFile));
   h->addWidget(iconButton(theHub.actImagesEnableCorr));
   h->addStretch();
   h->addWidget(iconButton(theHub.actAddFiles));

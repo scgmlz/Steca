@@ -14,7 +14,7 @@ namespace panel {
 class ReflectionView: public HubListView {
   SUPER(ReflectionView,HubListView)
 public:
-  using Model = model::ReflectionViewModel;
+  using Model = models::ReflectionViewModel;
 
   ReflectionView(TheHub&);
 

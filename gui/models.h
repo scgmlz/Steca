@@ -16,99 +16,81 @@
 #ifndef MODELS_H
 #define MODELS_H
 
-#include "core_defs.h"
-#include "types/core_types_fwd.h"
-#include <QAbstractTableModel>
+#include "types/type_models.h"
 
-class TheHub;
-class QCheckBox;
-class QLineEdit;
-
-namespace model {
+namespace models {
 //------------------------------------------------------------------------------
 
-struct InfoItem {
-  str tag; QCheckBox *cb; QLineEdit *text;
-};
-
-typedef QVector<InfoItem> infoitem_vec;
-
-//------------------------------------------------------------------------------
-/// The base class of all models (references the hub)
-
-class ModelBase {
-public:
-  ModelBase(TheHub&);
-protected:
-  TheHub &theHub;
-};
-
-//------------------------------------------------------------------------------
-
-class FileViewModel: public QAbstractTableModel, public ModelBase {
-  SUPER(FileViewModel,QAbstractTableModel)
+class FileViewModel: public TableModel {
+  SUPER(FileViewModel,TableModel)
 public:
   FileViewModel(TheHub&);
 
-  enum { GetFileRole = Qt::UserRole, IsCorrectionFileRole };
+  int columnCount(rcIndex = ANY_INDEX) const;
+  int rowCount(rcIndex    = ANY_INDEX) const;
 
-  uint numFiles(bool withCorr=false);
+  QVariant data(rcIndex,int) const;
+
+public:
+  enum { GetFileRole = Qt::UserRole, IsCorrFileRole };
+
   void remFile(uint i);
-
-  int columnCount(QModelIndex const& = QModelIndex())   const;
-  int rowCount(QModelIndex const& = QModelIndex())      const;
-  QVariant data(QModelIndex const&,int)                 const;
-
-  void signalReset();
 };
 
-class DatasetViewModel: public QAbstractTableModel, public ModelBase {
-  SUPER(DatasetViewModel,QAbstractTableModel)
+//------------------------------------------------------------------------------
+
+class DatasetViewModel: public TableModel {
+  SUPER(DatasetViewModel,TableModel)
 public:
   DatasetViewModel(TheHub&);
 
+  int columnCount(rcIndex = ANY_INDEX) const;
+  int rowCount(rcIndex    = ANY_INDEX) const;
+
+  QVariant data(rcIndex,int) const;
+  QVariant headerData(int,Qt::Orientation,int) const;
+
+  enum {
+    COL_NUMBER = DCOL,
+    COL_ATTRS
+  };
+
+public:
   enum { GetDatasetRole = Qt::UserRole };
 
-  int columnCount(QModelIndex const& = QModelIndex())   const;
-  int rowCount(QModelIndex const& = QModelIndex())      const;
-  QVariant data(QModelIndex const&,int)                 const;
-  QVariant headerData(int,Qt::Orientation,int)          const;
-
-  void setCoreFile(core::shp_File);
-  void setInfoItems(infoitem_vec const*);
+  void setFile(core::shp_File);
+  void showMetaInfo(checkedinfo_vec const&);
 
 private:
-  core::shp_Dataset const& getDataset(int row) const;
-
-private:
-  core::shp_File coreFile;
-  infoitem_vec const* infoItems;
-  QVector<int> attributeNums;
+  core::shp_File file;              ///< the file with datasets
+  checkedinfo_vec const* metaInfo;  ///< metadata items
+  uint_vec metaInfoNums;            ///< selected metadata items to show
 };
 
-class ReflectionViewModel: public QAbstractTableModel, public ModelBase {
-  SUPER(ReflectionViewModel,QAbstractTableModel)
+//------------------------------------------------------------------------------
+
+class ReflectionViewModel: public TableModel {
+  SUPER(ReflectionViewModel,TableModel)
 public:
+  ReflectionViewModel(TheHub&);
+
+  int columnCount(rcIndex = ANY_INDEX) const;
+  int rowCount(rcIndex    = ANY_INDEX) const;
+
+  QVariant data(rcIndex,int) const;
+  QVariant headerData(int,Qt::Orientation,int) const;
+
   enum {
-    COLUMN_0,
-    COLUMN_ID,
-    COLUMN_TYPE,
+    COL_ID = DCOL,
+    COL_TYPE,
     NUM_COLUMNS
   };
 
-  ReflectionViewModel(TheHub&);
-
+public:
   enum { GetDatasetRole = Qt::UserRole };
-
-  int columnCount(QModelIndex const& = QModelIndex()) const;
-  int rowCount(QModelIndex const& = QModelIndex())    const;
-  QVariant data(QModelIndex const&,int)               const;
-  QVariant headerData(int,Qt::Orientation,int)        const;
 
   void addReflection(core::ePeakType);
   void remReflection(uint);
-
-  void signalReset();
 };
 
 //------------------------------------------------------------------------------

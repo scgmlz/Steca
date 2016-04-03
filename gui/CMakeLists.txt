@@ -4,6 +4,7 @@
 
 file(GLOB header_files
   "*.h"
+  "types/*.h"
   "panels/*.h"
   "output/*.h"
   "QCP/*.h"
@@ -11,6 +12,7 @@ file(GLOB header_files
 
 file(GLOB source_files
   "*.cpp"
+  "types/*.cpp"
   "panels/*.cpp"
   "output/*.cpp"
   "QCP/*.cpp"

@@ -19,8 +19,6 @@
 #include "gui_helpers.h"
 #include "panels/panel.h"
 
-class TheHub;
-
 //------------------------------------------------------------------------------
 
 class OutTableModel;
@@ -37,7 +35,7 @@ public:
   typedef QVector<QVariant> row_t;
 
 public:
-  OutTable(uint numDataColumns);
+  OutTable(TheHub& theHub, uint numDataColumns);
 
   void setHeaders(str_lst const&);
   void setCmpFuns(cmp_vec const&);
@@ -87,7 +85,6 @@ private:
   };
 
 private:
-  TheHub          &theHub;
   OutTable        *outTable;
   ShowItemsWidget *showItemsWidget;
   showitem_vec     showItems;
