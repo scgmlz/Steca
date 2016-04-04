@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "core_defs.h"
-#include <qmath.h>
+#include <QtMath>
 
 static_assert (QT_VERSION >= QT_VERSION_CHECK(5,4,0),"written for Qt >= 5.4, have " QT_VERSION_STR);
 

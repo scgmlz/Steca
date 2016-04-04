@@ -1,11 +1,26 @@
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_fit_methods.cpp
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
 #include "core_fit_methods.h"
 
 #include "types/core_type_curve.h"
 #include "LevMar/levmar.h"
-#include <qmath.h>
+#include <QtMath>
 
 namespace core { namespace fit {
 //------------------------------------------------------------------------------
+// STeCa (1) code, refactored
 
 FittingMethod::FittingMethod() {
 }
@@ -13,11 +28,11 @@ FittingMethod::FittingMethod() {
 FittingMethod::~FittingMethod() {
 }
 
-bool FittingMethod::fitWithoutCheck(Function& function, core::Curve const& curve) {
+bool FittingMethod::fitWithoutChecks(Function& function, core::Curve const& curve) {
   return fit(function, curve, false);
 }
 
-bool FittingMethod::fit(Function& function_, core::Curve const& curve, bool sideConditionCheckIsActive) {
+bool FittingMethod::fit(Function& function_, core::Curve const& curve, bool withChecks) {
   if (curve.isEmpty()) return false;
 
   function = &function_;
@@ -35,15 +50,14 @@ bool FittingMethod::fit(Function& function_, core::Curve const& curve, bool side
     parMax[i]   = rge.max;
   }
 
-  uint pointCount = curve.count();
-
-  if (!approximate(parValue.data(),parMin.data(),parMax.data(),parError.data(),parCount,
-                   curve.getYs().data(),pointCount))
+  if (!approximate(parValue.data(),
+                   parMin.data(), parMax.data(), parError.data(), parCount,
+                   curve.getYs().data(), curve.count()))
     return false;
 
   // read data
   for_i (parCount) {
-    if (!function->parameterAt(i).setValue(parValue[i], parError[i], !sideConditionCheckIsActive))
+    if (!function->parameterAt(i).setValue(parValue[i], parError[i], !withChecks))
       return false;
   }
 
@@ -51,9 +65,8 @@ bool FittingMethod::fit(Function& function_, core::Curve const& curve, bool side
 }
 
 void FittingMethod::__functionY(qreal* parameterValues, qreal* yValues, int /*parameterLength*/, int xLength, void*) {
-  for_i (xLength) {
+  for_i (xLength)
     yValues[i] = function->y(xValues[i], parameterValues);
-  }
 }
 
 //------------------------------------------------------------------------------

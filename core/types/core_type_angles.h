@@ -17,7 +17,7 @@
 #define CORE_TYPE_ANGLES_H
 
 #include "core_defs.h"
-#include "core_types_fwd.h"
+#include "types/core_type_array2d.h"
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -27,6 +27,15 @@ struct DiffractionAngles {
   DiffractionAngles(qreal gamma = 0, qreal tth = 0);
 
   qreal gamma, tth;
+};
+
+//------------------------------------------------------------------------------
+// TODO make smart caching
+
+class DiffractionAnglesMap: public Array2D<DiffractionAngles> {
+  SUPER(DiffractionAnglesMap,Array2D<DiffractionAngles>)
+public:
+  DiffractionAnglesMap();
 };
 
 //------------------------------------------------------------------------------

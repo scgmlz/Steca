@@ -1,20 +1,27 @@
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_lens.h
+//! @brief     The lens system
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
 #ifndef CORE_LENS_H
 #define CORE_LENS_H
 
-#include "types/core_type_array2d.h"
+#include "types/core_type_angles.h"
 #include "types/core_type_range.h"
 #include "core_priority_chain.h"
 #include <QMargins>
 
 namespace core {
-//------------------------------------------------------------------------------
-
-// TODO make smart caching
-class DiffractionAnglesMap: public Array2D<DiffractionAngles> {
-  SUPER(DiffractionAnglesMap,Array2D<DiffractionAngles>)
-public:
-};
-
 //------------------------------------------------------------------------------
 
 class Lens : public ChainLink<Lens> {
@@ -181,4 +188,4 @@ shp_LensSystem makeLensSystem(Dataset const&, DiffractionAnglesMap const&);
 //------------------------------------------------------------------------------
 }
 
-#endif
+#endif // CORE_LENS_H

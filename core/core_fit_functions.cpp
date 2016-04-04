@@ -16,8 +16,7 @@
 #include "core_fit_fitting.h"
 #include "core_fit_functions.h"
 #include "types/core_json.h"
-#include <QScopedPointer>
-#include <qmath.h>
+#include <QtMath>
 
 namespace core { namespace fit {
 //------------------------------------------------------------------------------

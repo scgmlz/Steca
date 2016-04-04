@@ -126,10 +126,6 @@ TheHub::TheHub(): session(new core::Session())
   configActions();
 }
 
-TheHub::~TheHub() {
-  delete session;
-}
-
 #define TRIG(act,text,tip) (*(Action*)(act = new TriggerAction(text,tip,this)))
 #define TOGL(act,text,tip) (*(Action*)(act = new ToggleAction(text,tip,this)))
 

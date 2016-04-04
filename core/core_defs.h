@@ -26,7 +26,6 @@
 #include <QStringBuilder>
 
 // string support
-
 typedef QString     str;      ///< a short alias for the QString class
 typedef str const&  rcstr;    ///< a reference to a string constant
 typedef char const* pcstr;    ///< C-style (zero-byte-terminated) string
@@ -47,7 +46,6 @@ typedef QVector<qreal> qreal_vec;
 typedef QVector<uint>  uint_vec;
 
 // conversions
-
 qreal radToDeg(qreal rad);
 qreal degToRad(qreal deg);
 

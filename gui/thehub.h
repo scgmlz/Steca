@@ -1,3 +1,4 @@
+// TODO HEADER
 /** \file
  */
 
@@ -70,14 +71,13 @@ class TheHub: public QObject {
   Q_OBJECT
 public:
   TheHub();
- ~TheHub();
 
 private:
   void initActions();
   void configActions();
 
 private:
-  core::Session *session;
+  QScopedPointer<core::Session> session;
 
 public:
   bool fixedIntensityScale;

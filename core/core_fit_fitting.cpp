@@ -1,3 +1,17 @@
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_fit_fitting.cpp
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
 #include "core_fit_fitting.h"
 #include "core_fit_methods.h"
 #include "core_fit_limits.h"
@@ -7,15 +21,16 @@ namespace core { namespace fit {
 //------------------------------------------------------------------------------
 
 Polynomial fitBackground(core::Curve const& dgram, core::Ranges const& bgRanges, uint degree) {
+  // clamp the degree - complexity of higher degree fits grows fast
   Polynomial bgPolynomial(qMin(degree,MAX_BACKGROUND_POLYNOMIAL_DEGREE));
-  FittingLevenbergMarquardt().fitWithoutCheck(bgPolynomial,dgram.intersect(bgRanges));
+  FittingLevenbergMarquardt().fitWithoutChecks(bgPolynomial,dgram.intersect(bgRanges));
   return bgPolynomial;
 }
 
-void fitPeak(PeakFunction& peakFunction, core::Curve const& dgram, core::Range const& range) {
+void fitPeak(PeakFunction& peakFunction, core::Curve const& curve_, core::Range const& range) {
   peakFunction.reset();
 
-  core::Curve curve = dgram.intersect(range);
+  core::Curve curve = curve_.intersect(range);
   if (curve.isEmpty()) return;
 
   if (!peakFunction.getGuessPeak().isValid()) { // calculate guesses
@@ -42,7 +57,7 @@ void fitPeak(PeakFunction& peakFunction, core::Curve const& dgram, core::Range c
     peakFunction.setGuessFWHM(curve.x(hmi2) - curve.x(hmi1));
   }
 
-  FittingLevenbergMarquardt().fitWithoutCheck(peakFunction,curve);
+  FittingLevenbergMarquardt().fitWithoutChecks(peakFunction,curve);
 }
 
 //------------------------------------------------------------------------------

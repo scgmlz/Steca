@@ -1,3 +1,4 @@
+// TODO HEADER
 #include "core_session.h"
 #include "io/core_io.h"
 #include "core_fit_methods.h"
@@ -5,7 +6,7 @@
 #include "types/core_type_angles.h"
 #include "types/core_type_curve.h"
 #include <QStringList>
-#include <qmath.h>
+#include <QtMath>
 
 namespace core {
 //------------------------------------------------------------------------------

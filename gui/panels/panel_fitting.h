@@ -1,5 +1,17 @@
-/** \file
- */
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      panel_fitting.h
+//! @brief     Fitting panel.
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
 
 #ifndef PANEL_FITTING_H
 #define PANEL_FITTING_H
@@ -56,4 +68,4 @@ private:
 
 //------------------------------------------------------------------------------
 }
-#endif
+#endif // PANEL_FITTING_H

@@ -154,7 +154,7 @@ QVariant ReflectionViewModel::data(rcIndex index, int role) const {
 
     switch (col) {
     case COL_ID:
-      return str().setNum(row+1);
+      return str::number(row+1);
     case COL_TYPE:
       return core::Reflection::reflType(theHub.getReflections()[row]->getType());
     default:

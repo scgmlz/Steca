@@ -1,9 +1,23 @@
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_reflection.cpp
+//! @brief     Reflections
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
 #include "core_reflection.h"
 #include "types/core_json.h"
 #include <QStringList>
 
 namespace core {
-
 //------------------------------------------------------------------------------
 
 str_lst const& Reflection::reflTypes() {
@@ -21,7 +35,6 @@ Reflection::Reflection(ePeakType type): peakFunction(nullptr) {
 }
 
 Reflection::~Reflection() {
-  delete peakFunction;
 }
 
 ePeakType Reflection::getType() const {
@@ -37,7 +50,7 @@ void Reflection::setRange(Range const& range_) {
 }
 
 fit::PeakFunction* Reflection::makePeakFunction() const {
-  QScopedPointer<fit::PeakFunction> f(fit::PeakFunction::factory(getType()));
+  QScopedArrayPointer<fit::PeakFunction> f(fit::PeakFunction::factory(getType()));
   f->setGuessPeak(peakFunction->getGuessPeak());
   f->setGuessFWHM(peakFunction->getGuessFWHM());
   return f.take();
@@ -63,8 +76,7 @@ void Reflection::setPeakFunction(ePeakType type) {
 }
 
 void Reflection::setPeakFunction(fit::PeakFunction* f) {
-  delete peakFunction;
-  peakFunction = f;
+  peakFunction.reset(f);
 }
 
 static str const

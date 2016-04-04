@@ -1,3 +1,18 @@
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_polefigure.h
+//! @brief     Pole figure
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
 #ifndef CORE_POLEFIGURE_H
 #define CORE_POLEFIGURE_H
 
@@ -6,8 +21,8 @@
 #include "core_reflection_info.h"
 
 namespace core {
+//------------------------------------------------------------------------------
 
-class Reflection;
 class Session;
 
 class Polefigure final {
@@ -46,8 +61,7 @@ private:
                                   qreal &peakOffset,
                                   qreal &peakHeight,
                                   qreal &peakFWHM) const;
-
 };
-
+//------------------------------------------------------------------------------
 }
-#endif
+#endif // CORE_POLEFIGURE_H

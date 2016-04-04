@@ -20,12 +20,12 @@
 #include "core_fit_fitting.h"
 #include "types/core_type_matrix.h"
 #include "types/core_type_curve.h"
-#include <qmath.h>
+#include <QtMath>
 
 namespace core {
 //------------------------------------------------------------------------------
+// dataset attributes
 
-// datase attributes
 enum {
   attrDATE, attrCOMMENT,
 
@@ -92,7 +92,7 @@ str Dataset::getAttributeStrValue(uint i) const {
   case attrDELTA_TIME:      value = dTime;      break;
   }
 
-  return QString().setNum(value);
+  return str::number(value);
 }
 
 qreal Dataset::middleTth() const {
@@ -121,32 +121,10 @@ void Dataset::addIntensities(Dataset const& that) {
   image.addIntensities(that.image.getIntensities());
 }
 
-// Returns a clockwise rotation matrix around the x axis.
-matrix3d rotationCWx(qreal angle) {
-  return matrix3d(1, 0,           0,
-                  0, cos(angle), -sin(angle),
-                  0, sin(angle),  cos(angle));
-}
-
-// Returns a clockwise rotation matrix around the z axis.
-matrix3d rotationCWz(qreal angle) {
-  return matrix3d(cos(angle), -sin(angle), 0,
-                  sin(angle),  cos(angle), 0,
-                  0,           0,          1);
-}
-
-// Returns a counterclockwise rotation matrix around the z axis.
-matrix3d rotationCCWz(qreal angle) {
-  matrix3d m = rotationCWz(angle);
-  m.transpose();
-  return m;
-}
-
 // Calculates the polefigure coordinates alpha and beta with regards to
 // sample orientation and diffraction angles.
-void calculateAlphaBeta(qreal omgDet, qreal phiDet, qreal chiDet, qreal tthRef, qreal gammaRef,
+void Dataset::calculateAlphaBeta(qreal omgDet, qreal phiDet, qreal chiDet, qreal tthRef, qreal gammaRef,
                         qreal& alpha, qreal& beta) {
-
   omgDet   = degToRad(omgDet);
   phiDet   = degToRad(phiDet);
   chiDet   = degToRad(chiDet);
@@ -155,19 +133,22 @@ void calculateAlphaBeta(qreal omgDet, qreal phiDet, qreal chiDet, qreal tthRef, 
 
   // Note that the rotations here do not correspond to C. Randau's dissertation.
   // The rotations given in [J. Appl. Cryst. (2012) 44, 641-644] are incorrect.
-  const vector3d rotated =   rotationCWz (phiDet)
-                           * rotationCWx (chiDet)
-                           * rotationCWz (omgDet)
-                           * rotationCWx (gammaRef)
-                           * rotationCCWz(tthRef / 2)
+  const vector3d rotated =   matrix3d::rotationCWz (phiDet)
+                           * matrix3d::rotationCWx (chiDet)
+                           * matrix3d::rotationCWz (omgDet)
+                           * matrix3d::rotationCWx (gammaRef)
+                           * matrix3d::rotationCCWz(tthRef / 2)
                            * vector3d(0,1,0);
   alpha = acos(rotated._2);
   beta  = atan2(rotated._0, rotated._1);
+
+  // REVIEW
   // Mirror angles.
   if (alpha > M_PI / 2) {
     alpha = abs(alpha - M_PI);
     beta += beta < 0 ? M_PI : -M_PI;
   }
+
   // Keep beta between 0 and 2pi.
   if (beta < 0)
     beta += 2 * M_PI;
@@ -187,19 +168,21 @@ ReflectionInfo Dataset::makeReflectionInfo(Session const& session,
     = fit::fitBackground(gammaCutCurve,
                          session.getBgRanges(),
                          session.getBgPolynomialDegree());
+
   gammaCutCurve = gammaCutCurve.subtract(sectorBg);
   auto peakFunction = reflection.makePeakFunction();
   fit::fitPeak(*peakFunction,
                gammaCutCurve,
                reflection.getRange());
-  qreal alpha;
-  qreal beta;
+
+  qreal alpha, beta;
   calculateAlphaBeta(motorOmg, motorPhi, motorChi,
     reflection.getRange().center(),
     gammaSector.center(),
     alpha,
     beta
   );
+
   return ReflectionInfo(alpha,
                         beta,
                         gammaSector,

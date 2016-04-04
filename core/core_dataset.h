@@ -56,6 +56,8 @@ public:
   /// used for correction files if there are more than one image
   void addIntensities(Dataset const&);
 
+  static void calculateAlphaBeta(qreal, qreal, qreal, qreal, qreal, qreal&, qreal&);
+
   ReflectionInfo makeReflectionInfo(Session const& session,
                                     Reflection const& reflection,
                                     Range const& gammaSector) const;

@@ -71,8 +71,8 @@ void TestCoreLens::testSensitivityCorrectionLens() {
                                                  corrPosX,corrPosY,width,height);
 
   lensSystem << shp_LensSystem(new SensitivityCorrectionLens(correctionArray));
-  for (int y = 0; y < height; ++y) {
-    for (int x = 0; x < width; ++x) {
+  for_int (y, height) {
+    for_int (x, width) {
       auto intensity = lensSystem->getIntensity((uint) x,(uint) y);
       if (x == posIntensArray && y == posIntensArray) QCOMPARE(intensity,specialInten);
       else if (x == corrPosX && y == corrPosY) QCOMPARE(intensity,corrValSpecial*inten);
@@ -200,8 +200,8 @@ void TestCoreLens::checkIntensity(shp_LensSystem const& lensSystem,
                                   intens_t& val, intens_t& specialVal,
                                   int posX, int posY) {
   auto size = lensSystem->getSize();
-  for (int y = 0, yHeight = size.height(); y < yHeight; ++y) {
-    for (int x = 0, xWidth = size.width(); x < xWidth; ++x) {
+  for_int (y, size.height()) {
+    for_int (x, size.width()) {
       auto intensity = lensSystem->getIntensity(x,y);
       if (y == posY && x == posX) QCOMPARE(intensity,specialVal);
       else QCOMPARE(intensity, val);

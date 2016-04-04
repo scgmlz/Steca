@@ -1,6 +1,17 @@
-/** \file
- * Detector images.
- */
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_reflection.h
+//! @brief     Reflections
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
 
 #ifndef CORE_REFLECTION_H
 #define CORE_REFLECTION_H
@@ -40,7 +51,8 @@ private:
 
   void setPeakFunction(ePeakType);
   void setPeakFunction(fit::PeakFunction*);
-  fit::PeakFunction *peakFunction;
+
+  QScopedPointer<fit::PeakFunction> peakFunction;
 
 public:
   JsonObj saveJson() const;
@@ -54,4 +66,4 @@ typedef QVector<shp_Reflection>    Reflections;
 
 Q_DECLARE_METATYPE(core::shp_Reflection)
 
-#endif
+#endif // CORE_REFLECTION_H

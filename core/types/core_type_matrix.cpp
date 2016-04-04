@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "core_type_matrix.h"
+#include <QtMath>
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -69,7 +70,23 @@ bool matrix3d::operator ==(matrix3d const& n) const {
   return
     _00==n._00 && _01==n._01 && _02==n._02 &&
     _10==n._10 && _11==n._11 && _12==n._12 &&
-    _20==n._20 && _21==n._21 && _22==n._22;
+      _20==n._20 && _21==n._21 && _22==n._22;
+}
+
+matrix3d matrix3d::rotationCWx(qreal angle) {
+  return matrix3d(1, 0,           0,
+                  0, cos(angle), -sin(angle),
+                  0, sin(angle),  cos(angle));
+}
+
+matrix3d matrix3d::rotationCWz(qreal angle) {
+  return matrix3d(cos(angle), -sin(angle), 0,
+                  sin(angle),  cos(angle), 0,
+                  0,           0,          1);
+}
+
+matrix3d matrix3d::rotationCCWz(qreal angle) {
+  return rotationCWz(angle).transposed();
 }
 
 //------------------------------------------------------------------------------

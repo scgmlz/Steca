@@ -1,6 +1,22 @@
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      panel_dataset.cpp
+//! @brief     File selection panel.
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
 #include "panel_dataset.h"
 #include "thehub.h"
 
+#include <QScrollArea>
 #include <QPainter>
 #include <QAction>
 
@@ -35,8 +51,10 @@ void DatasetView::selectionChanged(QItemSelection const& selected, QItemSelectio
 DockDatasets::DockDatasets(TheHub& theHub)
 : super("Datasets","dock-datasets",Qt::Vertical) {
   box->addWidget((datasetView = new DatasetView(theHub)));
+
   auto h = hbox();
   box->addLayout(h);
+
   h->addWidget(label("Combine:"));
   h->addWidget(spinCell(4,1));
 }

@@ -16,7 +16,7 @@
 #include "core_fit_functions.h"
 #include "core_lens.h"
 #include "types/core_type_angles.h"
-#include <qmath.h>
+#include <QtMath>
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -101,8 +101,8 @@ Curve Curve::subtract(fit::Function const& f) const {
 Curve Curve::smooth3() const {
   Curve res;
 
-  for (int i = 1, cnt = count(); i + 1 < cnt; ++i)
-    res.append(xs[i], (ys[i - 1] + ys[i] + ys[i + 1]) / 3.);
+  for_i (count()-2)
+    res.append(xs[i+1], (ys[i] + ys[i+1] + ys[i+2]) / 3.);
 
   return res;
 }

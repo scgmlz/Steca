@@ -1,3 +1,17 @@
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_lens.cpp
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
 #include "core_lens.h"
 
 #include "core_dataset.h"
@@ -217,11 +231,9 @@ void IntensityRangeLens::nextChangedImpl() {
   if (!next) return;
 
   auto s = getSize();
-  for (int iy = 0; iy < s.height(); ++iy) {
-    for (int ix = 0; ix < s.width(); ++ix) {
+  for_int (iy, s.height())
+    for_int (ix, s.width())
       range.extendBy(getIntensity(ix, iy));
-    }
-  }
 }
 
 //------------------------------------------------------------------------------
@@ -284,7 +296,7 @@ QSize NormalizationLens::getSize() const {
 
 shp_LensSystem makeLensSystem(Dataset const& dataset,
                               DiffractionAnglesMap const& angleMap) {
-    return shp_LensSystem(new PlainLens(dataset.getImage(), angleMap));
+  return shp_LensSystem(new PlainLens(dataset.getImage(), angleMap));
 }
 
 //------------------------------------------------------------------------------

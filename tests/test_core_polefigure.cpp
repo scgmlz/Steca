@@ -88,7 +88,7 @@ void TestCorePolefigure::testGamaRange() {
     QCOMPARE(range.min, extendRange.min);
   }
 
-  { // extensiv test with full test data
+  { // extensive test with full test data
     int width = 11;
     int height = 11;
     qreal fillVal = 0;
@@ -100,10 +100,10 @@ void TestCorePolefigure::testGamaRange() {
                                                     width,height,
                                                     posVal,posVal);
     qreal gamma = 5.0;
-    for (int y = 0; y < height; ++y) {
+    for_int (y, height) {
       if (y > 0 && y <= 5) gamma = gamma - 1;
       else ++gamma;
-      for (int x = 0; x < width; ++x) {
+      for_int (x, width) {
         angleMapArray.setAt(x,y,DiffractionAngles(gamma,(x+1)*(y+1)));
         angleMapArray.setAt(x,y,DiffractionAngles(gamma,(x+1)*(y+1)));
       }

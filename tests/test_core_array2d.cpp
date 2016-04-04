@@ -23,23 +23,17 @@ void TestCoreArray2d::testArray2d() {
     a.fill(val,size);
     QCOMPARE(size,a.size());
 
-    for (int x = 0; x < xSize; ++x) {
-      for (int y = 0; y < ySize; ++y) {
+    for_int (x, xSize)
+      for_int (y, ySize)
         QCOMPARE(a.at(a.index(x, y)), val);
-      }
-    }
 
-    for (int x=0; x<xSize; ++x) {
-      for (int y=0; y<ySize; ++y) {
+    for_int (x, xSize)
+      for_int (y, ySize)
         a.setAt(a.index(x,y),x + y*xSize);
-      }
-    }
 
-    for (int x=0; x<xSize; ++x) {
-      for (int y=0; y<ySize; ++y) {
+    for_int (x, xSize)
+      for_int (y, ySize)
         QCOMPARE(a.at(a.index(x,y)),(qreal)(x + y*xSize));
-      }
-    }
 
     int const iSize = xSize * ySize;
     QCOMPARE(iSize,(int)a.getCount());

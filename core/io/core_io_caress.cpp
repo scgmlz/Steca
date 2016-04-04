@@ -18,7 +18,7 @@
 #include "io/Caress/raw.h"
 
 #include <sstream>
-#include <qmath.h>
+#include <QtMath>
 
 namespace core { namespace io {
 //------------------------------------------------------------------------------

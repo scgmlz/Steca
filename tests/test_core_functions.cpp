@@ -14,7 +14,7 @@ void TestCoreApprox::testPolynomial() {
     curve.append(1,1);
     curve.append(2,2);
     core::fit::Polynomial p(1);
-    fm.fitWithoutCheck(p,curve);
+    fm.fitWithoutChecks(p,curve);
     core::Range r(0,2);
     qreal average = p.calAverageValue(r);
 
@@ -33,7 +33,7 @@ void TestCoreApprox::testApproxFunction() {
     }
 
     core::fit::Polynomial p(1);
-    QVERIFY(fm.fitWithoutCheck(p,c));   // test if fitting succesfull
+    QVERIFY(fm.fitWithoutChecks(p,c));   // test if fitting succesfull
 
     //test if calculated parameters are aproximatly the same
     core::fit::Function::Parameter parameter = p.parameterAt(0);
@@ -49,7 +49,7 @@ void TestCoreApprox::testApproxFunction() {
     c.append(2,6);
     c.append(3,8);
     core::fit::Polynomial p(1);
-    QVERIFY(fm.fitWithoutCheck(p,c));
+    QVERIFY(fm.fitWithoutChecks(p,c));
     core::fit::Function::Parameter parameter = p.parameterAt(0);
     QALMOST_COMPARE(parameter.value(),2.);
     parameter = p.parameterAt(1);
@@ -63,7 +63,7 @@ void TestCoreApprox::testApproxFunction() {
     c.append(2,20);
     c.append(3,33);
     core::fit::Polynomial p(2);
-    QVERIFY(fm.fitWithoutCheck(p,c));
+    QVERIFY(fm.fitWithoutChecks(p,c));
     core::fit::Function::Parameter parameter = p.parameterAt(0);
     QALMOST_COMPARE(parameter.value(),6.);
     parameter = p.parameterAt(1);
@@ -80,7 +80,7 @@ void TestCoreApprox::testApproxFunction() {
     c.append(2,46.4);
     c.append(3,52.5);
     core::fit::Polynomial p(3);
-    QVERIFY(fm.fitWithoutCheck(p,c));
+    QVERIFY(fm.fitWithoutChecks(p,c));
     core::fit::Function::Parameter parameter = p.parameterAt(0);
     QALMOST_COMPARE(parameter.value(),42.);
     parameter = p.parameterAt(1);
@@ -99,7 +99,7 @@ void TestCoreApprox::testApproxFunction() {
       c.append(i,i);
     }
     core::fit::Polynomial p(1);
-    QVERIFY(fm.fitWithoutCheck(p,c));//test if fitting succesfull
+    QVERIFY(fm.fitWithoutChecks(p,c));//test if fitting succesfull
     //test if calculated parameters are aproximatly the same
     core::fit::Function::Parameter parameter = p.parameterAt(0);
     QALMOST_COMPARE(parameter.value(),0.);
@@ -114,7 +114,7 @@ void TestCoreApprox::testApproxFunction() {
     c.append(2,6);
     c.append(3,8);
     core::fit::Polynomial p(1);
-    QVERIFY(fm.fitWithoutCheck(p,c));
+    QVERIFY(fm.fitWithoutChecks(p,c));
     core::fit::Function::Parameter parameter = p.parameterAt(0);
     QALMOST_COMPARE(parameter.value(),2.);
     parameter = p.parameterAt(1);
@@ -129,7 +129,7 @@ void TestCoreApprox::testApproxFunction() {
     c.append(2,20);
     c.append(3,33);
     core::fit::Polynomial p(2);
-    QVERIFY(fm.fitWithoutCheck(p,c));
+    QVERIFY(fm.fitWithoutChecks(p,c));
     core::fit::Function::Parameter parameter = p.parameterAt(0);
     QALMOST_COMPARE(parameter.value(),6.);
     parameter = p.parameterAt(1);
@@ -146,7 +146,7 @@ void TestCoreApprox::testApproxFunction() {
     c.append(2,46.4);
     c.append(3,52.5);
     core::fit::Polynomial p(3);
-    QVERIFY(fm.fitWithoutCheck(p,c));
+    QVERIFY(fm.fitWithoutChecks(p,c));
     core::fit::Function::Parameter parameter = p.parameterAt(0);
     QALMOST_COMPARE(parameter.value(),42.);
     parameter = p.parameterAt(1);
@@ -165,7 +165,7 @@ void TestCoreApprox::testApproxFunction() {
     c.append(3,211.8);
     c.append(4,437.2);
     core::fit::Polynomial p(4);
-    QVERIFY(fm.fitWithoutCheck(p,c));
+    QVERIFY(fm.fitWithoutChecks(p,c));
     core::fit::Function::Parameter parameter = p.parameterAt(0);
     QALMOST_COMPARE(parameter.value(),42.);
     parameter = p.parameterAt(1);

@@ -18,7 +18,12 @@ namespace core {
 //------------------------------------------------------------------------------
 
 DiffractionAngles::DiffractionAngles(qreal gamma_, qreal tth_)
-: gamma(gamma_), tth(tth_) {
+  : gamma(gamma_), tth(tth_) {
+}
+
+//------------------------------------------------------------------------------
+
+DiffractionAnglesMap::DiffractionAnglesMap() {
 }
 
 //------------------------------------------------------------------------------
