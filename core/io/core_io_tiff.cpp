@@ -1,3 +1,18 @@
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_io_tiff.cpp
+//! @brief     Dataset loaders
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
 #include "core_io.h"
 #include "core_file.h"
 #include "core_dataset.h"
@@ -14,7 +29,10 @@
 
 namespace core { namespace io {
 //------------------------------------------------------------------------------
+
 shp_File loadTiffs(rcstr filePath) THROWS {
+// TODO code not finished
+/*
   shp_File file(new File(filePath));
 
   QFileInfo info(filePath);
@@ -36,11 +54,13 @@ shp_File loadTiffs(rcstr filePath) THROWS {
   }
 
   return shp_File(new File(filePath));
+  */
+  return shp_File();
 }
 
-
-
 void saveTiffs(File const& file, rcstr fileName) THROWS {
+// TODO code not finished
+/*
   QFileInfo info(fileName);
   QDir().mkpath(info.absoluteDir().absolutePath());
 
@@ -74,9 +94,8 @@ void saveTiffs(File const& file, rcstr fileName) THROWS {
     }
     out << "\n"; out.flush();
   }
-
+*/
 }
-
 
 //------------------------------------------------------------------------------
 }}

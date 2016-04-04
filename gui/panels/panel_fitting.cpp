@@ -59,8 +59,6 @@ void ReflectionView::selectionChanged(QItemSelection const& selected, QItemSelec
 Fitting::Fitting(TheHub& theHub_)
 : super(theHub_), silentSpin(false) {
 
-//  box->addLayout(hb);
-
   auto tools = [this]() {
     auto hb = hbox();
     hb->addWidget(iconButton(theHub.actFitTool));
@@ -191,6 +189,8 @@ Fitting::Fitting(TheHub& theHub_)
   connect(this, &thisClass::currentChanged, [this](int index) {
     theHub.setFittingTab(index);
   });
+
+  theHub.setFittingTab(0);
 }
 
 void Fitting::enableReflControls(bool on) {

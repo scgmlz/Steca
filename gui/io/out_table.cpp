@@ -23,6 +23,7 @@
 #include <QScrollArea>
 #include <QDate>
 
+namespace io {
 //------------------------------------------------------------------------------
 
 class OutTableModel: public models::TableModel {
@@ -259,15 +260,15 @@ OutTableWidget::OutTableWidget(TheHub& theHub,
   outTable->setCmpFuns(cmps);
 
   for_i (numDataColumns) {
-    ShowItem item; item.tag = headers[i];
-    showItems.append(item);
+    ShowColumn item; item.name = headers[i];
+    showColumns.append(item);
   }
 
   auto scrollArea = new QScrollArea;
-  scrollArea->setWidget((showItemsWidget = new ShowItemsWidget(showItems)));
+  scrollArea->setWidget((showColumnsWidget = new ShowColumnsWidget(showColumns)));
 
   for_i (numDataColumns) {
-    auto cb = showItems[i].cb;
+    auto cb = showColumns[i].cb;
 
     cb->setChecked(true);
     connect(cb, &QCheckBox::clicked,[this,cb,i]() {
@@ -288,12 +289,12 @@ OutTableWidget::~OutTableWidget () {
 
 //------------------------------------------------------------------------------
 
-OutTableWidget::ShowItemsWidget::ShowItemsWidget(OutTableWidget::showitem_vec& items) {
+OutTableWidget::ShowColumnsWidget::ShowColumnsWidget(OutTableWidget::showcolumn_vec& items) {
   setLayout((grid = gridLayout()));
 
   for_i (items.count()) {
     auto &item = items[i];
-    grid->addWidget((item.cb = check(item.tag)), i, 0);
+    grid->addWidget((item.cb = check(item.name)), i, 0);
   }
 }
 
@@ -334,5 +335,6 @@ void OutWindow::setWidgets(panel::BasicPanel* p, OutTableWidget* tw) {
 }
 
 //------------------------------------------------------------------------------
+}
 // eof
 

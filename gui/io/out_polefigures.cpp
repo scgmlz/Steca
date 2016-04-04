@@ -17,6 +17,7 @@
 #include "panels/panel.h"
 #include <QDate>
 
+namespace io {
 //------------------------------------------------------------------------------
 
 class OutPoleFiguresParams: public panel::BoxPanel {
@@ -45,6 +46,7 @@ OutPoleFigures::OutPoleFigures(rcstr title,TheHub& theHub,QWidget* parent)
 
 void OutPoleFigures::calculate() {
   // test
+  // TODO complete
   auto &table = tableWidget->table();
 
   table.clear();
@@ -56,4 +58,5 @@ void OutPoleFigures::calculate() {
 }
 
 //------------------------------------------------------------------------------
+}
 // eof

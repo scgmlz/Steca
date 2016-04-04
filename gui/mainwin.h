@@ -63,7 +63,7 @@ private:
   QMenu *menuFile, *menuEdit, *menuView, *menuDatasets, *menuReflect,
         *menuOutput, *menuHelp;
 
-  QDockWidget *dockFiles, *dockDatasets, *dockDataseInfo;
+  QDockWidget *dockFiles, *dockDatasets, *dockDatasetInfo;
 
 private:
   QByteArray initialState;
@@ -75,9 +75,9 @@ private:
 
   void viewStatusbar(bool);
   void viewFullscreen(bool);
-  void viewDockFiles();
-  void viewDockDatasets();
-  void viewDockDatasetInfo();
+  void viewDockFiles(bool);
+  void viewDockDatasets(bool);
+  void viewDockDatasetInfo(bool);
   void viewReset();
 };
 

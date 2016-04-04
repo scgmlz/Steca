@@ -17,7 +17,7 @@
 #include "panels/panel_diffractogram.h"
 #include "panels/panel_fitting.h"
 #include "panels/panel_file.h"
-#include "output/out_polefigures.h"
+#include "io/out_polefigures.h"
 
 #include <QApplication>
 #include <QCloseEvent>
@@ -188,7 +188,7 @@ void MainWin::initMenus() {
 void MainWin::initLayout() {
   addDockWidget(Qt::LeftDockWidgetArea,  (dockFiles      = new panel::DockFiles(theHub)));
   addDockWidget(Qt::LeftDockWidgetArea,  (dockDatasets   = new panel::DockDatasets(theHub)));
-  addDockWidget(Qt::RightDockWidgetArea, (dockDataseInfo  = new panel::DockDatasetInfo(theHub)));
+  addDockWidget(Qt::RightDockWidgetArea, (dockDatasetInfo  = new panel::DockDatasetInfo(theHub)));
 
   auto splMain = new QSplitter(Qt::Vertical);
   splMain->setChildrenCollapsible(false);
@@ -258,9 +258,9 @@ void MainWin::connectActions() {
   onToggle(theHub.actFullscreen, &thisClass::viewFullscreen);
 #endif
 
-  onTrigger(theHub.actViewDockFiles,       &thisClass::viewDockFiles);
-  onTrigger(theHub.actViewDockDatasets,    &thisClass::viewDockDatasets);
-  onTrigger(theHub.actViewDockDatasetInfo, &thisClass::viewDockDatasetInfo);
+  onToggle(theHub.actViewDockFiles,       &thisClass::viewDockFiles);
+  onToggle(theHub.actViewDockDatasets,    &thisClass::viewDockDatasets);
+  onToggle(theHub.actViewDockDatasetInfo, &thisClass::viewDockDatasetInfo);
 
   onTrigger(theHub.actViewReset, &thisClass::viewReset);
 }
@@ -348,7 +348,7 @@ void MainWin::saveSession() {
 }
 
 void MainWin::outputPoleFigures() {
-  auto popup = new OutPoleFigures("Pole Figures",theHub,this);
+  auto popup = new io::OutPoleFigures("Pole Figures",theHub,this);
   popup->show();
 }
 
@@ -401,6 +401,10 @@ void MainWin::checkActions() {
 #ifndef Q_OS_OSX
   theHub.actFullscreen->setChecked(isFullScreen());
 #endif
+
+  theHub.actViewDockFiles->setChecked(dockFiles->isVisible());
+  theHub.actViewDockDatasets->setChecked(dockDatasets->isVisible());
+  theHub.actViewDockDatasetInfo->setChecked(dockDatasetInfo->isVisible());
 }
 
 void MainWin::viewStatusbar(bool on) {
@@ -419,22 +423,28 @@ void MainWin::viewFullscreen(bool on) {
 #endif
 }
 
-void MainWin::viewDockFiles() {
-  dockFiles->setVisible(theHub.actViewDockFiles->isChecked());
+void MainWin::viewDockFiles(bool on) {
+  dockFiles->setVisible(on);
+  theHub.actViewDockFiles->setChecked(on);
 }
 
-void MainWin::viewDockDatasets() {
-  dockDatasets->setVisible(theHub.actViewDockDatasets->isChecked());
+void MainWin::viewDockDatasets(bool on) {
+  dockDatasets->setVisible(on);
+  theHub.actViewDockDatasets->setChecked(on);
 }
 
-void MainWin::viewDockDatasetInfo() {
-  dockDataseInfo->setVisible(theHub.actViewDockDatasetInfo->isChecked());
+void MainWin::viewDockDatasetInfo(bool on) {
+  dockDatasetInfo->setVisible(on);
+  theHub.actViewDockDatasetInfo->setChecked(on);
 }
 
 void MainWin::viewReset() {
   restoreState(initialState);
   viewStatusbar(true);
   viewFullscreen(false);
+  viewDockFiles(true);
+  viewDockDatasets(true);
+  viewDockDatasetInfo(true);
 }
 
 //------------------------------------------------------------------------------

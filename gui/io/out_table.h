@@ -19,6 +19,7 @@
 #include "gui_helpers.h"
 #include "panels/panel.h"
 
+namespace io {
 //------------------------------------------------------------------------------
 
 class OutTableModel;
@@ -30,12 +31,10 @@ public:
   typedef int cmpFun(QVariant const&, QVariant const&);
 
   typedef QVector<cmpFun*>  cmp_vec;
-  typedef QVector<bool>     bool_vec;
-
   typedef QVector<QVariant> row_t;
 
 public:
-  OutTable(TheHub& theHub, uint numDataColumns);
+  OutTable(TheHub&, uint numDataColumns);
 
   void setHeaders(str_lst const&);
   void setCmpFuns(cmp_vec const&);
@@ -70,24 +69,24 @@ public:
   }
 
 private:
-  struct ShowItem {
-    str tag; QCheckBox *cb;
+  struct ShowColumn {
+    str name; QCheckBox *cb;
   };
 
-  typedef QVector<ShowItem> showitem_vec;
+  typedef QVector<ShowColumn> showcolumn_vec;
 
 private:
-  class ShowItemsWidget: public QWidget {
-    SUPER(ShowItemsWidget,QWidget)
+  class ShowColumnsWidget: public QWidget {
+    SUPER(ShowColumnsWidget,QWidget)
   public:
-    ShowItemsWidget(showitem_vec&);
+    ShowColumnsWidget(showcolumn_vec&);
     QGridLayout *grid;
   };
 
 private:
-  OutTable        *outTable;
-  ShowItemsWidget *showItemsWidget;
-  showitem_vec     showItems;
+  OutTable          *outTable;
+  ShowColumnsWidget *showColumnsWidget;
+  showcolumn_vec     showColumns;
 };
 
 //------------------------------------------------------------------------------
@@ -99,14 +98,16 @@ public:
   OutWindow(rcstr title,QWidget*);
 
 protected:
+  virtual void calculate() = 0; ///< here do the work
+
+protected:
   void setWidgets(panel::BasicPanel*,OutTableWidget*);
 
   QBoxLayout        *box;
   panel::BasicPanel *panel;
   OutTableWidget    *tableWidget;
-
-  virtual void calculate() = 0;
 };
 
 //------------------------------------------------------------------------------
+}
 #endif // OUT_TABLE_H
