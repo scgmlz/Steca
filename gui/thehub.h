@@ -183,7 +183,7 @@ public:
 
   int fittingTab__; // TODO
   void setFittingTab(int);
-
+  
 private:
   core::shp_Reflection    selectedReflection;
 

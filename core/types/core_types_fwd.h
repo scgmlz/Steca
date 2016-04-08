@@ -24,7 +24,7 @@ namespace core {
 
 struct XY;
 
-class  Range;
+struct  Range;
 class  Ranges;
 
 class  Curve;
