@@ -37,7 +37,7 @@ public:
 
 private:
   DiffractogramPlot& plot;
-  QColor addColor, remColor, color;
+  QColor addColor, remColor, color, bgColor, reflColor;
   int marginLeft, marginRight;
 
 protected:
@@ -83,7 +83,10 @@ public:
   void updateBg();
 
   void clearReflLayer();
-
+  
+  QColor bgColor;
+  int selectedFittingTab();
+  
 protected:
   void addBgItem(core::Range const&);
   void resizeEvent(QResizeEvent*);

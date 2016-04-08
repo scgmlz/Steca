@@ -84,7 +84,8 @@ SplitDiffractogram::SplitDiffractogram(TheHub& theHub): super(Qt::Horizontal) {
 
 MainWin::MainWin() {
   setWindowIcon(QIcon(":/icon/STeCa2"));
-
+  QDir::setCurrent(QDir::homePath());
+  
   initMenus();
   initLayout();
   initStatus();
@@ -307,17 +308,23 @@ void MainWin::close() {
 void MainWin::addFiles() {
   str_lst fileNames = QFileDialog::getOpenFileNames(this, "Add files",
       QDir::current().absolutePath(), "Data files (*.dat);;All files (*.*)");
-
-  if (!fileNames.isEmpty())
+  
+  if (!fileNames.isEmpty()) {
     theHub.addFiles(fileNames);
+    auto filepath = QFileInfo(fileNames.at(0)).absolutePath();
+    QDir::setCurrent(filepath);
+  }
 }
 
 void MainWin::loadCorrFile() {
   str fileName = QFileDialog::getOpenFileName(this, "Set correction file",
       QDir::current().absolutePath(), "Data files (*.dat);;All files (*.*)");
 
-  if (!fileName.isEmpty())
+  if (!fileName.isEmpty()) {
     theHub.loadCorrFile(fileName);
+    auto filepath = QFileInfo(fileName).absolutePath();
+    QDir::setCurrent(filepath);
+  }  
 }
 
 static str const STE(".ste");
@@ -331,6 +338,9 @@ void MainWin::loadSession() {
     return;
 
   theHub.load(QFileInfo(fileName));
+  
+  auto filepath = QFileInfo(fileName).absolutePath();
+  QDir::setCurrent(filepath);
 }
 
 void MainWin::saveSession() {
