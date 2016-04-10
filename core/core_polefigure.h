@@ -30,11 +30,12 @@ public:
   const static int NUM_BETAS = 360 / 10; // Beta bin width 10 degrees.
 
 public:
-  Polefigure(Session &session,
-             shp_File file,
-             Reflection const& reflection,
-             qreal alphaStep,
-             qreal betaStep,
+  Polefigure(rcSession,
+             rcDatasets,
+             Reflection const&,
+             qreal _alphaStep,
+             qreal _betaStep,
+             rcRange rgeTth,
              Range gammaRange = Range()); // If no range specified, use the full range specified by the cuts.
 
   void generate(qreal centerRadius,
@@ -42,19 +43,19 @@ public:
                 qreal intensityTreshold,
                 qreal searchRadius = qQNaN());
 private:
-  qreal alphaStep;
-  qreal betaStep;
-  QVector<qreal> FWHMs;
-  QVector<XY> peakPositions;
-  QVector<QVector<ReflectionInfo>> reflectionInfos;
-  Reflection const* reflection;
+  qreal _alphaStep;
+  qreal _betaStep;
+  QVector<qreal> _FWHMs;
+  QVector<XY> _peakPositions;
+  QVector<QVector<ReflectionInfo>> _reflectionInfos;
+  Reflection const& _reflection;
 
   void searchPoints(qreal const alpha,
                     qreal const beta,
                     qreal const radius,
                     QList<qreal> &peakOffsets,
                     QList<qreal> &peakHeights,
-                    QList<qreal> &FWHMs) const;
+                    QList<qreal> &_FWHMs) const;
   void searchPointsInAllQuadrants(qreal const alpha,
                                   qreal const beta,
                                   qreal const searchRadius,

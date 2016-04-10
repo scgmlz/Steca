@@ -33,7 +33,7 @@ void CheckedInfo::setText(rcstr text) {
 
 //------------------------------------------------------------------------------
 
-TableModel::TableModel(TheHub& theHub): RefHub(theHub) {
+TableModel::TableModel(gui::TheHub& theHub): RefHub(theHub) {
 }
 
 void TableModel::signalReset() {

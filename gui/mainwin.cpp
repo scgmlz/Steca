@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "mainwin.h"
+#include "actions.h"
 #include "panels/panel_dataset.h"
 #include "panels/panel_diffractogram.h"
 #include "panels/panel_fitting.h"
@@ -35,6 +36,7 @@
 #include "io/core_io.h"
 #endif
 
+namespace gui {
 //------------------------------------------------------------------------------
 
 class SplitImage: public BoxWidget {
@@ -46,12 +48,12 @@ public:
 SplitImage::SplitImage(TheHub& theHub): super(Qt::Horizontal) {
   auto *options1 = new panel::DatasetOptions1(theHub);
   auto *options2 = new panel::DatasetOptions2(theHub);
-  auto *dataset = new panel::Dataset(theHub);
+  auto *dataset  = new panel::Dataset(theHub);
   connect(options2, &panel::DatasetOptions2::imageScale, dataset, &panel::Dataset::setImageScale);
-  box->addWidget(options1);
-  box->addWidget(options2);
-  box->addWidget(dataset);
-  box->setStretch(2,1);
+  _box->addWidget(options1);
+  _box->addWidget(options2);
+  _box->addWidget(dataset);
+  _box->setStretch(2,1);
 }
 
 //------------------------------------------------------------------------------
@@ -63,7 +65,7 @@ public:
 };
 
 SplitFitting::SplitFitting(TheHub& theHub): super(Qt::Vertical) {
-  box->addWidget(new panel::Fitting(theHub));
+  _box->addWidget(new panel::Fitting(theHub));
 }
 
 //------------------------------------------------------------------------------
@@ -77,12 +79,12 @@ public:
 SplitDiffractogram::SplitDiffractogram(TheHub& theHub): super(Qt::Horizontal) {
   auto diffractogram = new panel::Diffractogram(theHub);
   diffractogram->setHorizontalStretch(1);
-  box->addWidget(diffractogram);
+  _box->addWidget(diffractogram);
 }
 
 //------------------------------------------------------------------------------
 
-MainWin::MainWin() {
+MainWin::MainWin(): theHub(), actions(theHub.actions) {
   setWindowIcon(QIcon(":/icon/STeCa2"));
 
   initMenus();
@@ -96,7 +98,6 @@ MainWin::MainWin() {
 MainWin::~MainWin() {}
 
 void MainWin::initMenus() {
-
   auto separator = [this]() {
     auto act = new QAction(this);
     act->setSeparator(true);
@@ -105,90 +106,67 @@ void MainWin::initMenus() {
 
   auto *mbar = menuBar();
 
-  menuFile     = mbar->addMenu("&File");
-  menuEdit     = mbar->addMenu("&Edit");
-  menuView     = mbar->addMenu("&View");
-  menuDatasets = mbar->addMenu("&Datasets");
-  menuReflect  = mbar->addMenu("&Reflections");
-  menuOutput   = mbar->addMenu("&Output");
-  menuHelp     = mbar->addMenu("&Help");
+  _menuFile     = mbar->addMenu("&File");
+  _menuEdit     = mbar->addMenu("&Edit");
+  _menuView     = mbar->addMenu("&View");
+  _menuDatasets = mbar->addMenu("&Datasets");
+  _menuReflect  = mbar->addMenu("&Reflections");
+  _menuOutput   = mbar->addMenu("&Output");
+  _menuHelp     = mbar->addMenu("&Help");
 
-  menuFile->addActions({
-    theHub.actAddFiles, theHub.actRemoveFile, separator(),
-    theHub.actLoadCorrFile, separator(),
-    theHub.actLoadSession, theHub.actSaveSession, theHub.actLoadSession,
+  _menuFile->addActions({
+    actions.addFiles, actions.remFile, separator(),
+    actions.loadCorrFile, separator(),
+    actions.loadSession, actions.saveSession, actions.loadSession,
   });
 
-  QMenu *menuExportDiffractograms = new QMenu("Export diffractograms");
-  menuExportDiffractograms->addActions({
-    theHub.actExportDiffractogramCurrent,
-    theHub.actExportDiffractogramAllSeparateFiles,
-    theHub.actExportDiffractogramSingleFile,
-  });
-
-  menuFile->addAction(separator());
-  menuFile->addMenu(menuExportDiffractograms);
-
-  QMenu *menuExportImages = new QMenu("Export images");
-  menuExportImages->addActions({
-    theHub.actExportImagesWithMargins, theHub.actExportImagesWithoutMargins,
-  });
-
-  menuFile->addMenu(menuExportImages);
-
-  menuFile->addActions({
+  _menuFile->addActions({
 #ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
     separator(),
 #endif
-    theHub.actQuit,
+    actions.quit,
   });
 
-  menuEdit->addActions({
-    theHub.actUndo, theHub.actRedo, separator(),
-    theHub.actCut, theHub.actCopy, theHub.actPaste,
-  });
-
-  menuView->addActions({
-    theHub.actImagesFixedIntensity, theHub.actImageOverlay, separator(),
-    theHub.actFitTool, theHub.actFitBgClear, theHub.actFitShow, separator(),
-    theHub.actViewStatusbar,
+  _menuView->addActions({
+    actions.fixedIntensityDisplay, actions.showCut, separator(),
+    actions.fitTool, actions.fitBgClear, actions.fitShow, separator(),
+    actions.viewStatusbar,
 #ifndef Q_OS_OSX
-    theHub.actFullscreen,
+    acts.fullScreen,
 #endif
     separator(),
-    theHub.actViewDockFiles,
-    theHub.actViewDockDatasets,
-    theHub.actViewDockDatasetInfo,
+    actions.viewDockFiles,
+    actions.viewDockDatasets,
+    actions.viewDockDatasetInfo,
     separator(),
-    theHub.actViewReset,
+    actions.viewReset,
   });
 
-  menuDatasets->addActions({
-    theHub.actImageRotate, theHub.actImageMirror, separator(),
-    theHub.actEnableCorr, separator(),
+  _menuDatasets->addActions({
+    actions.rotateImage, actions.mirrorImage, separator(),
+    actions.enableCorr,
   });
 
-  menuReflect->addActions({
-    theHub.actReflectionAdd, theHub.actReflectionRemove, separator(),
-    theHub.actFitErrorParameters
+  _menuReflect->addActions({
+    actions.addReflection, actions.remReflection,
   });
 
-  menuOutput->addActions({
-    theHub.actOutputPolefigures, theHub.actOutputHistograms
+  _menuOutput->addActions({
+    actions.outputPolefigures, actions.outputHistograms
   });
 
-  menuHelp->addActions({
+  _menuHelp->addActions({
 #ifndef Q_OS_OSX // Mac puts About into the Apple menu
     separator(),
 #endif
-    theHub.actAbout,
+    actions.about,
   });
 }
 
 void MainWin::initLayout() {
-  addDockWidget(Qt::LeftDockWidgetArea,  (dockFiles      = new panel::DockFiles(theHub)));
-  addDockWidget(Qt::LeftDockWidgetArea,  (dockDatasets   = new panel::DockDatasets(theHub)));
-  addDockWidget(Qt::RightDockWidgetArea, (dockDatasetInfo  = new panel::DockDatasetInfo(theHub)));
+  addDockWidget(Qt::LeftDockWidgetArea,  (_dockFiles      = new panel::DockFiles(theHub)));
+  addDockWidget(Qt::LeftDockWidgetArea,  (_dockDatasets   = new panel::DockDatasets(theHub)));
+  addDockWidget(Qt::RightDockWidgetArea, (_dockDatasetInfo  = new panel::DockDatasetInfo(theHub)));
 
   auto splMain = new QSplitter(Qt::Vertical);
   splMain->setChildrenCollapsible(false);
@@ -225,44 +203,29 @@ void MainWin::connectActions() {
 
   auto notYet = [this](QAction* action) { action->setEnabled(false); };
 
-  onTrigger(theHub.actAddFiles,           &thisClass::addFiles);
-  onTrigger(theHub.actLoadCorrFile, &thisClass::loadCorrFile);
+  onTrigger(actions.addFiles,     &thisClass::addFiles);
+  onTrigger(actions.loadCorrFile, &thisClass::loadCorrFile);
 
-  onTrigger(theHub.actLoadSession,        &thisClass::loadSession);
-  onTrigger(theHub.actSaveSession,        &thisClass::saveSession);
+  onTrigger(actions.loadSession,  &thisClass::loadSession);
+  onTrigger(actions.saveSession,  &thisClass::saveSession);
 
-  notYet(theHub.actExportDiffractogramCurrent);
-  notYet(theHub.actExportDiffractogramAllSeparateFiles);
-  notYet(theHub.actExportDiffractogramSingleFile);
-  notYet(theHub.actExportImagesWithMargins);
-  notYet(theHub.actExportImagesWithoutMargins);
+  onTrigger(actions.quit,         &thisClass::close);
 
-  onTrigger(theHub.actQuit, &thisClass::close);
+  onTrigger(actions.outputPolefigures, &thisClass::outputPoleFigures);
+  notYet(actions.outputHistograms);
 
-  notYet(theHub.actUndo);
-  notYet(theHub.actRedo);
-  notYet(theHub.actCut);
-  notYet(theHub.actCopy);
-  notYet(theHub.actPaste);
+  onTrigger(actions.about, &thisClass::about);
 
-  notYet(theHub.actPreferences);
-  notYet(theHub.actFitErrorParameters);
-
-  onTrigger(theHub.actOutputPolefigures, &thisClass::outputPoleFigures);
-  notYet(theHub.actOutputHistograms);
-
-  onTrigger(theHub.actAbout, &thisClass::about);
-
-  onToggle(theHub.actViewStatusbar, &thisClass::viewStatusbar);
+  onToggle(actions.viewStatusbar, &thisClass::viewStatusbar);
 #ifndef Q_OS_OSX
-  onToggle(theHub.actFullscreen, &thisClass::viewFullscreen);
+  onToggle(acts.fullScreen, &thisClass::viewFullScreen);
 #endif
 
-  onToggle(theHub.actViewDockFiles,       &thisClass::viewDockFiles);
-  onToggle(theHub.actViewDockDatasets,    &thisClass::viewDockDatasets);
-  onToggle(theHub.actViewDockDatasetInfo, &thisClass::viewDockDatasetInfo);
+  onToggle(actions.viewDockFiles,       &thisClass::viewDockFiles);
+  onToggle(actions.viewDockDatasets,    &thisClass::viewDockDatasets);
+  onToggle(actions.viewDockDatasetInfo, &thisClass::viewDockDatasetInfo);
 
-  onTrigger(theHub.actViewReset, &thisClass::viewReset);
+  onTrigger(actions.viewReset, &thisClass::viewReset);
 }
 
 void MainWin::about() {
@@ -381,8 +344,8 @@ static str const KEY_GEOMETRY("geometry");
 static str const KEY_STATE("state");
 
 void MainWin::readSettings() {
-  if (initialState.isEmpty())
-    initialState = saveState();
+  if (_initialState.isEmpty())
+    _initialState = saveState();
 
   Settings s(GROUP_MAINWIN);
   restoreGeometry(s.value(KEY_GEOMETRY).toByteArray());
@@ -396,56 +359,57 @@ void MainWin::saveSettings() {
 }
 
 void MainWin::checkActions() {
-  theHub.actViewStatusbar->setChecked(statusBar()->isVisible());
+  actions.viewStatusbar->setChecked(statusBar()->isVisible());
 
 #ifndef Q_OS_OSX
-  theHub.actFullscreen->setChecked(isFullScreen());
+  acts.fullScreen->setChecked(isFullScreen());
 #endif
 
-  theHub.actViewDockFiles->setChecked(dockFiles->isVisible());
-  theHub.actViewDockDatasets->setChecked(dockDatasets->isVisible());
-  theHub.actViewDockDatasetInfo->setChecked(dockDatasetInfo->isVisible());
+  actions.viewDockFiles->setChecked(_dockFiles->isVisible());
+  actions.viewDockDatasets->setChecked(_dockDatasets->isVisible());
+  actions.viewDockDatasetInfo->setChecked(_dockDatasetInfo->isVisible());
 }
 
 void MainWin::viewStatusbar(bool on) {
   statusBar()->setVisible(on);
-  theHub.actViewStatusbar->setChecked(on);
+  actions.viewStatusbar->setChecked(on);
 }
 
-void MainWin::viewFullscreen(bool on) {
+void MainWin::viewFullScreen(bool on) {
   if (on)
     showFullScreen();
   else
     showNormal();
 
 #ifndef Q_OS_OSX
-  theHub.actFullscreen->setChecked(on);
+  acts.fullScreen->setChecked(on);
 #endif
 }
 
 void MainWin::viewDockFiles(bool on) {
-  dockFiles->setVisible(on);
-  theHub.actViewDockFiles->setChecked(on);
+  _dockFiles->setVisible(on);
+  actions.viewDockFiles->setChecked(on);
 }
 
 void MainWin::viewDockDatasets(bool on) {
-  dockDatasets->setVisible(on);
-  theHub.actViewDockDatasets->setChecked(on);
+  _dockDatasets->setVisible(on);
+  actions.viewDockDatasets->setChecked(on);
 }
 
 void MainWin::viewDockDatasetInfo(bool on) {
-  dockDatasetInfo->setVisible(on);
-  theHub.actViewDockDatasetInfo->setChecked(on);
+  _dockDatasetInfo->setVisible(on);
+  actions.viewDockDatasetInfo->setChecked(on);
 }
 
 void MainWin::viewReset() {
-  restoreState(initialState);
+  restoreState(_initialState);
   viewStatusbar(true);
-  viewFullscreen(false);
+  viewFullScreen(false);
   viewDockFiles(true);
   viewDockDatasets(true);
   viewDockDatasetInfo(true);
 }
 
 //------------------------------------------------------------------------------
+}
 // eof

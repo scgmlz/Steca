@@ -3,7 +3,6 @@
 //  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      panel.cpp
-//! @brief     Classes for building GUI panels in the main window.
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
@@ -16,7 +15,7 @@
 #include "panel.h"
 #include "mainwin.h"
 
-namespace panel {
+namespace gui { namespace panel {
 //-----------------------------------------------------------------------------
 
 HubListView::HubListView(TheHub& theHub): RefHub(theHub) {
@@ -50,14 +49,14 @@ void BasicPanel::setStretch(int horizontal, int vertical) {
 
 BoxPanel::BoxPanel(rcstr title, TheHub& theHub, Qt::Orientation orientation)
 : super(title,theHub) {
-  setLayout((box = boxLayout(orientation)));
+  setLayout((_box = boxLayout(orientation)));
 }
 
 //------------------------------------------------------------------------------
 
 GridPanel::GridPanel(rcstr title, TheHub& theHub)
 : super(title,theHub) {
-  setLayout((grid = gridLayout()));
+  setLayout((_grid = gridLayout()));
 }
 
 //------------------------------------------------------------------------------
@@ -76,5 +75,5 @@ TabsPanel::Tab& TabsPanel::addTab(rcstr title, Qt::Orientation orientation) {
 }
 
 //------------------------------------------------------------------------------
-}
+}}
 // eof

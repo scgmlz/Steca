@@ -23,22 +23,22 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-/// 2D (x/y) array
+/// 2D (i/j) array
 template<typename T>
 class Array2D {
 public:
   /// empty array
-  Array2D(): xySize(0,0) {
+  Array2D(): _size(0,0) {
   }
 
   /// 2D image size
   QSize const& size() const {
-    return xySize;
+    return _size;
   }
 
   /// number of elements
-  uint getCount() const {
-    return xySize.height() * xySize.width();
+  uint count() const {
+    return _size.width() * _size.height();
   }
 
   /// make empty
@@ -48,8 +48,8 @@ public:
 
   /// allocate and fill with a value
   void fill(T const& val, QSize const& size) {
-    xySize = size;  // set size first
-    ts.fill(val,getCount());
+    _size = size;  // set size first
+    _ts.fill(val,count());
   }
 
   /// allocate and fill with a default value
@@ -58,53 +58,53 @@ public:
   }
 
   /// Calculate the 1D index of an element. Row by row.
-  uint index(uint x, uint y) const {
-    return x + y * xySize.width();
+  uint index(uint i, uint j) const {
+    return i + j * _size.width();
   }
 
   /// access using 1D index
   T const& at(uint i) const {
-    return ts.at(i);
+    return _ts.at(i);
   }
 
   /// access using 2D index
-  T const& at(uint x,uint y) const {
-    return ts.at(index(x,y));
+  T const& at(uint i,uint j) const {
+    return _ts.at(index(i,j));
   }
 
   /// set using 1D index
   void setAt(uint i, T const& val) {
-    ts[i] = val;
+    _ts[i] = val;
   }
 
   /// set using 2D index
-  void setAt(uint x, uint y, T const& val) {
-    ts[index(x,y)] = val;
+  void setAt(uint i, uint j, T const& val) {
+    _ts[index(i,j)] = val;
   }
 
   /// raw access
-  T* getData() {
-    return ts.data();
+  T* data() {
+    return _ts.data();
   }
 
   /// raw access
-  T const* getData() const {
-    return ts.data();
+  T const* data() const {
+    return const_cast<Array2D*>(this)->data();
   }
 
   /// subscript operator
   T& operator[](uint i) {
-    return ts[i];
+    return _ts[i];
   }
 
   /// subscript operator
   T const& operator[](uint i) const {
-    return ts[i];
+    return const_cast<Array2D*>(this)[i];
   }
 
 protected:
-  QSize      xySize;
-  QVector<T> ts;
+  QSize      _size;
+  QVector<T> _ts;
 };
 
 //------------------------------------------------------------------------------

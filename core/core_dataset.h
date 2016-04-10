@@ -21,62 +21,75 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-class File;
-class Reflection;
-class ReflectionInfo;
-class Session;
+class Datasets;
 
 /// Dataset = image + metadata
 class Dataset final {
+  friend class Datasets;
 public:
   // attribute list - will be dynamic
   static uint  numAttributes();
-  static rcstr getAttributeTag(uint);
+  static rcstr attributeTag(uint);
 
 public:
-  Dataset(File const*,
-          rcstr date, rcstr comment,
+  Dataset(rcstr date, rcstr comment,
           qreal motorXT,  qreal motorYT,  qreal motorZT,
           qreal motorOmg, qreal motorTth, qreal motorPhi, qreal motorChi,
           qreal motorPST, qreal motorSST, qreal motorOMGM,
-          qreal monCount, qreal dTime,
-          QSize const& size, intens_t const* intensities);
+          qreal deltaMonitorCount, qreal deltaTime,
+          QSize const& size, inten_t const* intens);
 
-  str getAttributeStrValue(uint) const;
+  Datasets const& datasets() const;
 
-  qreal middleTth()     const;
-  qreal monitorCount()  const;
-  qreal deltaTime()     const;
+  str attributeStrValue(uint) const;
 
-  File  const& parentFile() const;
-  Image const& getImage()   const { return image; }
+  qreal midTth()              const;
+  qreal deltaMonitorCount()   const;
+  qreal deltaTime()           const;
 
-  Range intensRange(bool global) const;
+  qreal omg() const { return _motorOmg; }
+  qreal phi() const { return _motorPhi; }
+  qreal chi() const { return _motorChi; }
 
-  /// used for correction files if there are more than one image
-  void addIntensities(Dataset const&);
+  QSize   imageSize()          const;
+  inten_t inten(uint i,uint j) const;
 
-  static void calculateAlphaBeta(qreal, qreal, qreal, qreal, qreal, qreal&, qreal&);
+  /// used for correction files if there is more than one image
+  void addIntens(rcDataset);
 
-  ReflectionInfo makeReflectionInfo(Session const& session,
-                                    Reflection const& reflection,
-                                    Range const& gammaSector) const;
 private:
-  // TODO remove; datasets should not relate to their files of origin
-  File const *file; ///< the parent file
-
-  str
-    date, comment;
+  Datasets *_datasets;  // here it belongs
+  str _date, _comment;
 
   // all stored angles in degrees
-  qreal
-    motorXT,  motorYT,  motorZT,  motorOmg, motorTth,
-    motorPhi, motorChi, motorPST, motorSST, motorOMGM;
+  qreal _motorXT,  _motorYT,  _motorZT,  _motorOmg, _motorTth,
+        _motorPhi, _motorChi, _motorPST, _motorSST, _motorOMGM;
 
-  qreal
-    monCount, dTime;
+  qreal _deltaMonitorCount, _deltaTime;
 
-  Image image;
+  Image _image;
+};
+
+/// A groupd of Dataset(s)
+class Datasets: public QVector<shp_Dataset> {
+  SUPER(Datasets,QVector<shp_Dataset>)
+public:
+  Datasets();
+
+  void append(shp_Dataset);
+  void fold(); ///< collapse datasets into one (for correction files)
+
+  // in all datasets
+  QSize imageSize()       const;
+//  rcRange rgeInten() const;
+  qreal avgDeltaMonitorCount() const;
+  qreal avgDeltaTime()    const;
+
+private:
+  void invalidateMutables();
+  // computed on demand
+  mutable Range _rgeInten; //>>>
+  mutable qreal _avgMonitorCount, _avgDeltaTime;
 };
 
 //------------------------------------------------------------------------------

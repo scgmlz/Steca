@@ -1,7 +1,17 @@
-// TODO HEADER
-/** \file
- * Session that can compute all and needs no GUI.
- */
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_session.h
+//! @brief     Session that can compute all and needs no GUI.
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
 
 #ifndef CORE_SESSION_H
 #define CORE_SESSION_H
@@ -11,167 +21,107 @@
 #include "core_lens.h"
 #include "core_reflection.h"
 #include "types/core_type_image_transform.h"
-#include <QPoint>
-#include <QMargins>
+#include "types/core_type_geometry.h"
 
 namespace core {
 //------------------------------------------------------------------------------
 
-enum class Normalization {
-  DISABLE,DELTA_TIME,MON_COUNTS,BG_LEVEL,NUM_NORM_TYPES
-};
-
-str_lst const& getStringListNormalization();
-
-/// detector geometry
-struct Geometry {
-  static qreal const MIN_DETECTOR_DISTANCE;
-  static qreal const MIN_DETECTOR_PIXEL_SIZE;
-
-  Geometry();
-  bool operator ==(Geometry const&) const;
-
-  qreal detectorDistance;   // the distance from the sample to the detector
-  qreal pixSize;            // size of the detector pixel
-  bool  hasBeamOffset;
-  QPoint middlePixOffset;
-};
-
-struct Borders { // REVIEW bad name, hide, remove?
-  Range
-    gamma,
-    tth_regular,
-    tth_gamma0; // at gamma=0
-
-  void invalidate() {
-    gamma.invalidate();
-    tth_regular.invalidate();
-    tth_gamma0.invalidate();
-  }
-
-  bool isValid() const {
-    return gamma.isValid() && tth_regular.isValid() && tth_gamma0.isValid();
-  }
-};
-
 class Session final {
 public:
   Session();
-  virtual ~Session();
-
   void clear();
 
-  /// How many files has, optionally also counting the correction file.
+// data files
+private:
+  QVector<shp_File> _files;
+
+public:
+  /// how many files has, optionally also counting the correction file.
   uint     numFiles(bool withCorr) const;
+  shp_File file(uint i) const;              ///< Access the i-th file, including the correction file.
 
   shp_File addFile(rcstr fileName) THROWS;  ///< Add an ordinary file to the session.
   shp_File remFile(uint i);                 ///< Remove the i-th file, NOT including the correction file.
   bool     hasFile(rcstr fileName);         ///< Is there this ordinary file?
 
-  shp_File getFile(uint i) const;           ///< Access the i-th file, including the correction file.
+// correction file
+private:
+  shp_File _corrFile;
+  bool     _corrEnabled;
 
-  shp_File loadCorrFile(rcstr fileName);    ///< Load or remove a correction file.
+public:
+  shp_File corrFile()       const   { return _corrFile;           }
+  bool     hasCorrFile()    const   { return !_corrFile.isNull(); }
+
+  shp_File setCorrFile(rcstr fileName);     ///< Load or remove a correction file.
   void     remCorrFile();
-  shp_File getCorrFile()   const;
-  bool     hasCorrFile()   const  { return !getCorrFile().isNull(); }
-  void     enableCorrection(bool);
-  bool     isCorrEnabled() const  { return corrEnabled;             }
 
+  void     enableCorr(bool);
+  bool     isCorrEnabled()  const   { return _corrEnabled;        }
+
+// image - sanity
 private:
-  QVector<shp_File> dataFiles;
-  shp_File corrFile;
-  bool     corrEnabled;
+  /// All files must have images of the same size; this is a cached value
+  QSize _imageSize;
+  /// Clears the image size if there are no files in the session.
+  void updateImageSize();
+  /// Ensures that all images have the same size.
+  void setImageSize(QSize const&) THROWS;
 
+// image - transform & cut etc.
 private:
-  QSize imageSize; ///< All files must have images of the same size; this is a cached value
-
-  void updateImageSize();                 ///< Clears the image size if there are no files in the session.
-
-private:
-  void setImageSize(QSize const&) THROWS; ///< Ensures that all images have the same size.
+  ImageTransform _imageTransform;
+  ImageCut       _imageCut;
 
 public:
+  ImageTransform const& imageTransform() const { return _imageTransform; }
+  ImageCut       const& imageCut()       const { return _imageCut;       }
 
-  Geometry const& getGeometry() const { return geometry; }
-  void setGeometry(qreal detectorDistance, qreal pixSize, bool hasBeamOffset, QPoint const& middlePixOffset);
+  void setImageTransformMirror(bool);
+  void setImageTransformRotate(ImageTransform const&);
 
+  void setImageCut(bool topLeftFirst, bool linked, ImageCut const&);
+
+  AngleMap const& angleMap(rcDataset) const;
+
+// geometry
 private:
-  Geometry       geometry;
-  ImageTransform imageTransform;
+  Geometry _geometry;
 
 public:
-  void setImageMirror(bool);
-  void setImageRotate(ImageTransform);
+  Geometry const& geometry() const { return _geometry; }
+  void setGeometry(qreal detectorDistance, qreal pixSize,
+                   bool isMidPixOffset, rcIJ midPixOffset);
+  IJ midPix() const;
 
-  ImageTransform getImageTransform() const;
+// lenses
+public:
+  shp_Lens lens(bool trans, bool cut, Lens::eNorm, rcDataset) const;
 
-  QSize getImageSize() const;
+// fitting
+private:
+  uint   _bgPolynomialDegree;
+  Ranges _bgRanges;
 
-  shp_LensSystem allLenses(Dataset const& dataset,
-                           bool const globalIntensityScale) const;
-  shp_LensSystem noROILenses(Dataset const& dataset,
-                             bool const globalIntensityScale) const;
-  shp_LensSystem plainLens(Dataset const& dataset) const;
-
-private: // corrections
-  DiffractionAnglesMap angleMapArray;
-
-  Borders cut;      // REVIEW ful - remove?
-
-  QPoint  getPixMiddle() const;  // REVIEW / RENAME
-
-  qreal lastCalcTthMitte; QPoint lastPixMiddle;
-  Geometry lastGeometry;
-
-  QMargins lastImageMargins;
-  ImageTransform lastImageTransform;
+  Reflections _reflections;
 
 public:
-  // TODO move caching into DiffractionAnglesMap, make const
-  DiffractionAnglesMap const& calcAngleMap(qreal tthMitte);
+  // TODO instead of exposing the objects, provide an interface for TheHub
+  core::Ranges&       bgRanges()           { return _bgRanges;           }
+  uint&               bgPolynomialDegree() { return _bgPolynomialDegree; }
+  core::Reflections&  reflections()        { return _reflections;        }
 
+// normalization
 private:
-  Array2D<qreal> intensCorrArray;  // summed corrFile intensities
-  bool  hasNaNs;           // TODO warn on the statusbar
+  Lens::eNorm _norm;
 
 public:
-  void  calcIntensCorrArray();
-
-  Borders const& getCut() const { return cut; }
-
-public: // image cut
-  QMargins const& getImageMargins() const { return imageMargins; }
-  void setImageMargins(bool topLeft, bool linked, QMargins const&);
-
-private:
-  QMargins imageMargins;
+  Lens::eNorm norm() const { return _norm; }
+  void setNorm(Lens::eNorm);
 
 public:
-  Ranges&                getBgRanges()                 { return bgRanges; }
-  Ranges const&          getBgRanges() const           { return bgRanges; }
-  int&                   getBgPolynomialDegree()       { return bgPolynomialDegree; }
-  int const&             getBgPolynomialDegree() const { return bgPolynomialDegree; }
-  Reflections&           getReflections()              { return reflections;        }
-
-private:
-  Ranges          bgRanges;
-  int             bgPolynomialDegree;
-
-  Reflections     reflections;
-
-private:
-  shp_LensSystem makeNormalizationLens(Dataset const& dataset) const;
-
-public:
-  Normalization type;
-
-  bool isNormEnabled() const  { return (Normalization::DISABLE == type) ? false : true;}
-  void setNormType(Normalization type_);
-
-private:
-  qreal calAverageBG(Dataset const& dataset) const;
-  qreal calGlobalBGAverage(Dataset const& dataset) const;
-
+  qreal calcAvgBackground(rcDataset)  const;
+  qreal calcAvgBackground(rcDatasets) const;
 };
 
 //------------------------------------------------------------------------------

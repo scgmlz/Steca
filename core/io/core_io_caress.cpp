@@ -3,7 +3,6 @@
 //  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_io_caress.cpp
-//! @brief     Caress loader
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
@@ -18,7 +17,7 @@
 #include "io/Caress/raw.h"
 
 #include <sstream>
-#include <QtMath>
+#include <qmath.h>
 
 namespace core { namespace io {
 //------------------------------------------------------------------------------
@@ -163,7 +162,7 @@ shp_File loadCaress(rcstr filePath) THROWS {
           detRel = (uint)sqrt(imageSize);
           RUNTIME_CHECK(imageSize>0 && (uint)imageSize == detRel*detRel, "bad image size");
 
-          QVector<intens_t> convertedIntens(imageSize);
+          QVector<inten_t> convertedIntens(imageSize);
           for_i (imageSize)
             convertedIntens[i] = intens[i];
 
@@ -175,13 +174,13 @@ shp_File loadCaress(rcstr filePath) THROWS {
 //        #endif
 
           // Objekt inizialisieren
-          file->appendDataset(new Dataset(file.data(),
+          file->datasets().append(shp_Dataset(new Dataset(
             str::fromStdString(s_date), str::fromStdString(s_comment),
             xAxis, yAxis, zAxis,
             omgAxis, tthAxis, phiAxis, chiAxis,
             pstAxis, sstAxis, omgmAxis,
             deltaMon, deltaTime,
-            size, convertedIntens.constData()));
+            size, convertedIntens.constData())));
           delete[] intens; intens = NULL;
           imageSize = 0;
         }

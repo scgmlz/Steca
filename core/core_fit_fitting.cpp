@@ -20,23 +20,27 @@
 namespace core { namespace fit {
 //------------------------------------------------------------------------------
 
-Polynomial fitBackground(core::Curve const& dgram, core::Ranges const& bgRanges, uint degree) {
+Polynomial fitPolynomial(uint degree,
+                         core::rcCurve curve, core::rcRanges ranges) {
   // clamp the degree - complexity of higher degree fits grows fast
-  Polynomial bgPolynomial(qMin(degree,MAX_BACKGROUND_POLYNOMIAL_DEGREE));
-  FittingLevenbergMarquardt().fitWithoutChecks(bgPolynomial,dgram.intersect(bgRanges));
-  return bgPolynomial;
+  Polynomial polynomial(qMin(degree,MAX_POLYNOMIAL_DEGREE));
+
+  FittingLevenbergMarquardt().fitWithoutChecks(polynomial, curve.intersect(ranges));
+
+  return polynomial;
 }
 
-void fitPeak(PeakFunction& peakFunction, core::Curve const& curve_, core::Range const& range) {
+void fit(PeakFunction& peakFunction,
+                     core::rcCurve curve, core::rcRange range) {
   peakFunction.reset();
 
-  core::Curve curve = curve_.intersect(range);
-  if (curve.isEmpty()) return;
+  core::Curve c = curve.intersect(range);
+  if (c.isEmpty()) return;
 
-  if (!peakFunction.getGuessPeak().isValid()) { // calculate guesses
-    uint peakIndex  = curve.maxYindex();
-    auto peakTth    = curve.x(peakIndex);
-    auto peakIntens = curve.y(peakIndex);
+  if (!peakFunction.guessedPeak().isValid()) { // calculate guesses
+    uint peakIndex  = c.maxYindex();
+    auto peakTth    = c.x(peakIndex);
+    auto peakIntens = c.y(peakIndex);
 
     // half-maximum indices
     uint hmi1 = peakIndex, hmi2 = peakIndex;
@@ -44,20 +48,20 @@ void fitPeak(PeakFunction& peakFunction, core::Curve const& curve_, core::Range 
     // left
     for (uint i=peakIndex; i-- > 0; ) {
       hmi1 = i;
-      if (curve.y(i) < peakIntens/2) break;
+      if (c.y(i) < peakIntens/2) break;
     }
 
     // right
-    for (uint i=peakIndex, iCnt=curve.count(); i < iCnt; ++i) {
+    for (uint i=peakIndex, iCnt=c.count(); i < iCnt; ++i) {
       hmi2 = i;
-      if (curve.y(i) < peakIntens/2) break;
+      if (c.y(i) < peakIntens/2) break;
     }
 
-    peakFunction.setGuessPeak(XY(peakTth,peakIntens));
-    peakFunction.setGuessFWHM(curve.x(hmi2) - curve.x(hmi1));
+    peakFunction.setGuessedPeak(XY(peakTth,peakIntens));
+    peakFunction.setGuessedFWHM(c.x(hmi2) - c.x(hmi1));
   }
 
-  FittingLevenbergMarquardt().fitWithoutChecks(peakFunction,curve);
+  FittingLevenbergMarquardt().fitWithoutChecks(peakFunction,c);
 }
 
 //------------------------------------------------------------------------------

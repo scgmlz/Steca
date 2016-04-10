@@ -18,7 +18,7 @@
 
 #include "out_table.h"
 
-namespace io {
+namespace gui { namespace io {
 //------------------------------------------------------------------------------
 
 class OutPoleFigures: public OutWindow {
@@ -29,5 +29,5 @@ public:
 };
 
 //------------------------------------------------------------------------------
-}
+}}
 #endif // OUT_POLEFIGURES_H

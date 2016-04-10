@@ -20,7 +20,7 @@
 #include "core_reflection.h"
 #include "models.h"
 
-namespace panel {
+namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 class ReflectionView: public HubListView {
@@ -40,7 +40,7 @@ protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);
 
 private:
-  Model  &model;
+  Model  &_model;
 };
 
 //------------------------------------------------------------------------------
@@ -51,13 +51,13 @@ public:
   Fitting(TheHub&);
 
 private:
-  QSpinBox  *spinDegree;
-  QComboBox *comboReflType;
-  ReflectionView *reflectionView;
-  QDoubleSpinBox *spinRangeMin, *spinRangeMax;
-  QDoubleSpinBox *spinGuessPeakX, *spinGuessPeakY, *spinGuessFwhm;
-  QLineEdit      *readFitPeakX,   *readFitPeakY,   *readFitFwhm;
-  bool silentSpin;
+  QSpinBox  *_spinDegree;
+  QComboBox *_comboReflType;
+  ReflectionView *_reflectionView;
+  QDoubleSpinBox *_spinRangeMin, *_spinRangeMax;
+  QDoubleSpinBox *_spinGuessPeakX, *_spinGuessPeakY, *_spinGuessFWHM;
+  QLineEdit      *_readFitPeakX,   *_readFitPeakY,   *_readFitFWHM;
+  bool _silentSpin;
 
   void setReflControls(core::shp_Reflection const&);
   void updateReflectionControls();
@@ -67,5 +67,5 @@ private:
 };
 
 //------------------------------------------------------------------------------
-}
+}}
 #endif // PANEL_FITTING_H

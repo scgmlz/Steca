@@ -20,16 +20,14 @@
 
 namespace core {
 
-class Curve;
-
 namespace fit {
 //------------------------------------------------------------------------------
 
 /// Background fit
-Polynomial fitBackground(core::Curve const&, core::Ranges const&, uint degree);
+Polynomial fitPolynomial(uint degree, core::rcCurve, core::rcRanges);
 
 /// Peak fit
-void fitPeak(PeakFunction&, core::Curve const&, core::Range const&);
+void fit(PeakFunction&, core::rcCurve, core::rcRange);
 
 //------------------------------------------------------------------------------
 }}

@@ -3,7 +3,6 @@
 //  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_io_tiff.cpp
-//! @brief     Dataset loaders
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
@@ -58,7 +57,7 @@ shp_File loadTiffs(rcstr filePath) THROWS {
   return shp_File();
 }
 
-void saveTiffs(File const& file, rcstr fileName) THROWS {
+void saveTiffs(rcFile file, rcstr fileName) THROWS {
 // TODO code not finished
 /*
   QFileInfo info(fileName);

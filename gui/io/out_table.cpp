@@ -23,7 +23,7 @@
 #include <QScrollArea>
 #include <QDate>
 
-namespace io {
+namespace gui { namespace io {
 //------------------------------------------------------------------------------
 
 class OutTableModel: public models::TableModel {
@@ -209,7 +209,7 @@ OutTableHeaderView::OutTableHeaderView(): super(Qt::Horizontal) {
 
 OutTable::OutTable(TheHub& theHub, uint numDataColumns) {
   setHeader(new OutTableHeaderView);
-  setModel((model = new OutTableModel(theHub,numDataColumns)));
+  setModel((_model = new OutTableModel(theHub,numDataColumns)));
 
   header()->setSectionResizeMode(0,QHeaderView::Fixed);
 
@@ -218,24 +218,24 @@ OutTable::OutTable(TheHub& theHub, uint numDataColumns) {
 }
 
 void OutTable::setHeaders(str_lst const& headers) {
-  model->setHeaders(headers);
+  _model->setHeaders(headers);
 
   connect(header(),&QHeaderView::sectionMoved, [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
     ASSERT(oldVisualIndex>0 && newVisualIndex>0)
-    model->moveColumn((uint)(oldVisualIndex-1),(uint)(newVisualIndex-1));
+    _model->moveColumn((uint)(oldVisualIndex-1),(uint)(newVisualIndex-1));
   });
 }
 
 void OutTable::setCmpFuns(OutTable::cmp_vec const& cmps) {
-  model->setCmpFuns(cmps);
+  _model->setCmpFuns(cmps);
 }
 
 void OutTable::clear() {
-  model->clear();
+  _model->clear();
 }
 
 void OutTable::addRow(OutTable::row_t const& row) {
-  model->addRow(row);
+  _model->addRow(row);
 }
 
 //------------------------------------------------------------------------------
@@ -254,28 +254,28 @@ OutTableWidget::OutTableWidget(TheHub& theHub,
   box->addWidget(split);
 
   split->setChildrenCollapsible(false);
-  split->addWidget((outTable = new OutTable(theHub,numDataColumns)));
+  split->addWidget((_outTable = new OutTable(theHub,numDataColumns)));
 
-  outTable->setHeaders(headers);
-  outTable->setCmpFuns(cmps);
+  _outTable->setHeaders(headers);
+  _outTable->setCmpFuns(cmps);
 
   for_i (numDataColumns) {
     ShowColumn item; item.name = headers[i];
-    showColumns.append(item);
+    _showColumns.append(item);
   }
 
   auto scrollArea = new QScrollArea;
-  scrollArea->setWidget((showColumnsWidget = new ShowColumnsWidget(showColumns)));
+  scrollArea->setWidget((_showColumnsWidget = new ShowColumnsWidget(_showColumns)));
 
   for_i (numDataColumns) {
-    auto cb = showColumns[i].cb;
+    auto cb = _showColumns[i].cb;
 
     cb->setChecked(true);
     connect(cb, &QCheckBox::clicked,[this,cb,i]() {
       if (cb->isChecked())
-        outTable->showColumn(i+1);
+        _outTable->showColumn(i+1);
       else
-        outTable->hideColumn(i+1);
+        _outTable->hideColumn(i+1);
       }
     );
   }
@@ -290,11 +290,11 @@ OutTableWidget::~OutTableWidget () {
 //------------------------------------------------------------------------------
 
 OutTableWidget::ShowColumnsWidget::ShowColumnsWidget(OutTableWidget::showcolumn_vec& items) {
-  setLayout((grid = gridLayout()));
+  setLayout((_grid = gridLayout()));
 
   for_i (items.count()) {
     auto &item = items[i];
-    grid->addWidget((item.cb = check(item.name)), i, 0);
+    _grid->addWidget((item.cb = check(item.name)), i, 0);
   }
 }
 
@@ -303,15 +303,15 @@ OutTableWidget::ShowColumnsWidget::ShowColumnsWidget(OutTableWidget::showcolumn_
 OutWindow::OutWindow(rcstr title, QWidget* parent): super(parent, Qt::Dialog) {
   setAttribute(Qt::WA_DeleteOnClose);
   setWindowTitle(title);
-  setLayout((box = vbox()));
+  setLayout((_box = vbox()));
 }
 
 void OutWindow::setWidgets(panel::BasicPanel* p, OutTableWidget* tw) {
-  box->addWidget((panel       = p));
-  box->addWidget((tableWidget = tw));
+  _box->addWidget((_panel       = p));
+  _box->addWidget((_tableWidget = tw));
   auto bbox = hbox();
-  box->addLayout(bbox);
-  box->setStretch(1,1);
+  _box->addLayout(bbox);
+  _box->setStretch(1,1);
 
   auto actClose = new TriggerAction("Close", "Close", this);
   actClose->dialog();
@@ -335,6 +335,6 @@ void OutWindow::setWidgets(panel::BasicPanel* p, OutTableWidget* tw) {
 }
 
 //------------------------------------------------------------------------------
-}
+}}
 // eof
 

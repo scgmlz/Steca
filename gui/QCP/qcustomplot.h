@@ -43,7 +43,7 @@
 #include <QStack>
 #include <QCache>
 #include <QMargins>
-#include <QtMath>
+#include <qmath.h>
 #include <limits>
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #  include <qnumeric.h>

@@ -329,3 +329,22 @@ Consider:
 - enforce consistency
 - simplify, simplify, simplify
 - discard, discard, discard
+
+## Members
+
+structs: direct access, .x
+classes: indirect access, ._x
+
+## three-letter etc abbreviations
+
+rge: Range  rgeIntens
+
+avg
+
+inten (sity)
+intens (ities)
+-s plural
+
+## naming
+
+structs: xxxx_t

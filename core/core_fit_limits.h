@@ -8,7 +8,7 @@
 namespace core { namespace fit {
 //------------------------------------------------------------------------------
 
-uint const MAX_BACKGROUND_POLYNOMIAL_DEGREE = 3;
+uint const MAX_POLYNOMIAL_DEGREE = 3;
 
 //------------------------------------------------------------------------------
 }}

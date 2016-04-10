@@ -91,7 +91,7 @@ public:
   BoxWidget(Qt::Orientation);
 
 protected:
-  QBoxLayout *box;
+  QBoxLayout *_box;
 };
 
 //------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ public:
   DockWidget(rcstr name,rcstr objectName,Qt::Orientation);
 
 protected:
-  QBoxLayout *box;
+  QBoxLayout *_box;
 };
 
 //------------------------------------------------------------------------------

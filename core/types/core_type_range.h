@@ -45,12 +45,12 @@ struct Range {
   static Range safeFrom(qreal,qreal); ///< safe factory
 
   void  extendBy(qreal);          ///< extend to include the number
-  void  extendBy(Range const&);   ///< extend to include the range
+  void  extendBy(rcRange);   ///< extend to include the range
 
   // these may be called only on valid ranges
   bool  contains(qreal val)      const;
-  bool  contains(Range const&)   const;
-  bool  intersects(Range const&) const;
+  bool  contains(rcRange)   const;
+  bool  intersects(rcRange) const;
 
   /// limit the number to the interval, as qBound would
   qreal bound(qreal)             const;
@@ -66,25 +66,25 @@ class Ranges {
 public:
   Ranges();
 
-  void clear()                  { ranges.clear();           }
+  void clear()             { _ranges.clear();           }
 
-  bool isEmpty()          const { return ranges.isEmpty();  }
-  uint count()            const { return ranges.count();    }
+  bool isEmpty()     const { return _ranges.isEmpty();  }
+  uint count()       const { return _ranges.count();    }
 
-  Range const& at(uint i) const { return ranges.at(i);      }
+  rcRange at(uint i) const { return _ranges.at(i);      }
 
   /// collapses overlapping ranges into one; returns whether there was a change
-  bool add(Range const&);
+  bool add(rcRange);
   /// removes (cuts out) a range; returns whether there was a change
-  bool rem(Range const&);
+  bool rem(rcRange);
 
 private:
   void sort();
-  QVector<Range> ranges;
+  QVector<Range> _ranges;
 
 public:
-  JsonObj saveJson() const;
-  void    loadJson(rcJsonObj) THROWS;
+  JsonArr saveJson() const;
+  void    loadJson(rcJsonArr) THROWS;
 };
 
 //------------------------------------------------------------------------------

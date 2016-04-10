@@ -22,7 +22,7 @@
 
 class TheHub;
 
-namespace panel {
+namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 /// A (tree-)list view with a reference to the hub.
 
@@ -52,7 +52,7 @@ public:
   BoxPanel(rcstr title, TheHub&, Qt::Orientation);
 
 protected:
-  QBoxLayout *box;
+  QBoxLayout *_box;
 };
 
 /// A panel with grid layout
@@ -62,7 +62,7 @@ public:
   GridPanel(rcstr title,TheHub&);
 
 protected:
-  QGridLayout *grid;
+  QGridLayout *_grid;
 };
 
 //------------------------------------------------------------------------------
@@ -84,5 +84,5 @@ protected:
 };
 
 //------------------------------------------------------------------------------
-}
+}}
 #endif // PANEL_H

@@ -14,13 +14,12 @@
 
 #include "core_dataset.h"
 
-#include "core_file.h"
-#include "core_session.h"
-#include "core_reflection_info.h"
-#include "core_fit_fitting.h"
-#include "types/core_type_matrix.h"
-#include "types/core_type_curve.h"
-#include <QtMath>
+//>>>#include "core_file.h"
+//#include "core_session.h"
+//#include "core_reflection_info.h"
+//#include "core_fit_fitting.h"
+//#include "types/core_type_curve.h"
+//#include <qmath.h>
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -29,165 +28,168 @@ namespace core {
 enum {
   attrDATE, attrCOMMENT,
 
-  attrMOTOR_XT, attrMOTOR_YT, attrMOTOR_ZT,
+  attrMOTOR_XT,  attrMOTOR_YT,  attrMOTOR_ZT,
   attrMOTOR_OMG, attrMOTOR_TTH, attrMOTOR_PHI, attrMOTOR_CHI,
   attrMOTOR_PST, attrMOTOR_SST, attrMOTOR_OMGM,
-  attrDELTA_MON_COUNT, attrDELTA_TIME,
+  attrDELTA_MONITOR_COUNT, attrDELTA_TIME,
 
   NUM_ATTRIBUTES
-};
-
-static QVector<str> const attributeTags = {
-  "date", "comment",
-  "X", "Y", "Z",
-  "ω", "2θ", "φ", "χ",
-  "PST", "SST", "ΩM",
-  "Δmon", "Δt",
 };
 
 uint Dataset::numAttributes() {
   return NUM_ATTRIBUTES;
 }
 
-rcstr Dataset::getAttributeTag(uint i) {
+rcstr Dataset::attributeTag(uint i) {
+  static QVector<str> const attributeTags = {
+    "date", "comment",
+    "X", "Y", "Z",
+    "ω", "2θ", "φ", "χ",
+    "PST", "SST", "ΩM",
+    "Δmon", "Δt",
+  };
+
   return attributeTags.at(i);
 }
 
 Dataset::Dataset(
-  File const* file_,
-  rcstr date_, rcstr comment_,
-  qreal motorXT_, qreal motorYT_, qreal motorZT_,
-  qreal motorOmg_, qreal motorTth_, qreal motorPhi_, qreal motorChi_,
-  qreal motorPST_, qreal motorSST_, qreal motorOMGM_,
-  qreal monCount_, qreal dTime_,
-  QSize const& size_, intens_t const* intensities_)
+  rcstr date, rcstr comment,
+  qreal motorXT,  qreal motorYT,  qreal motorZT,
+  qreal motorOmg, qreal motorTth, qreal motorPhi, qreal motorChi,
+  qreal motorPST, qreal motorSST, qreal motorOMGM,
+  qreal deltaMonitorCount, qreal deltaTime,
+  QSize const& size, inten_t const* intens)
 
-: file(file_)
-, date(date_), comment(comment_)
-, motorXT(motorXT_), motorYT(motorYT_), motorZT(motorZT_)
-, motorOmg(motorOmg_), motorTth(motorTth_), motorPhi(motorPhi_), motorChi(motorChi_)
-, motorPST(motorPST_), motorSST(motorSST_), motorOMGM(motorOMGM_)
-, monCount(monCount_), dTime(dTime_)
-, image(size_,intensities_) {
+: _datasets(nullptr), _date(date), _comment(comment)
+, _motorXT(motorXT), _motorYT(motorYT), _motorZT(motorZT)
+, _motorOmg(motorOmg), _motorTth(motorTth), _motorPhi(motorPhi), _motorChi(motorChi)
+, _motorPST(motorPST), _motorSST(motorSST), _motorOMGM(motorOMGM)
+, _deltaMonitorCount(deltaMonitorCount), _deltaTime(deltaTime)
+, _image(size,intens) {
 }
 
-str Dataset::getAttributeStrValue(uint i) const {
+Datasets const& Dataset::datasets() const {
+  ASSERT(_datasets)
+  return *_datasets;
+}
+
+str Dataset::attributeStrValue(uint i) const {
   qreal value = 0;
 
   switch (i) {
-  case attrDATE:            return date;
-  case attrCOMMENT:         return comment;
+  case attrDATE:        return _date;
+  case attrCOMMENT:     return _comment;
 
-  case attrMOTOR_XT:        value = motorXT;    break;
-  case attrMOTOR_YT:        value = motorYT;    break;
-  case attrMOTOR_ZT:        value = motorZT;    break;
-  case attrMOTOR_OMG:       value = motorOmg;   break;
-  case attrMOTOR_TTH:       value = motorTth;   break;
-  case attrMOTOR_PHI:       value = motorPhi;   break;
-  case attrMOTOR_CHI:       value = motorChi;   break;
-  case attrMOTOR_PST:       value = motorPST;   break;
-  case attrMOTOR_SST:       value = motorSST;   break;
-  case attrMOTOR_OMGM:      value = motorOMGM;  break;
-  case attrDELTA_MON_COUNT: value = monCount;   break;
-  case attrDELTA_TIME:      value = dTime;      break;
+  case attrMOTOR_XT:    value = _motorXT;   break;
+  case attrMOTOR_YT:    value = _motorYT;   break;
+  case attrMOTOR_ZT:    value = _motorZT;   break;
+  case attrMOTOR_OMG:   value = _motorOmg;  break;
+  case attrMOTOR_TTH:   value = _motorTth;  break;
+  case attrMOTOR_PHI:   value = _motorPhi;  break;
+  case attrMOTOR_CHI:   value = _motorChi;  break;
+  case attrMOTOR_PST:   value = _motorPST;  break;
+  case attrMOTOR_SST:   value = _motorSST;  break;
+  case attrMOTOR_OMGM:  value = _motorOMGM; break;
+  case attrDELTA_MONITOR_COUNT: value = _deltaMonitorCount; break;
+  case attrDELTA_TIME:  value = _deltaTime; break;
   }
 
   return str::number(value);
 }
 
-qreal Dataset::middleTth() const {
-  return motorTth;
+qreal Dataset::midTth() const {
+  return _motorTth;
 }
 
-qreal Dataset::monitorCount() const {
-  return monCount;
+qreal Dataset::deltaMonitorCount() const {
+  return _deltaMonitorCount;
 }
 
 qreal Dataset::deltaTime() const {
-  return dTime;
+  return _deltaTime;
 }
 
-File const& Dataset::parentFile() const {
-  ASSERT(file)
-  return *file;
+QSize Dataset::imageSize() const {
+  return _image.size();
 }
 
-Range Dataset::intensRange(bool global) const {
-  return global ? parentFile().intensRange() : image.intensRange();
+inten_t Dataset::inten(uint i, uint j) const {
+  return _image.inten(i,j);
 }
 
-void Dataset::addIntensities(Dataset const& that) {
-  ASSERT(image.getCount() == that.image.getCount())
-  image.addIntensities(that.image.getIntensities());
+void Dataset::addIntens(rcDataset that) {
+  _image.addIntens(that._image);
 }
 
-// Calculates the polefigure coordinates alpha and beta with regards to
-// sample orientation and diffraction angles.
-void Dataset::calculateAlphaBeta(qreal omgDet, qreal phiDet, qreal chiDet, qreal tthRef, qreal gammaRef,
-                        qreal& alpha, qreal& beta) {
-  omgDet   = degToRad(omgDet);
-  phiDet   = degToRad(phiDet);
-  chiDet   = degToRad(chiDet);
-  tthRef   = degToRad(tthRef);
-  gammaRef = degToRad(gammaRef);
+//------------------------------------------------------------------------------
 
-  // Note that the rotations here do not correspond to C. Randau's dissertation.
-  // The rotations given in [J. Appl. Cryst. (2012) 44, 641-644] are incorrect.
-  const vector3d rotated =   matrix3d::rotationCWz (phiDet)
-                           * matrix3d::rotationCWx (chiDet)
-                           * matrix3d::rotationCWz (omgDet)
-                           * matrix3d::rotationCWx (gammaRef)
-                           * matrix3d::rotationCCWz(tthRef / 2)
-                           * vector3d(0,1,0);
-  alpha = acos(rotated._2);
-  beta  = atan2(rotated._0, rotated._1);
+Datasets::Datasets() {
+  invalidateMutables();
+}
 
-  // REVIEW
-  // Mirror angles.
-  if (alpha > M_PI / 2) {
-    alpha = abs(alpha - M_PI);
-    beta += beta < 0 ? M_PI : -M_PI;
+void Datasets::append(shp_Dataset dataset) {
+  ASSERT(!dataset->_datasets) // not appended yet
+  dataset->_datasets = this;
+  super::append(dataset);
+
+  invalidateMutables();
+}
+
+void Datasets::fold() {
+  while (super::count() > 1) {
+    super::first()->addIntens(*super::last());
+    super::removeLast();
   }
 
-  // Keep beta between 0 and 2pi.
-  if (beta < 0)
-    beta += 2 * M_PI;
-
-  alpha = radToDeg(alpha);
-  beta  = radToDeg(beta);
+  invalidateMutables();
 }
 
-ReflectionInfo Dataset::makeReflectionInfo(Session const& session,
-                                           Reflection const& reflection,
-                                           Range const& gammaSector) const {
-  auto lenses = session.allLenses(*this, false);
-  auto gammaCutCurve = makeCurve(lenses,
-                                 gammaSector,
-                                 session.getCut().tth_regular);
-  const fit::Polynomial sectorBg
-    = fit::fitBackground(gammaCutCurve,
-                         session.getBgRanges(),
-                         session.getBgPolynomialDegree());
+QSize Datasets::imageSize() const {
+  if (super::isEmpty()) return QSize(0,0);
+  // guaranteed that all images have the same size; simply take the first one
+  return super::first()->imageSize();
+}
 
-  gammaCutCurve = gammaCutCurve.subtract(sectorBg);
-  auto peakFunction = reflection.makePeakFunction();
-  fit::fitPeak(*peakFunction,
-               gammaCutCurve,
-               reflection.getRange());
+//rcRange Datasets::rgeInten() const {
+//  if (!_rgeInten.isValid()) {
+//    for (auto const& dataset: *this)
+//      _rgeInten.extendBy(dataset->image().rgeInten());
+//  }
 
-  qreal alpha, beta;
-  calculateAlphaBeta(motorOmg, motorPhi, motorChi,
-    reflection.getRange().center(),
-    gammaSector.center(),
-    alpha,
-    beta
-  );
+//  return _rgeInten;
+//}
 
-  return ReflectionInfo(alpha,
-                        beta,
-                        gammaSector,
-                        peakFunction->getFitPeak(),
-                        peakFunction->getFitFWHM());
+qreal Datasets::avgDeltaMonitorCount() const {
+  if (qIsNaN(_avgMonitorCount)) {
+    qreal avg = 0;
+    if (!super::isEmpty()) {
+      for (auto const& dataset: *this)
+        avg += dataset->deltaMonitorCount();
+      avg /= super::count();
+    }
+    _avgMonitorCount = avg;
+  }
+
+  return _avgMonitorCount;
+}
+
+qreal Datasets::avgDeltaTime() const {
+  if (qIsNaN(_avgDeltaTime)) {
+    qreal avg = 0;
+    if (!super::isEmpty()) {
+      for (auto const& dataset: *this)
+        avg += dataset->deltaTime();
+      avg /= super::count();
+    }
+    _avgDeltaTime = avg;
+  }
+
+  return _avgDeltaTime;
+}
+
+void Datasets::invalidateMutables() {
+  _rgeInten.invalidate();
+  _avgMonitorCount = _avgDeltaTime = qQNaN();
 }
 
 //------------------------------------------------------------------------------

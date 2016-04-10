@@ -16,7 +16,7 @@ void TestCoreApprox::testPolynomial() {
     core::fit::Polynomial p(1);
     fm.fitWithoutChecks(p,curve);
     core::Range r(0,2);
-    qreal average = p.calAverageValue(r);
+    qreal average = p.avgY(r);
 
     QALMOST_COMPARE(average,1.0);
   }

@@ -5,18 +5,18 @@
 #include "core_session.h"
 
 void TestCoreLib::testConversions() {
-  QCOMPARE(M_PI,degToRad(180));
-  QCOMPARE(90.0,radToDeg(M_PI_2));
+  QCOMPARE(M_PI,deg2Rad(180));
+  QCOMPARE(90.0,rad2Deg(M_PI_2));
 
   for_i (720)
-    QCOMPARE((qreal)i,radToDeg(degToRad(i)));
+    QCOMPARE((qreal)i,rad2Deg(deg2Rad(i)));
 }
 
 void TestCoreLib::testFile() {
   {//using default Constructor
     core::File f(EMPTY_STR);
     QByteArray b;
-    QCOMPARE(f.getImageSize(),QSize(0,0));
+    QCOMPARE(f.datasets().imageSize(),QSize(0,0));
   }
 }
 

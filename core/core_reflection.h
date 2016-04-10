@@ -22,44 +22,44 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-class Reflection {
+class Reflection final {
 public:
-  static str_lst const& reflTypes();
-  static rcstr          reflType(ePeakType);
+  static str_lst const& typeStrLst();
+  static rcstr          typeTag(ePeakType);
 
   Reflection(ePeakType = ePeakType::GAUSSIAN);
- ~Reflection();
 
-  ePeakType getType() const;
-  void  setType(ePeakType);
+  ePeakType type() const;
+  void setType(ePeakType);
 
-  Range const& getRange() const { return range; }
-  void         setRange(Range const&);
+  rcRange range() const { return _range; }
+  void setRange(rcRange);
 
-  fit::PeakFunction* makePeakFunction() const;
+  fit::PeakFunction const& peakFunction() const {
+    return const_cast<Reflection*>(this)->peakFunction();
+  }
 
-  fit::PeakFunction& getPeakFunction();
-  fit::PeakFunction const& getPeakFunction() const;
+  fit::PeakFunction& peakFunction();
 
   void invalidateGuesses();
 
-  void setGuessPeak(XY const& xy) { peakFunction->setGuessPeak(xy);   }
-  void setGuessFWHM(qreal fwhm)   { peakFunction->setGuessFWHM(fwhm); }
+  void setGuessPeak(rcXY  xy)   { _peakFunction->setGuessedPeak(xy);   }
+  void setGuessFWHM(qreal fwhm) { _peakFunction->setGuessedFWHM(fwhm); }
 
 private:
-  Range range;
+  Range _range;
 
   void setPeakFunction(ePeakType);
   void setPeakFunction(fit::PeakFunction*);
 
-  QScopedPointer<fit::PeakFunction> peakFunction;
+  QScopedPointer<fit::PeakFunction> _peakFunction;
 
 public:
   JsonObj saveJson() const;
   void    loadJson(rcJsonObj) THROWS;
 };
 
-typedef QVector<shp_Reflection>    Reflections;
+typedef QVector<shp_Reflection> Reflections;
 
 //------------------------------------------------------------------------------
 }

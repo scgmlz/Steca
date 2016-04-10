@@ -19,7 +19,7 @@
 namespace models {
 //------------------------------------------------------------------------------
 
-FileViewModel::FileViewModel(TheHub& theHub): TableModel(theHub) {
+FileViewModel::FileViewModel(gui::TheHub& theHub): TableModel(theHub) {
 }
 
 int FileViewModel::columnCount(rcIndex) const {
@@ -27,7 +27,7 @@ int FileViewModel::columnCount(rcIndex) const {
 }
 
 int FileViewModel::rowCount(rcIndex) const {
-  return theHub.numFiles(true);
+  return _theHub.numFiles(true);
 }
 
 QVariant FileViewModel::data(rcIndex index,int role) const {
@@ -35,16 +35,16 @@ QVariant FileViewModel::data(rcIndex index,int role) const {
   if (row < 0 || rowCnt <= row) return EMPTY_VAR;
 
   // the correction file (if any) is dislayed in the last row
-  bool isCorrFile = theHub.hasCorrFile() && row+1 == rowCnt;
+  bool isCorrFile = _theHub.hasCorrFile() && row+1 == rowCnt;
 
   switch (role) {
     case Qt::DisplayRole: {
-      str s = theHub.fileName(row);
+      str s = _theHub.fileName(row);
       static str const format("Corr: %1");
       return isCorrFile ? format.arg(s) : s;
     }
     case GetFileRole:
-      return QVariant::fromValue<core::shp_File>(theHub.getFile(row));
+      return QVariant::fromValue<core::shp_File>(_theHub.getFile(row));
     case IsCorrFileRole:
       return isCorrFile;
     default:
@@ -53,25 +53,25 @@ QVariant FileViewModel::data(rcIndex index,int role) const {
 }
 
 void FileViewModel::remFile(uint i) {
-  theHub.remFile(i);
+  _theHub.remFile(i);
 }
 
 //------------------------------------------------------------------------------
 
-DatasetViewModel::DatasetViewModel(TheHub& theHub)
-: super(theHub), file(nullptr), metaInfo(nullptr) {
+DatasetViewModel::DatasetViewModel(gui::TheHub& theHub)
+: super(theHub), _file(nullptr), _metaInfo(nullptr) {
 }
 
 int DatasetViewModel::columnCount(rcIndex) const {
-  return COL_ATTRS + metaInfoNums.count();
+  return COL_ATTRS + _metaInfoNums.count();
 }
 
 int DatasetViewModel::rowCount(rcIndex) const {
-  return file ? file->numDatasets() : 0;
+  return _file ? _file->datasets().count() : 0;
 }
 
 QVariant DatasetViewModel::data(rcIndex index,int role) const {
-  if (!file) return EMPTY_VAR;
+  if (!_file) return EMPTY_VAR;
 
   int row = index.row();
   if (row < 0 || rowCount() <= row) return EMPTY_VAR;
@@ -85,12 +85,12 @@ QVariant DatasetViewModel::data(rcIndex index,int role) const {
     case COL_NUMBER:
       return str::number(row+1);
     default:
-      return file->getDataset(row)->getAttributeStrValue(metaInfoNums[col-COL_ATTRS]);
+      return _file->datasets().at(row)->attributeStrValue(_metaInfoNums[col-COL_ATTRS]);
     }
   }
 
   case GetDatasetRole:
-    return QVariant::fromValue<core::shp_Dataset>(file->getDataset(row));
+    return QVariant::fromValue<core::shp_Dataset>(_file->datasets().at(row));
   default:
     return EMPTY_VAR;
   }
@@ -104,26 +104,26 @@ QVariant DatasetViewModel::headerData(int col, Qt::Orientation, int role) const 
   case COL_NUMBER:
     return "#";
   default:
-    return core::Dataset::getAttributeTag(metaInfoNums[col-COL_ATTRS]);
+    return core::Dataset::attributeTag(_metaInfoNums[col-COL_ATTRS]);
   }
 }
 
 void DatasetViewModel::setFile(core::shp_File file_) {
   beginResetModel();
-  file = file_;
+  _file = file_;
   endResetModel();
 }
 
 void DatasetViewModel::showMetaInfo(checkedinfo_vec const& infos_) {
   beginResetModel();
 
-  metaInfoNums.clear();
+  _metaInfoNums.clear();
 
-  if ((metaInfo = &infos_)) {
-    for_i (metaInfo->count()) {
-      auto &item = metaInfo->at(i);
+  if ((_metaInfo = &infos_)) {
+    for_i (_metaInfo->count()) {
+      auto &item = _metaInfo->at(i);
       if (item.cb->isChecked())
-        metaInfoNums.append(i);
+        _metaInfoNums.append(i);
     }
   }
 
@@ -132,7 +132,7 @@ void DatasetViewModel::showMetaInfo(checkedinfo_vec const& infos_) {
 
 //------------------------------------------------------------------------------
 
-ReflectionViewModel::ReflectionViewModel(TheHub& theHub): super(theHub) {
+ReflectionViewModel::ReflectionViewModel(gui::TheHub& theHub): super(theHub) {
 }
 
 int ReflectionViewModel::columnCount(rcIndex) const {
@@ -140,7 +140,7 @@ int ReflectionViewModel::columnCount(rcIndex) const {
 }
 
 int ReflectionViewModel::rowCount(rcIndex) const {
-  return theHub.getReflections().count();
+  return _theHub.reflections().count();
 }
 
 QVariant ReflectionViewModel::data(rcIndex index, int role) const {
@@ -156,14 +156,14 @@ QVariant ReflectionViewModel::data(rcIndex index, int role) const {
     case COL_ID:
       return str::number(row+1);
     case COL_TYPE:
-      return core::Reflection::reflType(theHub.getReflections()[row]->getType());
+      return core::Reflection::typeTag(_theHub.reflections()[row]->type());
     default:
       return EMPTY_VAR;
     }
   }
 
   case GetDatasetRole:
-    return QVariant::fromValue<core::shp_Reflection>(theHub.getReflections()[row]);
+    return QVariant::fromValue<core::shp_Reflection>(_theHub.reflections()[row]);
   default:
     return EMPTY_VAR;
   }
@@ -177,11 +177,11 @@ QVariant ReflectionViewModel::headerData(int col, Qt::Orientation, int role) con
 }
 
 void ReflectionViewModel::addReflection(core::ePeakType type) {
-  theHub.addReflection(type);
+  _theHub.addReflection(type);
 }
 
 void ReflectionViewModel::remReflection(uint i) {
-  theHub.remReflection(i);
+  _theHub.remReflection(i);
 }
 
 //------------------------------------------------------------------------------

@@ -18,7 +18,7 @@
 #include <QStyledItemDelegate>
 #include <QHeaderView>
 
-namespace panel {
+namespace gui { namespace panel {
 //-----------------------------------------------------------------------------
 
 class FileViewDelegate: public QStyledItemDelegate {
@@ -37,8 +37,8 @@ public:
 
 //------------------------------------------------------------------------------
 
-FileView::FileView(TheHub& theHub): super(theHub), model(theHub.fileViewModel) {
-  setModel(&model);
+FileView::FileView(TheHub& theHub): super(theHub), _model(theHub.fileViewModel) {
+  setModel(&_model);
 
   header()->hide();
 
@@ -50,9 +50,9 @@ void FileView::selectionChanged(QItemSelection const& selected, QItemSelection c
   super::selectionChanged(selected,deselected);
 
   auto indexes = selected.indexes();
-  theHub.setSelectedFile(indexes.isEmpty()
+  _theHub.setSelectedFile(indexes.isEmpty()
     ? core::shp_File()
-    : model.data(indexes.first(), Model::GetFileRole).value<core::shp_File>());
+    : _model.data(indexes.first(), Model::GetFileRole).value<core::shp_File>());
 }
 
 void FileView::removeSelected() {
@@ -60,45 +60,47 @@ void FileView::removeSelected() {
   if (!index.isValid()) return;
 
   uint row = index.row();
-  index = ((int)(row+1) < model.rowCount()) ? index : index.sibling(row-1,0);
+  index = ((int)(row+1) < _model.rowCount()) ? index : index.sibling(row-1,0);
 
-  model.remFile(row);
-  if (0>=model.rowCount()) // no more files
-    theHub.setSelectedFile(core::shp_File());
+  _model.remFile(row);
+  if (0>=_model.rowCount()) // no more files
+    _theHub.setSelectedFile(core::shp_File());
 
   setCurrentIndex(index);
 }
 
 void FileView::update() {
   auto index = currentIndex();
-  model.signalReset();
+  _model.signalReset();
   // keep the current index, or select the first item
-  setCurrentIndex(index.isValid() ? index : model.index(0,1));
+  setCurrentIndex(index.isValid() ? index : _model.index(0,1));
 }
 
 //------------------------------------------------------------------------------
 
 DockFiles::DockFiles(TheHub& theHub)
 : super("Files","dock-files",Qt::Vertical) {
-  box->addWidget((fileView = new FileView(theHub)));
+  _box->addWidget((_fileView = new FileView(theHub)));
 
-  auto h = hbox(); box->addLayout(h);
+  auto h = hbox(); _box->addLayout(h);
 
-  h->addWidget(textButton(theHub.actLoadCorrFile));
-  h->addWidget(iconButton(theHub.actEnableCorr));
+  auto &actions = theHub.actions;
+
+  h->addWidget(textButton(actions.loadCorrFile));
+  h->addWidget(iconButton(actions.enableCorr));
   h->addStretch();
-  h->addWidget(iconButton(theHub.actAddFiles));
-  h->addWidget(iconButton(theHub.actRemoveFile));
+  h->addWidget(iconButton(actions.addFiles));
+  h->addWidget(iconButton(actions.remFile));
 
-  connect(theHub.actRemoveFile, &QAction::triggered, [this]() {
-    fileView->removeSelected();
+  connect(actions.remFile, &QAction::triggered, [this]() {
+    _fileView->removeSelected();
   });
 
   connect(&theHub, &TheHub::filesChanged, [this]() {
-    fileView->update();
+    _fileView->update();
   });
 }
 
 //------------------------------------------------------------------------------
-}
+}}
 // eof
