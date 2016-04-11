@@ -17,6 +17,7 @@
 #define OUT_POLEFIGURES_H
 
 #include "out_table.h"
+#include <QLineEdit>
 
 namespace io {
 //------------------------------------------------------------------------------
@@ -26,6 +27,10 @@ class OutPoleFigures: public OutWindow {
 public:
   OutPoleFigures(rcstr title,TheHub&,QWidget*);
   void calculate();
+  
+private:
+  TheHub& theHub;
+  
 };
 
 //------------------------------------------------------------------------------

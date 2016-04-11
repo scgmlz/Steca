@@ -192,6 +192,7 @@ IMPL_CMP(cmp_int,  toInt)
 IMPL_CMP(cmp_str,  toString)
 IMPL_CMP(cmp_real, toDouble)
 IMPL_CMP(cmp_date, toDate)
+IMPL_CMP(cmp_float, toFloat)
 
 //------------------------------------------------------------------------------
 

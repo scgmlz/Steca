@@ -27,8 +27,8 @@ DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& plot_)
   setMargins(0,0);
 
   remColor  = QColor(0xf8,0xf8,0xff,0x90);
-  bgColor   = QColor(0x98,0xfb,0x98,0x80);
-  reflColor = QColor(0x87,0xce,0xfa,0x80);
+  bgColor   = QColor(0x98,0xfb,0x98,0x70);
+  reflColor = QColor(0x87,0xce,0xfa,0x70);
   
 }
 
@@ -298,8 +298,8 @@ int DiffractogramPlot::selectedFittingTab() {
 
 void DiffractogramPlot::addBgItem(core::Range const& range) {
   setCurrentLayer("bg");
-  if (TheHub::TAB_BACKGROUND == theHub.fittingTab__) bgColor = QColor(0x98,0xfb,0x98,0x60);
-  else bgColor = QColor(0x87,0xce,0xfa,0x60);
+  if (TheHub::TAB_BACKGROUND == theHub.fittingTab__) bgColor = QColor(0x98,0xfb,0x98,0x50);
+  else bgColor = QColor(0x87,0xce,0xfa,0x50);
   
   auto ir = new QCPItemRect(this);
   ir->setPen(QPen(bgColor));
