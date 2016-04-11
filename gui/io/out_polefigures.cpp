@@ -122,6 +122,12 @@ void OutPoleFigures::calculate() {
   table.addRow({ QDate::currentDate(),9,"a",2.1f});
   table.addRow({ QDate::currentDate(),9,"a",2.1f}); 
   table.addRow({ QDate::currentDate(),9,"a",2.1f});  
+  table.addRow({ QDate::currentDate(),9,"a",2.1f});
+  table.addRow({ QDate::currentDate(),9,"a",2.1f});  
+  table.addRow({ QDate::currentDate(),9,"a",2.1f});
+  table.addRow({ QDate::currentDate(),9,"a",2.1f});
+  table.addRow({ QDate::currentDate(),9,"a",2.1f}); 
+  table.addRow({ QDate::currentDate(),9,"a",2.1f});  
   table.addRow({ QDate::currentDate(),9,"a",2.1f}); 
 }
 
