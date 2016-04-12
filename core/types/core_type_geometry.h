@@ -69,7 +69,8 @@ public:
   rcRange rgeGamma() const { return _rgeGamma; }
   rcRange rgeTth()   const { return _rgeTth;   }
 
-  void calculate(qreal midTth, Geometry const&, QSize const&, rcIJ midPix);
+  void calculate(qreal midTth, Geometry const&,
+                 QSize const&, ImageCut const& cut, rcIJ midPix);
 
 private:
   Array2D<Angles> _arrAngles;

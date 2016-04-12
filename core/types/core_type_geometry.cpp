@@ -64,7 +64,7 @@ AngleMap::AngleMap() {
 }
 
 void AngleMap::calculate(qreal midTth, Geometry const& geometry,
-                         QSize const& size, rcIJ midPix) {
+                         QSize const& size, ImageCut const& cut, rcIJ midPix) {
   _arrAngles.fill(size);
   _rgeGamma.invalidate(); _rgeTth.invalidate();
 
@@ -96,14 +96,13 @@ void AngleMap::calculate(qreal midTth, Geometry const& geometry,
     }
   }
 
-  ASSERT(false) // >>> calculate rgeGamma, rgeTth
-//      for (int ix = imageMargins.left(); ix < size.width() - imageMargins.right(); ++ix) {
-//        for (int iy = imageMargins.top(); iy < size.height() - imageMargins.bottom(); ++iy) {
-//          auto ac = angleMapArray.at(ix,iy);
-//          cut.gamma.extendBy(ac.gamma);
-//          cut.tth_regular.extendBy(ac.tth);
-//        }
-      //      }
+  for (int i = cut.left, iEnd = size.width() - cut.right; i < iEnd; ++i) {
+    for (int j = cut.top, jEnd = size.height() - cut.bottom; j < jEnd; ++j) {
+      auto &as = _arrAngles.at(i,j);
+      _rgeGamma.extendBy(as.gamma);
+      _rgeTth.extendBy(as.tth);
+    }
+  }
 }
 
 //------------------------------------------------------------------------------

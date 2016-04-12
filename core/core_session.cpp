@@ -173,7 +173,7 @@ AngleMap const& Session::angleMap(rcDataset dataset) const {
   if (! (midTth_ == midTth && geometry_ == _geometry &&
          size_ == size && mid_ == mid)) {
     midTth_ = midTth; geometry_ = _geometry; size_ = size; mid_ = mid;
-    map.calculate(midTth,_geometry,size,mid);
+    map.calculate(midTth,_geometry,size,_imageCut,mid);
   }
 
   return map;
