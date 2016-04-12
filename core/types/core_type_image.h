@@ -49,7 +49,7 @@ public:
   }
 
   /// Sum all intensities with new ones.
-  void addIntens(Image const&);
+  void addIntens(Image const&) THROWS;
   void addIntens(inten_t const*);
 };
 

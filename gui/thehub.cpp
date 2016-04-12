@@ -1,6 +1,7 @@
 #include "thehub.h"
 #include "mainwin.h"
 #include "types/core_json.h"
+#include "io/core_io.h"
 
 #include <QSpinBox>
 #include <QDoubleSpinBox>
@@ -396,10 +397,9 @@ void TheHub::load(QByteArray const& json) THROWS {
 }
 
 void TheHub::addFile(rcstr filePath) THROWS {
-  WaitCursor __;
-
-  core::shp_File file = session->addFile(filePath);
-  if (!file.isNull()) {
+  if (!filePath.isEmpty() && !session->hasFile(filePath)) {
+    WaitCursor __;
+    session->addFile(core::io::load(filePath));
     emit filesChanged();
   }
 }
@@ -411,8 +411,12 @@ void TheHub::addFiles(str_lst filePaths) THROWS {
     addFile(filePath);
 }
 
-void TheHub::loadCorrFile(rcstr filePath) {
-  auto file = session->setCorrFile(filePath);
+void TheHub::loadCorrFile(rcstr filePath) THROWS {
+  core::shp_File file;
+  if (!filePath.isEmpty())
+    file = core::io::load(filePath);
+
+  session->setCorrFile(file);
   emit correctionEnabled(session->isCorrEnabled());
   emit filesChanged();
 }

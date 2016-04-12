@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "core_session.h"
-#include "io/core_io.h"
 #include "core_fit_fitting.h"
 #include "types/core_type_curve.h"
 
@@ -52,23 +51,15 @@ shp_File Session::file(uint i) const {
   }
 }
 
-shp_File Session::addFile(rcstr fileName) THROWS {
-  if (fileName.isEmpty() || hasFile(fileName))
-    return shp_File();  // no new file
-
-  shp_File file = io::load(fileName);
+void Session::addFile(shp_File file) THROWS {
   setImageSize(file->datasets().imageSize());
-
   // all ok
   _files.append(file);
-  return file;
 }
 
-shp_File Session::remFile(uint i) {
-  shp_File file = _files.at(i);
+void Session::remFile(uint i) {
   _files.remove(i);
   updateImageSize();
-  return file;
 }
 
 bool Session::hasFile(rcstr fileName) {
@@ -78,22 +69,19 @@ bool Session::hasFile(rcstr fileName) {
   return false;
 }
 
-shp_File Session::setCorrFile(rcstr fileName) {
-  if (fileName.isEmpty()) {
+void Session::setCorrFile(shp_File file) THROWS {
+  if (file.isNull()) {
     remCorrFile();
-    return shp_File();
+  } else {
+    auto &datasets = file->datasets();
+
+    datasets.fold(); // ensure one dataset
+    setImageSize(datasets.imageSize());
+
+    // all ok
+    _corrFile    = file;
+    _corrEnabled = true;
   }
-
-  shp_File file = io::load(fileName);
-  file->datasets().fold(); // ensure one dataset
-
-  setImageSize(file->datasets().imageSize());
-
-  // all ok
-  _corrFile    = file;
-  _corrEnabled = true;
-
-  return file;
 }
 
 void Session::remCorrFile() {

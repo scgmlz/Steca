@@ -6,9 +6,6 @@ namespace core {
 File::File(rcstr fileName): _fileInfo(fileName) {
 }
 
-File::~File() {
-}
-
 //------------------------------------------------------------------------------
 }
 // eof

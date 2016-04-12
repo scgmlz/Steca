@@ -27,7 +27,6 @@ namespace core {
 class File final {
 public:
   File(rcstr fileName);
- ~File();     // REVIEW needed, otherwise loadCaress() does not link
 
   QFileInfo const& fileInfo() const { return _fileInfo;              }
   str fileName()              const { return _fileInfo.fileName();   }

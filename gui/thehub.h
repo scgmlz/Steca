@@ -93,7 +93,7 @@ public:
 public:
   void addFile(rcstr filePath)      THROWS;
   void addFiles(str_lst filePaths)  THROWS;
-  void loadCorrFile(rcstr filePath);
+  void loadCorrFile(rcstr filePath) THROWS;
 
   void enableCorrection(bool);
 

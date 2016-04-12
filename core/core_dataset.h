@@ -55,7 +55,7 @@ public:
   inten_t inten(uint i,uint j) const;
 
   /// used for correction files if there is more than one image
-  void addIntens(rcDataset);
+  void addIntens(rcDataset) THROWS;
 
 private:
   Datasets *_datasets;  // here it belongs
@@ -77,7 +77,7 @@ public:
   Datasets();
 
   void append(shp_Dataset);
-  void fold(); ///< collapse datasets into one (for correction files)
+  void fold() THROWS;   ///< collapse datasets into one (for correction files)
 
   // in all datasets
   QSize imageSize()       const;

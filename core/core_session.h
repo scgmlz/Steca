@@ -40,8 +40,8 @@ public:
   uint     numFiles(bool withCorr) const;
   shp_File file(uint i) const;              ///< Access the i-th file, including the correction file.
 
-  shp_File addFile(rcstr fileName) THROWS;  ///< Add an ordinary file to the session.
-  shp_File remFile(uint i);                 ///< Remove the i-th file, NOT including the correction file.
+  void     addFile(shp_File) THROWS;        ///< Add an ordinary file to the session.
+  void     remFile(uint i);                 ///< Remove the i-th file, NOT including the correction file.
   bool     hasFile(rcstr fileName);         ///< Is there this ordinary file?
 
 // correction file
@@ -53,7 +53,7 @@ public:
   shp_File corrFile()       const   { return _corrFile;           }
   bool     hasCorrFile()    const   { return !_corrFile.isNull(); }
 
-  shp_File setCorrFile(rcstr fileName);     ///< Load or remove a correction file.
+  void     setCorrFile(shp_File) THROWS;    ///< Load or remove a correction file.
   void     remCorrFile();
 
   void     enableCorr(bool);

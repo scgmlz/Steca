@@ -110,7 +110,7 @@ inten_t Dataset::inten(uint i, uint j) const {
   return _image.inten(i,j);
 }
 
-void Dataset::addIntens(rcDataset that) {
+void Dataset::addIntens(rcDataset that) THROWS {
   _image.addIntens(that._image);
 }
 
@@ -128,7 +128,7 @@ void Datasets::append(shp_Dataset dataset) {
   invalidateMutables();
 }
 
-void Datasets::fold() {
+void Datasets::fold() THROWS {
   while (super::count() > 1) {
     super::first()->addIntens(*super::last());
     super::removeLast();
