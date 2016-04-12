@@ -14,13 +14,6 @@
 
 #include "core_dataset.h"
 
-//>>>#include "core_file.h"
-//#include "core_session.h"
-//#include "core_reflection_info.h"
-//#include "core_fit_fitting.h"
-//#include "types/core_type_curve.h"
-//#include <qmath.h>
-
 namespace core {
 //------------------------------------------------------------------------------
 // dataset attributes
@@ -150,15 +143,6 @@ QSize Datasets::imageSize() const {
   return super::first()->imageSize();
 }
 
-//rcRange Datasets::rgeInten() const {
-//  if (!_rgeInten.isValid()) {
-//    for (auto const& dataset: *this)
-//      _rgeInten.extendBy(dataset->image().rgeInten());
-//  }
-
-//  return _rgeInten;
-//}
-
 qreal Datasets::avgDeltaMonitorCount() const {
   if (qIsNaN(_avgMonitorCount)) {
     qreal avg = 0;
@@ -188,7 +172,6 @@ qreal Datasets::avgDeltaTime() const {
 }
 
 void Datasets::invalidateMutables() {
-  _rgeInten.invalidate();
   _avgMonitorCount = _avgDeltaTime = qQNaN();
 }
 

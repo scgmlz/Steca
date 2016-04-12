@@ -132,7 +132,7 @@ void MainWin::initMenus() {
     actions.fitTool, actions.fitBgClear, actions.fitShow, separator(),
     actions.viewStatusbar,
 #ifndef Q_OS_OSX
-    acts.fullScreen,
+    actions.fullScreen,
 #endif
     separator(),
     actions.viewDockFiles,
@@ -218,7 +218,7 @@ void MainWin::connectActions() {
 
   onToggle(actions.viewStatusbar, &thisClass::viewStatusbar);
 #ifndef Q_OS_OSX
-  onToggle(acts.fullScreen, &thisClass::viewFullScreen);
+  onToggle(actions.fullScreen, &thisClass::viewFullScreen);
 #endif
 
   onToggle(actions.viewDockFiles,       &thisClass::viewDockFiles);
@@ -362,7 +362,7 @@ void MainWin::checkActions() {
   actions.viewStatusbar->setChecked(statusBar()->isVisible());
 
 #ifndef Q_OS_OSX
-  acts.fullScreen->setChecked(isFullScreen());
+  actions.fullScreen->setChecked(isFullScreen());
 #endif
 
   actions.viewDockFiles->setChecked(_dockFiles->isVisible());
@@ -382,7 +382,7 @@ void MainWin::viewFullScreen(bool on) {
     showNormal();
 
 #ifndef Q_OS_OSX
-  acts.fullScreen->setChecked(on);
+  actions.fullScreen->setChecked(on);
 #endif
 }
 

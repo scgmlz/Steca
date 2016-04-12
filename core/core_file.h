@@ -27,12 +27,13 @@ namespace core {
 class File final {
 public:
   File(rcstr fileName);
+ ~File();     // REVIEW needed, otherwise loadCaress() does not link
 
   QFileInfo const& fileInfo() const { return _fileInfo;              }
   str fileName()              const { return _fileInfo.fileName();   }
 
-  Datasets&  datasets()        { return _datasets;              }
-  rcDatasets datasets()  const { return _datasets;              }
+  Datasets&  datasets()             { return _datasets;              }
+  rcDatasets datasets()       const { return _datasets;              }
 
 private:
   QFileInfo _fileInfo;

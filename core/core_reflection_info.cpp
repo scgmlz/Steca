@@ -50,7 +50,7 @@ ReflectionInfo::ReflectionInfo(qreal const alpha,
 
   // Mirror angles.
   if (alpha > M_PI / 2) {
-    alpha = abs(alpha - M_PI);
+    alpha = qAbs(alpha - M_PI);
     beta += beta < 0 ? M_PI : -M_PI;
   }
 
@@ -70,7 +70,7 @@ ReflectionInfo ReflectionInfo::make(
 {
   shp_Lens lens = session.lens(true, true, session.norm(), dataset);
   Curve gammaCutCurve = lens->makeCurve(gammaSector,rgeTth);
-/* >>> TODO ask Antti - take fitted background (all picture)?
+/* TODO ask Antti - take fitted background (all picture)?
   const fit::Polynomial sectorBg
     = fit::fitBackground(gammaCutCurve,
                          session.getBgRanges(),

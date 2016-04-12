@@ -23,8 +23,8 @@ qreal const Geometry::MIN_DETECTOR_DISTANCE   = 1000;
 qreal const Geometry::MIN_DETECTOR_PIXEL_SIZE = 1;
 
 Geometry::Geometry()
-: pixSize(MIN_DETECTOR_PIXEL_SIZE)
-, detectorDistance(MIN_DETECTOR_DISTANCE)
+: detectorDistance(MIN_DETECTOR_DISTANCE)
+, pixSize(MIN_DETECTOR_PIXEL_SIZE)
 , isMidPixOffset(false)
 , midPixOffset() {
 }

@@ -70,7 +70,7 @@ private:
   Image _image;
 };
 
-/// A groupd of Dataset(s)
+/// A group of Dataset(s)
 class Datasets: public QVector<shp_Dataset> {
   SUPER(Datasets,QVector<shp_Dataset>)
 public:
@@ -88,7 +88,6 @@ public:
 private:
   void invalidateMutables();
   // computed on demand
-  mutable Range _rgeInten; //>>>
   mutable qreal _avgMonitorCount, _avgDeltaTime;
 };
 

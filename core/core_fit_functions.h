@@ -216,11 +216,11 @@ public:
   qreal y(qreal x, qreal const* parValues = nullptr) const;
   qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-  void  setGuessedPeak(rcXY)  override;
-  void  setGuessedFWHM(qreal) override;
+  void  setGuessedPeak(rcXY);
+  void  setGuessedFWHM(qreal);
 
-  XY    fittedPeak() const override;
-  qreal fittedFWHM() const override;
+  XY    fittedPeak() const;
+  qreal fittedFWHM() const;
 
 public:
   JsonObj saveJson() const;
@@ -240,11 +240,11 @@ public:
   qreal y(qreal x, qreal const* parValues = nullptr) const;
   qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-  void setGuessedPeak(rcXY)  override;
-  void setGuessedFWHM(qreal) override;
+  void setGuessedPeak(rcXY);
+  void setGuessedFWHM(qreal);
 
-  XY    fittedPeak() const override;
-  qreal fittedFWHM() const override;
+  XY    fittedPeak() const;
+  qreal fittedFWHM() const;
 
 public:
   JsonObj saveJson() const;
@@ -264,11 +264,11 @@ public:
   qreal y(qreal x, qreal const* parValues = nullptr) const;
   qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-  void setGuessedPeak(rcXY)  override;
-  void setGuessedFWHM(qreal) override;
+  void setGuessedPeak(rcXY) ;
+  void setGuessedFWHM(qreal);
 
-  XY    fittedPeak() const override;
-  qreal fittedFWHM() const override;
+  XY    fittedPeak() const;
+  qreal fittedFWHM() const;
 
 public:
   JsonObj saveJson() const;
@@ -288,11 +288,11 @@ public:
   qreal y(qreal x, qreal const* parValues = nullptr) const;
   qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-  void setGuessedPeak(rcXY)  override;
-  void setGuessedFWHM(qreal) override;
+  void setGuessedPeak(rcXY) ;
+  void setGuessedFWHM(qreal);
 
-  XY    fittedPeak() const override;
-  qreal fittedFWHM() const override;
+  XY    fittedPeak() const;
+  qreal fittedFWHM() const;
 
 public:
   JsonObj saveJson() const;

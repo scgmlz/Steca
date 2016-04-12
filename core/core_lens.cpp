@@ -24,20 +24,6 @@
 
 namespace core {
 //------------------------------------------------------------------------------
-//>>>  Lens(Dataset,Geo,midPix)
-//  A & angle(x,y)
-//    if cut -> xy
-//  intens_t intens(x,y)
-//    if trans -> trans always!
-//    if cut -> xy
-//    sens ?
-//    glob ?
-//    norm ?
-//  size
-//    trans ?
-//    cut ?
-//  Range rgeInten()
-//    calc on demand
 
 str_lst const& Lens::normStrLst() {
   static str_lst strLst {
@@ -141,7 +127,7 @@ Curve Lens::makeCurve(rcRange gammaRange, rcRange tthRange) const {
               ? w - 1
               : qFloor((as.tth - tthRange.min) / deltaTTH);
 
-    if (bin < 0 || w <= bin) {
+    if (bin < 0 || (int)w <= bin) {
       //        TR("TTH bin outside cut?")
       continue; // outside of the cut
     }
