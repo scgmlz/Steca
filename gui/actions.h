@@ -47,7 +47,7 @@ public:
   Action& alt(rcstr text2, rcstr tip2);
 
 protected:
-  str _text1, _text2, _tip1, _tip2;
+  str text1_, text2_, tip1_, tip2_;
 };
 
 //------------------------------------------------------------------------------

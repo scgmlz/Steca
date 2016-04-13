@@ -209,7 +209,7 @@ OutTableHeaderView::OutTableHeaderView(): super(Qt::Horizontal) {
 
 OutTable::OutTable(TheHub& theHub, uint numDataColumns) {
   setHeader(new OutTableHeaderView);
-  setModel((_model = new OutTableModel(theHub,numDataColumns)));
+  setModel((model_ = new OutTableModel(theHub,numDataColumns)));
 
   header()->setSectionResizeMode(0,QHeaderView::Fixed);
 
@@ -218,24 +218,24 @@ OutTable::OutTable(TheHub& theHub, uint numDataColumns) {
 }
 
 void OutTable::setHeaders(str_lst const& headers) {
-  _model->setHeaders(headers);
+  model_->setHeaders(headers);
 
   connect(header(),&QHeaderView::sectionMoved, [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
     ASSERT(oldVisualIndex>0 && newVisualIndex>0)
-    _model->moveColumn((uint)(oldVisualIndex-1),(uint)(newVisualIndex-1));
+    model_->moveColumn((uint)(oldVisualIndex-1),(uint)(newVisualIndex-1));
   });
 }
 
 void OutTable::setCmpFuns(OutTable::cmp_vec const& cmps) {
-  _model->setCmpFuns(cmps);
+  model_->setCmpFuns(cmps);
 }
 
 void OutTable::clear() {
-  _model->clear();
+  model_->clear();
 }
 
 void OutTable::addRow(OutTable::row_t const& row) {
-  _model->addRow(row);
+  model_->addRow(row);
 }
 
 //------------------------------------------------------------------------------
@@ -254,28 +254,28 @@ OutTableWidget::OutTableWidget(TheHub& theHub,
   box->addWidget(split);
 
   split->setChildrenCollapsible(false);
-  split->addWidget((_outTable = new OutTable(theHub,numDataColumns)));
+  split->addWidget((outTable_ = new OutTable(theHub,numDataColumns)));
 
-  _outTable->setHeaders(headers);
-  _outTable->setCmpFuns(cmps);
+  outTable_->setHeaders(headers);
+  outTable_->setCmpFuns(cmps);
 
   for_i (numDataColumns) {
     ShowColumn item; item.name = headers[i];
-    _showColumns.append(item);
+    showColumns_.append(item);
   }
 
   auto scrollArea = new QScrollArea;
-  scrollArea->setWidget((_showColumnsWidget = new ShowColumnsWidget(_showColumns)));
+  scrollArea->setWidget((showColumnsWidget_ = new ShowColumnsWidget(showColumns_)));
 
   for_i (numDataColumns) {
-    auto cb = _showColumns[i].cb;
+    auto cb = showColumns_[i].cb;
 
     cb->setChecked(true);
     connect(cb, &QCheckBox::clicked,[this,cb,i]() {
       if (cb->isChecked())
-        _outTable->showColumn(i+1);
+        outTable_->showColumn(i+1);
       else
-        _outTable->hideColumn(i+1);
+        outTable_->hideColumn(i+1);
       }
     );
   }
@@ -290,11 +290,11 @@ OutTableWidget::~OutTableWidget () {
 //------------------------------------------------------------------------------
 
 OutTableWidget::ShowColumnsWidget::ShowColumnsWidget(OutTableWidget::showcolumn_vec& items) {
-  setLayout((_grid = gridLayout()));
+  setLayout((grid_ = gridLayout()));
 
   for_i (items.count()) {
     auto &item = items[i];
-    _grid->addWidget((item.cb = check(item.name)), i, 0);
+    grid_->addWidget((item.cb = check(item.name)), i, 0);
   }
 }
 
@@ -303,15 +303,15 @@ OutTableWidget::ShowColumnsWidget::ShowColumnsWidget(OutTableWidget::showcolumn_
 OutWindow::OutWindow(rcstr title, QWidget* parent): super(parent, Qt::Dialog) {
   setAttribute(Qt::WA_DeleteOnClose);
   setWindowTitle(title);
-  setLayout((_box = vbox()));
+  setLayout((box_ = vbox()));
 }
 
 void OutWindow::setWidgets(panel::BasicPanel* p, OutTableWidget* tw) {
-  _box->addWidget((_panel       = p));
-  _box->addWidget((_tableWidget = tw));
+  box_->addWidget((panel_       = p));
+  box_->addWidget((tableWidget_ = tw));
   auto bbox = hbox();
-  _box->addLayout(bbox);
-  _box->setStretch(1,1);
+  box_->addLayout(bbox);
+  box_->setStretch(1,1);
 
   auto actClose = new TriggerAction("Close", "Close", this);
   actClose->dialog();

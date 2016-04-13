@@ -32,7 +32,7 @@ public:
   ePeakType type() const;
   void setType(ePeakType);
 
-  rcRange range() const { return _range; }
+  rcRange range() const { return range_; }
   void setRange(rcRange);
 
   fit::PeakFunction const& peakFunction() const {
@@ -43,16 +43,16 @@ public:
 
   void invalidateGuesses();
 
-  void setGuessPeak(rcXY  xy)   { _peakFunction->setGuessedPeak(xy);   }
-  void setGuessFWHM(qreal fwhm) { _peakFunction->setGuessedFWHM(fwhm); }
+  void setGuessPeak(rcXY  xy)   { peakFunction_->setGuessedPeak(xy);   }
+  void setGuessFWHM(qreal fwhm) { peakFunction_->setGuessedFWHM(fwhm); }
 
 private:
-  Range _range;
+  Range range_;
 
   void setPeakFunction(ePeakType);
   void setPeakFunction(fit::PeakFunction*);
 
-  QScopedPointer<fit::PeakFunction> _peakFunction;
+  QScopedPointer<fit::PeakFunction> peakFunction_;
 
 public:
   JsonObj saveJson() const;

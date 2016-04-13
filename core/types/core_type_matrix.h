@@ -23,8 +23,8 @@ namespace core {
 //------------------------------------------------------------------------------
 
 struct vector3d {
-  qreal _0, _1, _2;
-
+  qreal _0,_1, _2;
+  
   vector3d(qreal,qreal,qreal);
 };
 

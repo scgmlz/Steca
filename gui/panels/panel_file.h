@@ -37,7 +37,7 @@ public:
   void update();
 
 private:
-  Model &_model;
+  Model &model_;
 };
 
 class DockFiles: public DockWidget {
@@ -45,7 +45,7 @@ class DockFiles: public DockWidget {
 public:
   DockFiles(TheHub&);
 private:
-  FileView *_fileView;
+  FileView *fileView_;
 };
 
 //------------------------------------------------------------------------------

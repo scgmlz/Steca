@@ -36,9 +36,9 @@ public:
   void setMargins(int left,int right);
 
 private:
-  DiffractogramPlot& _plot;
-  QColor _addColor, _remColor, _color;
-  int _marginLeft, _marginRight;
+  DiffractogramPlot& plot_;
+  QColor addColor_, remColor_, color_;
+  int marginLeft_, marginRight_;
 
 protected:
   void enterEvent(QEvent*);
@@ -49,8 +49,8 @@ protected:
 
   void paintEvent(QPaintEvent*);
 
-  bool _hasCursor, _mouseDown;
-  int  _cursorPos, _mouseDownPos;
+  bool hasCursor_, mouseDown_;
+  int  cursorPos_, mouseDownPos_;
 
   void updateCursorRegion();
 };
@@ -70,7 +70,7 @@ public:
 
 public:
   void setTool(Tool);
-  Tool getTool() const { return _tool; }
+  Tool getTool() const { return tool_; }
 
   void plot(core::rcCurve,core::rcCurve, core::rcCurve, core::curve_vec const&, uint);
 
@@ -89,12 +89,12 @@ protected:
   void resizeEvent(QResizeEvent*);
 
 private:
-  Diffractogram &_diffractogram;
-  Tool _tool;
-  QCPGraph *_bgGraph, *_dgramGraph, *_dgramBgFittedGraph, *_guesses, *_fits;
-  QVector<QCPGraph*> _reflGraph;
-  DiffractogramPlotOverlay *_overlay;
-  bool _showBgFit;
+  Diffractogram &diffractogram_;
+  Tool tool_;
+  QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *guesses_, *fits_;
+  QVector<QCPGraph*> reflGraph_;
+  DiffractogramPlotOverlay *overlay_;
+  bool showBgFit_;
 };
 
 class Diffractogram: public BoxPanel {
@@ -102,21 +102,21 @@ class Diffractogram: public BoxPanel {
 public:
   Diffractogram(TheHub&);
 
-  core::shp_Dataset const& getDataset() const { return _dataset; }
+  core::shp_Dataset const& getDataset() const { return dataset_; }
   void renderDataset(); // TODO move to DiffractogramPlot (?)
 
 private:
   void setDataset(core::shp_Dataset);
 
-  core::shp_Dataset _dataset;
+  core::shp_Dataset dataset_;
 
-  DiffractogramPlot *_plot;
+  DiffractogramPlot *plot_;
 
-  core::Curve  _dgram, _dgramBgFitted, _bg;
-  core::curve_vec _refls;
+  core::Curve  dgram_, dgramBgFitted_, bg_;
+  core::curve_vec refls_;
 
-  uint _currReflIndex;
-  core::shp_Reflection _currentReflection;
+  uint currReflIndex_;
+  core::shp_Reflection currentReflection_;
 
 public:
   void calcDgram();

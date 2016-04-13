@@ -62,13 +62,13 @@ private:
   void onClose();
 
 private:
-  QMenu *_menuFile, *_menuEdit, *_menuView, *_menuDatasets, *_menuReflect,
+  QMenu *menuFile_, *menuEdit_, *menuView_, *menuDatasets_, *menuReflect_,
         *_menuOutput, *_menuHelp;
 
-  QDockWidget *_dockFiles, *_dockDatasets, *_dockDatasetInfo;
+  QDockWidget *dockFiles_, *dockDatasets_, *dockDatasetInfo_;
 
 private:
-  QByteArray _initialState;
+  QByteArray initialState_;
 
   void readSettings();
   void saveSettings();

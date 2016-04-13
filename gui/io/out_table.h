@@ -43,7 +43,7 @@ public:
   void addRow(row_t const&);
 
 private:
-  OutTableModel *_model;
+  OutTableModel *model_;
 };
 
 //------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ public:
  ~OutTableWidget();
 
   OutTable& table() const {
-    return *_outTable;
+    return *outTable_;
   }
 
 private:
@@ -80,13 +80,13 @@ private:
     SUPER(ShowColumnsWidget,QWidget)
   public:
     ShowColumnsWidget(showcolumn_vec&);
-    QGridLayout *_grid;
+    QGridLayout *grid_;
   };
 
 private:
-  OutTable          *_outTable;
-  ShowColumnsWidget *_showColumnsWidget;
-  showcolumn_vec     _showColumns;
+  OutTable          *outTable_;
+  ShowColumnsWidget *showColumnsWidget_;
+  showcolumn_vec     showColumns_;
 };
 
 //------------------------------------------------------------------------------
@@ -103,9 +103,9 @@ protected:
 protected:
   void setWidgets(panel::BasicPanel*,OutTableWidget*);
 
-  QBoxLayout        *_box;
-  panel::BasicPanel *_panel;
-  OutTableWidget    *_tableWidget;
+  QBoxLayout        *box_;
+  panel::BasicPanel *panel_;
+  OutTableWidget    *tableWidget_;
 };
 
 //------------------------------------------------------------------------------

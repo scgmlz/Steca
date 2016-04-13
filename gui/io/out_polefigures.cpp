@@ -27,9 +27,9 @@ public:
 };
 
 OutPoleFiguresParams::OutPoleFiguresParams(TheHub& theHub): super("", theHub, Qt::Horizontal) {
-  _box->addWidget(label("Param"));
-  _box->addWidget(editCell(16));
-  _box->addStretch();
+  box_->addWidget(label("Param"));
+  box_->addWidget(editCell(16));
+  box_->addStretch();
 }
 
 //------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ OutPoleFigures::OutPoleFigures(rcstr title,TheHub& theHub,QWidget* parent)
 void OutPoleFigures::calculate() {
   // test
   // TODO complete
-  auto &table = _tableWidget->table();
+  auto &table = tableWidget_->table();
 
   table.clear();
 

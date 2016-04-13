@@ -3,7 +3,7 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-File::File(rcstr fileName): _fileInfo(fileName) {
+File::File(rcstr fileName): fileInfo_(fileName) {
 }
 
 //------------------------------------------------------------------------------

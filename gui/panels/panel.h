@@ -52,7 +52,7 @@ public:
   BoxPanel(rcstr title, TheHub&, Qt::Orientation);
 
 protected:
-  QBoxLayout *_box;
+  QBoxLayout *box_;
 };
 
 /// A panel with grid layout
@@ -62,7 +62,7 @@ public:
   GridPanel(rcstr title,TheHub&);
 
 protected:
-  QGridLayout *_grid;
+  QGridLayout *grid_;
 };
 
 //------------------------------------------------------------------------------

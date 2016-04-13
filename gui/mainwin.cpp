@@ -106,28 +106,28 @@ void MainWin::initMenus() {
 
   auto *mbar = menuBar();
 
-  _menuFile     = mbar->addMenu("&File");
-  _menuEdit     = mbar->addMenu("&Edit");
-  _menuView     = mbar->addMenu("&View");
-  _menuDatasets = mbar->addMenu("&Datasets");
-  _menuReflect  = mbar->addMenu("&Reflections");
+  menuFile_     = mbar->addMenu("&File");
+  menuEdit_     = mbar->addMenu("&Edit");
+  menuView_     = mbar->addMenu("&View");
+  menuDatasets_ = mbar->addMenu("&Datasets");
+  menuReflect_  = mbar->addMenu("&Reflections");
   _menuOutput   = mbar->addMenu("&Output");
   _menuHelp     = mbar->addMenu("&Help");
 
-  _menuFile->addActions({
+  menuFile_->addActions({
     actions.addFiles, actions.remFile, separator(),
     actions.loadCorrFile, separator(),
     actions.loadSession, actions.saveSession, actions.loadSession,
   });
 
-  _menuFile->addActions({
+  menuFile_->addActions({
 #ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
     separator(),
 #endif
     actions.quit,
   });
 
-  _menuView->addActions({
+  menuView_->addActions({
     actions.fixedIntensityDisplay, actions.showCut, separator(),
     actions.fitTool, actions.fitBgClear, actions.fitShow, separator(),
     actions.viewStatusbar,
@@ -142,12 +142,12 @@ void MainWin::initMenus() {
     actions.viewReset,
   });
 
-  _menuDatasets->addActions({
+  menuDatasets_->addActions({
     actions.rotateImage, actions.mirrorImage, separator(),
     actions.enableCorr,
   });
 
-  _menuReflect->addActions({
+  menuReflect_->addActions({
     actions.addReflection, actions.remReflection,
   });
 
@@ -164,9 +164,9 @@ void MainWin::initMenus() {
 }
 
 void MainWin::initLayout() {
-  addDockWidget(Qt::LeftDockWidgetArea,  (_dockFiles      = new panel::DockFiles(theHub)));
-  addDockWidget(Qt::LeftDockWidgetArea,  (_dockDatasets   = new panel::DockDatasets(theHub)));
-  addDockWidget(Qt::RightDockWidgetArea, (_dockDatasetInfo  = new panel::DockDatasetInfo(theHub)));
+  addDockWidget(Qt::LeftDockWidgetArea,  (dockFiles_      = new panel::DockFiles(theHub)));
+  addDockWidget(Qt::LeftDockWidgetArea,  (dockDatasets_   = new panel::DockDatasets(theHub)));
+  addDockWidget(Qt::RightDockWidgetArea, (dockDatasetInfo_  = new panel::DockDatasetInfo(theHub)));
 
   auto splMain = new QSplitter(Qt::Vertical);
   splMain->setChildrenCollapsible(false);
@@ -344,8 +344,8 @@ static str const KEY_GEOMETRY("geometry");
 static str const KEY_STATE("state");
 
 void MainWin::readSettings() {
-  if (_initialState.isEmpty())
-    _initialState = saveState();
+  if (initialState_.isEmpty())
+    initialState_ = saveState();
 
   Settings s(GROUP_MAINWIN);
   restoreGeometry(s.value(KEY_GEOMETRY).toByteArray());
@@ -365,9 +365,9 @@ void MainWin::checkActions() {
   actions.fullScreen->setChecked(isFullScreen());
 #endif
 
-  actions.viewDockFiles->setChecked(_dockFiles->isVisible());
-  actions.viewDockDatasets->setChecked(_dockDatasets->isVisible());
-  actions.viewDockDatasetInfo->setChecked(_dockDatasetInfo->isVisible());
+  actions.viewDockFiles->setChecked(dockFiles_->isVisible());
+  actions.viewDockDatasets->setChecked(dockDatasets_->isVisible());
+  actions.viewDockDatasetInfo->setChecked(dockDatasetInfo_->isVisible());
 }
 
 void MainWin::viewStatusbar(bool on) {
@@ -387,22 +387,22 @@ void MainWin::viewFullScreen(bool on) {
 }
 
 void MainWin::viewDockFiles(bool on) {
-  _dockFiles->setVisible(on);
+  dockFiles_->setVisible(on);
   actions.viewDockFiles->setChecked(on);
 }
 
 void MainWin::viewDockDatasets(bool on) {
-  _dockDatasets->setVisible(on);
+  dockDatasets_->setVisible(on);
   actions.viewDockDatasets->setChecked(on);
 }
 
 void MainWin::viewDockDatasetInfo(bool on) {
-  _dockDatasetInfo->setVisible(on);
+  dockDatasetInfo_->setVisible(on);
   actions.viewDockDatasetInfo->setChecked(on);
 }
 
 void MainWin::viewReset() {
-  restoreState(_initialState);
+  restoreState(initialState_);
   viewStatusbar(true);
   viewFullScreen(false);
   viewDockFiles(true);

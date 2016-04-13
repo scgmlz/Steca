@@ -47,9 +47,9 @@ public:
   qreal deltaMonitorCount()   const;
   qreal deltaTime()           const;
 
-  qreal omg() const { return _motorOmg; }
-  qreal phi() const { return _motorPhi; }
-  qreal chi() const { return _motorChi; }
+  qreal omg() const { return motorOmg_; }
+  qreal phi() const { return motorPhi_; }
+  qreal chi() const { return motorChi_; }
 
   QSize   imageSize()          const;
   inten_t inten(uint i,uint j) const;
@@ -58,16 +58,16 @@ public:
   void addIntens(rcDataset) THROWS;
 
 private:
-  Datasets *_datasets;  // here it belongs
-  str _date, _comment;
+  Datasets *datasets_;  // here it belongs
+  str date_, comment_;
 
   // all stored angles in degrees
-  qreal _motorXT,  _motorYT,  _motorZT,  _motorOmg, _motorTth,
-        _motorPhi, _motorChi, _motorPST, _motorSST, _motorOMGM;
+  qreal motorXT_,  motorYT_,  motorZT_,  motorOmg_, motorTth_,
+        motorPhi_, motorChi_, motorPST_, motorSST_, motorOMGM_;
 
-  qreal _deltaMonitorCount, _deltaTime;
+  qreal deltaMonitorCount_, deltaTime_;
 
-  Image _image;
+  Image image_;
 };
 
 /// A group of Dataset(s)
@@ -88,7 +88,7 @@ public:
 private:
   void invalidateMutables();
   // computed on demand
-  mutable qreal _avgMonitorCount, _avgDeltaTime;
+  mutable qreal avgMonitorCount_, avgDeltaTime_;
 };
 
 //------------------------------------------------------------------------------

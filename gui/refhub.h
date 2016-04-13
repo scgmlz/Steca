@@ -29,7 +29,7 @@ class RefHub {
 public:
   RefHub(gui::TheHub&);
 protected:
-  gui::TheHub &_theHub;
+  gui::TheHub &theHub_;
 };
 
 //------------------------------------------------------------------------------

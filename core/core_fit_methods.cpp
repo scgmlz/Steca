@@ -34,15 +34,15 @@ bool FittingMethod::fitWithoutChecks(Function& function, rcCurve curve) {
 bool FittingMethod::fit(Function& function, rcCurve curve, bool withChecks) {
   if (curve.isEmpty()) return false;
 
-  _function = &function;
-  _xValues  = curve.xs().data();
+  function_ = &function;
+  xValues_  = curve.xs().data();
 
   // prepare data in a required format
-  uint parCount = _function->parameterCount();
+  uint parCount = function_->parameterCount();
   qreal_vec parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
 
   for_i (parCount) {
-    auto par = _function->parameterAt(i);
+    auto par = function_->parameterAt(i);
     auto rge = par.valueRange();
 
     parValue[i] = par.value();
@@ -57,7 +57,7 @@ bool FittingMethod::fit(Function& function, rcCurve curve, bool withChecks) {
 
   // read data
   for_i (parCount) {
-    if (!_function->parameterAt(i).setValue(parValue[i], parError[i], !withChecks))
+    if (!function_->parameterAt(i).setValue(parValue[i], parError[i], !withChecks))
       return false;
   }
 
@@ -66,7 +66,7 @@ bool FittingMethod::fit(Function& function, rcCurve curve, bool withChecks) {
 
 void FittingMethod::callbackY(qreal* parValues, qreal* yValues, int /*parCount*/, int xLength, void*) {
   for_i (xLength)
-    yValues[i] = _function->y(_xValues[i], parValues);
+    yValues[i] = function_->y(xValues_[i], parValues);
 }
 
 //------------------------------------------------------------------------------
@@ -154,7 +154,7 @@ bool FittingLevenbergMarquardt::approximate(
 void FittingLevenbergMarquardt::callbackJacobianLM(qreal* parValues, qreal* jacobian, int parameterLength, int xLength, void*) {
   for_int (ix,xLength) {
     for_i (parameterLength) {
-      *jacobian++ = _function->dy(_xValues[ix],i,parValues);
+      *jacobian++ = function_->dy(xValues_[ix],i,parValues);
     }
   }
 }

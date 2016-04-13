@@ -28,13 +28,13 @@ rcstr Reflection::typeTag(ePeakType type) {
   return typeStrLst()[(int)type];
 }
 
-Reflection::Reflection(ePeakType type): _peakFunction(nullptr) {
+Reflection::Reflection(ePeakType type): peakFunction_(nullptr) {
   setPeakFunction(type);
   setRange(Range());
 }
 
 ePeakType Reflection::type() const {
-  return _peakFunction->type();
+  return peakFunction_->type();
 }
 
 void Reflection::setType(ePeakType type) {
@@ -42,17 +42,17 @@ void Reflection::setType(ePeakType type) {
 }
 
 void Reflection::setRange(rcRange range) {
-  _range = range;
+  range_ = range;
 }
 
 fit::PeakFunction& Reflection::peakFunction() {
-  ASSERT(_peakFunction)
-  return *_peakFunction;
+  ASSERT(peakFunction_)
+  return *peakFunction_;
 }
 
 void Reflection::invalidateGuesses() {
-  _peakFunction->setGuessedPeak(XY());
-  _peakFunction->setGuessedFWHM(qQNaN());
+  peakFunction_->setGuessedPeak(XY());
+  peakFunction_->setGuessedFWHM(qQNaN());
 }
 
 void Reflection::setPeakFunction(ePeakType type) {
@@ -60,19 +60,19 @@ void Reflection::setPeakFunction(ePeakType type) {
 }
 
 void Reflection::setPeakFunction(fit::PeakFunction* f) {
-  _peakFunction.reset(f);
+  peakFunction_.reset(f);
 }
 
 static str const KEY_RANGE("range"), KEY_PEAK("peak");
 
 JsonObj Reflection::saveJson() const {
   return JsonObj()
-    .saveRange(KEY_RANGE, _range)
-    .saveObj(KEY_PEAK, _peakFunction->saveJson());
+    .saveRange(KEY_RANGE, range_)
+    .saveObj(KEY_PEAK, peakFunction_->saveJson());
 }
 
 void Reflection::loadJson(rcJsonObj obj) THROWS {
-  _range = obj.loadRange(KEY_RANGE);
+  range_ = obj.loadRange(KEY_RANGE);
 
   QScopedPointer<fit::Function> f(fit::Function::factory(obj.loadObj(KEY_PEAK)));
 

@@ -28,15 +28,15 @@ class File final {
 public:
   File(rcstr fileName);
 
-  QFileInfo const& fileInfo() const { return _fileInfo;              }
-  str fileName()              const { return _fileInfo.fileName();   }
+  QFileInfo const& fileInfo() const { return fileInfo_;              }
+  str fileName()              const { return fileInfo_.fileName();   }
 
-  Datasets&  datasets()             { return _datasets;              }
-  rcDatasets datasets()       const { return _datasets;              }
+  Datasets&  datasets()             { return datasets_;              }
+  rcDatasets datasets()       const { return datasets_;              }
 
 private:
-  QFileInfo _fileInfo;
-  Datasets  _datasets;
+  QFileInfo fileInfo_;
+  Datasets  datasets_;
 };
 
 //------------------------------------------------------------------------------

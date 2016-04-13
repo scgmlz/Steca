@@ -53,22 +53,26 @@ qreal deg2Rad(qreal deg);
 #include <QException>
 
 /// exception specification macro
+#ifdef Q_OS_WIN
+#define THROWS
+#else
 #define THROWS throw (Exception)
+#endif
 
 /// An exception that carries a message.
 class Exception: public QException {
 public:
-  Exception(rcstr msg)             throw(): _msg(msg)       {}
-  Exception(Exception const& that) throw(): _msg(that._msg) {}
+  Exception(rcstr msg)             throw(): msg_(msg)       {}
+  Exception(Exception const& that) throw(): msg_(that.msg_) {}
  ~Exception()                      throw()                  {}
 
-  rcstr msg() const { return _msg; }
+  rcstr msg() const { return msg_; }
 
   Exception *clone() const;
   void raise()       const;
 
 protected:
-  str _msg;
+  str msg_;
 };
 
 /// raise an exception

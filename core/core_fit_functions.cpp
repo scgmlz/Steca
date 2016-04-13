@@ -21,35 +21,35 @@ namespace core { namespace fit {
 //------------------------------------------------------------------------------
 
 Function::Parameter::Parameter()
-  : _value(0), _range(Range::infinite())
-  , _maxDelta(qQNaN()), _maxDeltaPercent(qQNaN())
-  , _maxError(qQNaN()), _maxErrorPercent(qQNaN()) {
+  : value_(0), range_(Range::infinite())
+  , maxDelta_(qQNaN()), maxDeltaPercent_(qQNaN())
+  , maxError_(qQNaN()), maxErrorPercent_(qQNaN()) {
 }
 
 Range Function::Parameter::valueRange() const {
-  return _range.isValid() ? _range : Range(_value);
+  return range_.isValid() ? range_ : Range(value_);
 }
 
 void Function::Parameter::setValueRange(qreal min, qreal max) {
-  _range.set(min,max);
+  range_.set(min,max);
 }
 
 bool Function::Parameter::checkConstraints(qreal value, qreal error) {
-  if (_range.isValid() && !_range.contains(value))
+  if (range_.isValid() && !range_.contains(value))
     return false;
 
-  if (!qIsNaN(_maxDelta) && qAbs(value - _value) > _maxDelta)
+  if (!qIsNaN(maxDelta_) && qAbs(value - value_) > maxDelta_)
     return false;
 
-  if (!qIsNaN(_maxDeltaPercent) &&
-      (0 == _value || qAbs((value - _value) / _value) * 100 > _maxDeltaPercent))
+  if (!qIsNaN(maxDeltaPercent_) &&
+      (0 == value_ || qAbs((value - value_) / value_) * 100 > maxDeltaPercent_))
     return false;
 
-  if (!qIsNaN(_maxError) && error > _maxError)
+  if (!qIsNaN(maxError_) && error > maxError_)
     return false;
 
-  if (!qIsNaN(_maxErrorPercent) &&
-      (0 == _value || qAbs(error / _value) * 100 > _maxErrorPercent))
+  if (!qIsNaN(maxErrorPercent_) &&
+      (0 == value_ || qAbs(error / value_) * 100 > maxErrorPercent_))
     return false;
 
   return true;
@@ -59,7 +59,7 @@ bool Function::Parameter::setValue(qreal value, qreal error, bool force) {
   if (!force && !checkConstraints(value,error))
     return false;
 
-  _value = value;
+  value_ = value;
   return true;
 }
 
@@ -70,32 +70,32 @@ static str const
 
 JsonObj Function::Parameter::saveJson() const {
   return JsonObj()
-    .saveReal(KEY_VALUE,  _value)
-    .saveRange(KEY_RANGE, _range)
+    .saveReal(KEY_VALUE,  value_)
+    .saveRange(KEY_RANGE, range_)
 
-    .saveReal(KEY_MAX_DELTA,         _maxDelta)
-    .saveReal(KEY_MAX_DELTA_PERCENT, _maxDeltaPercent)
-    .saveReal(KEY_MAX_ERROR,         _maxError)
-    .saveReal(KEY_MAX_ERROR_PERCENT, _maxErrorPercent);
+    .saveReal(KEY_MAX_DELTA,         maxDelta_)
+    .saveReal(KEY_MAX_DELTA_PERCENT, maxDeltaPercent_)
+    .saveReal(KEY_MAX_ERROR,         maxError_)
+    .saveReal(KEY_MAX_ERROR_PERCENT, maxErrorPercent_);
 }
 
 void Function::Parameter::loadJson(rcJsonObj obj) THROWS {
-  _value   = obj.loadReal(KEY_VALUE);
-  _range = obj.loadRange(KEY_RANGE);
+  value_   = obj.loadReal(KEY_VALUE);
+  range_ = obj.loadRange(KEY_RANGE);
 
-  _maxDelta        = obj.loadReal(KEY_MAX_DELTA);
-  _maxDeltaPercent = obj.loadReal(KEY_MAX_DELTA_PERCENT);
-  _maxError        = obj.loadReal(KEY_MAX_ERROR);
-  _maxErrorPercent = obj.loadReal(KEY_MAX_ERROR_PERCENT);
+  maxDelta_        = obj.loadReal(KEY_MAX_DELTA);
+  maxDeltaPercent_ = obj.loadReal(KEY_MAX_DELTA_PERCENT);
+  maxError_        = obj.loadReal(KEY_MAX_ERROR);
+  maxErrorPercent_ = obj.loadReal(KEY_MAX_ERROR_PERCENT);
 }
 
 //------------------------------------------------------------------------------
 
 static str const
-  KEY_FUNCTION_TYPE("type"),
+KEY_FUNCTION_TYPE("type"),
 
-  KEY_SUM_FUNCTIONS("sum"),
-  KEY_POLYNOMIAL("polynomial"),
+KEY_SUM_FUNCTIONS("sum"),
+KEY_POLYNOMIAL("polynomial"),
   KEY_GAUSSIAN("Gaussian"), KEY_LORENTZIAN("Lorentzian"),
   KEY_PSEUDOVOIGT1("PseudoVoigt1"), KEY_PSEUDOVOIGT2("PseudoVoigt2");
 
@@ -152,20 +152,20 @@ SimpleFunction::SimpleFunction() {
 
 void SimpleFunction::setParameterCount(uint count) {
   ASSERT(count > 0)
-  _parameters.fill(Parameter(),count);
+  parameters_.fill(Parameter(),count);
 }
 
 uint SimpleFunction::parameterCount() const {
-  return _parameters.count();
+  return parameters_.count();
 }
 
 Function::Parameter& SimpleFunction::parameterAt(uint i) {
-  return _parameters[i];
+  return parameters_[i];
 }
 
 void SimpleFunction::reset() {
-  for_i (_parameters.count()) {
-    auto &p = _parameters[i];
+  for_i (parameters_.count()) {
+    auto &p = parameters_[i];
     p.setValue(p.valueRange().bound(0));
   }
 }
@@ -175,7 +175,7 @@ static str const KEY_PARAMS("parameters");
 JsonObj SimpleFunction::saveJson() const {
   JsonArr params;
 
-  for (auto &param: _parameters)
+  for (auto &param: parameters_)
     params.append(param.saveJson());
 
   return super::saveJson() + JsonObj().saveArr(KEY_PARAMS,params);
@@ -190,15 +190,15 @@ void SimpleFunction::loadJson(rcJsonObj obj) THROWS {
   setParameterCount(parCount);
 
   for_i (parCount)
-    _parameters[i].loadJson(params.objAt(i));
+    parameters_[i].loadJson(params.objAt(i));
 }
 
 qreal SimpleFunction::parValue(uint i, qreal const* parValues) const {
-  return parValues ? parValues[i] : _parameters[i].value();
+  return parValues ? parValues[i] : parameters_[i].value();
 }
 
 void SimpleFunction::setValue(uint i, qreal val) {
-  _parameters[i].setValue(val);
+  parameters_[i].setValue(val);
 }
 
 //------------------------------------------------------------------------------
@@ -208,36 +208,36 @@ SumFunctions::SumFunctions() {
 
 SumFunctions::~SumFunctions() {
   // dispose of the Functions that were added
-  for (Function *f: _functions) delete f;
+  for (Function *f: functions_) delete f;
 }
 
 void SumFunctions::addFunction(Function* function) {
   ASSERT(function)
 
   uint parIndex = parameterCount();
-  _functions.append(function);
+  functions_.append(function);
 
   for_i (function->parameterCount()) {
     // aggregate parameter list
-    _allParameters.append(&function->parameterAt(i));
+    allParameters_.append(&function->parameterAt(i));
     // lookup helpers
-    _function4parIndex.append(function);
-    _firstParIndex4parIndex.append(parIndex);
+    function4parIndex_.append(function);
+    firstParIndex4parIndex_.append(parIndex);
   }
 }
 
 uint SumFunctions::parameterCount() const {
-  return _allParameters.count();
+  return allParameters_.count();
 }
 
 Function::Parameter& SumFunctions::parameterAt(uint i) {
-  return *_allParameters.at(i);
+  return *allParameters_.at(i);
 }
 
 qreal SumFunctions::y(qreal x, qreal const* parValues) const {
   qreal sum = 0;
 
-  for (Function *f: _functions) {
+  for (Function *f: functions_) {
     sum += f->y(x,parValues);
 
     if (parValues)
@@ -248,10 +248,10 @@ qreal SumFunctions::y(qreal x, qreal const* parValues) const {
 }
 
 qreal SumFunctions::dy(qreal x, uint parIndex, qreal const* parValues) const {
-  Function *f = _function4parIndex.at(parIndex); // aggregate parIndex refers to function f
+  Function *f = function4parIndex_.at(parIndex); // aggregate parIndex refers to function f
 
   // offset parameter index
-  uint firstIndex = _firstParIndex4parIndex[parIndex];
+  uint firstIndex = firstParIndex4parIndex_[parIndex];
   if (parValues) parValues += firstIndex;
 
   ASSERT(firstIndex <= parIndex)
@@ -267,17 +267,17 @@ JsonObj SumFunctions::saveJson() const {
   JsonObj obj;
   obj.saveString(KEY_FUNCTION_TYPE, KEY_SUM_FUNCTIONS);
 
-  uint funCount = _functions.count();
+  uint funCount = functions_.count();
   obj.saveUint(KEY_FUNCTION_COUNT,funCount);
 
   for_i (funCount)
-    obj.saveObj(KEY_FUNCTION.arg(i+1), _functions[i]->saveJson());
+    obj.saveObj(KEY_FUNCTION.arg(i+1), functions_[i]->saveJson());
 
   return super::saveJson() + obj;
 }
 
 void SumFunctions::loadJson(rcJsonObj obj) THROWS {
-  RUNTIME_CHECK(_functions.isEmpty(), "non-empty sum of functions; cannot load twice");
+  RUNTIME_CHECK(functions_.isEmpty(), "non-empty sum of functions; cannot load twice");
 
   super::loadJson(obj);
 
@@ -316,7 +316,7 @@ static qreal pow_n(qreal x, uint n) {
 
 qreal Polynomial::y(qreal x, qreal const* parValues) const {
   qreal val = 0, xPow = 1;
-  for_i (_parameters.count()) {
+  for_i (parameters_.count()) {
     val += parValue(i,parValues) * xPow;
     xPow *= x;
   }
@@ -336,7 +336,7 @@ qreal Polynomial::avgY(rcRange rgeX, qreal const* parValues) const {
 
   qreal minY = 0, maxY = 0, minPow = 1, maxPow = 1;
 
-  for_i (_parameters.count()) {
+  for_i (parameters_.count()) {
     qreal facY = parValue(i,parValues) / (i+1);
     minY += facY * (minPow *= rgeX.min);
     maxY += facY * (maxPow *= rgeX.max);
@@ -375,35 +375,35 @@ PeakFunction* PeakFunction::clone() const {
   return f;
 }
 
-PeakFunction::PeakFunction(): _guessedPeak(), _guessedFWHM(qQNaN()) {
+PeakFunction::PeakFunction(): guessedPeak_(), guessedFWHM_(qQNaN()) {
 }
 
 void PeakFunction::setGuessedPeak(rcXY peak) {
-  _guessedPeak = peak;
+  guessedPeak_ = peak;
 }
 
 void PeakFunction::setGuessedFWHM(qreal fwhm) {
-  _guessedFWHM = fwhm;
+  guessedFWHM_ = fwhm;
 }
 
 void PeakFunction::reset() {
   super::reset();
-  setGuessedPeak(_guessedPeak);
-  setGuessedFWHM(_guessedFWHM);
+  setGuessedPeak(guessedPeak_);
+  setGuessedFWHM(guessedFWHM_);
 }
 
 static str const KEY_GUESSED_PEAK("guessed peak"), KEY_GUESSED_FWHM("guessed fwhm");
 
 JsonObj PeakFunction::saveJson() const {
   return super::saveJson()
-      .saveObj(KEY_GUESSED_PEAK,_guessedPeak.saveJson())
-      .saveReal(KEY_GUESSED_FWHM,_guessedFWHM);
+      .saveObj(KEY_GUESSED_PEAK,guessedPeak_.saveJson())
+      .saveReal(KEY_GUESSED_FWHM,guessedFWHM_);
 }
 
 void PeakFunction::loadJson(rcJsonObj obj) THROWS {
   super::loadJson(obj);
-  _guessedPeak.loadJson(obj.loadObj(KEY_GUESSED_PEAK));
-  _guessedFWHM = obj.loadReal(KEY_GUESSED_FWHM);
+  guessedPeak_.loadJson(obj.loadObj(KEY_GUESSED_PEAK));
+  guessedFWHM_ = obj.loadReal(KEY_GUESSED_FWHM);
 }
 
 //------------------------------------------------------------------------------
@@ -411,9 +411,9 @@ void PeakFunction::loadJson(rcJsonObj obj) THROWS {
 Gaussian::Gaussian(qreal ampl, qreal xShift, qreal sigma) {
   setParameterCount(3);
 
-  auto &parAmpl   = _parameters[parAMPL];
-  auto &parXShift = _parameters[parXSHIFT];
-  auto &parSigma  = _parameters[parSIGMA];
+  auto &parAmpl   = parameters_[parAMPL];
+  auto &parXShift = parameters_[parXSHIFT];
+  auto &parSigma  = parameters_[parSIGMA];
 
   parAmpl.setValueRange(0,qInf());
   parAmpl.setValue(ampl);
@@ -468,11 +468,11 @@ void Gaussian::setGuessedFWHM(qreal val) {
 }
 
 XY Gaussian::fittedPeak() const {
-  return XY(_parameters[parXSHIFT].value(), _parameters[parAMPL].value());
+  return XY(parameters_[parXSHIFT].value(), parameters_[parAMPL].value());
 }
 
 qreal Gaussian::fittedFWHM() const {
-  return _parameters[parSIGMA].value() / 0.424661;
+  return parameters_[parSIGMA].value() / 0.424661;
 }
 
 JsonObj Gaussian::saveJson() const {
@@ -485,9 +485,9 @@ JsonObj Gaussian::saveJson() const {
 CauchyLorentz::CauchyLorentz(qreal ampl, qreal xShift, qreal gamma) {
   setParameterCount(3);
 
-  auto &parAmpl   = _parameters[parAMPL];
-  auto &parXShift = _parameters[parXSHIFT];
-  auto &parGamma  = _parameters[parGAMMA];
+  auto &parAmpl   = parameters_[parAMPL];
+  auto &parXShift = parameters_[parXSHIFT];
+  auto &parGamma  = parameters_[parGAMMA];
 
   parAmpl.setValueRange(0,qInf());
   parAmpl.setValue(ampl);
@@ -541,11 +541,11 @@ void CauchyLorentz::setGuessedFWHM(qreal val) {
 }
 
 XY CauchyLorentz::fittedPeak() const {
-  return XY(_parameters[parXSHIFT].value(),_parameters[parAMPL].value());
+  return XY(parameters_[parXSHIFT].value(),parameters_[parAMPL].value());
 }
 
 qreal CauchyLorentz::fittedFWHM() const {
-  return _parameters[parGAMMA].value() * 2;
+  return parameters_[parGAMMA].value() * 2;
 }
 
 JsonObj CauchyLorentz::saveJson() const {
@@ -558,10 +558,10 @@ JsonObj CauchyLorentz::saveJson() const {
 PseudoVoigt1::PseudoVoigt1(qreal ampl, qreal xShift, qreal sigmaGamma, qreal eta) {
   setParameterCount(4);
 
-  auto &parAmpl       = _parameters[parAMPL];
-  auto &parXShift     = _parameters[parXSHIFT];
-  auto &parSigmaGamma = _parameters[parSIGMAGAMMA];
-  auto &parEta        = _parameters[parETA];
+  auto &parAmpl       = parameters_[parAMPL];
+  auto &parXShift     = parameters_[parXSHIFT];
+  auto &parSigmaGamma = parameters_[parSIGMAGAMMA];
+  auto &parEta        = parameters_[parETA];
 
   parAmpl.setValueRange(0,qInf());
   parAmpl.setValue(ampl);
@@ -628,11 +628,11 @@ void PseudoVoigt1::setGuessedFWHM(qreal val) {
 }
 
 XY PseudoVoigt1::fittedPeak() const {
-  return XY(_parameters[parXSHIFT].value(), _parameters[parAMPL].value());
+  return XY(parameters_[parXSHIFT].value(), parameters_[parAMPL].value());
 }
 
 qreal PseudoVoigt1::fittedFWHM() const {
-  return _parameters[parSIGMAGAMMA].value() * 2;
+  return parameters_[parSIGMAGAMMA].value() * 2;
 }
 
 JsonObj PseudoVoigt1::saveJson() const {
@@ -645,11 +645,11 @@ JsonObj PseudoVoigt1::saveJson() const {
 PseudoVoigt2::PseudoVoigt2(qreal ampl, qreal mu, qreal hwhmG, qreal hwhmL, qreal eta) {
   setParameterCount(5);
 
-  auto &parAmpl  = _parameters[parAMPL];
-  auto &parMu    = _parameters[parXSHIFT];
-  auto &parHwhmG = _parameters[parSIGMA];
-  auto &parHwhmL = _parameters[parGAMMA];
-  auto &parEta   = _parameters[parETA];
+  auto &parAmpl  = parameters_[parAMPL];
+  auto &parMu    = parameters_[parXSHIFT];
+  auto &parHwhmG = parameters_[parSIGMA];
+  auto &parHwhmL = parameters_[parGAMMA];
+  auto &parEta   = parameters_[parETA];
 
   parAmpl.setValueRange(0,qInf());
   parAmpl.setValue(ampl);
@@ -729,14 +729,14 @@ void PseudoVoigt2::setGuessedFWHM(qreal val) {
 }
 
 XY PseudoVoigt2::fittedPeak() const {
-  return XY(_parameters[parXSHIFT].value(), _parameters[parAMPL].value());
+  return XY(parameters_[parXSHIFT].value(), parameters_[parAMPL].value());
 }
 
 qreal PseudoVoigt2::fittedFWHM() const {
-  qreal eta = _parameters[parETA].value();
+  qreal eta = parameters_[parETA].value();
   return
-    ((1-eta) * _parameters[parSIGMA].value() / 0.424661
-     + eta * _parameters[parGAMMA].value() * 2)
+    ((1-eta) * parameters_[parSIGMA].value() / 0.424661
+     + eta * parameters_[parGAMMA].value() * 2)
     / 2;
 }
 

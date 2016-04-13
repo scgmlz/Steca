@@ -158,22 +158,22 @@ Polefigure::Polefigure(rcSession session,
                        qreal const betaStep,
                        rcRange rgeTth,
                        Range gammaRange)
-: _alphaStep(alphaStep)
-, _betaStep(betaStep)
-, _FWHMs()
-, _peakPositions()
-, _reflectionInfos(NUM_BETAS)
-, _reflection(reflection)
+: alphaStep_(alphaStep)
+, betaStep_(betaStep)
+, FWHMs_()
+, peakPositions_()
+, reflectionInfos_(NUM_BETAS)
+, reflection_(reflection)
 {
   // Fill the reflection info lists.
   for (auto const& dataset: datasets) {
     auto lenses = session.lens(true, true, session.norm(), *dataset);
     if (!gammaRange.isValid()) {
-      const auto& reflectionRange = _reflection.range();
+      const auto& reflectionRange = reflection_.range();
       gammaRange = gammaRangeAt(lenses, reflectionRange.center());
     }
 
-    const auto numGammaRows = qCeil(gammaRange.width() / _betaStep);
+    const auto numGammaRows = qCeil(gammaRange.width() / betaStep_);
     const auto gammaStep = gammaRange.width() / numGammaRows;
 
     for (int j = 0; j < numGammaRows; ++j) {
@@ -182,11 +182,11 @@ Polefigure::Polefigure(rcSession session,
       gammaStripe.max = gammaStripe.min + gammaStep;
       const auto info = ReflectionInfo::make(session,
                                              datasets, *dataset,
-                                                    _reflection,
+                                                    reflection_,
                                                     rgeTth,
                                                     gammaStripe);
       uint iBeta = qFloor(rad2Deg(info.beta()) / NUM_BETAS);
-      _reflectionInfos[iBeta].push_back(info);
+      reflectionInfos_[iBeta].push_back(info);
     }
   }
 }
@@ -195,13 +195,13 @@ void Polefigure::generate(qreal centerRadius,
                           qreal centerSearchRadius,
                           qreal intensityTreshold,
                           qreal searchRadius) {
-  _FWHMs.clear();
-  _peakPositions.clear();
+  FWHMs_.clear();
+  peakPositions_.clear();
 
-  for (int i = 0; i < qCeil(M_PI / 2 / _alphaStep); ++i) {
-    const auto alpha = i * _alphaStep;
-    for (int j = 0; j < qCeil(2 * M_PI / _betaStep); ++j) {
-      const auto beta = j * _betaStep;
+  for (int i = 0; i < qCeil(M_PI / 2 / alphaStep_); ++i) {
+    const auto alpha = i * alphaStep_;
+    for (int j = 0; j < qCeil(2 * M_PI / betaStep_); ++j) {
+      const auto beta = j * betaStep_;
       if (alpha <= centerRadius) {
         QList<qreal> tempPeakOffsets;
         QList<qreal> tempPeakHeights;
@@ -241,14 +241,14 @@ void Polefigure::generate(qreal centerRadius,
           peakOffset /= tempPeakOffsets.size() - kTreshold;
           peakHeight /= tempPeakHeights.size() - kTreshold;
           peakFWHM /= tempPeakFWHMs.size() - kTreshold;
-          _FWHMs.push_back(peakFWHM);
-          _peakPositions.push_back(XY(peakOffset, peakHeight));
+          FWHMs_.push_back(peakFWHM);
+          peakPositions_.push_back(XY(peakOffset, peakHeight));
 
           continue;
         }
         if (!qIsNaN(searchRadius)) {
-          _FWHMs.push_back(-1);
-          _peakPositions.push_back(XY(-1, -1));
+          FWHMs_.push_back(-1);
+          peakPositions_.push_back(XY(-1, -1));
 
           continue;
         }
@@ -265,8 +265,8 @@ void Polefigure::generate(qreal centerRadius,
                                  peakOffset,
                                  peakHeight,
                                  peakFWHM);
-      _peakPositions.push_back(XY(peakOffset, peakHeight));
-      _FWHMs.push_back(peakFWHM);
+      peakPositions_.push_back(XY(peakOffset, peakHeight));
+      FWHMs_.push_back(peakFWHM);
     }
   }
 }
@@ -278,15 +278,15 @@ void Polefigure::searchPoints(qreal const alpha,
                               QList<qreal> &peakHeights,
                               QList<qreal> &FWHMs) const {
   for (int i = 0; i < 10; i++) { // Why 10 and not NUM_BETAS? Noone knows.
-    for (int j=0; j < _reflectionInfos[i].count(); j++) {
-      if (inRadius(_reflectionInfos[i][j].alpha(),
-                   _reflectionInfos[i][j].beta(),
+    for (int j=0; j < reflectionInfos_[i].count(); j++) {
+      if (inRadius(reflectionInfos_[i][j].alpha(),
+                   reflectionInfos_[i][j].beta(),
                    alpha,
                    beta,
                    radius)) {
-        peakOffsets.push_back(_reflectionInfos[i][j].peakPosition().x);
-        peakHeights.push_back(_reflectionInfos[i][j].peakPosition().y);
-        FWHMs.push_back(_reflectionInfos[i][j].peakFWHM());
+        peakOffsets.push_back(reflectionInfos_[i][j].peakPosition().x);
+        peakHeights.push_back(reflectionInfos_[i][j].peakPosition().y);
+        FWHMs.push_back(reflectionInfos_[i][j].peakFWHM());
       }
     }
   }
@@ -309,12 +309,12 @@ void Polefigure::searchPointsInAllQuadrants(qreal const alpha,
     else if (i < 0) j = i + 10;
     else j = i;
 
-    for (int k = 0; k < _reflectionInfos[j].count(); ++k) {
-      const auto deltaAlpha = _reflectionInfos[j][k].alpha() - alpha;
+    for (int k = 0; k < reflectionInfos_[j].count(); ++k) {
+      const auto deltaAlpha = reflectionInfos_[j][k].alpha() - alpha;
       const auto deltaBeta
-        = calculateDeltaBeta(_reflectionInfos[j][k].beta(), beta);
+        = calculateDeltaBeta(reflectionInfos_[j][k].beta(), beta);
       const auto deltaZ
-        = angle(alpha, _reflectionInfos[j][k].alpha(), deltaBeta);
+        = angle(alpha, reflectionInfos_[j][k].alpha(), deltaBeta);
       QVector<qreal> tempDeltaZs(Quadrant::MAX_QUADRANTS);
       QVector<qreal> tempPeakOffsets(Quadrant::MAX_QUADRANTS);
       QVector<qreal> tempPeakHeights(Quadrant::MAX_QUADRANTS);
@@ -324,7 +324,7 @@ void Polefigure::searchPointsInAllQuadrants(qreal const alpha,
         if (!searchPointsInQuadrant(iQ,
                                     deltaAlpha,
                                     deltaBeta,
-                                    _reflectionInfos[j][k],
+                                    reflectionInfos_[j][k],
                                     tempPeakOffsets[iQ],
                                     tempPeakHeights[iQ],
                                     tempPeakFWHMs[iQ])) {
@@ -334,15 +334,15 @@ void Polefigure::searchPointsInAllQuadrants(qreal const alpha,
           qreal const newAlpha = M_PI - alpha;
           qreal const newBeta = beta < M_PI ? beta + M_PI : beta - M_PI;
           const auto newDeltaAlpha
-            = _reflectionInfos[j][k].alpha() - newAlpha;
+            = reflectionInfos_[j][k].alpha() - newAlpha;
           const auto newDeltaBeta
-            = calculateDeltaBeta(_reflectionInfos[j][k].beta(), newBeta);
+            = calculateDeltaBeta(reflectionInfos_[j][k].beta(), newBeta);
           tempDeltaZs[iQ]
-            = angle(newAlpha, _reflectionInfos[j][k].alpha(), newDeltaBeta);
+            = angle(newAlpha, reflectionInfos_[j][k].alpha(), newDeltaBeta);
           searchPointsInQuadrant(newQ,
                                  newDeltaAlpha,
                                  newDeltaBeta,
-                                 _reflectionInfos[j][k],
+                                 reflectionInfos_[j][k],
                                  tempPeakOffsets[iQ],
                                  tempPeakHeights[iQ],
                                  tempPeakFWHMs[iQ]);

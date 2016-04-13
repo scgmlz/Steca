@@ -17,11 +17,11 @@ ReflectionInfo::ReflectionInfo(qreal const alpha,
                                rcRange gammaRange,
                                rcXY  peakPosition,
                                qreal const peakFWHM)
-:  _alpha(alpha)
-  ,_beta(beta)
-  ,_gammaRange(gammaRange)
-  ,_peakPosition(peakPosition)
-  ,_peakFWHM(peakFWHM)
+:  alpha_(alpha)
+  ,beta_(beta)
+  ,gammaRange_(gammaRange)
+  ,peakPosition_(peakPosition)
+  ,peakFWHM_(peakFWHM)
 {
 }
 

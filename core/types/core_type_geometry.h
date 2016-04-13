@@ -64,17 +64,17 @@ class AngleMap {
 public:
   AngleMap();
 
-  Angles const& at(uint i, uint j) const { return _arrAngles.at(i,j); }
+  Angles const& at(uint i, uint j) const { return arrAngles_.at(i,j); }
 
-  rcRange rgeGamma() const { return _rgeGamma; }
-  rcRange rgeTth()   const { return _rgeTth;   }
+  rcRange rgeGamma() const { return rgeGamma_; }
+  rcRange rgeTth()   const { return rgeTth_;   }
 
   void calculate(qreal midTth, Geometry const&,
                  QSize const&, ImageCut const& cut, rcIJ midPix);
 
 private:
-  Array2D<Angles> _arrAngles;
-  Range _rgeGamma, _rgeTth;
+  Array2D<Angles> arrAngles_;
+  Range rgeGamma_, rgeTth_;
 };
 
 //------------------------------------------------------------------------------

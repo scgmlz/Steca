@@ -152,7 +152,7 @@ BoxWidget::BoxWidget(Qt::Orientation orientation) {
 DockWidget::DockWidget(rcstr name,rcstr objectName,Qt::Orientation orientation) {
   setFeatures(NoDockWidgetFeatures);
   setWidget(new QWidget);
-  widget()->setLayout((_box = boxLayout(orientation)));
+  widget()->setLayout((box_ = boxLayout(orientation)));
 
   setWindowTitle(name);
   setObjectName(objectName);

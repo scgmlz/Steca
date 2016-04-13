@@ -51,12 +51,12 @@ public:
   Fitting(TheHub&);
 
 private:
-  QSpinBox  *_spinDegree;
-  QComboBox *_comboReflType;
-  ReflectionView *_reflectionView;
-  QDoubleSpinBox *_spinRangeMin, *_spinRangeMax;
-  QDoubleSpinBox *_spinGuessPeakX, *_spinGuessPeakY, *_spinGuessFWHM;
-  QLineEdit      *_readFitPeakX,   *_readFitPeakY,   *_readFitFWHM;
+  QSpinBox  *spinDegree_;
+  QComboBox *comboReflType_;
+  ReflectionView *reflectionView_;
+  QDoubleSpinBox *spinRangeMin_, *spinRangeMax_;
+  QDoubleSpinBox *spinGuessPeakX_, *spinGuessPeakY_, *spinGuessFWHM_;
+  QLineEdit      *readFitPeakX_,   *readFitPeakY_,   *readFitFWHM_;
   bool _silentSpin;
 
   void setReflControls(core::shp_Reflection const&);

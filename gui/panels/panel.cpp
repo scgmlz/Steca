@@ -49,14 +49,14 @@ void BasicPanel::setStretch(int horizontal, int vertical) {
 
 BoxPanel::BoxPanel(rcstr title, TheHub& theHub, Qt::Orientation orientation)
 : super(title,theHub) {
-  setLayout((_box = boxLayout(orientation)));
+  setLayout((box_ = boxLayout(orientation)));
 }
 
 //------------------------------------------------------------------------------
 
 GridPanel::GridPanel(rcstr title, TheHub& theHub)
 : super(title,theHub) {
-  setLayout((_grid = gridLayout()));
+  setLayout((grid_ = gridLayout()));
 }
 
 //------------------------------------------------------------------------------

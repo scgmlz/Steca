@@ -66,12 +66,12 @@ class Ranges {
 public:
   Ranges();
 
-  void clear()             { _ranges.clear();           }
+  void clear()             { ranges_.clear();           }
 
-  bool isEmpty()     const { return _ranges.isEmpty();  }
-  uint count()       const { return _ranges.count();    }
+  bool isEmpty()     const { return ranges_.isEmpty();  }
+  uint count()       const { return ranges_.count();    }
 
-  rcRange at(uint i) const { return _ranges.at(i);      }
+  rcRange at(uint i) const { return ranges_.at(i);      }
 
   /// collapses overlapping ranges into one; returns whether there was a change
   bool add(rcRange);
@@ -80,7 +80,7 @@ public:
 
 private:
   void sort();
-  QVector<Range> _ranges;
+  QVector<Range> ranges_;
 
 public:
   JsonArr saveJson() const;

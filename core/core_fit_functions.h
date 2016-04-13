@@ -29,7 +29,7 @@ public:
   public:
     Parameter();
 
-    qreal value()  const { return _value; }
+    qreal value()  const { return value_; }
 
     Range valueRange() const; ///< allowed range of values
     void  setValueRange(qreal min,qreal max);
@@ -43,22 +43,25 @@ public:
     JsonObj saveJson() const;
     void    loadJson(rcJsonObj) THROWS;
 
+    qreal maxErrorPercent() const;
+    void setMaxErrorPercent(const qreal &maxErrorPercent);
+    
   private:
-    qreal _value;
-
+    qreal value_;
+    
     // constraints; TODO maybe not all needed?
-
+    
     /// allowed range of values
     /// if !isValid() -> means the same as <value,value>, i.e. fixed value
-    Range _range;
+    Range range_;
 
     /// maximum change allowed; NaN -> no check
-    qreal _maxDelta;
-    qreal _maxDeltaPercent;  // REVIEW - needed?
+    qreal maxDelta_;
+    qreal maxDeltaPercent_;  // REVIEW - needed?
 
     /// maximum error allowed; NaN -> no check
-    qreal _maxError;
-    qreal _maxErrorPercent;  // REVIEW - needed?
+    qreal maxError_;
+    qreal maxErrorPercent_;  // REVIEW - needed?
   };
 
 public:
@@ -110,7 +113,7 @@ public:
   void    loadJson(rcJsonObj) THROWS;
 
 protected:
-  QVector<Parameter> _parameters;
+  QVector<Parameter> parameters_;
   qreal parValue(uint parIndex, qreal const* parValues) const;
   void  setValue(uint parIndex, qreal val);
 };
@@ -140,13 +143,13 @@ public:
 
 protected:
   /// summed functions
-  QVector<Function*>  _functions;
+  QVector<Function*>  functions_;
   /// the aggregate parameter list
-  QVector<Parameter*> _allParameters;
+  QVector<Parameter*> allParameters_;
   /// look up the original function for a given aggregate parameter index
-  QVector<Function*>  _function4parIndex;
+  QVector<Function*>  function4parIndex_;
   /// the starting index of parameters of a summed function, given the aggregate parameter index
-  QVector<uint>       _firstParIndex4parIndex;
+  QVector<uint>       firstParIndex4parIndex_;
 };
 
 //------------------------------------------------------------------------------
@@ -186,8 +189,8 @@ public:
   virtual void setGuessedPeak(rcXY);
   virtual void setGuessedFWHM(qreal);
 
-  rcXY  guessedPeak() const { return _guessedPeak; }
-  qreal guessedFWHM() const { return _guessedFWHM; }
+  rcXY  guessedPeak() const { return guessedPeak_; }
+  qreal guessedFWHM() const { return guessedFWHM_; }
 
   virtual XY    fittedPeak() const = 0;
   virtual qreal fittedFWHM() const = 0;
@@ -199,7 +202,7 @@ public:
   void    loadJson(rcJsonObj) THROWS;
 
 private:
-  XY _guessedPeak; qreal _guessedFWHM;
+  XY guessedPeak_; qreal guessedFWHM_;
 };
 
 //------------------------------------------------------------------------------

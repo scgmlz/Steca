@@ -25,29 +25,29 @@ Curve::Curve() {
 }
 
 void Curve::clear() {
-  _xs.clear(); _ys.clear();
-  _rgeX.invalidate();
-  _rgeY.invalidate();
+  xs_.clear(); ys_.clear();
+  rgeX_.invalidate();
+  rgeY_.invalidate();
 }
 
 bool Curve::isEmpty() const {
-  return _xs.isEmpty();
+  return xs_.isEmpty();
 }
 
 uint Curve::count() const {
-  ASSERT(_xs.count() == _ys.count())
-  return _xs.count();
+  ASSERT(xs_.count() == ys_.count())
+  return xs_.count();
 }
 
 bool Curve::isOrdered() const {
-  return std::is_sorted(_xs.cbegin(), _xs.cend());
+  return std::is_sorted(xs_.cbegin(), xs_.cend());
 }
 
 void Curve::append(qreal x, qreal y) {
-  _xs.append(x);
-  _ys.append(y);
-  _rgeX.extendBy(x);
-  _rgeY.extendBy(y);
+  xs_.append(x);
+  ys_.append(y);
+  rgeX_.extendBy(x);
+  rgeY_.extendBy(y);
 }
 
 Curve Curve::intersect(rcRange range) const {
@@ -57,10 +57,10 @@ Curve Curve::intersect(rcRange range) const {
 
   uint xi = 0, cnt = count();
   auto minX = range.min, maxX = range.max;
-  while (xi<cnt && _xs[xi] < minX)
+  while (xi<cnt && xs_[xi] < minX)
     ++xi;
-  while (xi<cnt && _xs[xi] <= maxX) {
-    res.append(_xs[xi],_ys[xi]);
+  while (xi<cnt && xs_[xi] <= maxX) {
+    res.append(xs_[xi],ys_[xi]);
     ++xi;
   }
 
@@ -78,10 +78,10 @@ Curve Curve::intersect(rcRanges ranges) const {
   for_i (ranges.count()) {
     rcRange range = ranges.at(i);
     auto minX = range.min, maxX = range.max;
-    while (xi<cnt && _xs[xi] < minX)
+    while (xi<cnt && xs_[xi] < minX)
       ++xi;
-    while (xi<cnt && _xs[xi] <= maxX) {
-      res.append(_xs[xi],_ys[xi]);
+    while (xi<cnt && xs_[xi] <= maxX) {
+      res.append(xs_[xi],ys_[xi]);
       ++xi;
     }
   }
@@ -92,8 +92,8 @@ Curve Curve::intersect(rcRanges ranges) const {
 Curve Curve::subtract(fit::Function const& f) const {
   Curve res;
 
-  for_i (_xs.count())
-    res.append(_xs[i], _ys[i] - f.y(_xs[i]));
+  for_i (xs_.count())
+    res.append(xs_[i], ys_[i] - f.y(xs_[i]));
 
   return res;
 }
@@ -102,7 +102,7 @@ Curve Curve::smooth3() const {
   Curve res;
 
   for_i (count()-2)
-    res.append(_xs[i+1], (_ys[i] + _ys[i+1] + _ys[i+2]) / 3.);
+    res.append(xs_[i+1], (ys_[i] + ys_[i+1] + ys_[i+2]) / 3.);
 
   return res;
 }
@@ -110,10 +110,10 @@ Curve Curve::smooth3() const {
 uint Curve::maxYindex() const {
   if (isEmpty()) return 0;
 
-  auto yMax = _ys[0]; uint index = 0;
+  auto yMax = ys_[0]; uint index = 0;
 
   for_i (count()) {
-    auto y = _ys[i];
+    auto y = ys_[i];
     if (y > yMax) {
       yMax = y; index = i;
     }

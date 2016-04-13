@@ -34,7 +34,7 @@ protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);
 
 private:
-  Model &_model;
+  Model &model_;
 };
 
 //------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ class DockDatasets: public DockWidget {
 public:
   DockDatasets(TheHub&);
 private:
-  DatasetView *_datasetView;
+  DatasetView *datasetView_;
 };
 
 //------------------------------------------------------------------------------
@@ -58,11 +58,11 @@ private:
   class Info: public QWidget {
   public:
     Info(models::checkedinfo_vec&);
-    QGridLayout *_grid;
+    QGridLayout *grid_;
   };
 
-  Info *_info;
-  models::checkedinfo_vec _metaInfo;
+  Info *info_;
+  models::checkedinfo_vec metaInfo_;
 };
 
 //------------------------------------------------------------------------------
@@ -81,10 +81,10 @@ public:
   QSize sizeHint() const;
 
 protected:
-  Dataset &_dataset;
-  bool _showOverlay;
-  QPixmap _original, _scaled;
-  uint _scale;
+  Dataset &dataset_;
+  bool showOverlay_;
+  QPixmap original_, scaled_;
+  uint scale_;
 
   void paintEvent(QPaintEvent*);
 };
@@ -98,9 +98,9 @@ public:
   DatasetOptions1(TheHub&);
 
 private:
-  QSpinBox       *_spinOffsetI, *_spinOffsetJ;
-  QDoubleSpinBox *_spinDistance, *_spinPixelSize;
-  QComboBox      *_comboNormType;
+  QSpinBox       *spinOffsetI_, *spinOffsetJ_;
+  QDoubleSpinBox *spinDistance_, *spinPixelSize_;
+  QComboBox      *comboNormType_;
 
   // REVIEW
   void setTo(TheHub&);
@@ -117,8 +117,8 @@ signals:
   void imageScale(uint);
 
 private:
-  QSpinBox  *_marginLeft, *_marginTop, *_marginRight, *_marginBottom;
-  QSpinBox  *_spinImageScale;
+  QSpinBox  *marginLeft_, *marginTop_, *marginRight_, *marginBottom_;
+  QSpinBox  *spinImageScale_;
 
   void setFrom(TheHub&);
 };
@@ -137,9 +137,9 @@ private:
   void setDataset(core::shp_Dataset);
   void renderDataset();
 
-  core::shp_Dataset     _dataset;
+  core::shp_Dataset     dataset_;
 
-  ImageWidget *_imageWidget;
+  ImageWidget *imageWidget_;
 };
 
 //------------------------------------------------------------------------------

@@ -53,65 +53,65 @@ Dataset::Dataset(
   qreal deltaMonitorCount, qreal deltaTime,
   QSize const& size, inten_t const* intens)
 
-: _datasets(nullptr), _date(date), _comment(comment)
-, _motorXT(motorXT), _motorYT(motorYT), _motorZT(motorZT)
-, _motorOmg(motorOmg), _motorTth(motorTth), _motorPhi(motorPhi), _motorChi(motorChi)
-, _motorPST(motorPST), _motorSST(motorSST), _motorOMGM(motorOMGM)
-, _deltaMonitorCount(deltaMonitorCount), _deltaTime(deltaTime)
-, _image(size,intens) {
+: datasets_(nullptr), date_(date), comment_(comment)
+, motorXT_(motorXT), motorYT_(motorYT), motorZT_(motorZT)
+, motorOmg_(motorOmg), motorTth_(motorTth), motorPhi_(motorPhi), motorChi_(motorChi)
+, motorPST_(motorPST), motorSST_(motorSST), motorOMGM_(motorOMGM)
+, deltaMonitorCount_(deltaMonitorCount), deltaTime_(deltaTime)
+, image_(size,intens) {
 }
 
 Datasets const& Dataset::datasets() const {
-  ASSERT(_datasets)
-  return *_datasets;
+  ASSERT(datasets_)
+  return *datasets_;
 }
 
 str Dataset::attributeStrValue(uint i) const {
   qreal value = 0;
 
   switch (i) {
-  case attrDATE:        return _date;
-  case attrCOMMENT:     return _comment;
+  case attrDATE:        return date_;
+  case attrCOMMENT:     return comment_;
 
-  case attrMOTOR_XT:    value = _motorXT;   break;
-  case attrMOTOR_YT:    value = _motorYT;   break;
-  case attrMOTOR_ZT:    value = _motorZT;   break;
-  case attrMOTOR_OMG:   value = _motorOmg;  break;
-  case attrMOTOR_TTH:   value = _motorTth;  break;
-  case attrMOTOR_PHI:   value = _motorPhi;  break;
-  case attrMOTOR_CHI:   value = _motorChi;  break;
-  case attrMOTOR_PST:   value = _motorPST;  break;
-  case attrMOTOR_SST:   value = _motorSST;  break;
-  case attrMOTOR_OMGM:  value = _motorOMGM; break;
-  case attrDELTA_MONITOR_COUNT: value = _deltaMonitorCount; break;
-  case attrDELTA_TIME:  value = _deltaTime; break;
+  case attrMOTOR_XT:    value = motorXT_;   break;
+  case attrMOTOR_YT:    value = motorYT_;   break;
+  case attrMOTOR_ZT:    value = motorZT_;   break;
+  case attrMOTOR_OMG:   value = motorOmg_;  break;
+  case attrMOTOR_TTH:   value = motorTth_;  break;
+  case attrMOTOR_PHI:   value = motorPhi_;  break;
+  case attrMOTOR_CHI:   value = motorChi_;  break;
+  case attrMOTOR_PST:   value = motorPST_;  break;
+  case attrMOTOR_SST:   value = motorSST_;  break;
+  case attrMOTOR_OMGM:  value = motorOMGM_; break;
+  case attrDELTA_MONITOR_COUNT: value = deltaMonitorCount_; break;
+  case attrDELTA_TIME:  value = deltaTime_; break;
   }
 
   return str::number(value);
 }
 
 qreal Dataset::midTth() const {
-  return _motorTth;
+  return motorTth_;
 }
 
 qreal Dataset::deltaMonitorCount() const {
-  return _deltaMonitorCount;
+  return deltaMonitorCount_;
 }
 
 qreal Dataset::deltaTime() const {
-  return _deltaTime;
+  return deltaTime_;
 }
 
 QSize Dataset::imageSize() const {
-  return _image.size();
+  return image_.size();
 }
 
 inten_t Dataset::inten(uint i, uint j) const {
-  return _image.inten(i,j);
+  return image_.inten(i,j);
 }
 
 void Dataset::addIntens(rcDataset that) THROWS {
-  _image.addIntens(that._image);
+  image_.addIntens(that.image_);
 }
 
 //------------------------------------------------------------------------------
@@ -121,8 +121,8 @@ Datasets::Datasets() {
 }
 
 void Datasets::append(shp_Dataset dataset) {
-  ASSERT(!dataset->_datasets) // not appended yet
-  dataset->_datasets = this;
+  ASSERT(!dataset->datasets_) // not appended yet
+  dataset->datasets_ = this;
   super::append(dataset);
 
   invalidateMutables();
@@ -144,35 +144,35 @@ QSize Datasets::imageSize() const {
 }
 
 qreal Datasets::avgDeltaMonitorCount() const {
-  if (qIsNaN(_avgMonitorCount)) {
+  if (qIsNaN(avgMonitorCount_)) {
     qreal avg = 0;
     if (!super::isEmpty()) {
       for (auto const& dataset: *this)
         avg += dataset->deltaMonitorCount();
       avg /= super::count();
     }
-    _avgMonitorCount = avg;
+    avgMonitorCount_ = avg;
   }
 
-  return _avgMonitorCount;
+  return avgMonitorCount_;
 }
 
 qreal Datasets::avgDeltaTime() const {
-  if (qIsNaN(_avgDeltaTime)) {
+  if (qIsNaN(avgDeltaTime_)) {
     qreal avg = 0;
     if (!super::isEmpty()) {
       for (auto const& dataset: *this)
         avg += dataset->deltaTime();
       avg /= super::count();
     }
-    _avgDeltaTime = avg;
+    avgDeltaTime_ = avg;
   }
 
-  return _avgDeltaTime;
+  return avgDeltaTime_;
 }
 
 void Datasets::invalidateMutables() {
-  _avgMonitorCount = _avgDeltaTime = qQNaN();
+  avgMonitorCount_ = avgDeltaTime_ = qQNaN();
 }
 
 //------------------------------------------------------------------------------

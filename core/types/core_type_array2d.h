@@ -28,17 +28,17 @@ template<typename T>
 class Array2D {
 public:
   /// empty array
-  Array2D(): _size(0,0) {
+  Array2D(): size_(0,0) {
   }
 
   /// 2D image size
   QSize const& size() const {
-    return _size;
+    return size_;
   }
 
   /// number of elements
   uint count() const {
-    return _size.width() * _size.height();
+    return size_.width() * size_.height();
   }
 
   /// make empty
@@ -48,8 +48,8 @@ public:
 
   /// allocate and fill with a value
   void fill(T const& val, QSize const& size) {
-    _size = size;  // set size first
-    _ts.fill(val,count());
+    size_ = size;  // set size first
+    ts_.fill(val,count());
   }
 
   /// allocate and fill with a default value
@@ -59,32 +59,32 @@ public:
 
   /// Calculate the 1D index of an element. Row by row.
   uint index(uint i, uint j) const {
-    return i + j * _size.width();
+    return i + j * size_.width();
   }
 
   /// access using 1D index
   T const& at(uint i) const {
-    return _ts.at(i);
+    return ts_.at(i);
   }
 
   /// access using 2D index
   T const& at(uint i,uint j) const {
-    return _ts.at(index(i,j));
+    return ts_.at(index(i,j));
   }
 
   /// set using 1D index
   void setAt(uint i, T const& val) {
-    _ts[i] = val;
+    ts_[i] = val;
   }
 
   /// set using 2D index
   void setAt(uint i, uint j, T const& val) {
-    _ts[index(i,j)] = val;
+    ts_[index(i,j)] = val;
   }
 
   /// raw access
   T* data() {
-    return _ts.data();
+    return ts_.data();
   }
 
   /// raw access
@@ -94,7 +94,7 @@ public:
 
   /// subscript operator
   T& operator[](uint i) {
-    return _ts[i];
+    return ts_[i];
   }
 
   /// subscript operator
@@ -103,8 +103,8 @@ public:
   }
 
 protected:
-  QSize      _size;
-  QVector<T> _ts;
+  QSize      size_;
+  QVector<T> ts_;
 };
 
 //------------------------------------------------------------------------------

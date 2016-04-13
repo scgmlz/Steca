@@ -35,8 +35,8 @@ protected:
   virtual bool approximate(qreal*,qreal const*,qreal const*,qreal*,uint,qreal const*,uint) = 0;
 
   // these pointers are valid during fit() call
-  Function*    _function;
-  qreal const* _xValues;
+  Function*    function_;
+  qreal const* xValues_;
 
 protected:
   /// calculate a vector of y(x)

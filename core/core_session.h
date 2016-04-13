@@ -33,7 +33,7 @@ public:
 
 // data files
 private:
-  QVector<shp_File> _files;
+  QVector<shp_File> files_;
 
 public:
   /// how many files has, optionally also counting the correction file.
@@ -46,23 +46,23 @@ public:
 
 // correction file
 private:
-  shp_File _corrFile;
-  bool     _corrEnabled;
+  shp_File corrFile_;
+  bool     corrEnabled_;
 
 public:
-  shp_File corrFile()       const   { return _corrFile;           }
-  bool     hasCorrFile()    const   { return !_corrFile.isNull(); }
+  shp_File corrFile()       const   { return corrFile_;           }
+  bool     hasCorrFile()    const   { return !corrFile_.isNull(); }
 
   void     setCorrFile(shp_File) THROWS;    ///< Load or remove a correction file.
   void     remCorrFile();
 
   void     enableCorr(bool);
-  bool     isCorrEnabled()  const   { return _corrEnabled;        }
+  bool     isCorrEnabled()  const   { return corrEnabled_;        }
 
 // image - sanity
 private:
   /// All files must have images of the same size; this is a cached value
-  QSize _imageSize;
+  QSize imageSize_;
   /// Clears the image size if there are no files in the session.
   void updateImageSize();
   /// Ensures that all images have the same size.
@@ -70,12 +70,12 @@ private:
 
 // image - transform & cut etc.
 private:
-  ImageTransform _imageTransform;
-  ImageCut       _imageCut;
+  ImageTransform imageTransform_;
+  ImageCut       imageCut_;
 
 public:
-  ImageTransform const& imageTransform() const { return _imageTransform; }
-  ImageCut       const& imageCut()       const { return _imageCut;       }
+  ImageTransform const& imageTransform() const { return imageTransform_; }
+  ImageCut       const& imageCut()       const { return imageCut_;       }
 
   void setImageTransformMirror(bool);
   void setImageTransformRotate(ImageTransform const&);
@@ -86,10 +86,10 @@ public:
 
 // geometry
 private:
-  Geometry _geometry;
+  Geometry geometry_;
 
 public:
-  Geometry const& geometry() const { return _geometry; }
+  Geometry const& geometry() const { return geometry_; }
   void setGeometry(qreal detectorDistance, qreal pixSize,
                    bool isMidPixOffset, rcIJ midPixOffset);
   IJ midPix() const;
@@ -100,23 +100,23 @@ public:
 
 // fitting
 private:
-  uint   _bgPolynomialDegree;
-  Ranges _bgRanges;
+  uint   bgPolynomialDegree_;
+  Ranges bgRanges_;
 
-  Reflections _reflections;
+  Reflections reflections_;
 
 public:
   // TODO instead of exposing the objects, provide an interface for TheHub
-  core::Ranges&       bgRanges()           { return _bgRanges;           }
-  uint&               bgPolynomialDegree() { return _bgPolynomialDegree; }
-  core::Reflections&  reflections()        { return _reflections;        }
+  core::Ranges&       bgRanges()           { return bgRanges_;           }
+  uint&               bgPolynomialDegree() { return bgPolynomialDegree_; }
+  core::Reflections&  reflections()        { return reflections_;        }
 
 // normalization
 private:
-  Lens::eNorm _norm;
+  Lens::eNorm norm_;
 
 public:
-  Lens::eNorm norm() const { return _norm; }
+  Lens::eNorm norm() const { return norm_; }
   void setNorm(Lens::eNorm);
 
 public:

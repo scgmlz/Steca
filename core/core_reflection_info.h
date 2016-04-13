@@ -18,11 +18,11 @@ public:
                  rcXY  peakPosition,
                  qreal peakFWHM);
 
-  qreal   alpha()         const { return _alpha;        }
-  qreal   beta()          const { return _beta;         }
-  rcRange gammaRange()    const { return _gammaRange;   }
-  rcXY    peakPosition()  const { return _peakPosition; }
-  qreal   peakFWHM()      const { return _peakFWHM;     }
+  qreal   alpha()         const { return alpha_;        }
+  qreal   beta()          const { return beta_;         }
+  rcRange gammaRange()    const { return gammaRange_;   }
+  rcXY    peakPosition()  const { return peakPosition_; }
+  qreal   peakFWHM()      const { return peakFWHM_;     }
 
   static ReflectionInfo make(rcSession,
                              rcDatasets,
@@ -32,11 +32,11 @@ public:
                              rcRange gammaSector);
 
 private:
-    qreal _alpha;
-    qreal _beta;
-    Range _gammaRange;
-    XY    _peakPosition;
-    qreal _peakFWHM;
+    qreal alpha_;
+    qreal beta_;
+    Range gammaRange_;
+    XY    peakPosition_;
+    qreal peakFWHM_;
 };
 
 //------------------------------------------------------------------------------

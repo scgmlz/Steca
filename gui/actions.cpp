@@ -49,15 +49,15 @@ TriggerAction::TriggerAction(rcstr text, rcstr tip, QObject* parent)
 //------------------------------------------------------------------------------
 
 ToggleAction::ToggleAction(rcstr text, rcstr tip, QObject* parent)
-  : super(text,tip,parent), _text1(text), _tip1(tip.isEmpty() ? text : tip) {
+  : super(text,tip,parent), text1_(text), tip1_(tip.isEmpty() ? text : tip) {
   setCheckable(true);
 }
 
 Action& ToggleAction::alt(rcstr text2, rcstr tip2) {
-  _text2 = text2; _tip2 = tip2.isEmpty() ? text2 : tip2;
+  text2_ = text2; tip2_ = tip2.isEmpty() ? text2 : tip2;
   connect(this,&thisClass::toggled,[this](bool on) {
-    setText(on ? _text2 : _text1);
-    setToolTip(on ? _tip2 : _tip1);
+    setText(on ? text2_ : text1_);
+    setToolTip(on ? tip2_ : tip1_);
   });
 
   return super::alt(text2, tip2);

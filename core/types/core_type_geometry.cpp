@@ -65,8 +65,8 @@ AngleMap::AngleMap() {
 
 void AngleMap::calculate(qreal midTth, Geometry const& geometry,
                          QSize const& size, ImageCut const& cut, rcIJ midPix) {
-  _arrAngles.fill(size);
-  _rgeGamma.invalidate(); _rgeTth.invalidate();
+  arrAngles_.fill(size);
+  rgeGamma_.invalidate(); rgeTth_.invalidate();
 
   if (size.isEmpty()) return;
 
@@ -92,15 +92,15 @@ void AngleMap::calculate(qreal midTth, Geometry const& geometry,
         gamma = -gamma;
       }
 
-      _arrAngles.setAt(i,j,Angles(rad2Deg(gamma),rad2Deg(tth)));
+      arrAngles_.setAt(i,j,Angles(rad2Deg(gamma),rad2Deg(tth)));
     }
   }
 
   for (int i = cut.left, iEnd = size.width() - cut.right; i < iEnd; ++i) {
     for (int j = cut.top, jEnd = size.height() - cut.bottom; j < jEnd; ++j) {
-      auto &as = _arrAngles.at(i,j);
-      _rgeGamma.extendBy(as.gamma);
-      _rgeTth.extendBy(as.tth);
+      auto &as = arrAngles_.at(i,j);
+      rgeGamma_.extendBy(as.gamma);
+      rgeTth_.extendBy(as.tth);
     }
   }
 }

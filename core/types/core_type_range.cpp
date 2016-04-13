@@ -120,7 +120,7 @@ bool Ranges::add(rcRange range) {
   QVector<Range> newRanges;
 
   auto addRange = range;
-  for (rcRange r: _ranges) {
+  for (rcRange r: ranges_) {
     if (r.contains(range))
       return false;
     if (!range.contains(r)) {
@@ -132,7 +132,7 @@ bool Ranges::add(rcRange range) {
   }
 
   newRanges.append(addRange);
-  _ranges = newRanges;
+  ranges_ = newRanges;
   sort();
 
   return true;
@@ -142,7 +142,7 @@ bool Ranges::rem(rcRange remRange) {
   QVector<Range> newRanges;
   bool changed = false;
 
-  for (rcRange r: _ranges) {
+  for (rcRange r: ranges_) {
     if (r.intersects(remRange)) {
       changed = true;
       if (r.min < remRange.min)
@@ -154,7 +154,7 @@ bool Ranges::rem(rcRange remRange) {
     }
   }
 
-  if (changed) _ranges = newRanges;
+  if (changed) ranges_ = newRanges;
   return changed;
 }
 
@@ -165,13 +165,13 @@ static bool lessThan(rcRange r1, rcRange r2) {
 }
 
 void Ranges::sort() {
-  std::sort(_ranges.begin(),_ranges.end(),lessThan);
+  std::sort(ranges_.begin(),ranges_.end(),lessThan);
 }
 
 JsonArr Ranges::saveJson() const {
   JsonArr arr;
 
-  for (auto &range: _ranges)
+  for (auto &range: ranges_)
     arr.append(range.saveJson());
 
   return arr;
@@ -180,7 +180,7 @@ JsonArr Ranges::saveJson() const {
 void Ranges::loadJson(rcJsonArr arr) THROWS {
   for_i (arr.count()) {
     Range range; range.loadJson(arr.objAt(i));
-    _ranges.append(range);
+    ranges_.append(range);
   }
 }
 

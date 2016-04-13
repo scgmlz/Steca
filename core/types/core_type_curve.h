@@ -36,14 +36,14 @@ public:
 
   void append(qreal x, qreal y);
 
-  qreal_vec const& xs()  const { return _xs; }
-  qreal_vec const& ys()  const { return _ys; }
+  qreal_vec const& xs()  const { return xs_; }
+  qreal_vec const& ys()  const { return ys_; }
 
-  qreal x(uint i)        const { return _xs[i]; }
-  qreal y(uint i)        const { return _ys[i]; }
+  qreal x(uint i)        const { return xs_[i]; }
+  qreal y(uint i)        const { return ys_[i]; }
 
-  rcRange rgeX()         const { return _rgeX; }
-  rcRange rgeY()         const { return _rgeY; }
+  rcRange rgeX()         const { return rgeX_; }
+  rcRange rgeY()         const { return rgeY_; }
 
   Curve intersect(rcRange)   const;
   Curve intersect(rcRanges)  const;
@@ -54,8 +54,8 @@ public:
   uint  maxYindex() const;  ///< the index of the maximum y
 
 private:
-  qreal_vec _xs, _ys;
-  core::Range _rgeX, _rgeY;
+  qreal_vec xs_, ys_;
+  core::Range rgeX_, rgeY_;
 };
 
 typedef QVector<Curve> curve_vec;

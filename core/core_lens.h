@@ -57,21 +57,21 @@ private:
   void setNorm(eNorm);
 
 private:
-  bool _trans, _cut;
+  bool trans_, cut_;
 
-  Session  const& _session;
-  Dataset  const& _dataset;
-  Dataset  const* _corrDataset;
+  Session  const& session_;
+  Dataset  const& dataset_;
+  Dataset  const* corrDataset_;
 
   // must keep copies of these
-  AngleMap _angleMap;
-  ImageCut _imageCut;
-  ImageTransform _imageTransform;
+  AngleMap angleMap_;
+  ImageCut imageCut_;
+  ImageTransform imageTransform_;
 
-  Array2D<inten_t> _intensCorr; bool _hasNaNs;
-  qreal _normFactor;
+  Array2D<inten_t> intensCorr_; bool hasNaNs_;
+  qreal normFactor_;
 
-  mutable Range _rgeInten, _rgeIntenGlobal;
+  mutable Range rgeInten_, rgeIntenGlobal_;
 };
 
 //------------------------------------------------------------------------------

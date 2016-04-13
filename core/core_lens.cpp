@@ -37,73 +37,73 @@ str_lst const& Lens::normStrLst() {
 Lens::Lens(bool trans, bool cut, eNorm norm, rcSession session,
            rcDataset dataset, Dataset const* corrDataset,
            AngleMap const& angleMap, ImageCut const& imageCut, ImageTransform const& imageTransform)
-: _trans(trans), _cut(cut), _session(session)
-, _dataset(dataset), _corrDataset(corrDataset)
-, _angleMap(angleMap), _imageCut(imageCut), _imageTransform(imageTransform)
+: trans_(trans), cut_(cut), session_(session)
+, dataset_(dataset), corrDataset_(corrDataset)
+, angleMap_(angleMap), imageCut_(imageCut), imageTransform_(imageTransform)
 {
   calcSensCorr();
   setNorm(norm);
 }
 
 QSize Lens::size() const {
-  QSize size = _dataset.imageSize();
+  QSize size = dataset_.imageSize();
 
-  if (_trans)
-    if (_imageTransform.isTransposed())
+  if (trans_)
+    if (imageTransform_.isTransposed())
       size.transpose();
 
-  if (_cut)
-    size -= _imageCut.marginSize();
+  if (cut_)
+    size -= imageCut_.marginSize();
 
 
   return size;
 }
 
 inten_t Lens::inten(uint i, uint j) const {
-  if (_trans)
+  if (trans_)
     doTrans(i,j);
-  if (_cut)
+  if (cut_)
     doCut(i,j);
 
-  inten_t inten = _dataset.inten(i,j);
+  inten_t inten = dataset_.inten(i,j);
 
-  if (_corrDataset)
-    inten *= _intensCorr.at(i,j);
+  if (corrDataset_)
+    inten *= intensCorr_.at(i,j);
 
-  return inten * _normFactor;
+  return inten * normFactor_;
 }
 
 Angles const& Lens::angles(uint i, uint j) const {
-  if (_trans)
+  if (trans_)
     doTrans(i,j);
-  if (_cut)
+  if (cut_)
     doCut(i,j);
 
-  return _angleMap.at(i,j);
+  return angleMap_.at(i,j);
 }
 
 rcRange Lens::rgeInten() const {
-  if (!_rgeInten.isValid()) {
+  if (!rgeInten_.isValid()) {
     auto s = size();
     for_ij (s.width(), s.height())
-      _rgeInten.extendBy(inten(i,j));
+      rgeInten_.extendBy(inten(i,j));
   }
 
-  return _rgeInten;
+  return rgeInten_;
 }
 
 rcRange Lens::rgeIntenGlobal() const {
-  if (!_rgeIntenGlobal.isValid()) {
-    for (auto const& dataset: _dataset.datasets()) {
+  if (!rgeIntenGlobal_.isValid()) {
+    for (auto const& dataset: dataset_.datasets()) {
       // a copy of this lens for each dataset
-      Lens lens(_trans, _cut, _session.norm(), _session,
-                *dataset, _corrDataset,
-                _angleMap,_imageCut,_imageTransform);
-      _rgeIntenGlobal.extendBy(lens.rgeInten());
+      Lens lens(trans_, cut_, session_.norm(), session_,
+                *dataset, corrDataset_,
+                angleMap_,imageCut_,imageTransform_);
+      rgeIntenGlobal_.extendBy(lens.rgeInten());
     }
   }
 
-  return _rgeIntenGlobal;
+  return rgeIntenGlobal_;
 }
 
 Curve Lens::makeCurve(rcRange gammaRange, rcRange tthRange) const {
@@ -155,7 +155,7 @@ void Lens::doTrans(uint& x, uint& y) const {
   uint w = s.width();
   uint h = s.height();
 
-  switch (_imageTransform.val) {
+  switch (imageTransform_.val) {
   case ImageTransform::ROTATE_0:
     break;
   case ImageTransform::ROTATE_1:
@@ -190,64 +190,64 @@ void Lens::doTrans(uint& x, uint& y) const {
 }
 
 void Lens::doCut(uint& i, uint& j) const {
-  i += _imageCut.left; j += _imageCut.top;
+  i += imageCut_.left; j += imageCut_.top;
 }
 
 void Lens::calcSensCorr() {
-  _hasNaNs = false;
-  if (!_corrDataset) return;
+  hasNaNs_ = false;
+  if (!corrDataset_) return;
 
-  ASSERT(_dataset.imageSize() == _corrDataset->imageSize())
+  ASSERT(dataset_.imageSize() == corrDataset_->imageSize())
 
-  QSize size = _corrDataset->imageSize();
-  size -= _imageCut.marginSize();
+  QSize size = corrDataset_->imageSize();
+  size -= imageCut_.marginSize();
   ASSERT(!size.isEmpty())
 
   qreal sum = 0;
 
   uint w = size.width(), h = size.height(),
-      di = _imageCut.left, dj = _imageCut.top;
+      di = imageCut_.left, dj = imageCut_.top;
 
   for_ij(w,h)
-    sum += _corrDataset->inten(i+di, j+dj);
+    sum += corrDataset_->inten(i+di, j+dj);
 
   qreal avg = sum / (w * h);
 
-  _intensCorr.fill(size);
+  intensCorr_.fill(size);
 
   for_ij(w,h) {
-    auto inten = _corrDataset->inten(i+di,j+dj);
+    auto inten = corrDataset_->inten(i+di,j+dj);
     qreal fact;
 
     if (inten > 0) {
       fact = avg / inten;
     } else {
-      fact = qQNaN(); _hasNaNs = true;
+      fact = qQNaN(); hasNaNs_ = true;
     }
 
-    _intensCorr.setAt(i,j, fact);
+    intensCorr_.setAt(i,j, fact);
   }
 }
 
 void Lens::setNorm(eNorm norm) {
-  auto &datasets = _dataset.datasets();
+  auto &datasets = dataset_.datasets();
 
   switch (norm) {
   case normNONE:
-    _normFactor = 1;
+    normFactor_ = 1;
     break;
   case normDELTA_MONITOR_COUNT:
     // could be NaN (divide by 0)
-    _normFactor = datasets.avgDeltaMonitorCount() / _dataset.deltaMonitorCount();
+    normFactor_ = datasets.avgDeltaMonitorCount() / dataset_.deltaMonitorCount();
     break;
   case normDELTA_TIME:
     // could be NaN (divide by 0)
-    _normFactor = datasets.avgDeltaTime() / _dataset.deltaTime();
+    normFactor_ = datasets.avgDeltaTime() / dataset_.deltaTime();
     break;
   case normBACKGROUND:
     // could be NaN (divide by 0)
-    _normFactor = _session.calcAvgBackground(datasets) /
-                  _session.calcAvgBackground(_dataset);
+    normFactor_ = session_.calcAvgBackground(datasets) /
+                  session_.calcAvgBackground(dataset_);
     break;
   }
 }

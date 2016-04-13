@@ -62,9 +62,9 @@ public:
   void showMetaInfo(checkedinfo_vec const&);
 
 private:
-  core::shp_File _file;              ///< the file with datasets
-  checkedinfo_vec const* _metaInfo;  ///< metadata items
-  uint_vec _metaInfoNums;            ///< selected metadata items to show
+  core::shp_File file_;              ///< the file with datasets
+  checkedinfo_vec const* metaInfo_;  ///< metadata items
+  uint_vec metaInfoNums_;            ///< selected metadata items to show
 };
 
 //------------------------------------------------------------------------------

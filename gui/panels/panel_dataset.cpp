@@ -22,16 +22,16 @@
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-DatasetView::DatasetView(TheHub& theHub): super(theHub), _model(theHub.datasetViewModel) {
-  setModel(&_model);
+DatasetView::DatasetView(TheHub& theHub): super(theHub), model_(theHub.datasetViewModel) {
+  setModel(&model_);
 
   connect(&theHub, &TheHub::fileSelected, [this](core::shp_File coreFile) {
-    _model.setFile(coreFile);
-    setCurrentIndex(_model.index(0,0));
+    model_.setFile(coreFile);
+    setCurrentIndex(model_.index(0,0));
   });
 
-  connect(&_model, &QAbstractItemModel::modelReset, [this]() {
-    for_i (_model.columnCount())
+  connect(&model_, &QAbstractItemModel::modelReset, [this]() {
+    for_i (model_.columnCount())
       resizeColumnToContents(i);
   });
 }
@@ -40,19 +40,19 @@ void DatasetView::selectionChanged(QItemSelection const& selected, QItemSelectio
   super::selectionChanged(selected,deselected);
 
   auto indexes = selected.indexes();
-  _theHub.setSelectedDataset(indexes.isEmpty()
+  theHub_.setSelectedDataset(indexes.isEmpty()
     ? core::shp_Dataset()
-    : _model.data(indexes.first(), Model::GetDatasetRole).value<core::shp_Dataset>());
+    : model_.data(indexes.first(), Model::GetDatasetRole).value<core::shp_Dataset>());
 }
 
 //------------------------------------------------------------------------------
 
 DockDatasets::DockDatasets(TheHub& theHub)
 : super("Datasets","dock-datasets",Qt::Vertical) {
-  _box->addWidget((_datasetView = new DatasetView(theHub)));
+  box_->addWidget((datasetView_ = new DatasetView(theHub)));
 
   auto h = hbox();
-  _box->addLayout(h);
+  box_->addLayout(h);
 
   h->addWidget(label("Combine:"));
   h->addWidget(spinCell(4,1));
@@ -60,81 +60,81 @@ DockDatasets::DockDatasets(TheHub& theHub)
 
 //------------------------------------------------------------------------------
 
-DockDatasetInfo::DockDatasetInfo(TheHub& theHub_)
+DockDatasetInfo::DockDatasetInfo(TheHub& theHub)
 : super("Dataset info", "dock-dataset-info", Qt::Vertical), RefHub(theHub_) {
 
   using Dataset     = core::Dataset;
   using shp_Dataset = core::shp_Dataset;
 
-  _box->setMargin(0);
+  box_->setMargin(0);
 
   auto scrollArea = new QScrollArea;
-  _box->addWidget(scrollArea);
+  box_->addWidget(scrollArea);
 
   scrollArea->setFrameStyle(QFrame::NoFrame);
 
   for_i (Dataset::numAttributes())
-    _metaInfo.append(models::CheckedInfo(Dataset::attributeTag(i)));
+    metaInfo_.append(models::CheckedInfo(Dataset::attributeTag(i)));
 
-  scrollArea->setWidget((_info = new Info(_metaInfo)));
+  scrollArea->setWidget((info_ = new Info(metaInfo_)));
 
   for_i (Dataset::numAttributes())
-    _metaInfo[i].cb->setToolTip("Show value in Datasets list");
+    metaInfo_[i].cb->setToolTip("Show value in Datasets list");
 
-  connect(&_theHub, &TheHub::datasetSelected, [this](shp_Dataset dataset) {
+  connect(&theHub_, &TheHub::datasetSelected, [this](shp_Dataset dataset) {
     for_i (Dataset::numAttributes())
-      _metaInfo[i].setText(dataset ? dataset->attributeStrValue(i) : EMPTY_STR);
+      metaInfo_[i].setText(dataset ? dataset->attributeStrValue(i) : EMPTY_STR);
   });
 
-  for (auto &item: _metaInfo) {
+  for (auto &item: metaInfo_) {
     connect(item.cb, &QCheckBox::clicked, this, [this]() {
-      _theHub.datasetViewModel.showMetaInfo(_metaInfo);
+      theHub_.datasetViewModel.showMetaInfo(metaInfo_);
     });
   }
 }
 
 DockDatasetInfo::Info::Info(models::checkedinfo_vec& metaInfo) {
-  setLayout((_grid = gridLayout()));
+  setLayout((grid_ = gridLayout()));
 
-  _grid->setSpacing(-1);
+  grid_->setSpacing(-1);
 
   for (auto &item: metaInfo) {
-    int row = _grid->rowCount();
-    _grid->addWidget(label(item.tag),                    row, 0);
-    _grid->addWidget((item.cb       = check(EMPTY_STR)), row, 1);
-    _grid->addWidget((item.infoText = readCell(16)), row, 2);
+    int row = grid_->rowCount();
+    grid_->addWidget(label(item.tag),                    row, 0);
+    grid_->addWidget((item.cb       = check(EMPTY_STR)), row, 1);
+    grid_->addWidget((item.infoText = readCell(16)), row, 2);
   }
 }
 
 //------------------------------------------------------------------------------
 
 ImageWidget::ImageWidget(TheHub& theHub,Dataset& dataset_)
-: RefHub(theHub), _dataset(dataset_), _showOverlay(false), _scale(1) {
+: RefHub(theHub), dataset_(dataset_), showOverlay_(false), scale_(1) {
   setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 }
 
 void ImageWidget::setPixmap(QPixmap const& pixmap) {
-  _original = pixmap;
-  setScale(_scale);
+  original_ = pixmap;
+  setScale(scale_);
 }
 
 void ImageWidget::setShowOverlay(bool on) {
-  _showOverlay = on;
+  showOverlay_ = on;
   update();
 }
 
 void ImageWidget::setScale(uint scale_) {
   ASSERT(scale_ > 0)
-  _scale = scale_;
+  scale_ = scale_;
 
-  _scaled = _original.isNull() ? _original : _original.scaled(_original.size()*_scale);
+  scaled_ = original_.isNull() ? original_ : original_.scaled(original_.size()*scale_);
 
   updateGeometry();
   update();
 }
 
 QSize ImageWidget::sizeHint() const {
-  return _scaled.size() + QSize(2,2);
+  return scaled_.size() + QSize(2,2);
 }
 
 void ImageWidget::paintEvent(QPaintEvent*) {
@@ -145,17 +145,17 @@ void ImageWidget::paintEvent(QPaintEvent*) {
   painter.drawRect(rect().adjusted(0,0,-1,-1));
 
   // image
-  painter.drawPixmap(1,1,_scaled);
+  painter.drawPixmap(1,1,scaled_);
 
   // overlay follows
-  if (!_showOverlay) return;
+  if (!showOverlay_) return;
 
   // cut
-  auto margins = _theHub.imageCut();
+  auto margins = theHub_.imageCut();
   QRect r = rect()
     .adjusted(1,1,-2,-2)
-    .adjusted(_scale*margins.left,  _scale*margins.top,
-             -_scale*margins.right,-_scale*margins.bottom);
+    .adjusted(scale_*margins.left,  scale_*margins.top,
+             -scale_*margins.right,-scale_*margins.bottom);
 
   painter.setPen(Qt::lightGray);
   painter.drawRect(r);
@@ -166,96 +166,96 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 DatasetOptions1::DatasetOptions1(TheHub& theHub)
 : super(EMPTY_STR,theHub,Qt::Vertical) {
 
-  _box->addWidget(label("Beam offset"));
+  box_->addWidget(label("Beam offset"));
   auto ho = hbox();
-  _box->addLayout(ho);
+  box_->addLayout(ho);
 
   ho->addWidget(label("X"));
-  ho->addWidget((_spinOffsetI = spinCell(4,0)));
-  _spinOffsetI->setToolTip("Horizontal offset from image center");
+  ho->addWidget((spinOffsetI_ = spinCell(4,0)));
+  spinOffsetI_->setToolTip("Horizontal offset from image center");
   ho->addWidget(label("Y"));
-  ho->addWidget((_spinOffsetJ = spinCell(4,0)));
-  _spinOffsetJ->setToolTip("Vertical offset from image center");
+  ho->addWidget((spinOffsetJ_ = spinCell(4,0)));
+  spinOffsetJ_->setToolTip("Vertical offset from image center");
   ho->addWidget(label("pix"));
-  ho->addWidget(iconButton(_theHub.actions.hasBeamOffset));
+  ho->addWidget(iconButton(theHub_.actions.hasBeamOffset));
   ho->addStretch();
 
-  _box->addWidget(label("Detector"));
+  box_->addWidget(label("Detector"));
   auto gd = gridLayout();
-  _box->addLayout(gd);
+  box_->addLayout(gd);
 
-  gd->addWidget((_spinDistance = spinCell(6,core::Geometry::MIN_DETECTOR_DISTANCE)),    0,0);
-  _spinDistance->setToolTip("Sample to detector distance");
+  gd->addWidget((spinDistance_ = spinCell(6,core::Geometry::MIN_DETECTOR_DISTANCE)),    0,0);
+  spinDistance_->setToolTip("Sample to detector distance");
   gd->addWidget(label("distance mm"),                         0,1);
-  gd->addWidget((_spinPixelSize = spinCell(6,core::Geometry::MIN_DETECTOR_PIXEL_SIZE)), 1,0);
-  _spinPixelSize->setSingleStep(.1);
-  _spinPixelSize->setToolTip("Physical pixel size");
+  gd->addWidget((spinPixelSize_ = spinCell(6,core::Geometry::MIN_DETECTOR_PIXEL_SIZE)), 1,0);
+  spinPixelSize_->setSingleStep(.1);
+  spinPixelSize_->setToolTip("Physical pixel size");
   gd->addWidget(label("pixel size mm"),                       1,1);
   gd->setColumnStretch(2,1);
 
-  _box->addWidget(label("Normalization"));
+  box_->addWidget(label("Normalization"));
   auto vn = vbox();
-  _box->addLayout(vn);
+  box_->addLayout(vn);
 
   str_lst options = core::Lens::normStrLst();
 
-  vn->addWidget(_comboNormType = comboBox(options));
-  _box->addStretch();
+  vn->addWidget(comboNormType_ = comboBox(options));
+  box_->addStretch();
 
-  connect(&_theHub, &TheHub::geometryChanged, [this]() {
-    setFrom(_theHub);
+  connect(&theHub_, &TheHub::geometryChanged, [this]() {
+    setFrom(theHub_);
   });
 
   auto setEnabled = [this]() {
-    bool on = _theHub.actions.hasBeamOffset->isChecked();
-    _spinOffsetI->setEnabled(on);
-    _spinOffsetJ->setEnabled(on);
+    bool on = theHub_.actions.hasBeamOffset->isChecked();
+    spinOffsetI_->setEnabled(on);
+    spinOffsetJ_->setEnabled(on);
   };
 
   setEnabled();
 
-  connect(_theHub.actions.hasBeamOffset, &QAction::toggled, [this,setEnabled]() {
+  connect(theHub_.actions.hasBeamOffset, &QAction::toggled, [this,setEnabled]() {
     setEnabled();
-    setTo(_theHub);
+    setTo(theHub_);
   });
 
-  connect(_spinOffsetI, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this]() {
-    setTo(_theHub);
+  connect(spinOffsetI_, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this]() {
+    setTo(theHub_);
   });
 
-  connect(_spinOffsetJ, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this]() {
-    setTo(_theHub);
+  connect(spinOffsetJ_, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this]() {
+    setTo(theHub_);
   });
 
-  connect(_spinDistance, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
-    setTo(_theHub);
+  connect(spinDistance_, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
+    setTo(theHub_);
   });
 
-  connect(_spinPixelSize, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
-    setTo(_theHub);
+  connect(spinPixelSize_, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
+    setTo(theHub_);
   });
 
-  connect(_comboNormType, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),[this](int index) {
-    _theHub.setNorm((core::Lens::eNorm)index);
+  connect(comboNormType_, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),[this](int index) {
+    theHub_.setNorm((core::Lens::eNorm)index);
   });
 }
 
 void DatasetOptions1::setTo(TheHub& theHub) {
   theHub.setGeometry(
-    _spinDistance->value(), _spinPixelSize->value(),
+    spinDistance_->value(), spinPixelSize_->value(),
     theHub.actions.hasBeamOffset->isChecked(),
-    core::IJ(_spinOffsetI->value(),_spinOffsetJ->value()));
+    core::IJ(spinOffsetI_->value(),spinOffsetJ_->value()));
 }
 
 void DatasetOptions1::setFrom(TheHub& theHub) {
   auto const& g = theHub.geometry();
 
   theHub.actions.hasBeamOffset->setChecked(g.isMidPixOffset);
-  _spinOffsetI->setValue(g.midPixOffset.i);
-  _spinOffsetJ->setValue(g.midPixOffset.j);
+  spinOffsetI_->setValue(g.midPixOffset.i);
+  spinOffsetJ_->setValue(g.midPixOffset.j);
 
-  _spinDistance->setValue(g.detectorDistance);
-  _spinPixelSize->setValue(g.pixSize);
+  spinDistance_->setValue(g.detectorDistance);
+  spinPixelSize_->setValue(g.pixSize);
 }
 
 static str const GROUP_OPTIONS("Options");
@@ -276,77 +276,77 @@ static str const KEY_PIXEL_SIZE("pixel_size");
 DatasetOptions2::DatasetOptions2(TheHub& theHub)
 : super (EMPTY_STR,theHub,Qt::Vertical) {
 
-  _box->addWidget(label("Image"));
+  box_->addWidget(label("Image"));
   auto hb = hbox();
-  _box->addLayout(hb);
+  box_->addLayout(hb);
 
-  hb->addWidget(iconButton(_theHub.actions.rotateImage));
+  hb->addWidget(iconButton(theHub_.actions.rotateImage));
   hb->addSpacing(5);
-  hb->addWidget(iconButton(_theHub.actions.mirrorImage));
+  hb->addWidget(iconButton(theHub_.actions.mirrorImage));
   hb->addSpacing(5);
-  hb->addWidget(iconButton(_theHub.actions.fixedIntensityDisplay));
+  hb->addWidget(iconButton(theHub_.actions.fixedIntensityDisplay));
   hb->addStretch();
 
   auto sc = hbox();
-  _box->addLayout(sc);
+  box_->addLayout(sc);
   sc->addWidget(label("Scaling"));
   sc->addSpacing(5);
-  sc->addWidget((_spinImageScale = spinCell(4,1,4)));
-  _spinImageScale->setToolTip("Image scale");
+  sc->addWidget((spinImageScale_ = spinCell(4,1,4)));
+  spinImageScale_->setToolTip("Image scale");
   sc->addStretch();
 
-  _box->addWidget(label("Cut"));
+  box_->addWidget(label("Cut"));
   auto gc = gridLayout();
-  _box->addLayout(gc);
+  box_->addLayout(gc);
 
   gc->addWidget(icon(":/icon/cutTopU"),             0,0);
-  gc->addWidget((_marginTop = spinCell(4,0)),           0,1);
-  _marginTop->setToolTip("Top cut");
+  gc->addWidget((marginTop_ = spinCell(4,0)),           0,1);
+  marginTop_->setToolTip("Top cut");
   gc->addWidget(icon(":/icon/cutBottomU"),          0,2);
-  gc->addWidget((_marginBottom = spinCell(4,0)),        0,3);
-  _marginBottom->setToolTip("Bottom cut");
+  gc->addWidget((marginBottom_ = spinCell(4,0)),        0,3);
+  marginBottom_->setToolTip("Bottom cut");
 
-  gc->addWidget(iconButton(_theHub.actions.linkCuts),   0,5);
-  gc->addWidget(iconButton(_theHub.actions.showCut), 1,5);
+  gc->addWidget(iconButton(theHub_.actions.linkCuts),   0,5);
+  gc->addWidget(iconButton(theHub_.actions.showCut), 1,5);
 
   gc->addWidget(icon(":/icon/cutLeftU"),            1,0);
-  gc->addWidget((_marginLeft = spinCell(4,0)),          1,1);
-  _marginLeft->setToolTip("Left cut");
+  gc->addWidget((marginLeft_ = spinCell(4,0)),          1,1);
+  marginLeft_->setToolTip("Left cut");
   gc->addWidget(icon(":/icon/cutRightU"),           1,2);
-  gc->addWidget((_marginRight = spinCell(4,0)),         1,3);
-  _marginRight->setToolTip("Right cut");
+  gc->addWidget((marginRight_ = spinCell(4,0)),         1,3);
+  marginRight_->setToolTip("Right cut");
   gc->setColumnStretch(4,1);
 
-  _box->addStretch();
+  box_->addStretch();
 
   auto setImageCut = [this](bool topLeft, int value) {
-    if (_theHub.actions.linkCuts->isChecked())
-      _theHub.setImageCut(topLeft, true, core::ImageCut(value,value,value,value));
+    if (theHub_.actions.linkCuts->isChecked())
+      theHub_.setImageCut(topLeft, true, core::ImageCut(value,value,value,value));
     else
-      _theHub.setImageCut(topLeft, false, core::ImageCut(_marginLeft->value(), _marginTop->value(), _marginRight->value(), _marginBottom->value()));
+      theHub_.setImageCut(topLeft, false, core::ImageCut(marginLeft_->value(), marginTop_->value(), marginRight_->value(), marginBottom_->value()));
   };
 
-  connect(_marginLeft, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
+  connect(marginLeft_, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
     setImageCut(true,value);
   });
 
-  connect(_marginTop, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
+  connect(marginTop_, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
     setImageCut(true,value);
   });
 
-  connect(_marginRight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
+  connect(marginRight_, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
     setImageCut(false,value);
   });
 
-  connect(_marginBottom, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
+  connect(marginBottom_, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [setImageCut](int value) {
     setImageCut(false,value);
   });
 
-  connect(&_theHub, &TheHub::geometryChanged, [this]() {
-    setFrom(_theHub);
+  connect(&theHub_, &TheHub::geometryChanged, [this]() {
+    setFrom(theHub_);
   });
 
-  connect(_spinImageScale, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int scale) {
+  connect(spinImageScale_, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int scale) {
     emit imageScale(scale);
   });
 }
@@ -354,46 +354,46 @@ DatasetOptions2::DatasetOptions2(TheHub& theHub)
 void DatasetOptions2::setFrom(TheHub& theHub) {
   auto margins = theHub.imageCut();
 
-  _marginLeft   ->setValue(margins.left);
-  _marginTop    ->setValue(margins.top);
-  _marginRight  ->setValue(margins.right);
-  _marginBottom ->setValue(margins.bottom);
+  marginLeft_   ->setValue(margins.left);
+  marginTop_    ->setValue(margins.top);
+  marginRight_  ->setValue(margins.right);
+  marginBottom_ ->setValue(margins.bottom);
 }
 
 //------------------------------------------------------------------------------
 
 Dataset::Dataset(TheHub& theHub)
-: super(EMPTY_STR,theHub,Qt::Vertical), _dataset(nullptr) {
+: super(EMPTY_STR,theHub,Qt::Vertical), dataset_(nullptr) {
 
-  auto &actions = _theHub.actions;
+  auto &actions = theHub_.actions;
 
-  _box->addWidget(_imageWidget = new ImageWidget(_theHub,*this),0,Qt::AlignCenter);
+  box_->addWidget(imageWidget_ = new ImageWidget(theHub_,*this),0,Qt::AlignCenter);
 
   connect(actions.enableCorr, &QAction::toggled, [this](bool) {
     renderDataset();
   });
 
   connect(actions.showCut, &QAction::toggled, [this](bool on) {
-    _imageWidget->setShowOverlay(on);
+    imageWidget_->setShowOverlay(on);
   });
 
   actions.showCut->setChecked(true);
 
-  connect(&_theHub, &TheHub::displayChange, [this]() {
+  connect(&theHub_, &TheHub::displayChange, [this]() {
     renderDataset();
   });
 
-  connect(&_theHub, &TheHub::datasetSelected, [this](core::shp_Dataset dataset) {
+  connect(&theHub_, &TheHub::datasetSelected, [this](core::shp_Dataset dataset) {
     setDataset(dataset);
   });
 
-  connect(&_theHub, &TheHub::geometryChanged, [this]() {
+  connect(&theHub_, &TheHub::geometryChanged, [this]() {
     renderDataset();
   });
 }
 
 void Dataset::setImageScale(uint scale) {
-  _imageWidget->setScale(scale);
+  imageWidget_->setScale(scale);
 }
 
 QPixmap Dataset::makePixmap(core::shp_Lens lens) {
@@ -432,17 +432,17 @@ QPixmap Dataset::makePixmap(core::shp_Lens lens) {
 }
 
 void Dataset::setDataset(core::shp_Dataset dataset_) {
-  _dataset = dataset_;
+  dataset_ = dataset_;
   renderDataset();
 }
 
 void Dataset::renderDataset() {
   QPixmap pixMap;
-  if (_dataset) {
-    auto lens = _theHub.lensNoCut(*_dataset);
+  if (dataset_) {
+    auto lens = theHub_.lensNoCut(*dataset_);
     pixMap = makePixmap(lens);
   }
-  _imageWidget->setPixmap(pixMap);
+  imageWidget_->setPixmap(pixMap);
 }
 
 //------------------------------------------------------------------------------
