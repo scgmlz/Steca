@@ -15,7 +15,7 @@
 #include "core_defs.h"
 #include <QtMath>
 
-static_assert (QT_VERSION >= QT_VERSION_CHECK(5,3,0),"written for Qt >= 5.3, have " QT_VERSION_STR);
+static_assert (QT_VERSION >= QT_VERSION_CHECK(5,4,0),"written for Qt >= 5.4, have " QT_VERSION_STR);
 
 qreal radToDeg(qreal rad) {
   return rad * (180 / M_PI);
