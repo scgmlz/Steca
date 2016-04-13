@@ -2,6 +2,11 @@
 # top-level CMakeLists.txt for building STeCa
 ############################################################################
 
+# TODO actually cmake 3.1+ is required to handle PROPERTY CXX_STANDARD 11
+# but it may not be available
+# for cmake < 3.1, add an environment variable:
+# CXXFLAGS=-std=c+11 before running cmake
+
 cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 
 project(STeCa)
