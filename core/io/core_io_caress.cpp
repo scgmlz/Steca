@@ -1,11 +1,24 @@
-#include "core_io.h"
-#include "core_types.h"
-#include "core_file.h"
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_io_caress.cpp
+//! @brief     Caress loader
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
 
+#include "core_io.h"
+#include "core_file.h"
 #include "io/Caress/raw.h"
 
 #include <sstream>
-#include <cmath>
+#include <QtMath>
 
 namespace core { namespace io {
 //------------------------------------------------------------------------------
@@ -34,6 +47,11 @@ shp_File loadCaress(rcstr filePath) THROWS {
 
     std::string s_date, s_comment;
     char* c_comment;
+    double deltaTime = 0;
+    double prevTempTime = 0;
+    int deltaMon = 0;
+    int prevMon = 0;
+
 
     bool end = false;
     while (!end) {
@@ -131,18 +149,22 @@ shp_File loadCaress(rcstr filePath) THROWS {
           double tempTime = 0;
           if ((y < 2015) ||
               ((y == 2015) && ((s_m.compare("Jan") == 0) || (s_m.compare("Feb") == 0)))) {
-            tempTime = (double)tim1 / 100; // TODO verify how deltaTime is used!!
+            tempTime = (double)tim1 / 100; // HACK REVIEW how deltaTime is used!!
           } else {
             tempTime = (double)tim1;
           }
+          deltaTime = tempTime - prevTempTime;
+          prevTempTime = tempTime;
+          deltaMon = mon - prevMon;
+          prevMon = mon;
 
           uint detRel;
 
-          detRel = (uint)sqrt(imageSize); // TODO (also compare with original code) this is hairy
+          detRel = (uint)sqrt(imageSize);
           RUNTIME_CHECK(imageSize>0 && (uint)imageSize == detRel*detRel, "bad image size");
 
           QVector<intens_t> convertedIntens(imageSize);
-          for (int i=0; i<imageSize; ++i)
+          for_i (imageSize)
             convertedIntens[i] = intens[i];
 
           QSize size(detRel,detRel);
@@ -153,13 +175,12 @@ shp_File loadCaress(rcstr filePath) THROWS {
 //        #endif
 
           // Objekt inizialisieren
-          file->appendDataset(new Dataset(
+          file->appendDataset(new Dataset(file.data(),
             str::fromStdString(s_date), str::fromStdString(s_comment),
             xAxis, yAxis, zAxis,
-            rad_deg(omgAxis), rad_deg(tthAxis),
-            rad_deg(phiAxis), rad_deg(chiAxis),
-            pstAxis, sstAxis, rad_deg(omgmAxis),
-            mon, tempTime,
+            omgAxis, tthAxis, phiAxis, chiAxis,
+            pstAxis, sstAxis, omgmAxis,
+            deltaMon, deltaTime,
             size, convertedIntens.constData()));
           delete[] intens; intens = NULL;
           imageSize = 0;

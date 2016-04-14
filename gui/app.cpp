@@ -1,3 +1,17 @@
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      app.cpp
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
 #include "app.h"
 #include "../manifest.h"
 #include "mainwin.h"
@@ -16,7 +30,7 @@ App::App(int &argc, char *argv[]): super(argc,argv) {
 #if defined(Q_OS_OSX)
   setStyle(QStyleFactory::create("Macintosh"));
 #elif defined(Q_OS_WIN)
-  setStyle(QStyleFactory::create("Windows"));
+  setStyle(QStyleFactory::create("Fusion"));
 #else
   setStyle(QStyleFactory::create("Fusion"));
 #endif
@@ -40,7 +54,6 @@ static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr 
   }
 }
 
-// TODO icon
 int App::exec() {
   MainWin mainWin;
   mainWin.show();

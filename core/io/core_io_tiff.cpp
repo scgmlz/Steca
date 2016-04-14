@@ -1,5 +1,19 @@
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_io_tiff.cpp
+//! @brief     Dataset loaders
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
 #include "core_io.h"
-#include "core_types.h"
 #include "core_file.h"
 #include "core_dataset.h"
 #include "core_session.h"
@@ -12,11 +26,13 @@
 
 #include <QDir>
 #include <sstream>
-#include <cmath>
 
 namespace core { namespace io {
 //------------------------------------------------------------------------------
+
 shp_File loadTiffs(rcstr filePath) THROWS {
+// TODO code not finished
+/*
   shp_File file(new File(filePath));
 
   QFileInfo info(filePath);
@@ -31,18 +47,20 @@ shp_File loadTiffs(rcstr filePath) THROWS {
     str line = in.readLine();
 
     QVector<str> dataFromFile;
-    for (int i = 0; i < line.size(); ++i) {
+    for_i (line.size()) {
       dataFromFile.append(line.section(',',i,i));
     }
 
   }
 
   return shp_File(new File(filePath));
+  */
+  return shp_File();
 }
 
-
-
 void saveTiffs(File const& file, rcstr fileName) THROWS {
+// TODO code not finished
+/*
   QFileInfo info(fileName);
   QDir().mkpath(info.absoluteDir().absolutePath());
 
@@ -55,9 +73,9 @@ void saveTiffs(File const& file, rcstr fileName) THROWS {
     Dataset dataset = *file.getDataset(i);
     str fileName = info.absoluteFilePath() + QString(".%1.tiff").arg(i,3,10,QChar('0'));
 
-    QImage tiffImage(dataset.getFile().getImageSize(),QImage::Format_RGB32);
+    QImage tiffImage(dataset.parentFile().getImageSize(),QImage::Format_RGB32);
     Image image = dataset.getImage();
-    auto size = image.getSize();
+    auto size = image.size();
 
     for_i (size.height()) {
       auto y = i;
@@ -71,14 +89,13 @@ void saveTiffs(File const& file, rcstr fileName) THROWS {
     tiffImage.save(fileName,"tiff");
 
     out << fileName;
-    for_i (Dataset::NUM_ATTRIBUTES) {
+    for_i (Dataset::numAttributes()) {
       out << ", " << dataset.getAttributeStrValue(i);
     }
     out << "\n"; out.flush();
   }
-
+*/
 }
-
 
 //------------------------------------------------------------------------------
 }}

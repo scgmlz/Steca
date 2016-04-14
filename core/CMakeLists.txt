@@ -5,17 +5,14 @@
 add_subdirectory(io)
 add_subdirectory(LevMar)
 
-set(source_files
-  core_array2d.cpp
-  core_dataset.cpp
-  core_defs.cpp
-  core_file.cpp
-  core_fit_fitting.cpp
-  core_fit_functions.cpp
-  core_fit_methods.cpp
-  core_image.cpp
-  core_session.cpp
-  core_types.cpp
+file(GLOB header_files
+  "*.h"
+  "types/*.h"
+)
+
+file(GLOB source_files
+  "*.cpp"
+  "types/*.cpp"
 )
 
 include_directories(
@@ -24,6 +21,7 @@ include_directories(
 
 add_library(STeCaCore
   ${source_files}
+  ${header_files}
 )
 
 target_link_libraries(STeCaCore

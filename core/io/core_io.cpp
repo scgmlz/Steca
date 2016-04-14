@@ -1,3 +1,17 @@
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_io.h
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
 #include "core_io.h"
 
 namespace core { namespace io {
@@ -16,7 +30,7 @@ shp_File load(rcstr filePath) THROWS {
 
   shp_File file;
 
-  // apparently all Caress files begin this way
+  // apparently all Caress files begin so
   static QByteArray const caressHead("\020\012DEFCMD DAT");
   if (caressHead == peek(caressHead.size(),info)) {
     // looks like Caress, so try to load
@@ -28,10 +42,10 @@ shp_File load(rcstr filePath) THROWS {
   RUNTIME_CHECK(file->numDatasets() > 0, "File " % info.filePath() % " contains no datasets");
 
   // ensure that all datasets have images of the same size
-  QSize size = file->getDataset(0)->getImage().getSize();
+  QSize size = file->getDataset(0)->getImage().size();
 
   for_i (file->numDatasets())
-    if (file->getDataset(i)->getImage().getSize() != size)
+    if (file->getDataset(i)->getImage().size() != size)
       THROW("Inconsistent image size");
 
   return file;

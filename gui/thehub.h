@@ -1,3 +1,4 @@
+// TODO HEADER
 /** \file
  */
 
@@ -17,20 +18,26 @@ class QDoubleSpinBox;
 class Action: public QAction {
   SUPER(Action,QAction)
 public:
-  Action(rcstr text, rcstr tip, rcstr iconFile, QObject*);
+  Action(rcstr text, rcstr tip, QObject*);
+
+  Action& dialog();
+  Action& key(QKeySequence);
+  Action& icon(rcstr);
+
+  virtual Action& alt(rcstr text2, rcstr tip2);
 };
 
-class PushAction: public Action {
-  SUPER(PushAction,Action)
+class TriggerAction: public Action {
+  SUPER(TriggerAction,Action)
 public:
-  PushAction(rcstr text, rcstr tip, rcstr iconFile, QObject*);
+  TriggerAction(rcstr text, rcstr tip, QObject*);
 };
 
 class ToggleAction: public Action {
   SUPER(ToggleAction,Action)
 public:
-  ToggleAction(rcstr text1, rcstr text2, rcstr tip1, rcstr tip2, rcstr iconFile, QObject*);
-  ToggleAction(rcstr text1, rcstr tip1, rcstr iconFile, QObject*);
+  ToggleAction(rcstr text, rcstr tip, QObject*);
+  Action& alt(rcstr text2, rcstr tip2);
 
 protected:
   str text1, text2, tip1, tip2;
@@ -41,7 +48,7 @@ protected:
 class Settings: public QSettings {
   SUPER(Settings, QSettings)
 public:
-  Settings(rcstr group = "");
+  Settings(rcstr group = EMPTY_STR);
  ~Settings();
 
   QVariant readVariant(rcstr key, QVariant const& def);
@@ -64,26 +71,25 @@ class TheHub: public QObject {
   Q_OBJECT
 public:
   TheHub();
- ~TheHub();
 
 private:
   void initActions();
   void configActions();
 
 private:
-  core::Session *session;
+  QScopedPointer<core::Session> session;
 
 public:
-  bool globalNorm;  // TODO rename this and related to fixedIntensityScale
+  bool fixedIntensityScale;
 
-  model::FileViewModel       fileViewModel;
-  model::DatasetViewModel    datasetViewModel;
-  model::ReflectionViewModel reflectionViewModel;
+  models::FileViewModel       fileViewModel;
+  models::DatasetViewModel    datasetViewModel;
+  models::ReflectionViewModel reflectionViewModel;
 
 public:
   QAction
     *actAddFiles, *actRemoveFile,
-    *actLoadCorrectionFile,
+    *actLoadCorrFile,
     *actLoadSession, *actSaveSession,
 
     *actExportDiffractogramCurrent,
@@ -101,23 +107,22 @@ public:
 #ifndef Q_OS_OSX // Mac has its own
     *actFullscreen,
 #endif
+    *actViewDockFiles, *actViewDockDatasets, *actViewDockDatasetInfo,
     *actViewReset,
 
-    *actReflectionSelectRegion,
-    *actCalculatePolefigures,
-    *actCalculateHistograms,
+    *actOutputPolefigures,
+    *actOutputHistograms,
     *actPreferences,
     *actFitErrorParameters,
 
     *actAbout,
 
   // more actions, some not in the menu
-    *actSelectPeak, *actReflectionPeak, *actReflectionWidth, *actReflectionAdd, *actReflectionRemove,
+    *actReflectionAdd, *actReflectionRemove,
     *actImageRotate, *actImageMirror,
-    *actImagesLink, *actImageOverlay, *actImagesGlobalNorm, *actImagesEnableCorr,
-    *actBackgroundClear, *actBackgroundBackground, *actBackgroundShowFit,
-    *actHasBeamOffset,
-    *actNormalizationDisable, *actNormalizationMeasureTime, *actNormalizationMonitor, *actNormalizationBackground;
+    *actImagesLink, *actImageOverlay, *actImagesFixedIntensity, *actEnableCorr,
+    *actFitTool, *actFitBgClear, *actFitShow,
+    *actHasBeamOffset;
 
 public: // files
   uint numFiles(bool withCorr) const;
@@ -126,40 +131,61 @@ public: // files
   str  fileName(uint index)    const;
   str  filePath(uint index)    const;
 
-  core::shp_File getFile(uint i)  const;
-  void remFile(uint i);
+  core::shp_File getFile(uint) const;
+  void remFile(uint);
 
   void setSelectedFile(core::shp_File);
   void setSelectedDataset(core::shp_Dataset);
+  void setSelectedReflection(core::shp_Reflection);
+  void setReflectionData(core::shp_Reflection);
+  void newReflectionData(core::Range const&,core::XY const&,qreal,bool);
 
 public:
-  void load(QFileInfo const&)       THROWS;
-  void load(QByteArray const& json) THROWS;
-  QByteArray save() const;
+  core::shp_LensSystem allLenses(core::Dataset const& dataset) const;
+  core::shp_LensSystem noROILenses(core::Dataset const& dataset) const;
 
+public:
+  void load(QFileInfo const&)  THROWS;
+  void load(QByteArray const&) THROWS;
+
+  void save(QFileInfo const&) const;
+  QByteArray save()           const;
+
+public:
   void addFile(rcstr filePath)      THROWS;
   void addFiles(str_lst filePaths)  THROWS;
   void loadCorrFile(rcstr filePath);
 
   void enableCorrection(bool);
 
-  core::ImageCut const& getImageCut() const;
-  void setImageCut(bool topLeft, bool linked, core::ImageCut const&);
+  QMargins const& getImageMargins() const;
+  void setImageMargins(bool topLeft, bool linked, QMargins const&);
 
   QSize getImageSize() const;
-  uint  pixIndexNoTransform(uint x, uint y) const;
-  core::intens_t pixIntensity(core::Image const&, uint x, uint y) const; // TODO review (and remove?!)
 
-  core::AngleCorrArray const& calcAngleCorrArray(qreal tthMitte);
+  core::DiffractionAnglesMap const& calcAngleMap(qreal tthMitte);
   core::Borders const& getCut() const; // TODO somehow hide
 
   core::Geometry const& getGeometry() const;
-  void setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset);
+  void setGeometry(qreal detectorDistance, qreal pixSize, bool hasBeamOffset, QPoint const& middlePixOffset);
 
   void setBackgroundPolynomialDegree(uint);
 
-  void doReadSettings();  // TODO review
-  void doSaveSettings();
+  void setReflType(core::ePeakType);
+
+  void addReflection(core::ePeakType);
+  void remReflection(uint);
+
+  enum {
+    TAB_BACKGROUND,
+    TAB_REFLECTIONS,
+  };
+
+  int fittingTab__; // TODO
+  void setFittingTab(int);
+  
+private:
+  core::shp_Reflection    selectedReflection;
 
 private:
   void setImageRotate(core::ImageTransform);
@@ -175,10 +201,28 @@ signals:
   void fileSelected(core::shp_File);
   void datasetSelected(core::shp_Dataset);
 
+  void reflectionsChanged();
+  void reflectionSelected(core::shp_Reflection);
+  void reflectionData(core::shp_Reflection);
+  void reflectionValues(core::Range const&, core::XY const&, qreal, bool);
+
   void displayChange();
   void geometryChanged();
 
   void backgroundPolynomialDegree(uint);
+
+  void normChanged();
+
+  void fittingTab(int);
+
+public:
+  // TODO instead of exposing the objects, provide an interface
+  core::Ranges&       getBgRanges()           const { return session->getBgRanges(); }
+  int&                getBgPolynomialDegree() const { return session->getBgPolynomialDegree(); }
+  core::Reflections&  getReflections()        const { return session->getReflections();  }
+
+public:
+  void setNormType(core::Normalization type);
 };
 
 //------------------------------------------------------------------------------

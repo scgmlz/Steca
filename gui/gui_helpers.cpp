@@ -1,15 +1,21 @@
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      gui_helpers.cpp
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
 #include "gui_helpers.h"
 #include <QAction>
 
 //------------------------------------------------------------------------------
-
-QBoxLayout *hbox() {
-  return new QHBoxLayout;
-}
-
-QBoxLayout *vbox() {
-  return new QVBoxLayout;
-}
 
 QBoxLayout *boxLayout(Qt::Orientation orientation) {
   switch (orientation) {
@@ -22,8 +28,22 @@ QBoxLayout *boxLayout(Qt::Orientation orientation) {
   }
 }
 
+QBoxLayout *hbox() {
+  auto box = new QHBoxLayout;
+  box->setSpacing(2);
+  return box;
+}
+
+QBoxLayout *vbox() {
+  auto box = new QVBoxLayout;
+  box->setSpacing(2);
+  return box;
+}
+
 QGridLayout *gridLayout() {
-  return new QGridLayout;
+  auto grid = new QGridLayout;
+  grid->setSpacing(2);
+  return grid;
 }
 
 QLabel *icon(rcstr fileName) {
@@ -71,7 +91,7 @@ QDoubleSpinBox *spinCell(uint emWidth,qreal min, qreal max) {
 
 QCheckBox* check(rcstr text, QAction* action) {
   auto ch = new QCheckBox(text);
-  if (action) QObject::connect(ch,&QCheckBox::toggled,[action](bool on) {
+  if (action) QObject::connect(ch, &QCheckBox::toggled,[action](bool on) {
     action->setChecked(on);
   });
   return ch;
@@ -95,18 +115,10 @@ QRadioButton* radioButton(rcstr text) {
   return new QRadioButton(text);
 }
 
-QComboBox* comboBox(QVector<QString> options) {
+QComboBox* comboBox(str_lst const& items) {
   auto comboBox = new QComboBox();
-  for_i (options.size()) {
-    comboBox->addItem(options.at(i));
-  }
+  comboBox->addItems(items);
   return comboBox;
-}
-
-//------------------------------------------------------------------------------
-
-ListView::ListView() {
-  setAlternatingRowColors(true);
 }
 
 //------------------------------------------------------------------------------

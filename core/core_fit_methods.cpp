@@ -1,9 +1,26 @@
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_fit_methods.cpp
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
 #include "core_fit_methods.h"
+
+#include "types/core_type_curve.h"
 #include "LevMar/levmar.h"
-#include <cmath>
+#include <QtMath>
 
 namespace core { namespace fit {
 //------------------------------------------------------------------------------
+// STeCa (1) code, refactored
 
 FittingMethod::FittingMethod() {
 }
@@ -11,11 +28,11 @@ FittingMethod::FittingMethod() {
 FittingMethod::~FittingMethod() {
 }
 
-bool FittingMethod::fitWithoutCheck(Function& function, Curve const& curve) {
+bool FittingMethod::fitWithoutChecks(Function& function, core::Curve const& curve) {
   return fit(function, curve, false);
 }
 
-bool FittingMethod::fit(Function& function_, Curve const& curve, bool sideConditionCheckIsActive) {
+bool FittingMethod::fit(Function& function_, core::Curve const& curve, bool withChecks) {
   if (curve.isEmpty()) return false;
 
   function = &function_;
@@ -23,25 +40,24 @@ bool FittingMethod::fit(Function& function_, Curve const& curve, bool sideCondit
 
   // prepare data in a required format
   uint parCount = function->parameterCount();
-  reals_t parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
+  qreal_vec parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
 
   for_i (parCount) {
-    auto par = function->getParameter(i);
-    auto rge = par.getRange();
-    parValue[i] = par.getValue();
+    auto par = function->parameterAt(i);
+    auto rge = par.valueRange();
+    parValue[i] = par.value();
     parMin[i]   = rge.min;
     parMax[i]   = rge.max;
   }
 
-  uint pointCount = curve.count();
-
-  if (!approximate(parValue.data(),parMin.data(),parMax.data(),parError.data(),parCount,
-                   curve.getYs().data(),pointCount))
+  if (!approximate(parValue.data(),
+                   parMin.data(), parMax.data(), parError.data(), parCount,
+                   curve.getYs().data(), curve.count()))
     return false;
 
   // read data
   for_i (parCount) {
-    if (!function->getParameter(i).setValue(parValue[i], parError[i], !sideConditionCheckIsActive))
+    if (!function->parameterAt(i).setValue(parValue[i], parError[i], !withChecks))
       return false;
   }
 
@@ -49,9 +65,8 @@ bool FittingMethod::fit(Function& function_, Curve const& curve, bool sideCondit
 }
 
 void FittingMethod::__functionY(qreal* parameterValues, qreal* yValues, int /*parameterLength*/, int xLength, void*) {
-  for_i (xLength) {
+  for_i (xLength)
     yValues[i] = function->y(xValues[i], parameterValues);
-  }
 }
 
 //------------------------------------------------------------------------------
@@ -68,7 +83,7 @@ bool FittingLinearLeastSquare::approximate(
   qreal const*  yValues,            // I
   uint          numberOfDataPoints) // I
 {
-  DelegateCalculationDbl function(this, &thisCls::__functionY);
+  DelegateCalculationDbl function(this, &thisClass::__functionY);
 
   // information regarding the minimization
   double info[LM_INFO_SZ];
@@ -105,9 +120,9 @@ bool FittingLevenbergMarquardt::approximate(
   qreal const*  yValues,            // I
   uint          numberOfDataPoints) // I
 {
-  DelegateCalculationDbl function(this, &thisCls::__functionY);
+  DelegateCalculationDbl function(this, &thisClass::__functionY);
   // Function to fill the Jacobian Matrix
-  DelegateCalculationDbl functionJacobian(this, &thisCls::__functionJacobianLM);
+  DelegateCalculationDbl functionJacobian(this, &thisClass::__functionJacobianLM);
 
   // minim. options mu, epsilon1, epsilon2, epsilon3
   double opts[LM_OPTS_SZ];
@@ -138,8 +153,7 @@ bool FittingLevenbergMarquardt::approximate(
 }
 
 void FittingLevenbergMarquardt::__functionJacobianLM(qreal* parameterValues, qreal* jacobian, int parameterLength, int xLength, void*) {
-  for_i (xLength) {
-    int &xi = i;
+  for_int (xi,xLength) {
     for_i (parameterLength) {
       *jacobian++ = function->dy(xValues[xi],i,parameterValues);
     }

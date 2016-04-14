@@ -1,5 +1,5 @@
 #include "test_core_image.h"
-#include <core_image.h>
+#include "types/core_type_image.h"
 
 void TestCoreImage::testImage(uint w, uint h) {
     //Testing if Data is corectly added and can be accessed again
@@ -22,7 +22,7 @@ void TestCoreImage::testImage(uint w, uint h) {
     im.setIntensity(pos,specialIntens);
     QCOMPARE(*(im.getIntensities()+pos),specialIntens);
 
-    auto rgeActual = im.getRgeIntens();
+    auto rgeActual = im.intensRange();
     auto rgeExpect = core::Range(intens,specialIntens);
     QCOMPARE(rgeActual.min, rgeExpect.min);
     QCOMPARE(rgeActual.max, rgeExpect.max);

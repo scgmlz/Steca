@@ -1,18 +1,18 @@
 #include "test_core_array2d.h"
 
-#include <core_array2d.h>
+#include "types/core_type_array2d.h"
 
 void TestCoreArray2d::testArray2d() {
   core::Array2D<qreal> a; // default constructor
 
   //Basic Test
   {
-    auto aSize = a.getSize();
+    auto aSize = a.size();
     QCOMPARE(aSize,QSize(0,0));
     QVERIFY(aSize.isValid() && aSize.isEmpty());
     QSize size(10,20);
     a.fill(size);
-    QCOMPARE(size,a.getSize());
+    QCOMPARE(size,a.size());
   }
 
   //Testing Methods for Data input and access
@@ -21,25 +21,19 @@ void TestCoreArray2d::testArray2d() {
     qreal val = 3;
     QSize size(xSize,ySize);
     a.fill(val,size);
-    QCOMPARE(size,a.getSize());
+    QCOMPARE(size,a.size());
 
-    for (int x=0; x<xSize; ++x) {
-      for (int y=0; y<ySize; ++y) {
-        QCOMPARE(a.at(a.index(x,y)),val);
-      }
-    }
+    for_int (x, xSize)
+      for_int (y, ySize)
+        QCOMPARE(a.at(a.index(x, y)), val);
 
-    for (int x=0; x<xSize; ++x) {
-      for (int y=0; y<ySize; ++y) {
+    for_int (x, xSize)
+      for_int (y, ySize)
         a.setAt(a.index(x,y),x + y*xSize);
-      }
-    }
 
-    for (int x=0; x<xSize; ++x) {
-      for (int y=0; y<ySize; ++y) {
+    for_int (x, xSize)
+      for_int (y, ySize)
         QCOMPARE(a.at(a.index(x,y)),(qreal)(x + y*xSize));
-      }
-    }
 
     int const iSize = xSize * ySize;
     QCOMPARE(iSize,(int)a.getCount());
@@ -57,7 +51,7 @@ void TestCoreArray2d::testArray2d() {
   //Testing if Array is reset to default after clear
   {
     a.clear();
-    QCOMPARE(a.getSize(),QSize(0,0));
+    QCOMPARE(a.size(),QSize(0,0));
     QCOMPARE(a.getCount(),(uint)0);
   }
 }

@@ -1,63 +1,36 @@
+// TODO HEADER
 #include "core_session.h"
 #include "io/core_io.h"
 #include "core_fit_methods.h"
-#include <cmath>
+#include "core_fit_fitting.h"
+#include "types/core_type_angles.h"
+#include "types/core_type_curve.h"
+#include <QStringList>
+#include <QtMath>
 
 namespace core {
-
 //------------------------------------------------------------------------------
 
-ImageTransform::ImageTransform(int val_): val((e)(val_ & 7)) {
+str_lst const& getStringListNormalization() {
+  static str_lst sl{"Disable","Measurement time","Monitor counts","Background level"};
+  return sl;
 }
 
-ImageTransform ImageTransform::mirror(bool on) const {
-  return on ? ImageTransform(val |  MIRROR)
-            : ImageTransform(val & ~MIRROR);
-}
 
-ImageTransform ImageTransform::rotateTo(ImageTransform rot) const {
-  return ImageTransform((val & MIRROR) | (rot.val & 3));
-}
-
-ImageTransform ImageTransform::nextRotate() const {
-  return rotateTo(val+1);
-}
-
-//------------------------------------------------------------------------------
-
-ImageCut::ImageCut(uint top_, uint bottom_, uint left_, uint right_)
-: top(top_), bottom(bottom_), left(left_), right(right_) {
-}
-
-bool ImageCut::operator==(ImageCut const& that) {
-  return top==that.top && bottom==that.bottom && left==that.left && right==that.right;
-}
-
-uint ImageCut::getWidth(QSize const& fullSize) const {
-  return qMax(fullSize.width() - (int)left - (int)right, 0);
-}
-
-uint ImageCut::getHeight(QSize const& fullSize) const {
-  return qMax(fullSize.height() - (int)top - (int)bottom, 0);
-}
-
-uint ImageCut::getCount(QSize const& fullSize) const {
-  return getWidth(fullSize) * getHeight(fullSize);
-}
-
-//------------------------------------------------------------------------------
+qreal const Geometry::MIN_DETECTOR_DISTANCE   = 1000;
+qreal const Geometry::MIN_DETECTOR_PIXEL_SIZE = 1;
 
 Geometry::Geometry() {
-  sampleDetectorSpan  = 1.0;
-  pixSpan             = 0.01; // TODO these must be reasonable limited
+  detectorDistance  = MIN_DETECTOR_DISTANCE;
+  pixSize             = MIN_DETECTOR_PIXEL_SIZE;
   hasBeamOffset       = false;
   middlePixOffset     = QPoint();
 }
 
 bool Geometry::operator ==(Geometry const& that) const {
   return
-    sampleDetectorSpan == that.sampleDetectorSpan &&
-    pixSpan            == that.pixSpan &&
+    detectorDistance == that.detectorDistance &&
+    pixSize            == that.pixSize &&
     hasBeamOffset      == that.hasBeamOffset &&
     middlePixOffset    == that.middlePixOffset;
 }
@@ -67,10 +40,20 @@ bool Geometry::operator ==(Geometry const& that) const {
 Session::Session()
 : dataFiles(), corrFile(), corrEnabled(false), imageSize(), geometry()
 , imageTransform(ImageTransform::ROTATE_0)
-, lastCalcTthMitte(0), hasNaNs(false) {
+, angleMapArray()
+, lastCalcTthMitte(0)
+, hasNaNs(false), bgPolynomialDegree(0), type(Normalization::DISABLE) {
 }
 
 Session::~Session() {
+}
+
+void Session::clear() {
+  // TODO REVIEW
+  reflections.clear();
+  enableCorrection(false);
+  remCorrFile();
+  while (numFiles(false)) remFile(0);
 }
 
 uint Session::numFiles(bool withCorr) const {
@@ -100,7 +83,7 @@ shp_File Session::remFile(uint i) {
 bool Session::hasFile(rcstr fileName) {
   QFileInfo fileInfo(fileName);
   for (auto &file: dataFiles)
-    if (fileInfo == file->getInfo()) return true;
+    if (fileInfo == file->fileInfo()) return true;
   return false;
 }
 
@@ -158,10 +141,10 @@ void Session::setImageSize(QSize const& size) THROWS {
     THROW("inconsistent image size");
 }
 
-void Session::setGeometry(qreal sampleDetectorSpan, qreal pixSpan, bool hasBeamOffset, QPoint const& middlePixOffset) {
-  ASSERT(sampleDetectorSpan>0 && pixSpan>0) // TODO better than assert
-  geometry.sampleDetectorSpan = sampleDetectorSpan;
-  geometry.pixSpan            = pixSpan;
+void Session::setGeometry(qreal detectorDistance, qreal pixSize, bool hasBeamOffset, QPoint const& middlePixOffset) {
+  ASSERT(detectorDistance>0 && pixSize>0) // TODO use MIN_DETECTOR_DISTANCE ...
+  geometry.detectorDistance = detectorDistance;
+  geometry.pixSize            = pixSize;
   geometry.hasBeamOffset      = hasBeamOffset;
   geometry.middlePixOffset    = middlePixOffset;
 }
@@ -178,69 +161,52 @@ ImageTransform Session::getImageTransform() const {
   return imageTransform;
 }
 
-/// calculate the index of a pixel in a transformed image
-uint Session::pixIndex(uint x, uint y) const {
-  // imageSize is not transformed,
-  // therefore w and h are swapped in the odd cases below
-  uint w = imageSize.width(), h = imageSize.height();
-
-  switch (imageTransform.val) {
-  case ImageTransform::ROTATE_0:
-    return x + y * w;
-  case ImageTransform::ROTATE_1:
-    x = h - x - 1;
-    return y + x * w;
-  case ImageTransform::ROTATE_2:
-    x = w - x - 1;
-    y = h - y - 1;
-    return x + y * w;
-  case ImageTransform::ROTATE_3:
-    y = w - y - 1;
-    return y + x * w;
-  case ImageTransform::MIRROR_ROTATE_0:
-    x = w - x - 1;
-    return x + y * w;
-  case ImageTransform::MIRROR_ROTATE_1:
-    x = h - x - 1;
-    y = w - y - 1;
-    return y + x * w;
-  case ImageTransform::MIRROR_ROTATE_2:
-    y = h - y - 1;
-    return x + y * w;
-  case ImageTransform::MIRROR_ROTATE_3:
-    return y + x * w;
-  default:
-    NEVER_HERE return 0;
-  }
-}
-
-uint Session::pixIndexNoTransform(uint x, uint y) const {
-  uint w = imageTransform.isTransposed()
-    ? imageSize.height() : imageSize.width();
-  return x + y * w;
-}
-
-intens_t Session::pixIntensity(Image const& image, uint x, uint y) const {
-  uint index = pixIndex(x,y);
-  intens_t intens = image.intensity(index);
-  if (corrEnabled) {
-    auto factor = intensCorrArray.intensity(index);
-    if (!qIsNaN(factor))
-      intens *= factor;
-    else
-      intens = qQNaN();
-  }
-  return intens;
-}
-
 QSize Session::getImageSize() const {
   return imageTransform.isTransposed()
     ? imageSize.transposed() : imageSize;
 }
 
+shp_LensSystem Session::allLenses(Dataset const& dataset,
+                                  bool const globalIntensityScale) const {
+  auto lenses = plainLens(dataset);
+  lenses << shp_LensSystem(new TransformationLens(imageTransform));
+  lenses << shp_LensSystem(new ROILens(imageMargins));
+  if (corrEnabled)
+    lenses << shp_LensSystem(new SensitivityCorrectionLens(intensCorrArray));
+  if (globalIntensityScale)
+    lenses << shp_LensSystem(
+        new GlobalIntensityRangeLens(dataset.parentFile().intensRange()));
+  else
+    lenses << shp_LensSystem(new IntensityRangeLens());
+  if (isNormEnabled())
+     lenses << makeNormalizationLens(dataset);
+  return lenses;
+}
+
+shp_LensSystem Session::noROILenses(Dataset const& dataset,
+                                    bool const globalIntensityScale) const {
+  auto lenses = plainLens(dataset);
+  lenses << shp_LensSystem(new TransformationLens(imageTransform));
+  if (corrEnabled)
+    lenses << shp_LensSystem(new SensitivityCorrectionLens(intensCorrArray));
+  if (globalIntensityScale)
+    lenses << shp_LensSystem(
+        new GlobalIntensityRangeLens(dataset.parentFile().intensRange()));
+  else
+    lenses << shp_LensSystem(new IntensityRangeLens());
+  if (isNormEnabled())
+    lenses << makeNormalizationLens(dataset);
+  return lenses;
+}
+
+shp_LensSystem Session::plainLens(Dataset const& dataset) const {
+  Session *This = const_cast<Session*>(this); // TODO remove, make calcAngleMap const
+  return makeLensSystem(dataset, This->calcAngleMap(dataset.middleTth()));
+}
+
 QPoint Session::getPixMiddle() const {
   auto imageSize = getImageSize();
-  QPoint middle( // TODO hasBeamOffset
+  QPoint middle( // REVIEW TODO when hasBeamOffset
     imageSize.width()  / 2 + geometry.middlePixOffset.x(),
     imageSize.height() / 2 + geometry.middlePixOffset.y());
   // TODO was: if ((tempPixMiddleX *[<=]* 0) || (tempPixMiddleX >= getWidth()))
@@ -250,42 +216,41 @@ QPoint Session::getPixMiddle() const {
   return middle;
 }
 
-// TODO this is a slightly modified original code; be careful; eventually refactor
-AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
+DiffractionAnglesMap const& Session::calcAngleMap(qreal tthMitte) { // RENAME
+  // REFACTOR
   QPoint pixMiddle = getPixMiddle();
   auto size   = getImageSize();
 
-  if (angleCorrArray.getSize() == size
+  if (angleMapArray.size() == size
       && lastCalcTthMitte==tthMitte && lastPixMiddle == pixMiddle
-      && lastGeometry == geometry && lastImageCut == imageCut
+      && lastGeometry == geometry && lastImageMargins == imageMargins
       && lastImageTransform == imageTransform)
-    return angleCorrArray;
+    return angleMapArray;
 
   lastCalcTthMitte = tthMitte; lastPixMiddle = pixMiddle;
   lastGeometry = geometry;
-  lastImageCut = imageCut;
+  lastImageMargins = imageMargins;
   lastImageTransform = imageTransform;
 
-  angleCorrArray.fill(size);
-  ful.invalidate();
+  angleMapArray.fill(size);
   cut.invalidate();
 
   if (!size.isEmpty()) {
-    ASSERT(geometry.pixSpan>0) // TODO better than asserts
-    ASSERT(geometry.sampleDetectorSpan>0)
+    ASSERT(geometry.pixSize>0) // TODO better than asserts
+    ASSERT(geometry.detectorDistance>0)
 
     // Fill the Array
-    for (int iy = 0; iy < size.height(); ++iy) {
+    for_int (iy, size.height()) {
       int abstandInPixVertical = pixMiddle.y() - iy;
-      qreal y = abstandInPixVertical * geometry.pixSpan;
-      for (int ix = 0; ix < size.width(); ++ix) {
+      qreal y = abstandInPixVertical * geometry.pixSize;
+      for_int (ix, size.width()) {
         // TTH des Pixels berechnen
         int abstandInPixHorizontal = - pixMiddle.x() + ix;
-        qreal x = abstandInPixHorizontal * geometry.pixSpan;
+        qreal x = abstandInPixHorizontal * geometry.pixSize;
         qreal z = hypot(x,y);
-        qreal detektorAbstandPixel = hypot(z,geometry.sampleDetectorSpan);
-        qreal tthHorAktuell = tthMitte + atan(x / geometry.sampleDetectorSpan);
-        qreal detektorAbstandHorPixel = hypot(x,geometry.sampleDetectorSpan);
+        qreal detektorAbstandPixel = hypot(z,geometry.detectorDistance);
+        qreal tthHorAktuell = degToRad(tthMitte) + atan(x / geometry.detectorDistance);
+        qreal detektorAbstandHorPixel = hypot(x,geometry.detectorDistance);
         qreal h = cos(tthHorAktuell) * detektorAbstandHorPixel;
         qreal tthNeu = acos(h / detektorAbstandPixel);
 
@@ -299,40 +264,28 @@ AngleCorrArray const& Session::calcAngleCorrArray(qreal tthMitte) {
           gamma  = -gamma;
         }
 
-        // Maxima und minima setzen
-        ful.gamma.extend(gamma);
-        ful.tth_regular.extend(tthNeu);
-        ful.tth_gamma0.extend(tthHorAktuell);
-
         // Write angle in array
-        angleCorrArray.setAt(pixIndexNoTransform(ix,iy),Pixpos(gamma,tthNeu));
+        angleMapArray.setAt(ix, iy, DiffractionAngles(radToDeg(gamma),radToDeg(tthNeu)));
       }
     }
 
-    ASSERT(ful.isValid())
-
-    // Calculate Gamma and TTH after cut
-    // TODO the original code called setPixCut - is used elsewhere?
-    // TODO refactor
-    ASSERT(imageCut.getCount(size) > 0)
-
     cut.tth_gamma0.safeSet(
-      angleCorrArray.at(size.width() - 1 - imageCut.right,pixMiddle.y()).tthPix,
-      angleCorrArray.at(imageCut.left,pixMiddle.y()).tthPix);
+      angleMapArray.at(size.width() - 1 - imageMargins.right(),pixMiddle.y()).tth,
+      angleMapArray.at(imageMargins.left(),pixMiddle.y()).tth);
 
-    // TODO loop through cut - make abstract?
-    for (uint ix = imageCut.left; ix < size.width() - imageCut.right; ++ix) {
-      for (uint iy = imageCut.top; iy < size.height() - imageCut.bottom; ++iy) {
-        auto ac = angleCorrArray.at(ix,iy);
-        cut.gamma.extend(ac.gammaPix);
-        cut.tth_regular.extend(ac.tthPix);
+    // TODO loop through cut - make abstract (see below), REFACTOR
+    for (int ix = imageMargins.left(); ix < size.width() - imageMargins.right(); ++ix) {
+      for (int iy = imageMargins.top(); iy < size.height() - imageMargins.bottom(); ++iy) {
+        auto ac = angleMapArray.at(ix,iy);
+        cut.gamma.extendBy(ac.gamma);
+        cut.tth_regular.extendBy(ac.tth);
       }
     }
 
     ASSERT(cut.isValid())
   }
 
-  return angleCorrArray;
+  return angleMapArray;
 }
 
 void Session::calcIntensCorrArray() {
@@ -344,22 +297,26 @@ void Session::calcIntensCorrArray() {
   }
 
   ASSERT(1 == corrFile->numDatasets()) // no need to sum
-  Image const& image = corrFile->getDataset(0)->getImage();
+  auto lenses = plainLens(*corrFile->getDataset(0));
+  lenses << shp_LensSystem(new ROILens(imageMargins));
 
-  qreal sum = 0; uint n = 0; auto size = getImageSize();
-  for (uint x=imageCut.left; x<size.width()-imageCut.right; ++x)
-    for (uint y=imageCut.top; y<size.height()-imageCut.bottom; ++y) {
-      sum += image.intensity(pixIndex(x,y));
-      ++n; // TODO aren't we lazy
+  // REVIEW
+  qreal sum = 0; uint n = 0;
+  auto size = lenses->getSize();
+  for_int (iy, size.height()) {
+    for_int (ix, size.width()) {
+      sum += lenses->getIntensity(ix, iy);
+      ++n;
     }
+  }
 
-  ASSERT(n>0)
+  ASSERT(n>0) // TODO div. by 0 ?
   qreal avg = sum / n;
 
-  intensCorrArray.fill(1,size);
-  for (uint x=imageCut.left; x<size.width()-imageCut.right; ++x)
-    for (uint y=imageCut.top; y<size.height()-imageCut.bottom; ++y) {
-      auto intens = image.intensity(pixIndex(x,y));
+  intensCorrArray.fill(1,imageSize);
+  for_int (iy, size.height())
+    for_int (ix, size.width()) {
+      auto intens = lenses->getIntensity(ix, iy);
       qreal val;
 
       if (intens>0) {
@@ -368,35 +325,100 @@ void Session::calcIntensCorrArray() {
         val = qQNaN(); hasNaNs = true;
       }
 
-      intensCorrArray.setIntensity(pixIndex(x,y),val);
+      intensCorrArray.setAt(ix + imageMargins.left(), iy + imageMargins.top(), val);
     }
 }
 
-void Session::setImageCut(bool topLeft, bool linked, ImageCut const& imageCut_) {
+void Session::setImageMargins(bool topLeft, bool linked, QMargins const& margins) {
   auto size = getImageSize();
 
   if (size.isEmpty())
-    imageCut = ImageCut();
+    imageMargins = QMargins();
   else {
-    auto limit = [linked](uint &thisOne, uint &thatOne, uint maxTogether) {
-      if (linked && thisOne+thatOne>=maxTogether) {
-        thisOne = thatOne = qMax(0u, (maxTogether-1) / 2);
+    auto limit = [linked](int& m1, int& m2, int maxTogether) {
+      if (linked && m1+m2 >= maxTogether) {
+        m1 = m2 = qMax(0, (maxTogether-1) / 2);
       } else {
-        thisOne = qMax(qMin(thisOne, maxTogether - thatOne - 1), 0u);
-        thatOne = qMax(qMin(thatOne, maxTogether - thisOne - 1), 0u);
+        m1 = qMax(qMin(m1, maxTogether - m2 - 1), 0);
+        m2 = qMax(qMin(m2, maxTogether - m1 - 1), 0);
       }
     };
 
-    imageCut = imageCut_;
     // make sure that cut values are valid; in the right order
+    int left  = margins.left(),  top = margins.top(),
+        right = margins.right(), bottom = margins.bottom();
     if (topLeft) {
-      limit(imageCut.top,   imageCut.bottom,  size.height());
-      limit(imageCut.left,  imageCut.right,   size.width());
+      limit(top,  bottom, size.height());
+      limit(left, right,  size.width());
     } else {
-      limit(imageCut.bottom,imageCut.top,     size.height());
-      limit(imageCut.right, imageCut.left,    size.width());
+      limit(bottom, top,  size.height());
+      limit(right,  left, size.width());
     }
+
+    imageMargins = QMargins(left,top,right,bottom);
   }
+}
+
+shp_LensSystem Session::makeNormalizationLens(Dataset const& dataset) const {
+  auto const& parentFile = dataset.parentFile();
+  qreal normVal = 0;
+  qreal average = 0;
+  qreal current = 0;
+  switch (type) {
+  case Normalization::DELTA_TIME:
+    average = parentFile.calAverageDeltaTime();
+    current = dataset.deltaTime();
+    break;
+  case Normalization::MON_COUNTS:
+    average = parentFile.calAverageMonitor();
+    current = dataset.monitorCount();
+    break;
+  case Normalization::BG_LEVEL:
+    if (getBgRanges().isEmpty()) {
+      average = 1;
+      current = 1; // bg not set -> use 1 as normVal, warn user!
+    } else  {
+      average = calGlobalBGAverage(dataset);
+      current = calAverageBG(dataset);
+    }
+    break;
+  default:
+    NEVER_HERE
+  }
+  normVal = average/current;
+  RUNTIME_CHECK(normVal > 0, "Normalization value is negative");
+  return shp_LensSystem(new NormalizationLens(normVal));
+}
+
+void Session::setNormType(Normalization type_) {
+  type = type_;
+}
+
+qreal Session::calAverageBG(Dataset const& dataset) const {
+  auto lenses = plainLens(dataset);
+  lenses << shp_LensSystem(new TransformationLens(imageTransform));
+  lenses << shp_LensSystem(new ROILens(imageMargins));
+  if (corrEnabled)
+    lenses << shp_LensSystem(new SensitivityCorrectionLens(intensCorrArray));
+
+  Curve const& gammaCurve = makeCurve(lenses,
+                              getCut().gamma,
+                              getCut().tth_regular);
+
+  fit::Polynomial bgPoly = fit::fitBackground(gammaCurve,
+                                              getBgRanges(),
+                                              getBgPolynomialDegree());
+
+  return bgPoly.calAverageValue(getCut().tth_regular);
+}
+
+qreal Session::calGlobalBGAverage(Dataset const& dataset) const {
+  auto const& parentFile = dataset.parentFile();
+  qreal val = 0;
+  for_i(parentFile.numDatasets()) {
+    val += calAverageBG(*parentFile.getDataset(i).data());
+  }
+  return val/parentFile.numDatasets();
 }
 
 //------------------------------------------------------------------------------

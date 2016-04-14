@@ -1,11 +1,23 @@
-/** \file
- * Functions for data fitting (was: approximation)
- */
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_fit_functions.h
+//! @brief     Functions for data fitting
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
 
 #ifndef CORE_FIT_FUNCTIONS_H
 #define CORE_FIT_FUNCTIONS_H
 
-#include <core_types.h>
+#include "types/core_type_xy.h"
+#include "types/core_type_range.h"
 
 namespace core { namespace fit {
 //------------------------------------------------------------------------------
@@ -17,18 +29,22 @@ public:
   public:
     Parameter();
 
-    qreal getValue() const  { return value; }
-    Range getRange() const; ///< the allowed range
+    qreal value()  const  { return val; }
 
-    void setRange(qreal min,qreal max);
+    Range valueRange() const; ///< allowed range of values
+    void  setValueRange(qreal min,qreal max);
 
-    /// checks whether a new value/error pair would pass the constraints
-    bool  checkValue(qreal value, qreal error=0);
+    /// checks whether a value/error pair would pass the constraints
+    bool  checkConstraints(qreal val, qreal error=0);
     /// conditionally sets the new value/error pair
-    bool  setValue(qreal value, qreal error=0, bool force=false);
+    bool  setValue(qreal val, qreal error=0, bool force=false);
+
+  public:
+    JsonObj saveJson() const;
+    void    loadJson(rcJsonObj) THROWS;
 
   private:
-    qreal value;
+    qreal val;
 
     // constraints; TODO maybe not all needed?
 
@@ -38,22 +54,24 @@ public:
 
     /// maximum change allowed; NaN -> no check
     qreal maxDelta;
-    qreal maxDeltaPercent;
+    qreal maxDeltaPercent;  // REVIEW - needed?
 
     /// maximum error allowed; NaN -> no check
     qreal maxError;
-    qreal maxErrorPercent;
+    qreal maxErrorPercent;  // REVIEW - needed?
   };
 
 public:
+  static Function* factory(rcstr);
+
   Function();
   virtual ~Function();
 
   virtual uint parameterCount() const   = 0;
 
-  virtual Parameter& getParameter(uint) = 0;
-  virtual Parameter const& getParameter(uint i) const {
-    return const_cast<Function*>(this)->getParameter(i);
+  virtual Parameter& parameterAt(uint) = 0;
+  virtual Parameter const& parameterAt(uint i) const {
+    return const_cast<Function*>(this)->parameterAt(i);
   }
 
   /// evaluate the function y = f(x), with given (parameterValues) or own parameters
@@ -61,6 +79,10 @@ public:
 
   /// partial derivative / parameter, with given (parameterValues) or own parameters
   virtual qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const = 0;
+
+public:
+  virtual JsonObj saveJson() const;
+  virtual void    loadJson(rcJsonObj) THROWS;
 };
 
 #ifndef QT_NO_DEBUG
@@ -78,9 +100,13 @@ public:
 
   void setParameterCount(uint);
   uint parameterCount() const;
-  Parameter& getParameter(uint);
+  Parameter& parameterAt(uint);
 
-  void reset();
+  virtual void reset();
+
+public:
+  JsonObj saveJson() const;
+  void    loadJson(rcJsonObj) THROWS;
 
 protected:
   QVector<Parameter> parameters;
@@ -102,10 +128,14 @@ public:
 
   /// aggregate parameter list for all added functions
   uint parameterCount() const;
-  Parameter& getParameter(uint);
+  Parameter& parameterAt(uint);
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
+
+public:
+  JsonObj saveJson() const;
+  void    loadJson(rcJsonObj) THROWS;
 
 protected:
   /// summed functions
@@ -116,6 +146,7 @@ protected:
   QVector<Function*>  function_parIndex;
   /// the starting index of parameters of a summed function, given the aggregate parameter index
   QVector<uint> firstParIndex_parIndex;
+
 };
 
 //------------------------------------------------------------------------------
@@ -126,11 +157,16 @@ class Polynomial: public SimpleFunction {
 public:
   Polynomial(uint degree = 0);
 
-  uint getDegree() const;
+  uint degree() const;
   void setDegree(uint);
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
+  qreal calAverageValue(Range tth);
+
+public:
+  JsonObj saveJson() const;
+  void    loadJson(rcJsonObj) THROWS;
 };
 
 //------------------------------------------------------------------------------
@@ -139,10 +175,29 @@ public:
 class PeakFunction: public SimpleFunction {
   SUPER(PeakFunction,SimpleFunction)
 public:
+  static PeakFunction* factory(ePeakType);
+
   PeakFunction();
 
-  virtual void setPeak(qreal tth, qreal intens) = 0;
-  virtual void setFWHM(qreal)                   = 0;
+  virtual ePeakType type() const = 0;
+
+  virtual void  setGuessPeak(XY const&);
+  virtual void  setGuessFWHM(qreal);
+
+  XY const&     getGuessPeak() const { return guessPeak; }
+  qreal         getGuessFWHM() const { return guessFwhm; }
+
+  virtual XY    getFitPeak() const = 0;
+  virtual qreal getFitFWHM() const = 0;
+
+  void reset();
+
+public:
+  JsonObj saveJson() const;
+  void    loadJson(rcJsonObj) THROWS;
+
+private:
+  XY guessPeak; qreal guessFwhm;
 };
 
 //------------------------------------------------------------------------------
@@ -150,15 +205,23 @@ public:
 class Gaussian: public PeakFunction {
   SUPER(Gaussian,PeakFunction)
 public:
-  enum { parAMPL, parMU, parSIGMA };
+  enum { parAMPL, parXSHIFT, parSIGMA };
 
-  Gaussian(qreal ampl=1, qreal mu=0, qreal sigma=1);
+  Gaussian(qreal ampl=1, qreal xShift=0, qreal sigma=1);
+
+  ePeakType type() const { return ePeakType::GAUSSIAN; }
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
-  void setPeak(qreal tth, qreal intens);
-  void setFWHM(qreal);
+  void  setGuessPeak(XY const&) override;
+  void  setGuessFWHM(qreal) override;
+
+  XY    getFitPeak() const override;
+  qreal getFitFWHM() const override;
+
+public:
+  JsonObj saveJson() const;
 };
 
 //------------------------------------------------------------------------------
@@ -166,15 +229,23 @@ public:
 class CauchyLorentz: public PeakFunction {
   SUPER(CauchyLorentz,PeakFunction)
 public:
-  enum { parAMPL, parTTH0, parGAMMA };
+  enum { parAMPL, parXSHIFT, parGAMMA };
 
-  CauchyLorentz(qreal ampl=1, qreal tth=0, qreal gamma=1);
+  CauchyLorentz(qreal ampl=1, qreal xShift=0, qreal gamma=1);
+
+  ePeakType type() const { return ePeakType::LORENTZIAN; }
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
-  void setPeak(qreal tth, qreal intens);
-  void setFWHM(qreal);
+  void setGuessPeak(XY const&) override;
+  void setGuessFWHM(qreal) override;
+
+  XY    getFitPeak() const override;
+  qreal getFitFWHM() const override;
+
+public:
+  JsonObj saveJson() const;
 };
 
 //------------------------------------------------------------------------------
@@ -182,15 +253,23 @@ public:
 class PseudoVoigt1: public PeakFunction {
   SUPER(PseudoVoigt1,PeakFunction)
 public:
-  enum { parAMPL, parMU, parHWHM, parETA };
+  enum { parAMPL, parXSHIFT, parSIGMAGAMMA, parETA };
 
-  PseudoVoigt1(qreal ampl=1, qreal mu=0, qreal hwhm=1, qreal eta=0.1);
+  PseudoVoigt1(qreal ampl=1, qreal xShift=0, qreal sigmaGamma=1, qreal eta=0.1);
+
+  ePeakType type() const { return ePeakType::PSEUDOVOIGT1; }
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
-  void setPeak(qreal tth, qreal intens);
-  void setFWHM(qreal);
+  void setGuessPeak(XY const&) override;
+  void setGuessFWHM(qreal) override;
+
+  XY    getFitPeak() const override;
+  qreal getFitFWHM() const override;
+
+public:
+  JsonObj saveJson() const;
 };
 
 //------------------------------------------------------------------------------
@@ -198,17 +277,25 @@ public:
 class PseudoVoigt2: public PeakFunction {
   SUPER(PseudoVoigt2,PeakFunction)
 public:
-  enum { parAMPL, parMU, parHWHMG, parHWHML, parETA };
+  enum { parAMPL, parXSHIFT, parSIGMA, parGAMMA, parETA };
 
-  PseudoVoigt2(qreal ampl=1, qreal mu=0, qreal hwhmG=1, qreal hwhmL=1, qreal eta=0.1);
+  PseudoVoigt2(qreal ampl=1, qreal xShift=0, qreal sigma=1, qreal gamma=1, qreal eta=0.1);
+
+  ePeakType type() const { return ePeakType::PSEUDOVOIGT2; }
 
   qreal y(qreal x, qreal const* parameterValues = nullptr) const;
   qreal dy(qreal x, uint parameterIndex, qreal const* parameterValues = nullptr) const;
 
-  void setPeak(qreal tth, qreal intens);
-  void setFWHM(qreal);
+  void setGuessPeak(XY const&) override;
+  void setGuessFWHM(qreal) override;
+
+  XY    getFitPeak() const override;
+  qreal getFitFWHM() const override;
+
+public:
+  JsonObj saveJson() const;
 };
 
 //------------------------------------------------------------------------------
 }}
-#endif
+#endif // CORE_FIT_FUNCTIONS_H

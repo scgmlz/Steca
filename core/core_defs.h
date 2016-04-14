@@ -1,40 +1,59 @@
-/** \file
- * Commonly used or very useful definitions.
- */
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_defs.h
+//! @brief     Globally used definitions and includes.
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
 
 #ifndef CORE_DEFS_H
 #define CORE_DEFS_H
 
-// common QT includes - used all the time
+// common QT includes - everyone needs them
+
 #include <QtGlobal>
 #include <QSharedPointer>
 #include <QVector>
 
-/// A class definition helper: this class (thisCls) and superclass (super) access.
-#define SUPER(cls,sup)  typedef cls thisCls; typedef sup super;
-
 #include <QString>
 #include <QStringBuilder>
 
-typedef QString     str;      ///< a short alias for the string class
+// string support
+typedef QString     str;      ///< a short alias for the QString class
 typedef str const&  rcstr;    ///< a reference to a string constant
-typedef char const* pcstr;    ///< zero-terminated C-style string
+typedef char const* pcstr;    ///< C-style (zero-byte-terminated) string
 
-typedef QStringList str_lst;  ///< a short alias
+typedef QStringList str_lst;  ///< a short alias for QStringList
 
 extern  str const EMPTY_STR;  ///< an empty string (that can be returned by reference!)
 
+/// A class definition helper that defines aliases for this and super class.
+#define SUPER(cls,sup)  using thisClass = cls; using super = sup;
+
 /// the idiomatic iteration over *n* items
-#define for_i(n) for (int i=0, iEnd=(n); i<iEnd; ++i)
+#define for_int(var,n) for (int var=0, var##End=(n); var<var##End; ++var)
+#define for_i(n) for_int(i,n)
 
 // useful vectors
-typedef QVector<qreal> reals_t;
-typedef QVector<uint>  uints_t;
+typedef QVector<qreal> qreal_vec;
+typedef QVector<uint>  uint_vec;
+
+// conversions
+qreal radToDeg(qreal rad);
+qreal degToRad(qreal deg);
 
 // exceptions
 #include <QException>
 
-#define THROWS throw (Exception)    ///< exception annotation macro
+/// exception specification macro
+#define THROWS throw (Exception)
 
 /// An exception that carries a message.
 class Exception: public QException {
@@ -44,16 +63,18 @@ public:
  ~Exception()                       throw()                 {}
 
   Exception *clone() const;
-  void raise() const;
+  void raise()       const;
 
   str msg;
 };
 
-#define THROW(msg) throw Exception(msg)   ///< raise an exception
-#define RUNTIME_CHECK(test,msg) \
-  if (!(test)) THROW(msg)                 ///< run-time condition checking
+/// raise an exception
+#define THROW(msg)  throw Exception(msg)
+
+/// run-time condition checking
+#define RUNTIME_CHECK(test,msg)   if (!(test)) THROW(msg)
 
 // debug support
 #include "core_debug.h"
 
-#endif
+#endif // CORE_DEFS_H

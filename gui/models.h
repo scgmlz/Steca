@@ -1,98 +1,98 @@
-/** \files
- * Data models.
- */
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      models.h
+//! @brief     Data models.
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
 
 #ifndef MODELS_H
 #define MODELS_H
 
-#include "core_defs.h"
-#include "panel/panel.h"  // TODO remove ?
-#include "core_file.h"
-#include <QAbstractListModel>
-#include <QAbstractTableModel>
+#include "types/type_models.h"
 
-class TheHub;
-
-namespace model {
+namespace models {
 //------------------------------------------------------------------------------
 
-class ModelBase {
-public:
-  ModelBase(TheHub&);
-protected:
-  TheHub &theHub;
-};
-
-class FileViewModel: public QAbstractListModel, public ModelBase {
-  SUPER(FileViewModel,QAbstractListModel)
+class FileViewModel: public TableModel {
+  SUPER(FileViewModel,TableModel)
 public:
   FileViewModel(TheHub&);
 
-  uint numFiles(bool withCorr=false);
+  int columnCount(rcIndex = ANY_INDEX) const;
+  int rowCount(rcIndex    = ANY_INDEX) const;
+
+  QVariant data(rcIndex,int) const;
+
+public:
+  enum { GetFileRole = Qt::UserRole, IsCorrFileRole };
+
   void remFile(uint i);
-  void setSelectedFile(core::shp_File);
-
-  enum { GetFileRole = Qt::UserRole, IsCorrectionFileRole };
-
-  int rowCount(QModelIndex const& = QModelIndex())      const;
-  QVariant data(QModelIndex const&,int) const;
-
-  void signalReset();
 };
 
-class DatasetViewModel: public QAbstractTableModel, public ModelBase {
-  SUPER(DatasetViewModel,QAbstractTableModel)
+//------------------------------------------------------------------------------
+
+class DatasetViewModel: public TableModel {
+  SUPER(DatasetViewModel,TableModel)
 public:
   DatasetViewModel(TheHub&);
 
-  enum { GetDatasetRole = Qt::UserRole };
+  int columnCount(rcIndex = ANY_INDEX) const;
+  int rowCount(rcIndex    = ANY_INDEX) const;
 
-  int columnCount(QModelIndex const& = QModelIndex())   const;
-  int rowCount(QModelIndex const& = QModelIndex())      const;
-  QVariant data(QModelIndex const&,int) const;
+  QVariant data(rcIndex,int) const;
   QVariant headerData(int,Qt::Orientation,int) const;
 
-  void setCoreFile(core::shp_File);
-  void setInfoItems(panel::InfoItems const*);
+  enum {
+    COL_NUMBER = DCOL,
+    COL_ATTRS
+  };
+
+public:
+  enum { GetDatasetRole = Qt::UserRole };
+
+  void setFile(core::shp_File);
+  void showMetaInfo(checkedinfo_vec const&);
 
 private:
-  core::shp_Dataset const& getDataset(int row) const;
-
-private:
-  core::shp_File coreFile;
-  panel::InfoItems const* infoItems; // TODO make better; remove #include panel.h then
-  QVector<int> attributeNums;
+  core::shp_File file;              ///< the file with datasets
+  checkedinfo_vec const* metaInfo;  ///< metadata items
+  uint_vec metaInfoNums;            ///< selected metadata items to show
 };
 
-class ReflectionViewModel: public QAbstractTableModel, public ModelBase {
-  SUPER(ReflectionViewModel,QAbstractTableModel)
+//------------------------------------------------------------------------------
+
+class ReflectionViewModel: public TableModel {
+  SUPER(ReflectionViewModel,TableModel)
 public:
+  ReflectionViewModel(TheHub&);
+
+  int columnCount(rcIndex = ANY_INDEX) const;
+  int rowCount(rcIndex    = ANY_INDEX) const;
+
+  QVariant data(rcIndex,int) const;
+  QVariant headerData(int,Qt::Orientation,int) const;
+
   enum {
-    COLUMN_0,
-    COLUMN_ID,
-    COLUMN_TYPE,
+    COL_ID = DCOL,
+    COL_TYPE,
     NUM_COLUMNS
   };
 
-  ReflectionViewModel(TheHub&);
+public:
+  enum { GetDatasetRole = Qt::UserRole };
 
-  int columnCount(QModelIndex const& = QModelIndex()) const;
-  int rowCount(QModelIndex const& = QModelIndex())    const;
-  Qt::ItemFlags flags(QModelIndex const&)             const;
-  QVariant headerData(int,Qt::Orientation,int)        const;
-
-  QVariant data(QModelIndex const&,int) const;
-  bool setData(QModelIndex const&, QVariant const&, int role = Qt::EditRole);
-
-  void addReflection();
+  void addReflection(core::ePeakType);
   void remReflection(uint);
-
-  void signalReset();
-
-private:
-  QVector<int> reflections;
 };
 
 //------------------------------------------------------------------------------
 }
-#endif
+#endif // MODELS_H

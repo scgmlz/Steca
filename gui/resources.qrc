@@ -27,7 +27,7 @@
         <file alias="cutRightU">icons/cutRightU.svg</file>
         <file alias="cutTopU">icons/cutTopU.svg</file>
         <file alias="imageCrop">icons/imageCrop.svg</file>
-        <file alias="pekBackground">icons/pekBackground.svg</file>
+        <file alias="peakBackground">icons/peakBackground.svg</file>
         <file alias="clearBackground">icons/clearBackground.svg</file>
         <file alias="scale">icons/scale.svg</file>
         <file alias="selectPeak">icons/selectPeak.svg</file>
@@ -35,6 +35,6 @@
         <file alias="selectHight">icons/selectHight.svg</file>
         <file alias="showBackground">icons/showBackground.svg</file>
         <file alias="selectWidth">icons/selectWidth.svg</file>
-        <file alias="STeCa2">icons/STeCa2.bmp</file>
+        <file alias="STeCa2">icons/STeCa2.png</file>
     </qresource>
 </RCC>
