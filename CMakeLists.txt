@@ -29,7 +29,6 @@ endif()
 # --- Check for required packages ---
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
-find_package(Qt5PrintSupport REQUIRED)
 find_package(Qt5Test REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 

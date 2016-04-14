@@ -31,7 +31,6 @@ add_library(STeCaGUI
 target_link_libraries(STeCaGUI
   Qt5::Core
   Qt5::Gui
-  Qt5::PrintSupport
   Qt5::Widgets
   STeCaCore
   STeCaCoreIO
