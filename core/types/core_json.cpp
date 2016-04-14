@@ -14,6 +14,7 @@
 
 #include "core_json.h"
 #include "core_type_range.h"
+#include "core_coords.h"
 #include <QStringList>
 
 namespace core {
@@ -38,6 +39,22 @@ JsonObj JsonObj::loadObj(rcstr key) const THROWS {
     return val.toObject();
   default:
     THROW(key + ": not an object");
+  }
+}
+
+JsonObj& JsonObj::saveArr(rcstr key, QJsonArray const& arr) {
+  insert(key, arr);
+  return *this;
+}
+
+QJsonArray JsonObj::loadArr(rcstr key) const THROWS {
+  auto val = value(key);
+
+  switch (val.type()) {
+  case QJsonValue::Array:
+    return val.toArray();
+  default:
+    THROW(key + ": not an array");
   }
 }
 
@@ -98,6 +115,22 @@ qreal JsonObj::loadReal(rcstr key) const THROWS {
   }
 }
 
+JsonObj& JsonObj::saveBool(rcstr key, bool b) {
+  insert(key, b);
+  return *this;
+}
+
+bool JsonObj::loadBool(rcstr key) const THROWS {
+  auto val = value(key);
+
+  switch (val.type()) {
+  case QJsonValue::Bool:
+    return val.toBool();
+  default:
+    THROW(key + ": not a boolean");
+  }
+}
+
 JsonObj& JsonObj::saveString(rcstr key, rcstr s) {
   insert(key, s);
   return *this;
@@ -114,24 +147,58 @@ str JsonObj::loadString(rcstr key) const THROWS {
   }
 }
 
-JsonObj& JsonObj::saveRange(rcstr key, Range const& range) {
+JsonObj& JsonObj::saveRange(rcstr key, rcRange range) {
   insert(key, range.saveJson());
   return *this;
 }
 
 Range JsonObj::loadRange(rcstr key) const THROWS {
-  Range range; range.loadJson(value(key).toObject());
+  Range range; range.loadJson(loadObj(key));
   return range;
 }
 
-JsonObj& JsonObj::operator+= (JsonObj const& that) {
+JsonObj& JsonObj::saveXY(rcstr key, rcXY xy) {
+  insert(key, xy.saveJson());
+  return *this;
+}
+
+XY JsonObj::loadXY(rcstr key) const THROWS {
+  XY xy; xy.loadJson(loadObj(key));
+  return xy;
+}
+
+JsonObj& JsonObj::saveIJ(rcstr key, rcIJ ij) {
+  insert(key, ij.saveJson());
+  return *this;
+}
+
+IJ JsonObj::loadIJ(rcstr key) const THROWS {
+  IJ ij; ij.loadJson(loadObj(key));
+  return ij;
+}
+
+JsonObj& JsonObj::operator+= (rcJsonObj that) {
   for (auto &key: that.keys())
     insert(key,that[key]);
   return *this;
 }
 
-JsonObj JsonObj::operator+ (JsonObj const& that) const {
+JsonObj JsonObj::operator+ (rcJsonObj that) const {
   return JsonObj(*this) += that;
+}
+
+//------------------------------------------------------------------------------
+
+JsonArr::JsonArr() {
+}
+
+JsonArr::JsonArr(QJsonArray const& array): super(array) {
+}
+
+JsonObj JsonArr::objAt(uint i) const {
+  auto obj = super::at(i);
+  RUNTIME_CHECK(QJsonValue::Object == obj.type(), "not an object at " + str::number(i));
+  return super::at(i).toObject();
 }
 
 //------------------------------------------------------------------------------

@@ -17,7 +17,6 @@
 #define CORE_DEFS_H
 
 // common QT includes - everyone needs them
-
 #include <QtGlobal>
 #include <QSharedPointer>
 #include <QVector>
@@ -37,35 +36,43 @@ extern  str const EMPTY_STR;  ///< an empty string (that can be returned by refe
 /// A class definition helper that defines aliases for this and super class.
 #define SUPER(cls,sup)  using thisClass = cls; using super = sup;
 
-/// the idiomatic iteration over *n* items
-#define for_int(var,n) for (int var=0, var##End=(n); var<var##End; ++var)
+/// idiomatic iterations
+#define for_int(i,n) for (int i=0, i##End=(n); i<i##End; ++i)
 #define for_i(n) for_int(i,n)
+#define for_ij(ni,nj) for_int(i,ni) for_int(j,nj)
 
 // useful vectors
 typedef QVector<qreal> qreal_vec;
 typedef QVector<uint>  uint_vec;
 
 // conversions
-qreal radToDeg(qreal rad);
-qreal degToRad(qreal deg);
+qreal rad2Deg(qreal rad);
+qreal deg2Rad(qreal deg);
 
 // exceptions
 #include <QException>
 
 /// exception specification macro
+#ifdef Q_OS_WIN
+#define THROWS
+#else
 #define THROWS throw (Exception)
+#endif
 
 /// An exception that carries a message.
 class Exception: public QException {
 public:
-  Exception(rcstr msg_)             throw(): msg(msg_)      {}
-  Exception(Exception const& that)  throw(): msg(that.msg)  {}
- ~Exception()                       throw()                 {}
+  Exception(rcstr msg)             throw(): msg_(msg)       {}
+  Exception(Exception const& that) throw(): msg_(that.msg_) {}
+ ~Exception()                      throw()                  {}
+
+  rcstr msg() const { return msg_; }
 
   Exception *clone() const;
   void raise()       const;
 
-  str msg;
+protected:
+  str msg_;
 };
 
 /// raise an exception

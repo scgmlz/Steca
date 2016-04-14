@@ -1,339 +1,125 @@
-// TODO HEADER
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      core_session.cpp
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
 #include "core_session.h"
-#include "io/core_io.h"
-#include "core_fit_methods.h"
 #include "core_fit_fitting.h"
-#include "types/core_type_angles.h"
 #include "types/core_type_curve.h"
-#include <QStringList>
-#include <QtMath>
 
 namespace core {
 //------------------------------------------------------------------------------
 
-str_lst const& getStringListNormalization() {
-  static str_lst sl{"Disable","Measurement time","Monitor counts","Background level"};
-  return sl;
-}
-
-
-qreal const Geometry::MIN_DETECTOR_DISTANCE   = 1000;
-qreal const Geometry::MIN_DETECTOR_PIXEL_SIZE = 1;
-
-Geometry::Geometry() {
-  detectorDistance  = MIN_DETECTOR_DISTANCE;
-  pixSize             = MIN_DETECTOR_PIXEL_SIZE;
-  hasBeamOffset       = false;
-  middlePixOffset     = QPoint();
-}
-
-bool Geometry::operator ==(Geometry const& that) const {
-  return
-    detectorDistance == that.detectorDistance &&
-    pixSize            == that.pixSize &&
-    hasBeamOffset      == that.hasBeamOffset &&
-    middlePixOffset    == that.middlePixOffset;
-}
-
-//------------------------------------------------------------------------------
-
-Session::Session()
-: dataFiles(), corrFile(), corrEnabled(false), imageSize(), geometry()
-, imageTransform(ImageTransform::ROTATE_0)
-, angleMapArray()
-, lastCalcTthMitte(0)
-, hasNaNs(false), bgPolynomialDegree(0), type(Normalization::DISABLE) {
-}
-
-Session::~Session() {
+Session::Session() {
+  clear();
 }
 
 void Session::clear() {
-  // TODO REVIEW
-  reflections.clear();
-  enableCorrection(false);
-  remCorrFile();
   while (numFiles(false)) remFile(0);
+
+  remCorrFile();
+  corrEnabled_ = false;
+
+  bgPolynomialDegree_ = 0;
+  bgRanges_.clear();
+
+  reflections_.clear();
+
+  norm_ = Lens::normNONE;
 }
 
 uint Session::numFiles(bool withCorr) const {
-  return dataFiles.count() + (withCorr && !corrFile.isNull() ? 1 : 0);
+  return files_.count() + (withCorr && !corrFile_.isNull() ? 1 : 0);
 }
 
-shp_File Session::addFile(rcstr fileName) THROWS {
-  if (fileName.isEmpty() || hasFile(fileName))
-    return shp_File(); // nichts zu tun
+shp_File Session::file(uint i) const {
+  if ((uint)files_.count() == i) {
+    // past the vector end, must be the correction file
+    ASSERT(!corrFile_.isNull())
+    return corrFile_;
+  } else {
+    return files_.at(i);
+  }
+}
 
-  shp_File file = io::load(fileName);
-
-  setImageSize(file->getImageSize());
-
+void Session::addFile(shp_File file) THROWS {
+  setImageSize(file->datasets().imageSize());
   // all ok
-  dataFiles.append(file);
-  return file;
+  files_.append(file);
 }
 
-shp_File Session::remFile(uint i) {
-  shp_File file = dataFiles.at(i);
-  dataFiles.remove(i);
+void Session::remFile(uint i) {
+  files_.remove(i);
   updateImageSize();
-  return file;
 }
 
 bool Session::hasFile(rcstr fileName) {
   QFileInfo fileInfo(fileName);
-  for (auto &file: dataFiles)
+  for (auto &file: files_)
     if (fileInfo == file->fileInfo()) return true;
   return false;
 }
 
-shp_File Session::getFile(uint i) const {
-  if ((uint)dataFiles.count() == i) {
-    ASSERT(!corrFile.isNull())
-    return corrFile;
-  } else {
-    return dataFiles.at(i);
-  }
-}
-
-shp_File Session::loadCorrFile(rcstr fileName) {
-  if (fileName.isEmpty()) {
+void Session::setCorrFile(shp_File file) THROWS {
+  if (file.isNull()) {
     remCorrFile();
-    return shp_File();
+  } else {
+    auto &datasets = file->datasets();
+
+    datasets.fold(); // ensure one dataset
+    setImageSize(datasets.imageSize());
+
+    // all ok
+    corrFile_    = file;
+    corrEnabled_ = true;
   }
-
-  shp_File file = io::load(fileName);
-  file->fold();
-
-  setImageSize(file->getImageSize());
-
-  // all ok
-  corrFile    = file;
-  corrEnabled = true;
-  calcIntensCorrArray();
-  return file;
 }
 
 void Session::remCorrFile() {
-  corrFile.clear();
-  corrEnabled = false;
+  corrFile_.clear();
+  corrEnabled_ = false;
   updateImageSize();
 }
 
-shp_File Session::getCorrFile() const {
-  return corrFile;
-}
-
-void Session::enableCorrection(bool on) {
-  corrEnabled = on && hasCorrFile();
+void Session::enableCorr(bool on) {
+  corrEnabled_ = on && hasCorrFile();
 }
 
 void Session::updateImageSize() {
   if (0 == numFiles(true))
-    imageSize = QSize(0,0);
+    imageSize_ = QSize(0,0);
 }
 
 void Session::setImageSize(QSize const& size) THROWS {
   RUNTIME_CHECK (!size.isEmpty(), "bad image size");
-  if (imageSize.isEmpty()) // the first one
-    imageSize = size;
-  else if (imageSize != size)
+  if (imageSize_.isEmpty())
+    imageSize_ = size; // the first one
+  else if (imageSize_ != size)
     THROW("inconsistent image size");
 }
 
-void Session::setGeometry(qreal detectorDistance, qreal pixSize, bool hasBeamOffset, QPoint const& middlePixOffset) {
-  ASSERT(detectorDistance>0 && pixSize>0) // TODO use MIN_DETECTOR_DISTANCE ...
-  geometry.detectorDistance = detectorDistance;
-  geometry.pixSize            = pixSize;
-  geometry.hasBeamOffset      = hasBeamOffset;
-  geometry.middlePixOffset    = middlePixOffset;
+void Session::setImageTransformMirror(bool on) {
+  imageTransform_ = imageTransform_.mirror(on);
 }
 
-void Session::setImageMirror(bool on) {
-  imageTransform = imageTransform.mirror(on);
+void Session::setImageTransformRotate(ImageTransform const& rot) {
+  imageTransform_ = imageTransform_.rotateTo(rot);
 }
 
-void Session::setImageRotate(ImageTransform rot) {
-  imageTransform = imageTransform.rotateTo(rot);
-}
-
-ImageTransform Session::getImageTransform() const {
-  return imageTransform;
-}
-
-QSize Session::getImageSize() const {
-  return imageTransform.isTransposed()
-    ? imageSize.transposed() : imageSize;
-}
-
-shp_LensSystem Session::allLenses(Dataset const& dataset,
-                                  bool const globalIntensityScale) const {
-  auto lenses = plainLens(dataset);
-  lenses << shp_LensSystem(new TransformationLens(imageTransform));
-  lenses << shp_LensSystem(new ROILens(imageMargins));
-  if (corrEnabled)
-    lenses << shp_LensSystem(new SensitivityCorrectionLens(intensCorrArray));
-  if (globalIntensityScale)
-    lenses << shp_LensSystem(
-        new GlobalIntensityRangeLens(dataset.parentFile().intensRange()));
-  else
-    lenses << shp_LensSystem(new IntensityRangeLens());
-  if (isNormEnabled())
-     lenses << makeNormalizationLens(dataset);
-  return lenses;
-}
-
-shp_LensSystem Session::noROILenses(Dataset const& dataset,
-                                    bool const globalIntensityScale) const {
-  auto lenses = plainLens(dataset);
-  lenses << shp_LensSystem(new TransformationLens(imageTransform));
-  if (corrEnabled)
-    lenses << shp_LensSystem(new SensitivityCorrectionLens(intensCorrArray));
-  if (globalIntensityScale)
-    lenses << shp_LensSystem(
-        new GlobalIntensityRangeLens(dataset.parentFile().intensRange()));
-  else
-    lenses << shp_LensSystem(new IntensityRangeLens());
-  if (isNormEnabled())
-    lenses << makeNormalizationLens(dataset);
-  return lenses;
-}
-
-shp_LensSystem Session::plainLens(Dataset const& dataset) const {
-  Session *This = const_cast<Session*>(this); // TODO remove, make calcAngleMap const
-  return makeLensSystem(dataset, This->calcAngleMap(dataset.middleTth()));
-}
-
-QPoint Session::getPixMiddle() const {
-  auto imageSize = getImageSize();
-  QPoint middle( // REVIEW TODO when hasBeamOffset
-    imageSize.width()  / 2 + geometry.middlePixOffset.x(),
-    imageSize.height() / 2 + geometry.middlePixOffset.y());
-  // TODO was: if ((tempPixMiddleX *[<=]* 0) || (tempPixMiddleX >= getWidth()))
-  // TODO this limitation could be maybe lifted (think small angle X-ray scattering?)
-  RUNTIME_CHECK(Range(0,imageSize.width()).contains(middle.x()), "bad pixMiddle");
-  RUNTIME_CHECK(Range(0,imageSize.height()).contains(middle.y()), "bad pixMiddle");
-  return middle;
-}
-
-DiffractionAnglesMap const& Session::calcAngleMap(qreal tthMitte) { // RENAME
-  // REFACTOR
-  QPoint pixMiddle = getPixMiddle();
-  auto size   = getImageSize();
-
-  if (angleMapArray.size() == size
-      && lastCalcTthMitte==tthMitte && lastPixMiddle == pixMiddle
-      && lastGeometry == geometry && lastImageMargins == imageMargins
-      && lastImageTransform == imageTransform)
-    return angleMapArray;
-
-  lastCalcTthMitte = tthMitte; lastPixMiddle = pixMiddle;
-  lastGeometry = geometry;
-  lastImageMargins = imageMargins;
-  lastImageTransform = imageTransform;
-
-  angleMapArray.fill(size);
-  cut.invalidate();
-
-  if (!size.isEmpty()) {
-    ASSERT(geometry.pixSize>0) // TODO better than asserts
-    ASSERT(geometry.detectorDistance>0)
-
-    // Fill the Array
-    for_int (iy, size.height()) {
-      int abstandInPixVertical = pixMiddle.y() - iy;
-      qreal y = abstandInPixVertical * geometry.pixSize;
-      for_int (ix, size.width()) {
-        // TTH des Pixels berechnen
-        int abstandInPixHorizontal = - pixMiddle.x() + ix;
-        qreal x = abstandInPixHorizontal * geometry.pixSize;
-        qreal z = hypot(x,y);
-        qreal detektorAbstandPixel = hypot(z,geometry.detectorDistance);
-        qreal tthHorAktuell = degToRad(tthMitte) + atan(x / geometry.detectorDistance);
-        qreal detektorAbstandHorPixel = hypot(x,geometry.detectorDistance);
-        qreal h = cos(tthHorAktuell) * detektorAbstandHorPixel;
-        qreal tthNeu = acos(h / detektorAbstandPixel);
-
-        // Gamma des Pixels berechnen
-        qreal r = sqrt((detektorAbstandPixel * detektorAbstandPixel) - (h * h));
-        qreal gamma = asin(y / r);
-
-        // Check: if tthNeu negativ
-        if (tthHorAktuell < 0) {
-          tthNeu = -tthNeu;
-          gamma  = -gamma;
-        }
-
-        // Write angle in array
-        angleMapArray.setAt(ix, iy, DiffractionAngles(radToDeg(gamma),radToDeg(tthNeu)));
-      }
-    }
-
-    cut.tth_gamma0.safeSet(
-      angleMapArray.at(size.width() - 1 - imageMargins.right(),pixMiddle.y()).tth,
-      angleMapArray.at(imageMargins.left(),pixMiddle.y()).tth);
-
-    // TODO loop through cut - make abstract (see below), REFACTOR
-    for (int ix = imageMargins.left(); ix < size.width() - imageMargins.right(); ++ix) {
-      for (int iy = imageMargins.top(); iy < size.height() - imageMargins.bottom(); ++iy) {
-        auto ac = angleMapArray.at(ix,iy);
-        cut.gamma.extendBy(ac.gamma);
-        cut.tth_regular.extendBy(ac.tth);
-      }
-    }
-
-    ASSERT(cut.isValid())
-  }
-
-  return angleMapArray;
-}
-
-void Session::calcIntensCorrArray() {
-  hasNaNs = false;
-
-  if (corrFile.isNull()) {
-    intensCorrArray.clear();
-    return;
-  }
-
-  ASSERT(1 == corrFile->numDatasets()) // no need to sum
-  auto lenses = plainLens(*corrFile->getDataset(0));
-  lenses << shp_LensSystem(new ROILens(imageMargins));
-
-  // REVIEW
-  qreal sum = 0; uint n = 0;
-  auto size = lenses->getSize();
-  for_int (iy, size.height()) {
-    for_int (ix, size.width()) {
-      sum += lenses->getIntensity(ix, iy);
-      ++n;
-    }
-  }
-
-  ASSERT(n>0) // TODO div. by 0 ?
-  qreal avg = sum / n;
-
-  intensCorrArray.fill(1,imageSize);
-  for_int (iy, size.height())
-    for_int (ix, size.width()) {
-      auto intens = lenses->getIntensity(ix, iy);
-      qreal val;
-
-      if (intens>0) {
-        val = avg / intens;
-      } else {
-        val = qQNaN(); hasNaNs = true;
-      }
-
-      intensCorrArray.setAt(ix + imageMargins.left(), iy + imageMargins.top(), val);
-    }
-}
-
-void Session::setImageMargins(bool topLeft, bool linked, QMargins const& margins) {
-  auto size = getImageSize();
+void Session::setImageCut(bool topLeftFirst, bool linked, ImageCut const& cut) {
+  auto size = imageSize_;
 
   if (size.isEmpty())
-    imageMargins = QMargins();
+    imageCut_ = ImageCut();
   else {
     auto limit = [linked](int& m1, int& m2, int maxTogether) {
       if (linked && m1+m2 >= maxTogether) {
@@ -345,9 +131,10 @@ void Session::setImageMargins(bool topLeft, bool linked, QMargins const& margins
     };
 
     // make sure that cut values are valid; in the right order
-    int left  = margins.left(),  top = margins.top(),
-        right = margins.right(), bottom = margins.bottom();
-    if (topLeft) {
+    int left  = cut.left,  top    = cut.top,
+        right = cut.right, bottom = cut.bottom;
+
+    if (topLeftFirst) {
       limit(top,  bottom, size.height());
       limit(left, right,  size.width());
     } else {
@@ -355,70 +142,79 @@ void Session::setImageMargins(bool topLeft, bool linked, QMargins const& margins
       limit(right,  left, size.width());
     }
 
-    imageMargins = QMargins(left,top,right,bottom);
+    imageCut_ = ImageCut(left,top,right,bottom);
   }
 }
 
-shp_LensSystem Session::makeNormalizationLens(Dataset const& dataset) const {
-  auto const& parentFile = dataset.parentFile();
-  qreal normVal = 0;
-  qreal average = 0;
-  qreal current = 0;
-  switch (type) {
-  case Normalization::DELTA_TIME:
-    average = parentFile.calAverageDeltaTime();
-    current = dataset.deltaTime();
-    break;
-  case Normalization::MON_COUNTS:
-    average = parentFile.calAverageMonitor();
-    current = dataset.monitorCount();
-    break;
-  case Normalization::BG_LEVEL:
-    if (getBgRanges().isEmpty()) {
-      average = 1;
-      current = 1; // bg not set -> use 1 as normVal, warn user!
-    } else  {
-      average = calGlobalBGAverage(dataset);
-      current = calAverageBG(dataset);
-    }
-    break;
-  default:
-    NEVER_HERE
+AngleMap const& Session::angleMap(rcDataset dataset) const {
+  static AngleMap map;
+
+  // TODO cache through shared pointers
+  static qreal midTth_ = 0;
+  static Geometry geometry_;
+  static QSize size_; static IJ mid_;
+
+  qreal midTth = dataset.midTth();
+  QSize size   = dataset.imageSize();
+  IJ    mid    = midPix();
+
+  if (! (midTth_ == midTth && geometry_ == geometry_ &&
+         size_ == size && mid_ == mid)) {
+    midTth_ = midTth; geometry_ = geometry_; size_ = size; mid_ = mid;
+    map.calculate(midTth,geometry_,size,imageCut_,mid);
   }
-  normVal = average/current;
-  RUNTIME_CHECK(normVal > 0, "Normalization value is negative");
-  return shp_LensSystem(new NormalizationLens(normVal));
+
+  return map;
 }
 
-void Session::setNormType(Normalization type_) {
-  type = type_;
+void Session::setGeometry(qreal detectorDistance, qreal pixSize,
+                          bool isMidPixOffset, rcIJ midPixOffset) {
+  ASSERT(detectorDistance>0 && pixSize>0)
+
+  geometry_.detectorDistance = detectorDistance;
+  geometry_.pixSize          = pixSize;
+  geometry_.isMidPixOffset   = isMidPixOffset;
+  geometry_.midPixOffset     = midPixOffset;
 }
 
-qreal Session::calAverageBG(Dataset const& dataset) const {
-  auto lenses = plainLens(dataset);
-  lenses << shp_LensSystem(new TransformationLens(imageTransform));
-  lenses << shp_LensSystem(new ROILens(imageMargins));
-  if (corrEnabled)
-    lenses << shp_LensSystem(new SensitivityCorrectionLens(intensCorrArray));
+IJ Session::midPix() const {
+  auto halfSize = imageSize_ / 2;
+  IJ mid(halfSize.width(), halfSize.height());
 
-  Curve const& gammaCurve = makeCurve(lenses,
-                              getCut().gamma,
-                              getCut().tth_regular);
-
-  fit::Polynomial bgPoly = fit::fitBackground(gammaCurve,
-                                              getBgRanges(),
-                                              getBgPolynomialDegree());
-
-  return bgPoly.calAverageValue(getCut().tth_regular);
-}
-
-qreal Session::calGlobalBGAverage(Dataset const& dataset) const {
-  auto const& parentFile = dataset.parentFile();
-  qreal val = 0;
-  for_i(parentFile.numDatasets()) {
-    val += calAverageBG(*parentFile.getDataset(i).data());
+  if (geometry_.isMidPixOffset) {
+    rcIJ off = geometry_.midPixOffset;
+    mid.i += off.i; mid.j += off.j;
   }
-  return val/parentFile.numDatasets();
+
+  return mid;
+}
+
+shp_Lens Session::lens(bool trans, bool cut, Lens::eNorm norm, rcDataset dataset) const {
+  return shp_Lens(new Lens(trans, cut, norm, *this, dataset,
+      corrEnabled_ ? corrFile_->datasets().first().data() : nullptr,
+      angleMap(dataset), imageCut_, imageTransform_));
+}
+
+void Session::setNorm(Lens::eNorm norm) {
+  norm_ = norm;
+}
+
+qreal Session::calcAvgBackground(rcDataset dataset) const {
+  auto l = lens(true, true, Lens::normNONE, dataset);
+
+  auto &map = angleMap(dataset);
+  Curve gammaCurve = l->makeCurve(map.rgeGamma(), map.rgeTth());
+  auto bgPolynomial = fit::fitPolynomial(bgPolynomialDegree_, gammaCurve, bgRanges_);
+  return bgPolynomial.avgY(map.rgeTth());
+}
+
+qreal Session::calcAvgBackground(rcDatasets datasets) const {
+  qreal bg = 0;
+
+  for (auto &dataset: datasets)
+    bg += calcAvgBackground(*dataset);
+
+  return bg / datasets.count();
 }
 
 //------------------------------------------------------------------------------

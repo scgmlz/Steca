@@ -16,11 +16,10 @@
 
 #include "types/core_type_curve.h"
 #include "LevMar/levmar.h"
-#include <QtMath>
+#include <qmath.h>
 
 namespace core { namespace fit {
 //------------------------------------------------------------------------------
-// STeCa (1) code, refactored
 
 FittingMethod::FittingMethod() {
 }
@@ -28,23 +27,24 @@ FittingMethod::FittingMethod() {
 FittingMethod::~FittingMethod() {
 }
 
-bool FittingMethod::fitWithoutChecks(Function& function, core::Curve const& curve) {
+bool FittingMethod::fitWithoutChecks(Function& function, rcCurve curve) {
   return fit(function, curve, false);
 }
 
-bool FittingMethod::fit(Function& function_, core::Curve const& curve, bool withChecks) {
+bool FittingMethod::fit(Function& function, rcCurve curve, bool withChecks) {
   if (curve.isEmpty()) return false;
 
-  function = &function_;
-  xValues  = curve.getXs().data();
+  function_ = &function;
+  xValues_  = curve.xs().data();
 
   // prepare data in a required format
-  uint parCount = function->parameterCount();
+  uint parCount = function_->parameterCount();
   qreal_vec parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
 
   for_i (parCount) {
-    auto par = function->parameterAt(i);
+    auto par = function_->parameterAt(i);
     auto rge = par.valueRange();
+
     parValue[i] = par.value();
     parMin[i]   = rge.min;
     parMax[i]   = rge.max;
@@ -52,21 +52,21 @@ bool FittingMethod::fit(Function& function_, core::Curve const& curve, bool with
 
   if (!approximate(parValue.data(),
                    parMin.data(), parMax.data(), parError.data(), parCount,
-                   curve.getYs().data(), curve.count()))
+                   curve.ys().data(), curve.count()))
     return false;
 
   // read data
   for_i (parCount) {
-    if (!function->parameterAt(i).setValue(parValue[i], parError[i], !withChecks))
+    if (!function_->parameterAt(i).setValue(parValue[i], parError[i], !withChecks))
       return false;
   }
 
   return true;
 }
 
-void FittingMethod::__functionY(qreal* parameterValues, qreal* yValues, int /*parameterLength*/, int xLength, void*) {
+void FittingMethod::callbackY(qreal* parValues, qreal* yValues, int /*parCount*/, int xLength, void*) {
   for_i (xLength)
-    yValues[i] = function->y(xValues[i], parameterValues);
+    yValues[i] = function_->y(xValues_[i], parValues);
 }
 
 //------------------------------------------------------------------------------
@@ -75,33 +75,33 @@ FittingLinearLeastSquare::FittingLinearLeastSquare() {
 }
 
 bool FittingLinearLeastSquare::approximate(
-  qreal*        parameter,          // IO initial parameter estimates -> estimated solution
-  qreal const*  parameterLimitMin,  // I
-  qreal const*  parameterLimitMax,  // I
-  qreal*        parameterError,     // O
-  uint          numberOfParameter,  // I
-  qreal const*  yValues,            // I
-  uint          numberOfDataPoints) // I
+  qreal*        params,           // IO initial parameter estimates -> estimated solution
+  qreal const*  paramsLimitMin,   // I
+  qreal const*  paramsLimitMax,   // I
+  qreal*        paramsError,      // O
+  uint          paramsCount,      // I
+  qreal const*  yValues,          // I
+  uint          dataPointsCount)  // I
 {
-  DelegateCalculationDbl function(this, &thisClass::__functionY);
+  DelegateCalculationDbl function(this, &thisClass::callbackY);
 
   // information regarding the minimization
   double info[LM_INFO_SZ];
 
   // output covariance matrix
-  QVector<qreal> covar(numberOfParameter*numberOfParameter);
+  QVector<qreal> covar(paramsCount * paramsCount);
 
   uint const maxIterations = 1000;
 
   dlevmar_bc_dif(
     &function,
-    parameter, (qreal*)yValues, numberOfParameter, numberOfDataPoints,
-    (qreal*)parameterLimitMin, (qreal*)parameterLimitMax,
+    params, (qreal*)yValues, paramsCount, dataPointsCount,
+    (qreal*)paramsLimitMin, (qreal*)paramsLimitMax,
     NULL, maxIterations, NULL, info, NULL, covar.data(),
     NULL);
 
-  for (uint i=0; i<numberOfParameter; i++)
-    parameterError[i] = sqrt(covar[i*numberOfParameter + i]); // diagonal
+  for (uint i=0; i<paramsCount; i++)
+    paramsError[i] = sqrt(covar[i*paramsCount + i]); // diagonal
 
   return true;
 }
@@ -112,17 +112,16 @@ FittingLevenbergMarquardt::FittingLevenbergMarquardt() {
 }
 
 bool FittingLevenbergMarquardt::approximate(
-  qreal*        parameter,          // IO initial parameter estimates -> estimated solution
-  qreal const*  parameterLimitMin,  // I
-  qreal const*  parameterLimitMax,  // I
-  qreal*        parameterError,     // O
-  uint          numberOfParameter,  // I
-  qreal const*  yValues,            // I
-  uint          numberOfDataPoints) // I
+  qreal*        params,           // IO initial parameter estimates -> estimated solution
+  qreal const*  paramsLimitMin,   // I
+  qreal const*  paramsLimitMax,   // I
+  qreal*        paramsError,      // O
+  uint          paramsCount,      // I
+  qreal const*  yValues,          // I
+  uint          dataPointsCount)  // I
 {
-  DelegateCalculationDbl function(this, &thisClass::__functionY);
-  // Function to fill the Jacobian Matrix
-  DelegateCalculationDbl functionJacobian(this, &thisClass::__functionJacobianLM);
+  DelegateCalculationDbl function(this, &thisClass::callbackY);
+  DelegateCalculationDbl functionJacobian(this, &thisClass::callbackJacobianLM);
 
   // minim. options mu, epsilon1, epsilon2, epsilon3
   double opts[LM_OPTS_SZ];
@@ -135,27 +134,27 @@ bool FittingLevenbergMarquardt::approximate(
   double info[LM_INFO_SZ];
 
   // output covariance matrix
-  QVector<qreal> covar(numberOfParameter*numberOfParameter);
+  QVector<qreal> covar(paramsCount*paramsCount);
 
   uint const maxIterations = 1000;
 
   dlevmar_bc_der(
     &function, &functionJacobian,
-    parameter, (qreal*)yValues, numberOfParameter, numberOfDataPoints,
-    (qreal*)parameterLimitMin, (qreal*)parameterLimitMax,
+    params, (qreal*)yValues, paramsCount, dataPointsCount,
+    (qreal*)paramsLimitMin, (qreal*)paramsLimitMax,
     NULL, maxIterations, opts, info, NULL, covar.data(),
     NULL);
 
-  for (uint i=0; i<numberOfParameter; i++)
-    parameterError[i] = sqrt(covar[i*numberOfParameter + i]); // diagonal
+  for (uint i=0; i<paramsCount; i++)
+    paramsError[i] = sqrt(covar[i*paramsCount + i]); // diagonal
 
   return true;
 }
 
-void FittingLevenbergMarquardt::__functionJacobianLM(qreal* parameterValues, qreal* jacobian, int parameterLength, int xLength, void*) {
-  for_int (xi,xLength) {
+void FittingLevenbergMarquardt::callbackJacobianLM(qreal* parValues, qreal* jacobian, int parameterLength, int xLength, void*) {
+  for_int (ix,xLength) {
     for_i (parameterLength) {
-      *jacobian++ = function->dy(xValues[xi],i,parameterValues);
+      *jacobian++ = function_->dy(xValues_[ix],i,parValues);
     }
   }
 }

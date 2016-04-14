@@ -18,16 +18,18 @@
 
 #include "core_defs.h"
 
+namespace gui {
 class TheHub;
+}
 
 //------------------------------------------------------------------------------
 /// The base class that refers to the hub + support methods.
 
 class RefHub {
 public:
-  RefHub(TheHub&);
+  RefHub(gui::TheHub&);
 protected:
-  TheHub &theHub;
+  gui::TheHub &theHub_;
 };
 
 //------------------------------------------------------------------------------

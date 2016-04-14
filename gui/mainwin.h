@@ -20,6 +20,7 @@
 #include "thehub.h"
 #include <QMainWindow>
 
+namespace gui {
 //------------------------------------------------------------------------------
 
 class MainWin : public QMainWindow {
@@ -51,7 +52,8 @@ public:
 
 private:
   // the hub
-  TheHub theHub;
+  gui::TheHub theHub;
+  Actions &actions;
 
 private:
   void closeEvent(QCloseEvent*);
@@ -60,13 +62,13 @@ private:
   void onClose();
 
 private:
-  QMenu *menuFile, *menuEdit, *menuView, *menuDatasets, *menuReflect,
-        *menuOutput, *menuHelp;
+  QMenu *menuFile_, *menuEdit_, *menuView_, *menuDatasets_, *menuReflect_,
+        *_menuOutput, *_menuHelp;
 
-  QDockWidget *dockFiles, *dockDatasets, *dockDatasetInfo;
+  QDockWidget *dockFiles_, *dockDatasets_, *dockDatasetInfo_;
 
 private:
-  QByteArray initialState;
+  QByteArray initialState_;
 
   void readSettings();
   void saveSettings();
@@ -74,7 +76,7 @@ private:
   void checkActions();
 
   void viewStatusbar(bool);
-  void viewFullscreen(bool);
+  void viewFullScreen(bool);
   void viewDockFiles(bool);
   void viewDockDatasets(bool);
   void viewDockDatasetInfo(bool);
@@ -82,4 +84,5 @@ private:
 };
 
 //------------------------------------------------------------------------------
+}
 #endif // MAINWIN_H

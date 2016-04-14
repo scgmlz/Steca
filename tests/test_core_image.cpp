@@ -13,19 +13,19 @@ void TestCoreImage::testImage(uint w, uint h) {
     core::Image im;
     im.fill(intens,q);
 
-    auto data = im.getIntensities();
-    QCOMPARE(im.getCount(),w*h);
-    for_i (im.getCount()) {
+    auto data = im.intensData();
+    QCOMPARE(im.count(),w*h);
+    for_i (im.count()) {
       QCOMPARE(*data++,intens);
     }
 
-    im.setIntensity(pos,specialIntens);
-    QCOMPARE(*(im.getIntensities()+pos),specialIntens);
+    im.setInten(pos,specialIntens);
+    QCOMPARE(*(im.intensData()+pos),specialIntens);
 
-    auto rgeActual = im.intensRange();
-    auto rgeExpect = core::Range(intens,specialIntens);
-    QCOMPARE(rgeActual.min, rgeExpect.min);
-    QCOMPARE(rgeActual.max, rgeExpect.max);
+//    auto rgeActual = im.rgeInten();
+//    auto rgeExpect = core::Range(intens,specialIntens);
+//    QCOMPARE(rgeActual.min, rgeExpect.min);
+//    QCOMPARE(rgeActual.max, rgeExpect.max);
 
     // checking if intensities are correct
     for (uint x=0; x<w; ++x) {

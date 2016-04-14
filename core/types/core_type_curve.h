@@ -36,32 +36,29 @@ public:
 
   void append(qreal x, qreal y);
 
-  qreal_vec const& getXs()  const { return xs; }
-  qreal_vec const& getYs()  const { return ys; }
+  qreal_vec const& xs()  const { return xs_; }
+  qreal_vec const& ys()  const { return ys_; }
 
-  qreal x(uint i)           const { return xs[i]; }
-  qreal y(uint i)           const { return ys[i]; }
+  qreal x(uint i)        const { return xs_[i]; }
+  qreal y(uint i)        const { return ys_[i]; }
 
-  Range const& XRange()     const { return xRange; }
-  Range const& YRange()     const { return yRange; }
+  rcRange rgeX()         const { return rgeX_; }
+  rcRange rgeY()         const { return rgeY_; }
 
-  Curve intersect(Range const&)   const;
-  Curve intersect(Ranges const&)  const;
+  Curve intersect(rcRange)   const;
+  Curve intersect(rcRanges)  const;
 
   Curve subtract(fit::Function const&)  const;
-  Curve smooth3()                       const;  ///< moving average, 3 points
-  uint  maxYindex()                     const;  ///< the index of the maximum y
+
+  Curve smooth3()   const;  ///< moving average, 3 points
+  uint  maxYindex() const;  ///< the index of the maximum y
 
 private:
-  qreal_vec xs, ys;
-  core::Range xRange, yRange;
+  qreal_vec xs_, ys_;
+  core::Range rgeX_, rgeY_;
 };
 
 typedef QVector<Curve> curve_vec;
-
-//------------------------------------------------------------------------------
-
-Curve makeCurve(shp_LensSystem, Range const& gammaRange, Range const& tthRange);
 
 //------------------------------------------------------------------------------
 }

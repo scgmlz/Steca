@@ -2,33 +2,41 @@
 #ifndef REFLECTION_INFO_H
 #define REFLECTION_INFO_H
 
-#include "types/core_type_xy.h"
+#include "types/core_coords.h"
 #include "types/core_type_range.h"
 
 namespace core {
 //------------------------------------------------------------------------------
 
+class Session; // REMOVE
+
 class ReflectionInfo final {
 public:
   ReflectionInfo();
-  ReflectionInfo(qreal const alpha_,
-                 qreal const beta_,
-                 Range const& gammaRange_,
-                 XY const& peakPosition_,
-                 qreal const peakFWHM_);
+  ReflectionInfo(qreal alpha, qreal beta,
+                 rcRange rgeGamma,
+                 rcXY  peakPosition,
+                 qreal peakFWHM);
 
-  qreal getAlpha() const { return alpha; }
-  qreal getBeta() const { return beta; }
-  Range const& getGammaRange() const { return gammaRange; }
-  XY const& getPeakPosition() const { return peakPosition; }
-  qreal getPeakFWHM() const { return peakFWHM; }
+  qreal   alpha()         const { return alpha_;        }
+  qreal   beta()          const { return beta_;         }
+  rcRange gammaRange()    const { return gammaRange_;   }
+  rcXY    peakPosition()  const { return peakPosition_; }
+  qreal   peakFWHM()      const { return peakFWHM_;     }
+
+  static ReflectionInfo make(rcSession,
+                             rcDatasets,
+                             rcDataset,
+                             Reflection const&,
+                             rcRange rgeTth,
+                             rcRange gammaSector);
 
 private:
-    qreal alpha;
-    qreal beta;
-    Range gammaRange;
-    XY peakPosition;
-    qreal peakFWHM;
+    qreal alpha_;
+    qreal beta_;
+    Range gammaRange_;
+    XY    peakPosition_;
+    qreal peakFWHM_;
 };
 
 //------------------------------------------------------------------------------

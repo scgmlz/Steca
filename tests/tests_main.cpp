@@ -5,7 +5,6 @@
 #include "test_core_range.h"
 #include "test_core_session.h"
 #include "test_save_load_json.h"
-#include "test_core_link.h"
 #include "test_core_functions.h"
 #include "test_core_lens.h"
 #include "test_core_polefigure.h"
@@ -33,8 +32,6 @@ int main(int argc, char *argv[]) {
   TEST_SUITE(TestCoreImage)
   QTextStream(stdout) << "" << endl;
   TEST_SUITE(TestCoreLens)
-  QTextStream(stdout) << "" << endl;
-  TEST_SUITE(TestCorePriorityChain)
   QTextStream(stdout) << "" << endl;
   TEST_SUITE(TestCoreLib)
   QTextStream(stdout) << "" << endl;

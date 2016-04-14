@@ -27,30 +27,16 @@ namespace core {
 class File final {
 public:
   File(rcstr fileName);
- ~File();
 
-  QFileInfo const& fileInfo() const { return info;              }
-  str  fileName()             const { return info.fileName();   }
-  uint numDatasets()          const { return datasets.count();  }
+  QFileInfo const& fileInfo() const { return fileInfo_;              }
+  str fileName()              const { return fileInfo_.fileName();   }
 
-  void fold(); ///< collapse datasets into one (for correction files)
-
-  shp_Dataset const& getDataset(uint i) const { return datasets.at(i); }
-  void appendDataset(Dataset* dataset); ///< takes ownership of dataset
-
-  /// all datasets contain images of the same size
-  QSize getImageSize() const;
-  /// the range of all intensities in all datasets
-  Range const& intensRange() const;
+  Datasets&  datasets()             { return datasets_;              }
+  rcDatasets datasets()       const { return datasets_;              }
 
 private:
-  QFileInfo info;
-  QVector<shp_Dataset> datasets;
-  mutable Range rgeIntens;
-
-public:
-  qreal calAverageMonitor()   const;
-  qreal calAverageDeltaTime() const;
+  QFileInfo fileInfo_;
+  Datasets  datasets_;
 };
 
 //------------------------------------------------------------------------------

@@ -36,13 +36,13 @@ void TestCoreArray2d::testArray2d() {
         QCOMPARE(a.at(a.index(x,y)),(qreal)(x + y*xSize));
 
     int const iSize = xSize * ySize;
-    QCOMPARE(iSize,(int)a.getCount());
+    QCOMPARE(iSize,(int)a.count());
 
     for_i (iSize) {
       QCOMPARE(a[i],(qreal)i);
     }
 
-    auto data = a.getData();
+    auto data = a.data();
     for_i (iSize) {
       QCOMPARE(data[i],(qreal)i);
     }
@@ -52,7 +52,7 @@ void TestCoreArray2d::testArray2d() {
   {
     a.clear();
     QCOMPARE(a.size(),QSize(0,0));
-    QCOMPARE(a.getCount(),(uint)0);
+    QCOMPARE(a.count(),(uint)0);
   }
 }
 

@@ -30,14 +30,14 @@ App::App(int &argc, char *argv[]): super(argc,argv) {
 #if defined(Q_OS_OSX)
   setStyle(QStyleFactory::create("Macintosh"));
 #elif defined(Q_OS_WIN)
-  setStyle(QStyleFactory::create("Fusion"));
+  setStyle(QStyleFactory::create("Windows"));
 #else
   setStyle(QStyleFactory::create("Fusion"));
 #endif
 }
 
 static QtMessageHandler oldHandler;
-static MainWin *pMainWin;
+static gui::MainWin *pMainWin;
 
 static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg) {
   switch (type) {
@@ -55,7 +55,7 @@ static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr 
 }
 
 int App::exec() {
-  MainWin mainWin;
+  gui::MainWin mainWin;
   mainWin.show();
 
   pMainWin = &mainWin;
@@ -70,7 +70,7 @@ bool App::notify(QObject* receiver, QEvent* event) {
   try {
     return super::notify(receiver, event);
   } catch(Exception const& e) {
-    qWarning("%s", e.msg.toLocal8Bit().constData());
+    qWarning("%s", e.msg().toLocal8Bit().constData());
   } catch(std::exception const& e) {
     qWarning("Error: %s", e.what());
   }

@@ -2,8 +2,8 @@
 //
 //  STeCa2:    StressTexCalculator ver. 2
 //
-//! @file      core_type_xy.h
-//! @brief     2D coordinate point
+//! @file      core_coords.h
+//! @brief     Coordinates
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
@@ -13,21 +13,38 @@
 //
 // ************************************************************************** //
 
-#ifndef CORE_TYPE_XY_H
-#define CORE_TYPE_XY_H
+#ifndef CORE_COORDS_H
+#define CORE_COORDS_H
 
 #include "core_defs.h"
 #include "core_types_fwd.h"
 
 namespace core {
 //------------------------------------------------------------------------------
-/// 2D point
+/// 2D point, integers
+
+struct IJ {
+  int i, j;
+
+  IJ();                  ///< (0,0)
+  IJ(int, int);
+
+  bool operator ==(IJ const&) const;
+
+  JsonObj saveJson() const;
+  void    loadJson(rcJsonObj) THROWS;
+};
+
+typedef IJ const& rcIJ;
+
+//------------------------------------------------------------------------------
+/// 2D point, reals
 
 struct XY {
+  qreal x, y;
+
   XY();                   ///< invalid (NaN)
   XY(qreal,qreal);
-
-  qreal x, y;
 
   void  invalidate();     ///< make invalid
   bool  isValid() const;  ///< is not NaN
@@ -36,6 +53,8 @@ struct XY {
   void    loadJson(rcJsonObj) THROWS;
 };
 
+typedef XY const& rcXY;
+
 //------------------------------------------------------------------------------
 }
-#endif // CORE_TYPE_XY_H
+#endif // CORE_COORDS_H

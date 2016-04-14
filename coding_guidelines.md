@@ -1,130 +1,30 @@
 # STeCa2: Coding Guidelines
 
-(GitHub-flavoured Markdown; a nice editor is here: https://stackedit.io/editor)
+(This file is GitHub-flavoured Markdown; a nice editor is here: https://stackedit.io/editor)
 
-In principle following BornAgain (BA) where appropriate.
-
-## Comments & doxygen
-
-BA uses Qt-style doxygen tags. So do we in the boilerplate headers, otherwise
-`///` or `///<`.
-
-Doxygen comments in header files. Normal comments in source files.
-
-Make code read like a story - then it does not need much commenting.
-Use comments to express intentions, and what is not included in and
-understandable from code. Be brief and concise.
-
-## Templates
-
-### header file
-
-```
-// ************************************************************************** //
-//
-//  STeCa2:    StressTexCalculator ver. 2
-//
-//! @file      <file name>
-//! @brief     <brief description>
-//!
-//! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016
-//! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
-//
-// ************************************************************************** //
-
-#ifndef <GUARD>
-#define <GUARD>
-
-#include "other STeCa headers"
-#include <Qt includes>
-
-namespace <name> {
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-}
-
-#endif //<GUARD>
-```
-
-### source file
-
-```
-// ************************************************************************** //
-//
-//  STeCa2:    StressTexCalculator ver. 2
-//
-//! @file      core_defs.cpp
-//!
-//! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016
-//! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
-//
-// ************************************************************************** //
-
-#include "header file"
-#include "other STeCa2 headers"
-#include <Qt includes>
-
-namespace core {
-//------------------------------------------------------------------------------
-
-
-//------------------------------------------------------------------------------
-}
-// eof
-```
-
-Notes:
-
-- in @file: `<file name>` without the path component
-- @brief is not needed in .cpp
-- do prefer includes in .cpp file, forward declarations in .h
-
-### class definition
-
-```cpp
-//! @class <name>
-
-class SimpleFunction: public Function {
-  SUPER(SimpleFunction,Function)
-public:
-
-};
-```
-
-The macro SUPER is super handy. It defines aliases:
-- `thisClass` for the current class,
-- `super` for the superclass.
+In principle we tried to follow BornAgain (BA) where appropriate.
 
 ## Qt:: & std::
 
-The project is based in Qt. Therefore using (current, not deprecated) Qt classes
+The project is based in Qt. Therefore staying within Qt and using (current, not deprecated) Qt classes
 and other resources is preferable. In particular, use Qt collections (`QVector`,
 `QHash`, `QMap`), smart pointers (`QScopedPointer`,`QSharedPointer`) templated
 functions (`qMin`,`qBound`), types (`qreal`, `quint16`), etc.,
 rather than the corresponding `std::` counterparts.
 
-A notable exception is `std::sort` (and perhaps other std algorithms.
+A notable exception is `std::sort` (and perhaps other std algorithms).
 
-### QtCreator
+## QtCreator
 
-Qt Creator - a modern IDE that supports Qt development - provides syntax-aware coloring, block highlight, fast switching between header and source files, fast navigation through code, type hierarchy and usage of symbols, integration with the debugger, etc. All that improves productivity and allows code formatting with less whitespace and ornamentation, such as:
+Qt Creator - a modern IDE that supports Qt development - provides syntax-aware coloring, block highlight, fast switching between header and source files, fast navigation through code, type hierarchy and usage of symbols, integration with the debugger, etc. All that improves productivity and allows code formatting with less whitespace and ornamentation.
 
 ## code formatting
 
 ### indentation and alignment
 
-Indent by 2 spaces (no tabs!) (discuss - BA uses 4).
+Indent by 2 spaces, no tabs!
 
-Align code in vertical columns. It looks good, and one can quickly spot
-inconsistencies. Human brain is good in pattern-recognition, so why not use it?
-(Indentation by 2 spaces helps that we do not quickly run off the right edge.)
+Align code in vertical columns. It looks good, and one can quickly spot inconsistencies. Human brain is good in pattern-recognition, so why not use it? (Indentation by 2 spaces helps that we do not quickly run off the right edge.)
 
 Compare:
 ```
@@ -161,13 +61,8 @@ Egyptian.
 
 ### spaces
 
-Yes between a control statement and `(` and before `{`.
-No between a function name and `(`.
-Otherwise use spaces parsimoniously. Syntax-colouring and font-variation (bold,
-italics) in IDEs visually separates elements that in the past had to be
-separated by spaces. That way spaces and blank lines can be saved for where it
-matters. The best (arguably) is: colour and font-coding provides the grain, while
-more of text fits on one screen concisely.
+_Yes_ between a control statement and `(` and before `{`. _No_ between a function name and `(`.
+Otherwise use spaces parsimoniously. Syntax-colouring and font-variation (bold, italics) in IDEs visually separates elements that in the past had to be separated by spaces. That way spaces and blank lines can be saved for where it matters. The best (arguably) is: colour and font-coding provides the grain, while more of text fits on one screen concisely.
 
 ```
 int foo(int n) {
@@ -184,35 +79,68 @@ int foo(int n) {
 }
 ```
 
-## naming conventions
+## Comments & doxygen
 
-### names
+BA uses Qt-style doxygen tags `/*!`.  So do we in the _boilerplate headers_, otherwise we use `///`.
+
+Doxygen comments should be only in header files.
+
+Make the code read like a story - then it does not need much commenting.
+Use comments to express intentions, and to explain what is not included in or
+understandable from code. Be brief and concise. Do not repeat what the code says.
+
+## class - struct
+Classes have hidden data members and is mainly about the interface; structs have public data members and almost no member functions - perhaps only a constructor, assignment, equality operator.
+
+### class accessor method names
+
+- use `foo()` and `setFoo(...)` to access `foo_`.
+- use `get...` if it really goes and fetches something.
+- use `calc...` if it does a costly calculation.
+
+### struct members
+
+Directly accessible, such as `dataPoint.x`. No accessor methods.
+
+## names of things
 
 - Classes: camel case, begin with uppercase.
-- Variables: camel case, begin with lowercase. Descriptive names, the longer the
+- Variables: camel case, begin with lowercase. Use descriptive names, the longer the
   scope and life span, the longer the name.
-- Permissible one-letter names: `i`, `n`, `x`, `y` etc.
-- Permissible two-letter names: `sz` (size)
+- Permissible one-letter names: `i`, `n`, `x`, `y`, etc.
+- Permissible two-letter names: `ij`, `xy` (coordinates)
 - Permissible three-letter names (or parts of names):
-  `min`, `max`, `res` (result), `val` (value), `msg` (message), `add`,
-  `rem` (remove), `del` (delete), `fun` (that's what we have; kidding, function)
-  etc.
-- Plurals: name classes and variables of collection (list, vector, etc.) types in plural
-  form (`Range range`, `Ranges ranges`)
+  `min`,  `max`,  `res` (result), `val` (value), `msg` (message), `add`,
+  `rem` (remove), `del` (delete), `fun` (that's what we have, kids),
+  `rge` (range), `avg`, etc.
+- Plurals: whatever name ends in -s is a collection of some sort.
+  Cf. `inten`(sity) and `intens`(ities).
+- data members of *classes*: postfixed with `_`
+- lists: `..._lst`, e.g. `typedef QStringList str_lst;`
+- vectors: `..._vec`, e.g.  `typedef QVector<qreal> qreal_vec;`, `typedef QVector<uint> uint_vec;`
+- typedefs of primitive types and structs: `..._t`, e.g. `typedef float inten_t;`
+- reference const typedefs prefix with `rc...`, e.g. `rcJson`.
 
-### member variables
-  - no need to prefix member variables (with m_ and such)
-  - no need to mark overriden virtual methods as `virtual`
-    (nor `override`)
+## `typedef` & `using`
 
-## code
+Use `typedef` to type-define types (globally). Use `using` for local-scope aliases.
 
-### prefix ++
+## auto
+
+Be careful with `auto` (copy) v. `auto &` (reference).
+Also use `auto const&` to make the point.
+
+## polymorphism
+
+There is no real need to mark overriden virtual methods as `virtual` and/or
+`override`; the syntax colouring in Qt Creator does it nicely.
+
+## prefix ++
 
 If there can be both, `++i` is better than `i++`, although people usually do the
 opposite.
 
-### postpositive `const`
+## postpositive `const`
 
 C++ syntax allows `const` that modifies a type to either precede or follow the
 type name. One can be English or French.
@@ -226,7 +154,7 @@ organize code in simple visual patterns, such as aligned columns.
 Compare:
 
 ```
-      int a = 1;
+int       a = 1;
 const int b = 2;
 ```
 
@@ -242,8 +170,7 @@ Why then not all `const`s? Compare:
 
 ```
 class C {
-  // const-int, star-const, foo-(this)-const - inconsistent
-  const int * const foo() const;
+  const int   * const    foo() const;
 };
 ```
 
@@ -251,8 +178,8 @@ with
 
 ```
 class C {
-  // int-const, star-const, foo-(this)-const - consistent
-  int const * const foo() const;
+  int const   * const    foo() const;
+  // each const modifies the preceding thing
 };
 ```
 
@@ -262,62 +189,50 @@ Q.E.D.
 
 ### SUPER
 
-### for_i, for_int
+The macro SUPER is super handy. It defines aliases:
+- `thisClass` for the current class,
+- `super` for the superclass.
+
+### for_i, for_int, for_ij
 
 Use `for_i (n)` instead of the full idiomatic
 ```
 for (int i=0, iEnd=(n); i<iEnd; ++i)
 ```
-and `for_int (v,n)` to use some `v` instead of `i`.
+`for_int (v,n)` instead
+```
+for (int v=0, vEnd=(n); v<vEnd; ++v)
+```
+and `for_ij(m,n)` instead of
+```
+for_int (i,m)
+  for_int (j,n)
+```
 
-## the choice between float and double
+## the choice of float and double
 
-If saving space is required, use `float`.  If specifically 64b floating point is required, use `double`. (In both cases consider an appropriate `typedef`.) Otherwise, which is in most cases, use `qreal`.
+If saving space is required, use `float`.  If specifically 64b floating point is required, use `double`. (In both cases consider an appropriate `typedef`.)
 
-## the choice between int and uint
+Otherwise, which is in most cases, use `qreal`.
 
-If negative values cannot be, use `uint` to express it. There is a rub: in many
-places in libraries (Qt etc.), int is used instead. The probable reason is that
-with `uint`s one can be careful when it comes in comparisons. And then when we
-use those, we must occasionally cast our `uint`s to `int`s or the other way.
-Remember, when casting `int` to `uint`, it must be guaranteed that its value is
-non-negative. When casting `uint` to `int`, one loses half the range (is 2
-billion enough?).
+## the choice of int and uint
+
+If negative values cannot be, use `uint` to express it. There is a rub: in many places in libraries (Qt etc.), `int` is used instead. The probable reason is that with `uint`s one can be careful when it comes to underflows. Therefore we must occasionally cast our `uint`s to `int`s or the other way.
+
+Remember, when casting `int` to `uint`, it must be guaranteed that its value is non-negative. When casting `uint` to `int`, one loses half the range (is 2 billion enough?).
 
 ## Exceptions
 
 Exceptions happen; therefore write exception-safe code (did we mention `QScopedPointer`?) Throw an `Exception` if something goes wrong, namely if data are incorrect during import of data files. To do that, use `THROW` and `RUNTIME_CHECK` macros; mark yer functions that do throw exceptions with `THROWS`.
 
-## Debug time
+### Debug time
+
+Use:
 
 - `ASSERT`
 - `TR`
 - `WT`
 - `NEVER_HERE`
-- `NOT_YET`
-
-## Naming of types
-
-- lists: `_lst`, e.g. `typedef QStringList str_lst;`
-- vectors: `_vec`, e.g.  `typedef QVector<qreal> qreal_vec;`, `typedef QVector<uint> uint_vec;`
-- typedefs of primitive types: `_t`, e.g. `typedef float intens_t;`
-- reference typedefs prefix with `r`, e.g. `rJson`
-- reference const typedefs prefix with `rc`, e.g. `rcJson`
-
-## `typedef` & `using`
-
-Use `typedef` to type-define types (globally). Use `using` for local-scope aliases.
-
-## auto
-
-Be careful with `auto` (copy) v. `auto &` (reference).
-Also use `auto const&` to make the point.
-
-## class getter methods
-
-Name getSomething() if they must calculate that something,
-or if they should be used with caution;
-else prefer to call plain accessors just something()
 
 ## Refactoring
 
@@ -327,5 +242,88 @@ Consider:
 - eliminate clutter of all sorts
 - descriptive names
 - enforce consistency
-- simplify, simplify, simplify
-- discard, discard, discard
+- Simplify, simplify, simplify!
+- Discard, discard, discard!
+
+## Templates
+
+### header file
+
+```
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      <file_name.h>
+//! @brief     <brief_description>
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
+#ifndef <GUARD>
+#define <GUARD>
+
+#include "other STeCa headers"
+#include <Qt includes>
+
+namespace <name> {
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+}
+
+#endif //<GUARD>
+```
+
+### source file
+
+```
+// ************************************************************************** //
+//
+//  STeCa2:    StressTexCalculator ver. 2
+//
+//! @file      <file_name.cpp>
+//!
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Original version: Christian Randau
+//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//
+// ************************************************************************** //
+
+#include "file_name.h"
+#include "other STeCa2 headers"
+#include <Qt includes>
+
+namespace core {
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+}
+// eof
+```
+
+Notes:
+
+- @brief is not needed in .cpp
+- do prefer includes in .cpp file, forward declarations in .h
+
+### class definition
+
+```cpp
+//! @class <name>
+
+class SimpleFunction: public Function {
+  SUPER(SimpleFunction,Function)
+public:
+
+};
+```
+
+(eof)

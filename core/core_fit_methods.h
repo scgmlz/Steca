@@ -20,8 +20,6 @@
 
 namespace core {
 
-class Curve;
-
 namespace fit {
 //------------------------------------------------------------------------------
 
@@ -30,19 +28,19 @@ public:
   FittingMethod();
   virtual ~FittingMethod();
 
-  bool fitWithoutChecks(Function&, core::Curve const&);
+  bool fitWithoutChecks(Function&, rcCurve);
 
 protected:
-  bool fit(Function&, core::Curve const&, bool withChecks);
+  bool fit(Function&, rcCurve, bool withChecks);
   virtual bool approximate(qreal*,qreal const*,qreal const*,qreal*,uint,qreal const*,uint) = 0;
 
   // these pointers are valid during fit() call
-  Function*    function;
-  qreal const* xValues;
+  Function*    function_;
+  qreal const* xValues_;
 
 protected:
-  /// callback to calculate a vector of y(x)
-  void __functionY(qreal*,qreal*,int,int,void*);
+  /// calculate a vector of y(x)
+  void callbackY(qreal*,qreal*,int,int,void*);
 };
 
 //------------------------------------------------------------------------------
@@ -67,7 +65,7 @@ protected:
   bool approximate(qreal*,qreal const*,qreal const*,qreal*,uint,qreal const*,uint);
 
 private:
-  void __functionJacobianLM(qreal*,qreal*,int,int,void*);
+  void callbackJacobianLM(qreal*,qreal*,int,int,void*);
 };
 
 //------------------------------------------------------------------------------

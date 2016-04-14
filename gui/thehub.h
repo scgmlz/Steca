@@ -6,43 +6,16 @@
 #define THEHUB_H
 
 #include "core_defs.h"
+#include "actions.h"
 #include "models.h"
 #include "core_session.h"
 #include <QAction>
 #include <QSettings>
+
 class QSpinBox;
 class QDoubleSpinBox;
 
-//------------------------------------------------------------------------------
-
-class Action: public QAction {
-  SUPER(Action,QAction)
-public:
-  Action(rcstr text, rcstr tip, QObject*);
-
-  Action& dialog();
-  Action& key(QKeySequence);
-  Action& icon(rcstr);
-
-  virtual Action& alt(rcstr text2, rcstr tip2);
-};
-
-class TriggerAction: public Action {
-  SUPER(TriggerAction,Action)
-public:
-  TriggerAction(rcstr text, rcstr tip, QObject*);
-};
-
-class ToggleAction: public Action {
-  SUPER(ToggleAction,Action)
-public:
-  ToggleAction(rcstr text, rcstr tip, QObject*);
-  Action& alt(rcstr text2, rcstr tip2);
-
-protected:
-  str text1, text2, tip1, tip2;
-};
-
+namespace gui {
 //------------------------------------------------------------------------------
 
 class Settings: public QSettings {
@@ -72,6 +45,8 @@ class TheHub: public QObject {
 public:
   TheHub();
 
+  Actions actions;
+
 private:
   void initActions();
   void configActions();
@@ -85,44 +60,6 @@ public:
   models::FileViewModel       fileViewModel;
   models::DatasetViewModel    datasetViewModel;
   models::ReflectionViewModel reflectionViewModel;
-
-public:
-  QAction
-    *actAddFiles, *actRemoveFile,
-    *actLoadCorrFile,
-    *actLoadSession, *actSaveSession,
-
-    *actExportDiffractogramCurrent,
-    *actExportDiffractogramAllSeparateFiles,
-    *actExportDiffractogramSingleFile,
-    *actExportImagesWithMargins,
-    *actExportImagesWithoutMargins,
-
-    *actQuit,
-
-    *actUndo, *actRedo,
-    *actCut,  *actCopy, *actPaste,
-
-    *actViewStatusbar,
-#ifndef Q_OS_OSX // Mac has its own
-    *actFullscreen,
-#endif
-    *actViewDockFiles, *actViewDockDatasets, *actViewDockDatasetInfo,
-    *actViewReset,
-
-    *actOutputPolefigures,
-    *actOutputHistograms,
-    *actPreferences,
-    *actFitErrorParameters,
-
-    *actAbout,
-
-  // more actions, some not in the menu
-    *actReflectionAdd, *actReflectionRemove,
-    *actImageRotate, *actImageMirror,
-    *actImagesLink, *actImageOverlay, *actImagesFixedIntensity, *actEnableCorr,
-    *actFitTool, *actFitBgClear, *actFitShow,
-    *actHasBeamOffset;
 
 public: // files
   uint numFiles(bool withCorr) const;
@@ -138,36 +75,33 @@ public: // files
   void setSelectedDataset(core::shp_Dataset);
   void setSelectedReflection(core::shp_Reflection);
   void setReflectionData(core::shp_Reflection);
-  void newReflectionData(core::Range const&,core::XY const&,qreal,bool);
+  void newReflectionData(core::rcRange,core::rcXY,qreal,bool);
 
 public:
-  core::shp_LensSystem allLenses(core::Dataset const& dataset) const;
-  core::shp_LensSystem noROILenses(core::Dataset const& dataset) const;
+  core::shp_Lens lens(core::rcDataset)      const;
+  core::shp_Lens lensNoCut(core::rcDataset) const;
+
+  core::AngleMap const& angleMap(core::rcDataset)  const;
 
 public:
-  void load(QFileInfo const&)  THROWS;
-  void load(QByteArray const&) THROWS;
-
   void save(QFileInfo const&) const;
   QByteArray save()           const;
+
+  void load(QFileInfo const&)  THROWS;
+  void load(QByteArray const&) THROWS;
 
 public:
   void addFile(rcstr filePath)      THROWS;
   void addFiles(str_lst filePaths)  THROWS;
-  void loadCorrFile(rcstr filePath);
+  void loadCorrFile(rcstr filePath) THROWS;
 
   void enableCorrection(bool);
 
-  QMargins const& getImageMargins() const;
-  void setImageMargins(bool topLeft, bool linked, QMargins const&);
+  core::ImageCut const& imageCut() const;
+  void setImageCut(bool topLeft, bool linked, core::ImageCut const&);
 
-  QSize getImageSize() const;
-
-  core::DiffractionAnglesMap const& calcAngleMap(qreal tthMitte);
-  core::Borders const& getCut() const; // TODO somehow hide
-
-  core::Geometry const& getGeometry() const;
-  void setGeometry(qreal detectorDistance, qreal pixSize, bool hasBeamOffset, QPoint const& middlePixOffset);
+  core::Geometry const& geometry() const;
+  void setGeometry(qreal detectorDistance, qreal pixSize, bool isMidPixOffset, core::rcIJ midPixOffset);
 
   void setBackgroundPolynomialDegree(uint);
 
@@ -183,13 +117,16 @@ public:
 
   int fittingTab__; // TODO
   void setFittingTab(int);
-  
+
 private:
-  core::shp_Reflection    selectedReflection;
+  core::shp_Reflection selectedReflection;
 
 private:
   void setImageRotate(core::ImageTransform);
   void setImageMirror(bool);
+
+public:
+  void setNorm(core::Lens::eNorm);
 
 signals:
   void readSettings();
@@ -217,13 +154,11 @@ signals:
 
 public:
   // TODO instead of exposing the objects, provide an interface
-  core::Ranges&       getBgRanges()           const { return session->getBgRanges(); }
-  int&                getBgPolynomialDegree() const { return session->getBgPolynomialDegree(); }
-  core::Reflections&  getReflections()        const { return session->getReflections();  }
-
-public:
-  void setNormType(core::Normalization type);
+  core::Ranges&       bgRanges()           const { return session->bgRanges();           }
+  uint&               bgPolynomialDegree() const { return session->bgPolynomialDegree(); }
+  core::Reflections&  reflections()        const { return session->reflections();        }
 };
 
 //------------------------------------------------------------------------------
+}
 #endif

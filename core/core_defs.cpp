@@ -13,15 +13,15 @@
 // ************************************************************************** //
 
 #include "core_defs.h"
-#include <QtMath>
+#include <qmath.h>
 
 static_assert (QT_VERSION >= QT_VERSION_CHECK(5,4,0),"written for Qt >= 5.4, have " QT_VERSION_STR);
 
-qreal radToDeg(qreal rad) {
+qreal rad2Deg(qreal rad) {
   return rad * (180 / M_PI);
 }
 
-qreal degToRad(qreal deg) {
+qreal deg2Rad(qreal deg) {
   return deg * (M_PI / 180);
 }
 

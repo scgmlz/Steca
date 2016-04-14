@@ -24,7 +24,7 @@ namespace models {
 class FileViewModel: public TableModel {
   SUPER(FileViewModel,TableModel)
 public:
-  FileViewModel(TheHub&);
+  FileViewModel(gui::TheHub&);
 
   int columnCount(rcIndex = ANY_INDEX) const;
   int rowCount(rcIndex    = ANY_INDEX) const;
@@ -42,7 +42,7 @@ public:
 class DatasetViewModel: public TableModel {
   SUPER(DatasetViewModel,TableModel)
 public:
-  DatasetViewModel(TheHub&);
+  DatasetViewModel(gui::TheHub&);
 
   int columnCount(rcIndex = ANY_INDEX) const;
   int rowCount(rcIndex    = ANY_INDEX) const;
@@ -62,9 +62,9 @@ public:
   void showMetaInfo(checkedinfo_vec const&);
 
 private:
-  core::shp_File file;              ///< the file with datasets
-  checkedinfo_vec const* metaInfo;  ///< metadata items
-  uint_vec metaInfoNums;            ///< selected metadata items to show
+  core::shp_File file_;              ///< the file with datasets
+  checkedinfo_vec const* metaInfo_;  ///< metadata items
+  uint_vec metaInfoNums_;            ///< selected metadata items to show
 };
 
 //------------------------------------------------------------------------------
@@ -72,7 +72,7 @@ private:
 class ReflectionViewModel: public TableModel {
   SUPER(ReflectionViewModel,TableModel)
 public:
-  ReflectionViewModel(TheHub&);
+  ReflectionViewModel(gui::TheHub&);
 
   int columnCount(rcIndex = ANY_INDEX) const;
   int rowCount(rcIndex    = ANY_INDEX) const;

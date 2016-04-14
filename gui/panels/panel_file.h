@@ -19,7 +19,7 @@
 #include "panel.h"
 #include "models.h"
 
-namespace panel {
+namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 class FileView: public HubListView {
@@ -37,7 +37,7 @@ public:
   void update();
 
 private:
-  Model &model;
+  Model &model_;
 };
 
 class DockFiles: public DockWidget {
@@ -45,9 +45,9 @@ class DockFiles: public DockWidget {
 public:
   DockFiles(TheHub&);
 private:
-  FileView *fileView;
+  FileView *fileView_;
 };
 
 //------------------------------------------------------------------------------
-}
+  }}
 #endif

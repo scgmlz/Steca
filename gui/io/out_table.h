@@ -19,7 +19,7 @@
 #include "gui_helpers.h"
 #include "panels/panel.h"
 
-namespace io {
+namespace gui { namespace io {
 //------------------------------------------------------------------------------
 
 class OutTableModel;
@@ -43,7 +43,7 @@ public:
   void addRow(row_t const&);
 
 private:
-  OutTableModel *model;
+  OutTableModel *model_;
 };
 
 //------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ public:
  ~OutTableWidget();
 
   OutTable& table() const {
-    return *outTable;
+    return *outTable_;
   }
 
 private:
@@ -80,13 +80,13 @@ private:
     SUPER(ShowColumnsWidget,QWidget)
   public:
     ShowColumnsWidget(showcolumn_vec&);
-    QGridLayout *grid;
+    QGridLayout *grid_;
   };
 
 private:
-  OutTable          *outTable;
-  ShowColumnsWidget *showColumnsWidget;
-  showcolumn_vec     showColumns;
+  OutTable          *outTable_;
+  ShowColumnsWidget *showColumnsWidget_;
+  showcolumn_vec     showColumns_;
 };
 
 //------------------------------------------------------------------------------
@@ -103,11 +103,11 @@ protected:
 protected:
   void setWidgets(panel::BasicPanel*,OutTableWidget*);
 
-  QBoxLayout        *box;
-  panel::BasicPanel *panel;
-  OutTableWidget    *tableWidget;
+  QBoxLayout        *box_;
+  panel::BasicPanel *panel_;
+  OutTableWidget    *tableWidget_;
 };
 
 //------------------------------------------------------------------------------
-}
+}}
 #endif // OUT_TABLE_H

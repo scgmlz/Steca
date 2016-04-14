@@ -74,7 +74,7 @@ void Range::extendBy(qreal val) {
   max = qIsNaN(max) ? val : qMax(max,val);
 }
 
-void Range::extendBy(Range const& that) {
+void Range::extendBy(rcRange that) {
   extendBy(that.min); extendBy(that.max);
 }
 
@@ -83,12 +83,12 @@ bool Range::contains(qreal val) const {
   return min <= val && val <= max;
 }
 
-bool Range::contains(Range const& that) const {
+bool Range::contains(rcRange that) const {
   ASSERT(isValid() && that.isValid())
   return min <= that.min && that.max <= max;
 }
 
-bool Range::intersects(Range const& that) const {
+bool Range::intersects(rcRange that) const {
   ASSERT(isValid() && that.isValid())
   return min <= that.max && that.min <= max;
 }
@@ -116,11 +116,11 @@ void Range::loadJson(rcJsonObj obj) THROWS {
 Ranges::Ranges() {
 }
 
-bool Ranges::add(Range const& range) {
+bool Ranges::add(rcRange range) {
   QVector<Range> newRanges;
 
   auto addRange = range;
-  for (Range const& r: ranges) {
+  for (rcRange r: ranges_) {
     if (r.contains(range))
       return false;
     if (!range.contains(r)) {
@@ -132,17 +132,17 @@ bool Ranges::add(Range const& range) {
   }
 
   newRanges.append(addRange);
-  ranges = newRanges;
+  ranges_ = newRanges;
   sort();
 
   return true;
 }
 
-bool Ranges::rem(Range const& remRange) {
+bool Ranges::rem(rcRange remRange) {
   QVector<Range> newRanges;
   bool changed = false;
 
-  for (Range const& r: ranges) {
+  for (rcRange r: ranges_) {
     if (r.intersects(remRange)) {
       changed = true;
       if (r.min < remRange.min)
@@ -154,38 +154,34 @@ bool Ranges::rem(Range const& remRange) {
     }
   }
 
-  if (changed) ranges = newRanges;
+  if (changed) ranges_ = newRanges;
   return changed;
 }
 
-static bool lessThan(Range const& r1, Range const& r2) {
+static bool lessThan(rcRange r1, rcRange r2) {
   if (r1.min < r2.min) return true;
   if (r1.min > r2.min) return false;
   return r1.max < r2.max;
 }
 
 void Ranges::sort() {
-  std::sort(ranges.begin(),ranges.end(),lessThan);
+  std::sort(ranges_.begin(),ranges_.end(),lessThan);
 }
 
-static str const KEY_NUM("%1"), KEY_COUNT("count");
+JsonArr Ranges::saveJson() const {
+  JsonArr arr;
 
-JsonObj Ranges::saveJson() const {
-  JsonObj obj;
+  for (auto &range: ranges_)
+    arr.append(range.saveJson());
 
-  uint count = ranges.count();
-  obj.saveUint(KEY_COUNT,count);
-
-  for_i (count)
-    obj.saveRange(KEY_NUM.arg(i+1), ranges.at(i));
-
-  return obj;
+  return arr;
 }
 
-void Ranges::loadJson(rcJsonObj obj) THROWS {
-  uint count = obj.loadUint(KEY_COUNT);
-  for_i (count)
-    ranges.append(obj.loadRange(KEY_NUM.arg(i+1)));
+void Ranges::loadJson(rcJsonArr arr) THROWS {
+  for_i (arr.count()) {
+    Range range; range.loadJson(arr.objAt(i));
+    ranges_.append(range);
+  }
 }
 
 //------------------------------------------------------------------------------

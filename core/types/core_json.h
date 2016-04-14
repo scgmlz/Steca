@@ -19,6 +19,7 @@
 #include "core_defs.h"
 #include "core_types_fwd.h"
 #include <QJsonObject>
+#include <QJsonArray>
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -32,6 +33,9 @@ public:
   JsonObj& saveObj(rcstr key, QJsonObject const&);
   JsonObj  loadObj(rcstr key) const THROWS;
 
+  JsonObj&   saveArr(rcstr key, QJsonArray const&);
+  QJsonArray loadArr(rcstr key) const THROWS;
+
   JsonObj& saveInt(rcstr key, int);
   int      loadInt(rcstr key) const THROWS;
 
@@ -41,14 +45,34 @@ public:
   JsonObj& saveReal(rcstr key, qreal);
   qreal    loadReal(rcstr key) const THROWS;
 
+  JsonObj& saveBool(rcstr key, bool);
+  bool     loadBool(rcstr key) const THROWS;
+
   JsonObj& saveString(rcstr key, rcstr);
   str      loadString(rcstr key) const THROWS;
 
-  JsonObj& saveRange(rcstr key, Range const&);
+  JsonObj& saveRange(rcstr key, rcRange);
   Range    loadRange(rcstr key) const THROWS;
 
-  JsonObj& operator+= (JsonObj const&);
-  JsonObj  operator+  (JsonObj const&) const;
+  JsonObj& saveXY(rcstr key, rcXY);
+  XY       loadXY(rcstr key) const THROWS;
+
+  JsonObj& saveIJ(rcstr key, rcIJ);
+  IJ       loadIJ(rcstr key) const THROWS;
+
+  JsonObj& operator+= (rcJsonObj);
+  JsonObj  operator+  (rcJsonObj) const;
+};
+
+//------------------------------------------------------------------------------
+
+class JsonArr: public QJsonArray {
+  SUPER(JsonArr,QJsonArray)
+public:
+  JsonArr();
+  JsonArr(QJsonArray const&);
+
+  JsonObj objAt(uint) const;
 };
 
 //------------------------------------------------------------------------------

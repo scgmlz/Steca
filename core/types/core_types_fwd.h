@@ -22,29 +22,38 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-struct XY;
+struct IJ; typedef IJ const& rcIJ;
+struct XY; typedef XY const& rcXY;
 
-struct  Range;
-class  Ranges;
+struct Range;  typedef Range  const& rcRange;
+class  Ranges; typedef Ranges const& rcRanges;
 
-class  Curve;
+class  Curve;  typedef Curve  const& rcCurve;
 
 struct vector3d;
 struct matrix3d;
 
 class  Image;
 struct ImageTransform;
-struct DiffractionAngles;
 
-typedef float intens_t;   ///< intensity; float should suffice
+typedef float inten_t;    ///< intensity; float should suffice
 
-class JsonObj;            /// for saving / loading
-typedef JsonObj const &rcJsonObj;
+class JsonObj; typedef JsonObj const& rcJsonObj;
+class JsonArr; typedef JsonArr const& rcJsonArr;
 
-class Lens;       typedef QSharedPointer<Lens>        shp_LensSystem; // RENAME to shp_LensSystem
-class File;       typedef QSharedPointer<File>        shp_File;
-class Dataset;    typedef QSharedPointer<Dataset>     shp_Dataset;
-class Reflection; typedef QSharedPointer<Reflection>  shp_Reflection;
+class Session;  typedef Session const&  rcSession;
+class File;     typedef File const&     rcFile;
+class Dataset;  typedef Dataset const&  rcDataset;
+class Datasets; typedef Datasets const& rcDatasets;
+class Lens;
+class AngleMap;
+class Reflection;
+
+typedef QSharedPointer<File>        shp_File;
+typedef QSharedPointer<Dataset>     shp_Dataset;
+typedef QSharedPointer<Lens>        shp_Lens;
+typedef QSharedPointer<AngleMap>    shp_AngleMap;
+typedef QSharedPointer<Reflection>  shp_Reflection;
 
 enum class ePeakType {
   GAUSSIAN, LORENTZIAN, PSEUDOVOIGT1, PSEUDOVOIGT2,

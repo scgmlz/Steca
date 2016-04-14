@@ -9,13 +9,13 @@
 class TestCoreLens: public QObject {
   Q_OBJECT
 public:
-  void checkIntensity(core::shp_LensSystem const& lensSystem,
-                      core::intens_t& val, core::intens_t& specialVal, int posX, int posY);
+  void checkIntensity(core::shp_Lens const& lensSystem,
+                      core::inten_t& val, core::inten_t& specialVal, int posX, int posY);
 
-  core::Dataset const testDataset(int width, int height, core::intens_t inten,
-                                     core::intens_t specialInten,int posArray);
+  core::Dataset const testDataset(int width, int height, core::inten_t inten,
+                                     core::inten_t specialInten,int posArray);
 
-  core::DiffractionAnglesMap const testAngleMapArray(qreal valGamma, qreal gammaS,
+  core::AngleMap const testAngleMapArray(qreal valGamma, qreal gammaS,
                                               qreal valTth, qreal tthS,
                                               int width, int height,
                                               int posX, int posY);
@@ -24,12 +24,12 @@ public:
                                                    int corrPosX, int corrPosY,
                                                    int width, int height);
 private slots:
-  void testTransformationLens();
-  void testROILens();
-  void testSensitivityCorrectionLens();
-  void testIntensityRangeLens();
-  void testGlobalIntensityRangeLens();
-  void testNormalizationLens();
+//  void testTransformationLens();
+//  void testROILens();
+//  void testSensitivityCorrectionLens();
+//  void testIntensityRangeLens();
+//  void testGlobalIntensityRangeLens();
+//  void testNormalizationLens();
 };
 
 

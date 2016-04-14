@@ -48,7 +48,7 @@ public:
   using Index   = QModelIndex;
   using rcIndex = Index const&;
 
-  TableModel(TheHub&);
+  TableModel(gui::TheHub&);
 
 protected:
   /// the left-most column is hidden

@@ -15,68 +15,147 @@
 #include "core_lens.h"
 
 #include "core_dataset.h"
-#include "types/core_type_angles.h"
+#include "core_session.h"
+#include "types/core_type_curve.h"
+#include "types/core_type_geometry.h"
 #include "types/core_type_image.h"
 #include "types/core_type_image_transform.h"
+#include <QStringList>
+#include <qmath.h>
 
 namespace core {
 //------------------------------------------------------------------------------
 
-void Lens::nextChangedImpl() {
+str_lst const& Lens::normStrLst() {
+  static str_lst strLst {
+    "Disable", "Delta time", "Monitor count", "Background level",
+  };
+
+  return strLst;
 }
 
-//------------------------------------------------------------------------------
-
-PlainLens::PlainLens(Image const& image, DiffractionAnglesMap const& map)
-  :  Lens()
-    ,angleMap(&map)
-    ,intensityRange(&image.intensRange())
-    ,rawImage(&image)
+Lens::Lens(bool trans, bool cut, eNorm norm, rcSession session,
+           rcDataset dataset, Dataset const* corrDataset,
+           AngleMap const& angleMap, ImageCut const& imageCut, ImageTransform const& imageTransform)
+: trans_(trans), cut_(cut), session_(session)
+, dataset_(dataset), corrDataset_(corrDataset)
+, angleMap_(angleMap), imageCut_(imageCut), imageTransform_(imageTransform)
 {
+  calcSensCorr();
+  setNorm(norm);
 }
 
-DiffractionAngles PlainLens::getAngles(uint x, uint y) const {
-  return angleMap->at(x, y);
+QSize Lens::size() const {
+  QSize size = dataset_.imageSize();
+
+  if (trans_)
+    if (imageTransform_.isTransposed())
+      size.transpose();
+
+  if (cut_)
+    size -= imageCut_.marginSize();
+
+
+  return size;
 }
 
-uint PlainLens::getPriority() const {
-  return Lens::PRIORITY_PLAIN;
+inten_t Lens::inten(uint i, uint j) const {
+  if (trans_)
+    doTrans(i,j);
+  if (cut_)
+    doCut(i,j);
+
+  inten_t inten = dataset_.inten(i,j);
+
+  if (corrDataset_)
+    inten *= intensCorr_.at(i,j);
+
+  return inten * normFactor_;
 }
 
-intens_t PlainLens::getIntensity(uint x, uint y) const {
-  return rawImage->at(x, y);
+Angles const& Lens::angles(uint i, uint j) const {
+  if (trans_)
+    doTrans(i,j);
+  if (cut_)
+    doCut(i,j);
+
+  return angleMap_.at(i,j);
 }
 
-Range PlainLens::getIntensityRange() const {
-  return *intensityRange;
+rcRange Lens::rgeInten() const {
+  if (!rgeInten_.isValid()) {
+    auto s = size();
+    for_ij (s.width(), s.height())
+      rgeInten_.extendBy(inten(i,j));
+  }
+
+  return rgeInten_;
 }
 
-QSize PlainLens::getSize() const {
-  return rawImage->size();
+rcRange Lens::rgeIntenGlobal() const {
+  if (!rgeIntenGlobal_.isValid()) {
+    for (auto const& dataset: dataset_.datasets()) {
+      // a copy of this lens for each dataset
+      Lens lens(trans_, cut_, session_.norm(), session_,
+                *dataset, corrDataset_,
+                angleMap_,imageCut_,imageTransform_);
+      rgeIntenGlobal_.extendBy(lens.rgeInten());
+    }
+  }
+
+  return rgeIntenGlobal_;
 }
 
-//------------------------------------------------------------------------------
+Curve Lens::makeCurve(rcRange gammaRange, rcRange tthRange) const {
 
-TransformationLens::TransformationLens(ImageTransform const& transformation)
-  :  Lens()
-    ,transform(&transformation)
-{
+  Curve res;
+
+  auto s = size();
+  uint w = s.width(), h = s.height();
+
+  qreal const deltaTTH = tthRange.width() / w;
+
+  qreal_vec intens_vec(w);
+  uint_vec  counts_vec(w, 0);
+
+  for_ij (w, h) {
+    // TODO angles can be arranged for a single loop for_i (pixTotal)
+    // [last in commit 98413db71cd38ebaa54b6337a6c6e670483912ef]
+    auto const& as = angles(i,j);
+    if (!gammaRange.contains(as.gamma)) continue;
+
+    int bin = (as.tth == tthRange.max)
+              ? w - 1
+              : qFloor((as.tth - tthRange.min) / deltaTTH);
+
+    if (bin < 0 || (int)w <= bin) {
+      //        TR("TTH bin outside cut?")
+      continue; // outside of the cut
+    }
+
+    auto in = inten(i,j);
+    if (!qIsNaN(in)) {
+      intens_vec[bin] += in;
+      counts_vec[bin] += 1;
+    }
+  }
+
+  for_i (w) {
+    auto in  = intens_vec[i];
+    auto cnt = counts_vec[i];
+    if (cnt > 0) in /= cnt;
+    res.append(tthRange.min + deltaTTH * i, in);
+  }
+
+  return res;
 }
 
-uint TransformationLens::getPriority() const {
-  return Lens::PRIORITY_TRANSFORMATION;
-}
-
-DiffractionAngles TransformationLens::getAngles(uint x, uint y) const {
-  return next->getAngles(x, y);
-}
-
-intens_t TransformationLens::getIntensity(uint x, uint y) const {
-  auto s = getSize();
+void Lens::doTrans(uint& x, uint& y) const {
+  auto s = size();
   uint w = s.width();
   uint h = s.height();
 
-  switch (transform->val) {
+  switch (imageTransform_.val) {
   case ImageTransform::ROTATE_0:
     break;
   case ImageTransform::ROTATE_1:
@@ -108,198 +187,71 @@ intens_t TransformationLens::getIntensity(uint x, uint y) const {
   default:
     NEVER_HERE;
   }
-
-  return next->getIntensity(x, y);
 }
 
-Range TransformationLens::getIntensityRange() const {
-  return next->getIntensityRange();
+void Lens::doCut(uint& i, uint& j) const {
+  i += imageCut_.left; j += imageCut_.top;
 }
 
-QSize TransformationLens::getSize() const {
-  auto s = next->getSize();
-  switch (transform->val) {
-  case ImageTransform::ROTATE_0:
-  case ImageTransform::ROTATE_2:
-  case ImageTransform::MIRROR_ROTATE_0:
-  case ImageTransform::MIRROR_ROTATE_2:
-    return s;
-  case ImageTransform::ROTATE_1:
-  case ImageTransform::ROTATE_3:
-  case ImageTransform::MIRROR_ROTATE_1:
-  case ImageTransform::MIRROR_ROTATE_3:
-    s.transpose();
-    return s;
-  default:
-    NEVER_HERE return QSize();
+void Lens::calcSensCorr() {
+  hasNaNs_ = false;
+  if (!corrDataset_) return;
+
+  ASSERT(dataset_.imageSize() == corrDataset_->imageSize())
+
+  QSize size = corrDataset_->imageSize();
+  size -= imageCut_.marginSize();
+  ASSERT(!size.isEmpty())
+
+  qreal sum = 0;
+
+  uint w = size.width(), h = size.height(),
+      di = imageCut_.left, dj = imageCut_.top;
+
+  for_ij(w,h)
+    sum += corrDataset_->inten(i+di, j+dj);
+
+  qreal avg = sum / (w * h);
+
+  intensCorr_.fill(size);
+
+  for_ij(w,h) {
+    auto inten = corrDataset_->inten(i+di,j+dj);
+    qreal fact;
+
+    if (inten > 0) {
+      fact = avg / inten;
+    } else {
+      fact = qQNaN(); hasNaNs_ = true;
+    }
+
+    intensCorr_.setAt(i,j, fact);
   }
 }
 
-//------------------------------------------------------------------------------
+void Lens::setNorm(eNorm norm) {
+  auto &datasets = dataset_.datasets();
 
-ROILens::ROILens(QMargins const& imageMargins): cut(imageMargins) {
+  switch (norm) {
+  case normNONE:
+    normFactor_ = 1;
+    break;
+  case normDELTA_MONITOR_COUNT:
+    // could be NaN (divide by 0)
+    normFactor_ = datasets.avgDeltaMonitorCount() / dataset_.deltaMonitorCount();
+    break;
+  case normDELTA_TIME:
+    // could be NaN (divide by 0)
+    normFactor_ = datasets.avgDeltaTime() / dataset_.deltaTime();
+    break;
+  case normBACKGROUND:
+    // could be NaN (divide by 0)
+    normFactor_ = session_.calcAvgBackground(datasets) /
+                  session_.calcAvgBackground(dataset_);
+    break;
+  }
 }
 
-uint ROILens::getPriority() const {
-  return Lens::PRIORITY_ROI;
-}
-
-DiffractionAngles ROILens::getAngles(uint x, uint y) const {
-  x += cut.left();
-  y += cut.top();
-  return next->getAngles(x, y);
-}
-
-intens_t ROILens::getIntensity(uint x, uint y) const {
-  x += cut.left();
-  y += cut.top();
-  return next->getIntensity(x, y);
-}
-
-Range ROILens::getIntensityRange() const {
-  return next->getIntensityRange();
-}
-
-QSize ROILens::getSize() const {
-  auto s = next->getSize();
-  s.rwidth()  -= cut.left() + cut.right();
-  s.rheight() -= cut.top()  + cut.bottom();
-  return s;
-}
-
-//------------------------------------------------------------------------------
-
-SensitivityCorrectionLens::SensitivityCorrectionLens(
-  Array2D<qreal> const& sensitivityCorrection)
-  : correction(&sensitivityCorrection)
-{
-}
-
-uint SensitivityCorrectionLens::getPriority() const {
-  return Lens::PRIORITY_SENSITIVITY_CORRECTION;
-}
-
-DiffractionAngles SensitivityCorrectionLens::getAngles(uint x, uint y) const {
-  return next->getAngles(x, y);
-}
-
-intens_t SensitivityCorrectionLens::getIntensity(uint x, uint y) const {
-  const auto in = next->getIntensity(x, y);
-  const auto corr = correction->at(x, y);
-  return qIsNaN(corr) ? qQNaN() : in * corr;
-}
-
-Range SensitivityCorrectionLens::getIntensityRange() const {
-  return next->getIntensityRange();
-}
-
-QSize SensitivityCorrectionLens::getSize() const {
-  return next->getSize();
-}
-
-//------------------------------------------------------------------------------
-
-IntensityRangeLens::IntensityRangeLens()
-  :  Lens()
-    ,range()
-{
-  nextChangedImpl();
-}
-
-uint IntensityRangeLens::getPriority() const {
-  return Lens::PRIORITY_INTENSITY_RANGE;
-}
-
-DiffractionAngles IntensityRangeLens::getAngles(uint x, uint y) const {
-  return next->getAngles(x, y);
-}
-
-intens_t IntensityRangeLens::getIntensity(uint x, uint y) const {
-  return next->getIntensity(x, y);
-}
-
-Range IntensityRangeLens::getIntensityRange() const {
-  return range;
-}
-
-QSize IntensityRangeLens::getSize() const {
-  return next->getSize();
-}
-
-void IntensityRangeLens::nextChangedImpl() {
-  range.invalidate();
-  if (!next) return;
-
-  auto s = getSize();
-  for_int (iy, s.height())
-    for_int (ix, s.width())
-      range.extendBy(getIntensity(ix, iy));
-}
-
-//------------------------------------------------------------------------------
-
-GlobalIntensityRangeLens::GlobalIntensityRangeLens(Range const& intensityRange)
-  :  Lens()
-    ,range(&intensityRange)
-{
-}
-
-uint GlobalIntensityRangeLens::getPriority() const {
-  return Lens::PRIORITY_INTENSITY_RANGE;
-}
-
-DiffractionAngles GlobalIntensityRangeLens::getAngles(uint x, uint y) const {
-  return next->getAngles(x, y);
-}
-
-intens_t GlobalIntensityRangeLens::getIntensity(uint x, uint y) const {
-  return next->getIntensity(x, y);
-}
-
-Range GlobalIntensityRangeLens::getIntensityRange() const {
-  return *range;
-}
-
-QSize GlobalIntensityRangeLens::getSize() const {
-  return next->getSize();
-}
-//------------------------------------------------------------------------------
-
-NormalizationLens::NormalizationLens(qreal normVal_) : normVal(normVal_){
-
-}
-
-uint NormalizationLens::getPriority() const {
-  return Lens::PRIORITY_NORMALIZATION;
-}
-
-DiffractionAngles NormalizationLens::getAngles(uint x, uint y) const {
-  return next->getAngles(x,y);
-}
-
-intens_t NormalizationLens::getIntensity(uint x, uint y) const {
-  return next->getIntensity(x,y)*normVal;
-}
-
-Range NormalizationLens::getIntensityRange() const {
-  auto range = next->getIntensityRange();
-  range.min = range.min * normVal;
-  range.max = range.max * normVal;
-  return range;
-}
-
-QSize NormalizationLens::getSize() const {
-  return next->getSize();
-}
-
-//------------------------------------------------------------------------------
-
-shp_LensSystem makeLensSystem(Dataset const& dataset,
-                              DiffractionAnglesMap const& angleMap) {
-  return shp_LensSystem(new PlainLens(dataset.getImage(), angleMap));
-}
-
-//------------------------------------------------------------------------------
 }
 
 // eof

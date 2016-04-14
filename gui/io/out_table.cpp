@@ -23,7 +23,7 @@
 #include <QScrollArea>
 #include <QDate>
 
-namespace io {
+namespace gui { namespace io {
 //------------------------------------------------------------------------------
 
 class OutTableModel: public models::TableModel {
@@ -192,7 +192,6 @@ IMPL_CMP(cmp_int,  toInt)
 IMPL_CMP(cmp_str,  toString)
 IMPL_CMP(cmp_real, toDouble)
 IMPL_CMP(cmp_date, toDate)
-IMPL_CMP(cmp_float, toFloat)
 
 //------------------------------------------------------------------------------
 
@@ -210,7 +209,7 @@ OutTableHeaderView::OutTableHeaderView(): super(Qt::Horizontal) {
 
 OutTable::OutTable(TheHub& theHub, uint numDataColumns) {
   setHeader(new OutTableHeaderView);
-  setModel((model = new OutTableModel(theHub,numDataColumns)));
+  setModel((model_ = new OutTableModel(theHub,numDataColumns)));
 
   header()->setSectionResizeMode(0,QHeaderView::Fixed);
 
@@ -219,24 +218,24 @@ OutTable::OutTable(TheHub& theHub, uint numDataColumns) {
 }
 
 void OutTable::setHeaders(str_lst const& headers) {
-  model->setHeaders(headers);
+  model_->setHeaders(headers);
 
   connect(header(),&QHeaderView::sectionMoved, [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
     ASSERT(oldVisualIndex>0 && newVisualIndex>0)
-    model->moveColumn((uint)(oldVisualIndex-1),(uint)(newVisualIndex-1));
+    model_->moveColumn((uint)(oldVisualIndex-1),(uint)(newVisualIndex-1));
   });
 }
 
 void OutTable::setCmpFuns(OutTable::cmp_vec const& cmps) {
-  model->setCmpFuns(cmps);
+  model_->setCmpFuns(cmps);
 }
 
 void OutTable::clear() {
-  model->clear();
+  model_->clear();
 }
 
 void OutTable::addRow(OutTable::row_t const& row) {
-  model->addRow(row);
+  model_->addRow(row);
 }
 
 //------------------------------------------------------------------------------
@@ -255,28 +254,28 @@ OutTableWidget::OutTableWidget(TheHub& theHub,
   box->addWidget(split);
 
   split->setChildrenCollapsible(false);
-  split->addWidget((outTable = new OutTable(theHub,numDataColumns)));
+  split->addWidget((outTable_ = new OutTable(theHub,numDataColumns)));
 
-  outTable->setHeaders(headers);
-  outTable->setCmpFuns(cmps);
+  outTable_->setHeaders(headers);
+  outTable_->setCmpFuns(cmps);
 
   for_i (numDataColumns) {
     ShowColumn item; item.name = headers[i];
-    showColumns.append(item);
+    showColumns_.append(item);
   }
 
   auto scrollArea = new QScrollArea;
-  scrollArea->setWidget((showColumnsWidget = new ShowColumnsWidget(showColumns)));
+  scrollArea->setWidget((showColumnsWidget_ = new ShowColumnsWidget(showColumns_)));
 
   for_i (numDataColumns) {
-    auto cb = showColumns[i].cb;
+    auto cb = showColumns_[i].cb;
 
     cb->setChecked(true);
     connect(cb, &QCheckBox::clicked,[this,cb,i]() {
       if (cb->isChecked())
-        outTable->showColumn(i+1);
+        outTable_->showColumn(i+1);
       else
-        outTable->hideColumn(i+1);
+        outTable_->hideColumn(i+1);
       }
     );
   }
@@ -291,11 +290,11 @@ OutTableWidget::~OutTableWidget () {
 //------------------------------------------------------------------------------
 
 OutTableWidget::ShowColumnsWidget::ShowColumnsWidget(OutTableWidget::showcolumn_vec& items) {
-  setLayout((grid = gridLayout()));
+  setLayout((grid_ = gridLayout()));
 
   for_i (items.count()) {
     auto &item = items[i];
-    grid->addWidget((item.cb = check(item.name)), i, 0);
+    grid_->addWidget((item.cb = check(item.name)), i, 0);
   }
 }
 
@@ -304,15 +303,15 @@ OutTableWidget::ShowColumnsWidget::ShowColumnsWidget(OutTableWidget::showcolumn_
 OutWindow::OutWindow(rcstr title, QWidget* parent): super(parent, Qt::Dialog) {
   setAttribute(Qt::WA_DeleteOnClose);
   setWindowTitle(title);
-  setLayout((box = vbox()));
+  setLayout((box_ = vbox()));
 }
 
 void OutWindow::setWidgets(panel::BasicPanel* p, OutTableWidget* tw) {
-  box->addWidget((panel       = p));
-  box->addWidget((tableWidget = tw));
+  box_->addWidget((panel_       = p));
+  box_->addWidget((tableWidget_ = tw));
   auto bbox = hbox();
-  box->addLayout(bbox);
-  box->setStretch(1,1);
+  box_->addLayout(bbox);
+  box_->setStretch(1,1);
 
   auto actClose = new TriggerAction("Close", "Close", this);
   actClose->dialog();
@@ -336,6 +335,6 @@ void OutWindow::setWidgets(panel::BasicPanel* p, OutTableWidget* tw) {
 }
 
 //------------------------------------------------------------------------------
-}
+}}
 // eof
 

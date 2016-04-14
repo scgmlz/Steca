@@ -20,7 +20,7 @@
 #include "core_dataset.h"
 #include "models.h"
 
-namespace panel {
+namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 class DatasetView: public HubListView {
@@ -34,7 +34,7 @@ protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);
 
 private:
-  Model &model;
+  Model &model_;
 };
 
 //------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ class DockDatasets: public DockWidget {
 public:
   DockDatasets(TheHub&);
 private:
-  DatasetView *datasetView;
+  DatasetView *datasetView_;
 };
 
 //------------------------------------------------------------------------------
@@ -58,11 +58,11 @@ private:
   class Info: public QWidget {
   public:
     Info(models::checkedinfo_vec&);
-    QGridLayout *grid;
+    QGridLayout *grid_;
   };
 
-  Info *info;
-  models::checkedinfo_vec metaInfo;
+  Info *info_;
+  models::checkedinfo_vec metaInfo_;
 };
 
 //------------------------------------------------------------------------------
@@ -81,10 +81,10 @@ public:
   QSize sizeHint() const;
 
 protected:
-  Dataset &dataset;
-  bool showOverlay;
-  QPixmap original, scaled;
-  uint scale;
+  Dataset &dataset_;
+  bool showOverlay_;
+  QPixmap original_, scaled_;
+  uint scale_;
 
   void paintEvent(QPaintEvent*);
 };
@@ -98,9 +98,9 @@ public:
   DatasetOptions1(TheHub&);
 
 private:
-  QSpinBox       *spinOffsetX, *spinOffsetY;
-  QDoubleSpinBox *spinDistance, *spinPixelSize;
-  QComboBox      *comboNormType;
+  QSpinBox       *spinOffsetI_, *spinOffsetJ_;
+  QDoubleSpinBox *spinDistance_, *spinPixelSize_;
+  QComboBox      *comboNormType_;
 
   // REVIEW
   void setTo(TheHub&);
@@ -117,8 +117,8 @@ signals:
   void imageScale(uint);
 
 private:
-  QSpinBox  *marginLeft, *marginTop, *marginRight, *marginBottom;
-  QSpinBox  *spinImageScale;
+  QSpinBox  *marginLeft_, *marginTop_, *marginRight_, *marginBottom_;
+  QSpinBox  *spinImageScale_;
 
   void setFrom(TheHub&);
 };
@@ -133,15 +133,15 @@ public:
   void setImageScale(uint);
 
 private:
-  QPixmap makePixmap(core::shp_LensSystem lenses,core::Range rgeIntens);
+  QPixmap makePixmap(core::shp_Lens);
   void setDataset(core::shp_Dataset);
   void renderDataset();
 
-  core::shp_Dataset dataset;
+  core::shp_Dataset     dataset_;
 
-  ImageWidget *imageWidget;
+  ImageWidget *imageWidget_;
 };
 
 //------------------------------------------------------------------------------
-}
+}}
 #endif // PANEL_DATASET_H

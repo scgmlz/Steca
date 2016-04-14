@@ -23,7 +23,7 @@
 #include "types/core_type_curve.h"
 #include "QCP/qcustomplot.h"
 
-namespace panel {
+namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 class DiffractogramPlot;
@@ -36,9 +36,9 @@ public:
   void setMargins(int left,int right);
 
 private:
-  DiffractogramPlot& plot;
-  QColor addColor, remColor, color, bgColor, reflColor;
-  int marginLeft, marginRight;
+  DiffractogramPlot& plot_;
+  QColor addColor_, remColor_, color_;
+  int marginLeft_, marginRight_;
 
 protected:
   void enterEvent(QEvent*);
@@ -49,8 +49,8 @@ protected:
 
   void paintEvent(QPaintEvent*);
 
-  bool hasCursor, mouseDown;
-  int  cursorPos, mouseDownPos;
+  bool hasCursor_, mouseDown_;
+  int  cursorPos_, mouseDownPos_;
 
   void updateCursorRegion();
 };
@@ -70,34 +70,31 @@ public:
 
 public:
   void setTool(Tool);
-  Tool getTool() const { return tool; }
+  Tool getTool() const { return tool_; }
 
-  void plot(core::Curve const&,core::Curve const&, core::Curve const&, core::curve_vec const&, uint);
+  void plot(core::rcCurve,core::rcCurve, core::rcCurve, core::curve_vec const&, uint);
 
   core::Range fromPixels(int,int);
 
   void clearBg();
-  void addBg(core::Range const&);
-  void remBg(core::Range const&);
-  void setNewReflRange(core::Range const&);
+  void addBg(core::rcRange);
+  void remBg(core::rcRange);
+  void setNewReflRange(core::rcRange);
   void updateBg();
 
   void clearReflLayer();
-  
-  QColor bgColor;
-  int selectedFittingTab();
-  
+
 protected:
-  void addBgItem(core::Range const&);
+  void addBgItem(core::rcRange);
   void resizeEvent(QResizeEvent*);
 
 private:
-  Diffractogram &diffractogram;
-  Tool tool;
-  QCPGraph *bgGraph, *dgramGraph, *dgramBgFittedGraph, *guesses, *fits;
-  QVector<QCPGraph*> reflGraph;
-  DiffractogramPlotOverlay *overlay;
-  bool showBgFit;
+  Diffractogram &diffractogram_;
+  Tool tool_;
+  QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *guesses_, *fits_;
+  QVector<QCPGraph*> reflGraph_;
+  DiffractogramPlotOverlay *overlay_;
+  bool showBgFit_;
 };
 
 class Diffractogram: public BoxPanel {
@@ -105,31 +102,31 @@ class Diffractogram: public BoxPanel {
 public:
   Diffractogram(TheHub&);
 
-  core::shp_Dataset const& getDataset() const { return dataset; }
+  core::shp_Dataset const& getDataset() const { return dataset_; }
   void renderDataset(); // TODO move to DiffractogramPlot (?)
 
 private:
   void setDataset(core::shp_Dataset);
 
-  core::shp_Dataset dataset;
+  core::shp_Dataset dataset_;
 
-  DiffractogramPlot *plot;
+  DiffractogramPlot *plot_;
 
-  core::Curve  dgram, dgramBgFitted, bg;
-  core::curve_vec refls;
+  core::Curve  dgram_, dgramBgFitted_, bg_;
+  core::curve_vec refls_;
 
-  uint currReflIndex;
-  core::shp_Reflection currentReflection;
+  uint currReflIndex_;
+  core::shp_Reflection currentReflection_;
 
 public:
   void calcDgram();
   void calcBackground();
   void calcReflections();
 
-  void setCurrReflNewRange(core::Range const&);
+  void setCurrReflNewRange(core::rcRange);
   core::Range currReflRange() const;
 };
 
 //------------------------------------------------------------------------------
-}
+  }}
 #endif // PANEL_DIFFRACTOGRAM_H

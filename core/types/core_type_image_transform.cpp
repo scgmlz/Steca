@@ -18,7 +18,7 @@ namespace core {
 
 //------------------------------------------------------------------------------
 
-ImageTransform::ImageTransform(int val_): val((e)(val_ & 7)) {
+ImageTransform::ImageTransform(uint val_): val((eTransform)(val_ & 7)) {
 }
 
 ImageTransform ImageTransform::mirror(bool on) const {
@@ -26,7 +26,7 @@ ImageTransform ImageTransform::mirror(bool on) const {
             : ImageTransform(val & ~MIRROR);
 }
 
-ImageTransform ImageTransform::rotateTo(ImageTransform rot) const {
+ImageTransform ImageTransform::rotateTo(ImageTransform const& rot) const {
   return ImageTransform((val & MIRROR) | (rot.val & 3));
 }
 

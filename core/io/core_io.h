@@ -31,7 +31,7 @@ shp_File loadCaress(rcstr filePath) THROWS;
 /// load a sequence of TIFFs
 shp_File loadTiffs(rcstr filePath) THROWS;
 /// save datasets as a sequence of TIFFs
-void saveTiffs(File const&, rcstr filePath) THROWS;
+void saveTiffs(rcFile, rcstr filePath) THROWS;
 
 //------------------------------------------------------------------------------
 }}

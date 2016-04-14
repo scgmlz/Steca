@@ -18,43 +18,20 @@ namespace core {
 
 //------------------------------------------------------------------------------
 
-Image::Image(QSize const& size, intens_t const* src) {
+Image::Image(QSize const& size, inten_t const* src) {
   fill(0,size);
-  addIntensities(src);
+  addIntens(src);
 }
 
-void Image::clear() {
-  super::clear();
-  rgeIntens.invalidate();
+void Image::addIntens(Image const& that) THROWS {
+  RUNTIME_CHECK(size() == that.size(),"inconsistent image size");
+  addIntens(that.data());
 }
 
-void Image::fill(intens_t val, QSize const& size) {
-  super::fill(val,size);
-  rgeIntens.set(val);
-}
-
-void Image::setIntensity(uint i, intens_t val) {
-  super::setAt(i,val);
-  rgeIntens.invalidate();
-}
-
-void Image::addIntensities(intens_t const* src) {
-  if (src) {
-    auto data  = getData();
-    uint count = getCount();
-    while(count-- > 0) *data++ += *src++;
-    rgeIntens.invalidate();
-  }
-}
-
-Range const& Image::intensRange() const {
-  if (!rgeIntens.isValid()) {
-    auto data    = getData();
-    uint count   = getCount();
-    while(count-- > 0) rgeIntens.extendBy(*data++);
-  }
-
-  return rgeIntens;
+void Image::addIntens(inten_t const* thatIntens) {
+  auto intens = data();
+  uint n = count();
+  while(n-- > 0) *intens++ += *thatIntens++;
 }
 
 //------------------------------------------------------------------------------
