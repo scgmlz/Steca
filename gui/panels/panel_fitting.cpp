@@ -71,7 +71,7 @@ void ReflectionView::selectionChanged(QItemSelection const& selected, QItemSelec
 //------------------------------------------------------------------------------
 
 Fitting::Fitting(TheHub& theHub)
-: super(theHub_), _silentSpin(false) {
+: super(theHub), silentSpin_(false) {
 
   auto &actions = theHub_.actions;
   auto tools = [actions]() {
@@ -178,7 +178,7 @@ Fitting::Fitting(TheHub& theHub)
     });
 
     auto newReflData = [this](bool invalidateGuesses) {
-      if (!_silentSpin) {
+      if (!silentSpin_) {
         theHub_.newReflectionData(
           core::Range::safeFrom(spinRangeMin_->value(),spinRangeMax_->value()),
           core::XY(spinGuessPeakX_->value(),spinGuessPeakY_->value()),
@@ -230,7 +230,7 @@ static str safeRealText(qreal val) {
 }
 
 void Fitting::setReflControls(core::shp_Reflection const& reflection) {
-  _silentSpin = true;
+  silentSpin_ = true;
 
   if (reflection.isNull()) {
     // do not set comboReflType - we want it to stay as it is
@@ -261,7 +261,7 @@ void Fitting::setReflControls(core::shp_Reflection const& reflection) {
     readFitFWHM_->setText(safeRealText(peakFun.fittedFWHM()));
   }
 
-  _silentSpin = false;
+  silentSpin_ = false;
 }
 
 void Fitting::updateReflectionControls() {

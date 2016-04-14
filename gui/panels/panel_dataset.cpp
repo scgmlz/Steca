@@ -61,7 +61,7 @@ DockDatasets::DockDatasets(TheHub& theHub)
 //------------------------------------------------------------------------------
 
 DockDatasetInfo::DockDatasetInfo(TheHub& theHub)
-: super("Dataset info", "dock-dataset-info", Qt::Vertical), RefHub(theHub_) {
+: super("Dataset info", "dock-dataset-info", Qt::Vertical), RefHub(theHub) {
 
   using Dataset     = core::Dataset;
   using shp_Dataset = core::shp_Dataset;

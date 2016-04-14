@@ -57,7 +57,7 @@ private:
   QDoubleSpinBox *spinRangeMin_, *spinRangeMax_;
   QDoubleSpinBox *spinGuessPeakX_, *spinGuessPeakY_, *spinGuessFWHM_;
   QLineEdit      *readFitPeakX_,   *readFitPeakY_,   *readFitFWHM_;
-  bool _silentSpin;
+  bool silentSpin_;
 
   void setReflControls(core::shp_Reflection const&);
   void updateReflectionControls();
