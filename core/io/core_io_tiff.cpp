@@ -29,7 +29,7 @@
 namespace core { namespace io {
 //------------------------------------------------------------------------------
 
-shp_File loadTiffs(rcstr filePath) THROWS {
+shp_File loadTiffs(rcstr /*filePath*/) THROWS {
 // TODO code not finished
 /*
   shp_File file(new File(filePath));
@@ -57,7 +57,7 @@ shp_File loadTiffs(rcstr filePath) THROWS {
   return shp_File();
 }
 
-void saveTiffs(rcFile file, rcstr fileName) THROWS {
+void saveTiffs(rcFile /*file*/, rcstr /*fileName*/) THROWS {
 // TODO code not finished
 /*
   QFileInfo info(fileName);

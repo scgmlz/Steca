@@ -123,9 +123,9 @@ void ImageWidget::setShowOverlay(bool on) {
   update();
 }
 
-void ImageWidget::setScale(uint scale_) {
-  ASSERT(scale_ > 0)
-  scale_ = scale_;
+void ImageWidget::setScale(uint scale) {
+  ASSERT(scale > 0)
+  scale_ = scale;
 
   scaled_ = original_.isNull() ? original_ : original_.scaled(original_.size()*scale_);
 

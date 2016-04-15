@@ -36,7 +36,7 @@ Action& Action::icon(rcstr iconFile) {
   return *this;
 }
 
-Action& Action::alt(rcstr text2, rcstr tip2) {
+Action& Action::alt(rcstr /*text2*/, rcstr /*tip2*/) {
   return *this;
 }
 

@@ -180,8 +180,8 @@ DiffractogramPlot::DiffractogramPlot(TheHub& theHub,Diffractogram& diffractogram
   tool_ = TOOL_NONE;
 }
 
-void DiffractogramPlot::setTool(Tool tool_) {
-  tool_ = tool_;
+void DiffractogramPlot::setTool(Tool tool) {
+  tool_ = tool;
   updateBg();
 }
 
@@ -201,10 +201,9 @@ void DiffractogramPlot::plot(
 
   } else {
     auto tthRange   = dgram.rgeX();
-    bool fixedIntensityScale = theHub_.fixedIntensityScale;
 
     core::Range intenRange;
-//    if (fixedIntensityScale) { TODO lens
+//    if (fixedIntensityScale) { TODO use lens
 //      auto max = _diffractogram.getDataset()->rgeInten(true).max;
 //      // heuristics; to calculate this precisely would require much more computation
 //      intenRange = core::Range(-max/30,max/3);

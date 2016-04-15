@@ -24,7 +24,7 @@ namespace gui { namespace panel {
 class FileViewDelegate: public QStyledItemDelegate {
   SUPER(FileViewDelegate,QStyledItemDelegate)
 public:
-  void paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex index) const {
+  void paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const {
     QStyleOptionViewItem o = option;
     bool isCorrFile = index.data(FileView::Model::IsCorrFileRole).toBool();
     if (isCorrFile) {

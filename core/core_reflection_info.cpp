@@ -64,7 +64,7 @@ ReflectionInfo::ReflectionInfo(qreal const alpha,
 
 ReflectionInfo ReflectionInfo::make(
     rcSession session,
-    rcDatasets datasets, rcDataset dataset,
+    rcDatasets /*datasets*/, rcDataset dataset,
     Reflection const& reflection,
     rcRange rgeTth, rcRange gammaSector)
 {
