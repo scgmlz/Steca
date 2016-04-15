@@ -50,10 +50,10 @@ SplitImage::SplitImage(TheHub& theHub): super(Qt::Horizontal) {
   auto *options2 = new panel::DatasetOptions2(theHub);
   auto *dataset  = new panel::Dataset(theHub);
   connect(options2, &panel::DatasetOptions2::imageScale, dataset, &panel::Dataset::setImageScale);
-  _box->addWidget(options1);
-  _box->addWidget(options2);
-  _box->addWidget(dataset);
-  _box->setStretch(2,1);
+  box_->addWidget(options1);
+  box_->addWidget(options2);
+  box_->addWidget(dataset);
+  box_->setStretch(2,1);
 }
 
 //------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ public:
 };
 
 SplitFitting::SplitFitting(TheHub& theHub): super(Qt::Vertical) {
-  _box->addWidget(new panel::Fitting(theHub));
+  box_->addWidget(new panel::Fitting(theHub));
 }
 
 //------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ public:
 SplitDiffractogram::SplitDiffractogram(TheHub& theHub): super(Qt::Horizontal) {
   auto diffractogram = new panel::Diffractogram(theHub);
   diffractogram->setHorizontalStretch(1);
-  _box->addWidget(diffractogram);
+  box_->addWidget(diffractogram);
 }
 
 //------------------------------------------------------------------------------
@@ -111,8 +111,8 @@ void MainWin::initMenus() {
   menuView_     = mbar->addMenu("&View");
   menuDatasets_ = mbar->addMenu("&Datasets");
   menuReflect_  = mbar->addMenu("&Reflections");
-  _menuOutput   = mbar->addMenu("&Output");
-  _menuHelp     = mbar->addMenu("&Help");
+  menuOutput_   = mbar->addMenu("&Output");
+  menuHelp_     = mbar->addMenu("&Help");
 
   menuFile_->addActions({
     actions.addFiles, actions.remFile, separator(),
@@ -151,11 +151,11 @@ void MainWin::initMenus() {
     actions.addReflection, actions.remReflection,
   });
 
-  _menuOutput->addActions({
+  menuOutput_->addActions({
     actions.outputPolefigures, actions.outputHistograms
   });
 
-  _menuHelp->addActions({
+  menuHelp_->addActions({
 #ifndef Q_OS_OSX // Mac puts About into the Apple menu
     separator(),
 #endif

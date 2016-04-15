@@ -33,8 +33,8 @@ public:
   Polefigure(rcSession,
              rcDatasets,
              Reflection const&,
-             qreal alphaStep_,
-             qreal betaStep_,
+             qreal alphaStep,
+             qreal betaStep,
              rcRange rgeTth,
              Range gammaRange = Range()); // If no range specified, use the full range specified by the cuts.
 
@@ -55,7 +55,7 @@ private:
                     qreal const radius,
                     QList<qreal> &peakOffsets,
                     QList<qreal> &peakHeights,
-                    QList<qreal> &FWHMs_) const;
+                    QList<qreal> &FWHMs) const;
   void searchPointsInAllQuadrants(qreal const alpha,
                                   qreal const beta,
                                   qreal const searchRadius,

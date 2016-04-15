@@ -91,7 +91,7 @@ public:
   BoxWidget(Qt::Orientation);
 
 protected:
-  QBoxLayout *_box;
+  QBoxLayout *box_;
 };
 
 //------------------------------------------------------------------------------

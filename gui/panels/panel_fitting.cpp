@@ -85,15 +85,15 @@ Fitting::Fitting(TheHub& theHub)
 
   { // background
     auto &tab = addTab("Background",Qt::Vertical);
-    tab.box->addLayout(tools());
+    tab.box_->addLayout(tools());
 
     auto hb = hbox();
-    tab.box->addLayout(hb);
+    tab.box_->addLayout(hb);
     hb->addWidget(label("Polynomial degree:"));
     hb->addWidget((spinDegree_ = spinCell(4,0,core::fit::MAX_POLYNOMIAL_DEGREE)));
     hb->addStretch();
 
-    tab.box->addStretch();
+    tab.box_->addStretch();
 
     connect(spinDegree_, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int degree) {
       theHub_.setBackgroundPolynomialDegree(degree);
@@ -102,12 +102,12 @@ Fitting::Fitting(TheHub& theHub)
 
   { // reflections
     auto &tab = addTab("Reflections",Qt::Vertical);
-    tab.box->addLayout(tools());
+    tab.box_->addLayout(tools());
 
-    tab.box->addWidget((reflectionView_ = new ReflectionView(theHub_)));
+    tab.box_->addWidget((reflectionView_ = new ReflectionView(theHub_)));
 
     auto hb = hbox();
-    tab.box->addLayout(hb);
+    tab.box_->addLayout(hb);
 
     hb->addWidget((comboReflType_ = comboBox(core::Reflection::typeStrLst())));
     hb->addStretch();
@@ -115,7 +115,7 @@ Fitting::Fitting(TheHub& theHub)
     hb->addWidget(iconButton(actions.remReflection));
 
     auto vb = vbox();
-    tab.box->addLayout(vb);
+    tab.box_->addLayout(vb);
 
     auto gb = gridLayout();
     vb->addLayout(gb);

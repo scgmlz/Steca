@@ -25,9 +25,9 @@ namespace gui { namespace panel {
 DatasetView::DatasetView(TheHub& theHub): super(theHub), model_(theHub.datasetViewModel) {
   setModel(&model_);
 
-  connect(&theHub, &TheHub::fileSelected, [this](core::shp_File coreFile) {
+  connect(&theHub_, &TheHub::fileSelected, [this](core::shp_File coreFile) {
     model_.setFile(coreFile);
-    setCurrentIndex(model_.index(0,0));
+     setCurrentIndex(model_.index(0,0));
   });
 
   connect(&model_, &QAbstractItemModel::modelReset, [this]() {
@@ -431,8 +431,8 @@ QPixmap Dataset::makePixmap(core::shp_Lens lens) {
   return pixmap;
 }
 
-void Dataset::setDataset(core::shp_Dataset dataset_) {
-  dataset_ = dataset_;
+void Dataset::setDataset(core::shp_Dataset dataset) {
+  dataset_ = dataset;
   renderDataset();
 }
 

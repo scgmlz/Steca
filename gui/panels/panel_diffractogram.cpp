@@ -392,8 +392,8 @@ void Diffractogram::renderDataset() {
   plot_->plot(dgram_,dgramBgFitted_,bg_,refls_,currReflIndex_);
 }
 
-void Diffractogram::setDataset(core::shp_Dataset dataset_) {
-  dataset_ = dataset_;
+void Diffractogram::setDataset(core::shp_Dataset dataset) {
+  dataset_ = dataset;
   renderDataset();
 }
 

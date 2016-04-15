@@ -77,7 +77,7 @@ protected:
   class Tab: public QWidget {
   public:
     Tab(Qt::Orientation);
-    QBoxLayout *box;
+    QBoxLayout *box_;
   };
 
   Tab& addTab(rcstr title,Qt::Orientation);

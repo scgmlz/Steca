@@ -79,7 +79,7 @@ void FileView::update() {
 //------------------------------------------------------------------------------
 
 DockFiles::DockFiles(TheHub& theHub)
-: super("Files","dock-files",Qt::Vertical) {
+: super("Files","dock-files",Qt::Vertical), RefHub(theHub) {
   box_->addWidget((fileView_ = new FileView(theHub)));
 
   auto h = hbox(); box_->addLayout(h);
@@ -96,7 +96,7 @@ DockFiles::DockFiles(TheHub& theHub)
     fileView_->removeSelected();
   });
 
-  connect(&theHub, &TheHub::filesChanged, [this]() {
+  connect(&theHub_, &TheHub::filesChanged, [this]() {
     fileView_->update();
   });
 }

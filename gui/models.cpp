@@ -108,9 +108,9 @@ QVariant DatasetViewModel::headerData(int col, Qt::Orientation, int role) const 
   }
 }
 
-void DatasetViewModel::setFile(core::shp_File file_) {
+void DatasetViewModel::setFile(core::shp_File file) {
   beginResetModel();
-  file_ = file_;
+  file_ = file;
   endResetModel();
 }
 

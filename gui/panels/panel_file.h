@@ -40,7 +40,7 @@ private:
   Model &model_;
 };
 
-class DockFiles: public DockWidget {
+class DockFiles: public DockWidget, private RefHub {
   SUPER(DockFiles,DockWidget)
 public:
   DockFiles(TheHub&);

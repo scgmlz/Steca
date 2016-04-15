@@ -144,7 +144,7 @@ void TreeListView::setModel(QAbstractItemModel* model) {
 //------------------------------------------------------------------------------
 
 BoxWidget::BoxWidget(Qt::Orientation orientation) {
-  setLayout((_box = boxLayout(orientation)));
+  setLayout((box_ = boxLayout(orientation)));
 }
 
 //------------------------------------------------------------------------------
