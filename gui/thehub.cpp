@@ -297,10 +297,10 @@ QByteArray TheHub::save() const {
 
   auto &geo = session->geometry();
   top.saveObj(KEY_DETECTOR, JsonObj()
-    .saveReal(KEY_DISTANCE,    geo.detectorDistance)
-    .saveReal(KEY_PIX_SIZE,    geo.pixSize)
-    .saveBool(KEY_OFFSET_BEAM, geo.isMidPixOffset)
-    .saveObj(KEY_BEAM_OFFSET, geo.midPixOffset.saveJson())
+    .saveReal(KEY_DISTANCE,    geo.detectorDistance_)
+    .saveReal(KEY_PIX_SIZE,    geo.pixSize_)
+    .saveBool(KEY_OFFSET_BEAM, geo.isMidPixOffset_)
+    .saveObj(KEY_BEAM_OFFSET, geo.midPixOffset_.saveJson())
   );
 
   auto &cut = session->imageCut();

@@ -170,7 +170,7 @@ shp_File loadCaress(rcstr filePath) THROWS {
 
 // this was for testing of a non-square image
 //        #ifdef DEVELOPMENT_FAKE_NON_SQUARE_IMAGE
-//          size.rheight() /= 2;
+//        size.rheight() /= 2;
 //        #endif
 
           // Objekt inizialisieren

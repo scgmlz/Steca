@@ -32,10 +32,10 @@ struct Geometry {
   Geometry();
   bool operator ==(Geometry const&) const;
 
-  qreal detectorDistance;   // the distance from the sample to the detector
-  qreal pixSize;            // size of the detector pixel
-  bool  isMidPixOffset;
-  IJ    midPixOffset;
+  qreal detectorDistance_;   // the distance from the sample to the detector
+  qreal pixSize_;            // size of the detector pixel
+  bool  isMidPixOffset_;
+  IJ    midPixOffset_;
 };
 
 //------------------------------------------------------------------------------

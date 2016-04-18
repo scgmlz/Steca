@@ -150,17 +150,17 @@ AngleMap const& Session::angleMap(rcDataset dataset) const {
   static AngleMap map;
 
   // TODO cache through shared pointers
-  static qreal midTth_ = 0;
-  static Geometry geometry_;
-  static QSize size_; static IJ mid_;
+  Geometry tmp_geometry;
+  qreal tmp_midTth = 0;
+  QSize tmp_size; IJ tmp_mid;
 
   qreal midTth = dataset.midTth();
-  QSize size   = dataset.imageSize();
-  IJ    mid    = midPix();
+  QSize size   = dataset.imageSize(); IJ mid = midPix();
 
-  if (! (midTth_ == midTth && geometry_ == geometry_ &&
-         size_ == size && mid_ == mid)) {
-    midTth_ = midTth; geometry_ = geometry_; size_ = size; mid_ = mid;
+  if (! (tmp_midTth == midTth && tmp_geometry == geometry_ &&
+         tmp_size   == size   && tmp_mid      == mid)) {   
+    tmp_midTth = midTth;  tmp_geometry = geometry_; 
+    tmp_size = size;      tmp_mid = mid;
     map.calculate(midTth,geometry_,size,imageCut_,mid);
   }
 
@@ -171,18 +171,18 @@ void Session::setGeometry(qreal detectorDistance, qreal pixSize,
                           bool isMidPixOffset, rcIJ midPixOffset) {
   ASSERT(detectorDistance>0 && pixSize>0)
 
-  geometry_.detectorDistance = detectorDistance;
-  geometry_.pixSize          = pixSize;
-  geometry_.isMidPixOffset   = isMidPixOffset;
-  geometry_.midPixOffset     = midPixOffset;
+  geometry_.detectorDistance_ = detectorDistance;
+  geometry_.pixSize_          = pixSize;
+  geometry_.isMidPixOffset_   = isMidPixOffset;
+  geometry_.midPixOffset_     = midPixOffset;
 }
 
 IJ Session::midPix() const {
   auto halfSize = imageSize_ / 2;
   IJ mid(halfSize.width(), halfSize.height());
 
-  if (geometry_.isMidPixOffset) {
-    rcIJ off = geometry_.midPixOffset;
+  if (geometry_.isMidPixOffset_) {
+    rcIJ off = geometry_.midPixOffset_;
     mid.i += off.i; mid.j += off.j;
   }
 

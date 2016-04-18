@@ -388,7 +388,7 @@ void Diffractogram::renderDataset() {
   calcDgram();
   calcBackground();
   calcReflections();
-
+  
   plot_->plot(dgram_,dgramBgFitted_,bg_,refls_,currReflIndex_);
 }
 

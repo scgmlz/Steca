@@ -23,18 +23,18 @@ qreal const Geometry::MIN_DETECTOR_DISTANCE   = 1000;
 qreal const Geometry::MIN_DETECTOR_PIXEL_SIZE = 1;
 
 Geometry::Geometry()
-: detectorDistance(MIN_DETECTOR_DISTANCE)
-, pixSize(MIN_DETECTOR_PIXEL_SIZE)
-, isMidPixOffset(false)
-, midPixOffset() {
+: detectorDistance_(MIN_DETECTOR_DISTANCE)
+, pixSize_(MIN_DETECTOR_PIXEL_SIZE)
+, isMidPixOffset_(false)
+, midPixOffset_() {
 }
 
 bool Geometry::operator ==(Geometry const& that) const {
   return
-    detectorDistance == that.detectorDistance &&
-    pixSize          == that.pixSize &&
-    isMidPixOffset   == that.isMidPixOffset &&
-    midPixOffset     == that.midPixOffset;
+    detectorDistance_ == that.detectorDistance_ &&
+    pixSize_          == that.pixSize_ &&
+    isMidPixOffset_   == that.isMidPixOffset_ &&
+    midPixOffset_     == that.midPixOffset_;
 }
 
 //------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ void AngleMap::calculate(qreal midTth, Geometry const& geometry,
   if (size.isEmpty()) return;
 
   midTth = deg2Rad(midTth);
-  qreal pixSize = geometry.pixSize, detDist = geometry.detectorDistance;
+  qreal pixSize = geometry.pixSize_, detDist = geometry.detectorDistance_;
 
   for_int (i, size.width()) {
     qreal x = (i - midPix.i) * pixSize;
