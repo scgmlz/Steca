@@ -250,12 +250,12 @@ void DatasetOptions1::setTo(TheHub& theHub) {
 void DatasetOptions1::setFrom(TheHub& theHub) {
   auto const& g = theHub.geometry();
 
-  theHub.actions.hasBeamOffset->setChecked(g.isMidPixOffset_);
-  spinOffsetI_->setValue(g.midPixOffset_.i);
-  spinOffsetJ_->setValue(g.midPixOffset_.j);
+  theHub.actions.hasBeamOffset->setChecked(g.isMidPixOffset);
+  spinOffsetI_->setValue(g.midPixOffset.i);
+  spinOffsetJ_->setValue(g.midPixOffset.j);
 
-  spinDistance_->setValue(g.detectorDistance_);
-  spinPixelSize_->setValue(g.pixSize_);
+  spinDistance_->setValue(g.detectorDistance);
+  spinPixelSize_->setValue(g.pixSize);
 }
 
 static str const GROUP_OPTIONS("Options");

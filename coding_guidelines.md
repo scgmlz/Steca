@@ -90,7 +90,7 @@ Use comments to express intentions, and to explain what is not included in or
 understandable from code. Be brief and concise. Do not repeat what the code says.
 
 ## class - struct
-Classes have hidden data members and is mainly about the interface; structs have public data members and almost no member functions - perhaps only a constructor, assignment, equality operator.
+Classes have hidden data members and are mainly about the interface; structs have public data members and almost no member functions - perhaps only a constructor, assignment, equality operator.
 
 ### class accessor method names
 
@@ -116,6 +116,7 @@ Directly accessible, such as `dataPoint.x`. No accessor methods.
 - Plurals: whatever name ends in -s is a collection of some sort.
   Cf. `inten`(sity) and `intens`(ities).
 - data members of *classes*: postfixed with `_`
+- data members of *structs*: do not decorate
 - lists: `..._lst`, e.g. `typedef QStringList str_lst;`
 - vectors: `..._vec`, e.g.  `typedef QVector<qreal> qreal_vec;`, `typedef QVector<uint> uint_vec;`
 - typedefs of primitive types and structs: `..._t`, e.g. `typedef float inten_t;`

@@ -149,18 +149,18 @@ void Session::setImageCut(bool topLeftFirst, bool linked, ImageCut const& cut) {
 AngleMap const& Session::angleMap(rcDataset dataset) const {
   static AngleMap map;
   // TODO cache through shared pointers
-  static Geometry tmp_geometry;   static qreal    tmp_midTth = 0;
-  static QSize    tmp_size;       static IJ       tmp_mid;
-  static ImageCut tmp_imageCut = imageCut();
+  static Geometry lastGeometry;   static qreal    lastMidTth = 0;
+  static QSize    lastSize;       static IJ       lastMid;
+  static ImageCut lastImageCut = imageCut();
 
   qreal midTth = dataset.midTth();
   QSize size   = dataset.imageSize(); IJ mid = midPix();
 
-  if (! (tmp_midTth == midTth && tmp_geometry == geometry_ &&
-         tmp_size   == size   && tmp_mid      == mid && tmp_imageCut == imageCut_)) {   
-    tmp_midTth   = midTth;    tmp_geometry = geometry_; 
-    tmp_size     = size;      tmp_mid      = mid;
-    tmp_imageCut = imageCut_;
+  if (! (lastMidTth == midTth && lastGeometry == geometry_ &&
+         lastSize   == size   && lastMid      == mid && lastImageCut == imageCut_)) {   
+    lastMidTth   = midTth;    lastGeometry = geometry_; 
+    lastSize     = size;      lastMid      = mid;
+    lastImageCut = imageCut_;
     map.calculate(midTth,geometry_,size,imageCut_,mid);
   }
 
@@ -171,18 +171,18 @@ void Session::setGeometry(qreal detectorDistance, qreal pixSize,
                           bool isMidPixOffset, rcIJ midPixOffset) {
   ASSERT(detectorDistance>0 && pixSize>0)
 
-  geometry_.detectorDistance_ = detectorDistance;
-  geometry_.pixSize_          = pixSize;
-  geometry_.isMidPixOffset_   = isMidPixOffset;
-  geometry_.midPixOffset_     = midPixOffset;
+  geometry_.detectorDistance = detectorDistance;
+  geometry_.pixSize          = pixSize;
+  geometry_.isMidPixOffset   = isMidPixOffset;
+  geometry_.midPixOffset     = midPixOffset;
 }
 
 IJ Session::midPix() const {
   auto halfSize = imageSize_ / 2;
   IJ mid(halfSize.width(), halfSize.height());
 
-  if (geometry_.isMidPixOffset_) {
-    rcIJ off = geometry_.midPixOffset_;
+  if (geometry_.isMidPixOffset) {
+    rcIJ off = geometry_.midPixOffset;
     mid.i += off.i; mid.j += off.j;
   }
 
