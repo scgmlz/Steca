@@ -46,6 +46,11 @@ ImageCut::ImageCut(uint left_, uint top_, uint right_, uint bottom_)
   : left(left_), top(top_), right(right_), bottom(bottom_) {
 }
 
+bool ImageCut::operator ==(const ImageCut &that) const {
+  return (left  == that.left  && top    == that.top 
+       && right == that.right && bottom == that.bottom);
+}
+
 QSize ImageCut::marginSize() const {
   return QSize(left+right, top+bottom);
 }

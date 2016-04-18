@@ -46,6 +46,7 @@ struct ImageCut {
 
   ImageCut();
   ImageCut(uint left, uint top, uint right,uint bottom);
+  bool operator ==(ImageCut const&) const;
 
   QSize marginSize() const;
 };

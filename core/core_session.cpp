@@ -148,19 +148,19 @@ void Session::setImageCut(bool topLeftFirst, bool linked, ImageCut const& cut) {
 
 AngleMap const& Session::angleMap(rcDataset dataset) const {
   static AngleMap map;
-
   // TODO cache through shared pointers
-  Geometry tmp_geometry;
-  qreal tmp_midTth = 0;
-  QSize tmp_size; IJ tmp_mid;
+  static Geometry tmp_geometry;   static qreal    tmp_midTth = 0;
+  static QSize    tmp_size;       static IJ       tmp_mid;
+  static ImageCut tmp_imageCut = imageCut();
 
   qreal midTth = dataset.midTth();
   QSize size   = dataset.imageSize(); IJ mid = midPix();
 
   if (! (tmp_midTth == midTth && tmp_geometry == geometry_ &&
-         tmp_size   == size   && tmp_mid      == mid)) {   
-    tmp_midTth = midTth;  tmp_geometry = geometry_; 
-    tmp_size = size;      tmp_mid = mid;
+         tmp_size   == size   && tmp_mid      == mid && tmp_imageCut == imageCut_)) {   
+    tmp_midTth   = midTth;    tmp_geometry = geometry_; 
+    tmp_size     = size;      tmp_mid      = mid;
+    tmp_imageCut = imageCut_;
     map.calculate(midTth,geometry_,size,imageCut_,mid);
   }
 
