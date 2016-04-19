@@ -28,7 +28,7 @@
         <file alias="cutTopU">icons/cutTopU.svg</file>
         <file alias="imageCrop">icons/imageCrop.svg</file>
         <file alias="peakBackground">icons/peakBackground.svg</file>
-        <file alias="clearBackground">icons/clearBackground.svg</file>
+        <file alias="clear">icons/clear.svg</file>
         <file alias="scale">icons/scale.svg</file>
         <file alias="selectPeak">icons/selectPeak.svg</file>
         <file alias="useCorrection">icons/useCorrection.svg</file>

@@ -77,7 +77,9 @@ public:
   Datasets();
 
   void append(shp_Dataset);
-  void fold() THROWS;   ///< collapse datasets into one (for correction files)
+
+  /// collapse datasets into one (for correction files)
+  Image folded() THROWS;
 
   // in all datasets
   QSize imageSize()       const;

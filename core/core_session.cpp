@@ -38,13 +38,7 @@ void Session::clear() {
 }
 
 shp_File Session::file(uint i) const {
-  if ((uint)files_.count() == i) {
-    // past the vector end, must be the correction file
-    ASSERT(!corrFile_.isNull())
-    return corrFile_;
-  } else {
-    return files_.at(i);
-  }
+  return files_.at(i);
 }
 
 bool Session::hasFile(rcstr fileName) {
@@ -71,8 +65,8 @@ void Session::setCorrFile(shp_File file) THROWS {
   } else {
     auto &datasets = file->datasets();
 
-    datasets.fold(); // ensure one dataset
     setImageSize(datasets.imageSize());
+    corrImage_ = datasets.folded(); // ensure one dataset
 
     // all ok
     corrFile_    = file;
@@ -82,6 +76,7 @@ void Session::setCorrFile(shp_File file) THROWS {
 
 void Session::remCorrFile() {
   corrFile_.clear();
+  corrImage_.clear();
   corrEnabled_ = false;
   updateImageSize();
 }
@@ -195,7 +190,7 @@ IJ Session::midPix() const {
 
 shp_Lens Session::lens(bool trans, bool cut, Lens::eNorm norm, rcDataset dataset) const {
   return shp_Lens(new Lens(trans, cut, norm, *this, dataset,
-      corrEnabled_ ? corrFile_->datasets().first().data() : nullptr,
+      corrEnabled_ ? &corrImage_ : nullptr,
       angleMap(dataset), imageCut_, imageTransform_));
 }
 

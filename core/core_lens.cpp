@@ -35,10 +35,10 @@ str_lst const& Lens::normStrLst() {
 }
 
 Lens::Lens(bool trans, bool cut, eNorm norm, rcSession session,
-           rcDataset dataset, Dataset const* corrDataset,
+           rcDataset dataset, Image const* corrImage,
            AngleMap const& angleMap, ImageCut const& imageCut, ImageTransform const& imageTransform)
 : trans_(trans), cut_(cut), session_(session)
-, dataset_(dataset), corrDataset_(corrDataset)
+, dataset_(dataset), corrImage_(corrImage)
 , angleMap_(angleMap), imageCut_(imageCut), imageTransform_(imageTransform)
 {
   calcSensCorr();
@@ -51,7 +51,7 @@ QSize Lens::size() const {
   if (trans_)
     if (imageTransform_.isTransposed())
       size.transpose();
-      
+
   if (cut_)
     size -= imageCut_.marginSize();
 
@@ -67,7 +67,7 @@ inten_t Lens::inten(uint i, uint j) const {
 
   inten_t inten = dataset_.inten(i,j);
 
-  if (corrDataset_)
+  if (corrImage_)
     inten *= intensCorr_.at(i,j);
 
   return inten * normFactor_;
@@ -95,7 +95,7 @@ rcRange Lens::rgeIntenGlobal() const {
     for (auto const& dataset: dataset_.datasets()) {
       // a copy of this lens for each dataset
       Lens lens(trans_, cut_, session_.norm(), session_,
-                *dataset, corrDataset_,
+                *dataset, corrImage_,
                 angleMap_,imageCut_,imageTransform_);
       rgeIntenGlobal_.extendBy(lens.rgeInten());
     }
@@ -193,11 +193,11 @@ void Lens::doCut(uint& i, uint& j) const {
 
 void Lens::calcSensCorr() {
   hasNaNs_ = false;
-  if (!corrDataset_) return;
+  if (!corrImage_) return;
 
-  ASSERT(dataset_.imageSize() == corrDataset_->imageSize())
+  ASSERT(dataset_.imageSize() == corrImage_->size())
 
-  QSize size = corrDataset_->imageSize();
+  QSize size = corrImage_->size();
   size -= imageCut_.marginSize();
   ASSERT(!size.isEmpty())
 
@@ -206,15 +206,15 @@ void Lens::calcSensCorr() {
   uint w = size.width(), h = size.height(),
       di = imageCut_.left, dj = imageCut_.top;
 
-  for_ij(w,h)
-    sum += corrDataset_->inten(i+di, j+dj);
+  for_ij (w,h)
+    sum += corrImage_->inten(i+di, j+dj);
 
   qreal avg = sum / (w * h);
 
   intensCorr_.fill(size);
 
-  for_ij(w,h) {
-    auto inten = corrDataset_->inten(i+di,j+dj);
+  for_ij (w,h) {
+    auto inten = corrImage_->inten(i+di,j+dj);
     qreal fact;
 
     if (inten > 0) {

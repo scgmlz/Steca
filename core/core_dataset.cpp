@@ -128,13 +128,15 @@ void Datasets::append(shp_Dataset dataset) {
   invalidateMutables();
 }
 
-void Datasets::fold() THROWS {
-  while (super::count() > 1) {
-    super::first()->addIntens(*super::last());
-    super::removeLast();
+Image Datasets::folded() THROWS {
+  ASSERT(0 < count())
+  Image image(first()->imageSize());
+
+  for (auto &dataset: *this) {
+    image.addIntens(dataset->image_);
   }
 
-  invalidateMutables();
+  return image;
 }
 
 QSize Datasets::imageSize() const {

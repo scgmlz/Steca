@@ -47,6 +47,7 @@ public:
 // correction file
 private:
   shp_File corrFile_;
+  Image    corrImage_;
   bool     corrEnabled_;
 
 public:

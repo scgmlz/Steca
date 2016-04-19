@@ -95,7 +95,7 @@ void TheHub::initActions() { // REVIEW all action texts and tips and icons
       .alt("Disable correction file", "Disable correction by correction file")
       .icon(":/icon/useCorrection").key(Qt::SHIFT|Qt::CTRL|Qt::Key_C).dialog();
   TRIG(remCorr, "Remove correction file", "")
-      .icon(":/icon/rem").key(QKey::Delete);
+      .icon(":/icon/clear").key(QKey::Delete);
 
   TRIG(loadSession, "Load session", "")
       .dialog();
@@ -149,7 +149,7 @@ void TheHub::initActions() { // REVIEW all action texts and tips and icons
   TOGL(fitTool, "Select background fit regions", "Select regions for background fitting")
       .icon(":/icon/peakBackground");
   TRIG(fitBgClear, "Clear background fit regions", "Clear regions for background fitting")
-      .icon(":/icon/clearBackground");
+      .icon(":/icon/clear");
   TOGL(fitShow, "BackgroundEye", "Show background fit")
       .alt("BackgroundEye", "Hide background fit")
       .icon(":/icon/showBackground");

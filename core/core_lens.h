@@ -36,7 +36,7 @@ public:
   static str_lst const& normStrLst();
 
   Lens(bool trans, bool cut, eNorm norm, rcSession,
-       rcDataset, Dataset const* corr,
+       rcDataset, Image const* corr,
        AngleMap const&, ImageCut const&, ImageTransform const&);
 
   QSize   size()                 const;
@@ -61,7 +61,7 @@ private:
 
   Session  const& session_;
   Dataset  const& dataset_;
-  Dataset  const* corrDataset_;
+  Image    const* corrImage_;
 
   // must keep copies of these
   AngleMap angleMap_;

@@ -20,7 +20,7 @@ namespace core {
 
 Image::Image(QSize const& size, inten_t const* src) {
   fill(0,size);
-  addIntens(src);
+  if (src) addIntens(src);
 }
 
 void Image::addIntens(Image const& that) THROWS {
