@@ -23,8 +23,8 @@
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-class ReflectionView: public HubListView {
-  SUPER(ReflectionView,HubListView)
+class ReflectionView: public ListView {
+  SUPER(ReflectionView,ListView)
 public:
   using Model = models::ReflectionViewModel;
 

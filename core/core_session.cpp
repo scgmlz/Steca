@@ -24,7 +24,7 @@ Session::Session() {
 }
 
 void Session::clear() {
-  while (numFiles(false)) remFile(0);
+  while (0 < numFiles()) remFile(0);
 
   remCorrFile();
   corrEnabled_ = false;
@@ -37,10 +37,6 @@ void Session::clear() {
   norm_ = Lens::normNONE;
 }
 
-uint Session::numFiles(bool withCorr) const {
-  return files_.count() + (withCorr && !corrFile_.isNull() ? 1 : 0);
-}
-
 shp_File Session::file(uint i) const {
   if ((uint)files_.count() == i) {
     // past the vector end, must be the correction file
@@ -49,6 +45,13 @@ shp_File Session::file(uint i) const {
   } else {
     return files_.at(i);
   }
+}
+
+bool Session::hasFile(rcstr fileName) {
+  QFileInfo fileInfo(fileName);
+  for (auto &file: files_)
+    if (fileInfo == file->fileInfo()) return true;
+  return false;
 }
 
 void Session::addFile(shp_File file) THROWS {
@@ -60,13 +63,6 @@ void Session::addFile(shp_File file) THROWS {
 void Session::remFile(uint i) {
   files_.remove(i);
   updateImageSize();
-}
-
-bool Session::hasFile(rcstr fileName) {
-  QFileInfo fileInfo(fileName);
-  for (auto &file: files_)
-    if (fileInfo == file->fileInfo()) return true;
-  return false;
 }
 
 void Session::setCorrFile(shp_File file) THROWS {
@@ -95,7 +91,7 @@ void Session::enableCorr(bool on) {
 }
 
 void Session::updateImageSize() {
-  if (0 == numFiles(true))
+  if (0 == numFiles() && !hasCorrFile())
     imageSize_ = QSize(0,0);
 }
 
@@ -108,7 +104,7 @@ void Session::setImageSize(QSize const& size) THROWS {
 }
 
 QSize Session::imageSize() const {
-  return imageTransform_.isTransposed() 
+  return imageTransform_.isTransposed()
   ? imageSize_.transposed() : imageSize_;
 }
 
@@ -158,20 +154,20 @@ AngleMap const& Session::angleMap(rcDataset dataset) const {
   static QSize    lastSize;       static IJ    lastMid;
   static ImageCut lastImageCut;
   static ImageTransform lastImageTrans;
-  
-  qreal midTth = dataset.midTth();   
-  IJ mid = midPix();  
-  QSize size   = imageSize();        
-  
+
+  qreal midTth = dataset.midTth();
+  IJ mid = midPix();
+  QSize size   = imageSize();
+
   if (! (lastMidTth   == midTth    && lastGeometry   == geometry_ &&
-         lastSize     == size      && lastMid        == mid       && 
-         lastImageCut == imageCut_ && lastImageTrans == imageTransform_)) {   
-    lastMidTth   = midTth;    lastGeometry = geometry_; 
+         lastSize     == size      && lastMid        == mid       &&
+         lastImageCut == imageCut_ && lastImageTrans == imageTransform_)) {
+    lastMidTth   = midTth;    lastGeometry = geometry_;
     lastSize     = size;      lastMid      = mid;
     lastImageCut = imageCut_; lastImageTrans = imageTransform_;
     map.calculate(midTth,geometry_,size,imageCut_,mid);
   }
-  
+
   return map;
 }
 

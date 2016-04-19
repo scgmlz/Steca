@@ -43,7 +43,7 @@ public:
   void close();
 
   void addFiles();
-  void loadCorrFile();
+  void enableCorr();
 
   void loadSession();
   void saveSession();
@@ -52,8 +52,8 @@ public:
 
 private:
   // the hub
-  gui::TheHub theHub;
-  Actions &actions;
+  gui::TheHub  hub_;
+  Actions     &acts_;
 
 private:
   void closeEvent(QCloseEvent*);

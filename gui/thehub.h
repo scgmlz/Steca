@@ -62,14 +62,13 @@ public:
   models::ReflectionViewModel reflectionViewModel;
 
 public: // files
-  uint numFiles(bool withCorr) const;
-  bool hasCorrFile()           const;
-  bool isCorrFile(uint index)  const;
+  uint numFiles()              const;
   str  fileName(uint index)    const;
   str  filePath(uint index)    const;
-
   core::shp_File getFile(uint) const;
   void remFile(uint);
+
+  bool hasCorrFile()           const;
 
   void setSelectedFile(core::shp_File);
   void setSelectedDataset(core::shp_Dataset);
@@ -93,7 +92,7 @@ public:
 public:
   void addFile(rcstr filePath)      THROWS;
   void addFiles(str_lst filePaths)  THROWS;
-  void loadCorrFile(rcstr filePath) THROWS;
+  void setCorrFile(rcstr filePath)  THROWS;
 
   void enableCorrection(bool);
 
@@ -133,7 +132,8 @@ signals:
   void saveSettings();
 
   void filesChanged();
-  void correctionEnabled(bool);
+  void corrEnabled(bool);
+  void corrFileName(QString const&);
 
   void fileSelected(core::shp_File);
   void datasetSelected(core::shp_Dataset);

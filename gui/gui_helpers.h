@@ -83,6 +83,16 @@ protected:
 };
 
 //------------------------------------------------------------------------------
+
+class LineView: public QLineEdit {
+  SUPER(LineView,QLineEdit)
+public:
+  LineView();
+
+  void setText(rcstr);
+};
+
+//------------------------------------------------------------------------------
 /// a widget with a box layout
 
 class BoxWidget: public QWidget {

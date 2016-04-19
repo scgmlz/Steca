@@ -18,12 +18,12 @@
 namespace gui { namespace panel {
 //-----------------------------------------------------------------------------
 
-HubListView::HubListView(TheHub& theHub): RefHub(theHub) {
+ListView::ListView(TheHub& hub): RefHub(hub) {
 }
 
 //------------------------------------------------------------------------------
 
-BasicPanel::BasicPanel(rcstr title, TheHub& theHub): super(title), RefHub(theHub) {
+BasicPanel::BasicPanel(rcstr title, TheHub& hub): super(title), RefHub(hub) {
 }
 
 void BasicPanel::setHorizontalStretch(int stretch) {
@@ -47,15 +47,15 @@ void BasicPanel::setStretch(int horizontal, int vertical) {
 
 //------------------------------------------------------------------------------
 
-BoxPanel::BoxPanel(rcstr title, TheHub& theHub, Qt::Orientation orientation)
-: super(title,theHub) {
+BoxPanel::BoxPanel(rcstr title, TheHub& hub, Qt::Orientation orientation)
+: super(title,hub) {
   setLayout((box_ = boxLayout(orientation)));
 }
 
 //------------------------------------------------------------------------------
 
-GridPanel::GridPanel(rcstr title, TheHub& theHub)
-: super(title,theHub) {
+GridPanel::GridPanel(rcstr title, TheHub& hub)
+: super(title,hub) {
   setLayout((grid_ = gridLayout()));
 }
 
@@ -65,7 +65,7 @@ TabsPanel::Tab::Tab(Qt::Orientation orientation) {
   setLayout((box_ = boxLayout(orientation)));
 }
 
-TabsPanel::TabsPanel(TheHub& theHub): RefHub(theHub) {
+TabsPanel::TabsPanel(TheHub& hub): RefHub(hub) {
 }
 
 TabsPanel::Tab& TabsPanel::addTab(rcstr title, Qt::Orientation orientation) {

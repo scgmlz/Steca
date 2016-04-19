@@ -36,13 +36,13 @@ private:
   QVector<shp_File> files_;
 
 public:
-  /// how many files has, optionally also counting the correction file.
-  uint     numFiles(bool withCorr) const;
-  shp_File file(uint i) const;              ///< Access the i-th file, including the correction file.
+  /// number of data files (not counting the correction file)
+  uint     numFiles()       const { return files_.count(); }
+  shp_File file(uint i)     const;
 
-  void     addFile(shp_File) THROWS;        ///< Add an ordinary file to the session.
-  void     remFile(uint i);                 ///< Remove the i-th file, NOT including the correction file.
-  bool     hasFile(rcstr fileName);         ///< Is there this ordinary file?
+  bool     hasFile(rcstr fileName);
+  void     addFile(shp_File) THROWS;
+  void     remFile(uint i);
 
 // correction file
 private:
@@ -50,8 +50,8 @@ private:
   bool     corrEnabled_;
 
 public:
-  shp_File corrFile()       const   { return corrFile_;           }
   bool     hasCorrFile()    const   { return !corrFile_.isNull(); }
+  shp_File corrFile()       const   { return corrFile_;           }
 
   void     setCorrFile(shp_File) THROWS;    ///< Load or remove a correction file.
   void     remCorrFile();
@@ -67,7 +67,7 @@ private:
   void updateImageSize();
   /// Ensures that all images have the same size.
   void setImageSize(QSize const&) THROWS;
-  
+
   QSize imageSize() const;
 
 // image - transform & cut etc.

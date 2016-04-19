@@ -19,43 +19,23 @@
 #include <QHeaderView>
 
 namespace gui { namespace panel {
-//-----------------------------------------------------------------------------
-
-class FileViewDelegate: public QStyledItemDelegate {
-  SUPER(FileViewDelegate,QStyledItemDelegate)
-public:
-  void paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const {
-    QStyleOptionViewItem o = option;
-    bool isCorrFile = index.data(FileView::Model::IsCorrFileRole).toBool();
-    if (isCorrFile) {
-      o.font.setItalic(true);
-      o.font.setBold(true);
-    }
-    super::paint(painter,o,index);
-  }
-};
-
 //------------------------------------------------------------------------------
 
-FileView::FileView(TheHub& theHub): super(theHub), model_(theHub.fileViewModel) {
+FilesView::FilesView(TheHub& hub): super(hub), model_(hub.fileViewModel) {
   setModel(&model_);
-
   header()->hide();
-
-  static FileViewDelegate delegate;
-  setItemDelegate(&delegate);
 }
 
-void FileView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
+void FilesView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
   super::selectionChanged(selected,deselected);
 
   auto indexes = selected.indexes();
-  theHub_.setSelectedFile(indexes.isEmpty()
+  hub_.setSelectedFile(indexes.isEmpty()
     ? core::shp_File()
     : model_.data(indexes.first(), Model::GetFileRole).value<core::shp_File>());
 }
 
-void FileView::removeSelected() {
+void FilesView::removeSelected() {
   auto index = currentIndex();
   if (!index.isValid()) return;
 
@@ -64,12 +44,12 @@ void FileView::removeSelected() {
 
   model_.remFile(row);
   if (0>=model_.rowCount()) // no more files
-    theHub_.setSelectedFile(core::shp_File());
+    hub_.setSelectedFile(core::shp_File());
 
   setCurrentIndex(index);
 }
 
-void FileView::update() {
+void FilesView::update() {
   auto index = currentIndex();
   model_.signalReset();
   // keep the current index, or select the first item
@@ -78,26 +58,40 @@ void FileView::update() {
 
 //------------------------------------------------------------------------------
 
-DockFiles::DockFiles(TheHub& theHub)
-: super("Files","dock-files",Qt::Vertical), RefHub(theHub) {
-  box_->addWidget((fileView_ = new FileView(theHub)));
+DockFiles::DockFiles(TheHub& hub)
+: super("Files","dock-files",Qt::Vertical), RefHub(hub) {
+  box_->addWidget((filesView_ = new FilesView(hub)));
 
   auto h = hbox(); box_->addLayout(h);
 
-  auto &actions = theHub.actions;
+  auto &actions = hub_.actions;
 
-  h->addWidget(textButton(actions.loadCorrFile));
-  h->addWidget(iconButton(actions.enableCorr));
+  h->addWidget(label("Corr. file"));
   h->addStretch();
   h->addWidget(iconButton(actions.addFiles));
   h->addWidget(iconButton(actions.remFile));
 
+  h = hbox(); box_->addLayout(h);
+
+  h->addWidget((corrFile_  = new LineView()));
+  h->addWidget(iconButton(actions.enableCorr));
+  h->addWidget(iconButton(actions.remCorr));
+
   connect(actions.remFile, &QAction::triggered, [this]() {
-    fileView_->removeSelected();
+    filesView_->removeSelected();
   });
 
-  connect(&theHub_, &TheHub::filesChanged, [this]() {
-    fileView_->update();
+  connect(actions.remCorr, &QAction::triggered, [this]() {
+    hub_.setCorrFile(EMPTY_STR);
+  });
+
+  connect(&hub_, &TheHub::filesChanged, [this]() {
+    filesView_->update();
+  });
+
+  connect(&hub_, &TheHub::corrFileName, [this](rcstr fileName) {
+    corrFile_->setText(fileName);
+    hub_.actions.remCorr->setEnabled(!fileName.isEmpty());
   });
 }
 

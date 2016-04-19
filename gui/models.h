@@ -32,7 +32,7 @@ public:
   QVariant data(rcIndex,int) const;
 
 public:
-  enum { GetFileRole = Qt::UserRole, IsCorrFileRole };
+  enum { GetFileRole = Qt::UserRole };
 
   void remFile(uint i);
 };

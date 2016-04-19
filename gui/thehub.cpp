@@ -91,11 +91,11 @@ void TheHub::initActions() { // REVIEW all action texts and tips and icons
   TRIG(remFile, "Remove file", "Remove selected file")
       .icon(":/icon/rem").key(QKey::Delete);
 
-  TRIG(loadCorrFile, "Load correction file", "")
-      .key(Qt::SHIFT|Qt::CTRL|Qt::Key_O).dialog();
   TOGL(enableCorr, "Enable correction file", "Enable correction by correction file")
       .alt("Disable correction file", "Disable correction by correction file")
-      .icon(":/icon/useCorrection");
+      .icon(":/icon/useCorrection").key(Qt::SHIFT|Qt::CTRL|Qt::Key_C).dialog();
+  TRIG(remCorr, "Remove correction file", "")
+      .icon(":/icon/rem").key(QKey::Delete);
 
   TRIG(loadSession, "Load session", "")
       .dialog();
@@ -161,12 +161,10 @@ void TheHub::initActions() { // REVIEW all action texts and tips and icons
 
 void TheHub::configActions() {
   actions.remFile->setEnabled(false);
-  actions.enableCorr->setEnabled(false);
   actions.remReflection->setEnabled(false);
 
-  connect(this, &thisClass::correctionEnabled, [this](bool on) {
+  connect(this, &thisClass::corrEnabled, [this](bool on) {
     actions.enableCorr->setChecked(on);
-    actions.enableCorr->setEnabled(hasCorrFile());
   });
 
   connect(this, &thisClass::fileSelected, this, [this](core::shp_File file) {
@@ -191,16 +189,8 @@ void TheHub::configActions() {
   });
 }
 
-uint TheHub::numFiles(bool withCorr) const {
-  return session->numFiles(withCorr);
-}
-
-bool TheHub::hasCorrFile() const {
-  return session->hasCorrFile();
-}
-
-bool TheHub::isCorrFile(uint index) const {
-  return hasCorrFile() && numFiles(true) == index+1;
+uint TheHub::numFiles() const {
+  return session->numFiles();
 }
 
 str TheHub::fileName(uint index) const {
@@ -216,20 +206,33 @@ core::shp_File TheHub::getFile(uint index) const {
 }
 
 void TheHub::remFile(uint i) {
-  if (hasCorrFile() && numFiles(true) == i+1) {
-    session->remCorrFile();
-    emit correctionEnabled(session->isCorrEnabled());
-    emit filesChanged();
-  } else {
-    session->remFile(i);
-    emit filesChanged();
-  }
+  session->remFile(i);
+  emit filesChanged();
 
-  if (0==numFiles(true)) {
+  if (0==numFiles()) {
     setSelectedDataset(core::shp_Dataset());
     setImageCut(true, false, core::ImageCut());
   }
 }
+
+bool TheHub::hasCorrFile() const {
+  return session->hasCorrFile();
+}
+//void TheHub::remFile(uint i) {
+//  if (hasCorrFile() && numFiles(true) == i+1) {
+//    session->remCorrFile();
+//    emit correctionEnabled(session->isCorrEnabled());
+//    emit filesChanged();
+//  } else {
+//    session->remFile(i);
+//    emit filesChanged();
+//  }
+
+//  if (0==numFiles(true)) {
+//    setSelectedDataset(core::shp_Dataset());
+//    setImageCut(true, false, core::ImageCut());
+//  }
+//}
 
 void TheHub::setSelectedFile(core::shp_File file) {
   emit fileSelected(file);
@@ -316,7 +319,7 @@ QByteArray TheHub::saveSession() const {
 
   JsonArr arrFiles;
   // save file path relative to location of session
-  for_i (numFiles(false)) {
+  for_i (numFiles()) {
     str absPath = getFile(i)->fileInfo().absoluteFilePath();
     str relPath = QDir::current().relativeFilePath(absPath);
     arrFiles.append(relPath);
@@ -367,7 +370,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
     addFile(dir.absolutePath());
   }
 
-  loadCorrFile(top.loadString(KEY_CORR_FILE,EMPTY_STR));
+  setCorrFile(top.loadString(KEY_CORR_FILE,EMPTY_STR));
 
   auto det = top.loadObj(KEY_DETECTOR);
   setGeometry(
@@ -412,19 +415,19 @@ void TheHub::addFiles(str_lst filePaths) THROWS {
     addFile(filePath);
 }
 
-void TheHub::loadCorrFile(rcstr filePath) THROWS {
+void TheHub::setCorrFile(rcstr filePath) THROWS {
   core::shp_File file;
   if (!filePath.isEmpty())
     file = core::io::load(filePath);
 
   session->setCorrFile(file);
-  emit correctionEnabled(session->isCorrEnabled());
-  emit filesChanged();
+  emit corrFileName(file.isNull() ? EMPTY_STR : file->fileName());
+  enableCorrection(true);
 }
 
 void TheHub::enableCorrection(bool on) {
   session->enableCorr(on);
-  emit correctionEnabled(session->isCorrEnabled());
+  emit corrEnabled(session->isCorrEnabled());
 }
 
 core::ImageCut const& TheHub::imageCut() const {

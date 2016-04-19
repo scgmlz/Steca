@@ -22,12 +22,12 @@
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-class FileView: public HubListView {
-  SUPER(FileView,HubListView)
+class FilesView: public ListView {
+  SUPER(FilesView,ListView)
 public:
   using Model = models::FileViewModel;
 
-  FileView(TheHub&);
+  FilesView(TheHub&);
 
 protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);
@@ -44,8 +44,10 @@ class DockFiles: public DockWidget, private RefHub {
   SUPER(DockFiles,DockWidget)
 public:
   DockFiles(TheHub&);
+
 private:
-  FileView *fileView_;
+  FilesView *filesView_;
+  LineView  *corrFile_;
 };
 
 //------------------------------------------------------------------------------

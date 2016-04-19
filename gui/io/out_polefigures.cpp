@@ -26,7 +26,7 @@ public:
   OutPoleFiguresParams(TheHub&);
 };
 
-OutPoleFiguresParams::OutPoleFiguresParams(TheHub& theHub): super("", theHub, Qt::Horizontal) {
+OutPoleFiguresParams::OutPoleFiguresParams(TheHub& hub): super("", hub, Qt::Horizontal) {
   box_->addWidget(label("Param"));
   box_->addWidget(editCell(16));
   box_->addStretch();
@@ -34,11 +34,11 @@ OutPoleFiguresParams::OutPoleFiguresParams(TheHub& theHub): super("", theHub, Qt
 
 //------------------------------------------------------------------------------
 
-OutPoleFigures::OutPoleFigures(rcstr title,TheHub& theHub,QWidget* parent)
+OutPoleFigures::OutPoleFigures(rcstr title,TheHub& hub,QWidget* parent)
 : super(title,parent) {
   setWidgets(
-      new OutPoleFiguresParams(theHub),
-      new OutTableWidget(theHub,
+      new OutPoleFiguresParams(hub),
+      new OutTableWidget(hub,
           {"int","str","real","date"},
           {cmp_int, cmp_str, cmp_real, cmp_date})
   );

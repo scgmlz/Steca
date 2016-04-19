@@ -45,10 +45,10 @@ public:
   SplitImage(TheHub&);
 };
 
-SplitImage::SplitImage(TheHub& theHub): super(Qt::Horizontal) {
-  auto *options1 = new panel::DatasetOptions1(theHub);
-  auto *options2 = new panel::DatasetOptions2(theHub);
-  auto *dataset  = new panel::Dataset(theHub);
+SplitImage::SplitImage(TheHub& hub): super(Qt::Horizontal) {
+  auto *options1 = new panel::DatasetOptions1(hub);
+  auto *options2 = new panel::DatasetOptions2(hub);
+  auto *dataset  = new panel::Dataset(hub);
   connect(options2, &panel::DatasetOptions2::imageScale, dataset, &panel::Dataset::setImageScale);
   box_->addWidget(options1);
   box_->addWidget(options2);
@@ -64,8 +64,8 @@ public:
   SplitFitting(TheHub&);
 };
 
-SplitFitting::SplitFitting(TheHub& theHub): super(Qt::Vertical) {
-  box_->addWidget(new panel::Fitting(theHub));
+SplitFitting::SplitFitting(TheHub& hub): super(Qt::Vertical) {
+  box_->addWidget(new panel::Fitting(hub));
 }
 
 //------------------------------------------------------------------------------
@@ -76,15 +76,15 @@ public:
   SplitDiffractogram(TheHub&);
 };
 
-SplitDiffractogram::SplitDiffractogram(TheHub& theHub): super(Qt::Horizontal) {
-  auto diffractogram = new panel::Diffractogram(theHub);
+SplitDiffractogram::SplitDiffractogram(TheHub& hub): super(Qt::Horizontal) {
+  auto diffractogram = new panel::Diffractogram(hub);
   diffractogram->setHorizontalStretch(1);
   box_->addWidget(diffractogram);
 }
 
 //------------------------------------------------------------------------------
 
-MainWin::MainWin(): theHub(), actions(theHub.actions) {
+MainWin::MainWin(): hub_(), acts_(hub_.actions) {
   setWindowIcon(QIcon(":/icon/STeCa2"));
 
   initMenus();
@@ -115,58 +115,60 @@ void MainWin::initMenus() {
   menuHelp_     = mbar->addMenu("&Help");
 
   menuFile_->addActions({
-    actions.addFiles, actions.remFile, separator(),
-    actions.loadCorrFile, separator(),
-    actions.loadSession, actions.saveSession, actions.loadSession,
+    acts_.loadSession, acts_.saveSession,
+    separator(),
+    acts_.addFiles, acts_.remFile,
+    separator(),
+    acts_.enableCorr, acts_.remCorr,
   });
 
   menuFile_->addActions({
 #ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
     separator(),
 #endif
-    actions.quit,
+    acts_.quit,
   });
 
   menuView_->addActions({
-    actions.fixedIntensityDisplay, actions.showCut, separator(),
-    actions.fitTool, actions.fitBgClear, actions.fitShow, separator(),
-    actions.viewStatusbar,
+    acts_.fixedIntensityDisplay, acts_.showCut, separator(),
+    acts_.fitTool, acts_.fitBgClear, acts_.fitShow, separator(),
+    acts_.viewStatusbar,
 #ifndef Q_OS_OSX
-    actions.fullScreen,
+    acts_.fullScreen,
 #endif
     separator(),
-    actions.viewDockFiles,
-    actions.viewDockDatasets,
-    actions.viewDockDatasetInfo,
+    acts_.viewDockFiles,
+    acts_.viewDockDatasets,
+    acts_.viewDockDatasetInfo,
     separator(),
-    actions.viewReset,
+    acts_.viewReset,
   });
 
   menuDatasets_->addActions({
-    actions.rotateImage, actions.mirrorImage, separator(),
-    actions.enableCorr,
+    acts_.rotateImage, acts_.mirrorImage, separator(),
+    acts_.enableCorr,
   });
 
   menuReflect_->addActions({
-    actions.addReflection, actions.remReflection,
+    acts_.addReflection, acts_.remReflection,
   });
 
   menuOutput_->addActions({
-    actions.outputPolefigures, actions.outputHistograms
+    acts_.outputPolefigures, acts_.outputHistograms
   });
 
   menuHelp_->addActions({
 #ifndef Q_OS_OSX // Mac puts About into the Apple menu
     separator(),
 #endif
-    actions.about,
+    acts_.about,
   });
 }
 
 void MainWin::initLayout() {
-  addDockWidget(Qt::LeftDockWidgetArea,  (dockFiles_      = new panel::DockFiles(theHub)));
-  addDockWidget(Qt::LeftDockWidgetArea,  (dockDatasets_   = new panel::DockDatasets(theHub)));
-  addDockWidget(Qt::RightDockWidgetArea, (dockDatasetInfo_  = new panel::DockDatasetInfo(theHub)));
+  addDockWidget(Qt::LeftDockWidgetArea,  (dockFiles_      = new panel::DockFiles(hub_)));
+  addDockWidget(Qt::LeftDockWidgetArea,  (dockDatasets_   = new panel::DockDatasets(hub_)));
+  addDockWidget(Qt::RightDockWidgetArea, (dockDatasetInfo_  = new panel::DockDatasetInfo(hub_)));
 
   auto splMain = new QSplitter(Qt::Vertical);
   splMain->setChildrenCollapsible(false);
@@ -181,10 +183,10 @@ void MainWin::initLayout() {
   splMain->addWidget(splImages);
   splMain->addWidget(splReflections);
 
-  splImages->addWidget(new SplitImage(theHub));
+  splImages->addWidget(new SplitImage(hub_));
 
-  splReflections->addWidget(new SplitFitting(theHub));
-  splReflections->addWidget(new SplitDiffractogram(theHub));
+  splReflections->addWidget(new SplitFitting(hub_));
+  splReflections->addWidget(new SplitDiffractogram(hub_));
   splReflections->setStretchFactor(1, 1);
 }
 
@@ -203,29 +205,29 @@ void MainWin::connectActions() {
 
   auto notYet = [this](QAction* action) { action->setEnabled(false); };
 
-  onTrigger(actions.addFiles,     &thisClass::addFiles);
-  onTrigger(actions.loadCorrFile, &thisClass::loadCorrFile);
+  onTrigger(acts_.loadSession,  &thisClass::loadSession);
+  onTrigger(acts_.saveSession,  &thisClass::saveSession);
 
-  onTrigger(actions.loadSession,  &thisClass::loadSession);
-  onTrigger(actions.saveSession,  &thisClass::saveSession);
+  onTrigger(acts_.addFiles,     &thisClass::addFiles);
+  onTrigger(acts_.enableCorr,   &thisClass::enableCorr);
 
-  onTrigger(actions.quit,         &thisClass::close);
+  onTrigger(acts_.quit,         &thisClass::close);
 
-  onTrigger(actions.outputPolefigures, &thisClass::outputPoleFigures);
-  notYet(actions.outputHistograms);
+  onTrigger(acts_.outputPolefigures, &thisClass::outputPoleFigures);
+  notYet(acts_.outputHistograms);
 
-  onTrigger(actions.about, &thisClass::about);
+  onTrigger(acts_.about, &thisClass::about);
 
-  onToggle(actions.viewStatusbar, &thisClass::viewStatusbar);
+  onToggle(acts_.viewStatusbar, &thisClass::viewStatusbar);
 #ifndef Q_OS_OSX
-  onToggle(actions.fullScreen, &thisClass::viewFullScreen);
+  onToggle(acts_.fullScreen, &thisClass::viewFullScreen);
 #endif
 
-  onToggle(actions.viewDockFiles,       &thisClass::viewDockFiles);
-  onToggle(actions.viewDockDatasets,    &thisClass::viewDockDatasets);
-  onToggle(actions.viewDockDatasetInfo, &thisClass::viewDockDatasetInfo);
+  onToggle(acts_.viewDockFiles,       &thisClass::viewDockFiles);
+  onToggle(acts_.viewDockDatasets,    &thisClass::viewDockDatasets);
+  onToggle(acts_.viewDockDatasetInfo, &thisClass::viewDockDatasetInfo);
 
-  onTrigger(actions.viewReset, &thisClass::viewReset);
+  onTrigger(acts_.viewReset, &thisClass::viewReset);
 }
 
 void MainWin::about() {
@@ -272,15 +274,17 @@ void MainWin::addFiles() {
       QDir::current().absolutePath(), "Data files (*.dat);;All files (*.*)");
 
   if (!fileNames.isEmpty())
-    theHub.addFiles(fileNames);
+    hub_.addFiles(fileNames);
 }
 
-void MainWin::loadCorrFile() {
-  str fileName = QFileDialog::getOpenFileName(this, "Set correction file",
+void MainWin::enableCorr() {
+  str fileName;
+  if (!hub_.hasCorrFile())
+    fileName = QFileDialog::getOpenFileName(this, "Set correction file",
       QDir::current().absolutePath(), "Data files (*.dat);;All files (*.*)");
 
   if (!fileName.isEmpty())
-    theHub.loadCorrFile(fileName);
+    hub_.setCorrFile(fileName);
 }
 
 static str const STE(".ste");
@@ -293,7 +297,7 @@ void MainWin::loadSession() {
   if (fileName.isEmpty())
     return;
 
-  theHub.loadSession(QFileInfo(fileName));
+  hub_.loadSession(QFileInfo(fileName));
 }
 
 void MainWin::saveSession() {
@@ -307,11 +311,11 @@ void MainWin::saveSession() {
   if (!fileName.endsWith(STE))
     fileName += STE;
 
-  theHub.saveSession(QFileInfo(fileName));
+  hub_.saveSession(QFileInfo(fileName));
 }
 
 void MainWin::outputPoleFigures() {
-  auto popup = new io::OutPoleFigures("Pole Figures",theHub,this);
+  auto popup = new io::OutPoleFigures("Pole Figures",hub_,this);
   popup->show();
 }
 
@@ -324,13 +328,13 @@ void MainWin::onShow() {
   checkActions();
 
 #ifdef DEVELOPMENT_REBECCA
-  theHub.load(QFileInfo("/home/rebecca/SCG/STeCa-Data/1.ste"));
+  hub_.load(QFileInfo("/home/rebecca/SCG/STeCa-Data/1.ste"));
 #endif
 #ifdef DEVELOPMENT_JAN
 #if defined(Q_OS_OSX)
-//  theHub.load(QFileInfo("/Users/igb/P/+scg/data/s.ste"));
+//  hub_.load(QFileInfo("/Users/igb/P/+scg/data/s.ste"));
 #else
-  theHub.loadSession(QFileInfo("/home/jan/SCG/s.ste"));
+  hub_.loadSession(QFileInfo("/home/jan/SCG/s.ste"));
 #endif
 #endif
 }
@@ -359,20 +363,20 @@ void MainWin::saveSettings() {
 }
 
 void MainWin::checkActions() {
-  actions.viewStatusbar->setChecked(statusBar()->isVisible());
+  acts_.viewStatusbar->setChecked(statusBar()->isVisible());
 
 #ifndef Q_OS_OSX
-  actions.fullScreen->setChecked(isFullScreen());
+  acts_.fullScreen->setChecked(isFullScreen());
 #endif
 
-  actions.viewDockFiles->setChecked(dockFiles_->isVisible());
-  actions.viewDockDatasets->setChecked(dockDatasets_->isVisible());
-  actions.viewDockDatasetInfo->setChecked(dockDatasetInfo_->isVisible());
+  acts_.viewDockFiles->setChecked(dockFiles_->isVisible());
+  acts_.viewDockDatasets->setChecked(dockDatasets_->isVisible());
+  acts_.viewDockDatasetInfo->setChecked(dockDatasetInfo_->isVisible());
 }
 
 void MainWin::viewStatusbar(bool on) {
   statusBar()->setVisible(on);
-  actions.viewStatusbar->setChecked(on);
+  acts_.viewStatusbar->setChecked(on);
 }
 
 void MainWin::viewFullScreen(bool on) {
@@ -382,23 +386,23 @@ void MainWin::viewFullScreen(bool on) {
     showNormal();
 
 #ifndef Q_OS_OSX
-  actions.fullScreen->setChecked(on);
+  acts_.fullScreen->setChecked(on);
 #endif
 }
 
 void MainWin::viewDockFiles(bool on) {
   dockFiles_->setVisible(on);
-  actions.viewDockFiles->setChecked(on);
+  acts_.viewDockFiles->setChecked(on);
 }
 
 void MainWin::viewDockDatasets(bool on) {
   dockDatasets_->setVisible(on);
-  actions.viewDockDatasets->setChecked(on);
+  acts_.viewDockDatasets->setChecked(on);
 }
 
 void MainWin::viewDockDatasetInfo(bool on) {
   dockDatasetInfo_->setVisible(on);
-  actions.viewDockDatasetInfo->setChecked(on);
+  acts_.viewDockDatasetInfo->setChecked(on);
 }
 
 void MainWin::viewReset() {

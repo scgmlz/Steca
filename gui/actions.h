@@ -54,9 +54,10 @@ protected:
 
 struct Actions {
   QAction
-    *addFiles, *remFile,
-    *loadCorrFile,
     *loadSession, *saveSession,
+
+    *addFiles,   *remFile,
+    *enableCorr, *remCorr,
 
     *quit,
 
@@ -72,10 +73,9 @@ struct Actions {
 
     *about,
 
-  // more actions, some not in the menu
     *addReflection, *remReflection,
     *rotateImage, *mirrorImage,
-    *linkCuts, *showCut, *fixedIntensityDisplay, *enableCorr,
+    *linkCuts, *showCut, *fixedIntensityDisplay,
     *fitTool, *fitBgClear, *fitShow,
     *hasBeamOffset;
 };

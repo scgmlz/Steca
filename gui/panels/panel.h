@@ -26,10 +26,10 @@ namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 /// A (tree-)list view with a reference to the hub.
 
-class HubListView: public TreeListView, protected RefHub {
-  SUPER(HubListView,TreeListView)
+class ListView: public TreeListView, protected RefHub {
+  SUPER(ListView,TreeListView)
 public:
-  HubListView(TheHub&);
+  ListView(TheHub&);
 };
 
 //------------------------------------------------------------------------------

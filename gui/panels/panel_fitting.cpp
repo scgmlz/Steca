@@ -21,8 +21,8 @@
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-ReflectionView::ReflectionView(TheHub& theHub)
-: super(theHub), _model(theHub.reflectionViewModel) {
+ReflectionView::ReflectionView(TheHub& hub)
+: super(hub), _model(hub.reflectionViewModel) {
   setModel(&_model);
   for_i (_model.columnCount())
     resizeColumnToContents(i);
@@ -56,24 +56,24 @@ void ReflectionView::update() {
     ? index
     : _model.index(qMax(0,_model.rowCount()-1),0));
 
-  theHub_.actions.remReflection->setEnabled(hasReflections());
+  hub_.actions.remReflection->setEnabled(hasReflections());
 }
 
 void ReflectionView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
   super::selectionChanged(selected,deselected);
 
   auto indexes = selected.indexes();
-  theHub_.setSelectedReflection(indexes.isEmpty()
+  hub_.setSelectedReflection(indexes.isEmpty()
     ? core::shp_Reflection()
     : _model.data(indexes.first(), Model::GetDatasetRole).value<core::shp_Reflection>());
 }
 
 //------------------------------------------------------------------------------
 
-Fitting::Fitting(TheHub& theHub)
-: super(theHub), silentSpin_(false) {
+Fitting::Fitting(TheHub& hub)
+: super(hub), silentSpin_(false) {
 
-  auto &actions = theHub_.actions;
+  auto &actions = hub_.actions;
   auto tools = [actions]() {
     auto hb = hbox();
     hb->addWidget(iconButton(actions.fitTool));
@@ -96,7 +96,7 @@ Fitting::Fitting(TheHub& theHub)
     tab.box_->addStretch();
 
     connect(spinDegree_, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int degree) {
-      theHub_.setBackgroundPolynomialDegree(degree);
+      hub_.setBackgroundPolynomialDegree(degree);
     });
   }
 
@@ -104,7 +104,7 @@ Fitting::Fitting(TheHub& theHub)
     auto &tab = addTab("Reflections",Qt::Vertical);
     tab.box_->addLayout(tools());
 
-    tab.box_->addWidget((reflectionView_ = new ReflectionView(theHub_)));
+    tab.box_->addWidget((reflectionView_ = new ReflectionView(hub_)));
 
     auto hb = hbox();
     tab.box_->addLayout(hb);
@@ -160,26 +160,26 @@ Fitting::Fitting(TheHub& theHub)
       updateReflectionControls();
     });
 
-    connect(&theHub_, &TheHub::reflectionsChanged, [this]() {
+    connect(&hub_, &TheHub::reflectionsChanged, [this]() {
       reflectionView_->update();
       updateReflectionControls();
     });
 
     connect(comboReflType_, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this](int index) {
-      theHub_.setReflType((core::ePeakType)index);
+      hub_.setReflType((core::ePeakType)index);
     });
 
-    connect(&theHub_, &TheHub::reflectionSelected, [this](core::shp_Reflection reflection) {
+    connect(&hub_, &TheHub::reflectionSelected, [this](core::shp_Reflection reflection) {
       setReflControls(reflection);
     });
 
-    connect(&theHub_, &TheHub::reflectionData, [this](core::shp_Reflection reflection) {
+    connect(&hub_, &TheHub::reflectionData, [this](core::shp_Reflection reflection) {
       setReflControls(reflection);
     });
 
     auto newReflData = [this](bool invalidateGuesses) {
       if (!silentSpin_) {
-        theHub_.newReflectionData(
+        hub_.newReflectionData(
           core::Range::safeFrom(spinRangeMin_->value(),spinRangeMax_->value()),
           core::XY(spinGuessPeakX_->value(),spinGuessPeakY_->value()),
           spinGuessFWHM_->value(), invalidateGuesses);
@@ -202,10 +202,10 @@ Fitting::Fitting(TheHub& theHub)
   }
 
   connect(this, &thisClass::currentChanged, [this](int index) {
-    theHub_.setFittingTab(index);
+    hub_.setFittingTab(index);
   });
 
-  theHub_.setFittingTab(0);
+  hub_.setFittingTab(0);
 }
 
 void Fitting::enableReflControls(bool on) {

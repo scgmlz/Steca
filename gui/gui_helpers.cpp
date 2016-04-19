@@ -143,6 +143,17 @@ void TreeListView::setModel(QAbstractItemModel* model) {
 
 //------------------------------------------------------------------------------
 
+LineView::LineView() {
+  setReadOnly(true);
+}
+
+void LineView::setText(rcstr text) {
+  super::setText(text);
+  super::setCursorPosition(0);
+}
+
+//------------------------------------------------------------------------------
+
 BoxWidget::BoxWidget(Qt::Orientation orientation) {
   setLayout((box_ = boxLayout(orientation)));
 }

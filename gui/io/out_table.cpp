@@ -60,8 +60,8 @@ private:
 
 //------------------------------------------------------------------------------
 
-OutTableModel::OutTableModel(TheHub& theHub, uint numColumns_)
-: models::TableModel(theHub), numColumns(numColumns_) {
+OutTableModel::OutTableModel(TheHub& hub, uint numColumns_)
+: models::TableModel(hub), numColumns(numColumns_) {
   colIndexMap.resize(numColumns);
   for_i (numColumns)
     colIndexMap[i] = i;
@@ -207,9 +207,9 @@ OutTableHeaderView::OutTableHeaderView(): super(Qt::Horizontal) {
 
 //------------------------------------------------------------------------------
 
-OutTable::OutTable(TheHub& theHub, uint numDataColumns) {
+OutTable::OutTable(TheHub& hub, uint numDataColumns) {
   setHeader(new OutTableHeaderView);
-  setModel((model_ = new OutTableModel(theHub,numDataColumns)));
+  setModel((model_ = new OutTableModel(hub,numDataColumns)));
 
   header()->setSectionResizeMode(0,QHeaderView::Fixed);
 
@@ -240,7 +240,7 @@ void OutTable::addRow(OutTable::row_t const& row) {
 
 //------------------------------------------------------------------------------
 
-OutTableWidget::OutTableWidget(TheHub& theHub,
+OutTableWidget::OutTableWidget(TheHub& hub,
                                str_lst const& headers, OutTable::cmp_vec const& cmps)
 {
   ASSERT(headers.count() == cmps.count())
@@ -254,7 +254,7 @@ OutTableWidget::OutTableWidget(TheHub& theHub,
   box->addWidget(split);
 
   split->setChildrenCollapsible(false);
-  split->addWidget((outTable_ = new OutTable(theHub,numDataColumns)));
+  split->addWidget((outTable_ = new OutTable(hub,numDataColumns)));
 
   outTable_->setHeaders(headers);
   outTable_->setCmpFuns(cmps);

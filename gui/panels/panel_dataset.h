@@ -23,8 +23,8 @@
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-class DatasetView: public HubListView {
-  SUPER(DatasetView,HubListView)
+class DatasetView: public ListView {
+  SUPER(DatasetView,ListView)
 public:
   using Model = models::DatasetViewModel;
 
