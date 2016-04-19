@@ -48,7 +48,7 @@ void FilesView::selectionChanged(QItemSelection const& selected, QItemSelection 
 void FilesView::removeSelected() {
   auto indexes = selectedIndexes();
 
-  // backwards
+  // then delete backwards
   for (uint i = indexes.count(); i-- > 0; )
     model_.remFile(indexes.at(i).row());
 
@@ -56,7 +56,8 @@ void FilesView::removeSelected() {
 }
 
 void FilesView::update() {
-  super::update(model_);
+  selectionModel()->clearSelection();
+  model_.signalReset();
 }
 
 //------------------------------------------------------------------------------

@@ -82,7 +82,6 @@ public:
 
   // in all datasets
   QSize imageSize()       const;
-//  rcRange rgeInten() const;
   qreal avgDeltaMonitorCount() const;
   qreal avgDeltaTime()    const;
 
