@@ -57,7 +57,7 @@ private:
 public:
   bool fixedIntensityScale;
 
-  models::FileViewModel       fileViewModel;
+  models::FilesViewModel       fileViewModel;
   models::DatasetViewModel    datasetViewModel;
   models::ReflectionViewModel reflectionViewModel;
 
@@ -95,8 +95,10 @@ public:
 public:
   void addFile(rcstr filePath)      THROWS;
   void addFiles(str_lst filePaths)  THROWS;
-  void setCorrFile(rcstr filePath)  THROWS;
 
+  core::Datasets& workingDatasets()     { return session->workingDatasets(); }
+
+  void setCorrFile(rcstr filePath)  THROWS;
   void enableCorrection(bool);
 
   core::ImageCut const& imageCut() const;
@@ -139,6 +141,7 @@ signals:
   void corrFileName(QString const&);
 
   void fileSelected(core::shp_File);
+  void datasetsChanged();
   void datasetSelected(core::shp_Dataset);
 
   void reflectionsChanged();

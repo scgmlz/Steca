@@ -40,7 +40,7 @@ protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);
 
 private:
-  Model  &_model;
+  Model &model_;
 };
 
 //------------------------------------------------------------------------------

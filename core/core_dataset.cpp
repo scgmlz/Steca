@@ -128,9 +128,8 @@ Image Datasets::folded() THROWS {
   ASSERT(0 < count())
   Image image(first()->imageSize());
 
-  for (auto &dataset: *this) {
+  for (auto &dataset: *this)
     image.addIntens(dataset->image_);
-  }
 
   return image;
 }

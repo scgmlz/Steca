@@ -21,10 +21,10 @@
 namespace models {
 //------------------------------------------------------------------------------
 
-class FileViewModel: public TableModel {
-  SUPER(FileViewModel,TableModel)
+class FilesViewModel: public TableModel {
+  SUPER(FilesViewModel,TableModel)
 public:
-  FileViewModel(gui::TheHub&);
+  FilesViewModel(gui::TheHub&);
 
   int columnCount(rcIndex = ANY_INDEX) const;
   int rowCount(rcIndex    = ANY_INDEX) const;
@@ -58,11 +58,10 @@ public:
 public:
   enum { GetDatasetRole = Qt::UserRole };
 
-  void setFile(core::shp_File);
   void showMetaInfo(checkedinfo_vec const&);
 
 private:
-  core::shp_File file_;              ///< the file with datasets
+  core::rcDatasets datasets_;        ///< the selected datasets
   checkedinfo_vec const* metaInfo_;  ///< metadata items
   uint_vec metaInfoNums_;            ///< selected metadata items to show
 };

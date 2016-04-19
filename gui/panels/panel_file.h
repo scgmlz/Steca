@@ -25,7 +25,7 @@ namespace gui { namespace panel {
 class FilesView: public ListView {
   SUPER(FilesView,ListView)
 public:
-  using Model = models::FileViewModel;
+  using Model = models::FilesViewModel;
 
   FilesView(TheHub&);
 

@@ -36,24 +36,18 @@ void FilesView::selectionChanged(QItemSelection const& selected, QItemSelection 
 }
 
 void FilesView::removeSelected() {
-  auto index = currentIndex();
-  if (!index.isValid()) return;
-
-  uint row = index.row();
-  index = ((int)(row+1) < model_.rowCount()) ? index : index.sibling(row-1,0);
+  int row = currentIndex().row();
+  if (row<0 || model_.rowCount() <= row) return;
 
   model_.remFile(row);
-  if (0>=model_.rowCount()) // no more files
+  if (!model_.rowCount()) // no more files
     hub_.setSelectedFile(core::shp_File());
 
-  setCurrentIndex(index);
+  update();
 }
 
 void FilesView::update() {
-  auto index = currentIndex();
-  model_.signalReset();
-  // keep the current index, or select the first item
-  setCurrentIndex(index.isValid() ? index : model_.index(0,1));
+  super::update(model_);
 }
 
 //------------------------------------------------------------------------------

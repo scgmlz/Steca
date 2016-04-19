@@ -21,6 +21,12 @@ namespace gui { namespace panel {
 ListView::ListView(TheHub& hub): RefHub(hub) {
 }
 
+void ListView::update(models::TableModel& model) {
+  int row = currentIndex().row();
+  model.signalReset();
+  setCurrentIndex(model.index(qMin(row,model.rowCount()-1),0));
+}
+
 //------------------------------------------------------------------------------
 
 BasicPanel::BasicPanel(rcstr title, TheHub& hub): super(title), RefHub(hub) {

@@ -50,6 +50,8 @@ private:
   Image    corrImage_;
   bool     corrEnabled_;
 
+  Datasets workingDatasets_;
+
 public:
   bool     hasCorrFile()    const { return !corrFile_.isNull(); }
   shp_File corrFile()       const { return corrFile_;           }
@@ -59,7 +61,9 @@ public:
   void     remCorrFile();
 
   void     enableCorr(bool);
-  bool     isCorrEnabled()  const   { return corrEnabled_;        }
+  bool     isCorrEnabled()  const { return corrEnabled_;        }
+
+  Datasets& workingDatasets()     { return workingDatasets_;    }
 
 // image - sanity
 private:

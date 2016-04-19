@@ -22,6 +22,10 @@
 
 class TheHub;
 
+namespace models {
+class TableModel;
+}
+
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 /// A (tree-)list view with a reference to the hub.
@@ -30,6 +34,9 @@ class ListView: public TreeListView, protected RefHub {
   SUPER(ListView,TreeListView)
 public:
   ListView(TheHub&);
+
+protected:
+  void update(models::TableModel&);
 };
 
 //------------------------------------------------------------------------------

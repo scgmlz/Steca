@@ -25,8 +25,8 @@ namespace gui { namespace panel {
 DatasetView::DatasetView(TheHub& hub): super(hub), model_(hub.datasetViewModel) {
   setModel(&model_);
 
-  connect(&hub_, &TheHub::fileSelected, [this](core::shp_File coreFile) {
-    model_.setFile(coreFile);
+  connect(&hub_, &TheHub::datasetsChanged, [this]() {
+    model_.signalReset();
      setCurrentIndex(model_.index(0,0));
   });
 

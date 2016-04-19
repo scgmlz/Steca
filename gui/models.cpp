@@ -19,18 +19,18 @@
 namespace models {
 //------------------------------------------------------------------------------
 
-FileViewModel::FileViewModel(gui::TheHub& hub): TableModel(hub) {
+FilesViewModel::FilesViewModel(gui::TheHub& hub): TableModel(hub) {
 }
 
-int FileViewModel::columnCount(rcIndex) const {
+int FilesViewModel::columnCount(rcIndex) const {
   return 1 + DCOL;
 }
 
-int FileViewModel::rowCount(rcIndex) const {
+int FilesViewModel::rowCount(rcIndex) const {
   return hub_.numFiles();
 }
 
-QVariant FileViewModel::data(rcIndex index,int role) const {
+QVariant FilesViewModel::data(rcIndex index,int role) const {
   auto row = index.row(), rowCnt = rowCount();
   if (row < 0 || rowCnt <= row) return EMPTY_VAR;
 
@@ -44,14 +44,14 @@ QVariant FileViewModel::data(rcIndex index,int role) const {
   }
 }
 
-void FileViewModel::remFile(uint i) {
+void FilesViewModel::remFile(uint i) {
   hub_.remFile(i);
 }
 
 //------------------------------------------------------------------------------
 
 DatasetViewModel::DatasetViewModel(gui::TheHub& hub)
-: super(hub), file_(nullptr), metaInfo_(nullptr) {
+: super(hub), datasets_(hub.workingDatasets()), metaInfo_(nullptr) {
 }
 
 int DatasetViewModel::columnCount(rcIndex) const {
@@ -59,12 +59,10 @@ int DatasetViewModel::columnCount(rcIndex) const {
 }
 
 int DatasetViewModel::rowCount(rcIndex) const {
-  return file_ ? file_->datasets().count() : 0;
+  return datasets_.count();
 }
 
 QVariant DatasetViewModel::data(rcIndex index,int role) const {
-  if (!file_) return EMPTY_VAR;
-
   int row = index.row();
   if (row < 0 || rowCount() <= row) return EMPTY_VAR;
 
@@ -77,12 +75,12 @@ QVariant DatasetViewModel::data(rcIndex index,int role) const {
     case COL_NUMBER:
       return str::number(row+1);
     default:
-      return file_->datasets().at(row)->attributeStrValue(metaInfoNums_[col-COL_ATTRS]);
+      return datasets_.at(row)->attributeStrValue(metaInfoNums_[col-COL_ATTRS]);
     }
   }
 
   case GetDatasetRole:
-    return QVariant::fromValue<core::shp_Dataset>(file_->datasets().at(row));
+    return QVariant::fromValue<core::shp_Dataset>(datasets_.at(row));
   default:
     return EMPTY_VAR;
   }
@@ -98,12 +96,6 @@ QVariant DatasetViewModel::headerData(int col, Qt::Orientation, int role) const 
   default:
     return core::Dataset::attributeTag(metaInfoNums_[col-COL_ATTRS]);
   }
-}
-
-void DatasetViewModel::setFile(core::shp_File file) {
-  beginResetModel();
-  file_ = file;
-  endResetModel();
 }
 
 void DatasetViewModel::showMetaInfo(checkedinfo_vec const& infos_) {

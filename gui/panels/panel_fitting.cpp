@@ -22,40 +22,32 @@ namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 ReflectionView::ReflectionView(TheHub& hub)
-: super(hub), _model(hub.reflectionViewModel) {
-  setModel(&_model);
-  for_i (_model.columnCount())
+: super(hub), model_(hub.reflectionViewModel) {
+  setModel(&model_);
+  for_i (model_.columnCount())
     resizeColumnToContents(i);
 }
 
 void ReflectionView::addReflection(int type) {
   using eType = core::ePeakType;
-  _model.addReflection((eType)qBound(0,type,(int)eType::NUM_TYPES)); // make safe
+  model_.addReflection((eType)qBound(0,type,(int)eType::NUM_TYPES)); // make safe
   update();
 }
 
 void ReflectionView::removeSelected() {
-  auto index = currentIndex();
-  if (!index.isValid()) return;
+  int row = currentIndex().row();
+  if (row<0 || model_.rowCount() <= row) return;
 
-  int row = index.row();
-  index = (row < _model.rowCount()) ? index : index.sibling(row-1,0);
-  _model.remReflection(row);
+  model_.remReflection(row);
   update();
 }
 
 bool ReflectionView::hasReflections() const {
-  return _model.rowCount() > 0;
+  return model_.rowCount() > 0;
 }
 
 void ReflectionView::update() {
-  auto index = currentIndex();
-  _model.signalReset();
-  // keep the current index, or select the last item
-  setCurrentIndex(index.isValid()
-    ? index
-    : _model.index(qMax(0,_model.rowCount()-1),0));
-
+  super::update(model_);
   hub_.actions.remReflection->setEnabled(hasReflections());
 }
 
@@ -65,7 +57,7 @@ void ReflectionView::selectionChanged(QItemSelection const& selected, QItemSelec
   auto indexes = selected.indexes();
   hub_.setSelectedReflection(indexes.isEmpty()
     ? core::shp_Reflection()
-    : _model.data(indexes.first(), Model::GetDatasetRole).value<core::shp_Reflection>());
+    : model_.data(indexes.first(), Model::GetDatasetRole).value<core::shp_Reflection>());
 }
 
 //------------------------------------------------------------------------------
