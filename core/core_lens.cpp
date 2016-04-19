@@ -51,7 +51,7 @@ QSize Lens::size() const {
   if (trans_)
     if (imageTransform_.isTransposed())
       size.transpose();
-
+      
   if (cut_)
     size -= imageCut_.marginSize();
 
@@ -74,8 +74,6 @@ inten_t Lens::inten(uint i, uint j) const {
 }
 
 Angles const& Lens::angles(uint i, uint j) const {
-  if (trans_)
-    doTrans(i,j);
   if (cut_)
     doCut(i,j);
 

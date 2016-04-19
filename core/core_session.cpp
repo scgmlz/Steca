@@ -107,6 +107,11 @@ void Session::setImageSize(QSize const& size) THROWS {
     THROW("inconsistent image size");
 }
 
+QSize Session::imageSize() const {
+  return imageTransform_.isTransposed() 
+  ? imageSize_.transposed() : imageSize_;
+}
+
 void Session::setImageTransformMirror(bool on) {
   imageTransform_ = imageTransform_.mirror(on);
 }
@@ -149,21 +154,24 @@ void Session::setImageCut(bool topLeftFirst, bool linked, ImageCut const& cut) {
 AngleMap const& Session::angleMap(rcDataset dataset) const {
   static AngleMap map;
   // TODO cache through shared pointers
-  static Geometry lastGeometry;   static qreal    lastMidTth = 0;
-  static QSize    lastSize;       static IJ       lastMid;
-  static ImageCut lastImageCut = imageCut();
-
-  qreal midTth = dataset.midTth();
-  QSize size   = dataset.imageSize(); IJ mid = midPix();
-
-  if (! (lastMidTth == midTth && lastGeometry == geometry_ &&
-         lastSize   == size   && lastMid      == mid && lastImageCut == imageCut_)) {   
+  static Geometry lastGeometry;   static qreal lastMidTth = 0;
+  static QSize    lastSize;       static IJ    lastMid;
+  static ImageCut lastImageCut;
+  static ImageTransform lastImageTrans;
+  
+  qreal midTth = dataset.midTth();   
+  IJ mid = midPix();  
+  QSize size   = imageSize();        
+  
+  if (! (lastMidTth   == midTth    && lastGeometry   == geometry_ &&
+         lastSize     == size      && lastMid        == mid       && 
+         lastImageCut == imageCut_ && lastImageTrans == imageTransform_)) {   
     lastMidTth   = midTth;    lastGeometry = geometry_; 
     lastSize     = size;      lastMid      = mid;
-    lastImageCut = imageCut_;
+    lastImageCut = imageCut_; lastImageTrans = imageTransform_;
     map.calculate(midTth,geometry_,size,imageCut_,mid);
   }
-
+  
   return map;
 }
 
@@ -178,7 +186,7 @@ void Session::setGeometry(qreal detectorDistance, qreal pixSize,
 }
 
 IJ Session::midPix() const {
-  auto halfSize = imageSize_ / 2;
+  auto halfSize = imageSize() / 2;
   IJ mid(halfSize.width(), halfSize.height());
 
   if (geometry_.isMidPixOffset) {

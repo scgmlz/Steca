@@ -67,6 +67,8 @@ private:
   void updateImageSize();
   /// Ensures that all images have the same size.
   void setImageSize(QSize const&) THROWS;
+  
+  QSize imageSize() const;
 
 // image - transform & cut etc.
 private:
