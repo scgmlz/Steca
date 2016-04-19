@@ -61,18 +61,20 @@ qreal deg2Rad(qreal deg);
 
 /// An exception that carries a message.
 class Exception: public QException {
+  SUPER(Exception,QException)
 public:
-  Exception(rcstr msg)             throw(): msg_(msg)       {}
-  Exception(Exception const& that) throw(): msg_(that.msg_) {}
- ~Exception()                      throw()                  {}
+  Exception(rcstr msg)        noexcept;
+  Exception(Exception const&) noexcept;
 
-  rcstr msg() const { return msg_; }
+  rcstr msg()  const noexcept { return msg_; }
+  pcstr what() const noexcept;
 
   Exception *clone() const;
   void raise()       const;
 
 protected:
   str msg_;
+  QByteArray msg8bit_;
 };
 
 /// raise an exception

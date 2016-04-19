@@ -31,6 +31,16 @@ qreal deg2Rad(qreal deg) {
 
 str const EMPTY_STR;
 
+Exception::Exception(rcstr msg) noexcept: msg_(msg), msg8bit_(msg_.toLocal8Bit()) {
+}
+
+Exception::Exception(Exception const &that) noexcept: thisClass(that.msg_) {
+}
+
+pcstr Exception::what() const noexcept {
+  return msg8bit_.constData();
+}
+
 Exception* Exception::clone() const {
   return new Exception(*this);
 }

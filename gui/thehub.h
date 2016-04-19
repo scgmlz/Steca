@@ -84,11 +84,11 @@ public:
   core::AngleMap const& angleMap(core::rcDataset)  const;
 
 public:
-  void save(QFileInfo const&) const;
-  QByteArray save()           const;
+  void saveSession(QFileInfo const&) const;
+  QByteArray saveSession()           const;
 
-  void load(QFileInfo const&)  THROWS;
-  void load(QByteArray const&) THROWS;
+  void loadSession(QFileInfo const&)  THROWS;
+  void loadSession(QByteArray const&) THROWS;
 
 public:
   void addFile(rcstr filePath)      THROWS;

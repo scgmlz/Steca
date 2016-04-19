@@ -168,10 +168,8 @@ shp_File loadCaress(rcstr filePath) THROWS {
 
           QSize size(detRel,detRel);
 
-// this was for testing of a non-square image
-//        #ifdef DEVELOPMENT_FAKE_NON_SQUARE_IMAGE
-//        size.rheight() /= 2;
-//        #endif
+          // this is only for testing of a non-square image
+          // size.rheight() /= 2;
 
           // Objekt inizialisieren
           file->datasets().append(shp_Dataset(new Dataset(

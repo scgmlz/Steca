@@ -74,6 +74,12 @@ int JsonObj::loadInt(rcstr key) const THROWS {
   }
 }
 
+#define RET_LOAD_DEF(type) return value(key).isUndefined() ? def : load##type(key);
+
+int JsonObj::loadInt(rcstr key, int def) const THROWS {
+  RET_LOAD_DEF(Int)
+}
+
 JsonObj& JsonObj::saveUint(rcstr key, uint num) {
   return saveInt(key,num);
 }
@@ -82,6 +88,10 @@ uint JsonObj::loadUint(rcstr key) const THROWS {
   int num = loadInt(key);
   if (num < 0) THROW(key + ": bad number format");
   return (uint)num;
+}
+
+uint JsonObj::loadUint(rcstr key, uint def) const THROWS {
+  RET_LOAD_DEF(Uint)
 }
 
 static str const INF_P("+inf"), INF_M("-inf");
@@ -115,6 +125,10 @@ qreal JsonObj::loadReal(rcstr key) const THROWS {
   }
 }
 
+qreal JsonObj::loadReal(rcstr key, qreal def) const THROWS {
+  RET_LOAD_DEF(Real)
+}
+
 JsonObj& JsonObj::saveBool(rcstr key, bool b) {
   insert(key, b);
   return *this;
@@ -131,6 +145,10 @@ bool JsonObj::loadBool(rcstr key) const THROWS {
   }
 }
 
+bool JsonObj::loadBool(rcstr key, bool def) const THROWS {
+  RET_LOAD_DEF(Bool)
+}
+
 JsonObj& JsonObj::saveString(rcstr key, rcstr s) {
   insert(key, s);
   return *this;
@@ -145,6 +163,10 @@ str JsonObj::loadString(rcstr key) const THROWS {
   default:
     THROW(key + ": not a string");
   }
+}
+
+str JsonObj::loadString(rcstr key, rcstr def) const THROWS {
+  RET_LOAD_DEF(String)
 }
 
 JsonObj& JsonObj::saveRange(rcstr key, rcRange range) {

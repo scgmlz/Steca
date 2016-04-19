@@ -37,28 +37,33 @@ public:
   QJsonArray loadArr(rcstr key) const THROWS;
 
   JsonObj& saveInt(rcstr key, int);
-  int      loadInt(rcstr key) const THROWS;
+  int      loadInt(rcstr key)               const THROWS;
+  int      loadInt(rcstr key, int def)      const THROWS;
 
   JsonObj& saveUint(rcstr key, uint);
-  uint     loadUint(rcstr key) const THROWS;
+  uint     loadUint(rcstr key)              const THROWS;
+  uint     loadUint(rcstr key, uint def)    const THROWS;
 
   JsonObj& saveReal(rcstr key, qreal);
-  qreal    loadReal(rcstr key) const THROWS;
+  qreal    loadReal(rcstr key)              const THROWS;
+  qreal    loadReal(rcstr key, qreal def)   const THROWS;
 
   JsonObj& saveBool(rcstr key, bool);
-  bool     loadBool(rcstr key) const THROWS;
+  bool     loadBool(rcstr key)              const THROWS;
+  bool     loadBool(rcstr key, bool def)    const THROWS;
 
   JsonObj& saveString(rcstr key, rcstr);
-  str      loadString(rcstr key) const THROWS;
+  str      loadString(rcstr key)            const THROWS;
+  str      loadString(rcstr key, rcstr def) const THROWS;
 
   JsonObj& saveRange(rcstr key, rcRange);
-  Range    loadRange(rcstr key) const THROWS;
+  Range    loadRange(rcstr key)             const THROWS;
 
   JsonObj& saveXY(rcstr key, rcXY);
-  XY       loadXY(rcstr key) const THROWS;
+  XY       loadXY(rcstr key)                const THROWS;
 
   JsonObj& saveIJ(rcstr key, rcIJ);
-  IJ       loadIJ(rcstr key) const THROWS;
+  IJ       loadIJ(rcstr key)                const THROWS;
 
   JsonObj& operator+= (rcJsonObj);
   JsonObj  operator+  (rcJsonObj) const;

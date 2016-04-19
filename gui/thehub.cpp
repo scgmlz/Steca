@@ -280,16 +280,16 @@ static str const KEY_BG_DEGREE("background degree");
 static str const KEY_BG_RANGES("background ranges");
 static str const KEY_REFLECTIONS("reflections");
 
-void TheHub::save(QFileInfo const& fileInfo) const {
+void TheHub::saveSession(QFileInfo const& fileInfo) const {
   QFile file(fileInfo.filePath());
   RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File cannot be opened");
 
   QDir::setCurrent(fileInfo.absolutePath());
-  auto written = file.write(save());
+  auto written = file.write(saveSession());
   RUNTIME_CHECK(written >= 0, "Could not write session");
 }
 
-QByteArray TheHub::save() const {
+QByteArray TheHub::saveSession() const {
   using core::JsonObj;
   using core::JsonArr;
 
@@ -341,17 +341,17 @@ QByteArray TheHub::save() const {
   return QJsonDocument(top).toJson();
 }
 
-void TheHub::load(QFileInfo const& fileInfo) THROWS {
+void TheHub::loadSession(QFileInfo const& fileInfo) THROWS {
   QFile file(fileInfo.absoluteFilePath());
-  RUNTIME_CHECK(file.open(QIODevice::ReadOnly), "File cannot be opened");
+  RUNTIME_CHECK(file.open(QIODevice::ReadOnly), "Session file cannot be opened");
   QDir::setCurrent(fileInfo.absolutePath());
-  load(file.readAll());
+  loadSession(file.readAll());
 }
 
-void TheHub::load(QByteArray const& json) THROWS {
+void TheHub::loadSession(QByteArray const& json) THROWS {
   QJsonParseError parseError;
   QJsonDocument doc(QJsonDocument::fromJson(json,&parseError));
-  RUNTIME_CHECK(QJsonParseError::NoError==parseError.error, "Error parsing file");
+  RUNTIME_CHECK(QJsonParseError::NoError==parseError.error, "Error parsing session file");
 
   WaitCursor __;
 
@@ -361,12 +361,13 @@ void TheHub::load(QByteArray const& json) THROWS {
   auto files = top.loadArr(KEY_FILES);
 
   for (auto file: files) {
-    QDir dir(file.toString());
-    RUNTIME_CHECK(dir.makeAbsolute(),"count not create session path");
+    str filePath = file.toString();
+    QDir dir(filePath);
+    RUNTIME_CHECK(dir.makeAbsolute(),str("Invalid file path: %1").arg(filePath));
     addFile(dir.absolutePath());
   }
 
-  loadCorrFile(top.loadString(KEY_CORR_FILE));
+  loadCorrFile(top.loadString(KEY_CORR_FILE,EMPTY_STR));
 
   auto det = top.loadObj(KEY_DETECTOR);
   setGeometry(

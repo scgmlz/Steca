@@ -293,7 +293,7 @@ void MainWin::loadSession() {
   if (fileName.isEmpty())
     return;
 
-  theHub.load(QFileInfo(fileName));
+  theHub.loadSession(QFileInfo(fileName));
 }
 
 void MainWin::saveSession() {
@@ -307,7 +307,7 @@ void MainWin::saveSession() {
   if (!fileName.endsWith(STE))
     fileName += STE;
 
-  theHub.save(QFileInfo(fileName));
+  theHub.saveSession(QFileInfo(fileName));
 }
 
 void MainWin::outputPoleFigures() {
@@ -330,7 +330,7 @@ void MainWin::onShow() {
 #if defined(Q_OS_OSX)
 //  theHub.load(QFileInfo("/Users/igb/P/+scg/data/s.ste"));
 #else
-//  theHub.load(QFileInfo("/home/jan/SCG/s.ste"));
+  theHub.loadSession(QFileInfo("/home/jan/SCG/s.ste"));
 #endif
 #endif
 }

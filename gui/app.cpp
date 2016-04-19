@@ -55,23 +55,27 @@ static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr 
 }
 
 int App::exec() {
-  gui::MainWin mainWin;
-  mainWin.show();
+  try {
+    gui::MainWin mainWin;
+    mainWin.show();
 
-  pMainWin = &mainWin;
-  oldHandler = qInstallMessageHandler(messageHandler);
-  int res = super::exec();
-  qInstallMessageHandler(nullptr);
-
-  return res;
+    pMainWin = &mainWin;
+    oldHandler = qInstallMessageHandler(messageHandler);
+    int res = super::exec();
+    qInstallMessageHandler(nullptr);
+    return res;
+  } catch (std::exception const& e) {
+    qWarning("Fatal error: %s", e.what());
+    return -1;
+  }
 }
 
 bool App::notify(QObject* receiver, QEvent* event) {
   try {
     return super::notify(receiver, event);
-  } catch(Exception const& e) {
-    qWarning("%s", e.msg().toLocal8Bit().constData());
-  } catch(std::exception const& e) {
+  } catch (Exception const& e) {
+    qWarning("%s", e.what());
+  } catch (std::exception const& e) {
     qWarning("Error: %s", e.what());
   }
 

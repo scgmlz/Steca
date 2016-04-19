@@ -26,7 +26,7 @@ static QByteArray peek(uint maxLen, QFileInfo const& info) {
 
 shp_File load(rcstr filePath) THROWS {
   QFileInfo info(filePath);
-  RUNTIME_CHECK(info.exists(), "File " % info.filePath() % " does not exist");
+  RUNTIME_CHECK(info.exists(), "File " % filePath % " does not exist");
 
   shp_File file;
 
@@ -36,17 +36,16 @@ shp_File load(rcstr filePath) THROWS {
     // looks like Caress, so try to load
     file = io::loadCaress(filePath);
   } else {
-    THROW("unknown file type");
+    THROW("unknown file type: " % filePath);
   }
 
-  RUNTIME_CHECK(file->datasets().count() > 0, "File " % info.filePath() % " contains no datasets");
+  RUNTIME_CHECK(file->datasets().count() > 0, "File " % filePath % " contains no datasets");
 
   // ensure that all datasets have images of the same size
   QSize size = file->datasets().first()->imageSize();
-
   for (auto &dataset: file->datasets())
     if (dataset->imageSize() != size)
-      THROW("Inconsistent image size");
+      THROW("Inconsistent image size in " % filePath);
 
   return file;
 }
