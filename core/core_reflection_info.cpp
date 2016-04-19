@@ -68,7 +68,7 @@ ReflectionInfo ReflectionInfo::make(
     Reflection const& reflection,
     rcRange rgeTth, rcRange gammaSector)
 {
-  shp_Lens lens = session.lens(true, true, session.norm(), dataset);
+  shp_Lens lens = session.lens(dataset, true, true, session.norm());
   Curve gammaCutCurve = lens->makeCurve(gammaSector,rgeTth);
 /* TODO ask Antti - take fitted background (all picture)?
   const fit::Polynomial sectorBg

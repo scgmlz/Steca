@@ -167,10 +167,10 @@ Polefigure::Polefigure(rcSession session,
 {
   // Fill the reflection info lists.
   for (auto const& dataset: datasets) {
-    auto lenses = session.lens(true, true, session.norm(), *dataset);
+    auto lens = session.lens(*dataset, true, true, session.norm());
     if (!gammaRange.isValid()) {
       const auto& reflectionRange = reflection_.range();
-      gammaRange = gammaRangeAt(lenses, reflectionRange.center());
+      gammaRange = gammaRangeAt(lens, reflectionRange.center());
     }
 
     const auto numGammaRows = qCeil(gammaRange.width() / betaStep_);

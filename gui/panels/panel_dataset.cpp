@@ -363,24 +363,32 @@ void DatasetOptions2::setFrom(TheHub& hub) {
 //------------------------------------------------------------------------------
 
 Dataset::Dataset(TheHub& hub)
-: super(EMPTY_STR,hub,Qt::Vertical), dataset_(nullptr) {
+: super(hub), dataset_(nullptr) {
 
   auto &actions = hub_.actions;
+  actions.showCut->setChecked(true);
 
-  box_->addWidget(imageWidget_ = new ImageWidget(hub_,*this),0,Qt::AlignCenter);
+  {
+    auto &tab = addTab("Data",Qt::Vertical);
+    tab.box_->addWidget(dataImageWidget_ = new ImageWidget(hub_,*this),0,Qt::AlignCenter);
+  }
+
+  {
+    auto &tab = addTab("Corr.",Qt::Vertical);
+    tab.box_->addWidget(corrImageWidget_ = new ImageWidget(hub_,*this),0,Qt::AlignCenter);
+  }
 
   connect(actions.enableCorr, &QAction::toggled, [this](bool) {
-    renderDataset();
+    render();
   });
 
   connect(actions.showCut, &QAction::toggled, [this](bool on) {
-    imageWidget_->setShowOverlay(on);
+    dataImageWidget_->setShowOverlay(on);
+    corrImageWidget_->setShowOverlay(on);
   });
 
-  actions.showCut->setChecked(true);
-
   connect(&hub_, &TheHub::displayChange, [this]() {
-    renderDataset();
+    render();
   });
 
   connect(&hub_, &TheHub::datasetSelected, [this](core::shp_Dataset dataset) {
@@ -388,15 +396,16 @@ Dataset::Dataset(TheHub& hub)
   });
 
   connect(&hub_, &TheHub::geometryChanged, [this]() {
-    renderDataset();
+    render();
   });
 }
 
 void Dataset::setImageScale(uint scale) {
-  imageWidget_->setScale(scale);
+  dataImageWidget_->setScale(scale);
+  corrImageWidget_->setScale(scale);
 }
 
-QPixmap Dataset::makePixmap(core::shp_Lens lens) {
+QPixmap Dataset::makePixmap(core::shp_ImageLens lens) {
   QPixmap pixmap;
   auto size = lens->size();
   auto rgeInten = lens->rgeInten(); // REVIEW also global
@@ -433,16 +442,25 @@ QPixmap Dataset::makePixmap(core::shp_Lens lens) {
 
 void Dataset::setDataset(core::shp_Dataset dataset) {
   dataset_ = dataset;
-  renderDataset();
+  render();
 }
 
-void Dataset::renderDataset() {
-  QPixmap pixMap;
-  if (dataset_) {
-    auto lens = hub_.lensNoCut(*dataset_);
-    pixMap = makePixmap(lens);
+void Dataset::render() {
+  {
+    QPixmap pixMap;
+    if (dataset_) {
+      auto lens = hub_.lensNoCut(*dataset_);
+      pixMap = makePixmap(lens);
+    }
+    dataImageWidget_->setPixmap(pixMap);
   }
-  imageWidget_->setPixmap(pixMap);
+
+  {
+    QPixmap pixMap;
+    auto lens = hub_.lensNoCut(hub_.corrImage());
+    pixMap = makePixmap(lens);
+    corrImageWidget_->setPixmap(pixMap);
+  }
 }
 
 //------------------------------------------------------------------------------

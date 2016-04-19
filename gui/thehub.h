@@ -69,6 +69,7 @@ public: // files
   void remFile(uint);
 
   bool hasCorrFile()           const;
+  core::rcImage corrImage()    const;
 
   void setSelectedFile(core::shp_File);
   void setSelectedDataset(core::shp_Dataset);
@@ -77,8 +78,10 @@ public: // files
   void newReflectionData(core::rcRange,core::rcXY,qreal,bool);
 
 public:
-  core::shp_Lens lens(core::rcDataset)      const;
-  core::shp_Lens lensNoCut(core::rcDataset) const;
+  core::shp_ImageLens lensNoCut(core::rcImage)   const;
+
+  core::shp_Lens      lens(core::rcDataset)      const;
+  core::shp_Lens      lensNoCut(core::rcDataset) const;
 
   core::AngleMap const& angleMap(core::rcDataset)  const;
 

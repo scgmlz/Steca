@@ -24,7 +24,39 @@ namespace core {
 //------------------------------------------------------------------------------
 /// View the dataset through a lens (thanks, Antti!)
 
-class Lens {
+class ImageLens {
+public:
+  ImageLens(rcSession, rcImage, Image const* corrImage,
+            bool trans, bool cut, ImageCut const&, ImageTransform const&);
+
+  QSize   size()                 const;
+  inten_t inten(uint i, uint j)  const;
+
+  rcRange rgeInten()             const;
+
+protected:
+  void doTrans(uint& i, uint& j) const;
+  void doCut(uint& i, uint& j)   const;
+  void calcSensCorr();  ///< detector sensitivity correction
+
+  Session  const& session_;
+  Image    const& image_;
+  Image    const* corrImage_;
+
+  bool trans_, cut_;
+  ImageTransform imageTransform_;
+  ImageCut imageCut_;
+
+  Array2D<inten_t> intensCorr_; bool hasNaNs_;
+  qreal normFactor_;
+
+  mutable Range rgeInten_;
+};
+
+//------------------------------------------------------------------------------
+
+class Lens: public ImageLens {
+  SUPER(Lens,ImageLens)
 public:
   enum eNorm {
     normNONE,
@@ -35,43 +67,23 @@ public:
 
   static str_lst const& normStrLst();
 
-  Lens(bool trans, bool cut, eNorm norm, rcSession,
-       rcDataset, Image const* corr,
+  Lens(rcSession, rcDataset, Image const* corr,
+       bool trans, bool cut, eNorm norm,
        AngleMap const&, ImageCut const&, ImageTransform const&);
-
-  QSize   size()                 const;
-  inten_t inten(uint i, uint j)  const;
 
   Angles const& angles(uint i, uint j) const;
 
-  rcRange rgeInten()             const;
   rcRange rgeIntenGlobal()       const;
 
   Curve makeCurve(rcRange gamma, rcRange tth) const;
 
 private:
-  void doTrans(uint& i, uint& j) const;
-  void doCut(uint& i, uint& j)   const;
-
-  void calcSensCorr();  ///< detector sensitivity correction
   void setNorm(eNorm);
 
-private:
-  bool trans_, cut_;
-
-  Session  const& session_;
   Dataset  const& dataset_;
-  Image    const* corrImage_;
-
-  // must keep copies of these
   AngleMap angleMap_;
-  ImageCut imageCut_;
-  ImageTransform imageTransform_;
 
-  Array2D<inten_t> intensCorr_; bool hasNaNs_;
-  qreal normFactor_;
-
-  mutable Range rgeInten_, rgeIntenGlobal_;
+  mutable Range rgeIntenGlobal_;
 };
 
 //------------------------------------------------------------------------------

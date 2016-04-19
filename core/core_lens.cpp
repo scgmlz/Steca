@@ -26,61 +26,38 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-str_lst const& Lens::normStrLst() {
-  static str_lst strLst {
-    "Disable", "Delta time", "Monitor count", "Background level",
-  };
-
-  return strLst;
-}
-
-Lens::Lens(bool trans, bool cut, eNorm norm, rcSession session,
-           rcDataset dataset, Image const* corrImage,
-           AngleMap const& angleMap, ImageCut const& imageCut, ImageTransform const& imageTransform)
-: trans_(trans), cut_(cut), session_(session)
-, dataset_(dataset), corrImage_(corrImage)
-, angleMap_(angleMap), imageCut_(imageCut), imageTransform_(imageTransform)
+ImageLens::ImageLens(rcSession session, rcImage image, Image const* corrImage,
+           bool trans, bool cut, ImageCut const& imageCut, ImageTransform const& imageTransform)
+: session_(session), image_(image), corrImage_(corrImage)
+, trans_(trans), cut_(cut), imageTransform_(imageTransform), imageCut_(imageCut)
+, normFactor_(1)
 {
   calcSensCorr();
-  setNorm(norm);
 }
 
-QSize Lens::size() const {
-  QSize size = dataset_.imageSize();
+QSize ImageLens::size() const {
+  QSize size = image_.size();
 
-  if (trans_)
-    if (imageTransform_.isTransposed())
-      size.transpose();
+  if (trans_ && imageTransform_.isTransposed())
+    size.transpose();
 
   if (cut_)
     size -= imageCut_.marginSize();
 
-
   return size;
 }
 
-inten_t Lens::inten(uint i, uint j) const {
-  if (trans_)
-    doTrans(i,j);
-  if (cut_)
-    doCut(i,j);
+inten_t ImageLens::inten(uint i, uint j) const {
+  if (trans_) doTrans(i,j);
+  if (cut_)   doCut(i,j);
 
-  inten_t inten = dataset_.inten(i,j);
-
-  if (corrImage_)
-    inten *= intensCorr_.at(i,j);
+  inten_t inten = image_.inten(i,j);
+  if (corrImage_) inten *= intensCorr_.at(i,j);
 
   return inten * normFactor_;
 }
 
-Angles const& Lens::angles(uint i, uint j) const {
-  if (cut_)
-    doCut(i,j);
-
-  return angleMap_.at(i,j);
-}
-
-rcRange Lens::rgeInten() const {
+rcRange ImageLens::rgeInten() const {
   if (!rgeInten_.isValid()) {
     auto s = size();
     for_ij (s.width(), s.height())
@@ -90,12 +67,115 @@ rcRange Lens::rgeInten() const {
   return rgeInten_;
 }
 
+void ImageLens::doTrans(uint& x, uint& y) const {
+  auto s = size();
+  uint w = s.width();
+  uint h = s.height();
+
+  switch (imageTransform_.val) {
+  case ImageTransform::ROTATE_0:
+    break;
+  case ImageTransform::ROTATE_1:
+    qSwap(x, y);
+    y = w - y - 1;
+    break;
+  case ImageTransform::ROTATE_2:
+    x = w - x - 1;
+    y = h - y - 1;
+    break;
+  case ImageTransform::ROTATE_3:
+    qSwap(x, y);
+    x = h - x - 1;
+    break;
+  case ImageTransform::MIRROR_ROTATE_0:
+    x = w - x - 1;
+    break;
+  case ImageTransform::MIRROR_ROTATE_1:
+    y = h - y - 1;
+    qSwap(x, y);
+    y = w - y - 1;
+    break;
+  case ImageTransform::MIRROR_ROTATE_2:
+    y = h - y - 1;
+    break;
+  case ImageTransform::MIRROR_ROTATE_3:
+    qSwap(x, y);
+    break;
+  default:
+    NEVER_HERE;
+  }
+}
+
+void ImageLens::doCut(uint& i, uint& j) const {
+  i += imageCut_.left; j += imageCut_.top;
+}
+
+void ImageLens::calcSensCorr() {
+  hasNaNs_ = false;
+  if (!corrImage_) return;
+
+  ASSERT(image_.size() == corrImage_->size())
+
+  QSize size = corrImage_->size();
+  size -= imageCut_.marginSize();
+  ASSERT(!size.isEmpty())
+
+  qreal sum = 0;
+
+  uint w = size.width(), h = size.height(),
+      di = imageCut_.left, dj = imageCut_.top;
+
+  for_ij (w,h)
+    sum += corrImage_->inten(i+di, j+dj);
+
+  qreal avg = sum / (w * h);
+
+  intensCorr_.fill(size);
+
+  for_ij (w,h) {
+    auto inten = corrImage_->inten(i+di,j+dj);
+    qreal fact;
+
+    if (inten > 0) {
+      fact = avg / inten;
+    } else {
+      fact = qQNaN(); hasNaNs_ = true;
+    }
+
+    intensCorr_.setAt(i,j, fact);
+  }
+}
+
+//------------------------------------------------------------------------------
+
+str_lst const& Lens::normStrLst() {
+  static str_lst strLst {
+    "Disable", "Delta time", "Monitor count", "Background level",
+  };
+
+  return strLst;
+}
+
+Lens::Lens(rcSession session, rcDataset dataset, Image const* corrImage,
+                         bool trans, bool cut, eNorm norm,
+                         AngleMap const& angleMap, ImageCut const& imageCut, ImageTransform const& imageTransform)
+: super(session,dataset.image(),corrImage,trans,cut,imageCut,imageTransform)
+, dataset_(dataset), angleMap_(angleMap)
+{
+  setNorm(norm);
+}
+
+Angles const& Lens::angles(uint i, uint j) const {
+  if (cut_) doCut(i,j);
+  return angleMap_.at(i,j);
+}
+
 rcRange Lens::rgeIntenGlobal() const {
   if (!rgeIntenGlobal_.isValid()) {
     for (auto const& dataset: dataset_.datasets()) {
       // a copy of this lens for each dataset
-      Lens lens(trans_, cut_, session_.norm(), session_,
-                *dataset, corrImage_,
+      Lens lens(session_, *dataset, corrImage_,
+                trans_, cut_, session_.norm(),
                 angleMap_,imageCut_,imageTransform_);
       rgeIntenGlobal_.extendBy(lens.rgeInten());
     }
@@ -105,7 +185,6 @@ rcRange Lens::rgeIntenGlobal() const {
 }
 
 Curve Lens::makeCurve(rcRange gammaRange, rcRange tthRange) const {
-
   Curve res;
 
   auto s = size();
@@ -148,85 +227,6 @@ Curve Lens::makeCurve(rcRange gammaRange, rcRange tthRange) const {
   return res;
 }
 
-void Lens::doTrans(uint& x, uint& y) const {
-  auto s = size();
-  uint w = s.width();
-  uint h = s.height();
-
-  switch (imageTransform_.val) {
-  case ImageTransform::ROTATE_0:
-    break;
-  case ImageTransform::ROTATE_1:
-    qSwap(x, y);
-    y = w - y - 1;
-    break;
-  case ImageTransform::ROTATE_2:
-    x = w - x - 1;
-    y = h - y - 1;
-    break;
-  case ImageTransform::ROTATE_3:
-    qSwap(x, y);
-    x = h - x - 1;
-    break;
-  case ImageTransform::MIRROR_ROTATE_0:
-    x = w - x - 1;
-    break;
-  case ImageTransform::MIRROR_ROTATE_1:
-    y = h - y - 1;
-    qSwap(x, y);
-    y = w - y - 1;
-    break;
-  case ImageTransform::MIRROR_ROTATE_2:
-    y = h - y - 1;
-    break;
-  case ImageTransform::MIRROR_ROTATE_3:
-    qSwap(x, y);
-    break;
-  default:
-    NEVER_HERE;
-  }
-}
-
-void Lens::doCut(uint& i, uint& j) const {
-  i += imageCut_.left; j += imageCut_.top;
-}
-
-void Lens::calcSensCorr() {
-  hasNaNs_ = false;
-  if (!corrImage_) return;
-
-  ASSERT(dataset_.imageSize() == corrImage_->size())
-
-  QSize size = corrImage_->size();
-  size -= imageCut_.marginSize();
-  ASSERT(!size.isEmpty())
-
-  qreal sum = 0;
-
-  uint w = size.width(), h = size.height(),
-      di = imageCut_.left, dj = imageCut_.top;
-
-  for_ij (w,h)
-    sum += corrImage_->inten(i+di, j+dj);
-
-  qreal avg = sum / (w * h);
-
-  intensCorr_.fill(size);
-
-  for_ij (w,h) {
-    auto inten = corrImage_->inten(i+di,j+dj);
-    qreal fact;
-
-    if (inten > 0) {
-      fact = avg / inten;
-    } else {
-      fact = qQNaN(); hasNaNs_ = true;
-    }
-
-    intensCorr_.setAt(i,j, fact);
-  }
-}
-
 void Lens::setNorm(eNorm norm) {
   auto &datasets = dataset_.datasets();
 
@@ -250,6 +250,6 @@ void Lens::setNorm(eNorm norm) {
   }
 }
 
+//------------------------------------------------------------------------------
 }
-
 // eof

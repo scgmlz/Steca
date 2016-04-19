@@ -33,7 +33,7 @@ class  Curve;  typedef Curve  const& rcCurve;
 struct vector3d;
 struct matrix3d;
 
-class  Image;
+class  Image;   typedef Image const&  rcImage;
 struct ImageTransform;
 
 typedef float inten_t;    ///< intensity; float should suffice
@@ -45,12 +45,13 @@ class Session;  typedef Session const&  rcSession;
 class File;     typedef File const&     rcFile;
 class Dataset;  typedef Dataset const&  rcDataset;
 class Datasets; typedef Datasets const& rcDatasets;
-class Lens;
+class ImageLens; class Lens;
 class AngleMap;
 class Reflection;
 
 typedef QSharedPointer<File>        shp_File;
 typedef QSharedPointer<Dataset>     shp_Dataset;
+typedef QSharedPointer<ImageLens>   shp_ImageLens;
 typedef QSharedPointer<Lens>        shp_Lens;
 typedef QSharedPointer<AngleMap>    shp_AngleMap;
 typedef QSharedPointer<Reflection>  shp_Reflection;

@@ -110,10 +110,6 @@ inten_t Dataset::inten(uint i, uint j) const {
   return image_.inten(i,j);
 }
 
-void Dataset::addIntens(rcDataset that) THROWS {
-  image_.addIntens(that.image_);
-}
-
 //------------------------------------------------------------------------------
 
 Datasets::Datasets() {

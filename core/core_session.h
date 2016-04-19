@@ -51,8 +51,9 @@ private:
   bool     corrEnabled_;
 
 public:
-  bool     hasCorrFile()    const   { return !corrFile_.isNull(); }
-  shp_File corrFile()       const   { return corrFile_;           }
+  bool     hasCorrFile()    const { return !corrFile_.isNull(); }
+  shp_File corrFile()       const { return corrFile_;           }
+  rcImage  corrImage()      const { return corrImage_;          }
 
   void     setCorrFile(shp_File) THROWS;    ///< Load or remove a correction file.
   void     remCorrFile();
@@ -99,7 +100,8 @@ public:
 
 // lenses
 public:
-  shp_Lens lens(bool trans, bool cut, Lens::eNorm, rcDataset) const;
+  shp_ImageLens lens(rcImage,   bool trans, bool cut)              const;
+  shp_Lens      lens(rcDataset, bool trans, bool cut, Lens::eNorm) const;
 
 // fitting
 private:

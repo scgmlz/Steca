@@ -218,21 +218,10 @@ void TheHub::remFile(uint i) {
 bool TheHub::hasCorrFile() const {
   return session->hasCorrFile();
 }
-//void TheHub::remFile(uint i) {
-//  if (hasCorrFile() && numFiles(true) == i+1) {
-//    session->remCorrFile();
-//    emit correctionEnabled(session->isCorrEnabled());
-//    emit filesChanged();
-//  } else {
-//    session->remFile(i);
-//    emit filesChanged();
-//  }
 
-//  if (0==numFiles(true)) {
-//    setSelectedDataset(core::shp_Dataset());
-//    setImageCut(true, false, core::ImageCut());
-//  }
-//}
+core::rcImage TheHub::corrImage() const {
+  return session->corrImage();
+}
 
 void TheHub::setSelectedFile(core::shp_File file) {
   emit fileSelected(file);
@@ -254,12 +243,16 @@ void TheHub::newReflectionData(core::rcRange range, core::rcXY peak, qreal fwhm,
   emit reflectionValues(range, peak, fwhm, withGuesses);
 }
 
+core::shp_ImageLens TheHub::lensNoCut(core::rcImage image) const {
+  return session->lens(image, true, false);
+}
+
 core::shp_Lens TheHub::lens(core::rcDataset dataset) const {
-  return session->lens(true, true, session->norm(), dataset);
+  return session->lens(dataset, true, true, session->norm());
 }
 
 core::shp_Lens TheHub::lensNoCut(core::rcDataset dataset) const {
-  return session->lens(true, false, session->norm(), dataset);
+  return session->lens(dataset, true, false, session->norm());
 }
 
 core::AngleMap const& TheHub::angleMap(core::rcDataset dataset) const {

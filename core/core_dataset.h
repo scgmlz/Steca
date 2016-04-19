@@ -54,8 +54,7 @@ public:
   QSize   imageSize()          const;
   inten_t inten(uint i,uint j) const;
 
-  /// used for correction files if there is more than one image
-  void addIntens(rcDataset) THROWS;
+  rcImage image() const { return image_; }
 
 private:
   Datasets *datasets_;  // here it belongs

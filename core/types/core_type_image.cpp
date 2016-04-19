@@ -23,7 +23,7 @@ Image::Image(QSize const& size, inten_t const* src) {
   if (src) addIntens(src);
 }
 
-void Image::addIntens(Image const& that) THROWS {
+void Image::addIntens(rcImage that) THROWS {
   RUNTIME_CHECK(size() == that.size(),"inconsistent image size");
   addIntens(that.data());
 }

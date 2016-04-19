@@ -188,10 +188,15 @@ IJ Session::midPix() const {
   return mid;
 }
 
-shp_Lens Session::lens(bool trans, bool cut, Lens::eNorm norm, rcDataset dataset) const {
-  return shp_Lens(new Lens(trans, cut, norm, *this, dataset,
-      corrEnabled_ ? &corrImage_ : nullptr,
-      angleMap(dataset), imageCut_, imageTransform_));
+shp_ImageLens Session::lens(rcImage image, bool trans, bool cut) const {
+  return shp_ImageLens(new ImageLens(*this, image, corrEnabled_ ? &corrImage_ : nullptr,
+                         trans, cut, imageCut_, imageTransform_));
+}
+
+shp_Lens Session::lens(rcDataset dataset, bool trans, bool cut, Lens::eNorm norm) const {
+  return shp_Lens(new Lens(*this, dataset, corrEnabled_ ? &corrImage_ : nullptr,
+                         trans, cut, norm,
+                         angleMap(dataset), imageCut_, imageTransform_));
 }
 
 void Session::setNorm(Lens::eNorm norm) {
@@ -199,7 +204,7 @@ void Session::setNorm(Lens::eNorm norm) {
 }
 
 qreal Session::calcAvgBackground(rcDataset dataset) const {
-  auto l = lens(true, true, Lens::normNONE, dataset);
+  auto l = lens(dataset, true, true, Lens::normNONE);
 
   auto &map = angleMap(dataset);
   Curve gammaCurve = l->makeCurve(map.rgeGamma(), map.rgeTth());

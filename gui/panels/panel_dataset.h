@@ -125,21 +125,20 @@ private:
 
 //------------------------------------------------------------------------------
 
-class Dataset: public BoxPanel {
-  SUPER(Dataset,BoxPanel)
+class Dataset: public TabsPanel {
+  SUPER(Dataset,TabsPanel)
 public:
   Dataset(TheHub&);
 
   void setImageScale(uint);
 
 private:
-  QPixmap makePixmap(core::shp_Lens);
+  QPixmap makePixmap(core::shp_ImageLens);
   void setDataset(core::shp_Dataset);
-  void renderDataset();
+  void render();
 
-  core::shp_Dataset     dataset_;
-
-  ImageWidget *imageWidget_;
+  core::shp_Dataset dataset_;
+  ImageWidget *dataImageWidget_, *corrImageWidget_;
 };
 
 //------------------------------------------------------------------------------
