@@ -116,9 +116,8 @@ Datasets::Datasets() {
   invalidateMutables();
 }
 
-void Datasets::append(shp_Dataset dataset) {
-  ASSERT(!dataset->datasets_) // not appended yet
-  dataset->datasets_ = this;
+void Datasets::appendHere(shp_Dataset dataset) {
+  dataset->datasets_ = this;  // TODO ensure that only one is set
   super::append(dataset);
 
   invalidateMutables();

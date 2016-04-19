@@ -71,7 +71,7 @@ public: // files
   bool hasCorrFile()           const;
   core::rcImage corrImage()    const;
 
-  void setSelectedFile(core::shp_File);
+  void setFilesSelectedDatasetsChanged(bool,uint);
   void setSelectedDataset(core::shp_Dataset);
   void setSelectedReflection(core::shp_Reflection);
   void setReflectionData(core::shp_Reflection);
@@ -137,10 +137,10 @@ signals:
   void saveSettings();
 
   void filesChanged();
+  void filesSelected(bool);
   void corrEnabled(bool);
   void corrFileName(QString const&);
 
-  void fileSelected(core::shp_File);
   void datasetsChanged();
   void datasetSelected(core::shp_Dataset);
 

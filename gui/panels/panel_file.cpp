@@ -23,25 +23,34 @@ namespace gui { namespace panel {
 
 FilesView::FilesView(TheHub& hub): super(hub), model_(hub.fileViewModel) {
   setModel(&model_);
+  setSelectionMode(ExtendedSelection);
   header()->hide();
 }
 
 void FilesView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
   super::selectionChanged(selected,deselected);
 
-  auto indexes = selected.indexes();
-  hub_.setSelectedFile(indexes.isEmpty()
-    ? core::shp_File()
-    : model_.data(indexes.first(), Model::GetFileRole).value<core::shp_File>());
+  auto &wds = hub_.workingDatasets();
+  wds.clear();
+
+  auto indexes = selectedIndexes(); uint cnt = 0;
+  for (auto &index: indexes) {
+    auto file = model_.data(index, Model::GetFileRole).value<core::shp_File>();
+    for (auto &ds: file->datasets()) {
+      wds.appendHere(ds);
+      ++cnt;
+    }
+  }
+
+  hub_.setFilesSelectedDatasetsChanged(!indexes.isEmpty(),cnt);
 }
 
 void FilesView::removeSelected() {
-  int row = currentIndex().row();
-  if (row<0 || model_.rowCount() <= row) return;
+  auto indexes = selectedIndexes();
 
-  model_.remFile(row);
-  if (!model_.rowCount()) // no more files
-    hub_.setSelectedFile(core::shp_File());
+  // backwards
+  for (uint i = indexes.count(); i-- > 0; )
+    model_.remFile(indexes.at(i).row());
 
   update();
 }

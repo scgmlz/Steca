@@ -75,7 +75,7 @@ class Datasets: public QVector<shp_Dataset> {
 public:
   Datasets();
 
-  void append(shp_Dataset);
+  void appendHere(shp_Dataset);
 
   /// collapse datasets into one (for correction files)
   Image folded() THROWS;

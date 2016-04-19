@@ -167,8 +167,8 @@ void TheHub::configActions() {
     actions.enableCorr->setChecked(on);
   });
 
-  connect(this, &thisClass::fileSelected, this, [this](core::shp_File file) {
-    actions.remFile->setEnabled(!file.isNull());
+  connect(this, &thisClass::filesSelected, this, [this](bool on) {
+    actions.remFile->setEnabled(on);
   });
 
   connect(actions.enableCorr, &QAction::toggled, [this](bool on) {
@@ -210,7 +210,7 @@ void TheHub::remFile(uint i) {
   emit filesChanged();
 
   if (0==numFiles()) {
-    setSelectedDataset(core::shp_Dataset());
+    setSelectedDataset(core::shp_Dataset()); // REVIEW out?
     setImageCut(true, false, core::ImageCut());
   }
 }
@@ -223,8 +223,10 @@ core::rcImage TheHub::corrImage() const {
   return session->corrImage();
 }
 
-void TheHub::setSelectedFile(core::shp_File file) {
-  emit fileSelected(file);
+void TheHub::setFilesSelectedDatasetsChanged(bool on, uint cnt) {
+  emit datasetsChanged();
+  if (!cnt) setSelectedDataset(core::shp_Dataset());
+  emit filesSelected(on);
 }
 
 void TheHub::setSelectedDataset(core::shp_Dataset dataset) {
