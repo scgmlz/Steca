@@ -31,13 +31,11 @@ public:
 
 protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);
-
-public:
   void removeSelected();
-  void update();
 
 private:
   Model &model_;
+  mutable bool selfSignal_;
 };
 
 class DockFiles: public DockWidget, private RefHub {

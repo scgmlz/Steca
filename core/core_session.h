@@ -50,7 +50,8 @@ private:
   Image    corrImage_;
   bool     corrEnabled_;
 
-  Datasets workingDatasets_;
+  uint_vec collectedFromFiles_;
+  Datasets collectedDatasets_;
 
 public:
   bool     hasCorrFile()    const { return !corrFile_.isNull(); }
@@ -63,7 +64,9 @@ public:
   void     enableCorr(bool);
   bool     isCorrEnabled()  const { return corrEnabled_;        }
 
-  Datasets& workingDatasets()     { return workingDatasets_;    }
+  void            collectDatasetsFromFiles(uint_vec);
+  uint_vec const& collectedFromFiles() { return collectedFromFiles_;  }
+  rcDatasets      collectedDatasets()  { return collectedDatasets_;   }
 
 // image - sanity
 private:

@@ -460,7 +460,7 @@ void Diffractogram::calcReflections() {
     }
   }
 
-  hub_.setReflectionData(currentReflection_);
+  hub_.tellReflectionData(currentReflection_);
 }
 
 //------------------------------------------------------------------------------

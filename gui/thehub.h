@@ -71,11 +71,12 @@ public: // files
   bool hasCorrFile()           const;
   core::rcImage corrImage()    const;
 
-  void setFilesSelectedDatasetsChanged(bool,uint);
-  void setSelectedDataset(core::shp_Dataset);
-  void setSelectedReflection(core::shp_Reflection);
-  void setReflectionData(core::shp_Reflection);
-  void newReflectionData(core::rcRange,core::rcXY,qreal,bool);
+  // emit signals
+  void tellFilesSelectedDatasetsChanged();
+  void tellSelectedDataset(core::shp_Dataset);
+  void tellSelectedReflection(core::shp_Reflection);
+  void tellReflectionData(core::shp_Reflection);
+  void tellReflectionData(core::rcRange,core::rcXY,qreal,bool);
 
 public:
   core::shp_ImageLens lensNoCut(core::rcImage)   const;
@@ -96,7 +97,9 @@ public:
   void addFile(rcstr filePath)      THROWS;
   void addFiles(str_lst filePaths)  THROWS;
 
-  core::Datasets& workingDatasets()     { return session->workingDatasets(); }
+  void collectDatasetsFromFiles(uint_vec is) { session->collectDatasetsFromFiles(is);  }
+  uint_vec const& collectedFromFiles() const { return session->collectedFromFiles();   }
+  core::rcDatasets collectedDatasets() const { return session->collectedDatasets();    }
 
   void setCorrFile(rcstr filePath)  THROWS;
   void enableCorrection(bool);
@@ -137,7 +140,7 @@ signals:
   void saveSettings();
 
   void filesChanged();
-  void filesSelected(bool);
+  void filesSelected();
   void corrEnabled(bool);
   void corrFileName(QString const&);
 

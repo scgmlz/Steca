@@ -40,7 +40,7 @@ void DatasetView::selectionChanged(QItemSelection const& selected, QItemSelectio
   super::selectionChanged(selected,deselected);
 
   auto indexes = selected.indexes();
-  hub_.setSelectedDataset(indexes.isEmpty()
+  hub_.tellSelectedDataset(indexes.isEmpty()
     ? core::shp_Dataset()
     : model_.data(indexes.first(), Model::GetDatasetRole).value<core::shp_Dataset>());
 }

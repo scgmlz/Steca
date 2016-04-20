@@ -51,7 +51,7 @@ void FilesViewModel::remFile(uint i) {
 //------------------------------------------------------------------------------
 
 DatasetViewModel::DatasetViewModel(gui::TheHub& hub)
-: super(hub), datasets_(hub.workingDatasets()), metaInfo_(nullptr) {
+: super(hub), datasets_(hub.collectedDatasets()), metaInfo_(nullptr) {
 }
 
 int DatasetViewModel::columnCount(rcIndex) const {

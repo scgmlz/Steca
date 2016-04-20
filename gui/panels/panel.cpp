@@ -21,10 +21,32 @@ namespace gui { namespace panel {
 ListView::ListView(TheHub& hub): RefHub(hub) {
 }
 
-void ListView::update(models::TableModel& model) {
-  int row = currentIndex().row();
-  model.signalReset();
-  setCurrentIndex(model.index(qMin(row,model.rowCount()-1),0));
+void ListView::updateSingleSelection() {
+  Model *m = dynamic_cast<Model*>(model());
+  if (m) {
+    int row = currentIndex().row();
+    m->signalReset();
+    selectRow(row);
+  }
+}
+
+void ListView::clearSelection() {
+  selectionModel()->clearSelection();
+}
+
+void ListView::selectRow(uint row) {
+  setCurrentIndex(model()->index(row,0));
+}
+
+void ListView::selectRows(uint_vec rows) {
+  auto m = model();
+  uint cols = m->columnCount();
+
+  QItemSelection is;
+  for (int row: rows)
+    is.append(QItemSelectionRange(m->index(row,0), m->index(row,cols-1)));
+
+  selectionModel()->select(is,QItemSelectionModel::ClearAndSelect);
 }
 
 //------------------------------------------------------------------------------

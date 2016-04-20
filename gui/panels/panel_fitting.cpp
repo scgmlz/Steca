@@ -47,7 +47,7 @@ bool ReflectionView::hasReflections() const {
 }
 
 void ReflectionView::update() {
-  super::update(model_);
+  super::updateSingleSelection();
   hub_.actions.remReflection->setEnabled(hasReflections());
 }
 
@@ -55,7 +55,7 @@ void ReflectionView::selectionChanged(QItemSelection const& selected, QItemSelec
   super::selectionChanged(selected,deselected);
 
   auto indexes = selected.indexes();
-  hub_.setSelectedReflection(indexes.isEmpty()
+  hub_.tellSelectedReflection(indexes.isEmpty()
     ? core::shp_Reflection()
     : model_.data(indexes.first(), Model::GetDatasetRole).value<core::shp_Reflection>());
 }
@@ -171,7 +171,7 @@ Fitting::Fitting(TheHub& hub)
 
     auto newReflData = [this](bool invalidateGuesses) {
       if (!silentSpin_) {
-        hub_.newReflectionData(
+        hub_.tellReflectionData(
           core::Range::safeFrom(spinRangeMin_->value(),spinRangeMax_->value()),
           core::XY(spinGuessPeakX_->value(),spinGuessPeakY_->value()),
           spinGuessFWHM_->value(), invalidateGuesses);

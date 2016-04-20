@@ -36,7 +36,11 @@ public:
   ListView(TheHub&);
 
 protected:
-  void update(models::TableModel&);
+  using Model = models::TableModel;
+  void updateSingleSelection();
+  void clearSelection();
+  void selectRow(uint);
+  void selectRows(uint_vec);
 };
 
 //------------------------------------------------------------------------------

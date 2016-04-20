@@ -21,42 +21,63 @@
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-FilesView::FilesView(TheHub& hub): super(hub), model_(hub.fileViewModel) {
+FilesView::FilesView(TheHub& hub): super(hub)
+, model_(hub.fileViewModel), selfSignal_(false) {
   setModel(&model_);
   setSelectionMode(ExtendedSelection);
   header()->hide();
+
+  connect(hub_.actions.remFile, &QAction::triggered, [this]() {
+    removeSelected();
+  });
+
+  connect(&hub_, &TheHub::filesChanged, [this]() {
+    clearSelection();
+  });
+
+  connect(&hub_, &TheHub::filesSelected, [this]() {
+    if (!selfSignal_)
+      selectRows(hub_.collectedFromFiles());
+  });
 }
+
+class bool_lock {
+public:
+  bool_lock(bool &val): val_(val) {
+    val_ = true;
+  }
+
+ ~bool_lock() {
+    val_ = false;
+  }
+
+private:
+  bool &val_;
+};
 
 void FilesView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
   super::selectionChanged(selected,deselected);
 
-  auto &wds = hub_.workingDatasets();
-  wds.clear();
-
-  auto indexes = selectedIndexes(); uint cnt = 0;
-  for (auto &index: indexes) {
-    auto file = model_.data(index, Model::GetFileRole).value<core::shp_File>();
-    for (auto &ds: file->datasets()) {
-      wds.appendHere(ds);
-      ++cnt;
-    }
+  uint_vec fileNums;
+  for (auto &index: selectedIndexes()) {
+    ASSERT(0 <= index.row());
+    fileNums.append(index.row());
   }
 
-  hub_.setFilesSelectedDatasetsChanged(!indexes.isEmpty(),cnt);
+  bool_lock __(selfSignal_);
+
+  hub_.collectDatasetsFromFiles(fileNums);
+  hub_.tellFilesSelectedDatasetsChanged();
 }
 
 void FilesView::removeSelected() {
   auto indexes = selectedIndexes();
 
-  // then delete backwards
+  // backwards
   for (uint i = indexes.count(); i-- > 0; )
     model_.remFile(indexes.at(i).row());
 
-  update();
-}
-
-void FilesView::update() {
-  selectionModel()->clearSelection();
+  clearSelection();
   model_.signalReset();
 }
 
@@ -81,21 +102,8 @@ DockFiles::DockFiles(TheHub& hub)
   h->addWidget(iconButton(actions.enableCorr));
   h->addWidget(iconButton(actions.remCorr));
 
-  connect(actions.remFile, &QAction::triggered, [this]() {
-    filesView_->removeSelected();
-  });
-
-  connect(actions.remCorr, &QAction::triggered, [this]() {
-    hub_.setCorrFile(EMPTY_STR);
-  });
-
-  connect(&hub_, &TheHub::filesChanged, [this]() {
-    filesView_->update();
-  });
-
   connect(&hub_, &TheHub::corrFileName, [this](rcstr fileName) {
     corrFile_->setText(fileName);
-    hub_.actions.remCorr->setEnabled(!fileName.isEmpty());
   });
 }
 

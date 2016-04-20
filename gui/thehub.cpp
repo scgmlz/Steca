@@ -167,12 +167,16 @@ void TheHub::configActions() {
     actions.enableCorr->setChecked(on);
   });
 
-  connect(this, &thisClass::filesSelected, this, [this](bool on) {
-    actions.remFile->setEnabled(on);
+  connect(this, &thisClass::filesSelected, this, [this]() {
+    actions.remFile->setEnabled(!collectedFromFiles().isEmpty());
   });
 
   connect(actions.enableCorr, &QAction::toggled, [this](bool on) {
     enableCorrection(on);
+  });
+
+  connect(actions.remCorr, &QAction::triggered, [this]() {
+    setCorrFile(EMPTY_STR);
   });
 
   connect(actions.fixedIntensityDisplay, &QAction::toggled, [this](bool on) {
@@ -210,7 +214,7 @@ void TheHub::remFile(uint i) {
   emit filesChanged();
 
   if (0==numFiles()) {
-    setSelectedDataset(core::shp_Dataset()); // REVIEW out?
+    tellSelectedDataset(core::shp_Dataset()); // REVIEW out?
     setImageCut(true, false, core::ImageCut());
   }
 }
@@ -223,25 +227,26 @@ core::rcImage TheHub::corrImage() const {
   return session->corrImage();
 }
 
-void TheHub::setFilesSelectedDatasetsChanged(bool on, uint cnt) {
+void TheHub::tellFilesSelectedDatasetsChanged() {
+  emit filesSelected();
   emit datasetsChanged();
-  if (!cnt) setSelectedDataset(core::shp_Dataset());
-  emit filesSelected(on);
+  uint cnt = collectedDatasets().count();
+  if (!cnt) tellSelectedDataset(core::shp_Dataset());
 }
 
-void TheHub::setSelectedDataset(core::shp_Dataset dataset) {
+void TheHub::tellSelectedDataset(core::shp_Dataset dataset) {
   emit datasetSelected(dataset);
 }
 
-void TheHub::setSelectedReflection(core::shp_Reflection reflection) {
+void TheHub::tellSelectedReflection(core::shp_Reflection reflection) {
   emit reflectionSelected((selectedReflection = reflection));
 }
 
-void TheHub::setReflectionData(core::shp_Reflection reflection) {
+void TheHub::tellReflectionData(core::shp_Reflection reflection) {
   emit reflectionData(reflection);
 }
 
-void TheHub::newReflectionData(core::rcRange range, core::rcXY peak, qreal fwhm, bool withGuesses) {
+void TheHub::tellReflectionData(core::rcRange range, core::rcXY peak, qreal fwhm, bool withGuesses) {
   emit reflectionValues(range, peak, fwhm, withGuesses);
 }
 
@@ -262,6 +267,7 @@ core::AngleMap const& TheHub::angleMap(core::rcDataset dataset) const {
 }
 
 static str const KEY_FILES("files");
+static str const KEY_SELECTED_FILES("selected files");
 static str const KEY_CORR_FILE("correction file");
 static str const KEY_CUT("cut");
 static str const KEY_TOP("top");
@@ -322,6 +328,12 @@ QByteArray TheHub::saveSession() const {
 
   top.saveArr(KEY_FILES, arrFiles);
 
+  JsonArr arrSelectedFiles;
+  for (uint i: collectedFromFiles())
+    arrSelectedFiles.append((int)i);
+
+  top.saveArr(KEY_SELECTED_FILES, arrSelectedFiles);
+
   if (hasCorrFile()) {
     str absPath = session->corrFile()->fileInfo().absoluteFilePath();
     str relPath = QDir::current().relativeFilePath(absPath);
@@ -356,14 +368,32 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
   session->clear();
 
   core::JsonObj top(doc.object());
-  auto files = top.loadArr(KEY_FILES);
 
+  auto files = top.loadArr(KEY_FILES);
   for (auto file: files) {
     str filePath = file.toString();
     QDir dir(filePath);
     RUNTIME_CHECK(dir.makeAbsolute(),str("Invalid file path: %1").arg(filePath));
     addFile(dir.absolutePath());
   }
+
+  auto sels = top.loadArr(KEY_SELECTED_FILES,true);
+  uint_vec selIndexes;
+  for (auto sel: sels) {
+    int i = sel.toInt(), index = qBound(0, i, files.count());
+    RUNTIME_CHECK(i==index, str("Invalid selection index: %1").arg(i));
+    selIndexes.append(index);
+  }
+
+  std::sort(selIndexes.begin(),selIndexes.end());
+  int lastIndex = -1;
+  for (uint index: selIndexes) {
+    RUNTIME_CHECK(lastIndex < (int)index, str("Duplicate selection index"));
+    lastIndex = index;
+  }
+
+  collectDatasetsFromFiles(selIndexes);
+  tellFilesSelectedDatasetsChanged();
 
   setCorrFile(top.loadString(KEY_CORR_FILE,EMPTY_STR));
 
@@ -415,8 +445,12 @@ void TheHub::setCorrFile(rcstr filePath) THROWS {
   if (!filePath.isEmpty())
     file = core::io::load(filePath);
 
+  bool isFile = !file.isNull();
+  str fileName = isFile ? file->fileName() : EMPTY_STR;
+
+  actions.remCorr->setEnabled(isFile);
   session->setCorrFile(file);
-  emit corrFileName(file.isNull() ? EMPTY_STR : file->fileName());
+  emit corrFileName(fileName);
   enableCorrection(true);
 }
 
@@ -463,7 +497,7 @@ void TheHub::remReflection(uint i) {
   auto &rs = reflections();
   rs.remove(i);
   if (rs.isEmpty())
-    emit setSelectedReflection(core::shp_Reflection());
+    emit tellSelectedReflection(core::shp_Reflection());
 
   emit reflectionsChanged();
 }

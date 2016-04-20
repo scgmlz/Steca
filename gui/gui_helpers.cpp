@@ -134,6 +134,7 @@ int TreeView::sizeHintForColumn(int) const {
 //------------------------------------------------------------------------------
 
 TreeListView::TreeListView() {
+  setSelectionBehavior(SelectRows);
 }
 
 void TreeListView::setModel(QAbstractItemModel* model) {

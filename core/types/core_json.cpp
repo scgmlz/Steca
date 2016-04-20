@@ -31,12 +31,15 @@ JsonObj& JsonObj::saveObj(rcstr key, QJsonObject const& obj) {
   return *this;
 }
 
-JsonObj JsonObj::loadObj(rcstr key) const THROWS {
+JsonObj JsonObj::loadObj(rcstr key, bool defEmpty) const THROWS {
   auto val = value(key);
 
   switch (val.type()) {
   case QJsonValue::Object:
     return val.toObject();
+  case QJsonValue::Undefined:
+    if (defEmpty) return JsonObj();
+    // fall through
   default:
     THROW(key + ": not an object");
   }
@@ -47,12 +50,15 @@ JsonObj& JsonObj::saveArr(rcstr key, QJsonArray const& arr) {
   return *this;
 }
 
-QJsonArray JsonObj::loadArr(rcstr key) const THROWS {
+JsonArr JsonObj::loadArr(rcstr key, bool defEmpty) const THROWS {
   auto val = value(key);
 
   switch (val.type()) {
   case QJsonValue::Array:
     return val.toArray();
+  case QJsonValue::Undefined:
+    if (defEmpty) return JsonArr();
+    // fall through
   default:
     THROW(key + ": not an array");
   }

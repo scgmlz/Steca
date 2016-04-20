@@ -31,10 +31,10 @@ public:
   JsonObj(QJsonObject const&);
 
   JsonObj& saveObj(rcstr key, QJsonObject const&);
-  JsonObj  loadObj(rcstr key) const THROWS;
+  JsonObj  loadObj(rcstr key, bool defEmpty=false) const THROWS;
 
-  JsonObj&   saveArr(rcstr key, QJsonArray const&);
-  QJsonArray loadArr(rcstr key) const THROWS;
+  JsonObj& saveArr(rcstr key, QJsonArray const&);
+  JsonArr  loadArr(rcstr key, bool defEmpty=false) const THROWS;
 
   JsonObj& saveInt(rcstr key, int);
   int      loadInt(rcstr key)               const THROWS;

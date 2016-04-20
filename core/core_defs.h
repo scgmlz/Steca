@@ -37,8 +37,9 @@ extern  str const EMPTY_STR;  ///< an empty string (that can be returned by refe
 #define SUPER(cls,sup)  using thisClass = cls; using super = sup;
 
 /// idiomatic iterations
-#define for_int(i,n) for (int i=0, i##End=(n); i<i##End; ++i)
+#define for_int(i,n)  for (int i=0, i##End=(n); i<i##End; ++i)
 #define for_i(n) for_int(i,n)
+
 #define for_ij(ni,nj) for_int(i,ni) for_int(j,nj)
 
 // useful vectors

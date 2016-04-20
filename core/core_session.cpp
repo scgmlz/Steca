@@ -85,6 +85,17 @@ void Session::enableCorr(bool on) {
   corrEnabled_ = on && hasCorrFile();
 }
 
+void Session::collectDatasetsFromFiles(uint_vec fileNums) {
+  collectedFromFiles_ = fileNums;
+
+  collectedDatasets_.clear();
+  for (uint i: collectedFromFiles_) {
+    for (auto &ds: files_.at(i)->datasets()) {
+      collectedDatasets_.appendHere(ds);
+    }
+  }
+}
+
 void Session::updateImageSize() {
   if (0 == numFiles() && !hasCorrFile())
     imageSize_ = QSize(0,0);
