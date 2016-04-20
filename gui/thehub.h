@@ -144,7 +144,7 @@ private:
   void setImageMirror(bool);
 
 public:
-  void setNorm(core::Lens::eNorm);
+  void setNorm(core::eNorm);
 
 signals:
   void readSettings();

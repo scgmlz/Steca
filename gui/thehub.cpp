@@ -15,6 +15,7 @@
 #include "thehub.h"
 #include "mainwin.h"
 #include "types/core_json.h"
+#include "core_reflection.h"
 #include "io/core_io.h"
 
 #include <QSpinBox>
@@ -360,6 +361,7 @@ QByteArray TheHub::saveSession() const {
   JsonArr arrReflections;
   for (auto &reflection: reflections())
     arrReflections.append(reflection->saveJson());
+
   top.saveArr(KEY_REFLECTIONS, arrReflections);
 
   return QJsonDocument(top).toJson();
@@ -554,7 +556,7 @@ void TheHub::setImageMirror(bool on) {
   emit geometryChanged();
 }
 
-void TheHub::setNorm(core::Lens::eNorm norm) {
+void TheHub::setNorm(core::eNorm norm) {
   session->setNorm(norm);
   emit normChanged();
   emit geometryChanged();

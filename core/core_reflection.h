@@ -59,8 +59,6 @@ public:
   void    loadJson(rcJsonObj) THROWS;
 };
 
-typedef QVector<shp_Reflection> Reflections;
-
 //------------------------------------------------------------------------------
 }
 

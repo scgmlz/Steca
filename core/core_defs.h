@@ -47,8 +47,8 @@ typedef QVector<qreal> qreal_vec;
 typedef QVector<uint>  uint_vec;
 
 // conversions
-qreal rad2Deg(qreal rad);
-qreal deg2Rad(qreal deg);
+qreal rad2deg(qreal rad);
+qreal deg2rad(qreal deg);
 
 // exceptions
 #include <QException>

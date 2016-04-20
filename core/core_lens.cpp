@@ -131,7 +131,7 @@ void ImageLens::calcSensCorr() {
   qreal avg = sum / (w * h);
 
   intensCorr_.fill(1,image_.size());
-  
+
   for_ij (w,h) {
     auto inten = corrImage_->inten(i+di,j+dj);
     qreal fact;
@@ -231,18 +231,18 @@ void Lens::setNorm(eNorm norm) {
   auto &datasets = dataset_.datasets();
 
   switch (norm) {
-  case normNONE:
+  case eNorm::NONE:
     normFactor_ = 1;
     break;
-  case normDELTA_MONITOR_COUNT:
+  case eNorm::DELTA_MONITOR_COUNT:
     // could be NaN (divide by 0)
     normFactor_ = datasets.avgDeltaMonitorCount() / dataset_.deltaMonitorCount();
     break;
-  case normDELTA_TIME:
+  case eNorm::DELTA_TIME:
     // could be NaN (divide by 0)
     normFactor_ = datasets.avgDeltaTime() / dataset_.deltaTime();
     break;
-  case normBACKGROUND:
+  case eNorm::BACKGROUND:
     // could be NaN (divide by 0)
     normFactor_ = session_.calcAvgBackground(datasets) /
                   session_.calcAvgBackground(dataset_);

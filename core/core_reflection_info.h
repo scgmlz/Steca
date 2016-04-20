@@ -22,35 +22,28 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-class Session; // REMOVE
-
 class ReflectionInfo final {
 public:
   ReflectionInfo();
-  ReflectionInfo(qreal alpha, qreal beta,
-                 rcRange rgeGamma,
-                 rcXY  peakPosition,
-                 qreal peakFWHM);
+  ReflectionInfo(qreal alpha, qreal beta, rcRange rgeGamma,
+                 qreal inten, qreal tth, qreal fwhm);
 
-  qreal   alpha()         const { return alpha_;        }
-  qreal   beta()          const { return beta_;         }
-  rcRange gammaRange()    const { return gammaRange_;   }
-  rcXY    peakPosition()  const { return peakPosition_; }
-  qreal   peakFWHM()      const { return peakFWHM_;     }
+//OUT  qreal   alpha()         const { return alpha_;        }
+//  qreal   beta()          const { return beta_;         }
+//  rcRange gammaRange()    const { return rgeGamma_;   }
+//  rcXY    peakPosition()  const { return peakPosition_; }
+//  qreal   peakFWHM()      const { return peakFWHM_;     }
 
-  static ReflectionInfo make(rcSession,
-                             rcDatasets,
-                             rcDataset,
-                             Reflection const&,
-                             rcRange rgeTth,
-                             rcRange gammaSector);
+//OUT  static ReflectionInfo make(rcSession,
+//                             rcDatasets,
+//                             rcDataset,
+//                             rcReflection,
+//                             rcRange rgeTth,
+//                             rcRange gammaSector);
 
 private:
-    qreal alpha_;
-    qreal beta_;
-    Range gammaRange_;
-    XY    peakPosition_;
-    qreal peakFWHM_;
+    qreal alpha_, beta_; Range rgeGamma_;
+    qreal inten_, tth_, fwhm_;
 };
 
 //------------------------------------------------------------------------------

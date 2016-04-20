@@ -75,7 +75,7 @@ void AngleMap::calculate(qreal midTth, Geometry const& geometry,
 
   if (size.isEmpty()) return;
 
-  midTth = deg2Rad(midTth);
+  midTth = deg2rad(midTth);
   qreal pixSize = geometry.pixSize, detDist = geometry.detectorDistance;
 
   for_int (i, size.width()) {
@@ -97,7 +97,7 @@ void AngleMap::calculate(qreal midTth, Geometry const& geometry,
         gamma = -gamma;
       }
 
-      arrAngles_.setAt(i,j,Angles(rad2Deg(gamma),rad2Deg(tth)));
+      arrAngles_.setAt(i,j,Angles(rad2deg(gamma),rad2deg(tth)));
     }
   }
 

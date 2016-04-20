@@ -13,34 +13,37 @@
 // ************************************************************************** //
 
 #include "core_reflection_info.h"
-#include "core_session.h" // TODO OUT
-#include "core_fit_fitting.h"
-#include "types/core_type_matrix.h"
-#include "types/core_type_curve.h"
-#include <qmath.h>
+//#include "core_session.h" // TODO OUT
+//#include "core_fit_fitting.h"
+//#include "types/core_type_matrix.h"
+//#include "types/core_type_curve.h"
+//#include <qmath.h>
 
 namespace core{
 //------------------------------------------------------------------------------
 
-ReflectionInfo::ReflectionInfo() {
-}
+/* NOTE Invalid parameters are set to NaNs. However, some analysis programs
+ * require -1 as unknown value; thus, NaN parameter values should be output
+ * as -1 when output is written for these programs (polefigure!).
+ */
 
-ReflectionInfo::ReflectionInfo(qreal const alpha,
-                               qreal const beta,
-                               rcRange gammaRange,
-                               rcXY  peakPosition,
-                               qreal const peakFWHM)
-:  alpha_(alpha)
-  ,beta_(beta)
-  ,gammaRange_(gammaRange)
-  ,peakPosition_(peakPosition)
-  ,peakFWHM_(peakFWHM)
+ReflectionInfo::ReflectionInfo()
+  : alpha_(qQNaN()), beta_(qQNaN()), rgeGamma_()
+  , inten_(qQNaN()), tth_(qQNaN()), fwhm_(qQNaN())
 {
 }
 
+ReflectionInfo::ReflectionInfo(qreal alpha, qreal beta, rcRange rgeGamma,
+                               qreal inten, qreal tth, qreal fwhm)
+: alpha_(alpha), beta_(beta), rgeGamma_(rgeGamma)
+, inten_(inten), tth_(tth), fwhm_(fwhm)
+{
+}
+
+/* OUT
 // Calculates the polefigure coordinates alpha and beta with regards to
 // sample orientation and diffraction angles.
-/*static*/ void calculateAlphaBeta(qreal omgDet, qreal phiDet, qreal chiDet, qreal tthRef, qreal gammaRef,
+/ * static* / void calculateAlphaBeta(qreal omgDet, qreal phiDet, qreal chiDet, qreal tthRef, qreal gammaRef,
                         qreal& alpha, qreal& beta) {
   omgDet   = deg2Rad(omgDet);
   phiDet   = deg2Rad(phiDet);
@@ -77,19 +80,19 @@ ReflectionInfo::ReflectionInfo(qreal const alpha,
 
 ReflectionInfo ReflectionInfo::make(
     rcSession session,
-    rcDatasets /*datasets*/, rcDataset dataset,
-    Reflection const& reflection,
+    rcDatasets, rcDataset dataset,
+    rcReflection reflection,
     rcRange rgeTth, rcRange gammaSector)
 {
   shp_Lens lens = session.lens(dataset, true, true, session.norm());
   Curve gammaCutCurve = lens->makeCurve(gammaSector,rgeTth);
-/* TODO ask Antti - take fitted background (all picture)?
+/ * TODO ask Antti - take fitted background (all picture)?
   const fit::Polynomial sectorBg
     = fit::fitBackground(gammaCutCurve,
                          session.getBgRanges(),
                          session.getBgPolynomialDegree());
   gammaCutCurve = gammaCutCurve.subtract(sectorBg);
-*/
+* /
   QScopedPointer<fit::PeakFunction> peakFunction(reflection.peakFunction().clone());
   fit::fit(*peakFunction,
                gammaCutCurve,
@@ -109,7 +112,7 @@ ReflectionInfo ReflectionInfo::make(
                         peakFunction->fittedPeak(),
                         peakFunction->fittedFWHM());
 }
-
+*/
 //------------------------------------------------------------------------------
 }
 

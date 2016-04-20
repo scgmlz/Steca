@@ -14,7 +14,11 @@
 
 #include "core_session.h"
 #include "core_fit_fitting.h"
+#include "core_lens.h"
+#include "core_reflection.h"
+#include "core_reflection_info.h"
 #include "types/core_type_curve.h"
+#include "types/core_type_matrix.h"
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -34,7 +38,7 @@ void Session::clear() {
 
   reflections_.clear();
 
-  norm_ = Lens::normNONE;
+  norm_ = eNorm::NONE;
 }
 
 shp_File Session::file(uint i) const {
@@ -201,21 +205,88 @@ IJ Session::midPix() const {
 
 shp_ImageLens Session::lens(rcImage image, bool trans, bool cut) const {
   return shp_ImageLens(new ImageLens(*this, image, corrEnabled_ ? &corrImage_ : nullptr,
-                         trans, cut, imageCut_, imageTransform_));
+                                     trans, cut, imageCut_, imageTransform_));
 }
 
-shp_Lens Session::lens(rcDataset dataset, bool trans, bool cut, Lens::eNorm norm) const {
+shp_Lens Session::lens(rcDataset dataset, bool trans, bool cut, eNorm norm) const {
   return shp_Lens(new Lens(*this, dataset, corrEnabled_ ? &corrImage_ : nullptr,
-                         trans, cut, norm,
-                         angleMap(dataset), imageCut_, imageTransform_));
+                           trans, cut, norm, angleMap(dataset),
+                           imageCut_, imageTransform_));
 }
 
-void Session::setNorm(Lens::eNorm norm) {
+// Calculates the polefigure coordinates alpha and beta with regards to
+// sample orientation and diffraction angles.
+static void calculateAlphaBeta(rcDataset dataset,
+                               qreal tth, qreal gamma,
+                               qreal& alpha, qreal& beta) {
+  // Sample rotations.
+  qreal omg = deg2rad(dataset.omg());
+  qreal phi = deg2rad(dataset.phi());
+  qreal chi = deg2rad(dataset.chi());
+
+  // Center of reflection's 2theta interval.
+  tth   = deg2rad(tth);
+  // Center of gamma slice.
+  gamma = deg2rad(gamma);
+
+  // Rotate a unit vector initially parallel to the y axis with regards to the
+  // angles. As a result, the vector is a point on a unit sphere
+  // corresponding to the location of a polefigure point.
+  // Note that the rotations here do not correspond to C. Randau's dissertation.
+  // The rotations given in [J. Appl. Cryst. (2012) 44, 641-644] are incorrect.
+  vector3d rotated = matrix3d::rotationCWz (phi)
+                   * matrix3d::rotationCWx (chi)
+                   * matrix3d::rotationCWz (omg)
+                   * matrix3d::rotationCWx (gamma)
+                   * matrix3d::rotationCCWz(tth / 2)
+                   * vector3d(0,1,0);
+
+  // Extract alpha (latitude) and beta (longitude).
+  alpha = acos(rotated._2);
+  beta  = atan2(rotated._0, rotated._1);
+
+  // If alpha is in the wrong hemisphere, mirror both alpha and beta over the
+  // center of a unit sphere.
+  if (alpha > M_PI / 2) {
+    alpha = qAbs(alpha - M_PI);
+    beta += beta < 0 ? M_PI : -M_PI;
+  }
+
+  // Keep beta between 0 and 2pi.
+  if (beta < 0)
+    beta += 2 * M_PI;
+
+  alpha = rad2deg(alpha);
+  beta  = rad2deg(beta);
+}
+
+// Fits reflection to the given gammaSector and constructs a ReflectionInfo.
+ReflectionInfo Session::makeReflectionInfo(rcDataset dataset, rcReflection reflection,
+                                           rcRange rgeGamma) const {
+  auto curve = lens(dataset,true,true,norm_)
+                  ->makeCurve(rgeGamma, angleMap(dataset).rgeTth());
+  auto bgPol = fit::fitPolynomial(bgPolynomialDegree_,curve,bgRanges_);
+  curve = curve.subtract(bgPol);
+
+  QScopedPointer<fit::PeakFunction> peakFunction(reflection.peakFunction().clone());
+
+  rcRange rgeTth = reflection.range();
+  fit::fit(*peakFunction, curve, rgeTth);
+
+  qreal alpha, beta;
+  calculateAlphaBeta(dataset, rgeTth.center(), rgeGamma.center(), alpha, beta);
+
+  XY peak = peakFunction->fittedPeak();
+  return ReflectionInfo(alpha, beta, rgeGamma,
+                        peak.y,peak.x,peakFunction->fittedFWHM());
+}
+
+void Session::setNorm(eNorm norm) {
   norm_ = norm;
 }
 
 qreal Session::calcAvgBackground(rcDataset dataset) const {
-  auto l = lens(dataset, true, true, Lens::normNONE);
+  auto l = lens(dataset, true, true, eNorm::NONE);
 
   auto &map = angleMap(dataset);
   Curve gammaCurve = l->makeCurve(map.rgeGamma(), map.rgeTth());

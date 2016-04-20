@@ -58,13 +58,6 @@ protected:
 class Lens: public ImageLens {
   SUPER(Lens,ImageLens)
 public:
-  enum eNorm {
-    normNONE,
-    normDELTA_MONITOR_COUNT,
-    normDELTA_TIME,
-    normBACKGROUND,
-  };
-
   static str_lst const& normStrLst();
 
   Lens(rcSession, rcDataset, Image const* corr,

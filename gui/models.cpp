@@ -14,6 +14,7 @@
 
 #include "models.h"
 #include "thehub.h"
+#include "core_reflection.h"
 #include <QCheckBox>
 
 namespace models {

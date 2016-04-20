@@ -47,7 +47,9 @@ class Dataset;  typedef Dataset const&  rcDataset;
 class Datasets; typedef Datasets const& rcDatasets;
 class ImageLens; class Lens;
 class AngleMap;
-class Reflection;
+
+class Reflection;     typedef Reflection     const& rcReflection;
+class ReflectionInfo; typedef ReflectionInfo const& rcReflectionInfo;
 
 typedef QSharedPointer<File>        shp_File;
 typedef QSharedPointer<Dataset>     shp_Dataset;
@@ -55,6 +57,13 @@ typedef QSharedPointer<ImageLens>   shp_ImageLens;
 typedef QSharedPointer<Lens>        shp_Lens;
 typedef QSharedPointer<AngleMap>    shp_AngleMap;
 typedef QSharedPointer<Reflection>  shp_Reflection;
+
+typedef QVector<shp_Reflection>     Reflections;
+
+enum class eNorm {
+  NONE,
+  DELTA_MONITOR_COUNT, DELTA_TIME, BACKGROUND,
+};
 
 enum class ePeakType {
   GAUSSIAN, LORENTZIAN, PSEUDOVOIGT1, PSEUDOVOIGT2,

@@ -14,6 +14,7 @@
 
 #include "panel_dataset.h"
 #include "thehub.h"
+#include "core_lens.h"
 
 #include <QScrollArea>
 #include <QPainter>
@@ -236,7 +237,7 @@ DatasetOptions1::DatasetOptions1(TheHub& hub)
   });
 
   connect(comboNormType_, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),[this](int index) {
-    hub_.setNorm((core::Lens::eNorm)index);
+    hub_.setNorm((core::eNorm)index);
   });
 }
 

@@ -17,11 +17,9 @@
 #define CORE_SESSION_H
 
 #include "core_file.h"
-#include "core_fit_functions.h"
-#include "core_lens.h"
-#include "core_reflection.h"
 #include "types/core_type_image_transform.h"
 #include "types/core_type_geometry.h"
+#include "types/core_types_fwd.h"
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -107,8 +105,12 @@ public:
 
 // lenses
 public:
-  shp_ImageLens lens(rcImage,   bool trans, bool cut)              const;
-  shp_Lens      lens(rcDataset, bool trans, bool cut, Lens::eNorm) const;
+  shp_ImageLens lens(rcImage,   bool trans, bool cut)        const;
+  shp_Lens      lens(rcDataset, bool trans, bool cut, eNorm) const;
+
+// reflections
+  ReflectionInfo makeReflectionInfo(rcDataset, rcReflection,
+                                    rcRange gammaSector) const;
 
 // fitting
 private:
@@ -119,17 +121,17 @@ private:
 
 public:
   // TODO instead of exposing the objects, provide an interface for TheHub
-  core::Ranges&       bgRanges()           { return bgRanges_;           }
-  uint&               bgPolynomialDegree() { return bgPolynomialDegree_; }
-  core::Reflections&  reflections()        { return reflections_;        }
+  Ranges&       bgRanges()           { return bgRanges_;           }
+  uint&         bgPolynomialDegree() { return bgPolynomialDegree_; }
+  Reflections&  reflections()        { return reflections_;        }
 
 // normalization
 private:
-  Lens::eNorm norm_;
+  eNorm norm_;
 
 public:
-  Lens::eNorm norm() const { return norm_; }
-  void setNorm(Lens::eNorm);
+  eNorm norm() const { return norm_; }
+  void setNorm(eNorm);
 
 public:
   qreal calcAvgBackground(rcDataset)  const;

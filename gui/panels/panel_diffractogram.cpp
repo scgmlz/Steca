@@ -15,6 +15,7 @@
 #include "panel_diffractogram.h"
 #include "thehub.h"
 #include "core_fit_fitting.h"
+#include "core_lens.h"
 
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
@@ -326,6 +327,11 @@ Diffractogram::Diffractogram(TheHub& hub)
 : super(EMPTY_STR,hub,Qt::Vertical), dataset_(nullptr), currReflIndex_(-1) {
 
   box_->addWidget((plot_ = new DiffractogramPlot(hub_,*this)));
+  auto hb = hbox();
+  box_->addLayout(hb);
+  hb->addWidget(check("all datasets"));
+  hb->addWidget(check("fixed scale",hub_.actions.fixedIntensityDisplay));
+  hb->addStretch();
 
   ON_HUB_SIGNAL(datasetSelected, (core::shp_Dataset dataset) { setDataset(dataset); })
   ON_HUB_SIGNAL(geometryChanged, () { renderDataset(); })
