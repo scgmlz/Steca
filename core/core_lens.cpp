@@ -130,8 +130,8 @@ void ImageLens::calcSensCorr() {
 
   qreal avg = sum / (w * h);
 
-  intensCorr_.fill(size);
-
+  intensCorr_.fill(1,image_.size());
+  
   for_ij (w,h) {
     auto inten = corrImage_->inten(i+di,j+dj);
     qreal fact;
@@ -142,7 +142,7 @@ void ImageLens::calcSensCorr() {
       fact = qQNaN(); hasNaNs_ = true;
     }
 
-    intensCorr_.setAt(i,j, fact);
+    intensCorr_.setAt(i+di,j+dj, fact);
   }
 }
 
