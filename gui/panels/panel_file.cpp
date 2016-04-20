@@ -31,14 +31,11 @@ FilesView::FilesView(TheHub& hub): super(hub)
     removeSelected();
   });
 
-  connect(&hub_, &TheHub::filesChanged, [this]() {
-    clearSelection();
-  });
-
-  connect(&hub_, &TheHub::filesSelected, [this]() {
+  ON_HUB_SIGNAL(filesChanged,  () { clearSelection(); })
+  ON_HUB_SIGNAL(filesSelected, () {
     if (!selfSignal_)
       selectRows(hub_.collectedFromFiles());
-  });
+  })
 }
 
 class bool_lock {
@@ -102,9 +99,7 @@ DockFiles::DockFiles(TheHub& hub)
   h->addWidget(iconButton(actions.enableCorr));
   h->addWidget(iconButton(actions.remCorr));
 
-  connect(&hub_, &TheHub::corrFileName, [this](rcstr fileName) {
-    corrFile_->setText(fileName);
-  });
+  ON_HUB_SIGNAL(corrFileName, (rcstr fileName) { corrFile_->setText(fileName); })
 }
 
 //------------------------------------------------------------------------------

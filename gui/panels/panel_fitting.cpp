@@ -152,22 +152,22 @@ Fitting::Fitting(TheHub& hub)
       updateReflectionControls();
     });
 
-    connect(&hub_, &TheHub::reflectionsChanged, [this]() {
+    ON_HUB_SIGNAL(reflectionsChanged, () {
       reflectionView_->update();
       updateReflectionControls();
-    });
+    })
 
     connect(comboReflType_, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this](int index) {
       hub_.setReflType((core::ePeakType)index);
     });
 
-    connect(&hub_, &TheHub::reflectionSelected, [this](core::shp_Reflection reflection) {
+    ON_HUB_SIGNAL(reflectionSelected, (core::shp_Reflection reflection) {
       setReflControls(reflection);
-    });
+    })
 
-    connect(&hub_, &TheHub::reflectionData, [this](core::shp_Reflection reflection) {
+    ON_HUB_SIGNAL(reflectionData, (core::shp_Reflection reflection) {
       setReflControls(reflection);
-    });
+    })
 
     auto newReflData = [this](bool invalidateGuesses) {
       if (!silentSpin_) {

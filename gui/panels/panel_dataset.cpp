@@ -25,10 +25,10 @@ namespace gui { namespace panel {
 DatasetView::DatasetView(TheHub& hub): super(hub), model_(hub.datasetViewModel) {
   setModel(&model_);
 
-  connect(&hub_, &TheHub::datasetsChanged, [this]() {
+  ON_HUB_SIGNAL(datasetsChanged, () {
     model_.signalReset();
      setCurrentIndex(model_.index(0,0));
-  });
+  })
 
   connect(&model_, &QAbstractItemModel::modelReset, [this]() {
     for_i (model_.columnCount())
@@ -81,10 +81,10 @@ DockDatasetInfo::DockDatasetInfo(TheHub& hub)
   for_i (Dataset::numAttributes())
     metaInfo_[i].cb->setToolTip("Show value in Datasets list");
 
-  connect(&hub_, &TheHub::datasetSelected, [this](shp_Dataset dataset) {
+  ON_HUB_SIGNAL(datasetSelected, (shp_Dataset dataset) {
     for_i (Dataset::numAttributes())
       metaInfo_[i].setText(dataset ? dataset->attributeStrValue(i) : EMPTY_STR);
-  });
+  })
 
   for (auto &item: metaInfo_) {
     connect(item.cb, &QCheckBox::clicked, this, [this]() {
@@ -202,9 +202,9 @@ DatasetOptions1::DatasetOptions1(TheHub& hub)
   vn->addWidget(comboNormType_ = comboBox(options));
   box_->addStretch();
 
-  connect(&hub_, &TheHub::geometryChanged, [this]() {
+  ON_HUB_SIGNAL(geometryChanged, () {
     setFrom(hub_);
-  });
+  })
 
   auto setEnabled = [this]() {
     bool on = hub_.actions.hasBeamOffset->isChecked();
@@ -342,9 +342,9 @@ DatasetOptions2::DatasetOptions2(TheHub& hub)
     setImageCut(false,value);
   });
 
-  connect(&hub_, &TheHub::geometryChanged, [this]() {
+  ON_HUB_SIGNAL(geometryChanged, () {
     setFrom(hub_);
-  });
+  })
 
   connect(spinImageScale_, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int scale) {
     emit imageScale(scale);
@@ -387,17 +387,12 @@ Dataset::Dataset(TheHub& hub)
     corrImageWidget_->setShowOverlay(on);
   });
 
-  connect(&hub_, &TheHub::displayChange, [this]() {
-    render();
-  });
+  ON_HUB_SIGNAL(displayChange,   () { render(); })
+  ON_HUB_SIGNAL(geometryChanged, () { render(); })
 
-  connect(&hub_, &TheHub::datasetSelected, [this](core::shp_Dataset dataset) {
+  ON_HUB_SIGNAL(datasetSelected, (core::shp_Dataset dataset) {
     setDataset(dataset);
-  });
-
-  connect(&hub_, &TheHub::geometryChanged, [this]() {
-    render();
-  });
+  })
 }
 
 void Dataset::setImageScale(uint scale) {
