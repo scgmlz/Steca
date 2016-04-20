@@ -26,8 +26,9 @@ DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& plot_)
   setMouseTracking(true);
   setMargins(0,0);
 
-  addColor_ = QColor(0xff,0xf0,0xf0,0x80);
-  remColor_ = QColor(0xf0,0xf0,0xff,0x80);
+  remColor_  = QColor(0xf8,0xf8,0xff,0x90);
+  bgColor_   = QColor(0x98,0xfb,0x98,0x70);
+  reflColor_ = QColor(0x87,0xce,0xfa,0x70);
 }
 
 void DiffractogramPlotOverlay::setMargins(int left, int right) {
@@ -47,6 +48,8 @@ void DiffractogramPlotOverlay::leaveEvent(QEvent*) {
 void DiffractogramPlotOverlay::mousePressEvent(QMouseEvent* e) {
   mouseDownPos_ = cursorPos_;
   mouseDown_ = true;
+  addColor_ = (TheHub::TAB_BACKGROUND == plot_.selectedFittingTab()) ?
+  bgColor_ : reflColor_;
   color_ = Qt::LeftButton == e->button() ? addColor_ : remColor_;
   update();
 }
@@ -129,9 +132,9 @@ DiffractogramPlot::DiffractogramPlot(TheHub& hub,Diffractogram& diffractogram)
   dgramGraph_          = addGraph();
   dgramBgFittedGraph_  = addGraph();
 
-  bgGraph_->setPen(QPen(Qt::green,0));
+  bgGraph_->setPen(QPen(QColor(0x21,0xa1,0x21,0xff),2));
   dgramGraph_->setPen(QPen(Qt::gray));
-  dgramBgFittedGraph_->setPen(QPen(Qt::blue,2));
+  dgramBgFittedGraph_->setPen(QPen(Qt::black,2));
 
   // background regions
   addLayer("bg",layer("background"),QCustomPlot::limAbove);
@@ -288,13 +291,18 @@ void DiffractogramPlot::clearReflLayer() {
   reflGraph_.clear();
 }
 
+int DiffractogramPlot::selectedFittingTab() {
+  return hub_.fittingTab__;
+}
+
 void DiffractogramPlot::addBgItem(core::rcRange range) {
   setCurrentLayer("bg");
-  auto bgColor = QColor(0xff,0xf0,0xf0);
+  rangeColor_ = (TheHub::TAB_BACKGROUND == hub_.fittingTab__) ?
+     QColor(0x98,0xfb,0x98,0x50) : QColor(0x87,0xce,0xfa,0x50);
 
   auto ir = new QCPItemRect(this);
-  ir->setPen(QPen(bgColor));
-  ir->setBrush(QBrush(bgColor));
+  ir->setPen(QPen(rangeColor_));
+  ir->setBrush(QBrush(rangeColor_));
   auto br = ir->bottomRight;
   br->setTypeY(QCPItemPosition::ptViewportRatio);
   br->setCoords(range.max,1);
