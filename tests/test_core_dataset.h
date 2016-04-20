@@ -7,7 +7,7 @@ class TestCoreDataset: public QObject {
   Q_OBJECT
 
 private slots:
-  void testCalcAlphaBeta();
+//  void testCalcAlphaBeta();
   void testRotation();
 };
 

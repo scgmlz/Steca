@@ -5,11 +5,11 @@
 #include "core_session.h"
 
 void TestCoreLib::testConversions() {
-  QCOMPARE(M_PI,deg2Rad(180));
-  QCOMPARE(90.0,rad2Deg(M_PI_2));
+  QCOMPARE(M_PI,deg2rad(180));
+  QCOMPARE(90.0,rad2deg(M_PI_2));
 
   for_i (720)
-    QCOMPARE((qreal)i,rad2Deg(deg2Rad(i)));
+    QCOMPARE((qreal)i,rad2deg(deg2rad(i)));
 }
 
 void TestCoreLib::testFile() {

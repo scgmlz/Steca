@@ -45,11 +45,11 @@ ReflectionInfo::ReflectionInfo(qreal alpha, qreal beta, rcRange rgeGamma,
 // sample orientation and diffraction angles.
 / * static* / void calculateAlphaBeta(qreal omgDet, qreal phiDet, qreal chiDet, qreal tthRef, qreal gammaRef,
                         qreal& alpha, qreal& beta) {
-  omgDet   = deg2Rad(omgDet);
-  phiDet   = deg2Rad(phiDet);
-  chiDet   = deg2Rad(chiDet);
-  tthRef   = deg2Rad(tthRef);
-  gammaRef = deg2Rad(gammaRef);
+  omgDet   = deg2rad(omgDet);
+  phiDet   = deg2rad(phiDet);
+  chiDet   = deg2rad(chiDet);
+  tthRef   = deg2rad(tthRef);
+  gammaRef = deg2rad(gammaRef);
 
   // REVIEW
 
@@ -74,8 +74,8 @@ ReflectionInfo::ReflectionInfo(qreal alpha, qreal beta, rcRange rgeGamma,
   if (beta < 0)
     beta += 2 * M_PI;
 
-  alpha = rad2Deg(alpha);
-  beta  = rad2Deg(beta);
+  alpha = rad2deg(alpha);
+  beta  = rad2deg(beta);
 }
 
 ReflectionInfo ReflectionInfo::make(
