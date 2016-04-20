@@ -86,6 +86,7 @@ SplitDiffractogram::SplitDiffractogram(TheHub& hub): super(Qt::Horizontal) {
 
 MainWin::MainWin(): hub_(), acts_(hub_.actions) {
   setWindowIcon(QIcon(":/icon/STeCa2"));
+  QDir::setCurrent(QDir::homePath());
 
   initMenus();
   initLayout();
@@ -273,8 +274,10 @@ void MainWin::addFiles() {
   str_lst fileNames = QFileDialog::getOpenFileNames(this, "Add files",
       QDir::current().absolutePath(), "Data files (*.dat);;All files (*.*)");
 
-  if (!fileNames.isEmpty())
+  if (!fileNames.isEmpty()) {
     hub_.addFiles(fileNames);
+    QDir::setCurrent(QFileInfo(fileNames.at(0)).absolutePath());
+  }  
 }
 
 void MainWin::enableCorr() {
@@ -283,8 +286,10 @@ void MainWin::enableCorr() {
     fileName = QFileDialog::getOpenFileName(this, "Set correction file",
       QDir::current().absolutePath(), "Data files (*.dat);;All files (*.*)");
 
-  if (!fileName.isEmpty())
+  if (!fileName.isEmpty()) {
     hub_.setCorrFile(fileName);
+    QDir::setCurrent(QFileInfo(fileName).absolutePath());
+  }  
 }
 
 static str const STE(".ste");
