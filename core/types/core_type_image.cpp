@@ -31,7 +31,9 @@ void Image::addIntens(rcImage that) THROWS {
 void Image::addIntens(inten_t const* thatIntens) {
   auto intens = data();
   uint n = count();
-  while(n-- > 0) *intens++ += *thatIntens++;
+  while(n-- > 0) { 
+    *intens++ += *thatIntens++; 
+  }
 }
 
 //------------------------------------------------------------------------------

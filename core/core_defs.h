@@ -16,6 +16,11 @@
 #ifndef CORE_DEFS_H
 #define CORE_DEFS_H
 
+// testing support
+class TestCoreLens; class TestCoreImage;
+#define TESTS_FRIEND \
+  friend class ::TestCoreLens; friend class ::TestCoreImage;
+
 // common QT includes - everyone needs them
 #include <QtGlobal>
 #include <QSharedPointer>
@@ -34,7 +39,7 @@ typedef QStringList str_lst;  ///< a short alias for QStringList
 extern  str const EMPTY_STR;  ///< an empty string (that can be returned by reference!)
 
 /// A class definition helper that defines aliases for this and super class.
-#define SUPER(cls,sup)  using thisClass = cls; using super = sup;
+#define SUPER(cls,sup)  using thisClass = cls; using super = sup; 
 
 /// idiomatic iterations
 #define for_int(i,n)  for (int i=0, i##End=(n); i<i##End; ++i)

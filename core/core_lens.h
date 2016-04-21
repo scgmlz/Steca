@@ -24,7 +24,7 @@ namespace core {
 //------------------------------------------------------------------------------
 /// View the dataset through a lens (thanks, Antti!)
 
-class ImageLens {
+class ImageLens { TESTS_FRIEND
 public:
   ImageLens(rcSession, rcImage, Image const* corrImage,
             bool trans, bool cut, ImageCut const&, ImageTransform const&);

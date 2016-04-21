@@ -414,7 +414,6 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
   }
 
   collectDatasetsFromFiles(selIndexes);
-  tellFilesSelectedDatasetsChanged();
 
   setCorrFile(top.loadString(KEY_CORR_FILE,EMPTY_STR));
 
@@ -459,6 +458,11 @@ void TheHub::addFiles(str_lst filePaths) THROWS {
 
   for (auto &filePath: filePaths)
     addFile(filePath);
+}
+
+void TheHub::collectDatasetsFromFiles(uint_vec is) {
+  session->collectDatasetsFromFiles(is);
+  tellFilesSelectedDatasetsChanged();
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {

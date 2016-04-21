@@ -64,10 +64,9 @@ void FilesView::selectionChanged(QItemSelection const& selected, QItemSelection 
     fileNums.append(index.row());
   }
 
-  bool_lock __(selfSignal_);
+  bool_lock __(selfSignal_); // REVIEW
 
   hub_.collectDatasetsFromFiles(fileNums);
-  hub_.tellFilesSelectedDatasetsChanged();
 }
 
 void FilesView::removeSelected() {
@@ -79,6 +78,8 @@ void FilesView::removeSelected() {
 
   clearSelection();
   model_.signalReset();
+  
+  hub_.collectDatasetsFromFiles({});
 }
 
 //------------------------------------------------------------------------------

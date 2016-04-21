@@ -26,7 +26,7 @@ void ListView::updateSingleSelection() {
   if (m) {
     int row = currentIndex().row();
     m->signalReset();
-    selectRow(row);
+    selectRow(qMin(row,m->rowCount()-1));
   }
 }
 

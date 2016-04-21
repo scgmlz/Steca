@@ -108,7 +108,7 @@ public:
   void addFile(rcstr filePath)      THROWS;
   void addFiles(str_lst filePaths)  THROWS;
 
-  void collectDatasetsFromFiles(uint_vec is) { session->collectDatasetsFromFiles(is);  }
+  void collectDatasetsFromFiles(uint_vec); 
   uint_vec const& collectedFromFiles() const { return session->collectedFromFiles();   }
   core::rcDatasets collectedDatasets() const { return session->collectedDatasets();    }
 

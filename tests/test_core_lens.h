@@ -24,6 +24,7 @@ public:
                                                    int corrPosX, int corrPosY,
                                                    int width, int height);
 private slots:
+  void testLens();
 //  void testTransformationLens();
 //  void testROILens();
 //  void testSensitivityCorrectionLens();

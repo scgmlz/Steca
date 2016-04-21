@@ -24,7 +24,7 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-class Session final {
+class Session final { TESTS_FRIEND
 public:
   Session();
   void clear();
