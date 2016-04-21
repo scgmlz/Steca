@@ -47,7 +47,7 @@ ImageCut::ImageCut(uint left_, uint top_, uint right_, uint bottom_)
 }
 
 bool ImageCut::operator ==(const ImageCut &that) const {
-  return (left  == that.left  && top    == that.top 
+  return (left  == that.left  && top    == that.top
        && right == that.right && bottom == that.bottom);
 }
 

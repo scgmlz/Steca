@@ -51,6 +51,8 @@ class AngleMap;
 class Reflection;     typedef Reflection     const& rcReflection;
 class ReflectionInfo; typedef ReflectionInfo const& rcReflectionInfo;
 
+typedef QVector<ReflectionInfo>     ReflectionInfos;
+
 typedef QSharedPointer<File>        shp_File;
 typedef QSharedPointer<Dataset>     shp_Dataset;
 typedef QSharedPointer<ImageLens>   shp_ImageLens;

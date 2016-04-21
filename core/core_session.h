@@ -112,6 +112,8 @@ public:
   ReflectionInfo makeReflectionInfo(rcDataset, rcReflection,
                                     rcRange gammaSector) const;
 
+  ReflectionInfos reflectionInfos(rcDatasets, rcReflection, qreal betaStep,
+                                  rcRange gammaRange = Range());
 // fitting
 private:
   uint   bgPolynomialDegree_;

@@ -19,6 +19,7 @@
 #include "core_reflection_info.h"
 #include "types/core_type_curve.h"
 #include "types/core_type_matrix.h"
+#include <qmath.h>
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -260,11 +261,11 @@ static void calculateAlphaBeta(rcDataset dataset,
   beta  = rad2deg(beta);
 }
 
-// Fits reflection to the given gammaSector and constructs a ReflectionInfo.
+// Fits reflection to the given gamma sector and constructs a ReflectionInfo.
 ReflectionInfo Session::makeReflectionInfo(rcDataset dataset, rcReflection reflection,
-                                           rcRange rgeGamma) const {
+                                           rcRange gammaSector) const {
   auto curve = lens(dataset,true,true,norm_)
-                  ->makeCurve(rgeGamma, angleMap(dataset).rgeTth());
+                  ->makeCurve(gammaSector, angleMap(dataset).rgeTth());
   auto bgPol = fit::fitPolynomial(bgPolynomialDegree_,curve,bgRanges_);
   curve = curve.subtract(bgPol);
 
@@ -274,11 +275,40 @@ ReflectionInfo Session::makeReflectionInfo(rcDataset dataset, rcReflection refle
   fit::fit(*peakFunction, curve, rgeTth);
 
   qreal alpha, beta;
-  calculateAlphaBeta(dataset, rgeTth.center(), rgeGamma.center(), alpha, beta);
+  calculateAlphaBeta(dataset, rgeTth.center(), gammaSector.center(), alpha, beta);
 
   XY peak = peakFunction->fittedPeak();
-  return ReflectionInfo(alpha, beta, rgeGamma,
+  return ReflectionInfo(alpha, beta, gammaSector,
                         peak.y,peak.x,peakFunction->fittedFWHM());
+}
+
+/* Gathers ReflectionInfos from Datasets.
+ * Either uses the whole gamma range of the datasets (if gammaSector is invalid),
+ * or user limits the range.
+ * Even though the betaStep of the equidistant polefigure grid is needed here,
+ * the returned infos won't be on the grid.
+ */
+ReflectionInfos Session::reflectionInfos(rcDatasets datasets, rcReflection reflection,
+                                         qreal betaStep, rcRange gammaRange) {
+  ReflectionInfos infos;
+
+  for (auto &dataset: datasets) {
+    auto lenses = lens(*dataset, true, true, norm_);
+    // TODO potentially optimize (invariant if lens does not change)
+    Range gr = gammaRange.isValid()
+        ? gammaRange
+        : lenses->gammaRangeAt(reflection.range().center());
+
+    int numGammaRows = qCeil(gr.width() / betaStep);
+    qreal gammaStep = gr.width() / numGammaRows;
+
+    for_i (numGammaRows) {
+      qreal min = gammaRange.min + i * gammaStep;
+      Range gammaStripe(min,min + gammaStep);
+      infos.append(makeReflectionInfo(*dataset,reflection,gammaStripe));
+    }
+  }
+  return infos;
 }
 
 void Session::setNorm(eNorm norm) {

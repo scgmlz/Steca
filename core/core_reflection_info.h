@@ -28,18 +28,19 @@ public:
   ReflectionInfo(qreal alpha, qreal beta, rcRange rgeGamma,
                  qreal inten, qreal tth, qreal fwhm);
 
-//OUT  qreal   alpha()         const { return alpha_;        }
-//  qreal   beta()          const { return beta_;         }
-//  rcRange gammaRange()    const { return rgeGamma_;   }
-//  rcXY    peakPosition()  const { return peakPosition_; }
-//  qreal   peakFWHM()      const { return peakFWHM_;     }
+  qreal alpha() const { return alpha_;  }
+  qreal beta()  const { return beta_;   }
 
-//OUT  static ReflectionInfo make(rcSession,
-//                             rcDatasets,
-//                             rcDataset,
-//                             rcReflection,
-//                             rcRange rgeTth,
-//                             rcRange gammaSector);
+  rcRange rgeGamma() const { return rgeGamma_; }
+
+  qreal inten() const { return inten_;  }
+  qreal tth()   const { return tth_;    }
+  qreal fwhm()  const { return fwhm_;   }
+
+  // TODO these OUT
+  void setInten(qreal v) { inten_ = v; }
+  void setTth(qreal v)   { tth_   = v; }
+  void setFwhm(qreal v)  { fwhm_  = v; }
 
 private:
     qreal alpha_, beta_; Range rgeGamma_;

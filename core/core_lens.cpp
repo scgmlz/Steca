@@ -59,8 +59,8 @@ inten_t ImageLens::inten(uint i, uint j) const {
 
 rcRange ImageLens::rgeInten() const {
   if (!rgeInten_.isValid()) {
-    auto s = size();
-    for_ij (s.width(), s.height())
+    auto sz = size();
+    for_ij (sz.width(), sz.height())
       rgeInten_.extendBy(inten(i,j));
   }
 
@@ -182,6 +182,22 @@ rcRange Lens::rgeIntenGlobal() const {
   }
 
   return rgeIntenGlobal_;
+}
+
+Range Lens::gammaRangeAt(qreal tth) const {
+  auto sz = size(); uint w = sz.width(), h = sz.height();
+
+  Range rge;
+
+  for (uint j=1; j<h; ++j) {
+    for (uint i=1; i<w; ++i) {
+      auto tthMin = angles(i-1,j).tth, tthMax = angles(i,j).tth; // TODO optimize?
+      if (tthMin <= tth && tth < tthMax)
+        rge.extendBy(angles(i-1,j).gamma);
+    }
+  }
+
+  return rge;
 }
 
 Curve Lens::makeCurve(rcRange gammaRange, rcRange tthRange) const {

@@ -16,13 +16,17 @@
 #ifndef CORE_POLEFIGURE_H
 #define CORE_POLEFIGURE_H
 
-#include "types/core_types_fwd.h"
-#include "types/core_type_range.h"
 #include "core_reflection_info.h"
 
-namespace core {
+namespace core { namespace pole {
 //------------------------------------------------------------------------------
 
+ReflectionInfos interpolate(ReflectionInfos const&,
+    qreal alphaStep, qreal betaStep,
+    qreal averagingAlphaMax, qreal averagingRadius,
+    qreal idwRadius,
+    qreal inclusionTreshold);
+
 //------------------------------------------------------------------------------
-}
+}}
 #endif // CORE_POLEFIGURE_H

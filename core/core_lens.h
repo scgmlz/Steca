@@ -65,8 +65,8 @@ public:
        AngleMap const&, ImageCut const&, ImageTransform const&);
 
   Angles const& angles(uint i, uint j) const;
-
-  rcRange rgeIntenGlobal()       const;
+  rcRange rgeIntenGlobal()             const;
+  Range   gammaRangeAt(qreal tth)      const;
 
   Curve makeCurve(rcRange gamma, rcRange tth) const;
 
