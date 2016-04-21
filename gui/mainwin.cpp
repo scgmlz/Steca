@@ -19,6 +19,7 @@
 #include "panels/panel_fitting.h"
 #include "panels/panel_file.h"
 #include "io/out_polefigures.h"
+#include "io/out_sphere.h"
 
 #include <QApplication>
 #include <QCloseEvent>
@@ -115,6 +116,10 @@ void MainWin::initMenus() {
   menuOutput_   = mbar->addMenu("&Output");
   menuHelp_     = mbar->addMenu("&Help");
 
+#ifdef STECA_LABS
+  menuLabs_     = mbar->addMenu("&Labs");
+#endif
+
   menuFile_->addActions({
     acts_.loadSession, acts_.saveSession,
     separator(),
@@ -164,6 +169,12 @@ void MainWin::initMenus() {
 #endif
     acts_.about,
   });
+
+#ifdef STECA_LABS
+  menuLabs_->addActions({
+    acts_.poleSphere,
+  });
+#endif
 }
 
 void MainWin::initLayout() {
@@ -216,6 +227,10 @@ void MainWin::connectActions() {
 
   onTrigger(acts_.outputPolefigures, &thisClass::outputPoleFigures);
   notYet(acts_.outputHistograms);
+
+#ifdef STECA_LABS
+  onTrigger(acts_.poleSphere, &thisClass::poleSphere);
+#endif
 
   onTrigger(acts_.about, &thisClass::about);
 
@@ -277,7 +292,7 @@ void MainWin::addFiles() {
   if (!fileNames.isEmpty()) {
     hub_.addFiles(fileNames);
     QDir::setCurrent(QFileInfo(fileNames.at(0)).absolutePath());
-  }  
+  }
 }
 
 void MainWin::enableCorr() {
@@ -289,7 +304,7 @@ void MainWin::enableCorr() {
   if (!fileName.isEmpty()) {
     hub_.setCorrFile(fileName);
     QDir::setCurrent(QFileInfo(fileName).absolutePath());
-  }  
+  }
 }
 
 static str const STE(".ste");
@@ -324,6 +339,13 @@ void MainWin::outputPoleFigures() {
   popup->show();
 }
 
+#ifdef STECA_LABS
+void MainWin::poleSphere() {
+  auto popup = new io::PoleSphere("Pole Sphere",hub_,this);
+  popup->show();
+}
+#endif
+
 void MainWin::closeEvent(QCloseEvent* event) {
   onClose();
   event->accept();
@@ -341,6 +363,9 @@ void MainWin::onShow() {
 #else
   hub_.loadSession(QFileInfo("/home/jan/SCG/s.ste"));
 #endif
+#endif
+#ifdef STECA_LABS
+  poleSphere();
 #endif
 }
 

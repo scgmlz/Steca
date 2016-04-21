@@ -101,11 +101,11 @@ protected:
   virtual void calculate() = 0; ///< here do the work
 
 protected:
-  void setWidgets(panel::BasicPanel*,OutTableWidget*);
+  void setWidgets(panel::BasicPanel*,QWidget*);
 
   QBoxLayout        *box_;
   panel::BasicPanel *panel_;
-  OutTableWidget    *tableWidget_;
+  QWidget           *widget_; // work is here
 };
 
 //------------------------------------------------------------------------------

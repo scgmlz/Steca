@@ -29,6 +29,7 @@ namespace gui { namespace io {
 //------------------------------------------------------------------------------
 
 GLWidget::GLWidget(QWidget* parent): super(parent) {
+  init();
 }
 
 void GLWidget::reset() {
@@ -58,26 +59,22 @@ void GLWidget::init() {
   flat_       = false;
 }
 
-void GLWidget::glInit() {
-  super::glInit();
-  init();
-}
-
 void GLWidget::initializeGL() {
-  glDisable(GL_CULL_FACE);
-  glDisable(GL_DEPTH_TEST);
+  glClearColor(clearColor_);
+//  glDisable(GL_CULL_FACE);
+//  glDisable(GL_DEPTH_TEST);
 
-  glShadeModel(GL_SMOOTH);
-  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-  glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+//  glShadeModel(GL_SMOOTH);
+//  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+//  glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 }
 
 void GLWidget::resizeGL(int,int) {
 }
 
 void GLWidget::paintGL() {
-  qglClearColor(clearColor_);
   glClear(GL_COLOR_BUFFER_BIT);
+
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -139,9 +136,20 @@ void GLWidget::mouseMoveEvent(QMouseEvent* e) {
 void GLWidget::mouseReleaseEvent(QMouseEvent*) {
 }
 
+void GLWidget::glClearColor(QColor const& c) {
+  ::glClearColor(c.redF(),c.greenF(),c.blueF(),c.alphaF());
+}
+
+void GLWidget::glColor(QColor const& c) {
+  ::glColor4f(c.redF(),c.greenF(),c.blueF(),c.alphaF());
+}
+
 //---------------------------------------------------------------------------
 
 Sphere::vertex_t::vertex_t(): vertex_t(QVector3D()) {
+}
+
+Sphere::vertex_t::vertex_t(float x, float y, float z): vertex_t(QVector3D(x,y,z)) {
 }
 
 Sphere::vertex_t::vertex_t(QVector3D const& v): QVector3D(v), val(0), prominence(0) {
@@ -378,17 +386,13 @@ Sphere::Sphere(QWidget *parent)
 	poly_ = new Polyhedron(); geo_ = new Geography();
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-	QGLFormat fm(format());
-	fm.setSwapInterval(1);
-	setFormat(fm);
-
 	if (blackWhite_) {
 		clearColor_     = QColor(Qt::white);
 		polyMeshColor_  = QColor(Qt::darkGray);
 		geoMeshColor_   = QColor(Qt::darkGray);
 		geoCrossColor_  = QColor(Qt::black);
 	} else {
-		clearColor_     = QColor(Qt::black);
+		clearColor_     = QColor(Qt::gray);
 		polyMeshColor_  = QColor(Qt::gray).darker(300);
 		geoMeshColor_   = QColor(Qt::gray).darker();
 		geoCrossColor_  = QColor(Qt::darkYellow);
@@ -468,7 +472,7 @@ void Sphere::sortFaces() {
 }
 
 void Sphere::paintPolyhedronMesh() const {
-	qglColor(polyMeshColor_);
+	glColor(polyMeshColor_);
 
 	Polyhedron::faces_t const &fs = poly_->faces;
 	for (Polyhedron::faces_t::const_iterator fi = fs.begin(); fi != fs.end(); ++fi) {
@@ -483,7 +487,7 @@ void Sphere::paintPolyhedronMesh() const {
 }
 
 void Sphere::paintGeographicMesh() const {
-	qglColor(geoMeshColor_);
+	glColor(geoMeshColor_);
 
 	vertex_vec const& vs = geo_->vertices;
 	uint const aziSize = 360/Geography::STEP;
@@ -513,7 +517,7 @@ void Sphere::paintGeographicMesh() const {
 		if (blackWhite_) glLineWidth(1);
 
 		// cross
-		qglColor(geoCrossColor_);
+		glColor(geoCrossColor_);
 		{
 			float x = 0.25f;
 			glBegin(GL_LINES);
@@ -564,7 +568,7 @@ void Sphere::paintGeographicMesh() const {
 		}
 
 		// cross
-		qglColor(geoCrossColor_);
+		glColor(geoCrossColor_);
 		{
 			glBegin(GL_LINE_STRIP);
 			for (uint eli = 0; eli < eliSize; ++eli) {
@@ -640,10 +644,10 @@ void Sphere::paintFaces() const {
 				float y2 = h*(1-(float)(eli+1)/(float)(eliSize-1));
 
 				glBegin(GL_QUADS);
-				qglColor(ca); glVertex2f(x1,y1);
-				qglColor(cb); glVertex2f(x1,y2);
-				qglColor(cc); glVertex2f(x2,y2);
-				qglColor(cd); glVertex2f(x2,y1);
+				glColor(ca); glVertex2f(x1,y1);
+				glColor(cb); glVertex2f(x1,y2);
+				glColor(cc); glVertex2f(x2,y2);
+				glColor(cd); glVertex2f(x2,y1);
 				glEnd();
 			}
 		}
@@ -660,9 +664,9 @@ void Sphere::paintFaces() const {
 			colorScale(cc, c.val, blackWhite_);
 
 			glBegin(GL_TRIANGLES);
-			qglColor(ca);	glMappedVertex(a);
-			qglColor(cb);	glMappedVertex(b);
-			qglColor(cc);	glMappedVertex(c);
+			glColor(ca);	glMappedVertex(a);
+			glColor(cb);	glMappedVertex(b);
+			glColor(cc);	glMappedVertex(c);
 			glEnd();
 		}
 	}
@@ -692,7 +696,7 @@ void Sphere::paintTops() const {
 				// "1-" to turn upside down and left-right >>>
 				float x = w*(1-(float)azi/(float)aziSize);
 				float y = h*(1-(float)eli/(float)(eliSize-1));
-				qglColor(QColor(Qt::red));
+				glColor(QColor(Qt::red));
 
 				uint const S = v.prominence_/6;
 				glBegin(GL_QUADS);
@@ -718,7 +722,7 @@ void Sphere::paintTops() const {
 //			float x1 = w*(1-top1.x());
 //			float y1 = h*(1-top1.y());
 //
-//			qglColor(QColor(Qt::darkRed));
+//			glColor(QColor(Qt::darkRed));
 //			DrawLine(x0, y0, x1, y1, thd*(i+1),thd*i);
 //		}
 //	}
@@ -726,7 +730,7 @@ void Sphere::paintTops() const {
 	// Bezier
 	if (tops_.size()>=3) {
 		glLineWidth(6);
-		qglColor(QColor(Qt::darkGray));
+		glColor(QColor(Qt::darkGray));
 
 		glBegin(GL_LINE_STRIP);
 		for (int i=tops_.size()-1; i>2; --i) {
@@ -761,7 +765,71 @@ void Sphere::glMappedVertex(QPointF p, int w, int h) const {
 }
 
 Sphere::vertex_vec& Sphere::vertices() {
-	return flat_ ? geo_->vertices : poly_->vertices;
+  return flat_ ? geo_->vertices : poly_->vertices;
+}
+
+//------------------------------------------------------------------------------
+
+class OutPoleSphereParams: public panel::BoxPanel {
+  SUPER(OutPoleSphereParams,panel::BoxPanel)
+public:
+  OutPoleSphereParams(TheHub&);
+};
+
+OutPoleSphereParams::OutPoleSphereParams(TheHub& hub): super("", hub, Qt::Horizontal) {
+  box_->addWidget(label("Param"));
+  box_->addWidget(editCell(16));
+  box_->addStretch();
+}
+
+//------------------------------------------------------------------------------
+
+class OutSphere: public Sphere {
+  SUPER(OutSphere,Sphere)
+public:
+  OutSphere();
+protected:
+  void onPaintGL();
+
+  void point(float alpha, float beta);
+};
+
+OutSphere::OutSphere() {
+  showGeo(true);
+}
+
+void OutSphere::onPaintGL() {
+  super::onPaintGL();
+
+  point(0,0);
+  point(30,0);
+  point(30,30);
+  point(30,40);
+  point(30,50);
+}
+
+void OutSphere::point(float alpha, float beta) {
+  alpha = 90 - alpha;
+  vertex_t
+    a(beta,alpha), b(a.x()+.03,a.y(),a.z()), c(a.x(),a.y()+.03,a.z());
+
+  QColor clr(Qt::yellow);
+  glColor(clr);
+  glBegin(GL_TRIANGLES);
+  glMappedVertex(a);
+  glMappedVertex(b);
+  glMappedVertex(c);
+  glEnd();
+}
+
+//------------------------------------------------------------------------------
+
+PoleSphere::PoleSphere(rcstr title,TheHub& hub,QWidget* parent)
+: super(title,parent) {
+  setWidgets(new OutPoleSphereParams(hub), new OutSphere());
+}
+
+void PoleSphere::calculate() {
 }
 
 //------------------------------------------------------------------------------

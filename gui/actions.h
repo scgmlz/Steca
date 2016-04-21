@@ -71,6 +71,10 @@ struct Actions {
     *outputPolefigures,
     *outputHistograms,
 
+#ifdef STECA_LABS
+    *poleSphere,
+#endif
+
     *about,
 
     *addReflection, *remReflection,

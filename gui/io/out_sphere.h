@@ -21,18 +21,20 @@
 #define OUT_SPHERE_H
 
 #include "core_defs.h"
+#include "out_table.h"
 #include "types/core_types_fwd.h"
 #include "types/core_coords.h"
 
-#include <QGLWidget>
+#include <QOpenGLWidget>
+#include <QOpenGLFunctions>
 #include <QQuaternion>
 #include <QColor>
 
 namespace gui { namespace io {
 //------------------------------------------------------------------------------
 
-class GLWidget: public QGLWidget {
-  SUPER(GLWidget,QGLWidget)
+class GLWidget: public QOpenGLWidget {
+  SUPER(GLWidget,QOpenGLWidget)
   Q_OBJECT
 public:
   GLWidget(QWidget* = nullptr);
@@ -44,6 +46,8 @@ public:
   int width()  const;
   int height() const;
 
+  void updateGL() { update(); }
+
 signals:
   void rotated();
 
@@ -54,7 +58,6 @@ protected:
   QColor clearColor_;
   bool flat_;
 
-  void glInit();
   void initializeGL();
   void resizeGL(int,int);
   void paintGL();
@@ -67,6 +70,9 @@ protected:
   void mousePressEvent(QMouseEvent*);
   void mouseMoveEvent(QMouseEvent*);
   void mouseReleaseEvent(QMouseEvent*);
+
+  static void glClearColor(QColor const&);
+  static void glColor(QColor const&);
 };
 
 //------------------------------------------------------------------------------
@@ -77,6 +83,7 @@ class Sphere: public GLWidget {
 public:
   struct vertex_t: QVector3D {
     vertex_t();
+    vertex_t(float x, float y, float z);
     vertex_t(QVector3D const&);
     vertex_t(core::vector3f const&);
     vertex_t(float azi, float ele);
@@ -105,6 +112,8 @@ public:
 public:
   Sphere(QWidget* = NULL);
 
+  QSize minimumSizeHint() const { return QSize(200,140); }
+
 	void update();
 	void showGeo(bool);
 	void showSphere(bool);
@@ -127,6 +136,7 @@ private:
 	void paintFaces()			const;
 	void paintTops()			const;
 
+protected:
 	QVector3D mapSpherePoint(QVector3D const&)  const;	// distort
 	void glMappedVertex(QVector3D const&) const;
 	void glMappedVertex(QPointF p, int w, int h) const;
@@ -143,6 +153,15 @@ private:
 
 	QColor geoMeshColor_, polyMeshColor_, geoCrossColor_;
 	QVector<QPointF> tops_;
+};
+
+//------------------------------------------------------------------------------
+
+class PoleSphere: public OutWindow {
+  SUPER(PoleSphere,OutWindow)
+public:
+  PoleSphere(rcstr title,TheHub&,QWidget*);
+  void calculate();
 };
 
 //------------------------------------------------------------------------------

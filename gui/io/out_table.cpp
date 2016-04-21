@@ -306,9 +306,9 @@ OutWindow::OutWindow(rcstr title, QWidget* parent): super(parent, Qt::Dialog) {
   setLayout((box_ = vbox()));
 }
 
-void OutWindow::setWidgets(panel::BasicPanel* p, OutTableWidget* tw) {
+void OutWindow::setWidgets(panel::BasicPanel* p, QWidget* tw) {
   box_->addWidget((panel_       = p));
-  box_->addWidget((tableWidget_ = tw));
+  box_->addWidget((widget_ = tw));
   auto bbox = hbox();
   box_->addLayout(bbox);
   box_->setStretch(1,1);

@@ -50,6 +50,10 @@ public:
 
   void outputPoleFigures();
 
+#ifdef STECA_LABS
+  void poleSphere();
+#endif
+
 private:
   // the hub
   gui::TheHub  hub_;
@@ -64,6 +68,10 @@ private:
 private:
   QMenu *menuFile_, *menuEdit_, *menuView_, *menuDatasets_, *menuReflect_,
         *menuOutput_, *menuHelp_;
+
+#ifdef STECA_LABS
+  QMenu *menuLabs_;
+#endif
 
   QDockWidget *dockFiles_, *dockDatasets_, *dockDatasetInfo_;
 

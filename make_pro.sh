@@ -10,11 +10,12 @@ cat >> $PRO <<EOT
 TARGET   = $APP
 TEMPLATE = app
 
-QT      += core gui widgets opengl
+QT      += core gui widgets
 CONFIG  += silent $CFG
 DEFINES += STECA_LABS
 
 INCLUDEPATH += \$\$PWD/core \$\$PWD/gui
+LIBS    += -lGLU
 EOT
 
 function files {

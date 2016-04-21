@@ -47,14 +47,16 @@ OutPoleFigures::OutPoleFigures(rcstr title,TheHub& hub,QWidget* parent)
 void OutPoleFigures::calculate() {
   // test
   // TODO complete
-  auto &table = tableWidget_->table();
+  auto *tableWidget = dynamic_cast<OutTableWidget*>(widget_);
+  if (tableWidget) {
+    auto &table = tableWidget->table();
+    table.clear();
 
-  table.clear();
-
-  table.addRow({10,"d",10.10,QDate(2010,10,10),});
-  table.addRow({20,"c",10.20,QDate(2020,10,10),});
-  table.addRow({30,"b",10.30,QDate(2030,10,10),});
-  table.addRow({40,"a",10.40,QDate(2040,10,10),});
+    table.addRow({10,"d",10.10,QDate(2010,10,10),});
+    table.addRow({20,"c",10.20,QDate(2020,10,10),});
+    table.addRow({30,"b",10.30,QDate(2030,10,10),});
+    table.addRow({40,"a",10.40,QDate(2040,10,10),});
+  }
 }
 
 //------------------------------------------------------------------------------
