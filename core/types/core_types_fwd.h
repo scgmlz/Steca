@@ -30,6 +30,7 @@ class  Ranges; typedef Ranges const& rcRanges;
 
 class  Curve;  typedef Curve  const& rcCurve;
 
+struct vector3f;
 struct vector3d;
 struct matrix3d;
 

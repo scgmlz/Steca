@@ -18,8 +18,18 @@
 namespace core {
 //------------------------------------------------------------------------------
 
+vector3f::vector3f(float _0_, float _1_, float _2_) {
+  _0 = _0_; _1 = _1_; _2 = _2_;
+}
+
+vector3f::vector3f(vector3d const& v): vector3f(v._0,v._1,v._2) {
+}
+
 vector3d::vector3d(qreal _0_, qreal _1_, qreal _2_) {
   _0 = _0_; _1 = _1_; _2 = _2_;
+}
+
+vector3d::vector3d(vector3f const& v): vector3d(v._0,v._1,v._2) {
 }
 
 matrix3d::matrix3d(qreal _00_, qreal _01_, qreal _02_,

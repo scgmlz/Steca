@@ -101,9 +101,9 @@ void searchPoints(qreal alpha, qreal beta, qreal radius,
   // REVIEW Use value trees to improve performance.
   for (auto const& info : infos) {
     if (inRadius(info.alpha(), info.beta(), alpha, beta, radius)) {
-      peakOffsets.push_back(info.tth());
-      peakHeights.push_back(info.inten());
-      FWHMs.push_back(info.fwhm());
+      peakOffsets.append(info.tth());
+      peakHeights.append(info.inten());
+      FWHMs.append(info.fwhm());
     }
   }
 }
@@ -303,7 +303,7 @@ ReflectionInfos interpolate(ReflectionInfos const& infos,
           peakHeight /= tempPeakHeights.size() - kTreshold;
           peakFWHM   /= tempPeakFWHMs.size()   - kTreshold;
 
-          interpolatedInfos.push_back(
+          interpolatedInfos.append(
             ReflectionInfo(alpha,
                            beta,
                            infos.first().rgeGamma(),
@@ -323,7 +323,7 @@ ReflectionInfos interpolate(ReflectionInfos const& infos,
       ReflectionInfo interpolatedInfo(alpha,beta,infos.first().rgeGamma(),
                                       qQNaN(),qQNaN(),qQNaN());
       interpolateValues(idwRadius, infos, interpolatedInfo);
-      interpolatedInfos.push_back(interpolatedInfo);
+      interpolatedInfos.append(interpolatedInfo);
     }
   }
 

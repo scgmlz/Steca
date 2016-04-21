@@ -56,5 +56,38 @@ struct XY {
 typedef XY const& rcXY;
 
 //------------------------------------------------------------------------------
+
+template <typename F>
+class NormalizedAngle {
+public:
+  NormalizedAngle(F angle = 0, bool force = false) {
+    set(angle,force);
+  }
+
+  void set(F angle, bool force = false) {
+    angle_ = force ? angle : normalize(angle);
+  }
+
+  F val() const { return angle_; }
+
+  static F normalize(F angle) {
+    static qreal const MAX = 360;
+    angle = fmod(angle,MAX);
+    if (angle<0) angle += MAX;
+    return angle;
+  }
+
+  bool operator==(NormalizedAngle const& that) const { return angle_ == that.angle_; }
+
+  bool operator <(NormalizedAngle const& that) const { return angle_  < that.angle_; }
+  bool operator >(NormalizedAngle const& that) const { return angle_  > that.angle_; }
+  bool operator<=(NormalizedAngle const& that) const { return angle_ <= that.angle_; }
+  bool operator>=(NormalizedAngle const& that) const { return angle_ >= that.angle_; }
+
+private:
+  F angle_;
+};
+
+//------------------------------------------------------------------------------
 }
 #endif // CORE_COORDS_H

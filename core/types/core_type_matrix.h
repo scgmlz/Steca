@@ -22,10 +22,18 @@
 namespace core {
 //------------------------------------------------------------------------------
 
+struct vector3f {
+  float _0,_1, _2;
+
+  vector3f(float,float,float);
+  vector3f(vector3d const&);
+};
+
 struct vector3d {
   qreal _0,_1, _2;
-  
+
   vector3d(qreal,qreal,qreal);
+  vector3d(vector3f const&);
 };
 
 struct matrix3d {
