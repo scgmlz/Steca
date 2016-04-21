@@ -31,7 +31,7 @@ ReflectionView::ReflectionView(TheHub& hub)
 void ReflectionView::addReflection(int type) {
   using eType = core::ePeakType;
   model_.addReflection((eType)qBound(0,type,(int)eType::NUM_TYPES)); // make safe
-  update();
+  updateSingleSelection();
 }
 
 void ReflectionView::removeSelected() {
@@ -39,14 +39,14 @@ void ReflectionView::removeSelected() {
   if (row<0 || model_.rowCount() <= row) return;
 
   model_.remReflection(row);
-  update();
+  updateSingleSelection();
 }
 
 bool ReflectionView::hasReflections() const {
   return model_.rowCount() > 0;
 }
 
-void ReflectionView::update() {
+void ReflectionView::updateSingleSelection() {
   super::updateSingleSelection();
   hub_.actions.remReflection->setEnabled(hasReflections());
 }

@@ -34,7 +34,7 @@ public:
   void removeSelected();
   bool hasReflections() const;
 
-  void update();
+  void updateSingleSelection();
 
 protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);

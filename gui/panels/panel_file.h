@@ -22,13 +22,12 @@
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-class FilesView: public ListView {
-  SUPER(FilesView,ListView)
+class FilesView: public MultiListView {
+  SUPER(FilesView,MultiListView)
 public:
   using Model = models::FilesViewModel;
 
   FilesView(TheHub&);
-  void update();
 
 protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);

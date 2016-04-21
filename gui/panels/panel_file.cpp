@@ -24,18 +24,17 @@ namespace gui { namespace panel {
 FilesView::FilesView(TheHub& hub): super(hub)
 , model_(hub.fileViewModel), selfSignal_(false) {
   setModel(&model_);
-  setSelectionMode(ExtendedSelection);
   header()->hide();
 
   connect(hub_.actions.remFile, &QAction::triggered, [this]() {
     removeSelected();
-    update();
+    updateNoSelection();
   });
 
   ON_HUB_SIGNAL(filesChanged,  () { 
-    clearSelection();
-    update();
+    updateNoSelection();
   })
+  
   ON_HUB_SIGNAL(filesSelected, () {
     if (!selfSignal_)
       selectRows(hub_.collectedFromFiles());
@@ -80,13 +79,6 @@ void FilesView::removeSelected() {
 
   clearSelection();
   model_.signalReset();
-}
-
-void FilesView::update() {
-  auto index = currentIndex();
-  model_.signalReset();
-  // keep the current index, or select the first item
-  setCurrentIndex(index.isValid() ? index : model_.index(0,1));
 }
 
 //------------------------------------------------------------------------------

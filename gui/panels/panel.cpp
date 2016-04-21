@@ -30,15 +30,27 @@ void ListView::updateSingleSelection() {
   }
 }
 
-void ListView::clearSelection() {
-  selectionModel()->clearSelection();
-}
-
 void ListView::selectRow(uint row) {
   setCurrentIndex(model()->index(row,0));
 }
 
-void ListView::selectRows(uint_vec rows) {
+//------------------------------------------------------------------------------
+
+MultiListView::MultiListView(TheHub& hub): super(hub) {
+  setSelectionMode(ExtendedSelection);
+}
+
+void MultiListView::updateNoSelection() {
+  Model *m = dynamic_cast<Model*>(model());
+  if (m) m->signalReset();
+  clearSelection();
+}
+
+void MultiListView::clearSelection() {
+  selectionModel()->clearSelection();
+}
+
+void MultiListView::selectRows(uint_vec rows) {
   auto m = model();
   uint cols = m->columnCount();
 
