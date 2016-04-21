@@ -28,6 +28,7 @@ public:
   using Model = models::FilesViewModel;
 
   FilesView(TheHub&);
+  void update();
 
 protected:
   void selectionChanged(QItemSelection const&, QItemSelection const&);

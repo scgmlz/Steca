@@ -110,7 +110,7 @@ DockDatasetInfo::Info::Info(models::checkedinfo_vec& metaInfo) {
 //------------------------------------------------------------------------------
 
 ImageWidget::ImageWidget(TheHub& hub,Dataset& dataset_)
-: RefHub(hub), dataset_(dataset_), showOverlay_(false), scale_(1) {
+: RefHub(hub), dataset_(dataset_), showOverlay_(true), scale_(1) {
   setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 }
 
@@ -368,7 +368,7 @@ Dataset::Dataset(TheHub& hub)
 
   auto &actions = hub_.actions;
   actions.showCut->setChecked(true);
-
+  
   {
     auto &tab = addTab("Data",Qt::Vertical);
     tab.box_->addWidget(dataImageWidget_ = new ImageWidget(hub_,*this),0,Qt::AlignCenter);

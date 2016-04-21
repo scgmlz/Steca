@@ -29,9 +29,13 @@ FilesView::FilesView(TheHub& hub): super(hub)
 
   connect(hub_.actions.remFile, &QAction::triggered, [this]() {
     removeSelected();
+    update();
   });
 
-  ON_HUB_SIGNAL(filesChanged,  () { clearSelection(); })
+  ON_HUB_SIGNAL(filesChanged,  () { 
+    clearSelection();
+    update();
+  })
   ON_HUB_SIGNAL(filesSelected, () {
     if (!selfSignal_)
       selectRows(hub_.collectedFromFiles());
@@ -76,6 +80,13 @@ void FilesView::removeSelected() {
 
   clearSelection();
   model_.signalReset();
+}
+
+void FilesView::update() {
+  auto index = currentIndex();
+  model_.signalReset();
+  // keep the current index, or select the first item
+  setCurrentIndex(index.isValid() ? index : model_.index(0,1));
 }
 
 //------------------------------------------------------------------------------
