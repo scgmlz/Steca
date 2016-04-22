@@ -19,7 +19,7 @@
 
 #include "out_sphere.h"
 #include "thehub.h"
-#include "core/core_reflection_info.h"
+#include "core/core_polefigure.h"
 #include "types/core_type_matrix.h"
 #include <GL/glu.h>
 
@@ -325,8 +325,8 @@ public:
 	Geography();
 
 public:
-	static int const STEP = 15;
-	static int const GF = 1;	// grid factor
+	static int const STEP = 10;
+	static int const GF   = 3;	// grid factor
 
 private:
 	void init();
@@ -786,26 +786,44 @@ OutSphere::OutSphere() {
   showGeo(true);
 }
 
-void OutSphere::set(core::ReflectionInfos infos) {
-  infos_ = infos;
+void OutSphere::set1(core::ReflectionInfos infos) {
+  infos1_ = infos;
+  max1_   = maxInten(infos);
   update();
+}
+
+void OutSphere::set2(core::ReflectionInfos infos) {
+  infos2_ = infos;
+  max2_   = maxInten(infos);
+  update();
+}
+
+qreal OutSphere::maxInten(core::ReflectionInfos) {
+  qreal max = 0;
+  for (auto &info: infos1_)
+    max = qMax(max,info.inten());
+  return max;
 }
 
 void OutSphere::onPaintGL() {
   super::onPaintGL();
 
-  for (auto &info: infos_)
-    point(info.alpha(),info.beta(),info.inten());
+  QColor color1(Qt::blue), color2(Qt::green);
+
+  for (auto &info: infos1_)
+    point(info.alpha(),info.beta(),info.inten(), color1, .4/max1_);
+
+  for (auto &info: infos2_)
+    point(info.alpha(),info.beta(),info.inten(), color2, .4/max2_);
 }
 
-void OutSphere::point(float alpha, float beta, float inten) {
+void OutSphere::point(float alpha, float beta, float inten, QColor const& color, qreal factor) {
   alpha = 90 - alpha;
   vertex_t v1 = vertex_t::fromPolar(beta,alpha,1);
-  vertex_t v2 = vertex_t::fromPolar(beta,alpha,1 + inten/300);
+  vertex_t v2 = vertex_t::fromPolar(beta,alpha,1 + factor*inten);
 
   glLineWidth(2);
-  QColor clr(Qt::yellow);
-  glColor(clr);
+  glColor(color);
   glBegin(GL_LINES);
   glMappedVertex(v1);
   glMappedVertex(v2);
@@ -820,7 +838,10 @@ PoleSphere::PoleSphere(TheHub& hub,rcstr title,QWidget* parent): super(hub,title
 }
 
 void PoleSphere::calculate() {
-  sphere_->set(hub_.reflectionInfos(1));
+  auto rs1 = hub_.reflectionInfos(5);
+  auto rs2 = core::pole::interpolate(rs1,10,10,10,10,10,1);
+  sphere_->set1(rs1);
+  sphere_->set2(rs2);
 }
 
 //------------------------------------------------------------------------------

@@ -26,6 +26,7 @@ qreal calculateDeltaBeta(qreal beta1, qreal beta2) {
   if (qAbs(tempDelta) < qAbs(deltaBeta)) deltaBeta = tempDelta;
   tempDelta = deltaBeta + 360;
   if (qAbs(tempDelta) < qAbs(deltaBeta)) deltaBeta = tempDelta;
+  ASSERT(-180 <= deltaBeta && deltaBeta <= 180)
   return deltaBeta;
 }
 
@@ -36,10 +37,9 @@ qreal angle(qreal alpha1, qreal alpha2,
   alpha2 = deg2rad(alpha2);
   deltaBeta = deg2rad(deltaBeta);
   // Absolute value of deltaBeta is not needed because cos is an even function.
-  return rad2deg(acos(
-                         cos(alpha1) * cos(alpha2)
-                       + sin(alpha1) * sin(alpha2) * cos(deltaBeta)
-  ));
+  auto a = rad2deg(acos(cos(alpha1) * cos(alpha2) + sin(alpha1) * sin(alpha2) * cos(deltaBeta)));
+  ASSERT(0<=a && a<=180)
+  return a;
 }
 
 namespace Quadrant {
@@ -87,8 +87,8 @@ Quadrant::Quadrant remapQuadrant(Quadrant::Quadrant const Q) {
 bool inRadius(qreal alpha, qreal beta,
               qreal centerAlpha, qreal centerBeta,
               qreal radius) {
-  return qAbs(angle(alpha, centerAlpha, calculateDeltaBeta(beta, centerBeta)))
-         < radius;
+  auto a = angle(alpha, centerAlpha, calculateDeltaBeta(beta, centerBeta));
+  return qAbs(a) < radius;
 }
 
 // Adds data from reflection infos within radius from alpha and beta
@@ -116,7 +116,7 @@ void searchInQuadrants(
     ReflectionInfos const& infos,
     QVector<ReflectionInfo const*> & foundInfos,
     qreal_vec & distances) {
-  ASSERT(quadrants.size() < Quadrant::NUM_QUADRANTS);
+  ASSERT(quadrants.size() <= Quadrant::NUM_QUADRANTS);
   // Take only reflection infos with beta within +/- BETA_LIMIT degrees into
   // account. Original STeCa used something like +/- 1.5*36 degrees.
   qreal const BETA_LIMIT = 30;

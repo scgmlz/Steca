@@ -111,7 +111,7 @@ public:
 public:
   Sphere(QWidget* = NULL);
 
-  QSize minimumSizeHint() const { return QSize(200,140); }
+  QSize minimumSizeHint() const { return QSize(400,320); }
 
 	void update();
 	void showGeo(bool);
@@ -161,13 +161,15 @@ class OutSphere: public Sphere {
 public:
   OutSphere();
 
-  void set(core::ReflectionInfos);
+  void set1(core::ReflectionInfos);
+  void set2(core::ReflectionInfos);
+  qreal maxInten(core::ReflectionInfos);
 
 protected:
   void onPaintGL();
-  void point(float alpha, float beta, float inten);
+  void point(float alpha, float beta, float inten, QColor const&, qreal factor);
 
-  core::ReflectionInfos infos_;
+  core::ReflectionInfos infos1_, infos2_; qreal max1_, max2_;
 };
 
 //------------------------------------------------------------------------------

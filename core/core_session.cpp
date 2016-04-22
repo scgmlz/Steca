@@ -248,7 +248,7 @@ static void calculateAlphaBeta(rcDataset dataset,
 
   // If alpha is in the wrong hemisphere, mirror both alpha and beta over the
   // center of a unit sphere.
-  if (alpha > M_PI_2) { // REVIEW - does it ever happen
+  if (alpha > M_PI_2) { // REVIEW - seems like that happens only for a very narrow ring
     alpha = qAbs(alpha - M_PI);
     beta += beta < 0 ? M_PI : -M_PI;
   }
@@ -307,7 +307,7 @@ ReflectionInfos Session::reflectionInfos(rcDatasets datasets, rcReflection refle
       infos.append(makeReflectionInfo(l,reflection,gammaStripe));
     }
   }
-  
+
   return infos;
 }
 
