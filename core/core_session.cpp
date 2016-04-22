@@ -235,7 +235,7 @@ static void calculateAlphaBeta(rcDataset dataset,
   // corresponding to the location of a polefigure point.
   // Note that the rotations here do not correspond to C. Randau's dissertation.
   // The rotations given in [J. Appl. Cryst. (2012) 44, 641-644] are incorrect.
-  vector3d rotated = matrix3d::rotationCWz (phi)
+  vector3d rotated = matrix3d::rotationCWz (phi) // TODO precalculate phi/ch/omg rotations, save in dataset
                    * matrix3d::rotationCWx (chi)
                    * matrix3d::rotationCWz (omg)
                    * matrix3d::rotationCWx (gamma)
@@ -248,7 +248,7 @@ static void calculateAlphaBeta(rcDataset dataset,
 
   // If alpha is in the wrong hemisphere, mirror both alpha and beta over the
   // center of a unit sphere.
-  if (alpha > M_PI / 2) {
+  if (alpha > M_PI_2) { // REVIEW - does it ever happen
     alpha = qAbs(alpha - M_PI);
     beta += beta < 0 ? M_PI : -M_PI;
   }
@@ -262,10 +262,9 @@ static void calculateAlphaBeta(rcDataset dataset,
 }
 
 // Fits reflection to the given gamma sector and constructs a ReflectionInfo.
-ReflectionInfo Session::makeReflectionInfo(rcDataset dataset, rcReflection reflection,
+ReflectionInfo Session::makeReflectionInfo(shp_Lens lens, rcReflection reflection,
                                            rcRange gammaSector) const {
-  auto curve = lens(dataset,true,true,norm_)
-                  ->makeCurve(gammaSector, angleMap(dataset).rgeTth());
+  auto curve = lens->makeCurve(gammaSector, lens->angleMap().rgeTth());
   auto bgPol = fit::fitPolynomial(bgPolynomialDegree_,curve,bgRanges_);
   curve = curve.subtract(bgPol);
 
@@ -275,7 +274,7 @@ ReflectionInfo Session::makeReflectionInfo(rcDataset dataset, rcReflection refle
   fit::fit(*peakFunction, curve, rgeTth);
 
   qreal alpha, beta;
-  calculateAlphaBeta(dataset, rgeTth.center(), gammaSector.center(), alpha, beta);
+  calculateAlphaBeta(lens->dataset(), rgeTth.center(), gammaSector.center(), alpha, beta);
 
   XY peak = peakFunction->fittedPeak();
   return ReflectionInfo(alpha, beta, gammaSector,
@@ -293,11 +292,11 @@ ReflectionInfos Session::reflectionInfos(rcDatasets datasets, rcReflection refle
   ReflectionInfos infos;
 
   for (auto &dataset: datasets) {
-    auto lenses = lens(*dataset, true, true, norm_);
+    auto l = lens(*dataset, true, true, norm_);
     // TODO potentially optimize (invariant if lens does not change)
     Range rgeGamma = gammaRange.isValid()
         ? gammaRange
-        : lenses->gammaRangeAt(reflection.range().center());
+        : l->gammaRangeAt(reflection.range().center());
 
     int numGammaRows = qCeil(rgeGamma.width() / betaStep);
     qreal gammaStep = rgeGamma.width() / numGammaRows;
@@ -305,9 +304,10 @@ ReflectionInfos Session::reflectionInfos(rcDatasets datasets, rcReflection refle
     for_i (numGammaRows) {
       qreal min = rgeGamma.min + i * gammaStep;
       Range gammaStripe(min,min + gammaStep);
-      infos.append(makeReflectionInfo(*dataset,reflection,gammaStripe));
+      infos.append(makeReflectionInfo(l,reflection,gammaStripe));
     }
   }
+  
   return infos;
 }
 

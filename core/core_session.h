@@ -109,7 +109,7 @@ public:
   shp_Lens      lens(rcDataset, bool trans, bool cut, eNorm) const;
 
 // reflections
-  ReflectionInfo makeReflectionInfo(rcDataset, rcReflection,
+  ReflectionInfo makeReflectionInfo(shp_Lens, rcReflection,
                                     rcRange gammaSector) const;
 
   ReflectionInfos reflectionInfos(rcDatasets, rcReflection, qreal betaStep,

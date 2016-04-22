@@ -801,7 +801,7 @@ void OutSphere::onPaintGL() {
 void OutSphere::point(float alpha, float beta, float inten) {
   alpha = 90 - alpha;
   vertex_t v1 = vertex_t::fromPolar(beta,alpha,1);
-  vertex_t v2 = vertex_t::fromPolar(beta,alpha,1 + inten/200);
+  vertex_t v2 = vertex_t::fromPolar(beta,alpha,1 + inten/300);
 
   glLineWidth(2);
   QColor clr(Qt::yellow);
@@ -820,7 +820,7 @@ PoleSphere::PoleSphere(TheHub& hub,rcstr title,QWidget* parent): super(hub,title
 }
 
 void PoleSphere::calculate() {
-  sphere_->set(hub_.reflectionInfos(5));
+  sphere_->set(hub_.reflectionInfos(1));
 }
 
 //------------------------------------------------------------------------------

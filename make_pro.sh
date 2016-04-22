@@ -11,7 +11,7 @@ TARGET   = $APP
 TEMPLATE = app
 
 QT      += core gui widgets
-CONFIG  += silent $CFG
+CONFIG  += c++11 silent $CFG
 DEFINES += STECA_LABS
 
 INCLUDEPATH += \$\$PWD/core \$\$PWD/gui

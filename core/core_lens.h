@@ -69,12 +69,15 @@ public:
   Range   gammaRangeAt(qreal tth)      const;
 
   Curve makeCurve(rcRange gamma, rcRange tth) const;
+  
+  rcDataset       dataset()  const { return dataset_;  }
+  AngleMap const& angleMap() const { return angleMap_; }
 
 private:
   void setNorm(eNorm);
 
-  Dataset  const& dataset_;
-  AngleMap angleMap_;
+  rcDataset dataset_;
+  AngleMap  angleMap_;
 
   mutable Range rgeIntenGlobal_;
 };
