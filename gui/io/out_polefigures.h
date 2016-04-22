@@ -24,7 +24,7 @@ namespace gui { namespace io {
 class OutPoleFigures: public OutWindow {
   SUPER(OutPoleFigures,OutWindow)
 public:
-  OutPoleFigures(rcstr title,TheHub&,QWidget*);
+  OutPoleFigures(TheHub&,rcstr title,QWidget*);
   void calculate();
 };
 

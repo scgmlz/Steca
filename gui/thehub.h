@@ -98,6 +98,10 @@ public:
   core::AngleMap const& angleMap(core::rcDataset)  const;
 
 public:
+  core::ReflectionInfos reflectionInfos(qreal betaStep,
+                                        core::rcRange gammaRange = core::Range());
+
+public:
   void saveSession(QFileInfo const&) const;
   QByteArray saveSession()           const;
 
@@ -108,7 +112,7 @@ public:
   void addFile(rcstr filePath)      THROWS;
   void addFiles(str_lst filePaths)  THROWS;
 
-  void collectDatasetsFromFiles(uint_vec); 
+  void collectDatasetsFromFiles(uint_vec);
   uint_vec const& collectedFromFiles() const { return session->collectedFromFiles();   }
   core::rcDatasets collectedDatasets() const { return session->collectedDatasets();    }
 

@@ -300,7 +300,8 @@ OutTableWidget::ShowColumnsWidget::ShowColumnsWidget(OutTableWidget::showcolumn_
 
 //------------------------------------------------------------------------------
 
-OutWindow::OutWindow(rcstr title, QWidget* parent): super(parent, Qt::Dialog) {
+OutWindow::OutWindow(TheHub& hub,rcstr title, QWidget* parent)
+: super(parent, Qt::Dialog), RefHub(hub) {
   setAttribute(Qt::WA_DeleteOnClose);
   setWindowTitle(title);
   setLayout((box_ = vbox()));

@@ -46,7 +46,7 @@ public:
   int width()  const;
   int height() const;
 
-  void updateGL() { update(); }
+  void updateGL() { super::update(); }
 
 signals:
   void rotated();
@@ -86,11 +86,14 @@ public:
     vertex_t(float x, float y, float z);
     vertex_t(QVector3D const&);
     vertex_t(core::vector3f const&);
-    vertex_t(float azi, float ele);
 
-    core::NormalizedAngle<float> azi, ele;
+    static vertex_t fromPolar(qreal azi, qreal ele, qreal radius = 1);
+
     float val;
     int  prominence;
+
+    qreal azi() const;
+    qreal ele() const;
 
     vertex_t const *nbr[8];	// e,ne,n,nw,w,sw,s,se
 
@@ -101,10 +104,6 @@ public:
     float nv(uint i) { // nbr value
       return nbr[i]->val;
     }
-
-  private:
-    static void      toPolar(QVector3D const&,float& azi, float& ele);
-    static QVector3D toCart(float azi, float ele);
   };
 
   typedef QVector<vertex_t> vertex_vec;
@@ -157,11 +156,30 @@ private:
 
 //------------------------------------------------------------------------------
 
+class OutSphere: public Sphere {
+  SUPER(OutSphere,Sphere)
+public:
+  OutSphere();
+
+  void set(core::ReflectionInfos);
+
+protected:
+  void onPaintGL();
+  void point(float alpha, float beta, float inten);
+
+  core::ReflectionInfos infos_;
+};
+
+//------------------------------------------------------------------------------
+
 class PoleSphere: public OutWindow {
   SUPER(PoleSphere,OutWindow)
 public:
-  PoleSphere(rcstr title,TheHub&,QWidget*);
+  PoleSphere(TheHub&,rcstr title,QWidget*);
   void calculate();
+
+private:
+  OutSphere *sphere_;
 };
 
 //------------------------------------------------------------------------------

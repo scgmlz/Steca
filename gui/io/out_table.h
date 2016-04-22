@@ -92,10 +92,10 @@ private:
 //------------------------------------------------------------------------------
 /// a child window that deletes itself
 
-class OutWindow: public QFrame {
+class OutWindow: public QFrame, protected RefHub {
   SUPER(OutWindow,QFrame)
 public:
-  OutWindow(rcstr title,QWidget*);
+  OutWindow(TheHub&,rcstr title,QWidget*);
 
 protected:
   virtual void calculate() = 0; ///< here do the work

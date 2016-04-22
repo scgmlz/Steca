@@ -335,13 +335,13 @@ void MainWin::saveSession() {
 }
 
 void MainWin::outputPoleFigures() {
-  auto popup = new io::OutPoleFigures("Pole Figures",hub_,this);
+  auto popup = new io::OutPoleFigures(hub_,"Pole Figures",this);
   popup->show();
 }
 
 #ifdef STECA_LABS
 void MainWin::poleSphere() {
-  auto popup = new io::PoleSphere("Pole Sphere",hub_,this);
+  auto popup = new io::PoleSphere(hub_,"Pole Sphere",this);
   popup->show();
 }
 #endif
@@ -363,9 +363,6 @@ void MainWin::onShow() {
 #else
   hub_.loadSession(QFileInfo("/home/jan/SCG/s.ste"));
 #endif
-#endif
-#ifdef STECA_LABS
-  poleSphere();
 #endif
 }
 

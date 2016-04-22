@@ -34,8 +34,8 @@ OutPoleFiguresParams::OutPoleFiguresParams(TheHub& hub): super("", hub, Qt::Hori
 
 //------------------------------------------------------------------------------
 
-OutPoleFigures::OutPoleFigures(rcstr title,TheHub& hub,QWidget* parent)
-: super(title,parent) {
+OutPoleFigures::OutPoleFigures(TheHub& hub,rcstr title,QWidget* parent)
+: super(hub,title,parent) {
   setWidgets(
       new OutPoleFiguresParams(hub),
       new OutTableWidget(hub,

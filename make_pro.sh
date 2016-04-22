@@ -20,7 +20,7 @@ EOT
 
 function files {
   where=$1; ext=$2
-  find $where -type f -name \*.$ext -printf '  %p \\\n'
+  find $where -type f -name \*.$ext -exec echo ' ' {} \\ \;
 }
 
 echo -e '\nHEADERS += \\'	>> $PRO
@@ -32,5 +32,6 @@ files core cpp			>> $PRO
 files gui  cpp			>> $PRO
 
 echo -e '\nRESOURCES += \\'	>> $PRO
-files . qrc			>> $PRO
+files core qrc			>> $PRO
+files gui  qrc			>> $PRO
 

@@ -18,6 +18,8 @@
 #ifdef STECA_LABS
 
 #include "out_sphere.h"
+#include "thehub.h"
+#include "core/core_reflection_info.h"
 #include "types/core_type_matrix.h"
 #include <GL/glu.h>
 
@@ -154,27 +156,24 @@ Sphere::vertex_t::vertex_t(float x, float y, float z): vertex_t(QVector3D(x,y,z)
 
 Sphere::vertex_t::vertex_t(QVector3D const& v): QVector3D(v), val(0), prominence(0) {
   for_i (8) nbr[i] = nullptr;
-
-  float a, e; toPolar(*this,a,e);
-  azi.set(a); ele.set(e);
 }
 
 Sphere::vertex_t::vertex_t(core::vector3f const& v): vertex_t(QVector3D(v._0,v._1,v._2)) {
 }
 
-Sphere::vertex_t::vertex_t(float a, float e): vertex_t(toCart(a,e)) {
-}
-
-void Sphere::vertex_t::toPolar(QVector3D const& v, float &azi, float &ele) {
-  azi = rad2deg(atan2f(v.y(),v.x()));
-  ele = rad2deg(asinf(v.z()/v.length()));
-}
-
-QVector3D Sphere::vertex_t::toCart(float azi, float ele) {
+Sphere::vertex_t Sphere::vertex_t::fromPolar(qreal azi, qreal ele, qreal radius) {
   qreal	razi = deg2rad(azi), rele = deg2rad(ele);
   qreal cele = cosf(rele);
   qreal x = cosf(razi) * cele, y = sinf(razi) * cele, z = sinf(rele);
-  return QVector3D(x, y, z);
+  return vertex_t(x*radius,y*radius,z*radius);
+}
+
+qreal Sphere::vertex_t::azi() const {
+  return rad2deg(atan2f(y(),x()));
+}
+
+qreal Sphere::vertex_t::ele() const {
+  return rad2deg(asinf(z()/length()));
 }
 
 //------------------------------------------------------------------------------
@@ -353,7 +352,7 @@ int wrap(int i, int mx) {
 void Sphere::Geography::init() {
 	for (int azi=-180; azi<180; azi+=STEP) {
 		for (int ele=-90; ele<=90; ele+=STEP) {
-			vertices.append(vertex_t(azi, ele));
+			vertices.append(vertex_t::fromPolar(azi, ele));
 		}
 	}
 
@@ -394,7 +393,7 @@ Sphere::Sphere(QWidget *parent)
 	} else {
 		clearColor_     = QColor(Qt::gray);
 		polyMeshColor_  = QColor(Qt::gray).darker(300);
-		geoMeshColor_   = QColor(Qt::gray).darker();
+		geoMeshColor_   = QColor(Qt::gray).darker(160);
 		geoCrossColor_  = QColor(Qt::darkYellow);
 	}
 }
@@ -438,8 +437,9 @@ void Sphere::init() {
 }
 
 void Sphere::onPaintGL() {
-	if (polyMesh_ && !flat_) paintPolyhedronMesh();
+  glLineWidth(1);
 
+  if (polyMesh_ && !flat_) paintPolyhedronMesh();
 	if (geoMesh_)	paintGeographicMesh();
 	if (faces_)		paintFaces();
 	if (flat_)		paintTops();
@@ -493,8 +493,6 @@ void Sphere::paintGeographicMesh() const {
 	uint const aziSize = 360/Geography::STEP;
 	uint const eliSize = 180/Geography::STEP + 1;
 	if (flat_) {
-		glLineWidth(1);
-
 		int w = width(), h = height();
 		// paint lines of longitude
 		for (uint azi = 0; azi < aziSize; azi+=Geography::GF) {
@@ -784,52 +782,45 @@ OutPoleSphereParams::OutPoleSphereParams(TheHub& hub): super("", hub, Qt::Horizo
 
 //------------------------------------------------------------------------------
 
-class OutSphere: public Sphere {
-  SUPER(OutSphere,Sphere)
-public:
-  OutSphere();
-protected:
-  void onPaintGL();
-
-  void point(float alpha, float beta);
-};
-
 OutSphere::OutSphere() {
   showGeo(true);
+}
+
+void OutSphere::set(core::ReflectionInfos infos) {
+  infos_ = infos;
+  update();
 }
 
 void OutSphere::onPaintGL() {
   super::onPaintGL();
 
-  point(0,0);
-  point(30,0);
-  point(30,30);
-  point(30,40);
-  point(30,50);
+  for (auto &info: infos_)
+    point(info.alpha(),info.beta(),info.inten());
 }
 
-void OutSphere::point(float alpha, float beta) {
+void OutSphere::point(float alpha, float beta, float inten) {
   alpha = 90 - alpha;
-  vertex_t
-    a(beta,alpha), b(a.x()+.03,a.y(),a.z()), c(a.x(),a.y()+.03,a.z());
+  vertex_t v1 = vertex_t::fromPolar(beta,alpha,1);
+  vertex_t v2 = vertex_t::fromPolar(beta,alpha,1 + inten/200);
 
+  glLineWidth(2);
   QColor clr(Qt::yellow);
   glColor(clr);
-  glBegin(GL_TRIANGLES);
-  glMappedVertex(a);
-  glMappedVertex(b);
-  glMappedVertex(c);
+  glBegin(GL_LINES);
+  glMappedVertex(v1);
+  glMappedVertex(v2);
   glEnd();
 }
 
 //------------------------------------------------------------------------------
 
-PoleSphere::PoleSphere(rcstr title,TheHub& hub,QWidget* parent)
-: super(title,parent) {
-  setWidgets(new OutPoleSphereParams(hub), new OutSphere());
+PoleSphere::PoleSphere(TheHub& hub,rcstr title,QWidget* parent): super(hub,title,parent) {
+  setWidgets(new OutPoleSphereParams(hub), (sphere_ = new OutSphere()));
+  calculate();
 }
 
 void PoleSphere::calculate() {
+  sphere_->set(hub_.reflectionInfos(5));
 }
 
 //------------------------------------------------------------------------------

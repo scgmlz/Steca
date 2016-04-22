@@ -16,6 +16,7 @@
 #include "mainwin.h"
 #include "types/core_json.h"
 #include "core_reflection.h"
+#include "core_reflection_info.h"
 #include "io/core_io.h"
 
 #include <QSpinBox>
@@ -284,6 +285,13 @@ core::shp_Lens TheHub::lensNoCut(core::rcDataset dataset) const {
 
 core::AngleMap const& TheHub::angleMap(core::rcDataset dataset) const {
   return session->angleMap(dataset);
+}
+
+core::ReflectionInfos TheHub::reflectionInfos(qreal betaStep,
+                                              core::rcRange gammaRange) {
+  // TODO TODO TODO
+  return session->reflectionInfos(
+     collectedDatasets(), *reflections().first(), betaStep, gammaRange);
 }
 
 static str const KEY_FILES("files");

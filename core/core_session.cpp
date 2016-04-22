@@ -295,15 +295,15 @@ ReflectionInfos Session::reflectionInfos(rcDatasets datasets, rcReflection refle
   for (auto &dataset: datasets) {
     auto lenses = lens(*dataset, true, true, norm_);
     // TODO potentially optimize (invariant if lens does not change)
-    Range gr = gammaRange.isValid()
+    Range rgeGamma = gammaRange.isValid()
         ? gammaRange
         : lenses->gammaRangeAt(reflection.range().center());
 
-    int numGammaRows = qCeil(gr.width() / betaStep);
-    qreal gammaStep = gr.width() / numGammaRows;
+    int numGammaRows = qCeil(rgeGamma.width() / betaStep);
+    qreal gammaStep = rgeGamma.width() / numGammaRows;
 
     for_i (numGammaRows) {
-      qreal min = gammaRange.min + i * gammaStep;
+      qreal min = rgeGamma.min + i * gammaStep;
       Range gammaStripe(min,min + gammaStep);
       infos.append(makeReflectionInfo(*dataset,reflection,gammaStripe));
     }
