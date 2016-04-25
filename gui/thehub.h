@@ -66,9 +66,10 @@ private:
   QScopedPointer<core::Session> session;
 
 public:
-  bool fixedIntensityScale;
+  bool fixedIntenScaleImage_;
+  bool fixedIntenScaleDgram_;
 
-  models::FilesViewModel       fileViewModel;
+  models::FilesViewModel      fileViewModel;
   models::DatasetViewModel    datasetViewModel;
   models::ReflectionViewModel reflectionViewModel;
 

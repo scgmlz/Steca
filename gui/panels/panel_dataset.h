@@ -125,6 +125,7 @@ private:
 
 //------------------------------------------------------------------------------
 
+// RENAME gui::panel::Dataset -> ???
 class Dataset: public TabsPanel {
   SUPER(Dataset,TabsPanel)
 public:

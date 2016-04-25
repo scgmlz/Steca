@@ -136,7 +136,7 @@ void MainWin::initMenus() {
   });
 
   menuView_->addActions({
-    acts_.fixedIntensityDisplay, acts_.showCut, separator(),
+    acts_.fixedIntenDisplayImage,acts_.fixedIntenDisplayDgram, acts_.showCut, separator(),
     acts_.fitTool, acts_.fitBgClear, acts_.fitShow, separator(),
     acts_.viewStatusbar,
 #ifndef Q_OS_OSX

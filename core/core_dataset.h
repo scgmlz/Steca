@@ -17,6 +17,7 @@
 #define CORE_DATASET_H
 
 #include "types/core_type_image.h"
+#include "types/core_type_geometry.h"
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -78,17 +79,19 @@ public:
   void appendHere(shp_Dataset);
 
   /// collapse datasets into one (for correction files)
-  Image folded() THROWS;
+  Image folded() const THROWS;
 
   // in all datasets
-  QSize imageSize()       const;
+  QSize imageSize()            const;
   qreal avgDeltaMonitorCount() const;
-  qreal avgDeltaTime()    const;
+  qreal avgDeltaTime()         const;
+  Range rgeFixedInten(Session session, bool trans, bool cut) const;
 
 private:
   void invalidateMutables();
   // computed on demand
   mutable qreal avgMonitorCount_, avgDeltaTime_;
+  mutable Range rgeFixedInten_;
 };
 
 //------------------------------------------------------------------------------

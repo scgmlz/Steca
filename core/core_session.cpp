@@ -204,15 +204,17 @@ IJ Session::midPix() const {
   return mid;
 }
 
-shp_ImageLens Session::lens(rcImage image, bool trans, bool cut) const {
-  return shp_ImageLens(new ImageLens(*this, image, corrEnabled_ ? &corrImage_ : nullptr,
-                                     trans, cut, imageCut_, imageTransform_));
+shp_ImageLens Session::lens(rcImage image, Range rgeFixedInten, bool trans, bool cut) const {
+  return shp_ImageLens(new ImageLens(*this,image, corrEnabled_ ? &corrImage_ : nullptr,
+                                      rgeFixedInten, trans, cut, 
+                                     imageCut_, imageTransform_));
 }
 
-shp_Lens Session::lens(rcDataset dataset, bool trans, bool cut, eNorm norm) const {
+shp_Lens Session::lens(rcDataset dataset, Range rgeFixedInten,
+                       bool trans, bool cut, eNorm norm) const {
   return shp_Lens(new Lens(*this, dataset, corrEnabled_ ? &corrImage_ : nullptr,
-                           trans, cut, norm, angleMap(dataset),
-                           imageCut_, imageTransform_));
+                           rgeFixedInten, trans, cut, norm, 
+                           angleMap(dataset),imageCut_, imageTransform_));
 }
 
 // Calculates the polefigure coordinates alpha and beta with regards to
@@ -292,7 +294,7 @@ ReflectionInfos Session::reflectionInfos(rcDatasets datasets, rcReflection refle
   ReflectionInfos infos;
 
   for (auto &dataset: datasets) {
-    auto l = lens(*dataset, true, true, norm_);
+    auto l = lens(*dataset, datasets.rgeFixedInten(*this,true,true), true, true, norm_);
     // TODO potentially optimize (invariant if lens does not change)
     Range rgeGamma = gammaRange.isValid()
         ? gammaRange
@@ -316,7 +318,7 @@ void Session::setNorm(eNorm norm) {
 }
 
 qreal Session::calcAvgBackground(rcDataset dataset) const {
-  auto l = lens(dataset, true, true, eNorm::NONE);
+  auto l = lens(dataset, dataset.datasets().rgeFixedInten(*this,true,true), true, true, eNorm::NONE);
 
   auto &map = angleMap(dataset);
   Curve gammaCurve = l->makeCurve(map.rgeGamma(), map.rgeTth());

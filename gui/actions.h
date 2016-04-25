@@ -79,7 +79,8 @@ struct Actions {
 
     *addReflection, *remReflection,
     *rotateImage, *mirrorImage,
-    *linkCuts, *showCut, *fixedIntensityDisplay,
+    *linkCuts, *showCut,
+    *fixedIntenDisplayImage, *fixedIntenDisplayDgram,
     *fitTool, *fitBgClear, *fitShow,
     *hasBeamOffset;
 };

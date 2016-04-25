@@ -207,14 +207,15 @@ void DiffractogramPlot::plot(
     auto tthRange   = dgram.rgeX();
 
     core::Range intenRange;
-//    if (fixedIntensityScale) { TODO use lens
-//      auto max = _diffractogram.getDataset()->rgeInten(true).max;
-//      // heuristics; to calculate this precisely would require much more computation
-//      intenRange = core::Range(-max/30,max/3);
-//    } else {
+    if (hub_.fixedIntenScaleDgram_) {
+      auto lens = hub_.lens(*diffractogram_.getDataset().data());
+      auto max = lens->rgeInten(hub_.fixedIntenScaleDgram_).max;
+      // heuristics; to calculate this precisely would require much more computation
+      intenRange = core::Range(-max/30,max/3);
+    } else {
       intenRange = dgramBgFitted.rgeY();
       intenRange.extendBy(dgram.rgeY());
-//    }
+    }
 
     xAxis->setRange(tthRange.min,tthRange.max);
     yAxis->setRange(qMin(0.,intenRange.min),intenRange.max);
@@ -330,7 +331,7 @@ Diffractogram::Diffractogram(TheHub& hub)
   auto hb = hbox();
   box_->addLayout(hb);
   hb->addWidget(check("all datasets"));
-  hb->addWidget(check("fixed scale",hub_.actions.fixedIntensityDisplay));
+  hb->addWidget(check("fixed scale",hub_.actions.fixedIntenDisplayDgram));
   hb->addStretch();
 
   ON_HUB_SIGNAL(datasetSelected, (core::shp_Dataset dataset) { setDataset(dataset); })

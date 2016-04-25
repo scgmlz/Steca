@@ -64,7 +64,7 @@ public:
 
   void            collectDatasetsFromFiles(uint_vec);
   uint_vec const& collectedFromFiles() { return collectedFromFiles_;  }
-  rcDatasets      collectedDatasets()  { return collectedDatasets_;   }
+  rcDatasets      collectedDatasets()  const { return collectedDatasets_;   }
 
 // image - sanity
 private:
@@ -105,8 +105,8 @@ public:
 
 // lenses
 public:
-  shp_ImageLens lens(rcImage,   bool trans, bool cut)        const;
-  shp_Lens      lens(rcDataset, bool trans, bool cut, eNorm) const;
+  shp_ImageLens lens(rcImage, Range rgeFixedInten, bool trans, bool cut) const;
+  shp_Lens      lens(rcDataset, Range rgeFixedInten, bool trans, bool cut, eNorm) const;
 
 // reflections
   ReflectionInfo makeReflectionInfo(shp_Lens, rcReflection,

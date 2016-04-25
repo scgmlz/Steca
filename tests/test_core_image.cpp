@@ -28,7 +28,7 @@ void TestCoreImage::testImage(uint w, uint h) {
 
   // checking if intensities are correct
   for_ij (w,h) {
-    if (i==specialI && j==specialJ)
+    if ((uint)i==specialI && (uint)j==specialJ)
       QCOMPARE(im.at(i,j),specialInten);
     else
       QCOMPARE(im.at(i,j),inten);

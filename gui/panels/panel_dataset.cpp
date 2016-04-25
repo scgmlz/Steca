@@ -285,7 +285,7 @@ DatasetOptions2::DatasetOptions2(TheHub& hub)
   hb->addSpacing(5);
   hb->addWidget(iconButton(hub_.actions.mirrorImage));
   hb->addSpacing(5);
-  hb->addWidget(iconButton(hub_.actions.fixedIntensityDisplay));
+  hb->addWidget(iconButton(hub_.actions.fixedIntenDisplayImage));
   hb->addStretch();
 
   auto sc = hbox();
@@ -404,7 +404,7 @@ void Dataset::setImageScale(uint scale) {
 QPixmap Dataset::makePixmap(core::shp_ImageLens lens) {
   QPixmap pixmap;
   auto size = lens->size();
-  auto rgeInten = lens->rgeInten(); // REVIEW also global
+  auto rgeInten = lens->rgeInten(hub_.fixedIntenScaleImage_); // REVIEW also global
 
   if (!size.isEmpty()) {
     qreal maxIntens = rgeInten.max;

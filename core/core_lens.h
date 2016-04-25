@@ -26,14 +26,15 @@ namespace core {
 
 class ImageLens { TESTS_FRIEND
 public:
-  ImageLens(rcSession, rcImage, Image const* corrImage,
+  ImageLens(rcSession, rcImage, Image const* corrImage,Range rgeFixedInten,
             bool trans, bool cut, ImageCut const&, ImageTransform const&);
 
   QSize   size()                 const;
   inten_t inten(uint i, uint j)  const;
 
-  rcRange rgeInten()             const;
-
+  rcRange rgeInten(bool fixed)   const;
+  rcRange rgeImageInten()        const;
+  
 protected:
   void doTrans(uint& i, uint& j) const;
   void doCut(uint& i, uint& j)   const;
@@ -43,7 +44,8 @@ protected:
   Image    const& image_;
   Image    const* corrImage_;
 
-  bool trans_, cut_;
+  Range rgeFixedInten_;
+  bool trans_,cut_;
   ImageTransform imageTransform_;
   ImageCut imageCut_;
 
@@ -51,6 +53,7 @@ protected:
   qreal normFactor_;
 
   mutable Range rgeInten_;
+  
 };
 
 //------------------------------------------------------------------------------
@@ -61,12 +64,11 @@ public:
   static str_lst const& normStrLst();
 
   Lens(rcSession, rcDataset, Image const* corr,
-       bool trans, bool cut, eNorm norm,
+       Range rgeFixedInten, bool trans,  bool cut, eNorm norm,
        AngleMap const&, ImageCut const&, ImageTransform const&);
 
-  Angles const& angles(uint i, uint j) const;
-  rcRange rgeIntenGlobal()             const;
-  Range   gammaRangeAt(qreal tth)      const;
+  Angles  const& angles(uint i, uint j) const;
+  Range   gammaRangeAt(qreal tth)       const;
 
   Curve makeCurve(rcRange gamma, rcRange tth) const;
   
@@ -78,8 +80,6 @@ private:
 
   rcDataset dataset_;
   AngleMap  angleMap_;
-
-  mutable Range rgeIntenGlobal_;
 };
 
 //------------------------------------------------------------------------------

@@ -88,8 +88,8 @@ void Settings::save(rcstr key, QDoubleSpinBox* box) {
 
 //------------------------------------------------------------------------------
 
-TheHub::TheHub(): session(new core::Session())
-, fixedIntensityScale(false)
+TheHub::TheHub(): session(new core::Session()) 
+, fixedIntenScaleImage_(false), fixedIntenScaleDgram_(false)
 , fileViewModel(*this), datasetViewModel(*this), reflectionViewModel(*this) {
   initActions();
   configActions();
@@ -159,9 +159,12 @@ void TheHub::initActions() { // REVIEW all action texts and tips and icons
   TOGL(showCut, "overlay", "Show cut")
       .alt("overlay", "Hide cut")
       .icon(":/icon/imageCrop");
-  TOGL(fixedIntensityDisplay, "fixed Intensity", "Display data using a fixed intensity scale")
-      .alt("fixed Intensity", "Display data using non-fixed intensity scale")
+  TOGL(fixedIntenDisplayImage, "fixed Image Intensity", "Display image using a fixed intensity scale")
+      .alt("non-fixed Image Intensity", "Display image using non-fixed intensity scale")
       .icon(":/icon/scale");
+  TOGL(fixedIntenDisplayDgram, "fixed Diffractogram Intensity", "Display diffractogram using a fixed intensity scale")
+    .alt("non-fixed Diffractogram Intensity", "Display diffractogram using non-fixed intensity scale")
+    .dialog();
   TRIG(rotateImage, "Rotate", "Rotate 90° clockwise")
       .icon(":/icon/rotate0").key(Qt::CTRL|Qt::Key_R);
   TOGL(mirrorImage, "Mirror", "Mirror image")
@@ -199,9 +202,14 @@ void TheHub::configActions() {
   connect(actions.remCorr, &QAction::triggered, [this]() {
     setCorrFile(EMPTY_STR);
   });
+  
+  connect(actions.fixedIntenDisplayImage,&QAction::toggled,[this](bool on) {
+    fixedIntenScaleImage_ = on;
+    emit displayChange();
+  });
 
-  connect(actions.fixedIntensityDisplay, &QAction::toggled, [this](bool on) {
-    fixedIntensityScale = on;
+  connect(actions.fixedIntenDisplayDgram, &QAction::toggled, [this](bool on) {
+    fixedIntenScaleDgram_ = on;
     emit displayChange();
   });
 
@@ -272,15 +280,17 @@ void TheHub::tellReflectionData(core::rcRange range, core::rcXY peak, qreal fwhm
 }
 
 core::shp_ImageLens TheHub::lensNoCut(core::rcImage image) const {
-  return session->lens(image, true, false);
+  return session->lens(image, true, fixedIntenScaleImage_, false);
 }
 
-core::shp_Lens TheHub::lens(core::rcDataset dataset) const {
-  return session->lens(dataset, true, true, session->norm());
+core::shp_Lens TheHub::lens(core::rcDataset dataset) const { 
+  return session->lens(dataset, dataset.datasets()
+  .rgeFixedInten(*session.data(),true,true),true, true, session->norm());
 }
 
-core::shp_Lens TheHub::lensNoCut(core::rcDataset dataset) const {
-  return session->lens(dataset, true, false, session->norm());
+core::shp_Lens TheHub::lensNoCut(core::rcDataset dataset) const { 
+  return session->lens(dataset, dataset.datasets()
+  .rgeFixedInten(*session.data(),true,false), true, false, session->norm());
 }
 
 core::AngleMap const& TheHub::angleMap(core::rcDataset dataset) const {

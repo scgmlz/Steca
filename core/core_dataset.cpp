@@ -13,6 +13,8 @@
 // ************************************************************************** //
 
 #include "core_dataset.h"
+#include "core_session.h"
+#include "core_lens.h"
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -123,7 +125,7 @@ void Datasets::appendHere(shp_Dataset dataset) {
   invalidateMutables();
 }
 
-Image Datasets::folded() THROWS {
+Image Datasets::folded() const THROWS {
   ASSERT(0 < count())
   Image image(first()->imageSize());
 
@@ -167,8 +169,21 @@ qreal Datasets::avgDeltaTime() const {
   return avgDeltaTime_;
 }
 
+Range Datasets::rgeFixedInten(Session session, bool trans, bool cut) const {
+  if (!rgeFixedInten_.isValid()) {
+    for_i (count()) {
+      auto image = at(i)->image();
+      shp_ImageLens imageLens = session.lens(image,Range(),trans,cut);
+      rgeFixedInten_.extendBy(imageLens->rgeInten(false));
+    }
+  }
+  
+  return rgeFixedInten_;
+}
+
 void Datasets::invalidateMutables() {
   avgMonitorCount_ = avgDeltaTime_ = qQNaN();
+  rgeFixedInten_.invalidate();
 }
 
 //------------------------------------------------------------------------------
