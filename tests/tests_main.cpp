@@ -1,41 +1,46 @@
-#include "test_core_array2d.h"
-#include "test_core_image.h"
-#include "test_core_range.h"
-#include "test_save_load_json.h"
-#include "test_core_functions.h"
-#include "test_core_lens.h"
-#include "test_core_polefigure.h"
-#include <QTextStream>
+// All that we reasonably care to test, and then some.
 
-bool failed = false;
+#include "tests_main.h"
 
-#define TEST_SUITE(TestClass)                              \
-{                                                          \
-    TestClass test;                                        \
-    bool success = (0 == QTest::qExec(&test, argc, argv)); \
-    failed       = failed || !success;                     \
+uint TestSuite::total(0);
+uint TestSuite::failed(0);
+
+TestSuite::TestSuite() {
 }
+
+void TestSuite::cleanup() {
+  ++total;
+  if (QTest::currentTestFailed())
+    ++failed;
+}
+
+static QVector<TestSuite*> *pTests = NULL;
+
+RegisterTestSuite::RegisterTestSuite(TestSuite& testSuite) {
+  static QVector<TestSuite*> tests;
+  pTests = &tests;
+  tests.append(&testSuite);
+}
+
+#include <QTextStream>
 
 int main(int argc, char *argv[]) {
   QCoreApplication app(argc, argv);
+  QTextStream out(stdout);
 
-  // test suites
-  TEST_SUITE(TestCoreApprox)
-  QTextStream(stdout) << "" << endl;
-  TEST_SUITE(TestCoreArray2d)
-  QTextStream(stdout) << "" << endl;
-  TEST_SUITE(TestCoreImage)
-  QTextStream(stdout) << "" << endl;
-  TEST_SUITE(TestCoreLens)
-  QTextStream(stdout) << "" << endl;
-  TEST_SUITE(TestCoreRange)
-  QTextStream(stdout) << "" << endl;
-  TEST_SUITE(TestSaveLoadJson)
-  QTextStream(stdout) << "" << endl;
-  TEST_SUITE(TestCorePolefigure)
+  int status = 0;
 
-  if (failed) qDebug() << "!! Some tests failed !!";
-  return failed ? -1 : 0;
+  if (pTests) {
+    for (auto test: *pTests) {
+      status |= QTest::qExec(test);
+      endl(out);                                              \
+    }
+  }
+
+  out << "Result: " << TestSuite::total << " tests, " << TestSuite::failed << " failed" << endl;
+  if (0 != status) out << "!!** Some tests failed **!!" << endl;
+
+  return status;
 }
 
 // eof

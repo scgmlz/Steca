@@ -1,4 +1,5 @@
 #include "test_core_range.h"
+REGISTER_TEST_SUITE(TestCoreRange)
 
 #include "types/core_type_curve.h"
 #include "types/core_type_range.h"

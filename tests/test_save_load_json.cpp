@@ -1,4 +1,5 @@
 #include "test_save_load_json.h"
+REGISTER_TEST_SUITE(TestSaveLoadJson)
 
 #include "core_fit_functions.h"
 #include "types/core_json.h"

@@ -1,9 +1,9 @@
 #ifndef TEST_CORE_RANGE_H
 #define TEST_CORE_RANGE_H
 
-#include <QtTest/QtTest>
+#include "tests_main.h"
 
-class TestCoreRange: public QObject {
+class TestCoreRange: public TestSuite {
   Q_OBJECT
 
 private slots:

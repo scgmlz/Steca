@@ -10,7 +10,7 @@ core::Array2D<qreal> const TestHelpers::testCorrArray(qreal corrVal, int width, 
   return correctionArray;
 }
 
-/// requires 10 motor angles 
+/// requires 10 motor angles
 core::Dataset const TestHelpers::testDataset(QSize size, core::inten_t inten, QVector<qreal> motorAngles, qreal mon, qreal deltaTime) {
   rcstr date = "15.03.2016";
   rcstr comment = "comment";
@@ -38,3 +38,5 @@ core::Dataset const TestHelpers::testDataset(QSize size, core::inten_t inten, QV
                      size, intensities);
 
 }
+
+// eof

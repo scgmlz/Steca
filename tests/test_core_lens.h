@@ -1,17 +1,15 @@
 #ifndef TEST_CORE_LENS_H
 #define TEST_CORE_LENS_H
 
-#include "core_lens.h"
-#include "core_dataset.h"
+#include "tests_main.h"
 
-#include <QtTest/QtTest>
+#include "types/core_types_fwd.h"
+#include "types/core_type_array2d.h"
 
-class TestCoreLens: public QObject {
+class TestCoreLens: public TestSuite {
   Q_OBJECT
-public:
-  void checkIntensity(core::shp_Lens const& lensSystem,
-                      core::inten_t& val, core::inten_t& specialVal, int posX, int posY);
 
+public:
   core::Dataset const testDataset(int width, int height, core::inten_t inten,
                                      core::inten_t specialInten,int posArray);
 

@@ -1,6 +1,8 @@
 #include "test_core_lens.h"
+REGISTER_TEST_SUITE(TestCoreLens)
 
 #include "core_dataset.h"
+#include "core_lens.h"
 #include "types/core_type_geometry.h"
 #include "types/core_type_image_transform.h"
 #include "test_helpers.h"
@@ -16,8 +18,8 @@
   inten_t inten        = 42.0f;\
   int mon               = 10;\
   int deltaTime         = 5; \
-  
-  
+
+
 #define TEST_LENS \
  Session session; \
   QVector<qreal> motorAngles;\
@@ -81,74 +83,74 @@ void TestCoreLens::testNormLens() {
       angleMap,ImageCut(),ImageTransform::ROTATE_0);
       QCOMPARE(lensNorm.inten(0,0),inten*4.5);
     }
-    
+
     {
       Lens lensNorm(session,*(dataset.data()),&corr,true,true,core::eNorm::DELTA_TIME,
       angleMap,ImageCut(),ImageTransform::ROTATE_0);
       QCOMPARE(lensNorm.inten(0,0),inten*((deltaTime2+deltaTime)*0.5/deltaTime));
     }
   }
-  
+
 }
 
 void TestCoreLens::testTransformationLens() {
   TEST_DATA
   TEST_LENS
-  { 
+  {
     Lens lensTrans(session,*(dataset.data()),&corr,true,true,core::eNorm::NONE,
     angleMap,ImageCut(),ImageTransform::ROTATE_1);
     QCOMPARE(lensNoTrans.size().width(),lensTrans.size().height());
     QCOMPARE(lensNoTrans.size().height(),lensTrans.size().width());
-    QCOMPARE(lensNoTrans.inten(0,0),lensTrans.inten(2,0));  
+    QCOMPARE(lensNoTrans.inten(0,0),lensTrans.inten(2,0));
   }
-  
-  { 
+
+  {
     Lens lensTrans(session,*(dataset.data()),&corr,true,true,core::eNorm::NONE,
     angleMap,ImageCut(),ImageTransform::ROTATE_2);
     QCOMPARE(lensNoTrans.size().width(),lensTrans.size().width());
     QCOMPARE(lensNoTrans.size().height(),lensTrans.size().height());
-    QCOMPARE(lensNoTrans.inten(0,0),lensTrans.inten(1,2));  
+    QCOMPARE(lensNoTrans.inten(0,0),lensTrans.inten(1,2));
   }
 
-  { 
+  {
     Lens lensTrans(session,*(dataset.data()),&corr,true,true,core::eNorm::NONE,
     angleMap,ImageCut(),ImageTransform::ROTATE_3);
     QCOMPARE(lensNoTrans.size().width(),lensTrans.size().height());
     QCOMPARE(lensNoTrans.size().height(),lensTrans.size().width());
-    QCOMPARE(lensNoTrans.inten(0,0),lensTrans.inten(0,1));  
+    QCOMPARE(lensNoTrans.inten(0,0),lensTrans.inten(0,1));
   }
-  
-  { 
+
+  {
     Lens lensTrans(session,*(dataset.data()),&corr,true,true,core::eNorm::NONE,
     angleMap,ImageCut(),ImageTransform::MIRROR_ROTATE_0);
     QCOMPARE(lensNoTrans.size().width(),lensTrans.size().width());
     QCOMPARE(lensNoTrans.size().height(),lensTrans.size().height());
-    QCOMPARE(lensNoTrans.inten(0,0),lensTrans.inten(1,0));  
+    QCOMPARE(lensNoTrans.inten(0,0),lensTrans.inten(1,0));
   }
 
-  { 
+  {
     Lens lensTrans(session,*(dataset.data()),&corr,true,true,core::eNorm::NONE,
     angleMap,ImageCut(),ImageTransform::MIRROR_ROTATE_1);
     QCOMPARE(lensNoTrans.size().width(),lensTrans.size().height());
     QCOMPARE(lensNoTrans.size().height(),lensTrans.size().width());
-    QCOMPARE(lensNoTrans.inten(0,0),lensTrans.inten(2,1));  
+    QCOMPARE(lensNoTrans.inten(0,0),lensTrans.inten(2,1));
   }
 
-  { 
+  {
     Lens lensTrans(session,*(dataset.data()),&corr,true,true,core::eNorm::NONE,
     angleMap,ImageCut(),ImageTransform::MIRROR_ROTATE_2);
     QCOMPARE(lensNoTrans.size().width(),lensTrans.size().width());
     QCOMPARE(lensNoTrans.size().height(),lensTrans.size().height());
-    QCOMPARE(lensNoTrans.inten(0,0),lensTrans.inten(0,2));  
+    QCOMPARE(lensNoTrans.inten(0,0),lensTrans.inten(0,2));
   }
-  
-  { 
+
+  {
     Lens lensTrans(session,*(dataset.data()),&corr,true,true,core::eNorm::NONE,
     angleMap,ImageCut(),ImageTransform::MIRROR_ROTATE_3);
     QCOMPARE(lensNoTrans.size().width(),lensTrans.size().height());
     QCOMPARE(lensNoTrans.size().height(),lensTrans.size().width());
     QCOMPARE(lensNoTrans.inten(0,0),lensTrans.inten(0,0));
-  } 
+  }
 }
 
 void TestCoreLens::testCutLens() {
@@ -176,22 +178,22 @@ void TestCoreLens::testSensitivityCorrectionLens() {
 void TestCoreLens::testIntensityRangeLens() {
   TEST_DATA
   TEST_LENS
-  
+
   {
     QCOMPARE(lensNoTrans.rgeInten().max,inten);
-    QCOMPARE(lensNoTrans.rgeInten().min,inten/2);    
-    
+    QCOMPARE(lensNoTrans.rgeInten().min,inten/2);
+
     Lens lensCut(session,*(dataset.data()),&corr,true,true,core::eNorm::NONE,
     angleMap,ImageCut(1,0,0,2),ImageTransform::ROTATE_0);
     QCOMPARE(lensCut.rgeInten().max,inten/2);
     QCOMPARE(lensCut.rgeInten().min,inten/2);
   }
-  
+
   {
     Lens lensCut(session,*(dataset.data()),&corr,true,true,core::eNorm::NONE,
     angleMap,ImageCut(1,0,0,0),ImageTransform::ROTATE_0);
     QCOMPARE(lensCut.angles(0,0).gamma,lensNoTrans.angles(1,0).gamma);
-    QCOMPARE(lensCut.angles(0,0).tth,lensNoTrans.angles(1,0).tth);  
+    QCOMPARE(lensCut.angles(0,0).tth,lensNoTrans.angles(1,0).tth);
   }
 }
 

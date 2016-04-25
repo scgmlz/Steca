@@ -1,4 +1,6 @@
 #include "test_core_trees.h"
+REGISTER_TEST_SUITE(TestCoreTrees)
+
 #include "types/core_type_trees.h"
 #include "types/core_coords.h"
 

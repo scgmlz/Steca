@@ -1,4 +1,58 @@
 #include "test_core_polefigure.h"
+REGISTER_TEST_SUITE(TestCorePolefigure)
+
+namespace Quadrant {
+  enum Quadrant {
+    NORTHEAST,
+    SOUTHEAST,
+    SOUTHWEST,
+    NORTHWEST,
+    MAX_QUADRANTS
+  };
+}
+
+#include "core_polefigure.h"
+#include "core_session.h"
+
+namespace core {
+  void calculateAlphaBeta(rcDataset  dataset,
+                            qreal tth, qreal gamma,
+                            qreal& alpha, qreal& beta);
+
+  namespace pole {
+    qreal angle(qreal alpha1, qreal alpha2, qreal deltaBeta);
+
+    bool inRadius(qreal alpha, qreal beta,
+              qreal centerAlpha, qreal centerBeta,
+              qreal radius);
+
+    template<typename Container>
+    qreal inverseDistanceWeighing(Container const& distances,
+                                  Container const& values);
+
+    void inverseDistanceWeighing(qreal_vec const& distances,
+                             QVector<ReflectionInfo const*> const& infos,
+                             ReflectionInfo& out);
+
+    qreal calculateDeltaBeta(qreal beta1, qreal beta2);
+
+    bool inQuadrant(int quadrant, qreal deltaAlpha, qreal deltaBeta);
+
+    Quadrant::Quadrant remapQuadrant(Quadrant::Quadrant const Q);
+
+    core::Range gammaRangeAt(core::shp_Lens lenses, qreal const tth);
+
+    void searchInQuadrants(
+      uint_vec const& quadrants,
+      qreal alpha, qreal beta,
+      qreal searchRadius,
+      ReflectionInfos const& infos,
+      QVector<ReflectionInfo const*> & foundInfos,
+      qreal_vec & distances);
+
+  }
+}
+
 #include "core_polefigure.h"
 
 #include "test_core_lens.h"
@@ -16,15 +70,15 @@ using namespace pole;
 
 
 void TestCorePolefigure::testRelatedMethods() {
-  
+
   {
     QCOMPARE(M_PI,deg2rad(180));
     QCOMPARE(90.0,rad2deg(M_PI_2));
-  
+
     for_i (720)
       QCOMPARE((qreal)i,rad2deg(deg2rad(i)));
   }
-    
+
   {
     qreal phiDet = 0;
     qreal chiDet = 0;
@@ -39,14 +93,14 @@ void TestCorePolefigure::testRelatedMethods() {
     auto m2 = core::matrix3d::rotationCWx(chiDet);
     QCOMPARE(m2, cmpMatrix);
   }
-  
+
   {
     qreal beta1 = 90;
     qreal beta2 = 0;
     auto b = calculateDeltaBeta(beta1,beta2);
     QCOMPARE(b,beta1);
   }
-  
+
   {
     qreal angle1 = 90;
     qreal angle2 = 90;
@@ -54,17 +108,17 @@ void TestCorePolefigure::testRelatedMethods() {
     auto a = angle(angle1,angle2,angle3);
     QCOMPARE(a,0.0);
   }
-  
+
   {
     qreal alpha = 50;
     qreal beta = 40;
     qreal centerAlpha = 90;
     qreal centerBeta = 0;
     qreal radius = 90;
-    
+
     QVERIFY(inRadius(alpha,beta,centerAlpha,centerBeta,radius));
   }
-  
+
 }
 
 void TestCorePolefigure::testInQuadrant() {
@@ -112,7 +166,7 @@ void TestCorePolefigure::testInverseDistanceWeighing() {
   distances.append(1.0);
   distances.append(1.0);
   distances.append(2.0);
-  
+
   inten_t inten = 2;
   qreal tth     = 1;
   qreal fwhm    = 4;
@@ -155,13 +209,13 @@ void TestCorePolefigure::testSearchInQuadrants() {
 
   searchInQuadrants(uint_vec(Quadrant::SOUTHWEST,0),alpha,beta,
     searchRadius,infos,foundInfos,distances);
-    
+
   QCOMPARE(foundInfos.size(),2);
   QCOMPARE(foundInfos[0]->alpha(),infos[0].alpha());
   QCOMPARE(foundInfos[1]->alpha(),infos[0].alpha());
-  
+
 }
-  
+
 void TestCorePolefigure::testCalcAlphaBeta() {
   qreal alpha;
   qreal beta;
@@ -232,15 +286,15 @@ void TestCorePolefigure::testCalcAlphaBeta() {
     QCOMPARE(beta,rad2deg(atan2(0,0)));
   }
 
-  { 
+  {
     angles.fill(0,10);
     angles[0] = rad2deg(M_PI);
     angles[1] = rad2deg(M_PI);
     angles[2] = rad2deg(M_PI);
-    
+
     qreal const tthRef = 4*rad2deg(M_PI);
     qreal const gammaRef = rad2deg(M_PI);
-    
+
     auto const dataset = testHelper.testDataset(QSize(10,10),42,angles,mon,deltaTime);
     calculateAlphaBeta(dataset,tthRef, gammaRef, alpha,beta);
 
@@ -248,4 +302,4 @@ void TestCorePolefigure::testCalcAlphaBeta() {
   }
 }
 
-
+// eof
