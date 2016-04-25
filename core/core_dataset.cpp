@@ -169,7 +169,7 @@ qreal Datasets::avgDeltaTime() const {
   return avgDeltaTime_;
 }
 
-Range Datasets::rgeFixedInten(Session session, bool trans, bool cut) const {
+rcRange Datasets::rgeFixedInten(rcSession session, bool trans, bool cut) const {
   if (!rgeFixedInten_.isValid()) {
     for_i (count()) {
       auto image = at(i)->image();
@@ -177,7 +177,7 @@ Range Datasets::rgeFixedInten(Session session, bool trans, bool cut) const {
       rgeFixedInten_.extendBy(imageLens->rgeInten(false));
     }
   }
-  
+
   return rgeFixedInten_;
 }
 

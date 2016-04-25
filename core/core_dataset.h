@@ -85,7 +85,7 @@ public:
   QSize imageSize()            const;
   qreal avgDeltaMonitorCount() const;
   qreal avgDeltaTime()         const;
-  Range rgeFixedInten(Session session, bool trans, bool cut) const;
+  rcRange rgeFixedInten(rcSession, bool trans, bool cut) const;
 
 private:
   void invalidateMutables();

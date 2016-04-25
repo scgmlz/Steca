@@ -88,7 +88,7 @@ void Settings::save(rcstr key, QDoubleSpinBox* box) {
 
 //------------------------------------------------------------------------------
 
-TheHub::TheHub(): session(new core::Session()) 
+TheHub::TheHub(): session(new core::Session())
 , fixedIntenScaleImage_(false), fixedIntenScaleDgram_(false)
 , fileViewModel(*this), datasetViewModel(*this), reflectionViewModel(*this) {
   initActions();
@@ -202,7 +202,7 @@ void TheHub::configActions() {
   connect(actions.remCorr, &QAction::triggered, [this]() {
     setCorrFile(EMPTY_STR);
   });
-  
+
   connect(actions.fixedIntenDisplayImage,&QAction::toggled,[this](bool on) {
     fixedIntenScaleImage_ = on;
     emit displayChange();
@@ -283,14 +283,16 @@ core::shp_ImageLens TheHub::lensNoCut(core::rcImage image) const {
   return session->lens(image, true, fixedIntenScaleImage_, false);
 }
 
-core::shp_Lens TheHub::lens(core::rcDataset dataset) const { 
-  return session->lens(dataset, dataset.datasets()
-  .rgeFixedInten(*session.data(),true,true),true, true, session->norm());
+core::shp_Lens TheHub::lens(core::rcDataset dataset) const {
+  return session->lens(dataset,
+                       dataset.datasets().rgeFixedInten(*session,true,true),
+                       true, true, session->norm());
 }
 
-core::shp_Lens TheHub::lensNoCut(core::rcDataset dataset) const { 
-  return session->lens(dataset, dataset.datasets()
-  .rgeFixedInten(*session.data(),true,false), true, false, session->norm());
+core::shp_Lens TheHub::lensNoCut(core::rcDataset dataset) const {
+  return session->lens(dataset,
+                       dataset.datasets().rgeFixedInten(*session,true,false),
+                       true, false, session->norm());
 }
 
 core::AngleMap const& TheHub::angleMap(core::rcDataset dataset) const {

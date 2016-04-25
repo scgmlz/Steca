@@ -105,8 +105,8 @@ public:
 
 // lenses
 public:
-  shp_ImageLens lens(rcImage, Range rgeFixedInten, bool trans, bool cut) const;
-  shp_Lens      lens(rcDataset, Range rgeFixedInten, bool trans, bool cut, eNorm) const;
+  shp_ImageLens lens(rcImage,   rcRange rgeFixedInten, bool trans, bool cut) const;
+  shp_Lens      lens(rcDataset, rcRange rgeFixedInten, bool trans, bool cut, eNorm) const;
 
 // reflections
   ReflectionInfo makeReflectionInfo(shp_Lens, rcReflection,

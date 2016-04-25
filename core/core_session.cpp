@@ -204,17 +204,17 @@ IJ Session::midPix() const {
   return mid;
 }
 
-shp_ImageLens Session::lens(rcImage image, Range rgeFixedInten, bool trans, bool cut) const {
+shp_ImageLens Session::lens(rcImage image, rcRange rgeFixedInten, bool trans, bool cut) const {
   return shp_ImageLens(new ImageLens(*this,image, corrEnabled_ ? &corrImage_ : nullptr,
-                                      rgeFixedInten, trans, cut, 
+                                      rgeFixedInten, trans, cut,
                                      imageCut_, imageTransform_));
 }
 
-shp_Lens Session::lens(rcDataset dataset, Range rgeFixedInten,
+shp_Lens Session::lens(rcDataset dataset, rcRange rgeFixedInten,
                        bool trans, bool cut, eNorm norm) const {
   return shp_Lens(new Lens(*this, dataset, corrEnabled_ ? &corrImage_ : nullptr,
-                           rgeFixedInten, trans, cut, norm, 
-                           angleMap(dataset),imageCut_, imageTransform_));
+                           rgeFixedInten, trans, cut, norm,
+                           angleMap(dataset), imageCut_, imageTransform_));
 }
 
 // Calculates the polefigure coordinates alpha and beta with regards to
