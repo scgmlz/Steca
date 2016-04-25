@@ -5,7 +5,6 @@ REGISTER_TEST_SUITE(TestCoreLens)
 #include "core_lens.h"
 #include "types/core_type_geometry.h"
 #include "types/core_type_image_transform.h"
-#include "test_helpers.h"
 #include "types/core_types_fwd.h"
 #include "types/core_coords.h"
 #include "core_session.h"

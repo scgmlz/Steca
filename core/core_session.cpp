@@ -249,8 +249,8 @@ shp_Lens Session::lens(rcDataset dataset, bool trans, bool cut, eNorm norm) cons
   // If alpha is in the wrong hemisphere, mirror both alpha and beta over the
   // center of a unit sphere.
   if (alpha > M_PI_2) { // REVIEW - seems like that happens only for a very narrow ring
-    alpha = qAbs(alpha - M_PI);
-    beta += beta < 0 ? M_PI : -M_PI;
+//    alpha = qAbs(alpha - M_PI);
+//    beta += beta < 0 ? M_PI : -M_PI;
   }
 
   // Keep beta between 0 and 2pi.

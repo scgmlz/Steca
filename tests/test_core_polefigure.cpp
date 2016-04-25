@@ -58,7 +58,6 @@ namespace core {
 #include "test_core_lens.h"
 #include "core_dataset.h"
 #include "types/core_type_geometry.h"
-#include "test_helpers.h"
 #include "types/core_type_matrix.h"
 
 #include <algorithm>
@@ -216,16 +215,43 @@ void TestCorePolefigure::testSearchInQuadrants() {
 
 }
 
+static core::Dataset testDataset(QSize size, core::inten_t inten, QVector<qreal> motorAngles, qreal mon, qreal deltaTime) {
+  rcstr date = "15.03.2016";
+  rcstr comment = "comment";
+  qreal motorXT = motorAngles[0];
+  qreal motorYT = motorAngles[1];
+  qreal motorZT = motorAngles[2];
+  qreal motorOmg = motorAngles[3];
+  qreal motorTth = motorAngles[4];
+  qreal motorPhi = motorAngles[5];
+  qreal motorChi = motorAngles[6];
+  qreal motorPST = motorAngles[7];
+  qreal motorSST = motorAngles[8];
+  qreal motorOMGM = motorAngles[9];
+  QVector<core::inten_t> intenVector;
+  for_i (size.width() * size.height()) {
+    intenVector.append(inten);
+  }
+  core::inten_t const* intensities = intenVector.constData();
+
+  return core::Dataset (date,comment,
+                     motorXT,motorYT,motorZT,
+                     motorOmg,motorTth,motorPhi,motorChi,
+                     motorPST,motorSST,motorOMGM,
+                     mon, deltaTime,
+                     size, intensities);
+
+}
+
 void TestCorePolefigure::testCalcAlphaBeta() {
   qreal alpha;
   qreal beta;
-  TestHelpers testHelper;
   QVector<qreal> angles;
   qreal mon = 100, deltaTime = 8, tth = 0, gamma = 0;
   Session s;
   {
     angles.fill(0,10);
-    auto const dataset = testHelper.testDataset(QSize(10,10),42,angles,mon,deltaTime);
+    auto const dataset = testDataset(QSize(10,10),42,angles,mon,deltaTime);
     calculateAlphaBeta(dataset,tth, gamma, alpha,beta);
 
     QCOMPARE(alpha,rad2deg(acos(0)));
@@ -236,7 +262,7 @@ void TestCorePolefigure::testCalcAlphaBeta() {
     angles.fill(0,10);
     angles[3] = rad2deg(M_PI/2);
 
-    auto const dataset = testHelper.testDataset(QSize(10,10),42,angles,mon,deltaTime);
+    auto const dataset = testDataset(QSize(10,10),42,angles,mon,deltaTime);
     calculateAlphaBeta(dataset,tth, gamma, alpha,beta);
     //rotated = -1,0,0
     QCOMPARE(alpha,rad2deg(acos(0)));
@@ -247,7 +273,7 @@ void TestCorePolefigure::testCalcAlphaBeta() {
     angles.fill(0,10);
     angles[5] = rad2deg(M_PI/2);
 
-    auto const dataset = testHelper.testDataset(QSize(10,10),42,angles,mon,deltaTime);
+    auto const dataset = testDataset(QSize(10,10),42,angles,mon,deltaTime);
     calculateAlphaBeta(dataset,tth, gamma, alpha,beta);
     // rotated = -1,0,0
     QCOMPARE(alpha,rad2deg(acos(0)));
@@ -258,7 +284,7 @@ void TestCorePolefigure::testCalcAlphaBeta() {
     angles.fill(0,10);
     angles[6] = rad2deg(M_PI/2);
 
-    auto const dataset = testHelper.testDataset(QSize(10,10),42,angles,mon,deltaTime);
+    auto const dataset = testDataset(QSize(10,10),42,angles,mon,deltaTime);
     calculateAlphaBeta(dataset,tth, gamma, alpha,beta);
     // rotated = 0,0,1
     QCOMPARE(alpha,rad2deg(acos(1)));
@@ -268,7 +294,7 @@ void TestCorePolefigure::testCalcAlphaBeta() {
   {
     angles.fill(0,10);
     qreal tthRef = 90.0;
-    auto const dataset = testHelper.testDataset(QSize(10,10),42,angles,mon,deltaTime);
+    auto const dataset = testDataset(QSize(10,10),42,angles,mon,deltaTime);
     calculateAlphaBeta(dataset,tthRef, gamma, alpha,beta);
     // rotated = 0,-1,0
     QCOMPARE(alpha,rad2deg(acos(0)));
@@ -279,7 +305,7 @@ void TestCorePolefigure::testCalcAlphaBeta() {
     angles.fill(0,10);
     qreal gammaRef = 90;
 
-    auto const dataset = testHelper.testDataset(QSize(10,10),42,angles,mon,deltaTime);
+    auto const dataset = testDataset(QSize(10,10),42,angles,mon,deltaTime);
     calculateAlphaBeta(dataset,tth, gammaRef, alpha,beta);
     // rotated = 0,0,1
     QCOMPARE(alpha,rad2deg(acos(1)));
@@ -295,7 +321,7 @@ void TestCorePolefigure::testCalcAlphaBeta() {
     qreal const tthRef = 4*rad2deg(M_PI);
     qreal const gammaRef = rad2deg(M_PI);
 
-    auto const dataset = testHelper.testDataset(QSize(10,10),42,angles,mon,deltaTime);
+    auto const dataset = testDataset(QSize(10,10),42,angles,mon,deltaTime);
     calculateAlphaBeta(dataset,tthRef, gammaRef, alpha,beta);
 
     QCOMPARE(alpha,rad2deg(acos(0)));
