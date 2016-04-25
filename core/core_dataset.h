@@ -40,7 +40,7 @@ public:
           qreal deltaMonitorCount, qreal deltaTime,
           QSize const& size, inten_t const* intens);
 
-  Datasets const& datasets() const;
+  rcDatasets datasets() const;
 
   str attributeStrValue(uint) const;
 

@@ -27,9 +27,9 @@ namespace core {
 //------------------------------------------------------------------------------
 
 ImageLens::ImageLens(rcSession session, rcImage image, Image const* corrImage,
-           Range rgeFixedInten, bool trans, bool cut, ImageCut const& imageCut, ImageTransform const& imageTransform)
+           rcDatasets datasets, bool trans, bool cut, ImageCut const& imageCut, ImageTransform const& imageTransform)
 : session_(session), image_(image), corrImage_(corrImage)
-, rgeFixedInten_(rgeFixedInten) , trans_(trans), cut_(cut), imageTransform_(imageTransform), imageCut_(imageCut)
+, datasets_(datasets) , trans_(trans), cut_(cut), imageTransform_(imageTransform), imageCut_(imageCut)
 , normFactor_(1)
 {
   calcSensCorr();
@@ -58,8 +58,9 @@ inten_t ImageLens::inten(uint i, uint j) const {
 }
 
 rcRange ImageLens::rgeInten(bool fixed) const {
-  if (fixed && rgeFixedInten_.isValid()) return rgeFixedInten_;
-  
+  if (fixed)
+    return datasets_.rgeFixedInten(session_,trans_,cut_);
+
   if (!rgeInten_.isValid()) {
     auto sz = size();
     for_ij (sz.width(), sz.height())
@@ -159,9 +160,9 @@ str_lst const& Lens::normStrLst() {
 }
 
 Lens::Lens(rcSession session, rcDataset dataset, Image const* corrImage,
-                         Range rgeFixedInten, bool trans, bool cut, eNorm norm,
+                         rcDatasets datasets, bool trans, bool cut, eNorm norm,
                          AngleMap const& angleMap, ImageCut const& imageCut, ImageTransform const& imageTransform)
-: super(session,dataset.image(),corrImage,rgeFixedInten,trans,cut,imageCut,imageTransform)
+: super(session, dataset.image(), corrImage, datasets, trans, cut, imageCut, imageTransform)
 , dataset_(dataset), angleMap_(angleMap)
 {
   setNorm(norm);

@@ -280,18 +280,18 @@ void TheHub::tellReflectionData(core::rcRange range, core::rcXY peak, qreal fwhm
 }
 
 core::shp_ImageLens TheHub::lensNoCut(core::rcImage image) const {
-  return session->lens(image, true, fixedIntenScaleImage_, false);
+  return session->lens(image, collectedDatasets(), true, false);
 }
 
 core::shp_Lens TheHub::lens(core::rcDataset dataset) const {
   return session->lens(dataset,
-                       dataset.datasets().rgeFixedInten(*session,true,true),
+                       dataset.datasets(),
                        true, true, session->norm());
 }
 
 core::shp_Lens TheHub::lensNoCut(core::rcDataset dataset) const {
   return session->lens(dataset,
-                       dataset.datasets().rgeFixedInten(*session,true,false),
+                       dataset.datasets(),
                        true, false, session->norm());
 }
 

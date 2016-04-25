@@ -204,16 +204,16 @@ IJ Session::midPix() const {
   return mid;
 }
 
-shp_ImageLens Session::lens(rcImage image, rcRange rgeFixedInten, bool trans, bool cut) const {
+shp_ImageLens Session::lens(rcImage image, rcDatasets datasets, bool trans, bool cut) const {
   return shp_ImageLens(new ImageLens(*this,image, corrEnabled_ ? &corrImage_ : nullptr,
-                                      rgeFixedInten, trans, cut,
+                                     datasets, trans, cut,
                                      imageCut_, imageTransform_));
 }
 
-shp_Lens Session::lens(rcDataset dataset, rcRange rgeFixedInten,
+shp_Lens Session::lens(rcDataset dataset, rcDatasets datasets,
                        bool trans, bool cut, eNorm norm) const {
   return shp_Lens(new Lens(*this, dataset, corrEnabled_ ? &corrImage_ : nullptr,
-                           rgeFixedInten, trans, cut, norm,
+                           datasets, trans, cut, norm,
                            angleMap(dataset), imageCut_, imageTransform_));
 }
 
@@ -251,8 +251,8 @@ shp_Lens Session::lens(rcDataset dataset, rcRange rgeFixedInten,
   // If alpha is in the wrong hemisphere, mirror both alpha and beta over the
   // center of a unit sphere.
   if (alpha > M_PI_2) { // REVIEW - seems like that happens only for a very narrow ring
-//    alpha = qAbs(alpha - M_PI);
-//    beta += beta < 0 ? M_PI : -M_PI;
+    alpha = qAbs(alpha - M_PI);
+    beta += beta < 0 ? M_PI : -M_PI;
   }
 
   // Keep beta between 0 and 2pi.
@@ -297,7 +297,7 @@ ReflectionInfos Session::reflectionInfos(rcDatasets datasets, rcReflection refle
   ReflectionInfos infos;
 
   for (auto &dataset: datasets) {
-    auto l = lens(*dataset, datasets.rgeFixedInten(*this,true,true), true, true, norm_);
+    auto l = lens(*dataset, datasets, true, true, norm_);
     // TODO potentially optimize (invariant if lens does not change)
     Range rgeGamma = gammaRange.isValid()
         ? gammaRange
@@ -321,7 +321,7 @@ void Session::setNorm(eNorm norm) {
 }
 
 qreal Session::calcAvgBackground(rcDataset dataset) const {
-  auto l = lens(dataset, dataset.datasets().rgeFixedInten(*this,true,true), true, true, eNorm::NONE);
+  auto l = lens(dataset, dataset.datasets(), true, true, eNorm::NONE);
 
   auto &map = angleMap(dataset);
   Curve gammaCurve = l->makeCurve(map.rgeGamma(), map.rgeTth());

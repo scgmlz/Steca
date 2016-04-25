@@ -63,7 +63,7 @@ Dataset::Dataset(
 , image_(size,intens) {
 }
 
-Datasets const& Dataset::datasets() const {
+rcDatasets Dataset::datasets() const {
   ASSERT(datasets_)
   return *datasets_;
 }
@@ -173,7 +173,7 @@ rcRange Datasets::rgeFixedInten(rcSession session, bool trans, bool cut) const {
   if (!rgeFixedInten_.isValid()) {
     for_i (count()) {
       auto image = at(i)->image();
-      shp_ImageLens imageLens = session.lens(image,Range(),trans,cut);
+      shp_ImageLens imageLens = session.lens(image,*this,trans,cut);
       rgeFixedInten_.extendBy(imageLens->rgeInten(false));
     }
   }
