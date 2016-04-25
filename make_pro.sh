@@ -15,7 +15,17 @@ CONFIG  += c++11 silent $CFG
 DEFINES += STECA_LABS
 
 INCLUDEPATH += \$\$PWD/core \$\$PWD/gui
+
+unix {
 LIBS    += -lGLU
+}
+
+mac {
+}
+
+win32 {
+}
+
 EOT
 
 function files {
