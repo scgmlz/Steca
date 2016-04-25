@@ -22,7 +22,7 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-class ReflectionInfo final {
+class ReflectionInfo final { TESTS_FRIEND
 public:
   ReflectionInfo();
   ReflectionInfo(qreal alpha, qreal beta, rcRange rgeGamma,

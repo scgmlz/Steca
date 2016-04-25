@@ -22,11 +22,6 @@ void TestCoreImage::testImage(uint w, uint h) {
     im.setInten(pos,specialIntens);
     QCOMPARE(*(im.intensData()+pos),specialIntens);
 
-//    auto rgeActual = im.rgeInten();
-//    auto rgeExpect = core::Range(intens,specialIntens);
-//    QCOMPARE(rgeActual.min, rgeExpect.min);
-//    QCOMPARE(rgeActual.max, rgeExpect.max);
-
     // checking if intensities are correct
     for (uint x=0; x<w; ++x) {
       for (uint y=0; y<h; ++y) {

@@ -217,7 +217,7 @@ shp_Lens Session::lens(rcDataset dataset, bool trans, bool cut, eNorm norm) cons
 
 // Calculates the polefigure coordinates alpha and beta with regards to
 // sample orientation and diffraction angles.
-static void calculateAlphaBeta(rcDataset dataset,
+  void calculateAlphaBeta(rcDataset dataset,
                                qreal tth, qreal gamma,
                                qreal& alpha, qreal& beta) {
   // Sample rotations.

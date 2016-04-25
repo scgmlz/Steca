@@ -17,9 +17,10 @@
 #define CORE_DEFS_H
 
 // testing support
-class TestCoreLens; class TestCoreImage;
+class TestCoreLens; class TestCoreImage; class TestCorePolefigure;
 #define TESTS_FRIEND \
-  friend class ::TestCoreLens; friend class ::TestCoreImage;
+  friend class ::TestCoreLens; friend class ::TestCoreImage; \
+  friend class ::TestCorePolefigure;
 
 // common QT includes - everyone needs them
 #include <QtGlobal>

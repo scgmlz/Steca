@@ -4,15 +4,67 @@
 #include "test_core_lens.h"
 #include "core_dataset.h"
 #include "types/core_type_geometry.h"
+#include "test_helpers.h"
+#include "types/core_type_matrix.h"
 
 #include <algorithm>
 #include <QLinkedList>
 #include <qmath.h>
 
 using namespace core;
-/*
-void TestCorePolefigure::testPolefigure() {
+using namespace pole;
 
+
+void TestCorePolefigure::testRelatedMethods() {
+  
+  {
+    QCOMPARE(M_PI,deg2rad(180));
+    QCOMPARE(90.0,rad2deg(M_PI_2));
+  
+    for_i (720)
+      QCOMPARE((qreal)i,rad2deg(deg2rad(i)));
+  }
+    
+  {
+    qreal phiDet = 0;
+    qreal chiDet = 0;
+
+    auto m1 = matrix3d ::rotationCWz(phiDet);
+    matrix3d cmpMatrix(1, 0, 0,
+                       0, 1, 0,
+                       0, 0, 1);
+
+    QCOMPARE(m1, cmpMatrix);
+
+    auto m2 = core::matrix3d::rotationCWx(chiDet);
+    QCOMPARE(m2, cmpMatrix);
+  }
+  
+  {
+    qreal beta1 = 90;
+    qreal beta2 = 0;
+    auto b = calculateDeltaBeta(beta1,beta2);
+    QCOMPARE(b,beta1);
+  }
+  
+  {
+    qreal angle1 = 90;
+    qreal angle2 = 90;
+    qreal angle3 = 0;
+    auto a = angle(angle1,angle2,angle3);
+    QCOMPARE(a,0.0);
+  }
+  
+  {
+    qreal alpha = 50;
+    qreal beta = 40;
+    qreal centerAlpha = 90;
+    qreal centerBeta = 0;
+    qreal radius = 90;
+    
+    QVERIFY(inRadius(alpha,beta,centerAlpha,centerBeta,radius));
+  }
+  
 }
 
 void TestCorePolefigure::testInQuadrant() {
@@ -54,88 +106,146 @@ void TestCorePolefigure::testInQuadrant() {
 
 }
 
-void TestCorePolefigure::testGamaRange() {
-
-    int width             = 2;
-    int height            = 3;
-    inten_t inten        = 42.0f;
-    inten_t specialInten = 150.0f;
-    int posIntensArray    = 0;
-    qreal gamma           = 6.7;
-    qreal gammaSpecial    = 44.0;
-    qreal tth             = 4.2;
-    qreal tthSpecial      = 88.0;
-    int anglePosX         = 1;
-    int anglePosY         = 2;
-
-  { // simple test
-    TestCoreLens test;
-    Dataset dataset = test.testDataset(width,height,inten,specialInten,posIntensArray);
-    DiffractionAnglesMap angleMapArray = test.testAngleMapArray(gamma,gammaSpecial,
-                                                    tth,tthSpecial,
-                                                    width,height,
-                                                    anglePosX,anglePosY);
-
-    qreal tthNext   = 3.0;
-    qreal gammaNext = 8.0;
-    angleMapArray.setAt(1,0,DiffractionAngles(gammaNext,tthNext));
-    auto lensSystem = makeLensSystem(dataset, angleMapArray);
-    qreal testTth = 4.0;
-    Range extendRange = Range(gammaNext);
-    auto range = gammaRangeAt(lensSystem,testTth);
-
-    QCOMPARE(range.max, extendRange.max);
-    QCOMPARE(range.min, extendRange.min);
-  }
-
-  { // extensive test with full test data
-    int width = 11;
-    int height = 11;
-    qreal fillVal = 0;
-    int posVal = 0;
-    TestCoreLens test;
-    Dataset dataset = test.testDataset(width,height,fillVal,fillVal,posVal);
-    DiffractionAnglesMap angleMapArray = test.testAngleMapArray(fillVal,fillVal,
-                                                    fillVal,fillVal,
-                                                    width,height,
-                                                    posVal,posVal);
-    qreal gamma = 5.0;
-    for_int (y, height) {
-      if (y > 0 && y <= 5) gamma = gamma - 1;
-      else ++gamma;
-      for_int (x, width) {
-        angleMapArray.setAt(x,y,DiffractionAngles(gamma,(x+1)*(y+1)));
-        angleMapArray.setAt(x,y,DiffractionAngles(gamma,(x+1)*(y+1)));
-      }
-    }
-    auto lensSystem = makeLensSystem(dataset,angleMapArray);
-    qreal testTth = 42;
-    // min = gamma val minus 5  max = gamma val of last row
-    Range extendRange = Range(gamma-5,gamma);
-    auto range = gammaRangeAt(lensSystem,testTth);
-
-    QCOMPARE(range.max, extendRange.max);
-    QCOMPARE(range.min, extendRange.min);
-  }
-
-}
-
 void TestCorePolefigure::testInverseDistanceWeighing() {
-  TestContainer distances;
+  qreal_vec distances;
+  distances.append(2.0);
+  distances.append(1.0);
   distances.append(1.0);
   distances.append(2.0);
-  distances.append(3.0);
-  distances.append(4.0);
-
-  TestContainer values;
-  values.append(1.0);
-  values.append(2.0);
-  values.append(3.0);
-  values.append(4.0);
-
-  qreal in = inverseDistanceWeighing(distances,values);
-  qreal cmp = (qreal)4.0/(qreal)(25.0/12.0);
-  QCOMPARE(in,cmp);
-
+  
+  inten_t inten = 2;
+  qreal tth     = 1;
+  qreal fwhm    = 4;
+  QVector<ReflectionInfo const*> infos;
+  ReflectionInfo in;
+  for_i(4) {
+    in.inten_ = inten;
+    in.tth_   = tth;
+    in.fwhm_  = fwhm;
+    infos.append(&in);
+  }
+  ReflectionInfo out;
+  qreal tmp_height = 0;
+  qreal tmp_offset = 0;
+  qreal tmp_fwhm   = 0;
+  inverseDistanceWeighing(distances,infos,out);
+  for_i (Quadrant::MAX_QUADRANTS) {
+    tmp_height += infos[0]->inten() * (qreal)1/distances[i];
+    tmp_offset += infos[0]->tth()   * (qreal)1/distances[i];
+    tmp_fwhm   += infos[0]->fwhm()  * (qreal)1/distances[i];
+  }
+  QCOMPARE(out.inten(),tmp_height/3);
+  QCOMPARE(out.tth(),tmp_offset/3);
+  QCOMPARE(out.fwhm(),tmp_fwhm/3);
 }
-*/
+
+void TestCorePolefigure::testSearchInQuadrants() {
+  qreal alpha = 15, beta = 20, searchRadius = 5;
+  QVector<ReflectionInfo const*> foundInfos;
+  ReflectionInfos infos;
+  ReflectionInfo in;
+  in.alpha_ = 20;
+  in.beta_ = 20; // inside of BETA_LIMIT
+  infos.append(in);
+  in.alpha_ = 180;
+  in.beta_ = 180; // outside of BETA_LIMIT
+  infos.append(in);
+
+  qreal_vec distances;
+
+  searchInQuadrants(uint_vec(Quadrant::SOUTHWEST,0),alpha,beta,
+    searchRadius,infos,foundInfos,distances);
+    
+  QCOMPARE(foundInfos.size(),2);
+  QCOMPARE(foundInfos[0]->alpha(),infos[0].alpha());
+  QCOMPARE(foundInfos[1]->alpha(),infos[0].alpha());
+  
+}
+  
+void TestCorePolefigure::testCalcAlphaBeta() {
+  qreal alpha;
+  qreal beta;
+  TestHelpers testHelper;
+  QVector<qreal> angles;
+  qreal mon = 100, deltaTime = 8, tth = 0, gamma = 0;
+  Session s;
+  {
+    angles.fill(0,10);
+    auto const dataset = testHelper.testDataset(QSize(10,10),42,angles,mon,deltaTime);
+    calculateAlphaBeta(dataset,tth, gamma, alpha,beta);
+
+    QCOMPARE(alpha,rad2deg(acos(0)));
+    QCOMPARE(beta,rad2deg(atan2(0,1)));
+  }
+
+  {
+    angles.fill(0,10);
+    angles[3] = rad2deg(M_PI/2);
+
+    auto const dataset = testHelper.testDataset(QSize(10,10),42,angles,mon,deltaTime);
+    calculateAlphaBeta(dataset,tth, gamma, alpha,beta);
+    //rotated = -1,0,0
+    QCOMPARE(alpha,rad2deg(acos(0)));
+    QCOMPARE(beta,rad2deg(atan2(-1,0) + 2 * M_PI));
+  }
+
+  {
+    angles.fill(0,10);
+    angles[5] = rad2deg(M_PI/2);
+
+    auto const dataset = testHelper.testDataset(QSize(10,10),42,angles,mon,deltaTime);
+    calculateAlphaBeta(dataset,tth, gamma, alpha,beta);
+    // rotated = -1,0,0
+    QCOMPARE(alpha,rad2deg(acos(0)));
+    QCOMPARE(beta,rad2deg(atan2(-1,0) + 2*M_PI));
+  }
+
+  {
+    angles.fill(0,10);
+    angles[6] = rad2deg(M_PI/2);
+
+    auto const dataset = testHelper.testDataset(QSize(10,10),42,angles,mon,deltaTime);
+    calculateAlphaBeta(dataset,tth, gamma, alpha,beta);
+    // rotated = 0,0,1
+    QCOMPARE(alpha,rad2deg(acos(1)));
+    QCOMPARE(beta,rad2deg(atan2(0,0)));
+  }
+
+  {
+    angles.fill(0,10);
+    qreal tthRef = 90.0;
+    auto const dataset = testHelper.testDataset(QSize(10,10),42,angles,mon,deltaTime);
+    calculateAlphaBeta(dataset,tthRef, gamma, alpha,beta);
+    // rotated = 0,-1,0
+    QCOMPARE(alpha,rad2deg(acos(0)));
+    QCOMPARE(beta,rad2deg(atan2(sin(M_PI/4),cos(M_PI/4))));
+  }
+
+  {
+    angles.fill(0,10);
+    qreal gammaRef = 90;
+
+    auto const dataset = testHelper.testDataset(QSize(10,10),42,angles,mon,deltaTime);
+    calculateAlphaBeta(dataset,tth, gammaRef, alpha,beta);
+    // rotated = 0,0,1
+    QCOMPARE(alpha,rad2deg(acos(1)));
+    QCOMPARE(beta,rad2deg(atan2(0,0)));
+  }
+
+  { 
+    angles.fill(0,10);
+    angles[0] = rad2deg(M_PI);
+    angles[1] = rad2deg(M_PI);
+    angles[2] = rad2deg(M_PI);
+    
+    qreal const tthRef = 4*rad2deg(M_PI);
+    qreal const gammaRef = rad2deg(M_PI);
+    
+    auto const dataset = testHelper.testDataset(QSize(10,10),42,angles,mon,deltaTime);
+    calculateAlphaBeta(dataset,tthRef, gammaRef, alpha,beta);
+
+    QCOMPARE(alpha,rad2deg(acos(0)));
+  }
+}
+
+
