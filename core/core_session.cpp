@@ -278,9 +278,12 @@ ReflectionInfo Session::makeReflectionInfo(shp_Lens lens, rcReflection reflectio
   qreal alpha, beta;
   calculateAlphaBeta(lens->dataset(), rgeTth.center(), gammaSector.center(), alpha, beta);
 
-  XY peak = peakFunction->fittedPeak();
-  return ReflectionInfo(alpha, beta, gammaSector,
-                        peak.y,peak.x,peakFunction->fittedFWHM());
+  XY    peak = peakFunction->fittedPeak();
+  qreal fwhm = peakFunction->fittedFWHM();
+
+  return rgeTth.contains(peak.x)
+      ? ReflectionInfo(alpha, beta, gammaSector, peak.y,peak.x,fwhm)
+      : ReflectionInfo(alpha, beta, gammaSector);
 }
 
 /* Gathers ReflectionInfos from Datasets.

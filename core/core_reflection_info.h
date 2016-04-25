@@ -27,6 +27,7 @@ public:
   ReflectionInfo();
   ReflectionInfo(qreal alpha, qreal beta, rcRange rgeGamma,
                  qreal inten, qreal tth, qreal fwhm);
+  ReflectionInfo(qreal alpha, qreal beta, rcRange rgeGamma);
 
   qreal alpha() const { return alpha_;  }
   qreal beta()  const { return beta_;   }

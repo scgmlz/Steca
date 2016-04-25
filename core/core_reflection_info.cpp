@@ -13,13 +13,8 @@
 // ************************************************************************** //
 
 #include "core_reflection_info.h"
-//#include "core_session.h" // TODO OUT
-//#include "core_fit_fitting.h"
-//#include "types/core_type_matrix.h"
-//#include "types/core_type_curve.h"
-//#include <qmath.h>
 
-namespace core{
+namespace core {
 //------------------------------------------------------------------------------
 
 /* NOTE Invalid parameters are set to NaNs. However, some analysis programs
@@ -28,9 +23,7 @@ namespace core{
  */
 
 ReflectionInfo::ReflectionInfo()
-  : alpha_(qQNaN()), beta_(qQNaN()), rgeGamma_()
-  , inten_(qQNaN()), tth_(qQNaN()), fwhm_(qQNaN())
-{
+: ReflectionInfo(qQNaN(),qQNaN(),Range(),qQNaN(),qQNaN(),qQNaN()) {
 }
 
 ReflectionInfo::ReflectionInfo(qreal alpha, qreal beta, rcRange rgeGamma,
@@ -38,6 +31,10 @@ ReflectionInfo::ReflectionInfo(qreal alpha, qreal beta, rcRange rgeGamma,
 : alpha_(alpha), beta_(beta), rgeGamma_(rgeGamma)
 , inten_(inten), tth_(tth), fwhm_(fwhm)
 {
+}
+
+ReflectionInfo::ReflectionInfo(qreal alpha, qreal beta, rcRange rgeGamma)
+: ReflectionInfo(alpha,beta,rgeGamma,qQNaN(),qQNaN(),qQNaN()) {
 }
 
 //------------------------------------------------------------------------------

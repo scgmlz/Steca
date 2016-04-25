@@ -793,21 +793,29 @@ OutSphere::OutSphere() {
 
 void OutSphere::set1(core::ReflectionInfos infos) {
   infos1_ = infos;
-  max1_   = maxInten(infos);
+  avg1_   = avgInten(infos);
   update();
 }
 
 void OutSphere::set2(core::ReflectionInfos infos) {
   infos2_ = infos;
-  max2_   = maxInten(infos);
+  avg2_   = avgInten(infos);
   update();
 }
 
-qreal OutSphere::maxInten(core::ReflectionInfos) {
-  qreal max = 0;
-  for (auto &info: infos1_)
-    max = qMax(max,info.inten());
-  return max;
+qreal OutSphere::avgInten(core::ReflectionInfos infos) {
+  qreal avg = 0, sum = 0; uint count = 0;
+  for (auto &info: infos) {
+    qreal inten = info.inten();
+    if (qIsFinite(inten)) {
+      sum += info.inten();
+      ++count;
+    }
+  }
+
+  if (count) avg = sum / count;
+
+  return avg;
 }
 
 void OutSphere::onPaintGL() {
@@ -816,10 +824,10 @@ void OutSphere::onPaintGL() {
   QColor color1(Qt::blue), color2(Qt::green);
 
   for (auto &info: infos1_)
-    point(info.alpha(),info.beta(),info.inten(), color1, .4/max1_);
+    point(info.alpha(),info.beta(),info.inten(), color1, 0.03/avg1_);
 
   for (auto &info: infos2_)
-    point(info.alpha(),info.beta(),info.inten(), color2, .4/max2_);
+    point(info.alpha(),info.beta(),info.inten(), color2, 0.02/avg2_);
 }
 
 void OutSphere::point(float alpha, float beta, float inten, QColor const& color, qreal factor) {
@@ -844,7 +852,7 @@ PoleSphere::PoleSphere(TheHub& hub,rcstr title,QWidget* parent): super(hub,title
 
 void PoleSphere::calculate() {
   auto rs1 = hub_.reflectionInfos(5);
-  auto rs2 = core::pole::interpolate(rs1,10,10,10,10,10,1);
+  auto rs2 = core::pole::interpolate(rs1,5,5,10,10,10,1);
   sphere_->set1(rs1);
   sphere_->set2(rs2);
 }

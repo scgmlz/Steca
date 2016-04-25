@@ -311,17 +311,17 @@ ReflectionInfos interpolate(ReflectionInfos const& infos,
                            peakFWHM));
           continue;
         }
+
         if (!qIsNaN(idwRadius)) {
           // Don't fall back to idw, just add an unmeasured info.
-          ReflectionInfo invalidInfo(alpha,beta,infos.first().rgeGamma(),
-                                     qQNaN(),qQNaN(),qQNaN());
+          ReflectionInfo invalidInfo(alpha,beta,infos.first().rgeGamma()); // TODO insert?
+          interpolatedInfos.append(invalidInfo);
           continue;
         }
       }
       // Use idw, if alpha > averagingAlphaMax OR averaging failed (too small
       // averagingRadius?).
-      ReflectionInfo interpolatedInfo(alpha,beta,infos.first().rgeGamma(),
-                                      qQNaN(),qQNaN(),qQNaN());
+      ReflectionInfo interpolatedInfo(alpha,beta,infos.first().rgeGamma());
       interpolateValues(idwRadius, infos, interpolatedInfo);
       interpolatedInfos.append(interpolatedInfo);
     }

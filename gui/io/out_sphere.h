@@ -163,13 +163,13 @@ public:
 
   void set1(core::ReflectionInfos);
   void set2(core::ReflectionInfos);
-  qreal maxInten(core::ReflectionInfos);
+  qreal avgInten(core::ReflectionInfos);
 
 protected:
   void onPaintGL();
   void point(float alpha, float beta, float inten, QColor const&, qreal factor);
 
-  core::ReflectionInfos infos1_, infos2_; qreal max1_, max2_;
+  core::ReflectionInfos infos1_, infos2_; qreal avg1_, avg2_;
 };
 
 //------------------------------------------------------------------------------
