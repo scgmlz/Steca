@@ -14,12 +14,13 @@ void TestSuite::cleanup() {
     ++failed;
 }
 
-static QVector<TestSuite*> *pTests = NULL;
+static QVector<TestSuite*>& tests() {
+  static QVector<TestSuite*> tests_;
+  return tests_;
+}
 
 RegisterTestSuite::RegisterTestSuite(TestSuite& testSuite) {
-  static QVector<TestSuite*> tests;
-  pTests = &tests;
-  tests.append(&testSuite);
+  tests().append(&testSuite);
 }
 
 #include <QTextStream>
@@ -30,11 +31,9 @@ int main(int argc, char *argv[]) {
 
   int status = 0;
 
-  if (pTests) {
-    for (auto test: *pTests) {
-      status |= QTest::qExec(test);
-      endl(out);                                              \
-    }
+  for (auto test: tests()) {
+    status |= QTest::qExec(test);
+    endl(out);                                              \
   }
 
   out << "Result: " << TestSuite::total << " tests, " << TestSuite::failed << " failed" << endl;
