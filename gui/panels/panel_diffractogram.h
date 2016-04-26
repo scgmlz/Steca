@@ -83,7 +83,7 @@ public:
   void updateBg();
 
   void clearReflLayer();
-  
+
   QColor rangeColor_;
   int selectedFittingTab();
 

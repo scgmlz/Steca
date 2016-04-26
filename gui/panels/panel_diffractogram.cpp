@@ -330,7 +330,7 @@ Diffractogram::Diffractogram(TheHub& hub)
   box_->addWidget((plot_ = new DiffractogramPlot(hub_,*this)));
   auto hb = hbox();
   box_->addLayout(hb);
-  hb->addWidget(check("all datasets"));
+  hb->addWidget(check("all datasets",hub_.actions.avgCurveDgram));
   hb->addWidget(check("fixed scale",hub_.actions.fixedIntenDisplayDgram));
   hb->addStretch();
 
@@ -406,7 +406,10 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
   if (!dataset_) return;
 
   auto &map = hub_.angleMap(*dataset_);
-  dgram_ = hub_.lens(*dataset_)->makeCurve(map.rgeGamma(), map.rgeTth());
+  if (hub_.avgCurveDgram_)
+    dgram_ = hub_.lens(*dataset_)->makeAvgCurve();
+  else
+    dgram_ = hub_.lens(*dataset_)->makeCurve(map.rgeGamma(), map.rgeTth());
 }
 
 void Diffractogram::calcBackground() {

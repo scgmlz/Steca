@@ -81,6 +81,7 @@ struct Actions {
     *rotateImage, *mirrorImage,
     *linkCuts, *showCut,
     *fixedIntenDisplayImage, *fixedIntenDisplayDgram,
+    *avgCurveDgram,
     *fitTool, *fitBgClear, *fitShow,
     *hasBeamOffset;
 };

@@ -70,6 +70,7 @@ public:
   Range   gammaRangeAt(qreal tth)       const;
 
   Curve makeCurve(rcRange gamma, rcRange tth) const;
+  Curve makeAvgCurve()                        const;
 
   rcDataset       dataset()  const { return dataset_;  }
   AngleMap const& angleMap() const { return angleMap_; }

@@ -68,6 +68,7 @@ private:
 public:
   bool fixedIntenScaleImage_;
   bool fixedIntenScaleDgram_;
+  bool avgCurveDgram_;
 
   models::FilesViewModel      fileViewModel;
   models::DatasetViewModel    datasetViewModel;

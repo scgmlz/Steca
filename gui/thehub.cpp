@@ -89,7 +89,7 @@ void Settings::save(rcstr key, QDoubleSpinBox* box) {
 //------------------------------------------------------------------------------
 
 TheHub::TheHub(): session(new core::Session())
-, fixedIntenScaleImage_(false), fixedIntenScaleDgram_(false)
+, fixedIntenScaleImage_(false), fixedIntenScaleDgram_(false), avgCurveDgram_(false)
 , fileViewModel(*this), datasetViewModel(*this), reflectionViewModel(*this) {
   initActions();
   configActions();
@@ -163,8 +163,9 @@ void TheHub::initActions() { // REVIEW all action texts and tips and icons
       .alt("non-fixed Image Intensity", "Display image using non-fixed intensity scale")
       .icon(":/icon/scale");
   TOGL(fixedIntenDisplayDgram, "fixed Diffractogram Intensity", "Display diffractogram using a fixed intensity scale")
-    .alt("non-fixed Diffractogram Intensity", "Display diffractogram using non-fixed intensity scale")
-    .dialog();
+      .alt("non-fixed Diffractogram Intensity", "Display diffractogram using non-fixed intensity scale");
+  TOGL(avgCurveDgram, "Diffractogram all Datasets", "Show a diffractogram from all Datasets")
+      .alt("Diffractogram from single Dataset", "Show diffractogram from single dataset");
   TRIG(rotateImage, "Rotate", "Rotate 90° clockwise")
       .icon(":/icon/rotate0").key(Qt::CTRL|Qt::Key_R);
   TOGL(mirrorImage, "Mirror", "Mirror image")
@@ -210,6 +211,12 @@ void TheHub::configActions() {
 
   connect(actions.fixedIntenDisplayDgram, &QAction::toggled, [this](bool on) {
     fixedIntenScaleDgram_ = on;
+    emit displayChange();
+  });
+
+  actions.avgCurveDgram->setChecked(false);
+  connect(actions.avgCurveDgram, &QAction::toggled, [this] (bool on) {
+    avgCurveDgram_ = on;
     emit displayChange();
   });
 

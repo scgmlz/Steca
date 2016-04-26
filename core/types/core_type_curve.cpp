@@ -92,8 +92,41 @@ Curve Curve::intersect(rcRanges ranges) const {
 Curve Curve::subtract(fit::Function const& f) const {
   Curve res;
 
-  for_i (xs_.count())
+  for_i (count())
     res.append(xs_[i], ys_[i] - f.y(xs_[i]));
+
+  return res;
+}
+
+Curve Curve::mul(qreal factor) const {
+  Curve res;
+
+  for_i (count())
+    res.append(xs_[i], ys_[i] * factor);
+
+  return res;
+
+}
+
+Curve Curve::add(Curve const& that) const {
+  Curve const *curve1 = this, *curve2 = &that;
+  uint count1 = curve1->count(), count2 = curve2->count();
+
+  // the longer one comes second
+  if (count1 > count2) {
+    qSwap(curve1,curve2);
+    qSwap(count1,count2);
+  }
+
+  Curve res;
+
+  // the shorter part - both curves
+  for (uint i=0, iEnd = count1; i<iEnd; ++i)
+    res.append(curve2->x(i), curve1->y(i) + curve2->y(i));
+
+  // the remainder of the longer curve
+  for (uint i=count1, iEnd = count2; i<iEnd; ++i)
+    res.append(curve2->x(i), curve2->y(i));
 
   return res;
 }

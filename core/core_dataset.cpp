@@ -181,9 +181,27 @@ rcRange Datasets::rgeFixedInten(rcSession session, bool trans, bool cut) const {
   return rgeFixedInten_;
 }
 
+rcCurve Datasets::makeAvgCurve(rcSession session, bool trans, bool cut) const {
+  if (!avgCurve_.isEmpty())
+    return avgCurve_;
+
+  Curve res;
+  for (auto &dataset: *this) {
+    shp_Lens lens = session.lens(*dataset,*this,trans,cut,session.norm());
+    Curve single = lens->makeCurve(lens->angleMap().rgeGamma(),lens->angleMap().rgeTth());
+    res = res.add(single);
+  }
+
+  if (count() > 0)
+    res = res.mul(1. / count());
+
+  return (avgCurve_ = res);
+}
+
 void Datasets::invalidateMutables() {
   avgMonitorCount_ = avgDeltaTime_ = qQNaN();
   rgeFixedInten_.invalidate();
+  avgCurve_.clear();
 }
 
 //------------------------------------------------------------------------------

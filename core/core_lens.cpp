@@ -190,8 +190,6 @@ Range Lens::gammaRangeAt(qreal tth) const {
 }
 
 Curve Lens::makeCurve(rcRange gammaRange, rcRange tthRange) const {
-  Curve res;
-
   auto s = size();
   uint w = s.width(), h = s.height();
 
@@ -222,6 +220,8 @@ Curve Lens::makeCurve(rcRange gammaRange, rcRange tthRange) const {
     }
   }
 
+  Curve res;
+
   for_i (w) {
     auto in  = intens_vec[i];
     auto cnt = counts_vec[i];
@@ -230,6 +230,10 @@ Curve Lens::makeCurve(rcRange gammaRange, rcRange tthRange) const {
   }
 
   return res;
+}
+
+Curve Lens::makeAvgCurve() const {
+  return datasets_.makeAvgCurve(session_, trans_, cut_);
 }
 
 void Lens::setNorm(eNorm norm) {

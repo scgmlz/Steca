@@ -207,5 +207,3 @@ void TestCoreLens::testGlobalIntensityRangeLens() {
   QCOMPARE(lensGlobRange.rgeInten(true).max,(double)84);
   QCOMPARE(lensGlobRange.rgeInten(true).min,(double)21);
 }
-
-

@@ -368,7 +368,7 @@ Dataset::Dataset(TheHub& hub)
 
   auto &actions = hub_.actions;
   actions.showCut->setChecked(true);
-  
+
   {
     auto &tab = addTab("Data",Qt::Vertical);
     tab.box_->addWidget(dataImageWidget_ = new ImageWidget(hub_,*this),0,Qt::AlignCenter);
@@ -404,7 +404,7 @@ void Dataset::setImageScale(uint scale) {
 QPixmap Dataset::makePixmap(core::shp_ImageLens lens) {
   QPixmap pixmap;
   auto size = lens->size();
-  auto rgeInten = lens->rgeInten(hub_.fixedIntenScaleImage_); // REVIEW also global
+  auto rgeInten = lens->rgeInten(hub_.fixedIntenScaleImage_);
 
   if (!size.isEmpty()) {
     qreal maxIntens = rgeInten.max;

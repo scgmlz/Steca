@@ -49,6 +49,8 @@ public:
   Curve intersect(rcRanges)  const;
 
   Curve subtract(fit::Function const&)  const;
+  Curve add(rcCurve) const;
+  Curve mul(qreal)  const;
 
   Curve smooth3()   const;  ///< moving average, 3 points
   uint  maxYindex() const;  ///< the index of the maximum y

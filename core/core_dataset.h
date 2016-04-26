@@ -18,6 +18,7 @@
 
 #include "types/core_type_image.h"
 #include "types/core_type_geometry.h"
+#include "types/core_type_curve.h"
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -86,12 +87,14 @@ public:
   qreal avgDeltaMonitorCount() const;
   qreal avgDeltaTime()         const;
   rcRange rgeFixedInten(rcSession, bool trans, bool cut) const;
+  rcCurve makeAvgCurve(rcSession, bool trans, bool cut) const;
 
 private:
   void invalidateMutables();
   // computed on demand
   mutable qreal avgMonitorCount_, avgDeltaTime_;
   mutable Range rgeFixedInten_;
+  mutable Curve avgCurve_;
 };
 
 //------------------------------------------------------------------------------
