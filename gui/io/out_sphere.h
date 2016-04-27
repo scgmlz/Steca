@@ -13,10 +13,10 @@
 //
 // ************************************************************************** //
 
-// Original sphere code Copyright 2013-6 Ian G Burleigh http://phi53.xyz
+// Original sphere code Copyright 2013-6 Ian G Burleigh
 // MIT-licence
 
-#ifdef STECA_LABS
+#ifdef STECA_LABSX
 #ifndef OUT_SPHERE_H
 #define OUT_SPHERE_H
 
@@ -33,7 +33,7 @@
 namespace gui { namespace io {
 //------------------------------------------------------------------------------
 
-class GLWidget: public QOpenGLWidget {
+class GLWidget: public QOpenGLWidget, protected QOpenGLFunctions {
   SUPER(GLWidget,QOpenGLWidget)
   Q_OBJECT
 public:
@@ -54,9 +54,12 @@ signals:
 protected:
   virtual void init();
 
-  float zoom_; QQuaternion rot_;
+  float fov_, near_, far_;
+  QQuaternion rot_;
+  QMatrix4x4 proj_;
+  QOpenGLShaderProgram prog_;
+
   QColor clearColor_;
-  bool flat_;
 
   void initializeGL();
   void resizeGL(int,int);
@@ -65,7 +68,7 @@ protected:
   virtual void onPaintGL() = 0;
   virtual void onRotate() {}
 
-  QPoint lastMousePos;
+  QVector2D mousePressPos_, mouseLastPos_;
 
   void mousePressEvent(QMouseEvent*);
   void mouseMoveEvent(QMouseEvent*);
@@ -109,7 +112,7 @@ public:
   typedef QVector<vertex_t> vertex_vec;
 
 public:
-  Sphere(QWidget* = NULL);
+  Sphere(QWidget* = nullptr);
 
   QSize minimumSizeHint() const { return QSize(400,320); }
 

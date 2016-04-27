@@ -105,7 +105,6 @@ protected:
 
   QBoxLayout        *box_;
   panel::BasicPanel *panel_;
-  QWidget           *widget_; // work is here
 };
 
 //------------------------------------------------------------------------------

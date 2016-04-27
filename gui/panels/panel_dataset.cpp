@@ -370,13 +370,13 @@ Dataset::Dataset(TheHub& hub)
   actions.showCut->setChecked(true);
 
   {
-    auto &tab = addTab("Data",Qt::Vertical);
-    tab.box_->addWidget(dataImageWidget_ = new ImageWidget(hub_,*this),0,Qt::AlignCenter);
+    auto &tab = addTab("Data");
+    tab.box->addWidget(dataImageWidget_ = new ImageWidget(hub_,*this),0,Qt::AlignCenter);
   }
 
   {
-    auto &tab = addTab("Corr.",Qt::Vertical);
-    tab.box_->addWidget(corrImageWidget_ = new ImageWidget(hub_,*this),0,Qt::AlignCenter);
+    auto &tab = addTab("Corr.");
+    tab.box->addWidget(corrImageWidget_ = new ImageWidget(hub_,*this),0,Qt::AlignCenter);
   }
 
   connect(actions.enableCorr, &QAction::toggled, [this](bool) {

@@ -12,23 +12,16 @@
 //
 // ************************************************************************** //
 
-// Original sphere code Copyright 2013-6 Ian G Burleigh http://phi53.xyz
+// Original sphere code Copyright 2013-6 Ian G Burleigh
 // MIT-licence
 
-#ifdef STECA_LABS
+#ifdef STECA_LABSX
 
 #include "out_sphere.h"
 #include "thehub.h"
 #include "core/core_polefigure.h"
 #include "types/core_type_matrix.h"
-#ifdef Q_OS_OSX
-#include <GLUT/glut.h>
-#else
-#include <GL/glu.h>
-#endif
-#include <qmath.h>
 
-//#include "qv_gl.h"
 #include <QMatrix4x4>
 #include <QMouseEvent>
 
@@ -60,82 +53,62 @@ int GLWidget::height() const {
 }
 
 void GLWidget::init() {
-  zoom_       = 5;
+  fov_ = 5; near_ = 1; far_ = 100;
   rot_        = QQuaternion();
   clearColor_ = Qt::black;
   flat_       = false;
 }
 
 void GLWidget::initializeGL() {
+  initializeOpenGLFunctions();
+
   glClearColor(clearColor_);
-//  glDisable(GL_CULL_FACE);
-//  glDisable(GL_DEPTH_TEST);
+
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_CULL_FACE);
 
 //  glShadeModel(GL_SMOOTH);
 //  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 //  glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 }
 
-void GLWidget::resizeGL(int,int) {
+void GLWidget::resizeGL(int w, int h) {
+//  if (w > h) {
+//    glViewport(0, (h-w)/2, w, w);
+//  } else {
+//    glViewport((w-h)/2, 0, h, h);
+//  }
+
+  qreal aspect = (qreal)w / (h ? h : 1);
+
+  proj_.setToIdentity();
+  proj_.perspective(fov_, aspect, near_, far_);
 }
 
 void GLWidget::paintGL() {
-  glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  QMatrix4x4 matrix;
+  matrix.translate(0,0,-10);
+  matrix.rotate(rot_);
 
-  int w = width(), h = height();
-
-  if (flat_) {
-    glViewport(0,0,w,h);
-  } else {
-    if (w > h) {
-      glViewport(0, (h-w)/2, w, w);
-    } else {
-      glViewport((w-h)/2, 0, h, h);
-    }
-  }
-
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-
-  if (flat_) {
-    glOrtho(0,w,h,0,0,1000);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-  } else {
-    gluPerspective(zoom_,1,1,100);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0,0,-30);
-
-    QMatrix4x4 matrix;
-    matrix.translate(0,0,-10);
-    matrix.rotate(rot_);
-    glMultMatrixf(matrix.data());
-  }
+  program.setUniformValue("mvp_matrix", projection * matrix);
 
   onPaintGL();
 }
 
 
 void GLWidget::mousePressEvent(QMouseEvent* e) {
-  lastMousePos = e->pos();
+  mouseLastPos_ = mousePressPos_ = e->localPos();
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent* e) {
-  if (flat_) return;
+  QVector2D pos = e->localPos(),
+            d   = (pos - mouseLastPos_;
+  mouseLastPos_ = pos;
 
-  QPoint pos = e->pos();
-  QVector2D d = QVector2D(pos - lastMousePos);
-  lastMousePos = pos;
-
-  int dx = d.x(), dy = d.y();
-
-  QVector3D n = QVector3D(dy,dx,0).normalized();
-  QQuaternion q = QQuaternion::fromAxisAndAngle(n,d.length()/2);
+  auto n = QVector3D(d.y(),d.x(),0).normalized();
+  auto q = QQuaternion::fromAxisAndAngle(n, d.length()/2);
 
   rotate(q*rot_);
 }
@@ -383,7 +356,7 @@ void Sphere::Geography::init() {
 //------------------------------------------------------------------------------
 
 Sphere::Sphere(QWidget *parent)
-  : super(parent), poly_(NULL), geo_(NULL),
+  : super(parent), poly_(nullptr), geo_(nullptr),
     geoMesh_(false), polyMesh_(false), faces_(false),
     blackWhite_(false) {
 

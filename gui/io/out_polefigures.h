@@ -17,15 +17,25 @@
 #define OUT_POLEFIGURES_H
 
 #include "out_table.h"
+#include "panels/panel.h"
 
 namespace gui { namespace io {
 //------------------------------------------------------------------------------
+
+class OutPoleTabs: public panel::TabsPanel {
+  SUPER(OutPoleTabs,panel::TabsPanel)
+public:
+  OutPoleTabs(TheHub&);
+};
 
 class OutPoleFigures: public OutWindow {
   SUPER(OutPoleFigures,OutWindow)
 public:
   OutPoleFigures(TheHub&,rcstr title,QWidget*);
   void calculate();
+
+private:
+  OutTableWidget *tableWidget_;
 };
 
 //------------------------------------------------------------------------------

@@ -13,7 +13,7 @@
 //
 // ************************************************************************** //
 
-// Original tree code Copyright 2013-6 Ian G Burleigh http://phi53.xyz
+// Original tree code Copyright 2013-6 Ian G Burleigh
 // MIT-licence
 
 #ifndef CORE_TYPE_TREES_H

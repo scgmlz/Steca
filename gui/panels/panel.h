@@ -97,14 +97,13 @@ class TabsPanel: public QTabWidget, protected RefHub {
 public:
   TabsPanel(TheHub&);
 
-protected:
-  class Tab: public QWidget {
-  public:
+  struct Tab: public QWidget {
     Tab(Qt::Orientation);
-    QBoxLayout *box_;
+    QBoxLayout *box;
   };
 
-  Tab& addTab(rcstr title,Qt::Orientation);
+  Tab& addTab(rcstr title, Qt::Orientation = Qt::Vertical);
+  Tab& tab(uint);
 };
 
 //------------------------------------------------------------------------------

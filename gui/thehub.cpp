@@ -148,11 +148,6 @@ void TheHub::initActions() { // REVIEW all action texts and tips and icons
   TRIG(outputHistograms, "Histograms", "")
       .dialog();
 
-#ifdef STECA_LABS
-  TRIG(poleSphere, "Pole sphere", "")
-      .dialog();
-#endif
-
   TOGL(linkCuts, "Link", "Use the same value for all cuts")
       .alt("Unlink", "Use different value for cuts")
       .icon(":/icon/linkNew");

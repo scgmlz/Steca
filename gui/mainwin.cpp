@@ -116,10 +116,6 @@ void MainWin::initMenus() {
   menuOutput_   = mbar->addMenu("&Output");
   menuHelp_     = mbar->addMenu("&Help");
 
-#ifdef STECA_LABS
-  menuLabs_     = mbar->addMenu("&Labs");
-#endif
-
   menuFile_->addActions({
     acts_.loadSession, acts_.saveSession,
     separator(),
@@ -169,12 +165,6 @@ void MainWin::initMenus() {
 #endif
     acts_.about,
   });
-
-#ifdef STECA_LABS
-  menuLabs_->addActions({
-    acts_.poleSphere,
-  });
-#endif
 }
 
 void MainWin::initLayout() {
@@ -227,10 +217,6 @@ void MainWin::connectActions() {
 
   onTrigger(acts_.outputPolefigures, &thisClass::outputPoleFigures);
   notYet(acts_.outputHistograms);
-
-#ifdef STECA_LABS
-  onTrigger(acts_.poleSphere, &thisClass::poleSphere);
-#endif
 
   onTrigger(acts_.about, &thisClass::about);
 
@@ -339,13 +325,6 @@ void MainWin::outputPoleFigures() {
   popup->show();
 }
 
-#ifdef STECA_LABS
-void MainWin::poleSphere() {
-  auto popup = new io::PoleSphere(hub_,"Pole Sphere",this);
-  popup->show();
-}
-#endif
-
 void MainWin::closeEvent(QCloseEvent* event) {
   onClose();
   event->accept();
@@ -362,6 +341,7 @@ void MainWin::onShow() {
 //  hub_.load(QFileInfo("/Users/igb/P/+scg/data/s.ste"));
 #else
   hub_.loadSession(QFileInfo("/home/jan/SCG/s.ste"));
+  hub_.actions.outputPolefigures->trigger();
 #endif
 #endif
 }

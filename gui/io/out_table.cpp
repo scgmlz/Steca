@@ -307,9 +307,9 @@ OutWindow::OutWindow(TheHub& hub,rcstr title, QWidget* parent)
   setLayout((box_ = vbox()));
 }
 
-void OutWindow::setWidgets(panel::BasicPanel* p, QWidget* tw) {
-  box_->addWidget((panel_       = p));
-  box_->addWidget((widget_ = tw));
+void OutWindow::setWidgets(panel::BasicPanel* panel, QWidget* widget) {
+  box_->addWidget((panel_ = panel));
+  box_->addWidget(widget);
   auto bbox = hbox();
   box_->addLayout(bbox);
   box_->setStretch(1,1);
