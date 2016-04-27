@@ -16,8 +16,6 @@
 // Original code Copyright 2015-6 Ian G Burleigh
 // MIT-licence
 
-#ifdef STECA_LABS
-
 #include "gl_canvas.h"
 #include "gl_camera.h"
 #include <QMouseEvent>
@@ -94,5 +92,4 @@ void Canvas::mouseReleaseEvent(QMouseEvent*) {
 
 //------------------------------------------------------------------------------
 }}
-#endif // STECA_LABS
 // eof

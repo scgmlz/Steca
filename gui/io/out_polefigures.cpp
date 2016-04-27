@@ -15,7 +15,8 @@
 #include "out_polefigures.h"
 #include "out_table.h"
 #include "panels/panel.h"
-#include <QDate>
+#include "thehub.h"
+#include "core/core_polefigure.h"
 
 #ifdef STECA_LABS
 #include "gl/gl_canvas.h"
@@ -28,60 +29,71 @@ class OutPoleFiguresParams: public panel::BoxPanel {
   SUPER(OutPoleFiguresParams,panel::BoxPanel)
 public:
   OutPoleFiguresParams(TheHub&);
+
+  QDoubleSpinBox *stepAlpha, *stepBeta;
 };
 
 OutPoleFiguresParams::OutPoleFiguresParams(TheHub& hub): super("", hub, Qt::Horizontal) {
-  box_->addWidget(label("Param"));
-  box_->addWidget(editCell(16));
+  box_->addWidget(label("α"));
+  box_->addWidget((stepAlpha = spinCell(8,1.,30.)));
+  box_->addWidget(label("β"));
+  box_->addWidget((stepBeta = spinCell(8,1.,30.)));
   box_->addStretch();
+
+  stepAlpha->setValue(5);
+  stepBeta->setValue(5);
 }
 
 //------------------------------------------------------------------------------
 
 OutPoleTabs::OutPoleTabs(TheHub& hub): super(hub) {
+  {
+    addTab("Table");
+  }
+  {
+    addTab("Graph");
+  }
 #ifdef STECA_LABS
   {
-    auto &tab = addTab("Sphere");
+    addTab("Sphere");
   }
 #endif
-  {
-    auto &tab = addTab("Table");
-  }
-  {
-    auto &tab = addTab("Graph");
-  }
 }
 
 //------------------------------------------------------------------------------
 
 OutPoleFigures::OutPoleFigures(TheHub& hub,rcstr title,QWidget* parent)
 : super(hub,title,parent) {
+  params_ = new OutPoleFiguresParams(hub);
   auto *tabs = new OutPoleTabs(hub);
-  setWidgets(new OutPoleFiguresParams(hub), tabs);
+  setWidgets(params_,tabs);
 
   tableWidget_ = new OutTableWidget(hub,
-                      {"int","str","real","date"},
-                      {cmp_int, cmp_str, cmp_real, cmp_date});
-  tabs->tab(1).box->addWidget(tableWidget_);
+      {"α","β","γ1","γ2","inten","2θ","fwhm"},
+      {cmp_real,cmp_real,cmp_real,cmp_real,cmp_real,cmp_real,cmp_real});
+
+  tabs->tab(0).box->addWidget(tableWidget_);
 
 #ifdef STECA_LABS
   auto *canvas = new gl::Canvas();
-  tabs->tab(0).box->addWidget(canvas);
+  tabs->tab(2).box->addWidget(canvas);
   auto *camera = new gl::Camera();
   canvas->setCamera(camera);
 #endif
 }
 
 void OutPoleFigures::calculate() {
-  // test
-  // TODO complete
   auto &table = tableWidget_->table();
   table.clear();
 
-  table.addRow({10,"d",10.10,QDate(2010,10,10),});
-  table.addRow({20,"c",10.20,QDate(2020,10,10),});
-  table.addRow({30,"b",10.30,QDate(2030,10,10),});
-  table.addRow({40,"a",10.40,QDate(2040,10,10),});
+  qreal alphaStep = params_->stepAlpha->value();
+  qreal betaStep  = params_->stepBeta->value();
+  auto rs1 = hub_.reflectionInfos(betaStep);
+  auto rs2 = core::pole::interpolate(rs1,alphaStep,betaStep,10,10,10,.8);
+
+  for (core::ReflectionInfo const& r: rs2)
+    table.addRow({r.alpha(), r.beta(), r.rgeGamma().min, r.rgeGamma().max,
+                  r.inten(), r.tth(), r.fwhm() });
 }
 
 //------------------------------------------------------------------------------

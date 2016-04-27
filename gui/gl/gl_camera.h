@@ -16,7 +16,6 @@
 // Original code Copyright 2015-6 Ian G Burleigh
 // MIT-licence
 
-#ifdef STECA_LABS
 #ifndef GL_CAMERA_H
 #define GL_CAMERA_H
 
@@ -53,4 +52,3 @@ protected:
 //------------------------------------------------------------------------------
 }}
 #endif // GL_CAMERA_H
-#endif // STECA_LABS

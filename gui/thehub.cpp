@@ -29,16 +29,13 @@
 namespace gui {
 //------------------------------------------------------------------------------
 
-class WaitCursor {
-public:
-  WaitCursor() {
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-  }
+WaitCursor::WaitCursor() {
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+}
 
- ~WaitCursor() {
-    QApplication::restoreOverrideCursor();
-  }
-};
+WaitCursor::~WaitCursor() {
+  QApplication::restoreOverrideCursor();
+}
 
 //------------------------------------------------------------------------------
 

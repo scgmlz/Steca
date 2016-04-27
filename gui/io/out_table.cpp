@@ -315,7 +315,6 @@ void OutWindow::setWidgets(panel::BasicPanel* panel, QWidget* widget) {
   box_->setStretch(1,1);
 
   auto actClose = new TriggerAction("Close", "Close", this);
-  actClose->dialog();
   connect(actClose, &QAction::triggered, [this]() {
     close();
   });
@@ -324,8 +323,8 @@ void OutWindow::setWidgets(panel::BasicPanel* panel, QWidget* widget) {
   bbox->addStretch();
 
   auto actCalculate = new TriggerAction("Calculate", "Calculate", this);
-  actCalculate->dialog();
   connect(actCalculate, &QAction::triggered, [this]() {
+    WaitCursor __;
     calculate();
   });
   bbox->addWidget(textButton(actCalculate));

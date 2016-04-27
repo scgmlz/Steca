@@ -29,6 +29,14 @@ class QDoubleSpinBox;
 namespace gui {
 //------------------------------------------------------------------------------
 
+class WaitCursor {
+public:
+  WaitCursor();
+ ~WaitCursor();
+};
+
+//------------------------------------------------------------------------------
+
 class Settings: public QSettings {
   SUPER(Settings, QSettings)
 public:

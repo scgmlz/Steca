@@ -16,7 +16,6 @@
 // Original code Copyright 2015-6 Ian G Burleigh
 // MIT-licence
 
-#ifdef STECA_LABS
 #ifndef GL_CANVAS_H
 #define GL_CANVAS_H
 
@@ -59,4 +58,3 @@ private:
 //------------------------------------------------------------------------------
 }}
 #endif // GL_CANVAS_H
-#endif // STECA_LABS

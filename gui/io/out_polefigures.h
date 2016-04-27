@@ -28,6 +28,8 @@ public:
   OutPoleTabs(TheHub&);
 };
 
+class OutPoleFiguresParams;
+
 class OutPoleFigures: public OutWindow {
   SUPER(OutPoleFigures,OutWindow)
 public:
@@ -35,7 +37,8 @@ public:
   void calculate();
 
 private:
-  OutTableWidget *tableWidget_;
+  OutPoleFiguresParams *params_;
+  OutTableWidget       *tableWidget_;
 };
 
 //------------------------------------------------------------------------------
