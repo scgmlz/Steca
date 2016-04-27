@@ -36,6 +36,7 @@ target_link_libraries(STeCaGUI
   Qt5::Widgets
   STeCaCore
   STeCaCoreIO
+  GL
 )
 
 set_property(TARGET STeCaGUI PROPERTY CXX_STANDARD 11)

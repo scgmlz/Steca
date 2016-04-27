@@ -16,7 +16,7 @@
 #include "out_table.h"
 #include "panels/panel.h"
 #include "thehub.h"
-#include "core/core_polefigure.h"
+#include "core_polefigure.h"
 
 #ifdef STECA_LABS
 #include "gl/gl_canvas.h"
