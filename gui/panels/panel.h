@@ -20,42 +20,11 @@
 #include "gui_helpers.h"
 #include <QGroupBox>
 
-class TheHub;
-
 namespace models {
 class TableModel;
 }
 
 namespace gui { namespace panel {
-//------------------------------------------------------------------------------
-/// A (tree-)list view with a reference to the hub. Single selection.
-
-class ListView: public TreeListView, protected RefHub {
-  SUPER(ListView,TreeListView)
-public:
-  ListView(TheHub&);
-
-protected:
-  using Model = models::TableModel;
-  void updateSingleSelection();
-  void selectRow(uint);
-};
-
-//------------------------------------------------------------------------------
-/// Multiple selection.
-
-class MultiListView: public ListView {
-  SUPER(MultiListView,ListView)
-public:
-  MultiListView(TheHub&);
-
-protected:
-  using Model = models::TableModel;
-  void updateNoSelection();
-  void clearSelection();
-  void selectRows(uint_vec);
-};
-
 //------------------------------------------------------------------------------
 
 /// Just a plain panel

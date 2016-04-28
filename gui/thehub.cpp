@@ -298,11 +298,11 @@ core::AngleMap const& TheHub::angleMap(core::rcDataset dataset) const {
   return session->angleMap(dataset);
 }
 
-core::ReflectionInfos TheHub::reflectionInfos(qreal betaStep,
+core::ReflectionInfos TheHub::reflectionInfos(core::rcReflection reflection, qreal betaStep,
                                               core::rcRange gammaRange) {
   // TODO TODO TODO
   return session->reflectionInfos(
-     collectedDatasets(), *reflections().first(), betaStep, gammaRange);
+     collectedDatasets(), reflection, betaStep, gammaRange);
 }
 
 static str const KEY_FILES("files");

@@ -17,26 +17,10 @@
 #define PANEL_FILE_H
 
 #include "panel.h"
-#include "models.h"
+#include "views.h"
 
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
-
-class FilesView: public MultiListView {
-  SUPER(FilesView,MultiListView)
-public:
-  using Model = models::FilesViewModel;
-
-  FilesView(TheHub&);
-
-protected:
-  void selectionChanged(QItemSelection const&, QItemSelection const&);
-  void removeSelected();
-
-private:
-  Model &model_;
-  mutable bool selfSignal_;
-};
 
 class DockFiles: public DockWidget, private RefHub {
   SUPER(DockFiles,DockWidget)
@@ -44,10 +28,10 @@ public:
   DockFiles(TheHub&);
 
 private:
-  FilesView *filesView_;
+  views::FilesView *filesView_;
   LineView  *corrFile_;
 };
 
 //------------------------------------------------------------------------------
-  }}
+}}
 #endif

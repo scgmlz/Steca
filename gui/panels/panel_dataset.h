@@ -18,25 +18,9 @@
 
 #include "panel.h"
 #include "core_dataset.h"
-#include "models.h"
+#include "views.h"
 
 namespace gui { namespace panel {
-//------------------------------------------------------------------------------
-
-class DatasetView: public ListView {
-  SUPER(DatasetView,ListView)
-public:
-  using Model = models::DatasetViewModel;
-
-  DatasetView(TheHub&);
-
-protected:
-  void selectionChanged(QItemSelection const&, QItemSelection const&);
-
-private:
-  Model &model_;
-};
-
 //------------------------------------------------------------------------------
 
 class DockDatasets: public DockWidget {
@@ -44,7 +28,7 @@ class DockDatasets: public DockWidget {
 public:
   DockDatasets(TheHub&);
 private:
-  DatasetView *datasetView_;
+  views::DatasetView *datasetView_;
 };
 
 //------------------------------------------------------------------------------

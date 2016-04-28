@@ -23,34 +23,9 @@
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-DatasetView::DatasetView(TheHub& hub): super(hub), model_(hub.datasetViewModel) {
-  setModel(&model_);
-
-  ON_HUB_SIGNAL(datasetsChanged, () {
-    model_.signalReset();
-     setCurrentIndex(model_.index(0,0));
-  })
-
-  connect(&model_, &QAbstractItemModel::modelReset, [this]() {
-    for_i (model_.columnCount())
-      resizeColumnToContents(i);
-  });
-}
-
-void DatasetView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
-  super::selectionChanged(selected,deselected);
-
-  auto indexes = selected.indexes();
-  hub_.tellSelectedDataset(indexes.isEmpty()
-    ? core::shp_Dataset()
-    : model_.data(indexes.first(), Model::GetDatasetRole).value<core::shp_Dataset>());
-}
-
-//------------------------------------------------------------------------------
-
 DockDatasets::DockDatasets(TheHub& hub)
 : super("Datasets","dock-datasets",Qt::Vertical) {
-  box_->addWidget((datasetView_ = new DatasetView(hub)));
+  box_->addWidget((datasetView_ = new views::DatasetView(hub)));
 
   auto h = hbox();
   box_->addLayout(h);

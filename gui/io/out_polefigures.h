@@ -18,6 +18,7 @@
 
 #include "out_table.h"
 #include "panels/panel.h"
+#include "types/core_types_fwd.h"
 
 namespace gui { namespace io {
 //------------------------------------------------------------------------------
@@ -37,8 +38,9 @@ public:
   void calculate();
 
 private:
-  OutPoleFiguresParams *params_;
-  OutTableWidget       *tableWidget_;
+  OutPoleFiguresParams  *params_;
+  OutTableWidget        *tableWidget_;
+  core::ReflectionInfos  rs;
 };
 
 //------------------------------------------------------------------------------

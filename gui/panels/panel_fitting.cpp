@@ -15,51 +15,9 @@
 #include "panel_fitting.h"
 #include "thehub.h"
 #include "core_fit_limits.h"
-#include <QAction>
-#include <QApplication>
+#include "core_reflection.h"
 
 namespace gui { namespace panel {
-//------------------------------------------------------------------------------
-
-ReflectionView::ReflectionView(TheHub& hub)
-: super(hub), model_(hub.reflectionViewModel) {
-  setModel(&model_);
-  for_i (model_.columnCount())
-    resizeColumnToContents(i);
-}
-
-void ReflectionView::addReflection(int type) {
-  using eType = core::ePeakType;
-  model_.addReflection((eType)qBound(0,type,(int)eType::NUM_TYPES)); // make safe
-  updateSingleSelection();
-}
-
-void ReflectionView::removeSelected() {
-  int row = currentIndex().row();
-  if (row<0 || model_.rowCount() <= row) return;
-
-  model_.remReflection(row);
-  updateSingleSelection();
-}
-
-bool ReflectionView::hasReflections() const {
-  return model_.rowCount() > 0;
-}
-
-void ReflectionView::updateSingleSelection() {
-  super::updateSingleSelection();
-  hub_.actions.remReflection->setEnabled(hasReflections());
-}
-
-void ReflectionView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
-  super::selectionChanged(selected,deselected);
-
-  auto indexes = selected.indexes();
-  hub_.tellSelectedReflection(indexes.isEmpty()
-    ? core::shp_Reflection()
-    : model_.data(indexes.first(), Model::GetDatasetRole).value<core::shp_Reflection>());
-}
-
 //------------------------------------------------------------------------------
 
 Fitting::Fitting(TheHub& hub)
@@ -96,7 +54,7 @@ Fitting::Fitting(TheHub& hub)
     auto &tab = addTab("Reflections");
     tab.box->addLayout(tools());
 
-    tab.box->addWidget((reflectionView_ = new ReflectionView(hub_)));
+    tab.box->addWidget((reflectionView_ = new views::ReflectionView(hub_)));
 
     auto hb = hbox();
     tab.box->addLayout(hb);

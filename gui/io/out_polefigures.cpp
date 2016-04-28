@@ -16,6 +16,7 @@
 #include "out_table.h"
 #include "panels/panel.h"
 #include "thehub.h"
+#include "views.h"
 #include "core_polefigure.h"
 
 #ifdef STECA_LABS
@@ -30,18 +31,48 @@ class OutPoleFiguresParams: public panel::BoxPanel {
 public:
   OutPoleFiguresParams(TheHub&);
 
+  views::ReflectionView *reflectionView_;
+
+  QRadioButton *rbPoints_, *rbInterpolated_;
+  QGroupBox    *moreParams_;
   QDoubleSpinBox *stepAlpha, *stepBeta;
 };
 
-OutPoleFiguresParams::OutPoleFiguresParams(TheHub& hub): super("", hub, Qt::Horizontal) {
-  box_->addWidget(label("α"));
-  box_->addWidget((stepAlpha = spinCell(8,1.,30.)));
-  box_->addWidget(label("β"));
-  box_->addWidget((stepBeta = spinCell(8,1.,30.)));
-  box_->addStretch();
+OutPoleFiguresParams::OutPoleFiguresParams(TheHub& hub): super("", hub, Qt::Vertical) {
+  auto hb = hbox();
+  box_->addLayout(hb);
+
+  hb->addWidget(label("β step"));
+  hb->addWidget((stepBeta = spinCell(8,1.,30.)));
+  hb->addWidget((reflectionView_ = new views::ReflectionView(hub_)));
+  hb->addStretch();
+
+  hb = hbox();
+  box_->addLayout(hb);
+
+  hb->addWidget((rbPoints_ = radioButton("points")));
+  hb->addWidget((rbInterpolated_ = radioButton("interpolated")));
+  hb->addStretch();
+
+  box_->addWidget((moreParams_ = new QGroupBox()));
+  auto mp = gridLayout();
+  moreParams_->setLayout(mp);
+
+  mp->addWidget(label("α step"),0,0);
+  mp->addWidget((stepAlpha = spinCell(8,1.,30.)),0,1);
+
+  connect(rbPoints_, &QRadioButton::clicked, [this]() {
+    moreParams_->hide();
+  });
+
+  connect(rbInterpolated_, &QRadioButton::clicked, [this]() {
+    moreParams_->show();
+  });
 
   stepAlpha->setValue(5);
   stepBeta->setValue(5);
+  rbPoints_->click();
+
 }
 
 //------------------------------------------------------------------------------
@@ -88,10 +119,21 @@ void OutPoleFigures::calculate() {
 
   qreal alphaStep = params_->stepAlpha->value();
   qreal betaStep  = params_->stepBeta->value();
-  auto rs1 = hub_.reflectionInfos(betaStep);
-  auto rs2 = core::pole::interpolate(rs1,alphaStep,betaStep,10,10,10,.8);
 
-  for (core::ReflectionInfo const& r: rs2)
+  auto reflection = params_->reflectionView_->selectedReflection();
+  if (!reflection)
+    return;
+
+  rs = hub_.reflectionInfos(*reflection, betaStep);
+
+  if (params_->moreParams_->isHidden()) {
+    // points
+  } else {
+    // interpolated
+    rs = core::pole::interpolate(rs,alphaStep,betaStep,10,10,10,.8);
+  }
+
+  for (auto const& r: rs)
     table.addRow({r.alpha(), r.beta(), r.rgeGamma().min, r.rgeGamma().max,
                   r.inten(), r.tth(), r.fwhm() });
 }

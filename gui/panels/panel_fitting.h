@@ -17,32 +17,9 @@
 #define PANEL_FITTING_H
 
 #include "panel.h"
-#include "core_reflection.h"
-#include "models.h"
+#include "views.h"
 
 namespace gui { namespace panel {
-//------------------------------------------------------------------------------
-
-class ReflectionView: public ListView {
-  SUPER(ReflectionView,ListView)
-public:
-  using Model = models::ReflectionViewModel;
-
-  ReflectionView(TheHub&);
-
-  void addReflection(int type);
-  void removeSelected();
-  bool hasReflections() const;
-
-  void updateSingleSelection();
-
-protected:
-  void selectionChanged(QItemSelection const&, QItemSelection const&);
-
-private:
-  Model &model_;
-};
-
 //------------------------------------------------------------------------------
 
 class Fitting: public TabsPanel {
@@ -53,7 +30,7 @@ public:
 private:
   QSpinBox  *spinDegree_;
   QComboBox *comboReflType_;
-  ReflectionView *reflectionView_;
+  views::ReflectionView *reflectionView_;
   QDoubleSpinBox *spinRangeMin_, *spinRangeMax_;
   QDoubleSpinBox *spinGuessPeakX_, *spinGuessPeakY_, *spinGuessFWHM_;
   QLineEdit      *readFitPeakX_,   *readFitPeakY_,   *readFitFWHM_;
