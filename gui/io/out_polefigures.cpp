@@ -18,12 +18,80 @@
 #include "thehub.h"
 #include "views.h"
 #include "core_polefigure.h"
+#include <QPainter>
 
 #ifdef STECA_LABS
 #include "gl/gl_canvas.h"
 #endif
 
 namespace gui { namespace io {
+//------------------------------------------------------------------------------
+
+class PoleWidget: public QWidget {
+  SUPER(PoleWidget,QWidget)
+public:
+  void set(core::ReflectionInfos);
+
+protected:
+  core::ReflectionInfos rs_;
+
+  void paintEvent(QPaintEvent*);
+
+  QPointF p(qreal alpha, qreal beta) const;
+  void paintGrid();
+  void paintInfo();
+
+  // valid during paintEvent
+  QPainter *p_;
+  QPointF   c_;
+  qreal     r_;
+};
+
+void PoleWidget::set(core::ReflectionInfos rs) {
+  rs_ = rs;
+  update();
+}
+
+void PoleWidget::paintEvent(QPaintEvent* e) {
+  int w = size().width(), h = size().height();
+
+  QPainter painter(this);
+  painter.setRenderHint(QPainter::Antialiasing);
+  painter.translate(w/2, h/2);
+
+  p_ = &painter;
+  c_ = QPointF(0,0);
+  r_ = qMin(w,h) / 2;
+
+  paintGrid();
+  paintInfo();
+}
+
+QPointF PoleWidget::p(qreal alpha, qreal beta) const {
+  qreal r = r_*alpha/90;
+
+  beta  = deg2rad(beta);
+  return QPointF(r*cos(beta), -r*sin(beta));
+}
+
+void PoleWidget::paintGrid() {
+  for (int alpha = 10; alpha<=90; alpha+=10) {
+    qreal r = r_ / 90 * alpha;
+    p_->drawEllipse(c_,r,r);
+  }
+
+  for (int beta = 0; beta<360; beta += 10) {
+    p_->drawLine(p(10,beta), p(90,beta));
+  }
+}
+
+void PoleWidget::paintInfo() {
+  for (auto const &r: rs_) {
+    qreal in = r.inten() / 16;
+    p_->drawEllipse(p(r.alpha(),r.beta()),in,in);
+  }
+}
+
 //------------------------------------------------------------------------------
 
 class OutPoleFiguresParams: public panel::BoxPanel {
@@ -103,7 +171,10 @@ OutPoleFigures::OutPoleFigures(TheHub& hub,rcstr title,QWidget* parent)
       {"α","β","γ1","γ2","inten","2θ","fwhm"},
       {cmp_real,cmp_real,cmp_real,cmp_real,cmp_real,cmp_real,cmp_real});
 
+  poleWidget_ = new PoleWidget();
+
   tabs->tab(0).box->addWidget(tableWidget_);
+  tabs->tab(1).box->addWidget(poleWidget_);
 
 #ifdef STECA_LABS
   auto *canvas = new gl::Canvas();
@@ -124,18 +195,20 @@ void OutPoleFigures::calculate() {
   if (!reflection)
     return;
 
-  rs = hub_.reflectionInfos(*reflection, betaStep);
+  rs_ = hub_.reflectionInfos(*reflection, betaStep);
 
   if (params_->moreParams_->isHidden()) {
     // points
   } else {
     // interpolated
-    rs = core::pole::interpolate(rs,alphaStep,betaStep,10,10,10,.8);
+    rs_ = core::pole::interpolate(rs_,alphaStep,betaStep,10,10,10,.8);
   }
 
-  for (auto const& r: rs)
+  for (auto const& r: rs_)
     table.addRow({r.alpha(), r.beta(), r.rgeGamma().min, r.rgeGamma().max,
                   r.inten(), r.tth(), r.fwhm() });
+
+  poleWidget_->set(rs_);
 }
 
 //------------------------------------------------------------------------------

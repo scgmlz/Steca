@@ -30,6 +30,7 @@ public:
 };
 
 class OutPoleFiguresParams;
+class PoleWidget;
 
 class OutPoleFigures: public OutWindow {
   SUPER(OutPoleFigures,OutWindow)
@@ -40,7 +41,8 @@ public:
 private:
   OutPoleFiguresParams  *params_;
   OutTableWidget        *tableWidget_;
-  core::ReflectionInfos  rs;
+  PoleWidget            *poleWidget_;
+  core::ReflectionInfos  rs_;
 };
 
 //------------------------------------------------------------------------------
