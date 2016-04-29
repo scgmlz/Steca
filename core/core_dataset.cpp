@@ -15,7 +15,7 @@
 #include "core_dataset.h"
 #include "core_session.h"
 #include "core_lens.h"
-#include <QDate>
+#include <QStringList>
 
 namespace core {
 //------------------------------------------------------------------------------

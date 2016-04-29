@@ -25,6 +25,7 @@
 #include <QApplication>
 #include <QActionEvent>
 #include <QDir>
+#include <QStringList>
 
 namespace gui {
 //------------------------------------------------------------------------------
