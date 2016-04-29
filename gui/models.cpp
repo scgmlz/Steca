@@ -53,6 +53,14 @@ void FilesViewModel::remFile(uint i) {
 
 DatasetViewModel::DatasetViewModel(gui::TheHub& hub)
 : super(hub), datasets_(hub.collectedDatasets()), metaInfo_(nullptr) {
+
+  connect(&hub,&gui::TheHub::beginReset, [this]() {
+    beginResetModel();
+  });
+
+  connect(&hub,&gui::TheHub::endReset, [this]() {
+    endResetModel();
+  });
 }
 
 int DatasetViewModel::columnCount(rcIndex) const {
@@ -74,7 +82,7 @@ QVariant DatasetViewModel::data(rcIndex index,int role) const {
 
     switch (col) {
     case COL_NUMBER:
-      return str::number(row+1);
+      return hub_.indexCombinedDatasets()[row];
     default:
       return datasets_.at(row)->attributeStrValue(metaInfoNums_[col-COL_ATTRS]);
     }

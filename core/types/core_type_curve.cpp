@@ -118,7 +118,7 @@ Curve Curve::add(Curve const& that) const {
     qSwap(count1,count2);
   }
 
-  Curve res;
+  Curve res; // TODO take the tth axis into account
 
   // the shorter part - both curves
   for (uint i=0, iEnd = count1; i<iEnd; ++i)

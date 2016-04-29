@@ -330,8 +330,8 @@ Diffractogram::Diffractogram(TheHub& hub)
   box_->addWidget((plot_ = new DiffractogramPlot(hub_,*this)));
   auto hb = hbox();
   box_->addLayout(hb);
-  hb->addWidget(check("all datasets",hub_.actions.avgCurveDgram));
-  hb->addWidget(check("fixed scale",hub_.actions.fixedIntenDisplayDgram));
+  hb->addWidget(avgCurveCheckBox = check("all datasets",hub_.actions.avgCurveDgram));
+  hb->addWidget(fixedIntenCheckBox = check("fixed scale",hub_.actions.fixedIntenDisplayDgram));
   hb->addStretch();
 
   ON_HUB_SIGNAL(datasetSelected, (core::shp_Dataset dataset) { setDataset(dataset); })
@@ -365,6 +365,14 @@ Diffractogram::Diffractogram(TheHub& hub)
   connect(hub_.actions.fitTool, &QAction::toggled, [this](bool on) {
     plot_->setTool(on ? (0==hub_.fittingTab__ ? DiffractogramPlot::TOOL_BACKGROUND:DiffractogramPlot::TOOL_PEAK_REGION) : DiffractogramPlot::TOOL_NONE);
   });
+
+  ON_HUB_SIGNAL(factorySettings, () {
+    avgCurveCheckBox->setChecked(false);
+  })
+
+  ON_HUB_SIGNAL(factorySettings, () {
+    fixedIntenCheckBox->setChecked(false);
+  })
 
   ON_HUB_SIGNAL(reflectionSelected, (core::shp_Reflection reflection) {
     currentReflection_ = reflection;

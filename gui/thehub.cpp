@@ -240,7 +240,6 @@ core::shp_File TheHub::getFile(uint index) const {
 void TheHub::remFile(uint i) {
   session->remFile(i);
   emit filesChanged();
-
   if (0==numFiles()) {
     tellSelectedDataset(core::shp_Dataset()); // REVIEW out?
     setImageCut(true, false, core::ImageCut());
@@ -256,8 +255,9 @@ core::rcImage TheHub::corrImage() const {
 }
 
 void TheHub::tellFilesSelectedDatasetsChanged() {
-  emit filesSelected();
+  emit factorySettings();
   emit datasetsChanged();
+  emit filesSelected();
   uint cnt = collectedDatasets().count();
   if (!cnt) tellSelectedDataset(core::shp_Dataset());
 }
@@ -480,8 +480,28 @@ void TheHub::addFiles(str_lst filePaths) THROWS {
 }
 
 void TheHub::collectDatasetsFromFiles(uint_vec is) {
+  emit beginReset();
   session->collectDatasetsFromFiles(is);
+  emit endReset();
   tellFilesSelectedDatasetsChanged();
+}
+
+void TheHub::collectCombinedDatasetsFromFiles(uint_vec is) {
+  session->collectDatasetsFromFiles(is);
+  emit datasetsChanged(); // do not emit filesSelected here
+  uint cnt = collectedDatasets().count();
+  if (!cnt) tellSelectedDataset(core::shp_Dataset());
+}
+
+
+void TheHub::setNumCombinedDatasets(int num) {
+  session->numCombinedDatasets() = num;
+  if (0 != numFiles() ) // if no files do not update
+    emit datasetsChanged();
+}
+
+str_lst const& TheHub::indexCombinedDatasets() {
+  return session->combinedDatasetsIndices();
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {

@@ -123,8 +123,11 @@ public:
   void addFiles(str_lst filePaths)  THROWS;
 
   void collectDatasetsFromFiles(uint_vec);
+  void collectCombinedDatasetsFromFiles(uint_vec);
   uint_vec const& collectedFromFiles() const { return session->collectedFromFiles();   }
   core::rcDatasets collectedDatasets() const { return session->collectedDatasets();    }
+  void setNumCombinedDatasets(int num);
+  str_lst const& indexCombinedDatasets();
 
   void setCorrFile(rcstr filePath)  THROWS;
   void enableCorrection(bool);
@@ -171,6 +174,10 @@ signals:
 
   void datasetsChanged();
   void datasetSelected(core::shp_Dataset);
+
+  void factorySettings();
+  void beginReset();
+  void endReset();
 
   void reflectionsChanged();
   void reflectionSelected(core::shp_Reflection);

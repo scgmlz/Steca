@@ -41,7 +41,11 @@ public:
           qreal deltaMonitorCount, qreal deltaTime,
           QSize const& size, inten_t const* intens);
 
+  Dataset(rcDataset);
+
   rcDatasets datasets() const;
+
+  static shp_Dataset combine(Datasets);
 
   str attributeStrValue(uint) const;
 

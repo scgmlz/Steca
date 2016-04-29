@@ -15,6 +15,7 @@
 #include "core_dataset.h"
 #include "core_session.h"
 #include "core_lens.h"
+#include <QDate>
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -63,9 +64,62 @@ Dataset::Dataset(
 , image_(size,intens) {
 }
 
+Dataset::Dataset(rcDataset that): datasets_(nullptr), date_(that.date_), comment_(that.comment_)
+, motorXT_(that.motorXT_), motorYT_(that.motorYT_), motorZT_(that.motorZT_)
+, motorOmg_(that.motorOmg_), motorTth_(that.motorTth_), motorPhi_(that.motorPhi_), motorChi_(that.motorChi_)
+, motorPST_(that.motorPST_), motorSST_(that.motorSST_), motorOMGM_(that.motorOMGM_)
+, deltaMonitorCount_(that.deltaMonitorCount_), deltaTime_(that.deltaTime_)
+, image_(that.image_.size(),that.image_.intensData()) {
+}
+
 rcDatasets Dataset::datasets() const {
   ASSERT(datasets_)
-  return *datasets_;
+      return *datasets_;
+}
+
+shp_Dataset Dataset::combine(Datasets datasets) {
+  ASSERT(datasets.count() > 0)
+  qreal motorXT = 0,  motorYT = 0,  motorZT = 0,  motorOmg = 0, motorTth = 0,
+        motorPhi = 0, motorChi = 0, motorPST = 0, motorSST = 0, motorOMGM = 0,
+        deltaMonitorCount = 0, deltaTime = 0;
+
+  auto count = datasets.count();
+  for (int i = 0; i < count; ++i) {
+    auto &d = *datasets.at(i);
+    motorXT += d.motorXT_;
+    motorYT += d.motorYT_;
+    motorZT += d.motorZT_;
+    motorOmg += d.motorOmg_;
+    motorTth += d.motorTth_;
+    motorPhi += d.motorPhi_;
+    motorChi += d.motorChi_;
+    motorPST += d.motorPST_;
+    motorSST += d.motorSST_;
+    motorOMGM += d.motorOMGM_;
+    deltaMonitorCount += d.deltaMonitorCount_;
+    deltaTime += d.deltaTime_;
+  }
+
+  motorXT /= count;
+  motorYT /= count;
+  motorZT /= count;
+  motorOmg /= count;
+  motorTth /= count;
+  motorPhi /= count;
+  motorChi /= count;
+  motorPST /= count;
+  motorSST /= count;
+  motorOMGM /= count;
+
+  Image image = datasets.folded();
+  auto &first = *datasets.at(0);
+  rcstr date = first.date_;
+  rcstr comment = first.comment_;
+
+  return shp_Dataset(new Dataset(date, comment,
+                                 motorXT, motorYT,  motorZT,  motorOmg, motorTth,
+                                 motorPhi, motorChi, motorPST, motorSST, motorOMGM,
+                                 deltaMonitorCount, deltaTime, image.size(), image.intensData()));
 }
 
 str Dataset::attributeStrValue(uint i) const {
@@ -119,7 +173,8 @@ Datasets::Datasets() {
 }
 
 void Datasets::appendHere(shp_Dataset dataset) {
-  dataset->datasets_ = this;  // TODO ensure that only one is set
+  ASSERT(!dataset->datasets_)
+  dataset->datasets_ = this;  // ensured that only one is set
   super::append(dataset);
 
   invalidateMutables();

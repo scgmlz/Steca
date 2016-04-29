@@ -50,6 +50,7 @@ private:
 
   uint_vec collectedFromFiles_;
   Datasets collectedDatasets_;
+  str_lst  combindedDatasetsIndices_;
 
 public:
   bool     hasCorrFile()    const { return !corrFile_.isNull(); }
@@ -64,8 +65,12 @@ public:
 
   void            collectDatasetsFromFiles(uint_vec);
   uint_vec const& collectedFromFiles() { return collectedFromFiles_;  }
-  rcDatasets      collectedDatasets()  const { return collectedDatasets_;   }
+  rcDatasets      collectedDatasets()  const;
+  uint&           numCombinedDatasets();
+  str_lst  const& combinedDatasetsIndices();
 
+private:
+  uint            numCombine_;
 // image - sanity
 private:
   /// All files must have images of the same size; this is a cached value

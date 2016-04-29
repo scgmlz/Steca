@@ -80,6 +80,7 @@ struct Actions {
     *avgCurveDgram,
     *fitTool, *fitBgClear, *fitShow,
     *hasBeamOffset;
+
 };
 
 //------------------------------------------------------------------------------

@@ -24,14 +24,29 @@ namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 DockDatasets::DockDatasets(TheHub& hub)
-: super("Datasets","dock-datasets",Qt::Vertical) {
+: super("Datasets","dock-datasets",Qt::Vertical), RefHub(hub) {
   box_->addWidget((datasetView_ = new views::DatasetView(hub)));
 
   auto h = hbox();
   box_->addLayout(h);
 
   h->addWidget(label("Combine:"));
-  h->addWidget(spinCell(4,1));
+  h->addWidget(combineDatasets_ = spinCell(4,1));
+  combineDatasets_->setToolTip("Combine and average number of datasets");
+
+  auto setNumCombineDatasets = [this](int num) {
+    hub_.setNumCombinedDatasets(num);
+  };
+
+  connect(combineDatasets_,static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),[this,setNumCombineDatasets](int num) {
+    setNumCombineDatasets(num);
+    hub_.collectCombinedDatasetsFromFiles(hub_.collectedFromFiles());
+  });
+
+  connect(&hub_,&TheHub::beginReset,[this]() {
+    hub_.setNumCombinedDatasets(1);
+    combineDatasets_->setValue(1);
+  });
 }
 
 //------------------------------------------------------------------------------
