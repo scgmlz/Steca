@@ -19,6 +19,7 @@
 #include "core_reflection_info.h"
 #include "types/core_type_curve.h"
 #include "types/core_type_matrix.h"
+#include <QStringList>
 #include <qmath.h>
 
 namespace core {
