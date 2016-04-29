@@ -18,7 +18,9 @@
 #include "thehub.h"
 #include "views.h"
 #include "core_polefigure.h"
+#include "core_reflection.h"
 #include <QPainter>
+#include <QStringList>
 
 #ifdef STECA_LABS
 #include "gl/gl_canvas.h"
@@ -99,42 +101,73 @@ class OutPoleFiguresParams: public panel::BoxPanel {
 public:
   OutPoleFiguresParams(TheHub&);
 
-  views::ReflectionView *reflectionView_;
-
+  QComboBox *reflections_;
   QRadioButton *rbPoints_, *rbInterpolated_;
-  QGroupBox    *moreParams_;
-  QDoubleSpinBox *stepAlpha, *stepBeta;
+  QCheckBox *cbGammaLimit_;
+  QGroupBox    *moreParams_, *gammaLimit_;
+  QDoubleSpinBox *stepAlpha, *stepBeta, *centerSearchRadius, *searchRadius,
+                 *gammaLimitMax, *gammaLimitMin;
+  QSpinBox  *treshold;
 };
 
 OutPoleFiguresParams::OutPoleFiguresParams(TheHub& hub): super("", hub, Qt::Vertical) {
-  auto hb = hbox();
-  box_->addLayout(hb);
+  auto bp = gridLayout();
+  box_->addLayout(bp);
 
-  hb->addWidget(label("β step"));
-  hb->addWidget((stepBeta = spinCell(8,1.,30.)));
-  hb->addWidget((reflectionView_ = new views::ReflectionView(hub_)));
-  hb->addStretch();
+  bp->addWidget(label("β step"),0,0);
+  bp->addWidget((stepBeta = spinCell(8,1.,30.)),0,1);
+  str_lst ref;
+  for_i (hub_.reflections().count()) {
+    auto type = hub_.reflections().at(i)->type();
+    ref.append(QString("%1: "+core::Reflection::typeTag(type)).arg(i+1));
+  }
+  bp->addWidget(label("Reflection"),0,2);
+  bp->addWidget(reflections_ = comboBox(ref),0,3);
+  bp->setVerticalSpacing(5);
 
-  hb = hbox();
-  box_->addLayout(hb);
+  bp->addWidget((rbPoints_ = radioButton("points")),1,0);
+  bp->addWidget((rbInterpolated_ = radioButton("interpolated")),1,1);
+  bp->setColumnStretch(4,1);
 
-  hb->addWidget((rbPoints_ = radioButton("points")));
-  hb->addWidget((rbInterpolated_ = radioButton("interpolated")));
-  hb->addStretch();
-
-  box_->addWidget((moreParams_ = new QGroupBox()));
+  box_->addWidget((moreParams_ = new QGroupBox()),2,0);
   auto mp = gridLayout();
   moreParams_->setLayout(mp);
 
-  mp->addWidget(label("α step"),0,0);
-  mp->addWidget((stepAlpha = spinCell(8,1.,30.)),0,1);
+  mp->addWidget(label("α step"),                         0,0);
+  mp->addWidget((stepAlpha = spinCell(8,1.,30.)),        0,1);
+  mp->setHorizontalSpacing(10);
+  mp->addWidget(label("Treshold"),                       0,2);
+  mp->addWidget(treshold = spinCell(4,0,100),            0,3);
+  mp->addWidget(label("Radius from polefigure center"),  1,0);
+  mp->addWidget(centerSearchRadius = spinCell(8,1.,30.), 1,1);
+  mp->addWidget(label("Search radius"),                  1,2);
+  mp->addWidget(searchRadius = spinCell(8.,1.,30.),      1,3);
+  mp->setColumnStretch(4,1);
+
+  box_->addWidget(cbGammaLimit_ = check("Gamma Limitation"), 0,0);
+  box_->addWidget(gammaLimit_ = new QGroupBox());
+  auto gl = gridLayout();
+  gammaLimit_->setLayout(gl);
+  gammaLimit_->setDisabled(true);
+
+  gl->addWidget(label("Gamma limitation max"),                   0,0);
+  gl->setHorizontalSpacing(10);
+  gl->addWidget(gammaLimitMax = spinCell(8,1.,30.),              0,1);
+  gl->addWidget(label("Gamma limitation min"),                   1,0);
+  gl->addWidget(gammaLimitMin = spinCell(8,1.,30.),              1,1);
+  gl->setColumnStretch(2,1);
 
   connect(rbPoints_, &QRadioButton::clicked, [this]() {
-    moreParams_->hide();
+    moreParams_->setDisabled(true);
   });
 
   connect(rbInterpolated_, &QRadioButton::clicked, [this]() {
-    moreParams_->show();
+    moreParams_->setEnabled(true);
+  });
+
+  connect(cbGammaLimit_, &QCheckBox::toggled, [this](int on) {
+    cbGammaLimit_->setChecked(on);
+    gammaLimit_->setEnabled(on);
   });
 
   stepAlpha->setValue(5);
@@ -191,10 +224,12 @@ void OutPoleFigures::calculate() {
   qreal alphaStep = params_->stepAlpha->value();
   qreal betaStep  = params_->stepBeta->value();
 
-  auto reflection = params_->reflectionView_->selectedReflection();
-  if (!reflection)
+  auto index = params_->reflections_->currentIndex();
+  auto &reflections = hub_.reflections();
+  if (reflections.isEmpty())
     return;
 
+  auto reflection = reflections.at(index);
   rs_ = hub_.reflectionInfos(*reflection, betaStep);
 
   if (params_->moreParams_->isHidden()) {
