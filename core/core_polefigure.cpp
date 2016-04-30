@@ -43,7 +43,6 @@ qreal angle(qreal alpha1, qreal alpha2,
 }
 
 enum class Quadrant {
-  NONE,
   NORTHEAST,
   SOUTHEAST,
   SOUTHWEST,
@@ -54,13 +53,13 @@ static int NUM_QUADRANTS = 4;
 
 typedef QVector<Quadrant> Quadrants;
 
-static Quadrants allQuadrants() {
+Quadrants allQuadrants() {
   return { Quadrant::NORTHEAST, Quadrant::SOUTHEAST,
            Quadrant::SOUTHWEST, Quadrant::NORTHWEST
   };
 }
 
-static bool inQuadrant(Quadrant quadrant, qreal deltaAlpha, qreal deltaBeta) {
+bool inQuadrant(Quadrant quadrant, qreal deltaAlpha, qreal deltaBeta) {
   switch (quadrant) {
   case Quadrant::NORTHEAST:
     return deltaAlpha >= 0 && deltaBeta >= 0;
@@ -76,13 +75,13 @@ static bool inQuadrant(Quadrant quadrant, qreal deltaAlpha, qreal deltaBeta) {
 }
 
 // Search quadrant remapping in case no point was found.
-static Quadrant remapQuadrant(Quadrant q) {
+Quadrant remapQuadrant(Quadrant q) {
   switch(q) {
   case Quadrant::NORTHEAST: return Quadrant::NORTHWEST;
   case Quadrant::SOUTHEAST: return Quadrant::SOUTHWEST;
   case Quadrant::SOUTHWEST: return Quadrant::NORTHEAST;
   case Quadrant::NORTHWEST: return Quadrant::SOUTHEAST;
-  default: NEVER_HERE return Quadrant::NONE;
+  default: NEVER_HERE return (Quadrant)0;
   }
 }
 
@@ -112,7 +111,7 @@ void searchPoints(qreal alpha, qreal beta, qreal radius,
 }
 
 // Searches closest ReflectionInfos to given alpha and beta in quadrants.
-static void searchInQuadrants(
+void searchInQuadrants(
     Quadrants const& quadrants,
     qreal alpha, qreal beta,
     qreal searchRadius,

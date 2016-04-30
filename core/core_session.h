@@ -63,7 +63,7 @@ public:
   void     setCorrFile(shp_File) THROWS;  ///< Load or remove a correction file.
   void     remCorrFile();
 
-  void     enableCorr(bool);
+  void     tryEnableCorr(bool);
   bool     isCorrEnabled()  const { return corrEnabled_;        }
 
   void     collectDatasetsFromFiles(uint_vec,uint);
@@ -121,16 +121,24 @@ public:
                                   rcRange gammaRange = Range());
 // fitting
 private:
-  uint   bgPolynomialDegree_;
+  uint   bgPolyDegree_;
   Ranges bgRanges_;
 
   Reflections reflections_;
 
 public:
-  // TODO instead of exposing the objects, provide an interface for TheHub
-  Ranges&       bgRanges()           { return bgRanges_;           }
-  uint&         bgPolynomialDegree() { return bgPolynomialDegree_; }
-  Reflections&  reflections()        { return reflections_;        }
+  rcRanges      bgRanges()     const { return bgRanges_;      }
+  uint          bgPolyDegree() const { return bgPolyDegree_;  }
+  rcReflections reflections()  const { return reflections_;   }
+
+  void setBgRanges(rcRanges);
+  bool addBgRange(rcRange);
+  bool remBgRange(rcRange);
+
+  void setBgPolyDegree(uint);
+
+  void addReflection(shp_Reflection);
+  void remReflection(uint);
 
 // normalization
 private:

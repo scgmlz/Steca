@@ -99,6 +99,8 @@ class TakesLongTime {
 public:
   TakesLongTime();
  ~TakesLongTime();
+
+  static void (*handler)(bool);
 };
 
 #endif // CORE_DEFS_H

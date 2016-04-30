@@ -33,9 +33,8 @@ private:
   TheHub& asHub();
 
 protected:
-  // emit signals
-//  void tellNoSelectedDataset();
-  void tellSelectedDataset(core::shp_Dataset);
+  // emit signals - only TheHub can call these
+  void tellDatasetSelected(core::shp_Dataset);
   void tellSelectedReflection(core::shp_Reflection);
   void tellReflectionData(core::shp_Reflection);
   void tellReflectionValues(core::rcRange,core::rcXY,qreal,bool);
@@ -47,8 +46,8 @@ signals:
   void sigDatasetsChanged();  ///< the set of datasets collected from selected files has changed
   void sigDatasetSelected(core::shp_Dataset);
 
+  void sigCorrFile(core::shp_File);
   void sigCorrEnabled(bool);
-  void sigCorrFileName(QString const&);
 
   void sigReflectionsChanged();
   void sigReflectionSelected(core::shp_Reflection);
@@ -58,8 +57,8 @@ signals:
   void sigDisplayChanged();
   void sigGeometryChanged();
 
+  void sigBgChanged();    ///< ranges and poly: refit
   void sigNormChanged();
-  void sigBgPolynomialDegree(uint);
 
   void sigFittingTab(int);
 };
@@ -79,10 +78,9 @@ private:
     QObject::connect(&hub_,signal,slot);
   }
 
-// send signals (through the hub)
+// emit signals (through the hub)
 protected:
-  void tellFilesSelectedDatasetsChanged();
-  void tellSelectedDataset(core::shp_Dataset);
+  void tellDatasetSelected(core::shp_Dataset);
   void tellSelectedReflection(core::shp_Reflection);
   void tellReflectionData(core::shp_Reflection);
   void tellReflectionValues(core::rcRange,core::rcXY,qreal,bool);
@@ -101,8 +99,8 @@ protected:
   DEFINE_HUB_SIGNAL_HANDLER(DatasetsChanged)
   DEFINE_HUB_SIGNAL_HANDLER(DatasetSelected)
 
+  DEFINE_HUB_SIGNAL_HANDLER(CorrFile)
   DEFINE_HUB_SIGNAL_HANDLER(CorrEnabled)
-  DEFINE_HUB_SIGNAL_HANDLER(CorrFileName)
 
   DEFINE_HUB_SIGNAL_HANDLER(ReflectionsChanged)
   DEFINE_HUB_SIGNAL_HANDLER(ReflectionSelected)
@@ -112,8 +110,8 @@ protected:
   DEFINE_HUB_SIGNAL_HANDLER(DisplayChanged)
   DEFINE_HUB_SIGNAL_HANDLER(GeometryChanged)
 
+  DEFINE_HUB_SIGNAL_HANDLER(BgChanged)
   DEFINE_HUB_SIGNAL_HANDLER(NormChanged)
-  DEFINE_HUB_SIGNAL_HANDLER(BgPolynomialDegree)
 
   DEFINE_HUB_SIGNAL_HANDLER(FittingTab)
 

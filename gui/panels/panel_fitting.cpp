@@ -109,14 +109,14 @@ Fitting::Fitting(TheHub& hub)
 
     auto hb = hbox();
     tab.box->addLayout(hb);
-    hb->addWidget(label("Polynomial degree:"));
-    hb->addWidget((spinDegree_ = spinCell(4,0,core::fit::MAX_POLYNOMIAL_DEGREE)));
+    hb->addWidget(label("Polynom degree:"));
+    hb->addWidget((spinDegree_ = spinCell(4,0,core::fit::MAX_POLYNOM_DEGREE)));
     hb->addStretch();
 
     tab.box->addStretch();
 
     connect(spinDegree_, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int degree) {
-      hub_.setBackgroundPolynomialDegree(degree);
+      hub_.setBgPolyDegree(degree);
     });
   }
 
@@ -181,7 +181,7 @@ Fitting::Fitting(TheHub& hub)
     });
 
     onSigReflectionsChanged([this]() {
-      reflectionView_->update();
+      reflectionView_->updateSingleSelection();
       updateReflectionControls();
     });
 

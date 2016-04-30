@@ -67,12 +67,22 @@ Action& ToggleAction::alt(rcstr text2, rcstr tip2) {
 //------------------------------------------------------------------------------
 
 Actions::Actions(TheHub& hub): super(hub) {
+  onSigFilesSelected([this]() {
+    remFile->setEnabled(!hub_.collectedFromFiles().isEmpty());
+  });
+
+  onSigCorrFile([this](core::shp_File file) {
+    remCorr->setEnabled(!file.isNull());
+  });
+
   onSigCorrEnabled([this](bool on) {
     enableCorr->setChecked(on);
   });
 
-  onSigFilesSelected([this]() {
-    remFile->setEnabled(!hub_.collectedFromFiles().isEmpty());
+  onSigDatasetsChanged([this]() {
+    fixedIntenDisplayImage->setChecked(false);
+    fixedIntenDisplayDgram->setChecked(false);
+    avgCurveDgram->setChecked(false);
   });
 }
 

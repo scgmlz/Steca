@@ -35,7 +35,7 @@ void Session::clear() {
   remCorrFile();
   corrEnabled_ = false;
 
-  bgPolynomialDegree_ = 0;
+  bgPolyDegree_ = 0;
   bgRanges_.clear();
 
   reflections_.clear();
@@ -87,7 +87,7 @@ void Session::remCorrFile() {
   updateImageSize();
 }
 
-void Session::enableCorr(bool on) {
+void Session::tryEnableCorr(bool on) {
   corrEnabled_ = on && hasCorrFile();
 }
 
@@ -301,7 +301,7 @@ shp_Lens Session::lens(rcDataset dataset, rcDatasets datasets,
 ReflectionInfo Session::makeReflectionInfo(shp_Lens lens, rcReflection reflection,
                                            rcRange gammaSector) const {
   auto curve = lens->makeCurve(gammaSector, lens->angleMap().rgeTth());
-  auto bgPol = fit::fitPolynomial(bgPolynomialDegree_,curve,bgRanges_);
+  auto bgPol = fit::fitPolynom(bgPolyDegree_,curve,bgRanges_);
   curve = curve.subtract(bgPol);
 
   QScopedPointer<fit::PeakFunction> peakFunction(reflection.peakFunction().clone());
@@ -350,6 +350,30 @@ ReflectionInfos Session::reflectionInfos(rcDatasets datasets, rcReflection refle
   return infos;
 }
 
+void Session::setBgRanges(rcRanges ranges) {
+  bgRanges_ = ranges;
+}
+
+bool Session::addBgRange(rcRange range) {
+  return bgRanges_.add(range);
+}
+
+bool Session::remBgRange(rcRange range) {
+  return bgRanges_.rem(range);
+}
+
+void Session::setBgPolyDegree(uint degree) {
+  bgPolyDegree_ = degree;
+}
+
+void Session::addReflection(shp_Reflection reflection) {
+  reflections_.append(reflection);
+}
+
+void Session::remReflection(uint i) {
+  reflections_.remove(i);
+}
+
 void Session::setNorm(eNorm norm) {
   norm_ = norm;
 }
@@ -359,8 +383,8 @@ qreal Session::calcAvgBackground(rcDataset dataset) const {
 
   auto &map = angleMap(dataset);
   Curve gammaCurve = l->makeCurve(map.rgeGamma(), map.rgeTth());
-  auto bgPolynomial = fit::fitPolynomial(bgPolynomialDegree_, gammaCurve, bgRanges_);
-  return bgPolynomial.avgY(map.rgeTth());
+  auto bgPolynom = fit::fitPolynom(bgPolyDegree_, gammaCurve, bgRanges_);
+  return bgPolynom.avgY(map.rgeTth());
 }
 
 qreal Session::calcAvgBackground(rcDatasets datasets) const {

@@ -122,7 +122,7 @@ public:
   str_lst const& collectedDatasetsTags()  const { return session->collectedDatasetsTags(); }
 
   void setCorrFile(rcstr filePath)  THROWS;
-  void enableCorrection(bool);
+  void tryEnableCorrection(bool);
 
   core::ImageCut const& imageCut() const;
   void setImageCut(bool topLeft, bool linked, core::ImageCut const&);
@@ -130,7 +130,11 @@ public:
   core::Geometry const& geometry() const;
   void setGeometry(qreal detectorDistance, qreal pixSize, bool isMidPixOffset, core::rcIJ midPixOffset);
 
-  void setBackgroundPolynomialDegree(uint);
+  void setBgRanges(core::rcRanges);
+  void addBgRange(core::rcRange);
+  void remBgRange(core::rcRange);
+
+  void setBgPolyDegree(uint);
 
   void setReflType(core::ePeakType);
 
@@ -156,10 +160,10 @@ public:
   void setNorm(core::eNorm);
 
 public:
-  // TODO instead of exposing the objects, provide an interface
-  core::Ranges&       bgRanges()           const { return session->bgRanges();           }
-  uint&               bgPolynomialDegree() const { return session->bgPolynomialDegree(); }
-  core::Reflections&  reflections()        const { return session->reflections();        }
+  core::rcRanges      bgRanges()     const { return session->bgRanges();     }
+  uint                bgPolyDegree() const { return session->bgPolyDegree(); }
+
+  core::rcReflections reflections()  const { return session->reflections();  }
 };
 
 //------------------------------------------------------------------------------

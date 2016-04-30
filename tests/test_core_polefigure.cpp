@@ -1,16 +1,6 @@
 #include "test_core_polefigure.h"
 REGISTER_TEST_SUITE(TestCorePolefigure)
 
-namespace Quadrant {
-  enum Quadrant {
-    NORTHEAST,
-    SOUTHEAST,
-    SOUTHWEST,
-    NORTHWEST,
-    MAX_QUADRANTS
-  };
-}
-
 #include "core_polefigure.h"
 #include "core_session.h"
 
@@ -20,6 +10,15 @@ namespace core {
                             qreal& alpha, qreal& beta);
 
   namespace pole {
+  enum class Quadrant {
+    NORTHEAST,
+    SOUTHEAST,
+    SOUTHWEST,
+    NORTHWEST,
+  };
+
+  static int NUM_QUADRANTS = 4;
+  typedef QVector<Quadrant> Quadrants;
     qreal angle(qreal alpha1, qreal alpha2, qreal deltaBeta);
 
     bool inRadius(qreal alpha, qreal beta,
@@ -36,14 +35,14 @@ namespace core {
 
     qreal calculateDeltaBeta(qreal beta1, qreal beta2);
 
-    bool inQuadrant(int quadrant, qreal deltaAlpha, qreal deltaBeta);
+    bool inQuadrant(Quadrant quadrant, qreal deltaAlpha, qreal deltaBeta);
 
-    Quadrant::Quadrant remapQuadrant(Quadrant::Quadrant const Q);
+    Quadrant remapQuadrant(Quadrant);
 
     core::Range gammaRangeAt(core::shp_Lens lenses, qreal const tth);
 
     void searchInQuadrants(
-      uint_vec const& quadrants,
+      Quadrants const& quadrants,
       qreal alpha, qreal beta,
       qreal searchRadius,
       ReflectionInfos const& infos,
@@ -182,7 +181,7 @@ void TestCorePolefigure::testInverseDistanceWeighing() {
   qreal tmp_offset = 0;
   qreal tmp_fwhm   = 0;
   inverseDistanceWeighing(distances,infos,out);
-  for_i (Quadrant::MAX_QUADRANTS) {
+  for_i (NUM_QUADRANTS) {
     tmp_height += infos[0]->inten() * (qreal)1/distances[i];
     tmp_offset += infos[0]->tth()   * (qreal)1/distances[i];
     tmp_fwhm   += infos[0]->fwhm()  * (qreal)1/distances[i];
@@ -206,13 +205,18 @@ void TestCorePolefigure::testSearchInQuadrants() {
 
   qreal_vec distances;
 
-  searchInQuadrants(uint_vec(Quadrant::SOUTHWEST,0),alpha,beta,
+  searchInQuadrants({Quadrant::NORTHEAST, Quadrant::SOUTHEAST,
+                     Quadrant::SOUTHWEST, Quadrant::NORTHWEST},alpha,beta,
     searchRadius,infos,foundInfos,distances);
 
-  QCOMPARE(foundInfos.size(),2);
-  QCOMPARE(foundInfos[0]->alpha(),infos[0].alpha());
-  QCOMPARE(foundInfos[1]->alpha(),infos[0].alpha());
+  QCOMPARE(foundInfos.size(),4);
 
+  QVERIFY(foundInfos[0]);
+  QCOMPARE(foundInfos[0]->alpha(),infos[0].alpha());
+
+  QVERIFY(!foundInfos[1]);
+  QVERIFY(!foundInfos[2]);
+  QVERIFY(!foundInfos[3]);
 }
 
 static core::Dataset testDataset(QSize size, core::inten_t inten, QVector<qreal> motorAngles, qreal mon, qreal deltaTime) {

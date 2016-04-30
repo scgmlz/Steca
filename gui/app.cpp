@@ -54,6 +54,13 @@ static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr 
   }
 }
 
+static void waiting(bool on) {
+  if (on)
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+  else
+    QApplication::restoreOverrideCursor();
+}
+
 int App::exec() {
   try {
     gui::MainWin mainWin;
@@ -61,9 +68,15 @@ int App::exec() {
 
     pMainWin = &mainWin;
     oldHandler = qInstallMessageHandler(messageHandler);
+    TakesLongTime::handler = waiting;
+
     int res = super::exec();
+
+    TakesLongTime::handler = nullptr;
     qInstallMessageHandler(nullptr);
+
     return res;
+
   } catch (std::exception const& e) {
     qWarning("Fatal error: %s", e.what());
     return -1;

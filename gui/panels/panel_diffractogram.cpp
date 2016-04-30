@@ -181,6 +181,10 @@ DiffractogramPlot::DiffractogramPlot(TheHub& hub,Diffractogram& diffractogram)
     updateBg();
   });
 
+  onSigBgChanged([this]() {
+    updateBg();
+  });
+
   tool_ = TOOL_NONE;
 }
 
@@ -252,16 +256,15 @@ core::Range DiffractogramPlot::fromPixels(int pix1, int pix2) {
 }
 
 void DiffractogramPlot::clearBg() {
-  hub_.bgRanges().clear();
-  updateBg();
+  hub_.setBgRanges(core::Ranges());
 }
 
 void DiffractogramPlot::addBg(core::rcRange range) {
-  if (hub_.bgRanges().add(range)) updateBg();
+  hub_.addBgRange(range);
 }
 
 void DiffractogramPlot::remBg(core::rcRange range) {
-  if (hub_.bgRanges().rem(range)) updateBg();
+  hub_.remBgRange(range);
 }
 
 void DiffractogramPlot::setNewReflRange(core::rcRange range) {
@@ -328,8 +331,8 @@ Diffractogram::Diffractogram(TheHub& hub)
   box_->addWidget((plot_ = new DiffractogramPlot(hub_,*this)));
   auto hb = hbox();
   box_->addLayout(hb);
-  hb->addWidget(avgCurveCheckBox = check("all datasets",hub_.actions.avgCurveDgram));
-  hb->addWidget(fixedIntenCheckBox = check("fixed scale",hub_.actions.fixedIntenDisplayDgram));
+  hb->addWidget(check("all datasets",hub_.actions.avgCurveDgram));
+  hb->addWidget(check("fixed scale",hub_.actions.fixedIntenDisplayDgram));
   hb->addStretch();
 
   onSigDatasetSelected([this](core::shp_Dataset dataset) {
@@ -348,12 +351,11 @@ Diffractogram::Diffractogram(TheHub& hub)
     render();
   });
 
-  onSigNormChanged([this]() {
+  onSigBgChanged([this]() {
     render();
   });
 
-  onSigBgPolynomialDegree([this](uint degree) {
-    hub_.bgPolynomialDegree() = degree; // keep session up-to-date
+  onSigNormChanged([this]() {
     render();
   });
 
@@ -376,11 +378,6 @@ Diffractogram::Diffractogram(TheHub& hub)
 
   connect(hub_.actions.fitTool, &QAction::toggled, [this](bool on) {
     plot_->setTool(on ? (0==hub_.fittingTab__ ? DiffractogramPlot::TOOL_BACKGROUND:DiffractogramPlot::TOOL_PEAK_REGION) : DiffractogramPlot::TOOL_NONE);
-  });
-
-  onSigDatasetsChanged([this]() {
-    avgCurveCheckBox->setChecked(false);
-    fixedIntenCheckBox->setChecked(false);
   });
 
   onSigReflectionSelected([this](core::shp_Reflection reflection) {
@@ -432,14 +429,13 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
 void Diffractogram::calcBackground() {
   bg_.clear(); dgramBgFitted_.clear();
 
-  auto bgPolynomial = core::fit::fitPolynomial(
-    hub_.bgPolynomialDegree(),dgram_,hub_.bgRanges());
-  auto& tth   = dgram_.xs();
-  auto& inten = dgram_.ys();
+  auto bgPolynom = core::fit::fitPolynom(
+    hub_.bgPolyDegree(),dgram_,hub_.bgRanges());
+
   for_i (dgram_.count()) {
-    qreal x = tth[i], y = bgPolynomial.y(x);
+    qreal x = dgram_.x(i), y = bgPolynom.y(x);
     bg_.append(x,y);
-    dgramBgFitted_.append(x,inten[i] - y);
+    dgramBgFitted_.append(x,dgram_.y(i) - y);
   }
 }
 

@@ -13,7 +13,7 @@ public:                                     \
   }                                         \
 };
 
-TEST_FIT_CLASS(Polynomial)
+TEST_FIT_CLASS(Polynom)
 TEST_FIT_CLASS(Gaussian)
 TEST_FIT_CLASS(CauchyLorentz)
 TEST_FIT_CLASS(PseudoVoigt1)
@@ -48,9 +48,9 @@ void TestSaveLoadJson::testSaveLoadJson() {
     QCOMPARE(p4.value(), val1);
   }
 
-  { // testing saveJson/loadJson Polynomial
-    TestPolynomial polyLoad;
-    TestPolynomial polySave;
+  { // testing saveJson/loadJson Polynom
+    TestPolynom polyLoad;
+    TestPolynom polySave;
 
     polySave.setDegree(3);
     polySave.setParameterCount(4);
@@ -107,7 +107,7 @@ void TestSaveLoadJson::testSaveLoadJson() {
     // Testing saveJson/loadJson SumFunctions
 
     core::fit::SumFunctions sumSave, sumLoad;
-    TestPolynomial *p1 = new TestPolynomial, *p2 = new TestPolynomial;
+    TestPolynom *p1 = new TestPolynom, *p2 = new TestPolynom;
 
     p1->loadJson(polyObj);
     p2->loadJson(polyObj);

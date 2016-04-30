@@ -23,11 +23,7 @@ TheHub& TheHubSignallingBase::asHub() {
   return *static_cast<TheHub*>(this);
 }
 
-//void TheHubSignallingBase::tellNoSelectedDataset() {
-//  tellSelectedDataset(core::shp_Dataset());
-//}
-
-void TheHubSignallingBase::tellSelectedDataset(core::shp_Dataset dataset) {
+void TheHubSignallingBase::tellDatasetSelected(core::shp_Dataset dataset) {
   emit sigDatasetSelected(dataset);
 }
 
@@ -53,7 +49,7 @@ void RefHub::name pars { \
   hub_.name args;        \
 }
 
-REFHUB_TELL_IMPL(tellSelectedDataset,(core::shp_Dataset d),(d))
+REFHUB_TELL_IMPL(tellDatasetSelected,(core::shp_Dataset d),(d))
 
 REFHUB_TELL_IMPL(tellSelectedReflection,(core::shp_Reflection r),(r))
 

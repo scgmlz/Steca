@@ -217,10 +217,7 @@ void OutPoleFigures::calculate() {
   auto reflection = reflections.at(index);
   rs_ = hub_.reflectionInfos(*reflection, betaStep);
 
-  if (params_->moreParams_->isHidden()) {
-    // points
-  } else {
-    // interpolated
+  if (params_->rbInterpolated_->isChecked()) {
     rs_ = core::pole::interpolate(rs_,alphaStep,betaStep,10,10,10,.8);
   }
 

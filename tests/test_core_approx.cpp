@@ -8,13 +8,13 @@ REGISTER_TEST_SUITE(TestCoreApprox)
 // check if two qreals are equal for wanted precision
 #define QALMOST_COMPARE(a,b) QVERIFY(qAbs(a-b) < 1E-3)
 
-void TestCoreApprox::testPolynomial() {
-  { // TODO move test test_core_polynomial or rename test class
+void TestCoreApprox::testPolynom() {
+  { // TODO move test test_core_polynom or rename test class
     core::Curve curve;
     curve.append(1,1);
     curve.append(2,2);
 
-    core::fit::Polynomial p(1);
+    core::fit::Polynom p(1);
 
     core::fit::FittingLevenbergMarquardt fm;
     QVERIFY(fm.fitWithoutChecks(p,curve));
@@ -32,7 +32,7 @@ void TestCoreApprox::testLinearLeastSquare() {
     for_i (3)
       c.append(i,i);
 
-    core::fit::Polynomial p(1);
+    core::fit::Polynom p(1);
 
     core::fit::FittingLinearLeastSquare fm;
     QVERIFY(fm.fitWithoutChecks(p,c));
@@ -47,7 +47,7 @@ void TestCoreApprox::testLinearLeastSquare() {
     c.append(2,6);
     c.append(3,8);
 
-    core::fit::Polynomial p(1);
+    core::fit::Polynom p(1);
 
     core::fit::FittingLinearLeastSquare fm;
     QVERIFY(fm.fitWithoutChecks(p,c));
@@ -62,7 +62,7 @@ void TestCoreApprox::testLinearLeastSquare() {
     c.append(2,20);
     c.append(3,33);
 
-    core::fit::Polynomial p(2);
+    core::fit::Polynom p(2);
 
     core::fit::FittingLinearLeastSquare fm;
     QVERIFY(fm.fitWithoutChecks(p,c));
@@ -79,7 +79,7 @@ void TestCoreApprox::testLinearLeastSquare() {
     c.append(2,46.4);
     c.append(3,52.5);
 
-    core::fit::Polynomial p(3);
+    core::fit::Polynom p(3);
 
     core::fit::FittingLevenbergMarquardt fm;
     QVERIFY(fm.fitWithoutChecks(p,c));
@@ -98,7 +98,7 @@ void TestCoreApprox::testLevenbergMarquardt() {
       c.append(i,i);
     }
 
-    core::fit::Polynomial p(1);
+    core::fit::Polynom p(1);
     core::fit::FittingLevenbergMarquardt fm;
     QVERIFY(fm.fitWithoutChecks(p,c));
 
@@ -112,7 +112,7 @@ void TestCoreApprox::testLevenbergMarquardt() {
     c.append(2,6);
     c.append(3,8);
 
-    core::fit::Polynomial p(1);
+    core::fit::Polynom p(1);
 
     core::fit::FittingLevenbergMarquardt fm;
     QVERIFY(fm.fitWithoutChecks(p,c));
@@ -128,7 +128,7 @@ void TestCoreApprox::testLevenbergMarquardt() {
     c.append(2,20);
     c.append(3,33);
 
-    core::fit::Polynomial p(2);
+    core::fit::Polynom p(2);
 
     core::fit::FittingLevenbergMarquardt fm;
     QVERIFY(fm.fitWithoutChecks(p,c));
@@ -145,7 +145,7 @@ void TestCoreApprox::testLevenbergMarquardt() {
     c.append(2,46.4);
     c.append(3,52.5);
 
-    core::fit::Polynomial p(3);
+    core::fit::Polynom p(3);
 
     core::fit::FittingLevenbergMarquardt fm;
     QVERIFY(fm.fitWithoutChecks(p,c));
@@ -163,7 +163,7 @@ void TestCoreApprox::testLevenbergMarquardt() {
     c.append(3,211.8);
     c.append(4,437.2);
 
-    core::fit::Polynomial p(4);
+    core::fit::Polynom p(4);
 
     core::fit::FittingLevenbergMarquardt fm;
     QVERIFY(fm.fitWithoutChecks(p,c));

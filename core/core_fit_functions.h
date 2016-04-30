@@ -45,12 +45,12 @@ public:
 
     qreal maxErrorPercent() const;
     void setMaxErrorPercent(const qreal &maxErrorPercent);
-    
+
   private:
     qreal value_;
-    
+
     // constraints; TODO maybe not all needed?
-    
+
     /// allowed range of values
     /// if !isValid() -> means the same as <value,value>, i.e. fixed value
     Range range_;
@@ -153,12 +153,12 @@ protected:
 };
 
 //------------------------------------------------------------------------------
-/// a polynomial
+/// a polynom(ial)
 
-class Polynomial: public SimpleFunction {
-  SUPER(Polynomial,SimpleFunction)
+class Polynom: public SimpleFunction {
+  SUPER(Polynom,SimpleFunction)
 public:
-  Polynomial(uint degree = 0);
+  Polynom(uint degree = 0);
 
   uint degree() const;
   void setDegree(uint);

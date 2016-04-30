@@ -92,18 +92,18 @@ void Function::Parameter::loadJson(rcJsonObj obj) THROWS {
 //------------------------------------------------------------------------------
 
 static str const
-KEY_FUNCTION_TYPE("type"),
+  KEY_FUNCTION_TYPE("type"),
 
-KEY_SUM_FUNCTIONS("sum"),
-KEY_POLYNOMIAL("polynomial"),
+  KEY_SUM_FUNCTIONS("sum"),
+  KEY_POLYNOM("polynom"),
   KEY_GAUSSIAN("Gaussian"), KEY_LORENTZIAN("Lorentzian"),
   KEY_PSEUDOVOIGT1("PseudoVoigt1"), KEY_PSEUDOVOIGT2("PseudoVoigt2");
 
 Function* Function::factory(rcstr type) {
   if (KEY_SUM_FUNCTIONS == type)
     return new SumFunctions();
-  if (KEY_POLYNOMIAL == type)
-    return new Polynomial();
+  if (KEY_POLYNOM == type)
+    return new Polynom();
   if (KEY_GAUSSIAN == type)
     return new Gaussian();
   if (KEY_LORENTZIAN == type)
@@ -293,17 +293,17 @@ void SumFunctions::loadJson(rcJsonObj obj) THROWS {
 
 //------------------------------------------------------------------------------
 
-Polynomial::Polynomial(uint degree) {
+Polynom::Polynom(uint degree) {
   setDegree(degree);
 }
 
-uint Polynomial::degree() const {
+uint Polynom::degree() const {
   uint parCount = super::parameterCount();
   ASSERT(parCount > 0)
   return parCount - 1;
 }
 
-void Polynomial::setDegree(uint degree) {
+void Polynom::setDegree(uint degree) {
   super::setParameterCount(degree+1);
 }
 
@@ -314,7 +314,7 @@ static qreal pow_n(qreal x, uint n) {
   return val;
 }
 
-qreal Polynomial::y(qreal x, qreal const* parValues) const {
+qreal Polynom::y(qreal x, qreal const* parValues) const {
   qreal val = 0, xPow = 1;
   for_i (parameters_.count()) {
     val += parValue(i,parValues) * xPow;
@@ -323,12 +323,12 @@ qreal Polynomial::y(qreal x, qreal const* parValues) const {
   return val;
 }
 
-qreal Polynomial::dy(qreal x, uint i, qreal const*) const {
+qreal Polynom::dy(qreal x, uint i, qreal const*) const {
   return pow_n(x,i);
 }
 
 // REVIEW
-qreal Polynomial::avgY(rcRange rgeX, qreal const* parValues) const {
+qreal Polynom::avgY(rcRange rgeX, qreal const* parValues) const {
   ASSERT (rgeX.isValid())
 
   qreal w = rgeX.width();
@@ -345,13 +345,13 @@ qreal Polynomial::avgY(rcRange rgeX, qreal const* parValues) const {
   return (1/w) * (maxY-minY);
 }
 
-JsonObj Polynomial::saveJson() const {
+JsonObj Polynom::saveJson() const {
   JsonObj obj;
-  obj.saveString(KEY_FUNCTION_TYPE, KEY_POLYNOMIAL);
+  obj.saveString(KEY_FUNCTION_TYPE, KEY_POLYNOM);
   return super::saveJson() + obj;
 }
 
-void Polynomial::loadJson(rcJsonObj obj) THROWS {
+void Polynom::loadJson(rcJsonObj obj) THROWS {
   super::loadJson(obj);
 }
 

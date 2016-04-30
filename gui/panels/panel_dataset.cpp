@@ -49,7 +49,7 @@ void DatasetView::selectionChanged(QItemSelection const& selected, QItemSelectio
   super::selectionChanged(selected,deselected);
 
   auto indexes = selected.indexes();
-  tellSelectedDataset(indexes.isEmpty()
+  tellDatasetSelected(indexes.isEmpty()
     ? core::shp_Dataset()
     : model_.data(indexes.first(), Model::GetDatasetRole).value<core::shp_Dataset>());
 }
@@ -68,7 +68,7 @@ DockDatasets::DockDatasets(TheHub& hub)
   combineDatasets_->setToolTip("Combine and average number of datasets");
 
   connect(combineDatasets_,static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),[this](int num) {
-    hub_.combineDatasetsBy((uint)qMin(1,num));
+    hub_.combineDatasetsBy((uint)qMax(1,num));
   });
 }
 

@@ -24,7 +24,7 @@ namespace fit {
 //------------------------------------------------------------------------------
 
 /// Background fit
-Polynomial fitPolynomial(uint degree, core::rcCurve, core::rcRanges);
+Polynom fitPolynom(uint degree, core::rcCurve, core::rcRanges);
 
 /// Peak fit
 void fit(PeakFunction&, core::rcCurve, core::rcRange);

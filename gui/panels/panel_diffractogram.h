@@ -108,8 +108,6 @@ public:
   core::shp_Dataset const& getDataset() const { return dataset_; }
   void render(); // TODO move to DiffractogramPlot (?)
 
-  QCheckBox *avgCurveCheckBox, *fixedIntenCheckBox;
-
 private:
   void setDataset(core::shp_Dataset);
 

@@ -20,14 +20,14 @@
 namespace core { namespace fit {
 //------------------------------------------------------------------------------
 
-Polynomial fitPolynomial(uint degree,
-                         core::rcCurve curve, core::rcRanges ranges) {
+Polynom fitPolynom(uint degree,
+                   core::rcCurve curve, core::rcRanges ranges) {
   // clamp the degree - complexity of higher degree fits grows fast
-  Polynomial polynomial(qMin(degree,MAX_POLYNOMIAL_DEGREE));
+  Polynom polynom(qMin(degree,MAX_POLYNOM_DEGREE));
 
-  FittingLevenbergMarquardt().fitWithoutChecks(polynomial, curve.intersect(ranges));
+  FittingLevenbergMarquardt().fitWithoutChecks(polynom, curve.intersect(ranges));
 
-  return polynomial;
+  return polynom;
 }
 
 void fit(PeakFunction& peakFunction,

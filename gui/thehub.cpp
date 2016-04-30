@@ -170,7 +170,7 @@ void TheHub::configActions() {
   actions.remReflection->setEnabled(false);
 
   connect(actions.enableCorr, &QAction::toggled, [this](bool on) {
-    enableCorrection(on);
+    tryEnableCorrection(on);
   });
 
   connect(actions.remCorr, &QAction::triggered, [this]() {
@@ -335,7 +335,7 @@ QByteArray TheHub::saveSession() const {
     top.saveString(KEY_CORR_FILE, relPath);
   }
 
-  top.saveUint(KEY_BG_DEGREE, bgPolynomialDegree());
+  top.saveUint(KEY_BG_DEGREE, bgPolyDegree());
   top.saveArr(KEY_BG_RANGES, bgRanges().saveJson());
 
   JsonArr arrReflections;
@@ -407,14 +407,17 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
 
   setImageRotate(core::ImageTransform(top.loadUint(KEY_TRANSFORM)));
 
-  bgPolynomialDegree() = top.loadUint(KEY_BG_DEGREE);
-  bgRanges().loadJson(top.loadArr(KEY_BG_RANGES));
+  core::Ranges bgRanges;
+  bgRanges.loadJson(top.loadArr(KEY_BG_RANGES));
+  setBgRanges(bgRanges);
+
+  setBgPolyDegree(top.loadUint(KEY_BG_DEGREE));
 
   auto reflectionsObj = top.loadArr(KEY_REFLECTIONS);
   for_i (reflectionsObj.count()) {
     core::shp_Reflection reflection(new core::Reflection);
     reflection->loadJson(reflectionsObj.at(i).toObject());
-    session->reflections().append(reflection);
+    session->addReflection(reflection);
   }
 
   emit sigReflectionsChanged();
@@ -440,7 +443,9 @@ void TheHub::addFiles(str_lst const& filePaths) THROWS {
 
 void TheHub::collectDatasetsFromFiles(uint_vec is, uint by) {
   session->collectDatasetsFromFiles(
-      (collectFromFiles_ = is), (numGroupBy_ = by));
+    (collectFromFiles_ = is), (numGroupBy_ = by)
+  );
+
   emit sigFilesSelected();
   emit sigDatasetsChanged();
 }
@@ -458,17 +463,14 @@ void TheHub::setCorrFile(rcstr filePath) THROWS {
   if (!filePath.isEmpty())
     file = core::io::load(filePath);
 
-  bool isFile = !file.isNull();
-  str fileName = isFile ? file->fileName() : EMPTY_STR;
-
-  actions.remCorr->setEnabled(isFile);
   session->setCorrFile(file);
-  emit sigCorrFileName(fileName);
-  enableCorrection(true);
+  emit sigCorrFile(file);
+
+  tryEnableCorrection(true);
 }
 
-void TheHub::enableCorrection(bool on) {
-  session->enableCorr(on);
+void TheHub::tryEnableCorrection(bool on) {
+  session->tryEnableCorr(on);
   emit sigCorrEnabled(session->isCorrEnabled());
 }
 
@@ -490,8 +492,24 @@ void TheHub::setGeometry(qreal detectorDistance, qreal pixSize, bool isMidPixOff
   emit sigGeometryChanged();
 }
 
-void TheHub::setBackgroundPolynomialDegree(uint degree) {
-  emit sigBgPolynomialDegree(degree);
+void TheHub::setBgRanges(core::rcRanges ranges) {
+  session->setBgRanges(ranges);
+  emit sigBgChanged();
+}
+
+void TheHub::addBgRange(core::rcRange range) {
+  if (session->addBgRange(range))
+    emit sigBgChanged();
+}
+
+void TheHub::remBgRange(core::rcRange range) {
+  if (session->remBgRange(range))
+    emit sigBgChanged();
+}
+
+void TheHub::setBgPolyDegree(uint degree) {
+  session->setBgPolyDegree(degree);
+  emit sigBgChanged();
 }
 
 void TheHub::setReflType(core::ePeakType type) {
@@ -502,15 +520,14 @@ void TheHub::setReflType(core::ePeakType type) {
 }
 
 void TheHub::addReflection(core::ePeakType type) {
-  reflections().append(core::shp_Reflection(new core::Reflection(type)));
+  session->addReflection(core::shp_Reflection(new core::Reflection(type)));
   emit sigReflectionsChanged();
 }
 
 void TheHub::remReflection(uint i) {
-  auto &rs = reflections();
-  rs.remove(i);
-  if (rs.isEmpty())
-    emit tellSelectedReflection(core::shp_Reflection());
+  session->remReflection(i);
+  if (session->reflections().isEmpty())
+    tellSelectedReflection(core::shp_Reflection());
 
   emit sigReflectionsChanged();
 }
@@ -556,7 +573,6 @@ void TheHub::setImageMirror(bool on) {
 void TheHub::setNorm(core::eNorm norm) {
   session->setNorm(norm);
   emit sigNormChanged();
-  emit sigGeometryChanged();
 }
 
 //------------------------------------------------------------------------------
