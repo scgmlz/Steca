@@ -67,11 +67,11 @@ Action& ToggleAction::alt(rcstr text2, rcstr tip2) {
 //------------------------------------------------------------------------------
 
 Actions::Actions(TheHub& hub): super(hub) {
-  ON_CORR_ENABLED([this](bool on) {
+  onSigCorrEnabled([this](bool on) {
     enableCorr->setChecked(on);
   });
 
-  ON_FILES_SELECTED([this]() {
+  onSigFilesSelected([this]() {
     remFile->setEnabled(!hub_.collectedFromFiles().isEmpty());
   });
 }

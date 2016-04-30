@@ -75,11 +75,11 @@ FilesView::FilesView(TheHub& hub): super(hub)
     updateNoSelection();
   });
 
-  ON_FILES_CHANGED([this]() {
+  onSigFilesChanged([this]() {
     updateNoSelection();
   });
 
-  ON_FILES_SELECTED([this]() {
+  onSigFilesSelected([this]() {
     if (!selfSignal_)
       selectRows(hub_.collectedFromFiles());
   });
@@ -131,7 +131,7 @@ void FilesView::removeSelected() {
 DatasetView::DatasetView(TheHub& hub): super(hub), model_(hub.datasetViewModel) {
   setModel(&model_);
 
-  ON_DATASETS_CHANGED([this]() {
+  onSigDatasetsChanged([this]() {
     model_.signalReset();
     setCurrentIndex(model_.index(0,0));
   });

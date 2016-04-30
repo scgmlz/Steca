@@ -62,7 +62,7 @@ DockDatasetInfo::DockDatasetInfo(TheHub& hub)
   for_i (Dataset::numAttributes())
     metaInfo_[i].cb->setToolTip("Show value in Datasets list");
 
-  ON_DATASET_SELECTED([this](shp_Dataset dataset) {
+  onSigDatasetSelected([this](shp_Dataset dataset) {
     for_i (Dataset::numAttributes())
       metaInfo_[i].setText(dataset ? dataset->attributeStrValue(i) : EMPTY_STR);
   });
@@ -183,7 +183,7 @@ DatasetOptions1::DatasetOptions1(TheHub& hub)
   vn->addWidget(comboNormType_ = comboBox(options));
   box_->addStretch();
 
-  ON_GEOMETRY_CHANGED([this]() {
+  onSigGeometryChanged([this]() {
     setFrom(hub_);
   });
 
@@ -323,7 +323,7 @@ DatasetOptions2::DatasetOptions2(TheHub& hub)
     setImageCut(false,value);
   });
 
-  ON_GEOMETRY_CHANGED([this]() {
+  onSigGeometryChanged([this]() {
     setFrom(hub_);
   });
 
@@ -368,10 +368,15 @@ Dataset::Dataset(TheHub& hub)
     corrImageWidget_->setShowOverlay(on);
   });
 
-  ON_DISPLAY_CHANGED([this]() { render(); });
-  ON_GEOMETRY_CHANGED([this]() { render(); });
+  onSigDisplayChanged([this]() {
+    render();
+  });
 
-  ON_DATASET_SELECTED([this](core::shp_Dataset dataset) {
+  onSigGeometryChanged([this]() {
+    render();
+  });
+
+  onSigDatasetSelected([this](core::shp_Dataset dataset) {
     setDataset(dataset);
   });
 }

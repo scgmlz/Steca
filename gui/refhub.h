@@ -91,35 +91,35 @@ protected:
 
 // handle same signals
 protected:
-#define DEFINE_HUB_SIGNAL_HANDLER(name,signal)        \
-  template <typename Lambda>                          \
-  void name(Lambda slot) {                            \
-    onHubSignal(&TheHubSignallingBase::signal, slot); \
+#define DEFINE_HUB_SIGNAL_HANDLER(name)                   \
+  template <typename Lambda>                              \
+  void onSig##name(Lambda slot) {                         \
+    onHubSignal(&TheHubSignallingBase::sig##name, slot);  \
   }
 
-  DEFINE_HUB_SIGNAL_HANDLER(ON_FILES_CHANGED,     sigFilesChanged)
-  DEFINE_HUB_SIGNAL_HANDLER(ON_FILES_SELECTED,    sigFilesSelected)
+  DEFINE_HUB_SIGNAL_HANDLER(FilesChanged)
+  DEFINE_HUB_SIGNAL_HANDLER(FilesSelected)
 
-  DEFINE_HUB_SIGNAL_HANDLER(ON_DATASETS_CHANGED,  sigDatasetsChanged)
-  DEFINE_HUB_SIGNAL_HANDLER(ON_DATASET_SELECTED,  sigDatasetSelected)
+  DEFINE_HUB_SIGNAL_HANDLER(DatasetsChanged)
+  DEFINE_HUB_SIGNAL_HANDLER(DatasetSelected)
 
-  DEFINE_HUB_SIGNAL_HANDLER(ON_CORR_ENABLED,      sigCorrEnabled)
-  DEFINE_HUB_SIGNAL_HANDLER(ON_CORR_FILENAME,     sigCorrFileName)
+  DEFINE_HUB_SIGNAL_HANDLER(CorrEnabled)
+  DEFINE_HUB_SIGNAL_HANDLER(CorrFileName)
 
-  DEFINE_HUB_SIGNAL_HANDLER(ON_FACTORY_SETTINGS,  sigFactorySettings)
+  DEFINE_HUB_SIGNAL_HANDLER(FactorySettings)
 
-  DEFINE_HUB_SIGNAL_HANDLER(ON_REFL_CHANGED,      sigReflectionsChanged)
-  DEFINE_HUB_SIGNAL_HANDLER(ON_REFL_SELECTED,     sigReflectionSelected)
-  DEFINE_HUB_SIGNAL_HANDLER(ON_REFL_DATA,         sigReflectionData)
-  DEFINE_HUB_SIGNAL_HANDLER(ON_REFL_VALUES,       sigReflectionValues)
+  DEFINE_HUB_SIGNAL_HANDLER(ReflectionsChanged)
+  DEFINE_HUB_SIGNAL_HANDLER(ReflectionSelected)
+  DEFINE_HUB_SIGNAL_HANDLER(ReflectionData)
+  DEFINE_HUB_SIGNAL_HANDLER(ReflectionValues)
 
-  DEFINE_HUB_SIGNAL_HANDLER(ON_DISPLAY_CHANGED,   sigDisplayChanged)
-  DEFINE_HUB_SIGNAL_HANDLER(ON_GEOMETRY_CHANGED,  sigGeometryChanged)
+  DEFINE_HUB_SIGNAL_HANDLER(DisplayChanged)
+  DEFINE_HUB_SIGNAL_HANDLER(GeometryChanged)
 
-  DEFINE_HUB_SIGNAL_HANDLER(ON_NORM_CHANGED,      sigNormChanged)
-  DEFINE_HUB_SIGNAL_HANDLER(ON_BG_POLY_DEGREE,    sigBgPolynomialDegree)
+  DEFINE_HUB_SIGNAL_HANDLER(NormChanged)
+  DEFINE_HUB_SIGNAL_HANDLER(BgPolynomialDegree)
 
-  DEFINE_HUB_SIGNAL_HANDLER(ON_FITTING_TAB,       sigFittingTab)
+  DEFINE_HUB_SIGNAL_HANDLER(FittingTab)
 
 #undef DEFINE_HUB_SIGNAL_HANDLER
 };

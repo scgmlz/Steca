@@ -110,7 +110,7 @@ Fitting::Fitting(TheHub& hub)
       updateReflectionControls();
     });
 
-    ON_REFL_CHANGED([this]() {
+    onSigReflectionsChanged([this]() {
       reflectionView_->update();
       updateReflectionControls();
     });
@@ -119,11 +119,11 @@ Fitting::Fitting(TheHub& hub)
       hub_.setReflType((core::ePeakType)index);
     });
 
-    ON_REFL_SELECTED([this](core::shp_Reflection reflection) {
+    onSigReflectionSelected([this](core::shp_Reflection reflection) {
       setReflControls(reflection);
     });
 
-    ON_REFL_DATA([this](core::shp_Reflection reflection) {
+    onSigReflectionData([this](core::shp_Reflection reflection) {
       setReflControls(reflection);
     });
 

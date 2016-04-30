@@ -54,7 +54,7 @@ void FilesViewModel::remFile(uint i) {
 DatasetViewModel::DatasetViewModel(gui::TheHub& hub)
 : super(hub), datasets_(hub.collectedDatasets()), metaInfo_(nullptr) {
 
-  ON_DATASETS_CHANGED([this]() {
+  onSigDatasetsChanged([this]() {
     signalReset();
   });
 }
