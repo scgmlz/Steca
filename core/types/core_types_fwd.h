@@ -17,7 +17,6 @@
 #define CORE_TYPES_FWD_H
 
 #include "core_defs.h"
-#include "core_types_fwd.h"
 
 namespace core {
 //------------------------------------------------------------------------------

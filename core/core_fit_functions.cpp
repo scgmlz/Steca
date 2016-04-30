@@ -364,8 +364,7 @@ PeakFunction* PeakFunction::factory(ePeakType type) {
   case ePeakType::PSEUDOVOIGT1: return new PseudoVoigt1();
   case ePeakType::PSEUDOVOIGT2: return new PseudoVoigt2();
   default:
-    NEVER_HERE
-    return nullptr;
+    NEVER_HERE return nullptr;
   }
 }
 

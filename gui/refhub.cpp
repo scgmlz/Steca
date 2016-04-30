@@ -23,13 +23,9 @@ TheHub& TheHubSignallingBase::asHub() {
   return *static_cast<TheHub*>(this);
 }
 
-void TheHubSignallingBase::tellFilesSelectedDatasetsChanged() {
-  emit sigFactorySettings();
-  emit sigDatasetsChanged();
-  emit sigFilesSelected();
-  uint cnt = asHub().collectedDatasets().count();
-  if (!cnt) tellSelectedDataset(core::shp_Dataset());
-}
+//void TheHubSignallingBase::tellNoSelectedDataset() {
+//  tellSelectedDataset(core::shp_Dataset());
+//}
 
 void TheHubSignallingBase::tellSelectedDataset(core::shp_Dataset dataset) {
   emit sigDatasetSelected(dataset);
@@ -56,8 +52,6 @@ RefHub::RefHub(gui::TheHub& hub): hub_(hub) {
 void RefHub::name pars { \
   hub_.name args;        \
 }
-
-REFHUB_TELL_IMPL(tellFilesSelectedDatasetsChanged,(),())
 
 REFHUB_TELL_IMPL(tellSelectedDataset,(core::shp_Dataset d),(d))
 

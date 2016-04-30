@@ -20,24 +20,10 @@
 #include "io/core_io.h"
 
 #include <QSpinBox>
-#include <QDoubleSpinBox>
 #include <QJsonDocument>
-#include <QApplication>
-#include <QActionEvent>
 #include <QDir>
-#include <QStringList>
 
 namespace gui {
-//------------------------------------------------------------------------------
-
-WaitCursor::WaitCursor() {
-  QApplication::setOverrideCursor(Qt::WaitCursor);
-}
-
-WaitCursor::~WaitCursor() {
-  QApplication::restoreOverrideCursor();
-}
-
 //------------------------------------------------------------------------------
 
 Settings::Settings(rcstr group) {
@@ -89,7 +75,7 @@ void Settings::save(rcstr key, QDoubleSpinBox* box) {
 TheHub::TheHub()
 : actions(*this), session(new core::Session())
 , fixedIntenScaleImage_(false), fixedIntenScaleDgram_(false), avgCurveDgram_(false)
-, fileViewModel(*this), datasetViewModel(*this), reflectionViewModel(*this)
+, filesModel(*this), datasetsModel(*this), reflectionsModel(*this)
 , numGroupBy_(1) {
   initActions();
   configActions();
@@ -235,10 +221,9 @@ core::shp_File TheHub::getFile(uint index) const {
 void TheHub::remFile(uint i) {
   session->remFile(i);
   emit sigFilesChanged();
-  if (0==numFiles()) {
-    tellSelectedDataset(core::shp_Dataset()); // REVIEW out?
+
+  if (0==numFiles())
     setImageCut(true, false, core::ImageCut());
-  }
 }
 
 bool TheHub::hasCorrFile() const {
@@ -374,7 +359,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
   QJsonDocument doc(QJsonDocument::fromJson(json,&parseError));
   RUNTIME_CHECK(QJsonParseError::NoError==parseError.error, "Error parsing session file");
 
-  WaitCursor __;
+  TakesLongTime __;
 
   session->clear();
 
@@ -437,14 +422,17 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
 
 void TheHub::addFile(rcstr filePath) THROWS {
   if (!filePath.isEmpty() && !session->hasFile(filePath)) {
-    WaitCursor __;
-    session->addFile(core::io::load(filePath));
+    {
+      TakesLongTime __;
+      session->addFile(core::io::load(filePath));
+    }
+
     emit sigFilesChanged();
   }
 }
 
 void TheHub::addFiles(str_lst const& filePaths) THROWS {
-  WaitCursor __;
+  TakesLongTime __;
 
   for (auto &filePath: filePaths)
     addFile(filePath);
@@ -453,7 +441,8 @@ void TheHub::addFiles(str_lst const& filePaths) THROWS {
 void TheHub::collectDatasetsFromFiles(uint_vec is, uint by) {
   session->collectDatasetsFromFiles(
       (collectFromFiles_ = is), (numGroupBy_ = by));
-  tellFilesSelectedDatasetsChanged();
+  emit sigFilesSelected();
+  emit sigDatasetsChanged();
 }
 
 void TheHub::collectDatasetsFromFiles(uint_vec is) {

@@ -30,7 +30,7 @@ public:
 private:
   QSpinBox  *spinDegree_;
   QComboBox *comboReflType_;
-  views::ReflectionView *reflectionView_;
+  class ReflectionView *reflectionView_;
   QDoubleSpinBox *spinRangeMin_, *spinRangeMax_;
   QDoubleSpinBox *spinGuessPeakX_, *spinGuessPeakY_, *spinGuessFWHM_;
   QLineEdit      *readFitPeakX_,   *readFitPeakY_,   *readFitFWHM_;

@@ -23,9 +23,42 @@
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
+class DatasetView: public views::ListView {
+  SUPER(DatasetView,views::ListView)
+public:
+  using Model = models::DatasetsModel;
+
+  DatasetView(TheHub&);
+
+protected:
+  void selectionChanged(QItemSelection const&, QItemSelection const&);
+
+private:
+  Model &model_;
+};
+
+DatasetView::DatasetView(TheHub& hub): super(hub), model_(hub.datasetsModel) {
+  setModel(&model_);
+
+  onSigDatasetsChanged([this]() {
+    selectRow(0);
+  });
+}
+
+void DatasetView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
+  super::selectionChanged(selected,deselected);
+
+  auto indexes = selected.indexes();
+  tellSelectedDataset(indexes.isEmpty()
+    ? core::shp_Dataset()
+    : model_.data(indexes.first(), Model::GetDatasetRole).value<core::shp_Dataset>());
+}
+
+//------------------------------------------------------------------------------
+
 DockDatasets::DockDatasets(TheHub& hub)
 : super("Datasets","dock-datasets",Qt::Vertical), RefHub(hub) {
-  box_->addWidget((datasetView_ = new views::DatasetView(hub)));
+  box_->addWidget((datasetView_ = new DatasetView(hub)));
 
   auto h = hbox();
   box_->addLayout(h);
@@ -69,7 +102,7 @@ DockDatasetInfo::DockDatasetInfo(TheHub& hub)
 
   for (auto &item: metaInfo_) {
     connect(item.cb, &QCheckBox::clicked, this, [this]() {
-      hub_.datasetViewModel.showMetaInfo(metaInfo_);
+      hub_.datasetsModel.showMetaInfo(metaInfo_);
     });
   }
 }

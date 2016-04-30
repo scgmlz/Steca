@@ -20,6 +20,76 @@
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
+class ReflectionView: public views::ListView {
+  SUPER(ReflectionView,views::ListView)
+public:
+  using Model = models::ReflectionsModel;
+
+  ReflectionView(TheHub&);
+
+  void addReflection(int type);
+  void removeSelected();
+  bool hasReflections()     const;
+
+  core::shp_Reflection selectedReflection() const;
+
+  void updateSingleSelection();
+
+protected:
+  void selectionChanged(QItemSelection const&, QItemSelection const&);
+
+private:
+  Model &model_;
+};
+
+ReflectionView::ReflectionView(TheHub& hub)
+: super(hub), model_(hub.reflectionsModel) {
+  setModel(&model_);
+  for_i (model_.columnCount())
+    resizeColumnToContents(i);
+}
+
+void ReflectionView::addReflection(int type) {
+  using eType = core::ePeakType;
+  model_.addReflection((eType)qBound(0,type,(int)eType::NUM_TYPES)); // make safe
+  updateSingleSelection();
+}
+
+void ReflectionView::removeSelected() {
+  int row = currentIndex().row();
+  if (row<0 || model_.rowCount() <= row) return;
+
+  model_.remReflection(row);
+  updateSingleSelection();
+}
+
+bool ReflectionView::hasReflections() const {
+  return model_.rowCount() > 0;
+}
+
+core::shp_Reflection ReflectionView::selectedReflection() const {
+  auto indexes = selectionModel()->selectedIndexes();
+  if (indexes.isEmpty())
+    return core::shp_Reflection();
+  return model_.data(indexes.first(), Model::GetDatasetRole).value<core::shp_Reflection>();
+}
+
+void ReflectionView::updateSingleSelection() {
+  super::updateSingleSelection();
+  hub_.actions.remReflection->setEnabled(hasReflections());
+}
+
+void ReflectionView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
+  super::selectionChanged(selected,deselected);
+
+  auto indexes = selected.indexes();
+  tellSelectedReflection(indexes.isEmpty()
+    ? core::shp_Reflection()
+    : model_.data(indexes.first(), Model::GetDatasetRole).value<core::shp_Reflection>());
+}
+
+//------------------------------------------------------------------------------
+
 Fitting::Fitting(TheHub& hub)
 : super(hub), silentSpin_(false) {
 
@@ -54,7 +124,7 @@ Fitting::Fitting(TheHub& hub)
     auto &tab = addTab("Reflections");
     tab.box->addLayout(tools());
 
-    tab.box->addWidget((reflectionView_ = new views::ReflectionView(hub_)));
+    tab.box->addWidget((reflectionView_ = new ReflectionView(hub_)));
 
     auto hb = hbox();
     tab.box->addLayout(hb);

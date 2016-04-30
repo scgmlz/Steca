@@ -30,14 +30,6 @@ class QDoubleSpinBox;
 namespace gui {
 //------------------------------------------------------------------------------
 
-class WaitCursor {
-public:
-  WaitCursor();
- ~WaitCursor();
-};
-
-//------------------------------------------------------------------------------
-
 class Settings: public QSettings {
   SUPER(Settings, QSettings)
 public:
@@ -75,13 +67,13 @@ private:
   QScopedPointer<core::Session> session;
 
 public:
-  bool fixedIntenScaleImage_;
+  bool fixedIntenScaleImage_; // TODO private?
   bool fixedIntenScaleDgram_;
   bool avgCurveDgram_;
 
-  models::FilesViewModel      fileViewModel;
-  models::DatasetViewModel    datasetViewModel;
-  models::ReflectionViewModel reflectionViewModel;
+  models::FilesModel       filesModel;
+  models::DatasetsModel    datasetsModel;
+  models::ReflectionsModel reflectionsModel;
 
 public: // files
   uint numFiles()              const;

@@ -28,7 +28,7 @@ public:
   DockFiles(TheHub&);
 
 private:
-  views::FilesView *filesView_;
+  class FilesView *filesView_;
   LineView  *corrFile_;
 };
 

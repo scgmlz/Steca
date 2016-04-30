@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "core_defs.h"
+#include <QApplication>
 #include <qmath.h>
 
 static_assert (QT_VERSION >= QT_VERSION_CHECK(5,4,0),"written for Qt >= 5.4, have " QT_VERSION_STR);
@@ -47,6 +48,16 @@ Exception* Exception::clone() const {
 
 void Exception::raise() const {
   throw *this;
+}
+
+//------------------------------------------------------------------------------
+
+TakesLongTime::TakesLongTime() {
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+}
+
+TakesLongTime::~TakesLongTime() {
+  QApplication::restoreOverrideCursor();
 }
 
 // eof

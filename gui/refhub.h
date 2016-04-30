@@ -34,23 +34,21 @@ private:
 
 protected:
   // emit signals
-  void tellFilesSelectedDatasetsChanged();
+//  void tellNoSelectedDataset();
   void tellSelectedDataset(core::shp_Dataset);
   void tellSelectedReflection(core::shp_Reflection);
   void tellReflectionData(core::shp_Reflection);
   void tellReflectionValues(core::rcRange,core::rcXY,qreal,bool);
 
 signals:
-  void sigFilesChanged();
-  void sigFilesSelected();
+  void sigFilesChanged();     ///< the set of loaded files has changed
+  void sigFilesSelected();    ///< the selection of loaded files has changed
 
-  void sigDatasetsChanged();
+  void sigDatasetsChanged();  ///< the set of datasets collected from selected files has changed
   void sigDatasetSelected(core::shp_Dataset);
 
   void sigCorrEnabled(bool);
   void sigCorrFileName(QString const&);
-
-  void sigFactorySettings();
 
   void sigReflectionsChanged();
   void sigReflectionSelected(core::shp_Reflection);
@@ -105,8 +103,6 @@ protected:
 
   DEFINE_HUB_SIGNAL_HANDLER(CorrEnabled)
   DEFINE_HUB_SIGNAL_HANDLER(CorrFileName)
-
-  DEFINE_HUB_SIGNAL_HANDLER(FactorySettings)
 
   DEFINE_HUB_SIGNAL_HANDLER(ReflectionsChanged)
   DEFINE_HUB_SIGNAL_HANDLER(ReflectionSelected)

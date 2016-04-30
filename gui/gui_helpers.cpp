@@ -95,7 +95,7 @@ QCheckBox* check(rcstr text, QAction* action) {
     QObject::connect(ch, &QCheckBox::toggled,[action](bool on) {
       action->setChecked(on);
     });
-  }  
+  }
   return ch;
 }
 
@@ -142,6 +142,13 @@ TreeListView::TreeListView() {
 void TreeListView::setModel(QAbstractItemModel* model) {
   super::setModel(model);
   hideColumn(0);  // this should look like a list; 0th column is tree-like
+
+  if (model) {
+    connect(model, &QAbstractItemModel::modelReset, [this,model]() {
+      for_i (model->columnCount())
+        resizeColumnToContents(i);
+    });
+  }
 }
 
 //------------------------------------------------------------------------------

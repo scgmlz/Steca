@@ -285,7 +285,7 @@ void DiffractogramPlot::updateBg() {
     break;
   }
 
-  diffractogram_.renderDataset();
+  diffractogram_.render();
 }
 
 void DiffractogramPlot::clearReflLayer() {
@@ -321,8 +321,6 @@ void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
 }
 
 //------------------------------------------------------------------------------
-#define CH(signal,lambda)   ON_HUB_SIGNAL(signal, [this]lambda);
-
 
 Diffractogram::Diffractogram(TheHub& hub)
 : super(EMPTY_STR,hub,Qt::Vertical), dataset_(nullptr), currReflIndex_(-1) {
@@ -339,24 +337,24 @@ Diffractogram::Diffractogram(TheHub& hub)
   });
 
   onSigGeometryChanged([this]() {
-    renderDataset();
+    render();
   });
 
   onSigCorrEnabled([this]() {
-    renderDataset();
+    render();
   });
 
   onSigDisplayChanged([this]() {
-    renderDataset();
+    render();
   });
 
   onSigNormChanged([this]() {
-    renderDataset();
+    render();
   });
 
   onSigBgPolynomialDegree([this](uint degree) {
     hub_.bgPolynomialDegree() = degree; // keep session up-to-date
-    renderDataset();
+    render();
   });
 
   // REVIEW all these connects
@@ -380,7 +378,7 @@ Diffractogram::Diffractogram(TheHub& hub)
     plot_->setTool(on ? (0==hub_.fittingTab__ ? DiffractogramPlot::TOOL_BACKGROUND:DiffractogramPlot::TOOL_PEAK_REGION) : DiffractogramPlot::TOOL_NONE);
   });
 
-  onSigFactorySettings([this]() {
+  onSigDatasetsChanged([this]() {
     avgCurveCheckBox->setChecked(false);
     fixedIntenCheckBox->setChecked(false);
   });
@@ -406,7 +404,7 @@ Diffractogram::Diffractogram(TheHub& hub)
   hub_.actions.fitShow->setChecked(true);
 }
 
-void Diffractogram::renderDataset() {
+void Diffractogram::render() {
   calcDgram();
   calcBackground();
   calcReflections();
@@ -416,7 +414,7 @@ void Diffractogram::renderDataset() {
 
 void Diffractogram::setDataset(core::shp_Dataset dataset) {
   dataset_ = dataset;
-  renderDataset();
+  render();
 }
 
 void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, normalize==false

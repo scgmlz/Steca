@@ -238,6 +238,9 @@ qreal Datasets::avgDeltaTime() const {
 
 rcRange Datasets::rgeFixedInten(rcSession session, bool trans, bool cut) const {
   if (!rgeFixedInten_.isValid()) {
+
+    TakesLongTime __;
+
     for (auto const& dataset: *this) {
       auto const& image = dataset->image();
       shp_ImageLens imageLens = session.lens(image,*this,trans,cut);
@@ -251,6 +254,8 @@ rcRange Datasets::rgeFixedInten(rcSession session, bool trans, bool cut) const {
 rcCurve Datasets::makeAvgCurve(rcSession session, bool trans, bool cut) const {
   if (!avgCurve_.isEmpty())
     return avgCurve_;
+
+  TakesLongTime __;
 
   Curve res;
 

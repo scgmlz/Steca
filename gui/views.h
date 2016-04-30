@@ -45,67 +45,7 @@ public:
 
 protected:
   using Model = models::TableModel;
-  void updateNoSelection();
-  void clearSelection();
   void selectRows(uint_vec);
-};
-
-//------------------------------------------------------------------------------
-
-class FilesView: public MultiListView {
-  SUPER(FilesView,MultiListView)
-public:
-  using Model = models::FilesViewModel;
-
-  FilesView(TheHub&);
-
-protected:
-  void selectionChanged(QItemSelection const&, QItemSelection const&);
-  void removeSelected();
-
-private:
-  Model &model_;
-  mutable bool selfSignal_;
-};
-
-//------------------------------------------------------------------------------
-
-class DatasetView: public ListView {
-  SUPER(DatasetView,ListView)
-public:
-  using Model = models::DatasetViewModel;
-
-  DatasetView(TheHub&);
-
-protected:
-  void selectionChanged(QItemSelection const&, QItemSelection const&);
-
-private:
-  Model &model_;
-};
-
-//------------------------------------------------------------------------------
-
-class ReflectionView: public ListView {
-  SUPER(ReflectionView,ListView)
-public:
-  using Model = models::ReflectionViewModel;
-
-  ReflectionView(TheHub&);
-
-  void addReflection(int type);
-  void removeSelected();
-  bool hasReflections()     const;
-
-  core::shp_Reflection selectedReflection() const;
-
-  void updateSingleSelection();
-
-protected:
-  void selectionChanged(QItemSelection const&, QItemSelection const&);
-
-private:
-  Model &model_;
 };
 
 //------------------------------------------------------------------------------

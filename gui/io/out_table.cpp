@@ -324,9 +324,10 @@ void OutWindow::setWidgets(panel::BasicPanel* panel, QWidget* widget) {
 
   auto actCalculate = new TriggerAction("Calculate", "Calculate", this);
   connect(actCalculate, &QAction::triggered, [this]() {
-    WaitCursor __;
+    TakesLongTime __;
     calculate();
   });
+
   bbox->addWidget(textButton(actCalculate));
 
   auto actSave = new TriggerAction("Save", "Save", this);

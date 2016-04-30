@@ -106,7 +106,7 @@ public:
   Diffractogram(TheHub&);
 
   core::shp_Dataset const& getDataset() const { return dataset_; }
-  void renderDataset(); // TODO move to DiffractogramPlot (?)
+  void render(); // TODO move to DiffractogramPlot (?)
 
   QCheckBox *avgCurveCheckBox, *fixedIntenCheckBox;
 

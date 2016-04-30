@@ -20,18 +20,21 @@
 namespace models {
 //------------------------------------------------------------------------------
 
-FilesViewModel::FilesViewModel(gui::TheHub& hub): TableModel(hub) {
+FilesModel::FilesModel(gui::TheHub& hub): TableModel(hub) {
+  onSigFilesChanged([this]() {
+    signalReset();
+  });
 }
 
-int FilesViewModel::columnCount(rcIndex) const {
+int FilesModel::columnCount(rcIndex) const {
   return 1 + DCOL;
 }
 
-int FilesViewModel::rowCount(rcIndex) const {
+int FilesModel::rowCount(rcIndex) const {
   return hub_.numFiles();
 }
 
-QVariant FilesViewModel::data(rcIndex index,int role) const {
+QVariant FilesModel::data(rcIndex index,int role) const {
   auto row = index.row(), rowCnt = rowCount();
   if (row < 0 || rowCnt <= row) return EMPTY_VAR;
 
@@ -45,29 +48,28 @@ QVariant FilesViewModel::data(rcIndex index,int role) const {
   }
 }
 
-void FilesViewModel::remFile(uint i) {
+void FilesModel::remFile(uint i) {
   hub_.remFile(i);
 }
 
 //------------------------------------------------------------------------------
 
-DatasetViewModel::DatasetViewModel(gui::TheHub& hub)
+DatasetsModel::DatasetsModel(gui::TheHub& hub)
 : super(hub), datasets_(hub.collectedDatasets()), metaInfo_(nullptr) {
-
   onSigDatasetsChanged([this]() {
     signalReset();
   });
 }
 
-int DatasetViewModel::columnCount(rcIndex) const {
+int DatasetsModel::columnCount(rcIndex) const {
   return COL_ATTRS + metaInfoNums_.count();
 }
 
-int DatasetViewModel::rowCount(rcIndex) const {
+int DatasetsModel::rowCount(rcIndex) const {
   return datasets_.count();
 }
 
-QVariant DatasetViewModel::data(rcIndex index,int role) const {
+QVariant DatasetsModel::data(rcIndex index,int role) const {
   int row = index.row();
   if (row < 0 || rowCount() <= row) return EMPTY_VAR;
 
@@ -91,7 +93,7 @@ QVariant DatasetViewModel::data(rcIndex index,int role) const {
   }
 }
 
-QVariant DatasetViewModel::headerData(int col, Qt::Orientation, int role) const {
+QVariant DatasetsModel::headerData(int col, Qt::Orientation, int role) const {
   if (Qt::DisplayRole != role || col < DCOL || columnCount() <= col)
     return EMPTY_VAR;
 
@@ -103,7 +105,7 @@ QVariant DatasetViewModel::headerData(int col, Qt::Orientation, int role) const 
   }
 }
 
-void DatasetViewModel::showMetaInfo(checkedinfo_vec const& infos_) {
+void DatasetsModel::showMetaInfo(checkedinfo_vec const& infos_) {
   beginResetModel();
 
   metaInfoNums_.clear();
@@ -121,33 +123,33 @@ void DatasetViewModel::showMetaInfo(checkedinfo_vec const& infos_) {
 
 //------------------------------------------------------------------------------
 
-ReflectionViewModel::ReflectionViewModel(gui::TheHub& hub): super(hub) {
+ReflectionsModel::ReflectionsModel(gui::TheHub& hub): super(hub) {
 }
 
-int ReflectionViewModel::columnCount(rcIndex) const {
+int ReflectionsModel::columnCount(rcIndex) const {
   return NUM_COLUMNS;
 }
 
-int ReflectionViewModel::rowCount(rcIndex) const {
+int ReflectionsModel::rowCount(rcIndex) const {
   return hub_.reflections().count();
 }
 
-str ReflectionViewModel::displayData(uint row, uint col) const {
+str ReflectionsModel::displayData(uint row, uint col) const {
   switch (col) {
   case COL_ID:
     return str::number(row+1);
   case COL_TYPE:
     return core::Reflection::typeTag(hub_.reflections()[row]->type());
   default:
-    NEVER_HERE;
+    NEVER_HERE return EMPTY_STR;
   }
 }
 
-str ReflectionViewModel::displayData(uint row) const {
+str ReflectionsModel::displayData(uint row) const {
   return displayData(row,COL_ID) + ": " + displayData(row,COL_TYPE);
 }
 
-QVariant ReflectionViewModel::data(rcIndex index, int role) const {
+QVariant ReflectionsModel::data(rcIndex index, int role) const {
   int row = index.row();
   if (row < 0 || rowCount() <= row) return EMPTY_VAR;
 
@@ -172,18 +174,18 @@ QVariant ReflectionViewModel::data(rcIndex index, int role) const {
   }
 }
 
-QVariant ReflectionViewModel::headerData(int col, Qt::Orientation, int role) const {
+QVariant ReflectionsModel::headerData(int col, Qt::Orientation, int role) const {
   if (Qt::DisplayRole == role && COL_ID == col)
     return "#";
   else
     return EMPTY_VAR;
 }
 
-void ReflectionViewModel::addReflection(core::ePeakType type) {
+void ReflectionsModel::addReflection(core::ePeakType type) {
   hub_.addReflection(type);
 }
 
-void ReflectionViewModel::remReflection(uint i) {
+void ReflectionsModel::remReflection(uint i) {
   hub_.remReflection(i);
 }
 

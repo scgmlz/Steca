@@ -114,7 +114,7 @@ OutPoleFiguresParams::OutPoleFiguresParams(TheHub& hub): super("", hub, Qt::Vert
   bp->addWidget(label("β step"),0,0);
   bp->addWidget((stepBeta = spinCell(8,1.,30.)),0,1);
 
-  str_lst ref; auto const& model = hub_.reflectionViewModel;
+  str_lst ref; auto const& model = hub_.reflectionsModel;
   for_i (model.rowCount())
     ref.append(model.displayData(i));
 

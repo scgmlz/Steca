@@ -42,22 +42,25 @@ qreal angle(qreal alpha1, qreal alpha2,
   return a;
 }
 
-namespace Quadrant {
-  enum Quadrant {
-    NORTHEAST,
-    SOUTHEAST,
-    SOUTHWEST,
-    NORTHWEST,
-    NUM_QUADRANTS
+enum class Quadrant {
+  NONE,
+  NORTHEAST,
+  SOUTHEAST,
+  SOUTHWEST,
+  NORTHWEST,
+};
+
+static int NUM_QUADRANTS = 4;
+
+typedef QVector<Quadrant> Quadrants;
+
+static Quadrants allQuadrants() {
+  return { Quadrant::NORTHEAST, Quadrant::SOUTHEAST,
+           Quadrant::SOUTHWEST, Quadrant::NORTHWEST
   };
 }
 
-uint_vec allQuadrants() {
-  return uint_vec(Quadrant::NUM_QUADRANTS, 0);
-}
-
-bool inQuadrant(int quadrant,
-                qreal deltaAlpha, qreal deltaBeta) noexcept {
+static bool inQuadrant(Quadrant quadrant, qreal deltaAlpha, qreal deltaBeta) {
   switch (quadrant) {
   case Quadrant::NORTHEAST:
     return deltaAlpha >= 0 && deltaBeta >= 0;
@@ -73,13 +76,13 @@ bool inQuadrant(int quadrant,
 }
 
 // Search quadrant remapping in case no point was found.
-Quadrant::Quadrant remapQuadrant(Quadrant::Quadrant const Q) {
-  switch(Q) {
+static Quadrant remapQuadrant(Quadrant q) {
+  switch(q) {
   case Quadrant::NORTHEAST: return Quadrant::NORTHWEST;
   case Quadrant::SOUTHEAST: return Quadrant::SOUTHWEST;
   case Quadrant::SOUTHWEST: return Quadrant::NORTHEAST;
   case Quadrant::NORTHWEST: return Quadrant::SOUTHEAST;
-  default: NEVER_HERE return Quadrant::NUM_QUADRANTS;
+  default: NEVER_HERE return Quadrant::NONE;
   }
 }
 
@@ -109,14 +112,14 @@ void searchPoints(qreal alpha, qreal beta, qreal radius,
 }
 
 // Searches closest ReflectionInfos to given alpha and beta in quadrants.
-void searchInQuadrants(
-    uint_vec const& quadrants,
+static void searchInQuadrants(
+    Quadrants const& quadrants,
     qreal alpha, qreal beta,
     qreal searchRadius,
     ReflectionInfos const& infos,
     QVector<ReflectionInfo const*> & foundInfos,
     qreal_vec & distances) {
-  ASSERT(quadrants.size() <= Quadrant::NUM_QUADRANTS);
+  ASSERT(quadrants.size() <= NUM_QUADRANTS);
   // Take only reflection infos with beta within +/- BETA_LIMIT degrees into
   // account. Original STeCa used something like +/- 1.5*36 degrees.
   qreal const BETA_LIMIT = 30;
@@ -147,13 +150,13 @@ void inverseDistanceWeighing(qreal_vec const& distances,
                              ReflectionInfo& out) {
   // Generally, only distances.size() == values.size() > 0 is needed for this
   // algorithm. However, in this context we expect exactly the following:
-  RUNTIME_CHECK(distances.size() == Quadrant::NUM_QUADRANTS,
+  RUNTIME_CHECK(distances.size() == NUM_QUADRANTS,
                 "distances size should be 4");
-  RUNTIME_CHECK(infos.size() == Quadrant::NUM_QUADRANTS,
+  RUNTIME_CHECK(infos.size() == NUM_QUADRANTS,
                 "infos size should be 4");
-  QVector<qreal> inverseDistances(Quadrant::NUM_QUADRANTS);
+  QVector<qreal> inverseDistances(NUM_QUADRANTS);
   qreal inverseDistanceSum = 0;
-  for_i (Quadrant::NUM_QUADRANTS) {
+  for_i (NUM_QUADRANTS) {
     if (distances[i] == 0) {
       // Points coincide; no need to interpolate.
       auto &in = infos.at(i);
@@ -169,7 +172,7 @@ void inverseDistanceWeighing(qreal_vec const& distances,
   qreal offset = 0;
   qreal height = 0;
   qreal fwhm = 0;
-  for_i (Quadrant::NUM_QUADRANTS) {
+  for_i (NUM_QUADRANTS) {
     auto &in = infos.at(i);
     offset += in->tth()   * inverseDistances[i];
     height += in->inten() * inverseDistances[i];
@@ -194,23 +197,23 @@ void interpolateValues(qreal searchRadius,
                     interpolationInfos,
                     distances);
   // Check that infos were found in all quadrants.
-  uint numQuadrantsOk = 0;
-  for (int i = 0; i < Quadrant::NUM_QUADRANTS; ++i) {
+  int numQuadrantsOk = 0;
+  for_i (NUM_QUADRANTS) {
     if (interpolationInfos[i]) {
       ++numQuadrantsOk;
       continue;
     }
     // No info found in quadrant? Try another quadrant. See
     // [J.Appl.Cryst.(2011),44,641] for the angle mapping.
-    int   const newQ = remapQuadrant(static_cast<Quadrant::Quadrant>(i));
+    Quadrant newQ = remapQuadrant((Quadrant)i);
     qreal const newAlpha
-      = i == Quadrant::NORTHEAST || i == Quadrant::SOUTHEAST ?
+      = i == (int)Quadrant::NORTHEAST || i == (int)Quadrant::SOUTHEAST ?
         180 - out.alpha() : -out.alpha();
     qreal newBeta = out.beta() < 180 ?   out.beta() + 180
                                      : out.beta() - 180;
     QVector<ReflectionInfo const*> renewedSearch;
     QVector<qreal> newDistance;
-    searchInQuadrants(QVector<uint>(1, newQ),
+    searchInQuadrants({newQ},
                       newAlpha, newBeta, searchRadius,
                       infos, renewedSearch, newDistance);
     ASSERT(renewedSearch.size() == 1);
@@ -222,7 +225,7 @@ void interpolateValues(qreal searchRadius,
     }
   }
   // Use inverse distance weighing if everything is alright.
-  if (numQuadrantsOk == Quadrant::NUM_QUADRANTS) {
+  if (numQuadrantsOk == NUM_QUADRANTS) {
     inverseDistanceWeighing(distances, interpolationInfos, out);
   }
 }
