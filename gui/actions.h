@@ -17,6 +17,7 @@
 #define ACTIONS_H
 
 #include "core_defs.h"
+#include "refhub.h"
 #include <QAction>
 
 namespace gui {
@@ -52,7 +53,11 @@ protected:
 
 //------------------------------------------------------------------------------
 
-struct Actions {
+class Actions: protected RefHub {
+  SUPER(Actions,RefHub)
+public:
+  Actions(TheHub&);
+
   QAction
     *loadSession, *saveSession,
 
@@ -80,7 +85,6 @@ struct Actions {
     *avgCurveDgram,
     *fitTool, *fitBgClear, *fitShow,
     *hasBeamOffset;
-
 };
 
 //------------------------------------------------------------------------------

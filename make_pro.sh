@@ -12,10 +12,8 @@ TEMPLATE = app
 
 QT      += core gui widgets
 CONFIG  += c++11 silent $CFG
-DEFINES += STECA_LABS
 
 INCLUDEPATH += \$\$PWD/core \$\$PWD/gui
-
 EOT
 
 function files {

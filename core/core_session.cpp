@@ -19,7 +19,6 @@
 #include "core_reflection_info.h"
 #include "types/core_type_curve.h"
 #include "types/core_type_matrix.h"
-#include <QStringList>
 #include <qmath.h>
 
 namespace core {
@@ -30,7 +29,8 @@ Session::Session() {
 }
 
 void Session::clear() {
-  while (0 < numFiles()) remFile(0);
+  while (0 < numFiles())
+    remFile(0);
 
   remCorrFile();
   corrEnabled_ = false;
@@ -41,8 +41,6 @@ void Session::clear() {
   reflections_.clear();
 
   norm_ = eNorm::NONE;
-
-  numCombine_ = 1;
 }
 
 shp_File Session::file(uint i) const {
@@ -93,59 +91,48 @@ void Session::enableCorr(bool on) {
   corrEnabled_ = on && hasCorrFile();
 }
 
-void Session::collectDatasetsFromFiles(uint_vec fileNums) {
+void Session::collectDatasetsFromFiles(uint_vec fileNums, uint groupBy) {
+  ASSERT(1 <= groupBy)
+
   collectedFromFiles_ = fileNums;
   collectedDatasets_.clear();
-  combindedDatasetsIndices_.clear();
-  // REFACTOR move loops together
+  collectedDatasetsTags_.clear();
 
-  Datasets combinedDatasets;
+  Datasets collectedDatasets;
   for (uint i: collectedFromFiles_) {
-    for (auto &ds: files_.at(i)->datasets()) {
-      combinedDatasets.appendHere(shp_Dataset(new Dataset(*ds)));
+    for (auto const& dataset: files_.at(i)->datasets())
+      collectedDatasets.appendHere(shp_Dataset(new Dataset(*dataset)));
+  }
+
+  if (collectedDatasets.isEmpty())
+    return;
+
+  Datasets group; uint i = 0;
+
+  auto makeGroup = [this,&group,&groupBy,&i]() {
+    if (!group.isEmpty()) {
+      str tag = str::number(i+1);
+      i += group.count();
+
+      if (groupBy > 1)
+        tag += '-' + str::number(i);
+
+      collectedDatasets_.appendHere(Dataset::combine(group));
+      collectedDatasetsTags_.append(tag);
+
+      group.clear();
+    }
+  };
+
+  uint gcnt = groupBy;
+  for (auto& dataset: collectedDatasets) {
+    group.append(dataset);
+    if (1 >= gcnt--) {
+      makeGroup(); gcnt = groupBy;
     }
   }
 
-  auto count = combinedDatasets.count();
-  if (count == 0) return; // no files selected
-  if ((int)numCombine_ > count) numCombine_ = count;
-
-  auto even = count/numCombine_;
-  auto remain = count%numCombine_;
-  Datasets datasets;
-
-  for (uint i = 0; i < (even*numCombine_); i+=numCombine_) {
-    for_int (j,numCombine_) {
-      datasets.append(combinedDatasets[i+j]);
-    }
-    collectedDatasets_.appendHere(Dataset::combine(datasets));
-    if (numCombine_ == 1)
-      combindedDatasetsIndices_.append(str::number(i+1));
-    else
-      combindedDatasetsIndices_.append(str::number(i+1)+"-"+str::number(i+numCombine_));
-
-    datasets.clear();
-  }
-
-  if (remain) {
-    for_i (remain)
-      datasets.append(combinedDatasets[even*numCombine_+i]);
-
-  collectedDatasets_.appendHere(Dataset::combine(datasets));
-  combindedDatasetsIndices_.append(str::number(even*numCombine_+1)+"-"+str::number(even*numCombine_+remain));
-  }
-}
-
-rcDatasets Session::collectedDatasets() const {
-  return collectedDatasets_;
-}
-
-uint& Session::numCombinedDatasets() {
-  return numCombine_;
-}
-
-str_lst const& Session::combinedDatasetsIndices() {
-  return combindedDatasetsIndices_;
+  makeGroup(); // the remaining ones
 }
 
 void Session::updateImageSize() {

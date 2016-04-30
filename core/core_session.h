@@ -17,6 +17,7 @@
 #define CORE_SESSION_H
 
 #include "core_file.h"
+#include "types/core_type_image.h"
 #include "types/core_type_image_transform.h"
 #include "types/core_type_geometry.h"
 #include "types/core_types_fwd.h"
@@ -28,6 +29,7 @@ namespace core {
 class Session final { TESTS_FRIEND
 public:
   Session();
+
   void clear();
 
 // data files
@@ -49,30 +51,27 @@ private:
   Image    corrImage_;
   bool     corrEnabled_;
 
-  uint_vec collectedFromFiles_;
-  Datasets collectedDatasets_;
-  str_lst  combindedDatasetsIndices_;
+  uint_vec collectedFromFiles_;       ///< from these files
+  Datasets collectedDatasets_;        ///< datasets collected ...
+  str_lst  collectedDatasetsTags_;
 
 public:
   bool     hasCorrFile()    const { return !corrFile_.isNull(); }
   shp_File corrFile()       const { return corrFile_;           }
   rcImage  corrImage()      const { return corrImage_;          }
 
-  void     setCorrFile(shp_File) THROWS;    ///< Load or remove a correction file.
+  void     setCorrFile(shp_File) THROWS;  ///< Load or remove a correction file.
   void     remCorrFile();
 
   void     enableCorr(bool);
   bool     isCorrEnabled()  const { return corrEnabled_;        }
 
-  void            collectDatasetsFromFiles(uint_vec);
-  uint_vec const& collectedFromFiles() { return collectedFromFiles_;  }
-  rcDatasets      collectedDatasets()  const;
-  uint&           numCombinedDatasets();
-  str_lst  const& combinedDatasetsIndices();
+  void     collectDatasetsFromFiles(uint_vec,uint);
 
-private:
-  uint            numCombine_;
-// image - sanity
+  uint_vec const& collectedFromFiles()    const { return collectedFromFiles_;    }
+  rcDatasets      collectedDatasets()     const { return collectedDatasets_;     }
+  str_lst  const& collectedDatasetsTags() const { return collectedDatasetsTags_; }
+
 private:
   /// All files must have images of the same size; this is a cached value
   QSize imageSize_;

@@ -37,7 +37,7 @@ uint Dataset::numAttributes() {
 }
 
 rcstr Dataset::attributeTag(uint i) {
-  static QVector<str> const attributeTags = {
+  static str_lst const attributeTags = {
     "date", "comment",
     "X", "Y", "Z",
     "ω", "2θ", "φ", "χ",
@@ -64,62 +64,79 @@ Dataset::Dataset(
 , image_(size,intens) {
 }
 
-Dataset::Dataset(rcDataset that): datasets_(nullptr), date_(that.date_), comment_(that.comment_)
+Dataset::Dataset(rcDataset that)
+: datasets_(nullptr), date_(that.date_), comment_(that.comment_)
 , motorXT_(that.motorXT_), motorYT_(that.motorYT_), motorZT_(that.motorZT_)
 , motorOmg_(that.motorOmg_), motorTth_(that.motorTth_), motorPhi_(that.motorPhi_), motorChi_(that.motorChi_)
 , motorPST_(that.motorPST_), motorSST_(that.motorSST_), motorOMGM_(that.motorOMGM_)
 , deltaMonitorCount_(that.deltaMonitorCount_), deltaTime_(that.deltaTime_)
-, image_(that.image_.size(),that.image_.intensData()) {
+, image_(that.image_) {
 }
 
 rcDatasets Dataset::datasets() const {
   ASSERT(datasets_)
-      return *datasets_;
+  return *datasets_;
 }
 
 shp_Dataset Dataset::combine(Datasets datasets) {
-  ASSERT(datasets.count() > 0)
-  qreal motorXT = 0,  motorYT = 0,  motorZT = 0,  motorOmg = 0, motorTth = 0,
-        motorPhi = 0, motorChi = 0, motorPST = 0, motorSST = 0, motorOMGM = 0,
+  if (datasets.count() <= 0)
+    return shp_Dataset();
+
+  qreal motorXT = 0, motorYT = 0,  motorZT = 0,
+        motorOmg = 0, motorTth = 0, motorPhi = 0, motorChi = 0,
+        motorPST = 0, motorSST = 0, motorOMGM = 0,
         deltaMonitorCount = 0, deltaTime = 0;
 
-  auto count = datasets.count();
-  for (int i = 0; i < count; ++i) {
-    auto &d = *datasets.at(i);
-    motorXT += d.motorXT_;
-    motorYT += d.motorYT_;
-    motorZT += d.motorZT_;
-    motorOmg += d.motorOmg_;
-    motorTth += d.motorTth_;
-    motorPhi += d.motorPhi_;
-    motorChi += d.motorChi_;
-    motorPST += d.motorPST_;
-    motorSST += d.motorSST_;
-    motorOMGM += d.motorOMGM_;
-    deltaMonitorCount += d.deltaMonitorCount_;
-    deltaTime += d.deltaTime_;
+  // sums: deltaMonitorCount, deltaTime
+  // the rest are averaged
+
+  for (auto const& d: datasets) {
+    motorXT   += d->motorXT_;
+    motorYT   += d->motorYT_;
+    motorZT   += d->motorZT_;
+
+    motorOmg  += d->motorOmg_;
+    motorTth  += d->motorTth_;
+    motorPhi  += d->motorPhi_;
+    motorChi  += d->motorChi_;
+
+    motorPST  += d->motorPST_;
+    motorSST  += d->motorSST_;
+    motorOMGM += d->motorOMGM_;
+
+    deltaMonitorCount += d->deltaMonitorCount_;
+    deltaTime         += d->deltaTime_;
   }
 
-  motorXT /= count;
-  motorYT /= count;
-  motorZT /= count;
+  uint count = datasets.count();
+  motorXT  /= count;
+  motorYT  /= count;
+  motorZT  /= count;
+
   motorOmg /= count;
   motorTth /= count;
   motorPhi /= count;
   motorChi /= count;
-  motorPST /= count;
-  motorSST /= count;
+
+  motorPST  /= count;
+  motorSST  /= count;
   motorOMGM /= count;
 
+  // added intensities
   Image image = datasets.folded();
-  auto &first = *datasets.at(0);
-  rcstr date = first.date_;
+
+  // take string attributes from the first dataset
+  auto const& first = *datasets.at(0);
+
+  rcstr date    = first.date_;
   rcstr comment = first.comment_;
 
-  return shp_Dataset(new Dataset(date, comment,
-                                 motorXT, motorYT,  motorZT,  motorOmg, motorTth,
-                                 motorPhi, motorChi, motorPST, motorSST, motorOMGM,
-                                 deltaMonitorCount, deltaTime, image.size(), image.intensData()));
+  return shp_Dataset(
+    new Dataset(date, comment,
+                motorXT, motorYT,  motorZT,  motorOmg, motorTth,
+                motorPhi, motorChi, motorPST, motorSST, motorOMGM,
+                deltaMonitorCount, deltaTime,
+                image.size(), image.intensData()));
 }
 
 str Dataset::attributeStrValue(uint i) const {
@@ -146,18 +163,6 @@ str Dataset::attributeStrValue(uint i) const {
   return str::number(value);
 }
 
-qreal Dataset::midTth() const {
-  return motorTth_;
-}
-
-qreal Dataset::deltaMonitorCount() const {
-  return deltaMonitorCount_;
-}
-
-qreal Dataset::deltaTime() const {
-  return deltaTime_;
-}
-
 QSize Dataset::imageSize() const {
   return image_.size();
 }
@@ -173,25 +178,28 @@ Datasets::Datasets() {
 }
 
 void Datasets::appendHere(shp_Dataset dataset) {
+  // a dataset can be added to Datasets only once
   ASSERT(!dataset->datasets_)
-  dataset->datasets_ = this;  // ensured that only one is set
-  super::append(dataset);
+  dataset->datasets_ = this;
 
+  super::append(dataset);
   invalidateMutables();
 }
 
 Image Datasets::folded() const THROWS {
   ASSERT(0 < count())
-  Image image(first()->imageSize());
 
-  for (auto &dataset: *this)
+  Image image(first()->imageSize());
+  for (auto const& dataset: *this)
     image.addIntens(dataset->image_);
 
   return image;
 }
 
 QSize Datasets::imageSize() const {
-  if (super::isEmpty()) return QSize(0,0);
+  if (super::isEmpty())
+    return QSize(0,0);
+
   // guaranteed that all images have the same size; simply take the first one
   return super::first()->imageSize();
 }
@@ -199,11 +207,13 @@ QSize Datasets::imageSize() const {
 qreal Datasets::avgDeltaMonitorCount() const {
   if (qIsNaN(avgMonitorCount_)) {
     qreal avg = 0;
-    if (!super::isEmpty()) {
-      for (auto const& dataset: *this)
-        avg += dataset->deltaMonitorCount();
+
+    for (auto const& dataset: *this)
+      avg += dataset->deltaMonitorCount();
+
+    if (!super::isEmpty())
       avg /= super::count();
-    }
+
     avgMonitorCount_ = avg;
   }
 
@@ -213,11 +223,13 @@ qreal Datasets::avgDeltaMonitorCount() const {
 qreal Datasets::avgDeltaTime() const {
   if (qIsNaN(avgDeltaTime_)) {
     qreal avg = 0;
-    if (!super::isEmpty()) {
-      for (auto const& dataset: *this)
-        avg += dataset->deltaTime();
+
+    for (auto const& dataset: *this)
+      avg += dataset->deltaTime();
+
+    if (!super::isEmpty())
       avg /= super::count();
-    }
+
     avgDeltaTime_ = avg;
   }
 
@@ -226,8 +238,8 @@ qreal Datasets::avgDeltaTime() const {
 
 rcRange Datasets::rgeFixedInten(rcSession session, bool trans, bool cut) const {
   if (!rgeFixedInten_.isValid()) {
-    for_i (count()) {
-      auto image = at(i)->image();
+    for (auto const& dataset: *this) {
+      auto const& image = dataset->image();
       shp_ImageLens imageLens = session.lens(image,*this,trans,cut);
       rgeFixedInten_.extendBy(imageLens->rgeInten(false));
     }
@@ -241,13 +253,14 @@ rcCurve Datasets::makeAvgCurve(rcSession session, bool trans, bool cut) const {
     return avgCurve_;
 
   Curve res;
-  for (auto &dataset: *this) {
+
+  for (auto const& dataset: *this) {
     shp_Lens lens = session.lens(*dataset,*this,trans,cut,session.norm());
     Curve single = lens->makeCurve(lens->angleMap().rgeGamma(),lens->angleMap().rgeTth());
     res = res.add(single);
   }
 
-  if (count() > 0)
+  if (!isEmpty())
     res = res.mul(1. / count());
 
   return (avgCurve_ = res);

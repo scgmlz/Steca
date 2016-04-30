@@ -18,6 +18,7 @@
 
 #include "types/core_types_fwd.h"
 #include "core_fit_functions.h"
+#include <QStringList>
 
 namespace core {
 //------------------------------------------------------------------------------

@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "actions.h"
+#include "thehub.h"
 
 namespace gui {
 //------------------------------------------------------------------------------
@@ -61,6 +62,18 @@ Action& ToggleAction::alt(rcstr text2, rcstr tip2) {
   });
 
   return super::alt(text2, tip2);
+}
+
+//------------------------------------------------------------------------------
+
+Actions::Actions(TheHub& hub): super(hub) {
+  ON_CORR_ENABLED([this](bool on) {
+    enableCorr->setChecked(on);
+  });
+
+  ON_FILES_SELECTED([this]() {
+    remFile->setEnabled(!hub_.collectedFromFiles().isEmpty());
+  });
 }
 
 //------------------------------------------------------------------------------

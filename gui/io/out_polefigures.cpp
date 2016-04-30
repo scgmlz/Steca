@@ -22,10 +22,6 @@
 #include <QPainter>
 #include <QStringList>
 
-#ifdef STECA_LABS
-#include "gl/gl_canvas.h"
-#endif
-
 namespace gui { namespace io {
 //------------------------------------------------------------------------------
 
@@ -54,7 +50,7 @@ void PoleWidget::set(core::ReflectionInfos rs) {
   update();
 }
 
-void PoleWidget::paintEvent(QPaintEvent* e) {
+void PoleWidget::paintEvent(QPaintEvent*) {
   int w = size().width(), h = size().height();
 
   QPainter painter(this);
@@ -89,8 +85,9 @@ void PoleWidget::paintGrid() {
 
 void PoleWidget::paintInfo() {
   for (auto const &r: rs_) {
-    qreal in = r.inten() / 16;
-    p_->drawEllipse(p(r.alpha(),r.beta()),in,in);
+    qreal in = r.inten() / 16; // TODO better min-max
+    if (qIsFinite(in))
+      p_->drawEllipse(p(r.alpha(),r.beta()),in,in);
   }
 }
 
@@ -116,11 +113,11 @@ OutPoleFiguresParams::OutPoleFiguresParams(TheHub& hub): super("", hub, Qt::Vert
 
   bp->addWidget(label("β step"),0,0);
   bp->addWidget((stepBeta = spinCell(8,1.,30.)),0,1);
-  str_lst ref;
-  for_i (hub_.reflections().count()) {
-    auto type = hub_.reflections().at(i)->type();
-    ref.append(QString("%1: "+core::Reflection::typeTag(type)).arg(i+1));
-  }
+
+  str_lst ref; auto const& model = hub_.reflectionViewModel;
+  for_i (model.rowCount())
+    ref.append(model.displayData(i));
+
   bp->addWidget(label("Reflection"),0,2);
   bp->addWidget(reflections_ = comboBox(ref),0,3);
   bp->setVerticalSpacing(5);
@@ -185,11 +182,6 @@ OutPoleTabs::OutPoleTabs(TheHub& hub): super(hub) {
   {
     addTab("Graph");
   }
-#ifdef STECA_LABS
-  {
-    addTab("Sphere");
-  }
-#endif
 }
 
 //------------------------------------------------------------------------------
@@ -208,13 +200,6 @@ OutPoleFigures::OutPoleFigures(TheHub& hub,rcstr title,QWidget* parent)
 
   tabs->tab(0).box->addWidget(tableWidget_);
   tabs->tab(1).box->addWidget(poleWidget_);
-
-#ifdef STECA_LABS
-  auto *canvas = new gl::Canvas();
-  tabs->tab(2).box->addWidget(canvas);
-  auto *camera = new gl::Camera();
-  canvas->setCamera(camera);
-#endif
 }
 
 void OutPoleFigures::calculate() {

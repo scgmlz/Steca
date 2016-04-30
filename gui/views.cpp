@@ -75,14 +75,14 @@ FilesView::FilesView(TheHub& hub): super(hub)
     updateNoSelection();
   });
 
-  ON_HUB_SIGNAL(filesChanged,  () {
+  ON_FILES_CHANGED([this]() {
     updateNoSelection();
-  })
+  });
 
-  ON_HUB_SIGNAL(filesSelected, () {
+  ON_FILES_SELECTED([this]() {
     if (!selfSignal_)
       selectRows(hub_.collectedFromFiles());
-  })
+  });
 }
 
 class bool_lock {
@@ -131,10 +131,10 @@ void FilesView::removeSelected() {
 DatasetView::DatasetView(TheHub& hub): super(hub), model_(hub.datasetViewModel) {
   setModel(&model_);
 
-  ON_HUB_SIGNAL(datasetsChanged, () {
+  ON_DATASETS_CHANGED([this]() {
     model_.signalReset();
-     setCurrentIndex(model_.index(0,0));
-  })
+    setCurrentIndex(model_.index(0,0));
+  });
 
   connect(&model_, &QAbstractItemModel::modelReset, [this]() {
     for_i (model_.columnCount())
@@ -146,7 +146,7 @@ void DatasetView::selectionChanged(QItemSelection const& selected, QItemSelectio
   super::selectionChanged(selected,deselected);
 
   auto indexes = selected.indexes();
-  hub_.tellSelectedDataset(indexes.isEmpty()
+  tellSelectedDataset(indexes.isEmpty()
     ? core::shp_Dataset()
     : model_.data(indexes.first(), Model::GetDatasetRole).value<core::shp_Dataset>());
 }
@@ -194,7 +194,7 @@ void ReflectionView::selectionChanged(QItemSelection const& selected, QItemSelec
   super::selectionChanged(selected,deselected);
 
   auto indexes = selected.indexes();
-  hub_.tellSelectedReflection(indexes.isEmpty()
+  tellSelectedReflection(indexes.isEmpty()
     ? core::shp_Reflection()
     : model_.data(indexes.first(), Model::GetDatasetRole).value<core::shp_Reflection>());
 }

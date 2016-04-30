@@ -49,31 +49,35 @@ public:
 
   str attributeStrValue(uint) const;
 
-  qreal midTth()              const;
-  qreal deltaMonitorCount()   const;
-  qreal deltaTime()           const;
+  qreal midTth()            const { return motorTth_;           }
+  qreal deltaMonitorCount() const { return deltaMonitorCount_;  }
+  qreal deltaTime()         const { return deltaTime_;          }
 
-  qreal omg() const { return motorOmg_; }
-  qreal phi() const { return motorPhi_; }
-  qreal chi() const { return motorChi_; }
+  qreal omg()               const { return motorOmg_; }
+  qreal phi()               const { return motorPhi_; }
+  qreal chi()               const { return motorChi_; }
+
+  rcImage image()           const { return image_; }
 
   QSize   imageSize()          const;
   inten_t inten(uint i,uint j) const;
 
-  rcImage image() const { return image_; }
-
 private:
-  Datasets *datasets_;  // here it belongs
+  Datasets *datasets_;  ///< here it belongs (or could be nullptr)
+
   str date_, comment_;
 
   // all stored angles in degrees
-  qreal motorXT_,  motorYT_,  motorZT_,  motorOmg_, motorTth_,
-        motorPhi_, motorChi_, motorPST_, motorSST_, motorOMGM_;
+  qreal motorXT_,  motorYT_,  motorZT_,
+        motorOmg_, motorTth_, motorPhi_, motorChi_,
+        motorPST_, motorSST_, motorOMGM_;
 
   qreal deltaMonitorCount_, deltaTime_;
 
   Image image_;
 };
+
+//------------------------------------------------------------------------------
 
 /// A group of Dataset(s)
 class Datasets: public QVector<shp_Dataset> {
@@ -83,10 +87,10 @@ public:
 
   void appendHere(shp_Dataset);
 
-  /// collapse datasets into one (for correction files)
+  /// collapse datasets' images into one
   Image folded() const THROWS;
 
-  // in all datasets
+  /// all dataset(s) must have the same image size
   QSize imageSize()            const;
   qreal avgDeltaMonitorCount() const;
   qreal avgDeltaTime()         const;
@@ -95,7 +99,8 @@ public:
 
 private:
   void invalidateMutables();
-  // computed on demand
+
+  /// computed on demand (NaNs or emptiness indicate yet unknown values)
   mutable qreal avgMonitorCount_, avgDeltaTime_;
   mutable Range rgeFixedInten_;
   mutable Curve avgCurve_;

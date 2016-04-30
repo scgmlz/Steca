@@ -28,6 +28,8 @@ public:
   /// Image as vector of intensities, filled with 0 or given intensities.
   Image(QSize const& = QSize(0,0), inten_t const* = nullptr);
 
+  Image(rcImage);
+
   /// Access single intensity.
   inten_t inten(uint i) const {
     return super::at(i);

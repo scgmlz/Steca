@@ -54,12 +54,8 @@ void FilesViewModel::remFile(uint i) {
 DatasetViewModel::DatasetViewModel(gui::TheHub& hub)
 : super(hub), datasets_(hub.collectedDatasets()), metaInfo_(nullptr) {
 
-  connect(&hub,&gui::TheHub::beginReset, [this]() {
-    beginResetModel();
-  });
-
-  connect(&hub,&gui::TheHub::endReset, [this]() {
-    endResetModel();
+  ON_DATASETS_CHANGED([this]() {
+    signalReset();
   });
 }
 
@@ -82,7 +78,7 @@ QVariant DatasetViewModel::data(rcIndex index,int role) const {
 
     switch (col) {
     case COL_NUMBER:
-      return hub_.indexCombinedDatasets()[row];
+      return hub_.collectedDatasetsTags().at(row);
     default:
       return datasets_.at(row)->attributeStrValue(metaInfoNums_[col-COL_ATTRS]);
     }
@@ -136,6 +132,21 @@ int ReflectionViewModel::rowCount(rcIndex) const {
   return hub_.reflections().count();
 }
 
+str ReflectionViewModel::displayData(uint row, uint col) const {
+  switch (col) {
+  case COL_ID:
+    return str::number(row+1);
+  case COL_TYPE:
+    return core::Reflection::typeTag(hub_.reflections()[row]->type());
+  default:
+    NEVER_HERE;
+  }
+}
+
+str ReflectionViewModel::displayData(uint row) const {
+  return displayData(row,COL_ID) + ": " + displayData(row,COL_TYPE);
+}
+
 QVariant ReflectionViewModel::data(rcIndex index, int role) const {
   int row = index.row();
   if (row < 0 || rowCount() <= row) return EMPTY_VAR;
@@ -147,9 +158,8 @@ QVariant ReflectionViewModel::data(rcIndex index, int role) const {
 
     switch (col) {
     case COL_ID:
-      return str::number(row+1);
     case COL_TYPE:
-      return core::Reflection::typeTag(hub_.reflections()[row]->type());
+      return displayData(row,col);
     default:
       return EMPTY_VAR;
     }

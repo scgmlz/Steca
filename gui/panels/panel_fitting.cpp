@@ -110,26 +110,26 @@ Fitting::Fitting(TheHub& hub)
       updateReflectionControls();
     });
 
-    ON_HUB_SIGNAL(reflectionsChanged, () {
+    ON_REFL_CHANGED([this]() {
       reflectionView_->update();
       updateReflectionControls();
-    })
+    });
 
     connect(comboReflType_, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this](int index) {
       hub_.setReflType((core::ePeakType)index);
     });
 
-    ON_HUB_SIGNAL(reflectionSelected, (core::shp_Reflection reflection) {
+    ON_REFL_SELECTED([this](core::shp_Reflection reflection) {
       setReflControls(reflection);
-    })
+    });
 
-    ON_HUB_SIGNAL(reflectionData, (core::shp_Reflection reflection) {
+    ON_REFL_DATA([this](core::shp_Reflection reflection) {
       setReflControls(reflection);
-    })
+    });
 
     auto newReflData = [this](bool invalidateGuesses) {
       if (!silentSpin_) {
-        hub_.tellReflectionData(
+        tellReflectionValues(
           core::Range::safeFrom(spinRangeMin_->value(),spinRangeMax_->value()),
           core::XY(spinGuessPeakX_->value(),spinGuessPeakY_->value()),
           spinGuessFWHM_->value(), invalidateGuesses);

@@ -156,7 +156,7 @@ DiffractogramPlot::DiffractogramPlot(TheHub& hub,Diffractogram& diffractogram)
   fits_->setLineStyle(QCPGraph::lsNone);
   fits_->setPen(QPen(Qt::red));
 
-  ON_HUB_SIGNAL(reflectionData, (core::shp_Reflection reflection) {
+  ON_REFL_DATA([this](core::shp_Reflection reflection) {
     guesses_->clearData();
     fits_->clearData();
     if (reflection) {
@@ -174,7 +174,7 @@ DiffractogramPlot::DiffractogramPlot(TheHub& hub,Diffractogram& diffractogram)
       fits_->addData(fp.x-fw2,fp.y/2);
       fits_->addData(fp.x+fw2,fp.y/2);
     }
-  })
+  });
 
   connect(hub_.actions.fitShow, &QAction::toggled, [this](bool on) {
     showBgFit_ = on;
@@ -334,23 +334,23 @@ Diffractogram::Diffractogram(TheHub& hub)
   hb->addWidget(fixedIntenCheckBox = check("fixed scale",hub_.actions.fixedIntenDisplayDgram));
   hb->addStretch();
 
-  ON_HUB_SIGNAL(datasetSelected, (core::shp_Dataset dataset) { setDataset(dataset); })
-  ON_HUB_SIGNAL(geometryChanged, () { renderDataset(); })
-  ON_HUB_SIGNAL(corrEnabled,     () { renderDataset(); })
-  ON_HUB_SIGNAL(displayChange,   () { renderDataset(); })
-  ON_HUB_SIGNAL(normChanged,     () { renderDataset(); })
+  ON_DATASET_SELECTED([this](core::shp_Dataset dataset) { setDataset(dataset); });
+  ON_GEOMETRY_CHANGED([this]() { renderDataset(); });
+  ON_CORR_ENABLED([this]() { renderDataset(); });
+  ON_DISPLAY_CHANGED([this]() { renderDataset(); });
+  ON_NORM_CHANGED([this]() { renderDataset(); });
 
-  ON_HUB_SIGNAL(backgroundPolynomialDegree, (uint degree) {
+  ON_BG_POLY_DEGREE([this](uint degree) {
     hub_.bgPolynomialDegree() = degree; // keep session up-to-date
     renderDataset();
-  })
+  });
 
   // REVIEW all these connects
   connect(hub_.actions.fitBgClear, &QAction::triggered, [this]() {
     plot_->clearBg();
   });
 
-  ON_HUB_SIGNAL(fittingTab, (int index) {
+  ON_FITTING_TAB([this](int index) {
     bool on = hub_.actions.fitTool->isChecked();
     switch (index) {
     case TheHub::TAB_BACKGROUND:
@@ -360,26 +360,23 @@ Diffractogram::Diffractogram(TheHub& hub)
       plot_->setTool(on ? DiffractogramPlot::TOOL_PEAK_REGION : DiffractogramPlot::TOOL_NONE);
       break;
     }
-  })
+  });
 
   connect(hub_.actions.fitTool, &QAction::toggled, [this](bool on) {
     plot_->setTool(on ? (0==hub_.fittingTab__ ? DiffractogramPlot::TOOL_BACKGROUND:DiffractogramPlot::TOOL_PEAK_REGION) : DiffractogramPlot::TOOL_NONE);
   });
 
-  ON_HUB_SIGNAL(factorySettings, () {
+  ON_FACTORY_SETTINGS([this]() {
     avgCurveCheckBox->setChecked(false);
-  })
-
-  ON_HUB_SIGNAL(factorySettings, () {
     fixedIntenCheckBox->setChecked(false);
-  })
+  });
 
-  ON_HUB_SIGNAL(reflectionSelected, (core::shp_Reflection reflection) {
+  ON_REFL_SELECTED([this](core::shp_Reflection reflection) {
     currentReflection_ = reflection;
     plot_->updateBg();
-  })
+  });
 
-  ON_HUB_SIGNAL(reflectionValues, (core::rcRange range, core::rcXY peak, qreal fwhm, bool withGuesses) {
+  ON_REFL_VALUES([this](core::rcRange range, core::rcXY peak, qreal fwhm, bool withGuesses) {
     if (currentReflection_) {
       currentReflection_->setRange(range);
       if (withGuesses)
@@ -390,7 +387,7 @@ Diffractogram::Diffractogram(TheHub& hub)
       }
       plot_->updateBg();
     }
-  })
+  });
 
   hub_.actions.fitShow->setChecked(true);
 }
@@ -474,7 +471,7 @@ void Diffractogram::calcReflections() {
     }
   }
 
-  hub_.tellReflectionData(currentReflection_);
+  tellReflectionData(currentReflection_);
 }
 
 //------------------------------------------------------------------------------

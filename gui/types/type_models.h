@@ -42,7 +42,7 @@ typedef QVector<CheckedInfo> checkedinfo_vec;
 //------------------------------------------------------------------------------
 /// The base class of all table-like models
 
-class TableModel: public QAbstractTableModel, protected RefHub {
+class TableModel: public QAbstractTableModel, protected gui::RefHub {
   SUPER(TableModel,QAbstractTableModel)
 public:
   using Index   = QModelIndex;

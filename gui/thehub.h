@@ -20,6 +20,7 @@
 #include "actions.h"
 #include "models.h"
 #include "core_session.h"
+#include "core_session.h"
 #include <QAction>
 #include <QSettings>
 
@@ -58,9 +59,9 @@ public:
 
 //------------------------------------------------------------------------------
 
-class TheHub: public QObject {
-  SUPER(TheHub,QObject)
-  Q_OBJECT
+class TheHub: public TheHubSignallingBase {
+  SUPER(TheHub,TheHubSignallingBase)
+  friend class TheHubSignallingBase;
 public:
   TheHub();
 
@@ -92,13 +93,6 @@ public: // files
   bool hasCorrFile()           const;
   core::rcImage corrImage()    const;
 
-  // emit signals
-  void tellFilesSelectedDatasetsChanged();
-  void tellSelectedDataset(core::shp_Dataset);
-  void tellSelectedReflection(core::shp_Reflection);
-  void tellReflectionData(core::shp_Reflection);
-  void tellReflectionData(core::rcRange,core::rcXY,qreal,bool);
-
 public:
   core::shp_ImageLens lensNoCut(core::rcImage)   const;
 
@@ -119,15 +113,21 @@ public:
   void loadSession(QByteArray const&) THROWS;
 
 public:
-  void addFile(rcstr filePath)      THROWS;
-  void addFiles(str_lst filePaths)  THROWS;
+  void addFile(rcstr filePath)            THROWS;
+  void addFiles(str_lst const& filePaths) THROWS;
 
+private:
+  uint_vec collectFromFiles_;
+  uint     numGroupBy_;
+
+public:
+  void collectDatasetsFromFiles(uint_vec,uint);
   void collectDatasetsFromFiles(uint_vec);
-  void collectCombinedDatasetsFromFiles(uint_vec);
-  uint_vec const& collectedFromFiles() const { return session->collectedFromFiles();   }
-  core::rcDatasets collectedDatasets() const { return session->collectedDatasets();    }
-  void setNumCombinedDatasets(int num);
-  str_lst const& indexCombinedDatasets();
+  void combineDatasetsBy(uint);
+
+  uint_vec const& collectedFromFiles()    const { return session->collectedFromFiles();    }
+  core::rcDatasets collectedDatasets()    const { return session->collectedDatasets();     }
+  str_lst const& collectedDatasetsTags()  const { return session->collectedDatasetsTags(); }
 
   void setCorrFile(rcstr filePath)  THROWS;
   void enableCorrection(bool);
@@ -154,7 +154,7 @@ public:
   void setFittingTab(int);
 
 private:
-  core::shp_Reflection selectedReflection;
+  core::shp_Reflection selectedReflection_;
 
 private:
   void setImageRotate(core::ImageTransform);
@@ -163,44 +163,12 @@ private:
 public:
   void setNorm(core::eNorm);
 
-signals:
-  void readSettings();
-  void saveSettings();
-
-  void filesChanged();
-  void filesSelected();
-  void corrEnabled(bool);
-  void corrFileName(QString const&);
-
-  void datasetsChanged();
-  void datasetSelected(core::shp_Dataset);
-
-  void factorySettings();
-  void beginReset();
-  void endReset();
-
-  void reflectionsChanged();
-  void reflectionSelected(core::shp_Reflection);
-  void reflectionData(core::shp_Reflection);
-  void reflectionValues(core::Range const&, core::XY const&, qreal, bool);
-
-  void displayChange();
-  void geometryChanged();
-
-  void backgroundPolynomialDegree(uint);
-
-  void normChanged();
-
-  void fittingTab(int);
-
 public:
   // TODO instead of exposing the objects, provide an interface
   core::Ranges&       bgRanges()           const { return session->bgRanges();           }
   uint&               bgPolynomialDegree() const { return session->bgPolynomialDegree(); }
   core::Reflections&  reflections()        const { return session->reflections();        }
 };
-
-#define ON_HUB_SIGNAL(signal,lambda) connect(&hub_, &TheHub::signal, [this]lambda);
 
 //------------------------------------------------------------------------------
 }

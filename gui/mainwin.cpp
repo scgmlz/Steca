@@ -19,7 +19,6 @@
 #include "panels/panel_fitting.h"
 #include "panels/panel_file.h"
 #include "io/out_polefigures.h"
-#include "io/out_sphere.h"
 
 #include <QApplication>
 #include <QCloseEvent>
@@ -37,6 +36,13 @@
 #include "io/core_io.h"
 #endif
 
+template <typename Func1, typename Func2>
+void cconnect(const typename QtPrivate::FunctionPointer<Func1>::Object *sender, Func1 signal,
+                                 const typename QtPrivate::FunctionPointer<Func2>::Object *receiver, Func2 slot,
+                                 Qt::ConnectionType type = Qt::AutoConnection) {
+  QObject::connect(sender,signal,receiver,slot,type);
+};
+
 namespace gui {
 //------------------------------------------------------------------------------
 
@@ -50,7 +56,7 @@ SplitImage::SplitImage(TheHub& hub): super(Qt::Horizontal) {
   auto *options1 = new panel::DatasetOptions1(hub);
   auto *options2 = new panel::DatasetOptions2(hub);
   auto *dataset  = new panel::Dataset(hub);
-  connect(options2, &panel::DatasetOptions2::imageScale, dataset, &panel::Dataset::setImageScale);
+  cconnect(options2, &panel::DatasetOptions2::imageScale, dataset, &panel::Dataset::setImageScale);
   box_->addWidget(options1);
   box_->addWidget(options2);
   box_->addWidget(dataset);
@@ -340,8 +346,8 @@ void MainWin::onShow() {
 #if defined(Q_OS_OSX)
 //  hub_.load(QFileInfo("/Users/igb/P/+scg/data/s.ste"));
 #else
-  hub_.loadSession(QFileInfo("/home/jan/SCG/s.ste"));
-  hub_.actions.outputPolefigures->trigger();
+  hub_.loadSession(QFileInfo("/home/igb/P/+scg/s.ste"));
+//  hub_.actions.outputPolefigures->trigger();
 #endif
 #endif
 }

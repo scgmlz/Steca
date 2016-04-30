@@ -34,18 +34,8 @@ DockDatasets::DockDatasets(TheHub& hub)
   h->addWidget(combineDatasets_ = spinCell(4,1));
   combineDatasets_->setToolTip("Combine and average number of datasets");
 
-  auto setNumCombineDatasets = [this](int num) {
-    hub_.setNumCombinedDatasets(num);
-  };
-
-  connect(combineDatasets_,static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),[this,setNumCombineDatasets](int num) {
-    setNumCombineDatasets(num);
-    hub_.collectCombinedDatasetsFromFiles(hub_.collectedFromFiles());
-  });
-
-  connect(&hub_,&TheHub::beginReset,[this]() {
-    hub_.setNumCombinedDatasets(1);
-    combineDatasets_->setValue(1);
+  connect(combineDatasets_,static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),[this](int num) {
+    hub_.combineDatasetsBy((uint)qMin(1,num));
   });
 }
 
@@ -72,10 +62,10 @@ DockDatasetInfo::DockDatasetInfo(TheHub& hub)
   for_i (Dataset::numAttributes())
     metaInfo_[i].cb->setToolTip("Show value in Datasets list");
 
-  ON_HUB_SIGNAL(datasetSelected, (shp_Dataset dataset) {
+  ON_DATASET_SELECTED([this](shp_Dataset dataset) {
     for_i (Dataset::numAttributes())
       metaInfo_[i].setText(dataset ? dataset->attributeStrValue(i) : EMPTY_STR);
-  })
+  });
 
   for (auto &item: metaInfo_) {
     connect(item.cb, &QCheckBox::clicked, this, [this]() {
@@ -193,9 +183,9 @@ DatasetOptions1::DatasetOptions1(TheHub& hub)
   vn->addWidget(comboNormType_ = comboBox(options));
   box_->addStretch();
 
-  ON_HUB_SIGNAL(geometryChanged, () {
+  ON_GEOMETRY_CHANGED([this]() {
     setFrom(hub_);
-  })
+  });
 
   auto setEnabled = [this]() {
     bool on = hub_.actions.hasBeamOffset->isChecked();
@@ -333,9 +323,9 @@ DatasetOptions2::DatasetOptions2(TheHub& hub)
     setImageCut(false,value);
   });
 
-  ON_HUB_SIGNAL(geometryChanged, () {
+  ON_GEOMETRY_CHANGED([this]() {
     setFrom(hub_);
-  })
+  });
 
   connect(spinImageScale_, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int scale) {
     emit imageScale(scale);
@@ -378,12 +368,12 @@ Dataset::Dataset(TheHub& hub)
     corrImageWidget_->setShowOverlay(on);
   });
 
-  ON_HUB_SIGNAL(displayChange,   () { render(); })
-  ON_HUB_SIGNAL(geometryChanged, () { render(); })
+  ON_DISPLAY_CHANGED([this]() { render(); });
+  ON_GEOMETRY_CHANGED([this]() { render(); });
 
-  ON_HUB_SIGNAL(datasetSelected, (core::shp_Dataset dataset) {
+  ON_DATASET_SELECTED([this](core::shp_Dataset dataset) {
     setDataset(dataset);
-  })
+  });
 }
 
 void Dataset::setImageScale(uint scale) {

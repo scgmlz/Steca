@@ -86,9 +86,11 @@ void Settings::save(rcstr key, QDoubleSpinBox* box) {
 
 //------------------------------------------------------------------------------
 
-TheHub::TheHub(): session(new core::Session())
+TheHub::TheHub()
+: actions(*this), session(new core::Session())
 , fixedIntenScaleImage_(false), fixedIntenScaleDgram_(false), avgCurveDgram_(false)
-, fileViewModel(*this), datasetViewModel(*this), reflectionViewModel(*this) {
+, fileViewModel(*this), datasetViewModel(*this), reflectionViewModel(*this)
+, numGroupBy_(1) {
   initActions();
   configActions();
 }
@@ -181,14 +183,6 @@ void TheHub::configActions() {
   actions.remFile->setEnabled(false);
   actions.remReflection->setEnabled(false);
 
-  connect(this, &thisClass::corrEnabled, [this](bool on) {
-    actions.enableCorr->setChecked(on);
-  });
-
-  connect(this, &thisClass::filesSelected, this, [this]() {
-    actions.remFile->setEnabled(!collectedFromFiles().isEmpty());
-  });
-
   connect(actions.enableCorr, &QAction::toggled, [this](bool on) {
     enableCorrection(on);
   });
@@ -199,18 +193,18 @@ void TheHub::configActions() {
 
   connect(actions.fixedIntenDisplayImage,&QAction::toggled,[this](bool on) {
     fixedIntenScaleImage_ = on;
-    emit displayChange();
+    emit sigDisplayChanged();
   });
 
   connect(actions.fixedIntenDisplayDgram, &QAction::toggled, [this](bool on) {
     fixedIntenScaleDgram_ = on;
-    emit displayChange();
+    emit sigDisplayChanged();
   });
 
   actions.avgCurveDgram->setChecked(false);
-  connect(actions.avgCurveDgram, &QAction::toggled, [this] (bool on) {
+  connect(actions.avgCurveDgram, &QAction::toggled, [this](bool on) {
     avgCurveDgram_ = on;
-    emit displayChange();
+    emit sigDisplayChanged();
   });
 
   connect(actions.mirrorImage, &QAction::toggled, [this](bool on) {
@@ -240,7 +234,7 @@ core::shp_File TheHub::getFile(uint index) const {
 
 void TheHub::remFile(uint i) {
   session->remFile(i);
-  emit filesChanged();
+  emit sigFilesChanged();
   if (0==numFiles()) {
     tellSelectedDataset(core::shp_Dataset()); // REVIEW out?
     setImageCut(true, false, core::ImageCut());
@@ -253,30 +247,6 @@ bool TheHub::hasCorrFile() const {
 
 core::rcImage TheHub::corrImage() const {
   return session->corrImage();
-}
-
-void TheHub::tellFilesSelectedDatasetsChanged() {
-  emit factorySettings();
-  emit datasetsChanged();
-  emit filesSelected();
-  uint cnt = collectedDatasets().count();
-  if (!cnt) tellSelectedDataset(core::shp_Dataset());
-}
-
-void TheHub::tellSelectedDataset(core::shp_Dataset dataset) {
-  emit datasetSelected(dataset);
-}
-
-void TheHub::tellSelectedReflection(core::shp_Reflection reflection) {
-  emit reflectionSelected((selectedReflection = reflection));
-}
-
-void TheHub::tellReflectionData(core::shp_Reflection reflection) {
-  emit reflectionData(reflection);
-}
-
-void TheHub::tellReflectionData(core::rcRange range, core::rcXY peak, qreal fwhm, bool withGuesses) {
-  emit reflectionValues(range, peak, fwhm, withGuesses);
 }
 
 core::shp_ImageLens TheHub::lensNoCut(core::rcImage image) const {
@@ -462,47 +432,36 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
     session->reflections().append(reflection);
   }
 
-  emit reflectionsChanged();
+  emit sigReflectionsChanged();
 }
 
 void TheHub::addFile(rcstr filePath) THROWS {
   if (!filePath.isEmpty() && !session->hasFile(filePath)) {
     WaitCursor __;
     session->addFile(core::io::load(filePath));
-    emit filesChanged();
+    emit sigFilesChanged();
   }
 }
 
-void TheHub::addFiles(str_lst filePaths) THROWS {
+void TheHub::addFiles(str_lst const& filePaths) THROWS {
   WaitCursor __;
 
   for (auto &filePath: filePaths)
     addFile(filePath);
 }
 
-void TheHub::collectDatasetsFromFiles(uint_vec is) {
-  emit beginReset();
-  session->collectDatasetsFromFiles(is);
-  emit endReset();
+void TheHub::collectDatasetsFromFiles(uint_vec is, uint by) {
+  session->collectDatasetsFromFiles(
+      (collectFromFiles_ = is), (numGroupBy_ = by));
   tellFilesSelectedDatasetsChanged();
 }
 
-void TheHub::collectCombinedDatasetsFromFiles(uint_vec is) {
-  session->collectDatasetsFromFiles(is);
-  emit datasetsChanged(); // do not emit filesSelected here
-  uint cnt = collectedDatasets().count();
-  if (!cnt) tellSelectedDataset(core::shp_Dataset());
+void TheHub::collectDatasetsFromFiles(uint_vec is) {
+  collectDatasetsFromFiles(is, numGroupBy_);
 }
 
-
-void TheHub::setNumCombinedDatasets(int num) {
-  session->numCombinedDatasets() = num;
-  if (0 != numFiles() ) // if no files do not update
-    emit datasetsChanged();
-}
-
-str_lst const& TheHub::indexCombinedDatasets() {
-  return session->combinedDatasetsIndices();
+void TheHub::combineDatasetsBy(uint by) {
+  collectDatasetsFromFiles(collectFromFiles_, by);
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {
@@ -515,13 +474,13 @@ void TheHub::setCorrFile(rcstr filePath) THROWS {
 
   actions.remCorr->setEnabled(isFile);
   session->setCorrFile(file);
-  emit corrFileName(fileName);
+  emit sigCorrFileName(fileName);
   enableCorrection(true);
 }
 
 void TheHub::enableCorrection(bool on) {
   session->enableCorr(on);
-  emit corrEnabled(session->isCorrEnabled());
+  emit sigCorrEnabled(session->isCorrEnabled());
 }
 
 core::ImageCut const& TheHub::imageCut() const {
@@ -530,7 +489,7 @@ core::ImageCut const& TheHub::imageCut() const {
 
 void TheHub::setImageCut(bool topLeft, bool linked, core::ImageCut const& margins) {
   session->setImageCut(topLeft,linked,margins);
-  emit geometryChanged();
+  emit sigGeometryChanged();
 }
 
 const core::Geometry &TheHub::geometry() const {
@@ -539,23 +498,23 @@ const core::Geometry &TheHub::geometry() const {
 
 void TheHub::setGeometry(qreal detectorDistance, qreal pixSize, bool isMidPixOffset, core::rcIJ midPixOffset) {
   session->setGeometry(detectorDistance,pixSize,isMidPixOffset,midPixOffset);
-  emit geometryChanged();
+  emit sigGeometryChanged();
 }
 
 void TheHub::setBackgroundPolynomialDegree(uint degree) {
-  emit backgroundPolynomialDegree(degree);
+  emit sigBgPolynomialDegree(degree);
 }
 
 void TheHub::setReflType(core::ePeakType type) {
-  if (selectedReflection) {
-    selectedReflection->setType(type);
-    emit reflectionsChanged();
+  if (selectedReflection_) {
+    selectedReflection_->setType(type);
+    emit sigReflectionsChanged();
   }
 }
 
 void TheHub::addReflection(core::ePeakType type) {
   reflections().append(core::shp_Reflection(new core::Reflection(type)));
-  emit reflectionsChanged();
+  emit sigReflectionsChanged();
 }
 
 void TheHub::remReflection(uint i) {
@@ -564,11 +523,11 @@ void TheHub::remReflection(uint i) {
   if (rs.isEmpty())
     emit tellSelectedReflection(core::shp_Reflection());
 
-  emit reflectionsChanged();
+  emit sigReflectionsChanged();
 }
 
 void TheHub::setFittingTab(int index) {
-  emit fittingTab((fittingTab__=index));
+  emit sigFittingTab((fittingTab__=index));
 }
 
 void TheHub::setImageRotate(core::ImageTransform rot) {
@@ -596,19 +555,19 @@ void TheHub::setImageRotate(core::ImageTransform rot) {
   actions.mirrorImage->setIcon(QIcon(mirrorIconFile));
   session->setImageTransformRotate(rot);
   setImageCut(true,false,session->imageCut()); // TODO make makeSafeCut(?)
-  emit geometryChanged();
+  emit sigGeometryChanged();
 }
 
 void TheHub::setImageMirror(bool on) {
   actions.mirrorImage->setChecked(on);
   session->setImageTransformMirror(on);
-  emit geometryChanged();
+  emit sigGeometryChanged();
 }
 
 void TheHub::setNorm(core::eNorm norm) {
   session->setNorm(norm);
-  emit normChanged();
-  emit geometryChanged();
+  emit sigNormChanged();
+  emit sigGeometryChanged();
 }
 
 //------------------------------------------------------------------------------

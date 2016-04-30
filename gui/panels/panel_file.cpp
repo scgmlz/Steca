@@ -37,7 +37,7 @@ DockFiles::DockFiles(TheHub& hub)
   h->addWidget(iconButton(actions.enableCorr));
   h->addWidget(iconButton(actions.remCorr));
 
-  ON_HUB_SIGNAL(corrFileName, (rcstr fileName) { corrFile_->setText(fileName); })
+  ON_CORR_FILENAME([this](rcstr fileName) { corrFile_->setText(fileName); });
 }
 
 //------------------------------------------------------------------------------

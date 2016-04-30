@@ -76,6 +76,9 @@ public:
   int columnCount(rcIndex = ANY_INDEX) const;
   int rowCount(rcIndex    = ANY_INDEX) const;
 
+  str displayData(uint row, uint col) const;
+  str displayData(uint row)           const;
+
   QVariant data(rcIndex,int) const;
   QVariant headerData(int,Qt::Orientation,int) const;
 
