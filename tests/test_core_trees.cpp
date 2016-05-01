@@ -1,23 +1,24 @@
 #include "test_core_trees.h"
 REGISTER_TEST_SUITE(TestCoreTrees)
 
+#include "types/core_angles.h"
 #include "types/core_type_trees.h"
-#include "types/core_coords.h"
 
 //------------------------------------------------------------------------------
 
-using NormalizedAngle = core::NormalizedAngle<qreal>;
+using deg = core::deg;
+using NormalizedDeg = core::NormalizedDeg;
 
-class PolePoint: public core::tree::RangeTreeItem<NormalizedAngle> {
-  SUPER(PolePoint,core::tree::RangeTreeItem<NormalizedAngle>)
+class PolePoint: public core::tree::RangeTreeItem<NormalizedDeg> {
+  SUPER(PolePoint,core::tree::RangeTreeItem<NormalizedDeg>)
 public:
   PolePoint(qreal beta);
 
-  NormalizedAngle val() const { return beta_; }
+  NormalizedDeg val() const { return beta_; }
   int compareToEqual(super::rcItem) const;
 
 private:
-  NormalizedAngle beta_;
+  NormalizedDeg beta_;
 };
 
 PolePoint::PolePoint(qreal beta): beta_(beta) {
@@ -34,21 +35,20 @@ int PolePoint::compareToEqual(super::rcItem that) const {
 
 //------------------------------------------------------------------------------
 
-using PolePointsTree = core::tree::RangeTree<PolePoint,NormalizedAngle>;
+using PolePointsTree = core::tree::RangeTree<PolePoint,NormalizedDeg>;
 
 class PolePoints: public PolePointsTree {
   SUPER(PolePoints,PolePointsTree)
 public:
-  item_lst findAllBetweenAngles(qreal,qreal) const;
+  item_lst findAllBetweenAngles(deg,deg) const;
 };
 
-PolePoints::item_lst PolePoints::findAllBetweenAngles(qreal min, qreal max) const {
-  ASSERT(min < max)
-  ASSERT(-360 < min && max < 360)
+PolePoints::item_lst PolePoints::findAllBetweenAngles(deg min, deg max) const {
+  ASSERT(min < max && -360 < min && max < 360)
 
   if (min < 0 && 0 < max)
-    return super::findAllBetween(min,NormalizedAngle(360,true))
-         + super::findAllBetween(0,max);
+    return super::findAllBetween(NormalizedDeg(min),NormalizedDeg(360,true))
+         + super::findAllBetween(NormalizedDeg(0),NormalizedDeg(max));
 
   return super::findAllBetween(min,max);
 }

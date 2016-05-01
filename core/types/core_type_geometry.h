@@ -17,9 +17,10 @@
 #define CORE_TYPE_GEOMETRY_H
 
 #include "core_defs.h"
+#include "types/core_angles.h"
+#include "types/core_coords.h"
 #include "types/core_type_array2d.h"
 #include "types/core_type_range.h"
-#include "types/core_coords.h"
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -55,10 +56,10 @@ struct ImageCut {
 //------------------------------------------------------------------------------
 
 struct Angles {
-  qreal gamma, tth;
+  deg gamma, tth;
 
   Angles();
-  Angles(qreal gamma, qreal tth);
+  Angles(deg gamma, deg tth);
 };
 
 class AngleMap {
@@ -70,7 +71,7 @@ public:
   rcRange rgeGamma() const { return rgeGamma_; }
   rcRange rgeTth()   const { return rgeTth_;   }
 
-  void calculate(qreal midTth, Geometry const&,
+  void calculate(deg midTth, Geometry const&,
                  QSize const&, ImageCut const& cut, rcIJ midPix);
 
 private:

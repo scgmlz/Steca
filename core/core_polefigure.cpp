@@ -19,7 +19,7 @@ namespace core { namespace pole {
 //------------------------------------------------------------------------------
 
 // Calculates the difference of two angles. Parameters should be in [0, 360].
-qreal calculateDeltaBeta(qreal beta1, qreal beta2) {
+qreal calculateDeltaBeta(deg beta1, deg beta2) {
   // Due to cyclicity of angles (360 is equivalent to 0), some magic is needed.
   qreal deltaBeta = beta1 - beta2;
   qreal tempDelta = deltaBeta - 360;
@@ -31,13 +31,11 @@ qreal calculateDeltaBeta(qreal beta1, qreal beta2) {
 }
 
 // Calculates the angle between two points on a unit sphere.
-qreal angle(qreal alpha1, qreal alpha2,
-            qreal deltaBeta) {
-  alpha1 = deg2rad(alpha1);
-  alpha2 = deg2rad(alpha2);
-  deltaBeta = deg2rad(deltaBeta);
+deg angle(deg alpha1, deg alpha2, deg deltaBeta) {
   // Absolute value of deltaBeta is not needed because cos is an even function.
-  auto a = rad2deg(acos(cos(alpha1) * cos(alpha2) + sin(alpha1) * sin(alpha2) * cos(deltaBeta)));
+  auto a = rad(acos(cos(alpha1.toRad()) * cos(alpha2.toRad())
+              + sin(alpha1.toRad()) * sin(alpha2.toRad()) * cos(deltaBeta.toRad()))
+            ).toDeg();
   ASSERT(0<=a && a<=180)
   return a;
 }
@@ -59,7 +57,7 @@ Quadrants allQuadrants() {
   };
 }
 
-bool inQuadrant(Quadrant quadrant, qreal deltaAlpha, qreal deltaBeta) {
+bool inQuadrant(Quadrant quadrant, deg deltaAlpha, deg deltaBeta) {
   switch (quadrant) {
   case Quadrant::NORTHEAST:
     return deltaAlpha >= 0 && deltaBeta >= 0;
@@ -86,16 +84,15 @@ Quadrant remapQuadrant(Quadrant q) {
 }
 
 // Checks if (alpha,beta) is inside radius from (centerAlpha,centerBeta).
-bool inRadius(qreal alpha, qreal beta,
-              qreal centerAlpha, qreal centerBeta,
-              qreal radius) {
-  auto a = angle(alpha, centerAlpha, calculateDeltaBeta(beta, centerBeta));
-  return qAbs(a) < radius;
+bool inRadius(deg alpha, deg beta, deg centerAlpha, deg centerBeta,
+              deg radius) {
+  qreal a = angle(alpha, centerAlpha, calculateDeltaBeta(beta, centerBeta));
+  return qAbs(a) < (qreal)radius;
 }
 
 // Adds data from reflection infos within radius from alpha and beta
 // to the peak parameter lists.
-void searchPoints(qreal alpha, qreal beta, qreal radius,
+void searchPoints(deg alpha, deg beta, deg radius,
                   ReflectionInfos const& infos,
                   qreal_vec &peakOffsets,
                   qreal_vec &peakHeights,
@@ -113,8 +110,7 @@ void searchPoints(qreal alpha, qreal beta, qreal radius,
 // Searches closest ReflectionInfos to given alpha and beta in quadrants.
 void searchInQuadrants(
     Quadrants const& quadrants,
-    qreal alpha, qreal beta,
-    qreal searchRadius,
+    deg alpha, deg beta, deg searchRadius,
     ReflectionInfos const& infos,
     QVector<ReflectionInfo const*> & foundInfos,
     qreal_vec & distances) {
@@ -184,7 +180,7 @@ void inverseDistanceWeighing(qreal_vec const& distances,
 }
 
 // Interpolates reflection infos to a single point using idw.
-void interpolateValues(qreal searchRadius,
+void interpolateValues(deg searchRadius,
                        ReflectionInfos const& infos,
                        ReflectionInfo& out) {
   QVector<ReflectionInfo const*> interpolationInfos;
@@ -231,9 +227,9 @@ void interpolateValues(qreal searchRadius,
 
 // Interpolates infos to equidistant grid in alpha and beta.
 ReflectionInfos interpolate(ReflectionInfos const& infos,
-                            qreal alphaStep, qreal betaStep,
-                            qreal averagingAlphaMax, qreal averagingRadius,
-                            qreal idwRadius, qreal inclusionTreshold)
+                            deg alphaStep, deg betaStep,
+                            deg averagingAlphaMax, deg averagingRadius,
+                            deg idwRadius, qreal inclusionTreshold)
 {
   // Two interpolation methods are used here:
   // If grid point alpha <= averagingAlphaMax, points within averagingRadius

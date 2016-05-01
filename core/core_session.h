@@ -117,7 +117,7 @@ public:
   ReflectionInfo makeReflectionInfo(shp_Lens, rcReflection,
                                     rcRange gammaSector) const;
 
-  ReflectionInfos reflectionInfos(rcDatasets, rcReflection, qreal betaStep,
+  ReflectionInfos reflectionInfos(rcDatasets, rcReflection, deg betaStep,
                                   rcRange gammaRange = Range());
 // fitting
 private:

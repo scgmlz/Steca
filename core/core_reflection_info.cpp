@@ -26,14 +26,14 @@ ReflectionInfo::ReflectionInfo()
 : ReflectionInfo(qQNaN(),qQNaN(),Range(),qQNaN(),qQNaN(),qQNaN()) {
 }
 
-ReflectionInfo::ReflectionInfo(qreal alpha, qreal beta, rcRange rgeGamma,
-                               qreal inten, qreal tth, qreal fwhm)
+ReflectionInfo::ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma,
+                               qreal inten, deg tth, qreal fwhm)
 : alpha_(alpha), beta_(beta), rgeGamma_(rgeGamma)
 , inten_(inten), tth_(tth), fwhm_(fwhm)
 {
 }
 
-ReflectionInfo::ReflectionInfo(qreal alpha, qreal beta, rcRange rgeGamma)
+ReflectionInfo::ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma)
 : ReflectionInfo(alpha,beta,rgeGamma,qQNaN(),qQNaN(),qQNaN()) {
 }
 

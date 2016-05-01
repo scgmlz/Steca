@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "core_coords.h"
-#include "types/core_type_range.h"
 #include "types/core_json.h"
 
 namespace core {

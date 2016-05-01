@@ -6,8 +6,8 @@ REGISTER_TEST_SUITE(TestCorePolefigure)
 
 namespace core {
   void calculateAlphaBeta(rcDataset  dataset,
-                            qreal tth, qreal gamma,
-                            qreal& alpha, qreal& beta);
+                            deg tth, deg gamma,
+                            deg& alpha, deg& beta);
 
   namespace pole {
   enum class Quadrant {
@@ -19,11 +19,11 @@ namespace core {
 
   static int NUM_QUADRANTS = 4;
   typedef QVector<Quadrant> Quadrants;
-    qreal angle(qreal alpha1, qreal alpha2, qreal deltaBeta);
+    deg angle(deg alpha1, deg alpha2, deg deltaBeta);
 
-    bool inRadius(qreal alpha, qreal beta,
-              qreal centerAlpha, qreal centerBeta,
-              qreal radius);
+    bool inRadius(deg alpha, deg beta,
+              deg centerAlpha, deg centerBeta,
+              deg radius);
 
     template<typename Container>
     qreal inverseDistanceWeighing(Container const& distances,
@@ -33,9 +33,9 @@ namespace core {
                              QVector<ReflectionInfo const*> const& infos,
                              ReflectionInfo& out);
 
-    qreal calculateDeltaBeta(qreal beta1, qreal beta2);
+    deg calculateDeltaBeta(deg beta1, deg beta2);
 
-    bool inQuadrant(Quadrant quadrant, qreal deltaAlpha, qreal deltaBeta);
+    bool inQuadrant(Quadrant quadrant, deg deltaAlpha, deg deltaBeta);
 
     Quadrant remapQuadrant(Quadrant);
 
@@ -43,8 +43,8 @@ namespace core {
 
     void searchInQuadrants(
       Quadrants const& quadrants,
-      qreal alpha, qreal beta,
-      qreal searchRadius,
+      deg alpha, deg beta,
+      deg searchRadius,
       ReflectionInfos const& infos,
       QVector<ReflectionInfo const*> & foundInfos,
       qreal_vec & distances);
@@ -66,15 +66,15 @@ namespace core {
 using namespace core;
 using namespace pole;
 
-
+#define QALMOST_COMPARE(a,b) QVERIFY(qAbs(a-b) < 1E-6)
 void TestCorePolefigure::testRelatedMethods() {
 
   {
-    QCOMPARE(M_PI,deg2rad(180));
-    QCOMPARE(90.0,rad2deg(M_PI_2));
+    QCOMPARE(rad(M_PI),deg(180).toRad());
+    QCOMPARE(deg(90.0),rad(M_PI_2).toDeg());
 
     for_i (720)
-      QCOMPARE((qreal)i,rad2deg(deg2rad(i)));
+      QALMOST_COMPARE(deg(i),deg(i).toRad().toDeg());
   }
 
   {
@@ -93,26 +93,26 @@ void TestCorePolefigure::testRelatedMethods() {
   }
 
   {
-    qreal beta1 = 90;
-    qreal beta2 = 0;
+    deg beta1 = 90;
+    deg beta2 = 0;
     auto b = calculateDeltaBeta(beta1,beta2);
     QCOMPARE(b,beta1);
   }
 
   {
-    qreal angle1 = 90;
-    qreal angle2 = 90;
-    qreal angle3 = 0;
+    deg angle1 = 90;
+    deg angle2 = 90;
+    deg angle3 = 0;
     auto a = angle(angle1,angle2,angle3);
-    QCOMPARE(a,0.0);
+    QCOMPARE(a,deg(0));
   }
 
   {
-    qreal alpha = 50;
-    qreal beta = 40;
-    qreal centerAlpha = 90;
-    qreal centerBeta = 0;
-    qreal radius = 90;
+    deg alpha = 50;
+    deg beta = 40;
+    deg centerAlpha = 90;
+    deg centerBeta = 0;
+    deg radius = 90;
 
     QVERIFY(inRadius(alpha,beta,centerAlpha,centerBeta,radius));
   }
@@ -120,8 +120,8 @@ void TestCorePolefigure::testRelatedMethods() {
 }
 
 void TestCorePolefigure::testInQuadrant() {
-  qreal deltaAlpha;
-  qreal deltaBeta;
+  deg deltaAlpha;
+  deg deltaBeta;
 
   {
     deltaAlpha = 0; deltaBeta = 0;
@@ -187,7 +187,7 @@ void TestCorePolefigure::testInverseDistanceWeighing() {
     tmp_fwhm   += infos[0]->fwhm()  * (qreal)1/distances[i];
   }
   QCOMPARE(out.inten(),tmp_height/3);
-  QCOMPARE(out.tth(),tmp_offset/3);
+  QCOMPARE(out.tth(),deg(tmp_offset/3));
   QCOMPARE(out.fwhm(),tmp_fwhm/3);
 }
 
@@ -248,8 +248,8 @@ static core::Dataset testDataset(QSize size, core::inten_t inten, QVector<qreal>
 }
 
 void TestCorePolefigure::testCalcAlphaBeta() {
-  qreal alpha;
-  qreal beta;
+  deg alpha;
+  deg beta;
   QVector<qreal> angles;
   qreal mon = 100, deltaTime = 8, tth = 0, gamma = 0;
   Session s;
@@ -258,41 +258,41 @@ void TestCorePolefigure::testCalcAlphaBeta() {
     auto const dataset = testDataset(QSize(10,10),42,angles,mon,deltaTime);
     calculateAlphaBeta(dataset,tth, gamma, alpha,beta);
 
-    QCOMPARE(alpha,rad2deg(acos(0)));
-    QCOMPARE(beta,rad2deg(atan2(0,1)));
+    QCOMPARE(alpha,rad(acos(0)).toDeg());
+    QCOMPARE(beta,rad(atan2(0,1)).toDeg());
   }
 
   {
     angles.fill(0,10);
-    angles[3] = rad2deg(M_PI/2);
+    angles[3] = rad(M_PI/2).toDeg();
 
     auto const dataset = testDataset(QSize(10,10),42,angles,mon,deltaTime);
     calculateAlphaBeta(dataset,tth, gamma, alpha,beta);
     //rotated = -1,0,0
-    QCOMPARE(alpha,rad2deg(acos(0)));
-    QCOMPARE(beta,rad2deg(atan2(-1,0) + 2 * M_PI));
+    QCOMPARE(alpha,rad(acos(0)).toDeg());
+    QCOMPARE(beta,rad(atan2(-1,0) + 2 * M_PI).toDeg());
   }
 
   {
     angles.fill(0,10);
-    angles[5] = rad2deg(M_PI/2);
+    angles[5] = rad(M_PI/2).toDeg();
 
     auto const dataset = testDataset(QSize(10,10),42,angles,mon,deltaTime);
     calculateAlphaBeta(dataset,tth, gamma, alpha,beta);
     // rotated = -1,0,0
-    QCOMPARE(alpha,rad2deg(acos(0)));
-    QCOMPARE(beta,rad2deg(atan2(-1,0) + 2*M_PI));
+    QCOMPARE(alpha,rad(acos(0)).toDeg());
+    QCOMPARE(beta,rad(atan2(-1,0) + 2*M_PI).toDeg());
   }
 
   {
     angles.fill(0,10);
-    angles[6] = rad2deg(M_PI/2);
+    angles[6] = rad(M_PI/2).toDeg();
 
     auto const dataset = testDataset(QSize(10,10),42,angles,mon,deltaTime);
     calculateAlphaBeta(dataset,tth, gamma, alpha,beta);
     // rotated = 0,0,1
-    QCOMPARE(alpha,rad2deg(acos(1)));
-    QCOMPARE(beta,rad2deg(atan2(0,0)));
+    QCOMPARE(alpha,rad(acos(1)).toDeg());
+    QCOMPARE(beta,rad(atan2(0,0)).toDeg());
   }
 
   {
@@ -301,8 +301,8 @@ void TestCorePolefigure::testCalcAlphaBeta() {
     auto const dataset = testDataset(QSize(10,10),42,angles,mon,deltaTime);
     calculateAlphaBeta(dataset,tthRef, gamma, alpha,beta);
     // rotated = 0,-1,0
-    QCOMPARE(alpha,rad2deg(acos(0)));
-    QCOMPARE(beta,rad2deg(atan2(sin(M_PI/4),cos(M_PI/4))));
+    QCOMPARE(alpha,rad(acos(0)).toDeg());
+    QCOMPARE(beta,rad(atan2(sin(M_PI/4),cos(M_PI/4))).toDeg());
   }
 
   {
@@ -312,23 +312,23 @@ void TestCorePolefigure::testCalcAlphaBeta() {
     auto const dataset = testDataset(QSize(10,10),42,angles,mon,deltaTime);
     calculateAlphaBeta(dataset,tth, gammaRef, alpha,beta);
     // rotated = 0,0,1
-    QCOMPARE(alpha,rad2deg(acos(1)));
-    QCOMPARE(beta,rad2deg(atan2(0,0)));
+    QCOMPARE(alpha,rad(acos(1)).toDeg());
+    QCOMPARE(beta,rad(atan2(0,0)).toDeg());
   }
 
   {
     angles.fill(0,10);
-    angles[0] = rad2deg(M_PI);
-    angles[1] = rad2deg(M_PI);
-    angles[2] = rad2deg(M_PI);
+    angles[0] = rad(M_PI).toDeg();
+    angles[1] = rad(M_PI).toDeg();
+    angles[2] = rad(M_PI).toDeg();
 
-    qreal const tthRef = 4*rad2deg(M_PI);
-    qreal const gammaRef = rad2deg(M_PI);
+    qreal const tthRef = 4*rad(M_PI).toDeg();
+    qreal const gammaRef = rad(M_PI).toDeg();
 
     auto const dataset = testDataset(QSize(10,10),42,angles,mon,deltaTime);
     calculateAlphaBeta(dataset,tthRef, gammaRef, alpha,beta);
 
-    QCOMPARE(alpha,rad2deg(acos(0)));
+    QCOMPARE(alpha,rad(acos(0)).toDeg());
   }
 }
 

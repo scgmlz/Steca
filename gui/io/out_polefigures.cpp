@@ -19,11 +19,15 @@
 #include "views.h"
 #include "core_polefigure.h"
 #include "core_reflection.h"
+#include "types/core_angles.h"
 #include <QPainter>
 #include <QStringList>
 
 namespace gui { namespace io {
 //------------------------------------------------------------------------------
+
+using deg = core::deg;
+using rad = core::rad;
 
 class PoleWidget: public QWidget {
   SUPER(PoleWidget,QWidget)
@@ -32,10 +36,9 @@ public:
 
 protected:
   core::ReflectionInfos rs_;
-
   void paintEvent(QPaintEvent*);
 
-  QPointF p(qreal alpha, qreal beta) const;
+  QPointF p(deg alpha, deg beta) const;
   void paintGrid();
   void paintInfo();
 
@@ -65,11 +68,11 @@ void PoleWidget::paintEvent(QPaintEvent*) {
   paintInfo();
 }
 
-QPointF PoleWidget::p(qreal alpha, qreal beta) const {
+QPointF PoleWidget::p(deg alpha, deg beta) const {
   qreal r = r_*alpha/90;
 
-  beta  = deg2rad(beta);
-  return QPointF(r*cos(beta), -r*sin(beta));
+  rad betaRad = beta.toRad();
+  return QPointF(r*cos(betaRad), -r*sin(betaRad));
 }
 
 void PoleWidget::paintGrid() {
@@ -206,8 +209,8 @@ void OutPoleFigures::calculate() {
   auto &table = tableWidget_->table();
   table.clear();
 
-  qreal alphaStep = params_->stepAlpha->value();
-  qreal betaStep  = params_->stepBeta->value();
+  deg alphaStep = params_->stepAlpha->value();
+  deg betaStep  = params_->stepBeta->value();
 
   auto index = params_->reflections_->currentIndex();
   auto &reflections = hub_.reflections();
@@ -222,8 +225,8 @@ void OutPoleFigures::calculate() {
   }
 
   for (auto const& r: rs_)
-    table.addRow({r.alpha(), r.beta(), r.rgeGamma().min, r.rgeGamma().max,
-                  r.inten(), r.tth(), r.fwhm() });
+    table.addRow({(qreal)r.alpha(), (qreal)r.beta(), r.rgeGamma().min, r.rgeGamma().max,
+                  r.inten(), (qreal)r.tth(), r.fwhm() });
 
   poleWidget_->set(rs_);
 }

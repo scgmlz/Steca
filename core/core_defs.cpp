@@ -18,14 +18,6 @@
 
 static_assert (QT_VERSION >= QT_VERSION_CHECK(5,4,0),"written for Qt >= 5.4, have " QT_VERSION_STR);
 
-qreal rad2deg(qreal rad) {
-  return rad * (180 / M_PI);
-}
-
-qreal deg2rad(qreal deg) {
-  return deg * (M_PI / 180);
-}
-
 #ifdef QT_NO_EXCEPTIONS
 #error needs exception handling
 #endif

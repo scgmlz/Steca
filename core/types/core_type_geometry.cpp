@@ -60,7 +60,7 @@ QSize ImageCut::marginSize() const {
 Angles::Angles(): Angles(0,0) {
 }
 
-Angles::Angles(qreal gamma_, qreal tth_): gamma(gamma_), tth(tth_) {
+Angles::Angles(deg gamma_, deg tth_): gamma(gamma_), tth(tth_) {
 }
 
 //------------------------------------------------------------------------------
@@ -68,36 +68,35 @@ Angles::Angles(qreal gamma_, qreal tth_): gamma(gamma_), tth(tth_) {
 AngleMap::AngleMap() {
 }
 
-void AngleMap::calculate(qreal midTth, Geometry const& geometry,
+void AngleMap::calculate(deg midTth, Geometry const& geometry,
                          QSize const& size, ImageCut const& cut, rcIJ midPix) {
   arrAngles_.fill(size);
   rgeGamma_.invalidate(); rgeTth_.invalidate();
 
   if (size.isEmpty()) return;
 
-  midTth = deg2rad(midTth);
   qreal pixSize = geometry.pixSize, detDist = geometry.detectorDistance;
 
   for_int (i, size.width()) {
     qreal x = (i - midPix.i) * pixSize;
-    qreal tthHorz = midTth + atan(x / detDist);
+    rad   tthHorz = midTth.toRad() + atan(x / detDist);
     qreal h = cos(tthHorz) * hypot(x, detDist);
 
     for_int (j, size.height()) {
       qreal y = - (j - midPix.j) * pixSize;
       qreal z = hypot(x,y);
       qreal pixDetDist = hypot(z, detDist);
-      qreal tth = acos(h / pixDetDist);
+      rad   tth = acos(h / pixDetDist);
 
       qreal r = sqrt((pixDetDist * pixDetDist) - (h * h));
-      qreal gamma = asin(y / r);
+      rad   gamma = asin(y / r);
 
       if (tthHorz < 0) {
         tth   = -tth;
         gamma = -gamma;
       }
 
-      arrAngles_.setAt(i,j,Angles(rad2deg(gamma),rad2deg(tth)));
+      arrAngles_.setAt(i,j,Angles(gamma.toDeg(),tth.toDeg()));
     }
   }
 

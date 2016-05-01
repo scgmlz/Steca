@@ -253,18 +253,14 @@ shp_Lens Session::lens(rcDataset dataset, rcDatasets datasets,
 
 // Calculates the polefigure coordinates alpha and beta with regards to
 // sample orientation and diffraction angles.
-  void calculateAlphaBeta(rcDataset dataset,
-                               qreal tth, qreal gamma,
-                               qreal& alpha, qreal& beta) {
+// tth: Center of reflection's 2theta interval.
+// gamma: Center of gamma slice.
+void calculateAlphaBeta(rcDataset dataset, deg tth, deg gamma,
+                        deg& alpha, deg& beta) {
   // Sample rotations.
-  qreal omg = deg2rad(dataset.omg());
-  qreal phi = deg2rad(dataset.phi());
-  qreal chi = deg2rad(dataset.chi());
-
-  // Center of reflection's 2theta interval.
-  tth   = deg2rad(tth);
-  // Center of gamma slice.
-  gamma = deg2rad(gamma);
+  rad omg = dataset.omg().toRad();
+  rad phi = dataset.phi().toRad();
+  rad chi = dataset.chi().toRad();
 
   // Rotate a unit vector initially parallel to the y axis with regards to the
   // angles. As a result, the vector is a point on a unit sphere
@@ -274,27 +270,27 @@ shp_Lens Session::lens(rcDataset dataset, rcDatasets datasets,
   vector3d rotated = matrix3d::rotationCWz (phi) // TODO precalculate phi/ch/omg rotations, save in dataset
                    * matrix3d::rotationCWx (chi)
                    * matrix3d::rotationCWz (omg)
-                   * matrix3d::rotationCWx (gamma)
-                   * matrix3d::rotationCCWz(tth / 2)
+                   * matrix3d::rotationCWx (gamma.toRad())
+                   * matrix3d::rotationCCWz(tth.toRad() / 2)
                    * vector3d(0,1,0);
 
   // Extract alpha (latitude) and beta (longitude).
-  alpha = acos(rotated._2);
-  beta  = atan2(rotated._0, rotated._1);
+  rad alphaRad = acos(rotated._2);
+  rad betaRad  = atan2(rotated._0, rotated._1);
 
   // If alpha is in the wrong hemisphere, mirror both alpha and beta over the
   // center of a unit sphere.
-  if (alpha > M_PI_2) { // REVIEW - seems like that happens only for a very narrow ring
-    alpha = qAbs(alpha - M_PI);
-    beta += beta < 0 ? M_PI : -M_PI;
+  if (alphaRad > M_PI_2) { // REVIEW - seems like that happens only for a very narrow ring
+    alphaRad = qAbs(alphaRad - M_PI);
+    betaRad  = betaRad + (betaRad < 0 ? M_PI : -M_PI);
   }
 
   // Keep beta between 0 and 2pi.
-  if (beta < 0)
-    beta += 2 * M_PI;
+  if (betaRad < 0)
+    betaRad = betaRad + 2 * M_PI;
 
-  alpha = rad2deg(alpha);
-  beta  = rad2deg(beta);
+  alpha = alphaRad.toDeg();
+  beta  = betaRad.toDeg();
 }
 
 // Fits reflection to the given gamma sector and constructs a ReflectionInfo.
@@ -309,7 +305,7 @@ ReflectionInfo Session::makeReflectionInfo(shp_Lens lens, rcReflection reflectio
   rcRange rgeTth = reflection.range();
   fit::fit(*peakFunction, curve, rgeTth);
 
-  qreal alpha, beta;
+  deg alpha, beta;
   calculateAlphaBeta(lens->dataset(), rgeTth.center(), gammaSector.center(), alpha, beta);
 
   XY    peak = peakFunction->fittedPeak();
@@ -327,7 +323,7 @@ ReflectionInfo Session::makeReflectionInfo(shp_Lens lens, rcReflection reflectio
  * the returned infos won't be on the grid.
  */
 ReflectionInfos Session::reflectionInfos(rcDatasets datasets, rcReflection reflection,
-                                         qreal betaStep, rcRange gammaRange) {
+                                         deg betaStep, rcRange gammaRange) {
   ReflectionInfos infos;
 
   for (auto &dataset: datasets) {

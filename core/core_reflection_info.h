@@ -16,7 +16,7 @@
 #ifndef REFLECTION_INFO_H
 #define REFLECTION_INFO_H
 
-#include "types/core_coords.h"
+#include "types/core_angles.h"
 #include "types/core_type_range.h"
 
 namespace core {
@@ -25,17 +25,17 @@ namespace core {
 class ReflectionInfo final { TESTS_FRIEND
 public:
   ReflectionInfo();
-  ReflectionInfo(qreal alpha, qreal beta, rcRange rgeGamma,
-                 qreal inten, qreal tth, qreal fwhm);
-  ReflectionInfo(qreal alpha, qreal beta, rcRange rgeGamma);
+  ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma,
+                 qreal inten, deg tth, qreal fwhm);
+  ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma);
 
-  qreal alpha() const { return alpha_;  }
-  qreal beta()  const { return beta_;   }
+  deg alpha() const { return alpha_;  }
+  deg beta()  const { return beta_;   }
 
   rcRange rgeGamma() const { return rgeGamma_; }
 
   qreal inten() const { return inten_;  }
-  qreal tth()   const { return tth_;    }
+  deg   tth()   const { return tth_;    }
   qreal fwhm()  const { return fwhm_;   }
 
   // TODO these OUT
@@ -44,8 +44,8 @@ public:
   void setFwhm(qreal v)  { fwhm_  = v; }
 
 private:
-    qreal alpha_, beta_; Range rgeGamma_;
-    qreal inten_, tth_, fwhm_;
+  deg alpha_, beta_; Range rgeGamma_;
+  qreal inten_; deg tth_; qreal fwhm_;
 };
 
 //------------------------------------------------------------------------------

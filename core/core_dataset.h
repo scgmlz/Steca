@@ -49,13 +49,13 @@ public:
 
   str attributeStrValue(uint) const;
 
-  qreal midTth()            const { return motorTth_;           }
+  deg   midTth()            const { return motorTth_;           }
   qreal deltaMonitorCount() const { return deltaMonitorCount_;  }
   qreal deltaTime()         const { return deltaTime_;          }
 
-  qreal omg()               const { return motorOmg_; }
-  qreal phi()               const { return motorPhi_; }
-  qreal chi()               const { return motorChi_; }
+  deg   omg()               const { return motorOmg_; }
+  deg   phi()               const { return motorPhi_; }
+  deg   chi()               const { return motorChi_; }
 
   rcImage image()           const { return image_; }
 
@@ -68,9 +68,9 @@ private:
   str date_, comment_;
 
   // all stored angles in degrees
-  qreal motorXT_,  motorYT_,  motorZT_,
-        motorOmg_, motorTth_, motorPhi_, motorChi_,
-        motorPST_, motorSST_, motorOMGM_;
+  deg motorXT_,  motorYT_,  motorZT_,
+      motorOmg_, motorTth_, motorPhi_, motorChi_,
+      motorPST_, motorSST_, motorOMGM_;
 
   qreal deltaMonitorCount_, deltaTime_;
 

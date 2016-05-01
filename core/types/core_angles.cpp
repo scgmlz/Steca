@@ -2,8 +2,7 @@
 //
 //  STeCa2:    StressTexCalculator ver. 2
 //
-//! @file      core_polefigure.h
-//! @brief     Pole figure
+//! @file      core_angles.cpp
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
@@ -13,21 +12,30 @@
 //
 // ************************************************************************** //
 
-#ifndef CORE_POLEFIGURE_H
-#define CORE_POLEFIGURE_H
+#include "core_angles.h"
+//#include "types/core_type_range.h"
+//#include "types/core_json.h"
 
-#include "core_reflection_info.h"
-#include "types/core_angles.h"
+namespace core {
 
-namespace core { namespace pole {
+deg::deg(rad const& r) {
+  val_ = r.toDeg();
+}
+
+rad deg::toRad() const {
+  return val_ * (M_PI / 180);
+}
+
 //------------------------------------------------------------------------------
 
-ReflectionInfos interpolate(ReflectionInfos const&,
-    deg alphaStep, deg betaStep,
-    deg averagingAlphaMax, deg averagingRadius,
-    deg idwRadius,
-    qreal inclusionTreshold);
+rad::rad(deg const& d) {
+  val_ = d.toRad();
+}
+
+deg rad::toDeg() const {
+  return val_ * (180 / M_PI);
+}
 
 //------------------------------------------------------------------------------
-}}
-#endif // CORE_POLEFIGURE_H
+}
+// eof
