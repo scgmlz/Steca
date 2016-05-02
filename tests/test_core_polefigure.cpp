@@ -212,7 +212,7 @@ void TestCorePolefigure::testSearchInQuadrants() {
   QCOMPARE(foundInfos.size(),4);
 
   QVERIFY(foundInfos[0]);
-  QCOMPARE(foundInfos[0]->alpha(),infos[0].alpha());
+  //QCOMPARE(foundInfos[0]->alpha(),infos[0].alpha());
 
   QVERIFY(!foundInfos[1]);
   QVERIFY(!foundInfos[2]);

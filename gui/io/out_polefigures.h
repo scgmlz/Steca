@@ -19,6 +19,7 @@
 #include "out_table.h"
 #include "panels/panel.h"
 #include "types/core_types_fwd.h"
+#include "core_reflection_info.h"
 
 namespace gui { namespace io {
 //------------------------------------------------------------------------------

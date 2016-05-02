@@ -37,6 +37,35 @@ ReflectionInfo::ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma)
 : ReflectionInfo(alpha,beta,rgeGamma,qQNaN(),qQNaN(),qQNaN()) {
 }
 
+
+//------------------------------------------------------------------------------
+
+void ReflectionInfos::invalidate() {
+  avgInten = qQNaN();
+  rgInten.invalidate();
+}
+
+qreal& ReflectionInfos::averageInten() const {
+  for_i (count()) {
+    avgInten += at(i).inten();
+  }
+  avgInten /= count();
+  return avgInten;
+}
+
+rcRange ReflectionInfos::rgeInten() const {
+  for_i (count()) {
+    rgInten.extendBy(at(i).inten());
+  }
+  return rgInten;
+}
+
+void ReflectionInfos::append(rcReflectionInfo info) {
+  super::append(info);
+  invalidate();
+}
+
+
 //------------------------------------------------------------------------------
 }
 

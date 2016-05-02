@@ -49,5 +49,28 @@ private:
 };
 
 //------------------------------------------------------------------------------
+
+class ReflectionInfos: protected QVector<ReflectionInfo> {
+  SUPER(ReflectionInfos,QVector<ReflectionInfo>)
+public:
+
+  void append(rcReflectionInfo);
+  const_iterator begin() const { return super::begin(); }
+  const_iterator end()   const { return super::end(); }
+  rcReflectionInfo first() const { return super::first(); }
+  bool isEmpty() const { return super::isEmpty(); }
+  void reserve(int asize) { super::reserve(asize); }
+
+  qreal& averageInten() const;
+  rcRange rgeInten()    const;
+
+private:
+  void invalidate();
+  mutable qreal avgInten;
+  mutable Range rgInten;
+
+};
+
+//------------------------------------------------------------------------------
 }
 #endif

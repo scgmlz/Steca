@@ -32,8 +32,9 @@ using rad = core::rad;
 class PoleWidget: public QWidget {
   SUPER(PoleWidget,QWidget)
 public:
+  PoleWidget();
   void set(core::ReflectionInfos);
-
+  bool     fullCircle_;
 protected:
   core::ReflectionInfos rs_;
   void paintEvent(QPaintEvent*);
@@ -47,6 +48,9 @@ protected:
   QPointF   c_;
   qreal     r_;
 };
+
+PoleWidget::PoleWidget() : fullCircle_(false) {
+}
 
 void PoleWidget::set(core::ReflectionInfos rs) {
   rs_ = rs;
@@ -76,21 +80,38 @@ QPointF PoleWidget::p(deg alpha, deg beta) const {
 }
 
 void PoleWidget::paintGrid() {
-  for (int alpha = 10; alpha<=90; alpha+=10) {
+  int alphaMax = 90;
+  int betaMax = 360;
+  if (fullCircle_) alphaMax = 180;
+
+  for (int alpha = 10; alpha <= alphaMax; alpha +=10) {
     qreal r = r_ / 90 * alpha;
     p_->drawEllipse(c_,r,r);
   }
 
-  for (int beta = 0; beta<360; beta += 10) {
-    p_->drawLine(p(10,beta), p(90,beta));
+  for (int beta = 0; beta < betaMax; beta +=10) {
+    p_->drawLine(p(10,beta), p(alphaMax,beta));
   }
 }
 
 void PoleWidget::paintInfo() {
+  auto rangeInten = rs_.rgeInten();
+  auto rgMax = rangeInten.max;
   for (auto const &r: rs_) {
-    qreal in = r.inten() / 16; // TODO better min-max
-    if (qIsFinite(in))
-      p_->drawEllipse(p(r.alpha(),r.beta()),in,in);
+    QRgb color;
+    qreal in = r.inten() / rgMax; // TODO better min-max
+    if (qIsFinite(in)) {
+      if (in < 0.25) color = qRgb(0xff * in * 4, 0, 0);
+      else if (in < 0.5) color = qRgb(0xff, 0xff * (in - 0.25) * 4, 0);
+      else if (in < 0.75) color = qRgb(0xff - (0xff * (in - 0.5) * 4), 0xff, (0xff * (in - 0.5) * 4));
+      else color = qRgb(0xff * (in - 0.75) * 4, 0xff, 0xff);
+      p_->setPen(color); p_->setBrush(QColor(color));
+      p_->drawEllipse(p(r.alpha(),r.beta()),in*10,in*10); // * factor just for display
+    } else {
+      p_->setPen(Qt::magenta); p_->setBrush(Qt::magenta);
+      p_->drawEllipse(p(r.alpha(),r.beta()),5,5);
+    }
+
   }
 }
 
@@ -101,13 +122,14 @@ class OutPoleFiguresParams: public panel::BoxPanel {
 public:
   OutPoleFiguresParams(TheHub&);
 
-  QComboBox *reflections_;
-  QRadioButton *rbPoints_, *rbInterpolated_;
-  QCheckBox *cbGammaLimit_;
-  QGroupBox    *moreParams_, *gammaLimit_;
-  QDoubleSpinBox *stepAlpha, *stepBeta, *centerSearchRadius, *searchRadius,
-                 *gammaLimitMax, *gammaLimitMin;
-  QSpinBox  *treshold;
+  QGroupBox       *moreParams_, *gbGammaLimit_;
+  QComboBox       *reflections_;
+  QRadioButton    *rbPoints_, *rbInterpolated_;
+  QCheckBox       *cbFullCircle_, *cbGammaLimit_;
+  QDoubleSpinBox  *stepAlpha, *stepBeta, *idwRadius_, *averagingRadius_,
+                  *gammaLimitMax, *gammaLimitMin;
+  QSpinBox        *treshold;
+
 };
 
 OutPoleFiguresParams::OutPoleFiguresParams(TheHub& hub): super("", hub, Qt::Vertical) {
@@ -127,6 +149,7 @@ OutPoleFiguresParams::OutPoleFiguresParams(TheHub& hub): super("", hub, Qt::Vert
 
   bp->addWidget((rbPoints_ = radioButton("points")),1,0);
   bp->addWidget((rbInterpolated_ = radioButton("interpolated")),1,1);
+  bp->addWidget((cbFullCircle_ = check("Full circle")),1,2);
   bp->setColumnStretch(4,1);
 
   box_->addWidget((moreParams_ = new QGroupBox()),2,0);
@@ -138,23 +161,23 @@ OutPoleFiguresParams::OutPoleFiguresParams(TheHub& hub): super("", hub, Qt::Vert
   mp->setHorizontalSpacing(10);
   mp->addWidget(label("Treshold"),                       0,2);
   mp->addWidget(treshold = spinCell(4,0,100),            0,3);
-  mp->addWidget(label("Radius from polefigure center"),  1,0);
-  mp->addWidget(centerSearchRadius = spinCell(8,1.,30.), 1,1);
-  mp->addWidget(label("Search radius"),                  1,2);
-  mp->addWidget(searchRadius = spinCell(8.,1.,30.),      1,3);
+  mp->addWidget(label("Averaging radius"),               1,0); // REVIEW naming
+  mp->addWidget(averagingRadius_ = spinCell(8.,0.,100.), 1,3); // REVIEW reasonable limit
+  mp->addWidget(label("Idw radius"),                     1,2); // REVIEW naming
+  mp->addWidget(idwRadius_ = spinCell(8,0.,100.),        1,1); // REVIEW reasonable limit
   mp->setColumnStretch(4,1);
 
-  box_->addWidget(cbGammaLimit_ = check("Gamma Limitation"), 0,0);
-  box_->addWidget(gammaLimit_ = new QGroupBox());
+  box_->addWidget((cbGammaLimit_ = check("Gamma Limitation")), 0,0);
+  box_->addWidget((gbGammaLimit_ = new QGroupBox()));
   auto gl = gridLayout();
-  gammaLimit_->setLayout(gl);
-  gammaLimit_->setDisabled(true);
+  gbGammaLimit_->setLayout(gl);
+  gbGammaLimit_->setDisabled(true);
 
   gl->addWidget(label("Gamma limitation max"),                   0,0);
   gl->setHorizontalSpacing(10);
-  gl->addWidget(gammaLimitMax = spinCell(8,1.,30.),              0,1);
+  gl->addWidget(gammaLimitMax = spinCell(8,0.,100.),             0,1); // REVIEW reasonable limit
   gl->addWidget(label("Gamma limitation min"),                   1,0);
-  gl->addWidget(gammaLimitMin = spinCell(8,1.,30.),              1,1);
+  gl->addWidget(gammaLimitMin = spinCell(8,0.,100.),             1,1); // REVIEW reasonable limit
   gl->setColumnStretch(2,1);
 
   connect(rbPoints_, &QRadioButton::clicked, [this]() {
@@ -166,14 +189,17 @@ OutPoleFiguresParams::OutPoleFiguresParams(TheHub& hub): super("", hub, Qt::Vert
   });
 
   connect(cbGammaLimit_, &QCheckBox::toggled, [this](int on) {
-    cbGammaLimit_->setChecked(on);
-    gammaLimit_->setEnabled(on);
+    gbGammaLimit_->setEnabled(on);
   });
 
   stepAlpha->setValue(5);
   stepBeta->setValue(5);
+  treshold->setValue(100);
+  averagingRadius_->setValue(0);
+  idwRadius_->setValue(0);
+  gammaLimitMax->setValue(0);
+  gammaLimitMin->setValue(0);
   rbPoints_->click();
-
 }
 
 //------------------------------------------------------------------------------
@@ -203,6 +229,11 @@ OutPoleFigures::OutPoleFigures(TheHub& hub,rcstr title,QWidget* parent)
 
   tabs->tab(0).box->addWidget(tableWidget_);
   tabs->tab(1).box->addWidget(poleWidget_);
+
+  connect(params_->cbFullCircle_,&QCheckBox::toggled, [this,tabs] (bool on) {
+    poleWidget_->fullCircle_ = on;
+    tabs->tab(1).box->update();
+  });
 }
 
 void OutPoleFigures::calculate() {
@@ -221,7 +252,11 @@ void OutPoleFigures::calculate() {
   rs_ = hub_.reflectionInfos(*reflection, betaStep);
 
   if (params_->rbInterpolated_->isChecked()) {
-    rs_ = core::pole::interpolate(rs_,alphaStep,betaStep,10,10,10,.8);
+    qreal treshold  = (qreal)params_->treshold->value()/100.0;
+    qreal avgRadius = params_->averagingRadius_->value();
+    qreal idwRadius = params_->idwRadius_->value();
+    // REVIEW imput for avgeragingAlphaMax?
+    rs_ = core::pole::interpolate(rs_,alphaStep,betaStep,10,avgRadius,idwRadius,treshold);
   }
 
   for (auto const& r: rs_)

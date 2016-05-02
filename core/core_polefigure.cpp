@@ -252,7 +252,7 @@ ReflectionInfos interpolate(ReflectionInfos const& infos,
   int const numAlphas = qCeil(90 / alphaStep);
   int const numBetas  = qCeil(360 / betaStep);
 
-  QVector<ReflectionInfo> interpolatedInfos; // Output data.
+  ReflectionInfos interpolatedInfos; // Output data.
   interpolatedInfos.reserve(numAlphas * numBetas);
 
   for_int (i,numAlphas) {

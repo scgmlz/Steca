@@ -48,10 +48,9 @@ class Datasets; typedef Datasets const& rcDatasets;
 class ImageLens; class Lens;
 class AngleMap;
 
-class Reflection;     typedef Reflection     const& rcReflection;
-class ReflectionInfo; typedef ReflectionInfo const& rcReflectionInfo;
-
-typedef QVector<ReflectionInfo>     ReflectionInfos;
+class Reflection;      typedef Reflection      const& rcReflection;
+class ReflectionInfo;  typedef ReflectionInfo  const& rcReflectionInfo;
+class ReflectionInfos; typedef ReflectionInfos const& rcReflectionInfos;
 
 typedef QSharedPointer<File>        shp_File;
 typedef QSharedPointer<Dataset>     shp_Dataset;
