@@ -36,11 +36,13 @@ public:
 
   void append(qreal x, qreal y);
 
+  // access to data vectors - required by QCP
   qreal_vec const& xs()  const { return xs_; }
   qreal_vec const& ys()  const { return ys_; }
 
-  qreal x(uint i)        const { return xs_[i]; }
-  qreal y(uint i)        const { return ys_[i]; }
+  // prefer this access instead of xs(), ys()
+  qreal x(uint i)        const { return xs_.at(i); }
+  qreal y(uint i)        const { return ys_.at(i); }
 
   rcRange rgeX()         const { return rgeX_; }
   rcRange rgeY()         const { return rgeY_; }

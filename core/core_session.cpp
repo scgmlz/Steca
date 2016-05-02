@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "core_session.h"
-#include "core_fit_fitting.h"
 #include "core_lens.h"
 #include "core_reflection.h"
 #include "core_reflection_info.h"
@@ -297,14 +296,13 @@ void calculateAlphaBeta(rcDataset dataset, deg tth, deg gamma,
 ReflectionInfo Session::makeReflectionInfo(shp_Lens lens, rcReflection reflection,
                                            rcRange gammaSector) const {
   auto curve = lens->makeCurve(gammaSector, lens->angleMap().rgeTth());
-  auto bgPol = fit::fitPolynom(bgPolyDegree_,curve,bgRanges_);
-  curve = curve.subtract(bgPol);
+  curve = curve.subtract(fit::Polynom::fromFit(bgPolyDegree_,curve,bgRanges_));
 
   QScopedPointer<fit::PeakFunction> peakFunction(reflection.peakFunction().clone());
 
-  rcRange rgeTth = reflection.range();
-  fit::fit(*peakFunction, curve, rgeTth);
+  peakFunction->fit(curve);
 
+  rcRange rgeTth = peakFunction->range();
   deg alpha, beta;
   calculateAlphaBeta(lens->dataset(), rgeTth.center(), gammaSector.center(), alpha, beta);
 
@@ -379,7 +377,8 @@ qreal Session::calcAvgBackground(rcDataset dataset) const {
 
   auto &map = angleMap(dataset);
   Curve gammaCurve = l->makeCurve(map.rgeGamma(), map.rgeTth());
-  auto bgPolynom = fit::fitPolynom(bgPolyDegree_, gammaCurve, bgRanges_);
+
+  auto bgPolynom = fit::Polynom::fromFit(bgPolyDegree_, gammaCurve, bgRanges_);
   return bgPolynom.avgY(map.rgeTth());
 }
 

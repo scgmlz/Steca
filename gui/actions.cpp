@@ -70,8 +70,7 @@ Actions::Actions(TheHub& hub): super(hub) {
   trg(about,
       "About...", "About " + App::applicationName());
   trg(quit,
-      "Quit")
-      .icon(":/icon/clear");
+      "Quit");
 
   tgl(viewStatusbar,
       "Statusbar");

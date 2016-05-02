@@ -53,15 +53,17 @@ void Curve::append(qreal x, qreal y) {
 Curve Curve::intersect(rcRange range) const {
   Curve res;
 
-  ASSERT(isOrdered())
+  if (!range.isEmpty()) {
+    ASSERT(isOrdered())
 
-  uint xi = 0, cnt = count();
-  auto minX = range.min, maxX = range.max;
-  while (xi<cnt && xs_[xi] < minX)
-    ++xi;
-  while (xi<cnt && xs_[xi] <= maxX) {
-    res.append(xs_[xi],ys_[xi]);
-    ++xi;
+    uint xi = 0, cnt = count();
+    auto minX = range.min, maxX = range.max;
+    while (xi<cnt && xs_[xi] < minX)
+      ++xi;
+    while (xi<cnt && xs_[xi] <= maxX) {
+      res.append(xs_[xi],ys_[xi]);
+      ++xi;
+    }
   }
 
   return res;

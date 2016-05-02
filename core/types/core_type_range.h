@@ -32,6 +32,7 @@ struct Range {
 
   void  invalidate();             ///< make invalid
   bool  isValid() const;          ///< is not NaN
+  bool  isEmpty() const;          ///< not valid or empty
 
   qreal width()  const;
   qreal center() const;

@@ -14,7 +14,6 @@
 
 #include "panel_diffractogram.h"
 #include "thehub.h"
-#include "core_fit_fitting.h"
 #include "core_lens.h"
 
 namespace gui { namespace panel {
@@ -429,8 +428,8 @@ void Diffractogram::calcDgram() { // TODO is like getDgram00 w useCut==true, nor
 void Diffractogram::calcBackground() {
   bg_.clear(); dgramBgFitted_.clear();
 
-  auto bgPolynom = core::fit::fitPolynom(
-    hub_.bgPolyDegree(),dgram_,hub_.bgRanges());
+  auto bgPolynom =
+    core::fit::Polynom::fromFit(hub_.bgPolyDegree(),dgram_,hub_.bgRanges());
 
   for_i (dgram_.count()) {
     qreal x = dgram_.x(i), y = bgPolynom.y(x);
@@ -459,20 +458,14 @@ void Diffractogram::calcReflections() {
     if (r == currentReflection_)
       currReflIndex_ = i;
 
-    auto range = r->range();
-    if (range.min < range.max) {
-      auto &fun = r->peakFunction();
-      core::fit::fit(fun,dgramBgFitted_,range);
-
-      auto &tth   = dgramBgFitted_.xs();
-
+    if (r->fit(dgramBgFitted_)) {
       core::Curve c;
-
+      auto &rge = r->range();
+      auto &fun = r->peakFunction();
       for_i (dgramBgFitted_.count()) {
-        qreal x = tth[i];
-        if (range.contains(x)) {
+        qreal x = dgramBgFitted_.x(i);
+        if (rge.contains(x))
           c.append(x,fun.y(x));
-        }
       }
 
       refls_.append(c);

@@ -28,28 +28,24 @@ public:
   static str_lst const& typeStrLst();
   static rcstr          typeTag(ePeakType);
 
-  Reflection(ePeakType = ePeakType::GAUSSIAN);
+  Reflection(ePeakType = ePeakType::RAW);
 
   ePeakType type() const;
   void setType(ePeakType);
 
-  rcRange range() const { return range_; }
+  fit::PeakFunction const& peakFunction() const; // REMOVE
+
+  rcRange range() const;
   void setRange(rcRange);
-
-  fit::PeakFunction const& peakFunction() const {
-    return const_cast<Reflection*>(this)->peakFunction();
-  }
-
-  fit::PeakFunction& peakFunction();
 
   void invalidateGuesses();
 
   void setGuessPeak(rcXY  xy)   { peakFunction_->setGuessedPeak(xy);   }
   void setGuessFWHM(qreal fwhm) { peakFunction_->setGuessedFWHM(fwhm); }
 
-private:
-  Range range_;
+  bool fit(rcCurve);
 
+private:
   void setPeakFunction(ePeakType);
   void setPeakFunction(fit::PeakFunction*);
 

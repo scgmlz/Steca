@@ -20,7 +20,7 @@ namespace core {
 //------------------------------------------------------------------------------
 
 str_lst const& Reflection::typeStrLst() {
-  static str_lst types {"Gaussian","Lorentzian","PseudoVoigt1","PseudoVoigt2"};
+  static str_lst types {"Raw", "Gaussian","Lorentzian","PseudoVoigt1","PseudoVoigt2"};
   return types;
 }
 
@@ -30,7 +30,6 @@ rcstr Reflection::typeTag(ePeakType type) {
 
 Reflection::Reflection(ePeakType type): peakFunction_(nullptr) {
   setPeakFunction(type);
-  setRange(Range());
 }
 
 ePeakType Reflection::type() const {
@@ -41,13 +40,17 @@ void Reflection::setType(ePeakType type) {
   setPeakFunction(type);
 }
 
-void Reflection::setRange(rcRange range) {
-  range_ = range;
+fit::PeakFunction const& Reflection::peakFunction() const {
+  ASSERT(peakFunction_)
+      return *peakFunction_;
 }
 
-fit::PeakFunction& Reflection::peakFunction() {
-  ASSERT(peakFunction_)
-  return *peakFunction_;
+rcRange Reflection::range() const {
+  return peakFunction_->range();
+}
+
+void Reflection::setRange(rcRange range) {
+  peakFunction_->setRange(range);
 }
 
 void Reflection::invalidateGuesses() {
@@ -55,26 +58,32 @@ void Reflection::invalidateGuesses() {
   peakFunction_->setGuessedFWHM(qQNaN());
 }
 
+bool Reflection::fit(rcCurve curve) {
+  return peakFunction_->fit(curve);
+}
+
 void Reflection::setPeakFunction(ePeakType type) {
+  bool haveRange = !peakFunction_.isNull();
+  Range oldRange;
+  if (haveRange)
+    oldRange = peakFunction_->range();
+
   setPeakFunction(fit::PeakFunction::factory(type));
+
+  if (haveRange)
+    peakFunction_->setRange(oldRange);
 }
 
 void Reflection::setPeakFunction(fit::PeakFunction* f) {
   peakFunction_.reset(f);
 }
 
-static str const KEY_RANGE("range"), KEY_PEAK("peak");
-
 JsonObj Reflection::saveJson() const {
-  return JsonObj()
-    .saveRange(KEY_RANGE, range_)
-    .saveObj(KEY_PEAK, peakFunction_->saveJson());
+  return peakFunction_->saveJson();
 }
 
 void Reflection::loadJson(rcJsonObj obj) THROWS {
-  range_ = obj.loadRange(KEY_RANGE);
-
-  QScopedPointer<fit::Function> f(fit::Function::factory(obj.loadObj(KEY_PEAK)));
+  QScopedPointer<fit::Function> f(fit::Function::factory(obj));
 
   RUNTIME_CHECK(dynamic_cast<fit::PeakFunction*>(f.data()),"must be a peak function");
   setPeakFunction(static_cast<fit::PeakFunction*>(f.take()));

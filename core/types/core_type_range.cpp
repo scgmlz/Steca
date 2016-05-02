@@ -42,6 +42,10 @@ bool Range::isValid() const {
   return !qIsNaN(min) && !qIsNaN(max);
 }
 
+bool Range::isEmpty() const {
+  return !isValid() || min >= max;
+}
+
 qreal Range::width() const {
   return isValid() ? max - min : qQNaN();
 }

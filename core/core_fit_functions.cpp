@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "core_fit_fitting.h"
 #include "core_fit_functions.h"
+#include "core_fit_methods.h"
 #include "types/core_json.h"
 #include <qmath.h>
 
@@ -96,7 +96,8 @@ static str const
 
   KEY_SUM_FUNCTIONS("sum"),
   KEY_POLYNOM("polynom"),
-  KEY_GAUSSIAN("Gaussian"), KEY_LORENTZIAN("Lorentzian"),
+
+  KEY_RAW("Raw"), KEY_GAUSSIAN("Gaussian"), KEY_LORENTZIAN("Lorentzian"),
   KEY_PSEUDOVOIGT1("PseudoVoigt1"), KEY_PSEUDOVOIGT2("PseudoVoigt2");
 
 Function* Function::factory(rcstr type) {
@@ -104,6 +105,8 @@ Function* Function::factory(rcstr type) {
     return new SumFunctions();
   if (KEY_POLYNOM == type)
     return new Polynom();
+  if (KEY_RAW == type)
+    return new Raw();
   if (KEY_GAUSSIAN == type)
     return new Gaussian();
   if (KEY_LORENTZIAN == type)
@@ -151,7 +154,6 @@ SimpleFunction::SimpleFunction() {
 }
 
 void SimpleFunction::setParameterCount(uint count) {
-  ASSERT(count > 0)
   parameters_.fill(Parameter(),count);
 }
 
@@ -345,6 +347,16 @@ qreal Polynom::avgY(rcRange rgeX, qreal const* parValues) const {
   return (1/w) * (maxY-minY);
 }
 
+void Polynom::fit(rcCurve curve, rcRanges ranges) {
+  FittingLevenbergMarquardt().fitWithoutChecks(*this, curve.intersect(ranges));
+}
+
+Polynom Polynom::fromFit(uint degree, rcCurve curve, rcRanges ranges) {
+  Polynom poly(degree);
+  poly.fit(curve,ranges);
+  return poly;
+}
+
 JsonObj Polynom::saveJson() const {
   JsonObj obj;
   obj.saveString(KEY_FUNCTION_TYPE, KEY_POLYNOM);
@@ -359,6 +371,7 @@ void Polynom::loadJson(rcJsonObj obj) THROWS {
 
 PeakFunction* PeakFunction::factory(ePeakType type) {
   switch (type) {
+  case ePeakType::RAW:          return new Raw();
   case ePeakType::GAUSSIAN:     return new Gaussian();
   case ePeakType::LORENTZIAN:   return new CauchyLorentz();
   case ePeakType::PSEUDOVOIGT1: return new PseudoVoigt1();
@@ -372,6 +385,10 @@ PeakFunction* PeakFunction::clone() const {
   PeakFunction *f = factory(type());
   *f = *this; // REVIEW
   return f;
+}
+
+void PeakFunction::setRange(rcRange range) {
+  range_ = range;
 }
 
 PeakFunction::PeakFunction(): guessedPeak_(), guessedFWHM_(qQNaN()) {
@@ -391,18 +408,120 @@ void PeakFunction::reset() {
   setGuessedFWHM(guessedFWHM_);
 }
 
-static str const KEY_GUESSED_PEAK("guessed peak"), KEY_GUESSED_FWHM("guessed fwhm");
+bool PeakFunction::fit(rcCurve curve) {
+  return fit(curve,range_);
+}
+
+bool PeakFunction::fit(rcCurve curve, rcRange range) {
+  Curve c = prepareFit(curve,range);
+  if (c.isEmpty())
+    return false;
+
+  if (!guessedPeak().isValid()) { // calculate guesses
+    uint peakIndex  = c.maxYindex();
+    auto peakTth    = c.x(peakIndex);
+    auto peakIntens = c.y(peakIndex);
+
+    // half-maximum indices
+    uint hmi1 = peakIndex, hmi2 = peakIndex;
+
+    // left
+    for (uint i=peakIndex; i-- > 0; ) {
+      hmi1 = i;
+      if (c.y(i) < peakIntens/2) break;
+    }
+
+    // right
+    for (uint i=peakIndex, iCnt=c.count(); i < iCnt; ++i) {
+      hmi2 = i;
+      if (c.y(i) < peakIntens/2) break;
+    }
+
+    setGuessedPeak(XY(peakTth,peakIntens));
+    setGuessedFWHM(c.x(hmi2) - c.x(hmi1));
+  }
+
+  return FittingLevenbergMarquardt().fitWithoutChecks(*this,c);
+}
+
+Curve PeakFunction::prepareFit(rcCurve curve, rcRange range) {
+  reset();
+  return curve.intersect(range);
+}
+
+static str const
+  KEY_GUESSED_PEAK("guessed peak"), KEY_GUESSED_FWHM("guessed fwhm");
 
 JsonObj PeakFunction::saveJson() const {
   return super::saveJson()
-      .saveObj(KEY_GUESSED_PEAK,guessedPeak_.saveJson())
-      .saveReal(KEY_GUESSED_FWHM,guessedFWHM_);
+    .saveRange(KEY_RANGE, range_)
+    .saveObj(KEY_GUESSED_PEAK,guessedPeak_.saveJson())
+    .saveReal(KEY_GUESSED_FWHM,guessedFWHM_);
 }
 
 void PeakFunction::loadJson(rcJsonObj obj) THROWS {
   super::loadJson(obj);
+  range_ = obj.loadRange(KEY_RANGE);
   guessedPeak_.loadJson(obj.loadObj(KEY_GUESSED_PEAK));
   guessedFWHM_ = obj.loadReal(KEY_GUESSED_FWHM);
+}
+
+//------------------------------------------------------------------------------
+
+Raw::Raw() {
+}
+
+qreal Raw::y(qreal x, qreal const* /*parValues*/) const {
+  if (!x_count_ || !range_.contains(x))
+    return 0;
+
+  uint i = qBound(0, qFloor((x-range_.min) / dx_), x_count_-1);
+  return fittedCurve_.y(i);
+}
+
+qreal Raw::dy(qreal /*x*/, uint /*parIndex*/, qreal const* /*parValues*/) const {
+  return 0; // fake
+}
+
+XY Raw::fittedPeak() const {
+  if (qIsNaN(sum_y_)) {
+    sum_y_ = 0;
+    for_i (x_count_)
+      sum_y_ += fittedCurve_.y(i);
+  }
+
+  return XY(range_.center(),sum_y_); // approximate x, y is sum (TODO average?)
+}
+
+qreal Raw::fittedFWHM() const {
+  return range_.width();        // kind-of
+}
+
+void Raw::setRange(rcRange range) {
+  super::setRange(range);
+  prepareY();
+}
+
+bool Raw::fit(rcCurve curve, rcRange range) {
+  fittedCurve_ = prepareFit(curve,range); // do no more
+  prepareY();
+  return !fittedCurve_.isEmpty();
+}
+
+void Raw::prepareY() {
+  if (range_.isEmpty() || fittedCurve_.isEmpty()) {
+    x_count_ = 0; dx_ = 0;
+  } else {
+    x_count_ = fittedCurve_.count();
+    dx_      = range_.width() / x_count_;
+  }
+
+  sum_y_ = qQNaN();
+}
+
+JsonObj Raw::saveJson() const {
+  return super::saveJson()
+    .saveString(KEY_FUNCTION_TYPE, KEY_RAW);
 }
 
 //------------------------------------------------------------------------------

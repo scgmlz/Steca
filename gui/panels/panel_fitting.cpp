@@ -263,7 +263,11 @@ void Fitting::setReflControls(core::shp_Reflection const& reflection) {
     readFitPeakY_->clear();
     readFitFWHM_->clear();
   } else {
-    comboReflType_->setCurrentIndex((int)reflection->type());
+
+    {
+      QSignalBlocker __(comboReflType_);
+      comboReflType_->setCurrentIndex((int)reflection->type());
+    }
 
     auto &range = reflection->range();
     spinRangeMin_->setValue(safeReal(range.min));

@@ -17,6 +17,7 @@
 #define CORE_FIT_FUNCTIONS_H
 
 #include "types/core_coords.h"
+#include "types/core_type_curve.h"
 #include "types/core_type_range.h"
 
 namespace core { namespace fit {
@@ -168,6 +169,9 @@ public:
 
   qreal avgY(rcRange, qreal const* parValues = nullptr) const;
 
+  void fit(rcCurve, rcRanges);
+  static Polynom fromFit(uint degree, rcCurve, rcRanges);
+
 public:
   JsonObj saveJson() const;
   void    loadJson(rcJsonObj) THROWS;
@@ -186,6 +190,9 @@ public:
 
   virtual ePeakType type() const = 0;
 
+  rcRange range() const { return range_; }
+  virtual void setRange(rcRange);
+
   virtual void setGuessedPeak(rcXY);
   virtual void setGuessedFWHM(qreal);
 
@@ -197,12 +204,49 @@ public:
 
   void reset();
 
+  bool fit(rcCurve);
+  virtual bool fit(rcCurve, rcRange);
+
+protected:
+  Curve prepareFit(rcCurve,rcRange);
+
 public:
   JsonObj saveJson() const;
   void    loadJson(rcJsonObj) THROWS;
 
-private:
+protected:
+  Range range_;
   XY guessedPeak_; qreal guessedFWHM_;
+};
+
+//------------------------------------------------------------------------------
+
+class Raw: public PeakFunction {
+  SUPER(Raw,PeakFunction)
+public:
+  Raw();
+
+  ePeakType type() const { return ePeakType::RAW; }
+
+  qreal y(qreal x, qreal const* parValues = nullptr) const;
+  qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
+
+  XY    fittedPeak() const;
+  qreal fittedFWHM() const;
+
+  void setRange(rcRange);
+  bool fit(rcCurve, rcRange range);
+
+private:
+  Curve fittedCurve_;  ///< saved from fitting
+  void prepareY();
+
+  mutable int   x_count_;
+  mutable qreal dx_;
+  mutable qreal sum_y_;
+
+public:
+  JsonObj saveJson() const;
 };
 
 //------------------------------------------------------------------------------
