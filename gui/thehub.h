@@ -60,7 +60,6 @@ public:
   Actions actions;
 
 private:
-  void initActions();
   void configActions();
 
 private:

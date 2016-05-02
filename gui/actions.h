@@ -28,7 +28,6 @@ class Action: public QAction {
 public:
   Action(rcstr text, rcstr tip, QObject*);
 
-  Action& dialog();
   Action& key(QKeySequence);
   Action& icon(rcstr);
 
@@ -45,7 +44,7 @@ class ToggleAction: public Action {
   SUPER(ToggleAction,Action)
 public:
   ToggleAction(rcstr text, rcstr tip, QObject*);
-  Action& alt(rcstr text2, rcstr tip2);
+  Action& alt(rcstr text2, rcstr tip2 = EMPTY_STR);
 
 protected:
   str text1_, text2_, tip1_, tip2_;
@@ -58,33 +57,36 @@ class Actions: protected RefHub {
 public:
   Actions(TheHub&);
 
-  QAction
-    *loadSession, *saveSession,
-
-    *addFiles,   *remFile,
-    *enableCorr, *remCorr,
-
-    *quit,
+  Action
+    *about, *quit,
 
     *viewStatusbar,
-#ifndef Q_OS_OSX // Mac has its own
-    *fullScreen,
-#endif
-    *viewDockFiles, *viewDockDatasets, *viewDockDatasetInfo,
+    *viewFiles, *viewDatasets, *viewDatasetInfo,
     *viewReset,
+  #ifndef Q_OS_OSX // Mac has its own
+    *fullScreen,
+  #endif
 
-    *outputPolefigures,
-    *outputHistograms,
+    *loadSession, *saveSession,
 
-    *about,
+    *addFiles, *remFile, *enableCorr, *remCorr,
 
-    *addReflection, *remReflection,
     *rotateImage, *mirrorImage,
     *linkCuts, *showCut,
-    *fixedIntenDisplayImage, *fixedIntenDisplayDgram,
+    *hasBeamOffset,
+
+    *fixedIntenImageScale, *fixedIntenDgramScale,
     *avgCurveDgram,
-    *fitTool, *fitBgClear, *fitShow,
-    *hasBeamOffset;
+
+    *fitRegions, *fitBgClear, *fitBgShow,
+
+    *addReflection, *remReflection,
+
+    *outputPolefigures, *outputHistograms;
+
+private:
+  Action& trg(Action* &action, rcstr text, rcstr tip = EMPTY_STR);
+  Action& tgl(Action* &action, rcstr text, rcstr tip = EMPTY_STR);
 };
 
 //------------------------------------------------------------------------------

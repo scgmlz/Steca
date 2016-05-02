@@ -96,9 +96,9 @@ Fitting::Fitting(TheHub& hub)
   auto &actions = hub_.actions;
   auto tools = [actions]() {
     auto hb = hbox();
-    hb->addWidget(iconButton(actions.fitTool));
+    hb->addWidget(iconButton(actions.fitRegions));
     hb->addWidget(iconButton(actions.fitBgClear));
-    hb->addWidget(iconButton(actions.fitShow));
+    hb->addWidget(iconButton(actions.fitBgShow));
     hb->addStretch();
     return hb;
   };

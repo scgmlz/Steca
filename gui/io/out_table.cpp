@@ -314,7 +314,7 @@ void OutWindow::setWidgets(panel::BasicPanel* panel, QWidget* widget) {
   box_->addLayout(bbox);
   box_->setStretch(1,1);
 
-  auto actClose = new TriggerAction("Close", "Close", this);
+  auto actClose = new TriggerAction("Close", "", this);
   connect(actClose, &QAction::triggered, [this]() {
     close();
   });
@@ -330,8 +330,7 @@ void OutWindow::setWidgets(panel::BasicPanel* panel, QWidget* widget) {
 
   bbox->addWidget(textButton(actCalculate));
 
-  auto actSave = new TriggerAction("Save", "Save", this);
-  actSave->dialog();
+  auto actSave = new TriggerAction("Save...", "Save to file", this);
   bbox->addWidget(textButton(actSave));
 }
 

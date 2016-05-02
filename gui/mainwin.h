@@ -77,9 +77,9 @@ private:
 
   void viewStatusbar(bool);
   void viewFullScreen(bool);
-  void viewDockFiles(bool);
-  void viewDockDatasets(bool);
-  void viewDockDatasetInfo(bool);
+  void viewFiles(bool);
+  void viewDatasets(bool);
+  void viewDatasetInfo(bool);
   void viewReset();
 };
 

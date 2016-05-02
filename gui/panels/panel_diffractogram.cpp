@@ -176,7 +176,7 @@ DiffractogramPlot::DiffractogramPlot(TheHub& hub,Diffractogram& diffractogram)
     }
   });
 
-  connect(hub_.actions.fitShow, &QAction::toggled, [this](bool on) {
+  connect(hub_.actions.fitBgShow, &QAction::toggled, [this](bool on) {
     showBgFit_ = on;
     updateBg();
   });
@@ -332,7 +332,7 @@ Diffractogram::Diffractogram(TheHub& hub)
   auto hb = hbox();
   box_->addLayout(hb);
   hb->addWidget(check("all datasets",hub_.actions.avgCurveDgram));
-  hb->addWidget(check("fixed scale",hub_.actions.fixedIntenDisplayDgram));
+  hb->addWidget(check("fixed scale",hub_.actions.fixedIntenDgramScale));
   hb->addStretch();
 
   onSigDatasetSelected([this](core::shp_Dataset dataset) {
@@ -365,7 +365,7 @@ Diffractogram::Diffractogram(TheHub& hub)
   });
 
   onSigFittingTab([this](int index) {
-    bool on = hub_.actions.fitTool->isChecked();
+    bool on = hub_.actions.fitRegions->isChecked();
     switch (index) {
     case TheHub::TAB_BACKGROUND:
       plot_->setTool(on ? DiffractogramPlot::TOOL_BACKGROUND : DiffractogramPlot::TOOL_NONE);
@@ -376,7 +376,7 @@ Diffractogram::Diffractogram(TheHub& hub)
     }
   });
 
-  connect(hub_.actions.fitTool, &QAction::toggled, [this](bool on) {
+  connect(hub_.actions.fitRegions, &QAction::toggled, [this](bool on) {
     plot_->setTool(on ? (0==hub_.fittingTab__ ? DiffractogramPlot::TOOL_BACKGROUND:DiffractogramPlot::TOOL_PEAK_REGION) : DiffractogramPlot::TOOL_NONE);
   });
 
@@ -398,7 +398,7 @@ Diffractogram::Diffractogram(TheHub& hub)
     }
   });
 
-  hub_.actions.fitShow->setChecked(true);
+  hub_.actions.fitBgShow->setChecked(true);
 }
 
 void Diffractogram::render() {

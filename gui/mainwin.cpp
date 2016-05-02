@@ -138,16 +138,16 @@ void MainWin::initMenus() {
   });
 
   menuView_->addActions({
-    acts_.fixedIntenDisplayImage,acts_.fixedIntenDisplayDgram, acts_.showCut, separator(),
-    acts_.fitTool, acts_.fitBgClear, acts_.fitShow, separator(),
+    acts_.fixedIntenImageScale,acts_.fixedIntenDgramScale, acts_.showCut, separator(),
+    acts_.fitRegions, acts_.fitBgClear, acts_.fitBgShow, separator(),
     acts_.viewStatusbar,
 #ifndef Q_OS_OSX
     acts_.fullScreen,
 #endif
     separator(),
-    acts_.viewDockFiles,
-    acts_.viewDockDatasets,
-    acts_.viewDockDatasetInfo,
+    acts_.viewFiles,
+    acts_.viewDatasets,
+    acts_.viewDatasetInfo,
     separator(),
     acts_.viewReset,
   });
@@ -231,9 +231,9 @@ void MainWin::connectActions() {
   onToggle(acts_.fullScreen, &thisClass::viewFullScreen);
 #endif
 
-  onToggle(acts_.viewDockFiles,       &thisClass::viewDockFiles);
-  onToggle(acts_.viewDockDatasets,    &thisClass::viewDockDatasets);
-  onToggle(acts_.viewDockDatasetInfo, &thisClass::viewDockDatasetInfo);
+  onToggle(acts_.viewFiles,       &thisClass::viewFiles);
+  onToggle(acts_.viewDatasets,    &thisClass::viewDatasets);
+  onToggle(acts_.viewDatasetInfo, &thisClass::viewDatasetInfo);
 
   onTrigger(acts_.viewReset, &thisClass::viewReset);
 }
@@ -343,12 +343,7 @@ void MainWin::onShow() {
   hub_.load(QFileInfo("/home/rebecca/SCG/STeCa-Data/1.ste"));
 #endif
 #ifdef DEVELOPMENT_JAN
-#if defined(Q_OS_OSX)
-//  hub_.load(QFileInfo("/Users/igb/P/+scg/data/s.ste"));
-#else
-  hub_.loadSession(QFileInfo("/home/igb/P/+scg/s.ste"));
-//  hub_.actions.outputPolefigures->trigger();
-#endif
+  hub_.loadSession(QFileInfo(QDir::homePath() + "/P/+scg/data/s.ste"));
 #endif
 }
 
@@ -382,9 +377,9 @@ void MainWin::checkActions() {
   acts_.fullScreen->setChecked(isFullScreen());
 #endif
 
-  acts_.viewDockFiles->setChecked(dockFiles_->isVisible());
-  acts_.viewDockDatasets->setChecked(dockDatasets_->isVisible());
-  acts_.viewDockDatasetInfo->setChecked(dockDatasetInfo_->isVisible());
+  acts_.viewFiles->setChecked(dockFiles_->isVisible());
+  acts_.viewDatasets->setChecked(dockDatasets_->isVisible());
+  acts_.viewDatasetInfo->setChecked(dockDatasetInfo_->isVisible());
 }
 
 void MainWin::viewStatusbar(bool on) {
@@ -403,28 +398,28 @@ void MainWin::viewFullScreen(bool on) {
 #endif
 }
 
-void MainWin::viewDockFiles(bool on) {
+void MainWin::viewFiles(bool on) {
   dockFiles_->setVisible(on);
-  acts_.viewDockFiles->setChecked(on);
+  acts_.viewFiles->setChecked(on);
 }
 
-void MainWin::viewDockDatasets(bool on) {
+void MainWin::viewDatasets(bool on) {
   dockDatasets_->setVisible(on);
-  acts_.viewDockDatasets->setChecked(on);
+  acts_.viewDatasets->setChecked(on);
 }
 
-void MainWin::viewDockDatasetInfo(bool on) {
+void MainWin::viewDatasetInfo(bool on) {
   dockDatasetInfo_->setVisible(on);
-  acts_.viewDockDatasetInfo->setChecked(on);
+  acts_.viewDatasetInfo->setChecked(on);
 }
 
 void MainWin::viewReset() {
   restoreState(initialState_);
   viewStatusbar(true);
   viewFullScreen(false);
-  viewDockFiles(true);
-  viewDockDatasets(true);
-  viewDockDatasetInfo(true);
+  viewFiles(true);
+  viewDatasets(true);
+  viewDatasetInfo(true);
 }
 
 //------------------------------------------------------------------------------

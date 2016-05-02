@@ -298,7 +298,7 @@ DatasetOptions2::DatasetOptions2(TheHub& hub)
   hb->addSpacing(5);
   hb->addWidget(iconButton(hub_.actions.mirrorImage));
   hb->addSpacing(5);
-  hb->addWidget(iconButton(hub_.actions.fixedIntenDisplayImage));
+  hb->addWidget(iconButton(hub_.actions.fixedIntenImageScale));
   hb->addStretch();
 
   auto sc = hbox();

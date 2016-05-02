@@ -77,92 +77,7 @@ TheHub::TheHub()
 , fixedIntenScaleImage_(false), fixedIntenScaleDgram_(false), avgCurveDgram_(false)
 , filesModel(*this), datasetsModel(*this), reflectionsModel(*this)
 , numGroupBy_(1) {
-  initActions();
   configActions();
-}
-
-#define TRIG(act,text,tip) (*(Action*)(actions.act = new TriggerAction(text,tip,this)))
-#define TOGL(act,text,tip) (*(Action*)(actions.act = new ToggleAction(text,tip,this)))
-
-void TheHub::initActions() { // REVIEW all action texts and tips and icons
-  using QKey = QKeySequence;
-
-  TRIG(addFiles, "Add files", "")
-      .icon(":/icon/add").key(Qt::CTRL|Qt::Key_O)
-      .dialog();
-  TRIG(remFile, "Remove file", "Remove selected file")
-      .icon(":/icon/rem").key(QKey::Delete);
-
-  TOGL(enableCorr, "Enable correction file", "Enable correction by correction file")
-      .alt("Disable correction file", "Disable correction by correction file")
-      .icon(":/icon/useCorrection").key(Qt::SHIFT|Qt::CTRL|Qt::Key_C).dialog();
-  TRIG(remCorr, "Remove correction file", "")
-      .icon(":/icon/clear").key(QKey::Delete);
-
-  TRIG(loadSession, "Load session", "")
-      .dialog();
-  TRIG(saveSession, "Save session", "")
-      .dialog();
-
-  TRIG(quit, "Quit", "")
-      .key(QKey::Quit);
-
-  TOGL(viewStatusbar, "Statusbar",  "")
-      .key(Qt::Key_F12);
-#ifndef Q_OS_OSX
-  TOGL(fullScreen, "FullScreen", "")
-      .key(Qt::Key_F11);
-#endif
-  TOGL(viewDockFiles,       "Files", "")
-      .key(Qt::Key_F8);
-  TOGL(viewDockDatasets,    "Datasets", "")
-      .key(Qt::Key_F9);
-  TOGL(viewDockDatasetInfo, "Dataset info", "")
-      .key(Qt::Key_F10);
-  TRIG(viewReset, "Reset", "");
-
-  TRIG(about, "About", "")
-      .dialog();
-
-  TRIG(addReflection, "Add", "Add reflection")
-      .icon(":/icon/add");
-  TRIG(remReflection, "Remove", "Remove reflection")
-       .icon(":/icon/rem");
-
-  TRIG(outputPolefigures, "Pole figures", "")
-      .dialog();
-  TRIG(outputHistograms, "Histograms", "")
-      .dialog();
-
-  TOGL(linkCuts, "Link", "Use the same value for all cuts")
-      .alt("Unlink", "Use different value for cuts")
-      .icon(":/icon/linkNew");
-  TOGL(showCut, "overlay", "Show cut")
-      .alt("overlay", "Hide cut")
-      .icon(":/icon/imageCrop");
-  TOGL(fixedIntenDisplayImage, "fixed Image Intensity", "Display image using a fixed intensity scale")
-      .alt("non-fixed Image Intensity", "Display image using non-fixed intensity scale")
-      .icon(":/icon/scale");
-  TOGL(fixedIntenDisplayDgram, "fixed Diffractogram Intensity", "Display diffractogram using a fixed intensity scale")
-      .alt("non-fixed Diffractogram Intensity", "Display diffractogram using non-fixed intensity scale");
-  TOGL(avgCurveDgram, "Diffractogram all Datasets", "Show a diffractogram from all Datasets")
-      .alt("Diffractogram from single Dataset", "Show diffractogram from single dataset");
-  TRIG(rotateImage, "Rotate", "Rotate 90° clockwise")
-      .icon(":/icon/rotate0").key(Qt::CTRL|Qt::Key_R);
-  TOGL(mirrorImage, "Mirror", "Mirror image")
-      .icon(":/icon/mirror_horz");
-
-  TOGL(fitTool, "Select background fit regions", "Select regions for background fitting")
-      .icon(":/icon/peakBackground");
-  TRIG(fitBgClear, "Clear background fit regions", "Clear regions for background fitting")
-      .icon(":/icon/clear");
-  TOGL(fitShow, "BackgroundEye", "Show background fit")
-      .alt("BackgroundEye", "Hide background fit")
-      .icon(":/icon/showBackground");
-
-  TOGL(hasBeamOffset, "Beam centre offset", "Enable beam center offset (for X-ray instruments)")
-      .alt("Beam centre offset", "Disable beam center offset")
-      .icon(":/icon/beam");
 }
 
 void TheHub::configActions() {
@@ -177,12 +92,12 @@ void TheHub::configActions() {
     setCorrFile(EMPTY_STR);
   });
 
-  connect(actions.fixedIntenDisplayImage,&QAction::toggled,[this](bool on) {
+  connect(actions.fixedIntenImageScale,&QAction::toggled,[this](bool on) {
     fixedIntenScaleImage_ = on;
     emit sigDisplayChanged();
   });
 
-  connect(actions.fixedIntenDisplayDgram, &QAction::toggled, [this](bool on) {
+  connect(actions.fixedIntenDgramScale, &QAction::toggled, [this](bool on) {
     fixedIntenScaleDgram_ = on;
     emit sigDisplayChanged();
   });
