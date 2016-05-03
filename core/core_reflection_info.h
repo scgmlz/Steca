@@ -53,22 +53,22 @@ private:
 class ReflectionInfos: protected QVector<ReflectionInfo> {
   SUPER(ReflectionInfos,QVector<ReflectionInfo>)
 public:
+  using super::isEmpty;
+  using super::begin;
+  using super::end;
+  using super::reserve;
+  using super::first;
+  using super::at;
 
   void append(rcReflectionInfo);
-  const_iterator begin() const { return super::begin(); }
-  const_iterator end()   const { return super::end(); }
-  rcReflectionInfo first() const { return super::first(); }
-  bool isEmpty() const { return super::isEmpty(); }
-  void reserve(int asize) { super::reserve(asize); }
 
-  qreal& averageInten() const;
-  rcRange rgeInten()    const;
+  qreal   averageInten() const;
+  rcRange rgeInten()     const;
 
 private:
   void invalidate();
-  mutable qreal avgInten;
-  mutable Range rgInten;
-
+  mutable qreal avgInten_;
+  mutable Range rgeInten_;
 };
 
 //------------------------------------------------------------------------------

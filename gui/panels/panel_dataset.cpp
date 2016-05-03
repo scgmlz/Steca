@@ -15,6 +15,7 @@
 #include "panel_dataset.h"
 #include "thehub.h"
 #include "core_lens.h"
+#include "colors.h"
 
 #include <QScrollArea>
 #include <QPainter>
@@ -425,30 +426,13 @@ QPixmap Dataset::makePixmap(core::shp_ImageLens lens) {
   auto rgeInten = lens->rgeInten(hub_.fixedIntenScaleImage_);
 
   if (!size.isEmpty()) {
-    qreal maxIntens = rgeInten.max;
-    if (maxIntens <= 0) maxIntens = 1;  // sanity
+    QImage image(size,QImage::Format_RGB32);
 
-    QImage qimage(size,QImage::Format_RGB32);
+    qreal maxInten = rgeInten.max;
+    for_ij (size.width(), size.height())
+      image.setPixel(i,j,intenRgb(lens->inten(i,j),maxInten));
 
-    for_ij (size.width(), size.height()) {
-      qreal intens = lens->inten(i,j) / maxIntens;
-
-      QRgb rgb;
-      if (qIsNaN(intens))
-        rgb = qRgb(0x00,0xff,0xff);
-      else if (intens < 0.25)
-        rgb = qRgb(0xff * intens * 4, 0, 0);
-      else if (intens < 0.5)
-        rgb = qRgb(0xff, 0xff * (intens - 0.25) * 4, 0);
-      else if (intens < 0.75)
-        rgb = qRgb(0xff - (0xff * (intens - 0.5) * 4), 0xff, (0xff * (intens - 0.5) * 4));
-      else
-        rgb = qRgb(0xff * (intens - 0.75) * 4, 0xff, 0xff);
-
-      qimage.setPixel(i,j,rgb);
-    }
-
-    pixmap = QPixmap::fromImage(qimage);
+    pixmap = QPixmap::fromImage(image);
   }
 
   return pixmap;

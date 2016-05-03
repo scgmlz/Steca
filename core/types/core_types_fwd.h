@@ -36,7 +36,7 @@ struct matrix3d;
 class  Image;   typedef Image const&  rcImage;
 struct ImageTransform;
 
-typedef float inten_t;    ///< intensity; float should suffice
+typedef float inten_t;    ///< intensity if in a vector; float should suffice
 
 class JsonObj; typedef JsonObj const& rcJsonObj;
 class JsonArr; typedef JsonArr const& rcJsonArr;

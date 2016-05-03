@@ -17,7 +17,7 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-/* NOTE Invalid parameters are set to NaNs. However, some analysis programs
+/* NOTE Invalid output parameters are set to NaNs. However, some analysis programs
  * require -1 as unknown value; thus, NaN parameter values should be output
  * as -1 when output is written for these programs (polefigure!).
  */
@@ -40,31 +40,38 @@ ReflectionInfo::ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma)
 
 //------------------------------------------------------------------------------
 
-void ReflectionInfos::invalidate() {
-  avgInten = qQNaN();
-  rgInten.invalidate();
-}
-
-qreal& ReflectionInfos::averageInten() const {
-  for_i (count()) {
-    avgInten += at(i).inten();
-  }
-  avgInten /= count();
-  return avgInten;
-}
-
-rcRange ReflectionInfos::rgeInten() const {
-  for_i (count()) {
-    rgInten.extendBy(at(i).inten());
-  }
-  return rgInten;
-}
-
 void ReflectionInfos::append(rcReflectionInfo info) {
   super::append(info);
   invalidate();
 }
 
+qreal ReflectionInfos::averageInten() const {
+  if (qIsNaN(avgInten_)) {
+    avgInten_ = 0;
+    uint cnt = count();
+    if (cnt) {
+      for_i (cnt)
+        avgInten_ += at(i).inten();
+      avgInten_ /= cnt;
+    }
+  }
+
+  return avgInten_;
+}
+
+rcRange ReflectionInfos::rgeInten() const {
+  if (!rgeInten_.isValid()) {
+    for_i (count())
+      rgeInten_.extendBy(at(i).inten());
+  }
+
+  return rgeInten_;
+}
+
+void ReflectionInfos::invalidate() {
+  avgInten_ = qQNaN();
+  rgeInten_.invalidate();
+}
 
 //------------------------------------------------------------------------------
 }

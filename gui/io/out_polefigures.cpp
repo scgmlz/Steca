@@ -17,6 +17,7 @@
 #include "panels/panel.h"
 #include "thehub.h"
 #include "views.h"
+#include "colors.h"
 #include "core_polefigure.h"
 #include "core_reflection.h"
 #include "types/core_angles.h"
@@ -35,6 +36,7 @@ public:
   PoleWidget();
   void set(core::ReflectionInfos);
   bool     fullCircle_;
+
 protected:
   core::ReflectionInfos rs_;
   void paintEvent(QPaintEvent*);
@@ -80,9 +82,7 @@ QPointF PoleWidget::p(deg alpha, deg beta) const {
 }
 
 void PoleWidget::paintGrid() {
-  int alphaMax = 90;
-  int betaMax = 360;
-  if (fullCircle_) alphaMax = 180;
+  int alphaMax = fullCircle_ ? 180 : 90, betaMax = 360;
 
   for (int alpha = 10; alpha <= alphaMax; alpha +=10) {
     qreal r = r_ / 90 * alpha;
@@ -95,23 +95,19 @@ void PoleWidget::paintGrid() {
 }
 
 void PoleWidget::paintInfo() {
-  auto rangeInten = rs_.rgeInten();
-  auto rgMax = rangeInten.max;
+  auto rgeMax = rs_.rgeInten().max;
+
   for (auto const &r: rs_) {
-    QRgb color;
-    qreal in = r.inten() / rgMax; // TODO better min-max
-    if (qIsFinite(in)) {
-      if (in < 0.25) color = qRgb(0xff * in * 4, 0, 0);
-      else if (in < 0.5) color = qRgb(0xff, 0xff * (in - 0.25) * 4, 0);
-      else if (in < 0.75) color = qRgb(0xff - (0xff * (in - 0.5) * 4), 0xff, (0xff * (in - 0.5) * 4));
-      else color = qRgb(0xff * (in - 0.75) * 4, 0xff, 0xff);
-      p_->setPen(color); p_->setBrush(QColor(color));
-      p_->drawEllipse(p(r.alpha(),r.beta()),in*10,in*10); // * factor just for display
+    qreal inten = r.inten();
+    if (qIsFinite(inten)) {
+      inten /= rgeMax;
+      auto color = QColor(intenRgb(inten));
+      p_->setPen(color); p_->setBrush(color);
+      p_->drawEllipse(p(r.alpha(),r.beta()),inten*10,inten*10); // * factor just for display
     } else {
       p_->setPen(Qt::magenta); p_->setBrush(Qt::magenta);
       p_->drawEllipse(p(r.alpha(),r.beta()),5,5);
     }
-
   }
 }
 
@@ -129,7 +125,6 @@ public:
   QDoubleSpinBox  *stepAlpha, *stepBeta, *idwRadius_, *averagingRadius_,
                   *gammaLimitMax, *gammaLimitMin;
   QSpinBox        *treshold;
-
 };
 
 OutPoleFiguresParams::OutPoleFiguresParams(TheHub& hub): super("", hub, Qt::Vertical) {
