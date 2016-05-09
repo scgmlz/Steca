@@ -337,7 +337,8 @@ ReflectionInfos Session::reflectionInfos(rcDatasets datasets, rcReflection refle
     for_i (numGammaRows) {
       qreal min = rgeGamma.min + i * gammaStep;
       Range gammaStripe(min,min + gammaStep);
-      infos.append(makeReflectionInfo(l,reflection,gammaStripe));
+      auto refInfo = makeReflectionInfo(l,reflection,gammaStripe);
+      if (!qIsNaN(refInfo.inten())) infos.append(refInfo); // REVIEW
     }
   }
 

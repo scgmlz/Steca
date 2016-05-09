@@ -83,7 +83,7 @@ QPointF PoleWidget::p(deg alpha, deg beta) const {
 
 void PoleWidget::paintGrid() {
   int alphaMax = fullCircle_ ? 180 : 90, betaMax = 360;
-
+  if (fullCircle_) r_ /=2;
   for (int alpha = 10; alpha <= alphaMax; alpha +=10) {
     qreal r = r_ / 90 * alpha;
     p_->drawEllipse(c_,r,r);
@@ -96,17 +96,15 @@ void PoleWidget::paintGrid() {
 
 void PoleWidget::paintInfo() {
   auto rgeMax = rs_.rgeInten().max;
-
+  auto avgInten = rs_.averageInten();
   for (auto const &r: rs_) {
     qreal inten = r.inten();
     if (qIsFinite(inten)) {
       inten /= rgeMax;
       auto color = QColor(intenRgb(inten));
       p_->setPen(color); p_->setBrush(color);
-      p_->drawEllipse(p(r.alpha(),r.beta()),inten*10,inten*10); // * factor just for display
-    } else {
-      p_->setPen(Qt::magenta); p_->setBrush(Qt::magenta);
-      p_->drawEllipse(p(r.alpha(),r.beta()),5,5);
+      if (inten < 0.5) inten*=2;
+      p_->drawEllipse(p(r.alpha(),r.beta()),inten*avgInten,inten*avgInten);
     }
   }
 }
@@ -168,11 +166,11 @@ OutPoleFiguresParams::OutPoleFiguresParams(TheHub& hub): super("", hub, Qt::Vert
   gbGammaLimit_->setLayout(gl);
   gbGammaLimit_->setDisabled(true);
 
-  gl->addWidget(label("Gamma limitation max"),                   0,0);
+  gl->addWidget(label("Gamma limitation max"),       0,0);
   gl->setHorizontalSpacing(10);
-  gl->addWidget(gammaLimitMax = spinCell(8,0.,100.),             0,1); // REVIEW reasonable limit
-  gl->addWidget(label("Gamma limitation min"),                   1,0);
-  gl->addWidget(gammaLimitMin = spinCell(8,0.,100.),             1,1); // REVIEW reasonable limit
+  gl->addWidget(gammaLimitMax = spinCell(8,0.,100.), 0,1); // REVIEW reasonable limit
+  gl->addWidget(label("Gamma limitation min"),       1,0);
+  gl->addWidget(gammaLimitMin = spinCell(8,0.,100.), 1,1); // REVIEW reasonable limit
   gl->setColumnStretch(2,1);
 
   connect(rbPoints_, &QRadioButton::clicked, [this]() {
@@ -206,6 +204,10 @@ OutPoleTabs::OutPoleTabs(TheHub& hub): super(hub) {
   {
     addTab("Graph");
   }
+  {
+    addTab("Meta data");
+  }
+
 }
 
 //------------------------------------------------------------------------------
@@ -217,13 +219,18 @@ OutPoleFigures::OutPoleFigures(TheHub& hub,rcstr title,QWidget* parent)
   setWidgets(params_,tabs);
 
   tableWidget_ = new OutTableWidget(hub,
-      {"α","β","γ1","γ2","inten","2θ","fwhm"},
-      {cmp_real,cmp_real,cmp_real,cmp_real,cmp_real,cmp_real,cmp_real});
+       {"α","β","γ1","γ2","inten","2θ","fwhm"},
+       {cmp_real,cmp_real,cmp_real,cmp_real,cmp_real,cmp_real,cmp_real});
 
   poleWidget_ = new PoleWidget();
 
+  tableMetaData_ = new OutTableWidget(hub, {"X", "Y", "Z","ω", "2θ", "φ", "χ","PST", "SST", "ΩM", "Δmon", "Δt"},
+                                           {cmp_real,cmp_real,cmp_real,cmp_real,cmp_real,cmp_real,cmp_real,
+                                            cmp_real,cmp_real,cmp_real,cmp_real,cmp_real});
+
   tabs->tab(0).box->addWidget(tableWidget_);
   tabs->tab(1).box->addWidget(poleWidget_);
+  tabs->tab(2).box->addWidget(tableMetaData_);
 
   connect(params_->cbFullCircle_,&QCheckBox::toggled, [this,tabs] (bool on) {
     poleWidget_->fullCircle_ = on;
@@ -250,13 +257,16 @@ void OutPoleFigures::calculate() {
     qreal treshold  = (qreal)params_->treshold->value()/100.0;
     qreal avgRadius = params_->averagingRadius_->value();
     qreal idwRadius = params_->idwRadius_->value();
-    // REVIEW imput for avgeragingAlphaMax?
+    // REVIEW gui imput for avgeragingAlphaMax?
     rs_ = core::pole::interpolate(rs_,alphaStep,betaStep,10,avgRadius,idwRadius,treshold);
   }
 
-  for (auto const& r: rs_)
-    table.addRow({(qreal)r.alpha(), (qreal)r.beta(), r.rgeGamma().min, r.rgeGamma().max,
-                  r.inten(), (qreal)r.tth(), r.fwhm() });
+  for (auto const& r : rs_)
+    table.addRow({(qreal)r.alpha(), (qreal)r.beta(), r.rgeGamma().min, r.rgeGamma().max, r.inten(), (qreal)r.tth(), r.fwhm()});
+
+  auto &metaData = tableMetaData_->table();
+  for (auto const& d: hub_.collectedDatasets())
+    metaData.addRow(d->attributes(2));
 
   poleWidget_->set(rs_);
 }

@@ -42,6 +42,7 @@ public:
 private:
   OutPoleFiguresParams  *params_;
   OutTableWidget        *tableWidget_;
+  OutTableWidget        *tableMetaData_;
   PoleWidget            *poleWidget_;
   core::ReflectionInfos  rs_;
 };

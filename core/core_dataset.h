@@ -32,6 +32,8 @@ public:
   // attribute list - will be dynamic
   static uint  numAttributes();
   static rcstr attributeTag(uint);
+  QVariant attributeValue(uint tag);
+  QVector<QVariant> attributes(uint start);
 
 public:
   Dataset(rcstr date, rcstr comment,

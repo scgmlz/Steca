@@ -16,6 +16,7 @@
 #include "core_session.h"
 #include "core_lens.h"
 #include <QStringList>
+#include <QVariant>
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -46,6 +47,65 @@ rcstr Dataset::attributeTag(uint i) {
   };
 
   return attributeTags.at(i);
+}
+
+QVariant Dataset::attributeValue(uint tag) {
+  QVariant att = 0;
+  switch (tag) {
+  case attrDATE:
+    att = date_;
+    break;
+  case attrCOMMENT:
+    att = comment_;
+    break;
+  case attrMOTOR_XT:
+    att = (qreal) motorXT_;
+    break;
+  case attrMOTOR_YT:
+    att = (qreal)motorYT_;
+    break;
+  case attrMOTOR_ZT:
+    att = (qreal)motorZT_;
+    break;
+  case attrMOTOR_OMG:
+    att = (qreal)motorOmg_;
+    break;
+  case attrMOTOR_TTH:
+    att = (qreal)motorTth_;
+    break;
+  case attrMOTOR_PHI:
+    att = (qreal)motorPhi_;
+     break;
+  case attrMOTOR_CHI:
+    att = (qreal)motorChi_;
+    break;
+  case attrMOTOR_PST:
+    att = (qreal)motorPST_;
+    break;
+  case attrMOTOR_SST:
+    att = (qreal)motorSST_;
+    break;
+  case attrMOTOR_OMGM:
+    att = (qreal)motorOMGM_;
+    break;
+  case attrDELTA_MONITOR_COUNT:
+    att = deltaMonitorCount_;
+    break;
+  case attrDELTA_TIME:
+    att = deltaTime_;
+    break;
+  default:
+    NEVER_HERE
+    break;
+  }
+  return att;
+}
+
+QVector<QVariant> Dataset::attributes(uint start) {
+  QVector<QVariant> atts;
+  for (int i = start; i < NUM_ATTRIBUTES; ++i)
+    atts.append(attributeValue(i));
+  return atts;
 }
 
 Dataset::Dataset(
