@@ -10,7 +10,7 @@ cat >> $PRO <<EOT
 TARGET   = $APP
 TEMPLATE = app
 
-QT      += core gui widgets
+QT      += core gui widgets svg
 CONFIG  += c++11 silent $CFG
 
 INCLUDEPATH += \$\$PWD/core \$\$PWD/gui

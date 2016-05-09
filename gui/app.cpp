@@ -30,7 +30,7 @@ App::App(int &argc, char *argv[]): super(argc,argv) {
 #if defined(Q_OS_OSX)
   setStyle(QStyleFactory::create("Macintosh"));
 #elif defined(Q_OS_WIN)
-  setStyle(QStyleFactory::create("Windows"));
+  setStyle(QStyleFactory::create("Fusion"));
 #else
   setStyle(QStyleFactory::create("Fusion"));
 #endif

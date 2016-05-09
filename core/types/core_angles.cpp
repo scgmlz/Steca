@@ -13,8 +13,7 @@
 // ************************************************************************** //
 
 #include "core_angles.h"
-//#include "types/core_type_range.h"
-//#include "types/core_json.h"
+#include "QtMath"
 
 namespace core {
 
