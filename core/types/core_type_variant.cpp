@@ -14,10 +14,9 @@
 
 #include "core_type_variant.h"
 #include <QDate>
+#include <QVariant>
 
 namespace core {
-//------------------------------------------------------------------------------
-
 //------------------------------------------------------------------------------
 
 #define IMPL_CMP(name, toType)                       \

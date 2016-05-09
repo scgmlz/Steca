@@ -16,6 +16,7 @@
 #include "core_session.h"
 #include "core_lens.h"
 #include <QStringList>
+#include <QVariant>
 
 namespace core {
 //------------------------------------------------------------------------------

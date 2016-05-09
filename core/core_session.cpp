@@ -320,7 +320,7 @@ ReflectionInfo Session::makeReflectionInfo(shp_Lens lens, rcReflection reflectio
  * Even though the betaStep of the equidistant polefigure grid is needed here,
  * the returned infos won't be on the grid.
  */
-ReflectionInfos Session::reflectionInfos(rcDatasets datasets, rcReflection reflection,
+ReflectionInfos Session::makeReflectionInfos(rcDatasets datasets, rcReflection reflection,
                                          deg betaStep, rcRange gammaRange) {
   ReflectionInfos infos;
 

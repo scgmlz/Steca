@@ -93,12 +93,16 @@ void PoleWidget::circle(QPointF c, qreal r) {
 void PoleWidget::paintGrid() {
   alphaMax_ = cbFullSphere_->isChecked() ? 180 : 90;
 
+  QPen penMajor(Qt::gray), penMinor(Qt::lightGray);
+
   for (int alpha = 10; alpha <= alphaMax_; alpha +=10) {
     qreal r = r_ / alphaMax_ * alpha;
+    p_->setPen(!(alpha%90) ? penMajor : penMinor);
     circle(c_,r);
   }
 
   for (int beta = 0; beta < 360; beta +=10) {
+    p_->setPen(!(beta%30) ? penMajor : penMinor);
     p_->drawLine(p(10,beta), p(alphaMax_,beta));
   }
 }
@@ -256,7 +260,7 @@ void OutPoleFigures::calculate() {
     return;
 
   auto reflection = reflections.at(index);
-  rs_ = hub_.reflectionInfos(*reflection, betaStep);
+  rs_ = hub_.makeReflectionInfos(*reflection, betaStep);
 
   if (params_->cbInterpolated_->isChecked()) {
     qreal treshold  = (qreal)params_->threshold_->value()/100.0;

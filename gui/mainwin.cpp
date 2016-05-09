@@ -344,6 +344,7 @@ void MainWin::onShow() {
 #endif
 #ifdef DEVELOPMENT_JAN
   hub_.loadSession(QFileInfo(QDir::homePath() + "/P/+scg/data/s.ste"));
+  hub_.actions.outputPolefigures->trigger();
 #endif
 }
 

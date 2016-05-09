@@ -93,7 +93,7 @@ public:
   core::AngleMap const& angleMap(core::rcDataset)  const;
 
 public:
-  core::ReflectionInfos reflectionInfos(core::rcReflection, qreal betaStep,
+  core::ReflectionInfos makeReflectionInfos(core::rcReflection, qreal betaStep,
                                         core::rcRange gammaRange = core::Range());
 
 public:

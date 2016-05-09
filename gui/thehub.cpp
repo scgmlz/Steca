@@ -169,10 +169,10 @@ core::AngleMap const& TheHub::angleMap(core::rcDataset dataset) const {
   return session->angleMap(dataset);
 }
 
-core::ReflectionInfos TheHub::reflectionInfos(core::rcReflection reflection, qreal betaStep,
-                                              core::rcRange gammaRange) {
+core::ReflectionInfos TheHub::makeReflectionInfos(core::rcReflection reflection, qreal betaStep,
+                                                  core::rcRange gammaRange) {
   // TODO TODO TODO
-  return session->reflectionInfos(
+  return session->makeReflectionInfos(
      collectedDatasets(), reflection, betaStep, gammaRange);
 }
 
