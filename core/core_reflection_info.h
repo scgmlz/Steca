@@ -55,13 +55,12 @@ class ReflectionInfos: protected QVector<ReflectionInfo> {
 public:
   ReflectionInfos();
   using super::isEmpty;
-  using super::begin;
-  using super::end;
+  using super::count;
   using super::reserve;
   using super::first;
   using super::at;
-  using super::operator [];
-  using super::count;
+  using super::begin;
+  using super::end;
 
   void append(rcReflectionInfo);
 

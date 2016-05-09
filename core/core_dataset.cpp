@@ -16,29 +16,32 @@
 #include "core_session.h"
 #include "core_lens.h"
 #include <QStringList>
-#include <QVariant>
 
 namespace core {
 //------------------------------------------------------------------------------
 // dataset attributes
 
-enum {
-  attrDATE, attrCOMMENT,
+enum class attr {
+  DATE, COMMENT,
 
-  attrMOTOR_XT,  attrMOTOR_YT,  attrMOTOR_ZT,
-  attrMOTOR_OMG, attrMOTOR_TTH, attrMOTOR_PHI, attrMOTOR_CHI,
-  attrMOTOR_PST, attrMOTOR_SST, attrMOTOR_OMGM,
-  attrDELTA_MONITOR_COUNT, attrDELTA_TIME,
+  MOTOR_XT,  MOTOR_YT,  MOTOR_ZT,
+  MOTOR_OMG, MOTOR_TTH, MOTOR_PHI, MOTOR_CHI,
+  MOTOR_PST, MOTOR_SST, MOTOR_OMGM,
+  DELTA_MONITOR_COUNT, DELTA_TIME,
 
   NUM_ATTRIBUTES
 };
 
 uint Dataset::numAttributes() {
-  return NUM_ATTRIBUTES;
+  return (uint)attr::NUM_ATTRIBUTES;
 }
 
 rcstr Dataset::attributeTag(uint i) {
-  static str_lst const attributeTags = {
+  return attributeTags().at(i);
+}
+
+str_lst Dataset::attributeTags() {
+  static str_lst const tags = {
     "date", "comment",
     "X", "Y", "Z",
     "ω", "2θ", "φ", "χ",
@@ -46,67 +49,22 @@ rcstr Dataset::attributeTag(uint i) {
     "Δmon", "Δt",
   };
 
-  return attributeTags.at(i);
+  return tags;
 }
 
-QVariant Dataset::attributeValue(uint tag) {
-  QVariant att = 0;
-  switch (tag) {
-  case attrDATE:
-    att = date_;
-    break;
-  case attrCOMMENT:
-    att = comment_;
-    break;
-  case attrMOTOR_XT:
-    att = (qreal) motorXT_;
-    break;
-  case attrMOTOR_YT:
-    att = (qreal)motorYT_;
-    break;
-  case attrMOTOR_ZT:
-    att = (qreal)motorZT_;
-    break;
-  case attrMOTOR_OMG:
-    att = (qreal)motorOmg_;
-    break;
-  case attrMOTOR_TTH:
-    att = (qreal)motorTth_;
-    break;
-  case attrMOTOR_PHI:
-    att = (qreal)motorPhi_;
-     break;
-  case attrMOTOR_CHI:
-    att = (qreal)motorChi_;
-    break;
-  case attrMOTOR_PST:
-    att = (qreal)motorPST_;
-    break;
-  case attrMOTOR_SST:
-    att = (qreal)motorSST_;
-    break;
-  case attrMOTOR_OMGM:
-    att = (qreal)motorOMGM_;
-    break;
-  case attrDELTA_MONITOR_COUNT:
-    att = deltaMonitorCount_;
-    break;
-  case attrDELTA_TIME:
-    att = deltaTime_;
-    break;
-  default:
-    NEVER_HERE
-    break;
-  }
-  return att;
+cmp_vec Dataset::attributeCmps() {
+  static cmp_vec const cmps = {
+    cmp_date, cmp_str,
+    cmp_real, cmp_real, cmp_real,
+    cmp_real, cmp_real, cmp_real, cmp_real,
+    cmp_real, cmp_real, cmp_real,
+    cmp_real, cmp_real,
+  };
+
+  return cmps;
 }
 
-QVector<QVariant> Dataset::attributes(uint start) {
-  QVector<QVariant> atts;
-  for (int i = start; i < NUM_ATTRIBUTES; ++i)
-    atts.append(attributeValue(i));
-  return atts;
-}
+//------------------------------------------------------------------------------
 
 Dataset::Dataset(
   rcstr date, rcstr comment,
@@ -202,25 +160,55 @@ shp_Dataset Dataset::combine(Datasets datasets) {
 str Dataset::attributeStrValue(uint i) const {
   qreal value = 0;
 
-  switch (i) {
-  case attrDATE:        return date_;
-  case attrCOMMENT:     return comment_;
+  switch ((attr)i) {
+  case attr::DATE:        return date_;
+  case attr::COMMENT:     return comment_;
 
-  case attrMOTOR_XT:    value = motorXT_;   break;
-  case attrMOTOR_YT:    value = motorYT_;   break;
-  case attrMOTOR_ZT:    value = motorZT_;   break;
-  case attrMOTOR_OMG:   value = motorOmg_;  break;
-  case attrMOTOR_TTH:   value = motorTth_;  break;
-  case attrMOTOR_PHI:   value = motorPhi_;  break;
-  case attrMOTOR_CHI:   value = motorChi_;  break;
-  case attrMOTOR_PST:   value = motorPST_;  break;
-  case attrMOTOR_SST:   value = motorSST_;  break;
-  case attrMOTOR_OMGM:  value = motorOMGM_; break;
-  case attrDELTA_MONITOR_COUNT: value = deltaMonitorCount_; break;
-  case attrDELTA_TIME:  value = deltaTime_; break;
+  case attr::MOTOR_XT:    value = motorXT_;   break;
+  case attr::MOTOR_YT:    value = motorYT_;   break;
+  case attr::MOTOR_ZT:    value = motorZT_;   break;
+  case attr::MOTOR_OMG:   value = motorOmg_;  break;
+  case attr::MOTOR_TTH:   value = motorTth_;  break;
+  case attr::MOTOR_PHI:   value = motorPhi_;  break;
+  case attr::MOTOR_CHI:   value = motorChi_;  break;
+  case attr::MOTOR_PST:   value = motorPST_;  break;
+  case attr::MOTOR_SST:   value = motorSST_;  break;
+  case attr::MOTOR_OMGM:  value = motorOMGM_; break;
+  case attr::DELTA_MONITOR_COUNT: value = deltaMonitorCount_; break;
+  case attr::DELTA_TIME:  value = deltaTime_; break;
+  default: NEVER_HERE
   }
 
   return str::number(value);
+}
+
+QVariant Dataset::attributeValue(uint i) const {
+  switch ((attr)i) {
+  case attr::DATE:       return date_;
+  case attr::COMMENT:    return comment_;
+  case attr::MOTOR_XT:   return (qreal)motorXT_;
+  case attr::MOTOR_YT:   return (qreal)motorYT_;
+  case attr::MOTOR_ZT:   return (qreal)motorZT_;
+  case attr::MOTOR_OMG:  return (qreal)motorOmg_;
+  case attr::MOTOR_TTH:  return (qreal)motorTth_;
+  case attr::MOTOR_PHI:  return (qreal)motorPhi_;
+  case attr::MOTOR_CHI:  return (qreal)motorChi_;
+  case attr::MOTOR_PST:  return (qreal)motorPST_;
+  case attr::MOTOR_SST:  return (qreal)motorSST_;
+  case attr::MOTOR_OMGM: return (qreal)motorOMGM_;
+  case attr::DELTA_MONITOR_COUNT: return deltaMonitorCount_;
+  case attr::DELTA_TIME: return deltaTime_;
+  default:
+    NEVER_HERE
+    return 0;
+  }
+}
+
+row_t Dataset::attributeValues() const {
+  row_t attrs;
+  for_i ((uint)attr::NUM_ATTRIBUTES)
+    attrs.append(attributeValue(i));
+  return attrs;
 }
 
 QSize Dataset::imageSize() const {

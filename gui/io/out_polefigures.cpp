@@ -35,23 +35,28 @@ class PoleWidget: public QWidget {
 public:
   PoleWidget();
   void set(core::ReflectionInfos);
-  bool     fullCircle_;
 
 protected:
   core::ReflectionInfos rs_;
   void paintEvent(QPaintEvent*);
 
   QPointF p(deg alpha, deg beta) const;
+  void circle(QPointF c, qreal r);
   void paintGrid();
   void paintInfo();
 
   // valid during paintEvent
-  QPainter *p_;
-  QPointF   c_;
-  qreal     r_;
+  QPainter  *p_;
+  QPointF    c_;
+  qreal      r_, alphaMax_;
+  QCheckBox *cbFullSphere_;
 };
 
-PoleWidget::PoleWidget() : fullCircle_(false) {
+PoleWidget::PoleWidget() {
+  (cbFullSphere_ = check("Full sphere"))->setParent(this);
+  connect(cbFullSphere_, &QCheckBox::toggled, [this] (bool) {
+    update();
+  });
 }
 
 void PoleWidget::set(core::ReflectionInfos rs) {
@@ -75,36 +80,39 @@ void PoleWidget::paintEvent(QPaintEvent*) {
 }
 
 QPointF PoleWidget::p(deg alpha, deg beta) const {
-  qreal r = r_*alpha/90;
+  qreal r = r_*alpha/alphaMax_;
 
   rad betaRad = beta.toRad();
   return QPointF(r*cos(betaRad), -r*sin(betaRad));
 }
 
+void PoleWidget::circle(QPointF c, qreal r) {
+  p_->drawEllipse(c,r,r);
+}
+
 void PoleWidget::paintGrid() {
-  int alphaMax = fullCircle_ ? 180 : 90, betaMax = 360;
-  if (fullCircle_) r_ /=2;
-  for (int alpha = 10; alpha <= alphaMax; alpha +=10) {
-    qreal r = r_ / 90 * alpha;
-    p_->drawEllipse(c_,r,r);
+  alphaMax_ = cbFullSphere_->isChecked() ? 180 : 90;
+
+  for (int alpha = 10; alpha <= alphaMax_; alpha +=10) {
+    qreal r = r_ / alphaMax_ * alpha;
+    circle(c_,r);
   }
 
-  for (int beta = 0; beta < betaMax; beta +=10) {
-    p_->drawLine(p(10,beta), p(alphaMax,beta));
+  for (int beta = 0; beta < 360; beta +=10) {
+    p_->drawLine(p(10,beta), p(alphaMax_,beta));
   }
 }
 
 void PoleWidget::paintInfo() {
-  auto rgeMax = rs_.rgeInten().max;
-  auto avgInten = rs_.averageInten();
+  qreal rgeMax = rs_.rgeInten().max, avgInten = rs_.averageInten();
+
   for (auto const &r: rs_) {
     qreal inten = r.inten();
     if (qIsFinite(inten)) {
       inten /= rgeMax;
       auto color = QColor(intenRgb(inten));
       p_->setPen(color); p_->setBrush(color);
-      if (inten < 0.5) inten*=2;
-      p_->drawEllipse(p(r.alpha(),r.beta()),inten*avgInten,inten*avgInten);
+      circle(p(r.alpha(),r.beta()), inten*avgInten);
     }
   }
 }
@@ -116,83 +124,86 @@ class OutPoleFiguresParams: public panel::BoxPanel {
 public:
   OutPoleFiguresParams(TheHub&);
 
-  QGroupBox       *moreParams_, *gbGammaLimit_;
-  QComboBox       *reflections_;
-  QRadioButton    *rbPoints_, *rbInterpolated_;
-  QCheckBox       *cbFullCircle_, *cbGammaLimit_;
-  QDoubleSpinBox  *stepAlpha, *stepBeta, *idwRadius_, *averagingRadius_,
-                  *gammaLimitMax, *gammaLimitMin;
-  QSpinBox        *treshold;
+  QGroupBox       *gbReflection_, *gbInterpolation_, *gbGammaLimit_;
+  QCheckBox       *cbInterpolated_, *cbGammaLimit_;
+
+  QComboBox       *reflection_;
+  QDoubleSpinBox  *stepAlpha_, *stepBeta_, *idwRadius_, *averagingRadius_,
+                  *gammaLimitMax_, *gammaLimitMin_;
+  QSpinBox        *threshold_;
 };
 
-OutPoleFiguresParams::OutPoleFiguresParams(TheHub& hub): super("", hub, Qt::Vertical) {
-  auto bp = gridLayout();
-  box_->addLayout(bp);
+OutPoleFiguresParams::OutPoleFiguresParams(TheHub& hub): super("", hub, Qt::Horizontal) {
+  box_->addWidget((gbReflection_    = new QGroupBox()));
+  box_->addWidget((gbInterpolation_ = new QGroupBox()));
+  box_->addWidget((gbGammaLimit_    = new QGroupBox()));
 
-  bp->addWidget(label("β step"),0,0);
-  bp->addWidget((stepBeta = spinCell(8,1.,30.)),0,1);
+  auto g = gridLayout();
+  gbReflection_->setLayout(g);
 
-  str_lst ref; auto const& model = hub_.reflectionsModel;
-  for_i (model.rowCount())
-    ref.append(model.displayData(i));
+  g->addWidget(label("Reflection"),               0,0);
+  g->addWidget((reflection_ = comboBox(hub_.reflectionsModel.names())), 0,1);
+  g->addWidget(label("α step"),                   1,0);
+  g->addWidget((stepAlpha_ = spinCell(6,1.,30.)), 1,1);
+  g->addWidget(label("β step"),                   2,0);
+  g->addWidget((stepBeta_ = spinCell(6, 1.,30.)), 2,1);
+  g->addWidget(label(" "),                        3,0);
 
-  bp->addWidget(label("Reflection"),0,2);
-  bp->addWidget(reflections_ = comboBox(ref),0,3);
-  bp->setVerticalSpacing(5);
+  g = gridLayout();
+  gbInterpolation_->setLayout(g);
 
-  bp->addWidget((rbPoints_ = radioButton("points")),1,0);
-  bp->addWidget((rbInterpolated_ = radioButton("interpolated")),1,1);
-  bp->addWidget((cbFullCircle_ = check("Full circle")),1,2);
-  bp->setColumnStretch(4,1);
+  g->addWidget((cbInterpolated_ = check("Interpolated")), 0,0);
+  g->addWidget(label("Averaging radius"),                 1,0); // REVIEW naming
+  g->addWidget((averagingRadius_ = spinCell(8.,0.,100.)), 1,1); // REVIEW reasonable limit
+  g->addWidget(label("Idw radius"),                       2,0); // REVIEW naming
+  g->addWidget((idwRadius_ = spinCell(8,0.,100.)),        2,1); // REVIEW reasonable limit
+  g->addWidget(label("Threshold"),                        3,0);
+  g->addWidget((threshold_ = spinCell(4,0,100)),          3,1);
 
-  box_->addWidget((moreParams_ = new QGroupBox()),2,0);
-  auto mp = gridLayout();
-  moreParams_->setLayout(mp);
+  g = gridLayout();
+  gbGammaLimit_->setLayout(g);
 
-  mp->addWidget(label("α step"),                         0,0);
-  mp->addWidget((stepAlpha = spinCell(8,1.,30.)),        0,1);
-  mp->setHorizontalSpacing(10);
-  mp->addWidget(label("Treshold"),                       0,2);
-  mp->addWidget(treshold = spinCell(4,0,100),            0,3);
-  mp->addWidget(label("Averaging radius"),               1,0); // REVIEW naming
-  mp->addWidget(averagingRadius_ = spinCell(8.,0.,100.), 1,3); // REVIEW reasonable limit
-  mp->addWidget(label("Idw radius"),                     1,2); // REVIEW naming
-  mp->addWidget(idwRadius_ = spinCell(8,0.,100.),        1,1); // REVIEW reasonable limit
-  mp->setColumnStretch(4,1);
+  g->addWidget((cbGammaLimit_ = check("Gamma limit")),    0,0);
+  g->addWidget(label("max"),                              1,0);
+  g->addWidget((gammaLimitMax_ = spinCell(8,0.,100.)),    1,1); // REVIEW reasonable limit
+  g->addWidget(label("min"),                              2,0);
+  g->addWidget((gammaLimitMin_ = spinCell(8,0.,100.)),    2,1); // REVIEW reasonable limit
+  g->addWidget(label(" "),                        3,0);
 
-  box_->addWidget((cbGammaLimit_ = check("Gamma Limitation")), 0,0);
-  box_->addWidget((gbGammaLimit_ = new QGroupBox()));
-  auto gl = gridLayout();
-  gbGammaLimit_->setLayout(gl);
-  gbGammaLimit_->setDisabled(true);
+  // values
 
-  gl->addWidget(label("Gamma limitation max"),       0,0);
-  gl->setHorizontalSpacing(10);
-  gl->addWidget(gammaLimitMax = spinCell(8,0.,100.), 0,1); // REVIEW reasonable limit
-  gl->addWidget(label("Gamma limitation min"),       1,0);
-  gl->addWidget(gammaLimitMin = spinCell(8,0.,100.), 1,1); // REVIEW reasonable limit
-  gl->setColumnStretch(2,1);
+  stepAlpha_->setValue(5);
+  stepBeta_->setValue(5);
 
-  connect(rbPoints_, &QRadioButton::clicked, [this]() {
-    moreParams_->setDisabled(true);
-  });
-
-  connect(rbInterpolated_, &QRadioButton::clicked, [this]() {
-    moreParams_->setEnabled(true);
-  });
-
-  connect(cbGammaLimit_, &QCheckBox::toggled, [this](int on) {
-    gbGammaLimit_->setEnabled(on);
-  });
-
-  stepAlpha->setValue(5);
-  stepBeta->setValue(5);
-  treshold->setValue(100);
   averagingRadius_->setValue(0);
   idwRadius_->setValue(0);
-  gammaLimitMax->setValue(0);
-  gammaLimitMin->setValue(0);
-  rbPoints_->click();
+  threshold_->setValue(100);
+
+  gammaLimitMax_->setValue(0);
+  gammaLimitMin_->setValue(0);
+
+  auto interpolEnable = [this] (bool on) {
+    stepAlpha_->setEnabled(on);
+    averagingRadius_->setEnabled(on);
+    idwRadius_->setEnabled(on);
+    threshold_->setEnabled(on);
+  };
+
+  auto gammaEnable = [this] (bool on) {
+    gammaLimitMax_->setEnabled(on);
+    gammaLimitMin_->setEnabled(on);
+  };
+
+  interpolEnable(false);
+  gammaEnable(false);
+
+  connect(cbInterpolated_, &QCheckBox::toggled, [interpolEnable](bool on) {
+    interpolEnable(on);
+  });
+
+  connect(cbGammaLimit_, &QCheckBox::toggled, [gammaEnable](int on) {
+    gammaEnable(on);
+  });
 }
 
 //------------------------------------------------------------------------------
@@ -205,9 +216,8 @@ OutPoleTabs::OutPoleTabs(TheHub& hub): super(hub) {
     addTab("Graph");
   }
   {
-    addTab("Meta data");
+    addTab("Metadata");
   }
-
 }
 
 //------------------------------------------------------------------------------
@@ -218,34 +228,29 @@ OutPoleFigures::OutPoleFigures(TheHub& hub,rcstr title,QWidget* parent)
   auto *tabs = new OutPoleTabs(hub);
   setWidgets(params_,tabs);
 
-  tableWidget_ = new OutTableWidget(hub,
+  tableData_ = new OutTableWidget(hub,
        {"α","β","γ1","γ2","inten","2θ","fwhm"},
-       {cmp_real,cmp_real,cmp_real,cmp_real,cmp_real,cmp_real,cmp_real});
+       {core::cmp_real, core::cmp_real, core::cmp_real, core::cmp_real,
+        core::cmp_real, core::cmp_real, core::cmp_real});
 
   poleWidget_ = new PoleWidget();
 
-  tableMetaData_ = new OutTableWidget(hub, {"X", "Y", "Z","ω", "2θ", "φ", "χ","PST", "SST", "ΩM", "Δmon", "Δt"},
-                                           {cmp_real,cmp_real,cmp_real,cmp_real,cmp_real,cmp_real,cmp_real,
-                                            cmp_real,cmp_real,cmp_real,cmp_real,cmp_real});
-
-  tabs->tab(0).box->addWidget(tableWidget_);
+  tableMetadata_ = new OutTableWidget(hub,
+                                      core::Dataset::attributeTags(),
+                                      core::Dataset::attributeCmps());
+  tabs->tab(0).box->addWidget(tableData_);
   tabs->tab(1).box->addWidget(poleWidget_);
-  tabs->tab(2).box->addWidget(tableMetaData_);
-
-  connect(params_->cbFullCircle_,&QCheckBox::toggled, [this,tabs] (bool on) {
-    poleWidget_->fullCircle_ = on;
-    tabs->tab(1).box->update();
-  });
+  tabs->tab(2).box->addWidget(tableMetadata_);
 }
 
 void OutPoleFigures::calculate() {
-  auto &table = tableWidget_->table();
+  auto &table = tableData_->table();
   table.clear();
 
-  deg alphaStep = params_->stepAlpha->value();
-  deg betaStep  = params_->stepBeta->value();
+  deg alphaStep = params_->stepAlpha_->value();
+  deg betaStep  = params_->stepBeta_->value();
 
-  auto index = params_->reflections_->currentIndex();
+  auto index = params_->reflection_->currentIndex();
   auto &reflections = hub_.reflections();
   if (reflections.isEmpty())
     return;
@@ -253,20 +258,20 @@ void OutPoleFigures::calculate() {
   auto reflection = reflections.at(index);
   rs_ = hub_.reflectionInfos(*reflection, betaStep);
 
-  if (params_->rbInterpolated_->isChecked()) {
-    qreal treshold  = (qreal)params_->treshold->value()/100.0;
+  if (params_->cbInterpolated_->isChecked()) {
+    qreal treshold  = (qreal)params_->threshold_->value()/100.0;
     qreal avgRadius = params_->averagingRadius_->value();
     qreal idwRadius = params_->idwRadius_->value();
-    // REVIEW gui imput for avgeragingAlphaMax?
+    // REVIEW gui input for averagingAlphaMax?
     rs_ = core::pole::interpolate(rs_,alphaStep,betaStep,10,avgRadius,idwRadius,treshold);
   }
 
-  for (auto const& r : rs_)
+  for (auto const& r: rs_)
     table.addRow({(qreal)r.alpha(), (qreal)r.beta(), r.rgeGamma().min, r.rgeGamma().max, r.inten(), (qreal)r.tth(), r.fwhm()});
 
-  auto &metaData = tableMetaData_->table();
+  auto &metaData = tableMetadata_->table();
   for (auto const& d: hub_.collectedDatasets())
-    metaData.addRow(d->attributes(2));
+    metaData.addRow(d->attributeValues());
 
   poleWidget_->set(rs_);
 }

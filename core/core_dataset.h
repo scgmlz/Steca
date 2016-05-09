@@ -19,6 +19,7 @@
 #include "types/core_type_image.h"
 #include "types/core_type_geometry.h"
 #include "types/core_type_curve.h"
+#include "types/core_type_variant.h"
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -30,10 +31,10 @@ class Dataset final {
   friend class Datasets;
 public:
   // attribute list - will be dynamic
-  static uint  numAttributes();
-  static rcstr attributeTag(uint);
-  QVariant attributeValue(uint tag);
-  QVector<QVariant> attributes(uint start);
+  static uint    numAttributes();
+  static rcstr   attributeTag(uint);
+  static str_lst attributeTags();
+  static cmp_vec attributeCmps();
 
 public:
   Dataset(rcstr date, rcstr comment,
@@ -49,7 +50,9 @@ public:
 
   static shp_Dataset combine(Datasets);
 
-  str attributeStrValue(uint) const;
+  str       attributeStrValue(uint) const;
+  QVariant  attributeValue(uint)    const;
+  row_t     attributeValues()       const;
 
   deg   midTth()            const { return motorTth_;           }
   qreal deltaMonitorCount() const { return deltaMonitorCount_;  }

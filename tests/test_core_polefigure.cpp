@@ -211,12 +211,12 @@ void TestCorePolefigure::testSearchInQuadrants() {
 
   QCOMPARE(foundInfos.size(),4);
 
-  QVERIFY(foundInfos[0]);
-  QCOMPARE(foundInfos[0]->alpha(),infos[0].alpha());
+  QVERIFY(foundInfos.at(0));
+  QCOMPARE(foundInfos.at(0)->alpha(),infos.at(0).alpha());
 
-  QVERIFY(!foundInfos[1]);
-  QVERIFY(!foundInfos[2]);
-  QVERIFY(!foundInfos[3]);
+  QVERIFY(!foundInfos.at(1));
+  QVERIFY(!foundInfos.at(2));
+  QVERIFY(!foundInfos.at(3));
 }
 
 static core::Dataset testDataset(QSize size, core::inten_t inten, QVector<qreal> motorAngles, qreal mon, qreal deltaTime) {
@@ -244,7 +244,6 @@ static core::Dataset testDataset(QSize size, core::inten_t inten, QVector<qreal>
                      motorPST,motorSST,motorOMGM,
                      mon, deltaTime,
                      size, intensities);
-
 }
 
 void TestCorePolefigure::testCalcAlphaBeta() {

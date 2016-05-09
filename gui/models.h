@@ -93,6 +93,8 @@ public:
 
   void addReflection(core::ePeakType);
   void remReflection(uint);
+
+  str_lst names() const;
 };
 
 //------------------------------------------------------------------------------

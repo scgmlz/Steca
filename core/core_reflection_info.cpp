@@ -37,12 +37,10 @@ ReflectionInfo::ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma)
 : ReflectionInfo(alpha,beta,rgeGamma,qQNaN(),qQNaN(),qQNaN()) {
 }
 
-
 //------------------------------------------------------------------------------
 
-
-
-ReflectionInfos::ReflectionInfos() : avgInten_(qQNaN()){
+ReflectionInfos::ReflectionInfos() {
+  invalidate();
 }
 
 void ReflectionInfos::append(rcReflectionInfo info) {
@@ -53,12 +51,17 @@ void ReflectionInfos::append(rcReflectionInfo info) {
 qreal ReflectionInfos::averageInten() const {
   if (qIsNaN(avgInten_)) {
     avgInten_ = 0;
-    uint cnt = count();
-    if (cnt) {
-      for_i (cnt)
-        if(!qIsNaN(at(i).inten())) avgInten_ += at(i).inten();
-      avgInten_ /= cnt;
+    uint cnt = 0;
+
+    for (auto const& info: *this) {
+      qreal inten = info.inten();
+      if (qIsFinite(inten)) {
+        avgInten_ += inten; ++cnt;
+      }
     }
+
+    if (cnt)
+      avgInten_ /= cnt;
   }
 
   return avgInten_;

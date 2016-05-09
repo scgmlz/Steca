@@ -21,7 +21,6 @@
 #include <QFontMetrics>
 #include <QSplitter>
 #include <QScrollArea>
-#include <QDate>
 
 namespace gui { namespace io {
 //------------------------------------------------------------------------------
@@ -30,7 +29,7 @@ class OutTableModel: public models::TableModel {
   SUPER(OutTableModel,models::TableModel)
 
 public:
-  OutTableModel(TheHub&, uint numColumns);
+  OutTableModel(TheHub&, uint numCols_);
 
   int columnCount(rcIndex = models::ANY_INDEX) const;
   int rowCount(rcIndex    = models::ANY_INDEX) const;
@@ -41,38 +40,38 @@ public:
   void moveColumn(uint from, uint to);
 
   void setHeaders(str_lst const&);
-  void setCmpFuns(OutTable::cmp_vec const&);
+  void setCmpFuns(core::cmp_vec const&);
 
   void clear();
-  void addRow(OutTable::row_t const&);
+  void addRow(core::row_t const&);
 
   void sortData();
 
 private:
-  uint numColumns;
+  uint numCols_;
 
-  uint_vec            colIndexMap;
-  OutTable::cmp_vec   cmpFunctions;
+  str_lst       colTitles_;
+  uint_vec      colIndexMap_;
+  core::cmp_vec cmpFunctions_;
 
-  QVector<OutTable::row_t> printDatasets;
-  str_lst columnTitles;
+  QVector<core::row_t> rows_;
 };
 
 //------------------------------------------------------------------------------
 
 OutTableModel::OutTableModel(TheHub& hub, uint numColumns_)
-: models::TableModel(hub), numColumns(numColumns_) {
-  colIndexMap.resize(numColumns);
-  for_i (numColumns)
-    colIndexMap[i] = i;
+: models::TableModel(hub), numCols_(numColumns_) {
+  colIndexMap_.resize(numCols_);
+  for_i (numCols_)
+    colIndexMap_[i] = i;
 }
 
 int OutTableModel::columnCount(rcIndex) const {
-  return numColumns + 1;
+  return numCols_ + 1;
 }
 
 int OutTableModel::rowCount(rcIndex) const {
-  return printDatasets.count();
+  return rows_.count();
 }
 
 // The first column contains row numbers. The rest numCols columns contain data.
@@ -90,7 +89,7 @@ QVariant OutTableModel::data(rcIndex index, int role) const {
       return indexRow + 1;
 
     if (--indexCol < numCols && indexRow < numRows)
-      return printDatasets[indexRow][indexCol];
+      return rows_[indexRow][indexCol];
 
     break;
 
@@ -99,7 +98,7 @@ QVariant OutTableModel::data(rcIndex index, int role) const {
       return Qt::AlignRight;
 
     if (--indexCol < numCols && indexRow < numRows) {
-      switch (printDatasets[indexRow][indexCol].type()) {
+      switch (rows_[indexRow][indexCol].type()) {
       case QVariant::Int:
       case QVariant::UInt:
       case QVariant::LongLong:
@@ -122,51 +121,51 @@ QVariant OutTableModel::data(rcIndex index, int role) const {
 }
 
 QVariant OutTableModel::headerData(int section, Qt::Orientation, int role) const {
-  if (section < 0 || columnTitles.count() < section)
+  if (section < 0 || colTitles_.count() < section)
     return QVariant();
 
   if (Qt::DisplayRole == role) {
     return 0 == section
         ? "#"
-        : columnTitles.at(section - 1);
+        : colTitles_.at(section - 1);
   }
 
   return QVariant();
 }
 
 void OutTableModel::moveColumn(uint from, uint to) {
-  ASSERT(from < (uint)colIndexMap.count() && to < (uint)colIndexMap.count())
+  ASSERT(from < (uint)colIndexMap_.count() && to < (uint)colIndexMap_.count())
 
-  qSwap(colIndexMap[from],colIndexMap[to]);
+  qSwap(colIndexMap_[from],colIndexMap_[to]);
   sortData();
 }
 
-void OutTableModel::setCmpFuns(OutTable::cmp_vec const& cmps) {
-  ASSERT(cmps.count() == (int)numColumns)
-  cmpFunctions = cmps;
+void OutTableModel::setCmpFuns(core::cmp_vec const& cmps) {
+  ASSERT(cmps.count() == (int)numCols_)
+  cmpFunctions_ = cmps;
 }
 
 void OutTableModel::clear() {
   beginResetModel();
-  printDatasets.clear();
+  rows_.clear();
   endResetModel();
 }
 
 void OutTableModel::setHeaders(str_lst const& headers) {
-  ASSERT(headers.count() == (int)numColumns)
-  columnTitles = headers;
+  ASSERT(headers.count() == (int)numCols_)
+  colTitles_ = headers;
 }
 
-void OutTableModel::addRow(OutTable::row_t const& row) {
-  printDatasets.append(row);
+void OutTableModel::addRow(core::row_t const& row) {
+  rows_.append(row);
   sortData();
 }
 
 void OutTableModel::sortData() {
   // sort left-to-right
-  auto cmp = [this](OutTable::row_t const& r1, OutTable::row_t const& r2) {
-    for_i (numColumns) {
-      int c = cmpFunctions[colIndexMap[i]](r1[colIndexMap[i]], r2[colIndexMap[i]]);
+  auto cmp = [this](core::row_t const& r1, core::row_t const& r2) {
+    for_i (numCols_) {
+      int c = cmpFunctions_[colIndexMap_[i]](r1[colIndexMap_[i]], r2[colIndexMap_[i]]);
       if (c < 0) return true;
       if (c > 0) return false;
     }
@@ -174,24 +173,9 @@ void OutTableModel::sortData() {
   };
 
   beginResetModel();
-  std::sort(printDatasets.begin(),printDatasets.end(),cmp);
+  std::sort(rows_.begin(),rows_.end(),cmp);
   endResetModel();
 }
-
-//------------------------------------------------------------------------------
-
-#define IMPL_CMP(name, toType)                             \
-  int name(QVariant const& v1, QVariant const& v2) { \
-    auto val1 = v1.toType(), val2 = v2.toType();           \
-    if (val1 < val2) return -1;                            \
-    if (val1 > val2) return +1;                            \
-    return 0;                                              \
-  }
-
-IMPL_CMP(cmp_int,  toInt)
-IMPL_CMP(cmp_str,  toString)
-IMPL_CMP(cmp_real, toDouble)
-IMPL_CMP(cmp_date, toDate)
 
 //------------------------------------------------------------------------------
 
@@ -226,7 +210,7 @@ void OutTable::setHeaders(str_lst const& headers) {
   });
 }
 
-void OutTable::setCmpFuns(OutTable::cmp_vec const& cmps) {
+void OutTable::setCmpFuns(core::cmp_vec const& cmps) {
   model_->setCmpFuns(cmps);
 }
 
@@ -234,14 +218,14 @@ void OutTable::clear() {
   model_->clear();
 }
 
-void OutTable::addRow(OutTable::row_t const& row) {
+void OutTable::addRow(core::row_t const& row) {
   model_->addRow(row);
 }
 
 //------------------------------------------------------------------------------
 
 OutTableWidget::OutTableWidget(TheHub& hub,
-                               str_lst const& headers, OutTable::cmp_vec const& cmps)
+                               str_lst const& headers, core::cmp_vec const& cmps)
 {
   ASSERT(headers.count() == cmps.count())
   uint numDataColumns = headers.count();

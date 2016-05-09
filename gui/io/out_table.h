@@ -18,6 +18,7 @@
 
 #include "gui_helpers.h"
 #include "panels/panel.h"
+#include "types/core_type_variant.h"
 
 namespace gui { namespace io {
 //------------------------------------------------------------------------------
@@ -27,32 +28,17 @@ class OutTableModel;
 class OutTable: public TreeView {
   SUPER(OutTable,TreeView)
 public:
-  /// The usual comparator: <0, 0, >0
-  typedef int cmpFun(QVariant const&, QVariant const&);
-
-  typedef QVector<cmpFun*>  cmp_vec;
-  typedef QVector<QVariant> row_t;
-
-public:
   OutTable(TheHub&, uint numDataColumns);
 
   void setHeaders(str_lst const&);
-  void setCmpFuns(cmp_vec const&);
+  void setCmpFuns(core::cmp_vec const&);
 
   void clear();
-  void addRow(row_t const&);
+  void addRow(core::row_t const&);
 
 private:
   OutTableModel *model_;
 };
-
-//------------------------------------------------------------------------------
-/// Comparators
-
-int cmp_int(QVariant const&,  QVariant const&);
-int cmp_str(QVariant const&,  QVariant const&);
-int cmp_real(QVariant const&, QVariant const&);
-int cmp_date(QVariant const&, QVariant const&);
 
 //------------------------------------------------------------------------------
 
@@ -61,7 +47,7 @@ class OutTableWidget: public QWidget {
 public:
   // Must have the right number of headers and comparators
   OutTableWidget(TheHub&,
-                 str_lst const& headers, OutTable::cmp_vec const&);
+                 str_lst const& headers, core::cmp_vec const&);
  ~OutTableWidget();
 
   OutTable& table() const {
