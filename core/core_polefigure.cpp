@@ -302,8 +302,7 @@ ReflectionInfos interpolate(ReflectionInfos const& infos,
           peakFWHM   /= tempPeakFWHMs.size()   - kTreshold;
 
           interpolatedInfos.append(
-            ReflectionInfo(alpha,
-                           beta,
+            ReflectionInfo(shp_Metadata(),alpha,beta,
                            infos.first().rgeGamma(),
                            peakHeight,peakOffset,
                            peakFWHM));
@@ -312,14 +311,16 @@ ReflectionInfos interpolate(ReflectionInfos const& infos,
 
         if (!qIsNaN(idwRadius)) {
           // Don't fall back to idw, just add an unmeasured info.
-          ReflectionInfo invalidInfo(alpha,beta,infos.first().rgeGamma()); // TODO insert?
+          ReflectionInfo invalidInfo(
+              shp_Metadata(),alpha,beta,infos.first().rgeGamma()); // TODO insert?
           interpolatedInfos.append(invalidInfo);
           continue;
         }
       }
       // Use idw, if alpha > averagingAlphaMax OR averaging failed (too small
       // averagingRadius?).
-      ReflectionInfo interpolatedInfo(alpha,beta,infos.first().rgeGamma());
+      ReflectionInfo interpolatedInfo(
+          shp_Metadata(),alpha,beta,infos.first().rgeGamma());
       interpolateValues(idwRadius, infos, interpolatedInfo);
       interpolatedInfos.append(interpolatedInfo);
     }

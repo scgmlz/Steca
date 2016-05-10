@@ -24,43 +24,49 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-class Datasets;
-
-/// Dataset = image + metadata
-class Dataset final {
-  friend class Datasets;
-public:
+struct Metadata {
   // attribute list - will be dynamic
   static uint    numAttributes();
   static rcstr   attributeTag(uint);
   static str_lst attributeTags();
   static cmp_vec attributeCmps();
 
-public:
-  Dataset(rcstr date, rcstr comment,
-          qreal motorXT,  qreal motorYT,  qreal motorZT,
-          qreal motorOmg, qreal motorTth, qreal motorPhi, qreal motorChi,
-          qreal motorPST, qreal motorSST, qreal motorOMGM,
-          qreal deltaMonitorCount, qreal deltaTime,
-          QSize const& size, inten_t const* intens);
-
-  Dataset(rcDataset);
-
-  rcDatasets datasets() const;
-
-  static shp_Dataset combine(Datasets);
-
   str       attributeStrValue(uint) const;
   QVariant  attributeValue(uint)    const;
   row_t     attributeValues()       const;
 
-  deg   midTth()            const { return motorTth_;           }
-  qreal deltaMonitorCount() const { return deltaMonitorCount_;  }
-  qreal deltaTime()         const { return deltaTime_;          }
+  static row_t  attributeNaNs();
 
-  deg   omg()               const { return motorOmg_; }
-  deg   phi()               const { return motorPhi_; }
-  deg   chi()               const { return motorChi_; }
+  str date, comment;
+
+  deg motorXT,  motorYT,  motorZT,
+      motorOmg, motorTth, motorPhi, motorChi,
+      motorPST, motorSST, motorOMGM;
+
+  qreal deltaMonitorCount, deltaTime;
+};
+
+//------------------------------------------------------------------------------
+/// Dataset = metadata + image
+
+class Dataset final {
+  friend class Datasets;
+public:
+  Dataset(rcMetadata, QSize const& size, inten_t const* intens);
+  Dataset(rcDataset);
+
+  rcDatasets   datasets() const;
+  shp_Metadata metadata() const;
+
+  static shp_Dataset combine(Datasets);
+
+  deg   midTth()            const { return md_->motorTth;           }
+  qreal deltaMonitorCount() const { return md_->deltaMonitorCount;  }
+  qreal deltaTime()         const { return md_->deltaTime;          }
+
+  deg   omg()               const { return md_->motorOmg; }
+  deg   phi()               const { return md_->motorPhi; }
+  deg   chi()               const { return md_->motorChi; }
 
   rcImage image()           const { return image_; }
 
@@ -70,15 +76,7 @@ public:
 private:
   Datasets *datasets_;  ///< here it belongs (or could be nullptr)
 
-  str date_, comment_;
-
-  // all stored angles in degrees
-  deg motorXT_,  motorYT_,  motorZT_,
-      motorOmg_, motorTth_, motorPhi_, motorChi_,
-      motorPST_, motorSST_, motorOMGM_;
-
-  qreal deltaMonitorCount_, deltaTime_;
-
+  shp_Metadata md_;
   Image image_;
 };
 

@@ -36,6 +36,8 @@ public:
   void clear();
   void addRow(core::row_t const&);
 
+  void sortData();
+
 private:
   OutTableModel *model_;
 };

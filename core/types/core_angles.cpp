@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "core_angles.h"
-#include "QtMath"
+#include <qmath.h>
 
 namespace core {
 

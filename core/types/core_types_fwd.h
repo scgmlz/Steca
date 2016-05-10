@@ -43,8 +43,11 @@ class JsonArr; typedef JsonArr const& rcJsonArr;
 
 class Session;  typedef Session const&  rcSession;
 class File;     typedef File const&     rcFile;
-class Dataset;  typedef Dataset const&  rcDataset;
-class Datasets; typedef Datasets const& rcDatasets;
+
+struct Metadata; typedef Metadata const& rcMetadata;
+class  Dataset;  typedef Dataset  const& rcDataset;
+class  Datasets; typedef Datasets const& rcDatasets;
+
 class ImageLens; class Lens;
 class AngleMap;
 
@@ -53,6 +56,7 @@ class ReflectionInfo;  typedef ReflectionInfo  const& rcReflectionInfo;
 class ReflectionInfos; typedef ReflectionInfos const& rcReflectionInfos;
 
 typedef QSharedPointer<File>        shp_File;
+typedef QSharedPointer<Metadata>    shp_Metadata;
 typedef QSharedPointer<Dataset>     shp_Dataset;
 typedef QSharedPointer<ImageLens>   shp_ImageLens;
 typedef QSharedPointer<Lens>        shp_Lens;

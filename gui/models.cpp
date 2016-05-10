@@ -82,7 +82,7 @@ QVariant DatasetsModel::data(rcIndex index,int role) const {
     case COL_NUMBER:
       return hub_.collectedDatasetsTags().at(row);
     default:
-      return datasets_.at(row)->attributeStrValue(metaInfoNums_[col-COL_ATTRS]);
+      return datasets_.at(row)->metadata()->attributeStrValue(metaInfoNums_[col-COL_ATTRS]);
     }
   }
 
@@ -101,7 +101,7 @@ QVariant DatasetsModel::headerData(int col, Qt::Orientation, int role) const {
   case COL_NUMBER:
     return "#";
   default:
-    return core::Dataset::attributeTag(metaInfoNums_[col-COL_ATTRS]);
+    return core::Metadata::attributeTag(metaInfoNums_[col-COL_ATTRS]);
   }
 }
 

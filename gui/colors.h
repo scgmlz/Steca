@@ -22,7 +22,8 @@
 namespace gui {
 //------------------------------------------------------------------------------
 
-QRgb intenRgb(qreal inten, qreal maxInten = 1);
+QRgb intenImage(qreal inten, qreal maxInten = 1);
+QRgb intenGraph(qreal inten, qreal maxInten = 1);
 
 //------------------------------------------------------------------------------
 }

@@ -172,13 +172,28 @@ shp_File loadCaress(rcstr filePath) THROWS {
           // size.rheight() /= 2;
 
           // Objekt inizialisieren
-          file->datasets().append(shp_Dataset(new Dataset(
-            str::fromStdString(s_date), str::fromStdString(s_comment),
-            xAxis, yAxis, zAxis,
-            omgAxis, tthAxis, phiAxis, chiAxis,
-            pstAxis, sstAxis, omgmAxis,
-            deltaMon, deltaTime,
-            size, convertedIntens.constData())));
+          Metadata md;
+
+          md.date    = str::fromStdString(s_date);
+          md.comment = str::fromStdString(s_comment);
+
+          md.motorXT = xAxis;
+          md.motorYT = yAxis;
+          md.motorZT = zAxis;
+
+          md.motorOmg  = omgAxis;
+          md.motorTth  = tthAxis;
+          md.motorPhi  = phiAxis;
+          md.motorChi  = chiAxis;
+          md.motorPST  = pstAxis;
+          md.motorSST  = sstAxis;
+          md.motorOMGM = omgmAxis;
+
+          md.deltaMonitorCount = deltaMon;
+          md.deltaTime         = deltaTime;
+
+          file->datasets().append(
+            shp_Dataset(new Dataset(md, size, convertedIntens.constData())));
           delete[] intens; intens = NULL;
           imageSize = 0;
         }

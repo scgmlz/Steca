@@ -13,6 +13,8 @@
 // ************************************************************************** //
 
 #include "core_reflection_info.h"
+#include "core_dataset.h"
+#include <QVariant>
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -22,19 +24,52 @@ namespace core {
  * as -1 when output is written for these programs (polefigure!).
  */
 
-ReflectionInfo::ReflectionInfo()
-: ReflectionInfo(qQNaN(),qQNaN(),Range(),qQNaN(),qQNaN(),qQNaN()) {
+str_lst ReflectionInfo::dataTags() {
+  static str_lst tags;
+  if (tags.isEmpty()) {
+    tags = str_lst{"α","β","γ1","γ2","inten","2θ","fwhm"};
+    tags.append(Metadata::attributeTags());
+  }
+
+  return tags;
 }
 
-ReflectionInfo::ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma,
+cmp_vec ReflectionInfo::dataCmps() {
+  static cmp_vec cmps;
+  if (cmps.isEmpty()) {
+    cmps = cmp_vec{ core::cmp_real, core::cmp_real, core::cmp_real, core::cmp_real,
+                    core::cmp_real, core::cmp_real, core::cmp_real};
+    cmps.append(Metadata::attributeCmps());
+  }
+
+  return cmps;
+}
+
+ReflectionInfo::ReflectionInfo()
+: ReflectionInfo(shp_Metadata(),qQNaN(),qQNaN(),Range(),qQNaN(),qQNaN(),qQNaN()) {
+}
+
+ReflectionInfo::ReflectionInfo(shp_Metadata md,
+                               deg alpha, deg beta, rcRange rgeGamma,
                                qreal inten, deg tth, qreal fwhm)
-: alpha_(alpha), beta_(beta), rgeGamma_(rgeGamma)
+: md_(md)
+, alpha_(alpha), beta_(beta), rgeGamma_(rgeGamma)
 , inten_(inten), tth_(tth), fwhm_(fwhm)
 {
 }
 
-ReflectionInfo::ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma)
-: ReflectionInfo(alpha,beta,rgeGamma,qQNaN(),qQNaN(),qQNaN()) {
+ReflectionInfo::ReflectionInfo(shp_Metadata md,
+                               deg alpha, deg beta, rcRange rgeGamma)
+  : ReflectionInfo(md,alpha,beta,rgeGamma,qQNaN(),qQNaN(),qQNaN()) {
+}
+
+row_t ReflectionInfo::data() const {
+  row_t row { (QVariant)alpha(), (QVariant)beta(),
+              (QVariant)rgeGamma().min, (QVariant)rgeGamma().max,
+              (QVariant)inten(), (QVariant)tth(), (QVariant)fwhm() };
+
+  row.append(md_ ? md_->attributeValues() : Metadata::attributeNaNs());
+  return row;
 }
 
 //------------------------------------------------------------------------------

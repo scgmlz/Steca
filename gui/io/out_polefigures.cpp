@@ -108,15 +108,15 @@ void PoleWidget::paintGrid() {
 }
 
 void PoleWidget::paintInfo() {
-  qreal rgeMax = rs_.rgeInten().max, avgInten = rs_.averageInten();
+  qreal rgeMax = rs_.rgeInten().max;
 
   for (auto const &r: rs_) {
     qreal inten = r.inten();
     if (qIsFinite(inten)) {
       inten /= rgeMax;
-      auto color = QColor(intenRgb(inten));
+      auto color = QColor(intenGraph(inten));
       p_->setPen(color); p_->setBrush(color);
-      circle(p(r.alpha(),r.beta()), inten*avgInten);
+      circle(p(r.alpha(),r.beta()),inten * r_/60);
     }
   }
 }
@@ -152,6 +152,7 @@ OutPoleFiguresParams::OutPoleFiguresParams(TheHub& hub): super("", hub, Qt::Hori
   g->addWidget(label("β step"),                   2,0);
   g->addWidget((stepBeta_ = spinCell(6, 1.,30.)), 2,1);
   g->addWidget(label(" "),                        3,0);
+  g->setColumnStretch(4,1);
 
   g = gridLayout();
   gbInterpolation_->setLayout(g);
@@ -163,6 +164,7 @@ OutPoleFiguresParams::OutPoleFiguresParams(TheHub& hub): super("", hub, Qt::Hori
   g->addWidget((idwRadius_ = spinCell(8,0.,100.)),        2,1); // REVIEW reasonable limit
   g->addWidget(label("Threshold"),                        3,0);
   g->addWidget((threshold_ = spinCell(4,0,100)),          3,1);
+  g->setColumnStretch(4,1);
 
   g = gridLayout();
   gbGammaLimit_->setLayout(g);
@@ -172,7 +174,8 @@ OutPoleFiguresParams::OutPoleFiguresParams(TheHub& hub): super("", hub, Qt::Hori
   g->addWidget((gammaLimitMax_ = spinCell(8,0.,100.)),    1,1); // REVIEW reasonable limit
   g->addWidget(label("min"),                              2,0);
   g->addWidget((gammaLimitMin_ = spinCell(8,0.,100.)),    2,1); // REVIEW reasonable limit
-  g->addWidget(label(" "),                        3,0);
+  g->addWidget(label(" "),                                3,0);
+  g->setColumnStretch(4,1);
 
   // values
 
@@ -212,39 +215,21 @@ OutPoleFiguresParams::OutPoleFiguresParams(TheHub& hub): super("", hub, Qt::Hori
 
 //------------------------------------------------------------------------------
 
-OutPoleTabs::OutPoleTabs(TheHub& hub): super(hub) {
-  {
-    addTab("Table");
-  }
-  {
-    addTab("Graph");
-  }
-  {
-    addTab("Metadata");
-  }
-}
-
-//------------------------------------------------------------------------------
-
 OutPoleFigures::OutPoleFigures(TheHub& hub,rcstr title,QWidget* parent)
 : super(hub,title,parent) {
   params_ = new OutPoleFiguresParams(hub);
-  auto *tabs = new OutPoleTabs(hub);
+
+  auto *tabs = new panel::TabsPanel(hub);
   setWidgets(params_,tabs);
 
   tableData_ = new OutTableWidget(hub,
-       {"α","β","γ1","γ2","inten","2θ","fwhm"},
-       {core::cmp_real, core::cmp_real, core::cmp_real, core::cmp_real,
-        core::cmp_real, core::cmp_real, core::cmp_real});
+    core::ReflectionInfo::dataTags(),
+    core::ReflectionInfo::dataCmps());
 
   poleWidget_ = new PoleWidget();
 
-  tableMetadata_ = new OutTableWidget(hub,
-                                      core::Dataset::attributeTags(),
-                                      core::Dataset::attributeCmps());
-  tabs->tab(0).box->addWidget(tableData_);
-  tabs->tab(1).box->addWidget(poleWidget_);
-  tabs->tab(2).box->addWidget(tableMetadata_);
+  tabs->addTab("Points").box->addWidget(tableData_);
+  tabs->addTab("Graph").box->addWidget(poleWidget_);
 }
 
 void OutPoleFigures::calculate() {
@@ -271,11 +256,9 @@ void OutPoleFigures::calculate() {
   }
 
   for (auto const& r: rs_)
-    table.addRow({(qreal)r.alpha(), (qreal)r.beta(), r.rgeGamma().min, r.rgeGamma().max, r.inten(), (qreal)r.tth(), r.fwhm()});
+    table.addRow(r.data());
 
-  auto &metaData = tableMetadata_->table();
-  for (auto const& d: hub_.collectedDatasets())
-    metaData.addRow(d->attributeValues());
+  table.sortData();
 
   poleWidget_->set(rs_);
 }

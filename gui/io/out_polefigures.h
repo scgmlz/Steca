@@ -24,12 +24,6 @@
 namespace gui { namespace io {
 //------------------------------------------------------------------------------
 
-class OutPoleTabs: public panel::TabsPanel {
-  SUPER(OutPoleTabs,panel::TabsPanel)
-public:
-  OutPoleTabs(TheHub&);
-};
-
 class OutPoleFiguresParams;
 class PoleWidget;
 
@@ -42,7 +36,6 @@ public:
 private:
   OutPoleFiguresParams  *params_;
   OutTableWidget        *tableData_;
-  OutTableWidget        *tableMetadata_;
   PoleWidget            *poleWidget_;
   core::ReflectionInfos  rs_;
 };

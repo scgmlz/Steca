@@ -18,16 +18,22 @@
 
 #include "types/core_angles.h"
 #include "types/core_type_range.h"
+#include "types/core_type_variant.h"
 
 namespace core {
 //------------------------------------------------------------------------------
 
 class ReflectionInfo final { TESTS_FRIEND
 public:
+  static str_lst dataTags();
+  static cmp_vec dataCmps();
+
   ReflectionInfo();
-  ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma,
+  ReflectionInfo(shp_Metadata,
+                 deg alpha, deg beta, rcRange rgeGamma,
                  qreal inten, deg tth, qreal fwhm);
-  ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma);
+  ReflectionInfo(shp_Metadata,
+                 deg alpha, deg beta, rcRange rgeGamma);
 
   deg alpha() const { return alpha_;  }
   deg beta()  const { return beta_;   }
@@ -38,12 +44,15 @@ public:
   deg   tth()   const { return tth_;    }
   qreal fwhm()  const { return fwhm_;   }
 
-  // TODO these OUT
+  // TODO these OUT?
   void setInten(qreal v) { inten_ = v; }
   void setTth(qreal v)   { tth_   = v; }
   void setFwhm(qreal v)  { fwhm_  = v; }
 
+  row_t data() const;
+
 private:
+  shp_Metadata md_;
   deg alpha_, beta_; Range rgeGamma_;
   qreal inten_; deg tth_; qreal fwhm_;
 };

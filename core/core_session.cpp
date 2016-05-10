@@ -304,14 +304,19 @@ ReflectionInfo Session::makeReflectionInfo(shp_Lens lens, rcReflection reflectio
 
   rcRange rgeTth = peakFunction->range();
   deg alpha, beta;
-  calculateAlphaBeta(lens->dataset(), rgeTth.center(), gammaSector.center(), alpha, beta);
+
+  rcDataset dataset = lens->dataset();
+  calculateAlphaBeta(dataset, rgeTth.center(), gammaSector.center(), alpha, beta);
 
   XY    peak = peakFunction->fittedPeak();
   qreal fwhm = peakFunction->fittedFWHM();
 
+  shp_Metadata metadata = dataset.metadata();
+  ASSERT(metadata)
+
   return rgeTth.contains(peak.x)
-      ? ReflectionInfo(alpha, beta, gammaSector, peak.y,peak.x,fwhm)
-      : ReflectionInfo(alpha, beta, gammaSector);
+      ? ReflectionInfo(metadata, alpha, beta, gammaSector, peak.y,peak.x,fwhm)
+      : ReflectionInfo(metadata, alpha, beta, gammaSector);
 }
 
 /* Gathers ReflectionInfos from Datasets.

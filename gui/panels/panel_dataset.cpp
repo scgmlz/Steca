@@ -78,7 +78,7 @@ DockDatasets::DockDatasets(TheHub& hub)
 DockDatasetInfo::DockDatasetInfo(TheHub& hub)
 : super("Dataset info", "dock-dataset-info", Qt::Vertical), RefHub(hub) {
 
-  using Dataset     = core::Dataset;
+  using Metadata    = core::Metadata;
   using shp_Dataset = core::shp_Dataset;
 
   box_->setMargin(0);
@@ -88,17 +88,17 @@ DockDatasetInfo::DockDatasetInfo(TheHub& hub)
 
   scrollArea->setFrameStyle(QFrame::NoFrame);
 
-  for_i (Dataset::numAttributes())
-    metaInfo_.append(models::CheckedInfo(Dataset::attributeTag(i)));
+  for_i (Metadata::numAttributes())
+    metaInfo_.append(models::CheckedInfo(Metadata::attributeTag(i)));
 
   scrollArea->setWidget((info_ = new Info(metaInfo_)));
 
-  for_i (Dataset::numAttributes())
+  for_i (Metadata::numAttributes())
     metaInfo_[i].cb->setToolTip("Show value in Datasets list");
 
   onSigDatasetSelected([this](shp_Dataset dataset) {
-    for_i (Dataset::numAttributes())
-      metaInfo_[i].setText(dataset ? dataset->attributeStrValue(i) : EMPTY_STR);
+    for_i (Metadata::numAttributes())
+      metaInfo_[i].setText(dataset ? dataset->metadata()->attributeStrValue(i) : EMPTY_STR);
   });
 
   for (auto &item: metaInfo_) {
@@ -430,7 +430,7 @@ QPixmap Dataset::makePixmap(core::shp_ImageLens lens) {
 
     qreal maxInten = rgeInten.max;
     for_ij (size.width(), size.height())
-      image.setPixel(i,j,intenRgb(lens->inten(i,j),maxInten));
+      image.setPixel(i,j,intenImage(lens->inten(i,j),maxInten));
 
     pixmap = QPixmap::fromImage(image);
   }

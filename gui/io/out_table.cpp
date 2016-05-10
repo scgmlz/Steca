@@ -41,6 +41,7 @@ public:
 
   void setHeaders(str_lst const&);
   void setCmpFuns(core::cmp_vec const&);
+  void setSortColumn(int);
 
   void clear();
   void addRow(core::row_t const&);
@@ -48,7 +49,7 @@ public:
   void sortData();
 
 private:
-  uint numCols_;
+  uint numCols_; int sortColumn_;
 
   str_lst       colTitles_;
   uint_vec      colIndexMap_;
@@ -60,7 +61,7 @@ private:
 //------------------------------------------------------------------------------
 
 OutTableModel::OutTableModel(TheHub& hub, uint numColumns_)
-: models::TableModel(hub), numCols_(numColumns_) {
+: models::TableModel(hub), numCols_(numColumns_), sortColumn_(0) {
   colIndexMap_.resize(numCols_);
   for_i (numCols_)
     colIndexMap_[i] = i;
@@ -135,14 +136,16 @@ QVariant OutTableModel::headerData(int section, Qt::Orientation, int role) const
 
 void OutTableModel::moveColumn(uint from, uint to) {
   ASSERT(from < (uint)colIndexMap_.count() && to < (uint)colIndexMap_.count())
-
   qSwap(colIndexMap_[from],colIndexMap_[to]);
-  sortData();
 }
 
 void OutTableModel::setCmpFuns(core::cmp_vec const& cmps) {
   ASSERT(cmps.count() == (int)numCols_)
-  cmpFunctions_ = cmps;
+      cmpFunctions_ = cmps;
+}
+
+void OutTableModel::setSortColumn(int col) {
+  sortColumn_ = col;
 }
 
 void OutTableModel::clear() {
@@ -162,13 +165,27 @@ void OutTableModel::addRow(core::row_t const& row) {
 }
 
 void OutTableModel::sortData() {
-  // sort left-to-right
-  auto cmp = [this](core::row_t const& r1, core::row_t const& r2) {
-    for_i (numCols_) {
-      int c = cmpFunctions_[colIndexMap_[i]](r1[colIndexMap_[i]], r2[colIndexMap_[i]]);
+  // sort sortColumn first, then left-to-right
+  auto cmpRows = [this](uint i, core::row_t const& r1, core::row_t const& r2) {
+    i = colIndexMap_[i];
+    return cmpFunctions_[i](r1[i],r2[i]);
+  };
+
+  auto cmp = [this,cmpRows](core::row_t const& r1, core::row_t const& r2) {
+    if (sortColumn_>0) {
+      int c = cmpRows(sortColumn_, r1, r2);
       if (c < 0) return true;
       if (c > 0) return false;
     }
+
+    for_i (numCols_) {
+      if (i != sortColumn_) {
+        int c = cmpRows(i, r1, r2);
+        if (c < 0) return true;
+        if (c > 0) return false;
+      }
+    }
+
     return false;
   };
 
@@ -179,25 +196,17 @@ void OutTableModel::sortData() {
 
 //------------------------------------------------------------------------------
 
-class OutTableHeaderView: public QHeaderView {
-  SUPER(OutTableHeaderView,QHeaderView)
-public:
-  OutTableHeaderView();
-};
-
-OutTableHeaderView::OutTableHeaderView(): super(Qt::Horizontal) {
-  setSectionsMovable(true);
-}
-
-//------------------------------------------------------------------------------
-
 OutTable::OutTable(TheHub& hub, uint numDataColumns) {
-  setHeader(new OutTableHeaderView);
   setModel((model_ = new OutTableModel(hub,numDataColumns)));
+  setHeader(new QHeaderView(Qt::Horizontal));
 
-  header()->setSectionResizeMode(0,QHeaderView::Fixed);
+  auto &h = *header();
 
-  int w = QFontMetrics(header()->font()).width("000000000");
+  h.setSectionResizeMode(0,QHeaderView::Fixed);
+  h.setSectionsMovable(true);
+  h.setSectionsClickable(true);
+
+  int w = QFontMetrics(h.font()).width("000000000");
   setColumnWidth(0,w);
 }
 
@@ -206,7 +215,19 @@ void OutTable::setHeaders(str_lst const& headers) {
 
   connect(header(),&QHeaderView::sectionMoved, [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
     ASSERT(oldVisualIndex>0 && newVisualIndex>0)
+    auto &h = *header();
+    h.setSortIndicatorShown(false);
+    model_->setSortColumn(-1);
     model_->moveColumn((uint)(oldVisualIndex-1),(uint)(newVisualIndex-1));
+    model_->sortData();
+  });
+
+  connect(header(),&QHeaderView::sectionClicked, [this](int logicalIndex) {
+    auto &h = *header();
+    h.setSortIndicatorShown(true);
+    h.setSortIndicator(logicalIndex,Qt::AscendingOrder);
+    model_->setSortColumn(logicalIndex-1);
+    model_->sortData();
   });
 }
 
@@ -220,6 +241,10 @@ void OutTable::clear() {
 
 void OutTable::addRow(core::row_t const& row) {
   model_->addRow(row);
+}
+
+void OutTable::sortData() {
+  model_->sortData();
 }
 
 //------------------------------------------------------------------------------
