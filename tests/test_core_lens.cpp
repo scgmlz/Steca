@@ -36,12 +36,9 @@ REGISTER_TEST_SUITE(TestCoreLens)
   core::inten_t intensCorr = 10.0f;\
   \
   Datasets datasets;\
-  shp_Dataset dataset(new Dataset(\
-                       date,comment,\
-                       motorAngle,motorAngle,motorAngle,\
-                       motorAngle,motorAngle,motorAngle,motorAngle,\
-                       motorAngle,motorAngle,motorAngle,\
-                       mon, deltaTime,\
+  Metadata md; md.motorTth = motorAngle; \
+  md.deltaMonitorCount = mon; md.deltaTime = deltaTime; \
+  shp_Dataset dataset(new Dataset(md,\
                        QSize(width,height), intensities));\
   datasets.appendHere(dataset);\
   AngleMap angleMap;\
@@ -59,12 +56,8 @@ REGISTER_TEST_SUITE(TestCoreLens)
     intenVector2.append(inten*2);\
   }\
   auto intensities2 = intenVector2.data();\
-  shp_Dataset dataset2(new Dataset(\
-                     date,comment,\
-                     motorAngle,motorAngle,motorAngle,\
-                     motorAngle,motorAngle,motorAngle,motorAngle,\
-                     motorAngle,motorAngle,motorAngle,\
-                     mon2, deltaTime2,\
+  md.deltaMonitorCount = mon2; md.deltaTime = deltaTime2; \
+  shp_Dataset dataset2(new Dataset(md,\
                      QSize(width,height), intensities2));\
   datasets.appendHere(dataset2);
 

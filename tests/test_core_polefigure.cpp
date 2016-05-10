@@ -220,30 +220,27 @@ void TestCorePolefigure::testSearchInQuadrants() {
 }
 
 static core::Dataset testDataset(QSize size, core::inten_t inten, QVector<qreal> motorAngles, qreal mon, qreal deltaTime) {
-  rcstr date = "15.03.2016";
-  rcstr comment = "comment";
-  qreal motorXT = motorAngles[0];
-  qreal motorYT = motorAngles[1];
-  qreal motorZT = motorAngles[2];
-  qreal motorOmg = motorAngles[3];
-  qreal motorTth = motorAngles[4];
-  qreal motorPhi = motorAngles[5];
-  qreal motorChi = motorAngles[6];
-  qreal motorPST = motorAngles[7];
-  qreal motorSST = motorAngles[8];
-  qreal motorOMGM = motorAngles[9];
+  core::Metadata md;
+  md.date = "15.03.2016";
+  md.comment = "comment";
+  md.motorXT = motorAngles[0];
+  md.motorYT = motorAngles[1];
+  md.motorZT = motorAngles[2];
+  md.motorOmg = motorAngles[3];
+  md.motorTth = motorAngles[4];
+  md.motorPhi = motorAngles[5];
+  md.motorChi = motorAngles[6];
+  md.motorPST = motorAngles[7];
+  md.motorSST = motorAngles[8];
+  md.motorOMGM = motorAngles[9];
+
   QVector<core::inten_t> intenVector;
   for_i (size.width() * size.height()) {
     intenVector.append(inten);
   }
   core::inten_t const* intensities = intenVector.constData();
 
-  return core::Dataset (date,comment,
-                     motorXT,motorYT,motorZT,
-                     motorOmg,motorTth,motorPhi,motorChi,
-                     motorPST,motorSST,motorOMGM,
-                     mon, deltaTime,
-                     size, intensities);
+  return core::Dataset (md, size, intensities);
 }
 
 void TestCorePolefigure::testCalcAlphaBeta() {
