@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_type_image_transform.h
 //! @brief     The transform type
@@ -45,13 +45,11 @@ struct ImageTransform {
   /// rotates by one quarter-turn
   ImageTransform nextRotate() const;
 
-  bool isTransposed() const { return 0 != (val&1); }
+  bool isTransposed() const { return 0 != (val & 1); }
 
-  bool operator ==(ImageTransform const& that) const {
-    return val == that.val;
-  }
+  bool operator==(ImageTransform const& that) const { return val == that.val; }
 };
 
 //------------------------------------------------------------------------------
 }
-#endif // CORE_TYPE_IMAGE_TRANSFORM_H
+#endif  // CORE_TYPE_IMAGE_TRANSFORM_H

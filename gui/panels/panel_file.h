@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      panel_file.h
 //! @brief     File selection panel.
@@ -16,20 +16,20 @@
 #ifndef PANEL_FILE_H
 #define PANEL_FILE_H
 
-#include "panel.h"
-#include "views.h"
+#include "gui_helpers.h"
+#include "refhub.h"
 
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-class DockFiles: public DockWidget, private RefHub {
-  SUPER(DockFiles,DockWidget)
+class DockFiles : public DockWidget, private RefHub {
+  SUPER(DockFiles, DockWidget)
 public:
-  DockFiles(TheHub&);
+  DockFiles(TheHub &);
 
 private:
   class FilesView *filesView_;
-  LineView  *corrFile_;
+  class LineView * corrFile_;
 };
 
 //------------------------------------------------------------------------------

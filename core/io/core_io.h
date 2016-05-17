@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_io.h
 //! @brief     Dataset loaders
@@ -35,4 +35,4 @@ void saveTiffs(rcFile, rcstr filePath) THROWS;
 
 //------------------------------------------------------------------------------
 }}
-#endif // CORE_IO_H
+#endif  // CORE_IO_H

@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      panel.cpp
 //!
@@ -17,7 +17,7 @@
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-BasicPanel::BasicPanel(rcstr title, TheHub& hub): super(title), RefHub(hub) {
+BasicPanel::BasicPanel(rcstr title, TheHub& hub) : super(title), RefHub(hub) {
 }
 
 void BasicPanel::setHorizontalStretch(int stretch) {
@@ -42,14 +42,14 @@ void BasicPanel::setStretch(int horizontal, int vertical) {
 //------------------------------------------------------------------------------
 
 BoxPanel::BoxPanel(rcstr title, TheHub& hub, Qt::Orientation orientation)
-: super(title,hub) {
+: super(title, hub)
+{
   setLayout((box_ = boxLayout(orientation)));
 }
 
 //------------------------------------------------------------------------------
 
-GridPanel::GridPanel(rcstr title, TheHub& hub)
-: super(title,hub) {
+GridPanel::GridPanel(rcstr title, TheHub& hub) : super(title, hub) {
   setLayout((grid_ = gridLayout()));
 }
 
@@ -59,12 +59,11 @@ TabsPanel::Tab::Tab(Qt::Orientation orientation) {
   setLayout((box = boxLayout(orientation)));
 }
 
-TabsPanel::TabsPanel(TheHub& hub): RefHub(hub) {
-}
+TabsPanel::TabsPanel(TheHub& hub) : RefHub(hub) {}
 
 TabsPanel::Tab& TabsPanel::addTab(rcstr title, Qt::Orientation orientation) {
   auto tab = new Tab(orientation);
-  super::addTab(tab,title);
+  super::addTab(tab, title);
   return *tab;
 }
 

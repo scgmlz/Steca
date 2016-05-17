@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      actions.h
 //! @brief     A structure with all (glbal) actions
@@ -16,15 +16,15 @@
 #ifndef ACTIONS_H
 #define ACTIONS_H
 
-#include "types/core_defs.h"
 #include "refhub.h"
+#include "types/core_defs.h"
 #include <QAction>
 
 namespace gui {
 //------------------------------------------------------------------------------
 
-class Action: public QAction {
-  SUPER(Action,QAction)
+class Action : public QAction {
+  SUPER(Action, QAction)
 public:
   Action(rcstr text, rcstr tip, QObject*);
 
@@ -34,14 +34,14 @@ public:
   virtual Action& alt(rcstr text2, rcstr tip2);
 };
 
-class TriggerAction: public Action {
-  SUPER(TriggerAction,Action)
+class TriggerAction : public Action {
+  SUPER(TriggerAction, Action)
 public:
   TriggerAction(rcstr text, rcstr tip, QObject*);
 };
 
-class ToggleAction: public Action {
-  SUPER(ToggleAction,Action)
+class ToggleAction : public Action {
+  SUPER(ToggleAction, Action)
 public:
   ToggleAction(rcstr text, rcstr tip, QObject*);
   Action& alt(rcstr text2, rcstr tip2 = EMPTY_STR);
@@ -52,43 +52,30 @@ protected:
 
 //------------------------------------------------------------------------------
 
-class Actions: protected RefHub {
-  SUPER(Actions,RefHub)
+class Actions : protected RefHub {
+  SUPER(Actions, RefHub)
 public:
   Actions(TheHub&);
 
   Action
-    *about, *quit,
-
-    *viewStatusbar,
-    *viewFiles, *viewDatasets, *viewDatasetInfo,
-    *viewReset,
-  #ifndef Q_OS_OSX // Mac has its own
-    *fullScreen,
-  #endif
-
-    *loadSession, *saveSession,
-
-    *addFiles, *remFile, *enableCorr, *remCorr,
-
-    *rotateImage, *mirrorImage,
-    *linkCuts, *showCut,
-    *hasBeamOffset,
-
-    *fixedIntenImageScale, *fixedIntenDgramScale,
-    *avgCurveDgram,
-
-    *fitRegions, *fitBgClear, *fitBgShow,
-
-    *addReflection, *remReflection,
-
-    *outputPolefigures, *outputHistograms;
+      *about, *quit,
+      *viewStatusbar, *viewFiles, *viewDatasets, *viewDatasetInfo, *viewReset,
+#ifndef Q_OS_OSX  // Mac has its own
+      *fullScreen,
+#endif
+      *loadSession, *saveSession,
+      *addFiles, *remFile, *enableCorr, *remCorr,
+      *rotateImage, *mirrorImage, *linkCuts, *showCut, *hasBeamOffset,
+      *fixedIntenImageScale, *fixedIntenDgramScale, *avgCurveDgram,
+      *fitRegions, *fitBgClear, *fitBgShow,
+      *addReflection, *remReflection,
+      *outputPolefigures, *outputHistograms;
 
 private:
-  Action& trg(Action* &action, rcstr text, rcstr tip = EMPTY_STR);
-  Action& tgl(Action* &action, rcstr text, rcstr tip = EMPTY_STR);
+  Action& trg(Action*& action, rcstr text, rcstr tip = EMPTY_STR);
+  Action& tgl(Action*& action, rcstr text, rcstr tip = EMPTY_STR);
 };
 
 //------------------------------------------------------------------------------
 }
-#endif // ACTIONS_H
+#endif  // ACTIONS_H

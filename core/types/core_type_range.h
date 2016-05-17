@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_type_range.h
 //! @brief     Range of real values
@@ -49,12 +49,12 @@ struct Range {
   void  extendBy(rcRange);   ///< extend to include the range
 
   // these may be called only on valid ranges
-  bool  contains(qreal val)      const;
+  bool  contains(qreal val) const;
   bool  contains(rcRange)   const;
   bool  intersects(rcRange) const;
 
   /// limit the number to the interval, as qBound would
-  qreal bound(qreal)             const;
+  qreal bound(qreal)        const;
 
   JsonObj saveJson() const;
   void    loadJson(rcJsonObj) THROWS;

@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      app.cpp
 //!
@@ -13,16 +13,16 @@
 // ************************************************************************** //
 
 #include "app.h"
-#include "types/core_async.h"
 #include "../manifest.h"
 #include "mainwin.h"
-#include <QStyleFactory>
+#include "types/core_async.h"
 #include <QMessageBox>
+#include <QStyleFactory>
 #include <iostream>
 
 //------------------------------------------------------------------------------
 
-App::App(int &argc, char *argv[]): super(argc,argv) {
+App::App(int& argc, char* argv[]) : super(argc, argv) {
   setApplicationName(APPLICATION_NAME);
   setApplicationVersion(APPLICATION_VERSION);
   setOrganizationName(ORGANIZATION_NAME);
@@ -39,17 +39,18 @@ App::App(int &argc, char *argv[]): super(argc,argv) {
 
 static QtMessageHandler oldHandler;
 
-static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg) {
+static void messageHandler(QtMsgType type, QMessageLogContext const& ctx,
+                           rcstr msg) {
   switch (type) {
   case QtDebugMsg:
-    std::cerr << "TR " << msg.toStdString() // TR for TRace
+    std::cerr << "TR " << msg.toStdString()  // TR for TRace
               << "\t[" << ctx.function << ']' << std::endl;
     break;
   case QtWarningMsg:
     QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
     break;
   default:
-    oldHandler(type,ctx,msg);
+    oldHandler(type, ctx, msg);
     break;
   }
 }
@@ -66,7 +67,7 @@ int App::exec() {
     gui::MainWin mainWin;
     mainWin.show();
 
-    oldHandler = qInstallMessageHandler(messageHandler);
+    oldHandler             = qInstallMessageHandler(messageHandler);
     TakesLongTime::handler = waiting;
 
     int res = super::exec();

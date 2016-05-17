@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      out_polefigures.h
 //! @brief     A dynamic table for pole figures.
@@ -16,10 +16,10 @@
 #ifndef OUT_POLEFIGURES_H
 #define OUT_POLEFIGURES_H
 
+#include "core_reflection_info.h"
 #include "out_table.h"
 #include "panels/panel.h"
 #include "types/core_types_fwd.h"
-#include "core_reflection_info.h"
 
 namespace gui { namespace io {
 //------------------------------------------------------------------------------
@@ -27,19 +27,19 @@ namespace gui { namespace io {
 class OutPoleFiguresParams;
 class PoleWidget;
 
-class OutPoleFigures: public OutWindow {
-  SUPER(OutPoleFigures,OutWindow)
+class OutPoleFigures : public OutWindow {
+  SUPER(OutPoleFigures, OutWindow)
 public:
-  OutPoleFigures(TheHub&,rcstr title,QWidget*);
+  OutPoleFigures(TheHub &, rcstr title, QWidget *);
   void calculate();
 
 private:
-  OutPoleFiguresParams  *params_;
-  OutTableWidget        *tableData_;
-  PoleWidget            *poleWidget_;
-  core::ReflectionInfos  rs_;
+  OutPoleFiguresParams *params_;
+  OutTableWidget *      tableData_;
+  PoleWidget *          poleWidget_;
+  core::ReflectionInfos rs_;
 };
 
 //------------------------------------------------------------------------------
 }}
-#endif // OUT_POLEFIGURES_H
+#endif  // OUT_POLEFIGURES_H

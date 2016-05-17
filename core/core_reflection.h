@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_reflection.h
 //! @brief     Reflections
@@ -16,8 +16,8 @@
 #ifndef CORE_REFLECTION_H
 #define CORE_REFLECTION_H
 
-#include "types/core_types_fwd.h"
 #include "core_fit_functions.h"
+#include "types/core_types_fwd.h"
 #include <QStringList>
 
 namespace core {
@@ -31,16 +31,16 @@ public:
   Reflection(ePeakType = ePeakType::RAW);
 
   ePeakType type() const;
-  void setType(ePeakType);
+  void      setType(ePeakType);
 
-  fit::PeakFunction const& peakFunction() const; // REMOVE
+  fit::PeakFunction const& peakFunction() const;  // REMOVE
 
   rcRange range() const;
-  void setRange(rcRange);
+  void    setRange(rcRange);
 
   void invalidateGuesses();
 
-  void setGuessPeak(rcXY  xy)   { peakFunction_->setGuessedPeak(xy);   }
+  void setGuessPeak(rcXY xy) { peakFunction_->setGuessedPeak(xy); }
   void setGuessFWHM(qreal fwhm) { peakFunction_->setGuessedFWHM(fwhm); }
 
   bool fit(rcCurve);
@@ -61,4 +61,4 @@ public:
 
 Q_DECLARE_METATYPE(core::shp_Reflection)
 
-#endif // CORE_REFLECTION_H
+#endif  // CORE_REFLECTION_H

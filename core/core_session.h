@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_session.h
 //! @brief     Session that can compute all and needs no GUI.
@@ -17,9 +17,9 @@
 #define CORE_SESSION_H
 
 #include "core_file.h"
+#include "types/core_type_geometry.h"
 #include "types/core_type_image.h"
 #include "types/core_type_image_transform.h"
-#include "types/core_type_geometry.h"
 #include "types/core_types_fwd.h"
 #include <QStringList>
 
@@ -32,45 +32,47 @@ public:
 
   void clear();
 
-// data files
+  // data files
 private:
   QVector<shp_File> files_;
 
 public:
   /// number of data files (not counting the correction file)
-  uint     numFiles()       const { return files_.count(); }
-  shp_File file(uint i)     const;
+  uint     numFiles() const { return files_.count(); }
+  shp_File file(uint i) const;
 
-  bool     hasFile(rcstr fileName);
-  void     addFile(shp_File) THROWS;
-  void     remFile(uint i);
+  bool hasFile(rcstr fileName);
+  void addFile(shp_File) THROWS;
+  void remFile(uint i);
 
-// correction file
+  // correction file
 private:
   shp_File corrFile_;
   Image    corrImage_;
   bool     corrEnabled_;
 
-  uint_vec collectedFromFiles_;       ///< from these files
-  Datasets collectedDatasets_;        ///< datasets collected ...
+  uint_vec collectedFromFiles_;  ///< from these files
+  Datasets collectedDatasets_;   ///< datasets collected ...
   str_lst  collectedDatasetsTags_;
 
 public:
-  bool     hasCorrFile()    const { return !corrFile_.isNull(); }
-  shp_File corrFile()       const { return corrFile_;           }
-  rcImage  corrImage()      const { return corrImage_;          }
+  bool     hasCorrFile() const { return !corrFile_.isNull(); }
+  shp_File corrFile() const { return corrFile_; }
+  rcImage  corrImage() const { return corrImage_; }
 
-  void     setCorrFile(shp_File) THROWS;  ///< Load or remove a correction file.
-  void     remCorrFile();
+  void setCorrFile(shp_File) THROWS;  ///< Load or remove a correction file.
+  void remCorrFile();
 
-  void     tryEnableCorr(bool);
-  bool     isCorrEnabled()  const { return corrEnabled_;        }
+  void tryEnableCorr(bool);
+  bool isCorrEnabled() const { return corrEnabled_; }
 
-  void     collectDatasetsFromFiles(uint_vec,uint);
+  void collectDatasetsFromFiles(uint_vec, uint);
 
-  uint_vec const& collectedFromFiles()    const { return collectedFromFiles_;    }
-  rcDatasets      collectedDatasets()     const { return collectedDatasets_;     }
-  str_lst  const& collectedDatasetsTags() const { return collectedDatasetsTags_; }
+  uint_vec const& collectedFromFiles() const { return collectedFromFiles_; }
+  rcDatasets      collectedDatasets() const { return collectedDatasets_; }
+  str_lst const&  collectedDatasetsTags() const {
+    return collectedDatasetsTags_;
+  }
 
 private:
   /// All files must have images of the same size; this is a cached value
@@ -82,14 +84,14 @@ private:
 
   QSize imageSize() const;
 
-// image - transform & cut etc.
+  // image - transform & cut etc.
 private:
   ImageTransform imageTransform_;
   ImageCut       imageCut_;
 
 public:
   ImageTransform const& imageTransform() const { return imageTransform_; }
-  ImageCut       const& imageCut()       const { return imageCut_;       }
+  ImageCut const&       imageCut() const { return imageCut_; }
 
   void setImageTransformMirror(bool);
   void setImageTransformRotate(ImageTransform const&);
@@ -98,28 +100,28 @@ public:
 
   AngleMap const& angleMap(rcDataset) const;
 
-// geometry
+  // geometry
 private:
   Geometry geometry_;
 
 public:
   Geometry const& geometry() const { return geometry_; }
-  void setGeometry(qreal detectorDistance, qreal pixSize,
-                   bool isMidPixOffset, rcIJ midPixOffset);
+  void setGeometry(qreal detectorDistance, qreal pixSize, bool isMidPixOffset,
+                   rcIJ midPixOffset);
   IJ midPix() const;
 
-// lenses
+  // lenses
 public:
-  shp_ImageLens lens(rcImage,   rcDatasets, bool trans, bool cut) const;
-  shp_Lens      lens(rcDataset, rcDatasets, bool trans, bool cut, eNorm) const;
+  shp_ImageLens lens(rcImage, rcDatasets, bool trans, bool cut) const;
+  shp_Lens lens(rcDataset, rcDatasets, bool trans, bool cut, eNorm) const;
 
-// reflections
+  // reflections
   ReflectionInfo makeReflectionInfo(shp_Lens, rcReflection,
                                     rcRange gammaSector) const;
 
   ReflectionInfos makeReflectionInfos(rcDatasets, rcReflection, deg betaStep,
                                       rcRange gammaRange = Range());
-// fitting
+  // fitting
 private:
   uint   bgPolyDegree_;
   Ranges bgRanges_;
@@ -127,9 +129,9 @@ private:
   Reflections reflections_;
 
 public:
-  rcRanges      bgRanges()     const { return bgRanges_;      }
-  uint          bgPolyDegree() const { return bgPolyDegree_;  }
-  rcReflections reflections()  const { return reflections_;   }
+  rcRanges      bgRanges() const { return bgRanges_; }
+  uint          bgPolyDegree() const { return bgPolyDegree_; }
+  rcReflections reflections() const { return reflections_; }
 
   void setBgRanges(rcRanges);
   bool addBgRange(rcRange);
@@ -140,16 +142,16 @@ public:
   void addReflection(shp_Reflection);
   void remReflection(uint);
 
-// normalization
+  // normalization
 private:
   eNorm norm_;
 
 public:
   eNorm norm() const { return norm_; }
-  void setNorm(eNorm);
+  void  setNorm(eNorm);
 
 public:
-  qreal calcAvgBackground(rcDataset)  const;
+  qreal calcAvgBackground(rcDataset) const;
   qreal calcAvgBackground(rcDatasets) const;
 };
 

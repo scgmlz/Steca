@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      panel_fitting.h
 //! @brief     Fitting panel.
@@ -22,27 +22,29 @@
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-class Fitting: public TabsPanel {
-  SUPER(Fitting,TabsPanel)
+class Fitting : public TabsPanel {
+  SUPER(Fitting, TabsPanel)
 public:
-  Fitting(TheHub&);
+  Fitting(TheHub &);
 
 private:
-  QSpinBox  *spinDegree_;
-  QComboBox *comboReflType_;
   class ReflectionView *reflectionView_;
+
+  QSpinBox       *spinDegree_;
+  QComboBox      *comboReflType_;
   QDoubleSpinBox *spinRangeMin_, *spinRangeMax_;
   QDoubleSpinBox *spinGuessPeakX_, *spinGuessPeakY_, *spinGuessFWHM_;
-  QLineEdit      *readFitPeakX_,   *readFitPeakY_,   *readFitFWHM_;
-  bool silentSpin_;
+  QLineEdit      *readFitPeakX_, *readFitPeakY_, *readFitFWHM_;
 
-  void setReflControls(core::shp_Reflection const&);
+  bool            silentSpin_;
+
+  void setReflControls(core::shp_Reflection);
   void updateReflectionControls();
 
 private:
-  void enableReflControls(bool); // TODO REVIEW
+  void enableReflControls(bool);  // TODO REVIEW
 };
 
 //------------------------------------------------------------------------------
 }}
-#endif // PANEL_FITTING_H
+#endif  // PANEL_FITTING_H

@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_dataset.h
 //!
@@ -13,8 +13,8 @@
 // ************************************************************************** //
 
 #include "core_dataset.h"
-#include "core_session.h"
 #include "core_lens.h"
+#include "core_session.h"
 #include "types/core_async.h"
 #include <QStringList>
 #include <QVariant>
@@ -85,7 +85,7 @@ str Metadata::attributeStrValue(uint i) const {
   case attr::MOTOR_OMGM:  value = motorOMGM; break;
   case attr::DELTA_MONITOR_COUNT: value = deltaMonitorCount; break;
   case attr::DELTA_TIME:  value = deltaTime; break;
-  default: NEVER_HERE;
+  default: NEVER;
   }
 
   return str::number(value);
@@ -108,8 +108,7 @@ QVariant Metadata::attributeValue(uint i) const {
   case attr::DELTA_MONITOR_COUNT: return deltaMonitorCount;
   case attr::DELTA_TIME: return deltaTime;
   default:
-    NEVER_HERE
-    return 0;
+    NEVER return 0;
   }
 }
 

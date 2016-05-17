@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_type_curve.cpp
 //!
@@ -21,11 +21,11 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-Curve::Curve() {
-}
+Curve::Curve() {}
 
 void Curve::clear() {
-  xs_.clear(); ys_.clear();
+  xs_.clear();
+  ys_.clear();
   rgeX_.invalidate();
   rgeY_.invalidate();
 }
@@ -58,10 +58,10 @@ Curve Curve::intersect(rcRange range) const {
 
     uint xi = 0, cnt = count();
     auto minX = range.min, maxX = range.max;
-    while (xi<cnt && xs_[xi] < minX)
+    while (xi < cnt && xs_[xi] < minX)
       ++xi;
-    while (xi<cnt && xs_[xi] <= maxX) {
-      res.append(xs_[xi],ys_[xi]);
+    while (xi < cnt && xs_[xi] <= maxX) {
+      res.append(xs_[xi], ys_[xi]);
       ++xi;
     }
   }
@@ -73,17 +73,18 @@ Curve Curve::intersect(rcRanges ranges) const {
   Curve res;
 
   // collect points that are in ranges
-  // it works because both curve points and ranges are ordered and ranges are non-overlapping
+  // it works because both curve points and ranges are ordered and ranges are
+  // non-overlapping
   ENSURE(isOrdered())
 
   uint xi = 0, cnt = count();
   for_i (ranges.count()) {
     rcRange range = ranges.at(i);
-    auto minX = range.min, maxX = range.max;
-    while (xi<cnt && xs_[xi] < minX)
+    auto    minX = range.min, maxX = range.max;
+    while (xi < cnt && xs_[xi] < minX)
       ++xi;
-    while (xi<cnt && xs_[xi] <= maxX) {
-      res.append(xs_[xi],ys_[xi]);
+    while (xi < cnt && xs_[xi] <= maxX) {
+      res.append(xs_[xi], ys_[xi]);
       ++xi;
     }
   }
@@ -107,27 +108,26 @@ Curve Curve::mul(qreal factor) const {
     res.append(xs_[i], ys_[i] * factor);
 
   return res;
-
 }
 
 Curve Curve::add(Curve const& that) const {
   Curve const *curve1 = this, *curve2 = &that;
-  uint count1 = curve1->count(), count2 = curve2->count();
+  uint         count1 = curve1->count(), count2 = curve2->count();
 
   // the longer one comes second
   if (count1 > count2) {
-    qSwap(curve1,curve2);
-    qSwap(count1,count2);
+    qSwap(curve1, curve2);
+    qSwap(count1, count2);
   }
 
-  Curve res; // TODO take the tth axis into account
+  Curve res;  // TODO take the tth axis into account
 
   // the shorter part - both curves
-  for (uint i=0, iEnd = count1; i<iEnd; ++i)
+  for (uint i = 0, iEnd = count1; i < iEnd; ++i)
     res.append(curve2->x(i), curve1->y(i) + curve2->y(i));
 
   // the remainder of the longer curve
-  for (uint i=count1, iEnd = count2; i<iEnd; ++i)
+  for (uint i = count1, iEnd = count2; i < iEnd; ++i)
     res.append(curve2->x(i), curve2->y(i));
 
   return res;
@@ -136,8 +136,8 @@ Curve Curve::add(Curve const& that) const {
 Curve Curve::smooth3() const {
   Curve res;
 
-  for_i (count()-2)
-    res.append(xs_[i+1], (ys_[i] + ys_[i+1] + ys_[i+2]) / 3.);
+  for_i (count() - 2)
+    res.append(xs_[i + 1], (ys_[i] + ys_[i + 1] + ys_[i + 2]) / 3.);
 
   return res;
 }
@@ -145,12 +145,14 @@ Curve Curve::smooth3() const {
 uint Curve::maxYindex() const {
   if (isEmpty()) return 0;
 
-  auto yMax = ys_[0]; uint index = 0;
+  auto yMax  = ys_[0];
+  uint index = 0;
 
   for_i (count()) {
     auto y = ys_[i];
     if (y > yMax) {
-      yMax = y; index = i;
+      yMax  = y;
+      index = i;
     }
   }
 

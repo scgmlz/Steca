@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      out_table.cpp
 //!
@@ -13,30 +13,30 @@
 // ************************************************************************** //
 
 #include "out_table.h"
-#include "types/type_models.h"
-#include "types/core_async.h"
 #include "thehub.h"
+#include "types/core_async.h"
+#include "types/type_models.h"
 
 #include <QAbstractTableModel>
-#include <QHeaderView>
 #include <QFontMetrics>
-#include <QSplitter>
+#include <QHeaderView>
 #include <QScrollArea>
+#include <QSplitter>
 
 namespace gui { namespace io {
 //------------------------------------------------------------------------------
 
-class OutTableModel: public models::TableModel {
-  SUPER(OutTableModel,models::TableModel)
+class OutTableModel : public models::TableModel {
+  SUPER(OutTableModel, models::TableModel)
 
 public:
   OutTableModel(TheHub&, uint numCols_);
 
   int columnCount(rcIndex = models::ANY_INDEX) const;
-  int rowCount(rcIndex    = models::ANY_INDEX) const;
+  int rowCount(rcIndex = models::ANY_INDEX) const;
 
-  QVariant data(rcIndex,int) const;
-  QVariant headerData(int, Qt::Orientation, int)  const;
+  QVariant data(rcIndex, int) const;
+  QVariant headerData(int, Qt::Orientation, int) const;
 
   void moveColumn(uint from, uint to);
 
@@ -50,7 +50,8 @@ public:
   void sortData();
 
 private:
-  uint numCols_; int sortColumn_;
+  uint numCols_;
+  int  sortColumn_;
 
   str_lst       colTitles_;
   uint_vec      colIndexMap_;
@@ -62,7 +63,7 @@ private:
 //------------------------------------------------------------------------------
 
 OutTableModel::OutTableModel(TheHub& hub, uint numColumns_)
-: models::TableModel(hub), numCols_(numColumns_), sortColumn_(0) {
+    : models::TableModel(hub), numCols_(numColumns_), sortColumn_(0) {
   colIndexMap_.resize(numCols_);
   for_i (numCols_)
     colIndexMap_[i] = i;
@@ -82,13 +83,11 @@ QVariant OutTableModel::data(rcIndex index, int role) const {
   int indexRow = index.row(), indexCol = index.column();
   int numRows = rowCount(), numCols = columnCount();
 
-  if (indexCol < 0 || indexRow < 0)
-    return QVariant();
+  if (indexCol < 0 || indexRow < 0) return QVariant();
 
   switch (role) {
   case Qt::DisplayRole:
-    if (0 == indexCol)
-      return indexRow + 1;
+    if (0 == indexCol) return indexRow + 1;
 
     if (--indexCol < numCols && indexRow < numRows)
       return rows_[indexRow][indexCol];
@@ -96,8 +95,7 @@ QVariant OutTableModel::data(rcIndex index, int role) const {
     break;
 
   case Qt::TextAlignmentRole:
-    if (0 == indexCol)
-      return Qt::AlignRight;
+    if (0 == indexCol) return Qt::AlignRight;
 
     if (--indexCol < numCols && indexRow < numRows) {
       switch (rows_[indexRow][indexCol].type()) {
@@ -122,14 +120,12 @@ QVariant OutTableModel::data(rcIndex index, int role) const {
   return QVariant();
 }
 
-QVariant OutTableModel::headerData(int section, Qt::Orientation, int role) const {
-  if (section < 0 || colTitles_.count() < section)
-    return QVariant();
+QVariant OutTableModel::headerData(int section, Qt::Orientation,
+                                   int role) const {
+  if (section < 0 || colTitles_.count() < section) return QVariant();
 
   if (Qt::DisplayRole == role) {
-    return 0 == section
-        ? "#"
-        : colTitles_.at(section - 1);
+    return 0 == section ? "#" : colTitles_.at(section - 1);
   }
 
   return QVariant();
@@ -137,7 +133,7 @@ QVariant OutTableModel::headerData(int section, Qt::Orientation, int role) const
 
 void OutTableModel::moveColumn(uint from, uint to) {
   EXPECT(from < (uint)colIndexMap_.count() && to < (uint)colIndexMap_.count())
-  qSwap(colIndexMap_[from],colIndexMap_[to]);
+  qSwap(colIndexMap_[from], colIndexMap_[to]);
 }
 
 void OutTableModel::setCmpFuns(core::cmp_vec const& cmps) {
@@ -169,11 +165,11 @@ void OutTableModel::sortData() {
   // sort sortColumn first, then left-to-right
   auto cmpRows = [this](uint i, core::row_t const& r1, core::row_t const& r2) {
     i = colIndexMap_[i];
-    return cmpFunctions_[i](r1[i],r2[i]);
+    return cmpFunctions_[i](r1[i], r2[i]);
   };
 
-  auto cmp = [this,cmpRows](core::row_t const& r1, core::row_t const& r2) {
-    if (sortColumn_>0) {
+  auto cmp = [this, cmpRows](core::row_t const& r1, core::row_t const& r2) {
+    if (sortColumn_ > 0) {
       int c = cmpRows(sortColumn_, r1, r2);
       if (c < 0) return true;
       if (c > 0) return false;
@@ -191,43 +187,45 @@ void OutTableModel::sortData() {
   };
 
   beginResetModel();
-  std::sort(rows_.begin(),rows_.end(),cmp);
+  std::sort(rows_.begin(), rows_.end(), cmp);
   endResetModel();
 }
 
 //------------------------------------------------------------------------------
 
 OutTable::OutTable(TheHub& hub, uint numDataColumns) {
-  setModel((model_ = new OutTableModel(hub,numDataColumns)));
+  setModel((model_ = new OutTableModel(hub, numDataColumns)));
   setHeader(new QHeaderView(Qt::Horizontal));
 
-  auto &h = *header();
+  auto& h = *header();
 
-  h.setSectionResizeMode(0,QHeaderView::Fixed);
+  h.setSectionResizeMode(0, QHeaderView::Fixed);
   h.setSectionsMovable(true);
   h.setSectionsClickable(true);
 
   int w = QFontMetrics(h.font()).width("000000000");
-  setColumnWidth(0,w);
+  setColumnWidth(0, w);
 }
 
 void OutTable::setHeaders(str_lst const& headers) {
   model_->setHeaders(headers);
 
-  connect(header(),&QHeaderView::sectionMoved, [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
-    ENSURE(oldVisualIndex>0 && newVisualIndex>0)
-    auto &h = *header();
-    h.setSortIndicatorShown(false);
-    model_->setSortColumn(-1);
-    model_->moveColumn((uint)(oldVisualIndex-1),(uint)(newVisualIndex-1));
-    model_->sortData();
-  });
+  connect(header(), &QHeaderView::sectionMoved,
+          [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
+            ENSURE(oldVisualIndex > 0 && newVisualIndex > 0)
+            auto& h = *header();
+            h.setSortIndicatorShown(false);
+            model_->setSortColumn(-1);
+            model_->moveColumn((uint)(oldVisualIndex - 1),
+                               (uint)(newVisualIndex - 1));
+            model_->sortData();
+          });
 
-  connect(header(),&QHeaderView::sectionClicked, [this](int logicalIndex) {
-    auto &h = *header();
+  connect(header(), &QHeaderView::sectionClicked, [this](int logicalIndex) {
+    auto& h = *header();
     h.setSortIndicatorShown(true);
-    h.setSortIndicator(logicalIndex,Qt::AscendingOrder);
-    model_->setSortColumn(logicalIndex-1);
+    h.setSortIndicator(logicalIndex, Qt::AscendingOrder);
+    model_->setSortColumn(logicalIndex - 1);
     model_->sortData();
   });
 }
@@ -250,13 +248,12 @@ void OutTable::sortData() {
 
 //------------------------------------------------------------------------------
 
-OutTableWidget::OutTableWidget(TheHub& hub,
-                               str_lst const& headers, core::cmp_vec const& cmps)
-{
+OutTableWidget::OutTableWidget(TheHub& hub, str_lst const& headers,
+                               core::cmp_vec const& cmps) {
   EXPECT(headers.count() == cmps.count())
   uint numDataColumns = headers.count();
 
-  QBoxLayout *box;
+  QBoxLayout* box;
   setLayout((box = vbox()));
   box->setMargin(0);
 
@@ -264,54 +261,55 @@ OutTableWidget::OutTableWidget(TheHub& hub,
   box->addWidget(split);
 
   split->setChildrenCollapsible(false);
-  split->addWidget((outTable_ = new OutTable(hub,numDataColumns)));
+  split->addWidget((outTable_ = new OutTable(hub, numDataColumns)));
 
   outTable_->setHeaders(headers);
   outTable_->setCmpFuns(cmps);
 
   for_i (numDataColumns) {
-    ShowColumn item; item.name = headers[i];
+    ShowColumn item;
+    item.name = headers[i];
     showColumns_.append(item);
   }
 
   auto scrollArea = new QScrollArea;
-  scrollArea->setWidget((showColumnsWidget_ = new ShowColumnsWidget(showColumns_)));
+  scrollArea->setWidget(
+      (showColumnsWidget_ = new ShowColumnsWidget(showColumns_)));
 
   for_i (numDataColumns) {
     auto cb = showColumns_[i].cb;
 
     cb->setChecked(true);
-    connect(cb, &QCheckBox::clicked,[this,cb,i]() {
+    connect(cb, &QCheckBox::clicked, [this, cb, i]() {
       if (cb->isChecked())
-        outTable_->showColumn(i+1);
+        outTable_->showColumn(i + 1);
       else
-        outTable_->hideColumn(i+1);
-      }
-    );
+        outTable_->hideColumn(i + 1);
+    });
   }
 
   split->addWidget(scrollArea);
-  split->setStretchFactor(0,1);
+  split->setStretchFactor(0, 1);
 }
 
-OutTableWidget::~OutTableWidget () {
-}
+OutTableWidget::~OutTableWidget() {}
 
 //------------------------------------------------------------------------------
 
-OutTableWidget::ShowColumnsWidget::ShowColumnsWidget(OutTableWidget::showcolumn_vec& items) {
+OutTableWidget::ShowColumnsWidget::ShowColumnsWidget(
+    OutTableWidget::showcolumn_vec& items) {
   setLayout((grid_ = gridLayout()));
 
   for_i (items.count()) {
-    auto &item = items[i];
+    auto& item = items[i];
     grid_->addWidget((item.cb = check(item.name)), i, 0);
   }
 }
 
 //------------------------------------------------------------------------------
 
-OutWindow::OutWindow(TheHub& hub,rcstr title, QWidget* parent)
-: super(parent, Qt::Dialog), RefHub(hub) {
+OutWindow::OutWindow(TheHub& hub, rcstr title, QWidget* parent)
+    : super(parent, Qt::Dialog), RefHub(hub) {
   setAttribute(Qt::WA_DeleteOnClose);
   setWindowTitle(title);
   setLayout((box_ = vbox()));
@@ -322,12 +320,10 @@ void OutWindow::setWidgets(panel::BasicPanel* panel, QWidget* widget) {
   box_->addWidget(widget);
   auto bbox = hbox();
   box_->addLayout(bbox);
-  box_->setStretch(1,1);
+  box_->setStretch(1, 1);
 
   auto actClose = new TriggerAction("Close", "", this);
-  connect(actClose, &QAction::triggered, [this]() {
-    close();
-  });
+  connect(actClose, &QAction::triggered, [this]() { close(); });
   bbox->addWidget(textButton(actClose));
 
   bbox->addStretch();
@@ -347,4 +343,3 @@ void OutWindow::setWidgets(panel::BasicPanel* panel, QWidget* widget) {
 //------------------------------------------------------------------------------
 }}
 // eof
-

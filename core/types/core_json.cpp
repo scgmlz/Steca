@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_json.h
 //!
@@ -20,11 +20,9 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-JsonObj::JsonObj() {
-}
+JsonObj::JsonObj() {}
 
-JsonObj::JsonObj(QJsonObject const& obj): super(obj) {
-}
+JsonObj::JsonObj(QJsonObject const& obj) : super(obj) {}
 
 JsonObj& JsonObj::saveObj(rcstr key, QJsonObject const& obj) {
   insert(key, obj);
@@ -39,7 +37,7 @@ JsonObj JsonObj::loadObj(rcstr key, bool defEmpty) const THROWS {
     return val.toObject();
   case QJsonValue::Undefined:
     if (defEmpty) return JsonObj();
-    // fall through
+  // fall through
   default:
     THROW(key + ": not an object");
   }
@@ -58,7 +56,7 @@ JsonArr JsonObj::loadArr(rcstr key, bool defEmpty) const THROWS {
     return val.toArray();
   case QJsonValue::Undefined:
     if (defEmpty) return JsonArr();
-    // fall through
+  // fall through
   default:
     THROW(key + ": not an array");
   }
@@ -80,14 +78,15 @@ int JsonObj::loadInt(rcstr key) const THROWS {
   }
 }
 
-#define RET_LOAD_DEF(type) return value(key).isUndefined() ? def : load##type(key);
+#define RET_LOAD_DEF(type) \
+  return value(key).isUndefined() ? def : load##type(key);
 
 int JsonObj::loadInt(rcstr key, int def) const THROWS {
   RET_LOAD_DEF(Int)
 }
 
 JsonObj& JsonObj::saveUint(rcstr key, uint num) {
-  return saveInt(key,num);
+  return saveInt(key, num);
 }
 
 uint JsonObj::loadUint(rcstr key) const THROWS {
@@ -119,8 +118,8 @@ qreal JsonObj::loadReal(rcstr key) const THROWS {
 
   switch (val.type()) {
   case QJsonValue::Undefined:
-    return qQNaN();             // not present means not a number
-  case QJsonValue::String: {    // infinities stored as strings
+    return qQNaN();           // not present means not a number
+  case QJsonValue::String: {  // infinities stored as strings
     auto s = val.toString();
     if (INF_P == s) return +qInf();
     if (INF_M == s) return -qInf();
@@ -181,7 +180,8 @@ JsonObj& JsonObj::saveRange(rcstr key, rcRange range) {
 }
 
 Range JsonObj::loadRange(rcstr key) const THROWS {
-  Range range; range.loadJson(loadObj(key));
+  Range range;
+  range.loadJson(loadObj(key));
   return range;
 }
 
@@ -191,7 +191,8 @@ JsonObj& JsonObj::saveXY(rcstr key, rcXY xy) {
 }
 
 XY JsonObj::loadXY(rcstr key) const THROWS {
-  XY xy; xy.loadJson(loadObj(key));
+  XY xy;
+  xy.loadJson(loadObj(key));
   return xy;
 }
 
@@ -201,31 +202,31 @@ JsonObj& JsonObj::saveIJ(rcstr key, rcIJ ij) {
 }
 
 IJ JsonObj::loadIJ(rcstr key) const THROWS {
-  IJ ij; ij.loadJson(loadObj(key));
+  IJ ij;
+  ij.loadJson(loadObj(key));
   return ij;
 }
 
-JsonObj& JsonObj::operator+= (rcJsonObj that) {
-  for (auto &key: that.keys())
-    insert(key,that[key]);
+JsonObj& JsonObj::operator+=(rcJsonObj that) {
+  for (auto& key : that.keys())
+    insert(key, that[key]);
   return *this;
 }
 
-JsonObj JsonObj::operator+ (rcJsonObj that) const {
+JsonObj JsonObj::operator+(rcJsonObj that) const {
   return JsonObj(*this) += that;
 }
 
 //------------------------------------------------------------------------------
 
-JsonArr::JsonArr() {
-}
+JsonArr::JsonArr() {}
 
-JsonArr::JsonArr(QJsonArray const& array): super(array) {
-}
+JsonArr::JsonArr(QJsonArray const& array) : super(array) {}
 
 JsonObj JsonArr::objAt(uint i) const {
   auto obj = super::at(i);
-  RUNTIME_CHECK(QJsonValue::Object == obj.type(), "not an object at " + str::number(i));
+  RUNTIME_CHECK(QJsonValue::Object == obj.type(),
+                "not an object at " + str::number(i));
   return super::at(i).toObject();
 }
 

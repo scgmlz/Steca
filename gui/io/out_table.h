@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      out_table.h
 //! @brief     A dynamic table for ouput data.
@@ -25,16 +25,16 @@ namespace gui { namespace io {
 
 class OutTableModel;
 
-class OutTable: public TreeView {
-  SUPER(OutTable,TreeView)
+class OutTable : public TreeView {
+  SUPER(OutTable, TreeView)
 public:
-  OutTable(TheHub&, uint numDataColumns);
+  OutTable(TheHub &, uint numDataColumns);
 
-  void setHeaders(str_lst const&);
-  void setCmpFuns(core::cmp_vec const&);
+  void setHeaders(str_lst const &);
+  void setCmpFuns(core::cmp_vec const &);
 
   void clear();
-  void addRow(core::row_t const&);
+  void addRow(core::row_t const &);
 
   void sortData();
 
@@ -44,30 +44,28 @@ private:
 
 //------------------------------------------------------------------------------
 
-class OutTableWidget: public QWidget {
-  SUPER(OutTableWidget,QWidget)
+class OutTableWidget : public QWidget {
+  SUPER(OutTableWidget, QWidget)
 public:
   // Must have the right number of headers and comparators
-  OutTableWidget(TheHub&,
-                 str_lst const& headers, core::cmp_vec const&);
- ~OutTableWidget();
+  OutTableWidget(TheHub &, str_lst const &headers, core::cmp_vec const &);
+  ~OutTableWidget();
 
-  OutTable& table() const {
-    return *outTable_;
-  }
+  OutTable &table() const { return *outTable_; }
 
 private:
   struct ShowColumn {
-    str name; QCheckBox *cb;
+    str        name;
+    QCheckBox *cb;
   };
 
   typedef QVector<ShowColumn> showcolumn_vec;
 
 private:
-  class ShowColumnsWidget: public QWidget {
-    SUPER(ShowColumnsWidget,QWidget)
+  class ShowColumnsWidget : public QWidget {
+    SUPER(ShowColumnsWidget, QWidget)
   public:
-    ShowColumnsWidget(showcolumn_vec&);
+    ShowColumnsWidget(showcolumn_vec &);
     QGridLayout *grid_;
   };
 
@@ -80,16 +78,16 @@ private:
 //------------------------------------------------------------------------------
 /// a child window that deletes itself
 
-class OutWindow: public QFrame, protected RefHub {
-  SUPER(OutWindow,QFrame)
+class OutWindow : public QFrame, protected RefHub {
+  SUPER(OutWindow, QFrame)
 public:
-  OutWindow(TheHub&,rcstr title,QWidget*);
+  OutWindow(TheHub &, rcstr title, QWidget *);
 
 protected:
-  virtual void calculate() = 0; ///< here do the work
+  virtual void calculate() = 0;  ///< here do the work
 
 protected:
-  void setWidgets(panel::BasicPanel*,QWidget*);
+  void setWidgets(panel::BasicPanel *, QWidget *);
 
   QBoxLayout        *box_;
   panel::BasicPanel *panel_;
@@ -97,4 +95,4 @@ protected:
 
 //------------------------------------------------------------------------------
 }}
-#endif // OUT_TABLE_H
+#endif  // OUT_TABLE_H

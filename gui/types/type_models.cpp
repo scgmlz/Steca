@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      type_models.cpp
 //!
@@ -23,7 +23,7 @@ QModelIndex const ANY_INDEX;
 
 //------------------------------------------------------------------------------
 
-CheckedInfo::CheckedInfo(rcstr tag_): tag(tag_), cb(nullptr), infoText(nullptr) {
+CheckedInfo::CheckedInfo(rcstr t): tag(t), cb(nullptr), infoText(nullptr) {
 }
 
 void CheckedInfo::setText(rcstr text) {
@@ -33,7 +33,7 @@ void CheckedInfo::setText(rcstr text) {
 
 //------------------------------------------------------------------------------
 
-TableModel::TableModel(gui::TheHub& hub): RefHub(hub) {
+TableModel::TableModel(gui::TheHub& hub) : RefHub(hub) {
 }
 
 void TableModel::signalReset() {

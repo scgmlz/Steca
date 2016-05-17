@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_angles.h
 //! @brief     Coordinates
@@ -26,8 +26,8 @@ class rad;
 /// angles stored in degrees
 class deg {
 public:
-  deg(qreal val = 0): val_(val) {}
-  operator qreal() const  { return val_; }
+  deg(qreal val = 0) : val_(val) {}
+  operator qreal() const { return val_; }
 
   explicit deg(rad const&);
   rad toRad() const;
@@ -39,8 +39,8 @@ private:
 /// trigonometry needs radians
 class rad {
 public:
-  rad(qreal val = 0): val_(val) {}
-  operator qreal() const  { return val_; }
+  rad(qreal val = 0) : val_(val) {}
+  operator qreal() const { return val_; }
 
   explicit rad(deg const&);
   deg toDeg() const;
@@ -53,9 +53,7 @@ private:
 
 class NormalizedDeg {
 public:
-  NormalizedDeg(deg angle = 0, bool force = false) {
-    set(angle,force);
-  }
+  NormalizedDeg(deg angle = 0, bool force = false) { set(angle, force); }
 
   void set(deg angle, bool force = false) {
     angle_ = force ? angle : normalize(angle);
@@ -65,17 +63,27 @@ public:
 
   static deg normalize(deg angle) {
     static qreal const MAX = 360;
-    angle = fmod(angle,MAX);
-    if (angle<0) angle = angle + MAX;
+    angle                  = fmod(angle, MAX);
+    if (angle < 0) angle   = angle + MAX;
     return angle;
   }
 
-  bool operator==(NormalizedDeg const& that) const { return angle_ == that.angle_; }
+  bool operator==(NormalizedDeg const& that) const {
+    return angle_ == that.angle_;
+  }
 
-  bool operator <(NormalizedDeg const& that) const { return angle_  < that.angle_; }
-  bool operator >(NormalizedDeg const& that) const { return angle_  > that.angle_; }
-  bool operator<=(NormalizedDeg const& that) const { return angle_ <= that.angle_; }
-  bool operator>=(NormalizedDeg const& that) const { return angle_ >= that.angle_; }
+  bool operator<(NormalizedDeg const& that) const {
+    return angle_ < that.angle_;
+  }
+  bool operator>(NormalizedDeg const& that) const {
+    return angle_ > that.angle_;
+  }
+  bool operator<=(NormalizedDeg const& that) const {
+    return angle_ <= that.angle_;
+  }
+  bool operator>=(NormalizedDeg const& that) const {
+    return angle_ >= that.angle_;
+  }
 
 private:
   deg angle_;
@@ -83,4 +91,4 @@ private:
 
 //------------------------------------------------------------------------------
 }
-#endif // CORE_ANGLES_H
+#endif  // CORE_ANGLES_H

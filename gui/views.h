@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      views.h
 //! @brief     Data views.
@@ -16,21 +16,29 @@
 #ifndef VIEWS_H
 #define VIEWS_H
 
+#include "gui_helpers.h"
 #include "models.h"
 #include "refhub.h"
-#include "gui_helpers.h"
 
 namespace gui { namespace views {
 //------------------------------------------------------------------------------
 /// A (tree-)list view with a reference to the hub. Single selection.
 
-class ListView: public TreeListView, protected RefHub {
-  SUPER(ListView,TreeListView)
+class ListView : public TreeListView, protected RefHub {
+  SUPER(ListView, TreeListView)
 public:
   ListView(TheHub&);
 
-protected:
   using Model = models::TableModel;
+
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Woverloaded-virtual"
+  void setModel(Model*);
+  #pragma GCC diagnostic pop
+
+protected:
+  Model* model() const { return static_cast<Model*>(super::model()); }
+
   void updateSingleSelection();
   void selectRow(uint);
 };
@@ -38,16 +46,15 @@ protected:
 //------------------------------------------------------------------------------
 /// Multiple selection.
 
-class MultiListView: public ListView {
-  SUPER(MultiListView,ListView)
+class MultiListView : public ListView {
+  SUPER(MultiListView, ListView)
 public:
   MultiListView(TheHub&);
 
 protected:
-  using Model = models::TableModel;
   void selectRows(uint_vec);
 };
 
 //------------------------------------------------------------------------------
 }}
-#endif // VIEWS_H
+#endif  // VIEWS_H

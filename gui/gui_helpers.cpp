@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      gui_helpers.cpp
 //!
@@ -17,39 +17,39 @@
 
 //------------------------------------------------------------------------------
 
-QBoxLayout *boxLayout(Qt::Orientation orientation) {
+QBoxLayout* boxLayout(Qt::Orientation orientation) {
   switch (orientation) {
   case Qt::Horizontal:
     return hbox();
   case Qt::Vertical:
     return vbox();
   default:
-    NEVER_HERE return nullptr;
+    NEVER return nullptr;
   }
 }
 
-QBoxLayout *hbox() {
+QBoxLayout* hbox() {
   auto box = new QHBoxLayout;
   box->setSpacing(2);
   return box;
 }
 
-QBoxLayout *vbox() {
+QBoxLayout* vbox() {
   auto box = new QVBoxLayout;
   box->setSpacing(2);
   return box;
 }
 
-QGridLayout *gridLayout() {
+QGridLayout* gridLayout() {
   auto grid = new QGridLayout;
   grid->setSpacing(2);
   return grid;
 }
 
-QLabel *icon(rcstr fileName) {
+QLabel* icon(rcstr fileName) {
   auto label = new QLabel;
-  auto h = label->sizeHint().height();
-  label->setPixmap(QIcon(fileName).pixmap(QSize(h,h)));
+  auto h     = label->sizeHint().height();
+  label->setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
   return label;
 }
 
@@ -58,12 +58,12 @@ QLabel* label(rcstr text) {
 }
 
 static void setEmWidth(QWidget* w, uint emWidth) {
-  w->setMaximumWidth(emWidth*w->fontMetrics().width('m'));
+  w->setMaximumWidth(emWidth * w->fontMetrics().width('m'));
 }
 
 QLineEdit* editCell(uint emWidth) {
   auto cell = new QLineEdit;
-  setEmWidth(cell,emWidth);
+  setEmWidth(cell, emWidth);
   return cell;
 }
 
@@ -73,31 +73,29 @@ QLineEdit* readCell(uint emWidth) {
   return cell;
 }
 
-QSpinBox* spinCell(uint emWidth,int min,int max) {
+QSpinBox* spinCell(uint emWidth, int min, int max) {
   auto cell = new QSpinBox;
-  setEmWidth(cell,emWidth);
+  setEmWidth(cell, emWidth);
   cell->setMinimum(min);
-  cell->setMaximum(max>INT_MIN ? max : INT_MAX);
+  cell->setMaximum(max > INT_MIN ? max : INT_MAX);
   return cell;
 }
 
-QDoubleSpinBox *spinCell(uint emWidth,qreal min, qreal max) {
+QDoubleSpinBox* spinCell(uint emWidth, qreal min, qreal max) {
   auto cell = new QDoubleSpinBox;
-  setEmWidth(cell,emWidth);
+  setEmWidth(cell, emWidth);
   cell->setMinimum(min);
-  cell->setMaximum(max>INT_MIN ? max : INT_MAX);
+  cell->setMaximum(max > INT_MIN ? max : INT_MAX);
   return cell;
 }
 
 QCheckBox* check(rcstr text, QAction* action) {
   auto cb = new QCheckBox(text);
   if (action) {
-    QObject::connect(cb, &QCheckBox::toggled,[action](bool on) {
-      action->setChecked(on);
-    });
-    QObject::connect(action,&QAction::toggled,[cb](bool on) {
-      cb->setChecked(on);
-    });
+    QObject::connect(cb, &QCheckBox::toggled,
+                     [action](bool on) { action->setChecked(on); });
+    QObject::connect(action, &QAction::toggled,
+                     [cb](bool on) { cb->setChecked(on); });
   }
   return cb;
 }
@@ -147,7 +145,7 @@ void TreeListView::setModel(QAbstractItemModel* model) {
   hideColumn(0);  // this should look like a list; 0th column is tree-like
 
   if (model) {
-    connect(model, &QAbstractItemModel::modelReset, [this,model]() {
+    connect(model, &QAbstractItemModel::modelReset, [this, model]() {
       for_i (model->columnCount())
         resizeColumnToContents(i);
     });
@@ -173,7 +171,8 @@ BoxWidget::BoxWidget(Qt::Orientation orientation) {
 
 //------------------------------------------------------------------------------
 
-DockWidget::DockWidget(rcstr name,rcstr objectName,Qt::Orientation orientation) {
+DockWidget::DockWidget(rcstr name, rcstr objectName,
+                       Qt::Orientation orientation) {
   setFeatures(NoDockWidgetFeatures);
   setWidget(new QWidget);
   widget()->setLayout((box_ = boxLayout(orientation)));

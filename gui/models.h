@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      models.h
 //! @brief     Data models.
@@ -21,15 +21,15 @@
 namespace models {
 //------------------------------------------------------------------------------
 
-class FilesModel: public TableModel {
-  SUPER(FilesModel,TableModel)
+class FilesModel : public TableModel {
+  SUPER(FilesModel, TableModel)
 public:
   FilesModel(gui::TheHub&);
 
   int columnCount(rcIndex = ANY_INDEX) const;
-  int rowCount(rcIndex    = ANY_INDEX) const;
+  int rowCount(rcIndex = ANY_INDEX) const;
 
-  QVariant data(rcIndex,int) const;
+  QVariant data(rcIndex, int) const;
 
 public:
   enum { GetFileRole = Qt::UserRole };
@@ -39,21 +39,18 @@ public:
 
 //------------------------------------------------------------------------------
 
-class DatasetsModel: public TableModel {
-  SUPER(DatasetsModel,TableModel)
+class DatasetsModel : public TableModel {
+  SUPER(DatasetsModel, TableModel)
 public:
   DatasetsModel(gui::TheHub&);
 
   int columnCount(rcIndex = ANY_INDEX) const;
-  int rowCount(rcIndex    = ANY_INDEX) const;
+  int rowCount(rcIndex = ANY_INDEX) const;
 
-  QVariant data(rcIndex,int) const;
-  QVariant headerData(int,Qt::Orientation,int) const;
+  QVariant data(rcIndex, int) const;
+  QVariant headerData(int, Qt::Orientation, int) const;
 
-  enum {
-    COL_NUMBER = DCOL,
-    COL_ATTRS
-  };
+  enum { COL_NUMBER = DCOL, COL_ATTRS };
 
 public:
   enum { GetDatasetRole = Qt::UserRole };
@@ -61,32 +58,28 @@ public:
   void showMetaInfo(checkedinfo_vec const&);
 
 private:
-  core::rcDatasets datasets_;        ///< the selected datasets
-  checkedinfo_vec const* metaInfo_;  ///< metadata items
-  uint_vec metaInfoNums_;            ///< selected metadata items to show
+  core::rcDatasets       datasets_;      ///< the selected datasets
+  checkedinfo_vec const* metaInfo_;      ///< metadata items
+  uint_vec               metaInfoNums_;  ///< selected metadata items to show
 };
 
 //------------------------------------------------------------------------------
 
-class ReflectionsModel: public TableModel {
-  SUPER(ReflectionsModel,TableModel)
+class ReflectionsModel : public TableModel {
+  SUPER(ReflectionsModel, TableModel)
 public:
   ReflectionsModel(gui::TheHub&);
 
   int columnCount(rcIndex = ANY_INDEX) const;
-  int rowCount(rcIndex    = ANY_INDEX) const;
+  int rowCount(rcIndex = ANY_INDEX) const;
 
   str displayData(uint row, uint col) const;
-  str displayData(uint row)           const;
+  str displayData(uint row) const;
 
-  QVariant data(rcIndex,int) const;
-  QVariant headerData(int,Qt::Orientation,int) const;
+  QVariant data(rcIndex, int) const;
+  QVariant headerData(int, Qt::Orientation, int) const;
 
-  enum {
-    COL_ID = DCOL,
-    COL_TYPE,
-    NUM_COLUMNS
-  };
+  enum { COL_ID = DCOL, COL_TYPE, NUM_COLUMNS };
 
 public:
   enum { GetDatasetRole = Qt::UserRole };
@@ -99,4 +92,4 @@ public:
 
 //------------------------------------------------------------------------------
 }
-#endif // MODELS_H
+#endif  // MODELS_H

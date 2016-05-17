@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      type_models.h
 //! @brief     Supporting model types.
@@ -25,13 +25,15 @@ class QLineEdit;
 
 namespace models {
 
-extern QVariant    const EMPTY_VAR;
+extern QVariant const    EMPTY_VAR;
 extern QModelIndex const ANY_INDEX;
 
 //------------------------------------------------------------------------------
 
 struct CheckedInfo {
-  str tag; QCheckBox *cb; QLineEdit *infoText;
+  str        tag;
+  QCheckBox *cb;
+  QLineEdit *infoText;
 
   CheckedInfo(rcstr tag = EMPTY_STR);
   void setText(rcstr);
@@ -42,8 +44,8 @@ typedef QVector<CheckedInfo> checkedinfo_vec;
 //------------------------------------------------------------------------------
 /// The base class of all table-like models
 
-class TableModel: public QAbstractTableModel, protected gui::RefHub {
-  SUPER(TableModel,QAbstractTableModel)
+class TableModel : public QAbstractTableModel, protected gui::RefHub {
+  SUPER(TableModel, QAbstractTableModel)
 public:
   using Index   = QModelIndex;
   using rcIndex = Index const&;
@@ -61,4 +63,4 @@ public:
 
 //------------------------------------------------------------------------------
 }
-#endif // TYPE_MODELS_H
+#endif  // TYPE_MODELS_H

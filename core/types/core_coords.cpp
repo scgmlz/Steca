@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_coords.cpp
 //!
@@ -20,24 +20,22 @@ namespace core {
 
 static str const KEY_X("x"), KEY_Y("y");
 
-IJ::IJ(): IJ(0,0) {
-}
+IJ::IJ() : IJ(0, 0) {}
 
-IJ::IJ(int i_, int j_): i(i_), j(j_) {
-}
+IJ::IJ(int i_, int j_) : i(i_), j(j_) {}
 
-bool IJ::operator ==(IJ const& that) const {
+bool IJ::operator==(IJ const& that) const {
   return i == that.i && j == that.j;
 }
 
 JsonObj IJ::saveJson() const {
   return JsonObj()
-    .saveInt(KEY_X,i) // yes, use KEY_X/Y
-    .saveInt(KEY_Y,j);
+      .saveInt(KEY_X, i)  // yes, use KEY_X/Y
+      .saveInt(KEY_Y, j);
 }
 
 void IJ::loadJson(rcJsonObj obj) THROWS {
-  i = obj.loadInt(KEY_X); // yes, use KEY_X/Y
+  i = obj.loadInt(KEY_X);  // yes, use KEY_X/Y
   j = obj.loadInt(KEY_Y);
 }
 
@@ -47,8 +45,7 @@ XY::XY() {
   invalidate();
 }
 
-XY::XY(qreal x_, qreal y_): x(x_), y(y_) {
-}
+XY::XY(qreal x_, qreal y_) : x(x_), y(y_) {}
 
 void XY::invalidate() {
   x = y = qQNaN();
@@ -59,9 +56,7 @@ bool XY::isValid() const {
 }
 
 JsonObj XY::saveJson() const {
-  return JsonObj()
-    .saveReal(KEY_X,x)
-    .saveReal(KEY_Y,y);
+  return JsonObj().saveReal(KEY_X, x).saveReal(KEY_Y, y);
 }
 
 void XY::loadJson(rcJsonObj obj) THROWS {

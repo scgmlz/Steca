@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      views.cpp
 //!
@@ -13,43 +13,45 @@
 // ************************************************************************** //
 
 #include "views.h"
-#include "thehub.h"
 #include "core_reflection.h"
+#include "thehub.h"
 
 namespace gui { namespace views {
 //-----------------------------------------------------------------------------
 
-ListView::ListView(TheHub& hub): RefHub(hub) {
+ListView::ListView(TheHub& hub) : RefHub(hub) {
+}
+
+void ListView::setModel(Model* model) {
+  super::setModel(model);
+  EXPECT(dynamic_cast<Model*>(super::model()))
 }
 
 void ListView::updateSingleSelection() {
-  Model *m = dynamic_cast<Model*>(model());
-  if (m) {
-    int row = currentIndex().row();
-    m->signalReset();
-    selectRow(qMin(row,m->rowCount()-1));
-  }
+  int row = currentIndex().row();
+  model()->signalReset();
+  selectRow(qMin(row, model()->rowCount() - 1));
 }
 
 void ListView::selectRow(uint row) {
-  setCurrentIndex(model()->index(row,0));
+  setCurrentIndex(model()->index(row, 0));
 }
 
 //------------------------------------------------------------------------------
 
-MultiListView::MultiListView(TheHub& hub): super(hub) {
+MultiListView::MultiListView(TheHub& hub) : super(hub) {
   setSelectionMode(ExtendedSelection);
 }
 
 void MultiListView::selectRows(uint_vec rows) {
-  auto m = model();
+  auto m    = model();
   uint cols = m->columnCount();
 
   QItemSelection is;
-  for (int row: rows)
-    is.append(QItemSelectionRange(m->index(row,0), m->index(row,cols-1)));
+  for (int row : rows)
+    is.append(QItemSelectionRange(m->index(row, 0), m->index(row, cols - 1)));
 
-  selectionModel()->select(is,QItemSelectionModel::ClearAndSelect);
+  selectionModel()->select(is, QItemSelectionModel::ClearAndSelect);
 }
 
 //------------------------------------------------------------------------------

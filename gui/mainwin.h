@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      mainwin.h
 //! @brief     The main window
@@ -16,8 +16,8 @@
 #ifndef MAINWIN_H
 #define MAINWIN_H
 
-#include "types/core_defs.h"
 #include "thehub.h"
+#include "types/core_defs.h"
 #include <QMainWindow>
 
 namespace gui {
@@ -52,20 +52,22 @@ public:
 
 private:
   // the hub
-  gui::TheHub  hub_;
-  Actions     &acts_;
+  gui::TheHub hub_;
+  Actions    &acts_;
 
 private:
-  void closeEvent(QCloseEvent*);
+  void closeEvent(QCloseEvent *);
 
   void onShow();
   void onClose();
 
 private:
-  QMenu *menuFile_, *menuEdit_, *menuView_, *menuDatasets_, *menuReflect_,
-        *menuOutput_, *menuHelp_;
+  QMenu
+      *menuFile_, *menuEdit_, *menuView_, *menuDatasets_, *menuReflect_,
+      *menuOutput_, *menuHelp_;
 
-  QDockWidget *dockFiles_, *dockDatasets_, *dockDatasetInfo_;
+  QDockWidget
+      *dockFiles_, *dockDatasets_, *dockDatasetInfo_;
 
 private:
   QByteArray initialState_;
@@ -85,4 +87,4 @@ private:
 
 //------------------------------------------------------------------------------
 }
-#endif // MAINWIN_H
+#endif  // MAINWIN_H

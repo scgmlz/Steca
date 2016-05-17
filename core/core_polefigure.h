@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_polefigure.h
 //! @brief     Pole figure
@@ -22,12 +22,10 @@
 namespace core { namespace pole {
 //------------------------------------------------------------------------------
 
-ReflectionInfos interpolate(ReflectionInfos const&,
-    deg alphaStep, deg betaStep,
-    deg averagingAlphaMax, deg averagingRadius,
-    deg idwRadius,
-    qreal inclusionTreshold);
+ReflectionInfos interpolate(ReflectionInfos const&, deg alphaStep, deg betaStep,
+                            deg averagingAlphaMax, deg averagingRadius,
+                            deg idwRadius, qreal inclusionTreshold);
 
 //------------------------------------------------------------------------------
 }}
-#endif // CORE_POLEFIGURE_H
+#endif  // CORE_POLEFIGURE_H

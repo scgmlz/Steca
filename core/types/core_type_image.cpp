@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_type_image.cpp
 //!
@@ -15,27 +15,24 @@
 #include "core_type_image.h"
 
 namespace core {
-
 //------------------------------------------------------------------------------
 
 Image::Image(QSize const& size, inten_t const* src) {
-  fill(0,size);
-  if (src)
-    addIntens(src);
+  fill(0, size);
+  if (src) addIntens(src);
 }
 
-Image::Image(rcImage that): Image(that.size(), that.intensData()) {
-}
+Image::Image(rcImage that) : Image(that.size(), that.intensData()) {}
 
 void Image::addIntens(rcImage that) THROWS {
-  RUNTIME_CHECK(size() == that.size(),"inconsistent image size");
+  RUNTIME_CHECK(size() == that.size(), "inconsistent image size");
   addIntens(that.data());
 }
 
 void Image::addIntens(inten_t const* thatIntens) {
   auto intens = data();
-  uint n = count();
-  while(n-- > 0) {
+  uint n      = count();
+  while (n-- > 0) {
     *intens++ += *thatIntens++;
   }
 }

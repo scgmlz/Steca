@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_io.h
 //!
@@ -21,7 +21,8 @@ namespace core { namespace io {
 static QByteArray peek(uint maxLen, QFileInfo const& info) {
   QFile file(info.filePath());
   file.open(QFile::ReadOnly);
-  return file.read(maxLen); // on error returns an empty QByteArray; that's good
+  return file.read(
+      maxLen);  // on error returns an empty QByteArray; that's good
 }
 
 shp_File load(rcstr filePath) THROWS {
@@ -32,18 +33,19 @@ shp_File load(rcstr filePath) THROWS {
 
   // apparently all Caress files begin so
   static QByteArray const caressHead("\020\012DEFCMD DAT");
-  if (caressHead == peek(caressHead.size(),info)) {
+  if (caressHead == peek(caressHead.size(), info)) {
     // looks like Caress, so try to load
     file = io::loadCaress(filePath);
   } else {
     THROW("unknown file type: " % filePath);
   }
 
-  RUNTIME_CHECK(file->datasets().count() > 0, "File " % filePath % " contains no datasets");
+  RUNTIME_CHECK(file->datasets().count() > 0,
+                "File " % filePath % " contains no datasets");
 
   // ensure that all datasets have images of the same size
   QSize size = file->datasets().first()->imageSize();
-  for (auto &dataset: file->datasets())
+  for (auto& dataset : file->datasets())
     if (dataset->imageSize() != size)
       THROW("Inconsistent image size in " % filePath);
 

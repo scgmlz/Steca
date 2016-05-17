@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_dataset.h
 //! @brief     Dataset = a collection of images + metadata.
@@ -16,9 +16,9 @@
 #ifndef CORE_DATASET_H
 #define CORE_DATASET_H
 
-#include "types/core_type_image.h"
-#include "types/core_type_geometry.h"
 #include "types/core_type_curve.h"
+#include "types/core_type_geometry.h"
+#include "types/core_type_image.h"
 #include "types/core_type_variant.h"
 
 namespace core {
@@ -31,16 +31,15 @@ struct Metadata {
   static str_lst attributeTags();
   static cmp_vec attributeCmps();
 
-  str       attributeStrValue(uint) const;
-  QVariant  attributeValue(uint)    const;
-  row_t     attributeValues()       const;
+  str      attributeStrValue(uint) const;
+  QVariant attributeValue(uint)    const;
+  row_t    attributeValues()       const;
 
-  static row_t  attributeNaNs();
+  static row_t attributeNaNs();
 
   str date, comment;
 
-  deg motorXT,  motorYT,  motorZT,
-      motorOmg, motorTth, motorPhi, motorChi,
+  deg motorXT, motorYT, motorZT, motorOmg, motorTth, motorPhi, motorChi,
       motorPST, motorSST, motorOMGM;
 
   qreal deltaMonitorCount, deltaTime;
@@ -60,31 +59,31 @@ public:
 
   static shp_Dataset combine(Datasets);
 
-  deg   midTth()            const { return md_->motorTth;           }
-  qreal deltaMonitorCount() const { return md_->deltaMonitorCount;  }
-  qreal deltaTime()         const { return md_->deltaTime;          }
+  deg   midTth()            const { return md_->motorTth; }
+  qreal deltaMonitorCount() const { return md_->deltaMonitorCount; }
+  qreal deltaTime()         const { return md_->deltaTime; }
 
-  deg   omg()               const { return md_->motorOmg; }
-  deg   phi()               const { return md_->motorPhi; }
-  deg   chi()               const { return md_->motorChi; }
+  deg omg() const { return md_->motorOmg; }
+  deg phi() const { return md_->motorPhi; }
+  deg chi() const { return md_->motorChi; }
 
-  rcImage image()           const { return image_; }
+  rcImage image() const { return image_; }
 
-  QSize   imageSize()          const;
-  inten_t inten(uint i,uint j) const;
+  QSize   imageSize() const;
+  inten_t inten(uint i, uint j) const;
 
 private:
-  Datasets *datasets_;  ///< here it belongs (or could be nullptr)
+  Datasets* datasets_;  ///< here it belongs (or could be nullptr)
 
   shp_Metadata md_;
-  Image image_;
+  Image        image_;
 };
 
 //------------------------------------------------------------------------------
 
 /// A group of Dataset(s)
-class Datasets: public QVector<shp_Dataset> {
-  SUPER(Datasets,QVector<shp_Dataset>)
+class Datasets : public QVector<shp_Dataset> {
+  SUPER(Datasets, QVector<shp_Dataset>)
 public:
   Datasets();
 
@@ -94,9 +93,9 @@ public:
   Image folded() const THROWS;
 
   /// all dataset(s) must have the same image size
-  QSize imageSize()            const;
-  qreal avgDeltaMonitorCount() const;
-  qreal avgDeltaTime()         const;
+  QSize   imageSize() const;
+  qreal   avgDeltaMonitorCount() const;
+  qreal   avgDeltaTime() const;
   rcRange rgeFixedInten(rcSession, bool trans, bool cut) const;
   rcCurve makeAvgCurve(rcSession, bool trans, bool cut) const;
 
@@ -114,4 +113,4 @@ private:
 
 Q_DECLARE_METATYPE(core::shp_Dataset)
 
-#endif // CORE_DATASET_H
+#endif  // CORE_DATASET_H

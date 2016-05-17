@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_reflection.cpp
 //!
@@ -20,7 +20,8 @@ namespace core {
 //------------------------------------------------------------------------------
 
 str_lst const& Reflection::typeStrLst() {
-  static str_lst types {"Raw", "Gaussian","Lorentzian","PseudoVoigt1","PseudoVoigt2"};
+  static str_lst types{"Raw", "Gaussian", "Lorentzian", "PseudoVoigt1",
+                       "PseudoVoigt2"};
   return types;
 }
 
@@ -28,7 +29,7 @@ rcstr Reflection::typeTag(ePeakType type) {
   return typeStrLst().at((int)type);
 }
 
-Reflection::Reflection(ePeakType type): peakFunction_(nullptr) {
+Reflection::Reflection(ePeakType type) : peakFunction_(nullptr) {
   setPeakFunction(type);
 }
 
@@ -63,15 +64,13 @@ bool Reflection::fit(rcCurve curve) {
 }
 
 void Reflection::setPeakFunction(ePeakType type) {
-  bool haveRange = !peakFunction_.isNull();
+  bool  haveRange = !peakFunction_.isNull();
   Range oldRange;
-  if (haveRange)
-    oldRange = peakFunction_->range();
+  if (haveRange) oldRange = peakFunction_->range();
 
   setPeakFunction(fit::PeakFunction::factory(type));
 
-  if (haveRange)
-    peakFunction_->setRange(oldRange);
+  if (haveRange) peakFunction_->setRange(oldRange);
 }
 
 void Reflection::setPeakFunction(fit::PeakFunction* f) {
@@ -85,7 +84,8 @@ JsonObj Reflection::saveJson() const {
 void Reflection::loadJson(rcJsonObj obj) THROWS {
   QScopedPointer<fit::Function> f(fit::Function::factory(obj));
 
-  RUNTIME_CHECK(dynamic_cast<fit::PeakFunction*>(f.data()),"must be a peak function");
+  RUNTIME_CHECK(dynamic_cast<fit::PeakFunction*>(f.data()),
+                "must be a peak function");
   setPeakFunction(static_cast<fit::PeakFunction*>(f.take()));
 }
 

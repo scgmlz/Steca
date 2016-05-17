@@ -38,7 +38,7 @@
 /// Mark code that should not be reached, typically 'switch' branches
 /// includes ';'
 
-#define NEVER_HERE    Q_ASSERT_X(false, "Here", "not be!");
+#define NEVER    Q_ASSERT_X(false, "Here", "not be!");
 
 #else
 
@@ -50,7 +50,7 @@
 #define EXPECT2(cond, text)
 #define ENSURE2(cond, text)
 
-#define NEVER_HERE
+#define NEVER
 
 #endif
 

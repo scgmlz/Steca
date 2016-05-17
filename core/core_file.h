@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_file.h
 //! @brief     File with datasets.
@@ -16,8 +16,8 @@
 #ifndef CORE_FILE_H
 #define CORE_FILE_H
 
-#include "types/core_defs.h"
 #include "core_dataset.h"
+#include "types/core_defs.h"
 #include <QFileInfo>
 
 namespace core {
@@ -28,11 +28,11 @@ class File final {
 public:
   File(rcstr fileName);
 
-  QFileInfo const& fileInfo() const { return fileInfo_;              }
-  str fileName()              const { return fileInfo_.fileName();   }
+  QFileInfo const& fileInfo() const { return fileInfo_; }
+  str              fileName() const { return fileInfo_.fileName(); }
 
-  Datasets&  datasets()             { return datasets_;              }
-  rcDatasets datasets()       const { return datasets_;              }
+  Datasets&  datasets()       { return datasets_; }
+  rcDatasets datasets() const { return datasets_; }
 
 private:
   QFileInfo fileInfo_;
@@ -44,4 +44,4 @@ private:
 
 Q_DECLARE_METATYPE(core::shp_File)
 
-#endif // CORE_FILE_H
+#endif  // CORE_FILE_H

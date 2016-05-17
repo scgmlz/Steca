@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_type_trees.cpp
 //!
@@ -31,7 +31,7 @@ TreeBase::node::node(): left(nullptr), right(nullptr) {
 }
 
 int TreeBase::node::compareTo(rcNode) const {
-  NEVER_HERE return 0;  // "abstract"
+  NEVER return 0;  // "abstract"
 }
 
 TreeBase::pNode TreeBase::min(pNode n) const {
@@ -83,7 +83,7 @@ void RBTreeBase::node::flip() {
 }
 
 void RBTreeBase::node::assign(rcNode) {
-  NEVER_HERE // "abstract"
+  NEVER // "abstract"
 }
 
 #define isRed(n) (n && N(n)->red)

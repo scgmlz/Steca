@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_coords.h
 //! @brief     Coordinates
@@ -26,10 +26,10 @@ namespace core {
 struct IJ {
   int i, j;
 
-  IJ();                  ///< (0,0)
+  IJ();  ///< (0,0)
   IJ(int, int);
 
-  bool operator ==(IJ const&) const;
+  bool operator==(IJ const&) const;
 
   JsonObj saveJson() const;
   void    loadJson(rcJsonObj) THROWS;
@@ -43,11 +43,11 @@ typedef IJ const& rcIJ;
 struct XY {
   qreal x, y;
 
-  XY();                   ///< invalid (NaN)
-  XY(qreal,qreal);
+  XY();  ///< invalid (NaN)
+  XY(qreal, qreal);
 
-  void  invalidate();     ///< make invalid
-  bool  isValid() const;  ///< is not NaN
+  void invalidate();     ///< make invalid
+  bool isValid() const;  ///< is not NaN
 
   JsonObj saveJson() const;
   void    loadJson(rcJsonObj) THROWS;
@@ -57,4 +57,4 @@ typedef XY const& rcXY;
 
 //------------------------------------------------------------------------------
 }
-#endif // CORE_COORDS_H
+#endif  // CORE_COORDS_H

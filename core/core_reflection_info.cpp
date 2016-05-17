@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_reflection_info.cpp
 //!
@@ -19,7 +19,8 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-/* NOTE Invalid output parameters are set to NaNs. However, some analysis programs
+/* NOTE Invalid output parameters are set to NaNs. However, some analysis
+ * programs
  * require -1 as unknown value; thus, NaN parameter values should be output
  * as -1 when output is written for these programs (polefigure!).
  */
@@ -27,7 +28,7 @@ namespace core {
 str_lst ReflectionInfo::dataTags() {
   static str_lst tags;
   if (tags.isEmpty()) {
-    tags = str_lst{"α","β","γ1","γ2","inten","2θ","fwhm"};
+    tags = str_lst{"α", "β", "γ1", "γ2", "inten", "2θ", "fwhm"};
     tags += Metadata::attributeTags();
   }
 
@@ -37,8 +38,9 @@ str_lst ReflectionInfo::dataTags() {
 cmp_vec ReflectionInfo::dataCmps() {
   static cmp_vec cmps;
   if (cmps.isEmpty()) {
-    cmps = cmp_vec{ core::cmp_real, core::cmp_real, core::cmp_real, core::cmp_real,
-                    core::cmp_real, core::cmp_real, core::cmp_real};
+    cmps =
+        cmp_vec{core::cmp_real, core::cmp_real, core::cmp_real, core::cmp_real,
+                core::cmp_real, core::cmp_real, core::cmp_real};
     cmps += Metadata::attributeCmps();
   }
 
@@ -46,27 +48,30 @@ cmp_vec ReflectionInfo::dataCmps() {
 }
 
 ReflectionInfo::ReflectionInfo()
-: ReflectionInfo(shp_Metadata(),qQNaN(),qQNaN(),Range(),qQNaN(),qQNaN(),qQNaN()) {
-}
-
-ReflectionInfo::ReflectionInfo(shp_Metadata md,
-                               deg alpha, deg beta, rcRange rgeGamma,
-                               qreal inten, deg tth, qreal fwhm)
-: md_(md)
-, alpha_(alpha), beta_(beta), rgeGamma_(rgeGamma)
-, inten_(inten), tth_(tth), fwhm_(fwhm)
+: ReflectionInfo(shp_Metadata(),
+                 qQNaN(), qQNaN(), Range(), qQNaN(), qQNaN(), qQNaN())
 {
 }
 
-ReflectionInfo::ReflectionInfo(shp_Metadata md,
-                               deg alpha, deg beta, rcRange rgeGamma)
-  : ReflectionInfo(md,alpha,beta,rgeGamma,qQNaN(),qQNaN(),qQNaN()) {
+ReflectionInfo::ReflectionInfo(shp_Metadata md, deg alpha, deg beta,
+                               rcRange rgeGamma, qreal inten, deg tth,
+                               qreal fwhm)
+: md_(md), alpha_(alpha), beta_(beta), rgeGamma_(rgeGamma), inten_(inten)
+, tth_(tth), fwhm_(fwhm)
+{
+}
+
+ReflectionInfo::ReflectionInfo(shp_Metadata md, deg alpha, deg beta,
+                               rcRange rgeGamma)
+: ReflectionInfo(md, alpha, beta, rgeGamma, qQNaN(), qQNaN(), qQNaN())
+{
 }
 
 row_t ReflectionInfo::data() const {
-  row_t row { (QVariant)alpha(), (QVariant)beta(),
-              (QVariant)rgeGamma().min, (QVariant)rgeGamma().max,
-              (QVariant)inten(), (QVariant)tth(), (QVariant)fwhm() };
+  row_t row{(QVariant)alpha(),        (QVariant)beta(),
+            (QVariant)rgeGamma().min, (QVariant)rgeGamma().max,
+            (QVariant)inten(),        (QVariant)tth(),
+            (QVariant)fwhm()};
 
   row.append(md_ ? md_->attributeValues() : Metadata::attributeNaNs());
   return row;
@@ -86,17 +91,17 @@ void ReflectionInfos::append(rcReflectionInfo info) {
 qreal ReflectionInfos::averageInten() const {
   if (qIsNaN(avgInten_)) {
     avgInten_ = 0;
-    uint cnt = 0;
+    uint cnt  = 0;
 
-    for (auto const& info: *this) {
+    for (auto const& info : *this) {
       qreal inten = info.inten();
       if (qIsFinite(inten)) {
-        avgInten_ += inten; ++cnt;
+        avgInten_ += inten;
+        ++cnt;
       }
     }
 
-    if (cnt)
-      avgInten_ /= cnt;
+    if (cnt) avgInten_ /= cnt;
   }
 
   return avgInten_;

@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      app.h
 //! @brief     The application.
@@ -21,8 +21,8 @@
 
 //------------------------------------------------------------------------------
 
-class App: public QApplication {
-  SUPER(App,QApplication)
+class App : public QApplication {
+  SUPER(App, QApplication)
 public:
   App(int& argc, char* argv[]);
 
@@ -34,4 +34,4 @@ private:
 };
 
 //------------------------------------------------------------------------------
-#endif // APP_H
+#endif  // APP_H

@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      panel.h
 //! @brief     Gui panels (in the main window).
@@ -16,8 +16,8 @@
 #ifndef PANEL_H
 #define PANEL_H
 
-#include "refhub.h"
 #include "gui_helpers.h"
+#include "refhub.h"
 #include <QGroupBox>
 
 namespace models {
@@ -28,10 +28,10 @@ namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 /// Just a plain panel
-class BasicPanel: public QGroupBox, protected RefHub {
-  SUPER(BasicPanel,QGroupBox)
+class BasicPanel : public QGroupBox, protected RefHub {
+  SUPER(BasicPanel, QGroupBox)
 public:
-  BasicPanel(rcstr title,TheHub&);
+  BasicPanel(rcstr title, TheHub&);
 
   void setHorizontalStretch(int);
   void setVerticalStretch(int);
@@ -39,8 +39,8 @@ public:
 };
 
 /// A panel with a box layout
-class BoxPanel: public BasicPanel {
-  SUPER(BoxPanel,BasicPanel)
+class BoxPanel : public BasicPanel {
+  SUPER(BoxPanel, BasicPanel)
 public:
   BoxPanel(rcstr title, TheHub&, Qt::Orientation);
 
@@ -49,10 +49,10 @@ protected:
 };
 
 /// A panel with grid layout
-class GridPanel: public BasicPanel {
-  SUPER(GridPanel,BasicPanel)
+class GridPanel : public BasicPanel {
+  SUPER(GridPanel, BasicPanel)
 public:
-  GridPanel(rcstr title,TheHub&);
+  GridPanel(rcstr title, TheHub&);
 
 protected:
   QGridLayout *grid_;
@@ -61,20 +61,20 @@ protected:
 //------------------------------------------------------------------------------
 
 /// A tabbed panel
-class TabsPanel: public QTabWidget, protected RefHub {
-  SUPER(TabsPanel,QTabWidget)
+class TabsPanel : public QTabWidget, protected RefHub {
+  SUPER(TabsPanel, QTabWidget)
 public:
   TabsPanel(TheHub&);
 
-  struct Tab: public QWidget {
+  struct Tab : public QWidget {
     Tab(Qt::Orientation);
     QBoxLayout *box;
   };
 
-  Tab& addTab(rcstr title, Qt::Orientation = Qt::Vertical);
-  Tab& tab(uint);
+  Tab &addTab(rcstr title, Qt::Orientation = Qt::Vertical);
+  Tab &tab(uint);
 };
 
 //------------------------------------------------------------------------------
 }}
-#endif // PANEL_H
+#endif  // PANEL_H

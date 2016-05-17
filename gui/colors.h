@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      colors.h
 //! @brief     Colors, scales, and palletes.
@@ -27,4 +27,4 @@ QRgb intenGraph(qreal inten, qreal maxInten = 1);
 
 //------------------------------------------------------------------------------
 }
-#endif // COLORS_H
+#endif  // COLORS_H

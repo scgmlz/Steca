@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      core_fit_methods.h
 //! @brief     Fitting methods
@@ -26,13 +26,14 @@ namespace fit {
 class FittingMethod {
 public:
   FittingMethod();
-  virtual ~FittingMethod();
+  virtual ~FittingMethod() {}
 
   bool fitWithoutChecks(Function&, rcCurve);
 
 protected:
   bool fit(Function&, rcCurve, bool withChecks);
-  virtual bool approximate(qreal*,qreal const*,qreal const*,qreal*,uint,qreal const*,uint) = 0;
+  virtual bool approximate(qreal*, qreal const*, qreal const*, qreal*, uint,
+                           qreal const*, uint) = 0;
 
   // these pointers are valid during fit() call
   Function*    function_;
@@ -40,32 +41,34 @@ protected:
 
 protected:
   /// calculate a vector of y(x)
-  void callbackY(qreal*,qreal*,int,int,void*);
+  void callbackY(qreal*, qreal*, int, int, void*);
 };
 
 //------------------------------------------------------------------------------
 
-class FittingLinearLeastSquare: public FittingMethod {
-  SUPER(FittingLinearLeastSquare,FittingMethod)
+class FittingLinearLeastSquare : public FittingMethod {
+  SUPER(FittingLinearLeastSquare, FittingMethod)
 public:
   FittingLinearLeastSquare();
 
 protected:
-  bool approximate(qreal*,qreal const*,qreal const*,qreal*,uint,qreal const*,uint);
+  bool approximate(qreal*, qreal const*, qreal const*, qreal*, uint,
+                   qreal const*, uint);
 };
 
 //------------------------------------------------------------------------------
 
-class FittingLevenbergMarquardt: public FittingMethod {
-  SUPER(FittingLevenbergMarquardt,FittingMethod)
+class FittingLevenbergMarquardt : public FittingMethod {
+  SUPER(FittingLevenbergMarquardt, FittingMethod)
 public:
   FittingLevenbergMarquardt();
 
 protected:
-  bool approximate(qreal*,qreal const*,qreal const*,qreal*,uint,qreal const*,uint);
+  bool approximate(qreal*, qreal const*, qreal const*, qreal*, uint,
+                   qreal const*, uint);
 
 private:
-  void callbackJacobianLM(qreal*,qreal*,int,int,void*);
+  void callbackJacobianLM(qreal*, qreal*, int, int, void*);
 };
 
 //------------------------------------------------------------------------------

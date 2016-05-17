@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2 REVIEW
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      refhub.h
 //! @brief     Reference to The Hub.
@@ -25,10 +25,11 @@ namespace gui {
 
 class TheHub;
 
-class TheHubSignallingBase: public QObject {
-  SUPER(TheHubSignallingBase,QObject)
+class TheHubSignallingBase : public QObject {
+  SUPER(TheHubSignallingBase, QObject)
   Q_OBJECT
   friend class RefHub;
+
 private:
   TheHub& asHub();
 
@@ -37,13 +38,14 @@ protected:
   void tellDatasetSelected(core::shp_Dataset);
   void tellSelectedReflection(core::shp_Reflection);
   void tellReflectionData(core::shp_Reflection);
-  void tellReflectionValues(core::rcRange,core::rcXY,qreal,bool);
+  void tellReflectionValues(core::rcRange, core::rcXY, qreal, bool);
 
 signals:
-  void sigFilesChanged();     ///< the set of loaded files has changed
-  void sigFilesSelected();    ///< the selection of loaded files has changed
+  void sigFilesChanged();   ///< the set of loaded files has changed
+  void sigFilesSelected();  ///< the selection of loaded files has changed
 
-  void sigDatasetsChanged();  ///< the set of datasets collected from selected files has changed
+  void sigDatasetsChanged();  ///< the set of datasets collected from selected
+                              /// files has changed
   void sigDatasetSelected(core::shp_Dataset);
 
   void sigCorrFile(core::shp_File);
@@ -57,7 +59,7 @@ signals:
   void sigDisplayChanged();
   void sigGeometryChanged();
 
-  void sigBgChanged();    ///< ranges and poly: refit
+  void sigBgChanged();  ///< ranges and poly: refit
   void sigNormChanged();
 
   void sigFittingTab(int);
@@ -69,28 +71,28 @@ signals:
 class RefHub {
 public:
   RefHub(TheHub&);
+
 protected:
-  TheHub &hub_;
+  TheHub& hub_;
 
 private:
   template <typename Signal, typename Lambda>
   void onHubSignal(Signal signal, Lambda slot) {
-    QObject::connect(&hub_,signal,slot);
+    QObject::connect(&hub_, signal, slot);
   }
 
-// emit signals (through the hub)
+  // emit signals (through the hub)
 protected:
   void tellDatasetSelected(core::shp_Dataset);
   void tellSelectedReflection(core::shp_Reflection);
   void tellReflectionData(core::shp_Reflection);
-  void tellReflectionValues(core::rcRange,core::rcXY,qreal,bool);
+  void tellReflectionValues(core::rcRange, core::rcXY, qreal, bool);
 
-// handle same signals
+  // handle same signals
 protected:
-#define DEFINE_HUB_SIGNAL_HANDLER(name)                   \
-  template <typename Lambda>                              \
-  void onSig##name(Lambda slot) {                         \
-    onHubSignal(&TheHubSignallingBase::sig##name, slot);  \
+#define DEFINE_HUB_SIGNAL_HANDLER(name)                      \
+  template <typename Lambda> void onSig##name(Lambda slot) { \
+    onHubSignal(&TheHubSignallingBase::sig##name, slot);     \
   }
 
   DEFINE_HUB_SIGNAL_HANDLER(FilesChanged)
@@ -120,4 +122,4 @@ protected:
 
 //------------------------------------------------------------------------------
 }
-#endif // REFHUB_H
+#endif  // REFHUB_H
