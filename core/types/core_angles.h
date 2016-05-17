@@ -32,6 +32,8 @@ public:
   explicit deg(rad const&);
   rad toRad() const;
 
+  deg normalized();
+
 private:
   qreal val_;
 };
@@ -56,17 +58,10 @@ public:
   NormalizedDeg(deg angle = 0, bool force = false) { set(angle, force); }
 
   void set(deg angle, bool force = false) {
-    angle_ = force ? angle : normalize(angle);
+    angle_ = force ? angle : angle.normalized();
   }
 
   deg val() const { return angle_; }
-
-  static deg normalize(deg angle) {
-    static qreal const MAX = 360;
-    angle                  = fmod(angle, MAX);
-    if (angle < 0) angle   = angle + MAX;
-    return angle;
-  }
 
   bool operator==(NormalizedDeg const& that) const {
     return angle_ == that.angle_;
