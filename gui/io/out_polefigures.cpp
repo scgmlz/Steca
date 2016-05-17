@@ -23,6 +23,7 @@
 #include "views.h"
 #include <QPainter>
 #include <QStringList>
+#include <qmath.h>
 
 namespace gui { namespace io {
 //------------------------------------------------------------------------------
