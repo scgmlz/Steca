@@ -13,7 +13,12 @@ TEMPLATE = app
 QT      += core gui widgets svg
 CONFIG  += c++11 silent $CFG
 
+win32 {
+  RC_ICONS = \$\$PWD/gui/icons/steca2.ico
+}
+
 INCLUDEPATH += \$\$PWD/core \$\$PWD/gui
+
 EOT
 
 function files {

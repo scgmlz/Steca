@@ -73,7 +73,9 @@ row_t ReflectionInfo::data() const {
             (QVariant)inten(),        (QVariant)tth(),
             (QVariant)fwhm()};
 
-  row.append(md_ ? md_->attributeValues() : Metadata::attributeNaNs());
+  // append(QVector) introduced in 5.5+ - some still don't have it
+  // row.append(md_ ? md_->attributeValues() : Metadata::attributeNaNs());
+  row += md_ ? md_->attributeValues() : Metadata::attributeNaNs();
   return row;
 }
 
