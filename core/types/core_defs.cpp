@@ -13,10 +13,9 @@
 // ************************************************************************** //
 
 #include "core_defs.h"
-#include <QCoreApplication>
-#include <qmath.h>
 
-static_assert (QT_VERSION >= QT_VERSION_CHECK(5,4,0),"written for Qt >= 5.4, have " QT_VERSION_STR);
+static_assert(QT_VERSION >= QT_VERSION_CHECK(5, 4, 0),
+              "written for Qt >= 5.4, have " QT_VERSION_STR);
 
 #ifdef QT_NO_EXCEPTIONS
 #error needs exception handling
@@ -24,10 +23,12 @@ static_assert (QT_VERSION >= QT_VERSION_CHECK(5,4,0),"written for Qt >= 5.4, hav
 
 str const EMPTY_STR;
 
-Exception::Exception(rcstr msg) noexcept: msg_(msg), msg8bit_(msg_.toLocal8Bit()) {
+Exception::Exception(rcstr msg) noexcept
+: msg_(msg), msg8bit_(msg_.toLocal8Bit()) {
 }
 
-Exception::Exception(Exception const &that) noexcept: thisClass(that.msg_) {
+Exception::Exception(Exception const& that) noexcept
+: thisClass(that.msg_) {
 }
 
 pcstr Exception::what() const noexcept {
@@ -41,17 +42,5 @@ Exception* Exception::clone() const {
 void Exception::raise() const {
   throw *this;
 }
-
-//------------------------------------------------------------------------------
-
-TakesLongTime::TakesLongTime() {
-  if (handler) handler(true);
-}
-
-TakesLongTime::~TakesLongTime() {
-  if (handler) handler(false);
-}
-
-void (*TakesLongTime::handler)(bool) = nullptr;
 
 // eof

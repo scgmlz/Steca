@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      core_session.h
 //! @brief     Session that can compute all and needs no GUI.
@@ -26,7 +26,7 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-class Session final { TESTS_FRIEND
+class Session final {
 public:
   Session();
 

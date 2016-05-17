@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      out_polefigures.h
 //! @brief     A dynamic table for pole figures.

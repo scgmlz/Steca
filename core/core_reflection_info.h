@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      core_reflection_info.h
 //! @brief     Reflection data.
@@ -23,7 +23,7 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-class ReflectionInfo final { TESTS_FRIEND
+class ReflectionInfo final {
 public:
   static str_lst dataTags();
   static cmp_vec dataCmps();

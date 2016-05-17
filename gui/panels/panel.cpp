@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      panel.cpp
 //!
@@ -69,8 +69,8 @@ TabsPanel::Tab& TabsPanel::addTab(rcstr title, Qt::Orientation orientation) {
 }
 
 TabsPanel::Tab& TabsPanel::tab(uint i) {
-  ASSERT((int)i < count())
-  ASSERT(dynamic_cast<Tab*>(widget(i)))
+  EXPECT((int)i < count())
+  ENSURE(dynamic_cast<Tab*>(widget(i)))
   return *static_cast<Tab*>(widget(i));
 }
 

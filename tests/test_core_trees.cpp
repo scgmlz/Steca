@@ -25,8 +25,8 @@ PolePoint::PolePoint(qreal beta): beta_(beta) {
 }
 
 int PolePoint::compareToEqual(super::rcItem that) const {
-  ASSERT(dynamic_cast<thisClass const*>(&that))
-  ASSERT(beta_ == static_cast<thisClass const*>(&that)->beta_)
+  EXPECT(dynamic_cast<thisClass const*>(&that))
+  EXPECT(beta_ == static_cast<thisClass const*>(&that)->beta_)
 
   if (this < &that) return -1;
   if (this > &that) return +1;
@@ -44,7 +44,7 @@ public:
 };
 
 PolePoints::item_lst PolePoints::findAllBetweenAngles(deg min, deg max) const {
-  ASSERT(min < max && -360 < min && max < 360)
+  EXPECT(min < max && -360 < min && max < 360)
 
   if (min < 0 && 0 < max)
     return super::findAllBetween(NormalizedDeg(min),NormalizedDeg(360,true))

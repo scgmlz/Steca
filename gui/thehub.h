@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      thehub.h
 //! @brief     The communication hub.
@@ -16,7 +16,7 @@
 #ifndef THEHUB_H
 #define THEHUB_H
 
-#include "core_defs.h"
+#include "types/core_defs.h"
 #include "actions.h"
 #include "models.h"
 #include "core_session.h"

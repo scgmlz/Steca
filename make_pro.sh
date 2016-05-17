@@ -33,3 +33,13 @@ echo -e '\nRESOURCES += \\'	>> $PRO
 files core qrc			>> $PRO
 files gui  qrc			>> $PRO
 
+cat >> $PRO <<EOT
+
+OTHER_FILES += \\
+    .gitignore \\
+    make_pro.sh ours_wc.sh \\
+    README.md CODING.md \\
+    COPYING Doxyfile \\
+    manifest.h \\
+    TODO
+EOT

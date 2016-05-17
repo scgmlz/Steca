@@ -1,5 +1,5 @@
 ############################################################################
-# top-level CMakeLists.txt for building STeCa
+# top-level CMakeLists.txt for building STeCa2
 ############################################################################
 
 # TODO actually cmake 3.1+ is required to handle PROPERTY CXX_STANDARD 11
@@ -9,7 +9,7 @@
 
 cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 
-project(STeCa)
+project(STeCa2)
 
 # --- The version number ---
 set(STeCa_VERSION_MAJOR 2)

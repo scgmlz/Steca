@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      core_type_curve.cpp
 //!
@@ -35,7 +35,7 @@ bool Curve::isEmpty() const {
 }
 
 uint Curve::count() const {
-  ASSERT(xs_.count() == ys_.count())
+  ENSURE(xs_.count() == ys_.count())
   return xs_.count();
 }
 
@@ -54,7 +54,7 @@ Curve Curve::intersect(rcRange range) const {
   Curve res;
 
   if (!range.isEmpty()) {
-    ASSERT(isOrdered())
+    ENSURE(isOrdered())
 
     uint xi = 0, cnt = count();
     auto minX = range.min, maxX = range.max;
@@ -74,7 +74,7 @@ Curve Curve::intersect(rcRanges ranges) const {
 
   // collect points that are in ranges
   // it works because both curve points and ranges are ordered and ranges are non-overlapping
-  ASSERT(isOrdered())
+  ENSURE(isOrdered())
 
   uint xi = 0, cnt = count();
   for_i (ranges.count()) {

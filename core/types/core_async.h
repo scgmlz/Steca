@@ -2,8 +2,8 @@
 //
 //  STeCa2:    StressTexCalculator ver. 2
 //
-//! @file      main.cpp
-//! @brief     The main.
+//! @file      core_async.h
+//! @brief     Asynchronous computation support.
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
@@ -13,10 +13,17 @@
 //
 // ************************************************************************** //
 
-#include "app.h"
+#ifndef CORE_ASYNC_H
+#define CORE_ASYNC_H
 
-int main(int argc, char *argv[]) {
-  return App(argc, argv).exec();
-}
+// for now - just wait
 
-// eof
+class TakesLongTime final {
+public:
+  TakesLongTime();
+ ~TakesLongTime();
+
+  static void (*handler)(bool);
+};
+
+#endif  // CORE_ASYNC_H

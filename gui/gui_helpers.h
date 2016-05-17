@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      gui_helpers.h
 //! @brief     Helpful utilities for making Gui.
@@ -16,7 +16,7 @@
 #ifndef GUI_HELPERS_H
 #define GUI_HELPERS_H
 
-#include "core_defs.h"
+#include "types/core_defs.h"
 
 #include <QBoxLayout>
 #include <QDockWidget>

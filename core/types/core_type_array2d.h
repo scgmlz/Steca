@@ -24,8 +24,7 @@ namespace core {
 //------------------------------------------------------------------------------
 
 /// 2D (i/j) array
-template<typename T>
-class Array2D {
+template<typename T> class Array2D {
 public:
   /// empty array
   Array2D(): size_(0,0) {

@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      type_models.cpp
 //!
@@ -27,7 +27,7 @@ CheckedInfo::CheckedInfo(rcstr tag_): tag(tag_), cb(nullptr), infoText(nullptr) 
 }
 
 void CheckedInfo::setText(rcstr text) {
-  ASSERT(infoText)
+  EXPECT(infoText)
   infoText->setText(text);
 }
 

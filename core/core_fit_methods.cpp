@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      core_fit_methods.cpp
 //!
@@ -89,7 +89,7 @@ bool FittingLinearLeastSquare::approximate(
   double info[LM_INFO_SZ];
 
   // output covariance matrix
-  QVector<qreal> covar(paramsCount * paramsCount);
+  qreal_vec covar(paramsCount * paramsCount);
 
   uint const maxIterations = 1000;
 
@@ -134,7 +134,7 @@ bool FittingLevenbergMarquardt::approximate(
   double info[LM_INFO_SZ];
 
   // output covariance matrix
-  QVector<qreal> covar(paramsCount*paramsCount);
+  qreal_vec covar(paramsCount*paramsCount);
 
   uint const maxIterations = 1000;
 

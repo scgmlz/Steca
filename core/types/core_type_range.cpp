@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      core_type_range.cpp
 //!
@@ -60,7 +60,7 @@ void Range::set(qreal val) {
 
 void Range::set(qreal min_, qreal max_) {
   min = min_; max = max_;
-  ASSERT(!isValid() || min <= max)
+  EXPECT(!isValid() || min <= max)
 }
 
 void Range::safeSet(qreal v1, qreal v2) {
@@ -83,17 +83,17 @@ void Range::extendBy(rcRange that) {
 }
 
 bool Range::contains(qreal val) const {
-  ASSERT(isValid())
+  ENSURE(isValid())
   return min <= val && val <= max;
 }
 
 bool Range::contains(rcRange that) const {
-  ASSERT(isValid() && that.isValid())
+  ENSURE(isValid() && that.isValid())
   return min <= that.min && that.max <= max;
 }
 
 bool Range::intersects(rcRange that) const {
-  ASSERT(isValid() && that.isValid())
+  ENSURE(isValid() && that.isValid())
   return min <= that.max && that.min <= max;
 }
 

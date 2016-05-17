@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      colors.h
 //! @brief     Colors, scales, and palletes.
@@ -16,7 +16,7 @@
 #ifndef COLORS_H
 #define COLORS_H
 
-#include "core_defs.h"
+#include "types/core_defs.h"
 #include <QRgb>
 
 namespace gui {

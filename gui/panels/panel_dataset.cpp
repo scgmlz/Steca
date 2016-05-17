@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      panel_dataset.cpp
 //!
@@ -139,7 +139,7 @@ void ImageWidget::setShowOverlay(bool on) {
 }
 
 void ImageWidget::setScale(uint scale) {
-  ASSERT(scale > 0)
+  EXPECT(scale > 0)
   scale_ = scale;
 
   scaled_ = original_.isNull() ? original_ : original_.scaled(original_.size()*scale_);

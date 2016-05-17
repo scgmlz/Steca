@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      core_session.cpp
 //!
@@ -91,7 +91,7 @@ void Session::tryEnableCorr(bool on) {
 }
 
 void Session::collectDatasetsFromFiles(uint_vec fileNums, uint groupBy) {
-  ASSERT(1 <= groupBy)
+  EXPECT(1 <= groupBy)
 
   collectedFromFiles_ = fileNums;
   collectedDatasets_.clear();
@@ -217,7 +217,7 @@ AngleMap const& Session::angleMap(rcDataset dataset) const {
 
 void Session::setGeometry(qreal detectorDistance, qreal pixSize,
                           bool isMidPixOffset, rcIJ midPixOffset) {
-  ASSERT(detectorDistance>0 && pixSize>0)
+  EXPECT(detectorDistance>0 && pixSize>0)
 
   geometry_.detectorDistance = detectorDistance;
   geometry_.pixSize          = pixSize;
@@ -312,7 +312,7 @@ ReflectionInfo Session::makeReflectionInfo(shp_Lens lens, rcReflection reflectio
   qreal fwhm = peakFunction->fittedFWHM();
 
   shp_Metadata metadata = dataset.metadata();
-  ASSERT(metadata)
+  ENSURE(metadata)
 
   return rgeTth.contains(peak.x)
       ? ReflectionInfo(metadata, alpha, beta, gammaSector, peak.y,peak.x,fwhm)

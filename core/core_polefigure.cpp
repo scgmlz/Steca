@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      core_polefigure.cpp
 //!
@@ -26,7 +26,7 @@ qreal calculateDeltaBeta(deg beta1, deg beta2) {
   if (qAbs(tempDelta) < qAbs(deltaBeta)) deltaBeta = tempDelta;
   tempDelta = deltaBeta + 360;
   if (qAbs(tempDelta) < qAbs(deltaBeta)) deltaBeta = tempDelta;
-  ASSERT(-180 <= deltaBeta && deltaBeta <= 180)
+  ENSURE(-180 <= deltaBeta && deltaBeta <= 180)
   return deltaBeta;
 }
 
@@ -36,7 +36,7 @@ deg angle(deg alpha1, deg alpha2, deg deltaBeta) {
   auto a = rad(acos(cos(alpha1.toRad()) * cos(alpha2.toRad())
               + sin(alpha1.toRad()) * sin(alpha2.toRad()) * cos(deltaBeta.toRad()))
             ).toDeg();
-  ASSERT(0<=a && a<=180)
+  ENSURE(0<=a && a<=180)
   return a;
 }
 
@@ -114,7 +114,7 @@ void searchInQuadrants(
     ReflectionInfos const& infos,
     QVector<ReflectionInfo const*> & foundInfos,
     qreal_vec & distances) {
-  ASSERT(quadrants.size() <= NUM_QUADRANTS);
+  ENSURE(quadrants.size() <= NUM_QUADRANTS);
   // Take only reflection infos with beta within +/- BETA_LIMIT degrees into
   // account. Original STeCa used something like +/- 1.5*36 degrees.
   qreal const BETA_LIMIT = 30;
@@ -149,7 +149,7 @@ void inverseDistanceWeighing(qreal_vec const& distances,
                 "distances size should be 4");
   RUNTIME_CHECK(infos.size() == NUM_QUADRANTS,
                 "infos size should be 4");
-  QVector<qreal> inverseDistances(NUM_QUADRANTS);
+  qreal_vec inverseDistances(NUM_QUADRANTS);
   qreal inverseDistanceSum = 0;
   for_i (NUM_QUADRANTS) {
     if (distances[i] == 0) {
@@ -207,12 +207,12 @@ void interpolateValues(deg searchRadius,
     qreal newBeta = out.beta() < 180 ?   out.beta() + 180
                                      : out.beta() - 180;
     QVector<ReflectionInfo const*> renewedSearch;
-    QVector<qreal> newDistance;
+    qreal_vec newDistance;
     searchInQuadrants({newQ},
                       newAlpha, newBeta, searchRadius,
                       infos, renewedSearch, newDistance);
-    ASSERT(renewedSearch.size() == 1);
-    ASSERT(newDistance.size() == 1);
+    ENSURE(renewedSearch.size() == 1);
+    ENSURE(newDistance.size() == 1);
     if (renewedSearch.front()) {
       interpolationInfos[i] = renewedSearch.front();
       distances[i] = newDistance.front();
@@ -237,15 +237,15 @@ ReflectionInfos interpolate(ReflectionInfos const& infos,
   // If averaging fails, or alpha > averagingAlphaMax, inverse distance weighing
   // will be used.
 
-  ASSERT(!infos.isEmpty());
-  ASSERT(alphaStep > 0 && alphaStep <= 90);
-  ASSERT(betaStep > 0 && betaStep <= 360);
-  ASSERT(averagingAlphaMax >= 0 && averagingAlphaMax <= 90);
-  ASSERT(averagingRadius >= 0);
+  EXPECT(!infos.isEmpty());
+  EXPECT(alphaStep > 0 && alphaStep <= 90);
+  EXPECT(betaStep > 0 && betaStep <= 360);
+  EXPECT(averagingAlphaMax >= 0 && averagingAlphaMax <= 90);
+  EXPECT(averagingRadius >= 0);
   // Setting idwRadius = NaN disables idw radius checks and falling back to
   // idw when averaging fails.
-  ASSERT(qIsNaN(idwRadius) || idwRadius >= 0);
-  ASSERT(inclusionTreshold >= 0 && inclusionTreshold <= 1);
+  EXPECT(qIsNaN(idwRadius) || idwRadius >= 0);
+  EXPECT(inclusionTreshold >= 0 && inclusionTreshold <= 1);
 
   // NOTE We expect all infos to have the same gamma range.
 
@@ -261,9 +261,9 @@ ReflectionInfos interpolate(ReflectionInfos const& infos,
       auto const beta = j * betaStep;
       if (alpha <= averagingAlphaMax) {
         // Use averaging.
-        QVector<qreal> tempPeakOffsets;
-        QVector<qreal> tempPeakHeights;
-        QVector<qreal> tempPeakFWHMs;
+        qreal_vec tempPeakOffsets;
+        qreal_vec tempPeakHeights;
+        qreal_vec tempPeakFWHMs;
         searchPoints(alpha,
                      beta,
                      averagingRadius,

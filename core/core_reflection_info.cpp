@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      core_reflection_info.cpp
 //!
@@ -28,7 +28,7 @@ str_lst ReflectionInfo::dataTags() {
   static str_lst tags;
   if (tags.isEmpty()) {
     tags = str_lst{"α","β","γ1","γ2","inten","2θ","fwhm"};
-    tags.append(Metadata::attributeTags());
+    tags += Metadata::attributeTags();
   }
 
   return tags;
@@ -39,7 +39,7 @@ cmp_vec ReflectionInfo::dataCmps() {
   if (cmps.isEmpty()) {
     cmps = cmp_vec{ core::cmp_real, core::cmp_real, core::cmp_real, core::cmp_real,
                     core::cmp_real, core::cmp_real, core::cmp_real};
-    cmps.append(Metadata::attributeCmps());
+    cmps += Metadata::attributeCmps();
   }
 
   return cmps;

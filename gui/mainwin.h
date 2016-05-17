@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      mainwin.h
 //! @brief     The main window
@@ -16,7 +16,7 @@
 #ifndef MAINWIN_H
 #define MAINWIN_H
 
-#include "core_defs.h"
+#include "types/core_defs.h"
 #include "thehub.h"
 #include <QMainWindow>
 
@@ -25,10 +25,10 @@ namespace gui {
 
 class MainWin : public QMainWindow {
   SUPER(MainWin, QMainWindow)
-  Q_OBJECT
 public:
   MainWin();
- ~MainWin();
+
+  void showMessage(rcstr);
 
 private:
   void initMenus();

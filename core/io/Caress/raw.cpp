@@ -1720,7 +1720,7 @@ static int32 refresh_token(struct raw_infovars* pVars)
     int32 f_status;
 
     istatus = OK;
-    f_status = fclose(pVars->m_raw_data_file);
+    /*f_status =*/ fclose(pVars->m_raw_data_file);
     if (pVars->m_file_name_save == NULL)
         return NOT_OK;
 #ifdef RAW_ONLINE
@@ -1733,7 +1733,7 @@ static int32 refresh_token(struct raw_infovars* pVars)
 #endif
     if (pVars->m_raw_data_file == NULL)
         return NOT_OK;
-    f_status = fseeko(pVars->m_raw_data_file, (pVars->m_block_number - 1) * BLOCK_LENGTH, SEEK_SET);
+    /*f_status =*/ fseeko(pVars->m_raw_data_file, (pVars->m_block_number - 1) * BLOCK_LENGTH, SEEK_SET);
     f_status = fread(pVars->m_buf, BLOCK_LENGTH, 1, pVars->m_raw_data_file);
     if (f_status < 1)
         istatus = END_OF_FILE_DETECTED;
@@ -1769,7 +1769,7 @@ static int32 next_token(struct raw_infovars* pVars)
 #ifdef RAW_ONLINE
         istatus = mutex_file_lock(RAW_DATA_RSC, NULL);
 #endif
-        f_status =
+        /*f_status = */
             fseeko(pVars->m_raw_data_file, (pVars->m_block_number - 1) * BLOCK_LENGTH, SEEK_SET);
         f_status = fread(pVars->m_buf, BLOCK_LENGTH, 1, pVars->m_raw_data_file);
         if (f_status < 1)
@@ -1849,7 +1849,7 @@ static int32 get_data_block(struct raw_infovars* pVars, char d_type, int64 numbe
 #ifdef RAW_ONLINE
         istatus = mutex_file_lock(RAW_DATA_RSC, NULL);
 #endif
-        f_status =
+        /* f_status = */
             fseeko(pVars->m_raw_data_file, (pVars->m_block_number - 1) * BLOCK_LENGTH, SEEK_SET);
         f_status = fread(pVars->m_big_buf_poi, BLOCK_LENGTH, 1, pVars->m_raw_data_file);
         if (f_status < 1)
@@ -1859,7 +1859,7 @@ static int32 get_data_block(struct raw_infovars* pVars, char d_type, int64 numbe
                 if (pVars->m_data_blocks > 2)
                     pVars->m_saved_block_number = pVars->m_block_number + 1;
                 pVars->m_block_number += pVars->m_data_blocks - 1;
-                f_status = fseeko(pVars->m_raw_data_file,
+                /* f_status = */ fseeko(pVars->m_raw_data_file,
                                   (pVars->m_block_number - 1) * BLOCK_LENGTH, SEEK_SET);
                 if (pVars->m_data_blocks > MAX_BLOCKS)
                     pVars->m_big_buf_poi = pVars->m_big_buf + 2 * BLOCK_LENGTH;

@@ -27,21 +27,34 @@
  */
 #define TR(what)      { qDebug() << what; }
 
-/// Assert redefined, to include (or not) the ';'
-#define ASSERT(cond)  Q_ASSERT(cond);
+/// Asserts redefined, to include (or not) the ';'
+
+#define EXPECT(cond) EXPECT2(cond, "")
+#define ENSURE(cond) ENSURE2(cond, "")
+
+#define EXPECT2(cond, text) Q_ASSERT_X(cond, "precondition", text);
+#define ENSURE2(cond, text) Q_ASSERT_X(cond, "postcondition", text);
 
 /// Mark code that should not be reached, typically 'switch' branches
+/// includes ';'
+
 #define NEVER_HERE    Q_ASSERT_X(false, "Here", "not be!");
 
 #else
 
 #define TR(what)      { }
-#define ASSERT(cond)
-#define NEVER_HERE    ;
+
+#define EXPECT(cond)
+#define ENSURE(cond)
+
+#define EXPECT2(cond, text)
+#define ENSURE2(cond, text)
+
+#define NEVER_HERE
 
 #endif
 
 /// WaTch: same as TR, also prints stringized version (what is being printed)
-#define WT(what)      TR(#what":" << what)
+#define WT(what)      TR(#what ":" << what)
 
 #endif // CORE_DEBUG_H

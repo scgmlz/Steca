@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      actions.h
 //! @brief     A structure with all (glbal) actions
@@ -16,7 +16,7 @@
 #ifndef ACTIONS_H
 #define ACTIONS_H
 
-#include "core_defs.h"
+#include "types/core_defs.h"
 #include "refhub.h"
 #include <QAction>
 

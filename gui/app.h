@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      app.h
 //! @brief     The application.
@@ -16,7 +16,7 @@
 #ifndef APP_H
 #define APP_H
 
-#include "core_defs.h"
+#include "types/core_defs.h"
 #include <QApplication>
 
 //------------------------------------------------------------------------------

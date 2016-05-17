@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      core_file.h
 //! @brief     File with datasets.
@@ -16,7 +16,7 @@
 #ifndef CORE_FILE_H
 #define CORE_FILE_H
 
-#include "core_defs.h"
+#include "types/core_defs.h"
 #include "core_dataset.h"
 #include <QFileInfo>
 

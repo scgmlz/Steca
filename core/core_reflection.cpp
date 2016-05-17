@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      core_reflection.cpp
 //!
@@ -41,8 +41,8 @@ void Reflection::setType(ePeakType type) {
 }
 
 fit::PeakFunction const& Reflection::peakFunction() const {
-  ASSERT(peakFunction_)
-      return *peakFunction_;
+  ENSURE(peakFunction_)
+  return *peakFunction_;
 }
 
 rcRange Reflection::range() const {

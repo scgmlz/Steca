@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      refhub.h
 //!
@@ -19,7 +19,7 @@ namespace gui {
 //------------------------------------------------------------------------------
 
 TheHub& TheHubSignallingBase::asHub() {
-  ASSERT(dynamic_cast<TheHub*>(this))
+  ENSURE(dynamic_cast<TheHub*>(this))
   return *static_cast<TheHub*>(this);
 }
 

@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      refhub.h
 //! @brief     Reference to The Hub.
@@ -16,7 +16,7 @@
 #ifndef REFHUB_H
 #define REFHUB_H
 
-#include "core_defs.h"
+#include "types/core_defs.h"
 #include "types/core_types_fwd.h"
 
 namespace gui {

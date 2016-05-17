@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      core_dataset.h
 //!
@@ -15,6 +15,7 @@
 #include "core_dataset.h"
 #include "core_session.h"
 #include "core_lens.h"
+#include "types/core_async.h"
 #include <QStringList>
 #include <QVariant>
 
@@ -84,7 +85,7 @@ str Metadata::attributeStrValue(uint i) const {
   case attr::MOTOR_OMGM:  value = motorOMGM; break;
   case attr::DELTA_MONITOR_COUNT: value = deltaMonitorCount; break;
   case attr::DELTA_TIME:  value = deltaTime; break;
-  default: NEVER_HERE
+  default: NEVER_HERE;
   }
 
   return str::number(value);
@@ -139,7 +140,7 @@ Dataset::Dataset(rcDataset that)
 }
 
 rcDatasets Dataset::datasets() const {
-  ASSERT(datasets_)
+  EXPECT(datasets_)
   return *datasets_;
 }
 
@@ -236,7 +237,7 @@ Datasets::Datasets() {
 
 void Datasets::appendHere(shp_Dataset dataset) {
   // a dataset can be added to Datasets only once
-  ASSERT(!dataset->datasets_)
+  EXPECT(!dataset->datasets_)
   dataset->datasets_ = this;
 
   super::append(dataset);
@@ -244,7 +245,7 @@ void Datasets::appendHere(shp_Dataset dataset) {
 }
 
 Image Datasets::folded() const THROWS {
-  ASSERT(0 < count())
+  EXPECT(0 < count())
 
   Image image(first()->imageSize());
   for (auto const& dataset: *this)

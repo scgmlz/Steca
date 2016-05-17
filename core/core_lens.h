@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      core_lens.h
 //! @brief     The lens system
@@ -25,7 +25,7 @@ namespace core {
 //------------------------------------------------------------------------------
 /// View the dataset through a lens (thanks, Antti!)
 
-class ImageLens { TESTS_FRIEND
+class ImageLens {
 public:
   ImageLens(rcSession, rcImage, Image const* corrImage, rcDatasets,
             bool trans, bool cut, ImageCut const&, ImageTransform const&);

@@ -2,7 +2,7 @@
 //
 //  STeCa2:    StressTexCalculator ver. 2
 //
-//! @file      core_type_array2d.cpp
+//! @file      core_async.cpp
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
@@ -12,13 +12,16 @@
 //
 // ************************************************************************** //
 
-#include "core_type_array2d.h"
+#include "core_async.h"
 
-namespace core {
-//------------------------------------------------------------------------------
-
-// nothing here
-
-//------------------------------------------------------------------------------
+TakesLongTime::TakesLongTime() {
+  if (handler) handler(true);
 }
+
+TakesLongTime::~TakesLongTime() {
+  if (handler) handler(false);
+}
+
+void (*TakesLongTime::handler)(bool) = nullptr;
+
 // eof

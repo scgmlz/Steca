@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      core_lens.cpp
 //!
@@ -117,11 +117,11 @@ void ImageLens::calcSensCorr() {
   hasNaNs_ = false;
   if (!corrImage_) return;
 
-  ASSERT(image_.size() == corrImage_->size())
+  ENSURE(image_.size() == corrImage_->size())
 
   QSize size = corrImage_->size();
   size -= imageCut_.marginSize();
-  ASSERT(!size.isEmpty())
+  ENSURE(!size.isEmpty())
 
   qreal sum = 0;
 

@@ -7,7 +7,7 @@ void TestCoreImage::testImage(uint w, uint h) {
   // Testing if data is corectly added and can be accessed again
   uint const specialI = qMin(2u,w-1), specialJ = qMin(4u,h-1); // that's 42!
 
-  ASSERT(specialI<w && specialJ<h)
+  ENSURE(specialI<w && specialJ<h)
 
   float inten = 1.24, specialInten = 3*inten;
 

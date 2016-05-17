@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      app.cpp
 //!
@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "app.h"
+#include "types/core_async.h"
 #include "../manifest.h"
 #include "mainwin.h"
 #include <QStyleFactory>
@@ -37,7 +38,6 @@ App::App(int &argc, char *argv[]): super(argc,argv) {
 }
 
 static QtMessageHandler oldHandler;
-static gui::MainWin *pMainWin;
 
 static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg) {
   switch (type) {
@@ -46,7 +46,7 @@ static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr 
               << "\t[" << ctx.function << ']' << std::endl;
     break;
   case QtWarningMsg:
-    QMessageBox::warning(pMainWin, qAppName(), msg);
+    QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
     break;
   default:
     oldHandler(type,ctx,msg);
@@ -66,7 +66,6 @@ int App::exec() {
     gui::MainWin mainWin;
     mainWin.show();
 
-    pMainWin = &mainWin;
     oldHandler = qInstallMessageHandler(messageHandler);
     TakesLongTime::handler = waiting;
 

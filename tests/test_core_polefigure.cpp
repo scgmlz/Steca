@@ -168,14 +168,16 @@ void TestCorePolefigure::testInverseDistanceWeighing() {
   inten_t inten = 2;
   qreal tth     = 1;
   qreal fwhm    = 4;
-  QVector<ReflectionInfo const*> infos;
-  ReflectionInfo in;
-  for_i(4) {
-    in.inten_ = inten;
-    in.tth_   = tth;
-    in.fwhm_  = fwhm;
-    infos.append(&in);
+  ReflectionInfos rinfos;
+  for_i (4) {
+    rinfos.append(ReflectionInfo(shp_Metadata(),0,0,Range(),inten,tth,fwhm));
   }
+
+  QVector<ReflectionInfo const*> infos;
+  for_i (4) {
+    infos.append(&rinfos.at(i));
+  }
+
   ReflectionInfo out;
   qreal tmp_height = 0;
   qreal tmp_offset = 0;
@@ -196,12 +198,9 @@ void TestCorePolefigure::testSearchInQuadrants() {
   QVector<ReflectionInfo const*> foundInfos;
   ReflectionInfos infos;
   ReflectionInfo in;
-  in.alpha_ = 20;
-  in.beta_ = 20; // inside of BETA_LIMIT
-  infos.append(in);
-  in.alpha_ = 180;
-  in.beta_ = 180; // outside of BETA_LIMIT
-  infos.append(in);
+  // inside of BETA_LIMIT
+  infos.append(ReflectionInfo(shp_Metadata(),20,20,Range()));
+  infos.append(ReflectionInfo(shp_Metadata(),180,180,Range()));
 
   qreal_vec distances;
 
@@ -219,7 +218,7 @@ void TestCorePolefigure::testSearchInQuadrants() {
   QVERIFY(!foundInfos.at(3));
 }
 
-static core::Dataset testDataset(QSize size, core::inten_t inten, QVector<qreal> motorAngles, qreal mon, qreal deltaTime) {
+static core::Dataset testDataset(QSize size, core::inten_t inten, qreal_vec motorAngles, qreal mon, qreal deltaTime) {
   core::Metadata md;
   md.date = "15.03.2016";
   md.comment = "comment";
@@ -246,7 +245,7 @@ static core::Dataset testDataset(QSize size, core::inten_t inten, QVector<qreal>
 void TestCorePolefigure::testCalcAlphaBeta() {
   deg alpha;
   deg beta;
-  QVector<qreal> angles;
+  qreal_vec angles;
   qreal mon = 100, deltaTime = 8, tth = 0, gamma = 0;
   Session s;
   {

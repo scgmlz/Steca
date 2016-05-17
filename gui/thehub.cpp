@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      thehub.cpp
 //!
@@ -18,6 +18,7 @@
 #include "core_reflection.h"
 #include "core_reflection_info.h"
 #include "io/core_io.h"
+#include "types/core_async.h"
 
 #include <QSpinBox>
 #include <QJsonDocument>
@@ -45,12 +46,12 @@ void Settings::saveVariant(rcstr key, const QVariant &val) {
 }
 
 void Settings::read(rcstr key, QAction* act, bool def) {
-  ASSERT(act->isCheckable())
+  EXPECT(act->isCheckable())
   if (act) act->setChecked(readVariant(key,def).toBool());
 }
 
 void Settings::save(rcstr key, QAction* act) {
-  ASSERT(act->isCheckable())
+  EXPECT(act->isCheckable())
   if (act) saveVariant(key,act->isChecked());
 }
 

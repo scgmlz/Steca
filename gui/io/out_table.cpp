@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      out_table.cpp
 //!
@@ -14,6 +14,7 @@
 
 #include "out_table.h"
 #include "types/type_models.h"
+#include "types/core_async.h"
 #include "thehub.h"
 
 #include <QAbstractTableModel>
@@ -135,13 +136,13 @@ QVariant OutTableModel::headerData(int section, Qt::Orientation, int role) const
 }
 
 void OutTableModel::moveColumn(uint from, uint to) {
-  ASSERT(from < (uint)colIndexMap_.count() && to < (uint)colIndexMap_.count())
+  EXPECT(from < (uint)colIndexMap_.count() && to < (uint)colIndexMap_.count())
   qSwap(colIndexMap_[from],colIndexMap_[to]);
 }
 
 void OutTableModel::setCmpFuns(core::cmp_vec const& cmps) {
-  ASSERT(cmps.count() == (int)numCols_)
-      cmpFunctions_ = cmps;
+  EXPECT(cmps.count() == (int)numCols_)
+  cmpFunctions_ = cmps;
 }
 
 void OutTableModel::setSortColumn(int col) {
@@ -155,7 +156,7 @@ void OutTableModel::clear() {
 }
 
 void OutTableModel::setHeaders(str_lst const& headers) {
-  ASSERT(headers.count() == (int)numCols_)
+  EXPECT(headers.count() == (int)numCols_)
   colTitles_ = headers;
 }
 
@@ -214,7 +215,7 @@ void OutTable::setHeaders(str_lst const& headers) {
   model_->setHeaders(headers);
 
   connect(header(),&QHeaderView::sectionMoved, [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
-    ASSERT(oldVisualIndex>0 && newVisualIndex>0)
+    ENSURE(oldVisualIndex>0 && newVisualIndex>0)
     auto &h = *header();
     h.setSortIndicatorShown(false);
     model_->setSortColumn(-1);
@@ -252,7 +253,7 @@ void OutTable::sortData() {
 OutTableWidget::OutTableWidget(TheHub& hub,
                                str_lst const& headers, core::cmp_vec const& cmps)
 {
-  ASSERT(headers.count() == cmps.count())
+  EXPECT(headers.count() == cmps.count())
   uint numDataColumns = headers.count();
 
   QBoxLayout *box;

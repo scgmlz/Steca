@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      core_curve.cpp
 //!
@@ -103,7 +103,9 @@ MainWin::MainWin(): hub_(), acts_(hub_.actions) {
   readSettings();
 }
 
-MainWin::~MainWin() {}
+void MainWin::showMessage(rcstr msg) {
+  statusBar()->showMessage(msg);
+}
 
 void MainWin::initMenus() {
   auto separator = [this]() {
@@ -113,6 +115,7 @@ void MainWin::initMenus() {
   };
 
   auto *mbar = menuBar();
+  mbar->setNativeMenuBar(true);
 
   menuFile_     = mbar->addMenu("&File");
   menuEdit_     = mbar->addMenu("&Edit");

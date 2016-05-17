@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2 REVIEW
 //
 //! @file      core_fit_functions.h
 //!
@@ -214,7 +214,7 @@ SumFunctions::~SumFunctions() {
 }
 
 void SumFunctions::addFunction(Function* function) {
-  ASSERT(function)
+  EXPECT(function)
 
   uint parIndex = parameterCount();
   functions_.append(function);
@@ -256,10 +256,10 @@ qreal SumFunctions::dy(qreal x, uint parIndex, qreal const* parValues) const {
   uint firstIndex = firstParIndex4parIndex_[parIndex];
   if (parValues) parValues += firstIndex;
 
-  ASSERT(firstIndex <= parIndex)
+  ENSURE(firstIndex <= parIndex)
   parIndex -= firstIndex;
 
-  ASSERT(parIndex < f->parameterCount())
+  ENSURE(parIndex < f->parameterCount())
   return f->dy(x, parIndex, parValues);
 }
 
@@ -301,7 +301,7 @@ Polynom::Polynom(uint degree) {
 
 uint Polynom::degree() const {
   uint parCount = super::parameterCount();
-  ASSERT(parCount > 0)
+  ENSURE(parCount > 0)
   return parCount - 1;
 }
 
@@ -331,7 +331,7 @@ qreal Polynom::dy(qreal x, uint i, qreal const*) const {
 
 // REVIEW
 qreal Polynom::avgY(rcRange rgeX, qreal const* parValues) const {
-  ASSERT (rgeX.isValid())
+  EXPECT (rgeX.isValid())
 
   qreal w = rgeX.width();
   if (w <= 0) return y(rgeX.min, parValues);
