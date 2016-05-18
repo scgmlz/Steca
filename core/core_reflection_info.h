@@ -29,9 +29,14 @@ public:
   static cmp_vec dataCmps();
 
   ReflectionInfo();
+
   ReflectionInfo(shp_Metadata, deg alpha, deg beta, rcRange rgeGamma,
                  qreal inten, deg tth, qreal fwhm);
   ReflectionInfo(shp_Metadata, deg alpha, deg beta, rcRange rgeGamma);
+
+  ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma,
+                 qreal inten, deg tth, qreal fwhm);
+  ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma);
 
   deg alpha() const { return alpha_; }
   deg beta()  const { return beta_;  }
@@ -41,11 +46,6 @@ public:
   qreal inten() const { return inten_; }
   deg   tth()   const { return tth_;   }
   qreal fwhm()  const { return fwhm_;  }
-
-  // TODO these OUT?
-  void setInten(qreal v) { inten_ = v; }
-  void setTth(qreal v) { tth_ = v; }
-  void setFwhm(qreal v) { fwhm_ = v; }
 
   row_t data() const;
 

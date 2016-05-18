@@ -14,7 +14,7 @@ QT      += core gui widgets svg
 CONFIG  += c++11 silent $CFG
 
 win32 {
-  RC_ICONS = \$\$PWD/gui/icons/steca2.ico
+  RC_ICONS = \$\$PWD/gui/icons/STeCa2.ico
 }
 
 INCLUDEPATH += \$\$PWD/core \$\$PWD/gui

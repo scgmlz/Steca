@@ -18,6 +18,8 @@
 namespace core { namespace pole {
 //------------------------------------------------------------------------------
 
+typedef QVector<ReflectionInfo const*> info_vec;
+
 // Calculates the difference of two angles. Parameters should be in [0, 360].
 qreal calculateDeltaBeta(deg beta1, deg beta2) {
   // Due to cyclicity of angles (360 is equivalent to 0), some magic is needed.
@@ -117,7 +119,7 @@ void searchPoints(deg alpha, deg beta, deg radius, ReflectionInfos const& infos,
 // Searches closest ReflectionInfos to given alpha and beta in quadrants.
 void searchInQuadrants(Quadrants const& quadrants, deg alpha, deg beta,
                        deg searchRadius, ReflectionInfos const& infos,
-                       QVector<ReflectionInfo const*>& foundInfos,
+                       info_vec& foundInfos,
                        qreal_vec&                      distances) {
   ENSURE(quadrants.size() <= NUM_QUADRANTS);
   // Take only reflection infos with beta within +/- BETA_LIMIT degrees into
@@ -145,9 +147,14 @@ void searchInQuadrants(Quadrants const& quadrants, deg alpha, deg beta,
   }
 }
 
-void inverseDistanceWeighing(qreal_vec const&                      distances,
-                             QVector<ReflectionInfo const*> const& infos,
-                             ReflectionInfo&                       out) {
+struct itf_t {
+  inten_t inten;
+  deg     tth;
+  qreal   fwhm;
+};
+
+void inverseDistanceWeighing(qreal_vec const& distances, info_vec const& infos,
+                             itf_t& itf) {
   // Generally, only distances.size() == values.size() > 0 is needed for this
   // algorithm. However, in this context we expect exactly the following:
   RUNTIME_CHECK(distances.size() == NUM_QUADRANTS,
@@ -159,9 +166,9 @@ void inverseDistanceWeighing(qreal_vec const&                      distances,
     if (distances[i] == 0) {
       // Points coincide; no need to interpolate.
       auto& in = infos.at(i);
-      out.setInten(in->inten());
-      out.setTth(in->tth());
-      out.setFwhm(in->fwhm());
+      itf.inten = in->inten();
+      itf.tth   = in->tth();
+      itf.fwhm  = in->fwhm();
       return;
     }
     inverseDistances[i] = 1 / distances[i];
@@ -178,17 +185,17 @@ void inverseDistanceWeighing(qreal_vec const&                      distances,
     fwhm += in->fwhm() * inverseDistances[i];
   }
 
-  out.setInten(height / inverseDistanceSum);
-  out.setTth(offset / inverseDistanceSum);
-  out.setFwhm(fwhm / inverseDistanceSum);
+  itf.inten = height / inverseDistanceSum;
+  itf.tth   = offset / inverseDistanceSum;
+  itf.fwhm  = fwhm / inverseDistanceSum;
 }
 
 // Interpolates reflection infos to a single point using idw.
 void interpolateValues(deg searchRadius, ReflectionInfos const& infos,
-                       ReflectionInfo& out) {
-  QVector<ReflectionInfo const*> interpolationInfos;
+                       deg alpha, deg beta, itf_t& out) {
+  info_vec interpolationInfos;
   qreal_vec                      distances;
-  searchInQuadrants(allQuadrants(), out.alpha(), out.beta(), searchRadius,
+  searchInQuadrants(allQuadrants(), alpha, beta, searchRadius,
                     infos, interpolationInfos, distances);
   // Check that infos were found in all quadrants.
   int numQuadrantsOk = 0;
@@ -202,10 +209,10 @@ void interpolateValues(deg searchRadius, ReflectionInfos const& infos,
     Quadrant    newQ = remapQuadrant((Quadrant)i);
     qreal const newAlpha =
         i == (int)Quadrant::NORTHEAST || i == (int)Quadrant::SOUTHEAST
-            ? 180 - out.alpha()
-            : -out.alpha();
-    qreal newBeta = out.beta() < 180 ? out.beta() + 180 : out.beta() - 180;
-    QVector<ReflectionInfo const*> renewedSearch;
+            ? 180 - alpha
+            : -alpha;
+    qreal newBeta = beta < 180 ? beta + 180 : beta - 180;
+    info_vec renewedSearch;
     qreal_vec                      newDistance;
     searchInQuadrants({newQ}, newAlpha, newBeta, searchRadius, infos,
                       renewedSearch, newDistance);
@@ -234,35 +241,33 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
   // If averaging fails, or alpha > averagingAlphaMax, inverse distance weighing
   // will be used.
 
-  EXPECT(!infos.isEmpty());
-  EXPECT(alphaStep > 0 && alphaStep <= 90);
-  EXPECT(betaStep > 0 && betaStep <= 360);
-  EXPECT(averagingAlphaMax >= 0 && averagingAlphaMax <= 90);
-  EXPECT(averagingRadius >= 0);
+  EXPECT(0 <  alphaStep && alphaStep <= 90);
+  EXPECT(0 <  betaStep  && betaStep  <= 360);
+  EXPECT(0 <= averagingAlphaMax && averagingAlphaMax <= 90);
+  EXPECT(0 <= averagingRadius);
   // Setting idwRadius = NaN disables idw radius checks and falling back to
   // idw when averaging fails.
-  EXPECT(qIsNaN(idwRadius) || idwRadius >= 0);
-  EXPECT(inclusionTreshold >= 0 && inclusionTreshold <= 1);
+  EXPECT(qIsNaN(idwRadius) || 0 <= idwRadius);
+  EXPECT(0 <= inclusionTreshold >= 0 && inclusionTreshold <= 1);
 
   // NOTE We expect all infos to have the same gamma range.
 
-  int const numAlphas = qCeil(90 / alphaStep);
+  int const numAlphas = qCeil(90  / alphaStep);
   int const numBetas  = qCeil(360 / betaStep);
 
   ReflectionInfos interpolatedInfos;  // Output data.
   interpolatedInfos.reserve(numAlphas * numBetas);
 
   for_int (i, numAlphas) {
-    auto const alpha = i * alphaStep;
+    deg const alpha = i * alphaStep;
     for_int (j, numBetas) {
-      auto const beta = j * betaStep;
+      deg const beta = j * betaStep;
       if (alpha <= averagingAlphaMax) {
         // Use averaging.
-        qreal_vec tempPeakOffsets;
-        qreal_vec tempPeakHeights;
-        qreal_vec tempPeakFWHMs;
+        qreal_vec tempPeakOffsets, tempPeakHeights, tempPeakFWHMs;
         searchPoints(alpha, beta, averagingRadius, infos, tempPeakOffsets,
                      tempPeakHeights, tempPeakFWHMs);
+
         if (!tempPeakOffsets.isEmpty()) {
           // If inclusionTreshold < 1, we'll only use a fraction of largest
           // reflection parameter values.
@@ -294,14 +299,14 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
           peakFWHM /= tempPeakFWHMs.size() - kTreshold;
 
           interpolatedInfos.append(ReflectionInfo(
-              shp_Metadata(), alpha, beta, infos.first().rgeGamma(), peakHeight,
+              alpha, beta, infos.first().rgeGamma(), peakHeight,
               peakOffset, peakFWHM));
           continue;
         }
 
         if (!qIsNaN(idwRadius)) {
           // Don't fall back to idw, just add an unmeasured info.
-          ReflectionInfo invalidInfo(shp_Metadata(), alpha, beta,
+          ReflectionInfo invalidInfo(alpha, beta,
                                      infos.first().rgeGamma());  // TODO insert?
           interpolatedInfos.append(invalidInfo);
           continue;
@@ -309,10 +314,11 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
       }
       // Use idw, if alpha > averagingAlphaMax OR averaging failed (too small
       // averagingRadius?).
-      ReflectionInfo interpolatedInfo(shp_Metadata(), alpha, beta,
-                                      infos.first().rgeGamma());
-      interpolateValues(idwRadius, infos, interpolatedInfo);
-      interpolatedInfos.append(interpolatedInfo);
+      itf_t itf;
+      interpolateValues(idwRadius, infos, alpha, beta, itf);
+      interpolatedInfos.append(
+        ReflectionInfo(alpha, beta, infos.first().rgeGamma(),
+                       itf.inten, itf.tth, itf.fwhm));
     }
   }
 

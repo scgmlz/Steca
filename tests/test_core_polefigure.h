@@ -7,11 +7,11 @@ class TestCorePolefigure : public TestSuite {
   Q_OBJECT
 
 private slots:
-  void testRelatedMethods();
-  void testInQuadrant();
-  void testInverseDistanceWeighing();
-  void testSearchInQuadrants();
-  void testCalcAlphaBeta();
+//  void testRelatedMethods();
+//  void testInQuadrant();
+//  void testInverseDistanceWeighing();
+//  void testSearchInQuadrants();
+//  void testCalcAlphaBeta();
 };
 
 #endif

@@ -67,6 +67,16 @@ ReflectionInfo::ReflectionInfo(shp_Metadata md, deg alpha, deg beta,
 {
 }
 
+ReflectionInfo::ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma, qreal inten, deg tth, qreal fwhm)
+: ReflectionInfo(shp_Metadata(), alpha, beta, rgeGamma, inten, tth, fwhm)
+{
+}
+
+ReflectionInfo::ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma)
+: ReflectionInfo(alpha, beta, rgeGamma, qQNaN(), qQNaN(), qQNaN())
+{
+}
+
 row_t ReflectionInfo::data() const {
   row_t row{(QVariant)alpha(),        (QVariant)beta(),
             (QVariant)rgeGamma().min, (QVariant)rgeGamma().max,
