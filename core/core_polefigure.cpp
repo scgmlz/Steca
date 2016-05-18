@@ -21,7 +21,7 @@ namespace core { namespace pole {
 typedef QVector<ReflectionInfo const*> info_vec;
 
 // Calculates the difference of two angles. Parameters should be in [0, 360].
-qreal calculateDeltaBeta(deg beta1, deg beta2) {
+deg calculateDeltaBeta(deg beta1, deg beta2) {
   // Due to cyclicity of angles (360 is equivalent to 0), some magic is needed.
   qreal deltaBeta = beta1 - beta2;
   qreal tempDelta = deltaBeta - 360;
@@ -33,7 +33,7 @@ qreal calculateDeltaBeta(deg beta1, deg beta2) {
   if (qAbs(tempDelta) < qAbs(deltaBeta)) deltaBeta = tempDelta;
 
   ENSURE(-180 <= deltaBeta && deltaBeta <= 180)
-  return deltaBeta;
+  return (deg)deltaBeta;
 }
 
 // Calculates the angle between two points on a unit sphere.

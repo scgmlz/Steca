@@ -63,7 +63,8 @@ void TestCoreTrees::testIntervalTree() {
 
   // make a random collection
   for_i (cnt) {
-    qreal rnd = 270*((qreal)random()/RAND_MAX - .5);
+    // REVIEW random() not available on windows build
+    qreal rnd = 270*((qreal)rand()/RAND_MAX - .5);
     if (minAngle <= rnd && rnd < maxAngle)
       ++cntInRange;
 
