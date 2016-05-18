@@ -49,9 +49,8 @@ void DiffractogramPlotOverlay::leaveEvent(QEvent*) {
 void DiffractogramPlotOverlay::mousePressEvent(QMouseEvent* e) {
   mouseDownPos_ = cursorPos_;
   mouseDown_    = true;
-  addColor_     = (TheHub::TAB_BACKGROUND == plot_.selectedFittingTab())
-                  ? bgColor_
-                  : reflColor_;
+  addColor_     = (eFittingTab::BACKGROUND == plot_.selectedFittingTab())
+                      ? bgColor_: reflColor_;
   color_ = Qt::LeftButton == e->button() ? addColor_ : remColor_;
   update();
 }
@@ -114,6 +113,9 @@ DiffractogramPlot::DiffractogramPlot(TheHub& hub, Diffractogram& diffractogram)
 : RefHub(hub), diffractogram_(diffractogram), showBgFit_(false)
 {
   overlay_ = new DiffractogramPlotOverlay(*this);
+
+  bgRgeColor_   = QColor(0x98, 0xfb, 0x98, 0x50);
+  reflRgeColor_ = QColor(0x87, 0xce, 0xfa, 0x50);
 
   auto* ar = axisRect();
 
@@ -183,7 +185,9 @@ DiffractogramPlot::DiffractogramPlot(TheHub& hub, Diffractogram& diffractogram)
     updateBg();
   });
 
-  onSigBgChanged([this]() { updateBg(); });
+  onSigBgChanged([this]() {
+    updateBg();
+  });
 
   tool_ = TOOL_NONE;
 }
@@ -298,19 +302,26 @@ void DiffractogramPlot::clearReflLayer() {
   reflGraph_.clear();
 }
 
-int DiffractogramPlot::selectedFittingTab() {
-  return hub_.fittingTab__;
+eFittingTab DiffractogramPlot::selectedFittingTab() {
+  return hub_.fittingTab();
 }
 
 void DiffractogramPlot::addBgItem(core::rcRange range) {
   setCurrentLayer("bg");
-  rangeColor_ = (TheHub::TAB_BACKGROUND == hub_.fittingTab__)
-                    ? QColor(0x98, 0xfb, 0x98, 0x50)
-                    : QColor(0x87, 0xce, 0xfa, 0x50);
+
+  QColor color;
+  switch (hub_.fittingTab()) {
+  case eFittingTab::BACKGROUND:
+    color = bgRgeColor_;
+    break;
+  case eFittingTab::REFLECTIONS:
+    color = reflRgeColor_;
+    break;
+  }
 
   auto ir = new QCPItemRect(this);
-  ir->setPen(QPen(rangeColor_));
-  ir->setBrush(QBrush(rangeColor_));
+  ir->setPen(QPen(color));
+  ir->setBrush(QBrush(color));
   auto br = ir->bottomRight;
   br->setTypeY(QCPItemPosition::ptViewportRatio);
   br->setCoords(range.max, 1);
@@ -334,35 +345,46 @@ Diffractogram::Diffractogram(TheHub& hub)
   box_->addWidget((plot_ = new DiffractogramPlot(hub_, *this)));
   auto hb = hbox();
   box_->addLayout(hb);
-  hb->addWidget(check("all datasets", hub_.actions.avgCurveDgram));
+  hb->addWidget(check("all datasets", hub_.actions.combinedDgram));
   hb->addWidget(check("fixed scale", hub_.actions.fixedIntenDgramScale));
   hb->addStretch();
 
-  onSigDatasetSelected(
-      [this](core::shp_Dataset dataset) { setDataset(dataset); });
+  onSigDatasetSelected([this](core::shp_Dataset dataset) {
+    setDataset(dataset);
+  });
 
-  onSigGeometryChanged([this]() { render(); });
+  onSigGeometryChanged([this]() {
+    render();
+  });
 
-  onSigCorrEnabled([this]() { render(); });
+  onSigCorrEnabled([this]() {
+    render();
+  });
 
-  onSigDisplayChanged([this]() { render(); });
+  onSigDisplayChanged([this]() {
+    render();
+  });
 
-  onSigBgChanged([this]() { render(); });
+  onSigBgChanged([this]() {
+    render();
+  });
 
-  onSigNormChanged([this]() { render(); });
+  onSigNormChanged([this]() {
+    render();
+  });
 
   // REVIEW all these connects
   connect(hub_.actions.fitBgClear, &QAction::triggered,
           [this]() { plot_->clearBg(); });
 
-  onSigFittingTab([this](int index) {
+  onSigFittingTab([this](eFittingTab tab) {
     bool on = hub_.actions.fitRegions->isChecked();
-    switch (index) {
-    case TheHub::TAB_BACKGROUND:
+    switch (tab) {
+    case eFittingTab::BACKGROUND:
       plot_->setTool(on ? DiffractogramPlot::TOOL_BACKGROUND
                         : DiffractogramPlot::TOOL_NONE);
       break;
-    case TheHub::TAB_REFLECTIONS:
+    case eFittingTab::REFLECTIONS:
       plot_->setTool(on ? DiffractogramPlot::TOOL_PEAK_REGION
                         : DiffractogramPlot::TOOL_NONE);
       break;
@@ -370,7 +392,7 @@ Diffractogram::Diffractogram(TheHub& hub)
   });
 
   connect(hub_.actions.fitRegions, &QAction::toggled, [this](bool on) {
-    plot_->setTool(on ? (0 == hub_.fittingTab__
+    plot_->setTool(on ? (eFittingTab::BACKGROUND == hub_.fittingTab()
                              ? DiffractogramPlot::TOOL_BACKGROUND
                              : DiffractogramPlot::TOOL_PEAK_REGION)
                       : DiffractogramPlot::TOOL_NONE);
@@ -411,14 +433,13 @@ void Diffractogram::setDataset(core::shp_Dataset dataset) {
   render();
 }
 
-void Diffractogram::calcDgram() {  // TODO is like getDgram00 w useCut==true,
-                                   // normalize==false
+void Diffractogram::calcDgram() {
   dgram_.clear();
 
   if (!dataset_) return;
 
   auto& map = hub_.angleMap(*dataset_);
-  if (hub_.isAvgCurveDgram())
+  if (hub_.isCombinedDgram())
     dgram_ = hub_.lens(*dataset_)->makeAvgCurve();
   else
     dgram_ = hub_.lens(*dataset_)->makeCurve(map.rgeGamma(), map.rgeTth());

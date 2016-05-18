@@ -132,8 +132,7 @@ Actions::Actions(TheHub& hub): super(hub) {
       "Fixed diffractogram scale", "Display diffractogram using a fixed intensity scale")
       .alt("Variable diffractogram scale", "Display diffractogram using normalized intensity scale");
 
-  // TODO make combined, *not* average
-  tgl(avgCurveDgram,
+  tgl(combinedDgram,
       "Combined diffractogram", "Show diffractogram of all datasets")
       .alt("Single diffractogram", "Show diffractogram of a single dataset");
 
@@ -195,7 +194,7 @@ Actions::Actions(TheHub& hub): super(hub) {
   onSigDatasetsChanged([this]() {
     fixedIntenImageScale->setChecked(false);
     fixedIntenDgramScale->setChecked(false);
-    avgCurveDgram->setChecked(false);
+    combinedDgram->setChecked(false);
   });
 }
 

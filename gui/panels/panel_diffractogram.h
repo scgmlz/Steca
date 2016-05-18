@@ -85,8 +85,8 @@ public:
 
   void clearReflLayer();
 
-  QColor rangeColor_;
-  int    selectedFittingTab();
+  QColor bgRgeColor_, reflRgeColor_;
+  eFittingTab selectedFittingTab();
 
 protected:
   void addBgItem(core::rcRange);
@@ -109,7 +109,7 @@ class Diffractogram : public BoxPanel {
 public:
   Diffractogram(TheHub&);
 
-  void render();  // TODO move to DiffractogramPlot (?)
+  void render();
 
   core::rcDataset dataset() const { return *dataset_; }
 

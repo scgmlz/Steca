@@ -467,20 +467,16 @@ qreal Raw::y(qreal x, qreal const* /*parValues*/) const {
   return fittedCurve_.y(i);
 }
 
-qreal Raw::dy(qreal /*x*/, uint /*parIndex*/,
-              qreal const* /*parValues*/) const {
-  return 0;  // fake
+qreal Raw::dy(qreal, uint, qreal const*) const {
+  return 0; // fake
 }
 
 XY Raw::fittedPeak() const {
-  if (qIsNaN(sum_y_)) {
-    sum_y_ = 0;
-    for_i (x_count_)
-      sum_y_ += fittedCurve_.y(i);
-  }
+  if (qIsNaN(sum_y_))
+    sum_y_ = fittedCurve_.sumY();
 
-  return XY(range_.center(),
-            sum_y_);  // approximate x, y is sum (TODO average?)
+  return XY(range_.center(),  // approximate x
+            sum_y_);
 }
 
 qreal Raw::fittedFWHM() const {

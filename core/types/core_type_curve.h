@@ -58,6 +58,8 @@ public:
   Curve smooth3()   const;  ///< moving average, 3 points
   uint  maxYindex() const;  ///< the index of the maximum y
 
+  qreal sumY()      const;
+
 private:
   qreal_vec xs_, ys_;
   core::Range rgeX_, rgeY_;

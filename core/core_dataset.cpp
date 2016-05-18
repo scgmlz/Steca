@@ -23,7 +23,7 @@ namespace core {
 //------------------------------------------------------------------------------
 // metadata attributes
 
-enum class attr {
+enum class eAttr {
   DATE, COMMENT,
 
   MOTOR_XT,  MOTOR_YT,  MOTOR_ZT,
@@ -35,7 +35,7 @@ enum class attr {
 };
 
 uint Metadata::numAttributes() {
-  return (uint)attr::NUM_ATTRIBUTES;
+  return (uint)eAttr::NUM_ATTRIBUTES;
 }
 
 rcstr Metadata::attributeTag(uint i) {
@@ -69,22 +69,22 @@ cmp_vec Metadata::attributeCmps() {
 str Metadata::attributeStrValue(uint i) const {
   qreal value = 0;
 
-  switch ((attr)i) {
-  case attr::DATE:        return date;
-  case attr::COMMENT:     return comment;
+  switch ((eAttr)i) {
+  case eAttr::DATE:        return date;
+  case eAttr::COMMENT:     return comment;
 
-  case attr::MOTOR_XT:    value = motorXT;   break;
-  case attr::MOTOR_YT:    value = motorYT;   break;
-  case attr::MOTOR_ZT:    value = motorZT;   break;
-  case attr::MOTOR_OMG:   value = motorOmg;  break;
-  case attr::MOTOR_TTH:   value = motorTth;  break;
-  case attr::MOTOR_PHI:   value = motorPhi;  break;
-  case attr::MOTOR_CHI:   value = motorChi;  break;
-  case attr::MOTOR_PST:   value = motorPST;  break;
-  case attr::MOTOR_SST:   value = motorSST;  break;
-  case attr::MOTOR_OMGM:  value = motorOMGM; break;
-  case attr::DELTA_MONITOR_COUNT: value = deltaMonitorCount; break;
-  case attr::DELTA_TIME:  value = deltaTime; break;
+  case eAttr::MOTOR_XT:    value = motorXT;   break;
+  case eAttr::MOTOR_YT:    value = motorYT;   break;
+  case eAttr::MOTOR_ZT:    value = motorZT;   break;
+  case eAttr::MOTOR_OMG:   value = motorOmg;  break;
+  case eAttr::MOTOR_TTH:   value = motorTth;  break;
+  case eAttr::MOTOR_PHI:   value = motorPhi;  break;
+  case eAttr::MOTOR_CHI:   value = motorChi;  break;
+  case eAttr::MOTOR_PST:   value = motorPST;  break;
+  case eAttr::MOTOR_SST:   value = motorSST;  break;
+  case eAttr::MOTOR_OMGM:  value = motorOMGM; break;
+  case eAttr::DELTA_MONITOR_COUNT: value = deltaMonitorCount; break;
+  case eAttr::DELTA_TIME:  value = deltaTime; break;
   default: NEVER;
   }
 
@@ -92,21 +92,21 @@ str Metadata::attributeStrValue(uint i) const {
 }
 
 QVariant Metadata::attributeValue(uint i) const {
-  switch ((attr)i) {
-  case attr::DATE:       return date;
-  case attr::COMMENT:    return comment;
-  case attr::MOTOR_XT:   return (qreal)motorXT;
-  case attr::MOTOR_YT:   return (qreal)motorYT;
-  case attr::MOTOR_ZT:   return (qreal)motorZT;
-  case attr::MOTOR_OMG:  return (qreal)motorOmg;
-  case attr::MOTOR_TTH:  return (qreal)motorTth;
-  case attr::MOTOR_PHI:  return (qreal)motorPhi;
-  case attr::MOTOR_CHI:  return (qreal)motorChi;
-  case attr::MOTOR_PST:  return (qreal)motorPST;
-  case attr::MOTOR_SST:  return (qreal)motorSST;
-  case attr::MOTOR_OMGM: return (qreal)motorOMGM;
-  case attr::DELTA_MONITOR_COUNT: return deltaMonitorCount;
-  case attr::DELTA_TIME: return deltaTime;
+  switch ((eAttr)i) {
+  case eAttr::DATE:       return date;
+  case eAttr::COMMENT:    return comment;
+  case eAttr::MOTOR_XT:   return (qreal)motorXT;
+  case eAttr::MOTOR_YT:   return (qreal)motorYT;
+  case eAttr::MOTOR_ZT:   return (qreal)motorZT;
+  case eAttr::MOTOR_OMG:  return (qreal)motorOmg;
+  case eAttr::MOTOR_TTH:  return (qreal)motorTth;
+  case eAttr::MOTOR_PHI:  return (qreal)motorPhi;
+  case eAttr::MOTOR_CHI:  return (qreal)motorChi;
+  case eAttr::MOTOR_PST:  return (qreal)motorPST;
+  case eAttr::MOTOR_SST:  return (qreal)motorSST;
+  case eAttr::MOTOR_OMGM: return (qreal)motorOMGM;
+  case eAttr::DELTA_MONITOR_COUNT: return deltaMonitorCount;
+  case eAttr::DELTA_TIME: return deltaTime;
   default:
     NEVER return 0;
   }
@@ -114,7 +114,7 @@ QVariant Metadata::attributeValue(uint i) const {
 
 row_t Metadata::attributeValues() const {
   row_t attrs;
-  for_i ((uint)attr::NUM_ATTRIBUTES)
+  for_i ((uint)eAttr::NUM_ATTRIBUTES)
     attrs.append(attributeValue(i));
   return attrs;
 }
@@ -122,7 +122,7 @@ row_t Metadata::attributeValues() const {
 row_t Metadata::attributeNaNs() {
   static row_t row;
   if (row.isEmpty()) {
-    for_i ((uint)attr::NUM_ATTRIBUTES)
+    for_i ((uint)eAttr::NUM_ATTRIBUTES)
       row.append(qQNaN());
   }
   return row;

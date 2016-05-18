@@ -327,11 +327,20 @@ void MainWin::closeEvent(QCloseEvent* event) {
 void MainWin::onShow() {
   checkActions();
 
-#ifdef DEVELOPMENT_REBECCA
-  hub_.load(QFileInfo("/home/rebecca/SCG/STeCa-Data/1.ste"));
+#if defined(DEVELOPMENT_REBECCA) || defined(DEVELOPMENT_JAN)
+  auto safeLoad = [this](rcstr fileName) {
+    QFileInfo info(QDir::homePath() % fileName);
+    if (info.exists())
+      hub_.loadSession(info);
+  };
 #endif
+
+#ifdef DEVELOPMENT_REBECCA
+  safeLoad("/SCG/STeCa-Data/1.ste");
+#endif
+
 #ifdef DEVELOPMENT_JAN
-  hub_.loadSession(QFileInfo(QDir::homePath() + "/P/+scg/data/s.ste"));
+  safeLoad("/P/zz-gd/SCG/data/0.ste");
   hub_.actions.outputPolefigures->trigger();
 #endif
 }

@@ -50,19 +50,17 @@ public:
   private:
     qreal value_;
 
-    // constraints; TODO maybe not all needed?
-
     /// allowed range of values
     /// if !isValid() -> means the same as <value,value>, i.e. fixed value
     Range range_;
 
     /// maximum change allowed; NaN -> no check
     qreal maxDelta_;
-    qreal maxDeltaPercent_;  // REVIEW - needed?
+    qreal maxDeltaPercent_;
 
     /// maximum error allowed; NaN -> no check
     qreal maxError_;
-    qreal maxErrorPercent_;  // REVIEW - needed?
+    qreal maxErrorPercent_;
   };
 
 public:

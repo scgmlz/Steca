@@ -183,9 +183,9 @@ Range Lens::gammaRangeAt(qreal tth) const {
 
   for (uint j = 1; j < h; ++j) {
     for (uint i = 1; i < w; ++i) {
-      auto tthMin = angles(i - 1, j).tth,
-           tthMax = angles(i, j).tth;  // TODO optimize?
-      if (tthMin <= tth && tth < tthMax) rge.extendBy(angles(i - 1, j).gamma);
+      auto tthMin = angles(i-1, j).tth, tthMax = angles(i, j).tth;
+      if (tthMin <= tth && tth < tthMax)
+        rge.extendBy(angles(i - 1, j).gamma);
     }
   }
 

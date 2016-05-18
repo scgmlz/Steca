@@ -190,7 +190,7 @@ void Session::setImageCut(bool topLeftFirst, bool linked, ImageCut const& cut) {
 
 AngleMap const& Session::angleMap(rcDataset dataset) const {
   static AngleMap map;
-  // TODO cache through shared pointers
+  // REVIEW cache through shared pointers
   static Geometry       lastGeometry;
   static qreal          lastMidTth = 0;
   static QSize          lastSize;
@@ -271,11 +271,12 @@ void calculateAlphaBeta(rcDataset dataset, deg tth, deg gamma, deg& alpha,
   // Note that the rotations here do not correspond to C. Randau's dissertation.
   // The rotations given in [J. Appl. Cryst. (2012) 44, 641-644] are incorrect.
   vector3d rotated =
-      matrix3d::rotationCWz(
-          phi)  // TODO precalculate phi/ch/omg rotations, save in dataset
-      * matrix3d::rotationCWx(chi) * matrix3d::rotationCWz(omg) *
-      matrix3d::rotationCWx(gamma.toRad()) *
-      matrix3d::rotationCCWz(tth.toRad() / 2) * vector3d(0, 1, 0);
+      matrix3d::rotationCWz(phi)
+    * matrix3d::rotationCWx(chi)
+    * matrix3d::rotationCWz(omg)
+    * matrix3d::rotationCWx(gamma.toRad())
+    * matrix3d::rotationCCWz(tth.toRad() / 2)
+    * vector3d(0, 1, 0);
 
   // Extract alpha (latitude) and beta (longitude).
   rad alphaRad = acos(rotated._2);
@@ -342,7 +343,6 @@ ReflectionInfos Session::makeReflectionInfos(rcDatasets   datasets,
 
   for (auto& dataset : datasets) {
     auto l = lens(*dataset, datasets, true, true, norm_);
-    // TODO potentially optimize (invariant if lens does not change)
     Range rgeGamma = gammaRange.isValid()
                          ? gammaRange
                          : l->gammaRangeAt(reflection.range().center());

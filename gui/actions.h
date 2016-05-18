@@ -66,7 +66,7 @@ public:
       *loadSession, *saveSession,
       *addFiles, *remFile, *enableCorr, *remCorr,
       *rotateImage, *mirrorImage, *linkCuts, *showCut, *hasBeamOffset,
-      *fixedIntenImageScale, *fixedIntenDgramScale, *avgCurveDgram,
+      *fixedIntenImageScale, *fixedIntenDgramScale, *combinedDgram,
       *fitRegions, *fitBgClear, *fitBgShow,
       *addReflection, *remReflection,
       *outputPolefigures, *outputHistograms;

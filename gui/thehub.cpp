@@ -76,7 +76,7 @@ void Settings::save(rcstr key, QDoubleSpinBox* box) {
 TheHub::TheHub()
 : actions(*this), session(new core::Session())
 , isFixedIntenImageScale_(false), isFixedIntenDgramScale_(false)
-, isAvgCurveDgram_(false), filesModel(*this), datasetsModel(*this)
+, isCombinedDgram_(false), filesModel(*this), datasetsModel(*this)
 , reflectionsModel(*this), datasetsGroupedBy_(1)
 {
   configActions();
@@ -102,9 +102,9 @@ void TheHub::configActions() {
     emit sigDisplayChanged();
   });
 
-  actions.avgCurveDgram->setChecked(false);
-  connect(actions.avgCurveDgram, &QAction::toggled, [this](bool on) {
-    isAvgCurveDgram_ = on;
+  actions.combinedDgram->setChecked(false);
+  connect(actions.combinedDgram, &QAction::toggled, [this](bool on) {
+    isCombinedDgram_ = on;
     emit sigDisplayChanged();
   });
 
@@ -164,12 +164,11 @@ core::AngleMap const& TheHub::angleMap(core::rcDataset dataset) const {
   return session->angleMap(dataset);
 }
 
-core::ReflectionInfos TheHub::makeReflectionInfos(core::rcReflection reflection,
-                                                  qreal              betaStep,
-                                                  core::rcRange gammaRange) {
-  // TODO TODO TODO
+core::ReflectionInfos TheHub::makeReflectionInfos(
+    core::rcReflection reflection, core::deg betaStep, core::rcRange rgeGamma)
+{
   return session->makeReflectionInfos(collectedDatasets(), reflection, betaStep,
-                                      gammaRange);
+                                      rgeGamma);
 }
 
 static str const KEY_FILES("files");
@@ -440,8 +439,8 @@ void TheHub::remReflection(uint i) {
   emit sigReflectionsChanged();
 }
 
-void TheHub::setFittingTab(int index) {
-  emit sigFittingTab((fittingTab__ = index));
+void TheHub::setFittingTab(eFittingTab tab) {
+  emit sigFittingTab((fittingTab_ = tab));
 }
 
 void TheHub::setImageRotate(core::ImageTransform rot) {
@@ -468,7 +467,7 @@ void TheHub::setImageRotate(core::ImageTransform rot) {
   actions.rotateImage->setIcon(QIcon(rotateIconFile));
   actions.mirrorImage->setIcon(QIcon(mirrorIconFile));
   session->setImageTransformRotate(rot);
-  setImageCut(true, false, session->imageCut());  // TODO make makeSafeCut(?)
+  setImageCut(true, false, session->imageCut());
   emit sigGeometryChanged();
 }
 

@@ -47,7 +47,7 @@ deg angle(deg alpha1, deg alpha2, deg deltaBeta) {
   return a;
 }
 
-enum class Quadrant {
+enum class eQuadrant {
   NORTHEAST,
   SOUTHEAST,
   SOUTHWEST,
@@ -56,22 +56,22 @@ enum class Quadrant {
 
 static int NUM_QUADRANTS = 4;
 
-typedef QVector<Quadrant> Quadrants;
+typedef QVector<eQuadrant> Quadrants;
 
 Quadrants allQuadrants() {
-  return {Quadrant::NORTHEAST, Quadrant::SOUTHEAST, Quadrant::SOUTHWEST,
-          Quadrant::NORTHWEST};
+  return {eQuadrant::NORTHEAST, eQuadrant::SOUTHEAST, eQuadrant::SOUTHWEST,
+          eQuadrant::NORTHWEST};
 }
 
-bool inQuadrant(Quadrant quadrant, deg deltaAlpha, deg deltaBeta) {
+bool inQuadrant(eQuadrant quadrant, deg deltaAlpha, deg deltaBeta) {
   switch (quadrant) {
-  case Quadrant::NORTHEAST:
+  case eQuadrant::NORTHEAST:
     return deltaAlpha >= 0 && deltaBeta >= 0;
-  case Quadrant::SOUTHEAST:
+  case eQuadrant::SOUTHEAST:
     return deltaAlpha >= 0 && deltaBeta < 0;
-  case Quadrant::SOUTHWEST:
+  case eQuadrant::SOUTHWEST:
     return deltaAlpha < 0 && deltaBeta < 0;
-  case Quadrant::NORTHWEST:
+  case eQuadrant::NORTHWEST:
     return deltaAlpha < 0 && deltaBeta >= 0;
   default:
     NEVER return false;
@@ -79,18 +79,18 @@ bool inQuadrant(Quadrant quadrant, deg deltaAlpha, deg deltaBeta) {
 }
 
 // Search quadrant remapping in case no point was found.
-Quadrant remapQuadrant(Quadrant q) {
+eQuadrant remapQuadrant(eQuadrant q) {
   switch (q) {
-  case Quadrant::NORTHEAST:
-    return Quadrant::NORTHWEST;
-  case Quadrant::SOUTHEAST:
-    return Quadrant::SOUTHWEST;
-  case Quadrant::SOUTHWEST:
-    return Quadrant::NORTHEAST;
-  case Quadrant::NORTHWEST:
-    return Quadrant::SOUTHEAST;
+  case eQuadrant::NORTHEAST:
+    return eQuadrant::NORTHWEST;
+  case eQuadrant::SOUTHEAST:
+    return eQuadrant::SOUTHWEST;
+  case eQuadrant::SOUTHWEST:
+    return eQuadrant::NORTHEAST;
+  case eQuadrant::NORTHWEST:
+    return eQuadrant::SOUTHEAST;
   default:
-    NEVER return (Quadrant)0;
+    NEVER return (eQuadrant)0;
   }
 }
 
@@ -206,9 +206,9 @@ void interpolateValues(deg searchRadius, ReflectionInfos const& infos,
     }
     // No info found in quadrant? Try another quadrant. See
     // [J.Appl.Cryst.(2011),44,641] for the angle mapping.
-    Quadrant    newQ = remapQuadrant((Quadrant)i);
+    eQuadrant    newQ = remapQuadrant((eQuadrant)i);
     qreal const newAlpha =
-        i == (int)Quadrant::NORTHEAST || i == (int)Quadrant::SOUTHEAST
+        i == (int)eQuadrant::NORTHEAST || i == (int)eQuadrant::SOUTHEAST
             ? 180 - alpha
             : -alpha;
     qreal newBeta = beta < 180 ? beta + 180 : beta - 180;
@@ -307,7 +307,7 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
         if (!qIsNaN(idwRadius)) {
           // Don't fall back to idw, just add an unmeasured info.
           ReflectionInfo invalidInfo(alpha, beta,
-                                     infos.first().rgeGamma());  // TODO insert?
+                                     infos.first().rgeGamma());
           interpolatedInfos.append(invalidInfo);
           continue;
         }

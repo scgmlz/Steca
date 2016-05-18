@@ -172,19 +172,31 @@ Fitting::Fitting(TheHub &hub) : super(hub), silentSpin_(false) {
 
     gb->setColumnStretch(4, 1);
 
+    auto updateReflectionControls = [this]() {
+      bool on = reflectionView_->hasReflections();
+      spinRangeMin_->setEnabled(on);
+      spinRangeMax_->setEnabled(on);
+      spinGuessPeakX_->setEnabled(on);
+      spinGuessPeakY_->setEnabled(on);
+      spinGuessFWHM_->setEnabled(on);
+      readFitPeakX_->setEnabled(on);
+      readFitPeakY_->setEnabled(on);
+      readFitFWHM_->setEnabled(on);
+    };
+
     updateReflectionControls();
 
-    connect(actions.addReflection, &QAction::triggered, [this]() {
+    connect(actions.addReflection, &QAction::triggered, [this,updateReflectionControls]() {
       reflectionView_->addReflection(comboReflType_->currentIndex());
       updateReflectionControls();
     });
 
-    connect(actions.remReflection, &QAction::triggered, [this]() {
+    connect(actions.remReflection, &QAction::triggered, [this,updateReflectionControls]() {
       reflectionView_->removeSelected();
       updateReflectionControls();
     });
 
-    onSigReflectionsChanged([this]() {
+    onSigReflectionsChanged([this,updateReflectionControls]() {
       reflectionView_->updateSingleSelection();
       updateReflectionControls();
     });
@@ -232,31 +244,19 @@ Fitting::Fitting(TheHub &hub) : super(hub), silentSpin_(false) {
             changeReflData0);
   }
 
-  connect(this, &thisClass::currentChanged,
-          [this](int index) { hub_.setFittingTab(index); });
+  connect(this, &thisClass::currentChanged, [this](int index) {
+    hub_.setFittingTab((eFittingTab)index);
+  });
 
-  hub_.setFittingTab(0);
+  hub_.setFittingTab(eFittingTab::BACKGROUND);
 }
-
-void Fitting::enableReflControls(bool on) {
-  spinRangeMin_->setEnabled(on);
-  spinRangeMax_->setEnabled(on);
-  spinGuessPeakX_->setEnabled(on);
-  spinGuessPeakY_->setEnabled(on);
-  spinGuessFWHM_->setEnabled(on);
-  readFitPeakX_->setEnabled(on);
-  readFitPeakY_->setEnabled(on);
-  readFitFWHM_->setEnabled(on);
-}
-
-// TODO move to core_types ?
 
 static qreal safeReal(qreal val) {
   return qIsFinite(val) ? val : 0.0;
 }
 
 static str safeRealText(qreal val) {
-  return qIsFinite(val) ? str("%1").arg(val) : EMPTY_STR;
+  return qIsFinite(val) ? str::number(val) : EMPTY_STR;
 }
 
 void Fitting::setReflControls(core::shp_Reflection reflection) {
@@ -296,11 +296,6 @@ void Fitting::setReflControls(core::shp_Reflection reflection) {
   }
 
   silentSpin_ = false;
-}
-
-void Fitting::updateReflectionControls() {
-  reflectionView_->hasReflections() ? enableReflControls(true)
-                                    : enableReflControls(false);
 }
 
 //------------------------------------------------------------------------------

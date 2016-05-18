@@ -148,7 +148,7 @@ Curve Curve::addSimple(rcCurve that) const {
     qSwap(count1, count2);
   }
 
-  Curve res;  // TODO take the tth axis into account
+  Curve res;
 
   // the shorter part - both curves
   for (uint i = 0, iEnd = count1; i < iEnd; ++i)
@@ -194,6 +194,13 @@ uint Curve::maxYindex() const {
   }
 
   return index;
+}
+
+qreal Curve::sumY() const {
+  qreal sum = 0;
+  for_i (count())
+    sum += ys_[i];
+  return sum;
 }
 
 //------------------------------------------------------------------------------

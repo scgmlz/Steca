@@ -232,7 +232,9 @@ DatasetOptions1::DatasetOptions1(TheHub& hub)
   vn->addWidget(comboNormType_ = comboBox(options));
   box_->addStretch();
 
-  onSigGeometryChanged([this]() { setFrom(hub_); });
+  onSigGeometryChanged([this]() {
+    setFrom(hub_);
+  });
 
   auto setEnabled = [this]() {
     bool on = hub_.actions.hasBeamOffset->isChecked();
@@ -358,25 +360,37 @@ DatasetOptions2::DatasetOptions2(TheHub& hub)
 
   connect(marginLeft_,
           static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
-          [setImageCut](int value) { setImageCut(true, value); });
+          [setImageCut](int value) {
+    setImageCut(true, value);
+  });
 
   connect(marginTop_,
           static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
-          [setImageCut](int value) { setImageCut(true, value); });
+          [setImageCut](int value) {
+    setImageCut(true, value);
+  });
 
   connect(marginRight_,
           static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
-          [setImageCut](int value) { setImageCut(false, value); });
+          [setImageCut](int value) {
+    setImageCut(false, value);
+  });
 
   connect(marginBottom_,
           static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
-          [setImageCut](int value) { setImageCut(false, value); });
+          [setImageCut](int value) {
+    setImageCut(false, value);
+  });
 
-  onSigGeometryChanged([this]() { setFrom(hub_); });
+  onSigGeometryChanged([this]() {
+    setFrom(hub_);
+  });
 
   connect(spinImageScale_,
           static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
-          [this](int scale) { emit imageScale(scale); });
+          [this](int scale) {
+    emit imageScale(scale);
+  });
 }
 
 void DatasetOptions2::setFrom(TheHub& hub) {
@@ -414,12 +428,18 @@ Dataset::Dataset(TheHub& hub) : super(hub), dataset_(nullptr) {
     corrImageWidget_->setShowOverlay(on);
   });
 
-  onSigDisplayChanged([this]() { render(); });
+  onSigDisplayChanged([this]() {
+    render();
+  });
 
-  onSigGeometryChanged([this]() { render(); });
+  onSigGeometryChanged([this]() {
+    render();
+  });
 
   onSigDatasetSelected(
-      [this](core::shp_Dataset dataset) { setDataset(dataset); });
+      [this](core::shp_Dataset dataset) {
+    setDataset(dataset);
+  });
 }
 
 void Dataset::setImageScale(uint scale) {

@@ -25,6 +25,11 @@ namespace gui {
 
 class TheHub;
 
+enum class eFittingTab {
+  BACKGROUND,
+  REFLECTIONS,
+};
+
 class TheHubSignallingBase : public QObject {
   SUPER(TheHubSignallingBase, QObject)
   Q_OBJECT
@@ -62,7 +67,7 @@ signals:
   void sigBgChanged();  ///< ranges and poly: refit
   void sigNormChanged();
 
-  void sigFittingTab(int);
+  void sigFittingTab(eFittingTab);
 };
 
 //------------------------------------------------------------------------------

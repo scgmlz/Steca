@@ -9,7 +9,7 @@ REGISTER_TEST_SUITE(TestCoreApprox)
 #define QALMOST_COMPARE(a,b) QVERIFY(qAbs(a-b) < 1E-3)
 
 void TestCoreApprox::testPolynom() {
-  { // TODO move test test_core_polynom or rename test class
+  {
     core::Curve curve;
     curve.append(1,1);
     curve.append(2,2);

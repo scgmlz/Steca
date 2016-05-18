@@ -67,12 +67,12 @@ private:
 
   bool isFixedIntenImageScale_;
   bool isFixedIntenDgramScale_;
-  bool isAvgCurveDgram_;
+  bool isCombinedDgram_;
 
 public:
   bool isFixedIntenImageScale() const { return isFixedIntenImageScale_; }
   bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
-  bool isAvgCurveDgram()        const { return isAvgCurveDgram_;        }
+  bool isCombinedDgram()        const { return isCombinedDgram_;        }
 
   models::FilesModel       filesModel;
   models::DatasetsModel    datasetsModel;
@@ -97,9 +97,8 @@ public:
   core::AngleMap const& angleMap(core::rcDataset) const;
 
 public:
-  core::ReflectionInfos
-  makeReflectionInfos(core::rcReflection, qreal betaStep,
-                      core::rcRange gammaRange = core::Range());
+  core::ReflectionInfos makeReflectionInfos(core::rcReflection,
+      core::deg betaStep, core::rcRange rgeGamma = core::Range());
 
 public:
   void       saveSession(QFileInfo const&) const;
@@ -156,13 +155,11 @@ public:
   void addReflection(core::ePeakType);
   void remReflection(uint);
 
-  enum {
-    TAB_BACKGROUND,
-    TAB_REFLECTIONS,
-  };
+  eFittingTab fittingTab() const { return fittingTab_; }
+  void setFittingTab(eFittingTab);
 
-  int  fittingTab__;  // TODO
-  void setFittingTab(int);
+private:
+  eFittingTab fittingTab_;
 
 private:
   core::shp_Reflection selectedReflection_;

@@ -48,7 +48,9 @@ FilesView::FilesView(TheHub& hub) : super(hub) {
     recollect();
   });
 
-  onSigFilesSelected([this]() { selectRows(hub_.collectedFromFiles()); });
+  onSigFilesSelected([this]() {
+    selectRows(hub_.collectedFromFiles());
+  });
 }
 
 void FilesView::selectionChanged(QItemSelection const& selected,
