@@ -34,13 +34,13 @@ public:
   ReflectionInfo(shp_Metadata, deg alpha, deg beta, rcRange rgeGamma);
 
   deg alpha() const { return alpha_; }
-  deg beta() const { return beta_; }
+  deg beta()  const { return beta_;  }
 
   rcRange rgeGamma() const { return rgeGamma_; }
 
   qreal inten() const { return inten_; }
-  deg   tth() const { return tth_; }
-  qreal fwhm() const { return fwhm_; }
+  deg   tth()   const { return tth_;   }
+  qreal fwhm()  const { return fwhm_;  }
 
   // TODO these OUT?
   void setInten(qreal v) { inten_ = v; }

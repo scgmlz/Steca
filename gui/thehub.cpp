@@ -74,10 +74,11 @@ void Settings::save(rcstr key, QDoubleSpinBox* box) {
 //------------------------------------------------------------------------------
 
 TheHub::TheHub()
-    : actions(*this), session(new core::Session()),
-      fixedIntenScaleImage_(false), fixedIntenScaleDgram_(false),
-      avgCurveDgram_(false), filesModel(*this), datasetsModel(*this),
-      reflectionsModel(*this), numGroupBy_(1) {
+: actions(*this), session(new core::Session())
+, fixedIntenScaleImage_(false), fixedIntenScaleDgram_(false)
+, avgCurveDgram_(false), filesModel(*this), datasetsModel(*this)
+, reflectionsModel(*this), numGroupBy_(1)
+{
   configActions();
 }
 

@@ -32,7 +32,7 @@ class DiffractogramPlot;
 class DiffractogramPlotOverlay : public QWidget {
   SUPER(DiffractogramPlotOverlay, QWidget)
 public:
-  DiffractogramPlotOverlay(DiffractogramPlot &);
+  DiffractogramPlotOverlay(DiffractogramPlot&);
 
   void setMargins(int left, int right);
 
@@ -43,13 +43,13 @@ private:
   int    marginLeft_, marginRight_;
 
 protected:
-  void enterEvent(QEvent *);
-  void leaveEvent(QEvent *);
-  void mousePressEvent(QMouseEvent *);
-  void mouseReleaseEvent(QMouseEvent *);
-  void mouseMoveEvent(QMouseEvent *);
+  void enterEvent(QEvent*);
+  void leaveEvent(QEvent*);
+  void mousePressEvent(QMouseEvent*);
+  void mouseReleaseEvent(QMouseEvent*);
+  void mouseMoveEvent(QMouseEvent*);
 
-  void paintEvent(QPaintEvent *);
+  void paintEvent(QPaintEvent*);
 
   bool hasCursor_, mouseDown_;
   int  cursorPos_, mouseDownPos_;
@@ -66,14 +66,14 @@ public:
     TOOL_PEAK_REGION,
   };
 
-  DiffractogramPlot(TheHub &, class Diffractogram &);
+  DiffractogramPlot(TheHub&, class Diffractogram&);
 
 public:
   void setTool(Tool);
   Tool getTool() const { return tool_; }
 
   void plot(core::rcCurve, core::rcCurve, core::rcCurve,
-            core::curve_vec const &, uint);
+            core::curve_vec const&, uint);
 
   core::Range fromPixels(int, int);
 
@@ -90,7 +90,7 @@ public:
 
 protected:
   void addBgItem(core::rcRange);
-  void resizeEvent(QResizeEvent *);
+  void resizeEvent(QResizeEvent*);
 
 private:
   Diffractogram &diffractogram_;
@@ -100,14 +100,14 @@ private:
 
   QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *guesses_, *fits_;
 
-  QVector<QCPGraph *>       reflGraph_;
+  QVector<QCPGraph*>       reflGraph_;
   DiffractogramPlotOverlay *overlay_;
 };
 
 class Diffractogram : public BoxPanel {
   SUPER(Diffractogram, BoxPanel)
 public:
-  Diffractogram(TheHub &);
+  Diffractogram(TheHub&);
 
   void render();  // TODO move to DiffractogramPlot (?)
 

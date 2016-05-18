@@ -39,7 +39,7 @@ public:
 
 protected:
   core::ReflectionInfos rs_;
-  void                  paintEvent(QPaintEvent *);
+  void                  paintEvent(QPaintEvent*);
 
   QPointF p(deg alpha, deg beta) const;
   void circle(QPointF c, qreal r);
@@ -63,7 +63,7 @@ void PoleWidget::set(core::ReflectionInfos rs) {
   update();
 }
 
-void PoleWidget::paintEvent(QPaintEvent *) {
+void PoleWidget::paintEvent(QPaintEvent*) {
   int w = size().width(), h = size().height();
 
   QPainter painter(this);
@@ -126,7 +126,7 @@ void PoleWidget::paintInfo() {
 class OutPoleFiguresParams : public panel::BoxPanel {
   SUPER(OutPoleFiguresParams, panel::BoxPanel)
 public:
-  OutPoleFiguresParams(TheHub &);
+  OutPoleFiguresParams(TheHub&);
 
   QGroupBox *gbReflection_, *gbInterpolation_, *gbGammaLimit_;
   QCheckBox *cbInterpolated_, *cbGammaLimit_;
@@ -138,7 +138,8 @@ public:
 };
 
 OutPoleFiguresParams::OutPoleFiguresParams(TheHub &hub)
-    : super("", hub, Qt::Horizontal) {
+: super("", hub, Qt::Horizontal)
+{
   box_->addWidget((gbReflection_ = new QGroupBox()));
   box_->addWidget((gbInterpolation_ = new QGroupBox()));
   box_->addWidget((gbGammaLimit_ = new QGroupBox()));
@@ -219,7 +220,8 @@ OutPoleFiguresParams::OutPoleFiguresParams(TheHub &hub)
 //------------------------------------------------------------------------------
 
 OutPoleFigures::OutPoleFigures(TheHub &hub, rcstr title, QWidget *parent)
-    : super(hub, title, parent) {
+: super(hub, title, parent)
+{
   params_ = new OutPoleFiguresParams(hub);
 
   auto *tabs = new panel::TabsPanel(hub);

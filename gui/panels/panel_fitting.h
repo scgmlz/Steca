@@ -25,7 +25,7 @@ namespace gui { namespace panel {
 class Fitting : public TabsPanel {
   SUPER(Fitting, TabsPanel)
 public:
-  Fitting(TheHub &);
+  Fitting(TheHub&);
 
 private:
   class ReflectionView *reflectionView_;

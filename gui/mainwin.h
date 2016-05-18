@@ -56,7 +56,7 @@ private:
   Actions    &acts_;
 
 private:
-  void closeEvent(QCloseEvent *);
+  void closeEvent(QCloseEvent*);
 
   void onShow();
   void onClose();

@@ -23,8 +23,9 @@ qreal const Geometry::MIN_DETECTOR_DISTANCE   = 1000;
 qreal const Geometry::MIN_DETECTOR_PIXEL_SIZE = 1;
 
 Geometry::Geometry()
-    : detectorDistance(MIN_DETECTOR_DISTANCE), pixSize(MIN_DETECTOR_PIXEL_SIZE),
-      isMidPixOffset(false), midPixOffset() {}
+: detectorDistance(MIN_DETECTOR_DISTANCE), pixSize(MIN_DETECTOR_PIXEL_SIZE)
+, isMidPixOffset(false), midPixOffset() {
+}
 
 bool Geometry::operator==(Geometry const& that) const {
   return detectorDistance == that.detectorDistance && pixSize == that.pixSize &&
@@ -37,7 +38,8 @@ bool Geometry::operator==(Geometry const& that) const {
 ImageCut::ImageCut() : ImageCut(0, 0, 0, 0) {}
 
 ImageCut::ImageCut(uint left_, uint top_, uint right_, uint bottom_)
-    : left(left_), top(top_), right(right_), bottom(bottom_) {}
+: left(left_), top(top_), right(right_), bottom(bottom_) {
+}
 
 bool ImageCut::operator==(const ImageCut& that) const {
   return (left == that.left && top == that.top && right == that.right &&

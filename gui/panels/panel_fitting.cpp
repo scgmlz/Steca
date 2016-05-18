@@ -23,7 +23,7 @@ namespace gui { namespace panel {
 class ReflectionView : public views::ListView {
   SUPER(ReflectionView, views::ListView)
 public:
-  ReflectionView(TheHub &);
+  ReflectionView(TheHub&);
 
   void addReflection(int type);
   void removeSelected();
@@ -35,14 +35,14 @@ public:
 
 protected:
   using Model = models::ReflectionsModel;
-  Model *model() const { return static_cast<Model *>(super::model()); }
+  Model *model() const { return static_cast<Model*>(super::model()); }
 
-  void selectionChanged(QItemSelection const &, QItemSelection const &);
+  void selectionChanged(QItemSelection const&, QItemSelection const&);
 };
 
 ReflectionView::ReflectionView(TheHub &hub) : super(hub) {
   setModel(&hub.reflectionsModel);
-  EXPECT(dynamic_cast<Model *>(super::model()))
+  EXPECT(dynamic_cast<Model*>(super::model()))
 
   for_i (model()->columnCount())
     resizeColumnToContents(i);

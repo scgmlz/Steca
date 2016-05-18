@@ -30,7 +30,7 @@ class PoleWidget;
 class OutPoleFigures : public OutWindow {
   SUPER(OutPoleFigures, OutWindow)
 public:
-  OutPoleFigures(TheHub &, rcstr title, QWidget *);
+  OutPoleFigures(TheHub&, rcstr title, QWidget*);
   void calculate();
 
 private:

@@ -63,7 +63,8 @@ private:
 //------------------------------------------------------------------------------
 
 OutTableModel::OutTableModel(TheHub& hub, uint numColumns_)
-    : models::TableModel(hub), numCols_(numColumns_), sortColumn_(0) {
+: models::TableModel(hub), numCols_(numColumns_), sortColumn_(0)
+{
   colIndexMap_.resize(numCols_);
   for_i (numCols_)
     colIndexMap_[i] = i;
@@ -309,7 +310,8 @@ OutTableWidget::ShowColumnsWidget::ShowColumnsWidget(
 //------------------------------------------------------------------------------
 
 OutWindow::OutWindow(TheHub& hub, rcstr title, QWidget* parent)
-    : super(parent, Qt::Dialog), RefHub(hub) {
+: super(parent, Qt::Dialog), RefHub(hub)
+{
   setAttribute(Qt::WA_DeleteOnClose);
   setWindowTitle(title);
   setLayout((box_ = vbox()));

@@ -84,7 +84,7 @@ class DatasetOptions1 : public BoxPanel {
   Q_OBJECT
   SUPER(DatasetOptions1, BoxPanel)
 public:
-  DatasetOptions1(TheHub &);
+  DatasetOptions1(TheHub&);
 
 private:
   QSpinBox       *spinOffsetI_, *spinOffsetJ_;
@@ -92,15 +92,15 @@ private:
   QComboBox      *comboNormType_;
 
   // REVIEW
-  void setTo(TheHub &);
-  void setFrom(TheHub &);
+  void setTo(TheHub&);
+  void setFrom(TheHub&);
 };
 
 class DatasetOptions2 : public BoxPanel {
   Q_OBJECT
   SUPER(DatasetOptions2, BoxPanel)
 public:
-  DatasetOptions2(TheHub &);
+  DatasetOptions2(TheHub&);
 
 signals:
   void imageScale(uint);

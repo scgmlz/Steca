@@ -58,7 +58,8 @@ void DatasetView::selectionChanged(QItemSelection const& selected,
 //------------------------------------------------------------------------------
 
 DockDatasets::DockDatasets(TheHub& hub)
-    : super("Datasets", "dock-datasets", Qt::Vertical), RefHub(hub) {
+: super("Datasets", "dock-datasets", Qt::Vertical), RefHub(hub)
+{
   box_->addWidget((datasetView_ = new DatasetView(hub)));
 
   auto h = hbox();
@@ -76,8 +77,8 @@ DockDatasets::DockDatasets(TheHub& hub)
 //------------------------------------------------------------------------------
 
 DockDatasetInfo::DockDatasetInfo(TheHub& hub)
-    : super("Dataset info", "dock-dataset-info", Qt::Vertical), RefHub(hub) {
-
+: super("Dataset info", "dock-dataset-info", Qt::Vertical), RefHub(hub)
+{
   using Metadata    = core::Metadata;
   using shp_Dataset = core::shp_Dataset;
 
@@ -124,7 +125,8 @@ DockDatasetInfo::Info::Info(models::checkedinfo_vec& metaInfo) {
 //------------------------------------------------------------------------------
 
 ImageWidget::ImageWidget(TheHub& hub, Dataset& dataset_)
-    : RefHub(hub), dataset_(dataset_), showOverlay_(true), scale_(1) {
+: RefHub(hub), dataset_(dataset_), showOverlay_(true), scale_(1)
+{
   setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
@@ -180,8 +182,8 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 //------------------------------------------------------------------------------
 
 DatasetOptions1::DatasetOptions1(TheHub& hub)
-    : super(EMPTY_STR, hub, Qt::Vertical) {
-
+: super(EMPTY_STR, hub, Qt::Vertical)
+{
   box_->addWidget(label("Beam offset"));
   auto ho = hbox();
   box_->addLayout(ho);
@@ -290,8 +292,8 @@ static str const KEY_PIXEL_SIZE("pixel_size");
 //------------------------------------------------------------------------------
 
 DatasetOptions2::DatasetOptions2(TheHub& hub)
-    : super(EMPTY_STR, hub, Qt::Vertical) {
-
+: super(EMPTY_STR, hub, Qt::Vertical)
+{
   box_->addWidget(label("Image"));
   auto hb = hbox();
   box_->addLayout(hb);
