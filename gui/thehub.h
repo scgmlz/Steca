@@ -65,10 +65,14 @@ private:
 private:
   QScopedPointer<core::Session> session;
 
+  bool isFixedIntenImageScale_;
+  bool isFixedIntenDgramScale_;
+  bool isAvgCurveDgram_;
+
 public:
-  bool fixedIntenScaleImage_;  // TODO private?
-  bool fixedIntenScaleDgram_;
-  bool avgCurveDgram_;
+  bool isFixedIntenImageScale() const { return isFixedIntenImageScale_; }
+  bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
+  bool isAvgCurveDgram()        const { return isAvgCurveDgram_;        }
 
   models::FilesModel       filesModel;
   models::DatasetsModel    datasetsModel;
@@ -110,7 +114,7 @@ public:
 
 private:
   uint_vec collectFromFiles_;
-  uint     numGroupBy_;
+  uint     datasetsGroupedBy_;
 
 public:
   void collectDatasetsFromFiles(uint_vec, uint);
@@ -120,9 +124,13 @@ public:
   uint_vec const& collectedFromFiles() const {
     return session->collectedFromFiles();
   }
+
+  uint datasetsGroupedBy() const { return  datasetsGroupedBy_; }
+
   core::rcDatasets collectedDatasets() const {
     return session->collectedDatasets();
   }
+
   str_lst const& collectedDatasetsTags() const {
     return session->collectedDatasetsTags();
   }

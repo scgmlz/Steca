@@ -40,7 +40,9 @@ DatasetView::DatasetView(TheHub& hub) : super(hub) {
   setModel(&hub.datasetsModel);
   EXPECT(dynamic_cast<Model*>(super::model()))
 
-  onSigDatasetsChanged([this]() { selectRow(0); });
+  onSigDatasetsChanged([this]() {
+    selectRow(0);
+  });
 }
 
 void DatasetView::selectionChanged(QItemSelection const& selected,
@@ -71,7 +73,13 @@ DockDatasets::DockDatasets(TheHub& hub)
 
   connect(combineDatasets_,
           static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
-          [this](int num) { hub_.combineDatasetsBy((uint)qMax(1, num)); });
+          [this](int num) {
+    hub_.combineDatasetsBy((uint)qMax(1, num));
+  });
+
+  onSigDatasetsChanged([this]() {
+    combineDatasets_->setValue(hub_.datasetsGroupedBy());
+  });
 }
 
 //------------------------------------------------------------------------------
@@ -422,7 +430,7 @@ void Dataset::setImageScale(uint scale) {
 QPixmap Dataset::makePixmap(core::shp_ImageLens lens) {
   QPixmap pixmap;
   auto    size     = lens->size();
-  auto    rgeInten = lens->rgeInten(hub_.fixedIntenScaleImage_);
+  auto    rgeInten = lens->rgeInten(hub_.isFixedIntenImageScale());
 
   if (!size.isEmpty()) {
     QImage image(size, QImage::Format_RGB32);

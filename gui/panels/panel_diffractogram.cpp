@@ -210,9 +210,9 @@ void DiffractogramPlot::plot(core::rcCurve dgram, core::rcCurve dgramBgFitted,
     auto tthRange = dgram.rgeX();
 
     core::Range intenRange;
-    if (hub_.fixedIntenScaleDgram_) {
+    if (hub_.isFixedIntenDgramScale()) {
       auto lens = hub_.lens(diffractogram_.dataset());
-      auto max  = lens->rgeInten(hub_.fixedIntenScaleDgram_).max;
+      auto max  = lens->rgeInten(hub_.isFixedIntenDgramScale()).max;
       // heuristics; to calculate this precisely would require much more
       // computation
       intenRange = core::Range(-max / 30, max / 3);
@@ -418,7 +418,7 @@ void Diffractogram::calcDgram() {  // TODO is like getDgram00 w useCut==true,
   if (!dataset_) return;
 
   auto& map = hub_.angleMap(*dataset_);
-  if (hub_.avgCurveDgram_)
+  if (hub_.isAvgCurveDgram())
     dgram_ = hub_.lens(*dataset_)->makeAvgCurve();
   else
     dgram_ = hub_.lens(*dataset_)->makeCurve(map.rgeGamma(), map.rgeTth());

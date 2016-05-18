@@ -91,7 +91,7 @@ private:
 
 public:
   ImageTransform const& imageTransform() const { return imageTransform_; }
-  ImageCut const&       imageCut() const { return imageCut_; }
+  ImageCut const&       imageCut()       const { return imageCut_;       }
 
   void setImageTransformMirror(bool);
   void setImageTransformRotate(ImageTransform const&);

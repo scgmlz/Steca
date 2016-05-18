@@ -175,7 +175,6 @@ Actions::Actions(TheHub& hub): super(hub) {
   addFiles        -> key(Qt::CTRL|Qt::Key_O);
   remFile         -> key(QKey::Delete);
   enableCorr      -> key(Qt::SHIFT|Qt::CTRL|Qt::Key_C);
-  remCorr         -> key(QKey::Delete);
 
   rotateImage     -> key(Qt::CTRL|Qt::Key_R);
 

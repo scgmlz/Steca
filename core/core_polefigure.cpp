@@ -248,7 +248,7 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
   // Setting idwRadius = NaN disables idw radius checks and falling back to
   // idw when averaging fails.
   EXPECT(qIsNaN(idwRadius) || 0 <= idwRadius);
-  EXPECT(0 <= inclusionTreshold >= 0 && inclusionTreshold <= 1);
+  EXPECT(0 <= inclusionTreshold && inclusionTreshold <= 1);
 
   // NOTE We expect all infos to have the same gamma range.
 

@@ -75,9 +75,9 @@ void Settings::save(rcstr key, QDoubleSpinBox* box) {
 
 TheHub::TheHub()
 : actions(*this), session(new core::Session())
-, fixedIntenScaleImage_(false), fixedIntenScaleDgram_(false)
-, avgCurveDgram_(false), filesModel(*this), datasetsModel(*this)
-, reflectionsModel(*this), numGroupBy_(1)
+, isFixedIntenImageScale_(false), isFixedIntenDgramScale_(false)
+, isAvgCurveDgram_(false), filesModel(*this), datasetsModel(*this)
+, reflectionsModel(*this), datasetsGroupedBy_(1)
 {
   configActions();
 }
@@ -93,18 +93,18 @@ void TheHub::configActions() {
           [this]() { setCorrFile(EMPTY_STR); });
 
   connect(actions.fixedIntenImageScale, &QAction::toggled, [this](bool on) {
-    fixedIntenScaleImage_ = on;
+    isFixedIntenImageScale_ = on;
     emit sigDisplayChanged();
   });
 
   connect(actions.fixedIntenDgramScale, &QAction::toggled, [this](bool on) {
-    fixedIntenScaleDgram_ = on;
+    isFixedIntenDgramScale_ = on;
     emit sigDisplayChanged();
   });
 
   actions.avgCurveDgram->setChecked(false);
   connect(actions.avgCurveDgram, &QAction::toggled, [this](bool on) {
-    avgCurveDgram_ = on;
+    isAvgCurveDgram_ = on;
     emit sigDisplayChanged();
   });
 
@@ -174,6 +174,7 @@ core::ReflectionInfos TheHub::makeReflectionInfos(core::rcReflection reflection,
 
 static str const KEY_FILES("files");
 static str const KEY_SELECTED_FILES("selected files");
+static str const KEY_COMBINE("combine");
 static str const KEY_CORR_FILE("correction file");
 static str const KEY_CUT("cut");
 static str const KEY_TOP("top");
@@ -206,19 +207,18 @@ QByteArray TheHub::saveSession() const {
   JsonObj top;
 
   auto& geo = session->geometry();
-  top.saveObj(KEY_DETECTOR,
-              JsonObj()
-                  .saveReal(KEY_DISTANCE, geo.detectorDistance)
-                  .saveReal(KEY_PIX_SIZE, geo.pixSize)
-                  .saveBool(KEY_OFFSET_BEAM, geo.isMidPixOffset)
-                  .saveObj(KEY_BEAM_OFFSET, geo.midPixOffset.saveJson()));
+  top.saveObj(KEY_DETECTOR, JsonObj()
+      .saveReal(KEY_DISTANCE, geo.detectorDistance)
+      .saveReal(KEY_PIX_SIZE, geo.pixSize)
+      .saveBool(KEY_OFFSET_BEAM, geo.isMidPixOffset)
+      .saveObj(KEY_BEAM_OFFSET, geo.midPixOffset.saveJson()));
 
   auto& cut = session->imageCut();
   top.saveObj(KEY_CUT, JsonObj()
-                           .saveUint(KEY_LEFT, cut.left)
-                           .saveUint(KEY_TOP, cut.top)
-                           .saveUint(KEY_RIGHT, cut.right)
-                           .saveUint(KEY_BOTTOM, cut.bottom));
+      .saveUint(KEY_LEFT, cut.left)
+      .saveUint(KEY_TOP, cut.top)
+      .saveUint(KEY_RIGHT, cut.right)
+      .saveUint(KEY_BOTTOM, cut.bottom));
 
   auto& trn = session->imageTransform();
   top.saveUint(KEY_TRANSFORM, trn.val);
@@ -238,6 +238,7 @@ QByteArray TheHub::saveSession() const {
     arrSelectedFiles.append((int)i);
 
   top.saveArr(KEY_SELECTED_FILES, arrSelectedFiles);
+  top.saveUint(KEY_COMBINE, datasetsGroupedBy_);
 
   if (hasCorrFile()) {
     str absPath = session->corrFile()->fileInfo().absoluteFilePath();
@@ -301,7 +302,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
     lastIndex = index;
   }
 
-  collectDatasetsFromFiles(selIndexes);
+  collectDatasetsFromFiles(selIndexes,top.loadUint(KEY_COMBINE,1));
 
   setCorrFile(top.loadString(KEY_CORR_FILE, EMPTY_STR));
 
@@ -352,14 +353,14 @@ void TheHub::addFiles(str_lst const& filePaths) THROWS {
 
 void TheHub::collectDatasetsFromFiles(uint_vec is, uint by) {
   session->collectDatasetsFromFiles((collectFromFiles_ = is),
-                                    (numGroupBy_ = by));
+                                    (datasetsGroupedBy_ = by));
 
   emit sigFilesSelected();
   emit sigDatasetsChanged();
 }
 
 void TheHub::collectDatasetsFromFiles(uint_vec is) {
-  collectDatasetsFromFiles(is, numGroupBy_);
+  collectDatasetsFromFiles(is, datasetsGroupedBy_);
 }
 
 void TheHub::combineDatasetsBy(uint by) {
