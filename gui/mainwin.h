@@ -63,7 +63,7 @@ private:
 
 private:
   QMenu
-      *menuFile_, *menuEdit_, *menuView_, *menuDatasets_, *menuReflect_,
+      *menuFile_, *menuView_, *menuDatasets_, *menuReflect_,
       *menuOutput_, *menuHelp_;
 
   QDockWidget

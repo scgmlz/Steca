@@ -109,7 +109,6 @@ void MainWin::initMenus() {
   mbar->setNativeMenuBar(true);
 
   menuFile_     = mbar->addMenu("&File");
-  menuEdit_     = mbar->addMenu("&Edit");
   menuView_     = mbar->addMenu("&View");
   menuDatasets_ = mbar->addMenu("&Datasets");
   menuReflect_  = mbar->addMenu("&Reflections");
@@ -229,30 +228,26 @@ void MainWin::about() {
   str appName = qApp->applicationDisplayName();
   str version = qApp->applicationVersion();
 
+  str webSite = qApp->organizationDomain() % '/' % qApp->applicationName();
+
   str title = str("About %1").arg(appName);
   str text  = str("<h4>%1 ver. %2</h4>").arg(appName, version);
-  str info  = str("StressTexCalculator\n"
-                 "\n"
-                 "Copyright: Forschungszentrum Jülich GmbH %1")
-                 .arg(QDate::currentDate().toString("yyyy"));
+  str info  = str("<p>StressTexCalculator</p>"
+                 "<p>Copyright: Forschungszentrum Jülich GmbH %1</p>"
+                 "<p><a href='http://%2'>%2</a></p>")
+                 .arg(QDate::currentDate().toString("yyyy"))
+                 .arg(webSite);
 
-  str detailed =
-      "Version 1 written by Christian Randau "
-      "(Randau, Garbe, Brokmeier, J Appl Cryst 44, 641 (2011)).\n"
-      "\n"
-      "Version 2 written by Antti Soininen, Jan Burle, Rebecca Brydon.\n";
+  auto box = new QMessageBox(QMessageBox::NoIcon,
+                title, text, QMessageBox::Close, this);
+//                Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::WA_DeleteOnClose);
 
-  auto box = new QMessageBox(this);
-  box->setAttribute(Qt::WA_DeleteOnClose);
-
-  box->setWindowTitle(title);
-  box->setText(text);
+//  box->setWindowTitle(title);
+//  box->setText(text);
   box->setInformativeText(info);
-  box->setDetailedText(detailed);
 
-  auto pm =
-      QPixmap(":/icon/STeCa2")
-          .scaled(64, 64, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+  auto pm = QPixmap(":/icon/STeCa2")
+            .scaled(120, 120, Qt::KeepAspectRatio, Qt::SmoothTransformation);
   box->setIconPixmap(pm);
   box->exec();
 }

@@ -202,7 +202,7 @@ Curve Lens::makeCurve(rcRange gammaRange, rcRange tthRange) const {
   uint_vec  counts_vec(w, 0);
 
   for_ij (w, h) {
-    // TODO angles can be arranged for a single loop for_i (pixTotal)
+    // REVIEW angles can be arranged for a single loop for_i (pixTotal)
     // [last in commit 98413db71cd38ebaa54b6337a6c6e670483912ef]
     auto const& as = angles(i, j);
     if (!gammaRange.contains(as.gamma)) continue;
