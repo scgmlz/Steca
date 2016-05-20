@@ -1,19 +1,16 @@
 # usage: make_pro.sh <extra CONFIG>
 
-base=$'STeCa_'
-number=`date +%y.%m.%d_%H%M`
-APP=$base$number
-PRO=$APP.pro
-CFG=$*
-
+PRO=STeCa2.pro
 echo -e '# generated project\n' > $PRO
+
+APP=STeCa2_`date +%y.%m.%d_%H%M`
 
 cat >> $PRO <<EOT
 TARGET   = $APP
 TEMPLATE = app
 
 QT      += core gui widgets svg
-CONFIG  += c++11 silent $CFG
+CONFIG  += c++11 silent
 
 win32 {
   CONFIG += static
