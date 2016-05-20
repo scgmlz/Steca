@@ -1,6 +1,8 @@
 # usage: make_pro.sh <extra CONFIG>
 
-APP=$(basename `pwd`)
+base=$'STeCa_'
+number=`date +%y.%m.%d_%H%M`
+APP=$base$number
 PRO=$APP.pro
 CFG=$*
 
