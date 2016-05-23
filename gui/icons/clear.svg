@@ -1,6 +1,7 @@
-<svg width="99.99999999999999" height="99.99999999999999">
- <g>
-  <line stroke="#444444"  y2="91.874985" x2="90.999999" y1="7.375006" x1="8.000013"  stroke-width="15" fill="none"/>
-  <line y2="7.625006" x2="93.999994" y1="92.874986" x1="5.750014" stroke-width="15" stroke="#444444" fill="none"/>
+<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="#444" stroke-width="15" stroke-linecap="round" fill="none">
+  <line x1="15" y1="15" x2="85" y2="85" />
+  <line x1="15" y1="85" x2="85" y2="15" />
  </g>
 </svg>
+

@@ -32,9 +32,9 @@ private:
 
   QSpinBox       *spinDegree_;
   QComboBox      *comboReflType_;
-  QDoubleSpinBox *spinRangeMin_, *spinRangeMax_;
+  QDoubleSpinBox *spinRangeMin_,   *spinRangeMax_;
   QDoubleSpinBox *spinGuessPeakX_, *spinGuessPeakY_, *spinGuessFWHM_;
-  QLineEdit      *readFitPeakX_, *readFitPeakY_, *readFitFWHM_;
+  QLineEdit      *readFitPeakX_,   *readFitPeakY_,   *readFitFWHM_;
   bool            silentSpin_;
 
   void setReflControls(core::shp_Reflection);

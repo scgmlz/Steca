@@ -448,19 +448,19 @@ void TheHub::setImageRotate(core::ImageTransform rot) {
   switch (rot.val & 3) {
   case 0:
     rotateIconFile = ":/icon/rotate0";
-    mirrorIconFile = ":/icon/mirror_horz";
+    mirrorIconFile = ":/icon/mirrorHorz";
     break;
   case 1:
     rotateIconFile = ":/icon/rotate1";
-    mirrorIconFile = ":/icon/mirror_vert";
+    mirrorIconFile = ":/icon/mirrorVert";
     break;
   case 2:
     rotateIconFile = ":/icon/rotate2";
-    mirrorIconFile = ":/icon/mirror_horz";
+    mirrorIconFile = ":/icon/mirrorHorz";
     break;
   case 3:
     rotateIconFile = ":/icon/rotate3";
-    mirrorIconFile = ":/icon/mirror_vert";
+    mirrorIconFile = ":/icon/mirrorVert";
     break;
   }
 

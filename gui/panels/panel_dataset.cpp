@@ -327,20 +327,20 @@ DatasetOptions2::DatasetOptions2(TheHub& hub)
   auto gc = gridLayout();
   box_->addLayout(gc);
 
-  gc->addWidget(icon(":/icon/cutTopU"), 0, 0);
+  gc->addWidget(icon(":/icon/cutTop"), 0, 0);
   gc->addWidget((marginTop_ = spinCell(4, 0)), 0, 1);
   marginTop_->setToolTip("Top cut");
-  gc->addWidget(icon(":/icon/cutBottomU"), 0, 2);
+  gc->addWidget(icon(":/icon/cutBottom"), 0, 2);
   gc->addWidget((marginBottom_ = spinCell(4, 0)), 0, 3);
   marginBottom_->setToolTip("Bottom cut");
 
   gc->addWidget(iconButton(hub_.actions.linkCuts), 0, 5);
   gc->addWidget(iconButton(hub_.actions.showCut), 1, 5);
 
-  gc->addWidget(icon(":/icon/cutLeftU"), 1, 0);
+  gc->addWidget(icon(":/icon/cutLeft"), 1, 0);
   gc->addWidget((marginLeft_ = spinCell(4, 0)), 1, 1);
   marginLeft_->setToolTip("Left cut");
-  gc->addWidget(icon(":/icon/cutRightU"), 1, 2);
+  gc->addWidget(icon(":/icon/cutRight"), 1, 2);
   gc->addWidget((marginRight_ = spinCell(4, 0)), 1, 3);
   marginRight_->setToolTip("Right cut");
   gc->setColumnStretch(4, 1);

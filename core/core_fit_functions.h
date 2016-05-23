@@ -125,7 +125,7 @@ class SumFunctions final : public Function {
   SUPER(SumFunctions, Function)
 public:
   SumFunctions();
-  ~SumFunctions();
+ ~SumFunctions();
 
   /// add a (new) Function instance, take its ownership (for delete)
   void addFunction(Function*);

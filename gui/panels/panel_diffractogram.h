@@ -60,17 +60,17 @@ protected:
 class DiffractogramPlot : public QCustomPlot, protected RefHub {
   SUPER(DiffractogramPlot, QCustomPlot)
 public:
-  enum Tool {
-    TOOL_NONE,
-    TOOL_BACKGROUND,
-    TOOL_PEAK_REGION,
+  enum class eTool {
+    NONE,
+    BACKGROUND,
+    PEAK_REGION,
   };
 
   DiffractogramPlot(TheHub&, class Diffractogram&);
 
 public:
-  void setTool(Tool);
-  Tool getTool() const { return tool_; }
+  void  setTool(eTool);
+  eTool getTool() const { return tool_; }
 
   void plot(core::rcCurve, core::rcCurve, core::rcCurve,
             core::curve_vec const&, uint);
@@ -95,7 +95,7 @@ protected:
 private:
   Diffractogram &diffractogram_;
 
-  Tool tool_;
+  eTool tool_;
   bool showBgFit_;
 
   QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *guesses_, *fits_;

@@ -23,6 +23,18 @@ Action::Action(rcstr text, rcstr tip, QObject* parent): super(text,parent) {
   setToolTip(tip.isEmpty() ? text : tip);
 }
 
+Action& Action::text(rcstr text, bool alsoTip) {
+  setText(text);
+  if (alsoTip)
+    tip(text);
+  return *this;
+}
+
+Action& Action::tip(rcstr tip) {
+  setToolTip(tip);
+  return *this;
+}
+
 Action& Action::key(QKeySequence key) {
   setShortcut(key);
   return *this;
@@ -110,19 +122,19 @@ Actions::Actions(TheHub& hub): super(hub) {
       .icon(":/icon/rotate0");
   tgl(mirrorImage,
       "Mirror", "Mirror image")
-      .icon(":/icon/mirror_horz");
+      .icon(":/icon/mirrorHorz");
   tgl(linkCuts,
       "Link", "Use the same value for all cuts")
       .alt("Unlink", "Use different values for cuts")
-      .icon(":/icon/linkNew");
+      .icon(":/icon/link");
   tgl(showCut,
       "overlay", "Show cut")
       .alt("overlay", "Hide cut")
-      .icon(":/icon/imageCrop");
+      .icon(":/icon/crop");
   tgl(hasBeamOffset,
       "Beam centre offset", "Enable beam center offset (for X-ray instruments)")
       .alt("Beam centre offset", "Disable beam center offset")
-      .icon(":/icon/beam");
+      .icon(":/icon/beamOffset");
 
   tgl(fixedIntenImageScale,
       "Fixed image scale", "Display image using a fixed intensity scale")
@@ -136,9 +148,7 @@ Actions::Actions(TheHub& hub): super(hub) {
       "Combined diffractogram", "Show diffractogram of all datasets")
       .alt("Single diffractogram", "Show diffractogram of a single dataset");
 
-  tgl(fitRegions,
-      "Select regions", "Select regions for fitting")
-      .icon(":/icon/peakBackground"); // RENAME icon file
+  tgl(fitRegions, "Select regions").icon(":/icon/bgRegion");
   trg(fitBgClear,
       "Clear background regions", "Clear regions for background fitting")
       .icon(":/icon/clear");

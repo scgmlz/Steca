@@ -28,6 +28,8 @@ class Action : public QAction {
 public:
   Action(rcstr text, rcstr tip, QObject*);
 
+  Action& text(rcstr, bool alsoTip = false);
+  Action& tip(rcstr);
   Action& key(QKeySequence);
   Action& icon(rcstr);
 

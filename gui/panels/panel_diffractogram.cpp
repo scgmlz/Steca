@@ -61,14 +61,14 @@ void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
 
   core::Range range(plot_.fromPixels(mouseDownPos_, cursorPos_));
   switch (plot_.getTool()) {
-  case DiffractogramPlot::TOOL_BACKGROUND:
+  case DiffractogramPlot::eTool::BACKGROUND:
     if (Qt::LeftButton == e->button())
       plot_.addBg(range);
     else
       plot_.remBg(range);
     break;
 
-  case DiffractogramPlot::TOOL_PEAK_REGION:
+  case DiffractogramPlot::eTool::PEAK_REGION:
     plot_.setNewReflRange(range);
     break;
 
@@ -189,10 +189,10 @@ DiffractogramPlot::DiffractogramPlot(TheHub& hub, Diffractogram& diffractogram)
     updateBg();
   });
 
-  tool_ = TOOL_NONE;
+  tool_ = eTool::NONE;
 }
 
-void DiffractogramPlot::setTool(Tool tool) {
+void DiffractogramPlot::setTool(eTool tool) {
   tool_ = tool;
   updateBg();
 }
@@ -282,13 +282,13 @@ void DiffractogramPlot::updateBg() {
   switch (tool_) {
   default:
     break;
-  case TOOL_BACKGROUND: {
+  case eTool::BACKGROUND: {
     core::rcRanges rs = hub_.bgRanges();
     for_i (rs.count())
       addBgItem(rs.at(i));
     break;
   }
-  case TOOL_PEAK_REGION:
+  case eTool::PEAK_REGION:
     addBgItem(diffractogram_.currReflRange());
     break;
   }
@@ -379,23 +379,40 @@ Diffractogram::Diffractogram(TheHub& hub)
 
   onSigFittingTab([this](eFittingTab tab) {
     bool on = hub_.actions.fitRegions->isChecked();
+
     switch (tab) {
     case eFittingTab::BACKGROUND:
-      plot_->setTool(on ? DiffractogramPlot::TOOL_BACKGROUND
-                        : DiffractogramPlot::TOOL_NONE);
+      hub_.actions.fitRegions
+        ->text("Select background regions", true)
+        .icon(":/icon/bgRegion");
+
+      plot_->setTool(on ? DiffractogramPlot::eTool::BACKGROUND
+                        : DiffractogramPlot::eTool::NONE);
       break;
     case eFittingTab::REFLECTIONS:
-      plot_->setTool(on ? DiffractogramPlot::TOOL_PEAK_REGION
-                        : DiffractogramPlot::TOOL_NONE);
+      hub_.actions.fitRegions
+        ->text("Select reflection region", true)
+        .icon(":/icon/reflRegion");
+
+      plot_->setTool(on ? DiffractogramPlot::eTool::PEAK_REGION
+                        : DiffractogramPlot::eTool::NONE);
       break;
     }
   });
 
   connect(hub_.actions.fitRegions, &QAction::toggled, [this](bool on) {
-    plot_->setTool(on ? (eFittingTab::BACKGROUND == hub_.fittingTab()
-                             ? DiffractogramPlot::TOOL_BACKGROUND
-                             : DiffractogramPlot::TOOL_PEAK_REGION)
-                      : DiffractogramPlot::TOOL_NONE);
+    DiffractogramPlot::eTool tool;
+
+    switch (hub_.fittingTab()) {
+    case eFittingTab::BACKGROUND:
+      tool = DiffractogramPlot::eTool::BACKGROUND;
+      break;
+    case eFittingTab::REFLECTIONS:
+      tool = DiffractogramPlot::eTool::PEAK_REGION;
+      break;
+    }
+
+    plot_->setTool(on ? tool : DiffractogramPlot::eTool::NONE);
   });
 
   onSigReflectionSelected([this](core::shp_Reflection reflection) {
