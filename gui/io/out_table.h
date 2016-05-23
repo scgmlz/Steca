@@ -76,7 +76,17 @@ private:
   ShowColumnsWidget *showColumnsWidget_;
   showcolumn_vec     showColumns_;
 };
+//------------------------------------------------------------------------------
 
+class SaveOutputWidget : public QWidget {
+  SUPER(SaveOutputWidget, QWidget)
+public:
+  SaveOutputWidget();
+
+  QCheckBox *outputInten_, *outputTth_, *outputFWHM_;
+
+  QGridLayout *grid_;
+};
 //------------------------------------------------------------------------------
 /// a child window that deletes itself
 
@@ -84,6 +94,7 @@ class OutWindow : public QFrame, protected RefHub {
   SUPER(OutWindow, QFrame)
 public:
   OutWindow(TheHub&, rcstr title, QWidget*);
+  QAction *actClose_, *actCalculate_;
 
 protected:
   virtual void calculate() = 0;  ///< here do the work

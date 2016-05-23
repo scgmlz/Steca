@@ -317,6 +317,20 @@ OutTableWidget::ShowColumnsWidget::ShowColumnsWidget(
 
 //------------------------------------------------------------------------------
 
+SaveOutputWidget::SaveOutputWidget() {
+  setLayout((grid_ = gridLayout()));
+
+  grid_->addWidget(label("Output files for:"),0,0);
+  grid_->setRowMinimumHeight(1,10);
+  grid_->addWidget(outputInten_ = check("Intensity"),2,0);
+  grid_->addWidget(outputTth_   = check("tth"),2,2);
+  grid_->addWidget(outputFWHM_  = check("TWHM"),2,3);
+  grid_->setColumnStretch(4,1);
+  grid_->setRowStretch(3,1);
+}
+
+//------------------------------------------------------------------------------
+
 OutWindow::OutWindow(TheHub& hub, rcstr title, QWidget* parent)
 : super(parent, Qt::Dialog), RefHub(hub)
 {
@@ -332,22 +346,19 @@ void OutWindow::setWidgets(panel::BasicPanel* panel, QWidget* widget) {
   box_->addLayout(bbox);
   box_->setStretch(1, 1);
 
-  auto actClose = new TriggerAction("Close", "", this);
-  connect(actClose, &QAction::triggered, [this]() { close(); });
-  bbox->addWidget(textButton(actClose));
+  actClose_ = new TriggerAction("Close", "", this);
+  connect(actClose_, &QAction::triggered, [this]() { close(); });
+  bbox->addWidget(textButton(actClose_));
 
   bbox->addStretch();
 
-  auto actCalculate = new TriggerAction("Calculate", "Calculate", this);
-  connect(actCalculate, &QAction::triggered, [this]() {
+  actCalculate_ = new TriggerAction("Calculate", "Calculate", this);
+  connect(actCalculate_, &QAction::triggered, [this]() {
     TakesLongTime __;
     calculate();
   });
 
-  bbox->addWidget(textButton(actCalculate));
-
-  auto actSave = new TriggerAction("Save...", "Save to file", this);
-  bbox->addWidget(textButton(actSave));
+  bbox->addWidget(textButton(actCalculate_));
 }
 
 //------------------------------------------------------------------------------

@@ -256,6 +256,9 @@ OutPoleFigures::OutPoleFigures(TheHub &hub, rcstr title, QWidget *parent)
   tabs->addTab("Points").box->addWidget(tableData_);
   tabs->addTab("Graph").box->addWidget(poleWidget_);
 
+  auto saveWidget = new SaveOutputWidget();
+  tabs->addTab("Save").box->addWidget(saveWidget);
+
   params_->rbPresetAll_->click();
 }
 
