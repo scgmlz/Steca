@@ -18,6 +18,7 @@
 
 #include "types/core_defs.h"
 #include "types/core_types_fwd.h"
+#include <QAtomicInteger>
 
 namespace gui {
 //------------------------------------------------------------------------------
@@ -68,6 +69,19 @@ signals:
   void sigNormChanged();
 
   void sigFittingTab(eFittingTab);
+
+protected:
+  // to prevent some otherwise recursive calls
+  typedef uint level_t;
+  level_t sigLevel_ = 0;
+
+  class level_guard {
+  public:
+    level_guard(level_t&);
+   ~level_guard();
+  private:
+    level_t &level_;
+  };
 };
 
 //------------------------------------------------------------------------------

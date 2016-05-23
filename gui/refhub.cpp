@@ -42,6 +42,14 @@ void TheHubSignallingBase::tellReflectionValues(core::rcRange range,
   emit sigReflectionValues(range, peak, fwhm, withGuesses);
 }
 
+TheHubSignallingBase::level_guard::level_guard(level_t& level) : level_(level) {
+  ++level_;
+}
+
+TheHubSignallingBase::level_guard::~level_guard() {
+  --level_;
+}
+
 //------------------------------------------------------------------------------
 
 RefHub::RefHub(gui::TheHub& hub) : hub_(hub) {}
@@ -56,8 +64,8 @@ REFHUB_TELL_IMPL(tellSelectedReflection, (core::shp_Reflection r), (r))
 REFHUB_TELL_IMPL(tellReflectionData, (core::shp_Reflection r), (r))
 
 REFHUB_TELL_IMPL(tellReflectionValues,
-                 (core::rcRange rge, core::rcXY xy, qreal r, bool b),
-                 (rge, xy, r, b))
+(core::rcRange rge, core::rcXY xy, qreal r, bool b),
+(rge, xy, r, b))
 
 //------------------------------------------------------------------------------
 }

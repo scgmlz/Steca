@@ -397,6 +397,9 @@ const core::Geometry& TheHub::geometry() const {
 
 void TheHub::setGeometry(qreal detectorDistance, qreal pixSize,
                          bool isMidPixOffset, core::rcIJ midPixOffset) {
+  level_guard __(sigLevel_);
+  if (sigLevel_ > 1) return;
+
   session->setGeometry(detectorDistance, pixSize, isMidPixOffset, midPixOffset);
   emit sigGeometryChanged();
 }
