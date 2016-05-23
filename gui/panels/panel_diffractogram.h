@@ -111,7 +111,7 @@ public:
 
   void render();
 
-  core::rcDataset dataset() const { return *dataset_; }
+  core::shp_Dataset dataset() const { return dataset_; }
 
 private:
   void setDataset(core::shp_Dataset);

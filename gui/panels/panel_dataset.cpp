@@ -30,7 +30,7 @@ public:
   DatasetView(TheHub&);
 
 protected:
-  void selectionChanged(QItemSelection const&, QItemSelection const&);
+  void currentChanged(QModelIndex const&, QModelIndex const&);
 
   using Model = models::DatasetsModel;
   Model* model() const { return static_cast<Model*>(super::model()); }
@@ -41,20 +41,16 @@ DatasetView::DatasetView(TheHub& hub) : super(hub) {
   EXPECT(dynamic_cast<Model*>(super::model()))
 
   onSigDatasetsChanged([this]() {
+    tellDatasetSelected(core::shp_Dataset()); // first de-select
     selectRow(0);
   });
 }
 
-void DatasetView::selectionChanged(QItemSelection const& selected,
-                                   QItemSelection const& deselected) {
-  super::selectionChanged(selected, deselected);
-
-  auto indexes = selected.indexes();
-  tellDatasetSelected(indexes.isEmpty()
-                          ? core::shp_Dataset()
-                          : model()
-                                ->data(indexes.first(), Model::GetDatasetRole)
-                                .value<core::shp_Dataset>());
+void DatasetView::currentChanged(QModelIndex const& current,
+                                 QModelIndex const& previous) {
+  super::currentChanged(current, previous);
+  tellDatasetSelected(
+      model()->data(current, Model::GetDatasetRole).value<core::shp_Dataset>());
 }
 
 //------------------------------------------------------------------------------
@@ -436,8 +432,7 @@ Dataset::Dataset(TheHub& hub) : super(hub), dataset_(nullptr) {
     render();
   });
 
-  onSigDatasetSelected(
-      [this](core::shp_Dataset dataset) {
+  onSigDatasetSelected([this](core::shp_Dataset dataset) {
     setDataset(dataset);
   });
 }

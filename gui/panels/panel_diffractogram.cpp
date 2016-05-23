@@ -163,7 +163,8 @@ DiffractogramPlot::DiffractogramPlot(TheHub& hub, Diffractogram& diffractogram)
   onSigReflectionData([this](core::shp_Reflection reflection) {
     guesses_->clearData();
     fits_->clearData();
-    if (reflection) {
+
+    if (reflection && diffractogram_.dataset()) {
       auto& fun = reflection->peakFunction();
 
       auto gp = fun.guessedPeak();
@@ -215,7 +216,8 @@ void DiffractogramPlot::plot(core::rcCurve dgram, core::rcCurve dgramBgFitted,
 
     core::Range intenRange;
     if (hub_.isFixedIntenDgramScale()) {
-      auto lens = hub_.lens(diffractogram_.dataset());
+      ENSURE(!diffractogram_.dataset().isNull())
+      auto lens = hub_.lens(*diffractogram_.dataset());
       auto max  = lens->rgeInten(hub_.isFixedIntenDgramScale()).max;
       // heuristics; to calculate this precisely would require much more
       // computation
@@ -493,13 +495,15 @@ void Diffractogram::calcReflections() {
 
   auto rs = hub_.reflections();
   for_i (rs.count()) {
-    auto& r                                     = rs[i];
-    if (r == currentReflection_) currReflIndex_ = i;
+    auto& r = rs[i];
+    if (r == currentReflection_)
+      currReflIndex_ = i;
 
     if (r->fit(dgramBgFitted_)) {
       core::Curve c;
-      auto&       rge = r->range();
-      auto&       fun = r->peakFunction();
+      auto &rge = r->range();
+      auto &fun = r->peakFunction();
+
       for_i (dgramBgFitted_.count()) {
         qreal x = dgramBgFitted_.x(i);
         if (rge.contains(x)) c.append(x, fun.y(x));
