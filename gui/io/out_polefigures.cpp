@@ -125,14 +125,18 @@ void PoleWidget::paintInfo() {
 
 class OutPoleFiguresParams : public panel::BoxPanel {
   SUPER(OutPoleFiguresParams, panel::BoxPanel)
+  friend class OutPoleFigures;
 public:
   OutPoleFiguresParams(TheHub&);
 
-  QGroupBox *gbReflection_, *gbInterpolation_, *gbGammaLimit_;
+private:
+  QGroupBox *gbReflection_,   *gbInterpolation_, *gbGammaLimit_, *gbPresets_;
   QCheckBox *cbInterpolated_, *cbGammaLimit_;
+  QRadioButton *rbPresetAll_, *rbPresetNone_;
 
-  QComboBox *     reflection_;
-  QDoubleSpinBox *stepAlpha_, *stepBeta_, *idwRadius_, *averagingRadius_,
+  QComboBox *reflection_;
+  QDoubleSpinBox
+      *stepAlpha_, *stepBeta_, *idwRadius_, *averagingRadius_,
       *gammaLimitMax_, *gammaLimitMin_;
   QSpinBox *threshold_;
 };
@@ -140,9 +144,10 @@ public:
 OutPoleFiguresParams::OutPoleFiguresParams(TheHub &hub)
 : super("", hub, Qt::Horizontal)
 {
-  box_->addWidget((gbReflection_ = new QGroupBox()));
+  box_->addWidget((gbReflection_    = new QGroupBox()));
   box_->addWidget((gbInterpolation_ = new QGroupBox()));
-  box_->addWidget((gbGammaLimit_ = new QGroupBox()));
+  box_->addWidget((gbGammaLimit_    = new QGroupBox()));
+  box_->addWidget((gbPresets_       = new QGroupBox()));
 
   auto g = gridLayout();
   gbReflection_->setLayout(g);
@@ -183,6 +188,15 @@ OutPoleFiguresParams::OutPoleFiguresParams(TheHub &hub)
   g->addWidget(label(" "), 3, 0);
   g->setColumnStretch(4, 1);
 
+  g = gridLayout();
+  gbPresets_->setLayout(g);
+
+  g->addWidget((rbPresetAll_  = radioButton("all")),  0, 0);
+  g->addWidget((rbPresetNone_ = radioButton("none")), 1, 0);
+  g->addWidget(radioButton("..."),  2, 0);
+
+  g->setRowStretch(3, 1);
+
   // values
 
   stepAlpha_->setValue(5);
@@ -210,11 +224,13 @@ OutPoleFiguresParams::OutPoleFiguresParams(TheHub &hub)
   interpolEnable(false);
   gammaEnable(false);
 
-  connect(cbInterpolated_, &QCheckBox::toggled,
-          [interpolEnable](bool on) { interpolEnable(on); });
+  connect(cbInterpolated_, &QCheckBox::toggled, [interpolEnable](bool on) {
+    interpolEnable(on);
+  });
 
-  connect(cbGammaLimit_, &QCheckBox::toggled,
-          [gammaEnable](int on) { gammaEnable(on); });
+  connect(cbGammaLimit_, &QCheckBox::toggled, [gammaEnable](int on) {
+    gammaEnable(on);
+  });
 }
 
 //------------------------------------------------------------------------------
@@ -230,10 +246,17 @@ OutPoleFigures::OutPoleFigures(TheHub &hub, rcstr title, QWidget *parent)
   tableData_ = new OutTableWidget(hub, core::ReflectionInfo::dataTags(),
                                   core::ReflectionInfo::dataCmps());
 
+  connect(params_->rbPresetAll_, &QRadioButton::clicked,
+          tableData_, &OutTableWidget::presetAll);
+  connect(params_->rbPresetNone_, &QRadioButton::clicked,
+          tableData_, &OutTableWidget::presetNone);
+
   poleWidget_ = new PoleWidget();
 
   tabs->addTab("Points").box->addWidget(tableData_);
   tabs->addTab("Graph").box->addWidget(poleWidget_);
+
+  params_->rbPresetAll_->click();
 }
 
 void OutPoleFigures::calculate() {
@@ -247,24 +270,24 @@ void OutPoleFigures::calculate() {
   auto &reflections = hub_.reflections();
   if (reflections.isEmpty()) return;
 
-  auto reflection = reflections.at(index);
-  rs_             = hub_.makeReflectionInfos(*reflection, betaStep);
+  reflInfos_ = hub_.makeReflectionInfos(*reflections.at(index), betaStep);
 
   if (params_->cbInterpolated_->isChecked()) {
     qreal treshold  = (qreal)params_->threshold_->value() / 100.0;
     qreal avgRadius = params_->averagingRadius_->value();
     qreal idwRadius = params_->idwRadius_->value();
     // REVIEW gui input for averagingAlphaMax?
-    rs_ = core::pole::interpolate(rs_, alphaStep, betaStep, 10, avgRadius,
-                                  idwRadius, treshold);
+    reflInfos_ = core::pole::interpolate(
+                    reflInfos_, alphaStep, betaStep, 10, avgRadius,
+                    idwRadius, treshold);
   }
 
-  for (auto const &r : rs_)
+  for (auto const &r : reflInfos_)
     table.addRow(r.data());
 
   table.sortData();
 
-  poleWidget_->set(rs_);
+  poleWidget_->set(reflInfos_);
 }
 
 //------------------------------------------------------------------------------

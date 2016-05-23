@@ -49,9 +49,11 @@ class OutTableWidget : public QWidget {
 public:
   // Must have the right number of headers and comparators
   OutTableWidget(TheHub&, str_lst const &headers, core::cmp_vec const&);
-  ~OutTableWidget();
 
   OutTable &table() const { return *outTable_; }
+
+  void presetAll();
+  void presetNone();
 
 private:
   struct ShowColumn {

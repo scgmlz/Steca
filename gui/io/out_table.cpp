@@ -281,8 +281,8 @@ OutTableWidget::OutTableWidget(TheHub& hub, str_lst const& headers,
     auto cb = showColumns_[i].cb;
 
     cb->setChecked(true);
-    connect(cb, &QCheckBox::clicked, [this, cb, i]() {
-      if (cb->isChecked())
+    connect(cb, &QCheckBox::toggled, [this, cb, i](bool on) {
+      if (on)
         outTable_->showColumn(i + 1);
       else
         outTable_->hideColumn(i + 1);
@@ -293,7 +293,15 @@ OutTableWidget::OutTableWidget(TheHub& hub, str_lst const& headers,
   split->setStretchFactor(0, 1);
 }
 
-OutTableWidget::~OutTableWidget() {}
+void OutTableWidget::presetAll() {
+  for (auto& col: showColumns_)
+    col.cb->setChecked(true);
+}
+
+void OutTableWidget::presetNone() {
+  for (auto& col: showColumns_)
+    col.cb->setChecked(false);
+}
 
 //------------------------------------------------------------------------------
 

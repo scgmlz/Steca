@@ -37,7 +37,7 @@ private:
   OutPoleFiguresParams *params_;
   OutTableWidget *      tableData_;
   PoleWidget *          poleWidget_;
-  core::ReflectionInfos rs_;
+  core::ReflectionInfos reflInfos_;
 };
 
 //------------------------------------------------------------------------------
