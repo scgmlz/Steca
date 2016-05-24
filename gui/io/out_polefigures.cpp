@@ -18,6 +18,7 @@
 #include "core_reflection.h"
 #include "thehub.h"
 #include <QPainter>
+#include <QTextStream>
 
 namespace gui { namespace io {
 //------------------------------------------------------------------------------
@@ -129,7 +130,7 @@ private:
   QCheckBox *cbInterpolated_, *cbGammaLimit_;
   QRadioButton *rbPresetAll_, *rbPresetNone_;
 
-  QComboBox *reflection_;
+  QComboBox *cbReflection_;
   QDoubleSpinBox
       *stepAlpha_, *stepBeta_, *idwRadius_, *averagingRadius_,
       *gammaLimitMax_, *gammaLimitMin_;
@@ -148,7 +149,7 @@ OutPoleFiguresParams::OutPoleFiguresParams(TheHub &hub)
   gbReflection_->setLayout(g);
 
   g->addWidget(label("Reflection"), 0, 0);
-  g->addWidget((reflection_ = comboBox(hub_.reflectionsModel.names())), 0, 1);
+  g->addWidget((cbReflection_ = comboBox(hub_.reflectionsModel.names())), 0, 1);
   g->addWidget(label("α step"), 1, 0);
   g->addWidget((stepAlpha_ = spinCell(6, 1., 30.)), 1, 1);
   g->addWidget(label("β step"), 2, 0);
@@ -231,14 +232,32 @@ OutPoleFiguresParams::OutPoleFiguresParams(TheHub &hub)
 //------------------------------------------------------------------------------
 
 SavePoleFiguresWidget::SavePoleFiguresWidget() {
-  subGl_->addWidget(label("Output files for:"),0,0);
-  subGl_->setRowMinimumHeight(1,10);
-  subGl_->addWidget(outputInten_ = check("Intensity"),2,0);
-  subGl_->addWidget(outputTth_   = check("tth"),2,2);
-  subGl_->addWidget(outputFWHM_  = check("TWHM"),2,3);
-  subGl_->setRowMinimumHeight(4,10);
-  subGl_->setColumnStretch(4,1);
-  subGl_->setRowStretch(4,1);
+
+  auto gl = gridLayout();
+  gl->addWidget(gbRefl_ = new QGroupBox(),0,0);
+  gl->setRowMinimumHeight(2,10);
+  gl->addWidget(gbInfos_ = new QGroupBox(),0,1);
+
+  auto g = gridLayout();
+  gbRefl_->setLayout(g);
+  g->addWidget(label("Output files for "),0,0);
+  g->setRowMinimumHeight(1,10);
+  g->addWidget(selectedRefl_ = radioButton("Selected Reflection"), 2, 0);
+  g->addWidget(allRefl_ = radioButton("All Reflections"), 3, 0);
+  g->setRowStretch(4,1);
+
+  g = gridLayout();
+  g->addWidget(outputInten_     = check("Intensity Pole Figure"),     2,0);
+  g->addWidget(outputPeakPos_   = check("Peak Position Pole Figure"), 3,0);
+  g->addWidget(outputFWHM_      = check("TWHM Pole Figure"),          4,0);
+  g->setRowMinimumHeight(5,10);
+  g->setColumnStretch(5,1);
+  g->setRowStretch(5,1);
+  gbInfos_->setLayout(g);
+  box_->addStretch(1);
+
+  subGl_->addLayout(gl,0,0);
+
 }
 
 //------------------------------------------------------------------------------
@@ -247,6 +266,8 @@ OutPoleFiguresWindow::OutPoleFiguresWindow(TheHub &hub, rcstr title, QWidget *pa
 : super(hub, title, parent)
 {
   params_ = new OutPoleFiguresParams(hub);
+  saveWidget_ = new SavePoleFiguresWidget();
+  poleWidget_ = new PoleWidget();
 
   auto *tabs = new panel::TabsPanel(hub);
   setWidgets(params_, tabs);
@@ -258,48 +279,128 @@ OutPoleFiguresWindow::OutPoleFiguresWindow(TheHub &hub, rcstr title, QWidget *pa
           tableData_, &OutPoleFiguresTableWidget::presetAll);
   connect(params_->rbPresetNone_, &QRadioButton::clicked,
           tableData_, &OutPoleFiguresTableWidget::presetNone);
-
-  poleWidget_ = new PoleWidget();
+  connect(params_->cbReflection_, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),[this](int index){
+    display(index);
+  });
+  connect(saveWidget_->saveOutput_,&QAction::triggered,[this](){
+    savePoleFigureOutput();
+  });
 
   tabs->addTab("Points").box->addWidget(tableData_);
   tabs->addTab("Graph").box->addWidget(poleWidget_);
-
-  auto saveWidget = new SavePoleFiguresWidget();
-  tabs->addTab("Save").box->addWidget(saveWidget);
+  tabs->addTab("Save").box->addWidget(saveWidget_);
 
   params_->rbPresetAll_->click();
 }
 
 void OutPoleFiguresWindow::calculate() {
-  auto &table = tableData_->table();
-  table.clear();
 
   deg alphaStep = params_->stepAlpha_->value();
   deg betaStep  = params_->stepBeta_->value();
 
-  auto  index       = params_->reflection_->currentIndex();
   auto &reflections = hub_.reflections();
   if (reflections.isEmpty()) return;
 
-  reflInfos_ = hub_.makeReflectionInfos(*reflections.at(index), betaStep);
+  for_i(reflections.count()) {
 
-  if (params_->cbInterpolated_->isChecked()) {
-    qreal treshold  = (qreal)params_->threshold_->value() / 100.0;
-    qreal avgRadius = params_->averagingRadius_->value();
-    qreal idwRadius = params_->idwRadius_->value();
-    // REVIEW gui input for averagingAlphaMax?
-    reflInfos_ = core::pole::interpolate(
-                    reflInfos_, alphaStep, betaStep, 10, avgRadius,
-                    idwRadius, treshold);
+    reflInfos_.append(hub_.makeReflectionInfos(*reflections[i], betaStep));
+
+    if (params_->cbInterpolated_->isChecked()) {
+      qreal treshold  = (qreal)params_->threshold_->value() / 100.0;
+      qreal avgRadius = params_->averagingRadius_->value();
+      qreal idwRadius = params_->idwRadius_->value();
+      // REVIEW gui input for averagingAlphaMax?
+      reflInfos_[i] = core::pole::interpolate(
+                      reflInfos_[i], alphaStep, betaStep, 10, avgRadius,
+                      idwRadius, treshold);
+    }
   }
 
-  for (auto const &r : reflInfos_)
+  auto  index = params_->cbReflection_->currentIndex();
+  display(index);
+}
+
+void OutPoleFiguresWindow::display(int index) {
+  auto &table = tableData_->table();
+  table.clear();
+
+  for (auto const &r : reflInfos_[index])
     table.addRow(r.data());
 
   table.sortData();
-
-  poleWidget_->set(reflInfos_);
+  poleWidget_->set(reflInfos_[index]);
 }
+
+void OutPoleFiguresWindow::savePoleFigureOutput() {
+  auto &reflections = hub_.reflections();
+  if (reflections.isEmpty()) return;
+
+  if (saveWidget_->selectedRefl_->isChecked()) {
+    auto index = params_->cbReflection_->currentIndex();
+    writePoleFigureOutputFile(index);
+  } else {
+    for_i(reflections.count()) {
+      writePoleFigureOutputFile(i);
+    }
+  }
+
+}
+
+static str const OUT_FILE_TAG(".refl%1");
+static int const MAX_LINE_LENGTH_POL(9);
+
+void OutPoleFiguresWindow::writePoleFigureOutputFile(int index) {
+  auto refl = hub_.reflections()[index];
+  auto reflInfo = reflInfos_[index];
+
+  str fileName = QString(saveWidget_->fileName_->text() + OUT_FILE_TAG).arg(index);
+  auto filePath = QDir(saveWidget_->dirPath_->text()).filePath(fileName);
+
+  auto writePoleFile = [this,refl,reflInfo](str filePath /*pointer to getter: tth(), inten(), fwhm()*/ ) {
+    QFile file(filePath);
+    file.open(QIODevice::WriteOnly);
+    QTextStream stream(&file);
+
+    for_i(reflInfo.count()) {
+      for_i (MAX_LINE_LENGTH_POL) {
+        stream << reflInfo.at(i).tth() << " ";
+      }
+      stream << '\n';
+    }
+
+    file.close();
+  };
+
+  auto writeListFile = [this,refl,reflInfo](str filePath /*pointer to getter: tth(), inten(), fwhm() */) {
+    QFile file(filePath);
+    file.open(QIODevice::WriteOnly);
+    QTextStream stream(&file);
+
+    for_i(reflInfo.count()) {
+      stream << (qreal)reflInfo.at(i).alpha() << " " << (qreal)reflInfo.at(i).beta() << " " << reflInfo.at(i).tth() << '\n';
+    }
+
+    file.close();
+  };
+
+
+  if (saveWidget_->outputInten_->isChecked()) {
+    writeListFile(filePath);
+    writePoleFile(filePath);
+  }
+
+  if (saveWidget_->outputFWHM_->isChecked()) {
+    writeListFile(filePath);
+    writePoleFile(filePath);
+  }
+
+  if (saveWidget_->outputPeakPos_->isChecked()) { //TODO rename peakPos to tth
+    writeListFile(filePath);
+    writePoleFile(filePath);
+  }
+
+}
+
 
 //------------------------------------------------------------------------------
 }}

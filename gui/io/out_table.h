@@ -85,7 +85,8 @@ public:
   SaveOutputWidget();
 
   QAction *browsePath_;
-  QLineEdit *dirPath_;
+  QLineEdit *dirPath_, *fileName_;
+  QAction *saveOutput_;
   QBoxLayout *box_;
   QGridLayout *subGl_;
 

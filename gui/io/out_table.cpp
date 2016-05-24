@@ -323,15 +323,29 @@ SaveOutputWidget::SaveOutputWidget() {
   box_->addLayout(subGl_);
 
   auto gl = gridLayout();
-  gl->addWidget(dirPath_ = readCell(50),0,0);
+  gl->setColumnMinimumWidth(0,60);
+  gl->setColumnMinimumWidth(1,200);
+  gl->setColumnMinimumWidth(2,80);
+  gl->setColumnMinimumWidth(3,60);
+  gl->setColumnMinimumWidth(4,300);
+  gl->addWidget(label("Save in "));
+  gl->addWidget(dirPath_ = readCell(40),0,1);
   browsePath_ = new TriggerAction("Browse...","Set directory were to save output",this);
-  gl->addWidget(textButton(browsePath_),0,1);
-  gl->setColumnStretch(2,1);
+  gl->addWidget(textButton(browsePath_),0,2);
+  gl->addWidget(label("File name "),0,3);
+  gl->addWidget(fileName_ = editCell(60),0,4);
+
+  saveOutput_ = new TriggerAction("Save","Save files",this);
+  gl->addWidget(textButton(saveOutput_),0,5);
+
+  gl->setColumnStretch(6,1);
   gl->setRowStretch(1,1);
   box_->addLayout(gl);
-  box_->addStretch(1);
 
- // connect()
+  connect(browsePath_,&QAction::triggered,[this]() {
+    QString dir = QFileDialog::getExistingDirectory(this, "Browse path", QDir::current().absolutePath());
+    dirPath_->setText(dir);
+  });
 
 }
 
