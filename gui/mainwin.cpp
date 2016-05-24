@@ -340,7 +340,7 @@ void MainWin::onShow() {
 
 #ifdef DEVELOPMENT_JAN
   safeLoad("/P/zz-gd/SCG/data/0.ste");
-  hub_.actions.outputDiagrams->trigger();
+  hub_.actions.outputPolefigures->trigger();
 #endif
 }
 

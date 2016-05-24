@@ -7,9 +7,9 @@ class TestCoreApprox: public TestSuite {
   Q_OBJECT
 
 private slots:
-  void testPolynom();
-  void testLinearLeastSquare();
-  void testLevenbergMarquardt();
+//  void testPolynom();
+//  void testLinearLeastSquare();
+//  void testLevenbergMarquardt();
 };
 
 #endif

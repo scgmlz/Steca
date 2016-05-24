@@ -304,8 +304,7 @@ ReflectionInfo Session::makeReflectionInfo(shp_Lens     lens,
   Curve curve = lens->makeCurve(gammaSector, lens->angleMap().rgeTth());
   curve.subtract(fit::Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
 
-  QScopedPointer<fit::PeakFunction>
-      peakFunction(reflection.peakFunction().clone());
+  QScopedPointer<fit::PeakFunction> peakFunction(reflection.peakFunction().clone());
 
   peakFunction->fit(curve);
 
@@ -318,26 +317,30 @@ ReflectionInfo Session::makeReflectionInfo(shp_Lens     lens,
 
   XY    peak = peakFunction->fittedPeak();
   qreal fwhm = peakFunction->fittedFWHM();
+  XY    peakError = peakFunction->peakError();
+  qreal fwhmError = peakFunction->fwhmError();
 
   shp_Metadata metadata = dataset.metadata();
   ENSURE(metadata)
 
   return rgeTth.contains(peak.x)
-             ? ReflectionInfo(metadata, alpha, beta, gammaSector, peak.y,
-                              peak.x, fwhm)
+             ? ReflectionInfo(metadata, alpha, beta, gammaSector,
+                              peak.y, peakError.y,
+                              peak.x, peakError.x,
+                              fwhm, fwhmError)
              : ReflectionInfo(metadata, alpha, beta, gammaSector);
 }
 
 /* Gathers ReflectionInfos from Datasets.
  * Either uses the whole gamma range of the datasets (if gammaSector is
- * invalid),
- * or user limits the range.
+ * invalid), or user limits the range.
  * Even though the betaStep of the equidistant polefigure grid is needed here,
  * the returned infos won't be on the grid.
  */
 ReflectionInfos Session::makeReflectionInfos(rcDatasets   datasets,
                                              rcReflection reflection,
-                                             deg betaStep, rcRange gammaRange) {
+                                             deg betaStep, rcRange gammaRange)
+{
   ReflectionInfos infos;
 
   for (auto& dataset : datasets) {

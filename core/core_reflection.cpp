@@ -59,8 +59,8 @@ void Reflection::invalidateGuesses() {
   peakFunction_->setGuessedFWHM(qQNaN());
 }
 
-bool Reflection::fit(rcCurve curve) {
-  return peakFunction_->fit(curve);
+void Reflection::fit(rcCurve curve) {
+  peakFunction_->fit(curve);
 }
 
 void Reflection::setPeakFunction(ePeakType type) {

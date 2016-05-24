@@ -28,7 +28,8 @@ namespace core {
 str_lst ReflectionInfo::dataTags() {
   static str_lst tags;
   if (tags.isEmpty()) {
-    tags = str_lst{"α", "β", "γ1", "γ2", "inten", "2θ", "fwhm"};
+    tags = str_lst{"α", "β", "γ1", "γ2",
+                   "I", "σI", "2θ", "σ2θ", "fwhm", "σfwhm"};
     tags += Metadata::attributeTags();
   }
 
@@ -40,6 +41,7 @@ cmp_vec ReflectionInfo::dataCmps() {
   if (cmps.isEmpty()) {
     cmps =
         cmp_vec{core::cmp_real, core::cmp_real, core::cmp_real, core::cmp_real,
+                core::cmp_real, core::cmp_real, core::cmp_real,
                 core::cmp_real, core::cmp_real, core::cmp_real};
     cmps += Metadata::attributeCmps();
   }
@@ -49,39 +51,46 @@ cmp_vec ReflectionInfo::dataCmps() {
 
 ReflectionInfo::ReflectionInfo()
 : ReflectionInfo(shp_Metadata(),
-                 qQNaN(), qQNaN(), Range(), qQNaN(), qQNaN(), qQNaN())
+                 qQNaN(), qQNaN(), Range(), qQNaN(), qQNaN(), qQNaN(),
+                 qQNaN(), qQNaN(), qQNaN())
 {
 }
 
 ReflectionInfo::ReflectionInfo(shp_Metadata md, deg alpha, deg beta,
-                               rcRange rgeGamma, qreal inten, deg tth,
-                               qreal fwhm)
-: md_(md), alpha_(alpha), beta_(beta), rgeGamma_(rgeGamma), inten_(inten)
-, tth_(tth), fwhm_(fwhm)
+                               rcRange rgeGamma,
+                               qreal inten, qreal intenError,
+                               deg tth, deg tthError,
+                               qreal fwhm, qreal fwhmError)
+: md_(md), alpha_(alpha), beta_(beta), rgeGamma_(rgeGamma)
+, inten_(inten), intenError_(intenError)
+, tth_(tth), tthError_(tthError)
+, fwhm_(fwhm), fwhmError_(fwhmError)
 {
 }
 
 ReflectionInfo::ReflectionInfo(shp_Metadata md, deg alpha, deg beta,
                                rcRange rgeGamma)
-: ReflectionInfo(md, alpha, beta, rgeGamma, qQNaN(), qQNaN(), qQNaN())
+: ReflectionInfo(md, alpha, beta, rgeGamma, qQNaN(), qQNaN(), qQNaN(), qQNaN(), qQNaN(), qQNaN())
 {
 }
 
-ReflectionInfo::ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma, qreal inten, deg tth, qreal fwhm)
-: ReflectionInfo(shp_Metadata(), alpha, beta, rgeGamma, inten, tth, fwhm)
+ReflectionInfo::ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma,
+  qreal inten, qreal intenError, deg tth, deg tthError, qreal fwhm, qreal fwhmError)
+: ReflectionInfo(shp_Metadata(), alpha, beta, rgeGamma, inten, intenError, tth, tthError, fwhm, fwhmError)
 {
 }
 
 ReflectionInfo::ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma)
-: ReflectionInfo(alpha, beta, rgeGamma, qQNaN(), qQNaN(), qQNaN())
+: ReflectionInfo(alpha, beta, rgeGamma, qQNaN(), qQNaN(), qQNaN(), qQNaN(), qQNaN(), qQNaN())
 {
 }
 
 row_t ReflectionInfo::data() const {
   row_t row{(QVariant)alpha(),        (QVariant)beta(),
             (QVariant)rgeGamma().min, (QVariant)rgeGamma().max,
-            (QVariant)inten(),        (QVariant)tth(),
-            (QVariant)fwhm()};
+            (QVariant)inten(), (QVariant)intenError(),
+            (QVariant)tth(),   (QVariant)tthError(),
+            (QVariant)fwhm(),  (QVariant)fwhmError()};
 
   // append(QVector) introduced in 5.5+ - some still don't have it
   // row.append(md_ ? md_->attributeValues() : Metadata::attributeNaNs());

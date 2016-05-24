@@ -21,7 +21,7 @@ namespace core { namespace fit {
 //------------------------------------------------------------------------------
 
 Function::Parameter::Parameter()
-: value_(0), range_(Range::infinite()), maxDelta_(qQNaN())
+: value_(0), error_(0), range_(Range::infinite()), maxDelta_(qQNaN())
 , maxDeltaPercent_(qQNaN()), maxError_(qQNaN()), maxErrorPercent_(qQNaN())
 {
 }
@@ -34,16 +34,23 @@ void Function::Parameter::setValueRange(qreal min, qreal max) {
   range_.set(min, max);
 }
 
-bool Function::Parameter::checkConstraints(qreal value, qreal error) {
-  if (range_.isValid() && !range_.contains(value)) return false;
+bool Function::Parameter::checkConstraints() {
+  return checkConstraints(value_, error_);
+}
 
-  if (!qIsNaN(maxDelta_) && qAbs(value - value_) > maxDelta_) return false;
+bool Function::Parameter::checkConstraints(qreal value, qreal error) {
+  if (range_.isValid() && !range_.contains(value))
+    return false;
+
+  if (!qIsNaN(maxDelta_) && qAbs(value - value_) > maxDelta_)
+    return false;
 
   if (!qIsNaN(maxDeltaPercent_) &&
       (0 == value_ || qAbs((value - value_) / value_) * 100 > maxDeltaPercent_))
     return false;
 
-  if (!qIsNaN(maxError_) && error > maxError_) return false;
+  if (!qIsNaN(maxError_) && error > maxError_)
+    return false;
 
   if (!qIsNaN(maxErrorPercent_) &&
       (0 == value_ || qAbs(error / value_) * 100 > maxErrorPercent_))
@@ -52,11 +59,8 @@ bool Function::Parameter::checkConstraints(qreal value, qreal error) {
   return true;
 }
 
-bool Function::Parameter::setValue(qreal value, qreal error, bool force) {
-  if (!force && !checkConstraints(value, error)) return false;
-
-  value_ = value;
-  return true;
+void Function::Parameter::setValue(qreal value, qreal error) {
+  value_ = value; error_ = error;
 }
 
 static str const KEY_VALUE("value"), KEY_RANGE("range"),
@@ -151,7 +155,7 @@ Function::Parameter& SimpleFunction::parameterAt(uint i) {
 void SimpleFunction::reset() {
   for_i (parameters_.count()) {
     auto& p = parameters_[i];
-    p.setValue(p.valueRange().bound(0));
+    p.setValue(p.valueRange().bound(0), 0);
   }
 }
 
@@ -183,7 +187,7 @@ qreal SimpleFunction::parValue(uint i, qreal const* parValues) const {
 }
 
 void SimpleFunction::setValue(uint i, qreal val) {
-  parameters_[i].setValue(val);
+  parameters_[i].setValue(val, 0);
 }
 
 //------------------------------------------------------------------------------
@@ -335,7 +339,7 @@ qreal Polynom::avgY(rcRange rgeX, qreal const* parValues) const {
 }
 
 void Polynom::fit(rcCurve curve, rcRanges ranges) {
-  FittingLevenbergMarquardt().fitWithoutChecks(*this, curve.intersect(ranges));
+  FittingLevenbergMarquardt().fit(*this, curve.intersect(ranges));
 }
 
 Polynom Polynom::fromFit(uint degree, rcCurve curve, rcRanges ranges) {
@@ -399,13 +403,9 @@ void PeakFunction::reset() {
   setGuessedFWHM(guessedFWHM_);
 }
 
-bool PeakFunction::fit(rcCurve curve) {
-  return fit(curve, range_);
-}
-
-bool PeakFunction::fit(rcCurve curve, rcRange range) {
+void PeakFunction::fit(rcCurve curve, rcRange range) {
   Curve c = prepareFit(curve, range);
-  if (c.isEmpty()) return false;
+  if (c.isEmpty()) return;
 
   if (!guessedPeak().isValid()) {  // calculate guesses
     uint peakIndex  = c.maxYindex();
@@ -431,7 +431,7 @@ bool PeakFunction::fit(rcCurve curve, rcRange range) {
     setGuessedFWHM(c.x(hmi2) - c.x(hmi1));
   }
 
-  return FittingLevenbergMarquardt().fitWithoutChecks(*this, c);
+  FittingLevenbergMarquardt().fit(*this, c);
 }
 
 Curve PeakFunction::prepareFit(rcCurve curve, rcRange range) {
@@ -483,15 +483,22 @@ qreal Raw::fittedFWHM() const {
   return range_.width();  // kind-of
 }
 
+XY Raw::peakError() const {
+  return XY(0, 0);
+}
+
+qreal Raw::fwhmError() const {
+  return 0;
+}
+
 void Raw::setRange(rcRange range) {
   super::setRange(range);
   prepareY();
 }
 
-bool Raw::fit(rcCurve curve, rcRange range) {
-  fittedCurve_ = prepareFit(curve, range);  // do no more
+void Raw::fit(rcCurve curve, rcRange range) {
+  fittedCurve_ = prepareFit(curve, range);  // do no more than this
   prepareY();
-  return !fittedCurve_.isEmpty();
 }
 
 void Raw::prepareY() {
@@ -520,12 +527,12 @@ Gaussian::Gaussian(qreal ampl, qreal xShift, qreal sigma) {
   auto& parSigma  = parameters_[parSIGMA];
 
   parAmpl.setValueRange(0, qInf());
-  parAmpl.setValue(ampl);
+  parAmpl.setValue(ampl, 0);
 
-  parXShift.setValue(xShift);
+  parXShift.setValue(xShift, 0);
 
   parSigma.setValueRange(0, qInf());
-  parSigma.setValue(sigma);
+  parSigma.setValue(sigma, 0);
 }
 
 qreal Gaussian::y(qreal x, qreal const* parValues) const {
@@ -579,6 +586,15 @@ qreal Gaussian::fittedFWHM() const {
   return parameters_[parSIGMA].value() / 0.424661;
 }
 
+XY Gaussian::peakError() const {
+  return XY(parameters_[parXSHIFT].error(), parameters_[parAMPL].error());
+}
+
+qreal Gaussian::fwhmError() const {
+  // REVIEW
+  return parameters_[parSIGMA].error();
+}
+
 JsonObj Gaussian::saveJson() const {
   return super::saveJson().saveString(KEY_FUNCTION_TYPE, KEY_GAUSSIAN);
 }
@@ -593,12 +609,12 @@ CauchyLorentz::CauchyLorentz(qreal ampl, qreal xShift, qreal gamma) {
   auto& parGamma  = parameters_[parGAMMA];
 
   parAmpl.setValueRange(0, qInf());
-  parAmpl.setValue(ampl);
+  parAmpl.setValue(ampl, 0);
 
-  parXShift.setValue(xShift);
+  parXShift.setValue(xShift, 0);
 
   parGamma.setValueRange(0, qInf());
-  parGamma.setValue(gamma);
+  parGamma.setValue(gamma, 0);
 }
 
 qreal CauchyLorentz::y(qreal x, qreal const* parValues) const {
@@ -652,6 +668,14 @@ qreal CauchyLorentz::fittedFWHM() const {
   return parameters_[parGAMMA].value() * 2;
 }
 
+XY CauchyLorentz::peakError() const {
+  return XY(parameters_[parXSHIFT].error(), parameters_[parAMPL].error());
+}
+
+qreal CauchyLorentz::fwhmError() const {
+  return parameters_[parGAMMA].error();
+}
+
 JsonObj CauchyLorentz::saveJson() const {
   return super::saveJson().saveString(KEY_FUNCTION_TYPE, KEY_LORENTZIAN);
 }
@@ -668,15 +692,15 @@ PseudoVoigt1::PseudoVoigt1(qreal ampl, qreal xShift, qreal sigmaGamma,
   auto& parEta        = parameters_[parETA];
 
   parAmpl.setValueRange(0, qInf());
-  parAmpl.setValue(ampl);
+  parAmpl.setValue(ampl, 0);
 
-  parXShift.setValue(xShift);
+  parXShift.setValue(xShift, 0);
 
   parSigmaGamma.setValueRange(0, qInf());
-  parSigmaGamma.setValue(sigmaGamma);
+  parSigmaGamma.setValue(sigmaGamma, 0);
 
   parEta.setValueRange(0, 1);
-  parEta.setValue(eta);
+  parEta.setValue(eta, 0);
 }
 
 qreal PseudoVoigt1::y(qreal x, qreal const* parValues) const {
@@ -743,6 +767,14 @@ qreal PseudoVoigt1::fittedFWHM() const {
   return parameters_[parSIGMAGAMMA].value() * 2;
 }
 
+XY PseudoVoigt1::peakError() const {
+  return XY(parameters_[parXSHIFT].error(), parameters_[parAMPL].error());
+}
+
+qreal PseudoVoigt1::fwhmError() const {
+  return parameters_[parSIGMAGAMMA].error();
+}
+
 JsonObj PseudoVoigt1::saveJson() const {
   return super::saveJson().saveString(KEY_FUNCTION_TYPE, KEY_PSEUDOVOIGT1);
 }
@@ -760,18 +792,18 @@ PseudoVoigt2::PseudoVoigt2(qreal ampl, qreal mu, qreal hwhmG, qreal hwhmL,
   auto& parEta   = parameters_[parETA];
 
   parAmpl.setValueRange(0, qInf());
-  parAmpl.setValue(ampl);
+  parAmpl.setValue(ampl, 0);
 
-  parMu.setValue(mu);
+  parMu.setValue(mu, 0);
 
   parHwhmG.setValueRange(0, qInf());
-  parHwhmG.setValue(hwhmG);
+  parHwhmG.setValue(hwhmG, 0);
 
   parHwhmL.setValueRange(0, qInf());
-  parHwhmL.setValue(hwhmL);
+  parHwhmL.setValue(hwhmL, 0);
 
   parEta.setValueRange(0, 1);
-  parEta.setValue(eta);
+  parEta.setValue(eta, 0);
 }
 
 qreal PseudoVoigt2::y(qreal x, qreal const* parValues) const {
@@ -847,7 +879,16 @@ qreal PseudoVoigt2::fittedFWHM() const {
   qreal eta = parameters_[parETA].value();
   return ((1 - eta) * parameters_[parSIGMA].value() / 0.424661 +
           eta * parameters_[parGAMMA].value() * 2) /
-         2;
+  2;
+}
+
+XY PseudoVoigt2::peakError() const {
+  return XY(parameters_[parXSHIFT].error(), parameters_[parAMPL].error());
+}
+
+qreal PseudoVoigt2::fwhmError() const {
+  // REVIEW
+  return parameters_[parSIGMA].error() + parameters_[parGAMMA].error();
 }
 
 JsonObj PseudoVoigt2::saveJson() const {

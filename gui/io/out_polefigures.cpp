@@ -105,7 +105,8 @@ void PoleWidget::paintInfo() {
 
   for (auto const &r : rs_) {
     qreal inten = r.inten();
-    if (qIsFinite(inten)) {
+
+    if (qIsFinite(inten)) { // nan comes from interpolartion
       inten /= rgeMax;
       auto color = QColor(intenGraph(inten));
       p_->setPen(color);

@@ -25,12 +25,8 @@ namespace fit {
 FittingMethod::FittingMethod() {
 }
 
-bool FittingMethod::fitWithoutChecks(Function& function, rcCurve curve) {
-  return fit(function, curve, false);
-}
-
-bool FittingMethod::fit(Function& function, rcCurve curve, bool withChecks) {
-  if (curve.isEmpty()) return false;
+void FittingMethod::fit(Function& function, rcCurve curve) {
+  if (curve.isEmpty()) return;
 
   function_ = &function;
   xValues_  = curve.xs().data();
@@ -38,29 +34,24 @@ bool FittingMethod::fit(Function& function, rcCurve curve, bool withChecks) {
   // prepare data in a required format
   uint      parCount = function_->parameterCount();
   qreal_vec parValue(parCount), parMin(parCount), parMax(parCount),
-      parError(parCount);
+            parError(parCount);
 
   for_i (parCount) {
     auto par = function_->parameterAt(i);
     auto rge = par.valueRange();
 
+    EXPECT(qIsFinite(par.value())) // TODO if not so, return false
     parValue[i] = par.value();
     parMin[i]   = rge.min;
     parMax[i]   = rge.max;
   }
 
-  if (!approximate(parValue.data(), parMin.data(), parMax.data(),
-                   parError.data(), parCount, curve.ys().data(), curve.count()))
-    return false;
+  approximate(parValue.data(), parMin.data(), parMax.data(),
+              parError.data(), parCount, curve.ys().data(), curve.count());
 
   // read data
-  for_i (parCount) {
-    if (!function_->parameterAt(i).setValue(parValue[i], parError[i],
-                                            !withChecks))
-      return false;
-  }
-
-  return true;
+  for_i (parCount)
+    function_->parameterAt(i).setValue(parValue[i], parError[i]);
 }
 
 void FittingMethod::callbackY(qreal* parValues, qreal* yValues,
@@ -73,7 +64,7 @@ void FittingMethod::callbackY(qreal* parValues, qreal* yValues,
 
 FittingLinearLeastSquare::FittingLinearLeastSquare() {}
 
-bool FittingLinearLeastSquare::approximate(
+void FittingLinearLeastSquare::approximate(
     qreal* params,  // IO initial parameter estimates -> estimated solution
     qreal const* paramsLimitMin,   // I
     qreal const* paramsLimitMax,   // I
@@ -97,17 +88,15 @@ bool FittingLinearLeastSquare::approximate(
                  (qreal*)paramsLimitMax, NULL, maxIterations, NULL, info, NULL,
                  covar.data(), NULL);
 
-  for (uint i      = 0; i < paramsCount; i++)
-    paramsError[i] = sqrt(covar[i * paramsCount + i]);  // diagonal
-
-  return true;
+  for_i (paramsCount)
+    paramsError[i] = sqrt(covar[i * paramsCount + i]);  // the diagonal
 }
 
 //------------------------------------------------------------------------------
 
 FittingLevenbergMarquardt::FittingLevenbergMarquardt() {}
 
-bool FittingLevenbergMarquardt::approximate(
+void FittingLevenbergMarquardt::approximate(
     qreal* params,  // IO initial parameter estimates -> estimated solution
     qreal const* paramsLimitMin,   // I
     qreal const* paramsLimitMax,   // I
@@ -139,16 +128,15 @@ bool FittingLevenbergMarquardt::approximate(
                  (qreal*)paramsLimitMax, NULL, maxIterations, opts, info, NULL,
                  covar.data(), NULL);
 
-  for (uint i      = 0; i < paramsCount; i++)
-    paramsError[i] = sqrt(covar[i * paramsCount + i]);  // diagonal
-
-  return true;
+  for_i (paramsCount)
+    paramsError[i] = sqrt(covar[i * paramsCount + i]);  // the diagonal
 }
 
 void FittingLevenbergMarquardt::callbackJacobianLM(qreal* parValues,
                                                    qreal* jacobian,
                                                    int    parameterLength,
-                                                   int    xLength, void*) {
+                                                   int    xLength, void*)
+{
   for_int (ix, xLength) {
     for_int (ip, parameterLength) {
       *jacobian++ = function_->dy(xValues_[ix], ip, parValues);

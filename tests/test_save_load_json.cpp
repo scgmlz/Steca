@@ -30,7 +30,7 @@ void TestSaveLoadJson::testSaveLoadJson() {
   {
     core::fit::Function::Parameter p1;
     p1.setValueRange(r1,r1); // finite,finite
-    p1.setValue(val1,error,true);
+    p1.setValue(val1,error);
     core::JsonObj pObj = p1.saveJson();
     core::fit::Function::Parameter p3;
     p3.loadJson(pObj);
@@ -39,7 +39,7 @@ void TestSaveLoadJson::testSaveLoadJson() {
     QCOMPARE(p3.value(), val1);
 
     core::fit::Function::Parameter p2;
-    p2.setValue(val1,error,true);
+    p2.setValue(val1,error);
     pObj = p2.saveJson();
     core::fit::Function::Parameter p4;
     p4.loadJson(pObj);

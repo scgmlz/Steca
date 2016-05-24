@@ -500,18 +500,18 @@ void Diffractogram::calcReflections() {
     if (r == currentReflection_)
       currReflIndex_ = i;
 
-    if (r->fit(dgramBgFitted_)) {
-      core::Curve c;
-      auto &rge = r->range();
-      auto &fun = r->peakFunction();
+    r->fit(dgramBgFitted_);
+    auto &rge = r->range();
+    auto &fun = r->peakFunction();
 
-      for_i (dgramBgFitted_.count()) {
-        qreal x = dgramBgFitted_.x(i);
-        if (rge.contains(x)) c.append(x, fun.y(x));
-      }
+    core::Curve c;
 
-      refls_.append(c);
+    for_i (dgramBgFitted_.count()) {
+      qreal x = dgramBgFitted_.x(i);
+      if (rge.contains(x)) c.append(x, fun.y(x));
     }
+
+    refls_.append(c);
   }
 
   tellReflectionData(currentReflection_);

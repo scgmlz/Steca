@@ -299,8 +299,10 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
           peakFWHM /= tempPeakFWHMs.size() - kTreshold;
 
           interpolatedInfos.append(ReflectionInfo(
-              alpha, beta, infos.first().rgeGamma(), peakHeight,
-              peakOffset, peakFWHM));
+              alpha, beta, infos.first().rgeGamma(),
+              peakHeight, 0, // TODO ?
+              peakOffset, 0,
+              peakFWHM, 0));
           continue;
         }
 
@@ -318,7 +320,7 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
       interpolateValues(idwRadius, infos, alpha, beta, itf);
       interpolatedInfos.append(
         ReflectionInfo(alpha, beta, infos.first().rgeGamma(),
-                       itf.inten, itf.tth, itf.fwhm));
+                       itf.inten, 0, itf.tth, 0, itf.fwhm, 0)); // TODO errors
     }
   }
 

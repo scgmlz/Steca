@@ -31,14 +31,16 @@ public:
     Parameter();
 
     qreal value() const { return value_; }
+    qreal error() const { return error_; }
 
     Range valueRange() const;  ///< allowed range of values
     void setValueRange(qreal min, qreal max);
 
     /// checks whether a value/error pair would pass the constraints
-    bool checkConstraints(qreal value, qreal error = 0);
-    /// conditionally sets the new value/error pair
-    bool setValue(qreal value, qreal error = 0, bool force = false);
+    bool checkConstraints();
+    bool checkConstraints(qreal value, qreal error);
+
+    void setValue(qreal value, qreal error);
 
   public:
     JsonObj saveJson() const;
@@ -48,7 +50,7 @@ public:
     void setMaxErrorPercent(const qreal& maxErrorPercent);
 
   private:
-    qreal value_;
+    qreal value_, error_;
 
     /// allowed range of values
     /// if !isValid() -> means the same as <value,value>, i.e. fixed value
@@ -202,10 +204,14 @@ public:
   virtual XY    fittedPeak() const = 0;
   virtual qreal fittedFWHM() const = 0;
 
+  virtual XY    peakError() const = 0;
+  virtual qreal fwhmError() const = 0;
+
   void reset();
 
-  bool         fit(rcCurve);
-  virtual bool fit(rcCurve, rcRange);
+  void fit(rcCurve curve ) { return fit(curve, range_); }
+
+  virtual void fit(rcCurve, rcRange);
 
 protected:
   Curve prepareFit(rcCurve, rcRange);
@@ -235,8 +241,11 @@ public:
   XY    fittedPeak() const;
   qreal fittedFWHM() const;
 
+  XY    peakError() const;
+  qreal fwhmError() const;
+
   void setRange(rcRange);
-  bool fit(rcCurve, rcRange range);
+  void fit(rcCurve, rcRange range);
 
 private:
   Curve fittedCurve_;  ///< saved from fitting
@@ -270,6 +279,9 @@ public:
   XY    fittedPeak() const;
   qreal fittedFWHM() const;
 
+  XY    peakError() const;
+  qreal fwhmError() const;
+
 public:
   JsonObj saveJson() const;
 };
@@ -293,6 +305,9 @@ public:
 
   XY    fittedPeak() const;
   qreal fittedFWHM() const;
+
+  XY    peakError() const;
+  qreal fwhmError() const;
 
 public:
   JsonObj saveJson() const;
@@ -319,6 +334,9 @@ public:
   XY    fittedPeak() const;
   qreal fittedFWHM() const;
 
+  XY    peakError() const;
+  qreal fwhmError() const;
+
 public:
   JsonObj saveJson() const;
 };
@@ -343,6 +361,9 @@ public:
 
   XY    fittedPeak() const;
   qreal fittedFWHM() const;
+
+  XY    peakError() const;
+  qreal fwhmError() const;
 
 public:
   JsonObj saveJson() const;

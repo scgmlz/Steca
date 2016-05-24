@@ -28,11 +28,10 @@ public:
   FittingMethod();
   virtual ~FittingMethod() {}
 
-  bool fitWithoutChecks(Function&, rcCurve);
+  void fit(Function&, rcCurve);
 
 protected:
-  bool fit(Function&, rcCurve, bool withChecks);
-  virtual bool approximate(qreal*, qreal const*, qreal const*, qreal*, uint,
+  virtual void approximate(qreal*, qreal const*, qreal const*, qreal*, uint,
                            qreal const*, uint) = 0;
 
   // these pointers are valid during fit() call
@@ -52,7 +51,7 @@ public:
   FittingLinearLeastSquare();
 
 protected:
-  bool approximate(qreal*, qreal const*, qreal const*, qreal*, uint,
+  void approximate(qreal*, qreal const*, qreal const*, qreal*, uint,
                    qreal const*, uint);
 };
 
@@ -64,7 +63,7 @@ public:
   FittingLevenbergMarquardt();
 
 protected:
-  bool approximate(qreal*, qreal const*, qreal const*, qreal*, uint,
+  void approximate(qreal*, qreal const*, qreal const*, qreal*, uint,
                    qreal const*, uint);
 
 private:

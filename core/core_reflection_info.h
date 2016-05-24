@@ -26,7 +26,10 @@ namespace core {
 class ReflectionInfo final {
 public:
   enum class eField {
-    ALPHA, BETA, GAMMA1, GAMMA2, INTEN, TTH, FWHM,
+    ALPHA, BETA, GAMMA1, GAMMA2,
+    INTEN, INTEN_ERROR,
+    TTH,   INTEN_TTH,
+    FWHM,  INTEN_FWHM,
   };
 
   static str_lst dataTags();
@@ -35,11 +38,11 @@ public:
   ReflectionInfo();
 
   ReflectionInfo(shp_Metadata, deg alpha, deg beta, rcRange rgeGamma,
-                 qreal inten, deg tth, qreal fwhm);
+                 qreal inten, qreal, deg tth, deg, qreal fwhm, qreal);
   ReflectionInfo(shp_Metadata, deg alpha, deg beta, rcRange rgeGamma);
 
   ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma,
-                 qreal inten, deg tth, qreal fwhm);
+                 qreal inten, qreal, deg tth, deg, qreal fwhm, qreal);
   ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma);
 
   deg alpha() const { return alpha_; }
@@ -47,9 +50,14 @@ public:
 
   rcRange rgeGamma() const { return rgeGamma_; }
 
-  qreal inten() const { return inten_; }
-  deg   tth()   const { return tth_;   }
-  qreal fwhm()  const { return fwhm_;  }
+  qreal inten()      const { return inten_;      }
+  qreal intenError() const { return intenError_; }
+
+  deg   tth()        const { return tth_;        }
+  deg   tthError()   const { return tthError_;   }
+
+  qreal fwhm()       const { return fwhm_;  }
+  qreal fwhmError()  const { return fwhmError_;  }
 
   row_t data() const;
 
@@ -57,9 +65,9 @@ private:
   shp_Metadata md_;
   deg          alpha_, beta_;
   Range        rgeGamma_;
-  qreal        inten_;
-  deg          tth_;
-  qreal        fwhm_;
+  qreal        inten_, intenError_;
+  deg          tth_,   tthError_;
+  qreal        fwhm_,  fwhmError_;
 };
 
 //------------------------------------------------------------------------------
