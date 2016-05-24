@@ -22,24 +22,51 @@
 #include "types/core_types_fwd.h"
 
 namespace gui { namespace io {
+
+//------------------------------------------------------------------------------
+
+class OutPoleFiguresTable : public OutTable {
+  SUPER(OutPoleFiguresTable,OutTable)
+public:
+  using super::super;
+};
+
+//------------------------------------------------------------------------------
+
+class OutPoleFiguresTableWidget : public OutTableWidget {
+  SUPER(OutPoleFiguresTableWidget,OutTableWidget)
+public:
+  using super::super;
+};
+
+//------------------------------------------------------------------------------
+
+class SavePoleFiguresWidget : public SaveOutputWidget {
+  SUPER(SavePoleFiguresWidget, SaveOutputWidget)
+public:
+  SavePoleFiguresWidget();
+  QCheckBox *outputInten_, *outputTth_, *outputFWHM_;
+};
+
 //------------------------------------------------------------------------------
 
 class OutPoleFiguresParams;
 class PoleWidget;
 
-class OutPoleFigures : public OutWindow {
-  SUPER(OutPoleFigures, OutWindow)
+class OutPoleFiguresWindow : public OutWindow {
+  SUPER(OutPoleFiguresWindow, OutWindow)
 public:
-  OutPoleFigures(TheHub&, rcstr title, QWidget*);
+  OutPoleFiguresWindow(TheHub&, rcstr title, QWidget*);
   void calculate();
 
 private:
-  OutPoleFiguresParams *params_;
-  OutTableWidget *      tableData_;
-  PoleWidget *          poleWidget_;
-  core::ReflectionInfos reflInfos_;
+  OutPoleFiguresParams      *params_;
+  OutPoleFiguresTableWidget *tableData_;
+  PoleWidget                *poleWidget_;
+  core::ReflectionInfos      reflInfos_;
 };
 
 //------------------------------------------------------------------------------
+
 }}
 #endif  // OUT_POLEFIGURES_H

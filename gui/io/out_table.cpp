@@ -318,15 +318,21 @@ OutTableWidget::ShowColumnsWidget::ShowColumnsWidget(
 //------------------------------------------------------------------------------
 
 SaveOutputWidget::SaveOutputWidget() {
-  setLayout((grid_ = gridLayout()));
+  setLayout((box_ = vbox()));
+  subGl_ = gridLayout();
+  box_->addLayout(subGl_);
 
-  grid_->addWidget(label("Output files for:"),0,0);
-  grid_->setRowMinimumHeight(1,10);
-  grid_->addWidget(outputInten_ = check("Intensity"),2,0);
-  grid_->addWidget(outputTth_   = check("tth"),2,2);
-  grid_->addWidget(outputFWHM_  = check("TWHM"),2,3);
-  grid_->setColumnStretch(4,1);
-  grid_->setRowStretch(3,1);
+  auto gl = gridLayout();
+  gl->addWidget(dirPath_ = readCell(50),0,0);
+  browsePath_ = new TriggerAction("Browse...","Set directory were to save output",this);
+  gl->addWidget(textButton(browsePath_),0,1);
+  gl->setColumnStretch(2,1);
+  gl->setRowStretch(1,1);
+  box_->addLayout(gl);
+  box_->addStretch(1);
+
+ // connect()
+
 }
 
 //------------------------------------------------------------------------------

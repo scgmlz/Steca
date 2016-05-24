@@ -19,6 +19,7 @@
 #include "gui_helpers.h"
 #include "panels/panel.h"
 #include "types/core_type_variant.h"
+#include <QFileDialog>
 
 namespace gui { namespace io {
 //------------------------------------------------------------------------------
@@ -83,10 +84,13 @@ class SaveOutputWidget : public QWidget {
 public:
   SaveOutputWidget();
 
-  QCheckBox *outputInten_, *outputTth_, *outputFWHM_;
+  QAction *browsePath_;
+  QLineEdit *dirPath_;
+  QBoxLayout *box_;
+  QGridLayout *subGl_;
 
-  QGridLayout *grid_;
 };
+
 //------------------------------------------------------------------------------
 /// a child window that deletes itself
 

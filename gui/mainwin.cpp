@@ -310,7 +310,7 @@ void MainWin::saveSession() {
 }
 
 void MainWin::outputPoleFigures() {
-  auto popup = new io::OutPoleFigures(hub_, "Pole Figures", this);
+  auto popup = new io::OutPoleFiguresWindow(hub_, "Pole Figures", this);
   popup->show();
 }
 

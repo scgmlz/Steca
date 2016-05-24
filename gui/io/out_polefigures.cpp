@@ -28,6 +28,8 @@
 namespace gui { namespace io {
 //------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
+
 using deg = core::deg;
 using rad = core::rad;
 
@@ -125,7 +127,7 @@ void PoleWidget::paintInfo() {
 
 class OutPoleFiguresParams : public panel::BoxPanel {
   SUPER(OutPoleFiguresParams, panel::BoxPanel)
-  friend class OutPoleFigures;
+  friend class OutPoleFiguresWindow;
 public:
   OutPoleFiguresParams(TheHub&);
 
@@ -234,8 +236,20 @@ OutPoleFiguresParams::OutPoleFiguresParams(TheHub &hub)
 }
 
 //------------------------------------------------------------------------------
+SavePoleFiguresWidget::SavePoleFiguresWidget(){
 
-OutPoleFigures::OutPoleFigures(TheHub &hub, rcstr title, QWidget *parent)
+  subGl_->addWidget(label("Output files for:"),0,0);
+  subGl_->setRowMinimumHeight(1,10);
+  subGl_->addWidget(outputInten_ = check("Intensity"),2,0);
+  subGl_->addWidget(outputTth_   = check("tth"),2,2);
+  subGl_->addWidget(outputFWHM_  = check("TWHM"),2,3);
+  subGl_->setRowMinimumHeight(4,10);
+  subGl_->setColumnStretch(4,1);
+  subGl_->setRowStretch(4,1);
+}
+//------------------------------------------------------------------------------
+
+OutPoleFiguresWindow::OutPoleFiguresWindow(TheHub &hub, rcstr title, QWidget *parent)
 : super(hub, title, parent)
 {
   params_ = new OutPoleFiguresParams(hub);
@@ -243,26 +257,26 @@ OutPoleFigures::OutPoleFigures(TheHub &hub, rcstr title, QWidget *parent)
   auto *tabs = new panel::TabsPanel(hub);
   setWidgets(params_, tabs);
 
-  tableData_ = new OutTableWidget(hub, core::ReflectionInfo::dataTags(),
+  tableData_ = new OutPoleFiguresTableWidget(hub, core::ReflectionInfo::dataTags(),
                                   core::ReflectionInfo::dataCmps());
 
   connect(params_->rbPresetAll_, &QRadioButton::clicked,
-          tableData_, &OutTableWidget::presetAll);
+          tableData_, &OutPoleFiguresTableWidget::presetAll);
   connect(params_->rbPresetNone_, &QRadioButton::clicked,
-          tableData_, &OutTableWidget::presetNone);
+          tableData_, &OutPoleFiguresTableWidget::presetNone);
 
   poleWidget_ = new PoleWidget();
 
   tabs->addTab("Points").box->addWidget(tableData_);
   tabs->addTab("Graph").box->addWidget(poleWidget_);
 
-  auto saveWidget = new SaveOutputWidget();
+  auto saveWidget = new SavePoleFiguresWidget();
   tabs->addTab("Save").box->addWidget(saveWidget);
 
   params_->rbPresetAll_->click();
 }
 
-void OutPoleFigures::calculate() {
+void OutPoleFiguresWindow::calculate() {
   auto &table = tableData_->table();
   table.clear();
 
