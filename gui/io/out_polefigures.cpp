@@ -16,18 +16,10 @@
 #include "colors.h"
 #include "core_polefigure.h"
 #include "core_reflection.h"
-#include "out_table.h"
-#include "panels/panel.h"
 #include "thehub.h"
-#include "types/core_angles.h"
-#include "views.h"
 #include <QPainter>
-#include <QStringList>
-#include <qmath.h>
 
 namespace gui { namespace io {
-//------------------------------------------------------------------------------
-
 //------------------------------------------------------------------------------
 
 using deg = core::deg;
@@ -41,7 +33,7 @@ public:
 
 protected:
   core::ReflectionInfos rs_;
-  void                  paintEvent(QPaintEvent*);
+  void paintEvent(QPaintEvent*);
 
   QPointF p(deg alpha, deg beta) const;
   void circle(QPointF c, qreal r);
@@ -236,8 +228,8 @@ OutPoleFiguresParams::OutPoleFiguresParams(TheHub &hub)
 }
 
 //------------------------------------------------------------------------------
-SavePoleFiguresWidget::SavePoleFiguresWidget(){
 
+SavePoleFiguresWidget::SavePoleFiguresWidget() {
   subGl_->addWidget(label("Output files for:"),0,0);
   subGl_->setRowMinimumHeight(1,10);
   subGl_->addWidget(outputInten_ = check("Intensity"),2,0);
@@ -247,6 +239,7 @@ SavePoleFiguresWidget::SavePoleFiguresWidget(){
   subGl_->setColumnStretch(4,1);
   subGl_->setRowStretch(4,1);
 }
+
 //------------------------------------------------------------------------------
 
 OutPoleFiguresWindow::OutPoleFiguresWindow(TheHub &hub, rcstr title, QWidget *parent)

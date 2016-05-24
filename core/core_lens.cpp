@@ -49,7 +49,7 @@ QSize ImageLens::size() const {
 
 inten_t ImageLens::inten(uint i, uint j) const {
   if (trans_) doTrans(i, j);
-  if (cut_) doCut(i, j);
+  if (cut_)   doCut(i, j);
 
   inten_t inten = image_.inten(i, j);
   if (corrImage_) inten *= intensCorr_.at(i, j);
@@ -106,11 +106,6 @@ void ImageLens::doTrans(uint& x, uint& y) const {
   default:
     NEVER;
   }
-}
-
-void ImageLens::doCut(uint& i, uint& j) const {
-  i += imageCut_.left;
-  j += imageCut_.top;
 }
 
 void ImageLens::calcSensCorr() {
@@ -202,19 +197,13 @@ Curve Lens::makeCurve(rcRange gammaRange, rcRange tthRange) const {
   uint_vec  counts_vec(w, 0);
 
   for_ij (w, h) {
-    // REVIEW angles can be arranged for a single loop for_i (pixTotal)
-    // [last in commit 98413db71cd38ebaa54b6337a6c6e670483912ef]
     auto const& as = angles(i, j);
     if (!gammaRange.contains(as.gamma)) continue;
 
-    int bin = (as.tth == tthRange.max)
-                  ? w - 1
-                  : qFloor((as.tth - tthRange.min) / deltaTTH);
+    int bin = qFloor((as.tth - tthRange.min) / deltaTTH);
 
-    if (bin < 0 || (int)w <= bin) {
-      //        TR("TTH bin outside cut?")
+    if (bin < 0 || (int)w <= bin)
       continue;  // outside of the cut
-    }
 
     auto in = inten(i, j);
     if (!qIsNaN(in)) {
@@ -226,8 +215,8 @@ Curve Lens::makeCurve(rcRange gammaRange, rcRange tthRange) const {
   Curve res;
 
   for_i (w) {
-    auto in  = intens_vec[i];
-    auto cnt = counts_vec[i];
+    auto in  = intens_vec.at(i);
+    auto cnt = counts_vec.at(i);
     if (cnt > 0) in /= cnt;
     res.append(tthRange.min + deltaTTH * i, in);
   }

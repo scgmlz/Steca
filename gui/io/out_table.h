@@ -100,6 +100,8 @@ public:
   OutWindow(TheHub&, rcstr title, QWidget*);
   QAction *actClose_, *actCalculate_;
 
+  void show();
+
 protected:
   virtual void calculate() = 0;  ///< here do the work
 

@@ -345,6 +345,13 @@ OutWindow::OutWindow(TheHub& hub, rcstr title, QWidget* parent)
   setLayout((box_ = vbox()));
 }
 
+void OutWindow::show() {
+  super::show();
+#ifdef DEVELOPMENT_JAN
+  calculate();
+#endif
+}
+
 void OutWindow::setWidgets(panel::BasicPanel* panel, QWidget* widget) {
   box_->addWidget((panel_ = panel));
   box_->addWidget(widget);

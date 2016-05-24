@@ -32,13 +32,16 @@
 #define EXPECT(cond) EXPECT2(cond, "")
 #define ENSURE(cond) ENSURE2(cond, "")
 
-#define EXPECT2(cond, text) Q_ASSERT_X(cond, "precondition", text);
+#define EXPECT2(cond, text) Q_ASSERT_X(cond, "precondition",  text);
 #define ENSURE2(cond, text) Q_ASSERT_X(cond, "postcondition", text);
+
+#define EXPECT_WT(cond, what) { if (!(cond)) WT(what); EXPECT(cond) }
+#define ENSURE_WT(cond, what) { if (!(cond)) WT(what); ENSURE(cond) }
 
 /// Mark code that should not be reached, typically 'switch' branches
 /// includes ';'
 
-#define NEVER    Q_ASSERT_X(false, "Here", "not be!");
+#define NEVER Q_ASSERT_X(false, "Here", "not be!");
 
 #else
 
@@ -49,6 +52,9 @@
 
 #define EXPECT2(cond, text)
 #define ENSURE2(cond, text)
+
+#define EXPECT_TR(cond, what)
+#define ENSURE_TR(cond, what)
 
 #define NEVER
 

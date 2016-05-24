@@ -25,6 +25,10 @@ namespace core {
 
 class ReflectionInfo final {
 public:
+  enum class eField {
+    ALPHA, BETA, GAMMA1, GAMMA2, INTEN, TTH, FWHM,
+  };
+
   static str_lst dataTags();
   static cmp_vec dataCmps();
 

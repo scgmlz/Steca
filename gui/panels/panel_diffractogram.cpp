@@ -200,7 +200,8 @@ void DiffractogramPlot::setTool(eTool tool) {
 
 void DiffractogramPlot::plot(core::rcCurve dgram, core::rcCurve dgramBgFitted,
                              core::rcCurve bg, core::curve_vec const& refls,
-                             uint currReflIndex) {
+                             uint currReflIndex)
+{
   if (dgram.isEmpty()) {
     xAxis->setVisible(false);
     yAxis->setVisible(false);

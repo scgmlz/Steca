@@ -92,13 +92,9 @@ Curve Curve::intersect(rcRanges ranges) const {
   return res;
 }
 
-Curve Curve::subtract(fit::Function const& f) const {
-  Curve res;
-
+void Curve::subtract(fit::Function const& f) {
   for_i (count())
-    res.append(xs_[i], ys_[i] - f.y(xs_[i]));
-
-  return res;
+    ys_[i] -= f.y(xs_.at(i));
 }
 
 Curve Curve::add(rcCurve that) const {

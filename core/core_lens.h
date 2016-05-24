@@ -30,24 +30,28 @@ public:
   ImageLens(rcSession, rcImage, Image const* corrImage, rcDatasets, bool trans,
             bool cut, ImageCut const&, ImageTransform const&);
 
-  QSize   size() const;
-  inten_t inten(uint i, uint j) const;
+  QSize   size()                 const;
+  inten_t inten(uint i, uint j)  const;
 
-  rcRange rgeInten(bool fixed) const;
+  rcRange rgeInten(bool fixed)   const;
 
 protected:
   void doTrans(uint& i, uint& j) const;
-  void doCut(uint& i, uint& j) const;
+
+  void doCut(uint& i, uint& j) const {
+    i += imageCut_.left; j += imageCut_.top;
+  }
+
   void calcSensCorr();  ///< detector sensitivity correction
 
-  Session const& session_;
-  Image const&   image_;
-  Image const*   corrImage_;
+  Session const&   session_;
+  Image const&     image_;
+  Image const*     corrImage_;
 
-  rcDatasets     datasets_;
-  bool           trans_, cut_;
-  ImageTransform imageTransform_;
-  ImageCut       imageCut_;
+  rcDatasets       datasets_;
+  bool             trans_, cut_;
+  ImageTransform   imageTransform_;
+  ImageCut         imageCut_;
 
   Array2D<inten_t> intensCorr_;
   bool             hasNaNs_;
@@ -73,7 +77,7 @@ public:
   Curve makeCurve(rcRange gamma, rcRange tth) const;
   Curve makeAvgCurve() const;
 
-  rcDataset       dataset() const { return dataset_; }
+  rcDataset       dataset()  const { return dataset_;  }
   AngleMap const& angleMap() const { return angleMap_; }
 
 private:

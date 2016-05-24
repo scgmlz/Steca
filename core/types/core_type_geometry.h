@@ -68,7 +68,7 @@ public:
   Angles const& at(uint i, uint j) const { return arrAngles_.at(i, j); }
 
   rcRange rgeGamma() const { return rgeGamma_; }
-  rcRange rgeTth() const { return rgeTth_; }
+  rcRange rgeTth()   const { return rgeTth_;   }
 
   void calculate(deg midTth, Geometry const&, QSize const&, ImageCut const& cut,
                  rcIJ midPix);

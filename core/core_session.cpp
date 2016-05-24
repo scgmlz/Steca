@@ -301,12 +301,11 @@ void calculateAlphaBeta(rcDataset dataset, deg tth, deg gamma, deg& alpha,
 ReflectionInfo Session::makeReflectionInfo(shp_Lens     lens,
                                            rcReflection reflection,
                                            rcRange      gammaSector) const {
-  auto curve = lens->makeCurve(gammaSector, lens->angleMap().rgeTth());
-  curve =
-      curve.subtract(fit::Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
+  Curve curve = lens->makeCurve(gammaSector, lens->angleMap().rgeTth());
+  curve.subtract(fit::Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
 
-  QScopedPointer<fit::PeakFunction> peakFunction(
-      reflection.peakFunction().clone());
+  QScopedPointer<fit::PeakFunction>
+      peakFunction(reflection.peakFunction().clone());
 
   peakFunction->fit(curve);
 

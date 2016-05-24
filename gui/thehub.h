@@ -172,10 +172,10 @@ public:
   void setNorm(core::eNorm);
 
 public:
-  core::rcRanges bgRanges() const { return session->bgRanges(); }
-  uint           bgPolyDegree() const { return session->bgPolyDegree(); }
+  core::rcRanges bgRanges()         const { return session->bgRanges();     }
+  uint           bgPolyDegree()     const { return session->bgPolyDegree(); }
 
-  core::rcReflections reflections() const { return session->reflections(); }
+  core::rcReflections reflections() const { return session->reflections();  }
 };
 
 //------------------------------------------------------------------------------

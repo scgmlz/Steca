@@ -374,8 +374,8 @@ PeakFunction* PeakFunction::factory(ePeakType type) {
 }
 
 PeakFunction* PeakFunction::clone() const {
-  PeakFunction* f = factory(type());
-  *f              = *this;  // REVIEW
+  PeakFunction *f = factory(type());
+  *f = *this;
   return f;
 }
 

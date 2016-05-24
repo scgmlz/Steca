@@ -15,6 +15,7 @@
 #include "mainwin.h"
 #include "actions.h"
 #include "io/out_polefigures.h"
+#include "io/out_diagrams.h"
 #include "panels/panel_dataset.h"
 #include "panels/panel_diffractogram.h"
 #include "panels/panel_file.h"
@@ -146,7 +147,7 @@ void MainWin::initMenus() {
       acts_.addReflection, acts_.remReflection,
   });
 
-  menuOutput_->addActions({acts_.outputPolefigures, acts_.outputHistograms});
+  menuOutput_->addActions({acts_.outputPolefigures, acts_.outputDiagrams});
 
   menuHelp_->addActions({
     #ifndef Q_OS_OSX  // Mac puts About into the Apple menu
@@ -197,8 +198,6 @@ void MainWin::connectActions() {
     QObject::connect(action, &QAction::toggled, this, fun);
   };
 
-  auto notYet = [this](QAction* action) { action->setEnabled(false); };
-
   onTrigger(acts_.loadSession, &thisClass::loadSession);
   onTrigger(acts_.saveSession, &thisClass::saveSession);
 
@@ -208,7 +207,7 @@ void MainWin::connectActions() {
   onTrigger(acts_.quit, &thisClass::close);
 
   onTrigger(acts_.outputPolefigures, &thisClass::outputPoleFigures);
-  notYet(acts_.outputHistograms);
+  onTrigger(acts_.outputDiagrams,    &thisClass::outputDiagrams);
 
   onTrigger(acts_.about, &thisClass::about);
 
@@ -314,6 +313,11 @@ void MainWin::outputPoleFigures() {
   popup->show();
 }
 
+void MainWin::outputDiagrams() {
+  auto popup = new io::OutDiagramsWindow(hub_, "Diagrams", this);
+  popup->show();
+}
+
 void MainWin::closeEvent(QCloseEvent* event) {
   onClose();
   event->accept();
@@ -336,7 +340,7 @@ void MainWin::onShow() {
 
 #ifdef DEVELOPMENT_JAN
   safeLoad("/P/zz-gd/SCG/data/0.ste");
-  hub_.actions.outputPolefigures->trigger();
+  hub_.actions.outputDiagrams->trigger();
 #endif
 }
 

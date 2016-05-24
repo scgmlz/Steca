@@ -49,6 +49,7 @@ public:
   void saveSession();
 
   void outputPoleFigures();
+  void outputDiagrams();
 
 private:
   // the hub

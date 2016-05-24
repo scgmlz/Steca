@@ -40,7 +40,7 @@ public:
 
   void invalidateGuesses();
 
-  void setGuessPeak(rcXY xy) { peakFunction_->setGuessedPeak(xy); }
+  void setGuessPeak(rcXY xy)    { peakFunction_->setGuessedPeak(xy);   }
   void setGuessFWHM(qreal fwhm) { peakFunction_->setGuessedFWHM(fwhm); }
 
   bool fit(rcCurve);

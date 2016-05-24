@@ -2,8 +2,8 @@
 //
 //  STeCa2:    StressTexCalculator ver. 2
 //
-//! @file      out_polefigures.h
-//! @brief     Output of pole data.
+//! @file      out_diagrams.h
+//! @brief     Output of diagrams.
 //!
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
@@ -13,8 +13,8 @@
 //
 // ************************************************************************** //
 
-#ifndef OUT_POLEFIGURES_H
-#define OUT_POLEFIGURES_H
+#ifndef OUT_DIAGRAMS_H
+#define OUT_DIAGRAMS_H
 
 #include "core_reflection_info.h"
 #include "out_table.h"
@@ -25,48 +25,49 @@ namespace gui { namespace io {
 
 //------------------------------------------------------------------------------
 
-class OutPoleFiguresTable : public OutTable {
-  SUPER(OutPoleFiguresTable,OutTable)
+class OutDiagramsTable : public OutTable {
+  SUPER(OutDiagramsTable,OutTable)
 public:
   using super::super;
 };
 
 //------------------------------------------------------------------------------
 
-class OutPoleFiguresTableWidget : public OutTableWidget {
-  SUPER(OutPoleFiguresTableWidget,OutTableWidget)
+class OutDiagramsTableWidget : public OutTableWidget {
+  SUPER(OutDiagramsTableWidget,OutTableWidget)
 public:
   using super::super;
 };
 
 //------------------------------------------------------------------------------
 
-class SavePoleFiguresWidget : public SaveOutputWidget {
-  SUPER(SavePoleFiguresWidget, SaveOutputWidget)
+class SaveDiagramsWidget : public SaveOutputWidget {
+  SUPER(SaveDiagramsWidget, SaveOutputWidget)
 public:
-  SavePoleFiguresWidget();
-  QCheckBox *outputInten_, *outputTth_, *outputFWHM_;
+  SaveDiagramsWidget();
 };
 
 //------------------------------------------------------------------------------
 
-class OutPoleFiguresParams;
-class PoleWidget;
+class OutDiagramsParams;
+class DiagramsWidget;
 
-class OutPoleFiguresWindow : public OutWindow {
-  SUPER(OutPoleFiguresWindow, OutWindow)
+class OutDiagramsWindow : public OutWindow {
+  SUPER(OutDiagramsWindow, OutWindow)
 public:
-  OutPoleFiguresWindow(TheHub&, rcstr title, QWidget*);
+  OutDiagramsWindow(TheHub&, rcstr title, QWidget*);
+
   void calculate();
+  void plot();
 
 private:
-  OutPoleFiguresParams      *params_;
-  OutPoleFiguresTableWidget *tableData_;
-  PoleWidget                *poleWidget_;
-  core::ReflectionInfos      reflInfos_;
+  OutDiagramsParams      *params_;
+  OutDiagramsTableWidget *tableData_;
+  DiagramsWidget         *diagramsWidget_;
+  core::ReflectionInfos   reflInfos_;
 };
 
 //------------------------------------------------------------------------------
 
 }}
-#endif  // OUT_POLEFIGURES_H
+#endif  // OUT_Diagrams_H

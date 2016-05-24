@@ -50,7 +50,8 @@ public:
   Curve intersect(rcRange)   const;
   Curve intersect(rcRanges)  const;
 
-  Curve subtract(fit::Function const&)  const;
+  void  subtract(fit::Function const&);
+
   Curve add(rcCurve)       const; ///< taking x into account
   Curve addSimple(rcCurve) const; ///< just point-by-point
   Curve mul(qreal)         const;

@@ -72,8 +72,8 @@ public:
   void  setTool(eTool);
   eTool getTool() const { return tool_; }
 
-  void plot(core::rcCurve, core::rcCurve, core::rcCurve,
-            core::curve_vec const&, uint);
+  void  plot(core::rcCurve, core::rcCurve, core::rcCurve,
+             core::curve_vec const&, uint);
 
   core::Range fromPixels(int, int);
 
