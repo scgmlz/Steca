@@ -327,6 +327,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
   for_i (reflectionsObj.count()) {
     core::shp_Reflection reflection(new core::Reflection);
     reflection->loadJson(reflectionsObj.at(i).toObject());
+    RUNTIME_CHECK(reflection->isValid(), "bad reflection data");
     session->addReflection(reflection);
   }
 

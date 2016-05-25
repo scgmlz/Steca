@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "core_polefigure.h"
+#include "types/core_async.h"
 #include <qmath.h>
 
 namespace core { namespace pole {
@@ -234,7 +235,7 @@ void interpolateValues(deg searchRadius, ReflectionInfos const& infos,
 ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
                             deg betaStep, deg averagingAlphaMax,
                             deg averagingRadius, deg idwRadius,
-                            qreal inclusionTreshold) {
+                            qreal inclusionTreshold, Progress* progress) {
   // Two interpolation methods are used here:
   // If grid point alpha <= averagingAlphaMax, points within averagingRadius
   // will be averaged.
@@ -252,15 +253,17 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
 
   // NOTE We expect all infos to have the same gamma range.
 
-  int const numAlphas = qCeil(90  / alphaStep);
-  int const numBetas  = qCeil(360 / betaStep);
+  uint na = numAlphas(alphaStep), nb = numBetas(betaStep);
 
   ReflectionInfos interpolatedInfos;  // Output data.
-  interpolatedInfos.reserve(numAlphas * numBetas);
+  interpolatedInfos.reserve(na * nb);
 
-  for_int (i, numAlphas) {
+  for_int (i, na) {
     deg const alpha = i * alphaStep;
-    for_int (j, numBetas) {
+    for_int (j, nb) {
+      if (progress)
+        progress->step();
+
       deg const beta = j * betaStep;
       if (alpha <= averagingAlphaMax) {
         // Use averaging.
@@ -325,6 +328,14 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
   }
 
   return interpolatedInfos;
+}
+
+uint numAlphas(deg step) {
+  return qCeil(90. / step);
+}
+
+uint numBetas(deg step) {
+  return qCeil(360. / step);
 }
 
 //------------------------------------------------------------------------------

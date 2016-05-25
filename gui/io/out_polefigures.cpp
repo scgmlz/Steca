@@ -300,28 +300,34 @@ OutPoleFiguresWindow::OutPoleFiguresWindow(TheHub &hub, rcstr title, QWidget *pa
 }
 
 void OutPoleFiguresWindow::calculate() {
-
-  deg alphaStep = params_->stepAlpha_->value();
-  deg betaStep  = params_->stepBeta_->value();
+  reflInfos_.clear();
 
   auto &reflections = hub_.reflections();
   if (reflections.isEmpty()) return;
 
   uint reflCount = reflections.count();
 
-  Progress progress(reflCount * hub_.numCollectedDatasets());
+  bool interpolate = params_->cbInterpolated_->isChecked();
+  deg  alphaStep   = params_->stepAlpha_->value();
+  deg  betaStep    = params_->stepBeta_->value();
+
+  uint interpolateCount = interpolate
+      ? core::pole::numAlphas(alphaStep) * core::pole::numBetas(betaStep)
+      : 0;
+
+  Progress progress(reflCount * (hub_.numCollectedDatasets() + interpolateCount));
 
   for_i (reflCount) {
     reflInfos_.append(hub_.makeReflectionInfos(*reflections[i], betaStep,
                       core::Range(), &progress));
-    if (params_->cbInterpolated_->isChecked()) {
+    if (interpolate) {
       qreal treshold  = (qreal)params_->threshold_->value() / 100.0;
       qreal avgRadius = params_->averagingRadius_->value();
       qreal idwRadius = params_->idwRadius_->value();
       // REVIEW gui input for averagingAlphaMax?
       reflInfos_[i] = core::pole::interpolate(
-                      reflInfos_[i], alphaStep, betaStep, 10, avgRadius,
-                      idwRadius, treshold);
+                      reflInfos_.at(i), alphaStep, betaStep, 10, avgRadius,
+                      idwRadius, treshold, &progress);
     }
   }
 

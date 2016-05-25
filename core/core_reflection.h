@@ -38,6 +38,8 @@ public:
   rcRange range() const;
   void    setRange(rcRange);
 
+  bool    isValid() const;
+
   void invalidateGuesses();
 
   void setGuessPeak(rcXY xy)    { peakFunction_->setGuessedPeak(xy);   }

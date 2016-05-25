@@ -32,9 +32,11 @@ void (*TakesLongTime::handler)(bool) = nullptr;
 Progress::Progress(uint total)
 : total_(total), pd_(nullptr)
 {
-  pd_ = new QProgressDialog();
-  pd_->setWindowModality(Qt::WindowModal);
+  pd_ = new QProgressDialog(nullptr, Qt::FramelessWindowHint);
+  pd_->setWindowModality(Qt::ApplicationModal);
+  pd_->setCancelButtonText(EMPTY_STR);
   pd_->setRange(0, total_);
+  pd_->show();
 }
 
 Progress::~Progress() {

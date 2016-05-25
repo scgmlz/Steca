@@ -54,6 +54,10 @@ void Reflection::setRange(rcRange range) {
   peakFunction_->setRange(range);
 }
 
+bool Reflection::isValid() const {
+  return peakFunction_->range().isValid();
+}
+
 void Reflection::invalidateGuesses() {
   peakFunction_->setGuessedPeak(XY());
   peakFunction_->setGuessedFWHM(qQNaN());

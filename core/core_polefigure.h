@@ -19,12 +19,18 @@
 #include "core_reflection_info.h"
 #include "types/core_angles.h"
 
+class Progress;
+
 namespace core { namespace pole {
 //------------------------------------------------------------------------------
 
 ReflectionInfos interpolate(ReflectionInfos const&, deg alphaStep, deg betaStep,
                             deg averagingAlphaMax, deg averagingRadius,
-                            deg idwRadius, qreal inclusionTreshold);
+                            deg idwRadius, qreal inclusionTreshold,
+                            Progress*);
+
+uint numAlphas(deg step);
+uint numBetas(deg step);
 
 //------------------------------------------------------------------------------
 }}
