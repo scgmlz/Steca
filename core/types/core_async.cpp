@@ -13,6 +13,9 @@
 // ************************************************************************** //
 
 #include "core_async.h"
+#include <QtWidgets/QProgressDialog>
+
+//------------------------------------------------------------------------------
 
 TakesLongTime::TakesLongTime() {
   if (handler) handler(true);
@@ -23,5 +26,27 @@ TakesLongTime::~TakesLongTime() {
 }
 
 void (*TakesLongTime::handler)(bool) = nullptr;
+
+//------------------------------------------------------------------------------
+
+Progress::Progress(uint total)
+: total_(total), pd_(nullptr)
+{
+  pd_ = new QProgressDialog();
+  pd_->setWindowModality(Qt::WindowModal);
+  pd_->setRange(0, total_);
+}
+
+Progress::~Progress() {
+  delete pd_;
+}
+
+void Progress::setProgress(uint i) {
+  pd_->setValue(qBound(0u, i, total_));
+}
+
+void Progress::step() {
+  pd_->setValue(pd_->value() + 1);
+}
 
 // eof

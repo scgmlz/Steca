@@ -16,6 +16,7 @@
 #ifndef CORE_ASYNC_H
 #define CORE_ASYNC_H
 
+#include "core_defs.h"
 // for now - just wait
 
 class TakesLongTime final {
@@ -24,6 +25,19 @@ public:
  ~TakesLongTime();
 
   static void (*handler)(bool);
+};
+
+class Progress final {
+public:
+  Progress(uint total);
+ ~Progress();
+
+  void setProgress(uint);
+  void step();
+
+private:
+  uint total_;
+  class QProgressDialog *pd_;
 };
 
 #endif  // CORE_ASYNC_H

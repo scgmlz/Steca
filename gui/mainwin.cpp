@@ -89,14 +89,10 @@ MainWin::MainWin() : hub_(), acts_(hub_.actions) {
 
   initMenus();
   initLayout();
-  initStatus();
+  initStatusBar();
   connectActions();
 
   readSettings();
-}
-
-void MainWin::showMessage(rcstr msg) {
-  statusBar()->showMessage(msg);
 }
 
 void MainWin::initMenus() {
@@ -185,7 +181,7 @@ void MainWin::initLayout() {
   splReflections->setStretchFactor(1, 1);
 }
 
-void MainWin::initStatus() {
+void MainWin::initStatusBar() {
   statusBar();
 }
 

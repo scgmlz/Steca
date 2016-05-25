@@ -17,6 +17,7 @@
 #include "core_polefigure.h"
 #include "core_reflection.h"
 #include "thehub.h"
+#include "types/core_async.h"
 #include <QPainter>
 #include <QTextStream>
 
@@ -301,10 +302,13 @@ void OutPoleFiguresWindow::calculate() {
   auto &reflections = hub_.reflections();
   if (reflections.isEmpty()) return;
 
-  for_i(reflections.count()) {
+  uint reflCount = reflections.count();
 
-    reflInfos_.append(hub_.makeReflectionInfos(*reflections[i], betaStep));
+  Progress progress(reflCount * hub_.numCollectedDatasets());
 
+  for_i (reflCount) {
+    reflInfos_.append(hub_.makeReflectionInfos(*reflections[i], betaStep,
+                      core::Range(), &progress));
     if (params_->cbInterpolated_->isChecked()) {
       qreal treshold  = (qreal)params_->threshold_->value() / 100.0;
       qreal avgRadius = params_->averagingRadius_->value();

@@ -16,6 +16,7 @@
 #include "core_lens.h"
 #include "core_reflection.h"
 #include "core_reflection_info.h"
+#include "types/core_async.h"
 #include "types/core_type_curve.h"
 #include "types/core_type_matrix.h"
 #include <qmath.h>
@@ -339,11 +340,15 @@ ReflectionInfo Session::makeReflectionInfo(shp_Lens     lens,
  */
 ReflectionInfos Session::makeReflectionInfos(rcDatasets   datasets,
                                              rcReflection reflection,
-                                             deg betaStep, rcRange gammaRange)
+                                             deg betaStep, rcRange gammaRange,
+                                             Progress* progress)
 {
   ReflectionInfos infos;
 
   for (auto& dataset : datasets) {
+    if (progress)
+      progress->step();
+
     auto l = lens(*dataset, datasets, true, true, norm_);
     Range rgeGamma = gammaRange.isValid()
                          ? gammaRange

@@ -23,6 +23,8 @@
 #include "types/core_types_fwd.h"
 #include <QStringList>
 
+class Progress;
+
 namespace core {
 //------------------------------------------------------------------------------
 
@@ -69,7 +71,8 @@ public:
   void collectDatasetsFromFiles(uint_vec, uint);
 
   uint_vec const& collectedFromFiles() const { return collectedFromFiles_; }
-  rcDatasets      collectedDatasets() const { return collectedDatasets_; }
+  rcDatasets      collectedDatasets()  const { return collectedDatasets_;  }
+
   str_lst const&  collectedDatasetsTags() const {
     return collectedDatasetsTags_;
   }
@@ -120,7 +123,7 @@ public:
                                     rcRange gammaSector) const;
 
   ReflectionInfos makeReflectionInfos(rcDatasets, rcReflection, deg betaStep,
-                                      rcRange gammaRange = Range());
+                                      rcRange gammaRange, Progress* = nullptr);
   // fitting
 private:
   uint   bgPolyDegree_;

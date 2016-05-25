@@ -165,10 +165,11 @@ core::AngleMap const& TheHub::angleMap(core::rcDataset dataset) const {
 }
 
 core::ReflectionInfos TheHub::makeReflectionInfos(
-    core::rcReflection reflection, core::deg betaStep, core::rcRange rgeGamma)
+    core::rcReflection reflection, core::deg betaStep, core::rcRange rgeGamma,
+    Progress* progress)
 {
   return session->makeReflectionInfos(collectedDatasets(), reflection, betaStep,
-                                      rgeGamma);
+                                      rgeGamma, progress);
 }
 
 static str const KEY_FILES("files");

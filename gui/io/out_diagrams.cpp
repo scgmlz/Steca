@@ -17,8 +17,9 @@
 #include "colors.h"
 #include "core_polefigure.h"
 #include "core_reflection.h"
-#include "thehub.h"
 #include "gui_helpers.h"
+#include "thehub.h"
+#include "types/core_async.h"
 
 namespace gui { namespace io {
 //------------------------------------------------------------------------------
@@ -228,8 +229,10 @@ void OutDiagramsWindow::calculate() {
   auto &reflections = hub_.reflections();
   if (reflections.isEmpty()) return;
 
-  reflInfos_ = hub_.makeReflectionInfos(*reflections.at(index), gammaStep);
+  Progress progress(hub_.numCollectedDatasets());
 
+  reflInfos_ = hub_.makeReflectionInfos(*reflections.at(index), gammaStep,
+                                        core::Range(), &progress);
   for (auto const &r : reflInfos_)
     table.addRow(r.data());
 

@@ -26,6 +26,7 @@
 
 class QSpinBox;
 class QDoubleSpinBox;
+class Progress;
 
 namespace gui {
 //------------------------------------------------------------------------------
@@ -98,7 +99,7 @@ public:
 
 public:
   core::ReflectionInfos makeReflectionInfos(core::rcReflection,
-      core::deg betaStep, core::rcRange rgeGamma = core::Range());
+      core::deg betaStep, core::rcRange rgeGamma, Progress* = nullptr);
 
 public:
   void       saveSession(QFileInfo const&) const;
@@ -125,6 +126,10 @@ public:
   }
 
   uint datasetsGroupedBy() const { return  datasetsGroupedBy_; }
+
+  uint numCollectedDatasets() const {
+    return collectedDatasets().count();
+  }
 
   core::rcDatasets collectedDatasets() const {
     return session->collectedDatasets();

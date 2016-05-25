@@ -28,12 +28,10 @@ class MainWin : public QMainWindow {
 public:
   MainWin();
 
-  void showMessage(rcstr);
-
 private:
   void initMenus();
   void initLayout();
-  void initStatus();
+  void initStatusBar();
   void connectActions();
 
 public:
