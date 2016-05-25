@@ -16,6 +16,7 @@
 #include "colors.h"
 #include "core_polefigure.h"
 #include "core_reflection.h"
+#include "core_reflection_info.h"
 #include "thehub.h"
 #include "types/core_async.h"
 #include <QPainter>
@@ -249,7 +250,7 @@ SavePoleFiguresWidget::SavePoleFiguresWidget() {
 
   g = gridLayout();
   g->addWidget(outputInten_     = check("Intensity Pole Figure"),     2,0);
-  g->addWidget(outputPeakPos_   = check("Peak Position Pole Figure"), 3,0);
+  g->addWidget(outputTth_       = check("Peak Position Pole Figure"), 3,0);
   g->addWidget(outputFWHM_      = check("TWHM Pole Figure"),          4,0);
   g->setRowMinimumHeight(5,10);
   g->setColumnStretch(5,1);
@@ -258,6 +259,9 @@ SavePoleFiguresWidget::SavePoleFiguresWidget() {
   box_->addStretch(1);
 
   subGl_->addLayout(gl,0,0);
+
+  selectedRefl_->setChecked(true);
+  outputInten_->setChecked(true);
 
 }
 
@@ -284,7 +288,8 @@ OutPoleFiguresWindow::OutPoleFiguresWindow(TheHub &hub, rcstr title, QWidget *pa
     display(index);
   });
   connect(saveWidget_->saveOutput_,&QAction::triggered,[this](){
-    savePoleFigureOutput();
+    if (savePoleFigureOutput())
+      saveWidget_->fileName_->clear();
   });
 
   tabs->addTab("Points").box->addWidget(tableData_);
@@ -335,76 +340,107 @@ void OutPoleFiguresWindow::display(int index) {
   poleWidget_->set(reflInfos_[index]);
 }
 
-void OutPoleFiguresWindow::savePoleFigureOutput() {
+bool OutPoleFiguresWindow::savePoleFigureOutput() {
   auto &reflections = hub_.reflections();
-  if (reflections.isEmpty()) return;
-
+  if (reflections.isEmpty()) return false;
+  bool check = false;
   if (saveWidget_->selectedRefl_->isChecked()) {
     auto index = params_->cbReflection_->currentIndex();
-    writePoleFigureOutputFile(index);
+    check = writePoleFigureOutputFiles(index);
   } else {
     for_i(reflections.count()) {
-      writePoleFigureOutputFile(i);
+      check = writePoleFigureOutputFiles(i);
     }
   }
-
+  return check;
 }
 
 static str const OUT_FILE_TAG(".refl%1");
 static int const MAX_LINE_LENGTH_POL(9);
 
-void OutPoleFiguresWindow::writePoleFigureOutputFile(int index) {
+bool OutPoleFiguresWindow::writePoleFigureOutputFiles(int index) {
   auto refl = hub_.reflections()[index];
   auto reflInfo = reflInfos_[index];
-
   str fileName = QString(saveWidget_->fileName_->text() + OUT_FILE_TAG).arg(index);
   auto filePath = QDir(saveWidget_->dirPath_->text()).filePath(fileName);
+  RUNTIME_CHECK(filePath.isEmpty(),"Please set file path");
+  RUNTIME_CHECK(fileName.isEmpty(),"Please enter file name");
 
-  auto writePoleFile = [this,refl,reflInfo](str filePath /*pointer to getter: tth(), inten(), fwhm()*/ ) {
-    QFile file(filePath);
-    file.open(QIODevice::WriteOnly);
-    QTextStream stream(&file);
-
-    for_i(reflInfo.count()) {
-      for_i (MAX_LINE_LENGTH_POL) {
-        stream << reflInfo.at(i).tth() << " ";
-      }
-      stream << '\n';
-    }
-
-    file.close();
-  };
-
-  auto writeListFile = [this,refl,reflInfo](str filePath /*pointer to getter: tth(), inten(), fwhm() */) {
-    QFile file(filePath);
-    file.open(QIODevice::WriteOnly);
-    QTextStream stream(&file);
-
-    for_i(reflInfo.count()) {
-      stream << (qreal)reflInfo.at(i).alpha() << " " << (qreal)reflInfo.at(i).beta() << " " << reflInfo.at(i).tth() << '\n';
-    }
-
-    file.close();
-  };
-
-
+  bool check = false;
+  QVector<qreal> output;
   if (saveWidget_->outputInten_->isChecked()) {
-    writeListFile(filePath);
-    writePoleFile(filePath);
+    for_i (reflInfo.count())
+      output.append((qreal)reflInfo.at(i).inten());
+    auto intenFilePath = filePath + ".inten";
+    writeListFile(intenFilePath, reflInfo, output);
+    writePoleFile(intenFilePath, reflInfo, output);
+    writeErrorMask(intenFilePath, reflInfo, output);
+    check = true;
   }
-
+  output.clear();
   if (saveWidget_->outputFWHM_->isChecked()) {
-    writeListFile(filePath);
-    writePoleFile(filePath);
+    for_i (reflInfo.count())
+      output.append((qreal)reflInfo.at(i).fwhm());
+    auto fwhmFilePath = filePath + ".fwhm";
+    writeListFile(fwhmFilePath, reflInfo, output);
+    writePoleFile(fwhmFilePath, reflInfo, output);
+    check = true;
   }
-
-  if (saveWidget_->outputPeakPos_->isChecked()) { //TODO rename peakPos to tth
-    writeListFile(filePath);
-    writePoleFile(filePath);
+  output.clear();
+  if (saveWidget_->outputTth_->isChecked()) {
+    for_i (reflInfo.count())
+      output.append((qreal)reflInfo.at(i).tth());
+    auto tthFilePath = filePath + ".tth";
+    writeListFile(tthFilePath, reflInfo, output);
+    writePoleFile(tthFilePath, reflInfo, output);
+    check = true;
   }
-
+  return check;
 }
 
+void OutPoleFiguresWindow::writeErrorMask(str filePath, core::ReflectionInfos reflInfo, QVector<qreal> output) {
+  QFile file(filePath + ".errorMask");
+  file.open(QIODevice::WriteOnly);
+  QTextStream stream(&file);
+  for(int j = 0, jEnd = reflInfo.count(); j < jEnd; j+=9) {
+    for (int i = j; i < j + MAX_LINE_LENGTH_POL; i++) {
+      if (qIsNaN(output.at(i)))
+        stream << "0" << " ";
+      else
+        stream << "1" << " ";
+    }
+    stream << '\n';
+  }
+  file.close();
+}
+
+void OutPoleFiguresWindow::writePoleFile(str filePath, core::ReflectionInfos reflInfo, QVector<qreal> output) {
+  QFile file(filePath + ".pol");
+  file.open(QIODevice::WriteOnly);
+  QTextStream stream(&file);
+  for(int j = 0, jEnd = reflInfo.count(); j < jEnd; j+=9) {
+    for (int i = j; i < j + MAX_LINE_LENGTH_POL; i++) {
+      if (qIsNaN(output.at(i)))
+        stream << " -1 " << " ";
+      else
+        stream << output.at(i) << " ";
+    }
+    stream << '\n';
+  }
+  file.close();
+}
+
+void OutPoleFiguresWindow::writeListFile(str filePath, core::ReflectionInfos reflInfo, QVector<qreal> output) {
+  QFile file(filePath + ".lst");
+  file.open(QIODevice::WriteOnly);
+  QTextStream stream(&file);
+
+  for_i(reflInfo.count()) {
+    stream << (qreal)reflInfo.at(i).alpha() << " " << (qreal)reflInfo.at(i).beta() << " " << output.at(i) << '\n';
+  }
+
+  file.close();
+}
 
 //------------------------------------------------------------------------------
 }}

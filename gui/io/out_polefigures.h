@@ -45,7 +45,7 @@ class SavePoleFiguresWidget : public SaveOutputWidget {
   SUPER(SavePoleFiguresWidget, SaveOutputWidget)
 public:
   SavePoleFiguresWidget();
-  QCheckBox *outputInten_, *outputPeakPos_, *outputFWHM_;
+  QCheckBox *outputInten_, *outputTth_, *outputFWHM_;
   QRadioButton *selectedRefl_,*allRefl_;
   QGroupBox *gbRefl_, *gbInfos_;
 };
@@ -61,8 +61,11 @@ public:
   OutPoleFiguresWindow(TheHub&, rcstr title, QWidget*);
   void calculate();
   void display(int);
-  void savePoleFigureOutput();
-  void writePoleFigureOutputFile(int index);
+  bool savePoleFigureOutput();
+  bool writePoleFigureOutputFiles(int index);
+  void writePoleFile(str filePath, core::ReflectionInfos reflInfo, QVector<qreal> output);
+  void writeListFile(str filePath, core::ReflectionInfos reflInfo, QVector<qreal> output);
+  void writeErrorMask(str filePath, core::ReflectionInfos reflInfo, QVector<qreal> output);
 
 private:
   OutPoleFiguresParams          *params_;
