@@ -45,6 +45,9 @@ class SaveDiagramsWidget : public SaveOutputWidget {
   SUPER(SaveDiagramsWidget, SaveOutputWidget)
 public:
   SaveDiagramsWidget();
+
+  QRadioButton *currentDiagram_, *allData_;
+  QComboBox    *fileTypes_;
 };
 
 //------------------------------------------------------------------------------
@@ -59,10 +62,14 @@ public:
 
   void calculate();
   void plot();
+  bool saveDiagramOutput();
+  void writeCurrentDiagramOutputFile(str filePath, str separator, str fileTag);
+  void writeAllDataOutputFile(str filePath, str separator, str fileTag);
 
 private:
   OutDiagramsParams      *params_;
   OutDiagramsTableWidget *tableData_;
+  SaveDiagramsWidget     *saveWidget_;
   DiagramsWidget         *diagramsWidget_;
   core::ReflectionInfos   reflInfos_;
 };

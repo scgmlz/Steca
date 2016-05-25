@@ -31,6 +31,8 @@ public:
   void set(core::ReflectionInfos);
 
   void plot(uint xIndex, uint yIndex);
+  void sortColumns(uint xIndex, uint yIndex, qreal_vec& xs, qreal_vec& ys, uint_vec& is);
+  int reflInfosCount() { return rs_.count(); }
 
 protected:
   core::ReflectionInfos rs_;
@@ -51,13 +53,13 @@ void DiagramsWidget::plot(uint xIndex, uint yIndex) {
   graph_->clearData();
 
   qreal_vec xs(count), ys(count); uint_vec is(count);
-  core::Range rgeY, rgeX;
+  core::Range rgeX, rgeY;
 
   for_i (count) {
     auto row = rs_.at(i).data();
     rgeX.extendBy((xs[i] = row.at(xIndex).toDouble()));
     rgeY.extendBy((ys[i] = row.at(yIndex).toDouble()));
-    is[i] = i;
+
   }
 
   if (!count || rgeX.isEmpty() || rgeY.isEmpty()) {
@@ -66,6 +68,25 @@ void DiagramsWidget::plot(uint xIndex, uint yIndex) {
     replot();
     return;
   }
+
+  sortColumns(xIndex, yIndex, xs, ys, is);
+
+  xAxis->setRange(rgeX.min, rgeX.max);
+  yAxis->setRange(rgeY.min, rgeY.max);
+  xAxis->setVisible(true);
+  yAxis->setVisible(true);
+
+  graph_->setData(xs, ys);
+
+  replot();
+}
+
+void DiagramsWidget::sortColumns(uint xIndex, uint yIndex,
+                                 qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
+  uint count = rs_.count();
+
+  for_i (count)
+    is[i] = i;
 
   std::sort(is.begin(), is.end(), [&xs,&ys](uint i1,uint i2) {
     return xs.at(i1) < xs.at(i2);
@@ -79,14 +100,6 @@ void DiagramsWidget::plot(uint xIndex, uint yIndex) {
   for_i (count) r[i] = ys.at(is[i]);
   ys = r;
 
-  xAxis->setRange(rgeX.min, rgeX.max);
-  yAxis->setRange(rgeY.min, rgeY.max);
-  xAxis->setVisible(true);
-  yAxis->setVisible(true);
-
-  graph_->setData(xs, ys);
-
-  replot();
 }
 
 //------------------------------------------------------------------------------
@@ -179,6 +192,14 @@ OutDiagramsParams::OutDiagramsParams(TheHub &hub)
 //------------------------------------------------------------------------------
 
 SaveDiagramsWidget::SaveDiagramsWidget() {
+  auto gb = new QGroupBox(this);
+  auto g = gridLayout();
+  g->addWidget(currentDiagram_ = radioButton("Current diagram"),0,0);
+  g->addWidget(allData_ = radioButton("All data"),1,0);
+  g->addWidget(fileTypes_ = comboBox({"*.txt","*.dat",".csv"}));
+  gb->setLayout(g);
+  subGl_->addWidget(gb,0,0);
+  subGl_->setRowMinimumHeight(1,10);
 }
 
 //------------------------------------------------------------------------------
@@ -187,6 +208,7 @@ OutDiagramsWindow::OutDiagramsWindow(TheHub &hub, rcstr title, QWidget *parent)
 : super(hub, title, parent)
 {
   params_ = new OutDiagramsParams(hub);
+  saveWidget_ = new SaveDiagramsWidget();
 
   auto *tabs = new panel::TabsPanel(hub);
   setWidgets(params_, tabs);
@@ -198,6 +220,10 @@ OutDiagramsWindow::OutDiagramsWindow(TheHub &hub, rcstr title, QWidget *parent)
           tableData_, &OutDiagramsTableWidget::presetAll);
   connect(params_->rbPresetNone_, &QRadioButton::clicked,
           tableData_, &OutDiagramsTableWidget::presetNone);
+  connect(saveWidget_->saveOutput_,&QAction::triggered, [this](){
+    if (saveDiagramOutput())
+      saveWidget_->fileName_->clear();
+  });
 
   diagramsWidget_ = new DiagramsWidget();
 
@@ -211,8 +237,7 @@ OutDiagramsWindow::OutDiagramsWindow(TheHub &hub, rcstr title, QWidget *parent)
   tabs->addTab("Points").box->addWidget(tableData_);
   tabs->addTab("Diagram").box->addWidget(diagramsWidget_);
 
-  auto saveWidget = new SaveDiagramsWidget();
-  tabs->addTab("Save").box->addWidget(saveWidget);
+  tabs->addTab("Save").box->addWidget(saveWidget_);
 
   params_->rbPresetAll_->click();
 
@@ -245,6 +270,78 @@ void OutDiagramsWindow::calculate() {
 void OutDiagramsWindow::plot() {
   diagramsWidget_->plot(params_->xAxis_->currentIndex(),
                         params_->yAxis_->currentIndex());
+}
+
+bool OutDiagramsWindow::saveDiagramOutput() {
+  str_lst fileTags = {".txt",".dat",".csv"};
+  str_lst separators = {",", " ", ";"};
+  str p = saveWidget_->dirPath_->text();
+  str n = saveWidget_->fileName_->text();
+  if (p.isEmpty() || p.isNull()) return false;
+  if (n.isNull() || n.isEmpty()) return false;
+  str fileName = QString(n);
+  str filePath = QDir(p).filePath(fileName);
+  auto s = saveWidget_->fileTypes_->currentIndex();
+
+  if (saveWidget_->currentDiagram_->isChecked()) {
+    writeCurrentDiagramOutputFile(filePath,separators[s], fileTags[s]);
+    return true;
+  } else {
+    writeAllDataOutputFile(filePath,separators[s], fileTags[s]);
+    return true;
+  }
+}
+
+void OutDiagramsWindow::writeCurrentDiagramOutputFile(str filePath, str separator, str fileTag) {
+  QFile file(filePath + fileTag);
+  file.open(QIODevice::WriteOnly);
+  QTextStream stream(&file);
+  auto &table = tableData_->table();
+  auto xIndex = params_->xAxis_->currentIndex();
+  auto yIndex = params_->yAxis_->currentIndex();
+  uint count = diagramsWidget_->reflInfosCount();
+  qreal_vec xs(count), ys(count); uint_vec is(count);
+  for_i (count) {
+    xs[i] = table.row(i).at(xIndex).toDouble(); // TODO check type first
+    ys[i] = table.row(i).at(yIndex).toDouble();
+  }
+
+  diagramsWidget_->sortColumns(xIndex, yIndex,xs,ys,is);
+
+  for_i (count) {
+    stream << xs.at(i) << separator << ys.at(i) << '\n';
+  }
+
+  file.close();
+}
+
+void OutDiagramsWindow::writeAllDataOutputFile(str filePath, str separator, str fileTag) {
+  QFile file(filePath + fileTag);
+  file.open(QIODevice::WriteOnly);
+  QTextStream stream(&file);
+
+  auto &table = tableData_->table();
+  auto colTitles = table.colTitles();
+  for_i (colTitles.count())
+    stream << colTitles.at(i) << separator;
+
+  stream << '\n';
+
+  for_i (reflInfos_.count()) {
+    auto &row = table.row(i);
+    for_i (row.count()) {
+      auto entry = row.at(i);
+      if (entry.canConvert(QMetaType::QString))
+        stream << entry.toString() << " ";
+      else if (entry.canConvert(QMetaType::QDate))
+        stream << entry.toString();
+      else if (entry.canConvert(QMetaType::QReal))
+        stream << entry.toDouble();
+    }
+    stream << '\n';
+  }
+
+  file.close();
 }
 
 //------------------------------------------------------------------------------

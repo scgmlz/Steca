@@ -46,6 +46,9 @@ public:
 
   void clear();
   void addRow(core::row_t const&, bool sort = true);
+  void addRow(core::row_t const&);
+  core::row_t const& row(int);
+  str_lst const colTitles() { return colTitles_; }
 
   void sortData();
 
@@ -163,6 +166,10 @@ void OutTableModel::addRow(core::row_t const& row, bool sort) {
     sortData();
 }
 
+core::row_t const& OutTableModel::row(int index) {
+  return rows_.at(index);
+}
+
 void OutTableModel::sortData() {
   // sort sortColumn first, then left-to-right
   auto cmpRows = [this](uint i, core::row_t const& r1, core::row_t const& r2) {
@@ -246,6 +253,14 @@ void OutTable::clear() {
 
 void OutTable::addRow(core::row_t const& row, bool sort) {
   model_->addRow(row, sort);
+}
+
+const core::row_t& OutTable::row(int index) {
+  return model_->row(index);
+}
+
+const str_lst OutTable::colTitles() {
+  return model_->colTitles();
 }
 
 void OutTable::sortData() {
