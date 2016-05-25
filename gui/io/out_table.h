@@ -36,7 +36,8 @@ public:
   void setCmpFuns(core::cmp_vec const&);
 
   void clear();
-  void addRow(core::row_t const&);
+
+  void addRow(core::row_t const&, bool sort);
 
   void sortData();
 

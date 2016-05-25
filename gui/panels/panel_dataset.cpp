@@ -245,25 +245,25 @@ DatasetOptions1::DatasetOptions1(TheHub& hub)
     setTo(hub_);
   });
 
-  connect(spinOffsetI_,
-          static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
-          [this]() { setTo(hub_); });
+  connect(spinOffsetI_, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this]() {
+    setTo(hub_);
+  });
 
-  connect(spinOffsetJ_,
-          static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
-          [this]() { setTo(hub_); });
+  connect(spinOffsetJ_, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this]() {
+    setTo(hub_);
+  });
 
-  connect(spinDistance_, static_cast<void (QDoubleSpinBox::*)(double)>(
-                             &QDoubleSpinBox::valueChanged),
-          [this]() { setTo(hub_); });
+  connect(spinDistance_, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
+    setTo(hub_);
+  });
 
-  connect(spinPixelSize_, static_cast<void (QDoubleSpinBox::*)(double)>(
-                              &QDoubleSpinBox::valueChanged),
-          [this]() { setTo(hub_); });
+  connect(spinPixelSize_, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
+    setTo(hub_);
+  });
 
-  connect(comboNormType_, static_cast<void (QComboBox::*)(int)>(
-                              &QComboBox::currentIndexChanged),
-          [this](int index) { hub_.setNorm((core::eNorm)index); });
+  connect(comboNormType_, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this](int index) {
+    hub_.setNorm((core::eNorm)index);
+  });
 }
 
 void DatasetOptions1::setTo(TheHub& hub) {

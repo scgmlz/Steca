@@ -234,7 +234,7 @@ void OutDiagramsWindow::calculate() {
   reflInfos_ = hub_.makeReflectionInfos(*reflections.at(index), gammaStep,
                                         core::Range(), &progress);
   for (auto const &r : reflInfos_)
-    table.addRow(r.data());
+    table.addRow(r.data(), false);
 
   table.sortData();
 

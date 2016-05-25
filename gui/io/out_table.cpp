@@ -45,7 +45,7 @@ public:
   void setSortColumn(int);
 
   void clear();
-  void addRow(core::row_t const&);
+  void addRow(core::row_t const&, bool sort = true);
 
   void sortData();
 
@@ -137,6 +137,11 @@ void OutTableModel::moveColumn(uint from, uint to) {
   qSwap(colIndexMap_[from], colIndexMap_[to]);
 }
 
+void OutTableModel::setHeaders(str_lst const& headers) {
+  EXPECT(headers.count() == (int)numCols_)
+  colTitles_ = headers;
+}
+
 void OutTableModel::setCmpFuns(core::cmp_vec const& cmps) {
   EXPECT(cmps.count() == (int)numCols_)
   cmpFunctions_ = cmps;
@@ -152,14 +157,10 @@ void OutTableModel::clear() {
   endResetModel();
 }
 
-void OutTableModel::setHeaders(str_lst const& headers) {
-  EXPECT(headers.count() == (int)numCols_)
-  colTitles_ = headers;
-}
-
-void OutTableModel::addRow(core::row_t const& row) {
+void OutTableModel::addRow(core::row_t const& row, bool sort) {
   rows_.append(row);
-  sortData();
+  if (sort)
+    sortData();
 }
 
 void OutTableModel::sortData() {
@@ -243,8 +244,8 @@ void OutTable::clear() {
   model_->clear();
 }
 
-void OutTable::addRow(core::row_t const& row) {
-  model_->addRow(row);
+void OutTable::addRow(core::row_t const& row, bool sort) {
+  model_->addRow(row, sort);
 }
 
 void OutTable::sortData() {

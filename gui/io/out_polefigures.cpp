@@ -25,13 +25,34 @@
 namespace gui { namespace io {
 //------------------------------------------------------------------------------
 
+class OutPoleFiguresParams : public panel::BoxPanel {
+  SUPER(OutPoleFiguresParams, panel::BoxPanel)
+  friend class OutPoleFiguresWindow;
+  friend class PoleWidget;
+public:
+  OutPoleFiguresParams(TheHub&);
+
+private:
+  QGroupBox *gbReflection_,   *gbInterpolation_, *gbGammaLimit_, *gbPresets_;
+  QCheckBox *cbInterpolated_, *cbGammaLimit_;
+  QRadioButton *rbPresetAll_, *rbPresetNone_;
+
+  QComboBox *cbReflection_;
+  QDoubleSpinBox
+      *stepAlpha_, *stepBeta_, *idwRadius_, *averagingRadius_,
+      *gammaLimitMax_, *gammaLimitMin_;
+  QSpinBox *threshold_;
+};
+
+//------------------------------------------------------------------------------
+
 using deg = core::deg;
 using rad = core::rad;
 
 class PoleWidget : public QWidget {
   SUPER(PoleWidget, QWidget)
 public:
-  PoleWidget();
+  PoleWidget(OutPoleFiguresParams const&);
   void set(core::ReflectionInfos);
 
 protected:
@@ -43,6 +64,8 @@ protected:
   void paintGrid();
   void paintInfo();
 
+  OutPoleFiguresParams const& params_;
+
   // valid during paintEvent
   QPainter * p_;
   QPointF    c_;
@@ -50,9 +73,20 @@ protected:
   QCheckBox *cbFullSphere_;
 };
 
-PoleWidget::PoleWidget() {
+PoleWidget::PoleWidget(OutPoleFiguresParams const& params) : params_(params) {
   (cbFullSphere_ = check("Full sphere"))->setParent(this);
-  connect(cbFullSphere_, &QCheckBox::toggled, [this](bool) { update(); });
+
+  connect(cbFullSphere_, &QCheckBox::toggled, [this]() {
+    update();
+  });
+
+  connect(params_.cbInterpolated_, &QCheckBox::toggled, [this]() {
+    update();
+  });
+
+  connect(params_.averagingRadius_, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
+    update();
+  });
 }
 
 void PoleWidget::set(core::ReflectionInfos rs) {
@@ -101,6 +135,12 @@ void PoleWidget::paintGrid() {
     p_->setPen(!(beta % 30) ? penMajor : penMinor);
     p_->drawLine(p(10, beta), p(alphaMax_, beta));
   }
+
+  if (params_.cbInterpolated_->isChecked()) {
+    QPen penMark(Qt::darkGreen);
+    p_->setPen(penMark);
+    circle(c_, r_ * params_.averagingRadius_->value() / alphaMax_);
+  }
 }
 
 void PoleWidget::paintInfo() {
@@ -120,24 +160,6 @@ void PoleWidget::paintInfo() {
 }
 
 //------------------------------------------------------------------------------
-
-class OutPoleFiguresParams : public panel::BoxPanel {
-  SUPER(OutPoleFiguresParams, panel::BoxPanel)
-  friend class OutPoleFiguresWindow;
-public:
-  OutPoleFiguresParams(TheHub&);
-
-private:
-  QGroupBox *gbReflection_,   *gbInterpolation_, *gbGammaLimit_, *gbPresets_;
-  QCheckBox *cbInterpolated_, *cbGammaLimit_;
-  QRadioButton *rbPresetAll_, *rbPresetNone_;
-
-  QComboBox *cbReflection_;
-  QDoubleSpinBox
-      *stepAlpha_, *stepBeta_, *idwRadius_, *averagingRadius_,
-      *gammaLimitMax_, *gammaLimitMin_;
-  QSpinBox *threshold_;
-};
 
 OutPoleFiguresParams::OutPoleFiguresParams(TheHub &hub)
 : super("", hub, Qt::Horizontal)
@@ -270,9 +292,9 @@ SavePoleFiguresWidget::SavePoleFiguresWidget() {
 OutPoleFiguresWindow::OutPoleFiguresWindow(TheHub &hub, rcstr title, QWidget *parent)
 : super(hub, title, parent)
 {
-  params_ = new OutPoleFiguresParams(hub);
+  params_     = new OutPoleFiguresParams(hub);
   saveWidget_ = new SavePoleFiguresWidget();
-  poleWidget_ = new PoleWidget();
+  poleWidget_ = new PoleWidget(*params_);
 
   auto *tabs = new panel::TabsPanel(hub);
   setWidgets(params_, tabs);
@@ -350,7 +372,7 @@ void OutPoleFiguresWindow::display(int index) {
   table.clear();
 
   for (auto const &r : reflInfos_[index])
-    table.addRow(r.data());
+    table.addRow(r.data(), false);
 
   table.sortData();
   poleWidget_->set(reflInfos_[index]);
