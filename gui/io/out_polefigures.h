@@ -59,6 +59,9 @@ class OutPoleFiguresWindow : public OutWindow {
   SUPER(OutPoleFiguresWindow, OutWindow)
 public:
   OutPoleFiguresWindow(TheHub&, rcstr title, QWidget*);
+
+  void show();
+
   void calculate();
   void display(int);
   bool savePoleFigureOutput();

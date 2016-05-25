@@ -194,7 +194,7 @@ void OutTableModel::sortData() {
 
 //------------------------------------------------------------------------------
 
-OutTable::OutTable(TheHub& hub, uint numDataColumns) {
+OutTable::OutTable(TheHub& hub, uint numDataColumns) : model_(nullptr) {
   setModel((model_ = new OutTableModel(hub, numDataColumns)));
   setHeader(new QHeaderView(Qt::Horizontal));
 
@@ -206,6 +206,10 @@ OutTable::OutTable(TheHub& hub, uint numDataColumns) {
 
   int w = QFontMetrics(h.font()).width("000000000");
   setColumnWidth(0, w);
+}
+
+OutTable::~OutTable() {
+  delete model_;
 }
 
 void OutTable::setHeaders(str_lst const& headers) {
@@ -357,13 +361,6 @@ OutWindow::OutWindow(TheHub& hub, rcstr title, QWidget* parent)
   setAttribute(Qt::WA_DeleteOnClose);
   setWindowTitle(title);
   setLayout((box_ = vbox()));
-}
-
-void OutWindow::show() {
-  super::show();
-#ifdef DEVELOPMENT_JAN
-  calculate();
-#endif
 }
 
 void OutWindow::setWidgets(panel::BasicPanel* panel, QWidget* widget) {

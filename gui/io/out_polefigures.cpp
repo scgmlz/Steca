@@ -299,6 +299,14 @@ OutPoleFiguresWindow::OutPoleFiguresWindow(TheHub &hub, rcstr title, QWidget *pa
   params_->rbPresetAll_->click();
 }
 
+void OutPoleFiguresWindow::show() {
+  super::show();
+#ifdef DEVELOPMENT_JAN
+  params_->cbInterpolated_->setChecked(true);
+  calculate();
+#endif
+}
+
 void OutPoleFiguresWindow::calculate() {
   reflInfos_.clear();
 

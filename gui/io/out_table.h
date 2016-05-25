@@ -30,6 +30,7 @@ class OutTable : public TreeView {
   SUPER(OutTable, TreeView)
 public:
   OutTable(TheHub&, uint numDataColumns);
+ ~OutTable();
 
   void setHeaders(str_lst const&);
   void setCmpFuns(core::cmp_vec const&);
@@ -100,8 +101,6 @@ class OutWindow : public QFrame, protected RefHub {
 public:
   OutWindow(TheHub&, rcstr title, QWidget*);
   QAction *actClose_, *actCalculate_;
-
-  void show();
 
 protected:
   virtual void calculate() = 0;  ///< here do the work
