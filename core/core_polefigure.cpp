@@ -102,18 +102,36 @@ bool inRadius(deg alpha, deg beta, deg centerAlpha, deg centerBeta,
   return qAbs(a) < (qreal)radius;
 }
 
+struct itf_t {
+  itf_t(inten_t inten_, deg tth_, qreal fwhm_)
+  : inten(inten_), tth(tth_), fwhm(fwhm_) {
+  };
+
+  itf_t()
+  : itf_t(qQNaN(), qQNaN(), qQNaN()) {
+  };
+
+  void operator+=(itf_t const& that) {
+    inten     += that.inten;
+    tth = tth + that.tth;
+    fwhm      += that.fwhm;
+  }
+
+  inten_t inten;
+  deg     tth;
+  qreal   fwhm;
+};
+
+typedef QVector<itf_t> itfs_t;
+
 // Adds data from reflection infos within radius from alpha and beta
 // to the peak parameter lists.
 void searchPoints(deg alpha, deg beta, deg radius, ReflectionInfos const& infos,
-                  qreal_vec& peakOffsets, qreal_vec& peakHeights,
-                  qreal_vec& FWHMs) {
+                  itfs_t& itfs) {
   // REVIEW Use value trees to improve performance.
   for (auto const& info : infos) {
-    if (inRadius(info.alpha(), info.beta(), alpha, beta, radius)) {
-      peakOffsets.append(info.tth());
-      peakHeights.append(info.inten());
-      FWHMs.append(info.fwhm());
-    }
+    if (inRadius(info.alpha(), info.beta(), alpha, beta, radius))
+      itfs.append(itf_t(info.inten(), info.tth(), info.fwhm()));
   }
 }
 
@@ -147,12 +165,6 @@ void searchInQuadrants(Quadrants const& quadrants, deg alpha, deg beta,
     }
   }
 }
-
-struct itf_t {
-  inten_t inten;
-  deg     tth;
-  qreal   fwhm;
-};
 
 void inverseDistanceWeighing(qreal_vec const& distances, info_vec const& infos,
                              itf_t& itf) {
@@ -194,8 +206,8 @@ void inverseDistanceWeighing(qreal_vec const& distances, info_vec const& infos,
 // Interpolates reflection infos to a single point using idw.
 void interpolateValues(deg searchRadius, ReflectionInfos const& infos,
                        deg alpha, deg beta, itf_t& out) {
-  info_vec interpolationInfos;
-  qreal_vec                      distances;
+  info_vec  interpolationInfos;
+  qreal_vec distances;
   searchInQuadrants(allQuadrants(), alpha, beta, searchRadius,
                     infos, interpolationInfos, distances);
   // Check that infos were found in all quadrants.
@@ -207,14 +219,14 @@ void interpolateValues(deg searchRadius, ReflectionInfos const& infos,
     }
     // No info found in quadrant? Try another quadrant. See
     // [J.Appl.Cryst.(2011),44,641] for the angle mapping.
-    eQuadrant    newQ = remapQuadrant((eQuadrant)i);
+    eQuadrant newQ = remapQuadrant((eQuadrant)i);
     qreal const newAlpha =
         i == (int)eQuadrant::NORTHEAST || i == (int)eQuadrant::SOUTHEAST
             ? 180 - alpha
             : -alpha;
     qreal newBeta = beta < 180 ? beta + 180 : beta - 180;
-    info_vec renewedSearch;
-    qreal_vec                      newDistance;
+    info_vec  renewedSearch;
+    qreal_vec newDistance;
     searchInQuadrants({newQ}, newAlpha, newBeta, searchRadius, infos,
                       renewedSearch, newDistance);
     ENSURE(renewedSearch.size() == 1);
@@ -267,45 +279,31 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
       deg const beta = j * betaStep;
       if (alpha <= averagingAlphaMax) {
         // Use averaging.
-        qreal_vec tempPeakOffsets, tempPeakHeights, tempPeakFWHMs;
-        searchPoints(alpha, beta, averagingRadius, infos, tempPeakOffsets,
-                     tempPeakHeights, tempPeakFWHMs);
 
-        if (!tempPeakOffsets.isEmpty()) {
+        itfs_t itfs;
+        searchPoints(alpha, beta, averagingRadius, infos, itfs);
+
+        if (!itfs.isEmpty()) {
           // If inclusionTreshold < 1, we'll only use a fraction of largest
           // reflection parameter values.
-          // REVIEW Does the sorting make sense? Should the offsets and FWHMs
-          // be sorted according to heights?
-          std::sort(tempPeakOffsets.begin(), tempPeakOffsets.end());
-          std::sort(tempPeakHeights.begin(), tempPeakHeights.end());
-          std::sort(tempPeakFWHMs.begin(), tempPeakFWHMs.end());
-          qreal peakOffset = 0;
-          qreal peakHeight = 0;
-          qreal peakFWHM   = 0;
-          int   kTreshold  = qRound(tempPeakOffsets.size() -
-                                 tempPeakOffsets.size() * inclusionTreshold);
-          if (kTreshold >= tempPeakOffsets.size())
-            kTreshold          = tempPeakOffsets.size() - 1;
-          auto iterPeakOffsets = tempPeakOffsets.begin() + kTreshold;
-          auto iterPeakHeights = tempPeakHeights.begin() + kTreshold;
-          auto iterPeakFWHMs   = tempPeakFWHMs.begin() + kTreshold;
-          for (int k = kTreshold; k < tempPeakOffsets.size(); ++k) {
-            peakOffset += *iterPeakOffsets;
-            peakHeight += *iterPeakHeights;
-            peakFWHM += *iterPeakFWHMs;
-            ++iterPeakOffsets;
-            ++iterPeakHeights;
-            ++iterPeakFWHMs;
-          }
-          peakOffset /= tempPeakOffsets.size() - kTreshold;
-          peakHeight /= tempPeakHeights.size() - kTreshold;
-          peakFWHM /= tempPeakFWHMs.size() - kTreshold;
+          std::sort(itfs.begin(), itfs.end(), [](itf_t const& i1, itf_t const& i2) {
+            return i1.inten < i2.inten;
+          });
+
+          itf_t avg(0, 0, 0);
+
+          int iEnd = itfs.count();
+          int iBegin = qMin(qRound(itfs.count() * (1. - inclusionTreshold)), iEnd-1);
+          int n = iEnd - iBegin;
+
+          for (int i = iBegin; i < iEnd; ++i)
+            avg += itfs[i];
 
           interpolatedInfos.append(ReflectionInfo(
               alpha, beta, infos.first().rgeGamma(),
-              peakHeight, 0, // TODO ?
-              peakOffset, 0,
-              peakFWHM, 0));
+              avg.inten/n, qQNaN(),
+              avg.tth  /n, qQNaN(),
+              avg.fwhm /n, qQNaN()));
           continue;
         }
 
@@ -323,7 +321,7 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
       interpolateValues(idwRadius, infos, alpha, beta, itf);
       interpolatedInfos.append(
         ReflectionInfo(alpha, beta, infos.first().rgeGamma(),
-                       itf.inten, 0, itf.tth, 0, itf.fwhm, 0)); // TODO errors
+                       itf.inten, qQNaN(), itf.tth, qQNaN(), itf.fwhm, qQNaN()));
     }
   }
 

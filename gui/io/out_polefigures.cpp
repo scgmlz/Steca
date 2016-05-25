@@ -303,6 +303,8 @@ void OutPoleFiguresWindow::show() {
   super::show();
 #ifdef DEVELOPMENT_JAN
   params_->cbInterpolated_->setChecked(true);
+  params_->idwRadius_->setValue(20);
+  params_->averagingRadius_->setValue(20);
   calculate();
 #endif
 }
