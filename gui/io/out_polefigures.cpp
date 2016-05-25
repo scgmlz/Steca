@@ -361,10 +361,12 @@ static int const MAX_LINE_LENGTH_POL(9);
 bool OutPoleFiguresWindow::writePoleFigureOutputFiles(int index) {
   auto refl = hub_.reflections()[index];
   auto reflInfo = reflInfos_[index];
-  str fileName = QString(saveWidget_->fileName_->text() + OUT_FILE_TAG).arg(index);
-  auto filePath = QDir(saveWidget_->dirPath_->text()).filePath(fileName);
-  RUNTIME_CHECK(filePath.isEmpty(),"Please set file path");
-  RUNTIME_CHECK(fileName.isEmpty(),"Please enter file name");
+  str p = saveWidget_->dirPath_->text();
+  str n = saveWidget_->fileName_->text();
+  if (p.isEmpty() || p.isNull()) return false;
+  if (n.isNull() || n.isEmpty()) return false;
+  str fileName = QString(n + OUT_FILE_TAG).arg(index);
+  str filePath = QDir(p).filePath(fileName);
 
   bool check = false;
   QVector<qreal> output;
