@@ -35,9 +35,10 @@ public:
   void setProgress(uint);
   void step();
 
+  static class QProgressBar* bar;
+
 private:
-  uint total_;
-  class QProgressDialog *pd_;
+  uint total_, i_;
 };
 
 #endif  // CORE_ASYNC_H

@@ -20,18 +20,19 @@
 #include "panels/panel_diffractogram.h"
 #include "panels/panel_file.h"
 #include "panels/panel_fitting.h"
+#include "panels/panel_fitting.h"
 
+#include <QAction>
 #include <QApplication>
 #include <QCloseEvent>
 #include <QDate>
-#include <QMenuBar>
-#include <QMessageBox>
-#include <QSplitter>
-#include <QStatusBar>
-
-#include <QAction>
 #include <QDir>
 #include <QFileDialog>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QProgressBar>
+#include <QSplitter>
+#include <QStatusBar>
 
 namespace gui {
 //------------------------------------------------------------------------------
@@ -83,7 +84,7 @@ SplitDiffractogram::SplitDiffractogram(TheHub& hub) : super(Qt::Horizontal) {
 
 //------------------------------------------------------------------------------
 
-MainWin::MainWin() : hub_(), acts_(hub_.actions) {
+MainWin::MainWin() : hub_(), acts_(hub_.actions), pb_(nullptr) {
   setWindowIcon(QIcon(":/icon/STeCa2"));
   QDir::setCurrent(QDir::homePath());
 
@@ -182,7 +183,8 @@ void MainWin::initLayout() {
 }
 
 void MainWin::initStatusBar() {
-  statusBar();
+  statusBar()->insertWidget(0, (pb_ = new QProgressBar), 1);
+  pb_->hide();
 }
 
 void MainWin::connectActions() {
@@ -335,8 +337,8 @@ void MainWin::onShow() {
 #endif
 
 #ifdef DEVELOPMENT_JAN
-  safeLoad("/P/zz-gd/SCG/data/0.ste");
-  hub_.actions.outputPolefigures->trigger();
+//  safeLoad("/P/zz-gd/SCG/data/0.ste");
+//  hub_.actions.outputPolefigures->trigger();
 #endif
 }
 

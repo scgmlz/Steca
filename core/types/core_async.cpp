@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "core_async.h"
-#include <QtWidgets/QProgressDialog>
+#include <QtWidgets/QProgressBar>
 
 //------------------------------------------------------------------------------
 
@@ -29,26 +29,26 @@ void (*TakesLongTime::handler)(bool) = nullptr;
 
 //------------------------------------------------------------------------------
 
-Progress::Progress(uint total)
-: total_(total), pd_(nullptr)
-{
-  pd_ = new QProgressDialog(nullptr, Qt::FramelessWindowHint);
-  pd_->setWindowModality(Qt::ApplicationModal);
-  pd_->setCancelButtonText(EMPTY_STR);
-  pd_->setRange(0, total_);
-  pd_->show();
+Progress::Progress(uint total) : total_(total), i_(0) {
+  if (bar) {
+    bar->setRange(0, total_);
+    bar->setValue(i_);
+    bar->show();
+  }
 }
 
 Progress::~Progress() {
-  delete pd_;
+  if (bar) bar->hide();
 }
 
 void Progress::setProgress(uint i) {
-  pd_->setValue(qBound(0u, i, total_));
+  if (bar) bar->setValue((i_ = qBound(0u, i, total_)));
 }
 
 void Progress::step() {
-  pd_->setValue(pd_->value() + 1);
+  setProgress(i_ + 1);
 }
+
+QProgressBar* Progress::bar;
 
 // eof

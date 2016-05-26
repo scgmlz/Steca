@@ -67,11 +67,13 @@ int App::exec() {
     gui::MainWin mainWin;
     mainWin.show();
 
-    oldHandler             = qInstallMessageHandler(messageHandler);
+    oldHandler = qInstallMessageHandler(messageHandler);
     TakesLongTime::handler = waiting;
+    Progress::bar = mainWin.progressBar();
 
     int res = super::exec();
 
+    Progress::bar = nullptr;
     TakesLongTime::handler = nullptr;
     qInstallMessageHandler(nullptr);
 
