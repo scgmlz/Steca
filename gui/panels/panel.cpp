@@ -17,7 +17,10 @@
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-BasicPanel::BasicPanel(rcstr title, TheHub& hub) : super(title), RefHub(hub) {
+BasicPanel::BasicPanel(TheHub& hub, rcstr title) : super(title), RefHub(hub) {
+}
+
+BasicPanel::BasicPanel(TheHub& hub) : thisClass(hub, EMPTY_STR) {
 }
 
 void BasicPanel::setHorizontalStretch(int stretch) {
@@ -41,33 +44,40 @@ void BasicPanel::setStretch(int horizontal, int vertical) {
 
 //------------------------------------------------------------------------------
 
-BoxPanel::BoxPanel(rcstr title, TheHub& hub, Qt::Orientation orientation)
-: super(title, hub)
+BoxPanel::BoxPanel(TheHub& hub, Qt::Orientation o)
+: thisClass(hub, EMPTY_STR, o) {
+}
+
+BoxPanel::BoxPanel(TheHub& hub, rcstr title, Qt::Orientation orientation)
+: super(hub, title)
 {
   setLayout((box_ = boxLayout(orientation)));
 }
 
 //------------------------------------------------------------------------------
 
-GridPanel::GridPanel(rcstr title, TheHub& hub) : super(title, hub) {
+GridPanel::GridPanel(TheHub& hub) : thisClass(hub, EMPTY_STR) {
+}
+
+GridPanel::GridPanel(TheHub& hub, rcstr title) : super(hub, title) {
   setLayout((grid_ = gridLayout()));
 }
 
 //------------------------------------------------------------------------------
 
-TabsPanel::Tab::Tab(Qt::Orientation orientation) {
-  setLayout((box = boxLayout(orientation)));
+Tab::Tab(Qt::Orientation orientation) {
+  setLayout((box_ = boxLayout(orientation)));
 }
 
 TabsPanel::TabsPanel(TheHub& hub) : RefHub(hub) {}
 
-TabsPanel::Tab& TabsPanel::addTab(rcstr title, Qt::Orientation orientation) {
+Tab& TabsPanel::addTab(rcstr title, Qt::Orientation orientation) {
   auto tab = new Tab(orientation);
   super::addTab(tab, title);
   return *tab;
 }
 
-TabsPanel::Tab& TabsPanel::tab(uint i) {
+Tab& TabsPanel::tab(uint i) {
   EXPECT((int)i < count())
   ENSURE(dynamic_cast<Tab*>(widget(i)))
   return *static_cast<Tab*>(widget(i));

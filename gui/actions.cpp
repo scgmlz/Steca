@@ -51,14 +51,24 @@ Action& Action::alt(rcstr /*text2*/, rcstr /*tip2*/) {
 
 //------------------------------------------------------------------------------
 
+TriggerAction::TriggerAction(rcstr text, QObject* parent)
+: thisClass(text, "", parent) {
+}
+
 TriggerAction::TriggerAction(rcstr text, rcstr tip, QObject* parent)
-: super(text,tip,parent) {
+: super(text,tip,parent)
+{
 }
 
 //------------------------------------------------------------------------------
 
+ToggleAction::ToggleAction(rcstr text, QObject* parent)
+: thisClass(text, "", parent) {
+}
+
 ToggleAction::ToggleAction(rcstr text, rcstr tip, QObject* parent)
-  : super(text,tip,parent), text1_(text), tip1_(tip.isEmpty() ? text : tip) {
+: super(text,tip,parent), text1_(text), tip1_(tip.isEmpty() ? text : tip)
+{
   setCheckable(true);
 }
 

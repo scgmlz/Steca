@@ -31,7 +31,8 @@ namespace gui { namespace panel {
 class BasicPanel : public QGroupBox, protected RefHub {
   SUPER(BasicPanel, QGroupBox)
 public:
-  BasicPanel(rcstr title, TheHub&);
+  BasicPanel(TheHub&);
+  BasicPanel(TheHub&, rcstr title);
 
   void setHorizontalStretch(int);
   void setVerticalStretch(int);
@@ -42,7 +43,10 @@ public:
 class BoxPanel : public BasicPanel {
   SUPER(BoxPanel, BasicPanel)
 public:
-  BoxPanel(rcstr title, TheHub&, Qt::Orientation);
+  BoxPanel(TheHub&, Qt::Orientation);
+  BoxPanel(TheHub&, rcstr title, Qt::Orientation);
+
+  QBoxLayout* box() const { return box_; }
 
 protected:
   QBoxLayout *box_;
@@ -52,7 +56,10 @@ protected:
 class GridPanel : public BasicPanel {
   SUPER(GridPanel, BasicPanel)
 public:
-  GridPanel(rcstr title, TheHub&);
+  GridPanel(TheHub&);
+  GridPanel(TheHub&, rcstr title);
+
+  QGridLayout* grid() const { return grid_; }
 
 protected:
   QGridLayout *grid_;
@@ -61,15 +68,21 @@ protected:
 //------------------------------------------------------------------------------
 
 /// A tabbed panel
+class Tab : public QWidget {
+  SUPER(Tab, QWidget)
+public:
+  Tab(Qt::Orientation);
+
+  QBoxLayout& box() const { return *box_; }
+
+protected:
+  QBoxLayout *box_;
+};
+
 class TabsPanel : public QTabWidget, protected RefHub {
   SUPER(TabsPanel, QTabWidget)
 public:
   TabsPanel(TheHub&);
-
-  struct Tab : public QWidget {
-    Tab(Qt::Orientation);
-    QBoxLayout *box;
-  };
 
   Tab &addTab(rcstr title, Qt::Orientation = Qt::Vertical);
   Tab &tab(uint);

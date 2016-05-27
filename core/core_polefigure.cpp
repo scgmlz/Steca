@@ -247,7 +247,7 @@ void interpolateValues(deg searchRadius, ReflectionInfos const& infos,
 ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
                             deg betaStep, deg averagingAlphaMax,
                             deg averagingRadius, deg idwRadius,
-                            qreal inclusionTreshold, Progress* progress) {
+                            qreal inclusionTreshold) {
   // Two interpolation methods are used here:
   // If grid point alpha <= averagingAlphaMax, points within averagingRadius
   // will be averaged.
@@ -273,9 +273,6 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
   for_int (i, na) {
     deg const alpha = i * alphaStep;
     for_int (j, nb) {
-      if (progress)
-        progress->step();
-
       deg const beta = j * betaStep;
       if (alpha <= averagingAlphaMax) {
         // Use averaging.

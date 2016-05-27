@@ -14,8 +14,8 @@
 
 #include "mainwin.h"
 #include "actions.h"
-#include "io/out_polefigures.h"
-#include "io/out_diagrams.h"
+#include "output/output_polefigures.h"
+#include "output/output_diagrams.h"
 #include "panels/panel_dataset.h"
 #include "panels/panel_diffractogram.h"
 #include "panels/panel_file.h"
@@ -307,12 +307,12 @@ void MainWin::saveSession() {
 }
 
 void MainWin::outputPoleFigures() {
-  auto popup = new io::OutPoleFiguresWindow(hub_, "Pole Figures", this);
+  auto popup = new output::PoleFiguresFrame(hub_, "Pole Figures", this);
   popup->show();
 }
 
 void MainWin::outputDiagrams() {
-  auto popup = new io::OutDiagramsWindow(hub_, "Diagrams", this);
+  auto popup = new output::DiagramsFrame(hub_, "Diagrams", this);
   popup->show();
 }
 
@@ -337,8 +337,8 @@ void MainWin::onShow() {
 #endif
 
 #ifdef DEVELOPMENT_JAN
-//  safeLoad("/P/zz-gd/SCG/data/0.ste");
-//  hub_.actions.outputPolefigures->trigger();
+  safeLoad("/P/zz-gd/SCG/data/0.ste");
+  hub_.actions.outputPolefigures->trigger();
 #endif
 }
 

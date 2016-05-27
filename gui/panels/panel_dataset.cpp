@@ -186,7 +186,7 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 //------------------------------------------------------------------------------
 
 DatasetOptions1::DatasetOptions1(TheHub& hub)
-: super(EMPTY_STR, hub, Qt::Vertical)
+: super(hub, Qt::Vertical)
 {
   box_->addWidget(label("Beam offset"));
   auto ho = hbox();
@@ -298,7 +298,7 @@ static str const KEY_PIXEL_SIZE("pixel_size");
 //------------------------------------------------------------------------------
 
 DatasetOptions2::DatasetOptions2(TheHub& hub)
-: super(EMPTY_STR, hub, Qt::Vertical)
+: super(hub, Qt::Vertical)
 {
   box_->addWidget(label("Image"));
   auto hb = hbox();
@@ -407,13 +407,13 @@ Dataset::Dataset(TheHub& hub) : super(hub), dataset_(nullptr) {
 
   {
     auto& tab = addTab("Data");
-    tab.box->addWidget(dataImageWidget_ = new ImageWidget(hub_, *this), 0,
+    tab.box().addWidget(dataImageWidget_ = new ImageWidget(hub_, *this), 0,
                        Qt::AlignCenter);
   }
 
   {
     auto& tab = addTab("Corr.");
-    tab.box->addWidget(corrImageWidget_ = new ImageWidget(hub_, *this), 0,
+    tab.box().addWidget(corrImageWidget_ = new ImageWidget(hub_, *this), 0,
                        Qt::AlignCenter);
   }
 

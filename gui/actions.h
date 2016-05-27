@@ -39,13 +39,16 @@ public:
 class TriggerAction : public Action {
   SUPER(TriggerAction, Action)
 public:
-  TriggerAction(rcstr text, rcstr tip, QObject*);
+  TriggerAction(rcstr text, QObject* = nullptr);
+  TriggerAction(rcstr text, rcstr tip, QObject* = nullptr);
 };
 
 class ToggleAction : public Action {
   SUPER(ToggleAction, Action)
 public:
-  ToggleAction(rcstr text, rcstr tip, QObject*);
+  ToggleAction(rcstr text, QObject* = nullptr);
+  ToggleAction(rcstr text, rcstr tip, QObject* = nullptr);
+
   Action& alt(rcstr text2, rcstr tip2 = EMPTY_STR);
 
 protected:

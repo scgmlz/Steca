@@ -108,16 +108,16 @@ Fitting::Fitting(TheHub &hub) : super(hub), silentSpin_(false) {
 
   {  // background
     auto &tab = addTab("Background");
-    tab.box->addLayout(tools());
+    tab.box().addLayout(tools());
 
     auto hb = hbox();
-    tab.box->addLayout(hb);
+    tab.box().addLayout(hb);
     hb->addWidget(label("Polynom degree:"));
     hb->addWidget(
         (spinDegree_ = spinCell(4, 0, core::fit::MAX_POLYNOM_DEGREE)));
     hb->addStretch();
 
-    tab.box->addStretch();
+    tab.box().addStretch();
 
     connect(spinDegree_,
             static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
@@ -126,12 +126,12 @@ Fitting::Fitting(TheHub &hub) : super(hub), silentSpin_(false) {
 
   {  // reflections
     auto &tab = addTab("Reflections");
-    tab.box->addLayout(tools());
+    tab.box().addLayout(tools());
 
-    tab.box->addWidget((reflectionView_ = new ReflectionView(hub_)));
+    tab.box().addWidget((reflectionView_ = new ReflectionView(hub_)));
 
     auto hb = hbox();
-    tab.box->addLayout(hb);
+    tab.box().addLayout(hb);
 
     hb->addWidget((comboReflType_ = comboBox(core::Reflection::typeStrLst())));
     hb->addStretch();
@@ -139,7 +139,7 @@ Fitting::Fitting(TheHub &hub) : super(hub), silentSpin_(false) {
     hb->addWidget(iconButton(actions.remReflection));
 
     auto vb = vbox();
-    tab.box->addLayout(vb);
+    tab.box().addLayout(vb);
 
     auto gb = gridLayout();
     vb->addLayout(gb);

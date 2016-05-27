@@ -343,7 +343,7 @@ void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
 //------------------------------------------------------------------------------
 
 Diffractogram::Diffractogram(TheHub& hub)
-: super(EMPTY_STR, hub, Qt::Vertical), dataset_(nullptr), currReflIndex_(-1)
+: super(hub, Qt::Vertical), dataset_(nullptr), currReflIndex_(-1)
 {
   box_->addWidget((plot_ = new DiffractogramPlot(hub_, *this)));
   auto hb = hbox();
