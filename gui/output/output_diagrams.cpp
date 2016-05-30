@@ -25,6 +25,9 @@ DiagramsParams::DiagramsParams(TheHub& hub) : super(hub) {
   auto g = gpAxes_->grid();
 
   auto tags = core::ReflectionInfo::dataTags();
+  for_i (core::Metadata::numAttributes(false) - core::Metadata::numAttributes(true))
+    tags.removeLast(); // remove all tags that are not numbers
+
   g->addWidget((xAxis = comboBox(tags)), 0, 0);
   g->addWidget(label("x"), 0, 1);
   g->addWidget((yAxis = comboBox(tags)), 1, 0);
@@ -44,7 +47,12 @@ static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
     is[i] = i;
 
   std::sort(is.begin(), is.end(), [&xs,&ys](uint i1,uint i2) {
-    return xs.at(i1) < xs.at(i2);
+    qreal x1 = xs.at(i1), x2 =xs.at(i2);
+    if (x1 < x2)
+      return true;
+    if (x1 > x2)
+      return false;
+    return ys.at(i1) < ys.at(i2);
   });
 
   qreal_vec r(count);
@@ -78,7 +86,6 @@ void TabPlot::plot(uint xIndex, uint yIndex) {
     auto row = rs_.at(i).data();
     rgeX.extendBy((xs[i] = row.at(xIndex).toDouble()));
     rgeY.extendBy((ys[i] = row.at(yIndex).toDouble()));
-
   }
 
   if (!count || rgeX.isEmpty() || rgeY.isEmpty()) {
@@ -102,7 +109,7 @@ void TabPlot::plot(uint xIndex, uint yIndex) {
 
 //------------------------------------------------------------------------------
 
-static str_lst const fileTags {"*.txt","*.dat",".csv"};
+static str_lst const fileTags {".txt",".dat",".csv"};
 
 TabDiagramsSave::TabDiagramsSave(TheHub& hub, Params& params)
 : super(hub, params)
@@ -129,40 +136,21 @@ bool TabDiagramsSave::currDiagram() const {
 DiagramsFrame::DiagramsFrame(TheHub &hub, rcstr title, QWidget *parent)
 : super(hub, title, new DiagramsParams(hub), parent)
 {
-//  saveWidget_ = new TabDiagramsSave(hub);
+  tabPlot_ = new TabPlot();
+  tabs_->addTab("Diagram").box().addWidget(tabPlot_);
 
-//  auto *tabs = new panel::TabsPanel(hub);
-//  setWidgets(params_, tabs);
+  connect(static_cast<DiagramsParams*>(params_)->xAxis,static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),this, &thisClass::plot);
+  connect(static_cast<DiagramsParams*>(params_)->yAxis,static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),this, &thisClass::plot);
 
-//  tableData_ = new OutDiagramsTableWidget(hub, core::ReflectionInfo::dataTags(),
-//                                          core::ReflectionInfo::dataCmps());
+  tabSave_ = new TabDiagramsSave(hub, *params_);
+  tabs_->addTab("Save").box().addWidget(tabSave_);
 
-//  connect(params_->rbPresetAll_, &QRadioButton::clicked,
-//          tableData_, &OutDiagramsTableWidget::presetAll);
-//  connect(params_->rbPresetNone_, &QRadioButton::clicked,
-//          tableData_, &OutDiagramsTableWidget::presetNone);
-//  connect(saveWidget_->saveOutput_,&QAction::triggered, [this](){
-//    if (saveDiagramOutput())
-//      saveWidget_->fileName_->clear();
-//  });
+  connect(tabSave_->actSave(),&QAction::triggered,[this]() {
+    if (saveDiagramOutput())
+      tabSave_->fileName().clear();
+  });
 
-//  diagramsWidget_ = new TabPlot();
-
-//  connect(params_->xAxis_,
-//    static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
-//    this, &thisClass::plot);
-//  connect(params_->yAxis_,
-//    static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
-//    this, &thisClass::plot);
-
-//  tabs->addTab("Points").box_->addWidget(tableData_);
-//  tabs->addTab("Diagram").box_->addWidget(diagramsWidget_);
-
-//  tabs->addTab("Save").box_->addWidget(saveWidget_);
-
-//  params_->rbPresetAll_->click();
-
-  //  plot();
+  plot();
 }
 
 void DiagramsFrame::displayReflection(uint reflIndex, bool interpolated) {
@@ -175,6 +163,34 @@ void DiagramsFrame::plot() {
   auto ps = static_cast<DiagramsParams*>(params_);
   tabPlot_->plot(ps->xAxis->currentIndex(),
                  ps->yAxis->currentIndex());
+}
+
+void DiagramsFrame::calculateErrors(uint yIndex, uint count, qreal_vec xs, qreal_vec ys) {
+
+  auto calc = [this, xs, ys] (uint index) {
+    for_i (xs.count()) {
+      auto sigma = table_->row(i).at(index).toDouble();
+      xErrorAdd_.append(xs[i] + sigma);
+      xErrorSub_.append(xs[i] - sigma);
+      yErrorAdd_.append(ys[i] + sigma);
+      yErrorSub_.append(ys[i] - sigma);
+    }
+  };
+
+  for_i (count) {
+    yErrorAdd_.clear();
+    yErrorSub_.clear();
+    auto yTag = core::ReflectionInfo::reflStringTag(yIndex);
+    if (core::ReflectionInfo::reflStringTag((uint)core::ReflectionInfo::eReflAttr::INTEN) == yTag) {
+      calc((uint)core::ReflectionInfo::eReflAttr::SIGMA_INTEN);
+    }
+    else if (core::ReflectionInfo::reflStringTag((uint)core::ReflectionInfo::eReflAttr::TTH) == yTag) {
+      calc((uint)core::ReflectionInfo::eReflAttr::SIGMA_TTH);
+    }
+    else if (core::ReflectionInfo::reflStringTag((uint)core::ReflectionInfo::eReflAttr::FWHM) == yTag) {
+      calc((uint)core::ReflectionInfo::eReflAttr::SIGMA_FWHM);
+    }
+  }
 }
 
 //------------------------------------------------------------------------------
@@ -205,14 +221,14 @@ bool DiagramsFrame::saveDiagramOutput() {
 
 void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator, rcstr fileTag) {
   QFile file(filePath + fileTag);
-  file.open(QIODevice::WriteOnly);  // TODO if (file.open ...
+  RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File connot be opened");
 
   auto ps = static_cast<DiagramsParams*>(params_);
 
   auto xIndex = ps->xAxis->currentIndex();
   auto yIndex = ps->yAxis->currentIndex();
 
-  uint count = calcPoints_.count();
+  uint count = calcPoints_.at(params_->cbRefl->currentIndex()).count();
   qreal_vec xs(count), ys(count);
   uint_vec is(count);
 
@@ -222,16 +238,22 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separato
   }
 
   sortColumns(xs, ys, is);
-
   QTextStream stream(&file);
+
+  calculateErrors(yIndex,count, xs, ys);
+
   for_i (count) {
-    stream << xs.at(i) << separator << ys.at(i) << '\n';
+    stream << xs.at(i) << separator << ys.at(i);
+    if (!yErrorAdd_.isEmpty() && !yErrorSub_.isEmpty())
+      stream << separator << yErrorAdd_.at(i) << separator << yErrorSub_.at(i);
+    stream << '\n';
   }
+
 }
 
 void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator, rcstr fileTag) {
   QFile file(filePath + fileTag);
-  file.open(QIODevice::WriteOnly); // TODO if ...
+  RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File connot be opened");
 
   QTextStream stream(&file);
 
@@ -247,11 +269,11 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator, rcst
 
     for_i (row.count()) {
       auto entry = row.at(i);
-      if (entry.canConvert(QMetaType::QString))
+      if (QVariant::String == entry.type())
         stream << entry.toString() << " ";
-      else if (entry.canConvert(QMetaType::QDate))
+      else if (QVariant::Date == entry.type())
         stream << entry.toString();
-      else if (entry.canConvert(QMetaType::QReal))
+      else if (QVariant::Double == entry.type())
         stream << entry.toDouble();
     }
     stream << '\n';

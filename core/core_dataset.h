@@ -26,7 +26,7 @@ namespace core {
 
 struct Metadata {
   // attribute list - will be dynamic
-  static uint    numAttributes();
+  static uint    numAttributes(bool onlyNum);
   static rcstr   attributeTag(uint);
   static str_lst attributeTags();
   static cmp_vec attributeCmps();

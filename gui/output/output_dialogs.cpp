@@ -251,6 +251,9 @@ void Frame::interpolate() {
 void Frame::displayReflection(uint reflIndex, bool interpolated) {
   table_->clear();
 
+  if (hub_.reflections().isEmpty())
+    return;
+
   EXPECT(calcPoints_.count() == interpPoints_.count())
   if (calcPoints_.count() <= (int)reflIndex)
     return;

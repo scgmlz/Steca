@@ -32,8 +32,15 @@ public:
     FWHM,  INTEN_FWHM,
   };
 
+  enum class eReflAttr {
+    ALPHA, BETA, GAMMA1, GAMMA2,
+    INTEN, SIGMA_INTEN, TTH, SIGMA_TTH, FWHM, SIGMA_FWHM,
+    NUM_REF_ATTR,
+  };
+
   static str_lst dataTags();
   static cmp_vec dataCmps();
+  static str const reflStringTag(uint attr);
 
   ReflectionInfo();
 

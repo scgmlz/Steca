@@ -25,15 +25,46 @@ namespace core {
  * as -1 when output is written for these programs (polefigure!).
  */
 
+
+
 str_lst ReflectionInfo::dataTags() {
   static str_lst tags;
   if (tags.isEmpty()) {
-    tags = str_lst{"α", "β", "γ1", "γ2",
-                   "I", "σI", "2θ", "σ2θ", "fwhm", "σfwhm"};
+    for_i ((uint)eReflAttr::NUM_REF_ATTR)
+      tags.append(reflStringTag(i));
+
     tags += Metadata::attributeTags();
   }
 
   return tags;
+}
+
+str const ReflectionInfo::reflStringTag(uint attr) {
+  switch ((eReflAttr)attr) {
+  case eReflAttr::ALPHA:
+    return "α";
+  case eReflAttr::BETA:
+    return "β";
+  case eReflAttr::GAMMA1:
+    return "γ1";
+  case eReflAttr::GAMMA2:
+    return "γ2";
+  case eReflAttr::INTEN:
+    return "I";
+  case eReflAttr::SIGMA_INTEN:
+    return "σI";
+  case eReflAttr::TTH:
+    return "2θ";
+  case eReflAttr::SIGMA_TTH:
+    return "σ2θ";
+  case eReflAttr::FWHM:
+    return "fwhm";
+  case eReflAttr::SIGMA_FWHM:
+    return "σfwhm";
+  default:
+    NEVER;
+    return nullptr;
+  }
 }
 
 cmp_vec ReflectionInfo::dataCmps() {

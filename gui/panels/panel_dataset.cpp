@@ -93,16 +93,16 @@ DockDatasetInfo::DockDatasetInfo(TheHub& hub)
 
   scrollArea->setFrameStyle(QFrame::NoFrame);
 
-  for_i (Metadata::numAttributes())
+  for_i (Metadata::numAttributes(false))
     metaInfo_.append(models::CheckedInfo(Metadata::attributeTag(i)));
 
   scrollArea->setWidget((info_ = new Info(metaInfo_)));
 
-  for_i (Metadata::numAttributes())
+  for_i (Metadata::numAttributes(false))
     metaInfo_[i].cb->setToolTip("Show value in Datasets list");
 
   onSigDatasetSelected([this](shp_Dataset dataset) {
-    for_i (Metadata::numAttributes())
+    for_i (Metadata::numAttributes(false))
       metaInfo_[i].setText(dataset ? dataset->metadata()->attributeStrValue(i)
                                    : EMPTY_STR);
   });

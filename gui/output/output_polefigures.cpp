@@ -223,7 +223,8 @@ void PoleFiguresFrame::show() {
 
 void PoleFiguresFrame::displayReflection(uint reflIndex, bool interpolated) {
   super::displayReflection(reflIndex, interpolated);
-  tabGraph_->set((interpolated ? interpPoints_ : calcPoints_)[reflIndex]);
+  if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
+    tabGraph_->set((interpolated ? interpPoints_ : calcPoints_)[reflIndex]);
 }
 
 bool PoleFiguresFrame::savePoleFigureOutput() {
@@ -304,7 +305,7 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
 
 void PoleFiguresFrame::writeErrorMask(rcstr filePath, core::ReflectionInfos reflInfo, qreal_vec const& output) {
   QFile file(filePath + ".errorMask");
-  file.open(QIODevice::WriteOnly); // TODO if (!file.open) ...
+  RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File connot be opened");
 
   QTextStream stream(&file);
   for(int j = 0, jEnd = reflInfo.count(); j < jEnd; j+=9) {
@@ -320,7 +321,7 @@ void PoleFiguresFrame::writeErrorMask(rcstr filePath, core::ReflectionInfos refl
 
 void PoleFiguresFrame::writePoleFile(rcstr filePath, core::ReflectionInfos reflInfo, qreal_vec const& output) {
   QFile file(filePath + ".pol");
-  file.open(QIODevice::WriteOnly);
+  RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File connot be opened");
 
   QTextStream stream(&file);
   for(int j = 0, jEnd = reflInfo.count(); j < jEnd; j+=9) {
@@ -336,7 +337,7 @@ void PoleFiguresFrame::writePoleFile(rcstr filePath, core::ReflectionInfos reflI
 
 void PoleFiguresFrame::writeListFile(rcstr filePath, core::ReflectionInfos reflInfo, qreal_vec const& output) {
   QFile file(filePath + ".lst");
-  file.open(QIODevice::WriteOnly);
+  RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File connot be opened");
 
   QTextStream stream(&file);
 

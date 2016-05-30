@@ -24,18 +24,21 @@ namespace core {
 // metadata attributes
 
 enum class eAttr {
-  DATE, COMMENT,
-
   MOTOR_XT,  MOTOR_YT,  MOTOR_ZT,
   MOTOR_OMG, MOTOR_TTH, MOTOR_PHI, MOTOR_CHI,
   MOTOR_PST, MOTOR_SST, MOTOR_OMGM,
   DELTA_MONITOR_COUNT, DELTA_TIME,
 
-  NUM_ATTRIBUTES
+  NUM_NUM_ATTRIBUTES,
+// non-numbers must come last
+  DATE = NUM_NUM_ATTRIBUTES, COMMENT,
+
+  NUM_ALL_ATTRIBUTES
 };
 
-uint Metadata::numAttributes() {
-  return (uint)eAttr::NUM_ATTRIBUTES;
+uint Metadata::numAttributes(bool onlyNum) {
+  if (onlyNum) return (uint)eAttr::NUM_NUM_ATTRIBUTES;
+  else return (uint)eAttr::NUM_ALL_ATTRIBUTES;
 }
 
 rcstr Metadata::attributeTag(uint i) {
@@ -44,11 +47,11 @@ rcstr Metadata::attributeTag(uint i) {
 
 str_lst Metadata::attributeTags() {
   static str_lst const tags = {
-    "date", "comment",
     "X", "Y", "Z",
     "ω", "2θ", "φ", "χ",
     "PST", "SST", "ΩM",
     "Δmon", "Δt",
+    "date", "comment",
   };
 
   return tags;
@@ -56,11 +59,11 @@ str_lst Metadata::attributeTags() {
 
 cmp_vec Metadata::attributeCmps() {
   static cmp_vec const cmps = {
-    cmp_date, cmp_str,
     cmp_real, cmp_real, cmp_real,
     cmp_real, cmp_real, cmp_real, cmp_real,
     cmp_real, cmp_real, cmp_real,
     cmp_real, cmp_real,
+    cmp_date, cmp_str,
   };
 
   return cmps;
@@ -70,9 +73,6 @@ str Metadata::attributeStrValue(uint i) const {
   qreal value = 0;
 
   switch ((eAttr)i) {
-  case eAttr::DATE:        return date;
-  case eAttr::COMMENT:     return comment;
-
   case eAttr::MOTOR_XT:    value = motorXT;   break;
   case eAttr::MOTOR_YT:    value = motorYT;   break;
   case eAttr::MOTOR_ZT:    value = motorZT;   break;
@@ -85,6 +85,10 @@ str Metadata::attributeStrValue(uint i) const {
   case eAttr::MOTOR_OMGM:  value = motorOMGM; break;
   case eAttr::DELTA_MONITOR_COUNT: value = deltaMonitorCount; break;
   case eAttr::DELTA_TIME:  value = deltaTime; break;
+
+  case eAttr::DATE:        return date;
+  case eAttr::COMMENT:     return comment;
+
   default: NEVER;
   }
 
@@ -114,7 +118,7 @@ QVariant Metadata::attributeValue(uint i) const {
 
 row_t Metadata::attributeValues() const {
   row_t attrs;
-  for_i ((uint)eAttr::NUM_ATTRIBUTES)
+  for_i ((uint)eAttr::NUM_ALL_ATTRIBUTES)
     attrs.append(attributeValue(i));
   return attrs;
 }
@@ -122,7 +126,7 @@ row_t Metadata::attributeValues() const {
 row_t Metadata::attributeNaNs() {
   static row_t row;
   if (row.isEmpty()) {
-    for_i ((uint)eAttr::NUM_ATTRIBUTES)
+    for_i ((uint)eAttr::NUM_ALL_ATTRIBUTES)
       row.append(qQNaN());
   }
   return row;
