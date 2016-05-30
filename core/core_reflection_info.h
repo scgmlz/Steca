@@ -43,7 +43,7 @@ public:
 
   ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma,
                  qreal inten, qreal, deg tth, deg, qreal fwhm, qreal);
-  ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma);
+  ReflectionInfo(deg alpha, deg beta);
 
   deg alpha() const { return alpha_; }
   deg beta()  const { return beta_;  }

@@ -30,7 +30,6 @@
 #include <QFileDialog>
 #include <QMenuBar>
 #include <QMessageBox>
-#include <QProgressBar>
 #include <QSplitter>
 #include <QStatusBar>
 
@@ -84,7 +83,7 @@ SplitDiffractogram::SplitDiffractogram(TheHub& hub) : super(Qt::Horizontal) {
 
 //------------------------------------------------------------------------------
 
-MainWin::MainWin() : hub_(), acts_(hub_.actions), pb_(nullptr) {
+MainWin::MainWin() : hub_(), acts_(hub_.actions) {
   setWindowIcon(QIcon(":/icon/STeCa2"));
   QDir::setCurrent(QDir::homePath());
 
@@ -183,8 +182,7 @@ void MainWin::initLayout() {
 }
 
 void MainWin::initStatusBar() {
-  statusBar()->insertWidget(0, (pb_ = new QProgressBar), 1);
-  pb_->hide();
+  statusBar();
 }
 
 void MainWin::connectActions() {

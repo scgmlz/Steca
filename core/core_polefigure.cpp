@@ -268,12 +268,19 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
   uint na = numAlphas(alphaStep), nb = numBetas(betaStep);
 
   ReflectionInfos interpolatedInfos;  // Output data.
+
   interpolatedInfos.reserve(na * nb);
 
   for_int (i, na) {
     deg const alpha = i * alphaStep;
     for_int (j, nb) {
       deg const beta = j * betaStep;
+
+      if (infos.isEmpty()) {
+        interpolatedInfos.append(ReflectionInfo(alpha, beta));
+        continue;
+      }
+
       if (alpha <= averagingAlphaMax) {
         // Use averaging.
 
@@ -306,9 +313,7 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
 
         if (!qIsNaN(idwRadius)) {
           // Don't fall back to idw, just add an unmeasured info.
-          ReflectionInfo invalidInfo(alpha, beta,
-                                     infos.first().rgeGamma());
-          interpolatedInfos.append(invalidInfo);
+          interpolatedInfos.append(ReflectionInfo(alpha, beta));
           continue;
         }
       }

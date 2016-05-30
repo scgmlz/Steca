@@ -20,6 +20,7 @@
 
 #include <QFileDialog>
 #include <QHeaderView>
+#include <QProgressBar>
 #include <QScrollArea>
 #include <QSplitter>
 
@@ -66,16 +67,17 @@ Params::Params(TheHub& hub) : RefHub(hub) {
 
     g->addWidget(label("step α"), 0, 0, Qt::AlignRight);
     g->addWidget((stepAlpha = spinCell(6, 1., 30.)), 0, 1);
-    g->addWidget(label("β"), 0, 2, Qt::AlignRight);
-    g->addWidget((stepBeta = spinCell(6, 1., 30.)), 0, 3);
+    g->addWidget(label("β"), 1, 0, Qt::AlignRight);
+    g->addWidget((stepBeta = spinCell(6, 1., 30.)), 1, 1);
+    g->addWidget(label("r. idw"), 2, 0, Qt::AlignRight);
+    g->addWidget((idwRadius = spinCell(6, 0., 90.)), 2, 1);
 
-    g->addWidget(label("radius avg"), 1, 0, Qt::AlignRight);
-    g->addWidget((averagingRadius = spinCell(6, 0., 90.)), 1, 1);
-    g->addWidget(label("idw"), 1, 2, Qt::AlignRight);
-    g->addWidget((idwRadius = spinCell(6, 0., 90.)), 1, 3);
-
-    g->addWidget(label("incl. %"), 2, 0, Qt::AlignRight);
-    g->addWidget((threshold = spinCell(6, 0, 100)), 2, 1);
+    g->addWidget(label("avg α max"), 0, 2, Qt::AlignRight);
+    g->addWidget((avgAlphaMax = spinCell(6, 0., 90.)), 0, 3);
+    g->addWidget(label("r. avg"), 1, 2, Qt::AlignRight);
+    g->addWidget((avgRadius = spinCell(6, 0., 90.)), 1, 3);
+    g->addWidget(label("incl. %"), 2, 2, Qt::AlignRight);
+    g->addWidget((threshold = spinCell(6, 0, 100)), 2, 3);
 
     g->setRowStretch(g->rowCount(), 1);
   }
@@ -88,7 +90,8 @@ Params::Params(TheHub& hub) : RefHub(hub) {
 
   stepAlpha->setValue(5);
 
-  averagingRadius->setValue(3);
+  avgRadius->setValue(4);
+  avgAlphaMax->setValue(15);
   idwRadius->setValue(10);
   threshold->setValue(100);
 
@@ -149,12 +152,19 @@ Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
   auto bbox = hbox();
   box_->addLayout(bbox);
 
-  actClose_ = new TriggerAction("Close", this);
-  actCalculate_ = new TriggerAction("Calculate", this);
+  actClose_       = new TriggerAction("Close",       this);
+  actCalculate_   = new TriggerAction("Calculate",   this);
+  actInterpolate_ = new TriggerAction("Interpolate", this);
 
   bbox->addWidget(textButton(actClose_));
-  bbox->addStretch();
+  bbox->addStretch(1);
+  bbox->addWidget((pb_ = new QProgressBar));
+  bbox->addStretch(1);
   bbox->addWidget(textButton(actCalculate_));
+  bbox->addWidget(textButton(actInterpolate_));
+
+  bbox->setStretchFactor(pb_, 333);
+  pb_->hide();
 
   connect(actClose_, &QAction::triggered, [this]() {
     close();
@@ -162,6 +172,10 @@ Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
 
   connect(actCalculate_, &QAction::triggered, [this]() {
     calculate();
+  });
+
+  connect(actInterpolate_, &QAction::triggered, [this]() {
+    interpolate();
   });
 
   auto display = [this]() {
@@ -186,7 +200,7 @@ Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
 }
 
 void Frame::calculate() {
-  using deg = core::deg;
+  TakesLongTime __;
 
   calcPoints_.clear();
   interpPoints_.clear();
@@ -195,24 +209,40 @@ void Frame::calculate() {
   if (!reflections.isEmpty()) {
     uint reflCount = reflections.count();
 
-    deg alphaStep = params_->stepAlpha->value();
-    deg betaStep  = params_->stepBeta->value();
-    deg gammaStep = params_->stepGamma->value();
+    core::deg gammaStep = params_->stepGamma->value();
 
-    Progress progress(reflCount * hub_.numCollectedDatasets());
+    Progress progress(reflCount * hub_.numCollectedDatasets(), pb_);
 
-    qreal avgRadius = params_->averagingRadius->value();
-    qreal idwRadius = params_->idwRadius->value();
-    qreal treshold  = params_->threshold->value() / 100.0;
+    core::Range rgeGamma;
+    if (params_->cbLimitGamma->isChecked())
+      rgeGamma.safeSet(params_->limitGammaMin->value(),
+                       params_->limitGammaMax->value());
 
-    for_i (reflCount) {
-      auto rs = hub_.makeReflectionInfos(*reflections[i], gammaStep,
-                                         core::Range(), &progress);
-      calcPoints_.append(rs);
-        // REVIEW gui input for averagingAlphaMax?
-      interpPoints_.append(core::pole::interpolate(rs, alphaStep, betaStep, 10,
-                           avgRadius, idwRadius, treshold));
-    }
+    for_i (reflCount)
+      calcPoints_.append(hub_.makeReflectionInfos(
+          *reflections.at(i), gammaStep, rgeGamma, &progress));
+
+  }
+
+  interpolate();
+}
+
+void Frame::interpolate() {
+  TakesLongTime __;
+
+  core::deg alphaStep   = params_->stepAlpha->value();
+  core::deg betaStep    = params_->stepBeta->value();
+  qreal     avgRadius   = params_->avgRadius->value();
+  qreal     avgAlphaMax = params_->avgAlphaMax->value();
+  qreal     idwRadius   = params_->idwRadius->value();
+  qreal     treshold    = params_->threshold->value() / 100.0;
+
+  interpPoints_.clear();
+
+  for_i (calcPoints_.count()) {
+    interpPoints_.append(
+        core::pole::interpolate(calcPoints_.at(i), alphaStep, betaStep,
+                                avgAlphaMax, avgRadius, idwRadius, treshold));
   }
 
   displayReflection(params_->currReflIndex(), params_->interpolate());

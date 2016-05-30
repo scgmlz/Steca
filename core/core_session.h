@@ -132,9 +132,9 @@ private:
   Reflections reflections_;
 
 public:
-  rcRanges      bgRanges() const { return bgRanges_; }
-  uint          bgPolyDegree() const { return bgPolyDegree_; }
-  rcReflections reflections() const { return reflections_; }
+  rcRanges      bgRanges()      const { return bgRanges_; }
+  uint          bgPolyDegree()  const { return bgPolyDegree_; }
+  rcReflections reflections()   const { return reflections_; }
 
   void setBgRanges(rcRanges);
   bool addBgRange(rcRange);

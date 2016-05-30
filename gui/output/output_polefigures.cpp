@@ -24,11 +24,41 @@ namespace gui { namespace output {
 //------------------------------------------------------------------------------
 
 TabGraph::TabGraph(TheHub& hub, Params& params)
-: super(hub, params)
+: super(hub, params), flat_(false), alphaMax_(90)
 {
-  connect(params_.averagingRadius, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
+  grid_->addWidget((cbFlat_ = check("flat")), 0, 0);
+  grid_->addWidget((rb30_ = radioButton("30°")), 1, 0);
+  grid_->addWidget((rb60_ = radioButton("60°")), 2, 0);
+  grid_->addWidget((rb90_ = radioButton("90°")), 3, 0);
+
+  grid_->setRowStretch(grid_->rowCount(), 1);
+  grid_->setColumnStretch(grid_->columnCount(), 1);
+
+  connect(params_.avgAlphaMax, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
     update();
   });
+
+  connect(cbFlat_, &QCheckBox::toggled, [this](bool on) {
+    flat_ = on;
+    update();
+  });
+
+  connect(rb30_, &QRadioButton::clicked, [this]() {
+    alphaMax_ = 30;
+    update();
+  });
+
+  connect(rb60_, &QRadioButton::clicked, [this]() {
+    alphaMax_ = 60;
+    update();
+  });
+
+  connect(rb90_, &QRadioButton::clicked, [this]() {
+    alphaMax_ = 90;
+    update();
+  });
+
+  rb90_->click();
 }
 
 void TabGraph::set(core::ReflectionInfos rs) {
@@ -65,7 +95,7 @@ void TabGraph::circle(QPointF c, qreal r) {
 void TabGraph::paintGrid() {
   QPen penMajor(Qt::gray), penMinor(Qt::lightGray);
 
-  for (int alpha = 10; alpha <= alphaMax_; alpha += 10) {
+  for (int alpha = 10; alpha <= 90; alpha += 10) {
     qreal r = r_ / alphaMax_ * alpha;
     p_->setPen(!(alpha % 30) ? penMajor : penMinor);
     circle(c_, r);
@@ -73,12 +103,12 @@ void TabGraph::paintGrid() {
 
   for (int beta = 0; beta < 360; beta += 10) {
     p_->setPen(!(beta % 30) ? penMajor : penMinor);
-    p_->drawLine(p(10, beta), p(alphaMax_, beta));
+    p_->drawLine(p(10, beta), p(90, beta));
   }
 
   QPen penMark(Qt::darkGreen);
   p_->setPen(penMark);
-  circle(c_, r_ * params_.averagingRadius->value() / alphaMax_);
+  circle(c_, r_ * params_.avgAlphaMax->value() / alphaMax_);
 }
 
 void TabGraph::paintInfo() {
@@ -88,11 +118,19 @@ void TabGraph::paintInfo() {
     qreal inten = r.inten();
 
     if (qIsFinite(inten)) { // nan comes from interpolartion
-      inten /= rgeMax;
-      auto color = QColor(intenGraph(inten));
-      p_->setPen(color);
-      p_->setBrush(color);
-      circle(p(r.alpha(), r.beta()), inten * r_ / 60);
+      auto pp = p(r.alpha(), r.beta());
+      if (flat_) {
+        auto color = QColor(Qt::blue);
+        p_->setPen(color);
+        p_->setBrush(color);
+        circle(pp, .5);
+      } else {
+        inten /= rgeMax;
+        auto color = QColor(intenGraph(inten));
+        p_->setPen(color);
+        p_->setBrush(color);
+        circle(pp, inten * r_ / 60); // TODO scale to max inten
+      }
     }
   }
 }
@@ -177,8 +215,9 @@ void PoleFiguresFrame::show() {
   params_->stepBeta->setValue(10);
   params_->stepGamma->setValue(1.2);
   params_->idwRadius->setValue(20);
-  params_->averagingRadius->setValue(20);
-  calculate();
+  params_->avgRadius->setValue(20);
+  params_->cbLimitGamma->setChecked(false);
+//  calculate();
 }
 #endif
 

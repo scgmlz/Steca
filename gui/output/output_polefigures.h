@@ -47,11 +47,15 @@ protected:
   void paintGrid();
   void paintInfo();
 
-  constexpr static qreal alphaMax_ = 90;
-
   // valid during paintEvent
   QPainter *p_;
   QPointF   c_; qreal r_;
+
+  bool  flat_;
+  qreal alphaMax_ = 90;
+
+  QCheckBox    *cbFlat_;
+  QRadioButton *rb30_, *rb60_, *rb90_;
 };
 
 //------------------------------------------------------------------------------

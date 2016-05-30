@@ -122,6 +122,10 @@ Fitting::Fitting(TheHub &hub) : super(hub), silentSpin_(false) {
     connect(spinDegree_,
             static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
             [this](int degree) { hub_.setBgPolyDegree(degree); });
+
+    onSigBgChanged([this]() {
+      spinDegree_->setValue(hub_.bgPolyDegree());
+    });
   }
 
   {  // reflections

@@ -354,6 +354,10 @@ ReflectionInfos Session::makeReflectionInfos(rcDatasets   datasets,
                          ? gammaRange
                          : l->gammaRangeAt(reflection.range().center());
 
+    if (rgeGamma.isEmpty())
+      continue;
+
+    EXPECT(gammaStep > 0)
     int   numGammaRows = qCeil(rgeGamma.width() / gammaStep);
     qreal gammaStep    = rgeGamma.width() / numGammaRows;
 
@@ -361,7 +365,8 @@ ReflectionInfos Session::makeReflectionInfos(rcDatasets   datasets,
       qreal min = rgeGamma.min + i * gammaStep;
       Range gammaStripe(min, min + gammaStep);
       auto  refInfo = makeReflectionInfo(l, reflection, gammaStripe);
-      if (!qIsNaN(refInfo.inten())) infos.append(refInfo);  // REVIEW
+      if (!qIsNaN(refInfo.inten()))
+        infos.append(refInfo);
     }
   }
 
@@ -385,6 +390,7 @@ void Session::setBgPolyDegree(uint degree) {
 }
 
 void Session::addReflection(shp_Reflection reflection) {
+  EXPECT(!reflection.isNull() && reflection->range().isValid())
   reflections_.append(reflection);
 }
 

@@ -80,8 +80,8 @@ ReflectionInfo::ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma,
 {
 }
 
-ReflectionInfo::ReflectionInfo(deg alpha, deg beta, rcRange rgeGamma)
-: ReflectionInfo(alpha, beta, rgeGamma, qQNaN(), qQNaN(), qQNaN(), qQNaN(), qQNaN(), qQNaN())
+ReflectionInfo::ReflectionInfo(deg alpha, deg beta)
+: ReflectionInfo(alpha, beta, core::Range(), qQNaN(), qQNaN(), qQNaN(), qQNaN(), qQNaN(), qQNaN())
 {
 }
 

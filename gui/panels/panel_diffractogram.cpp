@@ -508,7 +508,8 @@ void Diffractogram::calcReflections() {
 
     for_i (dgramBgFitted_.count()) {
       qreal x = dgramBgFitted_.x(i);
-      if (rge.contains(x)) c.append(x, fun.y(x));
+      if (rge.contains(x))
+        c.append(x, fun.y(x));
     }
 
     refls_.append(c);

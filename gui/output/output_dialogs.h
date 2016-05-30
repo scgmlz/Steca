@@ -24,6 +24,8 @@
 #include "types/core_defs.h"
 #include "types/core_type_variant.h"
 
+class QProgressBar;
+
 namespace gui { namespace output {
 //------------------------------------------------------------------------------
 
@@ -56,7 +58,8 @@ public:
 protected:
   panel::GridPanel *gpInterpolation_;
 public:
-  QDoubleSpinBox   *stepAlpha, *stepBeta, *averagingRadius, *idwRadius;
+  QDoubleSpinBox   *stepAlpha, *stepBeta;
+  QDoubleSpinBox   *avgAlphaMax, *avgRadius, *idwRadius;
   QSpinBox         *threshold;
 };
 
@@ -89,7 +92,8 @@ public:
   Frame(TheHub&, rcstr title, Params*, QWidget*);
 
 protected:
-  QAction *actClose_, *actCalculate_;
+  QAction *actClose_, *actCalculate_, *actInterpolate_;
+  QProgressBar *pb_;
 
   QBoxLayout *box_;
   Params     *params_;
@@ -100,6 +104,7 @@ protected:
   class Table *table_;
 
   void calculate();
+  void interpolate();
 
   virtual void displayReflection(uint reflIndex, bool interpolated);
 };
@@ -178,7 +183,7 @@ public:
 
 protected:
   QLineEdit *path_, *fileName_;
-  Action *actBrowsePath_, *actSave_;
+  Action    *actBrowsePath_, *actSave_;
 };
 
 //------------------------------------------------------------------------------

@@ -20,8 +20,6 @@
 #include "types/core_defs.h"
 #include <QMainWindow>
 
-class QProgressBar;
-
 namespace gui {
 //------------------------------------------------------------------------------
 
@@ -51,12 +49,9 @@ public:
   void outputPoleFigures();
   void outputDiagrams();
 
-  QProgressBar* progressBar() const { return pb_; }
-
 private:
   gui::TheHub   hub_;
   Actions      &acts_;
-  QProgressBar *pb_;
 
 private:
   void closeEvent(QCloseEvent*);

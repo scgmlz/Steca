@@ -29,26 +29,28 @@ void (*TakesLongTime::handler)(bool) = nullptr;
 
 //------------------------------------------------------------------------------
 
-Progress::Progress(uint total) : total_(total), i_(0) {
-  if (bar) {
-    bar->setRange(0, total_);
-    bar->setValue(i_);
-    bar->show();
+Progress::Progress(uint total, QProgressBar* bar)
+: total_(total), i_(0), bar_(bar)
+{
+  if (bar_) {
+    bar_->setRange(0, total_);
+    bar_->setValue(i_);
+    bar_->show();
   }
 }
 
 Progress::~Progress() {
-  if (bar) bar->hide();
+  if (bar_)
+    bar_->hide();
 }
 
 void Progress::setProgress(uint i) {
-  if (bar) bar->setValue((i_ = qBound(0u, i, total_)));
+  if (bar_)
+    bar_->setValue((i_ = qBound(0u, i, total_)));
 }
 
 void Progress::step() {
   setProgress(i_ + 1);
 }
-
-QProgressBar* Progress::bar;
 
 // eof
