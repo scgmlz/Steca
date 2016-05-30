@@ -95,16 +95,49 @@ void TabPlot::plot(uint xIndex, uint yIndex) {
     return;
   }
 
-  sortColumns(xs, ys, is);
+  sortColumns(xs, ys, is); // TODO for inten, tth, fwhm also sort the corressponding errorValue
 
   xAxis->setRange(rgeX.min, rgeX.max);
   yAxis->setRange(rgeY.min, rgeY.max);
   xAxis->setVisible(true);
   yAxis->setVisible(true);
 
-  graph_->setData(xs, ys);
+  calculateErrors(yIndex,xs,ys);
+  if (!yErrorAdd_.isEmpty() && !yErrorSub_.isEmpty()) {
+    graph_->setPen(QPen(Qt::green));
+    graph_->addData(xs,yErrorAdd_);
+    graph_->setPen(QPen(Qt::red));
+    graph_->addData(xs,yErrorSub_);
+  }
+  graph_->setPen(QPen(Qt::blue));
+  graph_->addData(xs, ys);
 
   replot();
+}
+
+void TabPlot::calculateErrors(uint yIndex, qreal_vec xs, qreal_vec ys) {
+    auto calc = [this, xs, ys] (uint index) {
+      for_i (xs.count()) {
+        auto row = rs_.at(i).data();
+        auto sigma = row.at(index).toDouble();
+        yErrorAdd_.append(ys[i] + sigma);
+        yErrorSub_.append(ys[i] - sigma);
+      }
+    };
+
+    yErrorAdd_.clear();
+    yErrorSub_.clear();
+    auto yTag = core::ReflectionInfo::reflStringTag(yIndex);
+    if (core::ReflectionInfo::reflStringTag((uint)core::ReflectionInfo::eReflAttr::INTEN) == yTag) {
+      calc((uint)core::ReflectionInfo::eReflAttr::SIGMA_INTEN);
+    }
+    else if (core::ReflectionInfo::reflStringTag((uint)core::ReflectionInfo::eReflAttr::TTH) == yTag) {
+      calc((uint)core::ReflectionInfo::eReflAttr::SIGMA_TTH);
+    }
+    else if (core::ReflectionInfo::reflStringTag((uint)core::ReflectionInfo::eReflAttr::FWHM) == yTag) {
+      calc((uint)core::ReflectionInfo::eReflAttr::SIGMA_FWHM);
+    }
+
 }
 
 //------------------------------------------------------------------------------
@@ -165,34 +198,6 @@ void DiagramsFrame::plot() {
                  ps->yAxis->currentIndex());
 }
 
-void DiagramsFrame::calculateErrors(uint yIndex, uint count, qreal_vec xs, qreal_vec ys) {
-
-  auto calc = [this, xs, ys] (uint index) {
-    for_i (xs.count()) {
-      auto sigma = table_->row(i).at(index).toDouble();
-      xErrorAdd_.append(xs[i] + sigma);
-      xErrorSub_.append(xs[i] - sigma);
-      yErrorAdd_.append(ys[i] + sigma);
-      yErrorSub_.append(ys[i] - sigma);
-    }
-  };
-
-  for_i (count) {
-    yErrorAdd_.clear();
-    yErrorSub_.clear();
-    auto yTag = core::ReflectionInfo::reflStringTag(yIndex);
-    if (core::ReflectionInfo::reflStringTag((uint)core::ReflectionInfo::eReflAttr::INTEN) == yTag) {
-      calc((uint)core::ReflectionInfo::eReflAttr::SIGMA_INTEN);
-    }
-    else if (core::ReflectionInfo::reflStringTag((uint)core::ReflectionInfo::eReflAttr::TTH) == yTag) {
-      calc((uint)core::ReflectionInfo::eReflAttr::SIGMA_TTH);
-    }
-    else if (core::ReflectionInfo::reflStringTag((uint)core::ReflectionInfo::eReflAttr::FWHM) == yTag) {
-      calc((uint)core::ReflectionInfo::eReflAttr::SIGMA_FWHM);
-    }
-  }
-}
-
 //------------------------------------------------------------------------------
 
 bool DiagramsFrame::saveDiagramOutput() {
@@ -227,25 +232,24 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separato
 
   auto xIndex = ps->xAxis->currentIndex();
   auto yIndex = ps->yAxis->currentIndex();
+  auto cIndex = params_->cbRefl->currentIndex();
 
-  uint count = calcPoints_.at(params_->cbRefl->currentIndex()).count();
+  uint count = calcPoints_.at(cIndex).count();
   qreal_vec xs(count), ys(count);
   uint_vec is(count);
 
   for_i (count) {
-    xs[i] = table_->row(i).at(xIndex).toDouble(); // TODO check type first
+    xs[i] = table_->row(i).at(xIndex).toDouble();
     ys[i] = table_->row(i).at(yIndex).toDouble();
   }
 
   sortColumns(xs, ys, is);
   QTextStream stream(&file);
 
-  calculateErrors(yIndex,count, xs, ys);
-
   for_i (count) {
     stream << xs.at(i) << separator << ys.at(i);
-    if (!yErrorAdd_.isEmpty() && !yErrorSub_.isEmpty())
-      stream << separator << yErrorAdd_.at(i) << separator << yErrorSub_.at(i);
+    if (!tabPlot_->yErrorAdd_.isEmpty() && !tabPlot_->yErrorSub_.isEmpty())
+      stream << separator << tabPlot_->yErrorAdd_.at(i) << separator << tabPlot_->yErrorSub_.at(i);
     stream << '\n';
   }
 

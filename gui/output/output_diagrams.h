@@ -42,6 +42,9 @@ public:
   void set(core::ReflectionInfos);
 
   void plot(uint xIndex, uint yIndex);
+  void calculateErrors(uint yIndex, qreal_vec xs, qreal_vec ys);
+
+  qreal_vec yErrorAdd_, yErrorSub_;
 
 protected:
   core::ReflectionInfos rs_;
@@ -77,14 +80,10 @@ protected:
   void displayReflection(uint reflIndex, bool interpolated);
 
   void plot();
-  void calculateErrors(uint yIndex, uint count, qreal_vec xs, qreal_vec ys);
 
   bool saveDiagramOutput();
   void writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator, rcstr fileTag);
   void writeAllDataOutputFile(rcstr filePath, rcstr separator, rcstr fileTag);
-
-private:
-  qreal_vec xErrorAdd_, xErrorSub_, yErrorAdd_, yErrorSub_;
 };
 
 //------------------------------------------------------------------------------
