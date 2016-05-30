@@ -197,6 +197,7 @@ void Frame::calculate() {
 
     deg alphaStep = params_->stepAlpha->value();
     deg betaStep  = params_->stepBeta->value();
+    deg gammaStep = params_->stepGamma->value();
 
     Progress progress(reflCount * hub_.numCollectedDatasets());
 
@@ -205,7 +206,7 @@ void Frame::calculate() {
     qreal treshold  = params_->threshold->value() / 100.0;
 
     for_i (reflCount) {
-      auto rs = hub_.makeReflectionInfos(*reflections[i], betaStep,
+      auto rs = hub_.makeReflectionInfos(*reflections[i], gammaStep,
                                          core::Range(), &progress);
       calcPoints_.append(rs);
         // REVIEW gui input for averagingAlphaMax?
@@ -272,7 +273,7 @@ private:
 //------------------------------------------------------------------------------
 
 TableModel::TableModel(TheHub& hub, uint numColumns_)
-: models::TableModel(hub), numCols_(numColumns_), sortColumn_(0)
+: models::TableModel(hub), numCols_(numColumns_), sortColumn_(-1)
 {
   colIndexMap_.resize(numCols_);
   for_i (numCols_)
@@ -382,7 +383,7 @@ void TableModel::sortData() {
   };
 
   auto cmp = [this, cmpRows](core::row_t const& r1, core::row_t const& r2) {
-    if (sortColumn_ > 0) {
+    if (sortColumn_ >= 0) {
       int c = cmpRows(sortColumn_, r1, r2);
       if (c < 0) return true;
       if (c > 0) return false;

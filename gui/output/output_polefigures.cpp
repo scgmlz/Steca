@@ -173,10 +173,12 @@ PoleFiguresFrame::PoleFiguresFrame(TheHub &hub, rcstr title, QWidget *parent)
 #ifdef DEVELOPMENT_JAN
 void PoleFiguresFrame::show() {
   super::show();
-//  params_->cbInterpolated_->setChecked(true);
-//  params_->idwRadius_->setValue(20);
-//  params_->averagingRadius_->setValue(20);
-  //  calculate();
+  params_->stepAlpha->setValue(10);
+  params_->stepBeta->setValue(10);
+  params_->stepGamma->setValue(1.2);
+  params_->idwRadius->setValue(20);
+  params_->averagingRadius->setValue(20);
+  calculate();
 }
 #endif
 

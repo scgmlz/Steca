@@ -336,11 +336,11 @@ ReflectionInfo Session::makeReflectionInfo(shp_Lens     lens,
  * Either uses the whole gamma range of the datasets (if gammaSector is
  * invalid), or user limits the range.
  * Even though the betaStep of the equidistant polefigure grid is needed here,
- * the returned infos won't be on the grid.
+ * the returned infos won't be on the grid. REVIEW gammaStep separately?
  */
 ReflectionInfos Session::makeReflectionInfos(rcDatasets   datasets,
                                              rcReflection reflection,
-                                             deg betaStep, rcRange gammaRange,
+                                             deg gammaStep, rcRange gammaRange,
                                              Progress* progress)
 {
   ReflectionInfos infos;
@@ -354,7 +354,7 @@ ReflectionInfos Session::makeReflectionInfos(rcDatasets   datasets,
                          ? gammaRange
                          : l->gammaRangeAt(reflection.range().center());
 
-    int   numGammaRows = qCeil(rgeGamma.width() / betaStep);
+    int   numGammaRows = qCeil(rgeGamma.width() / gammaStep);
     qreal gammaStep    = rgeGamma.width() / numGammaRows;
 
     for_i (numGammaRows) {
