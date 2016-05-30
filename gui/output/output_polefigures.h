@@ -82,10 +82,6 @@ class PoleFiguresFrame : public Frame {
 public:
   PoleFiguresFrame(TheHub&, rcstr title, QWidget*);
 
-#ifdef DEVELOPMENT_JAN
-  void show();
-#endif
-
 protected:
   TabGraph *tabGraph_;
   TabPoleFiguresSave *tabSave_;

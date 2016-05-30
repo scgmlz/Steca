@@ -156,12 +156,12 @@ Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
   actCalculate_   = new TriggerAction("Calculate",   this);
   actInterpolate_ = new TriggerAction("Interpolate", this);
 
-  bbox->addWidget(textButton(actClose_));
+  bbox->addWidget((btnClose_ = textButton(actClose_)));
   bbox->addStretch(1);
   bbox->addWidget((pb_ = new QProgressBar));
   bbox->addStretch(1);
-  bbox->addWidget(textButton(actCalculate_));
-  bbox->addWidget(textButton(actInterpolate_));
+  bbox->addWidget((btnCalculate_  = textButton(actCalculate_)));
+  bbox->addWidget((btnInterpolate_= textButton(actInterpolate_)));
 
   bbox->setStretchFactor(pb_, 333);
   pb_->hide();

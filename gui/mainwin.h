@@ -48,6 +48,7 @@ public:
 
   void outputPoleFigures();
   void outputDiagrams();
+  void outputDiffractograms();
 
 private:
   gui::TheHub   hub_;

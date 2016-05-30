@@ -176,7 +176,8 @@ Actions::Actions(TheHub& hub): super(hub) {
       "Pole figures...");
   trg(outputDiagrams,
       "Diagrams...");
-
+  trg(outputDiffractograms,
+      "Diffractograms...");
 
   // key shortcuts
 

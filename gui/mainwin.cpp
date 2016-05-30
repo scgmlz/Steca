@@ -16,6 +16,7 @@
 #include "actions.h"
 #include "output/output_polefigures.h"
 #include "output/output_diagrams.h"
+#include "output/output_diffractograms.h"
 #include "panels/panel_dataset.h"
 #include "panels/panel_diffractogram.h"
 #include "panels/panel_file.h"
@@ -143,7 +144,9 @@ void MainWin::initMenus() {
       acts_.addReflection, acts_.remReflection,
   });
 
-  menuOutput_->addActions({acts_.outputPolefigures, acts_.outputDiagrams});
+  menuOutput_->addActions({
+      acts_.outputPolefigures, acts_.outputDiagrams, acts_.outputDiffractograms,
+  });
 
   menuHelp_->addActions({
     #ifndef Q_OS_OSX  // Mac puts About into the Apple menu
@@ -202,8 +205,9 @@ void MainWin::connectActions() {
 
   onTrigger(acts_.quit, &thisClass::close);
 
-  onTrigger(acts_.outputPolefigures, &thisClass::outputPoleFigures);
-  onTrigger(acts_.outputDiagrams,    &thisClass::outputDiagrams);
+  onTrigger(acts_.outputPolefigures,    &thisClass::outputPoleFigures);
+  onTrigger(acts_.outputDiagrams,       &thisClass::outputDiagrams);
+  onTrigger(acts_.outputDiffractograms, &thisClass::outputDiffractograms);
 
   onTrigger(acts_.about, &thisClass::about);
 
@@ -314,6 +318,11 @@ void MainWin::outputDiagrams() {
   popup->show();
 }
 
+void MainWin::outputDiffractograms() {
+  auto popup = new output::DiffractogramsFrame(hub_, "Diffractograms", this);
+  popup->show();
+}
+
 void MainWin::closeEvent(QCloseEvent* event) {
   onClose();
   event->accept();
@@ -336,7 +345,7 @@ void MainWin::onShow() {
 
 #ifdef DEVELOPMENT_JAN
   safeLoad("/P/zz-gd/SCG/data/0.ste");
-  hub_.actions.outputPolefigures->trigger();
+  hub_.actions.outputDiffractograms->trigger();
 #endif
 }
 

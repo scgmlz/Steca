@@ -74,7 +74,7 @@ public:
       *fixedIntenImageScale, *fixedIntenDgramScale, *combinedDgram,
       *fitRegions, *fitBgClear, *fitBgShow,
       *addReflection, *remReflection,
-      *outputPolefigures, *outputDiagrams;
+      *outputPolefigures, *outputDiagrams, *outputDiffractograms;
 
 private:
   Action& trg(Action*& action, rcstr text, rcstr tip = EMPTY_STR);

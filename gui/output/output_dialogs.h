@@ -32,7 +32,7 @@ namespace gui { namespace output {
 class Params : public QWidget, protected RefHub {
   SUPER(Params, QWidget)
 public:
-  Params(TheHub&);
+  Params(TheHub&);  // TODO hack
 
   void addStretch();
 
@@ -92,7 +92,9 @@ public:
   Frame(TheHub&, rcstr title, Params*, QWidget*);
 
 protected:
-  QAction *actClose_, *actCalculate_, *actInterpolate_;
+  QAction     *actClose_, *actCalculate_, *actInterpolate_;
+  QToolButton *btnClose_, *btnCalculate_, *btnInterpolate_;
+
   QProgressBar *pb_;
 
   QBoxLayout *box_;

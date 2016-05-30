@@ -208,19 +208,6 @@ PoleFiguresFrame::PoleFiguresFrame(TheHub &hub, rcstr title, QWidget *parent)
   });
 }
 
-#ifdef DEVELOPMENT_JAN
-void PoleFiguresFrame::show() {
-  super::show();
-  params_->stepAlpha->setValue(10);
-  params_->stepBeta->setValue(10);
-  params_->stepGamma->setValue(1.2);
-  params_->idwRadius->setValue(20);
-  params_->avgRadius->setValue(20);
-  params_->cbLimitGamma->setChecked(false);
-//  calculate();
-}
-#endif
-
 void PoleFiguresFrame::displayReflection(uint reflIndex, bool interpolated) {
   super::displayReflection(reflIndex, interpolated);
   if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
