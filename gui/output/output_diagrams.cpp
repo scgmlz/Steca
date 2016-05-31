@@ -102,7 +102,7 @@ void TabPlot::plot(uint xIndex, uint yIndex) {
   xAxis->setVisible(true);
   yAxis->setVisible(true);
 
-  calculateErrors(yIndex,xs,ys);
+  calculateErrors(yIndex,xs,ys,is);
   if (!yErrorAdd_.isEmpty() && !yErrorSub_.isEmpty()) {
     graph_->setPen(QPen(Qt::green));
     graph_->addData(xs,yErrorAdd_);
@@ -115,10 +115,10 @@ void TabPlot::plot(uint xIndex, uint yIndex) {
   replot();
 }
 
-void TabPlot::calculateErrors(uint yIndex, qreal_vec xs, qreal_vec ys) {
-    auto calc = [this, xs, ys] (uint index) {
+void TabPlot::calculateErrors(uint yIndex, qreal_vec xs, qreal_vec ys, uint_vec is) {
+    auto calc = [this, xs, ys, is] (uint index) {
       for_i (xs.count()) {
-        auto row = rs_.at(i).data();
+        auto row = rs_.at(is[i]).data(); // acces error over sorted index vec
         auto sigma = row.at(index).toDouble();
         yErrorAdd_.append(ys[i] + sigma);
         yErrorSub_.append(ys[i] - sigma);
@@ -154,6 +154,7 @@ TabDiagramsSave::TabDiagramsSave(TheHub& hub, Params& params)
   g->addWidget(currentDiagram_ = radioButton("Current diagram"),0,0);
   g->addWidget(allData_ = radioButton("All data"),1,0);
   g->addWidget(fileTypes_ = comboBox(fileTags));
+
 }
 
 uint TabDiagramsSave::currType() const {
@@ -180,7 +181,7 @@ DiagramsFrame::DiagramsFrame(TheHub &hub, rcstr title, QWidget *parent)
 
   connect(tabSave_->actSave(),&QAction::triggered,[this]() {
     if (saveDiagramOutput())
-      tabSave_->fileName().clear();
+      tabSave_->clearFilename();
   });
 
   plot();

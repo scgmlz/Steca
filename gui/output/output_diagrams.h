@@ -42,7 +42,7 @@ public:
   void set(core::ReflectionInfos);
 
   void plot(uint xIndex, uint yIndex);
-  void calculateErrors(uint yIndex, qreal_vec xs, qreal_vec ys);
+  void calculateErrors(uint yIndex, qreal_vec xs, qreal_vec ys, uint_vec is);
 
   qreal_vec yErrorAdd_, yErrorSub_;
 
