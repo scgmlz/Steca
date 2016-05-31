@@ -179,8 +179,8 @@ public:
 
   void clearFilename();
 
-  str path()     const { return path_->text();     }
-  str fileName() const { return fileName_->text(); }
+  str path()        const { return path_->text();     }
+  str fileName()    const { return fileName_->text(); }
 
   Action* actSave() const { return actSave_; }
 

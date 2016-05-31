@@ -21,8 +21,7 @@ namespace core { namespace io {
 static QByteArray peek(uint maxLen, QFileInfo const& info) {
   QFile file(info.filePath());
   file.open(QFile::ReadOnly);
-  return file.read(
-      maxLen);  // on error returns an empty QByteArray; that's good
+  return file.read(maxLen); // on error returns an empty QByteArray; that's good
 }
 
 shp_File load(rcstr filePath) THROWS {

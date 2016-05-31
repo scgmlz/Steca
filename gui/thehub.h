@@ -55,6 +55,20 @@ public:
 
 //------------------------------------------------------------------------------
 
+class ReadFile: public QFile {
+  SUPER(ReadFile, QFile)
+public:
+  ReadFile(rcstr path) THROWS;
+};
+
+class WriteFile: public QFile {
+  SUPER(WriteFile, QFile)
+public:
+  WriteFile(rcstr path) THROWS;
+};
+
+//------------------------------------------------------------------------------
+
 class TheHub : public TheHubSignallingBase {
   SUPER(TheHub, TheHubSignallingBase)
   friend class TheHubSignallingBase;

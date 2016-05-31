@@ -87,7 +87,8 @@ bool App::notify(QObject* receiver, QEvent* event) {
   try {
     return super::notify(receiver, event);
   } catch (Exception const& e) {
-    qWarning("%s", e.what());
+    if (!e.silent())
+      qWarning("%s", e.what());
   } catch (std::exception const& e) {
     qWarning("Error: %s", e.what());
   }

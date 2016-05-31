@@ -23,8 +23,12 @@ static_assert(QT_VERSION >= QT_VERSION_CHECK(5, 4, 0),
 
 str const EMPTY_STR;
 
+Exception::Exception() noexcept
+: msg_(), msg8bit_(), silent_(true) {
+}
+
 Exception::Exception(rcstr msg) noexcept
-: msg_(msg), msg8bit_(msg_.toLocal8Bit()) {
+: msg_(msg), msg8bit_(msg_.toLocal8Bit()), silent_(false) {
 }
 
 Exception::Exception(Exception const& that) noexcept

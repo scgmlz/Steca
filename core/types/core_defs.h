@@ -65,11 +65,13 @@ typedef QVector<uint>  uint_vec;
 class Exception : public QException {
   SUPER(Exception, QException)
 public:
+  Exception()                 noexcept;
   Exception(rcstr msg)        noexcept;
   Exception(Exception const&) noexcept;
 
-  rcstr msg()  const noexcept { return msg_; }
-  pcstr what() const noexcept;
+  bool  silent() const noexcept { return silent_; }
+  rcstr msg()    const noexcept { return msg_;    }
+  pcstr what()   const noexcept;
 
   Exception* clone() const;
   void       raise() const;
@@ -77,6 +79,7 @@ public:
 protected:
   str        msg_;
   QByteArray msg8bit_;
+  bool       silent_;
 };
 
 /// exception specification macro
@@ -87,7 +90,8 @@ protected:
 #endif
 
 /// raise an exception
-#define THROW(msg) throw Exception(msg)
+#define THROW(msg)     throw Exception(msg)
+#define THROW_SILENT() throw Exception()
 
 /// run-time condition checking
 #define RUNTIME_CHECK(test, msg) \

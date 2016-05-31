@@ -156,7 +156,7 @@ TabPoleFiguresSave::TabPoleFiguresSave(TheHub& hub, Params& params)
 
     b->addWidget(label("Output files for:"));
     b->addWidget(rbSelectedRefl_ = radioButton("Selected Reflection"));
-    b->addWidget(rbAllRefls_      = radioButton("All Reflections"));
+    b->addWidget(rbAllRefls_     = radioButton("All Reflections"));
 
     b->addStretch();
   }
@@ -291,10 +291,9 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
 }
 
 void PoleFiguresFrame::writeErrorMask(rcstr filePath, core::ReflectionInfos reflInfo, qreal_vec const& output) {
-  QFile file(filePath + ".errorMask");
-  RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File connot be opened");
-
+  WriteFile file(filePath + ".errorMask");
   QTextStream stream(&file);
+
   for(int j = 0, jEnd = reflInfo.count(); j < jEnd; j+=9) {
     for (int i = j; i < j + MAX_LINE_LENGTH_POL; i++) {
       if (qIsNaN(output.at(i)))
@@ -307,10 +306,9 @@ void PoleFiguresFrame::writeErrorMask(rcstr filePath, core::ReflectionInfos refl
 }
 
 void PoleFiguresFrame::writePoleFile(rcstr filePath, core::ReflectionInfos reflInfo, qreal_vec const& output) {
-  QFile file(filePath + ".pol");
-  RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File connot be opened");
-
+  WriteFile file(filePath + ".pol");
   QTextStream stream(&file);
+
   for(int j = 0, jEnd = reflInfo.count(); j < jEnd; j+=9) {
     for (int i = j; i < j + MAX_LINE_LENGTH_POL; i++) {
       if (qIsNaN(output.at(i)))
@@ -323,9 +321,7 @@ void PoleFiguresFrame::writePoleFile(rcstr filePath, core::ReflectionInfos reflI
 }
 
 void PoleFiguresFrame::writeListFile(rcstr filePath, core::ReflectionInfos reflInfo, qreal_vec const& output) {
-  QFile file(filePath + ".lst");
-  RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File connot be opened");
-
+  WriteFile file(filePath + ".lst");
   QTextStream stream(&file);
 
   for_i (reflInfo.count()) {

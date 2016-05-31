@@ -22,6 +22,7 @@
 
 #include <QDir>
 #include <QJsonDocument>
+#include <QMessageBox>
 #include <QSpinBox>
 
 namespace gui {
@@ -80,6 +81,24 @@ qreal Settings::readReal(rcstr key, qreal def) {
 
 void Settings::saveReal(rcstr key, qreal val) {
   saveVariant(key, val);
+}
+
+//------------------------------------------------------------------------------
+
+ReadFile::ReadFile(rcstr path) THROWS : super(path) {
+  RUNTIME_CHECK(super::open(QIODevice::ReadOnly),
+    "Cannot open file for reading: " % path);
+}
+
+WriteFile::WriteFile(rcstr path) THROWS : super(path) {
+  if (super::exists()) {
+    if (QMessageBox::Yes != QMessageBox::question(nullptr,
+        "File exists", "Overwrite " % path % " ?"))
+      THROW_SILENT();
+  }
+
+  RUNTIME_CHECK(super::open(QIODevice::WriteOnly),
+    "Cannot open file for writing: " % path);
 }
 
 //------------------------------------------------------------------------------
@@ -203,8 +222,7 @@ static str const KEY_BG_RANGES("background ranges");
 static str const KEY_REFLECTIONS("reflections");
 
 void TheHub::saveSession(QFileInfo const& fileInfo) const {
-  QFile file(fileInfo.filePath());
-  RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File cannot be opened");
+  WriteFile file(fileInfo.filePath());
 
   QDir::setCurrent(fileInfo.absolutePath());
   auto written = file.write(saveSession());
@@ -270,9 +288,8 @@ QByteArray TheHub::saveSession() const {
 }
 
 void TheHub::loadSession(QFileInfo const& fileInfo) THROWS {
-  QFile file(fileInfo.absoluteFilePath());
-  RUNTIME_CHECK(file.open(QIODevice::ReadOnly),
-                "Session file cannot be opened");
+  ReadFile file(fileInfo.absoluteFilePath());
+
   QDir::setCurrent(fileInfo.absolutePath());
   loadSession(file.readAll());
 }

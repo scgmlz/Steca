@@ -226,8 +226,7 @@ bool DiagramsFrame::saveDiagramOutput() {
 }
 
 void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator, rcstr fileTag) {
-  QFile file(filePath + fileTag);
-  RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File connot be opened");
+  WriteFile file(filePath + fileTag);
 
   auto ps = static_cast<DiagramsParams*>(params_);
 
@@ -257,8 +256,7 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separato
 }
 
 void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator, rcstr fileTag) {
-  QFile file(filePath + fileTag);
-  RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File connot be opened");
+  WriteFile file(filePath + fileTag);
 
   QTextStream stream(&file);
 
