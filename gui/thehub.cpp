@@ -71,6 +71,17 @@ void Settings::save(rcstr key, QDoubleSpinBox* box) {
   if (box) saveVariant(key, box->value());
 }
 
+qreal Settings::readReal(rcstr key, qreal def) {
+  auto var = readVariant(key, QVariant());
+  if (QVariant::Double == var.type())
+    return var.toDouble();
+  return def;
+}
+
+void Settings::saveReal(rcstr key, qreal val) {
+  saveVariant(key, val);
+}
+
 //------------------------------------------------------------------------------
 
 TheHub::TheHub()

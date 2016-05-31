@@ -48,6 +48,9 @@ public:
 
   void read(rcstr key, QDoubleSpinBox*, qreal def);
   void save(rcstr key, QDoubleSpinBox*);
+
+  qreal readReal(rcstr key, qreal def);
+  void  saveReal(rcstr key, qreal);
 };
 
 //------------------------------------------------------------------------------

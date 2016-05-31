@@ -359,8 +359,8 @@ ReflectionInfos Session::makeReflectionInfos(rcDatasets   datasets,
     Range lRange = l->gammaRangeAt(reflection.range().center());
 
     Range rgeGamma = gammaRange.isValid()
-                         ? gammaRange.intersects(lRange)
-                         : lRange;
+                    ? gammaRange.intersect(lRange)
+                    : lRange;
 
     if (rgeGamma.isEmpty())
       continue;

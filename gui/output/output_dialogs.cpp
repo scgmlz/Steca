@@ -27,6 +27,18 @@
 namespace gui { namespace output {
 //------------------------------------------------------------------------------
 
+static str const GROUP_OUT_PARAMS("Output Params");
+static str const
+  KEY_GAMMA_STEP("gamma step"),
+  KEY_GAMMA_MIN("gamma min"),
+  KEY_GAMMA_MAX("gamma max"),
+  KEY_ALPHA_STEP("alpha step"),
+  KEY_BETA_STEP("beta step"),
+  KEY_AVG_ALPHA_MAX("avg alpha max"),
+  KEY_AVG_RADIUS("avg radius"),
+  KEY_IDW_RADIUS("idw radius"),
+  KEY_THRESHOLD("threshold");
+
 Params::Params(TheHub& hub) : RefHub(hub) {
   setLayout((box_ = boxLayout(Qt::Horizontal)));
   box_->setMargin(0);
@@ -82,18 +94,19 @@ Params::Params(TheHub& hub) : RefHub(hub) {
     g->setRowStretch(g->rowCount(), 1);
   }
 
-  // default values TODO to Settings
+  Settings s(GROUP_OUT_PARAMS);
 
-  stepGamma->setValue(5);
-  limitGammaMin->setValue(0);
-  limitGammaMax->setValue(0);
+  stepGamma->setValue(s.readReal(KEY_GAMMA_STEP, 5));
+  limitGammaMin->setValue(s.readReal(KEY_GAMMA_MIN, 0));
+  limitGammaMax->setValue(s.readReal(KEY_GAMMA_MAX, 0));
 
-  stepAlpha->setValue(5);
+  stepAlpha->setValue(s.readReal(KEY_ALPHA_STEP, 5));
+  stepBeta->setValue(s.readReal(KEY_BETA_STEP, 5));
 
-  avgRadius->setValue(4);
-  avgAlphaMax->setValue(15);
-  idwRadius->setValue(10);
-  threshold->setValue(100);
+  avgAlphaMax->setValue(s.readReal(KEY_AVG_ALPHA_MAX, 15));
+  avgRadius->setValue(s.readReal(KEY_AVG_RADIUS, 5));
+  idwRadius->setValue(s.readReal(KEY_IDW_RADIUS, 10));
+  threshold->setValue(s.readReal(KEY_THRESHOLD, 100));
 
   auto enableLimitGamma = [this](bool on) {
     cbLimitGamma->setChecked(on);
@@ -107,6 +120,22 @@ Params::Params(TheHub& hub) : RefHub(hub) {
 
   enableLimitGamma(false);
   rbCalc->click();
+}
+
+Params::~Params() {
+  Settings s(GROUP_OUT_PARAMS);
+
+  s.saveReal(KEY_GAMMA_STEP, stepGamma->value());
+  s.saveReal(KEY_GAMMA_MIN,  limitGammaMin->value());
+  s.saveReal(KEY_GAMMA_MAX,  limitGammaMax->value());
+
+  s.saveReal(KEY_ALPHA_STEP, stepAlpha->value());
+  s.saveReal(KEY_BETA_STEP,  stepBeta->value());
+
+  s.saveReal(KEY_AVG_ALPHA_MAX, avgAlphaMax->value());
+  s.saveReal(KEY_AVG_RADIUS, avgRadius->value());
+  s.saveReal(KEY_IDW_RADIUS, idwRadius->value());
+  s.saveReal(KEY_THRESHOLD,  threshold->value());
 }
 
 void Params::addStretch() {
@@ -221,7 +250,6 @@ void Frame::calculate() {
     for_i (reflCount)
       calcPoints_.append(hub_.makeReflectionInfos(
           *reflections.at(i), gammaStep, rgeGamma, &progress));
-
   }
 
   interpolate();
@@ -333,10 +361,14 @@ QVariant TableModel::data(rcIndex index, int role) const {
   switch (role) {
   case Qt::DisplayRole:
     if (0 == indexCol)
-      return indexRow + 1;
+      return indexRow + 1;  // row number, 1-based
 
-    if (--indexCol < numCols && indexRow < numRows)
-      return rows_.at(indexRow).at(indexCol);
+    if (--indexCol < numCols && indexRow < numRows) {
+      QVariant var = rows_.at(indexRow).at(indexCol);
+      if (QVariant::Double == var.type() && qIsNaN(var.toDouble()))
+        var = QVariant(); // hide nans
+      return var;
+    }
 
     break;
 

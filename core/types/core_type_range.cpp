@@ -101,6 +101,17 @@ bool Range::intersects(rcRange that) const {
   return min <= that.max && that.min <= max;
 }
 
+Range Range::intersect(rcRange that) const {
+  if (isValid() || !that.isValid()) {
+    auto min_ = qMax(min, that.min), max_ = qMin(max, that.max);
+    if (min_ <= max_)
+      return Range(min_, max_);
+    return Range(min, min);
+  }
+
+  return Range();
+}
+
 qreal Range::bound(qreal value) const {
   if (isValid()) value = qBound(min, value, max);
   return value;

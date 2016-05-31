@@ -32,7 +32,8 @@ namespace gui { namespace output {
 class Params : public QWidget, protected RefHub {
   SUPER(Params, QWidget)
 public:
-  Params(TheHub&);  // TODO hack
+  Params(TheHub&);
+ ~Params();
 
   void addStretch();
 

@@ -52,6 +52,7 @@ struct Range {
   bool  contains(qreal val) const;
   bool  contains(rcRange)   const;
   bool  intersects(rcRange) const;
+  Range intersect(rcRange)  const;
 
   /// limit the number to the interval, as qBound would
   qreal bound(qreal)        const;

@@ -67,7 +67,7 @@ void DiffractogramsFrame::outputCurves(core::rcRange rgeGamma, qreal gammaStep, 
 
   core::Range rge = map.rgeGamma();
   if (rgeGamma.isValid())
-    rge = rge.intersects(rgeGamma);
+    rge = rge.intersect(rgeGamma);
 
   qreal step = gammaStep;
   for_i (rge.numSlices(step)) {
