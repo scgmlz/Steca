@@ -23,7 +23,7 @@ namespace gui { namespace output {
 DiagramsParams::DiagramsParams(TheHub& hub) : super(hub) {
   box_->addWidget((gpAxes_ = new panel::GridPanel(hub, "Reflection")));
   auto g = gpAxes_->grid();
-
+  gpInterpolation_->hide();
   auto tags = core::ReflectionInfo::dataTags();
   for_i (core::Metadata::numAttributes(false) - core::Metadata::numAttributes(true))
     tags.removeLast(); // remove all tags that are not numbers

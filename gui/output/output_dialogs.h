@@ -160,7 +160,7 @@ private:
     Table  &table_; showcol_vec& showCols_;
 
     QBoxLayout   *box_;
-    QRadioButton *rbHidden_, *rbAll_, *rbNone_;
+    QRadioButton *rbHidden_, *rbAll_, *rbNone_, *rbInten_, *rbTth_, *rbFWHM_;
   };
 
 private:

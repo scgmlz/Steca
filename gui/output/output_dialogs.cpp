@@ -545,6 +545,9 @@ TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
 
   box_->addWidget((rbAll_    = radioButton("all")));
   box_->addWidget((rbNone_   = radioButton("none")));
+  box_->addWidget(rbInten_   = radioButton("Intensity"));
+  box_->addWidget(rbTth_     = radioButton("2θ"));
+  box_->addWidget(rbFWHM_    = radioButton("fwhm"));
   box_->addSpacing(8);
 
   for_i (showCols.count()) {
@@ -562,15 +565,76 @@ TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
       col.cb->setChecked(false);
   };
 
+  auto showAlphaBeta = [this]() {
+    showCols_.at((uint)core::ReflectionInfo::eReflAttr::ALPHA).cb->setChecked(true);
+    showCols_.at((uint)core::ReflectionInfo::eReflAttr::BETA).cb->setChecked(true);
+  };
+
+  auto showInten = [this,none,showAlphaBeta]() {
+    none();
+    showAlphaBeta();
+    showCols_.at((uint)core::ReflectionInfo::eReflAttr::INTEN).cb->setChecked(true);
+    rbInten_->setChecked(true);
+  };
+
+  auto showTth = [this,none,showAlphaBeta]() {
+    none();
+    showAlphaBeta();
+    showCols_.at((uint)core::ReflectionInfo::eReflAttr::TTH).cb->setChecked(true);
+    rbTth_->setChecked(true);
+  };
+
+  auto showFWHM = [this,none,showAlphaBeta]() {
+    none();
+    showAlphaBeta();
+    showCols_.at((uint)core::ReflectionInfo::eReflAttr::FWHM).cb->setChecked(true);
+    rbFWHM_->setChecked(true);
+  };
+
   auto updateRbs = [this]() {
-    bool isAll = true, isNone = true;
-    for (auto& col: showCols_)
+    bool isAll = true, isNone = true, isInten = false, isTth = false, isFwhm = false;
+    for (auto& col: showCols_) {
       if (col.cb->isChecked())
         isNone = false;
       else
         isAll = false;
+    }
+
+    int iAlpha = (int)core::ReflectionInfo::eReflAttr::ALPHA,
+         iBeta = (int)core::ReflectionInfo::eReflAttr::BETA,
+         iInten = (int)core::ReflectionInfo::eReflAttr::INTEN,
+         iTth = (int)core::ReflectionInfo::eReflAttr::TTH,
+         iFwhm = (int)core::ReflectionInfo::eReflAttr::FWHM;
+
+    auto restNotChecked = [this, iAlpha, iBeta](int skip) -> bool {
+      bool on = true;
+      for_i (showCols_.count()) {
+        if (i == skip || i ==  iAlpha || i == iBeta)
+          continue;
+        else
+          if (showCols_.at(i).cb->isChecked())
+            on = false;
+      }
+      return on;
+    };
+
+    if (showCols_.at(iAlpha).cb->isChecked() &&
+        showCols_.at(iBeta).cb->isChecked()) {
+
+      if (showCols_.at(iInten).cb->isChecked())
+        isInten = restNotChecked(iInten);
+
+      if (showCols_.at(iTth).cb->isChecked())
+        isTth = restNotChecked(iTth);
+
+      if (showCols_.at(iFwhm).cb->isChecked())
+        isFwhm = restNotChecked(iFwhm);
+    }
     rbHidden_->setChecked(true);
     rbNone_->setChecked(isNone);
+    rbInten_->setChecked(isInten);
+    rbTth_->setChecked(isTth);
+    rbFWHM_->setChecked(isFwhm);
     rbAll_->setChecked(isAll);
   };
 
@@ -589,7 +653,9 @@ TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
 
   connect(rbAll_,  &QRadioButton::clicked, all);
   connect(rbNone_, &QRadioButton::clicked, none);
-
+  connect(rbInten_, &QRadioButton::clicked, showInten);
+  connect(rbTth_, &QRadioButton::clicked, showTth);
+  connect(rbFWHM_, &QRadioButton::clicked, showFWHM);
   rbAll_->click();
 }
 
