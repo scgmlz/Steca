@@ -298,12 +298,18 @@ void calculateAlphaBeta(rcDataset dataset, deg tth, deg gamma, deg& alpha,
   beta  = betaRad.toDeg();
 }
 
+Curve Session::makeCurve(shp_Lens lens, rcRange gammaSector) const {
+  Curve curve = lens->makeCurve(gammaSector, lens->angleMap().rgeTth());
+  curve.subtract(fit::Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
+
+  return curve;
+}
+
 // Fits reflection to the given gamma sector and constructs a ReflectionInfo.
 ReflectionInfo Session::makeReflectionInfo(shp_Lens     lens,
                                            rcReflection reflection,
                                            rcRange      gammaSector) const {
-  Curve curve = lens->makeCurve(gammaSector, lens->angleMap().rgeTth());
-  curve.subtract(fit::Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
+  Curve curve = makeCurve(lens, gammaSector);
 
   QScopedPointer<fit::PeakFunction> peakFunction(reflection.peakFunction().clone());
 
@@ -350,20 +356,19 @@ ReflectionInfos Session::makeReflectionInfos(rcDatasets   datasets,
       progress->step();
 
     auto l = lens(*dataset, datasets, true, true, norm_);
+    Range lRange = l->gammaRangeAt(reflection.range().center());
+
     Range rgeGamma = gammaRange.isValid()
-                         ? gammaRange
-                         : l->gammaRangeAt(reflection.range().center());
+                         ? gammaRange.intersects(lRange)
+                         : lRange;
 
     if (rgeGamma.isEmpty())
       continue;
 
-    EXPECT(gammaStep > 0)
-    int   numGammaRows = qCeil(rgeGamma.width() / gammaStep);
-    qreal gammaStep    = rgeGamma.width() / numGammaRows;
-
-    for_i (numGammaRows) {
-      qreal min = rgeGamma.min + i * gammaStep;
-      Range gammaStripe(min, min + gammaStep);
+    qreal step = gammaStep;
+    for_i (rgeGamma.numSlices(step)) {
+      qreal min = rgeGamma.min + i * step;
+      Range gammaStripe(min, min + step);
       auto  refInfo = makeReflectionInfo(l, reflection, gammaStripe);
       if (!qIsNaN(refInfo.inten()))
         infos.append(refInfo);

@@ -167,7 +167,11 @@ private:
   eFittingTab fittingTab_;
 
 private:
+  core::shp_Dataset    selectedDataset_;
   core::shp_Reflection selectedReflection_;
+
+public:
+  core::shp_Dataset selectedDataset() const { return selectedDataset_; }
 
 private:
   void setImageRotate(core::ImageTransform);

@@ -24,11 +24,10 @@ TheHub& TheHubSignallingBase::asHub() {
 }
 
 void TheHubSignallingBase::tellDatasetSelected(core::shp_Dataset dataset) {
-  emit sigDatasetSelected(dataset);
+  emit sigDatasetSelected((asHub().selectedDataset_ = dataset));
 }
 
-void TheHubSignallingBase::tellSelectedReflection(
-    core::shp_Reflection reflection) {
+void TheHubSignallingBase::tellSelectedReflection(core::shp_Reflection reflection) {
   emit sigReflectionSelected((asHub().selectedReflection_ = reflection));
 }
 

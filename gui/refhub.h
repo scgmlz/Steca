@@ -47,8 +47,8 @@ protected:
   void tellReflectionValues(core::rcRange, core::rcXY, qreal, bool);
 
 signals:
-  void sigFilesChanged();   ///< the set of loaded files has changed
-  void sigFilesSelected();  ///< the selection of loaded files has changed
+  void sigFilesChanged();     ///< the set of loaded files has changed
+  void sigFilesSelected();    ///< the selection of loaded files has changed
 
   void sigDatasetsChanged();  ///< the set of datasets collected from selected
                               /// files has changed

@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "output_diffractograms.h"
+#include "core_lens.h"
 #include "thehub.h"
 #include "types/core_async.h"
 #include <QDir>
@@ -58,6 +59,55 @@ DiffractogramsFrame::DiffractogramsFrame(TheHub &hub, rcstr title, QWidget *pare
     // if (saveDiagramOutput()) ...
       tabSave_->fileName().clear();
   });
+}
+
+void DiffractogramsFrame::outputCurves(core::rcRange rgeGamma, qreal gammaStep, core::rcDataset dataset) {
+  auto lens = hub_.lens(dataset);
+  auto &map = lens->angleMap();
+
+  core::Range rge = map.rgeGamma();
+  if (rgeGamma.isValid())
+    rge = rge.intersects(rgeGamma);
+
+  qreal step = gammaStep;
+  for_i (rge.numSlices(step)) {
+    qreal min = rge.min + i * step;
+    core::Range gammaStripe(min, min + step);
+
+    // here is the curve; metadata in dataset + gammaStripe
+    auto curve = lens->makeCurve(gammaStripe, map.rgeTth());
+  }
+}
+
+void DiffractogramsFrame::outputCurve(core::rcDataset dataset) {
+  auto lens = hub_.lens(dataset);
+  auto &map = lens->angleMap();
+
+  // here is the curve; metadata in dataset + rgeGamma
+  auto curve = lens->makeCurve(map.rgeGamma(), map.rgeTth());
+}
+
+void DiffractogramsFrame::outputCurrDiffractogram() {
+  auto dataset = hub_.selectedDataset();
+  if (dataset)
+    outputCurve(*dataset);
+}
+
+void DiffractogramsFrame::outputAllDiffractograms() {
+  core::deg gammaStep = params_->stepGamma->value();
+
+  core::Range rgeGamma;
+  if (params_->cbLimitGamma->isChecked())
+    rgeGamma.safeSet(params_->limitGammaMin->value(),
+                     params_->limitGammaMax->value());
+
+  auto &datasets = hub_.collectedDatasets();
+  Progress progress(datasets.count(), pb_);
+
+  for (core::shp_Dataset dataset: datasets) {
+    progress.step();
+    outputCurves(rgeGamma, gammaStep, *dataset);
+  }
 }
 
 //------------------------------------------------------------------------------

@@ -47,6 +47,12 @@ public:
 
 protected:
   TabDiffractogramsSave *tabSave_;
+
+  void outputCurves(core::rcRange rgeGamma, qreal gammaStep, core::rcDataset dataset);
+  void outputCurve(core::rcDataset dataset);
+
+  void outputCurrDiffractogram();
+  void outputAllDiffractograms();
 };
 
 //------------------------------------------------------------------------------

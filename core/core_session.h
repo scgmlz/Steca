@@ -103,7 +103,7 @@ public:
 
   AngleMap const& angleMap(rcDataset) const;
 
-  // geometry
+// geometry
 private:
   Geometry geometry_;
 
@@ -113,10 +113,12 @@ public:
                    rcIJ midPixOffset);
   IJ midPix() const;
 
-  // lenses
+// lenses
 public:
   shp_ImageLens lens(rcImage, rcDatasets, bool trans, bool cut) const;
   shp_Lens lens(rcDataset, rcDatasets, bool trans, bool cut, eNorm) const;
+
+  Curve makeCurve(shp_Lens, rcRange gammaSector) const;
 
   // reflections
   ReflectionInfo makeReflectionInfo(shp_Lens, rcReflection,
@@ -124,7 +126,7 @@ public:
 
   ReflectionInfos makeReflectionInfos(rcDatasets, rcReflection, deg betaStep,
                                       rcRange gammaRange, Progress* = nullptr);
-  // fitting
+// fitting
 private:
   uint   bgPolyDegree_;
   Ranges bgRanges_;
@@ -145,7 +147,7 @@ public:
   void addReflection(shp_Reflection);
   void remReflection(uint);
 
-  // normalization
+// normalization
 private:
   eNorm norm_;
 

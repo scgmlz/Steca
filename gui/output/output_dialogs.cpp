@@ -211,12 +211,12 @@ void Frame::calculate() {
 
     core::deg gammaStep = params_->stepGamma->value();
 
-    Progress progress(reflCount * hub_.numCollectedDatasets(), pb_);
-
     core::Range rgeGamma;
     if (params_->cbLimitGamma->isChecked())
       rgeGamma.safeSet(params_->limitGammaMin->value(),
                        params_->limitGammaMax->value());
+
+    Progress progress(reflCount * hub_.numCollectedDatasets(), pb_);
 
     for_i (reflCount)
       calcPoints_.append(hub_.makeReflectionInfos(
