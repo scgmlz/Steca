@@ -50,9 +50,9 @@ str const ReflectionInfo::reflStringTag(uint attr) {
   case eReflAttr::GAMMA2:
     return "γ2";
   case eReflAttr::INTEN:
-    return "I";
+    return "inten";
   case eReflAttr::SIGMA_INTEN:
-    return "σI";
+    return "σinten";
   case eReflAttr::TTH:
     return "2θ";
   case eReflAttr::SIGMA_TTH:

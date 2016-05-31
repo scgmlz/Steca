@@ -21,7 +21,7 @@ namespace gui { namespace output {
 //------------------------------------------------------------------------------
 
 DiagramsParams::DiagramsParams(TheHub& hub) : super(hub) {
-  box_->addWidget((gpAxes_ = new panel::GridPanel(hub, "Reflection")));
+  box_->addWidget((gpAxes_ = new panel::GridPanel(hub, "Diagram")));
   auto g = gpAxes_->grid();
   gpInterpolation_->hide();
   auto tags = core::ReflectionInfo::dataTags();

@@ -108,8 +108,9 @@ DockDatasetInfo::DockDatasetInfo(TheHub& hub)
   });
 
   for (auto& item : metaInfo_) {
-    connect(item.cb, &QCheckBox::clicked, this,
-            [this]() { hub_.datasetsModel.showMetaInfo(metaInfo_); });
+    connect(item.cb, &QCheckBox::clicked, this, [this]() {
+      hub_.datasetsModel.showMetaInfo(metaInfo_);
+    });
   }
 }
 

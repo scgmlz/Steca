@@ -144,7 +144,7 @@ TabPoleFiguresSave::TabPoleFiguresSave(TheHub& hub, Params& params)
   grid_->addLayout(hb, grid_->rowCount(), 0);
 
   auto p1 = new panel::BoxPanel(hub, "Reflection", Qt::Vertical);
-  auto p2 = new panel::BoxPanel(hub, "I", Qt::Vertical);
+  auto p2 = new panel::BoxPanel(hub, "Output", Qt::Vertical);
 
   hb->addWidget(p1);
   hb->addWidget(p2);
