@@ -41,7 +41,7 @@ QRgb intenGraph(qreal inten, qreal maxInten) {
 
   inten /= maxInten;
 
-  return qRgb(0xff * (1 - inten / 3), 0, 0);
+  return qRgb(0, 0, 0xff * (1 - inten / 3));
 }
 
 //------------------------------------------------------------------------------

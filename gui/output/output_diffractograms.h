@@ -34,11 +34,21 @@ class TabDiffractogramsSave : public TabSave {
 public:
   TabDiffractogramsSave(TheHub&, Params&);
 
+  uint currType() const;
+  bool currentChecked() { return rbCurrent_->isChecked(); }
+  bool allSequentialChecked() { return rbAllSequential_->isChecked(); }
+  bool allChecked() { return rbAll_->isChecked(); }
+
 protected:
   QRadioButton *rbCurrent_, *rbAllSequential_, *rbAll_;
+  QComboBox *fileTypes_;
 };
 
 //------------------------------------------------------------------------------
+
+struct OutputData;
+using OutputDataCollection  = QVector<OutputData>;
+using OutputDataCollections = QVector<OutputDataCollection>;
 
 class DiffractogramsFrame : public Frame {
   SUPER(DiffractogramsFrame, Frame)
@@ -48,11 +58,15 @@ public:
 protected:
   TabDiffractogramsSave *tabSave_;
 
-  void outputCurves(core::rcRange rgeGamma, qreal gammaStep, core::rcDataset dataset);
-  void outputCurve(core::rcDataset dataset);
+  OutputDataCollection collectCurves(core::rcRange rgeGamma, qreal gammaStep, core::rcDataset dataset, uint picNum);
+  OutputData collectCurve(core::rcDataset dataset);
 
-  void outputCurrDiffractogram();
-  void outputAllDiffractograms();
+  OutputData outputCurrDiffractogram();
+  OutputDataCollections outputAllDiffractograms();
+
+  bool saveDiffractogramOutput();
+  bool writeCurrDiffractogramToFile();
+  bool writeAllDiffractogramsToFiles(bool oneFile);
 };
 
 //------------------------------------------------------------------------------

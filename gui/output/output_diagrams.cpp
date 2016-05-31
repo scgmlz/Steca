@@ -142,7 +142,6 @@ void TabPlot::calculateErrors(uint yIndex, qreal_vec xs, qreal_vec ys, uint_vec 
 
 //------------------------------------------------------------------------------
 
-static str_lst const fileTags {".txt",".dat",".csv"};
 
 TabDiagramsSave::TabDiagramsSave(TheHub& hub, Params& params)
 : super(hub, params)
@@ -217,10 +216,10 @@ bool DiagramsFrame::saveDiagramOutput() {
 
   str_lst separators = {",", " ", ";"};
   if (ts->currDiagram()) {
-    writeCurrentDiagramOutputFile(filePath, separators[s], fileTags[s]);
+    writeCurrentDiagramOutputFile(filePath, separators[s], ts->fileTags[s]);
     return true;
   } else {
-    writeAllDataOutputFile(filePath, separators[s], fileTags[s]);
+    writeAllDataOutputFile(filePath, separators[s], ts->fileTags[s]);
     return true;
   }
 }

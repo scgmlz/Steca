@@ -142,6 +142,10 @@ Dataset::Dataset(rcDataset that)
 : datasets_(nullptr), md_(that.md_), image_(that.image_) {
 }
 
+Dataset::Dataset() {
+
+}
+
 rcDatasets Dataset::datasets() const {
   EXPECT(datasets_)
   return *datasets_;

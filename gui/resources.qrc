@@ -26,5 +26,6 @@
         <file alias="useCorrection">icons/use_correction.svg</file>
         <file alias="showBackground">icons/show_background.svg</file>
         <file alias="STeCa2">icons/STeCa2.png</file>
+        <file alias="Stier1">icons/icon_stier1.png</file>
     </qresource>
 </RCC>

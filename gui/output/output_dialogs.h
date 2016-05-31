@@ -184,6 +184,9 @@ public:
 
   Action* actSave() const { return actSave_; }
 
+  str_lst const fileTags {".txt",".dat",".csv"};
+  str_lst const fileSeparators {",", " ", ";"};
+
 protected:
   QLineEdit *path_, *fileName_;
   Action    *actBrowsePath_, *actSave_;

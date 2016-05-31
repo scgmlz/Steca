@@ -53,6 +53,7 @@ class Dataset final {
 public:
   Dataset(rcMetadata, QSize const& size, inten_t const* intens);
   Dataset(rcDataset);
+  Dataset();
 
   rcDatasets   datasets() const;
   shp_Metadata metadata() const;
