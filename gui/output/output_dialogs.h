@@ -189,6 +189,10 @@ public:
   str_lst const fileTags {".txt",".dat",".csv"};
   str_lst const fileSeparators {",", " ", ";"};
 
+  void showMessage();
+  void savedMessage(str message);
+  void clearMessage();
+
 protected:
   QLineEdit *path_, *fileName_;
   Action    *actBrowsePath_, *actSave_;

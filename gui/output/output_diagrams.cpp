@@ -155,6 +155,8 @@ TabDiagramsSave::TabDiagramsSave(TheHub& hub, Params& params)
   g->addWidget(allData_ = radioButton("All data"),1,0);
   g->addWidget(fileTypes_ = comboBox(fileTags));
 
+  currentDiagram_->setChecked(true);
+
 }
 
 uint TabDiagramsSave::currType() const {
@@ -178,10 +180,11 @@ DiagramsFrame::DiagramsFrame(TheHub &hub, rcstr title, QWidget *parent)
 
   tabSave_ = new TabDiagramsSave(hub, *params_);
   tabs_->addTab("Save").box().addWidget(tabSave_);
+  tabSave_->savedMessage("File has been saved.");
 
   connect(tabSave_->actSave(),&QAction::triggered,[this]() {
     if (saveDiagramOutput())
-      tabSave_->clearFilename();
+      tabSave_->showMessage();
   });
 
   plot();

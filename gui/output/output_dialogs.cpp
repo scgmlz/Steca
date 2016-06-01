@@ -725,6 +725,19 @@ void TabSave::clearFilename() {
   fileName_->clear();
 }
 
+void TabSave::showMessage() {
+  filesSavedDialog_->show();
+}
+
+void TabSave::savedMessage(str message) {
+  filesSavedDialog_->setText(filesSavedDialog_->text() + message);
+}
+
+void TabSave::clearMessage() {
+  filesSavedDialog_->text().clear();
+}
+
+
 //------------------------------------------------------------------------------
 }}
 // eof

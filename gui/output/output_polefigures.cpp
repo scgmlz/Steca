@@ -205,7 +205,8 @@ PoleFiguresFrame::PoleFiguresFrame(TheHub &hub, rcstr title, QWidget *parent)
 
   connect(tabSave_->actSave(), &QAction::triggered, [this]() {
     if (savePoleFigureOutput())
-      tabSave_->clearFilename();
+      tabSave_->showMessage();
+    tabSave_->clearMessage();
   });
 }
 
@@ -220,16 +221,19 @@ bool PoleFiguresFrame::savePoleFigureOutput() {
   if (reflections.isEmpty())
     return false;
 
-  if (tabSave_->onlySelectedRefl())
-    return writePoleFigureOutputFiles(params_->currReflIndex());
-
+  if (tabSave_->onlySelectedRefl()) {
+    if (writePoleFigureOutputFiles(params_->currReflIndex()))
+      tabSave_->savedMessage(QString(" for Reflection %1 \n").arg(params_->currReflIndex()));
+  }
   // all reflections
   bool check = true;
 
-  for_i (reflections.count())
-    if (!writePoleFigureOutputFiles(i))
+  for_i (reflections.count()) {
+    if (writePoleFigureOutputFiles(i))
+      tabSave_->savedMessage(QString(" for Reflection %1 \n").arg(i+1));
+    else
       check = false;  // some failed
-
+  }
   return check;
 }
 
@@ -250,6 +254,7 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
   str filePath = QDir(p).filePath(fileName);
 
   bool check = false;
+  int numSavedFiles = 0;
 
   if (tabSave_->outputInten()) {
     qreal_vec output;
@@ -262,6 +267,7 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
     writeErrorMask(intenFilePath, reflInfo, output);
 
     check = true;
+    numSavedFiles+=3;
   }
 
   if (tabSave_->outputTth()) {
@@ -274,6 +280,7 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
     writePoleFile(tthFilePath, reflInfo, output);
 
     check = true;
+    numSavedFiles+=2;
   }
 
   if (tabSave_->outputFWHM()) {
@@ -286,8 +293,10 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
     writePoleFile(fwhmFilePath, reflInfo, output);
 
     check = true;
+    numSavedFiles+=2;
   }
 
+  tabSave_->savedMessage(QString("%1 files have been saved").arg(numSavedFiles));
   return check;
 }
 
@@ -296,7 +305,8 @@ void PoleFiguresFrame::writeErrorMask(rcstr filePath, core::ReflectionInfos refl
   QTextStream stream(&file);
 
   for(int j = 0, jEnd = reflInfo.count(); j < jEnd; j+=9) {
-    for (int i = j; i < j + MAX_LINE_LENGTH_POL; i++) {
+    int max = j + MAX_LINE_LENGTH_POL;
+    for (int i = j; i < max; i++) {
       if (qIsNaN(output.at(i)))
         stream << "0" << " ";
       else
@@ -311,7 +321,8 @@ void PoleFiguresFrame::writePoleFile(rcstr filePath, core::ReflectionInfos reflI
   QTextStream stream(&file);
 
   for(int j = 0, jEnd = reflInfo.count(); j < jEnd; j+=9) {
-    for (int i = j; i < j + MAX_LINE_LENGTH_POL; i++) {
+    int max = j + MAX_LINE_LENGTH_POL;
+    for (int i = j; i < max; i++) {
       if (qIsNaN(output.at(i)))
         stream << " -1 " << " ";
       else

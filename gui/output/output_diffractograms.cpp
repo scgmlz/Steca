@@ -84,6 +84,8 @@ DiffractogramsFrame::DiffractogramsFrame(TheHub &hub, rcstr title, QWidget *pare
 
   connect(tabSave_->actSave(),&QAction::triggered,[this]() {
     saveDiffractogramOutput();
+    tabSave_->showMessage();
+    tabSave_->clearMessage();
   });
 }
 
@@ -184,6 +186,7 @@ bool DiffractogramsFrame::writeCurrDiffractogramToFile() {
   for_i (outputData.curve_.xs().count()) {
     stream << outputData.curve_.x(i) << separator << outputData.curve_.y(i) << '\n';
   }
+  tabSave_->savedMessage("File has been saved.");
 
   return true;
 }
@@ -216,6 +219,7 @@ bool DiffractogramsFrame::writeAllDiffractogramsToFiles(bool oneFile) {
         }
       }
     }
+    tabSave_->savedMessage("File has been saved.");
 
   } else {
     int fileNumber = 1;
@@ -233,6 +237,7 @@ bool DiffractogramsFrame::writeAllDiffractogramsToFiles(bool oneFile) {
       }
       ++fileNumber;
     }
+    tabSave_->savedMessage(QString("%1 files have been saved.").arg(fileNumber-1));
   }
   return true;
 
