@@ -34,7 +34,6 @@
 #include <QMessageBox>
 #include <QSplitter>
 #include <QStatusBar>
-#include <QSound>
 
 namespace gui {
 //------------------------------------------------------------------------------
