@@ -4,16 +4,16 @@
 //
 //! @file      panel_fitting.cpp
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
 #include "panel_fitting.h"
-#include "core_fit_limits.h"
 #include "core_reflection.h"
 #include "thehub.h"
 
@@ -94,8 +94,9 @@ void ReflectionView::selectionChanged(QItemSelection const &selected,
 
 //------------------------------------------------------------------------------
 
-Fitting::Fitting(TheHub &hub) : super(hub), silentSpin_(false) {
-
+Fitting::Fitting(TheHub &hub)
+: super(hub), silentSpin_(false)
+{
   auto &actions = hub_.actions;
   auto  tools   = [actions]() {
     auto hb = hbox();
@@ -113,15 +114,16 @@ Fitting::Fitting(TheHub &hub) : super(hub), silentSpin_(false) {
     auto hb = hbox();
     tab.box().addLayout(hb);
     hb->addWidget(label("Polynom degree:"));
-    hb->addWidget(
-        (spinDegree_ = spinCell(4, 0, core::fit::MAX_POLYNOM_DEGREE)));
+    hb->addWidget((spinDegree_ = spinCell(4, 0, TheHub::MAX_POLYNOM_DEGREE)));
     hb->addStretch();
 
     tab.box().addStretch();
 
     connect(spinDegree_,
             static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
-            [this](int degree) { hub_.setBgPolyDegree(degree); });
+            [this](int degree) {
+      hub_.setBgPolyDegree(degree);
+    });
 
     onSigBgChanged([this]() {
       spinDegree_->setValue(hub_.bgPolyDegree());

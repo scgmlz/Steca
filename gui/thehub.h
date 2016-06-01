@@ -5,11 +5,12 @@
 //! @file      thehub.h
 //! @brief     The communication hub.
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
@@ -170,6 +171,7 @@ public:
   void addBgRange(core::rcRange);
   void remBgRange(core::rcRange);
 
+  static uint constexpr MAX_POLYNOM_DEGREE = 4;
   void setBgPolyDegree(uint);
 
   void setReflType(core::ePeakType);

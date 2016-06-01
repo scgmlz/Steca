@@ -258,6 +258,7 @@ Consider:
 //! @file      <file_name.h>
 //! @brief     <brief_description>
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
@@ -290,6 +291,7 @@ namespace <name> {
 //
 //! @file      <file_name.cpp>
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching

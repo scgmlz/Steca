@@ -5,11 +5,12 @@
 //! @file      core_type_matrix.h
 //! @brief     3D matrix and vector operations
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
