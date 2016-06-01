@@ -712,7 +712,7 @@ TabSave::TabSave(TheHub& hub, Params& params)
 
   g->setRowStretch(g->rowCount(), 1);
 
-
+  filesSavedDialog_ = new QMessageBox(this);
 
   connect(actBrowsePath_, &QAction::triggered, [this]() {
     str dir = QFileDialog::getExistingDirectory(this, "Select folder", path_->text());

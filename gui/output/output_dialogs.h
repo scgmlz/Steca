@@ -24,6 +24,7 @@
 #include "refhub.h"
 #include "types/core_defs.h"
 #include "types/core_type_variant.h"
+#include <QMessageBox>
 
 class QProgressBar;
 
@@ -181,7 +182,7 @@ public:
   void clearFilename();
 
   str path()        const { return path_->text();     }
-  str fileName()    const { return fileName_->text(); }
+  str fileName()    { return fileName_->text(); }
 
   Action* actSave() const { return actSave_; }
 
@@ -191,6 +192,7 @@ public:
 protected:
   QLineEdit *path_, *fileName_;
   Action    *actBrowsePath_, *actSave_;
+  QMessageBox    *filesSavedDialog_;
 };
 
 //------------------------------------------------------------------------------

@@ -83,8 +83,7 @@ DiffractogramsFrame::DiffractogramsFrame(TheHub &hub, rcstr title, QWidget *pare
   tabs_->addTab("Save").box().addWidget(tabSave_);
 
   connect(tabSave_->actSave(),&QAction::triggered,[this]() {
-    if (saveDiffractogramOutput())
-      tabSave_->fileName().clear();
+    saveDiffractogramOutput();
   });
 }
 
@@ -117,7 +116,7 @@ OutputData DiffractogramsFrame::collectCurve(core::rcDataset dataset) {
   // here is the curve; metadata in dataset + rgeGamma
   auto curve = lens->makeCurve(map.rgeGamma(), map.rgeTth());
 
-  return OutputData(curve,dataset,map.rgeGamma(),-1); // TODO current picture number
+  return OutputData(curve,dataset,map.rgeGamma(),0); // TODO current picture number
 }
 
 
@@ -133,7 +132,7 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
   Progress progress(datasets.count(), pb_);
 
   OutputDataCollections allOutputData;
-  uint picNum = 0;
+  uint picNum = 1;
   for (core::shp_Dataset dataset: datasets) {
     progress.step();
     allOutputData.append(collectCurves(rgeGamma, gammaStep, *dataset, picNum));
@@ -152,14 +151,17 @@ OutputData DiffractogramsFrame::outputCurrDiffractogram() {
 }
 
 auto writeMetaData = [](OutputData outputData, QTextStream& stream, str separator) {
-  stream << "Picture Nr: " << separator << outputData.picNum_ << '\n';
-  stream << "Comment: "  << separator << outputData.dataset_.metadata()->comment << '\n';
-  stream << "Date: " << separator << outputData.dataset_.metadata()->date << '\n';
-  stream << "Gamma Range max: " << separator << outputData.gammaStripe_.min << '\n';
-  stream << "Gamma Range max: " << separator << outputData.gammaStripe_.max << '\n';
+  if (outputData.picNum_ > 0)
+    stream << "Picture Nr:" << separator << outputData.picNum_ << '\n';
+
+  stream << "Comment:"  << separator << outputData.dataset_.metadata()->comment << '\n';
+  stream << "Date:" << separator << outputData.dataset_.metadata()->date << '\n';
+  stream << "Gamma Range max:" << separator << outputData.gammaStripe_.min << '\n';
+  stream << "Gamma Range max:" << separator << outputData.gammaStripe_.max << '\n';
 
   for_i (core::Metadata::numAttributes(true)) {
-    stream << core::Metadata::attributeTag(i) << ": " << outputData.dataset_.metadata()->attributeValue((uint)i).toDouble() << '\n';
+    stream << core::Metadata::attributeTag(i) << ": " <<
+                        outputData.dataset_.metadata()->attributeValue((uint)i).toDouble() << '\n';
   }
 };
 
@@ -173,8 +175,7 @@ bool DiffractogramsFrame::writeCurrDiffractogramToFile() {
 
   auto filePath = QDir(tabSave_->path()).absoluteFilePath(tabSave_->fileName());
   auto fileTag = tabSave_->fileTags[s];
-  QFile file(filePath + fileTag);
-  RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File connot be opened");
+  WriteFile file(filePath + fileTag);
 
   QTextStream stream(&file);
 
@@ -197,14 +198,12 @@ bool DiffractogramsFrame::writeAllDiffractogramsToFiles(bool oneFile) {
 
   auto ts = static_cast<TabDiffractogramsSave*>(tabSave_);
   auto s = ts->currType();
-  auto separator = tabSave_->fileSeparators[s];
-
-  auto filePath = QDir(tabSave_->path()).absoluteFilePath(tabSave_->fileName());
-  auto fileTag = tabSave_->fileTags[s];
+  str separator = tabSave_->fileSeparators[s];
+  str fileTag = tabSave_->fileTags[s];
 
   if (oneFile) {
-    QFile file(filePath + fileTag);
-    RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File connot be opened");
+    auto filePath = QDir(tabSave_->path()).absoluteFilePath(tabSave_->fileName() + fileTag);
+    WriteFile file(filePath);
     QTextStream stream(&file);
 
     for (auto outputCollection : outputCollections) {
@@ -219,25 +218,25 @@ bool DiffractogramsFrame::writeAllDiffractogramsToFiles(bool oneFile) {
     }
 
   } else {
-    uint fileNumber = 1;
+    int fileNumber = 1;
     for (auto outputCollection : outputCollections) {
+      str fileName = QString(tabSave_->fileName() + "%1" + fileTag).arg(fileNumber);
+      auto filePath = QDir(tabSave_->path()).absoluteFilePath(fileName);
+      WriteFile file(filePath);
+      QTextStream stream(&file);
       for (auto outputData : outputCollection) {
-        QFile file(filePath + fileNumber + fileTag);
-        RUNTIME_CHECK(file.open(QIODevice::WriteOnly), "File connot be opened");
-        QTextStream stream(&file);
-
         writeMetaData(outputData,stream,separator);
         stream << "Intensity" << separator << "Tth" << '\n';
         for_i (outputData.curve_.xs().count()) {
           stream << outputData.curve_.x(i) << separator << outputData.curve_.y(i) << '\n';
         }
-      ++fileNumber;
       }
+      ++fileNumber;
     }
+  }
+  return true;
 
-    }
-    return true;
-   }
+ }
 
 bool DiffractogramsFrame::saveDiffractogramOutput() {
 
@@ -247,6 +246,8 @@ bool DiffractogramsFrame::saveDiffractogramOutput() {
     return writeAllDiffractogramsToFiles(false);
   else if (tabSave_->allChecked())
     return writeAllDiffractogramsToFiles(true);
+  else
+  return false;
 }
 
 
