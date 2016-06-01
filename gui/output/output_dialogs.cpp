@@ -734,7 +734,7 @@ void TabSave::savedMessage(str message) {
 }
 
 void TabSave::clearMessage() {
-  filesSavedDialog_->text().clear();
+  filesSavedDialog_->setText("");
 }
 
 

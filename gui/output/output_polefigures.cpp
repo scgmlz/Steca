@@ -211,9 +211,10 @@ PoleFiguresFrame::PoleFiguresFrame(TheHub &hub, rcstr title, QWidget *parent)
   tabs_->addTab("Save").box().addWidget(tabSave_);
 
   connect(tabSave_->actSave(), &QAction::triggered, [this]() {
-    if (savePoleFigureOutput())
+    if (savePoleFigureOutput()) {
       tabSave_->showMessage();
-    tabSave_->clearMessage();
+      tabSave_->clearMessage();
+    }
   });
 
   connect(static_cast<PoleFiguresParams*>(params_)->cbRefl,static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),[this]() {
@@ -259,6 +260,7 @@ static int const MAX_LINE_LENGTH_POL(9);
 bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
   auto refl = hub_.reflections()[index];
   auto reflInfo = interpPoints_[index];
+  auto type = refl->type();
 
   str p = tabSave_->path();
   str n = tabSave_->fileName();
@@ -286,7 +288,7 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
     numSavedFiles+=3;
   }
 
-  if (tabSave_->outputTth()) {
+  if (tabSave_->outputTth() && core::ePeakType::RAW != type) {
     qreal_vec output;
     for_i (reflInfo.count())
       output.append(reflInfo.at(i).tth());
@@ -299,7 +301,7 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
     numSavedFiles+=2;
   }
 
-  if (tabSave_->outputFWHM()) {
+  if (tabSave_->outputFWHM() && core::ePeakType::RAW != type) {
     qreal_vec output;
     for_i (reflInfo.count())
       output.append(reflInfo.at(i).fwhm());
