@@ -16,6 +16,7 @@
 #include "output_polefigures.h"
 #include "colors.h"
 #include "thehub.h"
+#include "core_reflection.h"
 
 #include <QDir>
 #include <QPainter>
@@ -176,20 +177,26 @@ TabPoleFiguresSave::TabPoleFiguresSave(TheHub& hub, Params& params)
   outputInten_->setChecked(true);
 }
 
+
 bool TabPoleFiguresSave::onlySelectedRefl() const {
   return rbSelectedRefl_->isChecked();
 }
 
 bool TabPoleFiguresSave::outputInten() const{
-  return outputInten_->isChecked();
+  return outputInten_->isChecked() && outputInten_->isEnabled();
 }
 
 bool TabPoleFiguresSave::outputTth() const {
-  return outputTth_->isChecked();
+  return outputTth_->isChecked() && outputTth_->isEnabled();
 }
 
 bool TabPoleFiguresSave::outputFWHM() const {
-  return outputFWHM_->isChecked();
+  return outputFWHM_->isChecked() && outputFWHM_->isEnabled();
+}
+
+void TabPoleFiguresSave::rawReflSettings(bool off) {
+  outputTth_->setEnabled(off);
+  outputFWHM_->setEnabled(off);
 }
 
 //------------------------------------------------------------------------------
@@ -208,6 +215,15 @@ PoleFiguresFrame::PoleFiguresFrame(TheHub &hub, rcstr title, QWidget *parent)
       tabSave_->showMessage();
     tabSave_->clearMessage();
   });
+
+  connect(static_cast<PoleFiguresParams*>(params_)->cbRefl,static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),[this]() {
+    bool off = core::ePeakType::RAW == hub_.reflections().at(static_cast<PoleFiguresParams*>(params_)->currReflIndex())->type()
+               ? false : true;
+    tabSave_->rawReflSettings(off);
+  });
+
+  static_cast<PoleFiguresParams*>(params_)->cbRefl->currentIndexChanged(0);
+
 }
 
 void PoleFiguresFrame::displayReflection(uint reflIndex, bool interpolated) {
@@ -340,6 +356,8 @@ void PoleFiguresFrame::writeListFile(rcstr filePath, core::ReflectionInfos reflI
     stream << (qreal)reflInfo.at(i).alpha() << " " << (qreal)reflInfo.at(i).beta() << " " << output.at(i) << '\n';
   }
 }
+
+
 
 //------------------------------------------------------------------------------
 }}

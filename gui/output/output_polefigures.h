@@ -71,6 +71,8 @@ public:
   bool outputTth()        const;
   bool outputFWHM()       const;
 
+  void rawReflSettings(bool on);
+
 protected:
   QRadioButton *rbSelectedRefl_,*rbAllRefls_;
   QCheckBox *outputInten_, *outputTth_, *outputFWHM_;
@@ -94,6 +96,8 @@ protected:
   void writePoleFile(rcstr filePath,  core::ReflectionInfos, qreal_vec const&);
   void writeListFile(rcstr filePath,  core::ReflectionInfos, qreal_vec const&);
   void writeErrorMask(rcstr filePath, core::ReflectionInfos, qreal_vec const&);
+
+
 };
 
 //------------------------------------------------------------------------------
