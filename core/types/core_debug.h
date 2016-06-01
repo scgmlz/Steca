@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      core_debug.h
 //! @brief     Macros for debugging support.

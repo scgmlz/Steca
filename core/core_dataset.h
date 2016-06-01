@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      core_dataset.h
 //! @brief     Dataset = a collection of images + metadata.

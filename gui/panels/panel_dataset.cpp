@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      panel_dataset.cpp
 //!
@@ -333,7 +333,7 @@ DatasetOptions2::DatasetOptions2(TheHub& hub)
   marginBottom_->setToolTip("Bottom cut");
 
   gc->addWidget(iconButton(hub_.actions.linkCuts), 0, 5);
-  gc->addWidget(iconButton(hub_.actions.showCut), 1, 5);
+  gc->addWidget(iconButton(hub_.actions.showOverlay), 1, 5);
 
   gc->addWidget(icon(":/icon/cutLeft"), 1, 0);
   gc->addWidget((marginLeft_ = spinCell(4, 0)), 1, 1);
@@ -405,7 +405,7 @@ void DatasetOptions2::setFrom(TheHub& hub) {
 Dataset::Dataset(TheHub& hub) : super(hub), dataset_(nullptr) {
 
   auto& actions = hub_.actions;
-  actions.showCut->setChecked(true);
+  actions.showOverlay->setChecked(true);
 
   {
     auto& tab = addTab("Data");
@@ -421,7 +421,7 @@ Dataset::Dataset(TheHub& hub) : super(hub), dataset_(nullptr) {
 
   connect(actions.enableCorr, &QAction::toggled, [this](bool) { render(); });
 
-  connect(actions.showCut, &QAction::toggled, [this](bool on) {
+  connect(actions.showOverlay, &QAction::toggled, [this](bool on) {
     dataImageWidget_->setShowOverlay(on);
     corrImageWidget_->setShowOverlay(on);
   });

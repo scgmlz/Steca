@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      core_curve.cpp
 //!
@@ -34,6 +34,7 @@
 #include <QMessageBox>
 #include <QSplitter>
 #include <QStatusBar>
+#include <QSound>
 
 namespace gui {
 //------------------------------------------------------------------------------
@@ -109,14 +110,17 @@ void MainWin::initMenus() {
 
   menuFile_     = mbar->addMenu("&File");
   menuView_     = mbar->addMenu("&View");
-  menuDatasets_ = mbar->addMenu("&Datasets");
+  menuImage_    = mbar->addMenu("&Image");
   menuReflect_  = mbar->addMenu("&Reflections");
   menuOutput_   = mbar->addMenu("&Output");
   menuHelp_     = mbar->addMenu("&Help");
 
   menuFile_->addActions({
-      acts_.loadSession, acts_.saveSession, separator(), acts_.addFiles,
-      acts_.remFile, separator(), acts_.enableCorr, acts_.remCorr,
+      acts_.addFiles, acts_.remFile,
+      separator(),
+      acts_.enableCorr, acts_.remCorr,
+      separator(),
+      acts_.loadSession, acts_.saveSession,
   });
 
   menuFile_->addActions({
@@ -127,21 +131,34 @@ void MainWin::initMenus() {
   });
 
   menuView_->addActions({
-      acts_.fixedIntenImageScale, acts_.fixedIntenDgramScale, acts_.showCut,
-      separator(), acts_.fitRegions, acts_.fitBgClear, acts_.fitBgShow,
-      separator(), acts_.viewStatusbar,
+      acts_.viewFiles, acts_.viewDatasets, acts_.viewDatasetInfo,
+      separator(),
     #ifndef Q_OS_OSX
       acts_.fullScreen,
     #endif
-      separator(), acts_.viewFiles, acts_.viewDatasets, acts_.viewDatasetInfo,
-      separator(), acts_.viewReset,
+      acts_.viewStatusbar,
+      separator(),
+      acts_.viewReset,
   });
 
-  menuDatasets_->addActions({
-      acts_.rotateImage, acts_.mirrorImage, separator(), acts_.enableCorr,
+  menuImage_->addActions({
+      acts_.hasBeamOffset,
+      separator(),
+      acts_.rotateImage,
+      acts_.mirrorImage,
+      acts_.fixedIntenImageScale,
+      acts_.showOverlay,
+      acts_.linkCuts,
+      separator(),
+      acts_.combinedDgram,
+      acts_.fixedIntenDgramScale,
   });
 
   menuReflect_->addActions({
+      acts_.fitRegions,
+      acts_.fitBgClear,
+      acts_.fitBgShow,
+      separator(),
       acts_.addReflection, acts_.remReflection,
   });
 
@@ -228,24 +245,20 @@ void MainWin::about() {
   str appName = qApp->applicationDisplayName();
   str version = qApp->applicationVersion();
 
-  str webSite = qApp->organizationDomain() % '/' % qApp->applicationName();
+  str webSite = qApp->organizationDomain() % "/steca2";
 
   str title = str("About %1").arg(appName);
   str text  = str("<h4>%1 ver. %2</h4>").arg(appName, version);
-  str info  = str("<p>StressTexCalculator</p>"
-                 "<p>Copyright: Forschungszentrum Jülich GmbH %1</p>"
-                 "<p><a href='http://%2'>%2</a></p>")
-                 .arg(QDate::currentDate().toString("yyyy"))
-                 .arg(webSite);
+  str info  = str("<p>StressTextureCalculator</p>"
+                  "<p>Copyright: Forschungszentrum Jülich GmbH %1</p>"
+                  "<p><a href='http://%2'>%2</a></p>")
+                  .arg(QDate::currentDate().toString("yyyy"))
+                  .arg(webSite);
 
   auto box = new QMessageBox(QMessageBox::NoIcon,
                 title, text, QMessageBox::Close, this);
-//                Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::WA_DeleteOnClose);
 
-//  box->setWindowTitle(title);
-//  box->setText(text);
   box->setInformativeText(info);
-
   auto pm = QPixmap(":/icon/STeCa2")
             .scaled(120, 120, Qt::KeepAspectRatio, Qt::SmoothTransformation);
   box->setIconPixmap(pm);

@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      colors.h
 //! @brief     Colors, scales, and palletes.

@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      actions.cpp
 //!
@@ -138,7 +138,7 @@ Actions::Actions(TheHub& hub): super(hub) {
       "Link", "Use the same value for all cuts")
       .alt("Unlink", "Use different values for cuts")
       .icon(":/icon/link");
-  tgl(showCut,
+  tgl(showOverlay,
       "overlay", "Show cut")
       .alt("overlay", "Hide cut")
       .icon(":/icon/crop");

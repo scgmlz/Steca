@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      output_diffractograms.cpp
 //!
@@ -240,16 +240,15 @@ bool DiffractogramsFrame::writeAllDiffractogramsToFiles(bool oneFile) {
    }
 
 bool DiffractogramsFrame::saveDiffractogramOutput() {
-
   if (tabSave_->currentChecked())
     return writeCurrDiffractogramToFile();
   else if (tabSave_->allSequentialChecked())
     return writeAllDiffractogramsToFiles(false);
   else if (tabSave_->allChecked())
     return writeAllDiffractogramsToFiles(true);
+
+  return false;
 }
-
-
 
 //------------------------------------------------------------------------------
 }}

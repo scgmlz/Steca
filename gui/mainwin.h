@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      mainwin.h
 //! @brief     The main window
@@ -63,7 +63,7 @@ private:
 
 private:
   QMenu
-      *menuFile_, *menuView_, *menuDatasets_, *menuReflect_,
+      *menuFile_, *menuView_, *menuImage_, *menuReflect_,
       *menuOutput_, *menuHelp_;
 
   QDockWidget

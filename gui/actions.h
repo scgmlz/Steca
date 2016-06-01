@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      actions.h
 //! @brief     A structure with all (glbal) actions
@@ -71,7 +71,7 @@ public:
 #endif
       *loadSession, *saveSession,
       *addFiles, *remFile, *enableCorr, *remCorr,
-      *rotateImage, *mirrorImage, *linkCuts, *showCut, *hasBeamOffset,
+      *rotateImage, *mirrorImage, *linkCuts, *showOverlay, *hasBeamOffset,
       *fixedIntenImageScale, *fixedIntenDgramScale, *combinedDgram,
       *fitRegions, *fitBgClear, *fitBgShow,
       *addReflection, *remReflection,
