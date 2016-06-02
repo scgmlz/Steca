@@ -220,7 +220,7 @@ bool DiagramsFrame::saveDiagramOutput() {
 
   auto s = ts->currType();
 
-  str_lst separators = {",", " ", ";"};
+  str_lst separators = ts->fileSeparators;
   if (ts->currDiagram()) {
     writeCurrentDiagramOutputFile(filePath, separators[s], ts->fileTags[s]);
     return true;

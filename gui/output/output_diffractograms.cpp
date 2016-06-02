@@ -104,7 +104,6 @@ OutputDataCollection DiffractogramsFrame::collectCurves(core::rcRange rgeGamma, 
     qreal min = rge.min + i * step;
     core::Range gammaStripe(min, min + step);
 
-    // here is the curve; metadata in dataset + gammaStripe
     auto curve = lens->makeCurve(gammaStripe, map.rgeTth());
     outputData.append(OutputData(curve,dataset,gammaStripe,picNum));
   }
@@ -115,12 +114,10 @@ OutputData DiffractogramsFrame::collectCurve(core::rcDataset dataset) {
   auto lens = hub_.lens(dataset);
   auto &map = lens->angleMap();
 
-  // here is the curve; metadata in dataset + rgeGamma
   auto curve = lens->makeCurve(map.rgeGamma(), map.rgeTth());
 
   return OutputData(curve,dataset,map.rgeGamma(),0); // TODO current picture number
 }
-
 
 OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
   core::deg gammaStep = params_->stepGamma->value();

@@ -179,21 +179,20 @@ TabPoleFiguresSave::TabPoleFiguresSave(TheHub& hub, Params& params)
 
 }
 
-
 bool TabPoleFiguresSave::onlySelectedRefl() const {
   return rbSelectedRefl_->isChecked();
 }
 
 bool TabPoleFiguresSave::outputInten() const{
-  return outputInten_->isChecked() && outputInten_->isEnabled();
+  return outputInten_->isChecked();
 }
 
 bool TabPoleFiguresSave::outputTth() const {
-  return outputTth_->isChecked() && outputTth_->isEnabled();
+  return outputTth_->isChecked();
 }
 
 bool TabPoleFiguresSave::outputFWHM() const {
-  return outputFWHM_->isChecked() && outputFWHM_->isEnabled();
+  return outputFWHM_->isChecked();
 }
 
 void TabPoleFiguresSave::rawReflSettings(bool off) {
@@ -268,7 +267,10 @@ static int const MAX_LINE_LENGTH_POL(9);
 
 bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
   auto refl = hub_.reflections()[index];
-  auto reflInfo = interpPoints_[index];
+  core::ReflectionInfos reflInfo;
+  if (params_->interpolate()) reflInfo = interpPoints_[index];
+  else  reflInfo = calcPoints_[index];
+
   auto type = refl->type();
 
   str p = tabSave_->path();
