@@ -185,7 +185,6 @@ DiagramsFrame::DiagramsFrame(TheHub &hub, rcstr title, QWidget *parent)
   connect(tabSave_->actSave(),&QAction::triggered,[this]() {
     if (saveDiagramOutput()) {
       tabSave_->showMessage();
-      tabSave_->clearMessage();
     }
   });
 

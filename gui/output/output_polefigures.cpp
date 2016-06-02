@@ -213,14 +213,16 @@ PoleFiguresFrame::PoleFiguresFrame(TheHub &hub, rcstr title, QWidget *parent)
   connect(tabSave_->actSave(), &QAction::triggered, [this]() {
     if (savePoleFigureOutput()) {
       tabSave_->showMessage();
-      tabSave_->clearMessage();
     }
   });
 
   connect(static_cast<PoleFiguresParams*>(params_)->cbRefl,static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),[this]() {
-    bool off = core::ePeakType::RAW == hub_.reflections().at(static_cast<PoleFiguresParams*>(params_)->currReflIndex())->type()
-               ? false : true;
-    tabSave_->rawReflSettings(off);
+    int index = static_cast<PoleFiguresParams*>(params_)->currReflIndex();
+    if (index != -1) {
+      bool off = core::ePeakType::RAW == hub_.reflections().at(index)->type()
+                 ? false : true;
+      tabSave_->rawReflSettings(off);
+    }
   });
 
   static_cast<PoleFiguresParams*>(params_)->cbRefl->currentIndexChanged(0);
