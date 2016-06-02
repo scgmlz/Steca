@@ -92,6 +92,8 @@ Actions::Actions(TheHub& hub): super(hub) {
 
   trg(about,
       "About...", "About " + App::applicationName());
+  trg(online,
+      "Online documentation...");
   trg(quit,
       "Quit");
 

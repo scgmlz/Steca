@@ -90,7 +90,6 @@ public:
 private:
   QSpinBox       *spinOffsetI_, *spinOffsetJ_;
   QDoubleSpinBox *spinDistance_, *spinPixelSize_;
-  QComboBox      *comboNormType_;
 
   // REVIEW
   void setTo(TheHub&);
@@ -107,8 +106,9 @@ signals:
   void imageScale(uint);
 
 private:
-  QSpinBox *marginLeft_, *marginTop_, *marginRight_, *marginBottom_;
-  QSpinBox *spinImageScale_;
+  QSpinBox  *marginLeft_, *marginTop_, *marginRight_, *marginBottom_;
+  QSpinBox  *spinImageScale_;
+  QComboBox *comboNormType_;
 
   void setFrom(TheHub&);
 };

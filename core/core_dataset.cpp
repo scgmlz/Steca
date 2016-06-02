@@ -28,17 +28,19 @@ enum class eAttr {
   MOTOR_XT,  MOTOR_YT,  MOTOR_ZT,
   MOTOR_OMG, MOTOR_TTH, MOTOR_PHI, MOTOR_CHI,
   MOTOR_PST, MOTOR_SST, MOTOR_OMGM,
-  DELTA_MONITOR_COUNT, DELTA_TIME,
+  MONITOR_COUNT, DELTA_MONITOR_COUNT,
+  TIME, DELTA_TIME,
 
-  NUM_NUM_ATTRIBUTES,
-// non-numbers must come last
-  DATE = NUM_NUM_ATTRIBUTES, COMMENT,
+  NUM_NUMERICAL_ATTRIBUTES,
+
+  // non-numbers must come last
+  DATE = NUM_NUMERICAL_ATTRIBUTES, COMMENT,
 
   NUM_ALL_ATTRIBUTES
 };
 
 uint Metadata::numAttributes(bool onlyNum) {
-  if (onlyNum) return (uint)eAttr::NUM_NUM_ATTRIBUTES;
+  if (onlyNum) return (uint)eAttr::NUM_NUMERICAL_ATTRIBUTES;
   else return (uint)eAttr::NUM_ALL_ATTRIBUTES;
 }
 
@@ -49,9 +51,10 @@ rcstr Metadata::attributeTag(uint i) {
 str_lst Metadata::attributeTags() {
   static str_lst const tags = {
     "X", "Y", "Z",
-    "ω", "2θ", "φ", "χ",
+    "ω", "mid 2θ", "φ", "χ",
     "PST", "SST", "ΩM",
-    "Δmon", "Δt",
+    "mon", "Δmon",
+    "t", "Δt",
     "date", "comment",
   };
 
@@ -63,6 +66,7 @@ cmp_vec Metadata::attributeCmps() {
     cmp_real, cmp_real, cmp_real,
     cmp_real, cmp_real, cmp_real, cmp_real,
     cmp_real, cmp_real, cmp_real,
+    cmp_real, cmp_real,
     cmp_real, cmp_real,
     cmp_date, cmp_str,
   };
@@ -84,7 +88,9 @@ str Metadata::attributeStrValue(uint i) const {
   case eAttr::MOTOR_PST:   value = motorPST;  break;
   case eAttr::MOTOR_SST:   value = motorSST;  break;
   case eAttr::MOTOR_OMGM:  value = motorOMGM; break;
+  case eAttr::MONITOR_COUNT: value = monitorCount; break;
   case eAttr::DELTA_MONITOR_COUNT: value = deltaMonitorCount; break;
+  case eAttr::TIME:        value = time; break;
   case eAttr::DELTA_TIME:  value = deltaTime; break;
 
   case eAttr::DATE:        return date;
@@ -110,7 +116,9 @@ QVariant Metadata::attributeValue(uint i) const {
   case eAttr::MOTOR_PST:  return (qreal)motorPST;
   case eAttr::MOTOR_SST:  return (qreal)motorSST;
   case eAttr::MOTOR_OMGM: return (qreal)motorOMGM;
+  case eAttr::MONITOR_COUNT: return monitorCount;
   case eAttr::DELTA_MONITOR_COUNT: return deltaMonitorCount;
+  case eAttr::TIME:       return time;
   case eAttr::DELTA_TIME: return deltaTime;
   default:
     NEVER return 0;
@@ -163,7 +171,8 @@ shp_Dataset Dataset::combine(Datasets datasets) {
   qreal motorXT = 0, motorYT = 0,  motorZT = 0,
         motorOmg = 0, motorTth = 0, motorPhi = 0, motorChi = 0,
         motorPST = 0, motorSST = 0, motorOMGM = 0,
-        deltaMonitorCount = 0, deltaTime = 0;
+        monitorCount = 0, deltaMonitorCount = 0,
+        time = 0, deltaTime = 0;
 
   // sums: deltaMonitorCount, deltaTime
   // the rest are averaged
@@ -184,7 +193,9 @@ shp_Dataset Dataset::combine(Datasets datasets) {
     motorOMGM += md.motorOMGM;
 
     deltaMonitorCount += md.deltaMonitorCount;
-    deltaTime         += md.deltaTime;
+    monitorCount += md.monitorCount;
+    deltaTime    += md.deltaTime;
+    time         += md.time;
   }
 
   uint count = datasets.count();
@@ -222,8 +233,10 @@ shp_Dataset Dataset::combine(Datasets datasets) {
   md.motorPST = motorPST;
   md.motorSST = motorSST;
   md.motorOMGM  = motorOMGM;
+  md.monitorCount = monitorCount;
   md.deltaMonitorCount = deltaMonitorCount;
   md.deltaTime  = deltaTime;
+  md.time     = time;
 
   return shp_Dataset(
     new Dataset(md, image.size(), image.intensData()));

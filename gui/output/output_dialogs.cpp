@@ -599,8 +599,6 @@ TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
       col.cb->setChecked(false);
   };
 
-  using eReflAttr = core::ReflectionInfo::eReflAttr;
-
   auto showAlphaBeta = [this,none]() {
     none();
     showCols_.at((uint)eReflAttr::ALPHA).cb->setChecked(true);

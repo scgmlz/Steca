@@ -221,13 +221,6 @@ DatasetOptions1::DatasetOptions1(TheHub& hub)
   gd->addWidget(label("pixel size mm"), 1, 1);
   gd->setColumnStretch(2, 1);
 
-  box_->addWidget(label("Normalization"));
-  auto vn = vbox();
-  box_->addLayout(vn);
-
-  str_lst options = core::Lens::normStrLst();
-
-  vn->addWidget(comboNormType_ = comboBox(options));
   box_->addStretch();
 
   onSigGeometryChanged([this]() {
@@ -261,10 +254,6 @@ DatasetOptions1::DatasetOptions1(TheHub& hub)
 
   connect(spinPixelSize_, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
     setTo(hub_);
-  });
-
-  connect(comboNormType_, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this](int index) {
-    hub_.setNorm((core::eNorm)index);
   });
 }
 
@@ -343,6 +332,14 @@ DatasetOptions2::DatasetOptions2(TheHub& hub)
   marginRight_->setToolTip("Right cut");
   gc->setColumnStretch(4, 1);
 
+  box_->addWidget(label("Normalization"));
+  auto vn = vbox();
+  box_->addLayout(vn);
+
+  str_lst options = core::Lens::normStrLst();
+
+  vn->addWidget(comboNormType_ = comboBox(options));
+
   box_->addStretch();
 
   auto setImageCut = [this](bool topLeft, int value) {
@@ -388,6 +385,10 @@ DatasetOptions2::DatasetOptions2(TheHub& hub)
           static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
           [this](int scale) {
     emit imageScale(scale);
+  });
+
+  connect(comboNormType_, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this](int index) {
+    hub_.setNorm((core::eNorm)index);
   });
 }
 

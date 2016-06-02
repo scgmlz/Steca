@@ -15,9 +15,10 @@
 
 #include "mainwin.h"
 #include "actions.h"
-#include "output/output_polefigures.h"
+#include "manifest.h"
 #include "output/output_diagrams.h"
 #include "output/output_diffractograms.h"
+#include "output/output_polefigures.h"
 #include "panels/panel_dataset.h"
 #include "panels/panel_diffractogram.h"
 #include "panels/panel_file.h"
@@ -28,12 +29,14 @@
 #include <QApplication>
 #include <QCloseEvent>
 #include <QDate>
+#include <QDesktopServices>
 #include <QDir>
 #include <QFileDialog>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QSplitter>
 #include <QStatusBar>
+#include <QUrl>
 
 namespace gui {
 //------------------------------------------------------------------------------
@@ -109,8 +112,9 @@ void MainWin::initMenus() {
 
   menuFile_     = mbar->addMenu("&File");
   menuView_     = mbar->addMenu("&View");
+  menuDetector_ = mbar->addMenu("&Detector");
   menuImage_    = mbar->addMenu("&Image");
-  menuReflect_  = mbar->addMenu("&Reflections");
+  menuDgram_    = mbar->addMenu("Di&ffractogram");
   menuOutput_   = mbar->addMenu("&Output");
   menuHelp_     = mbar->addMenu("&Help");
 
@@ -140,25 +144,27 @@ void MainWin::initMenus() {
       acts_.viewReset,
   });
 
-  menuImage_->addActions({
+  menuDetector_->addActions({
       acts_.hasBeamOffset,
-      separator(),
+  });
+
+  menuImage_->addActions({
       acts_.rotateImage,
       acts_.mirrorImage,
       acts_.fixedIntenImageScale,
       acts_.showOverlay,
       acts_.linkCuts,
-      separator(),
-      acts_.combinedDgram,
-      acts_.fixedIntenDgramScale,
   });
 
-  menuReflect_->addActions({
+  menuDgram_->addActions({
       acts_.fitRegions,
       acts_.fitBgClear,
       acts_.fitBgShow,
       separator(),
       acts_.addReflection, acts_.remReflection,
+      separator(),
+      acts_.combinedDgram,
+      acts_.fixedIntenDgramScale,
   });
 
   menuOutput_->addActions({
@@ -166,10 +172,11 @@ void MainWin::initMenus() {
   });
 
   menuHelp_->addActions({
-    #ifndef Q_OS_OSX  // Mac puts About into the Apple menu
-      separator(),
-    #endif
-      acts_.about,
+    acts_.about,
+  #ifndef Q_OS_OSX
+    separator(),  // Mac puts About into the Apple menu
+  #endif
+    acts_.online,
   });
 }
 
@@ -226,7 +233,8 @@ void MainWin::connectActions() {
   onTrigger(acts_.outputDiagrams,       &thisClass::outputDiagrams);
   onTrigger(acts_.outputDiffractograms, &thisClass::outputDiffractograms);
 
-  onTrigger(acts_.about, &thisClass::about);
+  onTrigger(acts_.about,  &thisClass::about);
+  onTrigger(acts_.online, &thisClass::online);
 
   onToggle(acts_.viewStatusbar, &thisClass::viewStatusbar);
 #ifndef Q_OS_OSX
@@ -244,15 +252,13 @@ void MainWin::about() {
   str appName = qApp->applicationDisplayName();
   str version = qApp->applicationVersion();
 
-  str webSite = qApp->organizationDomain() % "/steca2";
-
   str title = str("About %1").arg(appName);
   str text  = str("<h4>%1 ver. %2</h4>").arg(appName, version);
   str info  = str("<p>StressTextureCalculator</p>"
                   "<p>Copyright: Forschungszentrum Jülich GmbH %1</p>"
-                  "<p><a href='http://%2'>%2</a></p>")
+                  "<p><a href='%2'>%2</a></p>")
                   .arg(QDate::currentDate().toString("yyyy"))
-                  .arg(webSite);
+                  .arg(STECA2_URL);
 
   auto box = new QMessageBox(QMessageBox::NoIcon,
                 title, text, QMessageBox::Close, this);
@@ -262,6 +268,10 @@ void MainWin::about() {
             .scaled(120, 120, Qt::KeepAspectRatio, Qt::SmoothTransformation);
   box->setIconPixmap(pm);
   box->exec();
+}
+
+void MainWin::online() {
+  QDesktopServices::openUrl(QUrl(STECA2_URL));
 }
 
 void MainWin::show() {
@@ -358,7 +368,7 @@ void MainWin::onShow() {
 
 #ifdef DEVELOPMENT_JAN
   safeLoad("/P/zz-gd/SCG/data/0.ste");
-  hub_.actions.outputPolefigures->trigger();
+//  hub_.actions.outputPolefigures->trigger();
 #endif
 }
 

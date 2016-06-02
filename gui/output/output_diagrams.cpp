@@ -23,12 +23,13 @@ namespace gui { namespace output {
 
 DiagramsParams::DiagramsParams(TheHub& hub) : super(hub) {
   box_->addWidget((gpAxes_ = new panel::GridPanel(hub, "Diagram")));
-  auto g = gpAxes_->grid();
   gpInterpolation_->hide();
+
   auto tags = core::ReflectionInfo::dataTags();
   for_i (core::Metadata::numAttributes(false) - core::Metadata::numAttributes(true))
     tags.removeLast(); // remove all tags that are not numbers
 
+  auto g = gpAxes_->grid();
   g->addWidget((xAxis = comboBox(tags)), 0, 0);
   g->addWidget(label("x"), 0, 1);
   g->addWidget((yAxis = comboBox(tags)), 1, 0);
@@ -58,35 +59,39 @@ static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
 
   qreal_vec r(count);
 
-  for_i (count) r[i] = xs.at(is[i]);
+  for_i (count) r[i] = xs.at(is.at(i));
   xs = r;
 
-  for_i (count) r[i] = ys.at(is[i]);
+  for_i (count) r[i] = ys.at(is.at(i));
   ys = r;
 }
 
 //------------------------------------------------------------------------------
 
 TabPlot::TabPlot() {
-  graph_ = addGraph();
+  graph_    = addGraph();
+  graphAdd_ = addGraph();
+  graphSub_ = addGraph();
 }
 
 void TabPlot::set(core::ReflectionInfos rs) {
   rs_ = rs;
 }
 
-void TabPlot::plot(uint xIndex, uint yIndex) {
+void TabPlot::plot(eReflAttr xAttr, eReflAttr yAttr) {
   uint count = rs_.count();
 
   graph_->clearData();
+  graphAdd_->clearData();
+  graphSub_->clearData();
 
   qreal_vec xs(count), ys(count); uint_vec is(count);
   core::Range rgeX, rgeY;
 
   for_i (count) {
     auto row = rs_.at(i).data();
-    rgeX.extendBy((xs[i] = row.at(xIndex).toDouble()));
-    rgeY.extendBy((ys[i] = row.at(yIndex).toDouble()));
+    rgeX.extendBy((xs[i] = row.at((uint)xAttr).toDouble()));
+    rgeY.extendBy((ys[i] = row.at((uint)yAttr).toDouble()));
   }
 
   if (!count || rgeX.isEmpty() || rgeY.isEmpty()) {
@@ -103,42 +108,47 @@ void TabPlot::plot(uint xIndex, uint yIndex) {
   xAxis->setVisible(true);
   yAxis->setVisible(true);
 
-  calculateErrors(yIndex,xs,ys,is);
-  if (!yErrorAdd_.isEmpty() && !yErrorSub_.isEmpty()) {
-    graph_->setPen(QPen(Qt::green));
-    graph_->addData(xs,yErrorAdd_);
-    graph_->setPen(QPen(Qt::red));
-    graph_->addData(xs,yErrorSub_);
-  }
   graph_->setPen(QPen(Qt::blue));
   graph_->addData(xs, ys);
+
+  calculateErrors(yAttr, ys, is);
+
+  graphAdd_->setPen(QPen(Qt::green));
+  graphAdd_->addData(xs, yErrorAdd_);
+
+  graphSub_->setPen(QPen(Qt::red));
+  graphSub_->addData(xs, yErrorSub_);
 
   replot();
 }
 
-void TabPlot::calculateErrors(uint yIndex, qreal_vec xs, qreal_vec ys, uint_vec is) {
-    auto calc = [this, xs, ys, is] (uint index) {
-      for_i (xs.count()) {
-        auto row = rs_.at(is[i]).data(); // acces error over sorted index vec
-        auto sigma = row.at(index).toDouble();
-        yErrorAdd_.append(ys[i] + sigma);
-        yErrorSub_.append(ys[i] - sigma);
-      }
-    };
+void TabPlot::calculateErrors(eReflAttr yAttr, qreal_vec ys, uint_vec is) {
+  auto calc = [this, ys, is] (eReflAttr attr) {
+    for_i (ys.count()) {
+      auto row = rs_.at(is.at(i)).data(); // access error over sorted index vec
+      auto sigma = row.at((uint)attr).toDouble();
+      auto y = ys.at(i);
+      yErrorAdd_.append(y + sigma);
+      yErrorSub_.append(y - sigma);
+    }
+  };
 
-    yErrorAdd_.clear();
-    yErrorSub_.clear();
-    auto yTag = core::ReflectionInfo::reflStringTag(yIndex);
-    if (core::ReflectionInfo::reflStringTag((uint)core::ReflectionInfo::eReflAttr::INTEN) == yTag) {
-      calc((uint)core::ReflectionInfo::eReflAttr::SIGMA_INTEN);
-    }
-    else if (core::ReflectionInfo::reflStringTag((uint)core::ReflectionInfo::eReflAttr::TTH) == yTag) {
-      calc((uint)core::ReflectionInfo::eReflAttr::SIGMA_TTH);
-    }
-    else if (core::ReflectionInfo::reflStringTag((uint)core::ReflectionInfo::eReflAttr::FWHM) == yTag) {
-      calc((uint)core::ReflectionInfo::eReflAttr::SIGMA_FWHM);
-    }
+  yErrorAdd_.clear();
+  yErrorSub_.clear();
 
+  switch (yAttr) {
+  case eReflAttr::INTEN:
+    calc(eReflAttr::SIGMA_INTEN);
+    break;
+  case eReflAttr::TTH:
+    calc(eReflAttr::SIGMA_TTH);
+    break;
+  case eReflAttr::FWHM:
+    calc(eReflAttr::SIGMA_FWHM);
+    break;
+  default:
+    break;
+  }
 }
 
 //------------------------------------------------------------------------------
@@ -156,7 +166,6 @@ TabDiagramsSave::TabDiagramsSave(TheHub& hub, Params& params)
   g->addWidget(fileTypes_ = comboBox(fileTags));
 
   currentDiagram_->setChecked(true);
-
 }
 
 uint TabDiagramsSave::currType() const {
@@ -199,8 +208,8 @@ void DiagramsFrame::displayReflection(uint reflIndex, bool interpolated) {
 
 void DiagramsFrame::plot() {
   auto ps = static_cast<DiagramsParams*>(params_);
-  tabPlot_->plot(ps->xAxis->currentIndex(),
-                 ps->yAxis->currentIndex());
+  tabPlot_->plot((eReflAttr)ps->xAxis->currentIndex(),
+                 (eReflAttr)ps->yAxis->currentIndex());
 }
 
 //------------------------------------------------------------------------------

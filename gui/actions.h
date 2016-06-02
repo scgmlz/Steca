@@ -64,7 +64,7 @@ public:
   Actions(TheHub&);
 
   Action
-      *about, *quit,
+      *about, *online, *quit,
       *viewStatusbar, *viewFiles, *viewDatasets, *viewDatasetInfo, *viewReset,
 #ifndef Q_OS_OSX  // Mac has its own
       *fullScreen,

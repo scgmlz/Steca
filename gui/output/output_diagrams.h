@@ -42,14 +42,14 @@ public:
   TabPlot();
   void set(core::ReflectionInfos);
 
-  void plot(uint xIndex, uint yIndex);
-  void calculateErrors(uint yIndex, qreal_vec xs, qreal_vec ys, uint_vec is);
+  void plot(eReflAttr xAttr, eReflAttr yAttr);
+  void calculateErrors(eReflAttr yAttr, qreal_vec ys, uint_vec is);
 
   qreal_vec yErrorAdd_, yErrorSub_;
 
 protected:
   core::ReflectionInfos rs_;
-  QCPGraph *graph_;
+  QCPGraph *graph_, *graphAdd_, *graphSub_;
 };
 
 //------------------------------------------------------------------------------

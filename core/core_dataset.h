@@ -43,7 +43,8 @@ struct Metadata {
   deg motorXT, motorYT, motorZT, motorOmg, motorTth, motorPhi, motorChi,
       motorPST, motorSST, motorOMGM;
 
-  qreal deltaMonitorCount, deltaTime;
+  qreal monitorCount, deltaMonitorCount;
+  qreal time, deltaTime;
 };
 
 //------------------------------------------------------------------------------

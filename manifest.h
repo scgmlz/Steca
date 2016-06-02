@@ -7,4 +7,6 @@
 #define ORGANIZATION_NAME     "Scientific Computing at MLZ"
 #define ORGANIZATION_DOMAIN   "apps.jcns.fz-juelich.de"
 
+#define STECA2_URL            "http://apps.jcns.fz-juelich.de/steca2"
+
 #endif

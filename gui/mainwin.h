@@ -37,6 +37,7 @@ private:
 
 public:
   void about();
+  void online();
 
   void show();
   void close();
@@ -63,7 +64,8 @@ private:
 
 private:
   QMenu
-      *menuFile_, *menuView_, *menuImage_, *menuReflect_,
+      *menuFile_, *menuView_,
+      *menuDetector_, *menuImage_, *menuDgram_,
       *menuOutput_, *menuHelp_;
 
   QDockWidget

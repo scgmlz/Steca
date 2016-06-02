@@ -31,6 +31,8 @@ class QProgressBar;
 namespace gui { namespace output {
 //------------------------------------------------------------------------------
 
+using eReflAttr = core::ReflectionInfo::eReflAttr;
+
 class Params : public QWidget, protected RefHub {
   SUPER(Params, QWidget)
 public:

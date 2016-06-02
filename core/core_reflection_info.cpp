@@ -31,7 +31,7 @@ namespace core {
 str_lst ReflectionInfo::dataTags() {
   static str_lst tags;
   if (tags.isEmpty()) {
-    for_i ((uint)eReflAttr::NUM_REF_ATTR)
+    for_i ((uint)eReflAttr::NUM_REFL_ATTR)
       tags.append(reflStringTag(i));
 
     tags += Metadata::attributeTags();

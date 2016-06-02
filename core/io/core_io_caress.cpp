@@ -52,7 +52,6 @@ shp_File loadCaress(rcstr filePath) THROWS {
     int deltaMon = 0;
     int prevMon = 0;
 
-
     bool end = false;
     while (!end) {
       int e_number, e_type, d_type, d_number;
@@ -191,7 +190,9 @@ shp_File loadCaress(rcstr filePath) THROWS {
           md.motorOMGM = omgmAxis;
 
           md.deltaMonitorCount = deltaMon;
-          md.deltaTime         = deltaTime;
+          md.monitorCount = mon;
+          md.deltaTime    = deltaTime;
+          md.time         = tempTime;
 
           file->datasets().append(
             shp_Dataset(new Dataset(md, size, convertedIntens.constData())));
