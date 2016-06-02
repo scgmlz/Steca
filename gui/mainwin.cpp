@@ -15,7 +15,7 @@
 
 #include "mainwin.h"
 #include "actions.h"
-#include "manifest.h"
+#include "../manifest.h"
 #include "output/output_diagrams.h"
 #include "output/output_diffractograms.h"
 #include "output/output_polefigures.h"
