@@ -175,6 +175,8 @@ TabPoleFiguresSave::TabPoleFiguresSave(TheHub& hub, Params& params)
 
   rbSelectedRefl_->setChecked(true);
   outputInten_->setChecked(true);
+
+
 }
 
 
@@ -211,6 +213,7 @@ PoleFiguresFrame::PoleFiguresFrame(TheHub &hub, rcstr title, QWidget *parent)
   tabs_->addTab("Save").box().addWidget(tabSave_);
 
   connect(tabSave_->actSave(), &QAction::triggered, [this]() {
+    tabSave_->clearMessage();
     if (savePoleFigureOutput()) {
       tabSave_->showMessage();
     }
@@ -240,18 +243,22 @@ bool PoleFiguresFrame::savePoleFigureOutput() {
   if (reflections.isEmpty())
     return false;
 
+  bool check = false;
   if (tabSave_->onlySelectedRefl()) {
-    if (writePoleFigureOutputFiles(params_->currReflIndex()))
+    if (writePoleFigureOutputFiles(params_->currReflIndex())) {
       tabSave_->savedMessage(QString(" for Reflection %1 \n").arg(params_->currReflIndex()));
-  }
-  // all reflections
-  bool check = true;
-
-  for_i (reflections.count()) {
-    if (writePoleFigureOutputFiles(i))
-      tabSave_->savedMessage(QString(" for Reflection %1 \n").arg(i+1));
-    else
-      check = false;  // some failed
+      check = true;
+    }
+  } else {
+    // all reflections
+    for_i (reflections.count()) {
+      if (writePoleFigureOutputFiles(i)) {
+        tabSave_->savedMessage(QString(" for Reflection %1 \n").arg(i+1));
+        check = true;
+      } else {
+        check = false;  // some failed
+      }
+    }
   }
   return check;
 }

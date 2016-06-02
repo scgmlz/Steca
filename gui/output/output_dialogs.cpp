@@ -24,6 +24,7 @@
 #include <QProgressBar>
 #include <QScrollArea>
 #include <QSplitter>
+#include <QPushButton>
 
 namespace gui { namespace output {
 //------------------------------------------------------------------------------

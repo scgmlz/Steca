@@ -183,6 +183,7 @@ DiagramsFrame::DiagramsFrame(TheHub &hub, rcstr title, QWidget *parent)
   tabSave_->savedMessage("File has been saved.");
 
   connect(tabSave_->actSave(),&QAction::triggered,[this]() {
+    tabSave_->clearMessage();
     if (saveDiagramOutput()) {
       tabSave_->showMessage();
     }

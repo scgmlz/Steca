@@ -83,6 +83,7 @@ DiffractogramsFrame::DiffractogramsFrame(TheHub &hub, rcstr title, QWidget *pare
   tabs_->addTab("Save").box().addWidget(tabSave_);
 
   connect(tabSave_->actSave(),&QAction::triggered,[this]() {
+    tabSave_->clearMessage();
     saveDiffractogramOutput();
     tabSave_->showMessage();
   });
