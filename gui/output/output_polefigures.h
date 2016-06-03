@@ -86,8 +86,12 @@ public:
   PoleFiguresFrame(TheHub&, rcstr title, QWidget*);
 
 protected:
-  TabGraph *tabGraph_;
+  TabGraph           *tabGraph_;
   TabPoleFiguresSave *tabSave_;
+
+  PoleFiguresParams const* params() const {
+    return static_cast<PoleFiguresParams*>(params_);
+  }
 
   void displayReflection(uint reflIndex, bool interpolated);
 
@@ -96,8 +100,6 @@ protected:
   void writePoleFile(rcstr filePath,  core::ReflectionInfos, qreal_vec const&);
   void writeListFile(rcstr filePath,  core::ReflectionInfos, qreal_vec const&);
   void writeErrorMask(rcstr filePath, core::ReflectionInfos, qreal_vec const&);
-
-
 };
 
 //------------------------------------------------------------------------------

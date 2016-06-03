@@ -218,8 +218,8 @@ PoleFiguresFrame::PoleFiguresFrame(TheHub &hub, rcstr title, QWidget *parent)
     }
   });
 
-  connect(static_cast<PoleFiguresParams*>(params_)->cbRefl,static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),[this]() {
-    int index = static_cast<PoleFiguresParams*>(params_)->currReflIndex();
+  connect(params()->cbRefl,static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),[this]() {
+    int index = params()->currReflIndex();
     if (index != -1) {
       bool off = core::ePeakType::RAW == hub_.reflections().at(index)->type()
                  ? false : true;
@@ -227,8 +227,7 @@ PoleFiguresFrame::PoleFiguresFrame(TheHub &hub, rcstr title, QWidget *parent)
     }
   });
 
-  static_cast<PoleFiguresParams*>(params_)->cbRefl->currentIndexChanged(0);
-
+  params()->cbRefl->currentIndexChanged(0);
 }
 
 void PoleFiguresFrame::displayReflection(uint reflIndex, bool interpolated) {

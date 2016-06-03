@@ -118,7 +118,7 @@ ReflectionInfo::ReflectionInfo(deg alpha, deg beta)
 }
 
 row_t ReflectionInfo::data() const {
-  row_t row{(QVariant)alpha(),        (QVariant)beta(),
+  row_t row{(QVariant)alpha(), (QVariant)beta(),
             (QVariant)rgeGamma().min, (QVariant)rgeGamma().max,
             (QVariant)inten(), (QVariant)intenError(),
             (QVariant)tth(),   (QVariant)tthError(),

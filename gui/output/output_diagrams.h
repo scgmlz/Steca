@@ -42,13 +42,10 @@ public:
   TabPlot();
   void set(core::ReflectionInfos);
 
-  void plot(eReflAttr xAttr, eReflAttr yAttr);
-  void calculateErrors(eReflAttr yAttr, qreal_vec ys, uint_vec is);
-
-  qreal_vec yErrorAdd_, yErrorSub_;
+  void plot(qreal_vec const& xs, qreal_vec const& ys,
+            qreal_vec const& ysAdd, qreal_vec const& ysSub);
 
 protected:
-  core::ReflectionInfos rs_;
   QCPGraph *graph_, *graphAdd_, *graphSub_;
 };
 
@@ -78,9 +75,19 @@ protected:
   TabPlot         *tabPlot_;
   TabDiagramsSave *tabSave_;
 
+  DiagramsParams const* params() const {
+    return static_cast<DiagramsParams*>(params_);
+  }
+
+  eReflAttr xAttr() const;
+  eReflAttr yAttr() const;
+
   void displayReflection(uint reflIndex, bool interpolated);
 
-  void plot();
+  core::ReflectionInfos rs_;
+  qreal_vec xs_, ys_, ysErrorAdd_, ysErrorSub_;
+
+  void recalculate();
 
   bool saveDiagramOutput();
   void writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator, rcstr fileTag);
