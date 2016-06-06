@@ -26,6 +26,9 @@ DiagramsParams::DiagramsParams(TheHub& hub) : super(hub) {
   rbCalc->hide();
   rbInterp->hide();
   gpInterpolation_->hide();
+  rbInterp->setChecked(false);
+  rbInterp->hide();
+  rbCalc->setChecked(true);
 
   auto tags = core::ReflectionInfo::dataTags();
   for_i (core::Metadata::numAttributes(false) - core::Metadata::numAttributes(true))
@@ -294,18 +297,21 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator, rcst
     stream << headers.at(i) << separator;
 
   stream << '\n';
+  auto current = params_->currReflIndex();
 
-  for_i (calcPoints_.count()) {
+  for_i (calcPoints_.at(current).count()) {
     auto &row = table_->row(i);
 
     for_i (row.count()) {
       auto entry = row.at(i);
       if (QVariant::String == entry.type())
-        stream << entry.toString() << " ";
-      else if (QVariant::Date == entry.type())
         stream << entry.toString();
-      else if (QVariant::Double == entry.type())
+      if (QVariant::Date == entry.type())
+        stream << entry.toString();
+      if (QVariant::Double == entry.type())
         stream << entry.toDouble();
+
+      stream << separator;
     }
 
     stream << '\n';
