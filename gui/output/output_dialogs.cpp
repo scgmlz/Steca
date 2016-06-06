@@ -170,6 +170,8 @@ Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
 : super(parent, Qt::Dialog), RefHub(hub)
 {
   setAttribute(Qt::WA_DeleteOnClose);
+  auto flags = windowFlags();
+  setWindowFlags(flags & ~Qt::WindowContextHelpButtonHint);
   setWindowTitle(title);
   setLayout((box_ = vbox()));
 
@@ -568,7 +570,7 @@ TabTable::TabTable(TheHub& hub, Params& params,
 }
 
 //------------------------------------------------------------------------------
-
+static uint PRESET_SELECTION = 3;
 TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
 : table_(table), showCols_(showCols)
 {
@@ -641,7 +643,7 @@ TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
         ++nInten;
         break;
       case eReflAttr::TTH:
-        ++nTth = 0;
+        ++nTth;
         break;
       case eReflAttr::FWHM:
         ++nFwhm;
@@ -655,9 +657,9 @@ TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
     rbHidden_->setChecked(true);
     rbNone_->setChecked(isNone);
     rbAll_->setChecked(isAll);
-    rbInten_->setChecked(!isOther && 3 == nInten);
-    rbTth_->setChecked(!isOther && 3 == nTth);
-    rbFWHM_->setChecked(!isOther && 3 == nFwhm);
+    rbInten_->setChecked(!isOther && PRESET_SELECTION == nInten);
+    rbTth_->setChecked(!isOther && PRESET_SELECTION == nTth);
+    rbFWHM_->setChecked(!isOther && PRESET_SELECTION == nFwhm);
   };
 
   for_i (showCols_.count()) {

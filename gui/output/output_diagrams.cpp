@@ -133,7 +133,8 @@ TabDiagramsSave::TabDiagramsSave(TheHub& hub, Params& params)
   auto g = gp->grid();
   g->addWidget(currentDiagram_ = radioButton("Current diagram"),0,0);
   g->addWidget(allData_        = radioButton("All data"),1,0);
-  g->addWidget(fileTypes_      = comboBox(fileTags));
+  g->addWidget(fileTypes_      = comboBox(fileTags),2,0);
+  g->setColumnStretch(1,1);
 
   currentDiagram_->setChecked(true);
 }

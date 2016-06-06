@@ -40,7 +40,6 @@ TabDiffractogramsSave::TabDiffractogramsSave(TheHub& hub, Params& params)
   vb->addWidget(rbAllSequential_ = radioButton("All diffractograms to sequentially numbered files"));
   vb->addWidget(rbAll_           = radioButton("All diffractograms"));
   vb->addWidget(fileTypes_       = comboBox(fileTags));
-
   vb->addStretch();
 
   rbAll_->setChecked(true);
