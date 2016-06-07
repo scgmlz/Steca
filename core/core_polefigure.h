@@ -28,9 +28,6 @@ namespace core { namespace pole {
 ReflectionInfos interpolate(ReflectionInfos const&, deg alphaStep, deg betaStep,
                             deg averagingAlphaMax, deg averagingRadius,
                             deg idwRadius, qreal inclusionTreshold);
-uint numAlphas(deg step);
-uint numBetas(deg step);
-
 //------------------------------------------------------------------------------
 }}
 #endif  // CORE_POLEFIGURE_H

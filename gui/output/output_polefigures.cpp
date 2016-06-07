@@ -21,6 +21,7 @@
 #include <QDir>
 #include <QPainter>
 #include <QTextStream>
+#include <cmath>
 
 namespace gui { namespace output {
 //------------------------------------------------------------------------------
@@ -244,7 +245,7 @@ bool PoleFiguresFrame::savePoleFigureOutput() {
   bool check = false;
   if (tabSave_->onlySelectedRefl()) {
     if (writePoleFigureOutputFiles(params_->currReflIndex())) {
-      tabSave_->savedMessage(QString(" for Reflection %1 \n").arg(params_->currReflIndex()));
+      tabSave_->savedMessage(QString(" for Reflection %1 \n").arg(params_->currReflIndex()+1));
       check = true;
     }
   } else {

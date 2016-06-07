@@ -266,15 +266,16 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
 
   // NOTE We expect all infos to have the same gamma range.
 
-  uint na = numAlphas(alphaStep), nb = numBetas(betaStep);
+  // REVIEW qRound oder qCeil?
+  uint numAlphas = qRound(90. / alphaStep), numBetas = (360. / betaStep);
 
   ReflectionInfos interpolatedInfos;  // Output data.
 
-  interpolatedInfos.reserve(na * nb);
+  interpolatedInfos.reserve(numAlphas * numBetas);
 
-  for_int (i, na) {
+  for_int (i, numAlphas) {
     deg const alpha = i * alphaStep;
-    for_int (j, nb) {
+    for_int (j, numBetas) {
       deg const beta = j * betaStep;
 
       if (infos.isEmpty()) {
@@ -329,14 +330,6 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
   }
 
   return interpolatedInfos;
-}
-
-uint numAlphas(deg step) {
-  return qCeil(90. / step);
-}
-
-uint numBetas(deg step) {
-  return qCeil(360. / step);
 }
 
 //------------------------------------------------------------------------------
