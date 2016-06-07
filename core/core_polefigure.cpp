@@ -273,7 +273,7 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
 
   interpolatedInfos.reserve(numAlphas * numBetas);
 
-  for_int (i, numAlphas) {
+  for_int (i, numAlphas + 1) {
     deg const alpha = i * alphaStep;
     for_int (j, numBetas) {
       deg const beta = j * betaStep;
