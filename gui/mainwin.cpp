@@ -37,6 +37,7 @@
 #include <QSplitter>
 #include <QStatusBar>
 #include <QUrl>
+#include <QtMultimedia/QSound>
 
 namespace gui {
 //------------------------------------------------------------------------------
@@ -248,6 +249,19 @@ void MainWin::connectActions() {
   onTrigger(acts_.viewReset, &thisClass::viewReset);
 }
 
+class AboutBox : public QMessageBox {
+  SUPER(AboutBox, QMessageBox)
+public:
+  using super::super;
+
+protected:
+  void mouseDoubleClickEvent(QMouseEvent*);
+};
+
+void AboutBox::mouseDoubleClickEvent(QMouseEvent*) {
+  QSound::play(":/HAL/good_evening");
+}
+
 void MainWin::about() {
   str appName = qApp->applicationDisplayName();
   str version = qApp->applicationVersion();
@@ -260,7 +274,7 @@ void MainWin::about() {
                   .arg(QDate::currentDate().toString("yyyy"))
                   .arg(STECA2_URL);
 
-  auto box = new QMessageBox(QMessageBox::NoIcon,
+  auto box = new AboutBox(QMessageBox::NoIcon,
                 title, text, QMessageBox::Close, this);
 
   box->setInformativeText(info);
@@ -367,8 +381,8 @@ void MainWin::onShow() {
 #endif
 
 #ifdef DEVELOPMENT_JAN
-  safeLoad("/P/zz-gd/SCG/data/0.ste");
-  hub_.actions.outputDiagrams->trigger();
+//  safeLoad("/P/zz-gd/SCG/data/0.ste");
+  hub_.actions.about->trigger();
 #endif
 }
 

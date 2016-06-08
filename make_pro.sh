@@ -9,7 +9,7 @@ cat >> $PRO <<EOT
 TARGET   = $APP
 TEMPLATE = app
 
-QT      += core gui widgets svg
+QT      += core gui widgets svg multimedia
 CONFIG  += c++11 silent
 
 win32 {

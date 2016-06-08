@@ -28,4 +28,7 @@
         <file alias="STeCa2">icons/STeCa2.png</file>
         <file alias="Stier1">icons/icon_stier1.png</file>
     </qresource>
+    <qresource prefix="/HAL">
+        <file alias="good_evening">HAL/good_evening.wav</file>
+    </qresource>
 </RCC>

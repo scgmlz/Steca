@@ -32,6 +32,7 @@ target_link_libraries(STeCaGUI
   Qt5::Core
   Qt5::Gui
   Qt5::Widgets
+  Qt5::Multimedia
   STeCaCore
   STeCaCoreIO
 )
