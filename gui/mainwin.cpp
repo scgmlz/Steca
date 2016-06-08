@@ -90,7 +90,7 @@ SplitDiffractogram::SplitDiffractogram(TheHub& hub) : super(Qt::Horizontal) {
 //------------------------------------------------------------------------------
 
 MainWin::MainWin() : hub_(), acts_(hub_.actions) {
-  setWindowIcon(QIcon(":/icon/STeCa2"));
+  setWindowIcon(QIcon(":/icon/retroStier"));
   QDir::setCurrent(QDir::homePath());
 
   initMenus();
