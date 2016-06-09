@@ -8,7 +8,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -278,7 +278,7 @@ void MainWin::about() {
                 title, text, QMessageBox::Close, this);
 
   box->setInformativeText(info);
-  auto pm = QPixmap(":/icon/STeCa2")
+  auto pm = QPixmap(":/icon/retroStier")
             .scaled(120, 120, Qt::KeepAspectRatio, Qt::SmoothTransformation);
   box->setIconPixmap(pm);
   box->exec();
