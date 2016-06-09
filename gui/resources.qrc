@@ -25,7 +25,6 @@
         <file alias="scale">icons/scale.svg</file>
         <file alias="useCorrection">icons/use_correction.svg</file>
         <file alias="showBackground">icons/show_background.svg</file>
-        <file alias="STeCa2">icons/STeCa2.png</file>
         <file alias="retroStier">icons/retro_stier.png</file>
     </qresource>
     <qresource prefix="/HAL">
