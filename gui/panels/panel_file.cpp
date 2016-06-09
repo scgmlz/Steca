@@ -1,104 +1,113 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      panel_file.cpp
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
 #include "panel_file.h"
 #include "thehub.h"
-#include "models.h"
-#include <QStyledItemDelegate>
+#include "views.h"
 #include <QHeaderView>
 
-namespace panel {
-//-----------------------------------------------------------------------------
-
-class FileViewDelegate: public QStyledItemDelegate {
-  SUPER(FileViewDelegate,QStyledItemDelegate)
-public:
-  void paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex index) const {
-    QStyleOptionViewItem o = option;
-    bool isCorrFile = index.data(FileView::Model::IsCorrFileRole).toBool();
-    if (isCorrFile) {
-      o.font.setItalic(true);
-      o.font.setBold(true);
-    }
-    super::paint(painter,o,index);
-  }
-};
-
+namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-FileView::FileView(TheHub& theHub): super(theHub), model(theHub.fileViewModel) {
-  setModel(&model);
+class FilesView : public views::MultiListView {
+  SUPER(FilesView, views::MultiListView)
+public:
+  FilesView(TheHub&);
+
+protected:
+  using Model = models::FilesModel;
+  Model* model() const { return static_cast<Model*>(super::model()); }
+
+  void selectionChanged(QItemSelection const&, QItemSelection const&);
+  void removeSelected();
+  void recollect();
+};
+
+FilesView::FilesView(TheHub& hub) : super(hub) {
+  setModel(&hub.filesModel);
+  EXPECT(dynamic_cast<Model*>(super::model()))
 
   header()->hide();
 
-  static FileViewDelegate delegate;
-  setItemDelegate(&delegate);
+  connect(hub_.actions.remFile, &QAction::triggered,
+          [this]() { removeSelected(); });
+
+  onSigFilesChanged([this]() {
+    selectRows({});
+    recollect();
+  });
+
+  onSigFilesSelected([this]() {
+    selectRows(hub_.collectedFromFiles());
+  });
 }
 
-void FileView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
-  super::selectionChanged(selected,deselected);
-
-  auto indexes = selected.indexes();
-  theHub.setSelectedFile(indexes.isEmpty()
-    ? core::shp_File()
-    : model.data(indexes.first(), Model::GetFileRole).value<core::shp_File>());
+void FilesView::selectionChanged(QItemSelection const& selected,
+                                 QItemSelection const& deselected) {
+  super::selectionChanged(selected, deselected);
+  recollect();
 }
 
-void FileView::removeSelected() {
-  auto index = currentIndex();
-  if (!index.isValid()) return;
+void FilesView::removeSelected() {
+  auto indexes = selectedIndexes();
 
-  uint row = index.row();
-  index = ((int)(row+1) < model.rowCount()) ? index : index.sibling(row-1,0);
+  // backwards
+  for (uint i = indexes.count(); i-- > 0;)
+    model()->remFile(indexes.at(i).row());
 
-  model.remFile(row);
-  if (0>=model.rowCount()) // no more files
-    theHub.setSelectedFile(core::shp_File());
-
-  setCurrentIndex(index);
+  selectRows({});
+  recollect();
 }
 
-void FileView::update() {
-  auto index = currentIndex();
-  model.signalReset();
-  // keep the current index, or select the first item
-  setCurrentIndex(index.isValid() ? index : model.index(0,1));
+void FilesView::recollect() {
+  uint_vec rows;
+  for (auto const& index : selectionModel()->selectedRows())
+    if (index.isValid()) rows.append(index.row());
+
+  hub_.collectDatasetsFromFiles(rows);
 }
 
 //------------------------------------------------------------------------------
 
-DockFiles::DockFiles(TheHub& theHub)
-: super("Files","dock-files",Qt::Vertical) {
-  box->addWidget((fileView = new FileView(theHub)));
+DockFiles::DockFiles(TheHub& hub)
+: super("Files", "dock-files", Qt::Vertical), RefHub(hub)
+{
+  box_->addWidget((filesView_ = new FilesView(hub)));
 
-  auto h = hbox(); box->addLayout(h);
+  auto h = hbox();
+  box_->addLayout(h);
 
-  h->addWidget(textButton(theHub.actLoadCorrFile));
-  h->addWidget(iconButton(theHub.actEnableCorr));
+  auto& actions = hub_.actions;
+
+  h->addWidget(label("Corr. file"));
   h->addStretch();
-  h->addWidget(iconButton(theHub.actAddFiles));
-  h->addWidget(iconButton(theHub.actRemoveFile));
+  h->addWidget(iconButton(actions.addFiles));
+  h->addWidget(iconButton(actions.remFile));
 
-  connect(theHub.actRemoveFile, &QAction::triggered, [this]() {
-    fileView->removeSelected();
-  });
+  h = hbox();
+  box_->addLayout(h);
 
-  connect(&theHub, &TheHub::filesChanged, [this]() {
-    fileView->update();
+  h->addWidget((corrFile_ = new LineView()));
+  h->addWidget(iconButton(actions.enableCorr));
+  h->addWidget(iconButton(actions.remCorr));
+
+  onSigCorrFile([this](core::shp_File file) {
+    corrFile_->setText(file.isNull() ? EMPTY_STR : file->fileName());
   });
 }
 
 //------------------------------------------------------------------------------
-}
+}}
 // eof

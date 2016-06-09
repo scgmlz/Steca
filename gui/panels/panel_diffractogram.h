@@ -1,44 +1,47 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      panel_diffractogram.h
 //! @brief     File selection panel.
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
 #ifndef PANEL_DIFFRACTOGRAM_H
 #define PANEL_DIFFRACTOGRAM_H
 
-#include "panel.h"
-#include "core_dataset.h"
-#include "core_reflection.h"
-#include "core_fit_methods.h"
-#include "types/core_type_curve.h"
 #include "QCP/qcustomplot.h"
+#include "core_dataset.h"
+#include "core_fit_methods.h"
+#include "core_reflection.h"
+#include "panel.h"
+#include "types/core_type_curve.h"
 
+namespace gui {
 namespace panel {
 //------------------------------------------------------------------------------
 
 class DiffractogramPlot;
 
-class DiffractogramPlotOverlay: public QWidget {
-  SUPER(DiffractogramPlotOverlay,QWidget)
+class DiffractogramPlotOverlay : public QWidget {
+  SUPER(DiffractogramPlotOverlay, QWidget)
 public:
   DiffractogramPlotOverlay(DiffractogramPlot&);
 
-  void setMargins(int left,int right);
+  void setMargins(int left, int right);
 
 private:
-  DiffractogramPlot& plot;
-  QColor addColor, remColor, color, bgColor, reflColor;
-  int marginLeft, marginRight;
+  DiffractogramPlot &plot_;
+
+  QColor addColor_, remColor_, color_, bgColor_, reflColor_;
+  int    marginLeft_, marginRight_;
 
 protected:
   void enterEvent(QEvent*);
@@ -49,87 +52,91 @@ protected:
 
   void paintEvent(QPaintEvent*);
 
-  bool hasCursor, mouseDown;
-  int  cursorPos, mouseDownPos;
+  bool hasCursor_, mouseDown_;
+  int  cursorPos_, mouseDownPos_;
 
   void updateCursorRegion();
 };
 
-class Diffractogram;
-
-class DiffractogramPlot: public QCustomPlot, protected RefHub {
-  SUPER(DiffractogramPlot,QCustomPlot)
+class DiffractogramPlot : public QCustomPlot, protected RefHub {
+  SUPER(DiffractogramPlot, QCustomPlot)
 public:
-  enum Tool {
-    TOOL_NONE,
-    TOOL_BACKGROUND,
-    TOOL_PEAK_REGION,
+  enum class eTool {
+    NONE,
+    BACKGROUND,
+    PEAK_REGION,
   };
 
-  DiffractogramPlot(TheHub&,Diffractogram&);
+  DiffractogramPlot(TheHub&, class Diffractogram&);
 
 public:
-  void setTool(Tool);
-  Tool getTool() const { return tool; }
+  void  setTool(eTool);
+  eTool getTool() const { return tool_; }
 
-  void plot(core::Curve const&,core::Curve const&, core::Curve const&, core::curve_vec const&, uint);
+  void  plot(core::rcCurve, core::rcCurve, core::rcCurve,
+             core::curve_vec const&, uint);
 
-  core::Range fromPixels(int,int);
+  core::Range fromPixels(int, int);
 
   void clearBg();
-  void addBg(core::Range const&);
-  void remBg(core::Range const&);
-  void setNewReflRange(core::Range const&);
+  void addBg(core::rcRange);
+  void remBg(core::rcRange);
+  void setNewReflRange(core::rcRange);
   void updateBg();
 
   void clearReflLayer();
-  
-  QColor bgColor;
-  int selectedFittingTab();
-  
+
+  QColor bgRgeColor_, reflRgeColor_;
+  eFittingTab selectedFittingTab();
+
 protected:
-  void addBgItem(core::Range const&);
+  void addBgItem(core::rcRange);
   void resizeEvent(QResizeEvent*);
 
 private:
-  Diffractogram &diffractogram;
-  Tool tool;
-  QCPGraph *bgGraph, *dgramGraph, *dgramBgFittedGraph, *guesses, *fits;
-  QVector<QCPGraph*> reflGraph;
-  DiffractogramPlotOverlay *overlay;
-  bool showBgFit;
+  Diffractogram &diffractogram_;
+
+  eTool tool_;
+  bool showBgFit_;
+
+  QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *guesses_, *fits_;
+
+  QVector<QCPGraph*>       reflGraph_;
+  DiffractogramPlotOverlay *overlay_;
 };
 
-class Diffractogram: public BoxPanel {
-  SUPER(Diffractogram,BoxPanel)
+class Diffractogram : public BoxPanel {
+  SUPER(Diffractogram, BoxPanel)
 public:
   Diffractogram(TheHub&);
 
-  core::shp_Dataset const& getDataset() const { return dataset; }
-  void renderDataset(); // TODO move to DiffractogramPlot (?)
+  void render();
+
+  core::shp_Dataset dataset() const { return dataset_; }
 
 private:
   void setDataset(core::shp_Dataset);
 
-  core::shp_Dataset dataset;
+  core::shp_Dataset dataset_;
 
-  DiffractogramPlot *plot;
+  DiffractogramPlot *plot_;
 
-  core::Curve  dgram, dgramBgFitted, bg;
-  core::curve_vec refls;
+  core::Curve     dgram_, dgramBgFitted_, bg_;
+  core::curve_vec refls_;
 
-  uint currReflIndex;
-  core::shp_Reflection currentReflection;
+  uint                 currReflIndex_;
+  core::shp_Reflection currentReflection_;
 
 public:
   void calcDgram();
   void calcBackground();
   void calcReflections();
 
-  void setCurrReflNewRange(core::Range const&);
+  void        setCurrReflNewRange(core::rcRange);
   core::Range currReflRange() const;
 };
 
 //------------------------------------------------------------------------------
 }
-#endif // PANEL_DIFFRACTOGRAM_H
+}
+#endif  // PANEL_DIFFRACTOGRAM_H

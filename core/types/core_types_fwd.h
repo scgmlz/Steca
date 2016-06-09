@@ -1,15 +1,16 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      core_types_fwd.h
 //! @brief     Forward declaration of core types
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
@@ -17,37 +18,62 @@
 #define CORE_TYPES_FWD_H
 
 #include "core_defs.h"
-#include "core_types_fwd.h"
 
 namespace core {
 //------------------------------------------------------------------------------
 
-struct XY;
+struct IJ; typedef IJ const& rcIJ;
+struct XY; typedef XY const& rcXY;
 
-struct  Range;
-class  Ranges;
+struct Range;  typedef Range  const& rcRange;
+class  Ranges; typedef Ranges const& rcRanges;
 
-class  Curve;
+class  Curve;  typedef Curve  const& rcCurve;
 
+struct vector3f;
 struct vector3d;
 struct matrix3d;
 
-class  Image;
+class  Image;   typedef Image const&  rcImage;
 struct ImageTransform;
-struct DiffractionAngles;
 
-typedef float intens_t;   ///< intensity; float should suffice
+typedef float inten_t;    ///< intensity if in a vector; float should suffice
 
-class JsonObj;            /// for saving / loading
-typedef JsonObj const &rcJsonObj;
+class JsonObj; typedef JsonObj const& rcJsonObj;
+class JsonArr; typedef JsonArr const& rcJsonArr;
 
-class Lens;       typedef QSharedPointer<Lens>        shp_LensSystem; // RENAME to shp_LensSystem
-class File;       typedef QSharedPointer<File>        shp_File;
-class Dataset;    typedef QSharedPointer<Dataset>     shp_Dataset;
-class Reflection; typedef QSharedPointer<Reflection>  shp_Reflection;
+class Session;  typedef Session const&  rcSession;
+class File;     typedef File const&     rcFile;
+
+struct Metadata; typedef Metadata const& rcMetadata;
+class  Dataset;  typedef Dataset  const& rcDataset;
+class  Datasets; typedef Datasets const& rcDatasets;
+
+class ImageLens; class Lens;
+class AngleMap;
+
+class Reflection;      typedef Reflection      const& rcReflection;
+class ReflectionInfo;  typedef ReflectionInfo  const& rcReflectionInfo;
+class ReflectionInfos; typedef ReflectionInfos const& rcReflectionInfos;
+
+typedef QSharedPointer<File>        shp_File;
+typedef QSharedPointer<Metadata>    shp_Metadata;
+typedef QSharedPointer<Dataset>     shp_Dataset;
+typedef QSharedPointer<ImageLens>   shp_ImageLens;
+typedef QSharedPointer<Lens>        shp_Lens;
+typedef QSharedPointer<AngleMap>    shp_AngleMap;
+typedef QSharedPointer<Reflection>  shp_Reflection;
+
+typedef QVector<shp_Reflection>     Reflections;
+typedef Reflections const& rcReflections;
+
+enum class eNorm {
+  NONE,
+  DELTA_MONITOR_COUNT, DELTA_TIME, BACKGROUND,
+};
 
 enum class ePeakType {
-  GAUSSIAN, LORENTZIAN, PSEUDOVOIGT1, PSEUDOVOIGT2,
+  RAW, GAUSSIAN, LORENTZIAN, PSEUDOVOIGT1, PSEUDOVOIGT2,
   NUM_TYPES
 };
 

@@ -1,51 +1,38 @@
-// TODO HEADER
-/** \file
- */
+// ************************************************************************** //
+//
+//  STeCa2:    StressTextureCalculator ver. 2
+//
+//! @file      thehub.h
+//! @brief     The communication hub.
+//!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
+//
+// ************************************************************************** //
 
 #ifndef THEHUB_H
 #define THEHUB_H
 
-#include "core_defs.h"
-#include "models.h"
+#include "actions.h"
 #include "core_session.h"
+#include "core_session.h"
+#include "models.h"
+#include "types/core_defs.h"
 #include <QAction>
 #include <QSettings>
+
 class QSpinBox;
 class QDoubleSpinBox;
+class Progress;
 
+namespace gui {
 //------------------------------------------------------------------------------
 
-class Action: public QAction {
-  SUPER(Action,QAction)
-public:
-  Action(rcstr text, rcstr tip, QObject*);
-
-  Action& dialog();
-  Action& key(QKeySequence);
-  Action& icon(rcstr);
-
-  virtual Action& alt(rcstr text2, rcstr tip2);
-};
-
-class TriggerAction: public Action {
-  SUPER(TriggerAction,Action)
-public:
-  TriggerAction(rcstr text, rcstr tip, QObject*);
-};
-
-class ToggleAction: public Action {
-  SUPER(ToggleAction,Action)
-public:
-  ToggleAction(rcstr text, rcstr tip, QObject*);
-  Action& alt(rcstr text2, rcstr tip2);
-
-protected:
-  str text1, text2, tip1, tip2;
-};
-
-//------------------------------------------------------------------------------
-
-class Settings: public QSettings {
+class Settings : public QSettings {
   SUPER(Settings, QSettings)
 public:
   Settings(rcstr group = EMPTY_STR);
@@ -62,168 +49,163 @@ public:
 
   void read(rcstr key, QDoubleSpinBox*, qreal def);
   void save(rcstr key, QDoubleSpinBox*);
+
+  qreal readReal(rcstr key, qreal def);
+  void  saveReal(rcstr key, qreal);
 };
 
 //------------------------------------------------------------------------------
 
-class TheHub: public QObject {
-  SUPER(TheHub,QObject)
-  Q_OBJECT
+class ReadFile: public QFile {
+  SUPER(ReadFile, QFile)
+public:
+  ReadFile(rcstr path) THROWS;
+};
+
+class WriteFile: public QFile {
+  SUPER(WriteFile, QFile)
+public:
+  WriteFile(rcstr path) THROWS;
+};
+
+//------------------------------------------------------------------------------
+
+class TheHub : public TheHubSignallingBase {
+  SUPER(TheHub, TheHubSignallingBase)
+  friend class TheHubSignallingBase;
 public:
   TheHub();
 
+  Actions actions;
+
 private:
-  void initActions();
   void configActions();
 
 private:
   QScopedPointer<core::Session> session;
 
-public:
-  bool fixedIntensityScale;
-
-  models::FileViewModel       fileViewModel;
-  models::DatasetViewModel    datasetViewModel;
-  models::ReflectionViewModel reflectionViewModel;
+  bool isFixedIntenImageScale_;
+  bool isFixedIntenDgramScale_;
+  bool isCombinedDgram_;
 
 public:
-  QAction
-    *actAddFiles, *actRemoveFile,
-    *actLoadCorrFile,
-    *actLoadSession, *actSaveSession,
+  bool isFixedIntenImageScale() const { return isFixedIntenImageScale_; }
+  bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
+  bool isCombinedDgram()        const { return isCombinedDgram_;        }
 
-    *actExportDiffractogramCurrent,
-    *actExportDiffractogramAllSeparateFiles,
-    *actExportDiffractogramSingleFile,
-    *actExportImagesWithMargins,
-    *actExportImagesWithoutMargins,
+  models::FilesModel       filesModel;
+  models::DatasetsModel    datasetsModel;
+  models::ReflectionsModel reflectionsModel;
 
-    *actQuit,
-
-    *actUndo, *actRedo,
-    *actCut,  *actCopy, *actPaste,
-
-    *actViewStatusbar,
-#ifndef Q_OS_OSX // Mac has its own
-    *actFullscreen,
-#endif
-    *actViewDockFiles, *actViewDockDatasets, *actViewDockDatasetInfo,
-    *actViewReset,
-
-    *actOutputPolefigures,
-    *actOutputHistograms,
-    *actPreferences,
-    *actFitErrorParameters,
-
-    *actAbout,
-
-  // more actions, some not in the menu
-    *actReflectionAdd, *actReflectionRemove,
-    *actImageRotate, *actImageMirror,
-    *actImagesLink, *actImageOverlay, *actImagesFixedIntensity, *actEnableCorr,
-    *actFitTool, *actFitBgClear, *actFitShow,
-    *actHasBeamOffset;
-
-public: // files
-  uint numFiles(bool withCorr) const;
-  bool hasCorrFile()           const;
-  bool isCorrFile(uint index)  const;
-  str  fileName(uint index)    const;
-  str  filePath(uint index)    const;
-
+public:  // files
+  uint numFiles() const;
+  str fileName(uint index) const;
+  str filePath(uint index) const;
   core::shp_File getFile(uint) const;
-  void remFile(uint);
+  void           remFile(uint);
 
-  void setSelectedFile(core::shp_File);
-  void setSelectedDataset(core::shp_Dataset);
-  void setSelectedReflection(core::shp_Reflection);
-  void setReflectionData(core::shp_Reflection);
-  void newReflectionData(core::Range const&,core::XY const&,qreal,bool);
+  bool          hasCorrFile() const;
+  core::rcImage corrImage() const;
 
 public:
-  core::shp_LensSystem allLenses(core::Dataset const& dataset) const;
-  core::shp_LensSystem noROILenses(core::Dataset const& dataset) const;
+  core::shp_ImageLens lensNoCut(core::rcImage) const;
+
+  core::shp_Lens lens(core::rcDataset) const;
+  core::shp_Lens lensNoCut(core::rcDataset) const;
+
+  core::AngleMap const& angleMap(core::rcDataset) const;
 
 public:
-  void load(QFileInfo const&)  THROWS;
-  void load(QByteArray const&) THROWS;
-
-  void save(QFileInfo const&) const;
-  QByteArray save()           const;
+  core::ReflectionInfos makeReflectionInfos(core::rcReflection,
+      core::deg betaStep, core::rcRange rgeGamma, Progress* = nullptr);
 
 public:
-  void addFile(rcstr filePath)      THROWS;
-  void addFiles(str_lst filePaths)  THROWS;
-  void loadCorrFile(rcstr filePath);
+  void       saveSession(QFileInfo const&) const;
+  QByteArray saveSession() const;
 
-  void enableCorrection(bool);
+  void loadSession(QFileInfo const&) THROWS;
+  void loadSession(QByteArray const&) THROWS;
 
-  QMargins const& getImageMargins() const;
-  void setImageMargins(bool topLeft, bool linked, QMargins const&);
+public:
+  void addFile(rcstr filePath) THROWS;
+  void addFiles(str_lst const& filePaths) THROWS;
 
-  QSize getImageSize() const;
+private:
+  uint_vec collectFromFiles_;
+  uint     datasetsGroupedBy_;
 
-  core::DiffractionAnglesMap const& calcAngleMap(qreal tthMitte);
-  core::Borders const& getCut() const; // TODO somehow hide
+public:
+  void collectDatasetsFromFiles(uint_vec, uint);
+  void collectDatasetsFromFiles(uint_vec);
+  void combineDatasetsBy(uint);
 
-  core::Geometry const& getGeometry() const;
-  void setGeometry(qreal detectorDistance, qreal pixSize, bool hasBeamOffset, QPoint const& middlePixOffset);
+  uint_vec const& collectedFromFiles() const {
+    return session->collectedFromFiles();
+  }
 
-  void setBackgroundPolynomialDegree(uint);
+  uint datasetsGroupedBy() const { return  datasetsGroupedBy_; }
+
+  uint numCollectedDatasets() const {
+    return collectedDatasets().count();
+  }
+
+  core::rcDatasets collectedDatasets() const {
+    return session->collectedDatasets();
+  }
+
+  str_lst const& collectedDatasetsTags() const {
+    return session->collectedDatasetsTags();
+  }
+
+  void setCorrFile(rcstr filePath) THROWS;
+  void tryEnableCorrection(bool);
+
+  core::ImageCut const& imageCut() const;
+  void setImageCut(bool topLeft, bool linked, core::ImageCut const&);
+
+  core::Geometry const& geometry() const;
+  void setGeometry(qreal detectorDistance, qreal pixSize, bool isMidPixOffset,
+                   core::rcIJ midPixOffset);
+
+  void setBgRanges(core::rcRanges);
+  void addBgRange(core::rcRange);
+  void remBgRange(core::rcRange);
+
+  static uint constexpr MAX_POLYNOM_DEGREE = 4;
+  void setBgPolyDegree(uint);
 
   void setReflType(core::ePeakType);
 
   void addReflection(core::ePeakType);
   void remReflection(uint);
 
-  enum {
-    TAB_BACKGROUND,
-    TAB_REFLECTIONS,
-  };
+  eFittingTab fittingTab() const { return fittingTab_; }
+  void setFittingTab(eFittingTab);
 
-  int fittingTab__; // TODO
-  void setFittingTab(int);
-  
 private:
-  core::shp_Reflection    selectedReflection;
+  eFittingTab fittingTab_;
+
+private:
+  core::shp_Dataset    selectedDataset_;
+  core::shp_Reflection selectedReflection_;
+
+public:
+  core::shp_Dataset selectedDataset() const { return selectedDataset_; }
 
 private:
   void setImageRotate(core::ImageTransform);
   void setImageMirror(bool);
 
-signals:
-  void readSettings();
-  void saveSettings();
-
-  void filesChanged();
-  void correctionEnabled(bool);
-
-  void fileSelected(core::shp_File);
-  void datasetSelected(core::shp_Dataset);
-
-  void reflectionsChanged();
-  void reflectionSelected(core::shp_Reflection);
-  void reflectionData(core::shp_Reflection);
-  void reflectionValues(core::Range const&, core::XY const&, qreal, bool);
-
-  void displayChange();
-  void geometryChanged();
-
-  void backgroundPolynomialDegree(uint);
-
-  void normChanged();
-
-  void fittingTab(int);
+public:
+  void setNorm(core::eNorm);
 
 public:
-  // TODO instead of exposing the objects, provide an interface
-  core::Ranges&       getBgRanges()           const { return session->getBgRanges(); }
-  int&                getBgPolynomialDegree() const { return session->getBgPolynomialDegree(); }
-  core::Reflections&  getReflections()        const { return session->getReflections();  }
+  core::rcRanges bgRanges()         const { return session->bgRanges();     }
+  uint           bgPolyDegree()     const { return session->bgPolyDegree(); }
 
-public:
-  void setNormType(core::Normalization type);
+  core::rcReflections reflections() const { return session->reflections();  }
 };
 
 //------------------------------------------------------------------------------
+}
 #endif

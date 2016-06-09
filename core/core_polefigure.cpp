@@ -1,361 +1,337 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      core_polefigure.cpp
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
 #include "core_polefigure.h"
+#include "types/core_async.h"
+#include <qmath.h>
 
-#include "types/core_type_angles.h"
-#include "core_fit_fitting.h"
-#include "core_session.h"
-#include "core_reflection_info.h"
-
-#include <algorithm>
-#include <QtMath>
-
-namespace core {
+namespace core { namespace pole {
 //------------------------------------------------------------------------------
 
-qreal calculateDeltaBeta(qreal beta1, qreal beta2) noexcept {
+typedef QVector<ReflectionInfo const*> info_vec;
+
+// Calculates the difference of two angles. Parameters should be in [0, 360].
+deg calculateDeltaBeta(deg beta1, deg beta2) {
+  // Due to cyclicity of angles (360 is equivalent to 0), some magic is needed.
   qreal deltaBeta = beta1 - beta2;
-  qreal tempDelta = deltaBeta - 2 * M_PI;
+  qreal tempDelta = deltaBeta - 360;
+
   if (qAbs(tempDelta) < qAbs(deltaBeta)) deltaBeta = tempDelta;
-  tempDelta = deltaBeta + 2 * M_PI;
+
+  tempDelta = deltaBeta + 360;
+
   if (qAbs(tempDelta) < qAbs(deltaBeta)) deltaBeta = tempDelta;
-  return deltaBeta;
+
+  ENSURE(-180 <= deltaBeta && deltaBeta <= 180)
+  return (deg)deltaBeta;
 }
 
 // Calculates the angle between two points on a unit sphere.
-qreal angle(qreal alpha1, qreal alpha2,
-            qreal deltaBeta) noexcept {
-  return acos(
-      cos(alpha1) * cos(alpha2)
-    + sin(alpha1) * sin(alpha2) * cos(deltaBeta)
-  );
+deg angle(deg alpha1, deg alpha2, deg deltaBeta) {
+  // Absolute value of deltaBeta is not needed because cos is an even function.
+  auto a = rad(acos(cos(alpha1.toRad()) * cos(alpha2.toRad()) +
+                    sin(alpha1.toRad()) * sin(alpha2.toRad()) *
+                        cos(deltaBeta.toRad())))
+               .toDeg();
+  ENSURE(0 <= a && a <= 180)
+  return a;
+}
+
+enum class eQuadrant {
+  NORTHEAST,
+  SOUTHEAST,
+  SOUTHWEST,
+  NORTHWEST,
+};
+
+static int NUM_QUADRANTS = 4;
+
+typedef QVector<eQuadrant> Quadrants;
+
+Quadrants allQuadrants() {
+  return {eQuadrant::NORTHEAST, eQuadrant::SOUTHEAST, eQuadrant::SOUTHWEST,
+          eQuadrant::NORTHWEST};
+}
+
+bool inQuadrant(eQuadrant quadrant, deg deltaAlpha, deg deltaBeta) {
+  switch (quadrant) {
+  case eQuadrant::NORTHEAST:
+    return deltaAlpha >= 0 && deltaBeta >= 0;
+  case eQuadrant::SOUTHEAST:
+    return deltaAlpha >= 0 && deltaBeta < 0;
+  case eQuadrant::SOUTHWEST:
+    return deltaAlpha < 0 && deltaBeta < 0;
+  case eQuadrant::NORTHWEST:
+    return deltaAlpha < 0 && deltaBeta >= 0;
+  default:
+    NEVER return false;
+  }
+}
+
+// Search quadrant remapping in case no point was found.
+eQuadrant remapQuadrant(eQuadrant q) {
+  switch (q) {
+  case eQuadrant::NORTHEAST:
+    return eQuadrant::NORTHWEST;
+  case eQuadrant::SOUTHEAST:
+    return eQuadrant::SOUTHWEST;
+  case eQuadrant::SOUTHWEST:
+    return eQuadrant::NORTHEAST;
+  case eQuadrant::NORTHWEST:
+    return eQuadrant::SOUTHEAST;
+  default:
+    NEVER return (eQuadrant)0;
+  }
 }
 
 // Checks if (alpha,beta) is inside radius from (centerAlpha,centerBeta).
-bool inRadius(qreal alpha, qreal beta,
-              qreal centerAlpha, qreal centerBeta,
-              qreal radius) noexcept {
-  return   qAbs(angle(alpha, centerAlpha, calculateDeltaBeta(beta, centerBeta)))
-         < radius;
+bool inRadius(deg alpha, deg beta, deg centerAlpha, deg centerBeta,
+              deg radius) {
+  qreal a = angle(alpha, centerAlpha, calculateDeltaBeta(beta, centerBeta));
+  return qAbs(a) < (qreal)radius;
 }
 
-namespace Quadrant {
-  enum Quadrant {
-    NORTHEAST,
-    SOUTHEAST,
-    SOUTHWEST,
-    NORTHWEST,
-    MAX_QUADRANTS
+struct itf_t {
+  itf_t(inten_t inten_, deg tth_, qreal fwhm_)
+  : inten(inten_), tth(tth_), fwhm(fwhm_) {
   };
-}
 
-bool inQuadrant(int quadrant,
-                qreal deltaAlpha, qreal deltaBeta) noexcept {
-  switch (quadrant) {
-  case Quadrant::NORTHEAST:
-    return deltaAlpha >= 0 && deltaBeta >= 0;
-  case Quadrant::SOUTHEAST:
-    return deltaAlpha >= 0 && deltaBeta < 0;
-  case Quadrant::SOUTHWEST:
-    return deltaAlpha < 0 && deltaBeta < 0;
-  case Quadrant::NORTHWEST:
-    return deltaAlpha < 0 && deltaBeta >= 0;
-  default:
-    NEVER_HERE return false;
+  itf_t()
+  : itf_t(qQNaN(), qQNaN(), qQNaN()) {
+  };
+
+  void operator+=(itf_t const& that) {
+    inten     += that.inten;
+    tth = tth + that.tth;
+    fwhm      += that.fwhm;
+  }
+
+  inten_t inten;
+  deg     tth;
+  qreal   fwhm;
+};
+
+typedef QVector<itf_t> itfs_t;
+
+// Adds data from reflection infos within radius from alpha and beta
+// to the peak parameter lists.
+void searchPoints(deg alpha, deg beta, deg radius, ReflectionInfos const& infos,
+                  itfs_t& itfs) {
+  // REVIEW Use value trees to improve performance.
+  for (auto const& info : infos) {
+    if (inRadius(info.alpha(), info.beta(), alpha, beta, radius))
+      itfs.append(itf_t(info.inten(), info.tth(), info.fwhm()));
   }
 }
 
-Quadrant::Quadrant remapQuadrant(Quadrant::Quadrant const Q) {
-  switch(Q) {
-  case Quadrant::NORTHEAST: return Quadrant::NORTHWEST;
-  case Quadrant::SOUTHEAST: return Quadrant::SOUTHWEST;
-  case Quadrant::SOUTHWEST: return Quadrant::NORTHEAST;
-  case Quadrant::NORTHWEST: return Quadrant::SOUTHEAST;
-  default: NEVER_HERE return Quadrant::MAX_QUADRANTS;
-  }
-}
-
-Range gammaRangeAt(shp_LensSystem lenses, qreal const tth) {
-  const auto s = lenses->getSize();
-  RUNTIME_CHECK(s.width() > 0 && s.height() > 0, "invalid image size");
-  Range r;
-  auto angles = lenses->getAngles(0, 0);
-  auto nextAngles = lenses->getAngles(1, 0);
-  for (int iy = 0; iy < s.height(); ++iy) {
-    for (int ix = 0; ix < s.width() - 1; ++ix) {
-      if (tth >= angles.tth && tth < nextAngles.tth) {
-        r.extendBy(angles.gamma);
+// Searches closest ReflectionInfos to given alpha and beta in quadrants.
+void searchInQuadrants(Quadrants const& quadrants, deg alpha, deg beta,
+                       deg searchRadius, ReflectionInfos const& infos,
+                       info_vec& foundInfos,
+                       qreal_vec&                      distances) {
+  ENSURE(quadrants.size() <= NUM_QUADRANTS);
+  // Take only reflection infos with beta within +/- BETA_LIMIT degrees into
+  // account. Original STeCa used something like +/- 1.5*36 degrees.
+  qreal const BETA_LIMIT = 30;
+  distances.fill(std::numeric_limits<qreal>::max(), quadrants.size());
+  foundInfos.fill(nullptr, quadrants.size());
+  // Find infos closest to given alpha and beta in each quadrant.
+  for (auto const& info : infos) {
+    // REVIEW We could do better with value trees than looping over all infos.
+    auto deltaBeta = calculateDeltaBeta(info.beta(), beta);
+    if (fabs(deltaBeta) > BETA_LIMIT) continue;
+    auto deltaAlpha = info.alpha() - alpha;
+    // "Distance" between grid point and current info.
+    auto d = angle(alpha, info.alpha(), deltaBeta);
+    for (int i = 0; i < quadrants.size(); ++i) {
+      if (inQuadrant(quadrants[i], deltaAlpha, deltaBeta)) {
+        if (d >= distances[i]) continue;
+        distances[i] = d;
+        if (qIsNaN(searchRadius) || d < searchRadius) {
+          foundInfos[i] = &info;
+        }
       }
-      angles = nextAngles;
-      nextAngles = lenses->getAngles(ix + 1, iy);
     }
   }
-  return r;
 }
 
-template<typename Container>
-qreal inverseDistanceWeighing(Container const& distances,
-                              Container const& values) {
+void inverseDistanceWeighing(qreal_vec const& distances, info_vec const& infos,
+                             itf_t& itf) {
   // Generally, only distances.size() == values.size() > 0 is needed for this
   // algorithm. However, in this context we expect exactly the following:
-  RUNTIME_CHECK(distances.size() == Quadrant::MAX_QUADRANTS,
+  RUNTIME_CHECK(distances.size() == NUM_QUADRANTS,
                 "distances size should be 4");
-  RUNTIME_CHECK(values.size() == Quadrant::MAX_QUADRANTS,
-                "values size should be 4");
-  Container inverseDistances;
-  for (const auto& d : distances) inverseDistances.push_back(1 / d);
-  qreal const inverseDistanceSum
-    = std::accumulate(inverseDistances.cbegin(), inverseDistances.cend(), 0.0);
-  return std::inner_product(values.begin(),
-                            values.end(),
-                            inverseDistances.begin(),
-                            0.0)
-            / inverseDistanceSum;
-}
-
-template<typename Container>
-bool inSearchRadius(qreal const radius, Container const& deltaZs) {
-  RUNTIME_CHECK(deltaZs.size() == Quadrant::MAX_QUADRANTS,
-                "incorrect container size");
-  return std::all_of(deltaZs.cbegin(), deltaZs.cend(), [radius](qreal deltaZ) {
-    return deltaZ <= radius;
-  });
-}
-
-bool searchPointsInQuadrant(int const quadrant,
-                            qreal const deltaAlpha,
-                            qreal const deltaBeta,
-                            ReflectionInfo const& info,
-                            qreal &peakOffset,
-                            qreal &peakHeight,
-                            qreal &peakFWHM) {
-  if (inQuadrant(quadrant, deltaAlpha, deltaBeta)) {
-    peakOffset = info.getPeakPosition().x;
-    peakHeight = info.getPeakPosition().y;
-    peakFWHM = info.getPeakFWHM();
-    return true;
+  RUNTIME_CHECK(infos.size() == NUM_QUADRANTS, "infos size should be 4");
+  qreal_vec inverseDistances(NUM_QUADRANTS);
+  qreal     inverseDistanceSum = 0;
+  for_i (NUM_QUADRANTS) {
+    if (distances[i] == 0) {
+      // Points coincide; no need to interpolate.
+      auto& in = infos.at(i);
+      itf.inten = in->inten();
+      itf.tth   = in->tth();
+      itf.fwhm  = in->fwhm();
+      return;
+    }
+    inverseDistances[i] = 1 / distances[i];
+    inverseDistanceSum += inverseDistances[i];
   }
-  return false;
+  // REVIEW The RAW peak may need different handling.
+  qreal offset = 0;
+  qreal height = 0;
+  qreal fwhm   = 0;
+  for_i (NUM_QUADRANTS) {
+    auto& in = infos.at(i);
+    offset += in->tth() * inverseDistances[i];
+    height += in->inten() * inverseDistances[i];
+    fwhm += in->fwhm() * inverseDistances[i];
+  }
+
+  itf.inten = height / inverseDistanceSum;
+  itf.tth   = offset / inverseDistanceSum;
+  itf.fwhm  = fwhm / inverseDistanceSum;
+}
+
+// Interpolates reflection infos to a single point using idw.
+void interpolateValues(deg searchRadius, ReflectionInfos const& infos,
+                       deg alpha, deg beta, itf_t& out) {
+  info_vec  interpolationInfos;
+  qreal_vec distances;
+  searchInQuadrants(allQuadrants(), alpha, beta, searchRadius,
+                    infos, interpolationInfos, distances);
+  // Check that infos were found in all quadrants.
+  int numQuadrantsOk = 0;
+  for_i (NUM_QUADRANTS) {
+    if (interpolationInfos[i]) {
+      ++numQuadrantsOk;
+      continue;
+    }
+    // No info found in quadrant? Try another quadrant. See
+    // [J.Appl.Cryst.(2011),44,641] for the angle mapping.
+    eQuadrant newQ = remapQuadrant((eQuadrant)i);
+    qreal const newAlpha =
+        i == (int)eQuadrant::NORTHEAST || i == (int)eQuadrant::SOUTHEAST
+            ? 180 - alpha
+            : -alpha;
+    qreal newBeta = beta < 180 ? beta + 180 : beta - 180;
+    info_vec  renewedSearch;
+    qreal_vec newDistance;
+    searchInQuadrants({newQ}, newAlpha, newBeta, searchRadius, infos,
+                      renewedSearch, newDistance);
+    ENSURE(renewedSearch.size() == 1);
+    ENSURE(newDistance.size() == 1);
+    if (renewedSearch.front()) {
+      interpolationInfos[i] = renewedSearch.front();
+      distances[i]          = newDistance.front();
+      ++numQuadrantsOk;
+    }
+  }
+  // Use inverse distance weighing if everything is alright.
+  if (numQuadrantsOk == NUM_QUADRANTS) {
+    inverseDistanceWeighing(distances, interpolationInfos, out);
+  }
+}
+
+// Interpolates infos to equidistant grid in alpha and beta.
+ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
+                            deg betaStep, deg averagingAlphaMax,
+                            deg averagingRadius, deg idwRadius,
+                            qreal inclusionTreshold) {
+  // Two interpolation methods are used here:
+  // If grid point alpha <= averagingAlphaMax, points within averagingRadius
+  // will be averaged.
+  // If averaging fails, or alpha > averagingAlphaMax, inverse distance weighing
+  // will be used.
+
+  EXPECT(0 <  alphaStep && alphaStep <= 90);
+  EXPECT(0 <  betaStep  && betaStep  <= 360);
+  EXPECT(0 <= averagingAlphaMax && averagingAlphaMax <= 90);
+  EXPECT(0 <= averagingRadius);
+  // Setting idwRadius = NaN disables idw radius checks and falling back to
+  // idw when averaging fails.
+  EXPECT(qIsNaN(idwRadius) || 0 <= idwRadius);
+  EXPECT(0 <= inclusionTreshold && inclusionTreshold <= 1);
+
+  // NOTE We expect all infos to have the same gamma range.
+
+  // REVIEW qRound oder qCeil?
+  uint numAlphas = qRound(90. / alphaStep), numBetas = (360. / betaStep);
+
+  ReflectionInfos interpolatedInfos;  // Output data.
+
+  interpolatedInfos.reserve(numAlphas * numBetas);
+
+  for_int (i, numAlphas + 1) {
+    deg const alpha = i * alphaStep;
+    for_int (j, numBetas) {
+      deg const beta = j * betaStep;
+
+      if (infos.isEmpty()) {
+        interpolatedInfos.append(ReflectionInfo(alpha, beta));
+        continue;
+      }
+
+      if (alpha <= averagingAlphaMax) {
+        // Use averaging.
+
+        itfs_t itfs;
+        searchPoints(alpha, beta, averagingRadius, infos, itfs);
+
+        if (!itfs.isEmpty()) {
+          // If inclusionTreshold < 1, we'll only use a fraction of largest
+          // reflection parameter values.
+          std::sort(itfs.begin(), itfs.end(), [](itf_t const& i1, itf_t const& i2) {
+            return i1.inten < i2.inten;
+          });
+
+          itf_t avg(0, 0, 0);
+
+          int iEnd = itfs.count();
+          int iBegin = qMin(qRound(itfs.count() * (1. - inclusionTreshold)), iEnd-1);
+          int n = iEnd - iBegin;
+
+          for (int i = iBegin; i < iEnd; ++i)
+            avg += itfs[i];
+
+          interpolatedInfos.append(ReflectionInfo(
+              alpha, beta, infos.first().rgeGamma(),
+              avg.inten/n, qQNaN(),
+              avg.tth  /n, qQNaN(),
+              avg.fwhm /n, qQNaN()));
+          continue;
+        }
+
+        if (!qIsNaN(idwRadius)) {
+          // Don't fall back to idw, just add an unmeasured info.
+          interpolatedInfos.append(ReflectionInfo(alpha, beta));
+          continue;
+        }
+      }
+      // Use idw, if alpha > averagingAlphaMax OR averaging failed (too small
+      // averagingRadius?).
+      itf_t itf;
+      interpolateValues(idwRadius, infos, alpha, beta, itf);
+      interpolatedInfos.append(
+        ReflectionInfo(alpha, beta, infos.first().rgeGamma(),
+                       itf.inten, qQNaN(), itf.tth, qQNaN(), itf.fwhm, qQNaN()));
+    }
+  }
+
+  return interpolatedInfos;
 }
 
 //------------------------------------------------------------------------------
-
-Polefigure::Polefigure(Session &session,
-                       shp_File file,
-                       Reflection const& reflection_,
-                       qreal const alphaStep_,
-                       qreal const betaStep_,
-                       Range gammaRange)
-: alphaStep(alphaStep_)
- ,betaStep(betaStep_)
- ,FWHMs()
- ,peakPositions()
- ,reflectionInfos(NUM_BETAS)
- ,reflection(&reflection_)
-{
-  // Fill the reflection info lists.
-  for (uint i = 0; i < file->numDatasets(); ++i) {
-    auto dataset = file->getDataset(i);
-    auto lenses = session.allLenses(*dataset, false);
-    if (!gammaRange.isValid()) {
-      const auto& reflectionRange = reflection->getRange();
-      gammaRange = gammaRangeAt(lenses, reflectionRange.center());
-    }
-
-    const auto numGammaRows = qCeil(gammaRange.width() / betaStep);
-    const auto gammaStep = gammaRange.width() / numGammaRows;
-
-    for (int j = 0; j < numGammaRows; ++j) {
-      Range gammaStripe;
-      gammaStripe.min = gammaRange.min + j * gammaStep;
-      gammaStripe.max = gammaStripe.min + gammaStep;
-      const auto info = dataset->makeReflectionInfo(session,
-                                                    *reflection,
-                                                    gammaStripe);
-      uint iBeta = qFloor(radToDeg(info.getBeta()) / NUM_BETAS);
-      reflectionInfos[iBeta].push_back(info);
-    }
-  }
-}
-
-void Polefigure::generate(qreal centerRadius,
-                          qreal centerSearchRadius,
-                          qreal intensityTreshold,
-                          qreal searchRadius) {
-  FWHMs.clear();
-  peakPositions.clear();
-
-  for (int i = 0; i < qCeil(M_PI / 2 / alphaStep); ++i) {
-    const auto alpha = i * alphaStep;
-    for (int j = 0; j < qCeil(2 * M_PI / betaStep); ++j) {
-      const auto beta = j * betaStep;
-      if (alpha <= centerRadius) {
-        QList<qreal> tempPeakOffsets;
-        QList<qreal> tempPeakHeights;
-        QList<qreal> tempPeakFWHMs;
-        searchPoints(alpha,
-                     beta,
-                     centerSearchRadius,
-                     tempPeakOffsets,
-                     tempPeakHeights,
-                     tempPeakFWHMs);
-        if (!tempPeakOffsets.isEmpty()) {
-          // REVIEW Does the sorting make sense? Should the offsets and FWHMs
-          // be sorted according to heights?
-          std::sort(tempPeakOffsets.begin(), tempPeakOffsets.end());
-          std::sort(tempPeakHeights.begin(), tempPeakHeights.end());
-          std::sort(tempPeakFWHMs.begin(), tempPeakFWHMs.end());
-          qreal peakOffset = 0;
-          qreal peakHeight = 0;
-          qreal peakFWHM = 0;
-          auto iterPeakOffsets = tempPeakOffsets.begin();
-          auto iterPeakHeights = tempPeakHeights.begin();
-          auto iterPeakFWHMs = tempPeakFWHMs.begin();
-          int kTreshold = qRound(  tempPeakOffsets.size()
-                                 - tempPeakOffsets.size() * intensityTreshold);
-          if (kTreshold >= tempPeakOffsets.size())
-            kTreshold = tempPeakOffsets.size() - 1;
-          for (int k = 0; k < tempPeakOffsets.size(); ++k) {
-            if (k >= kTreshold) {
-              peakOffset += *iterPeakOffsets;
-              peakHeight += *iterPeakHeights;
-              peakFWHM += *iterPeakFWHMs;
-            }
-            ++iterPeakOffsets;
-            ++iterPeakHeights;
-            ++iterPeakFWHMs;
-          }
-          peakOffset /= tempPeakOffsets.size() - kTreshold;
-          peakHeight /= tempPeakHeights.size() - kTreshold;
-          peakFWHM /= tempPeakFWHMs.size() - kTreshold;
-          FWHMs.push_back(peakFWHM);
-          peakPositions.push_back(XY(peakOffset, peakHeight));
-
-          continue;
-        }
-        if (!qIsNaN(searchRadius)) {
-          FWHMs.push_back(-1);
-          peakPositions.push_back(XY(-1, -1));
-
-          continue;
-        }
-      }
-      // No reflection infos were found for the polefigure center.
-      // If no infos are found at all, the output values will be negative
-      // as some analysis software treat -1 as an unmeasured area.
-      qreal peakOffset = -1;
-      qreal peakHeight = -1;
-      qreal peakFWHM   = -1;
-      searchPointsInAllQuadrants(alpha,
-                                 beta,
-                                 searchRadius,
-                                 peakOffset,
-                                 peakHeight,
-                                 peakFWHM);
-      peakPositions.push_back(XY(peakOffset, peakHeight));
-      FWHMs.push_back(peakFWHM);
-    }
-  }
-}
-
-void Polefigure::searchPoints(qreal const alpha,
-                              qreal const beta,
-                              qreal const radius,
-                              QList<qreal> &peakOffsets,
-                              QList<qreal> &peakHeights,
-                              QList<qreal> &FWHMs) const {
-  for (int i = 0; i < 10; i++) { // Why 10 and not NUM_BETAS? Noone knows.
-    for (int j=0; j < reflectionInfos[i].count(); j++) {
-      if (inRadius(reflectionInfos[i][j].getAlpha(),
-                   reflectionInfos[i][j].getBeta(),
-                   alpha,
-                   beta,
-                   radius)) {
-        peakOffsets.push_back(reflectionInfos[i][j].getPeakPosition().x);
-        peakHeights.push_back(reflectionInfos[i][j].getPeakPosition().y);
-        FWHMs.push_back(reflectionInfos[i][j].getPeakFWHM());
-      }
-    }
-  }
-}
-
-
-void Polefigure::searchPointsInAllQuadrants(qreal const alpha,
-                                            qreal const beta,
-                                            qreal const searchRadius,
-                                            qreal &peakOffset,
-                                            qreal &peakHeight,
-                                            qreal &peakFWHM) const {
-  int const iBegin = qFloor(radToDeg(beta) / Polefigure::NUM_BETAS - 1);
-  int const iEnd = iBegin + 3; // A magic number.
-
-  for (int i = iBegin; i < iEnd; ++i) {
-    // REVIEW Index magick. Is the number 10 linked to searchPoints()?
-    int j;
-    if (i >= 10) j = i - 10;
-    else if (i < 0) j = i + 10;
-    else j = i;
-
-    for (int k = 0; k < reflectionInfos[j].count(); ++k) {
-      const auto deltaAlpha = reflectionInfos[j][k].getAlpha() - alpha;
-      const auto deltaBeta
-        = calculateDeltaBeta(reflectionInfos[j][k].getBeta(), beta);
-      const auto deltaZ
-        = angle(alpha, reflectionInfos[j][k].getAlpha(), deltaBeta);
-      QVector<qreal> tempDeltaZs(Quadrant::MAX_QUADRANTS);
-      QVector<qreal> tempPeakOffsets(Quadrant::MAX_QUADRANTS);
-      QVector<qreal> tempPeakHeights(Quadrant::MAX_QUADRANTS);
-      QVector<qreal> tempPeakFWHMs(Quadrant::MAX_QUADRANTS);
-      for (int iQ = 0; iQ < Quadrant::MAX_QUADRANTS; ++iQ) {
-        tempDeltaZs[iQ] = deltaZ;
-        if (!searchPointsInQuadrant(iQ,
-                                    deltaAlpha,
-                                    deltaBeta,
-                                    reflectionInfos[j][k],
-                                    tempPeakOffsets[iQ],
-                                    tempPeakHeights[iQ],
-                                    tempPeakFWHMs[iQ])) {
-          // Try another quadrant. See [J.Appl.Cryst.(2011),44,641] for the
-          // angle mapping and quadrant mirroring.
-          int   const newQ = remapQuadrant(static_cast<Quadrant::Quadrant>(iQ));
-          qreal const newAlpha = M_PI - alpha;
-          qreal const newBeta = beta < M_PI ? beta + M_PI : beta - M_PI;
-          const auto newDeltaAlpha
-            = reflectionInfos[j][k].getAlpha() - newAlpha;
-          const auto newDeltaBeta
-            = calculateDeltaBeta(reflectionInfos[j][k].getBeta(), newBeta);
-          tempDeltaZs[iQ]
-            = angle(newAlpha, reflectionInfos[j][k].getAlpha(), newDeltaBeta);
-          searchPointsInQuadrant(newQ,
-                                 newDeltaAlpha,
-                                 newDeltaBeta,
-                                 reflectionInfos[j][k],
-                                 tempPeakOffsets[iQ],
-                                 tempPeakHeights[iQ],
-                                 tempPeakFWHMs[iQ]);
-        }
-      }
-      if (qIsNaN(searchRadius) || inSearchRadius(searchRadius, tempDeltaZs)) {
-        peakOffset = inverseDistanceWeighing(tempDeltaZs, tempPeakOffsets);
-        peakHeight = inverseDistanceWeighing(tempDeltaZs, tempPeakHeights);
-        peakFWHM   = inverseDistanceWeighing(tempDeltaZs, tempPeakFWHMs);
-      }
-    }
-  }
-}
-
-//------------------------------------------------------------------------------
-}
+}}
 // eof

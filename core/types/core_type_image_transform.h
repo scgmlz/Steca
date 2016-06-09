@@ -1,15 +1,16 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      core_type_image_transform.h
 //! @brief     The transform type
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
@@ -24,7 +25,7 @@ namespace core {
 /// Image transform type - rotation and mirroring (bit-map)
 
 struct ImageTransform {
-  enum e {
+  enum eTransform {
     ROTATE_0        = 0,  // no transform
     ROTATE_1        = 1,  // one quarter
     ROTATE_2        = 2,  // two quarters
@@ -36,16 +37,20 @@ struct ImageTransform {
     MIRROR_ROTATE_3 = MIRROR | ROTATE_3,
   } val;
 
-  ImageTransform(int val = ROTATE_0);             ///< clamps val appropriately
-  ImageTransform mirror(bool on)          const;  ///< adds/removes the mirror flag
-  ImageTransform rotateTo(ImageTransform) const;  ///< rotates, but keeps the mirror flag
-  ImageTransform nextRotate()             const;  ///< rotates by one quarter-turn
+  /// clamps val appropriately
+  ImageTransform(uint val = ROTATE_0);
+  /// adds/removes the mirror flag
+  ImageTransform mirror(bool on) const;
+  /// rotates only; keeps the mirror flag
+  ImageTransform rotateTo(ImageTransform const&) const;
+  /// rotates by one quarter-turn
+  ImageTransform nextRotate() const;
 
-  bool isTransposed() const { return 0 != (val&1); }
+  bool isTransposed() const { return 0 != (val & 1); }
 
-  bool operator ==(ImageTransform const& that) const { return val == that.val; }
+  bool operator==(ImageTransform const& that) const { return val == that.val; }
 };
 
 //------------------------------------------------------------------------------
 }
-#endif // CORE_TYPE_IMAGE_TRANSFORM_H
+#endif  // CORE_TYPE_IMAGE_TRANSFORM_H

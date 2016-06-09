@@ -1,82 +1,114 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      core_dataset.h
 //! @brief     Dataset = a collection of images + metadata.
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
 #ifndef CORE_DATASET_H
 #define CORE_DATASET_H
 
+#include "types/core_type_curve.h"
+#include "types/core_type_geometry.h"
 #include "types/core_type_image.h"
+#include "types/core_type_variant.h"
 
 namespace core {
 //------------------------------------------------------------------------------
 
-class File;
-class Reflection;
-class ReflectionInfo;
-class Session;
-
-/// Dataset = image + metadata
-class Dataset final {
-public:
+struct Metadata {
   // attribute list - will be dynamic
-  static uint  numAttributes();
-  static rcstr getAttributeTag(uint);
+  static uint    numAttributes(bool onlyNum);
+  static rcstr   attributeTag(uint);
+  static str_lst attributeTags();
+  static cmp_vec attributeCmps();
 
+  str      attributeStrValue(uint) const;
+  QVariant attributeValue(uint)    const;
+  row_t    attributeValues()       const;
+
+  static row_t attributeNaNs();
+
+  str date, comment;
+
+  deg motorXT, motorYT, motorZT, motorOmg, motorTth, motorPhi, motorChi,
+      motorPST, motorSST, motorOMGM;
+
+  qreal monitorCount, deltaMonitorCount;
+  qreal time, deltaTime;
+};
+
+//------------------------------------------------------------------------------
+/// Dataset = metadata + image
+
+class Dataset final {
+  friend class Datasets;
 public:
-  Dataset(File const*,
-          rcstr date, rcstr comment,
-          qreal motorXT,  qreal motorYT,  qreal motorZT,
-          qreal motorOmg, qreal motorTth, qreal motorPhi, qreal motorChi,
-          qreal motorPST, qreal motorSST, qreal motorOMGM,
-          qreal monCount, qreal dTime,
-          QSize const& size, intens_t const* intensities);
+  Dataset(rcMetadata, QSize const& size, inten_t const* intens);
+  Dataset(rcDataset);
+  Dataset();
 
-  str getAttributeStrValue(uint) const;
+  rcDatasets   datasets() const;
+  shp_Metadata metadata() const;
 
-  qreal middleTth()     const;
-  qreal monitorCount()  const;
-  qreal deltaTime()     const;
+  static shp_Dataset combine(Datasets);
 
-  File  const& parentFile() const;
-  Image const& getImage()   const { return image; }
+  deg   midTth()            const { return md_->motorTth; }
+  qreal deltaMonitorCount() const { return md_->deltaMonitorCount; }
+  qreal deltaTime()         const { return md_->deltaTime; }
 
-  Range intensRange(bool global) const;
+  deg omg() const { return md_->motorOmg; }
+  deg phi() const { return md_->motorPhi; }
+  deg chi() const { return md_->motorChi; }
 
-  /// used for correction files if there are more than one image
-  void addIntensities(Dataset const&);
+  rcImage image() const { return image_; }
 
-  static void calculateAlphaBeta(qreal, qreal, qreal, qreal, qreal, qreal&, qreal&);
+  QSize   imageSize() const;
+  inten_t inten(uint i, uint j) const;
 
-  ReflectionInfo makeReflectionInfo(Session const& session,
-                                    Reflection const& reflection,
-                                    Range const& gammaSector) const;
 private:
-  // TODO remove; datasets should not relate to their files of origin
-  File const *file; ///< the parent file
+  Datasets* datasets_;  ///< here it belongs (or could be nullptr)
 
-  str
-    date, comment;
+  shp_Metadata md_;
+  Image        image_;
+};
 
-  // all stored angles in degrees
-  qreal
-    motorXT,  motorYT,  motorZT,  motorOmg, motorTth,
-    motorPhi, motorChi, motorPST, motorSST, motorOMGM;
+//------------------------------------------------------------------------------
 
-  qreal
-    monCount, dTime;
+/// A group of Dataset(s)
+class Datasets : public QVector<shp_Dataset> {
+  SUPER(Datasets, QVector<shp_Dataset>)
+public:
+  Datasets();
 
-  Image image;
+  void appendHere(shp_Dataset);
+
+  /// collapse datasets' images into one
+  Image folded() const THROWS;
+
+  /// all dataset(s) must have the same image size
+  QSize   imageSize() const;
+  qreal   avgDeltaMonitorCount() const;
+  qreal   avgDeltaTime() const;
+  rcRange rgeFixedInten(rcSession, bool trans, bool cut) const;
+  rcCurve makeAvgCurve(rcSession, bool trans, bool cut) const;
+
+private:
+  void invalidateMutables();
+
+  /// computed on demand (NaNs or emptiness indicate yet unknown values)
+  mutable qreal avgMonitorCount_, avgDeltaTime_;
+  mutable Range rgeFixedInten_;
+  mutable Curve avgCurve_;
 };
 
 //------------------------------------------------------------------------------
@@ -84,4 +116,4 @@ private:
 
 Q_DECLARE_METATYPE(core::shp_Dataset)
 
-#endif // CORE_DATASET_H
+#endif  // CORE_DATASET_H

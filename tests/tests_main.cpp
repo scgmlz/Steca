@@ -1,53 +1,45 @@
-#include "test_core_lib.h"
-#include "test_core_array2d.h"
-#include "test_core_dataset.h"
-#include "test_core_image.h"
-#include "test_core_range.h"
-#include "test_core_session.h"
-#include "test_save_load_json.h"
-#include "test_core_link.h"
-#include "test_core_functions.h"
-#include "test_core_lens.h"
-#include "test_core_polefigure.h"
-#include <QTextStream>
+// All that we reasonably care to test, and then some.
 
-bool failed = false;
+#include "tests_main.h"
 
-#define TEST_SUITE(TestClass)                              \
-{                                                          \
-    TestClass test;                                        \
-    bool success = (0 == QTest::qExec(&test, argc, argv)); \
-    failed       = failed || !success;                     \
+uint TestSuite::total(0);
+uint TestSuite::failed(0);
+
+TestSuite::TestSuite() {
 }
+
+void TestSuite::cleanup() {
+  ++total;
+  if (QTest::currentTestFailed())
+    ++failed;
+}
+
+static QVector<TestSuite*>& tests() {
+  static QVector<TestSuite*> tests_;
+  return tests_;
+}
+
+RegisterTestSuite::RegisterTestSuite(TestSuite& testSuite) {
+  tests().append(&testSuite);
+}
+
+#include <QTextStream>
 
 int main(int argc, char *argv[]) {
   QCoreApplication app(argc, argv);
+  QTextStream out(stdout);
 
-  // test suites
-  TEST_SUITE(TestCoreApprox)
-  QTextStream(stdout) << "" << endl;
-  TEST_SUITE(TestCoreArray2d)
-  QTextStream(stdout) << "" << endl;
-  TEST_SUITE(TestCoreDataset)
-  QTextStream(stdout) << "" << endl;
-  TEST_SUITE(TestCoreImage)
-  QTextStream(stdout) << "" << endl;
-  TEST_SUITE(TestCoreLens)
-  QTextStream(stdout) << "" << endl;
-  TEST_SUITE(TestCorePriorityChain)
-  QTextStream(stdout) << "" << endl;
-  TEST_SUITE(TestCoreLib)
-  QTextStream(stdout) << "" << endl;
-  TEST_SUITE(TestCoreRange)
-  QTextStream(stdout) << "" << endl;
-  TEST_SUITE(TestCoreSession)
-  QTextStream(stdout) << "" << endl;
-  TEST_SUITE(TestSaveLoadJson)
-  QTextStream(stdout) << "" << endl;
-  TEST_SUITE(TestCorePolefigure)
+  int status = 0;
 
-  if (failed) qDebug() << "!! Some tests failed !!";
-  return failed ? -1 : 0;
+  for (auto test: tests()) {
+    status |= QTest::qExec(test);
+    endl(out);                                              \
+  }
+
+  out << "Result: " << TestSuite::total << " tests, " << TestSuite::failed << " failed" << endl;
+  if (0 != status) out << "!!** Some tests failed **!!" << endl;
+
+  return status;
 }
 
 // eof

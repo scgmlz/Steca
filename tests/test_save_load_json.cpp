@@ -1,4 +1,5 @@
 #include "test_save_load_json.h"
+REGISTER_TEST_SUITE(TestSaveLoadJson)
 
 #include "core_fit_functions.h"
 #include "types/core_json.h"
@@ -12,7 +13,7 @@ public:                                     \
   }                                         \
 };
 
-TEST_FIT_CLASS(Polynomial)
+TEST_FIT_CLASS(Polynom)
 TEST_FIT_CLASS(Gaussian)
 TEST_FIT_CLASS(CauchyLorentz)
 TEST_FIT_CLASS(PseudoVoigt1)
@@ -29,7 +30,7 @@ void TestSaveLoadJson::testSaveLoadJson() {
   {
     core::fit::Function::Parameter p1;
     p1.setValueRange(r1,r1); // finite,finite
-    p1.setValue(val1,error,true);
+    p1.setValue(val1,error);
     core::JsonObj pObj = p1.saveJson();
     core::fit::Function::Parameter p3;
     p3.loadJson(pObj);
@@ -38,7 +39,7 @@ void TestSaveLoadJson::testSaveLoadJson() {
     QCOMPARE(p3.value(), val1);
 
     core::fit::Function::Parameter p2;
-    p2.setValue(val1,error,true);
+    p2.setValue(val1,error);
     pObj = p2.saveJson();
     core::fit::Function::Parameter p4;
     p4.loadJson(pObj);
@@ -47,9 +48,9 @@ void TestSaveLoadJson::testSaveLoadJson() {
     QCOMPARE(p4.value(), val1);
   }
 
-  { // testing saveJson/loadJson Polynomial
-    TestPolynomial polyLoad;
-    TestPolynomial polySave;
+  { // testing saveJson/loadJson Polynom
+    TestPolynom polyLoad;
+    TestPolynom polySave;
 
     polySave.setDegree(3);
     polySave.setParameterCount(4);
@@ -106,7 +107,7 @@ void TestSaveLoadJson::testSaveLoadJson() {
     // Testing saveJson/loadJson SumFunctions
 
     core::fit::SumFunctions sumSave, sumLoad;
-    TestPolynomial *p1 = new TestPolynomial, *p2 = new TestPolynomial;
+    TestPolynom *p1 = new TestPolynom, *p2 = new TestPolynom;
 
     p1->loadJson(polyObj);
     p2->loadJson(polyObj);

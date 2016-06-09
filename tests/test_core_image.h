@@ -1,9 +1,9 @@
 #ifndef TEST_CORE_IMAGE_H
 #define TEST_CORE_IMAGE_H
 
-#include <QtTest/QtTest>
+#include "tests_main.h"
 
-class TestCoreImage: public QObject {
+class TestCoreImage: public TestSuite {
   Q_OBJECT
 
   void testImage(uint w, uint h);

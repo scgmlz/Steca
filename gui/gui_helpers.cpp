@@ -1,14 +1,15 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      gui_helpers.cpp
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
@@ -17,39 +18,39 @@
 
 //------------------------------------------------------------------------------
 
-QBoxLayout *boxLayout(Qt::Orientation orientation) {
+QBoxLayout* boxLayout(Qt::Orientation orientation) {
   switch (orientation) {
   case Qt::Horizontal:
     return hbox();
   case Qt::Vertical:
     return vbox();
   default:
-    NEVER_HERE return nullptr;
+    NEVER return nullptr;
   }
 }
 
-QBoxLayout *hbox() {
+QBoxLayout* hbox() {
   auto box = new QHBoxLayout;
   box->setSpacing(2);
   return box;
 }
 
-QBoxLayout *vbox() {
+QBoxLayout* vbox() {
   auto box = new QVBoxLayout;
   box->setSpacing(2);
   return box;
 }
 
-QGridLayout *gridLayout() {
+QGridLayout* gridLayout() {
   auto grid = new QGridLayout;
   grid->setSpacing(2);
   return grid;
 }
 
-QLabel *icon(rcstr fileName) {
+QLabel* icon(rcstr fileName) {
   auto label = new QLabel;
-  auto h = label->sizeHint().height();
-  label->setPixmap(QIcon(fileName).pixmap(QSize(h,h)));
+  auto h     = label->sizeHint().height();
+  label->setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
   return label;
 }
 
@@ -58,12 +59,12 @@ QLabel* label(rcstr text) {
 }
 
 static void setEmWidth(QWidget* w, uint emWidth) {
-  w->setMaximumWidth(emWidth*w->fontMetrics().width('m'));
+  w->setMaximumWidth(emWidth * w->fontMetrics().width('m'));
 }
 
 QLineEdit* editCell(uint emWidth) {
   auto cell = new QLineEdit;
-  setEmWidth(cell,emWidth);
+  setEmWidth(cell, emWidth);
   return cell;
 }
 
@@ -73,28 +74,31 @@ QLineEdit* readCell(uint emWidth) {
   return cell;
 }
 
-QSpinBox* spinCell(uint emWidth,int min,int max) {
+QSpinBox* spinCell(uint emWidth, int min, int max) {
   auto cell = new QSpinBox;
-  setEmWidth(cell,emWidth);
+  setEmWidth(cell, emWidth);
   cell->setMinimum(min);
-  cell->setMaximum(max>INT_MIN ? max : INT_MAX);
+  cell->setMaximum(max > INT_MIN ? max : INT_MAX);
   return cell;
 }
 
-QDoubleSpinBox *spinCell(uint emWidth,qreal min, qreal max) {
+QDoubleSpinBox* spinCell(uint emWidth, qreal min, qreal max) {
   auto cell = new QDoubleSpinBox;
-  setEmWidth(cell,emWidth);
+  setEmWidth(cell, emWidth);
   cell->setMinimum(min);
-  cell->setMaximum(max>INT_MIN ? max : INT_MAX);
+  cell->setMaximum(max > INT_MIN ? max : INT_MAX);
   return cell;
 }
 
 QCheckBox* check(rcstr text, QAction* action) {
-  auto ch = new QCheckBox(text);
-  if (action) QObject::connect(ch, &QCheckBox::toggled,[action](bool on) {
-    action->setChecked(on);
-  });
-  return ch;
+  auto cb = new QCheckBox(text);
+  if (action) {
+    QObject::connect(cb, &QCheckBox::toggled,
+                     [action](bool on) { action->setChecked(on); });
+    QObject::connect(action, &QAction::toggled,
+                     [cb](bool on) { cb->setChecked(on); });
+  }
+  return cb;
 }
 
 QToolButton* textButton(QAction* action) {
@@ -134,25 +138,45 @@ int TreeView::sizeHintForColumn(int) const {
 //------------------------------------------------------------------------------
 
 TreeListView::TreeListView() {
+  setSelectionBehavior(SelectRows);
 }
 
 void TreeListView::setModel(QAbstractItemModel* model) {
   super::setModel(model);
   hideColumn(0);  // this should look like a list; 0th column is tree-like
+
+  if (model) {
+    connect(model, &QAbstractItemModel::modelReset, [this, model]() {
+      for_i (model->columnCount())
+        resizeColumnToContents(i);
+    });
+  }
+}
+
+//------------------------------------------------------------------------------
+
+LineView::LineView() {
+  setReadOnly(true);
+}
+
+void LineView::setText(rcstr text) {
+  super::setText(text);
+  super::setCursorPosition(0);
 }
 
 //------------------------------------------------------------------------------
 
 BoxWidget::BoxWidget(Qt::Orientation orientation) {
-  setLayout((box = boxLayout(orientation)));
+  setLayout((box_ = boxLayout(orientation)));
 }
 
 //------------------------------------------------------------------------------
 
-DockWidget::DockWidget(rcstr name,rcstr objectName,Qt::Orientation orientation) {
+DockWidget::DockWidget(rcstr name, rcstr objectName,
+                       Qt::Orientation orientation) {
   setFeatures(NoDockWidgetFeatures);
   setWidget(new QWidget);
-  widget()->setLayout((box = boxLayout(orientation)));
+  widget()->setLayout((box_ = boxLayout(orientation)));
 
   setWindowTitle(name);
   setObjectName(objectName);

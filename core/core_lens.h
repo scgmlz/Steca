@@ -1,191 +1,94 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      core_lens.h
 //! @brief     The lens system
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
 #ifndef CORE_LENS_H
 #define CORE_LENS_H
 
-#include "types/core_type_angles.h"
+#include "types/core_type_geometry.h"
+#include "types/core_type_image_transform.h"
 #include "types/core_type_range.h"
-#include "core_priority_chain.h"
-#include <QMargins>
+#include <QStringList>
 
 namespace core {
 //------------------------------------------------------------------------------
+/// View the dataset through a lens (thanks, Antti!)
 
-class Lens : public ChainLink<Lens> {
-  SUPER(Lens, ChainLink<Lens>)
+class ImageLens {
 public:
-  enum {
-    PRIORITY_NORMALIZATION,
-    PRIORITY_INTENSITY_RANGE,
-    PRIORITY_ROI,
-    PRIORITY_TRANSFORMATION,
-    PRIORITY_SENSITIVITY_CORRECTION,
-    PRIORITY_PLAIN
-  };
+  ImageLens(rcSession, rcImage, Image const* corrImage, rcDatasets, bool trans,
+            bool cut, ImageCut const&, ImageTransform const&);
 
-public:
-  virtual DiffractionAngles getAngles(uint x, uint y) const = 0;
-  virtual intens_t getIntensity(uint x, uint y) const = 0;
-  virtual Range getIntensityRange() const = 0;
-  virtual QSize getSize() const = 0;
+  QSize   size()                 const;
+  inten_t inten(uint i, uint j)  const;
+
+  rcRange rgeInten(bool fixed)   const;
 
 protected:
-  void nextChangedImpl() override;
+  void doTrans(uint& i, uint& j) const;
+
+  void doCut(uint& i, uint& j) const {
+    i += imageCut_.left; j += imageCut_.top;
+  }
+
+  void calcSensCorr();  ///< detector sensitivity correction
+
+  Session const&   session_;
+  Image const&     image_;
+  Image const*     corrImage_;
+
+  rcDatasets       datasets_;
+  bool             trans_, cut_;
+  ImageTransform   imageTransform_;
+  ImageCut         imageCut_;
+
+  Array2D<inten_t> intensCorr_;
+  bool             hasNaNs_;
+  qreal            normFactor_;
+
+  mutable Range rgeInten_;
 };
 
 //------------------------------------------------------------------------------
 
-class Image;
-
-class PlainLens final : public Lens {
-  SUPER(PlainLens, Lens)
+class Lens : public ImageLens {
+  SUPER(Lens, ImageLens)
 public:
-  PlainLens(Image const&, DiffractionAnglesMap const&);
+  static str_lst const& normStrLst();
 
-  uint getPriority() const override;
+  Lens(rcSession, rcDataset, Image const* corr, rcDatasets, bool trans,
+       bool cut, eNorm norm, AngleMap const&, ImageCut const&,
+       ImageTransform const&);
 
-  DiffractionAngles getAngles(uint x, uint y) const override;
-  intens_t getIntensity(uint x, uint y) const override;
-  Range getIntensityRange() const override;
-  QSize getSize() const override;
+  Angles const& angles(uint i, uint j) const;
+  Range gammaRangeAt(qreal tth) const;
+
+  Curve makeCurve(rcRange gamma, rcRange tth) const;
+  Curve makeAvgCurve() const;
+
+  rcDataset       dataset()  const { return dataset_;  }
+  AngleMap const& angleMap() const { return angleMap_; }
 
 private:
-  DiffractionAnglesMap const* angleMap; // TODO dangling
-  Range const* intensityRange;
-  Image const* rawImage;
+  void setNorm(eNorm);
+
+  rcDataset dataset_;
+  AngleMap  angleMap_;
 };
-
-//------------------------------------------------------------------------------
-
-class TransformationLens final : public Lens {
-  SUPER(TransformationLens, Lens)
-public:
-  TransformationLens(ImageTransform const& transformation);
-
-  uint getPriority() const override;
-
-  DiffractionAngles getAngles(uint x, uint y) const override;
-  intens_t getIntensity(uint x, uint y) const override;
-  Range getIntensityRange() const override;
-  QSize getSize() const override;
-
-private:
-  ImageTransform const* transform;
-};
-
-//------------------------------------------------------------------------------
-
-class ROILens final : public Lens {
-  SUPER(ROILens, Lens)
-public:
-  ROILens(QMargins const& imageMargins);
-
-  uint getPriority() const override;
-
-  DiffractionAngles getAngles(uint x, uint y) const override;
-  intens_t getIntensity(uint x, uint y) const override;
-  Range getIntensityRange() const override;
-  QSize getSize() const override;
-
-private:
-  QMargins const &cut;
-};
-
-//------------------------------------------------------------------------------
-
-class SensitivityCorrectionLens final : public Lens {
-  SUPER(SensitivityCorrectionLens, Lens)
-public:
-  SensitivityCorrectionLens(Array2D<qreal> const& sensitivityCorrection);
-
-  uint getPriority() const override;
-
-  DiffractionAngles getAngles(uint x, uint y) const override;
-  intens_t getIntensity(uint x, uint y) const override;
-  Range getIntensityRange() const override;
-  QSize getSize() const override;
-
-private:
-  Array2D<qreal> const* correction;
-};
-
-//------------------------------------------------------------------------------
-
-class IntensityRangeLens final : public Lens {
-  SUPER(IntensityRangeLens, Lens)
-public:
-  IntensityRangeLens();
-
-  uint getPriority() const override;
-
-  DiffractionAngles getAngles(uint x, uint y) const override;
-  intens_t getIntensity(uint x, uint y) const override;
-  Range getIntensityRange() const override;
-  QSize getSize() const override;
-
-protected:
-  void nextChangedImpl() override;
-
-private:
-  Range range;
-
-  void updateRange();
-};
-
-//------------------------------------------------------------------------------
-
-class GlobalIntensityRangeLens final : public Lens {
-  SUPER(GlobalIntensityRangeLens, Lens)
-public:
-  GlobalIntensityRangeLens(Range const& intensityRange);
-
-  uint getPriority() const override;
-
-  DiffractionAngles getAngles(uint x, uint y) const override;
-  intens_t getIntensity(uint x, uint y) const override;
-  Range getIntensityRange() const override;
-  QSize getSize() const override;
-
-private:
-  Range const* range;
-};
-//------------------------------------------------------------------------------
-class NormalizationLens final : public Lens {
-  SUPER(NormalizationLens, Lens)
-public:
-  NormalizationLens(qreal normVal_);
-
-  uint getPriority() const override;
-
-  DiffractionAngles getAngles(uint x, uint y) const override;
-  intens_t getIntensity(uint x, uint y) const override;
-  Range getIntensityRange() const override;
-  QSize getSize() const override;
-
-private:
-  qreal normVal;
-};
-
-//------------------------------------------------------------------------------
-
-class Dataset;
-
-shp_LensSystem makeLensSystem(Dataset const&, DiffractionAnglesMap const&);
 
 //------------------------------------------------------------------------------
 }
 
-#endif // CORE_LENS_H
+#endif  // CORE_LENS_H

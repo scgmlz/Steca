@@ -1,15 +1,15 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      core_io_caress.cpp
-//! @brief     Caress loader
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
@@ -18,7 +18,7 @@
 #include "io/Caress/raw.h"
 
 #include <sstream>
-#include <QtMath>
+#include <qmath.h>
 
 namespace core { namespace io {
 //------------------------------------------------------------------------------
@@ -51,7 +51,6 @@ shp_File loadCaress(rcstr filePath) THROWS {
     double prevTempTime = 0;
     int deltaMon = 0;
     int prevMon = 0;
-
 
     bool end = false;
     while (!end) {
@@ -163,25 +162,40 @@ shp_File loadCaress(rcstr filePath) THROWS {
           detRel = (uint)sqrt(imageSize);
           RUNTIME_CHECK(imageSize>0 && (uint)imageSize == detRel*detRel, "bad image size");
 
-          QVector<intens_t> convertedIntens(imageSize);
+          QVector<inten_t> convertedIntens(imageSize);
           for_i (imageSize)
             convertedIntens[i] = intens[i];
 
           QSize size(detRel,detRel);
 
-// this was for testing of a non-square image
-//        #ifdef DEVELOPMENT_FAKE_NON_SQUARE_IMAGE
-//          size.rheight() /= 2;
-//        #endif
+          // this is only for testing of a non-square image
+          // size.rheight() /= 2;
 
           // Objekt inizialisieren
-          file->appendDataset(new Dataset(file.data(),
-            str::fromStdString(s_date), str::fromStdString(s_comment),
-            xAxis, yAxis, zAxis,
-            omgAxis, tthAxis, phiAxis, chiAxis,
-            pstAxis, sstAxis, omgmAxis,
-            deltaMon, deltaTime,
-            size, convertedIntens.constData()));
+          Metadata md;
+
+          md.date    = str::fromStdString(s_date);
+          md.comment = str::fromStdString(s_comment);
+
+          md.motorXT = xAxis;
+          md.motorYT = yAxis;
+          md.motorZT = zAxis;
+
+          md.motorOmg  = omgAxis;
+          md.motorTth  = tthAxis;
+          md.motorPhi  = phiAxis;
+          md.motorChi  = chiAxis;
+          md.motorPST  = pstAxis;
+          md.motorSST  = sstAxis;
+          md.motorOMGM = omgmAxis;
+
+          md.deltaMonitorCount = deltaMon;
+          md.monitorCount = mon;
+          md.deltaTime    = deltaTime;
+          md.time         = tempTime;
+
+          file->datasets().append(
+            shp_Dataset(new Dataset(md, size, convertedIntens.constData())));
           delete[] intens; intens = NULL;
           imageSize = 0;
         }

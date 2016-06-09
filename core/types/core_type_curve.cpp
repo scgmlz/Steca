@@ -1,87 +1,68 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      core_type_curve.cpp
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
 #include "core_type_curve.h"
 #include "core_fit_functions.h"
 #include "core_lens.h"
-#include "types/core_type_angles.h"
-#include <QtMath>
+#include "types/core_type_geometry.h"
+#include <qmath.h>
 
 namespace core {
 //------------------------------------------------------------------------------
 
-Curve::Curve() {
-}
+Curve::Curve() {}
 
 void Curve::clear() {
-  xs.clear(); ys.clear();
-  xRange.invalidate();
-  yRange.invalidate();
+  xs_.clear();
+  ys_.clear();
+  rgeX_.invalidate();
+  rgeY_.invalidate();
 }
 
 bool Curve::isEmpty() const {
-  return xs.isEmpty();
+  return xs_.isEmpty();
 }
 
 uint Curve::count() const {
-  ASSERT(xs.count() == ys.count())
-  return xs.count();
+  ENSURE(xs_.count() == ys_.count())
+  return xs_.count();
 }
 
 bool Curve::isOrdered() const {
-  return std::is_sorted(xs.cbegin(), xs.cend());
+  return std::is_sorted(xs_.cbegin(), xs_.cend());
 }
 
 void Curve::append(qreal x, qreal y) {
-  xs.append(x);
-  ys.append(y);
-  xRange.extendBy(x);
-  yRange.extendBy(y);
+  xs_.append(x);
+  ys_.append(y);
+  rgeX_.extendBy(x);
+  rgeY_.extendBy(y);
 }
 
-Curve Curve::intersect(Range const& range) const {
+Curve Curve::intersect(rcRange range) const {
   Curve res;
 
-  ASSERT(isOrdered())
+  if (!range.isEmpty()) {
+    ENSURE(isOrdered())
 
-  uint xi = 0, cnt = count();
-  auto minX = range.min, maxX = range.max;
-  while (xi<cnt && xs[xi] < minX)
-    ++xi;
-  while (xi<cnt && xs[xi] <= maxX) {
-    res.append(xs[xi],ys[xi]);
-    ++xi;
-  }
-
-  return res;
-}
-
-Curve Curve::intersect(Ranges const& ranges) const {
-  Curve res;
-
-  // collect points that are in ranges
-  // it works because both curve points and ranges are ordered and ranges are non-overlapping
-  ASSERT(isOrdered())
-
-  uint xi = 0, cnt = count();
-  for_i (ranges.count()) {
-    Range const& range = ranges.at(i);
+    uint xi = 0, cnt = count();
     auto minX = range.min, maxX = range.max;
-    while (xi<cnt && xs[xi] < minX)
+    while (xi < cnt && xs_[xi] < minX)
       ++xi;
-    while (xi<cnt && xs[xi] <= maxX) {
-      res.append(xs[xi],ys[xi]);
+    while (xi < cnt && xs_[xi] <= maxX) {
+      res.append(xs_[xi], ys_[xi]);
       ++xi;
     }
   }
@@ -89,11 +70,99 @@ Curve Curve::intersect(Ranges const& ranges) const {
   return res;
 }
 
-Curve Curve::subtract(fit::Function const& f) const {
+Curve Curve::intersect(rcRanges ranges) const {
   Curve res;
 
-  for_i (xs.count())
-    res.append(xs[i], ys[i] - f.y(xs[i]));
+  // collect points that are in ranges
+  // it works because both curve points and ranges are ordered and ranges are
+  // non-overlapping
+  ENSURE(isOrdered())
+
+  uint xi = 0, cnt = count();
+  for_i (ranges.count()) {
+    rcRange range = ranges.at(i);
+    auto    minX = range.min, maxX = range.max;
+    while (xi < cnt && xs_[xi] < minX)
+      ++xi;
+    while (xi < cnt && xs_[xi] <= maxX) {
+      res.append(xs_[xi], ys_[xi]);
+      ++xi;
+    }
+  }
+
+  return res;
+}
+
+void Curve::subtract(fit::Function const& f) {
+  for_i (count())
+    ys_[i] -= f.y(xs_.at(i));
+}
+
+Curve Curve::add(rcCurve that) const {
+  rcCurve c1 = *this, c2 = that;
+  uint iEnd1 = c1.count(), iEnd2 = c2.count();
+  uint i1 = 0, i2 = 0;
+
+  Curve res;
+
+  for(;;) {
+    if (i1 >= iEnd1) {
+      // have only that, append its rest
+      for (; i2 < iEnd2; ++i2)
+        res.append(c2.x(i2), c2.y(i2));
+      break;
+    } else if (i2 >= iEnd2) {
+      // have only this, append its rest
+      for (; i1 < iEnd1; ++i1)
+        res.append(c1.x(i1), c1.y(i1));
+      break;
+    } else {
+      // have both, append one
+      qreal x1 = c1.x(i1), x2 = c2.x(i2);
+      if (x1 < x2) {
+        res.append(x1,c1.y(i1));
+        ++i1;
+      } else if (x2 < x1) {
+        res.append(x2,c2.y(i2));
+        ++i2;
+      } else {
+        res.append(x1, (c1.y(i1) + c2.y(i2)) / 2);
+        ++i1; ++i2;
+      }
+    }
+  }
+
+  return res;
+}
+
+Curve Curve::addSimple(rcCurve that) const {
+  Curve const *curve1 = this, *curve2 = &that;
+  uint         count1 = curve1->count(), count2 = curve2->count();
+
+  // the longer one comes second
+  if (count1 > count2) {
+    qSwap(curve1, curve2);
+    qSwap(count1, count2);
+  }
+
+  Curve res;
+
+  // the shorter part - both curves
+  for (uint i = 0, iEnd = count1; i < iEnd; ++i)
+    res.append(curve2->x(i), curve1->y(i) + curve2->y(i));
+
+  // the remainder of the longer curve
+  for (uint i = count1, iEnd = count2; i < iEnd; ++i)
+    res.append(curve2->x(i), curve2->y(i));
+
+  return res;
+}
+
+Curve Curve::mul(qreal factor) const {
+  Curve res;
+
+  for_i (count())
+    res.append(xs_[i], ys_[i] * factor);
 
   return res;
 }
@@ -101,8 +170,8 @@ Curve Curve::subtract(fit::Function const& f) const {
 Curve Curve::smooth3() const {
   Curve res;
 
-  for_i (count()-2)
-    res.append(xs[i+1], (ys[i] + ys[i+1] + ys[i+2]) / 3.);
+  for_i (count() - 2)
+    res.append(xs_[i + 1], (ys_[i] + ys_[i + 1] + ys_[i + 2]) / 3.);
 
   return res;
 }
@@ -110,63 +179,25 @@ Curve Curve::smooth3() const {
 uint Curve::maxYindex() const {
   if (isEmpty()) return 0;
 
-  auto yMax = ys[0]; uint index = 0;
+  auto yMax  = ys_[0];
+  uint index = 0;
 
   for_i (count()) {
-    auto y = ys[i];
+    auto y = ys_[i];
     if (y > yMax) {
-      yMax = y; index = i;
+      yMax  = y;
+      index = i;
     }
   }
 
   return index;
 }
 
-Curve makeCurve(shp_LensSystem lenses,
-    Range const& gammaRange, Range const& tthRange) {
-
-  Curve res;
-
-  auto size   = lenses->getSize();
-  int width = size.width(), height = size.height();
-
-  qreal const deltaTTH = tthRange.width() / width;
-
-  qreal_vec intens_vec(width);
-  uint_vec  counts_vec(width, 0);
-
-  for_int (iy, height) {
-    for_int (ix, width) {
-      // TODO angles can be arranged for a single loop for_i (pixTotal)
-      // [last in commit 98413db71cd38ebaa54b6337a6c6e670483912ef]
-      auto angles = lenses->getAngles(ix, iy);
-      if (!gammaRange.contains(angles.gamma)) continue;
-
-      int bin = (angles.tth == tthRange.max)
-                ? width - 1
-                : qFloor((angles.tth - tthRange.min) / deltaTTH);
-
-      if (bin < 0 || width <= bin) {
-//        TR("TTH bin outside cut?")
-        continue; // outside of the cut
-      }
-
-      const auto in = lenses->getIntensity(ix, iy);
-      if (!qIsNaN(in)) {
-        intens_vec[bin] += in;
-        counts_vec[bin] += 1;
-      }
-    }
-  }
-
-  for_i (width) {
-    auto in  = intens_vec[i];
-    auto cnt = counts_vec[i];
-    if (cnt > 0) in /= cnt;
-    res.append(tthRange.min + deltaTTH * i, in);
-  }
-
-  return res;
+qreal Curve::sumY() const {
+  qreal sum = 0;
+  for_i (count())
+    sum += ys_[i];
+  return sum;
 }
 
 //------------------------------------------------------------------------------

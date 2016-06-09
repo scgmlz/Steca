@@ -1,44 +1,39 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      panel.h
 //! @brief     Gui panels (in the main window).
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
 #ifndef PANEL_H
 #define PANEL_H
 
-#include "refhub.h"
 #include "gui_helpers.h"
+#include "refhub.h"
 #include <QGroupBox>
 
-class TheHub;
+namespace models {
+class TableModel;
+}
 
-namespace panel {
-//------------------------------------------------------------------------------
-/// A (tree-)list view with a reference to the hub.
-
-class HubListView: public TreeListView, protected RefHub {
-  SUPER(HubListView,TreeListView)
-public:
-  HubListView(TheHub&);
-};
-
+namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 /// Just a plain panel
-class BasicPanel: public QGroupBox, protected RefHub {
-  SUPER(BasicPanel,QGroupBox)
+class BasicPanel : public QGroupBox, protected RefHub {
+  SUPER(BasicPanel, QGroupBox)
 public:
-  BasicPanel(rcstr title,TheHub&);
+  BasicPanel(TheHub&);
+  BasicPanel(TheHub&, rcstr title);
 
   void setHorizontalStretch(int);
   void setVerticalStretch(int);
@@ -46,43 +41,54 @@ public:
 };
 
 /// A panel with a box layout
-class BoxPanel: public BasicPanel {
-  SUPER(BoxPanel,BasicPanel)
+class BoxPanel : public BasicPanel {
+  SUPER(BoxPanel, BasicPanel)
 public:
-  BoxPanel(rcstr title, TheHub&, Qt::Orientation);
+  BoxPanel(TheHub&, Qt::Orientation);
+  BoxPanel(TheHub&, rcstr title, Qt::Orientation);
+
+  QBoxLayout* box() const { return box_; }
 
 protected:
-  QBoxLayout *box;
+  QBoxLayout *box_;
 };
 
 /// A panel with grid layout
-class GridPanel: public BasicPanel {
-  SUPER(GridPanel,BasicPanel)
+class GridPanel : public BasicPanel {
+  SUPER(GridPanel, BasicPanel)
 public:
-  GridPanel(rcstr title,TheHub&);
+  GridPanel(TheHub&);
+  GridPanel(TheHub&, rcstr title);
+
+  QGridLayout* grid() const { return grid_; }
 
 protected:
-  QGridLayout *grid;
+  QGridLayout *grid_;
 };
 
 //------------------------------------------------------------------------------
 
 /// A tabbed panel
-class TabsPanel: public QTabWidget, protected RefHub {
-  SUPER(TabsPanel,QTabWidget)
+class Tab : public QWidget {
+  SUPER(Tab, QWidget)
+public:
+  Tab(Qt::Orientation);
+
+  QBoxLayout& box() const { return *box_; }
+
+protected:
+  QBoxLayout *box_;
+};
+
+class TabsPanel : public QTabWidget, protected RefHub {
+  SUPER(TabsPanel, QTabWidget)
 public:
   TabsPanel(TheHub&);
 
-protected:
-  class Tab: public QWidget {
-  public:
-    Tab(Qt::Orientation);
-    QBoxLayout *box;
-  };
-
-  Tab& addTab(rcstr title,Qt::Orientation);
+  Tab &addTab(rcstr title, Qt::Orientation = Qt::Vertical);
+  Tab &tab(uint);
 };
 
 //------------------------------------------------------------------------------
-}
-#endif // PANEL_H
+}}
+#endif  // PANEL_H

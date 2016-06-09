@@ -1,15 +1,15 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      core_reflection.cpp
-//! @brief     Reflections
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
@@ -20,82 +20,77 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-str_lst const& Reflection::reflTypes() {
-  static str_lst types {"Gaussian","Lorentzian","PseudoVoigt1","PseudoVoigt2"};
+str_lst const& Reflection::typeStrLst() {
+  static str_lst types{"Raw", "Gaussian", "Lorentzian", "PseudoVoigt1",
+                       "PseudoVoigt2"};
   return types;
 }
 
-rcstr Reflection::reflType(ePeakType type) {
-  return reflTypes()[(int)type];
+rcstr Reflection::typeTag(ePeakType type) {
+  return typeStrLst().at((int)type);
 }
 
-Reflection::Reflection(ePeakType type): peakFunction(nullptr) {
+Reflection::Reflection(ePeakType type) : peakFunction_(nullptr) {
   setPeakFunction(type);
-  setRange(Range());
 }
 
-Reflection::~Reflection() {
-}
-
-ePeakType Reflection::getType() const {
-  return peakFunction->type();
+ePeakType Reflection::type() const {
+  return peakFunction_->type();
 }
 
 void Reflection::setType(ePeakType type) {
   setPeakFunction(type);
 }
 
-void Reflection::setRange(Range const& range_) {
-  range = range_;
+fit::PeakFunction const& Reflection::peakFunction() const {
+  ENSURE(peakFunction_)
+  return *peakFunction_;
 }
 
-fit::PeakFunction* Reflection::makePeakFunction() const {
-  QScopedArrayPointer<fit::PeakFunction> f(fit::PeakFunction::factory(getType()));
-  f->setGuessPeak(peakFunction->getGuessPeak());
-  f->setGuessFWHM(peakFunction->getGuessFWHM());
-  return f.take();
+rcRange Reflection::range() const {
+  return peakFunction_->range();
 }
 
-fit::PeakFunction& Reflection::getPeakFunction() {
-  ASSERT(peakFunction)
-  return *peakFunction;
+void Reflection::setRange(rcRange range) {
+  peakFunction_->setRange(range);
 }
 
-fit::PeakFunction const& Reflection::getPeakFunction() const {
-  ASSERT(peakFunction)
-  return *peakFunction;
+bool Reflection::isValid() const {
+  return peakFunction_->range().isValid();
 }
 
 void Reflection::invalidateGuesses() {
-  peakFunction->setGuessPeak(XY());
-  peakFunction->setGuessFWHM(qQNaN());
+  peakFunction_->setGuessedPeak(XY());
+  peakFunction_->setGuessedFWHM(qQNaN());
+}
+
+void Reflection::fit(rcCurve curve) {
+  peakFunction_->fit(curve);
 }
 
 void Reflection::setPeakFunction(ePeakType type) {
+  bool  haveRange = !peakFunction_.isNull();
+  Range oldRange;
+  if (haveRange) oldRange = peakFunction_->range();
+
   setPeakFunction(fit::PeakFunction::factory(type));
+
+  if (haveRange) peakFunction_->setRange(oldRange);
 }
 
 void Reflection::setPeakFunction(fit::PeakFunction* f) {
-  peakFunction.reset(f);
+  peakFunction_.reset(f);
 }
 
-static str const
-  KEY_FWHM("fwhm"), KEY_TYPE("type"), KEY_RANGE("range"), KEY_PEAK("peak");
-
 JsonObj Reflection::saveJson() const {
-  return JsonObj()
-    .saveRange(KEY_RANGE, getRange())
-    .saveObj(KEY_PEAK, peakFunction->saveJson());
+  return peakFunction_->saveJson();
 }
 
 void Reflection::loadJson(rcJsonObj obj) THROWS {
-  range = obj.loadRange(KEY_RANGE);
+  QScopedPointer<fit::Function> f(fit::Function::factory(obj));
 
-  JsonObj peakObj = obj.loadObj(KEY_PEAK);
-  QScopedPointer<fit::Function> f(fit::Function::factory(peakObj.loadString(KEY_TYPE)));
-  f->loadJson(peakObj);
-
-  RUNTIME_CHECK(dynamic_cast<fit::PeakFunction*>(f.data()),"must be a peak function");
+  RUNTIME_CHECK(dynamic_cast<fit::PeakFunction*>(f.data()),
+                "must be a peak function");
   setPeakFunction(static_cast<fit::PeakFunction*>(f.take()));
 }
 

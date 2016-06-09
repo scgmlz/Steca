@@ -1,177 +1,164 @@
-// TODO HEADER
-/** \file
- * Session that can compute all and needs no GUI.
- */
+// ************************************************************************** //
+//
+//  STeCa2:    StressTextureCalculator ver. 2
+//
+//! @file      core_session.h
+//! @brief     Session that can compute all and needs no GUI.
+//!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016
+//! @authors   Scientific Computing Group at MLZ Garching
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
+//
+// ************************************************************************** //
 
 #ifndef CORE_SESSION_H
 #define CORE_SESSION_H
 
 #include "core_file.h"
-#include "core_fit_functions.h"
-#include "core_lens.h"
-#include "core_reflection.h"
+#include "types/core_type_geometry.h"
+#include "types/core_type_image.h"
 #include "types/core_type_image_transform.h"
-#include <QPoint>
-#include <QMargins>
+#include "types/core_types_fwd.h"
+#include <QStringList>
+
+class Progress;
 
 namespace core {
 //------------------------------------------------------------------------------
 
-enum class Normalization {
-  DISABLE,DELTA_TIME,MON_COUNTS,BG_LEVEL,NUM_NORM_TYPES
-};
-
-str_lst const& getStringListNormalization();
-
-/// detector geometry
-struct Geometry {
-  static qreal const MIN_DETECTOR_DISTANCE;
-  static qreal const MIN_DETECTOR_PIXEL_SIZE;
-
-  Geometry();
-  bool operator ==(Geometry const&) const;
-
-  qreal detectorDistance;   // the distance from the sample to the detector
-  qreal pixSize;            // size of the detector pixel
-  bool  hasBeamOffset;
-  QPoint middlePixOffset;
-};
-
-struct Borders { // REVIEW bad name, hide, remove?
-  Range
-    gamma,
-    tth_regular,
-    tth_gamma0; // at gamma=0
-
-  void invalidate() {
-    gamma.invalidate();
-    tth_regular.invalidate();
-    tth_gamma0.invalidate();
-  }
-
-  bool isValid() const {
-    return gamma.isValid() && tth_regular.isValid() && tth_gamma0.isValid();
-  }
-};
-
 class Session final {
 public:
   Session();
-  virtual ~Session();
 
   void clear();
 
-  /// How many files has, optionally also counting the correction file.
-  uint     numFiles(bool withCorr) const;
-
-  shp_File addFile(rcstr fileName) THROWS;  ///< Add an ordinary file to the session.
-  shp_File remFile(uint i);                 ///< Remove the i-th file, NOT including the correction file.
-  bool     hasFile(rcstr fileName);         ///< Is there this ordinary file?
-
-  shp_File getFile(uint i) const;           ///< Access the i-th file, including the correction file.
-
-  shp_File loadCorrFile(rcstr fileName);    ///< Load or remove a correction file.
-  void     remCorrFile();
-  shp_File getCorrFile()   const;
-  bool     hasCorrFile()   const  { return !getCorrFile().isNull(); }
-  void     enableCorrection(bool);
-  bool     isCorrEnabled() const  { return corrEnabled;             }
-
+  // data files
 private:
-  QVector<shp_File> dataFiles;
-  shp_File corrFile;
-  bool     corrEnabled;
-
-private:
-  QSize imageSize; ///< All files must have images of the same size; this is a cached value
-
-  void updateImageSize();                 ///< Clears the image size if there are no files in the session.
-
-private:
-  void setImageSize(QSize const&) THROWS; ///< Ensures that all images have the same size.
+  QVector<shp_File> files_;
 
 public:
+  /// number of data files (not counting the correction file)
+  uint     numFiles() const { return files_.count(); }
+  shp_File file(uint i) const;
 
-  Geometry const& getGeometry() const { return geometry; }
-  void setGeometry(qreal detectorDistance, qreal pixSize, bool hasBeamOffset, QPoint const& middlePixOffset);
+  bool hasFile(rcstr fileName);
+  void addFile(shp_File) THROWS;
+  void remFile(uint i);
 
+  // correction file
 private:
-  Geometry       geometry;
-  ImageTransform imageTransform;
+  shp_File corrFile_;
+  Image    corrImage_;
+  bool     corrEnabled_;
+
+  uint_vec collectedFromFiles_;  ///< from these files
+  Datasets collectedDatasets_;   ///< datasets collected ...
+  str_lst  collectedDatasetsTags_;
 
 public:
-  void setImageMirror(bool);
-  void setImageRotate(ImageTransform);
+  bool     hasCorrFile() const { return !corrFile_.isNull(); }
+  shp_File corrFile() const { return corrFile_; }
+  rcImage  corrImage() const { return corrImage_; }
 
-  ImageTransform getImageTransform() const;
+  void setCorrFile(shp_File) THROWS;  ///< Load or remove a correction file.
+  void remCorrFile();
 
-  QSize getImageSize() const;
+  void tryEnableCorr(bool);
+  bool isCorrEnabled() const { return corrEnabled_; }
 
-  shp_LensSystem allLenses(Dataset const& dataset,
-                           bool const globalIntensityScale) const;
-  shp_LensSystem noROILenses(Dataset const& dataset,
-                             bool const globalIntensityScale) const;
-  shp_LensSystem plainLens(Dataset const& dataset) const;
+  void collectDatasetsFromFiles(uint_vec, uint);
 
-private: // corrections
-  DiffractionAnglesMap angleMapArray;
+  uint_vec const& collectedFromFiles() const { return collectedFromFiles_; }
+  rcDatasets      collectedDatasets()  const { return collectedDatasets_;  }
 
-  Borders cut;      // REVIEW ful - remove?
+  str_lst const&  collectedDatasetsTags() const {
+    return collectedDatasetsTags_;
+  }
 
-  QPoint  getPixMiddle() const;  // REVIEW / RENAME
+private:
+  /// All files must have images of the same size; this is a cached value
+  QSize imageSize_;
+  /// Clears the image size if there are no files in the session.
+  void updateImageSize();
+  /// Ensures that all images have the same size.
+  void setImageSize(QSize const&) THROWS;
 
-  qreal lastCalcTthMitte; QPoint lastPixMiddle;
-  Geometry lastGeometry;
+  QSize imageSize() const;
 
-  QMargins lastImageMargins;
-  ImageTransform lastImageTransform;
+  // image - transform & cut etc.
+private:
+  ImageTransform imageTransform_;
+  ImageCut       imageCut_;
 
 public:
-  // TODO move caching into DiffractionAnglesMap, make const
-  DiffractionAnglesMap const& calcAngleMap(qreal tthMitte);
+  ImageTransform const& imageTransform() const { return imageTransform_; }
+  ImageCut const&       imageCut()       const { return imageCut_;       }
 
+  void setImageTransformMirror(bool);
+  void setImageTransformRotate(ImageTransform const&);
+
+  void setImageCut(bool topLeftFirst, bool linked, ImageCut const&);
+
+  AngleMap const& angleMap(rcDataset) const;
+
+// geometry
 private:
-  Array2D<qreal> intensCorrArray;  // summed corrFile intensities
-  bool  hasNaNs;           // TODO warn on the statusbar
+  Geometry geometry_;
 
 public:
-  void  calcIntensCorrArray();
+  Geometry const& geometry() const { return geometry_; }
+  void setGeometry(qreal detectorDistance, qreal pixSize, bool isMidPixOffset,
+                   rcIJ midPixOffset);
+  IJ midPix() const;
 
-  Borders const& getCut() const { return cut; }
+// lenses
+public:
+  shp_ImageLens lens(rcImage, rcDatasets, bool trans, bool cut) const;
+  shp_Lens lens(rcDataset, rcDatasets, bool trans, bool cut, eNorm) const;
 
-public: // image cut
-  QMargins const& getImageMargins() const { return imageMargins; }
-  void setImageMargins(bool topLeft, bool linked, QMargins const&);
+  Curve makeCurve(shp_Lens, rcRange gammaSector) const;
 
+  // reflections
+  ReflectionInfo makeReflectionInfo(shp_Lens, rcReflection,
+                                    rcRange gammaSector) const;
+
+  ReflectionInfos makeReflectionInfos(rcDatasets, rcReflection, deg betaStep,
+                                      rcRange gammaRange, Progress* = nullptr);
+// fitting
 private:
-  QMargins imageMargins;
+  uint   bgPolyDegree_;
+  Ranges bgRanges_;
+
+  Reflections reflections_;
 
 public:
-  Ranges&                getBgRanges()                 { return bgRanges; }
-  Ranges const&          getBgRanges() const           { return bgRanges; }
-  int&                   getBgPolynomialDegree()       { return bgPolynomialDegree; }
-  int const&             getBgPolynomialDegree() const { return bgPolynomialDegree; }
-  Reflections&           getReflections()              { return reflections;        }
+  rcRanges      bgRanges()      const { return bgRanges_; }
+  uint          bgPolyDegree()  const { return bgPolyDegree_; }
+  rcReflections reflections()   const { return reflections_; }
 
+  void setBgRanges(rcRanges);
+  bool addBgRange(rcRange);
+  bool remBgRange(rcRange);
+
+  void setBgPolyDegree(uint);
+
+  void addReflection(shp_Reflection);
+  void remReflection(uint);
+
+// normalization
 private:
-  Ranges          bgRanges;
-  int             bgPolynomialDegree;
-
-  Reflections     reflections;
-
-private:
-  shp_LensSystem makeNormalizationLens(Dataset const& dataset) const;
+  eNorm norm_;
 
 public:
-  Normalization type;
+  eNorm norm() const { return norm_; }
+  void  setNorm(eNorm);
 
-  bool isNormEnabled() const  { return (Normalization::DISABLE == type) ? false : true;}
-  void setNormType(Normalization type_);
-
-private:
-  qreal calAverageBG(Dataset const& dataset) const;
-  qreal calGlobalBGAverage(Dataset const& dataset) const;
-
+public:
+  qreal calcAvgBackground(rcDataset) const;
+  qreal calcAvgBackground(rcDatasets) const;
 };
 
 //------------------------------------------------------------------------------

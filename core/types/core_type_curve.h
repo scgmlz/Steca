@@ -1,15 +1,16 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      core_type_curve.h
 //! @brief     An x-y curve
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
@@ -36,32 +37,37 @@ public:
 
   void append(qreal x, qreal y);
 
-  qreal_vec const& getXs()  const { return xs; }
-  qreal_vec const& getYs()  const { return ys; }
+  // access to data vectors - required by QCP
+  qreal_vec const& xs()  const { return xs_; }
+  qreal_vec const& ys()  const { return ys_; }
 
-  qreal x(uint i)           const { return xs[i]; }
-  qreal y(uint i)           const { return ys[i]; }
+  // prefer this access instead of xs(), ys()
+  qreal x(uint i)        const { return xs_.at(i); }
+  qreal y(uint i)        const { return ys_.at(i); }
 
-  Range const& XRange()     const { return xRange; }
-  Range const& YRange()     const { return yRange; }
+  rcRange rgeX()         const { return rgeX_; }
+  rcRange rgeY()         const { return rgeY_; }
 
-  Curve intersect(Range const&)   const;
-  Curve intersect(Ranges const&)  const;
+  Curve intersect(rcRange)   const;
+  Curve intersect(rcRanges)  const;
 
-  Curve subtract(fit::Function const&)  const;
-  Curve smooth3()                       const;  ///< moving average, 3 points
-  uint  maxYindex()                     const;  ///< the index of the maximum y
+  void  subtract(fit::Function const&);
+
+  Curve add(rcCurve)       const; ///< taking x into account
+  Curve addSimple(rcCurve) const; ///< just point-by-point
+  Curve mul(qreal)         const;
+
+  Curve smooth3()   const;  ///< moving average, 3 points
+  uint  maxYindex() const;  ///< the index of the maximum y
+
+  qreal sumY()      const;
 
 private:
-  qreal_vec xs, ys;
-  core::Range xRange, yRange;
+  qreal_vec xs_, ys_;
+  core::Range rgeX_, rgeY_;
 };
 
 typedef QVector<Curve> curve_vec;
-
-//------------------------------------------------------------------------------
-
-Curve makeCurve(shp_LensSystem, Range const& gammaRange, Range const& tthRange);
 
 //------------------------------------------------------------------------------
 }

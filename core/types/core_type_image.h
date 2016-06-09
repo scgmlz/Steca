@@ -1,15 +1,16 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      core_type_image.h
 //! @brief     Detector image
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
@@ -22,35 +23,31 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-class Image final: public Array2D<intens_t> {
-  SUPER(Image,Array2D<intens_t>)
+class Image final : public Array2D<inten_t> {
+  SUPER(Image, Array2D<inten_t>)
 public:
   /// Image as vector of intensities, filled with 0 or given intensities.
-  Image(QSize const& = QSize(0,0), intens_t const* = nullptr);
+  Image(QSize const& = QSize(0, 0), inten_t const* = nullptr);
 
-  void clear();
-  void fill(intens_t val, QSize const&);
+  Image(rcImage);
 
   /// Access single intensity.
-  intens_t const& intensity(uint i) const {
-    return super::at(i);
-  }
+  inten_t inten(uint i) const { return super::at(i); }
+
+  /// Access single intensity.
+  inten_t inten(uint i, uint j) const { return super::at(i, j); }
 
   /// Set single intensity.
-  void setIntensity(uint i, intens_t);
+  void setInten(uint i, inten_t inten) { super::setAt(i, inten); }
 
   /// Access the whole 1D intensity array, getCount() values.
-  intens_t const* getIntensities() const { return getData(); }
-  /// Sum all getCount() intensities with new ones.
-  void addIntensities(intens_t const*);
+  inten_t const* intensData() const { return data(); }
 
-  /// Calculate the range of intensity values; cache the result
-  Range const& intensRange() const;
-
-private:
-  mutable Range rgeIntens;
+  /// Sum all intensities with new ones.
+  void addIntens(rcImage) THROWS;
+  void addIntens(inten_t const*);
 };
 
 //------------------------------------------------------------------------------
 }
-#endif // CORE_TYPE_IMAGE_H
+#endif  // CORE_TYPE_IMAGE_H

@@ -1,4 +1,5 @@
 #include "test_core_range.h"
+REGISTER_TEST_SUITE(TestCoreRange)
 
 #include "types/core_type_curve.h"
 #include "types/core_type_range.h"
@@ -100,31 +101,31 @@ void TestCoreRange::testRange() {
       // testing default Constructor, All data is NaN
       {
         QVERIFY(t.isEmpty());
-        QVERIFY(t.getXs().isEmpty());
-        QVERIFY(t.getYs().isEmpty());
-        QVERIFY(qIsNaN(t.XRange().min));
-        QVERIFY(qIsNaN(t.XRange().max));
-        QVERIFY(qIsNaN(t.YRange().min));
-        QVERIFY(qIsNaN(t.YRange().max));
+        QVERIFY(t.xs().isEmpty());
+        QVERIFY(t.ys().isEmpty());
+        QVERIFY(qIsNaN(t.rgeX().min));
+        QVERIFY(qIsNaN(t.rgeX().max));
+        QVERIFY(qIsNaN(t.rgeY().min));
+        QVERIFY(qIsNaN(t.rgeY().max));
       }
 
       //testing if input of data is correct
       {
         t.append(tth,inten);
-        QCOMPARE(t.getXs().at(0),tth);
-        QCOMPARE(t.getYs().at(0),inten);
-        QCOMPARE(t.XRange().min,tth);
-        QCOMPARE(t.XRange().max,tth);
-        QCOMPARE(t.YRange().min,inten);
-        QCOMPARE(t.YRange().max,inten);
+        QCOMPARE(t.xs().at(0),tth);
+        QCOMPARE(t.ys().at(0),inten);
+        QCOMPARE(t.rgeX().min,tth);
+        QCOMPARE(t.rgeX().max,tth);
+        QCOMPARE(t.rgeY().min,inten);
+        QCOMPARE(t.rgeY().max,inten);
 
         t.append(2*tth,0);
-        QCOMPARE(t.getXs().at(1),   2*tth);
-        QCOMPARE(t.getYs().at(1),   0.);
-        QCOMPARE(t.XRange().min, tth);
-        QCOMPARE(t.XRange().max, 2*tth);
-        QCOMPARE(t.YRange().min, 0.);
-        QCOMPARE(t.YRange().max, inten);
+        QCOMPARE(t.xs().at(1),   2*tth);
+        QCOMPARE(t.ys().at(1),   0.);
+        QCOMPARE(t.rgeX().min, tth);
+        QCOMPARE(t.rgeX().max, 2*tth);
+        QCOMPARE(t.rgeY().min, 0.);
+        QCOMPARE(t.rgeY().max, inten);
         QVERIFY(t.isOrdered());
 
         t.clear();

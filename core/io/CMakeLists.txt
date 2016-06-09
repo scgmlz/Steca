@@ -35,6 +35,7 @@ add_library(STeCaCoreIO
 target_link_libraries(STeCaCoreIO
   Qt5::Core
   Qt5::Gui
+  STeCaCore
 )
 
 set_property(TARGET STeCaCoreIO PROPERTY CXX_STANDARD 11)

@@ -1,15 +1,16 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      core_type_range.h
 //! @brief     Range of real values
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
@@ -32,6 +33,7 @@ struct Range {
 
   void  invalidate();             ///< make invalid
   bool  isValid() const;          ///< is not NaN
+  bool  isEmpty() const;          ///< not valid or empty
 
   qreal width()  const;
   qreal center() const;
@@ -45,15 +47,19 @@ struct Range {
   static Range safeFrom(qreal,qreal); ///< safe factory
 
   void  extendBy(qreal);          ///< extend to include the number
-  void  extendBy(Range const&);   ///< extend to include the range
+  void  extendBy(rcRange);   ///< extend to include the range
 
   // these may be called only on valid ranges
-  bool  contains(qreal val)      const;
-  bool  contains(Range const&)   const;
-  bool  intersects(Range const&) const;
+  bool  contains(qreal val) const;
+  bool  contains(rcRange)   const;
+  bool  intersects(rcRange) const;
+  Range intersect(rcRange)  const;
 
   /// limit the number to the interval, as qBound would
-  qreal bound(qreal)             const;
+  qreal bound(qreal)        const;
+
+  /// divide into slices
+  uint  numSlices(qreal& sliceSize /* i/o */) const;
 
   JsonObj saveJson() const;
   void    loadJson(rcJsonObj) THROWS;
@@ -66,25 +72,25 @@ class Ranges {
 public:
   Ranges();
 
-  void clear()                  { ranges.clear();           }
+  void clear()             { ranges_.clear();           }
 
-  bool isEmpty()          const { return ranges.isEmpty();  }
-  uint count()            const { return ranges.count();    }
+  bool isEmpty()     const { return ranges_.isEmpty();  }
+  uint count()       const { return ranges_.count();    }
 
-  Range const& at(uint i) const { return ranges.at(i);      }
+  rcRange at(uint i) const { return ranges_.at(i);      }
 
   /// collapses overlapping ranges into one; returns whether there was a change
-  bool add(Range const&);
+  bool add(rcRange);
   /// removes (cuts out) a range; returns whether there was a change
-  bool rem(Range const&);
+  bool rem(rcRange);
 
 private:
   void sort();
-  QVector<Range> ranges;
+  QVector<Range> ranges_;
 
 public:
-  JsonObj saveJson() const;
-  void    loadJson(rcJsonObj) THROWS;
+  JsonArr saveJson() const;
+  void    loadJson(rcJsonArr) THROWS;
 };
 
 //------------------------------------------------------------------------------

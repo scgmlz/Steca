@@ -1,25 +1,36 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      core_type_matrix.cpp
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
 #include "core_type_matrix.h"
-#include <QtMath>
+#include <qmath.h>
 
 namespace core {
 //------------------------------------------------------------------------------
 
+vector3f::vector3f(float _0_, float _1_, float _2_) {
+  _0 = _0_; _1 = _1_; _2 = _2_;
+}
+
+vector3f::vector3f(vector3d const& v): vector3f(v._0,v._1,v._2) {
+}
+
 vector3d::vector3d(qreal _0_, qreal _1_, qreal _2_) {
   _0 = _0_; _1 = _1_; _2 = _2_;
+}
+
+vector3d::vector3d(vector3f const& v): vector3d(v._0,v._1,v._2) {
 }
 
 matrix3d::matrix3d(qreal _00_, qreal _01_, qreal _02_,

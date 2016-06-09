@@ -1,58 +1,54 @@
 #include "test_core_array2d.h"
+REGISTER_TEST_SUITE(TestCoreArray2d)
 
 #include "types/core_type_array2d.h"
 
 void TestCoreArray2d::testArray2d() {
   core::Array2D<qreal> a; // default constructor
 
-  //Basic Test
-  {
+  { // basic test
     auto aSize = a.size();
     QCOMPARE(aSize,QSize(0,0));
     QVERIFY(aSize.isValid() && aSize.isEmpty());
+
     QSize size(10,20);
     a.fill(size);
     QCOMPARE(size,a.size());
   }
 
-  //Testing Methods for Data input and access
-  {
-    int const xSize = 10, ySize = 20;
+  { // methods for data input and access
+    int const iSize = 10, jSize = 20;
     qreal val = 3;
-    QSize size(xSize,ySize);
+
+    QSize size(iSize,jSize);
     a.fill(val,size);
     QCOMPARE(size,a.size());
 
-    for_int (x, xSize)
-      for_int (y, ySize)
-        QCOMPARE(a.at(a.index(x, y)), val);
+    for_ij (iSize,jSize)
+      QCOMPARE(a.at(a.index(i,j)), val);
 
-    for_int (x, xSize)
-      for_int (y, ySize)
-        a.setAt(a.index(x,y),x + y*xSize);
+    for_ij (iSize,jSize)
+      a.setAt(a.index(i,j), i + j*iSize);
 
-    for_int (x, xSize)
-      for_int (y, ySize)
-        QCOMPARE(a.at(a.index(x,y)),(qreal)(x + y*xSize));
+    for_ij (iSize,jSize)
+      QCOMPARE(a.at(a.index(i,j)),(qreal)(i + j*iSize));
 
-    int const iSize = xSize * ySize;
-    QCOMPARE(iSize,(int)a.getCount());
+    uint const count = iSize * jSize;
+    QCOMPARE(count, a.count());
 
-    for_i (iSize) {
+    for_i (count) {
       QCOMPARE(a[i],(qreal)i);
     }
 
-    auto data = a.getData();
-    for_i (iSize) {
+    auto data = a.data();
+    for_i (count)
       QCOMPARE(data[i],(qreal)i);
-    }
   }
 
-  //Testing if Array is reset to default after clear
-  {
+  { // is Array2D reset to default after clear?
     a.clear();
     QCOMPARE(a.size(),QSize(0,0));
-    QCOMPARE(a.getCount(),(uint)0);
+    QCOMPARE(a.count(),(uint)0);
   }
 }
 

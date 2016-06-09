@@ -1,30 +1,27 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      panel.cpp
-//! @brief     Classes for building GUI panels in the main window.
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
 #include "panel.h"
-#include "mainwin.h"
 
-namespace panel {
-//-----------------------------------------------------------------------------
-
-HubListView::HubListView(TheHub& theHub): RefHub(theHub) {
-}
-
+namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-BasicPanel::BasicPanel(rcstr title, TheHub& theHub): super(title), RefHub(theHub) {
+BasicPanel::BasicPanel(TheHub& hub, rcstr title) : super(title), RefHub(hub) {
+}
+
+BasicPanel::BasicPanel(TheHub& hub) : thisClass(hub, EMPTY_STR) {
 }
 
 void BasicPanel::setHorizontalStretch(int stretch) {
@@ -48,33 +45,45 @@ void BasicPanel::setStretch(int horizontal, int vertical) {
 
 //------------------------------------------------------------------------------
 
-BoxPanel::BoxPanel(rcstr title, TheHub& theHub, Qt::Orientation orientation)
-: super(title,theHub) {
-  setLayout((box = boxLayout(orientation)));
+BoxPanel::BoxPanel(TheHub& hub, Qt::Orientation o)
+: thisClass(hub, EMPTY_STR, o) {
+}
+
+BoxPanel::BoxPanel(TheHub& hub, rcstr title, Qt::Orientation orientation)
+: super(hub, title)
+{
+  setLayout((box_ = boxLayout(orientation)));
 }
 
 //------------------------------------------------------------------------------
 
-GridPanel::GridPanel(rcstr title, TheHub& theHub)
-: super(title,theHub) {
-  setLayout((grid = gridLayout()));
+GridPanel::GridPanel(TheHub& hub) : thisClass(hub, EMPTY_STR) {
+}
+
+GridPanel::GridPanel(TheHub& hub, rcstr title) : super(hub, title) {
+  setLayout((grid_ = gridLayout()));
 }
 
 //------------------------------------------------------------------------------
 
-TabsPanel::Tab::Tab(Qt::Orientation orientation) {
-  setLayout((box = boxLayout(orientation)));
+Tab::Tab(Qt::Orientation orientation) {
+  setLayout((box_ = boxLayout(orientation)));
 }
 
-TabsPanel::TabsPanel(TheHub& theHub): RefHub(theHub) {
-}
+TabsPanel::TabsPanel(TheHub& hub) : RefHub(hub) {}
 
-TabsPanel::Tab& TabsPanel::addTab(rcstr title, Qt::Orientation orientation) {
+Tab& TabsPanel::addTab(rcstr title, Qt::Orientation orientation) {
   auto tab = new Tab(orientation);
-  super::addTab(tab,title);
+  super::addTab(tab, title);
   return *tab;
 }
 
-//------------------------------------------------------------------------------
+Tab& TabsPanel::tab(uint i) {
+  EXPECT((int)i < count())
+  ENSURE(dynamic_cast<Tab*>(widget(i)))
+  return *static_cast<Tab*>(widget(i));
 }
+
+//------------------------------------------------------------------------------
+}}
 // eof

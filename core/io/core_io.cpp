@@ -1,14 +1,15 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      core_io.h
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
@@ -26,27 +27,27 @@ static QByteArray peek(uint maxLen, QFileInfo const& info) {
 
 shp_File load(rcstr filePath) THROWS {
   QFileInfo info(filePath);
-  RUNTIME_CHECK(info.exists(), "File " % info.filePath() % " does not exist");
+  RUNTIME_CHECK(info.exists(), "File " % filePath % " does not exist");
 
   shp_File file;
 
   // apparently all Caress files begin so
   static QByteArray const caressHead("\020\012DEFCMD DAT");
-  if (caressHead == peek(caressHead.size(),info)) {
+  if (caressHead == peek(caressHead.size(), info)) {
     // looks like Caress, so try to load
     file = io::loadCaress(filePath);
   } else {
-    THROW("unknown file type");
+    THROW("unknown file type: " % filePath);
   }
 
-  RUNTIME_CHECK(file->numDatasets() > 0, "File " % info.filePath() % " contains no datasets");
+  RUNTIME_CHECK(file->datasets().count() > 0,
+                "File " % filePath % " contains no datasets");
 
   // ensure that all datasets have images of the same size
-  QSize size = file->getDataset(0)->getImage().size();
-
-  for_i (file->numDatasets())
-    if (file->getDataset(i)->getImage().size() != size)
-      THROW("Inconsistent image size");
+  QSize size = file->datasets().first()->imageSize();
+  for (auto& dataset : file->datasets())
+    if (dataset->imageSize() != size)
+      THROW("Inconsistent image size in " % filePath);
 
   return file;
 }

@@ -1,23 +1,24 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      core_file.h
 //! @brief     File with datasets.
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
 #ifndef CORE_FILE_H
 #define CORE_FILE_H
 
-#include "core_defs.h"
 #include "core_dataset.h"
+#include "types/core_defs.h"
 #include <QFileInfo>
 
 namespace core {
@@ -27,30 +28,16 @@ namespace core {
 class File final {
 public:
   File(rcstr fileName);
- ~File();
 
-  QFileInfo const& fileInfo() const { return info;              }
-  str  fileName()             const { return info.fileName();   }
-  uint numDatasets()          const { return datasets.count();  }
+  QFileInfo const& fileInfo() const { return fileInfo_; }
+  str              fileName() const { return fileInfo_.fileName(); }
 
-  void fold(); ///< collapse datasets into one (for correction files)
-
-  shp_Dataset const& getDataset(uint i) const { return datasets.at(i); }
-  void appendDataset(Dataset* dataset); ///< takes ownership of dataset
-
-  /// all datasets contain images of the same size
-  QSize getImageSize() const;
-  /// the range of all intensities in all datasets
-  Range const& intensRange() const;
+  Datasets&  datasets()       { return datasets_; }
+  rcDatasets datasets() const { return datasets_; }
 
 private:
-  QFileInfo info;
-  QVector<shp_Dataset> datasets;
-  mutable Range rgeIntens;
-
-public:
-  qreal calAverageMonitor()   const;
-  qreal calAverageDeltaTime() const;
+  QFileInfo fileInfo_;
+  Datasets  datasets_;
 };
 
 //------------------------------------------------------------------------------
@@ -58,4 +45,4 @@ public:
 
 Q_DECLARE_METATYPE(core::shp_File)
 
-#endif // CORE_FILE_H
+#endif  // CORE_FILE_H

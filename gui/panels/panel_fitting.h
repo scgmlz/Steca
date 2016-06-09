@@ -1,15 +1,16 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      panel_fitting.h
 //! @brief     Fitting panel.
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
@@ -17,55 +18,29 @@
 #define PANEL_FITTING_H
 
 #include "panel.h"
-#include "core_reflection.h"
-#include "models.h"
+#include "views.h"
 
-namespace panel {
+namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-class ReflectionView: public HubListView {
-  SUPER(ReflectionView,HubListView)
-public:
-  using Model = models::ReflectionViewModel;
-
-  ReflectionView(TheHub&);
-
-  void addReflection(int type);
-  void removeSelected();
-  bool hasReflections() const;
-
-  void update();
-
-protected:
-  void selectionChanged(QItemSelection const&, QItemSelection const&);
-
-private:
-  Model  &model;
-};
-
-//------------------------------------------------------------------------------
-
-class Fitting: public TabsPanel {
-  SUPER(Fitting,TabsPanel)
+class Fitting : public TabsPanel {
+  SUPER(Fitting, TabsPanel)
 public:
   Fitting(TheHub&);
 
 private:
-  QSpinBox  *spinDegree;
-  QComboBox *comboReflType;
-  ReflectionView *reflectionView;
-  QDoubleSpinBox *spinRangeMin, *spinRangeMax;
-  QDoubleSpinBox *spinGuessPeakX, *spinGuessPeakY, *spinGuessFwhm;
-  QLineEdit      *readFitPeakX,   *readFitPeakY,   *readFitFwhm;
-  bool silentSpin;
+  class ReflectionView *reflectionView_;
 
-  void setReflControls(core::shp_Reflection const&);
-  void updateReflectionControls();
+  QSpinBox       *spinDegree_;
+  QComboBox      *comboReflType_;
+  QDoubleSpinBox *spinRangeMin_,   *spinRangeMax_;
+  QDoubleSpinBox *spinGuessPeakX_, *spinGuessPeakY_, *spinGuessFWHM_;
+  QLineEdit      *readFitPeakX_,   *readFitPeakY_,   *readFitFWHM_;
+  bool            silentSpin_;
 
-private:
-  void enableReflControls(bool); // TODO REVIEW
+  void setReflControls(core::shp_Reflection);
 };
 
 //------------------------------------------------------------------------------
-}
-#endif // PANEL_FITTING_H
+}}
+#endif  // PANEL_FITTING_H

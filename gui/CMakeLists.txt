@@ -6,7 +6,7 @@ file(GLOB header_files
   "*.h"
   "types/*.h"
   "panels/*.h"
-  "io/*.h"
+  "output/*.h"
   "QCP/*.h"
 )
 
@@ -14,7 +14,7 @@ file(GLOB source_files
   "*.cpp"
   "types/*.cpp"
   "panels/*.cpp"
-  "io/*.cpp"
+  "output/*.cpp"
   "QCP/*.cpp"
 )
 
@@ -31,8 +31,8 @@ add_library(STeCaGUI
 target_link_libraries(STeCaGUI
   Qt5::Core
   Qt5::Gui
-  Qt5::PrintSupport
   Qt5::Widgets
+  Qt5::Multimedia
   STeCaCore
   STeCaCoreIO
 )

@@ -1,27 +1,29 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      app.cpp
 //!
+//! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Original version: Christian Randau
-//! @authors   Version 2: Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Antti Soininen, Jan Burle, Rebecca Brydon
+//! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
 #include "app.h"
 #include "../manifest.h"
 #include "mainwin.h"
-#include <QStyleFactory>
+#include "types/core_async.h"
 #include <QMessageBox>
+#include <QStyleFactory>
 #include <iostream>
 
 //------------------------------------------------------------------------------
 
-App::App(int &argc, char *argv[]): super(argc,argv) {
+App::App(int& argc, char* argv[]) : super(argc, argv) {
   setApplicationName(APPLICATION_NAME);
   setApplicationVersion(APPLICATION_VERSION);
   setOrganizationName(ORGANIZATION_NAME);
@@ -37,41 +39,58 @@ App::App(int &argc, char *argv[]): super(argc,argv) {
 }
 
 static QtMessageHandler oldHandler;
-static MainWin *pMainWin;
 
-static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg) {
+static void messageHandler(QtMsgType type, QMessageLogContext const& ctx,
+                           rcstr msg) {
   switch (type) {
   case QtDebugMsg:
-    std::cerr << "TR " << msg.toStdString() // TR for TRace
+    std::cerr << "TR " << msg.toStdString()  // TR for TRace
               << "\t[" << ctx.function << ']' << std::endl;
     break;
   case QtWarningMsg:
-    QMessageBox::warning(pMainWin, qAppName(), msg);
+    QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
     break;
   default:
-    oldHandler(type,ctx,msg);
+    oldHandler(type, ctx, msg);
     break;
   }
 }
 
+static void waiting(bool on) {
+  if (on)
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+  else
+    QApplication::restoreOverrideCursor();
+}
+
 int App::exec() {
-  MainWin mainWin;
-  mainWin.show();
+  try {
+    gui::MainWin mainWin;
+    mainWin.show();
 
-  pMainWin = &mainWin;
-  oldHandler = qInstallMessageHandler(messageHandler);
-  int res = super::exec();
-  qInstallMessageHandler(nullptr);
+    oldHandler = qInstallMessageHandler(messageHandler);
+    TakesLongTime::handler = waiting;
 
-  return res;
+    int res = super::exec();
+
+    TakesLongTime::handler = nullptr;
+    qInstallMessageHandler(nullptr);
+
+    return res;
+
+  } catch (std::exception const& e) {
+    qWarning("Fatal error: %s", e.what());
+    return -1;
+  }
 }
 
 bool App::notify(QObject* receiver, QEvent* event) {
   try {
     return super::notify(receiver, event);
-  } catch(Exception const& e) {
-    qWarning("%s", e.msg.toLocal8Bit().constData());
-  } catch(std::exception const& e) {
+  } catch (Exception const& e) {
+    if (!e.silent())
+      qWarning("%s", e.what());
+  } catch (std::exception const& e) {
     qWarning("Error: %s", e.what());
   }
 
