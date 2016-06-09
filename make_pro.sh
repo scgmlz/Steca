@@ -14,7 +14,7 @@ CONFIG  += c++11 silent
 
 win32 {
   CONFIG += static
-  RC_ICONS = \$\$PWD/gui/icons/STeCa2.ico
+  RC_ICONS = \$\$PWD/gui/icons/retro_stier.ico
 }
 
 INCLUDEPATH += \$\$PWD/core \$\$PWD/gui
