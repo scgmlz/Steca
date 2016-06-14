@@ -137,12 +137,10 @@ Actions::Actions(TheHub& hub): super(hub) {
       "Mirror", "Mirror image")
       .icon(":/icon/mirrorHorz");
   tgl(linkCuts,
-      "Link", "Use the same value for all cuts")
-      .alt("Unlink", "Use different values for cuts")
+      "Link cut", "Use the same value for all cuts")
       .icon(":/icon/link");
   tgl(showOverlay,
-      "overlay", "Show cut")
-      .alt("overlay", "Hide cut")
+      "Overlay", "Show cut")
       .icon(":/icon/crop");
   tgl(hasBeamOffset,
       "Beam centre offset", "Enable beam center offset (for X-ray instruments)")
@@ -169,10 +167,10 @@ Actions::Actions(TheHub& hub): super(hub) {
       .icon(":/icon/showBackground");
 
   trg(addReflection,
-      "Add", "Add reflection")
+      "Add reflection")
       .icon(":/icon/add");
   trg(remReflection,
-      "Remove", "Remove reflection")
+      "Remove reflection")
       .icon(":/icon/rem");
 
   trg(outputPolefigures,
