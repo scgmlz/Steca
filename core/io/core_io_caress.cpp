@@ -159,8 +159,8 @@ shp_File loadCaress(rcstr filePath) THROWS {
 
           uint detRel;
 
-          detRel = (uint)sqrt(imageSize);
-          RUNTIME_CHECK(imageSize>0 && (uint)imageSize == detRel*detRel, "bad image size");
+          detRel = uint(sqrt(imageSize));
+          RUNTIME_CHECK(imageSize>0 && uint(imageSize) == detRel*detRel, "bad image size");
 
           QVector<inten_t> convertedIntens(imageSize);
           for_i (imageSize)

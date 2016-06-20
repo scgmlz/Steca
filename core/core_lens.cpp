@@ -149,8 +149,8 @@ void ImageLens::calcSensCorr() {
 //------------------------------------------------------------------------------
 
 str_lst const& Lens::normStrLst() {
-  static str_lst strLst{
-      "disabled", "Δ time", "Δ monitor", "background",
+  static str_lst strLst {
+      "disabled", "Δ monitor", "Δ time", "background",
   };
 
   return strLst;
@@ -173,7 +173,7 @@ Angles const& Lens::angles(uint i, uint j) const {
 
 Range Lens::gammaRangeAt(qreal tth) const {
   auto sz = size();
-  uint w = sz.width(), h = sz.height();
+  uint w = uint(sz.width()), h = uint(sz.height());
 
   Range rge;
 
@@ -232,25 +232,33 @@ Curve Lens::makeAvgCurve() const {
 void Lens::setNorm(eNorm norm) {
   auto& datasets = dataset_.datasets();
 
+  normFactor_ = 1;
+
+  if (eNorm::NONE == norm)
+    return;
+
+  qreal num, den;
+
   switch (norm) {
-  case eNorm::NONE:
-    normFactor_ = 1;
-    break;
   case eNorm::DELTA_MONITOR_COUNT:
-    // could be NaN (divide by 0)
-    normFactor_ =
-        datasets.avgDeltaMonitorCount() / dataset_.deltaMonitorCount();
+    num = datasets.avgDeltaMonitorCount();
+    den = dataset_.deltaMonitorCount();
     break;
   case eNorm::DELTA_TIME:
-    // could be NaN (divide by 0)
-    normFactor_ = datasets.avgDeltaTime() / dataset_.deltaTime();
+    num = datasets.avgDeltaTime();
+    den = dataset_.deltaTime();
     break;
   case eNorm::BACKGROUND:
-    // could be NaN (divide by 0)
-    normFactor_ = session_.calcAvgBackground(datasets) /
-                  session_.calcAvgBackground(dataset_);
+    num = session_.calcAvgBackground(datasets);
+    den = session_.calcAvgBackground(dataset_);
+    break;
+  case eNorm::NONE:
+    NEVER
+    num = den = 1;
     break;
   }
+
+  normFactor_ = inten_t((num > 0 && den > 0) ? num / den : qQNaN());
 }
 
 //------------------------------------------------------------------------------

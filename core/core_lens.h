@@ -56,7 +56,7 @@ protected:
 
   Array2D<inten_t> intensCorr_;
   bool             hasNaNs_;
-  qreal            normFactor_;
+  inten_t          normFactor_;
 
   mutable Range rgeInten_;
 };

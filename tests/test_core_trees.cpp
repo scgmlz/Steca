@@ -71,8 +71,6 @@ void TestCoreTrees::testIntervalTree() {
     ps.append(PolePoint(rnd));
   }
 
-  TR(cnt << "points total," << cntInRange << "in range")
-
   // insert into an interval tree
   PolePoints pps;
   for (auto &p: ps)

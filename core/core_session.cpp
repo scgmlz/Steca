@@ -401,7 +401,7 @@ void Session::addReflection(shp_Reflection reflection) {
 }
 
 void Session::remReflection(uint i) {
-  reflections_.remove(i);
+  reflections_.remove(int(i));
 }
 
 void Session::setNorm(eNorm norm) {
@@ -419,6 +419,8 @@ qreal Session::calcAvgBackground(rcDataset dataset) const {
 }
 
 qreal Session::calcAvgBackground(rcDatasets datasets) const {
+  TakesLongTime __;
+
   qreal bg = 0;
 
   for (auto& dataset : datasets)

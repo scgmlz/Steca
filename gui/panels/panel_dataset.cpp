@@ -421,6 +421,10 @@ Dataset::Dataset(TheHub& hub) : super(hub), dataset_(nullptr) {
     render();
   });
 
+  onSigNormChanged([this]() {
+    render();
+  });
+
   onSigDatasetSelected([this](core::shp_Dataset dataset) {
     setDataset(dataset);
   });
