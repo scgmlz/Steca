@@ -196,9 +196,9 @@ bool TabPoleFiguresSave::outputFWHM() const {
   return outputFWHM_->isChecked();
 }
 
-void TabPoleFiguresSave::rawReflSettings(bool off) {
-  outputTth_->setEnabled(off);
-  outputFWHM_->setEnabled(off);
+void TabPoleFiguresSave::rawReflSettings(bool on) {
+  outputTth_->setEnabled(on);
+  outputFWHM_->setEnabled(on);
 }
 
 //------------------------------------------------------------------------------
@@ -220,11 +220,10 @@ PoleFiguresFrame::PoleFiguresFrame(TheHub &hub, rcstr title, QWidget *parent)
   });
 
   connect(params()->cbRefl, slot(QComboBox,currentIndexChanged,int), [this]() {
-    uint index = params()->currReflIndex();
+    int index = params()->currReflIndex();
     if (index != -1) {
-      bool off = core::ePeakType::RAW == hub_.reflections().at(index)->type()
-                 ? false : true;
-      tabSave_->rawReflSettings(off);
+      bool on = core::ePeakType::RAW != hub_.reflections().at(index)->type();
+      tabSave_->rawReflSettings(on);
     }
   });
 

@@ -253,7 +253,7 @@ void DiffractogramPlot::plot(core::rcCurve dgram, core::rcCurve dgramBgFitted,
       auto& r = refls[i];
       auto* graph = addGraph();
       reflGraph_.append(graph);
-      graph->setPen(QPen(Qt::green, i == currReflIndex ? 2 : 1));
+      graph->setPen(QPen(Qt::green, uint(i) == currReflIndex ? 2 : 1));
       graph->setData(r.xs(), r.ys());
     }
   }
