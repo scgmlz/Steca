@@ -41,4 +41,10 @@ private:
   QProgressBar* bar_;
 };
 
+class MessageLogger {
+public:
+  static void log(rcstr);
+  static void (*handler)(rcstr);
+};
+
 #endif  // CORE_ASYNC_H

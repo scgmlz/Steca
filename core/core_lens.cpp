@@ -17,6 +17,7 @@
 
 #include "core_dataset.h"
 #include "core_session.h"
+#include "types/core_async.h"
 #include "types/core_type_curve.h"
 #include "types/core_type_geometry.h"
 #include "types/core_type_image.h"
@@ -259,6 +260,8 @@ void Lens::setNorm(eNorm norm) {
   }
 
   normFactor_ = inten_t((num > 0 && den > 0) ? num / den : qQNaN());
+  if (qIsNaN(normFactor_))
+    MessageLogger::log("Bad normalization value");
 }
 
 //------------------------------------------------------------------------------

@@ -54,4 +54,14 @@ void Progress::step() {
   setProgress(i_ + 1);
 }
 
+//------------------------------------------------------------------------------
+
+void MessageLogger::log(rcstr msg) {
+  if (handler)
+    handler(msg);
+}
+
+void (*MessageLogger::handler)(rcstr) = nullptr;
+
 // eof
+
