@@ -40,8 +40,9 @@ enum class eAttr {
 };
 
 uint Metadata::numAttributes(bool onlyNum) {
-  if (onlyNum) return (uint)eAttr::NUM_NUMERICAL_ATTRIBUTES;
-  else return (uint)eAttr::NUM_ALL_ATTRIBUTES;
+  return onlyNum
+      ? (uint)eAttr::NUM_NUMERICAL_ATTRIBUTES
+      : (uint)eAttr::NUM_ALL_ATTRIBUTES;
 }
 
 rcstr Metadata::attributeTag(uint i) {

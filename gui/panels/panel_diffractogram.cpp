@@ -73,7 +73,7 @@ void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
     plot_.setNewReflRange(range);
     break;
 
-  default:
+  case DiffractogramPlot::eTool::NONE:
     break;
   }
 }
@@ -169,16 +169,20 @@ DiffractogramPlot::DiffractogramPlot(TheHub& hub, Diffractogram& diffractogram)
       auto& fun = reflection->peakFunction();
 
       auto gp = fun.guessedPeak();
-      guesses_->addData(gp.x, gp.y);
-      auto gw2 = fun.guessedFWHM() / 2;
-      guesses_->addData(gp.x - gw2, gp.y / 2);
-      guesses_->addData(gp.x + gw2, gp.y / 2);
+      if (gp.isValid()) {
+        guesses_->addData(gp.x, gp.y);
+        auto gw2 = fun.guessedFWHM() / 2;
+        guesses_->addData(gp.x - gw2, gp.y / 2);
+        guesses_->addData(gp.x + gw2, gp.y / 2);
+      }
 
       auto fp = fun.fittedPeak();
-      fits_->addData(fp.x, fp.y);
-      auto fw2 = fun.fittedFWHM() / 2;
-      fits_->addData(fp.x - fw2, fp.y / 2);
-      fits_->addData(fp.x + fw2, fp.y / 2);
+      if (fp.isValid()) {
+        fits_->addData(fp.x, fp.y);
+        auto fw2 = fun.fittedFWHM() / 2;
+        fits_->addData(fp.x - fw2, fp.y / 2);
+        fits_->addData(fp.x + fw2, fp.y / 2);
+      }
     }
   });
 
@@ -212,7 +216,6 @@ void DiffractogramPlot::plot(core::rcCurve dgram, core::rcCurve dgramBgFitted,
     dgramBgFittedGraph_->clearData();
 
     clearReflLayer();
-
   } else {
     auto tthRange = dgram.rgeX();
 
@@ -247,10 +250,10 @@ void DiffractogramPlot::plot(core::rcCurve dgram, core::rcCurve dgramBgFitted,
     setCurrentLayer("refl");
 
     for_i (refls.count()) {
-      auto& r     = refls[i];
+      auto& r = refls[i];
       auto* graph = addGraph();
       reflGraph_.append(graph);
-      graph->setPen(QPen(Qt::green, i == (int)currReflIndex ? 2 : 1));
+      graph->setPen(QPen(Qt::green, i == currReflIndex ? 2 : 1));
       graph->setData(r.xs(), r.ys());
     }
   }
@@ -284,8 +287,6 @@ void DiffractogramPlot::updateBg() {
   clearItems();
 
   switch (tool_) {
-  default:
-    break;
   case eTool::BACKGROUND: {
     core::rcRanges rs = hub_.bgRanges();
     for_i (rs.count())
@@ -294,6 +295,8 @@ void DiffractogramPlot::updateBg() {
   }
   case eTool::PEAK_REGION:
     addBgItem(diffractogram_.currReflRange());
+    break;
+  case eTool::NONE:
     break;
   }
 

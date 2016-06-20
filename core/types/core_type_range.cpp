@@ -88,17 +88,14 @@ void Range::extendBy(rcRange that) {
 }
 
 bool Range::contains(qreal val) const {
-  ENSURE(isValid())
   return min <= val && val <= max;
 }
 
 bool Range::contains(rcRange that) const {
-  ENSURE(isValid() && that.isValid())
   return min <= that.min && that.max <= max;
 }
 
 bool Range::intersects(rcRange that) const {
-  ENSURE(isValid() && that.isValid())
   return min <= that.max && that.min <= max;
 }
 

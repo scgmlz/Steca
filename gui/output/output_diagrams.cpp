@@ -157,11 +157,11 @@ DiagramsFrame::DiagramsFrame(TheHub &hub, rcstr title, QWidget *parent)
   tabPlot_ = new TabPlot();
   tabs_->addTab("Diagram").box().addWidget(tabPlot_);
 
-  connect(params()->xAxis, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this]() {
+  connect(params()->xAxis, slot(QComboBox,currentIndexChanged,int), [this]() {
     recalculate();
   });
 
-  connect(params()->yAxis, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this]() {
+  connect(params()->yAxis, slot(QComboBox,currentIndexChanged,int), [this]() {
     recalculate();
   });
 
@@ -301,7 +301,7 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator, rcst
   auto current = params_->currReflIndex();
 
   for_i (calcPoints_.at(current).count()) {
-    auto &row = table_->row(i);
+    auto &row = table_->row(uint(i));
 
     for_i (row.count()) {
       auto entry = row.at(i);

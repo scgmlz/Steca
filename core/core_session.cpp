@@ -396,7 +396,7 @@ void Session::setBgPolyDegree(uint degree) {
 }
 
 void Session::addReflection(shp_Reflection reflection) {
-  EXPECT(!reflection.isNull() && reflection->range().isValid())
+  EXPECT(!reflection.isNull())
   reflections_.append(reflection);
 }
 

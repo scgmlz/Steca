@@ -37,7 +37,7 @@ TabGraph::TabGraph(TheHub& hub, Params& params)
   grid_->setRowStretch(grid_->rowCount(), 1);
   grid_->setColumnStretch(grid_->columnCount(), 1);
 
-  connect(params_.avgAlphaMax, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this]() {
+  connect(params_.avgAlphaMax, slot(QDoubleSpinBox,valueChanged,double), [this]() {
     update();
   });
 
@@ -219,8 +219,8 @@ PoleFiguresFrame::PoleFiguresFrame(TheHub &hub, rcstr title, QWidget *parent)
     }
   });
 
-  connect(params()->cbRefl,static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),[this]() {
-    int index = params()->currReflIndex();
+  connect(params()->cbRefl, slot(QComboBox,currentIndexChanged,int), [this]() {
+    uint index = params()->currReflIndex();
     if (index != -1) {
       bool off = core::ePeakType::RAW == hub_.reflections().at(index)->type()
                  ? false : true;

@@ -41,7 +41,7 @@ public:
 
   void addStretch();
 
-  uint currReflIndex() const;
+  int  currReflIndex() const;
   bool interpolate()   const;
 
 protected:

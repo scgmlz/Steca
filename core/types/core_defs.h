@@ -40,7 +40,7 @@ extern  str const   EMPTY_STR;  ///< an empty string
 
 /// idiomatic loops
 #define for_int(i, n) \
-  for (int i = 0, i##End = (n); i < i##End; ++i)  // a statement here
+  for (int i = 0, i##End = (n); i < i##End; ++i)
 
 #define for_int_down(num) \
   for (int i = (num); i-->0; )
@@ -53,7 +53,7 @@ extern  str const   EMPTY_STR;  ///< an empty string
 
 #define for_ij(ni, nj) \
   for_int (i, ni)      \
-    for_int (j, nj)  // a statement goes here
+    for_int (j, nj)
 
 // useful vectors
 typedef QVector<qreal> qreal_vec;
@@ -65,6 +65,8 @@ typedef QVector<uint>  uint_vec;
 /// An exception that carries a message.
 class Exception : public QException {
   SUPER(Exception, QException)
+protected:
+  Exception(rcstr msg, bool silent) noexcept;
 public:
   Exception()                 noexcept;
   Exception(rcstr msg)        noexcept;

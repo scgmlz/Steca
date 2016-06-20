@@ -150,7 +150,7 @@ void ImageLens::calcSensCorr() {
 
 str_lst const& Lens::normStrLst() {
   static str_lst strLst{
-      "Disable", "Delta time", "Monitor count", "Background level",
+      "disabled", "Δ time", "Δ monitor", "background",
   };
 
   return strLst;

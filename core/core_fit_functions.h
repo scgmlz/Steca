@@ -199,8 +199,8 @@ public:
   virtual void setGuessedPeak(rcXY);
   virtual void setGuessedFWHM(qreal);
 
-  rcXY  guessedPeak() const { return guessedPeak_; }
-  qreal guessedFWHM() const { return guessedFWHM_; }
+  rcXY    guessedPeak() const { return guessedPeak_; }
+  qreal   guessedFWHM() const { return guessedFWHM_; }
 
   virtual XY    fittedPeak() const = 0;
   virtual qreal fittedFWHM() const = 0;

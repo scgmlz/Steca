@@ -35,6 +35,11 @@
 #include <QTreeView>
 
 //------------------------------------------------------------------------------
+
+// make connects shorter
+#define slot(Type,method,parType) static_cast<void (Type::*)(parType)>(&Type::method)
+
+//------------------------------------------------------------------------------
 // handy functions that make (new) widgets
 
 QBoxLayout* boxLayout(Qt::Orientation);

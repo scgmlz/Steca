@@ -144,7 +144,7 @@ void Params::addStretch() {
   box_->addStretch();
 }
 
-uint Params::currReflIndex() const {
+int Params::currReflIndex() const {
   return cbRefl->currentIndex();
 }
 
@@ -215,7 +215,7 @@ Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
     displayReflection(params_->currReflIndex(), params_->interpolate());
   };
 
-  connect(params_->cbRefl, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [display]() {
+  connect(params_->cbRefl, slot(QComboBox,currentIndexChanged,int), [display]() {
     display();
   });
 

@@ -381,8 +381,8 @@ void MainWin::onShow() {
 #endif
 
 #ifdef DEVELOPMENT_JAN
-//  safeLoad("/P/zz-gd/SCG/data/0.ste");
-  hub_.actions.about->trigger();
+  safeLoad("/P53/+scg/nanError.ste");
+//  hub_.actions.about->trigger();
 #endif
 }
 
