@@ -334,12 +334,17 @@ void MainWin::loadSession() {
 }
 
 void MainWin::saveSession() {
-  str fileName = QFileDialog::getSaveFileName(
-      this, "Save session", QDir::current().absolutePath(),
-      "Session files (*" % STE % ");;All files (*.*)");
+  QFileDialog dlg(this, "Save session", QDir::current().absolutePath(),
+                  "Session files (*" % STE % ");;All files (*.*)");
+  dlg.setFileMode(QFileDialog::AnyFile);
+  dlg.setAcceptMode(QFileDialog::AcceptSave);
 
-  if (fileName.isEmpty()) return;
+  if (!dlg.exec()) return;
 
+  auto files = dlg.selectedFiles();
+  if (files.isEmpty()) return;
+
+  str fileName = files.first();
   if (!fileName.endsWith(STE)) fileName += STE;
 
   hub_.saveSession(QFileInfo(fileName));
@@ -381,7 +386,7 @@ void MainWin::onShow() {
 #endif
 
 #ifdef DEVELOPMENT_JAN
-  safeLoad("/P53/+scg/nanError.ste");
+  safeLoad("/P53/+scg/0.ste");
 //  hub_.actions.about->trigger();
 #endif
 }
