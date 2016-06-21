@@ -26,25 +26,25 @@ function files {
   find $where -type f -name \*.$ext -exec echo ' ' {} \\ \;
 }
 
-echo -e '\nHEADERS += \\'	>> $PRO
-files core h			>> $PRO
-files gui  h			>> $PRO
+echo -e '\nHEADERS += \\' >> $PRO
+files core h >> $PRO
+files gui  h >> $PRO
 
-echo -e '\nSOURCES += \\'	>> $PRO
-files core cpp			>> $PRO
-files gui  cpp			>> $PRO
+echo -e '\nSOURCES += \\' >> $PRO
+files core cpp >> $PRO
+files gui  cpp >> $PRO
 
-echo -e '\nRESOURCES += \\'	>> $PRO
-files core qrc			>> $PRO
-files gui  qrc			>> $PRO
+echo -e '\nRESOURCES += \\' >> $PRO
+files core qrc >> $PRO
+files gui  qrc >> $PRO
 
 cat >> $PRO <<EOT
 
 OTHER_FILES += \\
-    .gitignore \\
-    make_pro.sh ours_wc.sh \\
-    README.md CODING.md \\
-    COPYING Doxyfile \\
-    manifest.h \\
-    TODO
+  .gitignore \\
+  make_pro.sh ours_wc.sh \\
+  README.md CODING.md \\
+  COPYING Doxyfile \\
+  manifest.h \\
+  TODO
 EOT

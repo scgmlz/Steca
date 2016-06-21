@@ -162,11 +162,11 @@ shp_File loadCaress(rcstr filePath) THROWS {
           detRel = uint(sqrt(imageSize));
           RUNTIME_CHECK(imageSize>0 && uint(imageSize) == detRel*detRel, "bad image size");
 
-          QVector<inten_t> convertedIntens(imageSize);
+          vec<inten_t> convertedIntens(imageSize);
           for_i (imageSize)
             convertedIntens[i] = intens[i];
 
-          QSize size(detRel,detRel);
+          size2d size(detRel,detRel);
 
           // this is only for testing of a non-square image
           // size.rheight() /= 2;

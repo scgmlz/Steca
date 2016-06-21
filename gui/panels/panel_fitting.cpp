@@ -25,7 +25,7 @@ class ReflectionView : public views::ListView {
 public:
   ReflectionView(TheHub&);
 
-  void addReflection(int type);
+  void addReflection(uint type);
   void removeSelected();
   bool hasReflections() const;
 
@@ -48,8 +48,8 @@ ReflectionView::ReflectionView(TheHub &hub) : super(hub) {
     resizeColumnToContents(i);
 }
 
-void ReflectionView::addReflection(int type) {
-  type = qBound(0, type, int(core::ePeakType::NUM_TYPES));
+void ReflectionView::addReflection(uint type) {
+  type = qBound(0u, type, uint(core::ePeakType::NUM_TYPES));
   model()->addReflection(core::ePeakType(type));
   updateSingleSelection();
 }
@@ -117,6 +117,7 @@ Fitting::Fitting(TheHub &hub)
     tab.box().addStretch();
 
     connect(spinDegree_, slot(QSpinBox,valueChanged,int), [this](int degree) {
+      EXPECT(degree >= 0)
       hub_.setBgPolyDegree(uint(degree));
     });
 
@@ -188,7 +189,9 @@ Fitting::Fitting(TheHub &hub)
     updateReflectionControls();
 
     connect(actions.addReflection, &QAction::triggered, [this,updateReflectionControls]() {
-      reflectionView_->addReflection(comboReflType_->currentIndex());
+      int i = comboReflType_->currentIndex();
+      EXPECT(i >= 0)
+      reflectionView_->addReflection(uint(i));
       updateReflectionControls();
     });
 
@@ -266,7 +269,7 @@ void Fitting::setReflControls(core::shp_Reflection reflection) {
   } else {
     {
       QSignalBlocker __(comboReflType_);
-      comboReflType_->setCurrentIndex((int)reflection->type());
+      comboReflType_->setCurrentIndex(int(reflection->type()));
     }
 
     auto &range = reflection->range();

@@ -27,7 +27,7 @@ str_lst const& Reflection::typeStrLst() {
 }
 
 rcstr Reflection::typeTag(ePeakType type) {
-  return typeStrLst().at((int)type);
+  return typeStrLst().at(int(type));
 }
 
 Reflection::Reflection(ePeakType type) : peakFunction_(nullptr) {

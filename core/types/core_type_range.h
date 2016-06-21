@@ -86,7 +86,7 @@ public:
 
 private:
   void sort();
-  QVector<Range> ranges_;
+  vec<Range> ranges_;
 
 public:
   JsonArr saveJson() const;

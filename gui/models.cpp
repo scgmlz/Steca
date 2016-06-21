@@ -85,7 +85,7 @@ QVariant DatasetsModel::data(rcIndex index, int role) const {
       return hub_.collectedDatasetsTags().at(row);
     default:
       return datasets_.at(row)->metadata()->attributeStrValue(
-          metaInfoNums_[col - COL_ATTRS]);
+          metaInfoNums_.at(col - COL_ATTRS));
     }
   }
 
@@ -104,7 +104,7 @@ QVariant DatasetsModel::headerData(int col, Qt::Orientation, int role) const {
   case COL_NUMBER:
     return "#";
   default:
-    return core::Metadata::attributeTag(metaInfoNums_[col - COL_ATTRS]);
+    return core::Metadata::attributeTag(metaInfoNums_.at(col - COL_ATTRS));
   }
 }
 
@@ -141,7 +141,7 @@ str ReflectionsModel::displayData(uint row, uint col) const {
   case COL_ID:
     return str::number(row + 1);
   case COL_TYPE:
-    return core::Reflection::typeTag(hub_.reflections()[row]->type());
+    return core::Reflection::typeTag(hub_.reflections().at(row)->type());
   default:
     NEVER return EMPTY_STR;
   }
@@ -170,7 +170,7 @@ QVariant ReflectionsModel::data(rcIndex index, int role) const {
   }
 
   case GetDatasetRole:
-    return QVariant::fromValue<core::shp_Reflection>(hub_.reflections()[row]);
+    return QVariant::fromValue<core::shp_Reflection>(hub_.reflections().at(row));
   default:
     return EMPTY_VAR;
   }

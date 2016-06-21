@@ -47,8 +47,8 @@ bool ImageCut::operator==(const ImageCut& that) const {
           bottom == that.bottom);
 }
 
-QSize ImageCut::marginSize() const {
-  return QSize(left + right, top + bottom);
+size2d ImageCut::marginSize() const {
+  return size2d(left + right, top + bottom);
 }
 
 //------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ Angles::Angles(deg gamma_, deg tth_) : gamma(gamma_), tth(tth_) {}
 AngleMap::AngleMap() {}
 
 void AngleMap::calculate(deg midTth, Geometry const& geometry,
-                         QSize const& size, ImageCut const& cut, rcIJ midPix) {
+                         size2d const& size, ImageCut const& cut, rcIJ midPix) {
   arrAngles_.fill(size);
   rgeGamma_.invalidate();
   rgeTth_.invalidate();
@@ -71,12 +71,12 @@ void AngleMap::calculate(deg midTth, Geometry const& geometry,
 
   qreal pixSize = geometry.pixSize, detDist = geometry.detectorDistance;
 
-  for_int (i, size.width()) {
+  for_int (i, size.w) {
     qreal x       = (i - midPix.i) * pixSize;
     rad   tthHorz = midTth.toRad() + atan(x / detDist);
     qreal h       = cos(tthHorz) * hypot(x, detDist);
 
-    for_int (j, size.height()) {
+    for_int (j, size.h) {
       qreal y          = -(j - midPix.j) * pixSize;
       qreal z          = hypot(x, y);
       qreal pixDetDist = hypot(z, detDist);
@@ -94,8 +94,8 @@ void AngleMap::calculate(deg midTth, Geometry const& geometry,
     }
   }
 
-  for (int i = cut.left, iEnd = size.width() - cut.right; i < iEnd; ++i) {
-    for (int j = cut.top, jEnd = size.height() - cut.bottom; j < jEnd; ++j) {
+  for (int i = cut.left, iEnd = size.w - cut.right; i < iEnd; ++i) {
+    for (int j = cut.top, jEnd = size.h - cut.bottom; j < jEnd; ++j) {
       auto& as = arrAngles_.at(i, j);
       rgeGamma_.extendBy(as.gamma);
       rgeTth_.extendBy(as.tth);

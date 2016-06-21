@@ -53,7 +53,7 @@ struct Metadata {
 class Dataset final {
   friend class Datasets;
 public:
-  Dataset(rcMetadata, QSize const& size, inten_t const* intens);
+  Dataset(rcMetadata, size2d const&, inten_t const*);
   Dataset(rcDataset);
   Dataset();
 
@@ -72,7 +72,7 @@ public:
 
   rcImage image() const { return image_; }
 
-  QSize   imageSize() const;
+  size2d  imageSize() const;
   inten_t inten(uint i, uint j) const;
 
 private:
@@ -85,8 +85,8 @@ private:
 //------------------------------------------------------------------------------
 
 /// A group of Dataset(s)
-class Datasets : public QVector<shp_Dataset> {
-  SUPER(Datasets, QVector<shp_Dataset>)
+class Datasets : public vec<shp_Dataset> {
+  SUPER(Datasets, vec<shp_Dataset>)
 public:
   Datasets();
 
@@ -96,7 +96,7 @@ public:
   Image folded() const THROWS;
 
   /// all dataset(s) must have the same image size
-  QSize   imageSize() const;
+  size2d  imageSize() const;
   qreal   avgDeltaMonitorCount() const;
   qreal   avgDeltaTime() const;
   rcRange rgeFixedInten(rcSession, bool trans, bool cut) const;

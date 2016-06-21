@@ -8,19 +8,19 @@ void TestCoreArray2d::testArray2d() {
 
   { // basic test
     auto aSize = a.size();
-    QCOMPARE(aSize,QSize(0,0));
-    QVERIFY(aSize.isValid() && aSize.isEmpty());
+    QCOMPARE(aSize, core::size2d(0,0));
+    QVERIFY(aSize.isEmpty());
 
-    QSize size(10,20);
+    core::size2d size(10,20);
     a.fill(size);
     QCOMPARE(size,a.size());
   }
 
   { // methods for data input and access
-    int const iSize = 10, jSize = 20;
+    uint const iSize = 10, jSize = 20;
     qreal val = 3;
 
-    QSize size(iSize,jSize);
+    core::size2d size(iSize,jSize);
     a.fill(val,size);
     QCOMPARE(size,a.size());
 
@@ -31,24 +31,24 @@ void TestCoreArray2d::testArray2d() {
       a.setAt(a.index(i,j), i + j*iSize);
 
     for_ij (iSize,jSize)
-      QCOMPARE(a.at(a.index(i,j)),(qreal)(i + j*iSize));
+      QCOMPARE(a.at(a.index(i,j)),qreal(i + j*iSize));
 
     uint const count = iSize * jSize;
     QCOMPARE(count, a.count());
 
     for_i (count) {
-      QCOMPARE(a[i],(qreal)i);
+      QCOMPARE(a[i], qreal(i));
     }
 
     auto data = a.data();
     for_i (count)
-      QCOMPARE(data[i],(qreal)i);
+      QCOMPARE(data[i], qreal(i));
   }
 
   { // is Array2D reset to default after clear?
     a.clear();
-    QCOMPARE(a.size(),QSize(0,0));
-    QCOMPARE(a.count(),(uint)0);
+    QCOMPARE(a.size(),  core::size2d(0,0));
+    QCOMPARE(a.count(), 0u);
   }
 }
 

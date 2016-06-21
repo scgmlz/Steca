@@ -111,13 +111,13 @@ void TabPlot::plot(qreal_vec const& xs, qreal_vec const& ys,
   yAxis->setVisible(true);
 
   graph_->setPen(QPen(Qt::blue));
-  graph_->addData(xs, ys);
+  graph_->addData(xs.q(), ys.q());
 
   graphAdd_->setPen(QPen(Qt::green));
-  graphAdd_->addData(xs, ysAdd);
+  graphAdd_->addData(xs.q(), ysAdd.q());
 
   graphSub_->setPen(QPen(Qt::red));
-  graphSub_->addData(xs, ysSub);
+  graphSub_->addData(xs.q(), ysSub.q());
 
   replot();
 }
@@ -200,8 +200,8 @@ void DiagramsFrame::recalculate() {
   xs_.resize(count);
   ys_.resize(count);
 
-  uint xi = (uint)xAttr();
-  uint yi = (uint)yAttr();
+  uint xi = uint(xAttr());
+  uint yi = uint(yAttr());
 
   for_i (count) {
     auto row = rs_.at(i).data();
@@ -217,7 +217,7 @@ void DiagramsFrame::recalculate() {
     ysErrorAdd_.resize(count); ysErrorSub_.resize(count);
     for_i (count) {
       auto  row   = rs_.at(is.at(i)).data(); // access error over sorted index vec
-      qreal sigma = row.at((uint)attr).toDouble();
+      qreal sigma = row.at(uint(attr)).toDouble();
       qreal y = ys_.at(i);
       ysErrorAdd_[i] = y + sigma;
       ysErrorSub_[i] = y - sigma;
@@ -301,7 +301,7 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator, rcst
   auto current = params_->currReflIndex();
 
   for_i (calcPoints_.at(current).count()) {
-    auto &row = table_->row(uint(i));
+    auto &row = table_->row(i);
 
     for_i (row.count()) {
       auto entry = row.at(i);

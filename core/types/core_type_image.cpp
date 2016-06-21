@@ -18,7 +18,7 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-Image::Image(QSize const& size, inten_t const* src) {
+Image::Image(size2d const& size, inten_t const* src) {
   fill(0, size);
   if (src) addIntens(src);
 }

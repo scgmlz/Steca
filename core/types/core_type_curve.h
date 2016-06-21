@@ -67,7 +67,7 @@ private:
   core::Range rgeX_, rgeY_;
 };
 
-typedef QVector<Curve> curve_vec;
+typedef vec<Curve> curve_vec;
 
 //------------------------------------------------------------------------------
 }

@@ -9,9 +9,9 @@ void TestCoreImage::testImage(uint w, uint h) {
 
   ENSURE(specialI<w && specialJ<h)
 
-  float inten = 1.24, specialInten = 3*inten;
+  float inten = 1.24f, specialInten = 3*inten;
 
-  QSize size(w,h);
+  core::size2d size(w,h);
   core::Image im;
   im.fill(inten,size);
 
@@ -27,11 +27,11 @@ void TestCoreImage::testImage(uint w, uint h) {
   QCOMPARE(*(im.intensData()+pos),specialInten);
 
   // checking if intensities are correct
-  for_ij (w,h) {
-    if ((uint)i==specialI && (uint)j==specialJ)
-      QCOMPARE(im.at(i,j),specialInten);
+  for_ij(w, h) {
+    if (i == specialI && j == specialJ)
+      QCOMPARE(im.at(i, j), specialInten);
     else
-      QCOMPARE(im.at(i,j),inten);
+      QCOMPARE(im.at(i, j), inten);
   }
 }
 

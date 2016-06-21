@@ -31,7 +31,7 @@ namespace core {
 str_lst ReflectionInfo::dataTags() {
   static str_lst tags;
   if (tags.isEmpty()) {
-    for_i ((uint)eReflAttr::NUM_REFL_ATTR)
+    for_i (uint(eReflAttr::NUM_REFL_ATTR))
       tags.append(reflStringTag(i));
 
     tags += Metadata::attributeTags();
@@ -75,7 +75,7 @@ cmp_vec ReflectionInfo::dataCmps() {
         cmp_vec{core::cmp_real, core::cmp_real, core::cmp_real, core::cmp_real,
                 core::cmp_real, core::cmp_real, core::cmp_real,
                 core::cmp_real, core::cmp_real, core::cmp_real};
-    cmps += Metadata::attributeCmps();
+    cmps.append(Metadata::attributeCmps());
   }
 
   return cmps;
@@ -124,9 +124,7 @@ row_t ReflectionInfo::data() const {
             (QVariant)tth(),   (QVariant)tthError(),
             (QVariant)fwhm(),  (QVariant)fwhmError()};
 
-  // append(QVector) introduced in 5.5+ - some still don't have it
-  // row.append(md_ ? md_->attributeValues() : Metadata::attributeNaNs());
-  row += md_ ? md_->attributeValues() : Metadata::attributeNaNs();
+  row.append(md_ ? md_->attributeValues() : Metadata::attributeNaNs());
   return row;
 }
 

@@ -39,12 +39,14 @@ ImageLens::ImageLens(rcSession session, rcImage image, Image const* corrImage,
   calcSensCorr();
 }
 
-QSize ImageLens::size() const {
-  QSize size = image_.size();
+size2d ImageLens::size() const {
+  size2d size = image_.size();
 
-  if (trans_ && imageTransform_.isTransposed()) size.transpose();
+  if (trans_ && imageTransform_.isTransposed())
+    size = size.transposed();
 
-  if (cut_) size -= imageCut_.marginSize();
+  if (cut_)
+    size = size - imageCut_.marginSize();
 
   return size;
 }
@@ -64,7 +66,7 @@ rcRange ImageLens::rgeInten(bool fixed) const {
 
   if (!rgeInten_.isValid()) {
     auto sz = size();
-    for_ij (sz.width(), sz.height())
+    for_ij (sz.w, sz.h)
       rgeInten_.extendBy(inten(i, j));
   }
 
@@ -73,8 +75,8 @@ rcRange ImageLens::rgeInten(bool fixed) const {
 
 void ImageLens::doTrans(uint& x, uint& y) const {
   auto s = size();
-  uint w = s.width();
-  uint h = s.height();
+  uint w = s.w;
+  uint h = s.h;
 
   switch (imageTransform_.val) {
   case ImageTransform::ROTATE_0:
@@ -105,8 +107,6 @@ void ImageLens::doTrans(uint& x, uint& y) const {
   case ImageTransform::MIRROR_ROTATE_3:
     qSwap(x, y);
     break;
-  default:
-    NEVER;
   }
 }
 
@@ -116,13 +116,12 @@ void ImageLens::calcSensCorr() {
 
   ENSURE(image_.size() == corrImage_->size())
 
-  QSize size = corrImage_->size();
-  size -= imageCut_.marginSize();
+  size2d size = corrImage_->size() - imageCut_.marginSize();
   ENSURE(!size.isEmpty())
 
   qreal sum = 0;
 
-  uint w = size.width(), h = size.height(), di = imageCut_.left,
+  uint w = size.w, h = size.h, di = imageCut_.left,
        dj = imageCut_.top;
 
   for_ij (w, h)
@@ -174,7 +173,7 @@ Angles const& Lens::angles(uint i, uint j) const {
 
 Range Lens::gammaRangeAt(qreal tth) const {
   auto sz = size();
-  uint w = uint(sz.width()), h = uint(sz.height());
+  uint w = sz.w, h = sz.h;
 
   Range rge;
 
@@ -191,7 +190,7 @@ Range Lens::gammaRangeAt(qreal tth) const {
 
 Curve Lens::makeCurve(rcRange gammaRange, rcRange tthRange) const {
   auto s = size();
-  uint w = s.width(), h = s.height();
+  uint w = s.w, h = s.h;
 
   qreal const deltaTTH = tthRange.width() / w;
 
@@ -204,13 +203,13 @@ Curve Lens::makeCurve(rcRange gammaRange, rcRange tthRange) const {
 
     int bin = qFloor((as.tth - tthRange.min) / deltaTTH);
 
-    if (bin < 0 || (int)w <= bin)
+    if (bin < 0 || int(w) <= bin)
       continue;  // outside of the cut
 
     auto in = inten(i, j);
     if (!qIsNaN(in)) {
-      intens_vec[bin] += in;
-      counts_vec[bin] += 1;
+      intens_vec[uint(bin)] += in;
+      counts_vec[uint(bin)] += 1;
     }
   }
 
@@ -233,12 +232,7 @@ Curve Lens::makeAvgCurve() const {
 void Lens::setNorm(eNorm norm) {
   auto& datasets = dataset_.datasets();
 
-  normFactor_ = 1;
-
-  if (eNorm::NONE == norm)
-    return;
-
-  qreal num, den;
+  qreal num = 1, den = 1;
 
   switch (norm) {
   case eNorm::DELTA_MONITOR_COUNT:
@@ -254,8 +248,6 @@ void Lens::setNorm(eNorm norm) {
     den = session_.calcAvgBackground(dataset_);
     break;
   case eNorm::NONE:
-    NEVER
-    num = den = 1;
     break;
   }
 

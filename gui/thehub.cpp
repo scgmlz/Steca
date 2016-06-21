@@ -265,7 +265,7 @@ QByteArray TheHub::saveSession() const {
 
   JsonArr arrSelectedFiles;
   for (uint i : collectedFromFiles())
-    arrSelectedFiles.append((int)i);
+    arrSelectedFiles.append(int(i));
 
   top.saveArr(KEY_SELECTED_FILES, arrSelectedFiles);
   top.saveUint(KEY_COMBINE, datasetsGroupedBy_);
@@ -321,14 +321,14 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
   for (auto sel : sels) {
     int i = sel.toInt(), index = qBound(0, i, files.count());
     RUNTIME_CHECK(i == index, str("Invalid selection index: %1").arg(i));
-    selIndexes.append(index);
+    selIndexes.append(uint(index));
   }
 
   std::sort(selIndexes.begin(), selIndexes.end());
   int lastIndex = -1;
   for (uint index : selIndexes) {
-    RUNTIME_CHECK(lastIndex < (int)index, str("Duplicate selection index"));
-    lastIndex = index;
+    RUNTIME_CHECK(lastIndex < int(index), str("Duplicate selection index"));
+    lastIndex = int(index);
   }
 
   collectDatasetsFromFiles(selIndexes,top.loadUint(KEY_COMBINE,1));

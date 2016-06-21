@@ -18,11 +18,43 @@
 #define CORE_TYPE_ARRAY2D_H
 
 #include "core_defs.h"
-#include "core_types_fwd.h"
-#include <QSize>
 
 namespace core {
 //------------------------------------------------------------------------------
+
+struct size2d {
+  uint w, h;
+
+  size2d()                 : size2d(0, 0) {}
+  size2d(uint w_, uint h_) : w(w_), h(h_) {}
+
+  bool isEmpty() const {
+    return 0 == w && 0 == h;
+  }
+
+  friend bool operator==(size2d const& s1, size2d const& s2) {
+    return s1.w == s2.w && s1.h == s2.h;
+  }
+
+  friend bool operator!=(size2d const& s1, size2d const& s2) {
+    return !(s1 == s2);
+  }
+
+  friend size2d operator-(size2d const& s1, size2d const& s2) {
+    int w = int(s1.w) - int(s2.w);
+    int h = int(s1.h) - int(s2.h);
+    return size2d(uint(qMax(w, 0)), uint(qMax(h, 0)));
+  }
+
+  size2d transposed() const {
+    return size2d(h, w);
+  }
+
+  size2d scaled(qreal f) const {
+    f = qMax(f, .0);
+    return size2d(uint(qRound(w*f)), uint(qRound(h*f)));
+  }
+};
 
 /// 2D (i/j) array
 template<typename T> class Array2D {
@@ -32,34 +64,34 @@ public:
   }
 
   /// 2D image size
-  QSize const& size() const {
+  size2d const& size() const {
     return size_;
   }
 
   /// number of elements
   uint count() const {
-    return size_.width() * size_.height();
+    return size_.w * size_.h;
   }
 
   /// make empty
   void clear() {
-    fill(T(),QSize(0,0));
+    fill(T(), size2d(0,0));
   }
 
   /// allocate and fill with a value
-  void fill(T const& val, QSize const& size) {
+  void fill(T const& val, size2d const& size) {
     size_ = size;  // set size first
-    ts_.fill(val,count());
+    ts_.fill(val, count());
   }
 
   /// allocate and fill with a default value
-  void fill(QSize const& size) {
-    fill(T(),size);
+  void fill(size2d const& size) {
+    fill(T(), size);
   }
 
   /// Calculate the 1D index of an element. Row by row.
   uint index(uint i, uint j) const {
-    return i + j * size_.width();
+    return i + j * size_.w;
   }
 
   /// access using 1D index
@@ -103,8 +135,8 @@ public:
   }
 
 protected:
-  QSize      size_;
-  QVector<T> ts_;
+  size2d size_;
+  vec<T> ts_;
 };
 
 //------------------------------------------------------------------------------

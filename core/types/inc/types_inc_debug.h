@@ -2,7 +2,7 @@
 //
 //  STeCa2:    StressTextureCalculator ver. 2
 //
-//! @file      core_debug.h
+//! @file      types_inc_debug.h
 //! @brief     Macros for debugging support.
 //!
 //! @homepage  http://apps.jcns.fz-juelich.de/steca2
@@ -14,8 +14,8 @@
 //
 // ************************************************************************** //
 
-#ifndef CORE_DEBUG_H
-#define CORE_DEBUG_H
+#ifndef TYPES_INC_DEBUG_H
+#define TYPES_INC_DEBUG_H
 
 #ifndef QT_NO_DEBUG
 
@@ -64,4 +64,4 @@
 /// WaTch: same as TR, also prints stringized version (what is being printed)
 #define WT(what)      TR(#what ":" << what)
 
-#endif // CORE_DEBUG_H
+#endif // TYPES_INC_DEBUG_H

@@ -184,7 +184,7 @@ void SimpleFunction::loadJson(rcJsonObj obj) THROWS {
 }
 
 qreal SimpleFunction::parValue(uint i, qreal const* parValues) const {
-  return parValues ? parValues[i] : parameters_[i].value();
+  return parValues ? parValues[i] : parameters_.at(i).value();
 }
 
 void SimpleFunction::setValue(uint i, qreal val) {
@@ -242,7 +242,7 @@ qreal SumFunctions::dy(qreal x, uint parIndex, qreal const* parValues) const {
       parIndex);  // aggregate parIndex refers to function f
 
   // offset parameter index
-  uint firstIndex = firstParIndex4parIndex_[parIndex];
+  uint firstIndex = firstParIndex4parIndex_.at(parIndex);
   if (parValues) parValues += firstIndex;
 
   ENSURE(firstIndex <= parIndex)
@@ -262,7 +262,7 @@ JsonObj SumFunctions::saveJson() const {
   obj.saveUint(KEY_FUNCTION_COUNT, funCount);
 
   for_i (funCount)
-    obj.saveObj(KEY_FUNCTION.arg(i + 1), functions_[i]->saveJson());
+    obj.saveObj(KEY_FUNCTION.arg(i + 1), functions_.at(i)->saveJson());
 
   return super::saveJson() + obj;
 }
@@ -580,20 +580,20 @@ void Gaussian::setGuessedFWHM(qreal val) {
 }
 
 XY Gaussian::fittedPeak() const {
-  return XY(parameters_[parXSHIFT].value(), parameters_[parAMPL].value());
+  return XY(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
 }
 
 qreal Gaussian::fittedFWHM() const {
-  return parameters_[parSIGMA].value() / 0.424661;
+  return parameters_.at(parSIGMA).value() / 0.424661;
 }
 
 XY Gaussian::peakError() const {
-  return XY(parameters_[parXSHIFT].error(), parameters_[parAMPL].error());
+  return XY(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
 }
 
 qreal Gaussian::fwhmError() const {
   // REVIEW
-  return parameters_[parSIGMA].error();
+  return parameters_.at(parSIGMA).error();
 }
 
 JsonObj Gaussian::saveJson() const {
@@ -662,19 +662,19 @@ void CauchyLorentz::setGuessedFWHM(qreal val) {
 }
 
 XY CauchyLorentz::fittedPeak() const {
-  return XY(parameters_[parXSHIFT].value(), parameters_[parAMPL].value());
+  return XY(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
 }
 
 qreal CauchyLorentz::fittedFWHM() const {
-  return parameters_[parGAMMA].value() * 2;
+  return parameters_.at(parGAMMA).value() * 2;
 }
 
 XY CauchyLorentz::peakError() const {
-  return XY(parameters_[parXSHIFT].error(), parameters_[parAMPL].error());
+  return XY(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
 }
 
 qreal CauchyLorentz::fwhmError() const {
-  return parameters_[parGAMMA].error();
+  return parameters_.at(parGAMMA).error();
 }
 
 JsonObj CauchyLorentz::saveJson() const {
@@ -761,19 +761,19 @@ void PseudoVoigt1::setGuessedFWHM(qreal val) {
 }
 
 XY PseudoVoigt1::fittedPeak() const {
-  return XY(parameters_[parXSHIFT].value(), parameters_[parAMPL].value());
+  return XY(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
 }
 
 qreal PseudoVoigt1::fittedFWHM() const {
-  return parameters_[parSIGMAGAMMA].value() * 2;
+  return parameters_.at(parSIGMAGAMMA).value() * 2;
 }
 
 XY PseudoVoigt1::peakError() const {
-  return XY(parameters_[parXSHIFT].error(), parameters_[parAMPL].error());
+  return XY(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
 }
 
 qreal PseudoVoigt1::fwhmError() const {
-  return parameters_[parSIGMAGAMMA].error();
+  return parameters_.at(parSIGMAGAMMA).error();
 }
 
 JsonObj PseudoVoigt1::saveJson() const {
@@ -873,23 +873,22 @@ void PseudoVoigt2::setGuessedFWHM(qreal val) {
 }
 
 XY PseudoVoigt2::fittedPeak() const {
-  return XY(parameters_[parXSHIFT].value(), parameters_[parAMPL].value());
+  return XY(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
 }
 
 qreal PseudoVoigt2::fittedFWHM() const {
-  qreal eta = parameters_[parETA].value();
-  return ((1 - eta) * parameters_[parSIGMA].value() / 0.424661 +
-          eta * parameters_[parGAMMA].value() * 2) /
-  2;
+  qreal eta = parameters_.at(parETA).value();
+  return ((1 - eta) * parameters_.at(parSIGMA).value() / 0.424661 +
+          eta * parameters_.at(parGAMMA).value() * 2)  / 2;
 }
 
 XY PseudoVoigt2::peakError() const {
-  return XY(parameters_[parXSHIFT].error(), parameters_[parAMPL].error());
+  return XY(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
 }
 
 qreal PseudoVoigt2::fwhmError() const {
   // REVIEW
-  return parameters_[parSIGMA].error() + parameters_[parGAMMA].error();
+  return parameters_.at(parSIGMA).error() + parameters_.at(parGAMMA).error();
 }
 
 JsonObj PseudoVoigt2::saveJson() const {

@@ -20,7 +20,7 @@
 namespace core { namespace pole {
 //------------------------------------------------------------------------------
 
-typedef QVector<ReflectionInfo const*> info_vec;
+typedef vec<ReflectionInfo const*> info_vec;
 
 // Calculates the difference of two angles. Parameters should be in [0, 360].
 deg calculateDeltaBeta(deg beta1, deg beta2) {
@@ -58,7 +58,7 @@ enum class eQuadrant {
 
 static int NUM_QUADRANTS = 4;
 
-typedef QVector<eQuadrant> Quadrants;
+typedef vec<eQuadrant> Quadrants;
 
 Quadrants allQuadrants() {
   return {eQuadrant::NORTHEAST, eQuadrant::SOUTHEAST, eQuadrant::SOUTHWEST,
@@ -123,7 +123,7 @@ struct itf_t {
   qreal   fwhm;
 };
 
-typedef QVector<itf_t> itfs_t;
+typedef vec<itf_t> itfs_t;
 
 // Adds data from reflection infos within radius from alpha and beta
 // to the peak parameter lists.
@@ -141,12 +141,12 @@ void searchInQuadrants(Quadrants const& quadrants, deg alpha, deg beta,
                        deg searchRadius, ReflectionInfos const& infos,
                        info_vec& foundInfos,
                        qreal_vec&                      distances) {
-  ENSURE(quadrants.size() <= NUM_QUADRANTS);
+  ENSURE(quadrants.count() <= uint(NUM_QUADRANTS));
   // Take only reflection infos with beta within +/- BETA_LIMIT degrees into
   // account. Original STeCa used something like +/- 1.5*36 degrees.
   qreal const BETA_LIMIT = 30;
-  distances.fill(std::numeric_limits<qreal>::max(), quadrants.size());
-  foundInfos.fill(nullptr, quadrants.size());
+  distances.fill(std::numeric_limits<qreal>::max(), quadrants.count());
+  foundInfos.fill(nullptr, quadrants.count());
   // Find infos closest to given alpha and beta in each quadrant.
   for (auto const& info : infos) {
     // REVIEW We could do better with value trees than looping over all infos.
@@ -155,9 +155,9 @@ void searchInQuadrants(Quadrants const& quadrants, deg alpha, deg beta,
     auto deltaAlpha = info.alpha() - alpha;
     // "Distance" between grid point and current info.
     auto d = angle(alpha, info.alpha(), deltaBeta);
-    for (int i = 0; i < quadrants.size(); ++i) {
-      if (inQuadrant(quadrants[i], deltaAlpha, deltaBeta)) {
-        if (d >= distances[i]) continue;
+    for_i (quadrants.count()) {
+      if (inQuadrant(quadrants.at(i), deltaAlpha, deltaBeta)) {
+        if (d >= distances.at(i)) continue;
         distances[i] = d;
         if (qIsNaN(searchRadius) || d < searchRadius) {
           foundInfos[i] = &info;
@@ -169,37 +169,37 @@ void searchInQuadrants(Quadrants const& quadrants, deg alpha, deg beta,
 
 void inverseDistanceWeighing(qreal_vec const& distances, info_vec const& infos,
                              itf_t& itf) {
-  // Generally, only distances.size() == values.size() > 0 is needed for this
+  uint N = uint(NUM_QUADRANTS);
+  // Generally, only distances.count() == values.count() > 0 is needed for this
   // algorithm. However, in this context we expect exactly the following:
-  RUNTIME_CHECK(distances.size() == NUM_QUADRANTS,
-                "distances size should be 4");
-  RUNTIME_CHECK(infos.size() == NUM_QUADRANTS, "infos size should be 4");
-  qreal_vec inverseDistances(NUM_QUADRANTS);
+  RUNTIME_CHECK(distances.count() == N, "distances size should be 4");
+  RUNTIME_CHECK(infos.count() == N, "infos size should be 4");
+  qreal_vec inverseDistances(N);
   qreal     inverseDistanceSum = 0;
-  for_i (NUM_QUADRANTS) {
-    if (distances[i] == 0) {
+  for_i (uint(NUM_QUADRANTS)) {
+    if (distances.at(i) == .0) {
       // Points coincide; no need to interpolate.
-      auto& in = infos.at(i);
-      itf.inten = in->inten();
+      auto& in  = infos.at(i);
+      itf.inten = inten_t(in->inten());
       itf.tth   = in->tth();
       itf.fwhm  = in->fwhm();
       return;
     }
-    inverseDistances[i] = 1 / distances[i];
-    inverseDistanceSum += inverseDistances[i];
+    inverseDistances[i] = 1 / distances.at(i);
+    inverseDistanceSum += inverseDistances.at(i);
   }
   // REVIEW The RAW peak may need different handling.
   qreal offset = 0;
   qreal height = 0;
   qreal fwhm   = 0;
-  for_i (NUM_QUADRANTS) {
+  for_i (N) {
     auto& in = infos.at(i);
-    offset += in->tth() * inverseDistances[i];
-    height += in->inten() * inverseDistances[i];
-    fwhm += in->fwhm() * inverseDistances[i];
+    offset += in->tth() * inverseDistances.at(i);
+    height += in->inten() * inverseDistances.at(i);
+    fwhm += in->fwhm() * inverseDistances.at(i);
   }
 
-  itf.inten = height / inverseDistanceSum;
+  itf.inten = inten_t(height / inverseDistanceSum);
   itf.tth   = offset / inverseDistanceSum;
   itf.fwhm  = fwhm / inverseDistanceSum;
 }
@@ -213,16 +213,16 @@ void interpolateValues(deg searchRadius, ReflectionInfos const& infos,
                     infos, interpolationInfos, distances);
   // Check that infos were found in all quadrants.
   int numQuadrantsOk = 0;
-  for_i (NUM_QUADRANTS) {
-    if (interpolationInfos[i]) {
+  for_i (uint(NUM_QUADRANTS)) {
+    if (interpolationInfos.at(i)) {
       ++numQuadrantsOk;
       continue;
     }
     // No info found in quadrant? Try another quadrant. See
     // [J.Appl.Cryst.(2011),44,641] for the angle mapping.
-    eQuadrant newQ = remapQuadrant((eQuadrant)i);
+    eQuadrant newQ = remapQuadrant(eQuadrant(i));
     qreal const newAlpha =
-        i == (int)eQuadrant::NORTHEAST || i == (int)eQuadrant::SOUTHEAST
+        i == uint(eQuadrant::NORTHEAST) || i == uint(eQuadrant::SOUTHEAST)
             ? 180 - alpha
             : -alpha;
     qreal newBeta = beta < 180 ? beta + 180 : beta - 180;
@@ -230,11 +230,11 @@ void interpolateValues(deg searchRadius, ReflectionInfos const& infos,
     qreal_vec newDistance;
     searchInQuadrants({newQ}, newAlpha, newBeta, searchRadius, infos,
                       renewedSearch, newDistance);
-    ENSURE(renewedSearch.size() == 1);
-    ENSURE(newDistance.size() == 1);
-    if (renewedSearch.front()) {
-      interpolationInfos[i] = renewedSearch.front();
-      distances[i]          = newDistance.front();
+    ENSURE(renewedSearch.count() == 1);
+    ENSURE(newDistance.count() == 1);
+    if (renewedSearch.first()) {
+      interpolationInfos[i] = renewedSearch.first();
+      distances[i]          = newDistance.first();
       ++numQuadrantsOk;
     }
   }
@@ -303,7 +303,7 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
           int n = iEnd - iBegin;
 
           for (int i = iBegin; i < iEnd; ++i)
-            avg += itfs[i];
+            avg += itfs.at(i);
 
           interpolatedInfos.append(ReflectionInfo(
               alpha, beta, infos.first().rgeGamma(),

@@ -1,6 +1,7 @@
 // All that we reasonably care to test, and then some.
 
 #include "tests_main.h"
+#include <QVector>
 
 uint TestSuite::total(0);
 uint TestSuite::failed(0);

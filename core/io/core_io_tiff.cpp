@@ -40,7 +40,7 @@ shp_File loadTiffs(rcstr filePath) THROWS {
 
   QTextStream in(&diskFile);
 
-  QVector<Dataset> datasets;
+  vec<Dataset> datasets;
   while (!in.atEnd()) {
     str line = in.readLine();
 
@@ -63,7 +63,7 @@ void saveTiffs(rcFile file, rcstr fileName) THROWS {
   for_i (file.numDatasets()) {
     Dataset dataset = *file.getDataset(i);
     str     fileName =
-        info.absoluteFilePath() + QString(".%1.tiff").arg(i, 3, 10, QChar('0'));
+        info.absoluteFilePath() + str(".%1.tiff").arg(i, 3, 10, QChar('0'));
 
     QImage tiffImage(dataset.parentFile().getImageSize(), QImage::Format_RGB32);
     Image  image = dataset.getImage();
