@@ -72,12 +72,12 @@ void AngleMap::calculate(deg midTth, Geometry const& geometry,
   qreal pixSize = geometry.pixSize, detDist = geometry.detectorDistance;
 
   for_int (i, size.w) {
-    qreal x       = (i - midPix.i) * pixSize;
+    qreal x       = (int(i) - midPix.i) * pixSize;
     rad   tthHorz = midTth.toRad() + atan(x / detDist);
     qreal h       = cos(tthHorz) * hypot(x, detDist);
 
     for_int (j, size.h) {
-      qreal y          = -(j - midPix.j) * pixSize;
+      qreal y          = -(int(j) - midPix.j) * pixSize;
       qreal z          = hypot(x, y);
       qreal pixDetDist = hypot(z, detDist);
       rad   tth        = acos(h / pixDetDist);
@@ -94,8 +94,8 @@ void AngleMap::calculate(deg midTth, Geometry const& geometry,
     }
   }
 
-  for (int i = cut.left, iEnd = size.w - cut.right; i < iEnd; ++i) {
-    for (int j = cut.top, jEnd = size.h - cut.bottom; j < jEnd; ++j) {
+  for (uint i = cut.left, iEnd = size.w - cut.right; i < iEnd; ++i) {
+    for (uint j = cut.top, jEnd = size.h - cut.bottom; j < jEnd; ++j) {
       auto& as = arrAngles_.at(i, j);
       rgeGamma_.extendBy(as.gamma);
       rgeTth_.extendBy(as.tth);
