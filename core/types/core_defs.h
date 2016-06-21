@@ -31,8 +31,6 @@ typedef QString     str;        ///< a short alias for the QString class
 typedef str const&  rcstr;      ///< a reference to a string constant
 typedef char const* pcstr;      ///< C-style (zero-byte-terminated) string
 
-typedef QStringList str_lst;    ///< a short alias for QStringList
-
 extern  str const   EMPTY_STR;  ///< an empty string
 
 /// idiomatic loops

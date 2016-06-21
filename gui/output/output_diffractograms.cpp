@@ -169,10 +169,10 @@ bool DiffractogramsFrame::writeCurrDiffractogramToFile() {
 
   auto ts = static_cast<TabDiffractogramsSave*>(tabSave_);
   auto s = ts->currType();
-  auto separator = tabSave_->fileSeparators[s];
+  auto separator = tabSave_->fileSeparators.at(s);
 
   auto filePath = QDir(tabSave_->path()).absoluteFilePath(tabSave_->fileName());
-  auto fileTag = tabSave_->fileTags[s];
+  auto fileTag = tabSave_->fileTags.at(s);
   WriteFile file(filePath + fileTag);
 
   QTextStream stream(&file);
@@ -197,8 +197,8 @@ bool DiffractogramsFrame::writeAllDiffractogramsToFiles(bool oneFile) {
 
   auto ts = static_cast<TabDiffractogramsSave*>(tabSave_);
   auto s = ts->currType();
-  str separator = tabSave_->fileSeparators[s];
-  str fileTag = tabSave_->fileTags[s];
+  str separator = tabSave_->fileSeparators.at(s);
+  str fileTag = tabSave_->fileTags.at(s);
 
   if (oneFile) {
     auto filePath = QDir(tabSave_->path()).absoluteFilePath(tabSave_->fileName() + fileTag);

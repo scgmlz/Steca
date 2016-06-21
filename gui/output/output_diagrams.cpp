@@ -259,13 +259,12 @@ bool DiagramsFrame::saveDiagramOutput() {
   auto s = ts->currType();
 
   str_lst separators = ts->fileSeparators;
-  if (ts->currDiagram()) {
-    writeCurrentDiagramOutputFile(filePath, separators[s], ts->fileTags[s]);
-    return true;
-  } else {
-    writeAllDataOutputFile(filePath, separators[s], ts->fileTags[s]);
-    return true;
-  }
+  if (ts->currDiagram())
+    writeCurrentDiagramOutputFile(filePath, separators.at(s), ts->fileTags.at(s));
+  else
+    writeAllDataOutputFile(filePath, separators.at(s), ts->fileTags.at(s));
+
+  return true;
 }
 
 void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator, rcstr fileTag) {

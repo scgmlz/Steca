@@ -121,7 +121,7 @@ QRadioButton* radioButton(rcstr text) {
 
 QComboBox* comboBox(str_lst const& items) {
   auto comboBox = new QComboBox();
-  comboBox->addItems(items);
+  comboBox->addItems(items.q());
   return comboBox;
 }
 

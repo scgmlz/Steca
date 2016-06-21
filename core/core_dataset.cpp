@@ -46,7 +46,7 @@ uint Metadata::numAttributes(bool onlyNum) {
 }
 
 rcstr Metadata::attributeTag(uint i) {
-  return attributeTags().at(int(i));
+  return attributeTags().at(i);
 }
 
 str_lst Metadata::attributeTags() {

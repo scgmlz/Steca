@@ -34,7 +34,7 @@ str_lst ReflectionInfo::dataTags() {
     for_i (uint(eReflAttr::NUM_REFL_ATTR))
       tags.append(reflStringTag(i));
 
-    tags += Metadata::attributeTags();
+    tags.append(Metadata::attributeTags());
   }
 
   return tags;

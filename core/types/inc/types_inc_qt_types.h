@@ -19,6 +19,7 @@
 
 #include "types_inc_macros.h"
 #include <QSize>
+#include <QStringList>
 #include <QVector>
 #include <initializer_list>
 
@@ -26,6 +27,31 @@
  * - remove duplicities (count/size)
  * - use uint instead of int
  */
+
+//------------------------------------------------------------------------------
+
+class str_lst : protected QStringList {
+  SUPER(str_lst, QStringList)
+public:
+  super const& q() const { return *this; }  // access the Qt super class
+
+  str_lst()                                 : super()     {}
+  str_lst(std::initializer_list<QString> l) : super(l)    {}
+  str_lst(super const& that)                : super(that) {}
+
+  using super::count;
+  using super::clear;
+  using super::isEmpty;
+  using super::begin;
+  using super::end;
+  using super::cbegin;
+  using super::cend;
+  using super::append;
+  using super::removeLast;
+
+  void append(str_lst const& that) { super::append(that);      }
+  QString const& at(uint i) const  { return super::at(int(i)); }
+};
 
 //------------------------------------------------------------------------------
 
@@ -41,8 +67,7 @@ public:
   explicit vec(uint count)                : super(int(count))       {}
   explicit vec(uint count, T const& init) : super(int(count), init) {}
 
-
-  uint count()     const { return uint(super::count());      }
+  uint count()     const { return uint(super::count()); }
 
   using super::clear;
   using super::isEmpty;
@@ -55,11 +80,11 @@ public:
   using super::first;
   using super::last;
 
-  vec &fill(T const& init) {
+  vec& fill(T const& init) {
     return static_cast<vec&>(super::fill(init));
   }
 
-  vec &fill(T const& init, uint count) {
+  vec& fill(T const& init, uint count) {
     return static_cast<vec&>(super::fill(init, int(count)));
   }
 
