@@ -25,9 +25,27 @@ class Progress;
 namespace core { namespace pole {
 //------------------------------------------------------------------------------
 
+struct itf_t {
+  itf_t();
+  itf_t(inten_t inten, deg tth, qreal fwhm);
+
+  void operator+=(itf_t const&);
+
+  inten_t inten;
+  deg     tth;
+  qreal   fwhm;
+};
+
+typedef vec<itf_t> itfs_t;
+
+// Interpolates reflection infos to a single point using idw.
+itf_t interpolateValues(deg searchRadius, ReflectionInfos const& infos,
+                        deg alpha, deg beta);
+
 ReflectionInfos interpolate(ReflectionInfos const&, deg alphaStep, deg betaStep,
                             deg averagingAlphaMax, deg averagingRadius,
                             deg idwRadius, qreal inclusionTreshold);
+
 //------------------------------------------------------------------------------
 }}
 #endif  // CORE_POLEFIGURE_H

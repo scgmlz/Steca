@@ -118,11 +118,11 @@ ReflectionInfo::ReflectionInfo(deg alpha, deg beta)
 }
 
 row_t ReflectionInfo::data() const {
-  row_t row{(QVariant)alpha(), (QVariant)beta(),
-            (QVariant)rgeGamma().min, (QVariant)rgeGamma().max,
-            (QVariant)inten(), (QVariant)intenError(),
-            (QVariant)tth(),   (QVariant)tthError(),
-            (QVariant)fwhm(),  (QVariant)fwhmError()};
+  row_t row{QVariant(alpha()), QVariant(beta()),
+            QVariant(rgeGamma().min), QVariant(rgeGamma().max),
+            QVariant(inten()), QVariant(intenError()),
+            QVariant(tth()),   QVariant(tthError()),
+            QVariant(fwhm()),  QVariant(fwhmError())};
 
   row.append(md_ ? md_->attributeValues() : Metadata::attributeNaNs());
   return row;

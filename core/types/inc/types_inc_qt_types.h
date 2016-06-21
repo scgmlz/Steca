@@ -67,7 +67,8 @@ public:
   explicit vec(uint count)                : super(int(count))       {}
   explicit vec(uint count, T const& init) : super(int(count), init) {}
 
-  uint count()     const { return uint(super::count()); }
+  uint count() const   { return uint(super::count()); }
+  void reserve(uint n) { super::reserve(int(n));      }
 
   using super::clear;
   using super::isEmpty;

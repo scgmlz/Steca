@@ -91,39 +91,30 @@ eQuadrant remapQuadrant(eQuadrant q) {
     return eQuadrant::NORTHEAST;
   case eQuadrant::NORTHWEST:
     return eQuadrant::SOUTHEAST;
-  default:
-    NEVER return (eQuadrant)0;
   }
+
+  NEVER return eQuadrant::NORTHEAST;
 }
 
 // Checks if (alpha,beta) is inside radius from (centerAlpha,centerBeta).
 bool inRadius(deg alpha, deg beta, deg centerAlpha, deg centerBeta,
               deg radius) {
   qreal a = angle(alpha, centerAlpha, calculateDeltaBeta(beta, centerBeta));
-  return qAbs(a) < (qreal)radius;
+  return qAbs(a) < radius;
 }
 
-struct itf_t {
-  itf_t(inten_t inten_, deg tth_, qreal fwhm_)
-  : inten(inten_), tth(tth_), fwhm(fwhm_) {
-  };
+itf_t::itf_t() : itf_t(inten_t(qQNaN()), qQNaN(), qQNaN()) {
+}
 
-  itf_t()
-  : itf_t(qQNaN(), qQNaN(), qQNaN()) {
-  };
+itf_t::itf_t(inten_t inten_, deg tth_, qreal fwhm_)
+: inten(inten_), tth(tth_), fwhm(fwhm_) {
+}
 
-  void operator+=(itf_t const& that) {
-    inten     += that.inten;
-    tth = tth + that.tth;
-    fwhm      += that.fwhm;
-  }
-
-  inten_t inten;
-  deg     tth;
-  qreal   fwhm;
-};
-
-typedef vec<itf_t> itfs_t;
+void itf_t::operator+=(itf_t const& that) {
+  inten     += that.inten;
+  tth = tth + that.tth;
+  fwhm      += that.fwhm;
+}
 
 // Adds data from reflection infos within radius from alpha and beta
 // to the peak parameter lists.
@@ -167,8 +158,8 @@ void searchInQuadrants(Quadrants const& quadrants, deg alpha, deg beta,
   }
 }
 
-void inverseDistanceWeighing(qreal_vec const& distances, info_vec const& infos,
-                             itf_t& itf) {
+itf_t inverseDistanceWeighing(qreal_vec const& distances, info_vec const& infos) {
+  itf_t itf;
   uint N = uint(NUM_QUADRANTS);
   // Generally, only distances.count() == values.count() > 0 is needed for this
   // algorithm. However, in this context we expect exactly the following:
@@ -183,7 +174,7 @@ void inverseDistanceWeighing(qreal_vec const& distances, info_vec const& infos,
       itf.inten = inten_t(in->inten());
       itf.tth   = in->tth();
       itf.fwhm  = in->fwhm();
-      return;
+      return itf;
     }
     inverseDistances[i] = 1 / distances.at(i);
     inverseDistanceSum += inverseDistances.at(i);
@@ -202,11 +193,11 @@ void inverseDistanceWeighing(qreal_vec const& distances, info_vec const& infos,
   itf.inten = inten_t(height / inverseDistanceSum);
   itf.tth   = offset / inverseDistanceSum;
   itf.fwhm  = fwhm / inverseDistanceSum;
+  return itf;
 }
 
-// Interpolates reflection infos to a single point using idw.
-void interpolateValues(deg searchRadius, ReflectionInfos const& infos,
-                       deg alpha, deg beta, itf_t& out) {
+itf_t interpolateValues(deg searchRadius, ReflectionInfos const& infos,
+                       deg alpha, deg beta) {
   info_vec  interpolationInfos;
   qreal_vec distances;
   searchInQuadrants(allQuadrants(), alpha, beta, searchRadius,
@@ -239,9 +230,10 @@ void interpolateValues(deg searchRadius, ReflectionInfos const& infos,
     }
   }
   // Use inverse distance weighing if everything is alright.
-  if (numQuadrantsOk == NUM_QUADRANTS) {
-    inverseDistanceWeighing(distances, interpolationInfos, out);
-  }
+  if (numQuadrantsOk == NUM_QUADRANTS)
+    return inverseDistanceWeighing(distances, interpolationInfos);
+  else
+    return itf_t();
 }
 
 // Interpolates infos to equidistant grid in alpha and beta.
@@ -267,7 +259,8 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
   // NOTE We expect all infos to have the same gamma range.
 
   // REVIEW qRound oder qCeil?
-  uint numAlphas = qRound(90. / alphaStep), numBetas = (360. / betaStep);
+  uint numAlphas = uint(qRound(90.  / alphaStep)),
+       numBetas  = uint(qRound(360. / betaStep));
 
   ReflectionInfos interpolatedInfos;  // Output data.
 
@@ -298,11 +291,12 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
 
           itf_t avg(0, 0, 0);
 
-          int iEnd = itfs.count();
-          int iBegin = qMin(qRound(itfs.count() * (1. - inclusionTreshold)), iEnd-1);
-          int n = iEnd - iBegin;
+          uint iEnd = itfs.count();
+          uint iBegin = qMin(uint(qRound(itfs.count() * (1. - inclusionTreshold))), iEnd-1);
+          EXPECT(iBegin < iEnd)
+          uint n = iEnd - iBegin;
 
-          for (int i = iBegin; i < iEnd; ++i)
+          for (uint i = iBegin; i < iEnd; ++i)
             avg += itfs.at(i);
 
           interpolatedInfos.append(ReflectionInfo(
@@ -319,10 +313,10 @@ ReflectionInfos interpolate(ReflectionInfos const& infos, deg alphaStep,
           continue;
         }
       }
+
       // Use idw, if alpha > averagingAlphaMax OR averaging failed (too small
       // averagingRadius?).
-      itf_t itf;
-      interpolateValues(idwRadius, infos, alpha, beta, itf);
+      itf_t itf = interpolateValues(idwRadius, infos, alpha, beta);
       interpolatedInfos.append(
         ReflectionInfo(alpha, beta, infos.first().rgeGamma(),
                        itf.inten, qQNaN(), itf.tth, qQNaN(), itf.fwhm, qQNaN()));

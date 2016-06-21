@@ -54,12 +54,12 @@ public:
                  qreal inten, qreal, deg tth, deg, qreal fwhm, qreal);
   ReflectionInfo(deg alpha, deg beta);
 
-  deg alpha() const { return alpha_; }
-  deg beta()  const { return beta_;  }
+  deg   alpha() const { return alpha_; }
+  deg   beta()  const { return beta_;  }
 
   rcRange rgeGamma() const { return rgeGamma_; }
 
-  qreal inten()      const { return inten_;      }
+  inten_t inten()    const { return inten_;      }
   qreal intenError() const { return intenError_; }
 
   deg   tth()        const { return tth_;        }
@@ -74,24 +74,18 @@ private:
   shp_Metadata md_;
   deg          alpha_, beta_;
   Range        rgeGamma_;
-  qreal        inten_, intenError_;
+  inten_t      inten_;
+  qreal        intenError_;
   deg          tth_,   tthError_;
   qreal        fwhm_,  fwhmError_;
 };
 
 //------------------------------------------------------------------------------
 
-class ReflectionInfos : protected vec<ReflectionInfo> {
+class ReflectionInfos : public vec<ReflectionInfo> {
   SUPER(ReflectionInfos, vec<ReflectionInfo>)
 public:
   ReflectionInfos();
-  using super::isEmpty;
-  using super::count;
-  using super::reserve;
-  using super::first;
-  using super::at;
-  using super::begin;
-  using super::end;
 
   void append(rcReflectionInfo);
 
