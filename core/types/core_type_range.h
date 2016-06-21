@@ -47,7 +47,7 @@ struct Range {
   static Range safeFrom(qreal,qreal); ///< safe factory
 
   void  extendBy(qreal);          ///< extend to include the number
-  void  extendBy(rcRange);   ///< extend to include the range
+  void  extendBy(rcRange);        ///< extend to include the range
 
   // these may be called only on valid ranges
   bool  contains(qreal val) const;

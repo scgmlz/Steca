@@ -69,7 +69,7 @@ public:
   static str_lst const& normStrLst();
 
   Lens(rcSession, rcDataset, Image const* corr, rcDatasets, bool trans,
-       bool cut, eNorm norm, AngleMap const&, ImageCut const&,
+       bool cut, eNorm norm, ImageCut const&,
        ImageTransform const&);
 
   Angles const& angles(uint i, uint j) const;
@@ -78,14 +78,14 @@ public:
   Curve makeCurve(rcRange gamma, rcRange tth) const;
   Curve makeAvgCurve() const;
 
-  rcDataset       dataset()  const { return dataset_;  }
-  AngleMap const& angleMap() const { return angleMap_; }
+  rcDataset       dataset()  const { return dataset_;   }
+  AngleMap const& angleMap() const { return *angleMap_; }
 
 private:
   void setNorm(eNorm);
 
-  rcDataset dataset_;
-  AngleMap  angleMap_;
+  rcDataset    dataset_;
+  shp_AngleMap angleMap_;
 };
 
 //------------------------------------------------------------------------------

@@ -191,10 +191,6 @@ core::shp_Lens TheHub::lensNoCut(core::rcDataset dataset) const {
                        session->norm());
 }
 
-core::AngleMap const& TheHub::angleMap(core::rcDataset dataset) const {
-  return session->angleMap(dataset);
-}
-
 core::ReflectionInfos TheHub::makeReflectionInfos(
     core::rcReflection reflection, core::deg gammaStep, core::rcRange rgeGamma,
     Progress* progress)
@@ -432,6 +428,10 @@ void TheHub::setGeometry(qreal detectorDistance, qreal pixSize,
 
   session->setGeometry(detectorDistance, pixSize, isMidPixOffset, midPixOffset);
   emit sigGeometryChanged();
+}
+
+core::AngleMap const& TheHub::angleMap(core::rcDataset dataset) const {
+  return *session->angleMap(dataset);
 }
 
 void TheHub::setBgRanges(core::rcRanges ranges) {

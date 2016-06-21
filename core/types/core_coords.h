@@ -30,7 +30,7 @@ struct IJ {
   IJ();  ///< (0,0)
   IJ(int, int);
 
-  bool operator==(IJ const&) const;
+  int compare(IJ const&) const;
 
   JsonObj saveJson() const;
   void    loadJson(rcJsonObj) THROWS;

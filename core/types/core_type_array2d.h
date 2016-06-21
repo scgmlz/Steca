@@ -33,6 +33,14 @@ struct size2d {
     return 0 == w && 0 == h;
   }
 
+  int compare(size2d const& that) const {
+    if (w < that.w) return -1;
+    if (w > that.w) return +1;
+    if (h < that.h) return -1;
+    if (h > that.h) return +1;
+    return 0;
+  }
+
   friend bool operator==(size2d const& s1, size2d const& s2) {
     return s1.w == s2.w && s1.h == s2.h;
   }

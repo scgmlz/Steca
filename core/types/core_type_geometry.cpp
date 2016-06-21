@@ -28,10 +28,14 @@ Geometry::Geometry()
 , isMidPixOffset(false), midPixOffset() {
 }
 
-bool Geometry::operator==(Geometry const& that) const {
-  return detectorDistance == that.detectorDistance && pixSize == that.pixSize &&
-         isMidPixOffset == that.isMidPixOffset &&
-         midPixOffset == that.midPixOffset;
+int Geometry::compare(Geometry const& that) const {
+  if (detectorDistance < that.detectorDistance) return -1;
+  if (detectorDistance > that.detectorDistance) return +1;
+  if (pixSize          < that.pixSize)          return -1;
+  if (pixSize          > that.pixSize)          return +1;
+  if (isMidPixOffset   < that.isMidPixOffset)   return -1;
+  if (isMidPixOffset   > that.isMidPixOffset)   return +1;
+  return midPixOffset.compare(that.midPixOffset);
 }
 
 //------------------------------------------------------------------------------
@@ -42,9 +46,16 @@ ImageCut::ImageCut(uint left_, uint top_, uint right_, uint bottom_)
 : left(left_), top(top_), right(right_), bottom(bottom_) {
 }
 
-bool ImageCut::operator==(const ImageCut& that) const {
-  return (left == that.left && top == that.top && right == that.right &&
-          bottom == that.bottom);
+int ImageCut::compare(const ImageCut& that) const {
+  if (left   < that.left)   return -1;
+  if (left   > that.left)   return +1;
+  if (top    < that.top)    return -1;
+  if (top    > that.top)    return +1;
+  if (right  < that.right)  return -1;
+  if (right  > that.right)  return +1;
+  if (bottom < that.bottom) return -1;
+  if (bottom > that.bottom) return +1;
+  return 0;
 }
 
 size2d ImageCut::marginSize() const {
@@ -59,12 +70,24 @@ Angles::Angles(deg gamma_, deg tth_) : gamma(gamma_), tth(tth_) {}
 
 AngleMap::Key::Key(Geometry const& geometry_, size2d const& size_,
                    ImageCut const& cut_, IJ const& midPix_, deg midTth_)
-: geometry(geometry_), size(size_), cut(cut_), midPix(midPix_), midTth(midTth_) {
+  : geometry(geometry_), size(size_), cut(cut_), midPix(midPix_), midTth(midTth_) {
+}
+
+int AngleMap::Key::compare(AngleMap::Key const& that) const {
+  int cmp;
+  if ((cmp = geometry.compare(that.geometry)))  return cmp;
+  if ((cmp = size.compare(that.size)))          return cmp;
+  if ((cmp = cut.compare(that.cut)))            return cmp;
+  if ((cmp = midPix.compare(that.midPix)))      return cmp;
+  if (midTth < that.midTth) return -1;
+  if (midTth > that.midTth) return +1;
+  return 0;
 }
 
 //------------------------------------------------------------------------------
 
-AngleMap::AngleMap() {
+AngleMap::AngleMap(Key const& key) {
+  calculate(key);
 }
 
 void AngleMap::calculate(Key const& key) {

@@ -22,6 +22,7 @@
 #include "types/core_coords.h"
 #include "types/core_type_array2d.h"
 #include "types/core_type_range.h"
+#include "types/type_map.h"
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -32,7 +33,7 @@ struct Geometry {
   static qreal const MIN_DETECTOR_PIXEL_SIZE;
 
   Geometry();
-  bool operator==(Geometry const&) const;
+  int compare(Geometry const&) const;
 
   qreal detectorDistance;  // the distance from the sample to the detector
   qreal pixSize;           // size of the detector pixel
@@ -48,7 +49,8 @@ struct ImageCut {
 
   ImageCut();
   ImageCut(uint left, uint top, uint right, uint bottom);
-  bool operator==(ImageCut const&) const;
+
+  int compare(ImageCut const&) const;
 
   size2d marginSize() const;
 };
@@ -68,6 +70,11 @@ public:
     Key(Geometry const& geometry_, size2d const& size_,
         ImageCut const& cut, IJ const& midPix, deg midTth);
 
+    int compare(Key const&) const;
+    bool operator<(Key const& that) const {
+      return compare(that) < 0;
+    }
+
     Geometry geometry;
     size2d   size;
     ImageCut cut;
@@ -75,10 +82,7 @@ public:
     deg      midTth;
   };
 
-//  class map: public QMap<>
-
-  AngleMap();
-  void calculate(Key const&);
+  AngleMap(Key const&);
 
   Angles const& at(uint i, uint j) const { return arrAngles_.at(i, j); }
 
@@ -86,6 +90,8 @@ public:
   rcRange rgeTth()   const { return rgeTth_;   }
 
 private:
+  void calculate(Key const&);
+
   Array2D<Angles> arrAngles_;
   Range           rgeGamma_, rgeTth_;
 };

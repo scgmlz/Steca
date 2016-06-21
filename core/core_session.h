@@ -101,16 +101,17 @@ public:
 
   void setImageCut(bool topLeftFirst, bool linked, ImageCut const&);
 
-  AngleMap const& angleMap(rcDataset) const;
-
 private:
   Geometry geometry_;
+  mutable hash<AngleMap::Key,shp_AngleMap> keyMap;
 
 public:
   Geometry const& geometry() const { return geometry_; }
   void setGeometry(qreal detectorDistance, qreal pixSize, bool isMidPixOffset,
                    rcIJ midPixOffset);
   IJ midPix() const;
+
+  shp_AngleMap angleMap(rcDataset) const;
 
 // lenses
 public:

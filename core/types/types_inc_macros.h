@@ -21,11 +21,7 @@
 
 /// A class definition helper that defines aliases for this and super class.
 #define SUPER(cls, sup)        \
-private:                       \
   using thisClass = cls;       \
-  using super = sup;           \
-public:                        \
-  typedef thisClass const& rc; \
-private:
+  using super = sup;
 
 #endif // TYPES_INC_MACROS_H

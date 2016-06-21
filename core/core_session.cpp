@@ -42,6 +42,8 @@ void Session::clear() {
   reflections_.clear();
 
   norm_ = eNorm::NONE;
+
+  keyMap.clear();
 }
 
 shp_File Session::file(uint i) const {
@@ -191,35 +193,6 @@ void Session::setImageCut(bool topLeftFirst, bool linked, ImageCut const& cut) {
   }
 }
 
-AngleMap const& Session::angleMap(rcDataset dataset) const {
-  static AngleMap map;
-  // REVIEW cache through shared pointers
-  static Geometry       lastGeometry;
-  static qreal          lastMidTth = 0;
-  static size2d         lastSize;
-  static IJ             lastMid;
-  static ImageCut       lastImageCut;
-  static ImageTransform lastImageTrans;
-
-  qreal  midTth = dataset.midTth();
-  IJ     mid    = midPix();
-  size2d size   = imageSize();
-
-  if (!(lastMidTth == midTth && lastGeometry == geometry_ && lastSize == size &&
-        lastMid == mid && lastImageCut == imageCut_ &&
-        lastImageTrans == imageTransform_)) {
-    lastMidTth     = midTth;
-    lastGeometry   = geometry_;
-    lastSize       = size;
-    lastMid        = mid;
-    lastImageCut   = imageCut_;
-    lastImageTrans = imageTransform_;
-    map.calculate(AngleMap::Key(geometry_, size, imageCut_, mid, midTth));
-  }
-
-  return map;
-}
-
 void Session::setGeometry(qreal detectorDistance, qreal pixSize,
                           bool isMidPixOffset, rcIJ midPixOffset) {
   EXPECT(detectorDistance > 0 && pixSize > 0)
@@ -243,6 +216,15 @@ IJ Session::midPix() const {
   return mid;
 }
 
+shp_AngleMap Session::angleMap(rcDataset dataset) const {
+  AngleMap::Key key(geometry_, imageSize_, imageCut_, midPix(), dataset.midTth());
+  auto it = keyMap.find(key);
+  if (keyMap.end() == it)
+    keyMap.insert(key, shp_AngleMap(new AngleMap(key)));
+
+  return *keyMap.find(key);
+}
+
 shp_ImageLens Session::lens(rcImage image, rcDatasets datasets, bool trans,
                             bool cut) const {
   return shp_ImageLens(
@@ -253,7 +235,7 @@ shp_ImageLens Session::lens(rcImage image, rcDatasets datasets, bool trans,
 shp_Lens Session::lens(rcDataset dataset, rcDatasets datasets, bool trans,
                        bool cut, eNorm norm) const {
   return shp_Lens(new Lens(*this, dataset, corrEnabled_ ? &corrImage_ : nullptr,
-                           datasets, trans, cut, norm, angleMap(dataset),
+                           datasets, trans, cut, norm,
                            imageCut_, imageTransform_));
 }
 
@@ -412,11 +394,11 @@ void Session::setNorm(eNorm norm) {
 qreal Session::calcAvgBackground(rcDataset dataset) const {
   auto l = lens(dataset, dataset.datasets(), true, true, eNorm::NONE);
 
-  auto& map        = angleMap(dataset);
-  Curve gammaCurve = l->makeCurve(map.rgeGamma(), map.rgeTth());
+  auto map = angleMap(dataset);
+  Curve gammaCurve = l->makeCurve(map->rgeGamma(), map->rgeTth());
 
   auto bgPolynom = fit::Polynom::fromFit(bgPolyDegree_, gammaCurve, bgRanges_);
-  return bgPolynom.avgY(map.rgeTth());
+  return bgPolynom.avgY(map->rgeTth());
 }
 
 qreal Session::calcAvgBackground(rcDatasets datasets) const {

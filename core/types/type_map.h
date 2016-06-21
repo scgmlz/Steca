@@ -14,11 +14,11 @@
 //
 // ************************************************************************** //
 
-#ifndef TYPE_VEC_H
-#define TYPE_VEC_H
+#ifndef TYPE_MAP_H
+#define TYPE_MAP_H
 
 #include "types_inc_macros.h"
-#include <QHash>
+#include <QMap>
 #include <initializer_list>
 
 /* The derived classes control access to Qt classes:
@@ -29,11 +29,22 @@
 //------------------------------------------------------------------------------
 
 template <typename Key, typename T>
-class hash : protected QHash<Key,T> {
-  using hash_super = QHash<Key,T>;
+class hash : protected QMap<Key,T> {
+  using hash_super = QMap<Key,T>;
   SUPER(hash, hash_super)
 public:
   super const& q() const { return *this; }  // access the Qt super class
+
+  using super::clear;
+  using super::insert;
+  using super::remove;
+  using super::find;
+  using super::iterator;
+  using super::const_iterator;
+  using super::begin;
+  using super::end;
+  using super::cbegin;
+  using super::cend;
 };
 
 //------------------------------------------------------------------------------

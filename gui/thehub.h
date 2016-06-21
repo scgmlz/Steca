@@ -113,8 +113,6 @@ public:
   core::shp_Lens lens(core::rcDataset) const;
   core::shp_Lens lensNoCut(core::rcDataset) const;
 
-  core::AngleMap const& angleMap(core::rcDataset) const;
-
 public:
   core::ReflectionInfos makeReflectionInfos(core::rcReflection,
       core::deg betaStep, core::rcRange rgeGamma, Progress* = nullptr);
@@ -166,6 +164,8 @@ public:
   core::Geometry const& geometry() const;
   void setGeometry(qreal detectorDistance, qreal pixSize, bool isMidPixOffset,
                    core::rcIJ midPixOffset);
+
+  core::AngleMap const& angleMap(core::rcDataset) const;
 
   void setBgRanges(core::rcRanges);
   void addBgRange(core::rcRange);

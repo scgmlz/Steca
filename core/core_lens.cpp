@@ -141,7 +141,7 @@ void ImageLens::calcSensCorr() {
       hasNaNs_ = true;
     }
 
-    intensCorr_.setAt(i + di, j + dj, fact);
+    intensCorr_.setAt(i + di, j + dj, inten_t(fact));
   }
 }
 
@@ -157,17 +157,17 @@ str_lst const& Lens::normStrLst() {
 
 Lens::Lens(rcSession session, rcDataset dataset, Image const* corrImage,
            rcDatasets datasets, bool trans, bool cut, eNorm norm,
-           AngleMap const& angleMap, ImageCut const& imageCut,
+           ImageCut const& imageCut,
            ImageTransform const& imageTransform)
 : super(session, dataset.image(), corrImage, datasets, trans, cut, imageCut
-, imageTransform), dataset_(dataset), angleMap_(angleMap)
+, imageTransform), dataset_(dataset), angleMap_(session.angleMap(dataset))
 {
   setNorm(norm);
 }
 
 Angles const& Lens::angles(uint i, uint j) const {
   if (cut_) doCut(i, j);
-  return angleMap_.at(i, j);
+  return angleMap_->at(i, j);
 }
 
 Range Lens::gammaRangeAt(qreal tth) const {

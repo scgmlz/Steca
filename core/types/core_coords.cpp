@@ -25,8 +25,12 @@ IJ::IJ() : IJ(0, 0) {}
 
 IJ::IJ(int i_, int j_) : i(i_), j(j_) {}
 
-bool IJ::operator==(IJ const& that) const {
-  return i == that.i && j == that.j;
+int IJ::compare(IJ const& that) const {
+  if (i < that.i) return -1;
+  if (i > that.i) return +1;
+  if (j < that.j) return -1;
+  if (j > that.j) return +1;
+  return 0;
 }
 
 JsonObj IJ::saveJson() const {
