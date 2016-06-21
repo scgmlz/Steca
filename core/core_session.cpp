@@ -167,17 +167,17 @@ void Session::setImageCut(bool topLeftFirst, bool linked, ImageCut const& cut) {
   if (size.isEmpty())
     imageCut_ = ImageCut();
   else {
-    auto limit = [linked](int& m1, int& m2, int maxTogether) {
+    auto limit = [linked](uint& m1, uint& m2, uint maxTogether) {
       if (linked && m1 + m2 >= maxTogether) {
-        m1 = m2 = qMax(0, (maxTogether - 1) / 2);
+        m1 = m2 = qMax((maxTogether - 1) / 2, 0u);
       } else {
-        m1 = qMax(qMin(m1, maxTogether - m2 - 1), 0);
-        m2 = qMax(qMin(m2, maxTogether - m1 - 1), 0);
+        m1 = qMax(qMin(m1, maxTogether - m2 - 1), 0u);
+        m2 = qMax(qMin(m2, maxTogether - m1 - 1), 0u);
       }
     };
 
     // make sure that cut values are valid; in the right order
-    int left = cut.left, top = cut.top, right = cut.right, bottom = cut.bottom;
+    uint left = cut.left, top = cut.top, right = cut.right, bottom = cut.bottom;
 
     if (topLeftFirst) {
       limit(top, bottom, size.h);
@@ -214,7 +214,7 @@ AngleMap const& Session::angleMap(rcDataset dataset) const {
     lastMid        = mid;
     lastImageCut   = imageCut_;
     lastImageTrans = imageTransform_;
-    map.calculate(midTth, geometry_, size, imageCut_, mid);
+    map.calculate(AngleMap::Key(geometry_, size, imageCut_, mid, midTth));
   }
 
   return map;
@@ -232,7 +232,7 @@ void Session::setGeometry(qreal detectorDistance, qreal pixSize,
 
 IJ Session::midPix() const {
   auto halfSize = imageSize().scaled(.5);
-  IJ   mid(halfSize.w, halfSize.h);
+  IJ mid(int(halfSize.w), int(halfSize.h));
 
   if (geometry_.isMidPixOffset) {
     rcIJ off = geometry_.midPixOffset;

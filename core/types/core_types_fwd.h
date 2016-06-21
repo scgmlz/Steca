@@ -18,6 +18,7 @@
 #define CORE_TYPES_FWD_H
 
 #include "core_defs.h"
+#include "type_vec.h"
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -64,8 +65,8 @@ typedef QSharedPointer<Lens>        shp_Lens;
 typedef QSharedPointer<AngleMap>    shp_AngleMap;
 typedef QSharedPointer<Reflection>  shp_Reflection;
 
-typedef vec<shp_Reflection>     Reflections;
-typedef Reflections const& rcReflections;
+typedef vec<shp_Reflection> Reflections;
+typedef Reflections const&  rcReflections;
 
 enum class eNorm {
   NONE,

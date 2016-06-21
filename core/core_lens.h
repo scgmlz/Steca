@@ -20,7 +20,7 @@
 #include "types/core_type_geometry.h"
 #include "types/core_type_image_transform.h"
 #include "types/core_type_range.h"
-#include <QStringList>
+#include "types/type_str_lst.h"
 
 namespace core {
 //------------------------------------------------------------------------------

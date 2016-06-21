@@ -20,6 +20,7 @@
 #include "types/core_angles.h"
 #include "types/core_type_range.h"
 #include "types/core_type_variant.h"
+#include "types/type_str_lst.h"
 
 namespace core {
 //------------------------------------------------------------------------------

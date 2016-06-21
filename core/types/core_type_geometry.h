@@ -64,15 +64,27 @@ struct Angles {
 
 class AngleMap {
 public:
+  struct Key {
+    Key(Geometry const& geometry_, size2d const& size_,
+        ImageCut const& cut, IJ const& midPix, deg midTth);
+
+    Geometry geometry;
+    size2d   size;
+    ImageCut cut;
+    IJ       midPix;
+    deg      midTth;
+  };
+
+//  class map: public QMap<>
+
   AngleMap();
+  void calculate(Key const&);
 
   Angles const& at(uint i, uint j) const { return arrAngles_.at(i, j); }
 
   rcRange rgeGamma() const { return rgeGamma_; }
   rcRange rgeTth()   const { return rgeTth_;   }
 
-  void calculate(deg midTth, Geometry const&, size2d const&, ImageCut const& cut,
-                 rcIJ midPix);
 private:
   Array2D<Angles> arrAngles_;
   Range           rgeGamma_, rgeTth_;

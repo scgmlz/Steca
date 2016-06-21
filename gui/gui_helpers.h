@@ -18,6 +18,7 @@
 #define GUI_HELPERS_H
 
 #include "types/core_defs.h"
+#include "types/type_str_lst.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>

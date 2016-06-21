@@ -15,7 +15,6 @@
 
 #include "core_reflection.h"
 #include "types/core_json.h"
-#include <QStringList>
 
 namespace core {
 //------------------------------------------------------------------------------

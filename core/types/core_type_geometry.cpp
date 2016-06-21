@@ -57,27 +57,33 @@ Angles::Angles() : Angles(0, 0) {}
 
 Angles::Angles(deg gamma_, deg tth_) : gamma(gamma_), tth(tth_) {}
 
+AngleMap::Key::Key(Geometry const& geometry_, size2d const& size_,
+                   ImageCut const& cut_, IJ const& midPix_, deg midTth_)
+: geometry(geometry_), size(size_), cut(cut_), midPix(midPix_), midTth(midTth_) {
+}
+
 //------------------------------------------------------------------------------
 
-AngleMap::AngleMap() {}
+AngleMap::AngleMap() {
+}
 
-void AngleMap::calculate(deg midTth, Geometry const& geometry,
-                         size2d const& size, ImageCut const& cut, rcIJ midPix) {
-  arrAngles_.fill(size);
+void AngleMap::calculate(Key const& key) {
+  arrAngles_.fill(key.size);
   rgeGamma_.invalidate();
   rgeTth_.invalidate();
 
-  if (size.isEmpty()) return;
+  if (key.size.isEmpty()) return;
 
-  qreal pixSize = geometry.pixSize, detDist = geometry.detectorDistance;
+  qreal pixSize = key.geometry.pixSize,
+        detDist = key.geometry.detectorDistance;
 
-  for_int (i, size.w) {
-    qreal x       = (int(i) - midPix.i) * pixSize;
-    rad   tthHorz = midTth.toRad() + atan(x / detDist);
+  for_int (i, key.size.w) {
+    qreal x       = (int(i) - key.midPix.i) * pixSize;
+    rad   tthHorz = key.midTth.toRad() + atan(x / detDist);
     qreal h       = cos(tthHorz) * hypot(x, detDist);
 
-    for_int (j, size.h) {
-      qreal y          = -(int(j) - midPix.j) * pixSize;
+    for_int (j, key.size.h) {
+      qreal y          = (key.midPix.j - int(j)) * pixSize;
       qreal z          = hypot(x, y);
       qreal pixDetDist = hypot(z, detDist);
       rad   tth        = acos(h / pixDetDist);
@@ -94,8 +100,8 @@ void AngleMap::calculate(deg midTth, Geometry const& geometry,
     }
   }
 
-  for (uint i = cut.left, iEnd = size.w - cut.right; i < iEnd; ++i) {
-    for (uint j = cut.top, jEnd = size.h - cut.bottom; j < jEnd; ++j) {
+  for (uint i = key.cut.left, iEnd = key.size.w - key.cut.right; i < iEnd; ++i) {
+    for (uint j = key.cut.top, jEnd = key.size.h - key.cut.bottom; j < jEnd; ++j) {
       auto& as = arrAngles_.at(i, j);
       rgeGamma_.extendBy(as.gamma);
       rgeTth_.extendBy(as.tth);

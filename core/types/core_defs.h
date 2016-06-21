@@ -17,7 +17,7 @@
 #ifndef CORE_DEFS_H
 #define CORE_DEFS_H
 
-#include "inc/types_inc_qt_types.h"
+#include "types_inc_macros.h"
 
 // common QT includes - everyone needs them
 #include <QtGlobal>
@@ -50,10 +50,6 @@ extern  str const   EMPTY_STR;  ///< an empty string
   for_int (i, ni)      \
     for_int (j, nj)
 
-// useful vectors
-typedef vec<qreal> qreal_vec;
-typedef vec<uint>  uint_vec;
-
 // exceptions
 #include <QException>
 
@@ -84,7 +80,7 @@ protected:
 #ifdef Q_OS_WIN
 #define THROWS
 #else
-#define THROWS throw(Exception)
+#define THROWS noexcept(false)
 #endif
 
 /// raise an exception
@@ -96,6 +92,6 @@ protected:
   if (!(test)) THROW(msg)
 
 // gsl selections + debug support
-#include "inc/types_inc_gsl.h"
+#include "types_inc_gsl.h"
 
 #endif  // CORE_DEFS_H

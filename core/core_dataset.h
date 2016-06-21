@@ -21,6 +21,7 @@
 #include "types/core_type_geometry.h"
 #include "types/core_type_image.h"
 #include "types/core_type_variant.h"
+#include "types/type_str_lst.h"
 
 namespace core {
 //------------------------------------------------------------------------------

@@ -18,6 +18,7 @@
 #define CORE_TYPE_ARRAY2D_H
 
 #include "core_defs.h"
+#include "type_vec.h"
 
 namespace core {
 //------------------------------------------------------------------------------

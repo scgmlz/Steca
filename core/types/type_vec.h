@@ -2,8 +2,8 @@
 //
 //  STeCa2:    StressTextureCalculator ver. 2
 //
-//! @file      types_inc_qt_types.h
-//! @brief     Common QT includes and veneered QT classes.
+//! @file      type_vec.h
+//! @brief     Veneered QT class.
 //!
 //! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -14,12 +14,10 @@
 //
 // ************************************************************************** //
 
-#ifndef TYPES_INC_QT_TYPES_H
-#define TYPES_INC_QT_TYPES_H
+#ifndef TYPE_VEC_H
+#define TYPE_VEC_H
 
 #include "types_inc_macros.h"
-#include <QSize>
-#include <QStringList>
 #include <QVector>
 #include <initializer_list>
 
@@ -27,31 +25,6 @@
  * - remove duplicities (count/size)
  * - use uint instead of int
  */
-
-//------------------------------------------------------------------------------
-
-class str_lst : protected QStringList {
-  SUPER(str_lst, QStringList)
-public:
-  super const& q() const { return *this; }  // access the Qt super class
-
-  str_lst()                                 : super()     {}
-  str_lst(std::initializer_list<QString> l) : super(l)    {}
-  str_lst(super const& that)                : super(that) {}
-
-  using super::count;
-  using super::clear;
-  using super::isEmpty;
-  using super::begin;
-  using super::end;
-  using super::cbegin;
-  using super::cend;
-  using super::append;
-  using super::removeLast;
-
-  void append(str_lst const& that) { super::append(that);      }
-  QString const& at(uint i) const  { return super::at(int(i)); }
-};
 
 //------------------------------------------------------------------------------
 
@@ -98,5 +71,8 @@ public:
   T& operator[](uint i)         { return super::operator[](int(i)); }
 };
 
+typedef vec<qreal> qreal_vec;
+typedef vec<uint>  uint_vec;
+
 //------------------------------------------------------------------------------
-#endif  // TYPES_INC_QT_TYPES_H
+#endif  // TYPE_VEC_H

@@ -20,8 +20,12 @@
 #include <QtGlobal>
 
 /// A class definition helper that defines aliases for this and super class.
-#define SUPER(cls, sup)  \
-  using thisClass = cls; \
-  using super     = sup;
+#define SUPER(cls, sup)        \
+private:                       \
+  using thisClass = cls;       \
+  using super = sup;           \
+public:                        \
+  typedef thisClass const& rc; \
+private:
 
 #endif // TYPES_INC_MACROS_H

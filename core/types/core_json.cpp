@@ -16,7 +16,6 @@
 #include "core_json.h"
 #include "core_coords.h"
 #include "core_type_range.h"
-#include <QStringList>
 
 namespace core {
 //------------------------------------------------------------------------------

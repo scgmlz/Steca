@@ -17,7 +17,6 @@
 #include "core_lens.h"
 #include "core_session.h"
 #include "types/core_async.h"
-#include <QStringList>
 #include <QVariant>
 
 namespace core {

@@ -19,7 +19,7 @@
 
 #include "core_fit_functions.h"
 #include "types/core_types_fwd.h"
-#include <QStringList>
+#include "types/type_str_lst.h"
 
 namespace core {
 //------------------------------------------------------------------------------

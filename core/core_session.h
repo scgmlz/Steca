@@ -22,7 +22,6 @@
 #include "types/core_type_image.h"
 #include "types/core_type_image_transform.h"
 #include "types/core_types_fwd.h"
-#include <QStringList>
 
 class Progress;
 
@@ -104,7 +103,6 @@ public:
 
   AngleMap const& angleMap(rcDataset) const;
 
-// geometry
 private:
   Geometry geometry_;
 

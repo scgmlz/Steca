@@ -18,6 +18,7 @@
 #define MODELS_H
 
 #include "types/type_models.h"
+#include "types/type_str_lst.h"
 
 namespace models {
 //------------------------------------------------------------------------------
