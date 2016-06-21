@@ -244,14 +244,14 @@ bool PoleFiguresFrame::savePoleFigureOutput() {
   bool check = false;
   if (tabSave_->onlySelectedRefl()) {
     if (writePoleFigureOutputFiles(params_->currReflIndex())) {
-      tabSave_->savedMessage(QString(" for Reflection %1 \n").arg(params_->currReflIndex()+1));
+      tabSave_->savedMessage(str(" for Reflection %1 \n").arg(params_->currReflIndex()+1));
       check = true;
     }
   } else {
     // all reflections
     for_i (reflections.count()) {
       if (writePoleFigureOutputFiles(i)) {
-        tabSave_->savedMessage(QString(" for Reflection %1 \n").arg(i+1));
+        tabSave_->savedMessage(str(" for Reflection %1 \n").arg(i+1));
         check = true;
       } else {
         check = false;  // some failed
@@ -265,10 +265,10 @@ static str const OUT_FILE_TAG(".refl%1");
 static int const MAX_LINE_LENGTH_POL(9);
 
 bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
-  auto refl = hub_.reflections()[index];
+  auto refl = hub_.reflections().at(index);
   core::ReflectionInfos reflInfo;
-  if (params_->interpolate()) reflInfo = interpPoints_[index];
-  else  reflInfo = calcPoints_[index];
+  if (params_->interpolate()) reflInfo = interpPoints_.at(index);
+  else  reflInfo = calcPoints_.at(index);
 
   auto type = refl->type();
 
@@ -324,7 +324,7 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
     numSavedFiles+=2;
   }
 
-  tabSave_->savedMessage(QString("%1 files have been saved").arg(numSavedFiles));
+  tabSave_->savedMessage(str("%1 files have been saved").arg(numSavedFiles));
   return check;
 }
 

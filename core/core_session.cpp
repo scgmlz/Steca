@@ -137,10 +137,11 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, uint groupBy) {
 }
 
 void Session::updateImageSize() {
-  if (0 == numFiles() && !hasCorrFile()) imageSize_ = QSize(0, 0);
+  if (0 == numFiles() && !hasCorrFile())
+    imageSize_ = size2d(0, 0);
 }
 
-void Session::setImageSize(QSize const& size) THROWS {
+void Session::setImageSize(size2d const& size) THROWS {
   RUNTIME_CHECK(!size.isEmpty(), "bad image size");
   if (imageSize_.isEmpty())
     imageSize_ = size;  // the first one
@@ -148,7 +149,7 @@ void Session::setImageSize(QSize const& size) THROWS {
     THROW("inconsistent image size");
 }
 
-QSize Session::imageSize() const {
+size2d Session::imageSize() const {
   return imageTransform_.isTransposed() ? imageSize_.transposed() : imageSize_;
 }
 
@@ -179,11 +180,11 @@ void Session::setImageCut(bool topLeftFirst, bool linked, ImageCut const& cut) {
     int left = cut.left, top = cut.top, right = cut.right, bottom = cut.bottom;
 
     if (topLeftFirst) {
-      limit(top, bottom, size.height());
-      limit(left, right, size.width());
+      limit(top, bottom, size.h);
+      limit(left, right, size.w);
     } else {
-      limit(bottom, top, size.height());
-      limit(right, left, size.width());
+      limit(bottom, top, size.h);
+      limit(right, left, size.w);
     }
 
     imageCut_ = ImageCut(left, top, right, bottom);
@@ -195,14 +196,14 @@ AngleMap const& Session::angleMap(rcDataset dataset) const {
   // REVIEW cache through shared pointers
   static Geometry       lastGeometry;
   static qreal          lastMidTth = 0;
-  static QSize          lastSize;
+  static size2d         lastSize;
   static IJ             lastMid;
   static ImageCut       lastImageCut;
   static ImageTransform lastImageTrans;
 
-  qreal midTth = dataset.midTth();
-  IJ    mid    = midPix();
-  QSize size   = imageSize();
+  qreal  midTth = dataset.midTth();
+  IJ     mid    = midPix();
+  size2d size   = imageSize();
 
   if (!(lastMidTth == midTth && lastGeometry == geometry_ && lastSize == size &&
         lastMid == mid && lastImageCut == imageCut_ &&
@@ -230,8 +231,8 @@ void Session::setGeometry(qreal detectorDistance, qreal pixSize,
 }
 
 IJ Session::midPix() const {
-  auto halfSize = imageSize() / 2;
-  IJ   mid(halfSize.width(), halfSize.height());
+  auto halfSize = imageSize().scaled(.5);
+  IJ   mid(halfSize.w, halfSize.h);
 
   if (geometry_.isMidPixOffset) {
     rcIJ off = geometry_.midPixOffset;
@@ -401,7 +402,7 @@ void Session::addReflection(shp_Reflection reflection) {
 }
 
 void Session::remReflection(uint i) {
-  reflections_.remove(int(i));
+  reflections_.remove(i);
 }
 
 void Session::setNorm(eNorm norm) {

@@ -27,7 +27,7 @@ class Image final : public Array2D<inten_t> {
   SUPER(Image, Array2D<inten_t>)
 public:
   /// Image as vector of intensities, filled with 0 or given intensities.
-  Image(QSize const& = QSize(0, 0), inten_t const* = nullptr);
+  Image(size2d const& = size2d(0, 0), inten_t const* = nullptr);
 
   Image(rcImage);
 

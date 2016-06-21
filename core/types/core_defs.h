@@ -17,9 +17,11 @@
 #ifndef CORE_DEFS_H
 #define CORE_DEFS_H
 
+#include "inc/types_inc_qt_types.h"
+
 // common QT includes - everyone needs them
+#include <QtGlobal>
 #include <QSharedPointer>
-#include <QVector>
 
 #include <QString>
 #include <QStringBuilder>
@@ -33,17 +35,12 @@ typedef QStringList str_lst;    ///< a short alias for QStringList
 
 extern  str const   EMPTY_STR;  ///< an empty string
 
-/// A class definition helper that defines aliases for this and super class.
-#define SUPER(cls, sup)  \
-  using thisClass = cls; \
-  using super     = sup;
-
 /// idiomatic loops
 #define for_int(i, n) \
-  for (int i = 0, i##End = (n); i < i##End; ++i)
+  for (decltype(n) i = 0, i##End = (n); i < i##End; ++i)
 
-#define for_int_down(num) \
-  for (int i = (num); i-->0; )
+#define for_int_down(n) \
+  for (decltype(n) i = (num); i-->0; )
 
 #define for_i(n) \
   for_int (i, n)
@@ -56,8 +53,8 @@ extern  str const   EMPTY_STR;  ///< an empty string
     for_int (j, nj)
 
 // useful vectors
-typedef QVector<qreal> qreal_vec;
-typedef QVector<uint>  uint_vec;
+typedef vec<qreal> qreal_vec;
+typedef vec<uint>  uint_vec;
 
 // exceptions
 #include <QException>
@@ -101,6 +98,6 @@ protected:
   if (!(test)) THROW(msg)
 
 // gsl selections + debug support
-#include "core_gsl.h"
+#include "inc/types_inc_gsl.h"
 
 #endif  // CORE_DEFS_H

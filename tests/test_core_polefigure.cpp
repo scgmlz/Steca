@@ -20,7 +20,7 @@ namespace core {
   };
 
   static int NUM_QUADRANTS = 4;
-  typedef QVector<Quadrant> Quadrants;
+  typedef vec<Quadrant> Quadrants;
     deg angle(deg alpha1, deg alpha2, deg deltaBeta);
 
     bool inRadius(deg alpha, deg beta,
@@ -32,7 +32,7 @@ namespace core {
                                   Container const& values);
 
     void inverseDistanceWeighing(qreal_vec const& distances,
-                             QVector<ReflectionInfo const*> const& infos,
+                             vec<ReflectionInfo const*> const& infos,
                              ReflectionInfo& out);
 
     deg calculateDeltaBeta(deg beta1, deg beta2);
@@ -48,7 +48,7 @@ namespace core {
       deg alpha, deg beta,
       deg searchRadius,
       ReflectionInfos const& infos,
-      QVector<ReflectionInfo const*> & foundInfos,
+      vec<ReflectionInfo const*> & foundInfos,
       qreal_vec & distances);
 
   }
@@ -175,7 +175,7 @@ void TestCorePolefigure::testInverseDistanceWeighing() {
     rinfos.append(ReflectionInfo(0,0,Range(),inten,tth,fwhm));
   }
 
-  QVector<ReflectionInfo const*> infos;
+  vec<ReflectionInfo const*> infos;
   for_i (4) {
     infos.append(&rinfos.at(i));
   }
@@ -197,7 +197,7 @@ void TestCorePolefigure::testInverseDistanceWeighing() {
 
 void TestCorePolefigure::testSearchInQuadrants() {
   qreal alpha = 15, beta = 20, searchRadius = 5;
-  QVector<ReflectionInfo const*> foundInfos;
+  vec<ReflectionInfo const*> foundInfos;
   ReflectionInfos infos;
   ReflectionInfo in;
   // inside of BETA_LIMIT
@@ -235,7 +235,7 @@ static core::Dataset testDataset(QSize size, core::inten_t inten, qreal_vec moto
   md.motorSST = motorAngles[8];
   md.motorOMGM = motorAngles[9];
 
-  QVector<core::inten_t> intenVector;
+  vec<core::inten_t> intenVector;
   for_i (size.width() * size.height()) {
     intenVector.append(inten);
   }

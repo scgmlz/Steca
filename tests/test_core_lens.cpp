@@ -25,7 +25,7 @@ REGISTER_TEST_SUITE(TestCoreLens)
   IJ midPix(1,1);\
   qreal midTTh = 2;\
   qreal motorAngle = 0;\
-  QVector<core::inten_t> intenVector;\
+  vec<core::inten_t> intenVector;\
   for_i (width * height) {\
     intenVector.append(inten/2);\
   }\
@@ -50,7 +50,7 @@ REGISTER_TEST_SUITE(TestCoreLens)
   angleMap, ImageCut(),ImageTransform::ROTATE_0); \
   int mon2 = 80;\
   int deltaTime2 = 25;\
-  QVector<core::inten_t> intenVector2;\
+  vec<core::inten_t> intenVector2;\
   for_i (width * height) {\
     intenVector2.append(inten*2);\
   }\

@@ -341,8 +341,10 @@ DatasetOptions2::DatasetOptions2(TheHub& hub)
   box_->addStretch();
 
   auto setImageCut = [this](bool topLeft, int value) {
+    EXPECT(value >= 0)
     if (hub_.actions.linkCuts->isChecked())
-      hub_.setImageCut(topLeft, true, core::ImageCut(uint(value), uint(value), uint(value), uint(value)));
+      hub_.setImageCut(topLeft, true, core::ImageCut(
+                       uint(value), uint(value), uint(value), uint(value)));
     else
       hub_.setImageCut(topLeft, false,
                        core::ImageCut(uint(marginLeft_->value()),  uint(marginTop_->value()),
@@ -370,6 +372,7 @@ DatasetOptions2::DatasetOptions2(TheHub& hub)
   });
 
   connect(spinImageScale_, slot(QSpinBox,valueChanged,int), [this](int scale) {
+    EXPECT(scale >= 0)
     emit imageScale(uint(scale));
   });
 
@@ -441,12 +444,12 @@ QPixmap Dataset::makePixmap(core::shp_ImageLens lens) {
   auto    rgeInten = lens->rgeInten(hub_.isFixedIntenImageScale());
 
   if (!size.isEmpty()) {
-    QImage image(size, QImage::Format_RGB32);
+    QImage image(QSize(int(size.w), int(size.h)), QImage::Format_RGB32);
 
     qreal maxInten = rgeInten.max;
-    for_ij (size.width(), size.height())
-      image.setPixel(i, j, intenImage(lens->inten(uint(i), uint(j)), maxInten));
-
+    for_ij (size.w, size.h)
+      image.setPixel(int(i), int(j),
+                     intenImage(lens->inten(i, j), maxInten));
     pixmap = QPixmap::fromImage(image);
   }
 

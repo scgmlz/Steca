@@ -14,8 +14,8 @@ void TestSuite::cleanup() {
     ++failed;
 }
 
-static QVector<TestSuite*>& tests() {
-  static QVector<TestSuite*> tests_;
+static vec<TestSuite*>& tests() {
+  static vec<TestSuite*> tests_;
   return tests_;
 }
 

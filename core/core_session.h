@@ -37,7 +37,7 @@ public:
 
   // data files
 private:
-  QVector<shp_File> files_;
+  vec<shp_File> files_;
 
 public:
   /// number of data files (not counting the correction file)
@@ -80,13 +80,13 @@ public:
 
 private:
   /// All files must have images of the same size; this is a cached value
-  QSize imageSize_;
+  size2d imageSize_;
   /// Clears the image size if there are no files in the session.
   void updateImageSize();
   /// Ensures that all images have the same size.
-  void setImageSize(QSize const&) THROWS;
+  void setImageSize(size2d const&) THROWS;
 
-  QSize imageSize() const;
+  size2d imageSize() const;
 
   // image - transform & cut etc.
 private:

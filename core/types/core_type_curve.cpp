@@ -59,10 +59,10 @@ Curve Curve::intersect(rcRange range) const {
 
     uint xi = 0, cnt = count();
     auto minX = range.min, maxX = range.max;
-    while (xi < cnt && xs_[xi] < minX)
+    while (xi < cnt && xs_.at(xi) < minX)
       ++xi;
-    while (xi < cnt && xs_[xi] <= maxX) {
-      res.append(xs_[xi], ys_[xi]);
+    while (xi < cnt && xs_.at(xi) <= maxX) {
+      res.append(xs_.at(xi), ys_.at(xi));
       ++xi;
     }
   }
@@ -82,10 +82,10 @@ Curve Curve::intersect(rcRanges ranges) const {
   for_i (ranges.count()) {
     rcRange range = ranges.at(i);
     auto    minX = range.min, maxX = range.max;
-    while (xi < cnt && xs_[xi] < minX)
+    while (xi < cnt && xs_.at(xi) < minX)
       ++xi;
-    while (xi < cnt && xs_[xi] <= maxX) {
-      res.append(xs_[xi], ys_[xi]);
+    while (xi < cnt && xs_.at(xi) <= maxX) {
+      res.append(xs_.at(xi), ys_.at(xi));
       ++xi;
     }
   }
@@ -162,7 +162,7 @@ Curve Curve::mul(qreal factor) const {
   Curve res;
 
   for_i (count())
-    res.append(xs_[i], ys_[i] * factor);
+    res.append(xs_.at(i), ys_.at(i) * factor);
 
   return res;
 }
@@ -171,7 +171,7 @@ Curve Curve::smooth3() const {
   Curve res;
 
   for_i (count() - 2)
-    res.append(xs_[i + 1], (ys_[i] + ys_[i + 1] + ys_[i + 2]) / 3.);
+    res.append(xs_.at(i+1), (ys_.at(i) + ys_.at(i+1) + ys_.at(i+2)) / 3.);
 
   return res;
 }
@@ -179,11 +179,11 @@ Curve Curve::smooth3() const {
 uint Curve::maxYindex() const {
   if (isEmpty()) return 0;
 
-  auto yMax  = ys_[0];
+  auto yMax  = ys_.first();
   uint index = 0;
 
   for_i (count()) {
-    auto y = ys_[i];
+    auto y = ys_.at(i);
     if (y > yMax) {
       yMax  = y;
       index = i;
@@ -196,7 +196,7 @@ uint Curve::maxYindex() const {
 qreal Curve::sumY() const {
   qreal sum = 0;
   for_i (count())
-    sum += ys_[i];
+    sum += ys_.at(i);
   return sum;
 }
 

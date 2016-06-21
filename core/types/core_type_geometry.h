@@ -50,7 +50,7 @@ struct ImageCut {
   ImageCut(uint left, uint top, uint right, uint bottom);
   bool operator==(ImageCut const&) const;
 
-  QSize marginSize() const;
+  size2d marginSize() const;
 };
 
 //------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ public:
   rcRange rgeGamma() const { return rgeGamma_; }
   rcRange rgeTth()   const { return rgeTth_;   }
 
-  void calculate(deg midTth, Geometry const&, QSize const&, ImageCut const& cut,
+  void calculate(deg midTth, Geometry const&, size2d const&, ImageCut const& cut,
                  rcIJ midPix);
 
 private:

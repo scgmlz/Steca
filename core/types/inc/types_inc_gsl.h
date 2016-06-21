@@ -2,7 +2,7 @@
 //
 //  STeCa2:    StressTextureCalculator ver. 2
 //
-//! @file      core_gsl.h
+//! @file      types_inc_gsl.h
 //! @brief     Selections from Guidelines Support Library
 //!
 //! @homepage  http://apps.jcns.fz-juelich.de/steca2
@@ -14,10 +14,10 @@
 //
 // ************************************************************************** //
 
-#ifndef CORE_GSL_H
-#define CORE_GSL_H
+#ifndef TYPES_INC_GSL_H
+#define TYPES_INC_GSL_H
 
-#include "core_debug.h"
+#include "types_inc_debug.h"
 
 // adapted parts of https://github.com/Microsoft/GSL.git
 
@@ -76,4 +76,4 @@ private:
   not_null<P>& operator-=(size_t) = delete;
 };
 
-#endif  // CORE_GSL_H
+#endif  // TYPES_INC_

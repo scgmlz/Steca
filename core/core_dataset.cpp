@@ -40,13 +40,13 @@ enum class eAttr {
 };
 
 uint Metadata::numAttributes(bool onlyNum) {
-  return onlyNum
-      ? (uint)eAttr::NUM_NUMERICAL_ATTRIBUTES
-      : (uint)eAttr::NUM_ALL_ATTRIBUTES;
+  return uint(onlyNum
+      ? eAttr::NUM_NUMERICAL_ATTRIBUTES
+      : eAttr::NUM_ALL_ATTRIBUTES);
 }
 
 rcstr Metadata::attributeTag(uint i) {
-  return attributeTags().at(i);
+  return attributeTags().at(int(i));
 }
 
 str_lst Metadata::attributeTags() {
@@ -128,23 +128,22 @@ QVariant Metadata::attributeValue(uint i) const {
 
 row_t Metadata::attributeValues() const {
   row_t attrs;
-  for_i ((uint)eAttr::NUM_ALL_ATTRIBUTES)
+  for_i (uint(eAttr::NUM_ALL_ATTRIBUTES))
     attrs.append(attributeValue(i));
   return attrs;
 }
 
 row_t Metadata::attributeNaNs() {
   static row_t row;
-  if (row.isEmpty()) {
-    for_i ((uint)eAttr::NUM_ALL_ATTRIBUTES)
+  if (row.isEmpty())
+    for_i (uint(eAttr::NUM_ALL_ATTRIBUTES))
       row.append(qQNaN());
-  }
   return row;
 }
 
 //------------------------------------------------------------------------------
 
-Dataset::Dataset(rcMetadata md, QSize const& size, inten_t const* intens)
+Dataset::Dataset(rcMetadata md, size2d const& size, inten_t const* intens)
 : datasets_(nullptr), md_(new Metadata(md)), image_(size,intens) {
 }
 
@@ -243,7 +242,7 @@ shp_Dataset Dataset::combine(Datasets datasets) {
     new Dataset(md, image.size(), image.intensData()));
 }
 
-QSize Dataset::imageSize() const {
+size2d Dataset::imageSize() const {
   return image_.size();
 }
 
@@ -276,9 +275,9 @@ Image Datasets::folded() const THROWS {
   return image;
 }
 
-QSize Datasets::imageSize() const {
+size2d Datasets::imageSize() const {
   if (super::isEmpty())
-    return QSize(0,0);
+    return size2d(0,0);
 
   // guaranteed that all images have the same size; simply take the first one
   return super::first()->imageSize();

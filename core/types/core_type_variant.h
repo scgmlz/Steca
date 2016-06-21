@@ -25,14 +25,14 @@ namespace core {
 
 /// The usual comparators: <0, 0, >0
 typedef int cmpFun(QVariant const&, QVariant const&);
-typedef QVector<cmpFun*> cmp_vec;
+typedef vec<cmpFun*> cmp_vec;
 
 int cmp_int(QVariant const&,  QVariant const&);
 int cmp_str(QVariant const&,  QVariant const&);
 int cmp_real(QVariant const&, QVariant const&);
 int cmp_date(QVariant const&, QVariant const&);
 
-typedef QVector<QVariant> row_t;
+typedef vec<QVariant> row_t;
 
 //------------------------------------------------------------------------------
 }

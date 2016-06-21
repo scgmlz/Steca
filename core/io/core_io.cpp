@@ -44,7 +44,7 @@ shp_File load(rcstr filePath) THROWS {
                 "File " % filePath % " contains no datasets");
 
   // ensure that all datasets have images of the same size
-  QSize size = file->datasets().first()->imageSize();
+  size2d size = file->datasets().first()->imageSize();
   for (auto& dataset : file->datasets())
     if (dataset->imageSize() != size)
       THROW("Inconsistent image size in " % filePath);

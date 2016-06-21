@@ -40,7 +40,7 @@ struct CheckedInfo {
   void setText(rcstr);
 };
 
-typedef QVector<CheckedInfo> checkedinfo_vec;
+typedef vec<CheckedInfo> checkedinfo_vec;
 
 //------------------------------------------------------------------------------
 /// The base class of all table-like models

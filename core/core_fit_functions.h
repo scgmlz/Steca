@@ -116,7 +116,7 @@ public:
   void    loadJson(rcJsonObj) THROWS;
 
 protected:
-  QVector<Parameter> parameters_;
+  vec<Parameter> parameters_;
   qreal parValue(uint parIndex, qreal const* parValues) const;
   void setValue(uint parIndex, qreal val);
 };
@@ -146,14 +146,14 @@ public:
 
 protected:
   /// summed functions
-  QVector<Function*> functions_;
+  vec<Function*> functions_;
   /// the aggregate parameter list
-  QVector<Parameter*> allParameters_;
+  vec<Parameter*> allParameters_;
   /// look up the original function for a given aggregate parameter index
-  QVector<Function*> function4parIndex_;
+  vec<Function*> function4parIndex_;
   /// the starting index of parameters of a summed function, given the aggregate
   /// parameter index
-  QVector<uint> firstParIndex4parIndex_;
+  uint_vec firstParIndex4parIndex_;
 };
 
 //------------------------------------------------------------------------------

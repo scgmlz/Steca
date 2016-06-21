@@ -64,7 +64,7 @@ typedef QSharedPointer<Lens>        shp_Lens;
 typedef QSharedPointer<AngleMap>    shp_AngleMap;
 typedef QSharedPointer<Reflection>  shp_Reflection;
 
-typedef QVector<shp_Reflection>     Reflections;
+typedef vec<shp_Reflection>     Reflections;
 typedef Reflections const& rcReflections;
 
 enum class eNorm {

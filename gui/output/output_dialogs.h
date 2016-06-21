@@ -41,7 +41,7 @@ public:
 
   void addStretch();
 
-  int  currReflIndex() const;
+  uint currReflIndex() const;
   bool interpolate()   const;
 
 protected:
@@ -106,7 +106,7 @@ protected:
   Params     *params_;
   Tabs       *tabs_;
 
-  QVector<core::ReflectionInfos> calcPoints_, interpPoints_;
+  vec<core::ReflectionInfos> calcPoints_, interpPoints_;
 
   class Table *table_;
 
@@ -153,7 +153,7 @@ private:
     QCheckBox *cb;
   };
 
-  typedef QVector<showcol_t> showcol_vec;
+  typedef vec<showcol_t> showcol_vec;
 
 private:
   class ShowColsWidget : public QWidget {

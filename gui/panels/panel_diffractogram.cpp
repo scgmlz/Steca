@@ -238,23 +238,23 @@ void DiffractogramPlot::plot(core::rcCurve dgram, core::rcCurve dgramBgFitted,
     yAxis->setVisible(true);
 
     if (showBgFit_) {
-      bgGraph_->setData(bg.xs(), bg.ys());
+      bgGraph_->setData(bg.xs().q(), bg.ys().q());
     } else {
       bgGraph_->clearData();
     }
 
-    dgramGraph_->setData(dgram.xs(), dgram.ys());
-    dgramBgFittedGraph_->setData(dgramBgFitted.xs(), dgramBgFitted.ys());
+    dgramGraph_->setData(dgram.xs().q(), dgram.ys().q());
+    dgramBgFittedGraph_->setData(dgramBgFitted.xs().q(), dgramBgFitted.ys().q());
 
     clearReflLayer();
     setCurrentLayer("refl");
 
     for_i (refls.count()) {
-      auto& r = refls[i];
+      auto& r = refls.at(i);
       auto* graph = addGraph();
       reflGraph_.append(graph);
-      graph->setPen(QPen(Qt::green, uint(i) == currReflIndex ? 2 : 1));
-      graph->setData(r.xs(), r.ys());
+      graph->setPen(QPen(Qt::green, i == currReflIndex ? 2 : 1));
+      graph->setData(r.xs().q(), r.ys().q());
     }
   }
 

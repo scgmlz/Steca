@@ -144,7 +144,7 @@ void Range::loadJson(rcJsonObj obj) THROWS {
 Ranges::Ranges() {}
 
 bool Ranges::add(rcRange range) {
-  QVector<Range> newRanges;
+  vec<Range> newRanges;
 
   auto addRange = range;
   for (rcRange r : ranges_) {
@@ -165,7 +165,7 @@ bool Ranges::add(rcRange range) {
 }
 
 bool Ranges::rem(rcRange remRange) {
-  QVector<Range> newRanges;
+  vec<Range> newRanges;
   bool           changed = false;
 
   for (rcRange r : ranges_) {

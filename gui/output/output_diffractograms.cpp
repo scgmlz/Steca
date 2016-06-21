@@ -159,7 +159,7 @@ auto writeMetaData = [](OutputData outputData, QTextStream& stream, str separato
 
   for_i (core::Metadata::numAttributes(true)) {
     stream << core::Metadata::attributeTag(i) << ": " <<
-                        outputData.dataset_.metadata()->attributeValue((uint)i).toDouble() << '\n';
+                        outputData.dataset_.metadata()->attributeValue(i).toDouble() << '\n';
   }
 };
 
@@ -220,7 +220,7 @@ bool DiffractogramsFrame::writeAllDiffractogramsToFiles(bool oneFile) {
   } else {
     int fileNumber = 1;
     for (auto outputCollection : outputCollections) {
-      str fileName = QString(tabSave_->fileName() + "%1" + fileTag).arg(fileNumber);
+      str fileName = str(tabSave_->fileName() + "%1" + fileTag).arg(fileNumber);
       auto filePath = QDir(tabSave_->path()).absoluteFilePath(fileName);
       WriteFile file(filePath);
       QTextStream stream(&file);
@@ -233,7 +233,7 @@ bool DiffractogramsFrame::writeAllDiffractogramsToFiles(bool oneFile) {
       }
       ++fileNumber;
     }
-    tabSave_->savedMessage(QString("%1 files have been saved.").arg(fileNumber-1));
+    tabSave_->savedMessage(str("%1 files have been saved.").arg(fileNumber-1));
   }
   return true;
 

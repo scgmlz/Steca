@@ -31,7 +31,7 @@ public:
   ImageLens(rcSession, rcImage, Image const* corrImage, rcDatasets, bool trans,
             bool cut, ImageCut const&, ImageTransform const&);
 
-  QSize   size()                 const;
+  size2d  size()                 const;
   inten_t inten(uint i, uint j)  const;
 
   rcRange rgeInten(bool fixed)   const;

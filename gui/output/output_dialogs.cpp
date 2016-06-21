@@ -144,8 +144,10 @@ void Params::addStretch() {
   box_->addStretch();
 }
 
-int Params::currReflIndex() const {
-  return cbRefl->currentIndex();
+uint Params::currReflIndex() const {
+  int i = cbRefl->currentIndex();
+  ENSURE(i >= 0)
+  return uint(i);
 }
 
 bool Params::interpolate() const {
@@ -287,7 +289,7 @@ void Frame::displayReflection(uint reflIndex, bool interpolated) {
     return;
 
   EXPECT(calcPoints_.count() == interpPoints_.count())
-  if (calcPoints_.count() <= (int)reflIndex)
+  if (calcPoints_.count() <= reflIndex)
     return;
 
   for (auto const &r : (interpolated ? interpPoints_ : calcPoints_)[reflIndex])
@@ -332,7 +334,7 @@ private:
   uint_vec      colIndexMap_;
   core::cmp_vec cmpFunctions_;
 
-  QVector<core::row_t> rows_;
+  vec<core::row_t> rows_;
 };
 
 //------------------------------------------------------------------------------
@@ -414,12 +416,12 @@ QVariant TableModel::headerData(int section, Qt::Orientation, int role) const {
 }
 
 void TableModel::moveColumn(uint from, uint to) {
-  EXPECT(from < (uint)colIndexMap_.count() && to < (uint)colIndexMap_.count())
+  EXPECT(from < colIndexMap_.count() && to < colIndexMap_.count())
   qSwap(colIndexMap_[from], colIndexMap_[to]);
 }
 
 void TableModel::setColumns(str_lst const& headers, core::cmp_vec const& cmps) {
-  EXPECT(headers.count() == (int)numCols_ && cmps.count() == (int)numCols_)
+  EXPECT(uint(headers.count()) == numCols_ && uint(cmps.count()) == numCols_)
   headers_ = headers;
   cmpFunctions_ = cmps;
 }
@@ -459,7 +461,7 @@ void TableModel::sortData() {
     }
 
     for_i (numCols_) {
-      if (i != sortColumn_) {
+      if (int(i) != sortColumn_) {
         int c = cmpRows(i, r1, r2);
         if (c < 0) return true;
         if (c > 0) return false;
@@ -498,12 +500,12 @@ void Table::setColumns(str_lst const& headers, core::cmp_vec const& cmps) {
 
   connect(header(), &QHeaderView::sectionMoved,
           [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
-            ENSURE(oldVisualIndex > 0 && newVisualIndex > 0)
+            EXPECT(oldVisualIndex > 0 && newVisualIndex > 0)
             auto& h = *header();
             h.setSortIndicatorShown(false);
             model_->setSortColumn(-1);
-            model_->moveColumn((uint)(oldVisualIndex - 1),
-                               (uint)(newVisualIndex - 1));
+            model_->moveColumn(uint(oldVisualIndex - 1),
+                               uint(newVisualIndex - 1));
             model_->sortData();
           });
 
@@ -546,7 +548,7 @@ TabTable::TabTable(TheHub& hub, Params& params,
                    str_lst const& headers, core::cmp_vec const& cmps)
 : super(hub, params)
 {
-  EXPECT(headers.count() == cmps.count())
+  EXPECT(uint(headers.count()) == cmps.count())
   uint numCols = headers.count();
 
   grid_->setMargin(0);
@@ -603,23 +605,23 @@ TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
 
   auto showAlphaBeta = [this,none]() {
     none();
-    showCols_.at((uint)eReflAttr::ALPHA).cb->setChecked(true);
-    showCols_.at((uint)eReflAttr::BETA).cb->setChecked(true);
+    showCols_.at(uint(eReflAttr::ALPHA)).cb->setChecked(true);
+    showCols_.at(uint(eReflAttr::BETA)).cb->setChecked(true);
   };
 
   auto showInten = [this,showAlphaBeta]() {
     showAlphaBeta();
-    showCols_.at((uint)eReflAttr::INTEN).cb->setChecked(true);
+    showCols_.at(uint(eReflAttr::INTEN)).cb->setChecked(true);
   };
 
   auto showTth = [this,showAlphaBeta]() {
     showAlphaBeta();
-    showCols_.at((uint)eReflAttr::TTH).cb->setChecked(true);
+    showCols_.at(uint(eReflAttr::TTH)).cb->setChecked(true);
   };
 
   auto showFWHM = [this,showAlphaBeta]() {
     showAlphaBeta();
-    showCols_.at((uint)eReflAttr::FWHM).cb->setChecked(true);
+    showCols_.at(uint(eReflAttr::FWHM)).cb->setChecked(true);
   };
 
   auto updateRbs = [this]() {
@@ -634,7 +636,7 @@ TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
 
       isNone = false;
 
-      switch ((eReflAttr)i) {
+      switch (eReflAttr(i)) {
       case eReflAttr::ALPHA:
       case eReflAttr::BETA:
         ++nInten; ++nTth; ++nFwhm;

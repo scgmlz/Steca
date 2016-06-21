@@ -2,7 +2,7 @@
 #define TESTS_MAIN_H
 
 #include <QObject>
-#include <QVector>
+#include <vec>
 #include <QtTest/QtTest>
 
 class TestSuite: public QObject {

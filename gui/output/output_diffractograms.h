@@ -48,8 +48,8 @@ protected:
 //------------------------------------------------------------------------------
 
 struct OutputData;
-using OutputDataCollection  = QVector<OutputData>;
-using OutputDataCollections = QVector<OutputDataCollection>;
+using OutputDataCollection  = vec<OutputData>;
+using OutputDataCollections = vec<OutputDataCollection>;
 
 class DiffractogramsFrame : public Frame {
   SUPER(DiffractogramsFrame, Frame)

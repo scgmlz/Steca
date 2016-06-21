@@ -101,7 +101,7 @@ private:
 
   QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *guesses_, *fits_;
 
-  QVector<QCPGraph*>       reflGraph_;
+  vec<QCPGraph*>       reflGraph_;
   DiffractogramPlotOverlay *overlay_;
 };
 

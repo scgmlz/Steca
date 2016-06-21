@@ -81,8 +81,8 @@ private:
 
 //------------------------------------------------------------------------------
 
-class ReflectionInfos : protected QVector<ReflectionInfo> {
-  SUPER(ReflectionInfos, QVector<ReflectionInfo>)
+class ReflectionInfos : protected vec<ReflectionInfo> {
+  SUPER(ReflectionInfos, vec<ReflectionInfo>)
 public:
   ReflectionInfos();
   using super::isEmpty;
