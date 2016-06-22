@@ -17,6 +17,12 @@
 #ifndef CORE_DEFS_H
 #define CORE_DEFS_H
 
+#ifdef Q_CC_C
+
+#pragma clang diagnostic ignored "-Wno-switch-enum"
+
+#endif
+
 #include "types_inc_macros.h"
 
 // common QT includes - everyone needs them
@@ -27,18 +33,30 @@
 #include <QStringBuilder>
 
 // string support
-typedef QString     str;        ///< a short alias for the QString class
-typedef str const&  rcstr;      ///< a reference to a string constant
-typedef char const* pcstr;      ///< C-style (zero-byte-terminated) string
+typedef QString     str;        // a short alias for the QString class
+typedef str const&  rcstr;      // a reference to a string constant
+typedef char const* pcstr;      // C-style (zero-byte-terminated) string
 
-extern  str const   EMPTY_STR;  ///< an empty string
+extern  str const   EMPTY_STR;  // an empty string
 
-/// idiomatic loops
+// idiomatic loops
+#ifdef Q_OS_WIN
+
+// MSVC does not handle decltype etc. well, and we disregard int/uint warnings on Windows, anyway
+#define for_int(i, n) \
+  for (int i = 0, i##End = (n); i < i##End; ++i)
+#define for_int_down(n) \
+  for (int i = (num); i-- > 0; )
+
+#else
+
 #define for_int(i, n) \
   for (std::remove_const<decltype(n)>::type i = decltype(n)(0), i##End = (n); i < i##End; ++i)
-
 #define for_int_down(n) \
   for (std::remove_const<decltype(n)>::type i = (num); i-- > decltype(n)(0); )
+
+#endif
+
 
 #define for_i(n) \
   for_int (i, n)
@@ -53,7 +71,7 @@ extern  str const   EMPTY_STR;  ///< an empty string
 // exceptions
 #include <QException>
 
-/// An exception that carries a message.
+// An exception that carries a message.
 class Exception : public QException {
   SUPER(Exception, QException)
 protected:
@@ -76,18 +94,18 @@ protected:
   bool       silent_;
 };
 
-/// exception specification macro
+// exception specification macro
 #ifdef Q_OS_WIN
 #define THROWS
 #else
 #define THROWS noexcept(false)
 #endif
 
-/// raise an exception
+// raise an exception
 #define THROW(msg)     throw Exception(msg)
 #define THROW_SILENT() throw Exception()
 
-/// run-time condition checking
+// run-time condition checking
 #define RUNTIME_CHECK(test, msg) \
   if (!(test)) THROW(msg)
 

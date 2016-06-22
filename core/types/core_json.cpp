@@ -16,6 +16,7 @@
 #include "core_json.h"
 #include "core_coords.h"
 #include "core_type_range.h"
+#include <QStringList>
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -36,8 +37,9 @@ JsonObj JsonObj::loadObj(rcstr key, bool defEmpty) const THROWS {
   case QJsonValue::Object:
     return val.toObject();
   case QJsonValue::Undefined:
-    if (defEmpty) return JsonObj();
-  // fall through
+    if (defEmpty)
+      return JsonObj();
+  // fallthrough
   default:
     THROW(key + ": not an object");
   }
