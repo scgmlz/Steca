@@ -338,6 +338,7 @@ void MainWin::saveSession() {
                   "Session files (*" % STE % ");;All files (*.*)");
   dlg.setFileMode(QFileDialog::AnyFile);
   dlg.setAcceptMode(QFileDialog::AcceptSave);
+  dlg.setConfirmOverwrite(false);
 
   if (!dlg.exec()) return;
 
