@@ -7,15 +7,11 @@ include_directories (
 )
 
 file (GLOB header_files
-  "*.h"
-  "*/*.h"
-  "*/*/*.h"
+  "*.h" "*/*.h" "*/*/*.h"
 )
 
 file (GLOB source_files
-  "*.cpp"
-  "*/*.cpp"
-  "*/*/*.cpp"
+  "*.cpp" "*/*.cpp" "*/*/*.cpp"
 )
 
 add_library (STeCaCore

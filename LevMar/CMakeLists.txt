@@ -16,5 +16,4 @@ add_library(LevMar
   ${source_files}
 )
 
-set_property(TARGET LevMar PROPERTY CXX_STANDARD 11)
-set_property(TARGET LevMar PROPERTY CXX_STANDARD_REQUIRED ON)
+# def

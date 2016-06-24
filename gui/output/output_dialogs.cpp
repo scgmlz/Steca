@@ -421,7 +421,7 @@ void TableModel::moveColumn(uint from, uint to) {
 }
 
 void TableModel::setColumns(str_lst::rc headers, typ::cmp_vec::rc cmps) {
-  EXPECT(to_u(headers.count()) == numCols_ && to_u(cmps.count()) == numCols_)
+  EXPECT(to_u(headers.count()) == numCols_ && cmps.count() == numCols_)
   headers_ = headers;
   cmpFunctions_ = cmps;
 }

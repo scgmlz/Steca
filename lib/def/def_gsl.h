@@ -121,18 +121,18 @@ private:
 //------------------------------------------------------------------------------
 // casting signed <-> unsigned
 
+#include <limits>
+
 // unsigned to signed
 template <typename T>
 typename std::__make_signed<T>::__type to_i(T t) {
   static_assert(std::is_unsigned<T>::value, "to_i(signed)");
 #ifndef QT_NO_DEBUG
-  static std::numeric_limits<typename std::__make_signed<T>::__type> limits;
-  EXPECT2(static_cast<T>(limits::max()) <= t, "to_i(too big)")
+  auto max = std::numeric_limits<typename std::__make_signed<T>::__type>::max();
+  EXPECT2(static_cast<T>(max) <= t, "to_i(too big)")
 #endif
   return typename std::__make_signed<T>::__type(t);
 }
-
-#include <limits>
 
 // signed to unsigned
 template <typename T>
