@@ -14,8 +14,6 @@
 //
 // ************************************************************************** //
 
-// To remove ambiguities, use uint, etc.
-
 #ifndef TYP_MAP_H
 #define TYP_MAP_H
 
@@ -30,14 +28,13 @@ class map : public QMap<Key,T> {
   using super_type = QMap<Key,T>;
   WITH_SUPER(map, super_type)
 public:
-
   using super::clear;
   using super::insert;
   using super::remove;
-  using super::contains;
   using super::find;
-  using super::iterator;
-  using super::const_iterator;
+  using super::contains;
+  using super::value;
+  using super::take;
   using super::begin;
   using super::end;
   using super::cbegin;

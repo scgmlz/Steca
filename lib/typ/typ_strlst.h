@@ -14,8 +14,6 @@
 //
 // ************************************************************************** //
 
-// To remove ambiguities, use uint, etc.
-
 #ifndef TYP_STRLST_H
 #define TYP_STRLST_H
 

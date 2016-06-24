@@ -14,8 +14,6 @@
 //
 // ************************************************************************** //
 
-// To remove ambiguities, use uint, etc.
-
 #ifndef TYP_HASH_H
 #define TYP_HASH_H
 
@@ -31,12 +29,12 @@ class hash : protected QHash<Key,T> {
   using super_type = QHash<Key,T>;
   WITH_SUPER(hash, super_type)
 public:
-
   using super::clear;
   using super::insert;
   using super::remove;
-  using super::value;
+  using super::find;
   using super::contains;
+  using super::value;
   using super::take;
 };
 

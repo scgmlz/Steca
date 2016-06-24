@@ -14,8 +14,6 @@
 //
 // ************************************************************************** //
 
-// To remove ambiguities, use uint, etc.
-
 #ifndef TYP_VEC_H
 #define TYP_VEC_H
 

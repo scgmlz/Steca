@@ -5,12 +5,12 @@
 //#include "types/core_json.h"
 
 //// make non-public methods public
-//#define TEST_FIT_CLASS(cls)                 \
-//  class Test##cls: public core::fit::cls {  \
-//public:                                     \
-//  void setValue(uint parIndex, qreal val) { \
-//    core::fit::cls::setValue(parIndex,val); \
-//  }                                         \
+//#define TEST_FIT_CLASS(cls)                 \-
+//  class Test##cls: public core::fit::cls {  \-
+//public:                                     \-
+//  void setValue(uint parIndex, qreal val) { \-
+//    core::fit::cls::setValue(parIndex,val); \-
+//  }                                         \-
 //};
 
 //TEST_FIT_CLASS(Polynom)
