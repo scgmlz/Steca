@@ -222,8 +222,7 @@ Fitting::Fitting(TheHub &hub)
     auto newReflData = [this](bool invalidateGuesses) {
       if (!silentSpin_) {
         tellReflectionValues(
-            typ::Range::safeFrom(spinRangeMin_->value(),
-                                  spinRangeMax_->value()),
+            typ::Range::safeFrom(spinRangeMin_->value(), spinRangeMax_->value()),
             typ::XY(spinGuessPeakX_->value(), spinGuessPeakY_->value()),
             spinGuessFWHM_->value(), invalidateGuesses);
       }

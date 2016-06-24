@@ -3,7 +3,7 @@
 //  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      typ_types.h
-//! @brief     Basic core data types
+//! @brief     Basic steca data types
 //!
 //! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -18,16 +18,22 @@
 #define TYP_TYPES_H
 
 #include "typ/typ_angles.h"
+#include "typ/typ_range.h"
 #include "typ/typ_vec.h"
+#include "typ/typ_xy.h"
 
-namespace typ {
-//------------------------------------------------------------------------------
+typedef typ::deg gma_t;
+typedef typ::deg tth_t;
 
-typedef deg   tth_t;
 typedef float inten_t;
 typedef float fwhm_t;
 
 typedef typ::vec<inten_t> inten_vec;
+
+typedef typ::Range tth_rge;
+typedef typ::Range gma_rge;
+
+typedef typ::XY peak_t;
 
 enum class eNorm {
   NONE,
@@ -35,5 +41,4 @@ enum class eNorm {
 };
 
 //------------------------------------------------------------------------------
-}
 #endif // TYP_TYPES_H

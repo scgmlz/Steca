@@ -19,7 +19,7 @@
 
 #include "typ/typ_fun.h"
 #include "typ/typ_curve.h"
-#include "typ/typ_xy.h"
+#include "typ/typ_types.h"
 
 namespace fit {
 //------------------------------------------------------------------------------
@@ -68,17 +68,17 @@ public:
   typ::Range::rc range() const { return range_; }
   virtual void setRange(typ::Range::rc);
 
-  virtual void setGuessedPeak(typ::XY::rc);
-  virtual void setGuessedFWHM(qreal);
+  virtual void setGuessedPeak(peak_t::rc);
+  virtual void setGuessedFWHM(fwhm_t);
 
-  typ::XY::rc guessedPeak() const { return guessedPeak_; }
-  qreal       guessedFWHM() const { return guessedFWHM_; }
+  peak_t::rc guessedPeak() const { return guessedPeak_; }
+  fwhm_t     guessedFWHM() const { return guessedFWHM_; }
 
-  virtual typ::XY fittedPeak() const = 0;
-  virtual qreal   fittedFWHM() const = 0;
+  virtual peak_t fittedPeak() const = 0;
+  virtual fwhm_t fittedFWHM() const = 0;
 
-  virtual typ::XY peakError() const = 0;
-  virtual qreal   fwhmError() const = 0;
+  virtual peak_t peakError() const = 0;
+  virtual fwhm_t fwhmError() const = 0;
 
   void reset();
 
@@ -95,8 +95,8 @@ public:
 
 protected:
   typ::Range range_;
-  typ::XY    guessedPeak_;
-  qreal      guessedFWHM_;
+  peak_t     guessedPeak_;
+  fwhm_t     guessedFWHM_;
 };
 
 //------------------------------------------------------------------------------
@@ -111,18 +111,18 @@ public:
   qreal y(qreal x, qreal const* parValues = nullptr) const;
   qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-  typ::XY fittedPeak() const;
-  qreal   fittedFWHM() const;
+  peak_t fittedPeak() const;
+  fwhm_t fittedFWHM() const;
 
-  typ::XY peakError() const;
-  qreal   fwhmError() const;
+  peak_t peakError() const;
+  fwhm_t fwhmError() const;
 
   void setRange(typ::Range::rc);
   void fit(typ::Curve::rc, typ::Range::rc);
 
 private:
   typ::Curve fittedCurve_;  // saved from fitting
-  void  prepareY();
+  void prepareY();
 
   mutable uint  x_count_;
   mutable qreal dx_;
@@ -146,14 +146,14 @@ public:
   qreal y(qreal x, qreal const* parValues = nullptr) const;
   qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-  void setGuessedPeak(typ::XY::rc);
-  void setGuessedFWHM(qreal);
+  void setGuessedPeak(peak_t::rc);
+  void setGuessedFWHM(fwhm_t);
 
-  typ::XY fittedPeak() const;
-  qreal   fittedFWHM() const;
+  peak_t fittedPeak() const;
+  fwhm_t fittedFWHM() const;
 
-  typ::XY peakError() const;
-  qreal   fwhmError() const;
+  peak_t peakError() const;
+  fwhm_t fwhmError() const;
 
 public:
   typ::JsonObj saveJson() const;
@@ -173,14 +173,14 @@ public:
   qreal y(qreal x, qreal const* parValues = nullptr) const;
   qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-  void setGuessedPeak(typ::XY::rc);
-  void setGuessedFWHM(qreal);
+  void setGuessedPeak(peak_t::rc);
+  void setGuessedFWHM(fwhm_t);
 
-  typ::XY fittedPeak() const;
-  qreal   fittedFWHM() const;
+  peak_t fittedPeak() const;
+  fwhm_t fittedFWHM() const;
 
-  typ::XY peakError() const;
-  qreal   fwhmError() const;
+  peak_t peakError() const;
+  fwhm_t fwhmError() const;
 
 public:
   typ::JsonObj saveJson() const;
@@ -201,14 +201,14 @@ public:
   qreal y(qreal x, qreal const* parValues = nullptr) const;
   qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-  void setGuessedPeak(typ::XY::rc);
-  void setGuessedFWHM(qreal);
+  void setGuessedPeak(peak_t::rc);
+  void setGuessedFWHM(fwhm_t);
 
-  typ::XY fittedPeak() const;
-  qreal   fittedFWHM() const;
+  peak_t fittedPeak() const;
+  fwhm_t fittedFWHM() const;
 
-  typ::XY peakError() const;
-  qreal   fwhmError() const;
+  peak_t peakError() const;
+  fwhm_t fwhmError() const;
 
 public:
   typ::JsonObj saveJson() const;
@@ -229,14 +229,14 @@ public:
   qreal y(qreal x, qreal const* parValues = nullptr) const;
   qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-  void setGuessedPeak(typ::XY::rc);
-  void setGuessedFWHM(qreal);
+  void setGuessedPeak(peak_t::rc);
+  void setGuessedFWHM(fwhm_t);
 
-  typ::XY fittedPeak() const;
-  qreal   fittedFWHM() const;
+  peak_t fittedPeak() const;
+  fwhm_t fittedFWHM() const;
 
-  typ::XY peakError() const;
-  qreal  fwhmError() const;
+  peak_t peakError() const;
+  fwhm_t fwhmError() const;
 
 public:
   typ::JsonObj saveJson() const;

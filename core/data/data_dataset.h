@@ -39,11 +39,9 @@ Q_DECLARE_METATYPE(data::shp_Dataset)
 #define DATA_DATASET_H
 
 #include "def/defs.h"
-#include "typ/typ_angles.h"
 #include "typ/typ_array2d.h"
 #include "typ/typ_curve.h"
 #include "typ/typ_image.h"
-#include "typ/typ_range.h"
 #include "typ/typ_strlst.h"
 #include "typ/typ_types.h"
 #include "typ/typ_variant.h"
@@ -88,7 +86,7 @@ class Dataset final {
   THIS(Dataset)
 public:
 
-  Dataset(Metadata::rc, typ::size2d::rc, not_null<typ::inten_t const*>);
+  Dataset(Metadata::rc, typ::size2d::rc, not_null<inten_t const*>);
   Dataset(Dataset::rc);
   Dataset();
 
@@ -108,7 +106,7 @@ public:
   typ::Image::rc image() const { return image_; }
 
   typ::size2d imageSize() const;
-  typ::inten_t inten(uint i, uint j) const;
+  inten_t inten(uint i, uint j) const;
 
 private:
   Datasets* datasets_;  // here it belongs (or could be nullptr)

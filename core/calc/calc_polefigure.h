@@ -19,8 +19,6 @@
 
 #include "calc_reflection_info.h"
 #include "typ/typ_types.h"
-//#include "typ/typ_angles.h"
-//#include "typ/typ_vec.h"
 
 class Progress;
 
@@ -31,13 +29,13 @@ struct itf_t {
   THIS(itf_t)
 
   itf_t();
-  itf_t(typ::inten_t, typ::deg tth, qreal fwhm);
+  itf_t(inten_t, tth_t, fwhm_t);
 
   void operator+=(rc);
 
-  typ::inten_t inten;
-  typ::deg     tth;
-  qreal        fwhm;
+  inten_t inten;
+  tth_t   tth;
+  fwhm_t  fwhm;
 };
 
 typedef typ::vec<itf_t> itfs_t;

@@ -62,11 +62,11 @@ size2d ImageCut::marginSize() const {
 Angles::Angles() : Angles(0, 0) {
 }
 
-Angles::Angles(deg gamma_, deg tth_) : gamma(gamma_), tth(tth_) {
+Angles::Angles(gma_t gma_, tth_t tth_) : gma(gma_), tth(tth_) {
 }
 
 AngleMap::Key::Key(Geometry::rc geometry_, size2d::rc size_,
-                   ImageCut::rc cut_, IJ::rc midPix_, deg midTth_)
+                   ImageCut::rc cut_, IJ::rc midPix_, tth_t midTth_)
 : geometry(geometry_), size(size_), cut(cut_), midPix(midPix_), midTth(midTth_) {
 }
 
@@ -87,7 +87,7 @@ AngleMap::AngleMap(Key::rc key) {
 
 void AngleMap::calculate(Key::rc key) {
   arrAngles_.fill(key.size);
-  rgeGamma_.invalidate();
+  rgeGma_.invalidate();
   rgeTth_.invalidate();
 
   if (key.size.isEmpty())
@@ -122,7 +122,7 @@ void AngleMap::calculate(Key::rc key) {
   for (uint i = key.cut.left, iEnd = key.size.w - key.cut.right; i < iEnd; ++i) {
     for (uint j = key.cut.top, jEnd = key.size.h - key.cut.bottom; j < jEnd; ++j) {
       auto& as = arrAngles_.at(i, j);
-      rgeGamma_.extendBy(as.gamma);
+      rgeGma_.extendBy(as.gma);
       rgeTth_.extendBy(as.tth);
     }
   }

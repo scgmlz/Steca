@@ -163,7 +163,7 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
           detRel = to_u(qRound(sqrt(imageSize)));
           RUNTIME_CHECK(imageSize>0 && imageSize == detRel*detRel, "bad image size");
 
-          typ::inten_vec convertedIntens(imageSize);
+          inten_vec convertedIntens(imageSize);
           for_i (imageSize)
             convertedIntens[i] = intens[i];
 
@@ -196,7 +196,7 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
           md.time         = tempTime;
 
           file->datasets().append(
-            data::shp_Dataset(new data::Dataset(md, size, not_null<typ::inten_t const*>::from(convertedIntens.constData()))));
+            data::shp_Dataset(new data::Dataset(md, size, not_null<inten_t const*>::from(convertedIntens.constData()))));
           delete[] intens; intens = NULL;
           imageSize = 0;
         }

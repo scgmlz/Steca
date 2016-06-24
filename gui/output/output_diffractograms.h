@@ -59,7 +59,7 @@ public:
 protected:
   TabDiffractogramsSave *tabSave_;
 
-  OutputDataCollection collectCurves(typ::Range::rc rgeGamma, qreal gammaStep, data::Dataset::rc dataset, uint picNum);
+  OutputDataCollection collectCurves(gma_rge::rc, gma_t gmaStep, data::Dataset::rc dataset, uint picNum);
   OutputData collectCurve(data::Dataset::rc dataset);
 
   OutputData outputCurrDiffractogram();

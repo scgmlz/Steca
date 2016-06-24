@@ -469,7 +469,7 @@ void Diffractogram::calcDgram() {
   if (hub_.isCombinedDgram())
     dgram_ = hub_.lens(*dataset_)->makeAvgCurve();
   else
-    dgram_ = hub_.lens(*dataset_)->makeCurve(map.rgeGamma(), map.rgeTth());
+    dgram_ = hub_.lens(*dataset_)->makeCurve(map.rgeGma(), map.rgeTth());
 }
 
 void Diffractogram::calcBackground() {

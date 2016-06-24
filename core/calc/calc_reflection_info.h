@@ -19,8 +19,6 @@
 
 #include "def/defs.h"
 #include "data/data_dataset.h"
-#include "typ/typ_angles.h"
-#include "typ/typ_range.h"
 #include "typ/typ_strlst.h"
 #include "typ/typ_types.h"
 #include "typ/typ_variant.h"
@@ -31,7 +29,6 @@ namespace calc {
 class ReflectionInfo final {
   THIS(ReflectionInfo)
 public:
-
   enum class eField {
     ALPHA, BETA, GAMMA1, GAMMA2,
     INTEN, INTEN_ERROR,
@@ -52,40 +49,38 @@ public:
 
   ReflectionInfo();
 
-  ReflectionInfo(data::shp_Metadata, typ::deg alpha, typ::deg beta,
-                 typ::Range::rc rgeGamma,
-                 typ::inten_t, qreal, typ::deg tth, typ::deg, qreal fwhm, qreal);
-  ReflectionInfo(data::shp_Metadata, typ::deg alpha, typ::deg beta,
-                 typ::Range::rc rgeGamma);
-
-  ReflectionInfo(typ::deg alpha, typ::deg beta, typ::Range::rc rgeGamma,
-                 typ::inten_t, qreal, typ::deg tth, typ::deg, qreal fwhm, qreal);
+  ReflectionInfo(data::shp_Metadata, typ::deg alpha, typ::deg beta, gma_rge,
+                 inten_t, inten_t /*error*/, tth_t, tth_t /*error*/, fwhm_t, fwhm_t /*error*/);
+  ReflectionInfo(data::shp_Metadata, typ::deg alpha, typ::deg beta, gma_rge);
+  ReflectionInfo(typ::deg alpha, typ::deg beta, gma_rge,
+                 inten_t, inten_t /*error*/, tth_t, tth_t /*error*/, fwhm_t, fwhm_t /*error*/);
   ReflectionInfo(typ::deg alpha, typ::deg beta);
 
-  typ::deg   alpha() const { return alpha_; }
-  typ::deg   beta()  const { return beta_;  }
+  typ::deg alpha()      const { return alpha_;  }
+  typ::deg beta()       const { return beta_;   }
 
-  typ::Range::rc rgeGamma() const { return rgeGamma_; }
+  gma_rge  rgeGma()     const { return rgeGma_; }
 
-  typ::inten_t inten()  const { return inten_;      }
-  qreal intenError()    const { return intenError_; }
+  inten_t  inten()      const { return inten_;      }
+  inten_t  intenError() const { return intenError_; }
 
-  typ::deg   tth()      const { return tth_;        }
-  typ::deg   tthError() const { return tthError_;   }
+  tth_t    tth()        const { return tth_;        }
+  tth_t    tthError()   const { return tthError_;   }
 
-  qreal fwhm()          const { return fwhm_;  }
-  qreal fwhmError()     const { return fwhmError_;  }
+  fwhm_t   fwhm()       const { return fwhm_;       }
+  fwhm_t   fwhmError()  const { return fwhmError_;  }
 
   typ::row_t data() const;
 
 private:
   data::shp_Metadata md_;
-  typ::deg           alpha_, beta_;
-  typ::Range         rgeGamma_;
-  typ::inten_t       inten_;
-  qreal              intenError_;
-  typ::deg           tth_, tthError_;
-  qreal              fwhm_, fwhmError_;
+
+  typ::deg alpha_, beta_;
+  gma_rge  rgeGma_;
+
+  inten_t inten_, intenError_;
+  tth_t   tth_,   tthError_;
+  fwhm_t  fwhm_,  fwhmError_;
 };
 
 //------------------------------------------------------------------------------

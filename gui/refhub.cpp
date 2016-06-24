@@ -36,10 +36,9 @@ void TheHubSignallingBase::tellReflectionData(calc::shp_Reflection reflection) {
   emit sigReflectionData(reflection);
 }
 
-void TheHubSignallingBase::tellReflectionValues(typ::Range::rc range,
-                                                typ::XY::rc peak, qreal fwhm,
-                                                bool withGuesses) {
-  emit sigReflectionValues(range, peak, fwhm, withGuesses);
+void TheHubSignallingBase::tellReflectionValues(
+    tth_rge::rc rgeTth, peak_t::rc peak, fwhm_t fwhm, bool withGuesses) {
+  emit sigReflectionValues(rgeTth, peak, fwhm, withGuesses);
 }
 
 TheHubSignallingBase::level_guard::level_guard(level_t& level) : level_(level) {

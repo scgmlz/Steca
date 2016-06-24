@@ -148,11 +148,11 @@ void PeakFunction::setRange(Range::rc range) {
 
 PeakFunction::PeakFunction() : guessedPeak_(), guessedFWHM_(qQNaN()) {}
 
-void PeakFunction::setGuessedPeak(XY::rc peak) {
+void PeakFunction::setGuessedPeak(peak_t::rc peak) {
   guessedPeak_ = peak;
 }
 
-void PeakFunction::setGuessedFWHM(qreal fwhm) {
+void PeakFunction::setGuessedFWHM(fwhm_t fwhm) {
   guessedFWHM_ = fwhm;
 }
 
@@ -235,23 +235,23 @@ qreal Raw::dy(qreal, uint, qreal const*) const {
   return 0; // fake
 }
 
-XY Raw::fittedPeak() const {
+peak_t Raw::fittedPeak() const {
   if (qIsNaN(sum_y_))
     sum_y_ = fittedCurve_.sumY();
 
-  return XY(range_.center(),  // approximate x
-            sum_y_);
+  return peak_t(range_.center(),  // approximate x
+                sum_y_);
 }
 
-qreal Raw::fittedFWHM() const {
-  return range_.width();  // kind-of
+fwhm_t Raw::fittedFWHM() const {
+  return fwhm_t(range_.width());  // kind-of
 }
 
-XY Raw::peakError() const {
-  return XY(0, 0);
+peak_t Raw::peakError() const {
+  return peak_t(0, 0);
 }
 
-qreal Raw::fwhmError() const {
+fwhm_t Raw::fwhmError() const {
   return 0;
 }
 
@@ -330,33 +330,33 @@ qreal Gaussian::dy(qreal x, uint parIndex, qreal const* parValues) const {
   }
 }
 
-void Gaussian::setGuessedPeak(XY::rc xy) {
+void Gaussian::setGuessedPeak(peak_t::rc xy) {
   super::setGuessedPeak(xy);
   setValue(parXSHIFT, xy.x);
   setValue(parAMPL, xy.y);
 }
 
-void Gaussian::setGuessedFWHM(qreal val) {
-  super::setGuessedFWHM(val);
+void Gaussian::setGuessedFWHM(fwhm_t fwhm) {
+  super::setGuessedFWHM(fwhm);
   // sigma = FWHM * 1/4 * (SQRT(2)/SQRT(ln(2))) = FWHM * 0.424661
-  setValue(parSIGMA, val * 0.424661);
+  setValue(parSIGMA, fwhm * 0.424661);
 }
 
-XY Gaussian::fittedPeak() const {
-  return XY(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
+peak_t Gaussian::fittedPeak() const {
+  return peak_t(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
 }
 
-qreal Gaussian::fittedFWHM() const {
-  return parameters_.at(parSIGMA).value() / 0.424661;
+fwhm_t Gaussian::fittedFWHM() const {
+  return fwhm_t(parameters_.at(parSIGMA).value() / 0.424661);
 }
 
-XY Gaussian::peakError() const {
-  return XY(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
+peak_t Gaussian::peakError() const {
+  return peak_t(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
 }
 
-qreal Gaussian::fwhmError() const {
+fwhm_t Gaussian::fwhmError() const {
   // REVIEW
-  return parameters_.at(parSIGMA).error();
+  return fwhm_t(parameters_.at(parSIGMA).error());
 }
 
 JsonObj Gaussian::saveJson() const {
@@ -412,32 +412,32 @@ qreal Lorentzian::dy(qreal x, uint parIndex, qreal const* parValues) const {
   }
 }
 
-void Lorentzian::setGuessedPeak(XY::rc xy) {
+void Lorentzian::setGuessedPeak(peak_t::rc xy) {
   super::setGuessedPeak(xy);
   setValue(parXSHIFT, xy.x);
   setValue(parAMPL, xy.y);
 }
 
-void Lorentzian::setGuessedFWHM(qreal val) {
-  super::setGuessedFWHM(val);
+void Lorentzian::setGuessedFWHM(fwhm_t fwhm) {
+  super::setGuessedFWHM(fwhm);
   // gamma = HWHM = FWHM / 2
-  setValue(parGAMMA, val / 2);
+  setValue(parGAMMA, fwhm / 2);
 }
 
-XY Lorentzian::fittedPeak() const {
-  return XY(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
+peak_t Lorentzian::fittedPeak() const {
+  return peak_t(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
 }
 
-qreal Lorentzian::fittedFWHM() const {
-  return parameters_.at(parGAMMA).value() * 2;
+fwhm_t Lorentzian::fittedFWHM() const {
+  return fwhm_t(parameters_.at(parGAMMA).value() * 2);
 }
 
-XY Lorentzian::peakError() const {
-  return XY(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
+peak_t Lorentzian::peakError() const {
+  return peak_t(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
 }
 
-qreal Lorentzian::fwhmError() const {
-  return parameters_.at(parGAMMA).error();
+fwhm_t Lorentzian::fwhmError() const {
+  return fwhm_t(parameters_.at(parGAMMA).error());
 }
 
 JsonObj Lorentzian::saveJson() const {
@@ -512,31 +512,31 @@ qreal PseudoVoigt1::dy(qreal x, uint parIndex, qreal const* parValues) const {
   }
 }
 
-void PseudoVoigt1::setGuessedPeak(XY::rc xy) {
+void PseudoVoigt1::setGuessedPeak(peak_t::rc xy) {
   super::setGuessedPeak(xy);
   setValue(parXSHIFT, xy.x);
   setValue(parAMPL, xy.y);
 }
 
-void PseudoVoigt1::setGuessedFWHM(qreal val) {
-  super::setGuessedFWHM(val);
-  setValue(parSIGMAGAMMA, val / 2);
+void PseudoVoigt1::setGuessedFWHM(fwhm_t fwhm) {
+  super::setGuessedFWHM(fwhm);
+  setValue(parSIGMAGAMMA, fwhm / 2);
 }
 
-XY PseudoVoigt1::fittedPeak() const {
-  return XY(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
+peak_t PseudoVoigt1::fittedPeak() const {
+  return peak_t(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
 }
 
-qreal PseudoVoigt1::fittedFWHM() const {
-  return parameters_.at(parSIGMAGAMMA).value() * 2;
+fwhm_t PseudoVoigt1::fittedFWHM() const {
+  return fwhm_t(parameters_.at(parSIGMAGAMMA).value() * 2);
 }
 
-XY PseudoVoigt1::peakError() const {
-  return XY(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
+peak_t PseudoVoigt1::peakError() const {
+  return peak_t(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
 }
 
-qreal PseudoVoigt1::fwhmError() const {
-  return parameters_.at(parSIGMAGAMMA).error();
+fwhm_t PseudoVoigt1::fwhmError() const {
+  return fwhm_t(parameters_.at(parSIGMAGAMMA).error());
 }
 
 JsonObj PseudoVoigt1::saveJson() const {
@@ -623,35 +623,36 @@ qreal PseudoVoigt2::dy(qreal x, uint parIndex, qreal const* parValues) const {
   }
 }
 
-void PseudoVoigt2::setGuessedPeak(XY::rc xy) {
+void PseudoVoigt2::setGuessedPeak(peak_t::rc xy) {
   super::setGuessedPeak(xy);
   setValue(parXSHIFT, xy.x);
   setValue(parAMPL, xy.y);
 }
 
-void PseudoVoigt2::setGuessedFWHM(qreal val) {
-  super::setGuessedFWHM(val);
-  setValue(parSIGMA, val * 0.424661);
-  setValue(parGAMMA, val / 2);
+void PseudoVoigt2::setGuessedFWHM(fwhm_t fwhm) {
+  super::setGuessedFWHM(fwhm);
+  setValue(parSIGMA, fwhm * 0.424661);
+  setValue(parGAMMA, fwhm / 2);
 }
 
-XY PseudoVoigt2::fittedPeak() const {
-  return XY(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
+peak_t PseudoVoigt2::fittedPeak() const {
+  return peak_t(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
 }
 
-qreal PseudoVoigt2::fittedFWHM() const {
+fwhm_t PseudoVoigt2::fittedFWHM() const {
   qreal eta = parameters_.at(parETA).value();
-  return ((1 - eta) * parameters_.at(parSIGMA).value() / 0.424661 +
-          eta * parameters_.at(parGAMMA).value() * 2)  / 2;
+  return fwhm_t(((1 - eta) * parameters_.at(parSIGMA).value() / 0.424661 +
+                 eta * parameters_.at(parGAMMA).value() * 2) / 2);
 }
 
-XY PseudoVoigt2::peakError() const {
-  return XY(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
+peak_t PseudoVoigt2::peakError() const {
+  return peak_t(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
 }
 
-qreal PseudoVoigt2::fwhmError() const {
+fwhm_t PseudoVoigt2::fwhmError() const {
   // REVIEW
-  return parameters_.at(parSIGMA).error() + parameters_.at(parGAMMA).error();
+  return fwhm_t(parameters_.at(parSIGMA).error() +
+                parameters_.at(parGAMMA).error());
 }
 
 JsonObj PseudoVoigt2::saveJson() const {

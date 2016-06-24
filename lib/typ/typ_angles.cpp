@@ -27,6 +27,11 @@ rad deg::toRad() const {
   return val_ * (M_PI / 180);
 }
 
+deg& deg::operator+=(deg const& that) {
+  val_ += that.val_;
+  return *this;
+}
+
 deg deg::normalized() {
   static qreal const MAX = 360;
   qreal norm = fmod(val_, MAX);
@@ -42,6 +47,11 @@ rad::rad(deg d) {
 
 deg rad::toDeg() const {
   return val_ * (180 / M_PI);
+}
+
+rad& rad::operator+=(rad const& that) {
+  val_ += that.val_;
+  return *this;
 }
 
 //------------------------------------------------------------------------------

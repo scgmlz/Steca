@@ -47,7 +47,7 @@ protected:
   void tellDatasetSelected(data::shp_Dataset);
   void tellSelectedReflection(calc::shp_Reflection);
   void tellReflectionData(calc::shp_Reflection);
-  void tellReflectionValues(typ::Range::rc, typ::XY::rc, qreal, bool);
+  void tellReflectionValues(tth_rge::rc, peak_t::rc, fwhm_t, bool);
 
 signals:
   void sigFilesChanged();     // the set of loaded files has changed
@@ -63,7 +63,7 @@ signals:
   void sigReflectionsChanged();
   void sigReflectionSelected(calc::shp_Reflection);
   void sigReflectionData(calc::shp_Reflection);
-  void sigReflectionValues(typ::Range const&, typ::XY const&, qreal, bool);
+  void sigReflectionValues(tth_rge const&, peak_t const&, qreal, bool);
 
   void sigDisplayChanged();
   void sigGeometryChanged();

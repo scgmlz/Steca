@@ -105,17 +105,17 @@ bool inRadius(deg alpha, deg beta, deg centerAlpha, deg centerBeta,
   return qAbs(a) < radius;
 }
 
-itf_t::itf_t() : itf_t(inten_t(qQNaN()), qQNaN(), qQNaN()) {
+itf_t::itf_t() : itf_t(inten_t(qQNaN()), tth_t(qQNaN()), fwhm_t(qQNaN())) {
 }
 
-itf_t::itf_t(inten_t inten_, deg tth_, qreal fwhm_)
+itf_t::itf_t(inten_t inten_, tth_t tth_, fwhm_t fwhm_)
 : inten(inten_), tth(tth_), fwhm(fwhm_) {
 }
 
 void itf_t::operator+=(rc that) {
-  inten     += that.inten;
-  tth = tth + that.tth;
-  fwhm      += that.fwhm;
+  inten += that.inten;
+  tth   += that.tth;
+  fwhm  += that.fwhm;
 }
 
 // Adds data from reflection infos within radius from alpha and beta
@@ -187,14 +187,15 @@ itf_t inverseDistanceWeighing(qreal_vec::rc distances, info_vec::rc infos) {
   qreal fwhm   = 0;
   for_i (N) {
     auto& in = infos.at(i);
-    offset += in->tth() * inverseDistances.at(i);
-    height += in->inten() * inverseDistances.at(i);
-    fwhm += in->fwhm() * inverseDistances.at(i);
+    auto& d  = inverseDistances.at(i);
+    offset += in->tth()   * d;
+    height += in->inten() * d;
+    fwhm   += in->fwhm()  * d;
   }
 
   itf.inten = inten_t(height / inverseDistanceSum);
-  itf.tth   = offset / inverseDistanceSum;
-  itf.fwhm  = fwhm / inverseDistanceSum;
+  itf.tth   = tth_t(offset / inverseDistanceSum);
+  itf.fwhm  = fwhm_t(fwhm / inverseDistanceSum);
   return itf;
 }
 
@@ -301,11 +302,10 @@ ReflectionInfos interpolate(ReflectionInfos::rc infos, deg alphaStep,
           for (uint i = iBegin; i < iEnd; ++i)
             avg += itfs.at(i);
 
-          interpolatedInfos.append(ReflectionInfo(
-              alpha, beta, infos.first().rgeGamma(),
-              avg.inten/n, qQNaN(),
-              avg.tth  /n, qQNaN(),
-              avg.fwhm /n, qQNaN()));
+          interpolatedInfos.append(ReflectionInfo(alpha, beta, infos.first().rgeGma(),
+              avg.inten / n, inten_t(qQNaN()),
+              avg.tth   / n, tth_t(qQNaN()),
+              avg.fwhm  / n, fwhm_t(qQNaN())));
           continue;
         }
 
@@ -320,8 +320,10 @@ ReflectionInfos interpolate(ReflectionInfos::rc infos, deg alphaStep,
       // averagingRadius?).
       itf_t itf = interpolateValues(idwRadius, infos, alpha, beta);
       interpolatedInfos.append(
-        ReflectionInfo(alpha, beta, infos.first().rgeGamma(),
-                       itf.inten, qQNaN(), itf.tth, qQNaN(), itf.fwhm, qQNaN()));
+        ReflectionInfo(alpha, beta, infos.first().rgeGma(),
+                       itf.inten, inten_t(qQNaN()),
+                       itf.tth,   tth_t(qQNaN()),
+                       itf.fwhm,  fwhm_t(qQNaN())));
     }
   }
 

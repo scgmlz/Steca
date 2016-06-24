@@ -170,7 +170,7 @@ Angles::rc Lens::angles(uint i, uint j) const {
   return angleMap_->at(i, j);
 }
 
-Range Lens::gammaRangeAt(qreal tth) const {
+gma_rge Lens::gmaRangeAt(tth_t tth) const {
   auto sz = size();
   uint w = sz.w, h = sz.h;
 
@@ -180,27 +180,27 @@ Range Lens::gammaRangeAt(qreal tth) const {
     for (uint i = 1; i < w; ++i) {
       auto tthMin = angles(i-1, j).tth, tthMax = angles(i, j).tth;
       if (tthMin <= tth && tth < tthMax)
-        rge.extendBy(angles(i - 1, j).gamma);
+        rge.extendBy(angles(i - 1, j).gma);
     }
   }
 
   return rge;
 }
 
-Curve Lens::makeCurve(Range::rc gammaRange, Range::rc tthRange) const {
+Curve Lens::makeCurve(gma_rge::rc gmaRge, tth_rge::rc tthRge) const {
   auto s = size();
   uint w = s.w, h = s.h;
 
-  qreal const deltaTTH = tthRange.width() / w;
+  tth_t deltaTth = tthRge.width() / w;
 
   qreal_vec intens_vec(w);
   uint_vec  counts_vec(w, 0);
 
   for_ij (w, h) {
     auto const& as = angles(i, j);
-    if (!gammaRange.contains(as.gamma)) continue;
+    if (!gmaRge.contains(as.gma)) continue;
 
-    int bin = qFloor((as.tth - tthRange.min) / deltaTTH);
+    int bin = qFloor((as.tth - tthRge.min) / deltaTth);
 
     if (bin < 0 || to_i(w) <= bin)
       continue;  // outside of the cut
@@ -218,7 +218,7 @@ Curve Lens::makeCurve(Range::rc gammaRange, Range::rc tthRange) const {
     auto in  = intens_vec.at(i);
     auto cnt = counts_vec.at(i);
     if (cnt > 0) in /= cnt;
-    res.append(tthRange.min + deltaTTH * i, in);
+    res.append(tthRge.min + deltaTth * i, in);
   }
 
   return res;

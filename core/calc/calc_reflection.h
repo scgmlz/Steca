@@ -19,6 +19,7 @@
 
 #include "fit/fit_fun.h"
 #include "typ/typ_strlst.h"
+#include "typ/typ_types.h"
 #include <QSharedPointer>
 
 namespace calc {
@@ -43,8 +44,8 @@ public:
 
   void invalidateGuesses();
 
-  void setGuessPeak(typ::XY::rc xy) { peakFunction_->setGuessedPeak(xy);   }
-  void setGuessFWHM(qreal fwhm)     { peakFunction_->setGuessedFWHM(fwhm); }
+  void setGuessPeak(peak_t::rc peak) { peakFunction_->setGuessedPeak(peak); }
+  void setGuessFWHM(fwhm_t fwhm)     { peakFunction_->setGuessedFWHM(fwhm); }
 
   void fit(typ::Curve::rc);
 

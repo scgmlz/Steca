@@ -241,9 +241,9 @@ shp_Lens Session::lens(Dataset::rc dataset, Datasets::rc datasets, bool trans,
 // Calculates the polefigure coordinates alpha and beta with regards to
 // sample orientation and diffraction angles.
 // tth: Center of reflection's 2theta interval.
-// gamma: Center of gamma slice.
-void calculateAlphaBeta(Dataset::rc dataset, deg tth, deg gamma, deg& alpha,
-                        deg& beta) {
+// gma: Center of gamma slice.
+void calculateAlphaBeta(Dataset::rc dataset, tth_t tth, gma_t gma,
+                        deg& alpha, deg& beta) {
   // Sample rotations.
   rad omg = dataset.omg().toRad();
   rad phi = dataset.phi().toRad();
@@ -258,7 +258,7 @@ void calculateAlphaBeta(Dataset::rc dataset, deg tth, deg gamma, deg& alpha,
       matrix3d::rotationCWz(phi)
     * matrix3d::rotationCWx(chi)
     * matrix3d::rotationCWz(omg)
-    * matrix3d::rotationCWx(gamma.toRad())
+    * matrix3d::rotationCWx(gma.toRad())
     * matrix3d::rotationCCWz(tth.toRad() / 2)
     * vector3d(0, 1, 0);
 
@@ -281,18 +281,17 @@ void calculateAlphaBeta(Dataset::rc dataset, deg tth, deg gamma, deg& alpha,
   beta  = betaRad.toDeg();
 }
 
-Curve Session::makeCurve(shp_Lens lens, Range::rc gammaSector) const {
-  Curve curve = lens->makeCurve(gammaSector, lens->angleMap().rgeTth());
+Curve Session::makeCurve(shp_Lens lens, gma_rge::rc gmaSector) const {
+  Curve curve = lens->makeCurve(gmaSector, lens->angleMap().rgeTth());
   curve.subtract(fit::Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
 
   return curve;
 }
 
 // Fits reflection to the given gamma sector and constructs a ReflectionInfo.
-ReflectionInfo Session::makeReflectionInfo(shp_Lens     lens,
-                                           Reflection::rc reflection,
-                                           Range::rc      gammaSector) const {
-  Curve curve = makeCurve(lens, gammaSector);
+ReflectionInfo Session::makeReflectionInfo(
+    shp_Lens lens, Reflection::rc reflection, gma_rge::rc gmaSector) const {
+  Curve curve = makeCurve(lens, gmaSector);
 
   scoped<fit::PeakFunction*> peakFunction(reflection.peakFunction().clone());
 
@@ -302,23 +301,23 @@ ReflectionInfo Session::makeReflectionInfo(shp_Lens     lens,
   deg     alpha, beta;
 
   Dataset::rc dataset = lens->dataset();
-  calculateAlphaBeta(dataset, rgeTth.center(), gammaSector.center(), alpha,
+  calculateAlphaBeta(dataset, rgeTth.center(), gmaSector.center(), alpha,
                      beta);
 
-  XY    peak = peakFunction->fittedPeak();
-  qreal fwhm = peakFunction->fittedFWHM();
-  XY    peakError = peakFunction->peakError();
-  qreal fwhmError = peakFunction->fwhmError();
+  peak_t peak      = peakFunction->fittedPeak();
+  fwhm_t fwhm      = peakFunction->fittedFWHM();
+  peak_t peakError = peakFunction->peakError();
+  fwhm_t fwhmError = peakFunction->fwhmError();
 
   shp_Metadata metadata = dataset.metadata();
   ENSURE(metadata)
 
   return rgeTth.contains(peak.x)
-             ? ReflectionInfo(metadata, alpha, beta, gammaSector,
-                              inten_t(peak.y), peakError.y,
-                              peak.x, peakError.x,
-                              fwhm, fwhmError)
-             : ReflectionInfo(metadata, alpha, beta, gammaSector);
+             ? ReflectionInfo(metadata, alpha, beta, gmaSector,
+                              inten_t(peak.y), inten_t(peakError.y),
+                              tth_t(peak.x),   tth_t(peakError.x),
+                              fwhm_t(fwhm),    fwhm_t(fwhmError))
+             : ReflectionInfo(metadata, alpha, beta, gmaSector);
 }
 
 /* Gathers ReflectionInfos from Datasets.
@@ -327,10 +326,9 @@ ReflectionInfo Session::makeReflectionInfo(shp_Lens     lens,
  * Even though the betaStep of the equidistant polefigure grid is needed here,
  * the returned infos won't be on the grid. REVIEW gammaStep separately?
  */
-ReflectionInfos Session::makeReflectionInfos(Datasets::rc   datasets,
-                                             Reflection::rc reflection,
-                                             deg gammaStep, Range::rc gammaRange,
-                                             Progress* progress)
+ReflectionInfos Session::makeReflectionInfos(
+    Datasets::rc datasets, Reflection::rc reflection,
+    gma_t gmaStep, gma_rge::rc gmaRge, Progress* progress)
 {
   ReflectionInfos infos;
 
@@ -339,20 +337,17 @@ ReflectionInfos Session::makeReflectionInfos(Datasets::rc   datasets,
       progress->step();
 
     auto l = lens(*dataset, datasets, true, true, norm_);
-    Range lRange = l->gammaRangeAt(reflection.range().center());
+    Range lRange = l->gmaRangeAt(reflection.range().center());
 
-    Range rgeGamma = gammaRange.isValid()
-                    ? gammaRange.intersect(lRange)
-                    : lRange;
-
-    if (rgeGamma.isEmpty())
+    Range rgeGma = gmaRge.isValid() ? gmaRge.intersect(lRange) : lRange;
+    if (rgeGma.isEmpty())
       continue;
 
-    qreal step = gammaStep;
-    for_i (rgeGamma.numSlices(step)) {
-      qreal min = rgeGamma.min + i * step;
-      Range gammaStripe(min, min + step);
-      auto  refInfo = makeReflectionInfo(l, reflection, gammaStripe);
+    qreal step = gmaStep;
+    for_i (rgeGma.numSlices(step)) {
+      qreal min = rgeGma.min + i * step;
+      gma_rge gmaStripe(min, min + step);
+      auto  refInfo = makeReflectionInfo(l, reflection, gmaStripe);
       if (!qIsNaN(refInfo.inten()))
         infos.append(refInfo);
     }
@@ -394,9 +389,9 @@ qreal Session::calcAvgBackground(Dataset::rc dataset) const {
   auto l = lens(dataset, dataset.datasets(), true, true, eNorm::NONE);
 
   auto map = angleMap(dataset);
-  Curve gammaCurve = l->makeCurve(map->rgeGamma(), map->rgeTth());
+  Curve gmaCurve = l->makeCurve(map->rgeGma(), map->rgeTth());
 
-  auto bgPolynom = fit::Polynom::fromFit(bgPolyDegree_, gammaCurve, bgRanges_);
+  auto bgPolynom = fit::Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
   return bgPolynom.avgY(map->rgeTth());
 }
 

@@ -56,17 +56,17 @@ struct OutputData {
   OutputData() {
   }
 
-  OutputData(typ::Curve curve, data::Dataset dataset, typ::Range gammaStripe, uint picNum) :
-  curve_(curve), dataset_(dataset), gammaStripe_(gammaStripe), picNum_(picNum) {
+  OutputData(typ::Curve curve, data::Dataset dataset, gma_rge gmaStripe, uint picNum)
+  : curve_(curve), dataset_(dataset), gmaStripe_(gmaStripe), picNum_(picNum) {
   }
 
   typ::Curve curve_;
   data::Dataset dataset_;
-  typ::Range gammaStripe_;
+  gma_rge gmaStripe_;
   uint picNum_;
 
   bool isValid() {
-   return (!dataset_.metadata().isNull() || !curve_.isEmpty() || gammaStripe_.isValid());
+   return (!dataset_.metadata().isNull() || !curve_.isEmpty() || gmaStripe_.isValid());
   }
 
 };
@@ -88,23 +88,23 @@ DiffractogramsFrame::DiffractogramsFrame(TheHub &hub, rcstr title, QWidget *pare
   });
 }
 
-OutputDataCollection DiffractogramsFrame::collectCurves(typ::Range::rc rgeGamma, qreal gammaStep,
-                                                       data::Dataset::rc dataset, uint picNum) {
+OutputDataCollection DiffractogramsFrame::collectCurves(
+    gma_rge::rc rgeGma, gma_t gmaStep, data::Dataset::rc dataset, uint picNum) {
   auto lens = hub_.lens(dataset);
   auto &map = lens->angleMap();
 
-  typ::Range rge = map.rgeGamma();
-  if (rgeGamma.isValid())
-    rge = rge.intersect(rgeGamma);
+  typ::Range rge = map.rgeGma();
+  if (rgeGma.isValid())
+    rge = rge.intersect(rgeGma);
 
   OutputDataCollection outputData;
-  qreal step = gammaStep;
+  qreal step = gmaStep;
   for_i (rge.numSlices(step)) {
     qreal min = rge.min + i * step;
-    typ::Range gammaStripe(min, min + step);
+    gma_rge gmaStripe(min, min + step);
 
-    auto curve = lens->makeCurve(gammaStripe, map.rgeTth());
-    outputData.append(OutputData(curve,dataset,gammaStripe,picNum));
+    auto curve = lens->makeCurve(gmaStripe, map.rgeTth());
+    outputData.append(OutputData(curve, dataset, gmaStripe, picNum));
   }
   return outputData;
 }
@@ -113,17 +113,17 @@ OutputData DiffractogramsFrame::collectCurve(data::Dataset::rc dataset) {
   auto lens = hub_.lens(dataset);
   auto &map = lens->angleMap();
 
-  auto curve = lens->makeCurve(map.rgeGamma(), map.rgeTth());
+  auto curve = lens->makeCurve(map.rgeGma(), map.rgeTth());
 
-  return OutputData(curve,dataset,map.rgeGamma(),0); // TODO current picture number
+  return OutputData(curve, dataset, map.rgeGma(), 0); // TODO current picture number
 }
 
 OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
-  typ::deg gammaStep = params_->stepGamma->value();
+  gma_t gmaStep = params_->stepGamma->value();
 
-  typ::Range rgeGamma;
+  typ::Range rgeGma;
   if (params_->cbLimitGamma->isChecked())
-    rgeGamma.safeSet(params_->limitGammaMin->value(),
+    rgeGma.safeSet(params_->limitGammaMin->value(),
                      params_->limitGammaMax->value());
 
   auto &datasets = hub_.collectedDatasets();
@@ -133,7 +133,7 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
   uint picNum = 1;
   for (data::shp_Dataset dataset: datasets) {
     progress.step();
-    allOutputData.append(collectCurves(rgeGamma, gammaStep, *dataset, picNum));
+    allOutputData.append(collectCurves(rgeGma, gmaStep, *dataset, picNum));
     ++picNum;
   }
 
@@ -154,8 +154,8 @@ auto writeMetaData = [](OutputData outputData, QTextStream& stream, str separato
 
   stream << "Comment:"  << separator << outputData.dataset_.metadata()->comment << '\n';
   stream << "Date:" << separator << outputData.dataset_.metadata()->date << '\n';
-  stream << "Gamma Range max:" << separator << outputData.gammaStripe_.min << '\n';
-  stream << "Gamma Range max:" << separator << outputData.gammaStripe_.max << '\n';
+  stream << "Gamma Range max:" << separator << outputData.gmaStripe_.min << '\n';
+  stream << "Gamma Range max:" << separator << outputData.gmaStripe_.max << '\n';
 
   for_i (data::Metadata::numAttributes(true)) {
     stream << data::Metadata::attributeTag(i) << ": " <<

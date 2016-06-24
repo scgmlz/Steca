@@ -192,11 +192,11 @@ calc::shp_Lens TheHub::lensNoCut(data::Dataset::rc dataset) const {
 }
 
 calc::ReflectionInfos TheHub::makeReflectionInfos(
-    calc::Reflection::rc reflection, typ::deg gammaStep, typ::Range::rc rgeGamma,
+    calc::Reflection::rc reflection, gma_t gmaStep, gma_rge::rc rgeGma,
     Progress* progress)
 {
-  return session->makeReflectionInfos(collectedDatasets(), reflection, gammaStep,
-                                      rgeGamma, progress);
+  return session->makeReflectionInfos(collectedDatasets(), reflection,
+                                      gmaStep, rgeGma, progress);
 }
 
 static str const KEY_FILES("files");
@@ -479,8 +479,9 @@ void TheHub::setFittingTab(eFittingTab tab) {
 
 void TheHub::setImageRotate(typ::ImageTransform rot) {
   pcstr rotateIconFile, mirrorIconFile;
+
   switch (rot.val & 3) {
-  case 0:
+  default /* case */:
     rotateIconFile = ":/icon/rotate0";
     mirrorIconFile = ":/icon/mirrorHorz";
     break;
@@ -511,7 +512,7 @@ void TheHub::setImageMirror(bool on) {
   emit sigGeometryChanged();
 }
 
-void TheHub::setNorm(typ::eNorm norm) {
+void TheHub::setNorm(eNorm norm) {
   session->setNorm(norm);
   emit sigNormChanged();
 }

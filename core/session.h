@@ -135,17 +135,17 @@ public:
 // lenses
 public:
   calc::shp_ImageLens lens(typ::Image::rc, data::Datasets::rc, bool trans, bool cut) const;
-  calc::shp_Lens lens(data::Dataset::rc, data::Datasets::rc, bool trans, bool cut, typ::eNorm) const;
+  calc::shp_Lens lens(data::Dataset::rc, data::Datasets::rc, bool trans, bool cut, eNorm) const;
 
-  typ::Curve makeCurve(calc::shp_Lens, typ::Range::rc gammaSector) const;
+  typ::Curve makeCurve(calc::shp_Lens, gma_rge::rc) const;
 
   // reflections
   calc::ReflectionInfo makeReflectionInfo(
-      calc::shp_Lens, calc::Reflection::rc, typ::Range::rc gammaSector) const;
+      calc::shp_Lens, calc::Reflection::rc, gma_rge::rc) const;
 
   calc::ReflectionInfos makeReflectionInfos(
       data::Datasets::rc, calc::Reflection::rc,
-      typ::deg betaStep, typ::Range::rc gammaRange, Progress* = nullptr);
+      gma_t gmaStep, gma_rge::rc, Progress* = nullptr);
 // fitting
 private:
   uint   bgPolyDegree_;
@@ -169,11 +169,11 @@ public:
 
 // normalization
 private:
-  typ::eNorm norm_;
+  eNorm norm_;
 
 public:
-  typ::eNorm norm() const { return norm_; }
-  void setNorm(typ::eNorm);
+  eNorm norm() const { return norm_; }
+  void setNorm(eNorm);
 
 public:
   qreal calcAvgBackground(data::Dataset::rc) const;

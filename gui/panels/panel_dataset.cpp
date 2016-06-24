@@ -378,7 +378,7 @@ DatasetOptions2::DatasetOptions2(TheHub& hub)
   });
 
   connect(comboNormType_, slot(QComboBox,currentIndexChanged,int), [this](int index) {
-    hub_.setNorm(typ::eNorm(index));
+    hub_.setNorm(eNorm(index));
   });
 }
 

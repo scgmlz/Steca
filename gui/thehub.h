@@ -115,7 +115,7 @@ public:
 
 public:
   calc::ReflectionInfos makeReflectionInfos(calc::Reflection::rc,
-      typ::deg betaStep, typ::Range::rc rgeGamma, Progress* = nullptr);
+      gma_t gmaStep, gma_rge::rc, Progress* = nullptr);
 
 public:
   void       saveSession(QFileInfo const&) const;
@@ -197,11 +197,11 @@ private:
   void setImageMirror(bool);
 
 public:
-  void setNorm(typ::eNorm);
+  void setNorm(eNorm);
 
 public:
-  typ::Ranges::rc bgRanges()         const { return session->bgRanges();     }
-  uint            bgPolyDegree()     const { return session->bgPolyDegree(); }
+  typ::Ranges::rc bgRanges()          const { return session->bgRanges();     }
+  uint            bgPolyDegree()      const { return session->bgPolyDegree(); }
 
   calc::Reflections::rc reflections() const { return session->reflections();  }
 };

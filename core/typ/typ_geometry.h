@@ -18,10 +18,9 @@
 #define TYP_GEOMETRY_H
 
 #include "def/defs.h"
-#include "typ/typ_angles.h"
 #include "typ/typ_array2d.h"
 #include "typ/typ_ij.h"
-#include "typ/typ_range.h"
+#include "typ/typ_types.h"
 #include <QSharedPointer>
 
 namespace typ {
@@ -64,10 +63,11 @@ struct ImageCut {
 struct Angles {
   THIS(Angles)
 
-  deg gamma, tth;
+  gma_t gma;
+  tth_t tth;
 
   Angles();
-  Angles(deg gamma, deg tth);
+  Angles(gma_t, tth_t);
 };
 
 class AngleMap {
@@ -76,7 +76,7 @@ public:
   struct Key {
     THIS(Key)
 
-    Key(Geometry::rc, size2d::rc, ImageCut::rc, IJ::rc midPix, deg midTth);
+    Key(Geometry::rc, size2d::rc, ImageCut::rc, IJ::rc midPix, tth_t midTth);
 
     int compare(rc) const;
 
@@ -88,7 +88,7 @@ public:
     size2d   size;
     ImageCut cut;
     IJ       midPix;
-    deg      midTth;
+    tth_t    midTth;
   };
 
   AngleMap(Key::rc);
@@ -97,14 +97,15 @@ public:
     return arrAngles_.at(i, j);
   }
 
-  Range::rc rgeGamma() const { return rgeGamma_; }
-  Range::rc rgeTth()   const { return rgeTth_;   }
+  gma_rge rgeGma() const { return rgeGma_; }
+  tth_rge rgeTth() const { return rgeTth_;   }
 
 private:
   void calculate(Key::rc);
 
   Array2D<Angles> arrAngles_;
-  Range           rgeGamma_, rgeTth_;
+  gma_rge rgeGma_;
+  tth_rge rgeTth_;
 };
 
 typedef QSharedPointer<AngleMap> shp_AngleMap;

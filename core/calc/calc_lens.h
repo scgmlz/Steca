@@ -24,7 +24,6 @@
 #include "typ/typ_geometry.h"
 #include "typ/typ_image.h"
 #include "typ/typ_image_transform.h"
-#include "typ/typ_range.h"
 #include "typ/typ_strlst.h"
 #include "typ/typ_types.h"
 #include <QSharedPointer>
@@ -45,7 +44,7 @@ public:
             typ::ImageCut::rc, typ::ImageTransform::rc);
 
   typ::size2d size() const;
-  typ::inten_t inten(uint i, uint j)  const;
+  inten_t inten(uint i, uint j)  const;
 
   typ::Range::rc rgeInten(bool fixed) const;
 
@@ -68,9 +67,9 @@ protected:
   typ::ImageTransform imageTransform_;
   typ::ImageCut       imageCut_;
 
-  typ::Array2D<typ::inten_t> intensCorr_;
+  typ::Array2D<inten_t> intensCorr_;
   bool                hasNaNs_;
-  typ::inten_t        normFactor_;
+  inten_t             normFactor_;
 
   mutable typ::Range rgeInten_;
 };
@@ -86,20 +85,20 @@ public:
 
   Lens(core::Session const&, data::Dataset::rc,
        typ::Image const* corr, data::Datasets::rc,
-       bool trans, bool cut, typ::eNorm norm,
+       bool trans, bool cut, eNorm norm,
        typ::ImageCut::rc, typ::ImageTransform::rc);
 
   typ::Angles::rc angles(uint i, uint j) const;
-  typ::Range gammaRangeAt(qreal tth) const;
 
-  typ::Curve makeCurve(typ::Range::rc gamma, typ::Range::rc tth) const;
+  gma_rge    gmaRangeAt(tth_t) const;
+  typ::Curve makeCurve(gma_rge::rc, tth_rge::rc) const;
   typ::Curve makeAvgCurve() const;
 
   data::Dataset::rc dataset()  const { return dataset_;   }
   typ::AngleMap::rc angleMap() const { return *angleMap_; }
 
 private:
-  void setNorm(typ::eNorm);
+  void setNorm(eNorm);
 
   data::Dataset::rc dataset_;
   typ::shp_AngleMap angleMap_;

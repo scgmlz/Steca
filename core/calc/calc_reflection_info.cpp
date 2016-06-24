@@ -81,43 +81,52 @@ cmp_vec ReflectionInfo::dataCmps() {
 
 ReflectionInfo::ReflectionInfo()
 : ReflectionInfo(shp_Metadata(),
-                 qQNaN(), qQNaN(), Range(), inten_t(qQNaN()), qQNaN(), qQNaN(),
-                 qQNaN(), qQNaN(), qQNaN())
+                 qQNaN(), qQNaN(), Range(),
+                 inten_t(qQNaN()), inten_t(qQNaN()),
+                 tth_t(qQNaN()),   tth_t(qQNaN()),
+                 qQNaN(), qQNaN())
 {
 }
 
 ReflectionInfo::ReflectionInfo(shp_Metadata md, deg alpha, deg beta,
-                               Range::rc rgeGamma,
-                               inten_t inten, qreal intenError,
-                               deg tth, deg tthError,
-                               qreal fwhm, qreal fwhmError)
-: md_(md), alpha_(alpha), beta_(beta), rgeGamma_(rgeGamma)
+                               gma_rge rgeGma,
+                               inten_t inten, inten_t intenError,
+                               tth_t   tth,   tth_t tthError,
+                               fwhm_t  fwhm,  fwhm_t fwhmError)
+: md_(md), alpha_(alpha), beta_(beta), rgeGma_(rgeGma)
 , inten_(inten), intenError_(intenError)
-, tth_(tth), tthError_(tthError)
-, fwhm_(fwhm), fwhmError_(fwhmError)
+, tth_(tth),     tthError_(tthError)
+, fwhm_(fwhm),  fwhmError_(fwhmError)
 {
 }
 
 ReflectionInfo::ReflectionInfo(shp_Metadata md, deg alpha, deg beta,
-                               Range::rc rgeGamma)
-: ReflectionInfo(md, alpha, beta, rgeGamma, inten_t(qQNaN()), qQNaN(), qQNaN(), qQNaN(), qQNaN(), qQNaN())
+                               gma_rge rgeGma)
+: ReflectionInfo(md, alpha, beta, rgeGma,
+                 inten_t(qQNaN()), inten_t(qQNaN()),
+                 tth_t(qQNaN()),   tth_t(qQNaN()),
+                 fwhm_t(qQNaN()),  fwhm_t(qQNaN()))
 {
 }
 
-ReflectionInfo::ReflectionInfo(deg alpha, deg beta, Range::rc rgeGamma,
-  inten_t inten, qreal intenError, deg tth, deg tthError, qreal fwhm, qreal fwhmError)
-: ReflectionInfo(shp_Metadata(), alpha, beta, rgeGamma, inten, intenError, tth, tthError, fwhm, fwhmError)
+ReflectionInfo::ReflectionInfo(deg alpha, deg beta, gma_rge rgeGma,
+    inten_t inten, inten_t intenError, tth_t tth, tth_t tthError, fwhm_t fwhm, fwhm_t fwhmError)
+: ReflectionInfo(shp_Metadata(), alpha, beta, rgeGma,
+                 inten, intenError, tth, tthError, fwhm, fwhmError)
 {
 }
 
 ReflectionInfo::ReflectionInfo(deg alpha, deg beta)
-: ReflectionInfo(alpha, beta, Range(), inten_t(qQNaN()), qQNaN(), qQNaN(), qQNaN(), qQNaN(), qQNaN())
+: ReflectionInfo(alpha, beta, Range(),
+                 inten_t(qQNaN()), inten_t(qQNaN()),
+                 tth_t(qQNaN()), tth_t(qQNaN()),
+                 fwhm_t(qQNaN()), fwhm_t(qQNaN()))
 {
 }
 
 row_t ReflectionInfo::data() const {
   row_t row{QVariant(alpha()), QVariant(beta()),
-            QVariant(rgeGamma().min), QVariant(rgeGamma().max),
+            QVariant(rgeGma().min), QVariant(rgeGma().max),
             QVariant(inten()), QVariant(intenError()),
             QVariant(tth()),   QVariant(tthError()),
             QVariant(fwhm()),  QVariant(fwhmError())};
