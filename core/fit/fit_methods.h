@@ -27,7 +27,7 @@ public:
   Method();
   virtual ~Method();
 
-  void fit(typ::Function&, Curve::rc);
+  void fit(typ::Function&, typ::Curve::rc);
 
 protected:
   virtual void approximate(qreal*, qreal const*, qreal const*, qreal*, uint,

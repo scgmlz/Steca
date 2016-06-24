@@ -21,9 +21,10 @@
 namespace fit {
 //------------------------------------------------------------------------------
 
+using namespace typ;
+
 static str const
     KEY_POLYNOM("polynom"),
-
     KEY_RAW("Raw"), KEY_GAUSSIAN("Gaussian"), KEY_LORENTZIAN("Lorentzian"),
     KEY_PSEUDOVOIGT1("PseudoVoigt1"), KEY_PSEUDOVOIGT2("PseudoVoigt2");
 

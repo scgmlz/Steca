@@ -25,12 +25,6 @@ namespace fit {
 //------------------------------------------------------------------------------
 // a polynom(ial)
 
-using typ::Range;
-using typ::Ranges;
-using typ::Curve;
-using typ::JsonObj;
-using typ::XY;
-
 class Polynom : public typ::SimpleFunction {
   SUPER(Polynom, typ::SimpleFunction)
 public:
@@ -42,14 +36,14 @@ public:
   qreal y(qreal x, qreal const* parValues = nullptr) const;
   qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-  qreal avgY(Range::rc, qreal const* parValues = nullptr) const;
+  qreal avgY(typ::Range::rc, qreal const* parValues = nullptr) const;
 
-  void fit(Curve::rc, Ranges::rc);
-  static Polynom fromFit(uint degree, Curve::rc, Ranges::rc);
+  void fit(typ::Curve::rc, typ::Ranges::rc);
+  static Polynom fromFit(uint degree, typ::Curve::rc, typ::Ranges::rc);
 
 public:
   typ::JsonObj saveJson() const;
-  void loadJson(JsonObj::rc) THROWS;
+  void loadJson(typ::JsonObj::rc) THROWS;
 };
 
 //------------------------------------------------------------------------------
@@ -71,39 +65,38 @@ public:
 
   virtual ePeakType type() const = 0;
 
-  Range::rc range() const { return range_; }
-  virtual void setRange(Range::rc);
+  typ::Range::rc range() const { return range_; }
+  virtual void setRange(typ::Range::rc);
 
-  virtual void setGuessedPeak(XY::rc);
+  virtual void setGuessedPeak(typ::XY::rc);
   virtual void setGuessedFWHM(qreal);
 
-  XY::rc guessedPeak() const { return guessedPeak_; }
-  qreal  guessedFWHM() const { return guessedFWHM_; }
+  typ::XY::rc guessedPeak() const { return guessedPeak_; }
+  qreal       guessedFWHM() const { return guessedFWHM_; }
 
-  // TODO typedefs XY qreal
-  virtual XY    fittedPeak() const = 0;
-  virtual qreal fittedFWHM() const = 0;
+  virtual typ::XY fittedPeak() const = 0;
+  virtual qreal   fittedFWHM() const = 0;
 
-  virtual XY    peakError() const = 0;
-  virtual qreal fwhmError() const = 0;
+  virtual typ::XY peakError() const = 0;
+  virtual qreal   fwhmError() const = 0;
 
   void reset();
 
-  void fit(Curve::rc curve ) { return fit(curve, range_); }
+  void fit(typ::Curve::rc curve ) { return fit(curve, range_); }
 
-  virtual void fit(Curve::rc, Range::rc);
+  virtual void fit(typ::Curve::rc, typ::Range::rc);
 
 protected:
-  Curve prepareFit(Curve::rc, Range::rc);
+  typ::Curve prepareFit(typ::Curve::rc, typ::Range::rc);
 
 public:
-  JsonObj saveJson() const;
-  void loadJson(JsonObj::rc) THROWS;
+  typ::JsonObj saveJson() const;
+  void loadJson(typ::JsonObj::rc) THROWS;
 
 protected:
-  Range range_;
-  XY    guessedPeak_;
-  qreal guessedFWHM_;
+  typ::Range range_;
+  typ::XY    guessedPeak_;
+  qreal      guessedFWHM_;
 };
 
 //------------------------------------------------------------------------------
@@ -118,17 +111,17 @@ public:
   qreal y(qreal x, qreal const* parValues = nullptr) const;
   qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-  XY    fittedPeak() const;
-  qreal fittedFWHM() const;
+  typ::XY fittedPeak() const;
+  qreal   fittedFWHM() const;
 
-  XY    peakError() const;
-  qreal fwhmError() const;
+  typ::XY peakError() const;
+  qreal   fwhmError() const;
 
-  void setRange(Range::rc);
-  void fit(Curve::rc, Range::rc);
+  void setRange(typ::Range::rc);
+  void fit(typ::Curve::rc, typ::Range::rc);
 
 private:
-  Curve fittedCurve_;  // saved from fitting
+  typ::Curve fittedCurve_;  // saved from fitting
   void  prepareY();
 
   mutable uint  x_count_;
@@ -136,7 +129,7 @@ private:
   mutable qreal sum_y_;
 
 public:
-  JsonObj saveJson() const;
+  typ::JsonObj saveJson() const;
 };
 
 //------------------------------------------------------------------------------
@@ -153,17 +146,17 @@ public:
   qreal y(qreal x, qreal const* parValues = nullptr) const;
   qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-  void setGuessedPeak(XY::rc);
+  void setGuessedPeak(typ::XY::rc);
   void setGuessedFWHM(qreal);
 
-  XY    fittedPeak() const;
-  qreal fittedFWHM() const;
+  typ::XY fittedPeak() const;
+  qreal   fittedFWHM() const;
 
-  XY    peakError() const;
-  qreal fwhmError() const;
+  typ::XY peakError() const;
+  qreal   fwhmError() const;
 
 public:
-  JsonObj saveJson() const;
+  typ::JsonObj saveJson() const;
 };
 
 //------------------------------------------------------------------------------
@@ -180,17 +173,17 @@ public:
   qreal y(qreal x, qreal const* parValues = nullptr) const;
   qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-  void setGuessedPeak(XY::rc);
+  void setGuessedPeak(typ::XY::rc);
   void setGuessedFWHM(qreal);
 
-  XY    fittedPeak() const;
-  qreal fittedFWHM() const;
+  typ::XY fittedPeak() const;
+  qreal   fittedFWHM() const;
 
-  XY    peakError() const;
-  qreal fwhmError() const;
+  typ::XY peakError() const;
+  qreal   fwhmError() const;
 
 public:
-  JsonObj saveJson() const;
+  typ::JsonObj saveJson() const;
 };
 
 //------------------------------------------------------------------------------
@@ -208,17 +201,17 @@ public:
   qreal y(qreal x, qreal const* parValues = nullptr) const;
   qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-  void setGuessedPeak(XY::rc);
+  void setGuessedPeak(typ::XY::rc);
   void setGuessedFWHM(qreal);
 
-  XY    fittedPeak() const;
-  qreal fittedFWHM() const;
+  typ::XY fittedPeak() const;
+  qreal   fittedFWHM() const;
 
-  XY    peakError() const;
-  qreal fwhmError() const;
+  typ::XY peakError() const;
+  qreal   fwhmError() const;
 
 public:
-  JsonObj saveJson() const;
+  typ::JsonObj saveJson() const;
 };
 
 //------------------------------------------------------------------------------
@@ -236,17 +229,17 @@ public:
   qreal y(qreal x, qreal const* parValues = nullptr) const;
   qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-  void setGuessedPeak(XY::rc);
+  void setGuessedPeak(typ::XY::rc);
   void setGuessedFWHM(qreal);
 
-  XY    fittedPeak() const;
-  qreal fittedFWHM() const;
+  typ::XY fittedPeak() const;
+  qreal   fittedFWHM() const;
 
-  XY    peakError() const;
-  qreal fwhmError() const;
+  typ::XY peakError() const;
+  qreal  fwhmError() const;
 
 public:
-  JsonObj saveJson() const;
+  typ::JsonObj saveJson() const;
 };
 
 //------------------------------------------------------------------------------

@@ -21,13 +21,15 @@
 namespace fit {
 //------------------------------------------------------------------------------
 
+using namespace typ;
+
 Method::Method() {
 }
 
 Method::~Method() {
 }
 
-void Method::fit(typ::Function& function, Curve::rc curve) {
+void Method::fit(Function& function, Curve::rc curve) {
   if (curve.isEmpty())
     return;
 
