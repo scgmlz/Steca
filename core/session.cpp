@@ -23,7 +23,7 @@ using namespace typ;
 using namespace data;
 using namespace calc;
 
-Session::Session() {
+Session::Session() : angleMapCache(123) { // TODO decide the cache size
   clear();
 }
 
@@ -41,7 +41,7 @@ void Session::clear() {
 
   norm_ = eNorm::NONE;
 
-  keyMap.clear();
+  angleMapCache.clear();
 }
 
 shp_File Session::file(uint i) const {
@@ -218,10 +218,10 @@ IJ Session::midPix() const {
 
 shp_AngleMap Session::angleMap(Dataset::rc dataset) const {
   AngleMap::Key key(geometry_, imageSize_, imageCut_, midPix(), dataset.midTth());
-  if (!keyMap.contains(key))
-    keyMap.insert(key, shp_AngleMap(new AngleMap(key)));
-
-  return keyMap.value(key);
+  shp_AngleMap map = angleMapCache.value(key);
+  if (map.isNull())
+    map = angleMapCache.insert(key, shp_AngleMap(new AngleMap(key)));
+  return map;
 }
 
 shp_ImageLens Session::lens(Image::rc image, Datasets::rc datasets, bool trans,

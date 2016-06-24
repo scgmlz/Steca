@@ -82,7 +82,11 @@ public:
       removeLru();
   }
 
-  void insert(Key const& key, shp p) {
+  void clear() {
+    trim(0);
+  }
+
+  shp insert(Key const& key, shp p) {
     trim(maxItems_ - 1);
     shp_time shpTime(p, timNow());
     EXPECT(!mapKey_.contains(key))
@@ -90,6 +94,7 @@ public:
     EXPECT(!mapTim_.contains(shpTime.tim))
     mapTim_.insert(shpTime.tim, it);
     ENSURE(mapKey_.count() == mapTim_.count())
+    return p;
   }
 
   shp remove(Key const& key) {

@@ -22,10 +22,10 @@
 #include "calc/calc_reflection_info.h"
 #include "data/data_file.h"
 #include "typ/typ_async.h"
+#include "typ/typ_cache.h"
 #include "typ/typ_geometry.h"
 #include "typ/typ_image.h"
 #include "typ/typ_image_transform.h"
-#include "typ/typ_map.h"
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -122,7 +122,7 @@ public:
 
 private:
   typ::Geometry geometry_;
-  mutable typ::map<typ::AngleMap::Key,typ::shp_AngleMap> keyMap;
+  mutable typ::cache_lru<typ::AngleMap::Key,typ::AngleMap> angleMapCache;
 
 public:
   typ::Geometry::rc geometry() const { return geometry_; }
