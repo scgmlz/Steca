@@ -7,7 +7,7 @@ class TestCore: public TestSuite {
   Q_OBJECT
 
 private slots:
-  void testNaNs();
+//  void testNaNs();
 };
 
 #endif

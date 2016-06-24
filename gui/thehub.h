@@ -18,10 +18,10 @@
 #define THEHUB_H
 
 #include "actions.h"
-#include "core_session.h"
-#include "core_session.h"
+#include "session.h"
 #include "models.h"
-#include "types/core_defs.h"
+#include "def/defs.h"
+
 #include <QAction>
 #include <QSettings>
 
@@ -82,7 +82,7 @@ private:
   void configActions();
 
 private:
-  QScopedPointer<core::Session> session;
+  scoped<core::Session*> session;
 
   bool isFixedIntenImageScale_;
   bool isFixedIntenDgramScale_;
@@ -101,21 +101,21 @@ public:  // files
   uint numFiles() const;
   str fileName(uint index) const;
   str filePath(uint index) const;
-  core::shp_File getFile(uint) const;
+  data::shp_File getFile(uint) const;
   void           remFile(uint);
 
   bool          hasCorrFile() const;
-  core::rcImage corrImage() const;
+  typ::Image::rc corrImage() const;
 
 public:
-  core::shp_ImageLens lensNoCut(core::rcImage) const;
+  calc::shp_ImageLens lensNoCut(typ::Image::rc) const;
 
-  core::shp_Lens lens(core::rcDataset) const;
-  core::shp_Lens lensNoCut(core::rcDataset) const;
+  calc::shp_Lens lens(data::Dataset::rc) const;
+  calc::shp_Lens lensNoCut(data::Dataset::rc) const;
 
 public:
-  core::ReflectionInfos makeReflectionInfos(core::rcReflection,
-      core::deg betaStep, core::rcRange rgeGamma, Progress* = nullptr);
+  calc::ReflectionInfos makeReflectionInfos(calc::Reflection::rc,
+      typ::deg betaStep, typ::Range::rc rgeGamma, Progress* = nullptr);
 
 public:
   void       saveSession(QFileInfo const&) const;
@@ -126,7 +126,7 @@ public:
 
 public:
   void addFile(rcstr filePath) THROWS;
-  void addFiles(str_lst const& filePaths) THROWS;
+  void addFiles(str_lst::rc filePaths) THROWS;
 
 private:
   uint_vec collectFromFiles_;
@@ -137,7 +137,7 @@ public:
   void collectDatasetsFromFiles(uint_vec);
   void combineDatasetsBy(uint);
 
-  uint_vec const& collectedFromFiles() const {
+  uint_vec::rc collectedFromFiles() const {
     return session->collectedFromFiles();
   }
 
@@ -147,36 +147,36 @@ public:
     return collectedDatasets().count();
   }
 
-  core::rcDatasets collectedDatasets() const {
+  data::Datasets::rc collectedDatasets() const {
     return session->collectedDatasets();
   }
 
-  str_lst const& collectedDatasetsTags() const {
+  str_lst::rc collectedDatasetsTags() const {
     return session->collectedDatasetsTags();
   }
 
   void setCorrFile(rcstr filePath) THROWS;
   void tryEnableCorrection(bool);
 
-  core::ImageCut const& imageCut() const;
-  void setImageCut(bool topLeft, bool linked, core::ImageCut const&);
+  typ::ImageCut::rc imageCut() const;
+  void setImageCut(bool topLeft, bool linked, typ::ImageCut::rc);
 
-  core::Geometry const& geometry() const;
+  typ::Geometry::rc geometry() const;
   void setGeometry(qreal detectorDistance, qreal pixSize, bool isMidPixOffset,
-                   core::rcIJ midPixOffset);
+                   typ::IJ::rc midPixOffset);
 
-  core::AngleMap const& angleMap(core::rcDataset) const;
+  typ::AngleMap::rc angleMap(data::Dataset::rc) const;
 
-  void setBgRanges(core::rcRanges);
-  void addBgRange(core::rcRange);
-  void remBgRange(core::rcRange);
+  void setBgRanges(typ::Ranges::rc);
+  void addBgRange(typ::Range::rc);
+  void remBgRange(typ::Range::rc);
 
   static uint constexpr MAX_POLYNOM_DEGREE = 4;
   void setBgPolyDegree(uint);
 
-  void setReflType(core::ePeakType);
+  void setReflType(fit::ePeakType);
 
-  void addReflection(core::ePeakType);
+  void addReflection(fit::ePeakType);
   void remReflection(uint);
 
   eFittingTab fittingTab() const { return fittingTab_; }
@@ -186,24 +186,24 @@ private:
   eFittingTab fittingTab_;
 
 private:
-  core::shp_Dataset    selectedDataset_;
-  core::shp_Reflection selectedReflection_;
+  data::shp_Dataset    selectedDataset_;
+  calc::shp_Reflection selectedReflection_;
 
 public:
-  core::shp_Dataset selectedDataset() const { return selectedDataset_; }
+  data::shp_Dataset selectedDataset() const { return selectedDataset_; }
 
 private:
-  void setImageRotate(core::ImageTransform);
+  void setImageRotate(typ::ImageTransform);
   void setImageMirror(bool);
 
 public:
-  void setNorm(core::eNorm);
+  void setNorm(typ::eNorm);
 
 public:
-  core::rcRanges bgRanges()         const { return session->bgRanges();     }
-  uint           bgPolyDegree()     const { return session->bgPolyDegree(); }
+  typ::Ranges::rc bgRanges()         const { return session->bgRanges();     }
+  uint            bgPolyDegree()     const { return session->bgPolyDegree(); }
 
-  core::rcReflections reflections() const { return session->reflections();  }
+  calc::Reflections::rc reflections() const { return session->reflections();  }
 };
 
 //------------------------------------------------------------------------------

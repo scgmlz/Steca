@@ -18,7 +18,8 @@
 #define ACTIONS_H
 
 #include "refhub.h"
-#include "types/core_defs.h"
+#include "def/defs.h"
+
 #include <QAction>
 
 namespace gui {
@@ -84,4 +85,4 @@ private:
 
 //------------------------------------------------------------------------------
 }
-#endif  // ACTIONS_H
+#endif // ACTIONS_H

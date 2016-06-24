@@ -18,7 +18,8 @@
 #define MAINWIN_H
 
 #include "thehub.h"
-#include "types/core_defs.h"
+#include "def/defs.h"
+
 #include <QMainWindow>
 
 namespace gui {
@@ -89,4 +90,4 @@ private:
 
 //------------------------------------------------------------------------------
 }
-#endif  // MAINWIN_H
+#endif // MAINWIN_H

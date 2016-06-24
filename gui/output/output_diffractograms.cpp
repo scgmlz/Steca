@@ -14,9 +14,9 @@
 // ************************************************************************** //
 
 #include "output_diffractograms.h"
-#include "core_lens.h"
+#include "calc/calc_lens.h"
 #include "thehub.h"
-#include "types/core_async.h"
+#include "typ/typ_async.h"
 #include <QDir>
 #include <QTextStream>
 
@@ -46,7 +46,7 @@ TabDiffractogramsSave::TabDiffractogramsSave(TheHub& hub, Params& params)
 }
 
 uint TabDiffractogramsSave::currType() const {
-  return fileTypes_->currentIndex();
+  return to_u(fileTypes_->currentIndex());
 }
 
 //------------------------------------------------------------------------------
@@ -56,13 +56,13 @@ struct OutputData {
   OutputData() {
   }
 
-  OutputData(core::Curve curve, core::Dataset dataset, core::Range gammaStripe, uint picNum) :
+  OutputData(typ::Curve curve, data::Dataset dataset, typ::Range gammaStripe, uint picNum) :
   curve_(curve), dataset_(dataset), gammaStripe_(gammaStripe), picNum_(picNum) {
   }
 
-  core::Curve curve_;
-  core::Dataset dataset_;
-  core::Range gammaStripe_;
+  typ::Curve curve_;
+  data::Dataset dataset_;
+  typ::Range gammaStripe_;
   uint picNum_;
 
   bool isValid() {
@@ -88,12 +88,12 @@ DiffractogramsFrame::DiffractogramsFrame(TheHub &hub, rcstr title, QWidget *pare
   });
 }
 
-OutputDataCollection DiffractogramsFrame::collectCurves(core::rcRange rgeGamma, qreal gammaStep,
-                                                       core::rcDataset dataset, uint picNum) {
+OutputDataCollection DiffractogramsFrame::collectCurves(typ::Range::rc rgeGamma, qreal gammaStep,
+                                                       data::Dataset::rc dataset, uint picNum) {
   auto lens = hub_.lens(dataset);
   auto &map = lens->angleMap();
 
-  core::Range rge = map.rgeGamma();
+  typ::Range rge = map.rgeGamma();
   if (rgeGamma.isValid())
     rge = rge.intersect(rgeGamma);
 
@@ -101,7 +101,7 @@ OutputDataCollection DiffractogramsFrame::collectCurves(core::rcRange rgeGamma, 
   qreal step = gammaStep;
   for_i (rge.numSlices(step)) {
     qreal min = rge.min + i * step;
-    core::Range gammaStripe(min, min + step);
+    typ::Range gammaStripe(min, min + step);
 
     auto curve = lens->makeCurve(gammaStripe, map.rgeTth());
     outputData.append(OutputData(curve,dataset,gammaStripe,picNum));
@@ -109,7 +109,7 @@ OutputDataCollection DiffractogramsFrame::collectCurves(core::rcRange rgeGamma, 
   return outputData;
 }
 
-OutputData DiffractogramsFrame::collectCurve(core::rcDataset dataset) {
+OutputData DiffractogramsFrame::collectCurve(data::Dataset::rc dataset) {
   auto lens = hub_.lens(dataset);
   auto &map = lens->angleMap();
 
@@ -119,9 +119,9 @@ OutputData DiffractogramsFrame::collectCurve(core::rcDataset dataset) {
 }
 
 OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
-  core::deg gammaStep = params_->stepGamma->value();
+  typ::deg gammaStep = params_->stepGamma->value();
 
-  core::Range rgeGamma;
+  typ::Range rgeGamma;
   if (params_->cbLimitGamma->isChecked())
     rgeGamma.safeSet(params_->limitGammaMin->value(),
                      params_->limitGammaMax->value());
@@ -131,7 +131,7 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
 
   OutputDataCollections allOutputData;
   uint picNum = 1;
-  for (core::shp_Dataset dataset: datasets) {
+  for (data::shp_Dataset dataset: datasets) {
     progress.step();
     allOutputData.append(collectCurves(rgeGamma, gammaStep, *dataset, picNum));
     ++picNum;
@@ -157,15 +157,16 @@ auto writeMetaData = [](OutputData outputData, QTextStream& stream, str separato
   stream << "Gamma Range max:" << separator << outputData.gammaStripe_.min << '\n';
   stream << "Gamma Range max:" << separator << outputData.gammaStripe_.max << '\n';
 
-  for_i (core::Metadata::numAttributes(true)) {
-    stream << core::Metadata::attributeTag(i) << ": " <<
+  for_i (data::Metadata::numAttributes(true)) {
+    stream << data::Metadata::attributeTag(i) << ": " <<
                         outputData.dataset_.metadata()->attributeValue(i).toDouble() << '\n';
   }
 };
 
 bool DiffractogramsFrame::writeCurrDiffractogramToFile() {
   auto outputData = outputCurrDiffractogram();
-  if (!outputData.isValid()) return false;
+  if (!outputData.isValid())
+    return false;
 
   auto ts = static_cast<TabDiffractogramsSave*>(tabSave_);
   auto s = ts->currType();
@@ -191,7 +192,8 @@ bool DiffractogramsFrame::writeAllDiffractogramsToFiles(bool oneFile) {
   auto outputCollections = outputAllDiffractograms();
   for (auto outputCollection : outputCollections) {
     for (auto outputData : outputCollection) {
-      if (!outputData.isValid()) return false;
+      if (!outputData.isValid())
+        return false;
     }
   }
 

@@ -15,7 +15,7 @@
 
 #include "output_diagrams.h"
 #include "thehub.h"
-#include "types/core_async.h"
+#include "typ/typ_async.h"
 #include <QDir>
 
 namespace gui { namespace output {
@@ -30,8 +30,8 @@ DiagramsParams::DiagramsParams(TheHub& hub) : super(hub) {
   rbInterp->hide();
   rbCalc->setChecked(true);
 
-  auto tags = core::ReflectionInfo::dataTags();
-  for_i (core::Metadata::numAttributes(false) - core::Metadata::numAttributes(true))
+  auto tags = calc::ReflectionInfo::dataTags();
+  for_i (data::Metadata::numAttributes(false) - data::Metadata::numAttributes(true))
     tags.removeLast(); // remove all tags that are not numbers
 
   auto g = gpAxes_->grid();
@@ -81,8 +81,8 @@ TabPlot::TabPlot() {
   graphSub_ = addGraph();
 }
 
-void TabPlot::plot(qreal_vec const& xs, qreal_vec const& ys,
-                   qreal_vec const& ysAdd, qreal_vec const& ysSub) {
+void TabPlot::plot(qreal_vec::rc xs,    qreal_vec::rc ys,
+                   qreal_vec::rc ysAdd, qreal_vec::rc ysSub) {
   EXPECT(xs.count() == ys.count())
 
   uint count = xs.count();
@@ -91,7 +91,7 @@ void TabPlot::plot(qreal_vec const& xs, qreal_vec const& ys,
   graphAdd_->clearData();
   graphSub_->clearData();
 
-  core::Range rgeX, rgeY;
+  typ::Range rgeX, rgeY;
 
   for_i (count) {
     rgeX.extendBy(xs.at(i));
@@ -111,13 +111,13 @@ void TabPlot::plot(qreal_vec const& xs, qreal_vec const& ys,
   yAxis->setVisible(true);
 
   graph_->setPen(QPen(Qt::blue));
-  graph_->addData(xs.q(), ys.q());
+  graph_->addData(xs.sup(), ys.sup());
 
   graphAdd_->setPen(QPen(Qt::green));
-  graphAdd_->addData(xs.q(), ysAdd.q());
+  graphAdd_->addData(xs.sup(), ysAdd.sup());
 
   graphSub_->setPen(QPen(Qt::red));
-  graphSub_->addData(xs.q(), ysSub.q());
+  graphSub_->addData(xs.sup(), ysSub.sup());
 
   replot();
 }

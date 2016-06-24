@@ -17,7 +17,8 @@
 #ifndef PANEL_DATASET_H
 #define PANEL_DATASET_H
 
-#include "core_dataset.h"
+#include "data/data_dataset.h"
+#include "calc/calc_lens.h"
 #include "panel.h"
 #include "views.h"
 
@@ -124,14 +125,14 @@ public:
   void setImageScale(uint);
 
 private:
-  QPixmap makePixmap(core::shp_ImageLens);
-  void    setDataset(core::shp_Dataset);
+  QPixmap makePixmap(calc::shp_ImageLens);
+  void    setDataset(data::shp_Dataset);
   void    render();
 
-  core::shp_Dataset dataset_;
+  data::shp_Dataset dataset_;
   ImageWidget *dataImageWidget_, *corrImageWidget_;
 };
 
 //------------------------------------------------------------------------------
 }}
-#endif  // PANEL_DATASET_H
+#endif // PANEL_DATASET_H

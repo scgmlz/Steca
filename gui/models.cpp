@@ -14,7 +14,7 @@
 // ************************************************************************** //
 
 #include "models.h"
-#include "core_reflection.h"
+#include "calc/calc_reflection.h"
 #include "thehub.h"
 #include <QCheckBox>
 
@@ -32,18 +32,19 @@ int FilesModel::columnCount(rcIndex) const {
 }
 
 int FilesModel::rowCount(rcIndex) const {
-  return hub_.numFiles();
+  return to_i(hub_.numFiles());
 }
 
 QVariant FilesModel::data(rcIndex index, int role) const {
   auto row = index.row(), rowCnt = rowCount();
-  if (row < 0 || rowCnt <= row) return EMPTY_VAR;
+  if (row < 0 || rowCnt <= row)
+    return EMPTY_VAR;
 
   switch (role) {
   case Qt::DisplayRole:
-    return hub_.fileName(row);
+    return hub_.fileName(to_u(row));
   case GetFileRole:
-    return QVariant::fromValue<core::shp_File>(hub_.getFile(row));
+    return QVariant::fromValue<data::shp_File>(hub_.getFile(to_u(row)));
   default:
     return EMPTY_VAR;
   }
@@ -64,33 +65,35 @@ DatasetsModel::DatasetsModel(gui::TheHub& hub)
 }
 
 int DatasetsModel::columnCount(rcIndex) const {
-  return COL_ATTRS + metaInfoNums_.count();
+  return COL_ATTRS + to_i(metaInfoNums_.count());
 }
 
 int DatasetsModel::rowCount(rcIndex) const {
-  return datasets_.count();
+  return to_i(datasets_.count());
 }
 
 QVariant DatasetsModel::data(rcIndex index, int role) const {
   int row = index.row();
-  if (row < 0 || rowCount() <= row) return EMPTY_VAR;
+  if (row < 0 || rowCount() <= row)
+    return EMPTY_VAR;
 
   switch (role) {
   case Qt::DisplayRole: {
     int col = index.column();
-    if (col < DCOL || columnCount() <= col) return EMPTY_VAR;
+    if (col < DCOL || columnCount() <= col)
+      return EMPTY_VAR;
 
     switch (col) {
     case COL_NUMBER:
-      return hub_.collectedDatasetsTags().at(row);
+      return hub_.collectedDatasetsTags().at(to_u(row));
     default:
-      return datasets_.at(row)->metadata()->attributeStrValue(
-          metaInfoNums_.at(col - COL_ATTRS));
+      return datasets_.at(to_u(row))->metadata()->attributeStrValue(
+          metaInfoNums_.at(to_u(col - COL_ATTRS)));
     }
   }
 
   case GetDatasetRole:
-    return QVariant::fromValue<core::shp_Dataset>(datasets_.at(row));
+    return QVariant::fromValue<data::shp_Dataset>(datasets_.at(to_u(row)));
   default:
     return EMPTY_VAR;
   }
@@ -104,11 +107,11 @@ QVariant DatasetsModel::headerData(int col, Qt::Orientation, int role) const {
   case COL_NUMBER:
     return "#";
   default:
-    return core::Metadata::attributeTag(metaInfoNums_.at(col - COL_ATTRS));
+    return data::Metadata::attributeTag(metaInfoNums_.at(to_u(col - COL_ATTRS)));
   }
 }
 
-void DatasetsModel::showMetaInfo(checkedinfo_vec const& infos_) {
+void DatasetsModel::showMetaInfo(checkedinfo_vec::rc infos_) {
   beginResetModel();
 
   metaInfoNums_.clear();
@@ -133,7 +136,7 @@ int ReflectionsModel::columnCount(rcIndex) const {
 }
 
 int ReflectionsModel::rowCount(rcIndex) const {
-  return hub_.reflections().count();
+  return to_i(hub_.reflections().count());
 }
 
 str ReflectionsModel::displayData(uint row, uint col) const {
@@ -141,7 +144,7 @@ str ReflectionsModel::displayData(uint row, uint col) const {
   case COL_ID:
     return str::number(row + 1);
   case COL_TYPE:
-    return core::Reflection::typeTag(hub_.reflections().at(row)->type());
+    return calc::Reflection::typeTag(hub_.reflections().at(row)->type());
   default:
     NEVER return EMPTY_STR;
   }
@@ -153,24 +156,26 @@ str ReflectionsModel::displayData(uint row) const {
 
 QVariant ReflectionsModel::data(rcIndex index, int role) const {
   int row = index.row();
-  if (row < 0 || rowCount() <= row) return EMPTY_VAR;
+  if (row < 0 || rowCount() <= row)
+    return EMPTY_VAR;
 
   switch (role) {
   case Qt::DisplayRole: {
     int col = index.column();
-    if (col < DCOL) return EMPTY_VAR;
+    if (col < DCOL)
+      return EMPTY_VAR;
 
     switch (col) {
     case COL_ID:
     case COL_TYPE:
-      return displayData(row, col);
+      return displayData(to_u(row), to_u(col));
     default:
       return EMPTY_VAR;
     }
   }
 
   case GetDatasetRole:
-    return QVariant::fromValue<core::shp_Reflection>(hub_.reflections().at(row));
+    return QVariant::fromValue<calc::shp_Reflection>(hub_.reflections().at(to_u(row)));
   default:
     return EMPTY_VAR;
   }
@@ -184,7 +189,7 @@ QVariant ReflectionsModel::headerData(int col, Qt::Orientation,
     return EMPTY_VAR;
 }
 
-void ReflectionsModel::addReflection(core::ePeakType type) {
+void ReflectionsModel::addReflection(fit::ePeakType type) {
   hub_.addReflection(type);
 }
 
@@ -195,7 +200,7 @@ void ReflectionsModel::remReflection(uint i) {
 str_lst ReflectionsModel::names() const {
   str_lst ns;
   for_i (rowCount())
-    ns.append(displayData(i));
+    ns.append(displayData(to_u(i)));
   return ns;
 }
 

@@ -18,12 +18,13 @@
 #define OUTPUT_DIALOGS_H
 
 #include "actions.h"
-#include "core_reflection_info.h"
+#include "calc/calc_reflection_info.h"
 #include "gui_helpers.h"
 #include "panels/panel.h"
 #include "refhub.h"
-#include "types/core_defs.h"
-#include "types/core_type_variant.h"
+#include "def/defs.h"
+
+#include "typ/typ_variant.h"
 #include <QMessageBox>
 
 class QProgressBar;
@@ -31,7 +32,7 @@ class QProgressBar;
 namespace gui { namespace output {
 //------------------------------------------------------------------------------
 
-using eReflAttr = core::ReflectionInfo::eReflAttr;
+using eReflAttr = calc::ReflectionInfo::eReflAttr;
 
 class Params : public QWidget, protected RefHub {
   SUPER(Params, QWidget)
@@ -106,7 +107,7 @@ protected:
   Params     *params_;
   Tabs       *tabs_;
 
-  vec<core::ReflectionInfos> calcPoints_, interpPoints_;
+  typ::vec<calc::ReflectionInfos> calcPoints_, interpPoints_;
 
   class Table *table_;
 
@@ -123,19 +124,19 @@ class Table : public TreeView, protected RefHub {
 public:
   Table(TheHub&, uint numDataColumns);
 
-  void setColumns(str_lst const& headers, core::cmp_vec const&);
+  void setColumns(str_lst::rc headers, typ::cmp_vec::rc);
   str_lst const headers();
 
   void clear();
-  void addRow(core::row_t const&, bool sort);
+  void addRow(typ::row_t::rc, bool sort);
 
   void sortData();
 
   uint rowCount() const;
-  core::row_t const& row(uint) const;
+  typ::row_t::rc row(uint) const;
 
 private:
-  QScopedPointer<class TableModel> model_;
+  scoped<class TableModel*> model_;
 };
 
 //------------------------------------------------------------------------------
@@ -143,7 +144,7 @@ private:
 class TabTable : public Tab {
   SUPER(TabTable, Tab)
 public:
-  TabTable(TheHub&, Params&, str_lst const &headers, core::cmp_vec const&);
+  TabTable(TheHub&, Params&, str_lst::rc headers, typ::cmp_vec::rc);
 
   Table *table() const { return table_; }
 
@@ -153,7 +154,7 @@ private:
     QCheckBox *cb;
   };
 
-  typedef vec<showcol_t> showcol_vec;
+  typedef typ::vec<showcol_t> showcol_vec;
 
 private:
   class ShowColsWidget : public QWidget {
@@ -203,4 +204,4 @@ protected:
 
 //------------------------------------------------------------------------------
 }}
-#endif  // OUTPUT_DIALOGS_H
+#endif // OUTPUT_DIALOGS_H

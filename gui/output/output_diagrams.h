@@ -40,10 +40,10 @@ class TabPlot : public QCustomPlot {
   SUPER(TabPlot, QCustomPlot)
 public:
   TabPlot();
-  void set(core::ReflectionInfos);
+  void set(calc::ReflectionInfos);
 
-  void plot(qreal_vec const& xs, qreal_vec const& ys,
-            qreal_vec const& ysAdd, qreal_vec const& ysSub);
+  void plot(qreal_vec::rc xs,    qreal_vec::rc ys,
+            qreal_vec::rc ysAdd, qreal_vec::rc ysSub);
 
 protected:
   QCPGraph *graph_, *graphAdd_, *graphSub_;
@@ -84,7 +84,7 @@ protected:
 
   void displayReflection(uint reflIndex, bool interpolated);
 
-  core::ReflectionInfos rs_;
+  calc::ReflectionInfos rs_;
   qreal_vec xs_, ys_, ysErrorAdd_, ysErrorSub_;
 
   void recalculate();
@@ -96,4 +96,4 @@ protected:
 
 //------------------------------------------------------------------------------
 }}
-#endif  // OUTPUT_DIAGRAMS_H
+#endif // OUTPUT_DIAGRAMS_H

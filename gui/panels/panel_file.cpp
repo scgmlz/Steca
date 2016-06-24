@@ -103,7 +103,7 @@ DockFiles::DockFiles(TheHub& hub)
   h->addWidget(iconButton(actions.enableCorr));
   h->addWidget(iconButton(actions.remCorr));
 
-  onSigCorrFile([this](core::shp_File file) {
+  onSigCorrFile([this](data::shp_File file) {
     corrFile_->setText(file.isNull() ? EMPTY_STR : file->fileName());
   });
 }

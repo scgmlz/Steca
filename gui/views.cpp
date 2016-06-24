@@ -14,7 +14,7 @@
 // ************************************************************************** //
 
 #include "views.h"
-#include "core_reflection.h"
+#include "calc/calc_reflection.h"
 #include "thehub.h"
 
 namespace gui { namespace views {

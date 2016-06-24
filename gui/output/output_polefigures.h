@@ -33,14 +33,14 @@ public:
 class TabGraph : public Tab {
   SUPER(TabGraph, Tab)
 public:
-  using deg = core::deg;
-  using rad = core::rad;
+  using deg = typ::deg;
+  using rad = typ::rad;
 
   TabGraph(TheHub&, Params&);
-  void set(core::ReflectionInfos);
+  void set(calc::ReflectionInfos);
 
 protected:
-  core::ReflectionInfos rs_;
+  calc::ReflectionInfos rs_;
   void paintEvent(QPaintEvent*);
 
   QPointF p(deg alpha, deg beta) const;
@@ -97,12 +97,12 @@ protected:
 
   bool savePoleFigureOutput();
   bool writePoleFigureOutputFiles(uint index);
-  void writePoleFile(rcstr filePath,  core::ReflectionInfos, qreal_vec const&);
-  void writeListFile(rcstr filePath,  core::ReflectionInfos, qreal_vec const&);
-  void writeErrorMask(rcstr filePath, core::ReflectionInfos, qreal_vec const&);
+  void writePoleFile(rcstr filePath,  calc::ReflectionInfos, qreal_vec::rc);
+  void writeListFile(rcstr filePath,  calc::ReflectionInfos, qreal_vec::rc);
+  void writeErrorMask(rcstr filePath, calc::ReflectionInfos, qreal_vec::rc);
 };
 
 //------------------------------------------------------------------------------
 
 }}
-#endif  // OUTPUT_POLEFIGURES_H
+#endif // OUTPUT_POLEFIGURES_H

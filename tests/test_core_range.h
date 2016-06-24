@@ -7,7 +7,7 @@ class TestCoreRange: public TestSuite {
   Q_OBJECT
 
 private slots:
-  void testRange();
+//  void testRange();
 };
 
 #endif

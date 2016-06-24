@@ -16,7 +16,7 @@
 #include "output_polefigures.h"
 #include "colors.h"
 #include "thehub.h"
-#include "core_reflection.h"
+#include "calc/calc_reflection.h"
 
 #include <QDir>
 #include <QPainter>
@@ -64,7 +64,7 @@ TabGraph::TabGraph(TheHub& hub, Params& params)
   rb90_->click();
 }
 
-void TabGraph::set(core::ReflectionInfos rs) {
+void TabGraph::set(calc::ReflectionInfos rs) {
   rs_ = rs;
   update();
 }
@@ -117,7 +117,7 @@ void TabGraph::paintGrid() {
 void TabGraph::paintInfo() {
   qreal rgeMax = rs_.rgeInten().max;
 
-  for (auto const &r : rs_) {
+  for (auto const& r : rs_) {
     qreal inten = r.inten();
 
     if (qIsFinite(inten)) { // nan comes from interpolartion
@@ -222,7 +222,7 @@ PoleFiguresFrame::PoleFiguresFrame(TheHub &hub, rcstr title, QWidget *parent)
   connect(params()->cbRefl, slot(QComboBox,currentIndexChanged,int), [this]() {
     int index = params()->currReflIndex();
     if (index != -1) {
-      bool on = core::ePeakType::RAW != hub_.reflections().at(index)->type();
+      bool on = fit::ePeakType::RAW != hub_.reflections().at(index)->type();
       tabSave_->rawReflSettings(on);
     }
   });
@@ -266,7 +266,7 @@ static int const MAX_LINE_LENGTH_POL(9);
 
 bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
   auto refl = hub_.reflections().at(index);
-  core::ReflectionInfos reflInfo;
+  calc::ReflectionInfos reflInfo;
   if (params_->interpolate()) reflInfo = interpPoints_.at(index);
   else  reflInfo = calcPoints_.at(index);
 
@@ -298,7 +298,7 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
     numSavedFiles+=3;
   }
 
-  if (tabSave_->outputTth() && core::ePeakType::RAW != type) {
+  if (tabSave_->outputTth() && fit::ePeakType::RAW != type) {
     qreal_vec output;
     for_i (reflInfo.count())
       output.append(reflInfo.at(i).tth());
@@ -311,7 +311,7 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
     numSavedFiles+=2;
   }
 
-  if (tabSave_->outputFWHM() && core::ePeakType::RAW != type) {
+  if (tabSave_->outputFWHM() && fit::ePeakType::RAW != type) {
     qreal_vec output;
     for_i (reflInfo.count())
       output.append(reflInfo.at(i).fwhm());
@@ -328,7 +328,7 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
   return check;
 }
 
-void PoleFiguresFrame::writeErrorMask(rcstr filePath, core::ReflectionInfos reflInfo, qreal_vec const& output) {
+void PoleFiguresFrame::writeErrorMask(rcstr filePath, calc::ReflectionInfos reflInfo, qreal_vec::rc output) {
   WriteFile file(filePath + ".errorMask");
   QTextStream stream(&file);
 
@@ -344,7 +344,7 @@ void PoleFiguresFrame::writeErrorMask(rcstr filePath, core::ReflectionInfos refl
   }
 }
 
-void PoleFiguresFrame::writePoleFile(rcstr filePath, core::ReflectionInfos reflInfo, qreal_vec const& output) {
+void PoleFiguresFrame::writePoleFile(rcstr filePath, calc::ReflectionInfos reflInfo, qreal_vec::rc output) {
   WriteFile file(filePath + ".pol");
   QTextStream stream(&file);
 
@@ -360,7 +360,7 @@ void PoleFiguresFrame::writePoleFile(rcstr filePath, core::ReflectionInfos reflI
   }
 }
 
-void PoleFiguresFrame::writeListFile(rcstr filePath, core::ReflectionInfos reflInfo, qreal_vec const& output) {
+void PoleFiguresFrame::writeListFile(rcstr filePath, calc::ReflectionInfos reflInfo, qreal_vec::rc output) {
   WriteFile file(filePath + ".lst");
   QTextStream stream(&file);
 

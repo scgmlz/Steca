@@ -48,8 +48,8 @@ protected:
 //------------------------------------------------------------------------------
 
 struct OutputData;
-using OutputDataCollection  = vec<OutputData>;
-using OutputDataCollections = vec<OutputDataCollection>;
+using OutputDataCollection  = typ::vec<OutputData>;
+using OutputDataCollections = typ::vec<OutputDataCollection>;
 
 class DiffractogramsFrame : public Frame {
   SUPER(DiffractogramsFrame, Frame)
@@ -59,8 +59,8 @@ public:
 protected:
   TabDiffractogramsSave *tabSave_;
 
-  OutputDataCollection collectCurves(core::rcRange rgeGamma, qreal gammaStep, core::rcDataset dataset, uint picNum);
-  OutputData collectCurve(core::rcDataset dataset);
+  OutputDataCollection collectCurves(typ::Range::rc rgeGamma, qreal gammaStep, data::Dataset::rc dataset, uint picNum);
+  OutputData collectCurve(data::Dataset::rc dataset);
 
   OutputData outputCurrDiffractogram();
   OutputDataCollections outputAllDiffractograms();
@@ -72,4 +72,4 @@ protected:
 
 //------------------------------------------------------------------------------
 }}
-#endif  // OUTPUT_Diffractograms_H
+#endif // OUTPUT_Diffractograms_H

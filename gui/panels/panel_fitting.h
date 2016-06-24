@@ -38,9 +38,9 @@ private:
   QLineEdit      *readFitPeakX_,   *readFitPeakY_,   *readFitFWHM_;
   bool            silentSpin_;
 
-  void setReflControls(core::shp_Reflection);
+  void setReflControls(calc::shp_Reflection);
 };
 
 //------------------------------------------------------------------------------
 }}
-#endif  // PANEL_FITTING_H
+#endif // PANEL_FITTING_H

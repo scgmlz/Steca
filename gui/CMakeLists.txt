@@ -1,55 +1,43 @@
-############################################################################
-# CMakeLists.txt for building STeCaGUI
-############################################################################
+# gui/CMakeLists.txt
 
-file(GLOB header_files
-  "*.h"
-  "types/*.h"
-  "panels/*.h"
-  "output/*.h"
-  "QCP/*.h"
-)
-
-file(GLOB source_files
-  "*.cpp"
-  "types/*.cpp"
-  "panels/*.cpp"
-  "output/*.cpp"
-  "QCP/*.cpp"
-)
-
-include_directories(
+include_directories (
+  ${CMAKE_HOME_DIRECTORY}/lib
   ${CMAKE_HOME_DIRECTORY}/core
   ${CMAKE_HOME_DIRECTORY}/gui
 )
 
-add_library(STeCaGUI
+file (GLOB header_files
+  "*.h" "*/*.h" "*/*/*.h"
+)
+
+file (GLOB source_files
+  "*.cpp" "*/*.cpp" "*/*/*.cpp"
+)
+
+add_library (STeCaGUI
   ${header_files}
   ${source_files}
 )
 
-target_link_libraries(STeCaGUI
+target_link_libraries (STeCaGUI
   Qt5::Core
   Qt5::Gui
   Qt5::Widgets
   Qt5::Multimedia
   STeCaCore
-  STeCaCoreIO
+  LevMar
+  STeCaLib
 )
 
-set_property(TARGET STeCaGUI PROPERTY CXX_STANDARD 11)
-set_property(TARGET STeCaGUI PROPERTY CXX_STANDARD_REQUIRED ON)
-
-add_executable(STeCa
+add_executable (STeCa
   main.cpp
   resources.qrc
 )
 
-target_link_libraries(STeCa
+target_link_libraries (STeCa
   STeCaGUI
 )
 
-set_property(TARGET STeCa PROPERTY CXX_STANDARD 11)
-set_property(TARGET STeCa PROPERTY CXX_STANDARD_REQUIRED ON)
+install (TARGETS STeCa RUNTIME DESTINATION bin)
 
-install(TARGETS STeCa RUNTIME DESTINATION bin)
+# eof

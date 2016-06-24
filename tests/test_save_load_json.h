@@ -7,8 +7,7 @@ class TestSaveLoadJson: public TestSuite {
   Q_OBJECT
 
 private slots:
-  void testSaveLoadJson();
+//  void testSaveLoadJson();
 };
-
 
 #endif

@@ -14,12 +14,12 @@
 // ************************************************************************** //
 
 #include "thehub.h"
-#include "core_reflection.h"
-#include "core_reflection_info.h"
-#include "io/core_io.h"
+#include "calc/calc_reflection.h"
+#include "calc/calc_reflection_info.h"
+#include "io/io_io.h"
 #include "mainwin.h"
-#include "types/core_async.h"
-#include "types/core_json.h"
+#include "typ/typ_async.h"
+#include "typ/typ_json.h"
 
 #include <QDir>
 #include <QJsonDocument>
@@ -158,7 +158,7 @@ str TheHub::filePath(uint index) const {
   return getFile(index)->fileInfo().absoluteFilePath();
 }
 
-core::shp_File TheHub::getFile(uint index) const {
+data::shp_File TheHub::getFile(uint index) const {
   return session->file(index);
 }
 
@@ -166,33 +166,33 @@ void TheHub::remFile(uint i) {
   session->remFile(i);
   emit sigFilesChanged();
 
-  if (0 == numFiles()) setImageCut(true, false, core::ImageCut());
+  if (0 == numFiles()) setImageCut(true, false, typ::ImageCut());
 }
 
 bool TheHub::hasCorrFile() const {
   return session->hasCorrFile();
 }
 
-core::rcImage TheHub::corrImage() const {
+typ::Image::rc TheHub::corrImage() const {
   return session->corrImage();
 }
 
-core::shp_ImageLens TheHub::lensNoCut(core::rcImage image) const {
+calc::shp_ImageLens TheHub::lensNoCut(typ::Image::rc image) const {
   return session->lens(image, collectedDatasets(), true, false);
 }
 
-core::shp_Lens TheHub::lens(core::rcDataset dataset) const {
+calc::shp_Lens TheHub::lens(data::Dataset::rc dataset) const {
   return session->lens(dataset, dataset.datasets(), true, true,
                        session->norm());
 }
 
-core::shp_Lens TheHub::lensNoCut(core::rcDataset dataset) const {
+calc::shp_Lens TheHub::lensNoCut(data::Dataset::rc dataset) const {
   return session->lens(dataset, dataset.datasets(), true, false,
                        session->norm());
 }
 
-core::ReflectionInfos TheHub::makeReflectionInfos(
-    core::rcReflection reflection, core::deg gammaStep, core::rcRange rgeGamma,
+calc::ReflectionInfos TheHub::makeReflectionInfos(
+    calc::Reflection::rc reflection, typ::deg gammaStep, typ::Range::rc rgeGamma,
     Progress* progress)
 {
   return session->makeReflectionInfos(collectedDatasets(), reflection, gammaStep,
@@ -227,8 +227,8 @@ void TheHub::saveSession(QFileInfo const& fileInfo) const {
 }
 
 QByteArray TheHub::saveSession() const {
-  using core::JsonObj;
-  using core::JsonArr;
+  using typ::JsonObj;
+  using typ::JsonArr;
 
   JsonObj top;
 
@@ -261,7 +261,7 @@ QByteArray TheHub::saveSession() const {
 
   JsonArr arrSelectedFiles;
   for (uint i : collectedFromFiles())
-    arrSelectedFiles.append(int(i));
+    arrSelectedFiles.append(to_i(i));
 
   top.saveArr(KEY_SELECTED_FILES, arrSelectedFiles);
   top.saveUint(KEY_COMBINE, datasetsGroupedBy_);
@@ -281,7 +281,7 @@ QByteArray TheHub::saveSession() const {
 
   top.saveArr(KEY_REFLECTIONS, arrReflections);
 
-  return QJsonDocument(top).toJson();
+  return QJsonDocument(top.sup()).toJson();
 }
 
 void TheHub::loadSession(QFileInfo const& fileInfo) THROWS {
@@ -301,7 +301,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
 
   session->clear();
 
-  core::JsonObj top(doc.object());
+  typ::JsonObj top(doc.object());
 
   auto files = top.loadArr(KEY_FILES);
   for (auto file : files) {
@@ -315,16 +315,16 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
   auto     sels = top.loadArr(KEY_SELECTED_FILES, true);
   uint_vec selIndexes;
   for (auto sel : sels) {
-    int i = sel.toInt(), index = qBound(0, i, files.count());
+    int i = sel.toInt(), index = qBound(0, i, to_i(files.count()));
     RUNTIME_CHECK(i == index, str("Invalid selection index: %1").arg(i));
-    selIndexes.append(uint(index));
+    selIndexes.append(to_u(index));
   }
 
   std::sort(selIndexes.begin(), selIndexes.end());
   int lastIndex = -1;
   for (uint index : selIndexes) {
-    RUNTIME_CHECK(lastIndex < int(index), str("Duplicate selection index"));
-    lastIndex = int(index);
+    RUNTIME_CHECK(lastIndex < to_i(index), str("Duplicate selection index"));
+    lastIndex = to_i(index);
   }
 
   collectDatasetsFromFiles(selIndexes,top.loadUint(KEY_COMBINE,1));
@@ -338,11 +338,11 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
   auto cut = top.loadObj(KEY_CUT);
   uint x1 = cut.loadUint(KEY_LEFT), y1 = cut.loadUint(KEY_TOP),
        x2 = cut.loadUint(KEY_RIGHT), y2 = cut.loadUint(KEY_BOTTOM);
-  setImageCut(true, false, core::ImageCut(x1, y1, x2, y2));
+  setImageCut(true, false, typ::ImageCut(x1, y1, x2, y2));
 
-  setImageRotate(core::ImageTransform(top.loadUint(KEY_TRANSFORM)));
+  setImageRotate(typ::ImageTransform(top.loadUint(KEY_TRANSFORM)));
 
-  core::Ranges bgRanges;
+  typ::Ranges bgRanges;
   bgRanges.loadJson(top.loadArr(KEY_BG_RANGES));
   setBgRanges(bgRanges);
 
@@ -350,8 +350,8 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
 
   auto reflectionsObj = top.loadArr(KEY_REFLECTIONS);
   for_i (reflectionsObj.count()) {
-    core::shp_Reflection reflection(new core::Reflection);
-    reflection->loadJson(reflectionsObj.at(i).toObject());
+    calc::shp_Reflection reflection(new calc::Reflection);
+    reflection->loadJson(reflectionsObj.objAt(i));
     session->addReflection(reflection);
   }
 
@@ -362,14 +362,14 @@ void TheHub::addFile(rcstr filePath) THROWS {
   if (!filePath.isEmpty() && !session->hasFile(filePath)) {
     {
       TakesLongTime __;
-      session->addFile(core::io::load(filePath));
+      session->addFile(io::load(filePath));
     }
 
     emit sigFilesChanged();
   }
 }
 
-void TheHub::addFiles(str_lst const& filePaths) THROWS {
+void TheHub::addFiles(str_lst::rc filePaths) THROWS {
   TakesLongTime __;
 
   for (auto& filePath : filePaths)
@@ -393,8 +393,8 @@ void TheHub::combineDatasetsBy(uint by) {
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {
-  core::shp_File file;
-  if (!filePath.isEmpty()) file = core::io::load(filePath);
+  data::shp_File file;
+  if (!filePath.isEmpty()) file = io::load(filePath);
 
   session->setCorrFile(file);
   emit sigCorrFile(file);
@@ -407,43 +407,44 @@ void TheHub::tryEnableCorrection(bool on) {
   emit sigCorrEnabled(session->isCorrEnabled());
 }
 
-core::ImageCut const& TheHub::imageCut() const {
+typ::ImageCut::rc TheHub::imageCut() const {
   return session->imageCut();
 }
 
 void TheHub::setImageCut(bool topLeft, bool linked,
-                         core::ImageCut const& margins) {
+                         typ::ImageCut::rc margins) {
   session->setImageCut(topLeft, linked, margins);
   emit sigGeometryChanged();
 }
 
-const core::Geometry& TheHub::geometry() const {
+const typ::Geometry& TheHub::geometry() const {
   return session->geometry();
 }
 
 void TheHub::setGeometry(qreal detectorDistance, qreal pixSize,
-                         bool isMidPixOffset, core::rcIJ midPixOffset) {
+                         bool isMidPixOffset, typ::IJ::rc midPixOffset) {
   level_guard __(sigLevel_);
-  if (sigLevel_ > 1) return;
+  if (sigLevel_ > 1)
+    return;
 
   session->setGeometry(detectorDistance, pixSize, isMidPixOffset, midPixOffset);
   emit sigGeometryChanged();
 }
 
-core::AngleMap const& TheHub::angleMap(core::rcDataset dataset) const {
+typ::AngleMap::rc TheHub::angleMap(data::Dataset::rc dataset) const {
   return *session->angleMap(dataset);
 }
 
-void TheHub::setBgRanges(core::rcRanges ranges) {
+void TheHub::setBgRanges(typ::Ranges::rc ranges) {
   session->setBgRanges(ranges);
   emit sigBgChanged();
 }
 
-void TheHub::addBgRange(core::rcRange range) {
+void TheHub::addBgRange(typ::Range::rc range) {
   if (session->addBgRange(range)) emit sigBgChanged();
 }
 
-void TheHub::remBgRange(core::rcRange range) {
+void TheHub::remBgRange(typ::Range::rc range) {
   if (session->remBgRange(range)) emit sigBgChanged();
 }
 
@@ -452,22 +453,22 @@ void TheHub::setBgPolyDegree(uint degree) {
   emit sigBgChanged();
 }
 
-void TheHub::setReflType(core::ePeakType type) {
+void TheHub::setReflType(fit::ePeakType type) {
   if (selectedReflection_) {
     selectedReflection_->setType(type);
     emit sigReflectionsChanged();
   }
 }
 
-void TheHub::addReflection(core::ePeakType type) {
-  session->addReflection(core::shp_Reflection(new core::Reflection(type)));
+void TheHub::addReflection(fit::ePeakType type) {
+  session->addReflection(calc::shp_Reflection(new calc::Reflection(type)));
   emit sigReflectionsChanged();
 }
 
 void TheHub::remReflection(uint i) {
   session->remReflection(i);
   if (session->reflections().isEmpty())
-    tellSelectedReflection(core::shp_Reflection());
+    tellSelectedReflection(calc::shp_Reflection());
 
   emit sigReflectionsChanged();
 }
@@ -476,7 +477,7 @@ void TheHub::setFittingTab(eFittingTab tab) {
   emit sigFittingTab((fittingTab_ = tab));
 }
 
-void TheHub::setImageRotate(core::ImageTransform rot) {
+void TheHub::setImageRotate(typ::ImageTransform rot) {
   pcstr rotateIconFile, mirrorIconFile;
   switch (rot.val & 3) {
   case 0:
@@ -510,7 +511,7 @@ void TheHub::setImageMirror(bool on) {
   emit sigGeometryChanged();
 }
 
-void TheHub::setNorm(core::eNorm norm) {
+void TheHub::setNorm(typ::eNorm norm) {
   session->setNorm(norm);
   emit sigNormChanged();
 }

@@ -28,7 +28,7 @@ class TableModel;
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-/// Just a plain panel
+// Just a plain panel
 class BasicPanel : public QGroupBox, protected RefHub {
   SUPER(BasicPanel, QGroupBox)
 public:
@@ -40,7 +40,7 @@ public:
   void setStretch(int horizontal, int vertical);
 };
 
-/// A panel with a box layout
+// A panel with a box layout
 class BoxPanel : public BasicPanel {
   SUPER(BoxPanel, BasicPanel)
 public:
@@ -53,7 +53,7 @@ protected:
   QBoxLayout *box_;
 };
 
-/// A panel with grid layout
+// A panel with grid layout
 class GridPanel : public BasicPanel {
   SUPER(GridPanel, BasicPanel)
 public:
@@ -68,7 +68,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-/// A tabbed panel
+// A tabbed panel
 class Tab : public QWidget {
   SUPER(Tab, QWidget)
 public:
@@ -91,4 +91,4 @@ public:
 
 //------------------------------------------------------------------------------
 }}
-#endif  // PANEL_H
+#endif // PANEL_H

@@ -10,3 +10,10 @@
 #define STECA2_URL            "http://apps.jcns.fz-juelich.de/steca2"
 
 #endif
+/* TODO
+ *
+ * move rest of files
+ * factor out: settings + dialog, sessionfile
+ *
+ * .h files FORWARD_DECLARATIONS
+ */

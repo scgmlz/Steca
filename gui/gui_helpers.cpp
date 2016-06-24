@@ -24,9 +24,9 @@ QBoxLayout* boxLayout(Qt::Orientation orientation) {
     return hbox();
   case Qt::Vertical:
     return vbox();
-  default:
-    NEVER return nullptr;
   }
+
+  NEVER return nullptr;
 }
 
 QBoxLayout* hbox() {
@@ -59,7 +59,7 @@ QLabel* label(rcstr text) {
 }
 
 static void setEmWidth(QWidget* w, uint emWidth) {
-  w->setMaximumWidth(emWidth * w->fontMetrics().width('m'));
+  w->setMaximumWidth(to_i(emWidth) * w->fontMetrics().width('m'));
 }
 
 QLineEdit* editCell(uint emWidth) {
@@ -119,9 +119,9 @@ QRadioButton* radioButton(rcstr text) {
   return new QRadioButton(text);
 }
 
-QComboBox* comboBox(str_lst const& items) {
+QComboBox* comboBox(str_lst::rc items) {
   auto comboBox = new QComboBox();
-  comboBox->addItems(items.q());
+  comboBox->addItems(items.sup());
   return comboBox;
 }
 

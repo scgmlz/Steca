@@ -7,7 +7,7 @@ class TestCoreArray2d: public TestSuite {
   Q_OBJECT
 
 private slots:
-  void testArray2d();
+//  void testArray2d();
 };
 
 #endif

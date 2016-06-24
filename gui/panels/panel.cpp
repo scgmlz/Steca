@@ -21,7 +21,7 @@ namespace gui { namespace panel {
 BasicPanel::BasicPanel(TheHub& hub, rcstr title) : super(title), RefHub(hub) {
 }
 
-BasicPanel::BasicPanel(TheHub& hub) : thisClass(hub, EMPTY_STR) {
+BasicPanel::BasicPanel(TheHub& hub) : Cls(hub, EMPTY_STR) {
 }
 
 void BasicPanel::setHorizontalStretch(int stretch) {
@@ -46,7 +46,7 @@ void BasicPanel::setStretch(int horizontal, int vertical) {
 //------------------------------------------------------------------------------
 
 BoxPanel::BoxPanel(TheHub& hub, Qt::Orientation o)
-: thisClass(hub, EMPTY_STR, o) {
+: Cls(hub, EMPTY_STR, o) {
 }
 
 BoxPanel::BoxPanel(TheHub& hub, rcstr title, Qt::Orientation orientation)
@@ -57,7 +57,7 @@ BoxPanel::BoxPanel(TheHub& hub, rcstr title, Qt::Orientation orientation)
 
 //------------------------------------------------------------------------------
 
-GridPanel::GridPanel(TheHub& hub) : thisClass(hub, EMPTY_STR) {
+GridPanel::GridPanel(TheHub& hub) : Cls(hub, EMPTY_STR) {
 }
 
 GridPanel::GridPanel(TheHub& hub, rcstr title) : super(hub, title) {
@@ -79,9 +79,9 @@ Tab& TabsPanel::addTab(rcstr title, Qt::Orientation orientation) {
 }
 
 Tab& TabsPanel::tab(uint i) {
-  EXPECT(int(i) < count())
-  ENSURE(dynamic_cast<Tab*>(widget(int(i))))
-  return *static_cast<Tab*>(widget(int(i)));
+  EXPECT(to_i(i) < count())
+  ENSURE(dynamic_cast<Tab*>(widget(to_i(i))))
+  return *static_cast<Tab*>(widget(to_i(i)));
 }
 
 //------------------------------------------------------------------------------

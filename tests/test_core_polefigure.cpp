@@ -19,7 +19,7 @@ namespace core {
     NORTHWEST,
   };
 
-  static int NUM_QUADRANTS = 4;
+  static uint NUM_QUADRANTS = 4;
   typedef vec<Quadrant> Quadrants;
     deg angle(deg alpha1, deg alpha2, deg deltaBeta);
 
@@ -41,13 +41,13 @@ namespace core {
 
     Quadrant remapQuadrant(Quadrant);
 
-    core::Range gammaRangeAt(core::shp_Lens lenses, qreal const tth);
+    core::Range gammaRangeAt(calc::shp_Lens lenses, qreal const tth);
 
     void searchInQuadrants(
       Quadrants const& quadrants,
       deg alpha, deg beta,
       deg searchRadius,
-      ReflectionInfos const& infos,
+      ReflectionInfos::rc infos,
       vec<ReflectionInfo const*> & foundInfos,
       qreal_vec & distances);
 
@@ -56,10 +56,10 @@ namespace core {
 
 #include "core_polefigure.h"
 
-#include "test_core_lens.h"
-#include "core_dataset.h"
-#include "types/core_type_geometry.h"
-#include "types/core_type_matrix.h"
+#include "test_calc_lens.h"
+#include "data/data_dataset.h"
+#include "types/typ_geometry.h"
+#include "types/typ_matrix.h"
 
 #include <algorithm>
 #include <QLinkedList>
@@ -220,8 +220,8 @@ void TestCorePolefigure::testSearchInQuadrants() {
   QVERIFY(!foundInfos.at(3));
 }
 
-static core::Dataset testDataset(QSize size, core::inten_t inten, qreal_vec motorAngles, qreal mon, qreal deltaTime) {
-  core::Metadata md;
+static data::Dataset testDataset(QSize size, core::inten_t inten, qreal_vec motorAngles, qreal mon, qreal deltaTime) {
+  data::Metadata md;
   md.date = "15.03.2016";
   md.comment = "comment";
   md.motorXT = motorAngles[0];
@@ -235,13 +235,13 @@ static core::Dataset testDataset(QSize size, core::inten_t inten, qreal_vec moto
   md.motorSST = motorAngles[8];
   md.motorOMGM = motorAngles[9];
 
-  vec<core::inten_t> intenVector;
+  core::inten_vec intenVector;
   for_i (size.width() * size.height()) {
     intenVector.append(inten);
   }
   core::inten_t const* intensities = intenVector.constData();
 
-  return core::Dataset (md, size, intensities);
+  return data::Dataset (md, size, intensities);
 }
 
 void TestCorePolefigure::testCalcAlphaBeta() {

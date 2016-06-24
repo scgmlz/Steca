@@ -23,7 +23,7 @@
 
 namespace gui { namespace views {
 //------------------------------------------------------------------------------
-/// A (tree-)list view with a reference to the hub. Single selection.
+// A (tree-)list view with a reference to the hub. Single selection.
 
 class ListView : public TreeListView, protected RefHub {
   SUPER(ListView, TreeListView)
@@ -45,7 +45,7 @@ protected:
 };
 
 //------------------------------------------------------------------------------
-/// Multiple selection.
+// Multiple selection.
 
 class MultiListView : public ListView {
   SUPER(MultiListView, ListView)
@@ -58,4 +58,4 @@ protected:
 
 //------------------------------------------------------------------------------
 }}
-#endif  // VIEWS_H
+#endif // VIEWS_H

@@ -18,7 +18,8 @@
 #define MODELS_H
 
 #include "types/type_models.h"
-#include "types/type_str_lst.h"
+#include "typ/typ_strlst.h"
+#include "fit/fit_fun.h"
 
 namespace models {
 //------------------------------------------------------------------------------
@@ -57,12 +58,12 @@ public:
 public:
   enum { GetDatasetRole = Qt::UserRole };
 
-  void showMetaInfo(checkedinfo_vec const&);
+  void showMetaInfo(checkedinfo_vec::rc);
 
 private:
-  core::rcDatasets       datasets_;      ///< the selected datasets
-  checkedinfo_vec const* metaInfo_;      ///< metadata items
-  uint_vec               metaInfoNums_;  ///< selected metadata items to show
+  data::Datasets::rc     datasets_;     // the selected datasets
+  checkedinfo_vec const* metaInfo_;     // metadata items
+  uint_vec               metaInfoNums_; // selected metadata items to show
 };
 
 //------------------------------------------------------------------------------
@@ -86,7 +87,7 @@ public:
 public:
   enum { GetDatasetRole = Qt::UserRole };
 
-  void addReflection(core::ePeakType);
+  void addReflection(fit::ePeakType);
   void remReflection(uint);
 
   str_lst names() const;
@@ -94,4 +95,4 @@ public:
 
 //------------------------------------------------------------------------------
 }
-#endif  // MODELS_H
+#endif // MODELS_H

@@ -17,7 +17,7 @@ win32 {
   RC_ICONS = \$\$PWD/gui/icons/retro_stier.ico
 }
 
-INCLUDEPATH += \$\$PWD/core \$\$PWD/gui
+INCLUDEPATH += \$\$PWD/lib \$\$PWD/core \$\$PWD/gui
 
 EOT
 
@@ -27,15 +27,16 @@ function files {
 }
 
 echo -e '\nHEADERS += \\' >> $PRO
+files lib  h >> $PRO
 files core h >> $PRO
 files gui  h >> $PRO
 
 echo -e '\nSOURCES += \\' >> $PRO
+files lib  cpp >> $PRO
 files core cpp >> $PRO
 files gui  cpp >> $PRO
 
 echo -e '\nRESOURCES += \\' >> $PRO
-files core qrc >> $PRO
 files gui  qrc >> $PRO
 
 cat >> $PRO <<EOT
