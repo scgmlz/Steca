@@ -289,11 +289,11 @@ tth_rge Dataset::rgeTth(core::Session::rc session) const {
   RGE_ONES(rgeTth)
 }
 
-//size2d Dataset::imageSize() const {
-//  EXPECT(!isEmpty())
-//  // all images have the same size; simply take the first one
-//  return first()->imageSize();
-//}
+size2d Dataset::imageSize() const {
+  EXPECT(!isEmpty())
+  // all images have the same size; simply take the first one
+  return first()->imageSize();
+}
 
 qreal Dataset::avgDeltaMonitorCount() const {
   AVG_ONES(deltaMonitorCount)
@@ -318,13 +318,13 @@ void Datasets::appendHere(shp_Dataset dataset) {
   invalidateMutables();
 }
 
-//>>>size2d Datasets::imageSize() const {
-//  if (isEmpty())
-//    return size2d(0,0);
+size2d Datasets::imageSize() const {
+  if (isEmpty())
+    return size2d(0,0);
 
-//  // all images have the same size; simply take the first one
-//  return first()->imageSize();
-//}
+  // all images have the same size; simply take the first one
+  return first()->imageSize();
+}
 
 qreal Datasets::avgDeltaMonitorCount() const {
   if (qIsNaN(avgMonitorCount_)) {

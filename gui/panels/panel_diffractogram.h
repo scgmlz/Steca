@@ -123,7 +123,7 @@ private:
   typ::Curve     dgram_, dgramBgFitted_, bg_;
   typ::curve_vec refls_;
 
-  int                 currReflIndex_;
+  uint                 currReflIndex_;
   calc::shp_Reflection currentReflection_;
 
 public:

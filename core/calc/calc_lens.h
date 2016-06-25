@@ -41,6 +41,9 @@ public:
   LensBase(core::Session const&, data::Datasets::rc,
            bool trans, bool cut,
            typ::ImageTransform::rc, typ::ImageCut::rc);
+
+  typ::size2d size() const;
+
 protected:
   core::Session const& session_;
   data::Datasets::rc  datasets_;
@@ -58,7 +61,6 @@ public:
             data::Datasets::rc,
             bool trans, bool cut, typ::ImageCut::rc, typ::ImageTransform::rc);
 
-  typ::size2d size() const;
   inten_t imageInten(uint i, uint j)  const;
 
   inten_rge::rc rgeInten(bool fixed) const;

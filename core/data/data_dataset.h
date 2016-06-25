@@ -157,9 +157,9 @@ public:
 
 private:
   // all dataset(s) must have the same image size
-//>>>  typ::size2d imageSize()   const;
-  Datasets* datasets_;      // here it belongs (or could be nullptr)
+  typ::size2d imageSize() const;
 
+  Datasets* datasets_;      // here it belongs (or could be nullptr)
   mutable shp_Metadata md_; // on demand, just once
 };
 
@@ -172,7 +172,7 @@ public:
 
   void appendHere(shp_Dataset);
 
-//>>>  typ::size2d imageSize()   const;
+  typ::size2d imageSize() const;
 
   qreal avgDeltaMonitorCount() const;
   qreal avgDeltaTime() const;

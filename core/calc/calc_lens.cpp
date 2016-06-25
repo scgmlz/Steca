@@ -32,6 +32,18 @@ LensBase::LensBase(core::Session::rc session, data::Datasets::rc datasets,
 , imageTransform_(imageTransform), imageCut_(imageCut) {
 }
 
+size2d LensBase::size() const {
+  size2d size = datasets_.imageSize();
+
+  if (trans_ && imageTransform_.isTransposed())
+    size = size.transposed();
+
+  if (cut_)
+    size = size - imageCut_.marginSize();
+
+  return size;
+}
+
 //------------------------------------------------------------------------------
 
 ImageLens::ImageLens(core::Session::rc session,
@@ -42,18 +54,6 @@ ImageLens::ImageLens(core::Session::rc session,
 , image_(image), corrImage_(corrImage)
 {
   calcSensCorr();
-}
-
-size2d ImageLens::size() const {
-  size2d size = image_.size();
-
-  if (trans_ && imageTransform_.isTransposed())
-    size = size.transposed();
-
-  if (cut_)
-    size = size - imageCut_.marginSize();
-
-  return size;
 }
 
 inten_t ImageLens::imageInten(uint i, uint j) const {
@@ -190,10 +190,11 @@ Lens::Lens(core::Session::rc session,
 //  return rge;
 //}
 
-//Curve Lens::makeCurve(gma_rge::rc gmaRge, tth_rge::rc tthRge) const {
-//  auto s = size();
-//  uint w = s.w, h = s.h;
+Curve Lens::makeCurve(gma_rge::rc gmaRge, tth_rge::rc tthRge) const {
+  auto s = size();
+  uint w = s.w, h = s.h;
 
+//  >>> get gmaRge
 //  tth_t deltaTth = tthRge.width() / w;
 
 //  qreal_vec intens_vec(w);
@@ -215,7 +216,7 @@ Lens::Lens(core::Session::rc session,
 //    }
 //  }
 
-//  Curve res;
+  Curve res;
 
 //  for_i (w) {
 //    auto in  = intens_vec.at(i);
@@ -224,8 +225,8 @@ Lens::Lens(core::Session::rc session,
 //    res.append(tthRge.min + deltaTth * i, in);
 //  }
 
-//  return res;
-//}
+  return res;
+}
 
 gma_rge Lens::rgeGma() const {
   return dataset_.rgeGma(session_);

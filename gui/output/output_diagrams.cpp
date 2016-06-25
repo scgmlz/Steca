@@ -294,12 +294,11 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator, rcst
   auto headers = table_->headers();
 
   for_i (headers.count())
-    stream << headers.at(i) << separator;
+    stream << headers.at(to_u(i)) << separator;
 
   stream << '\n';
-  auto current = params_->currReflIndex();
 
-  for_i (calcPoints_.at(current).count()) {
+  for_i (calcPoints_.at(params_->currReflIndex()).count()) {
     auto &row = table_->row(i);
 
     for_i (row.count()) {

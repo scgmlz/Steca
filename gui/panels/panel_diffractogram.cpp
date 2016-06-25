@@ -347,7 +347,7 @@ void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
 //------------------------------------------------------------------------------
 
 Diffractogram::Diffractogram(TheHub& hub)
-: super(hub, Qt::Vertical), dataset_(nullptr), currReflIndex_(-1)
+: super(hub, Qt::Vertical), dataset_(nullptr), currReflIndex_(0)
 {
   box_->addWidget((plot_ = new DiffractogramPlot(hub_, *this)));
   auto hb = hbox();
@@ -451,8 +451,7 @@ void Diffractogram::render() {
   calcBackground();
   calcReflections();
 
-  EXPECT(currReflIndex_ >= 0)
-  plot_->plot(dgram_, dgramBgFitted_, bg_, refls_, to_u(currReflIndex_));
+  plot_->plot(dgram_, dgramBgFitted_, bg_, refls_, currReflIndex_);
 }
 
 void Diffractogram::setDataset(data::shp_Dataset dataset) {
@@ -499,7 +498,7 @@ typ::Range Diffractogram::currReflRange() const {
 
 void Diffractogram::calcReflections() {
   refls_.clear();
-  currReflIndex_ = -1;
+  currReflIndex_ = 0;
 
   auto rs = hub_.reflections();
   for_i (rs.count()) {

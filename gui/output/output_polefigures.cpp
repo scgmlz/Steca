@@ -220,11 +220,9 @@ PoleFiguresFrame::PoleFiguresFrame(TheHub &hub, rcstr title, QWidget *parent)
   });
 
   connect(params()->cbRefl, slot(QComboBox,currentIndexChanged,int), [this]() {
-    int index = params()->currReflIndex();
-    if (index != -1) {
-      bool on = fit::ePeakType::RAW != hub_.reflections().at(index)->type();
-      tabSave_->rawReflSettings(on);
-    }
+    uint index = params()->currReflIndex();
+    bool on = fit::ePeakType::RAW != hub_.reflections().at(index)->type();
+    tabSave_->rawReflSettings(on);
   });
 
   params()->cbRefl->currentIndexChanged(0);
@@ -243,8 +241,9 @@ bool PoleFiguresFrame::savePoleFigureOutput() {
 
   bool check = false;
   if (tabSave_->onlySelectedRefl()) {
-    if (writePoleFigureOutputFiles(params_->currReflIndex())) {
-      tabSave_->savedMessage(str(" for Reflection %1 \n").arg(params_->currReflIndex()+1));
+    uint index = params_->currReflIndex();
+    if (writePoleFigureOutputFiles(index)) {
+      tabSave_->savedMessage(str(" for Reflection %1 \n").arg(index + 1));
       check = true;
     }
   } else {
