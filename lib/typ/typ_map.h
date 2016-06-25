@@ -30,6 +30,7 @@ class map : public QMap<Key,T> {
 public:
   using super::clear;
   using super::insert;
+  using super::insertMulti;
   using super::remove;
   using super::find;
   using super::contains;
