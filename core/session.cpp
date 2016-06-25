@@ -236,11 +236,14 @@ shp_ImageLens Session::imageLens(
                     datasets, trans, cut, imageCut_, imageTransform_));
 }
 
-shp_Lens Session::lens(Dataset::rc dataset, Datasets::rc datasets, bool trans,
-                       bool cut, eNorm norm) const {
-  return shp_Lens(new Lens(*this, dataset, corrEnabled_ ? &corrImage_ : nullptr,
-                           datasets, trans, cut, norm,
-                           imageCut_, imageTransform_));
+shp_Lens Session::lens(Dataset::rc dataset, Datasets::rc datasets, eNorm norm,
+                       bool trans, bool cut) const {
+  return shp_Lens(new Lens(*this, dataset, datasets, norm,
+                           trans, cut, imageTransform_, imageCut_));
+
+                 /*>>>*this, dataset, corrEnabled_ ? &corrImage_ : nullptr,
+                 datasets, trans, cut, norm,
+                 imageCut_, imageTransform_*/
 }
 
 // Calculates the polefigure coordinates alpha and beta with regards to
@@ -286,8 +289,8 @@ void calculateAlphaBeta(Dataset::rc dataset, tth_t tth, gma_t gma,
   beta  = betaRad.toDeg();
 }
 
-Curve Session::makeCurve(shp_Lens lens, gma_rge::rc gmaSector) const {
-  Curve curve = lens->makeCurve(gmaSector, lens->angleMap().rgeTth());
+Curve Session::makeCurve(shp_Lens lens, gma_rge::rc rgeGma) const {
+  Curve curve = lens->makeCurve(rgeGma, lens->angleMap().rgeTth());
   curve.subtract(fit::Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
 
   return curve;
@@ -341,10 +344,10 @@ ReflectionInfos Session::makeReflectionInfos(
     if (progress)
       progress->step();
 
-    auto l = lens(*dataset, datasets, true, true, norm_);
-    Range lRange = l->gmaRangeAt(reflection.range().center());
+    auto l = lens(*dataset, datasets, norm_, true, true);
+//>>> replace with get(gmaRge)    Range lRange = l->gmaRangeAt(reflection.range().center());
 
-    Range rgeGma = gmaRge.isValid() ? gmaRge.intersect(lRange) : lRange;
+    Range rgeGma;//>>> = gmaRge.isValid() ? gmaRge.intersect(lRange) : lRange;
     if (rgeGma.isEmpty())
       continue;
 
@@ -391,7 +394,7 @@ void Session::setNorm(eNorm norm) {
 }
 
 qreal Session::calcAvgBackground(Dataset::rc dataset) const {
-  auto l = lens(dataset, dataset.datasets(), true, true, eNorm::NONE);
+  auto l = lens(dataset, dataset.datasets(), eNorm::NONE, true, true);
 
   auto rgeGma = dataset.rgeGma(*this);
   auto rgeTth = dataset.rgeTth(*this);

@@ -335,7 +335,7 @@ DatasetOptions2::DatasetOptions2(TheHub& hub)
   auto vn = vbox();
   box_->addLayout(vn);
 
-  str_lst options = calc::Lens::normStrLst();
+  str_lst options = normStrLst();
 
   vn->addWidget(comboNormType_ = comboBox(options));
 
@@ -439,10 +439,10 @@ void Dataset::setImageScale(uint scale) {
   corrImageWidget_->setScale(scale);
 }
 
-QPixmap Dataset::makePixmap(calc::shp_ImageLens lens) {
+QPixmap Dataset::makePixmap(calc::shp_ImageLens imageLens) {
   QPixmap pixmap;
-  auto size     = lens->size();
-  auto rgeInten = lens->rgeInten(hub_.isFixedIntenImageScale());
+  auto size     = imageLens->size();
+  auto rgeInten = imageLens->rgeInten(hub_.isFixedIntenImageScale());
 
   if (!size.isEmpty()) {
     QImage image(QSize(to_i(size.w), to_i(size.h)), QImage::Format_RGB32);
@@ -450,7 +450,7 @@ QPixmap Dataset::makePixmap(calc::shp_ImageLens lens) {
     qreal maxInten = rgeInten.max;
     for_ij (size.w, size.h)
       image.setPixel(to_i(i), to_i(j),
-                     intenImage(lens->inten(i, j), maxInten));
+                     intenImage(imageLens->imageInten(i, j), maxInten));
     pixmap = QPixmap::fromImage(image);
   }
 
@@ -466,8 +466,8 @@ void Dataset::render() {
   {
     QPixmap pixMap;
     if (dataset_) {
-      auto lens = hub_.lensNoCut(*dataset_);
-      pixMap    = makePixmap(lens);
+//>>> <prev next>      auto lens = hub_.lensNoCut(*dataset_);
+//      pixMap    = makePixmap(lens);
     }
     dataImageWidget_->setPixmap(pixMap);
   }

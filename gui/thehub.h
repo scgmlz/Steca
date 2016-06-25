@@ -109,9 +109,7 @@ public:  // files
 
 public:
   calc::shp_ImageLens lensNoCut(typ::Image::rc) const;
-
-  calc::shp_Lens lens(data::Dataset::rc) const;
-  calc::shp_Lens lensNoCut(data::Dataset::rc) const;
+  calc::shp_Lens      lens(data::Dataset::rc)   const;
 
 public:
   calc::ReflectionInfos makeReflectionInfos(calc::Reflection::rc,

@@ -385,7 +385,7 @@ Curve::rc Datasets::makeAvgCurve(core::Session::rc session, bool trans, bool cut
   Curve res;
 
   for (auto& dataset: *this) {
-    shp_Lens lens = session.lens(*dataset,*this,trans,cut,session.norm());
+    shp_Lens lens = session.lens(*dataset, *this, session.norm(), trans, cut);
     Curve single = lens->makeCurve(lens->angleMap().rgeGma(),lens->angleMap().rgeTth());
     res = res.add(single);
   }

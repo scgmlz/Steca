@@ -135,8 +135,10 @@ public:
 
 // lenses
 public:
-  calc::shp_ImageLens imageLens(typ::Image::rc, data::Datasets::rc, bool trans, bool cut) const;
-  calc::shp_Lens      lens(data::Dataset::rc, data::Datasets::rc, bool trans, bool cut, eNorm) const;
+  calc::shp_ImageLens imageLens(typ::Image::rc, data::Datasets::rc,
+                                bool trans, bool cut) const;
+  calc::shp_Lens      lens(data::Dataset::rc, data::Datasets::rc, eNorm,
+                           bool trans, bool cut) const;
 
   typ::Curve makeCurve(calc::shp_Lens, gma_rge::rc) const;
 

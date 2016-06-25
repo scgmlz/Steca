@@ -220,17 +220,17 @@ void DiffractogramPlot::plot(typ::Curve::rc dgram, typ::Curve::rc dgramBgFitted,
     auto tthRange = dgram.rgeX();
 
     typ::Range intenRange;
-    if (hub_.isFixedIntenDgramScale()) {
-      ENSURE(!diffractogram_.dataset().isNull())
-      auto lens = hub_.lens(*diffractogram_.dataset());
-      auto max  = lens->rgeInten(hub_.isFixedIntenDgramScale()).max;
-      // heuristics; to calculate this precisely would require much more
-      // computation
-      intenRange = typ::Range(-max / 30, max / 3);
-    } else {
+//>>>IN    if (hub_.isFixedIntenDgramScale()) {
+//      ENSURE(!diffractogram_.dataset().isNull())
+//      auto lens = hub_.lens(*diffractogram_.dataset());
+//      auto max  = lens->rgeInten(hub_.isFixedIntenDgramScale()).max;
+//      // heuristics; to calculate this precisely would require much more
+//      // computation
+//      intenRange = typ::Range(-max / 30, max / 3);
+//    } else {
       intenRange = dgramBgFitted.rgeY();
       intenRange.extendBy(dgram.rgeY());
-    }
+//    }
 
     xAxis->setRange(tthRange.min, tthRange.max);
     yAxis->setRange(qMin(0., intenRange.min), intenRange.max);
@@ -469,7 +469,7 @@ void Diffractogram::calcDgram() {
   if (hub_.isCombinedDgram())
     dgram_ = hub_.lens(*dataset_)->makeAvgCurve();
   else
-    dgram_ = hub_.lens(*dataset_)->makeCurve(dataset_->rgeGma(), dataset_->rgeTth());
+    dgram_ = hub_.lens(*dataset_)->makeCurve();
 }
 
 void Diffractogram::calcBackground() {

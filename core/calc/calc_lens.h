@@ -36,19 +36,34 @@ namespace calc {
 //------------------------------------------------------------------------------
 // View the dataset through a lens (thanks, Antti!)
 
-class ImageLens {
-  CLS(ImageLens)
+class LensBase {
+public:
+  LensBase(core::Session const&, data::Datasets::rc,
+           bool trans, bool cut,
+           typ::ImageTransform::rc, typ::ImageCut::rc);
+protected:
+  core::Session const& session_;
+  data::Datasets::rc  datasets_;
+  bool                trans_, cut_;
+  typ::ImageTransform imageTransform_;
+  typ::ImageCut       imageCut_;
+};
+
+//------------------------------------------------------------------------------
+
+class ImageLens final : public LensBase {
+  CLS(ImageLens) SUPER(LensBase)
 public:
   ImageLens(core::Session const&, typ::Image::rc, typ::Image const* corrImage,
-            data::Datasets::rc, bool trans, bool cut,
-            typ::ImageCut::rc, typ::ImageTransform::rc);
+            data::Datasets::rc,
+            bool trans, bool cut, typ::ImageCut::rc, typ::ImageTransform::rc);
 
   typ::size2d size() const;
-  inten_t inten(uint i, uint j)  const;
+  inten_t imageInten(uint i, uint j)  const;
 
   inten_rge::rc rgeInten(bool fixed) const;
 
-protected:
+private:
   void doTrans(uint& i, uint& j) const;
 
   void doCut(uint& i, uint& j) const {
@@ -57,19 +72,11 @@ protected:
 
   void calcSensCorr();  // detector sensitivity correction
 
-  core::Session const& session_;
-
   typ::Image const&   image_;
   typ::Image const*   corrImage_;
 
-  data::Datasets::rc  datasets_;
-  bool                trans_, cut_;
-  typ::ImageTransform imageTransform_;
-  typ::ImageCut       imageCut_;
-
   typ::Array2D<inten_t> intensCorr_;
   bool                hasNaNs_;
-  inten_t             normFactor_;
 
   mutable inten_rge   rgeInten_;
 };
@@ -78,19 +85,23 @@ typedef QSharedPointer<ImageLens> shp_ImageLens;
 
 //------------------------------------------------------------------------------
 
-class Lens : public ImageLens {
-  CLS(Lens) SUPER(ImageLens)
+class Lens final : public LensBase {
+  CLS(Lens) SUPER(LensBase)
 public:
-  static str_lst::rc normStrLst();
+  Lens(core::Session const&, data::Dataset::rc, data::Datasets::rc, eNorm,
+       bool trans, bool cut, typ::ImageTransform::rc, typ::ImageCut::rc);
+    //>>>  Lens(core::Session const&, ,
+    //       typ::Image const* corr, data::Datasets::rc,
+    //       bool trans, bool cut, eNorm norm,
+    //       typ::ImageCut::rc, typ::ImageTransform::rc);
 
-  Lens(core::Session const&, data::Dataset::rc,
-       typ::Image const* corr, data::Datasets::rc,
-       bool trans, bool cut, eNorm norm,
-       typ::ImageCut::rc, typ::ImageTransform::rc);
+//  typ::Angles::rc angles(uint i, uint j) const;
 
-  typ::Angles::rc angles(uint i, uint j) const;
+//  gma_rge    gmaRangeAt(tth_t) const;
+  gma_rge rgeGma() const;
+  tth_rge rgeTth() const;
 
-  gma_rge    gmaRangeAt(tth_t) const;
+  typ::Curve makeCurve() const;
   typ::Curve makeCurve(gma_rge::rc, tth_rge::rc) const;
   typ::Curve makeAvgCurve() const;
 
@@ -99,6 +110,7 @@ public:
 
 private:
   void setNorm(eNorm);
+  inten_t normFactor_;
 
   data::Dataset::rc dataset_;
   typ::shp_AngleMap angleMap_;

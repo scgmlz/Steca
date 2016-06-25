@@ -182,13 +182,8 @@ calc::shp_ImageLens TheHub::lensNoCut(typ::Image::rc image) const {
 }
 
 calc::shp_Lens TheHub::lens(data::Dataset::rc dataset) const {
-  return session->lens(dataset, dataset.datasets(), true, true,
-                       session->norm());
-}
-
-calc::shp_Lens TheHub::lensNoCut(data::Dataset::rc dataset) const {
-  return session->lens(dataset, dataset.datasets(), true, false,
-                       session->norm());
+  return session->lens(dataset, dataset.datasets(), session->norm(),
+                       true, true);
 }
 
 calc::ReflectionInfos TheHub::makeReflectionInfos(

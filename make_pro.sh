@@ -26,15 +26,12 @@ function files {
   find $where -type f -name \*.$ext -exec echo ' ' {} \\ \;
 }
 
+MODULES='lib LevMar core gui'
 echo -e '\nHEADERS += \\' >> $PRO
-files lib  h >> $PRO
-files core h >> $PRO
-files gui  h >> $PRO
+for m in $MODULES ; do files $m h >> $PRO ; done
 
 echo -e '\nSOURCES += \\' >> $PRO
-files lib  cpp >> $PRO
-files core cpp >> $PRO
-files gui  cpp >> $PRO
+for m in $MODULES ; do files $m cpp >> $PRO ; done
 
 echo -e '\nRESOURCES += \\' >> $PRO
 files gui  qrc >> $PRO

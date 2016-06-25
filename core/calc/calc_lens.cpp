@@ -24,13 +24,22 @@ namespace calc {
 using namespace typ;
 using namespace data;
 
+LensBase::LensBase(core::Session::rc session, data::Datasets::rc datasets,
+                   bool trans, bool cut,
+                   typ::ImageTransform::rc imageTransform, typ::ImageCut::rc imageCut)
+: session_(session), datasets_(datasets)
+, trans_(trans), cut_(cut)
+, imageTransform_(imageTransform), imageCut_(imageCut) {
+}
+
+//------------------------------------------------------------------------------
+
 ImageLens::ImageLens(core::Session::rc session,
                      Image::rc image, Image const* corrImage,
                      Datasets::rc datasets, bool trans, bool cut,
                      ImageCut::rc imageCut, ImageTransform::rc imageTransform)
-: session_(session), image_(image), corrImage_(corrImage), datasets_(datasets)
-, trans_(trans), cut_(cut), imageTransform_(imageTransform)
-, imageCut_(imageCut), normFactor_(1)
+: super(session, datasets, trans, cut, imageTransform, imageCut)
+, image_(image), corrImage_(corrImage)
 {
   calcSensCorr();
 }
@@ -47,7 +56,7 @@ size2d ImageLens::size() const {
   return size;
 }
 
-inten_t ImageLens::inten(uint i, uint j) const {
+inten_t ImageLens::imageInten(uint i, uint j) const {
   if (trans_) doTrans(i, j);
   if (cut_)   doCut(i, j);
 
@@ -55,7 +64,7 @@ inten_t ImageLens::inten(uint i, uint j) const {
   if (corrImage_)
     inten *= intensCorr_.at(i, j);
 
-  return inten * normFactor_;
+  return inten;
 }
 
 inten_rge::rc ImageLens::rgeInten(bool fixed) const {
@@ -65,7 +74,7 @@ inten_rge::rc ImageLens::rgeInten(bool fixed) const {
   if (!rgeInten_.isValid()) {
     auto sz = size();
     for_ij (sz.w, sz.h)
-      rgeInten_.extendBy(inten(i, j));
+      rgeInten_.extendBy(imageInten(i, j));
   }
 
   return rgeInten_;
@@ -147,81 +156,87 @@ void ImageLens::calcSensCorr() {
 
 //------------------------------------------------------------------------------
 
-str_lst::rc Lens::normStrLst() {
-  static str_lst strLst {
-      "disabled", "Δ monitor", "Δ time", "background",
-  };
-
-  return strLst;
-}
-
-Lens::Lens(core::Session::rc session, Dataset::rc dataset, Image const* corrImage,
-           Datasets::rc datasets, bool trans, bool cut, eNorm norm,
-           ImageCut::rc imageCut,
-           ImageTransform::rc imageTransform)
-: super(session, dataset.image(), corrImage, datasets, trans, cut, imageCut
-, imageTransform), dataset_(dataset), angleMap_(session.angleMap(dataset))
+Lens::Lens(core::Session::rc session,
+           data::Dataset::rc dataset, data::Datasets::rc datasets, eNorm norm,
+           bool trans, bool cut,
+           typ::ImageTransform::rc imageTransform, typ::ImageCut::rc imageCut)
+: super(session, datasets, trans, cut, imageTransform, imageCut)
+, normFactor_(1), dataset_(dataset)
+//>>>: super(session, dataset.image(), corrImage, datasets, trans, cut, imageCut
+//, imageTransform), dataset_(dataset), angleMap_(session.angleMap(dataset))
 {
   setNorm(norm);
 }
 
-Angles::rc Lens::angles(uint i, uint j) const {
-  if (cut_) doCut(i, j);
-  return angleMap_->at(i, j);
+//Angles::rc Lens::angles(uint i, uint j) const {
+//  if (cut_) doCut(i, j);
+//  return angleMap_->at(i, j);
+//}
+
+//gma_rge Lens::gmaRangeAt(tth_t tth) const {
+//  auto sz = size();
+//  uint w = sz.w, h = sz.h;
+
+//  Range rge;
+
+//  for (uint j = 1; j < h; ++j) {
+//    for (uint i = 1; i < w; ++i) {
+//      auto tthMin = angles(i-1, j).tth, tthMax = angles(i, j).tth;
+//      if (tthMin <= tth && tth < tthMax)
+//        rge.extendBy(angles(i - 1, j).gma);
+//    }
+//  }
+
+//  return rge;
+//}
+
+//Curve Lens::makeCurve(gma_rge::rc gmaRge, tth_rge::rc tthRge) const {
+//  auto s = size();
+//  uint w = s.w, h = s.h;
+
+//  tth_t deltaTth = tthRge.width() / w;
+
+//  qreal_vec intens_vec(w);
+//  uint_vec  counts_vec(w, 0);
+
+//  for_ij (w, h) {
+//    auto& as = angles(i, j);
+//    if (!gmaRge.contains(as.gma)) continue;
+
+//    int bin = qFloor((as.tth - tthRge.min) / deltaTth);
+
+//    if (bin < 0 || to_i(w) <= bin)
+//      continue;  // outside of the cut
+
+//    auto in = inten(i, j);
+//    if (!qIsNaN(in)) {
+//      intens_vec[to_u(bin)] += in;
+//      counts_vec[to_u(bin)] += 1;
+//    }
+//  }
+
+//  Curve res;
+
+//  for_i (w) {
+//    auto in  = intens_vec.at(i);
+//    auto cnt = counts_vec.at(i);
+//    if (cnt > 0) in /= cnt;
+//    res.append(tthRge.min + deltaTth * i, in);
+//  }
+
+//  return res;
+//}
+
+gma_rge Lens::rgeGma() const {
+  return dataset_.rgeGma(session_);
 }
 
-gma_rge Lens::gmaRangeAt(tth_t tth) const {
-  auto sz = size();
-  uint w = sz.w, h = sz.h;
-
-  Range rge;
-
-  for (uint j = 1; j < h; ++j) {
-    for (uint i = 1; i < w; ++i) {
-      auto tthMin = angles(i-1, j).tth, tthMax = angles(i, j).tth;
-      if (tthMin <= tth && tth < tthMax)
-        rge.extendBy(angles(i - 1, j).gma);
-    }
-  }
-
-  return rge;
+tth_rge Lens::rgeTth() const {
+  return dataset_.rgeTth(session_);
 }
 
-Curve Lens::makeCurve(gma_rge::rc gmaRge, tth_rge::rc tthRge) const {
-  auto s = size();
-  uint w = s.w, h = s.h;
-
-  tth_t deltaTth = tthRge.width() / w;
-
-  qreal_vec intens_vec(w);
-  uint_vec  counts_vec(w, 0);
-
-  for_ij (w, h) {
-    auto& as = angles(i, j);
-    if (!gmaRge.contains(as.gma)) continue;
-
-    int bin = qFloor((as.tth - tthRge.min) / deltaTth);
-
-    if (bin < 0 || to_i(w) <= bin)
-      continue;  // outside of the cut
-
-    auto in = inten(i, j);
-    if (!qIsNaN(in)) {
-      intens_vec[to_u(bin)] += in;
-      counts_vec[to_u(bin)] += 1;
-    }
-  }
-
-  Curve res;
-
-  for_i (w) {
-    auto in  = intens_vec.at(i);
-    auto cnt = counts_vec.at(i);
-    if (cnt > 0) in /= cnt;
-    res.append(tthRge.min + deltaTth * i, in);
-  }
-
-  return res;
+Curve Lens::makeCurve() const {
+  return makeCurve(rgeGma(), rgeTth());
 }
 
 Curve Lens::makeAvgCurve() const {

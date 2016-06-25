@@ -123,11 +123,11 @@ private:
 
 typedef uint nint;  // 1..
 
-bool is_nint(uint u) {
+inline bool is_nint(uint u) {
   return 1 <= u;
 }
 
-nint to_nint(uint u) {
+inline nint to_nint(uint u) {
   EXPECT2(is_nint(u), "to_nint(cannot be zero)")
   return nint(u);
 }
