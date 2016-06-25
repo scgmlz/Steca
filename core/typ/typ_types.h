@@ -30,6 +30,7 @@ typedef float fwhm_t;
 
 typedef typ::vec<inten_t> inten_vec;
 
+typedef typ::Range inten_rge;
 typedef typ::Range tth_rge;
 typedef typ::Range gma_rge;
 

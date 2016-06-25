@@ -34,6 +34,7 @@ public:
   rad toRad() const;
 
   deg& operator+=(deg const&);
+  deg& operator*=(deg const&);
 
   deg normalized();
 
@@ -51,6 +52,7 @@ public:
   deg toDeg() const;
 
   rad& operator+=(rad const&);
+  rad& operator*=(rad const&);
 
 private:
   qreal val_;

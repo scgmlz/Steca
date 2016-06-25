@@ -23,7 +23,7 @@ using namespace typ;
 using namespace data;
 using namespace calc;
 
-Session::Session() : angleMapCache(123) { // TODO decide the cache size
+Session::Session() : angleMapCache_(360) {
   clear();
 }
 
@@ -41,7 +41,7 @@ void Session::clear() {
 
   norm_ = eNorm::NONE;
 
-  angleMapCache.clear();
+  angleMapCache_.clear();
 }
 
 shp_File Session::file(uint i) const {
@@ -74,7 +74,7 @@ void Session::setCorrFile(shp_File file) THROWS {
     auto& datasets = file->datasets();
 
     setImageSize(datasets.imageSize());
-    corrImage_ = datasets.folded();  // ensure one dataset
+    corrImage_ = datasets.foldedImage();
 
     // all ok
     corrFile_    = file;
@@ -93,49 +93,50 @@ void Session::tryEnableCorr(bool on) {
   corrEnabled_ = on && hasCorrFile();
 }
 
-void Session::collectDatasetsFromFiles(uint_vec fileNums, uint groupBy) {
-  EXPECT(1 <= groupBy)
+void Session::collectDatasetsFromFiles(uint_vec fileNums, nint combineBy) {
+  EXPECT(is_nint(combineBy))
 
   collectedFromFiles_ = fileNums;
   collectedDatasets_.clear();
   collectedDatasetsTags_.clear();
 
-  Datasets collectedDatasets;
-  for (uint i : collectedFromFiles_) {
-    for (auto const& dataset : files_.at(i)->datasets())
-      collectedDatasets.appendHere(shp_Dataset(new Dataset(*dataset)));
-  }
+  vec<OneDataset const*> datasetsFromFiles;
+  for (uint i : collectedFromFiles_)
+    for (auto& dataset : files_.at(i)->datasets())
+      datasetsFromFiles.append(&*dataset);
 
-  if (collectedDatasets.isEmpty())
+  if (datasetsFromFiles.isEmpty())
     return;
 
-  Datasets group;
-  uint     i = 0;
+  shp_Dataset cd(new Dataset);
+  uint i = 0;
 
-  auto makeGroup = [this, &group, &groupBy, &i]() {
-    if (!group.isEmpty()) {
+  auto appendCd = [this, &cd, &combineBy, &i]() {
+    uint cnt = cd->count();
+    if (cnt) {
       str tag = str::number(i + 1);
-      i += group.count();
+      i += cnt;
 
-      if (groupBy > 1) tag += '-' + str::number(i);
+      if (combineBy > 1)
+        tag += '-' + str::number(i);
 
-      collectedDatasets_.appendHere(Dataset::combine(group));
+      collectedDatasets_.appendHere(cd);
       collectedDatasetsTags_.append(tag);
 
-      group.clear();
+      cd = shp_Dataset(new Dataset);
     }
   };
 
-  uint gcnt = groupBy;
-  for (auto& dataset : collectedDatasets) {
-    group.append(dataset);
-    if (1 >= gcnt--) {
-      makeGroup();
-      gcnt = groupBy;
+  uint by = combineBy;
+  for (auto& dataset : datasetsFromFiles) {
+    cd->append(shp_OneDataset(dataset));
+    if (1 >= by--) {
+      appendCd();
+      by = combineBy;
     }
   }
 
-  makeGroup();  // the remaining ones
+  appendCd();  // the remaining ones
 }
 
 void Session::updateImageSize() {
@@ -216,16 +217,20 @@ IJ Session::midPix() const {
   return mid;
 }
 
-shp_AngleMap Session::angleMap(Dataset::rc dataset) const {
-  AngleMap::Key key(geometry_, imageSize_, imageCut_, midPix(), dataset.midTth());
-  shp_AngleMap map = angleMapCache.value(key);
+shp_AngleMap Session::angleMap(OneDataset::rc one) const {
+  AngleMap::Key key(geometry_, imageSize_, imageCut_, midPix(), one.midTth());
+  shp_AngleMap map = angleMapCache_.value(key);
   if (map.isNull())
-    map = angleMapCache.insert(key, shp_AngleMap(new AngleMap(key)));
+    map = angleMapCache_.insert(key, shp_AngleMap(new AngleMap(key)));
   return map;
 }
 
-shp_ImageLens Session::lens(Image::rc image, Datasets::rc datasets, bool trans,
-                            bool cut) const {
+shp_AngleMap Session::angleMap(Session::rc session, OneDataset::rc one) {
+  return session.angleMap(one);
+}
+
+shp_ImageLens Session::imageLens(
+    Image::rc image, Datasets::rc datasets, bool trans, bool cut) const {
   return shp_ImageLens(
       new ImageLens(*this, image, corrEnabled_ ? &corrImage_ : nullptr,
                     datasets, trans, cut, imageCut_, imageTransform_));
@@ -388,11 +393,12 @@ void Session::setNorm(eNorm norm) {
 qreal Session::calcAvgBackground(Dataset::rc dataset) const {
   auto l = lens(dataset, dataset.datasets(), true, true, eNorm::NONE);
 
-  auto map = angleMap(dataset);
-  Curve gmaCurve = l->makeCurve(map->rgeGma(), map->rgeTth());
+  auto rgeGma = dataset.rgeGma(*this);
+  auto rgeTth = dataset.rgeTth(*this);
+  Curve gmaCurve = l->makeCurve(rgeGma, rgeTth);
 
   auto bgPolynom = fit::Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
-  return bgPolynom.avgY(map->rgeTth());
+  return bgPolynom.avgY(rgeTth);
 }
 
 qreal Session::calcAvgBackground(Datasets::rc datasets) const {

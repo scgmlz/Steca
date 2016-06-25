@@ -451,7 +451,8 @@ void Diffractogram::render() {
   calcBackground();
   calcReflections();
 
-  plot_->plot(dgram_, dgramBgFitted_, bg_, refls_, currReflIndex_);
+  EXPECT(currReflIndex_ >= 0)
+  plot_->plot(dgram_, dgramBgFitted_, bg_, refls_, to_u(currReflIndex_));
 }
 
 void Diffractogram::setDataset(data::shp_Dataset dataset) {
@@ -465,11 +466,10 @@ void Diffractogram::calcDgram() {
   if (!dataset_)
     return;
 
-  auto& map = hub_.angleMap(*dataset_);
   if (hub_.isCombinedDgram())
     dgram_ = hub_.lens(*dataset_)->makeAvgCurve();
   else
-    dgram_ = hub_.lens(*dataset_)->makeCurve(map.rgeGma(), map.rgeTth());
+    dgram_ = hub_.lens(*dataset_)->makeCurve(dataset_->rgeGma(), dataset_->rgeTth());
 }
 
 void Diffractogram::calcBackground() {

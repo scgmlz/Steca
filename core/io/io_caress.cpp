@@ -196,7 +196,11 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
           md.time         = tempTime;
 
           file->datasets().append(
-            data::shp_Dataset(new data::Dataset(md, size, not_null<inten_t const*>::from(convertedIntens.constData()))));
+            data::shp_OneDataset(new data::OneDataset(md, size,
+                not_null<inten_t const*>::from(convertedIntens.constData()))
+            )
+          );
+
           delete[] intens; intens = NULL;
           imageSize = 0;
         }

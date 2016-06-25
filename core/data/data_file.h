@@ -51,12 +51,12 @@ public:
   QFileInfo const& fileInfo() const;
   str              fileName() const;
 
-  Datasets&    datasets()       { return datasets_; }
-  Datasets::rc datasets() const { return datasets_; }
+  OneDatasets&     datasets()       { return datasets_; }
+  OneDatasets::rc  datasets() const { return datasets_; }
 
 private:
-  QFileInfo fileInfo_;
-  Datasets  datasets_;
+  QFileInfo   fileInfo_;
+  OneDatasets datasets_;
 };
 
 //------------------------------------------------------------------------------

@@ -46,7 +46,7 @@ public:
   }
 
   void clear() {
-    for (auto* v: QHash<Key,Tp>::values())
+    for (auto* v : QHash<Key,Tp>::values())
       delete v;
     super::clear();
   }

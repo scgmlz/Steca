@@ -119,6 +119,20 @@ private:
 };
 
 //------------------------------------------------------------------------------
+// natural numbers
+
+typedef uint nint;  // 1..
+
+bool is_nint(uint u) {
+  return 1 <= u;
+}
+
+nint to_nint(uint u) {
+  EXPECT2(is_nint(u), "to_nint(cannot be zero)")
+  return nint(u);
+}
+
+//------------------------------------------------------------------------------
 // casting signed <-> unsigned
 
 #ifndef QT_NO_DEBUG
@@ -140,8 +154,9 @@ typename std::__make_signed<T>::__type to_i(T t) {
 template <typename T>
 typename std::__make_unsigned<T>::__type to_u(T t) {
   static_assert(std::is_signed<T>::value, "to_u(signed)");
-  EXPECT2(t >= 0, "to_u(attempt to convert a negative value)")
+  EXPECT2(0 <= t, "to_u(attempt to convert a negative value)")
   return typename std::__make_unsigned<T>::__type(t);
 }
 
+//------------------------------------------------------------------------------
 #endif // DEF_GSL

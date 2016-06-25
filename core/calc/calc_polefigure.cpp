@@ -123,7 +123,7 @@ void itf_t::operator+=(rc that) {
 void searchPoints(deg alpha, deg beta, deg radius, ReflectionInfos::rc infos,
                   itfs_t& itfs) {
   // REVIEW Use value trees to improve performance.
-  for (auto const& info : infos) {
+  for (auto& info : infos) {
     if (inRadius(info.alpha(), info.beta(), alpha, beta, radius))
       itfs.append(itf_t(info.inten(), info.tth(), info.fwhm()));
   }
@@ -141,7 +141,7 @@ void searchInQuadrants(Quadrants::rc quadrants, deg alpha, deg beta,
   distances.fill(std::numeric_limits<qreal>::max(), quadrants.count());
   foundInfos.fill(nullptr, quadrants.count());
   // Find infos closest to given alpha and beta in each quadrant.
-  for (auto const& info : infos) {
+  for (auto& info : infos) {
     // REVIEW We could do better with value trees than looping over all infos.
     auto deltaBeta = calculateDeltaBeta(info.beta(), beta);
     if (fabs(deltaBeta) > BETA_LIMIT) continue;

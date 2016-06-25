@@ -117,7 +117,7 @@ void TabGraph::paintGrid() {
 void TabGraph::paintInfo() {
   qreal rgeMax = rs_.rgeInten().max;
 
-  for (auto const& r : rs_) {
+  for (auto& r : rs_) {
     qreal inten = r.inten();
 
     if (qIsFinite(inten)) { // nan comes from interpolartion

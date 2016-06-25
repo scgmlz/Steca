@@ -73,7 +73,7 @@ void FilesView::removeSelected() {
 
 void FilesView::recollect() {
   uint_vec rows;
-  for (auto const& index : selectionModel()->selectedRows())
+  for (auto& index : selectionModel()->selectedRows())
     if (index.isValid()) rows.append(index.row());
 
   hub_.collectDatasetsFromFiles(rows);

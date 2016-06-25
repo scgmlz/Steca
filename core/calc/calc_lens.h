@@ -46,7 +46,7 @@ public:
   typ::size2d size() const;
   inten_t inten(uint i, uint j)  const;
 
-  typ::Range::rc rgeInten(bool fixed) const;
+  inten_rge::rc rgeInten(bool fixed) const;
 
 protected:
   void doTrans(uint& i, uint& j) const;
@@ -71,7 +71,7 @@ protected:
   bool                hasNaNs_;
   inten_t             normFactor_;
 
-  mutable typ::Range rgeInten_;
+  mutable inten_rge   rgeInten_;
 };
 
 typedef QSharedPointer<ImageLens> shp_ImageLens;

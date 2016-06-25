@@ -263,7 +263,7 @@ void DatasetOptions1::setTo(TheHub& hub) {
 }
 
 void DatasetOptions1::setFrom(TheHub& hub) {
-  auto const& g = hub.geometry();
+  auto& g = hub.geometry();
 
   hub.actions.hasBeamOffset->setChecked(g.isMidPixOffset);
   spinOffsetI_->setValue(g.midPixOffset.i);
@@ -441,8 +441,8 @@ void Dataset::setImageScale(uint scale) {
 
 QPixmap Dataset::makePixmap(calc::shp_ImageLens lens) {
   QPixmap pixmap;
-  auto    size     = lens->size();
-  auto    rgeInten = lens->rgeInten(hub_.isFixedIntenImageScale());
+  auto size     = lens->size();
+  auto rgeInten = lens->rgeInten(hub_.isFixedIntenImageScale());
 
   if (!size.isEmpty()) {
     QImage image(QSize(to_i(size.w), to_i(size.h)), QImage::Format_RGB32);

@@ -22,11 +22,14 @@
 namespace data {
 
 struct Metadata;
+class  OneDataset;
+class  OneDatasets;
 class  Dataset;
 class  Datasets;
 
-typedef QSharedPointer<Metadata> shp_Metadata;
-typedef QSharedPointer<Dataset>  shp_Dataset;
+typedef QSharedPointer<Metadata   const> shp_Metadata; // no changing these
+typedef QSharedPointer<OneDataset const> shp_OneDataset;
+typedef QSharedPointer<Dataset> shp_Dataset;
 
 }
 
@@ -56,6 +59,8 @@ namespace data {
 struct Metadata {
   CLS(Metadata)
 
+  Metadata();
+
   // attribute list - will be dynamic
   static uint numAttributes(bool onlyNum);
 
@@ -79,37 +84,38 @@ struct Metadata {
 };
 
 //------------------------------------------------------------------------------
-// Dataset = metadata + image
+// OneDataset = metadata + image
+// for calculation always accessed through its owning Dataset
 
-class Dataset final {
-  friend class Datasets;
-  CLS(Dataset)
+class OneDataset final {
+  CLS(OneDataset) friend class OneDatasets; friend class Dataset;
 public:
+//  >>>OneDataset();
+  OneDataset(Metadata::rc, typ::size2d::rc, not_null<inten_t const*>);
+  OneDataset(rc);
 
-  Dataset(Metadata::rc, typ::size2d::rc, not_null<inten_t const*>);
-  Dataset(Dataset::rc);
-  Dataset();
-
-  Datasets const& datasets() const;
+//>>>  Datasets const& datasets() const;
   shp_Metadata metadata() const;
 
-  static shp_Dataset combine(Datasets);
+//>>>  static shp_Dataset combine(Datasets);
 
-  typ::deg midTth()            const { return md_->motorTth; }
-  qreal    deltaMonitorCount() const { return md_->deltaMonitorCount; }
-  qreal    deltaTime()         const { return md_->deltaTime; }
+  tth_t midTth()            const { return md_->motorTth; }
+  qreal deltaMonitorCount() const { return md_->deltaMonitorCount; }
+  qreal deltaTime()         const { return md_->deltaTime; }
 
-  typ::deg omg() const { return md_->motorOmg; }
-  typ::deg phi() const { return md_->motorPhi; }
-  typ::deg chi() const { return md_->motorChi; }
+  typ::deg omg()            const { return md_->motorOmg; }
+  typ::deg phi()            const { return md_->motorPhi; }
+  typ::deg chi()            const { return md_->motorChi; }
 
-  typ::Image::rc image() const { return image_; }
+  gma_rge  rgeGma(core::Session const&) const;
+  tth_rge  rgeTth(core::Session const&) const;
 
-  typ::size2d imageSize() const;
-  inten_t inten(uint i, uint j) const;
+  typ::Image::rc image()    const { return image_; }
+  typ::size2d imageSize()   const;
+//  inten_t inten(uint i, uint j) const;
 
 private:
-  Datasets* datasets_;  // here it belongs (or could be nullptr)
+//>>>  Dataset* dataset_;  // here it belongs (or could be nullptr)
 
   shp_Metadata md_;
   typ::Image   image_;
@@ -117,31 +123,68 @@ private:
 
 //------------------------------------------------------------------------------
 
-// A group of Dataset(s)
-class Datasets : public typ::vec<shp_Dataset> {
+class OneDatasets final : public typ::vec<shp_OneDataset> {
+  CLS(OneDatasets) SUPER(typ::vec<shp_OneDataset>)
+public:
+  typ::size2d imageSize()   const;
+  typ::Image  foldedImage() const;
+};
+
+//------------------------------------------------------------------------------
+
+// 1 or more OneDataset(s)
+class Dataset final : private typ::vec<shp_OneDataset> {
+  CLS(Dataset) SUPER(typ::vec<shp_OneDataset>)
+  friend class Datasets;
+public:
+  Dataset();
+
+  using super::count;
+  using super::append;
+
+  shp_Metadata    metadata() const;
+  Datasets const& datasets() const;
+
+  typ::deg omg() const;
+  typ::deg phi() const;
+  typ::deg chi() const;
+
+  gma_rge  rgeGma(core::Session const&) const;
+  tth_rge  rgeTth(core::Session const&) const;
+
+  qreal avgDeltaMonitorCount() const;
+  qreal avgDeltaTime()         const;
+
+private:
+  // all dataset(s) must have the same image size
+//>>>  typ::size2d imageSize()   const;
+  Datasets* datasets_;      // here it belongs (or could be nullptr)
+
+  mutable shp_Metadata md_; // on demand, just once
+};
+
+//------------------------------------------------------------------------------
+
+class Datasets final : public typ::vec<shp_Dataset> {
   CLS(Datasets) SUPER(typ::vec<shp_Dataset>)
 public:
   Datasets();
 
   void appendHere(shp_Dataset);
 
-  // collapse datasets' images into one
-  typ::Image folded() const THROWS;
+//>>>  typ::size2d imageSize()   const;
 
-  // all dataset(s) must have the same image size
-  typ::size2d imageSize() const;
-
-  qreal   avgDeltaMonitorCount() const;
-  qreal   avgDeltaTime() const;
-  typ::Range::rc rgeFixedInten(core::Session const&, bool trans, bool cut) const;
+  qreal avgDeltaMonitorCount() const;
+  qreal avgDeltaTime() const;
+  inten_rge::rc  rgeFixedInten(core::Session const&, bool trans, bool cut) const;
   typ::Curve::rc makeAvgCurve(core::Session const&, bool trans, bool cut) const;
 
-private:
+//private:
   void invalidateMutables();
 
   // computed on demand (NaNs or emptiness indicate yet unknown values)
   mutable qreal avgMonitorCount_, avgDeltaTime_;
-  mutable typ::Range rgeFixedInten_;
+  mutable inten_rge rgeFixedInten_;
   mutable typ::Curve avgCurve_;
 };
 

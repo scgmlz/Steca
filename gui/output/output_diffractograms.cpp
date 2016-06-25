@@ -131,7 +131,7 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
 
   OutputDataCollections allOutputData;
   uint picNum = 1;
-  for (data::shp_Dataset dataset: datasets) {
+  for (data::shp_Dataset dataset : datasets) {
     progress.step();
     allOutputData.append(collectCurves(rgeGma, gmaStep, *dataset, picNum));
     ++picNum;

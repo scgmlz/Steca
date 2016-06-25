@@ -165,8 +165,6 @@ public:
   void setGeometry(qreal detectorDistance, qreal pixSize, bool isMidPixOffset,
                    typ::IJ::rc midPixOffset);
 
-  typ::AngleMap::rc angleMap(data::Dataset::rc) const;
-
   void setBgRanges(typ::Ranges::rc);
   void addBgRange(typ::Range::rc);
   void remBgRange(typ::Range::rc);

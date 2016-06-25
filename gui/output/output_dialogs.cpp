@@ -292,7 +292,7 @@ void Frame::displayReflection(uint reflIndex, bool interpolated) {
   if (calcPoints_.count() <= reflIndex)
     return;
 
-  for (auto const& r : (interpolated ? interpPoints_ : calcPoints_)[reflIndex])
+  for (auto& r : (interpolated ? interpPoints_ : calcPoints_)[reflIndex])
     table_->addRow(r.data(), false);
 
   table_->sortData();

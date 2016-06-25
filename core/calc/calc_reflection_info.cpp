@@ -146,12 +146,12 @@ void ReflectionInfos::append(ReflectionInfo::rc info) {
   invalidate();
 }
 
-qreal ReflectionInfos::averageInten() const {
+inten_t ReflectionInfos::averageInten() const {
   if (qIsNaN(avgInten_)) {
     avgInten_ = 0;
     uint cnt  = 0;
 
-    for (auto const& info : *this) {
+    for (auto& info : *this) {
       qreal inten = info.inten();
       if (qIsFinite(inten)) {
         avgInten_ += inten;
@@ -165,7 +165,7 @@ qreal ReflectionInfos::averageInten() const {
   return avgInten_;
 }
 
-Range::rc ReflectionInfos::rgeInten() const {
+inten_rge::rc ReflectionInfos::rgeInten() const {
   if (!rgeInten_.isValid()) {
     for_i (count())
       rgeInten_.extendBy(at(i).inten());
@@ -175,7 +175,7 @@ Range::rc ReflectionInfos::rgeInten() const {
 }
 
 void ReflectionInfos::invalidate() {
-  avgInten_ = qQNaN();
+  avgInten_ = inten_t(qQNaN());
   rgeInten_.invalidate();
 }
 

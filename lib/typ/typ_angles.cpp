@@ -32,6 +32,11 @@ deg& deg::operator+=(deg const& that) {
   return *this;
 }
 
+deg& deg::operator*=(deg const& that) {
+  val_ *= that.val_;
+  return *this;
+}
+
 deg deg::normalized() {
   static qreal const MAX = 360;
   qreal norm = fmod(val_, MAX);
@@ -51,6 +56,11 @@ deg rad::toDeg() const {
 
 rad& rad::operator+=(rad const& that) {
   val_ += that.val_;
+  return *this;
+}
+
+rad& rad::operator*=(rad const& that) {
+  val_ *= that.val_;
   return *this;
 }
 

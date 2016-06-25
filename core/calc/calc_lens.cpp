@@ -58,7 +58,7 @@ inten_t ImageLens::inten(uint i, uint j) const {
   return inten * normFactor_;
 }
 
-Range::rc ImageLens::rgeInten(bool fixed) const {
+inten_rge::rc ImageLens::rgeInten(bool fixed) const {
   if (fixed)
     return datasets_.rgeFixedInten(session_, trans_, cut_);
 
@@ -197,7 +197,7 @@ Curve Lens::makeCurve(gma_rge::rc gmaRge, tth_rge::rc tthRge) const {
   uint_vec  counts_vec(w, 0);
 
   for_ij (w, h) {
-    auto const& as = angles(i, j);
+    auto& as = angles(i, j);
     if (!gmaRge.contains(as.gma)) continue;
 
     int bin = qFloor((as.tth - tthRge.min) / deltaTth);
@@ -236,11 +236,11 @@ void Lens::setNorm(eNorm norm) {
   switch (norm) {
   case eNorm::DELTA_MONITOR_COUNT:
     num = datasets.avgDeltaMonitorCount();
-    den = dataset_.deltaMonitorCount();
+    den = dataset_.avgDeltaMonitorCount();
     break;
   case eNorm::DELTA_TIME:
     num = datasets.avgDeltaTime();
-    den = dataset_.deltaTime();
+    den = dataset_.avgDeltaTime();
     break;
   case eNorm::BACKGROUND:
     num = session_.calcAvgBackground(datasets);

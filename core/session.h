@@ -82,7 +82,7 @@ public:
     return corrEnabled_;
   }
 
-  void collectDatasetsFromFiles(uint_vec, uint);
+  void collectDatasetsFromFiles(uint_vec, nint);
 
   uint_vec::rc collectedFromFiles() const {
     return collectedFromFiles_; \
@@ -122,7 +122,7 @@ public:
 
 private:
   typ::Geometry geometry_;
-  mutable typ::cache_eager<typ::AngleMap::Key,typ::AngleMap> angleMapCache;
+  mutable typ::cache_lazy<typ::AngleMap::Key,typ::AngleMap> angleMapCache_;
 
 public:
   typ::Geometry::rc geometry() const { return geometry_; }
@@ -130,12 +130,13 @@ public:
                    typ::IJ::rc midPixOffset);
   typ::IJ midPix() const;
 
-  typ::shp_AngleMap angleMap(data::Dataset::rc) const;
+  typ::shp_AngleMap        angleMap(data::OneDataset::rc) const;
+  static typ::shp_AngleMap angleMap(Session::rc, data::OneDataset::rc);
 
 // lenses
 public:
-  calc::shp_ImageLens lens(typ::Image::rc, data::Datasets::rc, bool trans, bool cut) const;
-  calc::shp_Lens lens(data::Dataset::rc, data::Datasets::rc, bool trans, bool cut, eNorm) const;
+  calc::shp_ImageLens imageLens(typ::Image::rc, data::Datasets::rc, bool trans, bool cut) const;
+  calc::shp_Lens      lens(data::Dataset::rc, data::Datasets::rc, bool trans, bool cut, eNorm) const;
 
   typ::Curve makeCurve(calc::shp_Lens, gma_rge::rc) const;
 

@@ -178,7 +178,7 @@ typ::Image::rc TheHub::corrImage() const {
 }
 
 calc::shp_ImageLens TheHub::lensNoCut(typ::Image::rc image) const {
-  return session->lens(image, collectedDatasets(), true, false);
+  return session->imageLens(image, collectedDatasets(), true, false);
 }
 
 calc::shp_Lens TheHub::lens(data::Dataset::rc dataset) const {
@@ -429,10 +429,6 @@ void TheHub::setGeometry(qreal detectorDistance, qreal pixSize,
 
   session->setGeometry(detectorDistance, pixSize, isMidPixOffset, midPixOffset);
   emit sigGeometryChanged();
-}
-
-typ::AngleMap::rc TheHub::angleMap(data::Dataset::rc dataset) const {
-  return *session->angleMap(dataset);
 }
 
 void TheHub::setBgRanges(typ::Ranges::rc ranges) {

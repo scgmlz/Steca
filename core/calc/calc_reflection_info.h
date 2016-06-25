@@ -92,13 +92,14 @@ public:
 
   void append(ReflectionInfo::rc);
 
-  qreal   averageInten() const;
-  typ::Range::rc rgeInten() const;
+  inten_t       averageInten() const;
+  inten_rge::rc rgeInten()     const;
 
 private:
-  void          invalidate();
-  mutable qreal avgInten_;
-  mutable typ::Range rgeInten_;
+  void invalidate();
+
+  mutable inten_t   avgInten_;
+  mutable inten_rge rgeInten_;
 };
 
 //------------------------------------------------------------------------------
