@@ -29,6 +29,8 @@ static str const
     KEY_PSEUDOVOIGT1("PseudoVoigt1"), KEY_PSEUDOVOIGT2("PseudoVoigt2");
 
 void initFactory() {
+  ONLY_ONCE
+
   using F = typ::Function;
   using O = owner_not_null<F::Factory::MakerBase*>;
   F::initFactory();

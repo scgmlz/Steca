@@ -137,14 +137,14 @@ public:
 public:
   calc::shp_ImageLens imageLens(typ::Image::rc, data::Datasets::rc,
                                 bool trans, bool cut) const;
-  calc::shp_Lens      lens(data::Dataset::rc, data::Datasets::rc, eNorm,
+  calc::shp_DatasetLens      lens(data::Dataset::rc, data::Datasets::rc, eNorm,
                            bool trans, bool cut) const;
 
-  typ::Curve makeCurve(calc::shp_Lens, gma_rge::rc) const;
+  typ::Curve makeCurve(calc::shp_DatasetLens, gma_rge::rc) const;
 
   // reflections
   calc::ReflectionInfo makeReflectionInfo(
-      calc::shp_Lens, calc::Reflection::rc, gma_rge::rc) const;
+      calc::shp_DatasetLens, calc::Reflection::rc, gma_rge::rc) const;
 
   calc::ReflectionInfos makeReflectionInfos(
       data::Datasets::rc, calc::Reflection::rc,

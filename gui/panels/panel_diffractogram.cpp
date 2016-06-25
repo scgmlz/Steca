@@ -466,9 +466,9 @@ void Diffractogram::calcDgram() {
     return;
 
   if (hub_.isCombinedDgram())
-    dgram_ = hub_.lens(*dataset_)->makeAvgCurve();
+    dgram_ = hub_.datasetLens(*dataset_)->makeAvgCurve();
   else
-    dgram_ = hub_.lens(*dataset_)->makeCurve();
+    dgram_ = hub_.datasetLens(*dataset_)->makeCurve();
 }
 
 void Diffractogram::calcBackground() {

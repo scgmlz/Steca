@@ -14,9 +14,10 @@
 // ************************************************************************** //
 
 #include "data_dataset.h"
+#include "calc/calc_lens.h"
 #include "session.h"
 #include "typ/typ_async.h"
-#include "calc/calc_lens.h"
+#include <qmath.h>
 
 namespace data {
 //------------------------------------------------------------------------------
@@ -165,12 +166,8 @@ OneDataset::OneDataset(rc that)
 : md_(that.md_), image_(that.image_) {
 }
 
-//>>> Datasets::rc OneDataset::datasets() const {
-//  EXPECT(datasets_)
-//  return *datasets_;
-//}
-
 shp_Metadata OneDataset::metadata() const {
+  ENSURE(!md_.isNull())
   return md_;
 }
 
@@ -186,9 +183,39 @@ size2d OneDataset::imageSize() const {
   return image_.size();
 }
 
-//inten_t OneDataset::inten(uint i, uint j) const {
-//  return image_.inten(i,j);
-//}
+void OneDataset::collectIntens(core::Session::rc session,
+                               inten_vec& intens, uint_vec& counts,gma_rge::rc rgeGma,
+                               tth_t minTth, tth_t deltaTth) const {
+  auto angleMap = session.angleMap(*this);
+  EXPECT(!angleMap.isNull())
+  AngleMap::rc map = *angleMap;
+
+  uint_vec const* gmaIndexes = nullptr;
+  uint gmaIndexMin = 0, gmaIndexMax = 0;
+  map.getGmaIndexes(rgeGma, gmaIndexes, gmaIndexMin, gmaIndexMax);
+  EXPECT(gmaIndexes)
+  EXPECT(gmaIndexMin <= gmaIndexMax)
+  EXPECT(gmaIndexMax <= gmaIndexes->count())
+
+  EXPECT(intens.count() == counts.count())
+  uint w = intens.count();
+
+  for (uint i = gmaIndexMin; i < gmaIndexMax; ++i) {
+    uint ind = gmaIndexes->at(i);
+    inten_t inten = image_.inten(ind);
+    if (qIsNaN(inten))
+      continue;
+
+    tth_t tth   = map.at(ind).tth;
+    if (minTth <= tth) {  // half-open interval
+      uint ti = to_u(qFloor((tth - minTth) / deltaTth)); // bin
+      if (ti < w) {
+        intens[ti] += inten;
+        counts[ti] += 1;
+      }
+    }
+  }
+}
 
 //------------------------------------------------------------------------------
 
@@ -199,11 +226,12 @@ Dataset::Dataset()
 shp_Metadata Dataset::metadata() const {
   if (md_.isNull()) {
     EXPECT(!isEmpty())
-    Metadata *m;
-    md_ = shp_Metadata((m = new Metadata));
+    const_cast<Cls*>(this)->md_ = shp_Metadata(new Metadata);
+    Metadata *m = const_cast<Metadata*>(md_.data());
 
     EXPECT(!first()->metadata().isNull())
-    Metadata::rc firstMd = *first()->metadata();
+    Metadata::rc firstMd = *(first()->metadata());
+
     m->date    = firstMd.date;
     m->comment = firstMd.comment;
 
@@ -303,6 +331,22 @@ qreal Dataset::avgDeltaTime() const {
   AVG_ONES(deltaTime)
 }
 
+void Dataset::collectIntens(core::Session::rc session,
+                            inten_vec& intens, gma_rge::rc rgeGma,
+                            tth_t minTth, tth_t deltaTth) const {
+  uint w = intens.count();
+  uint_vec counts(w, 0);
+
+  for (auto& one : *this)
+    one->collectIntens(session, intens, counts, rgeGma, minTth, deltaTth);
+
+  for_i (w) {
+    auto cnt = counts.at(i);
+    if (cnt > 0)
+      intens[i] /= cnt;
+  }
+}
+
 //------------------------------------------------------------------------------
 
 Datasets::Datasets() {
@@ -385,7 +429,7 @@ Curve::rc Datasets::makeAvgCurve(core::Session::rc session, bool trans, bool cut
   Curve res;
 
   for (auto& dataset: *this) {
-    shp_Lens lens = session.lens(*dataset, *this, session.norm(), trans, cut);
+    shp_DatasetLens lens = session.lens(*dataset, *this, session.norm(), trans, cut);
     Curve single = lens->makeCurve(lens->angleMap().rgeGma(),lens->angleMap().rgeTth());
     res = res.add(single);
   }
@@ -405,7 +449,7 @@ void Datasets::invalidateMutables() {
 size2d OneDatasets::imageSize() const {
   EXPECT(!isEmpty())
   // all images have the same size; simply take the first one
-      return first()->imageSize();
+  return first()->imageSize();
 }
 
 Image OneDatasets::foldedImage() const {

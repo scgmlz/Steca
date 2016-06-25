@@ -42,9 +42,13 @@ public:
            bool trans, bool cut,
            typ::ImageTransform::rc, typ::ImageCut::rc);
 
-  typ::size2d size() const;
+  virtual ~LensBase();
+
+  virtual typ::size2d size() const = 0;
 
 protected:
+  typ::size2d transCutSize(typ::size2d) const;
+
   core::Session const& session_;
   data::Datasets::rc  datasets_;
   bool                trans_, cut_;
@@ -60,6 +64,8 @@ public:
   ImageLens(core::Session const&, typ::Image::rc, typ::Image const* corrImage,
             data::Datasets::rc,
             bool trans, bool cut, typ::ImageCut::rc, typ::ImageTransform::rc);
+
+  typ::size2d size() const;
 
   inten_t imageInten(uint i, uint j)  const;
 
@@ -87,19 +93,17 @@ typedef QSharedPointer<ImageLens> shp_ImageLens;
 
 //------------------------------------------------------------------------------
 
-class Lens final : public LensBase {
-  CLS(Lens) SUPER(LensBase)
+class DatasetLens final : public LensBase {
+  CLS(DatasetLens) SUPER(LensBase)
 public:
-  Lens(core::Session const&, data::Dataset::rc, data::Datasets::rc, eNorm,
-       bool trans, bool cut, typ::ImageTransform::rc, typ::ImageCut::rc);
-    //>>>  Lens(core::Session const&, ,
-    //       typ::Image const* corr, data::Datasets::rc,
-    //       bool trans, bool cut, eNorm norm,
-    //       typ::ImageCut::rc, typ::ImageTransform::rc);
+  DatasetLens(core::Session const&, data::Dataset::rc, data::Datasets::rc, eNorm,
+      bool trans, bool cut, typ::ImageTransform::rc, typ::ImageCut::rc);
 
-//  typ::Angles::rc angles(uint i, uint j) const;
+  typ::size2d size() const;
 
-//  gma_rge    gmaRangeAt(tth_t) const;
+//>>>  typ::Angles::rc angles(uint i, uint j) const;
+
+//>>>  gma_rge    gmaRangeAt(tth_t) const;
   gma_rge rgeGma() const;
   tth_rge rgeTth() const;
 
@@ -118,7 +122,7 @@ private:
   typ::shp_AngleMap angleMap_;
 };
 
-typedef QSharedPointer<Lens> shp_Lens;
+typedef QSharedPointer<DatasetLens> shp_DatasetLens;
 
 //------------------------------------------------------------------------------
 }

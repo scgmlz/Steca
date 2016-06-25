@@ -112,18 +112,18 @@ public:
 
   typ::Image::rc image()    const { return image_; }
   typ::size2d imageSize()   const;
-//  inten_t inten(uint i, uint j) const;
 
+  void collectIntens(core::Session const&,
+                     inten_vec&, uint_vec&, gma_rge::rc,
+                     tth_t minTth, tth_t deltaTth) const;
 private:
-//>>>  Dataset* dataset_;  // here it belongs (or could be nullptr)
-
   shp_Metadata md_;
   typ::Image   image_;
 };
 
 //------------------------------------------------------------------------------
 
-class OneDatasets final : public typ::vec<shp_OneDataset> {
+class OneDatasets : public typ::vec<shp_OneDataset> {
   CLS(OneDatasets) SUPER(typ::vec<shp_OneDataset>)
 public:
   typ::size2d imageSize()   const;
@@ -133,14 +133,11 @@ public:
 //------------------------------------------------------------------------------
 
 // 1 or more OneDataset(s)
-class Dataset final : private typ::vec<shp_OneDataset> {
-  CLS(Dataset) SUPER(typ::vec<shp_OneDataset>)
+class Dataset final : public OneDatasets {
+  CLS(Dataset) SUPER(OneDatasets)
   friend class Datasets;
 public:
   Dataset();
-
-  using super::count;
-  using super::append;
 
   shp_Metadata    metadata() const;
   Datasets const& datasets() const;
@@ -152,15 +149,19 @@ public:
   gma_rge  rgeGma(core::Session const&) const;
   tth_rge  rgeTth(core::Session const&) const;
 
-  qreal avgDeltaMonitorCount() const;
-  qreal avgDeltaTime()         const;
+  qreal    avgDeltaMonitorCount() const;
+  qreal    avgDeltaTime()         const;
+
+  void collectIntens(core::Session const&,
+                     inten_vec&, gma_rge::rc,
+                     tth_t minTth, tth_t deltaTth) const;
 
 private:
   // all dataset(s) must have the same image size
   typ::size2d imageSize() const;
 
-  Datasets* datasets_;      // here it belongs (or could be nullptr)
-  mutable shp_Metadata md_; // on demand, just once
+  Datasets*    datasets_; // here it belongs (or can be nullptr)
+  shp_Metadata md_;       // on demand, compute once
 };
 
 //------------------------------------------------------------------------------

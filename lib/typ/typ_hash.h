@@ -62,14 +62,14 @@ public:
     return nullptr != t;
   }
 
-  not_null<Tp> value(Key const& key) {
-    return not_null<Tp>::from(super::value(key));
+  Tp value(Key const& key) {
+    return super::value(key);
   }
 
   using super::contains;
 
-  owner_not_null<Tp> take(Key const& key) {
-    return owner_not_null<Tp>::from(super::take(key));
+  owner<Tp> take(Key const& key) {
+    return owner<Tp>(super::take(key));
   }
 };
 

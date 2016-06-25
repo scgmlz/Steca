@@ -15,6 +15,7 @@
 
 #include "session.h"
 #include "typ/typ_matrix.h"
+#include "fit/fit_fun.h"
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -25,6 +26,7 @@ using namespace calc;
 
 Session::Session() : angleMapCache_(360) {
   clear();
+  fit::initFactory();
 }
 
 void Session::clear() {
@@ -100,10 +102,10 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, nint combineBy) {
   collectedDatasets_.clear();
   collectedDatasetsTags_.clear();
 
-  vec<OneDataset const*> datasetsFromFiles;
+  vec<shp_OneDataset> datasetsFromFiles;
   for (uint i : collectedFromFiles_)
     for (auto& dataset : files_.at(i)->datasets())
-      datasetsFromFiles.append(&*dataset);
+      datasetsFromFiles.append(dataset);
 
   if (datasetsFromFiles.isEmpty())
     return;
@@ -236,9 +238,9 @@ shp_ImageLens Session::imageLens(
                     datasets, trans, cut, imageCut_, imageTransform_));
 }
 
-shp_Lens Session::lens(Dataset::rc dataset, Datasets::rc datasets, eNorm norm,
+shp_DatasetLens Session::lens(Dataset::rc dataset, Datasets::rc datasets, eNorm norm,
                        bool trans, bool cut) const {
-  return shp_Lens(new Lens(*this, dataset, datasets, norm,
+  return shp_DatasetLens(new DatasetLens(*this, dataset, datasets, norm,
                            trans, cut, imageTransform_, imageCut_));
 
                  /*>>>*this, dataset, corrEnabled_ ? &corrImage_ : nullptr,
@@ -289,7 +291,7 @@ void calculateAlphaBeta(Dataset::rc dataset, tth_t tth, gma_t gma,
   beta  = betaRad.toDeg();
 }
 
-Curve Session::makeCurve(shp_Lens lens, gma_rge::rc rgeGma) const {
+Curve Session::makeCurve(shp_DatasetLens lens, gma_rge::rc rgeGma) const {
   Curve curve = lens->makeCurve(rgeGma, lens->angleMap().rgeTth());
   curve.subtract(fit::Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
 
@@ -298,7 +300,7 @@ Curve Session::makeCurve(shp_Lens lens, gma_rge::rc rgeGma) const {
 
 // Fits reflection to the given gamma sector and constructs a ReflectionInfo.
 ReflectionInfo Session::makeReflectionInfo(
-    shp_Lens lens, Reflection::rc reflection, gma_rge::rc gmaSector) const {
+    shp_DatasetLens lens, Reflection::rc reflection, gma_rge::rc gmaSector) const {
   Curve curve = makeCurve(lens, gmaSector);
 
   scoped<fit::PeakFunction*> peakFunction(reflection.peakFunction().clone());
@@ -318,7 +320,6 @@ ReflectionInfo Session::makeReflectionInfo(
   fwhm_t fwhmError = peakFunction->fwhmError();
 
   shp_Metadata metadata = dataset.metadata();
-  ENSURE(metadata)
 
   return rgeTth.contains(peak.x)
              ? ReflectionInfo(metadata, alpha, beta, gmaSector,
@@ -336,7 +337,7 @@ ReflectionInfo Session::makeReflectionInfo(
  */
 ReflectionInfos Session::makeReflectionInfos(
     Datasets::rc datasets, Reflection::rc reflection,
-    gma_t gmaStep, gma_rge::rc gmaRge, Progress* progress)
+    gma_t gmaStep, gma_rge::rc rgeGma, Progress* progress)
 {
   ReflectionInfos infos;
 
@@ -347,13 +348,13 @@ ReflectionInfos Session::makeReflectionInfos(
     auto l = lens(*dataset, datasets, norm_, true, true);
 //>>> replace with get(gmaRge)    Range lRange = l->gmaRangeAt(reflection.range().center());
 
-    Range rgeGma;//>>> = gmaRge.isValid() ? gmaRge.intersect(lRange) : lRange;
-    if (rgeGma.isEmpty())
+    Range rge;//>>> = gmaRge.isValid() ? gmaRge.intersect(lRange) : lRange;
+    if (rge.isEmpty())
       continue;
 
     qreal step = gmaStep;
-    for_i (rgeGma.numSlices(step)) {
-      qreal min = rgeGma.min + i * step;
+    for_i (rge.numSlices(step)) {
+      qreal min = rge.min + i * step;
       gma_rge gmaStripe(min, min + step);
       auto  refInfo = makeReflectionInfo(l, reflection, gmaStripe);
       if (!qIsNaN(refInfo.inten()))

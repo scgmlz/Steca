@@ -45,4 +45,8 @@
   for_int (i, ni)      \
     for_int (j, nj)
 
+// singletons
+#define ONLY_ONCE \
+{ static bool once = false; if (once) return; once = true; }
+
 #endif // DEF_MACROS_H

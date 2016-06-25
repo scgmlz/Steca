@@ -90,7 +90,7 @@ DiffractogramsFrame::DiffractogramsFrame(TheHub &hub, rcstr title, QWidget *pare
 
 OutputDataCollection DiffractogramsFrame::collectCurves(
     gma_rge::rc rgeGma, gma_t gmaStep, data::Dataset::rc dataset, uint picNum) {
-  auto lens = hub_.lens(dataset);
+  auto lens = hub_.datasetLens(dataset);
   auto &map = lens->angleMap();
 
   typ::Range rge = map.rgeGma();
@@ -110,7 +110,7 @@ OutputDataCollection DiffractogramsFrame::collectCurves(
 }
 
 OutputData DiffractogramsFrame::collectCurve(data::Dataset::rc dataset) {
-  auto lens = hub_.lens(dataset);
+  auto lens = hub_.datasetLens(dataset);
   auto &map = lens->angleMap();
 
   auto curve = lens->makeCurve(map.rgeGma(), map.rgeTth());

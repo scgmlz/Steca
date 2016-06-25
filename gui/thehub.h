@@ -108,8 +108,8 @@ public:  // files
   typ::Image::rc corrImage() const;
 
 public:
-  calc::shp_ImageLens lensNoCut(typ::Image::rc) const;
-  calc::shp_Lens      lens(data::Dataset::rc)   const;
+  calc::shp_ImageLens   plainImageLens(typ::Image::rc) const;
+  calc::shp_DatasetLens datasetLens(data::Dataset::rc) const;
 
 public:
   calc::ReflectionInfos makeReflectionInfos(calc::Reflection::rc,

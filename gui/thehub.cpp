@@ -177,11 +177,11 @@ typ::Image::rc TheHub::corrImage() const {
   return session->corrImage();
 }
 
-calc::shp_ImageLens TheHub::lensNoCut(typ::Image::rc image) const {
+calc::shp_ImageLens TheHub::plainImageLens(typ::Image::rc image) const {
   return session->imageLens(image, collectedDatasets(), true, false);
 }
 
-calc::shp_Lens TheHub::lens(data::Dataset::rc dataset) const {
+calc::shp_DatasetLens TheHub::datasetLens(data::Dataset::rc dataset) const {
   return session->lens(dataset, dataset.datasets(), session->norm(),
                        true, true);
 }

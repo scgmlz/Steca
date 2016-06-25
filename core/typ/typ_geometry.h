@@ -93,19 +93,30 @@ public:
 
   AngleMap(Key::rc);
 
+  Angles::rc at(uint i) const {
+    return arrAngles_.at(i);
+  }
+
   Angles::rc at(uint i, uint j) const {
     return arrAngles_.at(i, j);
   }
 
   gma_rge rgeGma() const { return rgeGma_; }
-  tth_rge rgeTth() const { return rgeTth_;   }
+  tth_rge rgeTth() const { return rgeTth_; }
+
+  void getGmaIndexes(gma_rge::rc, uint_vec const*&, uint&, uint&) const;
 
 private:
   void calculate(Key::rc);
 
   Array2D<Angles> arrAngles_;
-  gma_rge rgeGma_;
-  tth_rge rgeTth_;
+
+  gma_rge  rgeGma_;
+  tth_rge  rgeTth_;
+
+  // sorted
+  vec<gma_t> gmas;
+  uint_vec   gmaIndexes;
 };
 
 typedef QSharedPointer<AngleMap> shp_AngleMap;

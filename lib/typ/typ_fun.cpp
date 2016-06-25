@@ -38,6 +38,8 @@ void Function::addFactoryMaker(rcstr key, owner_not_null<Factory::MakerBase*> ma
 }
 
 void Function::initFactory() {
+  ONLY_ONCE
+
   addFactoryMaker(KEY::SUM_FUNCTIONS,
       owner_not_null<Factory::MakerBase*>::from(new Factory::Maker<SumFunctions>));
 }

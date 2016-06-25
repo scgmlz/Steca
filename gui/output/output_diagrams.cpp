@@ -66,10 +66,14 @@ static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
 
   qreal_vec r(count);
 
-  for_i (count) r[i] = xs.at(is.at(i));
+  for_i (count)
+    r[i] = xs.at(is.at(i));
+
   xs = r;
 
-  for_i (count) r[i] = ys.at(is.at(i));
+  for_i (count)
+    r[i] = ys.at(is.at(i));
+
   ys = r;
 }
 

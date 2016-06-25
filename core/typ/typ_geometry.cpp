@@ -85,6 +85,18 @@ AngleMap::AngleMap(Key::rc key) {
   calculate(key);
 }
 
+void AngleMap::getGmaIndexes(gma_rge::rc rgeGma,
+                             uint_vec const*& indexes, uint& minIndex, uint& maxIndex) const {
+  // TODO >>> binary
+  uint end = gmas.count();
+  for (minIndex = 0; minIndex < end && gmas.at(minIndex) < rgeGma.min; ++minIndex)
+    ;
+  for (maxIndex = minIndex; maxIndex < end && gmas.at(maxIndex) < rgeGma.max; ++maxIndex)
+    ;
+
+  indexes = &gmaIndexes;
+}
+
 void AngleMap::calculate(Key::rc key) {
   arrAngles_.fill(key.size);
   rgeGma_.invalidate();
@@ -93,16 +105,22 @@ void AngleMap::calculate(Key::rc key) {
   if (key.size.isEmpty())
     return;
 
-  qreal pixSize = key.geometry.pixSize,
-        detDist = key.geometry.detectorDistance;
+  auto& geometry = key.geometry;
+  auto& size     = key.size;
+  auto& cut      = key.cut;
+  auto& midPix   = key.midPix;
+  auto& midTth   = key.midTth;
 
-  for_int (i, key.size.w) {
-    qreal x       = (to_i(i) - key.midPix.i) * pixSize;
-    rad   tthHorz = key.midTth.toRad() + atan(x / detDist);
+  qreal pixSize = geometry.pixSize,
+        detDist = geometry.detectorDistance;
+
+  for_int (i, size.w) {
+    qreal x       = (to_i(i) - midPix.i) * pixSize;
+    rad   tthHorz = midTth.toRad() + atan(x / detDist);
     qreal h       = cos(tthHorz) * hypot(x, detDist);
 
-    for_int (j, key.size.h) {
-      qreal y          = (key.midPix.j - to_i(j)) * pixSize;
+    for_int (j, size.h) {
+      qreal y          = (midPix.j - to_i(j)) * pixSize;
       qreal z          = hypot(x, y);
       qreal pixDetDist = hypot(z, detDist);
       rad   tth        = acos(h / pixDetDist);
@@ -119,13 +137,35 @@ void AngleMap::calculate(Key::rc key) {
     }
   }
 
-  for (uint i = key.cut.left, iEnd = key.size.w - key.cut.right; i < iEnd; ++i) {
-    for (uint j = key.cut.top, jEnd = key.size.h - key.cut.bottom; j < jEnd; ++j) {
+
+  uint countWithoutCut = (size.w - cut.left - cut.right)
+                       * (size.h - cut.top  - cut.bottom);
+
+  gmas.resize(countWithoutCut);
+  gmaIndexes.resize(countWithoutCut);
+  uint gi = 0;
+
+  for (uint i = cut.left, iEnd = size.w - cut.right; i < iEnd; ++i) {
+    for (uint j = cut.top, jEnd = size.h - cut.bottom; j < jEnd; ++j) {
       auto& as = arrAngles_.at(i, j);
-      rgeGma_.extendBy(as.gma);
       rgeTth_.extendBy(as.tth);
+      rgeGma_.extendBy((gmas[gi] = as.gma));
+      gmaIndexes[gi] = gi;
+      ++gi;
     }
   }
+
+  std::sort(gmaIndexes.begin(), gmaIndexes.end(), [this](uint i1,uint i2) {
+    qreal gma1 = gmas.at(i1), gma2 = gmas.at(i2);
+    return gma1 < gma2;
+  });
+
+  vec<gma_t> gs(countWithoutCut);
+
+  for_i (countWithoutCut)
+    gs[i] = gmas.at(gmaIndexes.at(i));
+
+  gmas = gs;
 }
 
 //------------------------------------------------------------------------------

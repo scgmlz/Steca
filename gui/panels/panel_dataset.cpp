@@ -50,8 +50,8 @@ DatasetView::DatasetView(TheHub& hub) : super(hub) {
 void DatasetView::currentChanged(QModelIndex const& current,
                                  QModelIndex const& previous) {
   super::currentChanged(current, previous);
-  tellDatasetSelected(
-      model()->data(current, Model::GetDatasetRole).value<data::shp_Dataset>());
+  tellDatasetSelected(model()->data(current, Model::GetDatasetRole)
+                      .value<data::shp_Dataset>());
 }
 
 //------------------------------------------------------------------------------
@@ -473,9 +473,7 @@ void Dataset::render() {
   }
 
   {
-    QPixmap pixMap;
-    auto    lens = hub_.lensNoCut(hub_.corrImage());
-    pixMap       = makePixmap(lens);
+    QPixmap pixMap = makePixmap(hub_.plainImageLens(hub_.corrImage()));
     corrImageWidget_->setPixmap(pixMap);
   }
 }

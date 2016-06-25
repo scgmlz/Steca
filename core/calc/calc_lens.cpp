@@ -32,9 +32,10 @@ LensBase::LensBase(core::Session::rc session, data::Datasets::rc datasets,
 , imageTransform_(imageTransform), imageCut_(imageCut) {
 }
 
-size2d LensBase::size() const {
-  size2d size = datasets_.imageSize();
+LensBase::~LensBase() {
+}
 
+size2d LensBase::transCutSize(size2d size) const {
   if (trans_ && imageTransform_.isTransposed())
     size = size.transposed();
 
@@ -54,6 +55,10 @@ ImageLens::ImageLens(core::Session::rc session,
 , image_(image), corrImage_(corrImage)
 {
   calcSensCorr();
+}
+
+size2d ImageLens::size() const {
+  return super::transCutSize(image_.size());
 }
 
 inten_t ImageLens::imageInten(uint i, uint j) const {
@@ -156,10 +161,10 @@ void ImageLens::calcSensCorr() {
 
 //------------------------------------------------------------------------------
 
-Lens::Lens(core::Session::rc session,
-           data::Dataset::rc dataset, data::Datasets::rc datasets, eNorm norm,
-           bool trans, bool cut,
-           typ::ImageTransform::rc imageTransform, typ::ImageCut::rc imageCut)
+DatasetLens::DatasetLens(core::Session::rc session,
+   data::Dataset::rc dataset, data::Datasets::rc datasets, eNorm norm,
+   bool trans, bool cut,
+   typ::ImageTransform::rc imageTransform, typ::ImageCut::rc imageCut)
 : super(session, datasets, trans, cut, imageTransform, imageCut)
 , normFactor_(1), dataset_(dataset)
 //>>>: super(session, dataset.image(), corrImage, datasets, trans, cut, imageCut
@@ -190,61 +195,45 @@ Lens::Lens(core::Session::rc session,
 //  return rge;
 //}
 
-Curve Lens::makeCurve(gma_rge::rc gmaRge, tth_rge::rc tthRge) const {
-  auto s = size();
-  uint w = s.w, h = s.h;
+Curve DatasetLens::makeCurve(gma_rge::rc rgeGma, tth_rge::rc rgeTth) const {
+  uint w = size().w;
+  EXPECT(w > 0)
 
-//  >>> get gmaRge
-//  tth_t deltaTth = tthRge.width() / w;
+  EXPECT(rgeTth.isValid());
+  tth_t minTth = rgeTth.min, deltaTth = rgeTth.width() / w;
 
-//  qreal_vec intens_vec(w);
-//  uint_vec  counts_vec(w, 0);
-
-//  for_ij (w, h) {
-//    auto& as = angles(i, j);
-//    if (!gmaRge.contains(as.gma)) continue;
-
-//    int bin = qFloor((as.tth - tthRge.min) / deltaTth);
-
-//    if (bin < 0 || to_i(w) <= bin)
-//      continue;  // outside of the cut
-
-//    auto in = inten(i, j);
-//    if (!qIsNaN(in)) {
-//      intens_vec[to_u(bin)] += in;
-//      counts_vec[to_u(bin)] += 1;
-//    }
-//  }
+  inten_vec intens(w);
+  dataset_.collectIntens(session_, intens, rgeGma, minTth, deltaTth);
 
   Curve res;
 
-//  for_i (w) {
-//    auto in  = intens_vec.at(i);
-//    auto cnt = counts_vec.at(i);
-//    if (cnt > 0) in /= cnt;
-//    res.append(tthRge.min + deltaTth * i, in);
-//  }
+  for_i (w)
+    res.append(minTth + deltaTth * i, intens.at(i));
 
   return res;
 }
 
-gma_rge Lens::rgeGma() const {
+size2d DatasetLens::size() const {
+  return super::transCutSize(datasets_.imageSize());
+}
+
+gma_rge DatasetLens::rgeGma() const {
   return dataset_.rgeGma(session_);
 }
 
-tth_rge Lens::rgeTth() const {
+tth_rge DatasetLens::rgeTth() const {
   return dataset_.rgeTth(session_);
 }
 
-Curve Lens::makeCurve() const {
+Curve DatasetLens::makeCurve() const {
   return makeCurve(rgeGma(), rgeTth());
 }
 
-Curve Lens::makeAvgCurve() const {
+Curve DatasetLens::makeAvgCurve() const {
   return datasets_.makeAvgCurve(session_, trans_, cut_);
 }
 
-void Lens::setNorm(eNorm norm) {
+void DatasetLens::setNorm(eNorm norm) {
   auto& datasets = dataset_.datasets();
 
   qreal num = 1, den = 1;
