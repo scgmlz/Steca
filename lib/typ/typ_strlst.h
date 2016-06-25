@@ -25,7 +25,7 @@
 //------------------------------------------------------------------------------
 
 class str_lst : protected QStringList {
-  WITH_SUPER(str_lst, QStringList)
+  CLS(str_lst) WITH_SUPER(QStringList)
 public:
   str_lst()                                 : super()     {}
   str_lst(std::initializer_list<QString> l) : super(l)    {}

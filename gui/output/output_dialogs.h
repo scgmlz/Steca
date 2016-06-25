@@ -35,7 +35,7 @@ namespace gui { namespace output {
 using eReflAttr = calc::ReflectionInfo::eReflAttr;
 
 class Params : public QWidget, protected RefHub {
-  SUPER(Params, QWidget)
+  CLS(Params) SUPER(QWidget)
 public:
   Params(TheHub&);
  ~Params();
@@ -72,7 +72,7 @@ public:
 //------------------------------------------------------------------------------
 
 class Tabs : public panel::TabsPanel {
-  SUPER(Tabs, panel::TabsPanel)
+  CLS(Tabs) SUPER(panel::TabsPanel)
 public:
   Tabs(TheHub&);
 };
@@ -80,7 +80,7 @@ public:
 //------------------------------------------------------------------------------
 
 class Tab : public QWidget, protected RefHub {
-  SUPER(Tab, QWidget)
+  CLS(Tab) SUPER(QWidget)
 public:
   Tab(TheHub&, Params&);
 
@@ -93,7 +93,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class Frame : public QFrame, protected RefHub {
-  SUPER(Frame, QFrame)
+  CLS(Frame) SUPER(QFrame)
 public:
   Frame(TheHub&, rcstr title, Params*, QWidget*);
 
@@ -120,7 +120,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class Table : public TreeView, protected RefHub {
-  SUPER(Table, TreeView)
+  CLS(Table) SUPER(TreeView)
 public:
   Table(TheHub&, uint numDataColumns);
 
@@ -142,7 +142,7 @@ private:
 //------------------------------------------------------------------------------
 
 class TabTable : public Tab {
-  SUPER(TabTable, Tab)
+  CLS(TabTable) SUPER(Tab)
 public:
   TabTable(TheHub&, Params&, str_lst::rc headers, typ::cmp_vec::rc);
 
@@ -158,7 +158,7 @@ private:
 
 private:
   class ShowColsWidget : public QWidget {
-    SUPER(ShowColsWidget, QWidget)
+    CLS(ShowColsWidget) SUPER(QWidget)
   public:
     ShowColsWidget(Table&, showcol_vec&);
 
@@ -178,7 +178,7 @@ private:
 //------------------------------------------------------------------------------
 
 class TabSave : public Tab {
-  SUPER(TabSave, Tab)
+  CLS(TabSave) SUPER(Tab)
 public:
   TabSave(TheHub&, Params&);
 

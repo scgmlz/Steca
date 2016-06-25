@@ -37,7 +37,7 @@ namespace calc {
 // View the dataset through a lens (thanks, Antti!)
 
 class ImageLens {
-  THIS(ImageLens)
+  CLS(ImageLens)
 public:
   ImageLens(core::Session const&, typ::Image::rc, typ::Image const* corrImage,
             data::Datasets::rc, bool trans, bool cut,
@@ -79,7 +79,7 @@ typedef QSharedPointer<ImageLens> shp_ImageLens;
 //------------------------------------------------------------------------------
 
 class Lens : public ImageLens {
-  SUPER(Lens, ImageLens)
+  CLS(Lens) SUPER(ImageLens)
 public:
   static str_lst::rc normStrLst();
 

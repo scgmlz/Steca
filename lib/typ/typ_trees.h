@@ -74,7 +74,7 @@ int comparePlain(T const& t1, T const& t2) {
 // red-black
 
 class RBTreeBase: public TreeBase {
-  SUPER(RBTreeBase,TreeBase)
+  CLS(RBTreeBase) SUPER(TreeBase)
 protected:
   struct node;
 
@@ -109,7 +109,7 @@ protected:
 
 template <typename Item>
 class RBTree: public RBTreeBase {
-  SUPER(RBTree,RBTreeBase)
+  CLS(RBTree) SUPER(RBTreeBase)
 public:
   typedef Item const* pcItem;
   typedef Item const& rcItem;
@@ -225,7 +225,7 @@ struct RangeTreeItem {
 
 template <typename Item,typename Key>
 class RangeTree: public RBTree<Item> {
-  SUPER(RangeTree,RBTree<Item>)
+  CLS(RangeTree) SUPER(RBTree<Item>)
 public:
   typedef Key const& rcKey;
   typedef QList<Item const*> item_lst;

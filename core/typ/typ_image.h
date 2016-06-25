@@ -24,7 +24,7 @@ namespace typ {
 //------------------------------------------------------------------------------
 
 class Image final : public Array2D<inten_t> {
-  SUPER(Image, Array2D<inten_t>)
+  CLS(Image) SUPER(Array2D<inten_t>)
 public:
   // Image as vector of intensities, filled with 0 or given intensities.
   Image(size2d::rc = size2d(0, 0), inten_t const* = nullptr);

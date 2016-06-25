@@ -26,7 +26,7 @@ namespace gui {
 //------------------------------------------------------------------------------
 
 class MainWin : public QMainWindow {
-  SUPER(MainWin, QMainWindow)
+  CLS(MainWin) SUPER(QMainWindow)
 public:
   MainWin();
 

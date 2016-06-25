@@ -28,7 +28,7 @@ namespace typ {
 // detector geometry
 
 struct Geometry {
-  THIS(Geometry)
+  CLS(Geometry)
 
   static qreal const MIN_DETECTOR_DISTANCE;  // REVIEW
   static qreal const MIN_DETECTOR_PIXEL_SIZE;
@@ -46,7 +46,7 @@ struct Geometry {
 // image cut (margins)
 
 struct ImageCut {
-  THIS(ImageCut)
+  CLS(ImageCut)
 
   uint left, top, right, bottom;
 
@@ -61,7 +61,7 @@ struct ImageCut {
 //------------------------------------------------------------------------------
 
 struct Angles {
-  THIS(Angles)
+  CLS(Angles)
 
   gma_t gma;
   tth_t tth;
@@ -71,10 +71,10 @@ struct Angles {
 };
 
 class AngleMap {
-  THIS(AngleMap)
+  CLS(AngleMap)
 public:
   struct Key {
-    THIS(Key)
+    CLS(Key)
 
     Key(Geometry::rc, size2d::rc, ImageCut::rc, IJ::rc midPix, tth_t midTth);
 

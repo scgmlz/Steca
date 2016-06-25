@@ -31,7 +31,7 @@ class IJ;
 class XY;
 
 class JsonObj : protected QJsonObject {
-  WITH_SUPER(JsonObj,QJsonObject)
+  CLS(JsonObj) WITH_SUPER(QJsonObject)
 public:
   JsonObj();
   JsonObj(QJsonObject const&);
@@ -78,7 +78,7 @@ public:
 //------------------------------------------------------------------------------
 
 class JsonArr: protected QJsonArray {
-  WITH_SUPER(JsonArr,QJsonArray)
+  CLS(JsonArr) WITH_SUPER(QJsonArray)
 public:
   JsonArr();
   JsonArr(QJsonArray const&);

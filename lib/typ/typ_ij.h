@@ -26,7 +26,7 @@ namespace typ {
 class JsonObj;
 
 struct IJ {
-  THIS(IJ)
+  CLS(IJ)
 
   int i, j;
 

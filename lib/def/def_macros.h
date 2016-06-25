@@ -36,17 +36,19 @@
 
 // for class definitions
 
+// trouble with templates in macros
+#define COMMA ,
+
 // alias for the current class; const reference to it
-#define THIS(cls) \
-  private: using Cls = cls; public: typedef cls const& rc;
+#define CLS(cls) \
+  private: using Cls = cls; public: typedef Cls const& rc;
 
-// alias for the current and super class
-#define SUPER(cls,sup) THIS(cls) \
-  private: using super = sup;
+// alias for the super class
+#define SUPER(cls) \
+  private: using super = cls;
 
-// alias for the current and super class
-// and access to the super class (if protected or private inheritance)
-#define WITH_SUPER(cls,supr) SUPER(cls,supr) \
+// alias for super class and an access method (if non-public inheritance)
+#define WITH_SUPER(cls) SUPER(cls)                   \
   public: super const& sup() const { return *this; } \
           super&       sup()       { return *this; }
 

@@ -44,7 +44,7 @@ class Datasets;
 
 // A file (loaded from a disk file) that contains a number of datasets.
 class File final {
-  THIS(File)
+  CLS(File)
 public:
   File(rcstr fileName);
 

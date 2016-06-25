@@ -24,7 +24,7 @@ namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 class Fitting : public TabsPanel {
-  SUPER(Fitting, TabsPanel)
+  CLS(Fitting) SUPER(TabsPanel)
 public:
   Fitting(TheHub&);
 

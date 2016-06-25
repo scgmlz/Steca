@@ -25,7 +25,7 @@
 
 // An exception that carries a message.
 class Exception : public QException {
-  SUPER(Exception, QException)
+  CLS(Exception) SUPER(QException)
 protected:
   Exception(rcstr msg, bool silent) noexcept;
 public:

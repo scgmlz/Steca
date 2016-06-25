@@ -33,7 +33,7 @@ namespace gui {
 //------------------------------------------------------------------------------
 
 class Settings : public QSettings {
-  SUPER(Settings, QSettings)
+  CLS(Settings) SUPER(QSettings)
 public:
   Settings(rcstr group = EMPTY_STR);
  ~Settings();
@@ -57,13 +57,13 @@ public:
 //------------------------------------------------------------------------------
 
 class ReadFile: public QFile {
-  SUPER(ReadFile, QFile)
+  CLS(ReadFile) SUPER(QFile)
 public:
   ReadFile(rcstr path) THROWS;
 };
 
 class WriteFile: public QFile {
-  SUPER(WriteFile, QFile)
+  CLS(WriteFile) SUPER(QFile)
 public:
   WriteFile(rcstr path) THROWS;
 };
@@ -71,7 +71,7 @@ public:
 //------------------------------------------------------------------------------
 
 class TheHub : public TheHubSignallingBase {
-  SUPER(TheHub, TheHubSignallingBase)
+  CLS(TheHub) SUPER(TheHubSignallingBase)
   friend class TheHubSignallingBase;
 public:
   TheHub();

@@ -26,7 +26,7 @@ namespace typ {
 template <typename Key, typename T>
 class map : public QMap<Key,T> {
   using super_type = QMap<Key,T>;
-  WITH_SUPER(map, super_type)
+  CLS(map) SUPER(super_type)
 public:
   using super::clear;
   using super::insert;

@@ -27,7 +27,7 @@ namespace typ {
 
 template <typename T>
 class vec : protected QVector<T> {
-  WITH_SUPER(vec, QVector<T>)
+  CLS(vec) WITH_SUPER(QVector<T>)
 public:
 
   vec()                                   : super()  {}
@@ -59,8 +59,8 @@ public:
   }
 
   void resize(uint count)       { super::resize(to_i(count));        }
-  void append(T   const& that)  { *this += that;                    }
-  void append(vec const& that)  { *this += that;                    }
+  void append(T   const& that)  { *this += that;                     }
+  void append(vec const& that)  { *this += that;                     }
   void remove(uint i)           { super::remove(to_i(i));            }
 
   T const& at(uint i) const     { return super::at(to_i(i));         }

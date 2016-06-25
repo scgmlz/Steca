@@ -31,7 +31,7 @@ namespace core {
 //------------------------------------------------------------------------------
 
 class Session final {
-  THIS(Session)
+  CLS(Session)
 public:
   Session();
 
@@ -122,7 +122,7 @@ public:
 
 private:
   typ::Geometry geometry_;
-  mutable typ::cache<typ::AngleMap::Key,typ::AngleMap> angleMapCache;
+  mutable typ::cache_eager<typ::AngleMap::Key,typ::AngleMap> angleMapCache;
 
 public:
   typ::Geometry::rc geometry() const { return geometry_; }

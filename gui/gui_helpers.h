@@ -69,7 +69,7 @@ QComboBox* comboBox(str_lst::rc);
 
 class TreeView : public QTreeView {
   Q_OBJECT
-  SUPER(TreeView, QTreeView)
+  CLS(TreeView) SUPER(QTreeView)
 public:
   TreeView();
 
@@ -81,7 +81,7 @@ public:
 
 class TreeListView : public TreeView {
   Q_OBJECT
-  SUPER(TreeListView, TreeView)
+  CLS(TreeListView) SUPER(TreeView)
 public:
   TreeListView();
 
@@ -92,7 +92,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class LineView : public QLineEdit {
-  SUPER(LineView, QLineEdit)
+  CLS(LineView) SUPER(QLineEdit)
 public:
   LineView();
 
@@ -103,7 +103,7 @@ public:
 // a widget with a box layout
 
 class BoxWidget : public QWidget {
-  SUPER(BoxWidget, QWidget)
+  CLS(BoxWidget) SUPER(QWidget)
 public:
   BoxWidget(Qt::Orientation);
 
@@ -115,7 +115,7 @@ protected:
 // a dock widget that acts as BoxWidget
 
 class DockWidget : public QDockWidget {
-  SUPER(DockWidget, QDockWidget)
+  CLS(DockWidget) SUPER(QDockWidget)
 public:
   DockWidget(rcstr name, rcstr objectName, Qt::Orientation);
 

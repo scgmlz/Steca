@@ -30,7 +30,7 @@ namespace gui { namespace panel {
 class DiffractogramPlot;
 
 class DiffractogramPlotOverlay : public QWidget {
-  SUPER(DiffractogramPlotOverlay, QWidget)
+  CLS(DiffractogramPlotOverlay) SUPER(QWidget)
 public:
   DiffractogramPlotOverlay(DiffractogramPlot&);
 
@@ -58,7 +58,7 @@ protected:
 };
 
 class DiffractogramPlot : public QCustomPlot, protected RefHub {
-  SUPER(DiffractogramPlot, QCustomPlot)
+  CLS(DiffractogramPlot) SUPER(QCustomPlot)
 public:
   enum class eTool {
     NONE,
@@ -105,7 +105,7 @@ private:
 };
 
 class Diffractogram : public BoxPanel {
-  SUPER(Diffractogram, BoxPanel)
+  CLS(Diffractogram) SUPER(BoxPanel)
 public:
   Diffractogram(TheHub&);
 

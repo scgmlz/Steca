@@ -28,7 +28,7 @@
 
 template <class P> class not_null {
   static_assert(std::is_assignable<P&, std::nullptr_t>::value, "no nullptr");
-  THIS(not_null)
+  CLS(not_null)
 private:
   explicit not_null(P p) : p_(p) {
     EXPECT(p_)

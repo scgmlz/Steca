@@ -22,7 +22,7 @@ namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 class FilesView : public views::MultiListView {
-  SUPER(FilesView, views::MultiListView)
+  CLS(FilesView) SUPER(views::MultiListView)
 public:
   FilesView(TheHub&);
 

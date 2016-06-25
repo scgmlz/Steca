@@ -30,7 +30,7 @@ namespace gui { namespace panel {
 
 // Just a plain panel
 class BasicPanel : public QGroupBox, protected RefHub {
-  SUPER(BasicPanel, QGroupBox)
+  CLS(BasicPanel) SUPER(QGroupBox)
 public:
   BasicPanel(TheHub&);
   BasicPanel(TheHub&, rcstr title);
@@ -42,7 +42,7 @@ public:
 
 // A panel with a box layout
 class BoxPanel : public BasicPanel {
-  SUPER(BoxPanel, BasicPanel)
+  CLS(BoxPanel) SUPER(BasicPanel)
 public:
   BoxPanel(TheHub&, Qt::Orientation);
   BoxPanel(TheHub&, rcstr title, Qt::Orientation);
@@ -55,7 +55,7 @@ protected:
 
 // A panel with grid layout
 class GridPanel : public BasicPanel {
-  SUPER(GridPanel, BasicPanel)
+  CLS(GridPanel) SUPER(BasicPanel)
 public:
   GridPanel(TheHub&);
   GridPanel(TheHub&, rcstr title);
@@ -70,7 +70,7 @@ protected:
 
 // A tabbed panel
 class Tab : public QWidget {
-  SUPER(Tab, QWidget)
+  CLS(Tab) SUPER(QWidget)
 public:
   Tab(Qt::Orientation);
 
@@ -81,7 +81,7 @@ protected:
 };
 
 class TabsPanel : public QTabWidget, protected RefHub {
-  SUPER(TabsPanel, QTabWidget)
+  CLS(TabsPanel) SUPER(QTabWidget)
 public:
   TabsPanel(TheHub&);
 

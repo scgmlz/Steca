@@ -25,7 +25,7 @@
 /* Example:
 
 struct CacheKey {
-  THIS(CacheKey)
+  CLS(CacheKey)
 
   CacheKey(uint key) : key_(key) {
   }
@@ -58,12 +58,12 @@ namespace typ {
 //------------------------------------------------------------------------------
 
 template <typename Key, typename T>
-class cache final {
-  THIS(cache)
+class cache_base {
+  CLS(cache_base)
 public:
   typedef QSharedPointer<T> shp;
 
-private:
+protected:
   typedef uint mru_t; // the higher, the more mru
 
   struct shp_mru_t {
@@ -72,16 +72,17 @@ private:
   };
 
   typedef map<Key, shp_mru_t> mapKey_t;
-  typedef map<mru_t, typename mapKey_t::iterator> mapMru_t;
 
   mapKey_t mapKey_;
-  mapMru_t mapMru_;
 
   uint  maxItems_;
 
 public:
-  cache(uint maxItems) : maxItems_(maxItems) {
+  cache_base(uint maxItems) : maxItems_(maxItems) {
     EXPECT(maxItems_ > 0)
+  }
+
+  virtual ~cache_base() {
   }
 
   uint count() const {
@@ -92,37 +93,63 @@ public:
     return mapKey_.isEmpty();
   }
 
-  void trim(uint n) {
-    while (count() > n)
-      removeLru();
-  }
+  virtual void trim(uint n) = 0;
 
   void clear() {
     trim(0);
   }
 
+  virtual shp insert(Key const&, shp p) = 0;
+  virtual shp remove(Key const&)        = 0;
+  virtual shp value(Key const&)         = 0;
+};
+
+//------------------------------------------------------------------------------
+
+template <typename Key, typename T>
+class cache_eager final : public cache_base<Key,T> {
+  CLS(cache_eager) SUPER(cache_base<Key COMMA T>)
+public:
+  typedef QSharedPointer<T> shp;
+
+private:
+  using mru_t     = typename super::mru_t;
+  using shp_mru_t = typename super::shp_mru_t;
+  using mapKey_t  = typename super::mapKey_t;
+
+  typedef map<mru_t, typename mapKey_t::iterator> mapMru_t;
+  mapMru_t mapMru_;
+
+public:
+  using super::super;
+
+  void trim(uint n) {
+    while (super::count() > n)
+      removeLru();
+  }
+
   shp insert(Key const& key, shp p) {
     EXPECT(!mapKey_.contains(key))
-    trim(maxItems_ - 1);
+    trim(super::maxItems_ - 1);
 
     mru_t nextMru = 0;
-    if (!isEmpty()) {
+    if (!super::isEmpty()) {
       nextMru = mapMru_.lastKey() + 1;
       if (0 == nextMru) // was overflow
-        clear();        // take a hit, but not often
+        super::clear(); // take a hit, but only every 4G operations
     }
 
     shp_mru_t shpMru(p, nextMru);
     EXPECT(!mapMru_.contains(shpMru.mru))
-    auto it = mapKey_.insert(key, shpMru);
+    auto it = super::mapKey_.insert(key, shpMru);
     mapMru_.insert(shpMru.mru, it);
     ENSURE(mapKey_.count() == mapMru_.count())
     return p;
   }
 
   shp remove(Key const& key) {
-    auto it1 = mapKey_.find(key);
-    if (mapKey_.end() == it1)
+    auto it1 = super::mapKey_.find(key);
+    if (super::mapKey_.end() == it1)
       return shp();
 
     shp p = it1->p;
@@ -130,7 +157,7 @@ public:
     auto it2 = mapMru_.find(it1->mru);
     ENSURE(mapMru_.end() != it2)
 
-    mapKey_.erase(it1);
+    super::mapKey_.erase(it1);
     mapMru_.erase(it2);
 
     return p;
@@ -149,7 +176,7 @@ private:
     auto itMru = mapMru_.begin();
     auto itKey = *itMru;
     mapMru_.erase(itMru);
-    mapKey_.erase(itKey);
+    super::mapKey_.erase(itKey);
     ENSURE(mapKey_.count() == mapMru_.count())
   }
 };

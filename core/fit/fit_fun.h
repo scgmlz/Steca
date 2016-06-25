@@ -26,7 +26,7 @@ namespace fit {
 // a polynom(ial)
 
 class Polynom : public typ::SimpleFunction {
-  SUPER(Polynom, typ::SimpleFunction)
+  CLS(Polynom) SUPER(typ::SimpleFunction)
 public:
   Polynom(uint degree = 0);
 
@@ -55,7 +55,7 @@ enum class ePeakType {
 };
 
 class PeakFunction : public typ::SimpleFunction {
-  SUPER(PeakFunction, typ::SimpleFunction)
+  CLS(PeakFunction) SUPER(typ::SimpleFunction)
 public:
 
   static PeakFunction* factory(ePeakType);
@@ -102,7 +102,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class Raw : public PeakFunction {
-  SUPER(Raw, PeakFunction)
+  CLS(Raw) SUPER(PeakFunction)
 public:
   Raw();
 
@@ -135,7 +135,7 @@ public:
 //------------------------------------------------------------------------------
 
 class Gaussian : public PeakFunction {
-  SUPER(Gaussian, PeakFunction)
+  CLS(Gaussian) SUPER(PeakFunction)
 public:
   enum { parAMPL, parXSHIFT, parSIGMA };
 
@@ -162,7 +162,7 @@ public:
 //------------------------------------------------------------------------------
 
 class Lorentzian : public PeakFunction {
-  SUPER(Lorentzian, PeakFunction)
+  CLS(Lorentzian) SUPER(PeakFunction)
 public:
   enum { parAMPL, parXSHIFT, parGAMMA };
 
@@ -189,7 +189,7 @@ public:
 //------------------------------------------------------------------------------
 
 class PseudoVoigt1 : public PeakFunction {
-  SUPER(PseudoVoigt1, PeakFunction)
+  CLS(PseudoVoigt1) SUPER(PeakFunction)
 public:
   enum { parAMPL, parXSHIFT, parSIGMAGAMMA, parETA };
 
@@ -217,7 +217,7 @@ public:
 //------------------------------------------------------------------------------
 
 class PseudoVoigt2 : public PeakFunction {
-  SUPER(PseudoVoigt2, PeakFunction)
+  CLS(PseudoVoigt2) SUPER(PeakFunction)
 public:
   enum { parAMPL, parXSHIFT, parSIGMA, parGAMMA, parETA };
 

@@ -43,7 +43,7 @@ namespace gui {
 //------------------------------------------------------------------------------
 
 class SplitImage : public BoxWidget {
-  SUPER(SplitImage, BoxWidget)
+  CLS(SplitImage) SUPER(BoxWidget)
 public:
   SplitImage(TheHub&);
 };
@@ -64,7 +64,7 @@ SplitImage::SplitImage(TheHub& hub) : super(Qt::Horizontal) {
 //------------------------------------------------------------------------------
 
 class SplitFitting : public BoxWidget {
-  SUPER(SplitFitting, BoxWidget)
+  CLS(SplitFitting) SUPER(BoxWidget)
 public:
   SplitFitting(TheHub&);
 };
@@ -76,7 +76,7 @@ SplitFitting::SplitFitting(TheHub& hub) : super(Qt::Vertical) {
 //------------------------------------------------------------------------------
 
 class SplitDiffractogram : public BoxWidget {
-  SUPER(SplitDiffractogram, BoxWidget)
+  CLS(SplitDiffractogram) SUPER(BoxWidget)
 public:
   SplitDiffractogram(TheHub&);
 };
@@ -250,7 +250,7 @@ void MainWin::connectActions() {
 }
 
 class AboutBox : public QMessageBox {
-  SUPER(AboutBox, QMessageBox)
+  CLS(AboutBox) SUPER(QMessageBox)
 public:
   using super::super;
 

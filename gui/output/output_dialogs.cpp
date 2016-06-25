@@ -301,7 +301,7 @@ void Frame::displayReflection(uint reflIndex, bool interpolated) {
 //------------------------------------------------------------------------------
 
 class TableModel : public models::TableModel {
-  SUPER(TableModel, models::TableModel)
+  CLS(TableModel) SUPER(models::TableModel)
 
 public:
   TableModel(TheHub&, uint numCols_);

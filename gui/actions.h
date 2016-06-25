@@ -26,7 +26,7 @@ namespace gui {
 //------------------------------------------------------------------------------
 
 class Action : public QAction {
-  SUPER(Action, QAction)
+  CLS(Action) SUPER(QAction)
 public:
   Action(rcstr text, rcstr tip, QObject*);
 
@@ -39,14 +39,14 @@ public:
 };
 
 class TriggerAction : public Action {
-  SUPER(TriggerAction, Action)
+  CLS(TriggerAction) SUPER(Action)
 public:
   TriggerAction(rcstr text, QObject* = nullptr);
   TriggerAction(rcstr text, rcstr tip, QObject* = nullptr);
 };
 
 class ToggleAction : public Action {
-  SUPER(ToggleAction, Action)
+  CLS(ToggleAction) SUPER(Action)
 public:
   ToggleAction(rcstr text, QObject* = nullptr);
   ToggleAction(rcstr text, rcstr tip, QObject* = nullptr);
@@ -60,7 +60,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class Actions : protected RefHub {
-  SUPER(Actions, RefHub)
+  CLS(Actions) SUPER(RefHub)
 public:
   Actions(TheHub&);
 

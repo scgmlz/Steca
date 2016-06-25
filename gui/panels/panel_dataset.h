@@ -26,7 +26,7 @@ namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 class DockDatasets : public DockWidget, protected RefHub {
-  SUPER(DockDatasets, DockWidget)
+  CLS(DockDatasets) SUPER(DockWidget)
 public:
   DockDatasets(TheHub&);
 
@@ -39,7 +39,7 @@ private:
 //------------------------------------------------------------------------------
 
 class DockDatasetInfo : public DockWidget, protected RefHub {
-  SUPER(DockDatasetInfo, DockWidget)
+  CLS(DockDatasetInfo) SUPER(DockWidget)
 public:
   DockDatasetInfo(TheHub&);
 
@@ -61,7 +61,7 @@ private:
 class Dataset;
 
 class ImageWidget : public QWidget, protected RefHub {
-  SUPER(ImageWidget, QWidget)
+  CLS(ImageWidget) SUPER(QWidget)
 public:
   ImageWidget(TheHub&, Dataset&);
 
@@ -84,7 +84,7 @@ protected:
 
 class DatasetOptions1 : public BoxPanel {
   Q_OBJECT
-  SUPER(DatasetOptions1, BoxPanel)
+  CLS(DatasetOptions1) SUPER(BoxPanel)
 public:
   DatasetOptions1(TheHub&);
 
@@ -99,7 +99,7 @@ private:
 
 class DatasetOptions2 : public BoxPanel {
   Q_OBJECT
-  SUPER(DatasetOptions2, BoxPanel)
+  CLS(DatasetOptions2) SUPER(BoxPanel)
 public:
   DatasetOptions2(TheHub&);
 
@@ -118,7 +118,7 @@ private:
 
 // RENAME gui::panel::Dataset -> ???
 class Dataset : public TabsPanel {
-  SUPER(Dataset, TabsPanel)
+  CLS(Dataset) SUPER(TabsPanel)
 public:
   Dataset(TheHub&);
 

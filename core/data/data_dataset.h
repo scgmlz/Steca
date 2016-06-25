@@ -54,7 +54,7 @@ namespace data {
 //------------------------------------------------------------------------------
 
 struct Metadata {
-  THIS(Metadata)
+  CLS(Metadata)
 
   // attribute list - will be dynamic
   static uint numAttributes(bool onlyNum);
@@ -83,7 +83,7 @@ struct Metadata {
 
 class Dataset final {
   friend class Datasets;
-  THIS(Dataset)
+  CLS(Dataset)
 public:
 
   Dataset(Metadata::rc, typ::size2d::rc, not_null<inten_t const*>);
@@ -119,7 +119,7 @@ private:
 
 // A group of Dataset(s)
 class Datasets : public typ::vec<shp_Dataset> {
-  SUPER(Datasets, typ::vec<shp_Dataset>)
+  CLS(Datasets) SUPER(typ::vec<shp_Dataset>)
 public:
   Datasets();
 
