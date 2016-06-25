@@ -175,11 +175,10 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 
   // cut
   auto  margins = hub_.imageCut();
-  QRect r       = rect()
-                .adjusted(1, 1, -2, -2)
-                .adjusted(to_i(scale_ * margins.left),   to_i(scale_ * margins.top),
-                          to_i(-scale_ * margins.right), to_i(-scale_ * margins.bottom));
-
+  QRect r = rect()
+      .adjusted(1, 1, -2, -2)
+      .adjusted(to_i(scale_ * margins.left),   to_i(scale_ * margins.top),
+               -to_i(scale_ * margins.right), -to_i(scale_ * margins.bottom));
   painter.setPen(Qt::lightGray);
   painter.drawRect(r);
 }

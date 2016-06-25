@@ -154,10 +154,6 @@ row_t Metadata::attributeNaNs() {
 
 //------------------------------------------------------------------------------
 
-//OneDataset::OneDataset()
-//: dataset_(nullptr) {
-//}
-
 OneDataset::OneDataset(Metadata::rc md, size2d::rc size, not_null<inten_t const*> intens)
 : md_(new Metadata(md)), image_(size,intens) {
 }
@@ -168,7 +164,7 @@ OneDataset::OneDataset(rc that)
 
 shp_Metadata OneDataset::metadata() const {
   ENSURE(!md_.isNull())
-  return md_;
+      return md_;
 }
 
 gma_rge OneDataset::rgeGma(core::Session::rc session) const {
@@ -177,6 +173,10 @@ gma_rge OneDataset::rgeGma(core::Session::rc session) const {
 
 tth_rge OneDataset::rgeTth(core::Session::rc session) const {
   return session.angleMap(*this)->rgeTth();
+}
+
+inten_rge OneDataset::rgeInten() const {
+  return image_.rgeInten();
 }
 
 size2d OneDataset::imageSize() const {
@@ -300,6 +300,14 @@ deg Dataset::phi() const {
 
 deg Dataset::chi() const {
   AVG_ONES(chi)
+}
+
+inten_rge Dataset::rgeInten() const {
+  EXPECT(!isEmpty())
+  Range rge;
+  for (auto &one : *this)
+    rge.intersect(one->rgeInten());
+  return rge;
 }
 
 #define RGE_ONES(what)                \
@@ -429,8 +437,8 @@ Curve::rc Datasets::makeAvgCurve(core::Session::rc session, bool trans, bool cut
   Curve res;
 
   for (auto& dataset: *this) {
-    shp_DatasetLens lens = session.lens(*dataset, *this, session.norm(), trans, cut);
-    Curve single = lens->makeCurve(lens->angleMap().rgeGma(),lens->angleMap().rgeTth());
+    shp_DatasetLens lens = session.datasetLens(*dataset, *this, session.norm(), trans, cut);
+    Curve single = lens->makeCurve();
     res = res.add(single);
   }
 

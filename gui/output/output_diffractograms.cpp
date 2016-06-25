@@ -91,9 +91,8 @@ DiffractogramsFrame::DiffractogramsFrame(TheHub &hub, rcstr title, QWidget *pare
 OutputDataCollection DiffractogramsFrame::collectCurves(
     gma_rge::rc rgeGma, gma_t gmaStep, data::Dataset::rc dataset, uint picNum) {
   auto lens = hub_.datasetLens(dataset);
-  auto &map = lens->angleMap();
 
-  typ::Range rge = map.rgeGma();
+  typ::Range rge = lens->rgeGma();
   if (rgeGma.isValid())
     rge = rge.intersect(rgeGma);
 
@@ -103,7 +102,7 @@ OutputDataCollection DiffractogramsFrame::collectCurves(
     qreal min = rge.min + i * step;
     gma_rge gmaStripe(min, min + step);
 
-    auto curve = lens->makeCurve(gmaStripe, map.rgeTth());
+    auto curve = lens->makeCurve(gmaStripe, lens->rgeTth());
     outputData.append(OutputData(curve, dataset, gmaStripe, picNum));
   }
   return outputData;
@@ -111,11 +110,8 @@ OutputDataCollection DiffractogramsFrame::collectCurves(
 
 OutputData DiffractogramsFrame::collectCurve(data::Dataset::rc dataset) {
   auto lens = hub_.datasetLens(dataset);
-  auto &map = lens->angleMap();
-
-  auto curve = lens->makeCurve(map.rgeGma(), map.rgeTth());
-
-  return OutputData(curve, dataset, map.rgeGma(), 0); // TODO current picture number
+  auto curve = lens->makeCurve(lens->rgeGma(), lens->rgeTth());
+  return OutputData(curve, dataset, lens->rgeGma(), 0); // TODO current picture number
 }
 
 OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {

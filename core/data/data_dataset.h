@@ -90,14 +90,10 @@ struct Metadata {
 class OneDataset final {
   CLS(OneDataset) friend class OneDatasets; friend class Dataset;
 public:
-//  >>>OneDataset();
   OneDataset(Metadata::rc, typ::size2d::rc, not_null<inten_t const*>);
   OneDataset(rc);
 
-//>>>  Datasets const& datasets() const;
   shp_Metadata metadata() const;
-
-//>>>  static shp_Dataset combine(Datasets);
 
   tth_t midTth()            const { return md_->motorTth; }
   qreal deltaMonitorCount() const { return md_->deltaMonitorCount; }
@@ -109,6 +105,8 @@ public:
 
   gma_rge  rgeGma(core::Session const&) const;
   tth_rge  rgeTth(core::Session const&) const;
+
+  inten_rge rgeInten() const;
 
   typ::Image::rc image()    const { return image_; }
   typ::size2d imageSize()   const;
@@ -149,6 +147,8 @@ public:
   gma_rge  rgeGma(core::Session const&) const;
   tth_rge  rgeTth(core::Session const&) const;
 
+  inten_rge rgeInten() const;
+
   qreal    avgDeltaMonitorCount() const;
   qreal    avgDeltaTime()         const;
 
@@ -180,7 +180,7 @@ public:
   inten_rge::rc  rgeFixedInten(core::Session const&, bool trans, bool cut) const;
   typ::Curve::rc makeAvgCurve(core::Session const&, bool trans, bool cut) const;
 
-//private:
+private:
   void invalidateMutables();
 
   // computed on demand (NaNs or emptiness indicate yet unknown values)

@@ -220,17 +220,14 @@ void DiffractogramPlot::plot(typ::Curve::rc dgram, typ::Curve::rc dgramBgFitted,
     auto tthRange = dgram.rgeX();
 
     typ::Range intenRange;
-//>>>IN    if (hub_.isFixedIntenDgramScale()) {
-//      ENSURE(!diffractogram_.dataset().isNull())
-//      auto lens = hub_.lens(*diffractogram_.dataset());
-//      auto max  = lens->rgeInten(hub_.isFixedIntenDgramScale()).max;
-//      // heuristics; to calculate this precisely would require much more
-//      // computation
-//      intenRange = typ::Range(-max / 30, max / 3);
-//    } else {
+    if (hub_.isFixedIntenDgramScale()) {
+      ENSURE(!diffractogram_.dataset().isNull())
+      auto lens = hub_.datasetLens(*diffractogram_.dataset());
+      intenRange = lens->rgeInten();
+    } else {
       intenRange = dgramBgFitted.rgeY();
       intenRange.extendBy(dgram.rgeY());
-//    }
+    }
 
     xAxis->setRange(tthRange.min, tthRange.max);
     yAxis->setRange(qMin(0., intenRange.min), intenRange.max);

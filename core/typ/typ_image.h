@@ -28,7 +28,6 @@ class Image final : public Array2D<inten_t> {
 public:
   // Image as vector of intensities, filled with 0 or given intensities.
   Image(size2d::rc = size2d(0, 0), inten_t const* = nullptr);
-
   Image(rc);
 
   // Access single intensity.
@@ -54,6 +53,13 @@ public:
   // Sum all intensities with new ones.
   void addIntens(Image::rc) THROWS;
   void addIntens(not_null<inten_t const*>);
+
+  inten_rge::rc rgeInten() const {
+    return rgeInten_;
+  }
+
+private:
+  inten_rge rgeInten_;
 };
 
 //------------------------------------------------------------------------------

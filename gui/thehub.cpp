@@ -182,8 +182,8 @@ calc::shp_ImageLens TheHub::plainImageLens(typ::Image::rc image) const {
 }
 
 calc::shp_DatasetLens TheHub::datasetLens(data::Dataset::rc dataset) const {
-  return session->lens(dataset, dataset.datasets(), session->norm(),
-                       true, true);
+  return session->datasetLens(dataset, dataset.datasets(), session->norm(),
+                              true, true);
 }
 
 calc::ReflectionInfos TheHub::makeReflectionInfos(

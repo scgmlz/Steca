@@ -101,25 +101,22 @@ public:
 
   typ::size2d size() const;
 
-//>>>  typ::Angles::rc angles(uint i, uint j) const;
-
-//>>>  gma_rge    gmaRangeAt(tth_t) const;
   gma_rge rgeGma() const;
   tth_rge rgeTth() const;
+
+  inten_rge rgeInten() const;
 
   typ::Curve makeCurve() const;
   typ::Curve makeCurve(gma_rge::rc, tth_rge::rc) const;
   typ::Curve makeAvgCurve() const;
 
   data::Dataset::rc dataset()  const { return dataset_;   }
-  typ::AngleMap::rc angleMap() const { return *angleMap_; }
 
 private:
   void setNorm(eNorm);
   inten_t normFactor_;
 
   data::Dataset::rc dataset_;
-  typ::shp_AngleMap angleMap_;
 };
 
 typedef QSharedPointer<DatasetLens> shp_DatasetLens;

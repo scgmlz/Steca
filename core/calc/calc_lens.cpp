@@ -166,55 +166,30 @@ DatasetLens::DatasetLens(core::Session::rc session,
    bool trans, bool cut,
    typ::ImageTransform::rc imageTransform, typ::ImageCut::rc imageCut)
 : super(session, datasets, trans, cut, imageTransform, imageCut)
-, normFactor_(1), dataset_(dataset)
-//>>>: super(session, dataset.image(), corrImage, datasets, trans, cut, imageCut
-//, imageTransform), dataset_(dataset), angleMap_(session.angleMap(dataset))
-{
+, normFactor_(1), dataset_(dataset) {
   setNorm(norm);
-}
-
-//Angles::rc Lens::angles(uint i, uint j) const {
-//  if (cut_) doCut(i, j);
-//  return angleMap_->at(i, j);
-//}
-
-//gma_rge Lens::gmaRangeAt(tth_t tth) const {
-//  auto sz = size();
-//  uint w = sz.w, h = sz.h;
-
-//  Range rge;
-
-//  for (uint j = 1; j < h; ++j) {
-//    for (uint i = 1; i < w; ++i) {
-//      auto tthMin = angles(i-1, j).tth, tthMax = angles(i, j).tth;
-//      if (tthMin <= tth && tth < tthMax)
-//        rge.extendBy(angles(i - 1, j).gma);
-//    }
-//  }
-
-//  return rge;
-//}
-
-Curve DatasetLens::makeCurve(gma_rge::rc rgeGma, tth_rge::rc rgeTth) const {
-  uint w = size().w;
-  EXPECT(w > 0)
-
-  EXPECT(rgeTth.isValid());
-  tth_t minTth = rgeTth.min, deltaTth = rgeTth.width() / w;
-
-  inten_vec intens(w);
-  dataset_.collectIntens(session_, intens, rgeGma, minTth, deltaTth);
-
-  Curve res;
-
-  for_i (w)
-    res.append(minTth + deltaTth * i, intens.at(i));
-
-  return res;
 }
 
 size2d DatasetLens::size() const {
   return super::transCutSize(datasets_.imageSize());
+}
+
+Curve DatasetLens::makeCurve(gma_rge::rc rgeGma, tth_rge::rc rgeTth) const {
+  uint w = size().w;
+  Curve res;
+
+  if (w > 0) {
+    EXPECT(rgeTth.isValid());
+    tth_t minTth = rgeTth.min, deltaTth = rgeTth.width() / w;
+
+    inten_vec intens(w);
+    dataset_.collectIntens(session_, intens, rgeGma, minTth, deltaTth);
+
+    for_i (w)
+      res.append(minTth + deltaTth * i, intens.at(i) * normFactor_);
+  }
+
+  return res;
 }
 
 gma_rge DatasetLens::rgeGma() const {
@@ -223,6 +198,12 @@ gma_rge DatasetLens::rgeGma() const {
 
 tth_rge DatasetLens::rgeTth() const {
   return dataset_.rgeTth(session_);
+}
+
+inten_rge DatasetLens::rgeInten() const {
+  // fixes the scale
+  // TODO consider return datasets_.rgeInten();
+  return dataset_.rgeInten();
 }
 
 Curve DatasetLens::makeCurve() const {

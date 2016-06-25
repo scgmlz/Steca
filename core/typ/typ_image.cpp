@@ -36,8 +36,11 @@ void Image::addIntens(Image::rc that) THROWS {
 void Image::addIntens(not_null<inten_t const*> thatIntens) {
   inten_t *dst = data();
   inten_t const *src = thatIntens;
-  for_i (count())
-    *dst++ += *src++;
+  for_i (count()) {
+    inten_t inten = *src++;
+    rgeInten_.extendBy(inten);
+    *dst++ += inten;
+  }
 }
 
 //------------------------------------------------------------------------------

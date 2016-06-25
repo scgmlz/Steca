@@ -303,8 +303,8 @@ void MainWin::addFiles() {
       "Data files (*.dat);;All files (*.*)");
 
   if (!fileNames.isEmpty()) {
-    hub_.addFiles(fileNames);
     QDir::setCurrent(QFileInfo(fileNames.at(0)).absolutePath());
+    hub_.addFiles(fileNames);
   }
 }
 
@@ -316,8 +316,8 @@ void MainWin::enableCorr() {
         "Data files (*.dat);;All files (*.*)");
 
   if (!fileName.isEmpty()) {
-    hub_.setCorrFile(fileName);
     QDir::setCurrent(QFileInfo(fileName).absolutePath());
+    hub_.setCorrFile(fileName);
   }
 }
 

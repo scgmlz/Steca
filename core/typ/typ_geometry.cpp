@@ -87,7 +87,7 @@ AngleMap::AngleMap(Key::rc key) {
 
 void AngleMap::getGmaIndexes(gma_rge::rc rgeGma,
                              uint_vec const*& indexes, uint& minIndex, uint& maxIndex) const {
-  // TODO >>> binary
+  // TODO binary search for min/max index
   uint end = gmas.count();
   for (minIndex = 0; minIndex < end && gmas.at(minIndex) < rgeGma.min; ++minIndex)
     ;
