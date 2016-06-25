@@ -41,11 +41,11 @@ struct CacheT {
 };
 
 void test() {
-  typ::cache_lru<CacheKey, CacheT> cache(100);
+  typ::cache<CacheKey, CacheT> cache(100);
 
   for_i (13000u) {
     cache.insert(CacheKey(i), QSharedPointer<CacheT>(new CacheT));
-    cache.value(CacheKey(0)); // keeps LRU
+    cache.value(CacheKey(0)); // keeps mru
   }
 
   cache.trim(1);
@@ -58,14 +58,29 @@ namespace typ {
 //------------------------------------------------------------------------------
 
 template <typename Key, typename T>
-class cache_lru final {
-  THIS(cache_lru)
+class cache final {
+  THIS(cache)
 public:
   typedef QSharedPointer<T> shp;
 
-  cache_lru(uint maxItems)
-  : maxItems_(maxItems)
-  , startMsec_(QDateTime::currentMSecsSinceEpoch()) {
+private:
+  typedef uint mru_t; // the higher, the more mru
+
+  struct shp_mru_t {
+    shp_mru_t(shp p_, mru_t mru_) : p(p_), mru(mru_) {}
+    shp p; mru_t mru;
+  };
+
+  typedef map<Key, shp_mru_t> mapKey_t;
+  typedef map<mru_t, typename mapKey_t::iterator> mapMru_t;
+
+  mapKey_t mapKey_;
+  mapMru_t mapMru_;
+
+  uint  maxItems_;
+
+public:
+  cache(uint maxItems) : maxItems_(maxItems) {
     EXPECT(maxItems_ > 0)
   }
 
@@ -87,13 +102,21 @@ public:
   }
 
   shp insert(Key const& key, shp p) {
-    trim(maxItems_ - 1);
-    shp_time shpTime(p, timNow());
     EXPECT(!mapKey_.contains(key))
-    auto it = mapKey_.insert(key, shpTime);
-    EXPECT(!mapTim_.contains(shpTime.tim))
-    mapTim_.insert(shpTime.tim, it);
-    ENSURE(mapKey_.count() == mapTim_.count())
+    trim(maxItems_ - 1);
+
+    mru_t nextMru = 0;
+    if (!isEmpty()) {
+      nextMru = mapMru_.lastKey() + 1;
+      if (0 == nextMru) // was overflow
+        clear();        // take a hit, but not often
+    }
+
+    shp_mru_t shpMru(p, nextMru);
+    EXPECT(!mapMru_.contains(shpMru.mru))
+    auto it = mapKey_.insert(key, shpMru);
+    mapMru_.insert(shpMru.mru, it);
+    ENSURE(mapKey_.count() == mapMru_.count())
     return p;
   }
 
@@ -104,81 +127,31 @@ public:
 
     shp p = it1->p;
 
-    auto it2 = mapTim_.find(it1->tim);
-    ENSURE(mapTim_.end() != it2) // should have been there
+    auto it2 = mapMru_.find(it1->mru);
+    ENSURE(mapMru_.end() != it2)
 
     mapKey_.erase(it1);
-    mapTim_.erase(it2);
+    mapMru_.erase(it2);
 
     return p;
   }
 
   shp value(Key const& key) {
-    shp p = remove(key);
+    shp p = remove(key);  // remove + insert makes it mru
     if (p)
       insert(key, p);
     return p;
   }
 
 private:
-  struct tim_t {
-    uint msec; uint cnt;
-    friend bool operator <(tim_t const& t1, tim_t const& t2) {
-      if (t1.msec < t2.msec)
-        return true;
-      if (t1.msec > t2.msec)
-        return false;
-      return t1.cnt < t2.cnt;
-    }
-  };
-
-  struct shp_time {
-    shp_time(shp p_, tim_t tim_) : p(p_), tim(tim_) {}
-    shp p; tim_t tim;
-  };
-
-  tim_t timNow() const {
-    tim_t tim;
-    tim.msec = uint(QDateTime::currentMSecsSinceEpoch() - startMsec_);
-    tim.cnt  = 0;
-    if (!mapTim_.isEmpty()) {
-      tim_t max = maxTim();
-      EXPECT(tim.msec >= max.msec)
-      if (tim.msec == max.msec)
-        tim.cnt = max.cnt + 1;  // 4G max in 1 msec
-    }
-    return tim;
-  }
-
-  tim_t minTim() const {
-    EXPECT(!isEmpty())
-    return mapTim_.firstKey();
-  }
-
-  tim_t maxTim() const {
-    EXPECT(!isEmpty())
-    return mapTim_.lastKey();
-  }
-
   void removeLru() {
     EXPECT(!isEmpty())
-    // if there are multiple items with the same time (insertMulti above),
-    // then it is in fact Mru among them
-    auto it = mapTim_.take(minTim());
-    mapKey_.erase(it);
-    ENSURE(mapKey_.count() == mapTim_.count())
+    auto itMru = mapMru_.begin();
+    auto itKey = *itMru;
+    mapMru_.erase(itMru);
+    mapKey_.erase(itKey);
+    ENSURE(mapKey_.count() == mapMru_.count())
   }
-
-private:
-  typedef map<Key, shp_time> mapKey_t;
-  typedef map<tim_t, typename mapKey_t::iterator> mapTime_t;
-
-  mapKey_t  mapKey_;
-  mapTime_t mapTim_;
-
-  uint maxItems_;
-
-  qint64 startMsec_;
 };
 
 //------------------------------------------------------------------------------

@@ -121,7 +121,9 @@ private:
 //------------------------------------------------------------------------------
 // casting signed <-> unsigned
 
+#ifndef QT_NO_DEBUG
 #include <limits>
+#endif
 
 // unsigned to signed
 template <typename T>

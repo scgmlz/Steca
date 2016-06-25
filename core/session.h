@@ -122,7 +122,7 @@ public:
 
 private:
   typ::Geometry geometry_;
-  mutable typ::cache_lru<typ::AngleMap::Key,typ::AngleMap> angleMapCache;
+  mutable typ::cache<typ::AngleMap::Key,typ::AngleMap> angleMapCache;
 
 public:
   typ::Geometry::rc geometry() const { return geometry_; }
