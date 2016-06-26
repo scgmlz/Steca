@@ -229,8 +229,8 @@ QByteArray TheHub::saveSession() const {
 
   auto& geo = session->geometry();
   top.saveObj(KEY_DETECTOR, JsonObj()
-      .saveReal(KEY_DISTANCE, geo.detectorDistance)
-      .saveReal(KEY_PIX_SIZE, geo.pixSize)
+      .savePreal(KEY_DISTANCE, geo.detectorDistance)
+      .savePreal(KEY_PIX_SIZE, geo.pixSize)
       .saveBool(KEY_OFFSET_BEAM, geo.isMidPixOffset)
       .saveObj(KEY_BEAM_OFFSET, geo.midPixOffset.saveJson()));
 
@@ -322,12 +322,12 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
     lastIndex = to_i(index);
   }
 
-  collectDatasetsFromFiles(selIndexes,top.loadUint(KEY_COMBINE,1));
+  collectDatasetsFromFiles(selIndexes,top.loadNint(KEY_COMBINE,1));
 
   setCorrFile(top.loadString(KEY_CORR_FILE, EMPTY_STR));
 
   auto det = top.loadObj(KEY_DETECTOR);
-  setGeometry(det.loadReal(KEY_DISTANCE), det.loadReal(KEY_PIX_SIZE),
+  setGeometry(det.loadPreal(KEY_DISTANCE), det.loadPreal(KEY_PIX_SIZE),
               det.loadBool(KEY_OFFSET_BEAM), det.loadIJ(KEY_BEAM_OFFSET));
 
   auto cut = top.loadObj(KEY_CUT);
@@ -382,7 +382,7 @@ void TheHub::collectDatasetsFromFiles(uint_vec is) {
   collectDatasetsFromFiles(is, datasetsGroupedBy_);
 }
 
-void TheHub::combineDatasetsBy(uint by) {
+void TheHub::combineDatasetsBy(nint by) {
   collectDatasetsFromFiles(collectFromFiles_, by);
 }
 
@@ -415,7 +415,7 @@ const typ::Geometry& TheHub::geometry() const {
   return session->geometry();
 }
 
-void TheHub::setGeometry(qreal detectorDistance, qreal pixSize,
+void TheHub::setGeometry(preal detectorDistance, preal pixSize,
                          bool isMidPixOffset, typ::IJ::rc midPixOffset) {
   level_guard __(sigLevel_);
   if (sigLevel_ > 1)

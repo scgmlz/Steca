@@ -132,12 +132,12 @@ uint Range::numSlices(qreal& sliceSize) const {
 static str const KEY_MIN("min"), KEY_MAX("max");
 
 JsonObj Range::saveJson() const {
-  return JsonObj().saveReal(KEY_MIN, min).saveReal(KEY_MAX, max);
+  return JsonObj().saveQreal(KEY_MIN, min).saveQreal(KEY_MAX, max);
 }
 
 void Range::loadJson(JsonObj::rc obj) THROWS {
-  min = obj.loadReal(KEY_MIN);
-  max = obj.loadReal(KEY_MAX);
+  min = obj.loadQreal(KEY_MIN);
+  max = obj.loadQreal(KEY_MAX);
 }
 
 //------------------------------------------------------------------------------

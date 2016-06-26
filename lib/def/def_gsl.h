@@ -119,29 +119,6 @@ private:
 };
 
 //------------------------------------------------------------------------------
-// natural numbers 1...
-
-#ifndef QT_NO_DEBUG
-
-class nint {
-public:
-  nint(uint val = 0) : val_(val) {
-    EXPECT(1 <= val)
-  }
-
-  operator uint() const { return val_; }
-
-private:
-  uint val_;
-};
-
-#else
-
-typedef uint nint;
-
-#endif
-
-//------------------------------------------------------------------------------
 // casting signed <-> unsigned
 
 #ifndef QT_NO_DEBUG
@@ -166,6 +143,55 @@ typename std::__make_unsigned<T>::__type to_u(T t) {
   EXPECT2(0 <= t, "to_u(attempt to convert a negative value)")
   return typename std::__make_unsigned<T>::__type(t);
 }
+
+//------------------------------------------------------------------------------
+// natural numbers 1...
+
+#ifndef QT_NO_DEBUG
+
+class nint {
+public:
+  explicit nint(uint val) : val_(val) {
+    EXPECT(1 <= val)
+  }
+
+  explicit nint(int val) : nint(to_u(val)) {
+  }
+
+  operator uint() const { return val_; }
+
+private:
+  uint val_;
+};
+
+#else
+
+typedef uint nint;
+
+#endif
+
+//------------------------------------------------------------------------------
+// positive reals
+
+#ifndef QT_NO_DEBUG
+
+class preal {
+public:
+  explicit preal(qreal val) : val_(val) {
+    EXPECT(0 < val)
+  }
+
+  operator qreal() const { return val_; }
+
+private:
+  qreal val_;
+};
+
+#else
+
+typedef qreal preal;
+
+#endif
 
 //------------------------------------------------------------------------------
 #endif // DEF_GSL

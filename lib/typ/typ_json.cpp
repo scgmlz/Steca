@@ -85,8 +85,11 @@ int JsonObj::loadInt(rcstr key) const THROWS {
   }
 }
 
+#define LOAD_DEF(type) \
+  value(key).isUndefined() ? def : load##type(key)
+
 #define RET_LOAD_DEF(type) \
-  return value(key).isUndefined() ? def : load##type(key);
+  return LOAD_DEF(type);
 
 int JsonObj::loadInt(rcstr key, int def) const THROWS {
   RET_LOAD_DEF(Int)
@@ -107,9 +110,23 @@ uint JsonObj::loadUint(rcstr key, uint def) const THROWS {
   RET_LOAD_DEF(Uint)
 }
 
+JsonObj& JsonObj::saveNint(rcstr key, nint num) {
+  return saveUint(key, num);
+}
+
+nint JsonObj::loadNint(rcstr key) const {
+  uint num = loadUint(key);
+  RUNTIME_CHECK(num > 0, "expecting positive number");
+  return nint(num);
+}
+
+nint JsonObj::loadNint(rcstr key, uint def) const {
+  return nint(LOAD_DEF(Nint));
+}
+
 static str const INF_P("+inf"), INF_M("-inf");
 
-JsonObj& JsonObj::saveReal(rcstr key, qreal num) {
+JsonObj& JsonObj::saveQreal(rcstr key, qreal num) {
   if (qIsNaN(num)) {
     // do not save anything for NaNs
   } else if (qIsInf(num)) {
@@ -121,7 +138,7 @@ JsonObj& JsonObj::saveReal(rcstr key, qreal num) {
   return *this;
 }
 
-qreal JsonObj::loadReal(rcstr key) const THROWS {
+qreal JsonObj::loadQreal(rcstr key) const THROWS {
   auto val = value(key);
 
   switch (val.type()) {
@@ -140,8 +157,22 @@ qreal JsonObj::loadReal(rcstr key) const THROWS {
   }
 }
 
-qreal JsonObj::loadReal(rcstr key, qreal def) const THROWS {
-  RET_LOAD_DEF(Real)
+qreal JsonObj::loadQreal(rcstr key, qreal def) const THROWS {
+  RET_LOAD_DEF(Qreal)
+}
+
+JsonObj& JsonObj::savePreal(rcstr key, preal num) {
+  return saveQreal(key, num);
+}
+
+preal JsonObj::loadPreal(rcstr key) const {
+  qreal num = loadQreal(key);
+  RUNTIME_CHECK(num >= 0, "expecting positive number");
+  return preal(num);
+}
+
+preal JsonObj::loadPreal(rcstr key, preal def) const {
+  RET_LOAD_DEF(Preal)
 }
 
 JsonObj& JsonObj::saveBool(rcstr key, bool b) {

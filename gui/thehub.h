@@ -128,12 +128,12 @@ public:
 
 private:
   uint_vec collectFromFiles_;
-  nint     datasetsGroupedBy_ = 1;
+  nint     datasetsGroupedBy_ = nint(1);
 
 public:
   void collectDatasetsFromFiles(uint_vec, nint);
   void collectDatasetsFromFiles(uint_vec);
-  void combineDatasetsBy(uint);
+  void combineDatasetsBy(nint);
 
   uint_vec::rc collectedFromFiles() const {
     return session->collectedFromFiles();
@@ -162,8 +162,8 @@ public:
   void setImageCut(bool topLeft, bool linked, typ::ImageCut::rc);
 
   typ::Geometry::rc geometry() const;
-  void setGeometry(qreal detectorDistance, qreal pixSize, bool isMidPixOffset,
-                   typ::IJ::rc midPixOffset);
+  void setGeometry(preal detectorDistance, preal pixSize,
+                   bool isMidPixOffset, typ::IJ::rc midPixOffset);
 
   void setBgRanges(typ::Ranges::rc);
   void addBgRange(typ::Range::rc);

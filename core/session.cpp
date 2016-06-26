@@ -195,9 +195,8 @@ void Session::setImageCut(bool topLeftFirst, bool linked, ImageCut::rc cut) {
   }
 }
 
-void Session::setGeometry(qreal detectorDistance, qreal pixSize,
+void Session::setGeometry(preal detectorDistance, preal pixSize,
                           bool isMidPixOffset, IJ::rc midPixOffset) {
-  EXPECT(detectorDistance > 0 && pixSize > 0)
 
   geometry_.detectorDistance = detectorDistance;
   geometry_.pixSize          = pixSize;

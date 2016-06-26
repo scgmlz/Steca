@@ -71,12 +71,12 @@ str const Function::Parameter::KEY::RANGE("range");
 
 JsonObj Function::Parameter::saveJson() const {
   return JsonObj()
-      .saveReal(KEY::VALUE, value_)
+      .saveQreal(KEY::VALUE, value_)
       .saveRange(KEY::RANGE, range_);
 }
 
 void Function::Parameter::loadJson(JsonObj::rc obj) THROWS {
-  value_ = obj.loadReal(KEY::VALUE);
+  value_ = obj.loadQreal(KEY::VALUE);
   range_ = obj.loadRange(KEY::RANGE);
 }
 

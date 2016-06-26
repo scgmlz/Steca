@@ -20,8 +20,8 @@
 namespace typ {
 //------------------------------------------------------------------------------
 
-qreal const Geometry::MIN_DETECTOR_DISTANCE   = 10;
-qreal const Geometry::MIN_DETECTOR_PIXEL_SIZE = .1;
+preal const Geometry::MIN_DETECTOR_DISTANCE   = preal(10);
+preal const Geometry::MIN_DETECTOR_PIXEL_SIZE = preal(.1);
 
 Geometry::Geometry()
 : detectorDistance(MIN_DETECTOR_DISTANCE), pixSize(MIN_DETECTOR_PIXEL_SIZE)

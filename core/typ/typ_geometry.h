@@ -30,14 +30,14 @@ namespace typ {
 struct Geometry {
   CLS(Geometry)
 
-  static qreal const MIN_DETECTOR_DISTANCE;  // REVIEW
-  static qreal const MIN_DETECTOR_PIXEL_SIZE;
+  static preal const MIN_DETECTOR_DISTANCE;
+  static preal const MIN_DETECTOR_PIXEL_SIZE;
 
   Geometry();
   int compare(rc) const;
 
-  qreal detectorDistance;  // the distance from the sample to the detector
-  qreal pixSize;           // size of the detector pixel
+  preal detectorDistance;  // the distance from the sample to the detector
+  preal pixSize;           // size of the detector pixel
   bool  isMidPixOffset;
   IJ    midPixOffset;
 };

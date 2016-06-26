@@ -18,6 +18,7 @@
 #define TYP_JSON_H
 
 #include "def/def_macros.h"
+#include "def/def_gsl.h"
 #include "typ/typ_str.h"
 #include <QJsonArray>
 #include <QJsonObject>
@@ -50,9 +51,17 @@ public:
   uint     loadUint(rcstr key)              const THROWS;
   uint     loadUint(rcstr key, uint def)    const THROWS;
 
-  JsonObj& saveReal(rcstr key, qreal);
-  qreal    loadReal(rcstr key)              const THROWS;
-  qreal    loadReal(rcstr key, qreal def)   const THROWS;
+  JsonObj& saveNint(rcstr key, nint);
+  nint     loadNint(rcstr key)              const THROWS;
+  nint     loadNint(rcstr key, uint def)    const THROWS;
+
+  JsonObj& saveQreal(rcstr key, qreal);
+  qreal    loadQreal(rcstr key)             const THROWS;
+  qreal    loadQreal(rcstr key, qreal def)  const THROWS;
+
+  JsonObj& savePreal(rcstr key, preal);
+  preal    loadPreal(rcstr key)             const THROWS;
+  preal    loadPreal(rcstr key, preal def)  const THROWS;
 
   JsonObj& saveBool(rcstr key, bool);
   bool     loadBool(rcstr key)              const THROWS;

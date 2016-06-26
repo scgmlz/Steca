@@ -43,12 +43,12 @@ bool XY::isValid() const {
 static str const KEY_X("x"), KEY_Y("y");
 
 JsonObj XY::saveJson() const {
-  return JsonObj().saveReal(KEY_X, x).saveReal(KEY_Y, y);
+  return JsonObj().saveQreal(KEY_X, x).saveQreal(KEY_Y, y);
 }
 
 void XY::loadJson(JsonObj::rc obj) THROWS {
-  x = obj.loadReal(KEY_X);
-  y = obj.loadReal(KEY_Y);
+  x = obj.loadQreal(KEY_X);
+  y = obj.loadQreal(KEY_Y);
 }
 
 //------------------------------------------------------------------------------

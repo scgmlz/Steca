@@ -14,9 +14,10 @@
 // ************************************************************************** //
 
 #include "panel_dataset.h"
-#include "colors.h"
 #include "calc/calc_lens.h"
+#include "colors.h"
 #include "thehub.h"
+#include "typ/typ_geometry.h"
 
 #include <QAction>
 #include <QPainter>
@@ -69,7 +70,7 @@ DockDatasets::DockDatasets(TheHub& hub)
   combineDatasets_->setToolTip("Combine and average number of datasets");
 
   connect(combineDatasets_, slot(QSpinBox,valueChanged,int), [this](int num) {
-    hub_.combineDatasetsBy(to_u(qMax(1, num)));
+    hub_.combineDatasetsBy(nint(qMax(1, num)));
   });
 
   onSigDatasetsChanged([this]() {
@@ -256,9 +257,11 @@ DatasetOptions1::DatasetOptions1(TheHub& hub)
 }
 
 void DatasetOptions1::setTo(TheHub& hub) {
-  hub.setGeometry(spinDistance_->value(), spinPixelSize_->value(),
-                  hub.actions.hasBeamOffset->isChecked(),
-                  typ::IJ(spinOffsetI_->value(), spinOffsetJ_->value()));
+  hub.setGeometry(
+    preal(qMax(qreal(typ::Geometry::MIN_DETECTOR_DISTANCE),   spinDistance_->value())),
+    preal(qMax(qreal(typ::Geometry::MIN_DETECTOR_PIXEL_SIZE), spinPixelSize_->value())),
+    hub.actions.hasBeamOffset->isChecked(),
+    typ::IJ(spinOffsetI_->value(), spinOffsetJ_->value()));
 }
 
 void DatasetOptions1::setFrom(TheHub& hub) {

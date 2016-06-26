@@ -210,14 +210,14 @@ JsonObj PeakFunction::saveJson() const {
   return super::saveJson()
       .saveRange(KEY_RANGE, range_)
       .saveObj(KEY_GUESSED_PEAK, guessedPeak_.saveJson())
-      .saveReal(KEY_GUESSED_FWHM, guessedFWHM_);
+      .saveQreal(KEY_GUESSED_FWHM, guessedFWHM_);
 }
 
 void PeakFunction::loadJson(JsonObj::rc obj) THROWS {
   super::loadJson(obj);
   range_ = obj.loadRange(KEY_RANGE);
   guessedPeak_.loadJson(obj.loadObj(KEY_GUESSED_PEAK));
-  guessedFWHM_ = obj.loadReal(KEY_GUESSED_FWHM);
+  guessedFWHM_ = obj.loadQreal(KEY_GUESSED_FWHM);
 }
 
 //------------------------------------------------------------------------------
