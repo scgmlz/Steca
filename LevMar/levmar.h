@@ -22,6 +22,8 @@
 #ifndef _LEVMAR_H_
 #define _LEVMAR_H_
 
+void msg_cannotSolve(unsigned int n, unsigned int m);
+
 /************************************* Start of configuration options *************************************/
 /* Note that when compiling with CMake, this configuration section is automatically generated
  * based on the user's input, see levmar.h.in

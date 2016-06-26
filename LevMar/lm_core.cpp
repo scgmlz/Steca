@@ -119,8 +119,8 @@ int (*linsolver)(LM_REAL *A, LM_REAL *B, LM_REAL *x, int m)=NULL;
 
   mu=jacTe_inf=0.0; /* -Wall */
 
-  if(n<m){
-    fprintf(stderr, LCAT(LEVMAR_DER, "(): cannot solve a problem with fewer measurements [%d] than unknowns [%d]\n"), n, m);
+  if(n<m) {
+    msg_cannotSolve(n,m);
     return LM_ERROR;
   }
 
@@ -503,10 +503,9 @@ int (*linsolver)(LM_REAL *A, LM_REAL *B, LM_REAL *x, int m)=NULL;
     mu=jacTe_inf=p_L2=0.0;	/* -Wall */
     updjac=newjac=0;		/* -Wall */
 
-    if(n<m)
-    {
-        fprintf(stderr, LCAT(LEVMAR_DIF, "(): cannot solve a problem with fewer measurements [%d] than unknowns [%d]\n"), n, m);
-        return LM_ERROR;
+    if(n<m) {
+      msg_cannotSolve(n, m);
+      return LM_ERROR;
     }
 
     /* set options */
