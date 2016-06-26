@@ -85,69 +85,48 @@ AngleMap::AngleMap(Key::rc key) {
   calculate(key);
 }
 
-static bool findIndLower(vec<gma_t>::rc vec, gma_t x, uint i1, uint i2, uint& i) {
-  EXPECT(i1 + 1 <= i2) // at least one element in <i1, i2)
+static uint findIndLower(vec<gma_t>::rc vec, gma_t x, uint i1, uint i2) {
+  EXPECT(i1 < i2)
 
-  if (vec.at(i1) >= x) {
-    i = i1; return true;
-  }
+  if (1 == i2-i1)
+    return i1;
 
-  if (vec.at(i2-1) <= x) {
-    i = i2-1; return true;
-  }
-
-  if (1 == i2 - i1)
-    return false;
-
-  uint mid = (i2 - i1) / 2;
-  EXPECT(i1 < mid && mid < i2)
-
-  return findIndLower(vec, x, i1, mid, i) || findIndLower(vec, x, mid, i2, i);
+  uint mid = (i1 + i2) / 2;
+  return vec.at(mid-1) < x
+      ? findIndLower(vec, x, mid, i2)
+      : findIndLower(vec, x, i1, mid);
 }
 
-static bool findIndUpper(vec<gma_t>::rc vec, gma_t x, uint i1, uint i2, uint& i) {
-  EXPECT(i1 + 1 <= i2) // at least one element in <i1, i2)
+static uint findIndUpper(vec<gma_t>::rc vec, gma_t x, uint i1, uint i2) {
+  EXPECT(i1 < i2)
 
-  if (vec.at(i2-1) <= x) {
-    i = i2; return true;
-  }
+  if (1 == i2-i1)
+    return i2;
 
-  if (vec.at(i1) >= x) {
-    i = i1+1; return true;
-  }
-
-  if (1 == i2 - i1)
-    return false;
-
-  uint mid = (i2 - i1) / 2;
-  EXPECT(i1 < mid && mid < i2)
-
-  return findIndUpper(vec, x, i1, mid, i) || findIndUpper(vec, x, mid, i2, i);
+  uint mid = (i1 + i2) / 2;
+  return vec.at(mid) > x
+      ? findIndUpper(vec, x, i1, mid)
+      : findIndUpper(vec, x, mid, i2);
 }
 
 void AngleMap::getGmaIndexes(gma_rge::rc rgeGma,
                              uint_vec const*& indexes, uint& minIndex, uint& maxIndex) const {
-  minIndex = 0; maxIndex = gmas.count();
+  minIndex = findIndLower(gmas, rgeGma.min, 0, gmas.count());
+  maxIndex = findIndUpper(gmas, rgeGma.max, 0, gmas.count());
 
-  uint end = gmas.count();
-  for (minIndex = 0; minIndex < end && gmas.at(minIndex) < rgeGma.min; ++minIndex)
-    ;
-  for (maxIndex = end; maxIndex > minIndex && gmas.at(maxIndex-1) > rgeGma.max; --maxIndex)
-    ;
-
-  // test
-  if (minIndex > 0 || maxIndex < end) {
-    ++end;
-    --end;
-  }
-  uint upper, lower;
   if (minIndex < maxIndex) {
-    EXPECT(findIndLower(gmas, rgeGma.min, 0, end, lower))
-    EXPECT(findIndUpper(gmas, rgeGma.max, 0, end, upper))
-    EXPECT(minIndex == lower && maxIndex == upper)
+    ENSURE(rgeGma.min <= gmas.at(minIndex))
+    ENSURE(gmas.at(maxIndex-1) <= rgeGma.max)
+
+    if (minIndex > 0) {
+      ENSURE(gmas.at(minIndex-1) < rgeGma.min)
+    }
+
+    if (maxIndex < gmas.count()) {
+      ENSURE(rgeGma.min < gmas.at(maxIndex))
+    }
   } else {
-    EXPECT(!findIndLower(gmas, rgeGma.min, 0, end, lower) ||
-           !findIndUpper(gmas, rgeGma.max, 0, end, upper))
+    ENSURE(minIndex == maxIndex)
   }
 
   indexes = &gmaIndexes;
