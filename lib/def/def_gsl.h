@@ -119,18 +119,27 @@ private:
 };
 
 //------------------------------------------------------------------------------
-// natural numbers
+// natural numbers 1...
 
-typedef uint nint;  // 1..
+#ifndef QT_NO_DEBUG
 
-inline bool is_nint(uint u) {
-  return 1 <= u;
-}
+class nint {
+public:
+  nint(uint val = 0) : val_(val) {
+    EXPECT(1 <= val)
+  }
 
-inline nint to_nint(uint u) {
-  EXPECT2(is_nint(u), "to_nint(cannot be zero)")
-  return nint(u);
-}
+  operator uint() const { return val_; }
+
+private:
+  uint val_;
+};
+
+#else
+
+typedef uint nint;
+
+#endif
 
 //------------------------------------------------------------------------------
 // casting signed <-> unsigned

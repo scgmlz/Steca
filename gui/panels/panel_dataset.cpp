@@ -73,7 +73,7 @@ DockDatasets::DockDatasets(TheHub& hub)
   });
 
   onSigDatasetsChanged([this]() {
-    combineDatasets_->setValue(to_i(hub_.datasetsGroupedBy()));
+    combineDatasets_->setValue(to_i(uint(hub_.datasetsGroupedBy())));
   });
 }
 

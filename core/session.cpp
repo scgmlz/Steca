@@ -96,7 +96,6 @@ void Session::tryEnableCorr(bool on) {
 }
 
 void Session::collectDatasetsFromFiles(uint_vec fileNums, nint combineBy) {
-  EXPECT(is_nint(combineBy))
 
   collectedFromFiles_ = fileNums;
   collectedDatasets_.clear();
