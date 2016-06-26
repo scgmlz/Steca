@@ -85,7 +85,7 @@ AngleMap::AngleMap(Key::rc key) {
   calculate(key);
 }
 
-static uint findIndLower(vec<gma_t>::rc vec, gma_t x, uint i1, uint i2) {
+static uint lowerBound(vec<gma_t>::rc vec, gma_t x, uint i1, uint i2) {
   EXPECT(i1 < i2)
 
   if (1 == i2-i1)
@@ -93,11 +93,11 @@ static uint findIndLower(vec<gma_t>::rc vec, gma_t x, uint i1, uint i2) {
 
   uint mid = (i1 + i2) / 2;
   return vec.at(mid-1) < x
-      ? findIndLower(vec, x, mid, i2)
-      : findIndLower(vec, x, i1, mid);
+      ? lowerBound(vec, x, mid, i2)
+      : lowerBound(vec, x, i1, mid);
 }
 
-static uint findIndUpper(vec<gma_t>::rc vec, gma_t x, uint i1, uint i2) {
+static uint upperBound(vec<gma_t>::rc vec, gma_t x, uint i1, uint i2) {
   EXPECT(i1 < i2)
 
   if (1 == i2-i1)
@@ -105,31 +105,15 @@ static uint findIndUpper(vec<gma_t>::rc vec, gma_t x, uint i1, uint i2) {
 
   uint mid = (i1 + i2) / 2;
   return vec.at(mid) > x
-      ? findIndUpper(vec, x, i1, mid)
-      : findIndUpper(vec, x, mid, i2);
+      ? upperBound(vec, x, i1, mid)
+      : upperBound(vec, x, mid, i2);
 }
 
 void AngleMap::getGmaIndexes(gma_rge::rc rgeGma,
                              uint_vec const*& indexes, uint& minIndex, uint& maxIndex) const {
-  minIndex = findIndLower(gmas, rgeGma.min, 0, gmas.count());
-  maxIndex = findIndUpper(gmas, rgeGma.max, 0, gmas.count());
-
-  if (minIndex < maxIndex) {
-    ENSURE(rgeGma.min <= gmas.at(minIndex))
-    ENSURE(gmas.at(maxIndex-1) <= rgeGma.max)
-
-    if (minIndex > 0) {
-      ENSURE(gmas.at(minIndex-1) < rgeGma.min)
-    }
-
-    if (maxIndex < gmas.count()) {
-      ENSURE(rgeGma.min < gmas.at(maxIndex))
-    }
-  } else {
-    ENSURE(minIndex == maxIndex)
-  }
-
   indexes = &gmaIndexes;
+  minIndex = lowerBound(gmas, rgeGma.min, 0, gmas.count());
+  maxIndex = upperBound(gmas, rgeGma.max, 0, gmas.count());
 }
 
 void AngleMap::calculate(Key::rc key) {
@@ -171,7 +155,6 @@ void AngleMap::calculate(Key::rc key) {
       arrAngles_.setAt(i, j, Angles(gamma.toDeg(), tth.toDeg()));
     }
   }
-
 
   uint countWithoutCut = (size.w - cut.left - cut.right)
                        * (size.h - cut.top  - cut.bottom);
