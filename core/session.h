@@ -104,6 +104,7 @@ private:
   // Ensures that all images have the same size.
   void setImageSize(typ::size2d::rc) THROWS;
 
+public:
   typ::size2d imageSize() const;
 
   // image - transform & cut etc.

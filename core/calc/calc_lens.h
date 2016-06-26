@@ -99,16 +99,15 @@ public:
   DatasetLens(core::Session const&, data::Dataset::rc, data::Datasets::rc, eNorm,
       bool trans, bool cut, typ::ImageTransform::rc, typ::ImageCut::rc);
 
-  typ::size2d size() const;
+  typ::size2d size()    const;
 
-  gma_rge rgeGma() const;
-  tth_rge rgeTth() const;
+  gma_rge    rgeGma()   const;
+  tth_rge    rgeTth()   const;
+  inten_rge  rgeInten() const;
 
-  inten_rge rgeInten() const;
-
-  typ::Curve makeCurve() const;
-  typ::Curve makeCurve(gma_rge::rc, tth_rge::rc) const;
-  typ::Curve makeAvgCurve() const;
+  typ::Curve makeCurve()            const;
+  typ::Curve makeCurve(gma_rge::rc) const;
+  typ::Curve makeAvgCurve()         const;
 
   data::Dataset::rc dataset()  const { return dataset_;   }
 

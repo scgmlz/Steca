@@ -102,7 +102,7 @@ OutputDataCollection DiffractogramsFrame::collectCurves(
     qreal min = rge.min + i * step;
     gma_rge gmaStripe(min, min + step);
 
-    auto curve = lens->makeCurve(gmaStripe, lens->rgeTth());
+    auto curve = lens->makeCurve(gmaStripe);
     outputData.append(OutputData(curve, dataset, gmaStripe, picNum));
   }
   return outputData;
@@ -110,7 +110,7 @@ OutputDataCollection DiffractogramsFrame::collectCurves(
 
 OutputData DiffractogramsFrame::collectCurve(data::Dataset::rc dataset) {
   auto lens = hub_.datasetLens(dataset);
-  auto curve = lens->makeCurve(lens->rgeGma(), lens->rgeTth());
+  auto curve = lens->makeCurve();
   return OutputData(curve, dataset, lens->rgeGma(), 0); // TODO current picture number
 }
 

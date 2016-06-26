@@ -174,18 +174,16 @@ size2d DatasetLens::size() const {
   return super::transCutSize(datasets_.imageSize());
 }
 
-Curve DatasetLens::makeCurve(gma_rge::rc rgeGma, tth_rge::rc rgeTth) const {
-  uint w = size().w;
+Curve DatasetLens::makeCurve(gma_rge::rc rgeGma) const {
+  inten_vec intens = dataset_.collectIntens(session_, rgeGma);
+
   Curve res;
+  uint count = intens.count();
 
-  if (w > 0) {
-    EXPECT(rgeTth.isValid());
-    tth_t minTth = rgeTth.min, deltaTth = rgeTth.width() / w;
-
-    inten_vec intens(w);
-    dataset_.collectIntens(session_, intens, rgeGma, minTth, deltaTth);
-
-    for_i (w)
+  if (count) {
+    tth_rge rgeTth = dataset_.rgeTth(session_);
+    tth_t minTth = rgeTth.min, deltaTth = rgeTth.width() / count;
+    for_i (count)
       res.append(minTth + deltaTth * i, intens.at(i) * normFactor_);
   }
 
@@ -207,7 +205,7 @@ inten_rge DatasetLens::rgeInten() const {
 }
 
 Curve DatasetLens::makeCurve() const {
-  return makeCurve(rgeGma(), rgeTth());
+  return makeCurve(rgeGma());
 }
 
 Curve DatasetLens::makeAvgCurve() const {

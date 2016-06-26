@@ -111,8 +111,8 @@ private:
 
   Array2D<Angles> arrAngles_;
 
-  gma_rge  rgeGma_;
-  tth_rge  rgeTth_;
+  gma_rge    rgeGma_;
+  tth_rge    rgeTth_;
 
   // sorted
   vec<gma_t> gmas;

@@ -286,7 +286,7 @@ void calculateAlphaBeta(Dataset::rc dataset, tth_t tth, gma_t gma,
 }
 
 Curve Session::makeCurve(DatasetLens::rc lens, gma_rge::rc rgeGma) const {
-  Curve curve = lens.makeCurve(rgeGma, lens.rgeTth());
+  Curve curve = lens.makeCurve(rgeGma);
   curve.subtract(fit::Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
 
   return curve;

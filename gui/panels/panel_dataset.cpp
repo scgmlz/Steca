@@ -412,6 +412,8 @@ ImagePanel::ImagePanel(TheHub& hub) : super(hub), dataset_(nullptr) {
       n = to_u(qMax(0, i-1));
       render();
     });
+
+    spinN->setEnabled(false);
   }
 
   {

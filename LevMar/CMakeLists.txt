@@ -1,6 +1,9 @@
-############################################################################
-# CMakeLists.txt for building LevMar
-############################################################################
+# LevMar/CMakeLists.txt
+
+include_directories (
+  ${CMAKE_HOME_DIRECTORY}/lib
+  ${CMAKE_HOME_DIRECTORY}/core
+)
 
 set(source_files
   Axb.cpp
@@ -16,4 +19,8 @@ add_library(LevMar
   ${source_files}
 )
 
-# def
+target_link_libraries (LevMar
+  Qt5::Core
+)
+
+# eof

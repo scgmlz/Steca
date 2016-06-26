@@ -152,13 +152,11 @@ public:
   qreal    avgDeltaMonitorCount() const;
   qreal    avgDeltaTime()         const;
 
-  void collectIntens(core::Session const&,
-                     inten_vec&, gma_rge::rc,
-                     tth_t minTth, tth_t deltaTth) const;
+  inten_vec collectIntens(core::Session const&, gma_rge::rc) const;
 
 private:
   // all dataset(s) must have the same image size
-  typ::size2d imageSize() const;
+  typ::size2d imageSize()  const;
 
   Datasets*    datasets_; // here it belongs (or can be nullptr)
   shp_Metadata md_;       // on demand, compute once

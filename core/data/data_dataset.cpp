@@ -164,7 +164,7 @@ OneDataset::OneDataset(rc that)
 
 shp_Metadata OneDataset::metadata() const {
   ENSURE(!md_.isNull())
-      return md_;
+  return md_;
 }
 
 gma_rge OneDataset::rgeGma(core::Session::rc session) const {
@@ -180,7 +180,7 @@ inten_rge OneDataset::rgeInten() const {
 }
 
 size2d OneDataset::imageSize() const {
-  return image_.size();
+  return image_.size(); // REVIEW - (how) used ?
 }
 
 void OneDataset::collectIntens(core::Session::rc session,
@@ -302,14 +302,6 @@ deg Dataset::chi() const {
   AVG_ONES(chi)
 }
 
-inten_rge Dataset::rgeInten() const {
-  EXPECT(!isEmpty())
-  Range rge;
-  for (auto &one : *this)
-    rge.intersect(one->rgeInten());
-  return rge;
-}
-
 #define RGE_ONES(what)                \
   EXPECT(!isEmpty())                  \
   Range rge;                          \
@@ -318,17 +310,22 @@ inten_rge Dataset::rgeInten() const {
   return rge;
 
 gma_rge Dataset::rgeGma(core::Session::rc session) const {
+  // TODO mutables ?
   RGE_ONES(rgeGma)
 }
 
 tth_rge Dataset::rgeTth(core::Session::rc session) const {
+  // TODO mutables ?
   RGE_ONES(rgeTth)
 }
 
-size2d Dataset::imageSize() const {
+inten_rge Dataset::rgeInten() const {
+  // TODO mutables ?
   EXPECT(!isEmpty())
-  // all images have the same size; simply take the first one
-  return first()->imageSize();
+  Range rge;
+  for (auto &one : *this)
+    rge.intersect(one->rgeInten());
+  return rge;
 }
 
 qreal Dataset::avgDeltaMonitorCount() const {
@@ -339,20 +336,43 @@ qreal Dataset::avgDeltaTime() const {
   AVG_ONES(deltaTime)
 }
 
-void Dataset::collectIntens(core::Session::rc session,
-                            inten_vec& intens, gma_rge::rc rgeGma,
-                            tth_t minTth, tth_t deltaTth) const {
-  uint w = intens.count();
-  uint_vec counts(w, 0);
+inten_vec Dataset::collectIntens(core::Session::rc session, gma_rge::rc rgeGma) const {
+  tth_rge tthRge = rgeTth(session);
+  tth_t   tthWdt = tthRge.width();
+
+  auto cut = session.imageCut();
+  uint pixWidth = session.imageSize().w - cut.left - cut.right;
+
+  uint numBins;
+  if (1 < count()) {  // combined
+    auto one = first();
+    tth_t delta = one->rgeTth(session).width() / pixWidth;
+    numBins = to_u(qCeil(tthWdt / delta / 2));
+  } else {
+    numBins = pixWidth; // simply match the pixels
+  }
+
+  inten_vec intens(numBins, 0);
+  uint_vec  counts(numBins, 0);
+
+  tth_t minTth = tthRge.min, deltaTth = tthWdt / numBins;
 
   for (auto& one : *this)
     one->collectIntens(session, intens, counts, rgeGma, minTth, deltaTth);
 
-  for_i (w) {
+  for_i (numBins) {
     auto cnt = counts.at(i);
     if (cnt > 0)
       intens[i] /= cnt;
   }
+
+  return intens;
+}
+
+size2d Dataset::imageSize() const {
+  EXPECT(!isEmpty())
+  // all images have the same size; simply take the first one
+  return first()->imageSize();
 }
 
 //------------------------------------------------------------------------------
