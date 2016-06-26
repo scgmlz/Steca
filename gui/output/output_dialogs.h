@@ -42,7 +42,7 @@ public:
 
   void addStretch();
 
-  uint currReflIndex() const;
+  int  currReflIndex() const;
   bool interpolate()   const;
 
 protected:
@@ -114,7 +114,7 @@ protected:
   void calculate();
   void interpolate();
 
-  virtual void displayReflection(uint reflIndex, bool interpolated);
+  virtual void displayReflection(int reflIndex, bool interpolated);
 };
 
 //------------------------------------------------------------------------------

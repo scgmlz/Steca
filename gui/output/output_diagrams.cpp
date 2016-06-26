@@ -183,18 +183,20 @@ DiagramsFrame::DiagramsFrame(TheHub &hub, rcstr title, QWidget *parent)
 }
 
 eReflAttr DiagramsFrame::xAttr() const {
-  return (eReflAttr)params()->xAxis->currentIndex();
+  return eReflAttr(params()->xAxis->currentIndex());
 }
 
 eReflAttr DiagramsFrame::yAttr() const {
-  return (eReflAttr)params()->yAxis->currentIndex();
+  return eReflAttr(params()->yAxis->currentIndex());
 }
 
-void DiagramsFrame::displayReflection(uint reflIndex, bool interpolated) {
+void DiagramsFrame::displayReflection(int reflIndex, bool interpolated) {
   super::displayReflection(reflIndex, interpolated);
 
-  rs_ = calcPoints_[reflIndex];
-  recalculate();
+  if (reflIndex >= 0) {
+    rs_ = calcPoints_.at(to_u(reflIndex));
+    recalculate();
+  }
 }
 
 void DiagramsFrame::recalculate() {
@@ -291,6 +293,10 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separato
 }
 
 void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator, rcstr fileTag) {
+  int index = params_->currReflIndex();
+  if (index < 0)
+    return;
+
   WriteFile file(filePath + fileTag);
 
   QTextStream stream(&file);
@@ -302,7 +308,7 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator, rcst
 
   stream << '\n';
 
-  for_i (calcPoints_.at(params_->currReflIndex()).count()) {
+  for_i (calcPoints_.at(to_u(index)).count()) {
     auto &row = table_->row(i);
 
     for_i (row.count()) {

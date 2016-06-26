@@ -258,18 +258,20 @@ PoleFiguresFrame::PoleFiguresFrame(TheHub &hub, rcstr title, QWidget *parent)
   });
 
   connect(params()->cbRefl, slot(QComboBox,currentIndexChanged,int), [this]() {
-    uint index = params()->currReflIndex();
-    bool on = fit::ePeakType::RAW != hub_.reflections().at(index)->type();
-    tabSave_->rawReflSettings(on);
+    int index = params()->currReflIndex();
+    if (index>=0) {
+      bool on = fit::ePeakType::RAW != hub_.reflections().at(to_u(index))->type();
+      tabSave_->rawReflSettings(on);
+    }
   });
 
   params()->cbRefl->currentIndexChanged(0);
 }
 
-void PoleFiguresFrame::displayReflection(uint reflIndex, bool interpolated) {
+void PoleFiguresFrame::displayReflection(int reflIndex, bool interpolated) {
   super::displayReflection(reflIndex, interpolated);
-  if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
-    tabGraph_->set((interpolated ? interpPoints_ : calcPoints_)[reflIndex]);
+  if (reflIndex >= 0 && !interpPoints_.isEmpty() && !calcPoints_.isEmpty())
+    tabGraph_->set((interpolated ? interpPoints_ : calcPoints_).at(to_u(reflIndex)));
 }
 
 bool PoleFiguresFrame::savePoleFigureOutput() {
@@ -279,8 +281,8 @@ bool PoleFiguresFrame::savePoleFigureOutput() {
 
   bool check = false;
   if (tabSave_->onlySelectedRefl()) {
-    uint index = params_->currReflIndex();
-    if (writePoleFigureOutputFiles(index)) {
+    int index = params_->currReflIndex();
+    if (index >= 0 && writePoleFigureOutputFiles(to_u(index))) {
       tabSave_->savedMessage(str(" for Reflection %1 \n").arg(index + 1));
       check = true;
     }

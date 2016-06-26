@@ -97,7 +97,7 @@ protected:
     return static_cast<PoleFiguresParams*>(params_);
   }
 
-  void displayReflection(uint reflIndex, bool interpolated);
+  void displayReflection(int reflIndex, bool interpolated);
 
   bool savePoleFigureOutput();
   bool writePoleFigureOutputFiles(uint index);

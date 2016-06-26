@@ -143,10 +143,8 @@ void Params::addStretch() {
   box_->addStretch();
 }
 
-uint Params::currReflIndex() const {
-  int i = cbRefl->currentIndex();
-  ENSURE(i >= 0)
-  return to_u(i);
+int Params::currReflIndex() const {
+  return cbRefl->currentIndex();
 }
 
 bool Params::interpolate() const {
@@ -281,17 +279,17 @@ void Frame::interpolate() {
   displayReflection(params_->currReflIndex(), params_->interpolate());
 }
 
-void Frame::displayReflection(uint reflIndex, bool interpolated) {
+void Frame::displayReflection(int reflIndex, bool interpolated) {
   table_->clear();
 
-  if (hub_.reflections().isEmpty())
+  if (reflIndex < 0)
     return;
 
   EXPECT(calcPoints_.count() == interpPoints_.count())
-  if (calcPoints_.count() <= reflIndex)
+  if (calcPoints_.count() <= to_u(reflIndex))
     return;
 
-  for (auto& r : (interpolated ? interpPoints_ : calcPoints_)[reflIndex])
+  for (auto& r : (interpolated ? interpPoints_ : calcPoints_).at(to_u(reflIndex)))
     table_->addRow(r.data(), false);
 
   table_->sortData();
