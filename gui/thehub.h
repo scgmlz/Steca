@@ -128,10 +128,10 @@ public:
 
 private:
   uint_vec collectFromFiles_;
-  uint     datasetsGroupedBy_;
+  nint     datasetsGroupedBy_ = 1;
 
 public:
-  void collectDatasetsFromFiles(uint_vec, uint);
+  void collectDatasetsFromFiles(uint_vec, nint);
   void collectDatasetsFromFiles(uint_vec);
   void combineDatasetsBy(uint);
 
@@ -139,7 +139,9 @@ public:
     return session->collectedFromFiles();
   }
 
-  uint datasetsGroupedBy() const { return  datasetsGroupedBy_; }
+  nint datasetsGroupedBy() const {
+    return datasetsGroupedBy_;
+  }
 
   uint numCollectedDatasets() const {
     return collectedDatasets().count();

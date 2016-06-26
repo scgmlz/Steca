@@ -58,12 +58,12 @@ private:
 
 //------------------------------------------------------------------------------
 
-class Dataset;
+class ImagePanel;
 
 class ImageWidget : public QWidget, protected RefHub {
   CLS(ImageWidget) SUPER(QWidget)
 public:
-  ImageWidget(TheHub&, Dataset&);
+  ImageWidget(TheHub&, ImagePanel&);
 
   void setPixmap(QPixmap const&);
   void setShowOverlay(bool);
@@ -72,7 +72,7 @@ public:
   QSize sizeHint() const;
 
 protected:
-  Dataset &dataset_;
+  ImagePanel &dataset_;
   bool     showOverlay_;
   QPixmap  original_, scaled_;
   uint     scale_;
@@ -116,11 +116,10 @@ private:
 
 //------------------------------------------------------------------------------
 
-// RENAME gui::panel::Dataset -> ???
-class Dataset : public TabsPanel {
-  CLS(Dataset) SUPER(TabsPanel)
+class ImagePanel : public TabsPanel {
+  CLS(ImagePanel) SUPER(TabsPanel)
 public:
-  Dataset(TheHub&);
+  ImagePanel(TheHub&);
 
   void setImageScale(uint);
 
@@ -131,6 +130,9 @@ private:
 
   data::shp_Dataset dataset_;
   ImageWidget *dataImageWidget_, *corrImageWidget_;
+
+  uint n = 0;
+  QSpinBox    *spinN;
 };
 
 //------------------------------------------------------------------------------

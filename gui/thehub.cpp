@@ -108,7 +108,7 @@ TheHub::TheHub()
 : actions(*this), session(new core::Session())
 , isFixedIntenImageScale_(false), isFixedIntenDgramScale_(false)
 , isCombinedDgram_(false), filesModel(*this), datasetsModel(*this)
-, reflectionsModel(*this), datasetsGroupedBy_(1)
+, reflectionsModel(*this)
 {
   configActions();
 }
@@ -371,10 +371,9 @@ void TheHub::addFiles(str_lst::rc filePaths) THROWS {
     addFile(filePath);
 }
 
-void TheHub::collectDatasetsFromFiles(uint_vec is, uint by) {
-  session->collectDatasetsFromFiles((collectFromFiles_ = is),
+void TheHub::collectDatasetsFromFiles(uint_vec is, nint by) {
+  session->collectDatasetsFromFiles((collectFromFiles_  = is),
                                     (datasetsGroupedBy_ = by));
-
   emit sigFilesSelected();
   emit sigDatasetsChanged();
 }

@@ -51,13 +51,13 @@ public:
 SplitImage::SplitImage(TheHub& hub) : super(Qt::Horizontal) {
   auto* options1 = new panel::DatasetOptions1(hub);
   auto* options2 = new panel::DatasetOptions2(hub);
-  auto* dataset  = new panel::Dataset(hub);
+  auto* image    = new panel::ImagePanel(hub);
 
   connect(options2, &panel::DatasetOptions2::imageScale,
-          dataset,  &panel::Dataset::setImageScale);
+          image,  &panel::ImagePanel::setImageScale);
   box_->addWidget(options1);
   box_->addWidget(options2);
-  box_->addWidget(dataset);
+  box_->addWidget(image);
   box_->setStretch(2, 1);
 }
 
@@ -391,7 +391,7 @@ void MainWin::onShow() {
 
 #ifdef DEVELOPMENT_JAN
   safeLoad("/P53/+scg/0.ste");
-  hub_.actions.outputPolefigures->trigger();
+//  hub_.actions.outputPolefigures->trigger();
 #endif
 }
 

@@ -128,7 +128,7 @@ DockDatasetInfo::Info::Info(models::checkedinfo_vec& metaInfo) {
 
 //------------------------------------------------------------------------------
 
-ImageWidget::ImageWidget(TheHub& hub, Dataset& dataset_)
+ImageWidget::ImageWidget(TheHub& hub, ImagePanel& dataset_)
 : RefHub(hub), dataset_(dataset_), showOverlay_(true), scale_(1)
 {
   setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -392,15 +392,23 @@ void DatasetOptions2::setFrom(TheHub& hub) {
 
 //------------------------------------------------------------------------------
 
-Dataset::Dataset(TheHub& hub) : super(hub), dataset_(nullptr) {
+ImagePanel::ImagePanel(TheHub& hub) : super(hub), dataset_(nullptr) {
 
   auto& actions = hub_.actions;
   actions.showOverlay->setChecked(true);
 
   {
-    auto& tab = addTab("Data");
-    tab.box().addWidget(dataImageWidget_ = new ImageWidget(hub_, *this), 0,
-                       Qt::AlignCenter);
+    auto& tab = addTab("Data", Qt::Horizontal);
+    auto& box = tab.box();
+
+    box.addWidget((spinN = spinCell(3,1)));
+    box.addWidget((dataImageWidget_ = new ImageWidget(hub_, *this)),
+                   1, Qt::AlignCenter);
+
+    connect(spinN, slot(QSpinBox,valueChanged,int), [this](int i) {
+      n = to_u(qMax(0, i-1));
+      render();
+    });
   }
 
   {
@@ -409,7 +417,9 @@ Dataset::Dataset(TheHub& hub) : super(hub), dataset_(nullptr) {
                        Qt::AlignCenter);
   }
 
-  connect(actions.enableCorr, &QAction::toggled, [this](bool) { render(); });
+  connect(actions.enableCorr, &QAction::toggled, [this](bool) {
+    render();
+  });
 
   connect(actions.showOverlay, &QAction::toggled, [this](bool on) {
     dataImageWidget_->setShowOverlay(on);
@@ -433,12 +443,12 @@ Dataset::Dataset(TheHub& hub) : super(hub), dataset_(nullptr) {
   });
 }
 
-void Dataset::setImageScale(uint scale) {
+void ImagePanel::setImageScale(uint scale) {
   dataImageWidget_->setScale(scale);
   corrImageWidget_->setScale(scale);
 }
 
-QPixmap Dataset::makePixmap(calc::shp_ImageLens imageLens) {
+QPixmap ImagePanel::makePixmap(calc::shp_ImageLens imageLens) {
   QPixmap pixmap;
   auto size     = imageLens->size();
   auto rgeInten = imageLens->rgeInten(hub_.isFixedIntenImageScale());
@@ -456,17 +466,25 @@ QPixmap Dataset::makePixmap(calc::shp_ImageLens imageLens) {
   return pixmap;
 }
 
-void Dataset::setDataset(data::shp_Dataset dataset) {
+void ImagePanel::setDataset(data::shp_Dataset dataset) {
   dataset_ = dataset;
   render();
 }
 
-void Dataset::render() {
+void ImagePanel::render() {
   {
+    nint by = hub_.datasetsGroupedBy();
+    bool on = by > 1;
+    spinN->setEnabled(on);
+
+    n = qMin(n, by - 1);
+    spinN->setValue(to_i(n+1));
+
     QPixmap pixMap;
     if (dataset_) {
-//>>> <prev next>      auto lens = hub_.lensNoCut(*dataset_);
-//      pixMap    = makePixmap(lens);
+      auto one  = dataset_->at(n);
+      auto lens = hub_.plainImageLens(one->image());
+      pixMap    = makePixmap(lens);
     }
     dataImageWidget_->setPixmap(pixMap);
   }
