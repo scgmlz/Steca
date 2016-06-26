@@ -53,7 +53,6 @@ Params::Params(TheHub& hub) : RefHub(hub) {
 
     g->addWidget((rbCalc   = radioButton("calc.")),   1, 0);
     g->addWidget((rbInterp = radioButton("interp.")), 1, 1);
-
     g->setRowStretch(g->rowCount(), 1);
   }
 

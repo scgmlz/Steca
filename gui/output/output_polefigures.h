@@ -44,9 +44,13 @@ protected:
   void paintEvent(QPaintEvent*);
 
   QPointF p(deg alpha, deg beta) const;
+  deg alpha(QPointF const&)      const;
+  deg beta(QPointF  const&)      const;
+
   void circle(QPointF c, qreal r);
+
   void paintGrid();
-  void paintInfo();
+  void paintPoints();
 
   // valid during paintEvent
   QPainter *p_;

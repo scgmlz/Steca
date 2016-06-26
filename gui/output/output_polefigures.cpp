@@ -18,6 +18,10 @@
 #include "thehub.h"
 #include "calc/calc_reflection.h"
 
+#ifdef DEVELOPMENT_JAN
+#include "calc/calc_polefigure.h"
+#endif
+
 #include <QDir>
 #include <QPainter>
 #include <QTextStream>
@@ -81,7 +85,7 @@ void TabGraph::paintEvent(QPaintEvent*) {
   r_ = qMin(w, h) / 2;
 
   paintGrid();
-  paintInfo();
+  paintPoints();
 }
 
 QPointF TabGraph::p(deg alpha, deg beta) const {
@@ -89,6 +93,15 @@ QPointF TabGraph::p(deg alpha, deg beta) const {
 
   rad betaRad = beta.toRad();
   return QPointF(r * cos(betaRad), -r * sin(betaRad));
+}
+
+TabGraph::deg TabGraph::alpha(QPointF const& p) const {
+  return sqrt(p.x()*p.x() + p.y()*p.y()) / r_ * alphaMax_;
+}
+
+TabGraph::deg TabGraph::beta(QPointF const& p) const {
+  deg b = rad(atan2(p.y(), p.x())).toDeg();
+  return b <= 0 ? -b : 360 - b;
 }
 
 void TabGraph::circle(QPointF c, qreal r) {
@@ -114,9 +127,33 @@ void TabGraph::paintGrid() {
   circle(c_, r_ * params_.avgAlphaMax->value() / alphaMax_);
 }
 
-void TabGraph::paintInfo() {
+void TabGraph::paintPoints() {
   qreal rgeMax = rs_.rgeInten().max;
 
+#ifdef DEVELOPMENT_JAN
+
+  auto paintPoint = [this, &rgeMax](int i, int j) {
+    QPointF p(i,j);
+    calc::itf_t itf = calc::interpolateValues(5, rs_, alpha(p), beta(p));
+    if (qIsFinite(itf.inten)) {
+      auto color = QColor(intenImage(itf.inten / rgeMax));
+      p_->setPen(color);
+      p_->drawPoint(p);
+    }
+  };
+
+  int ru = int(r_), r2 = ru*ru;
+  for_ij(ru,ru) {
+    WT(i)
+    if (i*i + j*j <= r2) {
+      paintPoint(-i,-j);
+      paintPoint(-i,+j);
+      paintPoint(+i,-j);
+      paintPoint(+i,+j);
+    }
+  }
+
+#else
   for (auto& r : rs_) {
     qreal inten = r.inten();
 
@@ -136,6 +173,7 @@ void TabGraph::paintInfo() {
       }
     }
   }
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -266,8 +304,11 @@ static int const MAX_LINE_LENGTH_POL(9);
 bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
   auto refl = hub_.reflections().at(index);
   calc::ReflectionInfos reflInfo;
-  if (params_->interpolate()) reflInfo = interpPoints_.at(index);
-  else  reflInfo = calcPoints_.at(index);
+
+  if (params_->interpolate())
+    reflInfo = interpPoints_.at(index);
+  else
+    reflInfo = calcPoints_.at(index);
 
   auto type = refl->type();
 
