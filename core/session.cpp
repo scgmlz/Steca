@@ -16,6 +16,7 @@
 #include "session.h"
 #include "typ/typ_matrix.h"
 #include "fit/fit_fun.h"
+#include <qmath.h>
 
 namespace core {
 //------------------------------------------------------------------------------
@@ -272,8 +273,7 @@ void calculateAlphaBeta(Dataset::rc dataset, tth_t tth, gma_t gma,
 
   // If alpha is in the wrong hemisphere, mirror both alpha and beta over the
   // center of a unit sphere.
-  if (alphaRad >
-      M_PI_2) {  // REVIEW - seems like that happens only for a very narrow ring
+  if (alphaRad > M_PI_2) {  // REVIEW - seems like that happens only for a very narrow ring
     alphaRad = qAbs(alphaRad - M_PI);
     betaRad  = betaRad + (betaRad < 0 ? M_PI : -M_PI);
   }

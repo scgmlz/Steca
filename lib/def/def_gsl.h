@@ -121,6 +121,8 @@ private:
 //------------------------------------------------------------------------------
 // casting signed <-> unsigned
 
+#ifndef Q_OS_WIN
+
 #ifndef QT_NO_DEBUG
 #include <limits>
 #endif
@@ -143,6 +145,20 @@ typename std::__make_unsigned<T>::__type to_u(T t) {
   EXPECT2(0 <= t, "to_u(attempt to convert a negative value)")
   return typename std::__make_unsigned<T>::__type(t);
 }
+
+#else
+
+// MSVC/Win7 does not handle the above templates
+
+inline int to_i(unsigned int u) {
+  return u;
+}
+
+inline unsigned int to_u(int i) {
+  return i;
+}
+
+#endif
 
 //------------------------------------------------------------------------------
 // natural numbers 1...

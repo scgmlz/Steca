@@ -30,4 +30,4 @@
   for (int cmp = o.compare(that.o); cmp; ) \
     return cmp;
 
-#endif // DEF_MACROS_H
+#endif // DEF_COMPARE_H

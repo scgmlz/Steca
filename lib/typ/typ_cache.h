@@ -207,7 +207,7 @@ private:
   using mapKey_it = typename super::mapKey_it;
 
   mru_t nextMru_  = 0;
-  bool  rollOver_ = false;  // Ludwig
+  bool  rollOver_ = false;  // L.v.
 
   typedef map<mru_t, mapKey_it> mapMruIt_t;
 
@@ -216,15 +216,14 @@ private:
       mapMruIt_t mit;
       for (auto it = super::mapKey_.begin(), itEnd = super::mapKey_.end();
            it != itEnd; ++it)
-        mit.insertMulti(it->mru, it);
+        mit.insert(it->mru, it);
 
+      // make sure there were no duplicate mrus
       ENSURE(to_u(mit.count()) == super::count())
 
       uint cnt = super::count() - n;
-      for (auto it = mit.begin(); cnt-- > 0; ++it) {
-        mru_t m = it.key();
+      for (auto it = mit.begin(); cnt-- > 0; ++it)
         super::mapKey_.erase(*it);
-      }
     }
 
     if (super::isEmpty()) { // cleared

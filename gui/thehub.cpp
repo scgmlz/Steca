@@ -322,7 +322,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
     lastIndex = to_i(index);
   }
 
-  collectDatasetsFromFiles(selIndexes,top.loadNint(KEY_COMBINE,1));
+  collectDatasetsFromFiles(selIndexes,top.loadPint(KEY_COMBINE,1));
 
   setCorrFile(top.loadString(KEY_CORR_FILE, EMPTY_STR));
 

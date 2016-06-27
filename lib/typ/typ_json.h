@@ -27,9 +27,9 @@ namespace typ {
 //------------------------------------------------------------------------------
 
 class JsonArr;
-class Range;
-class IJ;
-class XY;
+struct Range;
+struct IJ;
+struct XY;
 
 class JsonObj : protected QJsonObject {
   CLS(JsonObj) WITH_SUPER(QJsonObject)
@@ -51,9 +51,9 @@ public:
   uint     loadUint(rcstr key)              const THROWS;
   uint     loadUint(rcstr key, uint def)    const THROWS;
 
-  JsonObj& saveNint(rcstr key, pint);
-  pint     loadNint(rcstr key)              const THROWS;
-  pint     loadNint(rcstr key, uint def)    const THROWS;
+  JsonObj& savePint(rcstr key, pint);
+  pint     loadPint(rcstr key)              const THROWS;
+  pint     loadPint(rcstr key, uint def)    const THROWS;
 
   JsonObj& saveQreal(rcstr key, qreal);
   qreal    loadQreal(rcstr key)             const THROWS;
