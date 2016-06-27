@@ -371,7 +371,7 @@ void TheHub::addFiles(str_lst::rc filePaths) THROWS {
     addFile(filePath);
 }
 
-void TheHub::collectDatasetsFromFiles(uint_vec is, nint by) {
+void TheHub::collectDatasetsFromFiles(uint_vec is, pint by) {
   session->collectDatasetsFromFiles((collectFromFiles_  = is),
                                     (datasetsGroupedBy_ = by));
   emit sigFilesSelected();
@@ -382,7 +382,7 @@ void TheHub::collectDatasetsFromFiles(uint_vec is) {
   collectDatasetsFromFiles(is, datasetsGroupedBy_);
 }
 
-void TheHub::combineDatasetsBy(nint by) {
+void TheHub::combineDatasetsBy(pint by) {
   collectDatasetsFromFiles(collectFromFiles_, by);
 }
 

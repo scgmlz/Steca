@@ -95,7 +95,7 @@ void Session::tryEnableCorr(bool on) {
   corrEnabled_ = on && hasCorrFile();
 }
 
-void Session::collectDatasetsFromFiles(uint_vec fileNums, nint combineBy) {
+void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
 
   collectedFromFiles_ = fileNums;
   collectedDatasets_.clear();

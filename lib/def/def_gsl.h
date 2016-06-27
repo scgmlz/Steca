@@ -149,13 +149,13 @@ typename std::__make_unsigned<T>::__type to_u(T t) {
 
 #ifndef QT_NO_DEBUG
 
-class nint {
+class pint {
 public:
-  explicit nint(uint val) : val_(val) {
+  explicit pint(uint val) : val_(val) {
     EXPECT(1 <= val)
   }
 
-  explicit nint(int val) : nint(to_u(val)) {
+  explicit pint(int val) : pint(to_u(val)) {
   }
 
   operator uint() const { return val_; }
@@ -166,7 +166,7 @@ private:
 
 #else
 
-typedef uint nint;
+typedef uint pint;
 
 #endif
 

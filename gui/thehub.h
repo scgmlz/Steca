@@ -128,18 +128,18 @@ public:
 
 private:
   uint_vec collectFromFiles_;
-  nint     datasetsGroupedBy_ = nint(1);
+  pint     datasetsGroupedBy_ = pint(1);
 
 public:
-  void collectDatasetsFromFiles(uint_vec, nint);
+  void collectDatasetsFromFiles(uint_vec, pint);
   void collectDatasetsFromFiles(uint_vec);
-  void combineDatasetsBy(nint);
+  void combineDatasetsBy(pint);
 
   uint_vec::rc collectedFromFiles() const {
     return session->collectedFromFiles();
   }
 
-  nint datasetsGroupedBy() const {
+  pint datasetsGroupedBy() const {
     return datasetsGroupedBy_;
   }
 

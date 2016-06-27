@@ -110,18 +110,18 @@ uint JsonObj::loadUint(rcstr key, uint def) const THROWS {
   RET_LOAD_DEF(Uint)
 }
 
-JsonObj& JsonObj::saveNint(rcstr key, nint num) {
+JsonObj& JsonObj::saveNint(rcstr key, pint num) {
   return saveUint(key, num);
 }
 
-nint JsonObj::loadNint(rcstr key) const {
+pint JsonObj::loadNint(rcstr key) const {
   uint num = loadUint(key);
   RUNTIME_CHECK(num > 0, "expecting positive number");
-  return nint(num);
+  return pint(num);
 }
 
-nint JsonObj::loadNint(rcstr key, uint def) const {
-  return nint(LOAD_DEF(Nint));
+pint JsonObj::loadNint(rcstr key, uint def) const {
+  return pint(LOAD_DEF(Nint));
 }
 
 static str const INF_P("+inf"), INF_M("-inf");

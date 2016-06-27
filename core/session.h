@@ -82,7 +82,7 @@ public:
     return corrEnabled_;
   }
 
-  void collectDatasetsFromFiles(uint_vec, nint);
+  void collectDatasetsFromFiles(uint_vec, pint);
 
   uint_vec::rc collectedFromFiles() const {
     return collectedFromFiles_; \

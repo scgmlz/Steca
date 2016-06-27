@@ -51,9 +51,9 @@ public:
   uint     loadUint(rcstr key)              const THROWS;
   uint     loadUint(rcstr key, uint def)    const THROWS;
 
-  JsonObj& saveNint(rcstr key, nint);
-  nint     loadNint(rcstr key)              const THROWS;
-  nint     loadNint(rcstr key, uint def)    const THROWS;
+  JsonObj& saveNint(rcstr key, pint);
+  pint     loadNint(rcstr key)              const THROWS;
+  pint     loadNint(rcstr key, uint def)    const THROWS;
 
   JsonObj& saveQreal(rcstr key, qreal);
   qreal    loadQreal(rcstr key)             const THROWS;
