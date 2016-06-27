@@ -117,18 +117,25 @@ void AngleMap::getGmaIndexes(gma_rge::rc rgeGma,
 }
 
 void AngleMap::calculate(Key::rc key) {
-  arrAngles_.fill(key.size);
-  rgeGma_.invalidate();
-  rgeTth_.invalidate();
-
-  if (key.size.isEmpty())
-    return;
-
   auto& geometry = key.geometry;
   auto& size     = key.size;
   auto& cut      = key.cut;
   auto& midPix   = key.midPix;
   auto& midTth   = key.midTth;
+
+  arrAngles_.fill(size);
+  rgeGma_.invalidate();
+  rgeTth_.invalidate();
+
+  EXPECT(size.w > cut.left + cut.right)
+  EXPECT(size.h > cut.top  + cut.bottom)
+
+  uint countWithoutCut = (size.w - cut.left - cut.right)
+                       * (size.h - cut.top  - cut.bottom);
+  EXPECT(countWithoutCut > 0)
+
+  gmas.resize(countWithoutCut);
+  gmaIndexes.resize(countWithoutCut);
 
   qreal pixSize = geometry.pixSize,
         detDist = geometry.detectorDistance;
@@ -136,7 +143,7 @@ void AngleMap::calculate(Key::rc key) {
   for_int (i, size.w) {
     qreal x       = (to_i(i) - midPix.i) * pixSize;
     rad   tthHorz = midTth.toRad() + atan(x / detDist);
-    qreal h       = cos(tthHorz) * hypot(x, detDist);
+    qreal h       = cos(tthHorz)   * hypot(x, detDist);
 
     for_int (j, size.h) {
       qreal y          = (midPix.j - to_i(j)) * pixSize;
@@ -156,11 +163,6 @@ void AngleMap::calculate(Key::rc key) {
     }
   }
 
-  uint countWithoutCut = (size.w - cut.left - cut.right)
-                       * (size.h - cut.top  - cut.bottom);
-
-  gmas.resize(countWithoutCut);
-  gmaIndexes.resize(countWithoutCut);
   uint gi = 0;
 
   for (uint i = cut.left, iEnd = size.w - cut.right; i < iEnd; ++i) {
@@ -168,22 +170,29 @@ void AngleMap::calculate(Key::rc key) {
       auto& as = arrAngles_.at(i, j);
       rgeTth_.extendBy(as.tth);
       rgeGma_.extendBy((gmas[gi] = as.gma));
-      gmaIndexes[gi] = gi;
+      gmaIndexes[gi] = i + j * size.w;
       ++gi;
     }
   }
 
-  std::sort(gmaIndexes.begin(), gmaIndexes.end(), [this](uint i1,uint i2) {
+  uint_vec is(countWithoutCut);
+  for_i (is.count())
+    is[i] = i;
+
+  std::sort(is.begin(), is.end(), [this](uint i1,uint i2) {
     qreal gma1 = gmas.at(i1), gma2 = gmas.at(i2);
     return gma1 < gma2;
   });
 
-  vec<gma_t> gs(countWithoutCut);
-
+  vec<gma_t> gv(countWithoutCut);
   for_i (countWithoutCut)
-    gs[i] = gmas.at(gmaIndexes.at(i));
+    gv[i] = gmas.at(is.at(i));
+  gmas = gv;
 
-  gmas = gs;
+  uint_vec uv(countWithoutCut);
+  for_i (countWithoutCut)
+    uv[i] = gmaIndexes.at(is.at(i));
+  gmaIndexes = uv;
 }
 
 //------------------------------------------------------------------------------

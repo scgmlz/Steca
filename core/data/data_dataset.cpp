@@ -198,22 +198,20 @@ void OneDataset::collectIntens(core::Session::rc session,
   EXPECT(gmaIndexMax <= gmaIndexes->count())
 
   EXPECT(intens.count() == counts.count())
-  uint w = intens.count();
 
   for (uint i = gmaIndexMin; i < gmaIndexMax; ++i) {
     uint ind = gmaIndexes->at(i);
+    EXPECT(rgeGma.contains(map.at(ind).gma))
     inten_t inten = image_.inten(ind);
     if (qIsNaN(inten))
       continue;
 
+    uint count = intens.count();
     tth_t tth   = map.at(ind).tth;
-    if (minTth <= tth) {  // half-open interval
-      uint ti = to_u(qFloor((tth - minTth) / deltaTth)); // bin
-      if (ti < w) {
-        intens[ti] += inten;
-        counts[ti] += 1;
-      }
-    }
+    EXPECT(minTth <= tth && tth <= minTth + count*deltaTth)
+    uint ti = qMin(to_u(qFloor((tth - minTth) / deltaTth)), count-1); // bin index
+    intens[ti] += inten;
+    counts[ti] += 1;
   }
 }
 

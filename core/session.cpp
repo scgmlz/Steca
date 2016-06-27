@@ -340,7 +340,7 @@ ReflectionInfos Session::makeReflectionInfos(
       progress->step();
 
     auto lens = datasetLens(*dataset, datasets, norm_, true, true);
-    Range rge = lens->rgeGma();
+    Range rge = lens->rgeGma(); // REVIEW at mid tth?
     if (rgeGma.isValid())
       rge = rge.intersect(rgeGma);
 

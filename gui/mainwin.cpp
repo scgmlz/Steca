@@ -391,7 +391,7 @@ void MainWin::onShow() {
 
 #ifdef DEVELOPMENT_JAN
   safeLoad("/P53/+scg/0.ste");
-//  hub_.actions.outputPolefigures->trigger();
+  hub_.actions.outputPolefigures->trigger();
 #endif
 }
 

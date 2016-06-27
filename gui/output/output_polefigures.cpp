@@ -18,7 +18,7 @@
 #include "thehub.h"
 #include "calc/calc_reflection.h"
 
-#ifdef DEVELOPMENT_JAN
+#ifdef DEVELOPMENT_LABS
 #include "calc/calc_polefigure.h"
 #endif
 
@@ -130,7 +130,7 @@ void TabGraph::paintGrid() {
 void TabGraph::paintPoints() {
   qreal rgeMax = rs_.rgeInten().max;
 
-#ifdef DEVELOPMENT_JAN
+#ifdef DEVELOPMENT_LABS
 
   auto paintPoint = [this, &rgeMax](int i, int j) {
     QPointF p(i,j);
@@ -144,7 +144,6 @@ void TabGraph::paintPoints() {
 
   int ru = int(r_), r2 = ru*ru;
   for_ij(ru,ru) {
-    WT(i)
     if (i*i + j*j <= r2) {
       paintPoint(-i,-j);
       paintPoint(-i,+j);
@@ -301,7 +300,7 @@ bool PoleFiguresFrame::savePoleFigureOutput() {
 }
 
 static str const OUT_FILE_TAG(".refl%1");
-static int const MAX_LINE_LENGTH_POL(9);
+static uint const MAX_LINE_LENGTH_POL(9);
 
 bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
   auto refl = hub_.reflections().at(index);
@@ -374,9 +373,9 @@ void PoleFiguresFrame::writeErrorMask(rcstr filePath, calc::ReflectionInfos refl
   WriteFile file(filePath + ".errorMask");
   QTextStream stream(&file);
 
-  for(int j = 0, jEnd = reflInfo.count(); j < jEnd; j+=9) {
-    int max = j + MAX_LINE_LENGTH_POL;
-    for (int i = j; i < max; i++) {
+  for(uint j = 0, jEnd = reflInfo.count(); j < jEnd; j+=9) {
+    uint max = j + MAX_LINE_LENGTH_POL;
+    for (uint i = j; i < max; i++) {
       if (qIsNaN(output.at(i)))
         stream << "0" << " ";
       else
@@ -390,9 +389,9 @@ void PoleFiguresFrame::writePoleFile(rcstr filePath, calc::ReflectionInfos reflI
   WriteFile file(filePath + ".pol");
   QTextStream stream(&file);
 
-  for(int j = 0, jEnd = reflInfo.count(); j < jEnd; j+=9) {
-    int max = j + MAX_LINE_LENGTH_POL;
-    for (int i = j; i < max; i++) {
+  for(uint j = 0, jEnd = reflInfo.count(); j < jEnd; j+=9) {
+    uint max = j + MAX_LINE_LENGTH_POL;
+    for (uint i = j; i < max; i++) {
       if (qIsNaN(output.at(i)))
         stream << " -1 " << " ";
       else
@@ -407,7 +406,9 @@ void PoleFiguresFrame::writeListFile(rcstr filePath, calc::ReflectionInfos reflI
   QTextStream stream(&file);
 
   for_i (reflInfo.count()) {
-    stream << (qreal)reflInfo.at(i).alpha() << " " << (qreal)reflInfo.at(i).beta() << " " << output.at(i) << '\n';
+    stream << reflInfo.at(i).alpha() << " "
+           << reflInfo.at(i).beta()  << " "
+           << output.at(i) << '\n';
   }
 }
 

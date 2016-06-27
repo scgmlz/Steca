@@ -123,7 +123,7 @@ uint Range::numSlices(qreal& sliceSize) const {
     return 0;
 
   qreal wdt = width();
-  uint  num = to_u(qCeil(wdt / sliceSize));
+  pint  num = pint(qMax(1,qRound(wdt / sliceSize)));
   sliceSize = wdt / num;
 
   return num;
