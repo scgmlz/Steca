@@ -18,7 +18,7 @@
 #include "thehub.h"
 #include "calc/calc_reflection.h"
 
-#ifdef DEVELOPMENT_LABS
+#ifdef DEVELOPMENT_JAN
 #include "calc/calc_polefigure.h"
 #endif
 
@@ -130,13 +130,15 @@ void TabGraph::paintGrid() {
 void TabGraph::paintPoints() {
   qreal rgeMax = rs_.rgeInten().max;
 
-#ifdef DEVELOPMENT_LABS
+#ifdef DEVELOPMENT_JAN
+
+  qreal rgeMax = rs_.rgeInten().max;
 
   auto paintPoint = [this, &rgeMax](int i, int j) {
     QPointF p(i,j);
     calc::itf_t itf = calc::interpolateValues(5, rs_, alpha(p), beta(p));
     if (qIsFinite(itf.inten)) {
-      auto color = QColor(intenImage(itf.inten / rgeMax));
+      auto color = QColor(heatmapColor(itf.inten / rgeMax));
       p_->setPen(color);
       p_->drawPoint(p);
     }
@@ -300,7 +302,7 @@ bool PoleFiguresFrame::savePoleFigureOutput() {
 }
 
 static str const OUT_FILE_TAG(".refl%1");
-static uint const MAX_LINE_LENGTH_POL(9);
+static int const MAX_LINE_LENGTH_POL(9);
 
 bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
   auto refl = hub_.reflections().at(index);
@@ -373,9 +375,9 @@ void PoleFiguresFrame::writeErrorMask(rcstr filePath, calc::ReflectionInfos refl
   WriteFile file(filePath + ".errorMask");
   QTextStream stream(&file);
 
-  for(uint j = 0, jEnd = reflInfo.count(); j < jEnd; j+=9) {
-    uint max = j + MAX_LINE_LENGTH_POL;
-    for (uint i = j; i < max; i++) {
+  for(int j = 0, jEnd = reflInfo.count(); j < jEnd; j+=9) {
+    int max = j + MAX_LINE_LENGTH_POL;
+    for (int i = j; i < max; i++) {
       if (qIsNaN(output.at(i)))
         stream << "0" << " ";
       else
@@ -389,9 +391,9 @@ void PoleFiguresFrame::writePoleFile(rcstr filePath, calc::ReflectionInfos reflI
   WriteFile file(filePath + ".pol");
   QTextStream stream(&file);
 
-  for(uint j = 0, jEnd = reflInfo.count(); j < jEnd; j+=9) {
-    uint max = j + MAX_LINE_LENGTH_POL;
-    for (uint i = j; i < max; i++) {
+  for(int j = 0, jEnd = reflInfo.count(); j < jEnd; j+=9) {
+    int max = j + MAX_LINE_LENGTH_POL;
+    for (int i = j; i < max; i++) {
       if (qIsNaN(output.at(i)))
         stream << " -1 " << " ";
       else
@@ -406,9 +408,7 @@ void PoleFiguresFrame::writeListFile(rcstr filePath, calc::ReflectionInfos reflI
   QTextStream stream(&file);
 
   for_i (reflInfo.count()) {
-    stream << reflInfo.at(i).alpha() << " "
-           << reflInfo.at(i).beta()  << " "
-           << output.at(i) << '\n';
+    stream << (qreal)reflInfo.at(i).alpha() << " " << (qreal)reflInfo.at(i).beta() << " " << output.at(i) << '\n';
   }
 }
 

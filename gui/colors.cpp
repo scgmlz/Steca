@@ -16,6 +16,8 @@
 #include "colors.h"
 #include "typ/typ_vec.h"
 
+#include <QColor>
+
 namespace gui {
 //------------------------------------------------------------------------------
 
@@ -52,17 +54,17 @@ QRgb intenGraph(qreal inten, qreal maxInten) {
 QRgb heatmapColor(qreal value) {
   using ColorPoints = typ::vec<qreal_vec>;
   ColorPoints colors;
-  colors.append({0.,0.,1.,0.10}); // blue
-  colors.append({0.,0.6,1.,0.15}); // cyan
-  colors.append({0.,0.75,0.,0.20}); // green
+  colors.append({0.,0.,1.,0}); // blue
+  colors.append({0.,0.6,1.,0.20}); // cyan
+  colors.append({0.,0.75,0.,0.30}); // green
   colors.append({1.,1.,0.,0.55}); // yellow
   colors.append({1.,0.,0.,1.00}); // red
 
-  for (uint i = 0; i < colors.count(); i++) {
+  for (int i = 0; i < colors.count(); i++) {
     qreal_vec curr = colors[i];
 
     if (value < curr[3]) {
-      qreal_vec prev = colors[qMax(0u,i-1)];
+      qreal_vec prev = colors[qMax(0,i-1)];
       qreal diff = (prev[3] - curr[3]);
       qreal fract = (diff == 0) ? 0 : ((value - curr[3])/diff);
 
@@ -72,7 +74,7 @@ QRgb heatmapColor(qreal value) {
       return qRgb(qRound(red)*255, qRound(green)*255, qRound(blue)*255);
     }
   }
-  return qRgb(255,255,255);
+  return qRgb(255,0,255);
 }
 
 //------------------------------------------------------------------------------
