@@ -26,6 +26,7 @@ namespace gui {
 
 QRgb intenImage(qreal inten, qreal maxInten = 1);
 QRgb intenGraph(qreal inten, qreal maxInten = 1);
+QRgb heatmapColor(qreal value);
 
 //------------------------------------------------------------------------------
 }
