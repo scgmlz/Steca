@@ -1,2 +1,32 @@
+ver. 2.0.1, released 2016.06.29
+-------------------------------
+
+New features:
+
+* Datasets with different 2theta and/or gamma values (i.e. angle maps) are now properly combined.
+* Some relevant warnings are now shown on the statusbar.
+
+Bug fixes:
+
+* #1442 - crash when normalizing to invalid monitor counts or delta time
+* #1443 - NaN errors shown by the diffractogram plot
+
+Changes in code:
+
+* statubar-messaging
+* semi-major code refactoring, rearranged modules and source code files
+* new specialized types and typedefs to improve type safety and self-documentation of code
+* cache classe to handle angle maps
+* Fixed bugs #1442, #1443, and a number of small things
+
 STeCa2-2.0.0.1, released 2016.06.09
-  * First release for user acceptance testing
+-----------------------------------
+* First release for user acceptance testing
+
+
+Features planned for the next version (2.0.2, probably by the end of July)
+==========================================================================
+
+Loading of TIFF and Mar files. X-ray - type data + beam offset handling.
+Filtering of results by their fitting errors (standard deviations).
+
