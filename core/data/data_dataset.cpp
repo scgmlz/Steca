@@ -230,10 +230,12 @@ shp_Metadata Dataset::metadata() const {
     EXPECT(!first()->metadata().isNull())
     Metadata::rc firstMd = *(first()->metadata());
 
-    m->date    = firstMd.date;
-    m->comment = firstMd.comment;
+    m->date         = firstMd.date;
+    m->comment      = firstMd.comment;
 
-    // sums: mon. count and time, averages the rest
+    // sums: delta mon. count and time,
+    // takes the last ones (presumed the maximum) of mon. count and time,
+    // averages the rest
     for (auto& one : *this) {
        Metadata const* o = one->metadata().data();
        EXPECT(o)
@@ -251,9 +253,14 @@ shp_Metadata Dataset::metadata() const {
        m->motorOMGM += o->motorOMGM;
 
        m->deltaMonitorCount += o->deltaMonitorCount;
-       m->monitorCount += o->monitorCount;
        m->deltaTime    += o->deltaTime;
-       m->time         += o->time;
+
+       if (m->monitorCount > o->monitorCount)
+         MessageLogger::log("decreasing monitor count in combined datasets");
+       if (m->time > o->time)
+         MessageLogger::log("decreasing time in combined datasets");
+       m->monitorCount = o->monitorCount;
+       m->time         = o->time;
     }
 
     qreal fac = 1.0 / count();
