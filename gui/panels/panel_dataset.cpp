@@ -80,8 +80,8 @@ DockDatasets::DockDatasets(TheHub& hub)
 
 //------------------------------------------------------------------------------
 
-DockDatasetInfo::DockDatasetInfo(TheHub& hub)
-: super("Dataset info", "dock-dataset-info", Qt::Vertical), RefHub(hub)
+DockMetadata::DockMetadata(TheHub& hub)
+: super("Metadata", "dock-metadata", Qt::Vertical), RefHub(hub)
 {
   using Metadata    = data::Metadata;
   using shp_Dataset = data::shp_Dataset;
@@ -114,7 +114,7 @@ DockDatasetInfo::DockDatasetInfo(TheHub& hub)
   }
 }
 
-DockDatasetInfo::Info::Info(models::checkedinfo_vec& metaInfo) {
+DockMetadata::Info::Info(models::checkedinfo_vec& metaInfo) {
   setLayout((grid_ = gridLayout()));
 
   grid_->setSpacing(-1);

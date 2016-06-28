@@ -38,10 +38,10 @@ private:
 
 //------------------------------------------------------------------------------
 
-class DockDatasetInfo : public DockWidget, protected RefHub {
-  CLS(DockDatasetInfo) SUPER(DockWidget)
+class DockMetadata : public DockWidget, protected RefHub {
+  CLS(DockMetadata) SUPER(DockWidget)
 public:
-  DockDatasetInfo(TheHub&);
+  DockMetadata(TheHub&);
 
 private:
   class Info : public QWidget {

@@ -104,7 +104,7 @@ Actions::Actions(TheHub& hub): super(hub) {
   tgl(viewDatasets,
       "Datasets");
   tgl(viewDatasetInfo,
-      "Dataset info");
+      "Metadata");
   trg(viewReset,
       "Reset", "Reset views");
 #ifndef Q_OS_OSX

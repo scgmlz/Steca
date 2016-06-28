@@ -187,7 +187,7 @@ void MainWin::initLayout() {
   addDockWidget(Qt::LeftDockWidgetArea,
                 (dockDatasets_ = new panel::DockDatasets(hub_)));
   addDockWidget(Qt::RightDockWidgetArea,
-                (dockDatasetInfo_ = new panel::DockDatasetInfo(hub_)));
+                (dockDatasetInfo_ = new panel::DockMetadata(hub_)));
 
   auto splMain = new QSplitter(Qt::Vertical);
   splMain->setChildrenCollapsible(false);
