@@ -52,29 +52,35 @@ QRgb intenGraph(qreal inten, qreal maxInten) {
 }
 
 QRgb heatmapColor(qreal value) {
-  using ColorPoints = typ::vec<qreal_vec>;
-  ColorPoints colors;
-  colors.append({0.,0.,1.,0}); // blue
-  colors.append({0.,0.6,1.,0.20}); // cyan
-  colors.append({0.,0.75,0.,0.30}); // green
-  colors.append({1.,1.,0.,0.55}); // yellow
-  colors.append({1.,0.,0.,1.00}); // red
+  struct lc_t {
+    qreal limit; int r, g, b;
+  };
 
-  for (int i = 0; i < colors.count(); i++) {
-    qreal_vec curr = colors[i];
+  static typ::vec<lc_t> lc = {
+    {0.00, 255, 255, 255},
+    {0.10, 0,   0,   255},
+    {0.20, 0,   152, 255},
+    {0.30, 0,   190, 0, },
+    {0.55, 255, 255, 1, },
+    {1.00, 255, 0,   1, },
+  };
 
-    if (value < curr[3]) {
-      qreal_vec prev = colors[qMax(0,i-1)];
-      qreal diff = (prev[3] - curr[3]);
-      qreal fract = (diff == 0) ? 0 : ((value - curr[3])/diff);
+  value = qBound(0.0, value, 1.0);
+  uint count = lc.count(), i;
+  for (i = 1; i < count; ++i)
+    if (value < lc.at(i).limit)
+      break;
 
-      qreal red = (prev[0] - curr[0]) * fract + curr[0];
-      qreal green = (curr[1] - curr[1]) * fract + curr[1];
-      qreal blue = (prev[2] - prev[2]) * fract + curr[2];
-      return qRgb(qRound(red)*255, qRound(green)*255, qRound(blue)*255);
-    }
-  }
-  return qRgb(255,0,255);
+  auto& lc1 = lc.at(i-1);
+  auto& lc2 = lc.at(qMin(i, count-1));
+
+  auto  frac = (value - lc1.limit) / (lc2.limit - lc1.limit);
+
+  int r = lc1.r + int((lc2.r - lc1.r) * frac);
+  int g = lc1.g + int((lc2.g - lc1.g) * frac);
+  int b = lc1.b + int((lc2.b - lc1.b) * frac);
+
+  return qRgb(r, g, b);
 }
 
 //------------------------------------------------------------------------------

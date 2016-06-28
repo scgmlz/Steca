@@ -132,11 +132,9 @@ void TabGraph::paintPoints() {
 
 #ifdef DEVELOPMENT_JAN
 
-  qreal rgeMax = rs_.rgeInten().max;
-
   auto paintPoint = [this, &rgeMax](int i, int j) {
     QPointF p(i,j);
-    calc::itf_t itf = calc::interpolateValues(5, rs_, alpha(p), beta(p));
+    calc::itf_t itf = calc::interpolateValues(10, rs_, alpha(p), beta(p));
     if (qIsFinite(itf.inten)) {
       auto color = QColor(heatmapColor(itf.inten / rgeMax));
       p_->setPen(color);
@@ -375,9 +373,9 @@ void PoleFiguresFrame::writeErrorMask(rcstr filePath, calc::ReflectionInfos refl
   WriteFile file(filePath + ".errorMask");
   QTextStream stream(&file);
 
-  for(int j = 0, jEnd = reflInfo.count(); j < jEnd; j+=9) {
-    int max = j + MAX_LINE_LENGTH_POL;
-    for (int i = j; i < max; i++) {
+  for(uint j = 0, jEnd = reflInfo.count(); j < jEnd; j+=9) {
+    uint max = j + MAX_LINE_LENGTH_POL;
+    for (uint i = j; i < max; i++) {
       if (qIsNaN(output.at(i)))
         stream << "0" << " ";
       else
@@ -391,9 +389,9 @@ void PoleFiguresFrame::writePoleFile(rcstr filePath, calc::ReflectionInfos reflI
   WriteFile file(filePath + ".pol");
   QTextStream stream(&file);
 
-  for(int j = 0, jEnd = reflInfo.count(); j < jEnd; j+=9) {
-    int max = j + MAX_LINE_LENGTH_POL;
-    for (int i = j; i < max; i++) {
+  for(uint j = 0, jEnd = reflInfo.count(); j < jEnd; j+=9) {
+    uint max = j + MAX_LINE_LENGTH_POL;
+    for (uint i = j; i < max; i++) {
       if (qIsNaN(output.at(i)))
         stream << " -1 " << " ";
       else
@@ -408,7 +406,9 @@ void PoleFiguresFrame::writeListFile(rcstr filePath, calc::ReflectionInfos reflI
   QTextStream stream(&file);
 
   for_i (reflInfo.count()) {
-    stream << (qreal)reflInfo.at(i).alpha() << " " << (qreal)reflInfo.at(i).beta() << " " << output.at(i) << '\n';
+    stream << qreal(reflInfo.at(i).alpha()) << " "
+           << qreal(reflInfo.at(i).beta()) << " "
+           << output.at(i) << '\n';
   }
 }
 
