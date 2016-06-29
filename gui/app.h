@@ -17,22 +17,22 @@
 #ifndef APP_H
 #define APP_H
 
-#include "types/core_defs.h"
+#include "def/defs.h"
 #include <QApplication>
 
 //------------------------------------------------------------------------------
 
 class App : public QApplication {
-  SUPER(App, QApplication)
+  CLS(App) SUPER(QApplication)
 public:
   App(int& argc, char* argv[]);
 
   int exec();
 
 private:
-  /// Exceptions caught here; displayed in a dialog.
+  // Exceptions caught here; displayed in a dialog.
   bool notify(QObject*, QEvent*);
 };
 
 //------------------------------------------------------------------------------
-#endif  // APP_H
+#endif // APP_H

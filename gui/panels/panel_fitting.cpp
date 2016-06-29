@@ -14,22 +14,22 @@
 // ************************************************************************** //
 
 #include "panel_fitting.h"
-#include "core_reflection.h"
+#include "calc/calc_reflection.h"
 #include "thehub.h"
 
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 class ReflectionView : public views::ListView {
-  SUPER(ReflectionView, views::ListView)
+  CLS(ReflectionView) SUPER(views::ListView)
 public:
   ReflectionView(TheHub&);
 
-  void addReflection(int type);
+  void addReflection(uint type);
   void removeSelected();
   bool hasReflections() const;
 
-  core::shp_Reflection selectedReflection() const;
+  calc::shp_Reflection selectedReflection() const;
 
   void updateSingleSelection();
 
@@ -48,18 +48,18 @@ ReflectionView::ReflectionView(TheHub &hub) : super(hub) {
     resizeColumnToContents(i);
 }
 
-void ReflectionView::addReflection(int type) {
-  using eType = core::ePeakType;
-  model()->addReflection(
-      (eType)qBound(0, type, (int)eType::NUM_TYPES));  // make safe
+void ReflectionView::addReflection(uint type) {
+  type = qBound(0u, type, uint(fit::ePeakType::NUM_TYPES));
+  model()->addReflection(fit::ePeakType(type));
   updateSingleSelection();
 }
 
 void ReflectionView::removeSelected() {
   int row = currentIndex().row();
-  if (row < 0 || model()->rowCount() <= row) return;
+  if (row < 0 || model()->rowCount() <= row)
+    return;
 
-  model()->remReflection(row);
+  model()->remReflection(to_u(row));
   updateSingleSelection();
 }
 
@@ -67,12 +67,13 @@ bool ReflectionView::hasReflections() const {
   return model()->rowCount() > 0;
 }
 
-core::shp_Reflection ReflectionView::selectedReflection() const {
+calc::shp_Reflection ReflectionView::selectedReflection() const {
   auto indexes = selectionModel()->selectedIndexes();
-  if (indexes.isEmpty()) return core::shp_Reflection();
+  if (indexes.isEmpty())
+    return calc::shp_Reflection();
   return model()
       ->data(indexes.first(), Model::GetDatasetRole)
-      .value<core::shp_Reflection>();
+      .value<calc::shp_Reflection>();
 }
 
 void ReflectionView::updateSingleSelection() {
@@ -80,16 +81,14 @@ void ReflectionView::updateSingleSelection() {
   hub_.actions.remReflection->setEnabled(hasReflections());
 }
 
-void ReflectionView::selectionChanged(QItemSelection const &selected,
-                                      QItemSelection const &deselected) {
+void ReflectionView::selectionChanged(QItemSelection const& selected,
+                                      QItemSelection const& deselected) {
   super::selectionChanged(selected, deselected);
 
   auto indexes = selected.indexes();
-  tellSelectedReflection(
-      indexes.isEmpty() ? core::shp_Reflection()
-                        : model()
-                              ->data(indexes.first(), Model::GetDatasetRole)
-                              .value<core::shp_Reflection>());
+  tellSelectedReflection(indexes.isEmpty()
+      ? calc::shp_Reflection()
+      : model()->data(indexes.first(), Model::GetDatasetRole).value<calc::shp_Reflection>());
 }
 
 //------------------------------------------------------------------------------
@@ -113,20 +112,19 @@ Fitting::Fitting(TheHub &hub)
 
     auto hb = hbox();
     tab.box().addLayout(hb);
-    hb->addWidget(label("Polynom degree:"));
+    hb->addWidget(label("Pol. degree:"));
     hb->addWidget((spinDegree_ = spinCell(4, 0, TheHub::MAX_POLYNOM_DEGREE)));
     hb->addStretch();
 
     tab.box().addStretch();
 
-    connect(spinDegree_,
-            static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
-            [this](int degree) {
-      hub_.setBgPolyDegree(degree);
+    connect(spinDegree_, slot(QSpinBox,valueChanged,int), [this](int degree) {
+      EXPECT(degree >= 0)
+      hub_.setBgPolyDegree(to_u(degree));
     });
 
     onSigBgChanged([this]() {
-      spinDegree_->setValue(hub_.bgPolyDegree());
+      spinDegree_->setValue(to_i(hub_.bgPolyDegree()));
     });
   }
 
@@ -139,7 +137,7 @@ Fitting::Fitting(TheHub &hub)
     auto hb = hbox();
     tab.box().addLayout(hb);
 
-    hb->addWidget((comboReflType_ = comboBox(core::Reflection::typeStrLst())));
+    hb->addWidget((comboReflType_ = comboBox(calc::Reflection::typeStrLst())));
     hb->addStretch();
     hb->addWidget(iconButton(actions.addReflection));
     hb->addWidget(iconButton(actions.remReflection));
@@ -193,7 +191,9 @@ Fitting::Fitting(TheHub &hub)
     updateReflectionControls();
 
     connect(actions.addReflection, &QAction::triggered, [this,updateReflectionControls]() {
-      reflectionView_->addReflection(comboReflType_->currentIndex());
+      int i = comboReflType_->currentIndex();
+      EXPECT(i >= 0)
+      reflectionView_->addReflection(to_u(i));
       updateReflectionControls();
     });
 
@@ -207,24 +207,23 @@ Fitting::Fitting(TheHub &hub)
       updateReflectionControls();
     });
 
-    connect(comboReflType_, static_cast<void (QComboBox::*)(int)>(
-                                &QComboBox::currentIndexChanged),
-            [this](int index) { hub_.setReflType((core::ePeakType)index); });
+    connect(comboReflType_, slot(QComboBox,currentIndexChanged,int), [this](int index) {
+      hub_.setReflType(fit::ePeakType(index));
+    });
 
-    onSigReflectionSelected([this](core::shp_Reflection reflection) {
+    onSigReflectionSelected([this](calc::shp_Reflection reflection) {
       setReflControls(reflection);
     });
 
-    onSigReflectionData([this](core::shp_Reflection reflection) {
+    onSigReflectionData([this](calc::shp_Reflection reflection) {
       setReflControls(reflection);
     });
 
     auto newReflData = [this](bool invalidateGuesses) {
       if (!silentSpin_) {
         tellReflectionValues(
-            core::Range::safeFrom(spinRangeMin_->value(),
-                                  spinRangeMax_->value()),
-            core::XY(spinGuessPeakX_->value(), spinGuessPeakY_->value()),
+            typ::Range::safeFrom(spinRangeMin_->value(), spinRangeMax_->value()),
+            typ::XY(spinGuessPeakX_->value(), spinGuessPeakY_->value()),
             spinGuessFWHM_->value(), invalidateGuesses);
       }
     };
@@ -233,25 +232,15 @@ Fitting::Fitting(TheHub &hub)
 
     auto changeReflData1 = [newReflData](qreal) { newReflData(true); };
 
-    connect(spinRangeMin_, static_cast<void (QDoubleSpinBox::*)(qreal)>(
-                               &QDoubleSpinBox::valueChanged),
-            changeReflData1);
-    connect(spinRangeMax_, static_cast<void (QDoubleSpinBox::*)(qreal)>(
-                               &QDoubleSpinBox::valueChanged),
-            changeReflData1);
-    connect(spinGuessPeakX_, static_cast<void (QDoubleSpinBox::*)(qreal)>(
-                                 &QDoubleSpinBox::valueChanged),
-            changeReflData0);
-    connect(spinGuessPeakY_, static_cast<void (QDoubleSpinBox::*)(qreal)>(
-                                 &QDoubleSpinBox::valueChanged),
-            changeReflData0);
-    connect(spinGuessFWHM_, static_cast<void (QDoubleSpinBox::*)(qreal)>(
-                                &QDoubleSpinBox::valueChanged),
-            changeReflData0);
+    connect(spinRangeMin_,   slot(QDoubleSpinBox,valueChanged,double), changeReflData1);
+    connect(spinRangeMax_,   slot(QDoubleSpinBox,valueChanged,double), changeReflData1);
+    connect(spinGuessPeakX_, slot(QDoubleSpinBox,valueChanged,double), changeReflData0);
+    connect(spinGuessPeakY_, slot(QDoubleSpinBox,valueChanged,double), changeReflData0);
+    connect(spinGuessFWHM_,  slot(QDoubleSpinBox,valueChanged,double), changeReflData0);
   }
 
-  connect(this, &thisClass::currentChanged, [this](int index) {
-    hub_.setFittingTab((eFittingTab)index);
+  connect(this, &Cls::currentChanged, [this](int index) {
+    hub_.setFittingTab(eFittingTab(index));
   });
 
   hub_.setFittingTab(eFittingTab::BACKGROUND);
@@ -265,7 +254,7 @@ static str safeRealText(qreal val) {
   return qIsFinite(val) ? str::number(val) : EMPTY_STR;
 }
 
-void Fitting::setReflControls(core::shp_Reflection reflection) {
+void Fitting::setReflControls(calc::shp_Reflection reflection) {
   silentSpin_ = true;
 
   if (reflection.isNull()) {
@@ -279,10 +268,9 @@ void Fitting::setReflControls(core::shp_Reflection reflection) {
     readFitPeakY_->clear();
     readFitFWHM_->clear();
   } else {
-
     {
       QSignalBlocker __(comboReflType_);
-      comboReflType_->setCurrentIndex((int)reflection->type());
+      comboReflType_->setCurrentIndex(int(reflection->type()));
     }
 
     auto &range = reflection->range();

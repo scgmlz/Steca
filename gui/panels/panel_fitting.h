@@ -24,7 +24,7 @@ namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 class Fitting : public TabsPanel {
-  SUPER(Fitting, TabsPanel)
+  CLS(Fitting) SUPER(TabsPanel)
 public:
   Fitting(TheHub&);
 
@@ -38,9 +38,9 @@ private:
   QLineEdit      *readFitPeakX_,   *readFitPeakY_,   *readFitFWHM_;
   bool            silentSpin_;
 
-  void setReflControls(core::shp_Reflection);
+  void setReflControls(calc::shp_Reflection);
 };
 
 //------------------------------------------------------------------------------
 }}
-#endif  // PANEL_FITTING_H
+#endif // PANEL_FITTING_H

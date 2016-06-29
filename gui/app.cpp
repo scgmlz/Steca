@@ -16,8 +16,9 @@
 #include "app.h"
 #include "../manifest.h"
 #include "mainwin.h"
-#include "types/core_async.h"
+#include "typ/typ_async.h"
 #include <QMessageBox>
+#include <QStatusBar>
 #include <QStyleFactory>
 #include <iostream>
 
@@ -63,17 +64,30 @@ static void waiting(bool on) {
     QApplication::restoreOverrideCursor();
 }
 
+static QStatusBar* mainStatusBar;
+
+static void logMessage(rcstr msg) {
+  mainStatusBar->showMessage(msg, 3000);
+}
+
 int App::exec() {
   try {
     gui::MainWin mainWin;
     mainWin.show();
 
     oldHandler = qInstallMessageHandler(messageHandler);
+
     TakesLongTime::handler = waiting;
+
+    mainStatusBar = mainWin.statusBar();
+    MessageLogger::handler = logMessage;
 
     int res = super::exec();
 
+    MessageLogger::handler = nullptr;
+
     TakesLongTime::handler = nullptr;
+
     qInstallMessageHandler(nullptr);
 
     return res;

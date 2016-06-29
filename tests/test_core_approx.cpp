@@ -1,9 +1,9 @@
-#include "test_core_approx.h"
-REGISTER_TEST_SUITE(TestCoreApprox)
+//#include "test_core_approx.h"
+//REGISTER_TEST_SUITE(TestCoreApprox)
 
-#include "types/core_type_curve.h"
-#include "core_fit_functions.h"
-#include "core_fit_methods.h"
+//#include "types/typ_curve.h"
+//#include "core_fit_functions.h"
+//#include "core_fit_methods.h"
 /* TODO
 // check if two qreals are equal for wanted precision
 #define QALMOST_COMPARE(a,b) QVERIFY(qAbs(a-b) < 1E-3)
@@ -16,7 +16,7 @@ void TestCoreApprox::testPolynom() {
 
     core::fit::Polynom p(1);
 
-    core::fit::FittingLevenbergMarquardt fm;
+    core::fit::LevenbergMarquardt fm;
     QVERIFY(fm.fit(p,curve));
 
     core::Range r(0,2);
@@ -34,7 +34,7 @@ void TestCoreApprox::testLinearLeastSquare() {
 
     core::fit::Polynom p(1);
 
-    core::fit::FittingLinearLeastSquare fm;
+    core::fit::LinearLeastSquare fm;
     QVERIFY(fm.fit(p,c));
 
     QALMOST_COMPARE(p.parameterAt(0).value(), 0.);
@@ -49,7 +49,7 @@ void TestCoreApprox::testLinearLeastSquare() {
 
     core::fit::Polynom p(1);
 
-    core::fit::FittingLinearLeastSquare fm;
+    core::fit::LinearLeastSquare fm;
     QVERIFY(fm.fit(p,c));
 
     QALMOST_COMPARE(p.parameterAt(0).value(), 2.);
@@ -64,7 +64,7 @@ void TestCoreApprox::testLinearLeastSquare() {
 
     core::fit::Polynom p(2);
 
-    core::fit::FittingLinearLeastSquare fm;
+    core::fit::LinearLeastSquare fm;
     QVERIFY(fm.fit(p,c));
 
     QALMOST_COMPARE(p.parameterAt(0).value(), 6.);
@@ -81,7 +81,7 @@ void TestCoreApprox::testLinearLeastSquare() {
 
     core::fit::Polynom p(3);
 
-    core::fit::FittingLevenbergMarquardt fm;
+    core::fit::LevenbergMarquardt fm;
     QVERIFY(fm.fit(p,c));
 
     QALMOST_COMPARE(p.parameterAt(0).value(), 42.);
@@ -99,7 +99,7 @@ void TestCoreApprox::testLevenbergMarquardt() {
     }
 
     core::fit::Polynom p(1);
-    core::fit::FittingLevenbergMarquardt fm;
+    core::fit::LevenbergMarquardt fm;
     QVERIFY(fm.fit(p,c));
 
     QALMOST_COMPARE(p.parameterAt(0).value(), 0.);
@@ -114,7 +114,7 @@ void TestCoreApprox::testLevenbergMarquardt() {
 
     core::fit::Polynom p(1);
 
-    core::fit::FittingLevenbergMarquardt fm;
+    core::fit::LevenbergMarquardt fm;
     QVERIFY(fm.fit(p,c));
 
     QALMOST_COMPARE(p.parameterAt(0).value(), 2.);
@@ -130,7 +130,7 @@ void TestCoreApprox::testLevenbergMarquardt() {
 
     core::fit::Polynom p(2);
 
-    core::fit::FittingLevenbergMarquardt fm;
+    core::fit::LevenbergMarquardt fm;
     QVERIFY(fm.fit(p,c));
 
     QALMOST_COMPARE(p.parameterAt(0).value(), 6.);
@@ -147,7 +147,7 @@ void TestCoreApprox::testLevenbergMarquardt() {
 
     core::fit::Polynom p(3);
 
-    core::fit::FittingLevenbergMarquardt fm;
+    core::fit::LevenbergMarquardt fm;
     QVERIFY(fm.fit(p,c));
 
     QALMOST_COMPARE(p.parameterAt(0).value(), 42.);
@@ -165,7 +165,7 @@ void TestCoreApprox::testLevenbergMarquardt() {
 
     core::fit::Polynom p(4);
 
-    core::fit::FittingLevenbergMarquardt fm;
+    core::fit::LevenbergMarquardt fm;
     QVERIFY(fm.fit(p,c));
 
     QALMOST_COMPARE(p.parameterAt(0).value(), 42.);

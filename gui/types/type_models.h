@@ -18,7 +18,6 @@
 #define TYPE_MODELS_H
 
 #include "refhub.h"
-#include "types/core_types_fwd.h"
 #include <QAbstractTableModel>
 
 class QCheckBox;
@@ -40,13 +39,13 @@ struct CheckedInfo {
   void setText(rcstr);
 };
 
-typedef QVector<CheckedInfo> checkedinfo_vec;
+typedef typ::vec<CheckedInfo> checkedinfo_vec;
 
 //------------------------------------------------------------------------------
-/// The base class of all table-like models
+// The base class of all table-like models
 
 class TableModel : public QAbstractTableModel, protected gui::RefHub {
-  SUPER(TableModel, QAbstractTableModel)
+  CLS(TableModel) SUPER(QAbstractTableModel)
 public:
   using Index   = QModelIndex;
   using rcIndex = Index const&;
@@ -54,14 +53,14 @@ public:
   TableModel(gui::TheHub&);
 
 protected:
-  /// the left-most column is hidden
+  // the left-most column is hidden
   static int const DCOL = 1;
 
 public:
-  /// force-emits reset() signal
+  // force-emits reset() signal
   void signalReset();
 };
 
 //------------------------------------------------------------------------------
 }
-#endif  // TYPE_MODELS_H
+#endif // TYPE_MODELS_H

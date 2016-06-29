@@ -23,7 +23,7 @@ namespace gui { namespace output {
 //------------------------------------------------------------------------------
 
 class DiffractogramsParams : public Params {
-  SUPER(DiffractogramsParams, Params)
+  CLS(DiffractogramsParams) SUPER(Params)
 public:
   DiffractogramsParams(TheHub&);
 };
@@ -31,7 +31,7 @@ public:
 //------------------------------------------------------------------------------
 
 class TabDiffractogramsSave : public TabSave {
-  SUPER(TabDiffractogramsSave, TabSave)
+  CLS(TabDiffractogramsSave) SUPER(TabSave)
 public:
   TabDiffractogramsSave(TheHub&, Params&);
 
@@ -48,19 +48,19 @@ protected:
 //------------------------------------------------------------------------------
 
 struct OutputData;
-using OutputDataCollection  = QVector<OutputData>;
-using OutputDataCollections = QVector<OutputDataCollection>;
+using OutputDataCollection  = typ::vec<OutputData>;
+using OutputDataCollections = typ::vec<OutputDataCollection>;
 
 class DiffractogramsFrame : public Frame {
-  SUPER(DiffractogramsFrame, Frame)
+  CLS(DiffractogramsFrame) SUPER(Frame)
 public:
   DiffractogramsFrame(TheHub&, rcstr title, QWidget*);
 
 protected:
   TabDiffractogramsSave *tabSave_;
 
-  OutputDataCollection collectCurves(core::rcRange rgeGamma, qreal gammaStep, core::rcDataset dataset, uint picNum);
-  OutputData collectCurve(core::rcDataset dataset);
+  OutputDataCollection collectCurves(gma_rge::rc, gma_t gmaStep, data::Dataset::rc dataset, uint picNum);
+  OutputData collectCurve(data::Dataset::rc dataset);
 
   OutputData outputCurrDiffractogram();
   OutputDataCollections outputAllDiffractograms();
@@ -72,4 +72,4 @@ protected:
 
 //------------------------------------------------------------------------------
 }}
-#endif  // OUTPUT_Diffractograms_H
+#endif // OUTPUT_Diffractograms_H

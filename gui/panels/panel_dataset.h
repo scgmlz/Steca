@@ -17,7 +17,8 @@
 #ifndef PANEL_DATASET_H
 #define PANEL_DATASET_H
 
-#include "core_dataset.h"
+#include "data/data_dataset.h"
+#include "calc/calc_lens.h"
 #include "panel.h"
 #include "views.h"
 
@@ -25,7 +26,7 @@ namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 class DockDatasets : public DockWidget, protected RefHub {
-  SUPER(DockDatasets, DockWidget)
+  CLS(DockDatasets) SUPER(DockWidget)
 public:
   DockDatasets(TheHub&);
 
@@ -37,10 +38,10 @@ private:
 
 //------------------------------------------------------------------------------
 
-class DockDatasetInfo : public DockWidget, protected RefHub {
-  SUPER(DockDatasetInfo, DockWidget)
+class DockMetadata : public DockWidget, protected RefHub {
+  CLS(DockMetadata) SUPER(DockWidget)
 public:
-  DockDatasetInfo(TheHub&);
+  DockMetadata(TheHub&);
 
 private:
   class Info : public QWidget {
@@ -57,12 +58,12 @@ private:
 
 //------------------------------------------------------------------------------
 
-class Dataset;
+class ImagePanel;
 
 class ImageWidget : public QWidget, protected RefHub {
-  SUPER(ImageWidget, QWidget)
+  CLS(ImageWidget) SUPER(QWidget)
 public:
-  ImageWidget(TheHub&, Dataset&);
+  ImageWidget(TheHub&, ImagePanel&);
 
   void setPixmap(QPixmap const&);
   void setShowOverlay(bool);
@@ -71,7 +72,7 @@ public:
   QSize sizeHint() const;
 
 protected:
-  Dataset &dataset_;
+  ImagePanel &dataset_;
   bool     showOverlay_;
   QPixmap  original_, scaled_;
   uint     scale_;
@@ -83,7 +84,7 @@ protected:
 
 class DatasetOptions1 : public BoxPanel {
   Q_OBJECT
-  SUPER(DatasetOptions1, BoxPanel)
+  CLS(DatasetOptions1) SUPER(BoxPanel)
 public:
   DatasetOptions1(TheHub&);
 
@@ -98,7 +99,7 @@ private:
 
 class DatasetOptions2 : public BoxPanel {
   Q_OBJECT
-  SUPER(DatasetOptions2, BoxPanel)
+  CLS(DatasetOptions2) SUPER(BoxPanel)
 public:
   DatasetOptions2(TheHub&);
 
@@ -115,23 +116,25 @@ private:
 
 //------------------------------------------------------------------------------
 
-// RENAME gui::panel::Dataset -> ???
-class Dataset : public TabsPanel {
-  SUPER(Dataset, TabsPanel)
+class ImagePanel : public TabsPanel {
+  CLS(ImagePanel) SUPER(TabsPanel)
 public:
-  Dataset(TheHub&);
+  ImagePanel(TheHub&);
 
   void setImageScale(uint);
 
 private:
-  QPixmap makePixmap(core::shp_ImageLens);
-  void    setDataset(core::shp_Dataset);
+  QPixmap makePixmap(calc::shp_ImageLens);
+  void    setDataset(data::shp_Dataset);
   void    render();
 
-  core::shp_Dataset dataset_;
+  data::shp_Dataset dataset_;
   ImageWidget *dataImageWidget_, *corrImageWidget_;
+
+  uint n = 0;
+  QSpinBox    *spinN;
 };
 
 //------------------------------------------------------------------------------
 }}
-#endif  // PANEL_DATASET_H
+#endif // PANEL_DATASET_H

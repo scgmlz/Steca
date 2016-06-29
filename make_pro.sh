@@ -17,7 +17,7 @@ win32 {
   RC_ICONS = \$\$PWD/gui/icons/retro_stier.ico
 }
 
-INCLUDEPATH += \$\$PWD/core \$\$PWD/gui
+INCLUDEPATH += \$\$PWD/lib \$\$PWD/LevMar \$\$PWD/core \$\$PWD/gui
 
 EOT
 
@@ -26,25 +26,23 @@ function files {
   find $where -type f -name \*.$ext -exec echo ' ' {} \\ \;
 }
 
-echo -e '\nHEADERS += \\'	>> $PRO
-files core h			>> $PRO
-files gui  h			>> $PRO
+MODULES='lib LevMar core gui'
+echo -e '\nHEADERS += \\' >> $PRO
+for m in $MODULES ; do files $m h >> $PRO ; done
 
-echo -e '\nSOURCES += \\'	>> $PRO
-files core cpp			>> $PRO
-files gui  cpp			>> $PRO
+echo -e '\nSOURCES += \\' >> $PRO
+for m in $MODULES ; do files $m cpp >> $PRO ; done
 
-echo -e '\nRESOURCES += \\'	>> $PRO
-files core qrc			>> $PRO
-files gui  qrc			>> $PRO
+echo -e '\nRESOURCES += \\' >> $PRO
+files gui  qrc >> $PRO
 
 cat >> $PRO <<EOT
 
 OTHER_FILES += \\
-    .gitignore \\
-    make_pro.sh ours_wc.sh \\
-    README.md CODING.md \\
-    COPYING Doxyfile \\
-    manifest.h \\
-    TODO
+  .gitignore \\
+  make_pro.sh ours_wc.sh \\
+  README.md CODING.md \\
+  COPYING Doxyfile \\
+  manifest.h \\
+  TODO
 EOT

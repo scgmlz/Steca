@@ -1,5 +1,5 @@
-#ifndef TEST_CORE_LENS_H
-#define TEST_CORE_LENS_H
+#ifndef TEST_CALC_LENS_H
+#define TEST_CALC_LENS_H
 
 #include "tests_main.h"
 
@@ -7,14 +7,12 @@ class TestCoreLens: public TestSuite {
   Q_OBJECT
 
 private slots:
-  /* TODO
-  void testTransformationLens();
-  void testCutLens();
-  void testSensitivityCorrectionLens();
-  void testIntensityRangeLens();
-  void testGlobalIntensityRangeLens();
-  void testNormLens();
-  */
+//  void testTransformationLens();
+//  void testCutLens();
+//  void testSensitivityCorrectionLens();
+//  void testIntensityRangeLens();
+//  void testGlobalIntensityRangeLens();
+//  void testNormLens();
 };
 
 #endif

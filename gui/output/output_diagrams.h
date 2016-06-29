@@ -24,7 +24,7 @@ namespace gui { namespace output {
 //------------------------------------------------------------------------------
 
 class DiagramsParams : public Params {
-  SUPER(DiagramsParams, Params)
+  CLS(DiagramsParams) SUPER(Params)
 public:
   DiagramsParams(TheHub&);
 
@@ -37,13 +37,13 @@ public:
 //------------------------------------------------------------------------------
 
 class TabPlot : public QCustomPlot {
-  SUPER(TabPlot, QCustomPlot)
+  CLS(TabPlot) SUPER(QCustomPlot)
 public:
   TabPlot();
-  void set(core::ReflectionInfos);
+  void set(calc::ReflectionInfos);
 
-  void plot(qreal_vec const& xs, qreal_vec const& ys,
-            qreal_vec const& ysAdd, qreal_vec const& ysSub);
+  void plot(qreal_vec::rc xs,    qreal_vec::rc ys,
+            qreal_vec::rc ysAdd, qreal_vec::rc ysSub);
 
 protected:
   QCPGraph *graph_, *graphAdd_, *graphSub_;
@@ -52,7 +52,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class TabDiagramsSave : public TabSave {
-  SUPER(TabDiagramsSave, TabSave)
+  CLS(TabDiagramsSave) SUPER(TabSave)
 public:
   TabDiagramsSave(TheHub&, Params&);
 
@@ -67,7 +67,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class DiagramsFrame : public Frame {
-  SUPER(DiagramsFrame, Frame)
+  CLS(DiagramsFrame) SUPER(Frame)
 public:
   DiagramsFrame(TheHub&, rcstr title, QWidget*);
 
@@ -82,9 +82,9 @@ protected:
   eReflAttr xAttr() const;
   eReflAttr yAttr() const;
 
-  void displayReflection(uint reflIndex, bool interpolated);
+  void displayReflection(int reflIndex, bool interpolated);
 
-  core::ReflectionInfos rs_;
+  calc::ReflectionInfos rs_;
   qreal_vec xs_, ys_, ysErrorAdd_, ysErrorSub_;
 
   void recalculate();
@@ -96,4 +96,4 @@ protected:
 
 //------------------------------------------------------------------------------
 }}
-#endif  // OUTPUT_DIAGRAMS_H
+#endif // OUTPUT_DIAGRAMS_H

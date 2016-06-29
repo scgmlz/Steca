@@ -1,33 +1,27 @@
-############################################################################
-# CMakeLists.txt for building STeCaCore
-############################################################################
+# core/CMakeLists.txt
 
-add_subdirectory(io)
-add_subdirectory(LevMar)
-
-file(GLOB header_files
-  "*.h"
-  "types/*.h"
-)
-
-file(GLOB source_files
-  "*.cpp"
-  "types/*.cpp"
-)
-
-include_directories(
+include_directories (
   ${CMAKE_HOME_DIRECTORY}/core
+  ${CMAKE_HOME_DIRECTORY}/LevMar
+  ${CMAKE_HOME_DIRECTORY}/lib
 )
 
-add_library(STeCaCore
+file (GLOB header_files
+  "*.h" "*/*.h" "*/*/*.h"
+)
+
+file (GLOB source_files
+  "*.cpp" "*/*.cpp" "*/*/*.cpp"
+)
+
+add_library (STeCaCore
   ${source_files}
   ${header_files}
 )
 
-target_link_libraries(STeCaCore
-  LevMar
+target_link_libraries (STeCaCore
   Qt5::Core
+  Qt5::Gui # TODO for QImage in tiffImage
 )
 
-set_property(TARGET STeCaCore PROPERTY CXX_STANDARD 11)
-set_property(TARGET STeCaCore PROPERTY CXX_STANDARD_REQUIRED ON)
+#eof

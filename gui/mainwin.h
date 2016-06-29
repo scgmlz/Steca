@@ -18,14 +18,15 @@
 #define MAINWIN_H
 
 #include "thehub.h"
-#include "types/core_defs.h"
+#include "def/defs.h"
+
 #include <QMainWindow>
 
 namespace gui {
 //------------------------------------------------------------------------------
 
 class MainWin : public QMainWindow {
-  SUPER(MainWin, QMainWindow)
+  CLS(MainWin) SUPER(QMainWindow)
 public:
   MainWin();
 
@@ -89,4 +90,4 @@ private:
 
 //------------------------------------------------------------------------------
 }
-#endif  // MAINWIN_H
+#endif // MAINWIN_H

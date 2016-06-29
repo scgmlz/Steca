@@ -53,7 +53,7 @@ Action& Action::alt(rcstr /*text2*/, rcstr /*tip2*/) {
 //------------------------------------------------------------------------------
 
 TriggerAction::TriggerAction(rcstr text, QObject* parent)
-: thisClass(text, "", parent) {
+: Cls(text, "", parent) {
 }
 
 TriggerAction::TriggerAction(rcstr text, rcstr tip, QObject* parent)
@@ -64,7 +64,7 @@ TriggerAction::TriggerAction(rcstr text, rcstr tip, QObject* parent)
 //------------------------------------------------------------------------------
 
 ToggleAction::ToggleAction(rcstr text, QObject* parent)
-: thisClass(text, "", parent) {
+: Cls(text, "", parent) {
 }
 
 ToggleAction::ToggleAction(rcstr text, rcstr tip, QObject* parent)
@@ -75,7 +75,7 @@ ToggleAction::ToggleAction(rcstr text, rcstr tip, QObject* parent)
 
 Action& ToggleAction::alt(rcstr text2, rcstr tip2) {
   text2_ = text2; tip2_ = tip2.isEmpty() ? text2 : tip2;
-  connect(this,&thisClass::toggled,[this](bool on) {
+  connect(this,&Cls::toggled,[this](bool on) {
     setText(on ? text2_ : text1_);
     setToolTip(on ? tip2_ : tip1_);
   });
@@ -104,7 +104,7 @@ Actions::Actions(TheHub& hub): super(hub) {
   tgl(viewDatasets,
       "Datasets");
   tgl(viewDatasetInfo,
-      "Dataset info");
+      "Metadata");
   trg(viewReset,
       "Reset", "Reset views");
 #ifndef Q_OS_OSX
@@ -137,12 +137,10 @@ Actions::Actions(TheHub& hub): super(hub) {
       "Mirror", "Mirror image")
       .icon(":/icon/mirrorHorz");
   tgl(linkCuts,
-      "Link", "Use the same value for all cuts")
-      .alt("Unlink", "Use different values for cuts")
+      "Link cut", "Use the same value for all cuts")
       .icon(":/icon/link");
   tgl(showOverlay,
-      "overlay", "Show cut")
-      .alt("overlay", "Hide cut")
+      "Overlay", "Show cut")
       .icon(":/icon/crop");
   tgl(hasBeamOffset,
       "Beam centre offset", "Enable beam center offset (for X-ray instruments)")
@@ -169,10 +167,10 @@ Actions::Actions(TheHub& hub): super(hub) {
       .icon(":/icon/showBackground");
 
   trg(addReflection,
-      "Add", "Add reflection")
+      "Add reflection")
       .icon(":/icon/add");
   trg(remReflection,
-      "Remove", "Remove reflection")
+      "Remove reflection")
       .icon(":/icon/rem");
 
   trg(outputPolefigures,
@@ -207,7 +205,7 @@ Actions::Actions(TheHub& hub): super(hub) {
     remFile->setEnabled(!hub_.collectedFromFiles().isEmpty());
   });
 
-  onSigCorrFile([this](core::shp_File file) {
+  onSigCorrFile([this](data::shp_File file) {
     remCorr->setEnabled(!file.isNull());
   });
 

@@ -15,7 +15,7 @@
 
 #include "output_diagrams.h"
 #include "thehub.h"
-#include "types/core_async.h"
+#include "typ/typ_async.h"
 #include <QDir>
 
 namespace gui { namespace output {
@@ -30,8 +30,8 @@ DiagramsParams::DiagramsParams(TheHub& hub) : super(hub) {
   rbInterp->hide();
   rbCalc->setChecked(true);
 
-  auto tags = core::ReflectionInfo::dataTags();
-  for_i (core::Metadata::numAttributes(false) - core::Metadata::numAttributes(true))
+  auto tags = calc::ReflectionInfo::dataTags();
+  for_i (data::Metadata::numAttributes(false) - data::Metadata::numAttributes(true))
     tags.removeLast(); // remove all tags that are not numbers
 
   auto g = gpAxes_->grid();
@@ -66,10 +66,14 @@ static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
 
   qreal_vec r(count);
 
-  for_i (count) r[i] = xs.at(is.at(i));
+  for_i (count)
+    r[i] = xs.at(is.at(i));
+
   xs = r;
 
-  for_i (count) r[i] = ys.at(is.at(i));
+  for_i (count)
+    r[i] = ys.at(is.at(i));
+
   ys = r;
 }
 
@@ -81,8 +85,8 @@ TabPlot::TabPlot() {
   graphSub_ = addGraph();
 }
 
-void TabPlot::plot(qreal_vec const& xs, qreal_vec const& ys,
-                   qreal_vec const& ysAdd, qreal_vec const& ysSub) {
+void TabPlot::plot(qreal_vec::rc xs,    qreal_vec::rc ys,
+                   qreal_vec::rc ysAdd, qreal_vec::rc ysSub) {
   EXPECT(xs.count() == ys.count())
 
   uint count = xs.count();
@@ -91,7 +95,7 @@ void TabPlot::plot(qreal_vec const& xs, qreal_vec const& ys,
   graphAdd_->clearData();
   graphSub_->clearData();
 
-  core::Range rgeX, rgeY;
+  typ::Range rgeX, rgeY;
 
   for_i (count) {
     rgeX.extendBy(xs.at(i));
@@ -111,13 +115,13 @@ void TabPlot::plot(qreal_vec const& xs, qreal_vec const& ys,
   yAxis->setVisible(true);
 
   graph_->setPen(QPen(Qt::blue));
-  graph_->addData(xs, ys);
+  graph_->addData(xs.sup(), ys.sup());
 
   graphAdd_->setPen(QPen(Qt::green));
-  graphAdd_->addData(xs, ysAdd);
+  graphAdd_->addData(xs.sup(), ysAdd.sup());
 
   graphSub_->setPen(QPen(Qt::red));
-  graphSub_->addData(xs, ysSub);
+  graphSub_->addData(xs.sup(), ysSub.sup());
 
   replot();
 }
@@ -157,11 +161,11 @@ DiagramsFrame::DiagramsFrame(TheHub &hub, rcstr title, QWidget *parent)
   tabPlot_ = new TabPlot();
   tabs_->addTab("Diagram").box().addWidget(tabPlot_);
 
-  connect(params()->xAxis, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this]() {
+  connect(params()->xAxis, slot(QComboBox,currentIndexChanged,int), [this]() {
     recalculate();
   });
 
-  connect(params()->yAxis, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this]() {
+  connect(params()->yAxis, slot(QComboBox,currentIndexChanged,int), [this]() {
     recalculate();
   });
 
@@ -179,18 +183,20 @@ DiagramsFrame::DiagramsFrame(TheHub &hub, rcstr title, QWidget *parent)
 }
 
 eReflAttr DiagramsFrame::xAttr() const {
-  return (eReflAttr)params()->xAxis->currentIndex();
+  return eReflAttr(params()->xAxis->currentIndex());
 }
 
 eReflAttr DiagramsFrame::yAttr() const {
-  return (eReflAttr)params()->yAxis->currentIndex();
+  return eReflAttr(params()->yAxis->currentIndex());
 }
 
-void DiagramsFrame::displayReflection(uint reflIndex, bool interpolated) {
+void DiagramsFrame::displayReflection(int reflIndex, bool interpolated) {
   super::displayReflection(reflIndex, interpolated);
 
-  rs_ = calcPoints_[reflIndex];
-  recalculate();
+  if (reflIndex >= 0) {
+    rs_ = calcPoints_.at(to_u(reflIndex));
+    recalculate();
+  }
 }
 
 void DiagramsFrame::recalculate() {
@@ -200,8 +206,8 @@ void DiagramsFrame::recalculate() {
   xs_.resize(count);
   ys_.resize(count);
 
-  uint xi = (uint)xAttr();
-  uint yi = (uint)yAttr();
+  uint xi = uint(xAttr());
+  uint yi = uint(yAttr());
 
   for_i (count) {
     auto row = rs_.at(i).data();
@@ -217,7 +223,7 @@ void DiagramsFrame::recalculate() {
     ysErrorAdd_.resize(count); ysErrorSub_.resize(count);
     for_i (count) {
       auto  row   = rs_.at(is.at(i)).data(); // access error over sorted index vec
-      qreal sigma = row.at((uint)attr).toDouble();
+      qreal sigma = row.at(uint(attr)).toDouble();
       qreal y = ys_.at(i);
       ysErrorAdd_[i] = y + sigma;
       ysErrorSub_[i] = y - sigma;
@@ -259,13 +265,12 @@ bool DiagramsFrame::saveDiagramOutput() {
   auto s = ts->currType();
 
   str_lst separators = ts->fileSeparators;
-  if (ts->currDiagram()) {
-    writeCurrentDiagramOutputFile(filePath, separators[s], ts->fileTags[s]);
-    return true;
-  } else {
-    writeAllDataOutputFile(filePath, separators[s], ts->fileTags[s]);
-    return true;
-  }
+  if (ts->currDiagram())
+    writeCurrentDiagramOutputFile(filePath, separators.at(s), ts->fileTags.at(s));
+  else
+    writeAllDataOutputFile(filePath, separators.at(s), ts->fileTags.at(s));
+
+  return true;
 }
 
 void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator, rcstr fileTag) {
@@ -288,6 +293,10 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separato
 }
 
 void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator, rcstr fileTag) {
+  int index = params_->currReflIndex();
+  if (index < 0)
+    return;
+
   WriteFile file(filePath + fileTag);
 
   QTextStream stream(&file);
@@ -295,12 +304,11 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator, rcst
   auto headers = table_->headers();
 
   for_i (headers.count())
-    stream << headers.at(i) << separator;
+    stream << headers.at(to_u(i)) << separator;
 
   stream << '\n';
-  auto current = params_->currReflIndex();
 
-  for_i (calcPoints_.at(current).count()) {
+  for_i (calcPoints_.at(to_u(index)).count()) {
     auto &row = table_->row(i);
 
     for_i (row.count()) {

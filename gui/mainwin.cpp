@@ -43,7 +43,7 @@ namespace gui {
 //------------------------------------------------------------------------------
 
 class SplitImage : public BoxWidget {
-  SUPER(SplitImage, BoxWidget)
+  CLS(SplitImage) SUPER(BoxWidget)
 public:
   SplitImage(TheHub&);
 };
@@ -51,20 +51,20 @@ public:
 SplitImage::SplitImage(TheHub& hub) : super(Qt::Horizontal) {
   auto* options1 = new panel::DatasetOptions1(hub);
   auto* options2 = new panel::DatasetOptions2(hub);
-  auto* dataset  = new panel::Dataset(hub);
+  auto* image    = new panel::ImagePanel(hub);
 
   connect(options2, &panel::DatasetOptions2::imageScale,
-          dataset,  &panel::Dataset::setImageScale);
+          image,  &panel::ImagePanel::setImageScale);
   box_->addWidget(options1);
   box_->addWidget(options2);
-  box_->addWidget(dataset);
+  box_->addWidget(image);
   box_->setStretch(2, 1);
 }
 
 //------------------------------------------------------------------------------
 
 class SplitFitting : public BoxWidget {
-  SUPER(SplitFitting, BoxWidget)
+  CLS(SplitFitting) SUPER(BoxWidget)
 public:
   SplitFitting(TheHub&);
 };
@@ -76,7 +76,7 @@ SplitFitting::SplitFitting(TheHub& hub) : super(Qt::Vertical) {
 //------------------------------------------------------------------------------
 
 class SplitDiffractogram : public BoxWidget {
-  SUPER(SplitDiffractogram, BoxWidget)
+  CLS(SplitDiffractogram) SUPER(BoxWidget)
 public:
   SplitDiffractogram(TheHub&);
 };
@@ -187,7 +187,7 @@ void MainWin::initLayout() {
   addDockWidget(Qt::LeftDockWidgetArea,
                 (dockDatasets_ = new panel::DockDatasets(hub_)));
   addDockWidget(Qt::RightDockWidgetArea,
-                (dockDatasetInfo_ = new panel::DockDatasetInfo(hub_)));
+                (dockDatasetInfo_ = new panel::DockMetadata(hub_)));
 
   auto splMain = new QSplitter(Qt::Vertical);
   splMain->setChildrenCollapsible(false);
@@ -214,43 +214,43 @@ void MainWin::initStatusBar() {
 }
 
 void MainWin::connectActions() {
-  auto onTrigger = [this](QAction* action, void (thisClass::*fun)()) {
+  auto onTrigger = [this](QAction* action, void (Cls::*fun)()) {
     QObject::connect(action, &QAction::triggered, this, fun);
   };
 
-  auto onToggle = [this](QAction* action, void (thisClass::*fun)(bool)) {
+  auto onToggle = [this](QAction* action, void (Cls::*fun)(bool)) {
     QObject::connect(action, &QAction::toggled, this, fun);
   };
 
-  onTrigger(acts_.loadSession, &thisClass::loadSession);
-  onTrigger(acts_.saveSession, &thisClass::saveSession);
+  onTrigger(acts_.loadSession, &Cls::loadSession);
+  onTrigger(acts_.saveSession, &Cls::saveSession);
 
-  onTrigger(acts_.addFiles, &thisClass::addFiles);
-  onTrigger(acts_.enableCorr, &thisClass::enableCorr);
+  onTrigger(acts_.addFiles, &Cls::addFiles);
+  onTrigger(acts_.enableCorr, &Cls::enableCorr);
 
-  onTrigger(acts_.quit, &thisClass::close);
+  onTrigger(acts_.quit, &Cls::close);
 
-  onTrigger(acts_.outputPolefigures,    &thisClass::outputPoleFigures);
-  onTrigger(acts_.outputDiagrams,       &thisClass::outputDiagrams);
-  onTrigger(acts_.outputDiffractograms, &thisClass::outputDiffractograms);
+  onTrigger(acts_.outputPolefigures,    &Cls::outputPoleFigures);
+  onTrigger(acts_.outputDiagrams,       &Cls::outputDiagrams);
+  onTrigger(acts_.outputDiffractograms, &Cls::outputDiffractograms);
 
-  onTrigger(acts_.about,  &thisClass::about);
-  onTrigger(acts_.online, &thisClass::online);
+  onTrigger(acts_.about,  &Cls::about);
+  onTrigger(acts_.online, &Cls::online);
 
-  onToggle(acts_.viewStatusbar, &thisClass::viewStatusbar);
+  onToggle(acts_.viewStatusbar, &Cls::viewStatusbar);
 #ifndef Q_OS_OSX
-  onToggle(acts_.fullScreen, &thisClass::viewFullScreen);
+  onToggle(acts_.fullScreen, &Cls::viewFullScreen);
 #endif
 
-  onToggle(acts_.viewFiles, &thisClass::viewFiles);
-  onToggle(acts_.viewDatasets, &thisClass::viewDatasets);
-  onToggle(acts_.viewDatasetInfo, &thisClass::viewDatasetInfo);
+  onToggle(acts_.viewFiles, &Cls::viewFiles);
+  onToggle(acts_.viewDatasets, &Cls::viewDatasets);
+  onToggle(acts_.viewDatasetInfo, &Cls::viewDatasetInfo);
 
-  onTrigger(acts_.viewReset, &thisClass::viewReset);
+  onTrigger(acts_.viewReset, &Cls::viewReset);
 }
 
 class AboutBox : public QMessageBox {
-  SUPER(AboutBox, QMessageBox)
+  CLS(AboutBox) SUPER(QMessageBox)
 public:
   using super::super;
 
@@ -303,8 +303,8 @@ void MainWin::addFiles() {
       "Data files (*.dat);;All files (*.*)");
 
   if (!fileNames.isEmpty()) {
-    hub_.addFiles(fileNames);
     QDir::setCurrent(QFileInfo(fileNames.at(0)).absolutePath());
+    hub_.addFiles(fileNames);
   }
 }
 
@@ -316,8 +316,8 @@ void MainWin::enableCorr() {
         "Data files (*.dat);;All files (*.*)");
 
   if (!fileName.isEmpty()) {
-    hub_.setCorrFile(fileName);
     QDir::setCurrent(QFileInfo(fileName).absolutePath());
+    hub_.setCorrFile(fileName);
   }
 }
 
@@ -328,18 +328,27 @@ void MainWin::loadSession() {
       this, "Load session", QDir::current().absolutePath(),
       "Session files (*" % STE % ");;All files (*.*)");
 
-  if (fileName.isEmpty()) return;
+  if (fileName.isEmpty())
+    return;
 
   hub_.loadSession(QFileInfo(fileName));
 }
 
 void MainWin::saveSession() {
-  str fileName = QFileDialog::getSaveFileName(
-      this, "Save session", QDir::current().absolutePath(),
-      "Session files (*" % STE % ");;All files (*.*)");
+  QFileDialog dlg(this, "Save session", QDir::current().absolutePath(),
+                  "Session files (*" % STE % ");;All files (*.*)");
+  dlg.setFileMode(QFileDialog::AnyFile);
+  dlg.setAcceptMode(QFileDialog::AcceptSave);
+  dlg.setConfirmOverwrite(false);
 
-  if (fileName.isEmpty()) return;
+  if (!dlg.exec())
+    return;
 
+  auto files = dlg.selectedFiles();
+  if (files.isEmpty())
+    return;
+
+  str fileName = files.first();
   if (!fileName.endsWith(STE)) fileName += STE;
 
   hub_.saveSession(QFileInfo(fileName));
@@ -381,8 +390,8 @@ void MainWin::onShow() {
 #endif
 
 #ifdef DEVELOPMENT_JAN
-//  safeLoad("/P/zz-gd/SCG/data/0.ste");
-  hub_.actions.about->trigger();
+  safeLoad("/P53/+scg/0.ste");
+  hub_.actions.outputPolefigures->trigger();
 #endif
 }
 

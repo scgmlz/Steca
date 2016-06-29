@@ -14,9 +14,9 @@
 // ************************************************************************** //
 
 #include "output_dialogs.h"
-#include "core_polefigure.h"
+#include "calc/calc_polefigure.h"
 #include "thehub.h"
-#include "types/core_async.h"
+#include "typ/typ_async.h"
 #include "types/type_models.h"
 
 #include <QFileDialog>
@@ -53,7 +53,6 @@ Params::Params(TheHub& hub) : RefHub(hub) {
 
     g->addWidget((rbCalc   = radioButton("calc.")),   1, 0);
     g->addWidget((rbInterp = radioButton("interp.")), 1, 1);
-
     g->setRowStretch(g->rowCount(), 1);
   }
 
@@ -144,7 +143,7 @@ void Params::addStretch() {
   box_->addStretch();
 }
 
-uint Params::currReflIndex() const {
+int Params::currReflIndex() const {
   return cbRefl->currentIndex();
 }
 
@@ -215,7 +214,7 @@ Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
     displayReflection(params_->currReflIndex(), params_->interpolate());
   };
 
-  connect(params_->cbRefl, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [display]() {
+  connect(params_->cbRefl, slot(QComboBox,currentIndexChanged,int), [display]() {
     display();
   });
 
@@ -226,7 +225,7 @@ Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
   // tabs
 
   auto tabTable = new TabTable(hub, *params_,
-     core::ReflectionInfo::dataTags(), core::ReflectionInfo::dataCmps());
+     calc::ReflectionInfo::dataTags(), calc::ReflectionInfo::dataCmps());
   tabs_->addTab("Points").box().addWidget(tabTable);
 
   table_ = tabTable->table();
@@ -242,9 +241,9 @@ void Frame::calculate() {
   if (!reflections.isEmpty()) {
     uint reflCount = reflections.count();
 
-    core::deg gammaStep = params_->stepGamma->value();
+    typ::deg gammaStep = params_->stepGamma->value();
 
-    core::Range rgeGamma;
+    typ::Range rgeGamma;
     if (params_->cbLimitGamma->isChecked())
       rgeGamma.safeSet(params_->limitGammaMin->value(),
                        params_->limitGammaMax->value());
@@ -262,8 +261,8 @@ void Frame::calculate() {
 void Frame::interpolate() {
   TakesLongTime __;
 
-  core::deg alphaStep   = params_->stepAlpha->value();
-  core::deg betaStep    = params_->stepBeta->value();
+  typ::deg alphaStep   = params_->stepAlpha->value();
+  typ::deg betaStep    = params_->stepBeta->value();
   qreal     avgRadius   = params_->avgRadius->value();
   qreal     avgAlphaMax = params_->avgAlphaMax->value();
   qreal     idwRadius   = params_->idwRadius->value();
@@ -273,24 +272,24 @@ void Frame::interpolate() {
 
   for_i (calcPoints_.count()) {
     interpPoints_.append(
-        core::pole::interpolate(calcPoints_.at(i), alphaStep, betaStep,
-                                avgAlphaMax, avgRadius, idwRadius, treshold));
+        calc::interpolate(calcPoints_.at(i), alphaStep, betaStep,
+                          avgAlphaMax, avgRadius, idwRadius, treshold));
   }
 
   displayReflection(params_->currReflIndex(), params_->interpolate());
 }
 
-void Frame::displayReflection(uint reflIndex, bool interpolated) {
+void Frame::displayReflection(int reflIndex, bool interpolated) {
   table_->clear();
 
-  if (hub_.reflections().isEmpty())
+  if (reflIndex < 0)
     return;
 
   EXPECT(calcPoints_.count() == interpPoints_.count())
-  if (calcPoints_.count() <= (int)reflIndex)
+  if (calcPoints_.count() <= to_u(reflIndex))
     return;
 
-  for (auto const &r : (interpolated ? interpPoints_ : calcPoints_)[reflIndex])
+  for (auto& r : (interpolated ? interpPoints_ : calcPoints_).at(to_u(reflIndex)))
     table_->addRow(r.data(), false);
 
   table_->sortData();
@@ -299,7 +298,7 @@ void Frame::displayReflection(uint reflIndex, bool interpolated) {
 //------------------------------------------------------------------------------
 
 class TableModel : public models::TableModel {
-  SUPER(TableModel, models::TableModel)
+  CLS(TableModel) SUPER(models::TableModel)
 
 public:
   TableModel(TheHub&, uint numCols_);
@@ -312,15 +311,15 @@ public:
 
   void moveColumn(uint from, uint to);
 
-  void setColumns(str_lst const& headers, core::cmp_vec const&);
+  void setColumns(str_lst::rc headers, typ::cmp_vec::rc);
   str_lst const headers() { return headers_; }
 
   void setSortColumn(int);
 
   void clear();
-  void addRow(core::row_t const&, bool sort = true);
+  void addRow(typ::row_t::rc, bool sort = true);
 
-  core::row_t const& row(uint);
+  typ::row_t::rc row(uint);
 
   void sortData();
 
@@ -328,11 +327,11 @@ private:
   uint numCols_;
   int  sortColumn_;
 
-  str_lst       headers_;
-  uint_vec      colIndexMap_;
-  core::cmp_vec cmpFunctions_;
+  str_lst      headers_;
+  uint_vec     colIndexMap_;
+  typ::cmp_vec cmpFunctions_;
 
-  QVector<core::row_t> rows_;
+  typ::vec<typ::row_t> rows_;
 };
 
 //------------------------------------------------------------------------------
@@ -346,11 +345,11 @@ TableModel::TableModel(TheHub& hub, uint numColumns_)
 }
 
 int TableModel::columnCount(rcIndex) const {
-  return numCols_ + 1;
+  return to_i(numCols_) + 1;
 }
 
 int TableModel::rowCount(rcIndex) const {
-  return rows_.count();
+  return to_i(rows_.count());
 }
 
 // The first column contains row numbers. The rest numCols columns contain data.
@@ -368,7 +367,7 @@ QVariant TableModel::data(rcIndex index, int role) const {
       return indexRow + 1;  // row number, 1-based
 
     if (--indexCol < numCols && indexRow < numRows) {
-      QVariant var = rows_.at(indexRow).at(indexCol);
+      QVariant var = rows_.at(to_u(indexRow)).at(to_u(indexCol));
       if (QVariant::Double == var.type() && qIsNaN(var.toDouble()))
         var = QVariant(); // hide nans
       return var;
@@ -381,7 +380,7 @@ QVariant TableModel::data(rcIndex index, int role) const {
       return Qt::AlignRight;
 
     if (--indexCol < numCols && indexRow < numRows) {
-      switch (rows_.at(indexRow).at(indexCol).type()) {
+      switch (rows_.at(to_u(indexRow)).at(to_u(indexCol)).type()) {
       case QVariant::Int:
       case QVariant::UInt:
       case QVariant::LongLong:
@@ -408,18 +407,18 @@ QVariant TableModel::headerData(int section, Qt::Orientation, int role) const {
     return QVariant();
 
   if (Qt::DisplayRole == role)
-    return 0 == section ? "#" : headers_.at(section - 1);
+    return 0 == section ? "#" : headers_.at(to_u(section) - 1);
 
   return QVariant();
 }
 
 void TableModel::moveColumn(uint from, uint to) {
-  EXPECT(from < (uint)colIndexMap_.count() && to < (uint)colIndexMap_.count())
+  EXPECT(from < colIndexMap_.count() && to < colIndexMap_.count())
   qSwap(colIndexMap_[from], colIndexMap_[to]);
 }
 
-void TableModel::setColumns(str_lst const& headers, core::cmp_vec const& cmps) {
-  EXPECT(headers.count() == (int)numCols_ && cmps.count() == (int)numCols_)
+void TableModel::setColumns(str_lst::rc headers, typ::cmp_vec::rc cmps) {
+  EXPECT(to_u(headers.count()) == numCols_ && cmps.count() == numCols_)
   headers_ = headers;
   cmpFunctions_ = cmps;
 }
@@ -434,35 +433,39 @@ void TableModel::clear() {
   endResetModel();
 }
 
-void TableModel::addRow(core::row_t const& row, bool sort) {
+void TableModel::addRow(typ::row_t::rc row, bool sort) {
   rows_.append(row);
   if (sort)
     sortData();
 }
 
-core::row_t const& TableModel::row(uint index) {
+typ::row_t::rc TableModel::row(uint index) {
   return rows_.at(index);
 }
 
 void TableModel::sortData() {
   // sort sortColumn first, then left-to-right
-  auto cmpRows = [this](uint i, core::row_t const& r1, core::row_t const& r2) {
+  auto cmpRows = [this](uint i, typ::row_t::rc r1, typ::row_t::rc r2) {
     i = colIndexMap_.at(i);
     return cmpFunctions_.at(i)(r1.at(i), r2.at(i));
   };
 
-  auto cmp = [this, cmpRows](core::row_t const& r1, core::row_t const& r2) {
+  auto cmp = [this, cmpRows](typ::row_t::rc r1, typ::row_t::rc r2) {
     if (sortColumn_ >= 0) {
-      int c = cmpRows(sortColumn_, r1, r2);
-      if (c < 0) return true;
-      if (c > 0) return false;
+      int c = cmpRows(to_u(sortColumn_), r1, r2);
+      if (c < 0)
+        return true;
+      if (c > 0)
+        return false;
     }
 
     for_i (numCols_) {
-      if (i != sortColumn_) {
+      if (to_i(i) != sortColumn_) {
         int c = cmpRows(i, r1, r2);
-        if (c < 0) return true;
-        if (c > 0) return false;
+        if (c < 0)
+          return true;
+        if (c > 0)
+          return false;
       }
     }
 
@@ -480,7 +483,7 @@ Table::Table(TheHub& hub, uint numDataColumns)
 : RefHub(hub), model_(nullptr)
 {
   model_.reset(new TableModel(hub_, numDataColumns));
-  setModel(model_.data());
+  setModel(model_.ptr());
   setHeader(new QHeaderView(Qt::Horizontal));
 
   auto& h = *header();
@@ -493,17 +496,17 @@ Table::Table(TheHub& hub, uint numDataColumns)
   setColumnWidth(0, w);
 }
 
-void Table::setColumns(str_lst const& headers, core::cmp_vec const& cmps) {
+void Table::setColumns(str_lst::rc headers, typ::cmp_vec::rc cmps) {
   model_->setColumns(headers, cmps);
 
   connect(header(), &QHeaderView::sectionMoved,
           [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
-            ENSURE(oldVisualIndex > 0 && newVisualIndex > 0)
+            EXPECT(oldVisualIndex > 0 && newVisualIndex > 0)
             auto& h = *header();
             h.setSortIndicatorShown(false);
             model_->setSortColumn(-1);
-            model_->moveColumn((uint)(oldVisualIndex - 1),
-                               (uint)(newVisualIndex - 1));
+            model_->moveColumn(to_u(oldVisualIndex - 1),
+                               to_u(newVisualIndex - 1));
             model_->sortData();
           });
 
@@ -524,7 +527,7 @@ void Table::clear() {
   model_->clear();
 }
 
-void Table::addRow(core::row_t const& row, bool sort) {
+void Table::addRow(typ::row_t::rc row, bool sort) {
   model_->addRow(row, sort);
 }
 
@@ -533,21 +536,21 @@ void Table::sortData() {
 }
 
 uint Table::rowCount() const {
-  return model_->rowCount();
+  return to_u(model_->rowCount());
 }
 
-const core::row_t&Table::row(uint i) const {
+const typ::row_t&Table::row(uint i) const {
   return model_->row(i);
 }
 
 //------------------------------------------------------------------------------
 
 TabTable::TabTable(TheHub& hub, Params& params,
-                   str_lst const& headers, core::cmp_vec const& cmps)
+                   str_lst::rc headers, typ::cmp_vec::rc cmps)
 : super(hub, params)
 {
-  EXPECT(headers.count() == cmps.count())
-  uint numCols = headers.count();
+  EXPECT(to_u(headers.count()) == cmps.count())
+  uint numCols = to_u(headers.count());
 
   grid_->setMargin(0);
   grid_->addWidget((table_ = new Table(hub_, numCols)), 0, 0);
@@ -603,23 +606,23 @@ TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
 
   auto showAlphaBeta = [this,none]() {
     none();
-    showCols_.at((uint)eReflAttr::ALPHA).cb->setChecked(true);
-    showCols_.at((uint)eReflAttr::BETA).cb->setChecked(true);
+    showCols_.at(uint(eReflAttr::ALPHA)).cb->setChecked(true);
+    showCols_.at(uint(eReflAttr::BETA)).cb->setChecked(true);
   };
 
   auto showInten = [this,showAlphaBeta]() {
     showAlphaBeta();
-    showCols_.at((uint)eReflAttr::INTEN).cb->setChecked(true);
+    showCols_.at(uint(eReflAttr::INTEN)).cb->setChecked(true);
   };
 
   auto showTth = [this,showAlphaBeta]() {
     showAlphaBeta();
-    showCols_.at((uint)eReflAttr::TTH).cb->setChecked(true);
+    showCols_.at(uint(eReflAttr::TTH)).cb->setChecked(true);
   };
 
   auto showFWHM = [this,showAlphaBeta]() {
     showAlphaBeta();
-    showCols_.at((uint)eReflAttr::FWHM).cb->setChecked(true);
+    showCols_.at(uint(eReflAttr::FWHM)).cb->setChecked(true);
   };
 
   auto updateRbs = [this]() {
@@ -634,7 +637,7 @@ TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
 
       isNone = false;
 
-      switch ((eReflAttr)i) {
+      switch (eReflAttr(i)) {
       case eReflAttr::ALPHA:
       case eReflAttr::BETA:
         ++nInten; ++nTth; ++nFwhm;
@@ -665,11 +668,11 @@ TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
   for_i (showCols_.count()) {
     auto cb = showCols_.at(i).cb;
 
-    connect(cb, &QCheckBox::toggled, [this, i, updateRbs](bool on) {
+    connect(cb, &QCheckBox::toggled, [this, updateRbs, i](bool on) {
       if (on)
-        table_.showColumn(i + 1);
+        table_.showColumn(to_i(i) + 1);
       else
-        table_.hideColumn(i + 1);
+        table_.hideColumn(to_i(i) + 1);
 
       updateRbs();
     });

@@ -22,7 +22,7 @@ namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 class FilesView : public views::MultiListView {
-  SUPER(FilesView, views::MultiListView)
+  CLS(FilesView) SUPER(views::MultiListView)
 public:
   FilesView(TheHub&);
 
@@ -73,7 +73,7 @@ void FilesView::removeSelected() {
 
 void FilesView::recollect() {
   uint_vec rows;
-  for (auto const& index : selectionModel()->selectedRows())
+  for (auto& index : selectionModel()->selectedRows())
     if (index.isValid()) rows.append(index.row());
 
   hub_.collectDatasetsFromFiles(rows);
@@ -103,7 +103,7 @@ DockFiles::DockFiles(TheHub& hub)
   h->addWidget(iconButton(actions.enableCorr));
   h->addWidget(iconButton(actions.remCorr));
 
-  onSigCorrFile([this](core::shp_File file) {
+  onSigCorrFile([this](data::shp_File file) {
     corrFile_->setText(file.isNull() ? EMPTY_STR : file->fileName());
   });
 }

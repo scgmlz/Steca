@@ -18,12 +18,13 @@
 #define OUTPUT_DIALOGS_H
 
 #include "actions.h"
-#include "core_reflection_info.h"
+#include "calc/calc_reflection_info.h"
 #include "gui_helpers.h"
 #include "panels/panel.h"
 #include "refhub.h"
-#include "types/core_defs.h"
-#include "types/core_type_variant.h"
+#include "def/defs.h"
+
+#include "typ/typ_variant.h"
 #include <QMessageBox>
 
 class QProgressBar;
@@ -31,17 +32,17 @@ class QProgressBar;
 namespace gui { namespace output {
 //------------------------------------------------------------------------------
 
-using eReflAttr = core::ReflectionInfo::eReflAttr;
+using eReflAttr = calc::ReflectionInfo::eReflAttr;
 
 class Params : public QWidget, protected RefHub {
-  SUPER(Params, QWidget)
+  CLS(Params) SUPER(QWidget)
 public:
   Params(TheHub&);
  ~Params();
 
   void addStretch();
 
-  uint currReflIndex() const;
+  int  currReflIndex() const;
   bool interpolate()   const;
 
 protected:
@@ -71,7 +72,7 @@ public:
 //------------------------------------------------------------------------------
 
 class Tabs : public panel::TabsPanel {
-  SUPER(Tabs, panel::TabsPanel)
+  CLS(Tabs) SUPER(panel::TabsPanel)
 public:
   Tabs(TheHub&);
 };
@@ -79,7 +80,7 @@ public:
 //------------------------------------------------------------------------------
 
 class Tab : public QWidget, protected RefHub {
-  SUPER(Tab, QWidget)
+  CLS(Tab) SUPER(QWidget)
 public:
   Tab(TheHub&, Params&);
 
@@ -92,7 +93,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class Frame : public QFrame, protected RefHub {
-  SUPER(Frame, QFrame)
+  CLS(Frame) SUPER(QFrame)
 public:
   Frame(TheHub&, rcstr title, Params*, QWidget*);
 
@@ -106,44 +107,44 @@ protected:
   Params     *params_;
   Tabs       *tabs_;
 
-  QVector<core::ReflectionInfos> calcPoints_, interpPoints_;
+  typ::vec<calc::ReflectionInfos> calcPoints_, interpPoints_;
 
   class Table *table_;
 
   void calculate();
   void interpolate();
 
-  virtual void displayReflection(uint reflIndex, bool interpolated);
+  virtual void displayReflection(int reflIndex, bool interpolated);
 };
 
 //------------------------------------------------------------------------------
 
 class Table : public TreeView, protected RefHub {
-  SUPER(Table, TreeView)
+  CLS(Table) SUPER(TreeView)
 public:
   Table(TheHub&, uint numDataColumns);
 
-  void setColumns(str_lst const& headers, core::cmp_vec const&);
+  void setColumns(str_lst::rc headers, typ::cmp_vec::rc);
   str_lst const headers();
 
   void clear();
-  void addRow(core::row_t const&, bool sort);
+  void addRow(typ::row_t::rc, bool sort);
 
   void sortData();
 
   uint rowCount() const;
-  core::row_t const& row(uint) const;
+  typ::row_t::rc row(uint) const;
 
 private:
-  QScopedPointer<class TableModel> model_;
+  scoped<class TableModel*> model_;
 };
 
 //------------------------------------------------------------------------------
 
 class TabTable : public Tab {
-  SUPER(TabTable, Tab)
+  CLS(TabTable) SUPER(Tab)
 public:
-  TabTable(TheHub&, Params&, str_lst const &headers, core::cmp_vec const&);
+  TabTable(TheHub&, Params&, str_lst::rc headers, typ::cmp_vec::rc);
 
   Table *table() const { return table_; }
 
@@ -153,11 +154,11 @@ private:
     QCheckBox *cb;
   };
 
-  typedef QVector<showcol_t> showcol_vec;
+  typedef typ::vec<showcol_t> showcol_vec;
 
 private:
   class ShowColsWidget : public QWidget {
-    SUPER(ShowColsWidget, QWidget)
+    CLS(ShowColsWidget) SUPER(QWidget)
   public:
     ShowColsWidget(Table&, showcol_vec&);
 
@@ -177,7 +178,7 @@ private:
 //------------------------------------------------------------------------------
 
 class TabSave : public Tab {
-  SUPER(TabSave, Tab)
+  CLS(TabSave) SUPER(Tab)
 public:
   TabSave(TheHub&, Params&);
 
@@ -203,4 +204,4 @@ protected:
 
 //------------------------------------------------------------------------------
 }}
-#endif  // OUTPUT_DIALOGS_H
+#endif // OUTPUT_DIALOGS_H

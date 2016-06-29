@@ -18,10 +18,10 @@
 #define THEHUB_H
 
 #include "actions.h"
-#include "core_session.h"
-#include "core_session.h"
+#include "session.h"
 #include "models.h"
-#include "types/core_defs.h"
+#include "def/defs.h"
+
 #include <QAction>
 #include <QSettings>
 
@@ -33,7 +33,7 @@ namespace gui {
 //------------------------------------------------------------------------------
 
 class Settings : public QSettings {
-  SUPER(Settings, QSettings)
+  CLS(Settings) SUPER(QSettings)
 public:
   Settings(rcstr group = EMPTY_STR);
  ~Settings();
@@ -57,13 +57,13 @@ public:
 //------------------------------------------------------------------------------
 
 class ReadFile: public QFile {
-  SUPER(ReadFile, QFile)
+  CLS(ReadFile) SUPER(QFile)
 public:
   ReadFile(rcstr path) THROWS;
 };
 
 class WriteFile: public QFile {
-  SUPER(WriteFile, QFile)
+  CLS(WriteFile) SUPER(QFile)
 public:
   WriteFile(rcstr path) THROWS;
 };
@@ -71,7 +71,7 @@ public:
 //------------------------------------------------------------------------------
 
 class TheHub : public TheHubSignallingBase {
-  SUPER(TheHub, TheHubSignallingBase)
+  CLS(TheHub) SUPER(TheHubSignallingBase)
   friend class TheHubSignallingBase;
 public:
   TheHub();
@@ -82,7 +82,7 @@ private:
   void configActions();
 
 private:
-  QScopedPointer<core::Session> session;
+  scoped<core::Session*> session;
 
   bool isFixedIntenImageScale_;
   bool isFixedIntenDgramScale_;
@@ -101,23 +101,19 @@ public:  // files
   uint numFiles() const;
   str fileName(uint index) const;
   str filePath(uint index) const;
-  core::shp_File getFile(uint) const;
+  data::shp_File getFile(uint) const;
   void           remFile(uint);
 
   bool          hasCorrFile() const;
-  core::rcImage corrImage() const;
+  typ::Image::rc corrImage() const;
 
 public:
-  core::shp_ImageLens lensNoCut(core::rcImage) const;
-
-  core::shp_Lens lens(core::rcDataset) const;
-  core::shp_Lens lensNoCut(core::rcDataset) const;
-
-  core::AngleMap const& angleMap(core::rcDataset) const;
+  calc::shp_ImageLens   plainImageLens(typ::Image::rc) const;
+  calc::shp_DatasetLens datasetLens(data::Dataset::rc) const;
 
 public:
-  core::ReflectionInfos makeReflectionInfos(core::rcReflection,
-      core::deg betaStep, core::rcRange rgeGamma, Progress* = nullptr);
+  calc::ReflectionInfos makeReflectionInfos(calc::Reflection::rc,
+      gma_t gmaStep, gma_rge::rc, Progress* = nullptr);
 
 public:
   void       saveSession(QFileInfo const&) const;
@@ -128,55 +124,57 @@ public:
 
 public:
   void addFile(rcstr filePath) THROWS;
-  void addFiles(str_lst const& filePaths) THROWS;
+  void addFiles(str_lst::rc filePaths) THROWS;
 
 private:
   uint_vec collectFromFiles_;
-  uint     datasetsGroupedBy_;
+  pint     datasetsGroupedBy_ = pint(1);
 
 public:
-  void collectDatasetsFromFiles(uint_vec, uint);
+  void collectDatasetsFromFiles(uint_vec, pint);
   void collectDatasetsFromFiles(uint_vec);
-  void combineDatasetsBy(uint);
+  void combineDatasetsBy(pint);
 
-  uint_vec const& collectedFromFiles() const {
+  uint_vec::rc collectedFromFiles() const {
     return session->collectedFromFiles();
   }
 
-  uint datasetsGroupedBy() const { return  datasetsGroupedBy_; }
+  pint datasetsGroupedBy() const {
+    return datasetsGroupedBy_;
+  }
 
   uint numCollectedDatasets() const {
     return collectedDatasets().count();
   }
 
-  core::rcDatasets collectedDatasets() const {
+  data::Datasets::rc collectedDatasets() const {
     return session->collectedDatasets();
   }
 
-  str_lst const& collectedDatasetsTags() const {
+  str_lst::rc collectedDatasetsTags() const {
     return session->collectedDatasetsTags();
   }
 
   void setCorrFile(rcstr filePath) THROWS;
   void tryEnableCorrection(bool);
 
-  core::ImageCut const& imageCut() const;
-  void setImageCut(bool topLeft, bool linked, core::ImageCut const&);
+  typ::ImageCut::rc imageCut() const;
+  void setImageCut(bool topLeft, bool linked, typ::ImageCut::rc);
 
-  core::Geometry const& geometry() const;
-  void setGeometry(qreal detectorDistance, qreal pixSize, bool isMidPixOffset,
-                   core::rcIJ midPixOffset);
+  typ::Geometry::rc geometry() const;
+  void setGeometry(preal detectorDistance, preal pixSize,
+                   bool isMidPixOffset, typ::IJ::rc midPixOffset);
 
-  void setBgRanges(core::rcRanges);
-  void addBgRange(core::rcRange);
-  void remBgRange(core::rcRange);
+  void setBgRanges(typ::Ranges::rc);
+  void addBgRange(typ::Range::rc);
+  void remBgRange(typ::Range::rc);
 
   static uint constexpr MAX_POLYNOM_DEGREE = 4;
   void setBgPolyDegree(uint);
 
-  void setReflType(core::ePeakType);
+  void setReflType(fit::ePeakType);
 
-  void addReflection(core::ePeakType);
+  void addReflection(fit::ePeakType);
   void remReflection(uint);
 
   eFittingTab fittingTab() const { return fittingTab_; }
@@ -186,24 +184,24 @@ private:
   eFittingTab fittingTab_;
 
 private:
-  core::shp_Dataset    selectedDataset_;
-  core::shp_Reflection selectedReflection_;
+  data::shp_Dataset    selectedDataset_;
+  calc::shp_Reflection selectedReflection_;
 
 public:
-  core::shp_Dataset selectedDataset() const { return selectedDataset_; }
+  data::shp_Dataset selectedDataset() const { return selectedDataset_; }
 
 private:
-  void setImageRotate(core::ImageTransform);
+  void setImageRotate(typ::ImageTransform);
   void setImageMirror(bool);
 
 public:
-  void setNorm(core::eNorm);
+  void setNorm(eNorm);
 
 public:
-  core::rcRanges bgRanges()         const { return session->bgRanges();     }
-  uint           bgPolyDegree()     const { return session->bgPolyDegree(); }
+  typ::Ranges::rc bgRanges()          const { return session->bgRanges();     }
+  uint            bgPolyDegree()      const { return session->bgPolyDegree(); }
 
-  core::rcReflections reflections() const { return session->reflections();  }
+  calc::Reflections::rc reflections() const { return session->reflections();  }
 };
 
 //------------------------------------------------------------------------------

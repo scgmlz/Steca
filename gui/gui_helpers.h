@@ -17,7 +17,8 @@
 #ifndef GUI_HELPERS_H
 #define GUI_HELPERS_H
 
-#include "types/core_defs.h"
+#include "def/defs.h"
+#include "typ/typ_strlst.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
@@ -35,17 +36,23 @@
 #include <QTreeView>
 
 //------------------------------------------------------------------------------
+
+// make connects shorter
+#define slot(Type,method,parType) \
+  static_cast<void (Type::*)(parType)>(&Type::method)
+
+//------------------------------------------------------------------------------
 // handy functions that make (new) widgets
 
 QBoxLayout* boxLayout(Qt::Orientation);
-QBoxLayout* hbox();  ///< horizontal box layout
-QBoxLayout* vbox();  ///< vertical box layout
+QBoxLayout* hbox();  // horizontal box layout
+QBoxLayout* vbox();  // vertical box layout
 
 QGridLayout* gridLayout();
 
 QLabel*    icon(rcstr);
 QLabel*    label(rcstr);
-QLineEdit* editCell(uint emWidth);  ///< emWidth: measured in typographical (m)s
+QLineEdit* editCell(uint emWidth);  // emWidth: measured in typographical (m)s
 QLineEdit* readCell(uint emWidth);
 QSpinBox*  spinCell(uint emWidth, int min, int max = INT_MIN);
 QDoubleSpinBox* spinCell(uint emWidth, qreal min, qreal max = INT_MIN);
@@ -56,14 +63,14 @@ QToolButton* iconButton(QAction*);
 
 QRadioButton* radioButton(rcstr text);
 
-QComboBox* comboBox(str_lst const&);
+QComboBox* comboBox(str_lst::rc);
 
 //------------------------------------------------------------------------------
-/// abstract tree widget
+// abstract tree widget
 
 class TreeView : public QTreeView {
   Q_OBJECT
-  SUPER(TreeView, QTreeView)
+  CLS(TreeView) SUPER(QTreeView)
 public:
   TreeView();
 
@@ -71,11 +78,11 @@ public:
 };
 
 //------------------------------------------------------------------------------
-/// abstract tree widget used as a list (hides column 0)
+// abstract tree widget used as a list (hides column 0)
 
 class TreeListView : public TreeView {
   Q_OBJECT
-  SUPER(TreeListView, TreeView)
+  CLS(TreeListView) SUPER(TreeView)
 public:
   TreeListView();
 
@@ -86,7 +93,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class LineView : public QLineEdit {
-  SUPER(LineView, QLineEdit)
+  CLS(LineView) SUPER(QLineEdit)
 public:
   LineView();
 
@@ -94,10 +101,10 @@ public:
 };
 
 //------------------------------------------------------------------------------
-/// a widget with a box layout
+// a widget with a box layout
 
 class BoxWidget : public QWidget {
-  SUPER(BoxWidget, QWidget)
+  CLS(BoxWidget) SUPER(QWidget)
 public:
   BoxWidget(Qt::Orientation);
 
@@ -106,10 +113,10 @@ protected:
 };
 
 //------------------------------------------------------------------------------
-/// a dock widget that acts as BoxWidget
+// a dock widget that acts as BoxWidget
 
 class DockWidget : public QDockWidget {
-  SUPER(DockWidget, QDockWidget)
+  CLS(DockWidget) SUPER(QDockWidget)
 public:
   DockWidget(rcstr name, rcstr objectName, Qt::Orientation);
 
@@ -118,4 +125,4 @@ protected:
 };
 
 //------------------------------------------------------------------------------
-#endif  // GUI_HELPERS_H
+#endif // GUI_HELPERS_H

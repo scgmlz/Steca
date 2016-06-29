@@ -23,7 +23,7 @@ namespace gui { namespace output {
 //------------------------------------------------------------------------------
 
 class PoleFiguresParams : public Params {
-  SUPER(PoleFiguresParams, Params)
+  CLS(PoleFiguresParams) SUPER(Params)
 public:
   using super::super;
 };
@@ -31,22 +31,26 @@ public:
 //------------------------------------------------------------------------------
 
 class TabGraph : public Tab {
-  SUPER(TabGraph, Tab)
+  CLS(TabGraph) SUPER(Tab)
 public:
-  using deg = core::deg;
-  using rad = core::rad;
+  using deg = typ::deg;
+  using rad = typ::rad;
 
   TabGraph(TheHub&, Params&);
-  void set(core::ReflectionInfos);
+  void set(calc::ReflectionInfos);
 
 protected:
-  core::ReflectionInfos rs_;
+  calc::ReflectionInfos rs_;
   void paintEvent(QPaintEvent*);
 
   QPointF p(deg alpha, deg beta) const;
+  deg alpha(QPointF const&)      const;
+  deg beta(QPointF  const&)      const;
+
   void circle(QPointF c, qreal r);
+
   void paintGrid();
-  void paintInfo();
+  void paintPoints();
 
   // valid during paintEvent
   QPainter *p_;
@@ -62,7 +66,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class TabPoleFiguresSave : public TabSave {
-  SUPER(TabPoleFiguresSave, TabSave)
+  CLS(TabPoleFiguresSave) SUPER(TabSave)
 public:
   TabPoleFiguresSave(TheHub& hub, Params& params);
 
@@ -81,7 +85,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class PoleFiguresFrame : public Frame {
-  SUPER(PoleFiguresFrame, Frame)
+  CLS(PoleFiguresFrame) SUPER(Frame)
 public:
   PoleFiguresFrame(TheHub&, rcstr title, QWidget*);
 
@@ -93,16 +97,16 @@ protected:
     return static_cast<PoleFiguresParams*>(params_);
   }
 
-  void displayReflection(uint reflIndex, bool interpolated);
+  void displayReflection(int reflIndex, bool interpolated);
 
   bool savePoleFigureOutput();
   bool writePoleFigureOutputFiles(uint index);
-  void writePoleFile(rcstr filePath,  core::ReflectionInfos, qreal_vec const&);
-  void writeListFile(rcstr filePath,  core::ReflectionInfos, qreal_vec const&);
-  void writeErrorMask(rcstr filePath, core::ReflectionInfos, qreal_vec const&);
+  void writePoleFile(rcstr filePath,  calc::ReflectionInfos, qreal_vec::rc);
+  void writeListFile(rcstr filePath,  calc::ReflectionInfos, qreal_vec::rc);
+  void writeErrorMask(rcstr filePath, calc::ReflectionInfos, qreal_vec::rc);
 };
 
 //------------------------------------------------------------------------------
 
 }}
-#endif  // OUTPUT_POLEFIGURES_H
+#endif // OUTPUT_POLEFIGURES_H

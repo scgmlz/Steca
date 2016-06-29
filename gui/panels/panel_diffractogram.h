@@ -18,20 +18,19 @@
 #define PANEL_DIFFRACTOGRAM_H
 
 #include "QCP/qcustomplot.h"
-#include "core_dataset.h"
-#include "core_fit_methods.h"
-#include "core_reflection.h"
+#include "data/data_dataset.h"
+#include "fit/fit_methods.h"
+#include "calc/calc_reflection.h"
 #include "panel.h"
-#include "types/core_type_curve.h"
+#include "typ/typ_curve.h"
 
-namespace gui {
-namespace panel {
+namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 class DiffractogramPlot;
 
 class DiffractogramPlotOverlay : public QWidget {
-  SUPER(DiffractogramPlotOverlay, QWidget)
+  CLS(DiffractogramPlotOverlay) SUPER(QWidget)
 public:
   DiffractogramPlotOverlay(DiffractogramPlot&);
 
@@ -59,7 +58,7 @@ protected:
 };
 
 class DiffractogramPlot : public QCustomPlot, protected RefHub {
-  SUPER(DiffractogramPlot, QCustomPlot)
+  CLS(DiffractogramPlot) SUPER(QCustomPlot)
 public:
   enum class eTool {
     NONE,
@@ -73,15 +72,15 @@ public:
   void  setTool(eTool);
   eTool getTool() const { return tool_; }
 
-  void  plot(core::rcCurve, core::rcCurve, core::rcCurve,
-             core::curve_vec const&, uint);
+  void  plot(typ::Curve::rc, typ::Curve::rc, typ::Curve::rc,
+             typ::curve_vec::rc, uint);
 
-  core::Range fromPixels(int, int);
+  typ::Range fromPixels(int, int);
 
   void clearBg();
-  void addBg(core::rcRange);
-  void remBg(core::rcRange);
-  void setNewReflRange(core::rcRange);
+  void addBg(typ::Range::rc);
+  void remBg(typ::Range::rc);
+  void setNewReflRange(typ::Range::rc);
   void updateBg();
 
   void clearReflLayer();
@@ -90,7 +89,7 @@ public:
   eFittingTab selectedFittingTab();
 
 protected:
-  void addBgItem(core::rcRange);
+  void addBgItem(typ::Range::rc);
   void resizeEvent(QResizeEvent*);
 
 private:
@@ -101,42 +100,41 @@ private:
 
   QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *guesses_, *fits_;
 
-  QVector<QCPGraph*>       reflGraph_;
+  typ::vec<QCPGraph*>       reflGraph_;
   DiffractogramPlotOverlay *overlay_;
 };
 
 class Diffractogram : public BoxPanel {
-  SUPER(Diffractogram, BoxPanel)
+  CLS(Diffractogram) SUPER(BoxPanel)
 public:
   Diffractogram(TheHub&);
 
   void render();
 
-  core::shp_Dataset dataset() const { return dataset_; }
+  data::shp_Dataset dataset() const { return dataset_; }
 
 private:
-  void setDataset(core::shp_Dataset);
+  void setDataset(data::shp_Dataset);
 
-  core::shp_Dataset dataset_;
+  data::shp_Dataset dataset_;
 
   DiffractogramPlot *plot_;
 
-  core::Curve     dgram_, dgramBgFitted_, bg_;
-  core::curve_vec refls_;
+  typ::Curve     dgram_, dgramBgFitted_, bg_;
+  typ::curve_vec refls_;
 
   uint                 currReflIndex_;
-  core::shp_Reflection currentReflection_;
+  calc::shp_Reflection currentReflection_;
 
 public:
   void calcDgram();
   void calcBackground();
   void calcReflections();
 
-  void        setCurrReflNewRange(core::rcRange);
-  core::Range currReflRange() const;
+  void        setCurrReflNewRange(typ::Range::rc);
+  typ::Range currReflRange() const;
 };
 
 //------------------------------------------------------------------------------
-}
-}
-#endif  // PANEL_DIFFRACTOGRAM_H
+}}
+#endif // PANEL_DIFFRACTOGRAM_H

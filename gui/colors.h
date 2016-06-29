@@ -17,7 +17,8 @@
 #ifndef COLORS_H
 #define COLORS_H
 
-#include "types/core_defs.h"
+#include "def/defs.h"
+
 #include <QRgb>
 
 namespace gui {
@@ -25,7 +26,8 @@ namespace gui {
 
 QRgb intenImage(qreal inten, qreal maxInten = 1);
 QRgb intenGraph(qreal inten, qreal maxInten = 1);
+QRgb heatmapColor(qreal value);
 
 //------------------------------------------------------------------------------
 }
-#endif  // COLORS_H
+#endif // COLORS_H

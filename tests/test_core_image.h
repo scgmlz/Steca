@@ -9,7 +9,7 @@ class TestCoreImage: public TestSuite {
   void testImage(uint w, uint h);
 
 private slots:
-  void testImage();
+//  void testImage();
 };
 
 #endif
