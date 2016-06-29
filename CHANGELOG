@@ -29,4 +29,4 @@ Features planned for the next version (2.0.2, probably by the end of July)
 
 Loading of TIFF and Mar files. X-ray - type data + beam offset handling.
 Filtering of results by their fitting errors (standard deviations).
-
+Faster interpolation; all datasets feature taking into account different tth angles.
