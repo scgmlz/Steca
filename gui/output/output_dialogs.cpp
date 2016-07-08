@@ -95,6 +95,135 @@ Params::Params(TheHub& hub) : RefHub(hub) {
     g->setRowStretch(g->rowCount(), 1);
   }
 
+#ifdef DEVELOP_REBECCA
+  static str_lst errorUnits = {"absolute Error","Δ to other Fit"};
+  static str_lst errorTypes = {"Intensity","Tth","Fwhm"};
+  {
+    box_->addWidget((gpFitError_ = new panel::GridPanel(hub,"Fit Error")));
+    auto g = gpFitError_->grid();
+    g->addWidget(cbErrorTypes_ = comboBox(errorTypes),0,0);
+
+    g->addWidget(intensityFitError_ = new panel::FitErrorGridPannel(hub),1,0); // displayed ony one at same pos
+    g->addWidget(tthFitError_       = new panel::FitErrorGridPannel(hub),1,0);
+    g->addWidget(fwhmFitError_      = new panel::FitErrorGridPannel(hub),1,0);
+
+    g->setRowStretch(g->rowCount(),1);
+    g->setMargin(1);
+
+    {
+      auto g = intensityFitError_->grid();
+      g->addWidget((intensityFitError_->cbErrorUnits = comboBox(errorUnits)),0,0);
+      auto grb = gridLayout();
+      grb->addWidget(intensityFitError_->rbAbs      = radioButton("Abs."),0,0);
+      grb->addWidget(intensityFitError_->rbPercent  = radioButton("%"),0,1);
+      g->addLayout(grb,1,0);
+      g->addWidget((intensityFitError_->spFitError  = spinCell(6,0.,50.)),3,0);
+
+      g->setColumnStretch(g->columnCount(),1);
+      g->setRowStretch(g->rowCount(),1);
+    }
+
+    {
+      auto g = tthFitError_->grid();
+      g->addWidget((tthFitError_->cbErrorUnits = comboBox(errorUnits)),0,0);
+      auto grb = gridLayout();
+      grb->addWidget(tthFitError_->rbAbs = radioButton("Abs."),0,0);
+      grb->addWidget(tthFitError_->rbPercent = radioButton("%"),0,1);
+      g->addLayout(grb,1,0);
+      g->addWidget((tthFitError_->spFitError = spinCell(6,0.,50.)),3,0);
+
+      g->setColumnStretch(g->columnCount(),1);
+      g->setRowStretch(g->rowCount(),1);
+    }
+
+    {
+      auto g = fwhmFitError_->grid();
+      g->addWidget((fwhmFitError_->cbErrorUnits = comboBox(errorUnits)),0,0);
+      auto grb = gridLayout();
+      grb->addWidget(fwhmFitError_->rbAbs = radioButton("Abs."),0,0);
+      grb->addWidget(fwhmFitError_->rbPercent= radioButton("%"),0,1);
+      g->addLayout(grb,1,0);
+      g->addWidget((fwhmFitError_->spFitError = spinCell(6,0.,50.)),3,0);
+
+      g->setColumnStretch(g->columnCount(),1);
+      g->setRowStretch(g->rowCount(),1);
+    }
+
+    intensityFitError_->show();
+    tthFitError_->hide();
+    fwhmFitError_->hide();
+
+  }
+
+    enum FitErrorTypes {
+    INTENSITY_ERROR, TTH_ERROR, FWHM_ERROR,
+  };
+  enum FitErrorUnits {
+    ABSOLUTE, DELTA_TO_NEXT,
+  };
+
+  connect(cbErrorTypes_, slot(QComboBox,currentIndexChanged,int),[this](int index) {
+    switch (index) {
+    case INTENSITY_ERROR:
+      intensityFitError_->show();
+      tthFitError_->hide();
+      fwhmFitError_->hide();
+      break;
+    case TTH_ERROR:
+      intensityFitError_->hide();
+      tthFitError_->show();
+      fwhmFitError_->hide();
+      break;
+    case FWHM_ERROR:
+      intensityFitError_->hide();
+      tthFitError_->show();
+      fwhmFitError_->hide();
+      break;
+    }
+  });
+
+  auto setRbEnabled = [this](int index, QRadioButton* rb) {
+    switch (index) {
+    case ABSOLUTE:
+      rb->setEnabled(false);
+      break;
+    case DELTA_TO_NEXT:
+      rb->setEnabled(true);
+      break;
+    }
+  };
+
+  connect(intensityFitError_->cbErrorUnits, slot(QComboBox,currentIndexChanged,int),[this,setRbEnabled](int index) {
+    setRbEnabled(index,intensityFitError_->rbPercent);
+    if (!intensityFitError_->rbPercent->isEnabled()) {
+      intensityFitError_->rbPercent->setChecked(false);
+      intensityFitError_->rbAbs->setChecked(true);
+    }
+  });
+
+  connect(tthFitError_->cbErrorUnits, slot(QComboBox,currentIndexChanged,int),[this,setRbEnabled](int index){
+    setRbEnabled(index,tthFitError_->rbPercent);
+    if (!tthFitError_->rbPercent->isEnabled()) {
+      tthFitError_->rbPercent->setChecked(false);
+      tthFitError_->rbAbs->setChecked(true);
+    }
+
+  });
+
+  connect(fwhmFitError_->cbErrorUnits, slot(QComboBox,currentIndexChanged,int),[this,setRbEnabled](int index){
+    setRbEnabled(index,fwhmFitError_->rbPercent);
+    if (!fwhmFitError_->rbPercent->isEnabled()) {
+      fwhmFitError_->rbPercent->setChecked(false);
+      fwhmFitError_->rbAbs->setChecked(true);
+    }
+  });
+
+  intensityFitError_->rbPercent->setEnabled(false);
+  tthFitError_->rbPercent->setEnabled(false);
+  fwhmFitError_->rbPercent->setEnabled(false);
+
+#endif
+
   Settings s(GROUP_OUT_PARAMS);
 
   stepGamma->setValue(s.readReal(KEY_GAMMA_STEP, 5));

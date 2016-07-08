@@ -67,6 +67,16 @@ public:
   QDoubleSpinBox   *stepAlpha, *stepBeta;
   QDoubleSpinBox   *avgAlphaMax, *avgRadius, *idwRadius;
   QSpinBox         *threshold;
+
+#ifdef DEVELOP_REBECCA
+
+protected:
+   panel::GridPanel *gpFitError_;
+public:
+   panel::FitErrorGridPannel *intensityFitError_, *tthFitError_, *fwhmFitError_;
+   QComboBox                 *cbErrorTypes_;
+
+#endif
 };
 
 //------------------------------------------------------------------------------
