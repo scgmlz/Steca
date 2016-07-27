@@ -1,3 +1,2 @@
-# STeCa 2
-
-The GUI v.2.
+# SteCa2
+StressTextureCalculator, version 2.
