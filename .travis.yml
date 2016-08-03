@@ -20,7 +20,7 @@ addons:
 
 env:
   global:
-  - QTDIR=/opt/qt4 PATH=$PATH:$QTDIR/bin
+  - QTDIR=/opt/qt54 PATH=$PATH:$QTDIR/bin
 
 script:
 - mkdir build
