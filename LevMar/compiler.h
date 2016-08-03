@@ -20,32 +20,9 @@
 #ifndef _COMPILER_H_
 #define _COMPILER_H_
 
-/* note: intel's icc defines both __ICC & __INTEL_COMPILER.
- * Also, some compilers other than gcc define __GNUC__,
- * therefore gcc should be checked last
- */
-//#if defined(_MSC_VER)
-//#define inline __inline // MSVC
-//#elif !defined(__ICC) && !defined(__INTEL_COMPILER) && !defined(__GNUC__)
-//#define inline // other than MSVC, ICC, GCC: define empty
-//#endif
+#include <QtGlobal>
 
-#if defined(_MSC_VER)
-#define LM_FINITE _finite // MSVC
-#elif defined(__clang__)
-#define LM_FINITE isfinite
-#elif defined(__ICC) || defined(__INTEL_COMPILER) || defined(__GNUC__)
-#define LM_FINITE finite // ICC, GCC
-#else
-#define LM_FINITE finite // other than MSVC, ICC, GCC, let's hope this will work
-#endif
-
-#if defined(_MSC_VER)
-#define LM_ISINF(x) (!_finite(x) && !_isnan(x)) // MSVC
-#elif defined(__ICC) || defined(__INTEL_COMPILER) || defined(__GNUC__)
-#define LM_ISINF(x) isinf(x) // ICC, GCC
-#else
-#define LM_ISINF(x) isinf(x) // other than MSVC, ICC, GCC, let's hope this will work
-#endif
+#define LM_FINITE qIsFinite
+#define LM_ISINF  qIsInf
 
 #endif /* _COMPILER_H_ */
