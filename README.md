@@ -1,5 +1,6 @@
 # SteCa2
 StressTextureCalculator, version 2.
 
-## CI Status
+## Travis CI Status
 
+[![Build Status](https://travis-ci.org/scgmlz/STeCa2.svg?branch=develop)](https://travis-ci.org/scgmlz/STeCa2)
