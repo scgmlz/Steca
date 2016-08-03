@@ -1,8 +1,9 @@
-os:   linux
-dist: trusty
+language: cpp
+
 sudo: required
 
-language: cpp
+os:   linux
+dist: trusty
 
 compiler: 
 - clang
@@ -13,8 +14,13 @@ addons:
     sources:
     - sourceline: ppa:beineri/opt-qt542-trusty
     packages:
-    - qt54tools
+    - qt54base
+    - qt54multimedia
     - xvfb
+
+env:
+  global:
+  - QTDIR=/opt/qt4 PATH=$PATH:$QTDIR/bin
 
 script:
 - mkdir build
