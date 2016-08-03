@@ -10,9 +10,10 @@ compiler:
 
 addons:
   apt:
+    sources:
+    - sourceline: ppa:beineri/opt-qt542-trusty
     packages:
-    - qt5-default
-    - qtmultimedia5-dev
+    - qt54tools
     - xvfb
 
 script:
