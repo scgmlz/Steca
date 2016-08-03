@@ -1,0 +1,23 @@
+os:   linux
+dist: trusty
+sudo: required
+
+language: cpp
+
+compiler: 
+- clang
+- gcc
+
+addons:
+  apt:
+    packages:
+    - qt5-default
+    - qtmultimedia5-dev
+    - xvfb
+
+script:
+- mkdir build
+- cd build
+- cmake ..
+- make
+- xvfb-run tests/tests
