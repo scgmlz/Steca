@@ -121,7 +121,18 @@ private:
 //------------------------------------------------------------------------------
 // casting signed <-> unsigned
 
-#ifndef Q_OS_WIN
+#if defined (Q_OS_WIN) || defined (Q_OS_OSX)
+// do not handle the below templates
+
+inline int to_i(unsigned int u) {
+  return u;
+}
+
+inline unsigned int to_u(int i) {
+  return i;
+}
+
+#else
 
 #ifndef QT_NO_DEBUG
 #include <limits>
@@ -144,18 +155,6 @@ typename std::__make_unsigned<T>::__type to_u(T t) {
   static_assert(std::is_signed<T>::value, "to_u(signed)");
   EXPECT2(0 <= t, "to_u(attempt to convert a negative value)")
   return typename std::__make_unsigned<T>::__type(t);
-}
-
-#else
-
-// MSVC/Win7 does not handle the above templates
-
-inline int to_i(unsigned int u) {
-  return u;
-}
-
-inline unsigned int to_u(int i) {
-  return i;
 }
 
 #endif
