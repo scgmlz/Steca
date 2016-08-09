@@ -1,13 +1,28 @@
 language: cpp
-
 sudo: required
-
-os:   linux
 dist: trusty
 
-compiler: 
+os:
+- linux
+- osx
+
+compiler:
 - clang
 - gcc
+
+env:
+- BUILD_TYPE=Debug
+- BUILD_TYPE=Release
+
+before_install:
+- chmod +x .travis/*/*.sh
+
+install:
+- .travis/${TRAVIS_OS_NAME}/install.sh
+
+script:
+- .travis/${TRAVIS_OS_NAME}/build.sh
+- .travis/${TRAVIS_OS_NAME}/test.sh
 
 addons:
   apt:
@@ -17,14 +32,3 @@ addons:
     - qt54base
     - qt54multimedia
     - xvfb
-
-env:
-  global:
-  - QTDIR=/opt/qt54 PATH=$PATH:$QTDIR/bin
-
-script:
-- mkdir build
-- cd build
-- cmake ..
-- make
-- xvfb-run tests/tests

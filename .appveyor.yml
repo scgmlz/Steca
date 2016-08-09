@@ -1,0 +1,29 @@
+image: Visual Studio 2015
+
+matrix:
+  fast_finish: true
+
+platform:
+- x86
+
+# http://www.appveyor.com/docs/installed-software
+environment:
+  QTDIR: "C:\\Qt\\5.7\\msvc2015"
+  PATH: "%PATH%;C:\\Qt\\5.7\\msvc2015\\bin;C:\\opt\\local_x86\\lib"
+
+build:
+  parallel: true
+
+before_build:
+- python -m pip install numpy
+- C:\cygwin\bin\wget http://apps.jcns.fz-juelich.de/redmine/attachments/download/227/local_x86.zip -O %temp%\local_x86.zip > null
+- 7z x %temp%\local_x86.zip -oC:\opt > null
+
+build_script:
+- mkdir build
+- cd build
+- cmake -G "Visual Studio 14 2015" -DCMAKE_INCLUDE_PATH=C:/opt/local_x86/include -DCMAKE_LIBRARY_PATH=C:/opt/local_x86/lib ..
+- cmake --build . --config Release
+
+test_script:
+- ctest
