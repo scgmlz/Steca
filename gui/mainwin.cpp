@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTextureCalculator ver. 2
+//  Steca2:    StressTextureCalculator ver. 2
 //
 //! @file      core_curve.cpp
 //!
@@ -377,16 +377,12 @@ void MainWin::closeEvent(QCloseEvent* event) {
 void MainWin::onShow() {
   checkActions();
 
-#if defined(DEVELOPMENT_REBECCA) || defined(DEVELOPMENT_JAN)
+#if defined(DEVELOPMENT_JAN)
   auto safeLoad = [this](rcstr fileName) {
     QFileInfo info(QDir::homePath() % fileName);
     if (info.exists())
       hub_.loadSession(info);
   };
-#endif
-
-#ifdef DEVELOPMENT_REBECCA
-  safeLoad("/SCG/STeCa-Data/1.ste");
 #endif
 
 #ifdef DEVELOPMENT_JAN

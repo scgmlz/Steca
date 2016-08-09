@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTextureCalculator ver. 2
+//  Steca2:    StressTextureCalculator ver. 2
 //
 //! @file      type_models.h
 //! @brief     Supporting model types.

@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTextureCalculator ver. 2
+//  Steca2:    StressTextureCalculator ver. 2
 //
 //! @file      io_io.h
 //! @brief     Dataset loaders - main

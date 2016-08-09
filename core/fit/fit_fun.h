@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  STeCa2:    StressTextureCalculator ver. 2
+//  Steca2:    StressTextureCalculator ver. 2
 //
 //! @file      fit_fun.h
 //! @brief     Functions for data fitting

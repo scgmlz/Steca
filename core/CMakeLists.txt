@@ -14,12 +14,12 @@ file (GLOB source_files
   "*.cpp" "*/*.cpp" "*/*/*.cpp"
 )
 
-add_library (STeCaCore
+add_library (StecaCore
   ${source_files}
   ${header_files}
 )
 
-target_link_libraries (STeCaCore
+target_link_libraries (StecaCore
   Qt5::Core
   Qt5::Gui # TODO for QImage in tiffImage
 )

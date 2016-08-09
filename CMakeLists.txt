@@ -2,7 +2,7 @@
 
 cmake_minimum_required (VERSION 2.8.12 FATAL_ERROR)
 
-project (STeCa2)
+project (Steca2)
 
 if (CMAKE_VERSION VERSION_LESS "3.1")
   set (CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
