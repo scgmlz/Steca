@@ -3,15 +3,18 @@ image: Visual Studio 2015
 matrix:
   fast_finish: true
 
-#platform:
-#- x86
+platform:
+- x64
 
 # http://www.appveyor.com/docs/installed-software
 environment:
   matrix:
   - QTDIR: "C:\\Qt\\5.7\\msvc2015"
-    PATH: "%PATH%;C:\\Qt\\5.7\\msvc2015\\bin"
+    PATH: "%PATH%;%QTDIR%\\bin"
     CMAKE_GENERATOR: "Visual Studio 14 2015"
+  - QTDIR: "C:\\Qt\\5.7\\msvc2015_64"
+    PATH: "%PATH%;%QTDIR%\\bin"
+    CMAKE_GENERATOR: "Visual Studio 14 2015 Win64"
 
 build:
   parallel: true
@@ -19,5 +22,5 @@ build:
 build_script:
 - mkdir build
 - cd build
-- cmake -G %CMAKE_GENERATOR% ..
+- cmake -G "%CMAKE_GENERATOR%" ..
 - cmake --build . --config Release
