@@ -11,16 +11,13 @@ environment:
   matrix:
   - QTDIR: "C:\\Qt\\5.7\\msvc2015"
     PATH: "%PATH%;C:\\Qt\\5.7\\msvc2015\\bin"
+    CMAKE_GENERATOR: "Visual Studio 14 2015"
 
 build:
   parallel: true
 
-before_build:
-- C:\cygwin\bin\wget -q http://apps.jcns.fz-juelich.de/redmine/attachments/download/227/local_x86.zip -O %temp%\local_x86.zip
-- 7z x %temp%\local_x86.zip -oC:\opt
-
 build_script:
 - mkdir build
 - cd build
-- cmake -G "Visual Studio 14 2015" ..
+- cmake -G %CMAKE_GENERATOR% ..
 - cmake --build . --config Release
