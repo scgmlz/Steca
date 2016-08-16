@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  Steca2:    StressTextureCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      typ_cache.h
 //! @brief     A map of shared pointers limited in size, lru.

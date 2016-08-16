@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  Steca2:    StressTextureCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      core_dataset.h
 //!
@@ -265,14 +265,14 @@ shp_Metadata Dataset::metadata() const {
 
     qreal fac = 1.0 / count();
 
-    m->motorXT  *= fac;
-    m->motorYT  *= fac;
-    m->motorZT  *= fac;
+    m->motorXT   *= fac;
+    m->motorYT   *= fac;
+    m->motorZT   *= fac;
 
-    m->motorOmg *= fac;
-    m->motorTth *= fac;
-    m->motorPhi *= fac;
-    m->motorChi *= fac;
+    m->motorOmg  *= fac;
+    m->motorTth  *= fac;
+    m->motorPhi  *= fac;
+    m->motorChi  *= fac;
 
     m->motorPST  *= fac;
     m->motorSST  *= fac;

@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  Steca2:    StressTextureCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      actions.h
 //! @brief     A structure with all (glbal) actions

@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  Steca2:    StressTextureCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      output_dialogs.h
 //! @brief     Output dialogs.
@@ -68,6 +68,7 @@ public:
   QDoubleSpinBox   *avgAlphaMax, *avgRadius, *idwRadius;
   QSpinBox         *threshold;
 
+// REVIEW >>> DEVELOP_REBECCA
 #ifdef DEVELOP_REBECCA
 
 protected:

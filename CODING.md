@@ -1,4 +1,4 @@
-# Steca2: Coding Guidelines
+# STeCa2: Coding Guidelines
 
 (This file is GitHub-flavoured Markdown; a nice editor is here: https://stackedit.io/editor)
 
@@ -253,7 +253,7 @@ Consider:
 ```
 // ************************************************************************** //
 //
-//  Steca2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      <file_name.h>
 //! @brief     <brief_description>
@@ -287,7 +287,7 @@ namespace <name> {
 ```
 // ************************************************************************** //
 //
-//  Steca2:    StressTexCalculator ver. 2
+//  STeCa2:    StressTexCalculator ver. 2
 //
 //! @file      <file_name.cpp>
 //!
@@ -301,7 +301,7 @@ namespace <name> {
 // ************************************************************************** //
 
 #include "file_name.h"
-#include "other Steca2 headers"
+#include "other Steca headers"
 #include <Qt includes>
 
 namespace core {

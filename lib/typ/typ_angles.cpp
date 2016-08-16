@@ -1,6 +1,6 @@
 // ************************************************************************** //
 //
-//  Steca2:    StressTextureCalculator ver. 2
+//  STeCa2:    StressTextureCalculator ver. 2
 //
 //! @file      typ_angles.cpp
 //!
@@ -32,8 +32,8 @@ deg& deg::operator+=(deg const& that) {
   return *this;
 }
 
-deg& deg::operator*=(deg const& that) {
-  val_ *= that.val_;
+deg& deg::operator*=(qreal fac) {
+  val_ *= fac;
   return *this;
 }
 
@@ -59,8 +59,8 @@ rad& rad::operator+=(rad const& that) {
   return *this;
 }
 
-rad& rad::operator*=(rad const& that) {
-  val_ *= that.val_;
+rad& rad::operator*=(qreal fac) {
+  val_ *= fac;
   return *this;
 }
 
