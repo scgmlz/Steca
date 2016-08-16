@@ -170,7 +170,7 @@ public:
   void addReflection(calc::shp_Reflection);
   void remReflection(uint);
 
-// normalization
+// normalisation
 private:
   eNorm norm_;
 

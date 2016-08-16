@@ -218,7 +218,11 @@ void DatasetLens::setNorm(eNorm norm) {
   qreal num = 1, den = 1;
 
   switch (norm) {
-  case eNorm::DELTA_MONITOR_COUNT:
+  case eNorm::MONITOR:
+    num = datasets.avgMonitorCount();
+    den = dataset_.avgMonitorCount();
+    break;
+  case eNorm::DELTA_MONITOR:
     num = datasets.avgDeltaMonitorCount();
     den = dataset_.avgDeltaMonitorCount();
     break;
@@ -236,7 +240,7 @@ void DatasetLens::setNorm(eNorm norm) {
 
   normFactor_ = inten_t((num > 0 && den > 0) ? num / den : qQNaN());
   if (qIsNaN(normFactor_))
-    MessageLogger::log("Bad normalization value");
+    MessageLogger::log("Bad normalisation value");
 }
 
 //------------------------------------------------------------------------------

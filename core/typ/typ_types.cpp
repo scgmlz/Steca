@@ -18,7 +18,7 @@
 
 str_lst::rc normStrLst() {
   static str_lst strLst {
-    "none", "Δ monitor", "Δ time", "background",
+    "none", "monitor", "Δ monitor", "Δ time", "background",
   };
 
   return strLst;

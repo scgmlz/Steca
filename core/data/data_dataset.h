@@ -95,9 +95,11 @@ public:
 
   shp_Metadata metadata() const;
 
-  tth_t midTth()            const { return md_->motorTth; }
+  tth_t midTth()            const { return md_->motorTth;          }
+
+  qreal monitorCount()      const { return md_->monitorCount;      }
   qreal deltaMonitorCount() const { return md_->deltaMonitorCount; }
-  qreal deltaTime()         const { return md_->deltaTime; }
+  qreal deltaTime()         const { return md_->deltaTime;         }
 
   typ::deg omg()            const { return md_->motorOmg; }
   typ::deg phi()            const { return md_->motorPhi; }
@@ -149,6 +151,7 @@ public:
 
   inten_rge rgeInten() const;
 
+  qreal    avgMonitorCount()      const;
   qreal    avgDeltaMonitorCount() const;
   qreal    avgDeltaTime()         const;
 
@@ -173,16 +176,19 @@ public:
 
   typ::size2d imageSize() const;
 
+  qreal avgMonitorCount()      const;
   qreal avgDeltaMonitorCount() const;
-  qreal avgDeltaTime() const;
+  qreal avgDeltaTime()         const;
+
   inten_rge::rc  rgeFixedInten(core::Session const&, bool trans, bool cut) const;
   typ::Curve::rc makeAvgCurve(core::Session const&, bool trans, bool cut) const;
 
 private:
-  void invalidateMutables();
+  void  invalidateAvgMutables();
+  qreal calcAvgMutable(qreal (Dataset::*avgMth)() const) const;
 
   // computed on demand (NaNs or emptiness indicate yet unknown values)
-  mutable qreal avgMonitorCount_, avgDeltaTime_;
+  mutable qreal avgMonitorCount_, avgDeltaMonitorCount_, avgDeltaTime_;
   mutable inten_rge rgeFixedInten_;
   mutable typ::Curve avgCurve_;
 };

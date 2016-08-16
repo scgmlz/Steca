@@ -333,7 +333,7 @@ DatasetOptions2::DatasetOptions2(TheHub& hub)
   marginRight_->setToolTip("Right cut");
   gc->setColumnStretch(4, 1);
 
-  box_->addWidget(label("Normalization"));
+  box_->addWidget(label("Normalisation"));
   auto vn = vbox();
   box_->addLayout(vn);
 

@@ -333,6 +333,10 @@ inten_rge Dataset::rgeInten() const {
   return rge;
 }
 
+qreal Dataset::avgMonitorCount() const {
+  AVG_ONES(monitorCount)
+}
+
 qreal Dataset::avgDeltaMonitorCount() const {
   AVG_ONES(deltaMonitorCount)
 }
@@ -383,7 +387,7 @@ size2d Dataset::imageSize() const {
 //------------------------------------------------------------------------------
 
 Datasets::Datasets() {
-  invalidateMutables();
+  invalidateAvgMutables();
 }
 
 void Datasets::appendHere(shp_Dataset dataset) {
@@ -392,7 +396,7 @@ void Datasets::appendHere(shp_Dataset dataset) {
   dataset->datasets_ = this;
 
   super::append(dataset);
-  invalidateMutables();
+  invalidateAvgMutables();
 }
 
 size2d Datasets::imageSize() const {
@@ -403,36 +407,23 @@ size2d Datasets::imageSize() const {
   return first()->imageSize();
 }
 
-qreal Datasets::avgDeltaMonitorCount() const {
-  if (qIsNaN(avgMonitorCount_)) {
-    qreal avg = 0;
-
-    if (!isEmpty()) {
-      for (auto& dataset: *this)
-        avg += dataset->avgDeltaMonitorCount();
-
-      avg /= super::count();
-    }
-
-    avgMonitorCount_ = avg;
-  }
+qreal Datasets::avgMonitorCount() const {
+  if (qIsNaN(avgMonitorCount_))
+    avgMonitorCount_ = calcAvgMutable(&Dataset::avgMonitorCount);
 
   return avgMonitorCount_;
 }
 
+qreal Datasets::avgDeltaMonitorCount() const {
+  if (qIsNaN(avgDeltaMonitorCount_))
+    avgDeltaMonitorCount_ = calcAvgMutable(&Dataset::avgDeltaMonitorCount);
+
+  return avgDeltaMonitorCount_;
+}
+
 qreal Datasets::avgDeltaTime() const {
-  if (qIsNaN(avgDeltaTime_)) {
-    qreal avg = 0;
-
-    if (!isEmpty()) {
-      for (auto& dataset: *this)
-        avg += dataset->avgDeltaTime();
-
-      avg /= super::count();
-    }
-
-    avgDeltaTime_ = avg;
-  }
+  if (qIsNaN(avgDeltaTime_))
+    avgDeltaTime_ = calcAvgMutable(&Dataset::avgDeltaTime);
 
   return avgDeltaTime_;
 }
@@ -473,10 +464,23 @@ Curve::rc Datasets::makeAvgCurve(core::Session::rc session, bool trans, bool cut
   return (avgCurve_ = res);
 }
 
-void Datasets::invalidateMutables() {
-  avgMonitorCount_ = avgDeltaTime_ = qQNaN();
+void Datasets::invalidateAvgMutables() {
+  avgMonitorCount_ = avgDeltaMonitorCount_ = avgDeltaTime_ = qQNaN();
   rgeFixedInten_.invalidate();
   avgCurve_.clear();
+}
+
+qreal Datasets::calcAvgMutable(qreal (Dataset::*avgMth)() const) const {
+  qreal avg = 0;
+
+  if (!isEmpty()) {
+    for (auto& dataset: *this)
+      avg += ((*dataset).*avgMth)();
+
+    avg /= super::count();
+  }
+
+  return avg;
 }
 
 size2d OneDatasets::imageSize() const {

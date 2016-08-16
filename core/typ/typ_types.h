@@ -39,7 +39,7 @@ typedef typ::XY peak_t;
 
 enum class eNorm {
   NONE,
-  DELTA_MONITOR_COUNT, DELTA_TIME, BACKGROUND,
+  MONITOR, DELTA_MONITOR, DELTA_TIME, BACKGROUND,
 };
 
 str_lst::rc normStrLst();
