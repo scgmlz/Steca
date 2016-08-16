@@ -35,10 +35,10 @@ DiagramsParams::DiagramsParams(TheHub& hub) : super(hub) {
     tags.removeLast(); // remove all tags that are not numbers
 
   auto g = gpAxes_->grid();
-  g->addWidget((xAxis = comboBox(tags)), 0, 0);
-  g->addWidget(label("x"), 0, 1);
-  g->addWidget((yAxis = comboBox(tags)), 1, 0);
-  g->addWidget(label("y"), 1, 1);
+  g->addWidget(label("y"), 0, 0);
+  g->addWidget((yAxis = comboBox(tags)), 0, 1);
+  g->addWidget(label("x"), 1, 0);
+  g->addWidget((xAxis = comboBox(tags)), 1, 1);
 
   g->setRowStretch(g->rowCount(), 1);
 }
