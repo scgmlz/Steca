@@ -15,6 +15,7 @@
 
 #include "output_diffractograms.h"
 #include "thehub.h"
+#include <QTextStream>
 
 namespace gui { namespace output {
 //------------------------------------------------------------------------------

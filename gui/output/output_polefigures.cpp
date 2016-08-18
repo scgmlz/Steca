@@ -19,6 +19,7 @@
 #include "thehub.h"
 
 #include <QPainter>
+#include <QTextStream>
 
 namespace gui { namespace output {
 //------------------------------------------------------------------------------

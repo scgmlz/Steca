@@ -1,2 +1,2 @@
-cd build
-tests/tests
+# cd build
+# tests/tests
