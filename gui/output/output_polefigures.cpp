@@ -14,18 +14,11 @@
 // ************************************************************************** //
 
 #include "output_polefigures.h"
+#include "calc/calc_polefigure.h"
 #include "colors.h"
 #include "thehub.h"
-#include "calc/calc_reflection.h"
 
-#ifdef DEVELOPMENT_JAN
-#include "calc/calc_polefigure.h"
-#endif
-
-#include <QDir>
 #include <QPainter>
-#include <QTextStream>
-#include <cmath>
 
 namespace gui { namespace output {
 //------------------------------------------------------------------------------
@@ -33,6 +26,8 @@ namespace gui { namespace output {
 TabGraph::TabGraph(TheHub& hub, Params& params)
 : super(hub, params), flat_(false), alphaMax_(90)
 {
+  ENSURE(params_.panelInterpolation)
+
   grid_->addWidget((cbFlat_ = check("flat")), 0, 0);
   grid_->addWidget((rb30_ = radioButton("30°")), 1, 0);
   grid_->addWidget((rb60_ = radioButton("60°")), 2, 0);
@@ -41,7 +36,8 @@ TabGraph::TabGraph(TheHub& hub, Params& params)
   grid_->setRowStretch(grid_->rowCount(), 1);
   grid_->setColumnStretch(grid_->columnCount(), 1);
 
-  connect(params_.avgAlphaMax, slot(QDoubleSpinBox,valueChanged,double), [this]() {
+  connect(params_.panelInterpolation->avgAlphaMax, slot(QDoubleSpinBox,valueChanged,double), [this](qreal val) {
+    avgAlphaMax_ = val;
     update();
   });
 
@@ -124,13 +120,14 @@ void TabGraph::paintGrid() {
 
   QPen penMark(Qt::darkGreen);
   p_->setPen(penMark);
-  circle(c_, r_ * params_.avgAlphaMax->value() / alphaMax_);
+  circle(c_, r_ * avgAlphaMax_ / alphaMax_);
 }
 
 void TabGraph::paintPoints() {
   qreal rgeMax = rs_.rgeInten().max;
 
-#ifdef DEVELOPMENT_JAN
+#ifdef DEVELOPMENT_REBECCA
+  // TODO
 
   auto paintPoint = [this, &rgeMax](int i, int j) {
     QPointF p(i,j);
@@ -178,7 +175,7 @@ void TabGraph::paintPoints() {
 //------------------------------------------------------------------------------
 
 TabPoleFiguresSave::TabPoleFiguresSave(TheHub& hub, Params& params)
-: super(hub,params)
+: super(hub, params, false)
 {
   auto hb = hbox();
   grid_->addLayout(hb, grid_->rowCount(), 0);
@@ -240,8 +237,11 @@ void TabPoleFiguresSave::rawReflSettings(bool on) {
 
 //------------------------------------------------------------------------------
 
+static const Params::ePanels PANELS = Params::ePanels(
+    Params::REFLECTION | Params::GAMMA | Params::POINTS| Params::INTERPOLATION);
+
 PoleFiguresFrame::PoleFiguresFrame(TheHub &hub, rcstr title, QWidget *parent)
-: super(hub, title, new PoleFiguresParams(hub), parent)
+: super(hub, title, new Params(hub, PANELS), parent)
 {
   tabGraph_ = new TabGraph(hub, *params_);
   tabs_->addTab("Graph").box().addWidget(tabGraph_);
@@ -249,28 +249,31 @@ PoleFiguresFrame::PoleFiguresFrame(TheHub &hub, rcstr title, QWidget *parent)
   tabSave_ = new TabPoleFiguresSave(hub, *params_);
   tabs_->addTab("Save").box().addWidget(tabSave_);
 
-  connect(tabSave_->actSave(), &QAction::triggered, [this]() {
-    tabSave_->clearMessage();
-    if (savePoleFigureOutput()) {
-      tabSave_->showMessage();
-    }
+//  connect(params()->cbRefl, slot(QComboBox,currentIndexChanged,int), [this]() {
+//    int index = params()->currReflIndex();
+//    if (index>=0) {
+//      bool on = fit::ePeakType::RAW != hub_.reflections().at(to_u(index))->type();
+//      tabSave_->rawReflSettings(on);
+//    }
+//  });
+
+  connect(tabSave_->actSave, &QAction::triggered, [this]() {
+    if (savePoleFigureOutput())
+      MessageLogger::info("The file has been saved.");
+    else
+      MessageLogger::warn("The file could not be saved.");
   });
 
-  connect(params()->cbRefl, slot(QComboBox,currentIndexChanged,int), [this]() {
-    int index = params()->currReflIndex();
-    if (index>=0) {
-      bool on = fit::ePeakType::RAW != hub_.reflections().at(to_u(index))->type();
-      tabSave_->rawReflSettings(on);
-    }
-  });
-
-  params()->cbRefl->currentIndexChanged(0);
+//  params()->cbRefl->currentIndexChanged(0);
 }
 
 void PoleFiguresFrame::displayReflection(int reflIndex, bool interpolated) {
   super::displayReflection(reflIndex, interpolated);
   if (reflIndex >= 0 && !interpPoints_.isEmpty() && !calcPoints_.isEmpty())
     tabGraph_->set((interpolated ? interpPoints_ : calcPoints_).at(to_u(reflIndex)));
+
+  bool on = fit::ePeakType::RAW != hub_.reflections().at(to_u(reflIndex))->type();
+  tabSave_->rawReflSettings(on);
 }
 
 bool PoleFiguresFrame::savePoleFigureOutput() {
@@ -278,18 +281,22 @@ bool PoleFiguresFrame::savePoleFigureOutput() {
   if (reflections.isEmpty())
     return false;
 
+  str path = tabSave_->filePath(true);
+  if (path.isEmpty())
+    return false;
+
   bool check = false;
   if (tabSave_->onlySelectedRefl()) {
-    int index = params_->currReflIndex();
-    if (index >= 0 && writePoleFigureOutputFiles(to_u(index))) {
-      tabSave_->savedMessage(str(" for Reflection %1 \n").arg(index + 1));
+    int index = getReflIndex();
+    if (index >= 0 && writePoleFigureOutputFiles(path, to_u(index))) {
+//      tabSave_->savedMessage(str(" for Reflection %1 \n").arg(index + 1));
       check = true;
     }
   } else {
     // all reflections
     for_i (reflections.count()) {
-      if (writePoleFigureOutputFiles(i)) {
-        tabSave_->savedMessage(str(" for Reflection %1 \n").arg(i+1));
+      if (writePoleFigureOutputFiles(path, i)) {
+//        tabSave_->savedMessage(str(" for Reflection %1 \n").arg(i+1));
         check = true;
       } else {
         check = false;  // some failed
@@ -302,25 +309,18 @@ bool PoleFiguresFrame::savePoleFigureOutput() {
 static str const OUT_FILE_TAG(".refl%1");
 static int const MAX_LINE_LENGTH_POL(9);
 
-bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
+bool PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
   auto refl = hub_.reflections().at(index);
   calc::ReflectionInfos reflInfo;
 
-  if (params_->interpolate())
+  if (getInterpolated())
     reflInfo = interpPoints_.at(index);
   else
     reflInfo = calcPoints_.at(index);
 
   auto type = refl->type();
 
-  str p = tabSave_->path();
-  str n = tabSave_->fileName();
-
-  if (p.isEmpty() || n.isEmpty())
-    return false;
-
-  str fileName = str(n + OUT_FILE_TAG).arg(index + 1);
-  str filePath = QDir(p).filePath(fileName);
+  str path = str(filePath + OUT_FILE_TAG).arg(index + 1);
 
   bool check = false;
   int numSavedFiles = 0;
@@ -330,7 +330,7 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
     for_i (reflInfo.count())
       output.append(reflInfo.at(i).inten());
 
-    auto intenFilePath = filePath + ".inten";
+    auto intenFilePath = path + ".inten";
     writeListFile(intenFilePath, reflInfo, output);
     writePoleFile(intenFilePath, reflInfo, output);
     writeErrorMask(intenFilePath, reflInfo, output);
@@ -365,7 +365,7 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(uint index) {
     numSavedFiles+=2;
   }
 
-  tabSave_->savedMessage(str("%1 files have been saved").arg(numSavedFiles));
+//  tabSave_->savedMessage(str("%1 files have been saved").arg(numSavedFiles));
   return check;
 }
 
@@ -411,8 +411,6 @@ void PoleFiguresFrame::writeListFile(rcstr filePath, calc::ReflectionInfos reflI
            << output.at(i) << '\n';
   }
 }
-
-
 
 //------------------------------------------------------------------------------
 }}

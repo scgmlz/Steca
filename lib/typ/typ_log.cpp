@@ -13,46 +13,21 @@
 //
 // ************************************************************************** //
 
-#include "typ_async.h"
-#include <QtWidgets/QProgressBar>
+#include "typ_log.h"
 
 //------------------------------------------------------------------------------
 
-TakesLongTime::TakesLongTime() {
-  if (handler) handler(true);
+void MessageLogger::info(rcstr msg) {
+  if (handler)
+    handler(msg);
 }
 
-TakesLongTime::~TakesLongTime() {
-  if (handler) handler(false);
+void MessageLogger::warn(rcstr msg) {
+  if (handler)
+    handler("** " + msg + " **");
 }
 
-void (*TakesLongTime::handler)(bool) = nullptr;
-
-//------------------------------------------------------------------------------
-
-Progress::Progress(uint total, QProgressBar* bar)
-: total_(total), i_(0), bar_(bar)
-{
-  if (bar_) {
-    bar_->setRange(0, to_i(total_));
-    bar_->setValue(to_i(i_));
-    bar_->show();
-  }
-}
-
-Progress::~Progress() {
-  if (bar_)
-    bar_->hide();
-}
-
-void Progress::setProgress(uint i) {
-  if (bar_)
-    bar_->setValue(to_i((i_ = qBound(0u, i, total_))));
-}
-
-void Progress::step() {
-  setProgress(i_ + 1);
-}
+void (*MessageLogger::handler)(rcstr) = nullptr;
 
 //------------------------------------------------------------------------------
 // eof

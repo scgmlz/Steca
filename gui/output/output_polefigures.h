@@ -22,14 +22,6 @@
 namespace gui { namespace output {
 //------------------------------------------------------------------------------
 
-class PoleFiguresParams : public Params {
-  CLS(PoleFiguresParams) SUPER(Params)
-public:
-  using super::super;
-};
-
-//------------------------------------------------------------------------------
-
 class TabGraph : public Tab {
   CLS(TabGraph) SUPER(Tab)
 public:
@@ -57,7 +49,7 @@ protected:
   QPointF   c_; qreal r_;
 
   bool  flat_;
-  qreal alphaMax_ = 90;
+  qreal alphaMax_ = 90, avgAlphaMax_ = 0;
 
   QCheckBox    *cbFlat_;
   QRadioButton *rb30_, *rb60_, *rb90_;
@@ -93,20 +85,15 @@ protected:
   TabGraph           *tabGraph_;
   TabPoleFiguresSave *tabSave_;
 
-  PoleFiguresParams const* params() const {
-    return static_cast<PoleFiguresParams*>(params_);
-  }
-
   void displayReflection(int reflIndex, bool interpolated);
 
   bool savePoleFigureOutput();
-  bool writePoleFigureOutputFiles(uint index);
+  bool writePoleFigureOutputFiles(rcstr filePath, uint index);
   void writePoleFile(rcstr filePath,  calc::ReflectionInfos, qreal_vec::rc);
   void writeListFile(rcstr filePath,  calc::ReflectionInfos, qreal_vec::rc);
   void writeErrorMask(rcstr filePath, calc::ReflectionInfos, qreal_vec::rc);
 };
 
 //------------------------------------------------------------------------------
-
 }}
 #endif // OUTPUT_POLEFIGURES_H

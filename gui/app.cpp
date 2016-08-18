@@ -16,7 +16,8 @@
 #include "app.h"
 #include "../manifest.h"
 #include "mainwin.h"
-#include "typ/typ_async.h"
+#include "typ/typ_log.h"
+
 #include <QMessageBox>
 #include <QStatusBar>
 #include <QStyleFactory>

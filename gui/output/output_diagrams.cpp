@@ -15,34 +15,8 @@
 
 #include "output_diagrams.h"
 #include "thehub.h"
-#include "typ/typ_async.h"
-#include <QDir>
 
 namespace gui { namespace output {
-//------------------------------------------------------------------------------
-
-DiagramsParams::DiagramsParams(TheHub& hub) : super(hub) {
-  box_->addWidget((gpAxes_ = new panel::GridPanel(hub, "Diagram")));
-  rbCalc->hide();
-  rbInterp->hide();
-  gpInterpolation_->hide();
-  rbInterp->setChecked(false);
-  rbInterp->hide();
-  rbCalc->setChecked(true);
-
-  auto tags = calc::ReflectionInfo::dataTags();
-  for_i (data::Metadata::numAttributes(false) - data::Metadata::numAttributes(true))
-    tags.removeLast(); // remove all tags that are not numbers
-
-  auto g = gpAxes_->grid();
-  g->addWidget(label("y"), 0, 0);
-  g->addWidget((yAxis = comboBox(tags)), 0, 1);
-  g->addWidget(label("x"), 1, 0);
-  g->addWidget((xAxis = comboBox(tags)), 1, 1);
-
-  g->setRowStretch(g->rowCount(), 1);
-}
-
 //------------------------------------------------------------------------------
 
 // sorts xs and ys the same way, by (x,y)
@@ -129,16 +103,14 @@ void TabPlot::plot(qreal_vec::rc xs,    qreal_vec::rc ys,
 //------------------------------------------------------------------------------
 
 TabDiagramsSave::TabDiagramsSave(TheHub& hub, Params& params)
-: super(hub, params)
+: super(hub, params, true)
 {
-  auto gp = new panel::GridPanel(hub);
-  grid_->addWidget(gp, grid_->rowCount(), 0);
+  auto gp = new panel::GridPanel(hub, "To save");
+  grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
 
   auto g = gp->grid();
-  g->addWidget(currentDiagram_ = radioButton("Current diagram"),0,0);
-  g->addWidget(allData_        = radioButton("All data"),1,0);
-  g->addWidget(fileTypes_      = comboBox(fileTags),2,0);
-  g->setColumnStretch(1,1);
+  g->addWidget((currentDiagram_ = radioButton("Current diagram")), 0, 0);
+  g->addWidget((allData_        = radioButton("All data")),        1, 0);
 
   currentDiagram_->setChecked(true);
 }
@@ -153,41 +125,49 @@ bool TabDiagramsSave::currDiagram() const {
 
 //------------------------------------------------------------------------------
 
+static const Params::ePanels PANELS = Params::ePanels(
+    Params::REFLECTION | Params::GAMMA | Params::DIAGRAM);
+
 DiagramsFrame::DiagramsFrame(TheHub &hub, rcstr title, QWidget *parent)
-: super(hub, title, new DiagramsParams(hub), parent)
+: super(hub, title, new Params(hub, PANELS), parent)
 {
   btnInterpolate_->hide();
 
   tabPlot_ = new TabPlot();
   tabs_->addTab("Diagram").box().addWidget(tabPlot_);
 
-  connect(params()->xAxis, slot(QComboBox,currentIndexChanged,int), [this]() {
+  ENSURE(params_->panelDiagram)
+  auto pd = params_->panelDiagram;
+
+  connect(pd->xAxis, slot(QComboBox,currentIndexChanged,int), [this]() {
     recalculate();
   });
 
-  connect(params()->yAxis, slot(QComboBox,currentIndexChanged,int), [this]() {
+  connect(pd->yAxis, slot(QComboBox,currentIndexChanged,int), [this]() {
     recalculate();
   });
 
   tabSave_ = new TabDiagramsSave(hub, *params_);
   tabs_->addTab("Save").box().addWidget(tabSave_);
-  tabSave_->savedMessage("File has been saved.");
 
-  connect(tabSave_->actSave(),&QAction::triggered,[this]() {
-    if (saveDiagramOutput()) {
-      tabSave_->showMessage();
-    }
+  connect(tabSave_->actSave, &QAction::triggered, [this]() {
+    if (saveDiagramOutput())
+      MessageLogger::info("The file has been saved.");
+    else
+      MessageLogger::warn("The file could not be saved.");
   });
 
   recalculate();
 }
 
-eReflAttr DiagramsFrame::xAttr() const {
-  return eReflAttr(params()->xAxis->currentIndex());
+DiagramsFrame::eReflAttr DiagramsFrame::xAttr() const {
+  ENSURE(params_->panelDiagram)
+  return eReflAttr(params_->panelDiagram->xAxis->currentIndex());
 }
 
-eReflAttr DiagramsFrame::yAttr() const {
-  return eReflAttr(params()->yAxis->currentIndex());
+DiagramsFrame::eReflAttr DiagramsFrame::yAttr() const {
+  ENSURE(params_->panelDiagram)
+  return eReflAttr(params_->panelDiagram->yAxis->currentIndex());
 }
 
 void DiagramsFrame::displayReflection(int reflIndex, bool interpolated) {
@@ -251,30 +231,22 @@ void DiagramsFrame::recalculate() {
 //------------------------------------------------------------------------------
 
 bool DiagramsFrame::saveDiagramOutput() {
-  auto ts = static_cast<TabDiagramsSave*>(tabSave_);
-
-  str p = ts->path();
-  str n = ts->fileName();
-
-  if (p.isEmpty() || n.isEmpty())
+  str path = tabSave_->filePath(true);
+  if (path.isEmpty())
     return false;
 
-  str fileName = n;
-  str filePath = QDir(p).filePath(fileName);
+  str separator = tabSave_->separator();
 
-  auto s = ts->currType();
-
-  str_lst separators = ts->fileSeparators;
-  if (ts->currDiagram())
-    writeCurrentDiagramOutputFile(filePath, separators.at(s), ts->fileTags.at(s));
+  if (tabSave_->currDiagram())
+    writeCurrentDiagramOutputFile(path, separator);
   else
-    writeAllDataOutputFile(filePath, separators.at(s), ts->fileTags.at(s));
+    writeAllDataOutputFile(path, separator);
 
   return true;
 }
 
-void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator, rcstr fileTag) {
-  WriteFile file(filePath + fileTag);
+void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator) {
+  WriteFile file(filePath);
 
   QTextStream stream(&file);
 
@@ -292,13 +264,12 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separato
   }
 }
 
-void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator, rcstr fileTag) {
-  int index = params_->currReflIndex();
+void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
+  int index = getReflIndex();
   if (index < 0)
     return;
 
-  WriteFile file(filePath + fileTag);
-
+  WriteFile file(filePath);
   QTextStream stream(&file);
 
   auto headers = table_->headers();

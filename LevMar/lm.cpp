@@ -32,10 +32,10 @@
 #include "compiler.h"
 #include "misc.h"
 
-#include "typ/typ_async.h"
+#include "typ/typ_log.h"
 
 void msg_cannotSolve(uint n, uint m) {
-  MessageLogger::log(str("levmar: cannot solve a problem with fewer measurements [%1] than unknowns [%2]\n").arg(n).arg(m));
+  MessageLogger::warn(str("levmar: cannot solve a problem with fewer measurements [%1] than unknowns [%2]\n").arg(n).arg(m));
 }
 
 #define EPSILON       1E-12

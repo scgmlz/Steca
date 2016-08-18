@@ -93,10 +93,13 @@ QDoubleSpinBox* spinCell(uint emWidth, qreal min, qreal max) {
 QCheckBox* check(rcstr text, QAction* action) {
   auto cb = new QCheckBox(text);
   if (action) {
-    QObject::connect(cb, &QCheckBox::toggled,
-                     [action](bool on) { action->setChecked(on); });
-    QObject::connect(action, &QAction::toggled,
-                     [cb](bool on) { cb->setChecked(on); });
+    QObject::connect(cb, &QCheckBox::toggled, [action](bool on) {
+      action->setChecked(on);
+    });
+
+    QObject::connect(action, &QAction::toggled, [cb](bool on) {
+      cb->setChecked(on);
+    });
   }
   return cb;
 }

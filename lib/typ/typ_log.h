@@ -14,30 +14,17 @@
 //
 // ************************************************************************** //
 
-#ifndef TYP_ASYNC_H
-#define TYP_ASYNC_H
+#ifndef TYP_LOG_H
+#define TYP_LOG_H
 
 #include "def/defs.h"
 
-class TakesLongTime final {
+class MessageLogger {
 public:
-  TakesLongTime();
- ~TakesLongTime();
+  static void info(rcstr);
+  static void warn(rcstr);
 
-  static void (*handler)(bool);
+  static void (*handler)(rcstr);
 };
 
-class Progress final {
-public:
-  Progress(uint total, class QProgressBar*);
- ~Progress();
-
-  void setProgress(uint);
-  void step();
-
-private:
-  uint total_, i_;
-  QProgressBar* bar_;
-};
-
-#endif // TYP_ASYNC_H
+#endif // TYP_LOG_H

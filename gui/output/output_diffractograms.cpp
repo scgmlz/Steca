@@ -14,33 +14,21 @@
 // ************************************************************************** //
 
 #include "output_diffractograms.h"
-#include "calc/calc_lens.h"
 #include "thehub.h"
-#include "typ/typ_async.h"
-#include <QDir>
-#include <QTextStream>
 
 namespace gui { namespace output {
 //------------------------------------------------------------------------------
 
-DiffractogramsParams::DiffractogramsParams(TheHub& hub) : super(hub) {
-  gpRefl_->hide();
-  gpInterpolation_->hide();
-}
-
-//------------------------------------------------------------------------------
-
 TabDiffractogramsSave::TabDiffractogramsSave(TheHub& hub, Params& params)
-: super(hub, params)
+: super(hub, params, true)
 {
-  auto vb = vbox();
-  grid_->addLayout(vb, grid_->rowCount(), 0);
+  auto gp = new panel::GridPanel(hub, "To save");
+  grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
 
-  vb->addWidget(rbCurrent_       = radioButton("Current diffractogram"));
-  vb->addWidget(rbAllSequential_ = radioButton("All diffractograms to sequentially numbered files"));
-  vb->addWidget(rbAll_           = radioButton("All diffractograms"));
-  vb->addWidget(fileTypes_       = comboBox(fileTags));
-  vb->addStretch();
+  auto g = gp->grid();
+  g->addWidget((rbCurrent_       = radioButton("Current diffractogram")), 0, 0);
+  g->addWidget((rbAllSequential_ = radioButton("All diffractograms to sequentially numbered files")), 1, 0);
+  g->addWidget((rbAll_           = radioButton("All diffractograms")), 2, 0);
 
   rbAll_->setChecked(true);
 }
@@ -52,7 +40,6 @@ uint TabDiffractogramsSave::currType() const {
 //------------------------------------------------------------------------------
 
 struct OutputData {
-
   OutputData() {
   }
 
@@ -68,11 +55,13 @@ struct OutputData {
   bool isValid() {
    return (!dataset_.metadata().isNull() || !curve_.isEmpty() || gmaStripe_.isValid());
   }
-
 };
 
+static const Params::ePanels PANELS = Params::ePanels(
+    Params::GAMMA);
+
 DiffractogramsFrame::DiffractogramsFrame(TheHub &hub, rcstr title, QWidget *parent)
-: super(hub, title, new DiffractogramsParams(hub), parent)
+: super(hub, title, new Params(hub, PANELS), parent)
 {
   tabs_->removeTab(0);
   btnCalculate_->hide();
@@ -81,10 +70,11 @@ DiffractogramsFrame::DiffractogramsFrame(TheHub &hub, rcstr title, QWidget *pare
   tabSave_ = new TabDiffractogramsSave(hub, *params_);
   tabs_->addTab("Save").box().addWidget(tabSave_);
 
-  connect(tabSave_->actSave(),&QAction::triggered,[this]() {
-    tabSave_->clearMessage();
-    saveDiffractogramOutput();
-    tabSave_->showMessage();
+  connect(tabSave_->actSave,&QAction::triggered,[this]() {
+    if (saveDiffractogramOutput())
+      MessageLogger::info("The file has been saved.");
+    else
+      MessageLogger::warn("The file could not be saved.");
   });
 }
 
@@ -115,12 +105,14 @@ OutputData DiffractogramsFrame::collectCurve(data::Dataset::rc dataset) {
 }
 
 OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
-  gma_t gmaStep = params_->stepGamma->value();
+  ENSURE(params_->panelGamma)
+  auto pg = params_->panelGamma;
+  gma_t gmaStep = pg->stepGamma->value();
 
   typ::Range rgeGma;
-  if (params_->cbLimitGamma->isChecked())
-    rgeGma.safeSet(params_->limitGammaMin->value(),
-                     params_->limitGammaMax->value());
+  if (pg->cbLimitGamma->isChecked())
+    rgeGma.safeSet(pg->minGamma->value(),
+                   pg->maxGamma->value());
 
   auto &datasets = hub_.collectedDatasets();
   Progress progress(datasets.count(), pb_);
@@ -159,32 +151,24 @@ auto writeMetaData = [](OutputData outputData, QTextStream& stream, str separato
   }
 };
 
-bool DiffractogramsFrame::writeCurrDiffractogramToFile() {
+bool DiffractogramsFrame::writeCurrDiffractogramToFile(rcstr filePath, rcstr separator) {
   auto outputData = outputCurrDiffractogram();
   if (!outputData.isValid())
     return false;
 
-  auto ts = static_cast<TabDiffractogramsSave*>(tabSave_);
-  auto s = ts->currType();
-  auto separator = tabSave_->fileSeparators.at(s);
-
-  auto filePath = QDir(tabSave_->path()).absoluteFilePath(tabSave_->fileName());
-  auto fileTag = tabSave_->fileTags.at(s);
-  WriteFile file(filePath + fileTag);
-
+  WriteFile file(filePath);
   QTextStream stream(&file);
 
-  writeMetaData(outputData,stream,separator);
+  writeMetaData(outputData, stream, separator);
   stream << "Intensity" << separator << "Tth" << '\n';
-  for_i (outputData.curve_.xs().count()) {
-    stream << outputData.curve_.x(i) << separator << outputData.curve_.y(i) << '\n';
-  }
-  tabSave_->savedMessage("File has been saved.");
+  for_i(outputData.curve_.xs().count())
+    stream << outputData.curve_.x(i) << separator << outputData.curve_.y(i)
+           << '\n';
 
   return true;
 }
 
-bool DiffractogramsFrame::writeAllDiffractogramsToFiles(bool oneFile) {
+bool DiffractogramsFrame::writeAllDiffractogramsToFiles(rcstr filePath, rcstr separator, bool oneFile) {
   auto outputCollections = outputAllDiffractograms();
   for (auto outputCollection : outputCollections) {
     for (auto outputData : outputCollection) {
@@ -193,16 +177,10 @@ bool DiffractogramsFrame::writeAllDiffractogramsToFiles(bool oneFile) {
     }
   }
 
-  auto ts = static_cast<TabDiffractogramsSave*>(tabSave_);
-  auto s = ts->currType();
-  str separator = tabSave_->fileSeparators.at(s);
-  str fileTag = tabSave_->fileTags.at(s);
+  WriteFile file(filePath);
+  QTextStream stream(&file);
 
   if (oneFile) {
-    auto filePath = QDir(tabSave_->path()).absoluteFilePath(tabSave_->fileName() + fileTag);
-    WriteFile file(filePath);
-    QTextStream stream(&file);
-
     for (auto outputCollection : outputCollections) {
       for (auto outputData : outputCollection) {
         writeMetaData(outputData,stream,separator);
@@ -213,15 +191,9 @@ bool DiffractogramsFrame::writeAllDiffractogramsToFiles(bool oneFile) {
         }
       }
     }
-    tabSave_->savedMessage("File has been saved.");
-
   } else {
     int fileNumber = 1;
     for (auto outputCollection : outputCollections) {
-      str fileName = str(tabSave_->fileName() + "%1" + fileTag).arg(fileNumber);
-      auto filePath = QDir(tabSave_->path()).absoluteFilePath(fileName);
-      WriteFile file(filePath);
-      QTextStream stream(&file);
       for (auto outputData : outputCollection) {
         writeMetaData(outputData,stream,separator);
         stream << "Intensity" << separator << "Tth" << '\n';
@@ -231,21 +203,26 @@ bool DiffractogramsFrame::writeAllDiffractogramsToFiles(bool oneFile) {
       }
       ++fileNumber;
     }
-    tabSave_->savedMessage(str("%1 files have been saved.").arg(fileNumber-1));
   }
   return true;
 
  }
 
 bool DiffractogramsFrame::saveDiffractogramOutput() {
+  str path = tabSave_->filePath(true);
+  if (path.isEmpty())
+    return false;
+
+  str separator = tabSave_->separator();
+
   if (tabSave_->currentChecked())
-    return writeCurrDiffractogramToFile();
+    return writeCurrDiffractogramToFile(path, separator);
 
   if (tabSave_->allSequentialChecked())
-    return writeAllDiffractogramsToFiles(false);
+    return writeAllDiffractogramsToFiles(path, separator, false);
 
   if (tabSave_->allChecked())
-    return writeAllDiffractogramsToFiles(true);
+    return writeAllDiffractogramsToFiles(path, separator, true);
 
   return false;
 }

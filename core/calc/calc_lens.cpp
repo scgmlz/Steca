@@ -15,7 +15,7 @@
 
 #include "calc/calc_lens.h"
 #include "session.h"
-#include "typ/typ_async.h"
+#include "typ/typ_log.h"
 #include <qmath.h>
 
 namespace calc {
@@ -240,7 +240,7 @@ void DatasetLens::setNorm(eNorm norm) {
 
   normFactor_ = inten_t((num > 0 && den > 0) ? num / den : qQNaN());
   if (qIsNaN(normFactor_))
-    MessageLogger::log("Bad normalisation value");
+    MessageLogger::warn("Bad normalisation value");
 }
 
 //------------------------------------------------------------------------------

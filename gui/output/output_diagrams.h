@@ -23,19 +23,6 @@
 namespace gui { namespace output {
 //------------------------------------------------------------------------------
 
-class DiagramsParams : public Params {
-  CLS(DiagramsParams) SUPER(Params)
-public:
-  DiagramsParams(TheHub&);
-
-protected:
-  panel::GridPanel *gpAxes_;
-public:
-  QComboBox *xAxis, *yAxis;
-};
-
-//------------------------------------------------------------------------------
-
 class TabPlot : public QCustomPlot {
   CLS(TabPlot) SUPER(QCustomPlot)
 public:
@@ -75,9 +62,7 @@ protected:
   TabPlot         *tabPlot_;
   TabDiagramsSave *tabSave_;
 
-  DiagramsParams const* params() const {
-    return static_cast<DiagramsParams*>(params_);
-  }
+  using eReflAttr = calc::ReflectionInfo::eReflAttr;
 
   eReflAttr xAttr() const;
   eReflAttr yAttr() const;
@@ -90,8 +75,8 @@ protected:
   void recalculate();
 
   bool saveDiagramOutput();
-  void writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator, rcstr fileTag);
-  void writeAllDataOutputFile(rcstr filePath, rcstr separator, rcstr fileTag);
+  void writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator);
+  void writeAllDataOutputFile(rcstr filePath, rcstr separator);
 };
 
 //------------------------------------------------------------------------------

@@ -16,7 +16,7 @@
 #include "data_dataset.h"
 #include "calc/calc_lens.h"
 #include "session.h"
-#include "typ/typ_async.h"
+#include "typ/typ_log.h"
 #include <qmath.h>
 
 namespace data {
@@ -256,9 +256,9 @@ shp_Metadata Dataset::metadata() const {
        m->deltaTime    += o->deltaTime;
 
        if (m->monitorCount > o->monitorCount)
-         MessageLogger::log("decreasing monitor count in combined datasets");
+         MessageLogger::warn("decreasing monitor count in combined datasets");
        if (m->time > o->time)
-         MessageLogger::log("decreasing time in combined datasets");
+         MessageLogger::warn("decreasing time in combined datasets");
        m->monitorCount = o->monitorCount;
        m->time         = o->time;
     }

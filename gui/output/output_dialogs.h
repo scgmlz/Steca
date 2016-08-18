@@ -19,113 +19,111 @@
 
 #include "actions.h"
 #include "calc/calc_reflection_info.h"
-#include "gui_helpers.h"
 #include "panels/panel.h"
-#include "refhub.h"
-#include "def/defs.h"
-
-#include "typ/typ_variant.h"
-#include <QMessageBox>
+#include "typ/typ_log.h"
 
 class QProgressBar;
 
 namespace gui { namespace output {
 //------------------------------------------------------------------------------
 
-using eReflAttr = calc::ReflectionInfo::eReflAttr;
+/* Note that some data members are public, to simplify the code. Be careful. */
 
-class Params : public QWidget, protected RefHub {
-  CLS(Params) SUPER(QWidget)
+class Panel : public panel::GridPanel {
+  CLS(Panel) SUPER(panel::GridPanel)
 public:
-  Params(TheHub&);
- ~Params();
+  using super::super;
+};
 
-  void addStretch();
-
-  int  currReflIndex() const;
-  bool interpolate()   const;
-
-protected:
-  QBoxLayout *box_;
-
-protected:
-  panel::GridPanel *gpRefl_;
+class PanelReflection : public Panel {
+  CLS(PanelReflection) SUPER(Panel)
 public:
-  QComboBox        *cbRefl;
-  QRadioButton     *rbCalc, *rbInterp;
+  PanelReflection(TheHub&);
 
-protected:
-  panel::GridPanel *gpGamma_;
+  QComboBox *cbRefl;
+};
+
+class PanelGamma : public Panel {
+  CLS(PanelGamma) SUPER(Panel)
 public:
-  QDoubleSpinBox   *stepGamma;
-  QCheckBox        *cbLimitGamma;
-  QDoubleSpinBox   *limitGammaMin, *limitGammaMax;
+  PanelGamma(TheHub&);
 
-protected:
-  panel::GridPanel *gpInterpolation_;
+  QSpinBox       *numSlices;
+  QDoubleSpinBox *stepGamma;
+
+  QCheckBox      *cbLimitGamma;
+  QDoubleSpinBox *minGamma, *maxGamma;
+
+  void updateGamma();
+};
+
+class PanelPoints : public Panel {
+  CLS(PanelPoints) SUPER(Panel)
 public:
-  QDoubleSpinBox   *stepAlpha, *stepBeta;
-  QDoubleSpinBox   *avgAlphaMax, *avgRadius, *idwRadius;
-  QSpinBox         *threshold;
+  PanelPoints(TheHub&);
 
-// REVIEW >>> DEVELOP_REBECCA
+  QRadioButton *rbCalc, *rbInterp;
+};
+
+class PanelInterpolation : public Panel {
+  CLS(PanelInterpolation) SUPER(Panel)
+public:
+  PanelInterpolation(TheHub&);
+
+  QDoubleSpinBox *stepAlpha, *stepBeta, *idwRadius;
+  QDoubleSpinBox *avgAlphaMax, *avgRadius; QSpinBox *avgThreshold;
+};
+
+class PanelDiagram : public Panel {
+  CLS(PanelDiagram) SUPER(Panel)
+public:
+  PanelDiagram(TheHub&);
+
+  QComboBox *xAxis, *yAxis;
+};
+
+class PanelFitError : public Panel {
+  CLS(PanelFitError) SUPER(Panel)
+public:
+  PanelFitError(TheHub&);
+
 #ifdef DEVELOP_REBECCA
+  QComboBox         *cbErrorUnits;
+  QRadioButton      *rbPercent, *rbAbs;
+  QDoubleSpinBox    *spFitError;
 
-protected:
-   panel::GridPanel *gpFitError_;
-public:
-   panel::FitErrorGridPannel *intensityFitError_, *tthFitError_, *fwhmFitError_;
-   QComboBox                 *cbErrorTypes_;
-
+times:
+  *intensityFitError_, *tthFitError_, *fwhmFitError_;
+  QComboBox                 *cbErrorTypes_;
 #endif
 };
 
 //------------------------------------------------------------------------------
 
-class Tabs : public panel::TabsPanel {
-  CLS(Tabs) SUPER(panel::TabsPanel)
+class Params : public QWidget, protected RefHub {
+  CLS(Params) SUPER(QWidget)
 public:
-  Tabs(TheHub&);
-};
+  enum ePanels {
+    REFLECTION = 0x01, GAMMA = 0x02, POINTS = 0x04, INTERPOLATION = 0x08,
+    DIAGRAM = 0x10,
+  };
 
-//------------------------------------------------------------------------------
+  Params(TheHub&, ePanels);
+ ~Params();
 
-class Tab : public QWidget, protected RefHub {
-  CLS(Tab) SUPER(QWidget)
-public:
-  Tab(TheHub&, Params&);
+  PanelReflection    *panelReflection;
+  PanelGamma         *panelGamma;
+  PanelPoints        *panelPoints;
+  PanelInterpolation *panelInterpolation;
+  PanelDiagram       *panelDiagram;
 
-protected:
-  QGridLayout *grid_;
+  str saveDir, saveFmt;
 
-  Params &params_;
-};
-
-//------------------------------------------------------------------------------
-
-class Frame : public QFrame, protected RefHub {
-  CLS(Frame) SUPER(QFrame)
-public:
-  Frame(TheHub&, rcstr title, Params*, QWidget*);
-
-protected:
-  QAction     *actClose_, *actCalculate_, *actInterpolate_;
-  QToolButton *btnClose_, *btnCalculate_, *btnInterpolate_;
-
-  QProgressBar *pb_;
+private:
+  void readSettings();
+  void saveSettings() const;
 
   QBoxLayout *box_;
-  Params     *params_;
-  Tabs       *tabs_;
-
-  typ::vec<calc::ReflectionInfos> calcPoints_, interpPoints_;
-
-  class Table *table_;
-
-  void calculate();
-  void interpolate();
-
-  virtual void displayReflection(int reflIndex, bool interpolated);
 };
 
 //------------------------------------------------------------------------------
@@ -152,12 +150,31 @@ private:
 
 //------------------------------------------------------------------------------
 
+class Tabs : public panel::TabsPanel {
+  CLS(Tabs) SUPER(panel::TabsPanel)
+public:
+  Tabs(TheHub&);
+};
+
+//------------------------------------------------------------------------------
+
+class Tab : public QWidget, protected RefHub {
+  CLS(Tab) SUPER(QWidget)
+public:
+  Tab(TheHub&, Params&);
+
+protected:
+  Params &params_;
+
+  QGridLayout *grid_;
+};
+
+//------------------------------------------------------------------------------
+
 class TabTable : public Tab {
   CLS(TabTable) SUPER(Tab)
 public:
   TabTable(TheHub&, Params&, str_lst::rc headers, typ::cmp_vec::rc);
-
-  Table *table() const { return table_; }
 
 private:
   struct showcol_t {
@@ -180,8 +197,10 @@ private:
     QRadioButton *rbHidden_, *rbAll_, *rbNone_, *rbInten_, *rbTth_, *rbFWHM_;
   };
 
+public:
+  Table          *table;
+
 private:
-  Table          *table_;
   ShowColsWidget *showColumnsWidget_;
   showcol_vec     showCols_;
 };
@@ -191,26 +210,49 @@ private:
 class TabSave : public Tab {
   CLS(TabSave) SUPER(Tab)
 public:
-  TabSave(TheHub&, Params&);
+  TabSave(TheHub&, Params&, bool withTypes);
 
-  void clearFilename();
+  str filePath(bool withSuffix);
+  str separator() const;
 
-  str path()        const { return path_->text();     }
-  str fileName()    { return fileName_->text(); }
-
-  Action* actSave() const { return actSave_; }
-
-  str_lst const fileTags {".txt",".dat",".csv"};
-  str_lst const fileSeparators {",", " ", ";"};
-
-  void showMessage();
-  void savedMessage(str message);
-  void clearMessage();
+  Action *actBrowse, *actSave;
 
 protected:
-  QLineEdit *path_, *fileName_;
-  Action    *actBrowsePath_, *actSave_;
-  QMessageBox    *filesSavedDialog_;
+  str fileSetSuffix(rcstr);
+
+  QLineEdit    *dir_, *file_;
+  QRadioButton *rbDat_, *rbCsv_;
+};
+
+//------------------------------------------------------------------------------
+
+class Frame : public QFrame, protected RefHub {
+  CLS(Frame) SUPER(QFrame)
+public:
+  Frame(TheHub&, rcstr title, Params*, QWidget*);
+
+protected:
+  QAction     *actClose_, *actCalculate_, *actInterpolate_;
+  QToolButton *btnClose_, *btnCalculate_, *btnInterpolate_;
+
+  QProgressBar *pb_;
+
+  QBoxLayout *box_;
+  Params     *params_;
+  Tabs       *tabs_;
+
+  typ::vec<calc::ReflectionInfos> calcPoints_, interpPoints_;
+
+  Table *table_;
+
+  void calculate();
+  void interpolate();
+
+  virtual void displayReflection(int reflIndex, bool interpolated);
+
+protected:
+  int  getReflIndex()    const;
+  bool getInterpolated() const;
 };
 
 //------------------------------------------------------------------------------

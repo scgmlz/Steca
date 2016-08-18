@@ -16,85 +16,95 @@
 #include "output_dialogs.h"
 #include "calc/calc_polefigure.h"
 #include "thehub.h"
-#include "typ/typ_async.h"
 #include "types/type_models.h"
 
 #include <QFileDialog>
 #include <QHeaderView>
+#include <QMessageBox>
 #include <QProgressBar>
 #include <QScrollArea>
-#include <QSplitter>
-#include <QPushButton>
 
 namespace gui { namespace output {
 //------------------------------------------------------------------------------
 
-static str const GROUP_OUT_PARAMS("Output Params");
-static str const
-  KEY_GAMMA_STEP("gamma step"),
-  KEY_GAMMA_MIN("gamma min"),
-  KEY_GAMMA_MAX("gamma max"),
-  KEY_ALPHA_STEP("alpha step"),
-  KEY_BETA_STEP("beta step"),
-  KEY_AVG_ALPHA_MAX("avg alpha max"),
-  KEY_AVG_RADIUS("avg radius"),
-  KEY_IDW_RADIUS("idw radius"),
-  KEY_THRESHOLD("threshold");
+PanelReflection::PanelReflection(TheHub& hub) : super(hub, "Reflection") {
+  auto g = grid();
+  g->addWidget((cbRefl = comboBox(hub_.reflectionsModel.names())), 0, 0);
+}
 
-Params::Params(TheHub& hub) : RefHub(hub) {
-  setLayout((box_ = boxLayout(Qt::Horizontal)));
-  box_->setMargin(0);
+PanelGamma::PanelGamma(TheHub& hub) : super(hub, "Gamma") {
+  auto g = grid();
 
-  {
-    box_->addWidget((gpRefl_ = new panel::GridPanel(hub, "Reflection")));
-    auto g = gpRefl_->grid();
+  g->addWidget(label("slices"), 0, 0, Qt::AlignRight);
+  g->addWidget((numSlices = spinCell(3, 1)), 0, 1);
 
-    g->addWidget((cbRefl = comboBox(hub_.reflectionsModel.names())), 0, 0, 1, 2);
+  g->addWidget(label("step °"), 1, 0, Qt::AlignRight);
+  g->addWidget((stepGamma = spinCell(3, 0.0)), 1, 1);
 
-    g->addWidget((rbCalc   = radioButton("calc.")),   1, 0);
-    g->addWidget((rbInterp = radioButton("interp.")), 1, 1);
-    g->setRowStretch(g->rowCount(), 1);
-  }
+  g->addWidget((cbLimitGamma = check("limit range")), 0, 2, 1, 4);
 
-  {
-    box_->addWidget((gpGamma_ = new panel::GridPanel(hub, "Gamma")));
-    auto g = gpGamma_->grid();
+  g->addWidget(label("min"), 1, 2);
+  g->addWidget((minGamma = spinCell(6, -180., 180.)), 1, 3);
 
-    g->addWidget(label("step"), 0, 0, Qt::AlignRight);
-    g->addWidget((stepGamma = spinCell(6, 1., 30.)), 0, 1);
+  g->addWidget(label("max"), 1, 4);
+  g->addWidget((maxGamma = spinCell(6, -180., 180.)), 1, 5);
 
-    g->addWidget((cbLimitGamma = check("limit range")), 0, 2, 1, 2);
+  connect(cbLimitGamma, &QCheckBox::toggled, [this]() {
+    updateGamma();
+  });
 
-    g->addWidget(label("min"), 1, 0, Qt::AlignRight);
-    g->addWidget((limitGammaMin = spinCell(6, -180., 180.)), 1, 1);
+  connect(numSlices, slot(QSpinBox,valueChanged,int), [this](int num) {
+    updateGamma();
+  });
+}
 
-    g->addWidget(label("max"), 1, 2, Qt::AlignRight);
-    g->addWidget((limitGammaMax = spinCell(6, -180., 180.)), 1, 3);
+void PanelGamma::updateGamma() {
+  // TODO slices/step
+  bool on = cbLimitGamma->isChecked();
+  minGamma->setEnabled(on);
+  maxGamma->setEnabled(on);
+}
 
-    g->setRowStretch(g->rowCount(), 1);
-  }
+PanelPoints::PanelPoints(TheHub& hub) : super(hub, "Points") {
+  auto g = grid();
+  g->addWidget((rbCalc   = radioButton("calculated")),   0, 0);
+  g->addWidget((rbInterp = radioButton("interpolated")), 0, 1);
+}
 
-  {
-    box_->addWidget((gpInterpolation_ = new panel::GridPanel(hub, "Interpolation")));
-    auto g = gpInterpolation_->grid();
+PanelInterpolation::PanelInterpolation(TheHub& hub) : super(hub, "Interpolation") {
+  auto g = grid();
 
-    g->addWidget(label("step α"), 0, 0, Qt::AlignRight);
-    g->addWidget((stepAlpha = spinCell(6, 1., 30.)), 0, 1);
-    g->addWidget(label("β"), 1, 0, Qt::AlignRight);
-    g->addWidget((stepBeta = spinCell(6, 1., 30.)), 1, 1);
-    g->addWidget(label("r. idw"), 2, 0, Qt::AlignRight);
-    g->addWidget((idwRadius = spinCell(6, 0., 90.)), 2, 1);
+  g->addWidget(label("step α"), 0, 0, Qt::AlignRight);
+  g->addWidget((stepAlpha = spinCell(6, 1., 30.)), 0, 1);
+  g->addWidget(label("β"), 1, 0, Qt::AlignRight);
+  g->addWidget((stepBeta = spinCell(6, 1., 30.)), 1, 1);
+  g->addWidget(label("r. idw"), 2, 0, Qt::AlignRight);
+  g->addWidget((idwRadius = spinCell(6, 0., 90.)), 2, 1);
 
-    g->addWidget(label("avg α max"), 0, 2, Qt::AlignRight);
-    g->addWidget((avgAlphaMax = spinCell(6, 0., 90.)), 0, 3);
-    g->addWidget(label("r. avg"), 1, 2, Qt::AlignRight);
-    g->addWidget((avgRadius = spinCell(6, 0., 90.)), 1, 3);
-    g->addWidget(label("incl. %"), 2, 2, Qt::AlignRight);
-    g->addWidget((threshold = spinCell(6, 0, 100)), 2, 3);
+  g->addWidget(label("avg α max"), 0, 2, Qt::AlignRight);
+  g->addWidget((avgAlphaMax = spinCell(6, 0., 90.)), 0, 3);
+  g->addWidget(label("r. avg"), 1, 2, Qt::AlignRight);
+  g->addWidget((avgRadius = spinCell(6, 0., 90.)), 1, 3);
+  g->addWidget(label("incl. %"), 2, 2, Qt::AlignRight);
+  g->addWidget((avgThreshold = spinCell(6, 0, 100)), 2, 3);
+}
 
-    g->setRowStretch(g->rowCount(), 1);
-  }
+PanelDiagram::PanelDiagram(TheHub& hub) : super(hub, "Diagram") {
+  auto tags = calc::ReflectionInfo::dataTags();
+  for_i (data::Metadata::numAttributes(false) - data::Metadata::numAttributes(true))
+    tags.removeLast(); // remove all tags that are not numbers
 
+  auto g = grid();
+  g->addWidget(label("y"),               0, 0);
+  g->addWidget((yAxis = comboBox(tags)), 0, 1);
+  g->addWidget(label("x"),               1, 0);
+  g->addWidget((xAxis = comboBox(tags)), 1, 1);
+}
+
+PanelFitError::PanelFitError(TheHub& hub) : super(hub, "Fit error") {
+}
+
+// REVIEW
 #ifdef DEVELOP_REBECCA
   static str_lst errorUnits = {"absolute Error","Δ to other Fit"};
   static str_lst errorTypes = {"Intensity","Tth","Fwhm"};
@@ -224,204 +234,117 @@ Params::Params(TheHub& hub) : RefHub(hub) {
 
 #endif
 
-  Settings s(GROUP_OUT_PARAMS);
+//------------------------------------------------------------------------------
 
-  stepGamma->setValue(s.readReal(KEY_GAMMA_STEP, 5));
-  limitGammaMin->setValue(s.readReal(KEY_GAMMA_MIN, 0));
-  limitGammaMax->setValue(s.readReal(KEY_GAMMA_MAX, 0));
+Params::Params(TheHub& hub, ePanels panels)
+: RefHub(hub)
+, panelReflection(nullptr), panelGamma(nullptr), panelPoints(nullptr)
+, panelInterpolation(nullptr), panelDiagram(nullptr)
+{
+  EXPECT(panels & GAMMA)
 
-  stepAlpha->setValue(s.readReal(KEY_ALPHA_STEP, 5));
-  stepBeta->setValue(s.readReal(KEY_BETA_STEP, 5));
+  setLayout((box_ = boxLayout(Qt::Horizontal)));
 
-  avgAlphaMax->setValue(s.readReal(KEY_AVG_ALPHA_MAX, 15));
-  avgRadius->setValue(s.readReal(KEY_AVG_RADIUS, 5));
-  idwRadius->setValue(s.readReal(KEY_IDW_RADIUS, 10));
-  threshold->setValue(s.readReal(KEY_THRESHOLD, 100));
+  if (REFLECTION & panels)
+    box_->addWidget((panelReflection = new PanelReflection(hub)));
 
-  auto enableLimitGamma = [this](bool on) {
-    cbLimitGamma->setChecked(on);
-    limitGammaMin->setEnabled(on);
-    limitGammaMax->setEnabled(on);
-  };
+  if (GAMMA & panels)
+    box_->addWidget((panelGamma = new PanelGamma(hub)));
 
-  connect(cbLimitGamma, &QCheckBox::toggled, [enableLimitGamma](int on) {
-    enableLimitGamma(on);
-  });
+  if (POINTS & panels)
+    box_->addWidget((panelPoints = new PanelPoints(hub)));
 
-  enableLimitGamma(false);
-  rbCalc->click();
+  if (INTERPOLATION & panels)
+    box_->addWidget((panelInterpolation = new PanelInterpolation(hub)));
+
+  if (DIAGRAM & panels)
+    box_->addWidget((panelDiagram = new PanelDiagram(hub)));
+
+  box_->setMargin(0);
+  box_->addStretch();
+
+  readSettings();
 }
 
 Params::~Params() {
-  Settings s(GROUP_OUT_PARAMS);
-
-  s.saveReal(KEY_GAMMA_STEP, stepGamma->value());
-  s.saveReal(KEY_GAMMA_MIN,  limitGammaMin->value());
-  s.saveReal(KEY_GAMMA_MAX,  limitGammaMax->value());
-
-  s.saveReal(KEY_ALPHA_STEP, stepAlpha->value());
-  s.saveReal(KEY_BETA_STEP,  stepBeta->value());
-
-  s.saveReal(KEY_AVG_ALPHA_MAX, avgAlphaMax->value());
-  s.saveReal(KEY_AVG_RADIUS, avgRadius->value());
-  s.saveReal(KEY_IDW_RADIUS, idwRadius->value());
-  s.saveReal(KEY_THRESHOLD,  threshold->value());
+  saveSettings();
 }
 
-void Params::addStretch() {
-  box_->addStretch();
-}
+static str SETTINGS_GROUP = "output";
+static str const
+  KEY_NUM_SLICES("num slices"),
+  KEY_MIN_GAMMA("min gamma"),
+  KEY_MAX_GAMMA("max gamma"),
 
-int Params::currReflIndex() const {
-  return cbRefl->currentIndex();
-}
+  KEY_INTERPOLATED("interpolated"),
 
-bool Params::interpolate() const {
-  return rbInterp->isChecked();
-}
+  KEY_STEP_ALPHA("step alpha"),
+  KEY_STEP_BETA("step beta"),
+  KEY_IDW_RADIUS("idw radius"),
 
-//------------------------------------------------------------------------------
+  KEY_AVG_ALPHA_MAX("avg alpha max"),
+  KEY_AVG_RADIUS("avg radius"),
+  KEY_AVG_THRESHOLD("avg threshold"),
 
-Tabs::Tabs(TheHub& hub) : super(hub) {
-}
+  KEY_SAVE_DIR("save dir"),
+  KEY_SAVE_FMT("save format");
 
-//------------------------------------------------------------------------------
+void Params::readSettings() {
+  Settings s(SETTINGS_GROUP);
 
-Tab::Tab(TheHub& hub, Params& params)
-: RefHub(hub), params_(params) {
-  setLayout((grid_ = gridLayout()));
-}
-
-//------------------------------------------------------------------------------
-
-Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
-: super(parent, Qt::Dialog), RefHub(hub)
-{
-  setAttribute(Qt::WA_DeleteOnClose);
-  auto flags = windowFlags();
-  setWindowFlags(flags & ~Qt::WindowContextHelpButtonHint);
-  setWindowTitle(title);
-  setLayout((box_ = vbox()));
-
-  EXPECT(params)
-  params->addStretch();
-
-  box_->addWidget((params_ = params));
-  box_->addWidget((tabs_   = new Tabs(hub)));
-  box_->setStretch(1, 1);
-
-  auto bbox = hbox();
-  box_->addLayout(bbox);
-
-  actClose_       = new TriggerAction("Close",       this);
-  actCalculate_   = new TriggerAction("Calculate",   this);
-  actInterpolate_ = new TriggerAction("Interpolate", this);
-
-  bbox->addWidget((btnClose_ = textButton(actClose_)));
-  bbox->addStretch(1);
-  bbox->addWidget((pb_ = new QProgressBar));
-  bbox->addStretch(1);
-  bbox->addWidget((btnCalculate_  = textButton(actCalculate_)));
-  bbox->addWidget((btnInterpolate_= textButton(actInterpolate_)));
-
-  bbox->setStretchFactor(pb_, 333);
-  pb_->hide();
-
-  connect(actClose_, &QAction::triggered, [this]() {
-    close();
-  });
-
-  connect(actCalculate_, &QAction::triggered, [this]() {
-    calculate();
-  });
-
-  connect(actInterpolate_, &QAction::triggered, [this]() {
-    interpolate();
-  });
-
-  auto display = [this]() {
-    displayReflection(params_->currReflIndex(), params_->interpolate());
-  };
-
-  connect(params_->cbRefl, slot(QComboBox,currentIndexChanged,int), [display]() {
-    display();
-  });
-
-  connect(params_->rbInterp, &QRadioButton::toggled, [display]() {
-    display();
-  });
-
-  // tabs
-
-  auto tabTable = new TabTable(hub, *params_,
-     calc::ReflectionInfo::dataTags(), calc::ReflectionInfo::dataCmps());
-  tabs_->addTab("Points").box().addWidget(tabTable);
-
-  table_ = tabTable->table();
-}
-
-void Frame::calculate() {
-  TakesLongTime __;
-
-  calcPoints_.clear();
-  interpPoints_.clear();
-
-  auto &reflections = hub_.reflections();
-  if (!reflections.isEmpty()) {
-    uint reflCount = reflections.count();
-
-    typ::deg gammaStep = params_->stepGamma->value();
-
-    typ::Range rgeGamma;
-    if (params_->cbLimitGamma->isChecked())
-      rgeGamma.safeSet(params_->limitGammaMin->value(),
-                       params_->limitGammaMax->value());
-
-    Progress progress(reflCount * hub_.numCollectedDatasets(), pb_);
-
-    for_i (reflCount)
-      calcPoints_.append(hub_.makeReflectionInfos(
-          *reflections.at(i), gammaStep, rgeGamma, &progress));
+  if (panelGamma) {
+    panelGamma->numSlices->setValue(s.readReal(KEY_NUM_SLICES, 1));
+    panelGamma->minGamma->setValue(s.readReal(KEY_MIN_GAMMA, 0));
+    panelGamma->maxGamma->setValue(s.readReal(KEY_MAX_GAMMA, 0));
   }
 
-  interpolate();
-}
-
-void Frame::interpolate() {
-  TakesLongTime __;
-
-  typ::deg alphaStep   = params_->stepAlpha->value();
-  typ::deg betaStep    = params_->stepBeta->value();
-  qreal     avgRadius   = params_->avgRadius->value();
-  qreal     avgAlphaMax = params_->avgAlphaMax->value();
-  qreal     idwRadius   = params_->idwRadius->value();
-  qreal     treshold    = params_->threshold->value() / 100.0;
-
-  interpPoints_.clear();
-
-  for_i (calcPoints_.count()) {
-    interpPoints_.append(
-        calc::interpolate(calcPoints_.at(i), alphaStep, betaStep,
-                          avgAlphaMax, avgRadius, idwRadius, treshold));
+  if (panelPoints) {
+    (s.readBool(KEY_INTERPOLATED, false)
+        ? panelPoints->rbInterp : panelPoints->rbCalc)->setChecked(true);
   }
 
-  displayReflection(params_->currReflIndex(), params_->interpolate());
+  if (panelInterpolation) {
+    panelInterpolation->stepAlpha->setValue(s.readReal(KEY_STEP_ALPHA, 5));
+    panelInterpolation->stepBeta->setValue(s.readReal(KEY_STEP_BETA, 5));
+    panelInterpolation->idwRadius->setValue(s.readReal(KEY_IDW_RADIUS, 10));
+
+    panelInterpolation->avgAlphaMax->setValue(s.readReal(KEY_AVG_ALPHA_MAX, 15));
+    panelInterpolation->avgRadius->setValue(s.readReal(KEY_AVG_RADIUS, 5));
+    panelInterpolation->avgThreshold->setValue(s.readReal(KEY_AVG_THRESHOLD, 100));
+  }
+
+  saveDir = s.readStr(KEY_SAVE_DIR);
+  saveFmt = s.readStr(KEY_SAVE_FMT);
+
+  if (panelGamma)
+    panelGamma->updateGamma();
 }
 
-void Frame::displayReflection(int reflIndex, bool interpolated) {
-  table_->clear();
+void Params::saveSettings() const {
+  Settings s(SETTINGS_GROUP);
 
-  if (reflIndex < 0)
-    return;
+  if (panelGamma) {
+    s.saveReal(KEY_NUM_SLICES, panelGamma->numSlices->value());
+    s.saveReal(KEY_MIN_GAMMA,  panelGamma->minGamma->value());
+    s.saveReal(KEY_MAX_GAMMA,  panelGamma->maxGamma->value());
+  }
 
-  EXPECT(calcPoints_.count() == interpPoints_.count())
-  if (calcPoints_.count() <= to_u(reflIndex))
-    return;
+  if (panelPoints) {
+    s.saveBool(KEY_INTERPOLATED, panelPoints->rbInterp->isChecked());
+  }
 
-  for (auto& r : (interpolated ? interpPoints_ : calcPoints_).at(to_u(reflIndex)))
-    table_->addRow(r.data(), false);
+  if (panelInterpolation) {
+    s.saveReal(KEY_STEP_ALPHA,    panelInterpolation->stepAlpha->value());
+    s.saveReal(KEY_STEP_BETA,     panelInterpolation->stepBeta->value());
+    s.saveReal(KEY_IDW_RADIUS,    panelInterpolation->idwRadius->value());
 
-  table_->sortData();
+    s.saveReal(KEY_AVG_ALPHA_MAX, panelInterpolation->avgAlphaMax->value());
+    s.saveReal(KEY_AVG_RADIUS,    panelInterpolation->avgRadius->value());
+    s.saveReal(KEY_AVG_THRESHOLD, panelInterpolation->avgThreshold->value());
+  }
+
+  s.saveStr(KEY_SAVE_DIR, saveDir);
+  s.saveStr(KEY_SAVE_FMT, saveFmt);
 }
 
 //------------------------------------------------------------------------------
@@ -608,6 +531,17 @@ void TableModel::sortData() {
 
 //------------------------------------------------------------------------------
 
+Tabs::Tabs(TheHub& hub) : super(hub) {
+}
+
+//------------------------------------------------------------------------------
+
+Tab::Tab(TheHub& hub, Params& params) : RefHub(hub), params_(params) {
+  setLayout((grid_ = gridLayout()));
+}
+
+//------------------------------------------------------------------------------
+
 Table::Table(TheHub& hub, uint numDataColumns)
 : RefHub(hub), model_(nullptr)
 {
@@ -682,10 +616,10 @@ TabTable::TabTable(TheHub& hub, Params& params,
   uint numCols = to_u(headers.count());
 
   grid_->setMargin(0);
-  grid_->addWidget((table_ = new Table(hub_, numCols)), 0, 0);
+  grid_->addWidget((table = new Table(hub_, numCols)), 0, 0);
   grid_->setColumnStretch(0, 1);
 
-  table_->setColumns(headers, cmps);
+  table->setColumns(headers, cmps);
 
   for_i (numCols) {
     showcol_t item;
@@ -695,17 +629,18 @@ TabTable::TabTable(TheHub& hub, Params& params,
 
   auto scrollArea = new QScrollArea;
   scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  scrollArea->setWidget(
-      (showColumnsWidget_ = new ShowColsWidget(*table_, showCols_)));
+  scrollArea->setWidget((showColumnsWidget_ = new ShowColsWidget(*table, showCols_)));
 
   grid_->addWidget(scrollArea, 0, 1);
 }
 
 //------------------------------------------------------------------------------
-static uint PRESET_SELECTION = 3;
+
 TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
 : table_(table), showCols_(showCols)
 {
+  using eReflAttr = calc::ReflectionInfo::eReflAttr;
+
   setLayout((box_ = vbox()));
 
   box_->addWidget((rbHidden_ = radioButton("")));
@@ -789,9 +724,12 @@ TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
     rbHidden_->setChecked(true);
     rbNone_->setChecked(isNone);
     rbAll_->setChecked(isAll);
+
+    uint const PRESET_SELECTION = 3;
+
     rbInten_->setChecked(!isOther && PRESET_SELECTION == nInten);
-    rbTth_->setChecked(!isOther && PRESET_SELECTION == nTth);
-    rbFWHM_->setChecked(!isOther && PRESET_SELECTION == nFwhm);
+    rbTth_->setChecked(!isOther   && PRESET_SELECTION == nTth);
+    rbFWHM_->setChecked(!isOther  && PRESET_SELECTION == nFwhm);
   };
 
   for_i (showCols_.count()) {
@@ -818,58 +756,245 @@ TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
 
 //------------------------------------------------------------------------------
 
-TabSave::TabSave(TheHub& hub, Params& params)
-: super(hub, params)
-{
-  path_ = new QLineEdit;
-  path_->setReadOnly(true);
-  path_->setText(QDir::current().canonicalPath()); // TODO Settings
+static str const
+  DAT_SFX(".dat"), DAT_SEP(" "),  // suffix, separator
+  CSV_SFX(".csv"), CSV_SEP("; ");
 
-  fileName_   = new QLineEdit;
+TabSave::TabSave(TheHub& hub, Params& params, bool withTypes) : super(hub, params) {
+  actBrowse = new TriggerAction("Browse...", this);
+  actSave   = new TriggerAction("Save", this);
 
-  actBrowsePath_ = new TriggerAction("Browse...", this);
-  actSave_       = new TriggerAction("Save", this);
+  str dir = params_.saveDir;
+  if (!QDir(dir).exists())
+    dir = QDir::current().absolutePath();
 
   auto gp = new panel::GridPanel(hub, "Destination");
   grid_->addWidget(gp, 0, 0);
-
   auto g = gp->grid();
 
-  g->addWidget(label("Save to folder:"),   0, 0, Qt::AlignRight);
-  g->addWidget(path_,                      0, 1);
-  g->addWidget(textButton(actBrowsePath_), 0, 2);
+  dir_  = new QLineEdit(dir);
+  dir_->setReadOnly(true);
 
-  g->addWidget(label("File name:"),  1, 0, Qt::AlignRight);
-  g->addWidget(fileName_,            1, 1);
-  g->addWidget(textButton(actSave_), 2, 1);
+  file_ = new QLineEdit();
 
-  g->setRowStretch(g->rowCount(), 1);
+  g->addWidget(label("Save to folder:"), 0, 0, Qt::AlignRight);
+  g->addWidget(dir_,                     0, 1);
+  g->addWidget(textButton(actBrowse),    0, 2);
 
-  filesSavedDialog_ = new QMessageBox(this);
+  g->addWidget(label("File name:"),      1, 0, Qt::AlignRight);
+  g->addWidget(file_,                    1, 1);
+  g->addWidget(textButton(actSave),      1, 2);
 
-  connect(actBrowsePath_, &QAction::triggered, [this]() {
-    str dir = QFileDialog::getExistingDirectory(this, "Select folder", path_->text());
+  connect(actBrowse, &QAction::triggered, [this]() {
+    str dir = QFileDialog::getExistingDirectory(this, "Select folder", dir_->text());
     if (!dir.isEmpty())
-      path_->setText(dir);
+      dir_->setText((params_.saveDir = dir));
   });
+
+  gp = new panel::GridPanel(hub, "File type");
+  grid_->addWidget(gp, 0, 1);
+  g = gp->grid();
+
+  g->addWidget((rbDat_ = radioButton(DAT_SFX)), 0, 0);
+  g->addWidget((rbCsv_ = radioButton(CSV_SFX)), 1, 0);
+
+  connect(rbDat_, &QRadioButton::clicked, [this]() {
+    params_.saveFmt = DAT_SFX;
+  });
+
+  connect(rbCsv_, &QRadioButton::clicked, [this]() {
+    params_.saveFmt = CSV_SFX;
+  });
+
+  (CSV_SFX == params_.saveFmt ? rbCsv_ : rbDat_)->setChecked(true);
+
+  gp->setVisible(withTypes);
 }
 
-void TabSave::clearFilename() {
-  fileName_->clear();
+str TabSave::filePath(bool withSuffix) {
+  str dir  = dir_->text().trimmed();
+  str file = file_->text().trimmed();
+
+  if (dir.isEmpty() || file.isEmpty())
+    return EMPTY_STR;
+  
+  str suffix;
+  if (withSuffix)
+    suffix = rbDat_->isChecked() ? DAT_SFX : CSV_SFX;
+
+  return QFileInfo(dir, fileSetSuffix(suffix)).canonicalPath();
 }
 
-void TabSave::showMessage() {
-  filesSavedDialog_->show();
+str TabSave::separator() const {
+  return rbDat_->isChecked() ? DAT_SEP : CSV_SEP;
 }
 
-void TabSave::savedMessage(str message) {
-  filesSavedDialog_->setText(filesSavedDialog_->text() + message);
+str TabSave::fileSetSuffix(rcstr suffix) {
+  str file = file_->text().trimmed();
+  if (!suffix.isEmpty()) {
+    file = QFileInfo(file).completeBaseName();
+    if (!file.isEmpty())
+      file += suffix;
+  }
+  
+  file_->setText(file);
+  return file;
 }
 
-void TabSave::clearMessage() {
-  filesSavedDialog_->setText("");
+
+//------------------------------------------------------------------------------
+
+Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
+: super(parent, Qt::Dialog), RefHub(hub)
+{
+  setAttribute(Qt::WA_DeleteOnClose);
+  auto flags = windowFlags();
+//  setWindowFlags(flags & ~Qt::WindowContextHelpButtonHint);
+  setWindowTitle(title);
+  setLayout((box_ = vbox()));
+
+  EXPECT(params)
+
+  box_->addWidget((params_ = params));
+  box_->addWidget((tabs_   = new Tabs(hub)));
+//  box_->setStretch(1, 1);
+
+  auto hb = hbox();
+  box_->addLayout(hb);
+
+  actClose_       = new TriggerAction("Close",       this);
+  actCalculate_   = new TriggerAction("Calculate",   this);
+  actInterpolate_ = new TriggerAction("Interpolate", this);
+
+  hb->addWidget((btnClose_ = textButton(actClose_)));
+//  hb->addStretch(1);
+  hb->addWidget((pb_ = new QProgressBar));
+//  hb->addStretch(1);
+  hb->addWidget((btnCalculate_  = textButton(actCalculate_)));
+  hb->addWidget((btnInterpolate_= textButton(actInterpolate_)));
+
+//  hb->setStretchFactor(pb_, 333);
+  pb_->hide();
+
+  connect(actClose_, &QAction::triggered, [this]() {
+    close();
+  });
+
+  connect(actCalculate_, &QAction::triggered, [this]() {
+    calculate();
+  });
+
+  connect(actInterpolate_, &QAction::triggered, [this]() {
+    interpolate();
+  });
+
+  auto updateDisplay = [this]() {
+    displayReflection(getReflIndex(), getInterpolated());
+  };
+
+  if (params_->panelReflection) {
+    connect(params_->panelReflection->cbRefl, slot(QComboBox,currentIndexChanged,int), [updateDisplay]() {
+      updateDisplay();
+    });
+  }
+
+  if (params_->panelPoints) {
+    ENSURE(params_->panelReflection)
+    connect(params_->panelPoints->rbInterp, &QRadioButton::toggled, [updateDisplay]() {
+      updateDisplay();
+    });
+  }
+
+  // tabs
+
+  auto tabTable = new TabTable(hub, *params_,
+     calc::ReflectionInfo::dataTags(), calc::ReflectionInfo::dataCmps());
+  tabs_->addTab("Points").box().addWidget(tabTable);
+
+  table_ = tabTable->table;
 }
 
+void Frame::calculate() {
+  TakesLongTime __;
+
+  calcPoints_.clear();
+  interpPoints_.clear();
+
+  auto &reflections = hub_.reflections();
+  if (!reflections.isEmpty()) {
+    uint reflCount = reflections.count();
+
+    auto pg = params_->panelGamma;
+    ENSURE(pg)
+
+    typ::deg gammaStep = pg->stepGamma->value();
+
+    typ::Range rgeGamma;
+    if (pg->cbLimitGamma->isChecked())
+      rgeGamma.safeSet(pg->minGamma->value(), pg->maxGamma->value());
+
+    Progress progress(reflCount * hub_.numCollectedDatasets(), pb_);
+
+    for_i (reflCount)
+      calcPoints_.append(hub_.makeReflectionInfos(
+          *reflections.at(i), gammaStep, rgeGamma, &progress));
+  }
+
+  interpolate();
+}
+
+void Frame::interpolate() {
+  TakesLongTime __;
+
+  auto pi = params_->panelInterpolation;
+  ENSURE(pi)
+
+  typ::deg alphaStep   = pi->stepAlpha->value();
+  typ::deg betaStep    = pi->stepBeta->value();
+  qreal    idwRadius   = pi->idwRadius->value();
+
+  qreal    avgRadius   = pi->avgRadius->value();
+  qreal    avgAlphaMax = pi->avgAlphaMax->value();
+  qreal    avgTreshold = pi->avgThreshold->value() / 100.0;
+
+  interpPoints_.clear();
+
+  for_i (calcPoints_.count()) {
+    interpPoints_.append(
+        calc::interpolate(calcPoints_.at(i),
+                          alphaStep, betaStep, idwRadius,
+                          avgAlphaMax, avgRadius, avgTreshold));
+  }
+
+  displayReflection(getReflIndex(), getInterpolated());
+}
+
+void Frame::displayReflection(int reflIndex, bool interpolated) {
+  table_->clear();
+
+  if (reflIndex < 0)
+    return;
+
+  EXPECT(calcPoints_.count() == interpPoints_.count())
+  if (calcPoints_.count() <= to_u(reflIndex))
+    return;
+
+  for (auto& r : (interpolated ? interpPoints_ : calcPoints_).at(to_u(reflIndex)))
+    table_->addRow(r.data(), false);
+
+  table_->sortData();
+}
+
+int Frame::getReflIndex() const {
+  if (!params_->panelReflection)
+    return -1;
+  return params_->panelReflection->cbRefl->currentIndex();
+}
+
+bool Frame::getInterpolated() const {
+  auto pi = params_->panelPoints;
+  return pi ? pi->rbInterp->isChecked() : false;
+}
 
 //------------------------------------------------------------------------------
 }}

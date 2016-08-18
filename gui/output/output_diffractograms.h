@@ -22,14 +22,6 @@
 namespace gui { namespace output {
 //------------------------------------------------------------------------------
 
-class DiffractogramsParams : public Params {
-  CLS(DiffractogramsParams) SUPER(Params)
-public:
-  DiffractogramsParams(TheHub&);
-};
-
-//------------------------------------------------------------------------------
-
 class TabDiffractogramsSave : public TabSave {
   CLS(TabDiffractogramsSave) SUPER(TabSave)
 public:
@@ -66,8 +58,8 @@ protected:
   OutputDataCollections outputAllDiffractograms();
 
   bool saveDiffractogramOutput();
-  bool writeCurrDiffractogramToFile();
-  bool writeAllDiffractogramsToFiles(bool oneFile);
+  bool writeCurrDiffractogramToFile(rcstr filePath, rcstr separator);
+  bool writeAllDiffractogramsToFiles(rcstr filePath, rcstr separator, bool oneFile);
 };
 
 //------------------------------------------------------------------------------
