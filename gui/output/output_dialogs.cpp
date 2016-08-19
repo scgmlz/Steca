@@ -29,36 +29,50 @@ namespace gui { namespace output {
 
 PanelReflection::PanelReflection(TheHub& hub) : super(hub, "Reflection") {
   auto g = grid();
-  g->addWidget((cbRefl = comboBox(hub_.reflectionsModel.names())), 0, 0);
+  g->addWidget((cbRefl = comboBox(hub_.reflectionsModel.names())));
+  g->addRowStretch();
 }
 
-PanelGamma::PanelGamma(TheHub& hub) : super(hub, "Gamma") {
+PanelGammaSlices::PanelGammaSlices(TheHub& hub) : super(hub, "Gamma slices") {
   auto g = grid();
 
-  g->addWidget(label("slices"), 0, 0, Qt::AlignRight);
-  g->addWidget((numSlices = spinCell(3, 1)), 0, 1);
+  g->addWidget(label("count"),               0, 0);
+  g->addWidget((numSlices = spinCell(6, 1)), 0, 1);
 
-  g->addWidget(label("step °"), 1, 0, Qt::AlignRight);
-  g->addWidget((stepGamma = spinCell(3, 0.0)), 1, 1);
+  g->addWidget(label("degrees"),               1, 0);
+  g->addWidget((stepGamma = spinCell(6, 0.0)), 1, 1);
+  stepGamma->setDisabled(true);
 
-  g->addWidget((cbLimitGamma = check("limit range")), 0, 2, 1, 4);
-
-  g->addWidget(label("min"), 1, 2);
-  g->addWidget((minGamma = spinCell(6, -180., 180.)), 1, 3);
-
-  g->addWidget(label("max"), 1, 4);
-  g->addWidget((maxGamma = spinCell(6, -180., 180.)), 1, 5);
-
-  connect(cbLimitGamma, &QCheckBox::toggled, [this]() {
-    updateGamma();
-  });
+  g->addRowStretch();
 
   connect(numSlices, slot(QSpinBox,valueChanged,int), [this](int num) {
-    updateGamma();
+    updateValues();
   });
 }
 
-void PanelGamma::updateGamma() {
+void PanelGammaSlices::updateValues() {
+  // TODO slices/step
+}
+
+PanelGammaRange::PanelGammaRange(TheHub& hub) : super(hub, "Gamma range") {
+  auto g = grid();
+
+  g->addWidget((cbLimitGamma = check("limit range")), 0, 0, 1, 2);
+
+  g->addWidget(label("min"),                          1, 0);
+  g->addWidget((minGamma = spinCell(6, -180., 180.)), 1, 1);
+
+  g->addWidget(label("max"),                          2, 0);
+  g->addWidget((maxGamma = spinCell(6, -180., 180.)), 2, 1);
+
+  g->addRowStretch();
+
+  connect(cbLimitGamma, &QCheckBox::toggled, [this]() {
+    updateValues();
+  });
+}
+
+void PanelGammaRange::updateValues() {
   // TODO slices/step
   bool on = cbLimitGamma->isChecked();
   minGamma->setEnabled(on);
@@ -68,7 +82,9 @@ void PanelGamma::updateGamma() {
 PanelPoints::PanelPoints(TheHub& hub) : super(hub, "Points") {
   auto g = grid();
   g->addWidget((rbCalc   = radioButton("calculated")),   0, 0);
-  g->addWidget((rbInterp = radioButton("interpolated")), 0, 1);
+  g->addWidget((rbInterp = radioButton("interpolated")), 1, 0);
+
+  g->addRowStretch();
 }
 
 PanelInterpolation::PanelInterpolation(TheHub& hub) : super(hub, "Interpolation") {
@@ -87,6 +103,8 @@ PanelInterpolation::PanelInterpolation(TheHub& hub) : super(hub, "Interpolation"
   g->addWidget((avgRadius = spinCell(6, 0., 90.)), 1, 3);
   g->addWidget(label("incl. %"), 2, 2, Qt::AlignRight);
   g->addWidget((avgThreshold = spinCell(6, 0, 100)), 2, 3);
+
+  g->addRowStretch();
 }
 
 PanelDiagram::PanelDiagram(TheHub& hub) : super(hub, "Diagram") {
@@ -99,6 +117,8 @@ PanelDiagram::PanelDiagram(TheHub& hub) : super(hub, "Diagram") {
   g->addWidget((yAxis = comboBox(tags)), 0, 1);
   g->addWidget(label("x"),               1, 0);
   g->addWidget((xAxis = comboBox(tags)), 1, 1);
+
+  g->addRowStretch();
 }
 
 PanelFitError::PanelFitError(TheHub& hub) : super(hub, "Fit error") {
@@ -117,7 +137,7 @@ PanelFitError::PanelFitError(TheHub& hub) : super(hub, "Fit error") {
     g->addWidget(tthFitError_       = new panel::FitErrorGridPannel(hub),1,0);
     g->addWidget(fwhmFitError_      = new panel::FitErrorGridPannel(hub),1,0);
 
-    g->setRowStretch(g->rowCount(),1);
+    g->addRowStretch();
     g->setMargin(1);
 
     {
@@ -129,8 +149,8 @@ PanelFitError::PanelFitError(TheHub& hub) : super(hub, "Fit error") {
       g->addLayout(grb,1,0);
       g->addWidget((intensityFitError_->spFitError  = spinCell(6,0.,50.)),3,0);
 
-      g->setColumnStretch(g->columnCount(),1);
-      g->setRowStretch(g->rowCount(),1);
+      g->addColumnStretch();
+      g->addRowStretch();
     }
 
     {
@@ -142,8 +162,8 @@ PanelFitError::PanelFitError(TheHub& hub) : super(hub, "Fit error") {
       g->addLayout(grb,1,0);
       g->addWidget((tthFitError_->spFitError = spinCell(6,0.,50.)),3,0);
 
-      g->setColumnStretch(g->columnCount(),1);
-      g->setRowStretch(g->rowCount(),1);
+      g->addColumnStretch();
+      g->addRowStretch();
     }
 
     {
@@ -155,8 +175,8 @@ PanelFitError::PanelFitError(TheHub& hub) : super(hub, "Fit error") {
       g->addLayout(grb,1,0);
       g->addWidget((fwhmFitError_->spFitError = spinCell(6,0.,50.)),3,0);
 
-      g->setColumnStretch(g->columnCount(),1);
-      g->setRowStretch(g->rowCount(),1);
+      g->addColumnStretch();
+      g->addRowStretch();
     }
 
     intensityFitError_->show();
@@ -238,7 +258,8 @@ PanelFitError::PanelFitError(TheHub& hub) : super(hub, "Fit error") {
 
 Params::Params(TheHub& hub, ePanels panels)
 : RefHub(hub)
-, panelReflection(nullptr), panelGamma(nullptr), panelPoints(nullptr)
+, panelReflection(nullptr)
+, panelGammaSlices(nullptr), panelGammaRange(nullptr), panelPoints(nullptr)
 , panelInterpolation(nullptr), panelDiagram(nullptr)
 {
   EXPECT(panels & GAMMA)
@@ -248,8 +269,10 @@ Params::Params(TheHub& hub, ePanels panels)
   if (REFLECTION & panels)
     box_->addWidget((panelReflection = new PanelReflection(hub)));
 
-  if (GAMMA & panels)
-    box_->addWidget((panelGamma = new PanelGamma(hub)));
+  if (GAMMA & panels) {
+    box_->addWidget((panelGammaSlices = new PanelGammaSlices(hub)));
+    box_->addWidget((panelGammaRange  = new PanelGammaRange(hub)));
+  }
 
   if (POINTS & panels)
     box_->addWidget((panelPoints = new PanelPoints(hub)));
@@ -292,10 +315,13 @@ static str const
 void Params::readSettings() {
   Settings s(SETTINGS_GROUP);
 
-  if (panelGamma) {
-    panelGamma->numSlices->setValue(s.readReal(KEY_NUM_SLICES, 1));
-    panelGamma->minGamma->setValue(s.readReal(KEY_MIN_GAMMA, 0));
-    panelGamma->maxGamma->setValue(s.readReal(KEY_MAX_GAMMA, 0));
+  if (panelGammaSlices) {
+    panelGammaSlices->numSlices->setValue(s.readReal(KEY_NUM_SLICES, 1));
+  }
+
+  if (panelGammaRange) {
+    panelGammaRange->minGamma->setValue(s.readReal(KEY_MIN_GAMMA, 0));
+    panelGammaRange->maxGamma->setValue(s.readReal(KEY_MAX_GAMMA, 0));
   }
 
   if (panelPoints) {
@@ -316,17 +342,23 @@ void Params::readSettings() {
   saveDir = s.readStr(KEY_SAVE_DIR);
   saveFmt = s.readStr(KEY_SAVE_FMT);
 
-  if (panelGamma)
-    panelGamma->updateGamma();
+  if (panelGammaSlices)
+    panelGammaSlices->updateValues();
+
+  if (panelGammaRange)
+    panelGammaRange->updateValues();
 }
 
 void Params::saveSettings() const {
   Settings s(SETTINGS_GROUP);
 
-  if (panelGamma) {
-    s.saveReal(KEY_NUM_SLICES, panelGamma->numSlices->value());
-    s.saveReal(KEY_MIN_GAMMA,  panelGamma->minGamma->value());
-    s.saveReal(KEY_MAX_GAMMA,  panelGamma->maxGamma->value());
+  if (panelGammaSlices) {
+    s.saveReal(KEY_NUM_SLICES, panelGammaSlices->numSlices->value());
+  }
+
+  if (panelGammaRange) {
+    s.saveReal(KEY_MIN_GAMMA,  panelGammaRange->minGamma->value());
+    s.saveReal(KEY_MAX_GAMMA,  panelGammaRange->maxGamma->value());
   }
 
   if (panelPoints) {
@@ -783,7 +815,6 @@ TabSave::TabSave(TheHub& hub, Params& params, bool withTypes) : super(hub, param
 
   g->addWidget(label("File name:"),      1, 0, Qt::AlignRight);
   g->addWidget(file_,                    1, 1);
-  g->addWidget(textButton(actSave),      1, 2);
 
   connect(actBrowse, &QAction::triggered, [this]() {
     str dir = QFileDialog::getExistingDirectory(this, "Select folder", dir_->text());
@@ -848,8 +879,8 @@ Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
 : super(parent, Qt::Dialog), RefHub(hub)
 {
   setAttribute(Qt::WA_DeleteOnClose);
-  auto flags = windowFlags();
-//  setWindowFlags(flags & ~Qt::WindowContextHelpButtonHint);
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
   setWindowTitle(title);
   setLayout((box_ = vbox()));
 
@@ -857,7 +888,7 @@ Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
 
   box_->addWidget((params_ = params));
   box_->addWidget((tabs_   = new Tabs(hub)));
-//  box_->setStretch(1, 1);
+  box_->setStretch(box_->count() - 1, 1);
 
   auto hb = hbox();
   box_->addLayout(hb);
@@ -867,13 +898,13 @@ Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
   actInterpolate_ = new TriggerAction("Interpolate", this);
 
   hb->addWidget((btnClose_ = textButton(actClose_)));
-//  hb->addStretch(1);
+  hb->addStretch(1);
   hb->addWidget((pb_ = new QProgressBar));
-//  hb->addStretch(1);
+  hb->setStretchFactor(pb_, 333);
+  hb->addStretch(1);
   hb->addWidget((btnCalculate_  = textButton(actCalculate_)));
   hb->addWidget((btnInterpolate_= textButton(actInterpolate_)));
 
-//  hb->setStretchFactor(pb_, 333);
   pb_->hide();
 
   connect(actClose_, &QAction::triggered, [this]() {
@@ -924,14 +955,17 @@ void Frame::calculate() {
   if (!reflections.isEmpty()) {
     uint reflCount = reflections.count();
 
-    auto pg = params_->panelGamma;
-    ENSURE(pg)
+    auto ps = params_->panelGammaSlices;
+    ENSURE(ps)
 
-    typ::deg gammaStep = pg->stepGamma->value();
+    typ::deg gammaStep = ps->stepGamma->value();
+
+    auto pr = params_->panelGammaRange;
+    ENSURE(pr)
 
     typ::Range rgeGamma;
-    if (pg->cbLimitGamma->isChecked())
-      rgeGamma.safeSet(pg->minGamma->value(), pg->maxGamma->value());
+    if (pr->cbLimitGamma->isChecked())
+      rgeGamma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
 
     Progress progress(reflCount * hub_.numCollectedDatasets(), pb_);
 

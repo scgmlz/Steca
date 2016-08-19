@@ -20,6 +20,7 @@
 
 #include <QPainter>
 #include <QTextStream>
+#include <qmath.h>
 
 namespace gui { namespace output {
 //------------------------------------------------------------------------------
@@ -29,13 +30,13 @@ TabGraph::TabGraph(TheHub& hub, Params& params)
 {
   ENSURE(params_.panelInterpolation)
 
-  grid_->addWidget((cbFlat_ = check("flat")), 0, 0);
+  grid_->addWidget((cbFlat_ = check("no intensity")), 0, 0);
   grid_->addWidget((rb30_ = radioButton("30°")), 1, 0);
   grid_->addWidget((rb60_ = radioButton("60°")), 2, 0);
   grid_->addWidget((rb90_ = radioButton("90°")), 3, 0);
 
-  grid_->setRowStretch(grid_->rowCount(), 1);
-  grid_->setColumnStretch(grid_->columnCount(), 1);
+  grid_->addRowStretch();
+  grid_->addColumnStretch();
 
   connect(params_.panelInterpolation->avgAlphaMax, slot(QDoubleSpinBox,valueChanged,double), [this](qreal val) {
     avgAlphaMax_ = val;
@@ -180,39 +181,33 @@ TabPoleFiguresSave::TabPoleFiguresSave(TheHub& hub, Params& params)
 {
   auto hb = hbox();
   grid_->addLayout(hb, grid_->rowCount(), 0);
+  grid_->addRowStretch();
 
-  auto p1 = new panel::BoxPanel(hub, "Reflection", Qt::Vertical);
-  auto p2 = new panel::BoxPanel(hub, "Output", Qt::Vertical);
+  auto p1 = new panel::GridPanel(hub, "Output data");
+  auto p2 = new panel::GridPanel(hub, "To save");
 
   hb->addWidget(p1);
   hb->addWidget(p2);
-
-  grid_->setRowStretch(grid_->rowCount(), 1);
+  hb->addStretch();
 
   {
-    auto b = p1->box();
-
-    b->addWidget(label("Output files for:"));
-    b->addWidget(rbSelectedRefl_ = radioButton("Selected Reflection"));
-    b->addWidget(rbAllRefls_     = radioButton("All Reflections"));
-
-    b->addStretch();
+    auto g = p1->grid();
+    g->addWidget((outputInten_ = check("Intensity pole figure")));
+    g->addWidget((outputTth_   = check("Peak position pole figure")));
+    g->addWidget((outputFWHM_  = check("TWHM pole figure")));
+    g->addRowStretch();
   }
 
   {
-    auto b = p2->box();
-
-    b->addWidget(outputInten_ = check("Intensity Pole Figure"));
-    b->addWidget(outputTth_   = check("Peak Position Pole Figure"));
-    b->addWidget(outputFWHM_  = check("TWHM Pole Figure"));
-
-    b->addStretch();
+    auto g = p2->grid();
+    g->addWidget((rbSelectedRefl_ = radioButton("Selected reflection")));
+    g->addWidget((rbAllRefls_     = radioButton("All reflections")));
+    g->addWidget(textButton(actSave), 2, 1);
+    g->addRowStretch();
   }
 
   rbSelectedRefl_->setChecked(true);
   outputInten_->setChecked(true);
-
-
 }
 
 bool TabPoleFiguresSave::onlySelectedRefl() const {

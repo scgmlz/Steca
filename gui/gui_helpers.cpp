@@ -18,6 +18,16 @@
 
 //------------------------------------------------------------------------------
 
+void GridLayout::addRowStretch(int stretch) {
+  setRowStretch(rowCount(), stretch);
+}
+
+void GridLayout::addColumnStretch(int stretch) {
+  setColumnStretch(columnCount(), stretch);
+}
+
+//------------------------------------------------------------------------------
+
 QBoxLayout* boxLayout(Qt::Orientation orientation) {
   switch (orientation) {
   case Qt::Horizontal:
@@ -41,8 +51,8 @@ QBoxLayout* vbox() {
   return box;
 }
 
-QGridLayout* gridLayout() {
-  auto grid = new QGridLayout;
+GridLayout* gridLayout() {
+  auto grid = new GridLayout;
   grid->setSpacing(2);
   return grid;
 }

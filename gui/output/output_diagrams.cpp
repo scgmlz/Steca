@@ -107,10 +107,13 @@ TabDiagramsSave::TabDiagramsSave(TheHub& hub, Params& params)
 {
   auto gp = new panel::GridPanel(hub, "To save");
   grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
+  grid_->addRowStretch();
 
   auto g = gp->grid();
-  g->addWidget((currentDiagram_ = radioButton("Current diagram")), 0, 0);
-  g->addWidget((allData_        = radioButton("All data")),        1, 0);
+  g->addWidget((currentDiagram_ = radioButton("Current diagram")));
+  g->addWidget((allData_        = radioButton("All data")));
+  g->addWidget(textButton(actSave), 1, 1);
+  g->setColumnStretch(0, 1);
 
   currentDiagram_->setChecked(true);
 }

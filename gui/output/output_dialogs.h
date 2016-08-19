@@ -43,18 +43,26 @@ public:
   QComboBox *cbRefl;
 };
 
-class PanelGamma : public Panel {
-  CLS(PanelGamma) SUPER(Panel)
+class PanelGammaSlices : public Panel {
+  CLS(PanelGammaSlices) SUPER(Panel)
 public:
-  PanelGamma(TheHub&);
+  PanelGammaSlices(TheHub&);
 
   QSpinBox       *numSlices;
   QDoubleSpinBox *stepGamma;
 
+  void updateValues();
+};
+
+class PanelGammaRange : public Panel {
+  CLS(PanelGammaRange) SUPER(Panel)
+public:
+  PanelGammaRange(TheHub&);
+
   QCheckBox      *cbLimitGamma;
   QDoubleSpinBox *minGamma, *maxGamma;
 
-  void updateGamma();
+  void updateValues();
 };
 
 class PanelPoints : public Panel {
@@ -112,7 +120,8 @@ public:
  ~Params();
 
   PanelReflection    *panelReflection;
-  PanelGamma         *panelGamma;
+  PanelGammaSlices   *panelGammaSlices;
+  PanelGammaRange    *panelGammaRange;
   PanelPoints        *panelPoints;
   PanelInterpolation *panelInterpolation;
   PanelDiagram       *panelDiagram;
@@ -166,7 +175,7 @@ public:
 protected:
   Params &params_;
 
-  QGridLayout *grid_;
+  GridLayout *grid_;
 };
 
 //------------------------------------------------------------------------------

@@ -30,7 +30,7 @@ class Reflection final {
 public:
 
   static str_lst::rc typeStrLst();
-  static rcstr          typeTag(fit::ePeakType);
+  static rcstr       typeTag(fit::ePeakType);
 
   Reflection(fit::ePeakType = fit::ePeakType::RAW);
 

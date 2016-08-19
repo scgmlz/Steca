@@ -49,7 +49,7 @@ private:
     Info(models::checkedinfo_vec&);
 
   private:
-    QGridLayout *grid_;
+    GridLayout *grid_;
   };
 
   Info *info_;

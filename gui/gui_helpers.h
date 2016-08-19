@@ -36,10 +36,22 @@
 #include <QTreeView>
 
 //------------------------------------------------------------------------------
-
 // make connects shorter
+
 #define slot(Type,method,parType) \
   static_cast<void (Type::*)(parType)>(&Type::method)
+
+//------------------------------------------------------------------------------
+// layouts
+
+class GridLayout: public QGridLayout {
+  CLS(GridLayout) SUPER(QGridLayout)
+public:
+  using super::super;
+
+  void addRowStretch(int = 1);
+  void addColumnStretch(int = 1);
+};
 
 //------------------------------------------------------------------------------
 // handy functions that make (new) widgets
@@ -48,7 +60,7 @@ QBoxLayout* boxLayout(Qt::Orientation);
 QBoxLayout* hbox();  // horizontal box layout
 QBoxLayout* vbox();  // vertical box layout
 
-QGridLayout* gridLayout();
+GridLayout* gridLayout();
 
 QLabel*    icon(rcstr);
 QLabel*    label(rcstr);

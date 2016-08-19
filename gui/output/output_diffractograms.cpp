@@ -25,11 +25,13 @@ TabDiffractogramsSave::TabDiffractogramsSave(TheHub& hub, Params& params)
 {
   auto gp = new panel::GridPanel(hub, "To save");
   grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
+  grid_->addRowStretch();
 
   auto g = gp->grid();
-  g->addWidget((rbCurrent_       = radioButton("Current diffractogram")), 0, 0);
-  g->addWidget((rbAllSequential_ = radioButton("All diffractograms to sequentially numbered files")), 1, 0);
-  g->addWidget((rbAll_           = radioButton("All diffractograms")), 2, 0);
+  g->addWidget((rbCurrent_       = radioButton("Current diffractogram")));
+  g->addWidget((rbAllSequential_ = radioButton("All diffractograms to sequentially numbered files")));
+  g->addWidget((rbAll_           = radioButton("All diffractograms")));
+  g->addWidget(textButton(actSave), 2, 1);
 
   rbAll_->setChecked(true);
 }
@@ -106,14 +108,16 @@ OutputData DiffractogramsFrame::collectCurve(data::Dataset::rc dataset) {
 }
 
 OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
-  ENSURE(params_->panelGamma)
-  auto pg = params_->panelGamma;
-  gma_t gmaStep = pg->stepGamma->value();
+  ENSURE(params_->panelGammaSlices)
+  auto ps = params_->panelGammaSlices;
+  gma_t gmaStep = ps->stepGamma->value();
 
+  ENSURE(params_->panelGammaRange)
+  auto pr = params_->panelGammaRange;
   typ::Range rgeGma;
-  if (pg->cbLimitGamma->isChecked())
-    rgeGma.safeSet(pg->minGamma->value(),
-                   pg->maxGamma->value());
+  if (pr->cbLimitGamma->isChecked())
+    rgeGma.safeSet(pr->minGamma->value(),
+                   pr->maxGamma->value());
 
   auto &datasets = hub_.collectedDatasets();
   Progress progress(datasets.count(), pb_);
