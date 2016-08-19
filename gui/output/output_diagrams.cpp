@@ -154,10 +154,7 @@ DiagramsFrame::DiagramsFrame(TheHub &hub, rcstr title, QWidget *parent)
   tabs_->addTab("Save").box().addWidget(tabSave_);
 
   connect(tabSave_->actSave, &QAction::triggered, [this]() {
-    if (saveDiagramOutput())
-      MessageLogger::info("The file has been saved.");
-    else
-      MessageLogger::warn("The file could not be saved.");
+    logSuccess(saveDiagramOutput());
   });
 
   recalculate();
@@ -173,13 +170,10 @@ DiagramsFrame::eReflAttr DiagramsFrame::yAttr() const {
   return eReflAttr(params_->panelDiagram->yAxis->currentIndex());
 }
 
-void DiagramsFrame::displayReflection(int reflIndex, bool interpolated) {
+void DiagramsFrame::displayReflection(uint reflIndex, bool interpolated) {
   super::displayReflection(reflIndex, interpolated);
-
-  if (reflIndex >= 0) {
-    rs_ = calcPoints_.at(to_u(reflIndex));
-    recalculate();
-  }
+  rs_ = calcPoints_.at(reflIndex);
+  recalculate();
 }
 
 void DiagramsFrame::recalculate() {
@@ -268,10 +262,6 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separato
 }
 
 void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
-  int index = getReflIndex();
-  if (index < 0)
-    return;
-
   WriteFile file(filePath);
   QTextStream stream(&file);
 
@@ -282,17 +272,15 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
 
   stream << '\n';
 
-  for_i (calcPoints_.at(to_u(index)).count()) {
+  for_i (calcPoints_.at(getReflIndex()).count()) {
     auto &row = table_->row(i);
 
     for_i (row.count()) {
-      auto entry = row.at(i);
-      if (QVariant::String == entry.type())
-        stream << entry.toString();
-      if (QVariant::Date == entry.type())
-        stream << entry.toString();
-      if (QVariant::Double == entry.type())
-        stream << entry.toDouble();
+      QVariant const& var = row.at(i);
+      if (typ::isReal(var))
+        stream << var.toDouble();
+      else
+        stream << var.toString();
 
       stream << separator;
     }

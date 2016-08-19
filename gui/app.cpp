@@ -65,10 +65,24 @@ static void waiting(bool on) {
     QApplication::restoreOverrideCursor();
 }
 
-static QStatusBar* mainStatusBar;
+static QMainWindow *mainWindow;
 
-static void logMessage(rcstr msg) {
-  mainStatusBar->showMessage(msg, 3000);
+static void logMessage(rcstr msg, MessageLogger::eType type) {
+  EXPECT(mainWindow)
+
+  str statusMsg;
+  switch (type) {
+  case MessageLogger::INFO:
+    statusMsg = msg;
+    break;
+  case MessageLogger::WARN:
+  case MessageLogger::POPUP:
+    QMessageBox::information(mainWindow, "", msg);
+    statusMsg = "** " + msg + " **";
+    break;
+  }
+
+  mainWindow->statusBar()->showMessage(statusMsg, 3000);
 }
 
 int App::exec() {
@@ -80,7 +94,7 @@ int App::exec() {
 
     TakesLongTime::handler = waiting;
 
-    mainStatusBar = mainWin.statusBar();
+    mainWindow = &mainWin;
     MessageLogger::handler = logMessage;
 
     int res = super::exec();

@@ -116,19 +116,6 @@ qreal Range::bound(qreal value) const {
   return value;
 }
 
-uint Range::numSlices(qreal& sliceSize) const {
-  EXPECT(sliceSize > 0)
-
-  if (isEmpty())
-    return 0;
-
-  qreal wdt = width();
-  pint  num = pint(qMax(1,qRound(wdt / sliceSize)));
-  sliceSize = wdt / num;
-
-  return num;
-}
-
 static str const KEY_MIN("min"), KEY_MAX("max");
 
 JsonObj Range::saveJson() const {

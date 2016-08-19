@@ -49,7 +49,7 @@ public:
   PanelGammaSlices(TheHub&);
 
   QSpinBox       *numSlices;
-  QDoubleSpinBox *stepGamma;
+//  QDoubleSpinBox *stepGamma; TODO put back
 
   void updateValues();
 };
@@ -257,11 +257,15 @@ protected:
   void calculate();
   void interpolate();
 
-  virtual void displayReflection(int reflIndex, bool interpolated);
+  virtual void displayReflection(uint reflIndex, bool interpolated);
 
 protected:
-  int  getReflIndex()    const;
+  uint getReflIndex()    const;
   bool getInterpolated() const;
+
+  void logMessage(rcstr) const;
+  void logSuccess(bool)  const;
+  bool logCheckSuccess(rcstr path, bool)  const;
 };
 
 //------------------------------------------------------------------------------

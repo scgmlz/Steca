@@ -67,7 +67,7 @@ protected:
   eReflAttr xAttr() const;
   eReflAttr yAttr() const;
 
-  void displayReflection(int reflIndex, bool interpolated);
+  void displayReflection(uint reflIndex, bool interpolated);
 
   calc::ReflectionInfos rs_;
   qreal_vec xs_, ys_, ysErrorAdd_, ysErrorSub_;

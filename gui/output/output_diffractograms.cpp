@@ -74,15 +74,13 @@ DiffractogramsFrame::DiffractogramsFrame(TheHub &hub, rcstr title, QWidget *pare
   tabs_->addTab("Save").box().addWidget(tabSave_);
 
   connect(tabSave_->actSave,&QAction::triggered,[this]() {
-    if (saveDiffractogramOutput())
-      MessageLogger::info("The file has been saved.");
-    else
-      MessageLogger::warn("The file could not be saved.");
+    logSuccess(saveDiffractogramOutput());
   });
 }
 
 OutputDataCollection DiffractogramsFrame::collectCurves(
-    gma_rge::rc rgeGma, gma_t gmaStep, data::Dataset::rc dataset, uint picNum) {
+    gma_rge::rc rgeGma, pint gmaSlices, data::Dataset::rc dataset, uint picNum) {
+
   auto lens = hub_.datasetLens(dataset);
 
   typ::Range rge = lens->rgeGma();
@@ -90,8 +88,9 @@ OutputDataCollection DiffractogramsFrame::collectCurves(
     rge = rge.intersect(rgeGma);
 
   OutputDataCollection outputData;
-  qreal step = gmaStep;
-  for_i (rge.numSlices(step)) {
+
+  qreal step = rge.width() / gmaSlices;
+  for_i (uint(gmaSlices)) {
     qreal min = rge.min + i * step;
     gma_rge gmaStripe(min, min + step);
 
@@ -110,7 +109,7 @@ OutputData DiffractogramsFrame::collectCurve(data::Dataset::rc dataset) {
 OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
   ENSURE(params_->panelGammaSlices)
   auto ps = params_->panelGammaSlices;
-  gma_t gmaStep = ps->stepGamma->value();
+  pint gmaSlices = pint(ps->numSlices->value());
 
   ENSURE(params_->panelGammaRange)
   auto pr = params_->panelGammaRange;
@@ -126,7 +125,7 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
   uint picNum = 1;
   for (data::shp_Dataset dataset : datasets) {
     progress.step();
-    allOutputData.append(collectCurves(rgeGma, gmaStep, *dataset, picNum));
+    allOutputData.append(collectCurves(rgeGma, gmaSlices, *dataset, picNum));
     ++picNum;
   }
 

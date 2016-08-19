@@ -37,11 +37,12 @@ PanelGammaSlices::PanelGammaSlices(TheHub& hub) : super(hub, "Gamma slices") {
   auto g = grid();
 
   g->addWidget(label("count"),               0, 0);
-  g->addWidget((numSlices = spinCell(6, 1)), 0, 1);
+  g->addWidget((numSlices = spinCell(4, 1)), 0, 1);
 
-  g->addWidget(label("degrees"),               1, 0);
-  g->addWidget((stepGamma = spinCell(6, 0.0)), 1, 1);
-  stepGamma->setDisabled(true);
+// TODO back
+//  g->addWidget(label("degrees"),               1, 0);
+//  g->addWidget((stepGamma = spinCell(6, 0.0)), 1, 1);
+//  stepGamma->setDisabled(true);
 
   g->addRowStretch();
 
@@ -452,7 +453,7 @@ QVariant TableModel::data(rcIndex index, int role) const {
 
     if (--indexCol < numCols && indexRow < numRows) {
       QVariant var = rows_.at(to_u(indexRow)).at(to_u(indexCol));
-      if (QVariant::Double == var.type() && qIsNaN(var.toDouble()))
+      if (typ::isReal(var) && qIsNaN(var.toDouble()))
         var = QVariant(); // hide nans
       return var;
     }
@@ -464,17 +465,9 @@ QVariant TableModel::data(rcIndex index, int role) const {
       return Qt::AlignRight;
 
     if (--indexCol < numCols && indexRow < numRows) {
-      switch (rows_.at(to_u(indexRow)).at(to_u(indexCol)).type()) {
-      case QVariant::Int:
-      case QVariant::UInt:
-      case QVariant::LongLong:
-      case QVariant::ULongLong:
-      case QVariant::Double:
-      case QVariant::Date:
+      QVariant const& var = rows_.at(to_u(indexRow)).at(to_u(indexCol));
+      if (typ::isNumeric(var))
         return Qt::AlignRight;
-      default:
-        break;
-      }
     }
 
     return Qt::AlignLeft;
@@ -790,7 +783,7 @@ TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
 
 static str const
   DAT_SFX(".dat"), DAT_SEP(" "),  // suffix, separator
-  CSV_SFX(".csv"), CSV_SEP("; ");
+  CSV_SFX(".csv"), CSV_SEP(", ");
 
 TabSave::TabSave(TheHub& hub, Params& params, bool withTypes) : super(hub, params) {
   actBrowse = new TriggerAction("Browse...", this);
@@ -853,7 +846,7 @@ str TabSave::filePath(bool withSuffix) {
   if (withSuffix)
     suffix = rbDat_->isChecked() ? DAT_SFX : CSV_SFX;
 
-  return QFileInfo(dir, fileSetSuffix(suffix)).canonicalPath();
+  return QFileInfo(dir + '/' + fileSetSuffix(suffix)).absoluteFilePath();
 }
 
 str TabSave::separator() const {
@@ -958,7 +951,7 @@ void Frame::calculate() {
     auto ps = params_->panelGammaSlices;
     ENSURE(ps)
 
-    typ::deg gammaStep = ps->stepGamma->value();
+    pint gammaSlices = pint(ps->numSlices->value());
 
     auto pr = params_->panelGammaRange;
     ENSURE(pr)
@@ -971,7 +964,7 @@ void Frame::calculate() {
 
     for_i (reflCount)
       calcPoints_.append(hub_.makeReflectionInfos(
-          *reflections.at(i), gammaStep, rgeGamma, &progress));
+          *reflections.at(i), gammaSlices, rgeGamma, &progress));
   }
 
   interpolate();
@@ -980,54 +973,71 @@ void Frame::calculate() {
 void Frame::interpolate() {
   TakesLongTime __;
 
-  auto pi = params_->panelInterpolation;
-  ENSURE(pi)
-
-  typ::deg alphaStep   = pi->stepAlpha->value();
-  typ::deg betaStep    = pi->stepBeta->value();
-  qreal    idwRadius   = pi->idwRadius->value();
-
-  qreal    avgRadius   = pi->avgRadius->value();
-  qreal    avgAlphaMax = pi->avgAlphaMax->value();
-  qreal    avgTreshold = pi->avgThreshold->value() / 100.0;
-
   interpPoints_.clear();
 
-  for_i (calcPoints_.count()) {
-    interpPoints_.append(
-        calc::interpolate(calcPoints_.at(i),
-                          alphaStep, betaStep, idwRadius,
-                          avgAlphaMax, avgRadius, avgTreshold));
+  auto pi = params_->panelInterpolation;
+  if (pi) {
+    typ::deg alphaStep   = pi->stepAlpha->value();
+    typ::deg betaStep    = pi->stepBeta->value();
+    qreal    idwRadius   = pi->idwRadius->value();
+
+    qreal    avgRadius   = pi->avgRadius->value();
+    qreal    avgAlphaMax = pi->avgAlphaMax->value();
+    qreal    avgTreshold = pi->avgThreshold->value() / 100.0;
+
+    for_i (calcPoints_.count())
+      interpPoints_.append(
+          calc::interpolate(calcPoints_.at(i),
+                            alphaStep, betaStep, idwRadius,
+                            avgAlphaMax, avgRadius, avgTreshold));
+  } else {
+    for_i (calcPoints_.count())
+      interpPoints_.append(calc::ReflectionInfos());
   }
 
   displayReflection(getReflIndex(), getInterpolated());
 }
 
-void Frame::displayReflection(int reflIndex, bool interpolated) {
+void Frame::displayReflection(uint reflIndex, bool interpolated) {
   table_->clear();
 
-  if (reflIndex < 0)
-    return;
-
   EXPECT(calcPoints_.count() == interpPoints_.count())
-  if (calcPoints_.count() <= to_u(reflIndex))
+  if (calcPoints_.count() <= reflIndex)
     return;
 
-  for (auto& r : (interpolated ? interpPoints_ : calcPoints_).at(to_u(reflIndex)))
+  for (auto& r : (interpolated ? interpPoints_ : calcPoints_).at(reflIndex))
     table_->addRow(r.data(), false);
 
   table_->sortData();
 }
 
-int Frame::getReflIndex() const {
-  if (!params_->panelReflection)
-    return -1;
-  return params_->panelReflection->cbRefl->currentIndex();
+uint Frame::getReflIndex() const {
+  EXPECT(params_->panelReflection)
+  int reflIndex = params_->panelReflection->cbRefl->currentIndex();
+  RUNTIME_CHECK(reflIndex >= 0, "invalid reflection index");
+  return reflIndex;
 }
 
 bool Frame::getInterpolated() const {
   auto pi = params_->panelPoints;
   return pi ? pi->rbInterp->isChecked() : false;
+}
+
+void Frame::logMessage(rcstr msg) const {
+  MessageLogger::info(msg);
+}
+
+void Frame::logSuccess(bool res) const {
+  if (res)
+    MessageLogger::popup("Saved.");
+  else
+    MessageLogger::popup("The output could not be saved.");
+}
+
+bool Frame::logCheckSuccess(rcstr path, bool res) const {
+  if (!res)
+    MessageLogger::popup(str("'%1' could not be saved.").arg(path));
+  return res;
 }
 
 //------------------------------------------------------------------------------

@@ -26,49 +26,35 @@ namespace gui { namespace output {
 //------------------------------------------------------------------------------
 
 TabGraph::TabGraph(TheHub& hub, Params& params)
-: super(hub, params), flat_(false), alphaMax_(90)
+: super(hub, params), flat_(false), alphaMax_(90), avgAlphaMax_(0)
 {
   ENSURE(params_.panelInterpolation)
 
   grid_->addWidget((cbFlat_ = check("no intensity")), 0, 0);
-  grid_->addWidget((rb30_ = radioButton("30°")), 1, 0);
-  grid_->addWidget((rb60_ = radioButton("60°")), 2, 0);
-  grid_->addWidget((rb90_ = radioButton("90°")), 3, 0);
 
   grid_->addRowStretch();
   grid_->addColumnStretch();
 
-  connect(params_.panelInterpolation->avgAlphaMax, slot(QDoubleSpinBox,valueChanged,double), [this](qreal val) {
-    avgAlphaMax_ = val;
+  connect(params_.panelInterpolation->avgAlphaMax, slot(QDoubleSpinBox,valueChanged,double), [this]() {
     update();
   });
 
-  connect(cbFlat_, &QCheckBox::toggled, [this](bool on) {
-    flat_ = on;
+  connect(cbFlat_, &QCheckBox::toggled, [this]() {
     update();
   });
 
-  connect(rb30_, &QRadioButton::clicked, [this]() {
-    alphaMax_ = 30;
-    update();
-  });
-
-  connect(rb60_, &QRadioButton::clicked, [this]() {
-    alphaMax_ = 60;
-    update();
-  });
-
-  connect(rb90_, &QRadioButton::clicked, [this]() {
-    alphaMax_ = 90;
-    update();
-  });
-
-  rb90_->click();
+  update();
 }
 
 void TabGraph::set(calc::ReflectionInfos rs) {
   rs_ = rs;
   update();
+}
+
+void TabGraph::update() {
+  avgAlphaMax_ = params_.panelInterpolation->avgAlphaMax->value();
+  flat_        = cbFlat_->isChecked();
+  super::update();
 }
 
 void TabGraph::paintEvent(QPaintEvent*) {
@@ -254,21 +240,18 @@ PoleFiguresFrame::PoleFiguresFrame(TheHub &hub, rcstr title, QWidget *parent)
 //  });
 
   connect(tabSave_->actSave, &QAction::triggered, [this]() {
-    if (savePoleFigureOutput())
-      MessageLogger::info("The file has been saved.");
-    else
-      MessageLogger::warn("The file could not be saved.");
+    logSuccess(savePoleFigureOutput());
   });
 
 //  params()->cbRefl->currentIndexChanged(0);
 }
 
-void PoleFiguresFrame::displayReflection(int reflIndex, bool interpolated) {
+void PoleFiguresFrame::displayReflection(uint reflIndex, bool interpolated) {
   super::displayReflection(reflIndex, interpolated);
-  if (reflIndex >= 0 && !interpPoints_.isEmpty() && !calcPoints_.isEmpty())
-    tabGraph_->set((interpolated ? interpPoints_ : calcPoints_).at(to_u(reflIndex)));
+  if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
+    tabGraph_->set((interpolated ? interpPoints_ : calcPoints_).at(reflIndex));
 
-  bool on = fit::ePeakType::RAW != hub_.reflections().at(to_u(reflIndex))->type();
+  bool on = fit::ePeakType::RAW != hub_.reflections().at(reflIndex)->type();
   tabSave_->rawReflSettings(on);
 }
 
@@ -277,29 +260,19 @@ bool PoleFiguresFrame::savePoleFigureOutput() {
   if (reflections.isEmpty())
     return false;
 
-  str path = tabSave_->filePath(true);
+  str path = tabSave_->filePath(false);
   if (path.isEmpty())
     return false;
 
-  bool check = false;
-  if (tabSave_->onlySelectedRefl()) {
-    int index = getReflIndex();
-    if (index >= 0 && writePoleFigureOutputFiles(path, to_u(index))) {
-//      tabSave_->savedMessage(str(" for Reflection %1 \n").arg(index + 1));
-      check = true;
-    }
-  } else {
-    // all reflections
-    for_i (reflections.count()) {
-      if (writePoleFigureOutputFiles(path, i)) {
-//        tabSave_->savedMessage(str(" for Reflection %1 \n").arg(i+1));
-        check = true;
-      } else {
-        check = false;  // some failed
-      }
-    }
-  }
-  return check;
+  if (tabSave_->onlySelectedRefl())
+    return writePoleFigureOutputFiles(path, getReflIndex());
+
+  // all reflections
+  bool res = true;
+  for_i (reflections.count())
+    res = logCheckSuccess(path, writePoleFigureOutputFiles(path, i)) && res;
+
+  return res;
 }
 
 static str const OUT_FILE_TAG(".refl%1");
@@ -319,7 +292,7 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
   str path = str(filePath + OUT_FILE_TAG).arg(index + 1);
 
   bool check = false;
-  int numSavedFiles = 0;
+  uint numSavedFiles = 0;
 
   if (tabSave_->outputInten()) {
     qreal_vec output;
@@ -361,7 +334,9 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
     numSavedFiles+=2;
   }
 
-//  tabSave_->savedMessage(str("%1 files have been saved").arg(numSavedFiles));
+  if (numSavedFiles > 0)
+    logMessage(str("%1 files have been saved").arg(numSavedFiles));
+
   return check;
 }
 

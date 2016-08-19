@@ -119,7 +119,7 @@ public:
 
 public:
   calc::ReflectionInfos makeReflectionInfos(calc::Reflection::rc,
-      gma_t gmaStep, gma_rge::rc, Progress* = nullptr);
+      pint gmaSlices, gma_rge::rc, Progress* = nullptr);
 
 public:
   void       saveSession(QFileInfo const&) const;

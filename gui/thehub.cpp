@@ -89,9 +89,7 @@ void Settings::saveBool(rcstr key, bool val) {
 
 qreal Settings::readReal(rcstr key, qreal def) {
   auto var = readVariant(key, QVariant());
-  if (QVariant::Double == var.type())
-    return var.toDouble();
-  return def;
+  return typ::isReal(var) ? var.toDouble() : def;
 }
 
 void Settings::saveReal(rcstr key, qreal val) {
@@ -209,11 +207,11 @@ calc::shp_DatasetLens TheHub::datasetLens(data::Dataset::rc dataset) const {
 }
 
 calc::ReflectionInfos TheHub::makeReflectionInfos(
-    calc::Reflection::rc reflection, gma_t gmaStep, gma_rge::rc rgeGma,
+    calc::Reflection::rc reflection, pint gmaSlices, gma_rge::rc rgeGma,
     Progress* progress)
 {
   return session->makeReflectionInfos(collectedDatasets(), reflection,
-                                      gmaStep, rgeGma, progress);
+                                      gmaSlices, rgeGma, progress);
 }
 
 static str const KEY_FILES("files");

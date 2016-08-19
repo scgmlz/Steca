@@ -148,7 +148,8 @@ public:
 
   calc::ReflectionInfos makeReflectionInfos(
       data::Datasets::rc, calc::Reflection::rc,
-      gma_t gmaStep, gma_rge::rc, Progress* = nullptr);
+      pint gmaSlices, gma_rge::rc, Progress* = nullptr);
+
 // fitting
 private:
   uint   bgPolyDegree_;

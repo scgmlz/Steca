@@ -19,15 +19,20 @@
 
 void MessageLogger::info(rcstr msg) {
   if (handler)
-    handler(msg);
+    handler(msg, INFO);
 }
 
 void MessageLogger::warn(rcstr msg) {
   if (handler)
-    handler("** " + msg + " **");
+    handler(msg, WARN);
 }
 
-void (*MessageLogger::handler)(rcstr) = nullptr;
+void MessageLogger::popup(rcstr msg) {
+  if (handler)
+    handler(msg, POPUP);
+}
+
+void (*MessageLogger::handler)(rcstr, eType) = nullptr;
 
 //------------------------------------------------------------------------------
 // eof

@@ -32,6 +32,8 @@ public:
   void set(calc::ReflectionInfos);
 
 protected:
+  void update();
+
   calc::ReflectionInfos rs_;
   void paintEvent(QPaintEvent*);
 
@@ -49,10 +51,9 @@ protected:
   QPointF   c_; qreal r_;
 
   bool  flat_;
-  qreal alphaMax_ = 90, avgAlphaMax_ = 0;
+  qreal alphaMax_, avgAlphaMax_;
 
   QCheckBox    *cbFlat_;
-  QRadioButton *rb30_, *rb60_, *rb90_;
 };
 
 //------------------------------------------------------------------------------
@@ -85,7 +86,7 @@ protected:
   TabGraph           *tabGraph_;
   TabPoleFiguresSave *tabSave_;
 
-  void displayReflection(int reflIndex, bool interpolated);
+  void displayReflection(uint reflIndex, bool interpolated);
 
   bool savePoleFigureOutput();
   bool writePoleFigureOutputFiles(rcstr filePath, uint index);
