@@ -1,6 +1,10 @@
 ver. 2.0.2, released 2016.mm.dd
 -------------------------------
 
+Bug fixes:
+
+* #22 - missing values in saved diagrams
+
 Additions:
 
 * #23 - normalisation to monitor count

@@ -66,6 +66,12 @@ struct Range {
   void loadJson(JsonObj const&) THROWS;
 };
 
+#ifndef QT_NO_DEBUG
+
+QDebug& operator<<(QDebug&, Range::rc);
+
+#endif
+
 //------------------------------------------------------------------------------
 // A set of *sorted* *non-overlapping* ranges
 

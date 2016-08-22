@@ -63,11 +63,11 @@ struct ImageCut {
 struct Angles {
   CLS(Angles)
 
-  gma_t gma;
   tth_t tth;
+  gma_t gma;
 
   Angles();
-  Angles(gma_t, tth_t);
+  Angles(tth_t, gma_t);
 };
 
 class AngleMap {
@@ -101,8 +101,8 @@ public:
     return arrAngles_.at(i, j);
   }
 
-  gma_rge rgeGma() const { return rgeGma_; }
   tth_rge rgeTth() const { return rgeTth_; }
+  gma_rge rgeGma() const { return rgeGma_; }
 
   void getGmaIndexes(gma_rge::rc, uint_vec const*&, uint&, uint&) const;
 
@@ -111,8 +111,8 @@ private:
 
   Array2D<Angles> arrAngles_;
 
-  gma_rge    rgeGma_;
   tth_rge    rgeTth_;
+  gma_rge    rgeGma_;
 
   // sorted
   vec<gma_t> gmas;

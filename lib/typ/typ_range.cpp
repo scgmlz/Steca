@@ -127,6 +127,15 @@ void Range::loadJson(JsonObj::rc obj) THROWS {
   max = obj.loadQreal(KEY_MAX);
 }
 
+#ifndef QT_NO_DEBUG
+
+QDebug& operator<<(QDebug& d, Range::rc rge) {
+  d << '<' << rge.min << '-' << rge.max << '>';
+  return d;
+}
+
+#endif
+
 //------------------------------------------------------------------------------
 
 Ranges::Ranges() {
