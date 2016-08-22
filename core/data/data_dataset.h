@@ -180,8 +180,10 @@ public:
   qreal avgDeltaMonitorCount() const;
   qreal avgDeltaTime()         const;
 
+  inten_rge::rc  rgeGma(core::Session const&) const;
+
   inten_rge::rc  rgeFixedInten(core::Session const&, bool trans, bool cut) const;
-  typ::Curve::rc makeAvgCurve(core::Session const&, bool trans, bool cut) const;
+  typ::Curve::rc makeAvgCurve(core::Session const&, bool trans, bool cut)  const;
 
 private:
   void  invalidateAvgMutables();
@@ -190,6 +192,7 @@ private:
   // computed on demand (NaNs or emptiness indicate yet unknown values)
   mutable qreal avgMonitorCount_, avgDeltaMonitorCount_, avgDeltaTime_;
   mutable inten_rge rgeFixedInten_;
+  mutable gma_rge   rgeGma_;
   mutable typ::Curve avgCurve_;
 };
 

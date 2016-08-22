@@ -49,9 +49,12 @@ public:
   PanelGammaSlices(TheHub&);
 
   QSpinBox       *numSlices;
-//  QDoubleSpinBox *stepGamma; TODO put back
+  QDoubleSpinBox *stepGamma;
 
   void updateValues();
+
+private:
+  gma_rge rgeGma_;
 };
 
 class PanelGammaRange : public Panel {
@@ -63,6 +66,9 @@ public:
   QDoubleSpinBox *minGamma, *maxGamma;
 
   void updateValues();
+
+private:
+  gma_rge rgeGma_;
 };
 
 class PanelPoints : public Panel {

@@ -15,6 +15,8 @@ Changes, improvements:
 * The range of gammas now retrieved at middle 2 theta.
 * Output text files written with OS-specific end-of-line (\r\n on Windows).
 * Output text formats: only .dat (spaces), .csv (commas); .txt is discontinued.
+* Output dialogs: gamma slicing initialized with gamma range of selected datasets. 
+  Gamma degrees updated when count changes.
 
 ver. 2.0.1, released 2016.06.29
 -------------------------------

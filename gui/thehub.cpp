@@ -406,6 +406,10 @@ void TheHub::combineDatasetsBy(pint by) {
   collectDatasetsFromFiles(collectFromFiles_, by);
 }
 
+gma_rge TheHub::collectedDatasetsRgeGma() const {
+  return collectedDatasets().rgeGma(*session);
+}
+
 void TheHub::setCorrFile(rcstr filePath) THROWS {
   data::shp_File file;
   if (!filePath.isEmpty()) file = io::load(filePath);

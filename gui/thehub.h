@@ -105,12 +105,12 @@ public:
 
 public:  // files
   uint numFiles() const;
-  str fileName(uint index) const;
-  str filePath(uint index) const;
+  str  fileName(uint index) const;
+  str  filePath(uint index) const;
   data::shp_File getFile(uint) const;
   void           remFile(uint);
 
-  bool          hasCorrFile() const;
+  bool           hasCorrFile() const;
   typ::Image::rc corrImage() const;
 
 public:
@@ -160,6 +160,8 @@ public:
   str_lst::rc collectedDatasetsTags() const {
     return session->collectedDatasetsTags();
   }
+
+  gma_rge collectedDatasetsRgeGma() const;
 
   void setCorrFile(rcstr filePath) THROWS;
   void tryEnableCorrection(bool);

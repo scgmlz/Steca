@@ -39,12 +39,13 @@ PanelGammaSlices::PanelGammaSlices(TheHub& hub) : super(hub, "Gamma slices") {
   g->addWidget(label("count"),               0, 0);
   g->addWidget((numSlices = spinCell(4, 1)), 0, 1);
 
-// TODO back
-//  g->addWidget(label("degrees"),               1, 0);
-//  g->addWidget((stepGamma = spinCell(6, 0.0)), 1, 1);
-//  stepGamma->setDisabled(true);
+  g->addWidget(label("degrees"),               1, 0);
+  g->addWidget((stepGamma = spinCell(6, 0.0)), 1, 1);
+  stepGamma->setReadOnly(true);
 
   g->addRowStretch();
+
+  rgeGma_ = hub_.collectedDatasetsRgeGma();
 
   connect(numSlices, slot(QSpinBox,valueChanged,int), [this](int num) {
     updateValues();
@@ -52,13 +53,13 @@ PanelGammaSlices::PanelGammaSlices(TheHub& hub) : super(hub, "Gamma slices") {
 }
 
 void PanelGammaSlices::updateValues() {
-  // TODO slices/step
+  stepGamma->setValue(rgeGma_.width() / numSlices->value());
 }
 
 PanelGammaRange::PanelGammaRange(TheHub& hub) : super(hub, "Gamma range") {
   auto g = grid();
 
-  g->addWidget((cbLimitGamma = check("limit range")), 0, 0, 1, 2);
+  g->addWidget((cbLimitGamma = check("limit")),       0, 0, 1, 2);
 
   g->addWidget(label("min"),                          1, 0);
   g->addWidget((minGamma = spinCell(6, -180., 180.)), 1, 1);
@@ -68,13 +69,19 @@ PanelGammaRange::PanelGammaRange(TheHub& hub) : super(hub, "Gamma range") {
 
   g->addRowStretch();
 
+  rgeGma_ = hub_.collectedDatasetsRgeGma();
+
+  minGamma->setValue(rgeGma_.min);
+  maxGamma->setValue(rgeGma_.max);
+
   connect(cbLimitGamma, &QCheckBox::toggled, [this]() {
     updateValues();
   });
 }
 
+// TODO when min/maxGamma updated -> reflect that in PanelGammaSlices
+
 void PanelGammaRange::updateValues() {
-  // TODO slices/step
   bool on = cbLimitGamma->isChecked();
   minGamma->setEnabled(on);
   maxGamma->setEnabled(on);
@@ -95,14 +102,14 @@ PanelInterpolation::PanelInterpolation(TheHub& hub) : super(hub, "Interpolation"
   g->addWidget((stepAlpha = spinCell(6, 1., 30.)), 0, 1);
   g->addWidget(label("β"), 1, 0, Qt::AlignRight);
   g->addWidget((stepBeta = spinCell(6, 1., 30.)), 1, 1);
-  g->addWidget(label("r. idw"), 2, 0, Qt::AlignRight);
+  g->addWidget(label("idw radius"), 2, 0, Qt::AlignRight);
   g->addWidget((idwRadius = spinCell(6, 0., 90.)), 2, 1);
 
-  g->addWidget(label("avg α max"), 0, 2, Qt::AlignRight);
+  g->addWidget(label("avg. α max"), 0, 2, Qt::AlignRight);
   g->addWidget((avgAlphaMax = spinCell(6, 0., 90.)), 0, 3);
-  g->addWidget(label("r. avg"), 1, 2, Qt::AlignRight);
+  g->addWidget(label("radius"), 1, 2, Qt::AlignRight);
   g->addWidget((avgRadius = spinCell(6, 0., 90.)), 1, 3);
-  g->addWidget(label("incl. %"), 2, 2, Qt::AlignRight);
+  g->addWidget(label("inclusion %"), 2, 2, Qt::AlignRight);
   g->addWidget((avgThreshold = spinCell(6, 0, 100)), 2, 3);
 
   g->addRowStretch();
@@ -297,8 +304,7 @@ Params::~Params() {
 static str SETTINGS_GROUP = "output";
 static str const
   KEY_NUM_SLICES("num slices"),
-  KEY_MIN_GAMMA("min gamma"),
-  KEY_MAX_GAMMA("max gamma"),
+  KEY_LIMIT_GAMMA("limit gamma"),
 
   KEY_INTERPOLATED("interpolated"),
 
@@ -321,8 +327,7 @@ void Params::readSettings() {
   }
 
   if (panelGammaRange) {
-    panelGammaRange->minGamma->setValue(s.readReal(KEY_MIN_GAMMA, 0));
-    panelGammaRange->maxGamma->setValue(s.readReal(KEY_MAX_GAMMA, 0));
+    panelGammaRange->cbLimitGamma->setChecked(s.readBool(KEY_LIMIT_GAMMA, false));
   }
 
   if (panelPoints) {
@@ -358,8 +363,7 @@ void Params::saveSettings() const {
   }
 
   if (panelGammaRange) {
-    s.saveReal(KEY_MIN_GAMMA,  panelGammaRange->minGamma->value());
-    s.saveReal(KEY_MAX_GAMMA,  panelGammaRange->maxGamma->value());
+    s.saveBool(KEY_LIMIT_GAMMA,  panelGammaRange->cbLimitGamma->isChecked());
   }
 
   if (panelPoints) {
@@ -936,6 +940,10 @@ Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
   tabs_->addTab("Points").box().addWidget(tabTable);
 
   table_ = tabTable->table;
+
+  uint reflCount = hub_.reflections().count();
+  calcPoints_.resize(reflCount);
+  interpPoints_.resize(reflCount);
 }
 
 void Frame::calculate() {

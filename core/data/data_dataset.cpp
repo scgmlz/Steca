@@ -422,6 +422,14 @@ qreal Datasets::avgDeltaTime() const {
   return avgDeltaTime_;
 }
 
+inten_rge::rc Datasets::rgeGma(core::Session::rc session) const {
+  if (!rgeGma_.isValid())
+    for (auto& dataset: *this)
+      rgeGma_.extendBy(dataset->rgeGma(session));
+
+  return rgeGma_;
+}
+
 inten_rge::rc Datasets::rgeFixedInten(core::Session::rc session, bool trans, bool cut) const {
   if (!rgeFixedInten_.isValid()) {
 
@@ -461,6 +469,7 @@ Curve::rc Datasets::makeAvgCurve(core::Session::rc session, bool trans, bool cut
 void Datasets::invalidateAvgMutables() {
   avgMonitorCount_ = avgDeltaMonitorCount_ = avgDeltaTime_ = qQNaN();
   rgeFixedInten_.invalidate();
+  rgeGma_.invalidate();
   avgCurve_.clear();
 }
 
