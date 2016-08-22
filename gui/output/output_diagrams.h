@@ -29,11 +29,11 @@ public:
   TabPlot();
   void set(calc::ReflectionInfos);
 
-  void plot(qreal_vec::rc xs,    qreal_vec::rc ys,
-            qreal_vec::rc ysAdd, qreal_vec::rc ysSub);
+  void plot(qreal_vec::rc xs,
+            qreal_vec::rc ys, qreal_vec::rc ysLo, qreal_vec::rc ysUp);
 
 protected:
-  QCPGraph *graph_, *graphAdd_, *graphSub_;
+  QCPGraph *graph_, *graphLo_, *graphUp_;
 };
 
 //------------------------------------------------------------------------------
@@ -70,7 +70,7 @@ protected:
   void displayReflection(uint reflIndex, bool interpolated);
 
   calc::ReflectionInfos rs_;
-  qreal_vec xs_, ys_, ysErrorAdd_, ysErrorSub_;
+  qreal_vec xs_, ys_, ysErrorLo_, ysErrorUp_;
 
   void recalculate();
 

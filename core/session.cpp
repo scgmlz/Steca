@@ -341,7 +341,7 @@ ReflectionInfos Session::makeReflectionInfos(
 
     auto lens = datasetLens(*dataset, datasets, norm_, true, true);
 
-    Range rge = lens->rgeGma(); // REVIEW at mid tth?
+    Range rge = lens->rgeGma();
     if (rgeGma.isValid())
       rge = rge.intersect(rgeGma);
 

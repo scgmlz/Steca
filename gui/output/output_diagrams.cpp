@@ -55,19 +55,19 @@ static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
 
 TabPlot::TabPlot() {
   graph_    = addGraph();
-  graphAdd_ = addGraph();
-  graphSub_ = addGraph();
+  graphLo_ = addGraph();
+  graphUp_ = addGraph();
 }
 
-void TabPlot::plot(qreal_vec::rc xs,    qreal_vec::rc ys,
-                   qreal_vec::rc ysAdd, qreal_vec::rc ysSub) {
+void TabPlot::plot(qreal_vec::rc xs,
+                   qreal_vec::rc ys, qreal_vec::rc ysLo, qreal_vec::rc ysUp) {
   EXPECT(xs.count() == ys.count())
 
   uint count = xs.count();
 
   graph_->clearData();
-  graphAdd_->clearData();
-  graphSub_->clearData();
+  graphUp_->clearData();
+  graphLo_->clearData();
 
   typ::Range rgeX, rgeY;
 
@@ -91,11 +91,11 @@ void TabPlot::plot(qreal_vec::rc xs,    qreal_vec::rc ys,
   graph_->setPen(QPen(Qt::blue));
   graph_->addData(xs.sup(), ys.sup());
 
-  graphAdd_->setPen(QPen(Qt::green));
-  graphAdd_->addData(xs.sup(), ysAdd.sup());
+  graphUp_->setPen(QPen(Qt::red));
+  graphUp_->addData(xs.sup(), ysUp.sup());
 
-  graphSub_->setPen(QPen(Qt::red));
-  graphSub_->addData(xs.sup(), ysSub.sup());
+  graphLo_->setPen(QPen(Qt::green));
+  graphLo_->addData(xs.sup(), ysLo.sup());
 
   replot();
 }
@@ -197,32 +197,36 @@ void DiagramsFrame::recalculate() {
 
   auto calcErrors = [this, is] (eReflAttr attr) {
     uint count = ys_.count();
-    ysErrorAdd_.resize(count); ysErrorSub_.resize(count);
+    ysErrorLo_.resize(count); ysErrorUp_.resize(count);
+
     for_i (count) {
       auto  row   = rs_.at(is.at(i)).data(); // access error over sorted index vec
       qreal sigma = row.at(uint(attr)).toDouble();
       qreal y = ys_.at(i);
-      ysErrorAdd_[i] = y + sigma;
-      ysErrorSub_[i] = y - sigma;
+      ysErrorLo_[i] = y - sigma;
+      ysErrorUp_[i] = y + sigma;
     }
   };
 
-  switch (yAttr()) {
-  case eReflAttr::INTEN:
-    calcErrors(eReflAttr::SIGMA_INTEN);
-    break;
-  case eReflAttr::TTH:
-    calcErrors(eReflAttr::SIGMA_TTH);
-    break;
-  case eReflAttr::FWHM:
-    calcErrors(eReflAttr::SIGMA_FWHM);
-    break;
-  default:
-    ysErrorAdd_.clear(); ysErrorSub_.clear();
-    break;
+  ysErrorLo_.clear(); ysErrorUp_.clear();
+
+  if (fit::ePeakType::RAW != hub_.reflections().at(getReflIndex())->type()) {
+    switch (yAttr()) {
+    case eReflAttr::INTEN:
+      calcErrors(eReflAttr::SIGMA_INTEN);
+      break;
+    case eReflAttr::TTH:
+      calcErrors(eReflAttr::SIGMA_TTH);
+      break;
+    case eReflAttr::FWHM:
+      calcErrors(eReflAttr::SIGMA_FWHM);
+      break;
+    default:
+      break;
+    }
   }
 
-  tabPlot_->plot(xs_, ys_, ysErrorAdd_, ysErrorSub_);
+  tabPlot_->plot(xs_, ys_, ysErrorLo_, ysErrorUp_);
 }
 
 //------------------------------------------------------------------------------
@@ -248,15 +252,15 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separato
   QTextStream stream(&file);
 
   EXPECT(xs_.count() == ys_.count())
-  EXPECT(ysErrorAdd_.count() == ysErrorSub_.count())
-  EXPECT(ysErrorAdd_.isEmpty() || ysErrorAdd_.count() == ys_.count())
+  EXPECT(ysErrorLo_.isEmpty() || ysErrorLo_.count() == ys_.count())
+  EXPECT(ysErrorLo_.count() == ysErrorUp_.count())
 
-  bool writeErrors = !ysErrorAdd_.isEmpty();
+  bool writeErrors = !ysErrorUp_.isEmpty();
 
   for_i (xs_.count()) {
     stream << xs_.at(i) << separator << ys_.at(i);
     if (writeErrors)
-      stream << separator << ysErrorAdd_.at(i) << separator << ysErrorSub_.at(i);
+      stream << separator << ysErrorLo_.at(i) << separator << ysErrorUp_.at(i);
     stream << '\n';
   }
 }

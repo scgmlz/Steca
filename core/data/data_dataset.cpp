@@ -180,7 +180,7 @@ inten_rge OneDataset::rgeInten() const {
 }
 
 size2d OneDataset::imageSize() const {
-  return image_.size(); // REVIEW - (how) used ?
+  return image_.size();
 }
 
 void OneDataset::collectIntens(core::Session::rc session,
