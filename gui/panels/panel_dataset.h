@@ -132,7 +132,8 @@ private:
   ImageWidget *dataImageWidget_, *corrImageWidget_;
 
   uint n = 0;
-  QSpinBox    *spinN;
+  QSpinBox *spinN;
+  QLabel   *labelN;
 };
 
 //------------------------------------------------------------------------------
