@@ -47,7 +47,7 @@ PanelGammaSlices::PanelGammaSlices(TheHub& hub) : super(hub, "Gamma slices") {
 
   rgeGma_ = hub_.collectedDatasetsRgeGma();
 
-  connect(numSlices, slot(QSpinBox,valueChanged,int), [this](int num) {
+  connect(numSlices, slot(QSpinBox,valueChanged,int), [this]() {
     updateValues();
   });
 }

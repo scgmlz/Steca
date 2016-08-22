@@ -3,7 +3,7 @@
 PRO=STeCa2.pro
 echo -e '# generated project\n' > $PRO
 
-APP=Steca_`date +%y%m%d_%H%M`
+APP=Steca2_`date +%y%m%d_%H%M`
 
 cat >> $PRO <<EOT
 TARGET   = $APP

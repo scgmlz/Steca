@@ -404,7 +404,7 @@ ImagePanel::ImagePanel(TheHub& hub) : super(hub), dataset_(nullptr) {
     auto& tab = addTab("Data", Qt::Horizontal);
     auto& box = tab.box();
 
-    box.addWidget((spinN  = spinCell(3,1)));
+    box.addWidget((spinN  = spinCell(4,1)));
     box.addWidget((labelN = label("")));
     box.addWidget((dataImageWidget_ = new ImageWidget(hub_, *this)),
                    1, Qt::AlignCenter);
