@@ -440,6 +440,7 @@ Diffractogram::Diffractogram(TheHub& hub)
     }
   });
 
+  hub_.actions.fitRegions->setChecked(true);
   hub_.actions.fitBgShow->setChecked(true);
 }
 
