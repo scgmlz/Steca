@@ -307,30 +307,24 @@ deg Dataset::chi() const {
   AVG_ONES(chi)
 }
 
-#define RGE_ONES(what)                \
+// combined range of combined datasets
+#define RGE_COMBINE(combineOp, what)  \
   EXPECT(!isEmpty())                  \
   Range rge;                          \
   for (auto &one : *this)             \
-    rge.extendBy(one->what(session)); \
+    rge.combineOp(one->what);         \
   return rge;
 
 gma_rge Dataset::rgeGma(core::Session::rc session) const {
-  // TODO mutables ?
-  RGE_ONES(rgeGma)
+  RGE_COMBINE(extendBy, rgeGma(session))
 }
 
 tth_rge Dataset::rgeTth(core::Session::rc session) const {
-  // TODO mutables ?
-  RGE_ONES(rgeTth)
+  RGE_COMBINE(extendBy, rgeTth(session))
 }
 
 inten_rge Dataset::rgeInten() const {
-  // TODO mutables ?
-  EXPECT(!isEmpty())
-  Range rge;
-  for (auto &one : *this)
-    rge.intersect(one->rgeInten());
-  return rge;
+  RGE_COMBINE(intersect, rgeInten())
 }
 
 qreal Dataset::avgMonitorCount() const {
