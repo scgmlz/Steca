@@ -75,9 +75,9 @@ static void logMessage(rcstr msg, MessageLogger::eType type) {
   case MessageLogger::INFO:
     statusMsg = msg;
     break;
-  case MessageLogger::WARN:
   case MessageLogger::POPUP:
     QMessageBox::information(mainWindow, "", msg);
+  case MessageLogger::WARN:
     statusMsg = "** " + msg + " **";
     break;
   }
