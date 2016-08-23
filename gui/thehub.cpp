@@ -206,6 +206,10 @@ calc::shp_DatasetLens TheHub::datasetLens(data::Dataset::rc dataset) const {
                               true, true);
 }
 
+typ::Curve TheHub::avgCurve(data::Datasets::rc datasets) const {
+  return datasets.avgCurve(*session);
+}
+
 calc::ReflectionInfos TheHub::makeReflectionInfos(
     calc::Reflection::rc reflection, pint gmaSlices, gma_rge::rc rgeGma,
     Progress* progress)

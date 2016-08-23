@@ -213,10 +213,18 @@ Actions::Actions(TheHub& hub): super(hub) {
     enableCorr->setChecked(on);
   });
 
-  onSigDatasetsChanged([this]() {
+  auto deselect = [this]() {
     fixedIntenImageScale->setChecked(false);
     fixedIntenDgramScale->setChecked(false);
     combinedDgram->setChecked(false);
+  };
+
+  onSigGeometryChanged([deselect]() {
+    deselect();
+  });
+
+  onSigDatasetsChanged([this,deselect]() {
+    deselect();
   });
 }
 

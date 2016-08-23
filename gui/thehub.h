@@ -117,6 +117,8 @@ public:
   calc::shp_ImageLens   plainImageLens(typ::Image::rc) const;
   calc::shp_DatasetLens datasetLens(data::Dataset::rc) const;
 
+  typ::Curve avgCurve(data::Datasets::rc) const;
+
 public:
   calc::ReflectionInfos makeReflectionInfos(calc::Reflection::rc,
       pint gmaSlices, gma_rge::rc, Progress* = nullptr);

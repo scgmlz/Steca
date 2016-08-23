@@ -55,8 +55,6 @@ public:
 
   void  subtract(Function::rc);
 
-  Curve add(rc)       const; // taking values of x into account
-  Curve addSimple(rc) const; // just point-by-point, without regard to x
   Curve mul(qreal)    const;
 
   Curve smooth3()    const;  // moving average, 3 points

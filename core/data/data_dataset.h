@@ -181,11 +181,12 @@ public:
   qreal avgDeltaTime()         const;
 
   inten_rge::rc  rgeGma(core::Session const&) const;
-
   inten_rge::rc  rgeFixedInten(core::Session const&, bool trans, bool cut) const;
-  typ::Curve::rc makeAvgCurve(core::Session const&, bool trans, bool cut)  const;
+
+  typ::Curve avgCurve(core::Session const&) const;
 
 private:
+  shp_Dataset combineAll() const;
   void  invalidateAvgMutables();
   qreal calcAvgMutable(qreal (Dataset::*avgMth)() const) const;
 

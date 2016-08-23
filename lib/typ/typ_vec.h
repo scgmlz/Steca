@@ -36,8 +36,8 @@ public:
   explicit vec(uint count)                : super(to_i(count))       {}
   explicit vec(uint count, T const& init) : super(to_i(count), init) {}
 
-  uint count() const   { return to_u(super::count()); }
-  void reserve(uint n) { super::reserve(to_i(n));     }
+  uint  count() const   { return to_u(super::count()); }
+  void  reserve(uint n) { super::reserve(to_i(n));     }
 
   using super::clear;
   using super::isEmpty;

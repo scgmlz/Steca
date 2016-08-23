@@ -96,67 +96,6 @@ void Curve::subtract(Function::rc f) {
     ys_[i] -= f.y(xs_.at(i));
 }
 
-Curve Curve::add(rc that) const {
-  rc   c1 = *this, c2 = that;
-  uint iEnd1 = c1.count(), iEnd2 = c2.count();
-  uint i1 = 0, i2 = 0;
-
-  Curve res;
-
-  for(;;) {
-    if (i1 >= iEnd1) {
-      // have only that, append its rest
-      for (; i2 < iEnd2; ++i2)
-        res.append(c2.x(i2), c2.y(i2));
-      break;
-    } else if (i2 >= iEnd2) {
-      // have only this, append its rest
-      for (; i1 < iEnd1; ++i1)
-        res.append(c1.x(i1), c1.y(i1));
-      break;
-    } else {
-      // have both, append one
-      qreal x1 = c1.x(i1), x2 = c2.x(i2);
-      if (x1 < x2) {
-        res.append(x1,c1.y(i1));
-        ++i1;
-      } else if (x2 < x1) {
-        res.append(x2,c2.y(i2));
-        ++i2;
-      } else {
-        res.append(x1, (c1.y(i1) + c2.y(i2)) / 2);
-        ++i1; ++i2;
-      }
-    }
-  }
-
-  return res;
-}
-
-Curve Curve::addSimple(rc that) const {
-  Curve const *curve1 = this, *curve2 = &that;
-
-  uint count1 = curve1->count(), count2 = curve2->count();
-
-  // the longer one comes second
-  if (count1 > count2) {
-    qSwap(curve1, curve2);
-    qSwap(count1, count2);
-  }
-
-  Curve res;
-
-  // the shorter part - both curves
-  for (uint i = 0, iEnd = count1; i < iEnd; ++i)
-    res.append(curve2->x(i), curve1->y(i) + curve2->y(i));
-
-  // the remainder of the longer curve
-  for (uint i = count1, iEnd = count2; i < iEnd; ++i)
-    res.append(curve2->x(i), curve2->y(i));
-
-  return res;
-}
-
 Curve Curve::mul(qreal factor) const {
   Curve res;
 

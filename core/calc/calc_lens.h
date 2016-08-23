@@ -107,7 +107,6 @@ public:
 
   typ::Curve makeCurve()            const;
   typ::Curve makeCurve(gma_rge::rc) const;
-  typ::Curve makeAvgCurve()         const;
 
   data::Dataset::rc dataset()  const { return dataset_;   }
 

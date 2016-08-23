@@ -237,30 +237,31 @@ shp_Metadata Dataset::metadata() const {
     // takes the last ones (presumed the maximum) of mon. count and time,
     // averages the rest
     for (auto& one : *this) {
-       Metadata const* o = one->metadata().data();
-       EXPECT(o)
-       m->motorXT   += o->motorXT;
-       m->motorYT   += o->motorYT;
-       m->motorZT   += o->motorZT;
+       Metadata const* d = one->metadata().data();
+       EXPECT(d)
 
-       m->motorOmg  += o->motorOmg;
-       m->motorTth  += o->motorTth;
-       m->motorPhi  += o->motorPhi;
-       m->motorChi  += o->motorChi;
+       m->motorXT   += d->motorXT;
+       m->motorYT   += d->motorYT;
+       m->motorZT   += d->motorZT;
 
-       m->motorPST  += o->motorPST;
-       m->motorSST  += o->motorSST;
-       m->motorOMGM += o->motorOMGM;
+       m->motorOmg  += d->motorOmg;
+       m->motorTth  += d->motorTth;
+       m->motorPhi  += d->motorPhi;
+       m->motorChi  += d->motorChi;
 
-       m->deltaMonitorCount += o->deltaMonitorCount;
-       m->deltaTime    += o->deltaTime;
+       m->motorPST  += d->motorPST;
+       m->motorSST  += d->motorSST;
+       m->motorOMGM += d->motorOMGM;
 
-       if (m->monitorCount > o->monitorCount)
+       m->deltaMonitorCount += d->deltaMonitorCount;
+       m->deltaTime    += d->deltaTime;
+
+       if (m->monitorCount > d->monitorCount)
          MessageLogger::warn("decreasing monitor count in combined datasets");
-       if (m->time > o->time)
+       if (m->time > d->time)
          MessageLogger::warn("decreasing time in combined datasets");
-       m->monitorCount = o->monitorCount;
-       m->time         = o->time;
+       m->monitorCount = d->monitorCount;
+       m->time         = d->time;
     }
 
     qreal fac = 1.0 / count();
@@ -446,24 +447,25 @@ inten_rge::rc Datasets::rgeFixedInten(core::Session::rc session, bool trans, boo
   return rgeFixedInten_;
 }
 
-Curve::rc Datasets::makeAvgCurve(core::Session::rc session, bool trans, bool cut) const {
-  if (!avgCurve_.isEmpty())
-    return avgCurve_;
+Curve Datasets::avgCurve(core::Session::rc session) const {
+  if (avgCurve_.isEmpty()) {
 
-  TakesLongTime __;
+    TakesLongTime __;
 
-  Curve res;
-
-  for (auto& dataset: *this) {
-    shp_DatasetLens lens = session.datasetLens(*dataset, *this, session.norm(), trans, cut);
-    Curve single = lens->makeCurve();
-    res = res.add(single);
+    avgCurve_ = session.datasetLens(*combineAll(), *this, session.norm(), true, true)->makeCurve();
   }
 
-  if (!isEmpty())
-    res = res.mul(1. / count());
+  return avgCurve_;
+}
 
-  return (avgCurve_ = res);
+shp_Dataset Datasets::combineAll() const {
+  shp_Dataset d(new Dataset);
+
+  for (shp_Dataset const& dataset: *this)
+    for (shp_OneDataset const& one: *dataset)
+      d->append(one);
+
+  return d;
 }
 
 void Datasets::invalidateAvgMutables() {
