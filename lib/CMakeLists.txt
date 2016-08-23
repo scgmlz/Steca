@@ -12,12 +12,12 @@ file (GLOB source_files
   "*.cpp" "*/*.cpp" "*/*/*.cpp"
 )
 
-add_library (STeCaLib
+add_library (StecaLib
   ${source_files}
   ${header_files}
 )
 
-target_link_libraries (STeCaLib
+target_link_libraries (StecaLib
   Qt5::Core
 )
 

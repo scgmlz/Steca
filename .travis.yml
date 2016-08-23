@@ -1,0 +1,34 @@
+language: cpp
+sudo: required
+dist: trusty
+
+os:
+- linux
+- osx
+
+compiler:
+- clang
+- gcc
+
+env:
+- BUILD_TYPE=Debug
+- BUILD_TYPE=Release
+
+before_install:
+- chmod +x .travis/*/*.sh
+
+install:
+- .travis/${TRAVIS_OS_NAME}/install.sh
+
+script:
+- .travis/${TRAVIS_OS_NAME}/build.sh
+- .travis/${TRAVIS_OS_NAME}/test.sh
+
+addons:
+  apt:
+    sources:
+    - sourceline: ppa:beineri/opt-qt542-trusty
+    packages:
+    - qt54base
+    - qt54multimedia
+    - xvfb

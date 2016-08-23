@@ -44,9 +44,9 @@ typedef typ::vec<itf_t> itfs_t;
 itf_t interpolateValues(typ::deg searchRadius, ReflectionInfos::rc infos,
                         typ::deg alpha, typ::deg beta);
 
-ReflectionInfos interpolate(ReflectionInfos::rc, typ::deg alphaStep, typ::deg betaStep,
-                            typ::deg averagingAlphaMax, typ::deg averagingRadius,
-                            typ::deg idwRadius, qreal inclusionTreshold);
+ReflectionInfos interpolate(ReflectionInfos::rc,
+                            typ::deg alphaStep, typ::deg betaStep, typ::deg idwRadius,
+                            typ::deg averagingAlphaMax, typ::deg averagingRadius, qreal inclusionTreshold);
 
 //------------------------------------------------------------------------------
 }

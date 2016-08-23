@@ -15,34 +15,8 @@
 
 #include "output_diagrams.h"
 #include "thehub.h"
-#include "typ/typ_async.h"
-#include <QDir>
 
 namespace gui { namespace output {
-//------------------------------------------------------------------------------
-
-DiagramsParams::DiagramsParams(TheHub& hub) : super(hub) {
-  box_->addWidget((gpAxes_ = new panel::GridPanel(hub, "Diagram")));
-  rbCalc->hide();
-  rbInterp->hide();
-  gpInterpolation_->hide();
-  rbInterp->setChecked(false);
-  rbInterp->hide();
-  rbCalc->setChecked(true);
-
-  auto tags = calc::ReflectionInfo::dataTags();
-  for_i (data::Metadata::numAttributes(false) - data::Metadata::numAttributes(true))
-    tags.removeLast(); // remove all tags that are not numbers
-
-  auto g = gpAxes_->grid();
-  g->addWidget((xAxis = comboBox(tags)), 0, 0);
-  g->addWidget(label("x"), 0, 1);
-  g->addWidget((yAxis = comboBox(tags)), 1, 0);
-  g->addWidget(label("y"), 1, 1);
-
-  g->setRowStretch(g->rowCount(), 1);
-}
-
 //------------------------------------------------------------------------------
 
 // sorts xs and ys the same way, by (x,y)
@@ -81,19 +55,19 @@ static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
 
 TabPlot::TabPlot() {
   graph_    = addGraph();
-  graphAdd_ = addGraph();
-  graphSub_ = addGraph();
+  graphLo_ = addGraph();
+  graphUp_ = addGraph();
 }
 
-void TabPlot::plot(qreal_vec::rc xs,    qreal_vec::rc ys,
-                   qreal_vec::rc ysAdd, qreal_vec::rc ysSub) {
+void TabPlot::plot(qreal_vec::rc xs,
+                   qreal_vec::rc ys, qreal_vec::rc ysLo, qreal_vec::rc ysUp) {
   EXPECT(xs.count() == ys.count())
 
   uint count = xs.count();
 
   graph_->clearData();
-  graphAdd_->clearData();
-  graphSub_->clearData();
+  graphUp_->clearData();
+  graphLo_->clearData();
 
   typ::Range rgeX, rgeY;
 
@@ -117,11 +91,11 @@ void TabPlot::plot(qreal_vec::rc xs,    qreal_vec::rc ys,
   graph_->setPen(QPen(Qt::blue));
   graph_->addData(xs.sup(), ys.sup());
 
-  graphAdd_->setPen(QPen(Qt::green));
-  graphAdd_->addData(xs.sup(), ysAdd.sup());
+  graphUp_->setPen(QPen(Qt::red));
+  graphUp_->addData(xs.sup(), ysUp.sup());
 
-  graphSub_->setPen(QPen(Qt::red));
-  graphSub_->addData(xs.sup(), ysSub.sup());
+  graphLo_->setPen(QPen(Qt::green));
+  graphLo_->addData(xs.sup(), ysLo.sup());
 
   replot();
 }
@@ -129,16 +103,17 @@ void TabPlot::plot(qreal_vec::rc xs,    qreal_vec::rc ys,
 //------------------------------------------------------------------------------
 
 TabDiagramsSave::TabDiagramsSave(TheHub& hub, Params& params)
-: super(hub, params)
+: super(hub, params, true)
 {
-  auto gp = new panel::GridPanel(hub);
-  grid_->addWidget(gp, grid_->rowCount(), 0);
+  auto gp = new panel::GridPanel(hub, "To save");
+  grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
+  grid_->addRowStretch();
 
   auto g = gp->grid();
-  g->addWidget(currentDiagram_ = radioButton("Current diagram"),0,0);
-  g->addWidget(allData_        = radioButton("All data"),1,0);
-  g->addWidget(fileTypes_      = comboBox(fileTags),2,0);
-  g->setColumnStretch(1,1);
+  g->addWidget((currentDiagram_ = radioButton("Current diagram")));
+  g->addWidget((allData_        = radioButton("All data")));
+  g->addWidget(textButton(actSave), 1, 1);
+  g->setColumnStretch(0, 1);
 
   currentDiagram_->setChecked(true);
 }
@@ -153,50 +128,52 @@ bool TabDiagramsSave::currDiagram() const {
 
 //------------------------------------------------------------------------------
 
+static const Params::ePanels PANELS = Params::ePanels(
+    Params::REFLECTION | Params::GAMMA | Params::DIAGRAM);
+
 DiagramsFrame::DiagramsFrame(TheHub &hub, rcstr title, QWidget *parent)
-: super(hub, title, new DiagramsParams(hub), parent)
+: super(hub, title, new Params(hub, PANELS), parent)
 {
   btnInterpolate_->hide();
 
   tabPlot_ = new TabPlot();
   tabs_->addTab("Diagram").box().addWidget(tabPlot_);
 
-  connect(params()->xAxis, slot(QComboBox,currentIndexChanged,int), [this]() {
+  ENSURE(params_->panelDiagram)
+  auto pd = params_->panelDiagram;
+
+  connect(pd->xAxis, slot(QComboBox,currentIndexChanged,int), [this]() {
     recalculate();
   });
 
-  connect(params()->yAxis, slot(QComboBox,currentIndexChanged,int), [this]() {
+  connect(pd->yAxis, slot(QComboBox,currentIndexChanged,int), [this]() {
     recalculate();
   });
 
   tabSave_ = new TabDiagramsSave(hub, *params_);
   tabs_->addTab("Save").box().addWidget(tabSave_);
-  tabSave_->savedMessage("File has been saved.");
 
-  connect(tabSave_->actSave(),&QAction::triggered,[this]() {
-    if (saveDiagramOutput()) {
-      tabSave_->showMessage();
-    }
+  connect(tabSave_->actSave, &QAction::triggered, [this]() {
+    logSuccess(saveDiagramOutput());
   });
 
   recalculate();
 }
 
-eReflAttr DiagramsFrame::xAttr() const {
-  return eReflAttr(params()->xAxis->currentIndex());
+DiagramsFrame::eReflAttr DiagramsFrame::xAttr() const {
+  ENSURE(params_->panelDiagram)
+  return eReflAttr(params_->panelDiagram->xAxis->currentIndex());
 }
 
-eReflAttr DiagramsFrame::yAttr() const {
-  return eReflAttr(params()->yAxis->currentIndex());
+DiagramsFrame::eReflAttr DiagramsFrame::yAttr() const {
+  ENSURE(params_->panelDiagram)
+  return eReflAttr(params_->panelDiagram->yAxis->currentIndex());
 }
 
-void DiagramsFrame::displayReflection(int reflIndex, bool interpolated) {
+void DiagramsFrame::displayReflection(uint reflIndex, bool interpolated) {
   super::displayReflection(reflIndex, interpolated);
-
-  if (reflIndex >= 0) {
-    rs_ = calcPoints_.at(to_u(reflIndex));
-    recalculate();
-  }
+  rs_ = calcPoints_.at(reflIndex);
+  recalculate();
 }
 
 void DiagramsFrame::recalculate() {
@@ -220,85 +197,76 @@ void DiagramsFrame::recalculate() {
 
   auto calcErrors = [this, is] (eReflAttr attr) {
     uint count = ys_.count();
-    ysErrorAdd_.resize(count); ysErrorSub_.resize(count);
+    ysErrorLo_.resize(count); ysErrorUp_.resize(count);
+
     for_i (count) {
       auto  row   = rs_.at(is.at(i)).data(); // access error over sorted index vec
       qreal sigma = row.at(uint(attr)).toDouble();
       qreal y = ys_.at(i);
-      ysErrorAdd_[i] = y + sigma;
-      ysErrorSub_[i] = y - sigma;
+      ysErrorLo_[i] = y - sigma;
+      ysErrorUp_[i] = y + sigma;
     }
   };
 
-  switch (yAttr()) {
-  case eReflAttr::INTEN:
-    calcErrors(eReflAttr::SIGMA_INTEN);
-    break;
-  case eReflAttr::TTH:
-    calcErrors(eReflAttr::SIGMA_TTH);
-    break;
-  case eReflAttr::FWHM:
-    calcErrors(eReflAttr::SIGMA_FWHM);
-    break;
-  default:
-    ysErrorAdd_.clear(); ysErrorSub_.clear();
-    break;
+  ysErrorLo_.clear(); ysErrorUp_.clear();
+
+  if (fit::ePeakType::RAW != hub_.reflections().at(getReflIndex())->type()) {
+    switch (yAttr()) {
+    case eReflAttr::INTEN:
+      calcErrors(eReflAttr::SIGMA_INTEN);
+      break;
+    case eReflAttr::TTH:
+      calcErrors(eReflAttr::SIGMA_TTH);
+      break;
+    case eReflAttr::FWHM:
+      calcErrors(eReflAttr::SIGMA_FWHM);
+      break;
+    default:
+      break;
+    }
   }
 
-  tabPlot_->plot(xs_, ys_, ysErrorAdd_, ysErrorSub_);
+  tabPlot_->plot(xs_, ys_, ysErrorLo_, ysErrorUp_);
 }
 
 //------------------------------------------------------------------------------
 
 bool DiagramsFrame::saveDiagramOutput() {
-  auto ts = static_cast<TabDiagramsSave*>(tabSave_);
-
-  str p = ts->path();
-  str n = ts->fileName();
-
-  if (p.isEmpty() || n.isEmpty())
+  str path = tabSave_->filePath(true);
+  if (path.isEmpty())
     return false;
 
-  str fileName = n;
-  str filePath = QDir(p).filePath(fileName);
+  str separator = tabSave_->separator();
 
-  auto s = ts->currType();
-
-  str_lst separators = ts->fileSeparators;
-  if (ts->currDiagram())
-    writeCurrentDiagramOutputFile(filePath, separators.at(s), ts->fileTags.at(s));
+  if (tabSave_->currDiagram())
+    writeCurrentDiagramOutputFile(path, separator);
   else
-    writeAllDataOutputFile(filePath, separators.at(s), ts->fileTags.at(s));
+    writeAllDataOutputFile(path, separator);
 
   return true;
 }
 
-void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator, rcstr fileTag) {
-  WriteFile file(filePath + fileTag);
+void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator) {
+  WriteFile file(filePath);
 
   QTextStream stream(&file);
 
   EXPECT(xs_.count() == ys_.count())
-  EXPECT(ysErrorAdd_.count() == ysErrorSub_.count())
-  EXPECT(ysErrorAdd_.isEmpty() || ysErrorAdd_.count() == ys_.count())
+  EXPECT(ysErrorLo_.isEmpty() || ysErrorLo_.count() == ys_.count())
+  EXPECT(ysErrorLo_.count() == ysErrorUp_.count())
 
-  bool writeErrors = !ysErrorAdd_.isEmpty();
+  bool writeErrors = !ysErrorUp_.isEmpty();
 
   for_i (xs_.count()) {
     stream << xs_.at(i) << separator << ys_.at(i);
     if (writeErrors)
-      stream << separator << ysErrorAdd_.at(i) << separator << ysErrorSub_.at(i);
+      stream << separator << ysErrorLo_.at(i) << separator << ysErrorUp_.at(i);
     stream << '\n';
   }
 }
 
-void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator, rcstr fileTag) {
-  int index = params_->currReflIndex();
-  if (index < 0)
-    return;
-
-  WriteFile file(filePath + fileTag);
-
+void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
+  WriteFile file(filePath);
   QTextStream stream(&file);
 
   auto headers = table_->headers();
@@ -308,17 +276,15 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator, rcst
 
   stream << '\n';
 
-  for_i (calcPoints_.at(to_u(index)).count()) {
+  for_i (calcPoints_.at(getReflIndex()).count()) {
     auto &row = table_->row(i);
 
     for_i (row.count()) {
-      auto entry = row.at(i);
-      if (QVariant::String == entry.type())
-        stream << entry.toString();
-      if (QVariant::Date == entry.type())
-        stream << entry.toString();
-      if (QVariant::Double == entry.type())
-        stream << entry.toDouble();
+      QVariant const& var = row.at(i);
+      if (typ::isReal(var))
+        stream << var.toDouble();
+      else
+        stream << var.toString();
 
       stream << separator;
     }

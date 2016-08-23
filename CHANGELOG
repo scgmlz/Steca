@@ -1,3 +1,23 @@
+ver. 2.0.2, released 2016.08.23
+-------------------------------
+
+New features:
+
+* #23 - normalisation to monitor count
+
+Bug fixes:
+
+* #22 - missing values in saved diagrams
+* Diagrams of RAW reflection values are output without (meaningless) error limits.
+* "all datasets" curve works
+
+Changes, improvements:
+
+* The range of gammas is now retrieved at the 'middle' 2 theta.
+* Output text files are written with OS-specific end-of-line (\r\n on Windows).
+* Output text formats: only .dat (spaces) and .csv (commas); .txt is discontinued.
+* Output dialogs: improved gamma slicing controls.
+
 ver. 2.0.1, released 2016.06.29
 -------------------------------
 

@@ -62,7 +62,7 @@ size2d ImageCut::marginSize() const {
 Angles::Angles() : Angles(0, 0) {
 }
 
-Angles::Angles(gma_t gma_, tth_t tth_) : gma(gma_), tth(tth_) {
+Angles::Angles(tth_t tth_, gma_t gma_) : tth(tth_), gma(gma_) {
 }
 
 AngleMap::Key::Key(Geometry::rc geometry_, size2d::rc size_,
@@ -124,8 +124,9 @@ void AngleMap::calculate(Key::rc key) {
   auto& midTth   = key.midTth;
 
   arrAngles_.fill(size);
-  rgeGma_.invalidate();
+
   rgeTth_.invalidate();
+  rgeGma_.invalidate();
 
   EXPECT(size.w > cut.left + cut.right)
   EXPECT(size.h > cut.top  + cut.bottom)
@@ -159,7 +160,7 @@ void AngleMap::calculate(Key::rc key) {
         gamma = -gamma;
       }
 
-      arrAngles_.setAt(i, j, Angles(gamma.toDeg(), tth.toDeg()));
+      arrAngles_.setAt(i, j, Angles(tth.toDeg(), gamma.toDeg()));
     }
   }
 
@@ -168,10 +169,14 @@ void AngleMap::calculate(Key::rc key) {
   for (uint i = cut.left, iEnd = size.w - cut.right; i < iEnd; ++i) {
     for (uint j = cut.top, jEnd = size.h - cut.bottom; j < jEnd; ++j) {
       auto& as = arrAngles_.at(i, j);
-      rgeTth_.extendBy(as.tth);
-      rgeGma_.extendBy((gmas[gi] = as.gma));
+
+      gmas[gi]       = as.gma;
       gmaIndexes[gi] = i + j * size.w;
       ++gi;
+
+      rgeTth_.extendBy(as.tth);
+      if (as.tth >= midTth)
+        rgeGma_.extendBy(as.gma); // gma range at mid tth
     }
   }
 

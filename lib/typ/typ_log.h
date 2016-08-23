@@ -2,7 +2,8 @@
 //
 //  STeCa2:    StressTextureCalculator ver. 2
 //
-//! @file      typ_types.h
+//! @file      typ_async.h
+//! @brief     Asynchronous computation support.
 //!
 //! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -13,16 +14,19 @@
 //
 // ************************************************************************** //
 
-#include "typ_types.h"
-//------------------------------------------------------------------------------
+#ifndef TYP_LOG_H
+#define TYP_LOG_H
 
-str_lst::rc normStrLst() {
-  static str_lst strLst {
-    "none", "monitor", "Δ monitor", "Δ time", "background",
-  };
+#include "def/defs.h"
 
-  return strLst;
-}
+class MessageLogger {
+public:
+  enum eType { INFO, WARN, POPUP };
+  static void info(rcstr);
+  static void warn(rcstr);
+  static void popup(rcstr);
 
-//------------------------------------------------------------------------------
-// eof
+  static void (*handler)(rcstr, eType);
+};
+
+#endif // TYP_LOG_H

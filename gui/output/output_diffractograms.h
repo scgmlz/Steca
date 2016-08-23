@@ -22,14 +22,6 @@
 namespace gui { namespace output {
 //------------------------------------------------------------------------------
 
-class DiffractogramsParams : public Params {
-  CLS(DiffractogramsParams) SUPER(Params)
-public:
-  DiffractogramsParams(TheHub&);
-};
-
-//------------------------------------------------------------------------------
-
 class TabDiffractogramsSave : public TabSave {
   CLS(TabDiffractogramsSave) SUPER(TabSave)
 public:
@@ -59,15 +51,15 @@ public:
 protected:
   TabDiffractogramsSave *tabSave_;
 
-  OutputDataCollection collectCurves(gma_rge::rc, gma_t gmaStep, data::Dataset::rc dataset, uint picNum);
+  OutputDataCollection collectCurves(gma_rge::rc, pint gmaSlices, data::Dataset::rc dataset, uint picNum);
   OutputData collectCurve(data::Dataset::rc dataset);
 
   OutputData outputCurrDiffractogram();
   OutputDataCollections outputAllDiffractograms();
 
   bool saveDiffractogramOutput();
-  bool writeCurrDiffractogramToFile();
-  bool writeAllDiffractogramsToFiles(bool oneFile);
+  bool writeCurrDiffractogramToFile(rcstr filePath, rcstr separator);
+  bool writeAllDiffractogramsToFiles(rcstr filePath, rcstr separator, bool oneFile);
 };
 
 //------------------------------------------------------------------------------

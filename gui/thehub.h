@@ -41,17 +41,23 @@ public:
   QVariant readVariant(rcstr key, QVariant const& def);
   void     saveVariant(rcstr key, QVariant const& val);
 
-  void read(rcstr key, QAction*, bool def);
+  void read(rcstr key, QAction*, bool def = false);
   void save(rcstr key, QAction*);
 
-  void read(rcstr key, QSpinBox*, int def);
+  void read(rcstr key, QSpinBox*, int def = 0);
   void save(rcstr key, QSpinBox*);
 
-  void read(rcstr key, QDoubleSpinBox*, qreal def);
+  void read(rcstr key, QDoubleSpinBox*, qreal def = 0);
   void save(rcstr key, QDoubleSpinBox*);
 
-  qreal readReal(rcstr key, qreal def);
+  bool readBool(rcstr key, bool def = false);
+  void saveBool(rcstr key, bool);
+
+  qreal readReal(rcstr key, qreal def = 0);
   void  saveReal(rcstr key, qreal);
+
+  str  readStr(rcstr key, rcstr def = EMPTY_STR);
+  void saveStr(rcstr key, rcstr);
 };
 
 //------------------------------------------------------------------------------
@@ -99,21 +105,23 @@ public:
 
 public:  // files
   uint numFiles() const;
-  str fileName(uint index) const;
-  str filePath(uint index) const;
+  str  fileName(uint index) const;
+  str  filePath(uint index) const;
   data::shp_File getFile(uint) const;
   void           remFile(uint);
 
-  bool          hasCorrFile() const;
+  bool           hasCorrFile() const;
   typ::Image::rc corrImage() const;
 
 public:
   calc::shp_ImageLens   plainImageLens(typ::Image::rc) const;
   calc::shp_DatasetLens datasetLens(data::Dataset::rc) const;
 
+  typ::Curve avgCurve(data::Datasets::rc) const;
+
 public:
   calc::ReflectionInfos makeReflectionInfos(calc::Reflection::rc,
-      gma_t gmaStep, gma_rge::rc, Progress* = nullptr);
+      pint gmaSlices, gma_rge::rc, Progress* = nullptr);
 
 public:
   void       saveSession(QFileInfo const&) const;
@@ -154,6 +162,8 @@ public:
   str_lst::rc collectedDatasetsTags() const {
     return session->collectedDatasetsTags();
   }
+
+  gma_rge collectedDatasetsRgeGma() const;
 
   void setCorrFile(rcstr filePath) THROWS;
   void tryEnableCorrection(bool);

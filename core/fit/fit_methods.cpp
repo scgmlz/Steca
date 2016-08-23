@@ -45,7 +45,7 @@ void Method::fit(Function& function, Curve::rc curve) {
     auto par = function_->parameterAt(i);
     auto rge = par.valueRange();
 
-    EXPECT(qIsFinite(par.value())) // TODO if not so, return false
+    EXPECT(qIsFinite(par.value())) // TODO if not so, return false ?
     parValue[i] = par.value();
     parMin[i]   = rge.min;
     parMax[i]   = rge.max;

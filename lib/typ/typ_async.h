@@ -2,7 +2,8 @@
 //
 //  STeCa2:    StressTextureCalculator ver. 2
 //
-//! @file      typ_types.h
+//! @file      typ_async.h
+//! @brief     Asynchronous computation support.
 //!
 //! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -13,16 +14,30 @@
 //
 // ************************************************************************** //
 
-#include "typ_types.h"
-//------------------------------------------------------------------------------
+#ifndef TYP_ASYNC_H
+#define TYP_ASYNC_H
 
-str_lst::rc normStrLst() {
-  static str_lst strLst {
-    "none", "monitor", "Δ monitor", "Δ time", "background",
-  };
+#include "def/defs.h"
 
-  return strLst;
-}
+class TakesLongTime final {
+public:
+  TakesLongTime();
+ ~TakesLongTime();
 
-//------------------------------------------------------------------------------
-// eof
+  static void (*handler)(bool);
+};
+
+class Progress final {
+public:
+  Progress(uint total, class QProgressBar*);
+ ~Progress();
+
+  void setProgress(uint);
+  void step();
+
+private:
+  uint total_, i_;
+  QProgressBar* bar_;
+};
+
+#endif // TYP_ASYNC_H

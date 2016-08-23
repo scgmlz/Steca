@@ -15,7 +15,7 @@
 
 #include "calc/calc_lens.h"
 #include "session.h"
-#include "typ/typ_async.h"
+#include "typ/typ_log.h"
 #include <qmath.h>
 
 namespace calc {
@@ -174,22 +174,6 @@ size2d DatasetLens::size() const {
   return super::transCutSize(datasets_.imageSize());
 }
 
-Curve DatasetLens::makeCurve(gma_rge::rc rgeGma) const {
-  inten_vec intens = dataset_.collectIntens(session_, rgeGma);
-
-  Curve res;
-  uint count = intens.count();
-
-  if (count) {
-    tth_rge rgeTth = dataset_.rgeTth(session_);
-    tth_t minTth = rgeTth.min, deltaTth = rgeTth.width() / count;
-    for_i (count)
-      res.append(minTth + deltaTth * i, intens.at(i) * normFactor_);
-  }
-
-  return res;
-}
-
 gma_rge DatasetLens::rgeGma() const {
   return dataset_.rgeGma(session_);
 }
@@ -208,26 +192,40 @@ Curve DatasetLens::makeCurve() const {
   return makeCurve(rgeGma());
 }
 
-Curve DatasetLens::makeAvgCurve() const {
-  return datasets_.makeAvgCurve(session_, trans_, cut_);
+Curve DatasetLens::makeCurve(gma_rge::rc rgeGma) const {
+  inten_vec intens = dataset_.collectIntens(session_, rgeGma);
+
+  Curve res;
+  uint count = intens.count();
+
+  if (count) {
+    tth_rge rgeTth = dataset_.rgeTth(session_);
+    tth_t minTth = rgeTth.min, deltaTth = rgeTth.width() / count;
+    for_i (count)
+      res.append(minTth + deltaTth * i, intens.at(i) * normFactor_);
+  }
+
+  return res;
 }
 
 void DatasetLens::setNorm(eNorm norm) {
-  auto& datasets = dataset_.datasets();
-
   qreal num = 1, den = 1;
 
   switch (norm) {
-  case eNorm::DELTA_MONITOR_COUNT:
-    num = datasets.avgDeltaMonitorCount();
+  case eNorm::MONITOR:
+    num = datasets_.avgMonitorCount();
+    den = dataset_.avgMonitorCount();
+    break;
+  case eNorm::DELTA_MONITOR:
+    num = datasets_.avgDeltaMonitorCount();
     den = dataset_.avgDeltaMonitorCount();
     break;
   case eNorm::DELTA_TIME:
-    num = datasets.avgDeltaTime();
+    num = datasets_.avgDeltaTime();
     den = dataset_.avgDeltaTime();
     break;
   case eNorm::BACKGROUND:
-    num = session_.calcAvgBackground(datasets);
+    num = session_.calcAvgBackground(datasets_);
     den = session_.calcAvgBackground(dataset_);
     break;
   case eNorm::NONE:
@@ -236,7 +234,7 @@ void DatasetLens::setNorm(eNorm norm) {
 
   normFactor_ = inten_t((num > 0 && den > 0) ? num / den : qQNaN());
   if (qIsNaN(normFactor_))
-    MessageLogger::log("Bad normalization value");
+    MessageLogger::warn("Bad normalisation value");
 }
 
 //------------------------------------------------------------------------------

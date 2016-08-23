@@ -331,7 +331,7 @@ ReflectionInfo Session::makeReflectionInfo(
  */
 ReflectionInfos Session::makeReflectionInfos(
     Datasets::rc datasets, Reflection::rc reflection,
-    gma_t gmaStep, gma_rge::rc rgeGma, Progress* progress)
+    pint gmaSlices, gma_rge::rc rgeGma, Progress* progress)
 {
   ReflectionInfos infos;
 
@@ -340,18 +340,19 @@ ReflectionInfos Session::makeReflectionInfos(
       progress->step();
 
     auto lens = datasetLens(*dataset, datasets, norm_, true, true);
-    Range rge = lens->rgeGma(); // REVIEW at mid tth?
+
+    Range rge = lens->rgeGma();
     if (rgeGma.isValid())
       rge = rge.intersect(rgeGma);
 
     if (rge.isEmpty())
       continue;
 
-    qreal step = gmaStep;
-    for_i (rge.numSlices(step)) {
+    qreal step = rge.width() / gmaSlices;
+    for_i (uint(gmaSlices)) {
       qreal min = rge.min + i * step;
       gma_rge gmaStripe(min, min + step);
-      auto  refInfo = makeReflectionInfo(*lens, reflection, gmaStripe);
+      auto refInfo = makeReflectionInfo(*lens, reflection, gmaStripe);
       if (!qIsNaN(refInfo.inten()))
         infos.append(refInfo);
     }

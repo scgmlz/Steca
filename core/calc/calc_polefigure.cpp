@@ -240,10 +240,9 @@ itf_t interpolateValues(deg searchRadius, ReflectionInfos::rc infos,
 }
 
 // Interpolates infos to equidistant grid in alpha and beta.
-ReflectionInfos interpolate(ReflectionInfos::rc infos, deg alphaStep,
-                            deg betaStep, deg averagingAlphaMax,
-                            deg averagingRadius, deg idwRadius,
-                            qreal inclusionTreshold) {
+ReflectionInfos interpolate(ReflectionInfos::rc infos,
+                            deg alphaStep, deg betaStep, deg idwRadius,
+                            deg averagingAlphaMax, deg averagingRadius, qreal inclusionTreshold) {
   // Two interpolation methods are used here:
   // If grid point alpha <= averagingAlphaMax, points within averagingRadius
   // will be averaged.

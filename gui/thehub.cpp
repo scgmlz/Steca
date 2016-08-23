@@ -49,45 +49,65 @@ void Settings::saveVariant(rcstr key, const QVariant& val) {
 
 void Settings::read(rcstr key, QAction* act, bool def) {
   EXPECT(act->isCheckable())
-  if (act) act->setChecked(readVariant(key, def).toBool());
+  if (act)
+      act->setChecked(readVariant(key, def).toBool());
 }
 
 void Settings::save(rcstr key, QAction* act) {
   EXPECT(act->isCheckable())
-  if (act) saveVariant(key, act->isChecked());
+  if (act)
+      saveVariant(key, act->isChecked());
 }
 
 void Settings::read(rcstr key, QSpinBox* box, int def) {
-  if (box) box->setValue(readVariant(key, def).toInt());
+  if (box)
+    box->setValue(readVariant(key, def).toInt());
 }
 
 void Settings::save(rcstr key, QSpinBox* box) {
-  if (box) saveVariant(key, box->value());
+  if (box)
+    saveVariant(key, box->value());
 }
 
 void Settings::read(rcstr key, QDoubleSpinBox* box, qreal def) {
-  if (box) box->setValue(readVariant(key, def).toDouble());
+  if (box)
+    box->setValue(readVariant(key, def).toDouble());
 }
 
 void Settings::save(rcstr key, QDoubleSpinBox* box) {
-  if (box) saveVariant(key, box->value());
+  if (box)
+    saveVariant(key, box->value());
+}
+
+bool Settings::readBool(rcstr key, bool def) {
+  return readVariant(key, def).toBool();
+}
+
+void Settings::saveBool(rcstr key, bool val) {
+  saveVariant(key, val);
 }
 
 qreal Settings::readReal(rcstr key, qreal def) {
   auto var = readVariant(key, QVariant());
-  if (QVariant::Double == var.type())
-    return var.toDouble();
-  return def;
+  return typ::isReal(var) ? var.toDouble() : def;
 }
 
 void Settings::saveReal(rcstr key, qreal val) {
   saveVariant(key, val);
 }
 
+str Settings::readStr(rcstr key, rcstr def) {
+  return readVariant(key, def).toString();
+}
+
+void Settings::saveStr(rcstr key, rcstr val) {
+  saveVariant(key, val);
+}
+
 //------------------------------------------------------------------------------
 
 ReadFile::ReadFile(rcstr path) THROWS : super(path) {
-  RUNTIME_CHECK(super::open(QIODevice::ReadOnly),
+  RUNTIME_CHECK(super::open(QIODevice::ReadOnly | QIODevice::Text),
     "Cannot open file for reading: " % path);
 }
 
@@ -98,7 +118,7 @@ WriteFile::WriteFile(rcstr path) THROWS : super(path) {
       THROW_SILENT();
   }
 
-  RUNTIME_CHECK(super::open(QIODevice::WriteOnly),
+  RUNTIME_CHECK(super::open(QIODevice::WriteOnly | QIODevice::Text),
     "Cannot open file for writing: " % path);
 }
 
@@ -186,12 +206,16 @@ calc::shp_DatasetLens TheHub::datasetLens(data::Dataset::rc dataset) const {
                               true, true);
 }
 
+typ::Curve TheHub::avgCurve(data::Datasets::rc datasets) const {
+  return datasets.avgCurve(*session);
+}
+
 calc::ReflectionInfos TheHub::makeReflectionInfos(
-    calc::Reflection::rc reflection, gma_t gmaStep, gma_rge::rc rgeGma,
+    calc::Reflection::rc reflection, pint gmaSlices, gma_rge::rc rgeGma,
     Progress* progress)
 {
   return session->makeReflectionInfos(collectedDatasets(), reflection,
-                                      gmaStep, rgeGma, progress);
+                                      gmaSlices, rgeGma, progress);
 }
 
 static str const KEY_FILES("files");
@@ -384,6 +408,10 @@ void TheHub::collectDatasetsFromFiles(uint_vec is) {
 
 void TheHub::combineDatasetsBy(pint by) {
   collectDatasetsFromFiles(collectFromFiles_, by);
+}
+
+gma_rge TheHub::collectedDatasetsRgeGma() const {
+  return collectedDatasets().rgeGma(*session);
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {

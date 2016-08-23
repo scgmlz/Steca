@@ -14,30 +14,30 @@ file (GLOB source_files
   "*.cpp" "*/*.cpp" "*/*/*.cpp"
 )
 
-add_library (STeCaGUI
+add_library (StecaGUI
   ${header_files}
   ${source_files}
 )
 
-target_link_libraries (STeCaGUI
+target_link_libraries (StecaGUI
   Qt5::Core
   Qt5::Gui
   Qt5::Widgets
   Qt5::Multimedia
-  STeCaCore
+  StecaCore
   LevMar
-  STeCaLib
+  StecaLib
 )
 
-add_executable (STeCa
+add_executable (Steca
   main.cpp
   resources.qrc
 )
 
-target_link_libraries (STeCa
-  STeCaGUI
+target_link_libraries (Steca
+  StecaGUI
 )
 
-install (TARGETS STeCa RUNTIME DESTINATION bin)
+install (TARGETS Steca RUNTIME DESTINATION bin)
 
 # eof

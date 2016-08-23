@@ -18,6 +18,16 @@
 
 //------------------------------------------------------------------------------
 
+void GridLayout::addRowStretch(int stretch) {
+  setRowStretch(rowCount(), stretch);
+}
+
+void GridLayout::addColumnStretch(int stretch) {
+  setColumnStretch(columnCount(), stretch);
+}
+
+//------------------------------------------------------------------------------
+
 QBoxLayout* boxLayout(Qt::Orientation orientation) {
   switch (orientation) {
   case Qt::Horizontal:
@@ -41,8 +51,8 @@ QBoxLayout* vbox() {
   return box;
 }
 
-QGridLayout* gridLayout() {
-  auto grid = new QGridLayout;
+GridLayout* gridLayout() {
+  auto grid = new GridLayout;
   grid->setSpacing(2);
   return grid;
 }
@@ -93,10 +103,13 @@ QDoubleSpinBox* spinCell(uint emWidth, qreal min, qreal max) {
 QCheckBox* check(rcstr text, QAction* action) {
   auto cb = new QCheckBox(text);
   if (action) {
-    QObject::connect(cb, &QCheckBox::toggled,
-                     [action](bool on) { action->setChecked(on); });
-    QObject::connect(action, &QAction::toggled,
-                     [cb](bool on) { cb->setChecked(on); });
+    QObject::connect(cb, &QCheckBox::toggled, [action](bool on) {
+      action->setChecked(on);
+    });
+
+    QObject::connect(action, &QAction::toggled, [cb](bool on) {
+      cb->setChecked(on);
+    });
   }
   return cb;
 }

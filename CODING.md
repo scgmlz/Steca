@@ -270,7 +270,7 @@ Consider:
 #ifndef <GUARD>
 #define <GUARD>
 
-#include "other STeCa headers"
+#include "other Steca headers"
 #include <Qt includes>
 
 namespace <name> {
@@ -301,7 +301,7 @@ namespace <name> {
 // ************************************************************************** //
 
 #include "file_name.h"
-#include "other STeCa2 headers"
+#include "other Steca headers"
 #include <Qt includes>
 
 namespace core {

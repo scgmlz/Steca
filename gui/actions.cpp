@@ -149,11 +149,11 @@ Actions::Actions(TheHub& hub): super(hub) {
 
   tgl(fixedIntenImageScale,
       "Fixed image scale", "Display image using a fixed intensity scale")
-      .alt("Variable image scale", "Display image using normalized intensity scale")
+      .alt("Variable image scale", "Display image using normalised intensity scale")
       .icon(":/icon/scale");
   tgl(fixedIntenDgramScale,
       "Fixed diffractogram scale", "Display diffractogram using a fixed intensity scale")
-      .alt("Variable diffractogram scale", "Display diffractogram using normalized intensity scale");
+      .alt("Variable diffractogram scale", "Display diffractogram using normalised intensity scale");
 
   tgl(combinedDgram,
       "Combined diffractogram", "Show diffractogram of all datasets")
@@ -213,10 +213,18 @@ Actions::Actions(TheHub& hub): super(hub) {
     enableCorr->setChecked(on);
   });
 
-  onSigDatasetsChanged([this]() {
+  auto deselect = [this]() {
     fixedIntenImageScale->setChecked(false);
     fixedIntenDgramScale->setChecked(false);
     combinedDgram->setChecked(false);
+  };
+
+  onSigGeometryChanged([deselect]() {
+    deselect();
+  });
+
+  onSigDatasetsChanged([this,deselect]() {
+    deselect();
   });
 }
 

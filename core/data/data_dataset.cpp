@@ -16,7 +16,7 @@
 #include "data_dataset.h"
 #include "calc/calc_lens.h"
 #include "session.h"
-#include "typ/typ_async.h"
+#include "typ/typ_log.h"
 #include <qmath.h>
 
 namespace data {
@@ -180,7 +180,7 @@ inten_rge OneDataset::rgeInten() const {
 }
 
 size2d OneDataset::imageSize() const {
-  return image_.size(); // REVIEW - (how) used ?
+  return image_.size();
 }
 
 void OneDataset::collectIntens(core::Session::rc session,
@@ -237,42 +237,43 @@ shp_Metadata Dataset::metadata() const {
     // takes the last ones (presumed the maximum) of mon. count and time,
     // averages the rest
     for (auto& one : *this) {
-       Metadata const* o = one->metadata().data();
-       EXPECT(o)
-       m->motorXT   += o->motorXT;
-       m->motorYT   += o->motorYT;
-       m->motorZT   += o->motorZT;
+       Metadata const* d = one->metadata().data();
+       EXPECT(d)
 
-       m->motorOmg  += o->motorOmg;
-       m->motorTth  += o->motorTth;
-       m->motorPhi  += o->motorPhi;
-       m->motorChi  += o->motorChi;
+       m->motorXT   += d->motorXT;
+       m->motorYT   += d->motorYT;
+       m->motorZT   += d->motorZT;
 
-       m->motorPST  += o->motorPST;
-       m->motorSST  += o->motorSST;
-       m->motorOMGM += o->motorOMGM;
+       m->motorOmg  += d->motorOmg;
+       m->motorTth  += d->motorTth;
+       m->motorPhi  += d->motorPhi;
+       m->motorChi  += d->motorChi;
 
-       m->deltaMonitorCount += o->deltaMonitorCount;
-       m->deltaTime    += o->deltaTime;
+       m->motorPST  += d->motorPST;
+       m->motorSST  += d->motorSST;
+       m->motorOMGM += d->motorOMGM;
 
-       if (m->monitorCount > o->monitorCount)
-         MessageLogger::log("decreasing monitor count in combined datasets");
-       if (m->time > o->time)
-         MessageLogger::log("decreasing time in combined datasets");
-       m->monitorCount = o->monitorCount;
-       m->time         = o->time;
+       m->deltaMonitorCount += d->deltaMonitorCount;
+       m->deltaTime    += d->deltaTime;
+
+       if (m->monitorCount > d->monitorCount)
+         MessageLogger::warn("decreasing monitor count in combined datasets");
+       if (m->time > d->time)
+         MessageLogger::warn("decreasing time in combined datasets");
+       m->monitorCount = d->monitorCount;
+       m->time         = d->time;
     }
 
     qreal fac = 1.0 / count();
 
-    m->motorXT  *= fac;
-    m->motorYT  *= fac;
-    m->motorZT  *= fac;
+    m->motorXT   *= fac;
+    m->motorYT   *= fac;
+    m->motorZT   *= fac;
 
-    m->motorOmg *= fac;
-    m->motorTth *= fac;
-    m->motorPhi *= fac;
-    m->motorChi *= fac;
+    m->motorOmg  *= fac;
+    m->motorTth  *= fac;
+    m->motorPhi  *= fac;
+    m->motorChi  *= fac;
 
     m->motorPST  *= fac;
     m->motorSST  *= fac;
@@ -307,30 +308,28 @@ deg Dataset::chi() const {
   AVG_ONES(chi)
 }
 
-#define RGE_ONES(what)                \
+// combined range of combined datasets
+#define RGE_COMBINE(combineOp, what)  \
   EXPECT(!isEmpty())                  \
   Range rge;                          \
   for (auto &one : *this)             \
-    rge.extendBy(one->what(session)); \
+    rge.combineOp(one->what);         \
   return rge;
 
 gma_rge Dataset::rgeGma(core::Session::rc session) const {
-  // TODO mutables ?
-  RGE_ONES(rgeGma)
+  RGE_COMBINE(extendBy, rgeGma(session))
 }
 
 tth_rge Dataset::rgeTth(core::Session::rc session) const {
-  // TODO mutables ?
-  RGE_ONES(rgeTth)
+  RGE_COMBINE(extendBy, rgeTth(session))
 }
 
 inten_rge Dataset::rgeInten() const {
-  // TODO mutables ?
-  EXPECT(!isEmpty())
-  Range rge;
-  for (auto &one : *this)
-    rge.intersect(one->rgeInten());
-  return rge;
+  RGE_COMBINE(intersect, rgeInten())
+}
+
+qreal Dataset::avgMonitorCount() const {
+  AVG_ONES(monitorCount)
 }
 
 qreal Dataset::avgDeltaMonitorCount() const {
@@ -383,7 +382,7 @@ size2d Dataset::imageSize() const {
 //------------------------------------------------------------------------------
 
 Datasets::Datasets() {
-  invalidateMutables();
+  invalidateAvgMutables();
 }
 
 void Datasets::appendHere(shp_Dataset dataset) {
@@ -392,7 +391,7 @@ void Datasets::appendHere(shp_Dataset dataset) {
   dataset->datasets_ = this;
 
   super::append(dataset);
-  invalidateMutables();
+  invalidateAvgMutables();
 }
 
 size2d Datasets::imageSize() const {
@@ -403,38 +402,33 @@ size2d Datasets::imageSize() const {
   return first()->imageSize();
 }
 
-qreal Datasets::avgDeltaMonitorCount() const {
-  if (qIsNaN(avgMonitorCount_)) {
-    qreal avg = 0;
-
-    if (!isEmpty()) {
-      for (auto& dataset: *this)
-        avg += dataset->avgDeltaMonitorCount();
-
-      avg /= super::count();
-    }
-
-    avgMonitorCount_ = avg;
-  }
+qreal Datasets::avgMonitorCount() const {
+  if (qIsNaN(avgMonitorCount_))
+    avgMonitorCount_ = calcAvgMutable(&Dataset::avgMonitorCount);
 
   return avgMonitorCount_;
 }
 
+qreal Datasets::avgDeltaMonitorCount() const {
+  if (qIsNaN(avgDeltaMonitorCount_))
+    avgDeltaMonitorCount_ = calcAvgMutable(&Dataset::avgDeltaMonitorCount);
+
+  return avgDeltaMonitorCount_;
+}
+
 qreal Datasets::avgDeltaTime() const {
-  if (qIsNaN(avgDeltaTime_)) {
-    qreal avg = 0;
-
-    if (!isEmpty()) {
-      for (auto& dataset: *this)
-        avg += dataset->avgDeltaTime();
-
-      avg /= super::count();
-    }
-
-    avgDeltaTime_ = avg;
-  }
+  if (qIsNaN(avgDeltaTime_))
+    avgDeltaTime_ = calcAvgMutable(&Dataset::avgDeltaTime);
 
   return avgDeltaTime_;
+}
+
+inten_rge::rc Datasets::rgeGma(core::Session::rc session) const {
+  if (!rgeGma_.isValid())
+    for (auto& dataset: *this)
+      rgeGma_.extendBy(dataset->rgeGma(session));
+
+  return rgeGma_;
 }
 
 inten_rge::rc Datasets::rgeFixedInten(core::Session::rc session, bool trans, bool cut) const {
@@ -453,30 +447,45 @@ inten_rge::rc Datasets::rgeFixedInten(core::Session::rc session, bool trans, boo
   return rgeFixedInten_;
 }
 
-Curve::rc Datasets::makeAvgCurve(core::Session::rc session, bool trans, bool cut) const {
-  if (!avgCurve_.isEmpty())
-    return avgCurve_;
+Curve Datasets::avgCurve(core::Session::rc session) const {
+  if (avgCurve_.isEmpty()) {
 
-  TakesLongTime __;
+    TakesLongTime __;
 
-  Curve res;
-
-  for (auto& dataset: *this) {
-    shp_DatasetLens lens = session.datasetLens(*dataset, *this, session.norm(), trans, cut);
-    Curve single = lens->makeCurve();
-    res = res.add(single);
+    avgCurve_ = session.datasetLens(*combineAll(), *this, session.norm(), true, true)->makeCurve();
   }
 
-  if (!isEmpty())
-    res = res.mul(1. / count());
-
-  return (avgCurve_ = res);
+  return avgCurve_;
 }
 
-void Datasets::invalidateMutables() {
-  avgMonitorCount_ = avgDeltaTime_ = qQNaN();
+shp_Dataset Datasets::combineAll() const {
+  shp_Dataset d(new Dataset);
+
+  for (shp_Dataset const& dataset: *this)
+    for (shp_OneDataset const& one: *dataset)
+      d->append(one);
+
+  return d;
+}
+
+void Datasets::invalidateAvgMutables() {
+  avgMonitorCount_ = avgDeltaMonitorCount_ = avgDeltaTime_ = qQNaN();
   rgeFixedInten_.invalidate();
+  rgeGma_.invalidate();
   avgCurve_.clear();
+}
+
+qreal Datasets::calcAvgMutable(qreal (Dataset::*avgMth)() const) const {
+  qreal avg = 0;
+
+  if (!isEmpty()) {
+    for (auto& dataset: *this)
+      avg += ((*dataset).*avgMth)();
+
+    avg /= super::count();
+  }
+
+  return avg;
 }
 
 size2d OneDatasets::imageSize() const {

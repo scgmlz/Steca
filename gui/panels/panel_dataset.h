@@ -49,7 +49,7 @@ private:
     Info(models::checkedinfo_vec&);
 
   private:
-    QGridLayout *grid_;
+    GridLayout *grid_;
   };
 
   Info *info_;
@@ -132,7 +132,8 @@ private:
   ImageWidget *dataImageWidget_, *corrImageWidget_;
 
   uint n = 0;
-  QSpinBox    *spinN;
+  QSpinBox *spinN;
+  QLabel   *labelN;
 };
 
 //------------------------------------------------------------------------------

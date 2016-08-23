@@ -62,12 +62,15 @@ struct Range {
   // limit the number to the interval, as qBound would
   qreal bound(qreal)    const;
 
-  // divide into slices
-  uint  numSlices(qreal& sliceSize /* i/o */) const;
-
   JsonObj saveJson()    const;
   void loadJson(JsonObj const&) THROWS;
 };
+
+#ifndef QT_NO_DEBUG
+
+QDebug& operator<<(QDebug&, Range::rc);
+
+#endif
 
 //------------------------------------------------------------------------------
 // A set of *sorted* *non-overlapping* ranges

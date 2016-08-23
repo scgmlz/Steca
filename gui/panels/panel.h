@@ -60,12 +60,23 @@ public:
   GridPanel(TheHub&);
   GridPanel(TheHub&, rcstr title);
 
-  QGridLayout* grid() const { return grid_; }
+  GridLayout* grid() const { return grid_; }
 
 protected:
-  QGridLayout *grid_;
+  GridLayout *grid_;
 };
 
+#ifdef DEVELOP_REBECCA
+class FitErrorGridPannel : public GridPanel {
+  CLS(FitErrorGridPannel) SUPER(GridPanel)
+public:
+  using super::super;
+
+  QComboBox         *cbErrorUnits;
+  QRadioButton      *rbPercent, *rbAbs;
+  QDoubleSpinBox    *spFitError;
+};
+#endif
 //------------------------------------------------------------------------------
 
 // A tabbed panel

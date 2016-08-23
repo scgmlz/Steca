@@ -333,7 +333,7 @@ DatasetOptions2::DatasetOptions2(TheHub& hub)
   marginRight_->setToolTip("Right cut");
   gc->setColumnStretch(4, 1);
 
-  box_->addWidget(label("Normalization"));
+  box_->addWidget(label("Normalisation"));
   auto vn = vbox();
   box_->addLayout(vn);
 
@@ -404,7 +404,8 @@ ImagePanel::ImagePanel(TheHub& hub) : super(hub), dataset_(nullptr) {
     auto& tab = addTab("Data", Qt::Horizontal);
     auto& box = tab.box();
 
-    box.addWidget((spinN = spinCell(3,1)));
+    box.addWidget((spinN  = spinCell(4,1)));
+    box.addWidget((labelN = label("")));
     box.addWidget((dataImageWidget_ = new ImageWidget(hub_, *this)),
                    1, Qt::AlignCenter);
 
@@ -412,8 +413,6 @@ ImagePanel::ImagePanel(TheHub& hub) : super(hub), dataset_(nullptr) {
       n = to_u(qMax(0, i-1));
       render();
     });
-
-    spinN->setEnabled(false);
   }
 
   {
@@ -484,6 +483,8 @@ void ImagePanel::render() {
 
     n = qMin(n, by - 1);
     spinN->setValue(to_i(n+1));
+
+    labelN->setText(str("/%1").arg(by));
 
     QPixmap pixMap;
     if (dataset_) {
