@@ -1,4 +1,4 @@
-ver. 2.0.2, released 2016.08.22
+ver. 2.0.2, released 2016.08.23
 -------------------------------
 
 New features:
@@ -9,6 +9,7 @@ Bug fixes:
 
 * #22 - missing values in saved diagrams
 * Diagrams of RAW reflection values are output without (meaningless) error limits.
+* "all datasets" curve works
 
 Changes, improvements:
 
