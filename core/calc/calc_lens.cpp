@@ -29,7 +29,8 @@ LensBase::LensBase(core::Session::rc session, data::Datasets::rc datasets,
                    typ::ImageTransform::rc imageTransform, typ::ImageCut::rc imageCut)
 : session_(session), datasets_(datasets)
 , trans_(trans), cut_(cut)
-, imageTransform_(imageTransform), imageCut_(imageCut) {
+, imageTransform_(imageTransform), imageCut_(imageCut)
+, intensCorr_(session.intensCorr()) {
 }
 
 LensBase::~LensBase() {
@@ -48,13 +49,11 @@ size2d LensBase::transCutSize(size2d size) const {
 //------------------------------------------------------------------------------
 
 ImageLens::ImageLens(core::Session::rc session,
-                     Image::rc image, Image const* corrImage,
-                     Datasets::rc datasets, bool trans, bool cut,
-                     ImageCut::rc imageCut, ImageTransform::rc imageTransform)
-: super(session, datasets, trans, cut, imageTransform, imageCut)
-, image_(image), corrImage_(corrImage)
+                     Image::rc image, Datasets::rc datasets,
+                     bool trans, bool cut)
+: super(session, datasets, trans, cut, session.imageTransform(), session.imageCut())
+, image_(image)
 {
-  calcSensCorr();
 }
 
 size2d ImageLens::size() const {
@@ -66,8 +65,8 @@ inten_t ImageLens::imageInten(uint i, uint j) const {
   if (cut_)   doCut(i, j);
 
   inten_t inten = image_.inten(i, j);
-  if (corrImage_)
-    inten *= intensCorr_.at(i, j);
+  if (intensCorr_)
+    inten *= intensCorr_->at(i, j);
 
   return inten;
 }
@@ -122,41 +121,8 @@ void ImageLens::doTrans(uint& x, uint& y) const {
   }
 }
 
-void ImageLens::calcSensCorr() {
-  hasNaNs_ = false;
-  if (!corrImage_)
-    return;
-
-  ENSURE(image_.size() == corrImage_->size())
-
-  size2d size = corrImage_->size() - imageCut_.marginSize();
-  ENSURE(!size.isEmpty())
-
-  qreal sum = 0;
-
-  uint w = size.w, h = size.h, di = imageCut_.left,
-       dj = imageCut_.top;
-
-  for_ij (w, h)
-    sum += corrImage_->inten(i + di, j + dj);
-
-  qreal avg = sum / (w * h);
-
-  intensCorr_.fill(1, image_.size());
-
-  for_ij (w, h) {
-    auto  inten = corrImage_->inten(i + di, j + dj);
-    qreal fact;
-
-    if (inten > 0) {
-      fact = avg / inten;
-    } else {
-      fact     = qQNaN();
-      hasNaNs_ = true;
-    }
-
-    intensCorr_.setAt(i + di, j + dj, inten_t(fact));
-  }
+void ImageLens::doCut(uint& i, uint& j) const {
+  i += imageCut_.left; j += imageCut_.top;
 }
 
 //------------------------------------------------------------------------------
@@ -193,7 +159,7 @@ Curve DatasetLens::makeCurve() const {
 }
 
 Curve DatasetLens::makeCurve(gma_rge::rc rgeGma) const {
-  inten_vec intens = dataset_.collectIntens(session_, rgeGma);
+  inten_vec intens = dataset_.collectIntens(session_, intensCorr_, rgeGma);
 
   Curve res;
   uint count = intens.count();

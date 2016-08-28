@@ -54,6 +54,7 @@ protected:
   bool                trans_, cut_;
   typ::ImageTransform imageTransform_;
   typ::ImageCut       imageCut_;
+  typ::Image const*   intensCorr_;
 };
 
 //------------------------------------------------------------------------------
@@ -61,9 +62,8 @@ protected:
 class ImageLens final : public LensBase {
   CLS(ImageLens) SUPER(LensBase)
 public:
-  ImageLens(core::Session const&, typ::Image::rc, typ::Image const* corrImage,
-            data::Datasets::rc,
-            bool trans, bool cut, typ::ImageCut::rc, typ::ImageTransform::rc);
+  ImageLens(core::Session const&, typ::Image::rc, data::Datasets::rc,
+            bool trans, bool cut);
 
   typ::size2d size() const;
 
@@ -73,20 +73,11 @@ public:
 
 private:
   void doTrans(uint& i, uint& j) const;
+  void doCut(uint& i, uint& j)   const;
 
-  void doCut(uint& i, uint& j) const {
-    i += imageCut_.left; j += imageCut_.top;
-  }
+  typ::Image const& image_;
 
-  void calcSensCorr();  // detector sensitivity correction
-
-  typ::Image const&   image_;
-  typ::Image const*   corrImage_;
-
-  typ::Array2D<inten_t> intensCorr_;
-  bool                hasNaNs_;
-
-  mutable inten_rge   rgeInten_;
+  mutable inten_rge rgeInten_;
 };
 
 typedef QSharedPointer<ImageLens> shp_ImageLens;

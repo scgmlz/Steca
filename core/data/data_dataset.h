@@ -113,7 +113,7 @@ public:
   typ::Image::rc image()    const { return image_; }
   typ::size2d imageSize()   const;
 
-  void collectIntens(core::Session const&,
+  void collectIntens(core::Session const&, typ::Image const* intensCorr,
                      inten_vec&, uint_vec&, gma_rge::rc,
                      tth_t minTth, tth_t deltaTth) const;
 private:
@@ -155,7 +155,8 @@ public:
   qreal    avgDeltaMonitorCount() const;
   qreal    avgDeltaTime()         const;
 
-  inten_vec collectIntens(core::Session const&, gma_rge::rc) const;
+  inten_vec collectIntens(core::Session const&, typ::Image const* intensCorr,
+                          gma_rge::rc) const;
 
 private:
   // all dataset(s) must have the same image size

@@ -50,12 +50,18 @@ public:
   void addFile(data::shp_File) THROWS;
   void remFile(uint i);
 
-  // correction file
 private:
+  // correction file
   data::shp_File corrFile_;
   typ::Image     corrImage_;
   bool           corrEnabled_;
 
+  mutable typ::Image intensCorr_;
+  mutable bool       corrHasNaNs_;
+
+  void calcIntensCorr() const;
+
+  // datasets
   uint_vec       collectedFromFiles_;  // from these files
   data::Datasets collectedDatasets_;   // datasets collected ...
   str_lst        collectedDatasetsTags_;
@@ -72,6 +78,8 @@ public:
   typ::Image::rc corrImage() const {
     return corrImage_;
   }
+
+  typ::Image const* intensCorr() const;
 
   void setCorrFile(data::shp_File) THROWS;  // Load or remove a correction file.
   void remCorrFile();

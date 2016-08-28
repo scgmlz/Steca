@@ -73,6 +73,11 @@ public:
   Array2D(): size_(0,0) {
   }
 
+  // is empty?
+  bool isEmpty() const {
+    return 0 == count();
+  }
+
   // 2D image size
   size2d::rc size() const {
     return size_;

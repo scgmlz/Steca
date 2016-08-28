@@ -35,7 +35,7 @@ void Session::clear() {
     remFile(0);
 
   remCorrFile();
-  corrEnabled_ = false;
+  corrEnabled_ = corrHasNaNs_ = false;
 
   bgPolyDegree_ = 0;
   bgRanges_.clear();
@@ -70,6 +70,49 @@ void Session::remFile(uint i) {
   updateImageSize();
 }
 
+void Session::calcIntensCorr() const {
+  TR("calcIntensCorr")
+  corrHasNaNs_ = false;
+
+  size2d size = corrImage_.size() - imageCut_.marginSize();
+  ENSURE(!size.isEmpty())
+
+  uint w = size.w, h = size.h, di = imageCut_.left,
+       dj = imageCut_.top;
+
+  qreal sum = 0;
+  for_ij (w, h)
+    sum += corrImage_.inten(i + di, j + dj);
+
+  qreal avg = sum / (w * h);
+
+  intensCorr_.fill(1, corrImage_.size());
+
+  for_ij (w, h) {
+    auto  inten = corrImage_.inten(i + di, j + dj);
+    qreal fact;
+
+    if (inten > 0) {
+      fact = avg / inten;
+    } else {
+      fact = qQNaN();
+      corrHasNaNs_ = true;
+    }
+
+    intensCorr_.setAt(i + di, j + dj, inten_t(fact));
+  }
+}
+
+Image const* Session::intensCorr() const {
+  if (!isCorrEnabled())
+    return nullptr;
+
+  if (intensCorr_.isEmpty())
+    calcIntensCorr();
+
+  return &intensCorr_;
+}
+
 void Session::setCorrFile(shp_File file) THROWS {
   if (file.isNull()) {
     remCorrFile();
@@ -78,6 +121,7 @@ void Session::setCorrFile(shp_File file) THROWS {
 
     setImageSize(datasets.imageSize());
     corrImage_ = datasets.foldedImage();
+    intensCorr_.clear();  // will be calculated lazily
 
     // all ok
     corrFile_    = file;
@@ -87,7 +131,7 @@ void Session::setCorrFile(shp_File file) THROWS {
 
 void Session::remCorrFile() {
   corrFile_.clear();
-  corrImage_.clear();
+  corrImage_.clear(); intensCorr_.clear();
   corrEnabled_ = false;
   updateImageSize();
 }
@@ -194,6 +238,8 @@ void Session::setImageCut(bool topLeftFirst, bool linked, ImageCut::rc cut) {
 
     imageCut_ = ImageCut(left, top, right, bottom);
   }
+
+  intensCorr_.clear();  // lazy
 }
 
 void Session::setGeometry(preal detectorDistance, preal pixSize,
@@ -231,10 +277,9 @@ shp_AngleMap Session::angleMap(Session::rc session, OneDataset::rc one) {
 }
 
 shp_ImageLens Session::imageLens(
-    Image::rc image, Datasets::rc datasets, bool trans, bool cut) const {
-  return shp_ImageLens(
-      new ImageLens(*this, image, corrEnabled_ ? &corrImage_ : nullptr,
-                    datasets, trans, cut, imageCut_, imageTransform_));
+    Image::rc image, Datasets::rc datasets, bool trans, bool cut) const
+{
+  return shp_ImageLens(new ImageLens(*this, image, datasets, trans, cut));
 }
 
 shp_DatasetLens Session::datasetLens(Dataset::rc dataset, Datasets::rc datasets, eNorm norm,

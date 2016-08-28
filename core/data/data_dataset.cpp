@@ -183,7 +183,7 @@ size2d OneDataset::imageSize() const {
   return image_.size();
 }
 
-void OneDataset::collectIntens(core::Session::rc session,
+void OneDataset::collectIntens(core::Session::rc session, typ::Image const* intensCorr,
                                inten_vec& intens, uint_vec& counts,gma_rge::rc rgeGma,
                                tth_t minTth, tth_t deltaTth) const {
   auto angleMap = session.angleMap(*this);
@@ -206,8 +206,14 @@ void OneDataset::collectIntens(core::Session::rc session,
     if (qIsNaN(inten))
       continue;
 
+    inten_t corr = intensCorr ? intensCorr->at(i) : 1;
+    if (qIsNaN(corr))
+      continue;
+
+    inten *= corr;
+
     uint count = intens.count();
-    tth_t tth   = map.at(ind).tth;
+    tth_t tth  = map.at(ind).tth;
     EXPECT(minTth <= tth && tth <= minTth + count*deltaTth)
     uint ti = qMin(to_u(qFloor((tth - minTth) / deltaTth)), count-1); // bin index
     intens[ti] += inten;
@@ -340,7 +346,9 @@ qreal Dataset::avgDeltaTime() const {
   AVG_ONES(deltaTime)
 }
 
-inten_vec Dataset::collectIntens(core::Session::rc session, gma_rge::rc rgeGma) const {
+inten_vec Dataset::collectIntens(
+    core::Session::rc session, typ::Image const* intensCorr, gma_rge::rc rgeGma) const
+{
   tth_rge tthRge = rgeTth(session);
   tth_t   tthWdt = tthRge.width();
 
@@ -348,7 +356,7 @@ inten_vec Dataset::collectIntens(core::Session::rc session, gma_rge::rc rgeGma) 
   uint pixWidth = session.imageSize().w - cut.left - cut.right;
 
   uint numBins;
-  if (1 < count()) {  // combined
+  if (1 < count()) {  // combined datasets
     auto one = first();
     tth_t delta = one->rgeTth(session).width() / pixWidth;
     numBins = to_u(qCeil(tthWdt / delta / 2));
@@ -362,7 +370,7 @@ inten_vec Dataset::collectIntens(core::Session::rc session, gma_rge::rc rgeGma) 
   tth_t minTth = tthRge.min, deltaTth = tthWdt / numBins;
 
   for (auto& one : *this)
-    one->collectIntens(session, intens, counts, rgeGma, minTth, deltaTth);
+    one->collectIntens(session, intensCorr, intens, counts, rgeGma, minTth, deltaTth);
 
   for_i (numBins) {
     auto cnt = counts.at(i);
