@@ -457,6 +457,7 @@ inten_rge::rc Datasets::rgeFixedInten(core::Session::rc session, bool trans, boo
 
 Curve Datasets::avgCurve(core::Session::rc session) const {
   if (avgCurve_.isEmpty()) {
+    // TODO invalidate when combinedDgram is unchecked
 
     TakesLongTime __;
 
@@ -464,6 +465,13 @@ Curve Datasets::avgCurve(core::Session::rc session) const {
   }
 
   return avgCurve_;
+}
+
+void Datasets::invalidateAvgMutables() const {
+  avgMonitorCount_ = avgDeltaMonitorCount_ = avgDeltaTime_ = qQNaN();
+  rgeFixedInten_.invalidate();
+  rgeGma_.invalidate();
+  avgCurve_.clear();
 }
 
 shp_Dataset Datasets::combineAll() const {
@@ -474,13 +482,6 @@ shp_Dataset Datasets::combineAll() const {
       d->append(one);
 
   return d;
-}
-
-void Datasets::invalidateAvgMutables() {
-  avgMonitorCount_ = avgDeltaMonitorCount_ = avgDeltaTime_ = qQNaN();
-  rgeFixedInten_.invalidate();
-  rgeGma_.invalidate();
-  avgCurve_.clear();
 }
 
 qreal Datasets::calcAvgMutable(qreal (Dataset::*avgMth)() const) const {

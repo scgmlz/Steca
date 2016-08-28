@@ -71,7 +71,6 @@ void Session::remFile(uint i) {
 }
 
 void Session::calcIntensCorr() const {
-  TR("calcIntensCorr")
   corrHasNaNs_ = false;
 
   size2d size = corrImage_.size() - imageCut_.marginSize();

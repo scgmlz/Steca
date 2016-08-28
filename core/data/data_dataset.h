@@ -186,9 +186,10 @@ public:
 
   typ::Curve avgCurve(core::Session const&) const;
 
+  void  invalidateAvgMutables() const;
+
 private:
   shp_Dataset combineAll() const;
-  void  invalidateAvgMutables();
   qreal calcAvgMutable(qreal (Dataset::*avgMth)() const) const;
 
   // computed on demand (NaNs or emptiness indicate yet unknown values)
