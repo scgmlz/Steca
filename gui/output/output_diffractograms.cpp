@@ -142,16 +142,19 @@ OutputData DiffractogramsFrame::outputCurrDiffractogram() {
 
 auto writeMetaData = [](OutputData outputData, QTextStream& stream, str separator) {
   if (outputData.picNum_ > 0)
-    stream << "Picture Nr:" << separator << outputData.picNum_ << '\n';
+    stream << "Picture Nr: " << outputData.picNum_ << '\n';
 
-  stream << "Comment:"  << separator << outputData.dataset_.metadata()->comment << '\n';
-  stream << "Date:" << separator << outputData.dataset_.metadata()->date << '\n';
-  stream << "Gamma Range max:" << separator << outputData.gmaStripe_.min << '\n';
-  stream << "Gamma Range max:" << separator << outputData.gmaStripe_.max << '\n';
+  auto &md     = *outputData.dataset_.metadata();
+  auto &rgeGma = outputData.gmaStripe_;
+
+  stream << "Comment: "         << md.comment << '\n';
+  stream << "Date: "            << md.date    << '\n';
+  stream << "Gamma range min: " << rgeGma.min << '\n';
+  stream << "Gamma range max: " << rgeGma.max << '\n';
 
   for_i (data::Metadata::numAttributes(true)) {
     stream << data::Metadata::attributeTag(i) << ": " <<
-                        outputData.dataset_.metadata()->attributeValue(i).toDouble() << '\n';
+              md.attributeValue(i).toDouble() << '\n';
   }
 };
 
@@ -164,10 +167,12 @@ bool DiffractogramsFrame::writeCurrDiffractogramToFile(rcstr filePath, rcstr sep
   QTextStream stream(&file);
 
   writeMetaData(outputData, stream, separator);
-  stream << "Intensity" << separator << "Tth" << '\n';
-  for_i(outputData.curve_.xs().count())
-    stream << outputData.curve_.x(i) << separator << outputData.curve_.y(i)
-           << '\n';
+  stream << "Tth" << separator << "Intensity" << '\n';
+
+  auto &curve = outputData.curve_;
+
+  for_i (curve.xs().count())
+    stream << curve.x(i) << separator << curve.y(i) << '\n';
 
   return true;
 }
@@ -189,7 +194,7 @@ bool DiffractogramsFrame::writeAllDiffractogramsToFiles(rcstr filePath, rcstr se
       for (auto outputData : outputCollection) {
         writeMetaData(outputData,stream,separator);
 
-        stream << "Intensity" << separator << "Tth" << '\n';
+        stream << "Tth" << separator << "Intensity" << '\n';
         for_i (outputData.curve_.xs().count()) {
           stream << outputData.curve_.x(i) << separator << outputData.curve_.y(i) << '\n';
         }
@@ -200,7 +205,7 @@ bool DiffractogramsFrame::writeAllDiffractogramsToFiles(rcstr filePath, rcstr se
     for (auto outputCollection : outputCollections) {
       for (auto outputData : outputCollection) {
         writeMetaData(outputData,stream,separator);
-        stream << "Intensity" << separator << "Tth" << '\n';
+        stream << "Tth" << separator << "Intensity" << '\n';
         for_i (outputData.curve_.xs().count()) {
           stream << outputData.curve_.x(i) << separator << outputData.curve_.y(i) << '\n';
         }
@@ -208,9 +213,9 @@ bool DiffractogramsFrame::writeAllDiffractogramsToFiles(rcstr filePath, rcstr se
       ++fileNumber;
     }
   }
-  return true;
 
- }
+  return true;
+}
 
 bool DiffractogramsFrame::saveDiffractogramOutput() {
   str path = tabSave_->filePath(true);

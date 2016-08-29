@@ -223,7 +223,11 @@ Actions::Actions(TheHub& hub): super(hub) {
     deselect();
   });
 
-  onSigDatasetsChanged([this,deselect]() {
+  onSigDatasetsChanged([deselect]() {
+    deselect();
+  });
+
+  onSigCorrEnabled([deselect]() {
     deselect();
   });
 }

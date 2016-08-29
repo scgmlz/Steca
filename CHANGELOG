@@ -1,3 +1,11 @@
+ver. 2.0.2a (hotfix), released 2016.08.29
+--------------------------------
+
+Bug fixes:
+
+* vanadium correction re-enabled for diffractograms
+* fixed labels in diffractogram output
+
 ver. 2.0.2, released 2016.08.23
 -------------------------------
 
