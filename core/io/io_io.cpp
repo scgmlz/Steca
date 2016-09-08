@@ -19,10 +19,23 @@ namespace io {
 //------------------------------------------------------------------------------
 
 // peek at up to maxLen bytes (to establish the file type)
-static QByteArray peek(uint maxLen, QFileInfo const& info) {
+static QByteArray peek(uint pos, uint maxLen, QFileInfo const& info) {
   QFile file(info.filePath());
-  file.open(QFile::ReadOnly);
-  return file.read(maxLen); // on error returns an empty QByteArray; that's good
+
+  if (file.open(QFile::ReadOnly) && file.seek(pos))
+    return file.read(maxLen);
+
+  return QByteArray();
+}
+
+static bool couldBeCaress(QFileInfo const& info) {
+  static QByteArray const header("\020\012DEFCMD DAT");
+  return header == peek(0, to_u(header.size()), info);
+}
+
+static bool couldBeMar(QFileInfo const& info) {
+  static QByteArray const header("mar research");
+  return header == peek(0x80, to_u(header.size()), info);
 }
 
 data::shp_File load(rcstr filePath) THROWS {
@@ -31,14 +44,12 @@ data::shp_File load(rcstr filePath) THROWS {
 
   data::shp_File file;
 
-  // apparently all Caress files begin so
-  static QByteArray const caressHead("\020\012DEFCMD DAT");
-  if (caressHead == peek(to_u(caressHead.size()), info)) {
-    // looks like Caress, so try to load
+  if (couldBeCaress(info))
     file = io::loadCaress(filePath);
-  } else {
+  else if (couldBeMar(info))
+    file = io::loadMar(filePath);
+  else
     THROW("unknown file type: " % filePath);
-  }
 
   RUNTIME_CHECK(file->datasets().count() > 0,
                 "File " % filePath % " contains no datasets");

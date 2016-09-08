@@ -2,8 +2,7 @@
 //
 //  STeCa2:    StressTextureCalculator ver. 2
 //
-//! @file      io_io.h
-//! @brief     Dataset loaders - main
+//! @file      io_caress.cpp
 //!
 //! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -14,23 +13,16 @@
 //
 // ************************************************************************** //
 
-#ifndef IO_IO_H
-#define IO_IO_H
-
-#include "data/data_file.h"
+#include "io_io.h"
 
 namespace io {
 //------------------------------------------------------------------------------
 
-// load a file; file type will be sensed
-data::shp_File load(rcstr filePath) THROWS;
-
-// load a Caress file
-data::shp_File loadCaress(rcstr filePath) THROWS;
-
-// load a Mar file
-data::shp_File loadMar(rcstr filePath) THROWS;
+data::shp_File loadMar(rcstr filePath) THROWS {
+  data::shp_File file(new data::File(filePath));
+  return file;
+}
 
 //------------------------------------------------------------------------------
 }
-#endif // IO_IO_H
+// eof

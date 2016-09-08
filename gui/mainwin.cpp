@@ -14,8 +14,9 @@
 // ************************************************************************** //
 
 #include "mainwin.h"
-#include "actions.h"
 #include "../manifest.h"
+#include "about.h"
+#include "actions.h"
 #include "output/output_diagrams.h"
 #include "output/output_diffractograms.h"
 #include "output/output_polefigures.h"
@@ -26,7 +27,6 @@
 #include "panels/panel_fitting.h"
 
 #include <QAction>
-#include <QApplication>
 #include <QCloseEvent>
 #include <QDate>
 #include <QDesktopServices>
@@ -34,10 +34,11 @@
 #include <QFileDialog>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 #include <QSplitter>
 #include <QStatusBar>
 #include <QUrl>
-#include <QtMultimedia/QSound>
 
 namespace gui {
 //------------------------------------------------------------------------------
@@ -178,6 +179,7 @@ void MainWin::initMenus() {
     separator(),  // Mac puts About into the Apple menu
   #endif
     acts_.online,
+    acts_.checkUpdate,
   });
 }
 
@@ -234,8 +236,9 @@ void MainWin::connectActions() {
   onTrigger(acts_.outputDiagrams,       &Cls::outputDiagrams);
   onTrigger(acts_.outputDiffractograms, &Cls::outputDiffractograms);
 
-  onTrigger(acts_.about,  &Cls::about);
-  onTrigger(acts_.online, &Cls::online);
+  onTrigger(acts_.about,       &Cls::about);
+  onTrigger(acts_.online,      &Cls::online);
+  onTrigger(acts_.checkUpdate, &Cls::checkUpdate);
 
   onToggle(acts_.viewStatusbar, &Cls::viewStatusbar);
 #ifndef Q_OS_OSX
@@ -249,43 +252,40 @@ void MainWin::connectActions() {
   onTrigger(acts_.viewReset, &Cls::viewReset);
 }
 
-class AboutBox : public QMessageBox {
-  CLS(AboutBox) SUPER(QMessageBox)
-public:
-  using super::super;
-
-protected:
-  void mouseDoubleClickEvent(QMouseEvent*);
-};
-
-void AboutBox::mouseDoubleClickEvent(QMouseEvent*) {
-  QSound::play(":/HAL/good_evening");
-}
-
 void MainWin::about() {
-  str appName = qApp->applicationDisplayName();
-  str version = qApp->applicationVersion();
-
-  str title = str("About %1").arg(appName);
-  str text  = str("<h4>%1 ver. %2</h4>").arg(appName, version);
-  str info  = str("<p>StressTextureCalculator</p>"
-                  "<p>Copyright: Forschungszentrum Jülich GmbH %1</p>"
-                  "<p><a href='%2'>%2</a></p>")
-                  .arg(QDate::currentDate().toString("yyyy"))
-                  .arg(STECA2_URL);
-
-  auto box = new AboutBox(QMessageBox::NoIcon,
-                title, text, QMessageBox::Close, this);
-
-  box->setInformativeText(info);
-  auto pm = QPixmap(":/icon/retroStier")
-            .scaled(120, 120, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-  box->setIconPixmap(pm);
-  box->exec();
+  AboutBox(this).exec();
 }
 
 void MainWin::online() {
-  QDesktopServices::openUrl(QUrl(STECA2_URL));
+  QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL));
+}
+
+void MainWin::checkUpdate() {
+  QNetworkRequest req;
+
+  req.setUrl(QUrl(STECA2_VERSION_URL));
+  auto reply = netMan_.get(req);
+
+  connect(reply, &QNetworkReply::finished, [this, reply]() {
+    auto strLst = str(reply->readAll()).split("\n");
+    reply->deleteLater();
+
+    str lastVer;
+    if (!strLst.isEmpty())
+      lastVer = strLst.first();
+
+    if (APPLICATION_VERSION != lastVer)
+      messageDialog(
+        str("%1 update")
+            .arg(APPLICATION_NAME),
+        str("<p>The latest %1 version is %2. You have %3.</p>"
+            "<p><a href='%4'>get new version</a></p>")
+            .arg(APPLICATION_NAME, lastVer, APPLICATION_VERSION, STECA2_DOWNLOAD_URL));
+  });
+}
+
+void MainWin::messageDialog(rcstr title, rcstr text) {
+  QMessageBox::information(this, title, text);
 }
 
 void MainWin::show() {
@@ -389,6 +389,12 @@ void MainWin::onShow() {
   safeLoad("/C/scg/0.ste");
 //  hub_.actions.outputDiagrams->trigger();
 #endif
+
+  Settings s(GROUP_CONFIG);
+  if (s.readBool(KEY_STARTUP_ABOUT, true))
+    acts_.about->trigger();
+  else if (s.readBool(KEY_STARTUP_CHECK_UPDATE, true))
+    acts_.checkUpdate->trigger();
 }
 
 void MainWin::onClose() {

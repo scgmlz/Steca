@@ -21,6 +21,7 @@
 #include "def/defs.h"
 
 #include <QMainWindow>
+#include <QNetworkAccessManager>
 
 namespace gui {
 //------------------------------------------------------------------------------
@@ -39,7 +40,12 @@ private:
 public:
   void about();
   void online();
+  void checkUpdate();
 
+private:
+  void messageDialog(rcstr title, rcstr text);
+
+public:
   void show();
   void close();
 
@@ -74,6 +80,7 @@ private:
 
 private:
   QByteArray initialState_;
+  QNetworkAccessManager netMan_;
 
   void readSettings();
   void saveSettings();

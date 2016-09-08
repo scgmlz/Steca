@@ -2,8 +2,8 @@
 //
 //  STeCa2:    StressTextureCalculator ver. 2
 //
-//! @file      io_io.h
-//! @brief     Dataset loaders - main
+//! @file      about.h
+//! @brief     The about dialog & configuration
 //!
 //! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -14,23 +14,31 @@
 //
 // ************************************************************************** //
 
-#ifndef IO_IO_H
-#define IO_IO_H
+#ifndef ABOUT_H
+#define ABOUT_H
 
-#include "data/data_file.h"
+#include "thehub.h"
+#include "def/defs.h"
 
-namespace io {
+#include <QDialog>
+
+namespace gui {
 //------------------------------------------------------------------------------
 
-// load a file; file type will be sensed
-data::shp_File load(rcstr filePath) THROWS;
+extern str const GROUP_CONFIG, KEY_STARTUP_ABOUT, KEY_STARTUP_CHECK_UPDATE;
 
-// load a Caress file
-data::shp_File loadCaress(rcstr filePath) THROWS;
+class AboutBox : public QDialog {
+  CLS(AboutBox) SUPER(QDialog)
+public:
+  AboutBox(QWidget*);
 
-// load a Mar file
-data::shp_File loadMar(rcstr filePath) THROWS;
+protected:
+  void accept();
+  void mouseDoubleClickEvent(QMouseEvent*);
+
+  QCheckBox *cbShowAtStartup_, *cbCheckUpdatesAtStartup_;
+};
 
 //------------------------------------------------------------------------------
 }
-#endif // IO_IO_H
+#endif // MAINWIN_H

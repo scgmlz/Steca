@@ -50,7 +50,9 @@ static void messageHandler(QtMsgType type, QMessageLogContext const& ctx,
               << "\t[" << ctx.function << ']' << std::endl;
     break;
   case QtWarningMsg:
+  #ifndef QT_NO_DEBUG
     QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
+  #endif
     break;
   default:
     oldHandler(type, ctx, msg);
