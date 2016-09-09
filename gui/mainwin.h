@@ -41,6 +41,7 @@ public:
   void about();
   void online();
   void checkUpdate();
+  void checkUpdate(bool completeReport);
 
 private:
   void messageDialog(rcstr title, rcstr text);

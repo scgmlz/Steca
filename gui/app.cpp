@@ -41,6 +41,7 @@ App::App(int& argc, char* argv[]) : super(argc, argv) {
 }
 
 static QtMessageHandler oldHandler;
+static QAtomicInt       noWarning;
 
 static void messageHandler(QtMsgType type, QMessageLogContext const& ctx,
                            rcstr msg) {
@@ -50,9 +51,8 @@ static void messageHandler(QtMsgType type, QMessageLogContext const& ctx,
               << "\t[" << ctx.function << ']' << std::endl;
     break;
   case QtWarningMsg:
-  #ifndef QT_NO_DEBUG
-    QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
-  #endif
+    if (0 == noWarning)
+      QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
     break;
   default:
     oldHandler(type, ctx, msg);
@@ -126,6 +126,16 @@ bool App::notify(QObject* receiver, QEvent* event) {
   }
 
   return false;
+}
+
+//------------------------------------------------------------------------------
+
+NoWarnings::NoWarnings() {
+  ++noWarning;
+}
+
+NoWarnings::~NoWarnings() {
+  --noWarning;
 }
 
 //------------------------------------------------------------------------------

@@ -17,6 +17,7 @@
 #include "../manifest.h"
 #include "about.h"
 #include "actions.h"
+#include "app.h"
 #include "output/output_diagrams.h"
 #include "output/output_diffractograms.h"
 #include "output/output_polefigures.h"
@@ -261,12 +262,18 @@ void MainWin::online() {
 }
 
 void MainWin::checkUpdate() {
+  checkUpdate(true);
+}
+
+void MainWin::checkUpdate(bool completeReport) {
+  NoWarnings _;
+
   QNetworkRequest req;
 
-  req.setUrl(QUrl(STECA2_VERSION_URL));
+  req.setUrl(QUrl(STECA2_VERSION_URL "?" APPLICATION_VERSION));
   auto reply = netMan_.get(req);
 
-  connect(reply, &QNetworkReply::finished, [this, reply]() {
+  connect(reply, &QNetworkReply::finished, [this, completeReport, reply]() {
     auto strLst = str(reply->readAll()).split("\n");
     reply->deleteLater();
 
@@ -281,6 +288,12 @@ void MainWin::checkUpdate() {
         str("<p>The latest %1 version is %2. You have %3.</p>"
             "<p><a href='%4'>get new version</a></p>")
             .arg(APPLICATION_NAME, lastVer, APPLICATION_VERSION, STECA2_DOWNLOAD_URL));
+    else if (completeReport)
+      messageDialog(
+        str("%1 update")
+            .arg(APPLICATION_NAME),
+        str("<p>You have the latest %1 version.</p>")
+            .arg(APPLICATION_NAME));
   });
 }
 
@@ -391,10 +404,10 @@ void MainWin::onShow() {
 #endif
 
   Settings s(GROUP_CONFIG);
+  if (s.readBool(KEY_STARTUP_CHECK_UPDATE, true))
+    checkUpdate(false);
   if (s.readBool(KEY_STARTUP_ABOUT, true))
-    acts_.about->trigger();
-  else if (s.readBool(KEY_STARTUP_CHECK_UPDATE, true))
-    acts_.checkUpdate->trigger();
+    about();
 }
 
 void MainWin::onClose() {

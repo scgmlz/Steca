@@ -22,6 +22,12 @@
 
 //------------------------------------------------------------------------------
 
+class NoWarnings {
+public:
+  NoWarnings();
+ ~NoWarnings();
+};
+
 class App : public QApplication {
   CLS(App) SUPER(QApplication)
 public:
