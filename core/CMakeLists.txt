@@ -21,7 +21,7 @@ add_library (StecaCore
 
 target_link_libraries (StecaCore
   Qt5::Core
-  Qt5::Gui # TODO for QImage in tiffImage
+  tiff
 )
 
 #eof

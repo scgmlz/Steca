@@ -31,6 +31,9 @@ data::shp_File loadCaress(rcstr filePath) THROWS;
 // load a Mar file
 data::shp_File loadMar(rcstr filePath) THROWS;
 
+// load a metadata file + tiffs
+data::shp_File loadTiffDat(rcstr filePath) THROWS;
+
 //------------------------------------------------------------------------------
 }
 #endif // IO_IO_H

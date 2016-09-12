@@ -31,7 +31,7 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
   RUNTIME_CHECK(0 == open_data_file(filePath.toLocal8Bit().data(),nullptr),
                 "Cannot open data file " + filePath);
 
-  struct CloseFile {
+  struct CloseFile { // TODO remove, replace with QFile etc.
     ~CloseFile() {
       close_data_file();
     }

@@ -266,6 +266,7 @@ void MainWin::checkUpdate() {
 }
 
 void MainWin::checkUpdate(bool completeReport) {
+#ifdef QT_NO_DEBUG // applies only in release
   NoWarnings _;
 
   QNetworkRequest req;
@@ -295,6 +296,7 @@ void MainWin::checkUpdate(bool completeReport) {
         str("<p>You have the latest %1 version.</p>")
             .arg(APPLICATION_NAME));
   });
+#endif
 }
 
 void MainWin::messageDialog(rcstr title, rcstr text) {
