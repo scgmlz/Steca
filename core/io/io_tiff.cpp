@@ -83,17 +83,19 @@ data::shp_File loadTiffDat(rcstr filePath) THROWS {
       RUNTIME_CHECK(ok, "bad expTime value");
     }
 
-    // load one dataset
-    loadTiff(file, dir.filePath(tiffFileName), phi, monitor, expTime);
+    try {
+      // load one dataset
+      loadTiff(file, dir.filePath(tiffFileName), phi, monitor, expTime);
+    } catch (Exception &e) {
+      // add file name to the message
+      e.setMsg(tiffFileName + ": " + e.msg());
+      throw;
+    }
   }
 
   return file;
 }
 
-
-#define READ(type, name) \
-  type name; is >> name; \
-  RUNTIME_CHECK(QDataStream::Ok == is.status(), BAD_FORMAT)
 
 #define IS_ASCII \
   RUNTIME_CHECK(2==dataType, BAD_FORMAT)
@@ -104,138 +106,170 @@ data::shp_File loadTiffDat(rcstr filePath) THROWS {
 #define CHECK_NUMBER(val) \
   IS_NUMBER; RUNTIME_CHECK(val==dataOffset, BAD_FORMAT)
 
-#define SEEK(offset) \
-  RUNTIME_CHECK(f.seek(offset), BAD_FORMAT)
 
-static void loadTiff(data::shp_File& file, rcstr filePath, typ::deg phi, qreal monitor, qreal expTime) THROWS {
+static void loadTiff(data::shp_File& file, rcstr filePath,
+                     typ::deg phi, qreal monitor, qreal expTime) THROWS {
+
+  data::Metadata md;
+  md.motorPhi     = phi;
+  md.monitorCount = monitor;
+  md.time         = expTime;
+
+  // see http://www.fileformat.info/format/tiff/egff.htm
 
   QFile f(filePath);
   RUNTIME_CHECK(f.open(QFile::ReadOnly), "cannot open file");
 
-  str const BAD_FORMAT = "cannot handle file format";
   QDataStream is(&f);
   is.setFloatingPointPrecision(QDataStream::SinglePrecision);
 
-  READ(quint16, magic);
+  auto check = [&is]() {
+    RUNTIME_CHECK(QDataStream::Ok == is.status(), "could not read data");
+  };
 
-  if (0x4949 == magic) {
-    // intel
+  // magic
+  quint16 magic; is >> magic;
+
+  if (0x4949 == magic)      // II - intel
     is.setByteOrder(QDataStream::LittleEndian);
-  } else if (0x4d4d == magic) {
-    // motorola
+  else if (0x4d4d == magic) // MM - motorola
     is.setByteOrder(QDataStream::BigEndian);
-  } else {
-    THROW(BAD_FORMAT);
-  }
+  else
+    THROW("bad magic");
 
-  READ(quint16, version);
-  RUNTIME_CHECK(42 == version, BAD_FORMAT);
+  quint16 version; is >> version;
+  if (42 != version)
+    THROW("bad version");
 
-  READ(quint32, offset);
-  SEEK(offset);
-
-  quint32 imageWidth = 0, imageHeight = 0,
+  quint32 imageWidth    = 0, imageHeight  = 0,
           bitsPerSample = 0, sampleFormat = 0,
-          rowsPerStrip = 0xffffffff,
-          stripOffsets = 0, stripByteCounts = 0;
+          rowsPerStrip  = 0xffffffff,
+          stripOffsets  = 0, stripByteCounts = 0;
+
+  quint16 tagId, dataType;
+  quint32 dataCount, dataOffset;
+
+  auto seek = [&f](qint64 offset) {
+    RUNTIME_CHECK(f.seek(offset), "bad offset");
+  };
+
+  auto asUint = [&]() -> uint {
+    RUNTIME_CHECK(1==dataCount, "bad data count");
+    switch (dataType) {
+    case 1: // byte
+      return dataOffset & 0x000000ff; // some tif files did have trash there
+    case 3: // short
+      return dataOffset & 0x0000ffff;
+    case 4:
+      return dataOffset;
+    }
+
+    THROW("not a simple number");
+  };
+
+  auto asStr = [&]() {
+    RUNTIME_CHECK(2==dataType, "bad data type");
+    auto lastPos = f.pos();
+
+    seek(dataOffset);
+    QByteArray data = f.readLine(dataCount);
+    seek(lastPos);
+
+    return str(data);
+  };
+
+  quint32 dirOffset; is >> dirOffset; check();
+  seek(dirOffset);
 
   quint16 numDirEntries; is >> numDirEntries;
+
   for_i(numDirEntries) {
-    READ(quint16, tagId);
-    READ(quint16, dataType);  // 1 byte, 2 ascii, 3 short, 4 long
-    READ(quint32, dataCount);
-    READ(quint32, dataOffset);
 
-    switch (dataType) {
-    case 1:
-      dataOffset &= 0x000000ff;
-      break;
-    case 3:
-      dataOffset &= 0x0000ffff;
-      break;
-    }
-
-    WT(tagId << dataType << dataCount << dataOffset)
+    is >> tagId >> dataType >> dataCount >> dataOffset; check();
 
     switch (tagId) {
-      case 256: // ImageWidth
-        IS_NUMBER; imageWidth = dataOffset;     // 2048
-        break;
-      case 257: // ImageHeight (TIFF calls: ImageLength)
-        IS_NUMBER; imageHeight = dataOffset;    // 2048
-        break;
-      case 258: // BitsPerSample
-        IS_NUMBER; bitsPerSample = dataOffset;  // 32
-        break;
-      case 259: // Compression
-        CHECK_NUMBER(1);                        // 1 - uncompressed
-        break;
-      case 269: // DocumentName
-        IS_ASCII; // ignore
-        break;
-      case 273: // StripOffsets
-        IS_NUMBER; stripOffsets = dataOffset;
-        break;
-      case 277: // SamplesPerPixel
-        CHECK_NUMBER(1);
-        break;
-      case 278: // RowsPerStrip
-        IS_NUMBER; rowsPerStrip = dataOffset;
-      case 279: // StripByteCounts
-        IS_NUMBER; stripByteCounts = dataOffset;
-        break;
-      case 284: // PlanarConfiguration
-        CHECK_NUMBER(1);
-        break;
-      case 306: // DateTime
-        IS_ASCII; // ignore
-        break;
-      case 339: // SampleFormat
-        IS_NUMBER; sampleFormat = dataOffset; // 1 unsigned, 2 signed, 3 IEEE
-        break;
-      default:
-        TR("* NEW TAG *")
-        break;
+    // numbers
+    case 256:
+      imageWidth = asUint();
+      break;
+    case 257:
+      imageHeight = asUint();
+      break;
+    case 258:
+      bitsPerSample = asUint();
+      break;
+    case 259: // Compression
+      RUNTIME_CHECK(1==asUint(), "compressed data");
+      break;
+    case 273:
+      stripOffsets = asUint();
+      break;
+    case 277: // SamplesPerPixel
+      RUNTIME_CHECK(1==asUint(), "more than one sample per pixel");
+      break;
+    case 278:
+      rowsPerStrip = asUint();
+    case 279:
+      stripByteCounts = asUint();
+      break;
+    case 284: // PlanarConfiguration
+      RUNTIME_CHECK(1==asUint(), "not planar");
+      break;
+    case 339:
+      sampleFormat = asUint(); // 1 unsigned, 2 signed, 3 IEEE
+      break;
+
+    // text
+    case 269: // DocumentName
+      md.comment = asStr();
+      break;
+    case 306: // DateTime
+      md.date = asStr();
+      break;
+//    default:
+//      TR("* NEW TAG *" << tagId << dataType << dataCount << dataOffset)
+//      break;
     }
   }
 
-  RUNTIME_CHECK(imageWidth>0 && imageHeight>0 && stripOffsets>0 && stripByteCounts>0, BAD_FORMAT);
-  RUNTIME_CHECK(1==sampleFormat || 2==sampleFormat || 3==sampleFormat, BAD_FORMAT);
-  RUNTIME_CHECK(32==bitsPerSample, BAD_FORMAT);
-  RUNTIME_CHECK(imageHeight <= rowsPerStrip, BAD_FORMAT);
+  RUNTIME_CHECK(
+      imageWidth>0 && imageHeight>0 && stripOffsets>0 && stripByteCounts>0 &&
+      imageHeight <= rowsPerStrip, "bad format");
+
+  RUNTIME_CHECK(
+      (1==sampleFormat || 2==sampleFormat || 3==sampleFormat) &&
+      32==bitsPerSample, "unhandled format");
 
   typ::size2d size(imageWidth, imageHeight);
-  inten_vec intens(imageWidth * imageHeight);
 
-  RUNTIME_CHECK((bitsPerSample/8) * imageWidth * imageHeight == stripByteCounts, BAD_FORMAT);
+  uint count = imageWidth * imageHeight;
+  inten_vec intens(count);
 
-  SEEK(stripOffsets);
+  RUNTIME_CHECK((bitsPerSample/8) * count == stripByteCounts, );
+
+  seek(stripOffsets);
 
   for_i (intens.count()) {
     switch (sampleFormat) {
     case 1: {
-      READ(quint32, sample);
+      quint32 sample; is >> sample;
       intens[i] = sample;
       break;
     }
     case 2: {
-      READ(qint32, sample); TR(sample)
+      qint32 sample; is >> sample;
       intens[i] = sample;
       break;
     }
     case 3: {
-      READ(float, sample);
+      float sample; is >> sample;
       intens[i] = sample;
       break;
     }
     }
   }
 
-  data::Metadata md;
-  // md.date    = str::fromStdString(s_date);
-  md.motorPhi     = phi;
-  md.monitorCount = monitor;
-  md.time         = expTime;
+  check();
 
   file->datasets().append(
     data::shp_OneDataset(new data::OneDataset(md, size,
