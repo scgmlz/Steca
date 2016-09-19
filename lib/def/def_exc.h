@@ -38,6 +38,8 @@ public:
   rcstr msg()    const noexcept { return msg_;    }
   pcstr what()   const noexcept;
 
+  void setMsg(rcstr);
+
   Exception* clone() const;
   void       raise() const;
 
