@@ -198,6 +198,9 @@ void OneDataset::collectIntens(core::Session::rc session, typ::Image const* inte
   EXPECT(gmaIndexMax <= gmaIndexes->count())
 
   EXPECT(intens.count() == counts.count())
+  uint count = intens.count();
+
+  EXPECT(0 < deltaTth)
 
   for (uint i = gmaIndexMin; i < gmaIndexMax; ++i) {
     uint ind = gmaIndexes->at(i);
@@ -212,10 +215,13 @@ void OneDataset::collectIntens(core::Session::rc session, typ::Image const* inte
 
     inten *= corr;
 
-    uint count = intens.count();
     tth_t tth  = map.at(ind).tth;
-    EXPECT(minTth <= tth && tth <= minTth + count*deltaTth)
-    uint ti = qMin(to_u(qFloor((tth - minTth) / deltaTth)), count-1); // bin index
+
+    // bin index
+    uint ti = to_u(qFloor((tth - minTth) / deltaTth));
+    EXPECT(ti <= count)
+    ti = qMin(ti, count-1); // it can overshoot due to floating point calculation
+
     intens[ti] += inten;
     counts[ti] += 1;
   }

@@ -141,26 +141,60 @@ void AngleMap::calculate(Key::rc key) {
   qreal pixSize = geometry.pixSize,
         detDist = geometry.detectorDistance;
 
+// was: adapted from Steca original code
+//  for_int (i, size.w) {
+//    qreal x       = (to_i(i) - midPix.i) * pixSize;
+//    rad   tthHorz = midTth.toRad() + atan(x / detDist);
+//    qreal h       = cos(tthHorz)   * hypot(x, detDist);
+
+//    for_int (j, size.h) {
+//      qreal y          = (midPix.j - to_i(j)) * pixSize;
+//      qreal z          = hypot(x, y);
+//      qreal pixDetDist = hypot(z, detDist);
+//      rad   tth        = acos(h / pixDetDist);
+
+//      qreal r     = sqrt((pixDetDist * pixDetDist) - (h * h));
+//      rad   gamma = asin(y / r);
+
+//      if (tthHorz < 0) {
+//        tth   = -tth;
+//        gamma = -gamma;
+//      }
+
+//      ENSURE(!qIsNaN(gamma))
+
+//      arrAngles_.setAt(i, j, Angles(tth.toDeg(), gamma.toDeg()));
+//    }
+//  }
+
+  // new code
+  /* detector coordinates: d_x, ... (d_z = const)
+     beam coordinates: b_x, ..; b_y = d_y */
+
+  qreal const& d_z = detDist;
+  // 2theta of the "middle" (whatever that is) detector pixel
+  qreal d_midTth = midTth.toRad(),
+        cos_midTth = cos(d_midTth), sin_midTth = sin(d_midTth);
+
+  qreal b_x1 = d_z * sin_midTth;
+  qreal b_z1 = d_z * cos_midTth;
+
   for_int (i, size.w) {
-    qreal x       = (to_i(i) - midPix.i) * pixSize;
-    rad   tthHorz = midTth.toRad() + atan(x / detDist);
-    qreal h       = cos(tthHorz)   * hypot(x, detDist);
+    qreal d_x = (to_i(i) - midPix.i) * pixSize;
+
+    qreal b_x = b_x1 + d_x * cos_midTth;
+    qreal b_z = b_z1 - d_x * sin_midTth;
+
+    qreal b_x2 = b_x*b_x;
 
     for_int (j, size.h) {
-      qreal y          = (midPix.j - to_i(j)) * pixSize;
-      qreal z          = hypot(x, y);
-      qreal pixDetDist = hypot(z, detDist);
-      rad   tth        = acos(h / pixDetDist);
+      qreal b_y = (midPix.j - to_i(j)) * pixSize; // == d_y
+      qreal b_r = sqrt(b_x2 + b_y*b_y);
 
-      qreal r     = sqrt((pixDetDist * pixDetDist) - (h * h));
-      rad   gamma = asin(y / r);
+      rad   gma = atan2(b_y, b_x);
+      rad   tth = atan2(b_r, b_z);
 
-      if (tthHorz < 0) {
-        tth   = -tth;
-        gamma = -gamma;
-      }
-
-      arrAngles_.setAt(i, j, Angles(tth.toDeg(), gamma.toDeg()));
+      arrAngles_.setAt(i, j, Angles(tth.toDeg(), gma.toDeg()));
     }
   }
 
