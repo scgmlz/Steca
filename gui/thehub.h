@@ -88,7 +88,7 @@ private:
   void configActions();
 
 private:
-  scoped<core::Session*> session;
+  scoped<core::Session*> session_;
 
   bool isFixedIntenImageScale_;
   bool isFixedIntenDgramScale_;
@@ -127,7 +127,8 @@ public:
   void       saveSession(QFileInfo const&) const;
   QByteArray saveSession() const;
 
-  void loadSession(QFileInfo const&) THROWS;
+  void clearSession();
+  void loadSession(QFileInfo const&)  THROWS;
   void loadSession(QByteArray const&) THROWS;
 
 public:
@@ -144,7 +145,7 @@ public:
   void combineDatasetsBy(pint);
 
   uint_vec::rc collectedFromFiles() const {
-    return session->collectedFromFiles();
+    return session_->collectedFromFiles();
   }
 
   pint datasetsGroupedBy() const {
@@ -156,11 +157,15 @@ public:
   }
 
   data::Datasets::rc collectedDatasets() const {
-    return session->collectedDatasets();
+    return session_->collectedDatasets();
   }
 
   str_lst::rc collectedDatasetsTags() const {
-    return session->collectedDatasetsTags();
+    return session_->collectedDatasetsTags();
+  }
+
+  typ::size2d imageSize() const {
+    return session_->imageSize();
   }
 
   gma_rge collectedDatasetsRgeGma() const;
@@ -208,10 +213,10 @@ public:
   void setNorm(eNorm);
 
 public:
-  typ::Ranges::rc bgRanges()          const { return session->bgRanges();     }
-  uint            bgPolyDegree()      const { return session->bgPolyDegree(); }
+  typ::Ranges::rc bgRanges()          const { return session_->bgRanges();     }
+  uint            bgPolyDegree()      const { return session_->bgPolyDegree(); }
 
-  calc::Reflections::rc reflections() const { return session->reflections();  }
+  calc::Reflections::rc reflections() const { return session_->reflections();  }
 };
 
 //------------------------------------------------------------------------------

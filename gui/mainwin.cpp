@@ -56,7 +56,7 @@ SplitImage::SplitImage(TheHub& hub) : super(Qt::Horizontal) {
   auto* image    = new panel::ImagePanel(hub);
 
   connect(options2, &panel::DatasetOptions2::imageScale,
-          image,  &panel::ImagePanel::setImageScale);
+          image,    &panel::ImagePanel::setImageScale);
   box_->addWidget(options1);
   box_->addWidget(options2);
   box_->addWidget(image);
@@ -391,6 +391,7 @@ void MainWin::closeEvent(QCloseEvent* event) {
 
 void MainWin::onShow() {
   checkActions();
+  hub_.clearSession();
 
 #ifdef DEVELOPMENT_JAN
   auto safeLoad = [this](rcstr fileName) {

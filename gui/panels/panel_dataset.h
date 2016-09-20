@@ -67,7 +67,7 @@ public:
 
   void setPixmap(QPixmap const&);
   void setShowOverlay(bool);
-  void setScale(uint);
+  void setScale(preal);
 
   QSize sizeHint() const;
 
@@ -75,7 +75,7 @@ protected:
   ImagePanel &dataset_;
   bool     showOverlay_;
   QPixmap  original_, scaled_;
-  uint     scale_;
+  preal    scale_;
 
   void paintEvent(QPaintEvent*);
 };
@@ -104,11 +104,11 @@ public:
   DatasetOptions2(TheHub&);
 
 signals:
-  void imageScale(uint);
+  void imageScale(preal);
 
 private:
   QSpinBox  *marginLeft_, *marginTop_, *marginRight_, *marginBottom_;
-  QSpinBox  *spinImageScale_;
+  QSlider   *sliderImageScale_;
   QComboBox *comboNormType_;
 
   void setFrom(TheHub&);
@@ -121,10 +121,12 @@ class ImagePanel : public TabsPanel {
 public:
   ImagePanel(TheHub&);
 
-  void setImageScale(uint);
+  void setImageScale(preal);
 
 private:
+  QPixmap makeBlankPixmap();
   QPixmap makePixmap(calc::shp_ImageLens);
+
   void    setDataset(data::shp_Dataset);
   void    render();
 

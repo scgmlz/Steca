@@ -70,7 +70,8 @@ Tab::Tab(Qt::Orientation orientation) {
   setLayout((box_ = boxLayout(orientation)));
 }
 
-TabsPanel::TabsPanel(TheHub& hub) : RefHub(hub) {}
+TabsPanel::TabsPanel(TheHub& hub) : RefHub(hub) {
+}
 
 Tab& TabsPanel::addTab(rcstr title, Qt::Orientation orientation) {
   auto tab = new Tab(orientation);

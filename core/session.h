@@ -105,7 +105,7 @@ public:
   }
 
 private:
-  // All files must have images of the same size; this is a cached value
+  // All files must have images of the same size
   typ::size2d imageSize_;
   // Clears the image size if there are no files in the session.
   void updateImageSize();

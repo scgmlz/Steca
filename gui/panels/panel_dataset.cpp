@@ -20,6 +20,8 @@
 #include "typ/typ_geometry.h"
 
 #include <QAction>
+#include <QApplication>
+#include <QDesktopWidget>
 #include <QPainter>
 #include <QScrollArea>
 
@@ -145,12 +147,23 @@ void ImageWidget::setShowOverlay(bool on) {
   update();
 }
 
-void ImageWidget::setScale(uint scale) {
-  EXPECT(scale > 0)
-  scale_ = scale;
+void ImageWidget::setScale(preal scale) {
+  TR(this << scale)
+  if (original_.isNull()) {
+    scale_  = scale;
+    scaled_ = original_;
+  } else {
+    qreal const M = .7;
+    auto r = QApplication::desktop()->screenGeometry();
+    qreal maxHeight = r.height() * M;
+    qreal maxWidth  = r.width()  * M;
 
-  scaled_ = original_.isNull() ? original_
-                               : original_.scaled(original_.size() * scale_);
+    auto o = original_.size();
+    auto maxScale = qMin(maxWidth / o.width(), maxHeight / o.height());
+
+    scale_  = qMin(scale, preal(maxScale));
+    scaled_ = original_.scaled(original_.size() * scale_);
+  }
 
   updateGeometry();
   update();
@@ -178,8 +191,8 @@ void ImageWidget::paintEvent(QPaintEvent*) {
   auto  margins = hub_.imageCut();
   QRect r = rect()
       .adjusted(1, 1, -2, -2)
-      .adjusted(to_i(scale_ * margins.left),   to_i(scale_ * margins.top),
-               -to_i(scale_ * margins.right), -to_i(scale_ * margins.bottom));
+      .adjusted(qRound(scale_ * margins.left),   qRound(scale_ * margins.top),
+               -qRound(scale_ * margins.right), -qRound(scale_ * margins.bottom));
   painter.setPen(Qt::lightGray);
   painter.drawRect(r);
 }
@@ -276,7 +289,6 @@ void DatasetOptions1::setFrom(TheHub& hub) {
 }
 
 static str const GROUP_OPTIONS("Options");
-static str const KEY_IMAGE_SCALE("image_scale");
 
 static str const GROUP_BEAM("Beam");
 static str const KEY_IS_OFFSET("is_offset");
@@ -307,8 +319,10 @@ DatasetOptions2::DatasetOptions2(TheHub& hub)
   box_->addLayout(sc);
   sc->addWidget(label("Scale"));
   sc->addSpacing(5);
-  sc->addWidget((spinImageScale_ = spinCell(4, 1, 4)));
-  spinImageScale_->setToolTip("Image scale");
+  sc->addWidget((sliderImageScale_ = new QSlider(Qt::Horizontal)));
+  sliderImageScale_->setToolTip("Image scale");
+  sliderImageScale_->setRange(-5, +2);
+  sliderImageScale_->setTickPosition(QSlider::TicksBelow);
   sc->addStretch();
 
   box_->addWidget(label("Cut"));
@@ -339,7 +353,7 @@ DatasetOptions2::DatasetOptions2(TheHub& hub)
 
   str_lst options = normStrLst();
 
-  vn->addWidget(comboNormType_ = comboBox(options));
+  vn->addWidget((comboNormType_ = comboBox(options)));
 
   box_->addStretch();
 
@@ -374,13 +388,23 @@ DatasetOptions2::DatasetOptions2(TheHub& hub)
     setFrom(hub_);
   });
 
-  connect(spinImageScale_, slot(QSpinBox,valueChanged,int), [this](int scale) {
-    EXPECT(scale >= 0)
-    emit imageScale(to_u(scale));
+  connect(sliderImageScale_, slot(QSlider,valueChanged,int), [this](int value) {
+    preal scale(1);
+
+    if (value > 0)
+      scale = preal(value + 1);
+    else if (value < 0)
+      scale = preal(1. / (-value + 1));
+
+    emit imageScale(scale);
   });
 
   connect(comboNormType_, slot(QComboBox,currentIndexChanged,int), [this](int index) {
     hub_.setNorm(eNorm(index));
+  });
+
+  onSigSessionCleared([this]() {
+    sliderImageScale_->setValue(sliderImageScale_->minimum());
   });
 }
 
@@ -447,9 +471,18 @@ ImagePanel::ImagePanel(TheHub& hub) : super(hub), dataset_(nullptr) {
   });
 }
 
-void ImagePanel::setImageScale(uint scale) {
+void ImagePanel::setImageScale(preal scale) {
   dataImageWidget_->setScale(scale);
   corrImageWidget_->setScale(scale);
+}
+
+QPixmap ImagePanel::makeBlankPixmap() {
+  auto size = hub_.imageSize();
+
+  QPixmap pixmap(to_i(size.w), to_i(size.h));
+  pixmap.fill(Qt::white);
+
+  return pixmap;
 }
 
 QPixmap ImagePanel::makePixmap(calc::shp_ImageLens imageLens) {
@@ -460,7 +493,7 @@ QPixmap ImagePanel::makePixmap(calc::shp_ImageLens imageLens) {
   if (!size.isEmpty()) {
     QImage image(QSize(to_i(size.w), to_i(size.h)), QImage::Format_RGB32);
 
-    qreal maxInten = rgeInten.max;
+    inten_t maxInten = inten_t(rgeInten.max);
     for_ij (size.w, size.h)
       image.setPixel(to_i(i), to_i(j),
                      intenImage(imageLens->imageInten(i, j), maxInten));
@@ -486,12 +519,10 @@ void ImagePanel::render() {
 
     labelN->setText(str("/%1").arg(by));
 
-    QPixmap pixMap;
-    if (dataset_) {
-      auto one  = dataset_->at(n);
-      auto lens = hub_.plainImageLens(one->image());
-      pixMap    = makePixmap(lens);
-    }
+    QPixmap pixMap = dataset_
+        ? makePixmap(hub_.plainImageLens(dataset_->at(n)->image()))
+        : makeBlankPixmap();
+
     dataImageWidget_->setPixmap(pixMap);
   }
 

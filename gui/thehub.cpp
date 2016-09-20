@@ -125,7 +125,7 @@ WriteFile::WriteFile(rcstr path) THROWS : super(path) {
 //------------------------------------------------------------------------------
 
 TheHub::TheHub()
-: actions(*this), session(new core::Session())
+: actions(*this), session_(new core::Session())
 , isFixedIntenImageScale_(false), isFixedIntenDgramScale_(false)
 , isCombinedDgram_(false), filesModel(*this), datasetsModel(*this)
 , reflectionsModel(*this)
@@ -163,11 +163,11 @@ void TheHub::configActions() {
           [this](bool on) { setImageMirror(on); });
 
   connect(actions.rotateImage, &QAction::triggered,
-          [this]() { setImageRotate(session->imageTransform().nextRotate()); });
+          [this]() { setImageRotate(session_->imageTransform().nextRotate()); });
 }
 
 uint TheHub::numFiles() const {
-  return session->numFiles();
+  return session_->numFiles();
 }
 
 str TheHub::fileName(uint index) const {
@@ -179,42 +179,42 @@ str TheHub::filePath(uint index) const {
 }
 
 data::shp_File TheHub::getFile(uint index) const {
-  return session->file(index);
+  return session_->file(index);
 }
 
 void TheHub::remFile(uint i) {
-  session->remFile(i);
+  session_->remFile(i);
   emit sigFilesChanged();
 
   if (0 == numFiles()) setImageCut(true, false, typ::ImageCut());
 }
 
 bool TheHub::hasCorrFile() const {
-  return session->hasCorrFile();
+  return session_->hasCorrFile();
 }
 
 typ::Image::rc TheHub::corrImage() const {
-  return session->corrImage();
+  return session_->corrImage();
 }
 
 calc::shp_ImageLens TheHub::plainImageLens(typ::Image::rc image) const {
-  return session->imageLens(image, collectedDatasets(), true, false);
+  return session_->imageLens(image, collectedDatasets(), true, false);
 }
 
 calc::shp_DatasetLens TheHub::datasetLens(data::Dataset::rc dataset) const {
-  return session->datasetLens(dataset, dataset.datasets(), session->norm(),
+  return session_->datasetLens(dataset, dataset.datasets(), session_->norm(),
                               true, true);
 }
 
 typ::Curve TheHub::avgCurve(data::Datasets::rc datasets) const {
-  return datasets.avgCurve(*session);
+  return datasets.avgCurve(*session_);
 }
 
 calc::ReflectionInfos TheHub::makeReflectionInfos(
     calc::Reflection::rc reflection, pint gmaSlices, gma_rge::rc rgeGma,
     Progress* progress)
 {
-  return session->makeReflectionInfos(collectedDatasets(), reflection,
+  return session_->makeReflectionInfos(collectedDatasets(), reflection,
                                       gmaSlices, rgeGma, progress);
 }
 
@@ -251,21 +251,21 @@ QByteArray TheHub::saveSession() const {
 
   JsonObj top;
 
-  auto& geo = session->geometry();
+  auto& geo = session_->geometry();
   top.saveObj(KEY_DETECTOR, JsonObj()
       .savePreal(KEY_DISTANCE, geo.detectorDistance)
       .savePreal(KEY_PIX_SIZE, geo.pixSize)
       .saveBool(KEY_OFFSET_BEAM, geo.isMidPixOffset)
       .saveObj(KEY_BEAM_OFFSET, geo.midPixOffset.saveJson()));
 
-  auto& cut = session->imageCut();
+  auto& cut = session_->imageCut();
   top.saveObj(KEY_CUT, JsonObj()
       .saveUint(KEY_LEFT, cut.left)
       .saveUint(KEY_TOP, cut.top)
       .saveUint(KEY_RIGHT, cut.right)
       .saveUint(KEY_BOTTOM, cut.bottom));
 
-  auto& trn = session->imageTransform();
+  auto& trn = session_->imageTransform();
   top.saveUint(KEY_TRANSFORM, trn.val);
 
   JsonArr arrFiles;
@@ -286,7 +286,7 @@ QByteArray TheHub::saveSession() const {
   top.saveUint(KEY_COMBINE, datasetsGroupedBy_);
 
   if (hasCorrFile()) {
-    str absPath = session->corrFile()->fileInfo().absoluteFilePath();
+    str absPath = session_->corrFile()->fileInfo().absoluteFilePath();
     str relPath = QDir::current().relativeFilePath(absPath);
     top.saveString(KEY_CORR_FILE, relPath);
   }
@@ -301,6 +301,11 @@ QByteArray TheHub::saveSession() const {
   top.saveArr(KEY_REFLECTIONS, arrReflections);
 
   return QJsonDocument(top.sup()).toJson();
+}
+
+void TheHub::clearSession() {
+  session_->clear();
+  tellSessionCleared();
 }
 
 void TheHub::loadSession(QFileInfo const& fileInfo) THROWS {
@@ -318,7 +323,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
 
   TakesLongTime __;
 
-  session->clear();
+  clearSession();
 
   typ::JsonObj top(doc.object());
 
@@ -371,17 +376,17 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
   for_i (reflectionsObj.count()) {
     calc::shp_Reflection reflection(new calc::Reflection);
     reflection->loadJson(reflectionsObj.objAt(i));
-    session->addReflection(reflection);
+    session_->addReflection(reflection);
   }
 
   emit sigReflectionsChanged();
 }
 
 void TheHub::addFile(rcstr filePath) THROWS {
-  if (!filePath.isEmpty() && !session->hasFile(filePath)) {
+  if (!filePath.isEmpty() && !session_->hasFile(filePath)) {
     {
       TakesLongTime __;
-      session->addFile(io::load(filePath));
+      session_->addFile(io::load(filePath));
     }
 
     emit sigFilesChanged();
@@ -396,7 +401,7 @@ void TheHub::addFiles(str_lst::rc filePaths) THROWS {
 }
 
 void TheHub::collectDatasetsFromFiles(uint_vec is, pint by) {
-  session->collectDatasetsFromFiles((collectFromFiles_  = is),
+  session_->collectDatasetsFromFiles((collectFromFiles_  = is),
                                     (datasetsGroupedBy_ = by));
   emit sigFilesSelected();
   emit sigDatasetsChanged();
@@ -411,36 +416,36 @@ void TheHub::combineDatasetsBy(pint by) {
 }
 
 gma_rge TheHub::collectedDatasetsRgeGma() const {
-  return collectedDatasets().rgeGma(*session);
+  return collectedDatasets().rgeGma(*session_);
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {
   data::shp_File file;
   if (!filePath.isEmpty()) file = io::load(filePath);
 
-  session->setCorrFile(file);
+  session_->setCorrFile(file);
   emit sigCorrFile(file);
 
   tryEnableCorrection(true);
 }
 
 void TheHub::tryEnableCorrection(bool on) {
-  session->tryEnableCorr(on);
-  emit sigCorrEnabled(session->isCorrEnabled());
+  session_->tryEnableCorr(on);
+  emit sigCorrEnabled(session_->isCorrEnabled());
 }
 
 typ::ImageCut::rc TheHub::imageCut() const {
-  return session->imageCut();
+  return session_->imageCut();
 }
 
 void TheHub::setImageCut(bool topLeft, bool linked,
                          typ::ImageCut::rc margins) {
-  session->setImageCut(topLeft, linked, margins);
+  session_->setImageCut(topLeft, linked, margins);
   emit sigGeometryChanged();
 }
 
 const typ::Geometry& TheHub::geometry() const {
-  return session->geometry();
+  return session_->geometry();
 }
 
 void TheHub::setGeometry(preal detectorDistance, preal pixSize,
@@ -449,25 +454,25 @@ void TheHub::setGeometry(preal detectorDistance, preal pixSize,
   if (sigLevel_ > 1)
     return;
 
-  session->setGeometry(detectorDistance, pixSize, isMidPixOffset, midPixOffset);
+  session_->setGeometry(detectorDistance, pixSize, isMidPixOffset, midPixOffset);
   emit sigGeometryChanged();
 }
 
 void TheHub::setBgRanges(typ::Ranges::rc ranges) {
-  session->setBgRanges(ranges);
+  session_->setBgRanges(ranges);
   emit sigBgChanged();
 }
 
 void TheHub::addBgRange(typ::Range::rc range) {
-  if (session->addBgRange(range)) emit sigBgChanged();
+  if (session_->addBgRange(range)) emit sigBgChanged();
 }
 
 void TheHub::remBgRange(typ::Range::rc range) {
-  if (session->remBgRange(range)) emit sigBgChanged();
+  if (session_->remBgRange(range)) emit sigBgChanged();
 }
 
 void TheHub::setBgPolyDegree(uint degree) {
-  session->setBgPolyDegree(degree);
+  session_->setBgPolyDegree(degree);
   emit sigBgChanged();
 }
 
@@ -479,13 +484,13 @@ void TheHub::setReflType(fit::ePeakType type) {
 }
 
 void TheHub::addReflection(fit::ePeakType type) {
-  session->addReflection(calc::shp_Reflection(new calc::Reflection(type)));
+  session_->addReflection(calc::shp_Reflection(new calc::Reflection(type)));
   emit sigReflectionsChanged();
 }
 
 void TheHub::remReflection(uint i) {
-  session->remReflection(i);
-  if (session->reflections().isEmpty())
+  session_->remReflection(i);
+  if (session_->reflections().isEmpty())
     tellSelectedReflection(calc::shp_Reflection());
 
   emit sigReflectionsChanged();
@@ -519,19 +524,19 @@ void TheHub::setImageRotate(typ::ImageTransform rot) {
 
   actions.rotateImage->setIcon(QIcon(rotateIconFile));
   actions.mirrorImage->setIcon(QIcon(mirrorIconFile));
-  session->setImageTransformRotate(rot);
-  setImageCut(true, false, session->imageCut());
+  session_->setImageTransformRotate(rot);
+  setImageCut(true, false, session_->imageCut());
   emit sigGeometryChanged();
 }
 
 void TheHub::setImageMirror(bool on) {
   actions.mirrorImage->setChecked(on);
-  session->setImageTransformMirror(on);
+  session_->setImageTransformMirror(on);
   emit sigGeometryChanged();
 }
 
 void TheHub::setNorm(eNorm norm) {
-  session->setNorm(norm);
+  session_->setNorm(norm);
   emit sigNormChanged();
 }
 

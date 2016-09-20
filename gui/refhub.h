@@ -44,12 +44,15 @@ private:
 
 protected:
   // emit signals - only TheHub can call these
+  void tellSessionCleared();
   void tellDatasetSelected(data::shp_Dataset);
   void tellSelectedReflection(calc::shp_Reflection);
   void tellReflectionData(calc::shp_Reflection);
   void tellReflectionValues(tth_rge::rc, peak_t::rc, fwhm_t, bool);
 
 signals:
+  void sigSessionCleared();
+
   void sigFilesChanged();     // the set of loaded files has changed
   void sigFilesSelected();    // the selection of loaded files has changed
 
@@ -116,6 +119,8 @@ protected:
   template <typename Lambda> void onSig##name(Lambda slot) { \
     onHubSignal(&TheHubSignallingBase::sig##name, slot);     \
   }
+
+  DEFINE_HUB_SIGNAL_HANDLER(SessionCleared)
 
   DEFINE_HUB_SIGNAL_HANDLER(FilesChanged)
   DEFINE_HUB_SIGNAL_HANDLER(FilesSelected)

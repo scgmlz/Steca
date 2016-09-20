@@ -172,7 +172,6 @@ void AngleMap::calculate(Key::rc key) {
      beam coordinates: b_x, ..; b_y = d_y */
 
   qreal const& d_z = detDist;
-  // 2theta of the "middle" (whatever that is) detector pixel
   qreal d_midTth = midTth.toRad(),
         cos_midTth = cos(d_midTth), sin_midTth = sin(d_midTth);
 
