@@ -18,15 +18,16 @@
 #define COLORS_H
 
 #include "def/defs.h"
+#include "typ/typ_types.h"
 
 #include <QRgb>
 
 namespace gui {
 //------------------------------------------------------------------------------
 
-QRgb intenImage(qreal inten, qreal maxInten = 1);
-QRgb intenGraph(qreal inten, qreal maxInten = 1);
-QRgb heatmapColor(qreal value);
+QRgb intenImage(inten_t inten, inten_t maxInten = 1);
+QRgb intenGraph(inten_t inten, inten_t maxInten = 1);
+QRgb heatmapColor(inten_t value);
 
 //------------------------------------------------------------------------------
 }

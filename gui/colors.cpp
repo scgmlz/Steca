@@ -21,7 +21,7 @@
 namespace gui {
 //------------------------------------------------------------------------------
 
-QRgb intenImage(qreal inten, qreal maxInten) {
+QRgb intenImage(inten_t inten, inten_t maxInten) {
   if (qIsNaN(inten))
     return qRgb(0x00, 0xff, 0xff);
   if (qIsInf(inten))
@@ -32,17 +32,17 @@ QRgb intenImage(qreal inten, qreal maxInten) {
 
   inten /= maxInten;
 
-  if (inten < 0.25)
+  if (inten < 0.25f)
     return qRgb(int(0xff * inten * 4), 0, 0);
-  if (inten < 0.5)
-    return qRgb(0xff, int(0xff * (inten - 0.25) * 4), 0);
-  if (inten < 0.75)
-    return qRgb(int(0xff - (0xff * (inten - 0.5) * 4)), 0xff,
-                int(0xff * (inten - 0.5) * 4));
-  return qRgb(int(0xff * (inten - 0.75) * 4), 0xff, 0xff);
+  if (inten < 0.5f)
+    return qRgb(0xff, int(0xff * (inten - 0.25f) * 4), 0);
+  if (inten < 0.75f)
+    return qRgb(int(0xff - (0xff * (inten - 0.5f) * 4)), 0xff,
+                int(0xff * (inten - 0.5f) * 4));
+  return qRgb(int(0xff * (inten - 0.75f) * 4), 0xff, 0xff);
 }
 
-QRgb intenGraph(qreal inten, qreal maxInten) {
+QRgb intenGraph(inten_t inten, inten_t maxInten) {
   if (!qIsFinite(inten) || qIsNaN(maxInten) || maxInten <= 0)
     return qRgb(0x00, 0x00, 0x00);
 
@@ -51,21 +51,21 @@ QRgb intenGraph(qreal inten, qreal maxInten) {
   return qRgb(0, 0, int(0xff * (1 - inten / 3)));
 }
 
-QRgb heatmapColor(qreal value) {
+QRgb heatmapColor(inten_t value) {
   struct lc_t {
-    qreal limit; int r, g, b;
+    inten_t limit; int r, g, b;
   };
 
   static typ::vec<lc_t> lc = {
-    {0.00, 255, 255, 255},
-    {0.10, 0,   0,   255},
-    {0.20, 0,   152, 255},
-    {0.30, 0,   190, 0, },
-    {0.55, 255, 255, 1, },
-    {1.00, 255, 0,   1, },
+    {0.00f, 255, 255, 255},
+    {0.10f, 0,   0,   255},
+    {0.20f, 0,   152, 255},
+    {0.30f, 0,   190, 0  },
+    {0.55f, 255, 255, 1  },
+    {1.00f, 255, 0,   1  },
   };
 
-  value = qBound(0.0, value, 1.0);
+  value = qBound(0.0f, value, 1.0f);
   uint count = lc.count(), i;
   for (i = 1; i < count; ++i)
     if (value < lc.at(i).limit)
