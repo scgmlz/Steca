@@ -117,6 +117,7 @@ void AngleMap::getGmaIndexes(gma_rge::rc rgeGma,
 }
 
 void AngleMap::calculate(Key::rc key) {
+  TR("*** anglemap ***")
   auto& geometry = key.geometry;
   auto& size     = key.size;
   auto& cut      = key.cut;

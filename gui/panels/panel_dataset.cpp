@@ -148,7 +148,6 @@ void ImageWidget::setShowOverlay(bool on) {
 }
 
 void ImageWidget::setScale(preal scale) {
-  TR(this << scale)
   if (original_.isNull()) {
     scale_  = scale;
     scaled_ = original_;
@@ -189,12 +188,22 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 
   // cut
   auto  margins = hub_.imageCut();
-  QRect r = rect()
-      .adjusted(1, 1, -2, -2)
-      .adjusted(qRound(scale_ * margins.left),   qRound(scale_ * margins.top),
-               -qRound(scale_ * margins.right), -qRound(scale_ * margins.bottom));
+  QRect r = rect().adjusted(1, 1, -2, -2)
+                  .adjusted(qRound(scale_ * margins.left),   qRound(scale_ * margins.top),
+                       -qRound(scale_ * margins.right), -qRound(scale_ * margins.bottom));
   painter.setPen(Qt::lightGray);
   painter.drawRect(r);
+
+  // cross
+  auto &geo = hub_.geometry();
+  if (geo.isMidPixOffset) {
+    auto c = r.center();
+    auto off = geo.midPixOffset;
+    auto x = qRound(c.x() + scale_ * off.i);
+    auto y = qRound(c.y() + scale_ * off.j);
+    painter.drawLine(x, r.top(), x, r.bottom());
+    painter.drawLine(r.left(), y, r.right(), y);
+  }
 }
 
 //------------------------------------------------------------------------------
