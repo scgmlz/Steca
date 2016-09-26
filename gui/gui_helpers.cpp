@@ -187,7 +187,7 @@ BoxWidget::BoxWidget(Qt::Orientation orientation) {
 
 DockWidget::DockWidget(rcstr name, rcstr objectName,
                        Qt::Orientation orientation) {
-  setFeatures(NoDockWidgetFeatures);
+  setFeatures(DockWidgetMovable);
   setWidget(new QWidget);
   widget()->setLayout((box_ = boxLayout(orientation)));
 
