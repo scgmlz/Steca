@@ -281,8 +281,10 @@ void MainWin::checkUpdate(bool completeReport) {
     reply->deleteLater();
 
     str lastVer;
-    if (!strLst.isEmpty())
+    if (!strLst.isEmpty()) {
       lastVer = strLst.first();
+      lastVer = lastVer.mid(1, lastVer.length()-2);
+    }
 
     str ver  = qApp->applicationVersion();
     str name = qApp->applicationName();
@@ -296,7 +298,8 @@ void MainWin::checkUpdate(bool completeReport) {
     else if (completeReport)
       messageDialog(
         str("%1 update").arg(name),
-        str("<p>You have the latest %1 version.</p>").arg(name));
+        str("<p>You have the latest %1 version (%2).</p>")
+            .arg(name).arg(ver));
   });
 //#endif
 }
