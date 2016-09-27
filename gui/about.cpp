@@ -35,7 +35,7 @@ AboutBox::AboutBox(QWidget *parent) : super(parent, Qt::Dialog) {
 
   int PAD = 12;
 
-  setWindowTitle(str("About %1").arg(APPLICATION_NAME));
+  setWindowTitle(str("About %1").arg(qApp->applicationName()));
 
   // layout
   auto vb = vbox();
@@ -60,7 +60,7 @@ AboutBox::AboutBox(QWidget *parent) : super(parent, Qt::Dialog) {
           "<p>StressTextureCalculator</p>"
           "<p>Copyright: Forschungszentrum Jülich GmbH %3</p>"
           "<p><a href='%4'>%4</a></p>")
-          .arg(APPLICATION_NAME, APPLICATION_VERSION)
+          .arg(qApp->applicationName(), qApp->applicationVersion())
           .arg(QDate::currentDate().toString("yyyy"))
           .arg(STECA2_PAGES_URL));
 

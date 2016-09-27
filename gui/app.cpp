@@ -27,7 +27,9 @@
 
 App::App(int& argc, char* argv[]) : super(argc, argv) {
   setApplicationName(APPLICATION_NAME);
-  setApplicationVersion(APPLICATION_VERSION);
+  setApplicationVersion(
+    #include "../VERSION"
+  );
   setOrganizationName(ORGANIZATION_NAME);
   setOrganizationDomain(ORGANIZATION_DOMAIN);
 

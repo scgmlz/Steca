@@ -268,12 +268,12 @@ void MainWin::checkUpdate() {
 }
 
 void MainWin::checkUpdate(bool completeReport) {
-#ifdef QT_NO_DEBUG // applies only in release
+//#ifdef QT_NO_DEBUG // applies only in release
   NoWarnings _;
 
   QNetworkRequest req;
 
-  req.setUrl(QUrl(STECA2_VERSION_URL "?" APPLICATION_VERSION));
+  req.setUrl(QUrl(STECA2_VERSION_URL));
   auto reply = netMan_.get(req);
 
   connect(reply, &QNetworkReply::finished, [this, completeReport, reply]() {
@@ -284,21 +284,21 @@ void MainWin::checkUpdate(bool completeReport) {
     if (!strLst.isEmpty())
       lastVer = strLst.first();
 
-    if (APPLICATION_VERSION != lastVer)
+    str ver  = qApp->applicationVersion();
+    str name = qApp->applicationName();
+
+    if (ver != lastVer)
       messageDialog(
-        str("%1 update")
-            .arg(APPLICATION_NAME),
+        str("%1 update").arg(name),
         str("<p>The latest %1 version is %2. You have %3.</p>"
             "<p><a href='%4'>get new version</a></p>")
-            .arg(APPLICATION_NAME, lastVer, APPLICATION_VERSION, STECA2_DOWNLOAD_URL));
+            .arg(name, lastVer, ver, STECA2_DOWNLOAD_URL));
     else if (completeReport)
       messageDialog(
-        str("%1 update")
-            .arg(APPLICATION_NAME),
-        str("<p>You have the latest %1 version.</p>")
-            .arg(APPLICATION_NAME));
+        str("%1 update").arg(name),
+        str("<p>You have the latest %1 version.</p>").arg(name));
   });
-#endif
+//#endif
 }
 
 void MainWin::messageDialog(rcstr title, rcstr text) {
