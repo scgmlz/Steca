@@ -17,8 +17,7 @@
 #ifndef PANEL_FILE_H
 #define PANEL_FILE_H
 
-#include "gui_helpers.h"
-#include "refhub.h"
+#include "panel.h"
 
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------

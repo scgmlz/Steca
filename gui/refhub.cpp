@@ -68,8 +68,8 @@ REFHUB_TELL_IMPL(tellSelectedReflection, (calc::shp_Reflection r), (r))
 REFHUB_TELL_IMPL(tellReflectionData, (calc::shp_Reflection r), (r))
 
 REFHUB_TELL_IMPL(tellReflectionValues,
-    (typ::Range::rc rge, typ::XY::rc xy, qreal r, bool b),
-    (rge, xy, r, b))
+    (typ::Range::rc rge, typ::XY::rc peak, fwhm_t fwhm, bool withGuesses),
+    (rge, peak, fwhm, withGuesses))
 
 //------------------------------------------------------------------------------
 }

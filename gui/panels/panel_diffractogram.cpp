@@ -426,7 +426,7 @@ Diffractogram::Diffractogram(TheHub& hub)
     plot_->updateBg();
   });
 
-  onSigReflectionValues([this](typ::Range::rc range, typ::XY::rc peak, qreal fwhm,
+  onSigReflectionValues([this](typ::Range::rc range, typ::XY::rc peak, fwhm_t fwhm,
                                bool withGuesses) {
     if (currentReflection_) {
       currentReflection_->setRange(range);

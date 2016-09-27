@@ -66,7 +66,7 @@ signals:
   void sigReflectionsChanged();
   void sigReflectionSelected(calc::shp_Reflection);
   void sigReflectionData(calc::shp_Reflection);
-  void sigReflectionValues(tth_rge const&, peak_t const&, qreal, bool);
+  void sigReflectionValues(tth_rge const&, peak_t const&, fwhm_t, bool);
 
   void sigDisplayChanged();
   void sigGeometryChanged();
@@ -111,7 +111,7 @@ protected:
   void tellDatasetSelected(data::shp_Dataset);
   void tellSelectedReflection(calc::shp_Reflection);
   void tellReflectionData(calc::shp_Reflection);
-  void tellReflectionValues(typ::Range::rc, typ::XY::rc, qreal, bool);
+  void tellReflectionValues(typ::Range::rc, typ::XY::rc, fwhm_t, bool);
 
   // handle same signals
 protected:

@@ -21,6 +21,8 @@
 #include "typ/typ_strlst.h"
 #include "fit/fit_fun.h"
 
+class TreeView;
+
 namespace models {
 //------------------------------------------------------------------------------
 
@@ -58,12 +60,37 @@ public:
 public:
   enum { GetDatasetRole = Qt::UserRole };
 
-  void showMetaInfo(checkedinfo_vec::rc);
+  void showMetaInfo(typ::vec<bool> const&);
 
 private:
-  data::Datasets::rc     datasets_;     // the selected datasets
-  checkedinfo_vec const* metaInfo_;     // metadata items
-  uint_vec               metaInfoNums_; // selected metadata items to show
+  data::Datasets::rc datasets_;     // the selected datasets
+  uint_vec           metaInfoNums_; // selected metadata items to show
+};
+
+//------------------------------------------------------------------------------
+
+class MetadataModel : public TableModel {
+  CLS(MetadataModel) SUPER(TableModel)
+public:
+  MetadataModel(gui::TheHub&);
+
+  int columnCount(rcIndex = ANY_INDEX) const;
+  int rowCount(rcIndex = ANY_INDEX) const;
+
+  QVariant data(rcIndex, int) const;
+  QVariant headerData(int, Qt::Orientation, int) const;
+
+  enum { COL_CHECK = DCOL, COL_TAG, COL_VALUE, NUM_COLUMNS };
+
+  typ::vec<bool> const& rowsChecked() const {
+    return rowsChecked_;
+  }
+
+  void flipCheck(uint row);
+
+private:
+  data::shp_Metadata metadata_;
+  typ::vec<bool> rowsChecked_;
 };
 
 //------------------------------------------------------------------------------

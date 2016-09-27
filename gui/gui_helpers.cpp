@@ -26,6 +26,11 @@ void GridLayout::addColumnStretch(int stretch) {
   setColumnStretch(columnCount(), stretch);
 }
 
+int mWidth(QWidget const* w) {
+  EXPECT(w)
+  return w->fontMetrics().width('m');
+}
+
 //------------------------------------------------------------------------------
 
 QBoxLayout* boxLayout(Qt::Orientation orientation) {
@@ -69,7 +74,7 @@ QLabel* label(rcstr text) {
 }
 
 static void setEmWidth(QWidget* w, uint emWidth) {
-  w->setMaximumWidth(to_i(emWidth) * w->fontMetrics().width('m'));
+  w->setMaximumWidth(to_i(emWidth) * mWidth(w));
 }
 
 QLineEdit* editCell(uint emWidth) {
@@ -145,7 +150,7 @@ TreeView::TreeView() {
 }
 
 int TreeView::sizeHintForColumn(int) const {
-  return 3 * fontMetrics().width('m');
+  return 3 * mWidth(this);
 }
 
 //------------------------------------------------------------------------------

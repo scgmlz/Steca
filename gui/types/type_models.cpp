@@ -24,13 +24,13 @@ QModelIndex const ANY_INDEX;
 
 //------------------------------------------------------------------------------
 
-CheckedInfo::CheckedInfo(rcstr t): tag(t), cb(nullptr), infoText(nullptr) {
-}
+//CheckedInfo::CheckedInfo(rcstr t): tag(t), cb(nullptr), infoText(nullptr) {
+//}
 
-void CheckedInfo::setText(rcstr text) {
-  EXPECT(infoText)
-  infoText->setText(text);
-}
+//void CheckedInfo::setText(rcstr text) {
+//  EXPECT(infoText)
+//  infoText->setText(text);
+//}
 
 //------------------------------------------------------------------------------
 

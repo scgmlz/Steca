@@ -127,7 +127,7 @@ WriteFile::WriteFile(rcstr path) THROWS : super(path) {
 TheHub::TheHub()
 : actions(*this), session_(new core::Session())
 , isFixedIntenImageScale_(false), isFixedIntenDgramScale_(false)
-, isCombinedDgram_(false), filesModel(*this), datasetsModel(*this)
+, isCombinedDgram_(false), filesModel(*this), datasetsModel(*this), metadataModel(*this)
 , reflectionsModel(*this)
 {
   configActions();
@@ -336,7 +336,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
     addFile(dir.absolutePath());
   }
 
-  auto     sels = top.loadArr(KEY_SELECTED_FILES, true);
+  auto sels = top.loadArr(KEY_SELECTED_FILES, true);
   uint_vec selIndexes;
   for (auto sel : sels) {
     int i = sel.toInt(), index = qBound(0, i, to_i(files.count()));

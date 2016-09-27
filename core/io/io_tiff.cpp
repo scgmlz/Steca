@@ -183,7 +183,7 @@ static void loadTiff(data::shp_File& file, rcstr filePath,
 
   quint16 numDirEntries; is >> numDirEntries;
 
-  for_i(numDirEntries) {
+  for_i (numDirEntries) {
 
     is >> tagId >> dataType >> dataCount >> dataOffset; check();
 
@@ -245,11 +245,11 @@ static void loadTiff(data::shp_File& file, rcstr filePath,
   uint count = imageWidth * imageHeight;
   inten_vec intens(count);
 
-  RUNTIME_CHECK((bitsPerSample/8) * count == stripByteCounts, );
+  RUNTIME_CHECK((bitsPerSample/8) * count == stripByteCounts, "bad format");
 
   seek(stripOffsets);
 
-  for_i (intens.count()) {
+  for_i (intens.count())
     switch (sampleFormat) {
     case 1: {
       quint32 sample; is >> sample;
@@ -267,7 +267,6 @@ static void loadTiff(data::shp_File& file, rcstr filePath,
       break;
     }
     }
-  }
 
   check();
 

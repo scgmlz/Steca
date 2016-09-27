@@ -29,19 +29,6 @@ extern QVariant const    EMPTY_VAR;
 extern QModelIndex const ANY_INDEX;
 
 //------------------------------------------------------------------------------
-
-struct CheckedInfo {
-  str        tag;
-  QCheckBox *cb;
-  QLineEdit *infoText;
-
-  CheckedInfo(rcstr tag = EMPTY_STR);
-  void setText(rcstr);
-};
-
-typedef typ::vec<CheckedInfo> checkedinfo_vec;
-
-//------------------------------------------------------------------------------
 // The base class of all table-like models
 
 class TableModel : public QAbstractTableModel, protected gui::RefHub {

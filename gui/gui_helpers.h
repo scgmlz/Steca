@@ -53,6 +53,8 @@ public:
   void addColumnStretch(int = 1);
 };
 
+extern int mWidth(QWidget const*);
+
 //------------------------------------------------------------------------------
 // handy functions that make (new) widgets
 

@@ -2,8 +2,8 @@
 //
 //  STeCa2:    StressTextureCalculator ver. 2
 //
-//! @file      panel_fitting.h
-//! @brief     Fitting panel.
+//! @file      panel_metadata.h
+//! @brief     Metadata panel.
 //!
 //! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -14,32 +14,23 @@
 //
 // ************************************************************************** //
 
-#ifndef PANEL_FITTING_H
-#define PANEL_FITTING_H
+#ifndef PANEL_METADATA_H
+#define PANEL_METADATA_H
 
 #include "panel.h"
 
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-class Fitting : public TabsPanel {
-  CLS(Fitting) SUPER(TabsPanel)
+class DockMetadata : public DockWidget, protected RefHub {
+  CLS(DockMetadata) SUPER(DockWidget)
 public:
-  Fitting(TheHub&);
+  DockMetadata(TheHub&);
 
 private:
-  class ReflectionView *reflectionView_;
-
-  QSpinBox       *spinDegree_;
-  QComboBox      *comboReflType_;
-  QDoubleSpinBox *spinRangeMin_,   *spinRangeMax_;
-  QDoubleSpinBox *spinGuessPeakX_, *spinGuessPeakY_, *spinGuessFWHM_;
-  QLineEdit      *readFitPeakX_,   *readFitPeakY_,   *readFitFWHM_;
-  bool            silentSpin_;
-
-  void setReflControls(calc::shp_Reflection);
+  class MetadataView *metadataView_;
 };
 
 //------------------------------------------------------------------------------
 }}
-#endif // PANEL_FITTING_H
+#endif // PANEL_METADATA_H

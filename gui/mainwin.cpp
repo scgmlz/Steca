@@ -25,7 +25,9 @@
 #include "panels/panel_diffractogram.h"
 #include "panels/panel_file.h"
 #include "panels/panel_fitting.h"
-#include "panels/panel_fitting.h"
+#include "panels/panel_image.h"
+#include "panels/panel_metadata.h"
+#include "panels/panel_options.h"
 
 #include <QAction>
 #include <QCloseEvent>
@@ -402,7 +404,7 @@ void MainWin::onShow() {
 #endif
 
 #ifdef DEVELOPMENT_JAN
-  safeLoad("~/C/+dev/+scg/data/0.ste");
+  safeLoad("/C/+scg/data/0.ste");
 //  hub_.actions.outputDiagrams->trigger();
 #endif
 

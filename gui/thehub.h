@@ -101,6 +101,7 @@ public:
 
   models::FilesModel       filesModel;
   models::DatasetsModel    datasetsModel;
+  models::MetadataModel    metadataModel;
   models::ReflectionsModel reflectionsModel;
 
 public:  // files

@@ -16,6 +16,7 @@
 #include "panel_fitting.h"
 #include "calc/calc_reflection.h"
 #include "thehub.h"
+#include "views.h"
 
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
@@ -224,7 +225,7 @@ Fitting::Fitting(TheHub &hub)
         tellReflectionValues(
             typ::Range::safeFrom(spinRangeMin_->value(), spinRangeMax_->value()),
             typ::XY(spinGuessPeakX_->value(), spinGuessPeakY_->value()),
-            spinGuessFWHM_->value(), invalidateGuesses);
+            fwhm_t(spinGuessFWHM_->value()), invalidateGuesses);
       }
     };
 

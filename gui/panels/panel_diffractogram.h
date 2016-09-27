@@ -17,12 +17,8 @@
 #ifndef PANEL_DIFFRACTOGRAM_H
 #define PANEL_DIFFRACTOGRAM_H
 
-#include "QCP/qcustomplot.h"
-#include "data/data_dataset.h"
-#include "fit/fit_methods.h"
-#include "calc/calc_reflection.h"
 #include "panel.h"
-#include "typ/typ_curve.h"
+#include "QCP/qcustomplot.h"
 
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------

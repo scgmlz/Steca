@@ -20,6 +20,7 @@
 #include "gui_helpers.h"
 #include "models.h"
 #include "refhub.h"
+#include <QItemDelegate>
 
 namespace gui { namespace views {
 //------------------------------------------------------------------------------
@@ -41,7 +42,7 @@ protected:
   Model* model() const { return static_cast<Model*>(super::model()); }
 
   void updateSingleSelection();
-  void selectRow(uint);
+  void selectRow(int);
 };
 
 //------------------------------------------------------------------------------
