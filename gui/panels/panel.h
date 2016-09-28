@@ -28,7 +28,21 @@ class TableModel;
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-// Just a plain panel
+// REVIEW still needed?
+
+// Just a widget
+class PanelWidget : public QWidget, protected RefHub {
+  CLS(PanelWidget) SUPER(QWidget)
+public:
+  PanelWidget(TheHub&, Qt::Orientation);
+
+  QBoxLayout* box() const { return box_; }
+
+protected:
+  QBoxLayout *box_;
+};
+
+// Just a groupbox
 class BasicPanel : public QGroupBox, protected RefHub {
   CLS(BasicPanel) SUPER(QGroupBox)
 public:

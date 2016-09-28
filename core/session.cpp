@@ -241,12 +241,10 @@ void Session::setImageCut(bool topLeftFirst, bool linked, ImageCut::rc cut) {
   intensCorr_.clear();  // lazy
 }
 
-void Session::setGeometry(preal detectorDistance, preal pixSize,
-                          bool isMidPixOffset, IJ::rc midPixOffset) {
+void Session::setGeometry(preal detectorDistance, preal pixSize, IJ::rc midPixOffset) {
 
   geometry_.detectorDistance = detectorDistance;
   geometry_.pixSize          = pixSize;
-  geometry_.isMidPixOffset   = isMidPixOffset;
   geometry_.midPixOffset     = midPixOffset;
 }
 
@@ -254,11 +252,9 @@ IJ Session::midPix() const {
   auto halfSize = imageSize().scaled(.5);
   IJ mid(to_i(halfSize.w), to_i(halfSize.h));
 
-  if (geometry_.isMidPixOffset) {
-    IJ::rc off = geometry_.midPixOffset;
-    mid.i += off.i;
-    mid.j += off.j;
-  }
+  IJ::rc off = geometry_.midPixOffset;
+  mid.i += off.i;
+  mid.j += off.j;
 
   return mid;
 }

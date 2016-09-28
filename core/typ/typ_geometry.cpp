@@ -25,13 +25,12 @@ preal const Geometry::MIN_DETECTOR_PIXEL_SIZE = preal(.1);
 
 Geometry::Geometry()
 : detectorDistance(MIN_DETECTOR_DISTANCE), pixSize(MIN_DETECTOR_PIXEL_SIZE)
-, isMidPixOffset(false), midPixOffset() {
+, midPixOffset() {
 }
 
 int Geometry::compare(rc that) const {
   COMPARE_VALUE(detectorDistance)
   COMPARE_VALUE(pixSize)
-  COMPARE_VALUE(isMidPixOffset)
   COMPARE_COMPARABLE(midPixOffset)
   return 0;
 }

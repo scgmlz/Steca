@@ -100,8 +100,8 @@ private:
   DiffractogramPlotOverlay *overlay_;
 };
 
-class Diffractogram : public BoxPanel {
-  CLS(Diffractogram) SUPER(BoxPanel)
+class Diffractogram : public PanelWidget {
+  CLS(Diffractogram) SUPER(PanelWidget)
 public:
   Diffractogram(TheHub&);
 
@@ -127,7 +127,7 @@ public:
   void calcBackground();
   void calcReflections();
 
-  void        setCurrReflNewRange(typ::Range::rc);
+  void setCurrReflNewRange(typ::Range::rc);
   typ::Range currReflRange() const;
 };
 

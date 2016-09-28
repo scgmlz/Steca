@@ -2,7 +2,7 @@
 //
 //  STeCa2:    StressTextureCalculator ver. 2
 //
-//! @file      panel_dataset.cpp
+//! @file      dock_dataset.cpp
 //!
 //! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -13,7 +13,7 @@
 //
 // ************************************************************************** //
 
-#include "panel_dataset.h"
+#include "dock_dataset.h"
 #include "thehub.h"
 #include "views.h"
 

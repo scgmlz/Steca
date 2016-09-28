@@ -144,10 +144,6 @@ Actions::Actions(TheHub& hub): super(hub) {
   tgl(showOverlay,
       "Overlay", "Show cut")
       .icon(":/icon/crop");
-  tgl(hasBeamOffset,
-      "Beam centre offset", "Enable beam center offset (for X-ray instruments)")
-      .alt("Beam centre offset", "Disable beam center offset")
-      .icon(":/icon/beamOffset");
 
   tgl(fixedIntenImageScale,
       "Fixed image scale", "Display image using a fixed intensity scale")

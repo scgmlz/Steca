@@ -72,7 +72,7 @@ public:
 #endif
       *loadSession, *saveSession,
       *addFiles, *remFile, *enableCorr, *remCorr,
-      *rotateImage, *mirrorImage, *linkCuts, *showOverlay, *hasBeamOffset,
+      *rotateImage, *mirrorImage, *linkCuts, *showOverlay,
       *fixedIntenImageScale, *fixedIntenDgramScale, *combinedDgram,
       *fitRegions, *fitBgClear, *fitBgShow,
       *addReflection, *remReflection,

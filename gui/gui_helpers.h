@@ -51,7 +51,11 @@ public:
 
   void addRowStretch(int = 1);
   void addColumnStretch(int = 1);
+
+  static GridLayout* groupBox(QLayout&, rcstr);
 };
+
+//------------------------------------------------------------------------------
 
 extern int mWidth(QWidget const*);
 
@@ -66,10 +70,13 @@ GridLayout* gridLayout();
 
 QLabel*    icon(rcstr);
 QLabel*    label(rcstr);
+
 QLineEdit* editCell(uint emWidth);  // emWidth: measured in typographical (m)s
 QLineEdit* readCell(uint emWidth);
+
 QSpinBox*  spinCell(uint emWidth, int min, int max = INT_MIN);
 QDoubleSpinBox* spinCell(uint emWidth, qreal min, qreal max = INT_MIN);
+
 QCheckBox* check(rcstr text, QAction* = nullptr);
 
 QToolButton* textButton(QAction*);

@@ -146,7 +146,6 @@ PanelFitError::PanelFitError(TheHub& hub) : super(hub, "Fit error") {
     g->addWidget(fwhmFitError_      = new panel::FitErrorGridPannel(hub),1,0);
 
     g->addRowStretch();
-    g->setMargin(1);
 
     {
       auto g = intensityFitError_->grid();
@@ -291,7 +290,6 @@ Params::Params(TheHub& hub, ePanels panels)
   if (DIAGRAM & panels)
     box_->addWidget((panelDiagram = new PanelDiagram(hub)));
 
-  box_->setMargin(0);
   box_->addStretch();
 
   readSettings();
@@ -644,7 +642,6 @@ TabTable::TabTable(TheHub& hub, Params& params,
   EXPECT(to_u(headers.count()) == cmps.count())
   uint numCols = to_u(headers.count());
 
-  grid_->setMargin(0);
   grid_->addWidget((table = new Table(hub_, numCols)), 0, 0);
   grid_->setColumnStretch(0, 1);
 
@@ -845,7 +842,7 @@ str TabSave::filePath(bool withSuffix) {
 
   if (dir.isEmpty() || file.isEmpty())
     return EMPTY_STR;
-  
+
   str suffix;
   if (withSuffix)
     suffix = rbDat_->isChecked() ? DAT_SFX : CSV_SFX;
@@ -864,7 +861,7 @@ str TabSave::fileSetSuffix(rcstr suffix) {
     if (!file.isEmpty())
       file += suffix;
   }
-  
+
   file_->setText(file);
   return file;
 }

@@ -16,29 +16,25 @@
 #include "mainwin.h"
 #include "../manifest.h"
 #include "about.h"
-#include "actions.h"
 #include "app.h"
 #include "output/output_diagrams.h"
 #include "output/output_diffractograms.h"
 #include "output/output_polefigures.h"
-#include "panels/panel_dataset.h"
-#include "panels/panel_diffractogram.h"
-#include "panels/panel_file.h"
-#include "panels/panel_fitting.h"
-#include "panels/panel_image.h"
-#include "panels/panel_metadata.h"
-#include "panels/panel_options.h"
+#include "panels/dock_dataset.h"
+#include "panels/dock_files.h"
+#include "panels/dock_metadata.h"
+#include "panels/tabs_diffractogram.h"
+#include "panels/tabs_images.h"
+#include "panels/tabs_setup.h"
 
-#include <QAction>
 #include <QCloseEvent>
-#include <QDate>
 #include <QDesktopServices>
 #include <QDir>
 #include <QFileDialog>
 #include <QMenuBar>
 #include <QMessageBox>
-#include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QSplitter>
 #include <QStatusBar>
 #include <QUrl>
@@ -46,56 +42,11 @@
 namespace gui {
 //------------------------------------------------------------------------------
 
-class SplitImage : public BoxWidget {
-  CLS(SplitImage) SUPER(BoxWidget)
-public:
-  SplitImage(TheHub&);
-};
-
-SplitImage::SplitImage(TheHub& hub) : super(Qt::Horizontal) {
-  auto* options1 = new panel::DatasetOptions1(hub);
-  auto* options2 = new panel::DatasetOptions2(hub);
-  auto* image    = new panel::ImagePanel(hub);
-
-  connect(options2, &panel::DatasetOptions2::imageScale,
-          image,    &panel::ImagePanel::setImageScale);
-  box_->addWidget(options1);
-  box_->addWidget(options2);
-  box_->addWidget(image);
-  box_->setStretch(2, 1);
-}
-
-//------------------------------------------------------------------------------
-
-class SplitFitting : public BoxWidget {
-  CLS(SplitFitting) SUPER(BoxWidget)
-public:
-  SplitFitting(TheHub&);
-};
-
-SplitFitting::SplitFitting(TheHub& hub) : super(Qt::Vertical) {
-  box_->addWidget(new panel::Fitting(hub));
-}
-
-//------------------------------------------------------------------------------
-
-class SplitDiffractogram : public BoxWidget {
-  CLS(SplitDiffractogram) SUPER(BoxWidget)
-public:
-  SplitDiffractogram(TheHub&);
-};
-
-SplitDiffractogram::SplitDiffractogram(TheHub& hub) : super(Qt::Horizontal) {
-  auto diffractogram = new panel::Diffractogram(hub);
-  diffractogram->setHorizontalStretch(1);
-  box_->addWidget(diffractogram);
-}
-
-//------------------------------------------------------------------------------
-
 MainWin::MainWin() : hub_(), acts_(hub_.actions) {
   setWindowIcon(QIcon(":/icon/retroStier"));
   QDir::setCurrent(QDir::homePath());
+
+  setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
 
   initMenus();
   initLayout();
@@ -117,7 +68,6 @@ void MainWin::initMenus() {
 
   menuFile_     = mbar->addMenu("&File");
   menuView_     = mbar->addMenu("&View");
-  menuDetector_ = mbar->addMenu("&Detector");
   menuImage_    = mbar->addMenu("&Image");
   menuDgram_    = mbar->addMenu("Di&ffractogram");
   menuOutput_   = mbar->addMenu("&Output");
@@ -147,10 +97,6 @@ void MainWin::initMenus() {
       acts_.viewStatusbar,
       separator(),
       acts_.viewReset,
-  });
-
-  menuDetector_->addActions({
-      acts_.hasBeamOffset,
   });
 
   menuImage_->addActions({
@@ -187,31 +133,23 @@ void MainWin::initMenus() {
 }
 
 void MainWin::initLayout() {
-  addDockWidget(Qt::LeftDockWidgetArea,
-                (dockFiles_ = new panel::DockFiles(hub_)));
-  addDockWidget(Qt::LeftDockWidgetArea,
-                (dockDatasets_ = new panel::DockDatasets(hub_)));
-  addDockWidget(Qt::RightDockWidgetArea,
-                (dockDatasetInfo_ = new panel::DockMetadata(hub_)));
+  addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_       = new panel::DockFiles(hub_)));
+  addDockWidget(Qt::LeftDockWidgetArea, (dockDatasets_    = new panel::DockDatasets(hub_)));
+  addDockWidget(Qt::RightDockWidgetArea,(dockDatasetInfo_ = new panel::DockMetadata(hub_)));
 
   auto splMain = new QSplitter(Qt::Vertical);
   splMain->setChildrenCollapsible(false);
+
+  auto splTop = new QSplitter(Qt::Horizontal);
+  splTop->setChildrenCollapsible(false);
+
   setCentralWidget(splMain);
 
-  auto splImages = new QSplitter(Qt::Horizontal);
-  splImages->setChildrenCollapsible(false);
+  splMain->addWidget(splTop);
+  splMain->addWidget(new panel::TabsDiffractogram(hub_));
 
-  auto splReflections = new QSplitter(Qt::Horizontal);
-  splReflections->setChildrenCollapsible(false);
-
-  splMain->addWidget(splImages);
-  splMain->addWidget(splReflections);
-
-  splImages->addWidget(new SplitImage(hub_));
-
-  splReflections->addWidget(new SplitFitting(hub_));
-  splReflections->addWidget(new SplitDiffractogram(hub_));
-  splReflections->setStretchFactor(1, 1);
+  splTop->addWidget(new panel::TabsSetup(hub_));
+  splTop->addWidget(new panel::TabsImages(hub_));
 }
 
 void MainWin::initStatusBar() {
@@ -268,7 +206,6 @@ void MainWin::checkUpdate() {
 }
 
 void MainWin::checkUpdate(bool completeReport) {
-//#ifdef QT_NO_DEBUG // applies only in release
   NoWarnings _;
 
   QNetworkRequest req;
@@ -301,7 +238,6 @@ void MainWin::checkUpdate(bool completeReport) {
         str("<p>You have the latest %1 version (%2).</p>")
             .arg(name).arg(ver));
   });
-//#endif
 }
 
 void MainWin::messageDialog(rcstr title, rcstr text) {

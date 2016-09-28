@@ -88,15 +88,12 @@ void ImageWidget::paintEvent(QPaintEvent*) {
   painter.drawRect(r);
 
   // cross
-  auto &geo = hub_.geometry();
-  if (geo.isMidPixOffset) {
-    auto c = r.center();
-    auto off = geo.midPixOffset;
-    auto x = qRound(c.x() + scale_ * off.i);
-    auto y = qRound(c.y() + scale_ * off.j);
-    painter.drawLine(x, r.top(), x, r.bottom());
-    painter.drawLine(r.left(), y, r.right(), y);
-  }
+  auto off = hub_.geometry().midPixOffset;
+  auto c = r.center();
+  auto x = qRound(c.x() + scale_ * off.i);
+  auto y = qRound(c.y() + scale_ * off.j);
+  painter.drawLine(x, r.top(), x, r.bottom());
+  painter.drawLine(r.left(), y, r.right(), y);
 }
 
 //------------------------------------------------------------------------------

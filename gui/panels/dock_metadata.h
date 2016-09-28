@@ -2,8 +2,7 @@
 //
 //  STeCa2:    StressTextureCalculator ver. 2
 //
-//! @file      panel_metadata.h
-//! @brief     Metadata panel.
+//! @file      dock_metadata.h
 //!
 //! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -14,8 +13,8 @@
 //
 // ************************************************************************** //
 
-#ifndef PANEL_METADATA_H
-#define PANEL_METADATA_H
+#ifndef DOCK_METADATA_H
+#define DOCK_METADATA_H
 
 #include "panel.h"
 
@@ -33,4 +32,4 @@ private:
 
 //------------------------------------------------------------------------------
 }}
-#endif // PANEL_METADATA_H
+#endif // DOCK_METADATA_H

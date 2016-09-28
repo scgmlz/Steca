@@ -15,6 +15,7 @@
 
 #include "gui_helpers.h"
 #include <QAction>
+#include <QGroupBox>
 
 //------------------------------------------------------------------------------
 
@@ -24,6 +25,14 @@ void GridLayout::addRowStretch(int stretch) {
 
 void GridLayout::addColumnStretch(int stretch) {
   setColumnStretch(columnCount(), stretch);
+}
+
+GridLayout* GridLayout::groupBox(QLayout &addTo, rcstr title) {
+  auto group = new QGroupBox(title);
+  addTo.addWidget(group);
+  auto grid = gridLayout();
+  group->setLayout(grid);
+  return grid;
 }
 
 int mWidth(QWidget const* w) {
@@ -47,26 +56,29 @@ QBoxLayout* boxLayout(Qt::Orientation orientation) {
 QBoxLayout* hbox() {
   auto box = new QHBoxLayout;
   box->setSpacing(2);
+  box->setMargin(2);
   return box;
 }
 
 QBoxLayout* vbox() {
   auto box = new QVBoxLayout;
   box->setSpacing(2);
+  box->setMargin(2);
   return box;
 }
 
 GridLayout* gridLayout() {
   auto grid = new GridLayout;
   grid->setSpacing(2);
+  grid->setMargin(2);
   return grid;
 }
 
 QLabel* icon(rcstr fileName) {
-  auto label = new QLabel;
-  auto h     = label->sizeHint().height();
-  label->setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
-  return label;
+  auto l = new QLabel;
+  auto h = l->sizeHint().height();
+  l->setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
+  return l;
 }
 
 QLabel* label(rcstr text) {
@@ -193,11 +205,11 @@ BoxWidget::BoxWidget(Qt::Orientation orientation) {
 DockWidget::DockWidget(rcstr name, rcstr objectName,
                        Qt::Orientation orientation) {
   setFeatures(DockWidgetMovable);
-  setWidget(new QWidget);
-  widget()->setLayout((box_ = boxLayout(orientation)));
-
   setWindowTitle(name);
   setObjectName(objectName);
+
+  setWidget(new QWidget);
+  widget()->setLayout((box_ = boxLayout(orientation)));
 }
 
 //------------------------------------------------------------------------------

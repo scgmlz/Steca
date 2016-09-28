@@ -18,6 +18,12 @@
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
+PanelWidget::PanelWidget(TheHub& hub, Qt::Orientation orientation) : RefHub(hub) {
+  setLayout((box_ = boxLayout(orientation)));
+}
+
+//------------------------------------------------------------------------------
+
 BasicPanel::BasicPanel(TheHub& hub, rcstr title) : super(title), RefHub(hub) {
 }
 
@@ -71,7 +77,10 @@ Tab::Tab(Qt::Orientation orientation) {
 }
 
 TabsPanel::TabsPanel(TheHub& hub) : RefHub(hub) {
+  setTabPosition(TabsPanel::North);
 }
+
+//------------------------------------------------------------------------------
 
 Tab& TabsPanel::addTab(rcstr title, Qt::Orientation orientation) {
   auto tab = new Tab(orientation);

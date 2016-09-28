@@ -135,8 +135,7 @@ private:
 
 public:
   typ::Geometry::rc geometry() const { return geometry_; }
-  void setGeometry(preal detectorDistance, preal pixSize,
-                   bool isMidPixOffset, typ::IJ::rc midPixOffset);
+  void setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midPixOffset);
   typ::IJ midPix() const;
 
   typ::shp_AngleMap        angleMap(data::OneDataset::rc) const;

@@ -2,7 +2,7 @@
 //
 //  STeCa2:    StressTextureCalculator ver. 2
 //
-//! @file      panel_metadata.cpp
+//! @file      dock_metadata.cpp
 //!
 //! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -13,14 +13,13 @@
 //
 // ************************************************************************** //
 
-#include "panel_metadata.h"
+#include "dock_metadata.h"
 #include "thehub.h"
 #include "views.h"
 #include <QHeaderView>
 
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
-
 
 class MetadataView : public views::ListView {
   CLS(MetadataView) SUPER(views::ListView)

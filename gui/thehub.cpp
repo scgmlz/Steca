@@ -230,7 +230,6 @@ static str const KEY_RIGHT("right");
 static str const KEY_DETECTOR("detector");
 static str const KEY_DISTANCE("distance");
 static str const KEY_PIX_SIZE("pixel size");
-static str const KEY_OFFSET_BEAM("offset beam");
 static str const KEY_BEAM_OFFSET("beam offset");
 static str const KEY_TRANSFORM("image transform");
 static str const KEY_BG_DEGREE("background degree");
@@ -255,7 +254,6 @@ QByteArray TheHub::saveSession() const {
   top.saveObj(KEY_DETECTOR, JsonObj()
       .savePreal(KEY_DISTANCE, geo.detectorDistance)
       .savePreal(KEY_PIX_SIZE, geo.pixSize)
-      .saveBool(KEY_OFFSET_BEAM, geo.isMidPixOffset)
       .saveObj(KEY_BEAM_OFFSET, geo.midPixOffset.saveJson()));
 
   auto& cut = session_->imageCut();
@@ -357,7 +355,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
 
   auto det = top.loadObj(KEY_DETECTOR);
   setGeometry(det.loadPreal(KEY_DISTANCE), det.loadPreal(KEY_PIX_SIZE),
-              det.loadBool(KEY_OFFSET_BEAM), det.loadIJ(KEY_BEAM_OFFSET));
+              det.loadIJ(KEY_BEAM_OFFSET));
 
   auto cut = top.loadObj(KEY_CUT);
   uint x1 = cut.loadUint(KEY_LEFT), y1 = cut.loadUint(KEY_TOP),
@@ -448,13 +446,12 @@ const typ::Geometry& TheHub::geometry() const {
   return session_->geometry();
 }
 
-void TheHub::setGeometry(preal detectorDistance, preal pixSize,
-                         bool isMidPixOffset, typ::IJ::rc midPixOffset) {
+void TheHub::setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midPixOffset) {
   level_guard __(sigLevel_);
   if (sigLevel_ > 1)
     return;
 
-  session_->setGeometry(detectorDistance, pixSize, isMidPixOffset, midPixOffset);
+  session_->setGeometry(detectorDistance, pixSize, midPixOffset);
   emit sigGeometryChanged();
 }
 

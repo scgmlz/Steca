@@ -38,7 +38,6 @@ struct Geometry {
 
   preal detectorDistance;  // the distance from the sample to the detector
   preal pixSize;           // size of the detector pixel
-  bool  isMidPixOffset;
   IJ    midPixOffset;
 };
 

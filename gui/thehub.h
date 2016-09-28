@@ -178,8 +178,7 @@ public:
   void setImageCut(bool topLeft, bool linked, typ::ImageCut::rc);
 
   typ::Geometry::rc geometry() const;
-  void setGeometry(preal detectorDistance, preal pixSize,
-                   bool isMidPixOffset, typ::IJ::rc midPixOffset);
+  void setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midPixOffset);
 
   void setBgRanges(typ::Ranges::rc);
   void addBgRange(typ::Range::rc);

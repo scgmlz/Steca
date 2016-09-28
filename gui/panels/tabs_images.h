@@ -2,8 +2,7 @@
 //
 //  STeCa2:    StressTextureCalculator ver. 2
 //
-//! @file      panel_dataset.h
-//! @brief     File selection panel.
+//! @file      tabs_images.h
 //!
 //! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -14,25 +13,23 @@
 //
 // ************************************************************************** //
 
-#ifndef PANEL_DATASET_H
-#define PANEL_DATASET_H
+#ifndef TABS_IMAGES_H
+#define TABS_IMAGES_H
 
 #include "panel.h"
 
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-class DockDatasets : public DockWidget, protected RefHub {
-  CLS(DockDatasets) SUPER(DockWidget)
+class TabsImages : public TabsPanel {
+  CLS(TabsImages) SUPER(TabsPanel)
 public:
-  DockDatasets(TheHub&);
-
-  QSpinBox *combineDatasets_;
+  TabsImages(TheHub&);
 
 private:
-  class DatasetView *datasetView_;
+  QSlider *imageScale_;
 };
 
 //------------------------------------------------------------------------------
 }}
-#endif // PANEL_DATASET_H
+#endif // TABS_IMAGES_H
