@@ -97,7 +97,7 @@ void ReflectionView::selectionChanged(QItemSelection const& selected,
 Fitting::Fitting(TheHub &hub)
 : super(hub), silentSpin_(false)
 {
-  auto &actions = hub_.actions;
+  auto& actions = hub_.actions;
   auto  tools   = [actions]() {
     auto hb = hbox();
     hb->addWidget(iconButton(actions.fitRegions));
@@ -108,7 +108,7 @@ Fitting::Fitting(TheHub &hub)
   };
 
   {  // background
-    auto &tab = addTab("Background");
+    auto& tab = addTab("Background", Qt::Vertical);
     tab.box().addLayout(tools());
 
     auto hb = hbox();
@@ -130,7 +130,7 @@ Fitting::Fitting(TheHub &hub)
   }
 
   {  // reflections
-    auto &tab = addTab("Reflections");
+    auto& tab = addTab("Reflections", Qt::Vertical);
     tab.box().addLayout(tools());
 
     tab.box().addWidget((reflectionView_ = new ReflectionView(hub_)));
@@ -274,12 +274,12 @@ void Fitting::setReflControls(calc::shp_Reflection reflection) {
       comboReflType_->setCurrentIndex(int(reflection->type()));
     }
 
-    auto &range = reflection->range();
+    auto& range = reflection->range();
     spinRangeMin_->setValue(safeReal(range.min));
     spinRangeMax_->setValue(safeReal(range.max));
 
-    auto &peakFun     = reflection->peakFunction();
-    auto &guessedPeak = peakFun.guessedPeak();
+    auto& peakFun     = reflection->peakFunction();
+    auto& guessedPeak = peakFun.guessedPeak();
     spinGuessPeakX_->setValue(safeReal(guessedPeak.x));
     spinGuessPeakY_->setValue(safeReal(guessedPeak.y));
     spinGuessFWHM_->setValue(safeReal(peakFun.guessedFWHM()));

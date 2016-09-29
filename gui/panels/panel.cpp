@@ -91,7 +91,7 @@ Tab& TabsPanel::addTab(rcstr title, Qt::Orientation orientation) {
 Tab& TabsPanel::tab(uint i) {
   EXPECT(to_i(i) < count())
   ENSURE(dynamic_cast<Tab*>(widget(to_i(i))))
-  return *static_cast<Tab*>(widget(to_i(i)));
+      return *static_cast<Tab*>(widget(to_i(i)));
 }
 
 //------------------------------------------------------------------------------

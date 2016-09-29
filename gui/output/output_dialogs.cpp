@@ -934,7 +934,7 @@ Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
 
   auto tabTable = new TabTable(hub, *params_,
      calc::ReflectionInfo::dataTags(), calc::ReflectionInfo::dataCmps());
-  tabs_->addTab("Points").box().addWidget(tabTable);
+  tabs_->addTab("Points", Qt::Vertical).box().addWidget(tabTable);
 
   table_ = tabTable->table;
 
@@ -949,7 +949,7 @@ void Frame::calculate() {
   calcPoints_.clear();
   interpPoints_.clear();
 
-  auto &reflections = hub_.reflections();
+  auto& reflections = hub_.reflections();
   if (!reflections.isEmpty()) {
     uint reflCount = reflections.count();
 

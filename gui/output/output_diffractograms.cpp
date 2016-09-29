@@ -71,7 +71,7 @@ DiffractogramsFrame::DiffractogramsFrame(TheHub &hub, rcstr title, QWidget *pare
   btnInterpolate_->hide();
 
   tabSave_ = new TabDiffractogramsSave(hub, *params_);
-  tabs_->addTab("Save").box().addWidget(tabSave_);
+  tabs_->addTab("Save", Qt::Vertical).box().addWidget(tabSave_);
 
   connect(tabSave_->actSave,&QAction::triggered,[this]() {
     logSuccess(saveDiffractogramOutput());
@@ -118,7 +118,7 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
     rgeGma.safeSet(pr->minGamma->value(),
                    pr->maxGamma->value());
 
-  auto &datasets = hub_.collectedDatasets();
+  auto& datasets = hub_.collectedDatasets();
   Progress progress(datasets.count(), pb_);
 
   OutputDataCollections allOutputData;
@@ -144,8 +144,8 @@ auto writeMetaData = [](OutputData outputData, QTextStream& stream, str separato
   if (outputData.picNum_ > 0)
     stream << "Picture Nr: " << outputData.picNum_ << '\n';
 
-  auto &md     = *outputData.dataset_.metadata();
-  auto &rgeGma = outputData.gmaStripe_;
+  auto& md     = *outputData.dataset_.metadata();
+  auto& rgeGma = outputData.gmaStripe_;
 
   stream << "Comment: "         << md.comment << '\n';
   stream << "Date: "            << md.date    << '\n';
@@ -169,7 +169,7 @@ bool DiffractogramsFrame::writeCurrDiffractogramToFile(rcstr filePath, rcstr sep
   writeMetaData(outputData, stream, separator);
   stream << "Tth" << separator << "Intensity" << '\n';
 
-  auto &curve = outputData.curve_;
+  auto& curve = outputData.curve_;
 
   for_i (curve.xs().count())
     stream << curve.x(i) << separator << curve.y(i) << '\n';

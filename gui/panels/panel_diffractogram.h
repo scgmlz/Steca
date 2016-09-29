@@ -122,6 +122,8 @@ private:
   uint                 currReflIndex_;
   calc::shp_Reflection currentReflection_;
 
+  QComboBox *comboNormType_;
+
 public:
   void calcDgram();
   void calcBackground();

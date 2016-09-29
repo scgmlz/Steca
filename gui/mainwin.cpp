@@ -150,6 +150,7 @@ void MainWin::initLayout() {
 
   splTop->addWidget(new panel::TabsSetup(hub_));
   splTop->addWidget(new panel::TabsImages(hub_));
+  splTop->setStretchFactor(1,1);
 }
 
 void MainWin::initStatusBar() {

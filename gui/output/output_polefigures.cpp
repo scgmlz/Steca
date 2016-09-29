@@ -226,10 +226,10 @@ PoleFiguresFrame::PoleFiguresFrame(TheHub &hub, rcstr title, QWidget *parent)
 : super(hub, title, new Params(hub, PANELS), parent)
 {
   tabGraph_ = new TabGraph(hub, *params_);
-  tabs_->addTab("Graph").box().addWidget(tabGraph_);
+  tabs_->addTab("Graph", Qt::Vertical).box().addWidget(tabGraph_);
 
   tabSave_ = new TabPoleFiguresSave(hub, *params_);
-  tabs_->addTab("Save").box().addWidget(tabSave_);
+  tabs_->addTab("Save", Qt::Vertical).box().addWidget(tabSave_);
 
 //  connect(params()->cbRefl, slot(QComboBox,currentIndexChanged,int), [this]() {
 //    int index = params()->currReflIndex();
@@ -256,7 +256,7 @@ void PoleFiguresFrame::displayReflection(uint reflIndex, bool interpolated) {
 }
 
 bool PoleFiguresFrame::savePoleFigureOutput() {
-  auto &reflections = hub_.reflections();
+  auto& reflections = hub_.reflections();
   if (reflections.isEmpty())
     return false;
 

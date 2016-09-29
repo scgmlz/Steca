@@ -110,7 +110,7 @@ class TabsPanel : public QTabWidget, protected RefHub {
 public:
   TabsPanel(TheHub&);
 
-  Tab &addTab(rcstr title, Qt::Orientation = Qt::Vertical);
+  Tab &addTab(rcstr title, Qt::Orientation);
   Tab &tab(uint);
 };
 

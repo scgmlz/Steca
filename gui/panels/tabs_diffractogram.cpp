@@ -20,16 +20,8 @@ namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 TabsDiffractogram::TabsDiffractogram(TheHub& hub) : super(hub) {
-  auto& box = addTab("Diffractogram").box();
+  auto& box = addTab("Diffractogram", Qt::Vertical).box();
   box.addWidget(new Diffractogram(hub));
-
-  str_lst options = normStrLst();
-  comboNormType_ = comboBox(options);
-  box.addWidget(comboNormType_);
-
-//  connect(comboNormType_, slot(QComboBox,currentIndexChanged,int), [this](int index) {
-//    hub_.setNorm(eNorm(index));
-//  });
 }
 
 //------------------------------------------------------------------------------

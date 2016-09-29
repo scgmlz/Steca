@@ -137,7 +137,7 @@ DiagramsFrame::DiagramsFrame(TheHub &hub, rcstr title, QWidget *parent)
   btnInterpolate_->hide();
 
   tabPlot_ = new TabPlot();
-  tabs_->addTab("Diagram").box().addWidget(tabPlot_);
+  tabs_->addTab("Diagram", Qt::Vertical).box().addWidget(tabPlot_);
 
   ENSURE(params_->panelDiagram)
   auto pd = params_->panelDiagram;
@@ -151,7 +151,7 @@ DiagramsFrame::DiagramsFrame(TheHub &hub, rcstr title, QWidget *parent)
   });
 
   tabSave_ = new TabDiagramsSave(hub, *params_);
-  tabs_->addTab("Save").box().addWidget(tabSave_);
+  tabs_->addTab("Save", Qt::Vertical).box().addWidget(tabSave_);
 
   connect(tabSave_->actSave, &QAction::triggered, [this]() {
     logSuccess(saveDiagramOutput());
@@ -277,7 +277,7 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
   stream << '\n';
 
   for_i (calcPoints_.at(getReflIndex()).count()) {
-    auto &row = table_->row(i);
+    auto& row = table_->row(i);
 
     for_i (row.count()) {
       QVariant const& var = row.at(i);

@@ -17,9 +17,12 @@
 #define TABS_IMAGES_H
 
 #include "panel.h"
+#include "calc/calc_lens.h"
 
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
+
+class ImageWidget;
 
 class TabsImages : public TabsPanel {
   CLS(TabsImages) SUPER(TabsPanel)
@@ -27,7 +30,17 @@ public:
   TabsImages(TheHub&);
 
 private:
-  QSlider *imageScale_;
+  QPixmap makeBlankPixmap();
+  QPixmap makePixmap(calc::shp_ImageLens);
+
+  void setDataset(data::shp_Dataset);
+  void render();
+
+  data::shp_Dataset dataset_;
+  ImageWidget *dataImageWidget_, *corrImageWidget_;
+
+  uint n = 0;
+  QSpinBox *spinN;
 };
 
 //------------------------------------------------------------------------------

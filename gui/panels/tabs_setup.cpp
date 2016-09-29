@@ -22,7 +22,7 @@ namespace gui { namespace panel {
 
 TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
   {
-    auto& box = addTab("Geometry").box();
+    auto& box = addTab("Geometry", Qt::Vertical).box();
 
     onSigGeometryChanged([this]() {
       setFromHub();
@@ -127,21 +127,11 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
     box.addStretch();
   }
   {
-    auto &tab = addTab("Background");
+    auto& tab = addTab("Background", Qt::Vertical);
   }
   {
-    auto &tab = addTab("Reflections");
+    auto& tab = addTab("Reflections", Qt::Vertical);
   }
-//  auto* options1 = new panel::DatasetOptions1(hub);
-//  auto* options2 = new panel::DatasetOptions2(hub);
-//  auto* image    = new panel::ImagePanel(hub);
-
-//  connect(options2, &panel::DatasetOptions2::imageScale,
-//          image,    &panel::ImagePanel::setImageScale);
-//  box_->addWidget(options1);
-//  box_->addWidget(options2);
-//  box_->addWidget(image);
-  //  box_->setStretch(2, 1);
 }
 
 void TabsSetup::setToHub() {

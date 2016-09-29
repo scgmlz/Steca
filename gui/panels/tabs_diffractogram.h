@@ -25,9 +25,6 @@ class TabsDiffractogram : public TabsPanel {
   CLS(TabsDiffractogram) SUPER(TabsPanel)
 public:
   TabsDiffractogram(TheHub&);
-
-private:
-  QComboBox *comboNormType_;
 };
 
 //------------------------------------------------------------------------------

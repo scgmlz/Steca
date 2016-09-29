@@ -72,11 +72,11 @@
 
 //  // insert into an interval tree
 //  PolePoints pps;
-//  for (auto &p: ps)
+//  for (auto& p: ps)
 //    pps.insert(p);
 
 //  // check that all can be found
-//  for (auto &p: ps)
+//  for (auto& p: ps)
 //    QVERIFY(pps.find(p));
 
 //  // get all in range

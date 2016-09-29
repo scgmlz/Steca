@@ -196,7 +196,7 @@ void Ranges::sort() {
 JsonArr Ranges::saveJson() const {
   JsonArr arr;
 
-  for (auto &range : ranges_)
+  for (auto& range : ranges_)
     arr.append(range.saveJson());
 
   return arr;

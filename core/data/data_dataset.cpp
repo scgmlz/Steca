@@ -303,7 +303,7 @@ Datasets::rc Dataset::datasets() const {
 #define AVG_ONES(what)    \
   EXPECT(!isEmpty())      \
   qreal avg = 0;          \
-  for (auto &one : *this) \
+  for (auto& one : *this) \
     avg += one->what();   \
   avg /= count();         \
   return avg;
@@ -324,7 +324,7 @@ deg Dataset::chi() const {
 #define RGE_COMBINE(combineOp, what)  \
   EXPECT(!isEmpty())                  \
   Range rge;                          \
-  for (auto &one : *this)             \
+  for (auto& one : *this)             \
     rge.combineOp(one->what);         \
   return rge;
 

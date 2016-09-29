@@ -351,6 +351,16 @@ Diffractogram::Diffractogram(TheHub& hub)
   box_->addLayout(hb);
   hb->addWidget(check("all datasets", hub_.actions.combinedDgram));
   hb->addWidget(check("fixed scale", hub_.actions.fixedIntenDgramScale));
+
+  str_lst options = normStrLst();
+  comboNormType_ = comboBox(options);
+  hb->addWidget(label("normalization:"));
+  hb->addWidget(comboNormType_);
+
+  connect(comboNormType_, slot(QComboBox,currentIndexChanged,int), [this](int index) { // TODO init value form hub?
+    hub_.setNorm(eNorm(index));
+  });
+
   hb->addStretch();
 
   onSigDatasetSelected([this](data::shp_Dataset dataset) {
@@ -466,7 +476,7 @@ void Diffractogram::calcDgram() {
   dgram_ = hub_.isCombinedDgram()
            ? hub_.avgCurve(dataset_->datasets())
            : hub_.datasetLens(*dataset_)->makeCurve();
-} 
+}
 
 void Diffractogram::calcBackground() {
   bg_.clear();
@@ -504,8 +514,8 @@ void Diffractogram::calcReflections() {
       currReflIndex_ = i;
 
     r->fit(dgramBgFitted_);
-    auto &rge = r->range();
-    auto &fun = r->peakFunction();
+    auto& rge = r->range();
+    auto& fun = r->peakFunction();
 
     typ::Curve c;
 
