@@ -109,9 +109,10 @@ void MainWin::initMenus() {
   });
 
   menuDgram_->addActions({
-      acts_.fitRegions,
-      acts_.fitBgClear,
-      acts_.fitBgShow,
+      acts_.selRegions,
+      acts_.showBackground,
+      acts_.clearBackground,
+      acts_.clearReflections,
       separator(),
       acts_.addReflection, acts_.remReflection,
       separator(),

@@ -28,6 +28,7 @@ public:
 
   void addReflection(uint type);
   void removeSelected();
+  void clear();
   bool hasReflections() const;
 
   calc::shp_Reflection selectedReflection() const;
@@ -62,6 +63,13 @@ void ReflectionView::removeSelected() {
 
   model()->remReflection(to_u(row));
   updateSingleSelection();
+}
+
+void ReflectionView::clear() {
+  for (int row = model()->rowCount(); row-- > 0; ) {
+    model()->remReflection(to_u(row));
+    updateSingleSelection();
+  }
 }
 
 bool ReflectionView::hasReflections() const {
@@ -218,9 +226,9 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
     auto hb = hbox();
     box.addLayout(hb);
 
-    hb->addWidget(iconButton(actions.fitRegions));
-    hb->addWidget(iconButton(actions.fitBgShow));
-    hb->addWidget(iconButton(actions.fitBgClear));
+    hb->addWidget(iconButton(actions.selRegions));
+    hb->addWidget(iconButton(actions.showBackground));
+    hb->addWidget(iconButton(actions.clearBackground));
     hb->addWidget(label("Pol. degree:"));
     hb->addWidget((spinDegree_ = spinCell(4, 0, TheHub::MAX_POLYNOM_DEGREE)));
     hb->addStretch();
@@ -243,8 +251,9 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
     auto hb = hbox();
     box.addLayout(hb);
 
-    hb->addWidget(iconButton(actions.fitRegions));
-    hb->addWidget(iconButton(actions.fitBgShow));
+    hb->addWidget(iconButton(actions.selRegions));
+    hb->addWidget(iconButton(actions.showBackground));
+    hb->addWidget(iconButton(actions.clearReflections));
     hb->addStretch();
 
     box.addWidget((reflectionView_ = new ReflectionView(hub_)));
@@ -314,6 +323,11 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
 
     connect(actions.remReflection, &QAction::triggered, [this,updateReflectionControls]() {
       reflectionView_->removeSelected();
+      updateReflectionControls();
+    });
+
+    connect(actions.clearReflections, &QAction::triggered, [this,updateReflectionControls]() {
+      reflectionView_->clear();
       updateReflectionControls();
     });
 

@@ -186,7 +186,7 @@ DiffractogramPlot::DiffractogramPlot(TheHub& hub, Diffractogram& diffractogram)
     }
   });
 
-  connect(hub_.actions.fitBgShow, &QAction::toggled, [this](bool on) {
+  connect(hub_.actions.showBackground, &QAction::toggled, [this](bool on) {
     showBgFit_ = on;
     updateBg();
   });
@@ -351,8 +351,6 @@ Diffractogram::Diffractogram(TheHub& hub)
   box_->addWidget((plot_ = new DiffractogramPlot(hub_, *this)));
   auto hb = hbox();
   box_->addLayout(hb);
-  hb->addWidget(check("all datasets", hub_.actions.combinedDgram));
-  hb->addWidget(check("fixed scale", hub_.actions.fixedIntenDgramScale));
 
   str_lst options = normStrLst();
   comboNormType_ = comboBox(options);
@@ -364,6 +362,9 @@ Diffractogram::Diffractogram(TheHub& hub)
   });
 
   hb->addStretch();
+
+  hb->addWidget(check("all datasets", hub_.actions.combinedDgram));
+  hb->addWidget(check("fixed scale", hub_.actions.fixedIntenDgramScale));
 
   onSigDatasetSelected([this](data::shp_Dataset dataset) {
     setDataset(dataset);
@@ -389,24 +390,24 @@ Diffractogram::Diffractogram(TheHub& hub)
     render();
   });
 
-  // REVIEW all these connects
-  connect(hub_.actions.fitBgClear, &QAction::triggered,
-          [this]() { plot_->clearBg(); });
+  connect(hub_.actions.clearBackground, &QAction::triggered, [this]() {
+    plot_->clearBg();
+  });
 
   onSigFittingTab([this](eFittingTab tab) {
-    bool on = hub_.actions.fitRegions->isChecked();
+    bool on = hub_.actions.selRegions->isChecked();
 
     switch (tab) {
     case eFittingTab::BACKGROUND:
-      hub_.actions.fitRegions
+      hub_.actions.selRegions
         ->text("Select background regions", true)
-        .icon(":/icon/bgRegion");
+        .icon(":/icon/selRegion");
 
       plot_->setTool(on ? DiffractogramPlot::eTool::BACKGROUND
                         : DiffractogramPlot::eTool::NONE);
       break;
     case eFittingTab::REFLECTIONS:
-      hub_.actions.fitRegions
+      hub_.actions.selRegions
         ->text("Select reflection region", true)
         .icon(":/icon/reflRegion");
 
@@ -418,7 +419,7 @@ Diffractogram::Diffractogram(TheHub& hub)
     }
   });
 
-  connect(hub_.actions.fitRegions, &QAction::toggled, [this](bool on) {
+  connect(hub_.actions.selRegions, &QAction::toggled, [this](bool on) {
     using eTool = DiffractogramPlot::eTool;
     auto tool = eTool::NONE;
 
@@ -456,8 +457,8 @@ Diffractogram::Diffractogram(TheHub& hub)
     }
   });
 
-  hub_.actions.fitRegions->setChecked(true);
-  hub_.actions.fitBgShow->setChecked(true);
+  hub_.actions.selRegions->setChecked(true);
+  hub_.actions.showBackground->setChecked(true);
 }
 
 void Diffractogram::render() {

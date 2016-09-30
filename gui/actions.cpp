@@ -160,12 +160,15 @@ Actions::Actions(TheHub& hub): super(hub) {
       "Combined diffractogram", "Show diffractogram of all datasets")
       .alt("Single diffractogram", "Show diffractogram of a single dataset");
 
-  tgl(fitRegions, "Select regions").icon(":/icon/bgRegion");
-  trg(fitBgClear,
-      "Clear background regions", "Clear regions for background fitting")
-      .icon(":/icon/clear");
-  tgl(fitBgShow, "Show background", "Show fitted background")
+  tgl(selRegions, "Select regions").icon(":/icon/selRegion");
+  tgl(showBackground, "Show background", "Show fitted background")
       .icon(":/icon/showBackground");
+  trg(clearBackground,
+      "Clear background regions")
+      .icon(":/icon/clear");
+  trg(clearReflections,
+      "Clear reflections")
+      .icon(":/icon/clear");
 
   trg(addReflection,
       "Add reflection")

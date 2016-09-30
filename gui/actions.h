@@ -65,18 +65,18 @@ public:
   Actions(TheHub&);
 
   Action
-      *about, *online, *checkUpdate, *quit,
-      *viewStatusbar, *viewFiles, *viewDatasets, *viewDatasetInfo, *viewReset,
+    *about, *online, *checkUpdate, *quit,
+    *viewStatusbar, *viewFiles, *viewDatasets, *viewDatasetInfo, *viewReset,
 #ifndef Q_OS_OSX  // Mac has its own
-      *fullScreen,
+    *fullScreen,
 #endif
-      *loadSession, *saveSession,
-      *addFiles, *remFile, *enableCorr, *remCorr,
-      *rotateImage, *mirrorImage, *linkCuts, *showOverlay, *stepScale,
-      *fixedIntenImageScale, *fixedIntenDgramScale, *combinedDgram,
-      *fitRegions, *fitBgClear, *fitBgShow,
-      *addReflection, *remReflection,
-      *outputPolefigures, *outputDiagrams, *outputDiffractograms;
+    *loadSession, *saveSession,
+    *addFiles, *remFile, *enableCorr, *remCorr,
+    *rotateImage, *mirrorImage, *linkCuts, *showOverlay, *stepScale,
+    *fixedIntenImageScale, *fixedIntenDgramScale, *combinedDgram,
+    *selRegions, *showBackground, *clearBackground, *clearReflections,
+    *addReflection, *remReflection,
+    *outputPolefigures, *outputDiagrams, *outputDiffractograms;
 
 private:
   Action& trg(Action*& action, rcstr text, rcstr tip = EMPTY_STR);

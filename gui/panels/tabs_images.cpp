@@ -135,8 +135,8 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
     vb->addWidget(iconButton(actions.fixedIntenImageScale));
     vb->addWidget(iconButton(actions.stepScale));
     vb->addWidget(iconButton(actions.showOverlay));
-    vb->addWidget((spinN = spinCell(4,1)));
     vb->addStretch(1);
+    vb->addWidget((spinN = spinCell(4,1)));
 
     connect(spinN, slot(QSpinBox,valueChanged,int), [this](int i) {
       n = to_u(qMax(0, i-1));

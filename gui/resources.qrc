@@ -20,7 +20,7 @@
         <file alias="cutTop">icons/cut_top.svg</file>
         <file alias="crop">icons/crop.svg</file>
         <file alias="steps">icons/steps.svg</file>
-        <file alias="bgRegion">icons/bg_region.svg</file>
+        <file alias="selRegion">icons/sel_region.svg</file>
         <file alias="reflRegion">icons/refl_region.svg</file>
         <file alias="clear">icons/clear.svg</file>
         <file alias="scale">icons/scale.svg</file>
