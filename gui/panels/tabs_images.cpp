@@ -18,6 +18,7 @@
 #include "thehub.h"
 #include <QPainter>
 #include <QResizeEvent>
+#include <qmath.h>
 
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
@@ -29,8 +30,6 @@ public:
 
   void  setPixmap(QPixmap const&);
   void  setScale();
-
-  QSize sizeHint() const;
 
 protected:
   void resizeEvent(QResizeEvent*);
@@ -45,9 +44,12 @@ private:
 ImageWidget::ImageWidget(TheHub& hub)
 : RefHub(hub), scale_(0)
 {
-  setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+  setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   connect(hub_.actions.showOverlay, &QAction::toggled, [this]() {
     update();
+  });
+  connect(hub_.actions.stepScale, &QAction::toggled, [this]() {
+    setScale();
   });
 }
 
@@ -57,64 +59,62 @@ void ImageWidget::setPixmap(QPixmap const& pixmap) {
 }
 
 void ImageWidget::setScale() {
-//  scale_ = 0;
-//  if (!original_.isNull()) {
-//    auto ws = static_cast<QWidget*>(parent())->size();
-//    auto is = original_.size();
-//    scale_ = .9 * qMin(qreal(ws.width()) / is.width(), qreal(ws.height()) / is.height());
-//  }
+  if (original_.isNull()) {
+    scale_ = 0;
+  } else {
+    auto sz = size();
+    auto os = original_.size();
+    scale_  = qMin(qreal(sz.width() - 2) / os.width(), qreal(sz.height() - 2) / os.height());
+  }
 
-//  if (original_.isNull() || !(scale_ > 0))
-//    scaled_ = QPixmap();
-//  else
-//    scaled_ = original_.scaled(original_.size() * scale_);
+  if (hub_.actions.stepScale->isChecked() && scale_ > 0)
+      scale_ = (scale_ >= 1) ? qFloor(scale_) : 1.0 / qCeil(1.0 / scale_);
 
-//  updateGeometry();
-//  update();
-}
+  if (original_.isNull() || !(scale_ > 0))
+    scaled_ = QPixmap();
+  else
+    scaled_ = original_.scaled(original_.size() * scale_);
 
-QSize ImageWidget::sizeHint() const {
-  return scaled_.size() + QSize(2, 2);
+  update();
 }
 
 void ImageWidget::resizeEvent(QResizeEvent* e) {
   super::resizeEvent(e);
-  auto sz = e->size();
-  auto s = qMin(sz.width(), sz.height());
   setScale();
-  resize(s, s);
 }
 
 void ImageWidget::paintEvent(QPaintEvent*) {
-  // fill background, paint centered
+  // paint centered
+  auto margin = (size() - scaled_.size()) / 2;
+  QRect rect(QPoint(margin.width(), margin.height()), scaled_.size());
+
   QPainter painter(this);
+
+  // image
+  painter.drawPixmap(rect.left(), rect.top(), scaled_);
+
+  // overlay
+  if (hub_.actions.showOverlay->isChecked()) {
+    // cut
+    auto  margins = hub_.imageCut();
+    QRect r = rect.adjusted(-1, -1, 0, 0)
+                  .adjusted(qRound(scale_ * margins.left),   qRound(scale_ * margins.top),
+                           -qRound(scale_ * margins.right), -qRound(scale_ * margins.bottom));
+    painter.setPen(Qt::lightGray);
+    painter.drawRect(r);
+
+    // cross
+    auto off = hub_.geometry().midPixOffset;
+    auto c = r.center();
+    auto x = qRound(c.x() + scale_ * off.i);
+    auto y = qRound(c.y() + scale_ * off.j);
+    painter.drawLine(x, r.top(), x, r.bottom());
+    painter.drawLine(r.left(), y, r.right(), y);
+  }
 
   // frame
   painter.setPen(Qt::black);
-  painter.drawRect(rect().adjusted(0, 0, -1, -1));
-
-  // image
-  painter.drawPixmap(1, 1, scaled_);
-
-  // overlay follows
-  if (!hub_.actions.showOverlay->isChecked())
-    return;
-
-  // cut
-  auto  margins = hub_.imageCut();
-  QRect r = rect().adjusted(1, 1, -2, -2)
-                  .adjusted(qRound(scale_ * margins.left),   qRound(scale_ * margins.top),
-                       -qRound(scale_ * margins.right), -qRound(scale_ * margins.bottom));
-  painter.setPen(Qt::lightGray);
-  painter.drawRect(r);
-
-  // cross
-  auto off = hub_.geometry().midPixOffset;
-  auto c = r.center();
-  auto x = qRound(c.x() + scale_ * off.i);
-  auto y = qRound(c.y() + scale_ * off.j);
-  painter.drawLine(x, r.top(), x, r.bottom());
-  painter.drawLine(r.left(), y, r.right(), y);
+  painter.drawRect(rect.adjusted(-1, -1, 0, 0));
 }
 
 //------------------------------------------------------------------------------
@@ -123,53 +123,47 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
   auto& actions = hub_.actions;
 
   {
-//    auto& box = addTab("Image", Qt::Horizontal).box();
+    auto& box = addTab("Image", Qt::Horizontal).box();
 
-    dataImageWidget_ = new ImageWidget(hub_);
-    auto w = new QWidget;
     auto g = gridLayout();
-    w->setLayout(g);
-    QTabWidget::addTab(w, "Q");
-    g->addWidget(dataImageWidget_);
-    g->setAlignment(dataImageWidget_, Qt::AlignHCenter);
+    box.addLayout(g);
+    g->addWidget((dataImageWidget_ = new ImageWidget(hub_)), 0, 0);
 
-//    auto vb = vbox();
-//    box.addLayout(vb);
+    auto vb = vbox();
+    g->addLayout(vb, 0, 0);
 
-//    vb->addWidget(iconButton(hub.actions.fixedIntenImageScale));
-//    vb->addWidget(iconButton(hub_.actions.showOverlay));
-//    vb->addStretch(1);
+    vb->addWidget(iconButton(actions.fixedIntenImageScale));
+    vb->addWidget(iconButton(actions.stepScale));
+    vb->addWidget(iconButton(actions.showOverlay));
+    vb->addWidget((spinN = spinCell(4,1)));
+    vb->addStretch(1);
 
-//    auto grid = gridLayout();
-    // overlapping
-//    grid->addWidget((dataImageWidget_ = new ImageWidget(hub_)), 0, 0, Qt::AlignCenter);
-//    grid->addWidget((spinN  = spinCell(4,1)),                   0, 0, Qt::AlignHCenter | Qt::AlignTop);
-
-//    box.addLayout(grid, 1);
-    spinN  = spinCell(4,1);
-//    box.addWidget((dataImageWidget_ = new ImageWidget(hub_)),
-//                   1, Qt::AlignCenter);
-//    box.setStretchFactor(dataImageWidget_, 10);
-
-//    connect(spinN, slot(QSpinBox,valueChanged,int), [this](int i) {
-//      n = to_u(qMax(0, i-1));
-//      render();
-//    });
+    connect(spinN, slot(QSpinBox,valueChanged,int), [this](int i) {
+      n = to_u(qMax(0, i-1));
+      render();
+    });
   }
   {
-//    auto& box = addTab("Correction", Qt::Horizontal).box();
+    auto& tab = addTab("Correction", Qt::Horizontal);
 
-//    auto vb = vbox();
-//    box.addLayout(vb);
+    onSigCorrFile([&tab](data::shp_File file) {
+      tab.setEnabled(!file.isNull());
+    });
 
-//    vb->addWidget(iconButton(hub.actions.fixedIntenImageScale));
-//    vb->addWidget(iconButton(hub_.actions.showOverlay));
-//    vb->addStretch(1);
+    auto& box = tab.box();
 
-    corrImageWidget_ = new ImageWidget(hub_);
-    QTabWidget::addTab(corrImageWidget_, "C");
-//    box.addWidget((corrImageWidget_ = new ImageWidget(hub_)),
-//                   1, Qt::AlignCenter);
+    auto g = gridLayout();
+    box.addLayout(g);
+
+    g->addWidget((corrImageWidget_ = new ImageWidget(hub_)), 0, 0);
+
+    auto vb = vbox();
+    g->addLayout(vb, 0, 0);
+
+    vb->addWidget(iconButton(actions.fixedIntenImageScale));
+    vb->addWidget(iconButton(actions.stepScale));
+    vb->addWidget(iconButton(actions.showOverlay));
+    vb->addStretch(1);
   }
 
   connect(actions.enableCorr, &QAction::toggled, [this](bool) {

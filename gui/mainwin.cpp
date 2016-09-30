@@ -104,6 +104,7 @@ void MainWin::initMenus() {
       acts_.mirrorImage,
       acts_.fixedIntenImageScale,
       acts_.showOverlay,
+      acts_.stepScale,
       acts_.linkCuts,
   });
 

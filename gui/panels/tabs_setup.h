@@ -21,19 +21,33 @@
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
+class ReflectionView;
+
 class TabsSetup : public TabsPanel {
   CLS(TabsSetup) SUPER(TabsPanel)
 public:
   TabsSetup(TheHub&);
 
 private:
+  // geometry
   QDoubleSpinBox *detDistance_, *detPixelSize_;
   QSpinBox       *beamOffsetI_, *beamOffsetJ_;
+  QSpinBox       *marginLeft_, *marginTop_, *marginRight_, *marginBottom_;
 
   void setToHub();
   void setFromHub();
 
-  QSpinBox       *marginLeft_, *marginTop_, *marginRight_, *marginBottom_;
+  // background
+  QSpinBox       *spinDegree_;
+
+  // reflections
+  ReflectionView *reflectionView_;
+  QComboBox      *comboReflType_;
+  QDoubleSpinBox *spinRangeMin_,   *spinRangeMax_;
+  QDoubleSpinBox *spinGuessPeakX_, *spinGuessPeakY_, *spinGuessFWHM_;
+  QLineEdit      *readFitPeakX_,   *readFitPeakY_,   *readFitFWHM_;
+
+  bool silentSpin_ = false;
 };
 
 //------------------------------------------------------------------------------

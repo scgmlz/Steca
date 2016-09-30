@@ -30,6 +30,7 @@ namespace gui {
 class TheHub;
 
 enum class eFittingTab {
+  NONE,
   BACKGROUND,
   REFLECTIONS,
 };

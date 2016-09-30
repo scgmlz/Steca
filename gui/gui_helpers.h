@@ -74,8 +74,8 @@ QLabel*    label(rcstr);
 QLineEdit* editCell(uint emWidth);  // emWidth: measured in typographical (m)s
 QLineEdit* readCell(uint emWidth);
 
-QSpinBox*  spinCell(uint emWidth, int min, int max = INT_MIN);
-QDoubleSpinBox* spinCell(uint emWidth, qreal min, qreal max = INT_MIN);
+QSpinBox*  spinCell(uint emWidth, int min = INT_MIN, int max = INT_MAX);
+QDoubleSpinBox* spinCell(uint emWidth, qreal min, qreal max = INT_MAX);
 
 QCheckBox* check(rcstr text, QAction* = nullptr);
 

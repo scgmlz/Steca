@@ -144,6 +144,9 @@ Actions::Actions(TheHub& hub): super(hub) {
   tgl(showOverlay,
       "Overlay", "Show cut")
       .icon(":/icon/crop");
+  tgl(stepScale,
+      "Step scale", "Scale image in steps")
+      .icon(":/icon/steps");
 
   tgl(fixedIntenImageScale,
       "Fixed image scale", "Display image using a fixed intensity scale")

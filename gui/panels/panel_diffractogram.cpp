@@ -321,6 +321,8 @@ void DiffractogramPlot::addBgItem(typ::Range::rc range) {
   case eFittingTab::REFLECTIONS:
     color = reflRgeColor_;
     break;
+  default:
+    break;
   }
 
   auto ir = new QCPItemRect(this);
@@ -411,6 +413,8 @@ Diffractogram::Diffractogram(TheHub& hub)
       plot_->setTool(on ? DiffractogramPlot::eTool::PEAK_REGION
                         : DiffractogramPlot::eTool::NONE);
       break;
+    default:
+      plot_->setTool(DiffractogramPlot::eTool::NONE);
     }
   });
 
@@ -425,6 +429,8 @@ Diffractogram::Diffractogram(TheHub& hub)
         break;
       case eFittingTab::REFLECTIONS:
         tool = eTool::PEAK_REGION;
+        break;
+      default:
         break;
       }
 

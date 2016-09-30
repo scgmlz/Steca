@@ -92,7 +92,7 @@ DockFiles::DockFiles(TheHub& hub)
 
   auto& actions = hub_.actions;
 
-  h->addWidget(label("Corr. file"));
+  h->addWidget(label("Correction file"));
   h->addStretch();
   h->addWidget(iconButton(actions.addFiles));
   h->addWidget(iconButton(actions.remFile));
