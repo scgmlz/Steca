@@ -62,7 +62,7 @@ static bool couldBeTiffDat(QFileInfo const& info) {
       continue;
 
     auto lst = s.split(' ');
-    uint cnt = lst.count();
+    int cnt = lst.count();
     if (cnt < 2 || cnt > 4)
       return false;
 
