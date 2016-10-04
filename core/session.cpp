@@ -375,6 +375,9 @@ ReflectionInfos Session::makeReflectionInfos(
 {
   ReflectionInfos infos;
 
+  if (progress)
+    progress->setTotal(datasets.count());
+
   for (auto& dataset : datasets) {
     if (progress)
       progress->step();

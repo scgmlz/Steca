@@ -29,14 +29,15 @@ public:
 
 class Progress final {
 public:
-  Progress(uint total, class QProgressBar*);
+  Progress(uint mulTotal, class QProgressBar*);
  ~Progress();
 
+  void setTotal(uint);
   void setProgress(uint);
   void step();
 
 private:
-  uint total_, i_;
+  uint total_, mulTotal_, i_;
   QProgressBar* bar_;
 };
 

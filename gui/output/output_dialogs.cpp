@@ -965,7 +965,7 @@ void Frame::calculate() {
     if (pr->cbLimitGamma->isChecked())
       rgeGamma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
 
-    Progress progress(reflCount * hub_.numCollectedDatasets(), pb_);
+    Progress progress(reflCount, pb_);
 
     for_i (reflCount)
       calcPoints_.append(hub_.makeReflectionInfos(
@@ -990,11 +990,14 @@ void Frame::interpolate() {
     qreal    avgAlphaMax = pi->avgAlphaMax->value();
     qreal    avgTreshold = pi->avgThreshold->value() / 100.0;
 
+    Progress progress(calcPoints_.count(), pb_);
+
     for_i (calcPoints_.count())
       interpPoints_.append(
           calc::interpolate(calcPoints_.at(i),
                             alphaStep, betaStep, idwRadius,
-                            avgAlphaMax, avgRadius, avgTreshold));
+                            avgAlphaMax, avgRadius, avgTreshold,
+                            &progress));
   } else {
     for_i (calcPoints_.count())
       interpPoints_.append(calc::ReflectionInfos());

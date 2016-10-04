@@ -27,7 +27,6 @@
 
 class QSpinBox;
 class QDoubleSpinBox;
-class Progress;
 
 namespace gui {
 //------------------------------------------------------------------------------
