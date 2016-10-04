@@ -11,7 +11,7 @@ file (GLOB header_files
 )
 
 file (GLOB source_files
-  "*.cpp" "*/*.cpp" "*/*/*.cpp"
+  "*.cpp" "*/*.cpp" "*/*/*.cpp" "*/*/*.c"
 )
 
 add_library (StecaCore

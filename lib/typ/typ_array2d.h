@@ -36,6 +36,10 @@ struct size2d {
     return 0 == w && 0 == h;
   }
 
+  uint count() const {
+    return w * h;
+  }
+
   int compare(rc that) const {
     COMPARE_VALUE(w)
     COMPARE_VALUE(h)
@@ -85,7 +89,7 @@ public:
 
   // number of elements
   uint count() const {
-    return size_.w * size_.h;
+    return size_.count();
   }
 
   // make empty
