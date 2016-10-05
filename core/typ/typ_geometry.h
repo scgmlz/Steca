@@ -103,10 +103,14 @@ public:
   tth_rge rgeTth() const { return rgeTth_; }
   gma_rge rgeGma() const { return rgeGma_; }
 
+//TODO remove  IJ gmaPixel(gma_t);
+
   void getGmaIndexes(gma_rge::rc, uint_vec const*&, uint&, uint&) const;
 
 private:
-  void calculate(Key::rc);
+  void calculate();
+
+  Key key_;
 
   Array2D<Angles> arrAngles_;
 

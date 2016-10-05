@@ -40,7 +40,12 @@ private:
   ImageWidget *dataImageWidget_, *corrImageWidget_;
 
   uint n = 0;
-  QSpinBox *spinN;
+  QSpinBox *spinN_;
+
+  calc::shp_DatasetLens lens_;
+  typ::Range rgeGma_;
+
+  QDoubleSpinBox *minGamma_, *maxGamma_;
 };
 
 //------------------------------------------------------------------------------

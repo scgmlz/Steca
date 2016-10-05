@@ -28,8 +28,8 @@ class ImageWidget : public QWidget, protected RefHub {
 public:
   ImageWidget(TheHub&);
 
-  void  setPixmap(QPixmap const&);
-  void  setScale();
+  void setPixmap(QPixmap const&);
+  void setScale();
 
 protected:
   void resizeEvent(QResizeEvent*);
@@ -45,9 +45,11 @@ ImageWidget::ImageWidget(TheHub& hub)
 : RefHub(hub), scale_(0)
 {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
   connect(hub_.actions.showOverlay, &QAction::toggled, [this]() {
     update();
   });
+
   connect(hub_.actions.stepScale, &QAction::toggled, [this]() {
     setScale();
   });
@@ -68,7 +70,7 @@ void ImageWidget::setScale() {
   }
 
   if (hub_.actions.stepScale->isChecked() && scale_ > 0)
-      scale_ = (scale_ >= 1) ? qFloor(scale_) : 1.0 / qCeil(1.0 / scale_);
+    scale_ = (scale_ >= 1) ? qFloor(scale_) : 1.0 / qCeil(1.0 / scale_);
 
   if (original_.isNull() || !(scale_ > 0))
     scaled_ = QPixmap();
@@ -123,26 +125,29 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
   auto& actions = hub_.actions;
 
   {
-    auto& box = addTab("Image", Qt::Horizontal).box();
+    auto& box = addTab("Image", Qt::Vertical).box();
 
-    auto g = gridLayout();
-    box.addLayout(g);
-    g->addWidget((dataImageWidget_ = new ImageWidget(hub_)), 0, 0);
+    auto hb = hbox();
+    box.addLayout(hb);
 
-    auto vb = vbox();
-    g->addLayout(vb, 0, 0);
+    hb->addWidget(iconButton(actions.fixedIntenImageScale));
+    hb->addWidget(iconButton(actions.stepScale));
+    hb->addWidget(iconButton(actions.showOverlay));
+    hb->addWidget((spinN_ = spinCell(4,1)));
+    hb->addStretch(1);
+    hb->addWidget(label("γ min"));
+    hb->addWidget((minGamma_ = spinCell(6, -180., 180.)));
+    hb->addWidget(label("max"));
+    hb->addWidget((maxGamma_ = spinCell(6, -180., 180.)));
 
-    vb->addWidget(iconButton(actions.fixedIntenImageScale));
-    vb->addWidget(iconButton(actions.stepScale));
-    vb->addWidget(iconButton(actions.showOverlay));
-    vb->addStretch(1);
-    vb->addWidget((spinN = spinCell(4,1)));
+    box.addWidget((dataImageWidget_ = new ImageWidget(hub_)), 0, 0);
 
-    connect(spinN, slot(QSpinBox,valueChanged,int), [this](int i) {
+    connect(spinN_, slot(QSpinBox,valueChanged,int), [this](int i) {
       n = to_u(qMax(0, i-1));
       render();
     });
   }
+
   {
     auto& tab = addTab("Correction", Qt::Horizontal);
 
@@ -191,7 +196,7 @@ QPixmap TabsImages::makeBlankPixmap() {
   auto size = hub_.imageSize();
 
   QPixmap pixmap(to_i(size.w), to_i(size.h));
-  pixmap.fill(Qt::white);
+  pixmap.fill(QColor(0, 0, 0, 0));
 
   return pixmap;
 }
@@ -216,6 +221,17 @@ QPixmap TabsImages::makePixmap(calc::shp_ImageLens imageLens) {
 
 void TabsImages::setDataset(data::shp_Dataset dataset) {
   dataset_ = dataset;
+
+  if (dataset_) {
+    lens_ = hub_.datasetLens(*dataset_);
+
+    if (!rgeGma_.isValid()) {
+      rgeGma_ = lens_->rgeGma();
+      minGamma_->setValue(rgeGma_.min);
+      maxGamma_->setValue(rgeGma_.max);
+    }
+  }
+
   render();
 }
 
@@ -223,14 +239,17 @@ void TabsImages::render() {
   {
     pint by = hub_.datasetsGroupedBy();
     bool on = by > 1;
-    spinN->setEnabled(on);
+    spinN_->setEnabled(on);
 
-    n = qMin(n, by - 1);
-    spinN->setValue(to_i(n+1));
+    QPixmap pixMap;
 
-    QPixmap pixMap = dataset_
-        ? makePixmap(hub_.plainImageLens(dataset_->at(n)->image()))
-        : makeBlankPixmap();
+    if (dataset_) {
+      n = qMin(n, by - 1);
+      spinN_->setValue(to_i(n+1));
+      pixMap = makePixmap(hub_.plainImageLens(dataset_->at(n)->image()));
+    } else {
+      pixMap = makeBlankPixmap();
+    }
 
     dataImageWidget_->setPixmap(pixMap);
   }

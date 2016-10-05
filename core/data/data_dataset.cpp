@@ -193,6 +193,7 @@ void OneDataset::collectIntens(core::Session::rc session, typ::Image const* inte
   uint_vec const* gmaIndexes = nullptr;
   uint gmaIndexMin = 0, gmaIndexMax = 0;
   map.getGmaIndexes(rgeGma, gmaIndexes, gmaIndexMin, gmaIndexMax);
+
   EXPECT(gmaIndexes)
   EXPECT(gmaIndexMin <= gmaIndexMax)
   EXPECT(gmaIndexMax <= gmaIndexes->count())

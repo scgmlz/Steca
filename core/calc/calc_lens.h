@@ -49,6 +49,9 @@ public:
 protected:
   typ::size2d transCutSize(typ::size2d) const;
 
+  void doTrans(uint& i, uint& j) const;
+  void doCut(uint& i, uint& j)   const;
+
   core::Session const& session_;
   data::Datasets::rc  datasets_;
   bool                trans_, cut_;
@@ -72,8 +75,6 @@ public:
   inten_rge::rc rgeInten(bool fixed) const;
 
 private:
-  void doTrans(uint& i, uint& j) const;
-  void doCut(uint& i, uint& j)   const;
 
   typ::Image const& image_;
 

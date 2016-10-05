@@ -80,9 +80,38 @@ int AngleMap::Key::compare(rc that) const {
 
 //------------------------------------------------------------------------------
 
-AngleMap::AngleMap(Key::rc key) {
-  calculate(key);
+AngleMap::AngleMap(Key::rc key) : key_(key) {
+  calculate();
 }
+
+//TODO remove
+//IJ AngleMap::gmaPixel(gma_t gma) {\
+//  uint_vec const *indexes; uint minIndex, maxIndex;
+//  getGmaIndexes(Range(gma), indexes, minIndex, maxIndex);
+
+//  auto& geometry = key_.geometry;
+//  auto& size     = key_.size;
+//  auto& midPix   = key_.midPix;
+//  auto& midTth   = key_.midTth;
+
+//  qreal pixSize = geometry.pixSize,
+//        detDist = geometry.detectorDistance;
+
+//  qreal d_midTth   = midTth.toRad(),
+//        cos_midTth = cos(d_midTth), sin_midTth = sin(d_midTth);
+
+//  auto j = [&](int i) {
+//    return midPix.j - tan(gma) * (detDist * sin_midTth + ((i - midPix.i) * pixSize) * cos_midTth) / pixSize;
+//  };
+
+////  auto i = [&](int j) {
+////    return (((midPix.j - j) * pixSize) / tan(gma) - b_x1) / (pixSize * cos_midTth) + midPix.i;
+////  };
+
+//  TR("gma 0" << size.w-1 << ":" << gma << j(0) << j(to_i(size.w-1)))
+
+//  return IJ(0,0);
+//}
 
 static uint lowerBound(vec<gma_t>::rc vec, gma_t x, uint i1, uint i2) {
   EXPECT(i1 < i2)
@@ -115,12 +144,15 @@ void AngleMap::getGmaIndexes(gma_rge::rc rgeGma,
   maxIndex = upperBound(gmas, rgeGma.max, 0, gmas.count());
 }
 
-void AngleMap::calculate(Key::rc key) {
-  auto& geometry = key.geometry;
-  auto& size     = key.size;
-  auto& cut      = key.cut;
-  auto& midPix   = key.midPix;
-  auto& midTth   = key.midTth;
+void AngleMap::calculate() {
+  auto& geometry = key_.geometry;
+  auto& size     = key_.size;
+  auto& cut      = key_.cut;
+  auto& midPix   = key_.midPix;
+  auto& midTth   = key_.midTth;
+
+  qreal pixSize = geometry.pixSize,
+        detDist = geometry.detectorDistance;
 
   arrAngles_.fill(size);
 
@@ -136,9 +168,6 @@ void AngleMap::calculate(Key::rc key) {
 
   gmas.resize(countWithoutCut);
   gmaIndexes.resize(countWithoutCut);
-
-  qreal pixSize = geometry.pixSize,
-        detDist = geometry.detectorDistance;
 
 // was: adapted from Steca original code
 //  for_int (i, size.w) {
@@ -167,13 +196,13 @@ void AngleMap::calculate(Key::rc key) {
 //  }
 
   // new code
-  /* detector coordinates: d_x, ... (d_z = const)
-     beam coordinates: b_x, ..; b_y = d_y */
+  // detector coordinates: d_x, ... (d_z = const)
+  // beam coordinates: b_x, ..; b_y = d_y
 
-  qreal const& d_z = detDist;
-  qreal d_midTth = midTth.toRad(),
+  qreal d_midTth   = midTth.toRad(),
         cos_midTth = cos(d_midTth), sin_midTth = sin(d_midTth);
 
+  qreal& d_z = detDist;
   qreal b_x1 = d_z * sin_midTth;
   qreal b_z1 = d_z * cos_midTth;
 
