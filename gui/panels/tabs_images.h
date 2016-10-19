@@ -39,7 +39,7 @@ private:
   data::shp_Dataset dataset_;
   ImageWidget *dataImageWidget_, *corrImageWidget_;
 
-  uint n = 0;
+  uint n = 0, by = 0;
   QSpinBox *spinN_;
 
   calc::shp_DatasetLens lens_;

@@ -223,6 +223,8 @@ void TabsImages::setDataset(data::shp_Dataset dataset) {
   dataset_ = dataset;
 
   if (dataset_) {
+    by = qMin(uint(hub_.datasetsGroupedBy()), dataset_->count());
+
     lens_ = hub_.datasetLens(*dataset_);
 
     if (!rgeGma_.isValid()) {
@@ -237,7 +239,6 @@ void TabsImages::setDataset(data::shp_Dataset dataset) {
 
 void TabsImages::render() {
   {
-    pint by = hub_.datasetsGroupedBy();
     bool on = by > 1;
     spinN_->setEnabled(on);
 
