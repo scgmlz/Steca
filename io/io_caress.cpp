@@ -14,7 +14,7 @@
 // ************************************************************************** //
 
 #include "io_io.h"
-#include "io/Caress/raw.h"
+#include "Caress/raw.h"
 #include "typ/typ_types.h"
 #include "data/data_dataset.h"
 

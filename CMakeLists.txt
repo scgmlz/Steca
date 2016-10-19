@@ -1,4 +1,4 @@
-# /CMakeLists.txt
+# CMakeLists.txt
 
 cmake_minimum_required (VERSION 2.8.12 FATAL_ERROR)
 
@@ -27,6 +27,7 @@ find_package (Qt5Multimedia REQUIRED)
 add_subdirectory (lib)
 add_subdirectory (LevMar)
 add_subdirectory (core)
+add_subdirectory (io)
 add_subdirectory (gui)
 add_subdirectory (tests)
 

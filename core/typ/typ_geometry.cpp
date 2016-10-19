@@ -85,7 +85,7 @@ AngleMap::AngleMap(Key::rc key) : key_(key) {
 }
 
 //TODO remove
-//IJ AngleMap::gmaPixel(gma_t gma) {\
+//IJ AngleMap::gmaPixel(gma_t gma) {
 //  uint_vec const *indexes; uint minIndex, maxIndex;
 //  getGmaIndexes(Range(gma), indexes, minIndex, maxIndex);
 
