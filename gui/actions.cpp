@@ -142,11 +142,17 @@ Actions::Actions(TheHub& hub): super(hub) {
       "Link cut", "Use the same value for all cuts")
       .icon(":/icon/link");
   tgl(showOverlay,
-      "Overlay", "Show cut")
+      "Overlay", "Show cut and beam centre")
       .icon(":/icon/crop");
   tgl(stepScale,
       "Step scale", "Scale image in steps")
       .icon(":/icon/steps");
+  tgl(showGamma,
+      "Gamma range", "Show gamma angle")
+      .icon(":/icon/angle");
+  trg(setGamma,
+      "Gamma max", "Reset gamma angle")
+      .icon(":/icon/angle");
 
   tgl(fixedIntenImageScale,
       "Fixed image scale", "Display image using a fixed intensity scale")

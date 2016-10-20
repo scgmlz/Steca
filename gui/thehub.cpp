@@ -437,8 +437,8 @@ typ::ImageCut::rc TheHub::imageCut() const {
 }
 
 void TheHub::setImageCut(bool topLeft, bool linked,
-                         typ::ImageCut::rc margins) {
-  session_->setImageCut(topLeft, linked, margins);
+                         typ::ImageCut::rc cut) {
+  session_->setImageCut(topLeft, linked, cut);
   emit sigGeometryChanged();
 }
 

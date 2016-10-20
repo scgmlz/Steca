@@ -16,6 +16,7 @@
 #include "tabs_images.h"
 #include "colors.h"
 #include "thehub.h"
+#include <QColor>
 #include <QPainter>
 #include <QResizeEvent>
 #include <qmath.h>
@@ -97,12 +98,13 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 
   // overlay
   if (hub_.actions.showOverlay->isChecked()) {
-    // cut
-    auto  margins = hub_.imageCut();
-    QRect r = rect.adjusted(-1, -1, 0, 0)
-                  .adjusted(qRound(scale_ * margins.left),   qRound(scale_ * margins.top),
-                           -qRound(scale_ * margins.right), -qRound(scale_ * margins.bottom));
     painter.setPen(Qt::lightGray);
+
+    // cut
+    auto cut = hub_.imageCut();
+    QRect r = rect.adjusted(-1, -1, 0, 0)
+                  .adjusted(qRound(scale_ * cut.left),   qRound(scale_ * cut.top),
+                           -qRound(scale_ * cut.right), -qRound(scale_ * cut.bottom));
     painter.drawRect(r);
 
     // cross
@@ -129,22 +131,33 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
 
     auto hb = hbox();
     box.addLayout(hb);
+    box.setAlignment(hb, Qt::AlignTop);
 
     hb->addWidget(iconButton(actions.fixedIntenImageScale));
     hb->addWidget(iconButton(actions.stepScale));
     hb->addWidget(iconButton(actions.showOverlay));
+    hb->addWidget(iconButton(actions.showGamma));
     hb->addWidget((spinN_ = spinCell(4,1)));
+
     hb->addStretch(1);
+
     hb->addWidget(label("γ min"));
     hb->addWidget((minGamma_ = spinCell(6, -180., 180.)));
     hb->addWidget(label("max"));
     hb->addWidget((maxGamma_ = spinCell(6, -180., 180.)));
+    hb->addWidget(iconButton(actions.setGamma));
 
     box.addWidget((dataImageWidget_ = new ImageWidget(hub_)), 0, 0);
 
     connect(spinN_, slot(QSpinBox,valueChanged,int), [this](int i) {
       n = to_u(qMax(0, i-1));
       render();
+    });
+
+    connect(minGamma_, slot(QDoubleSpinBox,valueChanged,double), [this]() {
+    });
+
+    connect(maxGamma_, slot(QDoubleSpinBox,valueChanged,double), [this]() {
     });
   }
 
@@ -157,21 +170,23 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
 
     auto& box = tab.box();
 
-    auto g = gridLayout();
-    box.addLayout(g);
+    auto hb = hbox();
+    box.addLayout(hb);
+    box.setAlignment(hb, Qt::AlignTop);
 
-    g->addWidget((corrImageWidget_ = new ImageWidget(hub_)), 0, 0);
+    hb->addWidget(iconButton(actions.fixedIntenImageScale));
+    hb->addWidget(iconButton(actions.stepScale));
+    hb->addWidget(iconButton(actions.showOverlay));
+    hb->addStretch(1);
 
-    auto vb = vbox();
-    g->addLayout(vb, 0, 0);
-
-    vb->addWidget(iconButton(actions.fixedIntenImageScale));
-    vb->addWidget(iconButton(actions.stepScale));
-    vb->addWidget(iconButton(actions.showOverlay));
-    vb->addStretch(1);
+    box.addWidget((corrImageWidget_ = new ImageWidget(hub_)), 0, 0);
   }
 
   connect(actions.enableCorr, &QAction::toggled, [this](bool) {
+    render();
+  });
+
+  connect(actions.showGamma, &QAction::toggled, [this]() {
     render();
   });
 
@@ -201,22 +216,38 @@ QPixmap TabsImages::makeBlankPixmap() {
   return pixmap;
 }
 
-QPixmap TabsImages::makePixmap(calc::shp_ImageLens imageLens) {
-  QPixmap pixmap;
+QImage TabsImages::makeImage(typ::Image::rc image) {
+  auto imageLens = hub_.plainImageLens(image);
+
   auto size     = imageLens->size();
+  if (size.isEmpty())
+    return  QImage();
+
+  QImage im(QSize(to_i(size.w), to_i(size.h)), QImage::Format_RGB32);
+
   auto rgeInten = imageLens->rgeInten(hub_.isFixedIntenImageScale());
+  inten_t maxInten = inten_t(rgeInten.max);
 
-  if (!size.isEmpty()) {
-    QImage image(QSize(to_i(size.w), to_i(size.h)), QImage::Format_RGB32);
+  for_ij (size.w, size.h)
+    im.setPixel(to_i(i), to_i(j),
+                intenImage(imageLens->imageInten(i, j), maxInten));
+  return im;
+}
 
-    inten_t maxInten = inten_t(rgeInten.max);
-    for_ij (size.w, size.h)
-      image.setPixel(to_i(i), to_i(j),
-                     intenImage(imageLens->imageInten(i, j), maxInten));
-    pixmap = QPixmap::fromImage(image);
-  }
+QPixmap TabsImages::makePixmap(typ::Image::rc image) {
+  return QPixmap::fromImage(makeImage(image));
+}
 
-  return pixmap;
+QPixmap TabsImages::makePixmap(data::OneDataset::rc dataset, gma_rge::rc rgeGma) {
+  auto im = makeImage(dataset.image());
+  auto angleMap = hub_.angleMap(dataset);
+
+  auto size = im.size();
+  for_ij (size.width(), size.height())
+    if (rgeGma.contains(angleMap->at(to_u(i),to_u(j)).gma))
+      im.setPixel(i,j, QColor(im.pixel(i,j)).lighter(200).rgb());
+
+  return QPixmap::fromImage(im);
 }
 
 void TabsImages::setDataset(data::shp_Dataset dataset) {
@@ -227,11 +258,9 @@ void TabsImages::setDataset(data::shp_Dataset dataset) {
 
     lens_ = hub_.datasetLens(*dataset_);
 
-    if (!rgeGma_.isValid()) {
-      rgeGma_ = lens_->rgeGma();
-      minGamma_->setValue(rgeGma_.min);
-      maxGamma_->setValue(rgeGma_.max);
-    }
+    rgeGma_ = lens_->rgeGma();
+    minGamma_->setValue(rgeGma_.min);
+    maxGamma_->setValue(rgeGma_.max);
   }
 
   render();
@@ -247,7 +276,11 @@ void TabsImages::render() {
     if (dataset_) {
       n = qMin(n, by - 1);
       spinN_->setValue(to_i(n+1));
-      pixMap = makePixmap(hub_.plainImageLens(dataset_->at(n)->image()));
+      auto oneDataset = dataset_->at(n);
+      if (hub_.actions.showGamma->isChecked())
+        pixMap = makePixmap(*oneDataset, rgeGma_);
+      else
+        pixMap = makePixmap(oneDataset->image());
     } else {
       pixMap = makeBlankPixmap();
     }
@@ -256,7 +289,7 @@ void TabsImages::render() {
   }
 
   {
-    QPixmap pixMap = makePixmap(hub_.plainImageLens(hub_.corrImage()));
+    QPixmap pixMap = makePixmap(hub_.corrImage());
     corrImageWidget_->setPixmap(pixMap);
   }
 }

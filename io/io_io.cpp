@@ -90,7 +90,6 @@ data::shp_File load(rcstr filePath) THROWS {
   RUNTIME_CHECK(file->datasets().count() > 0,
                 "File " % filePath % " contains no datasets");
 
-  WT(file->datasets().count())
   // ensure that all datasets have images of the same size
   typ::size2d size = file->datasets().first()->imageSize();
   for (auto& dataset : file->datasets())

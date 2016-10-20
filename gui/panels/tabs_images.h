@@ -31,7 +31,10 @@ public:
 
 private:
   QPixmap makeBlankPixmap();
-  QPixmap makePixmap(calc::shp_ImageLens);
+
+  QImage  makeImage(typ::Image::rc);
+  QPixmap makePixmap(typ::Image::rc);
+  QPixmap makePixmap(data::OneDataset::rc, gma_rge::rc);
 
   void setDataset(data::shp_Dataset);
   void render();

@@ -103,9 +103,11 @@ void MainWin::initMenus() {
       acts_.rotateImage,
       acts_.mirrorImage,
       acts_.fixedIntenImageScale,
+      acts_.linkCuts,
       acts_.showOverlay,
       acts_.stepScale,
-      acts_.linkCuts,
+      acts_.showGamma,
+      acts_.setGamma,
   });
 
   menuDgram_->addActions({

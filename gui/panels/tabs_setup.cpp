@@ -146,10 +146,10 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
       setToHub();
     });
 
-    marginLeft_   = spinCell(4, 0);
-    marginTop_    = spinCell(4, 0);
-    marginRight_  = spinCell(4, 0);
-    marginBottom_ = spinCell(4, 0);
+    cutLeft_   = spinCell(4, 0);
+    cutTop_    = spinCell(4, 0);
+    cutRight_  = spinCell(4, 0);
+    cutBottom_ = spinCell(4, 0);
 
     auto setImageCut = [this](bool topLeft, int value) {
       EXPECT(value >= 0)
@@ -158,23 +158,23 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
                          to_u(value), to_u(value), to_u(value), to_u(value)));
       else
         hub_.setImageCut(topLeft, false,
-                         typ::ImageCut(to_u(marginLeft_->value()),  to_u(marginTop_->value()),
-                                       to_u(marginRight_->value()), to_u(marginBottom_->value())));
+                         typ::ImageCut(to_u(cutLeft_->value()),  to_u(cutTop_->value()),
+                                       to_u(cutRight_->value()), to_u(cutBottom_->value())));
     };
 
-    connect(marginLeft_, slot(QSpinBox,valueChanged,int), [setImageCut](int value) {
+    connect(cutLeft_, slot(QSpinBox,valueChanged,int), [setImageCut](int value) {
       setImageCut(true, value);
     });
 
-    connect(marginTop_, slot(QSpinBox,valueChanged,int), [setImageCut](int value) {
+    connect(cutTop_, slot(QSpinBox,valueChanged,int), [setImageCut](int value) {
       setImageCut(true, value);
     });
 
-    connect(marginRight_, slot(QSpinBox,valueChanged,int), [setImageCut](int value) {
+    connect(cutRight_, slot(QSpinBox,valueChanged,int), [setImageCut](int value) {
       setImageCut(false, value);
     });
 
-    connect(marginBottom_, slot(QSpinBox,valueChanged,int), [setImageCut](int value) {
+    connect(cutBottom_, slot(QSpinBox,valueChanged,int), [setImageCut](int value) {
       setImageCut(false, value);
     });
 
@@ -209,10 +209,10 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
     add({ label("image rotate"),  iconButton(hub_.actions.rotateImage),
                                   label("mirror"), iconButton(hub_.actions.mirrorImage) });
 
-    add({ iconButton(hub_.actions.linkCuts), label("margin"), icon(":/icon/cutLeft"),
-                                  marginLeft_, icon(":/icon/cutRight"), marginRight_ }, 3);
-    add({ icon(":/icon/cutTop"),  marginTop_,
-                                  icon(":/icon/cutBottom"), marginBottom_});
+    add({ iconButton(hub_.actions.linkCuts), label("cut"), icon(":/icon/cutLeft"),
+                                  cutLeft_, icon(":/icon/cutRight"), cutRight_ }, 3);
+    add({ icon(":/icon/cutTop"),  cutTop_,
+                                  icon(":/icon/cutBottom"), cutBottom_});
 
     grid->addColumnStretch(1);
 
@@ -438,12 +438,12 @@ void TabsSetup::setFromHub() {
   beamOffsetI_->setValue(g.midPixOffset.i);
   beamOffsetJ_->setValue(g.midPixOffset.j);
 
-  auto margins = hub_.imageCut(); // RENAME Cut -> Margin everywhere
+  auto cut = hub_.imageCut();
 
-  marginLeft_  ->setValue(to_i(margins.left));
-  marginTop_   ->setValue(to_i(margins.top));
-  marginRight_ ->setValue(to_i(margins.right));
-  marginBottom_->setValue(to_i(margins.bottom));
+  cutLeft_  ->setValue(to_i(cut.left));
+  cutTop_   ->setValue(to_i(cut.top));
+  cutRight_ ->setValue(to_i(cut.right));
+  cutBottom_->setValue(to_i(cut.bottom));
 }
 
 //------------------------------------------------------------------------------

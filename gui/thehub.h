@@ -103,7 +103,7 @@ public:
   models::MetadataModel    metadataModel;
   models::ReflectionsModel reflectionsModel;
 
-public:  // files
+public: // files
   uint numFiles() const;
   str  fileName(uint index) const;
   str  filePath(uint index) const;
@@ -166,6 +166,10 @@ public:
 
   typ::size2d imageSize() const {
     return session_->imageSize();
+  }
+
+  typ::shp_AngleMap angleMap(data::OneDataset::rc dataset) const {
+    return session_->angleMap(dataset);
   }
 
   gma_rge collectedDatasetsRgeGma() const;

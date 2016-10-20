@@ -32,7 +32,7 @@ private:
   // geometry
   QDoubleSpinBox *detDistance_, *detPixelSize_;
   QSpinBox       *beamOffsetI_, *beamOffsetJ_;
-  QSpinBox       *marginLeft_, *marginTop_, *marginRight_, *marginBottom_;
+  QSpinBox       *cutLeft_, *cutTop_, *cutRight_, *cutBottom_;
 
   void setToHub();
   void setFromHub();
