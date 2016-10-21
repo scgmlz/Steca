@@ -105,15 +105,15 @@ QSpinBox* spinCell(uint emWidth, int min, int max) {
   auto cell = new QSpinBox;
   setEmWidth(cell, emWidth);
   cell->setMinimum(min);
-  cell->setMaximum(max > INT_MIN ? max : INT_MAX);
+  cell->setMaximum(max > min ? max : min);
   return cell;
 }
 
-QDoubleSpinBox* spinCell(uint emWidth, qreal min, qreal max) {
+QDoubleSpinBox* spinDoubleCell(uint emWidth, qreal min, qreal max) {
   auto cell = new QDoubleSpinBox;
   setEmWidth(cell, emWidth);
   cell->setMinimum(min);
-  cell->setMaximum(max > INT_MIN ? max : INT_MAX);
+  cell->setMaximum(max > min ? max : min);
   return cell;
 }
 

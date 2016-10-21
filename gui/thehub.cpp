@@ -455,17 +455,28 @@ void TheHub::setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midP
   emit sigGeometryChanged();
 }
 
+typ::Range::rc TheHub::gammaRange() const {
+  return session_->gammaRange();
+}
+
+void TheHub::setGammaRange(typ::Range::rc gammaRange) {
+  session_->setGammaRange(gammaRange);
+  emit sigGammaRange();
+}
+
 void TheHub::setBgRanges(typ::Ranges::rc ranges) {
   session_->setBgRanges(ranges);
   emit sigBgChanged();
 }
 
 void TheHub::addBgRange(typ::Range::rc range) {
-  if (session_->addBgRange(range)) emit sigBgChanged();
+  if (session_->addBgRange(range))
+    emit sigBgChanged();
 }
 
 void TheHub::remBgRange(typ::Range::rc range) {
-  if (session_->remBgRange(range)) emit sigBgChanged();
+  if (session_->remBgRange(range))
+    emit sigBgChanged();
 }
 
 void TheHub::setBgPolyDegree(uint degree) {

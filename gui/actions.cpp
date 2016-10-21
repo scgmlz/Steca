@@ -150,9 +150,6 @@ Actions::Actions(TheHub& hub): super(hub) {
   tgl(showGamma,
       "Gamma range", "Show gamma angle")
       .icon(":/icon/angle");
-  trg(setGamma,
-      "Gamma max", "Reset gamma angle")
-      .icon(":/icon/angle");
 
   tgl(fixedIntenImageScale,
       "Fixed image scale", "Display image using a fixed intensity scale")

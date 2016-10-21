@@ -259,6 +259,14 @@ IJ Session::midPix() const {
   return mid;
 }
 
+Range::rc Session::gammaRange() const {
+  return gammaRange_;
+}
+
+void Session::setGammaRange(Range::rc gammaRange) {
+  gammaRange_ = gammaRange;
+}
+
 shp_AngleMap Session::angleMap(OneDataset::rc one) const {
   AngleMap::Key key(geometry_, imageSize_, imageCut_, midPix(), one.midTth());
   shp_AngleMap map = angleMapCache_.value(key);

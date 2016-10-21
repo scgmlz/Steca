@@ -124,8 +124,8 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
 
     // widgets
 
-    detDistance_  = spinCell(6, typ::Geometry::MIN_DETECTOR_DISTANCE);
-    detPixelSize_ = spinCell(6, typ::Geometry::MIN_DETECTOR_PIXEL_SIZE);
+    detDistance_  = spinDoubleCell(6, typ::Geometry::MIN_DETECTOR_DISTANCE);
+    detPixelSize_ = spinDoubleCell(6, typ::Geometry::MIN_DETECTOR_PIXEL_SIZE);
 
     connect(detDistance_, slot(QDoubleSpinBox,valueChanged,double), [this]() {
       setToHub();
@@ -273,21 +273,21 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
     vb->addLayout(gb);
 
     gb->addWidget(label("min"), 0, 0);
-    gb->addWidget((spinRangeMin_ = spinCell(6, .0)), 0, 1);
+    gb->addWidget((spinRangeMin_ = spinDoubleCell(6, .0)), 0, 1);
     spinRangeMin_->setSingleStep(.1);
     gb->addWidget(label("max"), 0, 2);
-    gb->addWidget((spinRangeMax_ = spinCell(6, .0)), 0, 3);
+    gb->addWidget((spinRangeMax_ = spinDoubleCell(6, .0)), 0, 3);
     spinRangeMax_->setSingleStep(.1);
 
     gb->addWidget(label("guess x"), 1, 0);
-    gb->addWidget((spinGuessPeakX_ = spinCell(6, .0)), 1, 1);
+    gb->addWidget((spinGuessPeakX_ = spinDoubleCell(6, .0)), 1, 1);
     spinGuessPeakX_->setSingleStep(.1);
     gb->addWidget(label("y"), 1, 2);
-    gb->addWidget((spinGuessPeakY_ = spinCell(6, .0)), 1, 3);
+    gb->addWidget((spinGuessPeakY_ = spinDoubleCell(6, .0)), 1, 3);
     spinGuessPeakY_->setSingleStep(.1);
 
     gb->addWidget(label("fwhm"), 2, 0);
-    gb->addWidget((spinGuessFWHM_ = spinCell(6, .0)), 2, 1);
+    gb->addWidget((spinGuessFWHM_ = spinDoubleCell(6, .0)), 2, 1);
     spinGuessFWHM_->setSingleStep(.1);
 
     gb->addWidget(label("fit x"), 3, 0);

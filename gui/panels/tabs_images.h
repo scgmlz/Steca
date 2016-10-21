@@ -42,13 +42,11 @@ private:
   data::shp_Dataset dataset_;
   ImageWidget *dataImageWidget_, *corrImageWidget_;
 
-  uint n = 0, by = 0;
   QSpinBox *spinN_;
+  QSpinBox *numSlices_, *numSlice_;
+  QDoubleSpinBox *minGamma_, *maxGamma_;
 
   calc::shp_DatasetLens lens_;
-  typ::Range rgeGma_;
-
-  QDoubleSpinBox *minGamma_, *maxGamma_;
 };
 
 //------------------------------------------------------------------------------

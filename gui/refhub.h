@@ -72,6 +72,8 @@ signals:
   void sigDisplayChanged();
   void sigGeometryChanged();
 
+  void sigGammaRange();
+
   void sigBgChanged();  // ranges and poly: refit
   void sigNormChanged();
 
@@ -139,6 +141,7 @@ protected:
 
   DEFINE_HUB_SIGNAL_HANDLER(DisplayChanged)
   DEFINE_HUB_SIGNAL_HANDLER(GeometryChanged)
+  DEFINE_HUB_SIGNAL_HANDLER(GammaRange)
 
   DEFINE_HUB_SIGNAL_HANDLER(BgChanged)
   DEFINE_HUB_SIGNAL_HANDLER(NormChanged)

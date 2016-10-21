@@ -183,6 +183,10 @@ public:
   typ::Geometry::rc geometry() const;
   void setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midPixOffset);
 
+  typ::Range::rc gammaRange() const;
+  void setGammaRange(typ::Range::rc);
+
+public:
   void setBgRanges(typ::Ranges::rc);
   void addBgRange(typ::Range::rc);
   void remBgRange(typ::Range::rc);

@@ -382,6 +382,10 @@ Diffractogram::Diffractogram(TheHub& hub)
     render();
   });
 
+  onSigGammaRange([this]() {
+    render();
+  });
+
   onSigBgChanged([this]() {
     render();
   });
@@ -480,9 +484,12 @@ void Diffractogram::calcDgram() {
   if (!dataset_)
     return;
 
-  dgram_ = hub_.isCombinedDgram()
-           ? hub_.avgCurve(dataset_->datasets())
-           : hub_.datasetLens(*dataset_)->makeCurve();
+  if (hub_.isCombinedDgram())
+    dgram_ = hub_.avgCurve(dataset_->datasets());
+  else {
+    auto lens = hub_.datasetLens(*dataset_);
+    dgram_ = lens->makeCurve(hub_.gammaRange());
+  }
 }
 
 void Diffractogram::calcBackground() {

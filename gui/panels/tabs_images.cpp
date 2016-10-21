@@ -141,28 +141,36 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
 
     hb->addStretch(1);
 
-    hb->addWidget(label("γ min"));
-    hb->addWidget((minGamma_ = spinCell(6, -180., 180.)));
+    hb->addWidget(label("γ count"));
+    hb->addWidget((numSlices_ = spinCell(4, 1)));
+    hb->addWidget(label("#"));
+    hb->addWidget((numSlice_  = spinCell(4, 1)));
+
+    hb->addWidget(label("min"));
+    hb->addWidget((minGamma_ = spinDoubleCell(6)));
     hb->addWidget(label("max"));
-    hb->addWidget((maxGamma_ = spinCell(6, -180., 180.)));
-    hb->addWidget(iconButton(actions.setGamma));
+    hb->addWidget((maxGamma_ = spinDoubleCell(6)));
 
-    box.addWidget((dataImageWidget_ = new ImageWidget(hub_)), 0, 0);
+    minGamma_->setReadOnly(true);
+    maxGamma_->setReadOnly(true);
 
-    connect(spinN_, slot(QSpinBox,valueChanged,int), [this](int i) {
-      n = to_u(qMax(0, i-1));
+    box.addWidget((dataImageWidget_ = new ImageWidget(hub_)));
+
+    connect(spinN_, slot(QSpinBox,valueChanged,int), [this]() {
       render();
     });
 
-    connect(minGamma_, slot(QDoubleSpinBox,valueChanged,double), [this]() {
+    connect(numSlices_, slot(QSpinBox,valueChanged,int), [this]() {
+      render();
     });
 
-    connect(maxGamma_, slot(QDoubleSpinBox,valueChanged,double), [this]() {
+    connect(numSlice_, slot(QSpinBox,valueChanged,int), [this]() {
+      render();
     });
   }
 
   {
-    auto& tab = addTab("Correction", Qt::Horizontal);
+    auto& tab = addTab("Correction", Qt::Vertical);
 
     onSigCorrFile([&tab](data::shp_File file) {
       tab.setEnabled(!file.isNull());
@@ -179,7 +187,7 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
     hb->addWidget(iconButton(actions.showOverlay));
     hb->addStretch(1);
 
-    box.addWidget((corrImageWidget_ = new ImageWidget(hub_)), 0, 0);
+    box.addWidget((corrImageWidget_ = new ImageWidget(hub_)));
   }
 
   connect(actions.enableCorr, &QAction::toggled, [this](bool) {
@@ -205,6 +213,8 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
   onSigDatasetSelected([this](data::shp_Dataset dataset) {
     setDataset(dataset);
   });
+
+  render();
 }
 
 QPixmap TabsImages::makeBlankPixmap() {
@@ -244,44 +254,59 @@ QPixmap TabsImages::makePixmap(data::OneDataset::rc dataset, gma_rge::rc rgeGma)
 
   auto size = im.size();
   for_ij (size.width(), size.height())
-    if (rgeGma.contains(angleMap->at(to_u(i),to_u(j)).gma))
-      im.setPixel(i,j, QColor(im.pixel(i,j)).lighter(200).rgb());
+    if (rgeGma.contains(angleMap->at(to_u(i),to_u(j)).gma)) {
+      auto color = QColor(im.pixel(i,j));
+      color.setGreen(qFloor(color.green()*.7 + 255*.3));
+      im.setPixel(i,j, color.rgb());
+    }
 
   return QPixmap::fromImage(im);
 }
 
 void TabsImages::setDataset(data::shp_Dataset dataset) {
   dataset_ = dataset;
-
-  if (dataset_) {
-    by = qMin(uint(hub_.datasetsGroupedBy()), dataset_->count());
-
-    lens_ = hub_.datasetLens(*dataset_);
-
-    rgeGma_ = lens_->rgeGma();
-    minGamma_->setValue(rgeGma_.min);
-    maxGamma_->setValue(rgeGma_.max);
-  }
-
   render();
 }
 
 void TabsImages::render() {
   {
-    bool on = by > 1;
-    spinN_->setEnabled(on);
-
     QPixmap pixMap;
 
+    uint nSlices  = qMax(1u, to_u(numSlices_->value()));
+    numSlice_->setMaximum(to_i(nSlices));
+
     if (dataset_) {
-      n = qMin(n, by - 1);
-      spinN_->setValue(to_i(n+1));
-      auto oneDataset = dataset_->at(n);
-      if (hub_.actions.showGamma->isChecked())
-        pixMap = makePixmap(*oneDataset, rgeGma_);
-      else
+      // 1 - based
+      uint by = qBound(1u, uint(hub_.datasetsGroupedBy()), dataset_->count());
+      uint n  = qBound(1u, to_u(spinN_->value()), by);
+
+      spinN_->setValue(to_i(n));
+      spinN_->setEnabled(by > 1);
+
+      lens_ = hub_.datasetLens(*dataset_);
+
+      uint iSlice  = qMax(1u, to_u(numSlice_->value())) - 1;
+
+      auto rgeGma = lens_->rgeGma();
+      auto min    = rgeGma.min;
+      auto wn = rgeGma.width() / nSlices;
+
+      auto rge = gma_rge(min + iSlice * wn, min + (iSlice+1) * wn);
+
+      minGamma_->setValue(rge.min);
+      maxGamma_->setValue(rge.max);
+
+      hub_.setGammaRange(rge);
+
+      auto oneDataset = dataset_->at(n-1);
+      if (hub_.actions.showGamma->isChecked()) {
+        pixMap = makePixmap(*oneDataset, rge);
+      } else {
         pixMap = makePixmap(oneDataset->image());
+      }
     } else {
+      spinN_->setEnabled(false);
+
       pixMap = makeBlankPixmap();
     }
 
