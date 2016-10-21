@@ -1023,7 +1023,7 @@ uint Frame::getReflIndex() const {
   EXPECT(params_->panelReflection)
   int reflIndex = params_->panelReflection->cbRefl->currentIndex();
   RUNTIME_CHECK(reflIndex >= 0, "invalid reflection index");
-  return reflIndex;
+  return to_u(reflIndex);
 }
 
 bool Frame::getInterpolated() const {

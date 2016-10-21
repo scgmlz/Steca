@@ -348,7 +348,7 @@ void MainWin::onShow() {
 
 #ifdef DEVELOPMENT_JAN
   safeLoad("/C/+scg/data/0.ste");
-  hub_.actions.outputDiagrams->trigger();
+//  hub_.actions.outputDiagrams->trigger();
 #endif
 
   Settings s(GROUP_CONFIG);

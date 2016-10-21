@@ -205,7 +205,6 @@ void OneDataset::collectIntens(core::Session::rc session, typ::Image const* inte
 
   for (uint i = gmaIndexMin; i < gmaIndexMax; ++i) {
     uint ind = gmaIndexes->at(i);
-    EXPECT(rgeGma.contains(map.at(ind).gma))
     inten_t inten = image_.inten(ind);
     if (qIsNaN(inten))
       continue;

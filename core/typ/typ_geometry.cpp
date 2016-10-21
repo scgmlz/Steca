@@ -120,9 +120,9 @@ static uint lowerBound(vec<gma_t>::rc vec, gma_t x, uint i1, uint i2) {
     return i1;
 
   uint mid = (i1 + i2) / 2;
-  return vec.at(mid-1) < x
+  return vec.at(mid-1) < x            // x may be NaN ...
       ? lowerBound(vec, x, mid, i2)
-      : lowerBound(vec, x, i1, mid);
+      : lowerBound(vec, x, i1, mid);  // ... we should be so lucky
 }
 
 static uint upperBound(vec<gma_t>::rc vec, gma_t x, uint i1, uint i2) {
@@ -132,9 +132,9 @@ static uint upperBound(vec<gma_t>::rc vec, gma_t x, uint i1, uint i2) {
     return i2;
 
   uint mid = (i1 + i2) / 2;
-  return vec.at(mid) > x
+  return vec.at(mid) > x              // x may be NaN ...
       ? upperBound(vec, x, i1, mid)
-      : upperBound(vec, x, mid, i2);
+      : upperBound(vec, x, mid, i2);  // ... we should be so lucky
 }
 
 void AngleMap::getGmaIndexes(gma_rge::rc rgeGma,
