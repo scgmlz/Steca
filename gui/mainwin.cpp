@@ -218,29 +218,33 @@ void MainWin::checkUpdate(bool completeReport) {
   auto reply = netMan_.get(req);
 
   connect(reply, &QNetworkReply::finished, [this, completeReport, reply]() {
-    auto strLst = str(reply->readAll()).split("\n");
-    reply->deleteLater();
+    if (QNetworkReply::NoError != reply->error()) {
+      messageDialog("Network Error", reply->errorString());
+    } else {
+      auto strLst = str(reply->readAll()).split("\n");
+      reply->deleteLater();
 
-    str lastVer;
-    if (!strLst.isEmpty()) {
-      lastVer = strLst.first();
-      lastVer = lastVer.mid(1, lastVer.length()-2);
+      str lastVer;
+      if (!strLst.isEmpty()) {
+        lastVer = strLst.first();
+        lastVer = lastVer.mid(1, lastVer.length()-2);
+      }
+
+      str ver  = qApp->applicationVersion();
+      str name = qApp->applicationName();
+
+      if (ver != lastVer)
+        messageDialog(
+          str("%1 update").arg(name),
+          str("<p>The latest %1 version is %2. You have %3.</p>"
+              "<p><a href='%4'>Get new %1</a></p>")
+              .arg(name, lastVer, ver, STECA2_DOWNLOAD_URL));
+      else if (completeReport)
+        messageDialog(
+          str("%1 update").arg(name),
+          str("<p>You have the latest %1 version (%2).</p>")
+              .arg(name).arg(ver));
     }
-
-    str ver  = qApp->applicationVersion();
-    str name = qApp->applicationName();
-
-    if (ver != lastVer)
-      messageDialog(
-        str("%1 update").arg(name),
-        str("<p>The latest %1 version is %2. You have %3.</p>"
-            "<p><a href='%4'>get new version</a></p>")
-            .arg(name, lastVer, ver, STECA2_DOWNLOAD_URL));
-    else if (completeReport)
-      messageDialog(
-        str("%1 update").arg(name),
-        str("<p>You have the latest %1 version (%2).</p>")
-            .arg(name).arg(ver));
   });
 }
 
