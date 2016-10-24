@@ -17,7 +17,7 @@ win32 {
   RC_ICONS = \$\$PWD/gui/icons/retro_stier.ico
 }
 
-INCLUDEPATH += \$\$PWD/lib \$\$PWD/LevMar \$\$PWD/core \$\$PWD/gui
+INCLUDEPATH += \$\$PWD/lib \$\$PWD/LevMar \$\$PWD/io \$\$PWD/core \$\$PWD/gui
 
 EOT
 
@@ -26,7 +26,7 @@ function files {
   find $where -type f -name \*.$ext -exec echo ' ' {} \\ \;
 }
 
-MODULES='lib LevMar core gui'
+MODULES='lib LevMar io core gui'
 echo -e '\nHEADERS += \\' >> $PRO
 for m in $MODULES ; do files $m h >> $PRO ; done
 
