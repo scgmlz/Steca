@@ -136,11 +136,11 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
     hb->addWidget(iconButton(actions.fixedIntenImageScale));
     hb->addWidget(iconButton(actions.stepScale));
     hb->addWidget(iconButton(actions.showOverlay));
-    hb->addWidget(iconButton(actions.showGamma));
     hb->addWidget((spinN_ = spinCell(4,1)));
 
     hb->addStretch(1);
 
+    hb->addWidget(iconButton(actions.showGamma));
     hb->addWidget(label("γ count"));
     hb->addWidget((numSlices_ = spinCell(4, 1)));
     hb->addWidget(label("#"));

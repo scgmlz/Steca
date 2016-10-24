@@ -339,15 +339,15 @@ void MainWin::onShow() {
   hub_.clearSession();
 
 #ifdef DEVELOPMENT_JAN
-  auto safeLoad = [this](rcstr fileName) {
-    QFileInfo info(QDir::homePath() % fileName);
-    if (info.exists())
-      hub_.loadSession(info);
-  };
+//  auto safeLoad = [this](rcstr fileName) {
+//    QFileInfo info(QDir::homePath() % fileName);
+//    if (info.exists())
+//      hub_.loadSession(info);
+//  };
 #endif
 
 #ifdef DEVELOPMENT_JAN
-  safeLoad("/C/+scg/data/0.ste");
+//  safeLoad("/C/+scg/data/0.ste");
 //  hub_.actions.outputDiagrams->trigger();
 #endif
 
