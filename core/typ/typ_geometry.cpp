@@ -206,7 +206,10 @@ void AngleMap::calculate() {
   qreal b_x1 = d_z * sin_midTth;
   qreal b_z1 = d_z * cos_midTth;
 
-  for_int (i, size.w) {
+#ifdef QT_NO_DEBUG
+  #pragma omp parallel for
+#endif
+  for (uint i=0; i < size.w; ++i) {
     qreal d_x = (to_i(i) - midPix.i) * pixSize;
 
     qreal b_x = b_x1 + d_x * cos_midTth;

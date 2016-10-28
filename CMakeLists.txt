@@ -18,6 +18,9 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
   add_compile_options("-Wall")
 endif ()
 
+set(CMAKE_CXX_FLAGS_RELEASE        "${CMAKE_CXX_FLAGS_RELEASE} -fopenmp")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -fopenmp")
+
 find_package (Qt5Core       REQUIRED)
 find_package (Qt5Gui        REQUIRED)
 find_package (Qt5Test       REQUIRED)
