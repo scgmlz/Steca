@@ -5,5 +5,5 @@ StressTextureCalculator, version 2.
 
 ## CI Status
 
-[![Travis-CI Build Status](https://travis-ci.org/scgmlz/STeCa2.svg?branch=develop)](https://travis-ci.org/scgmlz/STeCa2)
-[![AppVeyor-CI Build Status](https://ci.appveyor.com/api/projects/status/github/scgmlz/steca2?branch=develop&svg=true)](https://ci.appveyor.com/project/jburle/steca2)
+[![Travis-CI Build Status](https://travis-ci.org/scgmlz/STeCa2.svg?branch=master)](https://travis-ci.org/scgmlz/STeCa2)
+[![AppVeyor-CI Build Status](https://ci.appveyor.com/api/projects/status/github/scgmlz/steca2?branch=master&svg=true)](https://ci.appveyor.com/project/jburle/steca2)
