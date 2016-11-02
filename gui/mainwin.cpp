@@ -215,29 +215,24 @@ void MainWin::checkUpdate(bool completeReport) {
 
   QNetworkRequest req;
 
-  req.setUrl(QUrl(STECA2_VERSION_URL));
+  str ver = qApp->applicationVersion();
+  str qry = ver % "\t| " % QSysInfo::prettyProductName();
+  req.setUrl(QUrl(str(STECA2_VERSION_URL) % "?" % qry));
   auto reply = netMan_.get(req);
 
   connect(reply, &QNetworkReply::finished, [this, completeReport, reply]() {
     if (QNetworkReply::NoError != reply->error()) {
       messageDialog("Network Error", reply->errorString());
     } else {
-      auto strLst = str(reply->readAll()).split("\n");
-      reply->deleteLater();
+      str ver = qApp->applicationVersion();
+      str lastVer = reply->readAll().trimmed();
 
-      str lastVer;
-      if (!strLst.isEmpty()) {
-        lastVer = strLst.first();
-        lastVer = lastVer.mid(1, lastVer.length()-2);
-      }
-
-      str ver  = qApp->applicationVersion();
       str name = qApp->applicationName();
 
       if (ver != lastVer)
         messageDialog(
           str("%1 update").arg(name),
-          str("<p>The latest %1 version is %2. You have %3.</p>"
+          str("<p>The latest %1 version is %2. You have version %3.</p>"
               "<p><a href='%4'>Get new %1</a></p>")
               .arg(name, lastVer, ver, STECA2_DOWNLOAD_URL));
       else if (completeReport)
