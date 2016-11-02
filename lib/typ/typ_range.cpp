@@ -116,15 +116,13 @@ qreal Range::bound(qreal value) const {
   return value;
 }
 
-static str const KEY_MIN("min"), KEY_MAX("max");
-
 JsonObj Range::saveJson() const {
-  return JsonObj().saveQreal(KEY_MIN, min).saveQreal(KEY_MAX, max);
+  return JsonObj().saveQreal(json_key::MIN, min).saveQreal(json_key::MAX, max);
 }
 
 void Range::loadJson(JsonObj::rc obj) THROWS {
-  min = obj.loadQreal(KEY_MIN);
-  max = obj.loadQreal(KEY_MAX);
+  min = obj.loadQreal(json_key::MIN);
+  max = obj.loadQreal(json_key::MAX);
 }
 
 #ifndef QT_NO_DEBUG

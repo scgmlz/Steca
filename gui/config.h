@@ -2,8 +2,8 @@
 //
 //  STeCa2:    StressTextureCalculator ver. 2
 //
-//! @file      about.h
-//! @brief     The about dialog & configuration
+//! @file      thehub.h
+//! @brief     The communication hub.
 //!
 //! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -14,30 +14,51 @@
 //
 // ************************************************************************** //
 
-#ifndef ABOUT_H
-#define ABOUT_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
-#include "thehub.h"
 #include "def/defs.h"
 
-#include <QDialog>
-
-namespace gui {
+namespace config_key {
 //------------------------------------------------------------------------------
 
-class AboutBox : public QDialog {
-  CLS(AboutBox) SUPER(QDialog)
-public:
-  AboutBox(QWidget*);
+extern str const
 
-protected:
-  void accept();
-  void mouseDoubleClickEvent(QMouseEvent*);
+// configuration
+  GROUP_CONFIG,
+  STARTUP_ABOUT, STARTUP_CHECK_UPDATE,
+  DETECTOR, DET_DISTANCE, DET_PIX_SIZE,
 
-  QCheckBox      *cbShowAtStartup_, *cbCheckUpdatesAtStartup_;
-  QDoubleSpinBox *detDistance_, *detPixelSize_;
-};
+// main window
+  GROUP_MAINWIN,
+  GEOMETRY,
+  STATE,
 
-//------------------------------------------------------------------------------
+// session
+  FILES, SELECTED_FILES, CORR_FILE,
+  COMBINE,
+  CUT, LEFT, TOP, RIGHT, BOTTOM,
+  BEAM_OFFSET,
+  TRANSFORM,
+  BG_DEGREE, BG_RANGES,
+  REFLECTIONS,
+
+// output
+  GROUP_OUTPUT,
+  NUM_SLICES,
+  LIMIT_GAMMA,
+
+  INTERPOLATED,
+
+  STEP_ALPHA,
+  STEP_BETA,
+  IDW_RADIUS,
+
+  AVG_ALPHA_MAX,
+  AVG_RADIUS, AVG_THRESHOLD,
+
+  SAVE_DIR, SAVE_FMT;
 }
-#endif // MAINWIN_H
+
+//------------------------------------------------------------------------------
+#endif

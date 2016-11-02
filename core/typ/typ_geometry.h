@@ -33,6 +33,9 @@ struct Geometry {
   static preal const MIN_DETECTOR_DISTANCE;
   static preal const MIN_DETECTOR_PIXEL_SIZE;
 
+  static preal const DEF_DETECTOR_DISTANCE;
+  static preal const DEF_DETECTOR_PIXEL_SIZE;
+
   Geometry();
   int compare(rc) const;
 

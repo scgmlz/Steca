@@ -15,10 +15,13 @@
 
 #include "about.h"
 #include "../manifest.h"
+#include "config.h"
 #include "gui_helpers.h"
+#include "typ/typ_geometry.h"
 #include <QApplication>
 #include <QDialogButtonBox>
 #include <QtMultimedia/QSound>
+
 #ifdef Q_OS_MAC
 #include <QToolTip>
 #endif
@@ -26,12 +29,8 @@
 namespace gui {
 //------------------------------------------------------------------------------
 
-str const GROUP_CONFIG("config");
-str const KEY_STARTUP_ABOUT("startup about");
-str const KEY_STARTUP_CHECK_UPDATE("startup check update");
-
 AboutBox::AboutBox(QWidget *parent) : super(parent, Qt::Dialog) {
-  Settings s(GROUP_CONFIG);
+  Settings s(config_key::GROUP_CONFIG);
 
   int PAD = 12;
 
@@ -73,28 +72,46 @@ AboutBox::AboutBox(QWidget *parent) : super(parent, Qt::Dialog) {
 
   hb->addWidget(info);
 
-  auto hline = new QFrame;
-  hline->setFrameShape(QFrame::HLine);
-  hline->setFrameShadow(QFrame::Sunken);
-  vb->addWidget(hline);
+  auto hline = []() {
+    auto frame = new QFrame;
+    frame->setFrameShape(QFrame::HLine);
+    frame->setFrameShadow(QFrame::Sunken);
+    return frame;
+  };
 
   // configuration
 
-  auto cb = vbox();
-  vb->addLayout(cb);
+  vb->addWidget(hline());
 
-  cb->addWidget((cbShowAtStartup_ = check("&Show this dialog at startup")));
-  cb->addWidget((cbCheckUpdatesAtStartup_ = check("&Check for update at startup")));
+  hb = hbox();
+  vb->addLayout(hb);
 
-  cbShowAtStartup_->setChecked(s.readBool(KEY_STARTUP_ABOUT, true));
-  cbCheckUpdatesAtStartup_->setChecked(s.readBool(KEY_STARTUP_CHECK_UPDATE, true));
+  hb->addWidget(label("at startup:"));
+  hb->addWidget((cbShowAtStartup_ = check("&show this dialog")));
+  hb->addWidget((cbCheckUpdatesAtStartup_ = check("&check for update")));
+  hb->addStretch();
+
+  cbShowAtStartup_->setChecked(s.readBool(config_key::STARTUP_ABOUT, true));
+  cbCheckUpdatesAtStartup_->setChecked(s.readBool(config_key::STARTUP_CHECK_UPDATE, true));
+
+  vb->addWidget(hline());
+
+  auto g = gridLayout();
+  vb->addLayout(g);
+
+  g->addWidget(label("default det. distance"), 0, 0);
+  g->addWidget((detDistance_ = spinDoubleCell(6, typ::Geometry::MIN_DETECTOR_DISTANCE)), 0, 1);
+  g->addWidget(label("default pixel size"),    1, 0);
+  g->addWidget((detPixelSize_ = spinDoubleCell(6, typ::Geometry::MIN_DETECTOR_PIXEL_SIZE)), 1, 1);
+  g->addColumnStretch();
+
+  detPixelSize_->setDecimals(3);
+  detDistance_->setValue(s.readReal(config_key::DET_DISTANCE, typ::Geometry::DEF_DETECTOR_DISTANCE));
+  detPixelSize_->setValue(s.readReal(config_key::DET_PIX_SIZE, typ::Geometry::DEF_DETECTOR_PIXEL_SIZE));
 
   // buttons
 
-  hline = new QFrame;
-  hline->setFrameShape(QFrame::HLine);
-  hline->setFrameShadow(QFrame::Sunken);
-  vb->addWidget(hline);
+  vb->addWidget(hline());
 
   auto bb = new QDialogButtonBox(QDialogButtonBox::Ok);
   vb->addWidget(bb);
@@ -103,10 +120,13 @@ AboutBox::AboutBox(QWidget *parent) : super(parent, Qt::Dialog) {
 }
 
 void AboutBox::accept() {
-  Settings s(GROUP_CONFIG);
+  Settings s(config_key::GROUP_CONFIG);
 
-  s.saveBool(KEY_STARTUP_ABOUT, cbShowAtStartup_->isChecked());
-  s.saveBool(KEY_STARTUP_CHECK_UPDATE, cbCheckUpdatesAtStartup_->isChecked());
+  s.saveBool(config_key::STARTUP_ABOUT, cbShowAtStartup_->isChecked());
+  s.saveBool(config_key::STARTUP_CHECK_UPDATE, cbCheckUpdatesAtStartup_->isChecked());
+
+  s.saveReal(config_key::DET_DISTANCE, detDistance_->value());
+  s.saveReal(config_key::DET_PIX_SIZE, detPixelSize_->value());
 
   super::accept();
 }

@@ -22,6 +22,11 @@
 #include "typ/typ_json.h"
 #include "typ/typ_range.h"
 
+namespace json_fun_key {
+extern str const
+  SUM;
+}
+
 namespace typ {
 //------------------------------------------------------------------------------
 // Abstract function
@@ -62,12 +67,6 @@ public:
     JsonObj saveJson() const;
     void loadJson(JsonObj::rc) THROWS;
 
-  protected:
-    struct KEY { // for Json
-      static str const
-        VALUE, RANGE;
-    };
-
   private:
     qreal value_, error_;
 
@@ -95,13 +94,6 @@ public:
 public:
   virtual JsonObj saveJson() const;
   virtual void loadJson(JsonObj::rc) THROWS;
-
-protected:
-  struct KEY { // for Json
-    static str const
-      TYPE,
-      SUM_FUNCTIONS;
-  };
 };
 
 //------------------------------------------------------------------------------

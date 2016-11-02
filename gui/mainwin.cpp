@@ -17,6 +17,7 @@
 #include "../manifest.h"
 #include "about.h"
 #include "app.h"
+#include "config.h"
 #include "output/output_diagrams.h"
 #include "output/output_diffractograms.h"
 #include "output/output_polefigures.h"
@@ -355,10 +356,10 @@ void MainWin::onShow() {
 //  hub_.actions.outputDiagrams->trigger();
 #endif
 
-  Settings s(GROUP_CONFIG);
-  if (s.readBool(KEY_STARTUP_CHECK_UPDATE, true))
+  Settings s(config_key::GROUP_CONFIG);
+  if (s.readBool(config_key::STARTUP_CHECK_UPDATE, true))
     checkUpdate(false);
-  if (s.readBool(KEY_STARTUP_ABOUT, true))
+  if (s.readBool(config_key::STARTUP_ABOUT, true))
     about();
 }
 
@@ -366,22 +367,18 @@ void MainWin::onClose() {
   saveSettings();
 }
 
-static str const GROUP_MAINWIN("MainWin");
-static str const KEY_GEOMETRY("geometry");
-static str const KEY_STATE("state");
-
 void MainWin::readSettings() {
   if (initialState_.isEmpty()) initialState_ = saveState();
 
-  Settings s(GROUP_MAINWIN);
-  restoreGeometry(s.value(KEY_GEOMETRY).toByteArray());
-  restoreState(s.value(KEY_STATE).toByteArray());
+  Settings s(config_key::GROUP_MAINWIN);
+  restoreGeometry(s.value(config_key::GEOMETRY).toByteArray());
+  restoreState(s.value(config_key::STATE).toByteArray());
 }
 
 void MainWin::saveSettings() {
-  Settings s(GROUP_MAINWIN);
-  s.setValue(KEY_GEOMETRY, saveGeometry());
-  s.setValue(KEY_STATE, saveState());
+  Settings s(config_key::GROUP_MAINWIN);
+  s.setValue(config_key::GEOMETRY, saveGeometry());
+  s.setValue(config_key::STATE, saveState());
 }
 
 void MainWin::checkActions() {

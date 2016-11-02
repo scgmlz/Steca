@@ -21,6 +21,14 @@
 #include "typ/typ_xy.h"
 #include <QStringList>
 
+namespace json_key {
+str const
+  I("i"), J("j"), X("x"), Y("y"), MIN("min"), MAX("max"),
+  PARAMS("parameters"), TYPE("type"), FUN("f%1"),
+  VALUE("value"), RANGE("range"), COUNT("count"),
+  PEAK("guessed peak"), FWHM("guessed fwhm");
+}
+
 namespace typ {
 //------------------------------------------------------------------------------
 
@@ -63,7 +71,7 @@ JsonArr JsonObj::loadArr(rcstr key, bool defEmpty) const THROWS {
   case QJsonValue::Undefined:
     if (defEmpty)
       return JsonArr();
-    // fallthrough
+    // fall through
   default:
     THROW(key + ": not an array");
   }

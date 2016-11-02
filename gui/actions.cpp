@@ -91,7 +91,7 @@ Actions::Actions(TheHub& hub): super(hub) {
   // create actions
 
   trg(about,
-      "About...", "About " + App::applicationName());
+      "About... / Configuration", "About " + App::applicationName());
   trg(online,
       "Online documentation...");
   trg(checkUpdate,

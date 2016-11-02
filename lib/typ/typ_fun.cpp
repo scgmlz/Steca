@@ -17,11 +17,16 @@
 #include "def/def_debug.h"
 #include "def/def_alg.h"
 
+namespace json_fun_key {
+str const
+  SUM("sum");
+}
+
 namespace typ {
 //------------------------------------------------------------------------------
 
 owner_not_null<Function*> Function::Factory::make(JsonObj::rc obj) THROWS {
-  str funType = obj.loadString(KEY::TYPE);
+  str funType = obj.loadString(json_key::TYPE);
   Function *fun = super::make(funType);
 
   RUNTIME_CHECK(fun, "factory does not know " % funType);
@@ -40,7 +45,7 @@ void Function::addFactoryMaker(rcstr key, owner_not_null<Factory::MakerBase*> ma
 void Function::initFactory() {
   ONLY_ONCE
 
-  addFactoryMaker(KEY::SUM_FUNCTIONS,
+  addFactoryMaker(json_fun_key::SUM,
       owner_not_null<Factory::MakerBase*>::from(new Factory::Maker<SumFunctions>));
 }
 
@@ -66,18 +71,15 @@ void Function::Parameter::setValue(qreal value, qreal error) {
   value_ = value; error_ = error;
 }
 
-str const Function::Parameter::KEY::VALUE("value");
-str const Function::Parameter::KEY::RANGE("range");
-
 JsonObj Function::Parameter::saveJson() const {
   return JsonObj()
-      .saveQreal(KEY::VALUE, value_)
-      .saveRange(KEY::RANGE, range_);
+      .saveQreal(json_key::VALUE, value_)
+      .saveRange(json_key::RANGE, range_);
 }
 
 void Function::Parameter::loadJson(JsonObj::rc obj) THROWS {
-  value_ = obj.loadQreal(KEY::VALUE);
-  range_ = obj.loadRange(KEY::RANGE);
+  value_ = obj.loadQreal(json_key::VALUE);
+  range_ = obj.loadRange(json_key::RANGE);
 }
 
 //------------------------------------------------------------------------------
@@ -93,9 +95,6 @@ JsonObj Function::saveJson() const {
 void Function::loadJson(JsonObj::rc) THROWS {
   // nothing to do
 }
-
-str const Function::KEY::TYPE("type");
-str const Function::KEY::SUM_FUNCTIONS("sum");
 
 //------------------------------------------------------------------------------
 
@@ -121,21 +120,19 @@ void SimpleFunction::reset() {
   }
 }
 
-static str const KEY_PARAMS("parameters");
-
 JsonObj SimpleFunction::saveJson() const {
   JsonArr params;
 
   for (auto& param : parameters_)
     params.append(param.saveJson());
 
-  return super::saveJson() + JsonObj().saveArr(KEY_PARAMS, params);
+  return super::saveJson() + JsonObj().saveArr(json_key::PARAMS, params);
 }
 
 void SimpleFunction::loadJson(JsonObj::rc obj) THROWS {
   super::loadJson(obj);
 
-  JsonArr params = obj.loadArr(KEY_PARAMS);
+  JsonArr params = obj.loadArr(json_key::PARAMS);
 
   uint parCount = params.count();
   setParameterCount(parCount);
@@ -212,19 +209,15 @@ qreal SumFunctions::dy(qreal x, uint parIndex, qreal const* parValues) const {
   return f->dy(x, parIndex, parValues);
 }
 
-static str const
-    KEY_FUNCTION_COUNT("function count"),
-    KEY_FUNCTION("f%1");
-
 JsonObj SumFunctions::saveJson() const {
   JsonObj obj;
-  obj.saveString(KEY::TYPE, KEY::SUM_FUNCTIONS);
+  obj.saveString(json_key::TYPE, json_fun_key::SUM);
 
   uint funCount = functions_.count();
-  obj.saveUint(KEY_FUNCTION_COUNT, funCount);
+  obj.saveUint(json_key::COUNT, funCount);
 
   for_i (funCount)
-    obj.saveObj(KEY_FUNCTION.arg(i + 1), functions_.at(i)->saveJson());
+    obj.saveObj(json_key::FUN.arg(i + 1), functions_.at(i)->saveJson());
 
   return super::saveJson() + obj;
 }
@@ -235,10 +228,10 @@ void SumFunctions::loadJson(JsonObj::rc obj) THROWS {
 
   super::loadJson(obj);
 
-  uint funCount = obj.loadUint(KEY_FUNCTION_COUNT);
+  uint funCount = obj.loadUint(json_key::COUNT);
 
   for_i (funCount) {
-    auto funObj = obj.loadObj(KEY_FUNCTION.arg(i + 1));
+    auto funObj = obj.loadObj(json_key::FUN.arg(i + 1));
     addFunction(make(funObj));
   }
 }

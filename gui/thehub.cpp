@@ -16,6 +16,7 @@
 #include "thehub.h"
 #include "calc/calc_reflection.h"
 #include "calc/calc_reflection_info.h"
+#include "config.h"
 #include "io_io.h"
 #include "mainwin.h"
 #include "typ/typ_async.h"
@@ -218,24 +219,6 @@ calc::ReflectionInfos TheHub::makeReflectionInfos(
                                       gmaSlices, rgeGma, progress);
 }
 
-static str const KEY_FILES("files");
-static str const KEY_SELECTED_FILES("selected files");
-static str const KEY_COMBINE("combine");
-static str const KEY_CORR_FILE("correction file");
-static str const KEY_CUT("cut");
-static str const KEY_TOP("top");
-static str const KEY_BOTTOM("bottom");
-static str const KEY_LEFT("left");
-static str const KEY_RIGHT("right");
-static str const KEY_DETECTOR("detector");
-static str const KEY_DISTANCE("distance");
-static str const KEY_PIX_SIZE("pixel size");
-static str const KEY_BEAM_OFFSET("beam offset");
-static str const KEY_TRANSFORM("image transform");
-static str const KEY_BG_DEGREE("background degree");
-static str const KEY_BG_RANGES("background ranges");
-static str const KEY_REFLECTIONS("reflections");
-
 void TheHub::saveSession(QFileInfo const& fileInfo) const {
   WriteFile file(fileInfo.filePath());
 
@@ -251,20 +234,20 @@ QByteArray TheHub::saveSession() const {
   JsonObj top;
 
   auto& geo = session_->geometry();
-  top.saveObj(KEY_DETECTOR, JsonObj()
-      .savePreal(KEY_DISTANCE, geo.detectorDistance)
-      .savePreal(KEY_PIX_SIZE, geo.pixSize)
-      .saveObj(KEY_BEAM_OFFSET, geo.midPixOffset.saveJson()));
+  top.saveObj(config_key::DETECTOR, JsonObj()
+      .savePreal(config_key::DET_DISTANCE, geo.detectorDistance)
+      .savePreal(config_key::DET_PIX_SIZE, geo.pixSize)
+      .saveObj(config_key::BEAM_OFFSET, geo.midPixOffset.saveJson()));
 
   auto& cut = session_->imageCut();
-  top.saveObj(KEY_CUT, JsonObj()
-      .saveUint(KEY_LEFT, cut.left)
-      .saveUint(KEY_TOP, cut.top)
-      .saveUint(KEY_RIGHT, cut.right)
-      .saveUint(KEY_BOTTOM, cut.bottom));
+  top.saveObj(config_key::CUT, JsonObj()
+      .saveUint(config_key::LEFT, cut.left)
+      .saveUint(config_key::TOP, cut.top)
+      .saveUint(config_key::RIGHT, cut.right)
+      .saveUint(config_key::BOTTOM, cut.bottom));
 
   auto& trn = session_->imageTransform();
-  top.saveUint(KEY_TRANSFORM, trn.val);
+  top.saveUint(config_key::TRANSFORM, trn.val);
 
   JsonArr arrFiles;
   // save file path relative to location of session
@@ -274,29 +257,29 @@ QByteArray TheHub::saveSession() const {
     arrFiles.append(relPath);
   }
 
-  top.saveArr(KEY_FILES, arrFiles);
+  top.saveArr(config_key::FILES, arrFiles);
 
   JsonArr arrSelectedFiles;
   for (uint i : collectedFromFiles())
     arrSelectedFiles.append(to_i(i));
 
-  top.saveArr(KEY_SELECTED_FILES, arrSelectedFiles);
-  top.saveUint(KEY_COMBINE, datasetsGroupedBy_);
+  top.saveArr(config_key::SELECTED_FILES, arrSelectedFiles);
+  top.saveUint(config_key::COMBINE, datasetsGroupedBy_);
 
   if (hasCorrFile()) {
     str absPath = session_->corrFile()->fileInfo().absoluteFilePath();
     str relPath = QDir::current().relativeFilePath(absPath);
-    top.saveString(KEY_CORR_FILE, relPath);
+    top.saveString(config_key::CORR_FILE, relPath);
   }
 
-  top.saveUint(KEY_BG_DEGREE, bgPolyDegree());
-  top.saveArr(KEY_BG_RANGES, bgRanges().saveJson());
+  top.saveUint(config_key::BG_DEGREE, bgPolyDegree());
+  top.saveArr(config_key::BG_RANGES, bgRanges().saveJson());
 
   JsonArr arrReflections;
   for (auto& reflection : reflections())
     arrReflections.append(reflection->saveJson());
 
-  top.saveArr(KEY_REFLECTIONS, arrReflections);
+  top.saveArr(config_key::REFLECTIONS, arrReflections);
 
   return QJsonDocument(top.sup()).toJson();
 }
@@ -325,7 +308,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
 
   typ::JsonObj top(doc.object());
 
-  auto files = top.loadArr(KEY_FILES);
+  auto files = top.loadArr(config_key::FILES);
   for (auto file : files) {
     str  filePath = file.toString();
     QDir dir(filePath);
@@ -334,7 +317,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
     addFile(dir.absolutePath());
   }
 
-  auto sels = top.loadArr(KEY_SELECTED_FILES, true);
+  auto sels = top.loadArr(config_key::SELECTED_FILES, true);
   uint_vec selIndexes;
   for (auto sel : sels) {
     int i = sel.toInt(), index = qBound(0, i, to_i(files.count()));
@@ -349,28 +332,28 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
     lastIndex = to_i(index);
   }
 
-  collectDatasetsFromFiles(selIndexes,top.loadPint(KEY_COMBINE,1));
+  collectDatasetsFromFiles(selIndexes,top.loadPint(config_key::COMBINE,1));
 
-  setCorrFile(top.loadString(KEY_CORR_FILE, EMPTY_STR));
+  setCorrFile(top.loadString(config_key::CORR_FILE, EMPTY_STR));
 
-  auto det = top.loadObj(KEY_DETECTOR);
-  setGeometry(det.loadPreal(KEY_DISTANCE), det.loadPreal(KEY_PIX_SIZE),
-              det.loadIJ(KEY_BEAM_OFFSET));
+  auto det = top.loadObj(config_key::DETECTOR);
+  setGeometry(det.loadPreal(config_key::DET_DISTANCE), det.loadPreal(config_key::DET_PIX_SIZE),
+              det.loadIJ(config_key::BEAM_OFFSET));
 
-  auto cut = top.loadObj(KEY_CUT);
-  uint x1 = cut.loadUint(KEY_LEFT), y1 = cut.loadUint(KEY_TOP),
-       x2 = cut.loadUint(KEY_RIGHT), y2 = cut.loadUint(KEY_BOTTOM);
+  auto cut = top.loadObj(config_key::CUT);
+  uint x1 = cut.loadUint(config_key::LEFT),  y1 = cut.loadUint(config_key::TOP),
+       x2 = cut.loadUint(config_key::RIGHT), y2 = cut.loadUint(config_key::BOTTOM);
   setImageCut(true, false, typ::ImageCut(x1, y1, x2, y2));
 
-  setImageRotate(typ::ImageTransform(top.loadUint(KEY_TRANSFORM)));
+  setImageRotate(typ::ImageTransform(top.loadUint(config_key::TRANSFORM)));
 
   typ::Ranges bgRanges;
-  bgRanges.loadJson(top.loadArr(KEY_BG_RANGES));
+  bgRanges.loadJson(top.loadArr(config_key::BG_RANGES));
   setBgRanges(bgRanges);
 
-  setBgPolyDegree(top.loadUint(KEY_BG_DEGREE));
+  setBgPolyDegree(top.loadUint(config_key::BG_DEGREE));
 
-  auto reflectionsObj = top.loadArr(KEY_REFLECTIONS);
+  auto reflectionsObj = top.loadArr(config_key::REFLECTIONS);
   for_i (reflectionsObj.count()) {
     calc::shp_Reflection reflection(new calc::Reflection);
     reflection->loadJson(reflectionsObj.objAt(i));
