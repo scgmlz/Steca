@@ -281,7 +281,7 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
 
     for_i (row.count()) {
       QVariant const& var = row.at(i);
-      if (typ::isReal(var))
+      if (typ::isNumeric(var))
         stream << var.toDouble();
       else
         stream << var.toString();

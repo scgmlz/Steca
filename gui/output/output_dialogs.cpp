@@ -432,7 +432,7 @@ QVariant TableModel::data(rcIndex index, int role) const {
 
     if (--indexCol < numCols && indexRow < numRows) {
       QVariant var = rows_.at(to_u(indexRow)).at(to_u(indexCol));
-      if (typ::isReal(var) && qIsNaN(var.toDouble()))
+      if (typ::isNumeric(var) && qIsNaN(var.toDouble()))
         var = QVariant(); // hide nans
       return var;
     }

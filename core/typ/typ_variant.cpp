@@ -41,18 +41,6 @@ bool isNumeric(QVariant const& v) {
   }
 }
 
-bool isReal(QVariant const& v) {
-  auto type = QMetaType::Type(v.type());
-
-  switch (type) {
-  case QMetaType::Double:
-  case QMetaType::Float:
-    return true;
-  default:
-    return false;
-  }
-}
-
 #define IMPL_CMP(name, toType)                       \
   int name(QVariant const& v1, QVariant const& v2) { \
     auto val1 = v1.toType(), val2 = v2.toType();     \

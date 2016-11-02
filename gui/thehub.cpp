@@ -90,7 +90,8 @@ void Settings::saveBool(rcstr key, bool val) {
 
 qreal Settings::readReal(rcstr key, qreal def) {
   auto var = readVariant(key, QVariant());
-  return typ::isReal(var) ? var.toDouble() : def;
+  bool ok; qreal val = var.toDouble(&ok);
+  return ok ? val : def;
 }
 
 void Settings::saveReal(rcstr key, qreal val) {

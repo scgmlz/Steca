@@ -26,7 +26,6 @@ namespace typ {
 //------------------------------------------------------------------------------
 
 bool isNumeric(QVariant const&);
-bool isReal(QVariant const&);
 
 // The usual comparators: <0, 0, >0
 typedef int cmpFun(QVariant const&, QVariant const&);
