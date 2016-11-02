@@ -55,6 +55,7 @@ public:
 
   void loadSession();
   void saveSession();
+  void clearSession();
 
   void outputPoleFigures();
   void outputDiagrams();

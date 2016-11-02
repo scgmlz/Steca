@@ -118,6 +118,8 @@ Actions::Actions(TheHub& hub): super(hub) {
       "Load session...");
   trg(saveSession,
       "Save session...");
+  trg(clearSession,
+      "Clear session (to defaults)");
 
   trg(addFiles,
       "Add files...")

@@ -78,7 +78,7 @@ void MainWin::initMenus() {
       separator(),
       acts_.enableCorr, acts_.remCorr,
       separator(),
-      acts_.loadSession, acts_.saveSession,
+      acts_.loadSession, acts_.saveSession, acts_.clearSession,
   });
 
   menuFile_->addActions({
@@ -169,8 +169,9 @@ void MainWin::connectActions() {
     QObject::connect(action, &QAction::toggled, this, fun);
   };
 
-  onTrigger(acts_.loadSession, &Cls::loadSession);
-  onTrigger(acts_.saveSession, &Cls::saveSession);
+  onTrigger(acts_.loadSession,  &Cls::loadSession);
+  onTrigger(acts_.saveSession,  &Cls::saveSession);
+  onTrigger(acts_.clearSession, &Cls::clearSession);
 
   onTrigger(acts_.addFiles, &Cls::addFiles);
   onTrigger(acts_.enableCorr, &Cls::enableCorr);
@@ -318,6 +319,10 @@ void MainWin::saveSession() {
   hub_.saveSession(QFileInfo(fileName));
 }
 
+void MainWin::clearSession() {
+  hub_.clearSession();
+}
+
 void MainWin::outputPoleFigures() {
   auto popup = new output::PoleFiguresFrame(hub_, "Pole Figures", this);
   popup->show();
@@ -343,15 +348,15 @@ void MainWin::onShow() {
   hub_.clearSession();
 
 #ifdef DEVELOPMENT_JAN
-//  auto safeLoad = [this](rcstr fileName) {
-//    QFileInfo info(QDir::homePath() % fileName);
-//    if (info.exists())
-//      hub_.loadSession(info);
-//  };
+  auto safeLoad = [this](rcstr fileName) {
+    QFileInfo info(QDir::homePath() % fileName);
+    if (info.exists())
+      hub_.loadSession(info);
+  };
 #endif
 
 #ifdef DEVELOPMENT_JAN
-//  safeLoad("/C/+scg/data/0.ste");
+  safeLoad("/C/+scg/data/0.ste");
 //  hub_.actions.outputDiagrams->trigger();
 #endif
 

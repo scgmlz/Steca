@@ -70,7 +70,7 @@ public:
 #ifndef Q_OS_OSX  // Mac has its own
     *fullScreen,
 #endif
-    *loadSession, *saveSession,
+    *loadSession, *saveSession, *clearSession,
     *addFiles, *remFile, *enableCorr, *remCorr,
     *rotateImage, *mirrorImage, *linkCuts, *showOverlay, *stepScale, *showGamma,
     *fixedIntenImageScale, *fixedIntenDgramScale, *combinedDgram,
