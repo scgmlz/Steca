@@ -209,7 +209,7 @@ void OneDataset::collectIntens(core::Session::rc session, typ::Image const* inte
     if (qIsNaN(inten))
       continue;
 
-    inten_t corr = intensCorr ? intensCorr->at(i) : 1;
+    inten_t corr = intensCorr ? intensCorr->at(ind) : 1;
     if (qIsNaN(corr))
       continue;
 
