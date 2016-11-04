@@ -133,7 +133,7 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
     box.addLayout(hb);
     box.setAlignment(hb, Qt::AlignTop);
 
-    hb->addWidget(iconButton(actions.fixedIntenImageScale));
+    hb->addWidget(iconButton(actions.fixedIntenImage));
     hb->addWidget(iconButton(actions.stepScale));
     hb->addWidget(iconButton(actions.showOverlay));
     hb->addWidget((spinN_ = spinCell(4,1)));
@@ -142,7 +142,7 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
 
     hb->addWidget(iconButton(actions.showGamma));
     hb->addWidget(label("γ count"));
-    hb->addWidget((numSlices_ = spinCell(4, 1)));
+    hb->addWidget((numSlices_ = spinCell(4, 0)));
     hb->addWidget(label("#"));
     hb->addWidget((numSlice_  = spinCell(4, 1)));
 
@@ -182,7 +182,7 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
     box.addLayout(hb);
     box.setAlignment(hb, Qt::AlignTop);
 
-    hb->addWidget(iconButton(actions.fixedIntenImageScale));
+    hb->addWidget(iconButton(actions.fixedIntenImage));
     hb->addWidget(iconButton(actions.stepScale));
     hb->addWidget(iconButton(actions.showOverlay));
     hb->addStretch(1);
@@ -272,8 +272,9 @@ void TabsImages::render() {
   {
     QPixmap pixMap;
 
-    uint nSlices  = qMax(1u, to_u(numSlices_->value()));
-    numSlice_->setMaximum(to_i(nSlices));
+    uint nSlices  = to_u(numSlices_->value());
+    numSlice_->setMaximum(qMax(1, to_i(nSlices)));
+    numSlice_->setEnabled(nSlices > 0);
 
     if (dataset_) {
       // 1 - based
@@ -285,16 +286,24 @@ void TabsImages::render() {
 
       lens_ = hub_.datasetLens(*dataset_);
 
-      uint iSlice  = qMax(1u, to_u(numSlice_->value())) - 1;
+      typ::Range rge;
+      if (nSlices > 0) {
+        uint nSlice  = qMax(1u, to_u(numSlice_->value()));
+        uint iSlice  = nSlice - 1;
 
-      auto rgeGma = lens_->rgeGma();
-      auto min    = rgeGma.min;
-      auto wn = rgeGma.width() / nSlices;
+        auto rgeGma = lens_->rgeGma();
+        auto min    = rgeGma.min;
+        auto wn = rgeGma.width() / nSlices;
 
-      auto rge = gma_rge(min + iSlice * wn, min + (iSlice+1) * wn);
+        rge = gma_rge(min + iSlice * wn, min + (iSlice+1) * wn);
 
-      minGamma_->setValue(rge.min);
-      maxGamma_->setValue(rge.max);
+        minGamma_->setValue(rge.min);
+        maxGamma_->setValue(rge.max);
+      } else {
+        rge = typ::Range::infinite();;
+        minGamma_->clear();
+        maxGamma_->clear();
+      }
 
       hub_.setGammaRange(rge);
 

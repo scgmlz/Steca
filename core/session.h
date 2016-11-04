@@ -159,7 +159,7 @@ public:
 
   calc::ReflectionInfos makeReflectionInfos(
       data::Datasets::rc, calc::Reflection::rc,
-      pint gmaSlices, gma_rge::rc, Progress* = nullptr);
+      uint gmaSlices, gma_rge::rc, Progress* = nullptr);
 
 // fitting
 private:
@@ -188,7 +188,7 @@ private:
 
 public:
   eNorm norm() const { return norm_; }
-  void setNorm(eNorm);
+  void  setNorm(eNorm);
 
 public:
   qreal calcAvgBackground(data::Dataset::rc) const;

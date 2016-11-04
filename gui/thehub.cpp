@@ -98,6 +98,16 @@ void Settings::saveReal(rcstr key, qreal val) {
   saveVariant(key, val);
 }
 
+int Settings::readInt(rcstr key, int def) {
+  auto var = readVariant(key, QVariant());
+  bool ok; int val = var.toInt(&ok);
+  return ok ? val : def;
+}
+
+void Settings::saveInt(rcstr key, int val) {
+  saveVariant(key, val);
+}
+
 str Settings::readStr(rcstr key, rcstr def) {
   return readVariant(key, def).toString();
 }
@@ -145,12 +155,12 @@ void TheHub::configActions() {
   connect(actions.remCorr, &QAction::triggered,
           [this]() { setCorrFile(EMPTY_STR); });
 
-  connect(actions.fixedIntenImageScale, &QAction::toggled, [this](bool on) {
+  connect(actions.fixedIntenImage, &QAction::toggled, [this](bool on) {
     isFixedIntenImageScale_ = on;
     emit sigDisplayChanged();
   });
 
-  connect(actions.fixedIntenDgramScale, &QAction::toggled, [this](bool on) {
+  connect(actions.fixedIntenDgram, &QAction::toggled, [this](bool on) {
     isFixedIntenDgramScale_ = on;
     emit sigDisplayChanged();
   });
@@ -213,7 +223,7 @@ typ::Curve TheHub::avgCurve(data::Datasets::rc datasets) const {
 }
 
 calc::ReflectionInfos TheHub::makeReflectionInfos(
-    calc::Reflection::rc reflection, pint gmaSlices, gma_rge::rc rgeGma,
+    calc::Reflection::rc reflection, uint gmaSlices, gma_rge::rc rgeGma,
     Progress* progress)
 {
   return session_->makeReflectionInfos(collectedDatasets(), reflection,

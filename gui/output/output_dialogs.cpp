@@ -38,7 +38,7 @@ PanelGammaSlices::PanelGammaSlices(TheHub& hub) : super(hub, "Gamma slices") {
   auto g = grid();
 
   g->addWidget(label("count"),               0, 0);
-  g->addWidget((numSlices = spinCell(4, 1)), 0, 1);
+  g->addWidget((numSlices = spinCell(4, 0)), 0, 1);
 
   g->addWidget(label("degrees"),               1, 0);
   g->addWidget((stepGamma = spinDoubleCell(6, 0.0)), 1, 1);
@@ -54,7 +54,11 @@ PanelGammaSlices::PanelGammaSlices(TheHub& hub) : super(hub, "Gamma slices") {
 }
 
 void PanelGammaSlices::updateValues() {
-  stepGamma->setValue(rgeGma_.width() / numSlices->value());
+  uint nSlices = to_u(numSlices->value());
+  if (nSlices > 0)
+    stepGamma->setValue(rgeGma_.width() / nSlices);
+  else
+    stepGamma->clear();
 }
 
 PanelGammaRange::PanelGammaRange(TheHub& hub) : super(hub, "Gamma range") {
@@ -304,7 +308,7 @@ void Params::readSettings() {
   Settings s(config_key::GROUP_OUTPUT);
 
   if (panelGammaSlices)
-    panelGammaSlices->numSlices->setValue(s.readReal(config_key::NUM_SLICES, 1));
+    panelGammaSlices->numSlices->setValue(s.readInt(config_key::NUM_SLICES, 0));
 
   if (panelGammaRange)
     panelGammaRange->cbLimitGamma->setChecked(s.readBool(config_key::LIMIT_GAMMA, false));
@@ -320,7 +324,7 @@ void Params::readSettings() {
 
     panelInterpolation->avgAlphaMax->setValue(s.readReal(config_key::AVG_ALPHA_MAX, 15));
     panelInterpolation->avgRadius->setValue(s.readReal(config_key::AVG_RADIUS, 5));
-    panelInterpolation->avgThreshold->setValue(s.readReal(config_key::AVG_THRESHOLD, 100));
+    panelInterpolation->avgThreshold->setValue(s.readInt(config_key::AVG_THRESHOLD, 100));
   }
 
   saveDir = s.readStr(config_key::SAVE_DIR);
@@ -337,7 +341,7 @@ void Params::saveSettings() const {
   Settings s(config_key::GROUP_OUTPUT);
 
   if (panelGammaSlices)
-    s.saveReal(config_key::NUM_SLICES, panelGammaSlices->numSlices->value());
+    s.saveInt(config_key::NUM_SLICES, panelGammaSlices->numSlices->value());
 
   if (panelGammaRange)
     s.saveBool(config_key::LIMIT_GAMMA,  panelGammaRange->cbLimitGamma->isChecked());
@@ -352,7 +356,7 @@ void Params::saveSettings() const {
 
     s.saveReal(config_key::AVG_ALPHA_MAX, panelInterpolation->avgAlphaMax->value());
     s.saveReal(config_key::AVG_RADIUS,    panelInterpolation->avgRadius->value());
-    s.saveReal(config_key::AVG_THRESHOLD, panelInterpolation->avgThreshold->value());
+    s.saveInt(config_key::AVG_THRESHOLD, panelInterpolation->avgThreshold->value());
   }
 
   s.saveStr(config_key::SAVE_DIR, saveDir);
@@ -933,7 +937,7 @@ void Frame::calculate() {
     auto ps = params_->panelGammaSlices;
     ENSURE(ps)
 
-    pint gammaSlices = pint(ps->numSlices->value());
+    uint gammaSlices = to_u(ps->numSlices->value());
 
     auto pr = params_->panelGammaRange;
     ENSURE(pr)

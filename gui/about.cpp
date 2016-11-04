@@ -99,9 +99,9 @@ AboutBox::AboutBox(QWidget *parent) : super(parent, Qt::Dialog) {
   auto g = gridLayout();
   vb->addLayout(g);
 
-  g->addWidget(label("default det. distance"), 0, 0);
+  g->addWidget(label("default det. distance"), 0, 0, Qt::AlignRight);
   g->addWidget((detDistance_ = spinDoubleCell(6, typ::Geometry::MIN_DETECTOR_DISTANCE)), 0, 1);
-  g->addWidget(label("default pixel size"),    1, 0);
+  g->addWidget(label("default pixel size"), 1, 0, Qt::AlignRight);
   g->addWidget((detPixelSize_ = spinDoubleCell(6, typ::Geometry::MIN_DETECTOR_PIXEL_SIZE)), 1, 1);
   g->addColumnStretch();
 

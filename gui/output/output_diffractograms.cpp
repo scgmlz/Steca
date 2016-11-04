@@ -79,18 +79,19 @@ DiffractogramsFrame::DiffractogramsFrame(TheHub &hub, rcstr title, QWidget *pare
 }
 
 OutputDataCollection DiffractogramsFrame::collectCurves(
-    gma_rge::rc rgeGma, pint gmaSlices, data::Dataset::rc dataset, uint picNum) {
+    gma_rge::rc rgeGma, uint gmaSlices, data::Dataset::rc dataset, uint picNum) {
 
   auto lens = hub_.datasetLens(dataset);
 
-  typ::Range rge = lens->rgeGma();
+  typ::Range rge = (gmaSlices > 0) ? lens->rgeGma() : typ::Range::infinite();
   if (rgeGma.isValid())
     rge = rge.intersect(rgeGma);
 
   OutputDataCollection outputData;
 
+  gmaSlices = qMax(1u, gmaSlices);
   qreal step = rge.width() / gmaSlices;
-  for_i (uint(gmaSlices)) {
+  for_i (gmaSlices) {
     qreal min = rge.min + i * step;
     gma_rge gmaStripe(min, min + step);
 
@@ -109,7 +110,7 @@ OutputData DiffractogramsFrame::collectCurve(data::Dataset::rc dataset) {
 OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
   ENSURE(params_->panelGammaSlices)
   auto ps = params_->panelGammaSlices;
-  pint gmaSlices = pint(ps->numSlices->value());
+  uint gmaSlices = to_u(ps->numSlices->value());
 
   ENSURE(params_->panelGammaRange)
   auto pr = params_->panelGammaRange;

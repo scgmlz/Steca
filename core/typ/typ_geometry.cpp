@@ -161,6 +161,7 @@ void AngleMap::calculate() {
 
   rgeTth_.invalidate();
   rgeGma_.invalidate();
+  rgeGmaFull_.invalidate();
 
   EXPECT(size.w > cut.left + cut.right)
   EXPECT(size.h > cut.top  + cut.bottom)
@@ -239,6 +240,7 @@ void AngleMap::calculate() {
       ++gi;
 
       rgeTth_.extendBy(as.tth);
+      rgeGmaFull_.extendBy(as.gma);
       if (as.tth >= midTth)
         rgeGma_.extendBy(as.gma); // gma range at mid tth
     }

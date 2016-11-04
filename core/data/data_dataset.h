@@ -106,6 +106,7 @@ public:
   typ::deg chi()            const { return md_->motorChi; }
 
   gma_rge  rgeGma(core::Session const&) const;
+  gma_rge  rgeGmaFull(core::Session const&) const;
   tth_rge  rgeTth(core::Session const&) const;
 
   inten_rge rgeInten() const;
@@ -147,6 +148,7 @@ public:
   typ::deg chi() const;
 
   gma_rge  rgeGma(core::Session const&) const;
+  gma_rge  rgeGmaFull(core::Session const&) const;
   tth_rge  rgeTth(core::Session const&) const;
 
   inten_rge rgeInten() const;

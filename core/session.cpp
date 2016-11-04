@@ -379,7 +379,7 @@ ReflectionInfo Session::makeReflectionInfo(
  */
 ReflectionInfos Session::makeReflectionInfos(
     Datasets::rc datasets, Reflection::rc reflection,
-    pint gmaSlices, gma_rge::rc rgeGma, Progress* progress)
+    uint gmaSlices, gma_rge::rc rgeGma, Progress* progress)
 {
   ReflectionInfos infos;
 
@@ -392,13 +392,14 @@ ReflectionInfos Session::makeReflectionInfos(
 
     auto lens = datasetLens(*dataset, datasets, norm_, true, true);
 
-    Range rge = lens->rgeGma();
+    Range rge = (gmaSlices > 0) ? lens->rgeGma() : lens->rgeGmaFull();
     if (rgeGma.isValid())
       rge = rge.intersect(rgeGma);
 
     if (rge.isEmpty())
       continue;
 
+    gmaSlices = qMax(1u, gmaSlices);
     qreal step = rge.width() / gmaSlices;
     for_i (uint(gmaSlices)) {
       qreal min = rge.min + i * step;

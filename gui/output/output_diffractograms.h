@@ -51,7 +51,7 @@ public:
 protected:
   TabDiffractogramsSave *tabSave_;
 
-  OutputDataCollection collectCurves(gma_rge::rc, pint gmaSlices, data::Dataset::rc dataset, uint picNum);
+  OutputDataCollection collectCurves(gma_rge::rc, uint gmaSlices, data::Dataset::rc dataset, uint picNum);
   OutputData collectCurve(data::Dataset::rc dataset);
 
   OutputData outputCurrDiffractogram();

@@ -79,7 +79,7 @@ void MainWin::initMenus() {
       separator(),
       acts_.enableCorr, acts_.remCorr,
       separator(),
-      acts_.loadSession, acts_.saveSession, acts_.clearSession,
+      acts_.loadSession, acts_.saveSession, // TODO add: acts_.clearSession,
   });
 
   menuFile_->addActions({
@@ -103,7 +103,7 @@ void MainWin::initMenus() {
   menuImage_->addActions({
       acts_.rotateImage,
       acts_.mirrorImage,
-      acts_.fixedIntenImageScale,
+      acts_.fixedIntenImage,
       acts_.linkCuts,
       acts_.showOverlay,
       acts_.stepScale,
@@ -119,7 +119,10 @@ void MainWin::initMenus() {
       acts_.addReflection, acts_.remReflection,
       separator(),
       acts_.combinedDgram,
-      acts_.fixedIntenDgramScale,
+      acts_.fixedIntenDgram,
+      separator(),
+      acts_.showAveraged,
+      acts_.scaleUp,
   });
 
   menuOutput_->addActions({
@@ -352,7 +355,7 @@ void MainWin::onShow() {
 #endif
 
 #ifdef DEVELOPMENT_JAN
-//  safeLoad("/C/+scg/data/0.ste");
+  safeLoad("/C/+scg/data/0.ste");
 //  hub_.actions.outputDiagrams->trigger();
 #endif
 

@@ -73,7 +73,8 @@ public:
     *loadSession, *saveSession, *clearSession,
     *addFiles, *remFile, *enableCorr, *remCorr,
     *rotateImage, *mirrorImage, *linkCuts, *showOverlay, *stepScale, *showGamma,
-    *fixedIntenImageScale, *fixedIntenDgramScale, *combinedDgram,
+    *fixedIntenImage, *fixedIntenDgram, *combinedDgram,
+    *showAveraged, *scaleUp,
     *selRegions, *showBackground, *clearBackground, *clearReflections,
     *addReflection, *remReflection,
     *outputPolefigures, *outputDiagrams, *outputDiffractograms;

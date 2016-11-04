@@ -144,6 +144,10 @@ gma_rge DatasetLens::rgeGma() const {
   return dataset_.rgeGma(session_);
 }
 
+gma_rge DatasetLens::rgeGmaFull() const {
+  return dataset_.rgeGmaFull(session_);
+}
+
 tth_rge DatasetLens::rgeTth() const {
   return dataset_.rgeTth(session_);
 }

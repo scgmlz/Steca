@@ -153,17 +153,21 @@ Actions::Actions(TheHub& hub): super(hub) {
       "Gamma range", "Show gamma angle")
       .icon(":/icon/angle");
 
-  tgl(fixedIntenImageScale,
+  tgl(fixedIntenImage,
       "Fixed image scale", "Display image using a fixed intensity scale")
       .alt("Variable image scale", "Display image using normalised intensity scale")
       .icon(":/icon/scale");
-  tgl(fixedIntenDgramScale,
-      "Fixed diffractogram scale", "Display diffractogram using a fixed intensity scale")
-      .alt("Variable diffractogram scale", "Display diffractogram using normalised intensity scale");
+  tgl(fixedIntenDgram,
+      "Fixed diffractogram intensity scale", "Display diffractogram using a fixed intensity scale");
 
   tgl(combinedDgram,
       "Combined diffractogram", "Show diffractogram of all datasets")
       .alt("Single diffractogram", "Show diffractogram of a single dataset");
+
+  tgl(showAveraged,
+      "averaged", "Display diffractogram using averaged intensities.");
+  tgl(scaleUp,
+      "scale up", "Show intensity scaled-up by detector size.");
 
   tgl(selRegions, "Select regions").icon(":/icon/selRegion");
   tgl(showBackground, "Show background", "Show fitted background")
@@ -223,8 +227,8 @@ Actions::Actions(TheHub& hub): super(hub) {
   });
 
   auto deselect = [this]() {
-    fixedIntenImageScale->setChecked(false);
-    fixedIntenDgramScale->setChecked(false);
+    fixedIntenImage->setChecked(false);
+    fixedIntenDgram->setChecked(false);
     combinedDgram->setChecked(false);
   };
 

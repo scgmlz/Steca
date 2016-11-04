@@ -171,6 +171,10 @@ gma_rge OneDataset::rgeGma(core::Session::rc session) const {
   return session.angleMap(*this)->rgeGma();
 }
 
+gma_rge OneDataset::rgeGmaFull(core::Session::rc session) const {
+  return session.angleMap(*this)->rgeGmaFull();
+}
+
 tth_rge OneDataset::rgeTth(core::Session::rc session) const {
   return session.angleMap(*this)->rgeTth();
 }
@@ -330,6 +334,10 @@ deg Dataset::chi() const {
 
 gma_rge Dataset::rgeGma(core::Session::rc session) const {
   RGE_COMBINE(extendBy, rgeGma(session))
+}
+
+gma_rge Dataset::rgeGmaFull(core::Session::rc session) const {
+  RGE_COMBINE(extendBy, rgeGmaFull(session))
 }
 
 tth_rge Dataset::rgeTth(core::Session::rc session) const {

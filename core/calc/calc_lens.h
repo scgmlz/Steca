@@ -93,9 +93,10 @@ public:
 
   typ::size2d size()    const;
 
-  gma_rge    rgeGma()   const;
-  tth_rge    rgeTth()   const;
-  inten_rge  rgeInten() const;
+  gma_rge    rgeGma()     const;
+  gma_rge    rgeGmaFull() const;
+  tth_rge    rgeTth()     const;
+  inten_rge  rgeInten()   const;
 
   typ::Curve makeCurve()            const;
   typ::Curve makeCurve(gma_rge::rc) const;

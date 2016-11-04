@@ -363,8 +363,10 @@ Diffractogram::Diffractogram(TheHub& hub)
 
   hb->addStretch();
 
-  hb->addWidget(check("all datasets", hub_.actions.combinedDgram));
-  hb->addWidget(check("fixed scale", hub_.actions.fixedIntenDgramScale));
+  hb->addWidget(check("averaged",      hub_.actions.showAveraged));
+  hb->addWidget(check("scaled up",     hub_.actions.scaleUp));
+  hb->addWidget(check("all datasets",  hub_.actions.combinedDgram));
+  hb->addWidget(check("fixed inten.",  hub_.actions.fixedIntenDgram));
 
   onSigDatasetSelected([this](data::shp_Dataset dataset) {
     setDataset(dataset);

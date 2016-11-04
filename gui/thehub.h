@@ -52,6 +52,9 @@ public:
   bool readBool(rcstr key, bool def = false);
   void saveBool(rcstr key, bool);
 
+  int  readInt(rcstr key, int def = 0);
+  void saveInt(rcstr key, int);
+
   qreal readReal(rcstr key, qreal def = 0);
   void  saveReal(rcstr key, qreal);
 
@@ -121,7 +124,7 @@ public:
 
 public:
   calc::ReflectionInfos makeReflectionInfos(calc::Reflection::rc,
-      pint gmaSlices, gma_rge::rc, Progress* = nullptr);
+      uint gmaSlices, gma_rge::rc, Progress* = nullptr);
 
 public:
   void       saveSession(QFileInfo const&) const;

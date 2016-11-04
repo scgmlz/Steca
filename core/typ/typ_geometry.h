@@ -103,8 +103,9 @@ public:
     return arrAngles_.at(i, j);
   }
 
-  tth_rge rgeTth() const { return rgeTth_; }
-  gma_rge rgeGma() const { return rgeGma_; }
+  tth_rge rgeTth()     const { return rgeTth_;     }
+  gma_rge rgeGma()     const { return rgeGma_;     }
+  gma_rge rgeGmaFull() const { return rgeGmaFull_; }
 
 //TODO remove  IJ gmaPixel(gma_t);
 
@@ -118,7 +119,7 @@ private:
   Array2D<Angles> arrAngles_;
 
   tth_rge    rgeTth_;
-  gma_rge    rgeGma_;
+  gma_rge    rgeGma_, rgeGmaFull_;
 
   // sorted
   vec<gma_t> gmas;
