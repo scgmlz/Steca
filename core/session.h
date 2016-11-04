@@ -151,15 +151,15 @@ public:
                                   bool trans, bool cut) const;
   calc::shp_DatasetLens datasetLens(data::Dataset::rc, data::Datasets::rc, eNorm,
                                     bool trans, bool cut) const;
-  typ::Curve makeCurve(calc::DatasetLens::rc, gma_rge::rc) const;
+  typ::Curve makeCurve(calc::DatasetLens::rc, gma_rge::rc, bool averaged) const;
 
   // reflections
   calc::ReflectionInfo makeReflectionInfo(
-      calc::DatasetLens::rc, calc::Reflection::rc, gma_rge::rc) const;
+      calc::DatasetLens::rc, calc::Reflection::rc, gma_rge::rc, bool averaged) const;
 
   calc::ReflectionInfos makeReflectionInfos(
       data::Datasets::rc, calc::Reflection::rc,
-      uint gmaSlices, gma_rge::rc, Progress* = nullptr);
+      uint gmaSlices, gma_rge::rc, bool averaged, Progress*);
 
 // fitting
 private:

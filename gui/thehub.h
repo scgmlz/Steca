@@ -120,11 +120,11 @@ public:
   calc::shp_ImageLens   plainImageLens(typ::Image::rc) const;
   calc::shp_DatasetLens datasetLens(data::Dataset::rc) const;
 
-  typ::Curve avgCurve(data::Datasets::rc) const;
+  typ::Curve avgCurve(data::Datasets::rc, bool averaged) const;
 
 public:
   calc::ReflectionInfos makeReflectionInfos(calc::Reflection::rc,
-      uint gmaSlices, gma_rge::rc, Progress* = nullptr);
+      uint gmaSlices, gma_rge::rc, Progress*);
 
 public:
   void       saveSession(QFileInfo const&) const;

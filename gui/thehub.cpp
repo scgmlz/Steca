@@ -171,6 +171,10 @@ void TheHub::configActions() {
     emit sigDisplayChanged();
   });
 
+  connect(actions.showAveraged, &QAction::toggled, [this]() {
+    emit sigDisplayChanged();
+  });
+
   connect(actions.mirrorImage, &QAction::toggled,
           [this](bool on) { setImageMirror(on); });
 
@@ -218,8 +222,8 @@ calc::shp_DatasetLens TheHub::datasetLens(data::Dataset::rc dataset) const {
                               true, true);
 }
 
-typ::Curve TheHub::avgCurve(data::Datasets::rc datasets) const {
-  return datasets.avgCurve(*session_);
+typ::Curve TheHub::avgCurve(data::Datasets::rc datasets, bool averaged) const {
+  return datasets.avgCurve(*session_, averaged);
 }
 
 calc::ReflectionInfos TheHub::makeReflectionInfos(
@@ -227,7 +231,7 @@ calc::ReflectionInfos TheHub::makeReflectionInfos(
     Progress* progress)
 {
   return session_->makeReflectionInfos(collectedDatasets(), reflection,
-                                      gmaSlices, rgeGma, progress);
+                                      gmaSlices, rgeGma, actions.showAveraged->isChecked(), progress);
 }
 
 void TheHub::saveSession(QFileInfo const& fileInfo) const {

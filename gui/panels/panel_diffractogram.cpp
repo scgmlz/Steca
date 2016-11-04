@@ -468,7 +468,7 @@ Diffractogram::Diffractogram(TheHub& hub)
 }
 
 void Diffractogram::render() {
-  calcDgram();
+  calcDgram(hub_.actions.showAveraged->isChecked());
   calcBackground();
   calcReflections();
 
@@ -480,17 +480,17 @@ void Diffractogram::setDataset(data::shp_Dataset dataset) {
   render();
 }
 
-void Diffractogram::calcDgram() {
+void Diffractogram::calcDgram(bool averaged) {
   dgram_.clear();
 
   if (!dataset_)
     return;
 
   if (hub_.isCombinedDgram())
-    dgram_ = hub_.avgCurve(dataset_->datasets());
+    dgram_ = hub_.avgCurve(dataset_->datasets(), averaged);
   else {
     auto lens = hub_.datasetLens(*dataset_);
-    dgram_ = lens->makeCurve(hub_.gammaRange());
+    dgram_ = lens->makeCurve(hub_.gammaRange(), averaged);
   }
 }
 

@@ -333,8 +333,8 @@ void calculateAlphaBeta(Dataset::rc dataset, tth_t tth, gma_t gma,
   beta  = betaRad.toDeg();
 }
 
-Curve Session::makeCurve(DatasetLens::rc lens, gma_rge::rc rgeGma) const {
-  Curve curve = lens.makeCurve(rgeGma);
+Curve Session::makeCurve(DatasetLens::rc lens, gma_rge::rc rgeGma, bool averaged) const {
+  Curve curve = lens.makeCurve(rgeGma, averaged);
   curve.subtract(fit::Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
 
   return curve;
@@ -342,8 +342,9 @@ Curve Session::makeCurve(DatasetLens::rc lens, gma_rge::rc rgeGma) const {
 
 // Fits reflection to the given gamma sector and constructs a ReflectionInfo.
 ReflectionInfo Session::makeReflectionInfo(
-    DatasetLens::rc lens, Reflection::rc reflection, gma_rge::rc gmaSector) const {
-  Curve curve = makeCurve(lens, gmaSector);
+    DatasetLens::rc lens, Reflection::rc reflection, gma_rge::rc gmaSector,
+    bool averaged) const {
+  Curve curve = makeCurve(lens, gmaSector, averaged);
 
   scoped<fit::PeakFunction*> peakFunction(reflection.peakFunction().clone());
 
@@ -379,7 +380,7 @@ ReflectionInfo Session::makeReflectionInfo(
  */
 ReflectionInfos Session::makeReflectionInfos(
     Datasets::rc datasets, Reflection::rc reflection,
-    uint gmaSlices, gma_rge::rc rgeGma, Progress* progress)
+    uint gmaSlices, gma_rge::rc rgeGma, bool averaged, Progress* progress)
 {
   ReflectionInfos infos;
 
@@ -404,7 +405,7 @@ ReflectionInfos Session::makeReflectionInfos(
     for_i (uint(gmaSlices)) {
       qreal min = rge.min + i * step;
       gma_rge gmaStripe(min, min + step);
-      auto refInfo = makeReflectionInfo(*lens, reflection, gmaStripe);
+      auto refInfo = makeReflectionInfo(*lens, reflection, gmaStripe, averaged);
       if (!qIsNaN(refInfo.inten()))
         infos.append(refInfo);
     }
@@ -445,7 +446,7 @@ void Session::setNorm(eNorm norm) {
 qreal Session::calcAvgBackground(Dataset::rc dataset) const {
   auto lens = datasetLens(dataset, dataset.datasets(), eNorm::NONE, true, true);
 
-  Curve gmaCurve = lens->makeCurve();
+  Curve gmaCurve = lens->makeCurve(true); // REVIEW averaged?
   auto bgPolynom = fit::Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
   return bgPolynom.avgY(lens->rgeTth());
 }

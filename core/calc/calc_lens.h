@@ -98,8 +98,8 @@ public:
   tth_rge    rgeTth()     const;
   inten_rge  rgeInten()   const;
 
-  typ::Curve makeCurve()            const;
-  typ::Curve makeCurve(gma_rge::rc) const;
+  typ::Curve makeCurve(bool averaged)              const;
+  typ::Curve makeCurve(gma_rge::rc, bool averaged) const;
 
   data::Dataset::rc dataset()  const { return dataset_;   }
 

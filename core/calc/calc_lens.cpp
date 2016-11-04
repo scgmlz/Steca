@@ -158,12 +158,12 @@ inten_rge DatasetLens::rgeInten() const {
   return dataset_.rgeInten();
 }
 
-Curve DatasetLens::makeCurve() const {
-  return makeCurve(rgeGma());
+Curve DatasetLens::makeCurve(bool averaged) const {
+  return makeCurve(rgeGma(), averaged);
 }
 
-Curve DatasetLens::makeCurve(gma_rge::rc rgeGma) const {
-  inten_vec intens = dataset_.collectIntens(session_, intensCorr_, rgeGma);
+Curve DatasetLens::makeCurve(gma_rge::rc rgeGma, bool averaged) const {
+  inten_vec intens = dataset_.collectIntens(session_, intensCorr_, rgeGma, averaged);
 
   Curve res;
   uint count = intens.count();

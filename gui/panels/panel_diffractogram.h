@@ -125,7 +125,7 @@ private:
   QComboBox *comboNormType_;
 
 public:
-  void calcDgram();
+  void calcDgram(bool averaged);
   void calcBackground();
   void calcReflections();
 

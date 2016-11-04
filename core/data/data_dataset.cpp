@@ -361,7 +361,8 @@ qreal Dataset::avgDeltaTime() const {
 }
 
 inten_vec Dataset::collectIntens(
-    core::Session::rc session, typ::Image const* intensCorr, gma_rge::rc rgeGma) const
+    core::Session::rc session, typ::Image const* intensCorr, gma_rge::rc rgeGma,
+    bool averaged) const
 {
   tth_rge tthRge = rgeTth(session);
   tth_t   tthWdt = tthRge.width();
@@ -386,11 +387,12 @@ inten_vec Dataset::collectIntens(
   for (auto& one : *this)
     one->collectIntens(session, intensCorr, intens, counts, rgeGma, minTth, deltaTth);
 
-  for_i (numBins) {
-    auto cnt = counts.at(i);
-    if (cnt > 0)
-      intens[i] /= cnt;
-  }
+  if (averaged)
+    for_i (numBins) {
+      auto cnt = counts.at(i);
+      if (cnt > 0)
+        intens[i] /= cnt;
+    }
 
   return intens;
 }
@@ -469,13 +471,13 @@ inten_rge::rc Datasets::rgeFixedInten(core::Session::rc session, bool trans, boo
   return rgeFixedInten_;
 }
 
-Curve Datasets::avgCurve(core::Session::rc session) const {
+Curve Datasets::avgCurve(core::Session::rc session, bool averaged) const {
   if (avgCurve_.isEmpty()) {
     // TODO invalidate when combinedDgram is unchecked
 
     TakesLongTime __;
 
-    avgCurve_ = session.datasetLens(*combineAll(), *this, session.norm(), true, true)->makeCurve();
+    avgCurve_ = session.datasetLens(*combineAll(), *this, session.norm(), true, true)->makeCurve(averaged);
   }
 
   return avgCurve_;
