@@ -74,7 +74,7 @@ public:
     *addFiles, *remFile, *enableCorr, *remCorr,
     *rotateImage, *mirrorImage, *linkCuts, *showOverlay, *stepScale, *showGamma,
     *fixedIntenImage, *fixedIntenDgram, *combinedDgram,
-    *showAveraged, *scaleUp,
+    *showAveraged,
     *selRegions, *showBackground, *clearBackground, *clearReflections,
     *addReflection, *remReflection,
     *outputPolefigures, *outputDiagrams, *outputDiffractograms;

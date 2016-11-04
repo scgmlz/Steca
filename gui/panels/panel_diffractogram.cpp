@@ -124,7 +124,7 @@ DiffractogramPlot::DiffractogramPlot(TheHub& hub, Diffractogram& diffractogram)
   QFontMetrics fontMetrics(font());
   int          em = fontMetrics.width('M'), ascent = fontMetrics.ascent();
 
-  QMargins margins(3 * em, ascent, em, 2 * ascent);
+  QMargins margins(6 * em, ascent, em, 2 * ascent);
   ar->setAutoMargins(QCP::msNone);
   ar->setMargins(margins);
   overlay_->setMargins(margins.left(), margins.right());
@@ -231,6 +231,7 @@ void DiffractogramPlot::plot(typ::Curve::rc dgram, typ::Curve::rc dgramBgFitted,
 
     xAxis->setRange(tthRange.min, tthRange.max);
     yAxis->setRange(qMin(0., intenRange.min), intenRange.max);
+    yAxis->setNumberFormat("g");
     xAxis->setVisible(true);
     yAxis->setVisible(true);
 
@@ -364,7 +365,6 @@ Diffractogram::Diffractogram(TheHub& hub)
   hb->addStretch();
 
   hb->addWidget(check("averaged",      hub_.actions.showAveraged));
-  hb->addWidget(check("scaled up",     hub_.actions.scaleUp));
   hb->addWidget(check("all datasets",  hub_.actions.combinedDgram));
   hb->addWidget(check("fixed inten.",  hub_.actions.fixedIntenDgram));
 

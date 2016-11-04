@@ -122,7 +122,6 @@ void MainWin::initMenus() {
       acts_.fixedIntenDgram,
       separator(),
       acts_.showAveraged,
-      acts_.scaleUp,
   });
 
   menuOutput_->addActions({
