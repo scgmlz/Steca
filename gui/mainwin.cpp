@@ -74,7 +74,7 @@ void MainWin::initMenus() {
   menuOutput_   = mbar->addMenu("&Output");
   menuHelp_     = mbar->addMenu("&Help");
 
-  menuFile_->addActions({
+  addActions(menuFile_, {
       acts_.addFiles, acts_.remFile,
       separator(),
       acts_.enableCorr, acts_.remCorr,
@@ -82,14 +82,14 @@ void MainWin::initMenus() {
       acts_.loadSession, acts_.saveSession, // TODO add: acts_.clearSession,
   });
 
-  menuFile_->addActions({
+  addActions(menuFile_, {
     #ifndef Q_OS_OSX  // Mac puts Quit into the Apple menu
       separator(),
     #endif
       acts_.quit,
   });
 
-  menuView_->addActions({
+  addActions(menuView_, {
       acts_.viewFiles, acts_.viewDatasets, acts_.viewDatasetInfo,
       separator(),
     #ifndef Q_OS_OSX
@@ -100,7 +100,7 @@ void MainWin::initMenus() {
       acts_.viewReset,
   });
 
-  menuImage_->addActions({
+  addActions(menuImage_, {
       acts_.rotateImage,
       acts_.mirrorImage,
       acts_.fixedIntenImage,
@@ -110,7 +110,7 @@ void MainWin::initMenus() {
       acts_.showGamma,
   });
 
-  menuDgram_->addActions({
+  addActions(menuDgram_, {
       acts_.selRegions,
       acts_.showBackground,
       acts_.clearBackground,
@@ -124,11 +124,11 @@ void MainWin::initMenus() {
       acts_.showAveraged,
   });
 
-  menuOutput_->addActions({
+  addActions(menuOutput_, {
       acts_.outputPolefigures, acts_.outputDiagrams, acts_.outputDiffractograms,
   });
 
-  menuHelp_->addActions({
+  addActions(menuHelp_, {
     acts_.about,
   #ifndef Q_OS_OSX
     separator(),  // Mac puts About into the Apple menu
@@ -136,6 +136,15 @@ void MainWin::initMenus() {
     acts_.online,
     acts_.checkUpdate,
   });
+}
+
+void MainWin::addActions(QMenu* menu, QList<QAction*> actions) {
+  EXPECT(menu)
+  menu->addActions(actions);
+
+  str prefix = str("%1: ").arg(menu->title().remove('&'));
+  for (auto action : actions)
+    action->setToolTip(prefix + action->toolTip());
 }
 
 void MainWin::initLayout() {

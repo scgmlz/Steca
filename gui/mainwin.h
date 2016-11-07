@@ -33,6 +33,7 @@ public:
 
 private:
   void initMenus();
+  void addActions(QMenu*, QList<QAction*>);
   void initLayout();
   void initStatusBar();
   void connectActions();
@@ -73,8 +74,8 @@ private:
 
 private:
   QMenu
-      *menuFile_, *menuView_,
-      *menuImage_, *menuDgram_,
+      *menuFile_,   *menuView_,
+      *menuImage_,  *menuDgram_,
       *menuOutput_, *menuHelp_;
 
   QDockWidget

@@ -364,9 +364,9 @@ Diffractogram::Diffractogram(TheHub& hub)
 
   hb->addStretch();
 
-  hb->addWidget(check("averaged",      hub_.actions.showAveraged));
-  hb->addWidget(check("all datasets",  hub_.actions.combinedDgram));
-  hb->addWidget(check("fixed inten.",  hub_.actions.fixedIntenDgram));
+  hb->addWidget(check(hub_.actions.showAveraged));
+  hb->addWidget(check(hub_.actions.combinedDgram));
+  hb->addWidget(check(hub_.actions.fixedIntenDgram));
 
   onSigDatasetSelected([this](data::shp_Dataset dataset) {
     setDataset(dataset);
@@ -405,18 +405,12 @@ Diffractogram::Diffractogram(TheHub& hub)
 
     switch (tab) {
     case eFittingTab::BACKGROUND:
-      hub_.actions.selRegions
-        ->text("Select background regions", true)
-        .icon(":/icon/selRegion");
-
+      hub_.actions.selRegions->icon(":/icon/selRegion");
       plot_->setTool(on ? DiffractogramPlot::eTool::BACKGROUND
                         : DiffractogramPlot::eTool::NONE);
       break;
     case eFittingTab::REFLECTIONS:
-      hub_.actions.selRegions
-        ->text("Select reflection region", true)
-        .icon(":/icon/reflRegion");
-
+      hub_.actions.selRegions->icon(":/icon/reflRegion");
       plot_->setTool(on ? DiffractogramPlot::eTool::PEAK_REGION
                         : DiffractogramPlot::eTool::NONE);
       break;
