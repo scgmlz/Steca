@@ -16,6 +16,7 @@
 #include "output_dialogs.h"
 #include "calc/calc_polefigure.h"
 #include "config.h"
+#include "gui_cfg.h"
 #include "thehub.h"
 #include "types/type_models.h"
 
@@ -38,10 +39,10 @@ PanelGammaSlices::PanelGammaSlices(TheHub& hub) : super(hub, "Gamma slices") {
   auto g = grid();
 
   g->addWidget(label("count"),               0, 0);
-  g->addWidget((numSlices = spinCell(4, 0)), 0, 1);
+  g->addWidget((numSlices = spinCell(gui_cfg::em4, 0)), 0, 1);
 
   g->addWidget(label("degrees"),               1, 0);
-  g->addWidget((stepGamma = spinDoubleCell(6, 0.0)), 1, 1);
+  g->addWidget((stepGamma = spinDoubleCell(gui_cfg::em4_2, 0.0)), 1, 1);
   stepGamma->setReadOnly(true);
 
   g->addRowStretch();
@@ -67,10 +68,10 @@ PanelGammaRange::PanelGammaRange(TheHub& hub) : super(hub, "Gamma range") {
   g->addWidget((cbLimitGamma = check("limit")),       0, 0, 1, 2);
 
   g->addWidget(label("min"),                          1, 0);
-  g->addWidget((minGamma = spinDoubleCell(6, -180., 180.)), 1, 1);
+  g->addWidget((minGamma = spinDoubleCell(gui_cfg::em4_2, -180., 180.)), 1, 1);
 
   g->addWidget(label("max"),                          2, 0);
-  g->addWidget((maxGamma = spinDoubleCell(6, -180., 180.)), 2, 1);
+  g->addWidget((maxGamma = spinDoubleCell(gui_cfg::em4_2, -180., 180.)), 2, 1);
 
   g->addRowStretch();
 
@@ -104,18 +105,18 @@ PanelInterpolation::PanelInterpolation(TheHub& hub) : super(hub, "Interpolation"
   auto g = grid();
 
   g->addWidget(label("step α"), 0, 0, Qt::AlignRight);
-  g->addWidget((stepAlpha = spinDoubleCell(6, 1., 30.)), 0, 1);
+  g->addWidget((stepAlpha = spinDoubleCell(gui_cfg::em4_2, 1., 30.)), 0, 1);
   g->addWidget(label("β"), 1, 0, Qt::AlignRight);
-  g->addWidget((stepBeta = spinDoubleCell(6, 1., 30.)), 1, 1);
+  g->addWidget((stepBeta = spinDoubleCell(gui_cfg::em4_2, 1., 30.)), 1, 1);
   g->addWidget(label("idw radius"), 2, 0, Qt::AlignRight);
-  g->addWidget((idwRadius = spinDoubleCell(6, 0., 90.)), 2, 1);
+  g->addWidget((idwRadius = spinDoubleCell(gui_cfg::em4_2, 0., 90.)), 2, 1);
 
   g->addWidget(label("avg. α max"), 0, 2, Qt::AlignRight);
-  g->addWidget((avgAlphaMax = spinDoubleCell(6, 0., 90.)), 0, 3);
+  g->addWidget((avgAlphaMax = spinDoubleCell(gui_cfg::em4_2, 0., 90.)), 0, 3);
   g->addWidget(label("radius"), 1, 2, Qt::AlignRight);
-  g->addWidget((avgRadius = spinDoubleCell(6, 0., 90.)), 1, 3);
+  g->addWidget((avgRadius = spinDoubleCell(gui_cfg::em4_2, 0., 90.)), 1, 3);
   g->addWidget(label("inclusion %"), 2, 2, Qt::AlignRight);
-  g->addWidget((avgThreshold = spinCell(6, 0, 100)), 2, 3);
+  g->addWidget((avgThreshold = spinCell(gui_cfg::em4_2, 0, 100)), 2, 3);
 
   g->addRowStretch();
 }
