@@ -166,6 +166,7 @@ Actions::Actions(TheHub& hub): super(hub) {
 
   tgl(showAveraged,
       "averaged", "Display diffractogram using averaged intensities.");
+  showAveraged->setChecked(true); // TODO to session
 
   tgl(selRegions, "Select regions").icon(":/icon/selRegion");
   tgl(showBackground, "Show background", "Show fitted background")

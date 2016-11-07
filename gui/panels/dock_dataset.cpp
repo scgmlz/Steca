@@ -14,6 +14,7 @@
 // ************************************************************************** //
 
 #include "dock_dataset.h"
+#include "gui_cfg.h"
 #include "thehub.h"
 #include "views.h"
 
@@ -60,7 +61,7 @@ DockDatasets::DockDatasets(TheHub& hub)
   box_->addLayout(h);
 
   h->addWidget(label("Combine:"));
-  h->addWidget(combineDatasets_ = spinCell(4, 1));
+  h->addWidget(combineDatasets_ = spinCell(gui_cfg::em4, 1));
   combineDatasets_->setToolTip("Combine and average number of datasets");
 
   connect(combineDatasets_, slot(QSpinBox,valueChanged,int), [this](int num) {

@@ -15,6 +15,7 @@
 
 #include "tabs_images.h"
 #include "colors.h"
+#include "gui_cfg.h"
 #include "thehub.h"
 #include <QColor>
 #include <QPainter>
@@ -136,20 +137,20 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
     hb->addWidget(iconButton(actions.fixedIntenImage));
     hb->addWidget(iconButton(actions.stepScale));
     hb->addWidget(iconButton(actions.showOverlay));
-    hb->addWidget((spinN_ = spinCell(4,1)));
+    hb->addWidget((spinN_ = spinCell(gui_cfg::em4,1)));
 
     hb->addStretch(1);
 
     hb->addWidget(iconButton(actions.showGamma));
     hb->addWidget(label("γ count"));
-    hb->addWidget((numSlices_ = spinCell(4, 0)));
+    hb->addWidget((numSlices_ = spinCell(gui_cfg::em4, 0)));
     hb->addWidget(label("#"));
-    hb->addWidget((numSlice_  = spinCell(4, 1)));
+    hb->addWidget((numSlice_  = spinCell(gui_cfg::em4, 1)));
 
     hb->addWidget(label("min"));
-    hb->addWidget((minGamma_ = spinDoubleCell(6)));
+    hb->addWidget((minGamma_ = spinDoubleCell(gui_cfg::em4_2)));
     hb->addWidget(label("max"));
-    hb->addWidget((maxGamma_ = spinDoubleCell(6)));
+    hb->addWidget((maxGamma_ = spinDoubleCell(gui_cfg::em4_2)));
 
     minGamma_->setReadOnly(true);
     maxGamma_->setReadOnly(true);

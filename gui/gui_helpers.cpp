@@ -127,6 +127,8 @@ QCheckBox* check(rcstr text, QAction* action) {
     QObject::connect(action, &QAction::toggled, [cb](bool on) {
       cb->setChecked(on);
     });
+
+    cb->setChecked(action->isChecked());
   }
   return cb;
 }

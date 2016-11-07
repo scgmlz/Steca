@@ -14,6 +14,9 @@
 // ************************************************************************** //
 
 #include "tabs_setup.h"
+#include "gui_cfg.h"
+#include "gui_cfg.h"
+#include "gui_cfg.h"
 #include "thehub.h"
 #include "typ/typ_geometry.h"
 #include "views.h"
@@ -124,8 +127,8 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
 
     // widgets
 
-    detDistance_  = spinDoubleCell(6, typ::Geometry::MIN_DETECTOR_DISTANCE);
-    detPixelSize_ = spinDoubleCell(6, typ::Geometry::MIN_DETECTOR_PIXEL_SIZE);
+    detDistance_  = spinDoubleCell(gui_cfg::em4_2, typ::Geometry::MIN_DETECTOR_DISTANCE);
+    detPixelSize_ = spinDoubleCell(gui_cfg::em4_2, typ::Geometry::MIN_DETECTOR_PIXEL_SIZE);
     detPixelSize_->setDecimals(3);
 
     connect(detDistance_, slot(QDoubleSpinBox,valueChanged,double), [this]() {
@@ -136,8 +139,8 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
       setToHub();
     });
 
-    beamOffsetI_  = spinCell(6);
-    beamOffsetJ_  = spinCell(6);
+    beamOffsetI_  = spinCell(gui_cfg::em4_2);
+    beamOffsetJ_  = spinCell(gui_cfg::em4_2);
 
     connect(beamOffsetI_, slot(QSpinBox,valueChanged,int), [this]() {
       setToHub();
@@ -147,10 +150,10 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
       setToHub();
     });
 
-    cutLeft_   = spinCell(4, 0);
-    cutTop_    = spinCell(4, 0);
-    cutRight_  = spinCell(4, 0);
-    cutBottom_ = spinCell(4, 0);
+    cutLeft_   = spinCell(gui_cfg::em4, 0);
+    cutTop_    = spinCell(gui_cfg::em4, 0);
+    cutRight_  = spinCell(gui_cfg::em4, 0);
+    cutBottom_ = spinCell(gui_cfg::em4, 0);
 
     auto setImageCut = [this](bool topLeft, int value) {
       EXPECT(value >= 0)
@@ -231,7 +234,7 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
     hb->addWidget(iconButton(actions.showBackground));
     hb->addWidget(iconButton(actions.clearBackground));
     hb->addWidget(label("Pol. degree:"));
-    hb->addWidget((spinDegree_ = spinCell(4, 0, TheHub::MAX_POLYNOM_DEGREE)));
+    hb->addWidget((spinDegree_ = spinCell(gui_cfg::em4, 0, TheHub::MAX_POLYNOM_DEGREE)));
     hb->addStretch();
 
     box.addStretch(1);
@@ -274,30 +277,30 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
     vb->addLayout(gb);
 
     gb->addWidget(label("min"), 0, 0);
-    gb->addWidget((spinRangeMin_ = spinDoubleCell(6, .0)), 0, 1);
+    gb->addWidget((spinRangeMin_ = spinDoubleCell(gui_cfg::em4_2, .0)), 0, 1);
     spinRangeMin_->setSingleStep(.1);
     gb->addWidget(label("max"), 0, 2);
-    gb->addWidget((spinRangeMax_ = spinDoubleCell(6, .0)), 0, 3);
+    gb->addWidget((spinRangeMax_ = spinDoubleCell(gui_cfg::em4_2, .0)), 0, 3);
     spinRangeMax_->setSingleStep(.1);
 
     gb->addWidget(label("guess x"), 1, 0);
-    gb->addWidget((spinGuessPeakX_ = spinDoubleCell(6, .0)), 1, 1);
+    gb->addWidget((spinGuessPeakX_ = spinDoubleCell(gui_cfg::em4_2, .0)), 1, 1);
     spinGuessPeakX_->setSingleStep(.1);
     gb->addWidget(label("y"), 1, 2);
-    gb->addWidget((spinGuessPeakY_ = spinDoubleCell(6, .0)), 1, 3);
+    gb->addWidget((spinGuessPeakY_ = spinDoubleCell(gui_cfg::em4_2, .0)), 1, 3);
     spinGuessPeakY_->setSingleStep(.1);
 
     gb->addWidget(label("fwhm"), 2, 0);
-    gb->addWidget((spinGuessFWHM_ = spinDoubleCell(6, .0)), 2, 1);
+    gb->addWidget((spinGuessFWHM_ = spinDoubleCell(gui_cfg::em4_2, .0)), 2, 1);
     spinGuessFWHM_->setSingleStep(.1);
 
     gb->addWidget(label("fit x"), 3, 0);
-    gb->addWidget((readFitPeakX_ = readCell(6)), 3, 1);
+    gb->addWidget((readFitPeakX_ = readCell(gui_cfg::em4_2)), 3, 1);
     gb->addWidget(label("y"), 3, 2);
-    gb->addWidget((readFitPeakY_ = readCell(6)), 3, 3);
+    gb->addWidget((readFitPeakY_ = readCell(gui_cfg::em4_2)), 3, 3);
 
     gb->addWidget(label("fwhm"), 4, 0);
-    gb->addWidget((readFitFWHM_ = readCell(6)), 4, 1);
+    gb->addWidget((readFitFWHM_ = readCell(gui_cfg::em4_2)), 4, 1);
 
     gb->setColumnStretch(4, 1);
 
