@@ -171,7 +171,7 @@ void PeakFunction::fit(Curve::rc curve, Range::rc range) {
   if (c.isEmpty())
     return;
 
-  if (!guessedPeak().isValid()) {  // calculate guesses
+//  if (!guessedPeak().isValid()) {  // calculate guesses // TODO caching temporarily disabled, until it works correctly
     uint peakIndex  = c.maxYindex();
     auto peakTth    = c.x(peakIndex);
     auto peakIntens = c.y(peakIndex);
@@ -193,7 +193,7 @@ void PeakFunction::fit(Curve::rc curve, Range::rc range) {
 
     setGuessedPeak(XY(peakTth, peakIntens));
     setGuessedFWHM(c.x(hmi2) - c.x(hmi1));
-  }
+//  }
 
   LevenbergMarquardt().fit(*this, c);
 }

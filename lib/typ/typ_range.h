@@ -67,9 +67,7 @@ struct Range {
 };
 
 #ifndef QT_NO_DEBUG
-
 QDebug& operator<<(QDebug&, Range::rc);
-
 #endif
 
 //------------------------------------------------------------------------------

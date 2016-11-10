@@ -96,6 +96,10 @@ public:
   virtual void loadJson(JsonObj::rc) THROWS;
 };
 
+#ifndef QT_NO_DEBUG
+QDebug& operator<<(QDebug&, Function::rc);
+#endif
+
 //------------------------------------------------------------------------------
 // abstract function with parameters
 

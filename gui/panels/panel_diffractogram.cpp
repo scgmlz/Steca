@@ -392,6 +392,10 @@ Diffractogram::Diffractogram(TheHub& hub)
     render();
   });
 
+  onSigReflectionsChanged([this]() {
+    render();
+  });
+
   onSigNormChanged([this]() {
     render();
   });
@@ -524,6 +528,7 @@ void Diffractogram::calcReflections() {
       currReflIndex_ = i;
 
     r->fit(dgramBgFitted_);
+
     auto& rge = r->range();
     auto& fun = r->peakFunction();
 

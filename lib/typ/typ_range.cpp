@@ -126,12 +126,10 @@ void Range::loadJson(JsonObj::rc obj) THROWS {
 }
 
 #ifndef QT_NO_DEBUG
-
 QDebug& operator<<(QDebug& d, Range::rc rge) {
   d << '<' << rge.min << '-' << rge.max << '>';
   return d;
 }
-
 #endif
 
 //------------------------------------------------------------------------------
