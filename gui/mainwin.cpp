@@ -162,6 +162,7 @@ void MainWin::initLayout() {
 
   splMain->addWidget(splTop);
   splMain->addWidget(new panel::TabsDiffractogram(hub_));
+  splMain->setStretchFactor(1,1);
 
   splTop->addWidget(new panel::TabsSetup(hub_));
   splTop->addWidget(new panel::TabsImages(hub_));
