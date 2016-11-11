@@ -8,7 +8,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -124,7 +124,7 @@ DiffractogramPlot::DiffractogramPlot(TheHub& hub, Diffractogram& diffractogram)
   QFontMetrics fontMetrics(font());
   int          em = fontMetrics.width('M'), ascent = fontMetrics.ascent();
 
-  QMargins margins(3 * em, ascent, em, 2 * ascent);
+  QMargins margins(6 * em, ascent, em, 2 * ascent);
   ar->setAutoMargins(QCP::msNone);
   ar->setMargins(margins);
   overlay_->setMargins(margins.left(), margins.right());
@@ -186,7 +186,7 @@ DiffractogramPlot::DiffractogramPlot(TheHub& hub, Diffractogram& diffractogram)
     }
   });
 
-  connect(hub_.actions.fitBgShow, &QAction::toggled, [this](bool on) {
+  connect(hub_.actions.showBackground, &QAction::toggled, [this](bool on) {
     showBgFit_ = on;
     updateBg();
   });
@@ -231,6 +231,7 @@ void DiffractogramPlot::plot(typ::Curve::rc dgram, typ::Curve::rc dgramBgFitted,
 
     xAxis->setRange(tthRange.min, tthRange.max);
     yAxis->setRange(qMin(0., intenRange.min), intenRange.max);
+    yAxis->setNumberFormat("g");
     xAxis->setVisible(true);
     yAxis->setVisible(true);
 
@@ -321,6 +322,8 @@ void DiffractogramPlot::addBgItem(typ::Range::rc range) {
   case eFittingTab::REFLECTIONS:
     color = reflRgeColor_;
     break;
+  default:
+    break;
   }
 
   auto ir = new QCPItemRect(this);
@@ -349,9 +352,21 @@ Diffractogram::Diffractogram(TheHub& hub)
   box_->addWidget((plot_ = new DiffractogramPlot(hub_, *this)));
   auto hb = hbox();
   box_->addLayout(hb);
-  hb->addWidget(check("all datasets", hub_.actions.combinedDgram));
-  hb->addWidget(check("fixed scale", hub_.actions.fixedIntenDgramScale));
+
+  str_lst options = normStrLst();
+  comboNormType_ = comboBox(options);
+  hb->addWidget(label("normalization:"));
+  hb->addWidget(comboNormType_);
+
+  connect(comboNormType_, slot(QComboBox,currentIndexChanged,int), [this](int index) { // TODO init value form hub?
+    hub_.setNorm(eNorm(index));
+  });
+
   hb->addStretch();
+
+  hb->addWidget(check(hub_.actions.showAveraged));
+  hb->addWidget(check(hub_.actions.combinedDgram));
+  hb->addWidget(check(hub_.actions.fixedIntenDgram));
 
   onSigDatasetSelected([this](data::shp_Dataset dataset) {
     setDataset(dataset);
@@ -369,7 +384,15 @@ Diffractogram::Diffractogram(TheHub& hub)
     render();
   });
 
+  onSigGammaRange([this]() {
+    render();
+  });
+
   onSigBgChanged([this]() {
+    render();
+  });
+
+  onSigReflectionsChanged([this]() {
     render();
   });
 
@@ -377,34 +400,30 @@ Diffractogram::Diffractogram(TheHub& hub)
     render();
   });
 
-  // REVIEW all these connects
-  connect(hub_.actions.fitBgClear, &QAction::triggered,
-          [this]() { plot_->clearBg(); });
+  connect(hub_.actions.clearBackground, &QAction::triggered, [this]() {
+    plot_->clearBg();
+  });
 
   onSigFittingTab([this](eFittingTab tab) {
-    bool on = hub_.actions.fitRegions->isChecked();
+    bool on = hub_.actions.selRegions->isChecked();
 
     switch (tab) {
     case eFittingTab::BACKGROUND:
-      hub_.actions.fitRegions
-        ->text("Select background regions", true)
-        .icon(":/icon/bgRegion");
-
+      hub_.actions.selRegions->icon(":/icon/selRegion");
       plot_->setTool(on ? DiffractogramPlot::eTool::BACKGROUND
                         : DiffractogramPlot::eTool::NONE);
       break;
     case eFittingTab::REFLECTIONS:
-      hub_.actions.fitRegions
-        ->text("Select reflection region", true)
-        .icon(":/icon/reflRegion");
-
+      hub_.actions.selRegions->icon(":/icon/reflRegion");
       plot_->setTool(on ? DiffractogramPlot::eTool::PEAK_REGION
                         : DiffractogramPlot::eTool::NONE);
       break;
+    default:
+      plot_->setTool(DiffractogramPlot::eTool::NONE);
     }
   });
 
-  connect(hub_.actions.fitRegions, &QAction::toggled, [this](bool on) {
+  connect(hub_.actions.selRegions, &QAction::toggled, [this](bool on) {
     using eTool = DiffractogramPlot::eTool;
     auto tool = eTool::NONE;
 
@@ -416,6 +435,8 @@ Diffractogram::Diffractogram(TheHub& hub)
       case eFittingTab::REFLECTIONS:
         tool = eTool::PEAK_REGION;
         break;
+      default:
+        break;
       }
 
     plot_->setTool(tool);
@@ -426,7 +447,7 @@ Diffractogram::Diffractogram(TheHub& hub)
     plot_->updateBg();
   });
 
-  onSigReflectionValues([this](typ::Range::rc range, typ::XY::rc peak, qreal fwhm,
+  onSigReflectionValues([this](typ::Range::rc range, typ::XY::rc peak, fwhm_t fwhm,
                                bool withGuesses) {
     if (currentReflection_) {
       currentReflection_->setRange(range);
@@ -440,12 +461,12 @@ Diffractogram::Diffractogram(TheHub& hub)
     }
   });
 
-  hub_.actions.fitRegions->setChecked(true);
-  hub_.actions.fitBgShow->setChecked(true);
+  hub_.actions.selRegions->setChecked(true);
+  hub_.actions.showBackground->setChecked(true);
 }
 
 void Diffractogram::render() {
-  calcDgram();
+  calcDgram(hub_.actions.showAveraged->isChecked());
   calcBackground();
   calcReflections();
 
@@ -457,16 +478,19 @@ void Diffractogram::setDataset(data::shp_Dataset dataset) {
   render();
 }
 
-void Diffractogram::calcDgram() {
+void Diffractogram::calcDgram(bool averaged) {
   dgram_.clear();
 
   if (!dataset_)
     return;
 
-  dgram_ = hub_.isCombinedDgram()
-           ? hub_.avgCurve(dataset_->datasets())
-           : hub_.datasetLens(*dataset_)->makeCurve();
-} 
+  if (hub_.isCombinedDgram())
+    dgram_ = hub_.avgCurve(dataset_->datasets(), averaged);
+  else {
+    auto lens = hub_.datasetLens(*dataset_);
+    dgram_ = lens->makeCurve(hub_.gammaRange(), averaged);
+  }
+}
 
 void Diffractogram::calcBackground() {
   bg_.clear();
@@ -504,8 +528,9 @@ void Diffractogram::calcReflections() {
       currReflIndex_ = i;
 
     r->fit(dgramBgFitted_);
-    auto &rge = r->range();
-    auto &fun = r->peakFunction();
+
+    auto& rge = r->range();
+    auto& fun = r->peakFunction();
 
     typ::Curve c;
 

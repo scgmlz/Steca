@@ -2,18 +2,18 @@
 //
 //  STeCa2:    StressTextureCalculator ver. 2
 //
-//! @file      panel_file.cpp
+//! @file      dock_files.cpp
 //!
 //! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
-#include "panel_file.h"
+#include "dock_files.h"
 #include "thehub.h"
 #include "views.h"
 #include <QHeaderView>
@@ -64,8 +64,8 @@ void FilesView::removeSelected() {
   auto indexes = selectedIndexes();
 
   // backwards
-  for (uint i = indexes.count(); i-- > 0;)
-    model()->remFile(indexes.at(i).row());
+  for (int i = indexes.count(); i-- > 0;)
+    model()->remFile(to_u(indexes.at(i).row()));
 
   selectRows({});
   recollect();
@@ -74,7 +74,8 @@ void FilesView::removeSelected() {
 void FilesView::recollect() {
   uint_vec rows;
   for (auto& index : selectionModel()->selectedRows())
-    if (index.isValid()) rows.append(index.row());
+    if (index.isValid())
+      rows.append(to_u(index.row()));
 
   hub_.collectDatasetsFromFiles(rows);
 }
@@ -91,7 +92,7 @@ DockFiles::DockFiles(TheHub& hub)
 
   auto& actions = hub_.actions;
 
-  h->addWidget(label("Corr. file"));
+  h->addWidget(label("Correction file"));
   h->addStretch();
   h->addWidget(iconButton(actions.addFiles));
   h->addWidget(iconButton(actions.remFile));

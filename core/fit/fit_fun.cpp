@@ -8,7 +8,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -18,15 +18,17 @@
 #include "def/def_alg.h"
 #include <qmath.h>
 
+namespace json_fun_key {
+str const
+  POLYNOM("polynom"), RAW("Raw"),
+  GAUSSIAN("Gaussian"), LORENTZIAN("Lorentzian"),
+  PSEUDOVOIGT1("PseudoVoigt1"), PSEUDOVOIGT2("PseudoVoigt2");
+}
+
 namespace fit {
 //------------------------------------------------------------------------------
 
 using namespace typ;
-
-static str const
-    KEY_POLYNOM("polynom"),
-    KEY_RAW("Raw"), KEY_GAUSSIAN("Gaussian"), KEY_LORENTZIAN("Lorentzian"),
-    KEY_PSEUDOVOIGT1("PseudoVoigt1"), KEY_PSEUDOVOIGT2("PseudoVoigt2");
 
 void initFactory() {
   ONLY_ONCE
@@ -35,12 +37,12 @@ void initFactory() {
   using O = owner_not_null<F::Factory::MakerBase*>;
   F::initFactory();
 
-  F::addFactoryMaker(KEY_POLYNOM,      O::from(new F::Factory::Maker<Gaussian>));
-  F::addFactoryMaker(KEY_RAW,          O::from(new F::Factory::Maker<Raw>));
-  F::addFactoryMaker(KEY_GAUSSIAN,     O::from(new F::Factory::Maker<Gaussian>));
-  F::addFactoryMaker(KEY_LORENTZIAN,   O::from(new F::Factory::Maker<Lorentzian>));
-  F::addFactoryMaker(KEY_PSEUDOVOIGT1, O::from(new F::Factory::Maker<PseudoVoigt1>));
-  F::addFactoryMaker(KEY_PSEUDOVOIGT2, O::from(new F::Factory::Maker<PseudoVoigt2>));
+  F::addFactoryMaker(json_fun_key::POLYNOM,      O::from(new F::Factory::Maker<Gaussian>));
+  F::addFactoryMaker(json_fun_key::RAW,          O::from(new F::Factory::Maker<Raw>));
+  F::addFactoryMaker(json_fun_key::GAUSSIAN,     O::from(new F::Factory::Maker<Gaussian>));
+  F::addFactoryMaker(json_fun_key::LORENTZIAN,   O::from(new F::Factory::Maker<Lorentzian>));
+  F::addFactoryMaker(json_fun_key::PSEUDOVOIGT1, O::from(new F::Factory::Maker<PseudoVoigt1>));
+  F::addFactoryMaker(json_fun_key::PSEUDOVOIGT2, O::from(new F::Factory::Maker<PseudoVoigt2>));
 }
 
 //------------------------------------------------------------------------------
@@ -111,7 +113,7 @@ Polynom Polynom::fromFit(uint degree, Curve::rc curve, Ranges::rc ranges) {
 
 JsonObj Polynom::saveJson() const {
   JsonObj obj;
-  obj.saveString(KEY::TYPE, KEY_POLYNOM);
+  obj.saveString(json_key::TYPE, json_fun_key::POLYNOM);
   return super::saveJson() + obj;
 }
 
@@ -169,7 +171,7 @@ void PeakFunction::fit(Curve::rc curve, Range::rc range) {
   if (c.isEmpty())
     return;
 
-  if (!guessedPeak().isValid()) {  // calculate guesses
+//  if (!guessedPeak().isValid()) {  // calculate guesses // TODO caching temporarily disabled, until it works correctly
     uint peakIndex  = c.maxYindex();
     auto peakTth    = c.x(peakIndex);
     auto peakIntens = c.y(peakIndex);
@@ -191,7 +193,7 @@ void PeakFunction::fit(Curve::rc curve, Range::rc range) {
 
     setGuessedPeak(XY(peakTth, peakIntens));
     setGuessedFWHM(c.x(hmi2) - c.x(hmi1));
-  }
+//  }
 
   LevenbergMarquardt().fit(*this, c);
 }
@@ -201,23 +203,18 @@ Curve PeakFunction::prepareFit(Curve::rc curve, Range::rc range) {
   return curve.intersect(range);
 }
 
-static str const
-    KEY_RANGE("range"),
-    KEY_GUESSED_PEAK("guessed peak"),
-    KEY_GUESSED_FWHM("guessed fwhm");
-
 JsonObj PeakFunction::saveJson() const {
   return super::saveJson()
-      .saveRange(KEY_RANGE, range_)
-      .saveObj(KEY_GUESSED_PEAK, guessedPeak_.saveJson())
-      .saveQreal(KEY_GUESSED_FWHM, guessedFWHM_);
+      .saveRange(json_key::RANGE, range_)
+      .saveObj(json_key::PEAK, guessedPeak_.saveJson())
+      .saveQreal(json_key::FWHM, guessedFWHM_);
 }
 
 void PeakFunction::loadJson(JsonObj::rc obj) THROWS {
   super::loadJson(obj);
-  range_ = obj.loadRange(KEY_RANGE);
-  guessedPeak_.loadJson(obj.loadObj(KEY_GUESSED_PEAK));
-  guessedFWHM_ = obj.loadQreal(KEY_GUESSED_FWHM);
+  range_ = obj.loadRange(json_key::RANGE);
+  guessedPeak_.loadJson(obj.loadObj(json_key::PEAK));
+  guessedFWHM_ = obj.loadQreal(json_key::FWHM);
 }
 
 //------------------------------------------------------------------------------
@@ -280,7 +277,7 @@ void Raw::prepareY() {
 }
 
 JsonObj Raw::saveJson() const {
-  return super::saveJson().saveString(KEY::TYPE, KEY_RAW);
+  return super::saveJson().saveString(json_key::TYPE, json_fun_key::RAW);
 }
 
 //------------------------------------------------------------------------------
@@ -362,7 +359,7 @@ fwhm_t Gaussian::fwhmError() const {
 }
 
 JsonObj Gaussian::saveJson() const {
-  return super::saveJson().saveString(KEY::TYPE, KEY_GAUSSIAN);
+  return super::saveJson().saveString(json_key::TYPE, json_fun_key::GAUSSIAN);
 }
 
 //------------------------------------------------------------------------------
@@ -443,7 +440,7 @@ fwhm_t Lorentzian::fwhmError() const {
 }
 
 JsonObj Lorentzian::saveJson() const {
-  return super::saveJson().saveString(KEY::TYPE, KEY_LORENTZIAN);
+  return super::saveJson().saveString(json_key::TYPE, json_fun_key::LORENTZIAN);
 }
 
 //------------------------------------------------------------------------------
@@ -542,7 +539,7 @@ fwhm_t PseudoVoigt1::fwhmError() const {
 }
 
 JsonObj PseudoVoigt1::saveJson() const {
-  return super::saveJson().saveString(KEY::TYPE, KEY_PSEUDOVOIGT1);
+  return super::saveJson().saveString(json_key::TYPE, json_fun_key::PSEUDOVOIGT1);
 }
 
 //------------------------------------------------------------------------------
@@ -658,7 +655,7 @@ fwhm_t PseudoVoigt2::fwhmError() const {
 }
 
 JsonObj PseudoVoigt2::saveJson() const {
-  return super::saveJson().saveString(KEY::TYPE, KEY_PSEUDOVOIGT2);
+  return super::saveJson().saveString(json_key::TYPE, json_fun_key::PSEUDOVOIGT2);
 }
 
 //------------------------------------------------------------------------------

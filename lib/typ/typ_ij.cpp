@@ -8,7 +8,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -30,15 +30,13 @@ int IJ::compare(rc that) const {
   return 0;
 }
 
-static str const KEY_I("i"), KEY_J("j");
-
 JsonObj IJ::saveJson() const {
-  return JsonObj().saveInt(KEY_I, i).saveInt(KEY_J, j);
+  return JsonObj().saveInt(json_key::I, i).saveInt(json_key::J, j);
 }
 
 void IJ::loadJson(JsonObj::rc obj) THROWS {
-  i = obj.loadInt(KEY_I);
-  j = obj.loadInt(KEY_J);
+  i = obj.loadInt(json_key::I);
+  j = obj.loadInt(json_key::J);
 }
 
 //------------------------------------------------------------------------------

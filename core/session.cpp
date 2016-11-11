@@ -8,7 +8,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -241,12 +241,10 @@ void Session::setImageCut(bool topLeftFirst, bool linked, ImageCut::rc cut) {
   intensCorr_.clear();  // lazy
 }
 
-void Session::setGeometry(preal detectorDistance, preal pixSize,
-                          bool isMidPixOffset, IJ::rc midPixOffset) {
+void Session::setGeometry(preal detectorDistance, preal pixSize, IJ::rc midPixOffset) {
 
   geometry_.detectorDistance = detectorDistance;
   geometry_.pixSize          = pixSize;
-  geometry_.isMidPixOffset   = isMidPixOffset;
   geometry_.midPixOffset     = midPixOffset;
 }
 
@@ -254,13 +252,19 @@ IJ Session::midPix() const {
   auto halfSize = imageSize().scaled(.5);
   IJ mid(to_i(halfSize.w), to_i(halfSize.h));
 
-  if (geometry_.isMidPixOffset) {
-    IJ::rc off = geometry_.midPixOffset;
-    mid.i += off.i;
-    mid.j += off.j;
-  }
+  IJ::rc off = geometry_.midPixOffset;
+  mid.i += off.i;
+  mid.j += off.j;
 
   return mid;
+}
+
+Range::rc Session::gammaRange() const {
+  return gammaRange_;
+}
+
+void Session::setGammaRange(Range::rc gammaRange) {
+  gammaRange_ = gammaRange;
 }
 
 shp_AngleMap Session::angleMap(OneDataset::rc one) const {
@@ -329,8 +333,8 @@ void calculateAlphaBeta(Dataset::rc dataset, tth_t tth, gma_t gma,
   beta  = betaRad.toDeg();
 }
 
-Curve Session::makeCurve(DatasetLens::rc lens, gma_rge::rc rgeGma) const {
-  Curve curve = lens.makeCurve(rgeGma);
+Curve Session::makeCurve(DatasetLens::rc lens, gma_rge::rc rgeGma, bool averaged) const {
+  Curve curve = lens.makeCurve(rgeGma, averaged);
   curve.subtract(fit::Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
 
   return curve;
@@ -338,8 +342,9 @@ Curve Session::makeCurve(DatasetLens::rc lens, gma_rge::rc rgeGma) const {
 
 // Fits reflection to the given gamma sector and constructs a ReflectionInfo.
 ReflectionInfo Session::makeReflectionInfo(
-    DatasetLens::rc lens, Reflection::rc reflection, gma_rge::rc gmaSector) const {
-  Curve curve = makeCurve(lens, gmaSector);
+    DatasetLens::rc lens, Reflection::rc reflection, gma_rge::rc gmaSector,
+    bool averaged) const {
+  Curve curve = makeCurve(lens, gmaSector, averaged);
 
   scoped<fit::PeakFunction*> peakFunction(reflection.peakFunction().clone());
 
@@ -375,9 +380,12 @@ ReflectionInfo Session::makeReflectionInfo(
  */
 ReflectionInfos Session::makeReflectionInfos(
     Datasets::rc datasets, Reflection::rc reflection,
-    pint gmaSlices, gma_rge::rc rgeGma, Progress* progress)
+    uint gmaSlices, gma_rge::rc rgeGma, bool averaged, Progress* progress)
 {
   ReflectionInfos infos;
+
+  if (progress)
+    progress->setTotal(datasets.count());
 
   for (auto& dataset : datasets) {
     if (progress)
@@ -385,18 +393,19 @@ ReflectionInfos Session::makeReflectionInfos(
 
     auto lens = datasetLens(*dataset, datasets, norm_, true, true);
 
-    Range rge = lens->rgeGma();
+    Range rge = (gmaSlices > 0) ? lens->rgeGma() : lens->rgeGmaFull();
     if (rgeGma.isValid())
       rge = rge.intersect(rgeGma);
 
     if (rge.isEmpty())
       continue;
 
+    gmaSlices = qMax(1u, gmaSlices);
     qreal step = rge.width() / gmaSlices;
     for_i (uint(gmaSlices)) {
       qreal min = rge.min + i * step;
       gma_rge gmaStripe(min, min + step);
-      auto refInfo = makeReflectionInfo(*lens, reflection, gmaStripe);
+      auto refInfo = makeReflectionInfo(*lens, reflection, gmaStripe, averaged);
       if (!qIsNaN(refInfo.inten()))
         infos.append(refInfo);
     }
@@ -437,7 +446,7 @@ void Session::setNorm(eNorm norm) {
 qreal Session::calcAvgBackground(Dataset::rc dataset) const {
   auto lens = datasetLens(dataset, dataset.datasets(), eNorm::NONE, true, true);
 
-  Curve gmaCurve = lens->makeCurve();
+  Curve gmaCurve = lens->makeCurve(true); // REVIEW averaged?
   auto bgPolynom = fit::Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
   return bgPolynom.avgY(lens->rgeTth());
 }

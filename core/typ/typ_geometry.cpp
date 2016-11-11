@@ -8,7 +8,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -23,15 +23,17 @@ namespace typ {
 preal const Geometry::MIN_DETECTOR_DISTANCE   = preal(10);
 preal const Geometry::MIN_DETECTOR_PIXEL_SIZE = preal(.1);
 
+preal const Geometry::DEF_DETECTOR_DISTANCE   = preal(1035);
+preal const Geometry::DEF_DETECTOR_PIXEL_SIZE = preal(1);
+
 Geometry::Geometry()
 : detectorDistance(MIN_DETECTOR_DISTANCE), pixSize(MIN_DETECTOR_PIXEL_SIZE)
-, isMidPixOffset(false), midPixOffset() {
+, midPixOffset() {
 }
 
 int Geometry::compare(rc that) const {
   COMPARE_VALUE(detectorDistance)
   COMPARE_VALUE(pixSize)
-  COMPARE_VALUE(isMidPixOffset)
   COMPARE_COMPARABLE(midPixOffset)
   return 0;
 }
@@ -81,9 +83,38 @@ int AngleMap::Key::compare(rc that) const {
 
 //------------------------------------------------------------------------------
 
-AngleMap::AngleMap(Key::rc key) {
-  calculate(key);
+AngleMap::AngleMap(Key::rc key) : key_(key) {
+  calculate();
 }
+
+//TODO remove
+//IJ AngleMap::gmaPixel(gma_t gma) {
+//  uint_vec const *indexes; uint minIndex, maxIndex;
+//  getGmaIndexes(Range(gma), indexes, minIndex, maxIndex);
+
+//  auto& geometry = key_.geometry;
+//  auto& size     = key_.size;
+//  auto& midPix   = key_.midPix;
+//  auto& midTth   = key_.midTth;
+
+//  qreal pixSize = geometry.pixSize,
+//        detDist = geometry.detectorDistance;
+
+//  qreal d_midTth   = midTth.toRad(),
+//        cos_midTth = cos(d_midTth), sin_midTth = sin(d_midTth);
+
+//  auto j = [&](int i) {
+//    return midPix.j - tan(gma) * (detDist * sin_midTth + ((i - midPix.i) * pixSize) * cos_midTth) / pixSize;
+//  };
+
+////  auto i = [&](int j) {
+////    return (((midPix.j - j) * pixSize) / tan(gma) - b_x1) / (pixSize * cos_midTth) + midPix.i;
+////  };
+
+//  TR("gma 0" << size.w-1 << ":" << gma << j(0) << j(to_i(size.w-1)))
+
+//  return IJ(0,0);
+//}
 
 static uint lowerBound(vec<gma_t>::rc vec, gma_t x, uint i1, uint i2) {
   EXPECT(i1 < i2)
@@ -92,9 +123,9 @@ static uint lowerBound(vec<gma_t>::rc vec, gma_t x, uint i1, uint i2) {
     return i1;
 
   uint mid = (i1 + i2) / 2;
-  return vec.at(mid-1) < x
+  return vec.at(mid-1) < x            // x may be NaN ...
       ? lowerBound(vec, x, mid, i2)
-      : lowerBound(vec, x, i1, mid);
+      : lowerBound(vec, x, i1, mid);  // ... we should be so lucky
 }
 
 static uint upperBound(vec<gma_t>::rc vec, gma_t x, uint i1, uint i2) {
@@ -104,9 +135,9 @@ static uint upperBound(vec<gma_t>::rc vec, gma_t x, uint i1, uint i2) {
     return i2;
 
   uint mid = (i1 + i2) / 2;
-  return vec.at(mid) > x
+  return vec.at(mid) > x              // x may be NaN ...
       ? upperBound(vec, x, i1, mid)
-      : upperBound(vec, x, mid, i2);
+      : upperBound(vec, x, mid, i2);  // ... we should be so lucky
 }
 
 void AngleMap::getGmaIndexes(gma_rge::rc rgeGma,
@@ -116,17 +147,21 @@ void AngleMap::getGmaIndexes(gma_rge::rc rgeGma,
   maxIndex = upperBound(gmas, rgeGma.max, 0, gmas.count());
 }
 
-void AngleMap::calculate(Key::rc key) {
-  auto& geometry = key.geometry;
-  auto& size     = key.size;
-  auto& cut      = key.cut;
-  auto& midPix   = key.midPix;
-  auto& midTth   = key.midTth;
+void AngleMap::calculate() {
+  auto& geometry = key_.geometry;
+  auto& size     = key_.size;
+  auto& cut      = key_.cut;
+  auto& midPix   = key_.midPix;
+  auto& midTth   = key_.midTth;
+
+  qreal pixSize = geometry.pixSize,
+        detDist = geometry.detectorDistance;
 
   arrAngles_.fill(size);
 
   rgeTth_.invalidate();
   rgeGma_.invalidate();
+  rgeGmaFull_.invalidate();
 
   EXPECT(size.w > cut.left + cut.right)
   EXPECT(size.h > cut.top  + cut.bottom)
@@ -138,29 +173,59 @@ void AngleMap::calculate(Key::rc key) {
   gmas.resize(countWithoutCut);
   gmaIndexes.resize(countWithoutCut);
 
-  qreal pixSize = geometry.pixSize,
-        detDist = geometry.detectorDistance;
+// was: adapted from Steca original code
+//  for_int (i, size.w) {
+//    qreal x       = (to_i(i) - midPix.i) * pixSize;
+//    rad   tthHorz = midTth.toRad() + atan(x / detDist);
+//    qreal h       = cos(tthHorz)   * hypot(x, detDist);
+
+//    for_int (j, size.h) {
+//      qreal y          = (midPix.j - to_i(j)) * pixSize;
+//      qreal z          = hypot(x, y);
+//      qreal pixDetDist = hypot(z, detDist);
+//      rad   tth        = acos(h / pixDetDist);
+
+//      qreal r     = sqrt((pixDetDist * pixDetDist) - (h * h));
+//      rad   gamma = asin(y / r);
+
+//      if (tthHorz < 0) {
+//        tth   = -tth;
+//        gamma = -gamma;
+//      }
+
+//      ENSURE(!qIsNaN(gamma))
+
+//      arrAngles_.setAt(i, j, Angles(tth.toDeg(), gamma.toDeg()));
+//    }
+//  }
+
+  // new code
+  // detector coordinates: d_x, ... (d_z = const)
+  // beam coordinates: b_x, ..; b_y = d_y
+
+  qreal d_midTth   = midTth.toRad(),
+        cos_midTth = cos(d_midTth), sin_midTth = sin(d_midTth);
+
+  qreal& d_z = detDist;
+  qreal b_x1 = d_z * sin_midTth;
+  qreal b_z1 = d_z * cos_midTth;
 
   for_int (i, size.w) {
-    qreal x       = (to_i(i) - midPix.i) * pixSize;
-    rad   tthHorz = midTth.toRad() + atan(x / detDist);
-    qreal h       = cos(tthHorz)   * hypot(x, detDist);
+    qreal d_x = (to_i(i) - midPix.i) * pixSize;
+
+    qreal b_x = b_x1 + d_x * cos_midTth;
+    qreal b_z = b_z1 - d_x * sin_midTth;
+
+    qreal b_x2 = b_x*b_x;
 
     for_int (j, size.h) {
-      qreal y          = (midPix.j - to_i(j)) * pixSize;
-      qreal z          = hypot(x, y);
-      qreal pixDetDist = hypot(z, detDist);
-      rad   tth        = acos(h / pixDetDist);
+      qreal b_y = (midPix.j - to_i(j)) * pixSize; // == d_y
+      qreal b_r = sqrt(b_x2 + b_y*b_y);
 
-      qreal r     = sqrt((pixDetDist * pixDetDist) - (h * h));
-      rad   gamma = asin(y / r);
+      rad   gma = atan2(b_y, b_x);
+      rad   tth = atan2(b_r, b_z);
 
-      if (tthHorz < 0) {
-        tth   = -tth;
-        gamma = -gamma;
-      }
-
-      arrAngles_.setAt(i, j, Angles(tth.toDeg(), gamma.toDeg()));
+      arrAngles_.setAt(i, j, Angles(tth.toDeg(), gma.toDeg()));
     }
   }
 
@@ -175,6 +240,7 @@ void AngleMap::calculate(Key::rc key) {
       ++gi;
 
       rgeTth_.extendBy(as.tth);
+      rgeGmaFull_.extendBy(as.gma);
       if (as.tth >= midTth)
         rgeGma_.extendBy(as.gma); // gma range at mid tth
     }

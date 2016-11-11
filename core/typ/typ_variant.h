@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -26,7 +26,6 @@ namespace typ {
 //------------------------------------------------------------------------------
 
 bool isNumeric(QVariant const&);
-bool isReal(QVariant const&);
 
 // The usual comparators: <0, 0, >0
 typedef int cmpFun(QVariant const&, QVariant const&);

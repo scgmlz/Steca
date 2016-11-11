@@ -8,7 +8,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -116,24 +116,20 @@ qreal Range::bound(qreal value) const {
   return value;
 }
 
-static str const KEY_MIN("min"), KEY_MAX("max");
-
 JsonObj Range::saveJson() const {
-  return JsonObj().saveQreal(KEY_MIN, min).saveQreal(KEY_MAX, max);
+  return JsonObj().saveQreal(json_key::MIN, min).saveQreal(json_key::MAX, max);
 }
 
 void Range::loadJson(JsonObj::rc obj) THROWS {
-  min = obj.loadQreal(KEY_MIN);
-  max = obj.loadQreal(KEY_MAX);
+  min = obj.loadQreal(json_key::MIN);
+  max = obj.loadQreal(json_key::MAX);
 }
 
 #ifndef QT_NO_DEBUG
-
 QDebug& operator<<(QDebug& d, Range::rc rge) {
   d << '<' << rge.min << '-' << rge.max << '>';
   return d;
 }
-
 #endif
 
 //------------------------------------------------------------------------------
@@ -196,7 +192,7 @@ void Ranges::sort() {
 JsonArr Ranges::saveJson() const {
   JsonArr arr;
 
-  for (auto &range : ranges_)
+  for (auto& range : ranges_)
     arr.append(range.saveJson());
 
   return arr;

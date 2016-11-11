@@ -8,7 +8,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -20,7 +20,8 @@
 #endif
 
 Exception::Exception(rcstr msg, bool silent) noexcept
-: msg_(msg), msg8bit_(msg_.toLocal8Bit()), silent_(silent) {
+: silent_(silent) {
+  setMsg(msg);
 }
 
 Exception::Exception() noexcept
@@ -37,6 +38,11 @@ Exception::Exception(rc that) noexcept
 
 pcstr Exception::what() const noexcept {
   return msg8bit_.constData();
+}
+
+void Exception::setMsg(rcstr s) {
+  msg_     = s;
+  msg8bit_ = msg_.toLocal8Bit();
 }
 
 Exception* Exception::clone() const {

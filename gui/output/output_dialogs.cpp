@@ -8,13 +8,15 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
 #include "output_dialogs.h"
 #include "calc/calc_polefigure.h"
+#include "config.h"
+#include "gui_cfg.h"
 #include "thehub.h"
 #include "types/type_models.h"
 
@@ -37,10 +39,10 @@ PanelGammaSlices::PanelGammaSlices(TheHub& hub) : super(hub, "Gamma slices") {
   auto g = grid();
 
   g->addWidget(label("count"),               0, 0);
-  g->addWidget((numSlices = spinCell(4, 1)), 0, 1);
+  g->addWidget((numSlices = spinCell(gui_cfg::em4, 0)), 0, 1);
 
   g->addWidget(label("degrees"),               1, 0);
-  g->addWidget((stepGamma = spinCell(6, 0.0)), 1, 1);
+  g->addWidget((stepGamma = spinDoubleCell(gui_cfg::em4_2, 0.0)), 1, 1);
   stepGamma->setReadOnly(true);
 
   g->addRowStretch();
@@ -53,7 +55,11 @@ PanelGammaSlices::PanelGammaSlices(TheHub& hub) : super(hub, "Gamma slices") {
 }
 
 void PanelGammaSlices::updateValues() {
-  stepGamma->setValue(rgeGma_.width() / numSlices->value());
+  uint nSlices = to_u(numSlices->value());
+  if (nSlices > 0)
+    stepGamma->setValue(rgeGma_.width() / nSlices);
+  else
+    stepGamma->clear();
 }
 
 PanelGammaRange::PanelGammaRange(TheHub& hub) : super(hub, "Gamma range") {
@@ -62,10 +68,10 @@ PanelGammaRange::PanelGammaRange(TheHub& hub) : super(hub, "Gamma range") {
   g->addWidget((cbLimitGamma = check("limit")),       0, 0, 1, 2);
 
   g->addWidget(label("min"),                          1, 0);
-  g->addWidget((minGamma = spinCell(6, -180., 180.)), 1, 1);
+  g->addWidget((minGamma = spinDoubleCell(gui_cfg::em4_2, -180., 180.)), 1, 1);
 
   g->addWidget(label("max"),                          2, 0);
-  g->addWidget((maxGamma = spinCell(6, -180., 180.)), 2, 1);
+  g->addWidget((maxGamma = spinDoubleCell(gui_cfg::em4_2, -180., 180.)), 2, 1);
 
   g->addRowStretch();
 
@@ -99,18 +105,18 @@ PanelInterpolation::PanelInterpolation(TheHub& hub) : super(hub, "Interpolation"
   auto g = grid();
 
   g->addWidget(label("step α"), 0, 0, Qt::AlignRight);
-  g->addWidget((stepAlpha = spinCell(6, 1., 30.)), 0, 1);
+  g->addWidget((stepAlpha = spinDoubleCell(gui_cfg::em4_2, 1., 30.)), 0, 1);
   g->addWidget(label("β"), 1, 0, Qt::AlignRight);
-  g->addWidget((stepBeta = spinCell(6, 1., 30.)), 1, 1);
+  g->addWidget((stepBeta = spinDoubleCell(gui_cfg::em4_2, 1., 30.)), 1, 1);
   g->addWidget(label("idw radius"), 2, 0, Qt::AlignRight);
-  g->addWidget((idwRadius = spinCell(6, 0., 90.)), 2, 1);
+  g->addWidget((idwRadius = spinDoubleCell(gui_cfg::em4_2, 0., 90.)), 2, 1);
 
   g->addWidget(label("avg. α max"), 0, 2, Qt::AlignRight);
-  g->addWidget((avgAlphaMax = spinCell(6, 0., 90.)), 0, 3);
+  g->addWidget((avgAlphaMax = spinDoubleCell(gui_cfg::em4_2, 0., 90.)), 0, 3);
   g->addWidget(label("radius"), 1, 2, Qt::AlignRight);
-  g->addWidget((avgRadius = spinCell(6, 0., 90.)), 1, 3);
+  g->addWidget((avgRadius = spinDoubleCell(gui_cfg::em4_2, 0., 90.)), 1, 3);
   g->addWidget(label("inclusion %"), 2, 2, Qt::AlignRight);
-  g->addWidget((avgThreshold = spinCell(6, 0, 100)), 2, 3);
+  g->addWidget((avgThreshold = spinCell(gui_cfg::em4_2, 0, 100)), 2, 3);
 
   g->addRowStretch();
 }
@@ -146,7 +152,6 @@ PanelFitError::PanelFitError(TheHub& hub) : super(hub, "Fit error") {
     g->addWidget(fwhmFitError_      = new panel::FitErrorGridPannel(hub),1,0);
 
     g->addRowStretch();
-    g->setMargin(1);
 
     {
       auto g = intensityFitError_->grid();
@@ -291,7 +296,6 @@ Params::Params(TheHub& hub, ePanels panels)
   if (DIAGRAM & panels)
     box_->addWidget((panelDiagram = new PanelDiagram(hub)));
 
-  box_->setMargin(0);
   box_->addStretch();
 
   readSettings();
@@ -301,52 +305,31 @@ Params::~Params() {
   saveSettings();
 }
 
-static str SETTINGS_GROUP = "output";
-static str const
-  KEY_NUM_SLICES("num slices"),
-  KEY_LIMIT_GAMMA("limit gamma"),
-
-  KEY_INTERPOLATED("interpolated"),
-
-  KEY_STEP_ALPHA("step alpha"),
-  KEY_STEP_BETA("step beta"),
-  KEY_IDW_RADIUS("idw radius"),
-
-  KEY_AVG_ALPHA_MAX("avg alpha max"),
-  KEY_AVG_RADIUS("avg radius"),
-  KEY_AVG_THRESHOLD("avg threshold"),
-
-  KEY_SAVE_DIR("save dir"),
-  KEY_SAVE_FMT("save format");
-
 void Params::readSettings() {
-  Settings s(SETTINGS_GROUP);
+  Settings s(config_key::GROUP_OUTPUT);
 
-  if (panelGammaSlices) {
-    panelGammaSlices->numSlices->setValue(s.readReal(KEY_NUM_SLICES, 1));
-  }
+  if (panelGammaSlices)
+    panelGammaSlices->numSlices->setValue(s.readInt(config_key::NUM_SLICES, 0));
 
-  if (panelGammaRange) {
-    panelGammaRange->cbLimitGamma->setChecked(s.readBool(KEY_LIMIT_GAMMA, false));
-  }
+  if (panelGammaRange)
+    panelGammaRange->cbLimitGamma->setChecked(s.readBool(config_key::LIMIT_GAMMA, false));
 
-  if (panelPoints) {
-    (s.readBool(KEY_INTERPOLATED, false)
+  if (panelPoints)
+    (s.readBool(config_key::INTERPOLATED, false)
         ? panelPoints->rbInterp : panelPoints->rbCalc)->setChecked(true);
-  }
 
   if (panelInterpolation) {
-    panelInterpolation->stepAlpha->setValue(s.readReal(KEY_STEP_ALPHA, 5));
-    panelInterpolation->stepBeta->setValue(s.readReal(KEY_STEP_BETA, 5));
-    panelInterpolation->idwRadius->setValue(s.readReal(KEY_IDW_RADIUS, 10));
+    panelInterpolation->stepAlpha->setValue(s.readReal(config_key::STEP_ALPHA, 5));
+    panelInterpolation->stepBeta->setValue(s.readReal(config_key::STEP_BETA, 5));
+    panelInterpolation->idwRadius->setValue(s.readReal(config_key::IDW_RADIUS, 10));
 
-    panelInterpolation->avgAlphaMax->setValue(s.readReal(KEY_AVG_ALPHA_MAX, 15));
-    panelInterpolation->avgRadius->setValue(s.readReal(KEY_AVG_RADIUS, 5));
-    panelInterpolation->avgThreshold->setValue(s.readReal(KEY_AVG_THRESHOLD, 100));
+    panelInterpolation->avgAlphaMax->setValue(s.readReal(config_key::AVG_ALPHA_MAX, 15));
+    panelInterpolation->avgRadius->setValue(s.readReal(config_key::AVG_RADIUS, 5));
+    panelInterpolation->avgThreshold->setValue(s.readInt(config_key::AVG_THRESHOLD, 100));
   }
 
-  saveDir = s.readStr(KEY_SAVE_DIR);
-  saveFmt = s.readStr(KEY_SAVE_FMT);
+  saveDir = s.readStr(config_key::SAVE_DIR);
+  saveFmt = s.readStr(config_key::SAVE_FMT);
 
   if (panelGammaSlices)
     panelGammaSlices->updateValues();
@@ -356,32 +339,29 @@ void Params::readSettings() {
 }
 
 void Params::saveSettings() const {
-  Settings s(SETTINGS_GROUP);
+  Settings s(config_key::GROUP_OUTPUT);
 
-  if (panelGammaSlices) {
-    s.saveReal(KEY_NUM_SLICES, panelGammaSlices->numSlices->value());
-  }
+  if (panelGammaSlices)
+    s.saveInt(config_key::NUM_SLICES, panelGammaSlices->numSlices->value());
 
-  if (panelGammaRange) {
-    s.saveBool(KEY_LIMIT_GAMMA,  panelGammaRange->cbLimitGamma->isChecked());
-  }
+  if (panelGammaRange)
+    s.saveBool(config_key::LIMIT_GAMMA,  panelGammaRange->cbLimitGamma->isChecked());
 
-  if (panelPoints) {
-    s.saveBool(KEY_INTERPOLATED, panelPoints->rbInterp->isChecked());
-  }
+  if (panelPoints)
+    s.saveBool(config_key::INTERPOLATED, panelPoints->rbInterp->isChecked());
 
   if (panelInterpolation) {
-    s.saveReal(KEY_STEP_ALPHA,    panelInterpolation->stepAlpha->value());
-    s.saveReal(KEY_STEP_BETA,     panelInterpolation->stepBeta->value());
-    s.saveReal(KEY_IDW_RADIUS,    panelInterpolation->idwRadius->value());
+    s.saveReal(config_key::STEP_ALPHA,    panelInterpolation->stepAlpha->value());
+    s.saveReal(config_key::STEP_BETA,     panelInterpolation->stepBeta->value());
+    s.saveReal(config_key::IDW_RADIUS,    panelInterpolation->idwRadius->value());
 
-    s.saveReal(KEY_AVG_ALPHA_MAX, panelInterpolation->avgAlphaMax->value());
-    s.saveReal(KEY_AVG_RADIUS,    panelInterpolation->avgRadius->value());
-    s.saveReal(KEY_AVG_THRESHOLD, panelInterpolation->avgThreshold->value());
+    s.saveReal(config_key::AVG_ALPHA_MAX, panelInterpolation->avgAlphaMax->value());
+    s.saveReal(config_key::AVG_RADIUS,    panelInterpolation->avgRadius->value());
+    s.saveInt(config_key::AVG_THRESHOLD, panelInterpolation->avgThreshold->value());
   }
 
-  s.saveStr(KEY_SAVE_DIR, saveDir);
-  s.saveStr(KEY_SAVE_FMT, saveFmt);
+  s.saveStr(config_key::SAVE_DIR, saveDir);
+  s.saveStr(config_key::SAVE_FMT, saveFmt);
 }
 
 //------------------------------------------------------------------------------
@@ -457,7 +437,7 @@ QVariant TableModel::data(rcIndex index, int role) const {
 
     if (--indexCol < numCols && indexRow < numRows) {
       QVariant var = rows_.at(to_u(indexRow)).at(to_u(indexCol));
-      if (typ::isReal(var) && qIsNaN(var.toDouble()))
+      if (typ::isNumeric(var) && qIsNaN(var.toDouble()))
         var = QVariant(); // hide nans
       return var;
     }
@@ -644,7 +624,6 @@ TabTable::TabTable(TheHub& hub, Params& params,
   EXPECT(to_u(headers.count()) == cmps.count())
   uint numCols = to_u(headers.count());
 
-  grid_->setMargin(0);
   grid_->addWidget((table = new Table(hub_, numCols)), 0, 0);
   grid_->setColumnStretch(0, 1);
 
@@ -845,7 +824,7 @@ str TabSave::filePath(bool withSuffix) {
 
   if (dir.isEmpty() || file.isEmpty())
     return EMPTY_STR;
-  
+
   str suffix;
   if (withSuffix)
     suffix = rbDat_->isChecked() ? DAT_SFX : CSV_SFX;
@@ -864,7 +843,7 @@ str TabSave::fileSetSuffix(rcstr suffix) {
     if (!file.isEmpty())
       file += suffix;
   }
-  
+
   file_->setText(file);
   return file;
 }
@@ -937,7 +916,7 @@ Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
 
   auto tabTable = new TabTable(hub, *params_,
      calc::ReflectionInfo::dataTags(), calc::ReflectionInfo::dataCmps());
-  tabs_->addTab("Points").box().addWidget(tabTable);
+  tabs_->addTab("Points", Qt::Vertical).box().addWidget(tabTable);
 
   table_ = tabTable->table;
 
@@ -952,14 +931,14 @@ void Frame::calculate() {
   calcPoints_.clear();
   interpPoints_.clear();
 
-  auto &reflections = hub_.reflections();
+  auto& reflections = hub_.reflections();
   if (!reflections.isEmpty()) {
     uint reflCount = reflections.count();
 
     auto ps = params_->panelGammaSlices;
     ENSURE(ps)
 
-    pint gammaSlices = pint(ps->numSlices->value());
+    uint gammaSlices = to_u(ps->numSlices->value());
 
     auto pr = params_->panelGammaRange;
     ENSURE(pr)
@@ -968,7 +947,7 @@ void Frame::calculate() {
     if (pr->cbLimitGamma->isChecked())
       rgeGamma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
 
-    Progress progress(reflCount * hub_.numCollectedDatasets(), pb_);
+    Progress progress(reflCount, pb_);
 
     for_i (reflCount)
       calcPoints_.append(hub_.makeReflectionInfos(
@@ -993,11 +972,14 @@ void Frame::interpolate() {
     qreal    avgAlphaMax = pi->avgAlphaMax->value();
     qreal    avgTreshold = pi->avgThreshold->value() / 100.0;
 
+    Progress progress(calcPoints_.count(), pb_);
+
     for_i (calcPoints_.count())
       interpPoints_.append(
           calc::interpolate(calcPoints_.at(i),
                             alphaStep, betaStep, idwRadius,
-                            avgAlphaMax, avgRadius, avgTreshold));
+                            avgAlphaMax, avgRadius, avgTreshold,
+                            &progress));
   } else {
     for_i (calcPoints_.count())
       interpPoints_.append(calc::ReflectionInfos());
@@ -1023,7 +1005,7 @@ uint Frame::getReflIndex() const {
   EXPECT(params_->panelReflection)
   int reflIndex = params_->panelReflection->cbRefl->currentIndex();
   RUNTIME_CHECK(reflIndex >= 0, "invalid reflection index");
-  return reflIndex;
+  return to_u(reflIndex);
 }
 
 bool Frame::getInterpolated() const {

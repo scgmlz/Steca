@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -37,6 +37,8 @@ public:
   bool  silent() const noexcept { return silent_; }
   rcstr msg()    const noexcept { return msg_;    }
   pcstr what()   const noexcept;
+
+  void setMsg(rcstr);
 
   Exception* clone() const;
   void       raise() const;

@@ -8,7 +8,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -242,7 +242,8 @@ itf_t interpolateValues(deg searchRadius, ReflectionInfos::rc infos,
 // Interpolates infos to equidistant grid in alpha and beta.
 ReflectionInfos interpolate(ReflectionInfos::rc infos,
                             deg alphaStep, deg betaStep, deg idwRadius,
-                            deg averagingAlphaMax, deg averagingRadius, qreal inclusionTreshold) {
+                            deg averagingAlphaMax, deg averagingRadius, qreal inclusionTreshold,
+                            Progress* progress) {
   // Two interpolation methods are used here:
   // If grid point alpha <= averagingAlphaMax, points within averagingRadius
   // will be averaged.
@@ -268,10 +269,16 @@ ReflectionInfos interpolate(ReflectionInfos::rc infos,
 
   interpolatedInfos.reserve(numAlphas * numBetas);
 
-  for_int (i, numAlphas + 1) {
+  if (progress)
+    progress->setTotal(numAlphas * numBetas); // REVIEW + 1?
+
+  for_int (i, numAlphas + 1) {  // REVIEW why + 1
     deg const alpha = i * alphaStep;
     for_int (j, numBetas) {
       deg const beta = j * betaStep;
+
+      if (progress)
+        progress->step();
 
       if (infos.isEmpty()) {
         interpolatedInfos.append(ReflectionInfo(alpha, beta));

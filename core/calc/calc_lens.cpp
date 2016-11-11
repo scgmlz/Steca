@@ -8,7 +8,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -46,45 +46,7 @@ size2d LensBase::transCutSize(size2d size) const {
   return size;
 }
 
-//------------------------------------------------------------------------------
-
-ImageLens::ImageLens(core::Session::rc session,
-                     Image::rc image, Datasets::rc datasets,
-                     bool trans, bool cut)
-: super(session, datasets, trans, cut, session.imageTransform(), session.imageCut())
-, image_(image)
-{
-}
-
-size2d ImageLens::size() const {
-  return super::transCutSize(image_.size());
-}
-
-inten_t ImageLens::imageInten(uint i, uint j) const {
-  if (trans_) doTrans(i, j);
-  if (cut_)   doCut(i, j);
-
-  inten_t inten = image_.inten(i, j);
-  if (intensCorr_)
-    inten *= intensCorr_->at(i, j);
-
-  return inten;
-}
-
-inten_rge::rc ImageLens::rgeInten(bool fixed) const {
-  if (fixed)
-    return datasets_.rgeFixedInten(session_, trans_, cut_);
-
-  if (!rgeInten_.isValid()) {
-    auto sz = size();
-    for_ij (sz.w, sz.h)
-      rgeInten_.extendBy(imageInten(i, j));
-  }
-
-  return rgeInten_;
-}
-
-void ImageLens::doTrans(uint& x, uint& y) const {
+void LensBase::doTrans(uint& x, uint& y) const {
   auto s = size();
   uint w = s.w;
   uint h = s.h;
@@ -121,8 +83,46 @@ void ImageLens::doTrans(uint& x, uint& y) const {
   }
 }
 
-void ImageLens::doCut(uint& i, uint& j) const {
+void LensBase::doCut(uint& i, uint& j) const {
   i += imageCut_.left; j += imageCut_.top;
+}
+
+//------------------------------------------------------------------------------
+
+ImageLens::ImageLens(core::Session::rc session,
+                     Image::rc image, Datasets::rc datasets,
+                     bool trans, bool cut)
+: super(session, datasets, trans, cut, session.imageTransform(), session.imageCut())
+, image_(image)
+{
+}
+
+size2d ImageLens::size() const {
+  return super::transCutSize(image_.size());
+}
+
+inten_t ImageLens::imageInten(uint i, uint j) const {
+  if (trans_) doTrans(i, j);
+  if (cut_)   doCut(i, j);
+
+  inten_t inten = image_.inten(i, j);
+  if (intensCorr_)
+    inten *= intensCorr_->at(i, j);
+
+  return inten;
+}
+
+inten_rge::rc ImageLens::rgeInten(bool fixed) const {
+  if (fixed)
+    return datasets_.rgeFixedInten(session_, trans_, cut_);
+
+  if (!rgeInten_.isValid()) {
+    auto sz = size();
+    for_ij (sz.w, sz.h)
+      rgeInten_.extendBy(qreal(imageInten(i, j)));
+  }
+
+  return rgeInten_;
 }
 
 //------------------------------------------------------------------------------
@@ -144,6 +144,10 @@ gma_rge DatasetLens::rgeGma() const {
   return dataset_.rgeGma(session_);
 }
 
+gma_rge DatasetLens::rgeGmaFull() const {
+  return dataset_.rgeGmaFull(session_);
+}
+
 tth_rge DatasetLens::rgeTth() const {
   return dataset_.rgeTth(session_);
 }
@@ -154,12 +158,12 @@ inten_rge DatasetLens::rgeInten() const {
   return dataset_.rgeInten();
 }
 
-Curve DatasetLens::makeCurve() const {
-  return makeCurve(rgeGma());
+Curve DatasetLens::makeCurve(bool averaged) const {
+  return makeCurve(rgeGma(), averaged);
 }
 
-Curve DatasetLens::makeCurve(gma_rge::rc rgeGma) const {
-  inten_vec intens = dataset_.collectIntens(session_, intensCorr_, rgeGma);
+Curve DatasetLens::makeCurve(gma_rge::rc rgeGma, bool averaged) const {
+  inten_vec intens = dataset_.collectIntens(session_, intensCorr_, rgeGma, averaged);
 
   Curve res;
   uint count = intens.count();
@@ -168,7 +172,7 @@ Curve DatasetLens::makeCurve(gma_rge::rc rgeGma) const {
     tth_rge rgeTth = dataset_.rgeTth(session_);
     tth_t minTth = rgeTth.min, deltaTth = rgeTth.width() / count;
     for_i (count)
-      res.append(minTth + deltaTth * i, intens.at(i) * normFactor_);
+      res.append(minTth + deltaTth * i, qreal(intens.at(i) * normFactor_));
   }
 
   return res;

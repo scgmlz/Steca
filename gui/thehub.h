@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -27,7 +27,6 @@
 
 class QSpinBox;
 class QDoubleSpinBox;
-class Progress;
 
 namespace gui {
 //------------------------------------------------------------------------------
@@ -52,6 +51,9 @@ public:
 
   bool readBool(rcstr key, bool def = false);
   void saveBool(rcstr key, bool);
+
+  int  readInt(rcstr key, int def = 0);
+  void saveInt(rcstr key, int);
 
   qreal readReal(rcstr key, qreal def = 0);
   void  saveReal(rcstr key, qreal);
@@ -88,7 +90,7 @@ private:
   void configActions();
 
 private:
-  scoped<core::Session*> session;
+  scoped<core::Session*> session_;
 
   bool isFixedIntenImageScale_;
   bool isFixedIntenDgramScale_;
@@ -101,9 +103,10 @@ public:
 
   models::FilesModel       filesModel;
   models::DatasetsModel    datasetsModel;
+  models::MetadataModel    metadataModel;
   models::ReflectionsModel reflectionsModel;
 
-public:  // files
+public: // files
   uint numFiles() const;
   str  fileName(uint index) const;
   str  filePath(uint index) const;
@@ -117,17 +120,18 @@ public:
   calc::shp_ImageLens   plainImageLens(typ::Image::rc) const;
   calc::shp_DatasetLens datasetLens(data::Dataset::rc) const;
 
-  typ::Curve avgCurve(data::Datasets::rc) const;
+  typ::Curve avgCurve(data::Datasets::rc, bool averaged) const;
 
 public:
   calc::ReflectionInfos makeReflectionInfos(calc::Reflection::rc,
-      pint gmaSlices, gma_rge::rc, Progress* = nullptr);
+      uint gmaSlices, gma_rge::rc, Progress*);
 
 public:
   void       saveSession(QFileInfo const&) const;
   QByteArray saveSession() const;
 
-  void loadSession(QFileInfo const&) THROWS;
+  void clearSession();
+  void loadSession(QFileInfo const&)  THROWS;
   void loadSession(QByteArray const&) THROWS;
 
 public:
@@ -144,7 +148,7 @@ public:
   void combineDatasetsBy(pint);
 
   uint_vec::rc collectedFromFiles() const {
-    return session->collectedFromFiles();
+    return session_->collectedFromFiles();
   }
 
   pint datasetsGroupedBy() const {
@@ -156,11 +160,19 @@ public:
   }
 
   data::Datasets::rc collectedDatasets() const {
-    return session->collectedDatasets();
+    return session_->collectedDatasets();
   }
 
   str_lst::rc collectedDatasetsTags() const {
-    return session->collectedDatasetsTags();
+    return session_->collectedDatasetsTags();
+  }
+
+  typ::size2d imageSize() const {
+    return session_->imageSize();
+  }
+
+  typ::shp_AngleMap angleMap(data::OneDataset::rc dataset) const {
+    return session_->angleMap(dataset);
   }
 
   gma_rge collectedDatasetsRgeGma() const;
@@ -172,9 +184,12 @@ public:
   void setImageCut(bool topLeft, bool linked, typ::ImageCut::rc);
 
   typ::Geometry::rc geometry() const;
-  void setGeometry(preal detectorDistance, preal pixSize,
-                   bool isMidPixOffset, typ::IJ::rc midPixOffset);
+  void setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midPixOffset);
 
+  typ::Range::rc gammaRange() const;
+  void setGammaRange(typ::Range::rc);
+
+public:
   void setBgRanges(typ::Ranges::rc);
   void addBgRange(typ::Range::rc);
   void remBgRange(typ::Range::rc);
@@ -208,10 +223,10 @@ public:
   void setNorm(eNorm);
 
 public:
-  typ::Ranges::rc bgRanges()          const { return session->bgRanges();     }
-  uint            bgPolyDegree()      const { return session->bgPolyDegree(); }
+  typ::Ranges::rc bgRanges()          const { return session_->bgRanges();     }
+  uint            bgPolyDegree()      const { return session_->bgPolyDegree(); }
 
-  calc::Reflections::rc reflections() const { return session->reflections();  }
+  calc::Reflections::rc reflections() const { return session_->reflections();  }
 };
 
 //------------------------------------------------------------------------------

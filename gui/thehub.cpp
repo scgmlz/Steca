@@ -8,7 +8,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -16,7 +16,8 @@
 #include "thehub.h"
 #include "calc/calc_reflection.h"
 #include "calc/calc_reflection_info.h"
-#include "io/io_io.h"
+#include "config.h"
+#include "io_io.h"
 #include "mainwin.h"
 #include "typ/typ_async.h"
 #include "typ/typ_json.h"
@@ -89,10 +90,21 @@ void Settings::saveBool(rcstr key, bool val) {
 
 qreal Settings::readReal(rcstr key, qreal def) {
   auto var = readVariant(key, QVariant());
-  return typ::isReal(var) ? var.toDouble() : def;
+  bool ok; qreal val = var.toDouble(&ok);
+  return ok ? val : def;
 }
 
 void Settings::saveReal(rcstr key, qreal val) {
+  saveVariant(key, val);
+}
+
+int Settings::readInt(rcstr key, int def) {
+  auto var = readVariant(key, QVariant());
+  bool ok; int val = var.toInt(&ok);
+  return ok ? val : def;
+}
+
+void Settings::saveInt(rcstr key, int val) {
   saveVariant(key, val);
 }
 
@@ -125,9 +137,9 @@ WriteFile::WriteFile(rcstr path) THROWS : super(path) {
 //------------------------------------------------------------------------------
 
 TheHub::TheHub()
-: actions(*this), session(new core::Session())
+: actions(*this), session_(new core::Session())
 , isFixedIntenImageScale_(false), isFixedIntenDgramScale_(false)
-, isCombinedDgram_(false), filesModel(*this), datasetsModel(*this)
+, isCombinedDgram_(false), filesModel(*this), datasetsModel(*this), metadataModel(*this)
 , reflectionsModel(*this)
 {
   configActions();
@@ -143,12 +155,12 @@ void TheHub::configActions() {
   connect(actions.remCorr, &QAction::triggered,
           [this]() { setCorrFile(EMPTY_STR); });
 
-  connect(actions.fixedIntenImageScale, &QAction::toggled, [this](bool on) {
+  connect(actions.fixedIntenImage, &QAction::toggled, [this](bool on) {
     isFixedIntenImageScale_ = on;
     emit sigDisplayChanged();
   });
 
-  connect(actions.fixedIntenDgramScale, &QAction::toggled, [this](bool on) {
+  connect(actions.fixedIntenDgram, &QAction::toggled, [this](bool on) {
     isFixedIntenDgramScale_ = on;
     emit sigDisplayChanged();
   });
@@ -159,15 +171,19 @@ void TheHub::configActions() {
     emit sigDisplayChanged();
   });
 
+  connect(actions.showAveraged, &QAction::toggled, [this]() {
+    emit sigDisplayChanged();
+  });
+
   connect(actions.mirrorImage, &QAction::toggled,
           [this](bool on) { setImageMirror(on); });
 
   connect(actions.rotateImage, &QAction::triggered,
-          [this]() { setImageRotate(session->imageTransform().nextRotate()); });
+          [this]() { setImageRotate(session_->imageTransform().nextRotate()); });
 }
 
 uint TheHub::numFiles() const {
-  return session->numFiles();
+  return session_->numFiles();
 }
 
 str TheHub::fileName(uint index) const {
@@ -179,63 +195,44 @@ str TheHub::filePath(uint index) const {
 }
 
 data::shp_File TheHub::getFile(uint index) const {
-  return session->file(index);
+  return session_->file(index);
 }
 
 void TheHub::remFile(uint i) {
-  session->remFile(i);
+  session_->remFile(i);
   emit sigFilesChanged();
 
   if (0 == numFiles()) setImageCut(true, false, typ::ImageCut());
 }
 
 bool TheHub::hasCorrFile() const {
-  return session->hasCorrFile();
+  return session_->hasCorrFile();
 }
 
 typ::Image::rc TheHub::corrImage() const {
-  return session->corrImage();
+  return session_->corrImage();
 }
 
 calc::shp_ImageLens TheHub::plainImageLens(typ::Image::rc image) const {
-  return session->imageLens(image, collectedDatasets(), true, false);
+  return session_->imageLens(image, collectedDatasets(), true, false);
 }
 
 calc::shp_DatasetLens TheHub::datasetLens(data::Dataset::rc dataset) const {
-  return session->datasetLens(dataset, dataset.datasets(), session->norm(),
+  return session_->datasetLens(dataset, dataset.datasets(), session_->norm(),
                               true, true);
 }
 
-typ::Curve TheHub::avgCurve(data::Datasets::rc datasets) const {
-  return datasets.avgCurve(*session);
+typ::Curve TheHub::avgCurve(data::Datasets::rc datasets, bool averaged) const {
+  return datasets.avgCurve(*session_, averaged);
 }
 
 calc::ReflectionInfos TheHub::makeReflectionInfos(
-    calc::Reflection::rc reflection, pint gmaSlices, gma_rge::rc rgeGma,
+    calc::Reflection::rc reflection, uint gmaSlices, gma_rge::rc rgeGma,
     Progress* progress)
 {
-  return session->makeReflectionInfos(collectedDatasets(), reflection,
-                                      gmaSlices, rgeGma, progress);
+  return session_->makeReflectionInfos(collectedDatasets(), reflection,
+                                      gmaSlices, rgeGma, actions.showAveraged->isChecked(), progress);
 }
-
-static str const KEY_FILES("files");
-static str const KEY_SELECTED_FILES("selected files");
-static str const KEY_COMBINE("combine");
-static str const KEY_CORR_FILE("correction file");
-static str const KEY_CUT("cut");
-static str const KEY_TOP("top");
-static str const KEY_BOTTOM("bottom");
-static str const KEY_LEFT("left");
-static str const KEY_RIGHT("right");
-static str const KEY_DETECTOR("detector");
-static str const KEY_DISTANCE("distance");
-static str const KEY_PIX_SIZE("pixel size");
-static str const KEY_OFFSET_BEAM("offset beam");
-static str const KEY_BEAM_OFFSET("beam offset");
-static str const KEY_TRANSFORM("image transform");
-static str const KEY_BG_DEGREE("background degree");
-static str const KEY_BG_RANGES("background ranges");
-static str const KEY_REFLECTIONS("reflections");
 
 void TheHub::saveSession(QFileInfo const& fileInfo) const {
   WriteFile file(fileInfo.filePath());
@@ -251,22 +248,21 @@ QByteArray TheHub::saveSession() const {
 
   JsonObj top;
 
-  auto& geo = session->geometry();
-  top.saveObj(KEY_DETECTOR, JsonObj()
-      .savePreal(KEY_DISTANCE, geo.detectorDistance)
-      .savePreal(KEY_PIX_SIZE, geo.pixSize)
-      .saveBool(KEY_OFFSET_BEAM, geo.isMidPixOffset)
-      .saveObj(KEY_BEAM_OFFSET, geo.midPixOffset.saveJson()));
+  auto& geo = session_->geometry();
+  top.saveObj(config_key::DETECTOR, JsonObj()
+      .savePreal(config_key::DET_DISTANCE, geo.detectorDistance)
+      .savePreal(config_key::DET_PIX_SIZE, geo.pixSize)
+      .saveObj(config_key::BEAM_OFFSET, geo.midPixOffset.saveJson()));
 
-  auto& cut = session->imageCut();
-  top.saveObj(KEY_CUT, JsonObj()
-      .saveUint(KEY_LEFT, cut.left)
-      .saveUint(KEY_TOP, cut.top)
-      .saveUint(KEY_RIGHT, cut.right)
-      .saveUint(KEY_BOTTOM, cut.bottom));
+  auto& cut = session_->imageCut();
+  top.saveObj(config_key::CUT, JsonObj()
+      .saveUint(config_key::LEFT, cut.left)
+      .saveUint(config_key::TOP, cut.top)
+      .saveUint(config_key::RIGHT, cut.right)
+      .saveUint(config_key::BOTTOM, cut.bottom));
 
-  auto& trn = session->imageTransform();
-  top.saveUint(KEY_TRANSFORM, trn.val);
+  auto& trn = session_->imageTransform();
+  top.saveUint(config_key::TRANSFORM, trn.val);
 
   JsonArr arrFiles;
   // save file path relative to location of session
@@ -276,31 +272,36 @@ QByteArray TheHub::saveSession() const {
     arrFiles.append(relPath);
   }
 
-  top.saveArr(KEY_FILES, arrFiles);
+  top.saveArr(config_key::FILES, arrFiles);
 
   JsonArr arrSelectedFiles;
   for (uint i : collectedFromFiles())
     arrSelectedFiles.append(to_i(i));
 
-  top.saveArr(KEY_SELECTED_FILES, arrSelectedFiles);
-  top.saveUint(KEY_COMBINE, datasetsGroupedBy_);
+  top.saveArr(config_key::SELECTED_FILES, arrSelectedFiles);
+  top.saveUint(config_key::COMBINE, datasetsGroupedBy_);
 
   if (hasCorrFile()) {
-    str absPath = session->corrFile()->fileInfo().absoluteFilePath();
+    str absPath = session_->corrFile()->fileInfo().absoluteFilePath();
     str relPath = QDir::current().relativeFilePath(absPath);
-    top.saveString(KEY_CORR_FILE, relPath);
+    top.saveString(config_key::CORR_FILE, relPath);
   }
 
-  top.saveUint(KEY_BG_DEGREE, bgPolyDegree());
-  top.saveArr(KEY_BG_RANGES, bgRanges().saveJson());
+  top.saveUint(config_key::BG_DEGREE, bgPolyDegree());
+  top.saveArr(config_key::BG_RANGES, bgRanges().saveJson());
 
   JsonArr arrReflections;
   for (auto& reflection : reflections())
     arrReflections.append(reflection->saveJson());
 
-  top.saveArr(KEY_REFLECTIONS, arrReflections);
+  top.saveArr(config_key::REFLECTIONS, arrReflections);
 
   return QJsonDocument(top.sup()).toJson();
+}
+
+void TheHub::clearSession() {
+  session_->clear();
+  tellSessionCleared();
 }
 
 void TheHub::loadSession(QFileInfo const& fileInfo) THROWS {
@@ -318,11 +319,11 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
 
   TakesLongTime __;
 
-  session->clear();
+  clearSession();
 
   typ::JsonObj top(doc.object());
 
-  auto files = top.loadArr(KEY_FILES);
+  auto files = top.loadArr(config_key::FILES);
   for (auto file : files) {
     str  filePath = file.toString();
     QDir dir(filePath);
@@ -331,7 +332,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
     addFile(dir.absolutePath());
   }
 
-  auto     sels = top.loadArr(KEY_SELECTED_FILES, true);
+  auto sels = top.loadArr(config_key::SELECTED_FILES, true);
   uint_vec selIndexes;
   for (auto sel : sels) {
     int i = sel.toInt(), index = qBound(0, i, to_i(files.count()));
@@ -346,42 +347,42 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
     lastIndex = to_i(index);
   }
 
-  collectDatasetsFromFiles(selIndexes,top.loadPint(KEY_COMBINE,1));
+  collectDatasetsFromFiles(selIndexes,top.loadPint(config_key::COMBINE,1));
 
-  setCorrFile(top.loadString(KEY_CORR_FILE, EMPTY_STR));
+  setCorrFile(top.loadString(config_key::CORR_FILE, EMPTY_STR));
 
-  auto det = top.loadObj(KEY_DETECTOR);
-  setGeometry(det.loadPreal(KEY_DISTANCE), det.loadPreal(KEY_PIX_SIZE),
-              det.loadBool(KEY_OFFSET_BEAM), det.loadIJ(KEY_BEAM_OFFSET));
+  auto det = top.loadObj(config_key::DETECTOR);
+  setGeometry(det.loadPreal(config_key::DET_DISTANCE), det.loadPreal(config_key::DET_PIX_SIZE),
+              det.loadIJ(config_key::BEAM_OFFSET));
 
-  auto cut = top.loadObj(KEY_CUT);
-  uint x1 = cut.loadUint(KEY_LEFT), y1 = cut.loadUint(KEY_TOP),
-       x2 = cut.loadUint(KEY_RIGHT), y2 = cut.loadUint(KEY_BOTTOM);
+  auto cut = top.loadObj(config_key::CUT);
+  uint x1 = cut.loadUint(config_key::LEFT),  y1 = cut.loadUint(config_key::TOP),
+       x2 = cut.loadUint(config_key::RIGHT), y2 = cut.loadUint(config_key::BOTTOM);
   setImageCut(true, false, typ::ImageCut(x1, y1, x2, y2));
 
-  setImageRotate(typ::ImageTransform(top.loadUint(KEY_TRANSFORM)));
+  setImageRotate(typ::ImageTransform(top.loadUint(config_key::TRANSFORM)));
 
   typ::Ranges bgRanges;
-  bgRanges.loadJson(top.loadArr(KEY_BG_RANGES));
+  bgRanges.loadJson(top.loadArr(config_key::BG_RANGES));
   setBgRanges(bgRanges);
 
-  setBgPolyDegree(top.loadUint(KEY_BG_DEGREE));
+  setBgPolyDegree(top.loadUint(config_key::BG_DEGREE));
 
-  auto reflectionsObj = top.loadArr(KEY_REFLECTIONS);
+  auto reflectionsObj = top.loadArr(config_key::REFLECTIONS);
   for_i (reflectionsObj.count()) {
     calc::shp_Reflection reflection(new calc::Reflection);
     reflection->loadJson(reflectionsObj.objAt(i));
-    session->addReflection(reflection);
+    session_->addReflection(reflection);
   }
 
   emit sigReflectionsChanged();
 }
 
 void TheHub::addFile(rcstr filePath) THROWS {
-  if (!filePath.isEmpty() && !session->hasFile(filePath)) {
+  if (!filePath.isEmpty() && !session_->hasFile(filePath)) {
     {
       TakesLongTime __;
-      session->addFile(io::load(filePath));
+      session_->addFile(io::load(filePath));
     }
 
     emit sigFilesChanged();
@@ -396,7 +397,7 @@ void TheHub::addFiles(str_lst::rc filePaths) THROWS {
 }
 
 void TheHub::collectDatasetsFromFiles(uint_vec is, pint by) {
-  session->collectDatasetsFromFiles((collectFromFiles_  = is),
+  session_->collectDatasetsFromFiles((collectFromFiles_  = is),
                                     (datasetsGroupedBy_ = by));
   emit sigFilesSelected();
   emit sigDatasetsChanged();
@@ -411,63 +412,73 @@ void TheHub::combineDatasetsBy(pint by) {
 }
 
 gma_rge TheHub::collectedDatasetsRgeGma() const {
-  return collectedDatasets().rgeGma(*session);
+  return collectedDatasets().rgeGma(*session_);
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {
   data::shp_File file;
   if (!filePath.isEmpty()) file = io::load(filePath);
 
-  session->setCorrFile(file);
+  session_->setCorrFile(file);
   emit sigCorrFile(file);
 
   tryEnableCorrection(true);
 }
 
 void TheHub::tryEnableCorrection(bool on) {
-  session->tryEnableCorr(on);
-  emit sigCorrEnabled(session->isCorrEnabled());
+  session_->tryEnableCorr(on);
+  emit sigCorrEnabled(session_->isCorrEnabled());
 }
 
 typ::ImageCut::rc TheHub::imageCut() const {
-  return session->imageCut();
+  return session_->imageCut();
 }
 
 void TheHub::setImageCut(bool topLeft, bool linked,
-                         typ::ImageCut::rc margins) {
-  session->setImageCut(topLeft, linked, margins);
+                         typ::ImageCut::rc cut) {
+  session_->setImageCut(topLeft, linked, cut);
   emit sigGeometryChanged();
 }
 
 const typ::Geometry& TheHub::geometry() const {
-  return session->geometry();
+  return session_->geometry();
 }
 
-void TheHub::setGeometry(preal detectorDistance, preal pixSize,
-                         bool isMidPixOffset, typ::IJ::rc midPixOffset) {
+void TheHub::setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midPixOffset) {
   level_guard __(sigLevel_);
   if (sigLevel_ > 1)
     return;
 
-  session->setGeometry(detectorDistance, pixSize, isMidPixOffset, midPixOffset);
+  session_->setGeometry(detectorDistance, pixSize, midPixOffset);
   emit sigGeometryChanged();
 }
 
+typ::Range::rc TheHub::gammaRange() const {
+  return session_->gammaRange();
+}
+
+void TheHub::setGammaRange(typ::Range::rc gammaRange) {
+  session_->setGammaRange(gammaRange);
+  emit sigGammaRange();
+}
+
 void TheHub::setBgRanges(typ::Ranges::rc ranges) {
-  session->setBgRanges(ranges);
+  session_->setBgRanges(ranges);
   emit sigBgChanged();
 }
 
 void TheHub::addBgRange(typ::Range::rc range) {
-  if (session->addBgRange(range)) emit sigBgChanged();
+  if (session_->addBgRange(range))
+    emit sigBgChanged();
 }
 
 void TheHub::remBgRange(typ::Range::rc range) {
-  if (session->remBgRange(range)) emit sigBgChanged();
+  if (session_->remBgRange(range))
+    emit sigBgChanged();
 }
 
 void TheHub::setBgPolyDegree(uint degree) {
-  session->setBgPolyDegree(degree);
+  session_->setBgPolyDegree(degree);
   emit sigBgChanged();
 }
 
@@ -479,13 +490,13 @@ void TheHub::setReflType(fit::ePeakType type) {
 }
 
 void TheHub::addReflection(fit::ePeakType type) {
-  session->addReflection(calc::shp_Reflection(new calc::Reflection(type)));
+  session_->addReflection(calc::shp_Reflection(new calc::Reflection(type)));
   emit sigReflectionsChanged();
 }
 
 void TheHub::remReflection(uint i) {
-  session->remReflection(i);
-  if (session->reflections().isEmpty())
+  session_->remReflection(i);
+  if (session_->reflections().isEmpty())
     tellSelectedReflection(calc::shp_Reflection());
 
   emit sigReflectionsChanged();
@@ -519,19 +530,19 @@ void TheHub::setImageRotate(typ::ImageTransform rot) {
 
   actions.rotateImage->setIcon(QIcon(rotateIconFile));
   actions.mirrorImage->setIcon(QIcon(mirrorIconFile));
-  session->setImageTransformRotate(rot);
-  setImageCut(true, false, session->imageCut());
+  session_->setImageTransformRotate(rot);
+  setImageCut(true, false, session_->imageCut());
   emit sigGeometryChanged();
 }
 
 void TheHub::setImageMirror(bool on) {
   actions.mirrorImage->setChecked(on);
-  session->setImageTransformMirror(on);
+  session_->setImageTransformMirror(on);
   emit sigGeometryChanged();
 }
 
 void TheHub::setNorm(eNorm norm) {
-  session->setNorm(norm);
+  session_->setNorm(norm);
   emit sigNormChanged();
 }
 

@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -20,6 +20,12 @@
 #include "typ/typ_fun.h"
 #include "typ/typ_curve.h"
 #include "typ/typ_types.h"
+
+namespace json_fun_key {
+extern str const
+  POLYNOM, RAW, GAUSSIAN, LORENTZIAN,
+  PSEUDOVOIGT1, PSEUDOVOIGT2;
+}
 
 namespace fit {
 //------------------------------------------------------------------------------

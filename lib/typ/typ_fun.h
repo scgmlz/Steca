@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -21,6 +21,11 @@
 #include "typ/typ_factory.h"
 #include "typ/typ_json.h"
 #include "typ/typ_range.h"
+
+namespace json_fun_key {
+extern str const
+  SUM;
+}
 
 namespace typ {
 //------------------------------------------------------------------------------
@@ -62,12 +67,6 @@ public:
     JsonObj saveJson() const;
     void loadJson(JsonObj::rc) THROWS;
 
-  protected:
-    struct KEY { // for Json
-      static str const
-        VALUE, RANGE;
-    };
-
   private:
     qreal value_, error_;
 
@@ -95,14 +94,11 @@ public:
 public:
   virtual JsonObj saveJson() const;
   virtual void loadJson(JsonObj::rc) THROWS;
-
-protected:
-  struct KEY { // for Json
-    static str const
-      TYPE,
-      SUM_FUNCTIONS;
-  };
 };
+
+#ifndef QT_NO_DEBUG
+QDebug& operator<<(QDebug&, Function::rc);
+#endif
 
 //------------------------------------------------------------------------------
 // abstract function with parameters

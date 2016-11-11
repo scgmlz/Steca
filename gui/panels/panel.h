@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -28,7 +28,21 @@ class TableModel;
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-// Just a plain panel
+// REVIEW still needed?
+
+// Just a widget
+class PanelWidget : public QWidget, protected RefHub {
+  CLS(PanelWidget) SUPER(QWidget)
+public:
+  PanelWidget(TheHub&, Qt::Orientation);
+
+  QBoxLayout* box() const { return box_; }
+
+protected:
+  QBoxLayout *box_;
+};
+
+// Just a groupbox
 class BasicPanel : public QGroupBox, protected RefHub {
   CLS(BasicPanel) SUPER(QGroupBox)
 public:
@@ -96,7 +110,7 @@ class TabsPanel : public QTabWidget, protected RefHub {
 public:
   TabsPanel(TheHub&);
 
-  Tab &addTab(rcstr title, Qt::Orientation = Qt::Vertical);
+  Tab &addTab(rcstr title, Qt::Orientation);
   Tab &tab(uint);
 };
 

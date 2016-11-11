@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -28,33 +28,31 @@ namespace gui {
 class Action : public QAction {
   CLS(Action) SUPER(QAction)
 public:
-  Action(rcstr text, rcstr tip, QObject*);
+  Action(rcstr text, QObject*);
 
-  Action& text(rcstr, bool alsoTip = false);
+  Action& text(rcstr);
   Action& tip(rcstr);
   Action& key(QKeySequence);
   Action& icon(rcstr);
 
-  virtual Action& alt(rcstr text2, rcstr tip2);
+  virtual Action& alt(rcstr text2);
 };
 
 class TriggerAction : public Action {
   CLS(TriggerAction) SUPER(Action)
 public:
   TriggerAction(rcstr text, QObject* = nullptr);
-  TriggerAction(rcstr text, rcstr tip, QObject* = nullptr);
 };
 
 class ToggleAction : public Action {
   CLS(ToggleAction) SUPER(Action)
 public:
   ToggleAction(rcstr text, QObject* = nullptr);
-  ToggleAction(rcstr text, rcstr tip, QObject* = nullptr);
 
-  Action& alt(rcstr text2, rcstr tip2 = EMPTY_STR);
+  Action& alt(rcstr text2);
 
 protected:
-  str text1_, text2_, tip1_, tip2_;
+  str text1_, text2_;
 };
 
 //------------------------------------------------------------------------------
@@ -65,22 +63,23 @@ public:
   Actions(TheHub&);
 
   Action
-      *about, *online, *quit,
-      *viewStatusbar, *viewFiles, *viewDatasets, *viewDatasetInfo, *viewReset,
+    *about, *online, *checkUpdate, *quit,
+    *viewStatusbar, *viewFiles, *viewDatasets, *viewDatasetInfo, *viewReset,
 #ifndef Q_OS_OSX  // Mac has its own
-      *fullScreen,
+    *fullScreen,
 #endif
-      *loadSession, *saveSession,
-      *addFiles, *remFile, *enableCorr, *remCorr,
-      *rotateImage, *mirrorImage, *linkCuts, *showOverlay, *hasBeamOffset,
-      *fixedIntenImageScale, *fixedIntenDgramScale, *combinedDgram,
-      *fitRegions, *fitBgClear, *fitBgShow,
-      *addReflection, *remReflection,
-      *outputPolefigures, *outputDiagrams, *outputDiffractograms;
+    *loadSession, *saveSession, *clearSession,
+    *addFiles, *remFile, *enableCorr, *remCorr,
+    *rotateImage, *mirrorImage, *linkCuts, *showOverlay, *stepScale, *showGamma,
+    *fixedIntenImage, *fixedIntenDgram, *combinedDgram,
+    *showAveraged,
+    *selRegions, *showBackground, *clearBackground, *clearReflections,
+    *addReflection, *remReflection,
+    *outputPolefigures, *outputDiagrams, *outputDiffractograms;
 
 private:
-  Action& trg(Action*& action, rcstr text, rcstr tip = EMPTY_STR);
-  Action& tgl(Action*& action, rcstr text, rcstr tip = EMPTY_STR);
+  Action& trg(Action*& action, rcstr text);
+  Action& tgl(Action*& action, rcstr text);
 };
 
 //------------------------------------------------------------------------------

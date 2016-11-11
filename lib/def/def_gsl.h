@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -132,6 +132,10 @@ inline unsigned int to_u(int i) {
   return i;
 }
 
+inline unsigned int clip_u(int i) {
+  return qMax(0, i);
+}
+
 #else
 
 #ifndef QT_NO_DEBUG
@@ -155,6 +159,12 @@ typename std::__make_unsigned<T>::__type to_u(T t) {
   static_assert(std::is_signed<T>::value, "to_u(signed)");
   EXPECT2(0 <= t, "to_u(attempt to convert a negative value)")
   return typename std::__make_unsigned<T>::__type(t);
+}
+
+template <typename T>
+typename std::__make_unsigned<T>::__type clip_u(T t) {
+  static_assert(std::is_signed<T>::value, "clip_u(signed)");
+  return typename std::__make_unsigned<T>::__type(qMax(0, t));
 }
 
 #endif

@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -22,6 +22,14 @@
 #include "typ/typ_str.h"
 #include <QJsonArray>
 #include <QJsonObject>
+
+namespace json_key {
+extern str const
+  I, J, X, Y, MIN, MAX,
+  PARAMS, TYPE, FUN,
+  VALUE, RANGE, COUNT,
+  PEAK, FWHM;
+}
 
 namespace typ {
 //------------------------------------------------------------------------------

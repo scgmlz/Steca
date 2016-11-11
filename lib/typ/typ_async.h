@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -29,14 +29,15 @@ public:
 
 class Progress final {
 public:
-  Progress(uint total, class QProgressBar*);
+  Progress(uint mulTotal, class QProgressBar*);
  ~Progress();
 
+  void setTotal(uint);
   void setProgress(uint);
   void step();
 
 private:
-  uint total_, i_;
+  uint total_, mulTotal_, i_;
   QProgressBar* bar_;
 };
 

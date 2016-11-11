@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -106,6 +106,7 @@ public:
   typ::deg chi()            const { return md_->motorChi; }
 
   gma_rge  rgeGma(core::Session const&) const;
+  gma_rge  rgeGmaFull(core::Session const&) const;
   tth_rge  rgeTth(core::Session const&) const;
 
   inten_rge rgeInten() const;
@@ -147,6 +148,7 @@ public:
   typ::deg chi() const;
 
   gma_rge  rgeGma(core::Session const&) const;
+  gma_rge  rgeGmaFull(core::Session const&) const;
   tth_rge  rgeTth(core::Session const&) const;
 
   inten_rge rgeInten() const;
@@ -156,7 +158,7 @@ public:
   qreal    avgDeltaTime()         const;
 
   inten_vec collectIntens(core::Session const&, typ::Image const* intensCorr,
-                          gma_rge::rc) const;
+                          gma_rge::rc, bool averaged) const;
 
 private:
   // all dataset(s) must have the same image size
@@ -184,7 +186,7 @@ public:
   inten_rge::rc  rgeGma(core::Session const&) const;
   inten_rge::rc  rgeFixedInten(core::Session const&, bool trans, bool cut) const;
 
-  typ::Curve avgCurve(core::Session const&) const;
+  typ::Curve avgCurve(core::Session const&, bool averaged) const;
 
   void  invalidateAvgMutables() const;
 

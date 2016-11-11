@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -21,6 +21,7 @@
 #include "def/defs.h"
 
 #include <QMainWindow>
+#include <QNetworkAccessManager>
 
 namespace gui {
 //------------------------------------------------------------------------------
@@ -32,6 +33,7 @@ public:
 
 private:
   void initMenus();
+  void addActions(QMenu*, QList<QAction*>);
   void initLayout();
   void initStatusBar();
   void connectActions();
@@ -39,7 +41,13 @@ private:
 public:
   void about();
   void online();
+  void checkUpdate();
+  void checkUpdate(bool completeReport);
 
+private:
+  void messageDialog(rcstr title, rcstr text);
+
+public:
   void show();
   void close();
 
@@ -48,6 +56,7 @@ public:
 
   void loadSession();
   void saveSession();
+  void clearSession();
 
   void outputPoleFigures();
   void outputDiagrams();
@@ -65,8 +74,8 @@ private:
 
 private:
   QMenu
-      *menuFile_, *menuView_,
-      *menuDetector_, *menuImage_, *menuDgram_,
+      *menuFile_,   *menuView_,
+      *menuImage_,  *menuDgram_,
       *menuOutput_, *menuHelp_;
 
   QDockWidget
@@ -74,6 +83,7 @@ private:
 
 private:
   QByteArray initialState_;
+  QNetworkAccessManager netMan_;
 
   void readSettings();
   void saveSettings();

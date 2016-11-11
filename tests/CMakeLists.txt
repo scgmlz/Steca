@@ -1,4 +1,7 @@
-# tests/CMakeLists.txt
+# CMakeLists.txt
+
+set(dir "tests")
+set(lib ${dir})
 
 include_directories (
   ${CMAKE_HOME_DIRECTORY}/core
@@ -13,17 +16,17 @@ file (GLOB source_files
   "*.cpp" "*/*.cpp" "*/*/*.cpp"
 )
 
-add_executable (tests
+add_executable (${lib}
   ${header_files}
   ${source_files}
 )
 
-target_link_libraries (tests
+target_link_libraries (${lib}
   Qt5::Test
-  StecaCore
+  core
   LevMar
-  StecaLib
-  StecaGUI
+  lib
+  gui
 )
 
 # eof

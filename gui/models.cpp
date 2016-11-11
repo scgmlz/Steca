@@ -8,15 +8,15 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
 #include "models.h"
 #include "calc/calc_reflection.h"
+#include "gui_helpers.h"
 #include "thehub.h"
-#include <QCheckBox>
 
 namespace models {
 //------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ void FilesModel::remFile(uint i) {
 //------------------------------------------------------------------------------
 
 DatasetsModel::DatasetsModel(gui::TheHub& hub)
-: super(hub), datasets_(hub.collectedDatasets()), metaInfo_(nullptr)
+: super(hub), datasets_(hub.collectedDatasets())//, metaInfo_(nullptr)
 {
   onSigDatasetsChanged([this]() {
     signalReset();
@@ -111,19 +111,75 @@ QVariant DatasetsModel::headerData(int col, Qt::Orientation, int role) const {
   }
 }
 
-void DatasetsModel::showMetaInfo(checkedinfo_vec::rc infos_) {
+void DatasetsModel::showMetaInfo(typ::vec<bool> const& metadataRows) {
   beginResetModel();
 
   metaInfoNums_.clear();
 
-  if ((metaInfo_ = &infos_)) {
-    for_i (metaInfo_->count()) {
-      auto& item = metaInfo_->at(i);
-      if (item.cb->isChecked()) metaInfoNums_.append(i);
-    }
-  }
+  for_i (metadataRows.count())
+    if (metadataRows.at(i))
+      metaInfoNums_.append(i);
 
   endResetModel();
+}
+
+//------------------------------------------------------------------------------
+
+MetadataModel::MetadataModel(gui::TheHub& hub) : super(hub) {
+  rowsChecked_.fill(false, data::Metadata::numAttributes(false));
+
+  onSigDatasetSelected([this](data::shp_Dataset dataset) {
+    metadata_.clear();
+    if (dataset)
+      metadata_ = dataset->metadata();
+    signalReset();
+  });
+}
+
+int MetadataModel::columnCount(rcIndex) const {
+  return NUM_COLUMNS;
+}
+
+int MetadataModel::rowCount(rcIndex) const {
+  return to_i(data::Metadata::numAttributes(false));
+}
+
+QVariant MetadataModel::data(rcIndex index, int role) const {
+  int row = index.row();
+  if (row < 0 || rowCount() <= row)
+    return EMPTY_VAR;
+
+  int col = index.column();
+
+  switch (role) {
+  case Qt::CheckStateRole:
+    switch (col) {
+    case COL_CHECK:
+      return rowsChecked_.at(to_u(row)) ? Qt::Checked : Qt::Unchecked;
+    }
+    break;
+
+  case Qt::DisplayRole:
+    switch (col) {
+    case COL_TAG:
+      return data::Metadata::attributeTag(to_u(row));
+    case COL_VALUE:
+      return metadata_ ? metadata_->attributeStrValue(to_u(row)) : "-";
+    }
+    break;
+  }
+
+  return EMPTY_VAR;
+}
+
+QVariant MetadataModel::headerData(int, Qt::Orientation, int) const {
+  return EMPTY_VAR;
+}
+
+void MetadataModel::flipCheck(uint row) {
+  auto& item = rowsChecked_[row];
+  item = !item;
+  signalReset();
 }
 
 //------------------------------------------------------------------------------

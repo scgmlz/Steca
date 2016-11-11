@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -105,7 +105,7 @@ public:
   }
 
 private:
-  // All files must have images of the same size; this is a cached value
+  // All files must have images of the same size
   typ::size2d imageSize_;
   // Clears the image size if there are no files in the session.
   void updateImageSize();
@@ -131,13 +131,16 @@ public:
 
 private:
   typ::Geometry geometry_;
+  typ::Range    gammaRange_;
   mutable typ::cache_lazy<typ::AngleMap::Key,typ::AngleMap> angleMapCache_;
 
 public:
   typ::Geometry::rc geometry() const { return geometry_; }
-  void setGeometry(preal detectorDistance, preal pixSize,
-                   bool isMidPixOffset, typ::IJ::rc midPixOffset);
+  void setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midPixOffset);
   typ::IJ midPix() const;
+
+  typ::Range::rc gammaRange() const;
+  void setGammaRange(typ::Range::rc);
 
   typ::shp_AngleMap        angleMap(data::OneDataset::rc) const;
   static typ::shp_AngleMap angleMap(Session::rc, data::OneDataset::rc);
@@ -148,15 +151,15 @@ public:
                                   bool trans, bool cut) const;
   calc::shp_DatasetLens datasetLens(data::Dataset::rc, data::Datasets::rc, eNorm,
                                     bool trans, bool cut) const;
-  typ::Curve makeCurve(calc::DatasetLens::rc, gma_rge::rc) const;
+  typ::Curve makeCurve(calc::DatasetLens::rc, gma_rge::rc, bool averaged) const;
 
   // reflections
   calc::ReflectionInfo makeReflectionInfo(
-      calc::DatasetLens::rc, calc::Reflection::rc, gma_rge::rc) const;
+      calc::DatasetLens::rc, calc::Reflection::rc, gma_rge::rc, bool averaged) const;
 
   calc::ReflectionInfos makeReflectionInfos(
       data::Datasets::rc, calc::Reflection::rc,
-      pint gmaSlices, gma_rge::rc, Progress* = nullptr);
+      uint gmaSlices, gma_rge::rc, bool averaged, Progress*);
 
 // fitting
 private:
@@ -185,7 +188,7 @@ private:
 
 public:
   eNorm norm() const { return norm_; }
-  void setNorm(eNorm);
+  void  setNorm(eNorm);
 
 public:
   qreal calcAvgBackground(data::Dataset::rc) const;

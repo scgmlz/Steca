@@ -1,23 +1,25 @@
-# lib/CMakeLists.txt
+# CMakeLists.txt
+
+get_filename_component(lib ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
 include_directories (
-  ${CMAKE_HOME_DIRECTORY}/lib
+  ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 file (GLOB header_files
-  "*.h" "*/*.h" "*/*/*.h"
+  "*/*.h"
 )
 
 file (GLOB source_files
-  "*.cpp" "*/*.cpp" "*/*/*.cpp"
+  "*/*.cpp"
 )
 
-add_library (StecaLib
+add_library (${lib}
   ${source_files}
   ${header_files}
 )
 
-target_link_libraries (StecaLib
+target_link_libraries (${lib}
   Qt5::Core
 )
 

@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -27,19 +27,6 @@ namespace models {
 
 extern QVariant const    EMPTY_VAR;
 extern QModelIndex const ANY_INDEX;
-
-//------------------------------------------------------------------------------
-
-struct CheckedInfo {
-  str        tag;
-  QCheckBox *cb;
-  QLineEdit *infoText;
-
-  CheckedInfo(rcstr tag = EMPTY_STR);
-  void setText(rcstr);
-};
-
-typedef typ::vec<CheckedInfo> checkedinfo_vec;
 
 //------------------------------------------------------------------------------
 // The base class of all table-like models

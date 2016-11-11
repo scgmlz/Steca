@@ -2,32 +2,34 @@
 //
 //  STeCa2:    StressTextureCalculator ver. 2
 //
-//! @file      io_io.h
-//! @brief     Dataset loaders - main
+//! @file      dock_metadata.h
 //!
 //! @homepage  http://apps.jcns.fz-juelich.de/steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
-#ifndef IO_IO_H
-#define IO_IO_H
+#ifndef DOCK_METADATA_H
+#define DOCK_METADATA_H
 
-#include "data/data_file.h"
+#include "panel.h"
 
-namespace io {
+namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-// load a file; file type will be sensed
-data::shp_File load(rcstr filePath) THROWS;
+class DockMetadata : public DockWidget, protected RefHub {
+  CLS(DockMetadata) SUPER(DockWidget)
+public:
+  DockMetadata(TheHub&);
 
-// load a Caress file
-data::shp_File loadCaress(rcstr filePath) THROWS;
+private:
+  class MetadataView *metadataView_;
+};
 
 //------------------------------------------------------------------------------
-}
-#endif // IO_IO_H
+}}
+#endif // DOCK_METADATA_H

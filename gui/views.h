@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -20,6 +20,7 @@
 #include "gui_helpers.h"
 #include "models.h"
 #include "refhub.h"
+#include <QItemDelegate>
 
 namespace gui { namespace views {
 //------------------------------------------------------------------------------
@@ -41,7 +42,7 @@ protected:
   Model* model() const { return static_cast<Model*>(super::model()); }
 
   void updateSingleSelection();
-  void selectRow(uint);
+  void selectRow(int);
 };
 
 //------------------------------------------------------------------------------

@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -30,6 +30,7 @@ namespace gui {
 class TheHub;
 
 enum class eFittingTab {
+  NONE,
   BACKGROUND,
   REFLECTIONS,
 };
@@ -44,12 +45,15 @@ private:
 
 protected:
   // emit signals - only TheHub can call these
+  void tellSessionCleared();
   void tellDatasetSelected(data::shp_Dataset);
   void tellSelectedReflection(calc::shp_Reflection);
   void tellReflectionData(calc::shp_Reflection);
   void tellReflectionValues(tth_rge::rc, peak_t::rc, fwhm_t, bool);
 
 signals:
+  void sigSessionCleared();
+
   void sigFilesChanged();     // the set of loaded files has changed
   void sigFilesSelected();    // the selection of loaded files has changed
 
@@ -63,10 +67,12 @@ signals:
   void sigReflectionsChanged();
   void sigReflectionSelected(calc::shp_Reflection);
   void sigReflectionData(calc::shp_Reflection);
-  void sigReflectionValues(tth_rge const&, peak_t const&, qreal, bool);
+  void sigReflectionValues(tth_rge const&, peak_t const&, fwhm_t, bool);
 
   void sigDisplayChanged();
   void sigGeometryChanged();
+
+  void sigGammaRange();
 
   void sigBgChanged();  // ranges and poly: refit
   void sigNormChanged();
@@ -108,7 +114,7 @@ protected:
   void tellDatasetSelected(data::shp_Dataset);
   void tellSelectedReflection(calc::shp_Reflection);
   void tellReflectionData(calc::shp_Reflection);
-  void tellReflectionValues(typ::Range::rc, typ::XY::rc, qreal, bool);
+  void tellReflectionValues(typ::Range::rc, typ::XY::rc, fwhm_t, bool);
 
   // handle same signals
 protected:
@@ -116,6 +122,8 @@ protected:
   template <typename Lambda> void onSig##name(Lambda slot) { \
     onHubSignal(&TheHubSignallingBase::sig##name, slot);     \
   }
+
+  DEFINE_HUB_SIGNAL_HANDLER(SessionCleared)
 
   DEFINE_HUB_SIGNAL_HANDLER(FilesChanged)
   DEFINE_HUB_SIGNAL_HANDLER(FilesSelected)
@@ -133,6 +141,7 @@ protected:
 
   DEFINE_HUB_SIGNAL_HANDLER(DisplayChanged)
   DEFINE_HUB_SIGNAL_HANDLER(GeometryChanged)
+  DEFINE_HUB_SIGNAL_HANDLER(GammaRange)
 
   DEFINE_HUB_SIGNAL_HANDLER(BgChanged)
   DEFINE_HUB_SIGNAL_HANDLER(NormChanged)

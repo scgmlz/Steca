@@ -8,7 +8,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -21,7 +21,11 @@ namespace gui {
 
 TheHub& TheHubSignallingBase::asHub() {
   ENSURE(dynamic_cast<TheHub*>(this))
-  return *static_cast<TheHub*>(this);
+      return *static_cast<TheHub*>(this);
+}
+
+void TheHubSignallingBase::tellSessionCleared() {
+  emit sigSessionCleared();
 }
 
 void TheHubSignallingBase::tellDatasetSelected(data::shp_Dataset dataset) {
@@ -64,8 +68,8 @@ REFHUB_TELL_IMPL(tellSelectedReflection, (calc::shp_Reflection r), (r))
 REFHUB_TELL_IMPL(tellReflectionData, (calc::shp_Reflection r), (r))
 
 REFHUB_TELL_IMPL(tellReflectionValues,
-    (typ::Range::rc rge, typ::XY::rc xy, qreal r, bool b),
-    (rge, xy, r, b))
+    (typ::Range::rc rge, typ::XY::rc peak, fwhm_t fwhm, bool withGuesses),
+    (rge, peak, fwhm, withGuesses))
 
 //------------------------------------------------------------------------------
 }

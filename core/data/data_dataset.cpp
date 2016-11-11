@@ -8,7 +8,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -171,6 +171,10 @@ gma_rge OneDataset::rgeGma(core::Session::rc session) const {
   return session.angleMap(*this)->rgeGma();
 }
 
+gma_rge OneDataset::rgeGmaFull(core::Session::rc session) const {
+  return session.angleMap(*this)->rgeGmaFull();
+}
+
 tth_rge OneDataset::rgeTth(core::Session::rc session) const {
   return session.angleMap(*this)->rgeTth();
 }
@@ -193,29 +197,35 @@ void OneDataset::collectIntens(core::Session::rc session, typ::Image const* inte
   uint_vec const* gmaIndexes = nullptr;
   uint gmaIndexMin = 0, gmaIndexMax = 0;
   map.getGmaIndexes(rgeGma, gmaIndexes, gmaIndexMin, gmaIndexMax);
+
   EXPECT(gmaIndexes)
   EXPECT(gmaIndexMin <= gmaIndexMax)
   EXPECT(gmaIndexMax <= gmaIndexes->count())
 
   EXPECT(intens.count() == counts.count())
+  uint count = intens.count();
+
+  EXPECT(0 < deltaTth)
 
   for (uint i = gmaIndexMin; i < gmaIndexMax; ++i) {
     uint ind = gmaIndexes->at(i);
-    EXPECT(rgeGma.contains(map.at(ind).gma))
     inten_t inten = image_.inten(ind);
     if (qIsNaN(inten))
       continue;
 
-    inten_t corr = intensCorr ? intensCorr->at(i) : 1;
+    inten_t corr = intensCorr ? intensCorr->at(ind) : 1;
     if (qIsNaN(corr))
       continue;
 
     inten *= corr;
 
-    uint count = intens.count();
     tth_t tth  = map.at(ind).tth;
-    EXPECT(minTth <= tth && tth <= minTth + count*deltaTth)
-    uint ti = qMin(to_u(qFloor((tth - minTth) / deltaTth)), count-1); // bin index
+
+    // bin index
+    uint ti = to_u(qFloor((tth - minTth) / deltaTth));
+    EXPECT(ti <= count)
+    ti = qMin(ti, count-1); // it can overshoot due to floating point calculation
+
     intens[ti] += inten;
     counts[ti] += 1;
   }
@@ -297,7 +307,7 @@ Datasets::rc Dataset::datasets() const {
 #define AVG_ONES(what)    \
   EXPECT(!isEmpty())      \
   qreal avg = 0;          \
-  for (auto &one : *this) \
+  for (auto& one : *this) \
     avg += one->what();   \
   avg /= count();         \
   return avg;
@@ -318,12 +328,16 @@ deg Dataset::chi() const {
 #define RGE_COMBINE(combineOp, what)  \
   EXPECT(!isEmpty())                  \
   Range rge;                          \
-  for (auto &one : *this)             \
+  for (auto& one : *this)             \
     rge.combineOp(one->what);         \
   return rge;
 
 gma_rge Dataset::rgeGma(core::Session::rc session) const {
   RGE_COMBINE(extendBy, rgeGma(session))
+}
+
+gma_rge Dataset::rgeGmaFull(core::Session::rc session) const {
+  RGE_COMBINE(extendBy, rgeGmaFull(session))
 }
 
 tth_rge Dataset::rgeTth(core::Session::rc session) const {
@@ -347,7 +361,8 @@ qreal Dataset::avgDeltaTime() const {
 }
 
 inten_vec Dataset::collectIntens(
-    core::Session::rc session, typ::Image const* intensCorr, gma_rge::rc rgeGma) const
+    core::Session::rc session, typ::Image const* intensCorr, gma_rge::rc rgeGma,
+    bool averaged) const
 {
   tth_rge tthRge = rgeTth(session);
   tth_t   tthWdt = tthRge.width();
@@ -372,11 +387,12 @@ inten_vec Dataset::collectIntens(
   for (auto& one : *this)
     one->collectIntens(session, intensCorr, intens, counts, rgeGma, minTth, deltaTth);
 
-  for_i (numBins) {
-    auto cnt = counts.at(i);
-    if (cnt > 0)
-      intens[i] /= cnt;
-  }
+  if (averaged)
+    for_i (numBins) {
+      auto cnt = counts.at(i);
+      if (cnt > 0)
+        intens[i] /= cnt;
+    }
 
   return intens;
 }
@@ -455,13 +471,13 @@ inten_rge::rc Datasets::rgeFixedInten(core::Session::rc session, bool trans, boo
   return rgeFixedInten_;
 }
 
-Curve Datasets::avgCurve(core::Session::rc session) const {
+Curve Datasets::avgCurve(core::Session::rc session, bool averaged) const {
   if (avgCurve_.isEmpty()) {
     // TODO invalidate when combinedDgram is unchecked
 
     TakesLongTime __;
 
-    avgCurve_ = session.datasetLens(*combineAll(), *this, session.norm(), true, true)->makeCurve();
+    avgCurve_ = session.datasetLens(*combineAll(), *this, session.norm(), true, true)->makeCurve(averaged);
   }
 
   return avgCurve_;

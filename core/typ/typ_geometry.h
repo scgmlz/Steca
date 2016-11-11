@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -33,12 +33,14 @@ struct Geometry {
   static preal const MIN_DETECTOR_DISTANCE;
   static preal const MIN_DETECTOR_PIXEL_SIZE;
 
+  static preal const DEF_DETECTOR_DISTANCE;
+  static preal const DEF_DETECTOR_PIXEL_SIZE;
+
   Geometry();
   int compare(rc) const;
 
   preal detectorDistance;  // the distance from the sample to the detector
   preal pixSize;           // size of the detector pixel
-  bool  isMidPixOffset;
   IJ    midPixOffset;
 };
 
@@ -101,18 +103,23 @@ public:
     return arrAngles_.at(i, j);
   }
 
-  tth_rge rgeTth() const { return rgeTth_; }
-  gma_rge rgeGma() const { return rgeGma_; }
+  tth_rge rgeTth()     const { return rgeTth_;     }
+  gma_rge rgeGma()     const { return rgeGma_;     }
+  gma_rge rgeGmaFull() const { return rgeGmaFull_; }
+
+//TODO remove  IJ gmaPixel(gma_t);
 
   void getGmaIndexes(gma_rge::rc, uint_vec const*&, uint&, uint&) const;
 
 private:
-  void calculate(Key::rc);
+  void calculate();
+
+  Key key_;
 
   Array2D<Angles> arrAngles_;
 
   tth_rge    rgeTth_;
-  gma_rge    rgeGma_;
+  gma_rge    rgeGma_, rgeGmaFull_;
 
   // sorted
   vec<gma_t> gmas;

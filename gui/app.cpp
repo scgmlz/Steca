@@ -8,7 +8,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -27,7 +27,9 @@
 
 App::App(int& argc, char* argv[]) : super(argc, argv) {
   setApplicationName(APPLICATION_NAME);
-  setApplicationVersion(APPLICATION_VERSION);
+  setApplicationVersion(
+    #include "../VERSION"
+  );
   setOrganizationName(ORGANIZATION_NAME);
   setOrganizationDomain(ORGANIZATION_DOMAIN);
 
@@ -41,6 +43,7 @@ App::App(int& argc, char* argv[]) : super(argc, argv) {
 }
 
 static QtMessageHandler oldHandler;
+static QAtomicInt       noWarning;
 
 static void messageHandler(QtMsgType type, QMessageLogContext const& ctx,
                            rcstr msg) {
@@ -50,7 +53,8 @@ static void messageHandler(QtMsgType type, QMessageLogContext const& ctx,
               << "\t[" << ctx.function << ']' << std::endl;
     break;
   case QtWarningMsg:
-    QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
+    if (0 == noWarning)
+      QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
     break;
   default:
     oldHandler(type, ctx, msg);
@@ -124,6 +128,16 @@ bool App::notify(QObject* receiver, QEvent* event) {
   }
 
   return false;
+}
+
+//------------------------------------------------------------------------------
+
+NoWarnings::NoWarnings() {
+  ++noWarning;
+}
+
+NoWarnings::~NoWarnings() {
+  --noWarning;
 }
 
 //------------------------------------------------------------------------------

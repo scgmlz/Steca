@@ -13,19 +13,20 @@
         <file alias="right">icons/right.svg</file>
         <file alias="left">icons/left.svg</file>
         <file alias="bottom">icons/bottom.svg</file>
-        <file alias="beamOffset">icons/beam_offset.svg</file>
         <file alias="cutBottom">icons/cut_bottom.svg</file>
         <file alias="cutLeft">icons/cut_left.svg</file>
         <file alias="cutRight">icons/cut_right.svg</file>
         <file alias="cutTop">icons/cut_top.svg</file>
         <file alias="crop">icons/crop.svg</file>
-        <file alias="bgRegion">icons/bg_region.svg</file>
+        <file alias="steps">icons/steps.svg</file>
+        <file alias="selRegion">icons/sel_region.svg</file>
         <file alias="reflRegion">icons/refl_region.svg</file>
         <file alias="clear">icons/clear.svg</file>
         <file alias="scale">icons/scale.svg</file>
         <file alias="useCorrection">icons/use_correction.svg</file>
         <file alias="showBackground">icons/show_background.svg</file>
         <file alias="retroStier">icons/retro_stier.png</file>
+        <file alias="angle">icons/angle.svg</file>
     </qresource>
     <qresource prefix="/HAL">
         <file alias="good_evening">HAL/good_evening.wav</file>

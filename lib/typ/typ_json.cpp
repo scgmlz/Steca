@@ -8,7 +8,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -20,6 +20,14 @@
 #include "typ/typ_str.h"
 #include "typ/typ_xy.h"
 #include <QStringList>
+
+namespace json_key {
+str const
+  I("i"), J("j"), X("x"), Y("y"), MIN("min"), MAX("max"),
+  PARAMS("parameters"), TYPE("type"), FUN("f%1"),
+  VALUE("value"), RANGE("range"), COUNT("count"),
+  PEAK("guessed peak"), FWHM("guessed fwhm");
+}
 
 namespace typ {
 //------------------------------------------------------------------------------
@@ -63,7 +71,7 @@ JsonArr JsonObj::loadArr(rcstr key, bool defEmpty) const THROWS {
   case QJsonValue::Undefined:
     if (defEmpty)
       return JsonArr();
-    // fallthrough
+    // fall through
   default:
     THROW(key + ": not an array");
   }

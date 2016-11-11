@@ -1,8 +1,9 @@
-# LevMar/CMakeLists.txt
+# CMakeLists.txt
+
+get_filename_component(lib ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
 include_directories (
   ${CMAKE_HOME_DIRECTORY}/lib
-  ${CMAKE_HOME_DIRECTORY}/core
 )
 
 set(source_files
@@ -15,11 +16,11 @@ set(source_files
   misc.cpp
 )
 
-add_library(LevMar
+add_library(${lib}
   ${source_files}
 )
 
-target_link_libraries (LevMar
+target_link_libraries (${lib}
   Qt5::Core
 )
 

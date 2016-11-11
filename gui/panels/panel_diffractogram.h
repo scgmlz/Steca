@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -17,12 +17,8 @@
 #ifndef PANEL_DIFFRACTOGRAM_H
 #define PANEL_DIFFRACTOGRAM_H
 
-#include "QCP/qcustomplot.h"
-#include "data/data_dataset.h"
-#include "fit/fit_methods.h"
-#include "calc/calc_reflection.h"
 #include "panel.h"
-#include "typ/typ_curve.h"
+#include "QCP/qcustomplot.h"
 
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
@@ -104,8 +100,8 @@ private:
   DiffractogramPlotOverlay *overlay_;
 };
 
-class Diffractogram : public BoxPanel {
-  CLS(Diffractogram) SUPER(BoxPanel)
+class Diffractogram : public PanelWidget {
+  CLS(Diffractogram) SUPER(PanelWidget)
 public:
   Diffractogram(TheHub&);
 
@@ -126,12 +122,14 @@ private:
   uint                 currReflIndex_;
   calc::shp_Reflection currentReflection_;
 
+  QComboBox *comboNormType_;
+
 public:
-  void calcDgram();
+  void calcDgram(bool averaged);
   void calcBackground();
   void calcReflections();
 
-  void        setCurrReflNewRange(typ::Range::rc);
+  void setCurrReflNewRange(typ::Range::rc);
   typ::Range currReflRange() const;
 };
 

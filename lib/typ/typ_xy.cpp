@@ -8,7 +8,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -40,15 +40,13 @@ bool XY::isValid() const {
   return !qIsNaN(x) && !qIsNaN(y);
 }
 
-static str const KEY_X("x"), KEY_Y("y");
-
 JsonObj XY::saveJson() const {
-  return JsonObj().saveQreal(KEY_X, x).saveQreal(KEY_Y, y);
+  return JsonObj().saveQreal(json_key::X, x).saveQreal(json_key::Y, y);
 }
 
 void XY::loadJson(JsonObj::rc obj) THROWS {
-  x = obj.loadQreal(KEY_X);
-  y = obj.loadQreal(KEY_Y);
+  x = obj.loadQreal(json_key::X);
+  y = obj.loadQreal(json_key::Y);
 }
 
 //------------------------------------------------------------------------------

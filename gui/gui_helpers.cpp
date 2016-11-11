@@ -8,13 +8,14 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
 
 #include "gui_helpers.h"
 #include <QAction>
+#include <QGroupBox>
 
 //------------------------------------------------------------------------------
 
@@ -24,6 +25,19 @@ void GridLayout::addRowStretch(int stretch) {
 
 void GridLayout::addColumnStretch(int stretch) {
   setColumnStretch(columnCount(), stretch);
+}
+
+GridLayout* GridLayout::groupBox(QLayout &addTo, rcstr title) {
+  auto group = new QGroupBox(title);
+  addTo.addWidget(group);
+  auto grid = gridLayout();
+  group->setLayout(grid);
+  return grid;
+}
+
+int mWidth(QWidget const* w) {
+  EXPECT(w)
+  return w->fontMetrics().width('m');
 }
 
 //------------------------------------------------------------------------------
@@ -42,26 +56,29 @@ QBoxLayout* boxLayout(Qt::Orientation orientation) {
 QBoxLayout* hbox() {
   auto box = new QHBoxLayout;
   box->setSpacing(2);
+  box->setMargin(2);
   return box;
 }
 
 QBoxLayout* vbox() {
   auto box = new QVBoxLayout;
   box->setSpacing(2);
+  box->setMargin(2);
   return box;
 }
 
 GridLayout* gridLayout() {
   auto grid = new GridLayout;
   grid->setSpacing(2);
+  grid->setMargin(2);
   return grid;
 }
 
 QLabel* icon(rcstr fileName) {
-  auto label = new QLabel;
-  auto h     = label->sizeHint().height();
-  label->setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
-  return label;
+  auto l = new QLabel;
+  auto h = l->sizeHint().height();
+  l->setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
+  return l;
 }
 
 QLabel* label(rcstr text) {
@@ -69,7 +86,7 @@ QLabel* label(rcstr text) {
 }
 
 static void setEmWidth(QWidget* w, uint emWidth) {
-  w->setMaximumWidth(to_i(emWidth) * w->fontMetrics().width('m'));
+  w->setMaximumWidth(to_i(emWidth) * mWidth(w));
 }
 
 QLineEdit* editCell(uint emWidth) {
@@ -88,20 +105,25 @@ QSpinBox* spinCell(uint emWidth, int min, int max) {
   auto cell = new QSpinBox;
   setEmWidth(cell, emWidth);
   cell->setMinimum(min);
-  cell->setMaximum(max > INT_MIN ? max : INT_MAX);
+  cell->setMaximum(max > min ? max : min);
   return cell;
 }
 
-QDoubleSpinBox* spinCell(uint emWidth, qreal min, qreal max) {
+QDoubleSpinBox* spinDoubleCell(uint emWidth, qreal min, qreal max) {
   auto cell = new QDoubleSpinBox;
   setEmWidth(cell, emWidth);
   cell->setMinimum(min);
-  cell->setMaximum(max > INT_MIN ? max : INT_MAX);
+  cell->setMaximum(max > min ? max : min);
   return cell;
 }
 
-QCheckBox* check(rcstr text, QAction* action) {
-  auto cb = new QCheckBox(text);
+QCheckBox* check(rcstr text) {
+  return new QCheckBox(text);
+}
+
+QCheckBox* check(QAction* action) {
+  auto cb = new QCheckBox(action ? action->text().toLower() : EMPTY_STR);
+
   if (action) {
     QObject::connect(cb, &QCheckBox::toggled, [action](bool on) {
       action->setChecked(on);
@@ -110,7 +132,11 @@ QCheckBox* check(rcstr text, QAction* action) {
     QObject::connect(action, &QAction::toggled, [cb](bool on) {
       cb->setChecked(on);
     });
+
+    cb->setToolTip(action->toolTip());
+    cb->setChecked(action->isChecked());
   }
+
   return cb;
 }
 
@@ -145,7 +171,7 @@ TreeView::TreeView() {
 }
 
 int TreeView::sizeHintForColumn(int) const {
-  return 3 * fontMetrics().width('m');
+  return 3 * mWidth(this);
 }
 
 //------------------------------------------------------------------------------
@@ -187,12 +213,12 @@ BoxWidget::BoxWidget(Qt::Orientation orientation) {
 
 DockWidget::DockWidget(rcstr name, rcstr objectName,
                        Qt::Orientation orientation) {
-  setFeatures(NoDockWidgetFeatures);
-  setWidget(new QWidget);
-  widget()->setLayout((box_ = boxLayout(orientation)));
-
+  setFeatures(DockWidgetMovable);
   setWindowTitle(name);
   setObjectName(objectName);
+
+  setWidget(new QWidget);
+  widget()->setLayout((box_ = boxLayout(orientation)));
 }
 
 //------------------------------------------------------------------------------

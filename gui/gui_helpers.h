@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -51,7 +51,13 @@ public:
 
   void addRowStretch(int = 1);
   void addColumnStretch(int = 1);
+
+  static GridLayout* groupBox(QLayout&, rcstr);
 };
+
+//------------------------------------------------------------------------------
+
+extern int mWidth(QWidget const*);
 
 //------------------------------------------------------------------------------
 // handy functions that make (new) widgets
@@ -64,11 +70,15 @@ GridLayout* gridLayout();
 
 QLabel*    icon(rcstr);
 QLabel*    label(rcstr);
+
 QLineEdit* editCell(uint emWidth);  // emWidth: measured in typographical (m)s
 QLineEdit* readCell(uint emWidth);
-QSpinBox*  spinCell(uint emWidth, int min, int max = INT_MIN);
-QDoubleSpinBox* spinCell(uint emWidth, qreal min, qreal max = INT_MIN);
-QCheckBox* check(rcstr text, QAction* = nullptr);
+
+QSpinBox*  spinCell(uint emWidth, int min = INT_MIN, int max = INT_MAX);
+QDoubleSpinBox* spinDoubleCell(uint emWidth, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
+
+QCheckBox* check(rcstr text);
+QCheckBox* check(QAction* = nullptr);
 
 QToolButton* textButton(QAction*);
 QToolButton* iconButton(QAction*);

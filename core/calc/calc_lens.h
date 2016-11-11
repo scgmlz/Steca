@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -49,6 +49,9 @@ public:
 protected:
   typ::size2d transCutSize(typ::size2d) const;
 
+  void doTrans(uint& i, uint& j) const;
+  void doCut(uint& i, uint& j)   const;
+
   core::Session const& session_;
   data::Datasets::rc  datasets_;
   bool                trans_, cut_;
@@ -72,8 +75,6 @@ public:
   inten_rge::rc rgeInten(bool fixed) const;
 
 private:
-  void doTrans(uint& i, uint& j) const;
-  void doCut(uint& i, uint& j)   const;
 
   typ::Image const& image_;
 
@@ -92,12 +93,13 @@ public:
 
   typ::size2d size()    const;
 
-  gma_rge    rgeGma()   const;
-  tth_rge    rgeTth()   const;
-  inten_rge  rgeInten() const;
+  gma_rge    rgeGma()     const;
+  gma_rge    rgeGmaFull() const;
+  tth_rge    rgeTth()     const;
+  inten_rge  rgeInten()   const;
 
-  typ::Curve makeCurve()            const;
-  typ::Curve makeCurve(gma_rge::rc) const;
+  typ::Curve makeCurve(bool averaged)              const;
+  typ::Curve makeCurve(gma_rge::rc, bool averaged) const;
 
   data::Dataset::rc dataset()  const { return dataset_;   }
 

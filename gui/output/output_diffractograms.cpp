@@ -8,7 +8,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -71,7 +71,7 @@ DiffractogramsFrame::DiffractogramsFrame(TheHub &hub, rcstr title, QWidget *pare
   btnInterpolate_->hide();
 
   tabSave_ = new TabDiffractogramsSave(hub, *params_);
-  tabs_->addTab("Save").box().addWidget(tabSave_);
+  tabs_->addTab("Save", Qt::Vertical).box().addWidget(tabSave_);
 
   connect(tabSave_->actSave,&QAction::triggered,[this]() {
     logSuccess(saveDiffractogramOutput());
@@ -79,37 +79,38 @@ DiffractogramsFrame::DiffractogramsFrame(TheHub &hub, rcstr title, QWidget *pare
 }
 
 OutputDataCollection DiffractogramsFrame::collectCurves(
-    gma_rge::rc rgeGma, pint gmaSlices, data::Dataset::rc dataset, uint picNum) {
+    gma_rge::rc rgeGma, uint gmaSlices, data::Dataset::rc dataset, uint picNum, bool averaged) {
 
   auto lens = hub_.datasetLens(dataset);
 
-  typ::Range rge = lens->rgeGma();
+  typ::Range rge = (gmaSlices > 0) ? lens->rgeGma() : typ::Range::infinite();
   if (rgeGma.isValid())
     rge = rge.intersect(rgeGma);
 
   OutputDataCollection outputData;
 
+  gmaSlices = qMax(1u, gmaSlices);
   qreal step = rge.width() / gmaSlices;
-  for_i (uint(gmaSlices)) {
+  for_i (gmaSlices) {
     qreal min = rge.min + i * step;
     gma_rge gmaStripe(min, min + step);
 
-    auto curve = lens->makeCurve(gmaStripe);
+    auto curve = lens->makeCurve(gmaStripe, averaged);
     outputData.append(OutputData(curve, dataset, gmaStripe, picNum));
   }
   return outputData;
 }
 
-OutputData DiffractogramsFrame::collectCurve(data::Dataset::rc dataset) {
+OutputData DiffractogramsFrame::collectCurve(data::Dataset::rc dataset, bool averaged) {
   auto lens = hub_.datasetLens(dataset);
-  auto curve = lens->makeCurve();
+  auto curve = lens->makeCurve(averaged);
   return OutputData(curve, dataset, lens->rgeGma(), 0); // TODO current picture number
 }
 
 OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
   ENSURE(params_->panelGammaSlices)
   auto ps = params_->panelGammaSlices;
-  pint gmaSlices = pint(ps->numSlices->value());
+  uint gmaSlices = to_u(ps->numSlices->value());
 
   ENSURE(params_->panelGammaRange)
   auto pr = params_->panelGammaRange;
@@ -118,14 +119,14 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
     rgeGma.safeSet(pr->minGamma->value(),
                    pr->maxGamma->value());
 
-  auto &datasets = hub_.collectedDatasets();
+  auto& datasets = hub_.collectedDatasets();
   Progress progress(datasets.count(), pb_);
 
   OutputDataCollections allOutputData;
   uint picNum = 1;
   for (data::shp_Dataset dataset : datasets) {
     progress.step();
-    allOutputData.append(collectCurves(rgeGma, gmaSlices, *dataset, picNum));
+    allOutputData.append(collectCurves(rgeGma, gmaSlices, *dataset, picNum, hub_.actions.showAveraged->isChecked()));
     ++picNum;
   }
 
@@ -135,17 +136,17 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
 OutputData DiffractogramsFrame::outputCurrDiffractogram() {
   auto dataset = hub_.selectedDataset();
   if (dataset)
-    return collectCurve(*dataset);
+    return collectCurve(*dataset, hub_.actions.showAveraged->isChecked());
   else
     return OutputData();
 }
 
-auto writeMetaData = [](OutputData outputData, QTextStream& stream, str separator) {
+auto writeMetaData = [](OutputData outputData, QTextStream& stream) {
   if (outputData.picNum_ > 0)
     stream << "Picture Nr: " << outputData.picNum_ << '\n';
 
-  auto &md     = *outputData.dataset_.metadata();
-  auto &rgeGma = outputData.gmaStripe_;
+  auto& md     = *outputData.dataset_.metadata();
+  auto& rgeGma = outputData.gmaStripe_;
 
   stream << "Comment: "         << md.comment << '\n';
   stream << "Date: "            << md.date    << '\n';
@@ -166,10 +167,10 @@ bool DiffractogramsFrame::writeCurrDiffractogramToFile(rcstr filePath, rcstr sep
   WriteFile file(filePath);
   QTextStream stream(&file);
 
-  writeMetaData(outputData, stream, separator);
+  writeMetaData(outputData, stream);
   stream << "Tth" << separator << "Intensity" << '\n';
 
-  auto &curve = outputData.curve_;
+  auto& curve = outputData.curve_;
 
   for_i (curve.xs().count())
     stream << curve.x(i) << separator << curve.y(i) << '\n';
@@ -192,7 +193,7 @@ bool DiffractogramsFrame::writeAllDiffractogramsToFiles(rcstr filePath, rcstr se
   if (oneFile) {
     for (auto outputCollection : outputCollections) {
       for (auto outputData : outputCollection) {
-        writeMetaData(outputData,stream,separator);
+        writeMetaData(outputData, stream);
 
         stream << "Tth" << separator << "Intensity" << '\n';
         for_i (outputData.curve_.xs().count()) {
@@ -204,7 +205,7 @@ bool DiffractogramsFrame::writeAllDiffractogramsToFiles(rcstr filePath, rcstr se
     int fileNumber = 1;
     for (auto outputCollection : outputCollections) {
       for (auto outputData : outputCollection) {
-        writeMetaData(outputData,stream,separator);
+        writeMetaData(outputData, stream);
         stream << "Tth" << separator << "Intensity" << '\n';
         for_i (outputData.curve_.xs().count()) {
           stream << outputData.curve_.x(i) << separator << outputData.curve_.y(i) << '\n';

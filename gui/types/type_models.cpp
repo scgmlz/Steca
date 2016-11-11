@@ -8,7 +8,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -24,13 +24,13 @@ QModelIndex const ANY_INDEX;
 
 //------------------------------------------------------------------------------
 
-CheckedInfo::CheckedInfo(rcstr t): tag(t), cb(nullptr), infoText(nullptr) {
-}
+//CheckedInfo::CheckedInfo(rcstr t): tag(t), cb(nullptr), infoText(nullptr) {
+//}
 
-void CheckedInfo::setText(rcstr text) {
-  EXPECT(infoText)
-  infoText->setText(text);
-}
+//void CheckedInfo::setText(rcstr text) {
+//  EXPECT(infoText)
+//  infoText->setText(text);
+//}
 
 //------------------------------------------------------------------------------
 

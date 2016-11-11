@@ -9,7 +9,7 @@
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016
 //! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle,  Antti Soininen
+//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
 //! @authors   Based on the original STeCa by Christian Randau
 //
 // ************************************************************************** //
@@ -34,6 +34,10 @@ struct size2d {
 
   bool isEmpty() const {
     return 0 == w && 0 == h;
+  }
+
+  uint count() const {
+    return w * h;
   }
 
   int compare(rc that) const {
@@ -85,7 +89,7 @@ public:
 
   // number of elements
   uint count() const {
-    return size_.w * size_.h;
+    return size_.count();
   }
 
   // make empty
