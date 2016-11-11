@@ -13,7 +13,6 @@
         <file alias="right">icons/right.svg</file>
         <file alias="left">icons/left.svg</file>
         <file alias="bottom">icons/bottom.svg</file>
-        <file alias="beamOffset">icons/beam_offset.svg</file>
         <file alias="cutBottom">icons/cut_bottom.svg</file>
         <file alias="cutLeft">icons/cut_left.svg</file>
         <file alias="cutRight">icons/cut_right.svg</file>

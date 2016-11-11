@@ -82,7 +82,7 @@ Actions::Actions(TheHub& hub): super(hub) {
 
   // create actions
 
-  trg(about,                "About... / Configuration");
+  trg(about,                "About && Configuration...");
   trg(online,               "Online documentation...");
   trg(checkUpdate,          "Check for update...");
   trg(quit,                 "Quit");
@@ -102,18 +102,17 @@ Actions::Actions(TheHub& hub): super(hub) {
 
   trg(addFiles,             "Add files...")                 .icon(":/icon/add");
   trg(remFile,              "Remove selected file(s)")      .icon(":/icon/rem");
-  tgl(enableCorr,           "Enable correction file...")
-                       .alt("Disable correction file")      .icon(":/icon/useCorrection");
+  tgl(enableCorr,           "Enable correction file...")    .icon(":/icon/useCorrection");
   trg(remCorr,              "Remove correction file")       .icon(":/icon/clear");
 
   trg(rotateImage,          "Rotate")                       .icon(":/icon/rotate0");
   tgl(mirrorImage,          "Mirror")                       .icon(":/icon/mirrorHorz");
   tgl(linkCuts,             "Link cuts")                    .icon(":/icon/link");
-  tgl(showOverlay,          "Overlay")                      .icon(":/icon/crop");
+  tgl(showOverlay,          "Show overlay")                 .icon(":/icon/crop");
   tgl(stepScale,            "Scale in steps")               .icon(":/icon/steps");
   tgl(showGamma,            "Show gamma range")             .icon(":/icon/angle");
 
-  tgl(fixedIntenImage,      "Use normalized intensity")     .icon(":/icon/scale");
+  tgl(fixedIntenImage,      "Global intensity scale")       .icon(":/icon/scale");
   tgl(fixedIntenDgram,      "Fixed intensity scale");
 
   tgl(combinedDgram,        "All datasets");
