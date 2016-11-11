@@ -1,9 +1,29 @@
-ver. 2.0.3, released 2016.09.xx
--------------------------------
+ver. 2.0.3 (Armistice), released 2016.11.11
+-------------------------------------------
 
 New features:
 
 * check updates; optionally at startup
+* loads TIFF data format
+* loads Mar data format
+* handles beam offset
+* option to disable gamma-slicing
+* option to disable neutron count averaging (experimental)
+
+Improvements:
+
+* optimized angle map calculation
+* improved image display resizing
+* image overlay shows beam centre crosshairs
+* Metadata view is a table view
+* more compact gui layout
+* X button that clears reflections
+* progress bar shows the progress of pole figure points interpolation
+* gamma slicing shown in images
+
+Bug fixes:
+
+* #28 - a bug in vanadium correction
 
 ver. 2.0.2a (hotfix), released 2016.08.29
 -----------------------------------------
