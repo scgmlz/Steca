@@ -374,7 +374,7 @@ inten_vec Dataset::collectIntens(
   if (1 < count()) {  // combined datasets
     auto one = first();
     tth_t delta = one->rgeTth(session).width() / pixWidth;
-    numBins = to_u(qCeil(tthWdt / delta / 2));
+    numBins = to_u(qCeil(tthWdt / delta));
   } else {
     numBins = pixWidth; // simply match the pixels
   }
