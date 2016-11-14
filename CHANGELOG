@@ -1,3 +1,11 @@
+ver. 2.0.3a (hotfix), released 2016.11.14
+-----------------------------------------
+
+Changes:
+
+* fixed incorrect calculation of bin numbers for combined datasets
+* non-used configuration entries (detector) temporarily hidden
+
 ver. 2.0.3 (Armistice), released 2016.11.11
 -------------------------------------------
 
