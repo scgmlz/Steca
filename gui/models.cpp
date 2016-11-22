@@ -107,7 +107,7 @@ QVariant DatasetsModel::headerData(int col, Qt::Orientation, int role) const {
   case COL_NUMBER:
     return "#";
   default:
-    return data::Metadata::attributeTag(metaInfoNums_.at(to_u(col - COL_ATTRS)));
+    return data::Metadata::attributeTag(metaInfoNums_.at(to_u(col - COL_ATTRS)), false);
   }
 }
 
@@ -162,7 +162,7 @@ QVariant MetadataModel::data(rcIndex index, int role) const {
   case Qt::DisplayRole:
     switch (col) {
     case COL_TAG:
-      return data::Metadata::attributeTag(to_u(row));
+      return data::Metadata::attributeTag(to_u(row), false);
     case COL_VALUE:
       return metadata_ ? metadata_->attributeStrValue(to_u(row)) : "-";
     }

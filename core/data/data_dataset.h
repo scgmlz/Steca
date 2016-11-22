@@ -64,8 +64,8 @@ struct Metadata {
   // attribute list - will be dynamic
   static uint numAttributes(bool onlyNum);
 
-  static rcstr        attributeTag(uint);
-  static str_lst      attributeTags();
+  static rcstr        attributeTag(uint, bool out);
+  static str_lst      attributeTags(bool out);
   static typ::cmp_vec attributeCmps();
 
   str        attributeStrValue(uint) const;

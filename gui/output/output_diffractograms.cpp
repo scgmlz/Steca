@@ -154,7 +154,7 @@ auto writeMetaData = [](OutputData outputData, QTextStream& stream) {
   stream << "Gamma range max: " << rgeGma.max << '\n';
 
   for_i (data::Metadata::numAttributes(true)) {
-    stream << data::Metadata::attributeTag(i) << ": " <<
+    stream << data::Metadata::attributeTag(i, true) << ": " <<
               md.attributeValue(i).toDouble() << '\n';
   }
 };

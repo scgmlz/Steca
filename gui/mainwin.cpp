@@ -23,6 +23,7 @@
 #include "output/output_polefigures.h"
 #include "panels/dock_dataset.h"
 #include "panels/dock_files.h"
+#include "panels/dock_help.h"
 #include "panels/dock_metadata.h"
 #include "panels/tabs_diffractogram.h"
 #include "panels/tabs_images.h"
@@ -92,6 +93,8 @@ void MainWin::initMenus() {
   addActions(menuView_, {
       acts_.viewFiles, acts_.viewDatasets, acts_.viewDatasetInfo,
       separator(),
+      acts_.viewHelp,
+      separator(),
     #ifndef Q_OS_OSX
       acts_.fullScreen,
     #endif
@@ -148,9 +151,10 @@ void MainWin::addActions(QMenu* menu, QList<QAction*> actions) {
 }
 
 void MainWin::initLayout() {
-  addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_       = new panel::DockFiles(hub_)));
-  addDockWidget(Qt::LeftDockWidgetArea, (dockDatasets_    = new panel::DockDatasets(hub_)));
-  addDockWidget(Qt::RightDockWidgetArea,(dockDatasetInfo_ = new panel::DockMetadata(hub_)));
+  addDockWidget(Qt::LeftDockWidgetArea,  (dockFiles_       = new panel::DockFiles(hub_)));
+  addDockWidget(Qt::LeftDockWidgetArea,  (dockDatasets_    = new panel::DockDatasets(hub_)));
+  addDockWidget(Qt::LeftDockWidgetArea,  (dockDatasetInfo_ = new panel::DockMetadata(hub_)));
+  addDockWidget(Qt::RightDockWidgetArea, (dockHelp_        = new panel::DockHelp(hub_)));
 
   auto splMain = new QSplitter(Qt::Vertical);
   splMain->setChildrenCollapsible(false);
@@ -204,9 +208,10 @@ void MainWin::connectActions() {
   onToggle(acts_.fullScreen, &Cls::viewFullScreen);
 #endif
 
-  onToggle(acts_.viewFiles, &Cls::viewFiles);
-  onToggle(acts_.viewDatasets, &Cls::viewDatasets);
+  onToggle(acts_.viewFiles,       &Cls::viewFiles);
+  onToggle(acts_.viewDatasets,    &Cls::viewDatasets);
   onToggle(acts_.viewDatasetInfo, &Cls::viewDatasetInfo);
+  onToggle(acts_.viewHelp,        &Cls::viewHelp);
 
   onTrigger(acts_.viewReset, &Cls::viewReset);
 }
@@ -357,7 +362,7 @@ void MainWin::onShow() {
 
 #ifdef DEVELOPMENT_JAN
   auto safeLoad = [this](rcstr fileName) {
-    QFileInfo info(QDir::homePath() % fileName);
+    QFileInfo info(fileName);
     if (info.exists())
       hub_.loadSession(info);
   };
@@ -403,6 +408,7 @@ void MainWin::checkActions() {
   acts_.viewFiles->setChecked(dockFiles_->isVisible());
   acts_.viewDatasets->setChecked(dockDatasets_->isVisible());
   acts_.viewDatasetInfo->setChecked(dockDatasetInfo_->isVisible());
+  acts_.viewHelp->setChecked(dockHelp_->isVisible());
 }
 
 void MainWin::viewStatusbar(bool on) {
@@ -434,6 +440,11 @@ void MainWin::viewDatasets(bool on) {
 void MainWin::viewDatasetInfo(bool on) {
   dockDatasetInfo_->setVisible(on);
   acts_.viewDatasetInfo->setChecked(on);
+}
+
+void MainWin::viewHelp(bool on) {
+  dockHelp_->setVisible(on);
+  acts_.viewHelp->setChecked(on);
 }
 
 void MainWin::viewReset() {

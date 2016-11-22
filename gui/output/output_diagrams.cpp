@@ -269,7 +269,7 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
   WriteFile file(filePath);
   QTextStream stream(&file);
 
-  auto headers = table_->headers();
+  auto headers = table_->outHeaders();
 
   for_i (headers.count())
     stream << headers.at(to_u(i)) << separator;

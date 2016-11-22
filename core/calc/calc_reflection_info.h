@@ -42,10 +42,10 @@ public:
     NUM_REFL_ATTR,
   };
 
-  static str_lst      dataTags();
+  static str_lst      dataTags(bool out);
   static typ::cmp_vec dataCmps();
 
-  static str const reflStringTag(uint attr);
+  static str const reflStringTag(uint attr, bool out);
 
   ReflectionInfo();
 

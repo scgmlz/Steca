@@ -91,6 +91,7 @@ Actions::Actions(TheHub& hub): super(hub) {
   tgl(viewFiles,            "Files");
   tgl(viewDatasets,         "Datasets");
   tgl(viewDatasetInfo,      "Metadata");
+  tgl(viewHelp,             "Help browser");
   trg(viewReset,            "Reset");
 #ifndef Q_OS_OSX
   tgl(fullScreen,           "FullScreen");
@@ -140,6 +141,7 @@ Actions::Actions(TheHub& hub): super(hub) {
   viewFiles       -> key(Qt::Key_F8);
   viewDatasets    -> key(Qt::Key_F9);
   viewDatasetInfo -> key(Qt::Key_F10);
+  viewHelp        -> key(Qt::Key_F1);
 
 #ifndef Q_OS_OSX
   fullScreen      -> key(Qt::Key_F11);

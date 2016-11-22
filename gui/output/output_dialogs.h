@@ -148,8 +148,8 @@ class Table : public TreeView, protected RefHub {
 public:
   Table(TheHub&, uint numDataColumns);
 
-  void setColumns(str_lst::rc headers, typ::cmp_vec::rc);
-  str_lst const headers();
+  void setColumns(str_lst::rc headers, str_lst::rc outHeaders, typ::cmp_vec::rc);
+  str_lst const outHeaders() { return outHeaders_; }
 
   void clear();
   void addRow(typ::row_t::rc, bool sort);
@@ -161,6 +161,7 @@ public:
 
 private:
   scoped<class TableModel*> model_;
+  str_lst outHeaders_;
 };
 
 //------------------------------------------------------------------------------
@@ -189,7 +190,9 @@ protected:
 class TabTable : public Tab {
   CLS(TabTable) SUPER(Tab)
 public:
-  TabTable(TheHub&, Params&, str_lst::rc headers, typ::cmp_vec::rc);
+  TabTable(TheHub&, Params&,
+           str_lst::rc headers, str_lst::rc outHeaders,
+           typ::cmp_vec::rc);
 
 private:
   struct showcol_t {

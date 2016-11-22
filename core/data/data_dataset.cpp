@@ -56,11 +56,11 @@ uint Metadata::numAttributes(bool onlyNum) {
       : eAttr::NUM_ALL_ATTRIBUTES);
 }
 
-rcstr Metadata::attributeTag(uint i) {
-  return attributeTags().at(i);
+rcstr Metadata::attributeTag(uint i, bool out) {
+  return attributeTags(out).at(i);
 }
 
-str_lst Metadata::attributeTags() {
+str_lst Metadata::attributeTags(bool out) {
   static str_lst const tags = {
     "X", "Y", "Z",
     "ω", "mid 2θ", "φ", "χ",
@@ -70,7 +70,16 @@ str_lst Metadata::attributeTags() {
     "date", "comment",
   };
 
-  return tags;
+  static str_lst const outTags = {
+    "X", "Y", "Z",
+    "omega", "mid2theta", "phi", "chi",
+    "PST", "SST", "OmegaM",
+    "mon", "delta_mon",
+    "t", "delta_t",
+    "date", "comment",
+  };
+
+  return out ? outTags : tags;
 }
 
 cmp_vec Metadata::attributeCmps() {

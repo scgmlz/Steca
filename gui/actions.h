@@ -64,7 +64,7 @@ public:
 
   Action
     *about, *online, *checkUpdate, *quit,
-    *viewStatusbar, *viewFiles, *viewDatasets, *viewDatasetInfo, *viewReset,
+    *viewStatusbar, *viewFiles, *viewDatasets, *viewDatasetInfo, *viewHelp, *viewReset,
 #ifndef Q_OS_OSX  // Mac has its own
     *fullScreen,
 #endif
