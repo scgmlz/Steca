@@ -274,9 +274,7 @@ static void loadTiff(data::shp_File& file, rcstr filePath,
   check();
 
   file->datasets().append(
-    data::shp_OneDataset(new data::OneDataset(md, size,
-        not_null<inten_t const*>::from(intens.constData()))
-    )
+    data::shp_OneDataset(new data::OneDataset(md, size, intens))
   );
 }
 

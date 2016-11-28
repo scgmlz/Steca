@@ -166,8 +166,15 @@ row_t Metadata::attributeNaNs() {
 
 //------------------------------------------------------------------------------
 
-OneDataset::OneDataset(Metadata::rc md, size2d::rc size, not_null<inten_t const*> intens)
-: md_(new Metadata(md)), image_(size,intens) {
+OneDataset::OneDataset(Metadata::rc md, typ::inten_arr::rc intens)
+  : md_(new Metadata(md)), image_(intens) {
+}
+
+OneDataset::OneDataset(Metadata::rc md, size2d::rc size, inten_vec const& intens)
+  : md_(new Metadata(md)), image_(size) {
+  EXPECT(intens.count() == size.count())
+  for_i (intens.count())
+    image_.setAt(i, intens.at(i));
 }
 
 OneDataset::OneDataset(rc that)
@@ -221,7 +228,7 @@ void OneDataset::collectIntens(core::Session::rc session, typ::Image const* inte
 
   for (uint i = gmaIndexMin; i < gmaIndexMax; ++i) {
     uint ind = gmaIndexes->at(i);
-    inten_t inten = image_.inten(ind);
+    inten_t inten = image_.at(ind);
     if (qIsNaN(inten))
       continue;
 

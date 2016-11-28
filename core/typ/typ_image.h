@@ -25,36 +25,17 @@
 namespace typ {
 //------------------------------------------------------------------------------
 
-class Image final : public Array2D<inten_t> {
-  CLS(Image) SUPER(Array2D<inten_t>)
+typedef Array2D<inten_t> inten_arr;
+
+class Image final : public inten_arr {
+  CLS(Image) SUPER(inten_arr)
 public:
   // Image as vector of intensities, filled with 0 or given intensities.
-  Image(size2d::rc = size2d(0, 0), inten_t const* = nullptr);
-  Image(rc);
-
-  // Access single intensity.
-  inten_t inten(uint i) const {
-    return super::at(i);
-  }
-
-  // Access single intensity.
-  inten_t inten(uint i, uint j) const {
-    return super::at(i, j);
-  }
-
-  // Set single intensity.
-  void setInten(uint i, inten_t inten) {
-    super::setAt(i, inten);
-  }
-
-  // Access the whole 1D intensity array, getCount() values.
-  not_null<inten_t const*> intensData() const {
-    return not_null<inten_t const*>::from(data());
-  }
+  Image(size2d::rc = size2d(0, 0));
+  Image(inten_arr::rc);
 
   // Sum all intensities with new ones.
-  void addIntens(Image::rc) THROWS;
-  void addIntens(not_null<inten_t const*>);
+  void addIntens(inten_arr::rc) THROWS;
 
   inten_rge::rc rgeInten() const {
     return rgeInten_;

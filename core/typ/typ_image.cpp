@@ -21,29 +21,23 @@
 namespace typ {
 //------------------------------------------------------------------------------
 
-Image::Image(size2d::rc size, inten_t const* src) {
+Image::Image(size2d::rc size) {
   fill(0, size);
-  if (src)
-    addIntens(not_null<inten_t const*>::from(src));
 }
 
-Image::Image(Image::rc that)
-: Image(that.size(), that.intensData()) {
+Image::Image(inten_arr::rc that): Image(that.size()) {
+  addIntens(that);
 }
 
-void Image::addIntens(Image::rc that) THROWS {
-  RUNTIME_CHECK(size() == that.size(), "inconsistent image size");
-  addIntens(not_null<inten_t const*>::from(that.data()));
-}
-
-void Image::addIntens(not_null<inten_t const*> thatIntens) {
-  inten_t *dst = data();
-  inten_t const *src = thatIntens;
-  for_i (count()) {
-    inten_t inten = *src++;
-    rgeInten_.extendBy(inten);
-    *dst++ += inten;
-  }
+void Image::addIntens(inten_arr::rc intens) THROWS {
+  RUNTIME_CHECK(size() == intens.size(), "inconsistent image size");
+  auto w = size().w, h = size().h;
+  for (uint i=0; i<w; ++i)
+    for (uint j=0; j<h; ++j) {
+      inten_t inten = intens.at(i, j);
+      rgeInten_.extendBy(inten);
+      refAt(i, j) += inten;
+    }
 }
 
 //------------------------------------------------------------------------------

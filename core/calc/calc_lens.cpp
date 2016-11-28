@@ -108,7 +108,7 @@ inten_t ImageLens::imageInten(uint i, uint j) const {
   if (trans_) doTrans(i, j);
   if (cut_)   doCut(i, j);
 
-  inten_t inten = image_.inten(i, j);
+  inten_t inten = image_.at(i, j);
   if (intensCorr_)
     inten *= intensCorr_->at(i, j);
 

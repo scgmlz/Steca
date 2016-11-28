@@ -92,7 +92,8 @@ struct Metadata {
 class OneDataset final {
   CLS(OneDataset) friend class OneDatasets; friend class Dataset;
 public:
-  OneDataset(Metadata::rc, typ::size2d::rc, not_null<inten_t const*>);
+  OneDataset(Metadata::rc, typ::inten_arr::rc);
+  OneDataset(Metadata::rc, typ::size2d::rc, inten_vec const&);
   OneDataset(rc);
 
   shp_Metadata metadata() const;

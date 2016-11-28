@@ -74,6 +74,10 @@ struct Angles {
   Angles(tth_t, gma_t);
 };
 
+#ifndef QT_NO_DEBUG
+QDebug& operator<<(QDebug&, Angles::rc);
+#endif
+
 class AngleMap {
   CLS(AngleMap)
 public:

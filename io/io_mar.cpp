@@ -227,8 +227,7 @@ data::shp_File loadMar(rcstr filePath) THROWS {
 
   file->datasets().append(
     data::shp_OneDataset(new data::OneDataset(md, typ::size2d(pixSizeX, pixSizeY),
-        not_null<inten_t const*>::from(convertedIntens.constData()))
-    )
+        convertedIntens))
   );
 
   delete[] i2_image;

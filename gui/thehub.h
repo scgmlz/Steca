@@ -208,7 +208,7 @@ public:
   void setFittingTab(eFittingTab);
 
 private:
-  eFittingTab fittingTab_;
+  eFittingTab fittingTab_ = eFittingTab::NONE;
 
 private:
   data::shp_Dataset    selectedDataset_;

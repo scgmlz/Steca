@@ -70,6 +70,13 @@ Angles::Angles() : Angles(0, 0) {
 Angles::Angles(tth_t tth_, gma_t gma_) : tth(tth_), gma(gma_) {
 }
 
+#ifndef QT_NO_DEBUG
+QDebug& operator<<(QDebug& d, Angles::rc angles) {
+  d << "(" << angles.tth << angles.gma << ")";
+  return d;
+}
+#endif
+
 AngleMap::Key::Key(Geometry::rc geometry_, size2d::rc size_,
                    ImageCut::rc cut_, IJ::rc midPix_, tth_t midTth_)
 : geometry(geometry_), size(size_), cut(cut_), midPix(midPix_), midTth(midTth_) {
@@ -160,7 +167,7 @@ void AngleMap::calculate() {
   qreal pixSize = geometry.pixSize,
         detDist = geometry.detectorDistance;
 
-  arrAngles_.fill(size);
+  arrAngles_.resize(size);
 
   rgeTth_.invalidate();
   rgeGma_.invalidate();

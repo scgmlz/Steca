@@ -74,52 +74,9 @@ struct size2d {
 
 // 2D (indexed by uint i/j) array
 template<typename T> class Array2D {
-  CLS(Array2D)
-private:
-  size2d size_;
-
-  typedef T* col_t;
-  col_t* ts_;
-
-  void alloc(size2d::rc size) {
-    free();
-
-    if (!(size_ = size).isEmpty()) {
-      ts_ = static_cast<col_t*>(calloc(size_.w, sizeof(col_t*)));
-      for (uint i=0; i<size_.w; ++i)
-        ts_[i] = static_cast<col_t>(calloc(size_.h, sizeof(T)));
-    }
-  }
-
-  void free() {
-    if (ts_) {
-      for (uint i=0; i<size_.w; ++i)
-        ::free(ts_[i]);
-      ::free(ts_); ts_ = nullptr;
-    }
-  }
-
 public:
   // empty array
-  Array2D(): size_(0,0), ts_(nullptr) {
-  }
-
-  Array2D(rc that): Array2D() {
-    *this = that;
-  }
-
-  rc operator=(rc that) {
-    alloc(that.size_);
-
-    for (uint i=0; i<size_.w; ++i)
-      for (uint j=0; j<size_.h; ++j)
-        ts_[i][j] = that.ts_[i][j];
-
-    return *this;
-  }
-
-  virtual ~Array2D() {
-    free();
+  Array2D(): size_(0,0) {
   }
 
   // is empty?
@@ -139,49 +96,68 @@ public:
 
   // make empty
   void clear() {
-    alloc(size2d(0,0));
+    fill(T(), size2d(0,0));
   }
 
   // allocate and fill with a value
   void fill(T const& val, size2d const& size) {
-    alloc(size);
-    for (uint i=0; i<size_.w; ++i)
-      for (uint j=0; j<size_.h; ++j)
-        ts_[i][j] = val;
+    size_ = size;  // set size first
+    ts_.fill(val, count());
   }
 
   // allocate and fill with a default value
-  void resize(size2d::rc size) {
+  void fill(size2d::rc size) {
     fill(T(), size);
+  }
+
+  // Calculate the 1D index of an element. Row by row.
+  uint index(uint i, uint j) const {
+    return i + j * size_.w;
   }
 
   // access using 1D index
   T const& at(uint i) const {
-    return at(i % size_.w, i / size_.h);
+    return ts_.at(i);
   }
 
   // access using 2D index
   T const& at(uint i, uint j) const {
-    EXPECT(i < size_.w && j < size_.h)
-    return ts_[i][j];
+    return ts_.at(index(i,j));
   }
 
   // set using 1D index
   void setAt(uint i, T const& val) {
-    setAt(i % size_.w, i / size_.h, val);
+    ts_[i] = val;
   }
 
   // set using 2D index
   void setAt(uint i, uint j, T const& val) {
-    EXPECT(i < size_.w && j < size_.h)
-    ts_[i][j] = val;
+    ts_[index(i,j)] = val;
   }
 
-  // mutable access
-  T& refAt(uint i, uint j) const {
-    EXPECT(i < size_.w && j < size_.h)
-    return ts_[i][j];
+  // raw access
+  T* data() {
+    return ts_.data();
   }
+
+  // raw access
+  T const* data() const {
+    return const_cast<Array2D*>(this)->data();
+  }
+
+  // subscript operator
+  T& operator[](uint i) {
+    return ts_[i];
+  }
+
+  // subscript operator
+  T const& operator[](uint i) const {
+    return const_cast<Array2D*>(this)[i];
+  }
+
+protected:
+  size2d size_;
+  vec<T> ts_;
 };
 
 //------------------------------------------------------------------------------
