@@ -11,7 +11,7 @@
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE.
- * 
+ *
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
@@ -107,9 +107,9 @@ inten_t ImageLens::imageInten(uint i, uint j) const {
   if (trans_) doTrans(i, j);
   if (cut_)   doCut(i, j);
 
-  inten_t inten = image_.at(i, j);
+  inten_t inten = image_.inten(i, j);
   if (intensCorr_)
-    inten *= intensCorr_->at(i, j);
+    inten *= intensCorr_->inten(i, j);
 
   return inten;
 }

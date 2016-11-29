@@ -11,7 +11,7 @@
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE.
- * 
+ *
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
@@ -173,7 +173,7 @@ OneDataset::OneDataset(Metadata::rc md, size2d::rc size, inten_vec const& intens
   : md_(new Metadata(md)), image_(size) {
   EXPECT(intens.count() == size.count())
   for_i (intens.count())
-    image_.setAt(i, intens.at(i));
+    image_.setInten(i, intens.at(i));
 }
 
 OneDataset::OneDataset(rc that)
@@ -227,11 +227,11 @@ void OneDataset::collectIntens(core::Session::rc session, typ::Image const* inte
 
   for (uint i = gmaIndexMin; i < gmaIndexMax; ++i) {
     uint ind = gmaIndexes->at(i);
-    inten_t inten = image_.at(ind);
+    inten_t inten = image_.inten(ind);
     if (qIsNaN(inten))
       continue;
 
-    inten_t corr = intensCorr ? intensCorr->at(ind) : 1;
+    inten_t corr = intensCorr ? intensCorr->inten(ind) : 1;
     if (qIsNaN(corr))
       continue;
 

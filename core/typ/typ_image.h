@@ -33,15 +33,51 @@ public:
   Image(size2d::rc = size2d(0, 0));
   Image(inten_arr::rc);
 
+  size2d::rc size() const {
+    return intens_.size();
+  }
+
+  void clear() {
+    return intens_.clear();
+  }
+
+  bool isEmpty() const {
+    return intens_.isEmpty();
+  }
+
+  void fill(inten_t val, size2d::rc size) {
+    intens_.fill(val, size);
+  }
+
+  inten_t inten(uint i) const {
+    return intens_.at(i);
+  }
+
+  inten_t inten(uint i, uint j) const {
+    return intens_.at(i, j);
+  }
+
+  void setInten(uint i, inten_t val) {
+    intens_.setAt(i, val);
+  }
+
+  void setInten(uint i, uint j, inten_t val) {
+    intens_.setAt(i, j, val);
+  }
+
+  void addInten(uint i, uint j, inten_t val) {
+    intens_.refAt(i, j) += val;
+  }
+
   // Sum all intensities with new ones.
-  void addIntens(inten_arr::rc) THROWS;
+  void addIntens(Cls::rc) THROWS;
 
   inten_rge::rc rgeInten() const {
     return rgeInten_;
   }
 
 private:
-  inten_arr intens;
+  inten_arr intens_;
   inten_rge rgeInten_;
 };
 

@@ -11,7 +11,7 @@
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE.
- * 
+ *
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
@@ -83,14 +83,14 @@ void Session::calcIntensCorr() const {
 
   qreal sum = 0;
   for_ij (w, h)
-    sum += corrImage_.at(i + di, j + dj);
+    sum += corrImage_.inten(i + di, j + dj);
 
   qreal avg = sum / (w * h);
 
   intensCorr_.fill(1, corrImage_.size());
 
   for_ij (w, h) {
-    auto  inten = corrImage_.at(i + di, j + dj);
+    auto  inten = corrImage_.inten(i + di, j + dj);
     qreal fact;
 
     if (inten > 0) {
@@ -100,7 +100,7 @@ void Session::calcIntensCorr() const {
       corrHasNaNs_ = true;
     }
 
-    intensCorr_.setAt(i + di, j + dj, inten_t(fact));
+    intensCorr_.setInten(i + di, j + dj, inten_t(fact));
   }
 }
 
