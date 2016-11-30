@@ -87,17 +87,21 @@ void FilesView::recollect() {
 DockFiles::DockFiles(TheHub& hub)
 : super("Files", "dock-files", Qt::Vertical), RefHub(hub)
 {
-  box_->addWidget((filesView_ = new FilesView(hub)));
+  auto& actions = hub_.actions;
 
   auto h = hbox();
   box_->addLayout(h);
 
-  auto& actions = hub_.actions;
-
-  h->addWidget(label("Correction file"));
   h->addStretch();
   h->addWidget(iconButton(actions.addFiles));
   h->addWidget(iconButton(actions.remFile));
+
+  box_->addWidget((filesView_ = new FilesView(hub)));
+
+  h = hbox();
+  box_->addLayout(h);
+
+  h->addWidget(label("Correction file"));
 
   h = hbox();
   box_->addLayout(h);
