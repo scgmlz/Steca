@@ -152,7 +152,7 @@ void TabGraph::paintPoints() {
         circle(pp, .5);
       } else {
         inten /= rgeMax;
-        auto color = QColor(intenGraph(inten));
+        auto color = QColor(intenGraph(inten, 1));
         p_->setPen(color);
         p_->setBrush(color);
         circle(pp, inten * r_ / 60); // TODO scale to max inten

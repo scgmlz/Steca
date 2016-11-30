@@ -26,8 +26,8 @@
 namespace gui {
 //------------------------------------------------------------------------------
 
-QRgb intenImage(inten_t inten, inten_t maxInten = 1);
-QRgb intenGraph(inten_t inten, inten_t maxInten = 1);
+QRgb intenImage(inten_t inten, inten_t maxInten, bool curved);
+QRgb intenGraph(inten_t inten, inten_t maxInten);
 QRgb heatmapColor(inten_t value);
 
 //------------------------------------------------------------------------------

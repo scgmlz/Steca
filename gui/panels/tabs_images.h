@@ -34,7 +34,7 @@ public:
 private:
   QPixmap makeBlankPixmap();
 
-  QImage  makeImage(typ::Image::rc);
+  QImage  makeImage(typ::Image::rc, bool curvedScale);
   QPixmap makePixmap(typ::Image::rc);
   QPixmap makePixmap(data::OneDataset::rc, gma_rge::rc);
 

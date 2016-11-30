@@ -23,7 +23,7 @@
 namespace gui {
 //------------------------------------------------------------------------------
 
-QRgb intenImage(inten_t inten, inten_t maxInten) {
+QRgb intenImage(inten_t inten, inten_t maxInten, bool curved) {
   if (qIsNaN(inten))
     return qRgb(0x00, 0xff, 0xff);
   if (qIsInf(inten))
@@ -34,14 +34,18 @@ QRgb intenImage(inten_t inten, inten_t maxInten) {
 
   inten /= maxInten;
 
-  if (inten < 0.25f)
+  if (curved && inten > 0)
+    inten = powf(inten, .6f);
+
+  inten_t const low = .25f, mid = .5f, high = .75f;
+  if (inten < low)
     return qRgb(int(0xff * inten * 4), 0, 0);
-  if (inten < 0.5f)
-    return qRgb(0xff, int(0xff * (inten - 0.25f) * 4), 0);
-  if (inten < 0.75f)
-    return qRgb(int(0xff - (0xff * (inten - 0.5f) * 4)), 0xff,
-                int(0xff * (inten - 0.5f) * 4));
-  return qRgb(int(0xff * (inten - 0.75f) * 4), 0xff, 0xff);
+  if (inten < mid)
+    return qRgb(0xff, int(0xff * (inten - low) * 4), 0);
+  if (inten < high)
+    return qRgb(int(0xff - (0xff * (inten - mid) * 4)), 0xff,
+                int(0xff * (inten - mid) * 4));
+  return qRgb(int(0xff * (inten - high) * 4), 0xff, 0xff);
 }
 
 QRgb intenGraph(inten_t inten, inten_t maxInten) {

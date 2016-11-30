@@ -245,7 +245,7 @@ QPixmap TabsImages::makeBlankPixmap() {
   return pixmap;
 }
 
-QImage TabsImages::makeImage(typ::Image::rc image) {
+QImage TabsImages::makeImage(typ::Image::rc image, bool curvedScale) {
   auto imageLens = hub_.plainImageLens(image);
 
   auto size     = imageLens->size();
@@ -259,16 +259,16 @@ QImage TabsImages::makeImage(typ::Image::rc image) {
 
   for_ij (size.w, size.h)
     im.setPixel(to_i(i), to_i(j),
-                intenImage(imageLens->imageInten(i, j), maxInten));
+                intenImage(imageLens->imageInten(i, j), maxInten, curvedScale));
   return im;
 }
 
 QPixmap TabsImages::makePixmap(typ::Image::rc image) {
-  return QPixmap::fromImage(makeImage(image));
+  return QPixmap::fromImage(makeImage(image, !hub_.isFixedIntenImageScale()));
 }
 
 QPixmap TabsImages::makePixmap(data::OneDataset::rc dataset, gma_rge::rc rgeGma) {
-  auto im = makeImage(dataset.image());
+  auto im = makeImage(dataset.image(), !hub_.isFixedIntenImageScale());
   auto angleMap = hub_.angleMap(dataset);
 
   auto size = im.size();
