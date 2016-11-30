@@ -94,34 +94,50 @@ void ImageWidget::paintEvent(QPaintEvent*) {
   auto margin = (size() - scaled_.size()) / 2;
   QRect rect(QPoint(margin.width(), margin.height()), scaled_.size());
 
-  QPainter painter(this);
+  QPainter p(this);
 
   // image
-  painter.drawPixmap(rect.left(), rect.top(), scaled_);
+  p.drawPixmap(rect.left(), rect.top(), scaled_);
 
   // overlay
   if (hub_.actions.showOverlay->isChecked()) {
-    painter.setPen(Qt::lightGray);
+    p.setPen(Qt::lightGray);
 
     // cut
     auto cut = hub_.imageCut();
     QRect r = rect.adjusted(-1, -1, 0, 0)
                   .adjusted(qRound(scale_ * cut.left),   qRound(scale_ * cut.top),
                            -qRound(scale_ * cut.right), -qRound(scale_ * cut.bottom));
-    painter.drawRect(r);
+    p.drawRect(r);
+
+    QPoint rc; rc = r.center();
+    int rcx = rc.x(), rcy = rc.y();
+
+    int rl, rt, rr, rb;
+    r.getCoords(&rl, &rt, &rr, &rb);
+    int rw = rr - rl;
 
     // cross
     auto off = hub_.geometry().midPixOffset;
-    auto c = r.center();
-    auto x = qRound(c.x() + scale_ * off.i);
-    auto y = qRound(c.y() + scale_ * off.j);
-    painter.drawLine(x, r.top(), x, r.bottom());
-    painter.drawLine(r.left(), y, r.right(), y);
+    auto x = qRound(rcx + scale_ * off.i);
+    auto y = qRound(rcy + scale_ * off.j);
+    p.drawLine(x, rt, x, rb);
+    p.drawLine(rl, y, rr, y);
+
+    // text annotations
+    auto paintText = [this, &p](QPoint pos, rcstr s, bool alignLeft) {
+      auto fm = fontMetrics();
+      if (alignLeft) pos.rx() -= fm.width(s);
+      p.drawText(pos, s);
+    };
+
+    p.setPen(Qt::cyan);
+    paintText(QPoint(rr - rw/5, rcy), "γ=0", false);
   }
 
   // frame
-  painter.setPen(Qt::black);
-  painter.drawRect(rect.adjusted(-1, -1, 0, 0));
+  p.setPen(Qt::black);
+  p.drawRect(rect.adjusted(-1, -1, 0, 0));
 }
 
 //------------------------------------------------------------------------------
