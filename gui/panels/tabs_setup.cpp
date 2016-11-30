@@ -133,6 +133,9 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
     detPixelSize_ = spinDoubleCell(gui_cfg::em4_2, typ::Geometry::MIN_DETECTOR_PIXEL_SIZE);
     detPixelSize_->setDecimals(3);
 
+    detDistance_->setValue(typ::Geometry::DEF_DETECTOR_DISTANCE);
+    detPixelSize_->setValue(typ::Geometry::DEF_DETECTOR_PIXEL_SIZE);
+
     connect(detDistance_, slot(QDoubleSpinBox,valueChanged,double), [this]() {
       setToHub();
     });

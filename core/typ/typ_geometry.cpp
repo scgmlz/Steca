@@ -29,7 +29,7 @@ preal const Geometry::DEF_DETECTOR_DISTANCE   = preal(1035);
 preal const Geometry::DEF_DETECTOR_PIXEL_SIZE = preal(1);
 
 Geometry::Geometry()
-: detectorDistance(MIN_DETECTOR_DISTANCE), pixSize(MIN_DETECTOR_PIXEL_SIZE)
+: detectorDistance(DEF_DETECTOR_DISTANCE), pixSize(DEF_DETECTOR_PIXEL_SIZE)
 , midPixOffset() {
 }
 
