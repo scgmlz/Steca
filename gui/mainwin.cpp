@@ -112,7 +112,7 @@ void MainWin::initMenus() {
       acts_.linkCuts,
       acts_.showOverlay,
       acts_.stepScale,
-      acts_.showGamma,
+      acts_.showBins,
   });
 
   addActions(menuDgram_, {

@@ -159,7 +159,7 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
 
     hb->addStretch(1);
 
-    hb->addWidget(iconButton(actions.showGamma));
+    hb->addWidget(iconButton(actions.showBins));
     hb->addWidget(label("γ count"));
     hb->addWidget((numSlices_ = spinCell(gui_cfg::em4, 0)));
     hb->addWidget(label("#"));
@@ -173,6 +173,9 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
     minGamma_->setReadOnly(true);
     maxGamma_->setReadOnly(true);
 
+    hb->addWidget(label("bin#"));
+    hb->addWidget((numBin_  = spinCell(gui_cfg::em4, 1)));
+
     box.addWidget((dataImageWidget_ = new ImageWidget(hub_)));
 
     connect(spinN_, slot(QSpinBox,valueChanged,int), [this]() {
@@ -184,6 +187,10 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
     });
 
     connect(numSlice_, slot(QSpinBox,valueChanged,int), [this]() {
+      render();
+    });
+
+    connect(numBin_, slot(QSpinBox,valueChanged,int), [this]() {
       render();
     });
   }
@@ -213,7 +220,7 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
     render();
   });
 
-  connect(actions.showGamma, &QAction::toggled, [this]() {
+  connect(actions.showBins, &QAction::toggled, [this]() {
     render();
   });
 
@@ -267,17 +274,26 @@ QPixmap TabsImages::makePixmap(typ::Image::rc image) {
   return QPixmap::fromImage(makeImage(image, !hub_.isFixedIntenImageScale()));
 }
 
-QPixmap TabsImages::makePixmap(data::OneDataset::rc dataset, gma_rge::rc rgeGma) {
+QPixmap TabsImages::makePixmap(data::OneDataset::rc dataset,
+                               gma_rge::rc rgeGma, tth_rge::rc rgeTth) {
   auto im = makeImage(dataset.image(), !hub_.isFixedIntenImageScale());
   auto angleMap = hub_.angleMap(dataset);
 
   auto size = im.size();
-  for_ij (size.width(), size.height())
-    if (rgeGma.contains(angleMap->at(to_u(i),to_u(j)).gma)) {
-      auto color = QColor(im.pixel(i,j));
-      color.setGreen(qFloor(color.green()*.7 + 255*.3));
-      im.setPixel(i,j, color.rgb());
+  for_ij (size.width(), size.height()) {
+    auto& a = angleMap->at(to_u(i),to_u(j));
+    auto color = QColor(im.pixel(i,j));
+    if (rgeGma.contains(a.gma)) {
+      if (rgeTth.contains(a.tth)) {
+        color = Qt::yellow;
+      } else {
+        color.setGreen(qFloor(color.green()*.3 + 255*.7));
+      }
+    } else if (rgeTth.contains(a.tth)) {
+      color.setGreen(qFloor(color.green()*.3 + 255*.7));
     }
+    im.setPixel(i,j, color.rgb());
+  }
 
   return QPixmap::fromImage(im);
 }
@@ -327,13 +343,23 @@ void TabsImages::render() {
       hub_.setGammaRange(rge);
 
       auto oneDataset = dataset_->at(n-1);
-      if (hub_.actions.showGamma->isChecked()) {
-        pixMap = makePixmap(*oneDataset, rge);
+
+      numBin_->setEnabled(true);
+      if (hub_.actions.showBins->isChecked()) {
+        typ::Range rgeTth = lens_->rgeTth();
+        auto curve = lens_->makeCurve(false); // TODO factor out lens::binCount()
+        int count  = to_i(curve.count());
+        numBin_->setMaximum(count-1);
+        auto min = rgeTth.min, wdt = rgeTth.width();
+        qreal num = qreal(numBin_->value());
+        pixMap = makePixmap(*oneDataset, rge, typ::Range(min + wdt * (num/count), min + wdt * ((num+1)/count)));
       } else {
         pixMap = makePixmap(oneDataset->image());
       }
     } else {
       spinN_->setEnabled(false);
+      numBin_->setMaximum(0);
+      numBin_->setEnabled(false);
 
       pixMap = makeBlankPixmap();
     }

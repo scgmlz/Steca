@@ -113,7 +113,7 @@ Actions::Actions(TheHub& hub): super(hub) {
   tgl(linkCuts,             "Link cuts")                    .icon(":/icon/link");
   tgl(showOverlay,          "Show overlay")                 .icon(":/icon/crop");
   tgl(stepScale,            "Scale in steps")               .icon(":/icon/steps");
-  tgl(showGamma,            "Show gamma range")             .icon(":/icon/angle");
+  tgl(showBins,             "Show bins")                    .icon(":/icon/angle");
 
   tgl(fixedIntenImage,      "Global intensity scale")       .icon(":/icon/scale");
   tgl(fixedIntenDgram,      "Fixed intensity scale");

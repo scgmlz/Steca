@@ -71,7 +71,7 @@ public:
 #endif
     *loadSession, *saveSession, *clearSession,
     *addFiles, *remFile, *enableCorr, *remCorr,
-    *rotateImage, *mirrorImage, *linkCuts, *showOverlay, *stepScale, *showGamma,
+    *rotateImage, *mirrorImage, *linkCuts, *showOverlay, *stepScale, *showBins,
     *fixedIntenImage, *fixedIntenDgram, *combinedDgram,
     *showAveraged,
     *selRegions, *showBackground, *clearBackground, *clearReflections,

@@ -36,7 +36,7 @@ private:
 
   QImage  makeImage(typ::Image::rc, bool curvedScale);
   QPixmap makePixmap(typ::Image::rc);
-  QPixmap makePixmap(data::OneDataset::rc, gma_rge::rc);
+  QPixmap makePixmap(data::OneDataset::rc, gma_rge::rc, tth_rge::rc);
 
   void setDataset(data::shp_Dataset);
   void render();
@@ -45,7 +45,7 @@ private:
   ImageWidget *dataImageWidget_, *corrImageWidget_;
 
   QSpinBox *spinN_;
-  QSpinBox *numSlices_, *numSlice_;
+  QSpinBox *numSlices_, *numSlice_, *numBin_;
   QDoubleSpinBox *minGamma_, *maxGamma_;
 
   calc::shp_DatasetLens lens_;
