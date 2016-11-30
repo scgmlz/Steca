@@ -252,13 +252,13 @@ void MainWin::checkUpdate(bool completeReport) {
       if (ver != lastVer)
         messageDialog(
           str("%1 update").arg(name),
-          str("<p>The latest %1 version is %2. You have version %3.</p>"
+          str("<p>The latest released %1 version is %2. You have version %3.</p>"
               "<p><a href='%4'>Get new %1</a></p>")
               .arg(name, lastVer, ver, STECA2_DOWNLOAD_URL));
       else if (completeReport)
         messageDialog(
           str("%1 update").arg(name),
-          str("<p>You have the latest %1 version (%2).</p>")
+          str("<p>You have the latest released %1 version (%2).</p>")
               .arg(name).arg(ver));
     }
   });
@@ -376,6 +376,14 @@ void MainWin::onShow() {
 #endif
 
   Settings s(config_key::GROUP_CONFIG);
+  auto ver = qApp->applicationVersion();
+  if (s.readStr(config_key::CURRENT_VERSION) != ver) {
+    // new version
+    s.saveStr(config_key::CURRENT_VERSION,       ver);
+    s.saveBool(config_key::STARTUP_CHECK_UPDATE, true);
+    s.saveBool(config_key::STARTUP_ABOUT,        true);
+  }
+
   if (s.readBool(config_key::STARTUP_CHECK_UPDATE, true))
     checkUpdate(false);
   if (s.readBool(config_key::STARTUP_ABOUT, true))
@@ -406,6 +414,8 @@ void MainWin::checkActions() {
 #ifndef Q_OS_OSX
   acts_.fullScreen->setChecked(isFullScreen());
 #endif
+
+  dockHelp_->setVisible(false);
 
   acts_.viewFiles->setChecked(dockFiles_->isVisible());
   acts_.viewDatasets->setChecked(dockDatasets_->isVisible());

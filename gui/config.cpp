@@ -22,6 +22,7 @@ namespace config_key {
 
 str const
   GROUP_CONFIG("config"),
+  CURRENT_VERSION("current version"),
   STARTUP_ABOUT("startup about"), STARTUP_CHECK_UPDATE("startup check update"),
   DETECTOR("detector"), DET_DISTANCE("distance"), DET_PIX_SIZE("pixel size"),
 

@@ -58,13 +58,14 @@ AboutBox::AboutBox(QWidget *parent) : super(parent, Qt::Dialog) {
   hb->addWidget(logo);
 
   auto info = label(
-      str("<h4>%1 ver. %2</h4>"
+      str("<h4>%1 ver. %2 (%5b)</h4>"
           "<p>StressTextureCalculator</p>"
           "<p>Copyright: Forschungszentrum Jülich GmbH %3</p>"
           "<p><a href='%4'>%4</a></p>")
-          .arg(qApp->applicationName(), qApp->applicationVersion())
+          .arg(qApp->applicationName()).arg(qApp->applicationVersion())
           .arg(QDate::currentDate().toString("yyyy"))
-          .arg(STECA2_PAGES_URL));
+          .arg(STECA2_PAGES_URL)
+          .arg(__WORDSIZE));
 
   info->setAlignment(Qt::AlignTop | Qt::AlignLeft);
   info->setOpenExternalLinks(true);
