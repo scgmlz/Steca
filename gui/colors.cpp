@@ -19,6 +19,7 @@
 #include "typ/typ_vec.h"
 
 #include <QColor>
+#include <qmath.h>
 
 namespace gui {
 //------------------------------------------------------------------------------
@@ -35,7 +36,7 @@ QRgb intenImage(inten_t inten, inten_t maxInten, bool curved) {
   inten /= maxInten;
 
   if (curved && inten > 0)
-    inten = powf(inten, .6f);
+    inten = qPow(inten, .6f);
 
   inten_t const low = .25f, mid = .5f, high = .75f;
   if (inten < low)
