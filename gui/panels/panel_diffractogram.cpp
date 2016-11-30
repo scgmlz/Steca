@@ -141,8 +141,10 @@ DiffractogramPlot::DiffractogramPlot(TheHub& hub, Diffractogram& diffractogram)
   dgramBgFittedGraph_ = addGraph();
 
   bgGraph_->setPen(QPen(QColor(0x21, 0xa1, 0x21, 0xff), 2));
-  dgramGraph_->setPen(QPen(Qt::gray));
   dgramBgFittedGraph_->setPen(QPen(Qt::black, 2));
+
+  dgramGraph_->setLineStyle(QCPGraph::LineStyle::lsNone);
+  dgramGraph_->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ScatterShape::ssDisc,Qt::gray,2));
 
   // background regions
   addLayer("bg", layer("background"), QCustomPlot::limAbove);
