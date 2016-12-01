@@ -1,3 +1,29 @@
+ver. 2.0.4, released 2016.12.01
+-------------------------------
+
+New features:
+
+* image overlay: visualise gamma slices and 2theta bins;
+  show where gamma=0 is
+* the "about" dialog indicates if the build is 64-bit;
+  startup options reset after a new version is installed
+  (to alert the user to that fact)
+
+Improvements:
+
+* raw diffractogram (before background adjustment) is plotted as dots
+  (to show the nature of the histogram binning)
+* detector geometry defaults to 1035 / 1 mm
+* image color scale adjusted to show lower counts more clearly
+* add/remove file buttons moved above the file list
+
+Bug fixes:
+
+* more conservative memory allocation that, we hope, fixes the strange
+  "bad allocation" errors on some machines
+* utf8 (Greek) characters replaced by ASCII strings (e.g. "gamma")
+  in output text files
+
 ver. 2.0.3a (hotfix), released 2016.11.14
 -----------------------------------------
 
