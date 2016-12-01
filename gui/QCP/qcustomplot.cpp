@@ -9719,6 +9719,33 @@ QCPGraph *QCustomPlot::addGraph(QCPAxis *keyAxis, QCPAxis *valueAxis)
   }
 }
 
+QCPCurve *QCustomPlot::addCurve(QCPAxis *keyAxis, QCPAxis *valueAxis)
+{
+  if (!keyAxis) keyAxis = xAxis;
+  if (!valueAxis) valueAxis = yAxis;
+  if (!keyAxis || !valueAxis)
+  {
+    qDebug() << Q_FUNC_INFO << "can't use default QCustomPlot xAxis or yAxis, because at least one is invalid (has been deleted)";
+    return 0;
+  }
+  if (keyAxis->parentPlot() != this || valueAxis->parentPlot() != this)
+  {
+    qDebug() << Q_FUNC_INFO << "passed keyAxis or valueAxis doesn't have this QCustomPlot as parent";
+    return 0;
+  }
+
+  QCPCurve *newCurve = new QCPCurve(keyAxis, valueAxis);
+  if (addPlottable(newCurve))
+  {
+    newCurve->setName(QLatin1String("Curve ")+QString::number(mGraphs.size()));
+    return newCurve;
+  } else
+  {
+    delete newCurve;
+    return 0;
+  }
+}
+
 /*!
   Removes the specified \a graph from the plot and, if necessary, from the QCustomPlot::legend. If
   any other graphs in the plot have a channel fill set towards the removed graph, the channel fill

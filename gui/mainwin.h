@@ -1,18 +1,19 @@
-// ************************************************************************** //
-//
-//  STeCa2:    StressTextureCalculator ver. 2
-//
-//! @file      mainwin.h
-//! @brief     The main window
-//!
-//! @homepage  http://apps.jcns.fz-juelich.de/steca2
-//! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016
-//! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
-//! @authors   Based on the original STeCa by Christian Randau
-//
-// ************************************************************************** //
+/*******************************************************************************
+ * STeCa2 - StressTextureCalculator ver. 2
+ *
+ * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the COPYING and AUTHORS files for more details.
+ ******************************************************************************/
 
 #ifndef MAINWIN_H
 #define MAINWIN_H
@@ -79,7 +80,7 @@ private:
       *menuOutput_, *menuHelp_;
 
   QDockWidget
-      *dockFiles_, *dockDatasets_, *dockDatasetInfo_;
+      *dockFiles_, *dockDatasets_, *dockDatasetInfo_, *dockHelp_;
 
 private:
   QByteArray initialState_;
@@ -95,6 +96,7 @@ private:
   void viewFiles(bool);
   void viewDatasets(bool);
   void viewDatasetInfo(bool);
+  void viewHelp(bool);
   void viewReset();
 };
 

@@ -1,46 +1,42 @@
-// ************************************************************************** //
-//
-//  STeCa2:    StressTextureCalculator ver. 2
-//
-//! @file      typ_image.cpp
-//!
-//! @homepage  http://apps.jcns.fz-juelich.de/steca2
-//! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016
-//! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
-//! @authors   Based on the original STeCa by Christian Randau
-//
-// ************************************************************************** //
+/*******************************************************************************
+ * STeCa2 - StressTextureCalculator ver. 2
+ *
+ * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the COPYING and AUTHORS files for more details.
+ ******************************************************************************/
 
 #include "typ_image.h"
 
 namespace typ {
 //------------------------------------------------------------------------------
 
-Image::Image(size2d::rc size, inten_t const* src) {
+Image::Image(size2d::rc size) {
   fill(0, size);
-  if (src)
-    addIntens(not_null<inten_t const*>::from(src));
 }
 
-Image::Image(Image::rc that)
-: Image(that.size(), that.intensData()) {
+Image::Image(inten_arr::rc that): Image(that.size()) {
+  addIntens(that);
 }
 
-void Image::addIntens(Image::rc that) THROWS {
+void Image::addIntens(Cls::rc that) THROWS {
   RUNTIME_CHECK(size() == that.size(), "inconsistent image size");
-  addIntens(not_null<inten_t const*>::from(that.data()));
-}
-
-void Image::addIntens(not_null<inten_t const*> thatIntens) {
-  inten_t *dst = data();
-  inten_t const *src = thatIntens;
-  for_i (count()) {
-    inten_t inten = *src++;
-    rgeInten_.extendBy(inten);
-    *dst++ += inten;
-  }
+  auto w = size().w, h = size().h;
+  for (uint i=0; i<w; ++i)
+    for (uint j=0; j<h; ++j) {
+      inten_t inten = that.inten(i, j);
+      rgeInten_.extendBy(inten);
+      addInten(i, j, inten);
+    }
 }
 
 //------------------------------------------------------------------------------

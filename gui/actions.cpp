@@ -1,17 +1,19 @@
-// ************************************************************************** //
-//
-//  STeCa2:    StressTextureCalculator ver. 2
-//
-//! @file      actions.cpp
-//!
-//! @homepage  http://apps.jcns.fz-juelich.de/steca2
-//! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016
-//! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
-//! @authors   Based on the original STeCa by Christian Randau
-//
-// ************************************************************************** //
+/*******************************************************************************
+ * STeCa2 - StressTextureCalculator ver. 2
+ *
+ * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the COPYING and AUTHORS files for more details.
+ ******************************************************************************/
 
 #include "actions.h"
 #include "app.h"
@@ -91,6 +93,7 @@ Actions::Actions(TheHub& hub): super(hub) {
   tgl(viewFiles,            "Files");
   tgl(viewDatasets,         "Datasets");
   tgl(viewDatasetInfo,      "Metadata");
+  tgl(viewHelp,             "Help browser");
   trg(viewReset,            "Reset");
 #ifndef Q_OS_OSX
   tgl(fullScreen,           "FullScreen");
@@ -110,7 +113,7 @@ Actions::Actions(TheHub& hub): super(hub) {
   tgl(linkCuts,             "Link cuts")                    .icon(":/icon/link");
   tgl(showOverlay,          "Show overlay")                 .icon(":/icon/crop");
   tgl(stepScale,            "Scale in steps")               .icon(":/icon/steps");
-  tgl(showGamma,            "Show gamma range")             .icon(":/icon/angle");
+  tgl(showBins,             "Show bins")                    .icon(":/icon/angle");
 
   tgl(fixedIntenImage,      "Global intensity scale")       .icon(":/icon/scale");
   tgl(fixedIntenDgram,      "Fixed intensity scale");
@@ -140,6 +143,7 @@ Actions::Actions(TheHub& hub): super(hub) {
   viewFiles       -> key(Qt::Key_F8);
   viewDatasets    -> key(Qt::Key_F9);
   viewDatasetInfo -> key(Qt::Key_F10);
+  viewHelp        -> key(Qt::Key_F1);
 
 #ifndef Q_OS_OSX
   fullScreen      -> key(Qt::Key_F11);

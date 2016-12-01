@@ -1,18 +1,19 @@
-// ************************************************************************** //
-//
-//  STeCa2:    StressTextureCalculator ver. 2
-//
-//! @file      typ_image.h
-//! @brief     Detector image
-//!
-//! @homepage  http://apps.jcns.fz-juelich.de/steca2
-//! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016
-//! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
-//! @authors   Based on the original STeCa by Christian Randau
-//
-// ************************************************************************** //
+/*******************************************************************************
+ * STeCa2 - StressTextureCalculator ver. 2
+ *
+ * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the COPYING and AUTHORS files for more details.
+ ******************************************************************************/
 
 #ifndef TYP_IMAGE_H
 #define TYP_IMAGE_H
@@ -23,42 +24,60 @@
 namespace typ {
 //------------------------------------------------------------------------------
 
-class Image final : public Array2D<inten_t> {
-  CLS(Image) SUPER(Array2D<inten_t>)
+typedef Array2D<inten_t> inten_arr;
+
+class Image final {
+  CLS(Image)
 public:
   // Image as vector of intensities, filled with 0 or given intensities.
-  Image(size2d::rc = size2d(0, 0), inten_t const* = nullptr);
-  Image(rc);
+  Image(size2d::rc = size2d(0, 0));
+  Image(inten_arr::rc);
 
-  // Access single intensity.
+  size2d::rc size() const {
+    return intens_.size();
+  }
+
+  void clear() {
+    return intens_.clear();
+  }
+
+  bool isEmpty() const {
+    return intens_.isEmpty();
+  }
+
+  void fill(inten_t val, size2d::rc size) {
+    intens_.fill(val, size);
+  }
+
   inten_t inten(uint i) const {
-    return super::at(i);
+    return intens_.at(i);
   }
 
-  // Access single intensity.
   inten_t inten(uint i, uint j) const {
-    return super::at(i, j);
+    return intens_.at(i, j);
   }
 
-  // Set single intensity.
-  void setInten(uint i, inten_t inten) {
-    super::setAt(i, inten);
+  void setInten(uint i, inten_t val) {
+    intens_.setAt(i, val);
   }
 
-  // Access the whole 1D intensity array, getCount() values.
-  not_null<inten_t const*> intensData() const {
-    return not_null<inten_t const*>::from(data());
+  void setInten(uint i, uint j, inten_t val) {
+    intens_.setAt(i, j, val);
+  }
+
+  void addInten(uint i, uint j, inten_t val) {
+    intens_.refAt(i, j) += val;
   }
 
   // Sum all intensities with new ones.
-  void addIntens(Image::rc) THROWS;
-  void addIntens(not_null<inten_t const*>);
+  void addIntens(Cls::rc) THROWS;
 
   inten_rge::rc rgeInten() const {
     return rgeInten_;
   }
 
 private:
+  inten_arr intens_;
   inten_rge rgeInten_;
 };
 

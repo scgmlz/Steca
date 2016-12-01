@@ -1,18 +1,19 @@
-// ************************************************************************** //
-//
-//  STeCa2:    StressTextureCalculator ver. 2
-//
-//! @file      calc_reflection_info.h
-//! @brief     Reflection data.
-//!
-//! @homepage  http://apps.jcns.fz-juelich.de/steca2
-//! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016
-//! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
-//! @authors   Based on the original STeCa by Christian Randau
-//
-// ************************************************************************** //
+/*******************************************************************************
+ * STeCa2 - StressTextureCalculator ver. 2
+ *
+ * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the COPYING and AUTHORS files for more details.
+ ******************************************************************************/
 
 #ifndef CALC_REFLECTION_INFO_H
 #define CALC_REFLECTION_INFO_H
@@ -42,10 +43,10 @@ public:
     NUM_REFL_ATTR,
   };
 
-  static str_lst      dataTags();
+  static str_lst      dataTags(bool out);
   static typ::cmp_vec dataCmps();
 
-  static str const reflStringTag(uint attr);
+  static str const reflStringTag(uint attr, bool out);
 
   ReflectionInfo();
 

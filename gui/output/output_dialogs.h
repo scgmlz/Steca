@@ -1,18 +1,19 @@
-// ************************************************************************** //
-//
-//  STeCa2:    StressTextureCalculator ver. 2
-//
-//! @file      output_dialogs.h
-//! @brief     Output dialogs.
-//!
-//! @homepage  http://apps.jcns.fz-juelich.de/steca2
-//! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016
-//! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
-//! @authors   Based on the original STeCa by Christian Randau
-//
-// ************************************************************************** //
+/*******************************************************************************
+ * STeCa2 - StressTextureCalculator ver. 2
+ *
+ * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the COPYING and AUTHORS files for more details.
+ ******************************************************************************/
 
 #ifndef OUTPUT_DIALOGS_H
 #define OUTPUT_DIALOGS_H
@@ -148,8 +149,8 @@ class Table : public TreeView, protected RefHub {
 public:
   Table(TheHub&, uint numDataColumns);
 
-  void setColumns(str_lst::rc headers, typ::cmp_vec::rc);
-  str_lst const headers();
+  void setColumns(str_lst::rc headers, str_lst::rc outHeaders, typ::cmp_vec::rc);
+  str_lst const outHeaders() { return outHeaders_; }
 
   void clear();
   void addRow(typ::row_t::rc, bool sort);
@@ -161,6 +162,7 @@ public:
 
 private:
   scoped<class TableModel*> model_;
+  str_lst outHeaders_;
 };
 
 //------------------------------------------------------------------------------
@@ -189,7 +191,9 @@ protected:
 class TabTable : public Tab {
   CLS(TabTable) SUPER(Tab)
 public:
-  TabTable(TheHub&, Params&, str_lst::rc headers, typ::cmp_vec::rc);
+  TabTable(TheHub&, Params&,
+           str_lst::rc headers, str_lst::rc outHeaders,
+           typ::cmp_vec::rc);
 
 private:
   struct showcol_t {

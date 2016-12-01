@@ -1,27 +1,30 @@
-// ************************************************************************** //
-//
-//  STeCa2:    StressTextureCalculator ver. 2
-//
-//! @file      colors.cpp
-//!
-//! @homepage  http://apps.jcns.fz-juelich.de/steca2
-//! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016
-//! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
-//! @authors   Based on the original STeCa by Christian Randau
-//
-// ************************************************************************** //
+/*******************************************************************************
+ * STeCa2 - StressTextureCalculator ver. 2
+ *
+ * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the COPYING and AUTHORS files for more details.
+ ******************************************************************************/
 
 #include "colors.h"
 #include "typ/typ_vec.h"
 
 #include <QColor>
+#include <qmath.h>
 
 namespace gui {
 //------------------------------------------------------------------------------
 
-QRgb intenImage(inten_t inten, inten_t maxInten) {
+QRgb intenImage(inten_t inten, inten_t maxInten, bool curved) {
   if (qIsNaN(inten))
     return qRgb(0x00, 0xff, 0xff);
   if (qIsInf(inten))
@@ -32,14 +35,18 @@ QRgb intenImage(inten_t inten, inten_t maxInten) {
 
   inten /= maxInten;
 
-  if (inten < 0.25f)
+  if (curved && inten > 0)
+    inten = qPow(inten, .6f);
+
+  inten_t const low = .25f, mid = .5f, high = .75f;
+  if (inten < low)
     return qRgb(int(0xff * inten * 4), 0, 0);
-  if (inten < 0.5f)
-    return qRgb(0xff, int(0xff * (inten - 0.25f) * 4), 0);
-  if (inten < 0.75f)
-    return qRgb(int(0xff - (0xff * (inten - 0.5f) * 4)), 0xff,
-                int(0xff * (inten - 0.5f) * 4));
-  return qRgb(int(0xff * (inten - 0.75f) * 4), 0xff, 0xff);
+  if (inten < mid)
+    return qRgb(0xff, int(0xff * (inten - low) * 4), 0);
+  if (inten < high)
+    return qRgb(int(0xff - (0xff * (inten - mid) * 4)), 0xff,
+                int(0xff * (inten - mid) * 4));
+  return qRgb(int(0xff * (inten - high) * 4), 0xff, 0xff);
 }
 
 QRgb intenGraph(inten_t inten, inten_t maxInten) {

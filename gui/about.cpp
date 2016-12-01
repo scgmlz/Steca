@@ -1,17 +1,19 @@
-// ************************************************************************** //
-//
-//  STeCa2:    StressTextureCalculator ver. 2
-//
-//! @file      about.cpp
-//!
-//! @homepage  http://apps.jcns.fz-juelich.de/steca2
-//! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016
-//! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
-//! @authors   Based on the original STeCa by Christian Randau
-//
-// ************************************************************************** //
+/*******************************************************************************
+ * STeCa2 - StressTextureCalculator ver. 2
+ *
+ * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the COPYING and AUTHORS files for more details.
+ ******************************************************************************/
 
 #include "about.h"
 #include "../manifest.h"
@@ -55,14 +57,21 @@ AboutBox::AboutBox(QWidget *parent) : super(parent, Qt::Dialog) {
                   .scaled(128, 128, Qt::KeepAspectRatio, Qt::SmoothTransformation));
   hb->addWidget(logo);
 
+#ifdef __x86_64__
+  str arch = "(64b)";
+#else
+  str arch = "";
+#endif
+
   auto info = label(
-      str("<h4>%1 ver. %2</h4>"
+      str("<h4>%1 ver. %2 %5</h4>"
           "<p>StressTextureCalculator</p>"
           "<p>Copyright: Forschungszentrum Jülich GmbH %3</p>"
           "<p><a href='%4'>%4</a></p>")
-          .arg(qApp->applicationName(), qApp->applicationVersion())
+          .arg(qApp->applicationName()).arg(qApp->applicationVersion())
           .arg(QDate::currentDate().toString("yyyy"))
-          .arg(STECA2_PAGES_URL));
+          .arg(STECA2_PAGES_URL)
+          .arg(arch));
 
   info->setAlignment(Qt::AlignTop | Qt::AlignLeft);
   info->setOpenExternalLinks(true);

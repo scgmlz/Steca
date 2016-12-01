@@ -1,17 +1,19 @@
-// ************************************************************************** //
-//
-//  STeCa2:    StressTextureCalculator ver. 2
-//
-//! @file      panel_diffractogram.cpp
-//!
-//! @homepage  http://apps.jcns.fz-juelich.de/steca2
-//! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016
-//! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
-//! @authors   Based on the original STeCa by Christian Randau
-//
-// ************************************************************************** //
+/*******************************************************************************
+ * STeCa2 - StressTextureCalculator ver. 2
+ *
+ * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the COPYING and AUTHORS files for more details.
+ ******************************************************************************/
 
 #include "panel_diffractogram.h"
 #include "calc/calc_lens.h"
@@ -139,8 +141,10 @@ DiffractogramPlot::DiffractogramPlot(TheHub& hub, Diffractogram& diffractogram)
   dgramBgFittedGraph_ = addGraph();
 
   bgGraph_->setPen(QPen(QColor(0x21, 0xa1, 0x21, 0xff), 2));
-  dgramGraph_->setPen(QPen(Qt::gray));
   dgramBgFittedGraph_->setPen(QPen(Qt::black, 2));
+
+  dgramGraph_->setLineStyle(QCPGraph::LineStyle::lsNone);
+  dgramGraph_->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ScatterShape::ssDisc,Qt::gray,2));
 
   // background regions
   addLayer("bg", layer("background"), QCustomPlot::limAbove);

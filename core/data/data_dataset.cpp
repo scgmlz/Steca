@@ -1,17 +1,19 @@
-// ************************************************************************** //
-//
-//  STeCa2:    StressTextureCalculator ver. 2
-//
-//! @file      core_dataset.h
-//!
-//! @homepage  http://apps.jcns.fz-juelich.de/steca2
-//! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016
-//! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
-//! @authors   Based on the original STeCa by Christian Randau
-//
-// ************************************************************************** //
+/*******************************************************************************
+ * STeCa2 - StressTextureCalculator ver. 2
+ *
+ * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the COPYING and AUTHORS files for more details.
+ ******************************************************************************/
 
 #include "data_dataset.h"
 #include "calc/calc_lens.h"
@@ -56,11 +58,11 @@ uint Metadata::numAttributes(bool onlyNum) {
       : eAttr::NUM_ALL_ATTRIBUTES);
 }
 
-rcstr Metadata::attributeTag(uint i) {
-  return attributeTags().at(i);
+rcstr Metadata::attributeTag(uint i, bool out) {
+  return attributeTags(out).at(i);
 }
 
-str_lst Metadata::attributeTags() {
+str_lst Metadata::attributeTags(bool out) {
   static str_lst const tags = {
     "X", "Y", "Z",
     "ω", "mid 2θ", "φ", "χ",
@@ -70,7 +72,16 @@ str_lst Metadata::attributeTags() {
     "date", "comment",
   };
 
-  return tags;
+  static str_lst const outTags = {
+    "X", "Y", "Z",
+    "omega", "mid2theta", "phi", "chi",
+    "PST", "SST", "OmegaM",
+    "mon", "delta_mon",
+    "t", "delta_t",
+    "date", "comment",
+  };
+
+  return out ? outTags : tags;
 }
 
 cmp_vec Metadata::attributeCmps() {
@@ -154,8 +165,15 @@ row_t Metadata::attributeNaNs() {
 
 //------------------------------------------------------------------------------
 
-OneDataset::OneDataset(Metadata::rc md, size2d::rc size, not_null<inten_t const*> intens)
-: md_(new Metadata(md)), image_(size,intens) {
+OneDataset::OneDataset(Metadata::rc md, typ::inten_arr::rc intens)
+  : md_(new Metadata(md)), image_(intens) {
+}
+
+OneDataset::OneDataset(Metadata::rc md, size2d::rc size, inten_vec const& intens)
+  : md_(new Metadata(md)), image_(size) {
+  EXPECT(intens.count() == size.count())
+  for_i (intens.count())
+    image_.setInten(i, intens.at(i));
 }
 
 OneDataset::OneDataset(rc that)
@@ -213,7 +231,7 @@ void OneDataset::collectIntens(core::Session::rc session, typ::Image const* inte
     if (qIsNaN(inten))
       continue;
 
-    inten_t corr = intensCorr ? intensCorr->at(ind) : 1;
+    inten_t corr = intensCorr ? intensCorr->inten(ind) : 1;
     if (qIsNaN(corr))
       continue;
 

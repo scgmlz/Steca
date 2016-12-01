@@ -61,6 +61,7 @@ class QCPAxisRect;
 class QCPAxisPainterPrivate;
 class QCPAbstractPlottable;
 class QCPGraph;
+class QCPCurve;
 class QCPAbstractItem;
 class QCPItemPosition;
 class QCPLayer;
@@ -1764,6 +1765,7 @@ public:
   QCPGraph *graph(int index) const;
   QCPGraph *graph() const;
   QCPGraph *addGraph(QCPAxis *keyAxis=0, QCPAxis *valueAxis=0);
+  QCPCurve *addCurve(QCPAxis *keyAxis=0, QCPAxis *valueAxis=0);
   bool removeGraph(QCPGraph *graph);
   bool removeGraph(int index);
   int clearGraphs();

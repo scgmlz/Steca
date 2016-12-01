@@ -1,17 +1,19 @@
-// ************************************************************************** //
-//
-//  STeCa2:    StressTextureCalculator ver. 2
-//
-//! @file      tabs_images.cpp
-//!
-//! @homepage  http://apps.jcns.fz-juelich.de/steca2
-//! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016
-//! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
-//! @authors   Based on the original STeCa by Christian Randau
-//
-// ************************************************************************** //
+/*******************************************************************************
+ * STeCa2 - StressTextureCalculator ver. 2
+ *
+ * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the COPYING and AUTHORS files for more details.
+ ******************************************************************************/
 
 #include "tabs_images.h"
 #include "colors.h"
@@ -92,34 +94,50 @@ void ImageWidget::paintEvent(QPaintEvent*) {
   auto margin = (size() - scaled_.size()) / 2;
   QRect rect(QPoint(margin.width(), margin.height()), scaled_.size());
 
-  QPainter painter(this);
+  QPainter p(this);
 
   // image
-  painter.drawPixmap(rect.left(), rect.top(), scaled_);
+  p.drawPixmap(rect.left(), rect.top(), scaled_);
 
   // overlay
   if (hub_.actions.showOverlay->isChecked()) {
-    painter.setPen(Qt::lightGray);
+    p.setPen(Qt::lightGray);
 
     // cut
     auto cut = hub_.imageCut();
     QRect r = rect.adjusted(-1, -1, 0, 0)
                   .adjusted(qRound(scale_ * cut.left),   qRound(scale_ * cut.top),
                            -qRound(scale_ * cut.right), -qRound(scale_ * cut.bottom));
-    painter.drawRect(r);
+    p.drawRect(r);
+
+    QPoint rc; rc = r.center();
+    int rcx = rc.x(), rcy = rc.y();
+
+    int rl, rt, rr, rb;
+    r.getCoords(&rl, &rt, &rr, &rb);
+    int rw = rr - rl;
 
     // cross
     auto off = hub_.geometry().midPixOffset;
-    auto c = r.center();
-    auto x = qRound(c.x() + scale_ * off.i);
-    auto y = qRound(c.y() + scale_ * off.j);
-    painter.drawLine(x, r.top(), x, r.bottom());
-    painter.drawLine(r.left(), y, r.right(), y);
+    auto x = qRound(rcx + scale_ * off.i);
+    auto y = qRound(rcy + scale_ * off.j);
+    p.drawLine(x, rt, x, rb);
+    p.drawLine(rl, y, rr, y);
+
+    // text annotations
+    auto paintText = [this, &p](QPoint pos, rcstr s, bool alignLeft) {
+      auto fm = fontMetrics();
+      if (alignLeft) pos.rx() -= fm.width(s);
+      p.drawText(pos, s);
+    };
+
+    p.setPen(Qt::cyan);
+    paintText(QPoint(rr - rw/5, rcy), "γ=0", false);
   }
 
   // frame
-  painter.setPen(Qt::black);
-  painter.drawRect(rect.adjusted(-1, -1, 0, 0));
+  p.setPen(Qt::black);
+  p.drawRect(rect.adjusted(-1, -1, 0, 0));
 }
 
 //------------------------------------------------------------------------------
@@ -141,7 +159,7 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
 
     hb->addStretch(1);
 
-    hb->addWidget(iconButton(actions.showGamma));
+    hb->addWidget(iconButton(actions.showBins));
     hb->addWidget(label("γ count"));
     hb->addWidget((numSlices_ = spinCell(gui_cfg::em4, 0)));
     hb->addWidget(label("#"));
@@ -155,6 +173,9 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
     minGamma_->setReadOnly(true);
     maxGamma_->setReadOnly(true);
 
+    hb->addWidget(label("bin#"));
+    hb->addWidget((numBin_  = spinCell(gui_cfg::em4, 1)));
+
     box.addWidget((dataImageWidget_ = new ImageWidget(hub_)));
 
     connect(spinN_, slot(QSpinBox,valueChanged,int), [this]() {
@@ -166,6 +187,10 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
     });
 
     connect(numSlice_, slot(QSpinBox,valueChanged,int), [this]() {
+      render();
+    });
+
+    connect(numBin_, slot(QSpinBox,valueChanged,int), [this]() {
       render();
     });
   }
@@ -195,7 +220,7 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
     render();
   });
 
-  connect(actions.showGamma, &QAction::toggled, [this]() {
+  connect(actions.showBins, &QAction::toggled, [this]() {
     render();
   });
 
@@ -227,7 +252,7 @@ QPixmap TabsImages::makeBlankPixmap() {
   return pixmap;
 }
 
-QImage TabsImages::makeImage(typ::Image::rc image) {
+QImage TabsImages::makeImage(typ::Image::rc image, bool curvedScale) {
   auto imageLens = hub_.plainImageLens(image);
 
   auto size     = imageLens->size();
@@ -241,25 +266,34 @@ QImage TabsImages::makeImage(typ::Image::rc image) {
 
   for_ij (size.w, size.h)
     im.setPixel(to_i(i), to_i(j),
-                intenImage(imageLens->imageInten(i, j), maxInten));
+                intenImage(imageLens->imageInten(i, j), maxInten, curvedScale));
   return im;
 }
 
 QPixmap TabsImages::makePixmap(typ::Image::rc image) {
-  return QPixmap::fromImage(makeImage(image));
+  return QPixmap::fromImage(makeImage(image, !hub_.isFixedIntenImageScale()));
 }
 
-QPixmap TabsImages::makePixmap(data::OneDataset::rc dataset, gma_rge::rc rgeGma) {
-  auto im = makeImage(dataset.image());
+QPixmap TabsImages::makePixmap(data::OneDataset::rc dataset,
+                               gma_rge::rc rgeGma, tth_rge::rc rgeTth) {
+  auto im = makeImage(dataset.image(), !hub_.isFixedIntenImageScale());
   auto angleMap = hub_.angleMap(dataset);
 
   auto size = im.size();
-  for_ij (size.width(), size.height())
-    if (rgeGma.contains(angleMap->at(to_u(i),to_u(j)).gma)) {
-      auto color = QColor(im.pixel(i,j));
-      color.setGreen(qFloor(color.green()*.7 + 255*.3));
-      im.setPixel(i,j, color.rgb());
+  for_ij (size.width(), size.height()) {
+    auto& a = angleMap->at(to_u(i),to_u(j));
+    auto color = QColor(im.pixel(i,j));
+    if (rgeGma.contains(a.gma)) {
+      if (rgeTth.contains(a.tth)) {
+        color = Qt::yellow;
+      } else {
+        color.setGreen(qFloor(color.green()*.3 + 255*.7));
+      }
+    } else if (rgeTth.contains(a.tth)) {
+      color.setGreen(qFloor(color.green()*.3 + 255*.7));
     }
+    im.setPixel(i,j, color.rgb());
+  }
 
   return QPixmap::fromImage(im);
 }
@@ -309,13 +343,23 @@ void TabsImages::render() {
       hub_.setGammaRange(rge);
 
       auto oneDataset = dataset_->at(n-1);
-      if (hub_.actions.showGamma->isChecked()) {
-        pixMap = makePixmap(*oneDataset, rge);
+
+      numBin_->setEnabled(true);
+      if (hub_.actions.showBins->isChecked()) {
+        typ::Range rgeTth = lens_->rgeTth();
+        auto curve = lens_->makeCurve(false); // TODO factor out lens::binCount()
+        int count  = to_i(curve.count());
+        numBin_->setMaximum(count-1);
+        auto min = rgeTth.min, wdt = rgeTth.width();
+        qreal num = qreal(numBin_->value());
+        pixMap = makePixmap(*oneDataset, rge, typ::Range(min + wdt * (num/count), min + wdt * ((num+1)/count)));
       } else {
         pixMap = makePixmap(oneDataset->image());
       }
     } else {
       spinN_->setEnabled(false);
+      numBin_->setMaximum(0);
+      numBin_->setEnabled(false);
 
       pixMap = makeBlankPixmap();
     }

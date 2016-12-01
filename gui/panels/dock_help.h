@@ -15,15 +15,25 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-// all useful defs
+#ifndef DOCK_HELP_H
+#define DOCK_HELP_H
 
-#ifndef DEFS_H
-#define DEFS_H
+#include "panel.h"
 
-#include "def/def_alg.h"
-#include "def/def_debug.h"
-#include "def/def_exc.h"
-#include "def/def_gsl.h"
-#include "def/def_macros.h"
+class QTextBrowser;
 
-#endif // DEFS_H
+namespace gui { namespace panel {
+//------------------------------------------------------------------------------
+
+class DockHelp : public DockWidget, protected RefHub {
+  CLS(DockHelp) SUPER(DockWidget)
+public:
+  DockHelp(TheHub&);
+
+private:
+  QTextBrowser *browser_;
+};
+
+//------------------------------------------------------------------------------
+}}
+#endif // DOCK_HELP_H

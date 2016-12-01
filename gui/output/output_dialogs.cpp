@@ -1,17 +1,19 @@
-// ************************************************************************** //
-//
-//  STeCa2:    StressTextureCalculator ver. 2
-//
-//! @file      output_dialogs.cpp
-//!
-//! @homepage  http://apps.jcns.fz-juelich.de/steca2
-//! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016
-//! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
-//! @authors   Based on the original STeCa by Christian Randau
-//
-// ************************************************************************** //
+/*******************************************************************************
+ * STeCa2 - StressTextureCalculator ver. 2
+ *
+ * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the COPYING and AUTHORS files for more details.
+ ******************************************************************************/
 
 #include "output_dialogs.h"
 #include "calc/calc_polefigure.h"
@@ -122,7 +124,7 @@ PanelInterpolation::PanelInterpolation(TheHub& hub) : super(hub, "Interpolation"
 }
 
 PanelDiagram::PanelDiagram(TheHub& hub) : super(hub, "Diagram") {
-  auto tags = calc::ReflectionInfo::dataTags();
+  auto tags = calc::ReflectionInfo::dataTags(false);
   for_i (data::Metadata::numAttributes(false) - data::Metadata::numAttributes(true))
     tags.removeLast(); // remove all tags that are not numbers
 
@@ -381,7 +383,6 @@ public:
   void moveColumn(uint from, uint to);
 
   void setColumns(str_lst::rc headers, typ::cmp_vec::rc);
-  str_lst const headers() { return headers_; }
 
   void setSortColumn(int);
 
@@ -480,7 +481,7 @@ void TableModel::moveColumn(uint from, uint to) {
 
 void TableModel::setColumns(str_lst::rc headers, typ::cmp_vec::rc cmps) {
   EXPECT(to_u(headers.count()) == numCols_ && cmps.count() == numCols_)
-  headers_ = headers;
+  headers_      = headers;
   cmpFunctions_ = cmps;
 }
 
@@ -568,8 +569,10 @@ Table::Table(TheHub& hub, uint numDataColumns)
   setColumnWidth(0, w);
 }
 
-void Table::setColumns(str_lst::rc headers, typ::cmp_vec::rc cmps) {
+void Table::setColumns(str_lst::rc headers, str_lst::rc outHeaders, typ::cmp_vec::rc cmps) {
   model_->setColumns(headers, cmps);
+  EXPECT(headers.count() == outHeaders.count())
+  outHeaders_ = outHeaders;
 
   connect(header(), &QHeaderView::sectionMoved,
           [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
@@ -589,10 +592,6 @@ void Table::setColumns(str_lst::rc headers, typ::cmp_vec::rc cmps) {
     model_->setSortColumn(logicalIndex - 1);
     model_->sortData();
   });
-}
-
-const str_lst Table::headers() {
-  return model_->headers();
 }
 
 void Table::clear() {
@@ -618,7 +617,8 @@ const typ::row_t&Table::row(uint i) const {
 //------------------------------------------------------------------------------
 
 TabTable::TabTable(TheHub& hub, Params& params,
-                   str_lst::rc headers, typ::cmp_vec::rc cmps)
+                   str_lst::rc headers, str_lst::rc outHeaders,
+                   typ::cmp_vec::rc cmps)
 : super(hub, params)
 {
   EXPECT(to_u(headers.count()) == cmps.count())
@@ -627,7 +627,7 @@ TabTable::TabTable(TheHub& hub, Params& params,
   grid_->addWidget((table = new Table(hub_, numCols)), 0, 0);
   grid_->setColumnStretch(0, 1);
 
-  table->setColumns(headers, cmps);
+  table->setColumns(headers, outHeaders, cmps);
 
   for_i (numCols) {
     showcol_t item;
@@ -915,7 +915,9 @@ Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
   // tabs
 
   auto tabTable = new TabTable(hub, *params_,
-     calc::ReflectionInfo::dataTags(), calc::ReflectionInfo::dataCmps());
+     calc::ReflectionInfo::dataTags(false),
+     calc::ReflectionInfo::dataTags(true),
+     calc::ReflectionInfo::dataCmps());
   tabs_->addTab("Points", Qt::Vertical).box().addWidget(tabTable);
 
   table_ = tabTable->table;

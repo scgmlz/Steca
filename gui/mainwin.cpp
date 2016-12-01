@@ -1,17 +1,19 @@
-// ************************************************************************** //
-//
-//  STeCa2:    StressTextureCalculator ver. 2
-//
-//! @file      core_curve.cpp
-//!
-//! @homepage  http://apps.jcns.fz-juelich.de/steca2
-//! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016
-//! @authors   Scientific Computing Group at MLZ Garching
-//! @authors   Rebecca Brydon, Jan Burle, Antti Soininen
-//! @authors   Based on the original STeCa by Christian Randau
-//
-// ************************************************************************** //
+/*******************************************************************************
+ * STeCa2 - StressTextureCalculator ver. 2
+ *
+ * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the COPYING and AUTHORS files for more details.
+ ******************************************************************************/
 
 #include "mainwin.h"
 #include "../manifest.h"
@@ -23,6 +25,7 @@
 #include "output/output_polefigures.h"
 #include "panels/dock_dataset.h"
 #include "panels/dock_files.h"
+#include "panels/dock_help.h"
 #include "panels/dock_metadata.h"
 #include "panels/tabs_diffractogram.h"
 #include "panels/tabs_images.h"
@@ -92,6 +95,8 @@ void MainWin::initMenus() {
   addActions(menuView_, {
       acts_.viewFiles, acts_.viewDatasets, acts_.viewDatasetInfo,
       separator(),
+      acts_.viewHelp,
+      separator(),
     #ifndef Q_OS_OSX
       acts_.fullScreen,
     #endif
@@ -107,7 +112,7 @@ void MainWin::initMenus() {
       acts_.linkCuts,
       acts_.showOverlay,
       acts_.stepScale,
-      acts_.showGamma,
+      acts_.showBins,
   });
 
   addActions(menuDgram_, {
@@ -148,9 +153,10 @@ void MainWin::addActions(QMenu* menu, QList<QAction*> actions) {
 }
 
 void MainWin::initLayout() {
-  addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_       = new panel::DockFiles(hub_)));
-  addDockWidget(Qt::LeftDockWidgetArea, (dockDatasets_    = new panel::DockDatasets(hub_)));
-  addDockWidget(Qt::RightDockWidgetArea,(dockDatasetInfo_ = new panel::DockMetadata(hub_)));
+  addDockWidget(Qt::LeftDockWidgetArea,  (dockFiles_       = new panel::DockFiles(hub_)));
+  addDockWidget(Qt::LeftDockWidgetArea,  (dockDatasets_    = new panel::DockDatasets(hub_)));
+  addDockWidget(Qt::LeftDockWidgetArea,  (dockDatasetInfo_ = new panel::DockMetadata(hub_)));
+  addDockWidget(Qt::RightDockWidgetArea, (dockHelp_        = new panel::DockHelp(hub_)));
 
   auto splMain = new QSplitter(Qt::Vertical);
   splMain->setChildrenCollapsible(false);
@@ -204,9 +210,10 @@ void MainWin::connectActions() {
   onToggle(acts_.fullScreen, &Cls::viewFullScreen);
 #endif
 
-  onToggle(acts_.viewFiles, &Cls::viewFiles);
-  onToggle(acts_.viewDatasets, &Cls::viewDatasets);
+  onToggle(acts_.viewFiles,       &Cls::viewFiles);
+  onToggle(acts_.viewDatasets,    &Cls::viewDatasets);
   onToggle(acts_.viewDatasetInfo, &Cls::viewDatasetInfo);
+  onToggle(acts_.viewHelp,        &Cls::viewHelp);
 
   onTrigger(acts_.viewReset, &Cls::viewReset);
 }
@@ -245,13 +252,13 @@ void MainWin::checkUpdate(bool completeReport) {
       if (ver != lastVer)
         messageDialog(
           str("%1 update").arg(name),
-          str("<p>The latest %1 version is %2. You have version %3.</p>"
+          str("<p>The latest released %1 version is %2. You have version %3.</p>"
               "<p><a href='%4'>Get new %1</a></p>")
               .arg(name, lastVer, ver, STECA2_DOWNLOAD_URL));
       else if (completeReport)
         messageDialog(
           str("%1 update").arg(name),
-          str("<p>You have the latest %1 version (%2).</p>")
+          str("<p>You have the latest released %1 version (%2).</p>")
               .arg(name).arg(ver));
     }
   });
@@ -357,7 +364,7 @@ void MainWin::onShow() {
 
 #ifdef DEVELOPMENT_JAN
   auto safeLoad = [this](rcstr fileName) {
-    QFileInfo info(QDir::homePath() % fileName);
+    QFileInfo info(fileName);
     if (info.exists())
       hub_.loadSession(info);
   };
@@ -369,6 +376,14 @@ void MainWin::onShow() {
 #endif
 
   Settings s(config_key::GROUP_CONFIG);
+  auto ver = qApp->applicationVersion();
+  if (s.readStr(config_key::CURRENT_VERSION) != ver) {
+    // new version
+    s.saveStr(config_key::CURRENT_VERSION,       ver);
+    s.saveBool(config_key::STARTUP_CHECK_UPDATE, true);
+    s.saveBool(config_key::STARTUP_ABOUT,        true);
+  }
+
   if (s.readBool(config_key::STARTUP_CHECK_UPDATE, true))
     checkUpdate(false);
   if (s.readBool(config_key::STARTUP_ABOUT, true))
@@ -400,9 +415,12 @@ void MainWin::checkActions() {
   acts_.fullScreen->setChecked(isFullScreen());
 #endif
 
+  dockHelp_->setVisible(false);
+
   acts_.viewFiles->setChecked(dockFiles_->isVisible());
   acts_.viewDatasets->setChecked(dockDatasets_->isVisible());
   acts_.viewDatasetInfo->setChecked(dockDatasetInfo_->isVisible());
+  acts_.viewHelp->setChecked(dockHelp_->isVisible());
 }
 
 void MainWin::viewStatusbar(bool on) {
@@ -434,6 +452,11 @@ void MainWin::viewDatasets(bool on) {
 void MainWin::viewDatasetInfo(bool on) {
   dockDatasetInfo_->setVisible(on);
   acts_.viewDatasetInfo->setChecked(on);
+}
+
+void MainWin::viewHelp(bool on) {
+  dockHelp_->setVisible(on);
+  acts_.viewHelp->setChecked(on);
 }
 
 void MainWin::viewReset() {

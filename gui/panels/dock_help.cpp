@@ -15,49 +15,20 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#include "typ_variant.h"
-#include "def/def_compare.h"
-#include <QDate>
-#include <QMetaType>
+#include "dock_help.h"
+#include "thehub.h"
+#include <QTextBrowser>
 
-namespace typ {
+namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
-bool isNumeric(QVariant const& v) {
-  auto type = QMetaType::Type(v.type());
-
-  switch (type) {
-  case QMetaType::Int:
-  case QMetaType::UInt:
-  case QMetaType::LongLong:
-  case QMetaType::ULongLong:
-  case QMetaType::Double:
-  case QMetaType::Long:
-  case QMetaType::Short:
-  case QMetaType::ULong:
-  case QMetaType::UShort:
-  case QMetaType::Float:
-    return true;
-  default:
-    return false;
-  }
+DockHelp::DockHelp(TheHub& hub)
+: super("Help", "dock-help", Qt::Vertical), RefHub(hub)
+{
+  setFeatures(features() | DockWidgetFloatable);
+  box_->addWidget((browser_ = new QTextBrowser()));
 }
-
-#define IMPL_CMP(name, toType)                       \
-  int name(QVariant const& v1, QVariant const& v2) { \
-    auto val1 = v1.toType(), val2 = v2.toType();     \
-    COMPARE_VALUE2(val1, val2)                       \
-    return 0;                                        \
-  }
-
-IMPL_CMP(cmp_int,  toInt)
-IMPL_CMP(cmp_str,  toString)
-IMPL_CMP(cmp_real, toDouble)
-IMPL_CMP(cmp_date, toDate)
-
-
-#undef IMPL_CMP
 
 //------------------------------------------------------------------------------
-}
+}}
 // eof
