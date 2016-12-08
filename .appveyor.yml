@@ -20,6 +20,7 @@ environment:
     CMAKE_GENERATOR: "Visual Studio 14 2015 Win64"
   
 build_script:
+- git submodule update --init --recursive
 - mkdir build
 - cd build
 - cmake -G "%CMAKE_GENERATOR%" ..
