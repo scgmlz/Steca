@@ -4,8 +4,11 @@ set(dir "tests")
 set(lib ${dir})
 
 include_directories (
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_HOME_DIRECTORY}/lib
   ${CMAKE_HOME_DIRECTORY}/core
   ${CMAKE_HOME_DIRECTORY}/gui
+  ${CMAKE_HOME_DIRECTORY}/io
 )
 
 file (GLOB header_files
@@ -27,6 +30,7 @@ target_link_libraries (${lib}
   LevMar
   lib
   gui
+  io
 )
 
 # eof
