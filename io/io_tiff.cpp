@@ -186,7 +186,6 @@ static void loadTiff(data::shp_File& file, rcstr filePath,
   quint16 numDirEntries; is >> numDirEntries;
 
   for_i (numDirEntries) {
-
     is >> tagId >> dataType >> dataCount >> dataOffset; check();
 
     switch (tagId) {
@@ -211,6 +210,7 @@ static void loadTiff(data::shp_File& file, rcstr filePath,
       break;
     case 278:
       rowsPerStrip = asUint();
+      break;
     case 279:
       stripByteCounts = asUint();
       break;
