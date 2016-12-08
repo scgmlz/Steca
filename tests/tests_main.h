@@ -1,6 +1,7 @@
 #ifndef TESTS_MAIN_H
 #define TESTS_MAIN_H
 
+#include "c/int.h"
 #include <QObject>
 #include <QtTest/QtTest>
 

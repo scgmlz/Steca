@@ -11,7 +11,7 @@ file (GLOB header_files
 )
 
 file (GLOB source_files
-  "*/*.cpp"
+  "*/*.c" "*/*.cpp"
 )
 
 add_library (${lib}
