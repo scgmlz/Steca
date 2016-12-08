@@ -1,3 +1,3 @@
 [submodule "lib/c"]
 	path = lib/c
-	url = git@github.com:jburle/c.git
+	url = https://github.com/jburle/c.git
