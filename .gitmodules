@@ -1,3 +1,0 @@
-[submodule "lib/c"]
-	path = lib/c
-	url = https://github.com/jburle/c.git
