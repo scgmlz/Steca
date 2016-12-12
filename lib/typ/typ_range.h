@@ -1,5 +1,5 @@
 /*******************************************************************************
- * STeCa2 - StressTextureCalculator ver. 2
+ * REVIEW: STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
