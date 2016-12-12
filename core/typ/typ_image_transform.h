@@ -18,7 +18,7 @@
 #ifndef TYP_IMAGE_TRANSFORM_H
 #define TYP_IMAGE_TRANSFORM_H
 
-#include "def/defs.h"
+#include "lib/def/defs.h"
 
 namespace typ {
 //------------------------------------------------------------------------------

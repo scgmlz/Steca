@@ -18,7 +18,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include "def/defs.h"
+#include "lib/def/defs.h"
 
 namespace config_key {
 //------------------------------------------------------------------------------

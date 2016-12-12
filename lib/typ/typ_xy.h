@@ -18,7 +18,7 @@
 #ifndef TYP_XY_H
 #define TYP_XY_H
 
-#include "def/def_macros.h"
+#include "../def/def_macros.h"
 
 namespace typ {
 //------------------------------------------------------------------------------

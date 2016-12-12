@@ -1,9 +1,9 @@
-#include "test_io.h"
-REGISTER_TEST_SUITE(TestIo)
+//#include "test_io.h"
+//REGISTER_TEST_SUITE(TestIo)
 
-#include "io_io.h"
+//#include "io_io.h"
 
-void TestIo::testDaisy() {
-}
+//void TestIo::testDaisy() {
+//}
 
-// eof
+//// eof

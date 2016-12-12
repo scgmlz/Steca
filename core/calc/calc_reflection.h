@@ -18,9 +18,9 @@
 #ifndef CALC_REFLECTION_H
 #define CALC_REFLECTION_H
 
-#include "fit/fit_fun.h"
-#include "typ/typ_strlst.h"
-#include "typ/typ_types.h"
+#include "../typ/typ_types.h"
+#include "../fit/fit_fun.h"
+#include "lib/typ/typ_strlst.h"
 #include <QSharedPointer>
 
 namespace calc {

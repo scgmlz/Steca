@@ -1,5 +1,5 @@
 /*******************************************************************************
- * REVIEW: STeCa2 - StressTextureCalculator ver. 2
+ * STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -15,10 +15,9 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-// everyone should include this file somehow
-
 #ifndef DEF_MACROS_H
 #define DEF_MACROS_H
+//------------------------------------------------------------------------------
 
 #include <QtGlobal>
 
@@ -35,6 +34,7 @@
 
 #endif
 
+//------------------------------------------------------------------------------
 // for class definitions
 
 // trouble with templates in macros
@@ -53,6 +53,7 @@
   public: super const& sup() const { return *this; } \
           super&       sup()       { return *this; }
 
+//------------------------------------------------------------------------------
 // exception specification macro
 #ifdef Q_OS_WIN
 
@@ -64,4 +65,15 @@
 
 #endif
 
+//------------------------------------------------------------------------------
+// tests
+
+#ifdef TESTS
+#define TEST(code) code
+#else
+#define TEST(code)
+#endif
+
+//------------------------------------------------------------------------------
 #endif // DEF_MACROS_H
+// eof

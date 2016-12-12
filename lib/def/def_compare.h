@@ -1,5 +1,5 @@
 /*******************************************************************************
- * REVIEW: STeCa2 - StressTextureCalculator ver. 2
+ * STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -17,6 +17,7 @@
 
 #ifndef DEF_COMPARE_H
 #define DEF_COMPARE_H
+//------------------------------------------------------------------------------
 
 // a helper for int compare()
 #define COMPARE_VALUE(val)        \
@@ -31,4 +32,6 @@
   for (int cmp = o.compare(that.o); cmp; ) \
     return cmp;
 
+//------------------------------------------------------------------------------
 #endif // DEF_COMPARE_H
+// eof

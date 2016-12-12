@@ -18,7 +18,7 @@
 #ifndef TYP_IJ_H
 #define TYP_IJ_H
 
-#include "def/def_macros.h"
+#include "../def/def_macros.h"
 
 namespace typ {
 //------------------------------------------------------------------------------

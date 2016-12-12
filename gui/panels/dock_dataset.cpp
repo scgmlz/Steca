@@ -16,9 +16,9 @@
  ******************************************************************************/
 
 #include "dock_dataset.h"
-#include "gui_cfg.h"
-#include "thehub.h"
-#include "views.h"
+#include "../gui_cfg.h"
+#include "../thehub.h"
+#include "../views.h"
 
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------

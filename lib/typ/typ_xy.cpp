@@ -16,8 +16,8 @@
  ******************************************************************************/
 
 #include "typ_xy.h"
-#include "def/def_compare.h"
-#include "typ/typ_json.h"
+#include "../def/def_compare.h"
+#include "typ_json.h"
 
 namespace typ {
 //------------------------------------------------------------------------------

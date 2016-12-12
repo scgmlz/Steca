@@ -1,5 +1,5 @@
 /*******************************************************************************
- * REVIEW: STeCa2 - StressTextureCalculator ver. 2
+ * STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -20,7 +20,9 @@
 
 #include <QtGlobal>
 
+//------------------------------------------------------------------------------
 // idiomatic loops
+
 #ifdef Q_OS_WIN
 
 // MSVC does not handle decltype etc. well, and we disregard int/uint warnings on Windows, anyway
@@ -48,8 +50,10 @@
   for_int (i, ni)      \
     for_int (j, nj)
 
-// singletons
+// code to call only once - guard
 #define ONLY_ONCE \
 { static bool once = false; if (once) return; once = true; }
 
+//------------------------------------------------------------------------------
 #endif // DEF_ALG_H
+// eof

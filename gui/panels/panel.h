@@ -18,8 +18,8 @@
 #ifndef PANEL_H
 #define PANEL_H
 
-#include "gui_helpers.h"
-#include "refhub.h"
+#include "../gui_helpers.h"
+#include "../refhub.h"
 #include <QGroupBox>
 
 namespace models {

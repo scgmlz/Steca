@@ -18,7 +18,7 @@
 #ifndef TYP_STR_H
 #define TYP_STR_H
 
-#include "def/def_macros.h"
+#include "../def/def_macros.h"
 #include <QString>
 #include <QStringBuilder>
 

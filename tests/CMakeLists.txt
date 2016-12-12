@@ -1,25 +1,20 @@
 # tests
 
+add_definitions (-DTESTS)
+
 set (srcdirs
   lib LevMar core io
 )
 
 foreach (dir ${srcdirs})
-  set (path ${CMAKE_HOME_DIRECTORY}/${dir})
-  include_directories (${path})
-
-  file (GLOB_RECURSE fs ${path}/*.cpp)
+  file (GLOB_RECURSE fs ${CMAKE_HOME_DIRECTORY}/${dir}/*.cpp)
   set (files ${files} ${fs})
 endforeach (dir)
 
-include_directories (
-  ${CMAKE_CURRENT_SOURCE_DIR}
-)
-
-add_definitions (-DTESTS)
+file (GLOB_RECURSE test_files *.h *.cpp)
 
 add_executable (tests
-  tests_main.cpp
+  ${test_files}
   ${files}
 )
 

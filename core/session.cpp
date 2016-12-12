@@ -16,7 +16,7 @@
  ******************************************************************************/
 
 #include "session.h"
-#include "typ/typ_matrix.h"
+#include "lib/typ/typ_matrix.h"
 #include "fit/fit_fun.h"
 #include <qmath.h>
 

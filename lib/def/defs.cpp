@@ -1,5 +1,5 @@
 /*******************************************************************************
- * REVIEW: STeCa2 - StressTextureCalculator ver. 2
+ * STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -16,8 +16,10 @@
  ******************************************************************************/
 
 #include "defs.h"
+//------------------------------------------------------------------------------
 
 static_assert(QT_VERSION >= QT_VERSION_CHECK(5, 4, 0),
               "written for Qt >= 5.4, have " QT_VERSION_STR);
 
+//------------------------------------------------------------------------------
 // eof

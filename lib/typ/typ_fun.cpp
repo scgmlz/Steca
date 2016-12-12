@@ -16,8 +16,8 @@
  ******************************************************************************/
 
 #include "typ_fun.h"
-#include "def/def_debug.h"
-#include "def/def_alg.h"
+#include "../def/def_alg.h"
+#include "../def/def_debug.h"
 
 namespace json_fun_key {
 str const

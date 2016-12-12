@@ -1,13 +1,13 @@
-#ifndef TEST_IO_H
-#define TEST_IO_H
+//#ifndef TEST_IO_H
+//#define TEST_IO_H
 
-#include "tests_main.h"
+//#include "tests_main.h"
 
-class TestIo: public TestSuite {
-  Q_OBJECT
+//class TestIo: public TestSuite {
+//  Q_OBJECT
 
-private slots:
-  void testDaisy();
-};
+//private slots:
+//  void testDaisy();
+//};
 
-#endif
+//#endif

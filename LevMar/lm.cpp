@@ -32,7 +32,7 @@
 #include "compiler.h"
 #include "misc.h"
 
-#include "typ/typ_log.h"
+#include "lib/typ/typ_log.h"
 
 void msg_cannotSolve(uint n, uint m) {
   MessageLogger::warn(str("levmar: cannot solve a problem with fewer measurements [%1] than unknowns [%2]\n").arg(n).arg(m));

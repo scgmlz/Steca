@@ -15,26 +15,30 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#ifndef GUI_CFG_H
-#define GUI_CFG_H
+#ifndef TYP_VARIANT_H
+#define TYP_VARIANT_H
 
-#include "lib/def/defs.h"
+#include "lib/typ/typ_vec.h"
+#include <QVariant>
 
-namespace gui_cfg {
+// Help with QVariant
+
+namespace typ {
 //------------------------------------------------------------------------------
 
-#ifdef Q_OS_WIN
+bool isNumeric(QVariant const&);
 
-uint const em4_2 = 8; // widget width for 4.2 numbers
-uint const em4   = 5; // for 4 numbers
+// The usual comparators: <0, 0, >0
+typedef int cmpFun(QVariant const&, QVariant const&);
+typedef vec<cmpFun*> cmp_vec;
 
-#else
+int cmp_int(QVariant const&,  QVariant const&);
+int cmp_str(QVariant const&,  QVariant const&);
+int cmp_real(QVariant const&, QVariant const&);
+int cmp_date(QVariant const&, QVariant const&);
 
-uint const em4_2 = 6;
-uint const em4   = 4;
-
-#endif
+typedef vec<QVariant> row_t;
 
 //------------------------------------------------------------------------------
 }
-#endif
+#endif // TYP_VARIANT_H

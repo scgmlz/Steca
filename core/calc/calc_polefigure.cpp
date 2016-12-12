@@ -16,7 +16,7 @@
  ******************************************************************************/
 
 #include "calc_polefigure.h"
-#include "typ/typ_async.h"
+#include "lib/typ/typ_async.h"
 #include <qmath.h>
 
 namespace calc {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * REVIEW: STeCa2 - StressTextureCalculator ver. 2
+ * STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -19,11 +19,14 @@
 
 #ifndef DEFS_H
 #define DEFS_H
+//------------------------------------------------------------------------------
 
-#include "def/def_alg.h"
-#include "def/def_debug.h"
-#include "def/def_exc.h"
-#include "def/def_gsl.h"
-#include "def/def_macros.h"
+#include "def_alg.h"
+#include "def_debug.h"
+#include "def_exc.h"
+#include "def_gsl.h"
+#include "def_macros.h"
 
+//------------------------------------------------------------------------------
 #endif // DEFS_H
+// eof

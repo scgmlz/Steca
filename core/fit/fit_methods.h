@@ -18,7 +18,7 @@
 #ifndef FIT_METHODS_H
 #define FIT_METHODS_H
 
-#include "fit/fit_fun.h"
+#include "fit_fun.h"
 
 namespace fit {
 //------------------------------------------------------------------------------

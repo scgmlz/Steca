@@ -16,13 +16,13 @@
  ******************************************************************************/
 
 #include "thehub.h"
-#include "calc/calc_reflection.h"
-#include "calc/calc_reflection_info.h"
+#include "core/calc/calc_reflection.h"
+#include "core/calc/calc_reflection_info.h"
 #include "config.h"
-#include "io_io.h"
+#include "io/io_io.h"
 #include "mainwin.h"
-#include "typ/typ_async.h"
-#include "typ/typ_json.h"
+#include "lib/typ/typ_async.h"
+#include "lib/typ/typ_json.h"
 
 #include <QDir>
 #include <QJsonDocument>

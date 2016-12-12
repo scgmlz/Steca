@@ -18,11 +18,11 @@
 #ifndef TYP_TYPES_H
 #define TYP_TYPES_H
 
-#include "typ/typ_angles.h"
-#include "typ/typ_range.h"
-#include "typ/typ_strlst.h"
-#include "typ/typ_vec.h"
-#include "typ/typ_xy.h"
+#include "lib/typ/typ_angles.h"
+#include "lib/typ/typ_range.h"
+#include "lib/typ/typ_strlst.h"
+#include "lib/typ/typ_vec.h"
+#include "lib/typ/typ_xy.h"
 
 typedef typ::deg gma_t;
 typedef typ::deg tth_t;

@@ -18,7 +18,7 @@
 #ifndef TYPE_MODELS_H
 #define TYPE_MODELS_H
 
-#include "refhub.h"
+#include "../refhub.h"
 #include <QAbstractTableModel>
 
 class QCheckBox;

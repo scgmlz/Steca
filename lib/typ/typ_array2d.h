@@ -18,9 +18,9 @@
 #ifndef TYP_ARRAY2D_H
 #define TYP_ARRAY2D_H
 
-#include "def/defs.h"
-#include "def/def_compare.h"
-#include "typ/typ_vec.h"
+#include "../def/defs.h"
+#include "../def/def_compare.h"
+#include "typ_vec.h"
 
 namespace typ {
 //------------------------------------------------------------------------------

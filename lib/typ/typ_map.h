@@ -18,7 +18,7 @@
 #ifndef TYP_MAP_H
 #define TYP_MAP_H
 
-#include "def/def_macros.h"
+#include "../def/def_macros.h"
 #include <QMap>
 
 namespace typ {

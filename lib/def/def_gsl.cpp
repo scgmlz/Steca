@@ -1,5 +1,5 @@
 /*******************************************************************************
- * REVIEW: STeCa2 - StressTextureCalculator ver. 2
+ * STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -15,30 +15,12 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#ifndef TYP_VARIANT_H
-#define TYP_VARIANT_H
-
-#include "typ/typ_vec.h"
-#include <QVariant>
-
-// Help with QVariant
-
-namespace typ {
-//------------------------------------------------------------------------------
-
-bool isNumeric(QVariant const&);
-
-// The usual comparators: <0, 0, >0
-typedef int cmpFun(QVariant const&, QVariant const&);
-typedef vec<cmpFun*> cmp_vec;
-
-int cmp_int(QVariant const&,  QVariant const&);
-int cmp_str(QVariant const&,  QVariant const&);
-int cmp_real(QVariant const&, QVariant const&);
-int cmp_date(QVariant const&, QVariant const&);
-
-typedef vec<QVariant> row_t;
+#include "def_gsl.h"
+#include "tests/tests.h"
 
 //------------------------------------------------------------------------------
-}
-#endif // TYP_VARIANT_H
+
+
+
+//------------------------------------------------------------------------------
+// eof

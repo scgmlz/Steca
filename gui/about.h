@@ -19,7 +19,7 @@
 #define ABOUT_H
 
 #include "thehub.h"
-#include "def/defs.h"
+#include "lib/def/defs.h"
 
 #include <QDialog>
 

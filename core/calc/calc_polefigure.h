@@ -19,8 +19,8 @@
 #define CALC_POLEFIGURE_H
 
 #include "calc_reflection_info.h"
-#include "typ/typ_types.h"
-#include "typ/typ_async.h"
+#include "../typ/typ_types.h"
+#include "lib/typ/typ_async.h"
 
 namespace calc {
 //------------------------------------------------------------------------------

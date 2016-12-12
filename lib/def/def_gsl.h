@@ -1,5 +1,5 @@
 /*******************************************************************************
- * REVIEW: STeCa2 - StressTextureCalculator ver. 2
+ * STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -21,8 +21,8 @@
 #ifndef DEF_GSL_H
 #define DEF_GSL_H
 
-#include "def/def_macros.h"
-#include "def/def_debug.h"
+#include "def_macros.h"
+#include "def_debug.h"
 
 //------------------------------------------------------------------------------
 // pointers that cannot be null
@@ -221,3 +221,4 @@ typedef qreal preal;
 
 //------------------------------------------------------------------------------
 #endif // DEF_GSL
+// eof

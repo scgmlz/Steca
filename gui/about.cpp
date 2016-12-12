@@ -16,11 +16,11 @@
  ******************************************************************************/
 
 #include "about.h"
-#include "../manifest.h"
+#include "manifest.h"
 #include "config.h"
 #include "gui_cfg.h"
 #include "gui_helpers.h"
-#include "typ/typ_geometry.h"
+#include "core/typ/typ_geometry.h"
 #include <QApplication>
 #include <QDialogButtonBox>
 #include <QtMultimedia/QSound>

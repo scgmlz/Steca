@@ -19,8 +19,8 @@
 #define MODELS_H
 
 #include "types/type_models.h"
-#include "typ/typ_strlst.h"
-#include "fit/fit_fun.h"
+#include "lib/typ/typ_strlst.h"
+#include "core/fit/fit_fun.h"
 
 class TreeView;
 

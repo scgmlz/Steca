@@ -42,13 +42,13 @@ Q_DECLARE_METATYPE(data::shp_Dataset)
 #ifndef DATA_DATASET_H
 #define DATA_DATASET_H
 
-#include "def/defs.h"
-#include "typ/typ_array2d.h"
-#include "typ/typ_curve.h"
-#include "typ/typ_image.h"
-#include "typ/typ_strlst.h"
-#include "typ/typ_types.h"
-#include "typ/typ_variant.h"
+#include "../typ/typ_image.h"
+#include "lib/def/defs.h"
+#include "lib/typ/typ_array2d.h"
+#include "lib/typ/typ_curve.h"
+#include "lib/typ/typ_strlst.h"
+#include "../typ/typ_types.h"
+#include "lib/typ/typ_variant.h"
 
 namespace core {
 class Session;

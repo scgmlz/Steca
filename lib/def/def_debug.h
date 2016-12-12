@@ -1,5 +1,5 @@
 /*******************************************************************************
- * REVIEW: STeCa2 - StressTextureCalculator ver. 2
+ * STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -19,6 +19,8 @@
 #define DEF_DEBUG_H
 
 #include <QtGlobal>
+//------------------------------------------------------------------------------
+// debugging helpers
 
 #ifndef QT_NO_DEBUG
 
@@ -80,3 +82,5 @@
   TR(#what ":" << what)
 
 #endif // DEF_DEBUG_H
+//------------------------------------------------------------------------------
+// eof

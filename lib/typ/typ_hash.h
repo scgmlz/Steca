@@ -18,8 +18,8 @@
 #ifndef TYP_HASH_H
 #define TYP_HASH_H
 
-#include "def/def_macros.h"
-#include "def/def_gsl.h"
+#include "../def/def_macros.h"
+#include "../def/def_gsl.h"
 #include <QHash>
 
 namespace typ {

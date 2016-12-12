@@ -18,15 +18,15 @@
 #ifndef CALC_LENS_H
 #define CALC_LENS_H
 
-#include "data/data_dataset.h"
-#include "def/defs.h"
-#include "typ/typ_array2d.h"
-#include "typ/typ_curve.h"
-#include "typ/typ_geometry.h"
-#include "typ/typ_image.h"
-#include "typ/typ_image_transform.h"
-#include "typ/typ_strlst.h"
-#include "typ/typ_types.h"
+#include "../typ/typ_geometry.h"
+#include "../typ/typ_image.h"
+#include "../typ/typ_image_transform.h"
+#include "../typ/typ_types.h"
+#include "../data/data_dataset.h"
+#include "lib/def/defs.h"
+#include "lib/typ/typ_array2d.h"
+#include "lib/typ/typ_curve.h"
+#include "lib/typ/typ_strlst.h"
 #include <QSharedPointer>
 
 namespace core {

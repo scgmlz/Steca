@@ -16,7 +16,7 @@
  ******************************************************************************/
 
 #include "typ_geometry.h"
-#include "def/def_compare.h"
+#include "lib/def/def_compare.h"
 #include <qmath.h>
 
 namespace typ {
