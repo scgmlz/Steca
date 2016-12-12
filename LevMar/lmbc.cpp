@@ -55,7 +55,7 @@
 
 #define LM_PREFIX s
 #define DelegateCalculation DelegateCalculationSngl
-#include "lmbc_core.cpp" // read in core code
+#include "lmbc_core.hpp" // read in core code
 #undef DelegateCalculation
 #undef LM_PREFIX
 
@@ -79,7 +79,7 @@
 
 #define LM_PREFIX d
 #define DelegateCalculation DelegateCalculationDbl
-#include "lmbc_core.cpp" // read in core code
+#include "lmbc_core.hpp" // read in core code
 #undef DelegateCalculation
 #undef LM_PREFIX
 

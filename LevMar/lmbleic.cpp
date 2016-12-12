@@ -58,7 +58,7 @@
 #define LM_CNST(x) __SUBCNST(x) // force substitution
 
 #define DelegateCalculation DelegateCalculationSngl
-#include "lmbleic_core.cpp" // read in core code
+#include "lmbleic_core.hpp" // read in core code
 #undef DelegateCalculation
 
 #undef LM_REAL
@@ -79,7 +79,7 @@
 #define LM_CNST(x) (x)
 
 #define DelegateCalculation DelegateCalculationDbl
-#include "lmbleic_core.cpp" // read in core code
+#include "lmbleic_core.hpp" // read in core code
 #undef DelegateCalculation
 
 #undef LM_REAL

@@ -58,7 +58,7 @@ void msg_cannotSolve(uint n, uint m) {
 
 #define LM_PREFIX s
 #define DelegateCalculation DelegateCalculationSngl
-#include "lm_core.cpp" // read in core code
+#include "lm_core.hpp" // read in core code
 #undef DelegateCalculation
 #undef LM_PREFIX
 
@@ -81,7 +81,7 @@ void msg_cannotSolve(uint n, uint m) {
 
 #define LM_PREFIX d
 #define DelegateCalculation DelegateCalculationDbl
-#include "lm_core.cpp" // read in core code
+#include "lm_core.hpp" // read in core code
 #undef DelegateCalculation
 #undef LM_PREFIX
 

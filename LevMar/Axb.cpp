@@ -47,7 +47,7 @@
 #endif
 
 #define DelegateCalculation DelegateCalculationDbl
-#include "Axb_core.cpp"
+#include "Axb_core.hpp"
 #undef DelegateCalculation
 
 #undef LM_REAL
@@ -67,7 +67,7 @@
 #endif
 
 #define DelegateCalculation DelegateCalculationSngl
-#include "Axb_core.cpp"
+#include "Axb_core.hpp"
 #undef DelegateCalculation
 
 #undef LM_REAL
