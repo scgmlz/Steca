@@ -1,15 +1,15 @@
-#ifndef TEST_CORE_IMAGE_H
-#define TEST_CORE_IMAGE_H
+//#ifndef TEST_CORE_IMAGE_H
+//#define TEST_CORE_IMAGE_H
 
-#include "tests_main.h"
+//#include "tests_main.h"
 
-class TestCoreImage: public TestSuite {
-  Q_OBJECT
+//class TestCoreImage: public TestSuite {
+//  Q_OBJECT
 
-  void testImage(uint w, uint h);
+//  void testImage(uint w, uint h);
 
-private slots:
-//  void testImage();
-};
+//private slots:
+////  void testImage();
+//};
 
-#endif
+//#endif

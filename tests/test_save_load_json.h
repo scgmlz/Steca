@@ -1,13 +1,13 @@
-#ifndef TEST_SAVE_LOAD_JSON_H
-#define TEST_SAVE_LOAD_JSON_H
+//#ifndef TEST_SAVE_LOAD_JSON_H
+//#define TEST_SAVE_LOAD_JSON_H
 
-#include "tests_main.h"
+//#include "tests_main.h"
 
-class TestSaveLoadJson: public TestSuite {
-  Q_OBJECT
+//class TestSaveLoadJson: public TestSuite {
+//  Q_OBJECT
 
-private slots:
-//  void testSaveLoadJson();
-};
+//private slots:
+////  void testSaveLoadJson();
+//};
 
-#endif
+//#endif

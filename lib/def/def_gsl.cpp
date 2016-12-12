@@ -20,7 +20,36 @@
 
 //------------------------------------------------------------------------------
 
+#ifdef TESTS
+namespace {
 
+TEST_CASE("class not_null") {
+  int i = 0;
+  auto p1 = not_null<int*>::from(&i), p2(p1);
+  CHECK_EQ(p1, p2);
 
+  ++(*p1); CHECK_EQ(1, *p2);
+}
+
+struct Counter {
+  static int cnt;
+
+  Counter() { ++cnt; }
+ ~Counter() { --cnt; }
+};
+
+int Counter::cnt = 0;
+
+TEST_CASE("class scoped") {
+  {
+    scoped<Counter*> cp(new Counter());
+    CHECK_EQ(1, Counter::cnt);
+  }
+
+  CHECK_EQ(0, Counter::cnt);
+}
+
+}
+#endif
 //------------------------------------------------------------------------------
 // eof
