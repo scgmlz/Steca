@@ -60,7 +60,7 @@ AboutBox::AboutBox(QWidget *parent) : super(parent, Qt::Dialog) {
 #ifdef __x86_64__
   str arch = "(64b)";
 #else
-  str arch = "";
+  str arch = EMPTY_STR;
 #endif
 
   auto info = label(

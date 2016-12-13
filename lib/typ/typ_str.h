@@ -1,5 +1,5 @@
 /*******************************************************************************
- * REVIEW: STeCa2 - StressTextureCalculator ver. 2
+ * STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -21,7 +21,6 @@
 #include "def/def_macros.h"
 #include <QString>
 #include <QStringBuilder>
-
 //------------------------------------------------------------------------------
 
 // string support

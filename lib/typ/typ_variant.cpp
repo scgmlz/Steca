@@ -1,5 +1,5 @@
 /*******************************************************************************
- * REVIEW: STeCa2 - StressTextureCalculator ver. 2
+ * STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -19,6 +19,7 @@
 #include "def/def_compare.h"
 #include <QDate>
 #include <QMetaType>
+#include "test/tests.h"
 
 namespace typ {
 //------------------------------------------------------------------------------
@@ -55,6 +56,12 @@ IMPL_CMP(cmp_str,  toString)
 IMPL_CMP(cmp_real, toDouble)
 IMPL_CMP(cmp_date, toDate)
 
+TEST("cmp_int(QVariants)", ({ // not exhaustive, just due diligence
+  QVariant v1(1), v2(2);
+  CHECK_EQ( 0, cmp_int(v1, v1));
+  CHECK_EQ(-1, cmp_int(v1, v2));
+  CHECK_EQ(+1, cmp_int(v2, v1));
+});)
 
 #undef IMPL_CMP
 

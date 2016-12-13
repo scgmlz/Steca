@@ -24,6 +24,7 @@
 #include <initializer_list>
 
 //------------------------------------------------------------------------------
+// limited QStringList, only needed methods reexported
 
 class str_lst : protected QStringList {
   CLS(str_lst) WITH_SUPER(QStringList)
