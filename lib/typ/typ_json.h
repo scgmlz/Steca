@@ -18,8 +18,8 @@
 #ifndef TYP_JSON_H
 #define TYP_JSON_H
 
-#include "../def/def_macros.h"
-#include "../def/def_gsl.h"
+#include "def/def_macros.h"
+#include "def/def_gsl.h"
 #include "typ/typ_str.h"
 #include <QJsonArray>
 #include <QJsonObject>

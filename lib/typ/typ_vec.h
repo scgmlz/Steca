@@ -1,5 +1,5 @@
 /*******************************************************************************
- * REVIEW: STeCa2 - StressTextureCalculator ver. 2
+ * STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -18,13 +18,14 @@
 #ifndef TYP_VEC_H
 #define TYP_VEC_H
 
-#include "../def/def_macros.h"
-#include "../def/def_gsl.h"
+#include "def/def_macros.h"
+#include "def/def_gsl.h"
 #include <QVector>
 #include <initializer_list>
 
 namespace typ {
 //------------------------------------------------------------------------------
+// limited QVector, only needed methods reexported
 
 template <typename T>
 class vec : protected QVector<T> {

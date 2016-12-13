@@ -16,7 +16,7 @@
  ******************************************************************************/
 
 #include "dock_help.h"
-#include "../thehub.h"
+#include "thehub.h"
 #include <QTextBrowser>
 
 namespace gui { namespace panel {

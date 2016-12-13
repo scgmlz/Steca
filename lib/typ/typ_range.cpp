@@ -16,28 +16,65 @@
  ******************************************************************************/
 
 #include "typ_range.h"
-#include "../def/defs.h"
+#include "def/defs.h"
 #include "typ/typ_json.h"
 #include <qmath.h>
+#include "test/tests.h"
 
 namespace typ {
 //------------------------------------------------------------------------------
+
+#ifdef TESTS
+static bool RANGE_EQ(Range::rc r1, Range::rc r2) {
+  return r1.min == r2.min && r1.max == r2.max;
+}
+
+TEST_CASE("Range::EQ") {
+  Range r1(1,2), r2(r1);
+  CHECK(RANGE_EQ(r1, r2));
+}
+
+#endif
 
 Range::Range() {
   invalidate();
 }
 
+TEST("Range()", ({
+  Range r;
+  CHECK(qIsNaN(r.min));
+  CHECK(qIsNaN(r.max));
+});)
+
 Range::Range(qreal val) {
   set(val);
 }
+
+TEST("Range(v)", ({
+  Range r(6);
+  CHECK_EQ(6, r.min);
+  CHECK_EQ(6, r.max);
+});)
 
 Range::Range(qreal min, qreal max) {
   set(min, max);
 }
 
+TEST("Range(min, max)", ({
+  Range r(6,7);
+  CHECK_EQ(6, r.min);
+  CHECK_EQ(7, r.max);
+});)
+
 Range Range::infinite() {
   return Range(-qInf(), +qInf());
 }
+
+TEST("Range::infinite", ({
+  auto r = Range::infinite();
+  CHECK(qIsInf(r.min)); CHECK_LE(r.min, 0);
+  CHECK(qIsInf(r.max)); CHECK_GE(r.max, 0);
+});)
 
 void Range::invalidate() {
   set(qQNaN());
@@ -47,17 +84,68 @@ bool Range::isValid() const {
   return !qIsNaN(min) && !qIsNaN(max);
 }
 
+TEST("Range::valid", ({
+  Range r;
+  CHECK(!r.isValid());
+  r.min = 0;
+  CHECK(!r.isValid());
+  r.max = 0;
+  CHECK(r.isValid());
+  r.invalidate();
+  CHECK(!r.isValid());
+  r.set(0);
+  CHECK(r.isValid());
+});)
+
 bool Range::isEmpty() const {
   return !isValid() || min >= max;
 }
+
+TEST("Range::empty", ({
+  CHECK(Range().isEmpty());
+  CHECK(!Range::infinite().isEmpty());
+
+  Range r(0);
+  CHECK(r.isEmpty());
+  r.max = 1;
+  CHECK(!r.isEmpty());
+  r.min = 2;
+  CHECK(r.isEmpty());
+  r.max = qQNaN();
+  CHECK(r.isEmpty());
+});)
 
 qreal Range::width() const {
   return isValid() ? max - min : qQNaN();
 }
 
+TEST("Range::width", ({
+  CHECK(qIsNaN(Range().width()));
+  CHECK_EQ(0, Range(0).width());
+  CHECK(qIsInf(Range(0,qInf()).width()));
+  CHECK(qIsInf(Range::infinite().width()));
+
+  Range r(0);
+  CHECK(r.isEmpty());
+  r.max = 1;
+  CHECK(!r.isEmpty());
+  r.min = 2;
+  CHECK(r.isEmpty());
+  r.max = qQNaN();
+  CHECK(r.isEmpty());
+});)
+
 qreal Range::center() const {
   return isValid() ? (min + max) / 2 : qQNaN();
 }
+
+TEST("Range::center", ({
+  CHECK(qIsNaN(Range().center()));
+  CHECK_EQ(0, Range(0).center());
+  CHECK(qIsNaN(Range(0,qQNaN()).center()));
+  CHECK(qIsInf(Range(0,qInf()).center()));
+  CHECK(qIsNaN(Range::infinite().center()));
+});)
 
 void Range::set(qreal val) {
   set(val, val);
@@ -80,6 +168,19 @@ Range Range::safeFrom(qreal v1, qreal v2) {
   return range;
 }
 
+TEST("Range::safe", ({
+  auto r = Range::safeFrom(2,3);
+  RANGE_EQ(r, Range(2,3));
+  r = Range::safeFrom(3,2);
+  RANGE_EQ(r, Range(2,3));
+  r.safeSet(3,4);
+  RANGE_EQ(r, Range(3,4));
+  r.safeSet(4,3);
+  RANGE_EQ(r, Range(3,4));
+  r.safeSet(+qInf(), -qInf());
+  RANGE_EQ(r, Range::infinite());
+});)
+
 void Range::extendBy(qreal val) {
   min = qIsNaN(min) ? val : qMin(min, val);
   max = qIsNaN(max) ? val : qMax(max, val);
@@ -89,6 +190,14 @@ void Range::extendBy(Range::rc that) {
   extendBy(that.min);
   extendBy(that.max);
 }
+
+TEST("Range::extend", ({
+  auto r  = Range(1,2);
+  r.extendBy(-1);
+  RANGE_EQ(r, Range(-1,2));
+  r.extendBy(Range(3,4));
+  RANGE_EQ(r, Range(-1,4));
+});)
 
 bool Range::contains(qreal val) const {
   return min <= val && val <= max;

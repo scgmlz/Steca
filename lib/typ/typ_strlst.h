@@ -18,12 +18,13 @@
 #ifndef TYP_STRLST_H
 #define TYP_STRLST_H
 
-#include "../def/def_gsl.h"
-#include "../def/def_macros.h"
+#include "def/def_gsl.h"
+#include "def/def_macros.h"
 #include <QStringList>
 #include <initializer_list>
 
 //------------------------------------------------------------------------------
+// limited QStringList, only needed methods reexported
 
 class str_lst : protected QStringList {
   CLS(str_lst) WITH_SUPER(QStringList)

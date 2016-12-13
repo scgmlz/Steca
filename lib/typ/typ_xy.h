@@ -1,5 +1,5 @@
 /*******************************************************************************
- * REVIEW: STeCa2 - StressTextureCalculator ver. 2
+ * STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -18,7 +18,7 @@
 #ifndef TYP_XY_H
 #define TYP_XY_H
 
-#include "../def/def_macros.h"
+#include "def/def_macros.h"
 
 namespace typ {
 //------------------------------------------------------------------------------

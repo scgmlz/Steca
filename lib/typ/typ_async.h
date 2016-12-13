@@ -18,7 +18,7 @@
 #ifndef TYP_ASYNC_H
 #define TYP_ASYNC_H
 
-#include "../def/defs.h"
+#include "def/defs.h"
 
 class TakesLongTime final {
 public:

@@ -18,7 +18,7 @@
 #ifndef TYP_RANGE_H
 #define TYP_RANGE_H
 
-#include "../def/def_macros.h"
+#include "def/def_macros.h"
 #include "typ_vec.h"
 
 namespace typ {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * REVIEW: STeCa2 - StressTextureCalculator ver. 2
+ * STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -16,21 +16,42 @@
  ******************************************************************************/
 
 #include "typ/typ_ij.h"
-#include "../def/def_compare.h"
+#include "def/def_compare.h"
 #include "typ/typ_json.h"
+#include "test/tests.h"
 
 namespace typ {
 //------------------------------------------------------------------------------
 
 IJ::IJ() : IJ(0, 0) {}
 
+TEST("IJ()", ({
+  IJ ij;
+  CHECK_EQ(0, ij.i);
+  CHECK_EQ(0, ij.j);
+});)
+
 IJ::IJ(int i_, int j_) : i(i_), j(j_) {}
+
+TEST("IJ(i,j)", ({
+  IJ ij(2,3);
+  CHECK_EQ(2, ij.i);
+  CHECK_EQ(3, ij.j);
+});)
 
 int IJ::compare(rc that) const {
   COMPARE_VALUE(i)
   COMPARE_VALUE(j)
   return 0;
 }
+
+TEST("IJ::compare", ({
+  IJ ij(1,2), ij1(1,2), ij2(1,0), ij3(2,2);
+  CHECK_EQ( 0, ij.compare(ij));
+  CHECK_EQ( 0, ij.compare(ij1));
+  CHECK_EQ( 1, ij.compare(ij2));
+  CHECK_EQ(-1, ij.compare(ij3));
+});)
 
 JsonObj IJ::saveJson() const {
   return JsonObj().saveInt(json_key::I, i).saveInt(json_key::J, j);
@@ -40,6 +61,12 @@ void IJ::loadJson(JsonObj::rc obj) THROWS {
   i = obj.loadInt(json_key::I);
   j = obj.loadInt(json_key::J);
 }
+
+TEST("IJ::json", ({
+  IJ ij(-1,2), ij1;
+  ij1.loadJson(ij.saveJson());
+  CHECK_EQ(0, ij.compare(ij1));
+});)
 
 //------------------------------------------------------------------------------
 }

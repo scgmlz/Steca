@@ -18,9 +18,9 @@
 #ifndef OUTPUT_DIALOGS_H
 #define OUTPUT_DIALOGS_H
 
-#include "../actions.h"
+#include "actions.h"
 #include "calc/calc_reflection_info.h"
-#include "../panels/panel.h"
+#include "panels/panel.h"
 #include "typ/typ_log.h"
 
 class QProgressBar;

@@ -18,7 +18,7 @@
 #ifndef TYP_LOG_H
 #define TYP_LOG_H
 
-#include "../def/defs.h"
+#include "def/defs.h"
 
 class MessageLogger {
 public:
