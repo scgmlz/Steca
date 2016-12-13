@@ -23,6 +23,10 @@ target_link_libraries (${lib}
 add_executable (Steca
   main.cpp
   resources.qrc
+  ../manifest.h
+  ../CHANGELOG
+  ../README.md
+  ../VERSION
 )
 
 target_link_libraries (Steca

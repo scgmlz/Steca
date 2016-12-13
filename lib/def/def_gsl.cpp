@@ -17,13 +17,12 @@
 
 #include "def_gsl.h"
 #include "tests/tests.h"
-
 //------------------------------------------------------------------------------
 
 #ifdef TESTS
 namespace {
 
-TEST_CASE("class not_null") {
+TEST_CASE("not_null<>") {
   int i = 0;
   auto p1 = not_null<int*>::from(&i), p2(p1);
   CHECK_EQ(p1, p2);
@@ -40,9 +39,34 @@ struct Counter {
 
 int Counter::cnt = 0;
 
-TEST_CASE("class scoped") {
+TEST_CASE("scoped<>") {
   {
-    scoped<Counter*> cp(new Counter());
+    Counter *c;
+    scoped<Counter*> p((c = new Counter()));
+    CHECK_FALSE(p.isNull());
+    CHECK(c == p.ptr());
+    CHECK(c == static_cast<Counter*>(p));
+    CHECK_EQ(1, p->cnt);
+  }
+
+  CHECK_EQ(0, Counter::cnt);
+
+  owner<Counter*> raw;
+
+  {
+    scoped<Counter*> p(new Counter());
+    CHECK_FALSE(p.isNull());
+    CHECK_NE(0, Counter::cnt);
+    CHECK_EQ(1, Counter::cnt);
+    raw = p.take();
+    CHECK(p.isNull());
+  }
+
+  CHECK_EQ(1, Counter::cnt);
+
+  {
+    scoped<Counter*> p(raw);
+    CHECK_FALSE(p.isNull());
     CHECK_EQ(1, Counter::cnt);
   }
 
