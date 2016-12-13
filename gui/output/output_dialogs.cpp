@@ -16,7 +16,7 @@
  ******************************************************************************/
 
 #include "output_dialogs.h"
-#include "core/calc/calc_polefigure.h"
+#include "calc/calc_polefigure.h"
 #include "../config.h"
 #include "../gui_cfg.h"
 #include "../thehub.h"

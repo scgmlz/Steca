@@ -15,7 +15,7 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#include "typ_types.h"
+#include "typ/typ_types.h"
 //------------------------------------------------------------------------------
 
 str_lst::rc normStrLst() {

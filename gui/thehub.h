@@ -19,9 +19,9 @@
 #define THEHUB_H
 
 #include "actions.h"
-#include "core/session.h"
+#include "session.h"
 #include "models.h"
-#include "lib/def/defs.h"
+#include "def/defs.h"
 
 #include <QAction>
 #include <QSettings>

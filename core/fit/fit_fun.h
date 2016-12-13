@@ -19,8 +19,8 @@
 #define FIT_FUN_H
 
 #include "../typ/typ_types.h"
-#include "lib/typ/typ_curve.h"
-#include "lib/typ/typ_fun.h"
+#include "typ/typ_curve.h"
+#include "typ/typ_fun.h"
 
 namespace json_fun_key {
 extern str const

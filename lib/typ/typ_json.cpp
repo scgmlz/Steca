@@ -15,12 +15,12 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#include "typ_json.h"
+#include "typ/typ_json.h"
 #include "../def/def_exc.h"
-#include "typ_ij.h"
-#include "typ_range.h"
-#include "typ_str.h"
-#include "typ_xy.h"
+#include "typ/typ_ij.h"
+#include "typ/typ_range.h"
+#include "typ/typ_str.h"
+#include "typ/typ_xy.h"
 #include <QStringList>
 
 namespace json_key {

@@ -15,9 +15,9 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#include "typ_ij.h"
+#include "typ/typ_ij.h"
 #include "../def/def_compare.h"
-#include "typ_json.h"
+#include "typ/typ_json.h"
 
 namespace typ {
 //------------------------------------------------------------------------------

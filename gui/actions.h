@@ -19,7 +19,7 @@
 #define ACTIONS_H
 
 #include "refhub.h"
-#include "lib/def/defs.h"
+#include "def/defs.h"
 
 #include <QAction>
 

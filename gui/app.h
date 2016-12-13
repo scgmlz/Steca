@@ -18,7 +18,7 @@
 #ifndef APP_H
 #define APP_H
 
-#include "lib/def/defs.h"
+#include "def/defs.h"
 #include <QApplication>
 
 //------------------------------------------------------------------------------

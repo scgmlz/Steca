@@ -18,10 +18,10 @@
 #ifndef REFHUB_H
 #define REFHUB_H
 
-#include "lib/def/defs.h"
-#include "core/data/data_dataset.h"
-#include "core/data/data_file.h"
-#include "core/calc/calc_reflection.h"
+#include "def/defs.h"
+#include "data/data_dataset.h"
+#include "data/data_file.h"
+#include "calc/calc_reflection.h"
 #include <QObject>
 
 namespace gui {

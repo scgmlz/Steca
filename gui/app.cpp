@@ -16,9 +16,9 @@
  ******************************************************************************/
 
 #include "app.h"
-#include "manifest.h"
+#include "../manifest.h"
 #include "mainwin.h"
-#include "lib/typ/typ_log.h"
+#include "typ/typ_log.h"
 
 #include <QMessageBox>
 #include <QStatusBar>
@@ -30,7 +30,7 @@
 App::App(int& argc, char* argv[]) : super(argc, argv) {
   setApplicationName(APPLICATION_NAME);
   setApplicationVersion(
-    #include "VERSION"
+    #include "../VERSION"
   );
   setOrganizationName(ORGANIZATION_NAME);
   setOrganizationDomain(ORGANIZATION_DOMAIN);

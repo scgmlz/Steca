@@ -16,7 +16,7 @@
  ******************************************************************************/
 
 #include "panel_diffractogram.h"
-#include "core/calc/calc_lens.h"
+#include "calc/calc_lens.h"
 #include "../thehub.h"
 
 namespace gui { namespace panel {

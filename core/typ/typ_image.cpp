@@ -15,7 +15,7 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#include "typ_image.h"
+#include "typ/typ_image.h"
 
 namespace typ {
 //------------------------------------------------------------------------------

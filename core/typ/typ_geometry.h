@@ -18,10 +18,10 @@
 #ifndef TYP_GEOMETRY_H
 #define TYP_GEOMETRY_H
 
-#include "lib/def/defs.h"
-#include "lib/typ/typ_array2d.h"
-#include "lib/typ/typ_ij.h"
-#include "typ_types.h"
+#include "def/defs.h"
+#include "typ/typ_array2d.h"
+#include "typ/typ_ij.h"
+#include "typ/typ_types.h"
 #include <QSharedPointer>
 
 namespace typ {

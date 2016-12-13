@@ -16,6 +16,7 @@
  ******************************************************************************/
 
 #include "def_exc.h"
+#include "test/tests.h"
 //------------------------------------------------------------------------------
 
 #ifdef QT_NO_EXCEPTIONS
@@ -27,13 +28,29 @@ Exception::Exception(rcstr msg, bool silent) noexcept
   setMsg(msg);
 }
 
+
 Exception::Exception() noexcept
 : Cls(EMPTY_STR, true) {
 }
 
+TEST("Exception()",
+  CHECK_THROWS_AS(THROW("Hello"), Exception);
+)
+
 Exception::Exception(rcstr msg) noexcept
 : Cls(msg, false) {
 }
+
+TEST("Exception(\"Hi\")",
+  try {
+    THROW("Hi");
+  } catch (Exception &e) {
+    CHECK_EQ("Hi", e.msg());
+    return;
+  }
+
+  CHECK(false); // not here
+)
 
 Exception::Exception(rc that) noexcept
 : Cls(that.msg_) {
@@ -42,6 +59,17 @@ Exception::Exception(rc that) noexcept
 pcstr Exception::what() const noexcept {
   return msg8bit_.constData();
 }
+
+TEST("Exception(\"Hi\")",
+  try {
+    THROW("Hi");
+  } catch (Exception &e) {
+    CHECK_EQ("Hi", str(e.what()));
+    return;
+  }
+
+  CHECK(false); // not here
+)
 
 void Exception::setMsg(rcstr s) {
   msg_     = s;

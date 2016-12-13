@@ -19,9 +19,9 @@
 #define TYP_FUN_H
 
 #include "../def/defs.h"
-#include "typ_factory.h"
-#include "typ_json.h"
-#include "typ_range.h"
+#include "typ/typ_factory.h"
+#include "typ/typ_json.h"
+#include "typ/typ_range.h"
 
 namespace json_fun_key {
 extern str const

@@ -17,7 +17,7 @@
 
 #include "calc_lens.h"
 #include "../session.h"
-#include "lib/typ/typ_log.h"
+#include "typ/typ_log.h"
 #include <qmath.h>
 
 namespace calc {

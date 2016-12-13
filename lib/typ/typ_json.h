@@ -20,7 +20,7 @@
 
 #include "../def/def_macros.h"
 #include "../def/def_gsl.h"
-#include "typ_str.h"
+#include "typ/typ_str.h"
 #include <QJsonArray>
 #include <QJsonObject>
 

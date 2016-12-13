@@ -15,7 +15,7 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#include "typ_async.h"
+#include "typ/typ_async.h"
 #include <QtWidgets/QProgressBar>
 
 //------------------------------------------------------------------------------

@@ -16,8 +16,8 @@
  ******************************************************************************/
 
 #include "fit_methods.h"
-#include "lib/def/def_alg.h"
-#include "LevMar/levmar.h"
+#include "def/def_alg.h"
+#include "LM/levmar.h"
 #include <qmath.h>
 
 namespace fit {
