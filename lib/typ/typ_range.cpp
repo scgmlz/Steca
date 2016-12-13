@@ -16,7 +16,7 @@
  ******************************************************************************/
 
 #include "typ_range.h"
-#include "../def/defs.h"
+#include "def/defs.h"
 #include "typ/typ_json.h"
 #include <qmath.h>
 

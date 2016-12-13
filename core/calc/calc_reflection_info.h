@@ -18,8 +18,8 @@
 #ifndef CALC_REFLECTION_INFO_H
 #define CALC_REFLECTION_INFO_H
 
-#include "../data/data_dataset.h"
-#include "../typ/typ_types.h"
+#include "data/data_dataset.h"
+#include "typ/typ_types.h"
 #include "def/defs.h"
 #include "typ/typ_strlst.h"
 #include "typ/typ_variant.h"

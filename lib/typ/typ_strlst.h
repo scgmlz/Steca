@@ -18,8 +18,8 @@
 #ifndef TYP_STRLST_H
 #define TYP_STRLST_H
 
-#include "../def/def_gsl.h"
-#include "../def/def_macros.h"
+#include "def/def_gsl.h"
+#include "def/def_macros.h"
 #include <QStringList>
 #include <initializer_list>
 

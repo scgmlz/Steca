@@ -16,9 +16,9 @@
  ******************************************************************************/
 
 #include "tabs_images.h"
-#include "../colors.h"
-#include "../gui_cfg.h"
-#include "../thehub.h"
+#include "colors.h"
+#include "gui_cfg.h"
+#include "thehub.h"
 #include <QColor>
 #include <QPainter>
 #include <QResizeEvent>

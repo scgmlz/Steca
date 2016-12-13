@@ -18,7 +18,7 @@
 #ifndef TYP_CURVE_H
 #define TYP_CURVE_H
 
-#include "../def/def_macros.h"
+#include "def/def_macros.h"
 #include "typ/typ_fun.h"
 #include "typ/typ_range.h"
 #include "typ/typ_curve.h"

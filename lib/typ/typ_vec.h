@@ -18,8 +18,8 @@
 #ifndef TYP_VEC_H
 #define TYP_VEC_H
 
-#include "../def/def_macros.h"
-#include "../def/def_gsl.h"
+#include "def/def_macros.h"
+#include "def/def_gsl.h"
 #include <QVector>
 #include <initializer_list>
 

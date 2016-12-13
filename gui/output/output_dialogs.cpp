@@ -17,10 +17,10 @@
 
 #include "output_dialogs.h"
 #include "calc/calc_polefigure.h"
-#include "../config.h"
-#include "../gui_cfg.h"
-#include "../thehub.h"
-#include "../types/type_models.h"
+#include "config.h"
+#include "gui_cfg.h"
+#include "thehub.h"
+#include "types/type_models.h"
 
 #include <QFileDialog>
 #include <QHeaderView>

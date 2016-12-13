@@ -16,7 +16,7 @@
  ******************************************************************************/
 
 #include "typ/typ_variant.h"
-#include "../def/def_compare.h"
+#include "def/def_compare.h"
 #include <QDate>
 #include <QMetaType>
 

@@ -16,10 +16,10 @@
  ******************************************************************************/
 
 #include "tabs_setup.h"
-#include "../gui_cfg.h"
-#include "../thehub.h"
+#include "gui_cfg.h"
+#include "thehub.h"
 #include "typ/typ_geometry.h"
-#include "../views.h"
+#include "views.h"
 
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------

@@ -18,11 +18,11 @@
 #ifndef CALC_LENS_H
 #define CALC_LENS_H
 
-#include "../typ/typ_geometry.h"
-#include "../typ/typ_image.h"
-#include "../typ/typ_image_transform.h"
-#include "../typ/typ_types.h"
-#include "../data/data_dataset.h"
+#include "typ/typ_geometry.h"
+#include "typ/typ_image.h"
+#include "typ/typ_image_transform.h"
+#include "typ/typ_types.h"
+#include "data/data_dataset.h"
 #include "def/defs.h"
 #include "typ/typ_array2d.h"
 #include "typ/typ_curve.h"

@@ -18,7 +18,7 @@
 #ifndef TYP_FUN_H
 #define TYP_FUN_H
 
-#include "../def/defs.h"
+#include "def/defs.h"
 #include "typ/typ_factory.h"
 #include "typ/typ_json.h"
 #include "typ/typ_range.h"

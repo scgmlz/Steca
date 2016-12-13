@@ -16,8 +16,8 @@
  ******************************************************************************/
 
 #include "dock_metadata.h"
-#include "../thehub.h"
-#include "../views.h"
+#include "thehub.h"
+#include "views.h"
 #include <QHeaderView>
 
 namespace gui { namespace panel {

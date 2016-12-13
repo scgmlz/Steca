@@ -18,7 +18,7 @@
 #ifndef FIT_FUN_H
 #define FIT_FUN_H
 
-#include "../typ/typ_types.h"
+#include "typ/typ_types.h"
 #include "typ/typ_curve.h"
 #include "typ/typ_fun.h"
 
