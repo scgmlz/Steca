@@ -15,9 +15,9 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#include "core/data/data_dataset.h"
+#include "data/data_dataset.h"
 #include "Caress/raw.h"
-#include "core/typ/typ_types.h"
+#include "typ/typ_types.h"
 #include "io_io.h"
 
 #include <sstream>

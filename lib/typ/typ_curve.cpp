@@ -15,7 +15,7 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#include "typ_curve.h"
+#include "typ/typ_curve.h"
 #include "../def/def_alg.h"
 
 namespace typ {

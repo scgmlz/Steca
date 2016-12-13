@@ -19,7 +19,7 @@
 #define TYP_CACHE_H
 
 #include "../def/def_debug.h"
-#include "typ_map.h"
+#include "typ/typ_map.h"
 #include <QSharedPointer>
 #include <QDateTime>
 

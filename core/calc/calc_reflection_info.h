@@ -20,9 +20,9 @@
 
 #include "../data/data_dataset.h"
 #include "../typ/typ_types.h"
-#include "lib/def/defs.h"
-#include "lib/typ/typ_strlst.h"
-#include "lib/typ/typ_variant.h"
+#include "def/defs.h"
+#include "typ/typ_strlst.h"
+#include "typ/typ_variant.h"
 
 namespace calc {
 //------------------------------------------------------------------------------

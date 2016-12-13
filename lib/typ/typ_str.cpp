@@ -15,7 +15,7 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#include "typ_str.h"
+#include "typ/typ_str.h"
 
 str const EMPTY_STR;
 

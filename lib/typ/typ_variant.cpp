@@ -15,7 +15,7 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#include "typ_variant.h"
+#include "typ/typ_variant.h"
 #include "../def/def_compare.h"
 #include <QDate>
 #include <QMetaType>

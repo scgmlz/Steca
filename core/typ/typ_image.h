@@ -18,8 +18,8 @@
 #ifndef TYP_IMAGE_H
 #define TYP_IMAGE_H
 
-#include "lib/typ/typ_array2d.h"
-#include "typ_types.h"
+#include "typ/typ_array2d.h"
+#include "typ/typ_types.h"
 
 namespace typ {
 //------------------------------------------------------------------------------

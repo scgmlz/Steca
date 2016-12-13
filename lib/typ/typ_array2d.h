@@ -20,7 +20,7 @@
 
 #include "../def/defs.h"
 #include "../def/def_compare.h"
-#include "typ_vec.h"
+#include "typ/typ_vec.h"
 
 namespace typ {
 //------------------------------------------------------------------------------

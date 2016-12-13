@@ -24,8 +24,6 @@ find_package (Qt5Test       REQUIRED)
 find_package (Qt5Widgets    REQUIRED)
 find_package (Qt5Multimedia REQUIRED)
 
-include_directories (${CMAKE_HOME_DIRECTORY})
-
 add_subdirectory (lib)
 add_subdirectory (LevMar)
 add_subdirectory (core)

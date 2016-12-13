@@ -19,7 +19,7 @@
 #define MAINWIN_H
 
 #include "thehub.h"
-#include "lib/def/defs.h"
+#include "def/defs.h"
 
 #include <QMainWindow>
 #include <QNetworkAccessManager>

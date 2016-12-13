@@ -18,7 +18,7 @@
 #ifndef GUI_CFG_H
 #define GUI_CFG_H
 
-#include "lib/def/defs.h"
+#include "def/defs.h"
 
 namespace gui_cfg {
 //------------------------------------------------------------------------------

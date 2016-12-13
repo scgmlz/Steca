@@ -18,7 +18,7 @@
 #ifndef TYP_VARIANT_H
 #define TYP_VARIANT_H
 
-#include "lib/typ/typ_vec.h"
+#include "typ/typ_vec.h"
 #include <QVariant>
 
 // Help with QVariant

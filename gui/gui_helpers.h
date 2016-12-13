@@ -18,8 +18,8 @@
 #ifndef GUI_HELPERS_H
 #define GUI_HELPERS_H
 
-#include "lib/def/defs.h"
-#include "lib/typ/typ_strlst.h"
+#include "def/defs.h"
+#include "typ/typ_strlst.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>

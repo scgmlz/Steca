@@ -16,7 +16,7 @@
  ******************************************************************************/
 
 #include "mainwin.h"
-#include "manifest.h"
+#include "../manifest.h"
 #include "about.h"
 #include "app.h"
 #include "config.h"

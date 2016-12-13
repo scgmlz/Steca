@@ -19,7 +19,7 @@
 #define TABS_IMAGES_H
 
 #include "panel.h"
-#include "core/calc/calc_lens.h"
+#include "calc/calc_lens.h"
 
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
