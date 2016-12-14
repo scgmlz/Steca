@@ -31,7 +31,7 @@ add_subdirectory (io)
 add_subdirectory (gui)
 
 if (WITH_TESTS)
-add_subdirectory (tests)
+  add_subdirectory (tests)
 endif ()
 
 # eof
