@@ -7,8 +7,8 @@ os:
 # - osx
 
 compiler:
-- clang
-# - gcc
+# - clang
+- gcc
 
 env:
 - BUILD_TYPE=Debug
