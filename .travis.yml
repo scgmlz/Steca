@@ -37,5 +37,5 @@ addons:
     - qt54base
     - qt54multimedia
     - lcov
-    - coveralls-lcov
+    - ruby-coveralls
     - xvfb
