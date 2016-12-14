@@ -30,7 +30,7 @@ add_subdirectory (core)
 add_subdirectory (io)
 add_subdirectory (gui)
 
-if (!WIN32) # msvc does not support ({ ... })
+if (WITH_TESTS)
 add_subdirectory (tests)
 endif ()
 
