@@ -29,6 +29,9 @@ add_subdirectory (LevMar)
 add_subdirectory (core)
 add_subdirectory (io)
 add_subdirectory (gui)
+
+if (!WIN32) # msvc does not support ({ ... })
 add_subdirectory (tests)
+endif ()
 
 # eof
