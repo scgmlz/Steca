@@ -18,6 +18,10 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
   add_compile_options("-Wall")
 endif ()
 
+if (WITH_COVERAGE)
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
+endif ()
+
 find_package (Qt5Core       REQUIRED)
 find_package (Qt5Gui        REQUIRED)
 find_package (Qt5Test       REQUIRED)
