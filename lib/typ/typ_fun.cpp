@@ -98,18 +98,6 @@ void Function::loadJson(JsonObj::rc) THROWS {
   // nothing to do
 }
 
-#ifndef QT_NO_DEBUG
-QDebug& operator<<(QDebug& d, Function::rc f) {
-  uint cnt = f.parameterCount();
-  d << "((" << cnt << "))";
-
-  for_i (cnt)
-    d << "(" << i << f.parameterAt(i).value() << ")";
-
-  return d;
-}
-#endif
-
 //------------------------------------------------------------------------------
 
 SimpleFunction::SimpleFunction() {

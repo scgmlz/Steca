@@ -18,6 +18,7 @@
 #ifndef TYP_XY_H
 #define TYP_XY_H
 
+#include "def/def_cmp.h"
 #include "def/def_macros.h"
 
 namespace typ {
@@ -34,7 +35,7 @@ struct XY {
   XY();  // invalid (NaN)
   XY(qreal, qreal);
 
-  int  compare(rc) const;
+  COMPARABLE
 
   void invalidate();     // make invalid (NaN)
   bool isValid() const;  // is not NaN

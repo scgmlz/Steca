@@ -18,8 +18,8 @@
 #ifndef TYP_ARRAY2D_H
 #define TYP_ARRAY2D_H
 
+#include "def/def_cmp.h"
 #include "def/defs.h"
-#include "def/def_compare.h"
 #include "typ/typ_vec.h"
 
 namespace typ {
@@ -41,19 +41,7 @@ struct size2d {
     return w * h;
   }
 
-  int compare(rc that) const {
-    COMPARE_VALUE(w)
-    COMPARE_VALUE(h)
-    return 0;
-  }
-
-  friend bool operator==(rc s1, rc s2) {
-    return s1.w == s2.w && s1.h == s2.h;
-  }
-
-  friend bool operator!=(rc s1, rc s2) {
-    return !(s1 == s2);
-  }
+  COMPARABLE
 
   friend size2d operator-(rc s1, rc s2) {
     int w = to_i(s1.w) - to_i(s2.w);
@@ -84,9 +72,9 @@ private:
     free();
 
     if (!(size_ = size).isEmpty()) {
-      ts_ = static_cast<col_t*>(calloc(size_.w, sizeof(col_t*)));
+      ts_ = static_cast<col_t*>(::calloc(size_.w, sizeof(col_t*)));
       for (uint i=0; i<size_.w; ++i)
-        ts_[i] = static_cast<col_t>(calloc(size_.h, sizeof(T)));
+        ts_[i] = static_cast<col_t>(::calloc(size_.h, sizeof(T)));
     }
   }
 

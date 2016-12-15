@@ -56,10 +56,10 @@ TEST_CASE("scoped<>") {
   {
     scoped<Counter*> p(new Counter());
     CHECK_FALSE(p.isNull());
-    CHECK_NE(0, Counter::cnt);
     CHECK_EQ(1, Counter::cnt);
     raw = p.take();
     CHECK(p.isNull());
+    CHECK_EQ(1, Counter::cnt);
   }
 
   CHECK_EQ(1, Counter::cnt);

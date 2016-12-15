@@ -15,9 +15,9 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#include "typ/typ_xy.h"
-#include "def/def_compare.h"
-#include "typ/typ_json.h"
+#include "typ_xy.h"
+#include "def/def_cmp_impl.h"
+#include "typ_json.h"
 #include "test/tests.h"
 
 namespace typ {
@@ -43,10 +43,12 @@ TEST("XY(x,y)", ({
 
 int XY::compare(rc that) const {
   EXPECT(isValid() && that.isValid())
-  COMPARE_VALUE(x)
-  COMPARE_VALUE(y)
+  RET_COMPARE_VALUE(x)
+  RET_COMPARE_VALUE(y)
   return 0;
 }
+
+VALID_EQ_NE_OPERATOR(XY)
 
 TEST("XY::compare", ({
   XY xy(1,2), xy1(1,2), xy2(1,0), xy3(2,2);
@@ -54,6 +56,9 @@ TEST("XY::compare", ({
   CHECK_EQ( 0, xy.compare(xy1));
   CHECK_EQ( 1, xy.compare(xy2));
   CHECK_EQ(-1, xy.compare(xy3));
+
+  CHECK_EQ(xy, xy1);
+  CHECK_NE(xy, xy2);
 });)
 
 void XY::invalidate() {
@@ -87,7 +92,7 @@ void XY::loadJson(JsonObj::rc obj) THROWS {
 TEST("XY::json", ({
   XY xy(-1,2), xy1;
   xy1.loadJson(xy.saveJson());
-  CHECK_EQ(0, xy.compare(xy1));
+  CHECK_EQ(xy, xy1);
 });)
 
 //------------------------------------------------------------------------------
