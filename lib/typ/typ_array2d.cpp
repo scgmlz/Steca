@@ -1,5 +1,5 @@
 /*******************************************************************************
- * STeCa2 - StressTextureCalculator ver. 2
+ * REVIEW: STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -15,23 +15,22 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#ifndef DEF_COMPARE_H
-#define DEF_COMPARE_H
+#include "typ_array2d.h"
+#include "def/def_cmp_impl.h"
+#include "typ_json.h"
+#include "test/tests.h"
+
+namespace typ {
 //------------------------------------------------------------------------------
 
-// a helper for int compare()
-#define COMPARE_VALUE(val)        \
-  if (val < that.val) return -1;  \
-  if (val > that.val) return +1;
+int size2d::compare(rc that) const {
+  RET_COMPARE_VALUE(w)
+  RET_COMPARE_VALUE(h)
+  return 0;
+}
 
-#define COMPARE_VALUE2(v1,v2)     \
-  if (v1 < v2) return -1;         \
-  if (v1 > v2) return +1;
-
-#define COMPARE_COMPARABLE(o) \
-  for (int cmp = o.compare(that.o); cmp; ) \
-    return cmp;
+EQ_NE_OPERATOR(size2d)
 
 //------------------------------------------------------------------------------
-#endif // DEF_COMPARE_H
+}
 // eof

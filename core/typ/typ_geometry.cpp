@@ -15,8 +15,8 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#include "typ/typ_geometry.h"
-#include "def/def_compare.h"
+#include "typ_geometry.h"
+#include "def/def_cmp_impl.h"
 #include <qmath.h>
 
 namespace typ {
@@ -34,11 +34,13 @@ Geometry::Geometry()
 }
 
 int Geometry::compare(rc that) const {
-  COMPARE_VALUE(detectorDistance)
-  COMPARE_VALUE(pixSize)
-  COMPARE_COMPARABLE(midPixOffset)
+  RET_COMPARE_VALUE(detectorDistance)
+  RET_COMPARE_VALUE(pixSize)
+  RET_COMPARE_COMPARABLE(midPixOffset)
   return 0;
 }
+
+EQ_NE_OPERATOR(Geometry)
 
 //------------------------------------------------------------------------------
 
@@ -50,12 +52,14 @@ ImageCut::ImageCut(uint left_, uint top_, uint right_, uint bottom_)
 }
 
 int ImageCut::compare(rc that) const {
-  COMPARE_VALUE(left)
-  COMPARE_VALUE(top)
-  COMPARE_VALUE(right)
-  COMPARE_VALUE(bottom)
+  RET_COMPARE_VALUE(left)
+  RET_COMPARE_VALUE(top)
+  RET_COMPARE_VALUE(right)
+  RET_COMPARE_VALUE(bottom)
   return 0;
 }
+
+EQ_NE_OPERATOR(ImageCut)
 
 size2d ImageCut::marginSize() const {
   return size2d(left + right, top + bottom);
@@ -69,26 +73,21 @@ Angles::Angles() : Angles(0, 0) {
 Angles::Angles(tth_t tth_, gma_t gma_) : tth(tth_), gma(gma_) {
 }
 
-#ifndef QT_NO_DEBUG
-QDebug& operator<<(QDebug& d, Angles::rc angles) {
-  d << "(" << angles.tth << angles.gma << ")";
-  return d;
-}
-#endif
-
 AngleMap::Key::Key(Geometry::rc geometry_, size2d::rc size_,
                    ImageCut::rc cut_, IJ::rc midPix_, tth_t midTth_)
 : geometry(geometry_), size(size_), cut(cut_), midPix(midPix_), midTth(midTth_) {
 }
 
 int AngleMap::Key::compare(rc that) const {
-  COMPARE_COMPARABLE(geometry)
-  COMPARE_COMPARABLE(size)
-  COMPARE_COMPARABLE(cut)
-  COMPARE_COMPARABLE(midPix)
-  COMPARE_VALUE(midTth)
+  RET_COMPARE_COMPARABLE(geometry)
+  RET_COMPARE_COMPARABLE(size)
+  RET_COMPARE_COMPARABLE(cut)
+  RET_COMPARE_COMPARABLE(midPix)
+  RET_COMPARE_VALUE(midTth)
   return 0;
 }
+
+EQ_NE_OPERATOR(AngleMap::Key)
 
 //------------------------------------------------------------------------------
 

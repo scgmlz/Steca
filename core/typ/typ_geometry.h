@@ -18,6 +18,7 @@
 #ifndef TYP_GEOMETRY_H
 #define TYP_GEOMETRY_H
 
+#include "def/def_cmp.h"
 #include "def/defs.h"
 #include "typ/typ_array2d.h"
 #include "typ/typ_ij.h"
@@ -38,7 +39,8 @@ struct Geometry {
   static preal const DEF_DETECTOR_PIXEL_SIZE;
 
   Geometry();
-  int compare(rc) const;
+
+  COMPARABLE
 
   preal detectorDistance;  // the distance from the sample to the detector
   preal pixSize;           // size of the detector pixel
@@ -56,7 +58,7 @@ struct ImageCut {
   ImageCut();
   ImageCut(uint left, uint top, uint right, uint bottom);
 
-  int compare(rc) const;
+  COMPARABLE
 
   size2d marginSize() const;
 };
@@ -73,10 +75,6 @@ struct Angles {
   Angles(tth_t, gma_t);
 };
 
-#ifndef QT_NO_DEBUG
-QDebug& operator<<(QDebug&, Angles::rc);
-#endif
-
 class AngleMap {
   CLS(AngleMap)
 public:
@@ -85,9 +83,9 @@ public:
 
     Key(Geometry::rc, size2d::rc, ImageCut::rc, IJ::rc midPix, tth_t midTth);
 
-    int compare(rc) const;
+    COMPARABLE
 
-    bool operator<(rc that) const {
+    bool operator< (rc that) const {
       return compare(that) < 0;
     }
 

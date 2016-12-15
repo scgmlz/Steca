@@ -16,6 +16,7 @@
  ******************************************************************************/
 
 #include "typ_range.h"
+#include "def/def_cmp_impl.h"
 #include "def/defs.h"
 #include "typ/typ_json.h"
 #include <qmath.h>
@@ -69,6 +70,15 @@ TEST("Range(min, max)", ({
 Range Range::infinite() {
   return Range(-qInf(), +qInf());
 }
+
+int Range::compare(rc that) const {
+  EXPECT(isValid() && that.isValid())
+  RET_COMPARE_VALUE(min)
+  RET_COMPARE_VALUE(max)
+  return 0;
+}
+
+VALID_EQ_NE_OPERATOR(Range)
 
 TEST("Range::infinite", ({
   auto r = Range::infinite();
@@ -207,25 +217,108 @@ bool Range::contains(Range::rc that) const {
   return min <= that.min && that.max <= max;
 }
 
+TEST("Range::contains", ({
+  auto r = Range(-1, +1);
+
+  CHECK(!Range().contains(r));
+  CHECK(!Range().contains(Range()));
+  CHECK(!Range().contains(Range::infinite()));
+
+  CHECK(Range::infinite().contains(r));
+  CHECK(Range::infinite().contains(Range::infinite()));
+  CHECK(!Range::infinite().contains(Range()));
+
+  CHECK(!r.contains(Range()));
+  CHECK(!r.contains(Range::infinite()));
+  CHECK(!r.contains(qQNaN()));
+  CHECK(!r.contains(qInf()));
+
+  CHECK(r.contains(r));
+
+  CHECK(r.contains(-1));
+  CHECK(r.contains(0));
+  CHECK(r.contains(+1));
+  CHECK(r.contains(Range(0,1)));
+  CHECK(!r.contains(Range(-2,0)));
+});)
+
 bool Range::intersects(Range::rc that) const {
   return min <= that.max && that.min <= max;
 }
 
-Range Range::intersect(Range::rc that) const {
-  if (isValid() || !that.isValid()) {
-    auto min_ = qMax(min, that.min), max_ = qMin(max, that.max);
-    if (min_ <= max_)
-      return Range(min_, max_);
-    return Range(min, min);
-  }
+TEST("Range::intersects", ({
+  auto r = Range(-1, +1);
 
-  return Range();
+  CHECK(!Range().intersects(r));
+  CHECK(!Range().intersects(Range()));
+  CHECK(!Range().intersects(Range::infinite()));
+
+  CHECK(Range::infinite().intersects(r));
+  CHECK(Range::infinite().intersects(Range::infinite()));
+  CHECK(!Range::infinite().intersects(Range()));
+
+  CHECK(!r.intersects(Range()));
+  CHECK(r.intersects(Range::infinite()));
+
+  CHECK(r.intersects(r));
+
+  CHECK(r.intersects(Range(0,10)));
+  CHECK(r.intersects(Range(-2,0)));
+});)
+
+Range Range::intersect(Range::rc that) const {
+  if (!isValid() || !that.isValid())
+    return Range();
+
+  auto min_ = qMax(min, that.min), max_ = qMin(max, that.max);
+  if (min_ <= max_)
+    return Range(min_, max_);
+
+  return Range(min, min); // empty, rather than !isValid(), arbitrary min/max value
 }
+
+TEST("Range::intersect", ({
+  auto r = Range(-1, +1);
+
+  CHECK(!Range().intersect(r).isValid());
+  CHECK(!r.intersect(Range()).isValid());
+  CHECK(!Range().intersect(Range::infinite()).isValid());
+
+  CHECK_EQ(r, Range::infinite().intersect(r));
+  CHECK_EQ(Range::infinite(), Range::infinite().intersect(Range::infinite()));
+  CHECK(!Range::infinite().intersect(Range()).isValid());
+
+  CHECK(!r.intersect(Range()).isValid());
+  CHECK_EQ(r, r.intersect(Range::infinite()));
+
+  CHECK_EQ(r, r.intersect(r));
+
+  CHECK_EQ(Range(0,1), r.intersect(Range(0,10)));
+  CHECK_EQ(Range(-1,0), r.intersect(Range(-2,0)));
+});)
 
 qreal Range::bound(qreal value) const {
-  if (isValid()) value = qBound(min, value, max);
-  return value;
+  if (isValid() && !qIsNaN(value))
+    return qBound(min, value, max);
+  return qQNaN();
 }
+
+TEST("Range::bound", ({
+  auto r = Range(-1, +1);
+
+  CHECK(qIsNaN(Range().bound(0)));
+  CHECK(qIsNaN(Range().bound(qInf())));
+  CHECK(qIsNaN(Range().bound(qQNaN())));
+  CHECK_EQ(0, Range::infinite().bound(0));
+  CHECK(qIsInf(Range::infinite().bound(qInf())));
+  CHECK(qIsNaN(Range::infinite().bound(qQNaN())));
+
+  CHECK_EQ(0,  r.bound(0));
+  CHECK_EQ(-1, r.bound(-10));
+  CHECK_EQ(-1, r.bound(-qInf()));
+  CHECK_EQ(+1, r.bound(+10));
+  CHECK_EQ(+1, r.bound(+qInf()));
+});)
 
 JsonObj Range::saveJson() const {
   return JsonObj().saveQreal(json_key::MIN, min).saveQreal(json_key::MAX, max);
@@ -236,12 +329,11 @@ void Range::loadJson(JsonObj::rc obj) THROWS {
   max = obj.loadQreal(json_key::MAX);
 }
 
-#ifndef QT_NO_DEBUG
-QDebug& operator<<(QDebug& d, Range::rc rge) {
-  d << '<' << rge.min << '-' << rge.max << '>';
-  return d;
-}
-#endif
+TEST("Range::json", ({
+  Range r(-1,2), r1;
+  r1.loadJson(r.saveJson());
+  CHECK_EQ(r, r1);
+});)
 
 //------------------------------------------------------------------------------
 

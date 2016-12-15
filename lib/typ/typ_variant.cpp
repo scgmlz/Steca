@@ -15,8 +15,8 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#include "typ/typ_variant.h"
-#include "def/def_compare.h"
+#include "typ_variant.h"
+#include "def/def_cmp_impl.h"
 #include <QDate>
 #include <QMetaType>
 #include "test/tests.h"
@@ -47,7 +47,7 @@ bool isNumeric(QVariant const& v) {
 #define IMPL_CMP(name, toType)                       \
   int name(QVariant const& v1, QVariant const& v2) { \
     auto val1 = v1.toType(), val2 = v2.toType();     \
-    COMPARE_VALUE2(val1, val2)                       \
+    RET_COMPARE_VALUE2(val1, val2)                       \
     return 0;                                        \
   }
 

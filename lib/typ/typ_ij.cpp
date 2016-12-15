@@ -16,7 +16,7 @@
  ******************************************************************************/
 
 #include "typ/typ_ij.h"
-#include "def/def_compare.h"
+#include "def/def_cmp_impl.h"
 #include "typ/typ_json.h"
 #include "test/tests.h"
 
@@ -40,10 +40,12 @@ TEST("IJ(i,j)", ({
 });)
 
 int IJ::compare(rc that) const {
-  COMPARE_VALUE(i)
-  COMPARE_VALUE(j)
+  RET_COMPARE_VALUE(i)
+  RET_COMPARE_VALUE(j)
   return 0;
 }
+
+EQ_NE_OPERATOR(IJ)
 
 TEST("IJ::compare", ({
   IJ ij(1,2), ij1(1,2), ij2(1,0), ij3(2,2);
@@ -51,6 +53,9 @@ TEST("IJ::compare", ({
   CHECK_EQ( 0, ij.compare(ij1));
   CHECK_EQ( 1, ij.compare(ij2));
   CHECK_EQ(-1, ij.compare(ij3));
+
+  CHECK_EQ(ij, ij1);
+  CHECK_NE(ij, ij2);
 });)
 
 JsonObj IJ::saveJson() const {
@@ -65,7 +70,7 @@ void IJ::loadJson(JsonObj::rc obj) THROWS {
 TEST("IJ::json", ({
   IJ ij(-1,2), ij1;
   ij1.loadJson(ij.saveJson());
-  CHECK_EQ(0, ij.compare(ij1));
+  CHECK_EQ(ij, ij1);
 });)
 
 //------------------------------------------------------------------------------

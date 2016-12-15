@@ -18,6 +18,7 @@
 #ifndef TYP_RANGE_H
 #define TYP_RANGE_H
 
+#include "def/def_cmp.h"
 #include "def/def_macros.h"
 #include "typ_vec.h"
 
@@ -36,6 +37,8 @@ struct Range {
   Range(qreal min, qreal max);      // normal
 
   static Range infinite();          // factory: -inf .. +inf
+
+  COMPARABLE
 
   void  invalidate();               // make invalid
   bool  isValid() const;            // is not NaN
@@ -66,10 +69,6 @@ struct Range {
   JsonObj saveJson()    const;
   void loadJson(JsonObj const&) THROWS;
 };
-
-#ifndef QT_NO_DEBUG
-QDebug& operator<<(QDebug&, Range::rc);
-#endif
 
 //------------------------------------------------------------------------------
 // A set of *sorted* *non-overlapping* ranges

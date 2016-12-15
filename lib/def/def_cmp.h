@@ -15,32 +15,15 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#ifndef TYP_IJ_H
-#define TYP_IJ_H
-
-#include "def/def_cmp.h"
-#include "def/def_macros.h"
-
-namespace typ {
+#ifndef DEF_CMP_H
+#define DEF_CMP_H
 //------------------------------------------------------------------------------
-// 2D point, integers
 
-class JsonObj;
-
-struct IJ {
-  CLS(IJ)
-
-  int i, j;
-
-  IJ();  // (0,0)
-  IJ(int, int);
-
-  COMPARABLE
-
-  JsonObj saveJson() const;
-  void loadJson(JsonObj const&) THROWS;
-};
+#define COMPARABLE            \
+  int  compare(rc)    const;  \
+  bool operator==(rc) const;  \
+  bool operator!=(rc) const;
 
 //------------------------------------------------------------------------------
-}
-#endif // TYP_IJ_H
+#endif // DEF_CMP_H
+// eof
