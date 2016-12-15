@@ -204,7 +204,7 @@ void DatasetLens::setNorm(eNorm norm) {
     break;
   }
 
-  normFactor_ = inten_t((num > 0 && den > 0) ? num / den : qQNaN());
+  normFactor_ = inten_t((num > 0 && den > 0) ? num / den : NAN);
   if (qIsNaN(normFactor_))
     MessageLogger::warn("Bad normalisation value");
 }

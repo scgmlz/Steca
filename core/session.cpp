@@ -96,7 +96,7 @@ void Session::calcIntensCorr() const {
     if (inten > 0) {
       fact = avg / inten;
     } else {
-      fact = qQNaN();
+      fact = NAN;
       corrHasNaNs_ = true;
     }
 

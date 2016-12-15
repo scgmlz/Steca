@@ -14360,7 +14360,7 @@ QCPData::QCPData(double key, double value) :
   want to plot non-single-valued curves, rather use the QCPCurve plottable.
 
   Gaps in the graph line can be created by adding data points with NaN as value
-  (<tt>qQNaN()</tt> or <tt>std::numeric_limits<double>::quiet_NaN()</tt>) in between the two data points that shall be
+  (<tt>NAN</tt> or <tt>std::numeric_limits<double>::quiet_NaN()</tt>) in between the two data points that shall be
   separated.
 
   \section appearance Changing the appearance
@@ -16700,7 +16700,7 @@ QCPCurveData::QCPCurveData(double t, double key, double value) :
   To plot data, assign it with the \ref setData or \ref addData functions.
 
   Gaps in the curve can be created by adding data points with NaN as key and value
-  (<tt>qQNaN()</tt> or <tt>std::numeric_limits<double>::quiet_NaN()</tt>) in between the two data points that shall be
+  (<tt>NAN</tt> or <tt>std::numeric_limits<double>::quiet_NaN()</tt>) in between the two data points that shall be
   separated.
 
   \section appearance Changing the appearance

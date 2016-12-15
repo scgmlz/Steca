@@ -107,7 +107,7 @@ bool inRadius(deg alpha, deg beta, deg centerAlpha, deg centerBeta,
   return qAbs(a) < radius;
 }
 
-itf_t::itf_t() : itf_t(inten_t(qQNaN()), tth_t(qQNaN()), fwhm_t(qQNaN())) {
+itf_t::itf_t() : itf_t(inten_t(NAN), tth_t(NAN), fwhm_t(NAN)) {
 }
 
 itf_t::itf_t(inten_t inten_, tth_t tth_, fwhm_t fwhm_)
@@ -311,9 +311,9 @@ ReflectionInfos interpolate(ReflectionInfos::rc infos,
             avg += itfs.at(i);
 
           interpolatedInfos.append(ReflectionInfo(alpha, beta, infos.first().rgeGma(),
-              avg.inten / n, inten_t(qQNaN()),
-              avg.tth   / n, tth_t(qQNaN()),
-              avg.fwhm  / n, fwhm_t(qQNaN())));
+              avg.inten / n, inten_t(NAN),
+              avg.tth   / n, tth_t(NAN),
+              avg.fwhm  / n, fwhm_t(NAN)));
           continue;
         }
 
@@ -329,9 +329,9 @@ ReflectionInfos interpolate(ReflectionInfos::rc infos,
       itf_t itf = interpolateValues(idwRadius, infos, alpha, beta);
       interpolatedInfos.append(
         ReflectionInfo(alpha, beta, infos.first().rgeGma(),
-                       itf.inten, inten_t(qQNaN()),
-                       itf.tth,   tth_t(qQNaN()),
-                       itf.fwhm,  fwhm_t(qQNaN())));
+                       itf.inten, inten_t(NAN),
+                       itf.tth,   tth_t(NAN),
+                       itf.fwhm,  fwhm_t(NAN)));
     }
   }
 

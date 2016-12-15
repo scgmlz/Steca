@@ -197,6 +197,15 @@ typedef uint pint;
 #endif
 
 //------------------------------------------------------------------------------
+// reals
+
+#undef NAN
+#undef INF
+
+extern qreal const NAN; // silent nan
+extern qreal const INF;
+
+//------------------------------------------------------------------------------
 // positive reals
 
 #ifndef QT_NO_DEBUG

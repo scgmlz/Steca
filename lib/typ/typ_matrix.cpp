@@ -81,7 +81,7 @@ vector3d matrix3d::operator *(vector3d const& v) const {
   );
 }
 
-bool matrix3d::operator ==(matrix3d const& n) const {
+bool matrix3d::operator==(matrix3d const& n) const {
   return
     _00==n._00 && _01==n._01 && _02==n._02 &&
     _10==n._10 && _11==n._11 && _12==n._12 &&

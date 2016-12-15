@@ -153,13 +153,13 @@ qreal JsonObj::loadQreal(rcstr key) const THROWS {
 
   switch (val.type()) {
   case QJsonValue::Undefined:
-    return qQNaN();           // not present means not a number
+    return NAN;           // not present means not a number
   case QJsonValue::String: {  // infinities stored as strings
     auto s = val.toString();
     if (INF_P == s)
-      return +qInf();
+      return +INF;
     if (INF_M == s)
-      return -qInf();
+      return -INF;
     THROW(key + ": bad number format");
   }
   default:

@@ -62,7 +62,7 @@ TEST("XY::compare", ({
 });)
 
 void XY::invalidate() {
-  x = y = qQNaN();
+  x = y = NAN;
 }
 
 bool XY::isValid() const {

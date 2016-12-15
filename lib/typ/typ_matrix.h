@@ -54,7 +54,7 @@ struct matrix3d {
   matrix3d operator *(matrix3d const&) const;
   vector3d operator *(vector3d const&) const;
 
-  bool operator ==(matrix3d const&) const;
+  bool operator==(matrix3d const&) const;
 
   // factories
   static matrix3d rotationCWx(qreal angle);

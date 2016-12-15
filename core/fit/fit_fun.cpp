@@ -152,7 +152,7 @@ void PeakFunction::setRange(Range::rc range) {
   range_ = range;
 }
 
-PeakFunction::PeakFunction() : guessedPeak_(), guessedFWHM_(qQNaN()) {}
+PeakFunction::PeakFunction() : guessedPeak_(), guessedFWHM_(NAN) {}
 
 void PeakFunction::setGuessedPeak(peak_t::rc peak) {
   guessedPeak_ = peak;
@@ -275,7 +275,7 @@ void Raw::prepareY() {
     dx_      = range_.width() / x_count_;
   }
 
-  sum_y_ = qQNaN();
+  sum_y_ = NAN;
 }
 
 JsonObj Raw::saveJson() const {
@@ -291,12 +291,12 @@ Gaussian::Gaussian(qreal ampl, qreal xShift, qreal sigma) {
   auto& parXShift = parameters_[parXSHIFT];
   auto& parSigma  = parameters_[parSIGMA];
 
-  parAmpl.setValueRange(0, qInf());
+  parAmpl.setValueRange(0, INF);
   parAmpl.setValue(ampl, 0);
 
   parXShift.setValue(xShift, 0);
 
-  parSigma.setValueRange(0, qInf());
+  parSigma.setValueRange(0, INF);
   parSigma.setValue(sigma, 0);
 }
 
@@ -373,12 +373,12 @@ Lorentzian::Lorentzian(qreal ampl, qreal xShift, qreal gamma) {
   auto& parXShift = parameters_[parXSHIFT];
   auto& parGamma  = parameters_[parGAMMA];
 
-  parAmpl.setValueRange(0, qInf());
+  parAmpl.setValueRange(0, INF);
   parAmpl.setValue(ampl, 0);
 
   parXShift.setValue(xShift, 0);
 
-  parGamma.setValueRange(0, qInf());
+  parGamma.setValueRange(0, INF);
   parGamma.setValue(gamma, 0);
 }
 
@@ -456,12 +456,12 @@ PseudoVoigt1::PseudoVoigt1(qreal ampl, qreal xShift, qreal sigmaGamma,
   auto& parSigmaGamma = parameters_[parSIGMAGAMMA];
   auto& parEta        = parameters_[parETA];
 
-  parAmpl.setValueRange(0, qInf());
+  parAmpl.setValueRange(0, INF);
   parAmpl.setValue(ampl, 0);
 
   parXShift.setValue(xShift, 0);
 
-  parSigmaGamma.setValueRange(0, qInf());
+  parSigmaGamma.setValueRange(0, INF);
   parSigmaGamma.setValue(sigmaGamma, 0);
 
   parEta.setValueRange(0, 1);
@@ -556,15 +556,15 @@ PseudoVoigt2::PseudoVoigt2(qreal ampl, qreal mu, qreal hwhmG, qreal hwhmL,
   auto& parHwhmL = parameters_[parGAMMA];
   auto& parEta   = parameters_[parETA];
 
-  parAmpl.setValueRange(0, qInf());
+  parAmpl.setValueRange(0, INF);
   parAmpl.setValue(ampl, 0);
 
   parMu.setValue(mu, 0);
 
-  parHwhmG.setValueRange(0, qInf());
+  parHwhmG.setValueRange(0, INF);
   parHwhmG.setValue(hwhmG, 0);
 
-  parHwhmL.setValueRange(0, qInf());
+  parHwhmL.setValueRange(0, INF);
   parHwhmL.setValue(hwhmL, 0);
 
   parEta.setValueRange(0, 1);

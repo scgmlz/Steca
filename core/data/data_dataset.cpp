@@ -159,7 +159,7 @@ row_t Metadata::attributeNaNs() {
   static row_t row;
   if (row.isEmpty())
     for_i (uint(eAttr::NUM_ALL_ATTRIBUTES))
-      row.append(qQNaN());
+      row.append(NAN);
   return row;
 }
 
@@ -502,7 +502,7 @@ Curve Datasets::avgCurve(core::Session::rc session, bool averaged) const {
 }
 
 void Datasets::invalidateAvgMutables() const {
-  avgMonitorCount_ = avgDeltaMonitorCount_ = avgDeltaTime_ = qQNaN();
+  avgMonitorCount_ = avgDeltaMonitorCount_ = avgDeltaTime_ = NAN;
   rgeFixedInten_.invalidate();
   rgeGma_.invalidate();
   avgCurve_.clear();

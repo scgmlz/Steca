@@ -68,7 +68,7 @@ TEST("Range(min, max)", ({
 });)
 
 Range Range::infinite() {
-  return Range(-qInf(), +qInf());
+  return Range(-INF, +INF);
 }
 
 int Range::compare(rc that) const {
@@ -87,7 +87,7 @@ TEST("Range::infinite", ({
 });)
 
 void Range::invalidate() {
-  set(qQNaN());
+  set(NAN);
 }
 
 bool Range::isValid() const {
@@ -121,18 +121,18 @@ TEST("Range::empty", ({
   CHECK(!r.isEmpty());
   r.min = 2;
   CHECK(r.isEmpty());
-  r.max = qQNaN();
+  r.max = NAN;
   CHECK(r.isEmpty());
 });)
 
 qreal Range::width() const {
-  return isValid() ? max - min : qQNaN();
+  return isValid() ? max - min : NAN;
 }
 
 TEST("Range::width", ({
   CHECK(qIsNaN(Range().width()));
   CHECK_EQ(0, Range(0).width());
-  CHECK(qIsInf(Range(0,qInf()).width()));
+  CHECK(qIsInf(Range(0,INF).width()));
   CHECK(qIsInf(Range::infinite().width()));
 
   Range r(0);
@@ -141,19 +141,19 @@ TEST("Range::width", ({
   CHECK(!r.isEmpty());
   r.min = 2;
   CHECK(r.isEmpty());
-  r.max = qQNaN();
+  r.max = NAN;
   CHECK(r.isEmpty());
 });)
 
 qreal Range::center() const {
-  return isValid() ? (min + max) / 2 : qQNaN();
+  return isValid() ? (min + max) / 2 : NAN;
 }
 
 TEST("Range::center", ({
   CHECK(qIsNaN(Range().center()));
   CHECK_EQ(0, Range(0).center());
-  CHECK(qIsNaN(Range(0,qQNaN()).center()));
-  CHECK(qIsInf(Range(0,qInf()).center()));
+  CHECK(qIsNaN(Range(0,NAN).center()));
+  CHECK(qIsInf(Range(0,INF).center()));
   CHECK(qIsNaN(Range::infinite().center()));
 });)
 
@@ -187,7 +187,7 @@ TEST("Range::safe", ({
   RANGE_EQ(r, Range(3,4));
   r.safeSet(4,3);
   RANGE_EQ(r, Range(3,4));
-  r.safeSet(+qInf(), -qInf());
+  r.safeSet(+INF, -INF);
   RANGE_EQ(r, Range::infinite());
 });)
 
@@ -230,8 +230,8 @@ TEST("Range::contains", ({
 
   CHECK(!r.contains(Range()));
   CHECK(!r.contains(Range::infinite()));
-  CHECK(!r.contains(qQNaN()));
-  CHECK(!r.contains(qInf()));
+  CHECK(!r.contains(NAN));
+  CHECK(!r.contains(INF));
 
   CHECK(r.contains(r));
 
@@ -274,7 +274,9 @@ Range Range::intersect(Range::rc that) const {
   if (min_ <= max_)
     return Range(min_, max_);
 
-  return Range(min, min); // empty, rather than !isValid(), arbitrary min/max value
+  // disjoint
+  auto val = that.min < min ? min : max;
+  return Range(val, val); // empty, isValid()
 }
 
 TEST("Range::intersect", ({
@@ -295,29 +297,33 @@ TEST("Range::intersect", ({
 
   CHECK_EQ(Range(0,1), r.intersect(Range(0,10)));
   CHECK_EQ(Range(-1,0), r.intersect(Range(-2,0)));
+
+  auto disjoint = Range(-3,-2);
+  CHECK(r.intersect(disjoint).isEmpty());
+  CHECK_EQ(r.min, r.intersect(disjoint).min);
 });)
 
 qreal Range::bound(qreal value) const {
   if (isValid() && !qIsNaN(value))
     return qBound(min, value, max);
-  return qQNaN();
+  return NAN;
 }
 
 TEST("Range::bound", ({
   auto r = Range(-1, +1);
 
   CHECK(qIsNaN(Range().bound(0)));
-  CHECK(qIsNaN(Range().bound(qInf())));
-  CHECK(qIsNaN(Range().bound(qQNaN())));
+  CHECK(qIsNaN(Range().bound(INF)));
+  CHECK(qIsNaN(Range().bound(NAN)));
   CHECK_EQ(0, Range::infinite().bound(0));
-  CHECK(qIsInf(Range::infinite().bound(qInf())));
-  CHECK(qIsNaN(Range::infinite().bound(qQNaN())));
+  CHECK(qIsInf(Range::infinite().bound(INF)));
+  CHECK(qIsNaN(Range::infinite().bound(NAN)));
 
   CHECK_EQ(0,  r.bound(0));
   CHECK_EQ(-1, r.bound(-10));
-  CHECK_EQ(-1, r.bound(-qInf()));
+  CHECK_EQ(-1, r.bound(-INF));
   CHECK_EQ(+1, r.bound(+10));
-  CHECK_EQ(+1, r.bound(+qInf()));
+  CHECK_EQ(+1, r.bound(+INF));
 });)
 
 JsonObj Range::saveJson() const {

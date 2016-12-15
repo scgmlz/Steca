@@ -82,10 +82,10 @@ cmp_vec ReflectionInfo::dataCmps() {
 
 ReflectionInfo::ReflectionInfo()
 : ReflectionInfo(shp_Metadata(),
-                 qQNaN(), qQNaN(), Range(),
-                 inten_t(qQNaN()), inten_t(qQNaN()),
-                 tth_t(qQNaN()),   tth_t(qQNaN()),
-                 qQNaN(), qQNaN())
+                 NAN, NAN, Range(),
+                 inten_t(NAN), inten_t(NAN),
+                 tth_t(NAN),   tth_t(NAN),
+                 NAN, NAN)
 {
 }
 
@@ -104,9 +104,9 @@ ReflectionInfo::ReflectionInfo(shp_Metadata md, deg alpha, deg beta,
 ReflectionInfo::ReflectionInfo(shp_Metadata md, deg alpha, deg beta,
                                gma_rge rgeGma)
 : ReflectionInfo(md, alpha, beta, rgeGma,
-                 inten_t(qQNaN()), inten_t(qQNaN()),
-                 tth_t(qQNaN()),   tth_t(qQNaN()),
-                 fwhm_t(qQNaN()),  fwhm_t(qQNaN()))
+                 inten_t(NAN), inten_t(NAN),
+                 tth_t(NAN),   tth_t(NAN),
+                 fwhm_t(NAN),  fwhm_t(NAN))
 {
 }
 
@@ -119,9 +119,9 @@ ReflectionInfo::ReflectionInfo(deg alpha, deg beta, gma_rge rgeGma,
 
 ReflectionInfo::ReflectionInfo(deg alpha, deg beta)
 : ReflectionInfo(alpha, beta, Range(),
-                 inten_t(qQNaN()), inten_t(qQNaN()),
-                 tth_t(qQNaN()), tth_t(qQNaN()),
-                 fwhm_t(qQNaN()), fwhm_t(qQNaN()))
+                 inten_t(NAN), inten_t(NAN),
+                 tth_t(NAN), tth_t(NAN),
+                 fwhm_t(NAN), fwhm_t(NAN))
 {
 }
 
@@ -176,7 +176,7 @@ inten_rge::rc ReflectionInfos::rgeInten() const {
 }
 
 void ReflectionInfos::invalidate() {
-  avgInten_ = inten_t(qQNaN());
+  avgInten_ = inten_t(NAN);
   rgeInten_.invalidate();
 }
 

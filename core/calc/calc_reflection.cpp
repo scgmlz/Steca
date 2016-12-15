@@ -57,7 +57,7 @@ void Reflection::setRange(typ::Range::rc range) {
 
 void Reflection::invalidateGuesses() {
   peakFunction_->setGuessedPeak(peak_t());
-  peakFunction_->setGuessedFWHM(qQNaN());
+  peakFunction_->setGuessedFWHM(NAN);
 }
 
 void Reflection::fit(typ::Curve::rc curve) {
