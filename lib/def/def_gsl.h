@@ -21,8 +21,8 @@
 #ifndef DEF_GSL_H
 #define DEF_GSL_H
 
-#include "def_macros.h"
-#include "def_debug.h"
+#include "def/def_macros.h"
+#include "def/def_debug.h"
 
 //------------------------------------------------------------------------------
 // pointers that cannot be null

@@ -16,8 +16,10 @@
  ******************************************************************************/
 
 #include "typ_xy.h"
+
 #include "def/def_cmp_impl.h"
-#include "typ_json.h"
+#include "typ/typ_json.h"
+
 #include "test/tests.h"
 
 namespace typ {

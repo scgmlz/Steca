@@ -16,9 +16,9 @@
  ******************************************************************************/
 
 #include "typ_array2d.h"
+
 #include "def/def_cmp_impl.h"
-#include "typ_json.h"
-#include "test/tests.h"
+#include "typ/typ_json.h"
 
 namespace typ {
 //------------------------------------------------------------------------------

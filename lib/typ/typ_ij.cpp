@@ -15,9 +15,11 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#include "typ/typ_ij.h"
+#include "typ_ij.h"
+
 #include "def/def_cmp_impl.h"
 #include "typ/typ_json.h"
+
 #include "test/tests.h"
 
 namespace typ {

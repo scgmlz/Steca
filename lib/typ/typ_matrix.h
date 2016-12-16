@@ -1,5 +1,5 @@
 /*******************************************************************************
- * REVIEW: STeCa2 - StressTextureCalculator ver. 2
+ * STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -23,43 +23,53 @@
 namespace typ {
 //------------------------------------------------------------------------------
 
-struct vector3d;
+struct vec3r;
 
-struct vector3f {
+struct vec3f {
+  typedef vec3f const& rc;
+
   float _0,_1, _2;
 
-  vector3f(float,float,float);
-  vector3f(vector3d const&);
+  vec3f(float,float,float);
+  vec3f(vec3r const&);
+
+  bool operator==(vec3f::rc) const;
 };
 
-struct vector3d {
+struct vec3r {
+  typedef vec3r const& rc;
+
   qreal _0,_1, _2;
 
-  vector3d(qreal, qreal, qreal);
-  vector3d(vector3f const&);
+  vec3r(qreal, qreal, qreal);
+  vec3r(vec3f::rc);
+
+  bool operator==(vec3r::rc) const;
 };
 
-struct matrix3d {
+struct mat3r {
+  typedef mat3r const& rc;
+
   qreal _00, _01, _02,
         _10, _11, _12,
         _20, _21, _22;
 
-  matrix3d(qreal, qreal, qreal,
-           qreal, qreal, qreal,
-           qreal, qreal, qreal);
+  mat3r(qreal, qreal, qreal,
+        qreal, qreal, qreal,
+        qreal, qreal, qreal);
 
-  void     transpose();
-  matrix3d transposed() const;
+  bool  operator==(mat3r::rc) const;
 
-  matrix3d operator *(matrix3d const&) const;
-  vector3d operator *(vector3d const&) const;
+  void  transpose();
+  mat3r transposed() const;
 
-  bool operator==(matrix3d const&) const;
+  mat3r operator*(mat3r::rc) const;
+  vec3r operator*(vec3r::rc) const;
 
   // factories
-  static matrix3d rotationCWx(qreal angle);
-  static matrix3d rotationCWz(qreal angle);
-  static matrix3d rotationCCWz(qreal angle);
+  static mat3r rotationCWx(qreal angle);
+  static mat3r rotationCWz(qreal angle);
+  static mat3r rotationCCWz(qreal angle);
 };
 
 //------------------------------------------------------------------------------

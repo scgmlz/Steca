@@ -15,7 +15,7 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#include "typ/typ_angles.h"
+#include "typ_angles.h"
 #include <qmath.h>
 
 namespace typ {

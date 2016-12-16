@@ -309,13 +309,13 @@ void calculateAlphaBeta(Dataset::rc dataset, tth_t tth, gma_t gma,
   // corresponding to the location of a polefigure point.
   // Note that the rotations here do not correspond to C. Randau's dissertation.
   // The rotations given in [J. Appl. Cryst. (2012) 44, 641-644] are incorrect.
-  vector3d rotated =
-      matrix3d::rotationCWz(phi)
-    * matrix3d::rotationCWx(chi)
-    * matrix3d::rotationCWz(omg)
-    * matrix3d::rotationCWx(gma.toRad())
-    * matrix3d::rotationCCWz(tth.toRad() / 2)
-    * vector3d(0, 1, 0);
+  vec3r rotated =
+      mat3r::rotationCWz(phi)
+    * mat3r::rotationCWx(chi)
+    * mat3r::rotationCWz(omg)
+    * mat3r::rotationCWx(gma.toRad())
+    * mat3r::rotationCCWz(tth.toRad() / 2)
+    * vec3r(0, 1, 0);
 
   // Extract alpha (latitude) and beta (longitude).
   rad alphaRad = acos(rotated._2);

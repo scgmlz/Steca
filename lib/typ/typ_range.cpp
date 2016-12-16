@@ -1,5 +1,5 @@
 /*******************************************************************************
- * REVIEW: STeCa2 - StressTextureCalculator ver. 2
+ * STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -16,10 +16,12 @@
  ******************************************************************************/
 
 #include "typ_range.h"
+
 #include "def/def_cmp_impl.h"
 #include "def/defs.h"
 #include "typ/typ_json.h"
 #include <qmath.h>
+
 #include "test/tests.h"
 
 namespace typ {
@@ -370,13 +372,15 @@ bool Ranges::add(Range::rc range) {
 
 bool Ranges::rem(Range::rc remRange) {
   vec<Range> newRanges;
-  bool           changed = false;
+  bool changed = false;
 
   for (Range::rc r : ranges_) {
-    if (r.intersects(remRange)) {
+    if (!r.intersect(remRange).isEmpty()) {
       changed = true;
-      if (r.min < remRange.min) newRanges.append(Range(r.min, remRange.min));
-      if (r.max > remRange.max) newRanges.append(Range(remRange.max, r.max));
+      if (r.min < remRange.min)
+        newRanges.append(Range(r.min, remRange.min));
+      if (r.max > remRange.max)
+        newRanges.append(Range(remRange.max, r.max));
     } else {
       newRanges.append(r);
     }
@@ -414,6 +418,53 @@ void Ranges::loadJson(JsonArr::rc arr) THROWS {
     ranges_.append(range);
   }
 }
+
+#ifdef TESTS
+
+typedef struct {
+  qreal min, max;
+} min_max;
+
+static bool RANGES_EQ(Ranges::rc rs, vec<min_max> mm) {
+  if (rs.count() != mm.count())
+    return false;
+
+  for_i (rs.count()) {
+    auto r = rs.at(i);
+    auto m = mm.at(i);
+    if (r.min != m.min || r.max != m.max)
+      return false;
+  }
+
+  return true;
+}
+
+#endif
+
+TEST("Ranges", ({
+  Ranges rs;
+  REQUIRE(rs.isEmpty());
+  CHECK(RANGES_EQ(rs, {}));
+
+  Range r1(0,1), r2(1,2), r3(2,3), r4(3,4);
+
+  REQUIRE(rs.add(r4)); CHECK_FALSE(rs.add(r4));
+  CHECK(RANGES_EQ(rs, {{3,4}} ));
+
+  REQUIRE(rs.add(r1)); CHECK_FALSE(rs.add(r1));
+  CHECK(RANGES_EQ(rs, {{0,1}, {3,4}} ));
+
+  REQUIRE(rs.add(r2));
+  CHECK(RANGES_EQ(rs, {{0,2}, {3,4}} ));
+
+  REQUIRE(rs.add(r3));
+  CHECK(RANGES_EQ(rs, {{0,4}} ));
+
+  REQUIRE(rs.rem(r2)); CHECK_FALSE(rs.rem(r2));
+  CHECK(RANGES_EQ(rs, {{0,1}, {2,4}} ));
+
+  rs.clear(); CHECK_FALSE(rs.rem(r1));
+});)
 
 //------------------------------------------------------------------------------
 }

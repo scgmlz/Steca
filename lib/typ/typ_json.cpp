@@ -15,7 +15,8 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#include "typ/typ_json.h"
+#include "typ_json.h"
+
 #include "def/def_exc.h"
 #include "typ/typ_ij.h"
 #include "typ/typ_range.h"

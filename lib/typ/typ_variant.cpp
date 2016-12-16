@@ -16,9 +16,11 @@
  ******************************************************************************/
 
 #include "typ_variant.h"
+
 #include "def/def_cmp_impl.h"
 #include <QDate>
 #include <QMetaType>
+
 #include "test/tests.h"
 
 namespace typ {

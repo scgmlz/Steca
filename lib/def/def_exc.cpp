@@ -23,6 +23,10 @@
 #error needs exception handling
 #endif
 
+#ifdef TESTS
+#include "def/def_gsl.h"
+#endif
+
 Exception::Exception(rcstr msg, bool silent) noexcept
 : silent_(silent) {
   setMsg(msg);
@@ -35,6 +39,13 @@ Exception::Exception() noexcept
 
 TEST("Exception()",
   CHECK_THROWS_AS(THROW("Hello"), Exception);
+  CHECK_THROWS_AS(THROW_SILENT(), Exception);
+
+  CHECK_NOTHROW(Exception());
+  CHECK_THROWS_AS(Exception().raise(), Exception);
+
+  scoped<Exception*> p(Exception().clone());
+  CHECK_THROWS_AS(p->raise(), Exception);
 )
 
 Exception::Exception(rcstr msg) noexcept

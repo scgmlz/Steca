@@ -20,7 +20,7 @@
 #ifndef DEF_EXC_H
 #define DEF_EXC_H
 
-#include "def_macros.h"
+#include "def/def_macros.h"
 #include "typ/typ_str.h"
 #include <QException>
 //------------------------------------------------------------------------------
