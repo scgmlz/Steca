@@ -33,10 +33,10 @@ namespace typ {
 // Abstract function
 
 class Function {
-  CLS(Function)
+  CLASS(Function)
 public:
   class Factory : public typ::Factory<Function> {
-    CLS(Factory) SUPER(typ::Factory<Function>)
+    CLASS(Factory) SUPER(typ::Factory<Function>)
   public:
     owner_not_null<Function*> make(JsonObj::rc) THROWS;
   };
@@ -52,7 +52,7 @@ public:
 
 public:
   class Parameter final {
-    CLS(Parameter)
+    CLASS(Parameter)
   public:
     Parameter();
 
@@ -101,7 +101,7 @@ public:
 // abstract function with parameters
 
 class SimpleFunction : public Function {
-  CLS(SimpleFunction) SUPER(Function)
+  CLASS(SimpleFunction) SUPER(Function)
 public:
   SimpleFunction();
 
@@ -125,7 +125,7 @@ protected:
 // concrete function that is a sum of other functions
 
 class SumFunctions final : public Function {
-  CLS(SumFunctions) SUPER(Function)
+  CLASS(SumFunctions) SUPER(Function)
 public:
   SumFunctions();
  ~SumFunctions();

@@ -369,7 +369,7 @@ void Params::saveSettings() const {
 //------------------------------------------------------------------------------
 
 class TableModel : public models::TableModel {
-  CLS(TableModel) SUPER(models::TableModel)
+  CLASS(TableModel) SUPER(models::TableModel)
 
 public:
   TableModel(TheHub&, uint numCols_);

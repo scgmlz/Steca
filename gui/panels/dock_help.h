@@ -26,7 +26,7 @@ namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 class DockHelp : public DockWidget, protected RefHub {
-  CLS(DockHelp) SUPER(DockWidget)
+  CLASS(DockHelp) SUPER(DockWidget)
 public:
   DockHelp(TheHub&);
 

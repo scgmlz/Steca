@@ -24,7 +24,7 @@ namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 class TabsDiffractogram : public TabsPanel {
-  CLS(TabsDiffractogram) SUPER(TabsPanel)
+  CLASS(TabsDiffractogram) SUPER(TabsPanel)
 public:
   TabsDiffractogram(TheHub&);
 };

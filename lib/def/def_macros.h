@@ -41,7 +41,7 @@
 #define COMMA ,
 
 // alias for the current class; const reference to it
-#define CLS(cls) \
+#define CLASS(cls) \
   private: using Cls = cls; public: typedef Cls const& rc;
 
 // alias for the super class

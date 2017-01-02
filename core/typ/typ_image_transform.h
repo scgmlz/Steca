@@ -25,7 +25,7 @@ namespace typ {
 // Image transform type - rotation and mirroring (bit-map)
 
 struct ImageTransform {
-  CLS(ImageTransform)
+  CLASS(ImageTransform)
 
   enum eTransform {
     ROTATE_0        = 0,  // no transform

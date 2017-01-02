@@ -27,7 +27,7 @@ namespace gui { namespace panel {
 class ImageWidget;
 
 class TabsImages : public TabsPanel {
-  CLS(TabsImages) SUPER(TabsPanel)
+  CLASS(TabsImages) SUPER(TabsPanel)
 public:
   TabsImages(TheHub&);
 

@@ -25,7 +25,7 @@ namespace gui { namespace output {
 //------------------------------------------------------------------------------
 
 class TabPlot : public QCustomPlot {
-  CLS(TabPlot) SUPER(QCustomPlot)
+  CLASS(TabPlot) SUPER(QCustomPlot)
 public:
   TabPlot();
   void set(calc::ReflectionInfos);
@@ -40,7 +40,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class TabDiagramsSave : public TabSave {
-  CLS(TabDiagramsSave) SUPER(TabSave)
+  CLASS(TabDiagramsSave) SUPER(TabSave)
 public:
   TabDiagramsSave(TheHub&, Params&);
 
@@ -55,7 +55,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class DiagramsFrame : public Frame {
-  CLS(DiagramsFrame) SUPER(Frame)
+  CLASS(DiagramsFrame) SUPER(Frame)
 public:
   DiagramsFrame(TheHub&, rcstr title, QWidget*);
 

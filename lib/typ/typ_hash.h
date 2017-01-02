@@ -27,7 +27,7 @@ namespace typ {
 
 template <typename Key, typename T>
 class hash : protected QHash<Key,T> {
-  CLS(hash) SUPER(QHash<Key COMMA T>)
+  CLASS(hash) SUPER(QHash<Key COMMA T>)
 public:
   using super::clear;
   using super::insert;
@@ -40,7 +40,7 @@ public:
 
 template <typename Key, typename Tp>
 class owning_hash : protected hash<Key,Tp> {
-  CLS(owning_hash) SUPER(hash<Key COMMA Tp>)
+  CLASS(owning_hash) SUPER(hash<Key COMMA Tp>)
 public:
  ~owning_hash() {
     clear();

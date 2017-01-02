@@ -1,5 +1,5 @@
 /*******************************************************************************
- * REVIEW: STeCa2 - StressTextureCalculator ver. 2
+ * STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -26,7 +26,7 @@ namespace typ {
 //------------------------------------------------------------------------------
 
 struct size2d {
-  CLS(size2d)
+  CLASS(size2d)
 
   uint w, h;
 
@@ -52,16 +52,11 @@ struct size2d {
   size2d transposed() const {
     return size2d(h, w);
   }
-
-  size2d scaled(qreal f) const {
-    f = qMax(f, .0);
-    return size2d(to_u(qRound(w*f)), to_u(qRound(h*f)));
-  }
 };
 
 // 2D (indexed by uint i/j) array
 template<typename T> class Array2D {
-  CLS(Array2D)
+  CLASS(Array2D)
 private:
   size2d size_;
 
@@ -91,37 +86,18 @@ public:
   Array2D(): size_(0,0), ts_(nullptr) {
   }
 
-  Array2D(rc that): Array2D() {
-    *this = that;
-  }
-
-  rc operator=(rc that) {
-    alloc(that.size_);
-
-    for (uint i=0; i<size_.w; ++i)
-      for (uint j=0; j<size_.h; ++j)
-        ts_[i][j] = that.ts_[i][j];
-
-    return *this;
-  }
-
   virtual ~Array2D() {
     free();
   }
 
   // is empty?
   bool isEmpty() const {
-    return 0 == count();
+    return size_.isEmpty();
   }
 
   // 2D image size
   size2d::rc size() const {
     return size_;
-  }
-
-  // number of elements
-  uint count() const {
-    return size_.count();
   }
 
   // make empty

@@ -26,7 +26,7 @@ namespace gui { namespace panel {
 class ReflectionView;
 
 class TabsSetup : public TabsPanel {
-  CLS(TabsSetup) SUPER(TabsPanel)
+  CLASS(TabsSetup) SUPER(TabsPanel)
 public:
   TabsSetup(TheHub&);
 

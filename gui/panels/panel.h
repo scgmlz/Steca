@@ -33,7 +33,7 @@ namespace gui { namespace panel {
 
 // Just a widget
 class PanelWidget : public QWidget, protected RefHub {
-  CLS(PanelWidget) SUPER(QWidget)
+  CLASS(PanelWidget) SUPER(QWidget)
 public:
   PanelWidget(TheHub&, Qt::Orientation);
 
@@ -45,7 +45,7 @@ protected:
 
 // Just a groupbox
 class BasicPanel : public QGroupBox, protected RefHub {
-  CLS(BasicPanel) SUPER(QGroupBox)
+  CLASS(BasicPanel) SUPER(QGroupBox)
 public:
   BasicPanel(TheHub&);
   BasicPanel(TheHub&, rcstr title);
@@ -57,7 +57,7 @@ public:
 
 // A panel with a box layout
 class BoxPanel : public BasicPanel {
-  CLS(BoxPanel) SUPER(BasicPanel)
+  CLASS(BoxPanel) SUPER(BasicPanel)
 public:
   BoxPanel(TheHub&, Qt::Orientation);
   BoxPanel(TheHub&, rcstr title, Qt::Orientation);
@@ -70,7 +70,7 @@ protected:
 
 // A panel with grid layout
 class GridPanel : public BasicPanel {
-  CLS(GridPanel) SUPER(BasicPanel)
+  CLASS(GridPanel) SUPER(BasicPanel)
 public:
   GridPanel(TheHub&);
   GridPanel(TheHub&, rcstr title);
@@ -83,7 +83,7 @@ protected:
 
 #ifdef DEVELOP_REBECCA
 class FitErrorGridPannel : public GridPanel {
-  CLS(FitErrorGridPannel) SUPER(GridPanel)
+  CLASS(FitErrorGridPannel) SUPER(GridPanel)
 public:
   using super::super;
 
@@ -96,7 +96,7 @@ public:
 
 // A tabbed panel
 class Tab : public QWidget {
-  CLS(Tab) SUPER(QWidget)
+  CLASS(Tab) SUPER(QWidget)
 public:
   Tab(Qt::Orientation);
 
@@ -107,7 +107,7 @@ protected:
 };
 
 class TabsPanel : public QTabWidget, protected RefHub {
-  CLS(TabsPanel) SUPER(QTabWidget)
+  CLASS(TabsPanel) SUPER(QTabWidget)
 public:
   TabsPanel(TheHub&);
 

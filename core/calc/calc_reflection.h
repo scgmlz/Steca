@@ -27,7 +27,7 @@ namespace calc {
 //------------------------------------------------------------------------------
 
 class Reflection final {
-  CLS(Reflection)
+  CLASS(Reflection)
 public:
 
   static str_lst::rc typeStrLst();

@@ -24,7 +24,7 @@ namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 class DockMetadata : public DockWidget, protected RefHub {
-  CLS(DockMetadata) SUPER(DockWidget)
+  CLASS(DockMetadata) SUPER(DockWidget)
 public:
   DockMetadata(TheHub&);
 

@@ -28,7 +28,7 @@ namespace typ {
 class JsonObj;
 
 struct XY {
-  CLS(XY)
+  CLASS(XY)
 
   qreal x, y;
 

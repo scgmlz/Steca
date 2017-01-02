@@ -251,8 +251,8 @@ void Session::setGeometry(preal detectorDistance, preal pixSize, IJ::rc midPixOf
 }
 
 IJ Session::midPix() const {
-  auto halfSize = imageSize().scaled(.5);
-  IJ mid(to_i(halfSize.w), to_i(halfSize.h));
+  auto sz = imageSize();
+  IJ mid(sz.w/2, sz.h/2);
 
   IJ::rc off = geometry_.midPixOffset;
   mid.i += off.i;

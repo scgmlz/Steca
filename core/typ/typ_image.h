@@ -27,7 +27,7 @@ namespace typ {
 typedef Array2D<inten_t> inten_arr;
 
 class Image final {
-  CLS(Image)
+  CLASS(Image)
 public:
   // Image as vector of intensities, filled with 0 or given intensities.
   Image(size2d::rc = size2d(0, 0));
@@ -70,7 +70,7 @@ public:
   }
 
   // Sum all intensities with new ones.
-  void addIntens(Cls::rc) THROWS;
+  void addIntens(rc) THROWS;
 
   inten_rge::rc rgeInten() const {
     return rgeInten_;

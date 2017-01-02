@@ -28,7 +28,7 @@ namespace calc {
 //------------------------------------------------------------------------------
 
 class ReflectionInfo final {
-  CLS(ReflectionInfo)
+  CLASS(ReflectionInfo)
 public:
   enum class eField {
     ALPHA, BETA, GAMMA1, GAMMA2,
@@ -87,7 +87,7 @@ private:
 //------------------------------------------------------------------------------
 
 class ReflectionInfos : public typ::vec<ReflectionInfo> {
-  CLS(ReflectionInfos) SUPER(typ::vec<ReflectionInfo>)
+  CLASS(ReflectionInfos) SUPER(typ::vec<ReflectionInfo>)
 public:
   ReflectionInfos();
 

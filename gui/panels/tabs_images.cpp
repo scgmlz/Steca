@@ -28,7 +28,7 @@ namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 class ImageWidget : public QWidget, protected RefHub {
-  CLS(ImageWidget) SUPER(QWidget)
+  CLASS(ImageWidget) SUPER(QWidget)
 public:
   ImageWidget(TheHub&);
 

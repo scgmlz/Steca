@@ -29,7 +29,7 @@ namespace typ {
 
 template <typename T>
 class vec : protected QVector<T> {
-  CLS(vec) WITH_SUPER(QVector<T>)
+  CLASS(vec) WITH_SUPER(QVector<T>)
 public:
 
   vec()                                   : super()  {}

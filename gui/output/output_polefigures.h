@@ -24,7 +24,7 @@ namespace gui { namespace output {
 //------------------------------------------------------------------------------
 
 class TabGraph : public Tab {
-  CLS(TabGraph) SUPER(Tab)
+  CLASS(TabGraph) SUPER(Tab)
 public:
   using deg = typ::deg;
   using rad = typ::rad;
@@ -60,7 +60,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class TabPoleFiguresSave : public TabSave {
-  CLS(TabPoleFiguresSave) SUPER(TabSave)
+  CLASS(TabPoleFiguresSave) SUPER(TabSave)
 public:
   TabPoleFiguresSave(TheHub& hub, Params& params);
 
@@ -79,7 +79,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class PoleFiguresFrame : public Frame {
-  CLS(PoleFiguresFrame) SUPER(Frame)
+  CLASS(PoleFiguresFrame) SUPER(Frame)
 public:
   PoleFiguresFrame(TheHub&, rcstr title, QWidget*);
 

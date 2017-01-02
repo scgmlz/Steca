@@ -28,7 +28,7 @@ namespace models {
 //------------------------------------------------------------------------------
 
 class FilesModel : public TableModel {
-  CLS(FilesModel) SUPER(TableModel)
+  CLASS(FilesModel) SUPER(TableModel)
 public:
   FilesModel(gui::TheHub&);
 
@@ -46,7 +46,7 @@ public:
 //------------------------------------------------------------------------------
 
 class DatasetsModel : public TableModel {
-  CLS(DatasetsModel) SUPER(TableModel)
+  CLASS(DatasetsModel) SUPER(TableModel)
 public:
   DatasetsModel(gui::TheHub&);
 
@@ -71,7 +71,7 @@ private:
 //------------------------------------------------------------------------------
 
 class MetadataModel : public TableModel {
-  CLS(MetadataModel) SUPER(TableModel)
+  CLASS(MetadataModel) SUPER(TableModel)
 public:
   MetadataModel(gui::TheHub&);
 
@@ -97,7 +97,7 @@ private:
 //------------------------------------------------------------------------------
 
 class ReflectionsModel : public TableModel {
-  CLS(ReflectionsModel) SUPER(TableModel)
+  CLASS(ReflectionsModel) SUPER(TableModel)
 public:
   ReflectionsModel(gui::TheHub&);
 

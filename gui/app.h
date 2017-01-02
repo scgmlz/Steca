@@ -30,7 +30,7 @@ public:
 };
 
 class App : public QApplication {
-  CLS(App) SUPER(QApplication)
+  CLASS(App) SUPER(QApplication)
 public:
   App(int& argc, char* argv[]);
 

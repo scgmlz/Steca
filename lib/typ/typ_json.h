@@ -41,7 +41,7 @@ struct IJ;
 struct XY;
 
 class JsonObj : protected QJsonObject {
-  CLS(JsonObj) WITH_SUPER(QJsonObject)
+  CLASS(JsonObj) WITH_SUPER(QJsonObject)
 public:
   JsonObj();
   JsonObj(QJsonObject const&);
@@ -96,7 +96,7 @@ public:
 //------------------------------------------------------------------------------
 
 class JsonArr: protected QJsonArray {
-  CLS(JsonArr) WITH_SUPER(QJsonArray)
+  CLASS(JsonArr) WITH_SUPER(QJsonArray)
 public:
   JsonArr();
   JsonArr(QJsonArray const&);

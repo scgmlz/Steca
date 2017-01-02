@@ -37,7 +37,7 @@ void initFactory();
 // a polynom(ial)
 
 class Polynom : public typ::SimpleFunction {
-  CLS(Polynom) SUPER(typ::SimpleFunction)
+  CLASS(Polynom) SUPER(typ::SimpleFunction)
 public:
   Polynom(uint degree = 0);
 
@@ -66,7 +66,7 @@ enum class ePeakType {
 };
 
 class PeakFunction : public typ::SimpleFunction {
-  CLS(PeakFunction) SUPER(typ::SimpleFunction)
+  CLASS(PeakFunction) SUPER(typ::SimpleFunction)
 public:
 
   static PeakFunction* factory(ePeakType);
@@ -113,7 +113,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class Raw : public PeakFunction {
-  CLS(Raw) SUPER(PeakFunction)
+  CLASS(Raw) SUPER(PeakFunction)
 public:
   Raw();
 
@@ -146,7 +146,7 @@ public:
 //------------------------------------------------------------------------------
 
 class Gaussian : public PeakFunction {
-  CLS(Gaussian) SUPER(PeakFunction)
+  CLASS(Gaussian) SUPER(PeakFunction)
 public:
   enum { parAMPL, parXSHIFT, parSIGMA };
 
@@ -173,7 +173,7 @@ public:
 //------------------------------------------------------------------------------
 
 class Lorentzian : public PeakFunction {
-  CLS(Lorentzian) SUPER(PeakFunction)
+  CLASS(Lorentzian) SUPER(PeakFunction)
 public:
   enum { parAMPL, parXSHIFT, parGAMMA };
 
@@ -200,7 +200,7 @@ public:
 //------------------------------------------------------------------------------
 
 class PseudoVoigt1 : public PeakFunction {
-  CLS(PseudoVoigt1) SUPER(PeakFunction)
+  CLASS(PseudoVoigt1) SUPER(PeakFunction)
 public:
   enum { parAMPL, parXSHIFT, parSIGMAGAMMA, parETA };
 
@@ -228,7 +228,7 @@ public:
 //------------------------------------------------------------------------------
 
 class PseudoVoigt2 : public PeakFunction {
-  CLS(PseudoVoigt2) SUPER(PeakFunction)
+  CLASS(PseudoVoigt2) SUPER(PeakFunction)
 public:
   enum { parAMPL, parXSHIFT, parSIGMA, parGAMMA, parETA };
 

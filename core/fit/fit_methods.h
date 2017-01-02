@@ -46,7 +46,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class LinearLeastSquare : public Method {
-  CLS(LinearLeastSquare) SUPER(Method)
+  CLASS(LinearLeastSquare) SUPER(Method)
 public:
   LinearLeastSquare();
 
@@ -58,7 +58,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class LevenbergMarquardt : public Method {
-  CLS(LevenbergMarquardt) SUPER(Method)
+  CLASS(LevenbergMarquardt) SUPER(Method)
 public:
   LevenbergMarquardt();
 

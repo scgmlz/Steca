@@ -25,7 +25,7 @@ namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 class ReflectionView : public views::ListView {
-  CLS(ReflectionView) SUPER(views::ListView)
+  CLASS(ReflectionView) SUPER(views::ListView)
 public:
   ReflectionView(TheHub&);
 

@@ -31,13 +31,13 @@ namespace gui { namespace output {
 /* Note that some data members are public, to simplify the code. Be careful. */
 
 class Panel : public panel::GridPanel {
-  CLS(Panel) SUPER(panel::GridPanel)
+  CLASS(Panel) SUPER(panel::GridPanel)
 public:
   using super::super;
 };
 
 class PanelReflection : public Panel {
-  CLS(PanelReflection) SUPER(Panel)
+  CLASS(PanelReflection) SUPER(Panel)
 public:
   PanelReflection(TheHub&);
 
@@ -45,7 +45,7 @@ public:
 };
 
 class PanelGammaSlices : public Panel {
-  CLS(PanelGammaSlices) SUPER(Panel)
+  CLASS(PanelGammaSlices) SUPER(Panel)
 public:
   PanelGammaSlices(TheHub&);
 
@@ -59,7 +59,7 @@ private:
 };
 
 class PanelGammaRange : public Panel {
-  CLS(PanelGammaRange) SUPER(Panel)
+  CLASS(PanelGammaRange) SUPER(Panel)
 public:
   PanelGammaRange(TheHub&);
 
@@ -73,7 +73,7 @@ private:
 };
 
 class PanelPoints : public Panel {
-  CLS(PanelPoints) SUPER(Panel)
+  CLASS(PanelPoints) SUPER(Panel)
 public:
   PanelPoints(TheHub&);
 
@@ -81,7 +81,7 @@ public:
 };
 
 class PanelInterpolation : public Panel {
-  CLS(PanelInterpolation) SUPER(Panel)
+  CLASS(PanelInterpolation) SUPER(Panel)
 public:
   PanelInterpolation(TheHub&);
 
@@ -90,7 +90,7 @@ public:
 };
 
 class PanelDiagram : public Panel {
-  CLS(PanelDiagram) SUPER(Panel)
+  CLASS(PanelDiagram) SUPER(Panel)
 public:
   PanelDiagram(TheHub&);
 
@@ -98,7 +98,7 @@ public:
 };
 
 class PanelFitError : public Panel {
-  CLS(PanelFitError) SUPER(Panel)
+  CLASS(PanelFitError) SUPER(Panel)
 public:
   PanelFitError(TheHub&);
 
@@ -116,7 +116,7 @@ times:
 //------------------------------------------------------------------------------
 
 class Params : public QWidget, protected RefHub {
-  CLS(Params) SUPER(QWidget)
+  CLASS(Params) SUPER(QWidget)
 public:
   enum ePanels {
     REFLECTION = 0x01, GAMMA = 0x02, POINTS = 0x04, INTERPOLATION = 0x08,
@@ -145,7 +145,7 @@ private:
 //------------------------------------------------------------------------------
 
 class Table : public TreeView, protected RefHub {
-  CLS(Table) SUPER(TreeView)
+  CLASS(Table) SUPER(TreeView)
 public:
   Table(TheHub&, uint numDataColumns);
 
@@ -168,7 +168,7 @@ private:
 //------------------------------------------------------------------------------
 
 class Tabs : public panel::TabsPanel {
-  CLS(Tabs) SUPER(panel::TabsPanel)
+  CLASS(Tabs) SUPER(panel::TabsPanel)
 public:
   Tabs(TheHub&);
 };
@@ -176,7 +176,7 @@ public:
 //------------------------------------------------------------------------------
 
 class Tab : public QWidget, protected RefHub {
-  CLS(Tab) SUPER(QWidget)
+  CLASS(Tab) SUPER(QWidget)
 public:
   Tab(TheHub&, Params&);
 
@@ -189,7 +189,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class TabTable : public Tab {
-  CLS(TabTable) SUPER(Tab)
+  CLASS(TabTable) SUPER(Tab)
 public:
   TabTable(TheHub&, Params&,
            str_lst::rc headers, str_lst::rc outHeaders,
@@ -205,7 +205,7 @@ private:
 
 private:
   class ShowColsWidget : public QWidget {
-    CLS(ShowColsWidget) SUPER(QWidget)
+    CLASS(ShowColsWidget) SUPER(QWidget)
   public:
     ShowColsWidget(Table&, showcol_vec&);
 
@@ -227,7 +227,7 @@ private:
 //------------------------------------------------------------------------------
 
 class TabSave : public Tab {
-  CLS(TabSave) SUPER(Tab)
+  CLASS(TabSave) SUPER(Tab)
 public:
   TabSave(TheHub&, Params&, bool withTypes);
 
@@ -246,7 +246,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class Frame : public QFrame, protected RefHub {
-  CLS(Frame) SUPER(QFrame)
+  CLASS(Frame) SUPER(QFrame)
 public:
   Frame(TheHub&, rcstr title, Params*, QWidget*);
 

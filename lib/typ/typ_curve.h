@@ -29,7 +29,7 @@ namespace typ {
 // A set of x-y datapoints.
 
 class Curve {
-  CLS(Curve)
+  CLASS(Curve)
 public:
   Curve();
 

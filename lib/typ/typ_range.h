@@ -30,7 +30,7 @@ class JsonObj;
 class JsonArr;
 
 struct Range {
-  CLS(Range)
+  CLASS(Range)
 
   Range();                          // invalid (NaN)
   Range(qreal val);                 // singular, min == max
@@ -74,7 +74,7 @@ struct Range {
 // A set of *sorted* *non-overlapping* ranges
 
 class Ranges {
-  CLS(Ranges)
+  CLASS(Ranges)
 public:
   Ranges();
 

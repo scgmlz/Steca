@@ -24,7 +24,7 @@ namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 class DockFiles : public DockWidget, private RefHub {
-  CLS(DockFiles) SUPER(DockWidget)
+  CLASS(DockFiles) SUPER(DockWidget)
 public:
   DockFiles(TheHub&);
 

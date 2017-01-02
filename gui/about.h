@@ -27,7 +27,7 @@ namespace gui {
 //------------------------------------------------------------------------------
 
 class AboutBox : public QDialog {
-  CLS(AboutBox) SUPER(QDialog)
+  CLASS(AboutBox) SUPER(QDialog)
 public:
   AboutBox(QWidget*);
 

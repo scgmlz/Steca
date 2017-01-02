@@ -28,7 +28,7 @@ namespace gui { namespace views {
 // A (tree-)list view with a reference to the hub. Single selection.
 
 class ListView : public TreeListView, protected RefHub {
-  CLS(ListView) SUPER(TreeListView)
+  CLASS(ListView) SUPER(TreeListView)
 public:
   ListView(TheHub&);
 
@@ -50,7 +50,7 @@ protected:
 // Multiple selection.
 
 class MultiListView : public ListView {
-  CLS(MultiListView) SUPER(ListView)
+  CLASS(MultiListView) SUPER(ListView)
 public:
   MultiListView(TheHub&);
 

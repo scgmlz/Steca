@@ -30,7 +30,7 @@ namespace typ {
 // detector geometry
 
 struct Geometry {
-  CLS(Geometry)
+  CLASS(Geometry)
 
   static preal const MIN_DETECTOR_DISTANCE;
   static preal const MIN_DETECTOR_PIXEL_SIZE;
@@ -51,7 +51,7 @@ struct Geometry {
 // image cut (margins)
 
 struct ImageCut {
-  CLS(ImageCut)
+  CLASS(ImageCut)
 
   uint left, top, right, bottom;
 
@@ -66,7 +66,7 @@ struct ImageCut {
 //------------------------------------------------------------------------------
 
 struct Angles {
-  CLS(Angles)
+  CLASS(Angles)
 
   tth_t tth;
   gma_t gma;
@@ -76,10 +76,10 @@ struct Angles {
 };
 
 class AngleMap {
-  CLS(AngleMap)
+  CLASS(AngleMap)
 public:
   struct Key {
-    CLS(Key)
+    CLASS(Key)
 
     Key(Geometry::rc, size2d::rc, ImageCut::rc, IJ::rc midPix, tth_t midTth);
 

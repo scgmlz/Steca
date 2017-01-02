@@ -32,7 +32,7 @@ namespace core {
 //------------------------------------------------------------------------------
 
 class Session final {
-  CLS(Session)
+  CLASS(Session)
 public:
   Session();
 

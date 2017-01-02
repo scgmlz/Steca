@@ -24,7 +24,7 @@ namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 class MetadataView : public views::ListView {
-  CLS(MetadataView) SUPER(views::ListView)
+  CLASS(MetadataView) SUPER(views::ListView)
 public:
   using Model = models::MetadataModel;
   MetadataView(TheHub&);

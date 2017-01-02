@@ -439,12 +439,25 @@ static bool RANGES_EQ(Ranges::rc rs, vec<min_max> mm) {
   return true;
 }
 
+static bool RANGES_EQ(Ranges::rc rs1, Ranges::rc rs2) {
+  if (rs1.count() != rs2.count())
+    return false;
+
+  for_i (rs1.count()) {
+    if (rs1.at(i) != rs2.at(i))
+      return false;
+  }
+
+  return true;
+}
+
 #endif
 
 TEST("Ranges", ({
   Ranges rs;
   REQUIRE(rs.isEmpty());
-  CHECK(RANGES_EQ(rs, {}));
+  CHECK(RANGES_EQ(rs, rs));
+  CHECK(RANGES_EQ(rs, Ranges()));
 
   Range r1(0,1), r2(1,2), r3(2,3), r4(3,4);
 
@@ -464,6 +477,17 @@ TEST("Ranges", ({
   CHECK(RANGES_EQ(rs, {{0,1}, {2,4}} ));
 
   rs.clear(); CHECK_FALSE(rs.rem(r1));
+});)
+
+TEST("Ranges::json", ({
+  Ranges rs, rs1;
+  rs.add(Range());
+  rs.add(Range(9));
+  rs.add(Range(-3, -2));
+  rs.add(Range::infinite());
+
+  rs1.loadJson(rs.saveJson());
+  CHECK(RANGES_EQ(rs, rs1));
 });)
 
 //------------------------------------------------------------------------------

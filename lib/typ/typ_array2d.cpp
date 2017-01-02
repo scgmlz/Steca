@@ -1,5 +1,5 @@
 /*******************************************************************************
- * REVIEW: STeCa2 - StressTextureCalculator ver. 2
+ * STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -20,6 +20,8 @@
 #include "def/def_cmp_impl.h"
 #include "typ/typ_json.h"
 
+#include "test/tests.h"
+
 namespace typ {
 //------------------------------------------------------------------------------
 
@@ -30,6 +32,19 @@ int size2d::compare(rc that) const {
 }
 
 EQ_NE_OPERATOR(size2d)
+
+//------------------------------------------------------------------------------
+
+TEST("size2d", ({
+  size2d sz;
+  CHECK((0==sz.w && 0==sz.h && sz.isEmpty() && 0==sz.count()));
+
+  size2d sz1(1,2);
+  CHECK((1==sz1.w && 2==sz1.h && !sz1.isEmpty() && 2==sz1.count()));
+
+  sz = sz1.transposed();
+  CHECK((sz.w==sz1.h && sz.h==sz1.w));
+});)
 
 //------------------------------------------------------------------------------
 }

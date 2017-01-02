@@ -24,7 +24,7 @@ namespace gui { namespace panel {
 //------------------------------------------------------------------------------
 
 class DatasetView : public views::ListView {
-  CLS(DatasetView) SUPER(views::ListView)
+  CLASS(DatasetView) SUPER(views::ListView)
 public:
   DatasetView(TheHub&);
 

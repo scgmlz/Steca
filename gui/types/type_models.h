@@ -33,7 +33,7 @@ extern QModelIndex const ANY_INDEX;
 // The base class of all table-like models
 
 class TableModel : public QAbstractTableModel, protected gui::RefHub {
-  CLS(TableModel) SUPER(QAbstractTableModel)
+  CLASS(TableModel) SUPER(QAbstractTableModel)
 public:
   using Index   = QModelIndex;
   using rcIndex = Index const&;

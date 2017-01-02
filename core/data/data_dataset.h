@@ -58,7 +58,7 @@ namespace data {
 //------------------------------------------------------------------------------
 
 struct Metadata {
-  CLS(Metadata)
+  CLASS(Metadata)
 
   Metadata();
 
@@ -89,7 +89,7 @@ struct Metadata {
 // for calculation always accessed through its owning Dataset
 
 class OneDataset final {
-  CLS(OneDataset) friend class OneDatasets; friend class Dataset;
+  CLASS(OneDataset) friend class OneDatasets; friend class Dataset;
 public:
   OneDataset(Metadata::rc, typ::inten_arr::rc);
   OneDataset(Metadata::rc, typ::size2d::rc, inten_vec const&);
@@ -127,7 +127,7 @@ private:
 //------------------------------------------------------------------------------
 
 class OneDatasets : public typ::vec<shp_OneDataset> {
-  CLS(OneDatasets) SUPER(typ::vec<shp_OneDataset>)
+  CLASS(OneDatasets) SUPER(typ::vec<shp_OneDataset>)
 public:
   typ::size2d imageSize()   const;
   typ::Image  foldedImage() const;
@@ -137,7 +137,7 @@ public:
 
 // 1 or more OneDataset(s)
 class Dataset final : public OneDatasets {
-  CLS(Dataset) SUPER(OneDatasets)
+  CLASS(Dataset) SUPER(OneDatasets)
   friend class Datasets;
 public:
   Dataset();
@@ -173,7 +173,7 @@ private:
 //------------------------------------------------------------------------------
 
 class Datasets final : public typ::vec<shp_Dataset> {
-  CLS(Datasets) SUPER(typ::vec<shp_Dataset>)
+  CLASS(Datasets) SUPER(typ::vec<shp_Dataset>)
 public:
   Datasets();
 
