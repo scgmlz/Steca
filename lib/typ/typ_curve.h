@@ -1,5 +1,5 @@
 /*******************************************************************************
- * REVIEW: STeCa2 - StressTextureCalculator ver. 2
+ * STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -56,9 +56,6 @@ public:
 
   void  subtract(Function::rc);
 
-  Curve mul(qreal)    const;
-
-  Curve smooth3()    const;  // moving average, 3 points
   uint  maxYindex()  const;  // the index of the maximum y value
 
   qreal sumY()       const;

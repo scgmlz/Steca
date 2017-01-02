@@ -1,5 +1,5 @@
 /*******************************************************************************
- * REVIEW: STeCa2 - StressTextureCalculator ver. 2
+ * STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -97,24 +97,6 @@ Curve Curve::intersect(Ranges::rc ranges) const {
 void Curve::subtract(Function::rc f) {
   for_i (count())
     ys_[i] -= f.y(xs_.at(i));
-}
-
-Curve Curve::mul(qreal factor) const {
-  Curve res;
-
-  for_i (count())
-    res.append(xs_.at(i), ys_.at(i) * factor);
-
-  return res;
-}
-
-Curve Curve::smooth3() const {
-  Curve res;
-
-  for_i (count() - 2)
-    res.append(xs_.at(i+1), (ys_.at(i) + ys_.at(i+1) + ys_.at(i+2)) / 3.);
-
-  return res;
 }
 
 uint Curve::maxYindex() const {
