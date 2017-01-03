@@ -1,5 +1,5 @@
 /*******************************************************************************
- * REVIEW: STeCa2 - StressTextureCalculator ver. 2
+ * STeCa2 - StressTextureCalculator ver. 2
  *
  * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
  *
@@ -115,6 +115,8 @@ public:
 // if full, keeps full, trims only what is needed
 // has insert/take overhead for each access (value())
 
+/* not used
+
 template <typename Key, typename T>
 class cache_eager final : public cache_base<Key,T> {
   CLASS(cache_eager) SUPER(cache_base<Key COMMA T>)
@@ -190,6 +192,7 @@ private:
     ENSURE(super::mapKey_.count() == mapMru_.count())
   }
 };
+*/
 
 //------------------------------------------------------------------------------
 
