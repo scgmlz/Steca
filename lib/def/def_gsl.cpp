@@ -22,6 +22,15 @@
 qreal const NAN = Q_QNAN;
 qreal const INF = Q_INFINITY;
 
+TEST("NAN/INF", ({
+  double d;
+  d = float(NAN); CHECK(qIsNaN(d));
+  d = float(INF); CHECK(qIsInf(d));
+  float f;
+  f = float(NAN); CHECK(qIsNaN(f));
+  f = float(INF); CHECK(qIsInf(f));
+});)
+
 //------------------------------------------------------------------------------
 
 #ifdef TESTS
