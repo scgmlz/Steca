@@ -75,7 +75,8 @@ void Session::remFile(uint i) {
 void Session::calcIntensCorr() const {
   corrHasNaNs_ = false;
 
-  size2d size = corrImage_.size() - imageCut_.marginSize();
+  EXPECT(corrImage_)
+  size2d size = corrImage_->size() - imageCut_.marginSize();
   ENSURE(!size.isEmpty())
 
   uint w = size.w, h = size.h, di = imageCut_.left,
@@ -83,14 +84,14 @@ void Session::calcIntensCorr() const {
 
   qreal sum = 0;
   for_ij (w, h)
-    sum += corrImage_.inten(i + di, j + dj);
+    sum += corrImage_->inten(i + di, j + dj);
 
   qreal avg = sum / (w * h);
 
-  intensCorr_.fill(1, corrImage_.size());
+  intensCorr_.fill(1, corrImage_->size());
 
   for_ij (w, h) {
-    auto  inten = corrImage_.inten(i + di, j + dj);
+    auto  inten = corrImage_->inten(i + di, j + dj);
     qreal fact;
 
     if (inten > 0) {

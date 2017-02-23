@@ -113,15 +113,15 @@ public:
 
   inten_rge rgeInten() const;
 
-  typ::Image::rc image()    const { return image_; }
-  typ::size2d imageSize()   const;
+  typ::shp_Image image()     const { return image_; }
+  typ::size2d    imageSize() const;
 
   void collectIntens(core::Session const&, typ::Image const* intensCorr,
                      inten_vec&, uint_vec&, gma_rge::rc,
                      tth_t minTth, tth_t deltaTth) const;
 private:
-  shp_Metadata md_;
-  typ::Image   image_;
+  shp_Metadata    md_;
+  typ::shp_Image  image_;
 };
 
 //------------------------------------------------------------------------------
@@ -129,8 +129,8 @@ private:
 class OneDatasets : public typ::vec<shp_OneDataset> {
   CLASS(OneDatasets) SUPER(typ::vec<shp_OneDataset>)
 public:
-  typ::size2d imageSize()   const;
-  typ::Image  foldedImage() const;
+  typ::size2d    imageSize()   const;
+  typ::shp_Image foldedImage() const;
 };
 
 //------------------------------------------------------------------------------

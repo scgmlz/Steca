@@ -20,6 +20,7 @@
 
 #include "typ/typ_array2d.h"
 #include "typ/typ_types.h"
+#include <QSharedPointer>
 
 namespace typ {
 //------------------------------------------------------------------------------
@@ -80,6 +81,8 @@ private:
   inten_arr intens_;
   inten_rge rgeInten_;
 };
+
+typedef QSharedPointer<Image> shp_Image;
 
 //------------------------------------------------------------------------------
 }

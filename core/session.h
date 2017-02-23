@@ -54,7 +54,7 @@ public:
 private:
   // correction file
   data::shp_File corrFile_;
-  typ::Image     corrImage_;
+  typ::shp_Image corrImage_;
   bool           corrEnabled_;
 
   mutable typ::Image intensCorr_;
@@ -76,7 +76,7 @@ public:
     return corrFile_;
   }
 
-  typ::Image::rc corrImage() const {
+  typ::shp_Image corrImage() const {
     return corrImage_;
   }
 

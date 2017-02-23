@@ -252,14 +252,18 @@ QPixmap TabsImages::makeBlankPixmap() {
   return pixmap;
 }
 
-QImage TabsImages::makeImage(typ::Image::rc image, bool curvedScale) {
-  auto imageLens = hub_.plainImageLens(image);
+QImage TabsImages::makeImage(typ::shp_Image image, bool curvedScale) {
+  QImage im;
+  if (!image)
+    return im;
 
-  auto size     = imageLens->size();
+  auto imageLens = hub_.plainImageLens(*image);
+
+  auto size = imageLens->size();
   if (size.isEmpty())
-    return  QImage();
+    return im;
 
-  QImage im(QSize(to_i(size.w), to_i(size.h)), QImage::Format_RGB32);
+  im = QImage(QSize(to_i(size.w), to_i(size.h)), QImage::Format_RGB32);
 
   auto rgeInten = imageLens->rgeInten(hub_.isFixedIntenImageScale());
   inten_t maxInten = inten_t(rgeInten.max);
@@ -270,7 +274,7 @@ QImage TabsImages::makeImage(typ::Image::rc image, bool curvedScale) {
   return im;
 }
 
-QPixmap TabsImages::makePixmap(typ::Image::rc image) {
+QPixmap TabsImages::makePixmap(typ::shp_Image image) {
   return QPixmap::fromImage(makeImage(image, !hub_.isFixedIntenImageScale()));
 }
 

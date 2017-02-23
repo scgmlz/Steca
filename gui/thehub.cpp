@@ -207,7 +207,7 @@ bool TheHub::hasCorrFile() const {
   return session_->hasCorrFile();
 }
 
-typ::Image::rc TheHub::corrImage() const {
+typ::shp_Image TheHub::corrImage() const {
   return session_->corrImage();
 }
 

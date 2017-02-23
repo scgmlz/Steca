@@ -115,7 +115,7 @@ public: // files
   void           remFile(uint);
 
   bool           hasCorrFile() const;
-  typ::Image::rc corrImage() const;
+  typ::shp_Image corrImage() const;
 
 public:
   calc::shp_ImageLens   plainImageLens(typ::Image::rc) const;

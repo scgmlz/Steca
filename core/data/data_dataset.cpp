@@ -166,14 +166,14 @@ row_t Metadata::attributeNaNs() {
 //------------------------------------------------------------------------------
 
 OneDataset::OneDataset(Metadata::rc md, typ::inten_arr::rc intens)
-  : md_(new Metadata(md)), image_(intens) {
+  : md_(new Metadata(md)), image_(new Image(intens)) {
 }
 
 OneDataset::OneDataset(Metadata::rc md, size2d::rc size, inten_vec const& intens)
-  : md_(new Metadata(md)), image_(size) {
+  : md_(new Metadata(md)), image_(new Image(size)) {
   EXPECT(intens.count() == size.count())
   for_i (intens.count())
-    image_.setInten(i, intens.at(i));
+    image_->setInten(i, intens.at(i));
 }
 
 OneDataset::OneDataset(rc that)
@@ -198,11 +198,11 @@ tth_rge OneDataset::rgeTth(core::Session::rc session) const {
 }
 
 inten_rge OneDataset::rgeInten() const {
-  return image_.rgeInten();
+  return image_->rgeInten();
 }
 
 size2d OneDataset::imageSize() const {
-  return image_.size();
+  return image_->size();
 }
 
 void OneDataset::collectIntens(core::Session::rc session, typ::Image const* intensCorr,
@@ -227,7 +227,7 @@ void OneDataset::collectIntens(core::Session::rc session, typ::Image const* inte
 
   for (uint i = gmaIndexMin; i < gmaIndexMax; ++i) {
     uint ind = gmaIndexes->at(i);
-    inten_t inten = image_.inten(ind);
+    inten_t inten = image_->inten(ind);
     if (qIsNaN(inten))
       continue;
 
@@ -479,9 +479,11 @@ inten_rge::rc Datasets::rgeFixedInten(core::Session::rc session, bool trans, boo
 
     for (auto& dataset: *this)
       for (auto& one : *dataset) {
-        auto& image = one->image();
-        shp_ImageLens imageLens = session.imageLens(image,*this,trans,cut);
-        rgeFixedInten_.extendBy(imageLens->rgeInten(false));
+        if (one->image()) {
+          auto& image = *one->image();
+          shp_ImageLens imageLens = session.imageLens(image,*this,trans,cut);
+          rgeFixedInten_.extendBy(imageLens->rgeInten(false));
+        }
       }
   }
 
@@ -536,12 +538,12 @@ size2d OneDatasets::imageSize() const {
   return first()->imageSize();
 }
 
-Image OneDatasets::foldedImage() const {
+shp_Image OneDatasets::foldedImage() const {
   EXPECT(!isEmpty())
-  Image image(imageSize());
+  shp_Image image(new Image(imageSize()));
 
   for (auto& one: *this)
-    image.addIntens(one->image_);
+    image->addIntens(*one->image_);
 
   return image;
 }
