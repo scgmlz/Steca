@@ -81,7 +81,7 @@ DiffractogramsFrame::DiffractogramsFrame(TheHub &hub, rcstr title, QWidget *pare
 }
 
 OutputDataCollection DiffractogramsFrame::collectCurves(
-    gma_rge::rc rgeGma, uint gmaSlices, data::Dataset::rc dataset, uint picNum, bool averaged) {
+    gma_rge::rc rgeGma, uint gmaSlices, data::Dataset::rc dataset, uint picNum) {
 
   auto lens = hub_.datasetLens(dataset);
 
@@ -97,15 +97,15 @@ OutputDataCollection DiffractogramsFrame::collectCurves(
     qreal min = rge.min + i * step;
     gma_rge gmaStripe(min, min + step);
 
-    auto curve = lens->makeCurve(gmaStripe, averaged);
+    auto curve = lens->makeCurve(gmaStripe);
     outputData.append(OutputData(curve, dataset, gmaStripe, picNum));
   }
   return outputData;
 }
 
-OutputData DiffractogramsFrame::collectCurve(data::Dataset::rc dataset, bool averaged) {
+OutputData DiffractogramsFrame::collectCurve(data::Dataset::rc dataset) {
   auto lens = hub_.datasetLens(dataset);
-  auto curve = lens->makeCurve(averaged);
+  auto curve = lens->makeCurve();
   return OutputData(curve, dataset, lens->rgeGma(), 0); // TODO current picture number
 }
 
@@ -128,7 +128,7 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
   uint picNum = 1;
   for (data::shp_Dataset dataset : datasets) {
     progress.step();
-    allOutputData.append(collectCurves(rgeGma, gmaSlices, *dataset, picNum, hub_.actions.showAveraged->isChecked()));
+    allOutputData.append(collectCurves(rgeGma, gmaSlices, *dataset, picNum));
     ++picNum;
   }
 
@@ -138,7 +138,7 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
 OutputData DiffractogramsFrame::outputCurrDiffractogram() {
   auto dataset = hub_.selectedDataset();
   if (dataset)
-    return collectCurve(*dataset, hub_.actions.showAveraged->isChecked());
+    return collectCurve(*dataset);
   else
     return OutputData();
 }

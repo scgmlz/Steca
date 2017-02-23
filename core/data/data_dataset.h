@@ -160,7 +160,7 @@ public:
   qreal    avgDeltaTime()         const;
 
   inten_vec collectIntens(core::Session const&, typ::Image const* intensCorr,
-                          gma_rge::rc, bool averaged) const;
+                          gma_rge::rc) const;
 
 private:
   // all dataset(s) must have the same image size
@@ -188,7 +188,7 @@ public:
   inten_rge::rc  rgeGma(core::Session const&) const;
   inten_rge::rc  rgeFixedInten(core::Session const&, bool trans, bool cut) const;
 
-  typ::Curve avgCurve(core::Session const&, bool averaged) const;
+  typ::Curve avgCurve(core::Session const&) const;
 
   void  invalidateAvgMutables() const;
 

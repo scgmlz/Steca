@@ -95,35 +95,6 @@ AngleMap::AngleMap(Key::rc key) : key_(key) {
   calculate();
 }
 
-//TODO remove
-//IJ AngleMap::gmaPixel(gma_t gma) {
-//  uint_vec const *indexes; uint minIndex, maxIndex;
-//  getGmaIndexes(Range(gma), indexes, minIndex, maxIndex);
-
-//  auto& geometry = key_.geometry;
-//  auto& size     = key_.size;
-//  auto& midPix   = key_.midPix;
-//  auto& midTth   = key_.midTth;
-
-//  qreal pixSize = geometry.pixSize,
-//        detDist = geometry.detectorDistance;
-
-//  qreal d_midTth   = midTth.toRad(),
-//        cos_midTth = cos(d_midTth), sin_midTth = sin(d_midTth);
-
-//  auto j = [&](int i) {
-//    return midPix.j - tan(gma) * (detDist * sin_midTth + ((i - midPix.i) * pixSize) * cos_midTth) / pixSize;
-//  };
-
-////  auto i = [&](int j) {
-////    return (((midPix.j - j) * pixSize) / tan(gma) - b_x1) / (pixSize * cos_midTth) + midPix.i;
-////  };
-
-//  TR("gma 0" << size.w-1 << ":" << gma << j(0) << j(to_i(size.w-1)))
-
-//  return IJ(0,0);
-//}
-
 static uint lowerBound(vec<gma_t>::rc vec, gma_t x, uint i1, uint i2) {
   EXPECT(i1 < i2)
 

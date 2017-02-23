@@ -120,9 +120,6 @@ Actions::Actions(TheHub& hub): super(hub) {
 
   tgl(combinedDgram,        "All datasets");
 
-  tgl(showAveraged,         "Averaged intensities");
-  showAveraged->setChecked(true); // TODO to session
-
   tgl(selRegions,           "Select regions")               .icon(":/icon/selRegion");
   tgl(showBackground,       "Show fitted background")       .icon(":/icon/showBackground");
   trg(clearBackground,      "Clear background regions")     .icon(":/icon/clear");

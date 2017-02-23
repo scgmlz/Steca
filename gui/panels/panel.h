@@ -81,7 +81,7 @@ protected:
   GridLayout *grid_;
 };
 
-#ifdef DEVELOP_REBECCA
+#ifdef DEVELOPMENT_REBECCA
 class FitErrorGridPannel : public GridPanel {
   CLASS(FitErrorGridPannel) SUPER(GridPanel)
 public:

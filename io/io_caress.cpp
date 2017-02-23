@@ -48,8 +48,6 @@ data::shp_File loadCaress2(rcstr filePath) THROWS {
       break;
 
     RUNTIME_CHECK(0 /*OK*/ == resNextUnit, "Error processing " + filePath);
-
-    WT(str('[')+element+']' << str('[')+node+']' << e_number << e_type << d_type << number)
   }
 
   data::shp_File file(new data::File(filePath));
@@ -241,7 +239,6 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
       }
     }
 
-    TR(element << node)
     // Read Master Counter
     if (!strncmp(element, "MM1 ", 4)) {
       s_masterCounter = node; // Master Counter steht in Node

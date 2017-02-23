@@ -335,8 +335,8 @@ void calculateAlphaBeta(Dataset::rc dataset, tth_t tth, gma_t gma,
   beta  = betaRad.toDeg();
 }
 
-Curve Session::makeCurve(DatasetLens::rc lens, gma_rge::rc rgeGma, bool averaged) const {
-  Curve curve = lens.makeCurve(rgeGma, averaged);
+Curve Session::makeCurve(DatasetLens::rc lens, gma_rge::rc rgeGma) const {
+  Curve curve = lens.makeCurve(rgeGma);
   curve.subtract(fit::Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
 
   return curve;
@@ -344,9 +344,8 @@ Curve Session::makeCurve(DatasetLens::rc lens, gma_rge::rc rgeGma, bool averaged
 
 // Fits reflection to the given gamma sector and constructs a ReflectionInfo.
 ReflectionInfo Session::makeReflectionInfo(
-    DatasetLens::rc lens, Reflection::rc reflection, gma_rge::rc gmaSector,
-    bool averaged) const {
-  Curve curve = makeCurve(lens, gmaSector, averaged);
+    DatasetLens::rc lens, Reflection::rc reflection, gma_rge::rc gmaSector) const {
+  Curve curve = makeCurve(lens, gmaSector);
 
   scoped<fit::PeakFunction*> peakFunction(reflection.peakFunction().clone());
 
@@ -382,7 +381,7 @@ ReflectionInfo Session::makeReflectionInfo(
  */
 ReflectionInfos Session::makeReflectionInfos(
     Datasets::rc datasets, Reflection::rc reflection,
-    uint gmaSlices, gma_rge::rc rgeGma, bool averaged, Progress* progress)
+    uint gmaSlices, gma_rge::rc rgeGma, Progress* progress)
 {
   ReflectionInfos infos;
 
@@ -407,7 +406,7 @@ ReflectionInfos Session::makeReflectionInfos(
     for_i (uint(gmaSlices)) {
       qreal min = rge.min + i * step;
       gma_rge gmaStripe(min, min + step);
-      auto refInfo = makeReflectionInfo(*lens, reflection, gmaStripe, averaged);
+      auto refInfo = makeReflectionInfo(*lens, reflection, gmaStripe);
       if (!qIsNaN(refInfo.inten()))
         infos.append(refInfo);
     }

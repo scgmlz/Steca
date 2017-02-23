@@ -38,7 +38,7 @@ public:
   }
 
   void clear() {
-    return intens_.clear();
+    intens_.clear();
   }
 
   bool isEmpty() const {

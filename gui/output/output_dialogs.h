@@ -102,7 +102,7 @@ class PanelFitError : public Panel {
 public:
   PanelFitError(TheHub&);
 
-#ifdef DEVELOP_REBECCA
+#ifdef DEVELOPMENT_REBECCA
   QComboBox         *cbErrorUnits;
   QRadioButton      *rbPercent, *rbAbs;
   QDoubleSpinBox    *spFitError;

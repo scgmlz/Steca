@@ -125,8 +125,6 @@ void MainWin::initMenus() {
       separator(),
       acts_.combinedDgram,
       acts_.fixedIntenDgram,
-      separator(),
-      acts_.showAveraged,
   });
 
   addActions(menuOutput_, {
@@ -371,7 +369,7 @@ void MainWin::onShow() {
 #endif
 
 #ifdef DEVELOPMENT_JAN
-  safeLoad("/C/+scg/data/0.ste");
+  safeLoad("/home/jan/C/+dev/fz/data/powder.ste");
 //  hub_.actions.outputDiagrams->trigger();
 #endif
 

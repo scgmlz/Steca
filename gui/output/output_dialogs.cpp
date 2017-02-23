@@ -141,7 +141,7 @@ PanelFitError::PanelFitError(TheHub& hub) : super(hub, "Fit error") {
 }
 
 // REVIEW
-#ifdef DEVELOP_REBECCA
+#ifdef DEVELOPMENT_REBECCA
   static str_lst errorUnits = {"absolute Error","Δ to other Fit"};
   static str_lst errorTypes = {"Intensity","Tth","Fwhm"};
   {
