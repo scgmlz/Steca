@@ -74,7 +74,8 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
 
   float tthAxis = 0, omgAxis = 0, phiAxis = 0, chiAxis = 0, tths = 0, omgs = 0, chis = 0,
       phis = 0, tthr = 0, omgr = 0, chir = 0, phir = 0, xAxis = 0, yAxis = 0, zAxis = 0,
-      pstAxis = 0, sstAxis = 0, omgmAxis = 0;
+      pstAxis = 0, sstAxis = 0, omgmAxis = 0,
+      nmT = 0, nmTeload = 0, nmTepos = 0, nmTeext = 0, nmXe = 0, nmYe = 0, nmZe = 0;
 
   int *intens = NULL;
   uint imageSize = 0;
@@ -225,6 +226,14 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
         md.motorSST  = sstAxis;
         md.motorOMGM = omgmAxis;
 
+        md.nmT      = nmT;
+        md.nmTeload = nmTeload;
+        md.nmTepos  = nmTepos;
+        md.nmTeext  = nmTeext;
+        md.nmXe     = nmXe;
+        md.nmYe     = nmYe;
+        md.nmZe     = nmZe;
+
         md.deltaMonitorCount = deltaMon;
         md.monitorCount = mon;
         md.deltaTime    = deltaTime;
@@ -265,6 +274,7 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
       delete[] c_date;
     }
     if (!strncmp(element, "READ  ", 6)) {
+//      TR('R' << node)
       if (!strncmp(node, "TTHS  ", 6)) {
         if (get_data_unit(&tths) != 0)
           tths = 0;
@@ -332,6 +342,27 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
       if (!strncmp(node, "OMGM  ", 6))
         if (get_data_unit(&omgmAxis) != 0)
           omgmAxis = 0;
+      if (!strncmp(node, "T     ", 6))
+        if (get_data_unit(&nmT) != 0)
+          nmT = 0;
+      if (!strncmp(node, "TELOAD", 6))
+        if (get_data_unit(&nmTeload) != 0)
+          nmTeload = 0;
+      if (!strncmp(node, "TEPOS ", 6))
+        if (get_data_unit(&nmTepos) != 0)
+          nmTepos = 0;
+      if (!strncmp(node, "TEEXT ", 6))
+        if (get_data_unit(&nmTeext) != 0)
+          nmTeext = 0;
+      if (!strncmp(node, "XE    ", 6))
+        if (get_data_unit(&nmXe) != 0)
+          nmXe = 0;
+      if (!strncmp(node, "YE    ", 6))
+        if (get_data_unit(&nmYe) != 0)
+          nmYe = 0;
+      if (!strncmp(node, "ZE    ", 6))
+        if (get_data_unit(&nmZe) != 0)
+          nmZe = 0;
     }
     if (!strncmp(element, "SETVALUE", 8)) {
       if (!strncmp(node, "TTHS  ", 6)) {
@@ -403,6 +434,7 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
           omgmAxis = 0;
     }
     if (!strncmp(element, "MASTER1V", 8)) {
+//      TR('M' << node)
       if (!strncmp(node, "TTHS  ", 6)) {
         if (get_data_unit(&tths) != 0)
           tths = 0;

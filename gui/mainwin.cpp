@@ -369,7 +369,7 @@ void MainWin::onShow() {
 #endif
 
 #ifdef DEVELOPMENT_JAN
-  safeLoad("/home/jan/C/+dev/fz/data/powder.ste");
+  safeLoad("/home/jan/C/+dev/fz/data/new_md.ste");
 //  hub_.actions.outputDiagrams->trigger();
 #endif
 

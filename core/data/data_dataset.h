@@ -80,6 +80,9 @@ struct Metadata {
   typ::deg motorXT, motorYT, motorZT, motorOmg, motorTth, motorPhi, motorChi,
            motorPST, motorSST, motorOMGM;
 
+  // new metadata
+  qreal nmT, nmTeload, nmTepos, nmTeext, nmXe, nmYe, nmZe;
+
   qreal monitorCount, deltaMonitorCount;
   qreal time, deltaTime;
 };
