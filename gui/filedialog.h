@@ -21,6 +21,8 @@
 #include "typ/typ_str.h"
 #include "typ/typ_strlst.h"
 
+class QWidget;
+
 namespace gui { namespace file_dialog {
 //------------------------------------------------------------------------------
 
