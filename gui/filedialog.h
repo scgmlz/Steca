@@ -15,32 +15,17 @@
  * See the COPYING and AUTHORS files for more details.
  ******************************************************************************/
 
-#ifndef IO_IO_H
-#define IO_IO_H
+#ifndef FILEDIALOG_H
+#define FILEDIALOG_H
 
-#include "data/data_file.h"
+#include "typ/typ_str.h"
+#include "typ/typ_strlst.h"
 
-namespace io {
+namespace gui { namespace file_dialog {
 //------------------------------------------------------------------------------
 
-bool couldBeCaress(QFileInfo const&);
-bool couldBeMar(QFileInfo const&);
-bool couldBeTiffDat(QFileInfo const&);
-
-// load a file; file type will be sensed
-data::shp_File load(rcstr filePath) THROWS;
-
-// load a Caress file
-data::shp_File loadCaress(rcstr filePath) THROWS;
-data::shp_File loadCaress2(rcstr filePath) THROWS;
-str loadCaressComment(rcstr filePath);
-
-// load a Mar file
-data::shp_File loadMar(rcstr filePath) THROWS;
-
-// load a metadata file + tiffs
-data::shp_File loadTiffDat(rcstr filePath) THROWS;
+str_lst openFileNames(QWidget*, rcstr caption, rcstr dir, rcstr filter);
 
 //------------------------------------------------------------------------------
-}
-#endif // IO_IO_H
+}}
+#endif // FILEDIALOG_H

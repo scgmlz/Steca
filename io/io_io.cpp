@@ -31,19 +31,19 @@ static QByteArray peek(uint pos, uint maxLen, QFileInfo const& info) {
 }
 
 // Caress file format
-static bool couldBeCaress(QFileInfo const& info) {
+bool couldBeCaress(QFileInfo const& info) {
   static QByteArray const header("\020\012DEFCMD DAT");
   return header == peek(0, to_u(header.size()), info);
 }
 
 // Mar file format
-static bool couldBeMar(QFileInfo const& info) {
+bool couldBeMar(QFileInfo const& info) {
   static QByteArray const header("mar research");
   return header == peek(0x80, to_u(header.size()), info);
 }
 
 // Text .dat file with metadata for tiff files
-static bool couldBeTiffDat(QFileInfo const& info) {
+bool couldBeTiffDat(QFileInfo const& info) {
   QFile file(info.filePath());
 
   if (!file.open(QFile::ReadOnly))

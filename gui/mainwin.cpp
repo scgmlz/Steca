@@ -20,6 +20,7 @@
 #include "about.h"
 #include "app.h"
 #include "config.h"
+#include "filedialog.h"
 #include "output/output_diagrams.h"
 #include "output/output_diffractograms.h"
 #include "output/output_polefigures.h"
@@ -276,7 +277,7 @@ void MainWin::close() {
 }
 
 void MainWin::addFiles() {
-  str_lst fileNames = QFileDialog::getOpenFileNames(
+  str_lst fileNames = file_dialog::openFileNames(
       this, "Add files", QDir::current().absolutePath(),
       "Data files (*.dat *.mar*);;All files (*.*)");
 
@@ -369,7 +370,7 @@ void MainWin::onShow() {
 #endif
 
 #ifdef DEVELOPMENT_JAN
-  safeLoad("/home/jan/C/+dev/fz/data/new_md.ste");
+//  safeLoad("/home/jan/C/+dev/fz/data/new_md.ste");
 //  hub_.actions.outputDiagrams->trigger();
 #endif
 

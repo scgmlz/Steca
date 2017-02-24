@@ -54,6 +54,8 @@ data::shp_File loadCaress2(rcstr filePath) THROWS {
   return file;
 }
 
+//------------------------------------------------------------------------------
+
 data::shp_File loadCaress(rcstr filePath) THROWS {
   data::shp_File file(new data::File(filePath));
 
@@ -543,6 +545,58 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
   }
 
   return file;
+}
+
+//------------------------------------------------------------------------------
+
+str loadCaressComment(rcstr filePath) {
+  str s_comment;
+
+  try {
+    RUNTIME_CHECK(0 == open_data_file(filePath.toLocal8Bit().data(),nullptr),
+                  "Cannot open data file " + filePath);
+
+    struct CloseFile { // TODO remove, replace with QFile etc.
+      ~CloseFile() {
+        close_data_file();
+      }
+    } _;
+
+    bool end = false;
+    while (!end) {
+      int e_number, e_type, d_type, d_number;
+      char element[100];
+      element[99] = '\0';
+      char node[100];
+      node[99] = '\0';
+
+      int returnNextDataUnit =
+          next_data_unit(&e_number, &e_type, element, node, &d_type, &d_number);
+      element[8] = '\0';
+      node[8] = '\0';
+
+      if (returnNextDataUnit == 1) // Error
+        continue;
+
+      if (returnNextDataUnit == 2)  // EOF
+        end = true;
+
+      if (!strncmp(element, "COM ", 4)) {
+        char* c_comment = new char[d_number + 1];
+        if (get_data_unit(c_comment) != 0)
+          s_comment = "no comment";
+        else {
+          c_comment[d_number] = '\0'; // terminiere Char-Array
+          s_comment = c_comment;
+        }
+        delete[] c_comment;
+      }
+    }
+  } catch (Exception const&) {
+
+  }
+
+  return s_comment;
 }
 
 //------------------------------------------------------------------------------
