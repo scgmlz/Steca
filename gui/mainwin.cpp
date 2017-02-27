@@ -35,7 +35,6 @@
 #include <QCloseEvent>
 #include <QDesktopServices>
 #include <QDir>
-#include <QFileDialog>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QNetworkReply>
@@ -290,7 +289,7 @@ void MainWin::addFiles() {
 void MainWin::enableCorr() {
   str fileName;
   if (!hub_.hasCorrFile())
-    fileName = QFileDialog::getOpenFileName(
+    fileName = file_dialog::openFileName(
         this, "Set correction file", QDir::current().absolutePath(),
         "Data files (*.dat *.mar*);;All files (*.*)");
 
@@ -303,7 +302,7 @@ void MainWin::enableCorr() {
 static str const STE(".ste");
 
 void MainWin::loadSession() {
-  str fileName = QFileDialog::getOpenFileName(
+  str fileName = file_dialog::openFileName(
       this, "Load session", QDir::current().absolutePath(),
       "Session files (*" % STE % ");;All files (*.*)");
 
@@ -314,22 +313,11 @@ void MainWin::loadSession() {
 }
 
 void MainWin::saveSession() {
-  QFileDialog dlg(this, "Save session", QDir::current().absolutePath(),
-                  "Session files (*" % STE % ");;All files (*.*)");
-  dlg.setFileMode(QFileDialog::AnyFile);
-  dlg.setAcceptMode(QFileDialog::AcceptSave);
-  dlg.setConfirmOverwrite(false);
+  str fileName = file_dialog::openFileName(
+      this, "Save session", QDir::current().absolutePath(),
+      "Session files (*" % STE % ");;All files (*.*)");
 
-  if (!dlg.exec())
-    return;
-
-  auto files = dlg.selectedFiles();
-  if (files.isEmpty())
-    return;
-
-  str fileName = files.first();
   if (!fileName.endsWith(STE)) fileName += STE;
-
   hub_.saveSession(QFileInfo(fileName));
 }
 

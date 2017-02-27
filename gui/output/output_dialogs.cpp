@@ -18,15 +18,16 @@
 #include "output_dialogs.h"
 #include "calc/calc_polefigure.h"
 #include "config.h"
+#include "filedialog.h"
 #include "gui_cfg.h"
 #include "thehub.h"
 #include "types/type_models.h"
 
-#include <QFileDialog>
 #include <QHeaderView>
 #include <QMessageBox>
 #include <QProgressBar>
 #include <QScrollArea>
+#include <QDir>
 
 namespace gui { namespace output {
 //------------------------------------------------------------------------------
@@ -793,7 +794,7 @@ TabSave::TabSave(TheHub& hub, Params& params, bool withTypes) : super(hub, param
   g->addWidget(file_,                    1, 1);
 
   connect(actBrowse, &QAction::triggered, [this]() {
-    str dir = QFileDialog::getExistingDirectory(this, "Select folder", dir_->text());
+    str dir = file_dialog::saveDirName(this, "Select folder", dir_->text());
     if (!dir.isEmpty())
       dir_->setText((params_.saveDir = dir));
   });

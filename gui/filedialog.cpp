@@ -70,6 +70,42 @@ QVariant ProxyModel::data(rcidx idx, int role) const {
   return super::data(idx, role);
 }
 
+//------------------------------------------------------------------------------
+
+str openFileName(QWidget* parent, rcstr caption, rcstr dir, rcstr filter) {
+  QFileDialog dlg(parent, caption, dir, filter);
+
+  dlg.setOption(QFileDialog::DontUseNativeDialog);
+  dlg.setViewMode(QFileDialog::Detail);
+  dlg.setFileMode(QFileDialog::ExistingFile);
+  dlg.setAcceptMode(QFileDialog::AcceptOpen);
+  dlg.setReadOnly(true);
+
+  dlg.setProxyModel(new ProxyModel);
+
+  str fileName;
+  if (dlg.exec() && !dlg.selectedFiles().isEmpty())
+    fileName = dlg.selectedFiles().first();
+
+  return fileName;
+}
+
+str saveFileName(QWidget* parent, rcstr caption, rcstr dir, rcstr filter) {
+  QFileDialog dlg(parent, caption, dir, filter);
+
+  dlg.setOption(QFileDialog::DontUseNativeDialog);
+  dlg.setViewMode(QFileDialog::Detail);
+  dlg.setFileMode(QFileDialog::AnyFile);
+  dlg.setAcceptMode(QFileDialog::AcceptSave);
+  dlg.setConfirmOverwrite(false);
+
+  str fileName;
+  if (dlg.exec() && !dlg.selectedFiles().isEmpty())
+    fileName = dlg.selectedFiles().first();
+
+  return fileName;
+}
+
 str_lst openFileNames(QWidget* parent, rcstr caption, rcstr dir, rcstr filter) {
   QFileDialog dlg(parent, caption, dir, filter);
 
@@ -79,13 +115,29 @@ str_lst openFileNames(QWidget* parent, rcstr caption, rcstr dir, rcstr filter) {
   dlg.setAcceptMode(QFileDialog::AcceptOpen);
   dlg.setReadOnly(true);
 
-  str_lst fileNames;
   dlg.setProxyModel(new ProxyModel);
 
-  if (QDialog::Accepted == dlg.exec())
+  str_lst fileNames;
+  if (dlg.exec())
     fileNames = dlg.selectedFiles();
 
   return fileNames;
+}
+
+str saveDirName(QWidget* parent, rcstr caption, rcstr dir) {
+  QFileDialog dlg(parent, caption, dir);
+
+  dlg.setOption(QFileDialog::DontUseNativeDialog);
+  dlg.setViewMode(QFileDialog::Detail);
+  dlg.setFileMode(QFileDialog::Directory);
+  dlg.setAcceptMode(QFileDialog::AcceptSave);
+  dlg.setConfirmOverwrite(false);
+
+  str dirName;
+  if (dlg.exec() && !dlg.selectedFiles().isEmpty())
+    dirName = dlg.selectedFiles().first();
+
+  return dirName;
 }
 
 //------------------------------------------------------------------------------
