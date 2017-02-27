@@ -56,11 +56,11 @@ QVariant ProxyModel::data(rcidx idx, int role) const {
       QFileInfo info(fileModel->rootDirectory().filePath(fileModel->fileName(ix0)));
       if (info.isFile()) {
         if (io::couldBeCaress(info))
-          return "(caress) " + io::loadCaressComment(info.absoluteFilePath());
+          return "[car] " + io::loadCaressComment(info.absoluteFilePath());
         else if (io::couldBeMar(info))
-          return "(mar) ";
+          return "[mar] ";
         else if (io::couldBeTiffDat(info))
-          return "(tiff) ";
+          return "[tif] ";
       }
     }
 

@@ -138,10 +138,15 @@ DiffractogramPlot::DiffractogramPlot(TheHub& hub, Diffractogram& diffractogram)
   // graphs in the "main" layer; in the display order
   bgGraph_            = addGraph();
   dgramGraph_         = addGraph();
+  dgramBgFittedGraph2_ = addGraph(); dgramBgFittedGraph2_ ->setVisible(false);
   dgramBgFittedGraph_ = addGraph();
 
   bgGraph_->setPen(QPen(QColor(0x21, 0xa1, 0x21, 0xff), 2));
+
   dgramBgFittedGraph_->setPen(QPen(Qt::black, 2));
+
+  dgramBgFittedGraph2_->setLineStyle(QCPGraph::LineStyle::lsNone);
+  dgramBgFittedGraph2_->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ScatterShape::ssDisc,QColor(255,0,0),4));
 
   dgramGraph_->setLineStyle(QCPGraph::LineStyle::lsNone);
   dgramGraph_->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ScatterShape::ssDisc,Qt::gray,2));
@@ -218,6 +223,7 @@ void DiffractogramPlot::plot(typ::Curve::rc dgram, typ::Curve::rc dgramBgFitted,
     bgGraph_->clearData();
     dgramGraph_->clearData();
     dgramBgFittedGraph_->clearData();
+    dgramBgFittedGraph2_->clearData();
 
     clearReflLayer();
   } else {
@@ -247,6 +253,7 @@ void DiffractogramPlot::plot(typ::Curve::rc dgram, typ::Curve::rc dgramBgFitted,
 
     dgramGraph_->setData(dgram.xs().sup(), dgram.ys().sup());
     dgramBgFittedGraph_->setData(dgramBgFitted.xs().sup(), dgramBgFitted.ys().sup());
+    dgramBgFittedGraph2_->setData(dgramBgFitted.xs().sup(), dgramBgFitted.ys().sup());
 
     clearReflLayer();
     setCurrentLayer("refl");
@@ -315,6 +322,11 @@ eFittingTab DiffractogramPlot::selectedFittingTab() {
   return hub_.fittingTab();
 }
 
+void DiffractogramPlot::enterZoom(bool on) {
+  overlay_->setHidden(on);
+  dgramBgFittedGraph2_->setVisible(on);
+}
+
 void DiffractogramPlot::addBgItem(typ::Range::rc range) {
   setCurrentLayer("bg");
 
@@ -362,14 +374,26 @@ Diffractogram::Diffractogram(TheHub& hub)
   hb->addWidget(label("normalization:"));
   hb->addWidget(comboNormType_);
 
-  connect(comboNormType_, slot(QComboBox,currentIndexChanged,int), [this](int index) { // TODO init value form hub?
+  connect(comboNormType_, slot(QComboBox,currentIndexChanged,int), [this](int index) { // TODO init value from hub?
     hub_.setNorm(eNorm(index));
   });
 
   hb->addStretch();
 
+  actZoom = new ToggleAction("zoom", this);
+  enableZoom_ = textButton(actZoom);
+  hb->addWidget(enableZoom_);
+
+  hb->addStretch();
+
   hb->addWidget(check(hub_.actions.combinedDgram));
   hb->addWidget(check(hub_.actions.fixedIntenDgram));
+
+  connect(actZoom, &QAction::toggled, this, [this](bool on) {
+    plot_->setInteraction(QCP::iRangeDrag, on);
+    plot_->setInteraction(QCP::iRangeZoom, on);
+    plot_->enterZoom(on);
+  });
 
   onSigDatasetSelected([this](data::shp_Dataset dataset) {
     setDataset(dataset);
@@ -478,6 +502,7 @@ void Diffractogram::render() {
 
 void Diffractogram::setDataset(data::shp_Dataset dataset) {
   dataset_ = dataset;
+  actZoom->setChecked(false);
   render();
 }
 

@@ -19,6 +19,7 @@
 #define PANEL_DIFFRACTOGRAM_H
 
 #include "panel.h"
+#include "actions.h"
 #include "QCP/qcustomplot.h"
 
 namespace gui { namespace panel {
@@ -85,6 +86,8 @@ public:
   QColor bgRgeColor_, reflRgeColor_;
   eFittingTab selectedFittingTab();
 
+  void enterZoom(bool);
+
 protected:
   void addBgItem(typ::Range::rc);
   void resizeEvent(QResizeEvent*);
@@ -95,7 +98,7 @@ private:
   eTool tool_;
   bool showBgFit_;
 
-  QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *guesses_, *fits_;
+  QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *dgramBgFittedGraph2_, *guesses_, *fits_;
 
   typ::vec<QCPGraph*>       reflGraph_;
   DiffractogramPlotOverlay *overlay_;
@@ -123,7 +126,9 @@ private:
   uint                 currReflIndex_;
   calc::shp_Reflection currentReflection_;
 
-  QComboBox *comboNormType_;
+  QComboBox   *comboNormType_;
+  QToolButton *enableZoom_;
+  Action      *actZoom;
 
 public:
   void calcDgram();
