@@ -228,7 +228,7 @@ void MainWin::checkUpdate() {
   checkUpdate(true);
 }
 
-void MainWin::checkUpdate(bool completeReport) {
+void MainWin::checkUpdate(bool completeReport) { /*TODO
   NoWarnings _;
 
   QNetworkRequest req;
@@ -260,7 +260,7 @@ void MainWin::checkUpdate(bool completeReport) {
               .arg(name).arg(ver));
     }
   });
-}
+*/}
 
 void MainWin::messageDialog(rcstr title, rcstr text) {
   QMessageBox::information(this, title, text);
