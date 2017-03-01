@@ -434,6 +434,27 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
       if (!strncmp(node, "OMGM  ", 6))
         if (get_data_unit(&omgmAxis) != 0)
           omgmAxis = 0;
+      if (!strncmp(node, "T     ", 6))
+        if (get_data_unit(&nmT) != 0)
+          nmT = 0;
+      if (!strncmp(node, "TELOAD", 6))
+        if (get_data_unit(&nmTeload) != 0)
+          nmTeload = 0;
+      if (!strncmp(node, "TEPOS ", 6))
+        if (get_data_unit(&nmTepos) != 0)
+          nmTepos = 0;
+      if (!strncmp(node, "TEEXT ", 6))
+        if (get_data_unit(&nmTeext) != 0)
+          nmTeext = 0;
+      if (!strncmp(node, "XE    ", 6))
+        if (get_data_unit(&nmXe) != 0)
+          nmXe = 0;
+      if (!strncmp(node, "YE    ", 6))
+        if (get_data_unit(&nmYe) != 0)
+          nmYe = 0;
+      if (!strncmp(node, "ZE    ", 6))
+        if (get_data_unit(&nmZe) != 0)
+          nmZe = 0;
     }
     if (!strncmp(element, "MASTER1V", 8)) {
 //      TR('M' << node)
