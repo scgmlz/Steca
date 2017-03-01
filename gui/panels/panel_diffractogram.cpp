@@ -18,6 +18,7 @@
 #include "panel_diffractogram.h"
 #include "calc/calc_lens.h"
 #include "thehub.h"
+#include "gui_cfg.h"
 
 namespace gui { namespace panel {
 //------------------------------------------------------------------------------
@@ -369,19 +370,35 @@ Diffractogram::Diffractogram(TheHub& hub)
   auto hb = hbox();
   box_->addLayout(hb);
 
+  hb->addWidget(label("norm:"));
   str_lst options = normStrLst();
-  comboNormType_ = comboBox(options);
-  hb->addWidget(label("normalization:"));
-  hb->addWidget(comboNormType_);
+  hb->addWidget((comboNormType_ = comboBox(options)));
 
   connect(comboNormType_, slot(QComboBox,currentIndexChanged,int), [this](int index) { // TODO init value from hub?
     hub_.setNorm(eNorm(index));
   });
 
+  hb->addWidget(label(" inten:"));
+  hb->addWidget((intenSum_ = radioButton("sum")));
+  hb->addWidget((intenAvg_ = radioButton("avg ×")));
+  hb->addWidget((intenScale_ = spinDoubleCell(gui_cfg::em4_2, 0.001)));
+  intenScale_->setDecimals(3);
+
+  connect(intenAvg_, &QRadioButton::toggled, [this](bool on) {
+    intenScale_->setEnabled(on);
+    intenScale_->setValue(hub_.intenScale());
+    hub_.setIntenScaleAvg(on, preal(intenScale_->value()));
+  });
+
+  connect(intenScale_, slot(QDoubleSpinBox,valueChanged,double), [this](double val) {
+    if (val>0)
+      hub_.setIntenScaleAvg(hub_.intenScaledAvg(), preal(val));
+  });
+
   hb->addStretch();
 
-  actZoom = new ToggleAction("zoom", this);
-  enableZoom_ = textButton(actZoom);
+  actZoom_ = new ToggleAction("zoom", this);
+  enableZoom_ = textButton(actZoom_);
   hb->addWidget(enableZoom_);
 
   hb->addStretch();
@@ -389,7 +406,7 @@ Diffractogram::Diffractogram(TheHub& hub)
   hb->addWidget(check(hub_.actions.combinedDgram));
   hb->addWidget(check(hub_.actions.fixedIntenDgram));
 
-  connect(actZoom, &QAction::toggled, this, [this](bool on) {
+  connect(actZoom_, &QAction::toggled, this, [this](bool on) {
     plot_->setInteraction(QCP::iRangeDrag, on);
     plot_->setInteraction(QCP::iRangeZoom, on);
     plot_->enterZoom(on);
@@ -424,6 +441,11 @@ Diffractogram::Diffractogram(TheHub& hub)
   });
 
   onSigNormChanged([this]() {
+    intenScale_->setValue(hub_.intenScale()); // TODO own signal
+    if (hub_.intenScaledAvg())
+      intenAvg_->setChecked(true);
+    else
+      intenSum_->setChecked(true);
     render();
   });
 
@@ -490,6 +512,7 @@ Diffractogram::Diffractogram(TheHub& hub)
 
   hub_.actions.selRegions->setChecked(true);
   hub_.actions.showBackground->setChecked(true);
+  intenAvg_->setChecked(true);
 }
 
 void Diffractogram::render() {
@@ -502,7 +525,7 @@ void Diffractogram::render() {
 
 void Diffractogram::setDataset(data::shp_Dataset dataset) {
   dataset_ = dataset;
-  actZoom->setChecked(false);
+  actZoom_->setChecked(false);
   render();
 }
 

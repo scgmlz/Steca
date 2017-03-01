@@ -287,6 +287,8 @@ QByteArray TheHub::saveSession() const {
 
   top.saveUint(config_key::BG_DEGREE, bgPolyDegree());
   top.saveArr(config_key::BG_RANGES, bgRanges().saveJson());
+  top.saveBool(config_key::INTEN_SCALED_AVG, intenScaledAvg());
+  top.savePreal(config_key::INTEN_SCALE, intenScale());
 
   JsonArr arrReflections;
   for (auto& reflection : reflections())
@@ -365,6 +367,9 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
   setBgRanges(bgRanges);
 
   setBgPolyDegree(top.loadUint(config_key::BG_DEGREE));
+
+  setIntenScaleAvg(top.loadBool(config_key::INTEN_SCALED_AVG, true),
+                   top.loadPreal(config_key::INTEN_SCALE, preal(1)));
 
   auto reflectionsObj = top.loadArr(config_key::REFLECTIONS);
   for_i (reflectionsObj.count()) {
@@ -478,6 +483,11 @@ void TheHub::remBgRange(typ::Range::rc range) {
 void TheHub::setBgPolyDegree(uint degree) {
   session_->setBgPolyDegree(degree);
   emit sigBgChanged();
+}
+
+void TheHub::setIntenScaleAvg(bool avg, preal scale) {
+  session_->setIntenScaleAvg(avg, scale);
+  emit sigNormChanged(); // TODO instead of another signal
 }
 
 void TheHub::setReflType(fit::ePeakType type) {

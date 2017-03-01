@@ -27,7 +27,7 @@ using namespace typ;
 using namespace data;
 using namespace calc;
 
-Session::Session() : angleMapCache_(360) {
+Session::Session() : angleMapCache_(360), intenScale_(1) {
   clear();
   fit::initFactory();
 }
@@ -47,6 +47,9 @@ void Session::clear() {
   norm_ = eNorm::NONE;
 
   angleMapCache_.clear();
+
+  intenScaledAvg_ = true;
+  intenScale_ = preal(1);
 }
 
 shp_File Session::file(uint i) const {
@@ -430,6 +433,10 @@ bool Session::remBgRange(Range::rc range) {
 
 void Session::setBgPolyDegree(uint degree) {
   bgPolyDegree_ = degree;
+}
+
+void Session::setIntenScaleAvg(bool avg, preal scale) {
+  intenScaledAvg_ = avg; intenScale_ = scale;
 }
 
 void Session::addReflection(shp_Reflection reflection) {

@@ -198,6 +198,8 @@ public:
   static uint constexpr MAX_POLYNOM_DEGREE = 4;
   void setBgPolyDegree(uint);
 
+  void setIntenScaleAvg(bool, preal);
+
   void setReflType(fit::ePeakType);
 
   void addReflection(fit::ePeakType);
@@ -226,6 +228,9 @@ public:
 public:
   typ::Ranges::rc bgRanges()          const { return session_->bgRanges();     }
   uint            bgPolyDegree()      const { return session_->bgPolyDegree(); }
+
+  bool            intenScaledAvg()    const { return session_->intenScaledAvg();  }
+  preal           intenScale()        const { return session_->intenScale();   }
 
   calc::Reflections::rc reflections() const { return session_->reflections();  }
 };

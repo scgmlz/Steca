@@ -126,9 +126,11 @@ private:
   uint                 currReflIndex_;
   calc::shp_Reflection currentReflection_;
 
-  QComboBox   *comboNormType_;
-  QToolButton *enableZoom_;
-  Action      *actZoom;
+  QComboBox      *comboNormType_;
+  QRadioButton   *intenSum_, *intenAvg_;
+  QDoubleSpinBox *intenScale_;
+  QToolButton    *enableZoom_;
+  Action         *actZoom_;
 
 public:
   void calcDgram();

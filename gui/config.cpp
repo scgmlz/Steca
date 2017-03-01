@@ -35,6 +35,7 @@ str const
   BEAM_OFFSET("beam offset"),
   TRANSFORM("image transform"),
   BG_DEGREE("background degree"), BG_RANGES("background ranges"),
+  INTEN_SCALED_AVG("averaged intensity "), INTEN_SCALE("intensity scale"),
   REFLECTIONS("reflections"),
 
 // output

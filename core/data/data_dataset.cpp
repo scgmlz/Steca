@@ -442,11 +442,14 @@ inten_vec Dataset::collectIntens(
   for (auto& one : *this)
     one->collectIntens(session, intensCorr, intens, counts, rgeGma, minTth, deltaTth);
 
-  // average
-  for_i (numBins) {
-    auto cnt = counts.at(i);
-    if (cnt > 0)
-      intens[i] /= cnt;
+  // sum or average
+  if (session.intenScaledAvg()) {
+    preal scale = session.intenScale();
+    for_i (numBins) {
+      auto cnt = counts.at(i);
+      if (cnt > 0)
+        intens[i] *= scale/cnt;
+    }
   }
 
   return intens;

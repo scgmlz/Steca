@@ -67,6 +67,10 @@ private:
   data::Datasets collectedDatasets_;   // datasets collected ...
   str_lst        collectedDatasetsTags_;
 
+  // scaling
+  bool  intenScaledAvg_;  // if not, summed
+  preal intenScale_;
+
 public:
   bool hasCorrFile() const {
     return !corrFile_.isNull();
@@ -170,15 +174,18 @@ private:
   calc::Reflections reflections_;
 
 public:
-  typ::Ranges::rc       bgRanges()      const { return bgRanges_; }
-  uint                  bgPolyDegree()  const { return bgPolyDegree_; }
-  calc::Reflections::rc reflections()   const { return reflections_; }
+  typ::Ranges::rc       bgRanges()       const { return bgRanges_;       }
+  uint                  bgPolyDegree()   const { return bgPolyDegree_;   }
+  bool                  intenScaledAvg() const { return intenScaledAvg_; }
+  preal                 intenScale()     const { return intenScale_;     }
+  calc::Reflections::rc reflections()    const { return reflections_;    }
 
   void setBgRanges(typ::Ranges::rc);
   bool addBgRange(typ::Range::rc);
   bool remBgRange(typ::Range::rc);
 
   void setBgPolyDegree(uint);
+  void setIntenScaleAvg(bool,preal);
 
   void addReflection(calc::shp_Reflection);
   void remReflection(uint);
