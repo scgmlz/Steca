@@ -22,8 +22,8 @@ if (WITH_COVERAGE)
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
 endif ()
 
-if (DEVELOPMENT_JAN)
-  add_definitions (-DDEVELOPMENT_JAN)
+if (DEVELOPMENT)
+  add_definitions (-DDEVELOPMENT)
 endif ()
 
 find_package (Qt5Core       REQUIRED)

@@ -30,37 +30,49 @@ namespace gui { namespace file_dialog {
 //typedef QModelIndex idx;
 typedef QModelIndex const& rcidx;
 
-class ProxyModel : public QSortFilterProxyModel {
-  CLASS(ProxyModel) SUPER(QSortFilterProxyModel)
+class OpenFileProxyModel : public QSortFilterProxyModel {
+  CLASS(OpenFileProxyModel) SUPER(QSortFilterProxyModel)
 public:
   int columnCount(rcidx) const;
   QVariant headerData(int, Qt::Orientation, int = Qt::DisplayRole) const;
   QVariant data(rcidx, int = Qt::DisplayRole) const;
+
+private:
+  mutable QHash<str,str> memInfo;
 };
 
-int ProxyModel::columnCount(rcidx) const {
+int OpenFileProxyModel::columnCount(rcidx) const {
   return 2;
 }
 
-QVariant ProxyModel::headerData(int section, Qt::Orientation o, int role) const {
+QVariant OpenFileProxyModel::headerData(int section, Qt::Orientation o, int role) const {
   if (1 == section && Qt::Horizontal == o && role == Qt::DisplayRole)
     return "Comment";
   return super::headerData(section, o, role);
 }
 
-QVariant ProxyModel::data(rcidx idx, int role) const {
+QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
   if (idx.isValid() && 1 == idx.column()) {
     if (Qt::DisplayRole == role) {
       QFileSystemModel* fileModel = qobject_cast<QFileSystemModel*>(sourceModel());
       auto ix0 = fileModel->index(mapToSource(idx).row(), 0, mapToSource(idx.parent()));
       QFileInfo info(fileModel->rootDirectory().filePath(fileModel->fileName(ix0)));
       if (info.isFile()) {
+        auto path = info.absoluteFilePath();
+        auto it = memInfo.find(path);
+        if (memInfo.end() != it)
+          return *it;
+
+        str loadInfo;
         if (io::couldBeCaress(info))
-          return "[car] " + io::loadCaressComment(info.absoluteFilePath());
+          loadInfo = "[car] " + io::loadCaressComment(path);
         else if (io::couldBeMar(info))
-          return "[mar] ";
+          loadInfo = "[mar] ";
         else if (io::couldBeTiffDat(info))
-          return "[tif] ";
+          loadInfo = "[tif] ";
+
+        memInfo.insert(path, loadInfo);
+        return loadInfo;
       }
     }
 
@@ -72,22 +84,50 @@ QVariant ProxyModel::data(rcidx idx, int role) const {
 
 //------------------------------------------------------------------------------
 
+class OpenFileDialog: public QFileDialog {
+public:
+  using QFileDialog::QFileDialog;
+  void init();
+
+  void onCurrentChanged(rcstr s);
+};
+
+void OpenFileDialog::init() {
+  setOption(DontUseNativeDialog);
+  setViewMode(Detail);
+  setAcceptMode(AcceptOpen);
+  setReadOnly(true);
+  setProxyModel(new OpenFileProxyModel);
+
+  connect(this, &QFileDialog::currentChanged, this, &OpenFileDialog::onCurrentChanged);
+}
+
+void OpenFileDialog::onCurrentChanged(rcstr s) {
+  TR(s)
+}
+
 str openFileName(QWidget* parent, rcstr caption, rcstr dir, rcstr filter) {
-  QFileDialog dlg(parent, caption, dir, filter);
-
-  dlg.setOption(QFileDialog::DontUseNativeDialog);
-  dlg.setViewMode(QFileDialog::Detail);
+  OpenFileDialog dlg(parent, caption, dir, filter);
+  dlg.init();
   dlg.setFileMode(QFileDialog::ExistingFile);
-  dlg.setAcceptMode(QFileDialog::AcceptOpen);
-  dlg.setReadOnly(true);
-
-  dlg.setProxyModel(new ProxyModel);
 
   str fileName;
   if (dlg.exec() && !dlg.selectedFiles().isEmpty())
     fileName = dlg.selectedFiles().first();
 
   return fileName;
+}
+
+str_lst openFileNames(QWidget* parent, rcstr caption, rcstr dir, rcstr filter) {
+  OpenFileDialog dlg(parent, caption, dir, filter);
+  dlg.init();
+  dlg.setFileMode(QFileDialog::ExistingFiles);
+
+  str_lst fileNames;
+  if (dlg.exec())
+    fileNames = dlg.selectedFiles();
+
+  return fileNames;
 }
 
 str saveFileName(QWidget* parent, rcstr caption, rcstr dir, rcstr filter) {
@@ -104,24 +144,6 @@ str saveFileName(QWidget* parent, rcstr caption, rcstr dir, rcstr filter) {
     fileName = dlg.selectedFiles().first();
 
   return fileName;
-}
-
-str_lst openFileNames(QWidget* parent, rcstr caption, rcstr dir, rcstr filter) {
-  QFileDialog dlg(parent, caption, dir, filter);
-
-  dlg.setOption(QFileDialog::DontUseNativeDialog);
-  dlg.setViewMode(QFileDialog::Detail);
-  dlg.setFileMode(QFileDialog::ExistingFiles);
-  dlg.setAcceptMode(QFileDialog::AcceptOpen);
-  dlg.setReadOnly(true);
-
-  dlg.setProxyModel(new ProxyModel);
-
-  str_lst fileNames;
-  if (dlg.exec())
-    fileNames = dlg.selectedFiles();
-
-  return fileNames;
 }
 
 str saveDirName(QWidget* parent, rcstr caption, rcstr dir) {

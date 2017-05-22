@@ -68,7 +68,11 @@ void MainWin::initMenus() {
   };
 
   auto* mbar = menuBar();
+#ifdef Q_OS_OSX
+  mbar->setNativeMenuBar(false); // REVIEW
+#else
   mbar->setNativeMenuBar(true);
+#endif
 
   menuFile_     = mbar->addMenu("&File");
   menuView_     = mbar->addMenu("&View");
@@ -313,7 +317,7 @@ void MainWin::loadSession() {
 }
 
 void MainWin::saveSession() {
-  str fileName = file_dialog::openFileName(
+  str fileName = file_dialog::saveFileName(
       this, "Save session", QDir::current().absolutePath(),
       "Session files (*" % STE % ");;All files (*.*)");
 
@@ -349,7 +353,7 @@ void MainWin::onShow() {
   checkActions();
   hub_.clearSession();
 
-#ifdef DEVELOPMENT_JAN
+#ifdef DEVELOPMENT
   auto safeLoad = [this](rcstr fileName) {
     QFileInfo info(fileName);
     if (info.exists())
@@ -357,8 +361,8 @@ void MainWin::onShow() {
   };
 #endif
 
-#ifdef DEVELOPMENT_JAN
-  safeLoad("/home/jan/C/+dev/fz/data/0.ste");
+#ifdef DEVELOPMENT
+  safeLoad("/home/jan/C/+dev/fz/data/5-7.ste");
 //  hub_.actions.outputDiagrams->trigger();
 #endif
 

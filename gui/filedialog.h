@@ -27,9 +27,9 @@ namespace gui { namespace file_dialog {
 //------------------------------------------------------------------------------
 
 str     openFileName(QWidget*, rcstr caption, rcstr dir, rcstr filter);
-str     saveFileName(QWidget*, rcstr caption, rcstr dir, rcstr filter);
 str_lst openFileNames(QWidget*, rcstr caption, rcstr dir, rcstr filter);
 
+str     saveFileName(QWidget*, rcstr caption, rcstr dir, rcstr filter);
 str     saveDirName(QWidget*, rcstr caption, rcstr dir);
 
 //------------------------------------------------------------------------------
