@@ -416,7 +416,7 @@ private:
 //------------------------------------------------------------------------------
 
 TableModel::TableModel(TheHub& hub, uint numColumns_)
-: models::TableModel(hub), numCols_(numColumns_), sortColumn_(-2)
+: models::TableModel(hub), numCols_(numColumns_), sortColumn_(-1)
 {
   colIndexMap_.resize(numCols_);
   for_i (numCols_)
@@ -515,14 +515,14 @@ typ::row_t::rc TableModel::row(uint index) {
 }
 
 void TableModel::sortData() {
-  // sort sortColumn first, then left-to-right
-  auto cmpRows = [this](uint i, typ::row_t::rc r1, typ::row_t::rc r2) {
-    i = colIndexMap_.at(i);
-    return cmpFunctions_.at(i)(r1.at(i), r2.at(i));
+  auto cmpRows = [this](uint col, typ::row_t::rc r1, typ::row_t::rc r2) {
+    col = colIndexMap_.at(col);
+    return cmpFunctions_.at(col)(r1.at(col), r2.at(col));
   };
 
+  // sort by sortColumn first, then left-to-right
   auto cmp = [this, cmpRows](numRow::rc r1, numRow::rc r2) {
-    if (sortColumn_ >= 0) {
+    if (0 <= sortColumn_) {
       int c = cmpRows(to_u(sortColumn_), r1.row, r2.row);
       if (c < 0)
         return true;
@@ -535,9 +535,9 @@ void TableModel::sortData() {
         return false;
     }
 
-    for_i (numCols_) {
-      if (to_i(i) != sortColumn_) {
-        int c = cmpRows(i, r1.row, r2.row);
+    for_int (col, numCols_) {
+      if (to_i(col) != sortColumn_) {
+        int c = cmpRows(col, r1.row, r2.row);
         if (c < 0)
           return true;
         if (c > 0)
