@@ -677,24 +677,18 @@ TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
       col.cb->setChecked(false);
   };
 
-  auto showAlphaBeta = [this,none]() {
+  auto showInten = [this,none]() {
     none();
-    showCols_.at(uint(eReflAttr::ALPHA)).cb->setChecked(true);
-    showCols_.at(uint(eReflAttr::BETA)).cb->setChecked(true);
-  };
-
-  auto showInten = [this,showAlphaBeta]() {
-    showAlphaBeta();
     showCols_.at(uint(eReflAttr::INTEN)).cb->setChecked(true);
   };
 
-  auto showTth = [this,showAlphaBeta]() {
-    showAlphaBeta();
+  auto showTth = [this,none]() {
+    none();
     showCols_.at(uint(eReflAttr::TTH)).cb->setChecked(true);
   };
 
-  auto showFWHM = [this,showAlphaBeta]() {
-    showAlphaBeta();
+  auto showFWHM = [this,none]() {
+    none();
     showCols_.at(uint(eReflAttr::FWHM)).cb->setChecked(true);
   };
 
@@ -734,7 +728,7 @@ TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
     rbNone_->setChecked(isNone);
     rbAll_->setChecked(isAll);
 
-    uint const PRESET_SELECTION = 3;
+    uint const PRESET_SELECTION = 1;
 
     rbInten_->setChecked(!isOther && PRESET_SELECTION == nInten);
     rbTth_->setChecked(!isOther   && PRESET_SELECTION == nTth);
