@@ -402,13 +402,21 @@ private:
   uint_vec     colIndexMap_;
   typ::cmp_vec cmpFunctions_;
 
-  typ::vec<typ::row_t> rows_;
+  struct numRow {
+    typedef numRow const& rc;
+    numRow() : n(0), row() {}
+    numRow(int n_, typ::row_t::rc row_) : n(n_), row(row_) {}
+    int n;
+    typ::row_t row;
+  };
+
+  typ::vec<numRow> rows_;
 };
 
 //------------------------------------------------------------------------------
 
 TableModel::TableModel(TheHub& hub, uint numColumns_)
-: models::TableModel(hub), numCols_(numColumns_), sortColumn_(-1)
+: models::TableModel(hub), numCols_(numColumns_), sortColumn_(-2)
 {
   colIndexMap_.resize(numCols_);
   for_i (numCols_)
@@ -435,10 +443,10 @@ QVariant TableModel::data(rcIndex index, int role) const {
   switch (role) {
   case Qt::DisplayRole:
     if (0 == indexCol)
-      return indexRow + 1;  // row number, 1-based
+      return rows_.at(to_u(indexRow)).n;
 
     if (--indexCol < numCols && indexRow < numRows) {
-      QVariant var = rows_.at(to_u(indexRow)).at(to_u(indexCol));
+      QVariant var = rows_.at(to_u(indexRow)).row.at(to_u(indexCol));
       if (typ::isNumeric(var) && qIsNaN(var.toDouble()))
         var = QVariant(); // hide nans
       return var;
@@ -451,7 +459,7 @@ QVariant TableModel::data(rcIndex index, int role) const {
       return Qt::AlignRight;
 
     if (--indexCol < numCols && indexRow < numRows) {
-      QVariant const& var = rows_.at(to_u(indexRow)).at(to_u(indexCol));
+      QVariant const& var = rows_.at(to_u(indexRow)).row.at(to_u(indexCol));
       if (typ::isNumeric(var))
         return Qt::AlignRight;
     }
@@ -497,13 +505,13 @@ void TableModel::clear() {
 }
 
 void TableModel::addRow(typ::row_t::rc row, bool sort) {
-  rows_.append(row);
+  rows_.append(numRow(rows_.count()+1, row));
   if (sort)
     sortData();
 }
 
 typ::row_t::rc TableModel::row(uint index) {
-  return rows_.at(index);
+  return rows_.at(index).row;
 }
 
 void TableModel::sortData() {
@@ -513,18 +521,23 @@ void TableModel::sortData() {
     return cmpFunctions_.at(i)(r1.at(i), r2.at(i));
   };
 
-  auto cmp = [this, cmpRows](typ::row_t::rc r1, typ::row_t::rc r2) {
+  auto cmp = [this, cmpRows](numRow::rc r1, numRow::rc r2) {
     if (sortColumn_ >= 0) {
-      int c = cmpRows(to_u(sortColumn_), r1, r2);
+      int c = cmpRows(to_u(sortColumn_), r1.row, r2.row);
       if (c < 0)
         return true;
       if (c > 0)
+        return false;
+    } else if (-1 == sortColumn_) {
+      if (r1.n < r2.n)
+        return true;
+      if (r1.n > r2.n)
         return false;
     }
 
     for_i (numCols_) {
       if (to_i(i) != sortColumn_) {
-        int c = cmpRows(i, r1, r2);
+        int c = cmpRows(i, r1.row, r2.row);
         if (c < 0)
           return true;
         if (c > 0)
@@ -580,7 +593,7 @@ void Table::setColumns(str_lst::rc headers, str_lst::rc outHeaders, typ::cmp_vec
             EXPECT(oldVisualIndex > 0 && newVisualIndex > 0)
             auto& h = *header();
             h.setSortIndicatorShown(false);
-            model_->setSortColumn(-1);
+            model_->setSortColumn(-2);
             model_->moveColumn(to_u(oldVisualIndex - 1),
                                to_u(newVisualIndex - 1));
             model_->sortData();

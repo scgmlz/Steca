@@ -362,8 +362,8 @@ void MainWin::onShow() {
 #endif
 
 #ifdef DEVELOPMENT
-  safeLoad("/home/jan/C/+dev/fz/data/5-7.ste");
-//  hub_.actions.outputDiagrams->trigger();
+  safeLoad("/home/jan/C/+dev/fz/data/0.ste");
+  hub_.actions.outputDiagrams->trigger();
 #endif
 
   Settings s(config_key::GROUP_CONFIG);
