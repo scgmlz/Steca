@@ -55,8 +55,19 @@ bool isNumeric(QVariant const& v) {
 
 IMPL_CMP(cmp_int,  toInt)
 IMPL_CMP(cmp_str,  toString)
-IMPL_CMP(cmp_real, toDouble)
 IMPL_CMP(cmp_date, toDate)
+
+int cmp_real(QVariant const& v1, QVariant const& v2) {
+  auto val1 = v1.toDouble(), val2 = v2.toDouble();
+  if (qIsNaN(val1)) {
+    return qIsNaN(val2) ? 0 : +1;
+  }
+  if (qIsNaN(val2)) {
+    return -1;
+  }
+  RET_COMPARE_VALUE2(val1, val2)
+  return 0;
+}
 
 TEST("cmp_int(QVariants)", ({ // not exhaustive, just due diligence
   QVariant v1(1), v2(2);

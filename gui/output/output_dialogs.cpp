@@ -495,7 +495,8 @@ void TableModel::setColumns(str_lst::rc headers, typ::cmp_vec::rc cmps) {
 }
 
 void TableModel::setSortColumn(int col) {
-  sortColumn_ = col;
+  sortColumn_ = col < 0 ? col : colIndexMap_.at(col);
+  WT(col << sortColumn_)
 }
 
 void TableModel::clear() {
@@ -593,7 +594,7 @@ void Table::setColumns(str_lst::rc headers, str_lst::rc outHeaders, typ::cmp_vec
             EXPECT(oldVisualIndex > 0 && newVisualIndex > 0)
             auto& h = *header();
             h.setSortIndicatorShown(false);
-            model_->setSortColumn(-2);
+//            model_->setSortColumn(-2);
             model_->moveColumn(to_u(oldVisualIndex - 1),
                                to_u(newVisualIndex - 1));
             model_->sortData();

@@ -363,7 +363,7 @@ void MainWin::onShow() {
 
 #ifdef DEVELOPMENT
   safeLoad("/home/jan/C/+dev/fz/data/0.ste");
-  hub_.actions.outputDiagrams->trigger();
+  hub_.actions.outputPolefigures->trigger();
 #endif
 
   Settings s(config_key::GROUP_CONFIG);
