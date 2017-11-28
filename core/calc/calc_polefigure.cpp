@@ -317,7 +317,7 @@ ReflectionInfos interpolate(ReflectionInfos::rc infos,
           continue;
         }
 
-        if (!qIsNaN(idwRadius)) {
+        if (qIsNaN(idwRadius)) {
           // Don't fall back to idw, just add an unmeasured info.
           interpolatedInfos.append(ReflectionInfo(alpha, beta));
           continue;
