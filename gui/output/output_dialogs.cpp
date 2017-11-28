@@ -496,7 +496,6 @@ void TableModel::setColumns(str_lst::rc headers, typ::cmp_vec::rc cmps) {
 
 void TableModel::setSortColumn(int col) {
   sortColumn_ = col < 0 ? col : colIndexMap_.at(col);
-  WT(col << sortColumn_)
 }
 
 void TableModel::clear() {

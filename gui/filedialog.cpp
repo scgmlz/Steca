@@ -88,8 +88,6 @@ class OpenFileDialog: public QFileDialog {
 public:
   using QFileDialog::QFileDialog;
   void init();
-
-  void onCurrentChanged(rcstr s);
 };
 
 void OpenFileDialog::init() {
@@ -98,12 +96,6 @@ void OpenFileDialog::init() {
   setAcceptMode(AcceptOpen);
   setReadOnly(true);
   setProxyModel(new OpenFileProxyModel);
-
-  connect(this, &QFileDialog::currentChanged, this, &OpenFileDialog::onCurrentChanged);
-}
-
-void OpenFileDialog::onCurrentChanged(rcstr s) {
-  TR(s)
 }
 
 str openFileName(QWidget* parent, rcstr caption, rcstr dir, rcstr filter) {
