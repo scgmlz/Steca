@@ -27,7 +27,7 @@ using namespace typ;
 using namespace data;
 using namespace calc;
 
-Session::Session() : angleMapCache_(360), intenScale_(1) {
+Session::Session() : intenScale_(1), angleMapCache_(360) {
   clear();
   fit::initFactory();
 }
