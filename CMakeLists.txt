@@ -2,6 +2,9 @@
 
 cmake_minimum_required (VERSION 2.8.12 FATAL_ERROR)
 
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
+include(PreventInSourceBuilds)
+
 project (SteCa2)
 
 if (CMAKE_VERSION VERSION_LESS "3.1")
