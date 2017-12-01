@@ -354,7 +354,9 @@ void MainWin::onShow() {
   hub_.clearSession();
 
 #ifdef DEVELOPMENT
-  // automatic actions
+  // automatic actions - load files & open dialog
+  // helps with development
+
   auto safeLoad = [this](rcstr fileName) {
     QFileInfo info(fileName);
     if (info.exists())
