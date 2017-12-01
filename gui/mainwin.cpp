@@ -354,14 +354,12 @@ void MainWin::onShow() {
   hub_.clearSession();
 
 #ifdef DEVELOPMENT
+  // automatic actions
   auto safeLoad = [this](rcstr fileName) {
     QFileInfo info(fileName);
     if (info.exists())
       hub_.loadSession(info);
   };
-#endif
-
-#ifdef DEVELOPMENT
   safeLoad("/home/jan/C/+dev/fz/data/0.ste");
   hub_.actions.outputPolefigures->trigger();
 #endif

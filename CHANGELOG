@@ -1,10 +1,24 @@
-ver. 2.0.5, released ....
+ver. 2.0.5, released 2017.12.01
 -------------------------------
 
-Changes:
+New features:
 
-* some unit tests are back
-* code cleanup
+* an option to switch between averaging and summing intensities in histograms
+* simple zooming in the histogram graph
+
+Improvements:
+
+* some code cleanup
+* Better sorting of the table of pole figure points.
+* Table of pole figure points does not auto-select the alpha & beta comumns
+* "open files" dialog caches the file type information
+* read new STRESS-SPEC metadata
+* all file dialogs are now uniformly looking
+
+Bug fixes:
+
+* Correctly enabled fallback to idw if pole figure point interpolation
+  by averaging fails
 
 ver. 2.0.4, released 2016.12.01
 -------------------------------
