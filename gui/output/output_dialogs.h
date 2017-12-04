@@ -101,16 +101,6 @@ class PanelFitError : public Panel {
   CLASS(PanelFitError) SUPER(Panel)
 public:
   PanelFitError(TheHub&);
-
-#ifdef DEVELOPMENT_REBECCA
-  QComboBox         *cbErrorUnits;
-  QRadioButton      *rbPercent, *rbAbs;
-  QDoubleSpinBox    *spFitError;
-
-times:
-  *intensityFitError_, *tthFitError_, *fwhmFitError_;
-  QComboBox                 *cbErrorTypes_;
-#endif
 };
 
 //------------------------------------------------------------------------------

@@ -116,30 +116,6 @@ void TabGraph::paintGrid() {
 void TabGraph::paintPoints() {
   qreal rgeMax = rs_.rgeInten().max;
 
-#ifdef DEVELOPMENT_REBECCA
-  // TODO
-
-  auto paintPoint = [this, &rgeMax](int i, int j) {
-    QPointF p(i,j);
-    calc::itf_t itf = calc::interpolateValues(10, rs_, alpha(p), beta(p));
-    if (qIsFinite(itf.inten)) {
-      auto color = QColor(heatmapColor(itf.inten / rgeMax));
-      p_->setPen(color);
-      p_->drawPoint(p);
-    }
-  };
-
-  int ru = int(r_), r2 = ru*ru;
-  for_ij(ru,ru) {
-    if (i*i + j*j <= r2) {
-      paintPoint(-i,-j);
-      paintPoint(-i,+j);
-      paintPoint(+i,-j);
-      paintPoint(+i,+j);
-    }
-  }
-
-#else
   for (auto& r : rs_) {
     qreal inten = r.inten();
 
@@ -159,7 +135,6 @@ void TabGraph::paintPoints() {
       }
     }
   }
-#endif
 }
 
 //------------------------------------------------------------------------------

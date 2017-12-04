@@ -81,17 +81,6 @@ protected:
   GridLayout *grid_;
 };
 
-#ifdef DEVELOPMENT_REBECCA
-class FitErrorGridPannel : public GridPanel {
-  CLASS(FitErrorGridPannel) SUPER(GridPanel)
-public:
-  using super::super;
-
-  QComboBox         *cbErrorUnits;
-  QRadioButton      *rbPercent, *rbAbs;
-  QDoubleSpinBox    *spFitError;
-};
-#endif
 //------------------------------------------------------------------------------
 
 // A tabbed panel
