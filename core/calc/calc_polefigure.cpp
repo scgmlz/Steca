@@ -20,7 +20,8 @@
 namespace calc {
 //------------------------------------------------------------------------------
 
-using namespace typ;
+    using typ::deg;
+    using typ::vec;
 
 typedef vec<ReflectionInfo const*> info_vec;
 
@@ -43,9 +44,9 @@ deg calculateDeltaBeta(deg beta1, deg beta2) {
 // Calculates the angle between two points on a unit sphere.
 deg angle(deg alpha1, deg alpha2, deg deltaBeta) {
   // Absolute value of deltaBeta is not needed because cos is an even function.
-  auto a = rad(acos(cos(alpha1.toRad()) * cos(alpha2.toRad()) +
-                    sin(alpha1.toRad()) * sin(alpha2.toRad()) *
-                        cos(deltaBeta.toRad())))
+    auto a = typ::rad(acos(cos(alpha1.toRad()) * cos(alpha2.toRad()) +
+                           sin(alpha1.toRad()) * sin(alpha2.toRad()) *
+                           cos(deltaBeta.toRad())))
                .toDeg();
   ENSURE(0 <= a && a <= 180)
   return a;
@@ -338,4 +339,3 @@ ReflectionInfos interpolate(ReflectionInfos::rc infos,
 
 //------------------------------------------------------------------------------
 }
-// eof

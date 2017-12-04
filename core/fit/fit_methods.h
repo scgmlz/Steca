@@ -23,9 +23,6 @@ namespace fit {
 
 class Method {
 public:
-  Method();
-  virtual ~Method();
-
   void fit(typ::Function&, typ::Curve::rc);
 
 protected:

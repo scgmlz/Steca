@@ -21,8 +21,10 @@
 namespace calc {
 //------------------------------------------------------------------------------
 
-using namespace typ;
-using namespace data;
+    using typ::Curve;
+    using typ::Image;
+    using typ::ImageTransform;
+    using typ::size2d;
 
 LensBase::LensBase(core::Session::rc session, data::Datasets::rc datasets,
                    bool trans, bool cut,
@@ -87,7 +89,7 @@ void LensBase::doCut(uint& i, uint& j) const {
 //------------------------------------------------------------------------------
 
 ImageLens::ImageLens(core::Session::rc session,
-                     Image::rc image, Datasets::rc datasets,
+                     Image::rc image, data::Datasets::rc datasets,
                      bool trans, bool cut)
 : super(session, datasets, trans, cut, session.imageTransform(), session.imageCut())
 , image_(image)
@@ -206,4 +208,3 @@ void DatasetLens::setNorm(eNorm norm) {
 
 //------------------------------------------------------------------------------
 }
-// eof

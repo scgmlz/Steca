@@ -21,13 +21,8 @@
 namespace fit {
 //------------------------------------------------------------------------------
 
-using namespace typ;
-
-Method::Method() {
-}
-
-Method::~Method() {
-}
+    using typ::Curve;
+    using typ::Function;
 
 void Method::fit(Function& function, Curve::rc curve) {
   if (curve.isEmpty())
@@ -158,4 +153,3 @@ void LevenbergMarquardt::callbackJacobianLM(qreal* parValues,
 
 //------------------------------------------------------------------------------
 }
-// eof

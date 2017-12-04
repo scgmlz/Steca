@@ -23,8 +23,11 @@ namespace data {
 //------------------------------------------------------------------------------
 // metadata attributes
 
-using namespace::typ;
-using namespace::calc;
+    using typ::Curve;
+    using typ::Image;
+    using typ::Range;
+    using typ::size2d;
+    using typ::deg;
 
 enum class eAttr {
   MOTOR_XT,  MOTOR_YT,  MOTOR_ZT,
@@ -86,8 +89,11 @@ str_lst Metadata::attributeTags(bool out) {
   return out ? outTags : tags;
 }
 
-cmp_vec Metadata::attributeCmps() {
-  static cmp_vec const cmps = {
+typ::cmp_vec Metadata::attributeCmps() {
+    using typ::cmp_real;
+    using typ::cmp_date;
+    using typ::cmp_str;
+    static typ::cmp_vec const cmps = {
     cmp_real, cmp_real, cmp_real,
     cmp_real, cmp_real, cmp_real, cmp_real,
     cmp_real, cmp_real, cmp_real,
@@ -168,15 +174,15 @@ QVariant Metadata::attributeValue(uint i) const {
   }
 }
 
-row_t Metadata::attributeValues() const {
-  row_t attrs;
+typ::row_t Metadata::attributeValues() const {
+    typ::row_t attrs;
   for_i (uint(eAttr::NUM_ALL_ATTRIBUTES))
     attrs.append(attributeValue(i));
   return attrs;
 }
 
-row_t Metadata::attributeNaNs() {
-  static row_t row;
+typ::row_t Metadata::attributeNaNs() {
+    static typ::row_t row;
   if (row.isEmpty())
     for_i (uint(eAttr::NUM_ALL_ATTRIBUTES))
       row.append(NAN);
@@ -230,7 +236,7 @@ void OneDataset::collectIntens(core::Session::rc session, typ::Image const* inte
                                tth_t minTth, tth_t deltaTth) const {
   auto angleMap = session.angleMap(*this);
   EXPECT(!angleMap.isNull())
-  AngleMap::rc map = *angleMap;
+  typ::AngleMap::rc map = *angleMap;
 
   uint_vec const* gmaIndexes = nullptr;
   uint gmaIndexMin = 0, gmaIndexMax = 0;
@@ -520,7 +526,7 @@ inten_rge::rc Datasets::rgeFixedInten(core::Session::rc session, bool trans, boo
       for (auto& one : *dataset) {
         if (one->image()) {
           auto& image = *one->image();
-          shp_ImageLens imageLens = session.imageLens(image,*this,trans,cut);
+          calc::shp_ImageLens imageLens = session.imageLens(image,*this,trans,cut);
           rgeFixedInten_.extendBy(imageLens->rgeInten(false));
         }
       }
@@ -577,9 +583,9 @@ size2d OneDatasets::imageSize() const {
   return first()->imageSize();
 }
 
-shp_Image OneDatasets::foldedImage() const {
+typ::shp_Image OneDatasets::foldedImage() const {
   EXPECT(!isEmpty())
-  shp_Image image(new Image(imageSize()));
+      typ::shp_Image image(new Image(imageSize()));
 
   for (auto& one: *this)
     image->addIntens(*one->image_);
@@ -589,4 +595,3 @@ shp_Image OneDatasets::foldedImage() const {
 
 //------------------------------------------------------------------------------
 }
-// eof

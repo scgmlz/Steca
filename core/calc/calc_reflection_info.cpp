@@ -18,8 +18,12 @@
 namespace calc {
 //------------------------------------------------------------------------------
 
-using namespace typ;
-using namespace data;
+    using typ::cmp_real;
+    using typ::cmp_vec;
+    using typ::deg;
+    using typ::Range;
+    using data::Metadata;
+    using data::shp_Metadata;
 
 /* NOTE Invalid output parameters are set to NaNs. However, some analysis
  * programs
@@ -123,8 +127,8 @@ ReflectionInfo::ReflectionInfo(deg alpha, deg beta)
 {
 }
 
-row_t ReflectionInfo::data() const {
-  row_t row{QVariant(alpha()), QVariant(beta()),
+typ::row_t ReflectionInfo::data() const {
+    typ::row_t row{QVariant(alpha()), QVariant(beta()),
             QVariant(rgeGma().min), QVariant(rgeGma().max),
             QVariant(inten()), QVariant(intenError()),
             QVariant(tth()),   QVariant(tthError()),
@@ -180,5 +184,3 @@ void ReflectionInfos::invalidate() {
 
 //------------------------------------------------------------------------------
 }
-
-// eof
