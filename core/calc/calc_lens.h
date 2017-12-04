@@ -43,8 +43,6 @@ public:
            bool trans, bool cut,
            typ::ImageTransform::rc, typ::ImageCut::rc);
 
-  virtual ~LensBase();
-
   virtual typ::size2d size() const = 0;
 
 protected:

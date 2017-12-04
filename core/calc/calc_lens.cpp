@@ -35,9 +35,6 @@ LensBase::LensBase(core::Session::rc session, data::Datasets::rc datasets,
 , intensCorr_(session.intensCorr()) {
 }
 
-LensBase::~LensBase() {
-}
-
 size2d LensBase::transCutSize(size2d size) const {
   if (trans_ && imageTransform_.isTransposed())
     size = size.transposed();
