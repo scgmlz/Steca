@@ -33,7 +33,6 @@ public:
 
 protected:
   void accept();
-  void mouseDoubleClickEvent(QMouseEvent*);
 
   QCheckBox      *cbShowAtStartup_, *cbCheckUpdatesAtStartup_;
   QDoubleSpinBox *detDistance_, *detPixelSize_;

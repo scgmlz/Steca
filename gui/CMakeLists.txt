@@ -20,7 +20,7 @@ target_link_libraries (${lib}
   Qt5::Core
   Qt5::Gui
   Qt5::Widgets
-  Qt5::Multimedia
+  Qt5::Network
   core
   LevMar
   io

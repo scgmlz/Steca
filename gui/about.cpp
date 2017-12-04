@@ -23,7 +23,6 @@
 #include "typ/typ_geometry.h"
 #include <QApplication>
 #include <QDialogButtonBox>
-#include <QtMultimedia/QSound>
 
 #ifdef Q_OS_MAC
 #include <QToolTip>
@@ -144,10 +143,6 @@ void AboutBox::accept() {
   s.saveReal(config_key::DET_PIX_SIZE, detPixelSize_->value());
 
   super::accept();
-}
-
-void AboutBox::mouseDoubleClickEvent(QMouseEvent *) {
-  QSound::play(":/HAL/good_evening");
 }
 
 //------------------------------------------------------------------------------
