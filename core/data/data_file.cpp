@@ -15,7 +15,6 @@
 #include "data_file.h"
 
 namespace data {
-//------------------------------------------------------------------------------
 
 File::File(rcstr fileName) : fileInfo_(fileName) {}
 
@@ -27,6 +26,5 @@ str File::fileName() const {
     return fileInfo_.fileName();
 }
 
-//------------------------------------------------------------------------------
+
 }
-// eof

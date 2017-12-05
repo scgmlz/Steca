@@ -17,7 +17,6 @@
 #include <qmath.h>
 
 namespace calc {
-//------------------------------------------------------------------------------
 
 using typ::deg;
 using typ::vec;
@@ -320,5 +319,5 @@ ReflectionInfos interpolate(
     return interpolatedInfos;
 }
 
-//------------------------------------------------------------------------------
+
 }

@@ -16,7 +16,6 @@
 
 #ifndef DEFS_H
 #define DEFS_H
-//------------------------------------------------------------------------------
 
 #include "def_alg.h"
 #include "def_debug.h"
@@ -24,6 +23,5 @@
 #include "def_gsl.h"
 #include "def_macros.h"
 
-//------------------------------------------------------------------------------
+
 #endif // DEFS_H
-// eof

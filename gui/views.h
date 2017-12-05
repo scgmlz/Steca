@@ -22,7 +22,7 @@
 
 namespace gui {
 namespace views {
-//------------------------------------------------------------------------------
+
 // A (tree-)list view with a reference to the hub. Single selection.
 
 class ListView : public TreeListView, protected RefHub {
@@ -42,7 +42,7 @@ protected:
     void selectRow(int);
 };
 
-//------------------------------------------------------------------------------
+
 // Multiple selection.
 
 class MultiListView : public ListView {
@@ -52,7 +52,7 @@ protected:
     void selectRows(uint_vec);
 };
 
-//------------------------------------------------------------------------------
+
 }
 }
 #endif // VIEWS_H

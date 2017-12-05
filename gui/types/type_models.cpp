@@ -23,7 +23,6 @@ namespace models
 QVariant const EMPTY_VAR;
 QModelIndex const ANY_INDEX;
 
-//------------------------------------------------------------------------------
 
 // CheckedInfo::CheckedInfo(rcstr t): tag(t), cb(nullptr), infoText(nullptr) {
 //}
@@ -33,7 +32,6 @@ QModelIndex const ANY_INDEX;
 //  infoText->setText(text);
 //}
 
-//------------------------------------------------------------------------------
 
 TableModel::TableModel(gui::TheHub& hub) : RefHub(hub) {}
 
@@ -43,6 +41,5 @@ void TableModel::signalReset()
     endResetModel();
 }
 
-//------------------------------------------------------------------------------
+
 }
-// eof

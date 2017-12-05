@@ -17,7 +17,6 @@
 #include <qmath.h>
 
 namespace typ {
-//------------------------------------------------------------------------------
 
 preal const Geometry::MIN_DETECTOR_DISTANCE = preal(10);
 preal const Geometry::MIN_DETECTOR_PIXEL_SIZE = preal(.1);
@@ -37,7 +36,6 @@ int Geometry::compare(rc that) const {
 
 EQ_NE_OPERATOR(Geometry)
 
-//------------------------------------------------------------------------------
 
 ImageCut::ImageCut() : ImageCut(0, 0, 0, 0) {}
 
@@ -58,7 +56,6 @@ size2d ImageCut::marginSize() const {
     return size2d(left + right, top + bottom);
 }
 
-//------------------------------------------------------------------------------
 
 Angles::Angles() : Angles(0, 0) {}
 
@@ -79,7 +76,6 @@ int AngleMap::Key::compare(rc that) const {
 
 EQ_NE_OPERATOR(AngleMap::Key)
 
-//------------------------------------------------------------------------------
 
 AngleMap::AngleMap(Key::rc key) : key_(key) {
     calculate();
@@ -232,6 +228,5 @@ void AngleMap::calculate() {
     gmaIndexes = uv;
 }
 
-//------------------------------------------------------------------------------
+
 }
-// eof

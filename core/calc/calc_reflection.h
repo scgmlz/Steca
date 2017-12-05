@@ -21,7 +21,6 @@
 #include <QSharedPointer>
 
 namespace calc {
-//------------------------------------------------------------------------------
 
 class Reflection final {
     CLASS(Reflection)
@@ -60,7 +59,7 @@ public:
 typedef QSharedPointer<Reflection> shp_Reflection;
 typedef typ::vec<shp_Reflection> Reflections;
 
-//------------------------------------------------------------------------------
+
 }
 
 Q_DECLARE_METATYPE(calc::shp_Reflection)

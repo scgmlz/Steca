@@ -16,7 +16,7 @@
 #include "io_io.h"
 
 namespace io {
-//------------------------------------------------------------------------------
+
 // Code taken from the original STeCa, only slightly modified.
 
 data::shp_File loadMar(rcstr filePath) THROWS {
@@ -229,6 +229,5 @@ data::shp_File loadMar(rcstr filePath) THROWS {
     return file;
 }
 
-//------------------------------------------------------------------------------
+
 }
-// eof

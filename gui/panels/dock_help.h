@@ -21,7 +21,6 @@ class QTextBrowser;
 
 namespace gui {
 namespace panel {
-//------------------------------------------------------------------------------
 
 class DockHelp : public DockWidget, protected RefHub {
     CLASS(DockHelp) SUPER(DockWidget) public : DockHelp(TheHub&);
@@ -30,7 +29,7 @@ private:
     QTextBrowser* browser_;
 };
 
-//------------------------------------------------------------------------------
+
 }
 }
 #endif // DOCK_HELP_H

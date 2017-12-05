@@ -15,7 +15,6 @@
 #include "config.h"
 
 namespace config_key {
-//------------------------------------------------------------------------------
 
 str const GROUP_CONFIG("config"), CURRENT_VERSION("current version"),
     STARTUP_ABOUT("startup about"), STARTUP_CHECK_UPDATE("startup check update"),
@@ -40,6 +39,5 @@ str const GROUP_CONFIG("config"), CURRENT_VERSION("current version"),
 
     SAVE_DIR("save dir"), SAVE_FMT("save format");
 
-//------------------------------------------------------------------------------
+
 }
-// eof

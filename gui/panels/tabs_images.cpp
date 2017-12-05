@@ -23,7 +23,6 @@
 
 namespace gui {
 namespace panel {
-//------------------------------------------------------------------------------
 
 class ImageWidget : public QWidget, protected RefHub {
     CLASS(ImageWidget) SUPER(QWidget) public : ImageWidget(TheHub&);
@@ -133,7 +132,6 @@ void ImageWidget::paintEvent(QPaintEvent*) {
     p.drawRect(rect.adjusted(-1, -1, 0, 0));
 }
 
-//------------------------------------------------------------------------------
 
 TabsImages::TabsImages(TheHub& hub) : super(hub) {
     auto& actions = hub_.actions;
@@ -351,7 +349,6 @@ void TabsImages::render() {
     }
 }
 
-//------------------------------------------------------------------------------
+
 }
 }
-// eof

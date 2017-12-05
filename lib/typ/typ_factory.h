@@ -22,7 +22,6 @@
 #include "typ/typ_str.h"
 
 namespace typ {
-//------------------------------------------------------------------------------
 
 template <class ProductBase> class Factory {
 public:
@@ -52,6 +51,6 @@ public:
     }
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_FACTORY_H

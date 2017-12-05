@@ -18,14 +18,12 @@
 
 namespace gui {
 namespace panel {
-//------------------------------------------------------------------------------
 
 DockHelp::DockHelp(TheHub& hub) : super("Help", "dock-help", Qt::Vertical), RefHub(hub) {
     setFeatures(features() | DockWidgetFloatable);
     box_->addWidget((browser_ = new QTextBrowser()));
 }
 
-//------------------------------------------------------------------------------
+
 }
 }
-// eof

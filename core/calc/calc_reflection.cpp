@@ -15,7 +15,6 @@
 #include "calc_reflection.h"
 
 namespace calc {
-//------------------------------------------------------------------------------
 
 str_lst::rc Reflection::typeStrLst() {
     static str_lst types{ "Raw", "Gaussian", "Lorentzian", "PseudoVoigt1", "PseudoVoigt2" };
@@ -87,6 +86,4 @@ void Reflection::loadJson(typ::JsonObj::rc obj) THROWS {
     setPeakFunction(static_cast<fit::PeakFunction*>(f.take()));
 }
 
-//------------------------------------------------------------------------------
-}
-// eof
+} // namespace calc

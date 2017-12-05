@@ -24,7 +24,6 @@ class QProgressBar;
 
 namespace gui {
 namespace output {
-//------------------------------------------------------------------------------
 
 /* Note that some data members are public, to simplify the code. Be careful. */
 
@@ -86,7 +85,6 @@ class PanelFitError : public Panel {
     CLASS(PanelFitError) SUPER(Panel) public : PanelFitError(TheHub&);
 };
 
-//------------------------------------------------------------------------------
 
 class Params : public QWidget, protected RefHub {
     CLASS(Params)
@@ -119,7 +117,6 @@ private:
     QBoxLayout* box_;
 };
 
-//------------------------------------------------------------------------------
 
 class Table : public TreeView, protected RefHub {
     CLASS(Table) SUPER(TreeView) public : Table(TheHub&, uint numDataColumns);
@@ -140,13 +137,11 @@ private:
     str_lst outHeaders_;
 };
 
-//------------------------------------------------------------------------------
 
 class Tabs : public panel::TabsPanel {
     CLASS(Tabs) SUPER(panel::TabsPanel) public : Tabs(TheHub&);
 };
 
-//------------------------------------------------------------------------------
 
 class Tab : public QWidget, protected RefHub {
     CLASS(Tab) SUPER(QWidget) public : Tab(TheHub&, Params&);
@@ -157,7 +152,6 @@ protected:
     GridLayout* grid_;
 };
 
-//------------------------------------------------------------------------------
 
 class TabTable : public Tab {
     CLASS(TabTable)
@@ -194,7 +188,6 @@ private:
     showcol_vec showCols_;
 };
 
-//------------------------------------------------------------------------------
 
 class TabSave : public Tab {
     CLASS(TabSave)
@@ -212,7 +205,6 @@ protected:
     QRadioButton *rbDat_, *rbCsv_;
 };
 
-//------------------------------------------------------------------------------
 
 class Frame : public QFrame, protected RefHub {
     CLASS(Frame)

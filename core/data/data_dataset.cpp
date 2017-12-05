@@ -19,7 +19,7 @@
 #include <qmath.h>
 
 namespace data {
-//------------------------------------------------------------------------------
+
 // metadata attributes
 
 using typ::Curve;
@@ -204,7 +204,6 @@ typ::row_t Metadata::attributeNaNs() {
     return row;
 }
 
-//------------------------------------------------------------------------------
 
 OneDataset::OneDataset(Metadata::rc md, typ::inten_arr::rc intens)
     : md_(new Metadata(md)), image_(new Image(intens)) {}
@@ -287,7 +286,6 @@ void OneDataset::collectIntens(
     }
 }
 
-//------------------------------------------------------------------------------
 
 Dataset::Dataset() : datasets_(nullptr) {}
 
@@ -458,7 +456,6 @@ size2d Dataset::imageSize() const {
     return first()->imageSize();
 }
 
-//------------------------------------------------------------------------------
 
 Datasets::Datasets() {
     invalidateAvgMutables();
@@ -587,5 +584,5 @@ typ::shp_Image OneDatasets::foldedImage() const {
     return image;
 }
 
-//------------------------------------------------------------------------------
+
 }

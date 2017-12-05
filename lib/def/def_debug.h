@@ -16,7 +16,7 @@
 #define DEF_DEBUG_H
 
 #include <QtGlobal>
-//------------------------------------------------------------------------------
+
 // debugging helpers
 
 #ifndef QT_NO_DEBUG
@@ -82,5 +82,4 @@
 #define WT(what) TR(#what ":" << what)
 
 #endif // DEF_DEBUG_H
-//------------------------------------------------------------------------------
-// eof
+

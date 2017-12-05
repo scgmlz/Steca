@@ -19,7 +19,6 @@
 
 namespace gui {
 namespace views {
-//-----------------------------------------------------------------------------
 
 ListView::ListView(TheHub& hub) : RefHub(hub) {}
 
@@ -38,7 +37,6 @@ void ListView::selectRow(int row) {
     setCurrentIndex(model()->index(row, 0));
 }
 
-//------------------------------------------------------------------------------
 
 MultiListView::MultiListView(TheHub& hub) : super(hub) {
     setSelectionMode(ExtendedSelection);
@@ -55,7 +53,6 @@ void MultiListView::selectRows(uint_vec rows) {
     selectionModel()->select(is, QItemSelectionModel::ClearAndSelect);
 }
 
-//------------------------------------------------------------------------------
+
 }
 }
-// eof

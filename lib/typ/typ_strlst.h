@@ -20,7 +20,7 @@
 #include <QStringList>
 #include <initializer_list>
 
-//------------------------------------------------------------------------------
+
 // limited QStringList, only needed methods reexported
 
 class str_lst : protected QStringList {
@@ -43,5 +43,5 @@ class str_lst : protected QStringList {
     QString const& at(uint i) const { return super::at(to_i(i)); }
 };
 
-//------------------------------------------------------------------------------
+
 #endif // TYP_STRLST_H

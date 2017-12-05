@@ -16,7 +16,6 @@
 #include <QAction>
 #include <QGroupBox>
 
-//------------------------------------------------------------------------------
 
 void GridLayout::addRowStretch(int stretch) {
     setRowStretch(rowCount(), stretch);
@@ -39,7 +38,6 @@ int mWidth(QWidget const* w) {
     return w->fontMetrics().width('m');
 }
 
-//------------------------------------------------------------------------------
 
 QBoxLayout* boxLayout(Qt::Orientation orientation) {
     switch (orientation) {
@@ -157,7 +155,6 @@ QComboBox* comboBox(str_lst::rc items) {
     return comboBox;
 }
 
-//------------------------------------------------------------------------------
 
 TreeView::TreeView() {
     setAlternatingRowColors(true);
@@ -167,7 +164,6 @@ int TreeView::sizeHintForColumn(int) const {
     return 3 * mWidth(this);
 }
 
-//------------------------------------------------------------------------------
 
 TreeListView::TreeListView() {
     setSelectionBehavior(SelectRows);
@@ -185,7 +181,6 @@ void TreeListView::setModel(QAbstractItemModel* model) {
     }
 }
 
-//------------------------------------------------------------------------------
 
 LineView::LineView() {
     setReadOnly(true);
@@ -196,13 +191,11 @@ void LineView::setText(rcstr text) {
     super::setCursorPosition(0);
 }
 
-//------------------------------------------------------------------------------
 
 BoxWidget::BoxWidget(Qt::Orientation orientation) {
     setLayout((box_ = boxLayout(orientation)));
 }
 
-//------------------------------------------------------------------------------
 
 DockWidget::DockWidget(rcstr name, rcstr objectName, Qt::Orientation orientation) {
     setFeatures(DockWidgetMovable);
@@ -213,5 +206,4 @@ DockWidget::DockWidget(rcstr name, rcstr objectName, Qt::Orientation orientation
     widget()->setLayout((box_ = boxLayout(orientation)));
 }
 
-//------------------------------------------------------------------------------
-// eof
+

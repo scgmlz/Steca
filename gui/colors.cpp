@@ -19,7 +19,6 @@
 #include <qmath.h>
 
 namespace gui {
-//------------------------------------------------------------------------------
 
 QRgb intenImage(inten_t inten, inten_t maxInten, bool curved) {
     if (qIsNaN(inten))
@@ -83,6 +82,5 @@ QRgb heatmapColor(inten_t value) {
     return qRgb(r, g, b);
 }
 
-//------------------------------------------------------------------------------
+
 }
-// eof

@@ -14,7 +14,6 @@
 
 #include "typ_log.h"
 
-//------------------------------------------------------------------------------
 
 void MessageLogger::info(rcstr msg) {
     if (handler)
@@ -33,5 +32,4 @@ void MessageLogger::popup(rcstr msg) {
 
 void (*MessageLogger::handler)(rcstr, eType) = nullptr;
 
-//------------------------------------------------------------------------------
-// eof
+

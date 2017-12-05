@@ -18,7 +18,6 @@
 
 namespace gui {
 namespace output {
-//------------------------------------------------------------------------------
 
 TabDiffractogramsSave::TabDiffractogramsSave(TheHub& hub, Params& params)
     : super(hub, params, true) {
@@ -40,7 +39,6 @@ uint TabDiffractogramsSave::currType() const {
     return to_u(fileTypes_->currentIndex());
 }
 
-//------------------------------------------------------------------------------
 
 struct OutputData {
     OutputData() {}
@@ -233,7 +231,6 @@ bool DiffractogramsFrame::saveDiffractogramOutput() {
     return false;
 }
 
-//------------------------------------------------------------------------------
+
 }
 }
-// eof

@@ -19,7 +19,6 @@
 
 namespace gui {
 namespace panel {
-//------------------------------------------------------------------------------
 
 class DockDatasets : public DockWidget, protected RefHub {
     CLASS(DockDatasets) SUPER(DockWidget) public : DockDatasets(TheHub&);
@@ -30,7 +29,7 @@ private:
     class DatasetView* datasetView_;
 };
 
-//------------------------------------------------------------------------------
+
 }
 }
 #endif // DOCK_DATASET_H

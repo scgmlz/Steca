@@ -21,7 +21,6 @@
 #include <QAction>
 
 namespace gui {
-//------------------------------------------------------------------------------
 
 class Action : public QAction {
     CLASS(Action) SUPER(QAction) public : Action(rcstr text, QObject*);
@@ -49,7 +48,6 @@ protected:
     str text1_, text2_;
 };
 
-//------------------------------------------------------------------------------
 
 class Actions : protected RefHub {
     CLASS(Actions) SUPER(RefHub) public : Actions(TheHub&);
@@ -70,6 +68,6 @@ private:
     Action& tgl(Action*& action, rcstr text);
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // ACTIONS_H

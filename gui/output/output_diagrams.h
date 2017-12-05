@@ -20,7 +20,6 @@
 
 namespace gui {
 namespace output {
-//------------------------------------------------------------------------------
 
 class TabPlot : public QCustomPlot {
     CLASS(TabPlot) SUPER(QCustomPlot) public : TabPlot();
@@ -32,7 +31,6 @@ protected:
     QCPGraph *graph_, *graphLo_, *graphUp_;
 };
 
-//------------------------------------------------------------------------------
 
 class TabDiagramsSave : public TabSave {
     CLASS(TabDiagramsSave)
@@ -46,7 +44,6 @@ protected:
     QComboBox* fileTypes_;
 };
 
-//------------------------------------------------------------------------------
 
 class DiagramsFrame : public Frame {
     CLASS(DiagramsFrame)
@@ -73,7 +70,7 @@ protected:
     void writeAllDataOutputFile(rcstr filePath, rcstr separator);
 };
 
-//------------------------------------------------------------------------------
+
 }
 }
 #endif // OUTPUT_DIAGRAMS_H

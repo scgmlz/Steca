@@ -27,7 +27,6 @@
 #include <QSpinBox>
 
 namespace gui {
-//------------------------------------------------------------------------------
 
 Settings::Settings(rcstr group) {
     setFallbacksEnabled(false);
@@ -117,7 +116,6 @@ void Settings::saveStr(rcstr key, rcstr val) {
     saveVariant(key, val);
 }
 
-//------------------------------------------------------------------------------
 
 ReadFile::ReadFile(rcstr path) THROWS : super(path) {
     RUNTIME_CHECK(
@@ -137,7 +135,6 @@ WriteFile::WriteFile(rcstr path) THROWS : super(path) {
         "Cannot open file for writing: " % path);
 }
 
-//------------------------------------------------------------------------------
 
 TheHub::TheHub()
     : actions(*this)
@@ -558,6 +555,5 @@ void TheHub::setNorm(eNorm norm) {
     emit sigNormChanged();
 }
 
-//------------------------------------------------------------------------------
+
 }
-// eof

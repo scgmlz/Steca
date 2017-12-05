@@ -19,7 +19,6 @@
 
 namespace gui {
 namespace output {
-//------------------------------------------------------------------------------
 
 class TabGraph : public Tab {
     CLASS(TabGraph) SUPER(Tab) public : using deg = typ::deg;
@@ -54,7 +53,6 @@ protected:
     QCheckBox* cbFlat_;
 };
 
-//------------------------------------------------------------------------------
 
 class TabPoleFiguresSave : public TabSave {
     CLASS(TabPoleFiguresSave)
@@ -72,7 +70,6 @@ protected:
     QCheckBox *outputInten_, *outputTth_, *outputFWHM_;
 };
 
-//------------------------------------------------------------------------------
 
 class PoleFiguresFrame : public Frame {
     CLASS(PoleFiguresFrame)
@@ -91,7 +88,7 @@ protected:
     void writeErrorMask(rcstr filePath, calc::ReflectionInfos, qreal_vec::rc);
 };
 
-//------------------------------------------------------------------------------
+
 }
 }
 #endif // OUTPUT_POLEFIGURES_H

@@ -21,7 +21,7 @@
 #include <sstream>
 
 namespace io {
-//------------------------------------------------------------------------------
+
 // Code taken from the original STeCa, only slightly modified.
 
 data::shp_File loadCaress2(rcstr filePath) THROWS {
@@ -52,7 +52,6 @@ data::shp_File loadCaress2(rcstr filePath) THROWS {
     return file;
 }
 
-//------------------------------------------------------------------------------
 
 data::shp_File loadCaress(rcstr filePath) THROWS {
     data::shp_File file(new data::File(filePath));
@@ -587,7 +586,6 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
     return file;
 }
 
-//------------------------------------------------------------------------------
 
 str loadCaressComment(rcstr filePath) {
     str s_comment;
@@ -636,6 +634,5 @@ str loadCaressComment(rcstr filePath) {
     return s_comment;
 }
 
-//------------------------------------------------------------------------------
+
 }
-// eof

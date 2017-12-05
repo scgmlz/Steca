@@ -17,7 +17,6 @@
 #include <QDir>
 
 namespace io {
-//------------------------------------------------------------------------------
 
 static void loadTiff(data::shp_File&, rcstr, typ::deg, qreal, qreal) THROWS;
 
@@ -261,6 +260,5 @@ loadTiff(data::shp_File& file, rcstr filePath, typ::deg phi, qreal monitor, qrea
     file->datasets().append(data::shp_OneDataset(new data::OneDataset(md, size, intens)));
 }
 
-//------------------------------------------------------------------------------
+
 }
-// eof

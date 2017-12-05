@@ -27,7 +27,6 @@ class QSpinBox;
 class QDoubleSpinBox;
 
 namespace gui {
-//------------------------------------------------------------------------------
 
 class Settings : public QSettings {
     CLASS(Settings) SUPER(QSettings) public : Settings(rcstr group = EMPTY_STR);
@@ -58,7 +57,6 @@ class Settings : public QSettings {
     void saveStr(rcstr key, rcstr);
 };
 
-//------------------------------------------------------------------------------
 
 class ReadFile : public QFile {
     CLASS(ReadFile) SUPER(QFile) public : ReadFile(rcstr path) THROWS;
@@ -68,7 +66,6 @@ class WriteFile : public QFile {
     CLASS(WriteFile) SUPER(QFile) public : WriteFile(rcstr path) THROWS;
 };
 
-//------------------------------------------------------------------------------
 
 class TheHub : public TheHubSignallingBase {
     CLASS(TheHub) SUPER(TheHubSignallingBase) friend class TheHubSignallingBase;
@@ -214,6 +211,6 @@ public:
     calc::Reflections::rc reflections() const { return session_->reflections(); }
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif

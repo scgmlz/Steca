@@ -19,7 +19,6 @@
 #include <QMap>
 
 namespace typ {
-//------------------------------------------------------------------------------
 
 template <typename Key, typename T> class map : public QMap<Key, T> {
     using super_type = QMap<Key, T>;
@@ -45,6 +44,6 @@ public:
     }
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_MAP_H

@@ -26,7 +26,6 @@
 #include "typ/typ_image_transform.h"
 
 namespace core {
-//------------------------------------------------------------------------------
 
 class Session final {
     CLASS(Session)
@@ -184,6 +183,6 @@ public:
     qreal calcAvgBackground(data::Datasets::rc) const;
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif

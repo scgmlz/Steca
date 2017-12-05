@@ -19,7 +19,6 @@
 
 namespace gui {
 namespace panel {
-//------------------------------------------------------------------------------
 
 DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& plot_)
     : super(&plot_)
@@ -349,7 +348,6 @@ void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
     overlay_->setGeometry(0, 0, size.width(), size.height());
 }
 
-//------------------------------------------------------------------------------
 
 Diffractogram::Diffractogram(TheHub& hub)
     : super(hub, Qt::Vertical), dataset_(nullptr), currReflIndex_(0) {
@@ -563,7 +561,6 @@ void Diffractogram::calcReflections() {
     tellReflectionData(currentReflection_);
 }
 
-//------------------------------------------------------------------------------
+
 }
 }
-// eof

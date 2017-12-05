@@ -22,7 +22,7 @@
 #include "typ/typ_vec.h"
 
 namespace typ {
-//------------------------------------------------------------------------------
+
 // A set of x-y datapoints.
 
 class Curve {
@@ -64,6 +64,6 @@ private:
 
 typedef vec<Curve> curve_vec;
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_CURVE_H

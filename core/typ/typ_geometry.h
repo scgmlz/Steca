@@ -23,7 +23,7 @@
 #include <QSharedPointer>
 
 namespace typ {
-//------------------------------------------------------------------------------
+
 // detector geometry
 
 struct Geometry {
@@ -44,7 +44,7 @@ struct Geometry {
     IJ midPixOffset;
 };
 
-//------------------------------------------------------------------------------
+
 // image cut (margins)
 
 struct ImageCut {
@@ -60,7 +60,6 @@ struct ImageCut {
     size2d marginSize() const;
 };
 
-//------------------------------------------------------------------------------
 
 struct Angles {
     CLASS(Angles)
@@ -122,6 +121,6 @@ private:
 
 typedef QSharedPointer<AngleMap> shp_AngleMap;
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_GEOMETRY_H

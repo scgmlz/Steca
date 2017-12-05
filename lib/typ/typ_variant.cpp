@@ -21,7 +21,6 @@
 #include "test/tests.h"
 
 namespace typ {
-//------------------------------------------------------------------------------
 
 bool isNumeric(QVariant const& v) {
     auto type = QMetaType::Type(v.type());
@@ -73,6 +72,5 @@ TEST("cmp_int(QVariants)", ({ // not exhaustive, just due diligence
 
 #undef IMPL_CMP
 
-//------------------------------------------------------------------------------
+
 }
-// eof

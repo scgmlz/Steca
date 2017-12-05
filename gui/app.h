@@ -18,7 +18,6 @@
 #include "def/defs.h"
 #include <QApplication>
 
-//------------------------------------------------------------------------------
 
 class NoWarnings {
 public:
@@ -36,5 +35,5 @@ private:
     bool notify(QObject*, QEvent*);
 };
 
-//------------------------------------------------------------------------------
+
 #endif // APP_H

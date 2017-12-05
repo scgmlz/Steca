@@ -18,7 +18,7 @@
 #include "def/defs.h"
 
 namespace typ {
-//------------------------------------------------------------------------------
+
 // Image transform type - rotation and mirroring (bit-map)
 
 struct ImageTransform {
@@ -53,6 +53,6 @@ struct ImageTransform {
     bool operator==(rc that) const { return val == that.val; }
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_IMAGE_TRANSFORM_H

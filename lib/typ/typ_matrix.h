@@ -18,7 +18,6 @@
 #include "def/def_macros.h"
 
 namespace typ {
-//------------------------------------------------------------------------------
 
 struct vec3r;
 
@@ -65,6 +64,6 @@ struct mat3r {
     static mat3r rotationCCWz(qreal angle);
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_MATRIX_H

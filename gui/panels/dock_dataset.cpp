@@ -19,7 +19,6 @@
 
 namespace gui {
 namespace panel {
-//------------------------------------------------------------------------------
 
 class DatasetView : public views::ListView {
     CLASS(DatasetView) SUPER(views::ListView) public : DatasetView(TheHub&);
@@ -46,7 +45,6 @@ void DatasetView::currentChanged(QModelIndex const& current, QModelIndex const& 
     tellDatasetSelected(model()->data(current, Model::GetDatasetRole).value<data::shp_Dataset>());
 }
 
-//------------------------------------------------------------------------------
 
 DockDatasets::DockDatasets(TheHub& hub)
     : super("Datasets", "dock-datasets", Qt::Vertical), RefHub(hub) {
@@ -67,7 +65,6 @@ DockDatasets::DockDatasets(TheHub& hub)
         [this]() { combineDatasets_->setValue(to_i(uint(hub_.datasetsGroupedBy()))); });
 }
 
-//------------------------------------------------------------------------------
+
 }
 }
-// eof

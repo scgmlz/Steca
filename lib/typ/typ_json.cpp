@@ -28,7 +28,6 @@ str const I("i"), J("j"), X("x"), Y("y"), MIN("min"), MAX("max"), PARAMS("parame
 }
 
 namespace typ {
-//------------------------------------------------------------------------------
 
 JsonObj::JsonObj() {}
 
@@ -238,7 +237,6 @@ JsonObj JsonObj::operator+(JsonObj::rc that) const {
     return JsonObj(*this) += that;
 }
 
-//------------------------------------------------------------------------------
 
 JsonArr::JsonArr() {}
 
@@ -258,6 +256,5 @@ JsonObj JsonArr::objAt(uint i) const {
     return super::at(to_i(i)).toObject();
 }
 
-//------------------------------------------------------------------------------
+
 }
-// eof

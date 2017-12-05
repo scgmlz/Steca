@@ -20,7 +20,6 @@
 #include <QHash>
 
 namespace typ {
-//------------------------------------------------------------------------------
 
 template <typename Key, typename T> class hash : protected QHash<Key, T> {
     CLASS(hash) SUPER(QHash<Key COMMA T>) public : using super::clear;
@@ -59,6 +58,6 @@ template <typename Key, typename Tp> class owning_hash : protected hash<Key, Tp>
     owner<Tp> take(Key const& key) { return owner<Tp>(super::take(key)); }
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_MAP_H

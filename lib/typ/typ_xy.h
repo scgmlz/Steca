@@ -19,7 +19,7 @@
 #include "def/def_macros.h"
 
 namespace typ {
-//------------------------------------------------------------------------------
+
 // 2D point, reals
 
 class JsonObj;
@@ -41,6 +41,6 @@ struct XY {
     void loadJson(JsonObj const&) THROWS;
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_XY_H

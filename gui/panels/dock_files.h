@@ -19,7 +19,6 @@
 
 namespace gui {
 namespace panel {
-//------------------------------------------------------------------------------
 
 class DockFiles : public DockWidget, private RefHub {
     CLASS(DockFiles) SUPER(DockWidget) public : DockFiles(TheHub&);
@@ -29,7 +28,7 @@ private:
     class LineView* corrFile_;
 };
 
-//------------------------------------------------------------------------------
+
 }
 }
 #endif // DOCK_FILES_H

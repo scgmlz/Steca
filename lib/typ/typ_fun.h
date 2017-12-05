@@ -25,7 +25,7 @@ extern str const SUM;
 }
 
 namespace typ {
-//------------------------------------------------------------------------------
+
 // Abstract function
 
 class Function {
@@ -94,7 +94,7 @@ public:
     virtual void loadJson(JsonObj::rc) THROWS;
 };
 
-//------------------------------------------------------------------------------
+
 // abstract function with parameters
 
 class SimpleFunction : public Function {
@@ -116,7 +116,7 @@ protected:
     void setValue(uint parIndex, qreal val);
 };
 
-//------------------------------------------------------------------------------
+
 // concrete function that is a sum of other functions
 
 class SumFunctions final : public Function {
@@ -148,6 +148,6 @@ protected:
     uint_vec firstParIndex4parIndex_;
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_FUN_H

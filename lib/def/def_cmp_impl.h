@@ -14,7 +14,6 @@
 
 #ifndef DEF_CMP_IMPL_H
 #define DEF_CMP_IMPL_H
-//------------------------------------------------------------------------------
 
 // a helper for int compare()
 #define RET_COMPARE_VALUE(val)                                                                     \
@@ -45,6 +44,5 @@
                                                                                                    \
     bool T::operator!=(rc that) const { return isValid() && that.isValid() && 0 != compare(that); }
 
-//------------------------------------------------------------------------------
+
 #endif // DEF_CMP_IMPL_H
-// eof

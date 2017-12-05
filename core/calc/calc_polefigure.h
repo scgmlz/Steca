@@ -20,7 +20,6 @@
 #include "typ/typ_types.h"
 
 namespace calc {
-//------------------------------------------------------------------------------
 
 struct itf_t {
     CLASS(itf_t)
@@ -45,6 +44,6 @@ ReflectionInfos interpolate(
     ReflectionInfos::rc, typ::deg alphaStep, typ::deg betaStep, typ::deg idwRadius,
     typ::deg averagingAlphaMax, typ::deg averagingRadius, qreal inclusionTreshold, Progress*);
 
-//------------------------------------------------------------------------------
+
 }
 #endif // CALC_POLEFIGURE_H

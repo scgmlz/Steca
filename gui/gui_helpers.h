@@ -33,12 +33,12 @@
 #include <QToolButton>
 #include <QTreeView>
 
-//------------------------------------------------------------------------------
+
 // make connects shorter
 
 #define slot(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
 
-//------------------------------------------------------------------------------
+
 // layouts
 
 class GridLayout : public QGridLayout {
@@ -50,11 +50,10 @@ class GridLayout : public QGridLayout {
     static GridLayout* groupBox(QLayout&, rcstr);
 };
 
-//------------------------------------------------------------------------------
 
 extern int mWidth(QWidget const*);
 
-//------------------------------------------------------------------------------
+
 // handy functions that make (new) widgets
 
 QBoxLayout* boxLayout(Qt::Orientation);
@@ -82,7 +81,7 @@ QRadioButton* radioButton(rcstr text);
 
 QComboBox* comboBox(str_lst::rc);
 
-//------------------------------------------------------------------------------
+
 // abstract tree widget
 
 class TreeView : public QTreeView {
@@ -92,7 +91,7 @@ class TreeView : public QTreeView {
     int sizeHintForColumn(int) const; // make narrow columns
 };
 
-//------------------------------------------------------------------------------
+
 // abstract tree widget used as a list (hides column 0)
 
 class TreeListView : public TreeView {
@@ -103,7 +102,6 @@ protected:
     void setModel(QAbstractItemModel*);
 };
 
-//------------------------------------------------------------------------------
 
 class LineView : public QLineEdit {
     CLASS(LineView) SUPER(QLineEdit) public : LineView();
@@ -111,7 +109,7 @@ class LineView : public QLineEdit {
     void setText(rcstr);
 };
 
-//------------------------------------------------------------------------------
+
 // a widget with a box layout
 
 class BoxWidget : public QWidget {

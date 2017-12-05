@@ -21,7 +21,7 @@
 #include <initializer_list>
 
 namespace typ {
-//------------------------------------------------------------------------------
+
 // limited QVector, only needed methods reexported
 
 template <typename T> class vec : protected QVector<T> {
@@ -63,7 +63,7 @@ public:
     T& operator[](uint i) { return super::operator[](to_i(i)); }
 };
 
-//------------------------------------------------------------------------------
+
 }
 
 // most useful vectors (that's why they are in the global namespace)

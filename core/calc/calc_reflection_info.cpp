@@ -15,7 +15,6 @@
 #include "calc_reflection_info.h"
 
 namespace calc {
-//------------------------------------------------------------------------------
 
 using typ::cmp_real;
 using typ::cmp_vec;
@@ -113,7 +112,6 @@ typ::row_t ReflectionInfo::data() const {
     return row;
 }
 
-//------------------------------------------------------------------------------
 
 ReflectionInfos::ReflectionInfos() {
     invalidate();
@@ -158,5 +156,5 @@ void ReflectionInfos::invalidate() {
     rgeInten_.invalidate();
 }
 
-//------------------------------------------------------------------------------
+
 }

@@ -17,7 +17,6 @@
 
 namespace gui {
 namespace output {
-//------------------------------------------------------------------------------
 
 // sorts xs and ys the same way, by (x,y)
 static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
@@ -51,7 +50,6 @@ static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
     ys = r;
 }
 
-//------------------------------------------------------------------------------
 
 TabPlot::TabPlot() {
     graph_ = addGraph();
@@ -99,7 +97,6 @@ void TabPlot::plot(qreal_vec::rc xs, qreal_vec::rc ys, qreal_vec::rc ysLo, qreal
     replot();
 }
 
-//------------------------------------------------------------------------------
 
 TabDiagramsSave::TabDiagramsSave(TheHub& hub, Params& params) : super(hub, params, true) {
     auto gp = new panel::GridPanel(hub, "To save");
@@ -123,7 +120,6 @@ bool TabDiagramsSave::currDiagram() const {
     return currentDiagram_->isChecked();
 }
 
-//------------------------------------------------------------------------------
 
 static const Params::ePanels PANELS =
     Params::ePanels(Params::REFLECTION | Params::GAMMA | Params::DIAGRAM);
@@ -214,7 +210,6 @@ void DiagramsFrame::recalculate() {
     tabPlot_->plot(xs_, ys_, ysErrorLo_, ysErrorUp_);
 }
 
-//------------------------------------------------------------------------------
 
 bool DiagramsFrame::saveDiagramOutput() {
     str path = tabSave_->filePath(true);
@@ -278,7 +273,6 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
     }
 }
 
-//------------------------------------------------------------------------------
+
 }
 }
-// eof
