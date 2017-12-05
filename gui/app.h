@@ -12,24 +12,20 @@
 //
 // ************************************************************************** //
 
-
 #ifndef APP_H
 #define APP_H
 
 #include "def/defs.h"
 #include <QApplication>
 
-
 class NoWarnings {
 public:
   NoWarnings();
- ~NoWarnings();
+  ~NoWarnings();
 };
 
 class App : public QApplication {
-  CLASS(App) SUPER(QApplication)
-public:
-  App(int& argc, char* argv[]);
+  CLASS(App) SUPER(QApplication) public : App(int& argc, char* argv[]);
 
   int exec();
 
@@ -38,5 +34,4 @@ private:
   bool notify(QObject*, QEvent*);
 };
 
-
-#endif // APP_H
+#endif  // APP_H

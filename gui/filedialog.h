@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef FILEDIALOG_H
 #define FILEDIALOG_H
 
@@ -21,14 +20,14 @@
 
 class QWidget;
 
-namespace gui { namespace file_dialog {
+namespace gui {
+namespace file_dialog {
 
-str     openFileName(QWidget*, rcstr caption, rcstr dir, rcstr filter);
+str openFileName(QWidget*, rcstr caption, rcstr dir, rcstr filter);
 str_lst openFileNames(QWidget*, rcstr caption, rcstr dir, rcstr filter);
 
-str     saveFileName(QWidget*, rcstr caption, rcstr dir, rcstr filter);
-str     saveDirName(QWidget*, rcstr caption, rcstr dir);
-
-
-}}
-#endif // FILEDIALOG_H
+str saveFileName(QWidget*, rcstr caption, rcstr dir, rcstr filter);
+str saveDirName(QWidget*, rcstr caption, rcstr dir);
+}
+}
+#endif  // FILEDIALOG_H
