@@ -80,7 +80,7 @@ private:
       *menuOutput_, *menuHelp_;
 
   QDockWidget
-      *dockFiles_, *dockDatasets_, *dockDatasetInfo_, *dockHelp_;
+      *dockFiles_, *dockDatasets_, *dockDatasetInfo_;
 
 private:
   QByteArray initialState_;
@@ -96,7 +96,6 @@ private:
   void viewFiles(bool);
   void viewDatasets(bool);
   void viewDatasetInfo(bool);
-  void viewHelp(bool);
   void viewReset();
 };
 
