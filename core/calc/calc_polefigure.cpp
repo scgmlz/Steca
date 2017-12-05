@@ -1,19 +1,17 @@
-/*******************************************************************************
- * STeCa2 - StressTextureCalculator ver. 2
- *
- * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
- *
- * This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * See the COPYING and AUTHORS files for more details.
- ******************************************************************************/
+// ************************************************************************** //
+//
+//  Steca2: stress and texture calculator
+//
+//! @file      core/calc/calc_polefigure.cpp
+//! @brief     Implements ...
+//!
+//! @homepage  https://github.com/scgmlz/Steca2
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
+//
+// ************************************************************************** //
+
 
 #include "calc_polefigure.h"
 #include "typ/typ_async.h"
@@ -22,7 +20,8 @@
 namespace calc {
 //------------------------------------------------------------------------------
 
-using namespace typ;
+    using typ::deg;
+    using typ::vec;
 
 typedef vec<ReflectionInfo const*> info_vec;
 
@@ -45,9 +44,9 @@ deg calculateDeltaBeta(deg beta1, deg beta2) {
 // Calculates the angle between two points on a unit sphere.
 deg angle(deg alpha1, deg alpha2, deg deltaBeta) {
   // Absolute value of deltaBeta is not needed because cos is an even function.
-  auto a = rad(acos(cos(alpha1.toRad()) * cos(alpha2.toRad()) +
-                    sin(alpha1.toRad()) * sin(alpha2.toRad()) *
-                        cos(deltaBeta.toRad())))
+    auto a = typ::rad(acos(cos(alpha1.toRad()) * cos(alpha2.toRad()) +
+                           sin(alpha1.toRad()) * sin(alpha2.toRad()) *
+                           cos(deltaBeta.toRad())))
                .toDeg();
   ENSURE(0 <= a && a <= 180)
   return a;
@@ -340,4 +339,3 @@ ReflectionInfos interpolate(ReflectionInfos::rc infos,
 
 //------------------------------------------------------------------------------
 }
-// eof

@@ -1,19 +1,17 @@
-/*******************************************************************************
- * STeCa2 - StressTextureCalculator ver. 2
- *
- * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
- *
- * This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * See the COPYING and AUTHORS files for more details.
- ******************************************************************************/
+// ************************************************************************** //
+//
+//  Steca2: stress and texture calculator
+//
+//! @file      core/fit/fit_methods.cpp
+//! @brief     Implements ...
+//!
+//! @homepage  https://github.com/scgmlz/Steca2
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
+//
+// ************************************************************************** //
+
 
 #include "fit_methods.h"
 #include "def/def_alg.h"
@@ -23,13 +21,8 @@
 namespace fit {
 //------------------------------------------------------------------------------
 
-using namespace typ;
-
-Method::Method() {
-}
-
-Method::~Method() {
-}
+    using typ::Curve;
+    using typ::Function;
 
 void Method::fit(Function& function, Curve::rc curve) {
   if (curve.isEmpty())
@@ -160,4 +153,3 @@ void LevenbergMarquardt::callbackJacobianLM(qreal* parValues,
 
 //------------------------------------------------------------------------------
 }
-// eof

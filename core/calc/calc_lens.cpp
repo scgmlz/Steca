@@ -1,19 +1,17 @@
-/*******************************************************************************
- * STeCa2 - StressTextureCalculator ver. 2
- *
- * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
- *
- * This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * See the COPYING and AUTHORS files for more details.
- ******************************************************************************/
+// ************************************************************************** //
+//
+//  Steca2: stress and texture calculator
+//
+//! @file      core/calc/calc_lens.cpp
+//! @brief     Implements ...
+//!
+//! @homepage  https://github.com/scgmlz/Steca2
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
+//
+// ************************************************************************** //
+
 
 #include "calc_lens.h"
 #include "session.h"
@@ -23,8 +21,10 @@
 namespace calc {
 //------------------------------------------------------------------------------
 
-using namespace typ;
-using namespace data;
+    using typ::Curve;
+    using typ::Image;
+    using typ::ImageTransform;
+    using typ::size2d;
 
 LensBase::LensBase(core::Session::rc session, data::Datasets::rc datasets,
                    bool trans, bool cut,
@@ -33,9 +33,6 @@ LensBase::LensBase(core::Session::rc session, data::Datasets::rc datasets,
 , trans_(trans), cut_(cut)
 , imageTransform_(imageTransform), imageCut_(imageCut)
 , intensCorr_(session.intensCorr()) {
-}
-
-LensBase::~LensBase() {
 }
 
 size2d LensBase::transCutSize(size2d size) const {
@@ -92,7 +89,7 @@ void LensBase::doCut(uint& i, uint& j) const {
 //------------------------------------------------------------------------------
 
 ImageLens::ImageLens(core::Session::rc session,
-                     Image::rc image, Datasets::rc datasets,
+                     Image::rc image, data::Datasets::rc datasets,
                      bool trans, bool cut)
 : super(session, datasets, trans, cut, session.imageTransform(), session.imageCut())
 , image_(image)
@@ -211,4 +208,3 @@ void DatasetLens::setNorm(eNorm norm) {
 
 //------------------------------------------------------------------------------
 }
-// eof

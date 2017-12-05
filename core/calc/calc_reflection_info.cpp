@@ -1,27 +1,29 @@
-/*******************************************************************************
- * STeCa2 - StressTextureCalculator ver. 2
- *
- * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
- *
- * This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * See the COPYING and AUTHORS files for more details.
- ******************************************************************************/
+// ************************************************************************** //
+//
+//  Steca2: stress and texture calculator
+//
+//! @file      core/calc/calc_reflection_info.cpp
+//! @brief     Implements ...
+//!
+//! @homepage  https://github.com/scgmlz/Steca2
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
+//
+// ************************************************************************** //
+
 
 #include "calc_reflection_info.h"
 
 namespace calc {
 //------------------------------------------------------------------------------
 
-using namespace typ;
-using namespace data;
+    using typ::cmp_real;
+    using typ::cmp_vec;
+    using typ::deg;
+    using typ::Range;
+    using data::Metadata;
+    using data::shp_Metadata;
 
 /* NOTE Invalid output parameters are set to NaNs. However, some analysis
  * programs
@@ -125,8 +127,8 @@ ReflectionInfo::ReflectionInfo(deg alpha, deg beta)
 {
 }
 
-row_t ReflectionInfo::data() const {
-  row_t row{QVariant(alpha()), QVariant(beta()),
+typ::row_t ReflectionInfo::data() const {
+    typ::row_t row{QVariant(alpha()), QVariant(beta()),
             QVariant(rgeGma().min), QVariant(rgeGma().max),
             QVariant(inten()), QVariant(intenError()),
             QVariant(tth()),   QVariant(tthError()),
@@ -182,5 +184,3 @@ void ReflectionInfos::invalidate() {
 
 //------------------------------------------------------------------------------
 }
-
-// eof

@@ -1,19 +1,17 @@
-/*******************************************************************************
- * STeCa2 - StressTextureCalculator ver. 2
- *
- * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
- *
- * This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * See the COPYING and AUTHORS files for more details.
- ******************************************************************************/
+// ************************************************************************** //
+//
+//  Steca2: stress and texture calculator
+//
+//! @file      core/fit/fit_fun.cpp
+//! @brief     Implements ...
+//!
+//! @homepage  https://github.com/scgmlz/Steca2
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
+//
+// ************************************************************************** //
+
 
 #include "fit_fun.h"
 #include "fit_methods.h"
@@ -30,7 +28,9 @@ str const
 namespace fit {
 //------------------------------------------------------------------------------
 
-using namespace typ;
+    using typ::Range;
+    using typ::Curve;
+    using typ::JsonObj;
 
 void initFactory() {
   ONLY_ONCE
@@ -103,11 +103,11 @@ qreal Polynom::avgY(Range::rc rgeX, qreal const* parValues) const {
   return (1 / w) * (maxY - minY);
 }
 
-void Polynom::fit(Curve::rc curve, Ranges::rc ranges) {
+    void Polynom::fit(Curve::rc curve, typ::Ranges::rc ranges) {
   LevenbergMarquardt().fit(*this, curve.intersect(ranges));
 }
 
-Polynom Polynom::fromFit(uint degree, Curve::rc curve, Ranges::rc ranges) {
+Polynom Polynom::fromFit(uint degree, Curve::rc curve, typ::Ranges::rc ranges) {
   Polynom poly(degree);
   poly.fit(curve, ranges);
   return poly;
@@ -193,7 +193,7 @@ void PeakFunction::fit(Curve::rc curve, Range::rc range) {
       if (c.y(i) < peakIntens / 2) break;
     }
 
-    setGuessedPeak(XY(peakTth, peakIntens));
+    setGuessedPeak(typ::XY(peakTth, peakIntens));
     setGuessedFWHM(c.x(hmi2) - c.x(hmi1));
 //  }
 
@@ -662,4 +662,3 @@ JsonObj PseudoVoigt2::saveJson() const {
 
 //------------------------------------------------------------------------------
 }
-// eof

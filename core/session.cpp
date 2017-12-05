@@ -1,19 +1,17 @@
-/*******************************************************************************
- * STeCa2 - StressTextureCalculator ver. 2
- *
- * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
- *
- * This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * See the COPYING and AUTHORS files for more details.
- ******************************************************************************/
+// ************************************************************************** //
+//
+//  Steca2: stress and texture calculator
+//
+//! @file      core/session.cpp
+//! @brief     Implements ...
+//!
+//! @homepage  https://github.com/scgmlz/Steca2
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
+//
+// ************************************************************************** //
+
 
 #include "session.h"
 #include "typ/typ_matrix.h"
@@ -23,9 +21,14 @@
 namespace core {
 //------------------------------------------------------------------------------
 
-using namespace typ;
-using namespace data;
-using namespace calc;
+    using typ::deg;
+    using typ::size2d;
+    using typ::vec;
+    using typ::Image;
+    using typ::ImageTransform;
+    using typ::ImageCut;
+    using typ::Curve;
+    using typ::Range;
 
 Session::Session() : intenScale_(1), angleMapCache_(360) {
   clear();
@@ -52,7 +55,7 @@ void Session::clear() {
   intenScale_ = preal(1);
 }
 
-shp_File Session::file(uint i) const {
+    data::shp_File Session::file(uint i) const {
   return files_.at(i);
 }
 
@@ -64,7 +67,7 @@ bool Session::hasFile(rcstr fileName) {
   return false;
 }
 
-void Session::addFile(shp_File file) THROWS {
+void Session::addFile(data::shp_File file) THROWS {
   setImageSize(file->datasets().imageSize());
   // all ok
   files_.append(file);
@@ -118,7 +121,7 @@ Image const* Session::intensCorr() const {
   return &intensCorr_;
 }
 
-void Session::setCorrFile(shp_File file) THROWS {
+void Session::setCorrFile(data::shp_File file) THROWS {
   if (file.isNull()) {
     remCorrFile();
   } else {
@@ -151,7 +154,7 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
   collectedDatasets_.clear();
   collectedDatasetsTags_.clear();
 
-  vec<shp_OneDataset> datasetsFromFiles;
+  vec<data::shp_OneDataset> datasetsFromFiles;
   for (uint i : collectedFromFiles_)
     for (auto& dataset : files_.at(i)->datasets())
       datasetsFromFiles.append(dataset);
@@ -159,7 +162,7 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
   if (datasetsFromFiles.isEmpty())
     return;
 
-  shp_Dataset cd(new Dataset);
+  data::shp_Dataset cd(new data::Dataset);
   uint i = 0;
 
   auto appendCd = [this, &cd, &combineBy, &i]() {
@@ -174,13 +177,13 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
       collectedDatasets_.appendHere(cd);
       collectedDatasetsTags_.append(tag);
 
-      cd = shp_Dataset(new Dataset);
+      cd = data::shp_Dataset(new data::Dataset);
     }
   };
 
   uint by = combineBy;
   for (auto& dataset : datasetsFromFiles) {
-    cd->append(shp_OneDataset(dataset));
+    cd->append(data::shp_OneDataset(dataset));
     if (1 >= by--) {
       appendCd();
       by = combineBy;
@@ -247,18 +250,18 @@ void Session::setImageCut(bool topLeftFirst, bool linked, ImageCut::rc cut) {
   intensCorr_.clear();  // lazy
 }
 
-void Session::setGeometry(preal detectorDistance, preal pixSize, IJ::rc midPixOffset) {
+void Session::setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midPixOffset) {
 
   geometry_.detectorDistance = detectorDistance;
   geometry_.pixSize          = pixSize;
   geometry_.midPixOffset     = midPixOffset;
 }
 
-IJ Session::midPix() const {
+typ::IJ Session::midPix() const {
   auto sz = imageSize();
-  IJ mid(sz.w/2, sz.h/2);
+  typ::IJ mid(sz.w/2, sz.h/2);
 
-  IJ::rc off = geometry_.midPixOffset;
+  typ::IJ::rc off = geometry_.midPixOffset;
   mid.i += off.i;
   mid.j += off.j;
 
@@ -273,27 +276,27 @@ void Session::setGammaRange(Range::rc gammaRange) {
   gammaRange_ = gammaRange;
 }
 
-shp_AngleMap Session::angleMap(OneDataset::rc one) const {
-  AngleMap::Key key(geometry_, imageSize_, imageCut_, midPix(), one.midTth());
-  shp_AngleMap map = angleMapCache_.value(key);
+    typ::shp_AngleMap Session::angleMap(data::OneDataset::rc one) const {
+  typ::AngleMap::Key key(geometry_, imageSize_, imageCut_, midPix(), one.midTth());
+  typ::shp_AngleMap map = angleMapCache_.value(key);
   if (map.isNull())
-    map = angleMapCache_.insert(key, shp_AngleMap(new AngleMap(key)));
+      map = angleMapCache_.insert(key, typ::shp_AngleMap(new typ::AngleMap(key)));
   return map;
 }
 
-shp_AngleMap Session::angleMap(Session::rc session, OneDataset::rc one) {
+typ::shp_AngleMap Session::angleMap(Session::rc session, data::OneDataset::rc one) {
   return session.angleMap(one);
 }
 
-shp_ImageLens Session::imageLens(
-    Image::rc image, Datasets::rc datasets, bool trans, bool cut) const
+    calc::shp_ImageLens Session::imageLens(
+    Image::rc image, data::Datasets::rc datasets, bool trans, bool cut) const
 {
-  return shp_ImageLens(new ImageLens(*this, image, datasets, trans, cut));
+    return calc::shp_ImageLens(new calc::ImageLens(*this, image, datasets, trans, cut));
 }
 
-shp_DatasetLens Session::datasetLens(Dataset::rc dataset, Datasets::rc datasets, eNorm norm,
+calc::shp_DatasetLens Session::datasetLens(data::Dataset::rc dataset, data::Datasets::rc datasets, eNorm norm,
                                      bool trans, bool cut) const {
-  return shp_DatasetLens(new DatasetLens(*this, dataset, datasets, norm,
+    return calc::shp_DatasetLens(new calc::DatasetLens(*this, dataset, datasets, norm,
                          trans, cut, imageTransform_, imageCut_));
 }
 
@@ -301,29 +304,29 @@ shp_DatasetLens Session::datasetLens(Dataset::rc dataset, Datasets::rc datasets,
 // sample orientation and diffraction angles.
 // tth: Center of reflection's 2theta interval.
 // gma: Center of gamma slice.
-void calculateAlphaBeta(Dataset::rc dataset, tth_t tth, gma_t gma,
+    void calculateAlphaBeta(data::Dataset::rc dataset, tth_t tth, gma_t gma,
                         deg& alpha, deg& beta) {
   // Sample rotations.
-  rad omg = dataset.omg().toRad();
-  rad phi = dataset.phi().toRad();
-  rad chi = dataset.chi().toRad();
+  typ::rad omg = dataset.omg().toRad();
+  typ::rad phi = dataset.phi().toRad();
+  typ::rad chi = dataset.chi().toRad();
 
   // Rotate a unit vector initially parallel to the y axis with regards to the
   // angles. As a result, the vector is a point on a unit sphere
   // corresponding to the location of a polefigure point.
   // Note that the rotations here do not correspond to C. Randau's dissertation.
   // The rotations given in [J. Appl. Cryst. (2012) 44, 641-644] are incorrect.
-  vec3r rotated =
-      mat3r::rotationCWz(phi)
-    * mat3r::rotationCWx(chi)
-    * mat3r::rotationCWz(omg)
-    * mat3r::rotationCWx(gma.toRad())
-    * mat3r::rotationCCWz(tth.toRad() / 2)
-    * vec3r(0, 1, 0);
+  typ::vec3r rotated =
+      typ::mat3r::rotationCWz(phi)
+      * typ::mat3r::rotationCWx(chi)
+      * typ::mat3r::rotationCWz(omg)
+      * typ::mat3r::rotationCWx(gma.toRad())
+      * typ::mat3r::rotationCCWz(tth.toRad() / 2)
+      * typ::vec3r(0, 1, 0);
 
   // Extract alpha (latitude) and beta (longitude).
-  rad alphaRad = acos(rotated._2);
-  rad betaRad  = atan2(rotated._0, rotated._1);
+  typ::rad alphaRad = acos(rotated._2);
+  typ::rad betaRad  = atan2(rotated._0, rotated._1);
 
   // If alpha is in the wrong hemisphere, mirror both alpha and beta over the
   // center of a unit sphere.
@@ -339,7 +342,7 @@ void calculateAlphaBeta(Dataset::rc dataset, tth_t tth, gma_t gma,
   beta  = betaRad.toDeg();
 }
 
-Curve Session::makeCurve(DatasetLens::rc lens, gma_rge::rc rgeGma) const {
+Curve Session::makeCurve(calc::DatasetLens::rc lens, gma_rge::rc rgeGma) const {
   Curve curve = lens.makeCurve(rgeGma);
   curve.subtract(fit::Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
 
@@ -347,8 +350,8 @@ Curve Session::makeCurve(DatasetLens::rc lens, gma_rge::rc rgeGma) const {
 }
 
 // Fits reflection to the given gamma sector and constructs a ReflectionInfo.
-ReflectionInfo Session::makeReflectionInfo(
-    DatasetLens::rc lens, Reflection::rc reflection, gma_rge::rc gmaSector) const {
+calc::ReflectionInfo Session::makeReflectionInfo(
+    calc::DatasetLens::rc lens, calc::Reflection::rc reflection, gma_rge::rc gmaSector) const {
   Curve curve = makeCurve(lens, gmaSector);
 
   scoped<fit::PeakFunction*> peakFunction(reflection.peakFunction().clone());
@@ -358,7 +361,7 @@ ReflectionInfo Session::makeReflectionInfo(
   Range::rc rgeTth = peakFunction->range();
   deg     alpha, beta;
 
-  Dataset::rc dataset = lens.dataset();
+  data::Dataset::rc dataset = lens.dataset();
   calculateAlphaBeta(dataset, rgeTth.center(), gmaSector.center(), alpha,
                      beta);
 
@@ -367,14 +370,14 @@ ReflectionInfo Session::makeReflectionInfo(
   peak_t peakError = peakFunction->peakError();
   fwhm_t fwhmError = peakFunction->fwhmError();
 
-  shp_Metadata metadata = dataset.metadata();
+  data::shp_Metadata metadata = dataset.metadata();
 
   return rgeTth.contains(peak.x)
-             ? ReflectionInfo(metadata, alpha, beta, gmaSector,
+             ? calc::ReflectionInfo(metadata, alpha, beta, gmaSector,
                               inten_t(peak.y), inten_t(peakError.y),
                               tth_t(peak.x),   tth_t(peakError.x),
                               fwhm_t(fwhm),    fwhm_t(fwhmError))
-             : ReflectionInfo(metadata, alpha, beta, gmaSector);
+             : calc::ReflectionInfo(metadata, alpha, beta, gmaSector);
 }
 
 /* Gathers ReflectionInfos from Datasets.
@@ -383,11 +386,11 @@ ReflectionInfo Session::makeReflectionInfo(
  * Even though the betaStep of the equidistant polefigure grid is needed here,
  * the returned infos won't be on the grid. REVIEW gammaStep separately?
  */
-ReflectionInfos Session::makeReflectionInfos(
-    Datasets::rc datasets, Reflection::rc reflection,
+calc::ReflectionInfos Session::makeReflectionInfos(
+    data::Datasets::rc datasets, calc::Reflection::rc reflection,
     uint gmaSlices, gma_rge::rc rgeGma, Progress* progress)
 {
-  ReflectionInfos infos;
+  calc::ReflectionInfos infos;
 
   if (progress)
     progress->setTotal(datasets.count());
@@ -419,7 +422,7 @@ ReflectionInfos Session::makeReflectionInfos(
   return infos;
 }
 
-void Session::setBgRanges(Ranges::rc ranges) {
+void Session::setBgRanges(typ::Ranges::rc ranges) {
   bgRanges_ = ranges;
 }
 
@@ -439,7 +442,7 @@ void Session::setIntenScaleAvg(bool avg, preal scale) {
   intenScaledAvg_ = avg; intenScale_ = scale;
 }
 
-void Session::addReflection(shp_Reflection reflection) {
+void Session::addReflection(calc::shp_Reflection reflection) {
   EXPECT(!reflection.isNull())
   reflections_.append(reflection);
 }
@@ -452,7 +455,7 @@ void Session::setNorm(eNorm norm) {
   norm_ = norm;
 }
 
-qreal Session::calcAvgBackground(Dataset::rc dataset) const {
+    qreal Session::calcAvgBackground(data::Dataset::rc dataset) const {
   auto lens = datasetLens(dataset, dataset.datasets(), eNorm::NONE, true, true);
 
   Curve gmaCurve = lens->makeCurve(true); // REVIEW averaged?
@@ -460,7 +463,7 @@ qreal Session::calcAvgBackground(Dataset::rc dataset) const {
   return bgPolynom.avgY(lens->rgeTth());
 }
 
-qreal Session::calcAvgBackground(Datasets::rc datasets) const {
+qreal Session::calcAvgBackground(data::Datasets::rc datasets) const {
   TakesLongTime __;
 
   qreal bg = 0;
@@ -473,4 +476,3 @@ qreal Session::calcAvgBackground(Datasets::rc datasets) const {
 
 //------------------------------------------------------------------------------
 }
-// eof
