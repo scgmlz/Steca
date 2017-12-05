@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef DOCK_HELP_H
 #define DOCK_HELP_H
 
@@ -20,18 +19,17 @@
 
 class QTextBrowser;
 
-namespace gui { namespace panel {
-//------------------------------------------------------------------------------
+namespace gui {
+namespace panel {
 
 class DockHelp : public DockWidget, protected RefHub {
-  CLASS(DockHelp) SUPER(DockWidget)
-public:
-  DockHelp(TheHub&);
+    CLASS(DockHelp) SUPER(DockWidget) public : DockHelp(TheHub&);
 
 private:
-  QTextBrowser *browser_;
+    QTextBrowser* browser_;
 };
 
-//------------------------------------------------------------------------------
-}}
+
+}
+}
 #endif // DOCK_HELP_H

@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYP_FACTORY_H
 #define TYP_FACTORY_H
 
@@ -23,40 +22,35 @@
 #include "typ/typ_str.h"
 
 namespace typ {
-//------------------------------------------------------------------------------
 
-template <class ProductBase>
-class Factory {
+template <class ProductBase> class Factory {
 public:
-  struct MakerBase {
-    virtual ~MakerBase() {}
-    virtual owner_not_null<ProductBase*> make() = 0;
-  };
+    struct MakerBase {
+        virtual ~MakerBase() {}
+        virtual owner_not_null<ProductBase*> make() = 0;
+    };
 
-  template <class Product>
-  struct Maker : MakerBase {
-    owner_not_null<ProductBase*> make() {
-      return owner_not_null<ProductBase*>::from(new Product);
-    }
-  };
+    template <class Product> struct Maker : MakerBase {
+        owner_not_null<ProductBase*> make() {
+            return owner_not_null<ProductBase*>::from(new Product);
+        }
+    };
 
 private:
-  owning_hash<str, MakerBase*> makers_;
+    owning_hash<str, MakerBase*> makers_;
 
 public:
-  virtual ~Factory() {}
+    virtual ~Factory() {}
 
-  void addMaker(rcstr key, owner_not_null<MakerBase*> maker) {
-    makers_.insert(key, maker);
-  }
+    void addMaker(rcstr key, owner_not_null<MakerBase*> maker) { makers_.insert(key, maker); }
 
-  owner_not_null<ProductBase*> make(rcstr key) THROWS {
-    MakerBase *maker = makers_.value(key);
-    RUNTIME_CHECK(maker, "no maker " % key);
-    return maker->make();
-  }
+    owner_not_null<ProductBase*> make(rcstr key) THROWS {
+        MakerBase* maker = makers_.value(key);
+        RUNTIME_CHECK(maker, "no maker " % key);
+        return maker->make();
+    }
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_FACTORY_H

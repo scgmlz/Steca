@@ -12,51 +12,49 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYP_ANGLES_H
 #define TYP_ANGLES_H
 
 #include "def/def_macros.h"
 
 namespace typ {
-//------------------------------------------------------------------------------
 
 class rad;
 
 // angles stored in degrees
 class deg {
 public:
-  deg(qreal val = 0) : val_(val) {}
-  operator qreal() const { return val_; }
+    deg(qreal val = 0) : val_(val) {}
+    operator qreal() const { return val_; }
 
-  explicit deg(rad);
-  rad toRad() const;
+    explicit deg(rad);
+    rad toRad() const;
 
-  deg& operator+=(deg const&);
-  deg& operator*=(qreal);
+    deg& operator+=(deg const&);
+    deg& operator*=(qreal);
 
-  deg normalized();
+    deg normalized();
 
 private:
-  qreal val_;
+    qreal val_;
 };
 
 // trigonometry needs radians
 class rad {
 public:
-  rad(qreal val = 0) : val_(val) {}
-  operator qreal() const { return val_; }
+    rad(qreal val = 0) : val_(val) {}
+    operator qreal() const { return val_; }
 
-  explicit rad(deg);
-  deg toDeg() const;
+    explicit rad(deg);
+    deg toDeg() const;
 
-  rad& operator+=(rad const&);
-  rad& operator*=(qreal);
+    rad& operator+=(rad const&);
+    rad& operator*=(qreal);
 
 private:
-  qreal val_;
+    qreal val_;
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_ANGLES_H

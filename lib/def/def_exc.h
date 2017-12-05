@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 // exceptions
 
 #ifndef DEF_EXC_H
@@ -21,42 +20,40 @@
 #include "def/def_macros.h"
 #include "typ/typ_str.h"
 #include <QException>
-//------------------------------------------------------------------------------
 
 // An exception that carries a message.
 class Exception : public QException {
-  CLASS(Exception) SUPER(QException)
-protected:
-  Exception(rcstr msg, bool silent) noexcept;
+    CLASS(Exception)
+    SUPER(QException) protected : Exception(rcstr msg, bool silent) noexcept;
+
 public:
+    Exception() noexcept;
+    Exception(rcstr msg) noexcept;
+    Exception(rc) noexcept;
 
-  Exception()           noexcept;
-  Exception(rcstr msg)  noexcept;
-  Exception(rc)         noexcept;
+    bool silent() const noexcept { return silent_; }
+    rcstr msg() const noexcept { return msg_; }
+    pcstr what() const noexcept;
 
-  bool  silent() const noexcept { return silent_; }
-  rcstr msg()    const noexcept { return msg_;    }
-  pcstr what()   const noexcept;
+    void setMsg(rcstr);
 
-  void setMsg(rcstr);
-
-  Exception* clone() const;
-  void       raise() const;
+    Exception* clone() const;
+    void raise() const;
 
 protected:
-  str        msg_;
-  QByteArray msg8bit_;
-  bool       silent_;
+    str msg_;
+    QByteArray msg8bit_;
+    bool silent_;
 };
 
 // raise an exception
-#define THROW(msg)     throw Exception(msg)
+#define THROW(msg) throw Exception(msg)
 #define THROW_SILENT() throw Exception()
 
 // run-time condition checking
-#define RUNTIME_CHECK(test, msg) \
-  if (!(test)) THROW(msg)
+#define RUNTIME_CHECK(test, msg)                                                                   \
+    if (!(test))                                                                                   \
+    THROW(msg)
 
-//------------------------------------------------------------------------------
+
 #endif // DEF_EXC_H
-// eof

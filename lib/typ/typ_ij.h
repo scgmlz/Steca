@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYP_IJ_H
 #define TYP_IJ_H
 
@@ -20,25 +19,25 @@
 #include "def/def_macros.h"
 
 namespace typ {
-//------------------------------------------------------------------------------
+
 // 2D point, integers
 
 class JsonObj;
 
 struct IJ {
-  CLASS(IJ)
+    CLASS(IJ)
 
-  int i, j;
+    int i, j;
 
-  IJ();  // (0,0)
-  IJ(int, int);
+    IJ(); // (0,0)
+    IJ(int, int);
 
-  COMPARABLE
+    COMPARABLE
 
-  JsonObj saveJson() const;
-  void loadJson(JsonObj const&) THROWS;
+    JsonObj saveJson() const;
+    void loadJson(JsonObj const&) THROWS;
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_IJ_H

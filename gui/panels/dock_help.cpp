@@ -12,21 +12,18 @@
 //
 // ************************************************************************** //
 
-
 #include "dock_help.h"
 #include "thehub.h"
 #include <QTextBrowser>
 
-namespace gui { namespace panel {
-//------------------------------------------------------------------------------
+namespace gui {
+namespace panel {
 
-DockHelp::DockHelp(TheHub& hub)
-: super("Help", "dock-help", Qt::Vertical), RefHub(hub)
-{
-  setFeatures(features() | DockWidgetFloatable);
-  box_->addWidget((browser_ = new QTextBrowser()));
+DockHelp::DockHelp(TheHub& hub) : super("Help", "dock-help", Qt::Vertical), RefHub(hub) {
+    setFeatures(features() | DockWidgetFloatable);
+    box_->addWidget((browser_ = new QTextBrowser()));
 }
 
-//------------------------------------------------------------------------------
-}}
-// eof
+
+}
+}

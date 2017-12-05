@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYP_IMAGE_H
 #define TYP_IMAGE_H
 
@@ -21,67 +20,46 @@
 #include <QSharedPointer>
 
 namespace typ {
-//------------------------------------------------------------------------------
 
 typedef Array2D<inten_t> inten_arr;
 
 class Image final {
-  CLASS(Image)
+    CLASS(Image)
 public:
-  // Image as vector of intensities, filled with 0 or given intensities.
-  Image(size2d::rc = size2d(0, 0));
-  Image(inten_arr::rc);
+    // Image as vector of intensities, filled with 0 or given intensities.
+    Image(size2d::rc = size2d(0, 0));
+    Image(inten_arr::rc);
 
-  size2d::rc size() const {
-    return intens_.size();
-  }
+    size2d::rc size() const { return intens_.size(); }
 
-  void clear() {
-    intens_.clear();
-  }
+    void clear() { intens_.clear(); }
 
-  bool isEmpty() const {
-    return intens_.isEmpty();
-  }
+    bool isEmpty() const { return intens_.isEmpty(); }
 
-  void fill(inten_t val, size2d::rc size) {
-    intens_.fill(val, size);
-  }
+    void fill(inten_t val, size2d::rc size) { intens_.fill(val, size); }
 
-  inten_t inten(uint i) const {
-    return intens_.at(i);
-  }
+    inten_t inten(uint i) const { return intens_.at(i); }
 
-  inten_t inten(uint i, uint j) const {
-    return intens_.at(i, j);
-  }
+    inten_t inten(uint i, uint j) const { return intens_.at(i, j); }
 
-  void setInten(uint i, inten_t val) {
-    intens_.setAt(i, val);
-  }
+    void setInten(uint i, inten_t val) { intens_.setAt(i, val); }
 
-  void setInten(uint i, uint j, inten_t val) {
-    intens_.setAt(i, j, val);
-  }
+    void setInten(uint i, uint j, inten_t val) { intens_.setAt(i, j, val); }
 
-  void addInten(uint i, uint j, inten_t val) {
-    intens_.refAt(i, j) += val;
-  }
+    void addInten(uint i, uint j, inten_t val) { intens_.refAt(i, j) += val; }
 
-  // Sum all intensities with new ones.
-  void addIntens(rc) THROWS;
+    // Sum all intensities with new ones.
+    void addIntens(rc) THROWS;
 
-  inten_rge::rc rgeInten() const {
-    return rgeInten_;
-  }
+    inten_rge::rc rgeInten() const { return rgeInten_; }
 
 private:
-  inten_arr intens_;
-  inten_rge rgeInten_;
+    inten_arr intens_;
+    inten_rge rgeInten_;
 };
 
 typedef QSharedPointer<Image> shp_Image;
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_IMAGE_H

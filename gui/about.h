@@ -12,31 +12,26 @@
 //
 // ************************************************************************** //
 
-
 #ifndef ABOUT_H
 #define ABOUT_H
 
-#include "thehub.h"
 #include "def/defs.h"
+#include "thehub.h"
 
 #include <QDialog>
 
 namespace gui {
-//------------------------------------------------------------------------------
 
 class AboutBox : public QDialog {
-  CLASS(AboutBox) SUPER(QDialog)
-public:
-  AboutBox(QWidget*);
+    CLASS(AboutBox) SUPER(QDialog) public : AboutBox(QWidget*);
 
 protected:
-  void accept();
-  void mouseDoubleClickEvent(QMouseEvent*);
+    void accept();
 
-  QCheckBox      *cbShowAtStartup_, *cbCheckUpdatesAtStartup_;
-  QDoubleSpinBox *detDistance_, *detPixelSize_;
+    QCheckBox *cbShowAtStartup_, *cbCheckUpdatesAtStartup_;
+    QDoubleSpinBox *detDistance_, *detPixelSize_;
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // MAINWIN_H

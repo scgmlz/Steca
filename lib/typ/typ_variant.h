@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYP_VARIANT_H
 #define TYP_VARIANT_H
 
@@ -22,7 +21,6 @@
 // Help with QVariant
 
 namespace typ {
-//------------------------------------------------------------------------------
 
 bool isNumeric(QVariant const&);
 
@@ -30,13 +28,13 @@ bool isNumeric(QVariant const&);
 typedef int cmpFun(QVariant const&, QVariant const&);
 typedef vec<cmpFun*> cmp_vec;
 
-int cmp_int(QVariant const&,  QVariant const&);
-int cmp_str(QVariant const&,  QVariant const&);
+int cmp_int(QVariant const&, QVariant const&);
+int cmp_str(QVariant const&, QVariant const&);
 int cmp_real(QVariant const&, QVariant const&);
 int cmp_date(QVariant const&, QVariant const&);
 
 typedef vec<QVariant> row_t;
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_VARIANT_H
