@@ -19,14 +19,14 @@ namespace typ {
 ImageTransform::ImageTransform(uint val_) : val(eTransform(val_ & 7)) {}
 
 ImageTransform ImageTransform::mirror(bool on) const {
-  return on ? ImageTransform(val | MIRROR) : ImageTransform(val & ~MIRROR);
+    return on ? ImageTransform(val | MIRROR) : ImageTransform(val & ~MIRROR);
 }
 
 ImageTransform ImageTransform::rotateTo(ImageTransform::rc rot) const {
-  return ImageTransform((val & MIRROR) | (rot.val & 3));
+    return ImageTransform((val & MIRROR) | (rot.val & 3));
 }
 
 ImageTransform ImageTransform::nextRotate() const {
-  return rotateTo(val + 1);
+    return rotateTo(val + 1);
 }
 }

@@ -18,77 +18,81 @@ namespace io {
 
 // peek at up to maxLen bytes (to establish the file type)
 static QByteArray peek(uint pos, uint maxLen, QFileInfo const& info) {
-  QFile file(info.filePath());
+    QFile file(info.filePath());
 
-  if (file.open(QFile::ReadOnly) && file.seek(pos)) return file.read(maxLen);
+    if (file.open(QFile::ReadOnly) && file.seek(pos))
+        return file.read(maxLen);
 
-  return QByteArray();
+    return QByteArray();
 }
 
 // Caress file format
 bool couldBeCaress(QFileInfo const& info) {
-  static QByteArray const header("\020\012DEFCMD DAT");
-  return header == peek(0, to_u(header.size()), info);
+    static QByteArray const header("\020\012DEFCMD DAT");
+    return header == peek(0, to_u(header.size()), info);
 }
 
 // Mar file format
 bool couldBeMar(QFileInfo const& info) {
-  static QByteArray const header("mar research");
-  return header == peek(0x80, to_u(header.size()), info);
+    static QByteArray const header("mar research");
+    return header == peek(0x80, to_u(header.size()), info);
 }
 
 // Text .dat file with metadata for tiff files
 bool couldBeTiffDat(QFileInfo const& info) {
-  QFile file(info.filePath());
+    QFile file(info.filePath());
 
-  if (!file.open(QFile::ReadOnly)) return false;
+    if (!file.open(QFile::ReadOnly))
+        return false;
 
-  bool couldBe = false;
+    bool couldBe = false;
 
-  QByteArray line;
+    QByteArray line;
 
-  while (!(line = file.readLine()).isEmpty()) {
-    str s = line;
+    while (!(line = file.readLine()).isEmpty()) {
+        str s = line;
 
-    int commentPos         = s.indexOf(';');
-    if (commentPos >= 0) s = s.left(commentPos);
+        int commentPos = s.indexOf(';');
+        if (commentPos >= 0)
+            s = s.left(commentPos);
 
-    if ((s = s.simplified()).isEmpty()) continue;
+        if ((s = s.simplified()).isEmpty())
+            continue;
 
-    auto lst = s.split(' ');
-    int  cnt = lst.count();
-    if (cnt < 2 || cnt > 4) return false;
+        auto lst = s.split(' ');
+        int cnt = lst.count();
+        if (cnt < 2 || cnt > 4)
+            return false;
 
-    couldBe = true;
-  }
+        couldBe = true;
+    }
 
-  return couldBe;
+    return couldBe;
 }
 
 data::shp_File load(rcstr filePath) THROWS {
-  QFileInfo info(filePath);
-  RUNTIME_CHECK(info.exists(), "File " % filePath % " does not exist");
+    QFileInfo info(filePath);
+    RUNTIME_CHECK(info.exists(), "File " % filePath % " does not exist");
 
-  data::shp_File file;
+    data::shp_File file;
 
-  if (couldBeCaress(info))
-    file = io::loadCaress(filePath);
-  else if (couldBeMar(info))
-    file = io::loadMar(filePath);
-  else if (couldBeTiffDat(info))
-    file = io::loadTiffDat(filePath);
-  else
-    THROW("unknown file type: " % filePath);
+    if (couldBeCaress(info))
+        file = io::loadCaress(filePath);
+    else if (couldBeMar(info))
+        file = io::loadMar(filePath);
+    else if (couldBeTiffDat(info))
+        file = io::loadTiffDat(filePath);
+    else
+        THROW("unknown file type: " % filePath);
 
-  RUNTIME_CHECK(file->datasets().count() > 0,
-                "File " % filePath % " contains no datasets");
+    RUNTIME_CHECK(file->datasets().count() > 0, "File " % filePath % " contains no datasets");
 
-  // ensure that all datasets have images of the same size
-  typ::size2d size = file->datasets().first()->imageSize();
-  for (auto& dataset : file->datasets())
-    if (dataset->imageSize() != size)
-      THROW("Inconsistent image size in " % filePath);
+    // ensure that all datasets have images of the same size
+    typ::size2d size = file->datasets().first()->imageSize();
+    for (auto& dataset : file->datasets())
+        if (dataset->imageSize() != size)
+            THROW("Inconsistent image size in " % filePath);
 
-  return file;
+    return file;
 }
 }

@@ -26,4 +26,4 @@ QRgb intenImage(inten_t inten, inten_t maxInten, bool curved);
 QRgb intenGraph(inten_t inten, inten_t maxInten);
 QRgb heatmapColor(inten_t value);
 }
-#endif  // COLORS_H
+#endif // COLORS_H

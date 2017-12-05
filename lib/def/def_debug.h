@@ -28,8 +28,8 @@
  * TR("name" << var1 << 2+3)
  * Note: there must be an available QDebug& operator<<
  */
-#define TR(what) \
-  { qDebug() << what; }
+#define TR(what)                                                                                   \
+    { qDebug() << what; }
 
 // asserts redefined, to include (or not) the ';'
 
@@ -43,16 +43,18 @@
 
 // with a debug message
 
-#define EXPECT_WT(cond, what) \
-  {                           \
-    if (!(cond)) WT(what);    \
-    EXPECT(cond)              \
-  }
-#define ENSURE_WT(cond, what) \
-  {                           \
-    if (!(cond)) WT(what);    \
-    ENSURE(cond)              \
-  }
+#define EXPECT_WT(cond, what)                                                                      \
+    {                                                                                              \
+        if (!(cond))                                                                               \
+            WT(what);                                                                              \
+        EXPECT(cond)                                                                               \
+    }
+#define ENSURE_WT(cond, what)                                                                      \
+    {                                                                                              \
+        if (!(cond))                                                                               \
+            WT(what);                                                                              \
+        ENSURE(cond)                                                                               \
+    }
 
 // marks code that should not be reached
 
@@ -60,8 +62,8 @@
 
 #else
 
-#define TR(what) \
-  {}
+#define TR(what)                                                                                   \
+    {}
 
 #define EXPECT(cond)
 #define ENSURE(cond)
@@ -79,4 +81,4 @@
 // WaTch: same as TR, also prints stringized version (what is being printed)
 #define WT(what) TR(#what ":" << what)
 
-#endif  // DEF_DEBUG_H
+#endif // DEF_DEBUG_H

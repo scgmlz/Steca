@@ -27,96 +27,96 @@ namespace typ {
 // detector geometry
 
 struct Geometry {
-  CLASS(Geometry)
+    CLASS(Geometry)
 
-  static preal const MIN_DETECTOR_DISTANCE;
-  static preal const MIN_DETECTOR_PIXEL_SIZE;
+    static preal const MIN_DETECTOR_DISTANCE;
+    static preal const MIN_DETECTOR_PIXEL_SIZE;
 
-  static preal const DEF_DETECTOR_DISTANCE;
-  static preal const DEF_DETECTOR_PIXEL_SIZE;
+    static preal const DEF_DETECTOR_DISTANCE;
+    static preal const DEF_DETECTOR_PIXEL_SIZE;
 
-  Geometry();
+    Geometry();
 
-  COMPARABLE
+    COMPARABLE
 
-  preal detectorDistance;  // the distance from the sample to the detector
-  preal pixSize;           // size of the detector pixel
-  IJ    midPixOffset;
+    preal detectorDistance; // the distance from the sample to the detector
+    preal pixSize; // size of the detector pixel
+    IJ midPixOffset;
 };
 
 // image cut (margins)
 
 struct ImageCut {
-  CLASS(ImageCut)
+    CLASS(ImageCut)
 
-  uint left, top, right, bottom;
+    uint left, top, right, bottom;
 
-  ImageCut();
-  ImageCut(uint left, uint top, uint right, uint bottom);
-
-  COMPARABLE
-
-  size2d marginSize() const;
-};
-
-struct Angles {
-  CLASS(Angles)
-
-  tth_t tth;
-  gma_t gma;
-
-  Angles();
-  Angles(tth_t, gma_t);
-};
-
-class AngleMap {
-  CLASS(AngleMap)
-public:
-  struct Key {
-    CLASS(Key)
-
-    Key(Geometry::rc, size2d::rc, ImageCut::rc, IJ::rc midPix, tth_t midTth);
+    ImageCut();
+    ImageCut(uint left, uint top, uint right, uint bottom);
 
     COMPARABLE
 
-    bool operator<(rc that) const { return compare(that) < 0; }
+    size2d marginSize() const;
+};
 
-    Geometry geometry;
-    size2d   size;
-    ImageCut cut;
-    IJ       midPix;
-    tth_t    midTth;
-  };
+struct Angles {
+    CLASS(Angles)
 
-  AngleMap(Key::rc);
+    tth_t tth;
+    gma_t gma;
 
-  Angles::rc at(uint i) const { return arrAngles_.at(i); }
+    Angles();
+    Angles(tth_t, gma_t);
+};
 
-  Angles::rc at(uint i, uint j) const { return arrAngles_.at(i, j); }
+class AngleMap {
+    CLASS(AngleMap)
+public:
+    struct Key {
+        CLASS(Key)
 
-  tth_rge rgeTth() const { return rgeTth_; }
-  gma_rge rgeGma() const { return rgeGma_; }
-  gma_rge rgeGmaFull() const { return rgeGmaFull_; }
+        Key(Geometry::rc, size2d::rc, ImageCut::rc, IJ::rc midPix, tth_t midTth);
 
-  // TODO remove  IJ gmaPixel(gma_t);
+        COMPARABLE
 
-  void getGmaIndexes(gma_rge::rc, uint_vec const*&, uint&, uint&) const;
+        bool operator<(rc that) const { return compare(that) < 0; }
+
+        Geometry geometry;
+        size2d size;
+        ImageCut cut;
+        IJ midPix;
+        tth_t midTth;
+    };
+
+    AngleMap(Key::rc);
+
+    Angles::rc at(uint i) const { return arrAngles_.at(i); }
+
+    Angles::rc at(uint i, uint j) const { return arrAngles_.at(i, j); }
+
+    tth_rge rgeTth() const { return rgeTth_; }
+    gma_rge rgeGma() const { return rgeGma_; }
+    gma_rge rgeGmaFull() const { return rgeGmaFull_; }
+
+    // TODO remove  IJ gmaPixel(gma_t);
+
+    void getGmaIndexes(gma_rge::rc, uint_vec const*&, uint&, uint&) const;
 
 private:
-  void calculate();
+    void calculate();
 
-  Key key_;
+    Key key_;
 
-  Array2D<Angles> arrAngles_;
+    Array2D<Angles> arrAngles_;
 
-  tth_rge rgeTth_;
-  gma_rge rgeGma_, rgeGmaFull_;
+    tth_rge rgeTth_;
+    gma_rge rgeGma_, rgeGmaFull_;
 
-  // sorted
-  vec<gma_t> gmas;
-  uint_vec   gmaIndexes;
+    // sorted
+    vec<gma_t> gmas;
+    uint_vec gmaIndexes;
 };
 
 typedef QSharedPointer<AngleMap> shp_AngleMap;
 }
-#endif  // TYP_GEOMETRY_H
+#endif // TYP_GEOMETRY_H

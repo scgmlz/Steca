@@ -21,13 +21,13 @@ namespace gui_cfg {
 
 #ifdef Q_OS_WIN
 
-uint const em4_2 = 8;  // widget width for 4.2 numbers
-uint const em4   = 5;  // for 4 numbers
+uint const em4_2 = 8; // widget width for 4.2 numbers
+uint const em4 = 5; // for 4 numbers
 
 #else
 
 uint const em4_2 = 6;
-uint const em4   = 4;
+uint const em4 = 4;
 
 #endif
 }

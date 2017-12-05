@@ -21,12 +21,12 @@ namespace gui {
 namespace panel {
 
 class DockFiles : public DockWidget, private RefHub {
-  CLASS(DockFiles) SUPER(DockWidget) public : DockFiles(TheHub &);
+    CLASS(DockFiles) SUPER(DockWidget) public : DockFiles(TheHub&);
 
 private:
-  class FilesView *filesView_;
-  class LineView * corrFile_;
+    class FilesView* filesView_;
+    class LineView* corrFile_;
 };
 }
 }
-#endif  // DOCK_FILES_H
+#endif // DOCK_FILES_H

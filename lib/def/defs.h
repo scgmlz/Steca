@@ -23,4 +23,4 @@
 #include "def_gsl.h"
 #include "def_macros.h"
 
-#endif  // DEFS_H
+#endif // DEFS_H

@@ -24,70 +24,69 @@
 namespace gui {
 
 class MainWin : public QMainWindow {
-  CLASS(MainWin) SUPER(QMainWindow) public : MainWin();
+    CLASS(MainWin) SUPER(QMainWindow) public : MainWin();
 
 private:
-  void initMenus();
-  void addActions(QMenu *, QList<QAction *>);
-  void initLayout();
-  void initStatusBar();
-  void connectActions();
+    void initMenus();
+    void addActions(QMenu*, QList<QAction*>);
+    void initLayout();
+    void initStatusBar();
+    void connectActions();
 
 public:
-  void about();
-  void online();
-  void checkUpdate();
-  void checkUpdate(bool completeReport);
+    void about();
+    void online();
+    void checkUpdate();
+    void checkUpdate(bool completeReport);
 
 private:
-  void messageDialog(rcstr title, rcstr text);
+    void messageDialog(rcstr title, rcstr text);
 
 public:
-  void show();
-  void close();
+    void show();
+    void close();
 
-  void addFiles();
-  void enableCorr();
+    void addFiles();
+    void enableCorr();
 
-  void loadSession();
-  void saveSession();
-  void clearSession();
+    void loadSession();
+    void saveSession();
+    void clearSession();
 
-  void outputPoleFigures();
-  void outputDiagrams();
-  void outputDiffractograms();
-
-private:
-  gui::TheHub hub_;
-  Actions &   acts_;
+    void outputPoleFigures();
+    void outputDiagrams();
+    void outputDiffractograms();
 
 private:
-  void closeEvent(QCloseEvent *);
-
-  void onShow();
-  void onClose();
+    gui::TheHub hub_;
+    Actions& acts_;
 
 private:
-  QMenu *menuFile_, *menuView_, *menuImage_, *menuDgram_, *menuOutput_,
-      *menuHelp_;
+    void closeEvent(QCloseEvent*);
 
-  QDockWidget *dockFiles_, *dockDatasets_, *dockDatasetInfo_;
+    void onShow();
+    void onClose();
 
 private:
-  QByteArray            initialState_;
-  QNetworkAccessManager netMan_;
+    QMenu *menuFile_, *menuView_, *menuImage_, *menuDgram_, *menuOutput_, *menuHelp_;
 
-  void readSettings();
-  void saveSettings();
+    QDockWidget *dockFiles_, *dockDatasets_, *dockDatasetInfo_;
 
-  void checkActions();
+private:
+    QByteArray initialState_;
+    QNetworkAccessManager netMan_;
 
-  void viewStatusbar(bool);
-  void viewFullScreen(bool);
-  void viewFiles(bool);
-  void viewDatasets(bool);
-  void viewDatasetInfo(bool);
-  void viewReset();
+    void readSettings();
+    void saveSettings();
+
+    void checkActions();
+
+    void viewStatusbar(bool);
+    void viewFullScreen(bool);
+    void viewFiles(bool);
+    void viewDatasets(bool);
+    void viewDatasetInfo(bool);
+    void viewReset();
 };
 }
-#endif  // MAINWIN_H
+#endif // MAINWIN_H

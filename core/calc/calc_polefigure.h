@@ -22,28 +22,26 @@
 namespace calc {
 
 struct itf_t {
-  CLASS(itf_t)
+    CLASS(itf_t)
 
-  itf_t();
-  itf_t(inten_t, tth_t, fwhm_t);
+    itf_t();
+    itf_t(inten_t, tth_t, fwhm_t);
 
-  void operator+=(rc);
+    void operator+=(rc);
 
-  inten_t inten;
-  tth_t   tth;
-  fwhm_t  fwhm;
+    inten_t inten;
+    tth_t tth;
+    fwhm_t fwhm;
 };
 
 typedef typ::vec<itf_t> itfs_t;
 
 // Interpolates reflection infos to a single point using idw.
-itf_t interpolateValues(typ::deg searchRadius, ReflectionInfos::rc infos,
-                        typ::deg alpha, typ::deg beta);
+itf_t interpolateValues(
+    typ::deg searchRadius, ReflectionInfos::rc infos, typ::deg alpha, typ::deg beta);
 
-ReflectionInfos interpolate(ReflectionInfos::rc, typ::deg alphaStep,
-                            typ::deg betaStep, typ::deg idwRadius,
-                            typ::deg averagingAlphaMax,
-                            typ::deg averagingRadius, qreal inclusionTreshold,
-                            Progress*);
+ReflectionInfos interpolate(
+    ReflectionInfos::rc, typ::deg alphaStep, typ::deg betaStep, typ::deg idwRadius,
+    typ::deg averagingAlphaMax, typ::deg averagingRadius, qreal inclusionTreshold, Progress*);
 }
-#endif  // CALC_POLEFIGURE_H
+#endif // CALC_POLEFIGURE_H

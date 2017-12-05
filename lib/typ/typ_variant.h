@@ -25,7 +25,7 @@ namespace typ {
 bool isNumeric(QVariant const&);
 
 // The usual comparators: <0, 0, >0
-typedef int          cmpFun(QVariant const&, QVariant const&);
+typedef int cmpFun(QVariant const&, QVariant const&);
 typedef vec<cmpFun*> cmp_vec;
 
 int cmp_int(QVariant const&, QVariant const&);
@@ -35,4 +35,4 @@ int cmp_date(QVariant const&, QVariant const&);
 
 typedef vec<QVariant> row_t;
 }
-#endif  // TYP_VARIANT_H
+#endif // TYP_VARIANT_H

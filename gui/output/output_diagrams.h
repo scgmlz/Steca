@@ -22,52 +22,51 @@ namespace gui {
 namespace output {
 
 class TabPlot : public QCustomPlot {
-  CLASS(TabPlot) SUPER(QCustomPlot) public : TabPlot();
-  void set(calc::ReflectionInfos);
+    CLASS(TabPlot) SUPER(QCustomPlot) public : TabPlot();
+    void set(calc::ReflectionInfos);
 
-  void plot(qreal_vec::rc xs, qreal_vec::rc ys, qreal_vec::rc ysLo,
-            qreal_vec::rc ysUp);
+    void plot(qreal_vec::rc xs, qreal_vec::rc ys, qreal_vec::rc ysLo, qreal_vec::rc ysUp);
 
 protected:
-  QCPGraph *graph_, *graphLo_, *graphUp_;
+    QCPGraph *graph_, *graphLo_, *graphUp_;
 };
 
 class TabDiagramsSave : public TabSave {
-  CLASS(TabDiagramsSave)
-  SUPER(TabSave) public : TabDiagramsSave(TheHub &, Params &);
+    CLASS(TabDiagramsSave)
+    SUPER(TabSave) public : TabDiagramsSave(TheHub&, Params&);
 
-  uint currType() const;
-  bool currDiagram() const;
+    uint currType() const;
+    bool currDiagram() const;
 
 protected:
-  QRadioButton *currentDiagram_, *allData_;
-  QComboBox *   fileTypes_;
+    QRadioButton *currentDiagram_, *allData_;
+    QComboBox* fileTypes_;
 };
 
 class DiagramsFrame : public Frame {
-  CLASS(DiagramsFrame)
-  SUPER(Frame) public : DiagramsFrame(TheHub &, rcstr title, QWidget *);
+    CLASS(DiagramsFrame)
+    SUPER(Frame) public : DiagramsFrame(TheHub&, rcstr title, QWidget*);
 
 protected:
-  TabPlot *        tabPlot_;
-  TabDiagramsSave *tabSave_;
+    TabPlot* tabPlot_;
+    TabDiagramsSave* tabSave_;
 
-  using eReflAttr = calc::ReflectionInfo::eReflAttr;
+    using eReflAttr = calc::ReflectionInfo::eReflAttr;
 
-  eReflAttr xAttr() const;
-  eReflAttr yAttr() const;
+    eReflAttr xAttr() const;
+    eReflAttr yAttr() const;
 
-  void displayReflection(uint reflIndex, bool interpolated);
+    void displayReflection(uint reflIndex, bool interpolated);
 
-  calc::ReflectionInfos rs_;
-  qreal_vec             xs_, ys_, ysErrorLo_, ysErrorUp_;
+    calc::ReflectionInfos rs_;
+    qreal_vec xs_, ys_, ysErrorLo_, ysErrorUp_;
 
-  void recalculate();
+    void recalculate();
 
-  bool saveDiagramOutput();
-  void writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator);
-  void writeAllDataOutputFile(rcstr filePath, rcstr separator);
+    bool saveDiagramOutput();
+    void writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator);
+    void writeAllDataOutputFile(rcstr filePath, rcstr separator);
 };
 }
 }
-#endif  // OUTPUT_DIAGRAMS_H
+#endif // OUTPUT_DIAGRAMS_H

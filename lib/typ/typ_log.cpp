@@ -15,15 +15,18 @@
 #include "typ_log.h"
 
 void MessageLogger::info(rcstr msg) {
-  if (handler) handler(msg, INFO);
+    if (handler)
+        handler(msg, INFO);
 }
 
 void MessageLogger::warn(rcstr msg) {
-  if (handler) handler(msg, WARN);
+    if (handler)
+        handler(msg, WARN);
 }
 
 void MessageLogger::popup(rcstr msg) {
-  if (handler) handler(msg, POPUP);
+    if (handler)
+        handler(msg, POPUP);
 }
 
 void (*MessageLogger::handler)(rcstr, eType) = nullptr;

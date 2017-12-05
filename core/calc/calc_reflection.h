@@ -23,43 +23,43 @@
 namespace calc {
 
 class Reflection final {
-  CLASS(Reflection)
+    CLASS(Reflection)
 public:
-  static str_lst::rc typeStrLst();
-  static rcstr       typeTag(fit::ePeakType);
+    static str_lst::rc typeStrLst();
+    static rcstr typeTag(fit::ePeakType);
 
-  Reflection(fit::ePeakType = fit::ePeakType::RAW);
+    Reflection(fit::ePeakType = fit::ePeakType::RAW);
 
-  fit::ePeakType type() const;
-  void           setType(fit::ePeakType);
+    fit::ePeakType type() const;
+    void setType(fit::ePeakType);
 
-  fit::PeakFunction::rc peakFunction() const;  // REMOVE
+    fit::PeakFunction::rc peakFunction() const; // REMOVE
 
-  typ::Range::rc range() const;
-  void           setRange(typ::Range::rc);
+    typ::Range::rc range() const;
+    void setRange(typ::Range::rc);
 
-  void invalidateGuesses();
+    void invalidateGuesses();
 
-  void setGuessPeak(peak_t::rc peak) { peakFunction_->setGuessedPeak(peak); }
-  void setGuessFWHM(fwhm_t fwhm) { peakFunction_->setGuessedFWHM(fwhm); }
+    void setGuessPeak(peak_t::rc peak) { peakFunction_->setGuessedPeak(peak); }
+    void setGuessFWHM(fwhm_t fwhm) { peakFunction_->setGuessedFWHM(fwhm); }
 
-  void fit(typ::Curve::rc);
+    void fit(typ::Curve::rc);
 
 private:
-  void setPeakFunction(fit::ePeakType);
-  void setPeakFunction(fit::PeakFunction*);
+    void setPeakFunction(fit::ePeakType);
+    void setPeakFunction(fit::PeakFunction*);
 
-  scoped<fit::PeakFunction*> peakFunction_;
+    scoped<fit::PeakFunction*> peakFunction_;
 
 public:
-  typ::JsonObj saveJson() const;
-  void         loadJson(typ::JsonObj::rc) THROWS;
+    typ::JsonObj saveJson() const;
+    void loadJson(typ::JsonObj::rc) THROWS;
 };
 
 typedef QSharedPointer<Reflection> shp_Reflection;
-typedef typ::vec<shp_Reflection>   Reflections;
+typedef typ::vec<shp_Reflection> Reflections;
 }
 
 Q_DECLARE_METATYPE(calc::shp_Reflection)
 
-#endif  // CORE_REFLECTION_H
+#endif // CORE_REFLECTION_H

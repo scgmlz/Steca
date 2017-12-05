@@ -19,10 +19,10 @@ namespace data {
 File::File(rcstr fileName) : fileInfo_(fileName) {}
 
 QFileInfo const& File::fileInfo() const {
-  return fileInfo_;
+    return fileInfo_;
 }
 
 str File::fileName() const {
-  return fileInfo_.fileName();
+    return fileInfo_.fileName();
 }
 }

@@ -21,11 +21,11 @@ namespace gui {
 namespace panel {
 
 class DockMetadata : public DockWidget, protected RefHub {
-  CLASS(DockMetadata) SUPER(DockWidget) public : DockMetadata(TheHub &);
+    CLASS(DockMetadata) SUPER(DockWidget) public : DockMetadata(TheHub&);
 
 private:
-  class MetadataView *metadataView_;
+    class MetadataView* metadataView_;
 };
 }
 }
-#endif  // DOCK_METADATA_H
+#endif // DOCK_METADATA_H

@@ -24,27 +24,27 @@ namespace panel {
 class ImageWidget;
 
 class TabsImages : public TabsPanel {
-  CLASS(TabsImages) SUPER(TabsPanel) public : TabsImages(TheHub &);
+    CLASS(TabsImages) SUPER(TabsPanel) public : TabsImages(TheHub&);
 
 private:
-  QPixmap makeBlankPixmap();
+    QPixmap makeBlankPixmap();
 
-  QImage makeImage(typ::shp_Image, bool curvedScale);
-  QPixmap makePixmap(typ::shp_Image);
-  QPixmap makePixmap(data::OneDataset::rc, gma_rge::rc, tth_rge::rc);
+    QImage makeImage(typ::shp_Image, bool curvedScale);
+    QPixmap makePixmap(typ::shp_Image);
+    QPixmap makePixmap(data::OneDataset::rc, gma_rge::rc, tth_rge::rc);
 
-  void setDataset(data::shp_Dataset);
-  void render();
+    void setDataset(data::shp_Dataset);
+    void render();
 
-  data::shp_Dataset dataset_;
-  ImageWidget *     dataImageWidget_, *corrImageWidget_;
+    data::shp_Dataset dataset_;
+    ImageWidget *dataImageWidget_, *corrImageWidget_;
 
-  QSpinBox *      spinN_;
-  QSpinBox *      numSlices_, *numSlice_, *numBin_;
-  QDoubleSpinBox *minGamma_, *maxGamma_;
+    QSpinBox* spinN_;
+    QSpinBox *numSlices_, *numSlice_, *numBin_;
+    QDoubleSpinBox *minGamma_, *maxGamma_;
 
-  calc::shp_DatasetLens lens_;
+    calc::shp_DatasetLens lens_;
 };
 }
 }
-#endif  // TABS_IMAGES_H
+#endif // TABS_IMAGES_H

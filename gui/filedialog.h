@@ -30,4 +30,4 @@ str saveFileName(QWidget*, rcstr caption, rcstr dir, rcstr filter);
 str saveDirName(QWidget*, rcstr caption, rcstr dir);
 }
 }
-#endif  // FILEDIALOG_H
+#endif // FILEDIALOG_H
