@@ -12,14 +12,15 @@
 //
 // ************************************************************************** //
 
-
 #include "data/data_dataset.h"
-#include "Caress/raw.h"
-#include "typ/typ_types.h"
-#include "io_io.h"
 
-#include <sstream>
+#include "Caress/raw.h"  // inclusion order is critical !
+
+#include "io_io.h"
+#include "typ/typ_types.h"
+
 #include <qmath.h>
+#include <sstream>
 
 namespace io {
 
@@ -35,15 +36,15 @@ data::shp_File loadCaress2(rcstr filePath) THROWS {
   } __;
 
   for (;;) {
-    int32 e_number, // element number
-          e_type,   // element type
-          d_type,   // data type
-          number;
+    int32 e_number,  // element number
+        e_type,      // element type
+        d_type,      // data type
+        number;
     modname_t element, node;
 
-    auto resNextUnit = next_data_unit(&e_number, &e_type, element, node, &d_type, &number);
-    if (2 /*END_OF_FILE_DETECTED*/ == resNextUnit)
-      break;
+    auto resNextUnit =
+        next_data_unit(&e_number, &e_type, element, node, &d_type, &number);
+    if (2 /*END_OF_FILE_DETECTED*/ == resNextUnit) break;
 
     RUNTIME_CHECK(0 /*OK*/ == resNextUnit, "Error processing " + filePath);
   }
@@ -52,45 +53,42 @@ data::shp_File loadCaress2(rcstr filePath) THROWS {
   return file;
 }
 
-
 data::shp_File loadCaress(rcstr filePath) THROWS {
   data::shp_File file(new data::File(filePath));
 
-  RUNTIME_CHECK(0 == open_data_file(filePath.toLocal8Bit().data(),nullptr),
+  RUNTIME_CHECK(0 == open_data_file(filePath.toLocal8Bit().data(), nullptr),
                 "Cannot open data file " + filePath);
 
-  struct CloseFile { // TODO remove, replace with QFile etc.
-    ~CloseFile() {
-      close_data_file();
-    }
+  struct CloseFile {  // TODO remove, replace with QFile etc.
+    ~CloseFile() { close_data_file(); }
   } _;
 
-  bool newObject = false;
-  bool workAfterStep = false;
-  bool collectData = false;
+  bool        newObject     = false;
+  bool        workAfterStep = false;
+  bool        collectData   = false;
   std::string s_masterCounter;
-  bool isRobot = false, isTable = false;
+  bool        isRobot = false, isTable = false;
 
-  float tthAxis = 0, omgAxis = 0, phiAxis = 0, chiAxis = 0, tths = 0, omgs = 0, chis = 0,
-      phis = 0, tthr = 0, omgr = 0, chir = 0, phir = 0, xAxis = 0, yAxis = 0, zAxis = 0,
-      pstAxis = 0, sstAxis = 0, omgmAxis = 0,
-      nmT = 0, nmTeload = 0, nmTepos = 0, nmTeext = 0, nmXe = 0, nmYe = 0, nmZe = 0;
+  float tthAxis = 0, omgAxis = 0, phiAxis = 0, chiAxis = 0, tths = 0, omgs = 0,
+        chis = 0, phis = 0, tthr = 0, omgr = 0, chir = 0, phir = 0, xAxis = 0,
+        yAxis = 0, zAxis = 0, pstAxis = 0, sstAxis = 0, omgmAxis = 0, nmT = 0,
+        nmTeload = 0, nmTepos = 0, nmTeext = 0, nmXe = 0, nmYe = 0, nmZe = 0;
 
-  int *intens = NULL;
+  int* intens    = NULL;
   uint imageSize = 0;
 
   int mon = 0, tim1 = 0;
 
   std::string s_date, s_comment;
-  char* c_comment;
-  double deltaTime = 0;
-  double prevTempTime = 0;
-  int deltaMon = 0;
-  int prevMon = 0;
+  char*       c_comment;
+  double      deltaTime    = 0;
+  double      prevTempTime = 0;
+  int         deltaMon     = 0;
+  int         prevMon      = 0;
 
   bool end = false;
   while (!end) {
-    int e_number, e_type, d_type, d_number;
+    int  e_number, e_type, d_type, d_number;
     char element[100];
     element[99] = '\0';
     char node[100];
@@ -99,20 +97,19 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
     int returnNextDataUnit =
         next_data_unit(&e_number, &e_type, element, node, &d_type, &d_number);
     element[8] = '\0';
-    node[8] = '\0';
+    node[8]    = '\0';
 
-    if (returnNextDataUnit == 1) // Error
+    if (returnNextDataUnit == 1)  // Error
       continue;
 
-    if (returnNextDataUnit == 2) { // EOF
+    if (returnNextDataUnit == 2) {  // EOF
       newObject = true;
-      end = true; // terminate while-loop after treating the current data unit
+      end = true;  // terminate while-loop after treating the current data unit
     }
 
     if (!strncmp(element, "SETVALUE", 8)) {
       // SETVALUE STEP is mark for a new Dataset!
-      if (!strncmp(node, "STEP  ", 6))
-        workAfterStep = true;
+      if (!strncmp(node, "STEP  ", 6)) workAfterStep = true;
 
       if (workAfterStep) {
         if (!strncmp(node, "STEP  ", 6)) {
@@ -125,7 +122,7 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
       } else {
         if (collectData) {
           collectData = false;
-          newObject = true;
+          newObject   = true;
         }
       }
     }
@@ -145,9 +142,9 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
       newObject = false;
 
       if (isRobot && isTable) {
-        if (tthr == 0 && tths != 0) // it's the robot
+        if (tthr == 0 && tths != 0)  // it's the robot
           isRobot = false;
-        else if (tths == 0 && tthr != 0) // it's the table
+        else if (tths == 0 && tthr != 0)  // it's the table
           isTable = false;
         else
           throw "inconsistent data set: not clear whether it's robot or table";
@@ -170,9 +167,9 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
 
       // Objekt inizialisieren
       if (intens != NULL) {
-        int d, y;
-        char c_m[5];
-        std::string s_m;
+        int                d, y;
+        char               c_m[5];
+        std::string        s_m;
         std::istringstream istr(s_date);
         istr >> d;
         istr.ignore();
@@ -182,27 +179,28 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
         s_m = c_m;
 
         double tempTime = 0;
-        if ((y < 2015) ||
-            ((y == 2015) && ((s_m.compare("Jan") == 0) || (s_m.compare("Feb") == 0)))) {
-          tempTime = double(tim1) / 100; // HACK REVIEW how deltaTime is used!!
+        if ((y < 2015) || ((y == 2015) && ((s_m.compare("Jan") == 0) ||
+                                           (s_m.compare("Feb") == 0)))) {
+          tempTime = double(tim1) / 100;  // HACK REVIEW how deltaTime is used!!
         } else {
           tempTime = double(tim1);
         }
-        deltaTime = tempTime - prevTempTime;
+        deltaTime    = tempTime - prevTempTime;
         prevTempTime = tempTime;
-        deltaMon = mon - prevMon;
-        prevMon = mon;
+        deltaMon     = mon - prevMon;
+        prevMon      = mon;
 
         uint detRel;
 
         detRel = to_u(qRound(sqrt(imageSize)));
-        RUNTIME_CHECK(imageSize>0 && imageSize == detRel*detRel, "bad image size");
+        RUNTIME_CHECK(imageSize > 0 && imageSize == detRel * detRel,
+                      "bad image size");
 
         inten_vec convertedIntens(imageSize);
         for_i (imageSize)
           convertedIntens[i] = intens[i];
 
-        typ::size2d size(detRel,detRel);
+        typ::size2d size(detRel, detRel);
 
         // this is only for testing of a non-square image
         // size.rheight() /= 2;
@@ -234,335 +232,261 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
         md.nmZe     = nmZe;
 
         md.deltaMonitorCount = deltaMon;
-        md.monitorCount = mon;
-        md.deltaTime    = deltaTime;
-        md.time         = tempTime;
+        md.monitorCount      = mon;
+        md.deltaTime         = deltaTime;
+        md.time              = tempTime;
 
-        file->datasets().append(
-          data::shp_OneDataset(new data::OneDataset(md, size, convertedIntens))
-        );
+        file->datasets().append(data::shp_OneDataset(
+            new data::OneDataset(md, size, convertedIntens)));
 
-        delete[] intens; intens = NULL;
+        delete[] intens;
+        intens    = NULL;
         imageSize = 0;
       }
     }
 
     // Read Master Counter
     if (!strncmp(element, "MM1 ", 4)) {
-      s_masterCounter = node; // Master Counter steht in Node
+      s_masterCounter = node;  // Master Counter steht in Node
     }
     if (!strncmp(element, "COM ", 4)) {
       c_comment = new char[d_number + 1];
       if (get_data_unit(c_comment) != 0)
         s_comment = "no comment";
       else {
-        c_comment[d_number] = '\0'; // terminiere Char-Array
-        s_comment = c_comment;
+        c_comment[d_number] = '\0';  // terminiere Char-Array
+        s_comment           = c_comment;
       }
       delete[] c_comment;
     }
     if (!strncmp(element, "DATE ", 5)) {
       char* c_date = NULL;
-      c_date = new char[d_number + 1];
+      c_date       = new char[d_number + 1];
       if (get_data_unit(c_date) != 0)
         s_date = "unknown";
       else {
-        c_date[d_number] = '\0'; // terminiere Char-Array
-        s_date = c_date;
+        c_date[d_number] = '\0';  // terminiere Char-Array
+        s_date           = c_date;
       }
       delete[] c_date;
     }
     if (!strncmp(element, "READ  ", 6)) {
-//      TR('R' << node)
+      //      TR('R' << node)
       if (!strncmp(node, "TTHS  ", 6)) {
-        if (get_data_unit(&tths) != 0)
-          tths = 0;
-        isTable = true;
+        if (get_data_unit(&tths) != 0) tths = 0;
+        isTable                             = true;
       }
       if (!strncmp(node, "TTHR  ", 6)) {
-        if (get_data_unit(&tthr) != 0)
-          tthr = 0;
-        isRobot = true;
+        if (get_data_unit(&tthr) != 0) tthr = 0;
+        isRobot                             = true;
       }
       if (!strncmp(node, "OMGS  ", 6)) {
-        if (get_data_unit(&omgs) != 0)
-          omgs = 0;
-        isTable = true;
+        if (get_data_unit(&omgs) != 0) omgs = 0;
+        isTable                             = true;
       }
       if (!strncmp(node, "OMGR  ", 6)) {
-        if (get_data_unit(&omgr) != 0)
-          omgr = 0;
-        isRobot = true;
+        if (get_data_unit(&omgr) != 0) omgr = 0;
+        isRobot                             = true;
       }
       if (!strncmp(node, "CHIS  ", 6)) {
-        if (get_data_unit(&chis) != 0)
-          chis = 0;
-        isTable = true;
+        if (get_data_unit(&chis) != 0) chis = 0;
+        isTable                             = true;
       }
       if (!strncmp(node, "CHIR  ", 6)) {
-        if (get_data_unit(&chir) != 0)
-          chir = 0;
-        isRobot = true;
+        if (get_data_unit(&chir) != 0) chir = 0;
+        isRobot                             = true;
       }
       if (!strncmp(node, "PHIS  ", 6)) {
-        if (get_data_unit(&phis) != 0)
-          phis = 0;
-        isTable = true;
+        if (get_data_unit(&phis) != 0) phis = 0;
+        isTable                             = true;
       }
       if (!strncmp(node, "PHIR  ", 6)) {
-        if (get_data_unit(&phir) != 0)
-          phir = 0;
-        isRobot = true;
+        if (get_data_unit(&phir) != 0) phir = 0;
+        isRobot                             = true;
       }
       if (!strncmp(node, "XT    ", 6))
-        if (get_data_unit(&xAxis) != 0)
-          xAxis = 0;
+        if (get_data_unit(&xAxis) != 0) xAxis = 0;
       if (!strncmp(node, "XR    ", 6))
-        if (get_data_unit(&xAxis) != 0)
-          xAxis = 0;
+        if (get_data_unit(&xAxis) != 0) xAxis = 0;
       if (!strncmp(node, "YT    ", 6))
-        if (get_data_unit(&yAxis) != 0)
-          yAxis = 0;
+        if (get_data_unit(&yAxis) != 0) yAxis = 0;
       if (!strncmp(node, "YR    ", 6))
-        if (get_data_unit(&yAxis) != 0)
-          yAxis = 0;
+        if (get_data_unit(&yAxis) != 0) yAxis = 0;
       if (!strncmp(node, "ZT    ", 6))
-        if (get_data_unit(&zAxis) != 0)
-          zAxis = 0;
+        if (get_data_unit(&zAxis) != 0) zAxis = 0;
       if (!strncmp(node, "ZR    ", 6))
-        if (get_data_unit(&zAxis) != 0)
-          zAxis = 0;
+        if (get_data_unit(&zAxis) != 0) zAxis = 0;
       if (!strncmp(node, "PST   ", 6))
-        if (get_data_unit(&pstAxis) != 0)
-          pstAxis = 0;
+        if (get_data_unit(&pstAxis) != 0) pstAxis = 0;
       if (!strncmp(node, "SST   ", 6))
-        if (get_data_unit(&sstAxis) != 0)
-          sstAxis = 0;
+        if (get_data_unit(&sstAxis) != 0) sstAxis = 0;
       if (!strncmp(node, "OMGM  ", 6))
-        if (get_data_unit(&omgmAxis) != 0)
-          omgmAxis = 0;
+        if (get_data_unit(&omgmAxis) != 0) omgmAxis = 0;
       if (!strncmp(node, "T     ", 6))
-        if (get_data_unit(&nmT) != 0)
-          nmT = 0;
+        if (get_data_unit(&nmT) != 0) nmT = 0;
       if (!strncmp(node, "TELOAD", 6))
-        if (get_data_unit(&nmTeload) != 0)
-          nmTeload = 0;
+        if (get_data_unit(&nmTeload) != 0) nmTeload = 0;
       if (!strncmp(node, "TEPOS ", 6))
-        if (get_data_unit(&nmTepos) != 0)
-          nmTepos = 0;
+        if (get_data_unit(&nmTepos) != 0) nmTepos = 0;
       if (!strncmp(node, "TEEXT ", 6))
-        if (get_data_unit(&nmTeext) != 0)
-          nmTeext = 0;
+        if (get_data_unit(&nmTeext) != 0) nmTeext = 0;
       if (!strncmp(node, "XE    ", 6))
-        if (get_data_unit(&nmXe) != 0)
-          nmXe = 0;
+        if (get_data_unit(&nmXe) != 0) nmXe = 0;
       if (!strncmp(node, "YE    ", 6))
-        if (get_data_unit(&nmYe) != 0)
-          nmYe = 0;
+        if (get_data_unit(&nmYe) != 0) nmYe = 0;
       if (!strncmp(node, "ZE    ", 6))
-        if (get_data_unit(&nmZe) != 0)
-          nmZe = 0;
+        if (get_data_unit(&nmZe) != 0) nmZe = 0;
     }
     if (!strncmp(element, "SETVALUE", 8)) {
       if (!strncmp(node, "TTHS  ", 6)) {
-        if (get_data_unit(&tths) != 0)
-          tths = 0;
-        isTable = true;
+        if (get_data_unit(&tths) != 0) tths = 0;
+        isTable                             = true;
       }
       if (!strncmp(node, "TTHR  ", 6)) {
-        if (get_data_unit(&tthr) != 0)
-          tthr = 0;
-        isRobot = true;
+        if (get_data_unit(&tthr) != 0) tthr = 0;
+        isRobot                             = true;
       }
       if (!strncmp(node, "OMGS  ", 6)) {
-        if (get_data_unit(&omgs) != 0)
-          omgs = 0;
-        isTable = true;
+        if (get_data_unit(&omgs) != 0) omgs = 0;
+        isTable                             = true;
       }
       if (!strncmp(node, "OMGR  ", 6)) {
-        if (get_data_unit(&omgr) != 0)
-          omgr = 0;
-        isRobot = true;
+        if (get_data_unit(&omgr) != 0) omgr = 0;
+        isRobot                             = true;
       }
       if (!strncmp(node, "CHIS  ", 6)) {
-        if (get_data_unit(&chis) != 0)
-          chis = 0;
-        isTable = true;
+        if (get_data_unit(&chis) != 0) chis = 0;
+        isTable                             = true;
       }
       if (!strncmp(node, "CHIR  ", 6)) {
-        if (get_data_unit(&chir) != 0)
-          chir = 0;
-        isRobot = true;
+        if (get_data_unit(&chir) != 0) chir = 0;
+        isRobot                             = true;
       }
       if (!strncmp(node, "PHIS  ", 6)) {
-        if (get_data_unit(&phis) != 0)
-          phis = 0;
-        isTable = true;
+        if (get_data_unit(&phis) != 0) phis = 0;
+        isTable                             = true;
       }
       if (!strncmp(node, "PHIR  ", 6)) {
-        if (get_data_unit(&phir) != 0)
-          phir = 0;
-        isRobot = true;
+        if (get_data_unit(&phir) != 0) phir = 0;
+        isRobot                             = true;
       }
       if (!strncmp(node, "XT    ", 6))
-        if (get_data_unit(&xAxis) != 0)
-          xAxis = 0;
+        if (get_data_unit(&xAxis) != 0) xAxis = 0;
       if (!strncmp(node, "XR    ", 6))
-        if (get_data_unit(&xAxis) != 0)
-          xAxis = 0;
+        if (get_data_unit(&xAxis) != 0) xAxis = 0;
       if (!strncmp(node, "YT    ", 6))
-        if (get_data_unit(&yAxis) != 0)
-          yAxis = 0;
+        if (get_data_unit(&yAxis) != 0) yAxis = 0;
       if (!strncmp(node, "YR    ", 6))
-        if (get_data_unit(&yAxis) != 0)
-          yAxis = 0;
+        if (get_data_unit(&yAxis) != 0) yAxis = 0;
       if (!strncmp(node, "ZT    ", 6))
-        if (get_data_unit(&zAxis) != 0)
-          zAxis = 0;
+        if (get_data_unit(&zAxis) != 0) zAxis = 0;
       if (!strncmp(node, "ZR    ", 6))
-        if (get_data_unit(&zAxis) != 0)
-          zAxis = 0;
+        if (get_data_unit(&zAxis) != 0) zAxis = 0;
       if (!strncmp(node, "PST   ", 6))
-        if (get_data_unit(&pstAxis) != 0)
-          pstAxis = 0;
+        if (get_data_unit(&pstAxis) != 0) pstAxis = 0;
       if (!strncmp(node, "SST   ", 6))
-        if (get_data_unit(&sstAxis) != 0)
-          sstAxis = 0;
+        if (get_data_unit(&sstAxis) != 0) sstAxis = 0;
       if (!strncmp(node, "OMGM  ", 6))
-        if (get_data_unit(&omgmAxis) != 0)
-          omgmAxis = 0;
+        if (get_data_unit(&omgmAxis) != 0) omgmAxis = 0;
       if (!strncmp(node, "T     ", 6))
-        if (get_data_unit(&nmT) != 0)
-          nmT = 0;
+        if (get_data_unit(&nmT) != 0) nmT = 0;
       if (!strncmp(node, "TELOAD", 6))
-        if (get_data_unit(&nmTeload) != 0)
-          nmTeload = 0;
+        if (get_data_unit(&nmTeload) != 0) nmTeload = 0;
       if (!strncmp(node, "TEPOS ", 6))
-        if (get_data_unit(&nmTepos) != 0)
-          nmTepos = 0;
+        if (get_data_unit(&nmTepos) != 0) nmTepos = 0;
       if (!strncmp(node, "TEEXT ", 6))
-        if (get_data_unit(&nmTeext) != 0)
-          nmTeext = 0;
+        if (get_data_unit(&nmTeext) != 0) nmTeext = 0;
       if (!strncmp(node, "XE    ", 6))
-        if (get_data_unit(&nmXe) != 0)
-          nmXe = 0;
+        if (get_data_unit(&nmXe) != 0) nmXe = 0;
       if (!strncmp(node, "YE    ", 6))
-        if (get_data_unit(&nmYe) != 0)
-          nmYe = 0;
+        if (get_data_unit(&nmYe) != 0) nmYe = 0;
       if (!strncmp(node, "ZE    ", 6))
-        if (get_data_unit(&nmZe) != 0)
-          nmZe = 0;
+        if (get_data_unit(&nmZe) != 0) nmZe = 0;
     }
     if (!strncmp(element, "MASTER1V", 8)) {
-//      TR('M' << node)
+      //      TR('M' << node)
       if (!strncmp(node, "TTHS  ", 6)) {
-        if (get_data_unit(&tths) != 0)
-          tths = 0;
-        isTable = true;
+        if (get_data_unit(&tths) != 0) tths = 0;
+        isTable                             = true;
       }
       if (!strncmp(node, "TTHR  ", 6)) {
-        if (get_data_unit(&tthr) != 0)
-          tthr = 0;
-        isRobot = true;
+        if (get_data_unit(&tthr) != 0) tthr = 0;
+        isRobot                             = true;
       }
       if (!strncmp(node, "OMGS  ", 6)) {
-        if (get_data_unit(&omgs) != 0)
-          omgs = 0;
-        isTable = true;
+        if (get_data_unit(&omgs) != 0) omgs = 0;
+        isTable                             = true;
       }
       if (!strncmp(node, "OMGR  ", 6)) {
-        if (get_data_unit(&omgr) != 0)
-          omgr = 0;
-        isRobot = true;
+        if (get_data_unit(&omgr) != 0) omgr = 0;
+        isRobot                             = true;
       }
       if (!strncmp(node, "CHIS  ", 6)) {
-        if (get_data_unit(&chis) != 0)
-          chis = 0;
-        isTable = true;
+        if (get_data_unit(&chis) != 0) chis = 0;
+        isTable                             = true;
       }
       if (!strncmp(node, "CHIR  ", 6)) {
-        if (get_data_unit(&chir) != 0)
-          chir = 0;
-        isRobot = true;
+        if (get_data_unit(&chir) != 0) chir = 0;
+        isRobot                             = true;
       }
       if (!strncmp(node, "PHIS  ", 6)) {
-        if (get_data_unit(&phis) != 0)
-          phis = 0;
-        isTable = true;
+        if (get_data_unit(&phis) != 0) phis = 0;
+        isTable                             = true;
       }
       if (!strncmp(node, "PHIR  ", 6)) {
-        if (get_data_unit(&phir) != 0)
-          phir = 0;
-        isRobot = true;
+        if (get_data_unit(&phir) != 0) phir = 0;
+        isRobot                             = true;
       }
       if (!strncmp(node, "XT    ", 6))
-        if (get_data_unit(&xAxis) != 0)
-          xAxis = 0;
+        if (get_data_unit(&xAxis) != 0) xAxis = 0;
       if (!strncmp(node, "XR    ", 6))
-        if (get_data_unit(&xAxis) != 0)
-          xAxis = 0;
+        if (get_data_unit(&xAxis) != 0) xAxis = 0;
       if (!strncmp(node, "YT    ", 6))
-        if (get_data_unit(&yAxis) != 0)
-          yAxis = 0;
+        if (get_data_unit(&yAxis) != 0) yAxis = 0;
       if (!strncmp(node, "YR    ", 6))
-        if (get_data_unit(&yAxis) != 0)
-          yAxis = 0;
+        if (get_data_unit(&yAxis) != 0) yAxis = 0;
       if (!strncmp(node, "ZT    ", 6))
-        if (get_data_unit(&zAxis) != 0)
-          zAxis = 0;
+        if (get_data_unit(&zAxis) != 0) zAxis = 0;
       if (!strncmp(node, "ZR    ", 6))
-        if (get_data_unit(&zAxis) != 0)
-          zAxis = 0;
+        if (get_data_unit(&zAxis) != 0) zAxis = 0;
       if (!strncmp(node, "PST   ", 6))
-        if (get_data_unit(&pstAxis) != 0)
-          pstAxis = 0;
+        if (get_data_unit(&pstAxis) != 0) pstAxis = 0;
       if (!strncmp(node, "SST   ", 6))
-        if (get_data_unit(&sstAxis) != 0)
-          sstAxis = 0;
+        if (get_data_unit(&sstAxis) != 0) sstAxis = 0;
       if (!strncmp(node, "OMGM  ", 6))
-        if (get_data_unit(&omgmAxis) != 0)
-          omgmAxis = 0;
+        if (get_data_unit(&omgmAxis) != 0) omgmAxis = 0;
       if (!strncmp(node, "T     ", 6))
-        if (get_data_unit(&nmT) != 0)
-          nmT = 0;
+        if (get_data_unit(&nmT) != 0) nmT = 0;
       if (!strncmp(node, "TELOAD", 6))
-        if (get_data_unit(&nmTeload) != 0)
-          nmTeload = 0;
+        if (get_data_unit(&nmTeload) != 0) nmTeload = 0;
       if (!strncmp(node, "TEPOS ", 6))
-        if (get_data_unit(&nmTepos) != 0)
-          nmTepos = 0;
+        if (get_data_unit(&nmTepos) != 0) nmTepos = 0;
       if (!strncmp(node, "TEEXT ", 6))
-        if (get_data_unit(&nmTeext) != 0)
-          nmTeext = 0;
+        if (get_data_unit(&nmTeext) != 0) nmTeext = 0;
       if (!strncmp(node, "XE    ", 6))
-        if (get_data_unit(&nmXe) != 0)
-          nmXe = 0;
+        if (get_data_unit(&nmXe) != 0) nmXe = 0;
       if (!strncmp(node, "YE    ", 6))
-        if (get_data_unit(&nmYe) != 0)
-          nmYe = 0;
+        if (get_data_unit(&nmYe) != 0) nmYe = 0;
       if (!strncmp(node, "ZE    ", 6))
-        if (get_data_unit(&nmZe) != 0)
-          nmZe = 0;
+        if (get_data_unit(&nmZe) != 0) nmZe = 0;
       if (!strncmp(node, "MON   ", 6))
-        if (get_data_unit(&mon) != 0)
-          mon = 0;
+        if (get_data_unit(&mon) != 0) mon = 0;
       if (!strncmp(node, "TIM1  ", 6))
-        if (get_data_unit(&tim1) != 0)
-          tim1 = 0;
+        if (get_data_unit(&tim1) != 0) tim1 = 0;
       if (!strncmp(node, "ADET  ", 6)) {
         if (d_type == 2) {
           union {
-            char ch[MAXNUMBEROFCHANNELS];
-            int16 i2[MAXNUMBEROFCHANNELS];
-            int32 i4[MAXNUMBEROFCHANNELS];
-            int64 i8[MAXNUMBEROFCHANNELS];
-            float r4[MAXNUMBEROFCHANNELS];
+            char   ch[MAXNUMBEROFCHANNELS];
+            int16  i2[MAXNUMBEROFCHANNELS];
+            int32  i4[MAXNUMBEROFCHANNELS];
+            int64  i8[MAXNUMBEROFCHANNELS];
+            float  r4[MAXNUMBEROFCHANNELS];
             double r8[MAXNUMBEROFCHANNELS];
           } buffer;
 
-          intens = new int[d_number];
-          imageSize = to_u(d_number);
-          int section = 1;
+          intens         = new int[d_number];
+          imageSize      = to_u(d_number);
+          int section    = 1;
           int start_item = 1;
           int tempNumItems, ret_val;
           int remaining_items = d_number;
@@ -574,7 +498,8 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
               tempNumItems = remaining_items;
             ret_val = get_data_partition(buffer.i4, &section, &start_item,
                                          &tempNumItems, &d_type);
-            memmove(&intens[start_item - 1], buffer.i4, to_u(tempNumItems) * sizeof(int));
+            memmove(&intens[start_item - 1], buffer.i4,
+                    to_u(tempNumItems) * sizeof(int));
             remaining_items -= MAXNUMBEROFCHANNELS;
             start_item += MAXNUMBEROFCHANNELS;
           } while (!ret_val && (remaining_items > 0));
@@ -586,23 +511,20 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
   return file;
 }
 
-
 str loadCaressComment(rcstr filePath) {
   str s_comment;
 
   try {
-    RUNTIME_CHECK(0 == open_data_file(filePath.toLocal8Bit().data(),nullptr),
+    RUNTIME_CHECK(0 == open_data_file(filePath.toLocal8Bit().data(), nullptr),
                   "Cannot open data file " + filePath);
 
-    struct CloseFile { // TODO remove, replace with QFile etc.
-      ~CloseFile() {
-        close_data_file();
-      }
+    struct CloseFile {  // TODO remove, replace with QFile etc.
+      ~CloseFile() { close_data_file(); }
     } _;
 
     bool end = false;
     while (!end) {
-      int e_number, e_type, d_type, d_number;
+      int  e_number, e_type, d_type, d_number;
       char element[100];
       element[99] = '\0';
       char node[100];
@@ -611,9 +533,9 @@ str loadCaressComment(rcstr filePath) {
       int returnNextDataUnit =
           next_data_unit(&e_number, &e_type, element, node, &d_type, &d_number);
       element[8] = '\0';
-      node[8] = '\0';
+      node[8]    = '\0';
 
-      if (returnNextDataUnit == 1) // Error
+      if (returnNextDataUnit == 1)  // Error
         continue;
 
       if (returnNextDataUnit == 2)  // EOF
@@ -624,18 +546,15 @@ str loadCaressComment(rcstr filePath) {
         if (get_data_unit(c_comment) != 0)
           s_comment = "no comment";
         else {
-          c_comment[d_number] = '\0'; // terminiere Char-Array
-          s_comment = c_comment;
+          c_comment[d_number] = '\0';  // terminiere Char-Array
+          s_comment           = c_comment;
         }
         delete[] c_comment;
       }
     }
-  } catch (Exception const&) {
-
-  }
+  } catch (Exception const&) {}
 
   return s_comment;
 }
 
-
-} // namespace io
+}  // namespace io
