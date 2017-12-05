@@ -1,4 +1,4 @@
-# top-level project
+# Steca top-level configuration
 
 cmake_minimum_required (VERSION 2.8.12 FATAL_ERROR)
 
@@ -30,14 +30,14 @@ if (DEVELOPMENT)
   add_definitions (-DDEVELOPMENT)
 endif ()
 
-find_package (Qt5Core       REQUIRED)
-find_package (Qt5Gui        REQUIRED)
-find_package (Qt5Test       REQUIRED)
-find_package (Qt5Widgets    REQUIRED)
-find_package (Qt5Network    REQUIRED)
+find_package (Qt5Core    REQUIRED)
+find_package (Qt5Gui     REQUIRED)
+find_package (Qt5Test    REQUIRED)
+find_package (Qt5Widgets REQUIRED)
+find_package (Qt5Network REQUIRED)
 
-add_subdirectory (lib)
 add_subdirectory (LevMar)
+add_subdirectory (lib)
 add_subdirectory (core)
 add_subdirectory (io)
 add_subdirectory (gui)
@@ -45,5 +45,3 @@ add_subdirectory (gui)
 if (WITH_TESTS)
   add_subdirectory (tests)
 endif ()
-
-# eof

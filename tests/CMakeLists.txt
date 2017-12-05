@@ -1,5 +1,3 @@
-# tests
-
 add_definitions (-DTESTS)
 
 set (srcdirs
@@ -29,5 +27,3 @@ add_executable (tests
 target_link_libraries (tests
   Qt5::Widgets
 )
-
-# eof
