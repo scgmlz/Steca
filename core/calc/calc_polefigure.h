@@ -12,13 +12,12 @@
 //
 // ************************************************************************** //
 
-
 #ifndef CALC_POLEFIGURE_H
 #define CALC_POLEFIGURE_H
 
 #include "calc_reflection_info.h"
-#include "typ/typ_types.h"
 #include "typ/typ_async.h"
+#include "typ/typ_types.h"
 
 namespace calc {
 
@@ -41,11 +40,10 @@ typedef typ::vec<itf_t> itfs_t;
 itf_t interpolateValues(typ::deg searchRadius, ReflectionInfos::rc infos,
                         typ::deg alpha, typ::deg beta);
 
-ReflectionInfos interpolate(ReflectionInfos::rc,
-                            typ::deg alphaStep, typ::deg betaStep, typ::deg idwRadius,
-                            typ::deg averagingAlphaMax, typ::deg averagingRadius, qreal inclusionTreshold,
+ReflectionInfos interpolate(ReflectionInfos::rc, typ::deg alphaStep,
+                            typ::deg betaStep, typ::deg idwRadius,
+                            typ::deg averagingAlphaMax,
+                            typ::deg averagingRadius, qreal inclusionTreshold,
                             Progress*);
-
-
 }
-#endif // CALC_POLEFIGURE_H
+#endif  // CALC_POLEFIGURE_H

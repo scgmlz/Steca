@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #include "typ_angles.h"
 #include <qmath.h>
 
@@ -24,9 +23,7 @@ deg::deg(rad r) {
   val_ = r.toDeg();
 }
 
-TEST("deg(rad)", ({
-  CHECK_EQ(qreal(deg(rad(M_PI_2))), 90);
-});)
+TEST("deg(rad)", ({ CHECK_EQ(qreal(deg(rad(M_PI_2))), 90); });)
 
 rad deg::toRad() const {
   return val_ * (M_PI / 180);
@@ -43,20 +40,17 @@ deg& deg::operator*=(qreal fac) {
 }
 
 deg deg::normalized() {
-  static qreal const MAX = 360;
-  qreal norm = fmod(val_, MAX);
+  static qreal const MAX  = 360;
+  qreal              norm = fmod(val_, MAX);
   if (norm < 0) norm += MAX;
   return norm;
 }
-
 
 rad::rad(deg d) {
   val_ = d.toRad();
 }
 
-TEST("rad(deg)", ({
-  CHECK_EQ(qreal(rad(deg(90))), M_PI_2);
-});)
+TEST("rad(deg)", ({ CHECK_EQ(qreal(rad(deg(90))), M_PI_2); });)
 
 deg rad::toDeg() const {
   return val_ * (180 / M_PI);
@@ -71,6 +65,4 @@ rad& rad::operator*=(qreal fac) {
   val_ *= fac;
   return *this;
 }
-
-
 }

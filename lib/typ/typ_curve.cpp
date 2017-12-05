@@ -12,15 +12,13 @@
 //
 // ************************************************************************** //
 
-
 #include "typ_curve.h"
 
 #include "def/def_alg.h"
 
 namespace typ {
 
-Curve::Curve() {
-}
+Curve::Curve() {}
 
 void Curve::clear() {
   xs_.clear();
@@ -57,8 +55,7 @@ Curve Curve::intersect(Range::rc range) const {
 
     uint xi = 0, cnt = count();
     auto minX = range.min, maxX = range.max;
-    while (xi < cnt && xs_.at(xi) < minX)
-      ++xi;
+    while (xi < cnt && xs_.at(xi) < minX) ++xi;
     while (xi < cnt && xs_.at(xi) <= maxX) {
       res.append(xs_.at(xi), ys_.at(xi));
       ++xi;
@@ -80,8 +77,7 @@ Curve Curve::intersect(Ranges::rc ranges) const {
   for_i (ranges.count()) {
     auto& range = ranges.at(i);
     auto  minX = range.min, maxX = range.max;
-    while (xi < cnt && xs_.at(xi) < minX)
-      ++xi;
+    while (xi < cnt && xs_.at(xi) < minX) ++xi;
     while (xi < cnt && xs_.at(xi) <= maxX) {
       res.append(xs_.at(xi), ys_.at(xi));
       ++xi;
@@ -97,8 +93,7 @@ void Curve::subtract(Function::rc f) {
 }
 
 uint Curve::maxYindex() const {
-  if (isEmpty())
-    return 0;
+  if (isEmpty()) return 0;
 
   auto yMax  = ys_.first();
   uint index = 0;
@@ -120,6 +115,4 @@ qreal Curve::sumY() const {
     sum += ys_.at(i);
   return sum;
 }
-
-
 }

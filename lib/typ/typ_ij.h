@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYP_IJ_H
 #define TYP_IJ_H
 
@@ -36,9 +35,7 @@ struct IJ {
   COMPARABLE
 
   JsonObj saveJson() const;
-  void loadJson(JsonObj const&) THROWS;
+  void    loadJson(JsonObj const&) THROWS;
 };
-
-
 }
-#endif // TYP_IJ_H
+#endif  // TYP_IJ_H

@@ -12,21 +12,17 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYP_HASH_H
 #define TYP_HASH_H
 
-#include "def/def_macros.h"
 #include "def/def_gsl.h"
+#include "def/def_macros.h"
 #include <QHash>
 
 namespace typ {
 
-template <typename Key, typename T>
-class hash : protected QHash<Key,T> {
-  CLASS(hash) SUPER(QHash<Key COMMA T>)
-public:
-  using super::clear;
+template <typename Key, typename T> class hash : protected QHash<Key, T> {
+  CLASS(hash) SUPER(QHash<Key COMMA T>) public : using super::clear;
   using super::insert;
   using super::remove;
   using super::find;
@@ -36,16 +32,13 @@ public:
 };
 
 template <typename Key, typename Tp>
-class owning_hash : protected hash<Key,Tp> {
-  CLASS(owning_hash) SUPER(hash<Key COMMA Tp>)
-public:
- ~owning_hash() {
+class owning_hash : protected hash<Key, Tp> {
+  CLASS(owning_hash) SUPER(hash<Key COMMA Tp>) public : ~owning_hash() {
     clear();
   }
 
   void clear() {
-    for (auto* v : QHash<Key,Tp>::values())
-      delete v;
+    for (auto* v : QHash<Key, Tp>::values()) delete v;
     super::clear();
   }
 
@@ -60,17 +53,11 @@ public:
     return nullptr != t;
   }
 
-  Tp value(Key const& key) {
-    return super::value(key);
-  }
+  Tp value(Key const& key) { return super::value(key); }
 
   using super::contains;
 
-  owner<Tp> take(Key const& key) {
-    return owner<Tp>(super::take(key));
-  }
+  owner<Tp> take(Key const& key) { return owner<Tp>(super::take(key)); }
 };
-
-
 }
-#endif // TYP_MAP_H
+#endif  // TYP_MAP_H

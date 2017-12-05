@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef FIT_METHODS_H
 #define FIT_METHODS_H
 
@@ -37,30 +36,23 @@ protected:
   void callbackY(qreal*, qreal*, int, int, void*);
 };
 
-
 class LinearLeastSquare : public Method {
-  CLASS(LinearLeastSquare) SUPER(Method)
-public:
-  LinearLeastSquare();
+  CLASS(LinearLeastSquare) SUPER(Method) public : LinearLeastSquare();
 
 protected:
   void approximate(qreal*, qreal const*, qreal const*, qreal*, uint,
                    qreal const*, uint);
 };
 
-
 class LevenbergMarquardt : public Method {
-  CLASS(LevenbergMarquardt) SUPER(Method)
-public:
-  LevenbergMarquardt();
+  CLASS(LevenbergMarquardt) SUPER(Method) public : LevenbergMarquardt();
 
 protected:
   void approximate(qreal*, qreal const*, qreal const*, qreal*, uint,
                    qreal const*, uint);
+
 private:
   void callbackJacobianLM(qreal*, qreal*, int, int, void*);
 };
-
-
 }
 #endif

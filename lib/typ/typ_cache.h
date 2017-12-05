@@ -12,14 +12,13 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYP_CACHE_H
 #define TYP_CACHE_H
 
 #include "def/def_debug.h"
 #include "typ/typ_map.h"
-#include <QSharedPointer>
 #include <QDateTime>
+#include <QSharedPointer>
 
 /* Example:
 
@@ -59,19 +58,19 @@ void test() {
 
 namespace typ {
 
-template <typename Key, typename T>
-class cache_base {
+template <typename Key, typename T> class cache_base {
   CLASS(cache_base)
 public:
   typedef QSharedPointer<T> shp;
 
 protected:
-  typedef quint32 mru_t; // the higher the value, the more mru it was
+  typedef quint32 mru_t;  // the higher the value, the more mru it was
 
   struct shp_mru_t {
-    shp_mru_t()                   : p(),   mru(0)    {}
+    shp_mru_t() : p(), mru(0) {}
     shp_mru_t(shp p_, mru_t mru_) : p(p_), mru(mru_) {}
-    shp p; mru_t mru;
+    shp   p;
+    mru_t mru;
   };
 
   typedef map<Key, shp_mru_t> mapKey_t;
@@ -79,35 +78,25 @@ protected:
 
   mapKey_t mapKey_;
 
-  uint  maxItems_;
+  uint maxItems_;
 
 public:
-  cache_base(uint maxItems) : maxItems_(maxItems) {
-    EXPECT(maxItems_ > 0)
-  }
+  cache_base(uint maxItems) : maxItems_(maxItems) { EXPECT(maxItems_ > 0) }
 
-  virtual ~cache_base() {
-  }
+  virtual ~cache_base() {}
 
-  uint count() const {
-    return to_u(mapKey_.count());
-  }
+  uint count() const { return to_u(mapKey_.count()); }
 
-  bool isEmpty() const {
-    return mapKey_.isEmpty();
-  }
+  bool isEmpty() const { return mapKey_.isEmpty(); }
 
   virtual void trim(uint n) = 0;
 
-  void clear() {
-    trim(0);
-  }
+  void clear() { trim(0); }
 
   virtual shp insert(Key const&, shp p) = 0;
-  virtual shp take(Key const&)          = 0;
-  virtual shp value(Key const&)         = 0;
+  virtual shp take(Key const&)  = 0;
+  virtual shp value(Key const&) = 0;
 };
-
 
 // if full, keeps full, trims only what is needed
 // has insert/take overhead for each access (value())
@@ -191,14 +180,12 @@ private:
 };
 */
 
-
 // if full, takes a hit, trims a lot
 // has no overhead for each access (value())
 template <typename Key, typename T>
-class cache_lazy final : public cache_base<Key,T> {
-  CLASS(cache_lazy) SUPER(cache_base<Key COMMA T>)
-public:
-  typedef QSharedPointer<T> shp;
+class cache_lazy final : public cache_base<Key, T> {
+  CLASS(cache_lazy)
+  SUPER(cache_base<Key COMMA T>) public : typedef QSharedPointer<T> shp;
 
 private:
   using mru_t     = typename super::mru_t;
@@ -222,11 +209,10 @@ private:
       ENSURE(to_u(mit.count()) == super::count())
 
       uint cnt = super::count() - n;
-      for (auto it = mit.begin(); cnt-- > 0; ++it)
-        super::mapKey_.erase(*it);
+      for (auto it = mit.begin(); cnt-- > 0; ++it) super::mapKey_.erase(*it);
     }
 
-    if (super::isEmpty()) { // cleared
+    if (super::isEmpty()) {  // cleared
       nextMru_  = 0;
       rollOver_ = false;
     }
@@ -234,17 +220,15 @@ private:
 
   mru_t nextMru() {
     mru_t mru = nextMru_++;
-    if (0 == nextMru_)  // was overflow
-      rollOver_ = true; // at next insert or value
+    if (0 == nextMru_)   // was overflow
+      rollOver_ = true;  // at next insert or value
     return mru;
   }
 
 public:
   using super::super;
 
-  void trim(uint n) {
-    _trim(n);
-  }
+  void trim(uint n) { _trim(n); }
 
   shp insert(Key const& key, shp p) {
     EXPECT(!super::mapKey_.contains(key))
@@ -260,25 +244,19 @@ public:
     return p;
   }
 
-  shp take(Key const& key) {
-    return super::mapKey_.take(key).p;
-  }
+  shp take(Key const& key) { return super::mapKey_.take(key).p; }
 
   shp value(Key const& key) {
     auto it = super::mapKey_.find(key);
-    if (super::mapKey_.end() == it)
-      return shp();
+    if (super::mapKey_.end() == it) return shp();
 
-    if (rollOver_)
-      return insert(key, take(key));
+    if (rollOver_) return insert(key, take(key));
 
-    if ((it->mru + 1) != nextMru_) // not mru, update
+    if ((it->mru + 1) != nextMru_)  // not mru, update
       it->mru = nextMru();
 
     return it->p;
   }
 };
-
-
 }
-#endif // TYP_CACHE_H
+#endif  // TYP_CACHE_H

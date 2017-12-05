@@ -12,11 +12,9 @@
 //
 // ************************************************************************** //
 
-
 #include "typ_async.h"
 
 #include <QtWidgets/QProgressBar>
-
 
 TakesLongTime::TakesLongTime() {
   if (handler) handler(true);
@@ -28,10 +26,8 @@ TakesLongTime::~TakesLongTime() {
 
 void (*TakesLongTime::handler)(bool) = nullptr;
 
-
 Progress::Progress(uint mulTotal, QProgressBar* bar)
-: total_(0), mulTotal_(mulTotal), i_(0), bar_(bar)
-{
+    : total_(0), mulTotal_(mulTotal), i_(0), bar_(bar) {
   setTotal(1);
 
   if (bar_) {
@@ -42,8 +38,7 @@ Progress::Progress(uint mulTotal, QProgressBar* bar)
 }
 
 Progress::~Progress() {
-  if (bar_)
-    bar_->hide();
+  if (bar_) bar_->hide();
 }
 
 void Progress::setTotal(uint total) {
@@ -60,5 +55,3 @@ void Progress::setProgress(uint i) {
 void Progress::step() {
   setProgress(i_ + 1);
 }
-
-

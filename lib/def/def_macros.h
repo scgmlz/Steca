@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef DEF_MACROS_H
 #define DEF_MACROS_H
 
@@ -31,7 +30,6 @@
 
 #endif
 
-
 // for class definitions
 
 // trouble with templates in macros
@@ -39,17 +37,22 @@
 
 // alias for the current class; const reference to it
 #define CLASS(cls) \
-  private: using Cls = cls; public: typedef Cls const& rc;
+private:           \
+  using Cls = cls; \
+public:            \
+  typedef Cls const& rc;
 
 // alias for the super class
 #define SUPER(cls) \
-  private: using super = cls;
+private:           \
+  using super = cls;
 
 // alias for super class and an access method (if non-public inheritance)
-#define WITH_SUPER(cls) SUPER(cls)                   \
-  public: super const& sup() const { return *this; } \
-          super&       sup()       { return *this; }
-
+#define WITH_SUPER(cls)                      \
+  SUPER(cls)                                 \
+public:                                      \
+  super const& sup() const { return *this; } \
+  super&       sup() { return *this; }
 
 // exception specification macro
 #ifdef Q_OS_WIN
@@ -62,5 +65,4 @@
 
 #endif
 
-
-#endif // DEF_MACROS_H
+#endif  // DEF_MACROS_H

@@ -12,15 +12,14 @@
 //
 // ************************************************************************** //
 
-
 #include "calc_polefigure.h"
 #include "typ/typ_async.h"
 #include <qmath.h>
 
 namespace calc {
 
-    using typ::deg;
-    using typ::vec;
+using typ::deg;
+using typ::vec;
 
 typedef vec<ReflectionInfo const*> info_vec;
 
@@ -43,9 +42,9 @@ deg calculateDeltaBeta(deg beta1, deg beta2) {
 // Calculates the angle between two points on a unit sphere.
 deg angle(deg alpha1, deg alpha2, deg deltaBeta) {
   // Absolute value of deltaBeta is not needed because cos is an even function.
-    auto a = typ::rad(acos(cos(alpha1.toRad()) * cos(alpha2.toRad()) +
-                           sin(alpha1.toRad()) * sin(alpha2.toRad()) *
-                           cos(deltaBeta.toRad())))
+  auto a = typ::rad(acos(cos(alpha1.toRad()) * cos(alpha2.toRad()) +
+                         sin(alpha1.toRad()) * sin(alpha2.toRad()) *
+                             cos(deltaBeta.toRad())))
                .toDeg();
   ENSURE(0 <= a && a <= 180)
   return a;
@@ -69,14 +68,10 @@ Quadrants allQuadrants() {
 
 bool inQuadrant(eQuadrant quadrant, deg deltaAlpha, deg deltaBeta) {
   switch (quadrant) {
-  case eQuadrant::NORTHEAST:
-    return deltaAlpha >= 0 && deltaBeta >= 0;
-  case eQuadrant::SOUTHEAST:
-    return deltaAlpha >= 0 && deltaBeta < 0;
-  case eQuadrant::SOUTHWEST:
-    return deltaAlpha < 0 && deltaBeta < 0;
-  case eQuadrant::NORTHWEST:
-    return deltaAlpha < 0 && deltaBeta >= 0;
+  case eQuadrant::NORTHEAST: return deltaAlpha >= 0 && deltaBeta >= 0;
+  case eQuadrant::SOUTHEAST: return deltaAlpha >= 0 && deltaBeta < 0;
+  case eQuadrant::SOUTHWEST: return deltaAlpha < 0 && deltaBeta < 0;
+  case eQuadrant::NORTHWEST: return deltaAlpha < 0 && deltaBeta >= 0;
   }
 
   NEVER return false;
@@ -85,14 +80,10 @@ bool inQuadrant(eQuadrant quadrant, deg deltaAlpha, deg deltaBeta) {
 // Search quadrant remapping in case no point was found.
 eQuadrant remapQuadrant(eQuadrant q) {
   switch (q) {
-  case eQuadrant::NORTHEAST:
-    return eQuadrant::NORTHWEST;
-  case eQuadrant::SOUTHEAST:
-    return eQuadrant::SOUTHWEST;
-  case eQuadrant::SOUTHWEST:
-    return eQuadrant::NORTHEAST;
-  case eQuadrant::NORTHWEST:
-    return eQuadrant::SOUTHEAST;
+  case eQuadrant::NORTHEAST: return eQuadrant::NORTHWEST;
+  case eQuadrant::SOUTHEAST: return eQuadrant::SOUTHWEST;
+  case eQuadrant::SOUTHWEST: return eQuadrant::NORTHEAST;
+  case eQuadrant::NORTHWEST: return eQuadrant::SOUTHEAST;
   }
 
   NEVER return eQuadrant::NORTHEAST;
@@ -105,17 +96,15 @@ bool inRadius(deg alpha, deg beta, deg centerAlpha, deg centerBeta,
   return qAbs(a) < radius;
 }
 
-itf_t::itf_t() : itf_t(inten_t(NAN), tth_t(NAN), fwhm_t(NAN)) {
-}
+itf_t::itf_t() : itf_t(inten_t(NAN), tth_t(NAN), fwhm_t(NAN)) {}
 
 itf_t::itf_t(inten_t inten_, tth_t tth_, fwhm_t fwhm_)
-: inten(inten_), tth(tth_), fwhm(fwhm_) {
-}
+    : inten(inten_), tth(tth_), fwhm(fwhm_) {}
 
 void itf_t::operator+=(rc that) {
   inten += that.inten;
-  tth   += that.tth;
-  fwhm  += that.fwhm;
+  tth += that.tth;
+  fwhm += that.fwhm;
 }
 
 // Adds data from reflection infos within radius from alpha and beta
@@ -132,8 +121,7 @@ void searchPoints(deg alpha, deg beta, deg radius, ReflectionInfos::rc infos,
 // Searches closest ReflectionInfos to given alpha and beta in quadrants.
 void searchInQuadrants(Quadrants::rc quadrants, deg alpha, deg beta,
                        deg searchRadius, ReflectionInfos::rc infos,
-                       info_vec& foundInfos,
-                       qreal_vec&                      distances) {
+                       info_vec& foundInfos, qreal_vec& distances) {
   ENSURE(quadrants.count() <= NUM_QUADRANTS);
   // Take only reflection infos with beta within +/- BETA_LIMIT degrees into
   // account. Original STeCa used something like +/- 1.5*36 degrees.
@@ -152,9 +140,7 @@ void searchInQuadrants(Quadrants::rc quadrants, deg alpha, deg beta,
       if (inQuadrant(quadrants.at(i), deltaAlpha, deltaBeta)) {
         if (d >= distances.at(i)) continue;
         distances[i] = d;
-        if (qIsNaN(searchRadius) || d < searchRadius) {
-          foundInfos[i] = &info;
-        }
+        if (qIsNaN(searchRadius) || d < searchRadius) { foundInfos[i] = &info; }
       }
     }
   }
@@ -162,7 +148,7 @@ void searchInQuadrants(Quadrants::rc quadrants, deg alpha, deg beta,
 
 itf_t inverseDistanceWeighing(qreal_vec::rc distances, info_vec::rc infos) {
   itf_t itf;
-  uint N = NUM_QUADRANTS;
+  uint  N = NUM_QUADRANTS;
   // Generally, only distances.count() == values.count() > 0 is needed for this
   // algorithm. However, in this context we expect exactly the following:
   RUNTIME_CHECK(distances.count() == N, "distances size should be 4");
@@ -188,9 +174,9 @@ itf_t inverseDistanceWeighing(qreal_vec::rc distances, info_vec::rc infos) {
   for_i (N) {
     auto& in = infos.at(i);
     auto& d  = inverseDistances.at(i);
-    offset += in->tth()   * d;
+    offset += in->tth() * d;
     height += in->inten() * d;
-    fwhm   += in->fwhm()  * d;
+    fwhm += in->fwhm() * d;
   }
 
   itf.inten = inten_t(height / inverseDistanceSum);
@@ -199,12 +185,12 @@ itf_t inverseDistanceWeighing(qreal_vec::rc distances, info_vec::rc infos) {
   return itf;
 }
 
-itf_t interpolateValues(deg searchRadius, ReflectionInfos::rc infos,
-                       deg alpha, deg beta) {
+itf_t interpolateValues(deg searchRadius, ReflectionInfos::rc infos, deg alpha,
+                        deg beta) {
   info_vec  interpolationInfos;
   qreal_vec distances;
-  searchInQuadrants(allQuadrants(), alpha, beta, searchRadius,
-                    infos, interpolationInfos, distances);
+  searchInQuadrants(allQuadrants(), alpha, beta, searchRadius, infos,
+                    interpolationInfos, distances);
   // Check that infos were found in all quadrants.
   uint numQuadrantsOk = 0;
   for_i (NUM_QUADRANTS) {
@@ -214,12 +200,12 @@ itf_t interpolateValues(deg searchRadius, ReflectionInfos::rc infos,
     }
     // No info found in quadrant? Try another quadrant. See
     // [J.Appl.Cryst.(2011),44,641] for the angle mapping.
-    eQuadrant newQ = remapQuadrant(eQuadrant(i));
+    eQuadrant   newQ = remapQuadrant(eQuadrant(i));
     qreal const newAlpha =
         i == uint(eQuadrant::NORTHEAST) || i == uint(eQuadrant::SOUTHEAST)
             ? 180 - alpha
             : -alpha;
-    qreal newBeta = beta < 180 ? beta + 180 : beta - 180;
+    qreal     newBeta = beta < 180 ? beta + 180 : beta - 180;
     info_vec  renewedSearch;
     qreal_vec newDistance;
     searchInQuadrants({newQ}, newAlpha, newBeta, searchRadius, infos,
@@ -240,9 +226,9 @@ itf_t interpolateValues(deg searchRadius, ReflectionInfos::rc infos,
 }
 
 // Interpolates infos to equidistant grid in alpha and beta.
-ReflectionInfos interpolate(ReflectionInfos::rc infos,
-                            deg alphaStep, deg betaStep, deg idwRadius,
-                            deg averagingAlphaMax, deg averagingRadius, qreal inclusionTreshold,
+ReflectionInfos interpolate(ReflectionInfos::rc infos, deg alphaStep,
+                            deg betaStep, deg idwRadius, deg averagingAlphaMax,
+                            deg averagingRadius, qreal inclusionTreshold,
                             Progress* progress) {
   // Two interpolation methods are used here:
   // If grid point alpha <= averagingAlphaMax, points within averagingRadius
@@ -250,8 +236,8 @@ ReflectionInfos interpolate(ReflectionInfos::rc infos,
   // If averaging fails, or alpha > averagingAlphaMax, inverse distance weighing
   // will be used.
 
-  EXPECT(0 <  alphaStep && alphaStep <= 90);
-  EXPECT(0 <  betaStep  && betaStep  <= 360);
+  EXPECT(0 < alphaStep && alphaStep <= 90);
+  EXPECT(0 < betaStep && betaStep <= 360);
   EXPECT(0 <= averagingAlphaMax && averagingAlphaMax <= 90);
   EXPECT(0 <= averagingRadius);
   // Setting idwRadius = NaN disables idw radius checks and falling back to
@@ -262,23 +248,21 @@ ReflectionInfos interpolate(ReflectionInfos::rc infos,
   // NOTE We expect all infos to have the same gamma range.
 
   // REVIEW qRound oder qCeil?
-  uint numAlphas = to_u(qRound(90.  / alphaStep)),
+  uint numAlphas = to_u(qRound(90. / alphaStep)),
        numBetas  = to_u(qRound(360. / betaStep));
 
   ReflectionInfos interpolatedInfos;  // Output data.
 
   interpolatedInfos.reserve(numAlphas * numBetas);
 
-  if (progress)
-    progress->setTotal(numAlphas * numBetas); // REVIEW + 1?
+  if (progress) progress->setTotal(numAlphas * numBetas);  // REVIEW + 1?
 
   for_int (i, numAlphas + 1) {  // REVIEW why + 1
     deg const alpha = i * alphaStep;
     for_int (j, numBetas) {
       deg const beta = j * betaStep;
 
-      if (progress)
-        progress->step();
+      if (progress) progress->step();
 
       if (infos.isEmpty()) {
         interpolatedInfos.append(ReflectionInfo(alpha, beta));
@@ -300,18 +284,17 @@ ReflectionInfos interpolate(ReflectionInfos::rc infos,
 
           itf_t avg(0, 0, 0);
 
-          uint iEnd = itfs.count();
-          uint iBegin = qMin(to_u(qRound(itfs.count() * (1. - inclusionTreshold))), iEnd-1);
+          uint iEnd   = itfs.count();
+          uint iBegin = qMin(
+              to_u(qRound(itfs.count() * (1. - inclusionTreshold))), iEnd - 1);
           EXPECT(iBegin < iEnd)
           uint n = iEnd - iBegin;
 
-          for (uint i = iBegin; i < iEnd; ++i)
-            avg += itfs.at(i);
+          for (uint i = iBegin; i < iEnd; ++i) avg += itfs.at(i);
 
-          interpolatedInfos.append(ReflectionInfo(alpha, beta, infos.first().rgeGma(),
-              avg.inten / n, inten_t(NAN),
-              avg.tth   / n, tth_t(NAN),
-              avg.fwhm  / n, fwhm_t(NAN)));
+          interpolatedInfos.append(ReflectionInfo(
+              alpha, beta, infos.first().rgeGma(), avg.inten / n, inten_t(NAN),
+              avg.tth / n, tth_t(NAN), avg.fwhm / n, fwhm_t(NAN)));
           continue;
         }
 
@@ -325,16 +308,12 @@ ReflectionInfos interpolate(ReflectionInfos::rc infos,
       // Use idw, if alpha > averagingAlphaMax OR averaging failed (too small
       // averagingRadius?).
       itf_t itf = interpolateValues(idwRadius, infos, alpha, beta);
-      interpolatedInfos.append(
-        ReflectionInfo(alpha, beta, infos.first().rgeGma(),
-                       itf.inten, inten_t(NAN),
-                       itf.tth,   tth_t(NAN),
-                       itf.fwhm,  fwhm_t(NAN)));
+      interpolatedInfos.append(ReflectionInfo(
+          alpha, beta, infos.first().rgeGma(), itf.inten, inten_t(NAN), itf.tth,
+          tth_t(NAN), itf.fwhm, fwhm_t(NAN)));
     }
   }
 
   return interpolatedInfos;
 }
-
-
 }

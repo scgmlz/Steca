@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYP_XY_H
 #define TYP_XY_H
 
@@ -39,9 +38,7 @@ struct XY {
   bool isValid() const;  // is not NaN
 
   JsonObj saveJson() const;
-  void loadJson(JsonObj const&) THROWS;
+  void    loadJson(JsonObj const&) THROWS;
 };
-
-
 }
-#endif // TYP_XY_H
+#endif  // TYP_XY_H

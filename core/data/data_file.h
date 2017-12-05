@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef FWD_DATA_FILE_H
 #define FWD_DATA_FILE_H
 
@@ -22,7 +21,6 @@ namespace data {
 
 class File;
 typedef QSharedPointer<File> shp_File;
-
 }
 
 Q_DECLARE_METATYPE(data::shp_File)
@@ -49,15 +47,13 @@ public:
   QFileInfo const& fileInfo() const;
   str              fileName() const;
 
-  OneDatasets&     datasets()       { return datasets_; }
-  OneDatasets::rc  datasets() const { return datasets_; }
+  OneDatasets&    datasets() { return datasets_; }
+  OneDatasets::rc datasets() const { return datasets_; }
 
 private:
   QFileInfo   fileInfo_;
   OneDatasets datasets_;
 };
-
-
 }
-#endif // DATA_FILE_H
-#endif // FORWARD_DECLARATIONS
+#endif  // DATA_FILE_H
+#endif  // FORWARD_DECLARATIONS

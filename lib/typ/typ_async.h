@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYP_ASYNC_H
 #define TYP_ASYNC_H
 
@@ -21,7 +20,7 @@
 class TakesLongTime final {
 public:
   TakesLongTime();
- ~TakesLongTime();
+  ~TakesLongTime();
 
   static void (*handler)(bool);
 };
@@ -29,15 +28,15 @@ public:
 class Progress final {
 public:
   Progress(uint mulTotal, class QProgressBar*);
- ~Progress();
+  ~Progress();
 
   void setTotal(uint);
   void setProgress(uint);
   void step();
 
 private:
-  uint total_, mulTotal_, i_;
+  uint          total_, mulTotal_, i_;
   QProgressBar* bar_;
 };
 
-#endif // TYP_ASYNC_H
+#endif  // TYP_ASYNC_H

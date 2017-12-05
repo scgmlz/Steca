@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef CORE_SESSION_H
 #define CORE_SESSION_H
 
@@ -41,7 +40,7 @@ private:
 
 public:
   // number of data files (not counting the correction file)
-  uint           numFiles()   const { return files_.count(); }
+  uint           numFiles() const { return files_.count(); }
   data::shp_File file(uint i) const;
 
   bool hasFile(rcstr fileName);
@@ -69,17 +68,11 @@ private:
   preal intenScale_;
 
 public:
-  bool hasCorrFile() const {
-    return !corrFile_.isNull();
-  }
+  bool hasCorrFile() const { return !corrFile_.isNull(); }
 
-  data::shp_File corrFile() const {
-    return corrFile_;
-  }
+  data::shp_File corrFile() const { return corrFile_; }
 
-  typ::shp_Image corrImage() const {
-    return corrImage_;
-  }
+  typ::shp_Image corrImage() const { return corrImage_; }
 
   typ::Image const* intensCorr() const;
 
@@ -88,23 +81,15 @@ public:
 
   void tryEnableCorr(bool);
 
-  bool isCorrEnabled() const {
-    return corrEnabled_;
-  }
+  bool isCorrEnabled() const { return corrEnabled_; }
 
   void collectDatasetsFromFiles(uint_vec, pint);
 
-  uint_vec::rc collectedFromFiles() const {
-    return collectedFromFiles_; \
-  }
+  uint_vec::rc collectedFromFiles() const { return collectedFromFiles_; }
 
-  data::Datasets::rc collectedDatasets() const {
-    return collectedDatasets_;
-  }
+  data::Datasets::rc collectedDatasets() const { return collectedDatasets_; }
 
-  str_lst::rc  collectedDatasetsTags() const {
-    return collectedDatasetsTags_;
-  }
+  str_lst::rc collectedDatasetsTags() const { return collectedDatasetsTags_; }
 
 private:
   // All files must have images of the same size
@@ -124,7 +109,7 @@ private:
 
 public:
   typ::ImageTransform::rc imageTransform() const { return imageTransform_; }
-  typ::ImageCut::rc       imageCut()       const { return imageCut_;       }
+  typ::ImageCut::rc       imageCut() const { return imageCut_; }
 
   void setImageTransformMirror(bool);
   void setImageTransformRotate(typ::ImageTransform::rc);
@@ -134,60 +119,63 @@ public:
 private:
   typ::Geometry geometry_;
   typ::Range    gammaRange_;
-  mutable typ::cache_lazy<typ::AngleMap::Key,typ::AngleMap> angleMapCache_;
+  mutable typ::cache_lazy<typ::AngleMap::Key, typ::AngleMap> angleMapCache_;
 
 public:
   typ::Geometry::rc geometry() const { return geometry_; }
-  void setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midPixOffset);
+  void setGeometry(preal detectorDistance, preal pixSize,
+                   typ::IJ::rc midPixOffset);
   typ::IJ midPix() const;
 
   typ::Range::rc gammaRange() const;
-  void setGammaRange(typ::Range::rc);
+  void           setGammaRange(typ::Range::rc);
 
   typ::shp_AngleMap        angleMap(data::OneDataset::rc) const;
   static typ::shp_AngleMap angleMap(Session::rc, data::OneDataset::rc);
 
-// lenses
+  // lenses
 public:
-  calc::shp_ImageLens   imageLens(typ::Image::rc, data::Datasets::rc,
-                                  bool trans, bool cut) const;
-  calc::shp_DatasetLens datasetLens(data::Dataset::rc, data::Datasets::rc, eNorm,
-                                    bool trans, bool cut) const;
+  calc::shp_ImageLens imageLens(typ::Image::rc, data::Datasets::rc, bool trans,
+                                bool cut) const;
+  calc::shp_DatasetLens datasetLens(data::Dataset::rc, data::Datasets::rc,
+                                    eNorm, bool trans, bool cut) const;
   typ::Curve makeCurve(calc::DatasetLens::rc, gma_rge::rc) const;
 
   // reflections
-  calc::ReflectionInfo makeReflectionInfo(
-      calc::DatasetLens::rc, calc::Reflection::rc, gma_rge::rc) const;
+  calc::ReflectionInfo makeReflectionInfo(calc::DatasetLens::rc,
+                                          calc::Reflection::rc,
+                                          gma_rge::rc) const;
 
-  calc::ReflectionInfos makeReflectionInfos(
-      data::Datasets::rc, calc::Reflection::rc,
-      uint gmaSlices, gma_rge::rc, Progress*);
+  calc::ReflectionInfos makeReflectionInfos(data::Datasets::rc,
+                                            calc::Reflection::rc,
+                                            uint gmaSlices, gma_rge::rc,
+                                            Progress*);
 
-// fitting
+  // fitting
 private:
-  uint   bgPolyDegree_;
+  uint        bgPolyDegree_;
   typ::Ranges bgRanges_;
 
   calc::Reflections reflections_;
 
 public:
-  typ::Ranges::rc       bgRanges()       const { return bgRanges_;       }
-  uint                  bgPolyDegree()   const { return bgPolyDegree_;   }
+  typ::Ranges::rc       bgRanges() const { return bgRanges_; }
+  uint                  bgPolyDegree() const { return bgPolyDegree_; }
   bool                  intenScaledAvg() const { return intenScaledAvg_; }
-  preal                 intenScale()     const { return intenScale_;     }
-  calc::Reflections::rc reflections()    const { return reflections_;    }
+  preal                 intenScale() const { return intenScale_; }
+  calc::Reflections::rc reflections() const { return reflections_; }
 
   void setBgRanges(typ::Ranges::rc);
   bool addBgRange(typ::Range::rc);
   bool remBgRange(typ::Range::rc);
 
   void setBgPolyDegree(uint);
-  void setIntenScaleAvg(bool,preal);
+  void setIntenScaleAvg(bool, preal);
 
   void addReflection(calc::shp_Reflection);
   void remReflection(uint);
 
-// normalisation
+  // normalisation
 private:
   eNorm norm_;
 
@@ -199,7 +187,5 @@ public:
   qreal calcAvgBackground(data::Dataset::rc) const;
   qreal calcAvgBackground(data::Datasets::rc) const;
 };
-
-
 }
 #endif

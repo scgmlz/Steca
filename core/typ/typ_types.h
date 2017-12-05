@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYP_TYPES_H
 #define TYP_TYPES_H
 
@@ -38,10 +37,12 @@ typedef typ::XY peak_t;
 
 enum class eNorm {
   NONE,
-  MONITOR, DELTA_MONITOR, DELTA_TIME, BACKGROUND,
+  MONITOR,
+  DELTA_MONITOR,
+  DELTA_TIME,
+  BACKGROUND,
 };
 
 str_lst::rc normStrLst();
 
-
-#endif // TYP_TYPES_H
+#endif  // TYP_TYPES_H

@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYP_FUN_H
 #define TYP_FUN_H
 
@@ -22,8 +21,7 @@
 #include "typ/typ_range.h"
 
 namespace json_fun_key {
-extern str const
-  SUM;
+extern str const SUM;
 }
 
 namespace typ {
@@ -34,9 +32,9 @@ class Function {
   CLASS(Function)
 public:
   class Factory : public typ::Factory<Function> {
-    CLASS(Factory) SUPER(typ::Factory<Function>)
-  public:
-    owner_not_null<Function*> make(JsonObj::rc) THROWS;
+    CLASS(Factory)
+    SUPER(typ::Factory<Function>) public
+        : owner_not_null<Function*> make(JsonObj::rc) THROWS;
   };
 
 protected:
@@ -58,13 +56,13 @@ public:
     qreal error() const { return error_; }
 
     Range valueRange() const;  // allowed range of values
-    void  setValueRange(qreal min, qreal max);
+    void setValueRange(qreal min, qreal max);
 
-    void  setValue(qreal value, qreal error);
+    void setValue(qreal value, qreal error);
 
   public:
     JsonObj saveJson() const;
-    void loadJson(JsonObj::rc) THROWS;
+    void    loadJson(JsonObj::rc) THROWS;
 
   private:
     qreal value_, error_;
@@ -90,18 +88,16 @@ public:
   // partial derivative / parameter, with given (parValues) or own parameters
   virtual qreal dy(qreal x, uint parIndex,
                    qreal const* parValues = nullptr) const = 0;
+
 public:
   virtual JsonObj saveJson() const;
-  virtual void loadJson(JsonObj::rc) THROWS;
+  virtual void    loadJson(JsonObj::rc) THROWS;
 };
-
 
 // abstract function with parameters
 
 class SimpleFunction : public Function {
-  CLASS(SimpleFunction) SUPER(Function)
-public:
-  SimpleFunction();
+  CLASS(SimpleFunction) SUPER(Function) public : SimpleFunction();
 
   void       setParameterCount(uint);
   uint       parameterCount() const;
@@ -111,22 +107,19 @@ public:
 
 public:
   JsonObj saveJson() const;
-  void loadJson(JsonObj::rc) THROWS;
+  void    loadJson(JsonObj::rc) THROWS;
 
 protected:
   vec<Parameter> parameters_;
   qreal parValue(uint parIndex, qreal const* parValues) const;
-  void  setValue(uint parIndex, qreal val);
+  void setValue(uint parIndex, qreal val);
 };
-
 
 // concrete function that is a sum of other functions
 
 class SumFunctions final : public Function {
-  CLASS(SumFunctions) SUPER(Function)
-public:
-  SumFunctions();
- ~SumFunctions();
+  CLASS(SumFunctions) SUPER(Function) public : SumFunctions();
+  ~SumFunctions();
 
   void addFunction(owner_not_null<Function*>);
 
@@ -139,7 +132,7 @@ public:
 
 public:
   JsonObj saveJson() const;
-  void loadJson(JsonObj::rc) THROWS;
+  void    loadJson(JsonObj::rc) THROWS;
 
 protected:
   // summed functions
@@ -152,7 +145,5 @@ protected:
   // parameter index
   uint_vec firstParIndex4parIndex_;
 };
-
-
 }
-#endif // TYP_FUN_H
+#endif  // TYP_FUN_H

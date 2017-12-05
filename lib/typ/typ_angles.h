@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYP_ANGLES_H
 #define TYP_ANGLES_H
 
@@ -55,7 +54,5 @@ public:
 private:
   qreal val_;
 };
-
-
 }
-#endif // TYP_ANGLES_H
+#endif  // TYP_ANGLES_H

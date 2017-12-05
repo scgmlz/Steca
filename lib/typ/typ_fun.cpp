@@ -12,51 +12,48 @@
 //
 // ************************************************************************** //
 
-
 #include "typ_fun.h"
 
 #include "def/def_alg.h"
 #include "def/def_debug.h"
 
 namespace json_fun_key {
-str const
-  SUM("sum");
+str const SUM("sum");
 }
 
 namespace typ {
 
 owner_not_null<Function*> Function::Factory::make(JsonObj::rc obj) THROWS {
-  str funType = obj.loadString(json_key::TYPE);
-  Function *fun = super::make(funType);
+  str       funType = obj.loadString(json_key::TYPE);
+  Function* fun     = super::make(funType);
 
   RUNTIME_CHECK(fun, "factory does not know " % funType);
 
   scoped<Function*> f(fun);
-  fun->loadJson(obj); // may throw
+  fun->loadJson(obj);  // may throw
   return owner_not_null<Function*>::from(f.take());
 }
 
 Function::Factory Function::factory_;
 
-void Function::addFactoryMaker(rcstr key, owner_not_null<Factory::MakerBase*> maker) {
+void Function::addFactoryMaker(rcstr                               key,
+                               owner_not_null<Factory::MakerBase*> maker) {
   factory_.addMaker(key, maker);
 }
 
 void Function::initFactory() {
   ONLY_ONCE
 
-  addFactoryMaker(json_fun_key::SUM,
-      owner_not_null<Factory::MakerBase*>::from(new Factory::Maker<SumFunctions>));
+  addFactoryMaker(json_fun_key::SUM, owner_not_null<Factory::MakerBase*>::from(
+                                         new Factory::Maker<SumFunctions>));
 }
 
 owner_not_null<Function*> Function::make(JsonObj::rc obj) {
   return factory_.make(obj);
 }
 
-
 Function::Parameter::Parameter()
-: value_(0), error_(0), range_(Range::infinite()) {
-}
+    : value_(0), error_(0), range_(Range::infinite()) {}
 
 Range Function::Parameter::valueRange() const {
   return range_.isValid() ? range_ : Range(value_);
@@ -67,7 +64,8 @@ void Function::Parameter::setValueRange(qreal min, qreal max) {
 }
 
 void Function::Parameter::setValue(qreal value, qreal error) {
-  value_ = value; error_ = error;
+  value_ = value;
+  error_ = error;
 }
 
 JsonObj Function::Parameter::saveJson() const {
@@ -81,9 +79,7 @@ void Function::Parameter::loadJson(JsonObj::rc obj) THROWS {
   range_ = obj.loadRange(json_key::RANGE);
 }
 
-
-Function::Function() {
-}
+Function::Function() {}
 
 JsonObj Function::saveJson() const {
   // nothing to do
@@ -94,9 +90,7 @@ void Function::loadJson(JsonObj::rc) THROWS {
   // nothing to do
 }
 
-
-SimpleFunction::SimpleFunction() {
-}
+SimpleFunction::SimpleFunction() {}
 
 void SimpleFunction::setParameterCount(uint count) {
   parameters_.fill(Parameter(), count);
@@ -120,8 +114,7 @@ void SimpleFunction::reset() {
 JsonObj SimpleFunction::saveJson() const {
   JsonArr params;
 
-  for (auto& param : parameters_)
-    params.append(param.saveJson());
+  for (auto& param : parameters_) params.append(param.saveJson());
 
   return super::saveJson() + JsonObj().saveArr(json_key::PARAMS, params);
 }
@@ -146,14 +139,11 @@ void SimpleFunction::setValue(uint i, qreal val) {
   parameters_[i].setValue(val, 0);
 }
 
-
-SumFunctions::SumFunctions() {
-}
+SumFunctions::SumFunctions() {}
 
 SumFunctions::~SumFunctions() {
   // dispose of the Functions that were added
-  for (Function* f : functions_)
-    delete f;
+  for (Function* f : functions_) delete f;
 }
 
 void SumFunctions::addFunction(owner_not_null<Function*> function) {
@@ -231,6 +221,4 @@ void SumFunctions::loadJson(JsonObj::rc obj) THROWS {
     addFunction(make(funObj));
   }
 }
-
-
 }

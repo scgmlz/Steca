@@ -12,14 +12,13 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYP_CURVE_H
 #define TYP_CURVE_H
 
 #include "def/def_macros.h"
+#include "typ/typ_curve.h"
 #include "typ/typ_fun.h"
 #include "typ/typ_range.h"
-#include "typ/typ_curve.h"
 #include "typ/typ_vec.h"
 
 namespace typ {
@@ -33,9 +32,9 @@ public:
 
   void clear();
 
-  bool isEmpty()    const;
-  uint count()      const;
-  bool isOrdered()  const;
+  bool isEmpty() const;
+  uint count() const;
+  bool isOrdered() const;
 
   void append(qreal x, qreal y);
 
@@ -43,20 +42,20 @@ public:
   qreal_vec::rc xs() const { return xs_; }
   qreal_vec::rc ys() const { return ys_; }
 
-  qreal x(uint i)    const { return xs_.at(i); }
-  qreal y(uint i)    const { return ys_.at(i); }
+  qreal x(uint i) const { return xs_.at(i); }
+  qreal y(uint i) const { return ys_.at(i); }
 
-  Range::rc rgeX()   const { return rgeX_; }
-  Range::rc rgeY()   const { return rgeY_; }
+  Range::rc rgeX() const { return rgeX_; }
+  Range::rc rgeY() const { return rgeY_; }
 
-  Curve intersect(Range::rc)   const;
-  Curve intersect(Ranges::rc)  const;
+  Curve intersect(Range::rc) const;
+  Curve intersect(Ranges::rc) const;
 
-  void  subtract(Function::rc);
+  void subtract(Function::rc);
 
-  uint  maxYindex()  const;  // the index of the maximum y value
+  uint maxYindex() const;  // the index of the maximum y value
 
-  qreal sumY()       const;
+  qreal sumY() const;
 
 private:
   qreal_vec xs_, ys_;
@@ -64,7 +63,5 @@ private:
 };
 
 typedef vec<Curve> curve_vec;
-
-
 }
-#endif // TYP_CURVE_H
+#endif  // TYP_CURVE_H

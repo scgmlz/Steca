@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYP_GEOMETRY_H
 #define TYP_GEOMETRY_H
 
@@ -45,7 +44,6 @@ struct Geometry {
   IJ    midPixOffset;
 };
 
-
 // image cut (margins)
 
 struct ImageCut {
@@ -60,7 +58,6 @@ struct ImageCut {
 
   size2d marginSize() const;
 };
-
 
 struct Angles {
   CLASS(Angles)
@@ -82,9 +79,7 @@ public:
 
     COMPARABLE
 
-    bool operator< (rc that) const {
-      return compare(that) < 0;
-    }
+    bool operator<(rc that) const { return compare(that) < 0; }
 
     Geometry geometry;
     size2d   size;
@@ -95,19 +90,15 @@ public:
 
   AngleMap(Key::rc);
 
-  Angles::rc at(uint i) const {
-    return arrAngles_.at(i);
-  }
+  Angles::rc at(uint i) const { return arrAngles_.at(i); }
 
-  Angles::rc at(uint i, uint j) const {
-    return arrAngles_.at(i, j);
-  }
+  Angles::rc at(uint i, uint j) const { return arrAngles_.at(i, j); }
 
-  tth_rge rgeTth()     const { return rgeTth_;     }
-  gma_rge rgeGma()     const { return rgeGma_;     }
+  tth_rge rgeTth() const { return rgeTth_; }
+  gma_rge rgeGma() const { return rgeGma_; }
   gma_rge rgeGmaFull() const { return rgeGmaFull_; }
 
-//TODO remove  IJ gmaPixel(gma_t);
+  // TODO remove  IJ gmaPixel(gma_t);
 
   void getGmaIndexes(gma_rge::rc, uint_vec const*&, uint&, uint&) const;
 
@@ -118,8 +109,8 @@ private:
 
   Array2D<Angles> arrAngles_;
 
-  tth_rge    rgeTth_;
-  gma_rge    rgeGma_, rgeGmaFull_;
+  tth_rge rgeTth_;
+  gma_rge rgeGma_, rgeGmaFull_;
 
   // sorted
   vec<gma_t> gmas;
@@ -127,7 +118,5 @@ private:
 };
 
 typedef QSharedPointer<AngleMap> shp_AngleMap;
-
-
 }
-#endif // TYP_GEOMETRY_H
+#endif  // TYP_GEOMETRY_H

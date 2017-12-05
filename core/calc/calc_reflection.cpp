@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #include "calc_reflection.h"
 
 namespace calc {
@@ -62,7 +61,7 @@ void Reflection::fit(typ::Curve::rc curve) {
 }
 
 void Reflection::setPeakFunction(fit::ePeakType type) {
-  bool haveRange = !peakFunction_.isNull();
+  bool       haveRange = !peakFunction_.isNull();
   typ::Range oldRange;
   if (haveRange) oldRange = peakFunction_->range();
 
@@ -86,6 +85,4 @@ void Reflection::loadJson(typ::JsonObj::rc obj) THROWS {
                 "must be a peak function");
   setPeakFunction(static_cast<fit::PeakFunction*>(f.take()));
 }
-
-
 }

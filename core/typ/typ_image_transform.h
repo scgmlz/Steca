@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYP_IMAGE_TRANSFORM_H
 #define TYP_IMAGE_TRANSFORM_H
 
@@ -49,15 +48,9 @@ struct ImageTransform {
   // rotates by one quarter-turn
   ImageTransform nextRotate() const;
 
-  bool isTransposed() const {
-    return 0 != (val & 1);
-  }
+  bool isTransposed() const { return 0 != (val & 1); }
 
-  bool operator==(rc that) const {
-    return val == that.val;
-  }
+  bool operator==(rc that) const { return val == that.val; }
 };
-
-
 }
-#endif // TYP_IMAGE_TRANSFORM_H
+#endif  // TYP_IMAGE_TRANSFORM_H

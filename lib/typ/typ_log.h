@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYP_LOG_H
 #define TYP_LOG_H
 
@@ -28,4 +27,4 @@ public:
   static void (*handler)(rcstr, eType);
 };
 
-#endif // TYP_LOG_H
+#endif  // TYP_LOG_H

@@ -12,24 +12,22 @@
 //
 // ************************************************************************** //
 
-
 #include "fit_fun.h"
-#include "fit_methods.h"
 #include "def/def_alg.h"
+#include "fit_methods.h"
 #include <qmath.h>
 
 namespace json_fun_key {
-str const
-  POLYNOM("polynom"), RAW("Raw"),
-  GAUSSIAN("Gaussian"), LORENTZIAN("Lorentzian"),
-  PSEUDOVOIGT1("PseudoVoigt1"), PSEUDOVOIGT2("PseudoVoigt2");
+str const POLYNOM("polynom"), RAW("Raw"), GAUSSIAN("Gaussian"),
+    LORENTZIAN("Lorentzian"), PSEUDOVOIGT1("PseudoVoigt1"),
+    PSEUDOVOIGT2("PseudoVoigt2");
 }
 
 namespace fit {
 
-    using typ::Range;
-    using typ::Curve;
-    using typ::JsonObj;
+using typ::Range;
+using typ::Curve;
+using typ::JsonObj;
 
 void initFactory() {
   ONLY_ONCE
@@ -38,14 +36,18 @@ void initFactory() {
   using O = owner_not_null<F::Factory::MakerBase*>;
   F::initFactory();
 
-  F::addFactoryMaker(json_fun_key::POLYNOM,      O::from(new F::Factory::Maker<Gaussian>));
-  F::addFactoryMaker(json_fun_key::RAW,          O::from(new F::Factory::Maker<Raw>));
-  F::addFactoryMaker(json_fun_key::GAUSSIAN,     O::from(new F::Factory::Maker<Gaussian>));
-  F::addFactoryMaker(json_fun_key::LORENTZIAN,   O::from(new F::Factory::Maker<Lorentzian>));
-  F::addFactoryMaker(json_fun_key::PSEUDOVOIGT1, O::from(new F::Factory::Maker<PseudoVoigt1>));
-  F::addFactoryMaker(json_fun_key::PSEUDOVOIGT2, O::from(new F::Factory::Maker<PseudoVoigt2>));
+  F::addFactoryMaker(json_fun_key::POLYNOM,
+                     O::from(new F::Factory::Maker<Gaussian>));
+  F::addFactoryMaker(json_fun_key::RAW, O::from(new F::Factory::Maker<Raw>));
+  F::addFactoryMaker(json_fun_key::GAUSSIAN,
+                     O::from(new F::Factory::Maker<Gaussian>));
+  F::addFactoryMaker(json_fun_key::LORENTZIAN,
+                     O::from(new F::Factory::Maker<Lorentzian>));
+  F::addFactoryMaker(json_fun_key::PSEUDOVOIGT1,
+                     O::from(new F::Factory::Maker<PseudoVoigt1>));
+  F::addFactoryMaker(json_fun_key::PSEUDOVOIGT2,
+                     O::from(new F::Factory::Maker<PseudoVoigt2>));
 }
-
 
 Polynom::Polynom(uint degree) {
   setDegree(degree);
@@ -64,8 +66,7 @@ void Polynom::setDegree(uint degree) {
 // the power with *uint* exponent
 static qreal pow_n(qreal x, uint n) {
   qreal val = 1;
-  while (n-- > 0)
-    val *= x;
+  while (n-- > 0) val *= x;
   return val;
 }
 
@@ -87,8 +88,7 @@ qreal Polynom::avgY(Range::rc rgeX, qreal const* parValues) const {
   EXPECT(rgeX.isValid())
 
   qreal w = rgeX.width();
-  if (w <= 0)
-    return y(rgeX.min, parValues);
+  if (w <= 0) return y(rgeX.min, parValues);
 
   qreal minY = 0, maxY = 0, minPow = 1, maxPow = 1;
 
@@ -101,7 +101,7 @@ qreal Polynom::avgY(Range::rc rgeX, qreal const* parValues) const {
   return (1 / w) * (maxY - minY);
 }
 
-    void Polynom::fit(Curve::rc curve, typ::Ranges::rc ranges) {
+void Polynom::fit(Curve::rc curve, typ::Ranges::rc ranges) {
   LevenbergMarquardt().fit(*this, curve.intersect(ranges));
 }
 
@@ -121,27 +121,20 @@ void Polynom::loadJson(JsonObj::rc obj) THROWS {
   super::loadJson(obj);
 }
 
-
 PeakFunction* PeakFunction::factory(ePeakType type) {
   switch (type) {
-  case ePeakType::RAW:
-    return new Raw();
-  case ePeakType::GAUSSIAN:
-    return new Gaussian();
-  case ePeakType::LORENTZIAN:
-    return new Lorentzian();
-  case ePeakType::PSEUDOVOIGT1:
-    return new PseudoVoigt1();
-  case ePeakType::PSEUDOVOIGT2:
-    return new PseudoVoigt2();
-  default:
-    NEVER return nullptr;
+  case ePeakType::RAW: return new Raw();
+  case ePeakType::GAUSSIAN: return new Gaussian();
+  case ePeakType::LORENTZIAN: return new Lorentzian();
+  case ePeakType::PSEUDOVOIGT1: return new PseudoVoigt1();
+  case ePeakType::PSEUDOVOIGT2: return new PseudoVoigt2();
+  default: NEVER return nullptr;
   }
 }
 
 PeakFunction* PeakFunction::clone() const {
-  PeakFunction *f = factory(type());
-  *f = *this;
+  PeakFunction* f = factory(type());
+  *f              = *this;
   return f;
 }
 
@@ -167,32 +160,32 @@ void PeakFunction::reset() {
 
 void PeakFunction::fit(Curve::rc curve, Range::rc range) {
   Curve c = prepareFit(curve, range);
-  if (c.isEmpty())
-    return;
+  if (c.isEmpty()) return;
 
-//  if (!guessedPeak().isValid()) {  // calculate guesses // TODO caching temporarily disabled, until it works correctly
-    uint peakIndex  = c.maxYindex();
-    auto peakTth    = c.x(peakIndex);
-    auto peakIntens = c.y(peakIndex);
+  //  if (!guessedPeak().isValid()) {  // calculate guesses // TODO caching
+  //  temporarily disabled, until it works correctly
+  uint peakIndex  = c.maxYindex();
+  auto peakTth    = c.x(peakIndex);
+  auto peakIntens = c.y(peakIndex);
 
-    // half-maximum indices
-    uint hmi1 = peakIndex, hmi2 = peakIndex;
+  // half-maximum indices
+  uint hmi1 = peakIndex, hmi2 = peakIndex;
 
-    // left
-    for (uint i = peakIndex; i-- > 0;) {
-      hmi1 = i;
-      if (c.y(i) < peakIntens / 2) break;
-    }
+  // left
+  for (uint i = peakIndex; i-- > 0;) {
+    hmi1 = i;
+    if (c.y(i) < peakIntens / 2) break;
+  }
 
-    // right
-    for (uint i = peakIndex, iCnt = c.count(); i < iCnt; ++i) {
-      hmi2 = i;
-      if (c.y(i) < peakIntens / 2) break;
-    }
+  // right
+  for (uint i = peakIndex, iCnt = c.count(); i < iCnt; ++i) {
+    hmi2 = i;
+    if (c.y(i) < peakIntens / 2) break;
+  }
 
-    setGuessedPeak(typ::XY(peakTth, peakIntens));
-    setGuessedFWHM(c.x(hmi2) - c.x(hmi1));
-//  }
+  setGuessedPeak(typ::XY(peakTth, peakIntens));
+  setGuessedFWHM(c.x(hmi2) - c.x(hmi1));
+  //  }
 
   LevenbergMarquardt().fit(*this, c);
 }
@@ -216,25 +209,21 @@ void PeakFunction::loadJson(JsonObj::rc obj) THROWS {
   guessedFWHM_ = obj.loadQreal(json_key::FWHM);
 }
 
-
-Raw::Raw() {
-}
+Raw::Raw() {}
 
 qreal Raw::y(qreal x, qreal const* /*parValues*/) const {
-  if (!x_count_ || !range_.contains(x))
-    return 0;
+  if (!x_count_ || !range_.contains(x)) return 0;
 
   uint i = to_u(qBound(0, qFloor((x - range_.min) / dx_), to_i(x_count_) - 1));
   return fittedCurve_.y(i);
 }
 
 qreal Raw::dy(qreal, uint, qreal const*) const {
-  return 0; // fake
+  return 0;  // fake
 }
 
 peak_t Raw::fittedPeak() const {
-  if (qIsNaN(sum_y_))
-    sum_y_ = fittedCurve_.sumY();
+  if (qIsNaN(sum_y_)) sum_y_ = fittedCurve_.sumY();
 
   return peak_t(range_.center(),  // approximate x
                 sum_y_);
@@ -278,7 +267,6 @@ JsonObj Raw::saveJson() const {
   return super::saveJson().saveString(json_key::TYPE, json_fun_key::RAW);
 }
 
-
 Gaussian::Gaussian(qreal ampl, qreal xShift, qreal sigma) {
   setParameterCount(3);
 
@@ -315,14 +303,11 @@ qreal Gaussian::dy(qreal x, uint parIndex, qreal const* parValues) const {
   qreal exa = exp(-0.5 * arg * arg);
 
   switch (parIndex) {
-  case parAMPL:
-    return exa;
-  case parXSHIFT:
-    return ampl * exa * (x - xShift) / (sigma * sigma);
+  case parAMPL: return exa;
+  case parXSHIFT: return ampl * exa * (x - xShift) / (sigma * sigma);
   case parSIGMA:
     return ampl * exa * ((x - xShift) * (x - xShift)) / (sigma * sigma * sigma);
-  default:
-    NEVER return 0;
+  default: NEVER return 0;
   }
 }
 
@@ -339,7 +324,8 @@ void Gaussian::setGuessedFWHM(fwhm_t fwhm) {
 }
 
 peak_t Gaussian::fittedPeak() const {
-  return peak_t(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
+  return peak_t(parameters_.at(parXSHIFT).value(),
+                parameters_.at(parAMPL).value());
 }
 
 fwhm_t Gaussian::fittedFWHM() const {
@@ -347,7 +333,8 @@ fwhm_t Gaussian::fittedFWHM() const {
 }
 
 peak_t Gaussian::peakError() const {
-  return peak_t(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
+  return peak_t(parameters_.at(parXSHIFT).error(),
+                parameters_.at(parAMPL).error());
 }
 
 fwhm_t Gaussian::fwhmError() const {
@@ -358,7 +345,6 @@ fwhm_t Gaussian::fwhmError() const {
 JsonObj Gaussian::saveJson() const {
   return super::saveJson().saveString(json_key::TYPE, json_fun_key::GAUSSIAN);
 }
-
 
 Lorentzian::Lorentzian(qreal ampl, qreal xShift, qreal gamma) {
   setParameterCount(3);
@@ -395,15 +381,12 @@ qreal Lorentzian::dy(qreal x, uint parIndex, qreal const* parValues) const {
   qreal arg3 = (1 + arg2) * (1 + arg2);
 
   switch (parIndex) {
-  case parAMPL:
-    return 1 / (1 + arg2);
-  case parXSHIFT:
-    return 2 * ampl * (x - xShift) / (arg3 * gamma * gamma);
+  case parAMPL: return 1 / (1 + arg2);
+  case parXSHIFT: return 2 * ampl * (x - xShift) / (arg3 * gamma * gamma);
   case parGAMMA:
     return 2 * ampl * (x - xShift) * (x - xShift) /
            (arg3 * gamma * gamma * gamma);
-  default:
-    NEVER return 0;
+  default: NEVER return 0;
   }
 }
 
@@ -420,7 +403,8 @@ void Lorentzian::setGuessedFWHM(fwhm_t fwhm) {
 }
 
 peak_t Lorentzian::fittedPeak() const {
-  return peak_t(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
+  return peak_t(parameters_.at(parXSHIFT).value(),
+                parameters_.at(parAMPL).value());
 }
 
 fwhm_t Lorentzian::fittedFWHM() const {
@@ -428,7 +412,8 @@ fwhm_t Lorentzian::fittedFWHM() const {
 }
 
 peak_t Lorentzian::peakError() const {
-  return peak_t(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
+  return peak_t(parameters_.at(parXSHIFT).error(),
+                parameters_.at(parAMPL).error());
 }
 
 fwhm_t Lorentzian::fwhmError() const {
@@ -438,7 +423,6 @@ fwhm_t Lorentzian::fwhmError() const {
 JsonObj Lorentzian::saveJson() const {
   return super::saveJson().saveString(json_key::TYPE, json_fun_key::LORENTZIAN);
 }
-
 
 PseudoVoigt1::PseudoVoigt1(qreal ampl, qreal xShift, qreal sigmaGamma,
                            qreal eta) {
@@ -487,8 +471,7 @@ qreal PseudoVoigt1::dy(qreal x, uint parIndex, qreal const* parValues) const {
   qreal arg4 = 1 + arg2;
 
   switch (parIndex) {
-  case parAMPL:
-    return eta / arg4 + (1 - eta) * arg3;
+  case parAMPL: return eta / arg4 + (1 - eta) * arg3;
   case parXSHIFT:
     return eta * 2 * ampl * (x - xShift) /
                (arg4 * arg4 * sigmaGamma * sigmaGamma) +
@@ -499,10 +482,8 @@ qreal PseudoVoigt1::dy(qreal x, uint parIndex, qreal const* parValues) const {
                (arg4 * arg4 * sigmaGamma * sigmaGamma * sigmaGamma) +
            (1 - eta) * 2 * ampl * (x - xShift) * (x - xShift) * log(2.0) *
                arg3 / (sigmaGamma * sigmaGamma * sigmaGamma);
-  case parETA:
-    return ampl / arg4 - ampl * arg3;
-  default:
-    NEVER return 0;
+  case parETA: return ampl / arg4 - ampl * arg3;
+  default: NEVER return 0;
   }
 }
 
@@ -518,7 +499,8 @@ void PseudoVoigt1::setGuessedFWHM(fwhm_t fwhm) {
 }
 
 peak_t PseudoVoigt1::fittedPeak() const {
-  return peak_t(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
+  return peak_t(parameters_.at(parXSHIFT).value(),
+                parameters_.at(parAMPL).value());
 }
 
 fwhm_t PseudoVoigt1::fittedFWHM() const {
@@ -526,7 +508,8 @@ fwhm_t PseudoVoigt1::fittedFWHM() const {
 }
 
 peak_t PseudoVoigt1::peakError() const {
-  return peak_t(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
+  return peak_t(parameters_.at(parXSHIFT).error(),
+                parameters_.at(parAMPL).error());
 }
 
 fwhm_t PseudoVoigt1::fwhmError() const {
@@ -534,9 +517,9 @@ fwhm_t PseudoVoigt1::fwhmError() const {
 }
 
 JsonObj PseudoVoigt1::saveJson() const {
-  return super::saveJson().saveString(json_key::TYPE, json_fun_key::PSEUDOVOIGT1);
+  return super::saveJson().saveString(json_key::TYPE,
+                                      json_fun_key::PSEUDOVOIGT1);
 }
-
 
 PseudoVoigt2::PseudoVoigt2(qreal ampl, qreal mu, qreal hwhmG, qreal hwhmL,
                            qreal eta) {
@@ -597,8 +580,7 @@ qreal PseudoVoigt2::dy(qreal x, uint parIndex, qreal const* parValues) const {
   qreal argL3 = 1 + argL2;
 
   switch (parIndex) {
-  case parAMPL:
-    return eta / argL3 + (1 - eta) * argG3;
+  case parAMPL: return eta / argL3 + (1 - eta) * argG3;
   case parXSHIFT:
     return eta * 2 * ampl * (x - xShift) / (argL3 * argL3 * gamma * gamma) +
            (1 - eta) * 2 * ampl * (x - xShift) * log(2.0) * argG3 /
@@ -609,10 +591,8 @@ qreal PseudoVoigt2::dy(qreal x, uint parIndex, qreal const* parValues) const {
   case parGAMMA:
     return eta * 2 * ampl * (x - xShift) * (x - xShift) /
            (argL3 * argL3 * gamma * gamma * gamma);
-  case parETA:
-    return ampl / argL3 - ampl * argG3;
-  default:
-    NEVER return 0;
+  case parETA: return ampl / argL3 - ampl * argG3;
+  default: NEVER return 0;
   }
 }
 
@@ -629,17 +609,20 @@ void PseudoVoigt2::setGuessedFWHM(fwhm_t fwhm) {
 }
 
 peak_t PseudoVoigt2::fittedPeak() const {
-  return peak_t(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
+  return peak_t(parameters_.at(parXSHIFT).value(),
+                parameters_.at(parAMPL).value());
 }
 
 fwhm_t PseudoVoigt2::fittedFWHM() const {
   qreal eta = parameters_.at(parETA).value();
   return fwhm_t(((1 - eta) * parameters_.at(parSIGMA).value() / 0.424661 +
-                 eta * parameters_.at(parGAMMA).value() * 2) / 2);
+                 eta * parameters_.at(parGAMMA).value() * 2) /
+                2);
 }
 
 peak_t PseudoVoigt2::peakError() const {
-  return peak_t(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
+  return peak_t(parameters_.at(parXSHIFT).error(),
+                parameters_.at(parAMPL).error());
 }
 
 fwhm_t PseudoVoigt2::fwhmError() const {
@@ -649,7 +632,8 @@ fwhm_t PseudoVoigt2::fwhmError() const {
 }
 
 JsonObj PseudoVoigt2::saveJson() const {
-  return super::saveJson().saveString(json_key::TYPE, json_fun_key::PSEUDOVOIGT2);
+  return super::saveJson().saveString(json_key::TYPE,
+                                      json_fun_key::PSEUDOVOIGT2);
 }
 
 //------------------------------------------------------------------------------

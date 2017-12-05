@@ -12,7 +12,5 @@ str thisDir() {
 
 #endif
 
-TEST("XY()", ({
-  CHECK_NOTHROW(io::loadCaress2(thisDir() + "/test_caress.dat"));
-});)
-
+TEST("XY()",
+     ({ CHECK_NOTHROW(io::loadCaress2(thisDir() + "/test_caress.dat")); });)
