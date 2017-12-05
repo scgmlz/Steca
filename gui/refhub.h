@@ -12,14 +12,13 @@
 //
 // ************************************************************************** //
 
-
 #ifndef REFHUB_H
 #define REFHUB_H
 
-#include "def/defs.h"
+#include "calc/calc_reflection.h"
 #include "data/data_dataset.h"
 #include "data/data_file.h"
-#include "calc/calc_reflection.h"
+#include "def/defs.h"
 #include <QObject>
 
 namespace gui {
@@ -35,9 +34,8 @@ enum class eFittingTab {
 };
 
 class TheHubSignallingBase : public QObject {
-  CLASS(TheHubSignallingBase) SUPER(QObject)
-  Q_OBJECT
-  friend class RefHub;
+  CLASS(TheHubSignallingBase) SUPER(QObject);
+  Q_OBJECT friend class RefHub;
 
 private:
   TheHub& asHub();
@@ -53,8 +51,8 @@ protected:
 signals:
   void sigSessionCleared();
 
-  void sigFilesChanged();     // the set of loaded files has changed
-  void sigFilesSelected();    // the selection of loaded files has changed
+  void sigFilesChanged();   // the set of loaded files has changed
+  void sigFilesSelected();  // the selection of loaded files has changed
 
   void sigDatasetsChanged();  // the set of datasets collected from selected
                               // files has changed
@@ -81,17 +79,17 @@ signals:
 protected:
   // to prevent some otherwise recursive calls
   typedef uint level_t;
-  level_t sigLevel_ = 0;
+  level_t      sigLevel_ = 0;
 
   class level_guard {
   public:
     level_guard(level_t&);
-   ~level_guard();
+    ~level_guard();
+
   private:
-    level_t &level_;
+    level_t& level_;
   };
 };
-
 
 // The base class that refers to the hub + support methods.
 
@@ -149,7 +147,5 @@ protected:
 
 #undef DEFINE_HUB_SIGNAL_HANDLER
 };
-
-
 }
-#endif // REFHUB_H
+#endif  // REFHUB_H
