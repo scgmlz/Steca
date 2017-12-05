@@ -4,15 +4,15 @@ dist: trusty
 
 os:
 - linux
-# - osx
+- osx
 
 compiler:
-# - clang
+- clang
 - gcc
 
 env:
 - BUILD_TYPE=Debug
-# - BUILD_TYPE=Release
+- BUILD_TYPE=Release
 
 # matrix:
 #  exclude:
@@ -24,7 +24,6 @@ before_install:
 
 install:
 - .travis/${TRAVIS_OS_NAME}/install.sh
-- gem install coveralls-lcov
 
 script:
 - .travis/${TRAVIS_OS_NAME}/build_${BUILD_TYPE}.sh
@@ -37,5 +36,4 @@ addons:
     packages:
     - qt54base
     - qt54multimedia
-    - lcov
     - xvfb
