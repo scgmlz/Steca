@@ -860,6 +860,5 @@ bool Frame::logCheckSuccess(rcstr path, bool res) const {
     return res;
 }
 
-//------------------------------------------------------------------------------
-}
-}
+} // namespace output
+} // namespace gui

@@ -620,5 +620,4 @@ JsonObj PseudoVoigt2::saveJson() const {
     return super::saveJson().saveString(json_key::TYPE, json_fun_key::PSEUDOVOIGT2);
 }
 
-//------------------------------------------------------------------------------
 }

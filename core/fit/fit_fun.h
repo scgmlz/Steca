@@ -224,6 +224,6 @@ public:
     typ::JsonObj saveJson() const;
 };
 
-//------------------------------------------------------------------------------
-}
+} // namespace fit
+
 #endif // FIT_FUN_H

@@ -1,2 +1,2 @@
 #!/bin/sh
-find . \( -name \*.h -or -name \*.cpp \) ! \( -path ./LevMar/\* -or -path ./gui/QCP/\* -or -path ./lib/tests/\* -or -path ./*build/\* -or -path ./io/Caress/\* -or -path ./io/Mar/\* \) | sort
+find . \( -name \*.h -or -name \*.cpp \) ! \( -path ./LevMar/\* -or -path ./gui/QCP/\* -or -path ./lib/test/\* -or -path ./*build/\* -or -path ./io/Caress/\* -or -path ./io/Mar/\* \) | sort

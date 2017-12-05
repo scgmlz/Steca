@@ -125,14 +125,16 @@ private:
 };
 
 class OneDatasets : public typ::vec<shp_OneDataset> {
-    CLASS(OneDatasets)
-    SUPER(typ::vec<shp_OneDataset>) public : typ::size2d imageSize() const;
+    CLASS(OneDatasets) SUPER(typ::vec<shp_OneDataset>);
+public:
+    typ::size2d imageSize() const;
     typ::shp_Image foldedImage() const;
 };
 
 // 1 or more OneDataset(s)
 class Dataset final : public OneDatasets {
-    CLASS(Dataset) SUPER(OneDatasets) friend class Datasets;
+    CLASS(Dataset) SUPER(OneDatasets);
+    friend class Datasets;
 
 public:
     Dataset();
@@ -165,7 +167,9 @@ private:
 };
 
 class Datasets final : public typ::vec<shp_Dataset> {
-    CLASS(Datasets) SUPER(typ::vec<shp_Dataset>) public : Datasets();
+    CLASS(Datasets) SUPER(typ::vec<shp_Dataset>);
+public:
+    Datasets();
 
     void appendHere(shp_Dataset);
 
@@ -192,6 +196,8 @@ private:
     mutable gma_rge rgeGma_;
     mutable typ::Curve avgCurve_;
 };
-}
+
+} // namespace data
+
 #endif // DATA_DATASET_H
 #endif // FORWARD_DECLARATIONS

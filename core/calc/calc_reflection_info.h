@@ -97,8 +97,9 @@ private:
 };
 
 class ReflectionInfos : public typ::vec<ReflectionInfo> {
-    CLASS(ReflectionInfos)
-    SUPER(typ::vec<ReflectionInfo>) public : ReflectionInfos();
+    CLASS(ReflectionInfos) SUPER(typ::vec<ReflectionInfo>);
+public:
+    ReflectionInfos();
 
     void append(ReflectionInfo::rc);
 

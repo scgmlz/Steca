@@ -28,21 +28,24 @@ namespace output {
 /* Note that some data members are public, to simplify the code. Be careful. */
 
 class Panel : public panel::GridPanel {
-    CLASS(Panel) SUPER(panel::GridPanel) public : using super::super;
+    CLASS(Panel) SUPER(panel::GridPanel);
+public:
+    using super::super;
 };
 
 class PanelReflection : public Panel {
-    CLASS(PanelReflection) SUPER(Panel) public : PanelReflection(TheHub&);
-
+    CLASS(PanelReflection) SUPER(Panel);
+public:
+    PanelReflection(TheHub&);
     QComboBox* cbRefl;
 };
 
 class PanelGammaSlices : public Panel {
-    CLASS(PanelGammaSlices) SUPER(Panel) public : PanelGammaSlices(TheHub&);
-
+    CLASS(PanelGammaSlices) SUPER(Panel);
+public:
+    PanelGammaSlices(TheHub&);
     QSpinBox* numSlices;
     QDoubleSpinBox* stepGamma;
-
     void updateValues();
 
 private:
@@ -50,7 +53,9 @@ private:
 };
 
 class PanelGammaRange : public Panel {
-    CLASS(PanelGammaRange) SUPER(Panel) public : PanelGammaRange(TheHub&);
+    CLASS(PanelGammaRange) SUPER(Panel);
+public:
+    PanelGammaRange(TheHub&);
 
     QCheckBox* cbLimitGamma;
     QDoubleSpinBox *minGamma, *maxGamma;
@@ -62,13 +67,17 @@ private:
 };
 
 class PanelPoints : public Panel {
-    CLASS(PanelPoints) SUPER(Panel) public : PanelPoints(TheHub&);
+    CLASS(PanelPoints) SUPER(Panel);
+public:
+    PanelPoints(TheHub&);
 
     QRadioButton *rbCalc, *rbInterp;
 };
 
 class PanelInterpolation : public Panel {
-    CLASS(PanelInterpolation) SUPER(Panel) public : PanelInterpolation(TheHub&);
+    CLASS(PanelInterpolation) SUPER(Panel);
+public:
+    PanelInterpolation(TheHub&);
 
     QDoubleSpinBox *stepAlpha, *stepBeta, *idwRadius;
     QDoubleSpinBox *avgAlphaMax, *avgRadius;
@@ -76,19 +85,23 @@ class PanelInterpolation : public Panel {
 };
 
 class PanelDiagram : public Panel {
-    CLASS(PanelDiagram) SUPER(Panel) public : PanelDiagram(TheHub&);
+    CLASS(PanelDiagram) SUPER(Panel);
+public:
+    PanelDiagram(TheHub&);
 
     QComboBox *xAxis, *yAxis;
 };
 
 class PanelFitError : public Panel {
-    CLASS(PanelFitError) SUPER(Panel) public : PanelFitError(TheHub&);
+    CLASS(PanelFitError) SUPER(Panel);
+public:
+    PanelFitError(TheHub&);
 };
 
 class Params : public QWidget, protected RefHub {
-    CLASS(Params)
-    SUPER(QWidget)
-    public : enum ePanels {
+    CLASS(Params) SUPER(QWidget);
+public:
+    enum ePanels {
         REFLECTION = 0x01,
         GAMMA = 0x02,
         POINTS = 0x04,
@@ -116,7 +129,9 @@ private:
 };
 
 class Table : public TreeView, protected RefHub {
-    CLASS(Table) SUPER(TreeView) public : Table(TheHub&, uint numDataColumns);
+    CLASS(Table) SUPER(TreeView);
+public:
+    Table(TheHub&, uint numDataColumns);
 
     void setColumns(str_lst::rc headers, str_lst::rc outHeaders, typ::cmp_vec::rc);
     str_lst const outHeaders() { return outHeaders_; }
@@ -135,11 +150,15 @@ private:
 };
 
 class Tabs : public panel::TabsPanel {
-    CLASS(Tabs) SUPER(panel::TabsPanel) public : Tabs(TheHub&);
+    CLASS(Tabs) SUPER(panel::TabsPanel);
+public:
+    Tabs(TheHub&);
 };
 
 class Tab : public QWidget, protected RefHub {
-    CLASS(Tab) SUPER(QWidget) public : Tab(TheHub&, Params&);
+    CLASS(Tab) SUPER(QWidget);
+public :
+    Tab(TheHub&, Params&);
 
 protected:
     Params& params_;
@@ -148,10 +167,9 @@ protected:
 };
 
 class TabTable : public Tab {
-    CLASS(TabTable)
-    SUPER(Tab)
-    public
-        : TabTable(TheHub&, Params&, str_lst::rc headers, str_lst::rc outHeaders, typ::cmp_vec::rc);
+    CLASS(TabTable) SUPER(Tab);
+public:
+    TabTable(TheHub&, Params&, str_lst::rc headers, str_lst::rc outHeaders, typ::cmp_vec::rc);
 
 private:
     struct showcol_t {
@@ -163,8 +181,9 @@ private:
 
 private:
     class ShowColsWidget : public QWidget {
-        CLASS(ShowColsWidget)
-        SUPER(QWidget) public : ShowColsWidget(Table&, showcol_vec&);
+        CLASS(ShowColsWidget) SUPER(QWidget);
+    public:
+        ShowColsWidget(Table&, showcol_vec&);
 
     private:
         Table& table_;
@@ -183,8 +202,9 @@ private:
 };
 
 class TabSave : public Tab {
-    CLASS(TabSave)
-    SUPER(Tab) public : TabSave(TheHub&, Params&, bool withTypes);
+    CLASS(TabSave) SUPER(Tab);
+public:
+    TabSave(TheHub&, Params&, bool withTypes);
 
     str filePath(bool withSuffix);
     str separator() const;
@@ -199,8 +219,9 @@ protected:
 };
 
 class Frame : public QFrame, protected RefHub {
-    CLASS(Frame)
-    SUPER(QFrame) public : Frame(TheHub&, rcstr title, Params*, QWidget*);
+    CLASS(Frame) SUPER(QFrame);
+public:
+    Frame(TheHub&, rcstr title, Params*, QWidget*);
 
 protected:
     QAction *actClose_, *actCalculate_, *actInterpolate_;
@@ -230,7 +251,6 @@ protected:
     bool logCheckSuccess(rcstr path, bool) const;
 };
 
-//------------------------------------------------------------------------------
 }
 }
 #endif // OUTPUT_DIALOGS_H
