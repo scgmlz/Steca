@@ -18,12 +18,12 @@ environment:
   - QTDIR: C:\Qt\5.7\msvc2015_64
     PATH: C:\Qt\5.7\msvc2015_64\bin;%PATH%
     CMAKE_GENERATOR: "Visual Studio 14 2015 Win64"
-  
+
 build_script:
 - git submodule update --init --recursive
 - mkdir build
 - cd build
-- cmake -G "%CMAKE_GENERATOR%" ..
+- cmake -G "%CMAKE_GENERATOR%" -DWITH_TESTS=1 ..
 - cmake --build . --config %BUILD_CONF% -- /clp:ErrorsOnly
-- cd tests_steca
-- tests_steca
+- cd tests
+- tests
