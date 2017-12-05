@@ -25,5 +25,3 @@ build_script:
 - cd build
 - cmake -G "%CMAKE_GENERATOR%" ..
 - cmake --build . --config %BUILD_CONF% -- /clp:ErrorsOnly
-- cd tests
-- tests
