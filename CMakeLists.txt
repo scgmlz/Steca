@@ -2,6 +2,9 @@
 
 cmake_minimum_required (VERSION 2.8.12 FATAL_ERROR)
 
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+include(PreventInSourceBuilds)
+
 project (SteCa2)
 
 if (CMAKE_VERSION VERSION_LESS "3.1")
@@ -31,7 +34,7 @@ find_package (Qt5Core       REQUIRED)
 find_package (Qt5Gui        REQUIRED)
 find_package (Qt5Test       REQUIRED)
 find_package (Qt5Widgets    REQUIRED)
-find_package (Qt5Multimedia REQUIRED)
+find_package (Qt5Network    REQUIRED)
 
 add_subdirectory (lib)
 add_subdirectory (LevMar)

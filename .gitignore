@@ -2,3 +2,7 @@
 *.*.user
 html/
 *~
+
+build
+mybuild
+qbuild
