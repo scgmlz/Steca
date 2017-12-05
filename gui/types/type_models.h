@@ -27,7 +27,7 @@ namespace models {
 extern QVariant const    EMPTY_VAR;
 extern QModelIndex const ANY_INDEX;
 
-//------------------------------------------------------------------------------
+
 // The base class of all table-like models
 
 class TableModel : public QAbstractTableModel, protected gui::RefHub {
@@ -47,6 +47,6 @@ public:
   void signalReset();
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYPE_MODELS_H

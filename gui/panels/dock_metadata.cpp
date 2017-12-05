@@ -19,7 +19,6 @@
 #include <QHeaderView>
 
 namespace gui { namespace panel {
-//------------------------------------------------------------------------------
 
 class MetadataView : public views::ListView {
   CLASS(MetadataView) SUPER(views::ListView)
@@ -55,7 +54,6 @@ int MetadataView::sizeHintForColumn(int col) const {
   }
 }
 
-//------------------------------------------------------------------------------
 
 DockMetadata::DockMetadata(TheHub& hub)
 : super("Metadata", "dock-metadata", Qt::Vertical), RefHub(hub)
@@ -63,6 +61,5 @@ DockMetadata::DockMetadata(TheHub& hub)
   box_->addWidget((metadataView_ = new MetadataView(hub)));
 }
 
-//------------------------------------------------------------------------------
+
 }}
-// eof

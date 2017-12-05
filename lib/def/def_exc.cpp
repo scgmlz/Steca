@@ -15,7 +15,6 @@
 
 #include "def_exc.h"
 #include "test/tests.h"
-//------------------------------------------------------------------------------
 
 #ifdef QT_NO_EXCEPTIONS
 #error needs exception handling
@@ -93,5 +92,4 @@ void Exception::raise() const {
   throw *this;
 }
 
-//------------------------------------------------------------------------------
-// eof
+

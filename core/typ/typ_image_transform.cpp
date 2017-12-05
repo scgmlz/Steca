@@ -16,7 +16,6 @@
 #include "typ/typ_image_transform.h"
 
 namespace typ {
-//------------------------------------------------------------------------------
 
 ImageTransform::ImageTransform(uint val_) : val(eTransform(val_ & 7)) {
 }
@@ -33,6 +32,5 @@ ImageTransform ImageTransform::nextRotate() const {
   return rotateTo(val + 1);
 }
 
-//------------------------------------------------------------------------------
+
 }
-// eof

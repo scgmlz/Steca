@@ -23,7 +23,6 @@
 #include <QFileSystemModel>
 
 namespace gui { namespace file_dialog {
-//------------------------------------------------------------------------------
 
 //typedef QModelIndex idx;
 typedef QModelIndex const& rcidx;
@@ -80,7 +79,6 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
   return super::data(idx, role);
 }
 
-//------------------------------------------------------------------------------
 
 class OpenFileDialog: public QFileDialog {
 public:
@@ -152,6 +150,5 @@ str saveDirName(QWidget* parent, rcstr caption, rcstr dir) {
   return dirName;
 }
 
-//------------------------------------------------------------------------------
+
 }}
-// eof

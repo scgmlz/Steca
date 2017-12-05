@@ -39,7 +39,6 @@ Q_DECLARE_METATYPE(data::shp_File)
 namespace data {
 
 class Datasets;
-//------------------------------------------------------------------------------
 
 // A file (loaded from a disk file) that contains a number of datasets.
 class File final {
@@ -58,7 +57,7 @@ private:
   OneDatasets datasets_;
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // DATA_FILE_H
 #endif // FORWARD_DECLARATIONS

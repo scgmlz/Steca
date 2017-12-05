@@ -19,7 +19,6 @@
 #include <qmath.h>
 
 namespace fit {
-//------------------------------------------------------------------------------
 
     using typ::Curve;
     using typ::Function;
@@ -60,7 +59,6 @@ void Method::callbackY(qreal* parValues, qreal* yValues,
     yValues[i] = function_->y(xValues_[i], parValues);
 }
 
-//------------------------------------------------------------------------------
 
 LinearLeastSquare::LinearLeastSquare() {
 }
@@ -98,7 +96,6 @@ void LinearLeastSquare::approximate(
     paramsError[i] = sqrt(covar[i * paramsCount + i]);  // the diagonal
 }
 
-//------------------------------------------------------------------------------
 
 LevenbergMarquardt::LevenbergMarquardt() {
 }
@@ -151,5 +148,5 @@ void LevenbergMarquardt::callbackJacobianLM(qreal* parValues,
   }
 }
 
-//------------------------------------------------------------------------------
+
 }

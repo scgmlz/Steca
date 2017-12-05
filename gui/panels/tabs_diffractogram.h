@@ -19,7 +19,6 @@
 #include "panel.h"
 
 namespace gui { namespace panel {
-//------------------------------------------------------------------------------
 
 class TabsDiffractogram : public TabsPanel {
   CLASS(TabsDiffractogram) SUPER(TabsPanel)
@@ -27,6 +26,6 @@ public:
   TabsDiffractogram(TheHub&);
 };
 
-//------------------------------------------------------------------------------
+
 }}
 #endif // TABS_DIFFRACTOGRAM_H

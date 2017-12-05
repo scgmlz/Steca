@@ -19,7 +19,6 @@
 #include <qmath.h>
 
 namespace calc {
-//------------------------------------------------------------------------------
 
     using typ::Curve;
     using typ::Image;
@@ -86,7 +85,6 @@ void LensBase::doCut(uint& i, uint& j) const {
   i += imageCut_.left; j += imageCut_.top;
 }
 
-//------------------------------------------------------------------------------
 
 ImageLens::ImageLens(core::Session::rc session,
                      Image::rc image, data::Datasets::rc datasets,
@@ -124,7 +122,6 @@ inten_rge::rc ImageLens::rgeInten(bool fixed) const {
   return rgeInten_;
 }
 
-//------------------------------------------------------------------------------
 
 DatasetLens::DatasetLens(core::Session::rc session,
    data::Dataset::rc dataset, data::Datasets::rc datasets, eNorm norm,
@@ -206,5 +203,5 @@ void DatasetLens::setNorm(eNorm norm) {
     MessageLogger::warn("Bad normalisation value");
 }
 
-//------------------------------------------------------------------------------
+
 }

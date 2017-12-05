@@ -19,7 +19,7 @@
 #include "def/defs.h"
 
 namespace typ {
-//------------------------------------------------------------------------------
+
 // Image transform type - rotation and mirroring (bit-map)
 
 struct ImageTransform {
@@ -58,6 +58,6 @@ struct ImageTransform {
   }
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_IMAGE_TRANSFORM_H

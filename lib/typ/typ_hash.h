@@ -21,7 +21,6 @@
 #include <QHash>
 
 namespace typ {
-//------------------------------------------------------------------------------
 
 template <typename Key, typename T>
 class hash : protected QHash<Key,T> {
@@ -72,6 +71,6 @@ public:
   }
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_MAP_H

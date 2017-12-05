@@ -28,7 +28,6 @@
 #include <QDir>
 
 namespace gui { namespace output {
-//------------------------------------------------------------------------------
 
 PanelReflection::PanelReflection(TheHub& hub) : super(hub, "Reflection") {
   auto g = grid();
@@ -139,7 +138,6 @@ PanelDiagram::PanelDiagram(TheHub& hub) : super(hub, "Diagram") {
 PanelFitError::PanelFitError(TheHub& hub) : super(hub, "Fit error") {
 }
 
-//------------------------------------------------------------------------------
 
 Params::Params(TheHub& hub, ePanels panels)
 : RefHub(hub)
@@ -236,7 +234,6 @@ void Params::saveSettings() const {
   s.saveStr(config_key::SAVE_FMT, saveFmt);
 }
 
-//------------------------------------------------------------------------------
 
 class TableModel : public models::TableModel {
   CLASS(TableModel) SUPER(models::TableModel)
@@ -282,7 +279,6 @@ private:
   typ::vec<numRow> rows_;
 };
 
-//------------------------------------------------------------------------------
 
 TableModel::TableModel(TheHub& hub, uint numColumns_)
 : models::TableModel(hub), numCols_(numColumns_), sortColumn_(-1)
@@ -422,18 +418,15 @@ void TableModel::sortData() {
   endResetModel();
 }
 
-//------------------------------------------------------------------------------
 
 Tabs::Tabs(TheHub& hub) : super(hub) {
 }
 
-//------------------------------------------------------------------------------
 
 Tab::Tab(TheHub& hub, Params& params) : RefHub(hub), params_(params) {
   setLayout((grid_ = gridLayout()));
 }
 
-//------------------------------------------------------------------------------
 
 Table::Table(TheHub& hub, uint numDataColumns)
 : RefHub(hub), model_(nullptr)
@@ -497,7 +490,6 @@ const typ::row_t&Table::row(uint i) const {
   return model_->row(i);
 }
 
-//------------------------------------------------------------------------------
 
 TabTable::TabTable(TheHub& hub, Params& params,
                    str_lst::rc headers, str_lst::rc outHeaders,
@@ -911,4 +903,3 @@ bool Frame::logCheckSuccess(rcstr path, bool res) const {
 
 //------------------------------------------------------------------------------
 }}
-// eof

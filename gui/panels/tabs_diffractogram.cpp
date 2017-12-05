@@ -17,13 +17,11 @@
 #include "panel_diffractogram.h"
 
 namespace gui { namespace panel {
-//------------------------------------------------------------------------------
 
 TabsDiffractogram::TabsDiffractogram(TheHub& hub) : super(hub) {
   auto& box = addTab("Diffractogram", Qt::Vertical).box();
   box.addWidget(new Diffractogram(hub));
 }
 
-//------------------------------------------------------------------------------
+
 }}
-// eof

@@ -22,7 +22,6 @@
 // Help with QVariant
 
 namespace typ {
-//------------------------------------------------------------------------------
 
 bool isNumeric(QVariant const&);
 
@@ -37,6 +36,6 @@ int cmp_date(QVariant const&, QVariant const&);
 
 typedef vec<QVariant> row_t;
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_VARIANT_H

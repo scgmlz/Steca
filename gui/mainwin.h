@@ -23,7 +23,6 @@
 #include <QNetworkAccessManager>
 
 namespace gui {
-//------------------------------------------------------------------------------
 
 class MainWin : public QMainWindow {
   CLASS(MainWin) SUPER(QMainWindow)
@@ -97,6 +96,6 @@ private:
   void viewReset();
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // MAINWIN_H

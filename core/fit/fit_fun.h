@@ -27,11 +27,10 @@ extern str const
 }
 
 namespace fit {
-//------------------------------------------------------------------------------
 
 void initFactory();
 
-//------------------------------------------------------------------------------
+
 // a polynom(ial)
 
 class Polynom : public typ::SimpleFunction {
@@ -55,7 +54,7 @@ public:
   void loadJson(typ::JsonObj::rc) THROWS;
 };
 
-//------------------------------------------------------------------------------
+
 // Abstract peak function
 
 enum class ePeakType {
@@ -108,7 +107,6 @@ protected:
   fwhm_t     guessedFWHM_;
 };
 
-//------------------------------------------------------------------------------
 
 class Raw : public PeakFunction {
   CLASS(Raw) SUPER(PeakFunction)
@@ -141,7 +139,6 @@ public:
   typ::JsonObj saveJson() const;
 };
 
-//------------------------------------------------------------------------------
 
 class Gaussian : public PeakFunction {
   CLASS(Gaussian) SUPER(PeakFunction)
@@ -168,7 +165,6 @@ public:
   typ::JsonObj saveJson() const;
 };
 
-//------------------------------------------------------------------------------
 
 class Lorentzian : public PeakFunction {
   CLASS(Lorentzian) SUPER(PeakFunction)
@@ -195,7 +191,6 @@ public:
   typ::JsonObj saveJson() const;
 };
 
-//------------------------------------------------------------------------------
 
 class PseudoVoigt1 : public PeakFunction {
   CLASS(PseudoVoigt1) SUPER(PeakFunction)
@@ -223,7 +218,6 @@ public:
   typ::JsonObj saveJson() const;
 };
 
-//------------------------------------------------------------------------------
 
 class PseudoVoigt2 : public PeakFunction {
   CLASS(PseudoVoigt2) SUPER(PeakFunction)

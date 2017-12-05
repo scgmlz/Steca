@@ -31,7 +31,6 @@ extern str const
 }
 
 namespace typ {
-//------------------------------------------------------------------------------
 
 class JsonArr;
 struct Range;
@@ -91,7 +90,6 @@ public:
   JsonObj  operator+  (rc) const;
 };
 
-//------------------------------------------------------------------------------
 
 class JsonArr: protected QJsonArray {
   CLASS(JsonArr) WITH_SUPER(QJsonArray)
@@ -111,6 +109,6 @@ public:
   JsonObj objAt(uint) const;
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_JSON_H

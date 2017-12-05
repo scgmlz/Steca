@@ -18,7 +18,6 @@
 #include <QDataStream>
 
 namespace io {
-//------------------------------------------------------------------------------
 
 static void loadTiff(data::shp_File&, rcstr, typ::deg, qreal, qreal) THROWS;
 
@@ -275,6 +274,5 @@ static void loadTiff(data::shp_File& file, rcstr filePath,
   );
 }
 
-//------------------------------------------------------------------------------
+
 }
-// eof

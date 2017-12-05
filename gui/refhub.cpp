@@ -17,7 +17,6 @@
 #include "thehub.h"
 
 namespace gui {
-//------------------------------------------------------------------------------
 
 TheHub& TheHubSignallingBase::asHub() {
   ENSURE(dynamic_cast<TheHub*>(this))
@@ -53,7 +52,6 @@ TheHubSignallingBase::level_guard::~level_guard() {
   --level_;
 }
 
-//------------------------------------------------------------------------------
 
 RefHub::RefHub(gui::TheHub& hub) : hub_(hub) {
 }
@@ -71,6 +69,5 @@ REFHUB_TELL_IMPL(tellReflectionValues,
     (typ::Range::rc rge, typ::XY::rc peak, fwhm_t fwhm, bool withGuesses),
     (rge, peak, fwhm, withGuesses))
 
-//------------------------------------------------------------------------------
+
 }
-// eof

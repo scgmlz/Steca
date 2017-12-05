@@ -23,7 +23,6 @@
 class TreeView;
 
 namespace models {
-//------------------------------------------------------------------------------
 
 class FilesModel : public TableModel {
   CLASS(FilesModel) SUPER(TableModel)
@@ -41,7 +40,6 @@ public:
   void remFile(uint i);
 };
 
-//------------------------------------------------------------------------------
 
 class DatasetsModel : public TableModel {
   CLASS(DatasetsModel) SUPER(TableModel)
@@ -66,7 +64,6 @@ private:
   uint_vec           metaInfoNums_; // selected metadata items to show
 };
 
-//------------------------------------------------------------------------------
 
 class MetadataModel : public TableModel {
   CLASS(MetadataModel) SUPER(TableModel)
@@ -92,7 +89,6 @@ private:
   typ::vec<bool> rowsChecked_;
 };
 
-//------------------------------------------------------------------------------
 
 class ReflectionsModel : public TableModel {
   CLASS(ReflectionsModel) SUPER(TableModel)
@@ -119,6 +115,6 @@ public:
   str_lst names() const;
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // MODELS_H

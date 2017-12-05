@@ -19,7 +19,6 @@
 #include "panel.h"
 
 namespace gui { namespace panel {
-//------------------------------------------------------------------------------
 
 class DockMetadata : public DockWidget, protected RefHub {
   CLASS(DockMetadata) SUPER(DockWidget)
@@ -30,6 +29,6 @@ private:
   class MetadataView *metadataView_;
 };
 
-//------------------------------------------------------------------------------
+
 }}
 #endif // DOCK_METADATA_H

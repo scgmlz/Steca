@@ -32,7 +32,7 @@ class Session;
 }
 
 namespace calc {
-//------------------------------------------------------------------------------
+
 // View the dataset through a lens (thanks, Antti!)
 
 class LensBase {
@@ -57,7 +57,6 @@ protected:
   typ::Image const*   intensCorr_;
 };
 
-//------------------------------------------------------------------------------
 
 class ImageLens final : public LensBase {
   CLASS(ImageLens) SUPER(LensBase)
@@ -80,7 +79,6 @@ private:
 
 typedef QSharedPointer<ImageLens> shp_ImageLens;
 
-//------------------------------------------------------------------------------
 
 class DatasetLens final : public LensBase {
   CLASS(DatasetLens) SUPER(LensBase)
@@ -109,6 +107,6 @@ private:
 
 typedef QSharedPointer<DatasetLens> shp_DatasetLens;
 
-//------------------------------------------------------------------------------
+
 }
 #endif // CALC_LENS_H

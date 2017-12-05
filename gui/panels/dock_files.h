@@ -19,7 +19,6 @@
 #include "panel.h"
 
 namespace gui { namespace panel {
-//------------------------------------------------------------------------------
 
 class DockFiles : public DockWidget, private RefHub {
   CLASS(DockFiles) SUPER(DockWidget)
@@ -31,6 +30,6 @@ private:
   class LineView * corrFile_;
 };
 
-//------------------------------------------------------------------------------
+
 }}
 #endif // DOCK_FILES_H

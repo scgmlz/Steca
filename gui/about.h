@@ -22,7 +22,6 @@
 #include <QDialog>
 
 namespace gui {
-//------------------------------------------------------------------------------
 
 class AboutBox : public QDialog {
   CLASS(AboutBox) SUPER(QDialog)
@@ -36,6 +35,6 @@ protected:
   QDoubleSpinBox *detDistance_, *detPixelSize_;
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // MAINWIN_H

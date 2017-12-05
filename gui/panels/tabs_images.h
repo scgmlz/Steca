@@ -20,7 +20,6 @@
 #include "calc/calc_lens.h"
 
 namespace gui { namespace panel {
-//------------------------------------------------------------------------------
 
 class ImageWidget;
 
@@ -49,6 +48,6 @@ private:
   calc::shp_DatasetLens lens_;
 };
 
-//------------------------------------------------------------------------------
+
 }}
 #endif // TABS_IMAGES_H

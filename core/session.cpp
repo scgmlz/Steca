@@ -19,7 +19,6 @@
 #include <qmath.h>
 
 namespace core {
-//------------------------------------------------------------------------------
 
     using typ::deg;
     using typ::size2d;
@@ -474,5 +473,5 @@ qreal Session::calcAvgBackground(data::Datasets::rc datasets) const {
   return bg / datasets.count();
 }
 
-//------------------------------------------------------------------------------
+
 }

@@ -21,7 +21,6 @@
 #include "test/tests.h"
 
 namespace typ {
-//------------------------------------------------------------------------------
 
 int size2d::compare(rc that) const {
   RET_COMPARE_VALUE(w)
@@ -31,7 +30,6 @@ int size2d::compare(rc that) const {
 
 EQ_NE_OPERATOR(size2d)
 
-//------------------------------------------------------------------------------
 
 TEST("size2d", ({
   size2d sz;
@@ -44,6 +42,5 @@ TEST("size2d", ({
   CHECK((sz.w==sz1.h && sz.h==sz1.w));
 });)
 
-//------------------------------------------------------------------------------
+
 }
-// eof

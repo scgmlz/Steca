@@ -22,7 +22,7 @@
 #include "def/def_macros.h"
 #include "def/def_debug.h"
 
-//------------------------------------------------------------------------------
+
 // pointers that cannot be null
 
 template <class P> class not_null {
@@ -77,13 +77,13 @@ private:
   not_null<P>& operator-=(size_t) = delete;
 };
 
-//------------------------------------------------------------------------------
+
 // to mark owning pointers (just a hint)
 
 template <class P> using owner = P;
 template <class P> using owner_not_null = not_null<P>;
 
-//------------------------------------------------------------------------------
+
 // scoped pointer that auto-deletes what he has
 
 template <class P>
@@ -117,7 +117,7 @@ private:
   P p_;
 };
 
-//------------------------------------------------------------------------------
+
 // casting signed <-> unsigned
 
 #if defined (Q_OS_WIN) || defined (Q_OS_OSX)
@@ -168,7 +168,7 @@ typename std::__make_unsigned<T>::__type clip_u(T t) {
 
 #endif
 
-//------------------------------------------------------------------------------
+
 // natural numbers 1...
 
 #ifndef QT_NO_DEBUG
@@ -194,7 +194,7 @@ typedef uint pint;
 
 #endif
 
-//------------------------------------------------------------------------------
+
 // reals
 
 #undef NAN
@@ -203,7 +203,7 @@ typedef uint pint;
 extern qreal const NAN; // silent nan
 extern qreal const INF;
 
-//------------------------------------------------------------------------------
+
 // positive reals
 
 #ifndef QT_NO_DEBUG
@@ -226,6 +226,5 @@ typedef qreal preal;
 
 #endif
 
-//------------------------------------------------------------------------------
+
 #endif // DEF_GSL
-// eof

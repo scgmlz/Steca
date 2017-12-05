@@ -23,7 +23,7 @@
 #include <QObject>
 
 namespace gui {
-//------------------------------------------------------------------------------
+
 // The base class of the hub that signalls.
 
 class TheHub;
@@ -92,7 +92,7 @@ protected:
   };
 };
 
-//------------------------------------------------------------------------------
+
 // The base class that refers to the hub + support methods.
 
 class RefHub {
@@ -150,6 +150,6 @@ protected:
 #undef DEFINE_HUB_SIGNAL_HANDLER
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // REFHUB_H

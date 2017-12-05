@@ -21,7 +21,6 @@
 #include "typ/typ_async.h"
 
 namespace calc {
-//------------------------------------------------------------------------------
 
 struct itf_t {
   CLASS(itf_t)
@@ -47,6 +46,6 @@ ReflectionInfos interpolate(ReflectionInfos::rc,
                             typ::deg averagingAlphaMax, typ::deg averagingRadius, qreal inclusionTreshold,
                             Progress*);
 
-//------------------------------------------------------------------------------
+
 }
 #endif // CALC_POLEFIGURE_H

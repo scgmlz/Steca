@@ -23,7 +23,6 @@
 #include <QStyleFactory>
 #include <iostream>
 
-//------------------------------------------------------------------------------
 
 App::App(int& argc, char* argv[]) : super(argc, argv) {
   setApplicationName(APPLICATION_NAME);
@@ -130,7 +129,6 @@ bool App::notify(QObject* receiver, QEvent* event) {
   return false;
 }
 
-//------------------------------------------------------------------------------
 
 NoWarnings::NoWarnings() {
   ++noWarning;
@@ -140,5 +138,4 @@ NoWarnings::~NoWarnings() {
   --noWarning;
 }
 
-//------------------------------------------------------------------------------
-// eof
+

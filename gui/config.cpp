@@ -16,7 +16,6 @@
 #include "config.h"
 
 namespace config_key {
-//------------------------------------------------------------------------------
 
 str const
   GROUP_CONFIG("config"),
@@ -54,6 +53,5 @@ str const
   SAVE_DIR("save dir"),
   SAVE_FMT("save format");
 
-//------------------------------------------------------------------------------
+
 }
-// eof

@@ -25,7 +25,6 @@ class TableModel;
 }
 
 namespace gui { namespace panel {
-//------------------------------------------------------------------------------
 
 // REVIEW still needed?
 
@@ -79,7 +78,6 @@ protected:
   GridLayout *grid_;
 };
 
-//------------------------------------------------------------------------------
 
 // A tabbed panel
 class Tab : public QWidget {
@@ -102,6 +100,6 @@ public:
   Tab &tab(uint);
 };
 
-//------------------------------------------------------------------------------
+
 }}
 #endif // PANEL_H

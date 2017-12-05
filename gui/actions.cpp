@@ -18,7 +18,6 @@
 #include "thehub.h"
 
 namespace gui {
-//------------------------------------------------------------------------------
 
 Action::Action(rcstr text, QObject* parent): super(text,parent) {
   setToolTip(text.toLower());
@@ -49,14 +48,12 @@ Action& Action::alt(rcstr /*text2*/) {
   return *this;
 }
 
-//------------------------------------------------------------------------------
 
 TriggerAction::TriggerAction(rcstr text, QObject* parent)
 : super(text,parent)
 {
 }
 
-//------------------------------------------------------------------------------
 
 ToggleAction::ToggleAction(rcstr text, QObject* parent)
 : super(text,parent), text1_(text)
@@ -75,7 +72,6 @@ Action& ToggleAction::alt(rcstr text2) {
   return super::alt(text2);
 }
 
-//------------------------------------------------------------------------------
 
 Actions::Actions(TheHub& hub): super(hub) {
   using QKey = QKeySequence;
@@ -189,6 +185,5 @@ Action& Actions::tgl(Action* &action, rcstr text) {
   return *(action = new ToggleAction(text,&hub_));
 }
 
-//------------------------------------------------------------------------------
+
 }
-// eof

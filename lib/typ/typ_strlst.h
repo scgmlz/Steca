@@ -21,7 +21,7 @@
 #include <QStringList>
 #include <initializer_list>
 
-//------------------------------------------------------------------------------
+
 // limited QStringList, only needed methods reexported
 
 class str_lst : protected QStringList {
@@ -50,5 +50,5 @@ public:
   }
 };
 
-//------------------------------------------------------------------------------
+
 #endif // TYP_STRLST_H

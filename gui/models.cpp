@@ -19,7 +19,6 @@
 #include "thehub.h"
 
 namespace models {
-//------------------------------------------------------------------------------
 
 FilesModel::FilesModel(gui::TheHub& hub) : TableModel(hub) {
   onSigFilesChanged([this]() {
@@ -54,7 +53,6 @@ void FilesModel::remFile(uint i) {
   hub_.remFile(i);
 }
 
-//------------------------------------------------------------------------------
 
 DatasetsModel::DatasetsModel(gui::TheHub& hub)
 : super(hub), datasets_(hub.collectedDatasets())//, metaInfo_(nullptr)
@@ -123,7 +121,6 @@ void DatasetsModel::showMetaInfo(typ::vec<bool> const& metadataRows) {
   endResetModel();
 }
 
-//------------------------------------------------------------------------------
 
 MetadataModel::MetadataModel(gui::TheHub& hub) : super(hub) {
   rowsChecked_.fill(false, data::Metadata::numAttributes(false));
@@ -182,7 +179,6 @@ void MetadataModel::flipCheck(uint row) {
   signalReset();
 }
 
-//------------------------------------------------------------------------------
 
 ReflectionsModel::ReflectionsModel(gui::TheHub& hub) : super(hub) {
 }
@@ -260,6 +256,5 @@ str_lst ReflectionsModel::names() const {
   return ns;
 }
 
-//------------------------------------------------------------------------------
+
 }
-// eof

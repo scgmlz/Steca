@@ -23,7 +23,6 @@
 #include "typ/typ_variant.h"
 
 namespace calc {
-//------------------------------------------------------------------------------
 
 class ReflectionInfo final {
   CLASS(ReflectionInfo)
@@ -82,7 +81,6 @@ private:
   fwhm_t  fwhm_,  fwhmError_;
 };
 
-//------------------------------------------------------------------------------
 
 class ReflectionInfos : public typ::vec<ReflectionInfo> {
   CLASS(ReflectionInfos) SUPER(typ::vec<ReflectionInfo>)
@@ -101,6 +99,6 @@ private:
   mutable inten_rge rgeInten_;
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // CALC_REFLECTION_INFO_H

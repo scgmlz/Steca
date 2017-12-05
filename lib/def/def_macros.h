@@ -15,7 +15,6 @@
 
 #ifndef DEF_MACROS_H
 #define DEF_MACROS_H
-//------------------------------------------------------------------------------
 
 #include <QtGlobal>
 
@@ -32,7 +31,7 @@
 
 #endif
 
-//------------------------------------------------------------------------------
+
 // for class definitions
 
 // trouble with templates in macros
@@ -51,7 +50,7 @@
   public: super const& sup() const { return *this; } \
           super&       sup()       { return *this; }
 
-//------------------------------------------------------------------------------
+
 // exception specification macro
 #ifdef Q_OS_WIN
 
@@ -63,6 +62,5 @@
 
 #endif
 
-//------------------------------------------------------------------------------
+
 #endif // DEF_MACROS_H
-// eof

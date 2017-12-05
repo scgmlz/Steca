@@ -23,7 +23,6 @@
 #include <qmath.h>
 
 namespace gui { namespace output {
-//------------------------------------------------------------------------------
 
 TabGraph::TabGraph(TheHub& hub, Params& params)
 : super(hub, params), flat_(false), alphaMax_(90), avgAlphaMax_(0)
@@ -135,7 +134,6 @@ void TabGraph::paintPoints() {
   }
 }
 
-//------------------------------------------------------------------------------
 
 TabPoleFiguresSave::TabPoleFiguresSave(TheHub& hub, Params& params)
 : super(hub, params, false)
@@ -192,7 +190,6 @@ void TabPoleFiguresSave::rawReflSettings(bool on) {
   outputFWHM_->setEnabled(on);
 }
 
-//------------------------------------------------------------------------------
 
 static const Params::ePanels PANELS = Params::ePanels(
     Params::REFLECTION | Params::GAMMA | Params::POINTS| Params::INTERPOLATION);
@@ -358,6 +355,5 @@ void PoleFiguresFrame::writeListFile(rcstr filePath, calc::ReflectionInfos reflI
   }
 }
 
-//------------------------------------------------------------------------------
+
 }}
-// eof

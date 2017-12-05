@@ -19,7 +19,6 @@
 #include "data/data_file.h"
 
 namespace io {
-//------------------------------------------------------------------------------
 
 bool couldBeCaress(QFileInfo const&);
 bool couldBeMar(QFileInfo const&);
@@ -39,6 +38,6 @@ data::shp_File loadMar(rcstr filePath) THROWS;
 // load a metadata file + tiffs
 data::shp_File loadTiffDat(rcstr filePath) THROWS;
 
-//------------------------------------------------------------------------------
+
 }
 #endif // IO_IO_H

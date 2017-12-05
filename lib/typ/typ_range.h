@@ -21,7 +21,7 @@
 #include "typ/typ_vec.h"
 
 namespace typ {
-//------------------------------------------------------------------------------
+
 // a range of values - a closed interval
 
 class JsonObj;
@@ -68,7 +68,7 @@ struct Range {
   void loadJson(JsonObj const&) THROWS;
 };
 
-//------------------------------------------------------------------------------
+
 // A set of *sorted* *non-overlapping* ranges
 
 class Ranges {
@@ -97,6 +97,6 @@ public:
   void loadJson(JsonArr const&) THROWS;
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_RANGE_H

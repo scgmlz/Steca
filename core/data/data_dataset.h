@@ -53,7 +53,6 @@ class Session;
 }
 
 namespace data {
-//------------------------------------------------------------------------------
 
 struct Metadata {
   CLASS(Metadata)
@@ -85,7 +84,7 @@ struct Metadata {
   qreal time, deltaTime;
 };
 
-//------------------------------------------------------------------------------
+
 // OneDataset = metadata + image
 // for calculation always accessed through its owning Dataset
 
@@ -125,7 +124,6 @@ private:
   typ::shp_Image  image_;
 };
 
-//------------------------------------------------------------------------------
 
 class OneDatasets : public typ::vec<shp_OneDataset> {
   CLASS(OneDatasets) SUPER(typ::vec<shp_OneDataset>)
@@ -134,7 +132,6 @@ public:
   typ::shp_Image foldedImage() const;
 };
 
-//------------------------------------------------------------------------------
 
 // 1 or more OneDataset(s)
 class Dataset final : public OneDatasets {
@@ -171,7 +168,6 @@ private:
   shp_Metadata md_;       // on demand, compute once
 };
 
-//------------------------------------------------------------------------------
 
 class Datasets final : public typ::vec<shp_Dataset> {
   CLASS(Datasets) SUPER(typ::vec<shp_Dataset>)
@@ -204,7 +200,7 @@ private:
   mutable typ::Curve avgCurve_;
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // DATA_DATASET_H
 #endif // FORWARD_DECLARATIONS

@@ -26,7 +26,6 @@ str const
 }
 
 namespace fit {
-//------------------------------------------------------------------------------
 
     using typ::Range;
     using typ::Curve;
@@ -47,7 +46,6 @@ void initFactory() {
   F::addFactoryMaker(json_fun_key::PSEUDOVOIGT2, O::from(new F::Factory::Maker<PseudoVoigt2>));
 }
 
-//------------------------------------------------------------------------------
 
 Polynom::Polynom(uint degree) {
   setDegree(degree);
@@ -123,7 +121,6 @@ void Polynom::loadJson(JsonObj::rc obj) THROWS {
   super::loadJson(obj);
 }
 
-//------------------------------------------------------------------------------
 
 PeakFunction* PeakFunction::factory(ePeakType type) {
   switch (type) {
@@ -219,7 +216,6 @@ void PeakFunction::loadJson(JsonObj::rc obj) THROWS {
   guessedFWHM_ = obj.loadQreal(json_key::FWHM);
 }
 
-//------------------------------------------------------------------------------
 
 Raw::Raw() {
 }
@@ -282,7 +278,6 @@ JsonObj Raw::saveJson() const {
   return super::saveJson().saveString(json_key::TYPE, json_fun_key::RAW);
 }
 
-//------------------------------------------------------------------------------
 
 Gaussian::Gaussian(qreal ampl, qreal xShift, qreal sigma) {
   setParameterCount(3);
@@ -364,7 +359,6 @@ JsonObj Gaussian::saveJson() const {
   return super::saveJson().saveString(json_key::TYPE, json_fun_key::GAUSSIAN);
 }
 
-//------------------------------------------------------------------------------
 
 Lorentzian::Lorentzian(qreal ampl, qreal xShift, qreal gamma) {
   setParameterCount(3);
@@ -445,7 +439,6 @@ JsonObj Lorentzian::saveJson() const {
   return super::saveJson().saveString(json_key::TYPE, json_fun_key::LORENTZIAN);
 }
 
-//------------------------------------------------------------------------------
 
 PseudoVoigt1::PseudoVoigt1(qreal ampl, qreal xShift, qreal sigmaGamma,
                            qreal eta) {
@@ -544,7 +537,6 @@ JsonObj PseudoVoigt1::saveJson() const {
   return super::saveJson().saveString(json_key::TYPE, json_fun_key::PSEUDOVOIGT1);
 }
 
-//------------------------------------------------------------------------------
 
 PseudoVoigt2::PseudoVoigt2(qreal ampl, qreal mu, qreal hwhmG, qreal hwhmL,
                            qreal eta) {

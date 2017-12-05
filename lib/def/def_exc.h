@@ -21,7 +21,6 @@
 #include "def/def_macros.h"
 #include "typ/typ_str.h"
 #include <QException>
-//------------------------------------------------------------------------------
 
 // An exception that carries a message.
 class Exception : public QException {
@@ -57,6 +56,5 @@ protected:
 #define RUNTIME_CHECK(test, msg) \
   if (!(test)) THROW(msg)
 
-//------------------------------------------------------------------------------
+
 #endif // DEF_EXC_H
-// eof

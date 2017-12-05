@@ -19,7 +19,6 @@
 #include <QHeaderView>
 
 namespace gui { namespace panel {
-//------------------------------------------------------------------------------
 
 class FilesView : public views::MultiListView {
   CLASS(FilesView) SUPER(views::MultiListView)
@@ -80,7 +79,6 @@ void FilesView::recollect() {
   hub_.collectDatasetsFromFiles(rows);
 }
 
-//------------------------------------------------------------------------------
 
 DockFiles::DockFiles(TheHub& hub)
 : super("Files", "dock-files", Qt::Vertical), RefHub(hub)
@@ -113,6 +111,5 @@ DockFiles::DockFiles(TheHub& hub)
   });
 }
 
-//------------------------------------------------------------------------------
+
 }}
-// eof

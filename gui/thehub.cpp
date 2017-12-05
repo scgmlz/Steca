@@ -28,7 +28,6 @@
 #include <QSpinBox>
 
 namespace gui {
-//------------------------------------------------------------------------------
 
 Settings::Settings(rcstr group) {
   setFallbacksEnabled(false);
@@ -116,7 +115,6 @@ void Settings::saveStr(rcstr key, rcstr val) {
   saveVariant(key, val);
 }
 
-//------------------------------------------------------------------------------
 
 ReadFile::ReadFile(rcstr path) THROWS : super(path) {
   RUNTIME_CHECK(super::open(QIODevice::ReadOnly | QIODevice::Text),
@@ -134,7 +132,6 @@ WriteFile::WriteFile(rcstr path) THROWS : super(path) {
     "Cannot open file for writing: " % path);
 }
 
-//------------------------------------------------------------------------------
 
 TheHub::TheHub()
 : actions(*this), session_(new core::Session())
@@ -552,6 +549,5 @@ void TheHub::setNorm(eNorm norm) {
   emit sigNormChanged();
 }
 
-//------------------------------------------------------------------------------
+
 }
-// eof

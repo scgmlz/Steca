@@ -41,7 +41,6 @@
 #include <QUrl>
 
 namespace gui {
-//------------------------------------------------------------------------------
 
 MainWin::MainWin() : hub_(), acts_(hub_.actions) {
   setWindowIcon(QIcon(":/icon/retroStier"));
@@ -444,6 +443,5 @@ void MainWin::viewReset() {
   viewDatasetInfo(true);
 }
 
-//------------------------------------------------------------------------------
+
 }
-// eof

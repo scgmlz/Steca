@@ -19,7 +19,6 @@
 #include "fit_fun.h"
 
 namespace fit {
-//------------------------------------------------------------------------------
 
 class Method {
 public:
@@ -38,7 +37,6 @@ protected:
   void callbackY(qreal*, qreal*, int, int, void*);
 };
 
-//------------------------------------------------------------------------------
 
 class LinearLeastSquare : public Method {
   CLASS(LinearLeastSquare) SUPER(Method)
@@ -50,7 +48,6 @@ protected:
                    qreal const*, uint);
 };
 
-//------------------------------------------------------------------------------
 
 class LevenbergMarquardt : public Method {
   CLASS(LevenbergMarquardt) SUPER(Method)
@@ -64,6 +61,6 @@ private:
   void callbackJacobianLM(qreal*, qreal*, int, int, void*);
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif

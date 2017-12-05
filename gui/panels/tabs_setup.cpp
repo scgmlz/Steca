@@ -20,7 +20,6 @@
 #include "views.h"
 
 namespace gui { namespace panel {
-//------------------------------------------------------------------------------
 
 class ReflectionView : public views::ListView {
   CLASS(ReflectionView) SUPER(views::ListView)
@@ -101,7 +100,6 @@ void ReflectionView::selectionChanged(QItemSelection const& selected,
       : model()->data(indexes.first(), Model::GetDatasetRole).value<calc::shp_Reflection>());
 }
 
-//------------------------------------------------------------------------------
 
 static qreal safeReal(qreal val) {
   return qIsFinite(val) ? val : 0.0;
@@ -451,6 +449,5 @@ void TabsSetup::setFromHub() {
   cutBottom_->setValue(to_i(cut.bottom));
 }
 
-//------------------------------------------------------------------------------
+
 }}
-// eof

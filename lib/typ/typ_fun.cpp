@@ -24,7 +24,6 @@ str const
 }
 
 namespace typ {
-//------------------------------------------------------------------------------
 
 owner_not_null<Function*> Function::Factory::make(JsonObj::rc obj) THROWS {
   str funType = obj.loadString(json_key::TYPE);
@@ -54,7 +53,6 @@ owner_not_null<Function*> Function::make(JsonObj::rc obj) {
   return factory_.make(obj);
 }
 
-//------------------------------------------------------------------------------
 
 Function::Parameter::Parameter()
 : value_(0), error_(0), range_(Range::infinite()) {
@@ -83,7 +81,6 @@ void Function::Parameter::loadJson(JsonObj::rc obj) THROWS {
   range_ = obj.loadRange(json_key::RANGE);
 }
 
-//------------------------------------------------------------------------------
 
 Function::Function() {
 }
@@ -97,7 +94,6 @@ void Function::loadJson(JsonObj::rc) THROWS {
   // nothing to do
 }
 
-//------------------------------------------------------------------------------
 
 SimpleFunction::SimpleFunction() {
 }
@@ -150,7 +146,6 @@ void SimpleFunction::setValue(uint i, qreal val) {
   parameters_[i].setValue(val, 0);
 }
 
-//------------------------------------------------------------------------------
 
 SumFunctions::SumFunctions() {
 }
@@ -237,6 +232,5 @@ void SumFunctions::loadJson(JsonObj::rc obj) THROWS {
   }
 }
 
-//------------------------------------------------------------------------------
+
 }
-// eof

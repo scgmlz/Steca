@@ -19,7 +19,6 @@
 #include "output_dialogs.h"
 
 namespace gui { namespace output {
-//------------------------------------------------------------------------------
 
 class TabDiffractogramsSave : public TabSave {
   CLASS(TabDiffractogramsSave) SUPER(TabSave)
@@ -36,7 +35,6 @@ protected:
   QComboBox *fileTypes_;
 };
 
-//------------------------------------------------------------------------------
 
 struct OutputData;
 using OutputDataCollection  = typ::vec<OutputData>;
@@ -61,6 +59,6 @@ protected:
   bool writeAllDiffractogramsToFiles(rcstr filePath, rcstr separator, bool oneFile);
 };
 
-//------------------------------------------------------------------------------
+
 }}
 #endif // OUTPUT_Diffractograms_H

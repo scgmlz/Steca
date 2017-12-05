@@ -18,7 +18,7 @@
 
 #include <QtGlobal>
 
-//------------------------------------------------------------------------------
+
 // idiomatic loops
 
 #ifdef Q_OS_WIN
@@ -52,6 +52,5 @@
 #define ONLY_ONCE \
 { static bool once = false; if (once) return; once = true; }
 
-//------------------------------------------------------------------------------
+
 #endif // DEF_ALG_H
-// eof

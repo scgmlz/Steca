@@ -19,7 +19,6 @@
 #include "views.h"
 
 namespace gui { namespace panel {
-//------------------------------------------------------------------------------
 
 class DatasetView : public views::ListView {
   CLASS(DatasetView) SUPER(views::ListView)
@@ -50,7 +49,6 @@ void DatasetView::currentChanged(QModelIndex const& current,
                       .value<data::shp_Dataset>());
 }
 
-//------------------------------------------------------------------------------
 
 DockDatasets::DockDatasets(TheHub& hub)
 : super("Datasets", "dock-datasets", Qt::Vertical), RefHub(hub)
@@ -73,6 +71,5 @@ DockDatasets::DockDatasets(TheHub& hub)
   });
 }
 
-//------------------------------------------------------------------------------
+
 }}
-// eof

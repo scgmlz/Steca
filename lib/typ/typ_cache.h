@@ -58,7 +58,6 @@ void test() {
 */
 
 namespace typ {
-//------------------------------------------------------------------------------
 
 template <typename Key, typename T>
 class cache_base {
@@ -109,7 +108,7 @@ public:
   virtual shp value(Key const&)         = 0;
 };
 
-//------------------------------------------------------------------------------
+
 // if full, keeps full, trims only what is needed
 // has insert/take overhead for each access (value())
 
@@ -192,7 +191,6 @@ private:
 };
 */
 
-//------------------------------------------------------------------------------
 
 // if full, takes a hit, trims a lot
 // has no overhead for each access (value())
@@ -281,6 +279,6 @@ public:
   }
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_CACHE_H

@@ -19,7 +19,6 @@
 #include "panel.h"
 
 namespace gui { namespace panel {
-//------------------------------------------------------------------------------
 
 class ReflectionView;
 
@@ -50,6 +49,6 @@ private:
   bool silentSpin_ = false;
 };
 
-//------------------------------------------------------------------------------
+
 }}
 #endif // TABS_SETUP_H

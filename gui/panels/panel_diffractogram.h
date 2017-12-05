@@ -21,7 +21,6 @@
 #include "QCP/qcustomplot.h"
 
 namespace gui { namespace panel {
-//------------------------------------------------------------------------------
 
 class DiffractogramPlot;
 
@@ -139,6 +138,6 @@ public:
   typ::Range currReflRange() const;
 };
 
-//------------------------------------------------------------------------------
+
 }}
 #endif // PANEL_DIFFRACTOGRAM_H

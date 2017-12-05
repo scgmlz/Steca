@@ -27,7 +27,6 @@
 #endif
 
 namespace gui {
-//------------------------------------------------------------------------------
 
 AboutBox::AboutBox(QWidget *parent) : super(parent, Qt::Dialog) {
   Settings s(config_key::GROUP_CONFIG);
@@ -143,6 +142,5 @@ void AboutBox::accept() {
   super::accept();
 }
 
-//------------------------------------------------------------------------------
+
 }
-// eof

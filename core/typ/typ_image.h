@@ -21,7 +21,6 @@
 #include <QSharedPointer>
 
 namespace typ {
-//------------------------------------------------------------------------------
 
 typedef Array2D<inten_t> inten_arr;
 
@@ -82,6 +81,6 @@ private:
 
 typedef QSharedPointer<Image> shp_Image;
 
-//------------------------------------------------------------------------------
+
 }
 #endif // TYP_IMAGE_H

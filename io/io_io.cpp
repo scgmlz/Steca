@@ -16,7 +16,6 @@
 #include "io_io.h"
 
 namespace io {
-//------------------------------------------------------------------------------
 
 // peek at up to maxLen bytes (to establish the file type)
 static QByteArray peek(uint pos, uint maxLen, QFileInfo const& info) {
@@ -99,6 +98,5 @@ data::shp_File load(rcstr filePath) THROWS {
   return file;
 }
 
-//------------------------------------------------------------------------------
+
 }
-// eof
