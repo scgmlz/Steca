@@ -40,5 +40,5 @@ addons:
     - sourceline: ppa:beineri/opt-qt542-trusty
     packages:
     - qt54base
-    - qt54multimedia
+    - qt54network
     - xvfb

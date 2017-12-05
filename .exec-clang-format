@@ -1,0 +1,24 @@
+cd /G/Steca2
+cd core
+clang-format -i -style=file `fs`
+cd ..
+cd gui
+clang-format -i -style=file *.cpp *.h
+cd output
+clang-format -i -style=file *.cpp *.h
+cd ../panels
+clang-format -i -style=file *.cpp *.h
+cd ../types
+cd ../..
+cd io
+clang-format -i -style=file *.cpp *.h
+cd ../lib
+cd def
+clang-format -i -style=file *.cpp *.h
+cd ../typ
+clang-format -i -style=file *.cpp *.h
+cd ../..
+cd tests
+clang-format -i -style=file *.cpp
+cd ..
+clang-format -i -style=file *.h

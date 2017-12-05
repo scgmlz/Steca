@@ -1,19 +1,16 @@
-/*******************************************************************************
- * STeCa2 - StressTextureCalculator ver. 2
- *
- * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
- *
- * This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * See the COPYING and AUTHORS files for more details.
- ******************************************************************************/
+// ************************************************************************** //
+//
+//  Steca2: stress and texture calculator
+//
+//! @file      core/session.h
+//! @brief     Defines ...
+//!
+//! @homepage  https://github.com/scgmlz/Steca2
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
+//
+// ************************************************************************** //
 
 #ifndef CORE_SESSION_H
 #define CORE_SESSION_H
@@ -29,180 +26,163 @@
 #include "typ/typ_image_transform.h"
 
 namespace core {
-//------------------------------------------------------------------------------
 
 class Session final {
-  CLASS(Session)
+    CLASS(Session)
 public:
-  Session();
+    Session();
 
-  void clear();
+    void clear();
 
-  // data files
+    // data files
 private:
-  typ::vec<data::shp_File> files_;
+    typ::vec<data::shp_File> files_;
 
 public:
-  // number of data files (not counting the correction file)
-  uint           numFiles()   const { return files_.count(); }
-  data::shp_File file(uint i) const;
+    // number of data files (not counting the correction file)
+    uint numFiles() const { return files_.count(); }
+    data::shp_File file(uint i) const;
 
-  bool hasFile(rcstr fileName);
-  void addFile(data::shp_File) THROWS;
-  void remFile(uint i);
-
-private:
-  // correction file
-  data::shp_File corrFile_;
-  typ::shp_Image corrImage_;
-  bool           corrEnabled_;
-
-  mutable typ::Image intensCorr_;
-  mutable bool       corrHasNaNs_;
-
-  void calcIntensCorr() const;
-
-  // datasets
-  uint_vec       collectedFromFiles_;  // from these files
-  data::Datasets collectedDatasets_;   // datasets collected ...
-  str_lst        collectedDatasetsTags_;
-
-  // scaling
-  bool  intenScaledAvg_;  // if not, summed
-  preal intenScale_;
-
-public:
-  bool hasCorrFile() const {
-    return !corrFile_.isNull();
-  }
-
-  data::shp_File corrFile() const {
-    return corrFile_;
-  }
-
-  typ::shp_Image corrImage() const {
-    return corrImage_;
-  }
-
-  typ::Image const* intensCorr() const;
-
-  void setCorrFile(data::shp_File) THROWS;  // Load or remove a correction file.
-  void remCorrFile();
-
-  void tryEnableCorr(bool);
-
-  bool isCorrEnabled() const {
-    return corrEnabled_;
-  }
-
-  void collectDatasetsFromFiles(uint_vec, pint);
-
-  uint_vec::rc collectedFromFiles() const {
-    return collectedFromFiles_; \
-  }
-
-  data::Datasets::rc collectedDatasets() const {
-    return collectedDatasets_;
-  }
-
-  str_lst::rc  collectedDatasetsTags() const {
-    return collectedDatasetsTags_;
-  }
+    bool hasFile(rcstr fileName);
+    void addFile(data::shp_File) THROWS;
+    void remFile(uint i);
 
 private:
-  // All files must have images of the same size
-  typ::size2d imageSize_;
-  // Clears the image size if there are no files in the session.
-  void updateImageSize();
-  // Ensures that all images have the same size.
-  void setImageSize(typ::size2d::rc) THROWS;
+    // correction file
+    data::shp_File corrFile_;
+    typ::shp_Image corrImage_;
+    bool corrEnabled_;
+
+    mutable typ::Image intensCorr_;
+    mutable bool corrHasNaNs_;
+
+    void calcIntensCorr() const;
+
+    // datasets
+    uint_vec collectedFromFiles_; // from these files
+    data::Datasets collectedDatasets_; // datasets collected ...
+    str_lst collectedDatasetsTags_;
+
+    // scaling
+    bool intenScaledAvg_; // if not, summed
+    preal intenScale_;
 
 public:
-  typ::size2d imageSize() const;
+    bool hasCorrFile() const { return !corrFile_.isNull(); }
 
-  // image - transform & cut etc.
+    data::shp_File corrFile() const { return corrFile_; }
+
+    typ::shp_Image corrImage() const { return corrImage_; }
+
+    typ::Image const* intensCorr() const;
+
+    void setCorrFile(data::shp_File) THROWS; // Load or remove a correction file.
+    void remCorrFile();
+
+    void tryEnableCorr(bool);
+
+    bool isCorrEnabled() const { return corrEnabled_; }
+
+    void collectDatasetsFromFiles(uint_vec, pint);
+
+    uint_vec::rc collectedFromFiles() const { return collectedFromFiles_; }
+
+    data::Datasets::rc collectedDatasets() const { return collectedDatasets_; }
+
+    str_lst::rc collectedDatasetsTags() const { return collectedDatasetsTags_; }
+
 private:
-  typ::ImageTransform imageTransform_;
-  typ::ImageCut       imageCut_;
+    // All files must have images of the same size
+    typ::size2d imageSize_;
+    // Clears the image size if there are no files in the session.
+    void updateImageSize();
+    // Ensures that all images have the same size.
+    void setImageSize(typ::size2d::rc) THROWS;
 
 public:
-  typ::ImageTransform::rc imageTransform() const { return imageTransform_; }
-  typ::ImageCut::rc       imageCut()       const { return imageCut_;       }
+    typ::size2d imageSize() const;
 
-  void setImageTransformMirror(bool);
-  void setImageTransformRotate(typ::ImageTransform::rc);
+    // image - transform & cut etc.
+private:
+    typ::ImageTransform imageTransform_;
+    typ::ImageCut imageCut_;
 
-  void setImageCut(bool topLeftFirst, bool linked, typ::ImageCut::rc);
+public:
+    typ::ImageTransform::rc imageTransform() const { return imageTransform_; }
+    typ::ImageCut::rc imageCut() const { return imageCut_; }
+
+    void setImageTransformMirror(bool);
+    void setImageTransformRotate(typ::ImageTransform::rc);
+
+    void setImageCut(bool topLeftFirst, bool linked, typ::ImageCut::rc);
 
 private:
-  typ::Geometry geometry_;
-  typ::Range    gammaRange_;
-  mutable typ::cache_lazy<typ::AngleMap::Key,typ::AngleMap> angleMapCache_;
+    typ::Geometry geometry_;
+    typ::Range gammaRange_;
+    mutable typ::cache_lazy<typ::AngleMap::Key, typ::AngleMap> angleMapCache_;
 
 public:
-  typ::Geometry::rc geometry() const { return geometry_; }
-  void setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midPixOffset);
-  typ::IJ midPix() const;
+    typ::Geometry::rc geometry() const { return geometry_; }
+    void setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midPixOffset);
+    typ::IJ midPix() const;
 
-  typ::Range::rc gammaRange() const;
-  void setGammaRange(typ::Range::rc);
+    typ::Range::rc gammaRange() const;
+    void setGammaRange(typ::Range::rc);
 
-  typ::shp_AngleMap        angleMap(data::OneDataset::rc) const;
-  static typ::shp_AngleMap angleMap(Session::rc, data::OneDataset::rc);
+    typ::shp_AngleMap angleMap(data::OneDataset::rc) const;
+    static typ::shp_AngleMap angleMap(Session::rc, data::OneDataset::rc);
 
-// lenses
+    // lenses
 public:
-  calc::shp_ImageLens   imageLens(typ::Image::rc, data::Datasets::rc,
-                                  bool trans, bool cut) const;
-  calc::shp_DatasetLens datasetLens(data::Dataset::rc, data::Datasets::rc, eNorm,
-                                    bool trans, bool cut) const;
-  typ::Curve makeCurve(calc::DatasetLens::rc, gma_rge::rc) const;
+    calc::shp_ImageLens imageLens(typ::Image::rc, data::Datasets::rc, bool trans, bool cut) const;
+    calc::shp_DatasetLens
+    datasetLens(data::Dataset::rc, data::Datasets::rc, eNorm, bool trans, bool cut) const;
+    typ::Curve makeCurve(calc::DatasetLens::rc, gma_rge::rc) const;
 
-  // reflections
-  calc::ReflectionInfo makeReflectionInfo(
-      calc::DatasetLens::rc, calc::Reflection::rc, gma_rge::rc) const;
+    // reflections
+    calc::ReflectionInfo
+        makeReflectionInfo(calc::DatasetLens::rc, calc::Reflection::rc, gma_rge::rc) const;
 
-  calc::ReflectionInfos makeReflectionInfos(
-      data::Datasets::rc, calc::Reflection::rc,
-      uint gmaSlices, gma_rge::rc, Progress*);
+    calc::ReflectionInfos makeReflectionInfos(
+        data::Datasets::rc, calc::Reflection::rc, uint gmaSlices, gma_rge::rc, Progress*);
 
-// fitting
+    // fitting
 private:
-  uint   bgPolyDegree_;
-  typ::Ranges bgRanges_;
+    uint bgPolyDegree_;
+    typ::Ranges bgRanges_;
 
-  calc::Reflections reflections_;
+    calc::Reflections reflections_;
 
 public:
-  typ::Ranges::rc       bgRanges()       const { return bgRanges_;       }
-  uint                  bgPolyDegree()   const { return bgPolyDegree_;   }
-  bool                  intenScaledAvg() const { return intenScaledAvg_; }
-  preal                 intenScale()     const { return intenScale_;     }
-  calc::Reflections::rc reflections()    const { return reflections_;    }
+    typ::Ranges::rc bgRanges() const { return bgRanges_; }
+    uint bgPolyDegree() const { return bgPolyDegree_; }
+    bool intenScaledAvg() const { return intenScaledAvg_; }
+    preal intenScale() const { return intenScale_; }
+    calc::Reflections::rc reflections() const { return reflections_; }
 
-  void setBgRanges(typ::Ranges::rc);
-  bool addBgRange(typ::Range::rc);
-  bool remBgRange(typ::Range::rc);
+    void setBgRanges(typ::Ranges::rc);
+    bool addBgRange(typ::Range::rc);
+    bool remBgRange(typ::Range::rc);
 
-  void setBgPolyDegree(uint);
-  void setIntenScaleAvg(bool,preal);
+    void setBgPolyDegree(uint);
+    void setIntenScaleAvg(bool, preal);
 
-  void addReflection(calc::shp_Reflection);
-  void remReflection(uint);
+    void addReflection(calc::shp_Reflection);
+    void remReflection(uint);
 
-// normalisation
+    // normalisation
 private:
-  eNorm norm_;
+    eNorm norm_;
 
 public:
-  eNorm norm() const { return norm_; }
-  void  setNorm(eNorm);
+    eNorm norm() const { return norm_; }
+    void setNorm(eNorm);
 
 public:
-  qreal calcAvgBackground(data::Dataset::rc) const;
-  qreal calcAvgBackground(data::Datasets::rc) const;
+    qreal calcAvgBackground(data::Dataset::rc) const;
+    qreal calcAvgBackground(data::Datasets::rc) const;
 };
 
-//------------------------------------------------------------------------------
+
 }
 #endif
