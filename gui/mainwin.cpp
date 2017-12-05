@@ -24,7 +24,6 @@
 #include "output/output_polefigures.h"
 #include "panels/dock_dataset.h"
 #include "panels/dock_files.h"
-#include "panels/dock_help.h"
 #include "panels/dock_metadata.h"
 #include "panels/tabs_diffractogram.h"
 #include "panels/tabs_images.h"
