@@ -5,12 +5,14 @@ AlignConsecutiveAssignments: true
 AlignConsecutiveDeclarations: true
 AlignEscapedNewlinesLeft: true
 
+AllowShortBlocksOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine : true
 AllowShortFunctionsOnASingleLine: Inline
 AllowShortIfStatementsOnASingleLine: true
+AllowShortLoopsOnASingleLine: true
 
 DerivePointerAlignment: true
 
 ForEachMacros:   [ for_int, for_int_down, for_i, for_i_down, for_ij ]
 
 SpacesBeforeTrailingComments: 2
-
