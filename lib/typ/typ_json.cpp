@@ -1,19 +1,16 @@
-/*******************************************************************************
- * STeCa2 - StressTextureCalculator ver. 2
- *
- * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
- *
- * This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * See the COPYING and AUTHORS files for more details.
- ******************************************************************************/
+// ************************************************************************** //
+//
+//  Steca2: stress and texture calculator
+//
+//! @file      lib/typ/typ_json.cpp
+//! @brief     Implements ...
+//!
+//! @homepage  https://github.com/scgmlz/Steca2
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
+//
+// ************************************************************************** //
 
 #include "typ_json.h"
 
@@ -25,272 +22,239 @@
 #include <QStringList>
 
 namespace json_key {
-str const
-  I("i"), J("j"), X("x"), Y("y"), MIN("min"), MAX("max"),
-  PARAMS("parameters"), TYPE("type"), FUN("f%1"),
-  VALUE("value"), RANGE("range"), COUNT("count"),
-  PEAK("guessed peak"), FWHM("guessed fwhm");
+str const I("i"), J("j"), X("x"), Y("y"), MIN("min"), MAX("max"), PARAMS("parameters"),
+    TYPE("type"), FUN("f%1"), VALUE("value"), RANGE("range"), COUNT("count"), PEAK("guessed peak"),
+    FWHM("guessed fwhm");
 }
 
 namespace typ {
-//------------------------------------------------------------------------------
 
-JsonObj::JsonObj() {
-}
+JsonObj::JsonObj() {}
 
 JsonObj::JsonObj(QJsonObject const& obj) : super(obj) {}
 
 JsonObj& JsonObj::saveObj(rcstr key, JsonObj::rc obj) {
-  insert(key, obj.sup());
-  return *this;
+    insert(key, obj.sup());
+    return *this;
 }
 
 JsonObj JsonObj::loadObj(rcstr key, bool defEmpty) const THROWS {
-  auto val = value(key);
+    auto val = value(key);
 
-  switch (val.type()) {
-  case QJsonValue::Object:
-    return val.toObject();
-  case QJsonValue::Undefined:
-    if (defEmpty)
-      return JsonObj();
+    switch (val.type()) {
+    case QJsonValue::Object: return val.toObject();
+    case QJsonValue::Undefined:
+        if (defEmpty)
+            return JsonObj();
     // fallthrough
-  default:
-    THROW(key + ": not an object");
-  }
+    default: THROW(key + ": not an object");
+    }
 }
 
 JsonObj& JsonObj::saveArr(rcstr key, JsonArr::rc arr) {
-  insert(key, arr.sup());
-  return *this;
+    insert(key, arr.sup());
+    return *this;
 }
 
 JsonArr JsonObj::loadArr(rcstr key, bool defEmpty) const THROWS {
-  auto val = value(key);
+    auto val = value(key);
 
-  switch (val.type()) {
-  case QJsonValue::Array:
-    return val.toArray();
-  case QJsonValue::Undefined:
-    if (defEmpty)
-      return JsonArr();
+    switch (val.type()) {
+    case QJsonValue::Array: return val.toArray();
+    case QJsonValue::Undefined:
+        if (defEmpty)
+            return JsonArr();
     // fall through
-  default:
-    THROW(key + ": not an array");
-  }
+    default: THROW(key + ": not an array");
+    }
 }
 
 JsonObj& JsonObj::saveInt(rcstr key, int num) {
-  insert(key, num);
-  return *this;
+    insert(key, num);
+    return *this;
 }
 
 int JsonObj::loadInt(rcstr key) const THROWS {
-  auto val = value(key);
+    auto val = value(key);
 
-  switch (val.type()) {
-  case QJsonValue::Double:
-    return qRound(val.toDouble());
-  default:
-    THROW(key + ": bad number format");
-  }
+    switch (val.type()) {
+    case QJsonValue::Double: return qRound(val.toDouble());
+    default: THROW(key + ": bad number format");
+    }
 }
 
-#define LOAD_DEF(type) \
-  value(key).isUndefined() ? def : load##type(key)
+#define LOAD_DEF(type) value(key).isUndefined() ? def : load##type(key)
 
-#define RET_LOAD_DEF(type) \
-  return LOAD_DEF(type);
+#define RET_LOAD_DEF(type) return LOAD_DEF(type);
 
-int JsonObj::loadInt(rcstr key, int def) const THROWS {
-  RET_LOAD_DEF(Int)
-}
+int JsonObj::loadInt(rcstr key, int def) const THROWS{ RET_LOAD_DEF(Int) }
 
 JsonObj& JsonObj::saveUint(rcstr key, uint num) {
-  return saveInt(key, to_i(num));
+    return saveInt(key, to_i(num));
 }
 
 uint JsonObj::loadUint(rcstr key) const THROWS {
-  int num = loadInt(key);
-  if (num < 0)
-    THROW(key + ": bad number format");
-  return to_u(num);
+    int num = loadInt(key);
+    if (num < 0)
+        THROW(key + ": bad number format");
+    return to_u(num);
 }
 
-uint JsonObj::loadUint(rcstr key, uint def) const THROWS {
-  RET_LOAD_DEF(Uint)
-}
+uint JsonObj::loadUint(rcstr key, uint def) const THROWS{ RET_LOAD_DEF(Uint) }
 
 JsonObj& JsonObj::savePint(rcstr key, pint num) {
-  return saveUint(key, num);
+    return saveUint(key, num);
 }
 
 pint JsonObj::loadPint(rcstr key) const {
-  uint num = loadUint(key);
-  RUNTIME_CHECK(num > 0, "expecting positive number");
-  return pint(num);
+    uint num = loadUint(key);
+    RUNTIME_CHECK(num > 0, "expecting positive number");
+    return pint(num);
 }
 
 pint JsonObj::loadPint(rcstr key, uint def) const {
-  return pint(LOAD_DEF(Pint));
+    return pint(LOAD_DEF(Pint));
 }
 
 static str const INF_P("+inf"), INF_M("-inf");
 
 JsonObj& JsonObj::saveQreal(rcstr key, qreal num) {
-  if (qIsNaN(num)) {
-    // do not save anything for NaNs
-  } else if (qIsInf(num)) {
-    insert(key, num < 0 ? INF_M : INF_P);
-  } else {
-    insert(key, num);
-  }
+    if (qIsNaN(num)) {
+        // do not save anything for NaNs
+    } else if (qIsInf(num)) {
+        insert(key, num < 0 ? INF_M : INF_P);
+    } else {
+        insert(key, num);
+    }
 
-  return *this;
+    return *this;
 }
 
 qreal JsonObj::loadQreal(rcstr key) const THROWS {
-  auto val = value(key);
+    auto val = value(key);
 
-  switch (val.type()) {
-  case QJsonValue::Undefined:
-    return NAN;           // not present means not a number
-  case QJsonValue::String: {  // infinities stored as strings
-    auto s = val.toString();
-    if (INF_P == s)
-      return +INF;
-    if (INF_M == s)
-      return -INF;
-    THROW(key + ": bad number format");
-  }
-  default:
-    return val.toDouble();
-  }
+    switch (val.type()) {
+    case QJsonValue::Undefined:
+        return NAN; // not present means not a number
+    case QJsonValue::String: { // infinities stored as strings
+        auto s = val.toString();
+        if (INF_P == s)
+            return +INF;
+        if (INF_M == s)
+            return -INF;
+        THROW(key + ": bad number format");
+    }
+    default: return val.toDouble();
+    }
 }
 
-qreal JsonObj::loadQreal(rcstr key, qreal def) const THROWS {
-  RET_LOAD_DEF(Qreal)
-}
+qreal JsonObj::loadQreal(rcstr key, qreal def) const THROWS{ RET_LOAD_DEF(Qreal) }
 
 JsonObj& JsonObj::savePreal(rcstr key, preal num) {
-  return saveQreal(key, num);
+    return saveQreal(key, num);
 }
 
 preal JsonObj::loadPreal(rcstr key) const {
-  qreal num = loadQreal(key);
-  RUNTIME_CHECK(num >= 0, "expecting positive number");
-  return preal(num);
+    qreal num = loadQreal(key);
+    RUNTIME_CHECK(num >= 0, "expecting positive number");
+    return preal(num);
 }
 
-preal JsonObj::loadPreal(rcstr key, preal def) const {
-  RET_LOAD_DEF(Preal)
-}
+preal JsonObj::loadPreal(rcstr key, preal def) const { RET_LOAD_DEF(Preal) }
 
 JsonObj& JsonObj::saveBool(rcstr key, bool b) {
-  insert(key, b);
-  return *this;
+    insert(key, b);
+    return *this;
 }
 
 bool JsonObj::loadBool(rcstr key) const THROWS {
-  auto val = value(key);
+    auto val = value(key);
 
-  switch (val.type()) {
-  case QJsonValue::Bool:
-    return val.toBool();
-  default:
-    THROW(key + ": not a boolean");
-  }
+    switch (val.type()) {
+    case QJsonValue::Bool: return val.toBool();
+    default: THROW(key + ": not a boolean");
+    }
 }
 
-bool JsonObj::loadBool(rcstr key, bool def) const THROWS {
-  RET_LOAD_DEF(Bool)
-}
+bool JsonObj::loadBool(rcstr key, bool def) const THROWS{ RET_LOAD_DEF(Bool) }
 
 JsonObj& JsonObj::saveString(rcstr key, rcstr s) {
-  insert(key, s);
-  return *this;
+    insert(key, s);
+    return *this;
 }
 
 str JsonObj::loadString(rcstr key) const THROWS {
-  auto val = value(key);
+    auto val = value(key);
 
-  switch (val.type()) {
-  case QJsonValue::String:
-    return val.toString();
-  default:
-    THROW(key + ": not a string");
-  }
+    switch (val.type()) {
+    case QJsonValue::String: return val.toString();
+    default: THROW(key + ": not a string");
+    }
 }
 
-str JsonObj::loadString(rcstr key, rcstr def) const THROWS {
-  RET_LOAD_DEF(String)
-}
+str JsonObj::loadString(rcstr key, rcstr def) const THROWS{ RET_LOAD_DEF(String) }
 
 JsonObj& JsonObj::saveRange(rcstr key, Range::rc range) {
-  insert(key, range.saveJson());
-  return *this;
+    insert(key, range.saveJson());
+    return *this;
 }
 
 Range JsonObj::loadRange(rcstr key) const THROWS {
-  Range range;
-  range.loadJson(loadObj(key));
-  return range;
+    Range range;
+    range.loadJson(loadObj(key));
+    return range;
 }
 
 JsonObj& JsonObj::saveIJ(rcstr key, IJ::rc ij) {
-  insert(key, ij.saveJson());
-  return *this;
+    insert(key, ij.saveJson());
+    return *this;
 }
 
 IJ JsonObj::loadIJ(rcstr key) const THROWS {
-  IJ ij;
-  ij.loadJson(loadObj(key));
-  return ij;
+    IJ ij;
+    ij.loadJson(loadObj(key));
+    return ij;
 }
 
 JsonObj& JsonObj::saveXY(rcstr key, XY::rc xy) {
-  insert(key, xy.saveJson());
-  return *this;
+    insert(key, xy.saveJson());
+    return *this;
 }
 
 XY JsonObj::loadXY(rcstr key) const THROWS {
-  XY xy;
-  xy.loadJson(loadObj(key));
-  return xy;
+    XY xy;
+    xy.loadJson(loadObj(key));
+    return xy;
 }
 
 JsonObj& JsonObj::operator+=(JsonObj::rc that) {
-  for (auto& key : that.keys())
-    insert(key, that[key]);
-  return *this;
+    for (auto& key : that.keys())
+        insert(key, that[key]);
+    return *this;
 }
 
 JsonObj JsonObj::operator+(JsonObj::rc that) const {
-  return JsonObj(*this) += that;
+    return JsonObj(*this) += that;
 }
 
-//------------------------------------------------------------------------------
 
-JsonArr::JsonArr() {
-}
+JsonArr::JsonArr() {}
 
 JsonArr::JsonArr(QJsonArray const& array) : super(array) {}
 
 void JsonArr::append(JsonObj::rc obj) {
-  super::append(obj.sup());
+    super::append(obj.sup());
 }
 
 uint JsonArr::count() const {
-  return to_u(super::count());
+    return to_u(super::count());
 }
 
 JsonObj JsonArr::objAt(uint i) const {
-  auto obj = super::at(to_i(i));
-  RUNTIME_CHECK(QJsonValue::Object == obj.type(),
-                "not an object at " + str::number(i));
-  return super::at(to_i(i)).toObject();
+    auto obj = super::at(to_i(i));
+    RUNTIME_CHECK(QJsonValue::Object == obj.type(), "not an object at " + str::number(i));
+    return super::at(to_i(i)).toObject();
 }
 
-//------------------------------------------------------------------------------
+
 }
-// eof

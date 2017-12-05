@@ -28,7 +28,4 @@
         <file alias="retroStier">icons/retro_stier.png</file>
         <file alias="angle">icons/angle.svg</file>
     </qresource>
-    <qresource prefix="/HAL">
-        <file alias="good_evening">HAL/good_evening.wav</file>
-    </qresource>
 </RCC>
