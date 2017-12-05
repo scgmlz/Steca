@@ -97,8 +97,6 @@ void MainWin::initMenus() {
   addActions(menuView_, {
       acts_.viewFiles, acts_.viewDatasets, acts_.viewDatasetInfo,
       separator(),
-      acts_.viewHelp,
-      separator(),
     #ifndef Q_OS_OSX
       acts_.fullScreen,
     #endif
@@ -156,7 +154,6 @@ void MainWin::initLayout() {
   addDockWidget(Qt::LeftDockWidgetArea,  (dockFiles_       = new panel::DockFiles(hub_)));
   addDockWidget(Qt::LeftDockWidgetArea,  (dockDatasets_    = new panel::DockDatasets(hub_)));
   addDockWidget(Qt::LeftDockWidgetArea,  (dockDatasetInfo_ = new panel::DockMetadata(hub_)));
-  addDockWidget(Qt::RightDockWidgetArea, (dockHelp_        = new panel::DockHelp(hub_)));
 
   auto splMain = new QSplitter(Qt::Vertical);
   splMain->setChildrenCollapsible(false);
@@ -213,7 +210,6 @@ void MainWin::connectActions() {
   onToggle(acts_.viewFiles,       &Cls::viewFiles);
   onToggle(acts_.viewDatasets,    &Cls::viewDatasets);
   onToggle(acts_.viewDatasetInfo, &Cls::viewDatasetInfo);
-  onToggle(acts_.viewHelp,        &Cls::viewHelp);
 
   onTrigger(acts_.viewReset, &Cls::viewReset);
 }
@@ -404,12 +400,9 @@ void MainWin::checkActions() {
   acts_.fullScreen->setChecked(isFullScreen());
 #endif
 
-  dockHelp_->setVisible(false);
-
   acts_.viewFiles->setChecked(dockFiles_->isVisible());
   acts_.viewDatasets->setChecked(dockDatasets_->isVisible());
   acts_.viewDatasetInfo->setChecked(dockDatasetInfo_->isVisible());
-  acts_.viewHelp->setChecked(dockHelp_->isVisible());
 }
 
 void MainWin::viewStatusbar(bool on) {
@@ -441,11 +434,6 @@ void MainWin::viewDatasets(bool on) {
 void MainWin::viewDatasetInfo(bool on) {
   dockDatasetInfo_->setVisible(on);
   acts_.viewDatasetInfo->setChecked(on);
-}
-
-void MainWin::viewHelp(bool on) {
-  dockHelp_->setVisible(on);
-  acts_.viewHelp->setChecked(on);
 }
 
 void MainWin::viewReset() {
