@@ -133,11 +133,3 @@ Changes in code:
 STeCa2-2.0.0.1, released 2016.06.09
 -----------------------------------
 * First release for user acceptance testing
-
-
-Features planned for the next version (2.0.2, probably by the end of July)
-==========================================================================
-
-Loading of TIFF and Mar files. X-ray - type data + beam offset handling.
-Filtering of results by their fitting errors (standard deviations).
-Faster interpolation; all datasets feature taking into account different tth angles.

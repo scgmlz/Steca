@@ -1,44 +1,35 @@
-/*******************************************************************************
- * STeCa2 - StressTextureCalculator ver. 2
- *
- * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
- *
- * This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * See the COPYING and AUTHORS files for more details.
- ******************************************************************************/
+// ************************************************************************** //
+//
+//  Steca2: stress and texture calculator
+//
+//! @file      gui/about.h
+//! @brief     Defines ...
+//!
+//! @homepage  https://github.com/scgmlz/Steca2
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
+//
+// ************************************************************************** //
 
 #ifndef ABOUT_H
 #define ABOUT_H
 
-#include "thehub.h"
 #include "def/defs.h"
+#include "thehub.h"
 
 #include <QDialog>
 
 namespace gui {
-//------------------------------------------------------------------------------
 
 class AboutBox : public QDialog {
-  CLASS(AboutBox) SUPER(QDialog)
-public:
-  AboutBox(QWidget*);
+    CLASS(AboutBox) SUPER(QDialog) public : AboutBox(QWidget*);
 
 protected:
-  void accept();
-  void mouseDoubleClickEvent(QMouseEvent*);
+    void accept();
 
-  QCheckBox      *cbShowAtStartup_, *cbCheckUpdatesAtStartup_;
-  QDoubleSpinBox *detDistance_, *detPixelSize_;
+    QCheckBox *cbShowAtStartup_, *cbCheckUpdatesAtStartup_;
+    QDoubleSpinBox *detDistance_, *detPixelSize_;
 };
-
-//------------------------------------------------------------------------------
 }
 #endif // MAINWIN_H
