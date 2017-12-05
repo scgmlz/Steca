@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef IO_IO_H
 #define IO_IO_H
 
@@ -37,7 +36,5 @@ data::shp_File loadMar(rcstr filePath) THROWS;
 
 // load a metadata file + tiffs
 data::shp_File loadTiffDat(rcstr filePath) THROWS;
-
-
 }
-#endif // IO_IO_H
+#endif  // IO_IO_H

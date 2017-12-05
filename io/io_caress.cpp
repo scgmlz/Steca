@@ -638,4 +638,4 @@ str loadCaressComment(rcstr filePath) {
 }
 
 
-}
+} // namespace io

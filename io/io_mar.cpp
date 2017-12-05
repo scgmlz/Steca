@@ -12,9 +12,8 @@
 //
 // ************************************************************************** //
 
-
-#include "io_io.h"
 #include "Mar/MarReader.h"
+#include "io_io.h"
 
 namespace io {
 
@@ -30,7 +29,7 @@ data::shp_File loadMar(rcstr filePath) THROWS {
   RUNTIME_CHECK((fpIn = fopen(filePath.toLocal8Bit().data(), "rb")),
                 "Cannot open data file " + filePath);
 
-  struct CloseFile { // TODO remove, replace with QFile etc.
+  struct CloseFile {  // TODO remove, replace with QFile etc.
     CloseFile(FILE *fpIn) : fpIn_(fpIn) {}
 
     ~CloseFile() { fclose(fpIn_); }
@@ -40,17 +39,17 @@ data::shp_File loadMar(rcstr filePath) THROWS {
   } _(fpIn);
 
   /* Check if byte_swapping is necessary */
-  int mar345, byteswap, h1;
+  int    mar345, byteswap, h1;
   size_t readElements = fread(&h1, sizeof(int), 1, fpIn);
 
   RUNTIME_CHECK(1 == readElements, "bad format");
 
   if (h1 == 1200 || h1 == 2000 || h1 == 1600 || h1 == 2300 || h1 == 3450 ||
       h1 == 3000 || h1 == 2400 || h1 == 1800 || h1 == 2560 || h1 == 3072) {
-    mar345 = 0;
+    mar345   = 0;
     byteswap = 0;
   } else if (h1 == 1234) {
-    mar345 = 1;
+    mar345   = 1;
     byteswap = 0;
   } else {
     byteswap = 1;
@@ -74,10 +73,10 @@ data::shp_File loadMar(rcstr filePath) THROWS {
   MAR345_HEADER h345;
 
   if (mar345) {
-    h345 = Getmar345Header(fpIn);
-    pixSizeX = h345.size;
+    h345         = Getmar345Header(fpIn);
+    pixSizeX     = h345.size;
     numberOfHigh = h345.high;
-    pixelSize = h345.pixels;
+    pixelSize    = h345.pixels;
     if ((h345.pixels != (int)(pixSizeX * pixSizeX)) && (h345.pixels > 0)) {
       pixSizeY = h345.pixels / pixSizeX;
     } else {
@@ -85,11 +84,11 @@ data::shp_File loadMar(rcstr filePath) THROWS {
     }
 
   } else {
-    h300 = Getmar300Header(fpIn);
-    pixSizeX = h300.pixels_x;
-    pixSizeY = h300.pixels_y;
+    h300         = Getmar300Header(fpIn);
+    pixSizeX     = h300.pixels_x;
+    pixSizeY     = h300.pixels_y;
     numberOfHigh = h300.high_pixels;
-    pixelSize = pixSizeX * pixSizeY;
+    pixelSize    = pixSizeX * pixSizeY;
   }
 
   if ((pixSizeX < 10) || (pixSizeX > 4000) || (pixSizeY < 10) ||
@@ -98,9 +97,9 @@ data::shp_File loadMar(rcstr filePath) THROWS {
   }
 
   WORD *i2_image = new WORD[pixelSize];
-  int *i4_image = new int[pixelSize];
+  int * i4_image = new int[pixelSize];
 
-  #define FPOS(a)  ((int)( a/8. + 0.875 )*64)
+#define FPOS(a) ((int)(a / 8. + 0.875) * 64)
   /* Read core of i2_image */
   /* Go to first record */
   if (mar345) {
@@ -110,8 +109,7 @@ data::shp_File loadMar(rcstr filePath) THROWS {
     fseek(fpIn, pixSizeX + pixSizeY, SEEK_SET);
     int i =
         (int)fread((unsigned char *)i2_image, sizeof(short), pixelSize, fpIn);
-    if (i != (int)pixelSize)
-      throw "WARNING: read not all pixel!";
+    if (i != (int)pixelSize) throw "WARNING: read not all pixel!";
     if (byteswap)
       swapint16((unsigned char *)i2_image, pixelSize * sizeof(WORD));
   }
@@ -145,20 +143,17 @@ data::shp_File loadMar(rcstr filePath) THROWS {
      */
     for_i (numberOfHigh) {
       readElements = fread(pair, sizeof(int), 2, fpIn);
-      if (readElements < 2)
-        break;
+      if (readElements < 2) break;
 
-      if (byteswap)
-        swapint32((unsigned char *)pair, sizeof(int) * 2);
+      if (byteswap) swapint32((unsigned char *)pair, sizeof(int) * 2);
 
       unsigned int address = pair[0];
-      if (address >= pixelSize)
-        continue;
+      if (address >= pixelSize) continue;
 
       // Check for error pixel (overflow pixel will set to 250000 and in the
       // dataset will set the overflow flag)
       if (pair[1] == 999999.0) {
-        pair[1] = 128000;
+        pair[1]         = 128000;
         pictureOverflow = true;
       }
 
@@ -169,69 +164,65 @@ data::shp_File loadMar(rcstr filePath) THROWS {
 
   // Check Pixel Level um Daten mit defekten Pixeln lesen zu k�nnen
   // TODO REVIEW
-//  if (MeasurementData::isPixelLevelUsed()) {
-//    for_i (pixelSize) {
-//      if (i4_image[i] > MeasurementData::pixelLevel)
-//        i4_image[i] = -1;
-//    }
-//  }
+  //  if (MeasurementData::isPixelLevelUsed()) {
+  //    for_i (pixelSize) {
+  //      if (i4_image[i] > MeasurementData::pixelLevel)
+  //        i4_image[i] = -1;
+  //    }
+  //  }
 
   // Create Dataset
-  double twoTheta = 0, omega = 0, chi = 0, phi = 0;
-  int exposureTime = 0, dosen = 0;
-  unsigned int totalTime=0;
+  double       twoTheta = 0, omega = 0, chi = 0, phi = 0;
+  int          exposureTime = 0, dosen = 0;
+  unsigned int totalTime = 0;
 
   if (mar345) {
     // Objekt inizialisieren
     twoTheta = h345.theta;
-    chi = h345.chi;
-    omega = ((fabs(h345.omeend - h345.omebeg) / 2) + h345.omebeg);
-    phi = ((fabs(h345.phiend - h345.phibeg) / 2) + h345.phibeg);
+    chi      = h345.chi;
+    omega    = ((fabs(h345.omeend - h345.omebeg) / 2) + h345.omebeg);
+    phi      = ((fabs(h345.phiend - h345.phibeg) / 2) + h345.phibeg);
 
-    dosen = h345.dosen;
+    dosen        = h345.dosen;
     exposureTime = h345.time;
     totalTime += exposureTime;
   } else {
     // Objekt inizialisieren
     twoTheta = 0;
-    chi = 0;
-    omega = fabs(h300.omega);
-    phi = ((fabs(h300.phi_end - h300.phi_start) / 2) + h300.phi_start);
+    chi      = 0;
+    omega    = fabs(h300.omega);
+    phi      = ((fabs(h300.phi_end - h300.phi_start) / 2) + h300.phi_start);
 
-    dosen = 0;
+    dosen        = 0;
     exposureTime = h300.exptime_sec;
     totalTime += exposureTime;
   }
 
   typ::size2d size(pixSizeX, pixSizeY);
-  inten_vec convertedIntens(pixelSize);
+  inten_vec   convertedIntens(pixelSize);
 
   for_i (pixelSize)
     convertedIntens[i] = inten_t(i4_image[i]);
 
   data::Metadata md;
 
-  md.motorOmg  = omega;
-  md.motorTth  = twoTheta;
-  md.motorPhi  = phi;
-  md.motorChi  = chi;
+  md.motorOmg = omega;
+  md.motorTth = twoTheta;
+  md.motorPhi = phi;
+  md.motorChi = chi;
 
-  md.monitorCount = dosen; // ? REVIEW ? md.deltaMonitorCount
+  md.monitorCount = dosen;  // ? REVIEW ? md.deltaMonitorCount
   md.deltaTime    = exposureTime;
   md.time         = totalTime;
 
   // REVIEW ?? pictureOverflow
 
-  file->datasets().append(
-    data::shp_OneDataset(new data::OneDataset(md, typ::size2d(pixSizeX, pixSizeY),
-        convertedIntens))
-  );
+  file->datasets().append(data::shp_OneDataset(new data::OneDataset(
+      md, typ::size2d(pixSizeX, pixSizeY), convertedIntens)));
 
   delete[] i2_image;
   delete[] i4_image;
 
   return file;
 }
-
-
 }

@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #include "io_io.h"
 
 namespace io {
@@ -21,8 +20,7 @@ namespace io {
 static QByteArray peek(uint pos, uint maxLen, QFileInfo const& info) {
   QFile file(info.filePath());
 
-  if (file.open(QFile::ReadOnly) && file.seek(pos))
-    return file.read(maxLen);
+  if (file.open(QFile::ReadOnly) && file.seek(pos)) return file.read(maxLen);
 
   return QByteArray();
 }
@@ -43,8 +41,7 @@ bool couldBeMar(QFileInfo const& info) {
 bool couldBeTiffDat(QFileInfo const& info) {
   QFile file(info.filePath());
 
-  if (!file.open(QFile::ReadOnly))
-    return false;
+  if (!file.open(QFile::ReadOnly)) return false;
 
   bool couldBe = false;
 
@@ -53,17 +50,14 @@ bool couldBeTiffDat(QFileInfo const& info) {
   while (!(line = file.readLine()).isEmpty()) {
     str s = line;
 
-    int commentPos = s.indexOf(';');
-    if (commentPos >= 0)
-      s = s.left(commentPos);
+    int commentPos         = s.indexOf(';');
+    if (commentPos >= 0) s = s.left(commentPos);
 
-    if ((s = s.simplified()).isEmpty())
-      continue;
+    if ((s = s.simplified()).isEmpty()) continue;
 
     auto lst = s.split(' ');
-    int cnt = lst.count();
-    if (cnt < 2 || cnt > 4)
-      return false;
+    int  cnt = lst.count();
+    if (cnt < 2 || cnt > 4) return false;
 
     couldBe = true;
   }
@@ -97,6 +91,4 @@ data::shp_File load(rcstr filePath) THROWS {
 
   return file;
 }
-
-
 }
