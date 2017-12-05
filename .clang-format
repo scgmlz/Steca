@@ -1,18 +1,39 @@
-Language:     Cpp
-BasedOnStyle: LLVM
+Language: Cpp
+Standard: Cpp11
+BasedOnStyle: WebKit
+IndentWidth: 4
 
-AlignConsecutiveAssignments: true
-AlignConsecutiveDeclarations: true
-AlignEscapedNewlinesLeft: true
-
+AccessModifierOffset: -4
+AlignAfterOpenBracket: AlwaysBreak
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignOperands: false
 AllowShortBlocksOnASingleLine: true
 AllowShortCaseLabelsOnASingleLine : true
 AllowShortFunctionsOnASingleLine: Inline
-AllowShortIfStatementsOnASingleLine: true
-AllowShortLoopsOnASingleLine: true
-
-DerivePointerAlignment: true
-
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakAfterReturnType: None
+BinPackArguments: true
+BinPackParameters: true
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBraces: Attach
+ColumnLimit: 100
+CommentPragmas: \/\/!
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ConstructorInitializerIndentWidth: 4
+ContinuationIndentWidth: 4
+Cpp11BracedListStyle: false
+DerivePointerAlignment: false
+# FixNamespaceComments: true
 ForEachMacros:   [ for_int, for_int_down, for_i, for_i_down, for_ij ]
-
-SpacesBeforeTrailingComments: 2
+IndentCaseLabels: false
+IndentWrappedFunctionNames: false
+MaxEmptyLinesToKeep: 2
+NamespaceIndentation: None
+PointerAlignment: Left
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 1
+SpacesInAngles: false
+UseTab: Never

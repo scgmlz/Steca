@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef GUI_HELPERS_H
 #define GUI_HELPERS_H
 
@@ -37,21 +36,18 @@
 //------------------------------------------------------------------------------
 // make connects shorter
 
-#define slot(Type,method,parType) \
-  static_cast<void (Type::*)(parType)>(&Type::method)
+#define slot(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
 
 //------------------------------------------------------------------------------
 // layouts
 
-class GridLayout: public QGridLayout {
-  CLASS(GridLayout) SUPER(QGridLayout)
-public:
-  using super::super;
+class GridLayout : public QGridLayout {
+    CLASS(GridLayout) SUPER(QGridLayout) public : using super::super;
 
-  void addRowStretch(int = 1);
-  void addColumnStretch(int = 1);
+    void addRowStretch(int = 1);
+    void addColumnStretch(int = 1);
 
-  static GridLayout* groupBox(QLayout&, rcstr);
+    static GridLayout* groupBox(QLayout&, rcstr);
 };
 
 //------------------------------------------------------------------------------
@@ -62,18 +58,18 @@ extern int mWidth(QWidget const*);
 // handy functions that make (new) widgets
 
 QBoxLayout* boxLayout(Qt::Orientation);
-QBoxLayout* hbox();  // horizontal box layout
-QBoxLayout* vbox();  // vertical box layout
+QBoxLayout* hbox(); // horizontal box layout
+QBoxLayout* vbox(); // vertical box layout
 
 GridLayout* gridLayout();
 
-QLabel*    icon(rcstr);
-QLabel*    label(rcstr);
+QLabel* icon(rcstr);
+QLabel* label(rcstr);
 
-QLineEdit* editCell(uint emWidth);  // emWidth: measured in typographical (m)s
+QLineEdit* editCell(uint emWidth); // emWidth: measured in typographical (m)s
 QLineEdit* readCell(uint emWidth);
 
-QSpinBox*  spinCell(uint emWidth, int min = INT_MIN, int max = INT_MAX);
+QSpinBox* spinCell(uint emWidth, int min = INT_MIN, int max = INT_MAX);
 QDoubleSpinBox* spinDoubleCell(uint emWidth, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
 
 QCheckBox* check(rcstr text);
@@ -90,59 +86,52 @@ QComboBox* comboBox(str_lst::rc);
 // abstract tree widget
 
 class TreeView : public QTreeView {
-  Q_OBJECT
-  CLASS(TreeView) SUPER(QTreeView)
-public:
-  TreeView();
+    Q_OBJECT
+    CLASS(TreeView) SUPER(QTreeView) public : TreeView();
 
-  int sizeHintForColumn(int) const;  // make narrow columns
+    int sizeHintForColumn(int) const; // make narrow columns
 };
 
 //------------------------------------------------------------------------------
 // abstract tree widget used as a list (hides column 0)
 
 class TreeListView : public TreeView {
-  Q_OBJECT
-  CLASS(TreeListView) SUPER(TreeView)
-public:
-  TreeListView();
+    Q_OBJECT
+    CLASS(TreeListView) SUPER(TreeView) public : TreeListView();
 
 protected:
-  void setModel(QAbstractItemModel*);
+    void setModel(QAbstractItemModel*);
 };
 
 //------------------------------------------------------------------------------
 
 class LineView : public QLineEdit {
-  CLASS(LineView) SUPER(QLineEdit)
-public:
-  LineView();
+    CLASS(LineView) SUPER(QLineEdit) public : LineView();
 
-  void setText(rcstr);
+    void setText(rcstr);
 };
 
 //------------------------------------------------------------------------------
 // a widget with a box layout
 
 class BoxWidget : public QWidget {
-  CLASS(BoxWidget) SUPER(QWidget)
-public:
-  BoxWidget(Qt::Orientation);
+    CLASS(BoxWidget) SUPER(QWidget) public : BoxWidget(Qt::Orientation);
 
 protected:
-  QBoxLayout* box_;
+    QBoxLayout* box_;
 };
 
 //------------------------------------------------------------------------------
 // a dock widget that acts as BoxWidget
 
 class DockWidget : public QDockWidget {
-  CLASS(DockWidget) SUPER(QDockWidget)
+    CLASS(DockWidget)
+    SUPER(QDockWidget)
 public:
-  DockWidget(rcstr name, rcstr objectName, Qt::Orientation);
+    DockWidget(rcstr name, rcstr objectName, Qt::Orientation);
 
 protected:
-  QBoxLayout* box_;
+    QBoxLayout* box_;
 };
 
 //------------------------------------------------------------------------------

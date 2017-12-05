@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYP_XY_H
 #define TYP_XY_H
 
@@ -26,20 +25,20 @@ namespace typ {
 class JsonObj;
 
 struct XY {
-  CLASS(XY)
+    CLASS(XY)
 
-  qreal x, y;
+    qreal x, y;
 
-  XY();  // invalid (NaN)
-  XY(qreal, qreal);
+    XY(); // invalid (NaN)
+    XY(qreal, qreal);
 
-  COMPARABLE
+    COMPARABLE
 
-  void invalidate();     // make invalid (NaN)
-  bool isValid() const;  // is not NaN
+    void invalidate(); // make invalid (NaN)
+    bool isValid() const; // is not NaN
 
-  JsonObj saveJson() const;
-  void loadJson(JsonObj const&) THROWS;
+    JsonObj saveJson() const;
+    void loadJson(JsonObj const&) THROWS;
 };
 
 //------------------------------------------------------------------------------

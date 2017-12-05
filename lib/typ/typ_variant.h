@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYP_VARIANT_H
 #define TYP_VARIANT_H
 
@@ -30,8 +29,8 @@ bool isNumeric(QVariant const&);
 typedef int cmpFun(QVariant const&, QVariant const&);
 typedef vec<cmpFun*> cmp_vec;
 
-int cmp_int(QVariant const&,  QVariant const&);
-int cmp_str(QVariant const&,  QVariant const&);
+int cmp_int(QVariant const&, QVariant const&);
+int cmp_str(QVariant const&, QVariant const&);
 int cmp_real(QVariant const&, QVariant const&);
 int cmp_date(QVariant const&, QVariant const&);
 

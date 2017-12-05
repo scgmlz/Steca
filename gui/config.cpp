@@ -12,47 +12,33 @@
 //
 // ************************************************************************** //
 
-
 #include "config.h"
 
 namespace config_key {
 //------------------------------------------------------------------------------
 
-str const
-  GROUP_CONFIG("config"),
-  CURRENT_VERSION("current version"),
-  STARTUP_ABOUT("startup about"), STARTUP_CHECK_UPDATE("startup check update"),
-  DETECTOR("detector"), DET_DISTANCE("distance"), DET_PIX_SIZE("pixel size"),
+str const GROUP_CONFIG("config"), CURRENT_VERSION("current version"),
+    STARTUP_ABOUT("startup about"), STARTUP_CHECK_UPDATE("startup check update"),
+    DETECTOR("detector"), DET_DISTANCE("distance"), DET_PIX_SIZE("pixel size"),
 
-  GROUP_MAINWIN("MainWin"),
-  GEOMETRY("geometry"), STATE("state"),
+    GROUP_MAINWIN("MainWin"), GEOMETRY("geometry"), STATE("state"),
 
-  FILES("files"), SELECTED_FILES("selected files"), CORR_FILE("correction file"),
-  COMBINE("combine"),
-  CUT("cut"), LEFT("left"), TOP("top"), RIGHT("right"), BOTTOM("bottom"),
-  BEAM_OFFSET("beam offset"),
-  TRANSFORM("image transform"),
-  BG_DEGREE("background degree"), BG_RANGES("background ranges"),
-  INTEN_SCALED_AVG("averaged intensity "), INTEN_SCALE("intensity scale"),
-  REFLECTIONS("reflections"),
+    FILES("files"), SELECTED_FILES("selected files"), CORR_FILE("correction file"),
+    COMBINE("combine"), CUT("cut"), LEFT("left"), TOP("top"), RIGHT("right"), BOTTOM("bottom"),
+    BEAM_OFFSET("beam offset"), TRANSFORM("image transform"), BG_DEGREE("background degree"),
+    BG_RANGES("background ranges"), INTEN_SCALED_AVG("averaged intensity "),
+    INTEN_SCALE("intensity scale"), REFLECTIONS("reflections"),
 
-// output
-  GROUP_OUTPUT("output"),
-  NUM_SLICES("num slices"),
-  LIMIT_GAMMA("limit gamma"),
+    // output
+    GROUP_OUTPUT("output"), NUM_SLICES("num slices"), LIMIT_GAMMA("limit gamma"),
 
-  INTERPOLATED("interpolated"),
+    INTERPOLATED("interpolated"),
 
-  STEP_ALPHA("step alpha"),
-  STEP_BETA("step beta"),
-  IDW_RADIUS("idw radius"),
+    STEP_ALPHA("step alpha"), STEP_BETA("step beta"), IDW_RADIUS("idw radius"),
 
-  AVG_ALPHA_MAX("avg alpha max"),
-  AVG_RADIUS("avg radius"),
-  AVG_THRESHOLD("avg threshold"),
+    AVG_ALPHA_MAX("avg alpha max"), AVG_RADIUS("avg radius"), AVG_THRESHOLD("avg threshold"),
 
-  SAVE_DIR("save dir"),
-  SAVE_FMT("save format");
+    SAVE_DIR("save dir"), SAVE_FMT("save format");
 
 //------------------------------------------------------------------------------
 }

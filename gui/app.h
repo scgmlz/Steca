@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef APP_H
 #define APP_H
 
@@ -23,20 +22,18 @@
 
 class NoWarnings {
 public:
-  NoWarnings();
- ~NoWarnings();
+    NoWarnings();
+    ~NoWarnings();
 };
 
 class App : public QApplication {
-  CLASS(App) SUPER(QApplication)
-public:
-  App(int& argc, char* argv[]);
+    CLASS(App) SUPER(QApplication) public : App(int& argc, char* argv[]);
 
-  int exec();
+    int exec();
 
 private:
-  // Exceptions caught here; displayed in a dialog.
-  bool notify(QObject*, QEvent*);
+    // Exceptions caught here; displayed in a dialog.
+    bool notify(QObject*, QEvent*);
 };
 
 //------------------------------------------------------------------------------

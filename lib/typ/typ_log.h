@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYP_LOG_H
 #define TYP_LOG_H
 
@@ -20,12 +19,12 @@
 
 class MessageLogger {
 public:
-  enum eType { INFO, WARN, POPUP };
-  static void info(rcstr);
-  static void warn(rcstr);
-  static void popup(rcstr);
+    enum eType { INFO, WARN, POPUP };
+    static void info(rcstr);
+    static void warn(rcstr);
+    static void popup(rcstr);
 
-  static void (*handler)(rcstr, eType);
+    static void (*handler)(rcstr, eType);
 };
 
 #endif // TYP_LOG_H

@@ -12,13 +12,12 @@
 //
 // ************************************************************************** //
 
-
 #include "typ/typ_types.h"
 
 str_lst::rc normStrLst() {
-  static str_lst strLst {
-    "none", "monitor", "Δ monitor", "Δ time", "background",
-  };
+    static str_lst strLst{
+        "none", "monitor", "Δ monitor", "Δ time", "background",
+    };
 
-  return strLst;
+    return strLst;
 }

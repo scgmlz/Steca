@@ -17,29 +17,30 @@
 #include <QCheckBox>
 #include <QLineEdit>
 
-namespace models {
+namespace models
+{
 
-QVariant    const EMPTY_VAR;
+QVariant const EMPTY_VAR;
 QModelIndex const ANY_INDEX;
 
 //------------------------------------------------------------------------------
 
-//CheckedInfo::CheckedInfo(rcstr t): tag(t), cb(nullptr), infoText(nullptr) {
+// CheckedInfo::CheckedInfo(rcstr t): tag(t), cb(nullptr), infoText(nullptr) {
 //}
 
-//void CheckedInfo::setText(rcstr text) {
+// void CheckedInfo::setText(rcstr text) {
 //  EXPECT(infoText)
 //  infoText->setText(text);
 //}
 
 //------------------------------------------------------------------------------
 
-TableModel::TableModel(gui::TheHub& hub) : RefHub(hub) {
-}
+TableModel::TableModel(gui::TheHub& hub) : RefHub(hub) {}
 
-void TableModel::signalReset() {
-  beginResetModel();
-  endResetModel();
+void TableModel::signalReset()
+{
+    beginResetModel();
+    endResetModel();
 }
 
 //------------------------------------------------------------------------------
