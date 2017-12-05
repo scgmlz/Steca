@@ -12,22 +12,21 @@
 //
 // ************************************************************************** //
 
-
 #ifndef PANEL_DIFFRACTOGRAM_H
 #define PANEL_DIFFRACTOGRAM_H
 
-#include "panel.h"
-#include "actions.h"
 #include "QCP/qcustomplot.h"
+#include "actions.h"
+#include "panel.h"
 
-namespace gui { namespace panel {
+namespace gui {
+namespace panel {
 
 class DiffractogramPlot;
 
 class DiffractogramPlotOverlay : public QWidget {
-  CLASS(DiffractogramPlotOverlay) SUPER(QWidget)
-public:
-  DiffractogramPlotOverlay(DiffractogramPlot&);
+  CLASS(DiffractogramPlotOverlay)
+  SUPER(QWidget) public : DiffractogramPlotOverlay(DiffractogramPlot &);
 
   void setMargins(int left, int right);
 
@@ -38,13 +37,13 @@ private:
   int    marginLeft_, marginRight_;
 
 protected:
-  void enterEvent(QEvent*);
-  void leaveEvent(QEvent*);
-  void mousePressEvent(QMouseEvent*);
-  void mouseReleaseEvent(QMouseEvent*);
-  void mouseMoveEvent(QMouseEvent*);
+  void enterEvent(QEvent *);
+  void leaveEvent(QEvent *);
+  void mousePressEvent(QMouseEvent *);
+  void mouseReleaseEvent(QMouseEvent *);
+  void mouseMoveEvent(QMouseEvent *);
 
-  void paintEvent(QPaintEvent*);
+  void paintEvent(QPaintEvent *);
 
   bool hasCursor_, mouseDown_;
   int  cursorPos_, mouseDownPos_;
@@ -53,22 +52,21 @@ protected:
 };
 
 class DiffractogramPlot : public QCustomPlot, protected RefHub {
-  CLASS(DiffractogramPlot) SUPER(QCustomPlot)
-public:
-  enum class eTool {
+  CLASS(DiffractogramPlot)
+  SUPER(QCustomPlot) public : enum class eTool {
     NONE,
     BACKGROUND,
     PEAK_REGION,
   };
 
-  DiffractogramPlot(TheHub&, class Diffractogram&);
+  DiffractogramPlot(TheHub &, class Diffractogram &);
 
 public:
   void  setTool(eTool);
   eTool getTool() const { return tool_; }
 
-  void  plot(typ::Curve::rc, typ::Curve::rc, typ::Curve::rc,
-             typ::curve_vec::rc, uint);
+  void plot(typ::Curve::rc, typ::Curve::rc, typ::Curve::rc, typ::curve_vec::rc,
+            uint);
 
   typ::Range fromPixels(int, int);
 
@@ -80,31 +78,30 @@ public:
 
   void clearReflLayer();
 
-  QColor bgRgeColor_, reflRgeColor_;
+  QColor      bgRgeColor_, reflRgeColor_;
   eFittingTab selectedFittingTab();
 
   void enterZoom(bool);
 
 protected:
   void addBgItem(typ::Range::rc);
-  void resizeEvent(QResizeEvent*);
+  void resizeEvent(QResizeEvent *);
 
 private:
   Diffractogram &diffractogram_;
 
   eTool tool_;
-  bool showBgFit_;
+  bool  showBgFit_;
 
-  QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *dgramBgFittedGraph2_, *guesses_, *fits_;
+  QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *dgramBgFittedGraph2_,
+      *guesses_, *fits_;
 
-  typ::vec<QCPGraph*>       reflGraph_;
+  typ::vec<QCPGraph *>      reflGraph_;
   DiffractogramPlotOverlay *overlay_;
 };
 
 class Diffractogram : public PanelWidget {
-  CLASS(Diffractogram) SUPER(PanelWidget)
-public:
-  Diffractogram(TheHub&);
+  CLASS(Diffractogram) SUPER(PanelWidget) public : Diffractogram(TheHub &);
 
   void render();
 
@@ -123,21 +120,20 @@ private:
   uint                 currReflIndex_;
   calc::shp_Reflection currentReflection_;
 
-  QComboBox      *comboNormType_;
-  QRadioButton   *intenSum_, *intenAvg_;
+  QComboBox *     comboNormType_;
+  QRadioButton *  intenSum_, *intenAvg_;
   QDoubleSpinBox *intenScale_;
-  QToolButton    *enableZoom_;
-  Action         *actZoom_;
+  QToolButton *   enableZoom_;
+  Action *        actZoom_;
 
 public:
   void calcDgram();
   void calcBackground();
   void calcReflections();
 
-  void setCurrReflNewRange(typ::Range::rc);
+  void       setCurrReflNewRange(typ::Range::rc);
   typ::Range currReflRange() const;
 };
-
-
-}}
-#endif // PANEL_DIFFRACTOGRAM_H
+}
+}
+#endif  // PANEL_DIFFRACTOGRAM_H

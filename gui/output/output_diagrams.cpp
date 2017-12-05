@@ -12,11 +12,11 @@
 //
 // ************************************************************************** //
 
-
 #include "output_diagrams.h"
 #include "thehub.h"
 
-namespace gui { namespace output {
+namespace gui {
+namespace output {
 
 // sorts xs and ys the same way, by (x,y)
 static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
@@ -28,12 +28,10 @@ static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
   for_i (count)
     is[i] = i;
 
-  std::sort(is.begin(), is.end(), [&xs,&ys](uint i1,uint i2) {
-    qreal x1 = xs.at(i1), x2 =xs.at(i2);
-    if (x1 < x2)
-      return true;
-    if (x1 > x2)
-      return false;
+  std::sort(is.begin(), is.end(), [&xs, &ys](uint i1, uint i2) {
+    qreal x1 = xs.at(i1), x2 = xs.at(i2);
+    if (x1 < x2) return true;
+    if (x1 > x2) return false;
     return ys.at(i1) < ys.at(i2);
   });
 
@@ -50,15 +48,14 @@ static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
   ys = r;
 }
 
-
 TabPlot::TabPlot() {
-  graph_    = addGraph();
+  graph_   = addGraph();
   graphLo_ = addGraph();
   graphUp_ = addGraph();
 }
 
-void TabPlot::plot(qreal_vec::rc xs,
-                   qreal_vec::rc ys, qreal_vec::rc ysLo, qreal_vec::rc ysUp) {
+void TabPlot::plot(qreal_vec::rc xs, qreal_vec::rc ys, qreal_vec::rc ysLo,
+                   qreal_vec::rc ysUp) {
   EXPECT(xs.count() == ys.count())
 
   uint count = xs.count();
@@ -98,17 +95,15 @@ void TabPlot::plot(qreal_vec::rc xs,
   replot();
 }
 
-
 TabDiagramsSave::TabDiagramsSave(TheHub& hub, Params& params)
-: super(hub, params, true)
-{
+    : super(hub, params, true) {
   auto gp = new panel::GridPanel(hub, "To save");
   grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
   grid_->addRowStretch();
 
   auto g = gp->grid();
   g->addWidget((currentDiagram_ = radioButton("Current diagram")));
-  g->addWidget((allData_        = radioButton("All data")));
+  g->addWidget((allData_ = radioButton("All data")));
   g->addWidget(textButton(actSave), 1, 1);
   g->setColumnStretch(0, 1);
 
@@ -123,13 +118,11 @@ bool TabDiagramsSave::currDiagram() const {
   return currentDiagram_->isChecked();
 }
 
+static const Params::ePanels PANELS =
+    Params::ePanels(Params::REFLECTION | Params::GAMMA | Params::DIAGRAM);
 
-static const Params::ePanels PANELS = Params::ePanels(
-    Params::REFLECTION | Params::GAMMA | Params::DIAGRAM);
-
-DiagramsFrame::DiagramsFrame(TheHub &hub, rcstr title, QWidget *parent)
-: super(hub, title, new Params(hub, PANELS), parent)
-{
+DiagramsFrame::DiagramsFrame(TheHub& hub, rcstr title, QWidget* parent)
+    : super(hub, title, new Params(hub, PANELS), parent) {
   btnInterpolate_->hide();
 
   tabPlot_ = new TabPlot();
@@ -138,20 +131,17 @@ DiagramsFrame::DiagramsFrame(TheHub &hub, rcstr title, QWidget *parent)
   ENSURE(params_->panelDiagram)
   auto pd = params_->panelDiagram;
 
-  connect(pd->xAxis, slot(QComboBox,currentIndexChanged,int), [this]() {
-    recalculate();
-  });
+  connect(pd->xAxis, slot(QComboBox, currentIndexChanged, int),
+          [this]() { recalculate(); });
 
-  connect(pd->yAxis, slot(QComboBox,currentIndexChanged,int), [this]() {
-    recalculate();
-  });
+  connect(pd->yAxis, slot(QComboBox, currentIndexChanged, int),
+          [this]() { recalculate(); });
 
   tabSave_ = new TabDiagramsSave(hub, *params_);
   tabs_->addTab("Save", Qt::Vertical).box().addWidget(tabSave_);
 
-  connect(tabSave_->actSave, &QAction::triggered, [this]() {
-    logSuccess(saveDiagramOutput());
-  });
+  connect(tabSave_->actSave, &QAction::triggered,
+          [this]() { logSuccess(saveDiagramOutput()); });
 
   recalculate();
 }
@@ -184,52 +174,45 @@ void DiagramsFrame::recalculate() {
 
   for_i (count) {
     auto row = rs_.at(i).data();
-    xs_[i] = row.at(xi).toDouble();
-    ys_[i] = row.at(yi).toDouble();
+    xs_[i]   = row.at(xi).toDouble();
+    ys_[i]   = row.at(yi).toDouble();
   }
 
   uint_vec is;
   sortColumns(xs_, ys_, is);
 
-  auto calcErrors = [this, is] (eReflAttr attr) {
+  auto calcErrors = [this, is](eReflAttr attr) {
     uint count = ys_.count();
-    ysErrorLo_.resize(count); ysErrorUp_.resize(count);
+    ysErrorLo_.resize(count);
+    ysErrorUp_.resize(count);
 
     for_i (count) {
-      auto  row   = rs_.at(is.at(i)).data(); // access error over sorted index vec
-      qreal sigma = row.at(uint(attr)).toDouble();
-      qreal y = ys_.at(i);
+      auto row = rs_.at(is.at(i)).data();  // access error over sorted index vec
+      qreal sigma   = row.at(uint(attr)).toDouble();
+      qreal y       = ys_.at(i);
       ysErrorLo_[i] = y - sigma;
       ysErrorUp_[i] = y + sigma;
     }
   };
 
-  ysErrorLo_.clear(); ysErrorUp_.clear();
+  ysErrorLo_.clear();
+  ysErrorUp_.clear();
 
   if (fit::ePeakType::RAW != hub_.reflections().at(getReflIndex())->type()) {
     switch (yAttr()) {
-    case eReflAttr::INTEN:
-      calcErrors(eReflAttr::SIGMA_INTEN);
-      break;
-    case eReflAttr::TTH:
-      calcErrors(eReflAttr::SIGMA_TTH);
-      break;
-    case eReflAttr::FWHM:
-      calcErrors(eReflAttr::SIGMA_FWHM);
-      break;
-    default:
-      break;
+    case eReflAttr::INTEN: calcErrors(eReflAttr::SIGMA_INTEN); break;
+    case eReflAttr::TTH: calcErrors(eReflAttr::SIGMA_TTH); break;
+    case eReflAttr::FWHM: calcErrors(eReflAttr::SIGMA_FWHM); break;
+    default: break;
     }
   }
 
   tabPlot_->plot(xs_, ys_, ysErrorLo_, ysErrorUp_);
 }
 
-
 bool DiagramsFrame::saveDiagramOutput() {
   str path = tabSave_->filePath(true);
-  if (path.isEmpty())
-    return false;
+  if (path.isEmpty()) return false;
 
   str separator = tabSave_->separator();
 
@@ -241,7 +224,8 @@ bool DiagramsFrame::saveDiagramOutput() {
   return true;
 }
 
-void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator) {
+void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath,
+                                                  rcstr separator) {
   WriteFile file(filePath);
 
   QTextStream stream(&file);
@@ -261,7 +245,7 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separato
 }
 
 void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
-  WriteFile file(filePath);
+  WriteFile   file(filePath);
   QTextStream stream(&file);
 
   auto headers = table_->outHeaders();
@@ -287,6 +271,5 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
     stream << '\n';
   }
 }
-
-
-}}
+}
+}

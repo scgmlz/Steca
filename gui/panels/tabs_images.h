@@ -12,26 +12,24 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TABS_IMAGES_H
 #define TABS_IMAGES_H
 
-#include "panel.h"
 #include "calc/calc_lens.h"
+#include "panel.h"
 
-namespace gui { namespace panel {
+namespace gui {
+namespace panel {
 
 class ImageWidget;
 
 class TabsImages : public TabsPanel {
-  CLASS(TabsImages) SUPER(TabsPanel)
-public:
-  TabsImages(TheHub&);
+  CLASS(TabsImages) SUPER(TabsPanel) public : TabsImages(TheHub &);
 
 private:
   QPixmap makeBlankPixmap();
 
-  QImage  makeImage(typ::shp_Image, bool curvedScale);
+  QImage makeImage(typ::shp_Image, bool curvedScale);
   QPixmap makePixmap(typ::shp_Image);
   QPixmap makePixmap(data::OneDataset::rc, gma_rge::rc, tth_rge::rc);
 
@@ -39,15 +37,14 @@ private:
   void render();
 
   data::shp_Dataset dataset_;
-  ImageWidget *dataImageWidget_, *corrImageWidget_;
+  ImageWidget *     dataImageWidget_, *corrImageWidget_;
 
-  QSpinBox *spinN_;
-  QSpinBox *numSlices_, *numSlice_, *numBin_;
+  QSpinBox *      spinN_;
+  QSpinBox *      numSlices_, *numSlice_, *numBin_;
   QDoubleSpinBox *minGamma_, *maxGamma_;
 
   calc::shp_DatasetLens lens_;
 };
-
-
-}}
-#endif // TABS_IMAGES_H
+}
+}
+#endif  // TABS_IMAGES_H

@@ -12,32 +12,30 @@
 //
 // ************************************************************************** //
 
-
 #ifndef OUTPUT_POLEFIGURES_H
 #define OUTPUT_POLEFIGURES_H
 
 #include "output_dialogs.h"
 
-namespace gui { namespace output {
+namespace gui {
+namespace output {
 
 class TabGraph : public Tab {
-  CLASS(TabGraph) SUPER(Tab)
-public:
-  using deg = typ::deg;
-  using rad = typ::rad;
+  CLASS(TabGraph) SUPER(Tab) public : using deg = typ::deg;
+  using rad                                     = typ::rad;
 
-  TabGraph(TheHub&, Params&);
+  TabGraph(TheHub &, Params &);
   void set(calc::ReflectionInfos);
 
 protected:
   void update();
 
   calc::ReflectionInfos rs_;
-  void paintEvent(QPaintEvent*);
+  void                  paintEvent(QPaintEvent *);
 
   QPointF p(deg alpha, deg beta) const;
-  deg alpha(QPointF const&)      const;
-  deg beta(QPointF  const&)      const;
+  deg alpha(QPointF const &) const;
+  deg beta(QPointF const &) const;
 
   void circle(QPointF c, qreal r);
 
@@ -46,51 +44,47 @@ protected:
 
   // valid during paintEvent
   QPainter *p_;
-  QPointF   c_; qreal r_;
+  QPointF   c_;
+  qreal     r_;
 
   bool  flat_;
   qreal alphaMax_, avgAlphaMax_;
 
-  QCheckBox    *cbFlat_;
+  QCheckBox *cbFlat_;
 };
 
-
 class TabPoleFiguresSave : public TabSave {
-  CLASS(TabPoleFiguresSave) SUPER(TabSave)
-public:
-  TabPoleFiguresSave(TheHub& hub, Params& params);
+  CLASS(TabPoleFiguresSave)
+  SUPER(TabSave) public : TabPoleFiguresSave(TheHub &hub, Params &params);
 
   bool onlySelectedRefl() const;
-  bool outputInten()      const;
-  bool outputTth()        const;
-  bool outputFWHM()       const;
+  bool outputInten() const;
+  bool outputTth() const;
+  bool outputFWHM() const;
 
   void rawReflSettings(bool on);
 
 protected:
-  QRadioButton *rbSelectedRefl_,*rbAllRefls_;
-  QCheckBox *outputInten_, *outputTth_, *outputFWHM_;
+  QRadioButton *rbSelectedRefl_, *rbAllRefls_;
+  QCheckBox *   outputInten_, *outputTth_, *outputFWHM_;
 };
 
-
 class PoleFiguresFrame : public Frame {
-  CLASS(PoleFiguresFrame) SUPER(Frame)
-public:
-  PoleFiguresFrame(TheHub&, rcstr title, QWidget*);
+  CLASS(PoleFiguresFrame)
+  SUPER(Frame) public : PoleFiguresFrame(TheHub &, rcstr title, QWidget *);
 
 protected:
-  TabGraph           *tabGraph_;
+  TabGraph *          tabGraph_;
   TabPoleFiguresSave *tabSave_;
 
   void displayReflection(uint reflIndex, bool interpolated);
 
   bool savePoleFigureOutput();
   bool writePoleFigureOutputFiles(rcstr filePath, uint index);
-  void writePoleFile(rcstr filePath,  calc::ReflectionInfos, qreal_vec::rc);
-  void writeListFile(rcstr filePath,  calc::ReflectionInfos, qreal_vec::rc);
+  void writePoleFile(rcstr filePath, calc::ReflectionInfos, qreal_vec::rc);
+  void writeListFile(rcstr filePath, calc::ReflectionInfos, qreal_vec::rc);
   void writeErrorMask(rcstr filePath, calc::ReflectionInfos, qreal_vec::rc);
 };
-
-
-}}
-#endif // OUTPUT_POLEFIGURES_H
+}
+}
+#endif  // OUTPUT_POLEFIGURES_H

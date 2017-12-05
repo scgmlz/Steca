@@ -12,18 +12,16 @@
 //
 // ************************************************************************** //
 
-
 #include "dock_files.h"
 #include "thehub.h"
 #include "views.h"
 #include <QHeaderView>
 
-namespace gui { namespace panel {
+namespace gui {
+namespace panel {
 
 class FilesView : public views::MultiListView {
-  CLASS(FilesView) SUPER(views::MultiListView)
-public:
-  FilesView(TheHub&);
+  CLASS(FilesView) SUPER(views::MultiListView) public : FilesView(TheHub&);
 
 protected:
   using Model = models::FilesModel;
@@ -48,9 +46,7 @@ FilesView::FilesView(TheHub& hub) : super(hub) {
     recollect();
   });
 
-  onSigFilesSelected([this]() {
-    selectRows(hub_.collectedFromFiles());
-  });
+  onSigFilesSelected([this]() { selectRows(hub_.collectedFromFiles()); });
 }
 
 void FilesView::selectionChanged(QItemSelection const& selected,
@@ -73,16 +69,13 @@ void FilesView::removeSelected() {
 void FilesView::recollect() {
   uint_vec rows;
   for (auto& index : selectionModel()->selectedRows())
-    if (index.isValid())
-      rows.append(to_u(index.row()));
+    if (index.isValid()) rows.append(to_u(index.row()));
 
   hub_.collectDatasetsFromFiles(rows);
 }
 
-
 DockFiles::DockFiles(TheHub& hub)
-: super("Files", "dock-files", Qt::Vertical), RefHub(hub)
-{
+    : super("Files", "dock-files", Qt::Vertical), RefHub(hub) {
   auto& actions = hub_.actions;
 
   auto h = hbox();
@@ -110,6 +103,5 @@ DockFiles::DockFiles(TheHub& hub)
     corrFile_->setText(file.isNull() ? EMPTY_STR : file->fileName());
   });
 }
-
-
-}}
+}
+}

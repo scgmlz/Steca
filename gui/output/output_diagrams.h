@@ -12,50 +12,44 @@
 //
 // ************************************************************************** //
 
-
 #ifndef OUTPUT_DIAGRAMS_H
 #define OUTPUT_DIAGRAMS_H
 
-#include "output_dialogs.h"
 #include "QCP/qcustomplot.h"
+#include "output_dialogs.h"
 
-namespace gui { namespace output {
+namespace gui {
+namespace output {
 
 class TabPlot : public QCustomPlot {
-  CLASS(TabPlot) SUPER(QCustomPlot)
-public:
-  TabPlot();
+  CLASS(TabPlot) SUPER(QCustomPlot) public : TabPlot();
   void set(calc::ReflectionInfos);
 
-  void plot(qreal_vec::rc xs,
-            qreal_vec::rc ys, qreal_vec::rc ysLo, qreal_vec::rc ysUp);
+  void plot(qreal_vec::rc xs, qreal_vec::rc ys, qreal_vec::rc ysLo,
+            qreal_vec::rc ysUp);
 
 protected:
   QCPGraph *graph_, *graphLo_, *graphUp_;
 };
 
-
 class TabDiagramsSave : public TabSave {
-  CLASS(TabDiagramsSave) SUPER(TabSave)
-public:
-  TabDiagramsSave(TheHub&, Params&);
+  CLASS(TabDiagramsSave)
+  SUPER(TabSave) public : TabDiagramsSave(TheHub &, Params &);
 
   uint currType() const;
   bool currDiagram() const;
 
 protected:
   QRadioButton *currentDiagram_, *allData_;
-  QComboBox    *fileTypes_;
+  QComboBox *   fileTypes_;
 };
 
-
 class DiagramsFrame : public Frame {
-  CLASS(DiagramsFrame) SUPER(Frame)
-public:
-  DiagramsFrame(TheHub&, rcstr title, QWidget*);
+  CLASS(DiagramsFrame)
+  SUPER(Frame) public : DiagramsFrame(TheHub &, rcstr title, QWidget *);
 
 protected:
-  TabPlot         *tabPlot_;
+  TabPlot *        tabPlot_;
   TabDiagramsSave *tabSave_;
 
   using eReflAttr = calc::ReflectionInfo::eReflAttr;
@@ -66,7 +60,7 @@ protected:
   void displayReflection(uint reflIndex, bool interpolated);
 
   calc::ReflectionInfos rs_;
-  qreal_vec xs_, ys_, ysErrorLo_, ysErrorUp_;
+  qreal_vec             xs_, ys_, ysErrorLo_, ysErrorUp_;
 
   void recalculate();
 
@@ -74,7 +68,6 @@ protected:
   void writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator);
   void writeAllDataOutputFile(rcstr filePath, rcstr separator);
 };
-
-
-}}
-#endif // OUTPUT_DIAGRAMS_H
+}
+}
+#endif  // OUTPUT_DIAGRAMS_H

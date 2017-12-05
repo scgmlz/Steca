@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef TYPE_MODELS_H
 #define TYPE_MODELS_H
 
@@ -27,14 +26,12 @@ namespace models {
 extern QVariant const    EMPTY_VAR;
 extern QModelIndex const ANY_INDEX;
 
-
 // The base class of all table-like models
 
 class TableModel : public QAbstractTableModel, protected gui::RefHub {
-  CLASS(TableModel) SUPER(QAbstractTableModel)
-public:
-  using Index   = QModelIndex;
-  using rcIndex = Index const&;
+  CLASS(TableModel)
+  SUPER(QAbstractTableModel) public : using Index = QModelIndex;
+  using rcIndex                                   = Index const&;
 
   TableModel(gui::TheHub&);
 
@@ -46,7 +43,5 @@ public:
   // force-emits reset() signal
   void signalReset();
 };
-
-
 }
-#endif // TYPE_MODELS_H
+#endif  // TYPE_MODELS_H
