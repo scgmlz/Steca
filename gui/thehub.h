@@ -12,14 +12,13 @@
 //
 // ************************************************************************** //
 
-
 #ifndef THEHUB_H
 #define THEHUB_H
 
 #include "actions.h"
-#include "session.h"
-#include "models.h"
 #include "def/defs.h"
+#include "models.h"
+#include "session.h"
 
 #include <QAction>
 #include <QSettings>
@@ -30,13 +29,11 @@ class QDoubleSpinBox;
 namespace gui {
 
 class Settings : public QSettings {
-  CLASS(Settings) SUPER(QSettings)
-public:
-  Settings(rcstr group = EMPTY_STR);
- ~Settings();
+  CLASS(Settings) SUPER(QSettings) public : Settings(rcstr group = EMPTY_STR);
+  ~Settings();
 
   QVariant readVariant(rcstr key, QVariant const& def);
-  void     saveVariant(rcstr key, QVariant const& val);
+  void saveVariant(rcstr key, QVariant const& val);
 
   void read(rcstr key, QAction*, bool def = false);
   void save(rcstr key, QAction*);
@@ -50,33 +47,27 @@ public:
   bool readBool(rcstr key, bool def = false);
   void saveBool(rcstr key, bool);
 
-  int  readInt(rcstr key, int def = 0);
+  int readInt(rcstr key, int def = 0);
   void saveInt(rcstr key, int);
 
   qreal readReal(rcstr key, qreal def = 0);
-  void  saveReal(rcstr key, qreal);
+  void saveReal(rcstr key, qreal);
 
-  str  readStr(rcstr key, rcstr def = EMPTY_STR);
+  str readStr(rcstr key, rcstr def = EMPTY_STR);
   void saveStr(rcstr key, rcstr);
 };
 
-
-class ReadFile: public QFile {
-  CLASS(ReadFile) SUPER(QFile)
-public:
-  ReadFile(rcstr path) THROWS;
+class ReadFile : public QFile {
+  CLASS(ReadFile) SUPER(QFile) public : ReadFile(rcstr path) THROWS;
 };
 
-class WriteFile: public QFile {
-  CLASS(WriteFile) SUPER(QFile)
-public:
-  WriteFile(rcstr path) THROWS;
+class WriteFile : public QFile {
+  CLASS(WriteFile) SUPER(QFile) public : WriteFile(rcstr path) THROWS;
 };
-
 
 class TheHub : public TheHubSignallingBase {
-  CLASS(TheHub) SUPER(TheHubSignallingBase)
-  friend class TheHubSignallingBase;
+  CLASS(TheHub) SUPER(TheHubSignallingBase) friend class TheHubSignallingBase;
+
 public:
   TheHub();
 
@@ -95,17 +86,17 @@ private:
 public:
   bool isFixedIntenImageScale() const { return isFixedIntenImageScale_; }
   bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
-  bool isCombinedDgram()        const { return isCombinedDgram_;        }
+  bool isCombinedDgram() const { return isCombinedDgram_; }
 
   models::FilesModel       filesModel;
   models::DatasetsModel    datasetsModel;
   models::MetadataModel    metadataModel;
   models::ReflectionsModel reflectionsModel;
 
-public: // files
+public:  // files
   uint numFiles() const;
-  str  fileName(uint index) const;
-  str  filePath(uint index) const;
+  str fileName(uint index) const;
+  str filePath(uint index) const;
   data::shp_File getFile(uint) const;
   void           remFile(uint);
 
@@ -120,14 +111,15 @@ public:
 
 public:
   calc::ReflectionInfos makeReflectionInfos(calc::Reflection::rc,
-      uint gmaSlices, gma_rge::rc, Progress*);
+                                            uint gmaSlices, gma_rge::rc,
+                                            Progress*);
 
 public:
   void       saveSession(QFileInfo const&) const;
   QByteArray saveSession() const;
 
   void clearSession();
-  void loadSession(QFileInfo const&)  THROWS;
+  void loadSession(QFileInfo const&) THROWS;
   void loadSession(QByteArray const&) THROWS;
 
 public:
@@ -147,13 +139,9 @@ public:
     return session_->collectedFromFiles();
   }
 
-  pint datasetsGroupedBy() const {
-    return datasetsGroupedBy_;
-  }
+  pint datasetsGroupedBy() const { return datasetsGroupedBy_; }
 
-  uint numCollectedDatasets() const {
-    return collectedDatasets().count();
-  }
+  uint numCollectedDatasets() const { return collectedDatasets().count(); }
 
   data::Datasets::rc collectedDatasets() const {
     return session_->collectedDatasets();
@@ -163,9 +151,7 @@ public:
     return session_->collectedDatasetsTags();
   }
 
-  typ::size2d imageSize() const {
-    return session_->imageSize();
-  }
+  typ::size2d imageSize() const { return session_->imageSize(); }
 
   typ::shp_AngleMap angleMap(data::OneDataset::rc dataset) const {
     return session_->angleMap(dataset);
@@ -180,10 +166,11 @@ public:
   void setImageCut(bool topLeft, bool linked, typ::ImageCut::rc);
 
   typ::Geometry::rc geometry() const;
-  void setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midPixOffset);
+  void setGeometry(preal detectorDistance, preal pixSize,
+                   typ::IJ::rc midPixOffset);
 
   typ::Range::rc gammaRange() const;
-  void setGammaRange(typ::Range::rc);
+  void           setGammaRange(typ::Range::rc);
 
 public:
   void setBgRanges(typ::Ranges::rc);
@@ -201,7 +188,7 @@ public:
   void remReflection(uint);
 
   eFittingTab fittingTab() const { return fittingTab_; }
-  void setFittingTab(eFittingTab);
+  void        setFittingTab(eFittingTab);
 
 private:
   eFittingTab fittingTab_ = eFittingTab::NONE;
@@ -221,15 +208,13 @@ public:
   void setNorm(eNorm);
 
 public:
-  typ::Ranges::rc bgRanges()          const { return session_->bgRanges();     }
-  uint            bgPolyDegree()      const { return session_->bgPolyDegree(); }
+  typ::Ranges::rc bgRanges() const { return session_->bgRanges(); }
+  uint            bgPolyDegree() const { return session_->bgPolyDegree(); }
 
-  bool            intenScaledAvg()    const { return session_->intenScaledAvg();  }
-  preal           intenScale()        const { return session_->intenScale();   }
+  bool  intenScaledAvg() const { return session_->intenScaledAvg(); }
+  preal intenScale() const { return session_->intenScale(); }
 
-  calc::Reflections::rc reflections() const { return session_->reflections();  }
+  calc::Reflections::rc reflections() const { return session_->reflections(); }
 };
-
-
 }
 #endif

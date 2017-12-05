@@ -12,22 +12,19 @@
 //
 // ************************************************************************** //
 
-
 #ifndef MODELS_H
 #define MODELS_H
 
-#include "types/type_models.h"
-#include "typ/typ_strlst.h"
 #include "fit/fit_fun.h"
+#include "typ/typ_strlst.h"
+#include "types/type_models.h"
 
 class TreeView;
 
 namespace models {
 
 class FilesModel : public TableModel {
-  CLASS(FilesModel) SUPER(TableModel)
-public:
-  FilesModel(gui::TheHub&);
+  CLASS(FilesModel) SUPER(TableModel) public : FilesModel(gui::TheHub&);
 
   int columnCount(rcIndex = ANY_INDEX) const;
   int rowCount(rcIndex = ANY_INDEX) const;
@@ -40,11 +37,8 @@ public:
   void remFile(uint i);
 };
 
-
 class DatasetsModel : public TableModel {
-  CLASS(DatasetsModel) SUPER(TableModel)
-public:
-  DatasetsModel(gui::TheHub&);
+  CLASS(DatasetsModel) SUPER(TableModel) public : DatasetsModel(gui::TheHub&);
 
   int columnCount(rcIndex = ANY_INDEX) const;
   int rowCount(rcIndex = ANY_INDEX) const;
@@ -60,15 +54,12 @@ public:
   void showMetaInfo(typ::vec<bool> const&);
 
 private:
-  data::Datasets::rc datasets_;     // the selected datasets
-  uint_vec           metaInfoNums_; // selected metadata items to show
+  data::Datasets::rc datasets_;      // the selected datasets
+  uint_vec           metaInfoNums_;  // selected metadata items to show
 };
 
-
 class MetadataModel : public TableModel {
-  CLASS(MetadataModel) SUPER(TableModel)
-public:
-  MetadataModel(gui::TheHub&);
+  CLASS(MetadataModel) SUPER(TableModel) public : MetadataModel(gui::TheHub&);
 
   int columnCount(rcIndex = ANY_INDEX) const;
   int rowCount(rcIndex = ANY_INDEX) const;
@@ -78,22 +69,18 @@ public:
 
   enum { COL_CHECK = DCOL, COL_TAG, COL_VALUE, NUM_COLUMNS };
 
-  typ::vec<bool> const& rowsChecked() const {
-    return rowsChecked_;
-  }
+  typ::vec<bool> const& rowsChecked() const { return rowsChecked_; }
 
   void flipCheck(uint row);
 
 private:
   data::shp_Metadata metadata_;
-  typ::vec<bool> rowsChecked_;
+  typ::vec<bool>     rowsChecked_;
 };
 
-
 class ReflectionsModel : public TableModel {
-  CLASS(ReflectionsModel) SUPER(TableModel)
-public:
-  ReflectionsModel(gui::TheHub&);
+  CLASS(ReflectionsModel)
+  SUPER(TableModel) public : ReflectionsModel(gui::TheHub&);
 
   int columnCount(rcIndex = ANY_INDEX) const;
   int rowCount(rcIndex = ANY_INDEX) const;
@@ -114,7 +101,5 @@ public:
 
   str_lst names() const;
 };
-
-
 }
-#endif // MODELS_H
+#endif  // MODELS_H

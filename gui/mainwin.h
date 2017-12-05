@@ -12,12 +12,11 @@
 //
 // ************************************************************************** //
 
-
 #ifndef MAINWIN_H
 #define MAINWIN_H
 
-#include "thehub.h"
 #include "def/defs.h"
+#include "thehub.h"
 
 #include <QMainWindow>
 #include <QNetworkAccessManager>
@@ -25,13 +24,11 @@
 namespace gui {
 
 class MainWin : public QMainWindow {
-  CLASS(MainWin) SUPER(QMainWindow)
-public:
-  MainWin();
+  CLASS(MainWin) SUPER(QMainWindow) public : MainWin();
 
 private:
   void initMenus();
-  void addActions(QMenu*, QList<QAction*>);
+  void addActions(QMenu *, QList<QAction *>);
   void initLayout();
   void initStatusBar();
   void connectActions();
@@ -61,26 +58,23 @@ public:
   void outputDiffractograms();
 
 private:
-  gui::TheHub   hub_;
-  Actions      &acts_;
+  gui::TheHub hub_;
+  Actions &   acts_;
 
 private:
-  void closeEvent(QCloseEvent*);
+  void closeEvent(QCloseEvent *);
 
   void onShow();
   void onClose();
 
 private:
-  QMenu
-      *menuFile_,   *menuView_,
-      *menuImage_,  *menuDgram_,
-      *menuOutput_, *menuHelp_;
+  QMenu *menuFile_, *menuView_, *menuImage_, *menuDgram_, *menuOutput_,
+      *menuHelp_;
 
-  QDockWidget
-      *dockFiles_, *dockDatasets_, *dockDatasetInfo_;
+  QDockWidget *dockFiles_, *dockDatasets_, *dockDatasetInfo_;
 
 private:
-  QByteArray initialState_;
+  QByteArray            initialState_;
   QNetworkAccessManager netMan_;
 
   void readSettings();
@@ -95,7 +89,5 @@ private:
   void viewDatasetInfo(bool);
   void viewReset();
 };
-
-
 }
-#endif // MAINWIN_H
+#endif  // MAINWIN_H

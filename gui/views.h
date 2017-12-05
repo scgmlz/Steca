@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #ifndef VIEWS_H
 #define VIEWS_H
 
@@ -21,21 +20,20 @@
 #include "refhub.h"
 #include <QItemDelegate>
 
-namespace gui { namespace views {
+namespace gui {
+namespace views {
 
 // A (tree-)list view with a reference to the hub. Single selection.
 
 class ListView : public TreeListView, protected RefHub {
-  CLASS(ListView) SUPER(TreeListView)
-public:
-  ListView(TheHub&);
+  CLASS(ListView) SUPER(TreeListView) public : ListView(TheHub&);
 
   using Model = models::TableModel;
 
-  #pragma GCC diagnostic push
-  #pragma GCC diagnostic ignored "-Woverloaded-virtual"
-  void setModel(Model*);
-  #pragma GCC diagnostic pop
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
+  void                 setModel(Model*);
+#pragma GCC diagnostic pop
 
 protected:
   Model* model() const { return static_cast<Model*>(super::model()); }
@@ -44,18 +42,14 @@ protected:
   void selectRow(int);
 };
 
-
 // Multiple selection.
 
 class MultiListView : public ListView {
-  CLASS(MultiListView) SUPER(ListView)
-public:
-  MultiListView(TheHub&);
+  CLASS(MultiListView) SUPER(ListView) public : MultiListView(TheHub&);
 
 protected:
   void selectRows(uint_vec);
 };
-
-
-}}
-#endif // VIEWS_H
+}
+}
+#endif  // VIEWS_H
