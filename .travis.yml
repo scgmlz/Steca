@@ -7,7 +7,7 @@ os:
 - osx
 
 compiler:
-- clang
+# - clang (problems installing qt54base, qt54multimedia)
 - gcc
 
 env:
