@@ -88,7 +88,5 @@ private:
     void viewDatasetInfo(bool);
     void viewReset();
 };
-
-
 }
 #endif // MAINWIN_H

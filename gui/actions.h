@@ -50,15 +50,12 @@ protected:
 
 
 class Actions : protected RefHub {
-  CLASS(Actions) SUPER(RefHub)
-public:
-  Actions(TheHub&);
+    CLASS(Actions) SUPER(RefHub) public : Actions(TheHub&);
 
-  Action
-    *about, *online, *checkUpdate, *quit,
-    *viewStatusbar, *viewFiles, *viewDatasets, *viewDatasetInfo, *viewReset,
-#ifndef Q_OS_OSX  // Mac has its own
-    *fullScreen,
+    Action *about, *online, *checkUpdate, *quit, *viewStatusbar, *viewFiles, *viewDatasets,
+        *viewDatasetInfo, *viewReset,
+#ifndef Q_OS_OSX // Mac has its own
+        *fullScreen,
 #endif
         *loadSession, *saveSession, *clearSession, *addFiles, *remFile, *enableCorr, *remCorr,
         *rotateImage, *mirrorImage, *linkCuts, *showOverlay, *stepScale, *showBins,
@@ -70,7 +67,5 @@ private:
     Action& trg(Action*& action, rcstr text);
     Action& tgl(Action*& action, rcstr text);
 };
-
-
 }
 #endif // ACTIONS_H
