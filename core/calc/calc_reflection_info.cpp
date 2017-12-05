@@ -156,5 +156,4 @@ void ReflectionInfos::invalidate() {
     rgeInten_.invalidate();
 }
 
-
-}
+} // namespace calc

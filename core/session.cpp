@@ -466,5 +466,4 @@ qreal Session::calcAvgBackground(data::Datasets::rc datasets) const {
     return bg / datasets.count();
 }
 
-
-}
+} // namespace core

@@ -28,7 +28,8 @@ class Datasets;
 typedef QSharedPointer<Metadata const> shp_Metadata; // no changing these
 typedef QSharedPointer<OneDataset const> shp_OneDataset;
 typedef QSharedPointer<Dataset> shp_Dataset;
-}
+
+} // namespace data
 
 Q_DECLARE_METATYPE(data::shp_Dataset)
 
@@ -48,7 +49,7 @@ Q_DECLARE_METATYPE(data::shp_Dataset)
 
 namespace core {
 class Session;
-}
+} // namespace core
 
 namespace data {
 
@@ -197,7 +198,7 @@ private:
     mutable typ::Curve avgCurve_;
 };
 
+} // namespace data
 
-}
 #endif // DATA_DATASET_H
 #endif // FORWARD_DECLARATIONS

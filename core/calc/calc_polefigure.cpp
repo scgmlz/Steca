@@ -319,5 +319,4 @@ ReflectionInfos interpolate(
     return interpolatedInfos;
 }
 
-
-}
+} // namespace calc
