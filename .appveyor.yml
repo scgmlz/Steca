@@ -23,7 +23,7 @@ build_script:
 - git submodule update --init --recursive
 - mkdir build
 - cd build
-- cmake -G "%CMAKE_GENERATOR%" ..
+- cmake -G "%CMAKE_GENERATOR%" -DWITH_TESTS=1 ..
 - cmake --build . --config %BUILD_CONF% -- /clp:ErrorsOnly
 - cd tests
 - tests
