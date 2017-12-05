@@ -12,16 +12,15 @@
 //
 // ************************************************************************** //
 
-
 #include "views.h"
 #include "calc/calc_reflection.h"
 #include "thehub.h"
 #include <QCheckBox>
 
-namespace gui { namespace views {
+namespace gui {
+namespace views {
 
-ListView::ListView(TheHub& hub) : RefHub(hub) {
-}
+ListView::ListView(TheHub& hub) : RefHub(hub) {}
 
 void ListView::setModel(Model* model) {
   super::setModel(model);
@@ -38,14 +37,13 @@ void ListView::selectRow(int row) {
   setCurrentIndex(model()->index(row, 0));
 }
 
-
 MultiListView::MultiListView(TheHub& hub) : super(hub) {
   setSelectionMode(ExtendedSelection);
 }
 
 void MultiListView::selectRows(uint_vec rows) {
-  auto m   = model();
-  int cols = m->columnCount();
+  auto m    = model();
+  int  cols = m->columnCount();
 
   QItemSelection is;
   for (uint row : rows)
@@ -54,6 +52,5 @@ void MultiListView::selectRows(uint_vec rows) {
 
   selectionModel()->select(is, QItemSelectionModel::ClearAndSelect);
 }
-
-
-}}
+}
+}

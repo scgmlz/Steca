@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-
 #include "app.h"
 #include "../manifest.h"
 #include "mainwin.h"
@@ -23,12 +22,11 @@
 #include <QStyleFactory>
 #include <iostream>
 
-
 App::App(int& argc, char* argv[]) : super(argc, argv) {
   setApplicationName(APPLICATION_NAME);
   setApplicationVersion(
-    #include "../VERSION"
-  );
+#include "../VERSION"
+      );
   setOrganizationName(ORGANIZATION_NAME);
   setOrganizationDomain(ORGANIZATION_DOMAIN);
 
@@ -55,9 +53,7 @@ static void messageHandler(QtMsgType type, QMessageLogContext const& ctx,
     if (0 == noWarning)
       QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
     break;
-  default:
-    oldHandler(type, ctx, msg);
-    break;
+  default: oldHandler(type, ctx, msg); break;
   }
 }
 
@@ -68,21 +64,17 @@ static void waiting(bool on) {
     QApplication::restoreOverrideCursor();
 }
 
-static QMainWindow *mainWindow;
+static QMainWindow* mainWindow;
 
 static void logMessage(rcstr msg, MessageLogger::eType type) {
   EXPECT(mainWindow)
 
   str statusMsg;
   switch (type) {
-  case MessageLogger::INFO:
-    statusMsg = msg;
-    break;
+  case MessageLogger::INFO: statusMsg = msg; break;
   case MessageLogger::POPUP:
     QMessageBox::information(mainWindow, EMPTY_STR, msg);
-  case MessageLogger::WARN:
-    statusMsg = "** " + msg + " **";
-    break;
+  case MessageLogger::WARN: statusMsg = "** " + msg + " **"; break;
   }
 
   mainWindow->statusBar()->showMessage(statusMsg, 3000);
@@ -97,7 +89,7 @@ int App::exec() {
 
     TakesLongTime::handler = waiting;
 
-    mainWindow = &mainWin;
+    mainWindow             = &mainWin;
     MessageLogger::handler = logMessage;
 
     int res = super::exec();
@@ -120,15 +112,11 @@ bool App::notify(QObject* receiver, QEvent* event) {
   try {
     return super::notify(receiver, event);
   } catch (Exception const& e) {
-    if (!e.silent())
-      qWarning("%s", e.what());
-  } catch (std::exception const& e) {
-    qWarning("Error: %s", e.what());
-  }
+    if (!e.silent()) qWarning("%s", e.what());
+  } catch (std::exception const& e) { qWarning("Error: %s", e.what()); }
 
   return false;
 }
-
 
 NoWarnings::NoWarnings() {
   ++noWarning;
@@ -137,5 +125,3 @@ NoWarnings::NoWarnings() {
 NoWarnings::~NoWarnings() {
   --noWarning;
 }
-
-

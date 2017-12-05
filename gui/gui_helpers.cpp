@@ -12,11 +12,9 @@
 //
 // ************************************************************************** //
 
-
 #include "gui_helpers.h"
 #include <QAction>
 #include <QGroupBox>
-
 
 void GridLayout::addRowStretch(int stretch) {
   setRowStretch(rowCount(), stretch);
@@ -26,7 +24,7 @@ void GridLayout::addColumnStretch(int stretch) {
   setColumnStretch(columnCount(), stretch);
 }
 
-GridLayout* GridLayout::groupBox(QLayout &addTo, rcstr title) {
+GridLayout* GridLayout::groupBox(QLayout& addTo, rcstr title) {
   auto group = new QGroupBox(title);
   addTo.addWidget(group);
   auto grid = gridLayout();
@@ -39,13 +37,10 @@ int mWidth(QWidget const* w) {
   return w->fontMetrics().width('m');
 }
 
-
 QBoxLayout* boxLayout(Qt::Orientation orientation) {
   switch (orientation) {
-  case Qt::Horizontal:
-    return hbox();
-  case Qt::Vertical:
-    return vbox();
+  case Qt::Horizontal: return hbox();
+  case Qt::Vertical: return vbox();
   }
 
   NEVER return nullptr;
@@ -123,13 +118,11 @@ QCheckBox* check(QAction* action) {
   auto cb = new QCheckBox(action ? action->text().toLower() : EMPTY_STR);
 
   if (action) {
-    QObject::connect(cb, &QCheckBox::toggled, [action](bool on) {
-      action->setChecked(on);
-    });
+    QObject::connect(cb, &QCheckBox::toggled,
+                     [action](bool on) { action->setChecked(on); });
 
-    QObject::connect(action, &QAction::toggled, [cb](bool on) {
-      cb->setChecked(on);
-    });
+    QObject::connect(action, &QAction::toggled,
+                     [cb](bool on) { cb->setChecked(on); });
 
     cb->setToolTip(action->toolTip());
     cb->setChecked(action->isChecked());
@@ -162,7 +155,6 @@ QComboBox* comboBox(str_lst::rc items) {
   return comboBox;
 }
 
-
 TreeView::TreeView() {
   setAlternatingRowColors(true);
 }
@@ -170,7 +162,6 @@ TreeView::TreeView() {
 int TreeView::sizeHintForColumn(int) const {
   return 3 * mWidth(this);
 }
-
 
 TreeListView::TreeListView() {
   setSelectionBehavior(SelectRows);
@@ -188,7 +179,6 @@ void TreeListView::setModel(QAbstractItemModel* model) {
   }
 }
 
-
 LineView::LineView() {
   setReadOnly(true);
 }
@@ -198,11 +188,9 @@ void LineView::setText(rcstr text) {
   super::setCursorPosition(0);
 }
 
-
 BoxWidget::BoxWidget(Qt::Orientation orientation) {
   setLayout((box_ = boxLayout(orientation)));
 }
-
 
 DockWidget::DockWidget(rcstr name, rcstr objectName,
                        Qt::Orientation orientation) {
@@ -213,5 +201,3 @@ DockWidget::DockWidget(rcstr name, rcstr objectName,
   setWidget(new QWidget);
   widget()->setLayout((box_ = boxLayout(orientation)));
 }
-
-
