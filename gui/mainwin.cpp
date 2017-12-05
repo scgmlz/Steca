@@ -23,7 +23,6 @@
 #include "output/output_polefigures.h"
 #include "panels/dock_dataset.h"
 #include "panels/dock_files.h"
-#include "panels/dock_help.h"
 #include "panels/dock_metadata.h"
 #include "panels/tabs_diffractogram.h"
 #include "panels/tabs_images.h"
@@ -70,71 +69,73 @@ void MainWin::initMenus() {
     mbar->setNativeMenuBar(true);
 #endif
 
-    menuFile_ = mbar->addMenu("&File");
-    menuView_ = mbar->addMenu("&View");
-    menuImage_ = mbar->addMenu("&Image");
-    menuDgram_ = mbar->addMenu("Di&ffractogram");
-    menuOutput_ = mbar->addMenu("&Output");
-    menuHelp_ = mbar->addMenu("&Help");
+  menuFile_     = mbar->addMenu("&File");
+  menuView_     = mbar->addMenu("&View");
+  menuImage_    = mbar->addMenu("&Image");
+  menuDgram_    = mbar->addMenu("Di&ffractogram");
+  menuOutput_   = mbar->addMenu("&Output");
+  menuHelp_     = mbar->addMenu("&Help");
 
-    addActions(
-        menuFile_,
-        {
-            acts_.addFiles, acts_.remFile, separator(), acts_.enableCorr, acts_.remCorr,
-            separator(), acts_.loadSession,
-            acts_.saveSession, // TODO add: acts_.clearSession,
-        });
+  addActions(menuFile_, {
+      acts_.addFiles, acts_.remFile,
+      separator(),
+      acts_.enableCorr, acts_.remCorr,
+      separator(),
+      acts_.loadSession, acts_.saveSession, // TODO add: acts_.clearSession,
+  });
 
-    addActions(
-        menuFile_,
-        {
-#ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
-            separator(),
-#endif
-            acts_.quit,
-        });
+  addActions(menuFile_, {
+    #ifndef Q_OS_OSX  // Mac puts Quit into the Apple menu
+      separator(),
+    #endif
+      acts_.quit,
+  });
 
-    addActions(
-        menuView_,
-        {
-            acts_.viewFiles, acts_.viewDatasets, acts_.viewDatasetInfo, separator(), acts_.viewHelp,
-            separator(),
-#ifndef Q_OS_OSX
-            acts_.fullScreen,
-#endif
-            acts_.viewStatusbar, separator(), acts_.viewReset,
-        });
+  addActions(menuView_, {
+      acts_.viewFiles, acts_.viewDatasets, acts_.viewDatasetInfo,
+      separator(),
+    #ifndef Q_OS_OSX
+      acts_.fullScreen,
+    #endif
+      acts_.viewStatusbar,
+      separator(),
+      acts_.viewReset,
+  });
 
-    addActions(
-        menuImage_,
-        {
-            acts_.rotateImage, acts_.mirrorImage, acts_.fixedIntenImage, acts_.linkCuts,
-            acts_.showOverlay, acts_.stepScale, acts_.showBins,
-        });
+  addActions(menuImage_, {
+      acts_.rotateImage,
+      acts_.mirrorImage,
+      acts_.fixedIntenImage,
+      acts_.linkCuts,
+      acts_.showOverlay,
+      acts_.stepScale,
+      acts_.showBins,
+  });
 
-    addActions(
-        menuDgram_,
-        {
-            acts_.selRegions, acts_.showBackground, acts_.clearBackground, acts_.clearReflections,
-            separator(), acts_.addReflection, acts_.remReflection, separator(), acts_.combinedDgram,
-            acts_.fixedIntenDgram,
-        });
+  addActions(menuDgram_, {
+      acts_.selRegions,
+      acts_.showBackground,
+      acts_.clearBackground,
+      acts_.clearReflections,
+      separator(),
+      acts_.addReflection, acts_.remReflection,
+      separator(),
+      acts_.combinedDgram,
+      acts_.fixedIntenDgram,
+  });
 
-    addActions(
-        menuOutput_,
-        {
-            acts_.outputPolefigures, acts_.outputDiagrams, acts_.outputDiffractograms,
-        });
+  addActions(menuOutput_, {
+      acts_.outputPolefigures, acts_.outputDiagrams, acts_.outputDiffractograms,
+  });
 
-    addActions(
-        menuHelp_,
-        {
-            acts_.about,
-#ifndef Q_OS_OSX
-            separator(), // Mac puts About into the Apple menu
-#endif
-            acts_.online, acts_.checkUpdate,
-        });
+  addActions(menuHelp_, {
+    acts_.about,
+  #ifndef Q_OS_OSX
+    separator(),  // Mac puts About into the Apple menu
+  #endif
+    acts_.online,
+    acts_.checkUpdate,
+  });
 }
 
 void MainWin::addActions(QMenu* menu, QList<QAction*> actions) {
@@ -150,7 +151,6 @@ void MainWin::initLayout() {
     addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new panel::DockFiles(hub_)));
     addDockWidget(Qt::LeftDockWidgetArea, (dockDatasets_ = new panel::DockDatasets(hub_)));
     addDockWidget(Qt::LeftDockWidgetArea, (dockDatasetInfo_ = new panel::DockMetadata(hub_)));
-    addDockWidget(Qt::RightDockWidgetArea, (dockHelp_ = new panel::DockHelp(hub_)));
 
     auto splMain = new QSplitter(Qt::Vertical);
     splMain->setChildrenCollapsible(false);
@@ -207,7 +207,6 @@ void MainWin::connectActions() {
     onToggle(acts_.viewFiles, &Cls::viewFiles);
     onToggle(acts_.viewDatasets, &Cls::viewDatasets);
     onToggle(acts_.viewDatasetInfo, &Cls::viewDatasetInfo);
-    onToggle(acts_.viewHelp, &Cls::viewHelp);
 
     onTrigger(acts_.viewReset, &Cls::viewReset);
 }
@@ -400,12 +399,9 @@ void MainWin::checkActions() {
     acts_.fullScreen->setChecked(isFullScreen());
 #endif
 
-    dockHelp_->setVisible(false);
-
     acts_.viewFiles->setChecked(dockFiles_->isVisible());
     acts_.viewDatasets->setChecked(dockDatasets_->isVisible());
     acts_.viewDatasetInfo->setChecked(dockDatasetInfo_->isVisible());
-    acts_.viewHelp->setChecked(dockHelp_->isVisible());
 }
 
 void MainWin::viewStatusbar(bool on) {
@@ -439,11 +435,6 @@ void MainWin::viewDatasetInfo(bool on) {
     acts_.viewDatasetInfo->setChecked(on);
 }
 
-void MainWin::viewHelp(bool on) {
-    dockHelp_->setVisible(on);
-    acts_.viewHelp->setChecked(on);
-}
-
 void MainWin::viewReset() {
     restoreState(initialState_);
     viewStatusbar(true);
@@ -453,5 +444,4 @@ void MainWin::viewReset() {
     viewDatasetInfo(true);
 }
 
-
-}
+} 

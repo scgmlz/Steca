@@ -53,7 +53,7 @@ class Actions : protected RefHub {
     CLASS(Actions) SUPER(RefHub) public : Actions(TheHub&);
 
     Action *about, *online, *checkUpdate, *quit, *viewStatusbar, *viewFiles, *viewDatasets,
-        *viewDatasetInfo, *viewHelp, *viewReset,
+        *viewDatasetInfo, *viewReset,
 #ifndef Q_OS_OSX // Mac has its own
         *fullScreen,
 #endif

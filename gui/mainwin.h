@@ -70,7 +70,7 @@ private:
 private:
     QMenu *menuFile_, *menuView_, *menuImage_, *menuDgram_, *menuOutput_, *menuHelp_;
 
-    QDockWidget *dockFiles_, *dockDatasets_, *dockDatasetInfo_, *dockHelp_;
+    QDockWidget *dockFiles_, *dockDatasets_, *dockDatasetInfo_;
 
 private:
     QByteArray initialState_;
@@ -86,10 +86,8 @@ private:
     void viewFiles(bool);
     void viewDatasets(bool);
     void viewDatasetInfo(bool);
-    void viewHelp(bool);
     void viewReset();
 };
-
 
 }
 #endif // MAINWIN_H

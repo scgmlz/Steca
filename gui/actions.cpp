@@ -77,12 +77,11 @@ Actions::Actions(TheHub& hub) : super(hub) {
     trg(checkUpdate, "Check for update...");
     trg(quit, "Quit");
 
-    tgl(viewStatusbar, "Statusbar");
-    tgl(viewFiles, "Files");
-    tgl(viewDatasets, "Datasets");
-    tgl(viewDatasetInfo, "Metadata");
-    tgl(viewHelp, "Help browser");
-    trg(viewReset, "Reset");
+  tgl(viewStatusbar,        "Statusbar");
+  tgl(viewFiles,            "Files");
+  tgl(viewDatasets,         "Datasets");
+  tgl(viewDatasetInfo,      "Metadata");
+  trg(viewReset,            "Reset");
 #ifndef Q_OS_OSX
     tgl(fullScreen, "FullScreen");
 #endif
@@ -124,11 +123,10 @@ Actions::Actions(TheHub& hub) : super(hub) {
 
     quit->key(QKey::Quit);
 
-    viewStatusbar->key(Qt::Key_F12);
-    viewFiles->key(Qt::Key_F8);
-    viewDatasets->key(Qt::Key_F9);
-    viewDatasetInfo->key(Qt::Key_F10);
-    viewHelp->key(Qt::Key_F1);
+    viewStatusbar   -> key(Qt::Key_F12);
+    viewFiles       -> key(Qt::Key_F8);
+    viewDatasets    -> key(Qt::Key_F9);
+    viewDatasetInfo -> key(Qt::Key_F10);
 
 #ifndef Q_OS_OSX
     fullScreen->key(Qt::Key_F11);
