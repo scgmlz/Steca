@@ -24,7 +24,6 @@ before_install:
 
 install:
 - .travis/${TRAVIS_OS_NAME}/install.sh
-- gem install coveralls-lcov
 
 script:
 - .travis/${TRAVIS_OS_NAME}/build_${BUILD_TYPE}.sh
@@ -36,6 +35,5 @@ addons:
     - sourceline: ppa:beineri/opt-qt542-trusty
     packages:
     - qt54base
-    - qt54multimedia
-    - lcov
+    - qt54network
     - xvfb
