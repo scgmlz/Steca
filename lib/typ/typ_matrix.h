@@ -1,19 +1,16 @@
-/*******************************************************************************
- * STeCa2 - StressTextureCalculator ver. 2
- *
- * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
- *
- * This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * See the COPYING and AUTHORS files for more details.
- ******************************************************************************/
+// ************************************************************************** //
+//
+//  Steca2: stress and texture calculator
+//
+//! @file      lib/typ/typ_matrix.h
+//! @brief     Defines ...
+//!
+//! @homepage  https://github.com/scgmlz/Steca2
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
+//
+// ************************************************************************** //
 
 #ifndef TYP_MATRIX_H
 #define TYP_MATRIX_H
@@ -21,47 +18,50 @@
 #include "def/def_macros.h"
 
 namespace typ {
-//------------------------------------------------------------------------------
 
-struct vector3d;
+struct vec3r;
 
-struct vector3f {
-  float _0,_1, _2;
+struct vec3f {
+    typedef vec3f const& rc;
 
-  vector3f(float,float,float);
-  vector3f(vector3d const&);
+    float _0, _1, _2;
+
+    vec3f(float, float, float);
+    vec3f(vec3r const&);
+
+    bool operator==(vec3f::rc) const;
 };
 
-struct vector3d {
-  qreal _0,_1, _2;
+struct vec3r {
+    typedef vec3r const& rc;
 
-  vector3d(qreal, qreal, qreal);
-  vector3d(vector3f const&);
+    qreal _0, _1, _2;
+
+    vec3r(qreal, qreal, qreal);
+    vec3r(vec3f::rc);
+
+    bool operator==(vec3r::rc) const;
 };
 
-struct matrix3d {
-  qreal _00, _01, _02,
-        _10, _11, _12,
-        _20, _21, _22;
+struct mat3r {
+    typedef mat3r const& rc;
 
-  matrix3d(qreal, qreal, qreal,
-           qreal, qreal, qreal,
-           qreal, qreal, qreal);
+    qreal _00, _01, _02, _10, _11, _12, _20, _21, _22;
 
-  void     transpose();
-  matrix3d transposed() const;
+    mat3r(qreal, qreal, qreal, qreal, qreal, qreal, qreal, qreal, qreal);
 
-  matrix3d operator *(matrix3d const&) const;
-  vector3d operator *(vector3d const&) const;
+    bool operator==(mat3r::rc) const;
 
-  bool operator ==(matrix3d const&) const;
+    void transpose();
+    mat3r transposed() const;
 
-  // factories
-  static matrix3d rotationCWx(qreal angle);
-  static matrix3d rotationCWz(qreal angle);
-  static matrix3d rotationCCWz(qreal angle);
+    mat3r operator*(mat3r::rc) const;
+    vec3r operator*(vec3r::rc) const;
+
+    // factories
+    static mat3r rotationCWx(qreal angle);
+    static mat3r rotationCWz(qreal angle);
+    static mat3r rotationCCWz(qreal angle);
 };
-
-//------------------------------------------------------------------------------
 }
 #endif // TYP_MATRIX_H

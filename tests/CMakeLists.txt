@@ -1,32 +1,29 @@
-# CMakeLists.txt
+add_definitions (-DTESTS)
 
-set(dir "tests")
-set(lib ${dir})
+set (srcdirs
+  lib LevMar core io
+)
 
 include_directories (
-  ${CMAKE_HOME_DIRECTORY}/core
-  ${CMAKE_HOME_DIRECTORY}/gui
+  ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-file (GLOB header_files
-  "*.h" "*/*.h" "*/*/*.h"
+foreach (dir ${srcdirs})
+  include_directories (${CMAKE_HOME_DIRECTORY}/${dir})
+endforeach (dir)
+
+foreach (dir ${srcdirs})
+  file (GLOB_RECURSE fs ${CMAKE_HOME_DIRECTORY}/${dir}/*.cpp)
+  set (files ${files} ${fs})
+endforeach (dir)
+
+file (GLOB_RECURSE test_files *.h *.cpp)
+
+add_executable (tests
+  ${test_files}
+  ${files}
 )
 
-file (GLOB source_files
-  "*.cpp" "*/*.cpp" "*/*/*.cpp"
+target_link_libraries (tests
+  Qt5::Widgets
 )
-
-add_executable (${lib}
-  ${header_files}
-  ${source_files}
-)
-
-target_link_libraries (${lib}
-  Qt5::Test
-  core
-  LevMar
-  lib
-  gui
-)
-
-# eof

@@ -1,6 +1,9 @@
-# CMakeLists.txt
+# Steca top-level configuration
 
 cmake_minimum_required (VERSION 2.8.12 FATAL_ERROR)
+
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+include(PreventInSourceBuilds)
 
 project (SteCa2)
 
@@ -18,17 +21,27 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
   add_compile_options("-Wall")
 endif ()
 
-find_package (Qt5Core       REQUIRED)
-find_package (Qt5Gui        REQUIRED)
-find_package (Qt5Test       REQUIRED)
-find_package (Qt5Widgets    REQUIRED)
-find_package (Qt5Multimedia REQUIRED)
+if (WITH_COVERAGE)
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
+endif ()
 
-add_subdirectory (lib)
+# if defined, enables development-helping code
+if (DEVELOPMENT)
+  add_definitions (-DDEVELOPMENT)
+endif ()
+
+find_package (Qt5Core    REQUIRED)
+find_package (Qt5Gui     REQUIRED)
+find_package (Qt5Test    REQUIRED)
+find_package (Qt5Widgets REQUIRED)
+find_package (Qt5Network REQUIRED)
+
 add_subdirectory (LevMar)
+add_subdirectory (lib)
 add_subdirectory (core)
 add_subdirectory (io)
 add_subdirectory (gui)
-add_subdirectory (tests)
 
-# eof
+if (WITH_TESTS)
+  add_subdirectory (tests)
+endif ()

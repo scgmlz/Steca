@@ -157,7 +157,7 @@ SWAP:
              printf("%s (0x%x)\n",q,fh[10]);
         }
 */
-            sprintf( str, "%1.3f\0",fh[10] );
+            sprintf( str, "%1.3f",fh[10] );
             ftmp  = (float)atof( str );
 #if ( LINUX || linux || VMS || __linux__ || __cygwin__ || __i386__ )
             ftmp = fh[10];

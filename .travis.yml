@@ -4,20 +4,25 @@ dist: trusty
 
 os:
 - linux
-- osx
+# - osx (temporari)
 
 compiler:
-- clang
+# - clang (problems installing qt54base, qt54multimedia)
 - gcc
+
+branches:
+  only:
+  - master
+  - develop-2.0.5
 
 env:
 - BUILD_TYPE=Debug
 - BUILD_TYPE=Release
 
 matrix:
-  exclude:
-  - os: osx
-    compiler: gcc
+ exclude:
+ - os: osx
+   compiler: gcc
 
 before_install:
 - chmod +x .travis/*/*.sh
@@ -26,8 +31,8 @@ install:
 - .travis/${TRAVIS_OS_NAME}/install.sh
 
 script:
-- .travis/${TRAVIS_OS_NAME}/build.sh
-- .travis/${TRAVIS_OS_NAME}/test.sh
+- .travis/${TRAVIS_OS_NAME}/build_${BUILD_TYPE}.sh
+- .travis/${TRAVIS_OS_NAME}/test_${BUILD_TYPE}.sh
 
 addons:
   apt:

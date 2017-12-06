@@ -1,19 +1,16 @@
-/*******************************************************************************
- * STeCa2 - StressTextureCalculator ver. 2
- *
- * Copyright (C) 2016 Forschungszentrum Jülich GmbH 2016
- *
- * This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * See the COPYING and AUTHORS files for more details.
- ******************************************************************************/
+// ************************************************************************** //
+//
+//  Steca2: stress and texture calculator
+//
+//! @file      gui/output/output_dialogs.h
+//! @brief     Defines ...
+//!
+//! @homepage  https://github.com/scgmlz/Steca2
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
+//
+// ************************************************************************** //
 
 #ifndef OUTPUT_DIALOGS_H
 #define OUTPUT_DIALOGS_H
@@ -25,259 +22,235 @@
 
 class QProgressBar;
 
-namespace gui { namespace output {
-//------------------------------------------------------------------------------
+namespace gui {
+namespace output {
 
 /* Note that some data members are public, to simplify the code. Be careful. */
 
 class Panel : public panel::GridPanel {
-  CLS(Panel) SUPER(panel::GridPanel)
+    CLASS(Panel) SUPER(panel::GridPanel);
 public:
-  using super::super;
+    using super::super;
 };
 
 class PanelReflection : public Panel {
-  CLS(PanelReflection) SUPER(Panel)
+    CLASS(PanelReflection) SUPER(Panel);
 public:
-  PanelReflection(TheHub&);
-
-  QComboBox *cbRefl;
+    PanelReflection(TheHub&);
+    QComboBox* cbRefl;
 };
 
 class PanelGammaSlices : public Panel {
-  CLS(PanelGammaSlices) SUPER(Panel)
+    CLASS(PanelGammaSlices) SUPER(Panel);
 public:
-  PanelGammaSlices(TheHub&);
-
-  QSpinBox       *numSlices;
-  QDoubleSpinBox *stepGamma;
-
-  void updateValues();
+    PanelGammaSlices(TheHub&);
+    QSpinBox* numSlices;
+    QDoubleSpinBox* stepGamma;
+    void updateValues();
 
 private:
-  gma_rge rgeGma_;
+    gma_rge rgeGma_;
 };
 
 class PanelGammaRange : public Panel {
-  CLS(PanelGammaRange) SUPER(Panel)
+    CLASS(PanelGammaRange) SUPER(Panel);
 public:
-  PanelGammaRange(TheHub&);
+    PanelGammaRange(TheHub&);
 
-  QCheckBox      *cbLimitGamma;
-  QDoubleSpinBox *minGamma, *maxGamma;
+    QCheckBox* cbLimitGamma;
+    QDoubleSpinBox *minGamma, *maxGamma;
 
-  void updateValues();
+    void updateValues();
 
 private:
-  gma_rge rgeGma_;
+    gma_rge rgeGma_;
 };
 
 class PanelPoints : public Panel {
-  CLS(PanelPoints) SUPER(Panel)
+    CLASS(PanelPoints) SUPER(Panel);
 public:
-  PanelPoints(TheHub&);
+    PanelPoints(TheHub&);
 
-  QRadioButton *rbCalc, *rbInterp;
+    QRadioButton *rbCalc, *rbInterp;
 };
 
 class PanelInterpolation : public Panel {
-  CLS(PanelInterpolation) SUPER(Panel)
+    CLASS(PanelInterpolation) SUPER(Panel);
 public:
-  PanelInterpolation(TheHub&);
+    PanelInterpolation(TheHub&);
 
-  QDoubleSpinBox *stepAlpha, *stepBeta, *idwRadius;
-  QDoubleSpinBox *avgAlphaMax, *avgRadius; QSpinBox *avgThreshold;
+    QDoubleSpinBox *stepAlpha, *stepBeta, *idwRadius;
+    QDoubleSpinBox *avgAlphaMax, *avgRadius;
+    QSpinBox* avgThreshold;
 };
 
 class PanelDiagram : public Panel {
-  CLS(PanelDiagram) SUPER(Panel)
+    CLASS(PanelDiagram) SUPER(Panel);
 public:
-  PanelDiagram(TheHub&);
+    PanelDiagram(TheHub&);
 
-  QComboBox *xAxis, *yAxis;
+    QComboBox *xAxis, *yAxis;
 };
 
 class PanelFitError : public Panel {
-  CLS(PanelFitError) SUPER(Panel)
+    CLASS(PanelFitError) SUPER(Panel);
 public:
-  PanelFitError(TheHub&);
-
-#ifdef DEVELOP_REBECCA
-  QComboBox         *cbErrorUnits;
-  QRadioButton      *rbPercent, *rbAbs;
-  QDoubleSpinBox    *spFitError;
-
-times:
-  *intensityFitError_, *tthFitError_, *fwhmFitError_;
-  QComboBox                 *cbErrorTypes_;
-#endif
+    PanelFitError(TheHub&);
 };
-
-//------------------------------------------------------------------------------
 
 class Params : public QWidget, protected RefHub {
-  CLS(Params) SUPER(QWidget)
+    CLASS(Params) SUPER(QWidget);
 public:
-  enum ePanels {
-    REFLECTION = 0x01, GAMMA = 0x02, POINTS = 0x04, INTERPOLATION = 0x08,
-    DIAGRAM = 0x10,
-  };
+    enum ePanels {
+        REFLECTION = 0x01,
+        GAMMA = 0x02,
+        POINTS = 0x04,
+        INTERPOLATION = 0x08,
+        DIAGRAM = 0x10,
+    };
 
-  Params(TheHub&, ePanels);
- ~Params();
+    Params(TheHub&, ePanels);
+    ~Params();
 
-  PanelReflection    *panelReflection;
-  PanelGammaSlices   *panelGammaSlices;
-  PanelGammaRange    *panelGammaRange;
-  PanelPoints        *panelPoints;
-  PanelInterpolation *panelInterpolation;
-  PanelDiagram       *panelDiagram;
+    PanelReflection* panelReflection;
+    PanelGammaSlices* panelGammaSlices;
+    PanelGammaRange* panelGammaRange;
+    PanelPoints* panelPoints;
+    PanelInterpolation* panelInterpolation;
+    PanelDiagram* panelDiagram;
 
-  str saveDir, saveFmt;
+    str saveDir, saveFmt;
 
 private:
-  void readSettings();
-  void saveSettings() const;
+    void readSettings();
+    void saveSettings() const;
 
-  QBoxLayout *box_;
+    QBoxLayout* box_;
 };
-
-//------------------------------------------------------------------------------
 
 class Table : public TreeView, protected RefHub {
-  CLS(Table) SUPER(TreeView)
+    CLASS(Table) SUPER(TreeView);
 public:
-  Table(TheHub&, uint numDataColumns);
+    Table(TheHub&, uint numDataColumns);
 
-  void setColumns(str_lst::rc headers, str_lst::rc outHeaders, typ::cmp_vec::rc);
-  str_lst const outHeaders() { return outHeaders_; }
+    void setColumns(str_lst::rc headers, str_lst::rc outHeaders, typ::cmp_vec::rc);
+    str_lst const outHeaders() { return outHeaders_; }
 
-  void clear();
-  void addRow(typ::row_t::rc, bool sort);
+    void clear();
+    void addRow(typ::row_t::rc, bool sort);
 
-  void sortData();
+    void sortData();
 
-  uint rowCount() const;
-  typ::row_t::rc row(uint) const;
+    uint rowCount() const;
+    typ::row_t::rc row(uint) const;
 
 private:
-  scoped<class TableModel*> model_;
-  str_lst outHeaders_;
+    scoped<class TableModel*> model_;
+    str_lst outHeaders_;
 };
-
-//------------------------------------------------------------------------------
 
 class Tabs : public panel::TabsPanel {
-  CLS(Tabs) SUPER(panel::TabsPanel)
+    CLASS(Tabs) SUPER(panel::TabsPanel);
 public:
-  Tabs(TheHub&);
+    Tabs(TheHub&);
 };
-
-//------------------------------------------------------------------------------
 
 class Tab : public QWidget, protected RefHub {
-  CLS(Tab) SUPER(QWidget)
-public:
-  Tab(TheHub&, Params&);
+    CLASS(Tab) SUPER(QWidget);
+public :
+    Tab(TheHub&, Params&);
 
 protected:
-  Params &params_;
+    Params& params_;
 
-  GridLayout *grid_;
+    GridLayout* grid_;
 };
-
-//------------------------------------------------------------------------------
 
 class TabTable : public Tab {
-  CLS(TabTable) SUPER(Tab)
+    CLASS(TabTable) SUPER(Tab);
 public:
-  TabTable(TheHub&, Params&,
-           str_lst::rc headers, str_lst::rc outHeaders,
-           typ::cmp_vec::rc);
+    TabTable(TheHub&, Params&, str_lst::rc headers, str_lst::rc outHeaders, typ::cmp_vec::rc);
 
 private:
-  struct showcol_t {
-    str        name;
-    QCheckBox *cb;
-  };
+    struct showcol_t {
+        str name;
+        QCheckBox* cb;
+    };
 
-  typedef typ::vec<showcol_t> showcol_vec;
+    typedef typ::vec<showcol_t> showcol_vec;
 
 private:
-  class ShowColsWidget : public QWidget {
-    CLS(ShowColsWidget) SUPER(QWidget)
-  public:
-    ShowColsWidget(Table&, showcol_vec&);
+    class ShowColsWidget : public QWidget {
+        CLASS(ShowColsWidget) SUPER(QWidget);
+    public:
+        ShowColsWidget(Table&, showcol_vec&);
 
-  private:
-    Table  &table_; showcol_vec& showCols_;
+    private:
+        Table& table_;
+        showcol_vec& showCols_;
 
-    QBoxLayout   *box_;
-    QRadioButton *rbHidden_, *rbAll_, *rbNone_, *rbInten_, *rbTth_, *rbFWHM_;
-  };
+        QBoxLayout* box_;
+        QRadioButton *rbHidden_, *rbAll_, *rbNone_, *rbInten_, *rbTth_, *rbFWHM_;
+    };
 
 public:
-  Table          *table;
+    Table* table;
 
 private:
-  ShowColsWidget *showColumnsWidget_;
-  showcol_vec     showCols_;
+    ShowColsWidget* showColumnsWidget_;
+    showcol_vec showCols_;
 };
-
-//------------------------------------------------------------------------------
 
 class TabSave : public Tab {
-  CLS(TabSave) SUPER(Tab)
+    CLASS(TabSave) SUPER(Tab);
 public:
-  TabSave(TheHub&, Params&, bool withTypes);
+    TabSave(TheHub&, Params&, bool withTypes);
 
-  str filePath(bool withSuffix);
-  str separator() const;
+    str filePath(bool withSuffix);
+    str separator() const;
 
-  Action *actBrowse, *actSave;
+    Action *actBrowse, *actSave;
 
 protected:
-  str fileSetSuffix(rcstr);
+    str fileSetSuffix(rcstr);
 
-  QLineEdit    *dir_, *file_;
-  QRadioButton *rbDat_, *rbCsv_;
+    QLineEdit *dir_, *file_;
+    QRadioButton *rbDat_, *rbCsv_;
 };
-
-//------------------------------------------------------------------------------
 
 class Frame : public QFrame, protected RefHub {
-  CLS(Frame) SUPER(QFrame)
+    CLASS(Frame) SUPER(QFrame);
 public:
-  Frame(TheHub&, rcstr title, Params*, QWidget*);
+    Frame(TheHub&, rcstr title, Params*, QWidget*);
 
 protected:
-  QAction     *actClose_, *actCalculate_, *actInterpolate_;
-  QToolButton *btnClose_, *btnCalculate_, *btnInterpolate_;
+    QAction *actClose_, *actCalculate_, *actInterpolate_;
+    QToolButton *btnClose_, *btnCalculate_, *btnInterpolate_;
 
-  QProgressBar *pb_;
+    QProgressBar* pb_;
 
-  QBoxLayout *box_;
-  Params     *params_;
-  Tabs       *tabs_;
+    QBoxLayout* box_;
+    Params* params_;
+    Tabs* tabs_;
 
-  typ::vec<calc::ReflectionInfos> calcPoints_, interpPoints_;
+    typ::vec<calc::ReflectionInfos> calcPoints_, interpPoints_;
 
-  Table *table_;
+    Table* table_;
 
-  void calculate();
-  void interpolate();
+    void calculate();
+    void interpolate();
 
-  virtual void displayReflection(uint reflIndex, bool interpolated);
+    virtual void displayReflection(uint reflIndex, bool interpolated);
 
 protected:
-  uint getReflIndex()    const;
-  bool getInterpolated() const;
+    uint getReflIndex() const;
+    bool getInterpolated() const;
 
-  void logMessage(rcstr) const;
-  void logSuccess(bool)  const;
-  bool logCheckSuccess(rcstr path, bool)  const;
+    void logMessage(rcstr) const;
+    void logSuccess(bool) const;
+    bool logCheckSuccess(rcstr path, bool) const;
 };
 
-//------------------------------------------------------------------------------
-}}
+}
+}
 #endif // OUTPUT_DIALOGS_H
