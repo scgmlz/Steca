@@ -18,16 +18,12 @@
 #include "def/defs.h"
 #include "typ/typ_strlst.h"
 
-#include <QBoxLayout>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDockWidget>
-#include <QDoubleSpinBox>
-#include <QFrame>
 #include <QLabel>
 #include <QLayout>
 #include <QLineEdit>
-#include <QListView>
 #include <QRadioButton>
 #include <QSpinBox>
 #include <QToolButton>
@@ -37,7 +33,7 @@
 
 #define slot(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
 
-// layouts
+//! layouts
 
 class GridLayout : public QGridLayout {
     CLASS(GridLayout) SUPER(QGridLayout) public : using super::super;
@@ -77,7 +73,7 @@ QRadioButton* radioButton(rcstr text);
 
 QComboBox* comboBox(str_lst::rc);
 
-// abstract tree widget
+//! abstract tree widget
 
 class TreeView : public QTreeView {
     Q_OBJECT
@@ -86,7 +82,7 @@ class TreeView : public QTreeView {
     int sizeHintForColumn(int) const; // make narrow columns
 };
 
-// abstract tree widget used as a list (hides column 0)
+//! abstract tree widget used as a list (hides column 0)
 
 class TreeListView : public TreeView {
     Q_OBJECT
@@ -102,7 +98,7 @@ class LineView : public QLineEdit {
     void setText(rcstr);
 };
 
-// a widget with a box layout
+//! a widget with a box layout
 
 class BoxWidget : public QWidget {
     CLASS(BoxWidget) SUPER(QWidget) public : BoxWidget(Qt::Orientation);
@@ -111,8 +107,7 @@ protected:
     QBoxLayout* box_;
 };
 
-//------------------------------------------------------------------------------
-// a dock widget that acts as BoxWidget
+//! a dock widget that acts as BoxWidget
 
 class DockWidget : public QDockWidget {
     CLASS(DockWidget)
@@ -122,5 +117,4 @@ protected:
     QBoxLayout* box_;
 };
 
-//------------------------------------------------------------------------------
 #endif // GUI_HELPERS_H

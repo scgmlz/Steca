@@ -1,5 +1,3 @@
-# Steca gui - main app
-
 get_filename_component(lib ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
 include_directories (
@@ -22,17 +20,15 @@ target_link_libraries (${lib}
   lib
 )
 
+# the Steca executable:
 add_executable (Steca
   main.cpp
   resources.qrc
+  # the following non-dependences are convenient for the qtcreator tree view:
   ../manifest.h
   ../CHANGELOG
   ../README.md
   ../VERSION
 )
 
-target_link_libraries (Steca
-  ${lib}
-)
-
-# eof
+target_link_libraries (Steca ${lib})

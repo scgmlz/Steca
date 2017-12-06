@@ -28,16 +28,13 @@
 #include "panels/tabs_images.h"
 #include "panels/tabs_setup.h"
 
-#include <QCloseEvent>
 #include <QDesktopServices>
 #include <QDir>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QNetworkReply>
-#include <QNetworkRequest>
 #include <QSplitter>
 #include <QStatusBar>
-#include <QUrl>
 
 namespace gui {
 

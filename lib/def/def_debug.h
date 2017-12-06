@@ -15,13 +15,11 @@
 #ifndef DEF_DEBUG_H
 #define DEF_DEBUG_H
 
-#include <QtGlobal>
 
 // debugging helpers
 
 #ifndef QT_NO_DEBUG
 
-#include <QDebug>
 
 /* TRace: trace prints; takes several things separated by << e.g.
  * TR(var)

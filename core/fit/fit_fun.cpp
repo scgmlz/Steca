@@ -12,8 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "fit_fun.h"
-#include "def/def_alg.h"
 #include "fit_methods.h"
 #include <qmath.h>
 
@@ -620,5 +618,4 @@ JsonObj PseudoVoigt2::saveJson() const {
     return super::saveJson().saveString(json_key::TYPE, json_fun_key::PSEUDOVOIGT2);
 }
 
-//------------------------------------------------------------------------------
 }

@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "session.h"
-#include "fit/fit_fun.h"
 #include "typ/typ_matrix.h"
 #include <qmath.h>
 

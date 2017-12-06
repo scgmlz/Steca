@@ -228,4 +228,5 @@ data::shp_File loadMar(rcstr filePath) THROWS {
 
     return file;
 }
-}
+
+} // namespace io

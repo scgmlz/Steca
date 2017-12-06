@@ -15,7 +15,7 @@
 #ifndef DEF_MACROS_H
 #define DEF_MACROS_H
 
-#include <QtGlobal>
+#include <QtGlobal> // to define Q_OS_WIN
 
 #ifdef Q_CC_GNU
 

@@ -16,10 +16,6 @@
 #define CALC_REFLECTION_INFO_H
 
 #include "data/data_dataset.h"
-#include "def/defs.h"
-#include "typ/typ_strlst.h"
-#include "typ/typ_types.h"
-#include "typ/typ_variant.h"
 
 namespace calc {
 
@@ -97,8 +93,9 @@ private:
 };
 
 class ReflectionInfos : public typ::vec<ReflectionInfo> {
-    CLASS(ReflectionInfos)
-    SUPER(typ::vec<ReflectionInfo>) public : ReflectionInfos();
+    CLASS(ReflectionInfos) SUPER(typ::vec<ReflectionInfo>);
+public:
+    ReflectionInfos();
 
     void append(ReflectionInfo::rc);
 

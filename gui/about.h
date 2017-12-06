@@ -15,7 +15,6 @@
 #ifndef ABOUT_H
 #define ABOUT_H
 
-#include "def/defs.h"
 #include "thehub.h"
 
 #include <QDialog>

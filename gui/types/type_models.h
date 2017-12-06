@@ -19,7 +19,6 @@
 #include <QAbstractTableModel>
 
 class QCheckBox;
-class QLineEdit;
 
 namespace models {
 

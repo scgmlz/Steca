@@ -15,8 +15,6 @@
 #ifndef TYP_GEOMETRY_H
 #define TYP_GEOMETRY_H
 
-#include "def/def_cmp.h"
-#include "def/defs.h"
 #include "typ/typ_array2d.h"
 #include "typ/typ_ij.h"
 #include "typ/typ_types.h"

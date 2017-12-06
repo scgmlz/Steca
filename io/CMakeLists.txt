@@ -1,5 +1,3 @@
-# io
-
 get_filename_component(lib ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
 include_directories (
@@ -18,9 +16,3 @@ add_library (${lib} ${files})
 target_link_libraries (${lib}
   Qt5::Core
 )
-
-target_link_libraries (${lib}
-  Qt5::Core
-)
-
-#eof

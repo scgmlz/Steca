@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "def_exc.h"
+#include "def_gsl.h" // declares 'scoped'
 #include "test/tests.h"
 
 #ifdef QT_NO_EXCEPTIONS
@@ -20,7 +21,6 @@
 #endif
 
 #ifdef TESTS
-#include "def/def_gsl.h"
 #endif
 
 Exception::Exception(rcstr msg, bool silent) noexcept : silent_(silent) {

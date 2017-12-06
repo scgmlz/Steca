@@ -15,7 +15,6 @@
 #ifndef COLORS_H
 #define COLORS_H
 
-#include "def/defs.h"
 #include "typ/typ_types.h"
 
 #include <QRgb>

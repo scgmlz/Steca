@@ -21,7 +21,6 @@ namespace data {
 
 struct Metadata;
 class OneDataset;
-class OneDatasets;
 class Dataset;
 class Datasets;
 
@@ -38,12 +37,8 @@ Q_DECLARE_METATYPE(data::shp_Dataset)
 #ifndef DATA_DATASET_H
 #define DATA_DATASET_H
 
-#include "def/defs.h"
-#include "typ/typ_array2d.h"
 #include "typ/typ_curve.h"
 #include "typ/typ_image.h"
-#include "typ/typ_strlst.h"
-#include "typ/typ_types.h"
 #include "typ/typ_variant.h"
 
 namespace core {
@@ -125,14 +120,16 @@ private:
 };
 
 class OneDatasets : public typ::vec<shp_OneDataset> {
-    CLASS(OneDatasets)
-    SUPER(typ::vec<shp_OneDataset>) public : typ::size2d imageSize() const;
+    CLASS(OneDatasets) SUPER(typ::vec<shp_OneDataset>);
+public:
+    typ::size2d imageSize() const;
     typ::shp_Image foldedImage() const;
 };
 
 // 1 or more OneDataset(s)
 class Dataset final : public OneDatasets {
-    CLASS(Dataset) SUPER(OneDatasets) friend class Datasets;
+    CLASS(Dataset) SUPER(OneDatasets);
+    friend class Datasets;
 
 public:
     Dataset();
@@ -165,7 +162,9 @@ private:
 };
 
 class Datasets final : public typ::vec<shp_Dataset> {
-    CLASS(Datasets) SUPER(typ::vec<shp_Dataset>) public : Datasets();
+    CLASS(Datasets) SUPER(typ::vec<shp_Dataset>);
+public:
+    Datasets();
 
     void appendHere(shp_Dataset);
 
@@ -192,6 +191,8 @@ private:
     mutable gma_rge rgeGma_;
     mutable typ::Curve avgCurve_;
 };
-}
+
+} // namespace data
+
 #endif // DATA_DATASET_H
 #endif // FORWARD_DECLARATIONS

@@ -15,7 +15,6 @@
 #ifndef ACTIONS_H
 #define ACTIONS_H
 
-#include "def/defs.h"
 #include "refhub.h"
 
 #include <QAction>

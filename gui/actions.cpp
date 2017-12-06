@@ -12,8 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "actions.h"
-#include "app.h"
 #include "thehub.h"
 
 namespace gui {

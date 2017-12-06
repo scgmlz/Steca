@@ -16,7 +16,6 @@
 #define TYP_JSON_H
 
 #include "def/def_gsl.h"
-#include "def/def_macros.h"
 #include "typ/typ_str.h"
 #include <QJsonArray>
 #include <QJsonObject>
@@ -92,11 +91,11 @@ class JsonArr : protected QJsonArray {
 
     using super::begin;
     using super::end;
-    using super::constBegin;
-    using super::constEnd;
 
     uint count() const;
     JsonObj objAt(uint) const;
 };
-}
+
+} // namespace typ
+
 #endif // TYP_JSON_H

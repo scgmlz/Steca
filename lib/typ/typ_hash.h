@@ -15,20 +15,11 @@
 #ifndef TYP_HASH_H
 #define TYP_HASH_H
 
-#include "def/def_gsl.h"
-#include "def/def_macros.h"
-#include <QHash>
 
 namespace typ {
 
 template <typename Key, typename T> class hash : protected QHash<Key, T> {
     CLASS(hash) SUPER(QHash<Key COMMA T>) public : using super::clear;
-    using super::insert;
-    using super::remove;
-    using super::find;
-    using super::contains;
-    using super::value;
-    using super::take;
 };
 
 template <typename Key, typename Tp> class owning_hash : protected hash<Key, Tp> {
@@ -53,7 +44,6 @@ template <typename Key, typename Tp> class owning_hash : protected hash<Key, Tp>
 
     Tp value(Key const& key) { return super::value(key); }
 
-    using super::contains;
 
     owner<Tp> take(Key const& key) { return owner<Tp>(super::take(key)); }
 };

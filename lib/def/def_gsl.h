@@ -18,6 +18,7 @@
 #ifndef DEF_GSL_H
 #define DEF_GSL_H
 
+#include <QtGlobal> // to define Q_OS_WIN
 #include "def/def_debug.h"
 #include "def/def_macros.h"
 
@@ -123,7 +124,6 @@ inline unsigned int clip_u(int i) {
 #else
 
 #ifndef QT_NO_DEBUG
-#include <limits>
 #endif
 
 // unsigned to signed

@@ -16,9 +16,7 @@
 #define TYP_STRLST_H
 
 #include "def/def_gsl.h"
-#include "def/def_macros.h"
 #include <QStringList>
-#include <initializer_list>
 
 // limited QStringList, only needed methods reexported
 
@@ -32,8 +30,6 @@ class str_lst : protected QStringList {
     using super::isEmpty;
     using super::begin;
     using super::end;
-    using super::cbegin;
-    using super::cend;
     using super::append;
     using super::removeLast;
 

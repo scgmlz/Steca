@@ -15,11 +15,8 @@
 #ifndef MODELS_H
 #define MODELS_H
 
-#include "fit/fit_fun.h"
-#include "typ/typ_strlst.h"
 #include "types/type_models.h"
 
-class TreeView;
 
 namespace models {
 

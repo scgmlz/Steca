@@ -18,7 +18,6 @@
 #include "typ/typ_angles.h"
 #include "typ/typ_range.h"
 #include "typ/typ_strlst.h"
-#include "typ/typ_vec.h"
 #include "typ/typ_xy.h"
 
 typedef typ::deg gma_t;
