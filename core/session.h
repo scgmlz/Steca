@@ -21,9 +21,6 @@
 #include "data/data_file.h"
 #include "typ/typ_async.h"
 #include "typ/typ_cache.h"
-#include "typ/typ_geometry.h"
-#include "typ/typ_image.h"
-#include "typ/typ_image_transform.h"
 
 namespace core {
 

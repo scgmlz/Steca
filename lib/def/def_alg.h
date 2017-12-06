@@ -15,7 +15,6 @@
 #ifndef DEF_ALG_H
 #define DEF_ALG_H
 
-#include <QtGlobal>
 
 // idiomatic loops
 

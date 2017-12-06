@@ -17,7 +17,6 @@
 #ifndef DEF_EXC_H
 #define DEF_EXC_H
 
-#include "def/def_macros.h"
 #include "typ/typ_str.h"
 #include <QException>
 

@@ -123,7 +123,6 @@ inline unsigned int clip_u(int i) {
 #else
 
 #ifndef QT_NO_DEBUG
-#include <limits>
 #endif
 
 // unsigned to signed

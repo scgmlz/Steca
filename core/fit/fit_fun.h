@@ -16,11 +16,9 @@
 #define FIT_FUN_H
 
 #include "typ/typ_curve.h"
-#include "typ/typ_fun.h"
 #include "typ/typ_types.h"
 
 namespace json_fun_key {
-extern str const POLYNOM, RAW, GAUSSIAN, LORENTZIAN, PSEUDOVOIGT1, PSEUDOVOIGT2;
 }
 
 namespace fit {

@@ -12,8 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "fit_fun.h"
-#include "def/def_alg.h"
 #include "fit_methods.h"
 #include <qmath.h>
 

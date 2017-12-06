@@ -15,14 +15,11 @@
 #ifndef TYP_CACHE_H
 #define TYP_CACHE_H
 
-#include "def/def_debug.h"
 #include "typ/typ_map.h"
 #include <QDateTime>
-#include <QSharedPointer>
 
 /* Example:
 
-#include "typ/typ_cache.h"
 
 struct CacheKey {
   CLASS(CacheKey)
@@ -110,16 +107,11 @@ public:
   typedef QSharedPointer<T> shp;
 
 private:
-  using mru_t     = typename super::mru_t;
-  using shp_mru_t = typename super::shp_mru_t;
-  using mapKey_t  = typename super::mapKey_t;
-  using mapKey_it = typename super::mapKey_it;
 
   typedef map<mru_t, mapKey_it> mapMru_t;
   mapMru_t mapMru_;
 
 public:
-  using super::super;
 
   void trim(uint n) {
     while (super::count() > n)
@@ -189,7 +181,6 @@ template <typename Key, typename T> class cache_lazy final : public cache_base<K
 private:
     using mru_t = typename super::mru_t;
     using shp_mru_t = typename super::shp_mru_t;
-    using mapKey_t = typename super::mapKey_t;
     using mapKey_it = typename super::mapKey_it;
 
     mru_t nextMru_ = 0;

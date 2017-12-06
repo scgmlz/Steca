@@ -16,9 +16,7 @@
 #define TYP_VEC_H
 
 #include "def/def_gsl.h"
-#include "def/def_macros.h"
 #include <QVector>
-#include <initializer_list>
 
 namespace typ {
 
@@ -46,9 +44,7 @@ template <typename T> class vec : protected QVector<T> {
     using super::cbegin;
     using super::cend;
     using super::data;
-    using super::constData;
     using super::first;
-    using super::last;
 
     vec& fill(T const& init) { return static_cast<vec&>(super::fill(init)); }
 

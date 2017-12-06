@@ -21,7 +21,6 @@
 #include "typ/typ_range.h"
 
 namespace json_fun_key {
-extern str const SUM;
 }
 
 namespace typ {

@@ -17,9 +17,7 @@
 #include "def/def_exc.h"
 #include "typ/typ_ij.h"
 #include "typ/typ_range.h"
-#include "typ/typ_str.h"
 #include "typ/typ_xy.h"
-#include <QStringList>
 
 namespace json_key {
 str const I("i"), J("j"), X("x"), Y("y"), MIN("min"), MAX("max"), PARAMS("parameters"),

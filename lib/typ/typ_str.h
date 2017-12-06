@@ -16,7 +16,6 @@
 #define TYP_STR_H
 
 #include "def/def_macros.h"
-#include <QString>
 #include <QStringBuilder>
 
 // string support

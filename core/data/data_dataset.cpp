@@ -12,8 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "data_dataset.h"
-#include "calc/calc_lens.h"
 #include "session.h"
 #include "typ/typ_log.h"
 #include <qmath.h>

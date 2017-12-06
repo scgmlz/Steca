@@ -20,7 +20,6 @@
 #endif
 
 #ifdef TESTS
-#include "def/def_gsl.h"
 #endif
 
 Exception::Exception(rcstr msg, bool silent) noexcept : silent_(silent) {
