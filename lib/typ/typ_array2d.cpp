@@ -13,10 +13,8 @@
 // ************************************************************************** //
 
 #include "typ_array2d.h"
-
 #include "def/def_cmp_impl.h"
-
-#include "test/tests.h"
+#include "wrap_doctest.h"
 
 namespace typ {
 

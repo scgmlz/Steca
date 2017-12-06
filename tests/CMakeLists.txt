@@ -1,11 +1,12 @@
 add_definitions (-DTESTS)
 
 set (srcdirs
-  lib LevMar core io
+  lib core io 3rdparty/doctest
 )
 
 include_directories (
   ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_HOME_DIRECTORY}/3rdparty/LevMar
 )
 
 foreach (dir ${srcdirs})
@@ -25,5 +26,6 @@ add_executable (tests
 )
 
 target_link_libraries (tests
-  Qt5::Widgets
+    Qt5::Widgets
+    LevMar
 )

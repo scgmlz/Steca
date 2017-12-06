@@ -14,7 +14,7 @@
 
 #include "def_exc.h"
 #include "def_gsl.h" // declares 'scoped'
-#include "test/tests.h"
+#include "wrap_doctest.h"
 
 #ifdef QT_NO_EXCEPTIONS
 #error needs exception handling

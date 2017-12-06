@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "def_gsl.h"
-#include "test/tests.h"
+#include "wrap_doctest.h"
 
 qreal const NAN = Q_QNAN;
 qreal const INF = Q_INFINITY;

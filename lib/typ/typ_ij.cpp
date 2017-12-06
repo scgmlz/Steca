@@ -13,11 +13,9 @@
 // ************************************************************************** //
 
 #include "typ_ij.h"
-
 #include "def/def_cmp_impl.h"
 #include "typ/typ_json.h"
-
-#include "test/tests.h"
+#include "wrap_doctest.h"
 
 namespace typ {
 

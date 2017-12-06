@@ -1,5 +1,5 @@
 #include "io_io.h"
-#include "test/tests.h"
+#include "wrap_doctest.h"
 
 #ifdef TESTS
 

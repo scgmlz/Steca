@@ -15,7 +15,7 @@
 #include "typ_angles.h"
 #include <qmath.h>
 
-#include "test/tests.h"
+#include "wrap_doctest.h"
 
 namespace typ {
 

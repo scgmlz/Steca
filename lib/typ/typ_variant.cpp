@@ -13,11 +13,9 @@
 // ************************************************************************** //
 
 #include "typ_variant.h"
-
 #include "def/def_cmp_impl.h"
 #include <QDate>
-
-#include "test/tests.h"
+#include "wrap_doctest.h"
 
 namespace typ {
 

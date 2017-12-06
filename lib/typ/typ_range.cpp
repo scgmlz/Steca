@@ -13,12 +13,10 @@
 // ************************************************************************** //
 
 #include "typ_range.h"
-
 #include "def/def_cmp_impl.h"
 #include "def/defs.h"
 #include "typ/typ_json.h"
-
-#include "test/tests.h"
+#include "wrap_doctest.h"
 
 namespace typ {
 
