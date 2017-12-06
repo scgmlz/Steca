@@ -9,7 +9,7 @@ cat >> $PRO <<EOT
 TARGET   = $APP
 TEMPLATE = app
 
-QT      += 3rdparty core gui widgets svg network
+QT      += core gui widgets svg network
 CONFIG  += c++11 silent
 
 win32 {
@@ -26,7 +26,7 @@ function files {
   find $where -type f -name \*.$ext -exec echo ' ' {} \\ \;
 }
 
-MODULES='lib LevMar io core gui'
+MODULES='3rdparty lib io core gui'
 echo -e '\nHEADERS += \\' >> $PRO
 for m in $MODULES ; do files $m h >> $PRO ; done
 
