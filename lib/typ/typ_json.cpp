@@ -18,6 +18,7 @@
 #include "typ/typ_ij.h"
 #include "typ/typ_range.h"
 #include "typ/typ_xy.h"
+#include <QStringList> // needed under Travis
 
 namespace json_key {
 str const I("i"), J("j"), X("x"), Y("y"), MIN("min"), MAX("max"), PARAMS("parameters"),

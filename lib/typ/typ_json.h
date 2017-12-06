@@ -95,5 +95,7 @@ class JsonArr : protected QJsonArray {
     uint count() const;
     JsonObj objAt(uint) const;
 };
-}
+
+} // namespace typ
+
 #endif // TYP_JSON_H
