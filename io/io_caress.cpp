@@ -17,7 +17,6 @@
 #include "Caress/raw.h" // inclusion order is critical !
 
 #include "io_io.h"
-#include "typ/typ_types.h"
 
 #include <qmath.h>
 #include <sstream>

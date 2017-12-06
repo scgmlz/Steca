@@ -259,4 +259,5 @@ loadTiff(data::shp_File& file, rcstr filePath, typ::deg phi, qreal monitor, qrea
 
     file->datasets().append(data::shp_OneDataset(new data::OneDataset(md, size, intens)));
 }
-}
+
+} // namespace io
