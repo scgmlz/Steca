@@ -16,9 +16,8 @@ target_link_libraries (${lib}
   Qt5::Widgets
   Qt5::Network
   steca_QCP
-  core
-  LevMar
   io
+  core
   lib
 )
 

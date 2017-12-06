@@ -37,9 +37,9 @@ find_package (Qt5Widgets REQUIRED)
 find_package (Qt5Network REQUIRED)
 
 add_subdirectory (3rdparty)
+add_subdirectory (io)
 add_subdirectory (lib)
 add_subdirectory (core)
-add_subdirectory (io)
 add_subdirectory (gui)
 
 if (WITH_TESTS)
