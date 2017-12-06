@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      lib/def/def_exc.h
+//! @file      core/def/def_exc.h
 //! @brief     Defines ...
 //!
 //! @homepage  https://github.com/scgmlz/Steca2

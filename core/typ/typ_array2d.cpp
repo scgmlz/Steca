@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      lib/typ/typ_array2d.cpp
+//! @file      core/typ/typ_array2d.cpp
 //! @brief     Implements ...
 //!
 //! @homepage  https://github.com/scgmlz/Steca2

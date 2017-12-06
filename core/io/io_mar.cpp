@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      io/io_mar.cpp
+//! @file      core/io/io_mar.cpp
 //! @brief     Implements ...
 //!
 //! @homepage  https://github.com/scgmlz/Steca2

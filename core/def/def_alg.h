@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      lib/def/def_alg.h
+//! @file      core/def/def_alg.h
 //! @brief     Defines idiomatic loops (for_int, ...) and ONLY_ONCE
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
