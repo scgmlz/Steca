@@ -13,7 +13,7 @@ compiler:
 branches:
   only:
   - master
-  - develop-2.0.5
+  - develop
 
 env:
 - BUILD_TYPE=Debug
