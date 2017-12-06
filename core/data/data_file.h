@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef FWD_DATA_FILE_H
-#define FWD_DATA_FILE_H
+#ifndef DATA_FILE_H
+#define DATA_FILE_H
 
 #include <QSharedPointer>
 
@@ -25,19 +25,12 @@ typedef QSharedPointer<File> shp_File;
 
 Q_DECLARE_METATYPE(data::shp_File)
 
-#endif
-
-#ifndef FORWARD_DECLARATIONS
-#ifndef DATA_FILE_H
-#define DATA_FILE_H
-
 #include "data_dataset.h"
 #include <QFileInfo>
 
 namespace data {
 
-
-// A file (loaded from a disk file) that contains a number of datasets.
+//! A file (loaded from a disk file) that contains a number of datasets.
 class File final {
     CLASS(File)
 public:
@@ -53,6 +46,7 @@ private:
     QFileInfo fileInfo_;
     OneDatasets datasets_;
 };
-}
+
+} // namespace data
+
 #endif // DATA_FILE_H
-#endif // FORWARD_DECLARATIONS

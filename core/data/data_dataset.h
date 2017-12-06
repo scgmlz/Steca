@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef FWD_DATA_DATASET_H
-#define FWD_DATA_DATASET_H
+#ifndef DATA_DATASET_H
+#define DATA_DATASET_H
 
 #include <QSharedPointer>
 
@@ -30,12 +30,6 @@ typedef QSharedPointer<Dataset> shp_Dataset;
 }
 
 Q_DECLARE_METATYPE(data::shp_Dataset)
-
-#endif
-
-#ifndef FORWARD_DECLARATIONS
-#ifndef DATA_DATASET_H
-#define DATA_DATASET_H
 
 #include "typ/typ_curve.h"
 #include "typ/typ_image.h"
@@ -195,4 +189,3 @@ private:
 } // namespace data
 
 #endif // DATA_DATASET_H
-#endif // FORWARD_DECLARATIONS
