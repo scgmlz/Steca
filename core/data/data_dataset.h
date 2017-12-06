@@ -15,7 +15,14 @@
 #ifndef DATA_DATASET_H
 #define DATA_DATASET_H
 
+#include "typ/typ_curve.h"
+#include "typ/typ_image.h"
+#include "typ/typ_variant.h"
 #include <QSharedPointer>
+
+namespace core {
+class Session;
+}
 
 namespace data {
 
@@ -27,19 +34,7 @@ class Datasets;
 typedef QSharedPointer<Metadata const> shp_Metadata; // no changing these
 typedef QSharedPointer<OneDataset const> shp_OneDataset;
 typedef QSharedPointer<Dataset> shp_Dataset;
-}
 
-Q_DECLARE_METATYPE(data::shp_Dataset)
-
-#include "typ/typ_curve.h"
-#include "typ/typ_image.h"
-#include "typ/typ_variant.h"
-
-namespace core {
-class Session;
-}
-
-namespace data {
 
 struct Metadata {
     CLASS(Metadata)
@@ -187,5 +182,7 @@ private:
 };
 
 } // namespace data
+
+Q_DECLARE_METATYPE(data::shp_Dataset)
 
 #endif // DATA_DATASET_H
