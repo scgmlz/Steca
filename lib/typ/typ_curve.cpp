@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "typ_curve.h"
-#include "def/def_alg.h" // for Win
+#include "typ_range.h"
 
 namespace typ {
 
@@ -74,9 +74,7 @@ Curve Curve::intersect(Ranges::rc ranges) const {
     ENSURE(isOrdered())
 
     uint xi = 0, cnt = count();
-    int n = ranges.count();
-
-    for_int (i, n) {
+    for_i (ranges.count()) {
         auto& range = ranges.at(i);
         auto minX = range.min, maxX = range.max;
         while (xi < cnt && xs_.at(xi) < minX)
