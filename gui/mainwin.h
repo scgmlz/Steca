@@ -15,7 +15,6 @@
 #ifndef MAINWIN_H
 #define MAINWIN_H
 
-#include "def/defs.h"
 #include "thehub.h"
 
 #include <QMainWindow>

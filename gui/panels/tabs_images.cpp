@@ -16,9 +16,7 @@
 #include "colors.h"
 #include "gui_cfg.h"
 #include "thehub.h"
-#include <QColor>
 #include <QPainter>
-#include <QResizeEvent>
 #include <qmath.h>
 
 namespace gui {

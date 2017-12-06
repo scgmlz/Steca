@@ -12,9 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "models.h"
-#include "calc/calc_reflection.h"
-#include "gui_helpers.h"
 #include "thehub.h"
 
 namespace models {

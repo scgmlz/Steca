@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "panel_diffractogram.h"
-#include "calc/calc_lens.h"
 #include "gui_cfg.h"
 #include "thehub.h"
 

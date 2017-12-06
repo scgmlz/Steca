@@ -18,16 +18,12 @@
 #include "def/defs.h"
 #include "typ/typ_strlst.h"
 
-#include <QBoxLayout>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDockWidget>
-#include <QDoubleSpinBox>
-#include <QFrame>
 #include <QLabel>
 #include <QLayout>
 #include <QLineEdit>
-#include <QListView>
 #include <QRadioButton>
 #include <QSpinBox>
 #include <QToolButton>

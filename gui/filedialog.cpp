@@ -12,11 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "filedialog.h"
 #include "io_io.h"
 
-#include <QAbstractProxyModel>
-#include <QApplication>
 #include <QFileDialog>
 #include <QFileSystemModel>
 #include <QSortFilterProxyModel>

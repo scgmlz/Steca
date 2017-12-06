@@ -17,8 +17,6 @@
 
 #include "gui_helpers.h"
 #include "models.h"
-#include "refhub.h"
-#include <QItemDelegate>
 
 namespace gui {
 namespace views {

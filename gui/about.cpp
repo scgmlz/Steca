@@ -17,12 +17,10 @@
 #include "config.h"
 #include "gui_cfg.h"
 #include "gui_helpers.h"
-#include "typ/typ_geometry.h"
 #include <QApplication>
 #include <QDialogButtonBox>
 
 #ifdef Q_OS_MAC
-#include <QToolTip>
 #endif
 
 namespace gui {

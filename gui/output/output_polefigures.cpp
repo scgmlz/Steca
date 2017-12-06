@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "output_polefigures.h"
-#include "calc/calc_polefigure.h"
 #include "colors.h"
 #include "thehub.h"
 

@@ -20,7 +20,6 @@
 #include <QGroupBox>
 
 namespace models {
-class TableModel;
 }
 
 namespace gui {

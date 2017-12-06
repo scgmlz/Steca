@@ -13,8 +13,6 @@
 // ************************************************************************** //
 
 #include "type_models.h"
-#include <QCheckBox>
-#include <QLineEdit>
 
 namespace models {
 

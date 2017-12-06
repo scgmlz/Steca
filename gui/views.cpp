@@ -13,9 +13,6 @@
 // ************************************************************************** //
 
 #include "views.h"
-#include "calc/calc_reflection.h"
-#include "thehub.h"
-#include <QCheckBox>
 
 namespace gui {
 namespace views {

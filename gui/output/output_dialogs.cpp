@@ -18,11 +18,9 @@
 #include "filedialog.h"
 #include "gui_cfg.h"
 #include "thehub.h"
-#include "types/type_models.h"
 
 #include <QDir>
 #include <QHeaderView>
-#include <QMessageBox>
 #include <QProgressBar>
 #include <QScrollArea>
 
