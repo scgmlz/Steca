@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/io/io_io.cpp
-//! @brief     Implements ...
+//! @brief     Implements loader functions.
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -95,4 +95,5 @@ data::shp_File load(rcstr filePath) THROWS {
 
     return file;
 }
-}
+
+} // namespace io

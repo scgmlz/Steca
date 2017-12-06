@@ -36,7 +36,10 @@ find_package (Qt5Test    REQUIRED)
 find_package (Qt5Widgets REQUIRED)
 find_package (Qt5Network REQUIRED)
 
-add_subdirectory (3rdparty)
+add_subdirectory (3rdparty/LevMar)
+add_subdirectory (3rdparty/QCustomPlot)
+add_subdirectory (3rdparty/Caress)
+add_subdirectory (3rdparty/Mar)
 add_subdirectory (core)
 add_subdirectory (gui)
 

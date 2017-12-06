@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/io/io_io.h
-//! @brief     Defines ...
+//! @brief     Defines loader functions in namespace io.
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -36,5 +36,7 @@ data::shp_File loadMar(rcstr filePath) THROWS;
 
 // load a metadata file + tiffs
 data::shp_File loadTiffDat(rcstr filePath) THROWS;
-}
+
+} // namespace io
+
 #endif // IO_IO_H
