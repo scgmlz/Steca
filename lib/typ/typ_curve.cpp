@@ -74,8 +74,9 @@ Curve Curve::intersect(Ranges::rc ranges) const {
     ENSURE(isOrdered())
 
     uint xi = 0, cnt = count();
+    int n = ranges.count();
 
-    for_int (i, ranges.count()) {
+    for_int (i, n) {
         auto& range = ranges.at(i);
         auto minX = range.min, maxX = range.max;
         while (xi < cnt && xs_.at(xi) < minX)
