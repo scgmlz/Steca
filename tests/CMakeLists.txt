@@ -6,7 +6,7 @@ set (srcdirs
 
 include_directories (
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_HOME_DIRECTORY}/io
+  ${CMAKE_HOME_DIRECTORY}
   ${CMAKE_HOME_DIRECTORY}/3rdparty/LevMar
 )
 
@@ -29,5 +29,5 @@ add_executable (tests
 target_link_libraries (tests
     Qt5::Widgets
     LevMar
-    io
+    core
 )

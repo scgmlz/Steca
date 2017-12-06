@@ -14,9 +14,9 @@
 
 #include "data/data_dataset.h"
 
-#include "Caress/raw.h" // inclusion order is critical !
+#include "3rdparty/Caress/raw.h" // inclusion order is critical !
 
-#include "io_io.h"
+#include "io/io_io.h"
 
 #include <qmath.h>
 #include <sstream>

@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "config.h"
-#include "io_io.h"
+#include "io/io_io.h"
 #include "mainwin.h"
 
 #include <QDir>

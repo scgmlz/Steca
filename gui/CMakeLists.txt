@@ -5,7 +5,6 @@ include_directories (
   ${CMAKE_HOME_DIRECTORY}/3rdparty/QCustomPlot
   ${CMAKE_HOME_DIRECTORY}/lib
   ${CMAKE_HOME_DIRECTORY}/core
-  ${CMAKE_HOME_DIRECTORY}/io
 )
 
 file (GLOB_RECURSE files *.h *.cpp)
@@ -16,7 +15,6 @@ target_link_libraries (${lib}
   Qt5::Widgets
   Qt5::Network
   steca_QCP
-  io
   core
   lib
 )
