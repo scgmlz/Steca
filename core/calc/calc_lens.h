@@ -16,18 +16,10 @@
 #define CALC_LENS_H
 
 #include "data/data_dataset.h"
-#include "def/defs.h"
-#include "typ/typ_array2d.h"
-#include "typ/typ_curve.h"
 #include "typ/typ_geometry.h"
-#include "typ/typ_image.h"
 #include "typ/typ_image_transform.h"
-#include "typ/typ_strlst.h"
-#include "typ/typ_types.h"
-#include <QSharedPointer>
 
 namespace core {
-class Session;
 }
 
 namespace calc {
