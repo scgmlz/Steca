@@ -5,6 +5,7 @@ include_directories (
   ${CMAKE_HOME_DIRECTORY}/lib
   ${CMAKE_HOME_DIRECTORY}
   ${CMAKE_HOME_DIRECTORY}/3rdparty/LevMar
+  ${CMAKE_HOME_DIRECTORY}/3rdparty/doctest
 )
 
 file (GLOB_RECURSE files *.h *.cpp)

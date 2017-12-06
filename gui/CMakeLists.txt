@@ -3,7 +3,6 @@ get_filename_component(lib ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 include_directories (
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_HOME_DIRECTORY}/3rdparty/QCustomPlot
-  ${CMAKE_HOME_DIRECTORY}/lib
   ${CMAKE_HOME_DIRECTORY}/core
 )
 
@@ -16,7 +15,6 @@ target_link_libraries (${lib}
   Qt5::Network
   steca_QCP
   core
-  lib
 )
 
 # the Steca executable:
