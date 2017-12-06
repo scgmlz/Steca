@@ -36,7 +36,7 @@ find_package (Qt5Test    REQUIRED)
 find_package (Qt5Widgets REQUIRED)
 find_package (Qt5Network REQUIRED)
 
-add_subdirectory (LevMar)
+add_subdirectory (3rdparty)
 add_subdirectory (lib)
 add_subdirectory (core)
 add_subdirectory (io)

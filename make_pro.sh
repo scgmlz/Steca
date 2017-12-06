@@ -9,7 +9,7 @@ cat >> $PRO <<EOT
 TARGET   = $APP
 TEMPLATE = app
 
-QT      += core gui widgets svg network
+QT      += 3rdparty core gui widgets svg network
 CONFIG  += c++11 silent
 
 win32 {
@@ -17,7 +17,7 @@ win32 {
   RC_ICONS = \$\$PWD/gui/icons/retro_stier.ico
 }
 
-INCLUDEPATH += \$\$PWD/lib \$\$PWD/LevMar \$\$PWD/io \$\$PWD/core \$\$PWD/gui
+INCLUDEPATH += \$\$PWD/3rdparty/LevMar \$\$PWD/lib \$\$PWD/io \$\$PWD/core \$\$PWD/gui
 
 EOT
 
