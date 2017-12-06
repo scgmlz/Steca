@@ -15,7 +15,7 @@
 #ifndef OUTPUT_DIAGRAMS_H
 #define OUTPUT_DIAGRAMS_H
 
-#include "QCP/qcustomplot.h"
+#include "qcustomplot.h"
 #include "output_dialogs.h"
 
 namespace gui {

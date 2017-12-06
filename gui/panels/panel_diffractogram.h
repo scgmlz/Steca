@@ -15,7 +15,7 @@
 #ifndef PANEL_DIFFRACTOGRAM_H
 #define PANEL_DIFFRACTOGRAM_H
 
-#include "QCP/qcustomplot.h"
+#include "qcustomplot.h"
 #include "actions.h"
 #include "panel.h"
 

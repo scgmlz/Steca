@@ -17,7 +17,7 @@ win32 {
   RC_ICONS = \$\$PWD/gui/icons/retro_stier.ico
 }
 
-INCLUDEPATH += \$\$PWD/3rdparty/LevMar \$\$PWD/lib \$\$PWD/io \$\$PWD/core \$\$PWD/gui
+INCLUDEPATH += \$\$PWD/3rdparty/LevMar \$\$PWD/3rdparty/QCustomPlot \$\$PWD/lib \$\$PWD/io \$\$PWD/core \$\$PWD/gui
 
 EOT
 
