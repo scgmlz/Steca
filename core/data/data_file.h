@@ -15,20 +15,13 @@
 #ifndef DATA_FILE_H
 #define DATA_FILE_H
 
+#include "data_dataset.h"
+#include <QFileInfo>
 #include <QSharedPointer>
 
 namespace data {
 
-class File;
-typedef QSharedPointer<File> shp_File;
-}
-
-Q_DECLARE_METATYPE(data::shp_File)
-
-#include "data_dataset.h"
-#include <QFileInfo>
-
-namespace data {
+typedef QSharedPointer<class File> shp_File;
 
 //! A file (loaded from a disk file) that contains a number of datasets.
 class File final {
@@ -48,5 +41,7 @@ private:
 };
 
 } // namespace data
+
+Q_DECLARE_METATYPE(data::shp_File)
 
 #endif // DATA_FILE_H
