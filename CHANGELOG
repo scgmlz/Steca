@@ -1,4 +1,4 @@
-ver. 2.0.5, released 2017.12.01
+ver. 2.0.5, released 2017.12.06
 -------------------------------
 
 New features:
@@ -8,9 +8,9 @@ New features:
 
 Improvements:
 
-* some code cleanup
+* some code cleanup (transiting to new maintainer's taste)
 * Better sorting of the table of pole figure points.
-* Table of pole figure points does not auto-select the alpha & beta comumns
+* Table of pole figure points does not auto-select the alpha & beta columns
 * "open files" dialog caches the file type information
 * read new STRESS-SPEC metadata
 * all file dialogs are now uniformly looking
