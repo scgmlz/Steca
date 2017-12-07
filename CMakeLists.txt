@@ -49,7 +49,7 @@ add_subdirectory(gui)
 if(WITH_TESTS)
   include(CTest) # equivalent to "enable_testing() ???
   add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND}) # => 'make check' is an alias for 'ctest'
-  set(gtest_force_shared_cr ON CACHE bool "Use shared (DLL) run-time lib even when Google Test is built as static lib.")
+  set(gtest_force_shared_crt ON CACHE bool "Use shared (DLL) run-time lib even when Google Test is built as static lib.")
   add_subdirectory(3rdparty/googletest)
   configure_file(testdata/testdata.h.in ${CMAKE_BINARY_DIR}/testdata.h @ONLY)
   add_subdirectory(utest)
