@@ -80,7 +80,7 @@ public:
 
     shp_Metadata metadata() const;
 
-    tth_t midTth() const { return md_->motorTth; }
+    typ::deg midTth() const { return md_->motorTth; }
 
     qreal monitorCount() const { return md_->monitorCount; }
     qreal deltaMonitorCount() const { return md_->deltaMonitorCount; }
@@ -101,7 +101,7 @@ public:
 
     void collectIntens(
         core::Session const&, typ::Image const* intensCorr, inten_vec&, uint_vec&, gma_rge::rc,
-        tth_t minTth, tth_t deltaTth) const;
+        typ::deg minTth, typ::deg deltaTth) const;
 
 private:
     shp_Metadata md_;

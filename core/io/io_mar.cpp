@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/io/io_mar.cpp
-//! @brief     Implements ...
+//! @brief     Implements function loadMar
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -57,13 +57,12 @@ data::shp_File loadMar(rcstr filePath) THROWS {
     }
 
     if (byteswap) {
-        if (h1 == 1234) {
+        if (h1 == 1234)
             mar345 = 1;
-        } else if (h1 > 10 && h1 < 5000)
+        else if (h1 > 10 && h1 < 5000)
             mar345 = 0;
-        else {
+        else
             THROW("bad format");
-        }
     }
 
     // Read Header
@@ -122,7 +121,6 @@ data::shp_File loadMar(rcstr filePath) THROWS {
     //*** Read and correct high bytes ***
     //***********************************
     /* There are some high intensity values stored in the image */
-    bool pictureOverflow = false;
     if (numberOfHigh) {
         int pair[2];
 
@@ -155,10 +153,8 @@ data::shp_File loadMar(rcstr filePath) THROWS {
 
             // Check for error pixel (overflow pixel will set to 250000 and in the
             // dataset will set the overflow flag)
-            if (pair[1] == 999999.0) {
+            if (pair[1] == 999999.0)
                 pair[1] = 128000;
-                pictureOverflow = true;
-            }
 
             // Correct high pixel
             i4_image[address] = pair[1];

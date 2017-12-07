@@ -24,12 +24,12 @@ struct itf_t {
     CLASS(itf_t)
 
     itf_t();
-    itf_t(inten_t, tth_t, fwhm_t);
+    itf_t(inten_t, deg, fwhm_t);
 
     void operator+=(rc);
 
     inten_t inten;
-    tth_t tth;
+    deg tth;
     fwhm_t fwhm;
 };
 

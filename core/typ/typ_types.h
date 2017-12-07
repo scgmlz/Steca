@@ -20,9 +20,6 @@
 #include "typ/typ_strlst.h"
 #include "typ/typ_xy.h"
 
-typedef typ::deg gma_t;
-typedef typ::deg tth_t;
-
 typedef float inten_t;
 typedef float fwhm_t;
 

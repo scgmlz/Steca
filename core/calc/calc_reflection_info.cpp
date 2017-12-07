@@ -69,12 +69,12 @@ cmp_vec ReflectionInfo::dataCmps() {
 
 ReflectionInfo::ReflectionInfo()
     : ReflectionInfo(
-          shp_Metadata(), NAN, NAN, Range(), inten_t(NAN), inten_t(NAN), tth_t(NAN), tth_t(NAN),
+          shp_Metadata(), NAN, NAN, Range(), inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN),
           NAN, NAN) {}
 
 ReflectionInfo::ReflectionInfo(
     shp_Metadata md, deg alpha, deg beta, gma_rge rgeGma, inten_t inten, inten_t intenError,
-    tth_t tth, tth_t tthError, fwhm_t fwhm, fwhm_t fwhmError)
+    deg tth, deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
     : md_(md)
     , alpha_(alpha)
     , beta_(beta)
@@ -88,18 +88,18 @@ ReflectionInfo::ReflectionInfo(
 
 ReflectionInfo::ReflectionInfo(shp_Metadata md, deg alpha, deg beta, gma_rge rgeGma)
     : ReflectionInfo(
-          md, alpha, beta, rgeGma, inten_t(NAN), inten_t(NAN), tth_t(NAN), tth_t(NAN), fwhm_t(NAN),
+          md, alpha, beta, rgeGma, inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), fwhm_t(NAN),
           fwhm_t(NAN)) {}
 
 ReflectionInfo::ReflectionInfo(
-    deg alpha, deg beta, gma_rge rgeGma, inten_t inten, inten_t intenError, tth_t tth,
-    tth_t tthError, fwhm_t fwhm, fwhm_t fwhmError)
+    deg alpha, deg beta, gma_rge rgeGma, inten_t inten, inten_t intenError, deg tth,
+    deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
     : ReflectionInfo(
           shp_Metadata(), alpha, beta, rgeGma, inten, intenError, tth, tthError, fwhm, fwhmError) {}
 
 ReflectionInfo::ReflectionInfo(deg alpha, deg beta)
     : ReflectionInfo(
-          alpha, beta, Range(), inten_t(NAN), inten_t(NAN), tth_t(NAN), tth_t(NAN), fwhm_t(NAN),
+          alpha, beta, Range(), inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), fwhm_t(NAN),
           fwhm_t(NAN)) {}
 
 typ::row_t ReflectionInfo::data() const {

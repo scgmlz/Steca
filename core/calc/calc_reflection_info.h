@@ -17,6 +17,8 @@
 
 #include "data/data_dataset.h"
 
+using typ::deg;
+
 namespace calc {
 
 class ReflectionInfo final {
@@ -58,10 +60,10 @@ public:
 
     ReflectionInfo(
         data::shp_Metadata, typ::deg alpha, typ::deg beta, gma_rge, inten_t, inten_t /*error*/,
-        tth_t, tth_t /*error*/, fwhm_t, fwhm_t /*error*/);
+        deg, deg /*error*/, fwhm_t, fwhm_t /*error*/);
     ReflectionInfo(data::shp_Metadata, typ::deg alpha, typ::deg beta, gma_rge);
     ReflectionInfo(
-        typ::deg alpha, typ::deg beta, gma_rge, inten_t, inten_t /*error*/, tth_t, tth_t /*error*/,
+        typ::deg alpha, typ::deg beta, gma_rge, inten_t, inten_t /*error*/, deg, deg /*error*/,
         fwhm_t, fwhm_t /*error*/);
     ReflectionInfo(typ::deg alpha, typ::deg beta);
 
@@ -73,8 +75,8 @@ public:
     inten_t inten() const { return inten_; }
     inten_t intenError() const { return intenError_; }
 
-    tth_t tth() const { return tth_; }
-    tth_t tthError() const { return tthError_; }
+    deg tth() const { return tth_; }
+    deg tthError() const { return tthError_; }
 
     fwhm_t fwhm() const { return fwhm_; }
     fwhm_t fwhmError() const { return fwhmError_; }
@@ -88,7 +90,7 @@ private:
     gma_rge rgeGma_;
 
     inten_t inten_, intenError_;
-    tth_t tth_, tthError_;
+    deg tth_, tthError_;
     fwhm_t fwhm_, fwhmError_;
 };
 

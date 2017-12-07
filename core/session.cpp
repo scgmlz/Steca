@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/session.cpp
-//! @brief     Implements ...
+//! @brief     Implements class Session
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -50,10 +50,6 @@ void Session::clear() {
 
     intenScaledAvg_ = true;
     intenScale_ = preal(1);
-}
-
-data::shp_File Session::file(uint i) const {
-    return files_.at(i);
 }
 
 bool Session::hasFile(rcstr fileName) {
@@ -139,10 +135,6 @@ void Session::remCorrFile() {
     intensCorr_.clear();
     corrEnabled_ = false;
     updateImageSize();
-}
-
-void Session::tryEnableCorr(bool on) {
-    corrEnabled_ = on && hasCorrFile();
 }
 
 void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
@@ -265,24 +257,12 @@ typ::IJ Session::midPix() const {
     return mid;
 }
 
-Range::rc Session::gammaRange() const {
-    return gammaRange_;
-}
-
-void Session::setGammaRange(Range::rc gammaRange) {
-    gammaRange_ = gammaRange;
-}
-
 typ::shp_AngleMap Session::angleMap(data::OneDataset::rc one) const {
     typ::AngleMap::Key key(geometry_, imageSize_, imageCut_, midPix(), one.midTth());
     typ::shp_AngleMap map = angleMapCache_.value(key);
     if (map.isNull())
         map = angleMapCache_.insert(key, typ::shp_AngleMap(new typ::AngleMap(key)));
     return map;
-}
-
-typ::shp_AngleMap Session::angleMap(Session::rc session, data::OneDataset::rc one) {
-    return session.angleMap(one);
 }
 
 calc::shp_ImageLens
@@ -301,7 +281,7 @@ calc::shp_DatasetLens Session::datasetLens(
 // sample orientation and diffraction angles.
 // tth: Center of reflection's 2theta interval.
 // gma: Center of gamma slice.
-void calculateAlphaBeta(data::Dataset::rc dataset, tth_t tth, gma_t gma, deg& alpha, deg& beta) {
+void calculateAlphaBeta(data::Dataset::rc dataset, deg tth, deg gma, deg& alpha, deg& beta) {
     // Sample rotations.
     typ::rad omg = dataset.omg().toRad();
     typ::rad phi = dataset.phi().toRad();
@@ -367,7 +347,7 @@ calc::ReflectionInfo Session::makeReflectionInfo(
     return rgeTth.contains(peak.x)
         ? calc::ReflectionInfo(
               metadata, alpha, beta, gmaSector, inten_t(peak.y), inten_t(peakError.y),
-              tth_t(peak.x), tth_t(peakError.x), fwhm_t(fwhm), fwhm_t(fwhmError))
+              deg(peak.x), deg(peakError.x), fwhm_t(fwhm), fwhm_t(fwhmError))
         : calc::ReflectionInfo(metadata, alpha, beta, gmaSector);
 }
 
@@ -412,22 +392,6 @@ calc::ReflectionInfos Session::makeReflectionInfos(
     return infos;
 }
 
-void Session::setBgRanges(typ::Ranges::rc ranges) {
-    bgRanges_ = ranges;
-}
-
-bool Session::addBgRange(Range::rc range) {
-    return bgRanges_.add(range);
-}
-
-bool Session::remBgRange(Range::rc range) {
-    return bgRanges_.rem(range);
-}
-
-void Session::setBgPolyDegree(uint degree) {
-    bgPolyDegree_ = degree;
-}
-
 void Session::setIntenScaleAvg(bool avg, preal scale) {
     intenScaledAvg_ = avg;
     intenScale_ = scale;
@@ -436,14 +400,6 @@ void Session::setIntenScaleAvg(bool avg, preal scale) {
 void Session::addReflection(calc::shp_Reflection reflection) {
     EXPECT(!reflection.isNull())
     reflections_.append(reflection);
-}
-
-void Session::remReflection(uint i) {
-    reflections_.remove(i);
-}
-
-void Session::setNorm(eNorm norm) {
-    norm_ = norm;
 }
 
 qreal Session::calcAvgBackground(data::Dataset::rc dataset) const {
@@ -464,4 +420,5 @@ qreal Session::calcAvgBackground(data::Datasets::rc datasets) const {
 
     return bg / datasets.count();
 }
-}
+
+} // namespace core

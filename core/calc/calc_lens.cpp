@@ -156,7 +156,7 @@ Curve DatasetLens::makeCurve(gma_rge::rc rgeGma) const {
 
     if (count) {
         tth_rge rgeTth = dataset_.rgeTth(session_);
-        tth_t minTth = rgeTth.min, deltaTth = rgeTth.width() / count;
+        deg minTth = rgeTth.min, deltaTth = rgeTth.width() / count;
         for_i (count)
             res.append(minTth + deltaTth * i, qreal(intens.at(i) * normFactor_));
     }

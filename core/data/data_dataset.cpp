@@ -241,7 +241,7 @@ size2d OneDataset::imageSize() const {
 
 void OneDataset::collectIntens(
     core::Session::rc session, typ::Image const* intensCorr, inten_vec& intens, uint_vec& counts,
-    gma_rge::rc rgeGma, tth_t minTth, tth_t deltaTth) const {
+    gma_rge::rc rgeGma, deg minTth, deg deltaTth) const {
     auto angleMap = session.angleMap(*this);
     EXPECT(!angleMap.isNull())
     typ::AngleMap::rc map = *angleMap;
@@ -271,7 +271,7 @@ void OneDataset::collectIntens(
 
         inten *= corr;
 
-        tth_t tth = map.at(ind).tth;
+        deg tth = map.at(ind).tth;
 
         // bin index
         uint ti = to_u(qFloor((tth - minTth) / deltaTth));
@@ -411,7 +411,7 @@ qreal Dataset::avgDeltaTime() const { AVG_ONES(deltaTime) }
 inten_vec Dataset::collectIntens(
     core::Session::rc session, typ::Image const* intensCorr, gma_rge::rc rgeGma) const {
     tth_rge tthRge = rgeTth(session);
-    tth_t tthWdt = tthRge.width();
+    deg tthWdt = tthRge.width();
 
     auto cut = session.imageCut();
     uint pixWidth = session.imageSize().w - cut.left - cut.right;
@@ -419,7 +419,7 @@ inten_vec Dataset::collectIntens(
     uint numBins;
     if (1 < count()) { // combined datasets
         auto one = first();
-        tth_t delta = one->rgeTth(session).width() / pixWidth;
+        deg delta = one->rgeTth(session).width() / pixWidth;
         numBins = to_u(qCeil(tthWdt / delta));
     } else {
         numBins = pixWidth; // simply match the pixels
@@ -428,7 +428,7 @@ inten_vec Dataset::collectIntens(
     inten_vec intens(numBins, 0);
     uint_vec counts(numBins, 0);
 
-    tth_t minTth = tthRge.min, deltaTth = tthWdt / numBins;
+    deg minTth = tthRge.min, deltaTth = tthWdt / numBins;
 
     for (auto& one : *this)
         one->collectIntens(session, intensCorr, intens, counts, rgeGma, minTth, deltaTth);

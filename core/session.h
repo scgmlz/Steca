@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/session.h
-//! @brief     Defines ...
+//! @brief     Defines class Session
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -31,22 +31,20 @@ public:
 
     void clear();
 
-    // data files
 private:
-    typ::vec<data::shp_File> files_;
+    typ::vec<data::shp_File> files_; //!< data files
 
 public:
-    // number of data files (not counting the correction file)
-    uint numFiles() const { return files_.count(); }
-    data::shp_File file(uint i) const;
+    uint numFiles() const { //!< number of data files (not counting the correction file)
+        return files_.count(); }
+    data::shp_File file(uint i) const { return files_.at(i); }
 
     bool hasFile(rcstr fileName);
     void addFile(data::shp_File) THROWS;
     void remFile(uint i);
 
 private:
-    // correction file
-    data::shp_File corrFile_;
+    data::shp_File corrFile_; //!< correction file
     typ::shp_Image corrImage_;
     bool corrEnabled_;
 
@@ -76,7 +74,7 @@ public:
     void setCorrFile(data::shp_File) THROWS; // Load or remove a correction file.
     void remCorrFile();
 
-    void tryEnableCorr(bool);
+    void tryEnableCorr(bool on) { corrEnabled_ = on && hasCorrFile(); }
 
     bool isCorrEnabled() const { return corrEnabled_; }
 
@@ -123,11 +121,12 @@ public:
     void setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midPixOffset);
     typ::IJ midPix() const;
 
-    typ::Range::rc gammaRange() const;
-    void setGammaRange(typ::Range::rc);
+    typ::Range::rc gammaRange() const { return gammaRange_; }
+    void setGammaRange(typ::Range::rc r) { gammaRange_ = r; }
 
     typ::shp_AngleMap angleMap(data::OneDataset::rc) const;
-    static typ::shp_AngleMap angleMap(Session::rc, data::OneDataset::rc);
+    static typ::shp_AngleMap angleMap(Session::rc session, data::OneDataset::rc ds) {
+        return session.angleMap(ds); }
 
     // lenses
 public:
@@ -157,15 +156,15 @@ public:
     preal intenScale() const { return intenScale_; }
     calc::Reflections::rc reflections() const { return reflections_; }
 
-    void setBgRanges(typ::Ranges::rc);
-    bool addBgRange(typ::Range::rc);
-    bool remBgRange(typ::Range::rc);
+    void setBgRanges(typ::Ranges::rc rr) { bgRanges_ = rr; }
+    bool addBgRange(typ::Range::rc r) { return bgRanges_.add(r); }
+    bool remBgRange(typ::Range::rc r) { return bgRanges_.rem(r); }
 
-    void setBgPolyDegree(uint);
+    void setBgPolyDegree(uint degree) { bgPolyDegree_ = degree; }
     void setIntenScaleAvg(bool, preal);
 
     void addReflection(calc::shp_Reflection);
-    void remReflection(uint);
+    void remReflection(uint i) { reflections_.remove(i); }
 
     // normalisation
 private:
@@ -173,11 +172,13 @@ private:
 
 public:
     eNorm norm() const { return norm_; }
-    void setNorm(eNorm);
+    void setNorm(eNorm norm) { norm_ = norm; }
 
 public:
     qreal calcAvgBackground(data::Dataset::rc) const;
     qreal calcAvgBackground(data::Datasets::rc) const;
 };
-}
+
+} // namespace core
+
 #endif

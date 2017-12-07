@@ -60,11 +60,11 @@ struct ImageCut {
 struct Angles {
     CLASS(Angles)
 
-    tth_t tth;
-    gma_t gma;
+    deg tth;
+    deg gma;
 
     Angles();
-    Angles(tth_t, gma_t);
+    Angles(deg, deg);
 };
 
 class AngleMap {
@@ -73,7 +73,7 @@ public:
     struct Key {
         CLASS(Key)
 
-        Key(Geometry::rc, size2d::rc, ImageCut::rc, IJ::rc midPix, tth_t midTth);
+        Key(Geometry::rc, size2d::rc, ImageCut::rc, IJ::rc midPix, deg midTth);
 
         COMPARABLE
 
@@ -83,7 +83,7 @@ public:
         size2d size;
         ImageCut cut;
         IJ midPix;
-        tth_t midTth;
+        deg midTth;
     };
 
     AngleMap(Key::rc);
@@ -111,7 +111,7 @@ private:
     gma_rge rgeGma_, rgeGmaFull_;
 
     // sorted
-    vec<gma_t> gmas;
+    vec<deg> gmas;
     uint_vec gmaIndexes;
 };
 
