@@ -7,7 +7,7 @@ os:
 # - osx (temporari)
 
 compiler:
-# - clang (problems installing qt54base, qt54multimedia)
+# - clang (problems installing qt54base)
 - gcc
 
 branches:
@@ -40,5 +40,4 @@ addons:
     - sourceline: ppa:beineri/opt-qt542-trusty
     packages:
     - qt54base
-    - qt54multimedia
     - xvfb
