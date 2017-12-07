@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/typ/typ_ij.h
-//! @brief     Defines ...
+//! @brief     Defines struct IJ.
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -37,5 +37,7 @@ struct IJ {
     JsonObj saveJson() const;
     void loadJson(JsonObj const&) THROWS;
 };
-}
+
+} // namespace typ
+
 #endif // TYP_IJ_H

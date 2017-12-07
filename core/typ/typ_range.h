@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/typ/typ_range.h
-//! @brief     Defines ...
+//! @brief     Defines classes Range and Ranges.
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -20,13 +20,13 @@
 
 namespace typ {
 
-// a range of values - a closed interval
-
 class JsonObj;
 class JsonArr;
 
-struct Range {
-    CLASS(Range)
+//! a range of values - a closed interval
+class Range {
+    CLASS(Range);
+public:
 
     Range(); // invalid (NaN)
     Range(qreal val); // singular, min == max
@@ -66,8 +66,7 @@ struct Range {
     void loadJson(JsonObj const&) THROWS;
 };
 
-// A set of *sorted* *non-overlapping* ranges
-
+//! A set of *sorted* *non-overlapping* ranges
 class Ranges {
     CLASS(Ranges)
 public:
@@ -93,5 +92,7 @@ public:
     JsonArr saveJson() const;
     void loadJson(JsonArr const&) THROWS;
 };
-}
+
+} // namespace typ
+
 #endif // TYP_RANGE_H

@@ -54,5 +54,7 @@ public:
 private:
     qreal val_;
 };
-}
+
+} //namespace typ
+
 #endif // TYP_ANGLES_H

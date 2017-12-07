@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "typ/typ_xy.h"
+#include "typ/typ_json.h"
 
 using typ::XY;
 

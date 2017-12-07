@@ -10,6 +10,8 @@
 //! @copyright Forschungszentrum Jülich GmbH 2017
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
+//  Unit tests in test002_xy
+//
 // ************************************************************************** //
 
 #include "typ_xy.h"
