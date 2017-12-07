@@ -52,7 +52,7 @@ void Session::clear() {
     intenScale_ = preal(1);
 }
 
-bool Session::hasFile(rcstr fileName) {
+bool Session::hasFile(rcstr fileName) const {
     QFileInfo fileInfo(fileName);
     for (auto& file : files_)
         if (fileInfo == file->fileInfo())
@@ -265,14 +265,14 @@ typ::shp_AngleMap Session::angleMap(data::OneDataset::rc one) const {
     return map;
 }
 
-calc::shp_ImageLens
-Session::imageLens(Image::rc image, data::Datasets::rc datasets, bool trans, bool cut) const {
+calc::shp_ImageLens Session::imageLens(
+    Image::rc image, data::Datasets::rc datasets, bool trans, bool cut) const {
     return calc::shp_ImageLens(new calc::ImageLens(*this, image, datasets, trans, cut));
 }
 
 calc::shp_DatasetLens Session::datasetLens(
-    data::Dataset::rc dataset, data::Datasets::rc datasets, eNorm norm, bool trans,
-    bool cut) const {
+    data::Dataset::rc dataset, data::Datasets::rc datasets, eNorm norm, bool trans, bool cut
+    ) const {
     return calc::shp_DatasetLens(new calc::DatasetLens(
         *this, dataset, datasets, norm, trans, cut, imageTransform_, imageCut_));
 }
@@ -321,7 +321,7 @@ calc::ReflectionInfo Session::makeReflectionInfo(
  */
 calc::ReflectionInfos Session::makeReflectionInfos(
     data::Datasets::rc datasets, calc::Reflection::rc reflection, uint gmaSlices,
-    gma_rge::rc rgeGma, Progress* progress) {
+    gma_rge::rc rgeGma, Progress* progress) const {
     calc::ReflectionInfos infos;
 
     if (progress)
