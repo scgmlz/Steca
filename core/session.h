@@ -57,6 +57,9 @@ private:
     void setImageSize(typ::size2d::rc) THROWS; //!< Ensures same size for all images
 
     void calcIntensCorr() const;
+    typ::Curve curveMinusBg(calc::DatasetLens::rc, gma_rge::rc) const;
+    calc::ReflectionInfo makeReflectionInfo(
+        calc::DatasetLens::rc, calc::Reflection::rc, gma_rge::rc) const;
 
 public:
     // Modifying methods:
@@ -113,10 +116,7 @@ public:
     calc::shp_ImageLens imageLens(typ::Image::rc, data::Datasets::rc, bool trans, bool cut) const;
     calc::shp_DatasetLens datasetLens(
         data::Dataset::rc, data::Datasets::rc, eNorm, bool trans, bool cut) const;
-    typ::Curve makeCurve(calc::DatasetLens::rc, gma_rge::rc) const;
 
-    calc::ReflectionInfo makeReflectionInfo(
-        calc::DatasetLens::rc, calc::Reflection::rc, gma_rge::rc) const;
     calc::ReflectionInfos makeReflectionInfos(
         data::Datasets::rc, calc::Reflection::rc, uint gmaSlices, gma_rge::rc, Progress*) const;
 

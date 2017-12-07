@@ -20,12 +20,6 @@
 
 namespace typ {
 
-XY::XY() {
-    invalidate();
-}
-
-XY::XY(qreal x_, qreal y_) : x(x_), y(y_) {}
-
 int XY::compare(rc that) const {
     EXPECT(isValid() && that.isValid())
     RET_COMPARE_VALUE(x)
@@ -37,10 +31,6 @@ VALID_EQ_NE_OPERATOR(XY)
 
 void XY::invalidate() {
     x = y = NAN;
-}
-
-bool XY::isValid() const {
-    return !qIsNaN(x) && !qIsNaN(y);
 }
 
 JsonObj XY::saveJson() const {

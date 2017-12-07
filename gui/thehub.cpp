@@ -37,10 +37,6 @@ QVariant Settings::readVariant(rcstr key, const QVariant& def) {
     return val;
 }
 
-void Settings::saveVariant(rcstr key, const QVariant& val) {
-    setValue(key, val);
-}
-
 void Settings::read(rcstr key, QAction* act, bool def) {
     EXPECT(act->isCheckable())
     if (act)
@@ -73,14 +69,6 @@ void Settings::save(rcstr key, QDoubleSpinBox* box) {
         saveVariant(key, box->value());
 }
 
-bool Settings::readBool(rcstr key, bool def) {
-    return readVariant(key, def).toBool();
-}
-
-void Settings::saveBool(rcstr key, bool val) {
-    saveVariant(key, val);
-}
-
 qreal Settings::readReal(rcstr key, qreal def) {
     auto var = readVariant(key, QVariant());
     bool ok;
@@ -88,27 +76,11 @@ qreal Settings::readReal(rcstr key, qreal def) {
     return ok ? val : def;
 }
 
-void Settings::saveReal(rcstr key, qreal val) {
-    saveVariant(key, val);
-}
-
 int Settings::readInt(rcstr key, int def) {
     auto var = readVariant(key, QVariant());
     bool ok;
     int val = var.toInt(&ok);
     return ok ? val : def;
-}
-
-void Settings::saveInt(rcstr key, int val) {
-    saveVariant(key, val);
-}
-
-str Settings::readStr(rcstr key, rcstr def) {
-    return readVariant(key, def).toString();
-}
-
-void Settings::saveStr(rcstr key, rcstr val) {
-    saveVariant(key, val);
 }
 
 ReadFile::ReadFile(rcstr path) THROWS : super(path) {
@@ -173,22 +145,6 @@ void TheHub::configActions() {
     });
 }
 
-uint TheHub::numFiles() const {
-    return session_->numFiles();
-}
-
-str TheHub::fileName(uint index) const {
-    return getFile(index)->fileName();
-}
-
-str TheHub::filePath(uint index) const {
-    return getFile(index)->fileInfo().absoluteFilePath();
-}
-
-data::shp_File TheHub::getFile(uint index) const {
-    return session_->file(index);
-}
-
 void TheHub::remFile(uint i) {
     session_->remFile(i);
     emit sigFilesChanged();
@@ -197,13 +153,7 @@ void TheHub::remFile(uint i) {
         setImageCut(true, false, typ::ImageCut());
 }
 
-bool TheHub::hasCorrFile() const {
-    return session_->hasCorrFile();
-}
-
-typ::shp_Image TheHub::corrImage() const {
-    return session_->corrImage();
-}
+bool TheHub::hasCorrFile() const { return session_->hasCorrFile(); }
 
 calc::shp_ImageLens TheHub::plainImageLens(typ::Image::rc image) const {
     return session_->imageLens(image, collectedDatasets(), true, false);
@@ -211,10 +161,6 @@ calc::shp_ImageLens TheHub::plainImageLens(typ::Image::rc image) const {
 
 calc::shp_DatasetLens TheHub::datasetLens(data::Dataset::rc dataset) const {
     return session_->datasetLens(dataset, dataset.datasets(), session_->norm(), true, true);
-}
-
-typ::Curve TheHub::avgCurve(data::Datasets::rc datasets) const {
-    return datasets.avgCurve(*session_);
 }
 
 calc::ReflectionInfos TheHub::makeReflectionInfos(
@@ -450,10 +396,6 @@ void TheHub::setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midP
     emit sigGeometryChanged();
 }
 
-typ::Range::rc TheHub::gammaRange() const {
-    return session_->gammaRange();
-}
-
 void TheHub::setGammaRange(typ::Range::rc gammaRange) {
     session_->setGammaRange(gammaRange);
     emit sigGammaRange();
@@ -547,4 +489,5 @@ void TheHub::setNorm(eNorm norm) {
     session_->setNorm(norm);
     emit sigNormChanged();
 }
-}
+
+} // namespace gui

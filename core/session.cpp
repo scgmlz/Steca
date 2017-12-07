@@ -243,7 +243,7 @@ calc::shp_DatasetLens Session::datasetLens(
         *this, dataset, datasets, norm, trans, cut, imageTransform_, imageCut_));
 }
 
-Curve Session::makeCurve(calc::DatasetLens::rc lens, gma_rge::rc rgeGma) const {
+Curve Session::curveMinusBg(calc::DatasetLens::rc lens, gma_rge::rc rgeGma) const {
     Curve curve = lens.makeCurve(rgeGma);
     curve.subtract(fit::Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
     return curve;
@@ -253,20 +253,20 @@ Curve Session::makeCurve(calc::DatasetLens::rc lens, gma_rge::rc rgeGma) const {
 calc::ReflectionInfo Session::makeReflectionInfo(
     calc::DatasetLens::rc lens, calc::Reflection::rc reflection, gma_rge::rc gmaSector) const {
 
-    Curve curve = makeCurve(lens, gmaSector);
-
+    // fit peak, and retrieve peak parameters:
+    Curve curve = curveMinusBg(lens, gmaSector);
     scoped<fit::PeakFunction*> peakFunction(reflection.peakFunction().clone());
     peakFunction->fit(curve);
     Range::rc rgeTth = peakFunction->range();
-
-    deg alpha, beta;
-    data::Dataset::rc dataset = lens.dataset();
-    dataset.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
-
     peak_t peak = peakFunction->fittedPeak();
     fwhm_t fwhm = peakFunction->fittedFWHM();
     peak_t peakError = peakFunction->peakError();
     fwhm_t fwhmError = peakFunction->fwhmError();
+
+    // compute alpha, beta:
+    deg alpha, beta;
+    data::Dataset::rc dataset = lens.dataset();
+    dataset.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
 
     data::shp_Metadata metadata = dataset.metadata();
 

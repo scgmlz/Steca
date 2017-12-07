@@ -29,16 +29,18 @@ struct XY {
 
     qreal x, y;
 
-    XY(); // invalid (NaN)
-    XY(qreal, qreal);
+    XY() { invalidate(); }
+    XY(qreal x_, qreal y_) : x(x_), y(y_) {}
 
     COMPARABLE
 
-    void invalidate(); // make invalid (NaN)
-    bool isValid() const; // is not NaN
+    void invalidate(); // x,y <- NAN
+    bool isValid() const { return !qIsNaN(x) && !qIsNaN(y); }
 
     JsonObj saveJson() const;
     void loadJson(JsonObj const&) THROWS;
 };
+
 }
+
 #endif // TYP_XY_H
