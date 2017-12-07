@@ -17,7 +17,7 @@
 #include "def/def_exc.h"
 #include "typ/typ_ij.h"
 #include "typ/typ_range.h"
-#include "typ/typ_xy.h"
+#include "typ/typ_qpair.h"
 #include <QStringList> // needed under Travis
 
 namespace json_key {
@@ -215,15 +215,15 @@ IJ JsonObj::loadIJ(rcstr key) const THROWS {
     return ij;
 }
 
-JsonObj& JsonObj::saveXY(rcstr key, XY::rc xy) {
-    insert(key, xy.saveJson());
+JsonObj& JsonObj::saveqpair(rcstr key, qpair::rc qpair) {
+    insert(key, qpair.saveJson());
     return *this;
 }
 
-XY JsonObj::loadXY(rcstr key) const THROWS {
-    XY xy;
-    xy.loadJson(loadObj(key));
-    return xy;
+qpair JsonObj::loadqpair(rcstr key) const THROWS {
+    qpair qpair;
+    qpair.loadJson(loadObj(key));
+    return qpair;
 }
 
 JsonObj& JsonObj::operator+=(JsonObj::rc that) {

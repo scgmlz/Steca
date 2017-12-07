@@ -92,7 +92,7 @@ void Curve::subtract(Function::rc f) {
         ys_[i] -= f.y(xs_.at(i));
 }
 
-uint Curve::maxYindex() const {
+uint Curve::maqpairindex() const {
     if (isEmpty())
         return 0;
 

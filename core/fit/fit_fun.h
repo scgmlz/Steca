@@ -65,16 +65,16 @@ class PeakFunction : public typ::SimpleFunction {
     typ::Range::rc range() const { return range_; }
     virtual void setRange(typ::Range::rc);
 
-    virtual void setGuessedPeak(peak_t::rc);
+    virtual void setGuessedPeak(qpair::rc);
     virtual void setGuessedFWHM(fwhm_t);
 
-    peak_t::rc guessedPeak() const { return guessedPeak_; }
+    qpair::rc guessedPeak() const { return guessedPeak_; }
     fwhm_t guessedFWHM() const { return guessedFWHM_; }
 
-    virtual peak_t fittedPeak() const = 0;
+    virtual qpair fittedPeak() const = 0;
     virtual fwhm_t fittedFWHM() const = 0;
 
-    virtual peak_t peakError() const = 0;
+    virtual qpair peakError() const = 0;
     virtual fwhm_t fwhmError() const = 0;
 
     void reset();
@@ -92,7 +92,7 @@ public:
 
 protected:
     typ::Range range_;
-    peak_t guessedPeak_;
+    qpair guessedPeak_;
     fwhm_t guessedFWHM_;
 };
 
@@ -104,10 +104,10 @@ class Raw : public PeakFunction {
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-    peak_t fittedPeak() const;
+    qpair fittedPeak() const;
     fwhm_t fittedFWHM() const;
 
-    peak_t peakError() const;
+    qpair peakError() const;
     fwhm_t fwhmError() const;
 
     void setRange(typ::Range::rc);
@@ -136,13 +136,13 @@ class Gaussian : public PeakFunction {
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-    void setGuessedPeak(peak_t::rc);
+    void setGuessedPeak(qpair::rc);
     void setGuessedFWHM(fwhm_t);
 
-    peak_t fittedPeak() const;
+    qpair fittedPeak() const;
     fwhm_t fittedFWHM() const;
 
-    peak_t peakError() const;
+    qpair peakError() const;
     fwhm_t fwhmError() const;
 
 public:
@@ -160,13 +160,13 @@ class Lorentzian : public PeakFunction {
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-    void setGuessedPeak(peak_t::rc);
+    void setGuessedPeak(qpair::rc);
     void setGuessedFWHM(fwhm_t);
 
-    peak_t fittedPeak() const;
+    qpair fittedPeak() const;
     fwhm_t fittedFWHM() const;
 
-    peak_t peakError() const;
+    qpair peakError() const;
     fwhm_t fwhmError() const;
 
 public:
@@ -184,13 +184,13 @@ class PseudoVoigt1 : public PeakFunction {
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-    void setGuessedPeak(peak_t::rc);
+    void setGuessedPeak(qpair::rc);
     void setGuessedFWHM(fwhm_t);
 
-    peak_t fittedPeak() const;
+    qpair fittedPeak() const;
     fwhm_t fittedFWHM() const;
 
-    peak_t peakError() const;
+    qpair peakError() const;
     fwhm_t fwhmError() const;
 
 public:
@@ -209,13 +209,13 @@ class PseudoVoigt2 : public PeakFunction {
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-    void setGuessedPeak(peak_t::rc);
+    void setGuessedPeak(qpair::rc);
     void setGuessedFWHM(fwhm_t);
 
-    peak_t fittedPeak() const;
+    qpair fittedPeak() const;
     fwhm_t fittedFWHM() const;
 
-    peak_t peakError() const;
+    qpair peakError() const;
     fwhm_t fwhmError() const;
 
 public:

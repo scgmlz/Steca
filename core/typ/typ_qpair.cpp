@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/typ/typ_xy.cpp
+//! @file      core/typ/typ_qpair.cpp
 //! @brief     Implements ...
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -10,36 +10,34 @@
 //! @copyright Forschungszentrum Jülich GmbH 2017
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-//  Unit tests in test002_xy
+//  Unit tests in test002_qpair
 //
 // ************************************************************************** //
 
-#include "typ_xy.h"
+#include "typ_qpair.h"
 #include "def/def_cmp_impl.h"
 #include "typ/typ_json.h"
 
-namespace typ {
-
-int XY::compare(rc that) const {
+int qpair::compare(rc that) const {
     EXPECT(isValid() && that.isValid())
     RET_COMPARE_VALUE(x)
     RET_COMPARE_VALUE(y)
     return 0;
 }
 
-VALID_EQ_NE_OPERATOR(XY)
+VALID_EQ_NE_OPERATOR(qpair)
 
-void XY::invalidate() {
+void qpair::invalidate() {
     x = y = NAN;
 }
 
-JsonObj XY::saveJson() const {
+using typ::JsonObj;
+
+JsonObj qpair::saveJson() const {
     return JsonObj().saveQreal(json_key::X, x).saveQreal(json_key::Y, y);
 }
 
-void XY::loadJson(JsonObj::rc obj) THROWS {
+void qpair::loadJson(JsonObj::rc obj) THROWS {
     x = obj.loadQreal(json_key::X);
     y = obj.loadQreal(json_key::Y);
 }
-
-} // namespace typ

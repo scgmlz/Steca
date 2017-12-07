@@ -18,7 +18,7 @@
 #include "typ/typ_angles.h"
 #include "typ/typ_range.h"
 #include "typ/typ_strlst.h"
-#include "typ/typ_xy.h"
+#include "typ/typ_qpair.h"
 
 typedef float inten_t;
 typedef float fwhm_t;
@@ -28,8 +28,6 @@ typedef typ::vec<inten_t> inten_vec;
 typedef typ::Range inten_rge;
 typedef typ::Range tth_rge;
 typedef typ::Range gma_rge;
-
-typedef typ::XY peak_t;
 
 enum class eNorm {
     NONE,

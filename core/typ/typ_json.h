@@ -24,12 +24,13 @@ namespace json_key {
 extern str const I, J, X, Y, MIN, MAX, PARAMS, TYPE, FUN, VALUE, RANGE, COUNT, PEAK, FWHM;
 }
 
+class qpair;
+
 namespace typ {
 
 class JsonArr;
 struct Range;
 struct IJ;
-struct XY;
 
 class JsonObj : protected QJsonObject {
     CLASS(JsonObj) WITH_SUPER(QJsonObject) public : JsonObj();
@@ -75,8 +76,8 @@ class JsonObj : protected QJsonObject {
     JsonObj& saveIJ(rcstr key, IJ const&);
     IJ loadIJ(rcstr key) const THROWS;
 
-    JsonObj& saveXY(rcstr key, XY const&);
-    XY loadXY(rcstr key) const THROWS;
+    JsonObj& saveqpair(rcstr key, qpair const&);
+    qpair loadqpair(rcstr key) const THROWS;
 
     JsonObj& operator+=(rc);
     JsonObj operator+(rc) const;

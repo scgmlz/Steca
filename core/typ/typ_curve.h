@@ -49,7 +49,7 @@ public:
 
     void subtract(Function::rc);
 
-    uint maxYindex() const; // the index of the maximum y value
+    uint maqpairindex() const; // the index of the maximum y value
 
     qreal sumY() const;
 

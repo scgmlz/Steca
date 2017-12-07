@@ -38,7 +38,7 @@ public:
 
     void invalidateGuesses();
 
-    void setGuessPeak(peak_t::rc peak) { peakFunction_->setGuessedPeak(peak); }
+    void setGuessPeak(qpair::rc peak) { peakFunction_->setGuessedPeak(peak); }
     void setGuessFWHM(fwhm_t fwhm) { peakFunction_->setGuessedFWHM(fwhm); }
 
     void fit(typ::Curve::rc);

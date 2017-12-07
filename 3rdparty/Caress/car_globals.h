@@ -1091,7 +1091,7 @@ enum {
     MODIDTYPE = 19,  /* short int (module ID) */
     /* cmdint - definitions */
     ONOFFTYPE = 21,       /* OT: strings "ON" or "OFF" (e.g. command CHECK) */
-    PMATRIXTYPE = 22,     /* PT: strings "XX", "XY",..., "ZZ" (cmd PMATRIX) */
+    PMATRIXTYPE = 22,     /* PT: strings "XX", "qpair",..., "ZZ" (cmd PMATRIX) */
     DAUTYPE = 23,         /* CT: strings "SI" or "MU" */
     ENUMERATIONTYPE = 24, /* EN: indicating enumeration in xx_ranges.dat */
     DAUDATATYPE = 25      /* IT: strings "I2" or "I4" in CONFIG command */

@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/typ/typ_xy.h
+//! @file      core/typ/typ_qpair.h
 //! @brief     Defines ...
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,35 +12,33 @@
 //
 // ************************************************************************** //
 
-#ifndef TYP_XY_H
-#define TYP_XY_H
+#ifndef TYP_qpair_H
+#define TYP_qpair_H
 
 #include "def/def_cmp.h"
 #include "def/def_macros.h"
 
 namespace typ {
+class JsonObj;
+}
 
 // 2D point, reals
-
-class JsonObj;
-
-struct XY {
-    CLASS(XY)
+class qpair {
+    CLASS(qpair);
+public:
 
     qreal x, y;
 
-    XY() { invalidate(); }
-    XY(qreal x_, qreal y_) : x(x_), y(y_) {}
+    qpair() { invalidate(); }
+    qpair(qreal x_, qreal y_) : x(x_), y(y_) {}
 
     COMPARABLE
 
     void invalidate(); // x,y <- NAN
     bool isValid() const { return !qIsNaN(x) && !qIsNaN(y); }
 
-    JsonObj saveJson() const;
-    void loadJson(JsonObj const&) THROWS;
+    typ::JsonObj saveJson() const;
+    void loadJson(typ::JsonObj const&) THROWS;
 };
 
-}
-
-#endif // TYP_XY_H
+#endif // TYP_qpair_H

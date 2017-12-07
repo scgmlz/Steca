@@ -51,7 +51,7 @@ void Reflection::setRange(typ::Range::rc range) {
 }
 
 void Reflection::invalidateGuesses() {
-    peakFunction_->setGuessedPeak(peak_t());
+    peakFunction_->setGuessedPeak(qpair());
     peakFunction_->setGuessedFWHM(NAN);
 }
 

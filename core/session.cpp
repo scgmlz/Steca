@@ -258,9 +258,9 @@ calc::ReflectionInfo Session::makeReflectionInfo(
     scoped<fit::PeakFunction*> peakFunction(reflection.peakFunction().clone());
     peakFunction->fit(curve);
     Range::rc rgeTth = peakFunction->range();
-    peak_t peak = peakFunction->fittedPeak();
+    qpair peak = peakFunction->fittedPeak();
     fwhm_t fwhm = peakFunction->fittedFWHM();
-    peak_t peakError = peakFunction->peakError();
+    qpair peakError = peakFunction->peakError();
     fwhm_t fwhmError = peakFunction->fwhmError();
 
     // compute alpha, beta:

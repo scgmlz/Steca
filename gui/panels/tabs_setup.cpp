@@ -379,7 +379,7 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
             if (!silentSpin_) {
                 tellReflectionValues(
                     typ::Range::safeFrom(spinRangeMin_->value(), spinRangeMax_->value()),
-                    typ::XY(spinGuessPeakX_->value(), spinGuessPeakY_->value()),
+                    qpair(spinGuessPeakX_->value(), spinGuessPeakY_->value()),
                     fwhm_t(spinGuessFWHM_->value()), invalidateGuesses);
             }
         };
