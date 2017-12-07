@@ -277,44 +277,6 @@ calc::shp_DatasetLens Session::datasetLens(
         *this, dataset, datasets, norm, trans, cut, imageTransform_, imageCut_));
 }
 
-// Calculates the polefigure coordinates alpha and beta with regards to
-// sample orientation and diffraction angles.
-// tth: Center of reflection's 2theta interval.
-// gma: Center of gamma slice.
-void calculateAlphaBeta(data::Dataset::rc dataset, deg tth, deg gma, deg& alpha, deg& beta) {
-    // Sample rotations.
-    typ::rad omg = dataset.omg().toRad();
-    typ::rad phi = dataset.phi().toRad();
-    typ::rad chi = dataset.chi().toRad();
-
-    // Rotate a unit vector initially parallel to the y axis with regards to the
-    // angles. As a result, the vector is a point on a unit sphere
-    // corresponding to the location of a polefigure point.
-    // Note that the rotations here do not correspond to C. Randau's dissertation.
-    // The rotations given in [J. Appl. Cryst. (2012) 44, 641-644] are incorrect.
-    typ::vec3r rotated = typ::mat3r::rotationCWz(phi) * typ::mat3r::rotationCWx(chi)
-        * typ::mat3r::rotationCWz(omg) * typ::mat3r::rotationCWx(gma.toRad())
-        * typ::mat3r::rotationCCWz(tth.toRad() / 2) * typ::vec3r(0, 1, 0);
-
-    // Extract alpha (latitude) and beta (longitude).
-    typ::rad alphaRad = acos(rotated._2);
-    typ::rad betaRad = atan2(rotated._0, rotated._1);
-
-    // If alpha is in the wrong hemisphere, mirror both alpha and beta over the
-    // center of a unit sphere.
-    if (alphaRad > M_PI_2) { // REVIEW - seems like that happens only for a very narrow ring
-        alphaRad = qAbs(alphaRad - M_PI);
-        betaRad = betaRad + (betaRad < 0 ? M_PI : -M_PI);
-    }
-
-    // Keep beta between 0 and 2pi.
-    if (betaRad < 0)
-        betaRad = betaRad + 2 * M_PI;
-
-    alpha = alphaRad.toDeg();
-    beta = betaRad.toDeg();
-}
-
 Curve Session::makeCurve(calc::DatasetLens::rc lens, gma_rge::rc rgeGma) const {
     Curve curve = lens.makeCurve(rgeGma);
     curve.subtract(fit::Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
@@ -335,7 +297,7 @@ calc::ReflectionInfo Session::makeReflectionInfo(
     deg alpha, beta;
 
     data::Dataset::rc dataset = lens.dataset();
-    calculateAlphaBeta(dataset, rgeTth.center(), gmaSector.center(), alpha, beta);
+    dataset.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
 
     peak_t peak = peakFunction->fittedPeak();
     fwhm_t fwhm = peakFunction->fittedFWHM();

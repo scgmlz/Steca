@@ -141,6 +141,7 @@ public:
     qreal avgDeltaTime() const;
 
     inten_vec collectIntens(core::Session const&, typ::Image const* intensCorr, gma_rge::rc) const;
+    void calculateAlphaBeta(typ::deg tth, typ::deg gma, typ::deg& alpha, typ::deg& beta) const;
 
 private:
     // all dataset(s) must have the same image size
