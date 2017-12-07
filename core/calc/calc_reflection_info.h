@@ -22,21 +22,8 @@ using typ::deg;
 namespace calc {
 
 class ReflectionInfo final {
-    CLASS(ReflectionInfo)
+    CLASS(ReflectionInfo);
 public:
-    enum class eField {
-        ALPHA,
-        BETA,
-        GAMMA1,
-        GAMMA2,
-        INTEN,
-        INTEN_ERROR,
-        TTH,
-        INTEN_TTH,
-        FWHM,
-        INTEN_FWHM,
-    };
-
     enum class eReflAttr {
         ALPHA,
         BETA,

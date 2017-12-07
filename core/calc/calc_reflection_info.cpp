@@ -112,6 +112,7 @@ typ::row_t ReflectionInfo::data() const {
     return row;
 }
 
+
 ReflectionInfos::ReflectionInfos() {
     invalidate();
 }
