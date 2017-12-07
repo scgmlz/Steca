@@ -246,22 +246,20 @@ calc::shp_DatasetLens Session::datasetLens(
 Curve Session::makeCurve(calc::DatasetLens::rc lens, gma_rge::rc rgeGma) const {
     Curve curve = lens.makeCurve(rgeGma);
     curve.subtract(fit::Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
-
     return curve;
 }
 
-// Fits reflection to the given gamma sector and constructs a ReflectionInfo.
+//! Fits reflection to the given gamma sector and constructs a ReflectionInfo.
 calc::ReflectionInfo Session::makeReflectionInfo(
     calc::DatasetLens::rc lens, calc::Reflection::rc reflection, gma_rge::rc gmaSector) const {
+
     Curve curve = makeCurve(lens, gmaSector);
 
     scoped<fit::PeakFunction*> peakFunction(reflection.peakFunction().clone());
-
     peakFunction->fit(curve);
-
     Range::rc rgeTth = peakFunction->range();
-    deg alpha, beta;
 
+    deg alpha, beta;
     data::Dataset::rc dataset = lens.dataset();
     dataset.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
 
