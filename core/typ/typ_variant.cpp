@@ -15,7 +15,6 @@
 #include "typ_variant.h"
 #include "def/def_cmp_impl.h"
 #include <QDate>
-#include "wrap_doctest.h"
 
 namespace typ {
 
@@ -59,13 +58,6 @@ int cmp_real(QVariant const& v1, QVariant const& v2) {
     RET_COMPARE_VALUE2(val1, val2)
     return 0;
 }
-
-TEST("cmp_int(QVariants)", ({ // not exhaustive, just due diligence
-         QVariant v1(1), v2(2);
-         CHECK_EQ(0, cmp_int(v1, v1));
-         CHECK_EQ(-1, cmp_int(v1, v2));
-         CHECK_EQ(+1, cmp_int(v2, v1));
-     });)
 
 #undef IMPL_CMP
 }
