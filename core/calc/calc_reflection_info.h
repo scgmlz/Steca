@@ -24,6 +24,16 @@ namespace calc {
 class ReflectionInfo final {
     CLASS(ReflectionInfo);
 public:
+    ReflectionInfo();
+    ReflectionInfo(
+        data::shp_Metadata, typ::deg alpha, typ::deg beta, gma_rge, inten_t, inten_t /*error*/,
+        deg, deg /*error*/, fwhm_t, fwhm_t /*error*/);
+    ReflectionInfo(data::shp_Metadata, typ::deg alpha, typ::deg beta, gma_rge);
+    ReflectionInfo(
+        typ::deg alpha, typ::deg beta, gma_rge, inten_t, inten_t /*error*/, deg, deg /*error*/,
+        fwhm_t, fwhm_t /*error*/);
+    ReflectionInfo(typ::deg alpha, typ::deg beta);
+
     enum class eReflAttr {
         ALPHA,
         BETA,
@@ -41,51 +51,33 @@ public:
     static str_lst dataTags(bool out);
     static typ::cmp_vec dataCmps();
 
-    static str const reflStringTag(uint attr, bool out);
-
-    ReflectionInfo();
-
-    ReflectionInfo(
-        data::shp_Metadata, typ::deg alpha, typ::deg beta, gma_rge, inten_t, inten_t /*error*/,
-        deg, deg /*error*/, fwhm_t, fwhm_t /*error*/);
-    ReflectionInfo(data::shp_Metadata, typ::deg alpha, typ::deg beta, gma_rge);
-    ReflectionInfo(
-        typ::deg alpha, typ::deg beta, gma_rge, inten_t, inten_t /*error*/, deg, deg /*error*/,
-        fwhm_t, fwhm_t /*error*/);
-    ReflectionInfo(typ::deg alpha, typ::deg beta);
-
     typ::deg alpha() const { return alpha_; }
     typ::deg beta() const { return beta_; }
-
     gma_rge rgeGma() const { return rgeGma_; }
-
     inten_t inten() const { return inten_; }
     inten_t intenError() const { return intenError_; }
-
     deg tth() const { return tth_; }
     deg tthError() const { return tthError_; }
-
     fwhm_t fwhm() const { return fwhm_; }
     fwhm_t fwhmError() const { return fwhmError_; }
-
     typ::row_t data() const;
 
 private:
     data::shp_Metadata md_;
-
     typ::deg alpha_, beta_;
     gma_rge rgeGma_;
-
     inten_t inten_, intenError_;
     deg tth_, tthError_;
     fwhm_t fwhm_, fwhmError_;
+
+    static str const reflStringTag(uint attr, bool out);
 };
 
 
 class ReflectionInfos : public typ::vec<ReflectionInfo> {
     CLASS(ReflectionInfos) SUPER(typ::vec<ReflectionInfo>);
 public:
-    ReflectionInfos();
+    ReflectionInfos() { invalidate(); }
 
     void append(ReflectionInfo::rc);
 
@@ -93,10 +85,10 @@ public:
     inten_rge::rc rgeInten() const;
 
 private:
-    void invalidate();
-
     mutable inten_t avgInten_;
     mutable inten_rge rgeInten_;
+
+    void invalidate();
 };
 
 } // namespace calc

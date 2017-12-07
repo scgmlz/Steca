@@ -23,49 +23,15 @@ using typ::Range;
 using data::Metadata;
 using data::shp_Metadata;
 
+// ************************************************************************** //
+//  class ReflectionInfo
+// ************************************************************************** //
+
 /* NOTE Invalid output parameters are set to NaNs. However, some analysis
  * programs
  * require -1 as unknown value; thus, NaN parameter values should be output
  * as -1 when output is written for these programs (polefigure!).
  */
-
-str_lst ReflectionInfo::dataTags(bool out) {
-    str_lst tags;
-
-    for_i (uint(eReflAttr::NUM_REFL_ATTR))
-        tags.append(reflStringTag(i, out));
-
-    tags.append(Metadata::attributeTags(out));
-
-    return tags;
-}
-
-str const ReflectionInfo::reflStringTag(uint attr, bool out) {
-    switch (eReflAttr(attr)) {
-    case eReflAttr::ALPHA: return out ? "alpha" : "α";
-    case eReflAttr::BETA: return out ? "beta" : "β";
-    case eReflAttr::GAMMA1: return out ? "gamma1" : "γ1";
-    case eReflAttr::GAMMA2: return out ? "gamma2" : "γ2";
-    case eReflAttr::INTEN: return "inten";
-    case eReflAttr::SIGMA_INTEN: return out ? "sinten" : "σinten";
-    case eReflAttr::TTH: return out ? "2theta" : "2θ";
-    case eReflAttr::SIGMA_TTH: return out ? "s2theta" : "σ2θ";
-    case eReflAttr::FWHM: return "fwhm";
-    case eReflAttr::SIGMA_FWHM: return out ? "sfwhm" : "σfwhm";
-    default: NEVER; return nullptr;
-    }
-}
-
-cmp_vec ReflectionInfo::dataCmps() {
-    static cmp_vec cmps;
-    if (cmps.isEmpty()) {
-        cmps = cmp_vec{ cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
-                        cmp_real, cmp_real, cmp_real, cmp_real, cmp_real };
-        cmps.append(Metadata::attributeCmps());
-    }
-
-    return cmps;
-}
 
 ReflectionInfo::ReflectionInfo()
     : ReflectionInfo(
@@ -102,6 +68,24 @@ ReflectionInfo::ReflectionInfo(deg alpha, deg beta)
           alpha, beta, Range(), inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), fwhm_t(NAN),
           fwhm_t(NAN)) {}
 
+str_lst ReflectionInfo::dataTags(bool out) {
+    str_lst tags;
+    for_i (uint(eReflAttr::NUM_REFL_ATTR))
+        tags.append(reflStringTag(i, out));
+    tags.append(Metadata::attributeTags(out));
+    return tags;
+}
+
+cmp_vec ReflectionInfo::dataCmps() {
+    static cmp_vec cmps;
+    if (cmps.isEmpty()) {
+        cmps = cmp_vec{ cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
+                        cmp_real, cmp_real, cmp_real, cmp_real, cmp_real };
+        cmps.append(Metadata::attributeCmps());
+    }
+    return cmps;
+}
+
 typ::row_t ReflectionInfo::data() const {
     typ::row_t row{ QVariant(alpha()),      QVariant(beta()),     QVariant(rgeGma().min),
                     QVariant(rgeGma().max), QVariant(inten()),    QVariant(intenError()),
@@ -112,10 +96,26 @@ typ::row_t ReflectionInfo::data() const {
     return row;
 }
 
-
-ReflectionInfos::ReflectionInfos() {
-    invalidate();
+str const ReflectionInfo::reflStringTag(uint attr, bool out) {
+    switch (eReflAttr(attr)) {
+    case eReflAttr::ALPHA: return out ? "alpha" : "α";
+    case eReflAttr::BETA: return out ? "beta" : "β";
+    case eReflAttr::GAMMA1: return out ? "gamma1" : "γ1";
+    case eReflAttr::GAMMA2: return out ? "gamma2" : "γ2";
+    case eReflAttr::INTEN: return "inten";
+    case eReflAttr::SIGMA_INTEN: return out ? "sinten" : "σinten";
+    case eReflAttr::TTH: return out ? "2theta" : "2θ";
+    case eReflAttr::SIGMA_TTH: return out ? "s2theta" : "σ2θ";
+    case eReflAttr::FWHM: return "fwhm";
+    case eReflAttr::SIGMA_FWHM: return out ? "sfwhm" : "σfwhm";
+    default: NEVER; return "";
+    }
 }
+
+
+// ************************************************************************** //
+//  class ReflectionInfos
+// ************************************************************************** //
 
 void ReflectionInfos::append(ReflectionInfo::rc info) {
     super::append(info);
@@ -126,7 +126,6 @@ inten_t ReflectionInfos::averageInten() const {
     if (qIsNaN(avgInten_)) {
         avgInten_ = 0;
         uint cnt = 0;
-
         for (auto& info : *this) {
             qreal inten = info.inten();
             if (qIsFinite(inten)) {
@@ -134,11 +133,9 @@ inten_t ReflectionInfos::averageInten() const {
                 ++cnt;
             }
         }
-
         if (cnt)
             avgInten_ /= cnt;
     }
-
     return avgInten_;
 }
 
@@ -147,7 +144,6 @@ inten_rge::rc ReflectionInfos::rgeInten() const {
         for_i (count())
             rgeInten_.extendBy(at(i).inten());
     }
-
     return rgeInten_;
 }
 

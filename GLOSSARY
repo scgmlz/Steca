@@ -1,5 +1,6 @@
 idw  inverse distance weighing
 itf  {intensity, tth, fwhm}
+lst  list
 pc   constant pointer
 rc   constant reference, defined in def_macros.h
 shp  shared pointer prefix
