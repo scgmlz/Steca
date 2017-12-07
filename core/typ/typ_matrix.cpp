@@ -14,21 +14,8 @@
 
 #include "typ_matrix.h"
 #include <qmath.h>
-#include "wrap_doctest.h"
 
 namespace typ {
-
-//#ifdef TESTS
-// template <typename T, typename O>
-// bool e(T const& t, O const& o) {
-//  return qAbs(qreal(t) - qreal(o)) < .00001;
-//}
-
-// template <typename T, typename O>
-// bool VEC3_EQ(T const& t, O const& o) {
-//  return e(t._0, o._0) && e(t._1, o._1) && e(t._2, o._2);
-//}
-//#endif
 
 vec3f::vec3f(float _0_, float _1_, float _2_) {
     _0 = _0_;
@@ -53,20 +40,6 @@ vec3r::vec3r(vec3f::rc v) : vec3r(qreal(v._0), qreal(v._1), qreal(v._2)) {}
 bool vec3r::operator==(rc that) const {
     return _0 == that._0 && _1 == that._1 && _2 == that._2;
 }
-
-TEST("vec3", ({
-         vec3f f(1, 2, 3);
-         vec3r r(1, 2, 3);
-         vec3f fr(r);
-         vec3r rf(f);
-
-         CHECK_EQ(f, r);
-         CHECK_EQ(f, fr);
-         CHECK_EQ(f, rf);
-         CHECK_EQ(r, fr);
-         CHECK_EQ(r, rf);
-         CHECK_EQ(fr, rf);
-     }););
 
 mat3r::mat3r(
     qreal _00_, qreal _01_, qreal _02_, qreal _10_, qreal _11_, qreal _12_, qreal _20_, qreal _21_,
@@ -115,18 +88,6 @@ vec3r mat3r::operator*(vec3r::rc v) const {
         _20 * v._0 + _21 * v._1 + _22 * v._2);
 }
 
-TEST("mat3r", ({
-         mat3r m1(0, 1, 2, 3, 4, 5, 6, 7, 8), mc(m1);
-         mat3r mt(0, 3, 6, 1, 4, 7, 2, 5, 8);
-
-         CHECK_EQ(m1.transposed(), mt);
-         mc.transpose();
-         CHECK_EQ(mc, mt);
-
-         CHECK_EQ(vec3r(17, 62, 107), m1 * vec3r(4, 5, 6));
-         CHECK_EQ(mat3r(5, 14, 23, 14, 50, 86, 23, 86, 149), m1 * mt);
-     }););
-
 mat3r mat3r::rotationCWx(qreal angle) {
     return mat3r(1, 0, 0, 0, cos(angle), -sin(angle), 0, sin(angle), cos(angle));
 }
@@ -139,14 +100,4 @@ mat3r mat3r::rotationCCWz(qreal angle) {
     return rotationCWz(angle).transposed();
 }
 
-TEST("mat3r::rotation", ({
-         qreal angle = 1;
-         auto cwx = mat3r::rotationCWx(angle);
-         auto cwz = mat3r::rotationCWz(angle);
-         auto ccwz = mat3r::rotationCCWz(angle);
-
-         vec3r v(1, 2, 3);
-         CHECK_EQ(v, cwx.transposed() * (cwx * v));
-         CHECK_EQ(v, ccwz * (cwz * v));
-     }););
-}
+} // namespace typ

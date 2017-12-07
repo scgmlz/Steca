@@ -11,21 +11,18 @@ include_directories(
     ${gtest_SOURCE_DIR}/include
     ${gtest_SOURCE_DIR}
     ../ThirdParty
-    ../trivia
-    ../readplus
-    ../lib
+    ../core
     )
 
 link_directories(
     ${gtest_BINARY_DIR}/src
-    ../trivia
-    ../readplus
-    ../lib
+    ../ThirdParty
+    ../core
     )
 
 set(test_link_libs
     gtest_main
-    ${fridacore_LIBRARY}
+    core
     )
 
 # We glob test sources, though this is often considered evil.
