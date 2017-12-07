@@ -1,0 +1,1 @@
+#define TESTDATADIR "@CMAKE_HOME_DIRECTORY@/testdata"

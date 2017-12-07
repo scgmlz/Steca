@@ -12,6 +12,7 @@ include_directories(
     ${gtest_SOURCE_DIR}
     ../ThirdParty
     ../core
+    ${CMAKE_BINARY_DIR}
     )
 
 link_directories(
@@ -23,6 +24,9 @@ link_directories(
 set(test_link_libs
     gtest_main
     core
+    # for test010_io, progress bar:
+    Qt5::Gui
+    Qt5::Widgets
     )
 
 # We glob test sources, though this is often considered evil.

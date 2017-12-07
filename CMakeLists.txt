@@ -50,6 +50,6 @@ if (WITH_TESTS)
   include(CTest) # equivalent to "enable_testing() ???
   add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND}) # => 'make check' is an alias for 'ctest'
   add_subdirectory (3rdparty/googletest)
+  configure_file(testdata/testdata.h.in ${CMAKE_BINARY_DIR}/testdata.h @ONLY)
   add_subdirectory (utest)
-  add_subdirectory (tests)
 endif ()
