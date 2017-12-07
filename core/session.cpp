@@ -159,13 +159,10 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
         if (cnt) {
             str tag = str::number(i + 1);
             i += cnt;
-
             if (combineBy > 1)
                 tag += '-' + str::number(i);
-
             collectedDatasets_.appendHere(cd);
             collectedDatasetsTags_.append(tag);
-
             cd = data::shp_Dataset(new data::Dataset);
         }
     };
