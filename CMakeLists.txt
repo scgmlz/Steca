@@ -7,6 +7,9 @@ include(PreventInSourceBuilds)
 
 project (SteCa2)
 
+option(WITH_TESTS "Build with all tests" ON)
+
+
 if (CMAKE_VERSION VERSION_LESS "3.1")
   set (CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 else ()
@@ -44,5 +47,9 @@ add_subdirectory (core)
 add_subdirectory (gui)
 
 if (WITH_TESTS)
+  include(CTest) # equivalent to "enable_testing() ???
+  add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND}) # => 'make check' is an alias for 'ctest'
+  add_subdirectory (3rdparty/googletest)
+  add_subdirectory (utest)
   add_subdirectory (tests)
 endif ()
