@@ -7,6 +7,9 @@ include(PreventInSourceBuilds)
 
 project (SteCa2)
 
+option(WITH_TESTS "Build with all tests" ON)
+
+
 if (CMAKE_VERSION VERSION_LESS "3.1")
   set (CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 else ()
@@ -36,12 +39,17 @@ find_package (Qt5Test    REQUIRED)
 find_package (Qt5Widgets REQUIRED)
 find_package (Qt5Network REQUIRED)
 
-add_subdirectory (LevMar)
-add_subdirectory (lib)
+add_subdirectory (3rdparty/LevMar)
+add_subdirectory (3rdparty/QCustomPlot)
+add_subdirectory (3rdparty/Caress)
+add_subdirectory (3rdparty/Mar)
 add_subdirectory (core)
-add_subdirectory (io)
 add_subdirectory (gui)
 
 if (WITH_TESTS)
-  add_subdirectory (tests)
+  include(CTest) # equivalent to "enable_testing() ???
+  add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND}) # => 'make check' is an alias for 'ctest'
+  add_subdirectory (3rdparty/googletest)
+  configure_file(testdata/testdata.h.in ${CMAKE_BINARY_DIR}/testdata.h @ONLY)
+  add_subdirectory (utest)
 endif ()
