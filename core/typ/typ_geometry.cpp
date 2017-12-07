@@ -41,6 +41,35 @@ ImageCut::ImageCut() : ImageCut(0, 0, 0, 0) {}
 ImageCut::ImageCut(uint left_, uint top_, uint right_, uint bottom_)
     : left(left_), top(top_), right(right_), bottom(bottom_) {}
 
+void ImageCut::update(bool topLeftFirst, bool linked, typ::size2d size) {
+    if (size.isEmpty()) {
+        *this = ImageCut();
+        return;
+    }
+
+    auto limit = [linked](uint& m1, uint& m2, uint maxTogether)->void {
+        if (linked && m1 + m2 >= maxTogether) {
+            m1 = m2 = qMax((maxTogether - 1) / 2, 0u);
+        } else {
+            m1 = qMax(qMin(m1, maxTogether - m2 - 1), 0u);
+            m2 = qMax(qMin(m2, maxTogether - m1 - 1), 0u);
+        }
+    };
+
+    // make sure that cut values are valid; in the right order
+    uint _left = this->left, _top = this->top, _right = this->right, _bottom = this->bottom;
+
+    if (topLeftFirst) {
+        limit(_top, _bottom, size.h);
+        limit(_left, _right, size.w);
+    } else {
+        limit(_bottom, _top, size.h);
+        limit(_right, _left, size.w);
+    }
+
+    *this = ImageCut(_left, _top, _right, _bottom);
+}
+
 int ImageCut::compare(rc that) const {
     RET_COMPARE_VALUE(left)
     RET_COMPARE_VALUE(top)
@@ -224,4 +253,5 @@ void AngleMap::calculate() {
         uv[i] = gmaIndexes.at(is.at(i));
     gmaIndexes = uv;
 }
-}
+
+} // namespace typ

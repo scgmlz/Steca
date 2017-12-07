@@ -106,10 +106,8 @@ void Session::calcIntensCorr() const {
 Image const* Session::intensCorr() const {
     if (!isCorrEnabled())
         return nullptr;
-
     if (intensCorr_.isEmpty())
         calcIntensCorr();
-
     return &intensCorr_;
 }
 
@@ -118,11 +116,9 @@ void Session::setCorrFile(data::shp_File file) THROWS {
         remCorrFile();
     } else {
         auto& datasets = file->datasets();
-
         setImageSize(datasets.imageSize());
         corrImage_ = datasets.foldedImage();
         intensCorr_.clear(); // will be calculated lazily
-
         // all ok
         corrFile_ = file;
         corrEnabled_ = true;
@@ -205,34 +201,7 @@ void Session::setImageTransformRotate(ImageTransform::rc rot) {
 }
 
 void Session::setImageCut(bool topLeftFirst, bool linked, ImageCut::rc cut) {
-    auto size = imageSize_;
-
-    if (size.isEmpty())
-        imageCut_ = ImageCut();
-    else {
-        auto limit = [linked](uint& m1, uint& m2, uint maxTogether) {
-            if (linked && m1 + m2 >= maxTogether) {
-                m1 = m2 = qMax((maxTogether - 1) / 2, 0u);
-            } else {
-                m1 = qMax(qMin(m1, maxTogether - m2 - 1), 0u);
-                m2 = qMax(qMin(m2, maxTogether - m1 - 1), 0u);
-            }
-        };
-
-        // make sure that cut values are valid; in the right order
-        uint left = cut.left, top = cut.top, right = cut.right, bottom = cut.bottom;
-
-        if (topLeftFirst) {
-            limit(top, bottom, size.h);
-            limit(left, right, size.w);
-        } else {
-            limit(bottom, top, size.h);
-            limit(right, left, size.w);
-        }
-
-        imageCut_ = ImageCut(left, top, right, bottom);
-    }
-
+    imageCut_.update(topLeftFirst, linked, imageSize_);
     intensCorr_.clear(); // lazy
 }
 
@@ -371,12 +340,9 @@ qreal Session::calcAvgBackground(data::Dataset::rc dataset) const {
 
 qreal Session::calcAvgBackground(data::Datasets::rc datasets) const {
     TakesLongTime __;
-
     qreal bg = 0;
-
     for (auto& dataset : datasets)
         bg += calcAvgBackground(*dataset);
-
     return bg / datasets.count();
 }
 

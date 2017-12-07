@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/calc/calc_reflection_info.cpp
-//! @brief     Implements ...
+//! @brief     Implements classes ReflectionInfo, ReflectionInfos
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -154,4 +154,5 @@ void ReflectionInfos::invalidate() {
     avgInten_ = inten_t(NAN);
     rgeInten_.invalidate();
 }
-}
+
+} // namespace calc

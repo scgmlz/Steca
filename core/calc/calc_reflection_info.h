@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/calc/calc_reflection_info.h
-//! @brief     Defines ...
+//! @brief     Defines classes ReflectionInfo, ReflectionInfos
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -94,6 +94,7 @@ private:
     fwhm_t fwhm_, fwhmError_;
 };
 
+
 class ReflectionInfos : public typ::vec<ReflectionInfo> {
     CLASS(ReflectionInfos) SUPER(typ::vec<ReflectionInfo>);
 public:
@@ -110,5 +111,7 @@ private:
     mutable inten_t avgInten_;
     mutable inten_rge rgeInten_;
 };
-}
+
+} // namespace calc
+
 #endif // CALC_REFLECTION_INFO_H

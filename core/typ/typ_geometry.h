@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/typ/typ_geometry.h
-//! @brief     Defines ...
+//! @brief     Defines classes Geometry, ImageCut, Angles, AngleMap
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -24,9 +24,9 @@ namespace typ {
 
 // detector geometry
 
-struct Geometry {
-    CLASS(Geometry)
-
+class Geometry {
+    CLASS(Geometry);
+public:
     static preal const MIN_DETECTOR_DISTANCE;
     static preal const MIN_DETECTOR_PIXEL_SIZE;
 
@@ -44,21 +44,23 @@ struct Geometry {
 
 // image cut (margins)
 
-struct ImageCut {
-    CLASS(ImageCut)
+class ImageCut {
+    CLASS(ImageCut);
+public:
 
     uint left, top, right, bottom;
 
     ImageCut();
     ImageCut(uint left, uint top, uint right, uint bottom);
-
-    COMPARABLE
+    COMPARABLE;
+    void update(bool topLeftFirst, bool linked, typ::size2d size);
 
     size2d marginSize() const;
 };
 
-struct Angles {
-    CLASS(Angles)
+class Angles {
+    CLASS(Angles);
+public:
 
     deg tth;
     deg gma;
@@ -68,7 +70,7 @@ struct Angles {
 };
 
 class AngleMap {
-    CLASS(AngleMap)
+    CLASS(AngleMap);
 public:
     struct Key {
         CLASS(Key)
@@ -116,5 +118,7 @@ private:
 };
 
 typedef QSharedPointer<AngleMap> shp_AngleMap;
-}
+
+} // namespace typ
+
 #endif // TYP_GEOMETRY_H
