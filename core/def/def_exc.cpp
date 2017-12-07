@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "def_exc.h"
-#include "def_gsl.h" // declares 'scoped'
 
 #ifdef QT_NO_EXCEPTIONS
 #error needs exception handling
