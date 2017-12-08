@@ -34,7 +34,7 @@ class Polynom : public typ::SimpleFunction {
 private:
     using super = typ::SimpleFunction;
 public:
-    Polynom(uint degree = 0);
+    Polynom(uint degree = 0) { setDegree(degree); }
 
     uint degree() const;
     void setDegree(uint);

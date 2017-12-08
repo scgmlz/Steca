@@ -50,10 +50,6 @@ void initFactory() {
 //  class Polynom
 // ************************************************************************** //
 
-Polynom::Polynom(uint degree) {
-    setDegree(degree);
-}
-
 uint Polynom::degree() const {
     uint parCount = super::parameterCount();
     ENSURE(parCount > 0)
@@ -195,7 +191,6 @@ void PeakFunction::fit(Curve const& curve, Range const& range) {
 
     setGuessedPeak(qpair(peakTth, peakIntens));
     setGuessedFWHM(c.x(hmi2) - c.x(hmi1));
-    //  }
 
     FitWrapper().fit(*this, c);
 }

@@ -23,17 +23,14 @@ class FitWrapper {
 public:
     void fit(typ::Function&, typ::Curve const&);
 
-protected:
+private:
     // these pointers are valid during fit() call
     typ::Function* function_;
     qreal const* xValues_;
 
-    // calculate a vector of y(x)
-    void callbackY(qreal*, qreal*, int, int, void*);
-protected:
     void approximate(qreal*, qreal const*, qreal const*, qreal*, uint, qreal const*, uint);
 
-private:
+    void callbackY(qreal*, qreal*, int, int, void*);
     void callbackJacobianLM(qreal*, qreal*, int, int, void*);
 };
 
