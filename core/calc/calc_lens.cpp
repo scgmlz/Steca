@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/calc/calc_lens.cpp
-//! @brief     Implements ...
+//! @brief     Implements LensBase, ImageLens, DatasetLens
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -22,6 +22,10 @@ using typ::Curve;
 using typ::Image;
 using typ::ImageTransform;
 using typ::size2d;
+
+// ************************************************************************** //
+//   class LensBase
+// ************************************************************************** //
 
 LensBase::LensBase(
     core::Session const& session, data::Datasets const& datasets, bool trans, bool cut,
@@ -79,8 +83,14 @@ void LensBase::doCut(uint& i, uint& j) const {
     j += imageCut_.top;
 }
 
+
+// ************************************************************************** //
+//   class ImageLens
+// ************************************************************************** //
+
 ImageLens::ImageLens(
-    core::Session const& session, Image const& image, data::Datasets const& datasets, bool trans, bool cut)
+    core::Session const& session, Image const& image, data::Datasets const& datasets, bool trans,
+    bool cut)
     : super(session, datasets, trans, cut, session.imageTransform(), session.imageCut())
     , image_(image) {}
 
@@ -114,9 +124,15 @@ inten_rge const& ImageLens::rgeInten(bool fixed) const {
     return rgeInten_;
 }
 
+
+// ************************************************************************** //
+//   class DatasetLens
+// ************************************************************************** //
+
 DatasetLens::DatasetLens(
-    core::Session const& session, data::Dataset const& dataset, data::Datasets const& datasets, eNorm norm,
-    bool trans, bool cut, typ::ImageTransform const& imageTransform, typ::ImageCut const& imageCut)
+    core::Session const& session, data::Dataset const& dataset, data::Datasets const& datasets,
+    eNorm norm, bool trans, bool cut, typ::ImageTransform const& imageTransform,
+    typ::ImageCut const& imageCut)
     : super(session, datasets, trans, cut, imageTransform, imageCut)
     , normFactor_(1)
     , dataset_(dataset) {
@@ -192,4 +208,5 @@ void DatasetLens::setNorm(eNorm norm) {
     if (qIsNaN(normFactor_))
         MessageLogger::warn("Bad normalisation value");
 }
-}
+
+} // namespace calc

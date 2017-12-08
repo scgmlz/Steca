@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/calc/calc_lens.h
-//! @brief     Defines ...
+//! @brief     Defines LensBase, ImageLens, DatasetLens
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -19,18 +19,15 @@
 #include "typ/typ_geometry.h"
 #include "typ/typ_image_transform.h"
 
-namespace core {
-}
-
 namespace calc {
 
-// View the dataset through a lens (thanks, Antti!)
+//! View the dataset through a lens
 
 class LensBase {
 public:
     LensBase(
-        core::Session const&, data::Datasets const&, bool trans, bool cut, typ::ImageTransform const&,
-        typ::ImageCut const&);
+        core::Session const&, data::Datasets const&, bool trans, bool cut,
+        typ::ImageTransform const&, typ::ImageCut const&);
 
     virtual typ::size2d size() const = 0;
 
@@ -73,8 +70,8 @@ private:
     using super = LensBase;
 public:
     DatasetLens(
-                 core::Session const&, data::Dataset const&, data::Datasets const&, eNorm, bool trans,
-                 bool cut, typ::ImageTransform const&, typ::ImageCut const&);
+        core::Session const&, data::Dataset const&, data::Datasets const&, eNorm, bool trans,
+        bool cut, typ::ImageTransform const&, typ::ImageCut const&);
 
     typ::size2d size() const;
 
@@ -96,5 +93,7 @@ private:
 };
 
 typedef QSharedPointer<DatasetLens> shp_DatasetLens;
-}
+
+} //namespace calc
+
 #endif // CALC_LENS_H
