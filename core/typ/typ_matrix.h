@@ -15,7 +15,7 @@
 #ifndef TYP_MATRIX_H
 #define TYP_MATRIX_H
 
-#include "def/def_macros.h"
+#include "def/macros.h"
 
 namespace typ {
 

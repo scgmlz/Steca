@@ -40,13 +40,4 @@
     for_int (i, ni)                                                                                \
         for_int (j, nj)
 
-// code to call only once - guard
-#define ONLY_ONCE                                                                                  \
-    {                                                                                              \
-        static bool once = false;                                                                  \
-        if (once)                                                                                  \
-            return;                                                                                \
-        once = true;                                                                               \
-    }
-
 #endif // DEF_ALG_H

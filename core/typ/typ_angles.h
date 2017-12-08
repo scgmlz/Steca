@@ -15,7 +15,7 @@
 #ifndef TYP_ANGLES_H
 #define TYP_ANGLES_H
 
-#include "def/def_macros.h"
+#include "def/macros.h"
 
 namespace typ {
 

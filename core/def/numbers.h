@@ -19,7 +19,7 @@
 #define DEF_GSL_H
 
 #include "def/def_debug.h"
-#include "def/def_macros.h"
+#include "def/macros.h"
 #include <QtGlobal> // to define Q_OS_WIN
 
 // casting signed <-> unsigned

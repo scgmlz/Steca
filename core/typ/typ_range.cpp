@@ -15,8 +15,8 @@
 // ************************************************************************** //
 
 #include "typ_range.h"
-#include "def/def_alg.h"
 #include "def/def_cmp_impl.h"
+#include "def/idiomatic_for.h"
 #include "typ/typ_json.h"
 
 namespace typ {

@@ -13,8 +13,8 @@
 // ************************************************************************** //
 
 #include "3rdparty/Mar/MarReader.h"
-#include "def/def_alg.h"
 #include "def/exception.h"
+#include "def/idiomatic_for.h"
 #include "io_io.h"
 #include "typ/typ_str.h"
 

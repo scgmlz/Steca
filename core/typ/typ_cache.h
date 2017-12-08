@@ -15,7 +15,7 @@
 #ifndef TYP_CACHE_H
 #define TYP_CACHE_H
 
-#include "def/def_alg.h"
+#include "def/idiomatic_for.h"
 #include "typ/typ_map.h"
 #include <QDateTime>
 

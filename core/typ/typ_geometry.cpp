@@ -13,8 +13,8 @@
 // ************************************************************************** //
 
 #include "typ_geometry.h"
-#include "def/def_alg.h"
 #include "def/def_cmp_impl.h"
+#include "def/idiomatic_for.h"
 #include <qmath.h>
 
 namespace typ {

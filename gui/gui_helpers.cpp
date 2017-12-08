@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "gui_helpers.h"
-#include "def/def_alg.h"
+#include "def/idiomatic_for.h"
 #include "typ/typ_str.h"
 #include <QAction>
 #include <QGroupBox>

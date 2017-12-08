@@ -13,8 +13,8 @@
 // ************************************************************************** //
 
 #include "session.h"
-#include "def/def_alg.h"
 #include "def/exception.h"
+#include "def/idiomatic_for.h"
 #include "typ/typ_matrix.h"
 #include "typ/typ_str.h"
 #include <qmath.h>

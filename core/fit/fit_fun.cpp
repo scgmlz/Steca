@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "def/def_alg.h"
 #include "def/exception.h"
+#include "def/idiomatic_for.h"
 #include "def/scoped.h"
 #include "fit_methods.h"
 #include <qmath.h>

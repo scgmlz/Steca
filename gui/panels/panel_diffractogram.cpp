@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "panel_diffractogram.h"
-#include "def/def_alg.h"
+#include "def/idiomatic_for.h"
 #include "gui_cfg.h"
 #include "thehub.h"
 

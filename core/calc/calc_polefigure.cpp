@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "calc_polefigure.h"
-#include "def/def_alg.h"
+#include "def/idiomatic_for.h"
 #include <qmath.h>
 
 namespace calc {

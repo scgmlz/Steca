@@ -14,7 +14,7 @@
 
 #include "output_polefigures.h"
 #include "colors.h"
-#include "def/def_alg.h"
+#include "def/idiomatic_for.h"
 #include "thehub.h"
 #include "typ/typ_str.h"
 #include <qmath.h>

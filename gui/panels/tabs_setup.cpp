@@ -14,7 +14,7 @@
 
 #include "tabs_setup.h"
 #include "views.h" // inheriting from
-#include "def/def_alg.h"
+#include "def/idiomatic_for.h"
 #include "gui_cfg.h"
 #include "thehub.h"
 

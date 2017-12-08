@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "output_diagrams.h"
-#include "def/def_alg.h"
+#include "def/idiomatic_for.h"
 #include "thehub.h"
 #include "typ/typ_str.h"
 

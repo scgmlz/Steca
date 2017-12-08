@@ -53,4 +53,13 @@ public:
 
 } // namespace typ
 
+// code to call only once - guard
+#define ONLY_ONCE                                                                                  \
+    {                                                                                              \
+        static bool once = false;                                                                  \
+        if (once)                                                                                  \
+            return;                                                                                \
+        once = true;                                                                               \
+    }
+
 #endif // TYP_FACTORY_H

@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "calc_reflection_info.h"
-#include "def/def_alg.h"
+#include "def/idiomatic_for.h"
 
 namespace calc {
 
