@@ -30,11 +30,6 @@
 
 #endif
 
-// for class definitions
-
-// trouble with templates in macros
-#define COMMA ,
-
 // alias for the super class
 #define SUPER(cls)                                                         \
 private:                                                                   \

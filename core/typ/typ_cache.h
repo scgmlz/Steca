@@ -53,8 +53,9 @@ void test() {
 
 namespace typ {
 
-template <typename Key, typename T> class cache_base {
-    public:
+template <typename Key, typename T>
+class cache_base {
+public:
     typedef QSharedPointer<T> shp;
 
 protected:
@@ -92,87 +93,13 @@ public:
     virtual shp value(Key const&) = 0;
 };
 
-// if full, keeps full, trims only what is needed
-// has insert/take overhead for each access (value())
-
-/* not used
-
-template <typename Key, typename T>
-class cache_eager final : public cache_base<Key,T> {
-  SUPER(cache_base<Key COMMA T>)
-public:
-  typedef QSharedPointer<T> shp;
-
-private:
-
-  typedef map<mru_t, mapKey_it> mapMru_t;
-  mapMru_t mapMru_;
-
-public:
-
-  void trim(uint n) {
-    while (super::count() > n)
-      removeLru();
-  }
-
-  shp insert(Key const& key, shp p) {
-    EXPECT(!super::mapKey_.contains(key))
-    trim(super::maxItems_ - 1);
-
-    mru_t mru = 0;
-    if (!super::isEmpty()) {
-      mru = mapMru_.lastKey() + 1;
-      if (0 == mru)     // was overflow
-        super::clear(); // take a hit, but only every 4G operations
-    }
-
-    shp_mru_t shpMru(p, mru);
-    EXPECT(!mapMru_.contains(shpMru.mru))
-    auto it = super::mapKey_.insert(key, shpMru);
-    mapMru_.insert(shpMru.mru, it);
-    ENSURE(super::mapKey_.count() == mapMru_.count())
-    return p;
-  }
-
-  shp take(Key const& key) {
-    auto it1 = super::mapKey_.find(key);
-    if (super::mapKey_.end() == it1)
-      return shp();
-
-    shp p = it1->p;
-
-    auto it2 = mapMru_.find(it1->mru);
-    ENSURE(mapMru_.end() != it2)
-
-    super::mapKey_.erase(it1);
-    mapMru_.erase(it2);
-
-    return p;
-  }
-
-  shp value(Key const& key) {
-    shp p = take(key);  // take + re-insert makes it mru
-    if (p)
-      insert(key, p);
-    return p;
-  }
-
-private:
-  void removeLru() {
-    EXPECT(!super::isEmpty())
-    auto itMru = mapMru_.begin();
-    auto itKey = *itMru;
-    mapMru_.erase(itMru);
-    super::mapKey_.erase(itKey);
-    ENSURE(super::mapKey_.count() == mapMru_.count())
-  }
-};
-*/
-
 // if full, takes a hit, trims a lot
 // has no overhead for each access (value())
-template <typename Key, typename T> class cache_lazy final : public cache_base<Key, T> {
-    SUPER(cache_base<Key COMMA T>) public : typedef QSharedPointer<T> shp;
+template <typename Key, typename T>
+class cache_lazy final : public cache_base<Key, T> {
+    using super = cache_base<Key,T>;
+public:
+    typedef QSharedPointer<T> shp;
 
 private:
     using mru_t = typename super::mru_t;
@@ -246,5 +173,7 @@ public:
         return it->p;
     }
 };
-}
+
+} // namespace typ
+
 #endif // TYP_CACHE_H

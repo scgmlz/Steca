@@ -18,12 +18,18 @@
 
 namespace typ {
 
-template <typename Key, typename T> class hash : protected QHash<Key, T> {
-    SUPER(QHash<Key COMMA T>) public : using super::clear;
+template <typename Key, typename T>
+class hash : protected QHash<Key, T> {
+    using super = QHash<Key,T>;
+public:
+    using super::clear;
 };
 
-template <typename Key, typename Tp> class owning_hash : protected hash<Key, Tp> {
-    SUPER(hash<Key COMMA Tp>) public : ~owning_hash() { clear(); }
+template <typename Key, typename Tp>
+class owning_hash : protected hash<Key, Tp> {
+    using super = hash<Key,Tp>;
+public:
+    ~owning_hash() { clear(); }
 
     void clear() {
         for (auto* v : QHash<Key, Tp>::values())
@@ -44,8 +50,9 @@ template <typename Key, typename Tp> class owning_hash : protected hash<Key, Tp>
 
     Tp value(Key const& key) { return super::value(key); }
 
-
     owner<Tp> take(Key const& key) { return owner<Tp>(super::take(key)); }
 };
-}
+
+} // namespace typ
+
 #endif // TYP_MAP_H
