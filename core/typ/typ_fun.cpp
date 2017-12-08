@@ -14,7 +14,7 @@
 
 #include "typ_fun.h"
 #include "def/def_alg.h"
-#include "def/def_exc.h"
+#include "def/exception.h"
 #include "def/scoped.h"
 #include "typ/typ_str.h"
 

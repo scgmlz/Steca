@@ -19,7 +19,7 @@
 #include "calc/calc_reflection.h"
 #include "calc/calc_reflection_info.h"
 #include "data/data_file.h"
-#include "def/def_exc.h"
+#include "def/exception.h"
 #include "def/scoped.h"
 #include "typ/typ_async.h"
 #include "typ/typ_cache.h"

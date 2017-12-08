@@ -16,7 +16,7 @@
 
 #include "typ_ij.h"
 #include "def/def_cmp_impl.h"
-#include "def/def_exc.h"
+#include "def/exception.h"
 #include "typ/typ_json.h"
 
 namespace typ {

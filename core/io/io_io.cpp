@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "io_io.h"
-#include "def/def_exc.h"
+#include "def/exception.h"
 #include "typ/typ_str.h"
 
 namespace io {

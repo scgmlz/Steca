@@ -15,7 +15,7 @@
 #ifndef TYP_IMAGE_H
 #define TYP_IMAGE_H
 
-#include "def/def_exc.h"
+#include "def/exception.h"
 #include "typ/typ_array2d.h"
 #include "typ/typ_types.h"
 #include <QSharedPointer>

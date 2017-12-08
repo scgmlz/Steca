@@ -15,7 +15,7 @@
 #ifndef TYP_FACTORY_H
 #define TYP_FACTORY_H
 
-#include "def/def_exc.h"
+#include "def/exception.h"
 #include "def/numbers.h"
 #include "def/scoped.h"
 #include "typ/typ_hash.h"

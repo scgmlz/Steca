@@ -12,8 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "def_exc.h"
-#include "typ/typ_str.h"
+#include "exception.h"
 
 #ifdef QT_NO_EXCEPTIONS
 #error needs exception handling

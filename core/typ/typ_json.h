@@ -15,7 +15,7 @@
 #ifndef TYP_JSON_H
 #define TYP_JSON_H
 
-#include "def/def_exc.h"
+#include "def/exception.h"
 #include "def/numbers.h"
 #include "typ/typ_str.h"
 #include <QJsonArray>

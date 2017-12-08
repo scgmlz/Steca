@@ -16,8 +16,8 @@
 #define TYP_IJ_H
 
 #include "def/def_cmp.h"
-#include "def/def_exc.h"
 #include "def/def_macros.h"
+#include "def/exception.h"
 
 namespace typ {
 
