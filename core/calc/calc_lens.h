@@ -15,7 +15,7 @@
 #ifndef CALC_LENS_H
 #define CALC_LENS_H
 
-#include "data/data_dataset.h"
+#include "data/dataset.h"
 #include "typ/geometry.h"
 #include "typ/image_transform.h"
 

@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/typ/qpair.h
+//! @file      core/typ/realpair.h
 //! @brief     Defines class qpair
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef QPAIR_HX // not to be confused qith QPAIR_H from Qt
-#define QPAIR_HX
+#ifndef REALPAIR_H
+#define REALPAIR_H
 
 #include "def/comparable.h"
 #include "def/exception.h"
@@ -41,4 +41,4 @@ class qpair {
     void loadJson(typ::JsonObj const&) THROWS;
 };
 
-#endif // QPAIR_HX
+#endif // REALPAIR_H

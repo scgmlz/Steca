@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/data/data_dataset.cpp
+//! @file      core/data/dataset.cpp
 //! @brief     Implements classes Metadata, [One]Dataset[s]
 //!
 //! @homepage  https://github.com/scgmlz/Steca2

@@ -15,8 +15,8 @@
 #include "def/exception.h"
 #include "def/idiomatic_for.h"
 #include "def/special_pointers.h"
-#include "typ/str.h"
 #include "typ/fun.h"
+#include "typ/str.h"
 
 namespace json_fun_key {
 str const SUM("sum");

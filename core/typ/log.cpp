@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "typ/str.h"
 #include "typ/log.h"
+#include "typ/str.h"
 
 void MessageLogger::info(rcstr msg) {
     if (handler)

@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/data/data_file.cpp
+//! @file      core/data/datafile.cpp
 //! @brief     Implements class File
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "data_file.h"
+#include "datafile.h"
 #include "typ/str.h"
 
 namespace data {

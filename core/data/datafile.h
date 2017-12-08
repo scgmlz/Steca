@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/data/data_file.h
+//! @file      core/data/datafile.h
 //! @brief     Defines class File
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,10 +12,10 @@
 //
 // ************************************************************************** //
 
-#ifndef DATA_FILE_H
-#define DATA_FILE_H
+#ifndef DATAFILE_H
+#define DATAFILE_H
 
-#include "data_dataset.h"
+#include "dataset.h"
 #include "typ/str.h"
 #include <QFileInfo>
 #include <QSharedPointer>
@@ -44,4 +44,4 @@ private:
 
 Q_DECLARE_METATYPE(data::shp_File)
 
-#endif // DATA_FILE_H
+#endif // DATAFILE_H

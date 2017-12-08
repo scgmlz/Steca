@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/typ/qpair.cpp
+//! @file      core/typ/realpair.cpp
 //! @brief     Implements class qpair
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -17,7 +17,7 @@
 #include "def/comparators.h"
 #include "def/exception.h"
 #include "typ/json.h"
-#include "typ/qpair.h"
+#include "typ/realpair.h"
 
 int qpair::compare(qpair const& that) const {
     EXPECT(isValid() && that.isValid())

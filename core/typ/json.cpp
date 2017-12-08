@@ -14,10 +14,10 @@
 
 #include "def/exception.h"
 #include "typ/ij.h"
-#include "typ/qpair.h"
-#include "typ/range.h"
-#include "typ/str.h"
 #include "typ/json.h"
+#include "typ/range.h"
+#include "typ/realpair.h"
+#include "typ/str.h"
 #include <QStringList> // needed under Travis
 
 namespace json_key {

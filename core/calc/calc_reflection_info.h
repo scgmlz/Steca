@@ -15,7 +15,7 @@
 #ifndef CALC_REFLECTION_INFO_H
 #define CALC_REFLECTION_INFO_H
 
-#include "data/data_dataset.h"
+#include "data/dataset.h"
 
 using typ::deg;
 

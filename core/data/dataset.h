@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/data/data_dataset.h
+//! @file      core/data/dataset.h
 //! @brief     Defines classes Metadata, [One]Dataset[s]
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef DATA_DATASET_H
-#define DATA_DATASET_H
+#ifndef DATASET_H
+#define DATASET_H
 
 #include "typ/curve.h"
 #include "typ/image.h"
@@ -193,4 +193,4 @@ private:
 
 Q_DECLARE_METATYPE(data::shp_Dataset)
 
-#endif // DATA_DATASET_H
+#endif // DATASET_H

@@ -16,7 +16,7 @@
 #define REFHUB_H
 
 #include "calc/calc_reflection.h"
-#include "data/data_file.h"
+#include "data/datafile.h"
 
 namespace gui {
 

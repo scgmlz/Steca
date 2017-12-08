@@ -16,8 +16,8 @@
 #define TYPES_H
 
 #include "typ/angles.h"
-#include "typ/qpair.h"
 #include "typ/range.h"
+#include "typ/realpair.h"
 #include "typ/strlst.h"
 
 typedef float inten_t;

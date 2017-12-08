@@ -16,8 +16,8 @@
 
 #include "def/comparators.h"
 #include "def/exception.h"
-#include "typ/json.h"
 #include "typ/ij.h"
+#include "typ/json.h"
 
 namespace typ {
 

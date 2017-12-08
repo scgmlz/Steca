@@ -16,7 +16,7 @@
 #include "def/exception.h"
 #include "def/idiomatic_for.h"
 #include "typ/matrix.h"
-#include "typ/qpair.h"
+#include "typ/realpair.h"
 #include "typ/str.h"
 #include <qmath.h>
 
