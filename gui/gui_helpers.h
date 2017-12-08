@@ -15,7 +15,6 @@
 #ifndef GUI_HELPERS_H
 #define GUI_HELPERS_H
 
-#include "def/defs.h"
 #include "typ/typ_str.h"
 #include "typ/typ_strlst.h"
 #include <QCheckBox>

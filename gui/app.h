@@ -15,7 +15,6 @@
 #ifndef APP_H
 #define APP_H
 
-#include "def/defs.h"
 #include <QApplication>
 
 class NoWarnings {

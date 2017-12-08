@@ -15,7 +15,7 @@
 #ifndef TYP_ASYNC_H
 #define TYP_ASYNC_H
 
-#include "def/defs.h"
+#include "def/def_gsl.h" // for uint
 
 class TakesLongTime final {
 public:

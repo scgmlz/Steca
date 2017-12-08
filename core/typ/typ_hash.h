@@ -15,7 +15,6 @@
 #ifndef TYP_HASH_H
 #define TYP_HASH_H
 
-
 namespace typ {
 
 template <typename Key, typename T>

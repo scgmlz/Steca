@@ -15,7 +15,7 @@
 #ifndef TYP_IMAGE_TRANSFORM_H
 #define TYP_IMAGE_TRANSFORM_H
 
-#include "def/defs.h"
+#include "def/def_gsl.h" // for uint
 
 namespace typ {
 

@@ -16,7 +16,7 @@
 #define TYP_ARRAY2D_H
 
 #include "def/def_cmp.h"
-#include "def/defs.h"
+#include "def/def_gsl.h" // for uint
 
 namespace typ {
 

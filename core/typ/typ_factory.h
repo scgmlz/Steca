@@ -16,6 +16,7 @@
 #define TYP_FACTORY_H
 
 #include "def/def_exc.h"
+#include "def/def_gsl.h"
 #include "typ/typ_hash.h"
 #include "typ/typ_str.h"
 

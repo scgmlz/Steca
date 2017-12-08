@@ -16,7 +16,6 @@
 #define TYP_FUN_H
 
 #include "def/def_exc.h"
-#include "def/defs.h"
 #include "typ/typ_factory.h"
 #include "typ/typ_json.h"
 #include "typ/typ_range.h"
