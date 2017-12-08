@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/def/def_gsl.h
+//! @file      core/def/numbers.h
 //! @brief     Defines ...
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -15,8 +15,8 @@
 // adapted parts of https://github.com/Microsoft/GSL.git
 // added some more
 
-#ifndef DEF_GSL_H
-#define DEF_GSL_H
+#ifndef NUMBERS_H
+#define NUMBERS_H
 
 #include "def/debug.h"
 #include "def/macros.h"
@@ -118,4 +118,4 @@ typedef qreal preal;
 
 #endif
 
-#endif // DEF_GSL_H
+#endif // NUMBERS_H

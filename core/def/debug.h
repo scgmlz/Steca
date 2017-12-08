@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/def/def_debug.h
+//! @file      core/def/debug.h
 //! @brief     Defines ...
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef DEF_DEBUG_H
-#define DEF_DEBUG_H
+#ifndef DEBUG_H
+#define DEBUG_H
 
 
 // debugging helpers
@@ -79,4 +79,4 @@
 // WaTch: same as TR, also prints stringized version (what is being printed)
 #define WT(what) TR(#what ":" << what)
 
-#endif // DEF_DEBUG_H
+#endif // DEBUG_H

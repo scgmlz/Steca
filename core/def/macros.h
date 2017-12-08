@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/def/def_macros.h
+//! @file      core/def/macros.h
 //! @brief     Defines ...
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef DEF_MACROS_H
-#define DEF_MACROS_H
+#ifndef MACROS_H
+#define MACROS_H
 
 #include <QtGlobal> // to define Q_OS_WIN
 
@@ -41,4 +41,4 @@
 
 #endif
 
-#endif // DEF_MACROS_H
+#endif // MACROS_H

@@ -16,7 +16,7 @@
 #define TYP_FUN_H
 
 #include "def/exception.h"
-#include "def/scoped.h"
+#include "def/special_pointers.h"
 #include "typ/typ_factory.h"
 #include "typ/typ_json.h"
 #include "typ/typ_range.h"

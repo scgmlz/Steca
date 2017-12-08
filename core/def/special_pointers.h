@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/def/scoped.h
+//! @file      core/def/special_pointers.h
 //! @brief     Defines and implements templated class scoped
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef SCOPED_H
-#define SCOPED_H
+#ifndef SPECIAL_POINTERS_H
+#define SPECIAL_POINTERS_H
 
 #include "def/debug.h"
 #include <cstddef> // for size_t
@@ -100,4 +100,4 @@ private:
     P p_;
 };
 
-#endif // SCOPED_H
+#endif // SPECIAL_POINTERS_H

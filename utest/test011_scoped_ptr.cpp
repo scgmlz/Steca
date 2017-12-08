@@ -1,4 +1,4 @@
-#include "def/scoped.h"
+#include "def/special_pointers.h"
 #include "gtest/gtest.h"
 
 TEST(ScopedPtr, NotNull) {

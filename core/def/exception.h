@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/def/def_exc.h
+//! @file      core/def/exception.h
 //! @brief     Defines class Exception
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -14,8 +14,8 @@
 
 // exceptions
 
-#ifndef DEF_EXC_H
-#define DEF_EXC_H
+#ifndef EXCEPTION_H
+#define EXCEPTION_H
 
 #include "typ/typ_str.h"
 #include <QException>
@@ -52,4 +52,4 @@ protected:
 // run-time condition checking
 #define RUNTIME_CHECK(test, msg) if (!(test)) THROW(msg)
 
-#endif // DEF_EXC_H
+#endif // EXCEPTION_H

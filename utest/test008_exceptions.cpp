@@ -1,5 +1,5 @@
 #include "def/exception.h"
-#include "def/scoped.h"
+#include "def/special_pointers.h"
 #include "gtest/gtest.h"
 
 TEST(Exception, Basics) {

@@ -17,7 +17,7 @@
 
 #include "def/exception.h"
 #include "def/numbers.h"
-#include "def/scoped.h"
+#include "def/special_pointers.h"
 #include "typ/typ_hash.h"
 #include "typ/typ_str.h"
 

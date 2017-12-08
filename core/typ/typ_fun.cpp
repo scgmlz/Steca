@@ -15,7 +15,7 @@
 #include "typ_fun.h"
 #include "def/exception.h"
 #include "def/idiomatic_for.h"
-#include "def/scoped.h"
+#include "def/special_pointers.h"
 #include "typ/typ_str.h"
 
 namespace json_fun_key {

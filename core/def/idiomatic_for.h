@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/def/def_alg.h
+//! @file      core/def/idiomatic_for.h
 //! @brief     Defines idiomatic loops (for_int, ...) and ONLY_ONCE
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef DEF_ALG_H
-#define DEF_ALG_H
+#ifndef IDIOMATIC_FOR_H
+#define IDIOMATIC_FOR_H
 
 #include <QtGlobal> // to define Q_OS_WIN
 
@@ -40,4 +40,4 @@
     for_int (i, ni)                                                                                \
         for_int (j, nj)
 
-#endif // DEF_ALG_H
+#endif // IDIOMATIC_FOR_H

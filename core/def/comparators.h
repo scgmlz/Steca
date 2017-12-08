@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/def/def_cmp_impl.h
+//! @file      core/def/comparators.h
 //! @brief     Defines ...
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef DEF_CMP_IMPL_H
-#define DEF_CMP_IMPL_H
+#ifndef COMPARATORS_H
+#define COMPARATORS_H
 
 // a helper for int compare()
 #define RET_COMPARE_VALUE(val)                                                                     \
@@ -44,4 +44,4 @@
                                                                                                    \
     bool T::operator!=(T const& that) const { return isValid() && that.isValid() && 0 != compare(that); }
 
-#endif // DEF_CMP_IMPL_H
+#endif // COMPARATORS_H
