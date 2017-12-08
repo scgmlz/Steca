@@ -20,7 +20,9 @@
 #include "def/special_pointers.h"
 #include "panels/panel.h"
 #include "typ/log.h"
+#include "typ/range.h"
 #include "typ/str.h"
+#include "typ/vec.h"
 
 class QProgressBar;
 
@@ -54,7 +56,7 @@ public:
     void updateValues();
 
 private:
-    gma_rge rgeGma_;
+    typ::Range rgeGma_;
 };
 
 class PanelGammaRange : public Panel {
@@ -69,7 +71,7 @@ public:
     void updateValues();
 
 private:
-    gma_rge rgeGma_;
+    typ::Range rgeGma_;
 };
 
 class PanelPoints : public Panel {

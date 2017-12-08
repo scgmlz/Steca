@@ -15,10 +15,13 @@
 #ifndef DATASET_H
 #define DATASET_H
 
+#include "typ/angles.h"
 #include "typ/curve.h"
 #include "typ/image.h"
+#include "typ/range.h"
 #include "typ/str.h"
 #include "typ/variant.h"
+#include "typ/vec.h"
 #include <QSharedPointer>
 
 namespace core {
@@ -89,17 +92,17 @@ public:
     typ::deg phi() const { return md_->motorPhi; }
     typ::deg chi() const { return md_->motorChi; }
 
-    gma_rge rgeGma(core::Session const&) const;
-    gma_rge rgeGmaFull(core::Session const&) const;
-    tth_rge rgeTth(core::Session const&) const;
+    typ::Range rgeGma(core::Session const&) const;
+    typ::Range rgeGmaFull(core::Session const&) const;
+    typ::Range rgeTth(core::Session const&) const;
 
-    inten_rge rgeInten() const;
+    typ::Range rgeInten() const;
 
     typ::shp_Image image() const { return image_; }
     typ::size2d imageSize() const;
 
     void collectIntens(
-        core::Session const&, typ::Image const* intensCorr, inten_vec&, uint_vec&, gma_rge const&,
+        core::Session const&, typ::Image const* intensCorr, inten_vec&, uint_vec&, typ::Range const&,
         typ::deg minTth, typ::deg deltaTth) const;
 
 private:
@@ -134,17 +137,17 @@ public:
     typ::deg phi() const;
     typ::deg chi() const;
 
-    gma_rge rgeGma(core::Session const&) const;
-    gma_rge rgeGmaFull(core::Session const&) const;
-    tth_rge rgeTth(core::Session const&) const;
+    typ::Range rgeGma(core::Session const&) const;
+    typ::Range rgeGmaFull(core::Session const&) const;
+    typ::Range rgeTth(core::Session const&) const;
 
-    inten_rge rgeInten() const;
+    typ::Range rgeInten() const;
 
     qreal avgMonitorCount() const;
     qreal avgDeltaMonitorCount() const;
     qreal avgDeltaTime() const;
 
-    inten_vec collectIntens(core::Session const&, typ::Image const* intensCorr, gma_rge const&) const;
+    inten_vec collectIntens(core::Session const&, typ::Image const* intensCorr, typ::Range const&) const;
     void calculateAlphaBeta(typ::deg tth, typ::deg gma, typ::deg& alpha, typ::deg& beta) const;
 
 private:
@@ -171,8 +174,8 @@ public:
     qreal avgDeltaMonitorCount() const;
     qreal avgDeltaTime() const;
 
-    inten_rge const& rgeGma(core::Session const&) const;
-    inten_rge const& rgeFixedInten(core::Session const&, bool trans, bool cut) const;
+    typ::Range const& rgeGma(core::Session const&) const;
+    typ::Range const& rgeFixedInten(core::Session const&, bool trans, bool cut) const;
 
     typ::Curve avgCurve(core::Session const&) const;
 
@@ -184,8 +187,8 @@ private:
 
     // computed on demand (NaNs or emptiness indicate yet unknown values)
     mutable qreal avgMonitorCount_, avgDeltaMonitorCount_, avgDeltaTime_;
-    mutable inten_rge rgeFixedInten_;
-    mutable gma_rge rgeGma_;
+    mutable typ::Range rgeFixedInten_;
+    mutable typ::Range rgeGma_;
     mutable typ::Curve avgCurve_;
 };
 

@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "thehub.h"
+#include "typ/range.h"
 
 namespace gui {
 
@@ -38,7 +39,7 @@ void TheHubSignallingBase::tellReflectionData(calc::shp_Reflection reflection) {
 }
 
 void TheHubSignallingBase::tellReflectionValues(
-    tth_rge const& rgeTth, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
+    typ::Range const& rgeTth, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
     emit sigReflectionValues(rgeTth, peak, fwhm, withGuesses);
 }
 

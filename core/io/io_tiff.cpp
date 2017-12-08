@@ -15,6 +15,7 @@
 #include "def/exception.h"
 #include "def/idiomatic_for.h"
 #include "io_io.h"
+#include "typ/angles.h"
 #include "typ/str.h"
 #include <QDataStream>
 #include <QDir>

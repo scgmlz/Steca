@@ -18,6 +18,7 @@
 #include "data/dataset.h"
 #include "typ/geometry.h"
 #include "typ/image_transform.h"
+#include "typ/range.h"
 
 namespace calc {
 
@@ -55,12 +56,12 @@ public:
 
     inten_t imageInten(uint i, uint j) const;
 
-    inten_rge const& rgeInten(bool fixed) const;
+    typ::Range const& rgeInten(bool fixed) const;
 
 private:
     typ::Image const& image_;
 
-    mutable inten_rge rgeInten_;
+    mutable typ::Range rgeInten_;
 };
 
 typedef QSharedPointer<ImageLens> shp_ImageLens;
@@ -75,13 +76,13 @@ public:
 
     typ::size2d size() const;
 
-    gma_rge rgeGma() const;
-    gma_rge rgeGmaFull() const;
-    tth_rge rgeTth() const;
-    inten_rge rgeInten() const;
+    typ::Range rgeGma() const;
+    typ::Range rgeGmaFull() const;
+    typ::Range rgeTth() const;
+    typ::Range rgeInten() const;
 
     typ::Curve makeCurve() const;
-    typ::Curve makeCurve(gma_rge const&) const;
+    typ::Curve makeCurve(typ::Range const&) const;
 
     data::Dataset const& dataset() const { return dataset_; }
 

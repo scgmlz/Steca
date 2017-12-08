@@ -16,7 +16,9 @@
 #define OUTPUT_DIFFRACTOGRAMS_H
 
 #include "output_dialogs.h"
+#include "typ/range.h"
 #include "typ/str.h"
+#include "typ/vec.h"
 
 namespace gui {
 namespace output {
@@ -51,7 +53,7 @@ protected:
     TabDiffractogramsSave* tabSave_;
 
     OutputDataCollection
-    collectCurves(gma_rge const&, uint gmaSlices, data::Dataset const& dataset, uint picNum);
+    collectCurves(typ::Range const&, uint gmaSlices, data::Dataset const& dataset, uint picNum);
     OutputData collectCurve(data::Dataset const& dataset);
 
     OutputData outputCurrDiffractogram();

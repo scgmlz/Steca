@@ -17,6 +17,7 @@
 
 #include "def/exception.h"
 #include "typ/array2d.h"
+#include "typ/range.h"
 #include "typ/types.h"
 #include <QSharedPointer>
 
@@ -51,11 +52,11 @@ class Image final {
     // Sum all intensities with new ones.
     void addIntens(Image const&) THROWS;
 
-    inten_rge const& rgeInten() const { return rgeInten_; }
+    typ::Range const& rgeInten() const { return rgeInten_; }
 
 private:
     inten_arr intens_;
-    inten_rge rgeInten_;
+    typ::Range rgeInten_;
 };
 
 typedef QSharedPointer<Image> shp_Image;

@@ -14,7 +14,10 @@
 
 #include "def/comparators.h"
 #include "def/idiomatic_for.h"
+#include "typ/angles.h"
 #include "typ/geometry.h"
+#include "typ/range.h"
+#include "typ/vec.h"
 #include <qmath.h>
 
 namespace typ {
@@ -133,7 +136,7 @@ static uint upperBound(vec<deg> const& vec, deg x, uint i1, uint i2) {
 }
 
 void AngleMap::getGmaIndexes(
-    gma_rge const& rgeGma, uint_vec const*& indexes, uint& minIndex, uint& maxIndex) const {
+    typ::Range const& rgeGma, uint_vec const*& indexes, uint& minIndex, uint& maxIndex) const {
     indexes = &gmaIndexes;
     minIndex = lowerBound(gmas, rgeGma.min, 0, gmas.count());
     maxIndex = upperBound(gmas, rgeGma.max, 0, gmas.count());

@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "colors.h"
+#include "typ/vec.h"
 #include <qmath.h>
 
 namespace gui {

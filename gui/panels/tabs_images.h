@@ -17,6 +17,7 @@
 
 #include "calc/calc_lens.h"
 #include "panel.h"
+#include "typ/range.h"
 
 namespace gui {
 namespace panel {
@@ -34,7 +35,7 @@ private:
 
     QImage makeImage(typ::shp_Image, bool curvedScale);
     QPixmap makePixmap(typ::shp_Image);
-    QPixmap makePixmap(data::OneDataset const&, gma_rge const&, tth_rge const&);
+    QPixmap makePixmap(data::OneDataset const&, typ::Range const&, typ::Range const&);
 
     void setDataset(data::shp_Dataset);
     void render();

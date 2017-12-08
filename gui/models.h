@@ -15,6 +15,7 @@
 #ifndef MODELS_H
 #define MODELS_H
 
+#include "typ/vec.h"
 #include "types/type_models.h"
 
 

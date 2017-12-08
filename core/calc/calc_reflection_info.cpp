@@ -14,6 +14,8 @@
 
 #include "calc_reflection_info.h"
 #include "def/idiomatic_for.h"
+#include "typ/angles.h"
+#include "typ/range.h"
 
 namespace calc {
 
@@ -40,7 +42,7 @@ ReflectionInfo::ReflectionInfo()
           NAN, NAN) {}
 
 ReflectionInfo::ReflectionInfo(
-    shp_Metadata md, deg alpha, deg beta, gma_rge rgeGma, inten_t inten, inten_t intenError,
+    shp_Metadata md, deg alpha, deg beta, typ::Range rgeGma, inten_t inten, inten_t intenError,
     deg tth, deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
     : md_(md)
     , alpha_(alpha)
@@ -53,13 +55,13 @@ ReflectionInfo::ReflectionInfo(
     , fwhm_(fwhm)
     , fwhmError_(fwhmError) {}
 
-ReflectionInfo::ReflectionInfo(shp_Metadata md, deg alpha, deg beta, gma_rge rgeGma)
+ReflectionInfo::ReflectionInfo(shp_Metadata md, deg alpha, deg beta, typ::Range rgeGma)
     : ReflectionInfo(
           md, alpha, beta, rgeGma, inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), fwhm_t(NAN),
           fwhm_t(NAN)) {}
 
 ReflectionInfo::ReflectionInfo(
-    deg alpha, deg beta, gma_rge rgeGma, inten_t inten, inten_t intenError, deg tth,
+    deg alpha, deg beta, typ::Range rgeGma, inten_t inten, inten_t intenError, deg tth,
     deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
     : ReflectionInfo(
           shp_Metadata(), alpha, beta, rgeGma, inten, intenError, tth, tthError, fwhm, fwhmError) {}
@@ -140,7 +142,7 @@ inten_t ReflectionInfos::averageInten() const {
     return avgInten_;
 }
 
-inten_rge const& ReflectionInfos::rgeInten() const {
+typ::Range const& ReflectionInfos::rgeInten() const {
     if (!rgeInten_.isValid()) {
         for_i (count())
             rgeInten_.extendBy(at(i).inten());

@@ -17,6 +17,7 @@
 #include "def/idiomatic_for.h"
 #include "gui_cfg.h"
 #include "thehub.h"
+#include "typ/range.h"
 
 namespace gui {
 namespace panel {

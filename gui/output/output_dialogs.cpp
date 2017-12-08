@@ -19,7 +19,10 @@
 #include "filedialog.h"
 #include "gui_cfg.h"
 #include "thehub.h"
+#include "typ/angles.h"
+#include "typ/range.h"
 #include "typ/str.h"
+#include "typ/vec.h"
 #include <QDir>
 #include <QHeaderView>
 #include <QProgressBar>

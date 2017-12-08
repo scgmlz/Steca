@@ -21,6 +21,7 @@
 #include "typ/json.h"
 #include "typ/range.h"
 #include "typ/str.h"
+#include "typ/vec.h"
 
 namespace json_fun_key {
 }

@@ -20,6 +20,7 @@
 #include "def/special_pointers.h"
 #include "models.h"
 #include "session.h"
+#include "typ/range.h"
 #include "typ/str.h"
 #include <QSettings>
 
@@ -121,7 +122,7 @@ public:
     typ::Curve avgCurve(data::Datasets const& dss) const { return dss.avgCurve(*session_); }
 
     calc::ReflectionInfos makeReflectionInfos(
-        calc::Reflection const&, uint gmaSlices, gma_rge const&, Progress*);
+        calc::Reflection const&, uint gmaSlices, typ::Range const&, Progress*);
 
     void saveSession(QFileInfo const&) const;
     QByteArray saveSession() const;
@@ -158,7 +159,7 @@ public:
         return session_->angleMap(dataset);
     }
 
-    gma_rge collectedDatasetsRgeGma() const;
+    typ::Range collectedDatasetsRgeGma() const;
 
     void setCorrFile(rcstr filePath) THROWS;
     void tryEnableCorrection(bool);

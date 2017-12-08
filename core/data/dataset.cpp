@@ -14,8 +14,10 @@
 
 #include "def/idiomatic_for.h"
 #include "session.h"
+#include "typ/angles.h"
 #include "typ/log.h"
 #include "typ/matrix.h"
+#include "typ/range.h"
 #include "typ/str.h"
 #include <qmath.h>
 
@@ -230,19 +232,19 @@ shp_Metadata OneDataset::metadata() const {
     return md_;
 }
 
-gma_rge OneDataset::rgeGma(core::Session const& session) const {
+typ::Range OneDataset::rgeGma(core::Session const& session) const {
     return session.angleMap(*this)->rgeGma();
 }
 
-gma_rge OneDataset::rgeGmaFull(core::Session const& session) const {
+typ::Range OneDataset::rgeGmaFull(core::Session const& session) const {
     return session.angleMap(*this)->rgeGmaFull();
 }
 
-tth_rge OneDataset::rgeTth(core::Session const& session) const {
+typ::Range OneDataset::rgeTth(core::Session const& session) const {
     return session.angleMap(*this)->rgeTth();
 }
 
-inten_rge OneDataset::rgeInten() const {
+typ::Range OneDataset::rgeInten() const {
     return image_->rgeInten();
 }
 
@@ -252,7 +254,7 @@ size2d OneDataset::imageSize() const {
 
 void OneDataset::collectIntens(
     core::Session const& session, typ::Image const* intensCorr, inten_vec& intens, uint_vec& counts,
-    gma_rge const& rgeGma, deg minTth, deg deltaTth) const {
+    typ::Range const& rgeGma, deg minTth, deg deltaTth) const {
     auto angleMap = session.angleMap(*this);
     EXPECT(!angleMap.isNull())
     typ::AngleMap const& map = *angleMap;
@@ -402,15 +404,15 @@ deg Dataset::chi() const {
         rge.combineOp(one->what);                                                                  \
     return rge;
 
-gma_rge Dataset::rgeGma(core::Session const& session) const { RGE_COMBINE(extendBy, rgeGma(session)) }
+typ::Range Dataset::rgeGma(core::Session const& session) const { RGE_COMBINE(extendBy, rgeGma(session)) }
 
-gma_rge Dataset::rgeGmaFull(core::Session const& session) const {
+typ::Range Dataset::rgeGmaFull(core::Session const& session) const {
     RGE_COMBINE(extendBy, rgeGmaFull(session))
 }
 
-tth_rge Dataset::rgeTth(core::Session const& session) const { RGE_COMBINE(extendBy, rgeTth(session)) }
+typ::Range Dataset::rgeTth(core::Session const& session) const { RGE_COMBINE(extendBy, rgeTth(session)) }
 
-inten_rge Dataset::rgeInten() const { RGE_COMBINE(intersect, rgeInten()) }
+typ::Range Dataset::rgeInten() const { RGE_COMBINE(intersect, rgeInten()) }
 
 qreal Dataset::avgMonitorCount() const { AVG_ONES(monitorCount) }
 
@@ -419,8 +421,8 @@ qreal Dataset::avgDeltaMonitorCount() const { AVG_ONES(deltaMonitorCount) }
 qreal Dataset::avgDeltaTime() const { AVG_ONES(deltaTime) }
 
 inten_vec Dataset::collectIntens(
-    core::Session const& session, typ::Image const* intensCorr, gma_rge const& rgeGma) const {
-    tth_rge tthRge = rgeTth(session);
+    core::Session const& session, typ::Image const* intensCorr, typ::Range const& rgeGma) const {
+    typ::Range tthRge = rgeTth(session);
     deg tthWdt = tthRge.width();
 
     auto cut = session.imageCut();
@@ -548,7 +550,7 @@ qreal Datasets::avgDeltaTime() const {
     return avgDeltaTime_;
 }
 
-inten_rge const& Datasets::rgeGma(core::Session const& session) const {
+typ::Range const& Datasets::rgeGma(core::Session const& session) const {
     if (!rgeGma_.isValid())
         for (auto& dataset : *this)
             rgeGma_.extendBy(dataset->rgeGma(session));
@@ -556,7 +558,7 @@ inten_rge const& Datasets::rgeGma(core::Session const& session) const {
     return rgeGma_;
 }
 
-inten_rge const& Datasets::rgeFixedInten(core::Session const& session, bool trans, bool cut) const {
+typ::Range const& Datasets::rgeFixedInten(core::Session const& session, bool trans, bool cut) const {
     if (!rgeFixedInten_.isValid()) {
 
         TakesLongTime __;

@@ -16,6 +16,7 @@
 #define CURVE_H
 
 #include "typ/fun.h"
+#include "typ/vec.h"
 
 namespace typ {
 

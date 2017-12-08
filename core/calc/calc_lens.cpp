@@ -15,6 +15,7 @@
 #include "def/idiomatic_for.h"
 #include "session.h"
 #include "typ/log.h"
+#include "typ/range.h"
 
 namespace calc {
 
@@ -111,7 +112,7 @@ inten_t ImageLens::imageInten(uint i, uint j) const {
     return inten;
 }
 
-inten_rge const& ImageLens::rgeInten(bool fixed) const {
+typ::Range const& ImageLens::rgeInten(bool fixed) const {
     if (fixed)
         return datasets_.rgeFixedInten(session_, trans_, cut_);
 
@@ -143,19 +144,19 @@ size2d DatasetLens::size() const {
     return super::transCutSize(datasets_.imageSize());
 }
 
-gma_rge DatasetLens::rgeGma() const {
+typ::Range DatasetLens::rgeGma() const {
     return dataset_.rgeGma(session_);
 }
 
-gma_rge DatasetLens::rgeGmaFull() const {
+typ::Range DatasetLens::rgeGmaFull() const {
     return dataset_.rgeGmaFull(session_);
 }
 
-tth_rge DatasetLens::rgeTth() const {
+typ::Range DatasetLens::rgeTth() const {
     return dataset_.rgeTth(session_);
 }
 
-inten_rge DatasetLens::rgeInten() const {
+typ::Range DatasetLens::rgeInten() const {
     // fixes the scale
     // TODO consider return datasets_.rgeInten();
     return dataset_.rgeInten();
@@ -165,14 +166,14 @@ Curve DatasetLens::makeCurve() const {
     return makeCurve(rgeGma());
 }
 
-Curve DatasetLens::makeCurve(gma_rge const& rgeGma) const {
+Curve DatasetLens::makeCurve(typ::Range const& rgeGma) const {
     inten_vec intens = dataset_.collectIntens(session_, intensCorr_, rgeGma);
 
     Curve res;
     uint count = intens.count();
 
     if (count) {
-        tth_rge rgeTth = dataset_.rgeTth(session_);
+        typ::Range rgeTth = dataset_.rgeTth(session_);
         deg minTth = rgeTth.min, deltaTth = rgeTth.width() / count;
         for_i (count)
             res.append(minTth + deltaTth * i, qreal(intens.at(i) * normFactor_));

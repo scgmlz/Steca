@@ -18,6 +18,7 @@
 #include "def/idiomatic_for.h"
 #include "typ/json.h"
 #include "typ/range.h"
+#include "typ/vec.h"
 
 namespace typ {
 

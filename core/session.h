@@ -23,7 +23,9 @@
 #include "def/special_pointers.h"
 #include "typ/async.h"
 #include "typ/cache.h"
+#include "typ/range.h"
 #include "typ/str.h"
+#include "typ/vec.h"
 
 namespace core {
 
@@ -59,9 +61,9 @@ private:
     void setImageSize(typ::size2d const&) THROWS; //!< Ensures same size for all images
 
     void calcIntensCorr() const;
-    typ::Curve curveMinusBg(calc::DatasetLens const&, gma_rge const&) const;
+    typ::Curve curveMinusBg(calc::DatasetLens const&, typ::Range const&) const;
     calc::ReflectionInfo makeReflectionInfo(
-        calc::DatasetLens const&, calc::Reflection const&, gma_rge const&) const;
+        calc::DatasetLens const&, calc::Reflection const&, typ::Range const&) const;
 
 public:
     // Modifying methods:
@@ -120,7 +122,7 @@ public:
         data::Dataset const&, data::Datasets const&, eNorm, bool trans, bool cut) const;
 
     calc::ReflectionInfos makeReflectionInfos(
-        data::Datasets const&, calc::Reflection const&, uint gmaSlices, gma_rge const&, Progress*) const;
+        data::Datasets const&, calc::Reflection const&, uint gmaSlices, typ::Range const&, Progress*) const;
 
     typ::Ranges const& bgRanges() const { return bgRanges_; }
     uint bgPolyDegree() const { return bgPolyDegree_; }

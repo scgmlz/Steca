@@ -17,6 +17,7 @@
 
 #include "calc/calc_reflection.h"
 #include "data/datafile.h"
+#include "typ/range.h"
 
 namespace gui {
 
@@ -44,7 +45,7 @@ protected:
     void tellDatasetSelected(data::shp_Dataset);
     void tellSelectedReflection(calc::shp_Reflection);
     void tellReflectionData(calc::shp_Reflection);
-    void tellReflectionValues(tth_rge const&, qpair const&, fwhm_t, bool);
+    void tellReflectionValues(typ::Range const&, qpair const&, fwhm_t, bool);
 
 signals:
     void sigSessionCleared();
@@ -62,7 +63,7 @@ signals:
     void sigReflectionsChanged();
     void sigReflectionSelected(calc::shp_Reflection);
     void sigReflectionData(calc::shp_Reflection);
-    void sigReflectionValues(tth_rge const&, qpair const&, fwhm_t, bool);
+    void sigReflectionValues(typ::Range const&, qpair const&, fwhm_t, bool);
 
     void sigDisplayChanged();
     void sigGeometryChanged();

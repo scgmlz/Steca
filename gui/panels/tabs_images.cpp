@@ -17,6 +17,7 @@
 #include "def/idiomatic_for.h"
 #include "gui_cfg.h"
 #include "thehub.h"
+#include "typ/range.h"
 #include "typ/str.h"
 #include <qmath.h>
 #include <QPainter>
@@ -250,7 +251,7 @@ QPixmap TabsImages::makePixmap(typ::shp_Image image) {
 }
 
 QPixmap
-TabsImages::makePixmap(data::OneDataset const& dataset, gma_rge const& rgeGma, tth_rge const& rgeTth) {
+TabsImages::makePixmap(data::OneDataset const& dataset, typ::Range const& rgeGma, typ::Range const& rgeTth) {
     auto im = makeImage(dataset.image(), !hub_.isFixedIntenImageScale());
     auto angleMap = hub_.angleMap(dataset);
 
@@ -305,7 +306,7 @@ void TabsImages::render() {
                 auto min = rgeGma.min;
                 auto wn = rgeGma.width() / nSlices;
 
-                rge = gma_rge(min + iSlice * wn, min + (iSlice + 1) * wn);
+                rge = typ::Range(min + iSlice * wn, min + (iSlice + 1) * wn);
 
                 minGamma_->setValue(rge.min);
                 maxGamma_->setValue(rge.max);

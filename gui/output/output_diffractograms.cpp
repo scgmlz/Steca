@@ -15,6 +15,7 @@
 #include "output_diffractograms.h"
 #include "def/idiomatic_for.h"
 #include "thehub.h"
+#include "typ/range.h"
 #include "typ/str.h"
 #include <QTextStream>
 
@@ -44,12 +45,12 @@ uint TabDiffractogramsSave::currType() const {
 struct OutputData {
     OutputData() {}
 
-    OutputData(typ::Curve curve, data::Dataset dataset, gma_rge gmaStripe, uint picNum)
+    OutputData(typ::Curve curve, data::Dataset dataset, typ::Range gmaStripe, uint picNum)
         : curve_(curve), dataset_(dataset), gmaStripe_(gmaStripe), picNum_(picNum) {}
 
     typ::Curve curve_;
     data::Dataset dataset_;
-    gma_rge gmaStripe_;
+    typ::Range gmaStripe_;
     uint picNum_;
 
     bool isValid() {
@@ -74,7 +75,7 @@ DiffractogramsFrame::DiffractogramsFrame(TheHub& hub, rcstr title, QWidget* pare
 }
 
 OutputDataCollection DiffractogramsFrame::collectCurves(
-    gma_rge const& rgeGma, uint gmaSlices, data::Dataset const& dataset, uint picNum) {
+    typ::Range const& rgeGma, uint gmaSlices, data::Dataset const& dataset, uint picNum) {
 
     auto lens = hub_.datasetLens(dataset);
 
@@ -88,7 +89,7 @@ OutputDataCollection DiffractogramsFrame::collectCurves(
     qreal step = rge.width() / gmaSlices;
     for_i (gmaSlices) {
         qreal min = rge.min + i * step;
-        gma_rge gmaStripe(min, min + step);
+        typ::Range gmaStripe(min, min + step);
 
         auto curve = lens->makeCurve(gmaStripe);
         outputData.append(OutputData(curve, dataset, gmaStripe, picNum));

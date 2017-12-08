@@ -14,6 +14,7 @@
 
 #include "def/idiomatic_for.h"
 #include "thehub.h"
+#include "typ/vec.h"
 
 namespace models {
 

@@ -16,6 +16,9 @@
 #define CALC_REFLECTION_INFO_H
 
 #include "data/dataset.h"
+#include "typ/angles.h"
+#include "typ/range.h"
+#include "typ/vec.h"
 
 using typ::deg;
 
@@ -25,11 +28,11 @@ class ReflectionInfo final {
     public:
     ReflectionInfo();
     ReflectionInfo(
-        data::shp_Metadata, typ::deg alpha, typ::deg beta, gma_rge, inten_t, inten_t /*error*/,
+        data::shp_Metadata, typ::deg alpha, typ::deg beta, typ::Range, inten_t, inten_t /*error*/,
         deg, deg /*error*/, fwhm_t, fwhm_t /*error*/);
-    ReflectionInfo(data::shp_Metadata, typ::deg alpha, typ::deg beta, gma_rge);
+    ReflectionInfo(data::shp_Metadata, typ::deg alpha, typ::deg beta, typ::Range);
     ReflectionInfo(
-        typ::deg alpha, typ::deg beta, gma_rge, inten_t, inten_t /*error*/, deg, deg /*error*/,
+        typ::deg alpha, typ::deg beta, typ::Range, inten_t, inten_t /*error*/, deg, deg /*error*/,
         fwhm_t, fwhm_t /*error*/);
     ReflectionInfo(typ::deg alpha, typ::deg beta);
 
@@ -52,7 +55,7 @@ class ReflectionInfo final {
 
     typ::deg alpha() const { return alpha_; }
     typ::deg beta() const { return beta_; }
-    gma_rge rgeGma() const { return rgeGma_; }
+    typ::Range rgeGma() const { return rgeGma_; }
     inten_t inten() const { return inten_; }
     inten_t intenError() const { return intenError_; }
     deg tth() const { return tth_; }
@@ -64,7 +67,7 @@ class ReflectionInfo final {
 private:
     data::shp_Metadata md_;
     typ::deg alpha_, beta_;
-    gma_rge rgeGma_;
+    typ::Range rgeGma_;
     inten_t inten_, intenError_;
     deg tth_, tthError_;
     fwhm_t fwhm_, fwhmError_;
@@ -82,11 +85,11 @@ public:
     void append(ReflectionInfo const&);
 
     inten_t averageInten() const;
-    inten_rge const& rgeInten() const;
+    typ::Range const& rgeInten() const;
 
 private:
     mutable inten_t avgInten_;
-    mutable inten_rge rgeInten_;
+    mutable typ::Range rgeInten_;
 
     void invalidate();
 };

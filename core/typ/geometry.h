@@ -17,7 +17,9 @@
 
 #include "typ/array2d.h"
 #include "typ/ij.h"
+#include "typ/range.h"
 #include "typ/types.h"
+#include "typ/vec.h"
 #include <QSharedPointer>
 
 namespace typ {
@@ -88,13 +90,13 @@ public:
 
     Angles const& at(uint i, uint j) const { return arrAngles_.at(i, j); }
 
-    tth_rge rgeTth() const { return rgeTth_; }
-    gma_rge rgeGma() const { return rgeGma_; }
-    gma_rge rgeGmaFull() const { return rgeGmaFull_; }
+    typ::Range rgeTth() const { return rgeTth_; }
+    typ::Range rgeGma() const { return rgeGma_; }
+    typ::Range rgeGmaFull() const { return rgeGmaFull_; }
 
     // TODO remove  IJ gmaPixel(gma_t);
 
-    void getGmaIndexes(gma_rge const&, uint_vec const*&, uint&, uint&) const;
+    void getGmaIndexes(typ::Range const&, uint_vec const*&, uint&, uint&) const;
 
 private:
     void calculate();
@@ -103,8 +105,8 @@ private:
 
     Array2D<Angles> arrAngles_;
 
-    tth_rge rgeTth_;
-    gma_rge rgeGma_, rgeGmaFull_;
+    typ::Range rgeTth_;
+    typ::Range rgeGma_, rgeGmaFull_;
 
     // sorted
     vec<deg> gmas;

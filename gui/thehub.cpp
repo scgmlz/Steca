@@ -17,6 +17,7 @@
 #include "def/idiomatic_for.h"
 #include "io/io_io.h"
 #include "mainwin.h"
+#include "typ/range.h"
 #include "typ/str.h"
 #include <QDir>
 #include <QJsonDocument>
@@ -166,7 +167,7 @@ calc::shp_DatasetLens TheHub::datasetLens(data::Dataset const& dataset) const {
 }
 
 calc::ReflectionInfos TheHub::makeReflectionInfos(
-    calc::Reflection const& reflection, uint gmaSlices, gma_rge const& rgeGma, Progress* progress) {
+    calc::Reflection const& reflection, uint gmaSlices, typ::Range const& rgeGma, Progress* progress) {
     return session_->makeReflectionInfos(
         collectedDatasets(), reflection, gmaSlices, rgeGma, progress);
 }
@@ -356,7 +357,7 @@ void TheHub::combineDatasetsBy(pint by) {
     collectDatasetsFromFiles(collectFromFiles_, by);
 }
 
-gma_rge TheHub::collectedDatasetsRgeGma() const {
+typ::Range TheHub::collectedDatasetsRgeGma() const {
     return collectedDatasets().rgeGma(*session_);
 }
 

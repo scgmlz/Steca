@@ -16,6 +16,7 @@
 #define VEC_H
 
 #include "def/numbers.h"
+#include "typ/vec.h"
 #include <QVector>
 
 namespace typ {

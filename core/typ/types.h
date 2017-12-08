@@ -15,19 +15,13 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include "typ/angles.h"
-#include "typ/range.h"
-#include "typ/realpair.h"
 #include "typ/strlst.h"
+#include "typ/vec.h"
 
 typedef float inten_t;
 typedef float fwhm_t;
 
 typedef typ::vec<inten_t> inten_vec;
-
-typedef typ::Range inten_rge;
-typedef typ::Range tth_rge;
-typedef typ::Range gma_rge;
 
 enum class eNorm {
     NONE,

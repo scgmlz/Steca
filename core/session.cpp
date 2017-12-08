@@ -15,9 +15,12 @@
 #include "session.h"
 #include "def/exception.h"
 #include "def/idiomatic_for.h"
+#include "typ/angles.h"
 #include "typ/matrix.h"
+#include "typ/range.h"
 #include "typ/realpair.h"
 #include "typ/str.h"
+#include "typ/vec.h"
 #include <qmath.h>
 
 namespace core {
@@ -247,7 +250,7 @@ calc::shp_DatasetLens Session::datasetLens(
         *this, dataset, datasets, norm, trans, cut, imageTransform_, imageCut_));
 }
 
-Curve Session::curveMinusBg(calc::DatasetLens const& lens, gma_rge const& rgeGma) const {
+Curve Session::curveMinusBg(calc::DatasetLens const& lens, typ::Range const& rgeGma) const {
     Curve curve = lens.makeCurve(rgeGma);
     curve.subtract(fit::Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
     return curve;
@@ -255,7 +258,7 @@ Curve Session::curveMinusBg(calc::DatasetLens const& lens, gma_rge const& rgeGma
 
 //! Fits reflection to the given gamma sector and constructs a ReflectionInfo.
 calc::ReflectionInfo Session::makeReflectionInfo(
-    calc::DatasetLens const& lens, calc::Reflection const& reflection, gma_rge const& gmaSector) const {
+    calc::DatasetLens const& lens, calc::Reflection const& reflection, typ::Range const& gmaSector) const {
 
     // fit peak, and retrieve peak parameters:
     Curve curve = curveMinusBg(lens, gmaSector);
@@ -289,7 +292,7 @@ calc::ReflectionInfo Session::makeReflectionInfo(
  */
 calc::ReflectionInfos Session::makeReflectionInfos(
     data::Datasets const& datasets, calc::Reflection const& reflection, uint gmaSlices,
-    gma_rge const& rgeGma, Progress* progress) const {
+    typ::Range const& rgeGma, Progress* progress) const {
     calc::ReflectionInfos infos;
 
     if (progress)
@@ -312,7 +315,7 @@ calc::ReflectionInfos Session::makeReflectionInfos(
         qreal step = rge.width() / gmaSlices;
         for_i (uint(gmaSlices)) {
             qreal min = rge.min + i * step;
-            gma_rge gmaStripe(min, min + step);
+            typ::Range gmaStripe(min, min + step);
             auto refInfo = makeReflectionInfo(*lens, reflection, gmaStripe);
             if (!qIsNaN(refInfo.inten()))
                 infos.append(refInfo);
