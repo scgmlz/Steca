@@ -23,11 +23,10 @@ namespace typ {
 // limited QVector, only needed methods reexported
 
 template <typename T> class vec : protected QVector<T> {
-    WITH_SUPER(QVector<T>)
-    public :
-
-        vec()
-        : super() {}
+private:
+    using super = QVector<T>;
+public:
+    vec() : super() {}
     vec(std::initializer_list<T> l) : super(l) {}
 
     explicit vec(uint count) : super(to_i(count)) {}
@@ -36,6 +35,7 @@ template <typename T> class vec : protected QVector<T> {
     uint count() const { return to_u(super::count()); }
     void reserve(uint n) { super::reserve(to_i(n)); }
 
+    super const& sup() const { return *this; }
     using super::clear;
     using super::isEmpty;
     using super::begin;

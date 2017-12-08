@@ -40,13 +40,6 @@
 private:                                                                   \
     using super = cls;
 
-// alias for super class and an access method (if non-public inheritance)
-#define WITH_SUPER(cls)                                                    \
-    SUPER(cls)                                                             \
-public:                                                                    \
-    super const& sup() const { return *this; }                             \
-    super& sup() { return *this; }
-
 // exception specification macro
 #ifdef Q_OS_WIN
 

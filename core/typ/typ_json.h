@@ -33,8 +33,13 @@ struct Range;
 struct IJ;
 
 class JsonObj : protected QJsonObject {
-    WITH_SUPER(QJsonObject) public : JsonObj();
+private:
+    using super = QJsonObject;
+public:
+    JsonObj();
     JsonObj(QJsonObject const&);
+
+    super const& sup() const { return *this; }
 
     JsonObj& saveObj(rcstr key, JsonObj const&);
     JsonObj loadObj(rcstr key, bool defEmpty = false) const THROWS;
@@ -84,8 +89,13 @@ class JsonObj : protected QJsonObject {
 };
 
 class JsonArr : protected QJsonArray {
-    WITH_SUPER(QJsonArray) public : JsonArr();
+private:
+    using super = QJsonArray;
+public:
+    JsonArr();
     JsonArr(QJsonArray const&);
+
+    super const& sup() const { return *this; }
 
     using super::append;
     void append(JsonObj const&);
