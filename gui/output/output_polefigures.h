@@ -16,6 +16,7 @@
 #define OUTPUT_POLEFIGURES_H
 
 #include "output_dialogs.h"
+#include "typ/typ_str.h"
 
 namespace gui {
 namespace output {

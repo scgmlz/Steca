@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "type_models.h"
+#include "typ/typ_str.h"
 
 namespace models {
 

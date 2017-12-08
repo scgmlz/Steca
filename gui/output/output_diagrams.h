@@ -17,6 +17,7 @@
 
 #include "output_dialogs.h"
 #include "qcustomplot.h"
+#include "typ/typ_str.h"
 
 namespace gui {
 namespace output {

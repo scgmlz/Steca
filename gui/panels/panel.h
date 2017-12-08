@@ -17,6 +17,7 @@
 
 #include "gui_helpers.h"
 #include "refhub.h"
+#include "typ/typ_str.h"
 #include <QGroupBox>
 
 namespace models {

@@ -16,6 +16,7 @@
 #include "session.h"
 #include "typ/typ_log.h"
 #include "typ/typ_matrix.h"
+#include "typ/typ_str.h"
 #include <qmath.h>
 
 namespace data {

@@ -14,8 +14,10 @@
 
 #include "config.h"
 #include "def/def_alg.h"
+#include "def/def_exc.h"
 #include "io/io_io.h"
 #include "mainwin.h"
+#include "typ/typ_str.h"
 #include <QDir>
 #include <QJsonDocument>
 #include <QMessageBox>

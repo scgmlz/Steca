@@ -17,6 +17,7 @@
 #include "def/def_alg.h"
 #include "gui_cfg.h"
 #include "thehub.h"
+#include "typ/typ_str.h"
 #include <qmath.h>
 #include <QPainter>
 

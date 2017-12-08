@@ -16,6 +16,7 @@
 #include "colors.h"
 #include "def/def_alg.h"
 #include "thehub.h"
+#include "typ/typ_str.h"
 #include <qmath.h>
 #include <QPainter>
 #include <QTextStream>

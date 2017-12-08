@@ -16,6 +16,7 @@
 #define TYP_qpair_H
 
 #include "def/def_cmp.h"
+#include "def/def_exc.h"
 #include "def/def_macros.h"
 
 namespace typ {

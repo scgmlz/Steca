@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "io/io_io.h"
+#include "typ/typ_str.h"
 #include <QFileDialog>
 #include <QFileSystemModel>
 #include <QSortFilterProxyModel>

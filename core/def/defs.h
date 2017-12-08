@@ -17,7 +17,6 @@
 #ifndef DEFS_H
 #define DEFS_H
 
-#include "def_exc.h"
 #include "def_gsl.h"
 
 #endif // DEFS_H

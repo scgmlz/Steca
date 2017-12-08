@@ -13,7 +13,9 @@
 // ************************************************************************** //
 
 #include "def/def_alg.h"
+#include "def/def_exc.h"
 #include "io_io.h"
+#include "typ/typ_str.h"
 #include <QDataStream>
 #include <QDir>
 

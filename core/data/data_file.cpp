@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "data_file.h"
+#include "typ/typ_str.h"
 
 namespace data {
 

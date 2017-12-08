@@ -12,6 +12,7 @@
 //
 // ************************************************************************** //
 
+#include "def/def_exc.h"
 #include "typ/typ_image.h"
 
 namespace typ {

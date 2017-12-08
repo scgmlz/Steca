@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "panel.h"
+#include "typ/typ_str.h"
 
 namespace gui {
 namespace panel {

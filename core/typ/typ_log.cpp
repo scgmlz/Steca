@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "typ_log.h"
+#include "typ/typ_str.h"
 
 void MessageLogger::info(rcstr msg) {
     if (handler)

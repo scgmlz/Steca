@@ -16,8 +16,10 @@
 #define THEHUB_H
 
 #include "actions.h"
+#include "def/def_exc.h"
 #include "models.h"
 #include "session.h"
+#include "typ/typ_str.h"
 #include <QSettings>
 
 class QSpinBox;

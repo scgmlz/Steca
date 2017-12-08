@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "def/def_alg.h"
+#include "def/def_exc.h"
 #include "fit_methods.h"
 #include <qmath.h>
 

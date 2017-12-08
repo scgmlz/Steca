@@ -17,6 +17,7 @@
 #include "typ_range.h"
 #include "def/def_alg.h"
 #include "def/def_cmp_impl.h"
+#include "def/def_exc.h"
 #include "def/defs.h"
 #include "typ/typ_json.h"
 

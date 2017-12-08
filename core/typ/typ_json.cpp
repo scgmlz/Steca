@@ -17,6 +17,7 @@
 #include "typ/typ_ij.h"
 #include "typ/typ_qpair.h"
 #include "typ/typ_range.h"
+#include "typ/typ_str.h"
 #include <QStringList> // needed under Travis
 
 namespace json_key {

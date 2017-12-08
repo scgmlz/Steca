@@ -14,6 +14,8 @@
 
 #include "typ_fun.h"
 #include "def/def_alg.h"
+#include "def/def_exc.h"
+#include "typ/typ_str.h"
 
 namespace json_fun_key {
 str const SUM("sum");

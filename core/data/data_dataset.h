@@ -17,6 +17,7 @@
 
 #include "typ/typ_curve.h"
 #include "typ/typ_image.h"
+#include "typ/typ_str.h"
 #include "typ/typ_variant.h"
 #include <QSharedPointer>
 

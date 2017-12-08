@@ -16,6 +16,7 @@
 #define TYP_RANGE_H
 
 #include "def/def_cmp.h"
+#include "def/def_exc.h"
 #include "typ/typ_vec.h"
 
 namespace typ {

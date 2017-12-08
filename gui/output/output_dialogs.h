@@ -19,6 +19,7 @@
 #include "calc/calc_reflection_info.h"
 #include "panels/panel.h"
 #include "typ/typ_log.h"
+#include "typ/typ_str.h"
 
 class QProgressBar;
 

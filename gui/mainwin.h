@@ -16,6 +16,7 @@
 #define MAINWIN_H
 
 #include "thehub.h"
+#include "typ/typ_str.h"
 #include <QMainWindow>
 #include <QNetworkAccessManager>
 
