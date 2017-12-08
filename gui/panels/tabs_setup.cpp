@@ -12,6 +12,7 @@
 //
 // ************************************************************************** //
 
+#include "def/def_alg.h"
 #include "tabs_setup.h"
 #include "gui_cfg.h"
 #include "thehub.h"

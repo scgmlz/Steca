@@ -12,6 +12,7 @@
 //
 // ************************************************************************** //
 
+#include "def/def_alg.h"
 #include "data/data_dataset.h"
 
 #include "3rdparty/Caress/raw.h" // inclusion order is critical !

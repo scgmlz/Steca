@@ -12,6 +12,7 @@
 //
 // ************************************************************************** //
 
+#include "def/def_alg.h"
 #include "tabs_images.h"
 #include "colors.h"
 #include "gui_cfg.h"

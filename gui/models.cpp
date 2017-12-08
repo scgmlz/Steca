@@ -12,6 +12,7 @@
 //
 // ************************************************************************** //
 
+#include "def/def_alg.h"
 #include "thehub.h"
 
 namespace models {

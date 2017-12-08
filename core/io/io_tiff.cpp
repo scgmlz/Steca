@@ -12,6 +12,7 @@
 //
 // ************************************************************************** //
 
+#include "def/def_alg.h"
 #include "io_io.h"
 #include <QDataStream>
 #include <QDir>

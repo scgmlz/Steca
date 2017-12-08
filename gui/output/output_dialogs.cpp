@@ -12,6 +12,7 @@
 //
 // ************************************************************************** //
 
+#include "def/def_alg.h"
 #include "output_dialogs.h"
 #include "calc/calc_polefigure.h"
 #include "config.h"

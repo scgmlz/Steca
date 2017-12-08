@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "3rdparty/Mar/MarReader.h"
+#include "def/def_alg.h"
 #include "io_io.h"
 
 namespace io {

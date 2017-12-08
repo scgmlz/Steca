@@ -12,6 +12,7 @@
 //
 // ************************************************************************** //
 
+#include "def/def_alg.h"
 #include "output_polefigures.h"
 #include "colors.h"
 #include "thehub.h"
@@ -351,5 +352,7 @@ void PoleFiguresFrame::writeListFile(
                << output.at(i) << '\n';
     }
 }
-}
-}
+
+} // namespace output
+
+} // namespace gui

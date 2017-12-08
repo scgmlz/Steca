@@ -12,6 +12,7 @@
 //
 // ************************************************************************** //
 
+#include "def/def_alg.h"
 #include "typ_geometry.h"
 #include "def/def_cmp_impl.h"
 #include <qmath.h>

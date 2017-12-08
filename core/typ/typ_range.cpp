@@ -14,6 +14,7 @@
 //
 // ************************************************************************** //
 
+#include "def/def_alg.h"
 #include "typ_range.h"
 #include "def/def_cmp_impl.h"
 #include "def/defs.h"

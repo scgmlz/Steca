@@ -33,6 +33,7 @@ public:
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
+    // base class has setModel(<other type>*)
     void setModel(Model*);
 #pragma GCC diagnostic pop
 

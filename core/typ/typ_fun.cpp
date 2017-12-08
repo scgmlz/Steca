@@ -12,6 +12,7 @@
 //
 // ************************************************************************** //
 
+#include "def/def_alg.h"
 #include "typ_fun.h"
 
 namespace json_fun_key {

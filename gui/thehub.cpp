@@ -12,6 +12,7 @@
 //
 // ************************************************************************** //
 
+#include "def/def_alg.h"
 #include "config.h"
 #include "io/io_io.h"
 #include "mainwin.h"

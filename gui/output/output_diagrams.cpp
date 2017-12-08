@@ -12,6 +12,7 @@
 //
 // ************************************************************************** //
 
+#include "def/def_alg.h"
 #include "output_diagrams.h"
 #include "thehub.h"
 
@@ -268,5 +269,6 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
         stream << '\n';
     }
 }
-}
-}
+
+} // namespace output
+} // namespace gui
