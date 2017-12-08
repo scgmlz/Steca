@@ -21,8 +21,6 @@
 namespace typ {
 
 struct size2d {
-    CLASS(size2d)
-
     uint w, h;
 
     size2d() : size2d(0, 0) {}
@@ -45,8 +43,7 @@ struct size2d {
 
 // 2D (indexed by uint i/j) array
 template <typename T> class Array2D {
-    CLASS(Array2D)
-private:
+    private:
     size2d size_;
 
     typedef T* col_t;

@@ -25,8 +25,7 @@ typedef QSharedPointer<class File> shp_File;
 
 //! A file (loaded from a disk file) that contains a number of datasets.
 class File final {
-    CLASS(File)
-public:
+    public:
     File(rcstr fileName);
 
     QFileInfo const& fileInfo() const;

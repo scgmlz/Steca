@@ -29,7 +29,6 @@ namespace panel {
 
 // Just a widget
 class PanelWidget : public QWidget, protected RefHub {
-    CLASS(PanelWidget)
     SUPER(QWidget) public : PanelWidget(TheHub&, Qt::Orientation);
 
     QBoxLayout* box() const { return box_; }
@@ -40,7 +39,7 @@ protected:
 
 // Just a groupbox
 class BasicPanel : public QGroupBox, protected RefHub {
-    CLASS(BasicPanel) SUPER(QGroupBox) public : BasicPanel(TheHub&);
+    SUPER(QGroupBox) public : BasicPanel(TheHub&);
     BasicPanel(TheHub&, rcstr title);
 
     void setHorizontalStretch(int);
@@ -50,7 +49,6 @@ class BasicPanel : public QGroupBox, protected RefHub {
 
 // A panel with a box layout
 class BoxPanel : public BasicPanel {
-    CLASS(BoxPanel)
     SUPER(BasicPanel) public : BoxPanel(TheHub&, Qt::Orientation);
     BoxPanel(TheHub&, rcstr title, Qt::Orientation);
 
@@ -62,7 +60,7 @@ protected:
 
 // A panel with grid layout
 class GridPanel : public BasicPanel {
-    CLASS(GridPanel) SUPER(BasicPanel) public : GridPanel(TheHub&);
+    SUPER(BasicPanel) public : GridPanel(TheHub&);
     GridPanel(TheHub&, rcstr title);
 
     GridLayout* grid() const { return grid_; }
@@ -73,7 +71,7 @@ protected:
 
 // A tabbed panel
 class Tab : public QWidget {
-    CLASS(Tab) SUPER(QWidget) public : Tab(Qt::Orientation);
+    SUPER(QWidget) public : Tab(Qt::Orientation);
 
     QBoxLayout& box() const { return *box_; }
 
@@ -82,7 +80,7 @@ protected:
 };
 
 class TabsPanel : public QTabWidget, protected RefHub {
-    CLASS(TabsPanel) SUPER(QTabWidget) public : TabsPanel(TheHub&);
+    SUPER(QTabWidget) public : TabsPanel(TheHub&);
 
     Tab& addTab(rcstr title, Qt::Orientation);
     Tab& tab(uint);

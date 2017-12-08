@@ -25,7 +25,7 @@ public:
 };
 
 class App : public QApplication {
-    CLASS(App) SUPER(QApplication) public : App(int& argc, char* argv[]);
+    SUPER(QApplication) public : App(int& argc, char* argv[]);
 
     int exec();
 

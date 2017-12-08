@@ -22,7 +22,7 @@ namespace gui {
 namespace output {
 
 class TabPlot : public QCustomPlot {
-    CLASS(TabPlot) SUPER(QCustomPlot) public : TabPlot();
+    SUPER(QCustomPlot) public : TabPlot();
     void set(calc::ReflectionInfos);
 
     void plot(qreal_vec const& xs, qreal_vec const& ys, qreal_vec const& ysLo, qreal_vec const& ysUp);
@@ -32,7 +32,6 @@ protected:
 };
 
 class TabDiagramsSave : public TabSave {
-    CLASS(TabDiagramsSave)
     SUPER(TabSave) public : TabDiagramsSave(TheHub&, Params&);
 
     uint currType() const;
@@ -44,7 +43,6 @@ protected:
 };
 
 class DiagramsFrame : public Frame {
-    CLASS(DiagramsFrame)
     SUPER(Frame) public : DiagramsFrame(TheHub&, rcstr title, QWidget*);
 
 protected:

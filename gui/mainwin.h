@@ -23,7 +23,7 @@
 namespace gui {
 
 class MainWin : public QMainWindow {
-    CLASS(MainWin) SUPER(QMainWindow) public : MainWin();
+    SUPER(QMainWindow) public : MainWin();
 
 private:
     void initMenus();

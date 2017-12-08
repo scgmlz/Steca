@@ -25,8 +25,7 @@
 namespace core {
 
 class Session final {
-    CLASS(Session)
-public:
+    public:
     Session();
 
 private:

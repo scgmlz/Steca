@@ -25,8 +25,7 @@ class JsonArr;
 
 //! a range of values - a closed interval
 class Range {
-    CLASS(Range);
-public:
+    public:
 
     Range(); // invalid (NaN)
     Range(qreal val); // singular, min == max
@@ -68,8 +67,7 @@ public:
 
 //! A set of *sorted* *non-overlapping* ranges
 class Ranges {
-    CLASS(Ranges)
-public:
+    public:
     Ranges();
 
     void clear() { ranges_.clear(); }

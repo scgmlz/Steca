@@ -21,7 +21,7 @@
 namespace models {
 
 class FilesModel : public TableModel {
-    CLASS(FilesModel) SUPER(TableModel) public : FilesModel(gui::TheHub&);
+    SUPER(TableModel) public : FilesModel(gui::TheHub&);
 
     int columnCount(rcIndex = ANY_INDEX) const;
     int rowCount(rcIndex = ANY_INDEX) const;
@@ -35,7 +35,7 @@ public:
 };
 
 class DatasetsModel : public TableModel {
-    CLASS(DatasetsModel) SUPER(TableModel) public : DatasetsModel(gui::TheHub&);
+    SUPER(TableModel) public : DatasetsModel(gui::TheHub&);
 
     int columnCount(rcIndex = ANY_INDEX) const;
     int rowCount(rcIndex = ANY_INDEX) const;
@@ -56,7 +56,7 @@ private:
 };
 
 class MetadataModel : public TableModel {
-    CLASS(MetadataModel) SUPER(TableModel) public : MetadataModel(gui::TheHub&);
+    SUPER(TableModel) public : MetadataModel(gui::TheHub&);
 
     int columnCount(rcIndex = ANY_INDEX) const;
     int rowCount(rcIndex = ANY_INDEX) const;
@@ -76,7 +76,6 @@ private:
 };
 
 class ReflectionsModel : public TableModel {
-    CLASS(ReflectionsModel)
     SUPER(TableModel) public : ReflectionsModel(gui::TheHub&);
 
     int columnCount(rcIndex = ANY_INDEX) const;

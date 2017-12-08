@@ -22,8 +22,7 @@ using typ::deg;
 namespace calc {
 
 class ReflectionInfo final {
-    CLASS(ReflectionInfo);
-public:
+    public:
     ReflectionInfo();
     ReflectionInfo(
         data::shp_Metadata, typ::deg alpha, typ::deg beta, gma_rge, inten_t, inten_t /*error*/,
@@ -75,7 +74,7 @@ private:
 
 
 class ReflectionInfos : public typ::vec<ReflectionInfo> {
-    CLASS(ReflectionInfos) SUPER(typ::vec<ReflectionInfo>);
+    SUPER(typ::vec<ReflectionInfo>);
 public:
     ReflectionInfos() { invalidate(); }
 

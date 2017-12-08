@@ -25,7 +25,6 @@ namespace file_dialog {
 typedef QModelIndex const& rcidx;
 
 class OpenFileProxyModel : public QSortFilterProxyModel {
-    CLASS(OpenFileProxyModel)
     SUPER(QSortFilterProxyModel) public : int columnCount(rcidx) const;
     QVariant headerData(int, Qt::Orientation, int = Qt::DisplayRole) const;
     QVariant data(rcidx, int = Qt::DisplayRole) const;

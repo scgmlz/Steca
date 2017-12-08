@@ -28,20 +28,20 @@ namespace output {
 /* Note that some data members are public, to simplify the code. Be careful. */
 
 class Panel : public panel::GridPanel {
-    CLASS(Panel) SUPER(panel::GridPanel);
+    SUPER(panel::GridPanel);
 public:
     using super::super;
 };
 
 class PanelReflection : public Panel {
-    CLASS(PanelReflection) SUPER(Panel);
+    SUPER(Panel);
 public:
     PanelReflection(TheHub&);
     QComboBox* cbRefl;
 };
 
 class PanelGammaSlices : public Panel {
-    CLASS(PanelGammaSlices) SUPER(Panel);
+    SUPER(Panel);
 public:
     PanelGammaSlices(TheHub&);
     QSpinBox* numSlices;
@@ -53,7 +53,7 @@ private:
 };
 
 class PanelGammaRange : public Panel {
-    CLASS(PanelGammaRange) SUPER(Panel);
+    SUPER(Panel);
 public:
     PanelGammaRange(TheHub&);
 
@@ -67,7 +67,7 @@ private:
 };
 
 class PanelPoints : public Panel {
-    CLASS(PanelPoints) SUPER(Panel);
+    SUPER(Panel);
 public:
     PanelPoints(TheHub&);
 
@@ -75,7 +75,7 @@ public:
 };
 
 class PanelInterpolation : public Panel {
-    CLASS(PanelInterpolation) SUPER(Panel);
+    SUPER(Panel);
 public:
     PanelInterpolation(TheHub&);
 
@@ -85,7 +85,7 @@ public:
 };
 
 class PanelDiagram : public Panel {
-    CLASS(PanelDiagram) SUPER(Panel);
+    SUPER(Panel);
 public:
     PanelDiagram(TheHub&);
 
@@ -93,13 +93,13 @@ public:
 };
 
 class PanelFitError : public Panel {
-    CLASS(PanelFitError) SUPER(Panel);
+    SUPER(Panel);
 public:
     PanelFitError(TheHub&);
 };
 
 class Params : public QWidget, protected RefHub {
-    CLASS(Params) SUPER(QWidget);
+    SUPER(QWidget);
 public:
     enum ePanels {
         REFLECTION = 0x01,
@@ -129,7 +129,7 @@ private:
 };
 
 class Table : public TreeView, protected RefHub {
-    CLASS(Table) SUPER(TreeView);
+    SUPER(TreeView);
 public:
     Table(TheHub&, uint numDataColumns);
 
@@ -150,13 +150,13 @@ private:
 };
 
 class Tabs : public panel::TabsPanel {
-    CLASS(Tabs) SUPER(panel::TabsPanel);
+    SUPER(panel::TabsPanel);
 public:
     Tabs(TheHub&);
 };
 
 class Tab : public QWidget, protected RefHub {
-    CLASS(Tab) SUPER(QWidget);
+    SUPER(QWidget);
 public :
     Tab(TheHub&, Params&);
 
@@ -167,7 +167,7 @@ protected:
 };
 
 class TabTable : public Tab {
-    CLASS(TabTable) SUPER(Tab);
+    SUPER(Tab);
 public:
     TabTable(TheHub&, Params&, str_lst const& headers, str_lst const& outHeaders, typ::cmp_vec const&);
 
@@ -181,7 +181,7 @@ private:
 
 private:
     class ShowColsWidget : public QWidget {
-        CLASS(ShowColsWidget) SUPER(QWidget);
+        SUPER(QWidget);
     public:
         ShowColsWidget(Table&, showcol_vec&);
 
@@ -202,7 +202,7 @@ private:
 };
 
 class TabSave : public Tab {
-    CLASS(TabSave) SUPER(Tab);
+    SUPER(Tab);
 public:
     TabSave(TheHub&, Params&, bool withTypes);
 
@@ -219,7 +219,7 @@ protected:
 };
 
 class Frame : public QFrame, protected RefHub {
-    CLASS(Frame) SUPER(QFrame);
+    SUPER(QFrame);
 public:
     Frame(TheHub&, rcstr title, Params*, QWidget*);
 

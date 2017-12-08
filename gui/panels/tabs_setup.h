@@ -23,7 +23,7 @@ namespace panel {
 class ReflectionView;
 
 class TabsSetup : public TabsPanel {
-    CLASS(TabsSetup) SUPER(TabsPanel) public : TabsSetup(TheHub&);
+    SUPER(TabsPanel) public : TabsSetup(TheHub&);
 
 private:
     // geometry

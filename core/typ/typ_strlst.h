@@ -21,7 +21,7 @@
 // limited QStringList, only needed methods reexported
 
 class str_lst : protected QStringList {
-    CLASS(str_lst) WITH_SUPER(QStringList) public : str_lst() : super() {}
+    WITH_SUPER(QStringList) public : str_lst() : super() {}
     str_lst(std::initializer_list<QString> l) : super(l) {}
     str_lst(super const& that) : super(that) {}
 

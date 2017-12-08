@@ -22,7 +22,7 @@
 namespace gui {
 
 class AboutBox : public QDialog {
-    CLASS(AboutBox) SUPER(QDialog) public : AboutBox(QWidget*);
+    SUPER(QDialog) public : AboutBox(QWidget*);
 
 protected:
     void accept();

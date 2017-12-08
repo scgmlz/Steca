@@ -21,7 +21,7 @@ namespace gui {
 namespace panel {
 
 class DatasetView : public views::ListView {
-    CLASS(DatasetView) SUPER(views::ListView) public : DatasetView(TheHub&);
+    SUPER(views::ListView) public : DatasetView(TheHub&);
 
 protected:
     void currentChanged(QModelIndex const&, QModelIndex const&);

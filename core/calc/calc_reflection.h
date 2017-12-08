@@ -21,8 +21,7 @@
 namespace calc {
 
 class Reflection final {
-    CLASS(Reflection)
-public:
+    public:
     static str_lst const& typeStrLst();
     static rcstr typeTag(fit::ePeakType);
 

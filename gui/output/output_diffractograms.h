@@ -21,7 +21,6 @@ namespace gui {
 namespace output {
 
 class TabDiffractogramsSave : public TabSave {
-    CLASS(TabDiffractogramsSave)
     SUPER(TabSave) public : TabDiffractogramsSave(TheHub&, Params&);
 
     uint currType() const;
@@ -39,7 +38,6 @@ using OutputDataCollection = typ::vec<OutputData>;
 using OutputDataCollections = typ::vec<OutputDataCollection>;
 
 class DiffractogramsFrame : public Frame {
-    CLASS(DiffractogramsFrame)
     SUPER(Frame) public : DiffractogramsFrame(TheHub&, rcstr title, QWidget*);
 
 protected:

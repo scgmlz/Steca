@@ -21,8 +21,6 @@
 namespace calc {
 
 struct itf_t {
-    CLASS(itf_t)
-
     itf_t();
     itf_t(inten_t, deg, fwhm_t);
 

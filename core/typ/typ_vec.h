@@ -23,7 +23,6 @@ namespace typ {
 // limited QVector, only needed methods reexported
 
 template <typename T> class vec : protected QVector<T> {
-    CLASS(vec)
     WITH_SUPER(QVector<T>)
     public :
 

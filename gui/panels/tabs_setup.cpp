@@ -21,7 +21,7 @@ namespace gui {
 namespace panel {
 
 class ReflectionView : public views::ListView {
-    CLASS(ReflectionView) SUPER(views::ListView) public : ReflectionView(TheHub&);
+    SUPER(views::ListView) public : ReflectionView(TheHub&);
 
     void addReflection(uint type);
     void removeSelected();

@@ -37,8 +37,6 @@ typedef QSharedPointer<Dataset> shp_Dataset;
 
 
 struct Metadata {
-    CLASS(Metadata)
-
     Metadata();
 
     // attribute list - will be dynamic
@@ -70,7 +68,7 @@ struct Metadata {
 // for calculation always accessed through its owning Dataset
 
 class OneDataset final {
-    CLASS(OneDataset) friend class OneDatasets;
+    friend class OneDatasets;
     friend class Dataset;
 
 public:
@@ -109,7 +107,7 @@ private:
 };
 
 class OneDatasets : public typ::vec<shp_OneDataset> {
-    CLASS(OneDatasets) SUPER(typ::vec<shp_OneDataset>);
+    SUPER(typ::vec<shp_OneDataset>);
 public:
     typ::size2d imageSize() const;
     typ::shp_Image foldedImage() const;
@@ -117,7 +115,7 @@ public:
 
 // 1 or more OneDataset(s)
 class Dataset final : public OneDatasets {
-    CLASS(Dataset) SUPER(OneDatasets);
+    SUPER(OneDatasets);
     friend class Datasets;
 
 public:
@@ -152,7 +150,7 @@ private:
 };
 
 class Datasets final : public typ::vec<shp_Dataset> {
-    CLASS(Datasets) SUPER(typ::vec<shp_Dataset>);
+    SUPER(typ::vec<shp_Dataset>);
 public:
     Datasets();
 

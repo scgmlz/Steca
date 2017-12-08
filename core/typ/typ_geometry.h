@@ -25,8 +25,7 @@ namespace typ {
 // detector geometry
 
 class Geometry {
-    CLASS(Geometry);
-public:
+    public:
     static preal const MIN_DETECTOR_DISTANCE;
     static preal const MIN_DETECTOR_PIXEL_SIZE;
 
@@ -45,8 +44,7 @@ public:
 // image cut (margins)
 
 class ImageCut {
-    CLASS(ImageCut);
-public:
+    public:
 
     uint left, top, right, bottom;
 

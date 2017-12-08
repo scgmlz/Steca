@@ -24,8 +24,7 @@ class JsonObj;
 
 // 2D point, reals
 class qpair {
-    CLASS(qpair);
-public:
+    public:
 
     qreal x, y;
 

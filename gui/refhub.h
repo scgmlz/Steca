@@ -31,7 +31,7 @@ enum class eFittingTab {
 };
 
 class TheHubSignallingBase : public QObject {
-    CLASS(TheHubSignallingBase) SUPER(QObject);
+    SUPER(QObject);
     Q_OBJECT friend class RefHub;
 
 private:

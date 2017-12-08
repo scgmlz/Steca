@@ -24,8 +24,7 @@ namespace typ {
 typedef Array2D<inten_t> inten_arr;
 
 class Image final {
-    CLASS(Image)
-public:
+    public:
     // Image as vector of intensities, filled with 0 or given intensities.
     Image(size2d const& = size2d(0, 0));
     Image(inten_arr const&);

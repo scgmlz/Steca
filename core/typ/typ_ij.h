@@ -25,8 +25,6 @@ namespace typ {
 class JsonObj;
 
 struct IJ {
-    CLASS(IJ)
-
     int i, j;
 
     IJ(); // (0,0)

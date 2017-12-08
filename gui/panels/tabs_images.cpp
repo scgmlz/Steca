@@ -23,7 +23,7 @@ namespace gui {
 namespace panel {
 
 class ImageWidget : public QWidget, protected RefHub {
-    CLASS(ImageWidget) SUPER(QWidget) public : ImageWidget(TheHub&);
+    SUPER(QWidget) public : ImageWidget(TheHub&);
 
     void setPixmap(QPixmap const&);
     void setScale();

@@ -20,7 +20,7 @@ namespace typ {
 
 template <typename Key, typename T> class map : public QMap<Key, T> {
     using super_type = QMap<Key, T>;
-    CLASS(map) SUPER(super_type) public : using super::clear;
+    SUPER(super_type) public : using super::clear;
 };
 
 template <typename Key, typename T> class owning_map : public map<Key, T*> {

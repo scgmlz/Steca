@@ -25,7 +25,6 @@ namespace panel {
 class DiffractogramPlot;
 
 class DiffractogramPlotOverlay : public QWidget {
-    CLASS(DiffractogramPlotOverlay)
     SUPER(QWidget) public : DiffractogramPlotOverlay(DiffractogramPlot&);
 
     void setMargins(int left, int right);
@@ -52,7 +51,6 @@ protected:
 };
 
 class DiffractogramPlot : public QCustomPlot, protected RefHub {
-    CLASS(DiffractogramPlot)
     SUPER(QCustomPlot)
     public : enum class eTool {
         NONE,
@@ -101,7 +99,7 @@ private:
 };
 
 class Diffractogram : public PanelWidget {
-    CLASS(Diffractogram) SUPER(PanelWidget) public : Diffractogram(TheHub&);
+    SUPER(PanelWidget) public : Diffractogram(TheHub&);
 
     void render();
 

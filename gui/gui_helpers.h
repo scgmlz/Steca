@@ -36,7 +36,7 @@
 //! layouts
 
 class GridLayout : public QGridLayout {
-    CLASS(GridLayout) SUPER(QGridLayout) public : using super::super;
+    SUPER(QGridLayout) public : using super::super;
 
     void addRowStretch(int = 1);
     void addColumnStretch(int = 1);
@@ -77,7 +77,7 @@ QComboBox* comboBox(str_lst const&);
 
 class TreeView : public QTreeView {
     Q_OBJECT
-    CLASS(TreeView) SUPER(QTreeView) public : TreeView();
+    SUPER(QTreeView) public : TreeView();
 
     int sizeHintForColumn(int) const; // make narrow columns
 };
@@ -86,14 +86,14 @@ class TreeView : public QTreeView {
 
 class TreeListView : public TreeView {
     Q_OBJECT
-    CLASS(TreeListView) SUPER(TreeView) public : TreeListView();
+    SUPER(TreeView) public : TreeListView();
 
 protected:
     void setModel(QAbstractItemModel*);
 };
 
 class LineView : public QLineEdit {
-    CLASS(LineView) SUPER(QLineEdit) public : LineView();
+    SUPER(QLineEdit) public : LineView();
 
     void setText(rcstr);
 };
@@ -101,7 +101,7 @@ class LineView : public QLineEdit {
 //! a widget with a box layout
 
 class BoxWidget : public QWidget {
-    CLASS(BoxWidget) SUPER(QWidget) public : BoxWidget(Qt::Orientation);
+    SUPER(QWidget) public : BoxWidget(Qt::Orientation);
 
 protected:
     QBoxLayout* box_;
@@ -110,7 +110,6 @@ protected:
 //! a dock widget that acts as BoxWidget
 
 class DockWidget : public QDockWidget {
-    CLASS(DockWidget)
     SUPER(QDockWidget) public : DockWidget(rcstr name, rcstr objectName, Qt::Orientation);
 
 protected:

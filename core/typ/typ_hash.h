@@ -19,11 +19,11 @@
 namespace typ {
 
 template <typename Key, typename T> class hash : protected QHash<Key, T> {
-    CLASS(hash) SUPER(QHash<Key COMMA T>) public : using super::clear;
+    SUPER(QHash<Key COMMA T>) public : using super::clear;
 };
 
 template <typename Key, typename Tp> class owning_hash : protected hash<Key, Tp> {
-    CLASS(owning_hash) SUPER(hash<Key COMMA Tp>) public : ~owning_hash() { clear(); }
+    SUPER(hash<Key COMMA Tp>) public : ~owning_hash() { clear(); }
 
     void clear() {
         for (auto* v : QHash<Key, Tp>::values())

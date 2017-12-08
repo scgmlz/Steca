@@ -22,7 +22,7 @@
 namespace gui {
 
 class Action : public QAction {
-    CLASS(Action) SUPER(QAction) public : Action(rcstr text, QObject*);
+    SUPER(QAction) public : Action(rcstr text, QObject*);
 
     Action& text(rcstr);
     Action& tip(rcstr);
@@ -33,12 +33,10 @@ class Action : public QAction {
 };
 
 class TriggerAction : public Action {
-    CLASS(TriggerAction)
     SUPER(Action) public : TriggerAction(rcstr text, QObject* = nullptr);
 };
 
 class ToggleAction : public Action {
-    CLASS(ToggleAction)
     SUPER(Action) public : ToggleAction(rcstr text, QObject* = nullptr);
 
     Action& alt(rcstr text2);
@@ -48,7 +46,7 @@ protected:
 };
 
 class Actions : protected RefHub {
-    CLASS(Actions) SUPER(RefHub) public : Actions(TheHub&);
+    SUPER(RefHub) public : Actions(TheHub&);
 
     Action *about, *online, *checkUpdate, *quit, *viewStatusbar, *viewFiles, *viewDatasets,
         *viewDatasetInfo, *viewReset,

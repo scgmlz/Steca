@@ -49,7 +49,6 @@ protected:
 };
 
 class ImageLens final : public LensBase {
-    CLASS(ImageLens)
     SUPER(LensBase)
     public
         : ImageLens(core::Session const&, typ::Image const&, data::Datasets const&, bool trans, bool cut);
@@ -69,7 +68,6 @@ private:
 typedef QSharedPointer<ImageLens> shp_ImageLens;
 
 class DatasetLens final : public LensBase {
-    CLASS(DatasetLens)
     SUPER(LensBase)
     public : DatasetLens(
                  core::Session const&, data::Dataset const&, data::Datasets const&, eNorm, bool trans,

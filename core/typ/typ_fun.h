@@ -29,10 +29,9 @@ namespace typ {
 //! Abstract function
 
 class Function {
-    CLASS(Function)
-public:
+    public:
     class Factory : public typ::Factory<Function> {
-        CLASS(Factory) SUPER(typ::Factory<Function>);
+        SUPER(typ::Factory<Function>);
     public:
         owner_not_null<Function*> make(JsonObj const&) THROWS;
     };
@@ -48,8 +47,7 @@ public:
 
 public:
     class Parameter final {
-        CLASS(Parameter)
-    public:
+        public:
         Parameter();
 
         qreal value() const { return value_; }
@@ -95,7 +93,7 @@ public:
 //! abstract function with parameters
 
 class SimpleFunction : public Function {
-    CLASS(SimpleFunction) SUPER(Function);
+    SUPER(Function);
 public:
 
     void setParameterCount(uint);
@@ -118,7 +116,7 @@ protected:
 //! concrete function that is a sum of other functions
 
 class SumFunctions final : public Function {
-    CLASS(SumFunctions) SUPER(Function);
+    SUPER(Function);
 public:
     ~SumFunctions();
 

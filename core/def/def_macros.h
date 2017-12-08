@@ -35,9 +35,6 @@
 // trouble with templates in macros
 #define COMMA ,
 
-// alias for the current class; const reference to it
-#define CLASS(cls)
-
 // alias for the super class
 #define SUPER(cls)                                                         \
 private:                                                                   \

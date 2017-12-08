@@ -22,8 +22,6 @@
 
 
 struct CacheKey {
-  CLASS(CacheKey)
-
   CacheKey(uint key) : key_(key) {
   }
 
@@ -56,8 +54,7 @@ void test() {
 namespace typ {
 
 template <typename Key, typename T> class cache_base {
-    CLASS(cache_base)
-public:
+    public:
     typedef QSharedPointer<T> shp;
 
 protected:
@@ -102,7 +99,7 @@ public:
 
 template <typename Key, typename T>
 class cache_eager final : public cache_base<Key,T> {
-  CLASS(cache_eager) SUPER(cache_base<Key COMMA T>)
+  SUPER(cache_base<Key COMMA T>)
 public:
   typedef QSharedPointer<T> shp;
 
@@ -175,7 +172,6 @@ private:
 // if full, takes a hit, trims a lot
 // has no overhead for each access (value())
 template <typename Key, typename T> class cache_lazy final : public cache_base<Key, T> {
-    CLASS(cache_lazy)
     SUPER(cache_base<Key COMMA T>) public : typedef QSharedPointer<T> shp;
 
 private:

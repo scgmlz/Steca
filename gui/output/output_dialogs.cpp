@@ -229,7 +229,6 @@ void Params::saveSettings() const {
 }
 
 class TableModel : public models::TableModel {
-    CLASS(TableModel)
     SUPER(models::TableModel)
 
 public:
