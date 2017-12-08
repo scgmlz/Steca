@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/fit/fit_methods.cpp
-//! @brief     Implements  fit::{Method, FitWrapper}
+//! @brief     Implements class FitWrapper
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -35,12 +35,10 @@ void FitWrapper::fit(Function& function, Curve const& curve) {
 
     for_i (parCount) {
         auto par = function_->parameterAt(i);
-        auto rge = par.valueRange();
-
         EXPECT(qIsFinite(par.value())) // TODO if not so, return false ?
         parValue[i] = par.value();
-        parMin[i] = rge.min;
-        parMax[i] = rge.max;
+        parMin[i] = par.valueRange().min;
+        parMax[i] = par.valueRange().max;
     }
 
     approximate(
@@ -50,11 +48,6 @@ void FitWrapper::fit(Function& function, Curve const& curve) {
     // read data
     for_i (parCount)
         function_->parameterAt(i).setValue(parValue[i], parError[i]);
-}
-
-void FitWrapper::callbackY(qreal* parValues, qreal* yValues, int /*parCount*/, int xLength, void*) {
-    for_i (xLength)
-        yValues[i] = function_->y(xValues_[i], parValues);
 }
 
 template <typename T> T* remove_const(T const* t) {
@@ -74,11 +67,7 @@ void FitWrapper::approximate(
     DelegateCalculationDbl functionJacobian(this, &FitWrapper::callbackJacobianLM);
 
     // minim. options mu, epsilon1, epsilon2, epsilon3
-    double opts[LM_OPTS_SZ];
-    opts[0] = LM_INIT_MU;
-    opts[1] = 1e-12;
-    opts[2] = 1e-12;
-    opts[3] = 1e-18;
+    double opts[] = { LM_INIT_MU, 1e-12, 1e-12, 1e-18 };
 
     // information regarding the minimization
     double info[LM_INFO_SZ];
@@ -97,6 +86,11 @@ void FitWrapper::approximate(
         paramsError[i] = sqrt(covar[i * paramsCount + i]); // the diagonal
 }
 
+void FitWrapper::callbackY(qreal* parValues, qreal* yValues, int /*parCount*/, int xLength, void*) {
+    for_i (xLength)
+        yValues[i] = function_->y(xValues_[i], parValues);
+}
+
 void FitWrapper::callbackJacobianLM(
     qreal* parValues, qreal* jacobian, int parameterLength, int xLength, void*) {
     for_int (ix, xLength) {
@@ -105,4 +99,5 @@ void FitWrapper::callbackJacobianLM(
         }
     }
 }
-}
+
+} // namespace fit
