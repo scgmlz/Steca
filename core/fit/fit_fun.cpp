@@ -105,7 +105,7 @@ qreal Polynom::avgY(Range const& rgeX, qreal const* parValues) const {
 }
 
 void Polynom::fit(Curve const& curve, typ::Ranges const& ranges) {
-    LevenbergMarquardt().fit(*this, curve.intersect(ranges));
+    FitWrapper().fit(*this, curve.intersect(ranges));
 }
 
 Polynom Polynom::fromFit(uint degree, Curve const& curve, typ::Ranges const& ranges) {
@@ -197,7 +197,7 @@ void PeakFunction::fit(Curve const& curve, Range const& range) {
     setGuessedFWHM(c.x(hmi2) - c.x(hmi1));
     //  }
 
-    LevenbergMarquardt().fit(*this, c);
+    FitWrapper().fit(*this, c);
 }
 
 Curve PeakFunction::prepareFit(Curve const& curve, Range const& range) {

@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/fit/fit_methods.cpp
-//! @brief     Implements  fit::{Method, LevenbergMarquardt}
+//! @brief     Implements  fit::{Method, FitWrapper}
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -22,7 +22,7 @@ namespace fit {
 using typ::Curve;
 using typ::Function;
 
-void Method::fit(Function& function, Curve const& curve) {
+void FitWrapper::fit(Function& function, Curve const& curve) {
     if (curve.isEmpty())
         return;
 
@@ -52,7 +52,7 @@ void Method::fit(Function& function, Curve const& curve) {
         function_->parameterAt(i).setValue(parValue[i], parError[i]);
 }
 
-void Method::callbackY(qreal* parValues, qreal* yValues, int /*parCount*/, int xLength, void*) {
+void FitWrapper::callbackY(qreal* parValues, qreal* yValues, int /*parCount*/, int xLength, void*) {
     for_i (xLength)
         yValues[i] = function_->y(xValues_[i], parValues);
 }
@@ -61,7 +61,7 @@ template <typename T> T* remove_const(T const* t) {
     return const_cast<T*>(t);
 }
 
-void LevenbergMarquardt::approximate(
+void FitWrapper::approximate(
     qreal* params, // IO initial parameter estimates -> estimated solution
     qreal const* paramsLimitMin, // I
     qreal const* paramsLimitMax, // I
@@ -70,8 +70,8 @@ void LevenbergMarquardt::approximate(
     qreal const* yValues, // I
     uint dataPointsCount) // I
 {
-    DelegateCalculationDbl function(this, &LevenbergMarquardt::callbackY);
-    DelegateCalculationDbl functionJacobian(this, &LevenbergMarquardt::callbackJacobianLM);
+    DelegateCalculationDbl function(this, &FitWrapper::callbackY);
+    DelegateCalculationDbl functionJacobian(this, &FitWrapper::callbackJacobianLM);
 
     // minim. options mu, epsilon1, epsilon2, epsilon3
     double opts[LM_OPTS_SZ];
@@ -97,7 +97,7 @@ void LevenbergMarquardt::approximate(
         paramsError[i] = sqrt(covar[i * paramsCount + i]); // the diagonal
 }
 
-void LevenbergMarquardt::callbackJacobianLM(
+void FitWrapper::callbackJacobianLM(
     qreal* parValues, qreal* jacobian, int parameterLength, int xLength, void*) {
     for_int (ix, xLength) {
         for_int (ip, parameterLength) {

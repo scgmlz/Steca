@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/fit/fit_methods.h
-//! @brief     Defines classes fit::{Method,  LevenbergMarquardt}
+//! @brief     Defines classes fit::{Method,  FitWrapper}
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -19,26 +19,17 @@
 
 namespace fit {
 
-class Method {
+class FitWrapper {
 public:
     void fit(typ::Function&, typ::Curve const&);
 
 protected:
-    virtual void
-    approximate(qreal*, qreal const*, qreal const*, qreal*, uint, qreal const*, uint) = 0;
-
     // these pointers are valid during fit() call
     typ::Function* function_;
     qreal const* xValues_;
 
-protected:
     // calculate a vector of y(x)
     void callbackY(qreal*, qreal*, int, int, void*);
-};
-
-class LevenbergMarquardt : public Method {
-private:
-    using super = Method;
 protected:
     void approximate(qreal*, qreal const*, qreal const*, qreal*, uint, qreal const*, uint);
 
