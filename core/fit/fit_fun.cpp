@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/fit/fit_fun.cpp
-//! @brief     Implements ...
+//! @brief     Implements classes Polynom and PeakFunction with subclasses
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -41,6 +41,10 @@ void initFactory() {
     F::addFactoryMaker(json_fun_key::PSEUDOVOIGT1, O::from(new F::Factory::Maker<PseudoVoigt1>));
     F::addFactoryMaker(json_fun_key::PSEUDOVOIGT2, O::from(new F::Factory::Maker<PseudoVoigt2>));
 }
+
+// ************************************************************************** //
+//  class Polynom
+// ************************************************************************** //
 
 Polynom::Polynom(uint degree) {
     setDegree(degree);
@@ -115,6 +119,10 @@ JsonObj Polynom::saveJson() const {
 void Polynom::loadJson(JsonObj const& obj) THROWS {
     super::loadJson(obj);
 }
+
+// ************************************************************************** //
+//  class PeakFunction
+// ************************************************************************** //
 
 PeakFunction* PeakFunction::factory(ePeakType type) {
     switch (type) {
@@ -207,7 +215,9 @@ void PeakFunction::loadJson(JsonObj const& obj) THROWS {
     guessedFWHM_ = obj.loadQreal(json_key::FWHM);
 }
 
-Raw::Raw() {}
+// ************************************************************************** //
+//  class Raw
+// ************************************************************************** //
 
 qreal Raw::y(qreal x, qreal const* /*parValues*/) const {
     if (!x_count_ || !range_.contains(x))
@@ -267,6 +277,11 @@ void Raw::prepareY() {
 JsonObj Raw::saveJson() const {
     return super::saveJson().saveString(json_key::TYPE, json_fun_key::RAW);
 }
+
+
+// ************************************************************************** //
+//  class Gaussian
+// ************************************************************************** //
 
 Gaussian::Gaussian(qreal ampl, qreal xShift, qreal sigma) {
     setParameterCount(3);
@@ -360,6 +375,11 @@ Lorentzian::Lorentzian(qreal ampl, qreal xShift, qreal gamma) {
     parGamma.setValue(gamma, 0);
 }
 
+
+// ************************************************************************** //
+//  class Lorentzian
+// ************************************************************************** //
+
 qreal Lorentzian::y(qreal x, qreal const* parValues) const {
     qreal ampl = parValue(parAMPL, parValues);
     qreal xShift = parValue(parXSHIFT, parValues);
@@ -417,6 +437,11 @@ fwhm_t Lorentzian::fwhmError() const {
 JsonObj Lorentzian::saveJson() const {
     return super::saveJson().saveString(json_key::TYPE, json_fun_key::LORENTZIAN);
 }
+
+
+// ************************************************************************** //
+//  class PseudoVoigt1
+// ************************************************************************** //
 
 PseudoVoigt1::PseudoVoigt1(qreal ampl, qreal xShift, qreal sigmaGamma, qreal eta) {
     setParameterCount(4);
@@ -508,6 +533,11 @@ fwhm_t PseudoVoigt1::fwhmError() const {
 JsonObj PseudoVoigt1::saveJson() const {
     return super::saveJson().saveString(json_key::TYPE, json_fun_key::PSEUDOVOIGT1);
 }
+
+
+// ************************************************************************** //
+//  class PseudoVoigt2
+// ************************************************************************** //
 
 PseudoVoigt2::PseudoVoigt2(qreal ampl, qreal mu, qreal hwhmG, qreal hwhmL, qreal eta) {
     setParameterCount(5);

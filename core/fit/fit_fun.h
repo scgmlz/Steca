@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/fit/fit_fun.h
-//! @brief     Defines ...
+//! @brief     Defines classes Polynom and PeakFunction with subclasses
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -25,7 +25,7 @@ namespace fit {
 
 void initFactory();
 
-// a polynom(ial)
+//! a polynom(ial)
 
 class Polynom : public typ::SimpleFunction {
 private:
@@ -48,9 +48,11 @@ public:
     void loadJson(typ::JsonObj const&) THROWS;
 };
 
-// Abstract peak function
 
 enum class ePeakType { RAW, GAUSSIAN, LORENTZIAN, PSEUDOVOIGT1, PSEUDOVOIGT2, NUM_TYPES };
+
+
+//! Abstract peak function
 
 class PeakFunction : public typ::SimpleFunction {
 private:
@@ -97,12 +99,13 @@ protected:
     fwhm_t guessedFWHM_;
 };
 
+
+//! Peak analysis without fitting
+
 class Raw : public PeakFunction {
 private:
     using super = PeakFunction;
 public:
-    Raw();
-
     ePeakType type() const { return ePeakType::RAW; }
 
     qreal y(qreal x, qreal const* parValues = nullptr) const;
@@ -127,6 +130,9 @@ private:
     mutable qreal dx_;
     mutable qreal sum_y_;
 };
+
+
+//! to fit peak with a Gaussian
 
 class Gaussian : public PeakFunction {
 private:
@@ -153,6 +159,9 @@ public:
     typ::JsonObj saveJson() const;
 };
 
+
+//! to fit peak with a Lorentzian
+
 class Lorentzian : public PeakFunction {
 private:
     using super = PeakFunction;
@@ -178,6 +187,9 @@ public:
     typ::JsonObj saveJson() const;
 };
 
+
+//! to fit peak with a sum of Gaussian and Lorentzian with shared width parameter
+
 class PseudoVoigt1 : public PeakFunction {
 private:
     using super = PeakFunction;
@@ -202,6 +214,9 @@ public:
 
     typ::JsonObj saveJson() const;
 };
+
+
+//! to fit peak with a sum of Gaussian and Lorentzian with independent width parameters
 
 class PseudoVoigt2 : public PeakFunction {
 private:
