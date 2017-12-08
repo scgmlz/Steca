@@ -16,8 +16,8 @@
 #define SCOPED_H
 
 #include "def/def_debug.h"
-#include <type_traits> // for is_assignable
 #include <cstddef> // for size_t
+#include <type_traits> // for is_assignable
 
 // pointers that cannot be null
 

@@ -17,7 +17,7 @@
 
 #include "def/def_cmp.h"
 #include "def/def_exc.h"
-#include "def/def_gsl.h" // for uint
+#include "def/numbers.h"
 #include "typ/typ_vec.h"
 
 namespace typ {

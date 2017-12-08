@@ -15,7 +15,7 @@
 #ifndef TYP_VEC_H
 #define TYP_VEC_H
 
-#include "def/def_gsl.h"
+#include "def/numbers.h"
 #include <QVector>
 
 namespace typ {

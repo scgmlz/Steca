@@ -15,7 +15,7 @@
 #ifndef TYP_STRLST_H
 #define TYP_STRLST_H
 
-#include "def/def_gsl.h"
+#include "def/numbers.h"
 #include <QStringList>
 
 // limited QStringList, only needed methods reexported
