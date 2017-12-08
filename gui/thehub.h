@@ -17,6 +17,7 @@
 
 #include "actions.h"
 #include "def/def_exc.h"
+#include "def/scoped.h"
 #include "models.h"
 #include "session.h"
 #include "typ/typ_str.h"

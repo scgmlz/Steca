@@ -17,6 +17,7 @@
 
 #include "def/def_exc.h"
 #include "def/def_gsl.h"
+#include "def/scoped.h"
 #include "typ/typ_hash.h"
 #include "typ/typ_str.h"
 

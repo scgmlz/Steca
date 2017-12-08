@@ -17,6 +17,7 @@
 
 #include "actions.h"
 #include "calc/calc_reflection_info.h"
+#include "def/scoped.h"
 #include "panels/panel.h"
 #include "typ/typ_log.h"
 #include "typ/typ_str.h"

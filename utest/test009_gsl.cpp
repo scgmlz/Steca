@@ -1,5 +1,5 @@
-#include "def/def_gsl.h" // declares 'scoped'
-#include "def/def_gsl.h"
+#include "def/def_gsl.h" // declares NAN
+#include "def/scoped.h"
 #include "gtest/gtest.h"
 
 TEST(GSL, NanInf) {

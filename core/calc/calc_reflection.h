@@ -16,6 +16,7 @@
 #define CALC_REFLECTION_H
 
 #include "def/def_exc.h"
+#include "def/scoped.h"
 #include "fit/fit_fun.h"
 #include "typ/typ_str.h"
 #include <QSharedPointer>
