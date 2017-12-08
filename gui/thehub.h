@@ -20,7 +20,7 @@
 #include "def/special_pointers.h"
 #include "models.h"
 #include "session.h"
-#include "typ/typ_str.h"
+#include "typ/str.h"
 #include <QSettings>
 
 class QSpinBox;

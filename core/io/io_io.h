@@ -17,7 +17,7 @@
 
 #include "data/data_file.h"
 #include "def/exception.h"
-#include "typ/typ_str.h"
+#include "typ/str.h"
 
 namespace io {
 

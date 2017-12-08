@@ -16,7 +16,7 @@
 #define ACTIONS_H
 
 #include "refhub.h"
-#include "typ/typ_str.h"
+#include "typ/str.h"
 #include <QAction>
 
 namespace gui {

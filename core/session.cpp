@@ -15,8 +15,9 @@
 #include "session.h"
 #include "def/exception.h"
 #include "def/idiomatic_for.h"
-#include "typ/typ_matrix.h"
-#include "typ/typ_str.h"
+#include "typ/matrix.h"
+#include "typ/qpair.h"
+#include "typ/str.h"
 #include <qmath.h>
 
 namespace core {

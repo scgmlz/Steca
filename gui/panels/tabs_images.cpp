@@ -17,7 +17,7 @@
 #include "def/idiomatic_for.h"
 #include "gui_cfg.h"
 #include "thehub.h"
-#include "typ/typ_str.h"
+#include "typ/str.h"
 #include <qmath.h>
 #include <QPainter>
 

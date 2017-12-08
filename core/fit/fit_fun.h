@@ -16,8 +16,9 @@
 #define FIT_FUN_H
 
 #include "def/exception.h"
-#include "typ/typ_curve.h"
-#include "typ/typ_types.h"
+#include "typ/qpair.h"
+#include "typ/curve.h"
+#include "typ/types.h"
 
 namespace json_fun_key {
 }

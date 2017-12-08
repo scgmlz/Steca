@@ -15,7 +15,7 @@
 #ifndef COLORS_H
 #define COLORS_H
 
-#include "typ/typ_types.h"
+#include "typ/types.h"
 #include <QRgb>
 
 namespace gui {

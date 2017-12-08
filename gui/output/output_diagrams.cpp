@@ -15,7 +15,7 @@
 #include "output_diagrams.h"
 #include "def/idiomatic_for.h"
 #include "thehub.h"
-#include "typ/typ_str.h"
+#include "typ/str.h"
 
 namespace gui {
 namespace output {

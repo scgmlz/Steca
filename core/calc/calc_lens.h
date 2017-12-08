@@ -16,8 +16,8 @@
 #define CALC_LENS_H
 
 #include "data/data_dataset.h"
-#include "typ/typ_geometry.h"
-#include "typ/typ_image_transform.h"
+#include "typ/geometry.h"
+#include "typ/image_transform.h"
 
 namespace calc {
 

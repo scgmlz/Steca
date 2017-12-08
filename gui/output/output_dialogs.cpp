@@ -19,7 +19,7 @@
 #include "filedialog.h"
 #include "gui_cfg.h"
 #include "thehub.h"
-#include "typ/typ_str.h"
+#include "typ/str.h"
 #include <QDir>
 #include <QHeaderView>
 #include <QProgressBar>

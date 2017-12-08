@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "typ/typ_variant.h"
+#include "typ/variant.h"
 
 using typ::cmp_int;
 

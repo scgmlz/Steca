@@ -21,9 +21,9 @@
 #include "data/data_file.h"
 #include "def/exception.h"
 #include "def/special_pointers.h"
-#include "typ/typ_async.h"
-#include "typ/typ_cache.h"
-#include "typ/typ_str.h"
+#include "typ/async.h"
+#include "typ/cache.h"
+#include "typ/str.h"
 
 namespace core {
 

@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "typ/typ_angles.h"
+#include "typ/angles.h"
 #include <qmath.h>
 
 using typ::deg;

@@ -16,7 +16,7 @@
 #define CALC_POLEFIGURE_H
 
 #include "calc_reflection_info.h"
-#include "typ/typ_async.h"
+#include "typ/async.h"
 
 namespace calc {
 

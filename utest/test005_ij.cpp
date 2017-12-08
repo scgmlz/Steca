@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
-#include "typ/typ_ij.h"
-#include "typ/typ_json.h"
+#include "typ/ij.h"
+#include "typ/json.h"
 
 using typ::IJ;
 

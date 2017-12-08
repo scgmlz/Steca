@@ -1,7 +1,7 @@
 #include "def/idiomatic_for.h"
 #include "gtest/gtest.h"
-#include "typ/typ_json.h"
-#include "typ/typ_range.h"
+#include "typ/json.h"
+#include "typ/range.h"
 #include <vector>
 
 using typ::Range;

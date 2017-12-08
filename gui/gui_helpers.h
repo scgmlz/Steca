@@ -15,8 +15,8 @@
 #ifndef GUI_HELPERS_H
 #define GUI_HELPERS_H
 
-#include "typ/typ_str.h"
-#include "typ/typ_strlst.h"
+#include "typ/str.h"
+#include "typ/strlst.h"
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDockWidget>

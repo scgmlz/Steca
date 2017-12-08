@@ -14,7 +14,7 @@
 
 #include "calc_reflection.h"
 #include "def/exception.h"
-#include "typ/typ_str.h"
+#include "typ/str.h"
 
 namespace calc {
 

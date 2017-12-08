@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "thehub.h"
-#include "typ/typ_str.h"
+#include "typ/str.h"
 
 namespace gui {
 

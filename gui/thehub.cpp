@@ -17,7 +17,7 @@
 #include "def/idiomatic_for.h"
 #include "io/io_io.h"
 #include "mainwin.h"
-#include "typ/typ_str.h"
+#include "typ/str.h"
 #include <QDir>
 #include <QJsonDocument>
 #include <QMessageBox>

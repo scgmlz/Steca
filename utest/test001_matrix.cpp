@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "typ/typ_matrix.h"
+#include "typ/matrix.h"
 
 using typ::vec3f;
 using typ::vec3r;

@@ -16,7 +16,7 @@
 #define OUTPUT_DIFFRACTOGRAMS_H
 
 #include "output_dialogs.h"
-#include "typ/typ_str.h"
+#include "typ/str.h"
 
 namespace gui {
 namespace output {

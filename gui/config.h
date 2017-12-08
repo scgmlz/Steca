@@ -15,7 +15,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include "typ/typ_str.h"
+#include "typ/str.h"
 
 namespace config_key {
 

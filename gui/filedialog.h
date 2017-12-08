@@ -15,8 +15,8 @@
 #ifndef FILEDIALOG_H
 #define FILEDIALOG_H
 
-#include "typ/typ_str.h"
-#include "typ/typ_strlst.h"
+#include "typ/str.h"
+#include "typ/strlst.h"
 
 class QWidget;
 

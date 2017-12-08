@@ -16,7 +16,7 @@
 #include "colors.h"
 #include "def/idiomatic_for.h"
 #include "thehub.h"
-#include "typ/typ_str.h"
+#include "typ/str.h"
 #include <qmath.h>
 #include <QPainter>
 #include <QTextStream>

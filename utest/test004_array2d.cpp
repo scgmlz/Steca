@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "typ/typ_array2d.h"
+#include "typ/array2d.h"
 
 using typ::size2d;
 

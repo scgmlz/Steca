@@ -17,7 +17,7 @@
 #ifndef EXCEPTION_H
 #define EXCEPTION_H
 
-#include "typ/typ_str.h"
+#include "typ/str.h"
 #include <QException>
 
 // An exception that carries a message.

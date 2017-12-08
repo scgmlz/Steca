@@ -16,7 +16,7 @@
 #define DATA_FILE_H
 
 #include "data_dataset.h"
-#include "typ/typ_str.h"
+#include "typ/str.h"
 #include <QFileInfo>
 #include <QSharedPointer>
 

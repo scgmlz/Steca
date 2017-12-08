@@ -14,9 +14,9 @@
 
 #include "def/idiomatic_for.h"
 #include "session.h"
-#include "typ/typ_log.h"
-#include "typ/typ_matrix.h"
-#include "typ/typ_str.h"
+#include "typ/log.h"
+#include "typ/matrix.h"
+#include "typ/str.h"
 #include <qmath.h>
 
 namespace data {
