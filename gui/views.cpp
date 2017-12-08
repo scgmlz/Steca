@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/views.cpp
-//! @brief     Implements ...
+//! @brief     Implements classes ListView, MultiListView
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -34,6 +34,7 @@ void ListView::selectRow(int row) {
     setCurrentIndex(model()->index(row, 0));
 }
 
+
 MultiListView::MultiListView(TheHub& hub) : super(hub) {
     setSelectionMode(ExtendedSelection);
 }
@@ -48,5 +49,7 @@ void MultiListView::selectRows(uint_vec rows) {
 
     selectionModel()->select(is, QItemSelectionModel::ClearAndSelect);
 }
-}
-}
+
+} // namespace views
+
+} // namespace gui

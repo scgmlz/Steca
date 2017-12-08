@@ -144,5 +144,7 @@ protected:
 
 #undef DEFINE_HUB_SIGNAL_HANDLER
 };
-}
+
+} //namespace gui
+
 #endif // REFHUB_H

@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/views.h
-//! @brief     Defines ...
+//! @brief     Defines classes ListView, MultiListView
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -21,7 +21,7 @@
 namespace gui {
 namespace views {
 
-// A (tree-)list view with a reference to the hub. Single selection.
+//! A (tree-)list view with a reference to the hub. Single selection.
 
 class ListView : public TreeListView, protected RefHub {
 private:
@@ -43,7 +43,8 @@ protected:
     void selectRow(int);
 };
 
-// Multiple selection.
+
+//! A (tree-)list view with a reference to the hub. Multiple selection.
 
 class MultiListView : public ListView {
 private:
@@ -54,6 +55,9 @@ public:
 protected:
     void selectRows(uint_vec);
 };
-}
-}
+
+} // namespace views
+
+} // namespace gui
+
 #endif // VIEWS_H
