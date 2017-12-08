@@ -27,7 +27,7 @@ preal const Geometry::DEF_DETECTOR_PIXEL_SIZE = preal(1);
 Geometry::Geometry()
     : detectorDistance(DEF_DETECTOR_DISTANCE), pixSize(DEF_DETECTOR_PIXEL_SIZE), midPixOffset() {}
 
-int Geometry::compare(rc that) const {
+int Geometry::compare(Geometry const& that) const {
     RET_COMPARE_VALUE(detectorDistance)
     RET_COMPARE_VALUE(pixSize)
     RET_COMPARE_COMPARABLE(midPixOffset)
@@ -70,7 +70,7 @@ void ImageCut::update(bool topLeftFirst, bool linked, typ::size2d size) {
     *this = ImageCut(_left, _top, _right, _bottom);
 }
 
-int ImageCut::compare(rc that) const {
+int ImageCut::compare(ImageCut const& that) const {
     RET_COMPARE_VALUE(left)
     RET_COMPARE_VALUE(top)
     RET_COMPARE_VALUE(right)
@@ -92,7 +92,7 @@ AngleMap::Key::Key(
     Geometry const& geometry_, size2d const& size_, ImageCut const& cut_, IJ const& midPix_, deg midTth_)
     : geometry(geometry_), size(size_), cut(cut_), midPix(midPix_), midTth(midTth_) {}
 
-int AngleMap::Key::compare(rc that) const {
+int AngleMap::Key::compare(AngleMap::Key const& that) const {
     RET_COMPARE_COMPARABLE(geometry)
     RET_COMPARE_COMPARABLE(size)
     RET_COMPARE_COMPARABLE(cut)

@@ -33,8 +33,8 @@ private:
 public:
     static not_null from(P p) { return not_null(p); }
 
-    not_null(rc) = default;
-    not_null& operator=(rc) = default;
+    not_null(not_null const&) = default;
+    not_null& operator=(not_null const&) = default;
 
     // from another not_null
     template <typename O, typename Dummy = std::enable_if<std::is_convertible<O, P>::value>>

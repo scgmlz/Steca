@@ -33,7 +33,7 @@ class str_lst : protected QStringList {
     using super::append;
     using super::removeLast;
 
-    void append(rc that) { super::append(that); }
+    void append(str_lst const& that) { super::append(that); }
 
     QString const& at(uint i) const { return super::at(to_i(i)); }
 };

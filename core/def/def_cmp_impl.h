@@ -33,15 +33,15 @@
         return cmp;
 
 #define EQ_NE_OPERATOR(T)                                                                          \
-    bool T::operator==(rc that) const { return 0 == compare(that); }                               \
+    bool T::operator==(T const& that) const { return 0 == compare(that); }                               \
                                                                                                    \
-    bool T::operator!=(rc that) const { return 0 != compare(that); }
+    bool T::operator!=(T const& that) const { return 0 != compare(that); }
 
 #define VALID_EQ_NE_OPERATOR(T)                                                                    \
-    bool T::operator==(rc that) const {                                                            \
+    bool T::operator==(T const& that) const {                                                            \
         return isValid() && that.isValid() && 0 == compare(that);                                  \
     }                                                                                              \
                                                                                                    \
-    bool T::operator!=(rc that) const { return isValid() && that.isValid() && 0 != compare(that); }
+    bool T::operator!=(T const& that) const { return isValid() && that.isValid() && 0 != compare(that); }
 
 #endif // DEF_CMP_IMPL_H

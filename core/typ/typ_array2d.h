@@ -32,9 +32,9 @@ struct size2d {
 
     uint count() const { return w * h; }
 
-    COMPARABLE
+    COMPARABLE(size2d const&)
 
-    friend size2d operator-(rc s1, rc s2) {
+    friend size2d operator-(size2d const& s1, size2d const& s2) {
         int w = to_i(s1.w) - to_i(s2.w);
         int h = to_i(s1.h) - to_i(s2.h);
         return size2d(to_u(qMax(w, 0)), to_u(qMax(h, 0)));
@@ -124,5 +124,7 @@ public:
         return ts_[i][j];
     }
 };
-}
+
+} // namespace typ
+
 #endif // TYP_ARRAY2D_H

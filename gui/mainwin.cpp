@@ -168,41 +168,41 @@ void MainWin::initStatusBar() {
 }
 
 void MainWin::connectActions() {
-    auto onTrigger = [this](QAction* action, void (Cls::*fun)()) {
+    auto onTrigger = [this](QAction* action, void (MainWin::*fun)()) {
         QObject::connect(action, &QAction::triggered, this, fun);
     };
 
-    auto onToggle = [this](QAction* action, void (Cls::*fun)(bool)) {
+    auto onToggle = [this](QAction* action, void (MainWin::*fun)(bool)) {
         QObject::connect(action, &QAction::toggled, this, fun);
     };
 
-    onTrigger(acts_.loadSession, &Cls::loadSession);
-    onTrigger(acts_.saveSession, &Cls::saveSession);
-    onTrigger(acts_.clearSession, &Cls::clearSession);
+    onTrigger(acts_.loadSession, &MainWin::loadSession);
+    onTrigger(acts_.saveSession, &MainWin::saveSession);
+    onTrigger(acts_.clearSession, &MainWin::clearSession);
 
-    onTrigger(acts_.addFiles, &Cls::addFiles);
-    onTrigger(acts_.enableCorr, &Cls::enableCorr);
+    onTrigger(acts_.addFiles, &MainWin::addFiles);
+    onTrigger(acts_.enableCorr, &MainWin::enableCorr);
 
-    onTrigger(acts_.quit, &Cls::close);
+    onTrigger(acts_.quit, &MainWin::close);
 
-    onTrigger(acts_.outputPolefigures, &Cls::outputPoleFigures);
-    onTrigger(acts_.outputDiagrams, &Cls::outputDiagrams);
-    onTrigger(acts_.outputDiffractograms, &Cls::outputDiffractograms);
+    onTrigger(acts_.outputPolefigures, &MainWin::outputPoleFigures);
+    onTrigger(acts_.outputDiagrams, &MainWin::outputDiagrams);
+    onTrigger(acts_.outputDiffractograms, &MainWin::outputDiffractograms);
 
-    onTrigger(acts_.about, &Cls::about);
-    onTrigger(acts_.online, &Cls::online);
-    onTrigger(acts_.checkUpdate, &Cls::checkUpdate);
+    onTrigger(acts_.about, &MainWin::about);
+    onTrigger(acts_.online, &MainWin::online);
+    onTrigger(acts_.checkUpdate, &MainWin::checkUpdate);
 
-    onToggle(acts_.viewStatusbar, &Cls::viewStatusbar);
+    onToggle(acts_.viewStatusbar, &MainWin::viewStatusbar);
 #ifndef Q_OS_OSX
-    onToggle(acts_.fullScreen, &Cls::viewFullScreen);
+    onToggle(acts_.fullScreen, &MainWin::viewFullScreen);
 #endif
 
-    onToggle(acts_.viewFiles, &Cls::viewFiles);
-    onToggle(acts_.viewDatasets, &Cls::viewDatasets);
-    onToggle(acts_.viewDatasetInfo, &Cls::viewDatasetInfo);
+    onToggle(acts_.viewFiles, &MainWin::viewFiles);
+    onToggle(acts_.viewDatasets, &MainWin::viewDatasets);
+    onToggle(acts_.viewDatasetInfo, &MainWin::viewDatasetInfo);
 
-    onTrigger(acts_.viewReset, &Cls::viewReset);
+    onTrigger(acts_.viewReset, &MainWin::viewReset);
 }
 
 void MainWin::about() {

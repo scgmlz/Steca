@@ -22,11 +22,11 @@ Exception::Exception(rcstr msg, bool silent) noexcept : silent_(silent) {
     setMsg(msg);
 }
 
-Exception::Exception() noexcept : Cls(EMPTY_STR, true) {}
+Exception::Exception() noexcept : Exception(EMPTY_STR, true) {}
 
-Exception::Exception(rcstr msg) noexcept : Cls(msg, false) {}
+Exception::Exception(rcstr msg) noexcept : Exception(msg, false) {}
 
-Exception::Exception(rc that) noexcept : Cls(that.msg_) {}
+Exception::Exception(Exception const& that) noexcept : Exception(that.msg_) {}
 
 pcstr Exception::what() const noexcept {
     return msg8bit_.constData();

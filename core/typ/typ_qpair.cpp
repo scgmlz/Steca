@@ -18,7 +18,7 @@
 #include "def/def_cmp_impl.h"
 #include "typ/typ_json.h"
 
-int qpair::compare(rc that) const {
+int qpair::compare(qpair const& that) const {
     EXPECT(isValid() && that.isValid())
     RET_COMPARE_VALUE(x)
     RET_COMPARE_VALUE(y)

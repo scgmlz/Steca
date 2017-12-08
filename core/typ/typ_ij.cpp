@@ -24,7 +24,7 @@ IJ::IJ() : IJ(0, 0) {}
 
 IJ::IJ(int i_, int j_) : i(i_), j(j_) {}
 
-int IJ::compare(rc that) const {
+int IJ::compare(IJ const& that) const {
     RET_COMPARE_VALUE(i)
     RET_COMPARE_VALUE(j)
     return 0;

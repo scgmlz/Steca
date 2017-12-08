@@ -43,14 +43,16 @@ struct ImageTransform {
     ImageTransform mirror(bool on) const;
 
     // rotates only; keeps the mirror flag
-    ImageTransform rotateTo(rc) const;
+    ImageTransform rotateTo(ImageTransform const&) const;
 
     // rotates by one quarter-turn
     ImageTransform nextRotate() const;
 
     bool isTransposed() const { return 0 != (val & 1); }
 
-    bool operator==(rc that) const { return val == that.val; }
+    bool operator==(ImageTransform const& that) const {
+        return val == that.val; }
 };
-}
+
+} // namespace typ
 #endif // TYP_IMAGE_TRANSFORM_H

@@ -53,7 +53,7 @@ ToggleAction::ToggleAction(rcstr text, QObject* parent) : super(text, parent), t
 
 Action& ToggleAction::alt(rcstr text2) {
     text2_ = text2;
-    connect(this, &Cls::toggled, [this](bool on) {
+    connect(this, &Action::toggled, [this](bool on) {
         rcstr text = on ? text2_ : text1_;
         setText(text);
         setToolTip(text);

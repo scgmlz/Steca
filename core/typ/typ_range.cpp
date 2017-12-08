@@ -37,7 +37,7 @@ Range Range::infinite() {
     return Range(-INF, +INF);
 }
 
-int Range::compare(rc that) const {
+int Range::compare(Range const& that) const {
     EXPECT(isValid() && that.isValid())
     RET_COMPARE_VALUE(min)
     RET_COMPARE_VALUE(max)

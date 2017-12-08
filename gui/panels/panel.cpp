@@ -23,7 +23,7 @@ PanelWidget::PanelWidget(TheHub& hub, Qt::Orientation orientation) : RefHub(hub)
 
 BasicPanel::BasicPanel(TheHub& hub, rcstr title) : super(title), RefHub(hub) {}
 
-BasicPanel::BasicPanel(TheHub& hub) : Cls(hub, EMPTY_STR) {}
+BasicPanel::BasicPanel(TheHub& hub) : BasicPanel(hub, EMPTY_STR) {}
 
 void BasicPanel::setHorizontalStretch(int stretch) {
     auto sp = sizePolicy();
@@ -44,13 +44,13 @@ void BasicPanel::setStretch(int horizontal, int vertical) {
     setSizePolicy(sp);
 }
 
-BoxPanel::BoxPanel(TheHub& hub, Qt::Orientation o) : Cls(hub, EMPTY_STR, o) {}
+BoxPanel::BoxPanel(TheHub& hub, Qt::Orientation o) : BoxPanel(hub, EMPTY_STR, o) {}
 
 BoxPanel::BoxPanel(TheHub& hub, rcstr title, Qt::Orientation orientation) : super(hub, title) {
     setLayout((box_ = boxLayout(orientation)));
 }
 
-GridPanel::GridPanel(TheHub& hub) : Cls(hub, EMPTY_STR) {}
+GridPanel::GridPanel(TheHub& hub) : GridPanel(hub, EMPTY_STR) {}
 
 GridPanel::GridPanel(TheHub& hub, rcstr title) : super(hub, title) {
     setLayout((grid_ = gridLayout()));

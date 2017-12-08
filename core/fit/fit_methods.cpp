@@ -71,7 +71,7 @@ void LinearLeastSquare::approximate(
     qreal const* yValues, // I
     uint dataPointsCount) // I
 {
-    DelegateCalculationDbl function(this, &Cls::callbackY);
+    DelegateCalculationDbl function(this, &LinearLeastSquare::callbackY);
 
     // information regarding the minimization
     double info[LM_INFO_SZ];
@@ -101,8 +101,8 @@ void LevenbergMarquardt::approximate(
     qreal const* yValues, // I
     uint dataPointsCount) // I
 {
-    DelegateCalculationDbl function(this, &Cls::callbackY);
-    DelegateCalculationDbl functionJacobian(this, &Cls::callbackJacobianLM);
+    DelegateCalculationDbl function(this, &LevenbergMarquardt::callbackY);
+    DelegateCalculationDbl functionJacobian(this, &LevenbergMarquardt::callbackJacobianLM);
 
     // minim. options mu, epsilon1, epsilon2, epsilon3
     double opts[LM_OPTS_SZ];

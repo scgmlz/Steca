@@ -24,7 +24,7 @@ Image::Image(inten_arr const& that) : Image(that.size()) {
     addIntens(that);
 }
 
-void Image::addIntens(rc that) THROWS {
+void Image::addIntens(Image const& that) THROWS {
     RUNTIME_CHECK(size() == that.size(), "inconsistent image size");
     auto w = size().w, h = size().h;
     for (uint i = 0; i < w; ++i)

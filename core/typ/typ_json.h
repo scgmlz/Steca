@@ -79,8 +79,8 @@ class JsonObj : protected QJsonObject {
     JsonObj& saveqpair(rcstr key, qpair const&);
     qpair loadqpair(rcstr key) const THROWS;
 
-    JsonObj& operator+=(rc);
-    JsonObj operator+(rc) const;
+    JsonObj& operator+=(JsonObj const&);
+    JsonObj operator+(JsonObj const&) const;
 };
 
 class JsonArr : protected QJsonArray {

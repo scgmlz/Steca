@@ -32,7 +32,7 @@ public:
     qpair() { invalidate(); }
     qpair(qreal x_, qreal y_) : x(x_), y(y_) {}
 
-    COMPARABLE
+    COMPARABLE(qpair const&);
 
     void invalidate(); // x,y <- NAN
     bool isValid() const { return !qIsNaN(x) && !qIsNaN(y); }

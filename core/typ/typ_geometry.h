@@ -35,7 +35,7 @@ public:
 
     Geometry();
 
-    COMPARABLE
+    COMPARABLE(Geometry const&);
 
     preal detectorDistance; // the distance from the sample to the detector
     preal pixSize; // size of the detector pixel
@@ -52,16 +52,14 @@ public:
 
     ImageCut();
     ImageCut(uint left, uint top, uint right, uint bottom);
-    COMPARABLE;
+    COMPARABLE(ImageCut const&);
     void update(bool topLeftFirst, bool linked, typ::size2d size);
 
     size2d marginSize() const;
 };
 
 class Angles {
-    CLASS(Angles);
 public:
-
     deg tth;
     deg gma;
 
@@ -70,16 +68,14 @@ public:
 };
 
 class AngleMap {
-    CLASS(AngleMap);
 public:
     struct Key {
-        CLASS(Key)
-
         Key(Geometry const&, size2d const&, ImageCut const&, IJ const& midPix, deg midTth);
 
-        COMPARABLE
+        COMPARABLE(AngleMap::Key const&);
 
-        bool operator<(rc that) const { return compare(that) < 0; }
+        bool operator<(AngleMap::Key const& that) const {
+            return compare(that) < 0; }
 
         Geometry geometry;
         size2d size;

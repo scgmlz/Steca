@@ -34,7 +34,7 @@ public:
 
     static Range infinite(); // factory: -inf .. +inf
 
-    COMPARABLE
+    COMPARABLE(Range const&)
 
     void invalidate(); // make invalid
     bool isValid() const; // is not NaN
@@ -52,12 +52,12 @@ public:
     static Range safeFrom(qreal, qreal); // safe factory
 
     void extendBy(qreal); // extend to include the number
-    void extendBy(rc); // extend to include the range
+    void extendBy(Range const&); // extend to include the range
 
     bool contains(qreal) const;
-    bool contains(rc) const;
-    bool intersects(rc) const;
-    Range intersect(rc) const;
+    bool contains(Range const&) const;
+    bool intersects(Range const&) const;
+    Range intersect(Range const&) const;
 
     // limit the number to the interval, as qBound would
     qreal bound(qreal) const;

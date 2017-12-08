@@ -32,7 +32,7 @@ struct IJ {
     IJ(); // (0,0)
     IJ(int, int);
 
-    COMPARABLE
+    COMPARABLE(IJ const&)
 
     JsonObj saveJson() const;
     void loadJson(JsonObj const&) THROWS;

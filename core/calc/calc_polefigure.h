@@ -26,7 +26,7 @@ struct itf_t {
     itf_t();
     itf_t(inten_t, deg, fwhm_t);
 
-    void operator+=(rc);
+    void operator+=(itf_t const&);
 
     inten_t inten;
     deg tth;

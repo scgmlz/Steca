@@ -28,7 +28,7 @@ class Exception : public QException {
 public:
     Exception() noexcept;
     Exception(rcstr msg) noexcept;
-    Exception(rc) noexcept;
+    Exception(Exception const&) noexcept;
 
     bool silent() const noexcept { return silent_; }
     rcstr msg() const noexcept { return msg_; }

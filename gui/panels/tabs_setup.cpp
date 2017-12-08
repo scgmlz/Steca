@@ -395,7 +395,7 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
         connect(spinGuessFWHM_, slot(QDoubleSpinBox, valueChanged, double), changeReflData0);
     }
 
-    connect(this, &Cls::currentChanged, [this, backgroundTabIndex, reflectionTabIndex](int index) {
+    connect(this, &TabsSetup::currentChanged, [this, backgroundTabIndex, reflectionTabIndex](int index) {
         eFittingTab tab;
         if (backgroundTabIndex == index)
             tab = eFittingTab::BACKGROUND;

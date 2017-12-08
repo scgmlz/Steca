@@ -100,7 +100,7 @@ itf_t::itf_t() : itf_t(inten_t(NAN), deg(NAN), fwhm_t(NAN)) {}
 
 itf_t::itf_t(inten_t inten_, deg tth_, fwhm_t fwhm_) : inten(inten_), tth(tth_), fwhm(fwhm_) {}
 
-void itf_t::operator+=(rc that) {
+void itf_t::operator+=(itf_t const& that) {
     inten += that.inten;
     tth += that.tth;
     fwhm += that.fwhm;

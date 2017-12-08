@@ -15,7 +15,7 @@
 #ifndef DEF_CMP_H
 #define DEF_CMP_H
 
-#define COMPARABLE                                                                                 \
+#define COMPARABLE(rc)                                                                                 \
     int compare(rc) const;                                                                         \
     bool operator==(rc) const;                                                                     \
     bool operator!=(rc) const;

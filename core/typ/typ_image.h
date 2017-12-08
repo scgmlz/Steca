@@ -49,7 +49,7 @@ public:
     void addInten(uint i, uint j, inten_t val) { intens_.refAt(i, j) += val; }
 
     // Sum all intensities with new ones.
-    void addIntens(rc) THROWS;
+    void addIntens(Image const&) THROWS;
 
     inten_rge const& rgeInten() const { return rgeInten_; }
 

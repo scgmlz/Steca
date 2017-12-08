@@ -76,7 +76,7 @@ class OneDataset final {
 public:
     OneDataset(Metadata const&, typ::inten_arr const&);
     OneDataset(Metadata const&, typ::size2d const&, inten_vec const&);
-    OneDataset(rc);
+    OneDataset(OneDataset const&);
 
     shp_Metadata metadata() const;
 

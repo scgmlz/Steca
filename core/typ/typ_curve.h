@@ -22,10 +22,7 @@ namespace typ {
 //! A set of x-y datapoints
 
 class Curve {
-    CLASS(Curve);
 public:
-    Curve();
-
     void clear();
 
     bool isEmpty() const;

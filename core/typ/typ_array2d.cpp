@@ -19,7 +19,7 @@
 
 namespace typ {
 
-int size2d::compare(rc that) const {
+int size2d::compare(size2d const& that) const {
     RET_COMPARE_VALUE(w)
     RET_COMPARE_VALUE(h)
     return 0;

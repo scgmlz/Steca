@@ -213,7 +213,7 @@ OneDataset::OneDataset(Metadata const& md, size2d const& size, inten_vec const& 
         image_->setInten(i, intens.at(i));
 }
 
-OneDataset::OneDataset(rc that) : md_(that.md_), image_(that.image_) {}
+OneDataset::OneDataset(OneDataset const& that) : md_(that.md_), image_(that.image_) {}
 
 shp_Metadata OneDataset::metadata() const {
     ENSURE(!md_.isNull())
@@ -289,7 +289,7 @@ Dataset::Dataset() : datasets_(nullptr) {}
 shp_Metadata Dataset::metadata() const {
     if (md_.isNull()) {
         EXPECT(!isEmpty())
-        const_cast<Cls*>(this)->md_ = shp_Metadata(new Metadata);
+        const_cast<Dataset*>(this)->md_ = shp_Metadata(new Metadata);
         Metadata* m = const_cast<Metadata*>(md_.data());
 
         EXPECT(!first()->metadata().isNull())
