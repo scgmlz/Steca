@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/typ/typ_factory.h
-//! @brief     Defines ...
+//! @brief     Defines and implements templated class Factory
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -46,5 +46,7 @@ public:
         return maker->make();
     }
 };
-}
+
+} // namespace typ
+
 #endif // TYP_FACTORY_H

@@ -31,6 +31,7 @@ void initFactory() {
 
     using F = typ::Function;
     using O = owner_not_null<F::Factory::MakerBase*>;
+
     F::initFactory();
 
     F::addFactoryMaker(json_fun_key::POLYNOM, O::from(new F::Factory::Maker<Gaussian>));
@@ -618,4 +619,4 @@ JsonObj PseudoVoigt2::saveJson() const {
     return super::saveJson().saveString(json_key::TYPE, json_fun_key::PSEUDOVOIGT2);
 }
 
-}
+} // namespace fit

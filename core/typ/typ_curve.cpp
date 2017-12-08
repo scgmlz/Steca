@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/typ/typ_curve.cpp
-//! @brief     Implements ...
+//! @brief     Implements class Curve
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,8 +15,6 @@
 #include "typ_curve.h"
 
 namespace typ {
-
-Curve::Curve() {}
 
 void Curve::clear() {
     xs_.clear();
@@ -116,4 +114,5 @@ qreal Curve::sumY() const {
         sum += ys_.at(i);
     return sum;
 }
-}
+
+} // namespace typ

@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/typ/typ_fun.cpp
-//! @brief     Implements ...
+//! @brief     Implements classes Function, SimpleFunction, SumFunctions
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -14,12 +14,15 @@
 
 #include "typ_fun.h"
 
-
 namespace json_fun_key {
 str const SUM("sum");
 }
 
 namespace typ {
+
+// ************************************************************************** //
+//   class Function
+// ************************************************************************** //
 
 owner_not_null<Function*> Function::Factory::make(JsonObj::rc obj) THROWS {
     str funType = obj.loadString(json_key::TYPE);
@@ -74,8 +77,6 @@ void Function::Parameter::loadJson(JsonObj::rc obj) THROWS {
     range_ = obj.loadRange(json_key::RANGE);
 }
 
-Function::Function() {}
-
 JsonObj Function::saveJson() const {
     // nothing to do
     return JsonObj();
@@ -85,7 +86,10 @@ void Function::loadJson(JsonObj::rc) THROWS {
     // nothing to do
 }
 
-SimpleFunction::SimpleFunction() {}
+
+// ************************************************************************** //
+//   class SimpleFunction
+// ************************************************************************** //
 
 void SimpleFunction::setParameterCount(uint count) {
     parameters_.fill(Parameter(), count);
@@ -135,7 +139,10 @@ void SimpleFunction::setValue(uint i, qreal val) {
     parameters_[i].setValue(val, 0);
 }
 
-SumFunctions::SumFunctions() {}
+
+// ************************************************************************** //
+//   class SumFunction
+// ************************************************************************** //
 
 SumFunctions::~SumFunctions() {
     // dispose of the Functions that were added
@@ -166,14 +173,11 @@ Function::Parameter& SumFunctions::parameterAt(uint i) {
 
 qreal SumFunctions::y(qreal x, qreal const* parValues) const {
     qreal sum = 0;
-
     for (Function* f : functions_) {
         sum += f->y(x, parValues);
-
         if (parValues)
             parValues += f->parameterCount(); // advance to next function
     }
-
     return sum;
 }
 
@@ -209,12 +213,11 @@ void SumFunctions::loadJson(JsonObj::rc obj) THROWS {
     RUNTIME_CHECK(functions_.isEmpty(), "non-empty sum of functions; cannot load twice");
 
     super::loadJson(obj);
-
     uint funCount = obj.loadUint(json_key::COUNT);
-
     for_i (funCount) {
         auto funObj = obj.loadObj(json_key::FUN.arg(i + 1));
         addFunction(make(funObj));
     }
 }
-}
+
+} // namespace typ

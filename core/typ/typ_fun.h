@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/typ/typ_fun.h
-//! @brief     Defines ...
+//! @brief     Defines classes Function, SimpleFunction, SumFunctions
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -25,14 +25,16 @@ namespace json_fun_key {
 
 namespace typ {
 
-// Abstract function
+
+//! Abstract function
 
 class Function {
     CLASS(Function)
 public:
     class Factory : public typ::Factory<Function> {
-        CLASS(Factory)
-        SUPER(typ::Factory<Function>) public : owner_not_null<Function*> make(JsonObj::rc) THROWS;
+        CLASS(Factory) SUPER(typ::Factory<Function>);
+    public:
+        owner_not_null<Function*> make(JsonObj::rc) THROWS;
     };
 
 protected:
@@ -70,7 +72,6 @@ public:
     };
 
 public:
-    Function();
     virtual ~Function() {}
 
     virtual uint parameterCount() const = 0;
@@ -86,15 +87,16 @@ public:
     // partial derivative / parameter, with given (parValues) or own parameters
     virtual qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const = 0;
 
-public:
     virtual JsonObj saveJson() const;
     virtual void loadJson(JsonObj::rc) THROWS;
 };
 
-// abstract function with parameters
+
+//! abstract function with parameters
 
 class SimpleFunction : public Function {
-    CLASS(SimpleFunction) SUPER(Function) public : SimpleFunction();
+    CLASS(SimpleFunction) SUPER(Function);
+public:
 
     void setParameterCount(uint);
     uint parameterCount() const;
@@ -112,10 +114,12 @@ protected:
     void setValue(uint parIndex, qreal val);
 };
 
-// concrete function that is a sum of other functions
+
+//! concrete function that is a sum of other functions
 
 class SumFunctions final : public Function {
-    CLASS(SumFunctions) SUPER(Function) public : SumFunctions();
+    CLASS(SumFunctions) SUPER(Function);
+public:
     ~SumFunctions();
 
     void addFunction(owner_not_null<Function*>);

@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/typ/typ_curve.h
-//! @brief     Defines ...
+//! @brief     Defines class Curve
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -19,10 +19,10 @@
 
 namespace typ {
 
-// A set of x-y datapoints.
+//! A set of x-y datapoints
 
 class Curve {
-    CLASS(Curve)
+    CLASS(Curve);
 public:
     Curve();
 
@@ -59,5 +59,7 @@ private:
 };
 
 typedef vec<Curve> curve_vec;
-}
+
+} // namespace typ
+
 #endif // TYP_CURVE_H
