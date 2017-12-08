@@ -81,9 +81,9 @@ protected:
 
     bool savePoleFigureOutput();
     bool writePoleFigureOutputFiles(rcstr filePath, uint index);
-    void writePoleFile(rcstr filePath, calc::ReflectionInfos, qreal_vec::rc);
-    void writeListFile(rcstr filePath, calc::ReflectionInfos, qreal_vec::rc);
-    void writeErrorMask(rcstr filePath, calc::ReflectionInfos, qreal_vec::rc);
+    void writePoleFile(rcstr filePath, calc::ReflectionInfos, qreal_vec const&);
+    void writeListFile(rcstr filePath, calc::ReflectionInfos, qreal_vec const&);
+    void writeErrorMask(rcstr filePath, calc::ReflectionInfos, qreal_vec const&);
 };
 }
 }

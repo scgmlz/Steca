@@ -93,7 +93,7 @@ void Range::extendBy(qreal val) {
     max = qIsNaN(max) ? val : qMax(max, val);
 }
 
-void Range::extendBy(Range::rc that) {
+void Range::extendBy(Range const& that) {
     extendBy(that.min);
     extendBy(that.max);
 }
@@ -102,15 +102,15 @@ bool Range::contains(qreal val) const {
     return min <= val && val <= max;
 }
 
-bool Range::contains(Range::rc that) const {
+bool Range::contains(Range const& that) const {
     return min <= that.min && that.max <= max;
 }
 
-bool Range::intersects(Range::rc that) const {
+bool Range::intersects(Range const& that) const {
     return min <= that.max && that.min <= max;
 }
 
-Range Range::intersect(Range::rc that) const {
+Range Range::intersect(Range const& that) const {
     if (!isValid() || !that.isValid())
         return Range();
 
@@ -133,18 +133,18 @@ JsonObj Range::saveJson() const {
     return JsonObj().saveQreal(json_key::MIN, min).saveQreal(json_key::MAX, max);
 }
 
-void Range::loadJson(JsonObj::rc obj) THROWS {
+void Range::loadJson(JsonObj const& obj) THROWS {
     min = obj.loadQreal(json_key::MIN);
     max = obj.loadQreal(json_key::MAX);
 }
 
 Ranges::Ranges() {}
 
-bool Ranges::add(Range::rc range) {
+bool Ranges::add(Range const& range) {
     vec<Range> newRanges;
 
     auto addRange = range;
-    for (Range::rc r : ranges_) {
+    for (Range const& r : ranges_) {
         if (r.contains(range))
             return false;
         if (!range.contains(r)) {
@@ -162,11 +162,11 @@ bool Ranges::add(Range::rc range) {
     return true;
 }
 
-bool Ranges::rem(Range::rc remRange) {
+bool Ranges::rem(Range const& remRange) {
     vec<Range> newRanges;
     bool changed = false;
 
-    for (Range::rc r : ranges_) {
+    for (Range const& r : ranges_) {
         if (!r.intersect(remRange).isEmpty()) {
             changed = true;
             if (r.min < remRange.min)
@@ -183,7 +183,7 @@ bool Ranges::rem(Range::rc remRange) {
     return changed;
 }
 
-static bool lessThan(Range::rc r1, Range::rc r2) {
+static bool lessThan(Range const& r1, Range const& r2) {
     if (r1.min < r2.min)
         return true;
     if (r1.min > r2.min)
@@ -204,7 +204,7 @@ JsonArr Ranges::saveJson() const {
     return arr;
 }
 
-void Ranges::loadJson(JsonArr::rc arr) THROWS {
+void Ranges::loadJson(JsonArr const& arr) THROWS {
     for_i (arr.count()) {
         Range range;
         range.loadJson(arr.objAt(i));

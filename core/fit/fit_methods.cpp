@@ -21,7 +21,7 @@ namespace fit {
 using typ::Curve;
 using typ::Function;
 
-void Method::fit(Function& function, Curve::rc curve) {
+void Method::fit(Function& function, Curve const& curve) {
     if (curve.isEmpty())
         return;
 

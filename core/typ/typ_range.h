@@ -76,13 +76,13 @@ public:
     bool isEmpty() const { return ranges_.isEmpty(); }
     uint count() const { return ranges_.count(); }
 
-    Range::rc at(uint i) const { return ranges_.at(i); }
+    Range const& at(uint i) const { return ranges_.at(i); }
 
     // collapses overlapping ranges into one; returns whether there was a change
-    bool add(Range::rc);
+    bool add(Range const&);
 
     // removes (cuts out) a range; returns whether there was a change
-    bool rem(Range::rc);
+    bool rem(Range const&);
 
 private:
     void sort();

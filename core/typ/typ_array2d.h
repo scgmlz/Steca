@@ -52,7 +52,7 @@ private:
     typedef T* col_t;
     col_t* ts_;
 
-    void alloc(size2d::rc size) {
+    void alloc(size2d const& size) {
         free();
 
         if (!(size_ = size).isEmpty()) {
@@ -84,7 +84,7 @@ public:
     bool isEmpty() const { return size_.isEmpty(); }
 
     // 2D image size
-    size2d::rc size() const { return size_; }
+    size2d const& size() const { return size_; }
 
     // make empty
     void clear() { alloc(size2d(0, 0)); }
@@ -98,7 +98,7 @@ public:
     }
 
     // allocate and fill with a default value
-    void resize(size2d::rc size) { fill(T(), size); }
+    void resize(size2d const& size) { fill(T(), size); }
 
     // access using 1D index
     T const& at(uint i) const { return at(i % size_.w, i / size_.h); }

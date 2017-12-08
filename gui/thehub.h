@@ -109,13 +109,13 @@ public:
     bool hasCorrFile() const;
     typ::shp_Image corrImage() const { return session_->corrImage(); }
 
-    calc::shp_ImageLens plainImageLens(typ::Image::rc) const;
-    calc::shp_DatasetLens datasetLens(data::Dataset::rc) const;
+    calc::shp_ImageLens plainImageLens(typ::Image const&) const;
+    calc::shp_DatasetLens datasetLens(data::Dataset const&) const;
 
-    typ::Curve avgCurve(data::Datasets::rc dss) const { return dss.avgCurve(*session_); }
+    typ::Curve avgCurve(data::Datasets const& dss) const { return dss.avgCurve(*session_); }
 
     calc::ReflectionInfos makeReflectionInfos(
-        calc::Reflection::rc, uint gmaSlices, gma_rge::rc, Progress*);
+        calc::Reflection const&, uint gmaSlices, gma_rge const&, Progress*);
 
     void saveSession(QFileInfo const&) const;
     QByteArray saveSession() const;
@@ -125,7 +125,7 @@ public:
     void loadSession(QByteArray const&) THROWS;
 
     void addFile(rcstr filePath) THROWS;
-    void addFiles(str_lst::rc filePaths) THROWS;
+    void addFiles(str_lst const& filePaths) THROWS;
 
 private:
     uint_vec collectFromFiles_;
@@ -136,19 +136,19 @@ public:
     void collectDatasetsFromFiles(uint_vec);
     void combineDatasetsBy(pint);
 
-    uint_vec::rc collectedFromFiles() const { return session_->collectedFromFiles(); }
+    uint_vec const& collectedFromFiles() const { return session_->collectedFromFiles(); }
 
     pint datasetsGroupedBy() const { return datasetsGroupedBy_; }
 
     uint numCollectedDatasets() const { return collectedDatasets().count(); }
 
-    data::Datasets::rc collectedDatasets() const { return session_->collectedDatasets(); }
+    data::Datasets const& collectedDatasets() const { return session_->collectedDatasets(); }
 
-    str_lst::rc collectedDatasetsTags() const { return session_->collectedDatasetsTags(); }
+    str_lst const& collectedDatasetsTags() const { return session_->collectedDatasetsTags(); }
 
     typ::size2d imageSize() const { return session_->imageSize(); }
 
-    typ::shp_AngleMap angleMap(data::OneDataset::rc dataset) const {
+    typ::shp_AngleMap angleMap(data::OneDataset const& dataset) const {
         return session_->angleMap(dataset);
     }
 
@@ -157,18 +157,18 @@ public:
     void setCorrFile(rcstr filePath) THROWS;
     void tryEnableCorrection(bool);
 
-    typ::ImageCut::rc imageCut() const;
-    void setImageCut(bool topLeft, bool linked, typ::ImageCut::rc);
+    typ::ImageCut const& imageCut() const;
+    void setImageCut(bool topLeft, bool linked, typ::ImageCut const&);
 
-    typ::Geometry::rc geometry() const;
-    void setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midPixOffset);
+    typ::Geometry const& geometry() const;
+    void setGeometry(preal detectorDistance, preal pixSize, typ::IJ const& midPixOffset);
 
-    typ::Range::rc gammaRange() const { return session_->gammaRange(); }
-    void setGammaRange(typ::Range::rc);
+    typ::Range const& gammaRange() const { return session_->gammaRange(); }
+    void setGammaRange(typ::Range const&);
 
-    void setBgRanges(typ::Ranges::rc);
-    void addBgRange(typ::Range::rc);
-    void remBgRange(typ::Range::rc);
+    void setBgRanges(typ::Ranges const&);
+    void addBgRange(typ::Range const&);
+    void remBgRange(typ::Range const&);
 
     static uint constexpr MAX_POLYNOM_DEGREE = 4;
     void setBgPolyDegree(uint);
@@ -199,13 +199,13 @@ private:
 public:
     void setNorm(eNorm);
 
-    typ::Ranges::rc bgRanges() const { return session_->bgRanges(); }
+    typ::Ranges const& bgRanges() const { return session_->bgRanges(); }
     uint bgPolyDegree() const { return session_->bgPolyDegree(); }
 
     bool intenScaledAvg() const { return session_->intenScaledAvg(); }
     preal intenScale() const { return session_->intenScale(); }
 
-    calc::Reflections::rc reflections() const { return session_->reflections(); }
+    calc::Reflections const& reflections() const { return session_->reflections(); }
 };
 
 } // namespace gui

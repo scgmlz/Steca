@@ -210,7 +210,7 @@ void DiffractogramPlot::setTool(eTool tool) {
 }
 
 void DiffractogramPlot::plot(
-    typ::Curve::rc dgram, typ::Curve::rc dgramBgFitted, typ::Curve::rc bg, typ::curve_vec::rc refls,
+    typ::Curve const& dgram, typ::Curve const& dgramBgFitted, typ::Curve const& bg, typ::curve_vec const& refls,
     uint currReflIndex) {
     if (dgram.isEmpty()) {
         xAxis->setVisible(false);
@@ -274,15 +274,15 @@ void DiffractogramPlot::clearBg() {
     hub_.setBgRanges(typ::Ranges());
 }
 
-void DiffractogramPlot::addBg(typ::Range::rc range) {
+void DiffractogramPlot::addBg(typ::Range const& range) {
     hub_.addBgRange(range);
 }
 
-void DiffractogramPlot::remBg(typ::Range::rc range) {
+void DiffractogramPlot::remBg(typ::Range const& range) {
     hub_.remBgRange(range);
 }
 
-void DiffractogramPlot::setNewReflRange(typ::Range::rc range) {
+void DiffractogramPlot::setNewReflRange(typ::Range const& range) {
     diffractogram_.setCurrReflNewRange(range);
     updateBg();
 }
@@ -292,7 +292,7 @@ void DiffractogramPlot::updateBg() {
 
     switch (tool_) {
     case eTool::BACKGROUND: {
-        typ::Ranges::rc rs = hub_.bgRanges();
+        typ::Ranges const& rs = hub_.bgRanges();
         for_i (rs.count())
             addBgItem(rs.at(i));
         break;
@@ -319,7 +319,7 @@ void DiffractogramPlot::enterZoom(bool on) {
     dgramBgFittedGraph2_->setVisible(on);
 }
 
-void DiffractogramPlot::addBgItem(typ::Range::rc range) {
+void DiffractogramPlot::addBgItem(typ::Range const& range) {
     setCurrentLayer("bg");
 
     QColor color;
@@ -460,7 +460,7 @@ Diffractogram::Diffractogram(TheHub& hub)
     });
 
     onSigReflectionValues(
-        [this](typ::Range::rc range, qpair::rc peak, fwhm_t fwhm, bool withGuesses) {
+        [this](typ::Range const& range, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
             if (currentReflection_) {
                 currentReflection_->setRange(range);
                 if (withGuesses)
@@ -519,7 +519,7 @@ void Diffractogram::calcBackground() {
     }
 }
 
-void Diffractogram::setCurrReflNewRange(typ::Range::rc range) {
+void Diffractogram::setCurrReflNewRange(typ::Range const& range) {
     if (currentReflection_) {
         currentReflection_->setRange(range);
         currentReflection_->invalidateGuesses();

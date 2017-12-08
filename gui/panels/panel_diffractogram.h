@@ -66,14 +66,14 @@ public:
     void setTool(eTool);
     eTool getTool() const { return tool_; }
 
-    void plot(typ::Curve::rc, typ::Curve::rc, typ::Curve::rc, typ::curve_vec::rc, uint);
+    void plot(typ::Curve const&, typ::Curve const&, typ::Curve const&, typ::curve_vec const&, uint);
 
     typ::Range fromPixels(int, int);
 
     void clearBg();
-    void addBg(typ::Range::rc);
-    void remBg(typ::Range::rc);
-    void setNewReflRange(typ::Range::rc);
+    void addBg(typ::Range const&);
+    void remBg(typ::Range const&);
+    void setNewReflRange(typ::Range const&);
     void updateBg();
 
     void clearReflLayer();
@@ -84,7 +84,7 @@ public:
     void enterZoom(bool);
 
 protected:
-    void addBgItem(typ::Range::rc);
+    void addBgItem(typ::Range const&);
     void resizeEvent(QResizeEvent*);
 
 private:
@@ -131,7 +131,7 @@ public:
     void calcBackground();
     void calcReflections();
 
-    void setCurrReflNewRange(typ::Range::rc);
+    void setCurrReflNewRange(typ::Range const&);
     typ::Range currReflRange() const;
 };
 }

@@ -24,7 +24,7 @@ namespace typ {
 //   class Function
 // ************************************************************************** //
 
-owner_not_null<Function*> Function::Factory::make(JsonObj::rc obj) THROWS {
+owner_not_null<Function*> Function::Factory::make(JsonObj const& obj) THROWS {
     str funType = obj.loadString(json_key::TYPE);
     Function* fun = super::make(funType);
 
@@ -49,7 +49,7 @@ void Function::initFactory() {
         owner_not_null<Factory::MakerBase*>::from(new Factory::Maker<SumFunctions>));
 }
 
-owner_not_null<Function*> Function::make(JsonObj::rc obj) {
+owner_not_null<Function*> Function::make(JsonObj const& obj) {
     return factory_.make(obj);
 }
 
@@ -72,7 +72,7 @@ JsonObj Function::Parameter::saveJson() const {
     return JsonObj().saveQreal(json_key::VALUE, value_).saveRange(json_key::RANGE, range_);
 }
 
-void Function::Parameter::loadJson(JsonObj::rc obj) THROWS {
+void Function::Parameter::loadJson(JsonObj const& obj) THROWS {
     value_ = obj.loadQreal(json_key::VALUE);
     range_ = obj.loadRange(json_key::RANGE);
 }
@@ -82,7 +82,7 @@ JsonObj Function::saveJson() const {
     return JsonObj();
 }
 
-void Function::loadJson(JsonObj::rc) THROWS {
+void Function::loadJson(JsonObj const&) THROWS {
     // nothing to do
 }
 
@@ -119,7 +119,7 @@ JsonObj SimpleFunction::saveJson() const {
     return super::saveJson() + JsonObj().saveArr(json_key::PARAMS, params);
 }
 
-void SimpleFunction::loadJson(JsonObj::rc obj) THROWS {
+void SimpleFunction::loadJson(JsonObj const& obj) THROWS {
     super::loadJson(obj);
 
     JsonArr params = obj.loadArr(json_key::PARAMS);
@@ -209,7 +209,7 @@ JsonObj SumFunctions::saveJson() const {
     return super::saveJson() + obj;
 }
 
-void SumFunctions::loadJson(JsonObj::rc obj) THROWS {
+void SumFunctions::loadJson(JsonObj const& obj) THROWS {
     RUNTIME_CHECK(functions_.isEmpty(), "non-empty sum of functions; cannot load twice");
 
     super::loadJson(obj);

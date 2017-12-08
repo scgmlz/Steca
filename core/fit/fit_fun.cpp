@@ -78,7 +78,7 @@ qreal Polynom::dy(qreal x, uint i, qreal const*) const {
 }
 
 // REVIEW
-qreal Polynom::avgY(Range::rc rgeX, qreal const* parValues) const {
+qreal Polynom::avgY(Range const& rgeX, qreal const* parValues) const {
     EXPECT(rgeX.isValid())
 
     qreal w = rgeX.width();
@@ -96,11 +96,11 @@ qreal Polynom::avgY(Range::rc rgeX, qreal const* parValues) const {
     return (1 / w) * (maqpair - minY);
 }
 
-void Polynom::fit(Curve::rc curve, typ::Ranges::rc ranges) {
+void Polynom::fit(Curve const& curve, typ::Ranges const& ranges) {
     LevenbergMarquardt().fit(*this, curve.intersect(ranges));
 }
 
-Polynom Polynom::fromFit(uint degree, Curve::rc curve, typ::Ranges::rc ranges) {
+Polynom Polynom::fromFit(uint degree, Curve const& curve, typ::Ranges const& ranges) {
     Polynom poly(degree);
     poly.fit(curve, ranges);
     return poly;
@@ -112,7 +112,7 @@ JsonObj Polynom::saveJson() const {
     return super::saveJson() + obj;
 }
 
-void Polynom::loadJson(JsonObj::rc obj) THROWS {
+void Polynom::loadJson(JsonObj const& obj) THROWS {
     super::loadJson(obj);
 }
 
@@ -133,13 +133,13 @@ PeakFunction* PeakFunction::clone() const {
     return f;
 }
 
-void PeakFunction::setRange(Range::rc range) {
+void PeakFunction::setRange(Range const& range) {
     range_ = range;
 }
 
 PeakFunction::PeakFunction() : guessedPeak_(), guessedFWHM_(NAN) {}
 
-void PeakFunction::setGuessedPeak(qpair::rc peak) {
+void PeakFunction::setGuessedPeak(qpair const& peak) {
     guessedPeak_ = peak;
 }
 
@@ -153,7 +153,7 @@ void PeakFunction::reset() {
     setGuessedFWHM(guessedFWHM_);
 }
 
-void PeakFunction::fit(Curve::rc curve, Range::rc range) {
+void PeakFunction::fit(Curve const& curve, Range const& range) {
     Curve c = prepareFit(curve, range);
     if (c.isEmpty())
         return;
@@ -188,7 +188,7 @@ void PeakFunction::fit(Curve::rc curve, Range::rc range) {
     LevenbergMarquardt().fit(*this, c);
 }
 
-Curve PeakFunction::prepareFit(Curve::rc curve, Range::rc range) {
+Curve PeakFunction::prepareFit(Curve const& curve, Range const& range) {
     reset();
     return curve.intersect(range);
 }
@@ -200,7 +200,7 @@ JsonObj PeakFunction::saveJson() const {
         .saveQreal(json_key::FWHM, guessedFWHM_);
 }
 
-void PeakFunction::loadJson(JsonObj::rc obj) THROWS {
+void PeakFunction::loadJson(JsonObj const& obj) THROWS {
     super::loadJson(obj);
     range_ = obj.loadRange(json_key::RANGE);
     guessedPeak_.loadJson(obj.loadObj(json_key::PEAK));
@@ -242,12 +242,12 @@ fwhm_t Raw::fwhmError() const {
     return 0;
 }
 
-void Raw::setRange(Range::rc range) {
+void Raw::setRange(Range const& range) {
     super::setRange(range);
     prepareY();
 }
 
-void Raw::fit(Curve::rc curve, Range::rc range) {
+void Raw::fit(Curve const& curve, Range const& range) {
     fittedCurve_ = prepareFit(curve, range); // do no more than this
     prepareY();
 }
@@ -311,7 +311,7 @@ qreal Gaussian::dy(qreal x, uint parIndex, qreal const* parValues) const {
     }
 }
 
-void Gaussian::setGuessedPeak(qpair::rc qpair) {
+void Gaussian::setGuessedPeak(qpair const& qpair) {
     super::setGuessedPeak(qpair);
     setValue(parXSHIFT, qpair.x);
     setValue(parAMPL, qpair.y);
@@ -386,7 +386,7 @@ qreal Lorentzian::dy(qreal x, uint parIndex, qreal const* parValues) const {
     }
 }
 
-void Lorentzian::setGuessedPeak(qpair::rc qpair) {
+void Lorentzian::setGuessedPeak(qpair const& qpair) {
     super::setGuessedPeak(qpair);
     setValue(parXSHIFT, qpair.x);
     setValue(parAMPL, qpair.y);
@@ -478,7 +478,7 @@ qreal PseudoVoigt1::dy(qreal x, uint parIndex, qreal const* parValues) const {
     }
 }
 
-void PseudoVoigt1::setGuessedPeak(qpair::rc qpair) {
+void PseudoVoigt1::setGuessedPeak(qpair const& qpair) {
     super::setGuessedPeak(qpair);
     setValue(parXSHIFT, qpair.x);
     setValue(parAMPL, qpair.y);
@@ -582,7 +582,7 @@ qreal PseudoVoigt2::dy(qreal x, uint parIndex, qreal const* parValues) const {
     }
 }
 
-void PseudoVoigt2::setGuessedPeak(qpair::rc qpair) {
+void PseudoVoigt2::setGuessedPeak(qpair const& qpair) {
     super::setGuessedPeak(qpair);
     setValue(parXSHIFT, qpair.x);
     setValue(parAMPL, qpair.y);

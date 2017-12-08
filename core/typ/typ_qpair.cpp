@@ -37,7 +37,7 @@ JsonObj qpair::saveJson() const {
     return JsonObj().saveQreal(json_key::X, x).saveQreal(json_key::Y, y);
 }
 
-void qpair::loadJson(JsonObj::rc obj) THROWS {
+void qpair::loadJson(JsonObj const& obj) THROWS {
     x = obj.loadQreal(json_key::X);
     y = obj.loadQreal(json_key::Y);
 }

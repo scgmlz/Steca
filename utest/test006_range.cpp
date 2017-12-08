@@ -8,7 +8,7 @@ using typ::Range;
 using typ::Ranges;
 using typ::JsonObj;
 
-static bool RANGE_EQ(Range::rc r1, Range::rc r2) {
+static bool RANGE_EQ(Range const& r1, Range const& r2) {
     return r1.min == r2.min && r1.max == r2.max;
 }
 
@@ -197,7 +197,7 @@ TEST(Range, Json) {
 
 typedef struct { qreal min, max; } min_max;
 
-static bool RANGES_EQ(Ranges::rc rs, std::vector<min_max> mm) {
+static bool RANGES_EQ(Ranges const& rs, std::vector<min_max> mm) {
     if (rs.count() != mm.size())
         return false;
 
@@ -211,7 +211,7 @@ static bool RANGES_EQ(Ranges::rc rs, std::vector<min_max> mm) {
     return true;
 }
 
-static bool RANGES_EQ(Ranges::rc rs1, Ranges::rc rs2) {
+static bool RANGES_EQ(Ranges const& rs1, Ranges const& rs2) {
     if (rs1.count() != rs2.count())
         return false;
 

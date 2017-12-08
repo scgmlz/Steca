@@ -32,7 +32,7 @@ JsonObj::JsonObj() {}
 
 JsonObj::JsonObj(QJsonObject const& obj) : super(obj) {}
 
-JsonObj& JsonObj::saveObj(rcstr key, JsonObj::rc obj) {
+JsonObj& JsonObj::saveObj(rcstr key, JsonObj const& obj) {
     insert(key, obj.sup());
     return *this;
 }
@@ -50,7 +50,7 @@ JsonObj JsonObj::loadObj(rcstr key, bool defEmpty) const THROWS {
     }
 }
 
-JsonObj& JsonObj::saveArr(rcstr key, JsonArr::rc arr) {
+JsonObj& JsonObj::saveArr(rcstr key, JsonArr const& arr) {
     insert(key, arr.sup());
     return *this;
 }
@@ -193,7 +193,7 @@ str JsonObj::loadString(rcstr key) const THROWS {
 
 str JsonObj::loadString(rcstr key, rcstr def) const THROWS{ RET_LOAD_DEF(String) }
 
-JsonObj& JsonObj::saveRange(rcstr key, Range::rc range) {
+JsonObj& JsonObj::saveRange(rcstr key, Range const& range) {
     insert(key, range.saveJson());
     return *this;
 }
@@ -204,7 +204,7 @@ Range JsonObj::loadRange(rcstr key) const THROWS {
     return range;
 }
 
-JsonObj& JsonObj::saveIJ(rcstr key, IJ::rc ij) {
+JsonObj& JsonObj::saveIJ(rcstr key, IJ const& ij) {
     insert(key, ij.saveJson());
     return *this;
 }
@@ -215,7 +215,7 @@ IJ JsonObj::loadIJ(rcstr key) const THROWS {
     return ij;
 }
 
-JsonObj& JsonObj::saveqpair(rcstr key, qpair::rc qpair) {
+JsonObj& JsonObj::saveqpair(rcstr key, qpair const& qpair) {
     insert(key, qpair.saveJson());
     return *this;
 }
@@ -226,13 +226,13 @@ qpair JsonObj::loadqpair(rcstr key) const THROWS {
     return qpair;
 }
 
-JsonObj& JsonObj::operator+=(JsonObj::rc that) {
+JsonObj& JsonObj::operator+=(JsonObj const& that) {
     for (auto& key : that.keys())
         insert(key, that[key]);
     return *this;
 }
 
-JsonObj JsonObj::operator+(JsonObj::rc that) const {
+JsonObj JsonObj::operator+(JsonObj const& that) const {
     return JsonObj(*this) += that;
 }
 
@@ -240,7 +240,7 @@ JsonArr::JsonArr() {}
 
 JsonArr::JsonArr(QJsonArray const& array) : super(array) {}
 
-void JsonArr::append(JsonObj::rc obj) {
+void JsonArr::append(JsonObj const& obj) {
     super::append(obj.sup());
 }
 

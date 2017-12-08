@@ -180,7 +180,7 @@ void Session::updateImageSize() {
         imageSize_ = size2d(0, 0);
 }
 
-void Session::setImageSize(size2d::rc size) THROWS {
+void Session::setImageSize(size2d const& size) THROWS {
     RUNTIME_CHECK(!size.isEmpty(), "bad image size");
     if (imageSize_.isEmpty())
         imageSize_ = size; // the first one
@@ -196,16 +196,16 @@ void Session::setImageTransformMirror(bool on) {
     imageTransform_ = imageTransform_.mirror(on);
 }
 
-void Session::setImageTransformRotate(ImageTransform::rc rot) {
+void Session::setImageTransformRotate(ImageTransform const& rot) {
     imageTransform_ = imageTransform_.rotateTo(rot);
 }
 
-void Session::setImageCut(bool topLeftFirst, bool linked, ImageCut::rc cut) {
+void Session::setImageCut(bool topLeftFirst, bool linked, ImageCut const& cut) {
     imageCut_.update(topLeftFirst, linked, imageSize_);
     intensCorr_.clear(); // lazy
 }
 
-void Session::setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midPixOffset) {
+void Session::setGeometry(preal detectorDistance, preal pixSize, typ::IJ const& midPixOffset) {
 
     geometry_.detectorDistance = detectorDistance;
     geometry_.pixSize = pixSize;
@@ -216,14 +216,14 @@ typ::IJ Session::midPix() const {
     auto sz = imageSize();
     typ::IJ mid(sz.w / 2, sz.h / 2);
 
-    typ::IJ::rc off = geometry_.midPixOffset;
+    typ::IJ const& off = geometry_.midPixOffset;
     mid.i += off.i;
     mid.j += off.j;
 
     return mid;
 }
 
-typ::shp_AngleMap Session::angleMap(data::OneDataset::rc one) const {
+typ::shp_AngleMap Session::angleMap(data::OneDataset const& one) const {
     typ::AngleMap::Key key(geometry_, imageSize_, imageCut_, midPix(), one.midTth());
     typ::shp_AngleMap map = angleMapCache_.value(key);
     if (map.isNull())
@@ -232,18 +232,18 @@ typ::shp_AngleMap Session::angleMap(data::OneDataset::rc one) const {
 }
 
 calc::shp_ImageLens Session::imageLens(
-    Image::rc image, data::Datasets::rc datasets, bool trans, bool cut) const {
+    Image const& image, data::Datasets const& datasets, bool trans, bool cut) const {
     return calc::shp_ImageLens(new calc::ImageLens(*this, image, datasets, trans, cut));
 }
 
 calc::shp_DatasetLens Session::datasetLens(
-    data::Dataset::rc dataset, data::Datasets::rc datasets, eNorm norm, bool trans, bool cut
+    data::Dataset const& dataset, data::Datasets const& datasets, eNorm norm, bool trans, bool cut
     ) const {
     return calc::shp_DatasetLens(new calc::DatasetLens(
         *this, dataset, datasets, norm, trans, cut, imageTransform_, imageCut_));
 }
 
-Curve Session::curveMinusBg(calc::DatasetLens::rc lens, gma_rge::rc rgeGma) const {
+Curve Session::curveMinusBg(calc::DatasetLens const& lens, gma_rge const& rgeGma) const {
     Curve curve = lens.makeCurve(rgeGma);
     curve.subtract(fit::Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
     return curve;
@@ -251,13 +251,13 @@ Curve Session::curveMinusBg(calc::DatasetLens::rc lens, gma_rge::rc rgeGma) cons
 
 //! Fits reflection to the given gamma sector and constructs a ReflectionInfo.
 calc::ReflectionInfo Session::makeReflectionInfo(
-    calc::DatasetLens::rc lens, calc::Reflection::rc reflection, gma_rge::rc gmaSector) const {
+    calc::DatasetLens const& lens, calc::Reflection const& reflection, gma_rge const& gmaSector) const {
 
     // fit peak, and retrieve peak parameters:
     Curve curve = curveMinusBg(lens, gmaSector);
     scoped<fit::PeakFunction*> peakFunction(reflection.peakFunction().clone());
     peakFunction->fit(curve);
-    Range::rc rgeTth = peakFunction->range();
+    Range const& rgeTth = peakFunction->range();
     qpair peak = peakFunction->fittedPeak();
     fwhm_t fwhm = peakFunction->fittedFWHM();
     qpair peakError = peakFunction->peakError();
@@ -265,7 +265,7 @@ calc::ReflectionInfo Session::makeReflectionInfo(
 
     // compute alpha, beta:
     deg alpha, beta;
-    data::Dataset::rc dataset = lens.dataset();
+    data::Dataset const& dataset = lens.dataset();
     dataset.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
 
     data::shp_Metadata metadata = dataset.metadata();
@@ -284,8 +284,8 @@ calc::ReflectionInfo Session::makeReflectionInfo(
  * the returned infos won't be on the grid. REVIEW gammaStep separately?
  */
 calc::ReflectionInfos Session::makeReflectionInfos(
-    data::Datasets::rc datasets, calc::Reflection::rc reflection, uint gmaSlices,
-    gma_rge::rc rgeGma, Progress* progress) const {
+    data::Datasets const& datasets, calc::Reflection const& reflection, uint gmaSlices,
+    gma_rge const& rgeGma, Progress* progress) const {
     calc::ReflectionInfos infos;
 
     if (progress)
@@ -328,7 +328,7 @@ void Session::addReflection(calc::shp_Reflection reflection) {
     reflections_.append(reflection);
 }
 
-qreal Session::calcAvgBackground(data::Dataset::rc dataset) const {
+qreal Session::calcAvgBackground(data::Dataset const& dataset) const {
     auto lens = datasetLens(dataset, dataset.datasets(), eNorm::NONE, true, true);
 
     Curve gmaCurve = lens->makeCurve(true); // REVIEW averaged?
@@ -336,7 +336,7 @@ qreal Session::calcAvgBackground(data::Dataset::rc dataset) const {
     return bgPolynom.avgY(lens->rgeTth());
 }
 
-qreal Session::calcAvgBackground(data::Datasets::rc datasets) const {
+qreal Session::calcAvgBackground(data::Datasets const& datasets) const {
     TakesLongTime __;
     qreal bg = 0;
     for (auto& dataset : datasets)

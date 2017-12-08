@@ -74,8 +74,8 @@ class OneDataset final {
     friend class Dataset;
 
 public:
-    OneDataset(Metadata::rc, typ::inten_arr::rc);
-    OneDataset(Metadata::rc, typ::size2d::rc, inten_vec const&);
+    OneDataset(Metadata const&, typ::inten_arr const&);
+    OneDataset(Metadata const&, typ::size2d const&, inten_vec const&);
     OneDataset(rc);
 
     shp_Metadata metadata() const;
@@ -100,7 +100,7 @@ public:
     typ::size2d imageSize() const;
 
     void collectIntens(
-        core::Session const&, typ::Image const* intensCorr, inten_vec&, uint_vec&, gma_rge::rc,
+        core::Session const&, typ::Image const* intensCorr, inten_vec&, uint_vec&, gma_rge const&,
         typ::deg minTth, typ::deg deltaTth) const;
 
 private:
@@ -140,7 +140,7 @@ public:
     qreal avgDeltaMonitorCount() const;
     qreal avgDeltaTime() const;
 
-    inten_vec collectIntens(core::Session const&, typ::Image const* intensCorr, gma_rge::rc) const;
+    inten_vec collectIntens(core::Session const&, typ::Image const* intensCorr, gma_rge const&) const;
     void calculateAlphaBeta(typ::deg tth, typ::deg gma, typ::deg& alpha, typ::deg& beta) const;
 
 private:
@@ -164,8 +164,8 @@ public:
     qreal avgDeltaMonitorCount() const;
     qreal avgDeltaTime() const;
 
-    inten_rge::rc rgeGma(core::Session const&) const;
-    inten_rge::rc rgeFixedInten(core::Session const&, bool trans, bool cut) const;
+    inten_rge const& rgeGma(core::Session const&) const;
+    inten_rge const& rgeFixedInten(core::Session const&, bool trans, bool cut) const;
 
     typ::Curve avgCurve(core::Session const&) const;
 

@@ -38,7 +38,7 @@ void TheHubSignallingBase::tellReflectionData(calc::shp_Reflection reflection) {
 }
 
 void TheHubSignallingBase::tellReflectionValues(
-    tth_rge::rc rgeTth, qpair::rc peak, fwhm_t fwhm, bool withGuesses) {
+    tth_rge const& rgeTth, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
     emit sigReflectionValues(rgeTth, peak, fwhm, withGuesses);
 }
 
@@ -62,6 +62,6 @@ REFHUB_TELL_IMPL(tellSelectedReflection, (calc::shp_Reflection r), (r))
 REFHUB_TELL_IMPL(tellReflectionData, (calc::shp_Reflection r), (r))
 
 REFHUB_TELL_IMPL(
-    tellReflectionValues, (typ::Range::rc rge, qpair::rc peak, fwhm_t fwhm, bool withGuesses),
+    tellReflectionValues, (typ::Range const& rge, qpair const& peak, fwhm_t fwhm, bool withGuesses),
     (rge, peak, fwhm, withGuesses))
 }

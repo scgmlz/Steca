@@ -243,14 +243,14 @@ public:
 
     void moveColumn(uint from, uint to);
 
-    void setColumns(str_lst::rc headers, typ::cmp_vec::rc);
+    void setColumns(str_lst const& headers, typ::cmp_vec const&);
 
     void setSortColumn(int);
 
     void clear();
-    void addRow(typ::row_t::rc, bool sort = true);
+    void addRow(typ::row_t const&, bool sort = true);
 
-    typ::row_t::rc row(uint);
+    typ::row_t const& row(uint);
 
     void sortData();
 
@@ -265,7 +265,7 @@ private:
     struct numRow {
         typedef numRow const& rc;
         numRow() : n(0), row() {}
-        numRow(int n_, typ::row_t::rc row_) : n(n_), row(row_) {}
+        numRow(int n_, typ::row_t const& row_) : n(n_), row(row_) {}
         int n;
         typ::row_t row;
     };
@@ -344,7 +344,7 @@ void TableModel::moveColumn(uint from, uint to) {
     qSwap(colIndexMap_[from], colIndexMap_[to]);
 }
 
-void TableModel::setColumns(str_lst::rc headers, typ::cmp_vec::rc cmps) {
+void TableModel::setColumns(str_lst const& headers, typ::cmp_vec const& cmps) {
     EXPECT(to_u(headers.count()) == numCols_ && cmps.count() == numCols_)
     headers_ = headers;
     cmpFunctions_ = cmps;
@@ -360,24 +360,24 @@ void TableModel::clear() {
     endResetModel();
 }
 
-void TableModel::addRow(typ::row_t::rc row, bool sort) {
+void TableModel::addRow(typ::row_t const& row, bool sort) {
     rows_.append(numRow(rows_.count() + 1, row));
     if (sort)
         sortData();
 }
 
-typ::row_t::rc TableModel::row(uint index) {
+typ::row_t const& TableModel::row(uint index) {
     return rows_.at(index).row;
 }
 
 void TableModel::sortData() {
-    auto cmpRows = [this](uint col, typ::row_t::rc r1, typ::row_t::rc r2) {
+    auto cmpRows = [this](uint col, typ::row_t const& r1, typ::row_t const& r2) {
         col = colIndexMap_.at(col);
         return cmpFunctions_.at(col)(r1.at(col), r2.at(col));
     };
 
     // sort by sortColumn first, then left-to-right
-    auto cmp = [this, cmpRows](numRow::rc r1, numRow::rc r2) {
+    auto cmp = [this, cmpRows](numRow const& r1, numRow const& r2) {
         if (0 <= sortColumn_) {
             int c = cmpRows(to_u(sortColumn_), r1.row, r2.row);
             if (c < 0)
@@ -430,7 +430,7 @@ Table::Table(TheHub& hub, uint numDataColumns) : RefHub(hub), model_(nullptr) {
     setColumnWidth(0, w);
 }
 
-void Table::setColumns(str_lst::rc headers, str_lst::rc outHeaders, typ::cmp_vec::rc cmps) {
+void Table::setColumns(str_lst const& headers, str_lst const& outHeaders, typ::cmp_vec const& cmps) {
     model_->setColumns(headers, cmps);
     EXPECT(headers.count() == outHeaders.count())
     outHeaders_ = outHeaders;
@@ -459,7 +459,7 @@ void Table::clear() {
     model_->clear();
 }
 
-void Table::addRow(typ::row_t::rc row, bool sort) {
+void Table::addRow(typ::row_t const& row, bool sort) {
     model_->addRow(row, sort);
 }
 
@@ -476,7 +476,7 @@ const typ::row_t& Table::row(uint i) const {
 }
 
 TabTable::TabTable(
-    TheHub& hub, Params& params, str_lst::rc headers, str_lst::rc outHeaders, typ::cmp_vec::rc cmps)
+    TheHub& hub, Params& params, str_lst const& headers, str_lst const& outHeaders, typ::cmp_vec const& cmps)
     : super(hub, params) {
     EXPECT(to_u(headers.count()) == cmps.count())
     uint numCols = to_u(headers.count());

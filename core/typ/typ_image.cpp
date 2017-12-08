@@ -16,11 +16,11 @@
 
 namespace typ {
 
-Image::Image(size2d::rc size) {
+Image::Image(size2d const& size) {
     fill(0, size);
 }
 
-Image::Image(inten_arr::rc that) : Image(that.size()) {
+Image::Image(inten_arr const& that) : Image(that.size()) {
     addIntens(that);
 }
 

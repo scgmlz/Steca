@@ -51,7 +51,7 @@ public:
     void showMetaInfo(typ::vec<bool> const&);
 
 private:
-    data::Datasets::rc datasets_; // the selected datasets
+    data::Datasets const& datasets_; // the selected datasets
     uint_vec metaInfoNums_; // selected metadata items to show
 };
 

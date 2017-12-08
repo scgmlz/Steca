@@ -16,7 +16,7 @@
 
 namespace calc {
 
-str_lst::rc Reflection::typeStrLst() {
+str_lst const& Reflection::typeStrLst() {
     static str_lst types{ "Raw", "Gaussian", "Lorentzian", "PseudoVoigt1", "PseudoVoigt2" };
     return types;
 }
@@ -37,16 +37,16 @@ void Reflection::setType(fit::ePeakType type) {
     setPeakFunction(type);
 }
 
-fit::PeakFunction::rc Reflection::peakFunction() const {
+fit::PeakFunction const& Reflection::peakFunction() const {
     ENSURE(peakFunction_)
     return *peakFunction_;
 }
 
-typ::Range::rc Reflection::range() const {
+typ::Range const& Reflection::range() const {
     return peakFunction_->range();
 }
 
-void Reflection::setRange(typ::Range::rc range) {
+void Reflection::setRange(typ::Range const& range) {
     peakFunction_->setRange(range);
 }
 
@@ -55,7 +55,7 @@ void Reflection::invalidateGuesses() {
     peakFunction_->setGuessedFWHM(NAN);
 }
 
-void Reflection::fit(typ::Curve::rc curve) {
+void Reflection::fit(typ::Curve const& curve) {
     peakFunction_->fit(curve);
 }
 
@@ -79,7 +79,7 @@ typ::JsonObj Reflection::saveJson() const {
     return peakFunction_->saveJson();
 }
 
-void Reflection::loadJson(typ::JsonObj::rc obj) THROWS {
+void Reflection::loadJson(typ::JsonObj const& obj) THROWS {
     scoped<typ::Function*> f(typ::Function::make(obj));
 
     RUNTIME_CHECK(dynamic_cast<fit::PeakFunction*>(f.ptr()), "must be a peak function");

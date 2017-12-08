@@ -43,7 +43,7 @@ void Curve::append(qreal x, qreal y) {
     rgeY_.extendBy(y);
 }
 
-Curve Curve::intersect(Range::rc range) const {
+Curve Curve::intersect(Range const& range) const {
     Curve res;
 
     if (!range.isEmpty()) {
@@ -62,7 +62,7 @@ Curve Curve::intersect(Range::rc range) const {
     return res;
 }
 
-Curve Curve::intersect(Ranges::rc ranges) const {
+Curve Curve::intersect(Ranges const& ranges) const {
     Curve res;
 
     // collect points that are in ranges
@@ -85,7 +85,7 @@ Curve Curve::intersect(Ranges::rc ranges) const {
     return res;
 }
 
-void Curve::subtract(Function::rc f) {
+void Curve::subtract(Function const& f) {
     for_i (count())
         ys_[i] -= f.y(xs_.at(i));
 }

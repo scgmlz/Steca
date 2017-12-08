@@ -245,7 +245,7 @@ QPixmap TabsImages::makePixmap(typ::shp_Image image) {
 }
 
 QPixmap
-TabsImages::makePixmap(data::OneDataset::rc dataset, gma_rge::rc rgeGma, tth_rge::rc rgeTth) {
+TabsImages::makePixmap(data::OneDataset const& dataset, gma_rge const& rgeGma, tth_rge const& rgeTth) {
     auto im = makeImage(dataset.image(), !hub_.isFixedIntenImageScale());
     auto angleMap = hub_.angleMap(dataset);
 

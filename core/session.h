@@ -54,12 +54,12 @@ private:
     mutable typ::cache_lazy<typ::AngleMap::Key, typ::AngleMap> angleMapCache_;
 
     void updateImageSize(); //!< Clears image size if session has no files
-    void setImageSize(typ::size2d::rc) THROWS; //!< Ensures same size for all images
+    void setImageSize(typ::size2d const&) THROWS; //!< Ensures same size for all images
 
     void calcIntensCorr() const;
-    typ::Curve curveMinusBg(calc::DatasetLens::rc, gma_rge::rc) const;
+    typ::Curve curveMinusBg(calc::DatasetLens const&, gma_rge const&) const;
     calc::ReflectionInfo makeReflectionInfo(
-        calc::DatasetLens::rc, calc::Reflection::rc, gma_rge::rc) const;
+        calc::DatasetLens const&, calc::Reflection const&, gma_rge const&) const;
 
 public:
     // Modifying methods:
@@ -71,13 +71,13 @@ public:
     void collectDatasetsFromFiles(uint_vec, pint);
 
     void setImageTransformMirror(bool);
-    void setImageTransformRotate(typ::ImageTransform::rc);
-    void setImageCut(bool topLeftFirst, bool linked, typ::ImageCut::rc);
-    void setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midPixOffset);
-    void setGammaRange(typ::Range::rc r) { gammaRange_ = r; }
-    void setBgRanges(typ::Ranges::rc rr) { bgRanges_ = rr; }
-    bool addBgRange(typ::Range::rc r) { return bgRanges_.add(r); }
-    bool remBgRange(typ::Range::rc r) { return bgRanges_.rem(r); }
+    void setImageTransformRotate(typ::ImageTransform const&);
+    void setImageCut(bool topLeftFirst, bool linked, typ::ImageCut const&);
+    void setGeometry(preal detectorDistance, preal pixSize, typ::IJ const& midPixOffset);
+    void setGammaRange(typ::Range const& r) { gammaRange_ = r; }
+    void setBgRanges(typ::Ranges const& rr) { bgRanges_ = rr; }
+    bool addBgRange(typ::Range const& r) { return bgRanges_.add(r); }
+    bool remBgRange(typ::Range const& r) { return bgRanges_.rem(r); }
     void setBgPolyDegree(uint degree) { bgPolyDegree_ = degree; }
     void setIntenScaleAvg(bool, preal);
     void addReflection(calc::shp_Reflection);
@@ -96,40 +96,40 @@ public:
     void tryEnableCorr(bool on) { corrEnabled_ = on && hasCorrFile(); }
     bool isCorrEnabled() const { return corrEnabled_; }
 
-    uint_vec::rc collectedFromFiles() const { return collectedFromFiles_; }
-    data::Datasets::rc collectedDatasets() const { return collectedDatasets_; }
-    str_lst::rc collectedDatasetsTags() const { return collectedDatasetsTags_; }
+    uint_vec const& collectedFromFiles() const { return collectedFromFiles_; }
+    data::Datasets const& collectedDatasets() const { return collectedDatasets_; }
+    str_lst const& collectedDatasetsTags() const { return collectedDatasetsTags_; }
 
     typ::size2d imageSize() const;
-    typ::ImageTransform::rc imageTransform() const { return imageTransform_; }
-    typ::ImageCut::rc imageCut() const { return imageCut_; }
+    typ::ImageTransform const& imageTransform() const { return imageTransform_; }
+    typ::ImageCut const& imageCut() const { return imageCut_; }
 
-    typ::Geometry::rc geometry() const { return geometry_; }
+    typ::Geometry const& geometry() const { return geometry_; }
     typ::IJ midPix() const;
 
-    typ::Range::rc gammaRange() const { return gammaRange_; }
+    typ::Range const& gammaRange() const { return gammaRange_; }
 
-    typ::shp_AngleMap angleMap(data::OneDataset::rc) const;
-    static typ::shp_AngleMap angleMap(Session::rc session, data::OneDataset::rc ds) {
+    typ::shp_AngleMap angleMap(data::OneDataset const&) const;
+    static typ::shp_AngleMap angleMap(Session const& session, data::OneDataset const& ds) {
         return session.angleMap(ds); }
 
-    calc::shp_ImageLens imageLens(typ::Image::rc, data::Datasets::rc, bool trans, bool cut) const;
+    calc::shp_ImageLens imageLens(typ::Image const&, data::Datasets const&, bool trans, bool cut) const;
     calc::shp_DatasetLens datasetLens(
-        data::Dataset::rc, data::Datasets::rc, eNorm, bool trans, bool cut) const;
+        data::Dataset const&, data::Datasets const&, eNorm, bool trans, bool cut) const;
 
     calc::ReflectionInfos makeReflectionInfos(
-        data::Datasets::rc, calc::Reflection::rc, uint gmaSlices, gma_rge::rc, Progress*) const;
+        data::Datasets const&, calc::Reflection const&, uint gmaSlices, gma_rge const&, Progress*) const;
 
-    typ::Ranges::rc bgRanges() const { return bgRanges_; }
+    typ::Ranges const& bgRanges() const { return bgRanges_; }
     uint bgPolyDegree() const { return bgPolyDegree_; }
     bool intenScaledAvg() const { return intenScaledAvg_; }
     preal intenScale() const { return intenScale_; }
-    calc::Reflections::rc reflections() const { return reflections_; }
+    calc::Reflections const& reflections() const { return reflections_; }
 
     eNorm norm() const { return norm_; }
 
-    qreal calcAvgBackground(data::Dataset::rc) const;
-    qreal calcAvgBackground(data::Datasets::rc) const;
+    qreal calcAvgBackground(data::Dataset const&) const;
+    qreal calcAvgBackground(data::Datasets const&) const;
 };
 
 } // namespace core

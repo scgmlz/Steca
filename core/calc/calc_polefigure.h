@@ -37,10 +37,10 @@ typedef typ::vec<itf_t> itfs_t;
 
 // Interpolates reflection infos to a single point using idw.
 itf_t interpolateValues(
-    typ::deg searchRadius, ReflectionInfos::rc infos, typ::deg alpha, typ::deg beta);
+    typ::deg searchRadius, ReflectionInfos const& infos, typ::deg alpha, typ::deg beta);
 
 ReflectionInfos interpolate(
-    ReflectionInfos::rc, typ::deg alphaStep, typ::deg betaStep, typ::deg idwRadius,
+    ReflectionInfos const&, typ::deg alphaStep, typ::deg betaStep, typ::deg idwRadius,
     typ::deg averagingAlphaMax, typ::deg averagingRadius, qreal inclusionTreshold, Progress*);
 }
 #endif // CALC_POLEFIGURE_H

@@ -25,7 +25,7 @@ class TabPlot : public QCustomPlot {
     CLASS(TabPlot) SUPER(QCustomPlot) public : TabPlot();
     void set(calc::ReflectionInfos);
 
-    void plot(qreal_vec::rc xs, qreal_vec::rc ys, qreal_vec::rc ysLo, qreal_vec::rc ysUp);
+    void plot(qreal_vec const& xs, qreal_vec const& ys, qreal_vec const& ysLo, qreal_vec const& ysUp);
 
 protected:
     QCPGraph *graph_, *graphLo_, *graphUp_;

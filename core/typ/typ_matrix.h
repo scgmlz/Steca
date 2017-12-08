@@ -29,7 +29,7 @@ struct vec3f {
     vec3f(float, float, float);
     vec3f(vec3r const&);
 
-    bool operator==(vec3f::rc) const;
+    bool operator==(vec3f const&) const;
 };
 
 struct vec3r {
@@ -38,9 +38,9 @@ struct vec3r {
     qreal _0, _1, _2;
 
     vec3r(qreal, qreal, qreal);
-    vec3r(vec3f::rc);
+    vec3r(vec3f const&);
 
-    bool operator==(vec3r::rc) const;
+    bool operator==(vec3r const&) const;
 };
 
 struct mat3r {
@@ -50,13 +50,13 @@ struct mat3r {
 
     mat3r(qreal, qreal, qreal, qreal, qreal, qreal, qreal, qreal, qreal);
 
-    bool operator==(mat3r::rc) const;
+    bool operator==(mat3r const&) const;
 
     void transpose();
     mat3r transposed() const;
 
-    mat3r operator*(mat3r::rc) const;
-    vec3r operator*(vec3r::rc) const;
+    mat3r operator*(mat3r const&) const;
+    vec3r operator*(vec3r const&) const;
 
     // factories
     static mat3r rotationCWx(qreal angle);

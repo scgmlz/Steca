@@ -79,10 +79,10 @@ class ReflectionInfos : public typ::vec<ReflectionInfo> {
 public:
     ReflectionInfos() { invalidate(); }
 
-    void append(ReflectionInfo::rc);
+    void append(ReflectionInfo const&);
 
     inten_t averageInten() const;
-    inten_rge::rc rgeInten() const;
+    inten_rge const& rgeInten() const;
 
 private:
     mutable inten_t avgInten_;

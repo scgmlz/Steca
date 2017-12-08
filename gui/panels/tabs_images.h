@@ -31,7 +31,7 @@ private:
 
     QImage makeImage(typ::shp_Image, bool curvedScale);
     QPixmap makePixmap(typ::shp_Image);
-    QPixmap makePixmap(data::OneDataset::rc, gma_rge::rc, tth_rge::rc);
+    QPixmap makePixmap(data::OneDataset const&, gma_rge const&, tth_rge const&);
 
     void setDataset(data::shp_Dataset);
     void render();

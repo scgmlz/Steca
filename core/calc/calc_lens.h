@@ -29,8 +29,8 @@ namespace calc {
 class LensBase {
 public:
     LensBase(
-        core::Session const&, data::Datasets::rc, bool trans, bool cut, typ::ImageTransform::rc,
-        typ::ImageCut::rc);
+        core::Session const&, data::Datasets const&, bool trans, bool cut, typ::ImageTransform const&,
+        typ::ImageCut const&);
 
     virtual typ::size2d size() const = 0;
 
@@ -41,7 +41,7 @@ protected:
     void doCut(uint& i, uint& j) const;
 
     core::Session const& session_;
-    data::Datasets::rc datasets_;
+    data::Datasets const& datasets_;
     bool trans_, cut_;
     typ::ImageTransform imageTransform_;
     typ::ImageCut imageCut_;
@@ -52,13 +52,13 @@ class ImageLens final : public LensBase {
     CLASS(ImageLens)
     SUPER(LensBase)
     public
-        : ImageLens(core::Session const&, typ::Image::rc, data::Datasets::rc, bool trans, bool cut);
+        : ImageLens(core::Session const&, typ::Image const&, data::Datasets const&, bool trans, bool cut);
 
     typ::size2d size() const;
 
     inten_t imageInten(uint i, uint j) const;
 
-    inten_rge::rc rgeInten(bool fixed) const;
+    inten_rge const& rgeInten(bool fixed) const;
 
 private:
     typ::Image const& image_;
@@ -72,8 +72,8 @@ class DatasetLens final : public LensBase {
     CLASS(DatasetLens)
     SUPER(LensBase)
     public : DatasetLens(
-                 core::Session const&, data::Dataset::rc, data::Datasets::rc, eNorm, bool trans,
-                 bool cut, typ::ImageTransform::rc, typ::ImageCut::rc);
+                 core::Session const&, data::Dataset const&, data::Datasets const&, eNorm, bool trans,
+                 bool cut, typ::ImageTransform const&, typ::ImageCut const&);
 
     typ::size2d size() const;
 
@@ -83,15 +83,15 @@ class DatasetLens final : public LensBase {
     inten_rge rgeInten() const;
 
     typ::Curve makeCurve() const;
-    typ::Curve makeCurve(gma_rge::rc) const;
+    typ::Curve makeCurve(gma_rge const&) const;
 
-    data::Dataset::rc dataset() const { return dataset_; }
+    data::Dataset const& dataset() const { return dataset_; }
 
 private:
     void setNorm(eNorm);
     inten_t normFactor_;
 
-    data::Dataset::rc dataset_;
+    data::Dataset const& dataset_;
 };
 
 typedef QSharedPointer<DatasetLens> shp_DatasetLens;

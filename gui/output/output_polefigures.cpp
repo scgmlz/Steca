@@ -305,7 +305,7 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
 }
 
 void PoleFiguresFrame::writeErrorMask(
-    rcstr filePath, calc::ReflectionInfos reflInfo, qreal_vec::rc output) {
+    rcstr filePath, calc::ReflectionInfos reflInfo, qreal_vec const& output) {
     WriteFile file(filePath + ".errorMask");
     QTextStream stream(&file);
 
@@ -324,7 +324,7 @@ void PoleFiguresFrame::writeErrorMask(
 }
 
 void PoleFiguresFrame::writePoleFile(
-    rcstr filePath, calc::ReflectionInfos reflInfo, qreal_vec::rc output) {
+    rcstr filePath, calc::ReflectionInfos reflInfo, qreal_vec const& output) {
     WriteFile file(filePath + ".pol");
     QTextStream stream(&file);
 
@@ -342,7 +342,7 @@ void PoleFiguresFrame::writePoleFile(
 }
 
 void PoleFiguresFrame::writeListFile(
-    rcstr filePath, calc::ReflectionInfos reflInfo, qreal_vec::rc output) {
+    rcstr filePath, calc::ReflectionInfos reflInfo, qreal_vec const& output) {
     WriteFile file(filePath + ".lst");
     QTextStream stream(&file);
 

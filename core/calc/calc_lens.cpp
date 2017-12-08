@@ -23,8 +23,8 @@ using typ::ImageTransform;
 using typ::size2d;
 
 LensBase::LensBase(
-    core::Session::rc session, data::Datasets::rc datasets, bool trans, bool cut,
-    typ::ImageTransform::rc imageTransform, typ::ImageCut::rc imageCut)
+    core::Session const& session, data::Datasets const& datasets, bool trans, bool cut,
+    typ::ImageTransform const& imageTransform, typ::ImageCut const& imageCut)
     : session_(session)
     , datasets_(datasets)
     , trans_(trans)
@@ -79,7 +79,7 @@ void LensBase::doCut(uint& i, uint& j) const {
 }
 
 ImageLens::ImageLens(
-    core::Session::rc session, Image::rc image, data::Datasets::rc datasets, bool trans, bool cut)
+    core::Session const& session, Image const& image, data::Datasets const& datasets, bool trans, bool cut)
     : super(session, datasets, trans, cut, session.imageTransform(), session.imageCut())
     , image_(image) {}
 
@@ -100,7 +100,7 @@ inten_t ImageLens::imageInten(uint i, uint j) const {
     return inten;
 }
 
-inten_rge::rc ImageLens::rgeInten(bool fixed) const {
+inten_rge const& ImageLens::rgeInten(bool fixed) const {
     if (fixed)
         return datasets_.rgeFixedInten(session_, trans_, cut_);
 
@@ -114,8 +114,8 @@ inten_rge::rc ImageLens::rgeInten(bool fixed) const {
 }
 
 DatasetLens::DatasetLens(
-    core::Session::rc session, data::Dataset::rc dataset, data::Datasets::rc datasets, eNorm norm,
-    bool trans, bool cut, typ::ImageTransform::rc imageTransform, typ::ImageCut::rc imageCut)
+    core::Session const& session, data::Dataset const& dataset, data::Datasets const& datasets, eNorm norm,
+    bool trans, bool cut, typ::ImageTransform const& imageTransform, typ::ImageCut const& imageCut)
     : super(session, datasets, trans, cut, imageTransform, imageCut)
     , normFactor_(1)
     , dataset_(dataset) {
@@ -148,7 +148,7 @@ Curve DatasetLens::makeCurve() const {
     return makeCurve(rgeGma());
 }
 
-Curve DatasetLens::makeCurve(gma_rge::rc rgeGma) const {
+Curve DatasetLens::makeCurve(gma_rge const& rgeGma) const {
     inten_vec intens = dataset_.collectIntens(session_, intensCorr_, rgeGma);
 
     Curve res;

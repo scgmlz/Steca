@@ -14,7 +14,7 @@
 
 #include "typ/typ_types.h"
 
-str_lst::rc normStrLst() {
+str_lst const& normStrLst() {
     static str_lst strLst{
         "none", "monitor", "Δ monitor", "Δ time", "background",
     };

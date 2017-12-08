@@ -33,7 +33,7 @@ public:
     str fileName() const;
 
     OneDatasets& datasets() { return datasets_; }
-    OneDatasets::rc datasets() const { return datasets_; }
+    OneDatasets const& datasets() const { return datasets_; }
 
 private:
     QFileInfo fileInfo_;

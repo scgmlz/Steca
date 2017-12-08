@@ -21,7 +21,7 @@ namespace fit {
 
 class Method {
 public:
-    void fit(typ::Function&, typ::Curve::rc);
+    void fit(typ::Function&, typ::Curve const&);
 
 protected:
     virtual void

@@ -203,10 +203,10 @@ typ::row_t Metadata::attributeNaNs() {
     return row;
 }
 
-OneDataset::OneDataset(Metadata::rc md, typ::inten_arr::rc intens)
+OneDataset::OneDataset(Metadata const& md, typ::inten_arr const& intens)
     : md_(new Metadata(md)), image_(new Image(intens)) {}
 
-OneDataset::OneDataset(Metadata::rc md, size2d::rc size, inten_vec const& intens)
+OneDataset::OneDataset(Metadata const& md, size2d const& size, inten_vec const& intens)
     : md_(new Metadata(md)), image_(new Image(size)) {
     EXPECT(intens.count() == size.count())
     for_i (intens.count())
@@ -220,15 +220,15 @@ shp_Metadata OneDataset::metadata() const {
     return md_;
 }
 
-gma_rge OneDataset::rgeGma(core::Session::rc session) const {
+gma_rge OneDataset::rgeGma(core::Session const& session) const {
     return session.angleMap(*this)->rgeGma();
 }
 
-gma_rge OneDataset::rgeGmaFull(core::Session::rc session) const {
+gma_rge OneDataset::rgeGmaFull(core::Session const& session) const {
     return session.angleMap(*this)->rgeGmaFull();
 }
 
-tth_rge OneDataset::rgeTth(core::Session::rc session) const {
+tth_rge OneDataset::rgeTth(core::Session const& session) const {
     return session.angleMap(*this)->rgeTth();
 }
 
@@ -241,11 +241,11 @@ size2d OneDataset::imageSize() const {
 }
 
 void OneDataset::collectIntens(
-    core::Session::rc session, typ::Image const* intensCorr, inten_vec& intens, uint_vec& counts,
-    gma_rge::rc rgeGma, deg minTth, deg deltaTth) const {
+    core::Session const& session, typ::Image const* intensCorr, inten_vec& intens, uint_vec& counts,
+    gma_rge const& rgeGma, deg minTth, deg deltaTth) const {
     auto angleMap = session.angleMap(*this);
     EXPECT(!angleMap.isNull())
-    typ::AngleMap::rc map = *angleMap;
+    typ::AngleMap const& map = *angleMap;
 
     uint_vec const* gmaIndexes = nullptr;
     uint gmaIndexMin = 0, gmaIndexMax = 0;
@@ -293,7 +293,7 @@ shp_Metadata Dataset::metadata() const {
         Metadata* m = const_cast<Metadata*>(md_.data());
 
         EXPECT(!first()->metadata().isNull())
-        Metadata::rc firstMd = *(first()->metadata());
+        Metadata const& firstMd = *(first()->metadata());
 
         m->date = firstMd.date;
         m->comment = firstMd.comment;
@@ -364,7 +364,7 @@ shp_Metadata Dataset::metadata() const {
     return md_;
 }
 
-Datasets::rc Dataset::datasets() const {
+Datasets const& Dataset::datasets() const {
     EXPECT(datasets_)
     return *datasets_;
 }
@@ -393,13 +393,13 @@ deg Dataset::chi() const {
         rge.combineOp(one->what);                                                                  \
     return rge;
 
-gma_rge Dataset::rgeGma(core::Session::rc session) const { RGE_COMBINE(extendBy, rgeGma(session)) }
+gma_rge Dataset::rgeGma(core::Session const& session) const { RGE_COMBINE(extendBy, rgeGma(session)) }
 
-gma_rge Dataset::rgeGmaFull(core::Session::rc session) const {
+gma_rge Dataset::rgeGmaFull(core::Session const& session) const {
     RGE_COMBINE(extendBy, rgeGmaFull(session))
 }
 
-tth_rge Dataset::rgeTth(core::Session::rc session) const { RGE_COMBINE(extendBy, rgeTth(session)) }
+tth_rge Dataset::rgeTth(core::Session const& session) const { RGE_COMBINE(extendBy, rgeTth(session)) }
 
 inten_rge Dataset::rgeInten() const { RGE_COMBINE(intersect, rgeInten()) }
 
@@ -410,7 +410,7 @@ qreal Dataset::avgDeltaMonitorCount() const { AVG_ONES(deltaMonitorCount) }
 qreal Dataset::avgDeltaTime() const { AVG_ONES(deltaTime) }
 
 inten_vec Dataset::collectIntens(
-    core::Session::rc session, typ::Image const* intensCorr, gma_rge::rc rgeGma) const {
+    core::Session const& session, typ::Image const* intensCorr, gma_rge const& rgeGma) const {
     tth_rge tthRge = rgeTth(session);
     deg tthWdt = tthRge.width();
 
@@ -530,7 +530,7 @@ qreal Datasets::avgDeltaTime() const {
     return avgDeltaTime_;
 }
 
-inten_rge::rc Datasets::rgeGma(core::Session::rc session) const {
+inten_rge const& Datasets::rgeGma(core::Session const& session) const {
     if (!rgeGma_.isValid())
         for (auto& dataset : *this)
             rgeGma_.extendBy(dataset->rgeGma(session));
@@ -538,7 +538,7 @@ inten_rge::rc Datasets::rgeGma(core::Session::rc session) const {
     return rgeGma_;
 }
 
-inten_rge::rc Datasets::rgeFixedInten(core::Session::rc session, bool trans, bool cut) const {
+inten_rge const& Datasets::rgeFixedInten(core::Session const& session, bool trans, bool cut) const {
     if (!rgeFixedInten_.isValid()) {
 
         TakesLongTime __;
@@ -556,7 +556,7 @@ inten_rge::rc Datasets::rgeFixedInten(core::Session::rc session, bool trans, boo
     return rgeFixedInten_;
 }
 
-Curve Datasets::avgCurve(core::Session::rc session) const {
+Curve Datasets::avgCurve(core::Session const& session) const {
     if (avgCurve_.isEmpty()) {
         // TODO invalidate when combinedDgram is unchecked
 

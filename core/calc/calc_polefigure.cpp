@@ -108,7 +108,7 @@ void itf_t::operator+=(rc that) {
 
 // Adds data from reflection infos within radius from alpha and beta
 // to the peak parameter lists.
-void searchPoints(deg alpha, deg beta, deg radius, ReflectionInfos::rc infos, itfs_t& itfs) {
+void searchPoints(deg alpha, deg beta, deg radius, ReflectionInfos const& infos, itfs_t& itfs) {
     // REVIEW Use value trees to improve performance.
     for (auto& info : infos) {
         if (inRadius(info.alpha(), info.beta(), alpha, beta, radius))
@@ -118,7 +118,7 @@ void searchPoints(deg alpha, deg beta, deg radius, ReflectionInfos::rc infos, it
 
 // Searches closest ReflectionInfos to given alpha and beta in quadrants.
 void searchInQuadrants(
-    Quadrants::rc quadrants, deg alpha, deg beta, deg searchRadius, ReflectionInfos::rc infos,
+    Quadrants const& quadrants, deg alpha, deg beta, deg searchRadius, ReflectionInfos const& infos,
     info_vec& foundInfos, qreal_vec& distances) {
     ENSURE(quadrants.count() <= NUM_QUADRANTS);
     // Take only reflection infos with beta within +/- BETA_LIMIT degrees into
@@ -148,7 +148,7 @@ void searchInQuadrants(
     }
 }
 
-itf_t inverseDistanceWeighing(qreal_vec::rc distances, info_vec::rc infos) {
+itf_t inverseDistanceWeighing(qreal_vec const& distances, info_vec const& infos) {
     itf_t itf;
     uint N = NUM_QUADRANTS;
     // Generally, only distances.count() == values.count() > 0 is needed for this
@@ -187,7 +187,7 @@ itf_t inverseDistanceWeighing(qreal_vec::rc distances, info_vec::rc infos) {
     return itf;
 }
 
-itf_t interpolateValues(deg searchRadius, ReflectionInfos::rc infos, deg alpha, deg beta) {
+itf_t interpolateValues(deg searchRadius, ReflectionInfos const& infos, deg alpha, deg beta) {
     info_vec interpolationInfos;
     qreal_vec distances;
     searchInQuadrants(
@@ -227,7 +227,7 @@ itf_t interpolateValues(deg searchRadius, ReflectionInfos::rc infos, deg alpha, 
 
 // Interpolates infos to equidistant grid in alpha and beta.
 ReflectionInfos interpolate(
-    ReflectionInfos::rc infos, deg alphaStep, deg betaStep, deg idwRadius, deg averagingAlphaMax,
+    ReflectionInfos const& infos, deg alphaStep, deg betaStep, deg idwRadius, deg averagingAlphaMax,
     deg averagingRadius, qreal inclusionTreshold, Progress* progress) {
     // Two interpolation methods are used here:
     // If grid point alpha <= averagingAlphaMax, points within averagingRadius
@@ -278,7 +278,7 @@ ReflectionInfos interpolate(
                 if (!itfs.isEmpty()) {
                     // If inclusionTreshold < 1, we'll only use a fraction of largest
                     // reflection parameter values.
-                    std::sort(itfs.begin(), itfs.end(), [](itf_t::rc i1, itf_t::rc i2) {
+                    std::sort(itfs.begin(), itfs.end(), [](itf_t const& i1, itf_t const& i2) {
                         return i1.inten < i2.inten;
                     });
 

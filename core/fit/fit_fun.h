@@ -38,13 +38,13 @@ public:
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-    qreal avgY(typ::Range::rc, qreal const* parValues = nullptr) const;
+    qreal avgY(typ::Range const&, qreal const* parValues = nullptr) const;
 
-    void fit(typ::Curve::rc, typ::Ranges::rc);
-    static Polynom fromFit(uint degree, typ::Curve::rc, typ::Ranges::rc);
+    void fit(typ::Curve const&, typ::Ranges const&);
+    static Polynom fromFit(uint degree, typ::Curve const&, typ::Ranges const&);
 
     typ::JsonObj saveJson() const;
-    void loadJson(typ::JsonObj::rc) THROWS;
+    void loadJson(typ::JsonObj const&) THROWS;
 };
 
 // Abstract peak function
@@ -61,13 +61,13 @@ public:
 
     virtual ePeakType type() const = 0;
 
-    typ::Range::rc range() const { return range_; }
-    virtual void setRange(typ::Range::rc);
+    typ::Range const& range() const { return range_; }
+    virtual void setRange(typ::Range const&);
 
-    virtual void setGuessedPeak(qpair::rc);
+    virtual void setGuessedPeak(qpair const&);
     virtual void setGuessedFWHM(fwhm_t);
 
-    qpair::rc guessedPeak() const { return guessedPeak_; }
+    qpair const& guessedPeak() const { return guessedPeak_; }
     fwhm_t guessedFWHM() const { return guessedFWHM_; }
 
     virtual qpair fittedPeak() const = 0;
@@ -78,16 +78,16 @@ public:
 
     void reset();
 
-    void fit(typ::Curve::rc curve) { return fit(curve, range_); }
+    void fit(typ::Curve const& curve) { return fit(curve, range_); }
 
-    virtual void fit(typ::Curve::rc, typ::Range::rc);
+    virtual void fit(typ::Curve const&, typ::Range const&);
 
 protected:
-    typ::Curve prepareFit(typ::Curve::rc, typ::Range::rc);
+    typ::Curve prepareFit(typ::Curve const&, typ::Range const&);
 
 public:
     typ::JsonObj saveJson() const;
-    void loadJson(typ::JsonObj::rc) THROWS;
+    void loadJson(typ::JsonObj const&) THROWS;
 
 protected:
     typ::Range range_;
@@ -111,8 +111,8 @@ public:
     qpair peakError() const;
     fwhm_t fwhmError() const;
 
-    void setRange(typ::Range::rc);
-    void fit(typ::Curve::rc, typ::Range::rc);
+    void setRange(typ::Range const&);
+    void fit(typ::Curve const&, typ::Range const&);
 
     typ::JsonObj saveJson() const;
 
@@ -137,7 +137,7 @@ public:
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-    void setGuessedPeak(qpair::rc);
+    void setGuessedPeak(qpair const&);
     void setGuessedFWHM(fwhm_t);
 
     qpair fittedPeak() const;
@@ -161,7 +161,7 @@ public:
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-    void setGuessedPeak(qpair::rc);
+    void setGuessedPeak(qpair const&);
     void setGuessedFWHM(fwhm_t);
 
     qpair fittedPeak() const;
@@ -185,7 +185,7 @@ public:
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-    void setGuessedPeak(qpair::rc);
+    void setGuessedPeak(qpair const&);
     void setGuessedFWHM(fwhm_t);
 
     qpair fittedPeak() const;
@@ -210,7 +210,7 @@ public:
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-    void setGuessedPeak(qpair::rc);
+    void setGuessedPeak(qpair const&);
     void setGuessedFWHM(fwhm_t);
 
     qpair fittedPeak() const;

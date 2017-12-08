@@ -27,16 +27,16 @@ class Image final {
     CLASS(Image)
 public:
     // Image as vector of intensities, filled with 0 or given intensities.
-    Image(size2d::rc = size2d(0, 0));
-    Image(inten_arr::rc);
+    Image(size2d const& = size2d(0, 0));
+    Image(inten_arr const&);
 
-    size2d::rc size() const { return intens_.size(); }
+    size2d const& size() const { return intens_.size(); }
 
     void clear() { intens_.clear(); }
 
     bool isEmpty() const { return intens_.isEmpty(); }
 
-    void fill(inten_t val, size2d::rc size) { intens_.fill(val, size); }
+    void fill(inten_t val, size2d const& size) { intens_.fill(val, size); }
 
     inten_t inten(uint i) const { return intens_.at(i); }
 
@@ -51,7 +51,7 @@ public:
     // Sum all intensities with new ones.
     void addIntens(rc) THROWS;
 
-    inten_rge::rc rgeInten() const { return rgeInten_; }
+    inten_rge const& rgeInten() const { return rgeInten_; }
 
 private:
     inten_arr intens_;

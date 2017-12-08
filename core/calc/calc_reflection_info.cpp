@@ -117,7 +117,7 @@ str const ReflectionInfo::reflStringTag(uint attr, bool out) {
 //  class ReflectionInfos
 // ************************************************************************** //
 
-void ReflectionInfos::append(ReflectionInfo::rc info) {
+void ReflectionInfos::append(ReflectionInfo const& info) {
     super::append(info);
     invalidate();
 }
@@ -139,7 +139,7 @@ inten_t ReflectionInfos::averageInten() const {
     return avgInten_;
 }
 
-inten_rge::rc ReflectionInfos::rgeInten() const {
+inten_rge const& ReflectionInfos::rgeInten() const {
     if (!rgeInten_.isValid()) {
         for_i (count())
             rgeInten_.extendBy(at(i).inten());

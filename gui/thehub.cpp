@@ -155,16 +155,16 @@ void TheHub::remFile(uint i) {
 
 bool TheHub::hasCorrFile() const { return session_->hasCorrFile(); }
 
-calc::shp_ImageLens TheHub::plainImageLens(typ::Image::rc image) const {
+calc::shp_ImageLens TheHub::plainImageLens(typ::Image const& image) const {
     return session_->imageLens(image, collectedDatasets(), true, false);
 }
 
-calc::shp_DatasetLens TheHub::datasetLens(data::Dataset::rc dataset) const {
+calc::shp_DatasetLens TheHub::datasetLens(data::Dataset const& dataset) const {
     return session_->datasetLens(dataset, dataset.datasets(), session_->norm(), true, true);
 }
 
 calc::ReflectionInfos TheHub::makeReflectionInfos(
-    calc::Reflection::rc reflection, uint gmaSlices, gma_rge::rc rgeGma, Progress* progress) {
+    calc::Reflection const& reflection, uint gmaSlices, gma_rge const& rgeGma, Progress* progress) {
     return session_->makeReflectionInfos(
         collectedDatasets(), reflection, gmaSlices, rgeGma, progress);
 }
@@ -333,7 +333,7 @@ void TheHub::addFile(rcstr filePath) THROWS {
     }
 }
 
-void TheHub::addFiles(str_lst::rc filePaths) THROWS {
+void TheHub::addFiles(str_lst const& filePaths) THROWS {
     TakesLongTime __;
 
     for (auto& filePath : filePaths)
@@ -374,11 +374,11 @@ void TheHub::tryEnableCorrection(bool on) {
     emit sigCorrEnabled(session_->isCorrEnabled());
 }
 
-typ::ImageCut::rc TheHub::imageCut() const {
+typ::ImageCut const& TheHub::imageCut() const {
     return session_->imageCut();
 }
 
-void TheHub::setImageCut(bool topLeft, bool linked, typ::ImageCut::rc cut) {
+void TheHub::setImageCut(bool topLeft, bool linked, typ::ImageCut const& cut) {
     session_->setImageCut(topLeft, linked, cut);
     emit sigGeometryChanged();
 }
@@ -387,7 +387,7 @@ const typ::Geometry& TheHub::geometry() const {
     return session_->geometry();
 }
 
-void TheHub::setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midPixOffset) {
+void TheHub::setGeometry(preal detectorDistance, preal pixSize, typ::IJ const& midPixOffset) {
     level_guard __(sigLevel_);
     if (sigLevel_ > 1)
         return;
@@ -396,22 +396,22 @@ void TheHub::setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midP
     emit sigGeometryChanged();
 }
 
-void TheHub::setGammaRange(typ::Range::rc gammaRange) {
+void TheHub::setGammaRange(typ::Range const& gammaRange) {
     session_->setGammaRange(gammaRange);
     emit sigGammaRange();
 }
 
-void TheHub::setBgRanges(typ::Ranges::rc ranges) {
+void TheHub::setBgRanges(typ::Ranges const& ranges) {
     session_->setBgRanges(ranges);
     emit sigBgChanged();
 }
 
-void TheHub::addBgRange(typ::Range::rc range) {
+void TheHub::addBgRange(typ::Range const& range) {
     if (session_->addBgRange(range))
         emit sigBgChanged();
 }
 
-void TheHub::remBgRange(typ::Range::rc range) {
+void TheHub::remBgRange(typ::Range const& range) {
     if (session_->remBgRange(range))
         emit sigBgChanged();
 }

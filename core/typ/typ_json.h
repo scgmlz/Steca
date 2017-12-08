@@ -88,7 +88,7 @@ class JsonArr : protected QJsonArray {
     JsonArr(QJsonArray const&);
 
     using super::append;
-    void append(JsonObj::rc);
+    void append(JsonObj const&);
 
     using super::begin;
     using super::end;

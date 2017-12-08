@@ -36,7 +36,7 @@ JsonObj IJ::saveJson() const {
     return JsonObj().saveInt(json_key::I, i).saveInt(json_key::J, j);
 }
 
-void IJ::loadJson(JsonObj::rc obj) THROWS {
+void IJ::loadJson(JsonObj const& obj) THROWS {
     i = obj.loadInt(json_key::I);
     j = obj.loadInt(json_key::J);
 }

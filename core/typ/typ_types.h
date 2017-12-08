@@ -37,6 +37,6 @@ enum class eNorm {
     BACKGROUND,
 };
 
-str_lst::rc normStrLst();
+str_lst const& normStrLst();
 
 #endif // TYP_TYPES_H

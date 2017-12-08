@@ -35,19 +35,19 @@ public:
     void append(qreal x, qreal y);
 
     // access to underlying data vectors
-    qreal_vec::rc xs() const { return xs_; }
-    qreal_vec::rc ys() const { return ys_; }
+    qreal_vec const& xs() const { return xs_; }
+    qreal_vec const& ys() const { return ys_; }
 
     qreal x(uint i) const { return xs_.at(i); }
     qreal y(uint i) const { return ys_.at(i); }
 
-    Range::rc rgeX() const { return rgeX_; }
-    Range::rc rgeY() const { return rgeY_; }
+    Range const& rgeX() const { return rgeX_; }
+    Range const& rgeY() const { return rgeY_; }
 
-    Curve intersect(Range::rc) const;
-    Curve intersect(Ranges::rc) const;
+    Curve intersect(Range const&) const;
+    Curve intersect(Ranges const&) const;
 
-    void subtract(Function::rc);
+    void subtract(Function const&);
 
     uint maqpairindex() const; // the index of the maximum y value
 

@@ -34,7 +34,7 @@ public:
     class Factory : public typ::Factory<Function> {
         CLASS(Factory) SUPER(typ::Factory<Function>);
     public:
-        owner_not_null<Function*> make(JsonObj::rc) THROWS;
+        owner_not_null<Function*> make(JsonObj const&) THROWS;
     };
 
 protected:
@@ -44,7 +44,7 @@ public:
     static void addFactoryMaker(rcstr key, owner_not_null<Factory::MakerBase*>);
     static void initFactory();
 
-    static owner_not_null<Function*> make(JsonObj::rc) THROWS;
+    static owner_not_null<Function*> make(JsonObj const&) THROWS;
 
 public:
     class Parameter final {
@@ -62,7 +62,7 @@ public:
 
     public:
         JsonObj saveJson() const;
-        void loadJson(JsonObj::rc) THROWS;
+        void loadJson(JsonObj const&) THROWS;
 
     private:
         qreal value_, error_;
@@ -77,7 +77,7 @@ public:
     virtual uint parameterCount() const = 0;
 
     virtual Parameter& parameterAt(uint) = 0;
-    virtual Parameter::rc parameterAt(uint i) const {
+    virtual Parameter const& parameterAt(uint i) const {
         return const_cast<Function*>(this)->parameterAt(i);
     }
 
@@ -88,7 +88,7 @@ public:
     virtual qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const = 0;
 
     virtual JsonObj saveJson() const;
-    virtual void loadJson(JsonObj::rc) THROWS;
+    virtual void loadJson(JsonObj const&) THROWS;
 };
 
 
@@ -106,7 +106,7 @@ public:
 
 public:
     JsonObj saveJson() const;
-    void loadJson(JsonObj::rc) THROWS;
+    void loadJson(JsonObj const&) THROWS;
 
 protected:
     vec<Parameter> parameters_;
@@ -133,7 +133,7 @@ public:
 
 public:
     JsonObj saveJson() const;
-    void loadJson(JsonObj::rc) THROWS;
+    void loadJson(JsonObj const&) THROWS;
 
 protected:
     // summed functions

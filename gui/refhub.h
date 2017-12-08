@@ -43,7 +43,7 @@ protected:
     void tellDatasetSelected(data::shp_Dataset);
     void tellSelectedReflection(calc::shp_Reflection);
     void tellReflectionData(calc::shp_Reflection);
-    void tellReflectionValues(tth_rge::rc, qpair::rc, fwhm_t, bool);
+    void tellReflectionValues(tth_rge const&, qpair const&, fwhm_t, bool);
 
 signals:
     void sigSessionCleared();
@@ -107,7 +107,7 @@ protected:
     void tellDatasetSelected(data::shp_Dataset);
     void tellSelectedReflection(calc::shp_Reflection);
     void tellReflectionData(calc::shp_Reflection);
-    void tellReflectionValues(typ::Range::rc, qpair::rc, fwhm_t, bool);
+    void tellReflectionValues(typ::Range const&, qpair const&, fwhm_t, bool);
 
     // handle same signals
 protected:

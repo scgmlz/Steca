@@ -89,7 +89,7 @@ Angles::Angles() : Angles(0, 0) {}
 Angles::Angles(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
 
 AngleMap::Key::Key(
-    Geometry::rc geometry_, size2d::rc size_, ImageCut::rc cut_, IJ::rc midPix_, deg midTth_)
+    Geometry const& geometry_, size2d const& size_, ImageCut const& cut_, IJ const& midPix_, deg midTth_)
     : geometry(geometry_), size(size_), cut(cut_), midPix(midPix_), midTth(midTth_) {}
 
 int AngleMap::Key::compare(rc that) const {
@@ -103,11 +103,11 @@ int AngleMap::Key::compare(rc that) const {
 
 EQ_NE_OPERATOR(AngleMap::Key)
 
-AngleMap::AngleMap(Key::rc key) : key_(key) {
+AngleMap::AngleMap(Key const& key) : key_(key) {
     calculate();
 }
 
-static uint lowerBound(vec<deg>::rc vec, deg x, uint i1, uint i2) {
+static uint lowerBound(vec<deg> const& vec, deg x, uint i1, uint i2) {
     EXPECT(i1 < i2)
 
     if (1 == i2 - i1)
@@ -119,7 +119,7 @@ static uint lowerBound(vec<deg>::rc vec, deg x, uint i1, uint i2) {
         : lowerBound(vec, x, i1, mid); // ... we should be so lucky
 }
 
-static uint upperBound(vec<deg>::rc vec, deg x, uint i1, uint i2) {
+static uint upperBound(vec<deg> const& vec, deg x, uint i1, uint i2) {
     EXPECT(i1 < i2)
 
     if (1 == i2 - i1)
@@ -132,7 +132,7 @@ static uint upperBound(vec<deg>::rc vec, deg x, uint i1, uint i2) {
 }
 
 void AngleMap::getGmaIndexes(
-    gma_rge::rc rgeGma, uint_vec const*& indexes, uint& minIndex, uint& maxIndex) const {
+    gma_rge const& rgeGma, uint_vec const*& indexes, uint& minIndex, uint& maxIndex) const {
     indexes = &gmaIndexes;
     minIndex = lowerBound(gmas, rgeGma.min, 0, gmas.count());
     maxIndex = upperBound(gmas, rgeGma.max, 0, gmas.count());
