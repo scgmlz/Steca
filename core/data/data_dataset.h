@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/data/data_dataset.h
-//! @brief     Defines ...
+//! @brief     Defines classes Metadata, [One]Dataset[s]
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -64,8 +64,8 @@ struct Metadata {
     qreal time, deltaTime;
 };
 
-// OneDataset = metadata + image
-// for calculation always accessed through its owning Dataset
+
+//! Metadata + Image, for calculation always accessed through its owning Dataset
 
 class OneDataset final {
     friend class OneDatasets;
@@ -106,6 +106,9 @@ private:
     typ::shp_Image image_;
 };
 
+
+//! Collection of (OneDataset)s
+
 class OneDatasets : public typ::vec<shp_OneDataset> {
 private:
     using super = typ::vec<shp_OneDataset>;
@@ -114,7 +117,8 @@ public:
     typ::shp_Image foldedImage() const;
 };
 
-// 1 or more OneDataset(s)
+//! One or more OneDataset(s)
+
 class Dataset final : public OneDatasets {
 private:
     using super = OneDatasets;friend class Datasets;
@@ -149,6 +153,8 @@ private:
     Datasets* datasets_; // here it belongs (or can be nullptr)
     shp_Metadata md_; // on demand, compute once
 };
+
+//! Collection of (Dataset)s
 
 class Datasets final : public typ::vec<shp_Dataset> {
 private:

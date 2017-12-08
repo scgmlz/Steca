@@ -12,12 +12,12 @@
 //
 // ************************************************************************** //
 
-#include "data/data_dataset.h"
 #include "def/def_alg.h"
 #include "io/io_io.h"
-#include "3rdparty/Caress/raw.h" // inclusion order is critical !
 #include <qmath.h>
 #include <sstream>
+; // preserve inclusion order
+#include "3rdparty/Caress/raw.h" // inclusion order is critical !
 
 namespace io {
 

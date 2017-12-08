@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/data/data_dataset.cpp
-//! @brief     Implements ...
+//! @brief     Implements classes Metadata, [One]Dataset[s]
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -59,6 +59,10 @@ enum class eAttr {
 
     NUM_ALL_ATTRIBUTES
 };
+
+// ************************************************************************** //
+//  class Metadata
+// ************************************************************************** //
 
 Metadata::Metadata()
     : date()
@@ -204,6 +208,10 @@ typ::row_t Metadata::attributeNaNs() {
     return row;
 }
 
+// ************************************************************************** //
+//  class OneDataset
+// ************************************************************************** //
+
 OneDataset::OneDataset(Metadata const& md, typ::inten_arr const& intens)
     : md_(new Metadata(md)), image_(new Image(intens)) {}
 
@@ -285,6 +293,10 @@ void OneDataset::collectIntens(
     }
 }
 
+// ************************************************************************** //
+//  class Dataset
+// ************************************************************************** //
+
 Dataset::Dataset() : datasets_(nullptr) {}
 
 shp_Metadata Dataset::metadata() const {
@@ -365,11 +377,6 @@ shp_Metadata Dataset::metadata() const {
     return md_;
 }
 
-Datasets const& Dataset::datasets() const {
-    EXPECT(datasets_)
-    return *datasets_;
-}
-
 #define AVG_ONES(what)                                                                             \
     EXPECT(!isEmpty())                                                                             \
     qreal avg = 0;                                                                                 \
@@ -448,6 +455,12 @@ inten_vec Dataset::collectIntens(
     return intens;
 }
 
+size2d Dataset::imageSize() const {
+    EXPECT(!isEmpty())
+    // all images have the same size; simply take the first one
+    return first()->imageSize();
+}
+
 //! Calculates the polefigure coordinates alpha and beta with regards to
 //! sample orientation and diffraction angles.
 
@@ -483,10 +496,13 @@ void Dataset::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const 
     beta = betaRad.toDeg();
 }
 
-size2d Dataset::imageSize() const {
-    EXPECT(!isEmpty())
-    // all images have the same size; simply take the first one
-    return first()->imageSize();
+// ************************************************************************** //
+//  class Datasets
+// ************************************************************************** //
+
+Datasets const& Dataset::datasets() const {
+    EXPECT(datasets_)
+    return *datasets_;
 }
 
 Datasets::Datasets() {
@@ -615,4 +631,5 @@ typ::shp_Image OneDatasets::foldedImage() const {
 
     return image;
 }
-}
+
+} // namespace data
