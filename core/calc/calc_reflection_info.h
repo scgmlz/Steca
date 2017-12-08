@@ -74,7 +74,8 @@ private:
 
 
 class ReflectionInfos : public typ::vec<ReflectionInfo> {
-    SUPER(typ::vec<ReflectionInfo>);
+private:
+    using super = typ::vec<ReflectionInfo>;
 public:
     ReflectionInfos() { invalidate(); }
 

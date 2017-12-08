@@ -27,7 +27,8 @@ class QDoubleSpinBox;
 namespace gui {
 
 class Settings : public QSettings {
-    SUPER(QSettings);
+private:
+    using super = QSettings;
 public:
     Settings(rcstr group = EMPTY_STR);
     ~Settings();
@@ -59,21 +60,24 @@ public:
 
 
 class ReadFile : public QFile {
-    SUPER(QFile);
+private:
+    using super = QFile;
 public:
     ReadFile(rcstr path) THROWS;
 };
 
 
 class WriteFile : public QFile {
-    SUPER(QFile);
+private:
+    using super = QFile;
 public:
     WriteFile(rcstr path) THROWS;
 };
 
 
 class TheHub : public TheHubSignallingBase {
-    SUPER(TheHubSignallingBase);
+private:
+    using super = TheHubSignallingBase;
     friend class TheHubSignallingBase;
 public:
     TheHub();

@@ -24,7 +24,10 @@ namespace views {
 // A (tree-)list view with a reference to the hub. Single selection.
 
 class ListView : public TreeListView, protected RefHub {
-    SUPER(TreeListView) public : ListView(TheHub&);
+private:
+    using super = TreeListView;
+public:
+    ListView(TheHub&);
 
     using Model = models::TableModel;
 
@@ -43,7 +46,10 @@ protected:
 // Multiple selection.
 
 class MultiListView : public ListView {
-    SUPER(ListView) public : MultiListView(TheHub&);
+private:
+    using super = ListView;
+public:
+    MultiListView(TheHub&);
 
 protected:
     void selectRows(uint_vec);

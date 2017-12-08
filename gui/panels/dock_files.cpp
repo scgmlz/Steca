@@ -21,7 +21,10 @@ namespace gui {
 namespace panel {
 
 class FilesView : public views::MultiListView {
-    SUPER(views::MultiListView) public : FilesView(TheHub&);
+private:
+    using super = views::MultiListView;
+public:
+    FilesView(TheHub&);
 
 protected:
     using Model = models::FilesModel;

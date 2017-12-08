@@ -39,7 +39,8 @@ protected:
 //! TODO CHANGE NAME - it's also Levenberg-M., just with known derivatives
 
 class LinearLeastSquare : public Method {
-    SUPER(Method);
+private:
+    using super = Method;
 public:
     LinearLeastSquare();
 
@@ -48,7 +49,8 @@ protected:
 };
 
 class LevenbergMarquardt : public Method {
-    SUPER(Method);
+private:
+    using super = Method;
 public:
     LevenbergMarquardt();
 

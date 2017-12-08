@@ -31,9 +31,10 @@ namespace typ {
 class Function {
     public:
     class Factory : public typ::Factory<Function> {
-        SUPER(typ::Factory<Function>);
-    public:
-        owner_not_null<Function*> make(JsonObj const&) THROWS;
+private:
+    using super = typ::Factory<Function>;
+public:
+    owner_not_null<Function*> make(JsonObj const&) THROWS;
     };
 
 protected:
@@ -93,9 +94,9 @@ public:
 //! abstract function with parameters
 
 class SimpleFunction : public Function {
-    SUPER(Function);
+private:
+    using super = Function;
 public:
-
     void setParameterCount(uint);
     uint parameterCount() const;
     Parameter& parameterAt(uint);
@@ -116,7 +117,8 @@ protected:
 //! concrete function that is a sum of other functions
 
 class SumFunctions final : public Function {
-    SUPER(Function);
+private:
+    using super = Function;
 public:
     ~SumFunctions();
 

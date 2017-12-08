@@ -21,7 +21,10 @@ namespace gui {
 namespace output {
 
 class TabDiffractogramsSave : public TabSave {
-    SUPER(TabSave) public : TabDiffractogramsSave(TheHub&, Params&);
+private:
+    using super = TabSave;
+public:
+    TabDiffractogramsSave(TheHub&, Params&);
 
     uint currType() const;
     bool currentChecked() { return rbCurrent_->isChecked(); }
@@ -38,7 +41,10 @@ using OutputDataCollection = typ::vec<OutputData>;
 using OutputDataCollections = typ::vec<OutputDataCollection>;
 
 class DiffractogramsFrame : public Frame {
-    SUPER(Frame) public : DiffractogramsFrame(TheHub&, rcstr title, QWidget*);
+private:
+    using super = Frame;
+public:
+    DiffractogramsFrame(TheHub&, rcstr title, QWidget*);
 
 protected:
     TabDiffractogramsSave* tabSave_;

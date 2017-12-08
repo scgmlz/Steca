@@ -28,7 +28,8 @@ void initFactory();
 // a polynom(ial)
 
 class Polynom : public typ::SimpleFunction {
-    SUPER(typ::SimpleFunction);
+private:
+    using super = typ::SimpleFunction;
 public:
     Polynom(uint degree = 0);
 
@@ -52,7 +53,8 @@ public:
 enum class ePeakType { RAW, GAUSSIAN, LORENTZIAN, PSEUDOVOIGT1, PSEUDOVOIGT2, NUM_TYPES };
 
 class PeakFunction : public typ::SimpleFunction {
-    SUPER(typ::SimpleFunction);
+private:
+    using super = typ::SimpleFunction;
 public:
     static PeakFunction* factory(ePeakType);
 
@@ -96,7 +98,8 @@ protected:
 };
 
 class Raw : public PeakFunction {
-    SUPER(PeakFunction);
+private:
+    using super = PeakFunction;
 public:
     Raw();
 
@@ -126,7 +129,8 @@ private:
 };
 
 class Gaussian : public PeakFunction {
-    SUPER(PeakFunction);
+private:
+    using super = PeakFunction;
 public:
     enum { parAMPL, parXSHIFT, parSIGMA };
 
@@ -150,7 +154,8 @@ public:
 };
 
 class Lorentzian : public PeakFunction {
-    SUPER(PeakFunction);
+private:
+    using super = PeakFunction;
 public:
     enum { parAMPL, parXSHIFT, parGAMMA };
 
@@ -174,7 +179,8 @@ public:
 };
 
 class PseudoVoigt1 : public PeakFunction {
-    SUPER(PeakFunction);
+private:
+    using super = PeakFunction;
 public:
     enum { parAMPL, parXSHIFT, parSIGMAGAMMA, parETA };
 
@@ -198,7 +204,8 @@ public:
 };
 
 class PseudoVoigt2 : public PeakFunction {
-    SUPER(PeakFunction);
+private:
+    using super = PeakFunction;
 public:
     enum { parAMPL, parXSHIFT, parSIGMA, parGAMMA, parETA };
 

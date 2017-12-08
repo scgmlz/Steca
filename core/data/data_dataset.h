@@ -107,7 +107,8 @@ private:
 };
 
 class OneDatasets : public typ::vec<shp_OneDataset> {
-    SUPER(typ::vec<shp_OneDataset>);
+private:
+    using super = typ::vec<shp_OneDataset>;
 public:
     typ::size2d imageSize() const;
     typ::shp_Image foldedImage() const;
@@ -115,8 +116,8 @@ public:
 
 // 1 or more OneDataset(s)
 class Dataset final : public OneDatasets {
-    SUPER(OneDatasets);
-    friend class Datasets;
+private:
+    using super = OneDatasets;friend class Datasets;
 
 public:
     Dataset();
@@ -150,7 +151,8 @@ private:
 };
 
 class Datasets final : public typ::vec<shp_Dataset> {
-    SUPER(typ::vec<shp_Dataset>);
+private:
+    using super = typ::vec<shp_Dataset>;
 public:
     Datasets();
 

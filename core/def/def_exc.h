@@ -22,8 +22,8 @@
 
 // An exception that carries a message.
 class Exception : public QException {
-    SUPER(QException) protected : Exception(rcstr msg, bool silent) noexcept;
-
+private:
+    using super = QException;
 public:
     Exception() noexcept;
     Exception(rcstr msg) noexcept;
@@ -39,6 +39,7 @@ public:
     void raise() const;
 
 protected:
+    Exception(rcstr msg, bool silent) noexcept;
     str msg_;
     QByteArray msg8bit_;
     bool silent_;

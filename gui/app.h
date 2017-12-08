@@ -25,7 +25,10 @@ public:
 };
 
 class App : public QApplication {
-    SUPER(QApplication) public : App(int& argc, char* argv[]);
+private:
+    using super = QApplication;
+public:
+    App(int& argc, char* argv[]);
 
     int exec();
 

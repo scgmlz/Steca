@@ -31,10 +31,11 @@ enum class eFittingTab {
 };
 
 class TheHubSignallingBase : public QObject {
-    SUPER(QObject);
-    Q_OBJECT friend class RefHub;
-
 private:
+    using super = QObject;
+    Q_OBJECT
+    friend class RefHub;
+
     TheHub& asHub();
 
 protected:

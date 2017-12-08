@@ -30,11 +30,6 @@
 
 #endif
 
-// alias for the super class
-#define SUPER(cls)                                                         \
-private:                                                                   \
-    using super = cls;
-
 // exception specification macro
 #ifdef Q_OS_WIN
 

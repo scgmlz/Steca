@@ -24,7 +24,10 @@ namespace panel {
 class ImageWidget;
 
 class TabsImages : public TabsPanel {
-    SUPER(TabsPanel) public : TabsImages(TheHub&);
+private:
+    using super = TabsPanel;
+public:
+    TabsImages(TheHub&);
 
 private:
     QPixmap makeBlankPixmap();

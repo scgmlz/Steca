@@ -229,8 +229,8 @@ void Params::saveSettings() const {
 }
 
 class TableModel : public models::TableModel {
-    SUPER(models::TableModel)
-
+private:
+    using super = models::TableModel;
 public:
     TableModel(TheHub&, uint numCols_);
 

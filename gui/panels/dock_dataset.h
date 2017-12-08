@@ -21,7 +21,10 @@ namespace gui {
 namespace panel {
 
 class DockDatasets : public DockWidget, protected RefHub {
-    SUPER(DockWidget) public : DockDatasets(TheHub&);
+private:
+    using super = DockWidget;
+public:
+    DockDatasets(TheHub&);
 
     QSpinBox* combineDatasets_;
 

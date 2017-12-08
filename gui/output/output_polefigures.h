@@ -21,7 +21,10 @@ namespace gui {
 namespace output {
 
 class TabGraph : public Tab {
-    SUPER(Tab) public : using deg = typ::deg;
+private:
+    using super = Tab;
+public:
+    using deg = typ::deg;
     using rad = typ::rad;
 
     TabGraph(TheHub&, Params&);
@@ -54,7 +57,10 @@ protected:
 };
 
 class TabPoleFiguresSave : public TabSave {
-    SUPER(TabSave) public : TabPoleFiguresSave(TheHub& hub, Params& params);
+private:
+    using super = TabSave;
+public:
+    TabPoleFiguresSave(TheHub& hub, Params& params);
 
     bool onlySelectedRefl() const;
     bool outputInten() const;
@@ -69,7 +75,10 @@ protected:
 };
 
 class PoleFiguresFrame : public Frame {
-    SUPER(Frame) public : PoleFiguresFrame(TheHub&, rcstr title, QWidget*);
+private:
+    using super = Frame;
+public:
+    PoleFiguresFrame(TheHub&, rcstr title, QWidget*);
 
 protected:
     TabGraph* tabGraph_;

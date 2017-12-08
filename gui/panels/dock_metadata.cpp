@@ -20,7 +20,10 @@ namespace gui {
 namespace panel {
 
 class MetadataView : public views::ListView {
-    SUPER(views::ListView) public : using Model = models::MetadataModel;
+private:
+    using super = views::ListView;
+public:
+    using Model = models::MetadataModel;
     MetadataView(TheHub&);
 
 protected:
