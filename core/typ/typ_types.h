@@ -16,9 +16,9 @@
 #define TYP_TYPES_H
 
 #include "typ/typ_angles.h"
+#include "typ/typ_qpair.h"
 #include "typ/typ_range.h"
 #include "typ/typ_strlst.h"
-#include "typ/typ_qpair.h"
 
 typedef float inten_t;
 typedef float fwhm_t;

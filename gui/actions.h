@@ -16,7 +16,6 @@
 #define ACTIONS_H
 
 #include "refhub.h"
-
 #include <QAction>
 
 namespace gui {

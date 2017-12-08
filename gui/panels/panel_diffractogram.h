@@ -15,9 +15,9 @@
 #ifndef PANEL_DIFFRACTOGRAM_H
 #define PANEL_DIFFRACTOGRAM_H
 
-#include "qcustomplot.h"
 #include "actions.h"
 #include "panel.h"
+#include "qcustomplot.h"
 
 namespace gui {
 namespace panel {

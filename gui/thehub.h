@@ -18,7 +18,6 @@
 #include "actions.h"
 #include "models.h"
 #include "session.h"
-
 #include <QSettings>
 
 class QSpinBox;

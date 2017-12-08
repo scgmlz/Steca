@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "typ_async.h"
-
 #include <QtWidgets/QProgressBar>
 
 TakesLongTime::TakesLongTime() {

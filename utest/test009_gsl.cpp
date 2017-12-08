@@ -1,6 +1,6 @@
-#include "gtest/gtest.h"
 #include "def/def_gsl.h"
 #include "def/def_gsl.h" // declares 'scoped'
+#include "gtest/gtest.h"
 
 TEST(GSL, NanInf) {
     double d;

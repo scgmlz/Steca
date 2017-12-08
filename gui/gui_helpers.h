@@ -17,7 +17,6 @@
 
 #include "def/defs.h"
 #include "typ/typ_strlst.h"
-
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDockWidget>

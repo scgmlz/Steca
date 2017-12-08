@@ -17,8 +17,8 @@ update history:
 
 ------------------------------------------------------------------------*/
 
-#ifndef CARESSGLOBALS_H
-#define CARESSGLOBALS_H 1
+#ifndef CAR_GLOBALS_H
+#define CAR_GLOBALS_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -1355,4 +1355,4 @@ struct perm_module_t {
 }
 #endif
 
-#endif /* CARESSGLOBALS_H */
+#endif // CAR_GLOBALS_H

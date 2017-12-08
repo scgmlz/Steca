@@ -12,13 +12,13 @@
 //
 // ************************************************************************** //
 
-#include "def/def_alg.h"
 #include "tabs_images.h"
 #include "colors.h"
+#include "def/def_alg.h"
 #include "gui_cfg.h"
 #include "thehub.h"
-#include <QPainter>
 #include <qmath.h>
+#include <QPainter>
 
 namespace gui {
 namespace panel {

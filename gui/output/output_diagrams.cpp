@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "def/def_alg.h"
 #include "output_diagrams.h"
+#include "def/def_alg.h"
 #include "thehub.h"
 
 namespace gui {

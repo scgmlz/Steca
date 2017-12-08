@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
-#include "typ/typ_qpair.h"
 #include "typ/typ_json.h"
+#include "typ/typ_qpair.h"
 
 
 TEST(qpair, Initialization) {

@@ -19,8 +19,8 @@
  *
  ***********************************************************************/
 
-#ifndef _MAR345_HEADER_H
-#define _MAR345_HEADER_H
+#ifndef MAR345_HEADER_H
+#define MAR345_HEADER_H
 
 #include <stdio.h>
 #include <string.h>
@@ -118,4 +118,4 @@ typedef struct {
 
 } MAR345_HEADER;
 
-#endif //_MAR345_HEADER_H
+#endif // MAR345_HEADER_H

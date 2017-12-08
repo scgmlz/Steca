@@ -1,6 +1,6 @@
-#include "gtest/gtest.h"
-#include "def/def_gsl.h"
 #include "def/def_exc.h"
+#include "def/def_gsl.h"
+#include "gtest/gtest.h"
 
 TEST(Exception, Basics) {
     EXPECT_THROW(THROW("Hello"), Exception);

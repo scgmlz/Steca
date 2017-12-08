@@ -18,9 +18,9 @@
 #ifndef DEF_GSL_H
 #define DEF_GSL_H
 
-#include <QtGlobal> // to define Q_OS_WIN
 #include "def/def_debug.h"
 #include "def/def_macros.h"
+#include <QtGlobal> // to define Q_OS_WIN
 
 // pointers that cannot be null
 

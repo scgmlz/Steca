@@ -13,9 +13,9 @@
 // ************************************************************************** //
 
 #include "dock_dataset.h"
+#include "views.h" // inheriting from
 #include "gui_cfg.h"
 #include "thehub.h"
-#include "views.h"
 
 namespace gui {
 namespace panel {

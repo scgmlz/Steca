@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "def/def_alg.h"
 #include "output_diffractograms.h"
+#include "def/def_alg.h"
 #include "thehub.h"
 #include <QTextStream>
 

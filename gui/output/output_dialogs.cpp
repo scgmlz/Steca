@@ -12,14 +12,13 @@
 //
 // ************************************************************************** //
 
-#include "def/def_alg.h"
 #include "output_dialogs.h"
 #include "calc/calc_polefigure.h"
 #include "config.h"
+#include "def/def_alg.h"
 #include "filedialog.h"
 #include "gui_cfg.h"
 #include "thehub.h"
-
 #include <QDir>
 #include <QHeaderView>
 #include <QProgressBar>

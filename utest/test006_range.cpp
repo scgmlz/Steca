@@ -1,7 +1,7 @@
-#include "gtest/gtest.h"
-#include "typ/typ_range.h"
-#include "typ/typ_json.h"
 #include "def/def_alg.h"
+#include "gtest/gtest.h"
+#include "typ/typ_json.h"
+#include "typ/typ_range.h"
 #include <vector>
 
 using typ::Range;

@@ -10,8 +10,8 @@
  *
  **********************************************************************/
 
-#ifndef _MAR300_HEADER_H
-#define _MAR300_HEADER_H
+#ifndef MAR300_HEADER_H
+#define MAR300_HEADER_H
 
 #include <stdio.h>
 #include <string.h>
@@ -60,4 +60,4 @@ typedef struct {
 
 } MAR300_HEADER;
 
-#endif //_MAR300_HEADER_H
+#endif // MAR300_HEADER_H

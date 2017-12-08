@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "def/def_alg.h"
 #include "session.h"
+#include "def/def_alg.h"
 #include "typ/typ_matrix.h"
 #include <qmath.h>
 

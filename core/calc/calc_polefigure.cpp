@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "def/def_alg.h"
 #include "calc_polefigure.h"
+#include "def/def_alg.h"
 #include <qmath.h>
 
 namespace calc {

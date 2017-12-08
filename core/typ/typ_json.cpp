@@ -13,11 +13,10 @@
 // ************************************************************************** //
 
 #include "typ_json.h"
-
 #include "def/def_exc.h"
 #include "typ/typ_ij.h"
-#include "typ/typ_range.h"
 #include "typ/typ_qpair.h"
+#include "typ/typ_range.h"
 #include <QStringList> // needed under Travis
 
 namespace json_key {

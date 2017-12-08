@@ -12,14 +12,13 @@
 //
 // ************************************************************************** //
 
-#include "def/def_alg.h"
 #include "output_polefigures.h"
 #include "colors.h"
+#include "def/def_alg.h"
 #include "thehub.h"
-
+#include <qmath.h>
 #include <QPainter>
 #include <QTextStream>
-#include <qmath.h>
 
 namespace gui {
 namespace output {

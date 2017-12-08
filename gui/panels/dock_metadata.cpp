@@ -13,8 +13,8 @@
 // ************************************************************************** //
 
 #include "dock_metadata.h"
+#include "views.h" // inheriting from
 #include "thehub.h"
-#include "views.h"
 
 namespace gui {
 namespace panel {

@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "def/def_alg.h"
 #include "typ_curve.h"
+#include "def/def_alg.h"
 
 namespace typ {
 

@@ -13,8 +13,8 @@
 // ************************************************************************** //
 
 #include "dock_files.h"
+#include "views.h" // inheriting from
 #include "thehub.h"
-#include "views.h"
 #include <QHeaderView>
 
 namespace gui {

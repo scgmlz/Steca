@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "def/def_alg.h"
 #include "panel_diffractogram.h"
+#include "def/def_alg.h"
 #include "gui_cfg.h"
 #include "thehub.h"
 

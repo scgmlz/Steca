@@ -12,13 +12,10 @@
 //
 // ************************************************************************** //
 
-#include "def/def_alg.h"
 #include "data/data_dataset.h"
-
-#include "3rdparty/Caress/raw.h" // inclusion order is critical !
-
+#include "def/def_alg.h"
 #include "io/io_io.h"
-
+#include "3rdparty/Caress/raw.h" // inclusion order is critical !
 #include <qmath.h>
 #include <sstream>
 

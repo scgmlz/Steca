@@ -12,9 +12,9 @@
 //
 // ************************************************************************** //
 
-#include "def/def_alg.h"
 #include "fit_methods.h"
 #include "LM/levmar.h"
+#include "def/def_alg.h"
 #include <qmath.h>
 
 namespace fit {

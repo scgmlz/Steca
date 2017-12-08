@@ -16,7 +16,6 @@
 #define ABOUT_H
 
 #include "thehub.h"
-
 #include <QDialog>
 
 namespace gui {

@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "def/def_alg.h"
 #include "calc_reflection_info.h"
+#include "def/def_alg.h"
 
 namespace calc {
 

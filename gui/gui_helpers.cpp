@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "def/def_alg.h"
 #include "gui_helpers.h"
+#include "def/def_alg.h"
 #include <QAction>
 #include <QGroupBox>
 
