@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/fit/fit_methods.cpp
-//! @brief     Implements  fit::{Method, LinearLeastSquare, LevenbergMarquardt}
+//! @brief     Implements  fit::{Method, LevenbergMarquardt}
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -57,41 +57,9 @@ void Method::callbackY(qreal* parValues, qreal* yValues, int /*parCount*/, int x
         yValues[i] = function_->y(xValues_[i], parValues);
 }
 
-LinearLeastSquare::LinearLeastSquare() {}
-
 template <typename T> T* remove_const(T const* t) {
     return const_cast<T*>(t);
 }
-
-void LinearLeastSquare::approximate(
-    qreal* params, // IO initial parameter estimates -> estimated solution
-    qreal const* paramsLimitMin, // I
-    qreal const* paramsLimitMax, // I
-    qreal* paramsError, // O
-    uint paramsCount, // I
-    qreal const* yValues, // I
-    uint dataPointsCount) // I
-{
-    DelegateCalculationDbl function(this, &LinearLeastSquare::callbackY);
-
-    // information regarding the minimization
-    double info[LM_INFO_SZ];
-
-    // output covariance matrix
-    qreal_vec covar(paramsCount * paramsCount);
-
-    uint const maxIterations = 1000;
-
-    dlevmar_bc_dif(
-        &function, params, remove_const(yValues), to_i(paramsCount), to_i(dataPointsCount),
-        remove_const(paramsLimitMin), remove_const(paramsLimitMax), NULL, maxIterations, NULL, info,
-        NULL, covar.data(), NULL);
-
-    for_i (paramsCount)
-        paramsError[i] = sqrt(covar[i * paramsCount + i]); // the diagonal
-}
-
-LevenbergMarquardt::LevenbergMarquardt() {}
 
 void LevenbergMarquardt::approximate(
     qreal* params, // IO initial parameter estimates -> estimated solution
