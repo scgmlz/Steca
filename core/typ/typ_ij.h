@@ -15,7 +15,7 @@
 #ifndef TYP_IJ_H
 #define TYP_IJ_H
 
-#include "def/def_cmp.h"
+#include "def/comparable.h"
 #include "def/exception.h"
 #include "def/macros.h"
 

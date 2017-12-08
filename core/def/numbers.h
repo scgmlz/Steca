@@ -18,7 +18,7 @@
 #ifndef DEF_GSL_H
 #define DEF_GSL_H
 
-#include "def/def_debug.h"
+#include "def/debug.h"
 #include "def/macros.h"
 #include <QtGlobal> // to define Q_OS_WIN
 

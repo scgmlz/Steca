@@ -15,7 +15,7 @@
 #ifndef TYP_RANGE_H
 #define TYP_RANGE_H
 
-#include "def/def_cmp.h"
+#include "def/comparable.h"
 #include "def/exception.h"
 #include "def/numbers.h"
 #include "typ/typ_vec.h"

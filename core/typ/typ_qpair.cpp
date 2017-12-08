@@ -15,7 +15,7 @@
 // ************************************************************************** //
 
 #include "typ_qpair.h"
-#include "def/def_cmp_impl.h"
+#include "def/comparators.h"
 #include "def/exception.h"
 #include "typ/typ_json.h"
 

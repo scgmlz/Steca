@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "typ_variant.h"
-#include "def/def_cmp_impl.h"
+#include "def/comparators.h"
 #include <QDate>
 
 namespace typ {

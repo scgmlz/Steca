@@ -15,7 +15,7 @@
 #ifndef SCOPED_H
 #define SCOPED_H
 
-#include "def/def_debug.h"
+#include "def/debug.h"
 #include <cstddef> // for size_t
 #include <type_traits> // for is_assignable
 

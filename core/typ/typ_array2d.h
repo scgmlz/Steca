@@ -15,7 +15,7 @@
 #ifndef TYP_ARRAY2D_H
 #define TYP_ARRAY2D_H
 
-#include "def/def_cmp.h"
+#include "def/comparable.h"
 #include "def/numbers.h"
 
 namespace typ {

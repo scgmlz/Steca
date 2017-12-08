@@ -15,7 +15,7 @@
 // ************************************************************************** //
 
 #include "typ_array2d.h"
-#include "def/def_cmp_impl.h"
+#include "def/comparators.h"
 
 namespace typ {
 
