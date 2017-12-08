@@ -16,8 +16,8 @@
 #define RANGE_H
 
 #include "def/comparable.h"
-#include "def/exception.h"
 #include "def/numbers.h"
+#include "typ/exception.h"
 #include "typ/vec.h"
 
 namespace typ {

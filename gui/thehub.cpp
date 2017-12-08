@@ -13,10 +13,10 @@
 // ************************************************************************** //
 
 #include "config.h"
-#include "def/exception.h"
 #include "def/idiomatic_for.h"
 #include "io/io_io.h"
 #include "mainwin.h"
+#include "typ/exception.h"
 #include "typ/range.h"
 #include "typ/str.h"
 #include <QDir>

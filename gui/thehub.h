@@ -16,10 +16,10 @@
 #define THEHUB_H
 
 #include "actions.h"
-#include "def/exception.h"
 #include "def/special_pointers.h"
 #include "models.h"
 #include "session.h"
+#include "typ/exception.h"
 #include "typ/range.h"
 #include "typ/str.h"
 #include <QSettings>

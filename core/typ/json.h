@@ -15,8 +15,8 @@
 #ifndef JSON_H
 #define JSON_H
 
-#include "def/exception.h"
 #include "def/numbers.h"
+#include "typ/exception.h"
 #include "typ/str.h"
 #include <QJsonArray>
 #include <QJsonObject>

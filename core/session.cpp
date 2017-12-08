@@ -13,9 +13,9 @@
 // ************************************************************************** //
 
 #include "session.h"
-#include "def/exception.h"
 #include "def/idiomatic_for.h"
 #include "typ/angles.h"
+#include "typ/exception.h"
 #include "typ/matrix.h"
 #include "typ/range.h"
 #include "typ/realpair.h"

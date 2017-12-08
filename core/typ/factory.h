@@ -15,9 +15,9 @@
 #ifndef FACTORY_H
 #define FACTORY_H
 
-#include "def/exception.h"
 #include "def/numbers.h"
 #include "def/special_pointers.h"
+#include "typ/exception.h"
 #include "typ/hash.h"
 #include "typ/str.h"
 

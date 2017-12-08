@@ -12,9 +12,9 @@
 //
 // ************************************************************************** //
 
-#include "def/exception.h"
 #include "def/idiomatic_for.h"
 #include "def/special_pointers.h"
+#include "typ/exception.h"
 #include "typ/fun.h"
 #include "typ/str.h"
 

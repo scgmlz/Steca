@@ -15,7 +15,7 @@
 // ************************************************************************** //
 
 #include "def/comparators.h"
-#include "def/exception.h"
+#include "typ/exception.h"
 #include "typ/ij.h"
 #include "typ/json.h"
 

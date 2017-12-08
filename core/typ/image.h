@@ -15,8 +15,8 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
-#include "def/exception.h"
 #include "typ/array2d.h"
+#include "typ/exception.h"
 #include "typ/range.h"
 #include "typ/types.h"
 #include <QSharedPointer>

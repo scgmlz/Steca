@@ -1,6 +1,6 @@
-#include "def/exception.h"
 #include "def/special_pointers.h"
 #include "gtest/gtest.h"
+#include "typ/exception.h"
 
 TEST(Exception, Basics) {
     EXPECT_THROW(THROW("Hello"), Exception);

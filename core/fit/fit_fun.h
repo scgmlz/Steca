@@ -15,8 +15,8 @@
 #ifndef FIT_FUN_H
 #define FIT_FUN_H
 
-#include "def/exception.h"
 #include "typ/curve.h"
+#include "typ/exception.h"
 #include "typ/range.h"
 #include "typ/realpair.h"
 #include "typ/types.h"

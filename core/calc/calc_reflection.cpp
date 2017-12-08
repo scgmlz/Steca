@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "calc_reflection.h"
-#include "def/exception.h"
+#include "typ/exception.h"
 #include "typ/range.h"
 #include "typ/str.h"
 

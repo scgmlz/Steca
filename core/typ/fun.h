@@ -15,8 +15,8 @@
 #ifndef FUN_H
 #define FUN_H
 
-#include "def/exception.h"
 #include "def/special_pointers.h"
+#include "typ/exception.h"
 #include "typ/factory.h"
 #include "typ/json.h"
 #include "typ/range.h"

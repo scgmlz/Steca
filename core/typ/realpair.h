@@ -16,8 +16,8 @@
 #define REALPAIR_H
 
 #include "def/comparable.h"
-#include "def/exception.h"
 #include "def/macros.h"
+#include "typ/exception.h"
 
 namespace typ {
 class JsonObj;
