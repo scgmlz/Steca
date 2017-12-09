@@ -36,7 +36,7 @@ public:
         super::clear();
     }
 
-    void insert(Key const& key, owner_not_null<Tp> t) {
+    void insert(Key const& key, not_null<Tp> t) {
         remove(key);
         super::insert(key, t);
     }
@@ -49,7 +49,7 @@ public:
 
     Tp value(Key const& key) { return super::value(key); }
 
-    owner<Tp> take(Key const& key) { return owner<Tp>(super::take(key)); }
+    Tp take(Key const& key) { return super::take(key); }
 };
 
 } // namespace typ

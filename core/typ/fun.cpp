@@ -28,7 +28,7 @@ namespace typ {
 //   class Function
 // ************************************************************************** //
 
-owner_not_null<Function*> Function::Factory::make(JsonObj const& obj) THROWS {
+not_null<Function*> Function::Factory::make(JsonObj const& obj) THROWS {
     str funType = obj.loadString(json_key::TYPE);
     Function* fun = super::make(funType);
 
@@ -36,12 +36,12 @@ owner_not_null<Function*> Function::Factory::make(JsonObj const& obj) THROWS {
 
     scoped<Function*> f(fun);
     fun->loadJson(obj); // may throw
-    return owner_not_null<Function*>::from(f.take());
+    return not_null<Function*>::from(f.take());
 }
 
 Function::Factory Function::factory_;
 
-void Function::addFactoryMaker(rcstr key, owner_not_null<Factory::MakerBase*> maker) {
+void Function::addFactoryMaker(rcstr key, not_null<Factory::MakerBase*> maker) {
     factory_.addMaker(key, maker);
 }
 
@@ -50,10 +50,10 @@ void Function::initFactory() {
 
     addFactoryMaker(
         json_fun_key::SUM,
-        owner_not_null<Factory::MakerBase*>::from(new Factory::Maker<SumFunctions>));
+        not_null<Factory::MakerBase*>::from(new Factory::Maker<SumFunctions>));
 }
 
-owner_not_null<Function*> Function::make(JsonObj const& obj) {
+not_null<Function*> Function::make(JsonObj const& obj) {
     return factory_.make(obj);
 }
 
@@ -154,7 +154,7 @@ SumFunctions::~SumFunctions() {
         delete f;
 }
 
-void SumFunctions::addFunction(owner_not_null<Function*> function) {
+void SumFunctions::addFunction(not_null<Function*> function) {
     uint parIndex = parameterCount();
     functions_.append(function);
 

@@ -23,8 +23,6 @@
 
 template <class P> class not_null {
     static_assert(std::is_assignable<P&, std::nullptr_t>::value, "no nullptr");
-    private:
-    explicit not_null(P p) : p_(p) { EXPECT(p_) }
 
 public:
     static not_null from(P p) { return not_null(p); }
@@ -55,6 +53,8 @@ public:
 private:
     P p_;
 
+    explicit not_null(P p) : p_(p) { EXPECT(p_) }
+
     // no pointer arithmetics
     not_null<P>& operator++() = delete;
     not_null<P>& operator--() = delete;
@@ -65,11 +65,6 @@ private:
     not_null<P>& operator-(size_t) = delete;
     not_null<P>& operator-=(size_t) = delete;
 };
-
-// to mark owning pointers (just a hint)
-
-template <class P> using owner = P;
-template <class P> using owner_not_null = not_null<P>;
 
 //! scoped pointer that auto-deletes what he has
 
@@ -86,7 +81,7 @@ public:
         p_ = ptr;
     }
 
-    owner<P> take() {
+    P take() {
         auto p = p_;
         p_ = nullptr;
         return p;

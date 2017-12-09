@@ -34,7 +34,7 @@ void initFactory() {
     ONLY_ONCE
 
     using F = typ::Function;
-    using O = owner_not_null<F::Factory::MakerBase*>;
+    using O = not_null<F::Factory::MakerBase*>;
 
     F::initFactory();
 
@@ -233,10 +233,7 @@ qreal Raw::dy(qreal, uint, qreal const*) const {
 qpair Raw::fittedPeak() const {
     if (qIsNaN(sum_y_))
         sum_y_ = fittedCurve_.sumY();
-
-    return qpair(
-        range_.center(), // approximate x
-        sum_y_);
+    return qpair(range_.center(), sum_y_);
 }
 
 fwhm_t Raw::fittedFWHM() const {
@@ -269,7 +266,6 @@ void Raw::prepareY() {
         x_count_ = fittedCurve_.count();
         dx_ = range_.width() / x_count_;
     }
-
     sum_y_ = NAN;
 }
 

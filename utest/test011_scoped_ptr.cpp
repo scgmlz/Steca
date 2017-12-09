@@ -30,7 +30,7 @@ TEST(ScopedPtr, Scoped) {
     }
     EXPECT_EQ(0, Counter::cnt);
 
-    owner<Counter*> raw;
+    Counter* raw;
 
     {
         scoped<Counter*> p(new Counter());

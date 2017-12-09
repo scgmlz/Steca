@@ -34,22 +34,21 @@ namespace typ {
 class Function {
     public:
     class Factory : public typ::Factory<Function> {
-private:
-    using super = typ::Factory<Function>;
-public:
-    owner_not_null<Function*> make(JsonObj const&) THROWS;
+    private:
+        using super = typ::Factory<Function>;
+    public:
+        not_null<Function*> make(JsonObj const&) THROWS;
     };
 
 protected:
     static Factory factory_;
 
 public:
-    static void addFactoryMaker(rcstr key, owner_not_null<Factory::MakerBase*>);
+    static void addFactoryMaker(rcstr key, not_null<Factory::MakerBase*>);
     static void initFactory();
 
-    static owner_not_null<Function*> make(JsonObj const&) THROWS;
+    static not_null<Function*> make(JsonObj const&) THROWS;
 
-public:
     class Parameter final {
         public:
         Parameter();
@@ -125,7 +124,7 @@ private:
 public:
     ~SumFunctions();
 
-    void addFunction(owner_not_null<Function*>);
+    void addFunction(not_null<Function*>);
 
     // aggregate parameter list for all added functions
     uint parameterCount() const;
