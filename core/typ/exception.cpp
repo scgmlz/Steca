@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "exception.h"
+#include <QtGlobal> // otherwise, strange bugs result (file loading fails silently, ...)
 
 #ifdef QT_NO_EXCEPTIONS
 #error needs exception handling
@@ -42,5 +43,5 @@ Exception* Exception::clone() const {
 }
 
 void Exception::raise() const {
-    throw * this;
+    throw *this;
 }
