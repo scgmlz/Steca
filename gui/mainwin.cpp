@@ -70,6 +70,7 @@ void MainWin::initMenus() {
     menuImage_ = mbar->addMenu("&Image");
     menuDgram_ = mbar->addMenu("Di&ffractogram");
     menuOutput_ = mbar->addMenu("&Output");
+    menuView_ = mbar->addMenu("&View");
     menuHelp_ = mbar->addMenu("&Help");
 
     addActions(

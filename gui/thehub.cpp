@@ -260,7 +260,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
     QJsonDocument doc(QJsonDocument::fromJson(json, &parseError));
     RUNTIME_CHECK(QJsonParseError::NoError == parseError.error, "Error parsing session file");
 
-    TakesLongTime __;
+    //TakesLongTime __;
 
     clearSession();
 
@@ -271,7 +271,9 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
         str filePath = file.toString();
         QDir dir(filePath);
         RUNTIME_CHECK(dir.makeAbsolute(), str("Invalid file path: %1").arg(filePath));
+        DM("loadSession: beg add File " << dir.absolutePath().toUtf8().constData())
         addFile(dir.absolutePath());
+        DM("loadSession: end add File " << dir.absolutePath().toUtf8().constData())
     }
 
     auto sels = top.loadArr(config_key::SELECTED_FILES, true);
@@ -326,21 +328,26 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
 }
 
 void TheHub::addFile(rcstr filePath) THROWS {
+    DM("hub::addFile beg")
     if (!filePath.isEmpty() && !session_->hasFile(filePath)) {
         {
-            TakesLongTime __;
+            //TakesLongTime __;
+            DM("hub::addFile cal")
             session_->addFile(io::load(filePath));
         }
-
+        DM("hub::addFile sig")
         emit sigFilesChanged();
     }
+    DM("hub::addFile end")
 }
 
 void TheHub::addFiles(str_lst const& filePaths) THROWS {
-    TakesLongTime __;
+    //TakesLongTime __;
 
+    DM("hub::addFiles beg")
     for (auto& filePath : filePaths)
         addFile(filePath);
+    DM("hub::addFiles end")
 }
 
 void TheHub::collectDatasetsFromFiles(uint_vec is, pint by) {

@@ -56,13 +56,6 @@ static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr 
     }
 }
 
-static void waiting(bool on) {
-    if (on)
-        QApplication::setOverrideCursor(Qt::WaitCursor);
-    else
-        QApplication::restoreOverrideCursor();
-}
-
 static QMainWindow* mainWindow;
 
 static void logMessage(rcstr msg, MessageLogger::eType type) {
@@ -94,7 +87,12 @@ int App::exec() {
         mainWindow = &mainWin;
 
         oldHandler = qInstallMessageHandler(messageHandler);
-        TakesLongTime::handler = waiting;
+        TakesLongTime::handler = [](bool on)->void {
+            if (on)
+                QApplication::setOverrideCursor(Qt::WaitCursor);
+            else
+                QApplication::restoreOverrideCursor();
+        };
         MessageLogger::handler = logMessage;
 
         // the main loop
