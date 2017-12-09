@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/app.h
-//! @brief     Defines classes NoWarnings, App
+//! @brief     Defines class App
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -16,12 +16,6 @@
 #define APP_H
 
 #include <QApplication>
-
-class NoWarnings {
-public:
-    NoWarnings();
-    ~NoWarnings();
-};
 
 class App : public QApplication {
 private:

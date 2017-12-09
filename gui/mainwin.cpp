@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/mainwin.cpp
-//! @brief     Implements ...
+//! @brief     Implements class MainWin
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -67,7 +67,6 @@ void MainWin::initMenus() {
 #endif
 
     menuFile_ = mbar->addMenu("&File");
-    menuView_ = mbar->addMenu("&View");
     menuImage_ = mbar->addMenu("&Image");
     menuDgram_ = mbar->addMenu("Di&ffractogram");
     menuOutput_ = mbar->addMenu("&Output");
@@ -218,7 +217,6 @@ void MainWin::checkUpdate() {
 }
 
 void MainWin::checkUpdate(bool completeReport) {
-    NoWarnings __no_warnings__;
 
     QNetworkRequest req;
 
@@ -437,4 +435,5 @@ void MainWin::viewReset() {
     viewDatasets(true);
     viewDatasetInfo(true);
 }
-}
+
+} // namespace gui

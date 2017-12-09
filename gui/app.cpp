@@ -91,19 +91,17 @@ int App::exec() {
     try {
         gui::MainWin mainWin;
         mainWin.show();
+        mainWindow = &mainWin;
 
         oldHandler = qInstallMessageHandler(messageHandler);
-
         TakesLongTime::handler = waiting;
-
-        mainWindow = &mainWin;
         MessageLogger::handler = logMessage;
 
+        // the main loop
         int res = super::exec();
 
         MessageLogger::handler = nullptr;
         TakesLongTime::handler = nullptr;
-
         qInstallMessageHandler(nullptr);
 
         return res;
@@ -123,12 +121,4 @@ bool App::notify(QObject* receiver, QEvent* event) {
     } catch (std::exception const& e) { qWarning("Error: %s", e.what()); }
 
     return false;
-}
-
-NoWarnings::NoWarnings() {
-    ++noWarning;
-}
-
-NoWarnings::~NoWarnings() {
-    --noWarning;
 }
