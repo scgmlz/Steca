@@ -18,7 +18,6 @@
 #include "data/dataset.h"
 #include "typ/geometry.h"
 #include "typ/image_transform.h"
-#include "typ/range.h"
 
 namespace calc {
 

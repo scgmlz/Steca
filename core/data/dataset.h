@@ -18,11 +18,7 @@
 #include "typ/angles.h"
 #include "typ/curve.h"
 #include "typ/image.h"
-#include "typ/range.h"
-#include "typ/str.h"
 #include "typ/variant.h"
-#include "typ/vec.h"
-#include <QSharedPointer>
 
 namespace core {
 class Session;
@@ -115,7 +111,6 @@ private:
 
 class OneDatasets : public typ::vec<shp_OneDataset> {
 private:
-    using super = typ::vec<shp_OneDataset>;
 public:
     typ::size2d imageSize() const;
     typ::shp_Image foldedImage() const;

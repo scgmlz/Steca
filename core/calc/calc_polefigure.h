@@ -16,9 +16,7 @@
 #define CALC_POLEFIGURE_H
 
 #include "calc_reflection_info.h"
-#include "typ/angles.h"
 #include "typ/async.h"
-#include "typ/vec.h"
 
 namespace calc {
 

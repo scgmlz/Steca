@@ -16,8 +16,6 @@
 #define IO_IO_H
 
 #include "data/datafile.h"
-#include "typ/exception.h"
-#include "typ/str.h"
 
 namespace io {
 

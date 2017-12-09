@@ -19,7 +19,6 @@
 #include "calc/calc_reflection.h"
 #include "calc/calc_reflection_info.h"
 #include "data/datafile.h"
-#include "def/special_pointers.h"
 #include "typ/async.h"
 #include "typ/cache.h"
 #include "typ/exception.h"

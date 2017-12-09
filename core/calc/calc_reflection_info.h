@@ -16,9 +16,6 @@
 #define CALC_REFLECTION_INFO_H
 
 #include "data/dataset.h"
-#include "typ/angles.h"
-#include "typ/range.h"
-#include "typ/vec.h"
 
 using typ::deg;
 

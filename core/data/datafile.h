@@ -16,9 +16,7 @@
 #define DATAFILE_H
 
 #include "dataset.h"
-#include "typ/str.h"
 #include <QFileInfo>
-#include <QSharedPointer>
 
 namespace data {
 
