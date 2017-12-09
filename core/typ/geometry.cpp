@@ -19,6 +19,7 @@
 #include "typ/range.h"
 #include "typ/vec.h"
 #include <qmath.h>
+#include <iostream> // for debugging
 
 namespace typ {
 
@@ -46,11 +47,15 @@ ImageCut::ImageCut(uint left_, uint top_, uint right_, uint bottom_)
     : left(left_), top(top_), right(right_), bottom(bottom_) {}
 
 void ImageCut::update(bool topLeftFirst, bool linked, typ::size2d size) {
+    std::cerr << "DEBUG update\n";
+    WT(size.h)
+    WT(size.w)
     if (size.isEmpty()) {
+        std::cerr << "DEBUG size is empty\n";
         *this = ImageCut();
         return;
     }
-
+    std::cerr << "DEBUG size is not empty\n";
     auto limit = [linked](uint& m1, uint& m2, uint maxTogether)->void {
         if (linked && m1 + m2 >= maxTogether) {
             m1 = m2 = qMax((maxTogether - 1) / 2, 0u);
@@ -93,7 +98,8 @@ Angles::Angles() : Angles(0, 0) {}
 Angles::Angles(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
 
 AngleMap::Key::Key(
-    Geometry const& geometry_, size2d const& size_, ImageCut const& cut_, IJ const& midPix_, deg midTth_)
+    Geometry const& geometry_, size2d const& size_, ImageCut const& cut_,
+    IJ const& midPix_, deg midTth_)
     : geometry(geometry_), size(size_), cut(cut_), midPix(midPix_), midTth(midTth_) {}
 
 int AngleMap::Key::compare(AngleMap::Key const& that) const {
