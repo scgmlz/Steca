@@ -19,7 +19,7 @@
 // debugging helpers
 
 #ifndef QT_NO_DEBUG
-
+#include <QDebug>
 
 /* TRace: trace prints; takes several things separated by << e.g.
  * TR(var)
