@@ -218,7 +218,7 @@ void MainWin::checkUpdate() {
 }
 
 void MainWin::checkUpdate(bool completeReport) {
-    NoWarnings _;
+    NoWarnings __no_warnings__;
 
     QNetworkRequest req;
 

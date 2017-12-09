@@ -70,9 +70,18 @@ static void logMessage(rcstr msg, MessageLogger::eType type) {
 
     str statusMsg;
     switch (type) {
-    case MessageLogger::INFO: statusMsg = msg; break;
-    case MessageLogger::POPUP: QMessageBox::information(mainWindow, EMPTY_STR, msg);
-    case MessageLogger::WARN: statusMsg = "** " + msg + " **"; break;
+    case MessageLogger::INFO:
+        TR("INFO " << msg);
+        statusMsg = msg;
+        break;
+    case MessageLogger::POPUP:
+        TR("POPUP " << msg);
+        QMessageBox::information(mainWindow, EMPTY_STR, msg);
+
+    case MessageLogger::WARN:
+        TR("WARNING " << msg);
+        statusMsg = "** " + msg + " **";
+        break;
     }
 
     mainWindow->statusBar()->showMessage(statusMsg, 3000);
@@ -93,7 +102,6 @@ int App::exec() {
         int res = super::exec();
 
         MessageLogger::handler = nullptr;
-
         TakesLongTime::handler = nullptr;
 
         qInstallMessageHandler(nullptr);
