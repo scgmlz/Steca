@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/actions.h
-//! @brief     Defines ...
+//! @brief     Defines classes Action, TriggerAction, ToggleAction, Actions
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -72,8 +72,10 @@ public:
         *outputDiagrams, *outputDiffractograms;
 
 private:
-    Action& trg(Action*& action, rcstr text);
-    Action& tgl(Action*& action, rcstr text);
+    Action& trg(Action*& action, rcstr text); //! < trigger
+    Action& tgl(Action*& action, rcstr text); //! < toggle
 };
-}
+
+} // namespace gui
+
 #endif // ACTIONS_H

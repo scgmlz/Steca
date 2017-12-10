@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/panels/dock_files.cpp
-//! @brief     Implements ...
+//! @brief     Implements class DockFiles; defines and implements class FileViews
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -20,6 +20,10 @@
 namespace gui {
 namespace panel {
 
+// ************************************************************************** //
+//  class FilesView (definition)
+// ************************************************************************** //
+
 class FilesView : public views::MultiListView {
 private:
     using super = views::MultiListView;
@@ -34,6 +38,10 @@ protected:
     void removeSelected();
     void recollect();
 };
+
+// ************************************************************************** //
+//  class FilesView (implementation)
+// ************************************************************************** //
 
 FilesView::FilesView(TheHub& hub) : super(hub) {
     setModel(&hub.filesModel);
@@ -76,6 +84,10 @@ void FilesView::recollect() {
     hub_.collectDatasetsFromFiles(rows);
 }
 
+// ************************************************************************** //
+//  class DocFiles
+// ************************************************************************** //
+
 DockFiles::DockFiles(TheHub& hub) : super("Files", "dock-files", Qt::Vertical), RefHub(hub) {
     auto& actions = hub_.actions;
 
@@ -104,5 +116,6 @@ DockFiles::DockFiles(TheHub& hub) : super("Files", "dock-files", Qt::Vertical), 
         corrFile_->setText(file.isNull() ? EMPTY_STR : file->fileName());
     });
 }
-}
-}
+
+} // namespace panel
+} // namespace gui

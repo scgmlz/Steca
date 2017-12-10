@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/refhub.h
-//! @brief     Defines classes TheHub and RefHub
+//! @brief     Defines classes TheHubSignallingBase and RefHub
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -21,7 +21,7 @@
 
 namespace gui {
 
-// The base class of the hub that signalls.
+// The base class of the hub that signals.
 
 class TheHub;
 
@@ -90,7 +90,8 @@ protected:
     };
 };
 
-// The base class that refers to the hub + support methods.
+
+//! The base class that refers to the hub + support methods.
 
 class RefHub {
 public:

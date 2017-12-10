@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/panels/dock_files.h
-//! @brief     Defines ...
+//! @brief     Defines class DockFiles
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -30,6 +30,7 @@ private:
     class FilesView* filesView_;
     class LineView* corrFile_;
 };
+
 }
 }
 #endif // DOCK_FILES_H

@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/actions.cpp
-//! @brief     Implements ...
+//! @brief     Implements classes Action, TriggerAction, ToggleAction, Actions
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -13,11 +13,15 @@
 // ************************************************************************** //
 
 #include "thehub.h"
-#include "typ/str.h"
 
 namespace gui {
 
-Action::Action(rcstr text, QObject* parent) : super(text, parent) {
+// ************************************************************************** //
+//  class Action
+// ************************************************************************** //
+
+Action::Action(rcstr text, QObject* parent)
+    : super(text, parent) {
     setToolTip(text.toLower());
 }
 
@@ -46,9 +50,19 @@ Action& Action::alt(rcstr /*text2*/) {
     return *this;
 }
 
-TriggerAction::TriggerAction(rcstr text, QObject* parent) : super(text, parent) {}
+// ************************************************************************** //
+//  class TriggerAction
+// ************************************************************************** //
 
-ToggleAction::ToggleAction(rcstr text, QObject* parent) : super(text, parent), text1_(text) {
+TriggerAction::TriggerAction(rcstr text, QObject* parent)
+    : super(text, parent) {}
+
+// ************************************************************************** //
+//  class ToggleAction
+// ************************************************************************** //
+
+ToggleAction::ToggleAction(rcstr text, QObject* parent)
+    : super(text, parent), text1_(text) {
     setCheckable(true);
 }
 
@@ -59,9 +73,12 @@ Action& ToggleAction::alt(rcstr text2) {
         setText(text);
         setToolTip(text);
     });
-
     return super::alt(text2);
 }
+
+// ************************************************************************** //
+//  class Actions
+// ************************************************************************** //
 
 Actions::Actions(TheHub& hub) : super(hub) {
     using QKey = QKeySequence;
@@ -137,9 +154,7 @@ Actions::Actions(TheHub& hub) : super(hub) {
     // handle signals
 
     onSigFilesSelected([this]() { remFile->setEnabled(!hub_.collectedFromFiles().isEmpty()); });
-
     onSigCorrFile([this](data::shp_File file) { remCorr->setEnabled(!file.isNull()); });
-
     onSigCorrEnabled([this](bool on) { enableCorr->setChecked(on); });
 
     auto deselect = [this]() {
@@ -149,9 +164,7 @@ Actions::Actions(TheHub& hub) : super(hub) {
     };
 
     onSigGeometryChanged([deselect]() { deselect(); });
-
     onSigDatasetsChanged([deselect]() { deselect(); });
-
     onSigCorrEnabled([deselect]() { deselect(); });
 }
 
@@ -162,4 +175,5 @@ Action& Actions::trg(Action*& action, rcstr text) {
 Action& Actions::tgl(Action*& action, rcstr text) {
     return *(action = new ToggleAction(text, &hub_));
 }
-}
+
+} // namespace gui
