@@ -131,8 +131,8 @@ public:
     void loadSession(QFileInfo const&) THROWS;
     void loadSession(QByteArray const&) THROWS;
 
-    void addFile(rcstr filePath) THROWS;
-    void addFiles(str_lst const& filePaths) THROWS;
+    void addGivenFile(rcstr filePath) THROWS;
+    void addGivenFiles(str_lst const& filePaths) THROWS;
 
 private:
     uint_vec collectFromFiles_;

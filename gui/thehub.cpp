@@ -272,7 +272,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
         QDir dir(filePath);
         RUNTIME_CHECK(dir.makeAbsolute(), str("Invalid file path: %1").arg(filePath));
         DM("loadSession: beg add File " << dir.absolutePath().toUtf8().constData())
-        addFile(dir.absolutePath());
+        addGivenFile(dir.absolutePath());
         DM("loadSession: end add File " << dir.absolutePath().toUtf8().constData())
     }
 
@@ -327,27 +327,27 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
     emit sigReflectionsChanged();
 }
 
-void TheHub::addFile(rcstr filePath) THROWS {
-    DM("hub::addFile beg")
+void TheHub::addGivenFile(rcstr filePath) THROWS {
+    DM("hub::addGivenFile beg")
     if (!filePath.isEmpty() && !session_->hasFile(filePath)) {
         {
             //TakesLongTime __;
-            DM("hub::addFile cal")
-            session_->addFile(io::load(filePath));
+            DM("hub::addGivenFile cal")
+            session_->addGivenFile(io::load(filePath));
         }
-        DM("hub::addFile sig")
+        DM("hub::addGivenFile sig")
         emit sigFilesChanged();
     }
-    DM("hub::addFile end")
+    DM("hub::addGivenFile end")
 }
 
-void TheHub::addFiles(str_lst const& filePaths) THROWS {
+void TheHub::addGivenFiles(str_lst const& filePaths) THROWS {
     //TakesLongTime __;
 
-    DM("hub::addFiles beg")
+    DM("hub::addGivenFiles beg")
     for (auto& filePath : filePaths)
-        addFile(filePath);
-    DM("hub::addFiles end")
+        addGivenFile(filePath);
+    DM("hub::addGivenFiles end")
 }
 
 void TheHub::collectDatasetsFromFiles(uint_vec is, pint by) {

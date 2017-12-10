@@ -67,13 +67,13 @@ bool Session::hasFile(rcstr fileName) const {
     return false;
 }
 
-void Session::addFile(data::shp_File file) THROWS {
-    DM("ses::addFile beg")
+void Session::addGivenFile(data::shp_File file) THROWS {
+    DM("ses::addGivenFile beg")
     setImageSize(file->datasets().imageSize());
     // all ok
-    DM("ses::addFile mid")
+    DM("ses::addGivenFile mid")
     files_.append(file);
-    DM("ses::addFile end")
+    DM("ses::addGivenFile end")
 }
 
 void Session::remFile(uint i) {
