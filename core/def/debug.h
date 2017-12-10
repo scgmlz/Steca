@@ -64,8 +64,8 @@
 
 #else
 
-#define TR(what) \
-    {}
+#define DM(what) {}
+#define TR(what) {}
 
 #define EXPECT(cond)
 #define ENSURE(cond)

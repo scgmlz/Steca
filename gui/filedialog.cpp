@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/filedialog.cpp
-//! @brief     Implements ...
+//! @brief     Implements functions openFileName(s), saveFileName, saveDirName in ns file_dialog
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -23,6 +23,10 @@ namespace file_dialog {
 
 // typedef QModelIndex idx;
 typedef QModelIndex const& rcidx;
+
+// ************************************************************************** //
+//  class OpenFileProxyModel (file scope)
+// ************************************************************************** //
 
 class OpenFileProxyModel : public QSortFilterProxyModel {
 private:
@@ -77,42 +81,28 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
     return super::data(idx, role);
 }
 
-class OpenFileDialog : public QFileDialog {
-public:
-    using QFileDialog::QFileDialog;
-    void init();
-};
+// ************************************************************************** //
+//  exported functions
+// ************************************************************************** //
 
-void OpenFileDialog::init() {
-    setOption(DontUseNativeDialog);
-    setViewMode(Detail);
-    setAcceptMode(AcceptOpen);
-    setReadOnly(true);
-    setProxyModel(new OpenFileProxyModel);
+str_lst openFileNames(QWidget* parent, rcstr caption, rcstr dir, rcstr filter, bool plural) {
+    QFileDialog dlg(parent, caption, dir, filter);
+    dlg.setOption(QFileDialog::DontUseNativeDialog);
+    dlg.setViewMode(QFileDialog::Detail);
+    dlg.setAcceptMode(QFileDialog::AcceptOpen);
+    dlg.setReadOnly(true);
+    dlg.setProxyModel(new OpenFileProxyModel);
+    dlg.setFileMode(plural ? QFileDialog::ExistingFiles : QFileDialog::ExistingFile);
+    if (dlg.exec())
+        return dlg.selectedFiles();
+    return {};
 }
 
 str openFileName(QWidget* parent, rcstr caption, rcstr dir, rcstr filter) {
-    OpenFileDialog dlg(parent, caption, dir, filter);
-    dlg.init();
-    dlg.setFileMode(QFileDialog::ExistingFile);
-
-    str fileName;
-    if (dlg.exec() && !dlg.selectedFiles().isEmpty())
-        fileName = dlg.selectedFiles().first();
-
-    return fileName;
-}
-
-str_lst openFileNames(QWidget* parent, rcstr caption, rcstr dir, rcstr filter) {
-    OpenFileDialog dlg(parent, caption, dir, filter);
-    dlg.init();
-    dlg.setFileMode(QFileDialog::ExistingFiles);
-
-    str_lst fileNames;
-    if (dlg.exec())
-        fileNames = dlg.selectedFiles();
-
-    return fileNames;
+    str_lst fileNames = openFileNames(parent, caption, dir, filter, false);
+    if (fileNames.isEmpty())
+        return "";
+    return fileNames.first();
 }
 
 str saveFileName(QWidget* parent, rcstr caption, rcstr dir, rcstr filter) {
@@ -146,5 +136,6 @@ str saveDirName(QWidget* parent, rcstr caption, rcstr dir) {
 
     return dirName;
 }
-}
-}
+
+} // namespace file_dialog
+} // namespace gui

@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "session.h"
+#include "def/debug.h"
 #include "def/idiomatic_for.h"
 #include "typ/angles.h"
 #include "typ/exception.h"
@@ -71,7 +72,6 @@ void Session::addGivenFile(data::shp_File file) THROWS {
     DM("ses::addGivenFile beg")
     setImageSize(file->datasets().imageSize());
     // all ok
-    DM("ses::addGivenFile mid")
     files_.append(file);
     DM("ses::addGivenFile end")
 }

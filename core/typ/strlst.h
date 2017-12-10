@@ -32,6 +32,7 @@ public:
     using super::count;
     using super::clear;
     using super::isEmpty;
+    using super::first;
     using super::begin;
     using super::end;
     using super::append;
