@@ -46,14 +46,14 @@ class Geometry {
 // image cut (margins)
 
 class ImageCut {
-    public:
+public:
 
     uint left, top, right, bottom;
 
     ImageCut();
     ImageCut(uint left, uint top, uint right, uint bottom);
     COMPARABLE(ImageCut const&);
-    void update(bool topLeftFirst, bool linked, typ::size2d size);
+    void update(bool topLeftFirst, bool linked, ImageCut const& cut, typ::size2d size);
 
     size2d marginSize() const;
 };

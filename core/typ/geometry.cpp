@@ -46,16 +46,11 @@ ImageCut::ImageCut() : ImageCut(0, 0, 0, 0) {}
 ImageCut::ImageCut(uint left_, uint top_, uint right_, uint bottom_)
     : left(left_), top(top_), right(right_), bottom(bottom_) {}
 
-void ImageCut::update(bool topLeftFirst, bool linked, typ::size2d size) {
-    std::cerr << "DEBUG update\n";
-    WT(size.h)
-    WT(size.w)
+void ImageCut::update(bool topLeftFirst, bool linked, ImageCut const& cut, typ::size2d size) {
     if (size.isEmpty()) {
-        std::cerr << "DEBUG size is empty\n";
         *this = ImageCut();
         return;
     }
-    std::cerr << "DEBUG size is not empty\n";
     auto limit = [linked](uint& m1, uint& m2, uint maxTogether)->void {
         if (linked && m1 + m2 >= maxTogether) {
             m1 = m2 = qMax((maxTogether - 1) / 2, 0u);
@@ -66,7 +61,7 @@ void ImageCut::update(bool topLeftFirst, bool linked, typ::size2d size) {
     };
 
     // make sure that cut values are valid; in the right order
-    uint _left = this->left, _top = this->top, _right = this->right, _bottom = this->bottom;
+    uint _left = cut.left, _top = cut.top, _right = cut.right, _bottom = cut.bottom;
 
     if (topLeftFirst) {
         limit(_top, _bottom, size.h);

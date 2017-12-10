@@ -75,7 +75,7 @@ public:
 
     void setImageTransformMirror(bool);
     void setImageTransformRotate(typ::ImageTransform const&);
-    void setImageCut(bool topLeftFirst, bool linked, typ::ImageCut const&);
+    void setImageCut(bool isTopOrLeft, bool linked, typ::ImageCut const&);
     void setGeometry(preal detectorDistance, preal pixSize, typ::IJ const& midPixOffset);
     void setGammaRange(typ::Range const& r) { gammaRange_ = r; }
     void setBgRanges(typ::Ranges const& rr) { bgRanges_ = rr; }

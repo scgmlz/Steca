@@ -165,7 +165,7 @@ public:
     void tryEnableCorrection(bool);
 
     typ::ImageCut const& imageCut() const;
-    void setImageCut(bool topLeft, bool linked, typ::ImageCut const&);
+    void setImageCut(bool isTopOrLeft, bool linked, typ::ImageCut const&);
 
     typ::Geometry const& geometry() const;
     void setGeometry(preal detectorDistance, preal pixSize, typ::IJ const& midPixOffset);

@@ -388,8 +388,8 @@ typ::ImageCut const& TheHub::imageCut() const {
     return session_->imageCut();
 }
 
-void TheHub::setImageCut(bool topLeft, bool linked, typ::ImageCut const& cut) {
-    session_->setImageCut(topLeft, linked, cut);
+void TheHub::setImageCut(bool isTopOrLeft, bool linked, typ::ImageCut const& cut) {
+    session_->setImageCut(isTopOrLeft, linked, cut);
     emit sigGeometryChanged();
 }
 

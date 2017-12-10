@@ -145,15 +145,15 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
         cutRight_ = spinCell(gui_cfg::em4, 0);
         cutBottom_ = spinCell(gui_cfg::em4, 0);
 
-        auto setImageCut = [this](bool topLeft, int value) {
+        auto setImageCut = [this](bool isTopOrLeft, int value) {
             EXPECT(value >= 0)
             if (hub_.actions.linkCuts->isChecked())
                 hub_.setImageCut(
-                    topLeft, true,
+                    isTopOrLeft, true,
                     typ::ImageCut(to_u(value), to_u(value), to_u(value), to_u(value)));
             else
                 hub_.setImageCut(
-                    topLeft, false, typ::ImageCut(
+                    isTopOrLeft, false, typ::ImageCut(
                                         to_u(cutLeft_->value()), to_u(cutTop_->value()),
                                         to_u(cutRight_->value()), to_u(cutBottom_->value())));
         };

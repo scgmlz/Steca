@@ -191,11 +191,11 @@ void Session::updateImageSize() {
 }
 
 void Session::setImageSize(size2d const& size) THROWS {
-    RUNTIME_CHECK(!size.isEmpty(), "bad image size");
+    RUNTIME_CHECK(!size.isEmpty(), "image is empty or has ill defined size");
     if (imageSize_.isEmpty())
         imageSize_ = size; // the first one
     else if (imageSize_ != size)
-        THROW("inconsistent image size");
+        THROW("image size differs from previously loaded images");
 }
 
 size2d Session::imageSize() const {
@@ -210,8 +210,8 @@ void Session::setImageTransformRotate(ImageTransform const& rot) {
     imageTransform_ = imageTransform_.rotateTo(rot);
 }
 
-void Session::setImageCut(bool topLeftFirst, bool linked, ImageCut const& cut) {
-    imageCut_.update(topLeftFirst, linked, imageSize_);
+void Session::setImageCut(bool isTopOrLeft, bool linked, ImageCut const& cut) {
+    imageCut_.update(isTopOrLeft, linked, cut, imageSize_);
     intensCorr_.clear(); // lazy
 }
 
