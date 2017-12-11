@@ -93,7 +93,6 @@ void Session::calcIntensCorr() const {
     qreal sum = 0;
     for_ij (w, h)
         sum += corrImage_->inten(i + di, j + dj);
-
     qreal avg = sum / (w * h);
 
     intensCorr_.fill(1, corrImage_->size());
@@ -101,14 +100,12 @@ void Session::calcIntensCorr() const {
     for_ij (w, h) {
         auto inten = corrImage_->inten(i + di, j + dj);
         qreal fact;
-
         if (inten > 0) {
             fact = avg / inten;
         } else {
             fact = NAN;
             corrHasNaNs_ = true;
         }
-
         intensCorr_.setInten(i + di, j + dj, inten_t(fact));
     }
 }

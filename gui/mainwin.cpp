@@ -168,41 +168,41 @@ void MainWin::initStatusBar() {
 }
 
 void MainWin::connectActions() {
-    auto onTrigger = [this](QAction* action, void (MainWin::*fun)()) {
+    auto connectTrigger = [this](QAction* action, void (MainWin::*fun)()) {
         QObject::connect(action, &QAction::triggered, this, fun);
     };
 
-    auto onToggle = [this](QAction* action, void (MainWin::*fun)(bool)) {
+    auto connectToggle = [this](QAction* action, void (MainWin::*fun)(bool)) {
         QObject::connect(action, &QAction::toggled, this, fun);
     };
 
-    onTrigger(acts_.loadSession, &MainWin::loadSession);
-    onTrigger(acts_.saveSession, &MainWin::saveSession);
-    onTrigger(acts_.clearSession, &MainWin::clearSession);
+    connectTrigger(acts_.loadSession, &MainWin::loadSession);
+    connectTrigger(acts_.saveSession, &MainWin::saveSession);
+    connectTrigger(acts_.clearSession, &MainWin::clearSession);
 
-    onTrigger(acts_.addFiles, &MainWin::addFiles);
-    onTrigger(acts_.enableCorr, &MainWin::enableCorr);
+    connectTrigger(acts_.addFiles, &MainWin::addFiles);
+    connectTrigger(acts_.enableCorr, &MainWin::enableCorr);
 
-    onTrigger(acts_.quit, &MainWin::close);
+    connectTrigger(acts_.quit, &MainWin::close);
 
-    onTrigger(acts_.outputPolefigures, &MainWin::outputPoleFigures);
-    onTrigger(acts_.outputDiagrams, &MainWin::outputDiagrams);
-    onTrigger(acts_.outputDiffractograms, &MainWin::outputDiffractograms);
+    connectTrigger(acts_.outputPolefigures, &MainWin::outputPoleFigures);
+    connectTrigger(acts_.outputDiagrams, &MainWin::outputDiagrams);
+    connectTrigger(acts_.outputDiffractograms, &MainWin::outputDiffractograms);
 
-    onTrigger(acts_.about, &MainWin::about);
-    onTrigger(acts_.online, &MainWin::online);
-    onTrigger(acts_.checkUpdate, &MainWin::checkUpdate);
+    connectTrigger(acts_.about, &MainWin::about);
+    connectTrigger(acts_.online, &MainWin::online);
+    connectTrigger(acts_.checkUpdate, &MainWin::checkUpdate);
 
-    onToggle(acts_.viewStatusbar, &MainWin::viewStatusbar);
+    connectToggle(acts_.viewStatusbar, &MainWin::viewStatusbar);
 #ifndef Q_OS_OSX
-    onToggle(acts_.fullScreen, &MainWin::viewFullScreen);
+    connectToggle(acts_.fullScreen, &MainWin::viewFullScreen);
 #endif
 
-    onToggle(acts_.viewFiles, &MainWin::viewFiles);
-    onToggle(acts_.viewDatasets, &MainWin::viewDatasets);
-    onToggle(acts_.viewDatasetInfo, &MainWin::viewDatasetInfo);
+    connectToggle(acts_.viewFiles, &MainWin::viewFiles);
+    connectToggle(acts_.viewDatasets, &MainWin::viewDatasets);
+    connectToggle(acts_.viewDatasetInfo, &MainWin::viewDatasetInfo);
 
-    onTrigger(acts_.viewReset, &MainWin::viewReset);
+    connectTrigger(acts_.viewReset, &MainWin::viewReset);
 }
 
 void MainWin::about() {
@@ -268,11 +268,14 @@ void MainWin::addFiles() {
     str_lst fileNames = file_dialog::openFileNames(
         this, "Add files", QDir::current().absolutePath(),
         "Data files (*.dat *.mar*);;All files (*.*)");
+    DM("MainWin::addFiles update1");
     update();
     if (!fileNames.isEmpty()) {
         QDir::setCurrent(QFileInfo(fileNames.at(0)).absolutePath());
         DM("MainWin::addFiles call Hub")
         hub_.addGivenFiles(fileNames);
+        DM("MainWin::addFiles update2");
+        update();
     }
     DM("MainWin::addFiles end")
 }
@@ -284,6 +287,7 @@ void MainWin::enableCorr() {
         fileName = file_dialog::openFileName(
             this, "Set correction file", QDir::current().absolutePath(),
             "Data files (*.dat *.mar*);;All files (*.*)");
+        DM("MainWin::enableCorr update1")
         update();
     }
     if (!fileName.isEmpty()) {
@@ -291,6 +295,8 @@ void MainWin::enableCorr() {
         DM("MainWin::enableCorr call Hub")
         hub_.setCorrFile(fileName);
     }
+    DM("MainWin::enableCorr update2")
+    update();
     DM("MainWin::enableCorr end")
 }
 
