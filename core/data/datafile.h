@@ -20,11 +20,9 @@
 
 namespace data {
 
-typedef QSharedPointer<class File> shp_File;
-
 //! A file (loaded from a disk file) that contains a number of datasets.
 class File final {
-    public:
+public:
     File(rcstr fileName);
 
     QFileInfo const& fileInfo() const;
@@ -37,6 +35,8 @@ private:
     QFileInfo fileInfo_;
     OneDatasets datasets_;
 };
+
+typedef QSharedPointer<class File> shp_File;
 
 } // namespace data
 

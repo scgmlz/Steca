@@ -22,6 +22,7 @@
 
 namespace io {
 
+// implemented below
 static void loadTiff(data::shp_File&, rcstr, typ::deg, qreal, qreal) THROWS;
 
 // The dat file looks like so:
