@@ -269,7 +269,6 @@ void MainWin::addFiles() {
         this, "Add files", QDir::current().absolutePath(),
         "Data files (*.dat *.mar*);;All files (*.*)");
     update();
-
     if (!fileNames.isEmpty()) {
         QDir::setCurrent(QFileInfo(fileNames.at(0)).absolutePath());
         DM("MainWin::addFiles call Hub")
@@ -287,7 +286,6 @@ void MainWin::enableCorr() {
             "Data files (*.dat *.mar*);;All files (*.*)");
         update();
     }
-
     if (!fileName.isEmpty()) {
         QDir::setCurrent(QFileInfo(fileName).absolutePath());
         DM("MainWin::enableCorr call Hub")
