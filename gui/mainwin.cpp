@@ -268,6 +268,7 @@ void MainWin::addFiles() {
     str_lst fileNames = file_dialog::openFileNames(
         this, "Add files", QDir::current().absolutePath(),
         "Data files (*.dat *.mar*);;All files (*.*)");
+    update();
 
     if (!fileNames.isEmpty()) {
         QDir::setCurrent(QFileInfo(fileNames.at(0)).absolutePath());
@@ -280,10 +281,12 @@ void MainWin::addFiles() {
 void MainWin::enableCorr() {
     DM("MainWin::enableCorr beg")
     str fileName;
-    if (!hub_.hasCorrFile())
+    if (!hub_.hasCorrFile()) {
         fileName = file_dialog::openFileName(
             this, "Set correction file", QDir::current().absolutePath(),
             "Data files (*.dat *.mar*);;All files (*.*)");
+        update();
+    }
 
     if (!fileName.isEmpty()) {
         QDir::setCurrent(QFileInfo(fileName).absolutePath());
@@ -299,10 +302,9 @@ void MainWin::loadSession() {
     str fileName = file_dialog::openFileName(
         this, "Load session", QDir::current().absolutePath(),
         "Session files (*" % STE % ");;All files (*.*)");
-
+    update();
     if (fileName.isEmpty())
         return;
-
     hub_.loadSession(QFileInfo(fileName));
 }
 
@@ -310,7 +312,7 @@ void MainWin::saveSession() {
     str fileName = file_dialog::saveFileName(
         this, "Save session", QDir::current().absolutePath(),
         "Session files (*" % STE % ");;All files (*.*)");
-
+    update();
     if (!fileName.endsWith(STE))
         fileName += STE;
     hub_.saveSession(QFileInfo(fileName));
