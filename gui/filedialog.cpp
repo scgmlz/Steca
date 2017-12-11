@@ -61,7 +61,6 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
                 auto it = memInfo.find(path);
                 if (memInfo.end() != it)
                     return *it;
-
                 str loadInfo;
                 if (io::couldBeCaress(info))
                     loadInfo = "[car] " + io::loadCaressComment(path);
@@ -74,10 +73,8 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
                 return loadInfo;
             }
         }
-
         return QVariant();
     }
-
     return super::data(idx, role);
 }
 

@@ -18,6 +18,10 @@
 
 namespace io {
 
+data::shp_File loadCaress(rcstr filePath) THROWS;
+data::shp_File loadMar(rcstr filePath) THROWS;
+data::shp_File loadTiffDat(rcstr filePath) THROWS;
+
 // peek at up to maxLen bytes (to establish the file type)
 static QByteArray peek(uint pos, uint maxLen, QFileInfo const& info) {
     QFile file(info.filePath());

@@ -23,18 +23,10 @@ bool couldBeCaress(QFileInfo const&);
 bool couldBeMar(QFileInfo const&);
 bool couldBeTiffDat(QFileInfo const&);
 
-// load a file; file type will be sensed
+//! load a file; file type will be sensed
 data::shp_File load(rcstr filePath) THROWS;
 
-// load a Caress file
-data::shp_File loadCaress(rcstr filePath) THROWS;
 str loadCaressComment(rcstr filePath);
-
-// load a Mar file
-data::shp_File loadMar(rcstr filePath) THROWS;
-
-// load a metadata file + tiffs
-data::shp_File loadTiffDat(rcstr filePath) THROWS;
 
 } // namespace io
 
