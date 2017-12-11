@@ -28,7 +28,7 @@ public:
     LensBase(
         core::Session const&, data::Datasets const&, bool trans, bool cut,
         typ::ImageTransform const&, typ::ImageCut const&);
-
+    virtual ~LensBase() {}
     virtual typ::size2d size() const = 0;
 
 protected:
