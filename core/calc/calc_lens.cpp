@@ -42,10 +42,8 @@ LensBase::LensBase(
 size2d LensBase::transCutSize(size2d size) const {
     if (trans_ && imageTransform_.isTransposed())
         size = size.transposed();
-
     if (cut_)
         size = size - imageCut_.marginSize();
-
     return size;
 }
 
@@ -92,11 +90,11 @@ void LensBase::doCut(uint& i, uint& j) const {
 ImageLens::ImageLens(
     core::Session const& session, Image const& image, data::Datasets const& datasets, bool trans,
     bool cut)
-    : super(session, datasets, trans, cut, session.imageTransform(), session.imageCut())
+    : LensBase(session, datasets, trans, cut, session.imageTransform(), session.imageCut())
     , image_(image) {}
 
 size2d ImageLens::size() const {
-    return super::transCutSize(image_.size());
+    return LensBase::transCutSize(image_.size());
 }
 
 inten_t ImageLens::imageInten(uint i, uint j) const {
@@ -104,24 +102,20 @@ inten_t ImageLens::imageInten(uint i, uint j) const {
         doTrans(i, j);
     if (cut_)
         doCut(i, j);
-
     inten_t inten = image_.inten(i, j);
     if (intensCorr_)
         inten *= intensCorr_->inten(i, j);
-
     return inten;
 }
 
 typ::Range const& ImageLens::rgeInten(bool fixed) const {
     if (fixed)
         return datasets_.rgeFixedInten(session_, trans_, cut_);
-
     if (!rgeInten_.isValid()) {
         auto sz = size();
         for_ij (sz.w, sz.h)
             rgeInten_.extendBy(qreal(imageInten(i, j)));
     }
-
     return rgeInten_;
 }
 
@@ -134,14 +128,14 @@ DatasetLens::DatasetLens(
     core::Session const& session, data::Dataset const& dataset, data::Datasets const& datasets,
     eNorm norm, bool trans, bool cut, typ::ImageTransform const& imageTransform,
     typ::ImageCut const& imageCut)
-    : super(session, datasets, trans, cut, imageTransform, imageCut)
+    : LensBase(session, datasets, trans, cut, imageTransform, imageCut)
     , normFactor_(1)
     , dataset_(dataset) {
     setNorm(norm);
 }
 
 size2d DatasetLens::size() const {
-    return super::transCutSize(datasets_.imageSize());
+    return LensBase::transCutSize(datasets_.imageSize());
 }
 
 typ::Range DatasetLens::rgeGma() const {
@@ -168,17 +162,14 @@ Curve DatasetLens::makeCurve() const {
 
 Curve DatasetLens::makeCurve(typ::Range const& rgeGma) const {
     inten_vec intens = dataset_.collectIntens(session_, intensCorr_, rgeGma);
-
     Curve res;
     uint count = intens.count();
-
     if (count) {
         typ::Range rgeTth = dataset_.rgeTth(session_);
         deg minTth = rgeTth.min, deltaTth = rgeTth.width() / count;
         for_i (count)
             res.append(minTth + deltaTth * i, qreal(intens.at(i) * normFactor_));
     }
-
     return res;
 }
 
