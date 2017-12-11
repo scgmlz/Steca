@@ -28,7 +28,6 @@ data::shp_File load(rcstr filePath) THROWS;
 
 // load a Caress file
 data::shp_File loadCaress(rcstr filePath) THROWS;
-data::shp_File loadCaress2(rcstr filePath) THROWS;
 str loadCaressComment(rcstr filePath);
 
 // load a Mar file
