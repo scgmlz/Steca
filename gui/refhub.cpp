@@ -51,18 +51,14 @@ TheHubSignallingBase::level_guard::~level_guard() {
     --level_;
 }
 
+
 RefHub::RefHub(gui::TheHub& hub) : hub_(hub) {}
 
-#define REFHUB_TELL_IMPL(name, pars, args)                                                         \
-    void RefHub::name pars { hub_.name args; }
+void RefHub::tellDatasetSelected(data::shp_Dataset d) { hub_.tellDatasetSelected(d); }
+void RefHub::tellSelectedReflection(calc::shp_Reflection r) { hub_.tellSelectedReflection (r); }
+void RefHub::tellReflectionData(calc::shp_Reflection r) { hub_.tellReflectionData(r); }
+void RefHub::tellReflectionValues(
+    typ::Range const& rge, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
+    hub_.tellReflectionValues(rge, peak, fwhm, withGuesses); }
 
-REFHUB_TELL_IMPL(tellDatasetSelected, (data::shp_Dataset d), (d))
-
-REFHUB_TELL_IMPL(tellSelectedReflection, (calc::shp_Reflection r), (r))
-
-REFHUB_TELL_IMPL(tellReflectionData, (calc::shp_Reflection r), (r))
-
-REFHUB_TELL_IMPL(
-    tellReflectionValues, (typ::Range const& rge, qpair const& peak, fwhm_t fwhm, bool withGuesses),
-    (rge, peak, fwhm, withGuesses))
-}
+} // namespace gui
