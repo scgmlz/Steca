@@ -268,16 +268,11 @@ void MainWin::addFiles() {
     str_lst fileNames = file_dialog::openFileNames(
         this, "Add files", QDir::current().absolutePath(),
         "Data files (*.dat *.mar*);;All files (*.*)");
-    DM("MainWin::addFiles update1");
     update();
     if (!fileNames.isEmpty()) {
         QDir::setCurrent(QFileInfo(fileNames.at(0)).absolutePath());
-        DM("MainWin::addFiles call Hub")
         hub_.addGivenFiles(fileNames);
-        DM("MainWin::addFiles update2");
-        update();
     }
-    DM("MainWin::addFiles end")
 }
 
 void MainWin::enableCorr() {
@@ -287,16 +282,12 @@ void MainWin::enableCorr() {
         fileName = file_dialog::openFileName(
             this, "Set correction file", QDir::current().absolutePath(),
             "Data files (*.dat *.mar*);;All files (*.*)");
-        DM("MainWin::enableCorr update1")
         update();
     }
     if (!fileName.isEmpty()) {
         QDir::setCurrent(QFileInfo(fileName).absolutePath());
-        DM("MainWin::enableCorr call Hub")
         hub_.setCorrFile(fileName);
     }
-    DM("MainWin::enableCorr update2")
-    update();
     DM("MainWin::enableCorr end")
 }
 

@@ -260,7 +260,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
     QJsonDocument doc(QJsonDocument::fromJson(json, &parseError));
     RUNTIME_CHECK(QJsonParseError::NoError == parseError.error, "Error parsing session file");
 
-    //TakesLongTime __;
+    TakesLongTime __;
 
     clearSession();
 
@@ -331,7 +331,7 @@ void TheHub::addGivenFile(rcstr filePath) THROWS {
     DM("hub::addGivenFile beg")
     if (!filePath.isEmpty() && !session_->hasFile(filePath)) {
         {
-            //TakesLongTime __;
+            TakesLongTime __;
             DM("hub::addGivenFile cal")
             session_->addGivenFile(io::load(filePath));
         }
@@ -342,8 +342,7 @@ void TheHub::addGivenFile(rcstr filePath) THROWS {
 }
 
 void TheHub::addGivenFiles(str_lst const& filePaths) THROWS {
-    //TakesLongTime __;
-
+    TakesLongTime __;
     DM("hub::addGivenFiles beg")
     for (auto& filePath : filePaths)
         addGivenFile(filePath);
