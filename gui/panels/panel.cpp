@@ -22,9 +22,8 @@ PanelWidget::PanelWidget(TheHub& hub, Qt::Orientation orientation) : RefHub(hub)
     setLayout((box_ = boxLayout(orientation)));
 }
 
-BasicPanel::BasicPanel(TheHub& hub, rcstr title) : super(title), RefHub(hub) {}
 
-BasicPanel::BasicPanel(TheHub& hub) : BasicPanel(hub, EMPTY_STR) {}
+BasicPanel::BasicPanel(TheHub& hub) : BasicPanel(hub, "") {}
 
 void BasicPanel::setHorizontalStretch(int stretch) {
     auto sp = sizePolicy();
@@ -45,21 +44,24 @@ void BasicPanel::setStretch(int horizontal, int vertical) {
     setSizePolicy(sp);
 }
 
-BoxPanel::BoxPanel(TheHub& hub, Qt::Orientation o) : BoxPanel(hub, EMPTY_STR, o) {}
+BoxPanel::BoxPanel(TheHub& hub, Qt::Orientation o) : BoxPanel(hub, "", o) {}
 
-BoxPanel::BoxPanel(TheHub& hub, rcstr title, Qt::Orientation orientation) : super(hub, title) {
+BoxPanel::BoxPanel(TheHub& hub, rcstr title, Qt::Orientation orientation) : BasicPanel(hub, title) {
     setLayout((box_ = boxLayout(orientation)));
 }
 
-GridPanel::GridPanel(TheHub& hub) : GridPanel(hub, EMPTY_STR) {}
 
-GridPanel::GridPanel(TheHub& hub, rcstr title) : super(hub, title) {
+GridPanel::GridPanel(TheHub& hub) : GridPanel(hub, "") {}
+
+GridPanel::GridPanel(TheHub& hub, rcstr title) : BasicPanel(hub, title) {
     setLayout((grid_ = gridLayout()));
 }
+
 
 Tab::Tab(Qt::Orientation orientation) {
     setLayout((box_ = boxLayout(orientation)));
 }
+
 
 TabsPanel::TabsPanel(TheHub& hub) : RefHub(hub) {
     setTabPosition(TabsPanel::North);
@@ -67,7 +69,7 @@ TabsPanel::TabsPanel(TheHub& hub) : RefHub(hub) {
 
 Tab& TabsPanel::addTab(rcstr title, Qt::Orientation orientation) {
     auto tab = new Tab(orientation);
-    super::addTab(tab, title);
+    QTabWidget::addTab(tab, title);
     return *tab;
 }
 
@@ -76,5 +78,6 @@ Tab& TabsPanel::tab(uint i) {
     ENSURE(dynamic_cast<Tab*>(widget(to_i(i))))
     return *static_cast<Tab*>(widget(to_i(i)));
 }
-}
-}
+
+} // namespace panel
+} // namespace gui

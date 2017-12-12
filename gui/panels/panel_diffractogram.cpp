@@ -448,7 +448,7 @@ Diffractogram::Diffractogram(TheHub& hub)
     auto hb = hbox();
     box_->addLayout(hb);
 
-    hb->addWidget(label("norm:"));
+    hb->addWidget(label("normalize to:"));
     str_lst options = normStrLst();
     hb->addWidget((comboNormType_ = comboBox(options)));
 
@@ -458,7 +458,7 @@ Diffractogram::Diffractogram(TheHub& hub)
             hub_.setNorm(eNorm(index));
         });
 
-    hb->addWidget(label(" inten:"));
+    hb->addWidget(label(" intensity as:"));
     hb->addWidget((intenSum_ = radioButton("sum")));
     hb->addWidget((intenAvg_ = radioButton("avg ×")));
     hb->addWidget((intenScale_ = spinDoubleCell(gui_cfg::em4_2, 0.001)));

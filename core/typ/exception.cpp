@@ -19,29 +19,21 @@
 #error needs exception handling
 #endif
 
-Exception::Exception(rcstr msg, bool silent) noexcept : silent_(silent) {
-    setMsg(msg);
-}
+Exception::Exception(rcstr msg, bool silent) noexcept : silent_(silent) { setMsg(msg); }
 
-Exception::Exception() noexcept : Exception(EMPTY_STR, true) {}
+Exception::Exception() noexcept : Exception("", true) {}
 
 Exception::Exception(rcstr msg) noexcept : Exception(msg, false) {}
 
 Exception::Exception(Exception const& that) noexcept : Exception(that.msg_) {}
 
-pcstr Exception::what() const noexcept {
-    return msg8bit_.constData();
-}
+pcstr Exception::what() const noexcept { return msg8bit_.constData(); }
 
 void Exception::setMsg(rcstr s) {
     msg_ = s;
     msg8bit_ = msg_.toLocal8Bit();
 }
 
-Exception* Exception::clone() const {
-    return new Exception(*this);
-}
+Exception* Exception::clone() const { return new Exception(*this); }
 
-void Exception::raise() const {
-    throw *this;
-}
+void Exception::raise() const { throw *this; }

@@ -123,7 +123,7 @@ void TheHub::configActions() {
 
     connect(actions.enableCorr, &QAction::toggled, [this](bool on) { tryEnableCorrection(on); });
 
-    connect(actions.remCorr, &QAction::triggered, [this]() { setCorrFile(EMPTY_STR); });
+    connect(actions.remCorr, &QAction::triggered, [this]() { setCorrFile(""); });
 
     connect(actions.fixedIntenImage, &QAction::toggled, [this](bool on) {
         isFixedIntenImageScale_ = on;
@@ -293,7 +293,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
 
     collectDatasetsFromFiles(selIndexes, top.loadPint(config_key::COMBINE, 1));
 
-    setCorrFile(top.loadString(config_key::CORR_FILE, EMPTY_STR));
+    setCorrFile(top.loadString(config_key::CORR_FILE, ""));
 
     auto det = top.loadObj(config_key::DETECTOR);
     setGeometry(
@@ -328,25 +328,20 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
 }
 
 void TheHub::addGivenFile(rcstr filePath) THROWS {
-    DM("hub::addGivenFile beg")
     if (!filePath.isEmpty() && !session_->hasFile(filePath)) {
         {
             TakesLongTime __;
             DM("hub::addGivenFile cal")
             session_->addGivenFile(io::load(filePath));
         }
-        DM("hub::addGivenFile sig")
         emit sigFilesChanged();
     }
-    DM("hub::addGivenFile end")
 }
 
 void TheHub::addGivenFiles(str_lst const& filePaths) THROWS {
     TakesLongTime __;
-    DM("hub::addGivenFiles beg")
     for (auto& filePath : filePaths)
         addGivenFile(filePath);
-    DM("hub::addGivenFiles end")
 }
 
 void TheHub::collectDatasetsFromFiles(uint_vec is, pint by) {
@@ -496,7 +491,9 @@ void TheHub::setImageMirror(bool on) {
 
 void TheHub::setNorm(eNorm norm) {
     session_->setNorm(norm);
+    DM("TheHub::setNorm going to signal")
     emit sigNormChanged();
+    DM("TheHub::setNorm back from signal")
 }
 
 } // namespace gui

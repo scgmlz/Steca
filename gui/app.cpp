@@ -69,7 +69,7 @@ static void logMessage(rcstr msg, MessageLogger::eType type) {
         break;
     case MessageLogger::POPUP:
         TR("POPUP " << msg);
-        QMessageBox::information(mainWindow, EMPTY_STR, msg);
+        QMessageBox::information(mainWindow, "", msg);
 
     case MessageLogger::WARN:
         TR("WARNING " << msg);

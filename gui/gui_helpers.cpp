@@ -117,7 +117,7 @@ QCheckBox* check(rcstr text) {
 }
 
 QCheckBox* check(QAction* action) {
-    auto cb = new QCheckBox(action ? action->text().toLower() : EMPTY_STR);
+    auto cb = new QCheckBox(action ? action->text().toLower() : "");
 
     if (action) {
         QObject::connect(cb, &QCheckBox::toggled, [action](bool on) { action->setChecked(on); });

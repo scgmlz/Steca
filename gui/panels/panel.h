@@ -20,9 +20,6 @@
 #include "typ/str.h"
 #include <QGroupBox>
 
-namespace models {
-}
-
 namespace gui {
 namespace panel {
 
@@ -43,11 +40,9 @@ protected:
 
 // Just a groupbox
 class BasicPanel : public QGroupBox, protected RefHub {
-private:
-    using super = QGroupBox;
 public:
     BasicPanel(TheHub&);
-    BasicPanel(TheHub&, rcstr title);
+    BasicPanel(TheHub& hub, rcstr title) : QGroupBox(title), RefHub(hub) {}
 
     void setHorizontalStretch(int);
     void setVerticalStretch(int);
@@ -56,8 +51,6 @@ public:
 
 // A panel with a box layout
 class BoxPanel : public BasicPanel {
-private:
-    using super = BasicPanel;
 public:
     BoxPanel(TheHub&, Qt::Orientation);
     BoxPanel(TheHub&, rcstr title, Qt::Orientation);
@@ -70,8 +63,6 @@ protected:
 
 // A panel with grid layout
 class GridPanel : public BasicPanel {
-private:
-    using super = BasicPanel;
 public:
     GridPanel(TheHub&);
     GridPanel(TheHub&, rcstr title);
@@ -84,11 +75,8 @@ protected:
 
 // A tabbed panel
 class Tab : public QWidget {
-private:
-    using super = QWidget;
 public:
     Tab(Qt::Orientation);
-
     QBoxLayout& box() const { return *box_; }
 
 protected:
@@ -96,14 +84,14 @@ protected:
 };
 
 class TabsPanel : public QTabWidget, protected RefHub {
-private:
-    using super = QTabWidget;
 public:
     TabsPanel(TheHub&);
 
     Tab& addTab(rcstr title, Qt::Orientation);
     Tab& tab(uint);
 };
-}
-}
+
+} // namespace panel
+} // namespace gui
+
 #endif // PANEL_H

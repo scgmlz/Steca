@@ -665,7 +665,7 @@ str TabSave::filePath(bool withSuffix) {
     str file = file_->text().trimmed();
 
     if (dir.isEmpty() || file.isEmpty())
-        return EMPTY_STR;
+        return "";
 
     str suffix;
     if (withSuffix)

@@ -101,13 +101,9 @@ void ReflectionView::selectionChanged(
             : model()->data(indexes.first(), Model::GetDatasetRole).value<calc::shp_Reflection>());
 }
 
-static qreal safeReal(qreal val) {
-    return qIsFinite(val) ? val : 0.0;
-}
+static qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }
 
-static str safeRealText(qreal val) {
-    return qIsFinite(val) ? str::number(val) : EMPTY_STR;
-}
+static str safeRealText(qreal val) { return qIsFinite(val) ? str::number(val) : ""; }
 
 TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
     auto& actions = hub_.actions;

@@ -175,7 +175,7 @@ str ReflectionsModel::displayData(uint row, uint col) const {
     switch (col) {
     case COL_ID: return str::number(row + 1);
     case COL_TYPE: return calc::Reflection::typeTag(hub_.reflections().at(row)->type());
-    default: NEVER return EMPTY_STR;
+    default: NEVER return "";
     }
 }
 

@@ -113,7 +113,7 @@ DockFiles::DockFiles(TheHub& hub) : super("Files", "dock-files", Qt::Vertical), 
     h->addWidget(iconButton(actions.remCorr));
 
     onSigCorrFile([this](data::shp_File file) {
-        corrFile_->setText(file.isNull() ? EMPTY_STR : file->fileName());
+        corrFile_->setText(file.isNull() ? "" : file->fileName());
     });
 }
 

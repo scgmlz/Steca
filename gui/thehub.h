@@ -33,7 +33,7 @@ class Settings : public QSettings {
 private:
     using super = QSettings;
 public:
-    Settings(rcstr group = EMPTY_STR);
+    Settings(rcstr group = "");
     ~Settings();
 
     QVariant readVariant(rcstr key, QVariant const& def);
@@ -57,7 +57,7 @@ public:
     qreal readReal(rcstr key, qreal def = 0);
     void saveReal(rcstr key, qreal val) { saveVariant(key, val); }
 
-    str readStr(rcstr key, rcstr def = EMPTY_STR) { return readVariant(key, def).toString(); }
+    str readStr(rcstr key, rcstr def = "") { return readVariant(key, def).toString(); }
     void saveStr(rcstr key, rcstr val) { saveVariant(key, val); }
 };
 

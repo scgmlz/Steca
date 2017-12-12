@@ -45,7 +45,7 @@ AboutBox::AboutBox(QWidget* parent) : super(parent, Qt::Dialog) {
 
     hb->setSpacing(PAD);
 
-    auto logo = label(EMPTY_STR);
+    auto logo = label("");
     logo->setPixmap(QPixmap(":/icon/retroStier")
                         .scaled(128, 128, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     hb->addWidget(logo);
@@ -53,7 +53,7 @@ AboutBox::AboutBox(QWidget* parent) : super(parent, Qt::Dialog) {
 #ifdef __x86_64__
     str arch = "(64b)";
 #else
-    str arch = EMPTY_STR;
+    str arch = "";
 #endif
 
     auto info = label(str("<h4>%1 ver. %2 %5</h4>"
