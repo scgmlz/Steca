@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/panels/panel_diffractogram.cpp
-//! @brief     Implements ...
+//! @brief     Implements classes DiffractogramPlot and Diffractogram.
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -21,8 +21,93 @@
 namespace gui {
 namespace panel {
 
+// ************************************************************************** //
+//  define file-scoped classes
+// ************************************************************************** //
+
+class DiffractogramPlot;
+
+class DiffractogramPlotOverlay : public QWidget {
+public:
+    DiffractogramPlotOverlay(DiffractogramPlot&);
+
+    void setMargins(int left, int right);
+
+private:
+    DiffractogramPlot& plot_;
+
+    QColor addColor_, remColor_, color_, bgColor_, reflColor_;
+    int marginLeft_, marginRight_;
+
+protected:
+    void enterEvent(QEvent*);
+    void leaveEvent(QEvent*);
+    void mousePressEvent(QMouseEvent*);
+    void mouseReleaseEvent(QMouseEvent*);
+    void mouseMoveEvent(QMouseEvent*);
+
+    void paintEvent(QPaintEvent*);
+
+    bool hasCursor_, mouseDown_;
+    int cursorPos_, mouseDownPos_;
+
+    void updateCursorRegion();
+};
+
+class DiffractogramPlot : public QCustomPlot, protected RefHub {
+public:
+    enum class eTool {
+        NONE,
+        BACKGROUND,
+        PEAK_REGION,
+    };
+
+    DiffractogramPlot(TheHub&, class Diffractogram&);
+
+public:
+    void setTool(eTool);
+    eTool getTool() const { return tool_; }
+
+    void plot(typ::Curve const&, typ::Curve const&, typ::Curve const&, typ::curve_vec const&, uint);
+
+    typ::Range fromPixels(int, int);
+
+    void clearBg();
+    void addBg(typ::Range const&);
+    void remBg(typ::Range const&);
+    void setNewReflRange(typ::Range const&);
+    void updateBg();
+
+    void clearReflLayer();
+
+    QColor bgRgeColor_, reflRgeColor_;
+    eFittingTab selectedFittingTab();
+
+    void enterZoom(bool);
+
+protected:
+    void addBgItem(typ::Range const&);
+    void resizeEvent(QResizeEvent*);
+
+private:
+    Diffractogram& diffractogram_;
+
+    eTool tool_;
+    bool showBgFit_;
+
+    QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *dgramBgFittedGraph2_, *guesses_,
+        *fits_;
+
+    typ::vec<QCPGraph*> reflGraph_;
+    DiffractogramPlotOverlay* overlay_;
+};
+
+// ************************************************************************** //
+//  class DiffractogramPlotOverlay (file scoped)
+// ************************************************************************** //
+
 DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& plot_)
-    : super(&plot_)
+    : QWidget(&plot_)
     , plot_(plot_)
     , hasCursor_(false)
     , mouseDown_(false)
@@ -110,6 +195,10 @@ void DiffractogramPlotOverlay::updateCursorRegion() {
     // updating 2 pixels seems to work both on Linux & Mac
     update(cursorPos_ - 1, g.top(), 2, g.height());
 }
+
+// ************************************************************************** //
+//  class DiffractogramPlot (file scope)
+// ************************************************************************** //
 
 DiffractogramPlot::DiffractogramPlot(TheHub& hub, Diffractogram& diffractogram)
     : RefHub(hub), diffractogram_(diffractogram), showBgFit_(false) {
@@ -344,13 +433,17 @@ void DiffractogramPlot::addBgItem(typ::Range const& range) {
 }
 
 void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
-    super::resizeEvent(e);
+    QCustomPlot::resizeEvent(e);
     auto size = e->size();
     overlay_->setGeometry(0, 0, size.width(), size.height());
 }
 
+// ************************************************************************** //
+//  class Diffractogram
+// ************************************************************************** //
+
 Diffractogram::Diffractogram(TheHub& hub)
-    : super(hub, Qt::Vertical), dataset_(nullptr), currReflIndex_(0) {
+    : PanelWidget(hub, Qt::Vertical), dataset_(nullptr), currReflIndex_(0) {
     box_->addWidget((plot_ = new DiffractogramPlot(hub_, *this)));
     auto hb = hbox();
     box_->addLayout(hb);
@@ -560,5 +653,6 @@ void Diffractogram::calcReflections() {
 
     tellReflectionData(currentReflection_);
 }
-}
-}
+
+} // namespace panel
+} // namespace gui
