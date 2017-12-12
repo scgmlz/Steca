@@ -26,13 +26,13 @@ namespace typ {
 template <class ProductBase> class Factory {
 public:
     struct MakerBase {
+        virtual ~MakerBase() {}
         virtual not_null<ProductBase*> make() = 0;
     };
 
     template <class Product> struct Maker : MakerBase {
         not_null<ProductBase*> make() {
-            return not_null<ProductBase*>::from(new Product);
-        }
+            return not_null<ProductBase*>::from(new Product); }
     };
 
     virtual ~Factory() {}
