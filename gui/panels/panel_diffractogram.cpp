@@ -507,12 +507,16 @@ Diffractogram::Diffractogram(TheHub& hub)
     onSigReflectionsChanged([this]() { render(); });
 
     onSigNormChanged([this]() {
+        DM("DGram::onSigNormChanged/1")
         intenScale_->setValue(hub_.intenScale()); // TODO own signal
+        DM("DGram::onSigNormChanged/2")
         if (hub_.intenScaledAvg())
             intenAvg_->setChecked(true);
         else
             intenSum_->setChecked(true);
+        DM("DGram::onSigNormChanged/3")
         render();
+        DM("DGram::onSigNormChanged/4")
     });
 
     connect(hub_.actions.clearBackground, &QAction::triggered, [this]() { plot_->clearBg(); });

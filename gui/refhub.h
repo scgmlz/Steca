@@ -114,10 +114,16 @@ protected:
 
     // handle same signals
 protected:
-#define DEFINE_HUB_SIGNAL_HANDLER(name)                                                            \
-    template <typename Lambda> void onSig##name(Lambda slot) {                                     \
-        onHubSignal(&TheHubSignallingBase::sig##name, slot);                                       \
+#define DEFINE_HUB_SIGNAL_HANDLER(name)                         \
+    template <typename Lambda> void onSig##name(Lambda slot) {  \
+        DM("onHubSignal " << #name)                             \
+        onHubSignal(&TheHubSignallingBase::sig##name, slot);    \
     }
+
+    // spells out like in this example:
+    template <typename Lambda> void onSigNormChanged(Lambda slot) {
+        DM("connect sigNormChanged")
+        QObject::connect(&hub_, &TheHubSignallingBase::sigNormChanged, slot); }
 
     DEFINE_HUB_SIGNAL_HANDLER(SessionCleared)
 
@@ -140,7 +146,7 @@ protected:
     DEFINE_HUB_SIGNAL_HANDLER(GammaRange)
 
     DEFINE_HUB_SIGNAL_HANDLER(BgChanged)
-    DEFINE_HUB_SIGNAL_HANDLER(NormChanged)
+        //DEFINE_HUB_SIGNAL_HANDLER(NormChanged)
 
     DEFINE_HUB_SIGNAL_HANDLER(FittingTab)
 
