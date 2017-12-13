@@ -463,7 +463,7 @@ Diffractogram::Diffractogram(TheHub& hub)
             hub_.setNorm(eNorm(index));
         });
 
-    hb->addWidget(label(" intensity as:"));
+    hb->addWidget(label(" intensity from:"));
     hb->addWidget((intenSum_ = radioButton("sum")));
     hb->addWidget((intenAvg_ = radioButton("avg ×")));
     hb->addWidget((intenScale_ = spinDoubleCell(gui_cfg::em4_2, 0.001)));
