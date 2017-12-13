@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/output/output_diagrams.h
-//! @brief     Defines ...
+//! @brief     Defines class DiagramsFrame
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -21,20 +21,6 @@
 namespace gui {
 namespace output {
 
-class TabDiagramsSave : public TabSave {
-private:
-    using super = TabSave;
-public:
-    TabDiagramsSave(TheHub&, Params&);
-
-    uint currType() const;
-    bool currDiagram() const;
-
-protected:
-    QRadioButton *currentDiagram_, *allData_;
-    QComboBox* fileTypes_;
-};
-
 class DiagramsFrame : public Frame {
 private:
     using super = Frame;
@@ -43,7 +29,7 @@ public:
 
 protected:
     class TabPlot* tabPlot_;
-    TabDiagramsSave* tabSave_;
+    class TabDiagramsSave* tabSave_;
 
     using eReflAttr = calc::ReflectionInfo::eReflAttr;
 
@@ -61,6 +47,8 @@ protected:
     void writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator);
     void writeAllDataOutputFile(rcstr filePath, rcstr separator);
 };
-}
-}
+
+} // namespace output
+} // namespace gui
+
 #endif // OUTPUT_DIAGRAMS_H

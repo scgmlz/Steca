@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/output/output_diagrams.cpp
-//! @brief     Implements ...
+//! @brief     Implements class DiagramsFrame
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -33,6 +33,20 @@ public:
 
 protected:
     QCPGraph *graph_, *graphLo_, *graphUp_;
+};
+
+class TabDiagramsSave : public TabSave {
+private:
+    using super = TabSave;
+public:
+    TabDiagramsSave(TheHub&, Params&);
+
+    uint currType() const;
+    bool currDiagram() const;
+
+protected:
+    QRadioButton *currentDiagram_, *allData_;
+    QComboBox* fileTypes_;
 };
 
 // sorts xs and ys the same way, by (x,y)
@@ -137,6 +151,10 @@ bool TabDiagramsSave::currDiagram() const {
 
 static const Params::ePanels PANELS =
     Params::ePanels(Params::REFLECTION | Params::GAMMA | Params::DIAGRAM);
+
+// ************************************************************************** //
+//  class DiagramsFrame
+// ************************************************************************** //
 
 DiagramsFrame::DiagramsFrame(TheHub& hub, rcstr title, QWidget* parent)
     : super(hub, title, new Params(hub, PANELS), parent) {
