@@ -208,11 +208,7 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
 
     onSigGeometryChanged([this]() { render(); });
 
-    onSigNormChanged([this]() {
-            DM("TabsImgs::onSigNormChanged/1")
-            render();
-            DM("TabsImgs::onSigNormChanged/2")
-        });
+    connect(&hub_, &TheHubSignallingBase::sigNormChanged, [this](){render();});
 
     onSigDatasetSelected([this](data::shp_Dataset dataset) { setDataset(dataset); });
 

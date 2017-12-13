@@ -25,8 +25,6 @@ namespace gui {
 namespace panel {
 
 class Diffractogram : public PanelWidget {
-private:
-    using super = PanelWidget;
 public:
     Diffractogram(TheHub&);
 
@@ -35,6 +33,7 @@ public:
     data::shp_Dataset dataset() const { return dataset_; }
 
 private:
+    void onNormChanged();
     void setDataset(data::shp_Dataset);
 
     data::shp_Dataset dataset_;

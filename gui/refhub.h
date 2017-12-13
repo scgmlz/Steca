@@ -121,9 +121,9 @@ protected:
     }
 
     // spells out like in this example:
-    template <typename Lambda> void onSigNormChanged(Lambda slot) {
-        DM("connect sigNormChanged")
-        QObject::connect(&hub_, &TheHubSignallingBase::sigNormChanged, slot); }
+//    template <typename Lambda> void onSigNormChanged(Lambda slot) {
+//        DM("connect sigNormChanged")
+//        QObject::connect(&hub_, &TheHubSignallingBase::sigNormChanged, slot); }
 
     DEFINE_HUB_SIGNAL_HANDLER(SessionCleared)
 
@@ -146,7 +146,6 @@ protected:
     DEFINE_HUB_SIGNAL_HANDLER(GammaRange)
 
     DEFINE_HUB_SIGNAL_HANDLER(BgChanged)
-        //DEFINE_HUB_SIGNAL_HANDLER(NormChanged)
 
     DEFINE_HUB_SIGNAL_HANDLER(FittingTab)
 
