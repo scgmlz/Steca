@@ -13,7 +13,14 @@
 // ************************************************************************** //
 
 #include "app.h"
+#include <tclap/CmdLine.h> // templated command line argument parser, in 3rdparty directory
 
 int main(int argc, char* argv[]) {
+
+    TCLAP::CmdLine cmd("Stress and texture calculator", ' ',
+#include "../VERSION"
+                       , true);
+    cmd.parse(argc, argv);
+
     return App(argc, argv).exec();
 }
