@@ -191,7 +191,7 @@ void MainWin::connectActions() {
 
     connectTrigger(acts_.about, &MainWin::about);
     connectTrigger(acts_.online, &MainWin::online);
-    connectTrigger(acts_.checkUpdate, &MainWin::checkUpdate);
+    QObject::connect(acts_.checkUpdate, &QAction::triggered, [this]() {checkUpdate();});
 
     connectToggle(acts_.viewStatusbar, &MainWin::viewStatusbar);
 #ifndef Q_OS_OSX
@@ -211,10 +211,6 @@ void MainWin::about() {
 
 void MainWin::online() {
     QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL));
-}
-
-void MainWin::checkUpdate() {
-    checkUpdate(true);
 }
 
 void MainWin::checkUpdate(bool completeReport) {
@@ -255,12 +251,12 @@ void MainWin::messageDialog(rcstr title, rcstr text) {
 }
 
 void MainWin::show() {
-    super::show();
+    QMainWindow::show();
     onShow();
 }
 
 void MainWin::close() {
-    super::close();
+    QMainWindow::close();
 }
 
 void MainWin::addFiles() {

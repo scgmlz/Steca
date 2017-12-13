@@ -457,11 +457,11 @@ Diffractogram::Diffractogram(TheHub& hub)
     str_lst options = normStrLst();
     hb->addWidget((comboNormType_ = comboBox(options)));
 
-    connect(
-        comboNormType_, slot(QComboBox, currentIndexChanged, int),
-        [this](int index) { // TODO init value from hub?
-            hub_.setNorm(eNorm(index));
-        });
+    connect(comboNormType_, slot(QComboBox, currentIndexChanged, int),
+            [this](int index) { // TODO init value from hub?
+                hub_.setNorm(eNorm(index));
+                DM("Lambda back from hub_.setNorm");
+            });
 
     hb->addWidget(label(" intensity from:"));
     hb->addWidget((intenSum_ = radioButton("sum")));

@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/mainwin.h
-//! @brief     Defines ...
+//! @brief     Defines class MainWin
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -23,28 +23,13 @@
 namespace gui {
 
 class MainWin : public QMainWindow {
-private:
-    using super = QMainWindow;
 public:
     MainWin();
 
-private:
-    void initMenus();
-    void addActions(QMenu*, QList<QAction*>);
-    void initLayout();
-    void initStatusBar();
-    void connectActions();
-
-public:
     void about();
     void online();
-    void checkUpdate();
-    void checkUpdate(bool completeReport);
+    void checkUpdate(bool completeReport=true);
 
-private:
-    void messageDialog(rcstr title, rcstr text);
-
-public:
     void show();
     void close();
 
@@ -60,27 +45,26 @@ public:
     void outputDiffractograms();
 
 private:
+    QMenu *menuFile_, *menuView_, *menuImage_, *menuDgram_, *menuOutput_, *menuHelp_;
+    QDockWidget *dockFiles_, *dockDatasets_, *dockDatasetInfo_;
+    QByteArray initialState_;
+    QNetworkAccessManager netMan_;
     gui::TheHub hub_;
     Actions& acts_;
 
-private:
-    void closeEvent(QCloseEvent*);
+    void initMenus();
+    void addActions(QMenu*, QList<QAction*>);
+    void initLayout();
+    void initStatusBar();
+    void connectActions();
 
+    void messageDialog(rcstr title, rcstr text);
+    void closeEvent(QCloseEvent*);
     void onShow();
     void onClose();
 
-private:
-    QMenu *menuFile_, *menuView_, *menuImage_, *menuDgram_, *menuOutput_, *menuHelp_;
-
-    QDockWidget *dockFiles_, *dockDatasets_, *dockDatasetInfo_;
-
-private:
-    QByteArray initialState_;
-    QNetworkAccessManager netMan_;
-
     void readSettings();
     void saveSettings();
-
     void checkActions();
 
     void viewStatusbar(bool);
@@ -90,5 +74,7 @@ private:
     void viewDatasetInfo(bool);
     void viewReset();
 };
-}
+
+} // namespace gui
+
 #endif // MAINWIN_H
