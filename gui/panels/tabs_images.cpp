@@ -204,13 +204,11 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
 
     connect(actions.showBins, &QAction::toggled, [this]() { render(); });
 
-    onSigDisplayChanged([this]() { render(); });
-
-    onSigGeometryChanged([this]() { render(); });
-
-    connect(&hub_, &TheHubSignallingBase::sigNormChanged, [this](){render();});
-
-    onSigDatasetSelected([this](data::shp_Dataset dataset) { setDataset(dataset); });
+    connect(&hub_, &TheHubSignallingBase::sigDisplayChanged, [this](){ render(); });
+    connect(&hub_, &TheHubSignallingBase::sigGeometryChanged, [this](){ render(); });
+    connect(&hub_, &TheHubSignallingBase::sigNormChanged, [this](){ render(); });
+    connect(&hub_, &TheHubSignallingBase::sigDatasetSelected,
+            [this](data::shp_Dataset dataset){ setDataset(dataset); });
 
     render();
 }

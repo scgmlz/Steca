@@ -34,6 +34,8 @@ public:
 
 private:
     void onNormChanged();
+    void onFittingTab(eFittingTab tab);
+
     void setDataset(data::shp_Dataset);
 
     data::shp_Dataset dataset_;

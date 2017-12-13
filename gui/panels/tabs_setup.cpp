@@ -113,7 +113,7 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
     {
         auto& box = addTab("Geometry", Qt::Vertical).box();
 
-        onSigGeometryChanged([this]() { setFromHub(); });
+        connect(&hub_, &TheHubSignallingBase::sigGeometryChanged, [this](){ setFromHub(); });
 
         // widgets
 
@@ -234,7 +234,8 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
             hub_.setBgPolyDegree(to_u(degree));
         });
 
-        onSigBgChanged([this]() { spinDegree_->setValue(to_i(hub_.bgPolyDegree())); });
+        connect(&hub_, &TheHubSignallingBase::sigBgChanged, [this](){
+                spinDegree_->setValue(to_i(hub_.bgPolyDegree())); });
     }
 
     {
@@ -323,10 +324,11 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
             updateReflectionControls();
         });
 
-        onSigReflectionsChanged([this, updateReflectionControls]() {
-            reflectionView_->updateSingleSelection();
-            updateReflectionControls();
-        });
+        connect(&hub_, &TheHubSignallingBase::sigReflectionsChanged,
+                [this, updateReflectionControls]() {
+                    reflectionView_->updateSingleSelection();
+                    updateReflectionControls(); }
+            );
 
         connect(comboReflType_, slot(QComboBox, currentIndexChanged, int), [this](int index) {
             hub_.setReflType(fit::ePeakType(index));

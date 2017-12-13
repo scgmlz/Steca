@@ -153,9 +153,12 @@ Actions::Actions(TheHub& hub) : super(hub) {
 
     // handle signals
 
-    onSigFilesSelected([this]() { remFile->setEnabled(!hub_.collectedFromFiles().isEmpty()); });
-    onSigCorrFile([this](data::shp_File file) { remCorr->setEnabled(!file.isNull()); });
-    onSigCorrEnabled([this](bool on) { enableCorr->setChecked(on); });
+    QObject::connect(&hub_, &TheHubSignallingBase::sigFilesSelected,
+            [this]() { remFile->setEnabled(!hub_.collectedFromFiles().isEmpty()); });
+    QObject::connect(&hub_, &TheHubSignallingBase::sigCorrFile,
+            [this](data::shp_File file) { remCorr->setEnabled(!file.isNull()); });
+    QObject::connect(&hub_, &TheHubSignallingBase::sigCorrEnabled,
+            [this](bool on) { enableCorr->setChecked(on); });
 
     auto deselect = [this]() {
         fixedIntenImage->setChecked(false);
@@ -163,9 +166,12 @@ Actions::Actions(TheHub& hub) : super(hub) {
         combinedDgram->setChecked(false);
     };
 
-    onSigGeometryChanged([deselect]() { deselect(); });
-    onSigDatasetsChanged([deselect]() { deselect(); });
-    onSigCorrEnabled([deselect]() { deselect(); });
+    QObject::connect(&hub_, &TheHubSignallingBase::sigGeometryChanged,
+                     [deselect]() { deselect(); });
+    QObject::connect(&hub_, &TheHubSignallingBase::sigDatasetsChanged,
+                     [deselect]() { deselect(); });
+    QObject::connect(&hub_, &TheHubSignallingBase::sigCorrEnabled,
+                     [deselect]() { deselect(); });
 }
 
 Action& Actions::trg(Action*& action, rcstr text) {

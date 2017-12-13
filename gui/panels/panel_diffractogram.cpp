@@ -290,7 +290,7 @@ DiffractogramPlot::DiffractogramPlot(TheHub& hub, Diffractogram& diffractogram)
         updateBg();
     });
 
-    onSigBgChanged([this]() { updateBg(); });
+    connect(&hub_, &TheHubSignallingBase::sigBgChanged, [this]() { updateBg(); });
 
     tool_ = eTool::NONE;
 }
@@ -492,41 +492,20 @@ Diffractogram::Diffractogram(TheHub& hub)
         plot_->enterZoom(on);
     });
 
-    onSigDatasetSelected([this](data::shp_Dataset dataset) { setDataset(dataset); });
-
-    onSigGeometryChanged([this]() { render(); });
-
-    onSigCorrEnabled([this]() { render(); });
-
-    onSigDisplayChanged([this]() { render(); });
-
-    onSigGammaRange([this]() { render(); });
-
-    onSigBgChanged([this]() { render(); });
-
-    onSigReflectionsChanged([this]() { render(); });
-
-    connect(&hub_, &TheHubSignallingBase::sigNormChanged, [this](){onNormChanged();});
+    connect(&hub_, &TheHubSignallingBase::sigDatasetSelected,
+            [this](data::shp_Dataset dataset){ setDataset(dataset); });
+    connect(&hub_, &TheHubSignallingBase::sigGeometryChanged, [this](){ render(); });
+    connect(&hub_, &TheHubSignallingBase::sigCorrEnabled, [this](){ render(); });
+    connect(&hub_, &TheHubSignallingBase::sigDisplayChanged, [this](){ render(); });
+    connect(&hub_, &TheHubSignallingBase::sigGammaRange, [this](){ render(); });
+    connect(&hub_, &TheHubSignallingBase::sigBgChanged, [this](){ render(); });
+    connect(&hub_, &TheHubSignallingBase::sigReflectionsChanged, [this](){ render(); });
+    connect(&hub_, &TheHubSignallingBase::sigNormChanged, [this](){ onNormChanged(); });
 
     connect(hub_.actions.clearBackground, &QAction::triggered, [this]() { plot_->clearBg(); });
 
-    onSigFittingTab([this](eFittingTab tab) {
-        bool on = hub_.actions.selRegions->isChecked();
-
-        switch (tab) {
-        case eFittingTab::BACKGROUND:
-            hub_.actions.selRegions->icon(":/icon/selRegion");
-            plot_->setTool(
-                on ? DiffractogramPlot::eTool::BACKGROUND : DiffractogramPlot::eTool::NONE);
-            break;
-        case eFittingTab::REFLECTIONS:
-            hub_.actions.selRegions->icon(":/icon/reflRegion");
-            plot_->setTool(
-                on ? DiffractogramPlot::eTool::PEAK_REGION : DiffractogramPlot::eTool::NONE);
-            break;
-        default: plot_->setTool(DiffractogramPlot::eTool::NONE);
-        }
-    });
+    connect(&hub_, &TheHubSignallingBase::sigFittingTab,
+            [this](eFittingTab tab) { onFittingTab(tab); });
 
     connect(hub_.actions.selRegions, &QAction::toggled, [this](bool on) {
         using eTool = DiffractogramPlot::eTool;
@@ -540,26 +519,27 @@ Diffractogram::Diffractogram(TheHub& hub)
             }
 
         plot_->setTool(tool);
-    });
-
-    onSigReflectionSelected([this](calc::shp_Reflection reflection) {
-        currentReflection_ = reflection;
-        plot_->updateBg();
-    });
-
-    onSigReflectionValues(
-        [this](typ::Range const& range, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
-            if (currentReflection_) {
-                currentReflection_->setRange(range);
-                if (withGuesses)
-                    currentReflection_->invalidateGuesses();
-                else {
-                    currentReflection_->setGuessPeak(peak);
-                    currentReflection_->setGuessFWHM(fwhm);
-                }
-                plot_->updateBg();
-            }
         });
+
+    connect(&hub_, &TheHubSignallingBase::sigReflectionSelected,
+            [this](calc::shp_Reflection reflection) {
+                currentReflection_ = reflection;
+                plot_->updateBg();
+            });
+
+    connect(&hub_, &TheHubSignallingBase::sigReflectionValues,
+            [this](typ::Range const& range, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
+                if (currentReflection_) {
+                    currentReflection_->setRange(range);
+                    if (withGuesses)
+                        currentReflection_->invalidateGuesses();
+                    else {
+                        currentReflection_->setGuessPeak(peak);
+                        currentReflection_->setGuessFWHM(fwhm);
+                    }
+                    plot_->updateBg();
+                }
+            });
 
     hub_.actions.selRegions->setChecked(true);
     hub_.actions.showBackground->setChecked(true);
@@ -577,6 +557,23 @@ void Diffractogram::onNormChanged() {
     DM("DGram::onSigNormChanged/3")
         render();
     DM("DGram::onSigNormChanged/4")
+}
+
+void Diffractogram::onFittingTab(eFittingTab tab) {
+    bool on = hub_.actions.selRegions->isChecked();
+    switch (tab) {
+    case eFittingTab::BACKGROUND:
+        hub_.actions.selRegions->icon(":/icon/selRegion");
+        plot_->setTool(
+            on ? DiffractogramPlot::eTool::BACKGROUND : DiffractogramPlot::eTool::NONE);
+        break;
+    case eFittingTab::REFLECTIONS:
+        hub_.actions.selRegions->icon(":/icon/reflRegion");
+        plot_->setTool(
+            on ? DiffractogramPlot::eTool::PEAK_REGION : DiffractogramPlot::eTool::NONE);
+        break;
+    default: plot_->setTool(DiffractogramPlot::eTool::NONE);
+    }
 }
 
 void Diffractogram::render() {

@@ -141,11 +141,7 @@ protected:
     DEFINE_HUB_SIGNAL_HANDLER(ReflectionData)
     DEFINE_HUB_SIGNAL_HANDLER(ReflectionValues)
 
-    DEFINE_HUB_SIGNAL_HANDLER(DisplayChanged)
-    DEFINE_HUB_SIGNAL_HANDLER(GeometryChanged)
     DEFINE_HUB_SIGNAL_HANDLER(GammaRange)
-
-    DEFINE_HUB_SIGNAL_HANDLER(BgChanged)
 
     DEFINE_HUB_SIGNAL_HANDLER(FittingTab)
 
