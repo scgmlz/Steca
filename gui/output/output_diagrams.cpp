@@ -22,33 +22,6 @@
 namespace gui {
 namespace output {
 
-class TabPlot : public QCustomPlot {
-private:
-    using super = QCustomPlot;
-public:
-    TabPlot();
-    void set(calc::ReflectionInfos);
-
-    void plot(qreal_vec const& xs, qreal_vec const& ys, qreal_vec const& ysLo, qreal_vec const& ysUp);
-
-protected:
-    QCPGraph *graph_, *graphLo_, *graphUp_;
-};
-
-class TabDiagramsSave : public TabSave {
-private:
-    using super = TabSave;
-public:
-    TabDiagramsSave(TheHub&, Params&);
-
-    uint currType() const;
-    bool currDiagram() const;
-
-protected:
-    QRadioButton *currentDiagram_, *allData_;
-    QComboBox* fileTypes_;
-};
-
 // sorts xs and ys the same way, by (x,y)
 static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
     EXPECT(xs.count() == ys.count())
@@ -80,6 +53,25 @@ static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
 
     ys = r;
 }
+
+static const Params::ePanels PANELS =
+    Params::ePanels(Params::REFLECTION | Params::GAMMA | Params::DIAGRAM);
+
+// ************************************************************************** //
+//  class TabPlot (file scope)
+// ************************************************************************** //
+
+class TabPlot : public QCustomPlot {
+private:
+    using super = QCustomPlot;
+public:
+    TabPlot();
+    void set(calc::ReflectionInfos);
+    void plot(
+        qreal_vec const& xs, qreal_vec const& ys, qreal_vec const& ysLo, qreal_vec const& ysUp);
+protected:
+    QCPGraph *graph_, *graphLo_, *graphUp_;
+};
 
 TabPlot::TabPlot() {
     graph_ = addGraph();
@@ -127,6 +119,22 @@ void TabPlot::plot(qreal_vec const& xs, qreal_vec const& ys, qreal_vec const& ys
     replot();
 }
 
+// ************************************************************************** //
+//  class TabDiagramsSave (file scope)
+// ************************************************************************** //
+
+class TabDiagramsSave : public TabSave {
+private:
+    using super = TabSave;
+public:
+    TabDiagramsSave(TheHub&, Params&);
+    uint currType() const { return fileTypes_->currentIndex(); }
+    bool currDiagram() const { return currentDiagram_->isChecked(); }
+protected:
+    QRadioButton *currentDiagram_, *allData_;
+    QComboBox* fileTypes_;
+};
+
 TabDiagramsSave::TabDiagramsSave(TheHub& hub, Params& params) : super(hub, params, true) {
     auto gp = new panel::GridPanel(hub, "To save");
     grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
@@ -140,17 +148,6 @@ TabDiagramsSave::TabDiagramsSave(TheHub& hub, Params& params) : super(hub, param
 
     currentDiagram_->setChecked(true);
 }
-
-uint TabDiagramsSave::currType() const {
-    return fileTypes_->currentIndex();
-}
-
-bool TabDiagramsSave::currDiagram() const {
-    return currentDiagram_->isChecked();
-}
-
-static const Params::ePanels PANELS =
-    Params::ePanels(Params::REFLECTION | Params::GAMMA | Params::DIAGRAM);
 
 // ************************************************************************** //
 //  class DiagramsFrame
