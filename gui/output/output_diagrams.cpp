@@ -17,9 +17,23 @@
 #include "thehub.h"
 #include "typ/range.h"
 #include "typ/str.h"
+#include "QCustomPlot/qcustomplot.h"
 
 namespace gui {
 namespace output {
+
+class TabPlot : public QCustomPlot {
+private:
+    using super = QCustomPlot;
+public:
+    TabPlot();
+    void set(calc::ReflectionInfos);
+
+    void plot(qreal_vec const& xs, qreal_vec const& ys, qreal_vec const& ysLo, qreal_vec const& ysUp);
+
+protected:
+    QCPGraph *graph_, *graphLo_, *graphUp_;
+};
 
 // sorts xs and ys the same way, by (x,y)
 static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {

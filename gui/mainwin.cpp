@@ -28,6 +28,7 @@
 #include "panels/tabs_images.h"
 #include "panels/tabs_setup.h"
 
+#include <QCloseEvent>
 #include <QDesktopServices>
 #include <QDir>
 #include <QMenuBar>

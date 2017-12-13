@@ -12,6 +12,7 @@
 //
 // ************************************************************************** //
 
+#include "QCustomPlot/qcustomplot.h"
 #include "panel_diffractogram.h"
 #include "def/idiomatic_for.h"
 #include "gui_cfg.h"

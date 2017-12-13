@@ -17,7 +17,6 @@
 
 #include "actions.h"
 #include "panel.h"
-#include "qcustomplot.h"
 #include "typ/range.h"
 #include "typ/vec.h"
 

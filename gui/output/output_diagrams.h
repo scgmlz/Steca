@@ -16,24 +16,10 @@
 #define OUTPUT_DIAGRAMS_H
 
 #include "output_dialogs.h"
-#include "qcustomplot.h"
 #include "typ/str.h"
 
 namespace gui {
 namespace output {
-
-class TabPlot : public QCustomPlot {
-private:
-    using super = QCustomPlot;
-public:
-    TabPlot();
-    void set(calc::ReflectionInfos);
-
-    void plot(qreal_vec const& xs, qreal_vec const& ys, qreal_vec const& ysLo, qreal_vec const& ysUp);
-
-protected:
-    QCPGraph *graph_, *graphLo_, *graphUp_;
-};
 
 class TabDiagramsSave : public TabSave {
 private:
@@ -56,7 +42,7 @@ public:
     DiagramsFrame(TheHub&, rcstr title, QWidget*);
 
 protected:
-    TabPlot* tabPlot_;
+    class TabPlot* tabPlot_;
     TabDiagramsSave* tabSave_;
 
     using eReflAttr = calc::ReflectionInfo::eReflAttr;
