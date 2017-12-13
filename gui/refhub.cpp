@@ -43,6 +43,7 @@ void TheHubSignallingBase::tellReflectionValues(
     emit sigReflectionValues(rgeTth, peak, fwhm, withGuesses);
 }
 
+
 TheHubSignallingBase::level_guard::level_guard(level_t& level) : level_(level) {
     ++level_;
 }

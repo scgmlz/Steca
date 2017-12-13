@@ -96,53 +96,13 @@ protected:
 class RefHub {
 public:
     RefHub(TheHub&);
-
 protected:
     TheHub& hub_;
-
-private:
-    template <typename Signal, typename Lambda> void onHubSignal(Signal signal, Lambda slot) {
-        QObject::connect(&hub_, signal, slot);
-    }
-
-    // emit signals (through the hub)
 protected:
     void tellDatasetSelected(data::shp_Dataset);
     void tellSelectedReflection(calc::shp_Reflection);
     void tellReflectionData(calc::shp_Reflection);
     void tellReflectionValues(typ::Range const&, qpair const&, fwhm_t, bool);
-
-    // handle same signals
-protected:
-#define DEFINE_HUB_SIGNAL_HANDLER(name)                         \
-    template <typename Lambda> void onSig##name(Lambda slot) {  \
-        DM("onHubSignal " << #name)                             \
-        onHubSignal(&TheHubSignallingBase::sig##name, slot);    \
-    }
-
-    // spells out like in this example:
-//    template <typename Lambda> void onSigNormChanged(Lambda slot) {
-//        DM("connect sigNormChanged")
-//        QObject::connect(&hub_, &TheHubSignallingBase::sigNormChanged, slot); }
-
-    DEFINE_HUB_SIGNAL_HANDLER(SessionCleared)
-
-    DEFINE_HUB_SIGNAL_HANDLER(FilesChanged)
-    DEFINE_HUB_SIGNAL_HANDLER(FilesSelected)
-
-    DEFINE_HUB_SIGNAL_HANDLER(DatasetsChanged)
-    DEFINE_HUB_SIGNAL_HANDLER(DatasetSelected)
-
-    DEFINE_HUB_SIGNAL_HANDLER(ReflectionsChanged)
-    DEFINE_HUB_SIGNAL_HANDLER(ReflectionSelected)
-    DEFINE_HUB_SIGNAL_HANDLER(ReflectionData)
-    DEFINE_HUB_SIGNAL_HANDLER(ReflectionValues)
-
-    DEFINE_HUB_SIGNAL_HANDLER(GammaRange)
-
-    DEFINE_HUB_SIGNAL_HANDLER(FittingTab)
-
-#undef DEFINE_HUB_SIGNAL_HANDLER
 };
 
 } //namespace gui

@@ -35,12 +35,12 @@ protected:
 
 DatasetView::DatasetView(TheHub& hub) : super(hub) {
     setModel(&hub.datasetsModel);
-    EXPECT(dynamic_cast<Model*>(super::model()))
+    EXPECT(dynamic_cast<Model*>(super::model()));
 
-    onSigDatasetsChanged([this]() {
-        tellDatasetSelected(data::shp_Dataset()); // first de-select
-        selectRow(0);
-    });
+    connect(&hub_, &TheHubSignallingBase::sigDatasetsChanged, [this]() {
+            tellDatasetSelected(data::shp_Dataset()); // first de-select
+            selectRow(0);
+        });
 }
 
 void DatasetView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
@@ -63,8 +63,9 @@ DockDatasets::DockDatasets(TheHub& hub)
         hub_.combineDatasetsBy(pint(qMax(1, num)));
     });
 
-    onSigDatasetsChanged(
-        [this]() { combineDatasets_->setValue(to_i(uint(hub_.datasetsGroupedBy()))); });
+    connect(&hub_, &TheHubSignallingBase::sigDatasetsChanged,
+            [this]() { combineDatasets_->setValue(to_i(uint(hub_.datasetsGroupedBy()))); });
 }
-}
-}
+
+} // namespace panel
+} // namespace gui

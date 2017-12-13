@@ -19,7 +19,7 @@
 namespace models {
 
 FilesModel::FilesModel(gui::TheHub& hub) : TableModel(hub) {
-    onSigFilesChanged([this]() { signalReset(); });
+    connect(&hub_, &gui::TheHubSignallingBase::sigFilesChanged, [this]() { signalReset(); });
 }
 
 int FilesModel::columnCount(rcIndex) const {
@@ -50,7 +50,7 @@ DatasetsModel::DatasetsModel(gui::TheHub& hub)
     : super(hub)
     , datasets_(hub.collectedDatasets()) //, metaInfo_(nullptr)
 {
-    onSigDatasetsChanged([this]() { signalReset(); });
+    connect(&hub_, &gui::TheHubSignallingBase::sigDatasetsChanged, [this]() { signalReset(); });
 }
 
 int DatasetsModel::columnCount(rcIndex) const {
@@ -110,12 +110,13 @@ void DatasetsModel::showMetaInfo(typ::vec<bool> const& metadataRows) {
 MetadataModel::MetadataModel(gui::TheHub& hub) : super(hub) {
     rowsChecked_.fill(false, data::Metadata::numAttributes(false));
 
-    onSigDatasetSelected([this](data::shp_Dataset dataset) {
-        metadata_.clear();
-        if (dataset)
-            metadata_ = dataset->metadata();
-        signalReset();
-    });
+    connect(&hub_, &gui::TheHubSignallingBase::sigDatasetSelected,
+            [this](data::shp_Dataset dataset) {
+                metadata_.clear();
+                if (dataset)
+                    metadata_ = dataset->metadata();
+                signalReset();
+            });
 }
 
 int MetadataModel::columnCount(rcIndex) const {
@@ -228,4 +229,5 @@ str_lst ReflectionsModel::names() const {
         ns.append(displayData(to_u(i)));
     return ns;
 }
-}
+
+} // namespace models
