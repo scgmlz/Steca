@@ -372,10 +372,10 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
             silentSpin_ = false;
         };
 
-        onSigReflectionSelected(
+        connect(&hub_, &TheHubSignallingBase::sigReflectionSelected,
             [setReflControls](calc::shp_Reflection reflection) { setReflControls(reflection); });
 
-        onSigReflectionData(
+        connect(&hub_, &TheHubSignallingBase::sigReflectionData,
             [setReflControls](calc::shp_Reflection reflection) { setReflControls(reflection); });
 
         auto newReflData = [this](bool invalidateGuesses) {

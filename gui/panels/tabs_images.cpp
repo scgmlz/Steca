@@ -184,7 +184,8 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
     {
         auto& tab = addTab("Correction", Qt::Vertical);
 
-        onSigCorrFile([&tab](data::shp_File file) { tab.setEnabled(!file.isNull()); });
+        connect(&hub_, &TheHubSignallingBase::sigCorrFile,
+                [&tab](data::shp_File file) { tab.setEnabled(!file.isNull()); });
 
         auto& box = tab.box();
 

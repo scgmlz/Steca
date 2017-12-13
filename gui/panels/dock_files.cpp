@@ -51,12 +51,11 @@ FilesView::FilesView(TheHub& hub) : super(hub) {
 
     connect(hub_.actions.remFile, &QAction::triggered, [this]() { removeSelected(); });
 
-    onSigFilesChanged([this]() {
-        selectRows({});
-        recollect();
-    });
+    connect(&hub_, &TheHubSignallingBase::sigFilesChanged,
+            [this]() { selectRows({}); recollect(); });
 
-    onSigFilesSelected([this]() { selectRows(hub_.collectedFromFiles()); });
+    connect(&hub_, &TheHubSignallingBase::sigFilesSelected,
+            [this]() { selectRows(hub_.collectedFromFiles()); });
 }
 
 void FilesView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
@@ -112,9 +111,9 @@ DockFiles::DockFiles(TheHub& hub) : super("Files", "dock-files", Qt::Vertical), 
     h->addWidget(iconButton(actions.enableCorr));
     h->addWidget(iconButton(actions.remCorr));
 
-    onSigCorrFile([this](data::shp_File file) {
-        corrFile_->setText(file.isNull() ? "" : file->fileName());
-    });
+    connect(&hub_, &TheHubSignallingBase::sigCorrFile,
+            [this](data::shp_File file) {
+                corrFile_->setText(file.isNull() ? "" : file->fileName()); });
 }
 
 } // namespace panel

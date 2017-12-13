@@ -133,9 +133,6 @@ protected:
     DEFINE_HUB_SIGNAL_HANDLER(DatasetsChanged)
     DEFINE_HUB_SIGNAL_HANDLER(DatasetSelected)
 
-    DEFINE_HUB_SIGNAL_HANDLER(CorrFile)
-    DEFINE_HUB_SIGNAL_HANDLER(CorrEnabled)
-
     DEFINE_HUB_SIGNAL_HANDLER(ReflectionsChanged)
     DEFINE_HUB_SIGNAL_HANDLER(ReflectionSelected)
     DEFINE_HUB_SIGNAL_HANDLER(ReflectionData)

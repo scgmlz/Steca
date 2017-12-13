@@ -100,6 +100,7 @@ private:
 
     typ::vec<QCPGraph*> reflGraph_;
     DiffractogramPlotOverlay* overlay_;
+    void onReflectionData(calc::shp_Reflection reflection);
 };
 
 // ************************************************************************** //
@@ -260,30 +261,8 @@ DiffractogramPlot::DiffractogramPlot(TheHub& hub, Diffractogram& diffractogram)
     fits_->setLineStyle(QCPGraph::lsNone);
     fits_->setPen(QPen(Qt::red));
 
-    onSigReflectionData([this](calc::shp_Reflection reflection) {
-        guesses_->clearData();
-        fits_->clearData();
-
-        if (reflection && diffractogram_.dataset()) {
-            auto& fun = reflection->peakFunction();
-
-            auto gp = fun.guessedPeak();
-            if (gp.isValid()) {
-                guesses_->addData(gp.x, gp.y);
-                auto gw2 = fun.guessedFWHM() / 2;
-                guesses_->addData(gp.x - gw2, gp.y / 2);
-                guesses_->addData(gp.x + gw2, gp.y / 2);
-            }
-
-            auto fp = fun.fittedPeak();
-            if (fp.isValid()) {
-                fits_->addData(fp.x, fp.y);
-                auto fw2 = fun.fittedFWHM() / 2;
-                fits_->addData(fp.x - fw2, fp.y / 2);
-                fits_->addData(fp.x + fw2, fp.y / 2);
-            }
-        }
-    });
+    connect(&hub_, &TheHubSignallingBase::sigReflectionData,
+            [this](calc::shp_Reflection reflection) { onReflectionData(reflection); });
 
     connect(hub_.actions.showBackground, &QAction::toggled, [this](bool on) {
         showBgFit_ = on;
@@ -436,6 +415,32 @@ void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
     QCustomPlot::resizeEvent(e);
     auto size = e->size();
     overlay_->setGeometry(0, 0, size.width(), size.height());
+}
+
+void DiffractogramPlot::onReflectionData(calc::shp_Reflection reflection) {
+
+    guesses_->clearData();
+    fits_->clearData();
+
+    if (reflection && diffractogram_.dataset()) {
+        auto& fun = reflection->peakFunction();
+
+        auto gp = fun.guessedPeak();
+        if (gp.isValid()) {
+            guesses_->addData(gp.x, gp.y);
+            auto gw2 = fun.guessedFWHM() / 2;
+            guesses_->addData(gp.x - gw2, gp.y / 2);
+            guesses_->addData(gp.x + gw2, gp.y / 2);
+        }
+
+        auto fp = fun.fittedPeak();
+        if (fp.isValid()) {
+            fits_->addData(fp.x, fp.y);
+            auto fw2 = fun.fittedFWHM() / 2;
+            fits_->addData(fp.x - fw2, fp.y / 2);
+            fits_->addData(fp.x + fw2, fp.y / 2);
+        }
+    }
 }
 
 // ************************************************************************** //
