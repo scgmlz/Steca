@@ -15,7 +15,6 @@
 #include "mainwin.h"
 #include "../manifest.h"
 #include "about.h"
-#include "app.h"
 #include "config.h"
 #include "filedialog.h"
 #include "output/output_diagrams.h"
@@ -28,6 +27,7 @@
 #include "panels/tabs_images.h"
 #include "panels/tabs_setup.h"
 
+#include <QApplication>
 #include <QCloseEvent>
 #include <QDesktopServices>
 #include <QDir>

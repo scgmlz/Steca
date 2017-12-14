@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "app.h"
 #include "../manifest.h"
 #include "mainwin.h"
 #include <tclap/CmdLine.h> // templated command line argument parser, in 3rdparty directory
