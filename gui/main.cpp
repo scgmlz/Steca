@@ -13,7 +13,11 @@
 // ************************************************************************** //
 
 #include "app.h"
+#include "../manifest.h"
+#include "mainwin.h"
 #include <tclap/CmdLine.h> // templated command line argument parser, in 3rdparty directory
+#include <QApplication>
+#include <QStyleFactory>
 
 int main(int argc, char* argv[]) {
 
@@ -22,5 +26,25 @@ int main(int argc, char* argv[]) {
                        , true);
     cmd.parse(argc, argv);
 
-    return App(argc, argv).exec();
+    QApplication app(argc, argv);
+
+    app.setApplicationName(APPLICATION_NAME);
+    app.setApplicationVersion(
+#include "../VERSION"
+        );
+    app.setOrganizationName(ORGANIZATION_NAME);
+    app.setOrganizationDomain(ORGANIZATION_DOMAIN);
+
+#if defined(Q_OS_OSX)
+    app.setStyle(QStyleFactory::create("Macintosh"));
+#elif defined(Q_OS_WIN)
+    app.setStyle(QStyleFactory::create("Fusion"));
+#else
+    app.setStyle(QStyleFactory::create("Fusion"));
+#endif
+
+    gui::MainWin mainWin;
+    mainWin.show();
+
+    return app.exec();
 }
