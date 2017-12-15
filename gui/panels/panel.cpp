@@ -18,11 +18,6 @@
 namespace gui {
 namespace panel {
 
-PanelWidget::PanelWidget(TheHub& hub, Qt::Orientation orientation) : RefHub(hub) {
-    setLayout((box_ = boxLayout(orientation)));
-}
-
-
 BasicPanel::BasicPanel(TheHub& hub) : BasicPanel(hub, "") {}
 
 void BasicPanel::setHorizontalStretch(int stretch) {

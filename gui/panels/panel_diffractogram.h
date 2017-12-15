@@ -23,6 +23,19 @@
 namespace gui {
 namespace panel {
 
+// Just a widget
+class PanelWidget : public QWidget, protected RefHub {
+private:
+    using super = QWidget;
+public:
+    PanelWidget(TheHub&, Qt::Orientation);
+
+    QBoxLayout* box() const { return box_; }
+
+protected:
+    QBoxLayout* box_;
+};
+
 class Diffractogram : public PanelWidget {
 public:
     Diffractogram(TheHub&);

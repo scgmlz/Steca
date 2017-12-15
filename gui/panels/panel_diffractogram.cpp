@@ -22,6 +22,10 @@
 namespace gui {
 namespace panel {
 
+PanelWidget::PanelWidget(TheHub& hub, Qt::Orientation orientation) : RefHub(hub) {
+    setLayout((box_ = boxLayout(orientation)));
+}
+
 // ************************************************************************** //
 //  define file-scoped classes
 // ************************************************************************** //
