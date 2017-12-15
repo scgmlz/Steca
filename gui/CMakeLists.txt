@@ -19,7 +19,7 @@ target_link_libraries (${lib}
 
 # the Steca executable:
 add_executable (Steca
-  main.cpp
+  steca.cpp
   resources.qrc
   # the following non-dependences are convenient for the qtcreator tree view:
   ../manifest.h

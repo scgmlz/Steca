@@ -2,8 +2,8 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/main.cpp
-//! @brief     Implements ...
+//! @file      gui/steca.cpp
+//! @brief     Implements the main program.
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
