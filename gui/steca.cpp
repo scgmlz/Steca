@@ -14,45 +14,12 @@
 
 #include "../manifest.h"
 #include "mainwin.h"
+#include "msg_handler.h"
 #include <tclap/CmdLine.h> // templated command line argument parser, in 3rdparty directory
 #include <QApplication>
-#include <QMessageBox>
-#include <QStatusBar>
 #include <QStyleFactory>
 
-static QMainWindow* pMainWin;
-
-static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg) {
-    switch (type) {
-    case QtDebugMsg:
-        std::cerr << ".... " << msg.toStdString() << " [" << ctx.function << "]\n" << std::flush;
-        break;
-    case QtInfoMsg:
-        std::cerr << "INFO " << msg.toStdString() << " [" << ctx.function << "]\n" << std::flush;
-        pMainWin->statusBar()->showMessage(msg, 5000);
-        break;
-    case QtFatalMsg:
-        std::cerr << "BUG! " << msg.toStdString() << " [" << ctx.function << "]\n" << std::flush;
-        QMessageBox::critical(QApplication::activeWindow(), qAppName(),
-                              "Sorry, you encountered a fatal bug.\n"
-                              "The application will terminate.\n"
-                              "Please report the following to the maintainer:\n"
-                              "Error message:\n" + msg + "\n"
-                              "Context:\n" + ctx.function + "\n");
-        qApp->quit();
-        break;
-    case QtWarningMsg:
-    default:
-        if (msg.left(4)=="QXcb") {
-            std::cerr << "QBUG " << msg.toStdString() << "\n" << std::flush;
-        } else {
-            std::cerr << "WARN " << msg.toStdString()
-                      << " [" << ctx.function << "]\n" << std::flush;
-            QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
-        }
-        break;
-    }
-}
+class QMainWindow* pMainWin;
 
 int main(int argc, char* argv[]) {
 
