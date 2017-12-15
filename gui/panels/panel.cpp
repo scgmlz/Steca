@@ -18,7 +18,9 @@
 namespace gui {
 namespace panel {
 
-BasicPanel::BasicPanel(TheHub& hub) : BasicPanel(hub, "") {}
+// ************************************************************************** //
+//  class BasicPanel
+// ************************************************************************** //
 
 void BasicPanel::setHorizontalStretch(int stretch) {
     auto sp = sizePolicy();
@@ -39,12 +41,10 @@ void BasicPanel::setStretch(int horizontal, int vertical) {
     setSizePolicy(sp);
 }
 
-BoxPanel::BoxPanel(TheHub& hub, Qt::Orientation o) : BoxPanel(hub, "", o) {}
 
-BoxPanel::BoxPanel(TheHub& hub, rcstr title, Qt::Orientation orientation) : BasicPanel(hub, title) {
-    setLayout((box_ = boxLayout(orientation)));
-}
-
+// ************************************************************************** //
+//  class GridPanel
+// ************************************************************************** //
 
 GridPanel::GridPanel(TheHub& hub) : GridPanel(hub, "") {}
 

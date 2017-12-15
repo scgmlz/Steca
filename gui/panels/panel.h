@@ -23,10 +23,10 @@
 namespace gui {
 namespace panel {
 
-// Just a groupbox
+//! Just a groupbox
 class BasicPanel : public QGroupBox, protected RefHub {
 public:
-    BasicPanel(TheHub&);
+    BasicPanel(TheHub& hub) : BasicPanel(hub, "") {}
     BasicPanel(TheHub& hub, rcstr title) : QGroupBox(title), RefHub(hub) {}
 
     void setHorizontalStretch(int);
@@ -34,19 +34,8 @@ public:
     void setStretch(int horizontal, int vertical);
 };
 
-// A panel with a box layout
-class BoxPanel : public BasicPanel {
-public:
-    BoxPanel(TheHub&, Qt::Orientation);
-    BoxPanel(TheHub&, rcstr title, Qt::Orientation);
 
-    QBoxLayout* box() const { return box_; }
-
-protected:
-    QBoxLayout* box_;
-};
-
-// A panel with grid layout
+//! A panel with grid layout
 class GridPanel : public BasicPanel {
 public:
     GridPanel(TheHub&);
@@ -58,7 +47,8 @@ protected:
     GridLayout* grid_;
 };
 
-// A tabbed panel
+
+//! A tabbed panel
 class Tab : public QWidget {
 public:
     Tab(Qt::Orientation);
@@ -68,6 +58,7 @@ protected:
     QBoxLayout* box_;
 };
 
+//!
 class TabsPanel : public QTabWidget, protected RefHub {
 public:
     TabsPanel(TheHub&);
