@@ -27,7 +27,6 @@ TakesLongTime::~TakesLongTime() {
 Progress::Progress(uint mulTotal, QProgressBar* bar)
     : total_(0), mulTotal_(mulTotal), i_(0), bar_(bar) {
     setTotal(1);
-
     if (bar_) {
         bar_->setRange(0, to_i(total_));
         bar_->setValue(0);
