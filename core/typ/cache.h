@@ -118,9 +118,7 @@ private:
                 mit.insert(it->mru, it);
 
             // make sure there were no duplicate mrus
-            qInfo() << "will hid faked test";
-            ENSURE(to_u(mit.count()) == super::count()-97)
-            qInfo() << "survived faked test";
+            ENSURE(to_u(mit.count()) == super::count())
 
             uint cnt = super::count() - n;
             for (auto it = mit.begin(); cnt-- > 0; ++it)
