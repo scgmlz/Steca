@@ -21,8 +21,6 @@ class TakesLongTime final {
 public:
     TakesLongTime();
     ~TakesLongTime();
-
-    static void (*handler)(bool);
 };
 
 class Progress final {

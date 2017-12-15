@@ -16,7 +16,28 @@
 #include "mainwin.h"
 #include <tclap/CmdLine.h> // templated command line argument parser, in 3rdparty directory
 #include <QApplication>
+#include <QMessageBox>
+#include <QStatusBar>
 #include <QStyleFactory>
+
+static QMainWindow* pMainWin;
+
+static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg) {
+    switch (type) {
+    case QtDebugMsg:
+        std::cerr << ".... " << msg.toStdString() << " [" << ctx.function << "]\n";
+        break;
+    case QtInfoMsg:
+        std::cerr << "INFO " << msg.toStdString() << " [" << ctx.function << "]\n";
+        pMainWin->statusBar()->showMessage(msg, 5000);
+        break;
+    case QtWarningMsg:
+    default:
+        std::cerr << "WARN " << msg.toStdString() << " [" << ctx.function << "]\n";
+        QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
+        break;
+    }
+}
 
 int main(int argc, char* argv[]) {
 
@@ -42,8 +63,12 @@ int main(int argc, char* argv[]) {
     app.setStyle(QStyleFactory::create("Fusion"));
 #endif
 
+    qInstallMessageHandler(messageHandler);
+
     gui::MainWin mainWin;
+    pMainWin = &mainWin;
     mainWin.show();
+    qInfo() << "Welcome to Steca";
 
     return app.exec();
 }

@@ -14,18 +14,15 @@
 
 #include "typ/async.h"
 #include <QtWidgets/QProgressBar>
+#include <QtWidgets/QApplication>
 
 TakesLongTime::TakesLongTime() {
-    if (handler)
-        handler(true);
+    qApp->setOverrideCursor(Qt::WaitCursor);
 }
 
 TakesLongTime::~TakesLongTime() {
-    if (handler)
-        handler(false);
+    qApp->restoreOverrideCursor();
 }
-
-void (*TakesLongTime::handler)(bool) = nullptr;
 
 Progress::Progress(uint mulTotal, QProgressBar* bar)
     : total_(0), mulTotal_(mulTotal), i_(0), bar_(bar) {
