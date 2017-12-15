@@ -272,8 +272,7 @@ PoleFiguresFrame::PoleFiguresFrame(TheHub& hub, rcstr title, QWidget* parent)
     //    }
     //  });
 
-    connect(
-        tabSave_->actSave, &QAction::triggered, [this]() { logSuccess(savePoleFigureOutput()); });
+    connect( tabSave_->actSave, &QAction::triggered, [this]() { savePoleFigureOutput(); });
 
     //  params()->cbRefl->currentIndexChanged(0);
 }
@@ -287,42 +286,38 @@ void PoleFiguresFrame::displayReflection(uint reflIndex, bool interpolated) {
     tabSave_->rawReflSettings(on);
 }
 
-bool PoleFiguresFrame::savePoleFigureOutput() {
+void PoleFiguresFrame::savePoleFigureOutput() {
     auto& reflections = hub_.reflections();
-    if (reflections.isEmpty())
-        return false;
-
+    if (reflections.isEmpty()) {
+        qWarning() << "cannot save pole figure: no reflection chosen";
+        return;
+    }
     str path = tabSave_->filePath(false);
-    if (path.isEmpty())
-        return false;
-
-    if (tabSave_->onlySelectedRefl())
-        return writePoleFigureOutputFiles(path, getReflIndex());
-
+    if (path.isEmpty()) {
+        qWarning() << "cannot save pole figure: file path is empty";
+        return;
+    }
+    if (tabSave_->onlySelectedRefl()) {
+        writePoleFigureOutputFiles(path, getReflIndex());
+        return;
+    }
     // all reflections
-    bool res = true;
-    for_i (reflections.count())
-        res = logCheckSuccess(path, writePoleFigureOutputFiles(path, i)) && res;
-
-    return res;
+    for_i (reflections.count()) // TODO collect output into one message
+        writePoleFigureOutputFiles(path, i);
 }
 
 static str const OUT_FILE_TAG(".refl%1");
 static int const MAX_LINE_LENGTH_POL(9);
 
-bool PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
+void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
     auto refl = hub_.reflections().at(index);
     calc::ReflectionInfos reflInfo;
-
     if (getInterpolated())
         reflInfo = interpPoints_.at(index);
     else
         reflInfo = calcPoints_.at(index);
-
     auto type = refl->type();
-
     str path = str(filePath + OUT_FILE_TAG).arg(index + 1);
-
     bool check = false;
     uint numSavedFiles = 0;
 
@@ -330,12 +325,10 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
         qreal_vec output;
         for_i (reflInfo.count())
             output.append(reflInfo.at(i).inten());
-
         auto intenFilePath = path + ".inten";
         writeListFile(intenFilePath, reflInfo, output);
         writePoleFile(intenFilePath, reflInfo, output);
         writeErrorMask(intenFilePath, reflInfo, output);
-
         check = true;
         numSavedFiles += 3;
     }
@@ -344,11 +337,9 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
         qreal_vec output;
         for_i (reflInfo.count())
             output.append(reflInfo.at(i).tth());
-
         auto tthFilePath = filePath + ".tth";
         writeListFile(tthFilePath, reflInfo, output);
         writePoleFile(tthFilePath, reflInfo, output);
-
         check = true;
         numSavedFiles += 2;
     }
@@ -357,19 +348,20 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
         qreal_vec output;
         for_i (reflInfo.count())
             output.append(reflInfo.at(i).fwhm());
-
         auto fwhmFilePath = filePath + ".fwhm";
         writeListFile(fwhmFilePath, reflInfo, output);
         writePoleFile(fwhmFilePath, reflInfo, output);
-
         check = true;
         numSavedFiles += 2;
     }
 
-    if (numSavedFiles > 0)
-        logMessage(str("%1 files have been saved").arg(numSavedFiles));
-
-    return check;
+    if (numSavedFiles > 0) {
+        if (check)
+            qInfo() << numSavedFiles << " files have been saved";
+        else
+            qWarning() << "something went wrong, yet " << numSavedFiles << " files have been saved";
+    } else
+        qWarning() << "no files saved";
 }
 
 void PoleFiguresFrame::writeErrorMask(

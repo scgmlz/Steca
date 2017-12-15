@@ -844,22 +844,5 @@ bool Frame::getInterpolated() const {
     return pi ? pi->rbInterp->isChecked() : false;
 }
 
-void Frame::logMessage(rcstr msg) const {
-    MessageLogger::info(msg);
-}
-
-void Frame::logSuccess(bool res) const {
-    if (res)
-        MessageLogger::popup("Saved.");
-    else
-        MessageLogger::popup("The output could not be saved.");
-}
-
-bool Frame::logCheckSuccess(rcstr path, bool res) const {
-    if (!res)
-        MessageLogger::popup(str("'%1' could not be saved.").arg(path));
-    return res;
-}
-
 } // namespace output
 } // namespace gui

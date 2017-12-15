@@ -170,7 +170,7 @@ DiagramsFrame::DiagramsFrame(TheHub& hub, rcstr title, QWidget* parent)
     tabSave_ = new TabDiagramsSave(hub, *params_);
     tabs_->addTab("Save", Qt::Vertical).box().addWidget(tabSave_);
 
-    connect(tabSave_->actSave, &QAction::triggered, [this]() { logSuccess(saveDiagramOutput()); });
+    connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiagramOutput(); });
 
     recalculate();
 }
@@ -239,19 +239,18 @@ void DiagramsFrame::recalculate() {
     tabPlot_->plot(xs_, ys_, ysErrorLo_, ysErrorUp_);
 }
 
-bool DiagramsFrame::saveDiagramOutput() {
+void DiagramsFrame::saveDiagramOutput() {
     str path = tabSave_->filePath(true);
-    if (path.isEmpty())
-        return false;
-
+    if (path.isEmpty()) {
+        qWarning() << "cannot save diagram: path is empty";
+        return;
+    }
     str separator = tabSave_->separator();
-
     if (tabSave_->currDiagram())
         writeCurrentDiagramOutputFile(path, separator);
     else
         writeAllDataOutputFile(path, separator);
-
-    return true;
+    qInfo() << "diagram saved to " << path;
 }
 
 void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator) {
@@ -278,15 +277,12 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
     QTextStream stream(&file);
 
     auto headers = table_->outHeaders();
-
     for_i (headers.count())
         stream << headers.at(to_u(i)) << separator;
-
     stream << '\n';
 
     for_i (calcPoints_.at(getReflIndex()).count()) {
         auto& row = table_->row(i);
-
         for_i (row.count()) {
             QVariant const& var = row.at(i);
             if (typ::isNumeric(var))
@@ -296,7 +292,6 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
 
             stream << separator;
         }
-
         stream << '\n';
     }
 }

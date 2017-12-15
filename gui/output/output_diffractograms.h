@@ -59,10 +59,12 @@ protected:
     OutputData outputCurrDiffractogram();
     OutputDataCollections outputAllDiffractograms();
 
-    bool saveDiffractogramOutput();
-    bool writeCurrDiffractogramToFile(rcstr filePath, rcstr separator);
-    bool writeAllDiffractogramsToFiles(rcstr filePath, rcstr separator, bool oneFile);
+    void saveDiffractogramOutput();
+    void writeCurrDiffractogramToFile(rcstr filePath, rcstr separator);
+    void writeAllDiffractogramsToFiles(rcstr filePath, rcstr separator, bool oneFile);
 };
-}
-}
+
+} // namespace output
+} // namespace gui
+
 #endif // OUTPUT_Diffractograms_H

@@ -70,8 +70,7 @@ DiffractogramsFrame::DiffractogramsFrame(TheHub& hub, rcstr title, QWidget* pare
     tabs_->addTab("Save", Qt::Vertical).box().addWidget(tabSave_);
 
     connect(tabSave_->actSave, &QAction::triggered, [this]() {
-        logSuccess(saveDiffractogramOutput());
-    });
+            saveDiffractogramOutput(); });
 }
 
 OutputDataCollection DiffractogramsFrame::collectCurves(
@@ -154,38 +153,34 @@ auto writeMetaData = [](OutputData outputData, QTextStream& stream) {
     }
 };
 
-bool DiffractogramsFrame::writeCurrDiffractogramToFile(rcstr filePath, rcstr separator) {
+void DiffractogramsFrame::writeCurrDiffractogramToFile(rcstr filePath, rcstr separator) {
     auto outputData = outputCurrDiffractogram();
-    if (!outputData.isValid())
-        return false;
-
+    if (!outputData.isValid()) {
+        qWarning() << "invalid output data in writeCurrDiffractogramsToFiles";
+        return;
+    }
     WriteFile file(filePath);
     QTextStream stream(&file);
-
     writeMetaData(outputData, stream);
     stream << "Tth" << separator << "Intensity" << '\n';
-
     auto& curve = outputData.curve_;
-
     for_i (curve.xs().count())
         stream << curve.x(i) << separator << curve.y(i) << '\n';
-
-    return true;
 }
 
-bool DiffractogramsFrame::writeAllDiffractogramsToFiles(
+void DiffractogramsFrame::writeAllDiffractogramsToFiles(
     rcstr filePath, rcstr separator, bool oneFile) {
     auto outputCollections = outputAllDiffractograms();
     for (auto outputCollection : outputCollections) {
         for (auto outputData : outputCollection) {
-            if (!outputData.isValid())
-                return false;
+            if (!outputData.isValid()) {
+                qWarning() << "invalid output data in writeAllDiffractogramsToFiles";
+                return;
+            }
         }
     }
-
     WriteFile file(filePath);
     QTextStream stream(&file);
-
     if (oneFile) {
         for (auto outputCollection : outputCollections) {
             for (auto outputData : outputCollection) {
@@ -210,27 +205,23 @@ bool DiffractogramsFrame::writeAllDiffractogramsToFiles(
             ++fileNumber;
         }
     }
-
-    return true;
 }
 
-bool DiffractogramsFrame::saveDiffractogramOutput() {
+void DiffractogramsFrame::saveDiffractogramOutput() {
     str path = tabSave_->filePath(true);
     if (path.isEmpty())
-        return false;
-
+        return;
     str separator = tabSave_->separator();
 
     if (tabSave_->currentChecked())
-        return writeCurrDiffractogramToFile(path, separator);
-
-    if (tabSave_->allSequentialChecked())
-        return writeAllDiffractogramsToFiles(path, separator, false);
-
-    if (tabSave_->allChecked())
-        return writeAllDiffractogramsToFiles(path, separator, true);
-
-    return false;
+        writeCurrDiffractogramToFile(path, separator);
+    else if (tabSave_->allSequentialChecked())
+        writeAllDiffractogramsToFiles(path, separator, false);
+    else if (tabSave_->allChecked())
+        writeAllDiffractogramsToFiles(path, separator, true);
+    else
+        qWarning() << "Invalid call of DiffractogramsFrame::saveDiffractogramOutput";
 }
-}
-}
+
+} // namespace output
+} // namespace gui

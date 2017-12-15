@@ -19,7 +19,6 @@
 #include "calc/calc_reflection_info.h"
 #include "def/special_pointers.h"
 #include "panels/panel.h"
-#include "typ/log.h"
 #include "typ/range.h"
 #include "typ/str.h"
 #include "typ/vec.h"
@@ -235,9 +234,6 @@ protected:
 protected:
     uint getReflIndex() const;
     bool getInterpolated() const;
-    void logMessage(rcstr) const;
-    void logSuccess(bool) const;
-    bool logCheckSuccess(rcstr path, bool) const;
 };
 
 } // namespace output

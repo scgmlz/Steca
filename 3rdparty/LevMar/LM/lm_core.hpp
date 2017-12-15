@@ -120,7 +120,7 @@ int (*linsolver)(LM_REAL *A, LM_REAL *B, LM_REAL *x, int m)=NULL;
   mu=jacTe_inf=0.0; /* -Wall */
 
   if(n<m) {
-    msg_cannotSolve(n,m);
+    throw("more free parameters than data points");
     return LM_ERROR;
   }
 

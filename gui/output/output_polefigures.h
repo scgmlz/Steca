@@ -34,8 +34,8 @@ protected:
 
     void displayReflection(uint reflIndex, bool interpolated);
 
-    bool savePoleFigureOutput();
-    bool writePoleFigureOutputFiles(rcstr filePath, uint index);
+    void savePoleFigureOutput();
+    void writePoleFigureOutputFiles(rcstr filePath, uint index);
     void writePoleFile(rcstr filePath, calc::ReflectionInfos, qreal_vec const&);
     void writeListFile(rcstr filePath, calc::ReflectionInfos, qreal_vec const&);
     void writeErrorMask(rcstr filePath, calc::ReflectionInfos, qreal_vec const&);

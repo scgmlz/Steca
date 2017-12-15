@@ -15,11 +15,11 @@
 #include "def/idiomatic_for.h"
 #include "session.h"
 #include "typ/angles.h"
-#include "typ/log.h"
 #include "typ/matrix.h"
 #include "typ/range.h"
 #include "typ/str.h"
 #include <qmath.h>
+#include <QtGlobal>
 
 namespace data {
 
@@ -125,7 +125,6 @@ typ::cmp_vec Metadata::attributeCmps() {
         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_date, cmp_str,
     };
-
     return cmps;
 }
 
@@ -346,9 +345,9 @@ shp_Metadata Dataset::metadata() const {
             m->deltaTime += d->deltaTime;
 
             if (m->monitorCount > d->monitorCount)
-                MessageLogger::warn("decreasing monitor count in combined datasets");
+                qWarning() << "decreasing monitor count in combined datasets";
             if (m->time > d->time)
-                MessageLogger::warn("decreasing time in combined datasets");
+                qWarning() << "decreasing time in combined datasets";
             m->monitorCount = d->monitorCount;
             m->time = d->time;
         }
@@ -516,7 +515,6 @@ void Datasets::appendHere(shp_Dataset dataset) {
     // can be added only once
     EXPECT(!dataset->datasets_)
     dataset->datasets_ = this;
-
     super::append(dataset);
     invalidateAvgMutables();
 }
@@ -524,7 +522,6 @@ void Datasets::appendHere(shp_Dataset dataset) {
 size2d Datasets::imageSize() const {
     if (isEmpty())
         return size2d(0, 0);
-
     // all images have the same size; simply take the first one
     return first()->imageSize();
 }
@@ -532,21 +529,18 @@ size2d Datasets::imageSize() const {
 qreal Datasets::avgMonitorCount() const {
     if (qIsNaN(avgMonitorCount_))
         avgMonitorCount_ = calcAvgMutable(&Dataset::avgMonitorCount);
-
     return avgMonitorCount_;
 }
 
 qreal Datasets::avgDeltaMonitorCount() const {
     if (qIsNaN(avgDeltaMonitorCount_))
         avgDeltaMonitorCount_ = calcAvgMutable(&Dataset::avgDeltaMonitorCount);
-
     return avgDeltaMonitorCount_;
 }
 
 qreal Datasets::avgDeltaTime() const {
     if (qIsNaN(avgDeltaTime_))
         avgDeltaTime_ = calcAvgMutable(&Dataset::avgDeltaTime);
-
     return avgDeltaTime_;
 }
 
@@ -554,15 +548,12 @@ typ::Range const& Datasets::rgeGma(core::Session const& session) const {
     if (!rgeGma_.isValid())
         for (auto& dataset : *this)
             rgeGma_.extendBy(dataset->rgeGma(session));
-
     return rgeGma_;
 }
 
 typ::Range const& Datasets::rgeFixedInten(core::Session const& session, bool trans, bool cut) const {
     if (!rgeFixedInten_.isValid()) {
-
         TakesLongTime __;
-
         for (auto& dataset : *this)
             for (auto& one : *dataset) {
                 if (one->image()) {
@@ -572,20 +563,16 @@ typ::Range const& Datasets::rgeFixedInten(core::Session const& session, bool tra
                 }
             }
     }
-
     return rgeFixedInten_;
 }
 
 Curve Datasets::avgCurve(core::Session const& session) const {
     if (avgCurve_.isEmpty()) {
         // TODO invalidate when combinedDgram is unchecked
-
         TakesLongTime __;
-
         avgCurve_ =
             session.datasetLens(*combineAll(), *this, session.norm(), true, true)->makeCurve();
     }
-
     return avgCurve_;
 }
 
@@ -598,24 +585,19 @@ void Datasets::invalidateAvgMutables() const {
 
 shp_Dataset Datasets::combineAll() const {
     shp_Dataset d(new Dataset);
-
     for (shp_Dataset const& dataset : *this)
         for (shp_OneDataset const& one : *dataset)
             d->append(one);
-
     return d;
 }
 
 qreal Datasets::calcAvgMutable(qreal (Dataset::*avgMth)() const) const {
     qreal avg = 0;
-
     if (!isEmpty()) {
         for (auto& dataset : *this)
             avg += ((*dataset).*avgMth)();
-
         avg /= super::count();
     }
-
     return avg;
 }
 
@@ -628,10 +610,8 @@ size2d OneDatasets::imageSize() const {
 typ::shp_Image OneDatasets::foldedImage() const {
     EXPECT(!isEmpty())
     typ::shp_Image image(new Image(imageSize()));
-
     for (auto& one : *this)
         image->addIntens(*one->image_);
-
     return image;
 }
 

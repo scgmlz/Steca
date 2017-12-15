@@ -43,7 +43,7 @@ protected:
 
     void recalculate();
 
-    bool saveDiagramOutput();
+    void saveDiagramOutput();
     void writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator);
     void writeAllDataOutputFile(rcstr filePath, rcstr separator);
 };
