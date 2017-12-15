@@ -193,10 +193,10 @@ qreal SumFunctions::dy(qreal x, uint parIndex, qreal const* parValues) const {
     if (parValues)
         parValues += firstIndex;
 
-    ENSURE(firstIndex <= parIndex)
+    debug::ensure(firstIndex <= parIndex);
     parIndex -= firstIndex;
 
-    ENSURE(parIndex < f->parameterCount())
+    debug::ensure(parIndex < f->parameterCount());
     return f->dy(x, parIndex, parValues);
 }
 

@@ -32,7 +32,7 @@ using data::shp_Metadata;
 
 /* NOTE Invalid output parameters are set to NaNs. However, some analysis
  * programs
- * require -1 as unknown value; thus, NaN parameter values should be output
+ * debug::ensure -1 as unknown value; thus, NaN parameter values should be output
  * as -1 when output is written for these programs (polefigure!).
  */
 

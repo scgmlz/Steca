@@ -29,7 +29,7 @@ bool Curve::isEmpty() const {
 }
 
 uint Curve::count() const {
-    ENSURE(xs_.count() == ys_.count())
+    debug::ensure(xs_.count() == ys_.count());
     return xs_.count();
 }
 
@@ -48,7 +48,7 @@ Curve Curve::intersect(Range const& range) const {
     Curve res;
 
     if (!range.isEmpty()) {
-        ENSURE(isOrdered())
+        debug::ensure(isOrdered());
 
         uint xi = 0, cnt = count();
         auto minX = range.min, maxX = range.max;
@@ -69,7 +69,7 @@ Curve Curve::intersect(Ranges const& ranges) const {
     // collect points that are in ranges
     // it works because both curve points and ranges are ordered and ranges are
     // non-overlapping
-    ENSURE(isOrdered())
+    debug::ensure(isOrdered());
 
     uint xi = 0, cnt = count();
     for_i (ranges.count()) {

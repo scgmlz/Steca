@@ -113,11 +113,9 @@ AngleMap::AngleMap(Key const& key) : key_(key) {
 }
 
 static uint lowerBound(vec<deg> const& vec, deg x, uint i1, uint i2) {
-    EXPECT(i1 < i2)
-
+    debug::ensure(i1 < i2);
     if (1 == i2 - i1)
         return i1;
-
     uint mid = (i1 + i2) / 2;
     return vec.at(mid - 1) < x // x may be NaN ...
         ? lowerBound(vec, x, mid, i2)
@@ -125,11 +123,9 @@ static uint lowerBound(vec<deg> const& vec, deg x, uint i1, uint i2) {
 }
 
 static uint upperBound(vec<deg> const& vec, deg x, uint i1, uint i2) {
-    EXPECT(i1 < i2)
-
+    debug::ensure(i1 < i2);
     if (1 == i2 - i1)
         return i2;
-
     uint mid = (i1 + i2) / 2;
     return vec.at(mid) > x // x may be NaN ...
         ? upperBound(vec, x, i1, mid)
@@ -158,11 +154,11 @@ void AngleMap::calculate() {
     rgeGma_.invalidate();
     rgeGmaFull_.invalidate();
 
-    EXPECT(size.w > cut.left + cut.right)
-    EXPECT(size.h > cut.top + cut.bottom)
+    debug::ensure(size.w > cut.left + cut.right);
+    debug::ensure(size.h > cut.top + cut.bottom);
 
     uint countWithoutCut = (size.w - cut.left - cut.right) * (size.h - cut.top - cut.bottom);
-    EXPECT(countWithoutCut > 0)
+    debug::ensure(countWithoutCut > 0);
 
     gmas.resize(countWithoutCut);
     gmaIndexes.resize(countWithoutCut);
@@ -187,7 +183,7 @@ void AngleMap::calculate() {
     //        gamma = -gamma;
     //      }
 
-    //      ENSURE(!qIsNaN(gamma))
+    //      debug::ensure(!qIsNaN(gamma))
 
     //      arrAngles_.setAt(i, j, Angles(tth.toDeg(), gamma.toDeg()));
     //    }

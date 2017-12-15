@@ -82,9 +82,9 @@ void Session::remFile(uint i) {
 void Session::calcIntensCorr() const {
     corrHasNaNs_ = false;
 
-    EXPECT(corrImage_)
+    debug::ensure(corrImage_);
     size2d size = corrImage_->size() - imageCut_.marginSize();
-    ENSURE(!size.isEmpty())
+    debug::ensure(!size.isEmpty());
 
     uint w = size.w, h = size.h, di = imageCut_.left, dj = imageCut_.top;
 
@@ -256,7 +256,8 @@ Curve Session::curveMinusBg(calc::DatasetLens const& lens, typ::Range const& rge
 
 //! Fits reflection to the given gamma sector and constructs a ReflectionInfo.
 calc::ReflectionInfo Session::makeReflectionInfo(
-    calc::DatasetLens const& lens, calc::Reflection const& reflection, typ::Range const& gmaSector) const {
+    calc::DatasetLens const& lens, calc::Reflection const& reflection,
+    typ::Range const& gmaSector) const {
 
     // fit peak, and retrieve peak parameters:
     Curve curve = curveMinusBg(lens, gmaSector);
@@ -329,7 +330,7 @@ void Session::setIntenScaleAvg(bool avg, preal scale) {
 }
 
 void Session::addReflection(calc::shp_Reflection reflection) {
-    EXPECT(!reflection.isNull())
+    debug::ensure(!reflection.isNull());
     reflections_.append(reflection);
 }
 

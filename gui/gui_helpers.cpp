@@ -35,7 +35,7 @@ GridLayout* GridLayout::groupBox(QLayout& addTo, rcstr title) {
 }
 
 int mWidth(QWidget const* w) {
-    EXPECT(w)
+    debug::ensure(w);
     return w->fontMetrics().width('m');
 }
 
@@ -44,7 +44,6 @@ QBoxLayout* boxLayout(Qt::Orientation orientation) {
     case Qt::Horizontal: return hbox();
     case Qt::Vertical: return vbox();
     }
-
     NEVER return nullptr;
 }
 

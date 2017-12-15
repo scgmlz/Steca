@@ -35,8 +35,7 @@ private:
 
 MetadataView::MetadataView(TheHub& hub) : super(hub) {
     setModel(&hub.metadataModel);
-    EXPECT(dynamic_cast<Model*>(super::model()))
-
+    debug::ensure(dynamic_cast<Model*>(super::model()));
     connect(this, &MetadataView::clicked, [this](QModelIndex const& index) {
         model()->flipCheck(to_u(index.row()));
         hub_.datasetsModel.showMetaInfo(model()->rowsChecked()); // REVIEW signal instead?
@@ -54,5 +53,6 @@ DockMetadata::DockMetadata(TheHub& hub)
     : super("Metadata", "dock-metadata", Qt::Vertical), RefHub(hub) {
     box_->addWidget((metadataView_ = new MetadataView(hub)));
 }
-}
-}
+
+} // namespace panel
+} // namespace gui

@@ -30,16 +30,12 @@ deg calculateDeltaBeta(deg beta1, deg beta2) {
     // Due to cyclicity of angles (360 is equivalent to 0), some magic is needed.
     qreal deltaBeta = beta1 - beta2;
     qreal tempDelta = deltaBeta - 360;
-
     if (qAbs(tempDelta) < qAbs(deltaBeta))
         deltaBeta = tempDelta;
-
     tempDelta = deltaBeta + 360;
-
     if (qAbs(tempDelta) < qAbs(deltaBeta))
         deltaBeta = tempDelta;
-
-    ENSURE(-180 <= deltaBeta && deltaBeta <= 180)
+    debug::ensure(-180 <= deltaBeta && deltaBeta <= 180);
     return deg(deltaBeta);
 }
 
@@ -50,7 +46,7 @@ deg angle(deg alpha1, deg alpha2, deg deltaBeta) {
                           cos(alpha1.toRad()) * cos(alpha2.toRad())
                           + sin(alpha1.toRad()) * sin(alpha2.toRad()) * cos(deltaBeta.toRad())))
                  .toDeg();
-    ENSURE(0 <= a && a <= 180)
+    debug::ensure(0 <= a && a <= 180);
     return a;
 }
 
@@ -77,7 +73,6 @@ bool inQuadrant(eQuadrant quadrant, deg deltaAlpha, deg deltaBeta) {
     case eQuadrant::SOUTHWEST: return deltaAlpha < 0 && deltaBeta < 0;
     case eQuadrant::NORTHWEST: return deltaAlpha < 0 && deltaBeta >= 0;
     }
-
     NEVER return false;
 }
 
@@ -89,7 +84,6 @@ eQuadrant remapQuadrant(eQuadrant q) {
     case eQuadrant::SOUTHWEST: return eQuadrant::NORTHEAST;
     case eQuadrant::NORTHWEST: return eQuadrant::SOUTHEAST;
     }
-
     NEVER return eQuadrant::NORTHEAST;
 }
 
@@ -123,7 +117,7 @@ void searchPoints(deg alpha, deg beta, deg radius, ReflectionInfos const& infos,
 void searchInQuadrants(
     Quadrants const& quadrants, deg alpha, deg beta, deg searchRadius, ReflectionInfos const& infos,
     info_vec& foundInfos, qreal_vec& distances) {
-    ENSURE(quadrants.count() <= NUM_QUADRANTS);
+    debug::ensure(quadrants.count() <= NUM_QUADRANTS);
     // Take only reflection infos with beta within +/- BETA_LIMIT degrees into
     // account. Original STeCa used something like +/- 1.5*36 degrees.
     qreal const BETA_LIMIT = 30;
@@ -213,8 +207,8 @@ itf_t interpolateValues(deg searchRadius, ReflectionInfos const& infos, deg alph
         qreal_vec newDistance;
         searchInQuadrants(
             { newQ }, newAlpha, newBeta, searchRadius, infos, renewedSearch, newDistance);
-        ENSURE(renewedSearch.count() == 1);
-        ENSURE(newDistance.count() == 1);
+        debug::ensure(renewedSearch.count() == 1);
+        debug::ensure(newDistance.count() == 1);
         if (renewedSearch.first()) {
             interpolationInfos[i] = renewedSearch.first();
             distances[i] = newDistance.first();
@@ -238,14 +232,14 @@ ReflectionInfos interpolate(
     // If averaging fails, or alpha > averagingAlphaMax, inverse distance weighing
     // will be used.
 
-    EXPECT(0 < alphaStep && alphaStep <= 90);
-    EXPECT(0 < betaStep && betaStep <= 360);
-    EXPECT(0 <= averagingAlphaMax && averagingAlphaMax <= 90);
-    EXPECT(0 <= averagingRadius);
+    debug::ensure(0 < alphaStep && alphaStep <= 90);
+    debug::ensure(0 < betaStep && betaStep <= 360);
+    debug::ensure(0 <= averagingAlphaMax && averagingAlphaMax <= 90);
+    debug::ensure(0 <= averagingRadius);
     // Setting idwRadius = NaN disables idw radius checks and falling back to
     // idw when averaging fails.
-    EXPECT(qIsNaN(idwRadius) || 0 <= idwRadius);
-    EXPECT(0 <= inclusionTreshold && inclusionTreshold <= 1);
+    debug::ensure(qIsNaN(idwRadius) || 0 <= idwRadius);
+    debug::ensure(0 <= inclusionTreshold && inclusionTreshold <= 1);
 
     // NOTE We expect all infos to have the same gamma range.
 
@@ -290,7 +284,7 @@ ReflectionInfos interpolate(
                     uint iEnd = itfs.count();
                     uint iBegin =
                         qMin(to_u(qRound(itfs.count() * (1. - inclusionTreshold))), iEnd - 1);
-                    EXPECT(iBegin < iEnd)
+                    debug::ensure(iBegin < iEnd);
                     uint n = iEnd - iBegin;
 
                     for (uint i = iBegin; i < iEnd; ++i)

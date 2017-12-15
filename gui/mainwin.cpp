@@ -134,9 +134,8 @@ void MainWin::initMenus() {
 }
 
 void MainWin::addActions(QMenu* menu, QList<QAction*> actions) {
-    EXPECT(menu)
+    debug::ensure(menu);
     menu->addActions(actions);
-
     str prefix = str("%1: ").arg(menu->title().remove('&'));
     for (auto action : actions)
         action->setToolTip(prefix + action->toolTip());

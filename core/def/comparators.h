@@ -16,32 +16,31 @@
 #define COMPARATORS_H
 
 // a helper for int compare()
-#define RET_COMPARE_VALUE(val)                                                                     \
-    if (val < that.val)                                                                            \
-        return -1;                                                                                 \
-    if (val > that.val)                                                                            \
+#define RET_COMPARE_VALUE(val)                                                    \
+    if (val < that.val)                                                           \
+        return -1;                                                                \
+    if (val > that.val)                                                           \
         return +1;
 
-#define RET_COMPARE_VALUE2(v1, v2)                                                                 \
-    if (v1 < v2)                                                                                   \
-        return -1;                                                                                 \
-    if (v1 > v2)                                                                                   \
+#define RET_COMPARE_VALUE2(v1, v2)                                                \
+    if (v1 < v2)                                                                  \
+        return -1;                                                                \
+    if (v1 > v2)                                                                  \
         return +1;
 
-#define RET_COMPARE_COMPARABLE(o)                                                                  \
-    for (int cmp = o.compare(that.o); cmp;)                                                        \
+#define RET_COMPARE_COMPARABLE(o)                                                 \
+    for (int cmp = o.compare(that.o); cmp;)                                       \
         return cmp;
 
-#define EQ_NE_OPERATOR(T)                                                                          \
-    bool T::operator==(T const& that) const { return 0 == compare(that); }                               \
-                                                                                                   \
+#define EQ_NE_OPERATOR(T)                                                         \
+    bool T::operator==(T const& that) const { return 0 == compare(that); }        \
     bool T::operator!=(T const& that) const { return 0 != compare(that); }
 
-#define VALID_EQ_NE_OPERATOR(T)                                                                    \
-    bool T::operator==(T const& that) const {                                                            \
-        return isValid() && that.isValid() && 0 == compare(that);                                  \
-    }                                                                                              \
-                                                                                                   \
-    bool T::operator!=(T const& that) const { return isValid() && that.isValid() && 0 != compare(that); }
+#define VALID_EQ_NE_OPERATOR(T)                                                   \
+    bool T::operator==(T const& that) const {                                     \
+        return isValid() && that.isValid() && 0 == compare(that);                 \
+    }                                                                             \
+    bool T::operator!=(T const& that) const {                                     \
+       return isValid() && that.isValid() && 0 != compare(that); }
 
 #endif // COMPARATORS_H

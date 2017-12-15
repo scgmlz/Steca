@@ -20,6 +20,7 @@
 #include "typ/str.h"
 #include <qmath.h>
 #include <QtGlobal>
+#include <QDebug>
 
 namespace data {
 
@@ -219,7 +220,7 @@ OneDataset::OneDataset(Metadata const& md, typ::inten_arr const& intens)
 
 OneDataset::OneDataset(Metadata const& md, size2d const& size, inten_vec const& intens)
     : md_(new Metadata(md)), image_(new Image(size)) {
-    EXPECT(intens.count() == size.count())
+    debug::ensure(intens.count() == size.count());
     for_i (intens.count())
         image_->setInten(i, intens.at(i));
 }
@@ -227,7 +228,7 @@ OneDataset::OneDataset(Metadata const& md, size2d const& size, inten_vec const& 
 OneDataset::OneDataset(OneDataset const& that) : md_(that.md_), image_(that.image_) {}
 
 shp_Metadata OneDataset::metadata() const {
-    ENSURE(!md_.isNull())
+    debug::ensure(!md_.isNull());
     return md_;
 }
 
@@ -255,21 +256,21 @@ void OneDataset::collectIntens(
     core::Session const& session, typ::Image const* intensCorr, inten_vec& intens, uint_vec& counts,
     typ::Range const& rgeGma, deg minTth, deg deltaTth) const {
     auto angleMap = session.angleMap(*this);
-    EXPECT(!angleMap.isNull())
+    debug::ensure(!angleMap.isNull());
     typ::AngleMap const& map = *angleMap;
 
     uint_vec const* gmaIndexes = nullptr;
     uint gmaIndexMin = 0, gmaIndexMax = 0;
     map.getGmaIndexes(rgeGma, gmaIndexes, gmaIndexMin, gmaIndexMax);
 
-    EXPECT(gmaIndexes)
-    EXPECT(gmaIndexMin <= gmaIndexMax)
-    EXPECT(gmaIndexMax <= gmaIndexes->count())
+    debug::ensure(gmaIndexes);
+    debug::ensure(gmaIndexMin <= gmaIndexMax);
+    debug::ensure(gmaIndexMax <= gmaIndexes->count());
 
-    EXPECT(intens.count() == counts.count())
+    debug::ensure(intens.count() == counts.count());
     uint count = intens.count();
 
-    EXPECT(0 < deltaTth)
+    debug::ensure(0 < deltaTth);
 
     for (uint i = gmaIndexMin; i < gmaIndexMax; ++i) {
         uint ind = gmaIndexes->at(i);
@@ -287,7 +288,7 @@ void OneDataset::collectIntens(
 
         // bin index
         uint ti = to_u(qFloor((tth - minTth) / deltaTth));
-        EXPECT(ti <= count)
+        debug::ensure(ti <= count);
         ti = qMin(ti, count - 1); // it can overshoot due to floating point calculation
 
         intens[ti] += inten;
@@ -303,11 +304,11 @@ Dataset::Dataset() : datasets_(nullptr) {}
 
 shp_Metadata Dataset::metadata() const {
     if (md_.isNull()) {
-        EXPECT(!isEmpty())
+        debug::ensure(!isEmpty());
         const_cast<Dataset*>(this)->md_ = shp_Metadata(new Metadata);
         Metadata* m = const_cast<Metadata*>(md_.data());
 
-        EXPECT(!first()->metadata().isNull())
+        debug::ensure(!first()->metadata().isNull());
         Metadata const& firstMd = *(first()->metadata());
 
         m->date = firstMd.date;
@@ -318,7 +319,7 @@ shp_Metadata Dataset::metadata() const {
         // averages the rest
         for (auto& one : *this) {
             Metadata const* d = one->metadata().data();
-            EXPECT(d)
+            debug::ensure(d);
 
             m->motorXT += d->motorXT;
             m->motorYT += d->motorYT;
@@ -380,7 +381,7 @@ shp_Metadata Dataset::metadata() const {
 }
 
 #define AVG_ONES(what)                                                                             \
-    EXPECT(!isEmpty())                                                                             \
+    debug::ensure(!isEmpty());                                                                 \
     qreal avg = 0;                                                                                 \
     for (auto& one : *this)                                                                        \
         avg += one->what();                                                                        \
@@ -391,13 +392,11 @@ deg Dataset::omg() const { AVG_ONES(omg) }
 
 deg Dataset::phi() const { AVG_ONES(phi) }
 
-deg Dataset::chi() const {
-    AVG_ONES(chi)
-}
+deg Dataset::chi() const { AVG_ONES(chi) }
 
 // combined range of combined datasets
 #define RGE_COMBINE(combineOp, what)                                                               \
-    EXPECT(!isEmpty())                                                                             \
+    debug::ensure(!isEmpty());                                                                           \
     Range rge;                                                                                     \
     for (auto& one : *this)                                                                        \
         rge.combineOp(one->what);                                                                  \
@@ -458,7 +457,7 @@ inten_vec Dataset::collectIntens(
 }
 
 size2d Dataset::imageSize() const {
-    EXPECT(!isEmpty())
+    debug::ensure(!isEmpty());
     // all images have the same size; simply take the first one
     return first()->imageSize();
 }
@@ -503,7 +502,7 @@ void Dataset::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const 
 // ************************************************************************** //
 
 Datasets const& Dataset::datasets() const {
-    EXPECT(datasets_)
+    debug::ensure(datasets_);
     return *datasets_;
 }
 
@@ -513,7 +512,7 @@ Datasets::Datasets() {
 
 void Datasets::appendHere(shp_Dataset dataset) {
     // can be added only once
-    EXPECT(!dataset->datasets_)
+    debug::ensure(!dataset->datasets_);
     dataset->datasets_ = this;
     super::append(dataset);
     invalidateAvgMutables();
@@ -602,13 +601,13 @@ qreal Datasets::calcAvgMutable(qreal (Dataset::*avgMth)() const) const {
 }
 
 size2d OneDatasets::imageSize() const {
-    EXPECT(!isEmpty())
+    debug::ensure(!isEmpty());
     // all images have the same size; simply take the first one
     return first()->imageSize();
 }
 
 typ::shp_Image OneDatasets::foldedImage() const {
-    EXPECT(!isEmpty())
+    debug::ensure(!isEmpty());
     typ::shp_Image image(new Image(imageSize()));
     for (auto& one : *this)
         image->addIntens(*one->image_);

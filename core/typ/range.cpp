@@ -39,7 +39,7 @@ Range Range::infinite() {
 }
 
 int Range::compare(Range const& that) const {
-    EXPECT(isValid() && that.isValid())
+    debug::ensure(isValid() && that.isValid());
     RET_COMPARE_VALUE(min)
     RET_COMPARE_VALUE(max)
     return 0;
@@ -74,7 +74,7 @@ void Range::set(qreal val) {
 void Range::set(qreal min_, qreal max_) {
     min = min_;
     max = max_;
-    EXPECT(!isValid() || min <= max)
+    debug::ensure(!isValid() || min <= max);
 }
 
 void Range::safeSet(qreal v1, qreal v2) {

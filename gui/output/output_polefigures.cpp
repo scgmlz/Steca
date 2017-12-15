@@ -66,7 +66,7 @@ protected:
 
 TabGraph::TabGraph(TheHub& hub, Params& params)
     : super(hub, params), flat_(false), alphaMax_(90), avgAlphaMax_(0) {
-    ENSURE(params_.panelInterpolation)
+    debug::ensure(params_.panelInterpolation);
 
     grid_->addWidget((cbFlat_ = check("no intensity")), 0, 0);
 

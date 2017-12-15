@@ -49,7 +49,7 @@ template <typename T> typename std::__make_signed<T>::__type to_i(T t) {
     static_assert(std::is_unsigned<T>::value, "to_i(signed)");
 #ifndef QT_NO_DEBUG
     auto max = std::numeric_limits<typename std::__make_signed<T>::__type>::max();
-    EXPECT2(static_cast<T>(max) >= t, "to_i(too big)")
+    debug::ensure(static_cast<T>(max) >= t, "to_i(too big)")
 #endif
     return typename std::__make_signed<T>::__type(t);
 }
@@ -57,7 +57,7 @@ template <typename T> typename std::__make_signed<T>::__type to_i(T t) {
 // signed to unsigned
 template <typename T> typename std::__make_unsigned<T>::__type to_u(T t) {
     static_assert(std::is_signed<T>::value, "to_u(signed)");
-    EXPECT2(0 <= t, "to_u(attempt to convert a negative value)")
+    debug::ensure(0 <= t, "to_u(attempt to convert a negative value)");
     return typename std::__make_unsigned<T>::__type(t);
 }
 
@@ -74,7 +74,7 @@ template <typename T> typename std::__make_unsigned<T>::__type clip_u(T t) {
 
 class pint {
 public:
-    explicit pint(uint val) : val_(val) { EXPECT(1 <= val) }
+    explicit pint(uint val) : val_(val) { debug::ensure(1 <= val) }
 
     explicit pint(int val) : pint(to_u(val)) {}
 
@@ -104,7 +104,7 @@ extern qreal const INF;
 
 class preal {
 public:
-    explicit preal(qreal val) : val_(val) { EXPECT(0 < val) }
+    explicit preal(qreal val) : val_(val) { debug::ensure(0 < val) }
 
     operator qreal() const { return val_; }
 

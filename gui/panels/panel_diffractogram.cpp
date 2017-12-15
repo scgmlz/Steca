@@ -298,7 +298,7 @@ void DiffractogramPlot::plot(
 
         typ::Range intenRange;
         if (hub_.isFixedIntenDgramScale()) {
-            ENSURE(!diffractogram_.dataset().isNull())
+            debug::ensure(!diffractogram_.dataset().isNull());
             auto lens = hub_.datasetLens(*diffractogram_.dataset());
             intenRange = lens->rgeInten();
         } else {

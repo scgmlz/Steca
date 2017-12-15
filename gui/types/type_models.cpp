@@ -24,7 +24,7 @@ QModelIndex const ANY_INDEX;
 //}
 
 // void CheckedInfo::setText(rcstr text) {
-//  EXPECT(infoText)
+//  debug::ensure(infoText)
 //  infoText->setText(text);
 //}
 

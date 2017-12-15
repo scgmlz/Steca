@@ -24,7 +24,7 @@ namespace output {
 
 // sorts xs and ys the same way, by (x,y)
 static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
-    EXPECT(xs.count() == ys.count())
+    debug::ensure(xs.count() == ys.count());
 
     uint count = xs.count();
 
@@ -79,8 +79,9 @@ TabPlot::TabPlot() {
     graphUp_ = addGraph();
 }
 
-void TabPlot::plot(qreal_vec const& xs, qreal_vec const& ys, qreal_vec const& ysLo, qreal_vec const& ysUp) {
-    EXPECT(xs.count() == ys.count())
+void TabPlot::plot(
+    qreal_vec const& xs, qreal_vec const& ys, qreal_vec const& ysLo, qreal_vec const& ysUp) {
+    debug::ensure(xs.count() == ys.count());
 
     uint count = xs.count();
 
@@ -160,7 +161,7 @@ DiagramsFrame::DiagramsFrame(TheHub& hub, rcstr title, QWidget* parent)
     tabPlot_ = new TabPlot();
     tabs_->addTab("Diagram", Qt::Vertical).box().addWidget(tabPlot_);
 
-    ENSURE(params_->panelDiagram)
+    debug::ensure(params_->panelDiagram);
     auto pd = params_->panelDiagram;
 
     connect(pd->xAxis, slot(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
@@ -176,12 +177,12 @@ DiagramsFrame::DiagramsFrame(TheHub& hub, rcstr title, QWidget* parent)
 }
 
 DiagramsFrame::eReflAttr DiagramsFrame::xAttr() const {
-    ENSURE(params_->panelDiagram)
+    debug::ensure(params_->panelDiagram);
     return eReflAttr(params_->panelDiagram->xAxis->currentIndex());
 }
 
 DiagramsFrame::eReflAttr DiagramsFrame::yAttr() const {
-    ENSURE(params_->panelDiagram)
+    debug::ensure(params_->panelDiagram);
     return eReflAttr(params_->panelDiagram->yAxis->currentIndex());
 }
 
@@ -258,9 +259,9 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separato
 
     QTextStream stream(&file);
 
-    EXPECT(xs_.count() == ys_.count())
-    EXPECT(ysErrorLo_.isEmpty() || ysErrorLo_.count() == ys_.count())
-    EXPECT(ysErrorLo_.count() == ysErrorUp_.count())
+    debug::ensure(xs_.count() == ys_.count());
+    debug::ensure(ysErrorLo_.isEmpty() || ysErrorLo_.count() == ys_.count());
+    debug::ensure(ysErrorLo_.count() == ysErrorUp_.count());
 
     bool writeErrors = !ysErrorUp_.isEmpty();
 

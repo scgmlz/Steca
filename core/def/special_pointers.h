@@ -53,7 +53,7 @@ public:
 private:
     P p_;
 
-    explicit not_null(P p) : p_(p) { EXPECT(p_) }
+    explicit not_null(P p) : p_(p) { debug::ensure(p_); }
 
     // no pointer arithmetics
     not_null<P>& operator++() = delete;

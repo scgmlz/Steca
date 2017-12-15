@@ -18,7 +18,7 @@
 namespace gui {
 
 TheHub& TheHubSignallingBase::asHub() {
-    ENSURE(dynamic_cast<TheHub*>(this))
+    debug::ensure(dynamic_cast<TheHub*>(this));
     return *static_cast<TheHub*>(this);
 }
 

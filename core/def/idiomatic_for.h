@@ -19,14 +19,13 @@
 
 #ifdef Q_OS_WIN
 
-// MSVC does not handle decltype etc. well, and we disregard int/uint warnings
-// on Windows, anyway
+// MSVC does not handle decltype etc. well, and we disregard int/uint warnings on Windows, anyway
 #define for_int(i, n) for (int i = 0, i##End = (n); i < i##End; ++i)
 #define for_int_down(n) for (int i = (num); i-- > 0;)
 
 #else
 
-#define for_int(i, n)                                                                              \
+#define for_int(i, n) \
     for (std::remove_const<decltype(n)>::type i = decltype(n)(0), i##End = (n); i < i##End; ++i)
 #define for_int_down(n) for (std::remove_const<decltype(n)>::type i = (num); i-- > decltype(n)(0);)
 
@@ -36,8 +35,8 @@
 
 #define for_i_down(n) for_int_down (i, n)
 
-#define for_ij(ni, nj)                                                                             \
-    for_int (i, ni)                                                                                \
+#define for_ij(ni, nj)  \
+    for_int (i, ni)     \
         for_int (j, nj)
 
 #endif // IDIOMATIC_FOR_H

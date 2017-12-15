@@ -15,6 +15,7 @@
 #include "def/idiomatic_for.h"
 #include "session.h"
 #include "typ/range.h"
+#include <QDebug>
 #include <QtGlobal>
 
 namespace calc {

@@ -103,11 +103,11 @@ OutputData DiffractogramsFrame::collectCurve(data::Dataset const& dataset) {
 }
 
 OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
-    ENSURE(params_->panelGammaSlices)
+    debug::ensure(params_->panelGammaSlices);
     auto ps = params_->panelGammaSlices;
     uint gmaSlices = to_u(ps->numSlices->value());
 
-    ENSURE(params_->panelGammaRange)
+    debug::ensure(params_->panelGammaRange);
     auto pr = params_->panelGammaRange;
     typ::Range rgeGma;
     if (pr->cbLimitGamma->isChecked())

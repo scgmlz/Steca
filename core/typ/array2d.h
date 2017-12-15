@@ -102,7 +102,7 @@ public:
 
     // access using 2D index
     T const& at(uint i, uint j) const {
-        EXPECT(i < size_.w && j < size_.h)
+        debug::ensure(i < size_.w && j < size_.h);
         return ts_[i][j];
     }
 
@@ -111,13 +111,13 @@ public:
 
     // set using 2D index
     void setAt(uint i, uint j, T const& val) {
-        EXPECT(i < size_.w && j < size_.h)
+        debug::ensure(i < size_.w && j < size_.h);
         ts_[i][j] = val;
     }
 
     // mutable access
     T& refAt(uint i, uint j) const {
-        EXPECT(i < size_.w && j < size_.h)
+        debug::ensure(i < size_.w && j < size_.h);
         return ts_[i][j];
     }
 };

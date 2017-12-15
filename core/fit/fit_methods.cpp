@@ -29,13 +29,13 @@ void FitWrapper::fit(Function& function, Curve const& curve) {
     function_ = &function;
     xValues_ = curve.xs().data();
 
-    // prepare data in a required format
+    // prepare data in a debug::ensured format
     uint parCount = function_->parameterCount();
     qreal_vec parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
 
     for_i (parCount) {
         auto par = function_->parameterAt(i);
-        EXPECT(qIsFinite(par.value())) // TODO if not so, return false ?
+        debug::ensure(qIsFinite(par.value())); // TODO if not so, return false ?
         parValue[i] = par.value();
         parMin[i] = par.valueRange().min;
         parMax[i] = par.valueRange().max;

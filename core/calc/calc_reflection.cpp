@@ -41,7 +41,7 @@ void Reflection::setType(fit::ePeakType type) {
 }
 
 fit::PeakFunction const& Reflection::peakFunction() const {
-    ENSURE(peakFunction_)
+    debug::ensure(peakFunction_);
     return *peakFunction_;
 }
 

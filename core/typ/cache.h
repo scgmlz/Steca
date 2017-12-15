@@ -76,7 +76,7 @@ protected:
     uint maxItems_;
 
 public:
-    cache_base(uint maxItems) : maxItems_(maxItems) { EXPECT(maxItems_ > 0) }
+    cache_base(uint maxItems) : maxItems_(maxItems) { debug::ensure(maxItems_ > 0); }
 
     virtual ~cache_base() {}
 
@@ -116,10 +116,8 @@ private:
             mapMruIt_t mit;
             for (auto it = super::mapKey_.begin(), itEnd = super::mapKey_.end(); it != itEnd; ++it)
                 mit.insert(it->mru, it);
-
             // make sure there were no duplicate mrus
-            ENSURE(to_u(mit.count()) == super::count())
-
+            debug::ensure(to_u(mit.count()) == super::count());
             uint cnt = super::count() - n;
             for (auto it = mit.begin(); cnt-- > 0; ++it)
                 super::mapKey_.erase(*it);
@@ -144,15 +142,12 @@ public:
     void trim(uint n) { _trim(n); }
 
     shp insert(Key const& key, shp p) {
-        EXPECT(!super::mapKey_.contains(key))
-
+        debug::ensure(!super::mapKey_.contains(key));
         if (rollOver_)
             trim(0);
         else if (super::count() >= super::maxItems_)
             trim(super::maxItems_ / 2);
-
         mru_t mru = nextMru();
-
         super::mapKey_.insert(key, shp_mru_t(p, mru));
         return p;
     }
@@ -163,13 +158,10 @@ public:
         auto it = super::mapKey_.find(key);
         if (super::mapKey_.end() == it)
             return shp();
-
         if (rollOver_)
             return insert(key, take(key));
-
         if ((it->mru + 1) != nextMru_) // not mru, update
             it->mru = nextMru();
-
         return it->p;
     }
 };

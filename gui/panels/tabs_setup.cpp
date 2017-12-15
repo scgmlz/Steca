@@ -46,7 +46,7 @@ protected:
 
 ReflectionView::ReflectionView(TheHub& hub) : super(hub) {
     setModel(&hub.reflectionsModel);
-    EXPECT(dynamic_cast<Model*>(super::model()))
+    debug::ensure(dynamic_cast<Model*>(super::model()));
 
     for_i (model()->columnCount())
         resizeColumnToContents(i);
@@ -142,7 +142,7 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
         cutBottom_ = spinCell(gui_cfg::em4, 0);
 
         auto setImageCut = [this](bool isTopOrLeft, int value) {
-            EXPECT(value >= 0)
+            debug::ensure(value >= 0);
             if (hub_.actions.linkCuts->isChecked())
                 hub_.setImageCut(
                     isTopOrLeft, true,
@@ -230,9 +230,9 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
         box.addStretch(1);
 
         connect(spinDegree_, slot(QSpinBox, valueChanged, int), [this](int degree) {
-            EXPECT(degree >= 0)
-            hub_.setBgPolyDegree(to_u(degree));
-        });
+                debug::ensure(degree >= 0);
+                hub_.setBgPolyDegree(to_u(degree));
+            });
 
         connect(&hub_, &TheHubSignallingBase::sigBgChanged, [this](){
                 spinDegree_->setValue(to_i(hub_.bgPolyDegree())); });
@@ -309,7 +309,7 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
 
         connect(actions.addReflection, &QAction::triggered, [this, updateReflectionControls]() {
             int i = comboReflType_->currentIndex();
-            EXPECT(i >= 0)
+            debug::ensure(i >= 0);
             reflectionView_->addReflection(to_u(i));
             updateReflectionControls();
         });

@@ -52,7 +52,7 @@ void initFactory() {
 
 uint Polynom::degree() const {
     uint parCount = super::parameterCount();
-    ENSURE(parCount > 0)
+    debug::ensure(parCount > 0);
     return parCount - 1;
 }
 
@@ -83,14 +83,13 @@ qreal Polynom::dy(qreal x, uint i, qreal const*) const {
 
 // REVIEW
 qreal Polynom::avgY(Range const& rgeX, qreal const* parValues) const {
-    EXPECT(rgeX.isValid())
+    debug::ensure(rgeX.isValid());
 
     qreal w = rgeX.width();
     if (w <= 0)
         return y(rgeX.min, parValues);
 
     qreal minY = 0, maqpair = 0, minPow = 1, maxPow = 1;
-
     for_i (parameters_.count()) {
         qreal facY = parValue(i, parValues) / (i + 1);
         minY += facY * (minPow *= rgeX.min);

@@ -35,7 +35,7 @@ protected:
 
 DatasetView::DatasetView(TheHub& hub) : super(hub) {
     setModel(&hub.datasetsModel);
-    EXPECT(dynamic_cast<Model*>(super::model()));
+    debug::ensure(dynamic_cast<Model*>(super::model()));
 
     connect(&hub_, &TheHubSignallingBase::sigDatasetsChanged, [this]() {
             tellDatasetSelected(data::shp_Dataset()); // first de-select
