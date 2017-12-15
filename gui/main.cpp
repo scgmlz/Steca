@@ -31,6 +31,16 @@ static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr 
         std::cerr << "INFO " << msg.toStdString() << " [" << ctx.function << "]\n";
         pMainWin->statusBar()->showMessage(msg, 5000);
         break;
+    case QtFatalMsg:
+        std::cerr << "BUG! " << msg.toStdString() << " [" << ctx.function << "]\n";
+        QMessageBox::critical(QApplication::activeWindow(), qAppName(),
+                              "Sorry, you encountered a fatal bug.\n"
+                              "The application will terminate.\n"
+                              "Please report the following to the maintainer:\n"
+                              "Error message:\n" + msg + "\n"
+                              "Context:\n" + ctx.function + "\n");
+        qApp->quit();
+        break;
     case QtWarningMsg:
     default:
         std::cerr << "WARN " << msg.toStdString() << " [" << ctx.function << "]\n";
