@@ -25,14 +25,14 @@ static QMainWindow* pMainWin;
 static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg) {
     switch (type) {
     case QtDebugMsg:
-        std::cerr << ".... " << msg.toStdString() << " [" << ctx.function << "]\n";
+        std::cerr << ".... " << msg.toStdString() << " [" << ctx.function << "]\n" << std::flush;
         break;
     case QtInfoMsg:
-        std::cerr << "INFO " << msg.toStdString() << " [" << ctx.function << "]\n";
+        std::cerr << "INFO " << msg.toStdString() << " [" << ctx.function << "]\n" << std::flush;
         pMainWin->statusBar()->showMessage(msg, 5000);
         break;
     case QtFatalMsg:
-        std::cerr << "BUG! " << msg.toStdString() << " [" << ctx.function << "]\n";
+        std::cerr << "BUG! " << msg.toStdString() << " [" << ctx.function << "]\n" << std::flush;
         QMessageBox::critical(QApplication::activeWindow(), qAppName(),
                               "Sorry, you encountered a fatal bug.\n"
                               "The application will terminate.\n"
@@ -44,9 +44,10 @@ static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr 
     case QtWarningMsg:
     default:
         if (msg.left(4)=="QXcb") {
-            std::cerr << "QBUG " << msg.toStdString() << "\n";
+            std::cerr << "QBUG " << msg.toStdString() << "\n" << std::flush;
         } else {
-            std::cerr << "WARN " << msg.toStdString() << " [" << ctx.function << "]\n";
+            std::cerr << "WARN " << msg.toStdString()
+                      << " [" << ctx.function << "]\n" << std::flush;
             QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
         }
         break;

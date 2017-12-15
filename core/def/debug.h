@@ -19,7 +19,6 @@
 
 #ifndef QT_NO_DEBUG
 #include <QDebug> // protect
-#include <iostream> // protect
 
 /* TRace: trace prints; takes several things separated by << e.g.
  * TR(var)
