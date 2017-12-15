@@ -461,7 +461,6 @@ Diffractogram::Diffractogram(TheHub& hub)
     connect(comboNormType_, slot(QComboBox, currentIndexChanged, int),
             [this](int index) { // TODO init value from hub?
                 hub_.setNorm(eNorm(index));
-                DM("Lambda back from hub_.setNorm");
             });
 
     hb->addWidget(label(" intensity from:"));
@@ -553,16 +552,12 @@ Diffractogram::Diffractogram(TheHub& hub)
 }
 
 void Diffractogram::onNormChanged() {
-    DM("DGram::onSigNormChanged/1")
-        intenScale_->setValue(hub_.intenScale()); // TODO own signal
-    DM("DGram::onSigNormChanged/2")
-        if (hub_.intenScaledAvg())
-            intenAvg_->setChecked(true);
-        else
-            intenSum_->setChecked(true);
-    DM("DGram::onSigNormChanged/3")
-        render();
-    DM("DGram::onSigNormChanged/4")
+    intenScale_->setValue(hub_.intenScale()); // TODO own signal
+    if (hub_.intenScaledAvg())
+        intenAvg_->setChecked(true);
+    else
+        intenSum_->setChecked(true);
+    render();
 }
 
 void Diffractogram::onFittingTab(eFittingTab tab) {

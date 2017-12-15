@@ -261,7 +261,6 @@ void MainWin::close() {
 }
 
 void MainWin::addFiles() {
-    DM("MainWin::addFiles beg")
     str_lst fileNames = file_dialog::openFileNames(
         this, "Add files", QDir::current().absolutePath(),
         "Data files (*.dat *.mar*);;All files (*.*)");
@@ -273,7 +272,6 @@ void MainWin::addFiles() {
 }
 
 void MainWin::enableCorr() {
-    DM("MainWin::enableCorr beg")
     str fileName;
     if (!hub_.hasCorrFile()) {
         fileName = file_dialog::openFileName(
@@ -285,7 +283,6 @@ void MainWin::enableCorr() {
         QDir::setCurrent(QFileInfo(fileName).absolutePath());
         hub_.setCorrFile(fileName);
     }
-    DM("MainWin::enableCorr end")
 }
 
 static str const STE(".ste");

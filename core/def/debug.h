@@ -15,7 +15,6 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
-
 // debugging helpers
 
 #ifndef QT_NO_DEBUG
@@ -29,9 +28,6 @@
  */
 #define TR(what)  \
     { qDebug() << what; }
-
-#define DM(what)  \
-    { std::cerr << what << "\n"; }
 
 // asserts redefined, to include (or not) the ';'
 
@@ -49,7 +45,6 @@
 
 #else
 
-#define DM(what) {}
 #define TR(what) {}
 
 #define EXPECT(cond)

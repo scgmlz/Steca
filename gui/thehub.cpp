@@ -271,9 +271,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
         str filePath = file.toString();
         QDir dir(filePath);
         RUNTIME_CHECK(dir.makeAbsolute(), str("Invalid file path: %1").arg(filePath));
-        DM("loadSession: beg add File " << dir.absolutePath().toUtf8().constData())
         addGivenFile(dir.absolutePath());
-        DM("loadSession: end add File " << dir.absolutePath().toUtf8().constData())
     }
 
     auto sels = top.loadArr(config_key::SELECTED_FILES, true);
@@ -331,7 +329,6 @@ void TheHub::addGivenFile(rcstr filePath) THROWS {
     if (!filePath.isEmpty() && !session_->hasFile(filePath)) {
         {
             TakesLongTime __;
-            DM("hub::addGivenFile cal")
             session_->addGivenFile(io::load(filePath));
         }
         emit sigFilesChanged();
@@ -491,9 +488,7 @@ void TheHub::setImageMirror(bool on) {
 
 void TheHub::setNorm(eNorm norm) {
     session_->setNorm(norm);
-    DM("TheHub::setNorm going to signal")
     emit sigNormChanged();
-    DM("TheHub::setNorm back from signal")
 }
 
 } // namespace gui
