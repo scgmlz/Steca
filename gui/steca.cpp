@@ -43,8 +43,12 @@ static void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr 
         break;
     case QtWarningMsg:
     default:
-        std::cerr << "WARN " << msg.toStdString() << " [" << ctx.function << "]\n";
-        QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
+        if (msg.left(4)=="QXcb") {
+            std::cerr << "QBUG " << msg.toStdString() << "\n";
+        } else {
+            std::cerr << "WARN " << msg.toStdString() << " [" << ctx.function << "]\n";
+            QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
+        }
         break;
     }
 }

@@ -18,7 +18,7 @@
 #include "def/numbers.h"
 #include <QStringList>
 
-// limited QStringList, only needed methods reexported
+//! A string list. Mostly a subset of QStringList.
 
 class str_lst : protected QStringList {
 private:

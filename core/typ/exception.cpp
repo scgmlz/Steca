@@ -27,7 +27,7 @@ Exception::Exception(rcstr msg) noexcept : Exception(msg, false) {}
 
 Exception::Exception(Exception const& that) noexcept : Exception(that.msg_) {}
 
-pcstr Exception::what() const noexcept { return msg8bit_.constData(); }
+const char* Exception::what() const noexcept { return msg8bit_.constData(); }
 
 void Exception::setMsg(rcstr s) {
     msg_ = s;

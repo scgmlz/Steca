@@ -452,7 +452,8 @@ void TheHub::setFittingTab(eFittingTab tab) {
 }
 
 void TheHub::setImageRotate(typ::ImageTransform rot) {
-    pcstr rotateIconFile, mirrorIconFile;
+    const char* rotateIconFile;
+    const char* mirrorIconFile;
 
     switch (rot.val & 3) {
     default /* case */:

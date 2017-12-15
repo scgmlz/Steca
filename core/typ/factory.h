@@ -20,6 +20,7 @@
 #include "typ/exception.h"
 #include "typ/hash.h"
 #include "typ/str.h"
+#include <QStringBuilder> // for ".." % ..
 
 namespace typ {
 

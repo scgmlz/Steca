@@ -31,7 +31,7 @@ public:
 
     bool silent() const noexcept { return silent_; }
     rcstr msg() const noexcept { return msg_; }
-    pcstr what() const noexcept;
+    const char* what() const noexcept;
 
     void setMsg(rcstr);
 
