@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/output/output_polefigures.cpp
-//! @brief     Implements ...
+//! @brief     Implements class PoleFiguresFrame
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -23,6 +23,46 @@
 
 namespace gui {
 namespace output {
+
+// ************************************************************************** //
+//  class TabGraph (file scope)
+// ************************************************************************** //
+
+class TabGraph : public Tab {
+private:
+    using super = Tab;
+public:
+    using deg = typ::deg;
+    using rad = typ::rad;
+
+    TabGraph(TheHub&, Params&);
+    void set(calc::ReflectionInfos);
+
+protected:
+    void update();
+
+    calc::ReflectionInfos rs_;
+    void paintEvent(QPaintEvent*);
+
+    QPointF p(deg alpha, deg beta) const;
+    deg alpha(QPointF const&) const;
+    deg beta(QPointF const&) const;
+
+    void circle(QPointF c, qreal r);
+
+    void paintGrid();
+    void paintPoints();
+
+    // valid during paintEvent
+    QPainter* p_;
+    QPointF c_;
+    qreal r_;
+
+    bool flat_;
+    qreal alphaMax_, avgAlphaMax_;
+
+    QCheckBox* cbFlat_;
+};
 
 TabGraph::TabGraph(TheHub& hub, Params& params)
     : super(hub, params), flat_(false), alphaMax_(90), avgAlphaMax_(0) {
@@ -131,6 +171,28 @@ void TabGraph::paintPoints() {
     }
 }
 
+// ************************************************************************** //
+//  class TabPoleFiguresSave (file scope)
+// ************************************************************************** //
+
+class TabPoleFiguresSave : public TabSave {
+private:
+    using super = TabSave;
+public:
+    TabPoleFiguresSave(TheHub& hub, Params& params);
+
+    bool onlySelectedRefl() const;
+    bool outputInten() const;
+    bool outputTth() const;
+    bool outputFWHM() const;
+
+    void rawReflSettings(bool on);
+
+protected:
+    QRadioButton *rbSelectedRefl_, *rbAllRefls_;
+    QCheckBox *outputInten_, *outputTth_, *outputFWHM_;
+};
+
 TabPoleFiguresSave::TabPoleFiguresSave(TheHub& hub, Params& params) : super(hub, params, false) {
     auto hb = hbox();
     grid_->addLayout(hb, grid_->rowCount(), 0);
@@ -183,6 +245,11 @@ void TabPoleFiguresSave::rawReflSettings(bool on) {
     outputTth_->setEnabled(on);
     outputFWHM_->setEnabled(on);
 }
+
+
+// ************************************************************************** //
+//  class PoleFiguresFrame
+// ************************************************************************** //
 
 static const Params::ePanels PANELS =
     Params::ePanels(Params::REFLECTION | Params::GAMMA | Params::POINTS | Params::INTERPOLATION);
@@ -354,5 +421,4 @@ void PoleFiguresFrame::writeListFile(
 }
 
 } // namespace output
-
 } // namespace gui
