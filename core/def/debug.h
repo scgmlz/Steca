@@ -43,21 +43,6 @@
 #define EXPECT2(cond, text) Q_ASSERT_X(cond, "precondition", text);
 #define ENSURE2(cond, text) Q_ASSERT_X(cond, "postcondition", text);
 
-// with a debug message
-
-#define EXPECT_WT(cond, what)  \
-    {                          \
-        if (!(cond))           \
-            WT(what);          \
-        EXPECT(cond)           \
-    }
-#define ENSURE_WT(cond, what)  \
-    {                          \
-        if (!(cond))           \
-            WT(what);          \
-        ENSURE(cond)           \
-    }
-
 // marks code that should not be reached
 
 #define NEVER Q_ASSERT_X(false, "Here", "not be!");
@@ -72,9 +57,6 @@
 
 #define EXPECT2(cond, text)
 #define ENSURE2(cond, text)
-
-#define EXPECT_TR(cond, what)
-#define ENSURE_TR(cond, what)
 
 #define NEVER
 
