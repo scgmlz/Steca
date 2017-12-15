@@ -53,10 +53,18 @@ GridPanel::GridPanel(TheHub& hub, rcstr title) : BasicPanel(hub, title) {
 }
 
 
+// ************************************************************************** //
+//  class Tab
+// ************************************************************************** //
+
 Tab::Tab(Qt::Orientation orientation) {
     setLayout((box_ = boxLayout(orientation)));
 }
 
+
+// ************************************************************************** //
+//  class TabsPanel
+// ************************************************************************** //
 
 TabsPanel::TabsPanel(TheHub& hub) : RefHub(hub) {
     setTabPosition(TabsPanel::North);
