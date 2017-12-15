@@ -27,17 +27,11 @@
 #if defined(Q_OS_WIN) || defined(Q_OS_OSX)
 // do not handle the below templates
 
-inline int to_i(unsigned int u) {
-    return u;
-}
+inline int to_i(unsigned int u) { return u; }
 
-inline unsigned int to_u(int i) {
-    return i;
-}
+inline unsigned int to_u(int i) { return i; }
 
-inline unsigned int clip_u(int i) {
-    return qMax(0, i);
-}
+inline unsigned int clip_u(int i) { return qMax(0, i); }
 
 #else
 
@@ -49,7 +43,7 @@ template <typename T> typename std::__make_signed<T>::__type to_i(T t) {
     static_assert(std::is_unsigned<T>::value, "to_i(signed)");
 #ifndef QT_NO_DEBUG
     auto max = std::numeric_limits<typename std::__make_signed<T>::__type>::max();
-    debug::ensure(static_cast<T>(max) >= t, "to_i(too big)")
+    debug::ensure(static_cast<T>(max) >= t, "to_i(too big)");
 #endif
     return typename std::__make_signed<T>::__type(t);
 }
@@ -74,7 +68,7 @@ template <typename T> typename std::__make_unsigned<T>::__type clip_u(T t) {
 
 class pint {
 public:
-    explicit pint(uint val) : val_(val) { debug::ensure(1 <= val) }
+    explicit pint(uint val) : val_(val) { debug::ensure(1 <= val); }
 
     explicit pint(int val) : pint(to_u(val)) {}
 
@@ -104,7 +98,7 @@ extern qreal const INF;
 
 class preal {
 public:
-    explicit preal(qreal val) : val_(val) { debug::ensure(0 < val) }
+    explicit preal(qreal val) : val_(val) { debug::ensure(0 < val); }
 
     operator qreal() const { return val_; }
 
