@@ -22,10 +22,6 @@
 namespace gui {
 namespace panel {
 
-PanelWidget::PanelWidget(TheHub& hub, Qt::Orientation orientation) : RefHub(hub) {
-    setLayout((box_ = boxLayout(orientation)));
-}
-
 // ************************************************************************** //
 //  define file-scoped classes
 // ************************************************************************** //
@@ -453,7 +449,8 @@ void DiffractogramPlot::onReflectionData(calc::shp_Reflection reflection) {
 // ************************************************************************** //
 
 Diffractogram::Diffractogram(TheHub& hub)
-    : PanelWidget(hub, Qt::Vertical), dataset_(nullptr), currReflIndex_(0) {
+    : RefHub(hub), dataset_(nullptr), currReflIndex_(0) {
+    setLayout((box_ = boxLayout(Qt::Vertical)));
     box_->addWidget((plot_ = new DiffractogramPlot(hub_, *this)));
     auto hb = hbox();
     box_->addLayout(hb);

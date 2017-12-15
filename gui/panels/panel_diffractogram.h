@@ -23,28 +23,17 @@
 namespace gui {
 namespace panel {
 
-// Just a widget
-class PanelWidget : public QWidget, protected RefHub {
-private:
-    using super = QWidget;
-public:
-    PanelWidget(TheHub&, Qt::Orientation);
-
-    QBoxLayout* box() const { return box_; }
-
-protected:
-    QBoxLayout* box_;
-};
-
-class Diffractogram : public PanelWidget {
+class Diffractogram : public QWidget, protected RefHub {
 public:
     Diffractogram(TheHub&);
 
     void render();
 
     data::shp_Dataset dataset() const { return dataset_; }
+    QBoxLayout* box() const { return box_; }
 
 private:
+    QBoxLayout* box_;
     void onNormChanged();
     void onFittingTab(eFittingTab tab);
 
