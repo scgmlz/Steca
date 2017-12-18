@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/types/type_models.h
-//! @brief     Defines ...
+//! @brief     Defines class TableModel
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -25,7 +25,7 @@ namespace models {
 extern QVariant const EMPTY_VAR;
 extern QModelIndex const ANY_INDEX;
 
-// The base class of all table-like models
+//! The base class of all table-like models
 
 class TableModel : public QAbstractTableModel, protected gui::RefHub {
 private:
@@ -44,5 +44,7 @@ public:
     // force-emits reset() signal
     void signalReset();
 };
-}
+
+} // namespace models
+
 #endif // TYPE_MODELS_H

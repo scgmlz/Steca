@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/types/type_models.cpp
-//! @brief     Implements ...
+//! @brief     Implements class TableModel
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -20,18 +20,11 @@ namespace models {
 QVariant const EMPTY_VAR;
 QModelIndex const ANY_INDEX;
 
-// CheckedInfo::CheckedInfo(rcstr t): tag(t), cb(nullptr), infoText(nullptr) {
-//}
-
-// void CheckedInfo::setText(rcstr text) {
-//  debug::ensure(infoText)
-//  infoText->setText(text);
-//}
-
 TableModel::TableModel(gui::TheHub& hub) : RefHub(hub) {}
 
 void TableModel::signalReset() {
     beginResetModel();
     endResetModel();
 }
-}
+
+} // namespace models
