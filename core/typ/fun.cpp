@@ -210,13 +210,13 @@ JsonObj SumFunctions::saveJson() const {
     for_i (funCount)
         obj.saveObj(json_key::FUN.arg(i + 1), functions_.at(i)->saveJson());
 
-    return super::saveJson() + obj;
+    return Function::saveJson() + obj;
 }
 
 void SumFunctions::loadJson(JsonObj const& obj) THROWS {
     RUNTIME_CHECK(functions_.isEmpty(), "non-empty sum of functions; cannot load twice");
 
-    super::loadJson(obj);
+    Function::loadJson(obj);
     uint funCount = obj.loadUint(json_key::COUNT);
     for_i (funCount) {
         auto funObj = obj.loadObj(json_key::FUN.arg(i + 1));

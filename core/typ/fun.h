@@ -23,11 +23,7 @@
 #include "typ/str.h"
 #include "typ/vec.h"
 
-namespace json_fun_key {
-}
-
 namespace typ {
-
 
 //! Abstract function
 
@@ -119,8 +115,6 @@ protected:
 //! concrete function that is a sum of other functions
 
 class SumFunctions final : public Function {
-private:
-    using super = Function;
 public:
     ~SumFunctions();
 

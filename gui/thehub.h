@@ -22,7 +22,6 @@
 #include "typ/exception.h"
 #include "typ/range.h"
 #include "typ/str.h"
-#include <QSettings>
 
 class QSpinBox;
 class QDoubleSpinBox;
