@@ -62,14 +62,6 @@ public:
 };
 
 
-class WriteFile : public QFile {
-private:
-    using super = QFile;
-public:
-    WriteFile(rcstr path) THROWS;
-};
-
-
 class TheHub : public TheHubSignallingBase {
 private:
     using super = TheHubSignallingBase;

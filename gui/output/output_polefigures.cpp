@@ -17,6 +17,7 @@
 #include "def/idiomatic_for.h"
 #include "thehub.h"
 #include "typ/str.h"
+#include "write_file.h"
 #include <qmath.h>
 #include <QPainter>
 #include <QTextStream>

@@ -16,6 +16,7 @@
 #include "def/idiomatic_for.h"
 #include "io/io_io.h"
 #include "mainwin.h"
+#include "output/write_file.h"
 #include "typ/exception.h"
 #include "typ/range.h"
 #include "typ/str.h"
@@ -84,18 +85,6 @@ int Settings::readInt(rcstr key, int def) {
     bool ok;
     int val = var.toInt(&ok);
     return ok ? val : def;
-}
-
-WriteFile::WriteFile(rcstr path) THROWS : super(path) {
-    if (super::exists()) {
-        if (QMessageBox::Yes
-            != QMessageBox::question(nullptr, "File exists", "Overwrite " % path % " ?"))
-            THROW_SILENT();
-    }
-
-    RUNTIME_CHECK(
-        super::open(QIODevice::WriteOnly | QIODevice::Text),
-        "Cannot open file for writing: " % path);
 }
 
 TheHub::TheHub()

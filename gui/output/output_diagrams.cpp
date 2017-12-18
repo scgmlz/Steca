@@ -17,6 +17,7 @@
 #include "thehub.h"
 #include "typ/range.h"
 #include "typ/str.h"
+#include "write_file.h"
 #include "QCustomPlot/qcustomplot.h"
 
 namespace gui {
