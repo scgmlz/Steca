@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/thehub.h
-//! @brief     Defines classes Settings, ReadFile, WriteFile, TheHub
+//! @brief     Defines classes Settings, TheHub
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
