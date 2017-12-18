@@ -86,12 +86,6 @@ int Settings::readInt(rcstr key, int def) {
     return ok ? val : def;
 }
 
-ReadFile::ReadFile(rcstr path) THROWS : super(path) {
-    RUNTIME_CHECK(
-        super::open(QIODevice::ReadOnly | QIODevice::Text),
-        "Cannot open file for reading: " % path);
-}
-
 WriteFile::WriteFile(rcstr path) THROWS : super(path) {
     if (super::exists()) {
         if (QMessageBox::Yes
@@ -249,8 +243,9 @@ void TheHub::clearSession() {
 }
 
 void TheHub::loadSession(QFileInfo const& fileInfo) THROWS {
-    ReadFile file(fileInfo.absoluteFilePath());
-
+    QFile file(fileInfo.absoluteFilePath());
+    RUNTIME_CHECK(file.open(QIODevice::ReadOnly | QIODevice::Text),
+                  "Cannot open file for reading: " % fileInfo.absoluteFilePath());
     QDir::setCurrent(fileInfo.absolutePath());
     loadSession(file.readAll());
 }

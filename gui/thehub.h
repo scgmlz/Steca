@@ -62,14 +62,6 @@ public:
 };
 
 
-class ReadFile : public QFile {
-private:
-    using super = QFile;
-public:
-    ReadFile(rcstr path) THROWS;
-};
-
-
 class WriteFile : public QFile {
 private:
     using super = QFile;
