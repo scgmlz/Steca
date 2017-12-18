@@ -21,7 +21,7 @@
 
 namespace gui {
 
-// The base class of the hub that signals.
+//! The base class of the hub that signals.
 
 class TheHub;
 

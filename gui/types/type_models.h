@@ -28,21 +28,16 @@ extern QModelIndex const ANY_INDEX;
 //! The base class of all table-like models
 
 class TableModel : public QAbstractTableModel, protected gui::RefHub {
-private:
-    using super = QAbstractTableModel;
 public:
     using Index = QModelIndex;
     using rcIndex = Index const&;
 
     TableModel(gui::TheHub&);
 
-protected:
-    // the left-most column is hidden
-    static int const DCOL = 1;
+    void signalReset(); //!< force-emits reset() signal
 
-public:
-    // force-emits reset() signal
-    void signalReset();
+protected:
+    static int const DCOL = 1; //!< the left-most column is hidden
 };
 
 } // namespace models

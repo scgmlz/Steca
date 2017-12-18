@@ -18,7 +18,6 @@
 #include "typ/vec.h"
 #include "types/type_models.h"
 
-
 namespace models {
 
 class FilesModel : public TableModel {
