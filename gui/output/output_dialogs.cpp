@@ -18,6 +18,7 @@
 #include "def/idiomatic_for.h"
 #include "filedialog.h"
 #include "gui_cfg.h"
+#include "settings.h"
 #include "thehub.h"
 #include "typ/angles.h"
 #include "typ/range.h"

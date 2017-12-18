@@ -26,6 +26,7 @@
 #include "panels/tabs_diffractogram.h"
 #include "panels/tabs_images.h"
 #include "panels/tabs_setup.h"
+#include "settings.h"
 
 #include <QApplication>
 #include <QCloseEvent>

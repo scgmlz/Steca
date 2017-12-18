@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/about.h
-//! @brief     Defines ...
+//! @brief     Defines class AboutBox
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,14 +15,14 @@
 #ifndef ABOUT_H
 #define ABOUT_H
 
-#include "thehub.h"
 #include <QDialog>
+
+class QCheckBox;
+class QDoubleSpinBox;
 
 namespace gui {
 
 class AboutBox : public QDialog {
-private:
-    using super = QDialog;
 public:
     AboutBox(QWidget*);
 
@@ -32,5 +32,7 @@ protected:
     QCheckBox *cbShowAtStartup_, *cbCheckUpdatesAtStartup_;
     QDoubleSpinBox *detDistance_, *detPixelSize_;
 };
-}
+
+} // namespace gui
+
 #endif // MAINWIN_H
