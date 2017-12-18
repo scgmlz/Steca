@@ -191,17 +191,17 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
 
     typ::JsonObj top(doc.object());
 
-    auto files = top.loadArr(config_key::FILES);
-    for (auto file : files) {
+    const typ::JsonArr& files = top.loadArr(config_key::FILES);
+    for (const QJsonValue& file : files) {
         str filePath = file.toString();
         QDir dir(filePath);
         RUNTIME_CHECK(dir.makeAbsolute(), str("Invalid file path: %1").arg(filePath));
         addGivenFile(dir.absolutePath());
     }
 
-    auto sels = top.loadArr(config_key::SELECTED_FILES, true);
+    const typ::JsonArr& sels = top.loadArr(config_key::SELECTED_FILES, true);
     uint_vec selIndexes;
-    for (auto sel : sels) {
+    for (const QJsonValue& sel : sels) {
         int i = sel.toInt(), index = qBound(0, i, to_i(files.count()));
         RUNTIME_CHECK(i == index, str("Invalid selection index: %1").arg(i));
         selIndexes.append(to_u(index));
@@ -218,12 +218,12 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
 
     setCorrFile(top.loadString(config_key::CORR_FILE, ""));
 
-    auto det = top.loadObj(config_key::DETECTOR);
+    const typ::JsonObj& det = top.loadObj(config_key::DETECTOR);
     setGeometry(
         det.loadPreal(config_key::DET_DISTANCE), det.loadPreal(config_key::DET_PIX_SIZE),
         det.loadIJ(config_key::BEAM_OFFSET));
 
-    auto cut = top.loadObj(config_key::CUT);
+    const typ::JsonObj& cut = top.loadObj(config_key::CUT);
     uint x1 = cut.loadUint(config_key::LEFT), y1 = cut.loadUint(config_key::TOP),
          x2 = cut.loadUint(config_key::RIGHT), y2 = cut.loadUint(config_key::BOTTOM);
     setImageCut(true, false, typ::ImageCut(x1, y1, x2, y2));
@@ -240,7 +240,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
         top.loadBool(config_key::INTEN_SCALED_AVG, true),
         top.loadPreal(config_key::INTEN_SCALE, preal(1)));
 
-    auto reflectionsObj = top.loadArr(config_key::REFLECTIONS);
+    const typ::JsonArr& reflectionsObj = top.loadArr(config_key::REFLECTIONS);
     for_i (reflectionsObj.count()) {
         calc::shp_Reflection reflection(new calc::Reflection);
         reflection->loadJson(reflectionsObj.objAt(i));
