@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/thehub.cpp
+//! @file      gui/write_file.cpp
 //! @brief     Declares class WriteFile
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,6 +12,8 @@
 //
 // ************************************************************************** //
 
+#ifndef WRITEFILE_H
+#define WRITEFILE_H
 
 #include "def/macros.h"
 #include "typ/str.h"
@@ -23,3 +25,5 @@ private:
 public:
     WriteFile(rcstr path) THROWS;
 };
+
+#endif // WRITEFILE_H

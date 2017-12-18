@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/thehub.cpp
+//! @file      gui/settings.cpp
 //! @brief     Implements classes Settings, TheHub
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
