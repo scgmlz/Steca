@@ -189,35 +189,35 @@ str JsonObj::loadString(rcstr key) const THROWS {
 str JsonObj::loadString(rcstr key, rcstr def) const THROWS{ RET_LOAD_DEF(String) }
 
 JsonObj& JsonObj::saveRange(rcstr key, Range const& range) {
-    insert(key, range.saveJson());
+    insert(key, range.to_json());
     return *this;
 }
 
 Range JsonObj::loadRange(rcstr key) const THROWS {
     Range range;
-    range.loadJson(loadObj(key));
+    range.from_json(loadObj(key));
     return range;
 }
 
 JsonObj& JsonObj::saveIJ(rcstr key, IJ const& ij) {
-    insert(key, ij.saveJson());
+    insert(key, ij.to_json());
     return *this;
 }
 
 IJ JsonObj::loadIJ(rcstr key) const THROWS {
     IJ ij;
-    ij.loadJson(loadObj(key));
+    ij.from_json(loadObj(key));
     return ij;
 }
 
 JsonObj& JsonObj::saveqpair(rcstr key, qpair const& qpair) {
-    insert(key, qpair.saveJson());
+    insert(key, qpair.to_json());
     return *this;
 }
 
 qpair JsonObj::loadqpair(rcstr key) const THROWS {
     qpair qpair;
-    qpair.loadJson(loadObj(key));
+    qpair.from_json(loadObj(key));
     return qpair;
 }
 

@@ -130,11 +130,11 @@ qreal Range::bound(qreal value) const {
     return NAN;
 }
 
-JsonObj Range::saveJson() const {
+JsonObj Range::to_json() const {
     return JsonObj().saveQreal(json_key::MIN, min).saveQreal(json_key::MAX, max);
 }
 
-void Range::loadJson(JsonObj const& obj) THROWS {
+void Range::from_json(JsonObj const& obj) THROWS {
     min = obj.loadQreal(json_key::MIN);
     max = obj.loadQreal(json_key::MAX);
 }
@@ -196,19 +196,19 @@ void Ranges::sort() {
     std::sort(ranges_.begin(), ranges_.end(), lessThan);
 }
 
-JsonArr Ranges::saveJson() const {
+JsonArr Ranges::to_json() const {
     JsonArr arr;
 
     for (auto& range : ranges_)
-        arr.append(range.saveJson());
+        arr.append(range.to_json());
 
     return arr;
 }
 
-void Ranges::loadJson(JsonArr const& arr) THROWS {
+void Ranges::from_json(JsonArr const& arr) THROWS {
     for_i (arr.count()) {
         Range range;
-        range.loadJson(arr.objAt(i));
+        range.from_json(arr.objAt(i));
         ranges_.append(range);
     }
 }

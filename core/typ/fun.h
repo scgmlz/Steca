@@ -58,8 +58,8 @@ public:
         void setValue(qreal value, qreal error);
 
     public:
-        JsonObj saveJson() const;
-        void loadJson(JsonObj const&) THROWS;
+        JsonObj to_json() const;
+        void from_json(JsonObj const&) THROWS;
 
     private:
         qreal value_, error_;
@@ -84,8 +84,8 @@ public:
     // partial derivative / parameter, with given (parValues) or own parameters
     virtual qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const = 0;
 
-    virtual JsonObj saveJson() const;
-    virtual void loadJson(JsonObj const&) THROWS;
+    virtual JsonObj to_json() const;
+    virtual void from_json(JsonObj const&) THROWS;
 };
 
 
@@ -102,8 +102,8 @@ public:
     virtual void reset();
 
 public:
-    JsonObj saveJson() const;
-    void loadJson(JsonObj const&) THROWS;
+    JsonObj to_json() const;
+    void from_json(JsonObj const&) THROWS;
 
 protected:
     vec<Parameter> parameters_;
@@ -128,8 +128,8 @@ public:
     qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
 public:
-    JsonObj saveJson() const;
-    void loadJson(JsonObj const&) THROWS;
+    JsonObj to_json() const;
+    void from_json(JsonObj const&) THROWS;
 
 protected:
     // summed functions

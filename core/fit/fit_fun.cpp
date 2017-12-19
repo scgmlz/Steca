@@ -109,14 +109,14 @@ Polynom Polynom::fromFit(uint degree, Curve const& curve, typ::Ranges const& ran
     return poly;
 }
 
-JsonObj Polynom::saveJson() const {
+JsonObj Polynom::to_json() const {
     JsonObj obj;
     obj.saveString(json_key::TYPE, json_fun_key::POLYNOM);
-    return super::saveJson() + obj;
+    return super::to_json() + obj;
 }
 
-void Polynom::loadJson(JsonObj const& obj) THROWS {
-    super::loadJson(obj);
+void Polynom::from_json(JsonObj const& obj) THROWS {
+    super::from_json(obj);
 }
 
 // ************************************************************************** //
@@ -199,17 +199,17 @@ Curve PeakFunction::prepareFit(Curve const& curve, Range const& range) {
     return curve.intersect(range);
 }
 
-JsonObj PeakFunction::saveJson() const {
-    return super::saveJson()
+JsonObj PeakFunction::to_json() const {
+    return super::to_json()
         .saveRange(json_key::RANGE, range_)
-        .saveObj(json_key::PEAK, guessedPeak_.saveJson())
+        .saveObj(json_key::PEAK, guessedPeak_.to_json())
         .saveQreal(json_key::FWHM, guessedFWHM_);
 }
 
-void PeakFunction::loadJson(JsonObj const& obj) THROWS {
-    super::loadJson(obj);
+void PeakFunction::from_json(JsonObj const& obj) THROWS {
+    super::from_json(obj);
     range_ = obj.loadRange(json_key::RANGE);
-    guessedPeak_.loadJson(obj.loadObj(json_key::PEAK));
+    guessedPeak_.from_json(obj.loadObj(json_key::PEAK));
     guessedFWHM_ = obj.loadQreal(json_key::FWHM);
 }
 
@@ -268,8 +268,8 @@ void Raw::prepareY() {
     sum_y_ = NAN;
 }
 
-JsonObj Raw::saveJson() const {
-    return super::saveJson().saveString(json_key::TYPE, json_fun_key::RAW);
+JsonObj Raw::to_json() const {
+    return super::to_json().saveString(json_key::TYPE, json_fun_key::RAW);
 }
 
 
@@ -349,8 +349,8 @@ fwhm_t Gaussian::fwhmError() const {
     return fwhm_t(parameters_.at(parSIGMA).error());
 }
 
-JsonObj Gaussian::saveJson() const {
-    return super::saveJson().saveString(json_key::TYPE, json_fun_key::GAUSSIAN);
+JsonObj Gaussian::to_json() const {
+    return super::to_json().saveString(json_key::TYPE, json_fun_key::GAUSSIAN);
 }
 
 Lorentzian::Lorentzian(qreal ampl, qreal xShift, qreal gamma) {
@@ -428,8 +428,8 @@ fwhm_t Lorentzian::fwhmError() const {
     return fwhm_t(parameters_.at(parGAMMA).error());
 }
 
-JsonObj Lorentzian::saveJson() const {
-    return super::saveJson().saveString(json_key::TYPE, json_fun_key::LORENTZIAN);
+JsonObj Lorentzian::to_json() const {
+    return super::to_json().saveString(json_key::TYPE, json_fun_key::LORENTZIAN);
 }
 
 
@@ -524,8 +524,8 @@ fwhm_t PseudoVoigt1::fwhmError() const {
     return fwhm_t(parameters_.at(parSIGMAGAMMA).error());
 }
 
-JsonObj PseudoVoigt1::saveJson() const {
-    return super::saveJson().saveString(json_key::TYPE, json_fun_key::PSEUDOVOIGT1);
+JsonObj PseudoVoigt1::to_json() const {
+    return super::to_json().saveString(json_key::TYPE, json_fun_key::PSEUDOVOIGT1);
 }
 
 
@@ -639,8 +639,8 @@ fwhm_t PseudoVoigt2::fwhmError() const {
     return fwhm_t(parameters_.at(parSIGMA).error() + parameters_.at(parGAMMA).error());
 }
 
-JsonObj PseudoVoigt2::saveJson() const {
-    return super::saveJson().saveString(json_key::TYPE, json_fun_key::PSEUDOVOIGT2);
+JsonObj PseudoVoigt2::to_json() const {
+    return super::to_json().saveString(json_key::TYPE, json_fun_key::PSEUDOVOIGT2);
 }
 
 } // namespace fit

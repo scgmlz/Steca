@@ -45,8 +45,8 @@ public:
     void fit(typ::Curve const&, typ::Ranges const&);
     static Polynom fromFit(uint degree, typ::Curve const&, typ::Ranges const&);
 
-    typ::JsonObj saveJson() const;
-    void loadJson(typ::JsonObj const&) THROWS;
+    typ::JsonObj to_json() const;
+    void from_json(typ::JsonObj const&) THROWS;
 };
 
 
@@ -91,8 +91,8 @@ protected:
     typ::Curve prepareFit(typ::Curve const&, typ::Range const&);
 
 public:
-    typ::JsonObj saveJson() const;
-    void loadJson(typ::JsonObj const&) THROWS;
+    typ::JsonObj to_json() const;
+    void from_json(typ::JsonObj const&) THROWS;
 
 protected:
     typ::Range range_;
@@ -121,7 +121,7 @@ public:
     void setRange(typ::Range const&);
     void fit(typ::Curve const&, typ::Range const&);
 
-    typ::JsonObj saveJson() const;
+    typ::JsonObj to_json() const;
 
 private:
     typ::Curve fittedCurve_; // saved from fitting
@@ -157,7 +157,7 @@ public:
     qpair peakError() const;
     fwhm_t fwhmError() const;
 
-    typ::JsonObj saveJson() const;
+    typ::JsonObj to_json() const;
 };
 
 
@@ -185,7 +185,7 @@ public:
     qpair peakError() const;
     fwhm_t fwhmError() const;
 
-    typ::JsonObj saveJson() const;
+    typ::JsonObj to_json() const;
 };
 
 
@@ -213,7 +213,7 @@ public:
     qpair peakError() const;
     fwhm_t fwhmError() const;
 
-    typ::JsonObj saveJson() const;
+    typ::JsonObj to_json() const;
 };
 
 
@@ -242,7 +242,7 @@ public:
     qpair peakError() const;
     fwhm_t fwhmError() const;
 
-    typ::JsonObj saveJson() const;
+    typ::JsonObj to_json() const;
 };
 
 } // namespace fit

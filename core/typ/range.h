@@ -63,8 +63,8 @@ class Range {
     // limit the number to the interval, as qBound would
     qreal bound(qreal) const;
 
-    JsonObj saveJson() const;
-    void loadJson(JsonObj const&) THROWS;
+    JsonObj to_json() const;
+    void from_json(JsonObj const&) THROWS;
 };
 
 //! A set of *sorted* *non-overlapping* ranges
@@ -89,8 +89,8 @@ private:
     vec<Range> ranges_;
 
 public:
-    JsonArr saveJson() const;
-    void loadJson(JsonArr const&) THROWS;
+    JsonArr to_json() const;
+    void from_json(JsonArr const&) THROWS;
 };
 
 } // namespace typ

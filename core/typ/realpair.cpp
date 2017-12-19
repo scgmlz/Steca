@@ -34,11 +34,11 @@ void qpair::invalidate() {
 
 using typ::JsonObj;
 
-JsonObj qpair::saveJson() const {
+JsonObj qpair::to_json() const {
     return JsonObj().saveQreal(json_key::X, x).saveQreal(json_key::Y, y);
 }
 
-void qpair::loadJson(JsonObj const& obj) THROWS {
+void qpair::from_json(JsonObj const& obj) THROWS {
     x = obj.loadQreal(json_key::X);
     y = obj.loadQreal(json_key::Y);
 }

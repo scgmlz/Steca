@@ -49,8 +49,8 @@ private:
     scoped<fit::PeakFunction*> peakFunction_;
 
 public:
-    typ::JsonObj saveJson() const;
-    void loadJson(typ::JsonObj const&) THROWS;
+    typ::JsonObj to_json() const;
+    void from_json(typ::JsonObj const&) THROWS;
 };
 
 typedef QSharedPointer<Reflection> shp_Reflection;

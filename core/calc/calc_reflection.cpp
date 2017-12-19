@@ -78,11 +78,11 @@ void Reflection::setPeakFunction(fit::PeakFunction* f) {
     peakFunction_.reset(f);
 }
 
-typ::JsonObj Reflection::saveJson() const {
-    return peakFunction_->saveJson();
+typ::JsonObj Reflection::to_json() const {
+    return peakFunction_->to_json();
 }
 
-void Reflection::loadJson(typ::JsonObj const& obj) THROWS {
+void Reflection::from_json(typ::JsonObj const& obj) THROWS {
     scoped<typ::Function*> f(typ::Function::make(obj));
 
     RUNTIME_CHECK(dynamic_cast<fit::PeakFunction*>(f.ptr()), "must be a peak function");

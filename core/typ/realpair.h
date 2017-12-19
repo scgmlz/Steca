@@ -37,8 +37,8 @@ class qpair {
     void invalidate(); // x,y <- NAN
     bool isValid() const { return !qIsNaN(x) && !qIsNaN(y); }
 
-    typ::JsonObj saveJson() const;
-    void loadJson(typ::JsonObj const&) THROWS;
+    typ::JsonObj to_json() const;
+    void from_json(typ::JsonObj const&) THROWS;
 };
 
 #endif // REALPAIR_H

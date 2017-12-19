@@ -116,7 +116,7 @@ QByteArray TheHub::saveSession() const {
         JsonObj()
             .savePreal(config_key::DET_DISTANCE, geo.detectorDistance)
             .savePreal(config_key::DET_PIX_SIZE, geo.pixSize)
-            .saveObj(config_key::BEAM_OFFSET, geo.midPixOffset.saveJson()));
+            .saveObj(config_key::BEAM_OFFSET, geo.midPixOffset.to_json()));
 
     auto& cut = session_->imageCut();
     top.saveObj(
@@ -154,13 +154,13 @@ QByteArray TheHub::saveSession() const {
     }
 
     top.saveUint(config_key::BG_DEGREE, bgPolyDegree());
-    top.saveArr(config_key::BG_RANGES, bgRanges().saveJson());
+    top.saveArr(config_key::BG_RANGES, bgRanges().to_json());
     top.saveBool(config_key::INTEN_SCALED_AVG, intenScaledAvg());
     top.savePreal(config_key::INTEN_SCALE, intenScale());
 
     JsonArr arrReflections;
     for (auto& reflection : reflections())
-        arrReflections.append(reflection->saveJson());
+        arrReflections.append(reflection->to_json());
 
     top.saveArr(config_key::REFLECTIONS, arrReflections);
 
@@ -231,7 +231,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
     setImageRotate(typ::ImageTransform(top.loadUint(config_key::TRANSFORM)));
 
     typ::Ranges bgRanges;
-    bgRanges.loadJson(top.loadArr(config_key::BG_RANGES));
+    bgRanges.from_json(top.loadArr(config_key::BG_RANGES));
     setBgRanges(bgRanges);
 
     setBgPolyDegree(top.loadUint(config_key::BG_DEGREE));
@@ -243,7 +243,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
     const typ::JsonArr& reflectionsObj = top.loadArr(config_key::REFLECTIONS);
     for_i (reflectionsObj.count()) {
         calc::shp_Reflection reflection(new calc::Reflection);
-        reflection->loadJson(reflectionsObj.objAt(i));
+        reflection->from_json(reflectionsObj.objAt(i));
         session_->addReflection(reflection);
     }
 

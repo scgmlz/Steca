@@ -33,8 +33,8 @@ struct IJ {
 
     COMPARABLE(IJ const&)
 
-    JsonObj saveJson() const;
-    void loadJson(JsonObj const&) THROWS;
+    JsonObj to_json() const;
+    void from_json(JsonObj const&) THROWS;
 };
 
 } // namespace typ
