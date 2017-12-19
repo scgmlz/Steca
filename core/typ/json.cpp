@@ -81,9 +81,7 @@ int JsonObj::loadInt(rcstr key) const THROWS {
 
 #define LOAD_DEF(type) value(key).isUndefined() ? def : load##type(key)
 
-#define RET_LOAD_DEF(type) return LOAD_DEF(type);
-
-int JsonObj::loadInt(rcstr key, int def) const THROWS{ RET_LOAD_DEF(Int) }
+int JsonObj::loadInt(rcstr key, int def) const THROWS{ return LOAD_DEF(Int); }
 
 JsonObj& JsonObj::saveUint(rcstr key, uint num) {
     return saveInt(key, to_i(num));
@@ -96,7 +94,7 @@ uint JsonObj::loadUint(rcstr key) const THROWS {
     return to_u(num);
 }
 
-uint JsonObj::loadUint(rcstr key, uint def) const THROWS{ RET_LOAD_DEF(Uint) }
+uint JsonObj::loadUint(rcstr key, uint def) const THROWS{ return LOAD_DEF(Uint); }
 
 JsonObj& JsonObj::savePint(rcstr key, pint num) {
     return saveUint(key, num);
@@ -144,7 +142,7 @@ qreal JsonObj::loadQreal(rcstr key) const THROWS {
     }
 }
 
-qreal JsonObj::loadQreal(rcstr key, qreal def) const THROWS{ RET_LOAD_DEF(Qreal) }
+qreal JsonObj::loadQreal(rcstr key, qreal def) const THROWS{ return LOAD_DEF(Qreal); }
 
 JsonObj& JsonObj::savePreal(rcstr key, preal num) {
     return saveQreal(key, num);
@@ -156,7 +154,7 @@ preal JsonObj::loadPreal(rcstr key) const {
     return preal(num);
 }
 
-preal JsonObj::loadPreal(rcstr key, preal def) const { RET_LOAD_DEF(Preal) }
+preal JsonObj::loadPreal(rcstr key, preal def) const { return LOAD_DEF(Preal); }
 
 JsonObj& JsonObj::saveBool(rcstr key, bool b) {
     insert(key, b);
@@ -171,7 +169,7 @@ bool JsonObj::loadBool(rcstr key) const THROWS {
     }
 }
 
-bool JsonObj::loadBool(rcstr key, bool def) const THROWS{ RET_LOAD_DEF(Bool) }
+bool JsonObj::loadBool(rcstr key, bool def) const THROWS{ return LOAD_DEF(Bool); }
 
 JsonObj& JsonObj::saveString(rcstr key, rcstr s) {
     insert(key, s);
@@ -186,7 +184,7 @@ str JsonObj::loadString(rcstr key) const THROWS {
     }
 }
 
-str JsonObj::loadString(rcstr key, rcstr def) const THROWS{ RET_LOAD_DEF(String) }
+str JsonObj::loadString(rcstr key, rcstr def) const THROWS{ return LOAD_DEF(String); }
 
 JsonObj& JsonObj::saveRange(rcstr key, Range const& range) {
     insert(key, range.to_json());
