@@ -38,8 +38,7 @@ JsonObj& JsonObj::saveObj(rcstr key, JsonObj const& obj) {
 }
 
 JsonObj JsonObj::loadObj(rcstr key, bool defEmpty) const THROWS {
-    auto val = value(key);
-
+    const QJsonValue& val = value(key);
     switch (val.type()) {
     case QJsonValue::Object: return val.toObject();
     case QJsonValue::Undefined:
@@ -56,13 +55,12 @@ JsonObj& JsonObj::saveArr(rcstr key, JsonArr const& arr) {
 }
 
 JsonArr JsonObj::loadArr(rcstr key, bool defEmpty) const THROWS {
-    auto val = value(key);
-
+    const QJsonValue& val = value(key);
     switch (val.type()) {
     case QJsonValue::Array: return val.toArray();
     case QJsonValue::Undefined:
         if (defEmpty)
-            return JsonArr();
+            return {};
     // fall through
     default: THROW(key + ": not an array");
     }
@@ -74,8 +72,7 @@ JsonObj& JsonObj::saveInt(rcstr key, int num) {
 }
 
 int JsonObj::loadInt(rcstr key) const THROWS {
-    auto val = value(key);
-
+    const QJsonValue& val = value(key);
     switch (val.type()) {
     case QJsonValue::Double: return qRound(val.toDouble());
     default: THROW(key + ": bad number format");
@@ -130,13 +127,13 @@ JsonObj& JsonObj::saveQreal(rcstr key, qreal num) {
 }
 
 qreal JsonObj::loadQreal(rcstr key) const THROWS {
-    auto val = value(key);
+    const QJsonValue& val = value(key);
 
     switch (val.type()) {
     case QJsonValue::Undefined:
         return NAN; // not present means not a number
     case QJsonValue::String: { // infinities stored as strings
-        auto s = val.toString();
+        const str& s = val.toString();
         if (INF_P == s)
             return +INF;
         if (INF_M == s)
@@ -167,8 +164,7 @@ JsonObj& JsonObj::saveBool(rcstr key, bool b) {
 }
 
 bool JsonObj::loadBool(rcstr key) const THROWS {
-    auto val = value(key);
-
+    const QJsonValue& val = value(key);
     switch (val.type()) {
     case QJsonValue::Bool: return val.toBool();
     default: THROW(key + ": not a boolean");
@@ -183,8 +179,7 @@ JsonObj& JsonObj::saveString(rcstr key, rcstr s) {
 }
 
 str JsonObj::loadString(rcstr key) const THROWS {
-    auto val = value(key);
-
+    const QJsonValue& val = value(key);
     switch (val.type()) {
     case QJsonValue::String: return val.toString();
     default: THROW(key + ": not a string");
@@ -227,7 +222,7 @@ qpair JsonObj::loadqpair(rcstr key) const THROWS {
 }
 
 JsonObj& JsonObj::operator+=(JsonObj const& that) {
-    for (auto& key : that.keys())
+    for (const str& key : that.keys())
         insert(key, that[key]);
     return *this;
 }
@@ -250,7 +245,7 @@ uint JsonArr::count() const {
 }
 
 JsonObj JsonArr::objAt(uint i) const {
-    auto obj = super::at(to_i(i));
+    const QJsonValue& obj = super::at(to_i(i));
     RUNTIME_CHECK(QJsonValue::Object == obj.type(), "not an object at " + str::number(i));
     return super::at(to_i(i)).toObject();
 }

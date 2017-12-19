@@ -31,9 +31,7 @@ namespace typ {
 not_null<Function*> Function::Factory::make(JsonObj const& obj) THROWS {
     str funType = obj.loadString(json_key::TYPE);
     Function* fun = super::make(funType);
-
     RUNTIME_CHECK(fun, "factory does not know " % funType);
-
     scoped<Function*> f(fun);
     fun->loadJson(obj); // may throw
     return not_null<Function*>::from(f.take());
@@ -116,21 +114,16 @@ void SimpleFunction::reset() {
 
 JsonObj SimpleFunction::saveJson() const {
     JsonArr params;
-
-    for (auto& param : parameters_)
+    for (const Parameter& param : parameters_)
         params.append(param.saveJson());
-
     return super::saveJson() + JsonObj().saveArr(json_key::PARAMS, params);
 }
 
 void SimpleFunction::loadJson(JsonObj const& obj) THROWS {
     super::loadJson(obj);
-
     JsonArr params = obj.loadArr(json_key::PARAMS);
-
     uint parCount = params.count();
     setParameterCount(parCount);
-
     for_i (parCount)
         parameters_[i].loadJson(params.objAt(i));
 }
@@ -149,7 +142,6 @@ void SimpleFunction::setValue(uint i, qreal val) {
 // ************************************************************************** //
 
 SumFunctions::~SumFunctions() {
-    // dispose of the Functions that were added
     for (Function* f : functions_)
         delete f;
 }
@@ -157,7 +149,6 @@ SumFunctions::~SumFunctions() {
 void SumFunctions::addFunction(not_null<Function*> function) {
     uint parIndex = parameterCount();
     functions_.append(function);
-
     for_i (function->parameterCount()) {
         // aggregate parameter list
         allParameters_.append(&function->parameterAt(i));
@@ -187,15 +178,12 @@ qreal SumFunctions::y(qreal x, qreal const* parValues) const {
 
 qreal SumFunctions::dy(qreal x, uint parIndex, qreal const* parValues) const {
     Function* f = function4parIndex_.at(parIndex); // aggregate parIndex refers to function f
-
     // offset parameter index
     uint firstIndex = firstParIndex4parIndex_.at(parIndex);
     if (parValues)
         parValues += firstIndex;
-
     debug::ensure(firstIndex <= parIndex);
     parIndex -= firstIndex;
-
     debug::ensure(parIndex < f->parameterCount());
     return f->dy(x, parIndex, parValues);
 }
@@ -203,19 +191,15 @@ qreal SumFunctions::dy(qreal x, uint parIndex, qreal const* parValues) const {
 JsonObj SumFunctions::saveJson() const {
     JsonObj obj;
     obj.saveString(json_key::TYPE, json_fun_key::SUM);
-
     uint funCount = functions_.count();
     obj.saveUint(json_key::COUNT, funCount);
-
     for_i (funCount)
         obj.saveObj(json_key::FUN.arg(i + 1), functions_.at(i)->saveJson());
-
     return Function::saveJson() + obj;
 }
 
 void SumFunctions::loadJson(JsonObj const& obj) THROWS {
     RUNTIME_CHECK(functions_.isEmpty(), "non-empty sum of functions; cannot load twice");
-
     Function::loadJson(obj);
     uint funCount = obj.loadUint(json_key::COUNT);
     for_i (funCount) {
