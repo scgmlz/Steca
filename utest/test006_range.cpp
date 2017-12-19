@@ -40,7 +40,7 @@ TEST(Range, Validity) {
     EXPECT_TRUE(r.isValid());
     r.invalidate();
     EXPECT_TRUE(!r.isValid());
-    r.set1(0);
+    r.set(0,0);
     EXPECT_TRUE(r.isValid());
 }
 

@@ -44,7 +44,7 @@ int Range::compare(Range const& that) const {
 VALID_EQ_NE_OPERATOR(Range)
 
 void Range::invalidate() {
-    set1(NAN);
+    set(NAN, NAN);
 }
 
 bool Range::isValid() const {
@@ -61,10 +61,6 @@ qreal Range::width() const {
 
 qreal Range::center() const {
     return isValid() ? (min + max) / 2 : NAN;
-}
-
-void Range::set1(qreal val) {
-    set(val, val);
 }
 
 void Range::set(qreal min_, qreal max_) {
