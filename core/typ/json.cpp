@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/typ/json.cpp
-//! @brief     Implements ...
+//! @brief     Implements classes JsonObj, JsonArr
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -236,6 +236,7 @@ JsonObj JsonObj::operator+(JsonObj const& that) const {
     return JsonObj(*this) += that;
 }
 
+
 JsonArr::JsonArr() {}
 
 JsonArr::JsonArr(QJsonArray const& array) : super(array) {}
@@ -253,4 +254,5 @@ JsonObj JsonArr::objAt(uint i) const {
     RUNTIME_CHECK(QJsonValue::Object == obj.type(), "not an object at " + str::number(i));
     return super::at(to_i(i)).toObject();
 }
-}
+
+} // namespace typ
