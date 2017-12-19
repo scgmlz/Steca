@@ -46,7 +46,6 @@ void Function::addFactoryMaker(rcstr key, not_null<Factory::MakerBase*> maker) {
 
 void Function::initFactory() {
     ONLY_ONCE
-
     addFactoryMaker(
         json_fun_key::SUM,
         not_null<Factory::MakerBase*>::from(new Factory::Maker<SumFunctions>));
@@ -59,7 +58,7 @@ not_null<Function*> Function::make(JsonObj const& obj) {
 Function::Parameter::Parameter() : value_(0), error_(0), range_(Range::infinite()) {}
 
 Range Function::Parameter::valueRange() const {
-    return range_.isValid() ? range_ : Range(value_);
+    return range_.isValid() ? range_ : Range(value_, value_);
 }
 
 void Function::Parameter::setValueRange(qreal min, qreal max) {

@@ -336,8 +336,7 @@ void Session::addReflection(calc::shp_Reflection reflection) {
 
 qreal Session::calcAvgBackground(data::Dataset const& dataset) const {
     auto lens = datasetLens(dataset, dataset.datasets(), eNorm::NONE, true, true);
-
-    Curve gmaCurve = lens->makeCurve(true); // REVIEW averaged?
+    Curve gmaCurve = lens->makeCurve(); // had argument averaged=true
     auto bgPolynom = fit::Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
     return bgPolynom.avgY(lens->rgeTth());
 }

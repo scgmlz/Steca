@@ -28,9 +28,7 @@ class JsonObj;
 //! a range of values - a closed interval
 class Range {
 public:
-
     Range(); //!< invalid (NaN)
-    Range(qreal val); //!< singular, min == max
     Range(qreal min, qreal max); //!< normal
 
     static Range infinite(); //!< factory: -inf .. +inf
@@ -46,7 +44,7 @@ public:
 
     qreal min, max; // this is the range
 
-    void set(qreal val); //!< make singular
+    void set1(qreal val); //!< make singular
     void set(qreal min, qreal max); //!< must be: min <= max
     void safeSet(qreal, qreal); //!< will be set in the right order min/max
 

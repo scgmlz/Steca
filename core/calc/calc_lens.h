@@ -61,6 +61,7 @@ private:
     mutable typ::Range rgeInten_;
 };
 
+
 typedef QSharedPointer<ImageLens> shp_ImageLens;
 
 class DatasetLens final : public LensBase {

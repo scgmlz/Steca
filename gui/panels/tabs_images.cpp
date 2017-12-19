@@ -323,7 +323,9 @@ void TabsImages::render() {
             numBin_->setEnabled(true);
             if (hub_.actions.showBins->isChecked()) {
                 typ::Range rgeTth = lens_->rgeTth();
-                auto curve = lens_->makeCurve(false); // TODO factor out lens::binCount()
+                auto curve = lens_->makeCurve();
+                     // had argument averaged=false
+                     // TODO factor out lens::binCount()
                 int count = to_i(curve.count());
                 numBin_->setMaximum(count - 1);
                 auto min = rgeTth.min, wdt = rgeTth.width();

@@ -18,7 +18,7 @@ TEST(Range, Trivia) {
     EXPECT_TRUE(qIsNaN(r0.max));
     Range r1(1, 2), r2(r1);
     EXPECT_TRUE(RANGE_EQ(r1, r2));
-    Range r3(6);
+    Range r3(6,6);
     EXPECT_EQ(6, r3.min);
     EXPECT_EQ(6, r3.max);
     Range r4(6, 7);
@@ -40,7 +40,7 @@ TEST(Range, Validity) {
     EXPECT_TRUE(r.isValid());
     r.invalidate();
     EXPECT_TRUE(!r.isValid());
-    r.set(0);
+    r.set1(0);
     EXPECT_TRUE(r.isValid());
 }
 
@@ -48,7 +48,7 @@ TEST(Range, IsEmpty) {
     EXPECT_TRUE(Range().isEmpty());
     EXPECT_TRUE(!Range::infinite().isEmpty());
 
-    Range r(0);
+    Range r(0,0);
     EXPECT_TRUE(r.isEmpty());
     r.max = 1;
     EXPECT_TRUE(!r.isEmpty());
@@ -60,11 +60,11 @@ TEST(Range, IsEmpty) {
 
 TEST(Range, Width) {
     EXPECT_TRUE(qIsNaN(Range().width()));
-    EXPECT_EQ(0, Range(0).width());
+    EXPECT_EQ(0, Range(0,0).width());
     EXPECT_TRUE(qIsInf(Range(0, INF).width()));
     EXPECT_TRUE(qIsInf(Range::infinite().width()));
 
-    Range r(0);
+    Range r(0,0);
     EXPECT_TRUE(r.isEmpty());
     r.max = 1;
     EXPECT_TRUE(!r.isEmpty());
@@ -76,7 +76,7 @@ TEST(Range, Width) {
 
 TEST(Range, Center) {
     EXPECT_TRUE(qIsNaN(Range().center()));
-    EXPECT_EQ(0, Range(0).center());
+    EXPECT_EQ(0, Range(0,0).center());
     EXPECT_TRUE(qIsNaN(Range(0, NAN).center()));
     EXPECT_TRUE(qIsInf(Range(0, INF).center()));
     EXPECT_TRUE(qIsNaN(Range::infinite().center()));
@@ -256,7 +256,7 @@ TEST(Ranges, Trivia) {
 TEST(Ranges, Json) {
     Ranges rs, rs1;
     rs.add(Range());
-    rs.add(Range(9));
+    rs.add(Range(9,9));
     rs.add(Range(-3, -2));
     rs.add(Range::infinite());
 
