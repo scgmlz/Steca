@@ -106,7 +106,6 @@ void TheHub::saveSession(QFileInfo const& fileInfo) const {
 
 QByteArray TheHub::saveSession() const {
     using typ::JsonObj;
-    using typ::JsonArr;
 
     JsonObj top;
 
@@ -130,7 +129,7 @@ QByteArray TheHub::saveSession() const {
     auto& trn = session_->imageTransform();
     top.saveUint(config_key::TRANSFORM, trn.val);
 
-    JsonArr arrFiles;
+    QJsonArray arrFiles;
     // save file path relative to location of session
     for_i (numFiles()) {
         str absPath = getFile(i)->fileInfo().absoluteFilePath();
@@ -140,7 +139,7 @@ QByteArray TheHub::saveSession() const {
 
     top.saveArr(config_key::FILES, arrFiles);
 
-    JsonArr arrSelectedFiles;
+    QJsonArray arrSelectedFiles;
     for (uint i : collectedFromFiles())
         arrSelectedFiles.append(to_i(i));
 
@@ -158,9 +157,9 @@ QByteArray TheHub::saveSession() const {
     top.saveBool(config_key::INTEN_SCALED_AVG, intenScaledAvg());
     top.savePreal(config_key::INTEN_SCALE, intenScale());
 
-    JsonArr arrReflections;
+    QJsonArray arrReflections;
     for (auto& reflection : reflections())
-        arrReflections.append(reflection->to_json());
+        arrReflections.append(reflection->to_json().sup());
 
     top.saveArr(config_key::REFLECTIONS, arrReflections);
 
@@ -191,7 +190,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
 
     typ::JsonObj top(doc.object());
 
-    const typ::JsonArr& files = top.loadArr(config_key::FILES);
+    const QJsonArray& files = top.loadArr(config_key::FILES);
     for (const QJsonValue& file : files) {
         str filePath = file.toString();
         QDir dir(filePath);
@@ -199,10 +198,10 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
         addGivenFile(dir.absolutePath());
     }
 
-    const typ::JsonArr& sels = top.loadArr(config_key::SELECTED_FILES, true);
+    const QJsonArray& sels = top.loadArr(config_key::SELECTED_FILES, true);
     uint_vec selIndexes;
     for (const QJsonValue& sel : sels) {
-        int i = sel.toInt(), index = qBound(0, i, to_i(files.count()));
+        int i = sel.toInt(), index = qBound(0, i, files.count());
         RUNTIME_CHECK(i == index, str("Invalid selection index: %1").arg(i));
         selIndexes.append(to_u(index));
     }
@@ -240,10 +239,10 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
         top.loadBool(config_key::INTEN_SCALED_AVG, true),
         top.loadPreal(config_key::INTEN_SCALE, preal(1)));
 
-    const typ::JsonArr& reflectionsObj = top.loadArr(config_key::REFLECTIONS);
+    const QJsonArray& reflectionsObj = top.loadArr(config_key::REFLECTIONS);
     for_i (reflectionsObj.count()) {
         calc::shp_Reflection reflection(new calc::Reflection);
-        reflection->from_json(reflectionsObj.objAt(i));
+        reflection->from_json(reflectionsObj.at(i).toObject());
         session_->addReflection(reflection);
     }
 

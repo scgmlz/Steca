@@ -196,19 +196,17 @@ void Ranges::sort() {
     std::sort(ranges_.begin(), ranges_.end(), lessThan);
 }
 
-JsonArr Ranges::to_json() const {
-    JsonArr arr;
-
-    for (auto& range : ranges_)
-        arr.append(range.to_json());
-
+QJsonArray Ranges::to_json() const {
+    QJsonArray arr;
+    for (const Range& range : ranges_)
+        arr.append(range.to_json().sup());
     return arr;
 }
 
-void Ranges::from_json(JsonArr const& arr) THROWS {
+void Ranges::from_json(QJsonArray const& arr) THROWS {
     for_i (arr.count()) {
         Range range;
-        range.from_json(arr.objAt(i));
+        range.from_json(arr.at(i).toObject());
         ranges_.append(range);
     }
 }

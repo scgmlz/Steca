@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/typ/json.cpp
-//! @brief     Implements classes JsonObj, JsonArr
+//! @brief     Implements class JsonObj
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -43,12 +43,12 @@ JsonObj JsonObj::loadObj(rcstr key, bool defEmpty) const THROWS {
     }
 }
 
-JsonObj& JsonObj::saveArr(rcstr key, JsonArr const& arr) {
-    insert(key, arr.sup());
+JsonObj& JsonObj::saveArr(rcstr key, QJsonArray const& arr) {
+    insert(key, arr);
     return *this;
 }
 
-JsonArr JsonObj::loadArr(rcstr key, bool defEmpty) const THROWS {
+QJsonArray JsonObj::loadArr(rcstr key, bool defEmpty) const THROWS {
     const QJsonValue& val = value(key);
     switch (val.type()) {
     case QJsonValue::Array: return val.toArray();
@@ -221,25 +221,6 @@ JsonObj& JsonObj::operator+=(JsonObj const& that) {
 
 JsonObj JsonObj::operator+(JsonObj const& that) const {
     return JsonObj(*this) += that;
-}
-
-
-JsonArr::JsonArr() {}
-
-JsonArr::JsonArr(QJsonArray const& array) : super(array) {}
-
-void JsonArr::append(JsonObj const& obj) {
-    super::append(obj.sup());
-}
-
-uint JsonArr::count() const {
-    return to_u(super::count());
-}
-
-JsonObj JsonArr::objAt(uint i) const {
-    const QJsonValue& obj = super::at(to_i(i));
-    RUNTIME_CHECK(QJsonValue::Object == obj.type(), "not an object at " + str::number(i));
-    return super::at(to_i(i)).toObject();
 }
 
 } // namespace typ

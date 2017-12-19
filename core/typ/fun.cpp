@@ -17,6 +17,7 @@
 #include "typ/exception.h"
 #include "typ/fun.h"
 #include "typ/str.h"
+#include <QJsonArray>
 
 namespace json_fun_key {
 str const SUM("sum");
@@ -113,19 +114,19 @@ void SimpleFunction::reset() {
 }
 
 JsonObj SimpleFunction::to_json() const {
-    JsonArr params;
+    QJsonArray params;
     for (const Parameter& param : parameters_)
-        params.append(param.to_json());
+        params.append(param.to_json().sup());
     return super::to_json() + JsonObj().saveArr("parameters", params);
 }
 
 void SimpleFunction::from_json(JsonObj const& obj) THROWS {
     super::from_json(obj);
-    JsonArr params = obj.loadArr("parameters");
+    QJsonArray params = obj.loadArr("parameters");
     uint parCount = params.count();
     setParameterCount(parCount);
     for_i (parCount)
-        parameters_[i].from_json(params.objAt(i));
+        parameters_[i].from_json(params.at(i).toObject());
 }
 
 qreal SimpleFunction::parValue(uint i, qreal const* parValues) const {

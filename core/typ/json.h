@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/typ/json.h
-//! @brief     Defines classes JsonObj, JsonArr
+//! @brief     Defines class JsonObj
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -25,7 +25,6 @@ class qpair;
 
 namespace typ {
 
-class JsonArr;
 struct Range;
 struct IJ;
 
@@ -41,8 +40,8 @@ public:
     JsonObj& saveObj(rcstr key, JsonObj const&);
     JsonObj loadObj(rcstr key, bool defEmpty = false) const THROWS;
 
-    JsonObj& saveArr(rcstr key, JsonArr const&);
-    JsonArr loadArr(rcstr key, bool defEmpty = false) const THROWS;
+    JsonObj& saveArr(rcstr key, QJsonArray const&);
+    QJsonArray loadArr(rcstr key, bool defEmpty = false) const THROWS;
 
     JsonObj& saveInt(rcstr key, int);
     int loadInt(rcstr key) const THROWS;
@@ -83,25 +82,6 @@ public:
 
     JsonObj& operator+=(JsonObj const&);
     JsonObj operator+(JsonObj const&) const;
-};
-
-class JsonArr : protected QJsonArray {
-private:
-    using super = QJsonArray;
-public:
-    JsonArr();
-    JsonArr(QJsonArray const&);
-
-    super const& sup() const { return *this; }
-
-    using super::append;
-    void append(JsonObj const&);
-
-    using super::begin;
-    using super::end;
-
-    uint count() const;
-    JsonObj objAt(uint) const;
 };
 
 } // namespace typ

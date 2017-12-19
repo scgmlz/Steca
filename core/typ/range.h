@@ -19,11 +19,11 @@
 #include "def/numbers.h"
 #include "typ/exception.h"
 #include "typ/vec.h"
+#include <QJsonArray>
 
 namespace typ {
 
 class JsonObj;
-class JsonArr;
 
 //! a range of values - a closed interval
 class Range {
@@ -89,8 +89,8 @@ private:
     vec<Range> ranges_;
 
 public:
-    JsonArr to_json() const;
-    void from_json(JsonArr const&) THROWS;
+    QJsonArray to_json() const;
+    void from_json(QJsonArray const&) THROWS;
 };
 
 } // namespace typ
