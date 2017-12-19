@@ -43,7 +43,7 @@ JsonObj JsonObj::loadObj(rcstr key, bool defEmpty) const THROWS {
     case QJsonValue::Object: return val.toObject();
     case QJsonValue::Undefined:
         if (defEmpty)
-            return JsonObj();
+            return {};
     // fallthrough
     default: THROW(key + ": not an object");
     }
