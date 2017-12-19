@@ -21,10 +21,6 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
-namespace json_key {
-extern str const I, J, X, Y, MIN, MAX, PARAMS, TYPE, FUN, VALUE, RANGE, COUNT, PEAK, FWHM;
-}
-
 class qpair;
 
 namespace typ {

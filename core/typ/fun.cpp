@@ -29,7 +29,7 @@ namespace typ {
 // ************************************************************************** //
 
 not_null<Function*> Function::Factory::make(JsonObj const& obj) THROWS {
-    str funType = obj.loadString(json_key::TYPE);
+    str funType = obj.loadString("type");
     Function* fun = super::make(funType);
     RUNTIME_CHECK(fun, "factory does not know " % funType);
     scoped<Function*> f(fun);
@@ -71,12 +71,12 @@ void Function::Parameter::setValue(qreal value, qreal error) {
 }
 
 JsonObj Function::Parameter::to_json() const {
-    return JsonObj().saveQreal(json_key::VALUE, value_).saveRange(json_key::RANGE, range_);
+    return JsonObj().saveQreal("value", value_).saveRange("range", range_);
 }
 
 void Function::Parameter::from_json(JsonObj const& obj) THROWS {
-    value_ = obj.loadQreal(json_key::VALUE);
-    range_ = obj.loadRange(json_key::RANGE);
+    value_ = obj.loadQreal("value");
+    range_ = obj.loadRange("range");
 }
 
 JsonObj Function::to_json() const {
@@ -116,12 +116,12 @@ JsonObj SimpleFunction::to_json() const {
     JsonArr params;
     for (const Parameter& param : parameters_)
         params.append(param.to_json());
-    return super::to_json() + JsonObj().saveArr(json_key::PARAMS, params);
+    return super::to_json() + JsonObj().saveArr("parameters", params);
 }
 
 void SimpleFunction::from_json(JsonObj const& obj) THROWS {
     super::from_json(obj);
-    JsonArr params = obj.loadArr(json_key::PARAMS);
+    JsonArr params = obj.loadArr("parameters");
     uint parCount = params.count();
     setParameterCount(parCount);
     for_i (parCount)
@@ -190,20 +190,20 @@ qreal SumFunctions::dy(qreal x, uint parIndex, qreal const* parValues) const {
 
 JsonObj SumFunctions::to_json() const {
     JsonObj obj;
-    obj.saveString(json_key::TYPE, json_fun_key::SUM);
+    obj.saveString("type", json_fun_key::SUM);
     uint funCount = functions_.count();
-    obj.saveUint(json_key::COUNT, funCount);
+    obj.saveUint("count", funCount);
     for_i (funCount)
-        obj.saveObj(json_key::FUN.arg(i + 1), functions_.at(i)->to_json());
+        obj.saveObj(QString("f%1").arg(i + 1), functions_.at(i)->to_json());
     return Function::to_json() + obj;
 }
 
 void SumFunctions::from_json(JsonObj const& obj) THROWS {
     RUNTIME_CHECK(functions_.isEmpty(), "non-empty sum of functions; cannot load twice");
     Function::from_json(obj);
-    uint funCount = obj.loadUint(json_key::COUNT);
+    uint funCount = obj.loadUint("count");
     for_i (funCount) {
-        auto funObj = obj.loadObj(json_key::FUN.arg(i + 1));
+        auto funObj = obj.loadObj(QString("f%1").arg(i + 1));
         addFunction(make(funObj));
     }
 }

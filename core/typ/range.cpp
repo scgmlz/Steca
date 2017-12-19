@@ -131,12 +131,12 @@ qreal Range::bound(qreal value) const {
 }
 
 JsonObj Range::to_json() const {
-    return JsonObj().saveQreal(json_key::MIN, min).saveQreal(json_key::MAX, max);
+    return JsonObj().saveQreal("min", min).saveQreal("max", max);
 }
 
 void Range::from_json(JsonObj const& obj) THROWS {
-    min = obj.loadQreal(json_key::MIN);
-    max = obj.loadQreal(json_key::MAX);
+    min = obj.loadQreal("min");
+    max = obj.loadQreal("max");
 }
 
 Ranges::Ranges() {}

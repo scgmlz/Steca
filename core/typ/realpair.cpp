@@ -35,10 +35,10 @@ void qpair::invalidate() {
 using typ::JsonObj;
 
 JsonObj qpair::to_json() const {
-    return JsonObj().saveQreal(json_key::X, x).saveQreal(json_key::Y, y);
+    return JsonObj().saveQreal("x", x).saveQreal("y", y);
 }
 
 void qpair::from_json(JsonObj const& obj) THROWS {
-    x = obj.loadQreal(json_key::X);
-    y = obj.loadQreal(json_key::Y);
+    x = obj.loadQreal("x");
+    y = obj.loadQreal("y");
 }
