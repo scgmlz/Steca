@@ -34,12 +34,13 @@ JsonObj& JsonObj::saveObj(rcstr key, JsonObj const& obj) {
 JsonObj JsonObj::loadObj(rcstr key, bool defEmpty) const THROWS {
     const QJsonValue& val = value(key);
     switch (val.type()) {
-    case QJsonValue::Object: return val.toObject();
+    case QJsonValue::Object:
+        return val.toObject();
     case QJsonValue::Undefined:
         if (defEmpty)
             return {};
-    // fallthrough
-    default: THROW(key + ": not an object");
+    default:
+        THROW(key + ": not an object");
     }
 }
 
@@ -51,12 +52,13 @@ JsonObj& JsonObj::saveArr(rcstr key, QJsonArray const& arr) {
 QJsonArray JsonObj::loadArr(rcstr key, bool defEmpty) const THROWS {
     const QJsonValue& val = value(key);
     switch (val.type()) {
-    case QJsonValue::Array: return val.toArray();
+    case QJsonValue::Array:
+        return val.toArray();
     case QJsonValue::Undefined:
         if (defEmpty)
             return {};
-    // fall through
-    default: THROW(key + ": not an array");
+    default:
+        THROW(key + ": not an array");
     }
 }
 
@@ -73,9 +75,9 @@ int JsonObj::loadInt(rcstr key) const THROWS {
     }
 }
 
-#define LOAD_DEF(type) value(key).isUndefined() ? def : load##type(key)
-
-int JsonObj::loadInt(rcstr key, int def) const THROWS{ return LOAD_DEF(Int); }
+int JsonObj::loadInt(rcstr key, int def) const THROWS{
+    return value(key).isUndefined() ? def : loadInt(key);
+}
 
 JsonObj& JsonObj::saveUint(rcstr key, uint num) {
     return saveInt(key, to_i(num));
@@ -88,7 +90,9 @@ uint JsonObj::loadUint(rcstr key) const THROWS {
     return to_u(num);
 }
 
-uint JsonObj::loadUint(rcstr key, uint def) const THROWS{ return LOAD_DEF(Uint); }
+uint JsonObj::loadUint(rcstr key, uint def) const THROWS{
+    return value(key).isUndefined() ? def : loadUint(key);
+}
 
 JsonObj& JsonObj::savePint(rcstr key, pint num) {
     return saveUint(key, num);
@@ -101,20 +105,17 @@ pint JsonObj::loadPint(rcstr key) const {
 }
 
 pint JsonObj::loadPint(rcstr key, uint def) const {
-    return pint(LOAD_DEF(Pint));
+    return value(key).isUndefined() ? (pint)def : loadPint(key);
 }
-
-static str const INF_P("+inf"), INF_M("-inf");
 
 JsonObj& JsonObj::saveQreal(rcstr key, qreal num) {
     if (qIsNaN(num)) {
         // do not save anything for NaNs
     } else if (qIsInf(num)) {
-        insert(key, num < 0 ? INF_M : INF_P);
+        insert(key, num < 0 ? "-inf" : "+inf");
     } else {
         insert(key, num);
     }
-
     return *this;
 }
 
@@ -126,9 +127,9 @@ qreal JsonObj::loadQreal(rcstr key) const THROWS {
         return NAN; // not present means not a number
     case QJsonValue::String: { // infinities stored as strings
         const str& s = val.toString();
-        if (INF_P == s)
+        if (s == "+inf")
             return +INF;
-        if (INF_M == s)
+        if (s == "-inf")
             return -INF;
         THROW(key + ": bad number format");
     }
@@ -136,7 +137,9 @@ qreal JsonObj::loadQreal(rcstr key) const THROWS {
     }
 }
 
-qreal JsonObj::loadQreal(rcstr key, qreal def) const THROWS{ return LOAD_DEF(Qreal); }
+qreal JsonObj::loadQreal(rcstr key, qreal def) const THROWS{
+    return value(key).isUndefined() ? def : loadQreal(key);
+}
 
 JsonObj& JsonObj::savePreal(rcstr key, preal num) {
     return saveQreal(key, num);
@@ -148,7 +151,9 @@ preal JsonObj::loadPreal(rcstr key) const {
     return preal(num);
 }
 
-preal JsonObj::loadPreal(rcstr key, preal def) const { return LOAD_DEF(Preal); }
+preal JsonObj::loadPreal(rcstr key, preal def) const {
+    return value(key).isUndefined() ? def : loadPreal(key);
+}
 
 JsonObj& JsonObj::saveBool(rcstr key, bool b) {
     insert(key, b);
@@ -163,7 +168,9 @@ bool JsonObj::loadBool(rcstr key) const THROWS {
     }
 }
 
-bool JsonObj::loadBool(rcstr key, bool def) const THROWS{ return LOAD_DEF(Bool); }
+bool JsonObj::loadBool(rcstr key, bool def) const THROWS{
+    return value(key).isUndefined() ? def : loadBool(key);
+}
 
 JsonObj& JsonObj::saveString(rcstr key, rcstr s) {
     insert(key, s);
@@ -178,7 +185,9 @@ str JsonObj::loadString(rcstr key) const THROWS {
     }
 }
 
-str JsonObj::loadString(rcstr key, rcstr def) const THROWS{ return LOAD_DEF(String); }
+str JsonObj::loadString(rcstr key, rcstr def) const THROWS{
+    return value(key).isUndefined() ? def : loadString(key);
+}
 
 JsonObj& JsonObj::saveRange(rcstr key, Range const& range) {
     insert(key, range.to_json());

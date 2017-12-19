@@ -66,7 +66,7 @@ public:
 //! A set of *sorted* *non-overlapping* ranges
 class Ranges {
 public:
-    Ranges();
+    Ranges() {}
 
     void clear() { ranges_.clear(); }
     bool isEmpty() const { return ranges_.isEmpty(); }
