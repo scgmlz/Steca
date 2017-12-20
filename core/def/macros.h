@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/def/macros.h
-//! @brief     Defines ...
+//! @brief     Defines macro THROWS, sets some compiler pragmas
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
