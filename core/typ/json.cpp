@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/typ/json.cpp
-//! @brief     Implements class JsonObj
+//! @brief     Implements function qreal_to_json and class JsonObj
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -20,6 +20,10 @@
 #include "typ/str.h"
 #include <QStringList> // needed under Travis
 
+// ************************************************************************** //
+//  To support Json output
+// ************************************************************************** //
+
 QJsonValue qreal_to_json(const qreal num) {
     if (qIsNaN(num))
         return "nan";
@@ -28,6 +32,11 @@ QJsonValue qreal_to_json(const qreal num) {
     else
         return num;
 }
+
+
+// ************************************************************************** //
+//  To read Json input
+// ************************************************************************** //
 
 namespace typ {
 
