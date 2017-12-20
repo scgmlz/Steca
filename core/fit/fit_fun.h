@@ -45,6 +45,8 @@ public:
 
     typ::JsonObj to_json() const;
     void from_json(typ::JsonObj const&) THROWS;
+
+    const char* name() final { return "polynom"; }
 };
 
 
@@ -120,6 +122,7 @@ public:
     void fit(typ::Curve const&, typ::Range const&);
 
     typ::JsonObj to_json() const;
+    const char* name() final { return "Raw"; }
 
 private:
     typ::Curve fittedCurve_; // saved from fitting
@@ -156,6 +159,7 @@ public:
     fwhm_t fwhmError() const;
 
     typ::JsonObj to_json() const;
+    const char* name() final { return "Gaussian"; }
 };
 
 
@@ -184,6 +188,7 @@ public:
     fwhm_t fwhmError() const;
 
     typ::JsonObj to_json() const;
+    const char* name() final { return "Lorentzian"; }
 };
 
 
@@ -212,6 +217,7 @@ public:
     fwhm_t fwhmError() const;
 
     typ::JsonObj to_json() const;
+    const char* name() final { return "PseudoVoigt1"; }
 };
 
 
@@ -241,6 +247,7 @@ public:
     fwhm_t fwhmError() const;
 
     typ::JsonObj to_json() const;
+    const char* name() final { return "PseudoVoigt2"; }
 };
 
 } // namespace fit

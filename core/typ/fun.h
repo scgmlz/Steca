@@ -95,6 +95,7 @@ public:
 
     JsonObj to_json() const;
     void from_json(JsonObj const&) THROWS;
+    virtual const char* name() = 0;
 
 protected:
     vec<Parameter> parameters_;
