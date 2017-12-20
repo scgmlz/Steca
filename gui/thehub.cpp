@@ -115,7 +115,7 @@ QByteArray TheHub::saveSession() const {
         { config_key::DET_PIX_SIZE, QJsonValue(geo.pixSize) },
         { config_key::BEAM_OFFSET, geo.midPixOffset.to_json() }
     };
-    top.saveObj(config_key::DETECTOR, sub);
+    top.insert(config_key::DETECTOR, sub);
 
     auto& cut = session_->imageCut();
     sub = {
@@ -123,7 +123,7 @@ QByteArray TheHub::saveSession() const {
         { config_key::TOP, to_i(cut.top) },
         { config_key::RIGHT, to_i(cut.right) },
         { config_key::BOTTOM, to_i(cut.bottom) } };
-    top.saveObj(config_key::CUT, sub);
+    top.insert(config_key::CUT, sub);
 
     auto& trn = session_->imageTransform();
     top.insert(config_key::TRANSFORM, to_i((uint)trn.val));
@@ -136,13 +136,13 @@ QByteArray TheHub::saveSession() const {
         arrFiles.append(relPath);
     }
 
-    top.saveArr(config_key::FILES, arrFiles);
+    top.insert(config_key::FILES, arrFiles);
 
     QJsonArray arrSelectedFiles;
     for (uint i : collectedFromFiles())
         arrSelectedFiles.append(to_i(i));
 
-    top.saveArr(config_key::SELECTED_FILES, arrSelectedFiles);
+    top.insert(config_key::SELECTED_FILES, arrSelectedFiles);
     top.insert(config_key::COMBINE, to_i((uint)datasetsGroupedBy_));
 
     if (hasCorrFile()) {
@@ -152,7 +152,7 @@ QByteArray TheHub::saveSession() const {
     }
 
     top.insert(config_key::BG_DEGREE, to_i(bgPolyDegree()));
-    top.saveArr(config_key::BG_RANGES, bgRanges().to_json());
+    top.insert(config_key::BG_RANGES, bgRanges().to_json());
     top.insert(config_key::INTEN_SCALED_AVG, intenScaledAvg());
     top.savePreal(config_key::INTEN_SCALE, intenScale());
 
@@ -160,7 +160,7 @@ QByteArray TheHub::saveSession() const {
     for (auto& reflection : reflections())
         arrReflections.append(reflection->to_json().sup());
 
-    top.saveArr(config_key::REFLECTIONS, arrReflections);
+    top.insert(config_key::REFLECTIONS, arrReflections);
 
     return QJsonDocument(top.sup()).toJson();
 }

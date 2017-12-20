@@ -108,7 +108,7 @@ JsonObj SimpleFunction::to_json() const {
     for (const Parameter& param : parameters_)
         params.append(param.to_json().sup());
     JsonObj ret = super::to_json();
-    ret.saveArr("parameters", params);
+    ret.insert("parameters", params);
     return ret;
 }
 

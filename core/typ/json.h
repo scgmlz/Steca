@@ -37,13 +37,10 @@ public:
 
     super const& sup() const { return *this; }
 
-    JsonObj& saveObj(rcstr key, JsonObj const&);
     JsonObj loadObj(rcstr key, bool defEmpty = false) const THROWS;
 
-    JsonObj& saveArr(rcstr key, QJsonArray const&);
     QJsonArray loadArr(rcstr key, bool defEmpty = false) const THROWS;
 
-    JsonObj& saveInt(rcstr key, int);
     int loadInt(rcstr key) const THROWS;
     int loadInt(rcstr key, int def) const THROWS;
 

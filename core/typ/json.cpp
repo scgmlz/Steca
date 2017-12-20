@@ -26,11 +26,6 @@ JsonObj::JsonObj() {}
 
 JsonObj::JsonObj(QJsonObject const& obj) : super(obj) {}
 
-JsonObj& JsonObj::saveObj(rcstr key, JsonObj const& obj) {
-    insert(key, obj.sup());
-    return *this;
-}
-
 JsonObj JsonObj::loadObj(rcstr key, bool defEmpty) const THROWS {
     const QJsonValue& val = value(key);
     switch (val.type()) {
@@ -44,11 +39,6 @@ JsonObj JsonObj::loadObj(rcstr key, bool defEmpty) const THROWS {
     }
 }
 
-JsonObj& JsonObj::saveArr(rcstr key, QJsonArray const& arr) {
-    insert(key, arr);
-    return *this;
-}
-
 QJsonArray JsonObj::loadArr(rcstr key, bool defEmpty) const THROWS {
     const QJsonValue& val = value(key);
     switch (val.type()) {
@@ -60,11 +50,6 @@ QJsonArray JsonObj::loadArr(rcstr key, bool defEmpty) const THROWS {
     default:
         THROW(key + ": not an array");
     }
-}
-
-JsonObj& JsonObj::saveInt(rcstr key, int num) {
-    insert(key, num);
-    return *this;
 }
 
 int JsonObj::loadInt(rcstr key) const THROWS {
