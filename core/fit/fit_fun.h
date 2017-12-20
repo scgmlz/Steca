@@ -26,7 +26,7 @@ void initFactory();
 
 //! a polynom(ial)
 
-class Polynom : public typ::SimpleFunction {
+class Polynom final : public typ::SimpleFunction {
 private:
     using super = typ::SimpleFunction;
 public:
@@ -46,7 +46,7 @@ public:
     typ::JsonObj to_json() const;
     void from_json(typ::JsonObj const&) THROWS;
 
-    const char* name() final { return "polynom"; }
+    const char* name() const { return "polynom"; }
 };
 
 
@@ -103,7 +103,7 @@ protected:
 
 //! Peak analysis without fitting
 
-class Raw : public PeakFunction {
+class Raw final : public PeakFunction {
 private:
     using super = PeakFunction;
 public:
@@ -122,7 +122,7 @@ public:
     void fit(typ::Curve const&, typ::Range const&);
 
     typ::JsonObj to_json() const;
-    const char* name() final { return "Raw"; }
+    const char* name() const { return "Raw"; }
 
 private:
     typ::Curve fittedCurve_; // saved from fitting
@@ -136,7 +136,7 @@ private:
 
 //! to fit peak with a Gaussian
 
-class Gaussian : public PeakFunction {
+class Gaussian final : public PeakFunction {
 private:
     using super = PeakFunction;
 public:
@@ -159,13 +159,13 @@ public:
     fwhm_t fwhmError() const;
 
     typ::JsonObj to_json() const;
-    const char* name() final { return "Gaussian"; }
+    const char* name() const { return "Gaussian"; }
 };
 
 
 //! to fit peak with a Lorentzian
 
-class Lorentzian : public PeakFunction {
+class Lorentzian final : public PeakFunction {
 private:
     using super = PeakFunction;
 public:
@@ -188,13 +188,13 @@ public:
     fwhm_t fwhmError() const;
 
     typ::JsonObj to_json() const;
-    const char* name() final { return "Lorentzian"; }
+    const char* name() const { return "Lorentzian"; }
 };
 
 
 //! to fit peak with a sum of Gaussian and Lorentzian with shared width parameter
 
-class PseudoVoigt1 : public PeakFunction {
+class PseudoVoigt1 final : public PeakFunction {
 private:
     using super = PeakFunction;
 public:
@@ -217,13 +217,13 @@ public:
     fwhm_t fwhmError() const;
 
     typ::JsonObj to_json() const;
-    const char* name() final { return "PseudoVoigt1"; }
+    const char* name() const { return "PseudoVoigt1"; }
 };
 
 
 //! to fit peak with a sum of Gaussian and Lorentzian with independent width parameters
 
-class PseudoVoigt2 : public PeakFunction {
+class PseudoVoigt2 final : public PeakFunction {
 private:
     using super = PeakFunction;
 public:
@@ -247,7 +247,7 @@ public:
     fwhm_t fwhmError() const;
 
     typ::JsonObj to_json() const;
-    const char* name() final { return "PseudoVoigt2"; }
+    const char* name() const { return "PseudoVoigt2"; }
 };
 
 } // namespace fit

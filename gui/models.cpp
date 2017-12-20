@@ -174,9 +174,12 @@ int ReflectionsModel::rowCount(rcIndex) const {
 
 str ReflectionsModel::displayData(uint row, uint col) const {
     switch (col) {
-    case COL_ID: return str::number(row + 1);
-    case COL_TYPE: return calc::Reflection::typeTag(hub_.reflections().at(row)->type());
-    default: NEVER return "";
+    case COL_ID:
+        return str::number(row + 1);
+    case COL_TYPE:
+        return hub_.reflections().at(row)->peakFunction().name();
+    default:
+        NEVER return "";
     }
 }
 
