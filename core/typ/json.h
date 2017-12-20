@@ -54,7 +54,6 @@ public:
     qreal loadQreal(rcstr key) const THROWS;
     qreal loadQreal(rcstr key, qreal def) const THROWS;
 
-    JsonObj& savePreal(rcstr key, preal);
     preal loadPreal(rcstr key) const THROWS;
     preal loadPreal(rcstr key, preal def) const THROWS;
 
