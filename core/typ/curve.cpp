@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "def/idiomatic_for.h"
+#include "typ/fun.h"
 #include "typ/curve.h"
 
 namespace typ {

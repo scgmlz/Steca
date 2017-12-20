@@ -16,6 +16,7 @@
 #define FIT_FUN_H
 
 #include "typ/curve.h"
+#include "typ/fun.h"
 #include "typ/realpair.h"
 #include "typ/types.h"
 

@@ -15,10 +15,12 @@
 #ifndef CURVE_H
 #define CURVE_H
 
-#include "typ/fun.h"
+#include "typ/range.h"
 #include "typ/vec.h"
 
 namespace typ {
+
+class Function;
 
 //! A set of x-y datapoints
 

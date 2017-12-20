@@ -15,6 +15,7 @@
 #include "io_io.h"
 #include "typ/exception.h"
 #include "typ/str.h"
+#include <QStringBuilder> // for ".." % ..
 
 namespace io {
 
