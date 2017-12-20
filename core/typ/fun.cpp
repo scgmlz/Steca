@@ -42,7 +42,7 @@ void Function::Parameter::setValue(qreal value, qreal error) {
 
 JsonObj Function::Parameter::to_json() const {
     JsonObj ret;
-    ret.saveQreal("value", value_);
+    ret.insert("value", qreal_to_json(value_));
     ret.insert("range", range_.to_json());
     return ret;
 }

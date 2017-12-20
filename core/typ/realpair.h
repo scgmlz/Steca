@@ -37,7 +37,7 @@ class qpair {
     void invalidate(); // x,y <- NAN
     bool isValid() const { return !qIsNaN(x) && !qIsNaN(y); }
 
-    typ::JsonObj to_json() const;
+    QJsonObject to_json() const;
     void from_json(typ::JsonObj const&) THROWS;
 };
 

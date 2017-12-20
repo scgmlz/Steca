@@ -196,7 +196,7 @@ JsonObj PeakFunction::to_json() const {
     JsonObj ret = super::to_json();
     ret.insert("range", range_.to_json());
     ret.insert("guessed peak", guessedPeak_.to_json());
-    ret.saveQreal("guessed fwhm", guessedFWHM_);
+    ret.insert("guessed fwhm", qreal_to_json(guessedFWHM_));
     ret.insert("type", name());
     return ret;
 }

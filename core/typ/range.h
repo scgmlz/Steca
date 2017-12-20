@@ -59,7 +59,7 @@ public:
 
     qreal bound(qreal) const; //!< limit the number to the interval, as qBound would
 
-    JsonObj to_json() const;
+    QJsonObject to_json() const;
     void from_json(JsonObj const&) THROWS;
 };
 

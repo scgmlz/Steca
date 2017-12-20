@@ -105,9 +105,8 @@ void TheHub::saveSession(QFileInfo const& fileInfo) const {
 }
 
 QByteArray TheHub::saveSession() const {
-    using typ::JsonObj;
 
-    JsonObj top;
+    QJsonObject top;
 
     auto& geo = session_->geometry();
     QJsonObject sub {
@@ -154,15 +153,15 @@ QByteArray TheHub::saveSession() const {
     top.insert(config_key::BG_DEGREE, to_i(bgPolyDegree()));
     top.insert(config_key::BG_RANGES, bgRanges().to_json());
     top.insert(config_key::INTEN_SCALED_AVG, intenScaledAvg());
-    top.saveQreal(config_key::INTEN_SCALE, (qreal)intenScale());
+    top.insert(config_key::INTEN_SCALE, qreal_to_json((qreal)intenScale()));
 
     QJsonArray arrReflections;
     for (auto& reflection : reflections())
-        arrReflections.append(reflection->to_json().sup());
+        arrReflections.append(reflection->to_json());
 
     top.insert(config_key::REFLECTIONS, arrReflections);
 
-    return QJsonDocument(top.sup()).toJson();
+    return QJsonDocument(top).toJson();
 }
 
 void TheHub::clearSession() {

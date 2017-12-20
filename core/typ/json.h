@@ -20,8 +20,11 @@
 #include "typ/str.h"
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QJsonValue>
 
 class qpair;
+
+QJsonValue qreal_to_json(const qreal num);
 
 namespace typ {
 
@@ -50,7 +53,6 @@ public:
     pint loadPint(rcstr key) const THROWS;
     pint loadPint(rcstr key, uint def) const THROWS;
 
-    JsonObj& saveQreal(rcstr key, qreal);
     qreal loadQreal(rcstr key) const THROWS;
     qreal loadQreal(rcstr key, qreal def) const THROWS;
 

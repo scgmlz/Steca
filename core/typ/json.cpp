@@ -20,6 +20,15 @@
 #include "typ/str.h"
 #include <QStringList> // needed under Travis
 
+QJsonValue qreal_to_json(const qreal num) {
+    if (qIsNaN(num))
+        return "nan";
+    else if (qIsInf(num))
+        return num < 0 ? "-inf" : "+inf";
+    else
+        return num;
+}
+
 namespace typ {
 
 JsonObj::JsonObj() {}
@@ -83,17 +92,6 @@ pint JsonObj::loadPint(rcstr key) const {
 
 pint JsonObj::loadPint(rcstr key, uint def) const {
     return value(key).isUndefined() ? (pint)def : loadPint(key);
-}
-
-JsonObj& JsonObj::saveQreal(rcstr key, qreal num) {
-    if (qIsNaN(num)) {
-        // do not save anything for NaNs
-    } else if (qIsInf(num)) {
-        insert(key, num < 0 ? "-inf" : "+inf");
-    } else {
-        insert(key, num);
-    }
-    return *this;
 }
 
 qreal JsonObj::loadQreal(rcstr key) const THROWS {
