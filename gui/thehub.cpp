@@ -27,17 +27,17 @@
 
 namespace gui {
 
-
 TheHub::TheHub()
     : actions(*this)
+    , filesModel(*this)
+    , datasetsModel(*this)
+    , metadataModel(*this)
+    , reflectionsModel(*this)
     , session_(new core::Session())
     , isFixedIntenImageScale_(false)
     , isFixedIntenDgramScale_(false)
     , isCombinedDgram_(false)
-    , filesModel(*this)
-    , datasetsModel(*this)
-    , metadataModel(*this)
-    , reflectionsModel(*this) {
+{
     configActions();
 }
 
@@ -176,10 +176,10 @@ void TheHub::loadSession(QFileInfo const& fileInfo) THROWS {
     RUNTIME_CHECK(file.open(QIODevice::ReadOnly | QIODevice::Text),
                   "Cannot open file for reading: " % fileInfo.absoluteFilePath());
     QDir::setCurrent(fileInfo.absolutePath());
-    loadSession(file.readAll());
+    session_from_json(file.readAll());
 }
 
-void TheHub::loadSession(QByteArray const& json) THROWS {
+void TheHub::session_from_json(QByteArray const& json) THROWS {
     QJsonParseError parseError;
     QJsonDocument doc(QJsonDocument::fromJson(json, &parseError));
     RUNTIME_CHECK(QJsonParseError::NoError == parseError.error, "Error parsing session file");

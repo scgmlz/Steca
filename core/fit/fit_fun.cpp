@@ -198,6 +198,7 @@ JsonObj PeakFunction::to_json() const {
     ret.saveObj("guessed peak", guessedPeak_.to_json());
     ret.saveQreal("guessed fwhm", guessedFWHM_);
     ret.saveString("type", name());
+    return ret;
 }
 
 void PeakFunction::from_json(JsonObj const& obj) THROWS {
