@@ -106,6 +106,8 @@ qreal JsonObj::loadQreal(rcstr key) const THROWS {
             return +INF;
         if (s == "-inf")
             return -INF;
+        if (s == "nan")
+            return NAN;
         THROW(key + ": bad number format");
     }
     default: return val.toDouble();
