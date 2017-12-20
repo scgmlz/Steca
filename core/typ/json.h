@@ -67,9 +67,6 @@ public:
     Range loadRange(rcstr key) const THROWS;
 
     IJ loadIJ(rcstr key) const THROWS;
-
-    JsonObj& saveqpair(rcstr key, qpair const&);
-    qpair loadqpair(rcstr key) const THROWS;
 };
 
 } // namespace typ

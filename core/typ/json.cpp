@@ -168,15 +168,4 @@ IJ JsonObj::loadIJ(rcstr key) const THROWS {
     return ij;
 }
 
-JsonObj& JsonObj::saveqpair(rcstr key, qpair const& qpair) {
-    insert(key, qpair.to_json());
-    return *this;
-}
-
-qpair JsonObj::loadqpair(rcstr key) const THROWS {
-    qpair qpair;
-    qpair.from_json(loadObj(key));
-    return qpair;
-}
-
 } // namespace typ
