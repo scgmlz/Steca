@@ -104,7 +104,7 @@ Polynom Polynom::fromFit(uint degree, Curve const& curve, typ::Ranges const& ran
 
 JsonObj Polynom::to_json() const {
     JsonObj ret = super::to_json();
-    ret.saveString("type", name());
+    ret.insert("type", name());
     return ret;
 }
 
@@ -197,7 +197,7 @@ JsonObj PeakFunction::to_json() const {
     ret.insert("range", range_.to_json());
     ret.saveObj("guessed peak", guessedPeak_.to_json());
     ret.saveQreal("guessed fwhm", guessedFWHM_);
-    ret.saveString("type", name());
+    ret.insert("type", name());
     return ret;
 }
 

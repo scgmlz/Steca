@@ -67,7 +67,6 @@ public:
     bool loadBool(rcstr key) const THROWS;
     bool loadBool(rcstr key, bool def) const THROWS;
 
-    JsonObj& saveString(rcstr key, rcstr);
     str loadString(rcstr key) const THROWS;
     str loadString(rcstr key, rcstr def) const THROWS;
 

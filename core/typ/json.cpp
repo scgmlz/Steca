@@ -172,11 +172,6 @@ bool JsonObj::loadBool(rcstr key, bool def) const THROWS{
     return value(key).isUndefined() ? def : loadBool(key);
 }
 
-JsonObj& JsonObj::saveString(rcstr key, rcstr s) {
-    insert(key, s);
-    return *this;
-}
-
 str JsonObj::loadString(rcstr key) const THROWS {
     const QJsonValue& val = value(key);
     switch (val.type()) {

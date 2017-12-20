@@ -301,7 +301,7 @@ void MainWin::loadSession() {
         qWarning() << "Could not load session from file " << fileName << ":\n"
                    << ex.msg() << "\n"
                    << "The application may now be in an inconsistent state.\n"
-                   << "Please consider to quit the application, and start afresh.\n"
+                   << "Please consider to quit the application, and start afresh.\n";
         clearSession();
     }
 }

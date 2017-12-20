@@ -149,7 +149,7 @@ QByteArray TheHub::saveSession() const {
     if (hasCorrFile()) {
         str absPath = session_->corrFile()->fileInfo().absoluteFilePath();
         str relPath = QDir::current().relativeFilePath(absPath);
-        top.saveString(config_key::CORR_FILE, relPath);
+        top.insert(config_key::CORR_FILE, relPath);
     }
 
     top.saveUint(config_key::BG_DEGREE, bgPolyDegree());
