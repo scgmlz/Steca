@@ -19,9 +19,6 @@
 #include "typ/realpair.h"
 #include "typ/types.h"
 
-namespace json_fun_key {
-}
-
 namespace fit {
 
 void initFactory();

@@ -31,8 +31,6 @@ void initFactory() {
     using F = typ::Function;
     using O = not_null<F::Factory::MakerBase*>;
 
-    F::initFactory();
-
     F::addFactoryMaker("polynom", O::from(new F::Factory::Maker<Gaussian>));
     F::addFactoryMaker("Raw", O::from(new F::Factory::Maker<Raw>));
     F::addFactoryMaker("Gaussian", O::from(new F::Factory::Maker<Gaussian>));

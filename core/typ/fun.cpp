@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/typ/fun.cpp
-//! @brief     Implements classes Function, SimpleFunction, SumFunctions
+//! @brief     Implements classes Function, SimpleFunction
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -38,11 +38,6 @@ Function::Factory Function::factory_;
 
 void Function::addFactoryMaker(rcstr key, not_null<Factory::MakerBase*> maker) {
     factory_.addMaker(key, maker);
-}
-
-void Function::initFactory() {
-    ONLY_ONCE;
-    addFactoryMaker("sum", not_null<Factory::MakerBase*>::from(new Factory::Maker<SumFunctions>));
 }
 
 not_null<Function*> Function::make(JsonObj const& obj) {
@@ -133,76 +128,5 @@ void SimpleFunction::setValue(uint i, qreal val) {
     parameters_[i].setValue(val, 0);
 }
 
-
-// ************************************************************************** //
-//   class SumFunction
-// ************************************************************************** //
-
-SumFunctions::~SumFunctions() {
-    for (Function* f : functions_)
-        delete f;
-}
-
-void SumFunctions::addFunction(not_null<Function*> function) {
-    uint parIndex = parameterCount();
-    functions_.append(function);
-    for_i (function->parameterCount()) {
-        // aggregate parameter list
-        allParameters_.append(&function->parameterAt(i));
-        // lookup helpers
-        function4parIndex_.append(function);
-        firstParIndex4parIndex_.append(parIndex);
-    }
-}
-
-uint SumFunctions::parameterCount() const {
-    return allParameters_.count();
-}
-
-Function::Parameter& SumFunctions::parameterAt(uint i) {
-    return *allParameters_.at(i);
-}
-
-qreal SumFunctions::y(qreal x, qreal const* parValues) const {
-    qreal sum = 0;
-    for (Function* f : functions_) {
-        sum += f->y(x, parValues);
-        if (parValues)
-            parValues += f->parameterCount(); // advance to next function
-    }
-    return sum;
-}
-
-qreal SumFunctions::dy(qreal x, uint parIndex, qreal const* parValues) const {
-    Function* f = function4parIndex_.at(parIndex); // aggregate parIndex refers to function f
-    // offset parameter index
-    uint firstIndex = firstParIndex4parIndex_.at(parIndex);
-    if (parValues)
-        parValues += firstIndex;
-    debug::ensure(firstIndex <= parIndex);
-    parIndex -= firstIndex;
-    debug::ensure(parIndex < f->parameterCount());
-    return f->dy(x, parIndex, parValues);
-}
-
-JsonObj SumFunctions::to_json() const {
-    JsonObj obj;
-    obj.saveString("type", "sum");
-    uint funCount = functions_.count();
-    obj.saveUint("count", funCount);
-    for_i (funCount)
-        obj.saveObj(QString("f%1").arg(i + 1), functions_.at(i)->to_json());
-    return Function::to_json() + obj;
-}
-
-void SumFunctions::from_json(JsonObj const& obj) THROWS {
-    RUNTIME_CHECK(functions_.isEmpty(), "non-empty sum of functions; cannot load twice");
-    Function::from_json(obj);
-    uint funCount = obj.loadUint("count");
-    for_i (funCount) {
-        auto funObj = obj.loadObj(QString("f%1").arg(i + 1));
-        addFunction(make(funObj));
-    }
-}
 
 } // namespace typ

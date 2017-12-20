@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/typ/fun.h
-//! @brief     Defines classes Function, SimpleFunction, SumFunctions
+//! @brief     Defines classes Function, SimpleFunction
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -41,7 +41,6 @@ protected:
 
 public:
     static void addFactoryMaker(rcstr key, not_null<Factory::MakerBase*>);
-    static void initFactory();
 
     static not_null<Function*> make(JsonObj const&) THROWS;
 
@@ -111,36 +110,6 @@ protected:
     void setValue(uint parIndex, qreal val);
 };
 
+} // namespace typ
 
-//! concrete function that is a sum of other functions
-
-class SumFunctions final : public Function {
-public:
-    ~SumFunctions();
-
-    void addFunction(not_null<Function*>);
-
-    // aggregate parameter list for all added functions
-    uint parameterCount() const;
-    Parameter& parameterAt(uint);
-
-    qreal y(qreal x, qreal const* parValues = nullptr) const;
-    qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
-
-public:
-    JsonObj to_json() const;
-    void from_json(JsonObj const&) THROWS;
-
-protected:
-    // summed functions
-    vec<Function*> functions_;
-    // the aggregate parameter list
-    vec<Parameter*> allParameters_;
-    // look up the original function for a given aggregate parameter index
-    vec<Function*> function4parIndex_;
-    // the starting index of parameters of a summed function, given the aggregate
-    // parameter index
-    uint_vec firstParIndex4parIndex_;
-};
-}
 #endif // FUN_H
