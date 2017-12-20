@@ -103,9 +103,9 @@ Polynom Polynom::fromFit(uint degree, Curve const& curve, typ::Ranges const& ran
 }
 
 JsonObj Polynom::to_json() const {
-    JsonObj obj;
-    obj.saveString("type", "polynom");
-    return super::to_json() + obj;
+    JsonObj ret = super::to_json();
+    ret.saveString("type", name());
+    return ret;
 }
 
 void Polynom::from_json(JsonObj const& obj) THROWS {
@@ -197,7 +197,7 @@ JsonObj PeakFunction::to_json() const {
     ret.insert("range", range_.to_json());
     ret.saveObj("guessed peak", guessedPeak_.to_json());
     ret.saveQreal("guessed fwhm", guessedFWHM_);
-    return ret;
+    ret.saveString("type", name());
 }
 
 void PeakFunction::from_json(JsonObj const& obj) THROWS {
@@ -260,10 +260,6 @@ void Raw::prepareY() {
         dx_ = range_.width() / x_count_;
     }
     sum_y_ = NAN;
-}
-
-JsonObj Raw::to_json() const {
-    return super::to_json().saveString("type", "Raw");
 }
 
 
@@ -343,10 +339,6 @@ fwhm_t Gaussian::fwhmError() const {
     return fwhm_t(parameters_.at(parSIGMA).error());
 }
 
-JsonObj Gaussian::to_json() const {
-    return super::to_json().saveString("type", "Gaussian");
-}
-
 Lorentzian::Lorentzian(qreal ampl, qreal xShift, qreal gamma) {
     setParameterCount(3);
 
@@ -420,10 +412,6 @@ qpair Lorentzian::peakError() const {
 
 fwhm_t Lorentzian::fwhmError() const {
     return fwhm_t(parameters_.at(parGAMMA).error());
-}
-
-JsonObj Lorentzian::to_json() const {
-    return super::to_json().saveString("type", "Lorentzian");
 }
 
 
@@ -516,10 +504,6 @@ qpair PseudoVoigt1::peakError() const {
 
 fwhm_t PseudoVoigt1::fwhmError() const {
     return fwhm_t(parameters_.at(parSIGMAGAMMA).error());
-}
-
-JsonObj PseudoVoigt1::to_json() const {
-    return super::to_json().saveString("type", "PseudoVoigt1");
 }
 
 
@@ -631,10 +615,6 @@ qpair PseudoVoigt2::peakError() const {
 fwhm_t PseudoVoigt2::fwhmError() const {
     // REVIEW
     return fwhm_t(parameters_.at(parSIGMA).error() + parameters_.at(parGAMMA).error());
-}
-
-JsonObj PseudoVoigt2::to_json() const {
-    return super::to_json().saveString("type", "PseudoVoigt2");
 }
 
 } // namespace fit

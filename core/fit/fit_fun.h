@@ -85,17 +85,15 @@ public:
 
     virtual void fit(typ::Curve const&, typ::Range const&);
 
-protected:
-    typ::Curve prepareFit(typ::Curve const&, typ::Range const&);
-
-public:
-    typ::JsonObj to_json() const;
+    typ::JsonObj to_json() const final;
     void from_json(typ::JsonObj const&) THROWS;
 
 protected:
     typ::Range range_;
     qpair guessedPeak_;
     fwhm_t guessedFWHM_;
+
+    typ::Curve prepareFit(typ::Curve const&, typ::Range const&);
 };
 
 
@@ -118,8 +116,6 @@ public:
 
     void setRange(typ::Range const&);
     void fit(typ::Curve const&, typ::Range const&);
-
-    typ::JsonObj to_json() const;
 
 private:
     typ::Curve fittedCurve_; // saved from fitting
@@ -154,8 +150,6 @@ public:
 
     qpair peakError() const;
     fwhm_t fwhmError() const;
-
-    typ::JsonObj to_json() const;
 };
 
 
@@ -182,8 +176,6 @@ public:
 
     qpair peakError() const;
     fwhm_t fwhmError() const;
-
-    typ::JsonObj to_json() const;
 };
 
 
@@ -210,8 +202,6 @@ public:
 
     qpair peakError() const;
     fwhm_t fwhmError() const;
-
-    typ::JsonObj to_json() const;
 };
 
 
@@ -239,8 +229,6 @@ public:
 
     qpair peakError() const;
     fwhm_t fwhmError() const;
-
-    typ::JsonObj to_json() const;
 };
 
 } // namespace fit

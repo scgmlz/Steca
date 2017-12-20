@@ -30,8 +30,6 @@ namespace typ {
 class Function {
 public:
     class Factory : public typ::Factory<Function> {
-    private:
-        using super = typ::Factory<Function>;
     public:
         not_null<Function*> make(JsonObj const&) THROWS;
     };

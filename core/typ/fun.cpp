@@ -58,7 +58,7 @@ void Function::Parameter::from_json(JsonObj const& obj) THROWS {
 
 not_null<Function*> Function::Factory::make(JsonObj const& obj) THROWS {
     str funType = obj.loadString("type");
-    Function* fun = super::make(funType);
+    Function* fun = typ::Factory<Function>::make(funType);
     RUNTIME_CHECK(fun, "factory does not know " % funType);
     scoped<Function*> f(fun);
     fun->from_json(obj); // may throw
