@@ -21,7 +21,7 @@ namespace gui {
 // ************************************************************************** //
 
 Action::Action(rcstr text, QObject* parent)
-    : super(text, parent) {
+    : QAction(text, parent) {
     setToolTip(text.toLower());
 }
 
@@ -55,14 +55,14 @@ Action& Action::alt(rcstr /*text2*/) {
 // ************************************************************************** //
 
 TriggerAction::TriggerAction(rcstr text, QObject* parent)
-    : super(text, parent) {}
+    : Action(text, parent) {}
 
 // ************************************************************************** //
 //  class ToggleAction
 // ************************************************************************** //
 
 ToggleAction::ToggleAction(rcstr text, QObject* parent)
-    : super(text, parent), text1_(text) {
+    : Action(text, parent), text1_(text) {
     setCheckable(true);
 }
 
@@ -73,14 +73,14 @@ Action& ToggleAction::alt(rcstr text2) {
         setText(text);
         setToolTip(text);
     });
-    return super::alt(text2);
+    return Action::alt(text2);
 }
 
 // ************************************************************************** //
 //  class Actions
 // ************************************************************************** //
 
-Actions::Actions(TheHub& hub) : super(hub) {
+Actions::Actions(TheHub& hub) : RefHub(hub) {
     using QKey = QKeySequence;
 
     // create actions

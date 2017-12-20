@@ -22,8 +22,6 @@
 namespace gui {
 
 class Action : public QAction {
-private:
-    using super = QAction;
 public:
     Action(rcstr text, QObject*);
 
@@ -36,15 +34,11 @@ public:
 };
 
 class TriggerAction : public Action {
-private:
-    using super = Action;
 public:
     TriggerAction(rcstr text, QObject* = nullptr);
 };
 
 class ToggleAction : public Action {
-private:
-    using super = Action;
 public:
     ToggleAction(rcstr text, QObject* = nullptr);
 
@@ -55,8 +49,6 @@ protected:
 };
 
 class Actions : protected RefHub {
-private:
-    using super = RefHub;
 public:
     Actions(TheHub&);
 
