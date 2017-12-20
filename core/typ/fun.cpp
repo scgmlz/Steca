@@ -71,7 +71,10 @@ void Function::Parameter::setValue(qreal value, qreal error) {
 }
 
 JsonObj Function::Parameter::to_json() const {
-    return JsonObj().saveQreal("value", value_).saveRange("range", range_);
+    JsonObj ret;
+    ret.saveQreal("value", value_);
+    ret.insert("range", range_.to_json());
+    return ret;
 }
 
 void Function::Parameter::from_json(JsonObj const& obj) THROWS {

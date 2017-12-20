@@ -189,11 +189,6 @@ str JsonObj::loadString(rcstr key, rcstr def) const THROWS{
     return value(key).isUndefined() ? def : loadString(key);
 }
 
-JsonObj& JsonObj::saveRange(rcstr key, Range const& range) {
-    insert(key, range.to_json());
-    return *this;
-}
-
 Range JsonObj::loadRange(rcstr key) const THROWS {
     Range range;
     range.from_json(loadObj(key));

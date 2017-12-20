@@ -28,7 +28,7 @@ namespace typ {
 struct Range;
 struct IJ;
 
-class JsonObj : protected QJsonObject {
+class JsonObj : public QJsonObject {
 private:
     using super = QJsonObject;
 public:
@@ -71,7 +71,6 @@ public:
     str loadString(rcstr key) const THROWS;
     str loadString(rcstr key, rcstr def) const THROWS;
 
-    JsonObj& saveRange(rcstr key, Range const&);
     Range loadRange(rcstr key) const THROWS;
 
     JsonObj& saveIJ(rcstr key, IJ const&);

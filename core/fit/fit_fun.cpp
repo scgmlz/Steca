@@ -200,10 +200,11 @@ Curve PeakFunction::prepareFit(Curve const& curve, Range const& range) {
 }
 
 JsonObj PeakFunction::to_json() const {
-    return super::to_json()
-        .saveRange("range", range_)
-        .saveObj("guessed peak", guessedPeak_.to_json())
-        .saveQreal("guessed fwhm", guessedFWHM_);
+    JsonObj ret = super::to_json();
+    ret.insert("range", range_.to_json());
+    ret.saveObj("guessed peak", guessedPeak_.to_json());
+    ret.saveQreal("guessed fwhm", guessedFWHM_);
+    return ret;
 }
 
 void PeakFunction::from_json(JsonObj const& obj) THROWS {
