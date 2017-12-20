@@ -190,11 +190,6 @@ Range JsonObj::loadRange(rcstr key) const THROWS {
     return range;
 }
 
-JsonObj& JsonObj::saveIJ(rcstr key, IJ const& ij) {
-    insert(key, ij.to_json());
-    return *this;
-}
-
 IJ JsonObj::loadIJ(rcstr key) const THROWS {
     IJ ij;
     ij.from_json(loadObj(key));

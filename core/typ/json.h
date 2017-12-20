@@ -72,7 +72,6 @@ public:
 
     Range loadRange(rcstr key) const THROWS;
 
-    JsonObj& saveIJ(rcstr key, IJ const&);
     IJ loadIJ(rcstr key) const THROWS;
 
     JsonObj& saveqpair(rcstr key, qpair const&);
