@@ -110,21 +110,20 @@ QByteArray TheHub::saveSession() const {
     JsonObj top;
 
     auto& geo = session_->geometry();
-    top.saveObj(
-        config_key::DETECTOR,
-        JsonObj()
-            .savePreal(config_key::DET_DISTANCE, geo.detectorDistance)
-            .savePreal(config_key::DET_PIX_SIZE, geo.pixSize)
-            .saveObj(config_key::BEAM_OFFSET, geo.midPixOffset.to_json()));
+    QJsonObject sub {
+        { config_key::DET_DISTANCE, QJsonValue(geo.detectorDistance) },
+        { config_key::DET_PIX_SIZE, QJsonValue(geo.pixSize) },
+        { config_key::BEAM_OFFSET, geo.midPixOffset.to_json() }
+    };
+    top.saveObj(config_key::DETECTOR, sub);
 
     auto& cut = session_->imageCut();
-    top.saveObj(
-        config_key::CUT,
-        JsonObj()
-            .saveUint(config_key::LEFT, cut.left)
-            .saveUint(config_key::TOP, cut.top)
-            .saveUint(config_key::RIGHT, cut.right)
-            .saveUint(config_key::BOTTOM, cut.bottom));
+    sub = {
+        { config_key::LEFT, to_i(cut.left) },
+        { config_key::TOP, to_i(cut.top) },
+        { config_key::RIGHT, to_i(cut.right) },
+        { config_key::BOTTOM, to_i(cut.bottom) } };
+    top.saveObj(config_key::CUT, sub);
 
     auto& trn = session_->imageTransform();
     top.saveUint(config_key::TRANSFORM, trn.val);

@@ -33,8 +33,8 @@ int IJ::compare(IJ const& that) const {
 
 EQ_NE_OPERATOR(IJ)
 
-JsonObj IJ::to_json() const {
-    return JsonObj().saveInt("i", i).saveInt("j", j);
+QJsonObject IJ::to_json() const {
+    return { { "i", i }, { "j", j } };
 }
 
 void IJ::from_json(JsonObj const& obj) THROWS {

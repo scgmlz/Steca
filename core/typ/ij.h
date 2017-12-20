@@ -18,6 +18,7 @@
 #include "def/comparable.h"
 #include "def/macros.h"
 #include "typ/exception.h"
+#include <QJsonObject>
 
 namespace typ {
 
@@ -33,7 +34,7 @@ struct IJ {
 
     COMPARABLE(IJ const&)
 
-    JsonObj to_json() const;
+    QJsonObject to_json() const;
     void from_json(JsonObj const&) THROWS;
 };
 
