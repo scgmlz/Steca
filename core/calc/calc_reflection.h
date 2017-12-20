@@ -26,8 +26,8 @@ class Reflection final {
 
     Reflection(fit::ePeakType = fit::ePeakType::RAW);
 
-    fit::ePeakType type() const;
-    void setType(fit::ePeakType);
+    fit::ePeakType type() const { return peakFunction_->type(); }
+    void setType(fit::ePeakType type) { setPeakFunction(type); }
 
     fit::PeakFunction const& peakFunction() const;
 

@@ -28,14 +28,6 @@ Reflection::Reflection(fit::ePeakType type) : peakFunction_(nullptr) {
     setPeakFunction(type);
 }
 
-fit::ePeakType Reflection::type() const {
-    return peakFunction_->type();
-}
-
-void Reflection::setType(fit::ePeakType type) {
-    setPeakFunction(type);
-}
-
 fit::PeakFunction const& Reflection::peakFunction() const {
     debug::ensure(peakFunction_);
     return *peakFunction_;

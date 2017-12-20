@@ -270,9 +270,7 @@ void PoleFiguresFrame::displayReflection(uint reflIndex, bool interpolated) {
     super::displayReflection(reflIndex, interpolated);
     if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
         tabGraph_->set((interpolated ? interpPoints_ : calcPoints_).at(reflIndex));
-
-    bool on = fit::ePeakType::RAW != hub_.reflections().at(reflIndex)->type();
-    tabSave_->rawReflSettings(on);
+    tabSave_->rawReflSettings(hub_.reflections().at(reflIndex)->peakFunction().name() != "Raw");
 }
 
 void PoleFiguresFrame::savePoleFigureOutput() {
@@ -305,7 +303,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
         reflInfo = interpPoints_.at(index);
     else
         reflInfo = calcPoints_.at(index);
-    auto type = refl->type();
+    bool withFit = refl->peakFunction().name() != "Raw";
     str path = str(filePath + OUT_FILE_TAG).arg(index + 1);
     bool check = false;
     uint numSavedFiles = 0;
@@ -322,7 +320,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
         numSavedFiles += 3;
     }
 
-    if (tabSave_->outputTth() && fit::ePeakType::RAW != type) {
+    if (tabSave_->outputTth() && withFit) {
         qreal_vec output;
         for_i (reflInfo.count())
             output.append(reflInfo.at(i).tth());
@@ -333,7 +331,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
         numSavedFiles += 2;
     }
 
-    if (tabSave_->outputFWHM() && fit::ePeakType::RAW != type) {
+    if (tabSave_->outputFWHM() && withFit) {
         qreal_vec output;
         for_i (reflInfo.count())
             output.append(reflInfo.at(i).fwhm());
