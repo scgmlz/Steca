@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/calc/calc_reflection.h
-//! @brief     Defines ...
+//! @brief     Defines class Reflection
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -55,7 +55,8 @@ public:
 
 typedef QSharedPointer<Reflection> shp_Reflection;
 typedef typ::vec<shp_Reflection> Reflections;
-}
+
+} // namespace calc
 
 Q_DECLARE_METATYPE(calc::shp_Reflection)
 

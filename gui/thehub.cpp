@@ -187,6 +187,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
     TakesLongTime __;
 
     clearSession();
+    TR("cleared old session");
 
     typ::JsonObj top(doc.object());
 
@@ -247,6 +248,7 @@ void TheHub::loadSession(QByteArray const& json) THROWS {
     }
 
     emit sigReflectionsChanged();
+    TR("installed session from file");
 }
 
 void TheHub::addGivenFile(rcstr filePath) THROWS {

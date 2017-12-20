@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/calc/calc_reflection.cpp
-//! @brief     Implements ...
+//! @brief     Implements class Reflection
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -84,8 +84,8 @@ typ::JsonObj Reflection::to_json() const {
 
 void Reflection::from_json(typ::JsonObj const& obj) THROWS {
     scoped<typ::Function*> f(typ::Function::make(obj));
-
     RUNTIME_CHECK(dynamic_cast<fit::PeakFunction*>(f.ptr()), "must be a peak function");
     setPeakFunction(static_cast<fit::PeakFunction*>(f.take()));
 }
-}
+
+} // namespace calc
