@@ -263,19 +263,7 @@ PoleFiguresFrame::PoleFiguresFrame(TheHub& hub, rcstr title, QWidget* parent)
     tabSave_ = new TabPoleFiguresSave(hub, *params_);
     tabs_->addTab("Save", Qt::Vertical).box().addWidget(tabSave_);
 
-    //  connect(params()->cbRefl, slot(QComboBox,currentIndexChanged,int),
-    //  [this]() {
-    //    int index = params()->currReflIndex();
-    //    if (index>=0) {
-    //      bool on = fit::ePeakType::RAW !=
-    //      hub_.reflections().at(to_u(index))->type();
-    //      tabSave_->rawReflSettings(on);
-    //    }
-    //  });
-
     connect( tabSave_->actSave, &QAction::triggered, [this]() { savePoleFigureOutput(); });
-
-    //  params()->cbRefl->currentIndexChanged(0);
 }
 
 void PoleFiguresFrame::displayReflection(uint reflIndex, bool interpolated) {
