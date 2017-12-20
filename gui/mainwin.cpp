@@ -285,12 +285,10 @@ void MainWin::enableCorr() {
     }
 }
 
-static str const STE(".ste");
-
 void MainWin::loadSession() {
     str fileName = file_dialog::openFileName(
         this, "Load session", QDir::current().absolutePath(),
-        "Session files (*" % STE % ");;All files (*.*)");
+        "Session files (*.ste);;All files (*.*)");
     update();
     if (fileName.isEmpty()) {
         TR("load session aborted");
@@ -303,10 +301,10 @@ void MainWin::loadSession() {
 void MainWin::saveSession() {
     str fileName = file_dialog::saveFileName(
         this, "Save session", QDir::current().absolutePath(),
-        "Session files (*" % STE % ");;All files (*.*)");
+        "Session files (*.ste);;All files (*.*)");
     update();
-    if (!fileName.endsWith(STE))
-        fileName += STE;
+    if (!fileName.endsWith(".ste"))
+        fileName += ".ste";
     hub_.saveSession(QFileInfo(fileName));
 }
 

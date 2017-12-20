@@ -142,7 +142,6 @@ public:
     models::DatasetsModel datasetsModel;
     models::MetadataModel metadataModel;
     models::ReflectionsModel reflectionsModel;
-
 };
 
 } // namespace gui
