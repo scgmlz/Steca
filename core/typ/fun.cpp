@@ -22,27 +22,8 @@
 namespace typ {
 
 // ************************************************************************** //
-//   class Function
+//   class Function::Parameter
 // ************************************************************************** //
-
-not_null<Function*> Function::Factory::make(JsonObj const& obj) THROWS {
-    str funType = obj.loadString("type");
-    Function* fun = super::make(funType);
-    RUNTIME_CHECK(fun, "factory does not know " % funType);
-    scoped<Function*> f(fun);
-    fun->from_json(obj); // may throw
-    return not_null<Function*>::from(f.take());
-}
-
-Function::Factory Function::factory_;
-
-void Function::addFactoryMaker(rcstr key, not_null<Factory::MakerBase*> maker) {
-    factory_.addMaker(key, maker);
-}
-
-not_null<Function*> Function::make(JsonObj const& obj) {
-    return factory_.make(obj);
-}
 
 Function::Parameter::Parameter() : value_(0), error_(0), range_(Range::infinite()) {}
 
@@ -71,13 +52,31 @@ void Function::Parameter::from_json(JsonObj const& obj) THROWS {
     range_ = obj.loadRange("range");
 }
 
-JsonObj Function::to_json() const {
-    // nothing to do
-    return JsonObj();
+// ************************************************************************** //
+//   class Function::Factory
+// ************************************************************************** //
+
+not_null<Function*> Function::Factory::make(JsonObj const& obj) THROWS {
+    str funType = obj.loadString("type");
+    Function* fun = super::make(funType);
+    RUNTIME_CHECK(fun, "factory does not know " % funType);
+    scoped<Function*> f(fun);
+    fun->from_json(obj); // may throw
+    return not_null<Function*>::from(f.take());
 }
 
-void Function::from_json(JsonObj const&) THROWS {
-    // nothing to do
+Function::Factory Function::factory_;
+
+// ************************************************************************** //
+//   class Function
+// ************************************************************************** //
+
+void Function::addFactoryMaker(rcstr key, not_null<Factory::MakerBase*> maker) {
+    factory_.addMaker(key, maker);
+}
+
+not_null<Function*> Function::make(JsonObj const& obj) {
+    return factory_.make(obj);
 }
 
 
@@ -127,6 +126,5 @@ qreal SimpleFunction::parValue(uint i, qreal const* parValues) const {
 void SimpleFunction::setValue(uint i, qreal val) {
     parameters_[i].setValue(val, 0);
 }
-
 
 } // namespace typ

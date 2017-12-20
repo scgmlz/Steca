@@ -28,7 +28,7 @@ namespace typ {
 //! Abstract function
 
 class Function {
-    public:
+public:
     class Factory : public typ::Factory<Function> {
     private:
         using super = typ::Factory<Function>;
@@ -36,16 +36,12 @@ class Function {
         not_null<Function*> make(JsonObj const&) THROWS;
     };
 
-protected:
-    static Factory factory_;
-
-public:
     static void addFactoryMaker(rcstr key, not_null<Factory::MakerBase*>);
 
     static not_null<Function*> make(JsonObj const&) THROWS;
 
     class Parameter final {
-        public:
+    public:
         Parameter();
 
         qreal value() const { return value_; }
@@ -56,18 +52,14 @@ public:
 
         void setValue(qreal value, qreal error);
 
-    public:
         JsonObj to_json() const;
         void from_json(JsonObj const&) THROWS;
 
     private:
         qreal value_, error_;
-
-        // allowed range of values
-        Range range_;
+        Range range_; //!< allowed range of values
     };
 
-public:
     virtual ~Function() {}
 
     virtual uint parameterCount() const = 0;
@@ -83,16 +75,17 @@ public:
     // partial derivative / parameter, with given (parValues) or own parameters
     virtual qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const = 0;
 
-    virtual JsonObj to_json() const;
-    virtual void from_json(JsonObj const&) THROWS;
+    virtual JsonObj to_json() const { return JsonObj(); }
+    virtual void from_json(JsonObj const&) THROWS {}
+
+protected:
+    static Factory factory_;
 };
 
 
 //! abstract function with parameters
 
 class SimpleFunction : public Function {
-private:
-    using super = Function;
 public:
     void setParameterCount(uint);
     uint parameterCount() const;
@@ -100,7 +93,6 @@ public:
 
     virtual void reset();
 
-public:
     JsonObj to_json() const;
     void from_json(JsonObj const&) THROWS;
 
@@ -108,6 +100,9 @@ protected:
     vec<Parameter> parameters_;
     qreal parValue(uint parIndex, qreal const* parValues) const;
     void setValue(uint parIndex, qreal val);
+
+private:
+    using super = Function;
 };
 
 } // namespace typ
