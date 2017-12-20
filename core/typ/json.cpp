@@ -79,10 +79,6 @@ int JsonObj::loadInt(rcstr key, int def) const THROWS{
     return value(key).isUndefined() ? def : loadInt(key);
 }
 
-JsonObj& JsonObj::saveUint(rcstr key, uint num) {
-    return saveInt(key, to_i(num));
-}
-
 uint JsonObj::loadUint(rcstr key) const THROWS {
     int num = loadInt(key);
     if (num < 0)
@@ -92,10 +88,6 @@ uint JsonObj::loadUint(rcstr key) const THROWS {
 
 uint JsonObj::loadUint(rcstr key, uint def) const THROWS{
     return value(key).isUndefined() ? def : loadUint(key);
-}
-
-JsonObj& JsonObj::savePint(rcstr key, pint num) {
-    return saveUint(key, num);
 }
 
 pint JsonObj::loadPint(rcstr key) const {

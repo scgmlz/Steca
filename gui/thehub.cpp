@@ -126,7 +126,7 @@ QByteArray TheHub::saveSession() const {
     top.saveObj(config_key::CUT, sub);
 
     auto& trn = session_->imageTransform();
-    top.saveUint(config_key::TRANSFORM, trn.val);
+    top.insert(config_key::TRANSFORM, to_i((uint)trn.val));
 
     QJsonArray arrFiles;
     // save file path relative to location of session
@@ -143,7 +143,7 @@ QByteArray TheHub::saveSession() const {
         arrSelectedFiles.append(to_i(i));
 
     top.saveArr(config_key::SELECTED_FILES, arrSelectedFiles);
-    top.saveUint(config_key::COMBINE, datasetsGroupedBy_);
+    top.insert(config_key::COMBINE, to_i((uint)datasetsGroupedBy_));
 
     if (hasCorrFile()) {
         str absPath = session_->corrFile()->fileInfo().absoluteFilePath();
@@ -151,7 +151,7 @@ QByteArray TheHub::saveSession() const {
         top.insert(config_key::CORR_FILE, relPath);
     }
 
-    top.saveUint(config_key::BG_DEGREE, bgPolyDegree());
+    top.insert(config_key::BG_DEGREE, to_i(bgPolyDegree()));
     top.saveArr(config_key::BG_RANGES, bgRanges().to_json());
     top.insert(config_key::INTEN_SCALED_AVG, intenScaledAvg());
     top.savePreal(config_key::INTEN_SCALE, intenScale());

@@ -47,11 +47,9 @@ public:
     int loadInt(rcstr key) const THROWS;
     int loadInt(rcstr key, int def) const THROWS;
 
-    JsonObj& saveUint(rcstr key, uint);
     uint loadUint(rcstr key) const THROWS;
     uint loadUint(rcstr key, uint def) const THROWS;
 
-    JsonObj& savePint(rcstr key, pint);
     pint loadPint(rcstr key) const THROWS;
     pint loadPint(rcstr key, uint def) const THROWS;
 
