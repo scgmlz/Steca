@@ -35,10 +35,6 @@ public:
     static uint constexpr MAX_POLYNOM_DEGREE = 4;
 
     Actions actions;
-    models::FilesModel filesModel;
-    models::DatasetsModel datasetsModel;
-    models::MetadataModel metadataModel;
-    models::ReflectionsModel reflectionsModel;
 
     // modifying methods:
     void remFile(uint);
@@ -141,6 +137,12 @@ private:
     void setImageMirror(bool);
     void configActions();
     void session_from_json(QByteArray const&) THROWS;
+public:
+    models::FilesModel filesModel;
+    models::DatasetsModel datasetsModel;
+    models::MetadataModel metadataModel;
+    models::ReflectionsModel reflectionsModel;
+
 };
 
 } // namespace gui

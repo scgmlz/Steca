@@ -29,14 +29,14 @@ namespace gui {
 
 TheHub::TheHub()
     : actions(*this)
-    , filesModel(*this)
-    , datasetsModel(*this)
-    , metadataModel(*this)
-    , reflectionsModel(*this)
     , session_(new core::Session())
     , isFixedIntenImageScale_(false)
     , isFixedIntenDgramScale_(false)
     , isCombinedDgram_(false)
+    , filesModel(*this)
+    , datasetsModel(*this)
+    , metadataModel(*this)
+    , reflectionsModel(*this)
 {
     configActions();
 }

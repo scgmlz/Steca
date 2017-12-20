@@ -292,8 +292,11 @@ void MainWin::loadSession() {
         this, "Load session", QDir::current().absolutePath(),
         "Session files (*" % STE % ");;All files (*.*)");
     update();
-    if (fileName.isEmpty())
+    if (fileName.isEmpty()) {
+        TR("load session aborted");
         return;
+    }
+    TR("going to load session from file '"+fileName+"'");
     hub_.loadSession(QFileInfo(fileName));
 }
 
