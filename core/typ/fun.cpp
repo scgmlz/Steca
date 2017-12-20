@@ -19,10 +19,6 @@
 #include "typ/str.h"
 #include <QJsonArray>
 
-namespace json_fun_key {
-str const SUM("sum");
-}
-
 namespace typ {
 
 // ************************************************************************** //
@@ -45,10 +41,8 @@ void Function::addFactoryMaker(rcstr key, not_null<Factory::MakerBase*> maker) {
 }
 
 void Function::initFactory() {
-    ONLY_ONCE
-    addFactoryMaker(
-        json_fun_key::SUM,
-        not_null<Factory::MakerBase*>::from(new Factory::Maker<SumFunctions>));
+    ONLY_ONCE;
+    addFactoryMaker("sum", not_null<Factory::MakerBase*>::from(new Factory::Maker<SumFunctions>));
 }
 
 not_null<Function*> Function::make(JsonObj const& obj) {
@@ -193,7 +187,7 @@ qreal SumFunctions::dy(qreal x, uint parIndex, qreal const* parValues) const {
 
 JsonObj SumFunctions::to_json() const {
     JsonObj obj;
-    obj.saveString("type", json_fun_key::SUM);
+    obj.saveString("type", "sum");
     uint funCount = functions_.count();
     obj.saveUint("count", funCount);
     for_i (funCount)

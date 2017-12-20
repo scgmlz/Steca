@@ -19,11 +19,6 @@
 #include "typ/range.h"
 #include <qmath.h>
 
-namespace json_fun_key {
-str const POLYNOM("polynom"), RAW("Raw"), GAUSSIAN("Gaussian"), LORENTZIAN("Lorentzian"),
-    PSEUDOVOIGT1("PseudoVoigt1"), PSEUDOVOIGT2("PseudoVoigt2");
-}
-
 namespace fit {
 
 using typ::Range;
@@ -38,12 +33,12 @@ void initFactory() {
 
     F::initFactory();
 
-    F::addFactoryMaker(json_fun_key::POLYNOM, O::from(new F::Factory::Maker<Gaussian>));
-    F::addFactoryMaker(json_fun_key::RAW, O::from(new F::Factory::Maker<Raw>));
-    F::addFactoryMaker(json_fun_key::GAUSSIAN, O::from(new F::Factory::Maker<Gaussian>));
-    F::addFactoryMaker(json_fun_key::LORENTZIAN, O::from(new F::Factory::Maker<Lorentzian>));
-    F::addFactoryMaker(json_fun_key::PSEUDOVOIGT1, O::from(new F::Factory::Maker<PseudoVoigt1>));
-    F::addFactoryMaker(json_fun_key::PSEUDOVOIGT2, O::from(new F::Factory::Maker<PseudoVoigt2>));
+    F::addFactoryMaker("polynom", O::from(new F::Factory::Maker<Gaussian>));
+    F::addFactoryMaker("Raw", O::from(new F::Factory::Maker<Raw>));
+    F::addFactoryMaker("Gaussian", O::from(new F::Factory::Maker<Gaussian>));
+    F::addFactoryMaker("Lorentzian", O::from(new F::Factory::Maker<Lorentzian>));
+    F::addFactoryMaker("PseudoVoigt1", O::from(new F::Factory::Maker<PseudoVoigt1>));
+    F::addFactoryMaker("PseudoVoigt2", O::from(new F::Factory::Maker<PseudoVoigt2>));
 }
 
 // ************************************************************************** //
@@ -111,7 +106,7 @@ Polynom Polynom::fromFit(uint degree, Curve const& curve, typ::Ranges const& ran
 
 JsonObj Polynom::to_json() const {
     JsonObj obj;
-    obj.saveString("type", json_fun_key::POLYNOM);
+    obj.saveString("type", "polynom");
     return super::to_json() + obj;
 }
 
@@ -270,7 +265,7 @@ void Raw::prepareY() {
 }
 
 JsonObj Raw::to_json() const {
-    return super::to_json().saveString("type", json_fun_key::RAW);
+    return super::to_json().saveString("type", "Raw");
 }
 
 
@@ -351,7 +346,7 @@ fwhm_t Gaussian::fwhmError() const {
 }
 
 JsonObj Gaussian::to_json() const {
-    return super::to_json().saveString("type", json_fun_key::GAUSSIAN);
+    return super::to_json().saveString("type", "Gaussian");
 }
 
 Lorentzian::Lorentzian(qreal ampl, qreal xShift, qreal gamma) {
@@ -430,7 +425,7 @@ fwhm_t Lorentzian::fwhmError() const {
 }
 
 JsonObj Lorentzian::to_json() const {
-    return super::to_json().saveString("type", json_fun_key::LORENTZIAN);
+    return super::to_json().saveString("type", "Lorentzian");
 }
 
 
@@ -526,7 +521,7 @@ fwhm_t PseudoVoigt1::fwhmError() const {
 }
 
 JsonObj PseudoVoigt1::to_json() const {
-    return super::to_json().saveString("type", json_fun_key::PSEUDOVOIGT1);
+    return super::to_json().saveString("type", "PseudoVoigt1");
 }
 
 
@@ -641,7 +636,7 @@ fwhm_t PseudoVoigt2::fwhmError() const {
 }
 
 JsonObj PseudoVoigt2::to_json() const {
-    return super::to_json().saveString("type", json_fun_key::PSEUDOVOIGT2);
+    return super::to_json().saveString("type", "PseudoVoigt2");
 }
 
 } // namespace fit
