@@ -107,7 +107,9 @@ JsonObj SimpleFunction::to_json() const {
     QJsonArray params;
     for (const Parameter& param : parameters_)
         params.append(param.to_json().sup());
-    return super::to_json() + JsonObj().saveArr("parameters", params);
+    JsonObj ret = super::to_json();
+    ret.saveArr("parameters", params);
+    return ret;
 }
 
 void SimpleFunction::from_json(JsonObj const& obj) THROWS {

@@ -202,14 +202,4 @@ qpair JsonObj::loadqpair(rcstr key) const THROWS {
     return qpair;
 }
 
-JsonObj& JsonObj::operator+=(JsonObj const& that) {
-    for (const str& key : that.keys())
-        insert(key, that[key]);
-    return *this;
-}
-
-JsonObj JsonObj::operator+(JsonObj const& that) const {
-    return JsonObj(*this) += that;
-}
-
 } // namespace typ
