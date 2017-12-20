@@ -41,7 +41,7 @@ public:
     calc::ReflectionInfos makeReflectionInfos(
         calc::Reflection const&, uint gmaSlices, typ::Range const&, Progress*);
     void clearSession();
-    void loadSession(QFileInfo const&) THROWS;
+    void sessionFromFile(QFileInfo const&) THROWS;
     void addGivenFile(rcstr filePath) THROWS;
     void addGivenFiles(str_lst const& filePaths) THROWS;
     void collectDatasetsFromFiles(uint_vec, pint);
@@ -136,7 +136,7 @@ private:
     void setImageRotate(typ::ImageTransform);
     void setImageMirror(bool);
     void configActions();
-    void session_from_json(QByteArray const&) THROWS;
+    void sessionFromJson(QByteArray const&) THROWS;
 public:
     models::FilesModel filesModel;
     models::DatasetsModel datasetsModel;

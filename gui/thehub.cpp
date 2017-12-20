@@ -171,15 +171,15 @@ void TheHub::clearSession() {
     tellSessionCleared();
 }
 
-void TheHub::loadSession(QFileInfo const& fileInfo) THROWS {
+void TheHub::sessionFromFile(QFileInfo const& fileInfo) THROWS {
     QFile file(fileInfo.absoluteFilePath());
     RUNTIME_CHECK(file.open(QIODevice::ReadOnly | QIODevice::Text),
                   "Cannot open file for reading: " % fileInfo.absoluteFilePath());
     QDir::setCurrent(fileInfo.absolutePath());
-    session_from_json(file.readAll());
+    sessionFromJson(file.readAll());
 }
 
-void TheHub::session_from_json(QByteArray const& json) THROWS {
+void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     QJsonParseError parseError;
     QJsonDocument doc(QJsonDocument::fromJson(json, &parseError));
     RUNTIME_CHECK(QJsonParseError::NoError == parseError.error, "Error parsing session file");

@@ -297,7 +297,7 @@ void MainWin::loadSession() {
         return;
     }
     TR("going to load session from file '"+fileName+"'");
-    hub_.loadSession(QFileInfo(fileName));
+    hub_.sessionFromFile(QFileInfo(fileName));
 }
 
 void MainWin::saveSession() {
