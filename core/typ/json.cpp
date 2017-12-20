@@ -155,11 +155,6 @@ preal JsonObj::loadPreal(rcstr key, preal def) const {
     return value(key).isUndefined() ? def : loadPreal(key);
 }
 
-JsonObj& JsonObj::saveBool(rcstr key, bool b) {
-    insert(key, b);
-    return *this;
-}
-
 bool JsonObj::loadBool(rcstr key) const THROWS {
     const QJsonValue& val = value(key);
     switch (val.type()) {

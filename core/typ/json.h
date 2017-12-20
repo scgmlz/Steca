@@ -63,7 +63,6 @@ public:
     preal loadPreal(rcstr key) const THROWS;
     preal loadPreal(rcstr key, preal def) const THROWS;
 
-    JsonObj& saveBool(rcstr key, bool);
     bool loadBool(rcstr key) const THROWS;
     bool loadBool(rcstr key, bool def) const THROWS;
 

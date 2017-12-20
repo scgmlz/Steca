@@ -154,7 +154,7 @@ QByteArray TheHub::saveSession() const {
 
     top.saveUint(config_key::BG_DEGREE, bgPolyDegree());
     top.saveArr(config_key::BG_RANGES, bgRanges().to_json());
-    top.saveBool(config_key::INTEN_SCALED_AVG, intenScaledAvg());
+    top.insert(config_key::INTEN_SCALED_AVG, intenScaledAvg());
     top.savePreal(config_key::INTEN_SCALE, intenScale());
 
     QJsonArray arrReflections;
