@@ -92,7 +92,7 @@ data::shp_File loadTiffDat(rcstr filePath) THROWS {
         } catch (Exception& e) {
             // add file name to the message
             e.setMsg(tiffFileName + ": " + e.msg());
-            throw;
+            throw e;
         }
     }
 
