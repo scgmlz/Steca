@@ -61,7 +61,7 @@ public:
 };
 }
 
-// most useful QVectors (that's why they are in the global namespace)
+// most useful vectors (that's why they are in the global namespace)
 typedef typ::vec<qreal> qreal_vec;
 typedef typ::vec<uint> uint_vec;
 
