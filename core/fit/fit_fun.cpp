@@ -12,8 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "typ/singleton.h"
-#include "typ/registry.h"
 #include "def/idiomatic_for.h"
 #include "def/special_pointers.h"
 #include "fit_methods.h"
@@ -22,14 +20,9 @@
 #include <qmath.h>
 #include "fit_fun.h"
 
-typedef typ::SimpleFunction* (*const initializer_type)();
-
-class FunctionRegistry : public IRegistry<initializer_type>, public ISingleton<FunctionRegistry> {
-public:
-    void register_fct(initializer_type f) {
-        typ::SimpleFunction* tmp = f();
-        register_item(tmp->name(), &f);
-    }
+void FunctionRegistry::register_fct(initializer_type f) {
+    typ::SimpleFunction* tmp = f();
+    register_item(tmp->name(), &f);
 };
 
 namespace fit {

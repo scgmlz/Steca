@@ -15,10 +15,20 @@
 #ifndef FIT_FUN_H
 #define FIT_FUN_H
 
+#include "typ/singleton.h"
+#include "typ/registry.h"
 #include "typ/curve.h"
 #include "typ/fun.h"
 #include "typ/realpair.h"
 #include "typ/types.h"
+
+typedef class typ::SimpleFunction* (*const initializer_type)();
+
+class FunctionRegistry : public IRegistry<initializer_type>, public ISingleton<FunctionRegistry> {
+public:
+    void register_fct(initializer_type f);
+};
+
 
 namespace fit {
 
