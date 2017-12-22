@@ -52,6 +52,8 @@ public:
             throw "Invalid index in registry lookup";
         return ret;
     }
+    unsigned int size() const { return m_list.size(); }
+    str name_at(const unsigned int idx) const { return at_or_fail(idx)->name(); }
 };
 
 #endif // IREGISTRY_H
