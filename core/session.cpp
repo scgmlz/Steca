@@ -24,6 +24,8 @@
 #include "typ/vec.h"
 #include <qmath.h>
 
+void register_fit_functions();
+
 namespace core {
 
 using typ::deg;
@@ -38,6 +40,7 @@ using typ::Range;
 Session::Session() : intenScale_(1), angleMapCache_(360) {
     clear();
     fit::initFactory();
+    register_fit_functions();
 }
 
 void Session::clear() {

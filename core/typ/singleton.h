@@ -10,9 +10,6 @@
 #ifndef ISINGLETON_H
 #define ISINGLETON_H
 
-namespace triv
-{
-
 //! Mixin interface for singleton classes.
 
 template <class T> class ISingleton
@@ -30,7 +27,5 @@ public:
         return instance;
     }
 };
-
-} // namespace triv
 
 #endif // ISINGLETON_H

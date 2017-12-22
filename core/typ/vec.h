@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/typ/vec.h
-//! @brief     Defines ...
+//! @brief     Defines class vec
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -20,7 +20,7 @@
 
 namespace typ {
 
-// limited QVector, only needed methods reexported
+//! limited QVector, only needed methods reexported
 
 template <typename T> class vec : protected QVector<T> {
 private:
@@ -61,7 +61,7 @@ public:
 };
 }
 
-// most useful vectors (that's why they are in the global namespace)
+// most useful QVectors (that's why they are in the global namespace)
 typedef typ::vec<qreal> qreal_vec;
 typedef typ::vec<uint> uint_vec;
 

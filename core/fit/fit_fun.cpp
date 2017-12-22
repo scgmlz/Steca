@@ -12,12 +12,25 @@
 //
 // ************************************************************************** //
 
+#include "typ/singleton.h"
+#include "typ/registry.h"
 #include "def/idiomatic_for.h"
 #include "def/special_pointers.h"
 #include "fit_methods.h"
 #include "typ/exception.h"
 #include "typ/range.h"
 #include <qmath.h>
+#include "fit_fun.h"
+
+typedef typ::SimpleFunction* (*const initializer_type)();
+
+class FunctionRegistry : public IRegistry<initializer_type>, public ISingleton<FunctionRegistry> {
+public:
+    void register_fct(initializer_type f) {
+        typ::SimpleFunction* tmp = f();
+        register_item(tmp->name(), &f);
+    }
+};
 
 namespace fit {
 
@@ -619,3 +632,8 @@ fwhm_t PseudoVoigt2::fwhmError() const {
 }
 
 } // namespace fit
+
+void register_fit_functions() {
+    auto G = FunctionRegistry::instance();
+    G->register_fct([]()->typ::SimpleFunction*{return new fit::PseudoVoigt2();});
+}
