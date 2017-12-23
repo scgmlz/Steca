@@ -20,9 +20,9 @@
 #include <qmath.h>
 #include "fit_fun.h"
 
-void FunctionRegistry::register_fct(initializer_type f) {
+void FunctionRegistry::register_fct(const initializer_type f) {
     typ::SimpleFunction* tmp = f();
-    register_item(tmp->name(), &f);
+    register_item(tmp->name(), f);
 };
 
 namespace fit {

@@ -14,6 +14,7 @@
 
 #include "def/idiomatic_for.h"
 #include "def/special_pointers.h"
+#include "fit/fit_fun.h"
 #include "typ/exception.h"
 #include "typ/fun.h"
 #include "typ/str.h"
@@ -76,7 +77,12 @@ void Function::addFactoryMaker(rcstr key, not_null<Factory::MakerBase*> maker) {
 }
 
 not_null<Function*> Function::make(JsonObj const& obj) {
-    return factory_.make(obj);
+    str funType = obj.loadString("type");
+    initializer_type new_fun = FunctionRegistry::instance()->find_or_fail(funType);
+    Function* fun = (*new_fun)();
+    fun->from_json(obj); // may throw
+    scoped<Function*> f(fun);
+    return not_null<Function*>::from(f.take());
 }
 
 

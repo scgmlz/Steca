@@ -22,7 +22,7 @@
 #include "typ/realpair.h"
 #include "typ/types.h"
 
-typedef class typ::SimpleFunction* (*const initializer_type)();
+typedef class typ::SimpleFunction* (*initializer_type)();
 
 class FunctionRegistry : public IRegistry<initializer_type>, public ISingleton<FunctionRegistry> {
 public:

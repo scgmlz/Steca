@@ -16,38 +16,38 @@
 
 //! Mixin interface for registries holding objects of type T
 
-template <class T> class IRegistry
+template <typename T> class IRegistry
 {
 protected:
-    QMap<str, const T*> m_map; //!< unsorted hash, for quick lookup
-    QVector<const T*> m_list; //!< sorted array, for listing all registered objects
+    QMap<str, T> m_map; //!< unsorted hash, for quick lookup
+    QVector<T> m_list; //!< sorted array, for listing all registered objects
 public:
-    void register_item(const str& key, const T* val)
+    void register_item(const str& key, T val)
     {
         if (m_map.find(key) != m_map.end())
             throw "Duplicate registry entry " + key;
         m_map.insert(key, val);
         m_list.push_back(val);
     }
-    const T* find(const str& key) const
+    T find(const str& key) const
     {
         auto pos = m_map.find(key);
-        return pos == m_map.end() ? nullptr : pos->second;
+        return pos == m_map.end() ? nullptr : pos.value(); // here std::map and QMap differ
     }
-    const T* find_or_fail(const str& key) const
+    T find_or_fail(const str& key) const
     {
-        const T* ret = find(key);
+        T ret = find(key);
         if (!ret)
             throw "Cannot find '" + key + "' in function registry";
         return ret;
     }
-    const T* at(const unsigned int idx) const
+    T at(const unsigned int idx) const
     {
         return idx>=m_list.size() ? nullptr : m_list[idx];
     }
-    const T* at_or_fail(const unsigned int idx) const
+    T at_or_fail(const unsigned int idx) const
     {
-        const T* ret = at(idx);
+        T ret = at(idx);
         if (!ret)
             throw "Invalid index in registry lookup";
         return ret;
