@@ -53,7 +53,7 @@ ReflectionView::ReflectionView(TheHub& hub) : super(hub) {
 }
 
 void ReflectionView::addReflection(uint type) {
-    type = qBound(0u, type, uint(fit::ePeakType::NUM_TYPES));
+    type = qBound(0u, type, FunctionRegistry::instance()->size());
     model()->addReflection(fit::ePeakType(type));
     updateSingleSelection();
 }
