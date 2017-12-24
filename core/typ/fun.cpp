@@ -53,19 +53,10 @@ void Function::Parameter::from_json(JsonObj const& obj) THROWS {
     range_ = obj.loadRange("range");
 }
 
-// ************************************************************************** //
-//   class Function::Factory
-// ************************************************************************** //
-
-Function::Factory Function::factory_;
 
 // ************************************************************************** //
 //   class Function
 // ************************************************************************** //
-
-void Function::addFactoryMaker(rcstr key, not_null<Factory::MakerBase*> maker) {
-    factory_.addMaker(key, maker);
-}
 
 not_null<Function*> Function::make(JsonObj const& obj) {
     str funType = obj.loadString("type");

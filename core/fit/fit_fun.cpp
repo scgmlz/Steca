@@ -31,20 +31,6 @@ using typ::Range;
 using typ::Curve;
 using typ::JsonObj;
 
-void initFactory() {
-    ONLY_ONCE
-
-    using F = typ::Function;
-    using O = not_null<F::Factory::MakerBase*>;
-
-    F::addFactoryMaker("polynom", O::from(new F::Factory::Maker<Gaussian>));
-    F::addFactoryMaker("Raw", O::from(new F::Factory::Maker<Raw>));
-    F::addFactoryMaker("Gaussian", O::from(new F::Factory::Maker<Gaussian>));
-    F::addFactoryMaker("Lorentzian", O::from(new F::Factory::Maker<Lorentzian>));
-    F::addFactoryMaker("PseudoVoigt1", O::from(new F::Factory::Maker<PseudoVoigt1>));
-    F::addFactoryMaker("PseudoVoigt2", O::from(new F::Factory::Maker<PseudoVoigt2>));
-}
-
 // ************************************************************************** //
 //  class Polynom
 // ************************************************************************** //

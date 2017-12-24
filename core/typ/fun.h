@@ -17,7 +17,6 @@
 
 #include "def/special_pointers.h"
 #include "typ/exception.h"
-#include "typ/factory.h"
 #include "typ/json.h"
 #include "typ/range.h"
 #include "typ/str.h"
@@ -29,13 +28,6 @@ namespace typ {
 
 class Function {
 public:
-    class Factory : public typ::Factory<Function> {
-    public:
-        not_null<Function*> make(JsonObj const&) THROWS;
-    };
-
-    static void addFactoryMaker(rcstr key, not_null<Factory::MakerBase*>);
-
     static not_null<Function*> make(JsonObj const&) THROWS;
 
     class Parameter final {
@@ -75,9 +67,6 @@ public:
 
     virtual JsonObj to_json() const { return JsonObj(); }
     virtual void from_json(JsonObj const&) THROWS {}
-
-protected:
-    static Factory factory_;
 };
 
 

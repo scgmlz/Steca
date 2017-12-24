@@ -37,6 +37,7 @@
 #include <QNetworkReply>
 #include <QSplitter>
 #include <QStatusBar>
+#include <QStringBuilder> // for ".." % ..
 
 namespace gui {
 

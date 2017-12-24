@@ -32,8 +32,6 @@ public:
 
 namespace fit {
 
-void initFactory();
-
 //! a polynom(ial)
 
 class Polynom final : public typ::SimpleFunction {

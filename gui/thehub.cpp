@@ -24,6 +24,7 @@
 #include <QJsonDocument>
 #include <QMessageBox>
 #include <QSpinBox>
+#include <QStringBuilder> // for ".." % ..
 
 namespace gui {
 
