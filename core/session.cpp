@@ -331,8 +331,15 @@ void Session::setIntenScaleAvg(bool avg, preal scale) {
     intenScale_ = scale;
 }
 
-void Session::addReflection(calc::shp_Reflection reflection) {
+void Session::addReflection(fit::ePeakType type) {
+    calc::shp_Reflection reflection(new calc::Reflection(type));
     debug::ensure(!reflection.isNull());
+    reflections_.append(reflection);
+}
+
+void Session::addReflection(const QJsonObject& obj) {
+    calc::shp_Reflection reflection(new calc::Reflection);
+    reflection->from_json(obj);
     reflections_.append(reflection);
 }
 

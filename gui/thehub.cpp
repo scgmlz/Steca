@@ -239,11 +239,9 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
         top.loadBool(config_key::INTEN_SCALED_AVG, true),
         top.loadPreal(config_key::INTEN_SCALE, preal(1)));
 
-    const QJsonArray& reflectionsObj = top.loadArr(config_key::REFLECTIONS);
-    for_i (reflectionsObj.count()) {
-        calc::shp_Reflection reflection(new calc::Reflection);
-        reflection->from_json(reflectionsObj.at(i).toObject());
-        session_->addReflection(reflection);
+    const QJsonArray& reflectionsInfo = top.loadArr(config_key::REFLECTIONS);
+    for_i (reflectionsInfo.count()) {
+        session_->addReflection(reflectionsInfo.at(i).toObject());
     }
 
     emit sigReflectionsChanged();
@@ -360,7 +358,7 @@ void TheHub::setPeakTypeIndex(uint idx) {
 }
 
 void TheHub::addReflection(fit::ePeakType type) {
-    session_->addReflection(calc::shp_Reflection(new calc::Reflection(type)));
+    session_->addReflection(type);
     emit sigReflectionsChanged();
 }
 
