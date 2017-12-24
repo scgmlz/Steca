@@ -20,13 +20,13 @@
 template <typename T> class IRegistry {
 protected:
     QMap<str, T> m_map; //!< unsorted hash, for quick lookup
-    QVector<T> m_list; //!< sorted array, for listing all registered objects
+    QVector<str> m_keys; //!< sorted array, for listing all registered objects
 public:
     void register_item(const str& key, T val) {
         if (m_map.find(key) != m_map.end())
             throw "Duplicate registry entry " + key;
         m_map.insert(key, val);
-        m_list.push_back(val);
+        m_keys.push_back(key);
     }
     T find(const str& key) const {
         auto pos = m_map.find(key);
@@ -38,17 +38,16 @@ public:
             throw Exception("Cannot find '" + key + "' in function registry");
         return ret;
     }
-    T at(const unsigned int idx) const {
-        return idx>=m_list.size() ? nullptr : m_list[idx];
+    str key_at(const unsigned int idx) const {
+        return idx>=m_keys.size() ? "" : m_keys[idx];
     }
-    T at_or_fail(const unsigned int idx) const {
-        T ret = at(idx);
-        if (!ret)
+    str key_at_or_fail(const unsigned int idx) const {
+        str ret = key_at(idx);
+        if (ret=="")
             throw Exception("Invalid index in registry lookup");
         return ret;
     }
-    unsigned int size() const { return m_list.size(); }
-    str name_at(const unsigned int idx) const { return at_or_fail(idx)->name(); }
+    unsigned int size() const { return m_keys.size(); }
 };
 
 #endif // IREGISTRY_H
