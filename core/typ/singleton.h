@@ -1,7 +1,7 @@
 //**************************************************************************************************
-//*  FRIDA: fast reliable interactive data analysis
-//*  (C) Joachim Wuttke 2001-
-//*  http://apps.jcns.fz-juelich.de/frida
+//*  SCG generic C++ templates
+//*  (C) Joachim Wuttke: Frida 2001-, Steca2 2017-
+//*  License: this file is in the public domain
 //**************************************************************************************************
 
 //! \file  singleton.h
@@ -12,17 +12,15 @@
 
 //! Mixin interface for singleton classes.
 
-template <class T> class ISingleton
-{
+template <class T> class ISingleton {
 private:
-    ISingleton(ISingleton const&) = delete; //!< To prevent copying
-    void operator=(ISingleton const&) = delete; //!< To prevent copying
+    ISingleton(ISingleton const&) = delete;
+    void operator=(ISingleton const&) = delete;
 protected:
     ~ISingleton(){};
     ISingleton() {}
 public:
-    static T* instance()
-    {
+    static T* instance() {
         static T* instance = new T();
         return instance;
     }
