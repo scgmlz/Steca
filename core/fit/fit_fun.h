@@ -26,7 +26,7 @@ typedef class typ::SimpleFunction* (*initializer_type)();
 
 class FunctionRegistry : public IRegistry<initializer_type>, public ISingleton<FunctionRegistry> {
 public:
-    void register_fct(initializer_type f);
+    void register_fct(const initializer_type f);
 };
 
 
