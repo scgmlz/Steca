@@ -352,9 +352,9 @@ void TheHub::setIntenScaleAvg(bool avg, preal scale) {
     emit sigNormChanged(); // TODO instead of another signal
 }
 
-void TheHub::setReflType(fit::ePeakType type) {
+void TheHub::setPeakTypeIndex(uint idx) {
     if (selectedReflection_) {
-        selectedReflection_->setType(type);
+        selectedReflection_->setPeakTypeIndex(idx);
         emit sigReflectionsChanged();
     }
 }

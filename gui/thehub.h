@@ -62,7 +62,7 @@ public:
     void setNorm(eNorm);
     void setFittingTab(eFittingTab);
 
-    void setReflType(fit::ePeakType);
+    void setPeakTypeIndex(uint);
     void addReflection(fit::ePeakType);
     void remReflection(uint);
 

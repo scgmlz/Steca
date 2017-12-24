@@ -331,7 +331,7 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
             );
 
         connect(comboReflType_, slot(QComboBox, currentIndexChanged, int), [this](int index) {
-            hub_.setReflType(fit::ePeakType(index));
+            hub_.setPeakTypeIndex(index);
         });
 
         auto setReflControls = [this](calc::shp_Reflection reflection) {
