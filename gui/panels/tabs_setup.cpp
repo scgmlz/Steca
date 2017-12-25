@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/panels/tabs_setup.cpp
-//! @brief     Implements ...
+//! @brief     Implements class TabsSetup
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -22,9 +22,15 @@
 namespace gui {
 namespace panel {
 
+static qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }
+static str safeRealText(qreal val) { return qIsFinite(val) ? str::number(val) : ""; }
+
+
+// ************************************************************************** //
+//  class ReflectionView (local scope)
+// ************************************************************************** //
+
 class ReflectionView : public views::ListView {
-private:
-    using super = views::ListView;
 public:
     ReflectionView(TheHub&);
 
@@ -37,7 +43,8 @@ public:
 
     void updateSingleSelection();
 
-protected:
+private:
+    using super = views::ListView;
     using Model = models::ReflectionsModel;
     Model* model() const { return static_cast<Model*>(super::model()); }
 
@@ -101,11 +108,12 @@ void ReflectionView::selectionChanged(
             : model()->data(indexes.first(), Model::GetDatasetRole).value<calc::shp_Reflection>());
 }
 
-static qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }
 
-static str safeRealText(qreal val) { return qIsFinite(val) ? str::number(val) : ""; }
+// ************************************************************************** //
+//  class TabsSetup
+// ************************************************************************** //
 
-TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
+TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
     auto& actions = hub_.actions;
 
     int backgroundTabIndex, reflectionTabIndex;
@@ -398,7 +406,8 @@ TabsSetup::TabsSetup(TheHub& hub) : super(hub) {
         connect(spinGuessFWHM_, slot(QDoubleSpinBox, valueChanged, double), changeReflData0);
     }
 
-    connect(this, &TabsSetup::currentChanged, [this, backgroundTabIndex, reflectionTabIndex](int index) {
+    connect(this, &TabsSetup::currentChanged,
+            [this, backgroundTabIndex, reflectionTabIndex](int index) {
         eFittingTab tab;
         if (backgroundTabIndex == index)
             tab = eFittingTab::BACKGROUND;
@@ -436,5 +445,6 @@ void TabsSetup::setFromHub() {
     cutRight_->setValue(to_i(cut.right));
     cutBottom_->setValue(to_i(cut.bottom));
 }
-}
-}
+
+} // namespace panel
+} // namespace gui
