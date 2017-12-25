@@ -24,8 +24,6 @@ namespace views {
 //! A (tree-)list view with a reference to the hub. Single selection.
 
 class ListView : public TreeListView, protected RefHub {
-private:
-    using super = TreeListView;
 public:
     ListView(TheHub&);
 
@@ -34,12 +32,11 @@ public:
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
     // base class has setModel(<other type>*)
-    void setModel(Model*);
+    void setModel(Model* model) { TreeListView::setModel(model); }
 #pragma GCC diagnostic pop
 
 protected:
-    Model* model() const { return static_cast<Model*>(super::model()); }
-
+    Model* model() const { return static_cast<Model*>(TreeListView::model()); }
     void updateSingleSelection();
     void selectRow(int);
 };
@@ -48,8 +45,6 @@ protected:
 //! A (tree-)list view with a reference to the hub. Multiple selection.
 
 class MultiListView : public ListView {
-private:
-    using super = ListView;
 public:
     MultiListView(TheHub&);
 
@@ -58,7 +53,6 @@ protected:
 };
 
 } // namespace views
-
 } // namespace gui
 
 #endif // VIEWS_H

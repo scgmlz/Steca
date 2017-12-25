@@ -19,11 +19,6 @@ namespace views {
 
 ListView::ListView(TheHub& hub) : RefHub(hub) {}
 
-void ListView::setModel(Model* model) {
-    super::setModel(model);
-    debug::ensure(dynamic_cast<Model*>(super::model()));
-}
-
 void ListView::updateSingleSelection() {
     int row = currentIndex().row();
     model()->signalReset();
@@ -35,7 +30,7 @@ void ListView::selectRow(int row) {
 }
 
 
-MultiListView::MultiListView(TheHub& hub) : super(hub) {
+MultiListView::MultiListView(TheHub& hub) : ListView(hub) {
     setSelectionMode(ExtendedSelection);
 }
 
@@ -51,5 +46,4 @@ void MultiListView::selectRows(uint_vec rows) {
 }
 
 } // namespace views
-
 } // namespace gui

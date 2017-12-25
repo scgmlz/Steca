@@ -78,9 +78,6 @@ QComboBox* comboBox(str_lst const&);
 //! abstract tree widget
 
 class TreeView : public QTreeView {
-    Q_OBJECT
-private:
-    using super = QTreeView;
 public:
     TreeView();
 
@@ -90,9 +87,6 @@ public:
 //! abstract tree widget used as a list (hides column 0)
 
 class TreeListView : public TreeView {
-    Q_OBJECT
-private:
-    using super = TreeView;
 public:
     TreeListView();
 
@@ -100,9 +94,9 @@ protected:
     void setModel(QAbstractItemModel*);
 };
 
+//! Read-only version of QLineEdit
+
 class LineView : public QLineEdit {
-private:
-    using super = QLineEdit;
 public:
     LineView();
 

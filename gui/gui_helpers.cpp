@@ -167,7 +167,7 @@ TreeListView::TreeListView() {
 }
 
 void TreeListView::setModel(QAbstractItemModel* model) {
-    super::setModel(model);
+    TreeView::setModel(model);
     hideColumn(0); // this should look like a list; 0th column is tree-like
 
     if (model) {
@@ -183,8 +183,8 @@ LineView::LineView() {
 }
 
 void LineView::setText(rcstr text) {
-    super::setText(text);
-    super::setCursorPosition(0);
+    QLineEdit::setText(text);
+    setCursorPosition(0);
 }
 
 BoxWidget::BoxWidget(Qt::Orientation orientation) {
