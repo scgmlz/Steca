@@ -86,7 +86,7 @@ bool ReflectionView::hasReflections() const {
 }
 
 calc::shp_Reflection ReflectionView::selectedReflection() const {
-    auto indexes = selectionModel()->selectedIndexes();
+    QList<QModelIndex> indexes = selectionModel()->selectedIndexes();
     if (indexes.isEmpty())
         return calc::shp_Reflection();
     return model()->data(indexes.first(), Model::GetDatasetRole).value<calc::shp_Reflection>();
@@ -101,7 +101,7 @@ void ReflectionView::selectionChanged(
     QItemSelection const& selected, QItemSelection const& deselected) {
     super::selectionChanged(selected, deselected);
 
-    auto indexes = selected.indexes();
+    QList<QModelIndex> indexes = selected.indexes();
     tellSelectedReflection(
         indexes.isEmpty()
             ? calc::shp_Reflection()
@@ -119,7 +119,7 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
     int backgroundTabIndex, reflectionTabIndex;
 
     {
-        auto& box = addTab("Geometry", Qt::Vertical).box();
+        QBoxLayout& box = addTab("Geometry", Qt::Vertical).box();
 
         connect(&hub_, &TheHubSignallingBase::sigGeometryChanged, [this](){ setFromHub(); });
 
@@ -180,13 +180,13 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
 
         // layout
 
-        auto grid = gridLayout();
+        GridLayout* grid = gridLayout();
         int row = 0;
 
         auto add = [&grid, &row](QVector<QWidget*> const& ws, int left = 1) {
             int i = 0, cnt = ws.count();
 
-            auto box = hbox();
+            QBoxLayout* box = hbox();
             box->addStretch(1);
             while (i < left)
                 box->addWidget(ws.at(i++));
@@ -224,8 +224,8 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
 
     {
         backgroundTabIndex = count();
-        auto& box = addTab("Background", Qt::Vertical).box();
-        auto hb = hbox();
+        QBoxLayout& box = addTab("Background", Qt::Vertical).box();
+        QBoxLayout* hb = hbox();
         box.addLayout(hb);
 
         hb->addWidget(iconButton(actions.selRegions));
@@ -248,8 +248,8 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
 
     {
         reflectionTabIndex = count();
-        auto& box = addTab("Reflections", Qt::Vertical).box();
-        auto hb = hbox();
+        QBoxLayout& box = addTab("Reflections", Qt::Vertical).box();
+        QBoxLayout* hb = hbox();
         box.addLayout(hb);
 
         hb->addWidget(iconButton(actions.selRegions));
@@ -267,10 +267,10 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
         hb->addWidget(iconButton(actions.addReflection));
         hb->addWidget(iconButton(actions.remReflection));
 
-        auto vb = vbox();
+        QBoxLayout* vb = vbox();
         box.addLayout(vb);
 
-        auto gb = gridLayout();
+        GridLayout* gb = gridLayout();
         vb->addLayout(gb);
 
         gb->addWidget(label("min"), 0, 0);
