@@ -19,7 +19,7 @@
 template <typename T> class IRegistry {
 protected:
     QMap<str, T> m_map; //!< unsorted hash, for quick lookup
-    QVector<str> m_keys; //!< sorted array, for listing all registered objects
+    QStringList m_keys; //!< sorted array, for listing all registered objects
 public:
     void register_item(const str& key, T val) {
         if (m_map.find(key) != m_map.end())
@@ -47,6 +47,7 @@ public:
         return ret;
     }
     unsigned int size() const { return m_keys.size(); }
+    QStringList keys() const { return m_keys; }
 };
 
 #endif // IREGISTRY_H

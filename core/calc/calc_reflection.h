@@ -21,8 +21,6 @@ namespace calc {
 
 class Reflection final {
     public:
-    static QStringList const& typeStrLst();
-
     Reflection(fit::ePeakType = fit::ePeakType::RAW);
 
     fit::ePeakType type() const { return peakFunction_->type(); }

@@ -262,7 +262,7 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
         hb = hbox();
         box.addLayout(hb);
 
-        hb->addWidget((comboReflType_ = comboBox(calc::Reflection::typeStrLst())));
+        hb->addWidget((comboReflType_ = comboBox(FunctionRegistry::instance()->keys())));
         hb->addStretch();
         hb->addWidget(iconButton(hub_.actions.addReflection));
         hb->addWidget(iconButton(hub_.actions.remReflection));

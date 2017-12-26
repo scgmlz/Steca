@@ -16,11 +16,6 @@
 
 namespace calc {
 
-QStringList const& Reflection::typeStrLst() {
-    static QStringList types{ "Raw", "Gaussian", "Lorentzian", "PseudoVoigt1", "PseudoVoigt2" };
-    return types;
-}
-
 Reflection::Reflection(fit::ePeakType type) : peakFunction_(nullptr) {
     setPeakFunction(type);
 }
