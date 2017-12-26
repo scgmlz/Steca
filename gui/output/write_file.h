@@ -16,12 +16,10 @@
 #define WRITEFILE_H
 
 #include "def/macros.h"
-#include "typ/str.h"
 #include <QFile>
 
 class WriteFile : public QFile {
 private:
-    using super = QFile;
 public:
     WriteFile(rcstr path) THROWS;
 };

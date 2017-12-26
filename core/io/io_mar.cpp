@@ -15,8 +15,6 @@
 #include "3rdparty/Mar/MarReader.h"
 #include "def/idiomatic_for.h"
 #include "io_io.h"
-#include "typ/exception.h"
-#include "typ/str.h"
 
 namespace io {
 

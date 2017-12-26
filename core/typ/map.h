@@ -23,7 +23,6 @@ template <typename Key, typename T> class map : public QMap<Key, T> {
 private:
     using super = super_type;
 public:
-    using super::clear;
 };
 
 template <typename Key, typename T> class owning_map : public map<Key, T*> {

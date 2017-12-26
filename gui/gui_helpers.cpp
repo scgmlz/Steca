@@ -13,10 +13,8 @@
 // ************************************************************************** //
 
 #include "gui_helpers.h"
-#include "def/debug.h"
 #include "def/idiomatic_for.h"
 #include "def/numbers.h"
-#include "typ/str.h"
 #include <QAction>
 #include <QGroupBox>
 

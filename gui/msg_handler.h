@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "typ/str.h"
-#include <QtGlobal>
 
 extern class QMainWindow* pMainWin;
 void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg);

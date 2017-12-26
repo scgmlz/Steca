@@ -16,13 +16,9 @@
 #define JSON_H
 
 #include "def/numbers.h"
-#include "typ/exception.h"
 #include "typ/str.h"
-#include <QJsonArray>
 #include <QJsonObject>
-#include <QJsonValue>
 
-class qpair;
 
 QJsonValue qreal_to_json(const qreal num);
 

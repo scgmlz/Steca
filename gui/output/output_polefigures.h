@@ -16,8 +16,6 @@
 #define OUTPUT_POLEFIGURES_H
 
 #include "output_dialogs.h"
-#include "typ/angles.h"
-#include "typ/str.h"
 
 namespace gui {
 namespace output {

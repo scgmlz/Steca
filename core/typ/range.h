@@ -16,7 +16,6 @@
 #define RANGE_H
 
 #include "def/comparable.h"
-#include "def/numbers.h"
 #include "typ/exception.h"
 #include "typ/vec.h"
 #include <QJsonArray>

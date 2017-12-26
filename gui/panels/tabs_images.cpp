@@ -14,11 +14,8 @@
 
 #include "tabs_images.h"
 #include "colors.h"
-#include "def/idiomatic_for.h"
 #include "gui_cfg.h"
 #include "thehub.h"
-#include "typ/range.h"
-#include "typ/str.h"
 #include <qmath.h>
 #include <QPainter>
 

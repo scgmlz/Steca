@@ -17,7 +17,6 @@
 
 #include "calc/calc_lens.h"
 #include "panel.h"
-#include "typ/range.h"
 
 namespace gui {
 namespace panel {

@@ -17,7 +17,6 @@
 
 #include "calc/calc_reflection.h"
 #include "data/datafile.h"
-#include "typ/range.h"
 
 namespace gui {
 
@@ -33,7 +32,6 @@ enum class eFittingTab {
 
 class TheHubSignallingBase : public QObject {
 private:
-    using super = QObject;
     Q_OBJECT
     friend class RefHub;
 

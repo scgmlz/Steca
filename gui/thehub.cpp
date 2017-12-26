@@ -13,17 +13,11 @@
 // ************************************************************************** //
 
 #include "config.h"
-#include "def/idiomatic_for.h"
 #include "io/io_io.h"
 #include "mainwin.h"
 #include "output/write_file.h"
-#include "typ/exception.h"
-#include "typ/range.h"
-#include "typ/str.h"
 #include <QDir>
 #include <QJsonDocument>
-#include <QMessageBox>
-#include <QSpinBox>
 #include <QStringBuilder> // for ".." % ..
 
 namespace gui {

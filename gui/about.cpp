@@ -19,9 +19,7 @@
 #include "gui_helpers.h"
 #include "settings.h"
 #include <QApplication>
-#include <QCheckBox>
 #include <QDialogButtonBox>
-#include <QDoubleSpinBox>
 
 #ifdef Q_OS_MAC
 #endif

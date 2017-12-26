@@ -16,7 +16,6 @@
 #define CALC_REFLECTION_H
 
 #include "fit/fit_fun.h"
-#include <QSharedPointer>
 
 namespace calc {
 

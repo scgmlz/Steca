@@ -15,7 +15,6 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include <QStringList>
 #include "typ/vec.h"
 
 typedef float inten_t;

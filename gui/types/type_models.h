@@ -18,7 +18,6 @@
 #include "refhub.h"
 #include <QAbstractTableModel>
 
-class QCheckBox;
 
 namespace models {
 

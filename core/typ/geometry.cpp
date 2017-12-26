@@ -16,8 +16,6 @@
 #include "def/idiomatic_for.h"
 #include "typ/angles.h"
 #include "typ/geometry.h"
-#include "typ/range.h"
-#include "typ/vec.h"
 #include <qmath.h>
 #include <iostream> // for debugging
 

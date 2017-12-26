@@ -14,10 +14,8 @@
 
 #include "QCustomPlot/qcustomplot.h"
 #include "panel_diffractogram.h"
-#include "def/idiomatic_for.h"
 #include "gui_cfg.h"
 #include "thehub.h"
-#include "typ/range.h"
 
 namespace gui {
 namespace panel {
@@ -26,7 +24,6 @@ namespace panel {
 //  define file-scoped classes
 // ************************************************************************** //
 
-class DiffractogramPlot;
 
 class DiffractogramPlotOverlay : public QWidget {
 public:

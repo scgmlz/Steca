@@ -12,12 +12,9 @@
 //
 // ************************************************************************** //
 
-#include "typ/exception.h"
 #include "typ/ij.h"
 #include "typ/json.h"
 #include "typ/range.h"
-#include "typ/realpair.h"
-#include "typ/str.h"
 #include <QStringList> // needed under Travis
 
 // ************************************************************************** //

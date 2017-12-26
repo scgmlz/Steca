@@ -14,14 +14,11 @@
 
 #include "calc_reflection_info.h"
 #include "def/idiomatic_for.h"
-#include "typ/angles.h"
-#include "typ/range.h"
 
 namespace calc {
 
 using typ::cmp_real;
 using typ::cmp_vec;
-using typ::deg;
 using typ::Range;
 using data::Metadata;
 using data::shp_Metadata;

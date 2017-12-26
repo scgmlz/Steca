@@ -14,10 +14,8 @@
 
 #include "tabs_setup.h"
 #include "views.h" // inheriting from
-#include "def/idiomatic_for.h"
 #include "gui_cfg.h"
 #include "thehub.h"
-#include "typ/range.h"
 
 namespace gui {
 namespace panel {

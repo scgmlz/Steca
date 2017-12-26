@@ -13,12 +13,8 @@
 // ************************************************************************** //
 
 #include "def/idiomatic_for.h"
-#include "def/special_pointers.h"
 #include "fit_methods.h"
-#include "typ/exception.h"
-#include "typ/range.h"
 #include <qmath.h>
-#include "fit_fun.h"
 
 void FunctionRegistry::register_fct(const initializer_type f) {
     typ::SimpleFunction* tmp = f();

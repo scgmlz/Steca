@@ -13,10 +13,7 @@
 // ************************************************************************** //
 
 #include "output_diagrams.h"
-#include "def/idiomatic_for.h"
 #include "thehub.h"
-#include "typ/range.h"
-#include "typ/str.h"
 #include "write_file.h"
 #include "QCustomPlot/qcustomplot.h"
 
@@ -64,7 +61,6 @@ static const Params::ePanels PANELS =
 
 class TabPlot : public QCustomPlot {
 private:
-    using super = QCustomPlot;
 public:
     TabPlot();
     void set(calc::ReflectionInfos);

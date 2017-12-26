@@ -17,7 +17,6 @@
 
 #include "def/comparable.h"
 #include "def/macros.h"
-#include "typ/exception.h"
 #include <QJsonObject>
 
 namespace typ {

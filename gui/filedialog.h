@@ -15,10 +15,7 @@
 #ifndef FILEDIALOG_H
 #define FILEDIALOG_H
 
-#include "typ/str.h"
-#include <QStringList>
 
-class QWidget;
 
 namespace gui {
 namespace file_dialog {

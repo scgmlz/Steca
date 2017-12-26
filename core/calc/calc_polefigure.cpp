@@ -14,13 +14,10 @@
 
 #include "calc_polefigure.h"
 #include "def/idiomatic_for.h"
-#include "typ/angles.h"
-#include "typ/vec.h"
 #include <qmath.h>
 
 namespace calc {
 
-using typ::deg;
 using typ::vec;
 
 typedef vec<ReflectionInfo const*> info_vec;

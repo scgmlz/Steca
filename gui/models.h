@@ -15,14 +15,12 @@
 #ifndef MODELS_H
 #define MODELS_H
 
-#include "typ/vec.h"
 #include "types/type_models.h"
 
 namespace models {
 
 class FilesModel : public TableModel {
 private:
-    using super = TableModel;
 public:
     FilesModel(gui::TheHub&);
 

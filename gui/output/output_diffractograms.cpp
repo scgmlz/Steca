@@ -13,12 +13,8 @@
 // ************************************************************************** //
 
 #include "output_diffractograms.h"
-#include "def/idiomatic_for.h"
 #include "thehub.h"
-#include "typ/range.h"
-#include "typ/str.h"
 #include "write_file.h"
-#include <QTextStream>
 
 namespace gui {
 namespace output {

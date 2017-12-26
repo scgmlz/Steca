@@ -16,7 +16,6 @@
 #define CURVE_H
 
 #include "typ/range.h"
-#include "typ/vec.h"
 
 namespace typ {
 

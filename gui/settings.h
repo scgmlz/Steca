@@ -16,12 +16,7 @@
 #define SETTINGS_H
 
 #include "actions.h"
-#include "def/special_pointers.h"
-#include "models.h"
 #include "session.h"
-#include "typ/exception.h"
-#include "typ/range.h"
-#include "typ/str.h"
 #include <QSettings>
 
 class QSpinBox;
@@ -31,7 +26,6 @@ namespace gui {
 
 class Settings : public QSettings {
 private:
-    using super = QSettings;
 public:
     Settings(rcstr group = "");
     ~Settings();

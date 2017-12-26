@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "typ/exception.h"
 #include "typ/image.h"
 
 namespace typ {

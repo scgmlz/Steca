@@ -13,22 +13,11 @@
 // ************************************************************************** //
 
 #include "session.h"
-#include "def/debug.h"
-#include "def/idiomatic_for.h"
-#include "typ/angles.h"
-#include "typ/exception.h"
-#include "typ/matrix.h"
-#include "typ/range.h"
-#include "typ/realpair.h"
-#include "typ/str.h"
-#include "typ/vec.h"
-#include <qmath.h>
 
 void register_fit_functions();
 
 namespace core {
 
-using typ::deg;
 using typ::size2d;
 using typ::vec;
 using typ::Image;

@@ -14,7 +14,6 @@
 
 #include "msg_handler.h"
 #include <iostream>
-#include <QDebug>
 #include <QMessageBox>
 #include <QStatusBar>
 #include <QApplication>

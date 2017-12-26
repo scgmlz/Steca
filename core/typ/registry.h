@@ -12,7 +12,6 @@
 
 #include "str.h" // Steca specific
 #include "exception.h" // Steca specific
-#include <QMap>
 #include <QVector>
 
 //! Mixin interface for registries holding objects of type T

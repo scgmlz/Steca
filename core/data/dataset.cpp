@@ -12,15 +12,9 @@
 //
 // ************************************************************************** //
 
-#include "def/idiomatic_for.h"
 #include "session.h"
-#include "typ/angles.h"
 #include "typ/matrix.h"
-#include "typ/range.h"
-#include "typ/str.h"
 #include <qmath.h>
-#include <QtGlobal>
-#include <QDebug>
 
 namespace data {
 
@@ -30,7 +24,6 @@ using typ::Curve;
 using typ::Image;
 using typ::Range;
 using typ::size2d;
-using typ::deg;
 
 enum class eAttr {
     MOTOR_XT,

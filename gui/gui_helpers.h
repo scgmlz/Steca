@@ -16,7 +16,6 @@
 #define GUI_HELPERS_H
 
 #include "typ/str.h"
-#include <QStringList>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDockWidget>
@@ -38,7 +37,6 @@ class GridLayout : public QGridLayout {
 private:
     using super = QGridLayout;
 public:
-    using super::super;
 
     void addRowStretch(int = 1);
     void addColumnStretch(int = 1);
@@ -107,7 +105,6 @@ public:
 
 class BoxWidget : public QWidget {
 private:
-    using super = QWidget;
 public:
     BoxWidget(Qt::Orientation);
 
@@ -119,7 +116,6 @@ protected:
 
 class DockWidget : public QDockWidget {
 private:
-    using super = QDockWidget;
 public:
     DockWidget(rcstr name, rcstr objectName, Qt::Orientation);
 

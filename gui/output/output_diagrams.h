@@ -16,7 +16,6 @@
 #define OUTPUT_DIAGRAMS_H
 
 #include "output_dialogs.h"
-#include "typ/str.h"
 
 namespace gui {
 namespace output {

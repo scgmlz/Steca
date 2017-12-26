@@ -14,7 +14,6 @@
 
 #include "typ/exception.h"
 #include "write_file.h"
-#include <QFileInfo>
 #include <QMessageBox>
 #include <QStringBuilder> // for ".." % ..
 

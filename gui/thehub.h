@@ -16,15 +16,9 @@
 #define THEHUB_H
 
 #include "actions.h"
-#include "def/special_pointers.h"
 #include "models.h"
 #include "session.h"
-#include "typ/exception.h"
-#include "typ/range.h"
-#include "typ/str.h"
 
-class QSpinBox;
-class QDoubleSpinBox;
 
 namespace gui {
 
@@ -121,7 +115,6 @@ public:
     calc::Reflections const& reflections() const { return session_->reflections(); }
 
 private:
-    using super = TheHubSignallingBase;
     friend class TheHubSignallingBase;
     scoped<core::Session*> session_;
     bool isFixedIntenImageScale_;

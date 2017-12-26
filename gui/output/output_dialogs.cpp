@@ -15,15 +15,10 @@
 #include "output_dialogs.h"
 #include "calc/calc_polefigure.h"
 #include "config.h"
-#include "def/idiomatic_for.h"
 #include "filedialog.h"
 #include "gui_cfg.h"
 #include "settings.h"
 #include "thehub.h"
-#include "typ/angles.h"
-#include "typ/range.h"
-#include "typ/str.h"
-#include "typ/vec.h"
 #include <QDir>
 #include <QHeaderView>
 #include <QProgressBar>
@@ -235,7 +230,6 @@ void Params::saveSettings() const {
 
 class TableModel : public models::TableModel {
 private:
-    using super = models::TableModel;
 public:
     TableModel(TheHub&, uint numCols_);
 

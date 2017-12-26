@@ -16,7 +16,6 @@
 #define VARIANT_H
 
 #include "typ/vec.h"
-#include <QVariant>
 
 // Help with QVariant
 

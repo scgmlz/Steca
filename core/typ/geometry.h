@@ -18,9 +18,6 @@
 #include "typ/array2d.h"
 #include "typ/ij.h"
 #include "typ/range.h"
-#include "typ/types.h"
-#include "typ/vec.h"
-#include <QSharedPointer>
 
 namespace typ {
 

@@ -15,7 +15,6 @@
 // ************************************************************************** //
 
 #include "def/comparators.h"
-#include "typ/exception.h"
 #include "typ/json.h"
 #include "typ/realpair.h"
 

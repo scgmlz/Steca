@@ -17,8 +17,6 @@
 
 #include "actions.h"
 #include "panel.h"
-#include "typ/range.h"
-#include "typ/vec.h"
 
 namespace gui {
 namespace panel {

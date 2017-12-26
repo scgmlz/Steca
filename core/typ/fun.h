@@ -16,11 +16,8 @@
 #define FUN_H
 
 #include "def/special_pointers.h"
-#include "typ/exception.h"
 #include "typ/json.h"
 #include "typ/range.h"
-#include "typ/str.h"
-#include "typ/vec.h"
 
 namespace typ {
 

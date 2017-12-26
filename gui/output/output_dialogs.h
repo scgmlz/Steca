@@ -17,11 +17,7 @@
 
 #include "actions.h"
 #include "calc/calc_reflection_info.h"
-#include "def/special_pointers.h"
 #include "panels/panel.h"
-#include "typ/range.h"
-#include "typ/str.h"
-#include "typ/vec.h"
 
 class QProgressBar;
 

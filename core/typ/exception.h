@@ -23,7 +23,6 @@
 // An exception that carries a message.
 class Exception : public QException {
 private:
-    using super = QException;
 public:
     Exception() noexcept;
     Exception(rcstr msg) noexcept;

@@ -21,10 +21,6 @@
 #include "data/datafile.h"
 #include "typ/async.h"
 #include "typ/cache.h"
-#include "typ/exception.h"
-#include "typ/range.h"
-#include "typ/str.h"
-#include "typ/vec.h"
 
 namespace core {
 
