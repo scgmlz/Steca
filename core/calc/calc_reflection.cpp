@@ -19,8 +19,8 @@
 
 namespace calc {
 
-str_lst const& Reflection::typeStrLst() {
-    static str_lst types{ "Raw", "Gaussian", "Lorentzian", "PseudoVoigt1", "PseudoVoigt2" };
+QStringList const& Reflection::typeStrLst() {
+    static QStringList types{ "Raw", "Gaussian", "Lorentzian", "PseudoVoigt1", "PseudoVoigt2" };
     return types;
 }
 

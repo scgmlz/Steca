@@ -247,7 +247,7 @@ public:
 
     void moveColumn(uint from, uint to);
 
-    void setColumns(str_lst const& headers, typ::cmp_vec const&);
+    void setColumns(QStringList const& headers, typ::cmp_vec const&);
 
     void setSortColumn(int);
 
@@ -262,7 +262,7 @@ private:
     uint numCols_;
     int sortColumn_;
 
-    str_lst headers_;
+    QStringList headers_;
     uint_vec colIndexMap_;
     typ::cmp_vec cmpFunctions_;
 
@@ -348,7 +348,7 @@ void TableModel::moveColumn(uint from, uint to) {
     qSwap(colIndexMap_[from], colIndexMap_[to]);
 }
 
-void TableModel::setColumns(str_lst const& headers, typ::cmp_vec const& cmps) {
+void TableModel::setColumns(QStringList const& headers, typ::cmp_vec const& cmps) {
     debug::ensure(to_u(headers.count()) == numCols_ && cmps.count() == numCols_);
     headers_ = headers;
     cmpFunctions_ = cmps;
@@ -435,7 +435,7 @@ Table::Table(TheHub& hub, uint numDataColumns) : RefHub(hub), model_(nullptr) {
 }
 
 void Table::setColumns(
-    str_lst const& headers, str_lst const& outHeaders, typ::cmp_vec const& cmps) {
+    QStringList const& headers, QStringList const& outHeaders, typ::cmp_vec const& cmps) {
     model_->setColumns(headers, cmps);
     debug::ensure(headers.count() == outHeaders.count());
     outHeaders_ = outHeaders;
@@ -481,7 +481,7 @@ const typ::row_t& Table::row(uint i) const {
 }
 
 TabTable::TabTable(
-    TheHub& hub, Params& params, str_lst const& headers, str_lst const& outHeaders,
+    TheHub& hub, Params& params, QStringList const& headers, QStringList const& outHeaders,
     typ::cmp_vec const& cmps)
     : super(hub, params) {
     debug::ensure(to_u(headers.count()) == cmps.count());

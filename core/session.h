@@ -39,7 +39,7 @@ private:
     bool corrEnabled_;
     uint_vec collectedFromFiles_; // from these files
     data::Datasets collectedDatasets_; // datasets collected ...
-    str_lst collectedDatasetsTags_;
+    QStringList collectedDatasetsTags_;
     bool intenScaledAvg_; // if not, summed
     preal intenScale_;
     typ::size2d imageSize_; //!< All images must have this same size
@@ -102,7 +102,7 @@ public:
 
     uint_vec const& collectedFromFiles() const { return collectedFromFiles_; }
     data::Datasets const& collectedDatasets() const { return collectedDatasets_; }
-    str_lst const& collectedDatasetsTags() const { return collectedDatasetsTags_; }
+    QStringList const& collectedDatasetsTags() const { return collectedDatasetsTags_; }
 
     typ::size2d imageSize() const;
     typ::ImageTransform const& imageTransform() const { return imageTransform_; }

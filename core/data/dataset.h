@@ -43,7 +43,7 @@ struct Metadata {
     static uint numAttributes(bool onlyNum);
 
     static rcstr attributeTag(uint, bool out);
-    static str_lst attributeTags(bool out);
+    static QStringList attributeTags(bool out);
     static typ::cmp_vec attributeCmps();
 
     str attributeStrValue(uint) const;

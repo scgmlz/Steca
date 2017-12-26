@@ -262,7 +262,7 @@ void MainWin::close() {
 }
 
 void MainWin::addFiles() {
-    str_lst fileNames = file_dialog::openFileNames(
+    QStringList fileNames = file_dialog::openFileNames(
         this, "Add files", QDir::current().absolutePath(),
         "Data files (*.dat *.mar*);;All files (*.*)");
     update();

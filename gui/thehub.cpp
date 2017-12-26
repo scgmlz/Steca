@@ -258,7 +258,7 @@ void TheHub::addGivenFile(rcstr filePath) THROWS {
     }
 }
 
-void TheHub::addGivenFiles(str_lst const& filePaths) THROWS {
+void TheHub::addGivenFiles(QStringList const& filePaths) THROWS {
     TakesLongTime __;
     for (auto& filePath : filePaths)
         addGivenFile(filePath);

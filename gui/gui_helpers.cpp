@@ -13,7 +13,9 @@
 // ************************************************************************** //
 
 #include "gui_helpers.h"
+#include "def/debug.h"
 #include "def/idiomatic_for.h"
+#include "def/numbers.h"
 #include "typ/str.h"
 #include <QAction>
 #include <QGroupBox>
@@ -148,9 +150,9 @@ QRadioButton* radioButton(rcstr text) {
     return new QRadioButton(text);
 }
 
-QComboBox* comboBox(str_lst const& items) {
+QComboBox* comboBox(QStringList const& items) {
     auto comboBox = new QComboBox();
-    comboBox->addItems(items.sup());
+    comboBox->addItems(items);
     return comboBox;
 }
 

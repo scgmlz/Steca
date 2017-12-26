@@ -15,7 +15,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include "typ/strlst.h"
+#include <QStringList>
 #include "typ/vec.h"
 
 typedef float inten_t;
@@ -31,6 +31,6 @@ enum class eNorm {
     BACKGROUND,
 };
 
-str_lst const& normStrLst();
+QStringList const& normStrLst();
 
 #endif // TYPES_H

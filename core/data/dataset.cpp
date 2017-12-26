@@ -101,14 +101,14 @@ rcstr Metadata::attributeTag(uint i, bool out) {
     return attributeTags(out).at(i);
 }
 
-str_lst Metadata::attributeTags(bool out) {
-    static str_lst const tags = {
+QStringList Metadata::attributeTags(bool out) {
+    static QStringList const tags = {
         "X",   "Y",   "Z",    "ω",      "mid 2θ", "φ",     "χ",       "PST",
         "SST", "ΩM",  "T",    "teload", "tepos",  "teext", "xe",      "ye",
         "ze",  "mon", "Δmon", "t",      "Δt",     "date",  "comment",
     };
 
-    static str_lst const outTags = {
+    static QStringList const outTags = {
         "X",   "Y",      "Z",         "omega",  "mid2theta", "phi",   "chi",     "PST",
         "SST", "OmegaM", "T",         "teload", "tepos",     "teext", "xe",      "ye",
         "ze",  "mon",    "delta_mon", "t",      "delta_t",   "date",  "comment",

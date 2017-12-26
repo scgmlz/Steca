@@ -22,7 +22,7 @@ namespace calc {
 
 class Reflection final {
     public:
-    static str_lst const& typeStrLst();
+    static QStringList const& typeStrLst();
 
     Reflection(fit::ePeakType = fit::ePeakType::RAW);
 

@@ -71,8 +71,8 @@ ReflectionInfo::ReflectionInfo(deg alpha, deg beta)
           alpha, beta, Range(), inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), fwhm_t(NAN),
           fwhm_t(NAN)) {}
 
-str_lst ReflectionInfo::dataTags(bool out) {
-    str_lst tags;
+QStringList ReflectionInfo::dataTags(bool out) {
+    QStringList tags;
     for_i (uint(eReflAttr::NUM_REFL_ATTR))
         tags.append(reflStringTag(i, out));
     tags.append(Metadata::attributeTags(out));

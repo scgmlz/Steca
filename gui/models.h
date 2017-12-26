@@ -107,7 +107,7 @@ public:
     void addReflection(fit::ePeakType);
     void remReflection(uint);
 
-    str_lst names() const;
+    QStringList names() const;
 };
 }
 #endif // MODELS_H

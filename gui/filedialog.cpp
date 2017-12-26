@@ -82,7 +82,7 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
 //  exported functions
 // ************************************************************************** //
 
-str_lst openFileNames(QWidget* parent, rcstr caption, rcstr dir, rcstr filter, bool plural) {
+QStringList openFileNames(QWidget* parent, rcstr caption, rcstr dir, rcstr filter, bool plural) {
     QFileDialog dlg(parent, caption, dir, filter);
     dlg.setOption(QFileDialog::DontUseNativeDialog);
     dlg.setViewMode(QFileDialog::Detail);
@@ -96,7 +96,7 @@ str_lst openFileNames(QWidget* parent, rcstr caption, rcstr dir, rcstr filter, b
 }
 
 str openFileName(QWidget* parent, rcstr caption, rcstr dir, rcstr filter) {
-    str_lst fileNames = openFileNames(parent, caption, dir, filter, false);
+    QStringList fileNames = openFileNames(parent, caption, dir, filter, false);
     if (fileNames.isEmpty())
         return "";
     return fileNames.first();

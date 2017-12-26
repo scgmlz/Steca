@@ -14,8 +14,8 @@
 
 #include "typ/types.h"
 
-str_lst const& normStrLst() {
-    static str_lst strLst{
+QStringList const& normStrLst() {
+    static QStringList strLst{
         "none", "monitor", "Δ monitor", "Δ time", "background",
     };
 

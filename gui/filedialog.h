@@ -16,14 +16,14 @@
 #define FILEDIALOG_H
 
 #include "typ/str.h"
-#include "typ/strlst.h"
+#include <QStringList>
 
 class QWidget;
 
 namespace gui {
 namespace file_dialog {
 
-str_lst openFileNames(QWidget*, rcstr caption, rcstr dir, rcstr filter, bool plural=true);
+QStringList openFileNames(QWidget*, rcstr caption, rcstr dir, rcstr filter, bool plural=true);
 str openFileName(QWidget*, rcstr caption, rcstr dir, rcstr filter);
 
 str saveFileName(QWidget*, rcstr caption, rcstr dir, rcstr filter);

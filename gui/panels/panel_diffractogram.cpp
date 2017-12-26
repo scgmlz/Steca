@@ -456,7 +456,7 @@ Diffractogram::Diffractogram(TheHub& hub)
     box_->addLayout(hb);
 
     hb->addWidget(label("normalize to:"));
-    str_lst options = normStrLst();
+    QStringList options = normStrLst();
     hb->addWidget((comboNormType_ = comboBox(options)));
 
     connect(comboNormType_, slot(QComboBox, currentIndexChanged, int),

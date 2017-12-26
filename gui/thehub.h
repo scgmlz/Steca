@@ -43,7 +43,7 @@ public:
     void clearSession();
     void sessionFromFile(QFileInfo const&) THROWS;
     void addGivenFile(rcstr filePath) THROWS;
-    void addGivenFiles(str_lst const& filePaths) THROWS;
+    void addGivenFiles(QStringList const& filePaths) THROWS;
     void collectDatasetsFromFiles(uint_vec, pint);
     void collectDatasetsFromFiles(uint_vec);
     void combineDatasetsBy(pint);
@@ -95,7 +95,7 @@ public:
 
     data::Datasets const& collectedDatasets() const { return session_->collectedDatasets(); }
 
-    str_lst const& collectedDatasetsTags() const { return session_->collectedDatasetsTags(); }
+    QStringList const& collectedDatasetsTags() const { return session_->collectedDatasetsTags(); }
 
     typ::size2d imageSize() const { return session_->imageSize(); }
 

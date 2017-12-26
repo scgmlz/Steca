@@ -16,7 +16,7 @@
 #define GUI_HELPERS_H
 
 #include "typ/str.h"
-#include "typ/strlst.h"
+#include <QStringList>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDockWidget>
@@ -73,7 +73,7 @@ QToolButton* iconButton(QAction*);
 
 QRadioButton* radioButton(rcstr text);
 
-QComboBox* comboBox(str_lst const&);
+QComboBox* comboBox(QStringList const&);
 
 //! abstract tree widget
 

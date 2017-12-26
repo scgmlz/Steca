@@ -47,7 +47,7 @@ class ReflectionInfo final {
         NUM_REFL_ATTR,
     };
 
-    static str_lst dataTags(bool out);
+    static QStringList dataTags(bool out);
     static typ::cmp_vec dataCmps();
 
     typ::deg alpha() const { return alpha_; }

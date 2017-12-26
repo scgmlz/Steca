@@ -141,8 +141,8 @@ class Table : public TreeView, protected RefHub {
 private:
     using super = TreeView;public:
     Table(TheHub&, uint numDataColumns);
-    void setColumns(str_lst const& headers, str_lst const& outHeaders, typ::cmp_vec const&);
-    str_lst const outHeaders() { return outHeaders_; }
+    void setColumns(QStringList const& headers, QStringList const& outHeaders, typ::cmp_vec const&);
+    QStringList const outHeaders() { return outHeaders_; }
     void clear();
     void addRow(typ::row_t const&, bool sort);
     void sortData();
@@ -150,7 +150,7 @@ private:
     typ::row_t const& row(uint) const;
 private:
     scoped<class TableModel*> model_;
-    str_lst outHeaders_;
+    QStringList outHeaders_;
 };
 
 
@@ -174,7 +174,7 @@ protected:
 class TabTable : public Tab {
 private:
     using super = Tab;public:
-    TabTable(TheHub&, Params&, str_lst const& headers, str_lst const& outHeaders,
+    TabTable(TheHub&, Params&, QStringList const& headers, QStringList const& outHeaders,
              typ::cmp_vec const&);
 private:
     struct showcol_t {
