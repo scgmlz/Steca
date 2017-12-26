@@ -114,10 +114,10 @@ void ReflectionView::selectionChanged(
 // ************************************************************************** //
 
 TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
-    auto& actions = hub_.actions;
 
     int backgroundTabIndex, reflectionTabIndex;
 
+    // ==== image geometry tab ====
     {
         QBoxLayout& box = addTab("Geometry", Qt::Vertical).box();
 
@@ -222,15 +222,16 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
         box.addStretch();
     }
 
+    // ==== background fit tab ====
     {
         backgroundTabIndex = count();
         QBoxLayout& box = addTab("Background", Qt::Vertical).box();
         QBoxLayout* hb = hbox();
         box.addLayout(hb);
 
-        hb->addWidget(iconButton(actions.selRegions));
-        hb->addWidget(iconButton(actions.showBackground));
-        hb->addWidget(iconButton(actions.clearBackground));
+        hb->addWidget(iconButton(hub_.actions.selRegions));
+        hb->addWidget(iconButton(hub_.actions.showBackground));
+        hb->addWidget(iconButton(hub_.actions.clearBackground));
         hb->addWidget(label("Pol. degree:"));
         hb->addWidget((spinDegree_ = spinCell(gui_cfg::em4, 0, TheHub::MAX_POLYNOM_DEGREE)));
         hb->addStretch();
@@ -246,15 +247,16 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
                 spinDegree_->setValue(to_i(hub_.bgPolyDegree())); });
     }
 
+    // ==== peak fits tab ====
     {
         reflectionTabIndex = count();
         QBoxLayout& box = addTab("Reflections", Qt::Vertical).box();
         QBoxLayout* hb = hbox();
         box.addLayout(hb);
 
-        hb->addWidget(iconButton(actions.selRegions));
-        hb->addWidget(iconButton(actions.showBackground));
-        hb->addWidget(iconButton(actions.clearReflections));
+        hb->addWidget(iconButton(hub_.actions.selRegions));
+        hb->addWidget(iconButton(hub_.actions.showBackground));
+        hb->addWidget(iconButton(hub_.actions.clearReflections));
         hb->addStretch();
 
         box.addWidget((reflectionView_ = new ReflectionView(hub_)));
@@ -264,8 +266,8 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
 
         hb->addWidget((comboReflType_ = comboBox(calc::Reflection::typeStrLst())));
         hb->addStretch();
-        hb->addWidget(iconButton(actions.addReflection));
-        hb->addWidget(iconButton(actions.remReflection));
+        hb->addWidget(iconButton(hub_.actions.addReflection));
+        hb->addWidget(iconButton(hub_.actions.remReflection));
 
         QBoxLayout* vb = vbox();
         box.addLayout(vb);
@@ -315,19 +317,22 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
 
         updateReflectionControls();
 
-        connect(actions.addReflection, &QAction::triggered, [this, updateReflectionControls]() {
+        connect(hub_.actions.addReflection, &QAction::triggered,
+                [this, updateReflectionControls]() {
             int i = comboReflType_->currentIndex();
             debug::ensure(i >= 0);
             reflectionView_->addReflection(to_u(i));
             updateReflectionControls();
         });
 
-        connect(actions.remReflection, &QAction::triggered, [this, updateReflectionControls]() {
+        connect(hub_.actions.remReflection, &QAction::triggered,
+                [this, updateReflectionControls]() {
             reflectionView_->removeSelected();
             updateReflectionControls();
         });
 
-        connect(actions.clearReflections, &QAction::triggered, [this, updateReflectionControls]() {
+        connect(hub_.actions.clearReflections, &QAction::triggered,
+                [this, updateReflectionControls]() {
             reflectionView_->clear();
             updateReflectionControls();
         });
