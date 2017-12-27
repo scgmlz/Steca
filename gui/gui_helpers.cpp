@@ -148,12 +148,6 @@ QRadioButton* radioButton(rcstr text) {
     return new QRadioButton(text);
 }
 
-QComboBox* comboBox(QStringList const& items) {
-    auto comboBox = new QComboBox();
-    comboBox->addItems(items);
-    return comboBox;
-}
-
 TreeView::TreeView() {
     setAlternatingRowColors(true);
 }

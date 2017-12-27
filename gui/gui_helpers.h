@@ -71,8 +71,6 @@ QToolButton* iconButton(QAction*);
 
 QRadioButton* radioButton(rcstr text);
 
-QComboBox* comboBox(QStringList const&);
-
 //! abstract tree widget
 
 class TreeView : public QTreeView {

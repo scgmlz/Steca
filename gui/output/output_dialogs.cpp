@@ -29,7 +29,9 @@ namespace output {
 
 PanelReflection::PanelReflection(TheHub& hub) : super(hub, "Reflection") {
     auto g = grid();
-    g->addWidget((cbRefl = comboBox(hub_.reflectionsModel.names())));
+    cbRefl = new QComboBox;
+    cbRefl->addItems(hub_.reflectionsModel.names());
+    g->addWidget(cbRefl);
     g->addRowStretch();
 }
 
@@ -121,10 +123,12 @@ PanelDiagram::PanelDiagram(TheHub& hub) : super(hub, "Diagram") {
         tags.removeLast(); // remove all tags that are not numbers
 
     auto g = grid();
-    g->addWidget(label("y"), 0, 0);
-    g->addWidget((yAxis = comboBox(tags)), 0, 1);
+    xAxis = (new QComboBox); xAxis->addItems(tags);
+    yAxis = (new QComboBox); yAxis->addItems(tags);
     g->addWidget(label("x"), 1, 0);
-    g->addWidget((xAxis = comboBox(tags)), 1, 1);
+    g->addWidget(xAxis, 1, 1);
+    g->addWidget(label("y"), 0, 0);
+    g->addWidget(yAxis, 0, 1);
 
     g->addRowStretch();
 }
