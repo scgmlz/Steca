@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/fit/fit_fun.h
-//! @brief     Defines classes Polynom and PeakFunction with subclasses
+//! @brief     Defines classes Polynom and PeakFunction with subclasses, and FunctionRegistry
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -231,9 +231,14 @@ public:
 
 typedef class fit::PeakFunction* (*initializer_type)();
 
+namespace typ {
+    class JsonObj;
+}
+
 class FunctionRegistry : public IRegistry<initializer_type>, public ISingleton<FunctionRegistry> {
 public:
     void register_fct(const initializer_type f);
+    static not_null<fit::PeakFunction*> make(typ::JsonObj const&) THROWS;
 };
 
 #endif // FIT_FUN_H

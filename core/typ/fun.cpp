@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "def/idiomatic_for.h"
-#include "fit/fit_fun.h"
+#include "typ/fun.h"
 
 namespace typ {
 
@@ -46,20 +46,6 @@ JsonObj Function::Parameter::to_json() const {
 void Function::Parameter::from_json(JsonObj const& obj) THROWS {
     value_ = obj.loadQreal("value");
     range_ = obj.loadRange("range");
-}
-
-
-// ************************************************************************** //
-//   class Function
-// ************************************************************************** //
-
-not_null<Function*> Function::make(JsonObj const& obj) {
-    str funType = obj.loadString("type");
-    initializer_type new_fun = FunctionRegistry::instance()->find_or_fail(funType);
-    Function* fun = (*new_fun)();
-    fun->from_json(obj); // may throw
-    scoped<Function*> f(fun);
-    return not_null<Function*>::from(f.take());
 }
 
 

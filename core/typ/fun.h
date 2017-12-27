@@ -25,8 +25,6 @@ namespace typ {
 
 class Function {
 public:
-    static not_null<Function*> make(JsonObj const&) THROWS;
-
     class Parameter final {
     public:
         Parameter();

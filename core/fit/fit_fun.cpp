@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/fit/fit_fun.cpp
-//! @brief     Implements classes Polynom and PeakFunction with subclasses
+//! @brief     Implements classes Polynom and PeakFunction with subclasses, and FunctionRegistry
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -14,6 +14,7 @@
 
 #include "def/idiomatic_for.h"
 #include "fit_methods.h"
+#include "typ/json.h"
 #include <qmath.h>
 
 void FunctionRegistry::register_fct(const initializer_type f) {
@@ -609,4 +610,17 @@ void register_fit_functions() {
     G->register_fct([]()->fit::PeakFunction*{return new fit::Lorentzian();});
     G->register_fct([]()->fit::PeakFunction*{return new fit::PseudoVoigt1();});
     G->register_fct([]()->fit::PeakFunction*{return new fit::PseudoVoigt2();});
+}
+
+// ************************************************************************** //
+//   class Function
+// ************************************************************************** //
+
+not_null<fit::PeakFunction*> FunctionRegistry::make(typ::JsonObj const& obj) {
+    str funType = obj.loadString("type");
+    initializer_type new_fun = instance()->find_or_fail(funType);
+    fit::PeakFunction* fun = (*new_fun)();
+    fun->from_json(obj); // may throw
+    scoped<fit::PeakFunction*> f(fun);
+    return not_null<fit::PeakFunction*>::from(f.take());
 }
