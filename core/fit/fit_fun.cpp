@@ -104,19 +104,8 @@ void Polynom::from_json(JsonObj const& obj) THROWS {
 //  class PeakFunction
 // ************************************************************************** //
 
-PeakFunction* PeakFunction::factory(ePeakType type) {
-    switch (type) {
-    case ePeakType::RAW: return new Raw();
-    case ePeakType::GAUSSIAN: return new Gaussian();
-    case ePeakType::LORENTZIAN: return new Lorentzian();
-    case ePeakType::PSEUDOVOIGT1: return new PseudoVoigt1();
-    case ePeakType::PSEUDOVOIGT2: return new PseudoVoigt2();
-    default: NEVER return nullptr;
-    }
-}
-
 PeakFunction* PeakFunction::clone() const {
-    PeakFunction* f = factory(type());
+    PeakFunction* f = FunctionRegistry::instance()->find_or_fail(name())();
     *f = *this;
     return f;
 }
@@ -608,6 +597,10 @@ fwhm_t PseudoVoigt2::fwhmError() const {
 
 } // namespace fit
 
+
+// ************************************************************************** //
+//  -> FunctionRegistry
+// ************************************************************************** //
 
 void register_fit_functions() {
     auto G = FunctionRegistry::instance();

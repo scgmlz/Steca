@@ -50,21 +50,14 @@ public:
 };
 
 
-enum class ePeakType { RAW, GAUSSIAN, LORENTZIAN, PSEUDOVOIGT1, PSEUDOVOIGT2, NUM_TYPES };
-
-
 //! Abstract peak function
 
 class PeakFunction : public typ::SimpleFunction {
 private:
     using super = typ::SimpleFunction;
 public:
-    static PeakFunction* factory(ePeakType);
-
     PeakFunction();
     PeakFunction* clone() const;
-
-    virtual ePeakType type() const = 0;
 
     typ::Range const& range() const { return range_; }
     virtual void setRange(typ::Range const&);
@@ -105,8 +98,6 @@ class Raw final : public PeakFunction {
 private:
     using super = PeakFunction;
 public:
-    ePeakType type() const { return ePeakType::RAW; }
-
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
@@ -141,8 +132,6 @@ public:
 
     Gaussian(qreal ampl = 1, qreal xShift = 0, qreal sigma = 1);
 
-    ePeakType type() const { return ePeakType::GAUSSIAN; }
-
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
@@ -168,8 +157,6 @@ public:
     enum { parAMPL, parXSHIFT, parGAMMA };
 
     Lorentzian(qreal ampl = 1, qreal xShift = 0, qreal gamma = 1);
-
-    ePeakType type() const { return ePeakType::LORENTZIAN; }
 
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
@@ -197,8 +184,6 @@ public:
 
     PseudoVoigt1(qreal ampl = 1, qreal xShift = 0, qreal sigmaGamma = 1, qreal eta = 0.1);
 
-    ePeakType type() const { return ePeakType::PSEUDOVOIGT1; }
-
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
@@ -225,8 +210,6 @@ public:
 
     PseudoVoigt2(
         qreal ampl = 1, qreal xShift = 0, qreal sigma = 1, qreal gamma = 1, qreal eta = 0.1);
-
-    ePeakType type() const { return ePeakType::PSEUDOVOIGT2; }
 
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
