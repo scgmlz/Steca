@@ -320,8 +320,8 @@ void Session::setIntenScaleAvg(bool avg, preal scale) {
     intenScale_ = scale;
 }
 
-void Session::addReflection(fit::ePeakType type) {
-    calc::shp_Reflection reflection(new calc::Reflection(type));
+void Session::addReflection(QString const& peakFunctionName) {
+    calc::shp_Reflection reflection(new calc::Reflection(peakFunctionName));
     debug::ensure(!reflection.isNull());
     reflections_.append(reflection);
 }

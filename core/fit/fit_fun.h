@@ -22,14 +22,6 @@
 #include "typ/realpair.h"
 #include "typ/types.h"
 
-typedef class typ::SimpleFunction* (*initializer_type)();
-
-class FunctionRegistry : public IRegistry<initializer_type>, public ISingleton<FunctionRegistry> {
-public:
-    void register_fct(const initializer_type f);
-};
-
-
 namespace fit {
 
 //! a polynom(ial)
@@ -252,5 +244,13 @@ public:
 ;
 
 } // namespace fit
+
+
+typedef class fit::PeakFunction* (*initializer_type)();
+
+class FunctionRegistry : public IRegistry<initializer_type>, public ISingleton<FunctionRegistry> {
+public:
+    void register_fct(const initializer_type f);
+};
 
 #endif // FIT_FUN_H

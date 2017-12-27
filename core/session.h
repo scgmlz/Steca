@@ -79,7 +79,7 @@ public:
     bool remBgRange(typ::Range const& r) { return bgRanges_.rem(r); }
     void setBgPolyDegree(uint degree) { bgPolyDegree_ = degree; }
     void setIntenScaleAvg(bool, preal);
-    void addReflection(fit::ePeakType type);
+    void addReflection(QString const&);
     void addReflection(const QJsonObject& obj);
     void remReflection(uint i) { reflections_.remove(i); }
     void setNorm(eNorm norm) { norm_ = norm; }

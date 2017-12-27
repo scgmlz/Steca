@@ -20,33 +20,24 @@
 namespace calc {
 
 class Reflection final {
-    public:
-    Reflection(fit::ePeakType = fit::ePeakType::RAW);
+public:
+    Reflection(QString const& peakFunctionName = "Raw");
 
-    fit::ePeakType type() const { return peakFunction_->type(); }
-    void setPeakTypeIndex(uint index);
-
-    fit::PeakFunction const& peakFunction() const;
-
-    typ::Range const& range() const;
+    void from_json(typ::JsonObj const&) THROWS;
+    void setPeakFunction(QString const&);
     void setRange(typ::Range const&);
-
     void invalidateGuesses();
-
     void setGuessPeak(qpair const& peak) { peakFunction_->setGuessedPeak(peak); }
     void setGuessFWHM(fwhm_t fwhm) { peakFunction_->setGuessedFWHM(fwhm); }
-
     void fit(typ::Curve const&);
 
-private:
-    void setPeakFunction(fit::ePeakType);
-    void setPeakFunction(fit::PeakFunction*);
-
-    scoped<fit::PeakFunction*> peakFunction_;
-
-public:
+    QString peakFunctionName() const { return peakFunction_->name(); }
+    fit::PeakFunction const& peakFunction() const;
+    typ::Range const& range() const;
     typ::JsonObj to_json() const;
-    void from_json(typ::JsonObj const&) THROWS;
+
+private:
+    scoped<fit::PeakFunction*> peakFunction_;
 };
 
 typedef QSharedPointer<Reflection> shp_Reflection;

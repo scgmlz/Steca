@@ -216,8 +216,8 @@ QVariant ReflectionsModel::headerData(int col, Qt::Orientation, int role) const 
         return EMPTY_VAR;
 }
 
-void ReflectionsModel::addReflection(fit::ePeakType type) {
-    hub_.addReflection(type);
+void ReflectionsModel::addReflection(QString const& peakFunctionName) {
+    hub_.addReflection(peakFunctionName);
 }
 
 void ReflectionsModel::remReflection(uint i) {

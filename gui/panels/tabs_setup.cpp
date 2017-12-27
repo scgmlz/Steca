@@ -32,7 +32,7 @@ class ReflectionView : public views::ListView {
 public:
     ReflectionView(TheHub&);
 
-    void addReflection(uint type);
+    void addReflection(const QString& peakFunctionName);
     void removeSelected();
     void clear();
     bool hasReflections() const;
@@ -57,9 +57,8 @@ ReflectionView::ReflectionView(TheHub& hub) : super(hub) {
         resizeColumnToContents(i);
 }
 
-void ReflectionView::addReflection(uint type) {
-    type = qBound(0u, type, FunctionRegistry::instance()->size());
-    model()->addReflection(fit::ePeakType(type));
+void ReflectionView::addReflection(QString const& peakFunctionName) {
+    model()->addReflection(peakFunctionName);
     updateSingleSelection();
 }
 
@@ -319,9 +318,7 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
 
         connect(hub_.actions.addReflection, &QAction::triggered,
                 [this, updateReflectionControls]() {
-            int i = comboReflType_->currentIndex();
-            debug::ensure(i >= 0);
-            reflectionView_->addReflection(to_u(i));
+            reflectionView_->addReflection(comboReflType_->currentText());
             updateReflectionControls();
         });
 
@@ -343,8 +340,9 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
                     updateReflectionControls(); }
             );
 
-        connect(comboReflType_, slot(QComboBox, currentIndexChanged, int), [this](int index) {
-            hub_.setPeakTypeIndex(index);
+        connect(comboReflType_, slot(QComboBox, currentIndexChanged, const QString&),
+                [this](const QString& peakFunctionName) {
+            hub_.setPeakFunction(peakFunctionName);
         });
 
         auto setReflControls = [this](calc::shp_Reflection reflection) {
@@ -363,7 +361,7 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
             } else {
                 {
                     QSignalBlocker __(comboReflType_);
-                    comboReflType_->setCurrentIndex(int(reflection->type()));
+                    comboReflType_->setCurrentText(reflection->peakFunctionName());
                 }
 
                 auto& range = reflection->range();

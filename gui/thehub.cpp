@@ -344,15 +344,15 @@ void TheHub::setIntenScaleAvg(bool avg, preal scale) {
     emit sigNormChanged(); // TODO instead of another signal
 }
 
-void TheHub::setPeakTypeIndex(uint idx) {
+void TheHub::setPeakFunction(QString const& peakFunctionName) {
     if (selectedReflection_) {
-        selectedReflection_->setPeakTypeIndex(idx);
+        selectedReflection_->setPeakFunction(peakFunctionName);
         emit sigReflectionsChanged();
     }
 }
 
-void TheHub::addReflection(fit::ePeakType type) {
-    session_->addReflection(type);
+void TheHub::addReflection(QString const& peakFunctionName) {
+    session_->addReflection(peakFunctionName);
     emit sigReflectionsChanged();
 }
 

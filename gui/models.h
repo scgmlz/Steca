@@ -102,7 +102,7 @@ public:
 public:
     enum { GetDatasetRole = Qt::UserRole };
 
-    void addReflection(fit::ePeakType);
+    void addReflection(QString const&);
     void remReflection(uint);
 
     QStringList names() const;

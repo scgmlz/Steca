@@ -56,8 +56,8 @@ public:
     void setNorm(eNorm);
     void setFittingTab(eFittingTab);
 
-    void setPeakTypeIndex(uint);
-    void addReflection(fit::ePeakType);
+    void setPeakFunction(QString const&);
+    void addReflection(QString const&);
     void remReflection(uint);
 
     // const methods:

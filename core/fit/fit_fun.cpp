@@ -611,9 +611,9 @@ fwhm_t PseudoVoigt2::fwhmError() const {
 
 void register_fit_functions() {
     auto G = FunctionRegistry::instance();
-    G->register_fct([]()->typ::SimpleFunction*{return new fit::Raw();});
-    G->register_fct([]()->typ::SimpleFunction*{return new fit::Gaussian();});
-    G->register_fct([]()->typ::SimpleFunction*{return new fit::Lorentzian();});
-    G->register_fct([]()->typ::SimpleFunction*{return new fit::PseudoVoigt1();});
-    G->register_fct([]()->typ::SimpleFunction*{return new fit::PseudoVoigt2();});
+    G->register_fct([]()->fit::PeakFunction*{return new fit::Raw();});
+    G->register_fct([]()->fit::PeakFunction*{return new fit::Gaussian();});
+    G->register_fct([]()->fit::PeakFunction*{return new fit::Lorentzian();});
+    G->register_fct([]()->fit::PeakFunction*{return new fit::PseudoVoigt1();});
+    G->register_fct([]()->fit::PeakFunction*{return new fit::PseudoVoigt2();});
 }

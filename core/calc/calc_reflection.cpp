@@ -16,12 +16,8 @@
 
 namespace calc {
 
-Reflection::Reflection(fit::ePeakType type) : peakFunction_(nullptr) {
-    setPeakFunction(type);
-}
-
-void Reflection::setPeakTypeIndex(uint index) {
-    setPeakFunction(fit::ePeakType(index));
+Reflection::Reflection(QString const& peakFunctionName) : peakFunction_(nullptr) {
+    setPeakFunction(peakFunctionName);
 }
 
 fit::PeakFunction const& Reflection::peakFunction() const {
@@ -46,20 +42,16 @@ void Reflection::fit(typ::Curve const& curve) {
     peakFunction_->fit(curve);
 }
 
-void Reflection::setPeakFunction(fit::ePeakType type) {
+void Reflection::setPeakFunction(QString const& peakFunctionName) {
     bool haveRange = !peakFunction_.isNull();
     typ::Range oldRange;
     if (haveRange)
         oldRange = peakFunction_->range();
 
-    setPeakFunction(fit::PeakFunction::factory(type));
+    peakFunction_.reset(FunctionRegistry::instance()->find_or_fail(peakFunctionName)());
 
     if (haveRange)
         peakFunction_->setRange(oldRange);
-}
-
-void Reflection::setPeakFunction(fit::PeakFunction* f) {
-    peakFunction_.reset(f);
 }
 
 typ::JsonObj Reflection::to_json() const {
@@ -67,9 +59,9 @@ typ::JsonObj Reflection::to_json() const {
 }
 
 void Reflection::from_json(typ::JsonObj const& obj) THROWS {
-    scoped<typ::Function*> f(typ::Function::make(obj));
-    RUNTIME_CHECK(dynamic_cast<fit::PeakFunction*>(f.ptr()), "must be a peak function");
-    setPeakFunction(static_cast<fit::PeakFunction*>(f.take()));
+    str peakFunctionName = obj.loadString("type");
+    setPeakFunction(peakFunctionName);
+    peakFunction_->from_json(obj); // may throw
 }
 
 } // namespace calc
