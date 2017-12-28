@@ -116,7 +116,7 @@ public:
 
 private:
     friend class TheHubSignallingBase;
-    scoped<core::Session*> session_;
+    scoped<Session*> session_;
     bool isFixedIntenImageScale_;
     bool isFixedIntenDgramScale_;
     bool isCombinedDgram_;

@@ -24,7 +24,7 @@ namespace gui {
 
 TheHub::TheHub()
     : actions(*this)
-    , session_(new core::Session())
+    , session_(new Session())
     , isFixedIntenImageScale_(false)
     , isFixedIntenDgramScale_(false)
     , isCombinedDgram_(false)

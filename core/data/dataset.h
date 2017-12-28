@@ -20,9 +20,7 @@
 #include "typ/image.h"
 #include "typ/variant.h"
 
-namespace core {
 class Session;
-}
 
 namespace data {
 
@@ -88,9 +86,9 @@ public:
     typ::deg phi() const { return md_->motorPhi; }
     typ::deg chi() const { return md_->motorChi; }
 
-    typ::Range rgeGma(core::Session const&) const;
-    typ::Range rgeGmaFull(core::Session const&) const;
-    typ::Range rgeTth(core::Session const&) const;
+    typ::Range rgeGma(Session const&) const;
+    typ::Range rgeGmaFull(Session const&) const;
+    typ::Range rgeTth(Session const&) const;
 
     typ::Range rgeInten() const;
 
@@ -98,7 +96,7 @@ public:
     typ::size2d imageSize() const;
 
     void collectIntens(
-        core::Session const&, typ::Image const* intensCorr, inten_vec&, uint_vec&, typ::Range const&,
+        Session const&, typ::Image const* intensCorr, inten_vec&, uint_vec&, typ::Range const&,
         typ::deg minTth, typ::deg deltaTth) const;
 
 private:
@@ -132,9 +130,9 @@ public:
     typ::deg phi() const;
     typ::deg chi() const;
 
-    typ::Range rgeGma(core::Session const&) const;
-    typ::Range rgeGmaFull(core::Session const&) const;
-    typ::Range rgeTth(core::Session const&) const;
+    typ::Range rgeGma(Session const&) const;
+    typ::Range rgeGmaFull(Session const&) const;
+    typ::Range rgeTth(Session const&) const;
 
     typ::Range rgeInten() const;
 
@@ -142,7 +140,7 @@ public:
     qreal avgDeltaMonitorCount() const;
     qreal avgDeltaTime() const;
 
-    inten_vec collectIntens(core::Session const&, typ::Image const* intensCorr, typ::Range const&) const;
+    inten_vec collectIntens(Session const&, typ::Image const* intensCorr, typ::Range const&) const;
     void calculateAlphaBeta(typ::deg tth, typ::deg gma, typ::deg& alpha, typ::deg& beta) const;
 
 private:
@@ -169,10 +167,10 @@ public:
     qreal avgDeltaMonitorCount() const;
     qreal avgDeltaTime() const;
 
-    typ::Range const& rgeGma(core::Session const&) const;
-    typ::Range const& rgeFixedInten(core::Session const&, bool trans, bool cut) const;
+    typ::Range const& rgeGma(Session const&) const;
+    typ::Range const& rgeFixedInten(Session const&, bool trans, bool cut) const;
 
-    typ::Curve avgCurve(core::Session const&) const;
+    typ::Curve avgCurve(Session const&) const;
 
     void invalidateAvgMutables() const;
 

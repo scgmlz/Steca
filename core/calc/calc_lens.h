@@ -26,7 +26,7 @@ namespace calc {
 class LensBase {
 public:
     LensBase(
-        core::Session const&, data::Datasets const&, bool trans, bool cut,
+        Session const&, data::Datasets const&, bool trans, bool cut,
         typ::ImageTransform const&, typ::ImageCut const&);
     virtual ~LensBase() {}
     virtual typ::size2d size() const = 0;
@@ -37,7 +37,7 @@ protected:
     void doTrans(uint& i, uint& j) const;
     void doCut(uint& i, uint& j) const;
 
-    core::Session const& session_;
+    Session const& session_;
     data::Datasets const& datasets_;
     bool trans_, cut_;
     typ::ImageTransform imageTransform_;
@@ -47,7 +47,7 @@ protected:
 
 class ImageLens final : public LensBase {
 public:
-    ImageLens(core::Session const&, typ::Image const&, data::Datasets const&, bool trans, bool cut);
+    ImageLens(Session const&, typ::Image const&, data::Datasets const&, bool trans, bool cut);
 
     typ::size2d size() const;
 
@@ -67,7 +67,7 @@ typedef QSharedPointer<ImageLens> shp_ImageLens;
 class DatasetLens final : public LensBase {
 public:
     DatasetLens(
-        core::Session const&, data::Dataset const&, data::Datasets const&, eNorm, bool trans,
+        Session const&, data::Dataset const&, data::Datasets const&, eNorm, bool trans,
         bool cut, typ::ImageTransform const&, typ::ImageCut const&);
 
     typ::size2d size() const;

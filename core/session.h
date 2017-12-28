@@ -22,8 +22,6 @@
 #include "typ/async.h"
 #include "typ/cache.h"
 
-namespace core {
-
 class Session final {
     public:
     Session();
@@ -131,7 +129,5 @@ public:
     qreal calcAvgBackground(data::Dataset const&) const;
     qreal calcAvgBackground(data::Datasets const&) const;
 };
-
-} // namespace core
 
 #endif

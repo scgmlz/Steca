@@ -16,8 +16,6 @@
 
 void register_fit_functions();
 
-namespace core {
-
 using typ::size2d;
 using typ::vec;
 using typ::Image;
@@ -346,5 +344,3 @@ qreal Session::calcAvgBackground(data::Datasets const& datasets) const {
         bg += calcAvgBackground(*dataset);
     return bg / datasets.count();
 }
-
-} // namespace core
