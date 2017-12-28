@@ -654,7 +654,7 @@ void Diffractogram::calcReflections() {
         refls_.append(c);
     }
 
-    tellReflectionData(currentReflection_);
+    hub_.tellReflectionData(currentReflection_);
 }
 
 } // namespace panel
