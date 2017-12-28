@@ -12,6 +12,8 @@
 //
 // ************************************************************************** //
 
+#include "def/debug.h"
+#include "def/numbers.h"
 #include "panel.h"
 
 namespace gui {
@@ -65,7 +67,7 @@ Tab::Tab(Qt::Orientation orientation) {
 //  class TabsPanel
 // ************************************************************************** //
 
-TabsPanel::TabsPanel(TheHub& hub) : RefHub(hub) {
+TabsPanel::TabsPanel(TheHub& hub) : hub_(hub) {
     setTabPosition(TabsPanel::North);
 }
 

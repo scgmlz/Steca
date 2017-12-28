@@ -22,7 +22,7 @@
 namespace gui {
 namespace panel {
 
-class ImageWidget : public QWidget, protected RefHub {
+class ImageWidget : public QWidget {
 private:
     using super = QWidget;
 public:
@@ -35,13 +35,14 @@ protected:
     void resizeEvent(QResizeEvent*);
 
 private:
+    TheHub& hub_;
     qreal scale_;
     QPixmap original_, scaled_;
 
     void paintEvent(QPaintEvent*);
 };
 
-ImageWidget::ImageWidget(TheHub& hub) : RefHub(hub), scale_(0) {
+ImageWidget::ImageWidget(TheHub& hub) : hub_(hub), scale_(0) {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     connect(hub_.actions.showOverlay, &QAction::toggled, [this]() { update(); });

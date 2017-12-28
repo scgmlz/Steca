@@ -52,7 +52,7 @@ protected:
     void updateCursorRegion();
 };
 
-class DiffractogramPlot : public QCustomPlot, protected RefHub {
+class DiffractogramPlot : public QCustomPlot {
 public:
     enum class eTool {
         NONE,
@@ -88,6 +88,7 @@ protected:
     void resizeEvent(QResizeEvent*);
 
 private:
+    TheHub& hub_;
     Diffractogram& diffractogram_;
 
     eTool tool_;
@@ -200,7 +201,7 @@ void DiffractogramPlotOverlay::updateCursorRegion() {
 // ************************************************************************** //
 
 DiffractogramPlot::DiffractogramPlot(TheHub& hub, Diffractogram& diffractogram)
-    : RefHub(hub), diffractogram_(diffractogram), showBgFit_(false) {
+    : hub_(hub), diffractogram_(diffractogram), showBgFit_(false) {
     overlay_ = new DiffractogramPlotOverlay(*this);
 
     bgRgeColor_ = QColor(0x98, 0xfb, 0x98, 0x50);
@@ -446,7 +447,7 @@ void DiffractogramPlot::onReflectionData(calc::shp_Reflection reflection) {
 // ************************************************************************** //
 
 Diffractogram::Diffractogram(TheHub& hub)
-    : RefHub(hub), dataset_(nullptr), currReflIndex_(0) {
+    : hub_(hub), dataset_(nullptr), currReflIndex_(0) {
     setLayout((box_ = boxLayout(Qt::Vertical)));
     box_->addWidget((plot_ = new DiffractogramPlot(hub_, *this)));
     auto hb = hbox();

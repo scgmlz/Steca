@@ -20,9 +20,12 @@
 #include "signalling.h" // for eFittingTab
 
 namespace gui {
+
+class TheHub;
+
 namespace panel {
 
-class Diffractogram : public QWidget, protected RefHub {
+class Diffractogram : public QWidget {
 public:
     Diffractogram(TheHub&);
 
@@ -32,6 +35,7 @@ public:
     QBoxLayout* box() const { return box_; }
 
 private:
+    TheHub& hub_;
     QBoxLayout* box_;
     void onNormChanged();
     void onFittingTab(eFittingTab tab);

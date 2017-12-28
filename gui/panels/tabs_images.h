@@ -48,6 +48,8 @@ private:
 
     calc::shp_DatasetLens lens_;
 };
-}
-}
+
+} // namespace panel
+} // namespace gui
+
 #endif // TABS_IMAGES_H

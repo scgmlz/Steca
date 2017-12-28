@@ -16,10 +16,12 @@
 #define PANEL_H
 
 #include "gui_helpers.h"
-#include "refhub.h"
 #include <QGroupBox>
 
 namespace gui {
+
+class TheHub;
+
 namespace panel {
 
 //! Just a groupbox
@@ -61,12 +63,13 @@ protected:
 };
 
 //!
-class TabsPanel : public QTabWidget, protected RefHub {
+class TabsPanel : public QTabWidget {
 public:
     TabsPanel(TheHub&);
-
     Tab& addTab(rcstr title, Qt::Orientation);
     Tab& tab(uint);
+protected:
+    TheHub& hub_;
 };
 
 } // namespace panel
