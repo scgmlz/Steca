@@ -12,9 +12,8 @@
 //
 // ************************************************************************** //
 
+#include "fit/peak_functions.h"
 #include "session.h"
-
-void register_fit_functions();
 
 using typ::size2d;
 using typ::vec;
@@ -26,7 +25,7 @@ using typ::Range;
 
 Session::Session() : intenScale_(1), angleMapCache_(360) {
     clear();
-    register_fit_functions();
+    register_peak_functions();
 }
 
 void Session::clear() {
