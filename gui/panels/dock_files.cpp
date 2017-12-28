@@ -87,7 +87,7 @@ void FilesView::recollect() {
 //  class DocFiles
 // ************************************************************************** //
 
-DockFiles::DockFiles(TheHub& hub) : super("Files", "dock-files", Qt::Vertical), RefHub(hub) {
+DockFiles::DockFiles(TheHub& hub) : DockWidget("Files", "dock-files", Qt::Vertical), hub_(hub) {
     auto& actions = hub_.actions;
 
     auto h = hbox();

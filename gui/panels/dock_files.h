@@ -18,19 +18,22 @@
 #include "panel.h"
 
 namespace gui {
+
+class TheHub;
+
 namespace panel {
 
-class DockFiles : public DockWidget, private RefHub {
-private:
-    using super = DockWidget;
+class DockFiles : public DockWidget {
 public:
     DockFiles(TheHub&);
 
 private:
     class FilesView* filesView_;
     class LineView* corrFile_;
+    TheHub& hub_;
 };
 
-}
-}
+} // namespace panel
+} // namespace gui
+
 #endif // DOCK_FILES_H
