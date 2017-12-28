@@ -19,6 +19,4 @@ namespace gui {
 
 RefHub::RefHub(gui::TheHub& hub) : hub_(hub) {}
 
-void RefHub::tellDatasetSelected(data::shp_Dataset d) { hub_.tellDatasetSelected(d); }
-
 } // namespace gui

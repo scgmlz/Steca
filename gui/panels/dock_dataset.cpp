@@ -38,14 +38,15 @@ DatasetView::DatasetView(TheHub& hub) : super(hub) {
     debug::ensure(dynamic_cast<Model*>(super::model()));
 
     connect(&hub_, &TheHubSignallingBase::sigDatasetsChanged, [this]() {
-            tellDatasetSelected(data::shp_Dataset()); // first de-select
+            hub_.tellDatasetSelected(data::shp_Dataset()); // first de-select
             selectRow(0);
         });
 }
 
 void DatasetView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     super::currentChanged(current, previous);
-    tellDatasetSelected(model()->data(current, Model::GetDatasetRole).value<data::shp_Dataset>());
+    hub_.tellDatasetSelected(model()->data(current,
+                                           Model::GetDatasetRole).value<data::shp_Dataset>());
 }
 
 DockDatasets::DockDatasets(TheHub& hub)

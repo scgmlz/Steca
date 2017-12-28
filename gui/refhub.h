@@ -29,8 +29,6 @@ public:
     RefHub(TheHub&);
 protected:
     TheHub& hub_;
-protected:
-    void tellDatasetSelected(data::shp_Dataset);
 };
 
 } //namespace gui
