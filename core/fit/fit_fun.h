@@ -223,8 +223,8 @@ public:
     qpair peakError() const;
     fwhm_t fwhmError() const;
 
-    str name() const { return "PseudoVoigt2"; }}
-;
+    str name() const { return "PseudoVoigt2"; }
+};
 
 } // namespace fit
 
@@ -238,7 +238,8 @@ namespace typ {
 class FunctionRegistry : public IRegistry<initializer_type>, public ISingleton<FunctionRegistry> {
 public:
     void register_fct(const initializer_type f);
-    static not_null<fit::PeakFunction*> make(typ::JsonObj const&) THROWS;
+    static fit::PeakFunction* name2new(QString const&) THROWS;
+    static fit::PeakFunction* clone(fit::PeakFunction const& old);
 };
 
 #endif // FIT_FUN_H

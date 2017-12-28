@@ -17,11 +17,6 @@
 #include "typ/json.h"
 #include <qmath.h>
 
-void FunctionRegistry::register_fct(const initializer_type f) {
-    typ::SimpleFunction* tmp = f();
-    register_item(tmp->name(), f);
-};
-
 namespace fit {
 
 using typ::Range;
@@ -104,12 +99,6 @@ void Polynom::from_json(JsonObj const& obj) THROWS {
 // ************************************************************************** //
 //  class PeakFunction
 // ************************************************************************** //
-
-PeakFunction* PeakFunction::clone() const {
-    PeakFunction* f = FunctionRegistry::instance()->find_or_fail(name())();
-    *f = *this;
-    return f;
-}
 
 void PeakFunction::setRange(Range const& range) {
     range_ = range;
@@ -600,8 +589,25 @@ fwhm_t PseudoVoigt2::fwhmError() const {
 
 
 // ************************************************************************** //
-//  -> FunctionRegistry
+//  FunctionRegistry
 // ************************************************************************** //
+
+void FunctionRegistry::register_fct(const initializer_type f) {
+    typ::SimpleFunction* tmp = f();
+    register_item(tmp->name(), f);
+};
+
+fit::PeakFunction* FunctionRegistry::name2new(QString const& peakFunctionName) {
+    initializer_type make_new = instance()->find_or_fail(peakFunctionName);
+    return make_new();
+}
+
+fit::PeakFunction* FunctionRegistry::clone(fit::PeakFunction const& old) {
+    fit::PeakFunction* ret = name2new(old.name());
+    *ret = old;
+    return ret;
+}
+
 
 void register_fit_functions() {
     auto G = FunctionRegistry::instance();
@@ -610,17 +616,4 @@ void register_fit_functions() {
     G->register_fct([]()->fit::PeakFunction*{return new fit::Lorentzian();});
     G->register_fct([]()->fit::PeakFunction*{return new fit::PseudoVoigt1();});
     G->register_fct([]()->fit::PeakFunction*{return new fit::PseudoVoigt2();});
-}
-
-// ************************************************************************** //
-//   class Function
-// ************************************************************************** //
-
-not_null<fit::PeakFunction*> FunctionRegistry::make(typ::JsonObj const& obj) {
-    str funType = obj.loadString("type");
-    initializer_type new_fun = instance()->find_or_fail(funType);
-    fit::PeakFunction* fun = (*new_fun)();
-    fun->from_json(obj); // may throw
-    scoped<fit::PeakFunction*> f(fun);
-    return not_null<fit::PeakFunction*>::from(f.take());
 }

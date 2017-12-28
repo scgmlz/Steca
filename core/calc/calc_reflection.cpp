@@ -47,9 +47,7 @@ void Reflection::setPeakFunction(QString const& peakFunctionName) {
     typ::Range oldRange;
     if (haveRange)
         oldRange = peakFunction_->range();
-
-    peakFunction_.reset(FunctionRegistry::instance()->find_or_fail(peakFunctionName)());
-
+    peakFunction_.reset(FunctionRegistry::name2new(peakFunctionName));
     if (haveRange)
         peakFunction_->setRange(oldRange);
 }

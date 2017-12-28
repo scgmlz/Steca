@@ -252,7 +252,7 @@ calc::ReflectionInfo Session::makeReflectionInfo(
 
     // fit peak, and retrieve peak parameters:
     Curve curve = curveMinusBg(lens, gmaSector);
-    scoped<fit::PeakFunction*> peakFunction(reflection.peakFunction().clone());
+    scoped<fit::PeakFunction*> peakFunction = FunctionRegistry::clone(reflection.peakFunction());
     peakFunction->fit(curve);
     Range const& rgeTth = peakFunction->range();
     qpair peak = peakFunction->fittedPeak();
