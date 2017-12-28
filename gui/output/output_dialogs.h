@@ -15,14 +15,17 @@
 #ifndef OUTPUT_DIALOGS_H
 #define OUTPUT_DIALOGS_H
 
-#include "actions.h"
 #include "calc/calc_reflection_info.h"
 #include "def/special_pointers.h"
 #include "panels/panel.h"
 
 class QProgressBar;
+class QAction;
 
 namespace gui {
+
+class Action;
+
 namespace output {
 
 /* Note that some data members are public, to simplify the code. Be careful. */
@@ -219,7 +222,8 @@ protected:
 
 class Frame : public QFrame {
 private:
-    using super = QFrame;public:
+    using super = QFrame;
+public:
     Frame(TheHub&, rcstr title, Params*, QWidget*);
 protected:
     QAction *actClose_, *actCalculate_, *actInterpolate_;
