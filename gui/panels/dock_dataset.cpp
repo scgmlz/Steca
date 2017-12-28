@@ -50,7 +50,7 @@ void DatasetView::currentChanged(QModelIndex const& current, QModelIndex const& 
 }
 
 DockDatasets::DockDatasets(TheHub& hub)
-    : super("Datasets", "dock-datasets", Qt::Vertical), RefHub(hub) {
+    : super("Datasets", "dock-datasets", Qt::Vertical), hub_(hub) {
     box_->addWidget((datasetView_ = new DatasetView(hub)));
 
     auto h = hbox();
