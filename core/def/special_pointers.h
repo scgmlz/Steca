@@ -15,10 +15,6 @@
 #ifndef SPECIAL_POINTERS_H
 #define SPECIAL_POINTERS_H
 
-#include "def/debug.h"
-#include <cstddef> // for size_t
-#include <type_traits> // for is_assignable
-
 //! scoped pointer that auto-deletes what he has
 
 template <class P> class scoped final {
