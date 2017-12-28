@@ -107,7 +107,7 @@ public:
 };
 
 
-class Params : public QWidget, protected RefHub {
+class Params : public QWidget {
 private:
     using super = QWidget;public:
     enum ePanels {
@@ -119,6 +119,7 @@ private:
     };
     Params(TheHub&, ePanels);
     ~Params();
+    TheHub& hub_;
     PanelReflection* panelReflection;
     PanelGammaSlices* panelGammaSlices;
     PanelGammaRange* panelGammaRange;
@@ -126,14 +127,13 @@ private:
     PanelInterpolation* panelInterpolation;
     PanelDiagram* panelDiagram;
     str saveDir, saveFmt;
-private:
     void readSettings();
     void saveSettings() const;
     QBoxLayout* box_;
 };
 
 
-class Table : public TreeView, protected RefHub {
+class Table : public TreeView {
 private:
     using super = TreeView;public:
     Table(TheHub&, uint numDataColumns);
@@ -144,7 +144,7 @@ private:
     void sortData();
     uint rowCount() const;
     typ::row_t const& row(uint) const;
-private:
+    TheHub& hub_;
     scoped<class TableModel*> model_;
     QStringList outHeaders_;
 };
@@ -157,11 +157,11 @@ private:
 };
 
 
-class Tab : public QWidget, protected RefHub {
-private:
-    using super = QWidget;public :
+class Tab : public QWidget {
+public :
     Tab(TheHub&, Params&);
 protected:
+    TheHub& hub_;
     Params& params_;
     GridLayout* grid_;
 };
@@ -199,7 +199,8 @@ private:
 
 class TabSave : public Tab {
 private:
-    using super = Tab;public:
+    using super = Tab;
+public:
     TabSave(TheHub&, Params&, bool withTypes);
     str filePath(bool withSuffix);
     str separator() const;
@@ -211,7 +212,7 @@ protected:
 };
 
 
-class Frame : public QFrame, protected RefHub {
+class Frame : public QFrame {
 private:
     using super = QFrame;public:
     Frame(TheHub&, rcstr title, Params*, QWidget*);
@@ -227,9 +228,9 @@ protected:
     void calculate();
     void interpolate();
     virtual void displayReflection(uint reflIndex, bool interpolated);
-protected:
     uint getReflIndex() const;
     bool getInterpolated() const;
+    TheHub& hub_;
 };
 
 } // namespace output

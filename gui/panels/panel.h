@@ -23,14 +23,17 @@ namespace gui {
 namespace panel {
 
 //! Just a groupbox
-class BasicPanel : public QGroupBox, protected RefHub {
+class BasicPanel : public QGroupBox {
 public:
     BasicPanel(TheHub& hub) : BasicPanel(hub, "") {}
-    BasicPanel(TheHub& hub, rcstr title) : QGroupBox(title), RefHub(hub) {}
+    BasicPanel(TheHub& hub, rcstr title) : QGroupBox(title), hub_(hub) {}
 
     void setHorizontalStretch(int);
     void setVerticalStretch(int);
     void setStretch(int horizontal, int vertical);
+
+protected:
+    TheHub& hub_;
 };
 
 

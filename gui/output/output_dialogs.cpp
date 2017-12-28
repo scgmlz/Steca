@@ -136,7 +136,7 @@ PanelDiagram::PanelDiagram(TheHub& hub) : super(hub, "Diagram") {
 PanelFitError::PanelFitError(TheHub& hub) : super(hub, "Fit error") {}
 
 Params::Params(TheHub& hub, ePanels panels)
-    : RefHub(hub)
+    : hub_(hub)
     , panelReflection(nullptr)
     , panelGammaSlices(nullptr)
     , panelGammaRange(nullptr)
@@ -413,11 +413,11 @@ void TableModel::sortData() {
 
 Tabs::Tabs(TheHub& hub) : super(hub) {}
 
-Tab::Tab(TheHub& hub, Params& params) : RefHub(hub), params_(params) {
+Tab::Tab(TheHub& hub, Params& params) : hub_(hub), params_(params) {
     setLayout((grid_ = gridLayout()));
 }
 
-Table::Table(TheHub& hub, uint numDataColumns) : RefHub(hub), model_(nullptr) {
+Table::Table(TheHub& hub, uint numDataColumns) : hub_(hub), model_(nullptr) {
     model_.reset(new TableModel(hub_, numDataColumns));
     setModel(model_.ptr());
     setHeader(new QHeaderView(Qt::Horizontal));
@@ -694,7 +694,7 @@ str TabSave::fileSetSuffix(rcstr suffix) {
 //------------------------------------------------------------------------------
 
 Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
-    : super(parent, Qt::Dialog), RefHub(hub) {
+    : super(parent, Qt::Dialog), hub_(hub) {
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
