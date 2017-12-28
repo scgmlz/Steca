@@ -71,17 +71,16 @@ signals:
     void sigFittingTab(eFittingTab);
 
 protected:
-    // to prevent some otherwise recursive calls
-    typedef uint level_t;
-    level_t sigLevel_ = 0;
+    uint sigLevel_ = 0;
 
+    //! to prevent some otherwise recursive calls // TODO get rid of this
     class level_guard {
     public:
-        level_guard(level_t&);
+        level_guard(uint&);
         ~level_guard();
 
     private:
-        level_t& level_;
+        uint& level_;
     };
 };
 

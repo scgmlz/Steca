@@ -44,7 +44,7 @@ void TheHubSignallingBase::tellReflectionValues(
 }
 
 
-TheHubSignallingBase::level_guard::level_guard(level_t& level) : level_(level) {
+TheHubSignallingBase::level_guard::level_guard(uint& level) : level_(level) {
     ++level_;
 }
 
