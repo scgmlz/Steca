@@ -136,7 +136,8 @@ private:
 
 class Table : public TreeView {
 private:
-    using super = TreeView;public:
+    using super = TreeView;
+public:
     Table(TheHub&, uint numDataColumns);
     void setColumns(QStringList const& headers, QStringList const& outHeaders, typ::cmp_vec const&);
     QStringList const outHeaders() { return outHeaders_; }
@@ -153,7 +154,8 @@ private:
 
 class Tabs : public panel::TabsPanel {
 private:
-    using super = panel::TabsPanel;public:
+    using super = panel::TabsPanel;
+public:
     Tabs(TheHub&);
 };
 
@@ -170,7 +172,8 @@ protected:
 
 class TabTable : public Tab {
 private:
-    using super = Tab;public:
+    using super = Tab;
+public:
     TabTable(TheHub&, Params&, QStringList const& headers, QStringList const& outHeaders,
              typ::cmp_vec const&);
 private:
@@ -179,10 +182,11 @@ private:
         QCheckBox* cb;
     };
     typedef typ::vec<showcol_t> showcol_vec;
-private:
+
     class ShowColsWidget : public QWidget {
-private:
-    using super = QWidget;public:
+    private:
+    using super = QWidget;
+    public:
         ShowColsWidget(Table&, showcol_vec&);
     private:
         Table& table_;
