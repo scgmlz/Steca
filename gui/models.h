@@ -15,7 +15,13 @@
 #ifndef MODELS_H
 #define MODELS_H
 
+#include "typ/vec.h"
 #include "types/type_models.h"
+
+namespace data {
+    class Datasets;
+    struct Metadata;
+}
 
 namespace models {
 
@@ -78,7 +84,7 @@ public:
     void flipCheck(uint row);
 
 private:
-    data::shp_Metadata metadata_;
+    QSharedPointer<data::Metadata const> metadata_;
     typ::vec<bool> rowsChecked_;
 };
 

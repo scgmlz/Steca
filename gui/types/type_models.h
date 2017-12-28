@@ -15,9 +15,11 @@
 #ifndef TYPE_MODELS_H
 #define TYPE_MODELS_H
 
-#include "refhub.h"
 #include <QAbstractTableModel>
 
+namespace gui {
+    class TheHub;
+}
 
 namespace models {
 
@@ -26,7 +28,7 @@ extern QModelIndex const ANY_INDEX;
 
 //! The base class of all table-like models
 
-class TableModel : public QAbstractTableModel, protected gui::RefHub {
+class TableModel : public QAbstractTableModel {
 public:
     using Index = QModelIndex;
     using rcIndex = Index const&;
@@ -37,6 +39,7 @@ public:
 
 protected:
     static int const DCOL = 1; //!< the left-most column is hidden
+    class gui::TheHub& hub_;
 };
 
 } // namespace models

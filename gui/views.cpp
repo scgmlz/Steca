@@ -17,8 +17,6 @@
 namespace gui {
 namespace views {
 
-ListView::ListView(TheHub& hub) : RefHub(hub) {}
-
 void ListView::updateSingleSelection() {
     int row = currentIndex().row();
     model()->signalReset();

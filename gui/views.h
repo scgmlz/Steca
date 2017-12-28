@@ -23,9 +23,9 @@ namespace views {
 
 //! A (tree-)list view with a reference to the hub. Single selection.
 
-class ListView : public TreeListView, protected RefHub {
+class ListView : public TreeListView {
 public:
-    ListView(TheHub&);
+    ListView(TheHub& hub) : hub_(hub) {}
 
     using Model = models::TableModel;
 
@@ -39,6 +39,8 @@ protected:
     Model* model() const { return static_cast<Model*>(TreeListView::model()); }
     void updateSingleSelection();
     void selectRow(int);
+
+    class TheHub& hub_;
 };
 
 

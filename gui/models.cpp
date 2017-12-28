@@ -13,6 +13,8 @@
 // ************************************************************************** //
 
 #include "thehub.h"
+#include "data/dataset.h"
+#include "models.h"
 
 namespace models {
 
