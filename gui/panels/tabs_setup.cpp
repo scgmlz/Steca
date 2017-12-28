@@ -391,7 +391,7 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
 
         auto newReflData = [this](bool invalidateGuesses) {
             if (!silentSpin_) {
-                tellReflectionValues(
+                hub_.tellReflectionValues(
                     typ::Range::safeFrom(spinRangeMin_->value(), spinRangeMax_->value()),
                     qpair(spinGuessPeakX_->value(), spinGuessPeakY_->value()),
                     fwhm_t(spinGuessFWHM_->value()), invalidateGuesses);
