@@ -15,10 +15,12 @@
 #ifndef ACTIONS_H
 #define ACTIONS_H
 
-#include "refhub.h"
+#include "typ/str.h"
 #include <QAction>
 
 namespace gui {
+
+class TheHub;
 
 class Action : public QAction {
 public:
@@ -47,7 +49,7 @@ protected:
     str text1_, text2_;
 };
 
-class Actions : protected RefHub {
+class Actions {
 public:
     Actions(TheHub&);
 
@@ -61,6 +63,9 @@ public:
         *fixedIntenImage, *fixedIntenDgram, *combinedDgram, *selRegions, *showBackground,
         *clearBackground, *clearReflections, *addReflection, *remReflection, *outputPolefigures,
         *outputDiagrams, *outputDiffractograms;
+
+protected:
+    TheHub& hub_;
 
 private:
     Action& trg(Action*& action, rcstr text); //! < trigger

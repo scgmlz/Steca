@@ -80,7 +80,7 @@ Action& ToggleAction::alt(rcstr text2) {
 //  class Actions
 // ************************************************************************** //
 
-Actions::Actions(TheHub& hub) : RefHub(hub) {
+Actions::Actions(TheHub& hub) : hub_(hub) {
     using QKey = QKeySequence;
 
     // create actions
