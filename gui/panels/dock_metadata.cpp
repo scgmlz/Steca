@@ -50,7 +50,7 @@ int MetadataView::sizeHintForColumn(int col) const {
 }
 
 DockMetadata::DockMetadata(TheHub& hub)
-    : super("Metadata", "dock-metadata", Qt::Vertical), RefHub(hub) {
+    : DockWidget("Metadata", "dock-metadata", Qt::Vertical), hub_(hub) {
     box_->addWidget((metadataView_ = new MetadataView(hub)));
 }
 

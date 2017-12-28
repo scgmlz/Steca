@@ -18,17 +18,21 @@
 #include "panel.h"
 
 namespace gui {
+
+class TheHub;
+
 namespace panel {
 
-class DockMetadata : public DockWidget, protected RefHub {
-private:
-    using super = DockWidget;
+class DockMetadata : public DockWidget {
 public:
     DockMetadata(TheHub&);
 
 private:
     class MetadataView* metadataView_;
+    TheHub& hub_;
 };
-}
-}
+
+} // namespace panel
+} // namespace gui
+
 #endif // DOCK_METADATA_H
