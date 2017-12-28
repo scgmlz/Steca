@@ -360,7 +360,6 @@ void TheHub::remReflection(uint i) {
     session_->remReflection(i);
     if (session_->reflections().isEmpty())
         tellSelectedReflection(calc::shp_Reflection());
-
     emit sigReflectionsChanged();
 }
 

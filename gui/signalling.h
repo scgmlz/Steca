@@ -36,8 +36,7 @@ private:
 
     TheHub& asHub();
 
-protected:
-    // emit signals - only TheHub can call these
+public: // emit signals
     void tellSessionCleared();
     void tellDatasetSelected(data::shp_Dataset);
     void tellSelectedReflection(calc::shp_Reflection);

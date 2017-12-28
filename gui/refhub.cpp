@@ -20,7 +20,6 @@ namespace gui {
 RefHub::RefHub(gui::TheHub& hub) : hub_(hub) {}
 
 void RefHub::tellDatasetSelected(data::shp_Dataset d) { hub_.tellDatasetSelected(d); }
-void RefHub::tellSelectedReflection(calc::shp_Reflection r) { hub_.tellSelectedReflection (r); }
 void RefHub::tellReflectionData(calc::shp_Reflection r) { hub_.tellReflectionData(r); }
 void RefHub::tellReflectionValues(
     typ::Range const& rge, qpair const& peak, fwhm_t fwhm, bool withGuesses) {

@@ -99,7 +99,7 @@ void ReflectionView::selectionChanged(
     super::selectionChanged(selected, deselected);
 
     QList<QModelIndex> indexes = selected.indexes();
-    tellSelectedReflection(
+    hub_.tellSelectedReflection(
         indexes.isEmpty()
             ? calc::shp_Reflection()
             : model()->data(indexes.first(), Model::GetDatasetRole).value<calc::shp_Reflection>());

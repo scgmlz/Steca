@@ -31,7 +31,6 @@ protected:
     TheHub& hub_;
 protected:
     void tellDatasetSelected(data::shp_Dataset);
-    void tellSelectedReflection(calc::shp_Reflection);
     void tellReflectionData(calc::shp_Reflection);
     void tellReflectionValues(typ::Range const&, qpair const&, fwhm_t, bool);
 };
