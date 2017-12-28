@@ -16,7 +16,7 @@
 #define MODELS_H
 
 #include "typ/vec.h"
-#include "types/type_models.h"
+#include "table_model.h"
 
 namespace data {
     class Datasets;
