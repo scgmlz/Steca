@@ -18,7 +18,7 @@
 #include "actions.h"
 #include "models.h"
 #include "session.h"
-
+#include "signalling.h"
 
 namespace gui {
 

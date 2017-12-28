@@ -1,0 +1,2 @@
+#!/bin/sh
+find . \( -name \*.h -or -name \*.cpp \) ! \( -path ./3rdparty/\* -or -path ./*build/\* \) | sort

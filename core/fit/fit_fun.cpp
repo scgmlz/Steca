@@ -593,7 +593,7 @@ fwhm_t PseudoVoigt2::fwhmError() const {
 // ************************************************************************** //
 
 void FunctionRegistry::register_fct(const initializer_type f) {
-    typ::SimpleFunction* tmp = f();
+    fit::PeakFunction* tmp = f();
     register_item(tmp->name(), f);
 };
 

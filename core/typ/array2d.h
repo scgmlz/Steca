@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/typ/array2d.h
-//! @brief     Defines ...
+//! @brief     Defines and mostly implements size2d and Array2D
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -20,6 +20,7 @@
 
 namespace typ {
 
+//! Geometry of a rectangle
 struct size2d {
     uint w, h;
 
@@ -41,7 +42,7 @@ struct size2d {
     size2d transposed() const { return size2d(h, w); }
 };
 
-// 2D (indexed by uint i/j) array
+//! 2D (indexed by uint i/j) array
 template <typename T> class Array2D {
     private:
     size2d size_;

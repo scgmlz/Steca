@@ -17,6 +17,7 @@
 
 #include "actions.h"
 #include "panel.h"
+#include "signalling.h" // for eFittingTab
 
 namespace gui {
 namespace panel {
