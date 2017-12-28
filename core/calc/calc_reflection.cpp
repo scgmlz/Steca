@@ -20,7 +20,7 @@ Reflection::Reflection(QString const& peakFunctionName) : peakFunction_(nullptr)
     setPeakFunction(peakFunctionName);
 }
 
-fit::PeakFunction const& Reflection::peakFunction() const {
+PeakFunction const& Reflection::peakFunction() const {
     debug::ensure(peakFunction_);
     return *peakFunction_;
 }

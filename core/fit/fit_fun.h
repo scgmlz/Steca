@@ -22,9 +22,7 @@
 #include "typ/realpair.h"
 #include "typ/types.h"
 
-namespace fit {
-
-//! a polynom(ial)
+//! A polynomial, for fitting the background of a diffractogram
 
 class Polynom final : public typ::SimpleFunction {
 private:
@@ -226,10 +224,8 @@ public:
     str name() const { return "PseudoVoigt2"; }
 };
 
-} // namespace fit
 
-
-typedef class fit::PeakFunction* (*initializer_type)();
+typedef class PeakFunction* (*initializer_type)();
 
 namespace typ {
     class JsonObj;
@@ -238,8 +234,8 @@ namespace typ {
 class FunctionRegistry : public IRegistry<initializer_type>, public ISingleton<FunctionRegistry> {
 public:
     void register_fct(const initializer_type f);
-    static fit::PeakFunction* name2new(QString const&) THROWS;
-    static fit::PeakFunction* clone(fit::PeakFunction const& old);
+    static PeakFunction* name2new(QString const&) THROWS;
+    static PeakFunction* clone(PeakFunction const& old);
 };
 
 #endif // FIT_FUN_H

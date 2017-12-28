@@ -32,12 +32,12 @@ public:
     void fit(typ::Curve const&);
 
     QString peakFunctionName() const { return peakFunction_->name(); }
-    fit::PeakFunction const& peakFunction() const;
+    PeakFunction const& peakFunction() const;
     typ::Range const& range() const;
     typ::JsonObj to_json() const;
 
 private:
-    scoped<fit::PeakFunction*> peakFunction_;
+    scoped<PeakFunction*> peakFunction_;
 };
 
 typedef QSharedPointer<Reflection> shp_Reflection;

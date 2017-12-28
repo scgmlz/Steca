@@ -609,7 +609,7 @@ void Diffractogram::calcBackground() {
     bg_.clear();
     dgramBgFitted_.clear();
 
-    auto bgPolynom = fit::Polynom::fromFit(hub_.bgPolyDegree(), dgram_, hub_.bgRanges());
+    auto bgPolynom = Polynom::fromFit(hub_.bgPolyDegree(), dgram_, hub_.bgRanges());
 
     for_i (dgram_.count()) {
         qreal x = dgram_.x(i), y = bgPolynom.y(x);

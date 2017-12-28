@@ -239,7 +239,7 @@ calc::shp_DatasetLens Session::datasetLens(
 
 Curve Session::curveMinusBg(calc::DatasetLens const& lens, typ::Range const& rgeGma) const {
     Curve curve = lens.makeCurve(rgeGma);
-    curve.subtract(fit::Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
+    curve.subtract(Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
     return curve;
 }
 
@@ -250,7 +250,7 @@ calc::ReflectionInfo Session::makeReflectionInfo(
 
     // fit peak, and retrieve peak parameters:
     Curve curve = curveMinusBg(lens, gmaSector);
-    scoped<fit::PeakFunction*> peakFunction = FunctionRegistry::clone(reflection.peakFunction());
+    scoped<PeakFunction*> peakFunction = FunctionRegistry::clone(reflection.peakFunction());
     peakFunction->fit(curve);
     Range const& rgeTth = peakFunction->range();
     qpair peak = peakFunction->fittedPeak();
@@ -333,7 +333,7 @@ void Session::addReflection(const QJsonObject& obj) {
 qreal Session::calcAvgBackground(data::Dataset const& dataset) const {
     auto lens = datasetLens(dataset, dataset.datasets(), eNorm::NONE, true, true);
     Curve gmaCurve = lens->makeCurve(); // had argument averaged=true
-    auto bgPolynom = fit::Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
+    auto bgPolynom = Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
     return bgPolynom.avgY(lens->rgeTth());
 }
 

@@ -17,11 +17,21 @@
 #include "typ/json.h"
 #include <qmath.h>
 
-namespace fit {
-
 using typ::Range;
 using typ::Curve;
 using typ::JsonObj;
+
+namespace { // file-scope functions
+
+//! Compute a low power with an exponent of type uint
+static qreal pow_n(qreal x, uint n) {
+    qreal val = 1;
+    while (n-- > 0)
+        val *= x;
+    return val;
+}
+
+} // file-scope functions
 
 // ************************************************************************** //
 //  class Polynom
@@ -35,14 +45,6 @@ uint Polynom::degree() const {
 
 void Polynom::setDegree(uint degree) {
     super::setParameterCount(degree + 1);
-}
-
-// the power with *uint* exponent
-static qreal pow_n(qreal x, uint n) {
-    qreal val = 1;
-    while (n-- > 0)
-        val *= x;
-    return val;
 }
 
 qreal Polynom::y(qreal x, qreal const* parValues) const {
@@ -585,25 +587,22 @@ fwhm_t PseudoVoigt2::fwhmError() const {
     return fwhm_t(parameters_.at(parSIGMA).error() + parameters_.at(parGAMMA).error());
 }
 
-} // namespace fit
-
-
 // ************************************************************************** //
 //  FunctionRegistry
 // ************************************************************************** //
 
 void FunctionRegistry::register_fct(const initializer_type f) {
-    fit::PeakFunction* tmp = f();
+    PeakFunction* tmp = f();
     register_item(tmp->name(), f);
 };
 
-fit::PeakFunction* FunctionRegistry::name2new(QString const& peakFunctionName) {
+PeakFunction* FunctionRegistry::name2new(QString const& peakFunctionName) {
     initializer_type make_new = instance()->find_or_fail(peakFunctionName);
     return make_new();
 }
 
-fit::PeakFunction* FunctionRegistry::clone(fit::PeakFunction const& old) {
-    fit::PeakFunction* ret = name2new(old.name());
+PeakFunction* FunctionRegistry::clone(PeakFunction const& old) {
+    PeakFunction* ret = name2new(old.name());
     *ret = old;
     return ret;
 }
@@ -611,9 +610,9 @@ fit::PeakFunction* FunctionRegistry::clone(fit::PeakFunction const& old) {
 
 void register_fit_functions() {
     auto G = FunctionRegistry::instance();
-    G->register_fct([]()->fit::PeakFunction*{return new fit::Raw();});
-    G->register_fct([]()->fit::PeakFunction*{return new fit::Gaussian();});
-    G->register_fct([]()->fit::PeakFunction*{return new fit::Lorentzian();});
-    G->register_fct([]()->fit::PeakFunction*{return new fit::PseudoVoigt1();});
-    G->register_fct([]()->fit::PeakFunction*{return new fit::PseudoVoigt2();});
+    G->register_fct([]()->PeakFunction*{return new Raw();});
+    G->register_fct([]()->PeakFunction*{return new Gaussian();});
+    G->register_fct([]()->PeakFunction*{return new Lorentzian();});
+    G->register_fct([]()->PeakFunction*{return new PseudoVoigt1();});
+    G->register_fct([]()->PeakFunction*{return new PseudoVoigt2();});
 }

@@ -17,8 +17,6 @@
 #include "def/idiomatic_for.h"
 #include <qmath.h>
 
-namespace fit {
-
 using typ::Curve;
 using typ::Function;
 
@@ -99,5 +97,3 @@ void FitWrapper::callbackJacobianLM(
         }
     }
 }
-
-} // namespace fit

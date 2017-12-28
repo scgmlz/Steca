@@ -17,8 +17,6 @@
 
 #include "fit_fun.h"
 
-namespace fit {
-
 class FitWrapper {
 public:
     void fit(typ::Function&, typ::Curve const&);
@@ -33,7 +31,5 @@ private:
     void callbackY(qreal*, qreal*, int, int, void*);
     void callbackJacobianLM(qreal*, qreal*, int, int, void*);
 };
-
-} // namespace fit
 
 #endif
