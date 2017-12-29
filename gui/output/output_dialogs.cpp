@@ -27,7 +27,7 @@
 namespace gui {
 namespace output {
 
-PanelReflection::PanelReflection(TheHub& hub) : super(hub, "Reflection") {
+PanelReflection::PanelReflection(TheHub& hub) : panel::GridPanel(hub, "Reflection") {
     auto g = grid();
     cbRefl = new QComboBox;
     cbRefl->addItems(hub_.reflectionsModel.names());
@@ -35,7 +35,7 @@ PanelReflection::PanelReflection(TheHub& hub) : super(hub, "Reflection") {
     g->addRowStretch();
 }
 
-PanelGammaSlices::PanelGammaSlices(TheHub& hub) : super(hub, "Gamma slices") {
+PanelGammaSlices::PanelGammaSlices(TheHub& hub) : panel::GridPanel(hub, "Gamma slices") {
     auto g = grid();
 
     g->addWidget(label("count"), 0, 0);
@@ -60,7 +60,7 @@ void PanelGammaSlices::updateValues() {
         stepGamma->clear();
 }
 
-PanelGammaRange::PanelGammaRange(TheHub& hub) : super(hub, "Gamma range") {
+PanelGammaRange::PanelGammaRange(TheHub& hub) : panel::GridPanel(hub, "Gamma range") {
     auto g = grid();
 
     g->addWidget((cbLimitGamma = check("limit")), 0, 0, 1, 2);
@@ -89,7 +89,7 @@ void PanelGammaRange::updateValues() {
     maxGamma->setEnabled(on);
 }
 
-PanelPoints::PanelPoints(TheHub& hub) : super(hub, "Points") {
+PanelPoints::PanelPoints(TheHub& hub) : panel::GridPanel(hub, "Points") {
     auto g = grid();
     g->addWidget((rbCalc = radioButton("calculated")), 0, 0);
     g->addWidget((rbInterp = radioButton("interpolated")), 1, 0);
@@ -97,7 +97,7 @@ PanelPoints::PanelPoints(TheHub& hub) : super(hub, "Points") {
     g->addRowStretch();
 }
 
-PanelInterpolation::PanelInterpolation(TheHub& hub) : super(hub, "Interpolation") {
+PanelInterpolation::PanelInterpolation(TheHub& hub) : panel::GridPanel(hub, "Interpolation") {
     auto g = grid();
 
     g->addWidget(label("step α"), 0, 0, Qt::AlignRight);
@@ -117,7 +117,7 @@ PanelInterpolation::PanelInterpolation(TheHub& hub) : super(hub, "Interpolation"
     g->addRowStretch();
 }
 
-PanelDiagram::PanelDiagram(TheHub& hub) : super(hub, "Diagram") {
+PanelDiagram::PanelDiagram(TheHub& hub) : panel::GridPanel(hub, "Diagram") {
     auto tags = calc::ReflectionInfo::dataTags(false);
     for_i (data::Metadata::numAttributes(false) - data::Metadata::numAttributes(true))
         tags.removeLast(); // remove all tags that are not numbers
@@ -133,7 +133,7 @@ PanelDiagram::PanelDiagram(TheHub& hub) : super(hub, "Diagram") {
     g->addRowStretch();
 }
 
-PanelFitError::PanelFitError(TheHub& hub) : super(hub, "Fit error") {}
+PanelFitError::PanelFitError(TheHub& hub) : panel::GridPanel(hub, "Fit error") {}
 
 Params::Params(TheHub& hub, ePanels panels)
     : hub_(hub)

@@ -31,8 +31,6 @@ namespace output {
 /* Note that some data members are public, to simplify the code. Be careful. */
 
 class PanelReflection : public panel::GridPanel {
-private:
-    using super = panel::GridPanel;
 public:
     PanelReflection(TheHub&);
     QComboBox* cbRefl;
@@ -40,8 +38,6 @@ public:
 
 
 class PanelGammaSlices : public panel::GridPanel {
-private:
-    using super = panel::GridPanel;
 public:
     PanelGammaSlices(TheHub&);
     QSpinBox* numSlices;
@@ -53,8 +49,6 @@ private:
 
 
 class PanelGammaRange : public panel::GridPanel {
-private:
-    using super = panel::GridPanel;
 public:
     PanelGammaRange(TheHub&);
     QCheckBox* cbLimitGamma;
@@ -66,8 +60,6 @@ private:
 
 
 class PanelPoints : public panel::GridPanel {
-private:
-    using super = panel::GridPanel;
 public:
     PanelPoints(TheHub&);
     QRadioButton *rbCalc, *rbInterp;
@@ -75,8 +67,6 @@ public:
 
 
 class PanelInterpolation : public panel::GridPanel {
-private:
-    using super = panel::GridPanel;
 public:
     PanelInterpolation(TheHub&);
     QDoubleSpinBox *stepAlpha, *stepBeta, *idwRadius;
@@ -86,8 +76,6 @@ public:
 
 
 class PanelDiagram : public panel::GridPanel {
-private:
-    using super = panel::GridPanel;
 public:
     PanelDiagram(TheHub&);
     QComboBox *xAxis, *yAxis;
@@ -95,8 +83,6 @@ public:
 
 
 class PanelFitError : public panel::GridPanel {
-private:
-    using super = panel::GridPanel;
 public:
     PanelFitError(TheHub&);
 };
@@ -104,7 +90,8 @@ public:
 
 class Params : public QWidget {
 private:
-    using super = QWidget;public:
+    using super = QWidget;
+public:
     enum ePanels {
         REFLECTION = 0x01,
         GAMMA = 0x02,
