@@ -30,27 +30,18 @@ namespace output {
 
 /* Note that some data members are public, to simplify the code. Be careful. */
 
-
-class Panel : public panel::GridPanel {
+class PanelReflection : public panel::GridPanel {
 private:
     using super = panel::GridPanel;
-public:
-    using super::super;
-};
-
-
-class PanelReflection : public Panel {
-private:
-    using super = Panel;
 public:
     PanelReflection(TheHub&);
     QComboBox* cbRefl;
 };
 
 
-class PanelGammaSlices : public Panel {
+class PanelGammaSlices : public panel::GridPanel {
 private:
-    using super = Panel;
+    using super = panel::GridPanel;
 public:
     PanelGammaSlices(TheHub&);
     QSpinBox* numSlices;
@@ -61,9 +52,9 @@ private:
 };
 
 
-class PanelGammaRange : public Panel {
+class PanelGammaRange : public panel::GridPanel {
 private:
-    using super = Panel;
+    using super = panel::GridPanel;
 public:
     PanelGammaRange(TheHub&);
     QCheckBox* cbLimitGamma;
@@ -74,18 +65,18 @@ private:
 };
 
 
-class PanelPoints : public Panel {
+class PanelPoints : public panel::GridPanel {
 private:
-    using super = Panel;
+    using super = panel::GridPanel;
 public:
     PanelPoints(TheHub&);
     QRadioButton *rbCalc, *rbInterp;
 };
 
 
-class PanelInterpolation : public Panel {
+class PanelInterpolation : public panel::GridPanel {
 private:
-    using super = Panel;
+    using super = panel::GridPanel;
 public:
     PanelInterpolation(TheHub&);
     QDoubleSpinBox *stepAlpha, *stepBeta, *idwRadius;
@@ -94,18 +85,18 @@ public:
 };
 
 
-class PanelDiagram : public Panel {
+class PanelDiagram : public panel::GridPanel {
 private:
-    using super = Panel;
+    using super = panel::GridPanel;
 public:
     PanelDiagram(TheHub&);
     QComboBox *xAxis, *yAxis;
 };
 
 
-class PanelFitError : public Panel {
+class PanelFitError : public panel::GridPanel {
 private:
-    using super = Panel;
+    using super = panel::GridPanel;
 public:
     PanelFitError(TheHub&);
 };
