@@ -7,8 +7,8 @@
 //! \file  singleton.h
 //! \brief declares and implements the mixin interface ISingleton.
 
-#ifndef ISINGLETON_H
-#define ISINGLETON_H
+#ifndef SINGLETON_H
+#define SINGLETON_H
 
 //! Mixin interface for singleton classes.
 
@@ -26,4 +26,4 @@ public:
     }
 };
 
-#endif // ISINGLETON_H
+#endif // SINGLETON_H

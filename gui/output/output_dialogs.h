@@ -28,66 +28,6 @@ class Action;
 
 namespace output {
 
-/* Note that some data members are public, to simplify the code. Be careful. */
-
-class PanelReflection : public panel::GridPanel {
-public:
-    PanelReflection(TheHub&);
-    QComboBox* cbRefl;
-};
-
-
-class PanelGammaSlices : public panel::GridPanel {
-public:
-    PanelGammaSlices(TheHub&);
-    QSpinBox* numSlices;
-    QDoubleSpinBox* stepGamma;
-    void updateValues();
-private:
-    typ::Range rgeGma_;
-};
-
-
-class PanelGammaRange : public panel::GridPanel {
-public:
-    PanelGammaRange(TheHub&);
-    QCheckBox* cbLimitGamma;
-    QDoubleSpinBox *minGamma, *maxGamma;
-    void updateValues();
-private:
-    typ::Range rgeGma_;
-};
-
-
-class PanelPoints : public panel::GridPanel {
-public:
-    PanelPoints(TheHub&);
-    QRadioButton *rbCalc, *rbInterp;
-};
-
-
-class PanelInterpolation : public panel::GridPanel {
-public:
-    PanelInterpolation(TheHub&);
-    QDoubleSpinBox *stepAlpha, *stepBeta, *idwRadius;
-    QDoubleSpinBox *avgAlphaMax, *avgRadius;
-    QSpinBox* avgThreshold;
-};
-
-
-class PanelDiagram : public panel::GridPanel {
-public:
-    PanelDiagram(TheHub&);
-    QComboBox *xAxis, *yAxis;
-};
-
-
-class PanelFitError : public panel::GridPanel {
-public:
-    PanelFitError(TheHub&);
-};
-
-
 class Params : public QWidget {
 private:
     using super = QWidget;
@@ -102,12 +42,12 @@ public:
     Params(TheHub&, ePanels);
     ~Params();
     TheHub& hub_;
-    PanelReflection* panelReflection;
-    PanelGammaSlices* panelGammaSlices;
-    PanelGammaRange* panelGammaRange;
-    PanelPoints* panelPoints;
-    PanelInterpolation* panelInterpolation;
-    PanelDiagram* panelDiagram;
+    class PanelReflection* panelReflection;
+    class PanelGammaSlices* panelGammaSlices;
+    class PanelGammaRange* panelGammaRange;
+    class PanelPoints* panelPoints;
+    class PanelInterpolation* panelInterpolation;
+    class PanelDiagram* panelDiagram;
     str saveDir, saveFmt;
     void readSettings();
     void saveSettings() const;

@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "output_polefigures.h"
+#include "dialog_panels.h"
 #include "colors.h"
 #include "thehub.h"
 #include "write_file.h"

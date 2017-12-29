@@ -47,4 +47,4 @@ typedef typ::vec<shp_Reflection> Reflections;
 
 Q_DECLARE_METATYPE(calc::shp_Reflection)
 
-#endif // CORE_REFLECTION_H
+#endif // CALC_REFLECTION_H

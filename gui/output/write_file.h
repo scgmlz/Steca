@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef WRITEFILE_H
-#define WRITEFILE_H
+#ifndef WRITE_FILE_H
+#define WRITE_FILE_H
 
 #include "def/macros.h"
 #include <QFile>
@@ -24,4 +24,4 @@ public:
     WriteFile(rcstr path) THROWS;
 };
 
-#endif // WRITEFILE_H
+#endif // WRITE_FILE_H

@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "output_diffractograms.h"
+#include "dialog_panels.h"
 #include "thehub.h"
 #include "write_file.h"
 

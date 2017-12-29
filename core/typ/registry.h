@@ -7,8 +7,8 @@
 //! \file  registry.h
 //! \brief declares a generic registry mixin interface.
 
-#ifndef IREGISTRY_H
-#define IREGISTRY_H
+#ifndef REGISTRY_H
+#define REGISTRY_H
 
 #include "str.h" // Steca specific
 #include "exception.h" // Steca specific
@@ -50,4 +50,4 @@ public:
     QStringList keys() const { return m_keys; }
 };
 
-#endif // IREGISTRY_H
+#endif // REGISTRY_H

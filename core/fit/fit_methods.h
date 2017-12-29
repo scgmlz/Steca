@@ -32,4 +32,4 @@ private:
     void callbackJacobianLM(qreal*, qreal*, int, int, void*);
 };
 
-#endif
+#endif // FIT_METHODS_H

@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "output_diagrams.h"
+#include "dialog_panels.h"
 #include "thehub.h"
 #include "write_file.h"
 #include "QCustomPlot/qcustomplot.h"

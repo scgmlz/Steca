@@ -64,4 +64,4 @@ protected:
 } // namespace output
 } // namespace gui
 
-#endif // OUTPUT_Diffractograms_H
+#endif // OUTPUT_DIFFRACTOGRAMS_H
