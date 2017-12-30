@@ -16,6 +16,10 @@
 
 namespace models {
 
+// ************************************************************************** //
+//  class FilesModel
+// ************************************************************************** //
+
 FilesModel::FilesModel(gui::TheHub& hub) : TableModel(hub) {
     connect(&hub_, &gui::TheHubSignallingBase::sigFilesChanged, [this]() { signalReset(); });
 }
@@ -43,6 +47,10 @@ QVariant FilesModel::data(rcIndex index, int role) const {
 void FilesModel::removeFile(uint i) {
     hub_.removeFile(i);
 }
+
+// ************************************************************************** //
+//  class DatasetsModel
+// ************************************************************************** //
 
 DatasetsModel::DatasetsModel(gui::TheHub& hub)
     : TableModel(hub)
@@ -105,6 +113,10 @@ void DatasetsModel::showMetaInfo(typ::vec<bool> const& metadataRows) {
     endResetModel();
 }
 
+// ************************************************************************** //
+//  class MetadataModel
+// ************************************************************************** //
+
 MetadataModel::MetadataModel(gui::TheHub& hub) : TableModel(hub) {
     rowsChecked_.fill(false, data::Metadata::numAttributes(false));
 
@@ -159,6 +171,10 @@ void MetadataModel::flipCheck(uint row) {
     item = !item;
     signalReset();
 }
+
+// ************************************************************************** //
+//  class ReflectionsModel
+// ************************************************************************** //
 
 ReflectionsModel::ReflectionsModel(gui::TheHub& hub) : TableModel(hub) {}
 
