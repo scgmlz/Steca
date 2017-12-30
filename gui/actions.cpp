@@ -27,12 +27,7 @@ Action::Action(rcstr text, QObject* parent)
 
 Action& Action::text(rcstr text) {
     setText(text);
-    tip(text);
-    return *this;
-}
-
-Action& Action::tip(rcstr tip) {
-    setToolTip(tip.toLower());
+    setToolTip(text.toLower()); // TODO: do we want lower case ?
     return *this;
 }
 

@@ -27,7 +27,6 @@ public:
     Action(rcstr text, QObject*);
 
     Action& text(rcstr);
-    Action& tip(rcstr);
     Action& key(QKeySequence);
     Action& icon(rcstr);
 };
