@@ -28,16 +28,16 @@ public:
 
     static uint constexpr MAX_POLYNOM_DEGREE = 4;
 
-    QAction *actn_about, *actn_online, *actn_checkUpdate, *actn_quit, *actn_viewStatusbar, *actn_viewFiles, *actn_viewDatasets,
-        *actn_viewDatasetInfo, *actn_viewReset,
+    QAction *trigger_about, *trigger_online, *trigger_checkUpdate, *trigger_quit, *toggle_viewStatusbar, *toggle_viewFiles, *toggle_viewDatasets,
+        *toggle_viewDatasetInfo, *trigger_viewReset,
 #ifndef Q_OS_OSX // Mac has its own
-        *actn_fullScreen,
+        *toggle_fullScreen,
 #endif
-        *actn_loadSession, *actn_saveSession, *actn_clearSession, *actn_addFiles, *actn_remFile, *actn_enableCorr, *actn_remCorr,
-        *actn_rotateImage, *actn_mirrorImage, *actn_linkCuts, *actn_showOverlay, *actn_stepScale, *actn_showBins,
-        *actn_fixedIntenImage, *actn_fixedIntenDgram, *actn_combinedDgram, *actn_selRegions, *actn_showBackground,
-        *actn_clearBackground, *actn_clearReflections, *actn_addReflection, *actn_remReflection, *actn_outputPolefigures,
-        *actn_outputDiagrams, *actn_outputDiffractograms;
+        *trigger_loadSession, *trigger_saveSession, *trigger_clearSession, *trigger_addFiles, *trigger_remFile, *toggle_enableCorr, *trigger_remCorr,
+        *trigger_rotateImage, *toggle_mirrorImage, *toggle_linkCuts, *toggle_showOverlay, *toggle_stepScale, *toggle_showBins,
+        *toggle_fixedIntenImage, *toggle_fixedIntenDgram, *toggle_combinedDgram, *toggle_selRegions, *toggle_showBackground,
+        *trigger_clearBackground, *trigger_clearReflections, *trigger_addReflection, *trigger_remReflection, *trigger_outputPolefigures,
+        *trigger_outputDiagrams, *trigger_outputDiffractograms;
 
     // modifying methods:
     void remFile(uint);

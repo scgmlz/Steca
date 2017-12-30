@@ -49,7 +49,7 @@ FilesView::FilesView(TheHub& hub) : super(hub) {
 
     header()->hide();
 
-    connect(hub_.actn_remFile, &QAction::triggered, [this]() { removeSelected(); });
+    connect(hub_.trigger_remFile, &QAction::triggered, [this]() { removeSelected(); });
 
     connect(&hub_, &TheHubSignallingBase::sigFilesChanged,
             [this]() { selectRows({}); recollect(); });
@@ -93,8 +93,8 @@ DockFiles::DockFiles(TheHub& hub) : DockWidget("Files", "dock-files", Qt::Vertic
     box_->addLayout(h);
 
     h->addStretch();
-    h->addWidget(iconButton(hub_.actn_addFiles));
-    h->addWidget(iconButton(hub_.actn_remFile));
+    h->addWidget(iconButton(hub_.trigger_addFiles));
+    h->addWidget(iconButton(hub_.trigger_remFile));
 
     box_->addWidget((filesView_ = new FilesView(hub)));
 
@@ -107,8 +107,8 @@ DockFiles::DockFiles(TheHub& hub) : DockWidget("Files", "dock-files", Qt::Vertic
     box_->addLayout(h);
 
     h->addWidget((corrFile_ = new LineView()));
-    h->addWidget(iconButton(hub_.actn_enableCorr));
-    h->addWidget(iconButton(hub_.actn_remCorr));
+    h->addWidget(iconButton(hub_.toggle_enableCorr));
+    h->addWidget(iconButton(hub_.trigger_remCorr));
 
     connect(&hub_, &TheHubSignallingBase::sigCorrFile,
             [this](data::shp_File file) {

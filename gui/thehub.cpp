@@ -36,85 +36,85 @@ TheHub::TheHub()
 
     // create actions
 
-    actn_about = newTrigger("About && Configuration...");
-    actn_online = newTrigger("Online documentation...");
-    actn_checkUpdate = newTrigger("Check for update...");
-    actn_quit = newTrigger("Quit");
+    trigger_about = newTrigger("About && Configuration...");
+    trigger_online = newTrigger("Online documentation...");
+    trigger_checkUpdate = newTrigger("Check for update...");
+    trigger_quit = newTrigger("Quit");
 
-    actn_viewStatusbar = newToggle("Statusbar");
-    actn_viewFiles = newToggle("Files");
-    actn_viewDatasets = newToggle("Datasets");
-    actn_viewDatasetInfo = newToggle("Metadata");
-    actn_viewReset = newTrigger("Reset");
+    toggle_viewStatusbar = newToggle("Statusbar");
+    toggle_viewFiles = newToggle("Files");
+    toggle_viewDatasets = newToggle("Datasets");
+    toggle_viewDatasetInfo = newToggle("Metadata");
+    trigger_viewReset = newTrigger("Reset");
 #ifndef Q_OS_OSX
-    actn_fullScreen = newToggle("FullScreen");
+    toggle_fullScreen = newToggle("FullScreen");
 #endif
 
-    actn_loadSession = newTrigger("Load session...");
-    actn_saveSession = newTrigger("Save session...");
-    actn_clearSession = newTrigger("Clear session (to defaults)");
+    trigger_loadSession = newTrigger("Load session...");
+    trigger_saveSession = newTrigger("Save session...");
+    trigger_clearSession = newTrigger("Clear session (to defaults)");
 
-    actn_addFiles = newTrigger("Add files...", ":/icon/add");
-    actn_remFile = newTrigger("Remove selected file(s)", ":/icon/rem");
-    actn_enableCorr = newToggle("Enable correction file...", ":/icon/useCorrection");
-    actn_remCorr = newTrigger("Remove correction file", ":/icon/clear");
+    trigger_addFiles = newTrigger("Add files...", ":/icon/add");
+    trigger_remFile = newTrigger("Remove selected file(s)", ":/icon/rem");
+    toggle_enableCorr = newToggle("Enable correction file...", ":/icon/useCorrection");
+    trigger_remCorr = newTrigger("Remove correction file", ":/icon/clear");
 
-    actn_rotateImage = newTrigger("Rotate", ":/icon/rotate0");
-    actn_mirrorImage = newToggle("Mirror", ":/icon/mirrorHorz");
-    actn_linkCuts = newToggle("Link cuts", ":/icon/link");
-    actn_showOverlay = newToggle("Show overlay", ":/icon/crop");
-    actn_stepScale = newToggle("Scale in steps", ":/icon/steps");
-    actn_showBins = newToggle("Show bins", ":/icon/angle");
+    trigger_rotateImage = newTrigger("Rotate", ":/icon/rotate0");
+    toggle_mirrorImage = newToggle("Mirror", ":/icon/mirrorHorz");
+    toggle_linkCuts = newToggle("Link cuts", ":/icon/link");
+    toggle_showOverlay = newToggle("Show overlay", ":/icon/crop");
+    toggle_stepScale = newToggle("Scale in steps", ":/icon/steps");
+    toggle_showBins = newToggle("Show bins", ":/icon/angle");
 
-    actn_fixedIntenImage = newToggle("Global intensity scale", ":/icon/scale");
-    actn_fixedIntenDgram = newToggle("Fixed intensity scale");
+    toggle_fixedIntenImage = newToggle("Global intensity scale", ":/icon/scale");
+    toggle_fixedIntenDgram = newToggle("Fixed intensity scale");
 
-    actn_combinedDgram = newToggle("All datasets");
+    toggle_combinedDgram = newToggle("All datasets");
 
-    actn_selRegions = newToggle("Select regions", ":/icon/selRegion");
-    actn_showBackground = newToggle("Show fitted background", ":/icon/showBackground");
-    actn_clearBackground = newTrigger("Clear background regions", ":/icon/clear");
-    actn_clearReflections = newTrigger("Clear reflections", ":/icon/clear");
+    toggle_selRegions = newToggle("Select regions", ":/icon/selRegion");
+    toggle_showBackground = newToggle("Show fitted background", ":/icon/showBackground");
+    trigger_clearBackground = newTrigger("Clear background regions", ":/icon/clear");
+    trigger_clearReflections = newTrigger("Clear reflections", ":/icon/clear");
 
-    actn_addReflection = newTrigger("Add reflection", ":/icon/add");
-    actn_remReflection = newTrigger("Remove reflection", ":/icon/rem");
+    trigger_addReflection = newTrigger("Add reflection", ":/icon/add");
+    trigger_remReflection = newTrigger("Remove reflection", ":/icon/rem");
 
-    actn_outputPolefigures = newTrigger("Pole figures...");
-    actn_outputDiagrams = newTrigger("Diagrams...");
-    actn_outputDiffractograms = newTrigger("Diffractograms...");
+    trigger_outputPolefigures = newTrigger("Pole figures...");
+    trigger_outputDiagrams = newTrigger("Diagrams...");
+    trigger_outputDiffractograms = newTrigger("Diffractograms...");
 
     // key shortcuts
 
-    actn_quit->setShortcut(QKey::Quit);
+    trigger_quit->setShortcut(QKey::Quit);
 
-    actn_viewStatusbar->setShortcut(Qt::Key_F12);
-    actn_viewFiles->setShortcut(Qt::Key_F8);
-    actn_viewDatasets->setShortcut(Qt::Key_F9);
-    actn_viewDatasetInfo->setShortcut(Qt::Key_F10);
+    toggle_viewStatusbar->setShortcut(Qt::Key_F12);
+    toggle_viewFiles->setShortcut(Qt::Key_F8);
+    toggle_viewDatasets->setShortcut(Qt::Key_F9);
+    toggle_viewDatasetInfo->setShortcut(Qt::Key_F10);
 
 #ifndef Q_OS_OSX
-    actn_fullScreen->setShortcut(Qt::Key_F11);
+    toggle_fullScreen->setShortcut(Qt::Key_F11);
 #endif
 
-    actn_addFiles->setShortcut(Qt::CTRL | Qt::Key_O);
-    actn_remFile->setShortcut(QKey::Delete);
-    actn_enableCorr->setShortcut(Qt::SHIFT | Qt::CTRL | Qt::Key_C);
+    trigger_addFiles->setShortcut(Qt::CTRL | Qt::Key_O);
+    trigger_remFile->setShortcut(QKey::Delete);
+    toggle_enableCorr->setShortcut(Qt::SHIFT | Qt::CTRL | Qt::Key_C);
 
-    actn_rotateImage->setShortcut(Qt::CTRL | Qt::Key_R);
+    trigger_rotateImage->setShortcut(Qt::CTRL | Qt::Key_R);
 
     // handle signals
 
     QObject::connect(this, &gui::TheHub::sigFilesSelected,
-            [this]() { actn_remFile->setEnabled(!collectedFromFiles().isEmpty()); });
+            [this]() { trigger_remFile->setEnabled(!collectedFromFiles().isEmpty()); });
     QObject::connect(this, &gui::TheHub::sigCorrFile,
-            [this](data::shp_File file) { actn_remCorr->setEnabled(!file.isNull()); });
+            [this](data::shp_File file) { trigger_remCorr->setEnabled(!file.isNull()); });
     QObject::connect(this, &gui::TheHub::sigCorrEnabled,
-            [this](bool on) { actn_enableCorr->setChecked(on); });
+            [this](bool on) { toggle_enableCorr->setChecked(on); });
 
     auto deselect = [this]() {
-        actn_fixedIntenImage->setChecked(false);
-        actn_fixedIntenDgram->setChecked(false);
-        actn_combinedDgram->setChecked(false);
+        toggle_fixedIntenImage->setChecked(false);
+        toggle_fixedIntenDgram->setChecked(false);
+        toggle_combinedDgram->setChecked(false);
     };
 
     QObject::connect(this, &gui::TheHub::sigGeometryChanged,
@@ -124,32 +124,32 @@ TheHub::TheHub()
     QObject::connect(this, &gui::TheHub::sigCorrEnabled,
                      [deselect]() { deselect(); });
 
-    actn_remFile->setEnabled(false);
-    actn_remReflection->setEnabled(false);
+    trigger_remFile->setEnabled(false);
+    trigger_remReflection->setEnabled(false);
 
-    connect(actn_enableCorr, &QAction::toggled, [this](bool on) { tryEnableCorrection(on); });
+    connect(toggle_enableCorr, &QAction::toggled, [this](bool on) { tryEnableCorrection(on); });
 
-    connect(actn_remCorr, &QAction::triggered, [this]() { setCorrFile(""); });
+    connect(trigger_remCorr, &QAction::triggered, [this]() { setCorrFile(""); });
 
-    connect(actn_fixedIntenImage, &QAction::toggled, [this](bool on) {
+    connect(toggle_fixedIntenImage, &QAction::toggled, [this](bool on) {
         isFixedIntenImageScale_ = on;
         emit sigDisplayChanged();
     });
 
-    connect(actn_fixedIntenDgram, &QAction::toggled, [this](bool on) {
+    connect(toggle_fixedIntenDgram, &QAction::toggled, [this](bool on) {
         isFixedIntenDgramScale_ = on;
         emit sigDisplayChanged();
     });
 
-    actn_combinedDgram->setChecked(false);
-    connect(actn_combinedDgram, &QAction::toggled, [this](bool on) {
+    toggle_combinedDgram->setChecked(false);
+    connect(toggle_combinedDgram, &QAction::toggled, [this](bool on) {
         isCombinedDgram_ = on;
         emit sigDisplayChanged();
     });
 
-    connect(actn_mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
+    connect(toggle_mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
 
-    connect(actn_rotateImage, &QAction::triggered, [this]() {
+    connect(trigger_rotateImage, &QAction::triggered, [this]() {
         setImageRotate(session_->imageTransform().nextRotate());
     });
 }
@@ -477,15 +477,15 @@ void TheHub::setImageRotate(typ::ImageTransform rot) {
         break;
     }
 
-    actn_rotateImage->setIcon(QIcon(rotateIconFile));
-    actn_mirrorImage->setIcon(QIcon(mirrorIconFile));
+    trigger_rotateImage->setIcon(QIcon(rotateIconFile));
+    toggle_mirrorImage->setIcon(QIcon(mirrorIconFile));
     session_->setImageTransformRotate(rot);
     setImageCut(true, false, session_->imageCut());
     emit sigGeometryChanged();
 }
 
 void TheHub::setImageMirror(bool on) {
-    actn_mirrorImage->setChecked(on);
+    toggle_mirrorImage->setChecked(on);
     session_->setImageTransformMirror(on);
     emit sigGeometryChanged();
 }

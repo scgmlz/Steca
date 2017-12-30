@@ -45,9 +45,9 @@ private:
 ImageWidget::ImageWidget(TheHub& hub) : hub_(hub), scale_(0) {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    connect(hub_.actn_showOverlay, &QAction::toggled, [this]() { update(); });
+    connect(hub_.toggle_showOverlay, &QAction::toggled, [this]() { update(); });
 
-    connect(hub_.actn_stepScale, &QAction::toggled, [this]() { setScale(); });
+    connect(hub_.toggle_stepScale, &QAction::toggled, [this]() { setScale(); });
 }
 
 void ImageWidget::setPixmap(QPixmap const& pixmap) {
@@ -64,7 +64,7 @@ void ImageWidget::setScale() {
         scale_ = qMin(qreal(sz.width() - 2) / os.width(), qreal(sz.height() - 2) / os.height());
     }
 
-    if (hub_.actn_stepScale->isChecked() && scale_ > 0)
+    if (hub_.toggle_stepScale->isChecked() && scale_ > 0)
         scale_ = (scale_ >= 1) ? qFloor(scale_) : 1.0 / qCeil(1.0 / scale_);
 
     if (original_.isNull() || !(scale_ > 0))
@@ -91,7 +91,7 @@ void ImageWidget::paintEvent(QPaintEvent*) {
     p.drawPixmap(rect.left(), rect.top(), scaled_);
 
     // overlay
-    if (hub_.actn_showOverlay->isChecked()) {
+    if (hub_.toggle_showOverlay->isChecked()) {
         p.setPen(Qt::lightGray);
 
         // cut
@@ -142,14 +142,14 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
         box.addLayout(hb);
         box.setAlignment(hb, Qt::AlignTop);
 
-        hb->addWidget(iconButton(hub_.actn_fixedIntenImage));
-        hb->addWidget(iconButton(hub_.actn_stepScale));
-        hb->addWidget(iconButton(hub_.actn_showOverlay));
+        hb->addWidget(iconButton(hub_.toggle_fixedIntenImage));
+        hb->addWidget(iconButton(hub_.toggle_stepScale));
+        hb->addWidget(iconButton(hub_.toggle_showOverlay));
         hb->addWidget((spinN_ = spinCell(gui_cfg::em4, 1)));
 
         hb->addStretch(1);
 
-        hb->addWidget(iconButton(hub_.actn_showBins));
+        hb->addWidget(iconButton(hub_.toggle_showBins));
         hb->addWidget(label("γ count"));
         hb->addWidget((numSlices_ = spinCell(gui_cfg::em4, 0)));
         hb->addWidget(label("#"));
@@ -189,17 +189,17 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
         box.addLayout(hb);
         box.setAlignment(hb, Qt::AlignTop);
 
-        hb->addWidget(iconButton(hub_.actn_fixedIntenImage));
-        hb->addWidget(iconButton(hub_.actn_stepScale));
-        hb->addWidget(iconButton(hub_.actn_showOverlay));
+        hb->addWidget(iconButton(hub_.toggle_fixedIntenImage));
+        hb->addWidget(iconButton(hub_.toggle_stepScale));
+        hb->addWidget(iconButton(hub_.toggle_showOverlay));
         hb->addStretch(1);
 
         box.addWidget((corrImageWidget_ = new ImageWidget(hub_)));
     }
 
-    connect(hub_.actn_enableCorr, &QAction::toggled, [this](bool) { render(); });
+    connect(hub_.toggle_enableCorr, &QAction::toggled, [this](bool) { render(); });
 
-    connect(hub_.actn_showBins, &QAction::toggled, [this]() { render(); });
+    connect(hub_.toggle_showBins, &QAction::toggled, [this]() { render(); });
 
     connect(&hub_, &TheHubSignallingBase::sigDisplayChanged, [this](){ render(); });
     connect(&hub_, &TheHubSignallingBase::sigGeometryChanged, [this](){ render(); });
@@ -317,7 +317,7 @@ void TabsImages::render() {
             auto oneDataset = dataset_->at(n - 1);
 
             numBin_->setEnabled(true);
-            if (hub_.actn_showBins->isChecked()) {
+            if (hub_.toggle_showBins->isChecked()) {
                 typ::Range rgeTth = lens_->rgeTth();
                 auto curve = lens_->makeCurve();
                      // had argument averaged=false
