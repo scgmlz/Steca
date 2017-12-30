@@ -25,11 +25,6 @@ Action::Action(rcstr text, QObject* parent)
     setToolTip(text.toLower());
 }
 
-Action& Action::key(QKeySequence key) {
-    setShortcut(key);
-    return *this;
-}
-
 Action& Action::icon(rcstr iconFile) {
     setIcon(QIcon(iconFile));
     return *this;
@@ -109,22 +104,22 @@ Actions::Actions(TheHub& hub) : hub_(hub) {
 
     // key shortcuts
 
-    quit->key(QKey::Quit);
+    quit->setShortcut(QKey::Quit);
 
-    viewStatusbar->key(Qt::Key_F12);
-    viewFiles->key(Qt::Key_F8);
-    viewDatasets->key(Qt::Key_F9);
-    viewDatasetInfo->key(Qt::Key_F10);
+    viewStatusbar->setShortcut(Qt::Key_F12);
+    viewFiles->setShortcut(Qt::Key_F8);
+    viewDatasets->setShortcut(Qt::Key_F9);
+    viewDatasetInfo->setShortcut(Qt::Key_F10);
 
 #ifndef Q_OS_OSX
-    fullScreen->key(Qt::Key_F11);
+    fullScreen->setShortcut(Qt::Key_F11);
 #endif
 
-    addFiles->key(Qt::CTRL | Qt::Key_O);
-    remFile->key(QKey::Delete);
-    enableCorr->key(Qt::SHIFT | Qt::CTRL | Qt::Key_C);
+    addFiles->setShortcut(Qt::CTRL | Qt::Key_O);
+    remFile->setShortcut(QKey::Delete);
+    enableCorr->setShortcut(Qt::SHIFT | Qt::CTRL | Qt::Key_C);
 
-    rotateImage->key(Qt::CTRL | Qt::Key_R);
+    rotateImage->setShortcut(Qt::CTRL | Qt::Key_R);
 
     // handle signals
 

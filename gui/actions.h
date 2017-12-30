@@ -26,7 +26,6 @@ class Action : public QAction {
 public:
     Action(rcstr text, QObject*);
 
-    Action& key(QKeySequence);
     Action& icon(rcstr);
 };
 
