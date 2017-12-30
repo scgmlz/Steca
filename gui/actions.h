@@ -30,8 +30,6 @@ public:
     Action& tip(rcstr);
     Action& key(QKeySequence);
     Action& icon(rcstr);
-
-    virtual Action& alt(rcstr text2);
 };
 
 class TriggerAction : public Action {
@@ -42,9 +40,6 @@ public:
 class ToggleAction : public Action {
 public:
     ToggleAction(rcstr text, QObject* = nullptr);
-
-    Action& alt(rcstr text2);
-
 protected:
     str text1_, text2_;
 };

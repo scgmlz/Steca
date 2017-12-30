@@ -46,10 +46,6 @@ Action& Action::icon(rcstr iconFile) {
     return *this;
 }
 
-Action& Action::alt(rcstr /*text2*/) {
-    return *this;
-}
-
 // ************************************************************************** //
 //  class TriggerAction
 // ************************************************************************** //
@@ -64,16 +60,6 @@ TriggerAction::TriggerAction(rcstr text, QObject* parent)
 ToggleAction::ToggleAction(rcstr text, QObject* parent)
     : Action(text, parent), text1_(text) {
     setCheckable(true);
-}
-
-Action& ToggleAction::alt(rcstr text2) {
-    text2_ = text2;
-    connect(this, &Action::toggled, [this](bool on) {
-        rcstr text = on ? text2_ : text1_;
-        setText(text);
-        setToolTip(text);
-    });
-    return Action::alt(text2);
 }
 
 // ************************************************************************** //
