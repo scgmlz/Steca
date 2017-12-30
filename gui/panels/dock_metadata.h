@@ -19,7 +19,6 @@
 
 namespace gui {
 
-class TheHub;
 
 namespace panel {
 

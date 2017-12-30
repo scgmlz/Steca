@@ -35,7 +35,6 @@
 
 class GridLayout : public QGridLayout {
 private:
-    using super = QGridLayout;
 public:
 
     void addRowStretch(int = 1);

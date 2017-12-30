@@ -13,16 +13,8 @@
 // ************************************************************************** //
 
 #include "dialog_panels.h"
-#include "calc/calc_polefigure.h"
-#include "config.h"
-#include "filedialog.h"
 #include "gui_cfg.h"
-#include "settings.h"
 #include "thehub.h"
-#include <QDir>
-#include <QHeaderView>
-#include <QProgressBar>
-#include <QScrollArea>
 
 namespace gui {
 namespace output {

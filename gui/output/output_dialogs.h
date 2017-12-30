@@ -20,7 +20,6 @@
 #include "panels/panel.h"
 
 class QProgressBar;
-class QAction;
 
 namespace gui {
 
@@ -30,7 +29,6 @@ namespace output {
 
 class Params : public QWidget {
 private:
-    using super = QWidget;
 public:
     enum ePanels {
         REFLECTION = 0x01,
@@ -57,7 +55,6 @@ public:
 
 class Table : public TreeView {
 private:
-    using super = TreeView;
 public:
     Table(TheHub&, uint numDataColumns);
     void setColumns(QStringList const& headers, QStringList const& outHeaders, typ::cmp_vec const&);
@@ -106,7 +103,6 @@ private:
 
     class ShowColsWidget : public QWidget {
     private:
-    using super = QWidget;
     public:
         ShowColsWidget(Table&, showcol_vec&);
     private:
