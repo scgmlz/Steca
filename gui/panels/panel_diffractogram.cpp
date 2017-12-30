@@ -482,7 +482,7 @@ Diffractogram::Diffractogram(TheHub& hub)
 
     hb->addStretch();
 
-    actZoom_ = new ToggleAction("zoom", this);
+    actZoom_ = newToggle("zoom");
     enableZoom_ = textButton(actZoom_);
     hb->addWidget(enableZoom_);
 

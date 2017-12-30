@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "thehub.h"
+#include <QApplication>
 
 namespace gui {
 
@@ -25,26 +26,20 @@ Action::Action(rcstr text, QObject* parent)
     setToolTip(text.toLower());
 }
 
-Action& Action::icon(rcstr iconFile) {
-    setIcon(QIcon(iconFile));
-    return *this;
-}
+Action* newTrigger(rcstr text, rcstr iconFile) {
+    Action* ret = new Action(text, qApp);
+    if (iconFile!="")
+        ret->setIcon(QIcon(iconFile));
+    return ret;
+};
 
-// ************************************************************************** //
-//  class TriggerAction
-// ************************************************************************** //
-
-TriggerAction::TriggerAction(rcstr text, QObject* parent)
-    : Action(text, parent) {}
-
-// ************************************************************************** //
-//  class ToggleAction
-// ************************************************************************** //
-
-ToggleAction::ToggleAction(rcstr text, QObject* parent)
-    : Action(text, parent) {
-    setCheckable(true);
-}
+Action* newToggle(rcstr text, rcstr iconFile) {
+    Action* ret = new Action(text, qApp);
+    if (iconFile!="")
+        ret->setIcon(QIcon(iconFile));
+    ret->setCheckable(true);
+    return ret;
+};
 
 // ************************************************************************** //
 //  class Actions
@@ -55,52 +50,52 @@ Actions::Actions(TheHub& hub) : hub_(hub) {
 
     // create actions
 
-    trg(about, "About && Configuration...");
-    trg(online, "Online documentation...");
-    trg(checkUpdate, "Check for update...");
-    trg(quit, "Quit");
+    about = newTrigger("About && Configuration...");
+    online = newTrigger("Online documentation...");
+    checkUpdate = newTrigger("Check for update...");
+    quit = newTrigger("Quit");
 
-    tgl(viewStatusbar, "Statusbar");
-    tgl(viewFiles, "Files");
-    tgl(viewDatasets, "Datasets");
-    tgl(viewDatasetInfo, "Metadata");
-    trg(viewReset, "Reset");
+    viewStatusbar = newToggle("Statusbar");
+    viewFiles = newToggle("Files");
+    viewDatasets = newToggle("Datasets");
+    viewDatasetInfo = newToggle("Metadata");
+    viewReset = newTrigger("Reset");
 #ifndef Q_OS_OSX
-    tgl(fullScreen, "FullScreen");
+    fullScreen = newToggle("FullScreen");
 #endif
 
-    trg(loadSession, "Load session...");
-    trg(saveSession, "Save session...");
-    trg(clearSession, "Clear session (to defaults)");
+    loadSession = newTrigger("Load session...");
+    saveSession = newTrigger("Save session...");
+    clearSession = newTrigger("Clear session (to defaults)");
 
-    trg(addFiles, "Add files...").icon(":/icon/add");
-    trg(remFile, "Remove selected file(s)").icon(":/icon/rem");
-    tgl(enableCorr, "Enable correction file...").icon(":/icon/useCorrection");
-    trg(remCorr, "Remove correction file").icon(":/icon/clear");
+    addFiles = newTrigger("Add files...", ":/icon/add");
+    remFile = newTrigger("Remove selected file(s)", ":/icon/rem");
+    enableCorr = newToggle("Enable correction file...", ":/icon/useCorrection");
+    remCorr = newTrigger("Remove correction file", ":/icon/clear");
 
-    trg(rotateImage, "Rotate").icon(":/icon/rotate0");
-    tgl(mirrorImage, "Mirror").icon(":/icon/mirrorHorz");
-    tgl(linkCuts, "Link cuts").icon(":/icon/link");
-    tgl(showOverlay, "Show overlay").icon(":/icon/crop");
-    tgl(stepScale, "Scale in steps").icon(":/icon/steps");
-    tgl(showBins, "Show bins").icon(":/icon/angle");
+    rotateImage = newTrigger("Rotate", ":/icon/rotate0");
+    mirrorImage = newToggle("Mirror", ":/icon/mirrorHorz");
+    linkCuts = newToggle("Link cuts", ":/icon/link");
+    showOverlay = newToggle("Show overlay", ":/icon/crop");
+    stepScale = newToggle("Scale in steps", ":/icon/steps");
+    showBins = newToggle("Show bins", ":/icon/angle");
 
-    tgl(fixedIntenImage, "Global intensity scale").icon(":/icon/scale");
-    tgl(fixedIntenDgram, "Fixed intensity scale");
+    fixedIntenImage = newToggle("Global intensity scale", ":/icon/scale");
+    fixedIntenDgram = newToggle("Fixed intensity scale");
 
-    tgl(combinedDgram, "All datasets");
+    combinedDgram = newToggle("All datasets");
 
-    tgl(selRegions, "Select regions").icon(":/icon/selRegion");
-    tgl(showBackground, "Show fitted background").icon(":/icon/showBackground");
-    trg(clearBackground, "Clear background regions").icon(":/icon/clear");
-    trg(clearReflections, "Clear reflections").icon(":/icon/clear");
+    selRegions = newToggle("Select regions", ":/icon/selRegion");
+    showBackground = newToggle("Show fitted background", ":/icon/showBackground");
+    clearBackground = newTrigger("Clear background regions", ":/icon/clear");
+    clearReflections = newTrigger("Clear reflections", ":/icon/clear");
 
-    trg(addReflection, "Add reflection").icon(":/icon/add");
-    trg(remReflection, "Remove reflection").icon(":/icon/rem");
+    addReflection = newTrigger("Add reflection", ":/icon/add");
+    remReflection = newTrigger("Remove reflection", ":/icon/rem");
 
-    trg(outputPolefigures, "Pole figures...");
-    trg(outputDiagrams, "Diagrams...");
-    trg(outputDiffractograms, "Diffractograms...");
+    outputPolefigures = newTrigger("Pole figures...");
+    outputDiagrams = newTrigger("Diagrams...");
+    outputDiffractograms = newTrigger("Diffractograms...");
 
     // key shortcuts
 
@@ -142,14 +137,6 @@ Actions::Actions(TheHub& hub) : hub_(hub) {
                      [deselect]() { deselect(); });
     QObject::connect(&hub_, &TheHubSignallingBase::sigCorrEnabled,
                      [deselect]() { deselect(); });
-}
-
-Action& Actions::trg(Action*& action, rcstr text) {
-    return *(action = new TriggerAction(text, &hub_));
-}
-
-Action& Actions::tgl(Action*& action, rcstr text) {
-    return *(action = new ToggleAction(text, &hub_));
 }
 
 } // namespace gui

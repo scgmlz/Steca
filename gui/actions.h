@@ -25,19 +25,10 @@ class TheHub;
 class Action : public QAction {
 public:
     Action(rcstr text, QObject*);
-
-    Action& icon(rcstr);
 };
 
-class TriggerAction : public Action {
-public:
-    TriggerAction(rcstr text, QObject* = nullptr);
-};
-
-class ToggleAction : public Action {
-public:
-    ToggleAction(rcstr text, QObject* = nullptr);
-};
+Action* newTrigger(rcstr text, rcstr iconFile="");
+Action* newToggle(rcstr text, rcstr iconFile="");
 
 class Actions {
 public:
@@ -56,10 +47,6 @@ public:
 
 protected:
     TheHub& hub_;
-
-private:
-    Action& trg(Action*& action, rcstr text); //! < trigger
-    Action& tgl(Action*& action, rcstr text); //! < toggle
 };
 
 } // namespace gui

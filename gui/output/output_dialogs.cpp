@@ -508,8 +508,8 @@ static str const DAT_SFX(".dat"), DAT_SEP(" "), // suffix, separator
     CSV_SFX(".csv"), CSV_SEP(", ");
 
 TabSave::TabSave(TheHub& hub, Params& params, bool withTypes) : super(hub, params) {
-    actBrowse = new TriggerAction("Browse...", this);
-    actSave = new TriggerAction("Save", this);
+    actBrowse = newTrigger("Browse...");
+    actSave = newTrigger("Save");
 
     str dir = params_.saveDir;
     if (!QDir(dir).exists())
@@ -602,9 +602,9 @@ Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
     auto hb = hbox();
     box_->addLayout(hb);
 
-    actClose_ = new TriggerAction("Close", this);
-    actCalculate_ = new TriggerAction("Calculate", this);
-    actInterpolate_ = new TriggerAction("Interpolate", this);
+    actClose_ = newTrigger("Close");
+    actCalculate_ = newTrigger("Calculate");
+    actInterpolate_ = newTrigger("Interpolate");
 
     hb->addWidget((btnClose_ = textButton(actClose_)));
     hb->addStretch(1);
@@ -617,9 +617,7 @@ Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
     pb_->hide();
 
     connect(actClose_, &QAction::triggered, [this]() { close(); });
-
     connect(actCalculate_, &QAction::triggered, [this]() { calculate(); });
-
     connect(actInterpolate_, &QAction::triggered, [this]() { interpolate(); });
 
     auto updateDisplay = [this]() { displayReflection(getReflIndex(), getInterpolated()); };
