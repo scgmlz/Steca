@@ -25,12 +25,6 @@ Action::Action(rcstr text, QObject* parent)
     setToolTip(text.toLower());
 }
 
-Action& Action::text(rcstr text) {
-    setText(text);
-    setToolTip(text.toLower()); // TODO: do we want lower case ?
-    return *this;
-}
-
 Action& Action::key(QKeySequence key) {
     setShortcut(key);
     return *this;
