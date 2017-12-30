@@ -68,13 +68,6 @@ GridLayout* gridLayout() {
     return grid;
 }
 
-QLabel* icon(rcstr fileName) {
-    auto l = new QLabel;
-    auto h = l->sizeHint().height();
-    l->setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
-    return l;
-}
-
 QLabel* label(rcstr text) {
     return new QLabel(text);
 }

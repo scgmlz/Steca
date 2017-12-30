@@ -110,6 +110,13 @@ void ReflectionView::selectionChanged(
 //  class TabsSetup
 // ************************************************************************** //
 
+QLabel* icon(rcstr fileName) {
+    auto l = new QLabel;
+    auto h = l->sizeHint().height();
+    l->setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
+    return l;
+}
+
 TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
 
     int backgroundTabIndex, reflectionTabIndex;

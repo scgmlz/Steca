@@ -53,7 +53,6 @@ QBoxLayout* vbox(); // vertical box layout
 
 GridLayout* gridLayout();
 
-QLabel* icon(rcstr);
 QLabel* label(rcstr);
 
 QLineEdit* editCell(uint emWidth); // emWidth: measured in typographical (m)s
