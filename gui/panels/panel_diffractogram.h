@@ -55,7 +55,7 @@ private:
     QRadioButton *intenSum_, *intenAvg_;
     QDoubleSpinBox* intenScale_;
     QToolButton* enableZoom_;
-    Action* actZoom_;
+    QAction* actZoom_;
 
 public:
     void calcDgram();

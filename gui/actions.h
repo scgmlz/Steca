@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/actions.h
-//! @brief     Defines classes Action, TriggerAction, ToggleAction, Actions
+//! @brief     Defines functions newTrigger, newToggle, and class Actions
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -22,19 +22,14 @@ namespace gui {
 
 class TheHub;
 
-class Action : public QAction {
-public:
-    Action(rcstr text, QObject*);
-};
-
-Action* newTrigger(rcstr text, rcstr iconFile="");
-Action* newToggle(rcstr text, rcstr iconFile="");
+QAction* newTrigger(rcstr text, rcstr iconFile="");
+QAction* newToggle(rcstr text, rcstr iconFile="");
 
 class Actions {
 public:
     Actions(TheHub&);
 
-    Action *about, *online, *checkUpdate, *quit, *viewStatusbar, *viewFiles, *viewDatasets,
+    QAction *about, *online, *checkUpdate, *quit, *viewStatusbar, *viewFiles, *viewDatasets,
         *viewDatasetInfo, *viewReset,
 #ifndef Q_OS_OSX // Mac has its own
         *fullScreen,

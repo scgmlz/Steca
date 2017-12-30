@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/actions.cpp
-//! @brief     Implements classes Action, TriggerAction, ToggleAction, Actions
+//! @brief     Implements functions newTrigger, newToggle, and class Actions
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -21,20 +21,17 @@ namespace gui {
 //  class Action
 // ************************************************************************** //
 
-Action::Action(rcstr text, QObject* parent)
-    : QAction(text, parent) {
-    setToolTip(text.toLower());
-}
-
-Action* newTrigger(rcstr text, rcstr iconFile) {
-    Action* ret = new Action(text, qApp);
+QAction* newTrigger(rcstr text, rcstr iconFile) {
+    QAction* ret = new QAction(text, qApp);
+    ret->setToolTip(text.toLower());
     if (iconFile!="")
         ret->setIcon(QIcon(iconFile));
     return ret;
 };
 
-Action* newToggle(rcstr text, rcstr iconFile) {
-    Action* ret = new Action(text, qApp);
+QAction* newToggle(rcstr text, rcstr iconFile) {
+    QAction* ret = new QAction(text, qApp);
+    ret->setToolTip(text.toLower());
     if (iconFile!="")
         ret->setIcon(QIcon(iconFile));
     ret->setCheckable(true);

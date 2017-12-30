@@ -126,7 +126,7 @@ public:
     TabSave(TheHub&, Params&, bool withTypes);
     str filePath(bool withSuffix);
     str separator() const;
-    Action *actBrowse, *actSave;
+    QAction *actBrowse, *actSave;
 protected:
     str fileSetSuffix(rcstr);
     QLineEdit *dir_, *file_;
