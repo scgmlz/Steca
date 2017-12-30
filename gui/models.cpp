@@ -40,8 +40,8 @@ QVariant FilesModel::data(rcIndex index, int role) const {
     }
 }
 
-void FilesModel::remFile(uint i) {
-    hub_.remFile(i);
+void FilesModel::removeFile(uint i) {
+    hub_.removeFile(i);
 }
 
 DatasetsModel::DatasetsModel(gui::TheHub& hub)

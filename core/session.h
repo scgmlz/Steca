@@ -62,7 +62,7 @@ public:
     // Modifying methods:
     void clear();
     void addGivenFile(data::shp_File) THROWS;
-    void remFile(uint i);
+    void removeFile(uint i);
     void setCorrFile(data::shp_File) THROWS; // Load or remove a correction file.
     void remCorrFile();
     void collectDatasetsFromFiles(uint_vec, pint);

@@ -30,7 +30,7 @@ Session::Session() : intenScale_(1), angleMapCache_(360) {
 
 void Session::clear() {
     while (0 < numFiles())
-        remFile(0);
+        removeFile(0);
 
     remCorrFile();
     corrEnabled_ = corrHasNaNs_ = false;
@@ -62,7 +62,7 @@ void Session::addGivenFile(data::shp_File file) THROWS {
     files_.append(file);
 }
 
-void Session::remFile(uint i) {
+void Session::removeFile(uint i) {
     files_.remove(i);
     updateImageSize();
 }

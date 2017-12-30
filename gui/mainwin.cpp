@@ -79,7 +79,7 @@ void MainWin::initMenus() {
     addActions(
         menuFile_,
         {
-            hub_.trigger_addFiles, hub_.trigger_remFile, separator(), hub_.toggle_enableCorr, hub_.trigger_remCorr,
+            hub_.trigger_addFiles, hub_.trigger_removeFile, separator(), hub_.toggle_enableCorr, hub_.trigger_remCorr,
             separator(), hub_.trigger_loadSession,
             hub_.trigger_saveSession, // TODO add: hub_.trigger_clearSession,
         });

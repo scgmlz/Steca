@@ -33,14 +33,14 @@ public:
 #ifndef Q_OS_OSX // Mac has its own
         *toggle_fullScreen,
 #endif
-        *trigger_loadSession, *trigger_saveSession, *trigger_clearSession, *trigger_addFiles, *trigger_remFile, *toggle_enableCorr, *trigger_remCorr,
+        *trigger_loadSession, *trigger_saveSession, *trigger_clearSession, *trigger_addFiles, *trigger_removeFile, *toggle_enableCorr, *trigger_remCorr,
         *trigger_rotateImage, *toggle_mirrorImage, *toggle_linkCuts, *toggle_showOverlay, *toggle_stepScale, *toggle_showBins,
         *toggle_fixedIntenImage, *toggle_fixedIntenDgram, *toggle_combinedDgram, *toggle_selRegions, *toggle_showBackground,
         *trigger_clearBackground, *trigger_clearReflections, *trigger_addReflection, *trigger_remReflection, *trigger_outputPolefigures,
         *trigger_outputDiagrams, *trigger_outputDiffractograms;
 
     // modifying methods:
-    void remFile(uint);
+    void removeFile(uint);
     calc::ReflectionInfos makeReflectionInfos(
         calc::Reflection const&, uint gmaSlices, typ::Range const&, Progress*);
     void clearSession();

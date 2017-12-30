@@ -49,7 +49,7 @@ FilesView::FilesView(TheHub& hub) : super(hub) {
 
     header()->hide();
 
-    connect(hub_.trigger_remFile, &QAction::triggered, [this]() { removeSelected(); });
+    connect(hub_.trigger_removeFile, &QAction::triggered, [this]() { removeSelected(); });
 
     connect(&hub_, &TheHubSignallingBase::sigFilesChanged,
             [this]() { selectRows({}); recollect(); });
@@ -68,7 +68,7 @@ void FilesView::removeSelected() {
 
     // backwards
     for (int i = indexes.count(); i-- > 0;)
-        model()->remFile(to_u(indexes.at(i).row()));
+        model()->removeFile(to_u(indexes.at(i).row()));
 
     selectRows({});
     recollect();
@@ -94,7 +94,7 @@ DockFiles::DockFiles(TheHub& hub) : DockWidget("Files", "dock-files", Qt::Vertic
 
     h->addStretch();
     h->addWidget(iconButton(hub_.trigger_addFiles));
-    h->addWidget(iconButton(hub_.trigger_remFile));
+    h->addWidget(iconButton(hub_.trigger_removeFile));
 
     box_->addWidget((filesView_ = new FilesView(hub)));
 

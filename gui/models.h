@@ -37,7 +37,7 @@ public:
 public:
     enum { GetFileRole = Qt::UserRole };
 
-    void remFile(uint i);
+    void removeFile(uint i);
 };
 
 

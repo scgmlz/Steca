@@ -55,7 +55,7 @@ TheHub::TheHub()
     trigger_clearSession = newTrigger("Clear session (to defaults)");
 
     trigger_addFiles = newTrigger("Add files...", ":/icon/add");
-    trigger_remFile = newTrigger("Remove selected file(s)", ":/icon/rem");
+    trigger_removeFile = newTrigger("Remove selected file(s)", ":/icon/rem");
     toggle_enableCorr = newToggle("Enable correction file...", ":/icon/useCorrection");
     trigger_remCorr = newTrigger("Remove correction file", ":/icon/clear");
 
@@ -97,7 +97,7 @@ TheHub::TheHub()
 #endif
 
     trigger_addFiles->setShortcut(Qt::CTRL | Qt::Key_O);
-    trigger_remFile->setShortcut(QKey::Delete);
+    trigger_removeFile->setShortcut(QKey::Delete);
     toggle_enableCorr->setShortcut(Qt::SHIFT | Qt::CTRL | Qt::Key_C);
 
     trigger_rotateImage->setShortcut(Qt::CTRL | Qt::Key_R);
@@ -105,7 +105,7 @@ TheHub::TheHub()
     // handle signals
 
     QObject::connect(this, &gui::TheHub::sigFilesSelected,
-            [this]() { trigger_remFile->setEnabled(!collectedFromFiles().isEmpty()); });
+            [this]() { trigger_removeFile->setEnabled(!collectedFromFiles().isEmpty()); });
     QObject::connect(this, &gui::TheHub::sigCorrFile,
             [this](data::shp_File file) { trigger_remCorr->setEnabled(!file.isNull()); });
     QObject::connect(this, &gui::TheHub::sigCorrEnabled,
@@ -124,7 +124,7 @@ TheHub::TheHub()
     QObject::connect(this, &gui::TheHub::sigCorrEnabled,
                      [deselect]() { deselect(); });
 
-    trigger_remFile->setEnabled(false);
+    trigger_removeFile->setEnabled(false);
     trigger_remReflection->setEnabled(false);
 
     connect(toggle_enableCorr, &QAction::toggled, [this](bool on) { tryEnableCorrection(on); });
@@ -154,8 +154,8 @@ TheHub::TheHub()
     });
 }
 
-void TheHub::remFile(uint i) {
-    session_->remFile(i);
+void TheHub::removeFile(uint i) {
+    session_->removeFile(i);
     emit sigFilesChanged();
 
     if (0 == numFiles())
