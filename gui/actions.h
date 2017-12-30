@@ -25,25 +25,6 @@ class TheHub;
 QAction* newTrigger(rcstr text, rcstr iconFile="");
 QAction* newToggle(rcstr text, rcstr iconFile="");
 
-class Actions {
-public:
-    Actions(TheHub&);
-
-    QAction *about, *online, *checkUpdate, *quit, *viewStatusbar, *viewFiles, *viewDatasets,
-        *viewDatasetInfo, *viewReset,
-#ifndef Q_OS_OSX // Mac has its own
-        *fullScreen,
-#endif
-        *loadSession, *saveSession, *clearSession, *addFiles, *remFile, *enableCorr, *remCorr,
-        *rotateImage, *mirrorImage, *linkCuts, *showOverlay, *stepScale, *showBins,
-        *fixedIntenImage, *fixedIntenDgram, *combinedDgram, *selRegions, *showBackground,
-        *clearBackground, *clearReflections, *addReflection, *remReflection, *outputPolefigures,
-        *outputDiagrams, *outputDiffractograms;
-
-protected:
-    TheHub& hub_;
-};
-
 } // namespace gui
 
 #endif // ACTIONS_H

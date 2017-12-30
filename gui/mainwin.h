@@ -49,7 +49,6 @@ private:
     QByteArray initialState_;
     QNetworkAccessManager netMan_;
     gui::TheHub hub_;
-    Actions& acts_;
 
     void initMenus();
     void addActions(QMenu*, QList<QAction*>);

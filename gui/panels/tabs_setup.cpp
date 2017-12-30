@@ -91,7 +91,7 @@ calc::shp_Reflection ReflectionView::selectedReflection() const {
 
 void ReflectionView::updateSingleSelection() {
     super::updateSingleSelection();
-    hub_.actions.remReflection->setEnabled(hasReflections());
+    hub_.actn_remReflection->setEnabled(hasReflections());
 }
 
 void ReflectionView::selectionChanged(
@@ -155,7 +155,7 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
 
         auto setImageCut = [this](bool isTopOrLeft, int value) {
             debug::ensure(value >= 0);
-            if (hub_.actions.linkCuts->isChecked())
+            if (hub_.actn_linkCuts->isChecked())
                 hub_.setImageCut(
                     isTopOrLeft, true,
                     typ::ImageCut(to_u(value), to_u(value), to_u(value), to_u(value)));
@@ -212,10 +212,10 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
         add({ label("beam offset X"), beamOffsetI_, label("pix") });
         add({ label("Y"), beamOffsetJ_, label("pix") });
 
-        add({ label("image rotate"), iconButton(hub_.actions.rotateImage), label("mirror"),
-              iconButton(hub_.actions.mirrorImage) });
+        add({ label("image rotate"), iconButton(hub_.actn_rotateImage), label("mirror"),
+              iconButton(hub_.actn_mirrorImage) });
 
-        add({ iconButton(hub_.actions.linkCuts), label("cut"), icon(":/icon/cutLeft"), cutLeft_,
+        add({ iconButton(hub_.actn_linkCuts), label("cut"), icon(":/icon/cutLeft"), cutLeft_,
               icon(":/icon/cutRight"), cutRight_ },
             3);
         add({ icon(":/icon/cutTop"), cutTop_, icon(":/icon/cutBottom"), cutBottom_ });
@@ -233,9 +233,9 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
         QBoxLayout* hb = hbox();
         box.addLayout(hb);
 
-        hb->addWidget(iconButton(hub_.actions.selRegions));
-        hb->addWidget(iconButton(hub_.actions.showBackground));
-        hb->addWidget(iconButton(hub_.actions.clearBackground));
+        hb->addWidget(iconButton(hub_.actn_selRegions));
+        hb->addWidget(iconButton(hub_.actn_showBackground));
+        hb->addWidget(iconButton(hub_.actn_clearBackground));
         hb->addWidget(label("Pol. degree:"));
         hb->addWidget((spinDegree_ = spinCell(gui_cfg::em4, 0, TheHub::MAX_POLYNOM_DEGREE)));
         hb->addStretch();
@@ -258,9 +258,9 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
         QBoxLayout* hb = hbox();
         box.addLayout(hb);
 
-        hb->addWidget(iconButton(hub_.actions.selRegions));
-        hb->addWidget(iconButton(hub_.actions.showBackground));
-        hb->addWidget(iconButton(hub_.actions.clearReflections));
+        hb->addWidget(iconButton(hub_.actn_selRegions));
+        hb->addWidget(iconButton(hub_.actn_showBackground));
+        hb->addWidget(iconButton(hub_.actn_clearReflections));
         hb->addStretch();
 
         box.addWidget((reflectionView_ = new ReflectionView(hub_)));
@@ -272,8 +272,8 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
         comboReflType_->addItems(FunctionRegistry::instance()->keys());
         hb->addWidget(comboReflType_);
         hb->addStretch();
-        hb->addWidget(iconButton(hub_.actions.addReflection));
-        hb->addWidget(iconButton(hub_.actions.remReflection));
+        hb->addWidget(iconButton(hub_.actn_addReflection));
+        hb->addWidget(iconButton(hub_.actn_remReflection));
 
         QBoxLayout* vb = vbox();
         box.addLayout(vb);
@@ -323,19 +323,19 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
 
         updateReflectionControls();
 
-        connect(hub_.actions.addReflection, &QAction::triggered,
+        connect(hub_.actn_addReflection, &QAction::triggered,
                 [this, updateReflectionControls]() {
             reflectionView_->addReflection(comboReflType_->currentText());
             updateReflectionControls();
         });
 
-        connect(hub_.actions.remReflection, &QAction::triggered,
+        connect(hub_.actn_remReflection, &QAction::triggered,
                 [this, updateReflectionControls]() {
             reflectionView_->removeSelected();
             updateReflectionControls();
         });
 
-        connect(hub_.actions.clearReflections, &QAction::triggered,
+        connect(hub_.actn_clearReflections, &QAction::triggered,
                 [this, updateReflectionControls]() {
             reflectionView_->clear();
             updateReflectionControls();

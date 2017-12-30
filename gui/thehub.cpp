@@ -23,8 +23,7 @@
 namespace gui {
 
 TheHub::TheHub()
-    : actions(*this)
-    , session_(new Session())
+    : session_(new Session())
     , isFixedIntenImageScale_(false)
     , isFixedIntenDgramScale_(false)
     , isCombinedDgram_(false)
@@ -33,36 +32,124 @@ TheHub::TheHub()
     , metadataModel(*this)
     , reflectionsModel(*this)
 {
-    configActions();
-}
+    using QKey = QKeySequence;
 
-void TheHub::configActions() {
-    actions.remFile->setEnabled(false);
-    actions.remReflection->setEnabled(false);
+    // create actions
 
-    connect(actions.enableCorr, &QAction::toggled, [this](bool on) { tryEnableCorrection(on); });
+    actn_about = newTrigger("About && Configuration...");
+    actn_online = newTrigger("Online documentation...");
+    actn_checkUpdate = newTrigger("Check for update...");
+    actn_quit = newTrigger("Quit");
 
-    connect(actions.remCorr, &QAction::triggered, [this]() { setCorrFile(""); });
+    actn_viewStatusbar = newToggle("Statusbar");
+    actn_viewFiles = newToggle("Files");
+    actn_viewDatasets = newToggle("Datasets");
+    actn_viewDatasetInfo = newToggle("Metadata");
+    actn_viewReset = newTrigger("Reset");
+#ifndef Q_OS_OSX
+    actn_fullScreen = newToggle("FullScreen");
+#endif
 
-    connect(actions.fixedIntenImage, &QAction::toggled, [this](bool on) {
+    actn_loadSession = newTrigger("Load session...");
+    actn_saveSession = newTrigger("Save session...");
+    actn_clearSession = newTrigger("Clear session (to defaults)");
+
+    actn_addFiles = newTrigger("Add files...", ":/icon/add");
+    actn_remFile = newTrigger("Remove selected file(s)", ":/icon/rem");
+    actn_enableCorr = newToggle("Enable correction file...", ":/icon/useCorrection");
+    actn_remCorr = newTrigger("Remove correction file", ":/icon/clear");
+
+    actn_rotateImage = newTrigger("Rotate", ":/icon/rotate0");
+    actn_mirrorImage = newToggle("Mirror", ":/icon/mirrorHorz");
+    actn_linkCuts = newToggle("Link cuts", ":/icon/link");
+    actn_showOverlay = newToggle("Show overlay", ":/icon/crop");
+    actn_stepScale = newToggle("Scale in steps", ":/icon/steps");
+    actn_showBins = newToggle("Show bins", ":/icon/angle");
+
+    actn_fixedIntenImage = newToggle("Global intensity scale", ":/icon/scale");
+    actn_fixedIntenDgram = newToggle("Fixed intensity scale");
+
+    actn_combinedDgram = newToggle("All datasets");
+
+    actn_selRegions = newToggle("Select regions", ":/icon/selRegion");
+    actn_showBackground = newToggle("Show fitted background", ":/icon/showBackground");
+    actn_clearBackground = newTrigger("Clear background regions", ":/icon/clear");
+    actn_clearReflections = newTrigger("Clear reflections", ":/icon/clear");
+
+    actn_addReflection = newTrigger("Add reflection", ":/icon/add");
+    actn_remReflection = newTrigger("Remove reflection", ":/icon/rem");
+
+    actn_outputPolefigures = newTrigger("Pole figures...");
+    actn_outputDiagrams = newTrigger("Diagrams...");
+    actn_outputDiffractograms = newTrigger("Diffractograms...");
+
+    // key shortcuts
+
+    actn_quit->setShortcut(QKey::Quit);
+
+    actn_viewStatusbar->setShortcut(Qt::Key_F12);
+    actn_viewFiles->setShortcut(Qt::Key_F8);
+    actn_viewDatasets->setShortcut(Qt::Key_F9);
+    actn_viewDatasetInfo->setShortcut(Qt::Key_F10);
+
+#ifndef Q_OS_OSX
+    actn_fullScreen->setShortcut(Qt::Key_F11);
+#endif
+
+    actn_addFiles->setShortcut(Qt::CTRL | Qt::Key_O);
+    actn_remFile->setShortcut(QKey::Delete);
+    actn_enableCorr->setShortcut(Qt::SHIFT | Qt::CTRL | Qt::Key_C);
+
+    actn_rotateImage->setShortcut(Qt::CTRL | Qt::Key_R);
+
+    // handle signals
+
+    QObject::connect(this, &gui::TheHub::sigFilesSelected,
+            [this]() { actn_remFile->setEnabled(!collectedFromFiles().isEmpty()); });
+    QObject::connect(this, &gui::TheHub::sigCorrFile,
+            [this](data::shp_File file) { actn_remCorr->setEnabled(!file.isNull()); });
+    QObject::connect(this, &gui::TheHub::sigCorrEnabled,
+            [this](bool on) { actn_enableCorr->setChecked(on); });
+
+    auto deselect = [this]() {
+        actn_fixedIntenImage->setChecked(false);
+        actn_fixedIntenDgram->setChecked(false);
+        actn_combinedDgram->setChecked(false);
+    };
+
+    QObject::connect(this, &gui::TheHub::sigGeometryChanged,
+                     [deselect]() { deselect(); });
+    QObject::connect(this, &gui::TheHub::sigDatasetsChanged,
+                     [deselect]() { deselect(); });
+    QObject::connect(this, &gui::TheHub::sigCorrEnabled,
+                     [deselect]() { deselect(); });
+
+    actn_remFile->setEnabled(false);
+    actn_remReflection->setEnabled(false);
+
+    connect(actn_enableCorr, &QAction::toggled, [this](bool on) { tryEnableCorrection(on); });
+
+    connect(actn_remCorr, &QAction::triggered, [this]() { setCorrFile(""); });
+
+    connect(actn_fixedIntenImage, &QAction::toggled, [this](bool on) {
         isFixedIntenImageScale_ = on;
         emit sigDisplayChanged();
     });
 
-    connect(actions.fixedIntenDgram, &QAction::toggled, [this](bool on) {
+    connect(actn_fixedIntenDgram, &QAction::toggled, [this](bool on) {
         isFixedIntenDgramScale_ = on;
         emit sigDisplayChanged();
     });
 
-    actions.combinedDgram->setChecked(false);
-    connect(actions.combinedDgram, &QAction::toggled, [this](bool on) {
+    actn_combinedDgram->setChecked(false);
+    connect(actn_combinedDgram, &QAction::toggled, [this](bool on) {
         isCombinedDgram_ = on;
         emit sigDisplayChanged();
     });
 
-    connect(actions.mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
+    connect(actn_mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
 
-    connect(actions.rotateImage, &QAction::triggered, [this]() {
+    connect(actn_rotateImage, &QAction::triggered, [this]() {
         setImageRotate(session_->imageTransform().nextRotate());
     });
 }
@@ -390,15 +477,15 @@ void TheHub::setImageRotate(typ::ImageTransform rot) {
         break;
     }
 
-    actions.rotateImage->setIcon(QIcon(rotateIconFile));
-    actions.mirrorImage->setIcon(QIcon(mirrorIconFile));
+    actn_rotateImage->setIcon(QIcon(rotateIconFile));
+    actn_mirrorImage->setIcon(QIcon(mirrorIconFile));
     session_->setImageTransformRotate(rot);
     setImageCut(true, false, session_->imageCut());
     emit sigGeometryChanged();
 }
 
 void TheHub::setImageMirror(bool on) {
-    actions.mirrorImage->setChecked(on);
+    actn_mirrorImage->setChecked(on);
     session_->setImageTransformMirror(on);
     emit sigGeometryChanged();
 }

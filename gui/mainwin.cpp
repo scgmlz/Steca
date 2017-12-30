@@ -41,7 +41,7 @@
 
 namespace gui {
 
-MainWin::MainWin() : hub_(), acts_(hub_.actions) {
+MainWin::MainWin() : hub_() {
     setWindowIcon(QIcon(":/icon/retroStier"));
     QDir::setCurrent(QDir::homePath());
 
@@ -79,9 +79,9 @@ void MainWin::initMenus() {
     addActions(
         menuFile_,
         {
-            acts_.addFiles, acts_.remFile, separator(), acts_.enableCorr, acts_.remCorr,
-            separator(), acts_.loadSession,
-            acts_.saveSession, // TODO add: acts_.clearSession,
+            hub_.actn_addFiles, hub_.actn_remFile, separator(), hub_.actn_enableCorr, hub_.actn_remCorr,
+            separator(), hub_.actn_loadSession,
+            hub_.actn_saveSession, // TODO add: hub_.actn_clearSession,
         });
 
     addActions(
@@ -90,48 +90,48 @@ void MainWin::initMenus() {
 #ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
             separator(),
 #endif
-            acts_.quit,
+            hub_.actn_quit,
         });
 
     addActions(
         menuView_,
         {
-            acts_.viewFiles, acts_.viewDatasets, acts_.viewDatasetInfo, separator(),
+            hub_.actn_viewFiles, hub_.actn_viewDatasets, hub_.actn_viewDatasetInfo, separator(),
 #ifndef Q_OS_OSX
-            acts_.fullScreen,
+            hub_.actn_fullScreen,
 #endif
-            acts_.viewStatusbar, separator(), acts_.viewReset,
+            hub_.actn_viewStatusbar, separator(), hub_.actn_viewReset,
         });
 
     addActions(
         menuImage_,
         {
-            acts_.rotateImage, acts_.mirrorImage, acts_.fixedIntenImage, acts_.linkCuts,
-            acts_.showOverlay, acts_.stepScale, acts_.showBins,
+            hub_.actn_rotateImage, hub_.actn_mirrorImage, hub_.actn_fixedIntenImage, hub_.actn_linkCuts,
+            hub_.actn_showOverlay, hub_.actn_stepScale, hub_.actn_showBins,
         });
 
     addActions(
         menuDgram_,
         {
-            acts_.selRegions, acts_.showBackground, acts_.clearBackground, acts_.clearReflections,
-            separator(), acts_.addReflection, acts_.remReflection, separator(), acts_.combinedDgram,
-            acts_.fixedIntenDgram,
+            hub_.actn_selRegions, hub_.actn_showBackground, hub_.actn_clearBackground, hub_.actn_clearReflections,
+            separator(), hub_.actn_addReflection, hub_.actn_remReflection, separator(), hub_.actn_combinedDgram,
+            hub_.actn_fixedIntenDgram,
         });
 
     addActions(
         menuOutput_,
         {
-            acts_.outputPolefigures, acts_.outputDiagrams, acts_.outputDiffractograms,
+            hub_.actn_outputPolefigures, hub_.actn_outputDiagrams, hub_.actn_outputDiffractograms,
         });
 
     addActions(
         menuHelp_,
         {
-            acts_.about,
+            hub_.actn_about,
 #ifndef Q_OS_OSX
             separator(), // Mac puts About into the Apple menu
 #endif
-            acts_.online, acts_.checkUpdate,
+            hub_.actn_online, hub_.actn_checkUpdate,
         });
 }
 
@@ -178,33 +178,33 @@ void MainWin::connectActions() {
         QObject::connect(action, &QAction::toggled, this, fun);
     };
 
-    connectTrigger(acts_.loadSession, &MainWin::loadSession);
-    connectTrigger(acts_.saveSession, &MainWin::saveSession);
-    connectTrigger(acts_.clearSession, &MainWin::clearSession);
+    connectTrigger(hub_.actn_loadSession, &MainWin::loadSession);
+    connectTrigger(hub_.actn_saveSession, &MainWin::saveSession);
+    connectTrigger(hub_.actn_clearSession, &MainWin::clearSession);
 
-    connectTrigger(acts_.addFiles, &MainWin::addFiles);
-    connectTrigger(acts_.enableCorr, &MainWin::enableCorr);
+    connectTrigger(hub_.actn_addFiles, &MainWin::addFiles);
+    connectTrigger(hub_.actn_enableCorr, &MainWin::enableCorr);
 
-    connectTrigger(acts_.quit, &MainWin::close);
+    connectTrigger(hub_.actn_quit, &MainWin::close);
 
-    connectTrigger(acts_.outputPolefigures, &MainWin::outputPoleFigures);
-    connectTrigger(acts_.outputDiagrams, &MainWin::outputDiagrams);
-    connectTrigger(acts_.outputDiffractograms, &MainWin::outputDiffractograms);
+    connectTrigger(hub_.actn_outputPolefigures, &MainWin::outputPoleFigures);
+    connectTrigger(hub_.actn_outputDiagrams, &MainWin::outputDiagrams);
+    connectTrigger(hub_.actn_outputDiffractograms, &MainWin::outputDiffractograms);
 
-    connectTrigger(acts_.about, &MainWin::about);
-    connectTrigger(acts_.online, &MainWin::online);
-    QObject::connect(acts_.checkUpdate, &QAction::triggered, [this]() {checkUpdate();});
+    connectTrigger(hub_.actn_about, &MainWin::about);
+    connectTrigger(hub_.actn_online, &MainWin::online);
+    QObject::connect(hub_.actn_checkUpdate, &QAction::triggered, [this]() {checkUpdate();});
 
-    connectToggle(acts_.viewStatusbar, &MainWin::viewStatusbar);
+    connectToggle(hub_.actn_viewStatusbar, &MainWin::viewStatusbar);
 #ifndef Q_OS_OSX
-    connectToggle(acts_.fullScreen, &MainWin::viewFullScreen);
+    connectToggle(hub_.actn_fullScreen, &MainWin::viewFullScreen);
 #endif
 
-    connectToggle(acts_.viewFiles, &MainWin::viewFiles);
-    connectToggle(acts_.viewDatasets, &MainWin::viewDatasets);
-    connectToggle(acts_.viewDatasetInfo, &MainWin::viewDatasetInfo);
+    connectToggle(hub_.actn_viewFiles, &MainWin::viewFiles);
+    connectToggle(hub_.actn_viewDatasets, &MainWin::viewDatasets);
+    connectToggle(hub_.actn_viewDatasetInfo, &MainWin::viewDatasetInfo);
 
-    connectTrigger(acts_.viewReset, &MainWin::viewReset);
+    connectTrigger(hub_.actn_viewReset, &MainWin::viewReset);
 }
 
 void MainWin::about() {
@@ -393,20 +393,20 @@ void MainWin::saveSettings() {
 }
 
 void MainWin::checkActions() {
-    acts_.viewStatusbar->setChecked(statusBar()->isVisible());
+    hub_.actn_viewStatusbar->setChecked(statusBar()->isVisible());
 
 #ifndef Q_OS_OSX
-    acts_.fullScreen->setChecked(isFullScreen());
+    hub_.actn_fullScreen->setChecked(isFullScreen());
 #endif
 
-    acts_.viewFiles->setChecked(dockFiles_->isVisible());
-    acts_.viewDatasets->setChecked(dockDatasets_->isVisible());
-    acts_.viewDatasetInfo->setChecked(dockDatasetInfo_->isVisible());
+    hub_.actn_viewFiles->setChecked(dockFiles_->isVisible());
+    hub_.actn_viewDatasets->setChecked(dockDatasets_->isVisible());
+    hub_.actn_viewDatasetInfo->setChecked(dockDatasetInfo_->isVisible());
 }
 
 void MainWin::viewStatusbar(bool on) {
     statusBar()->setVisible(on);
-    acts_.viewStatusbar->setChecked(on);
+    hub_.actn_viewStatusbar->setChecked(on);
 }
 
 void MainWin::viewFullScreen(bool on) {
@@ -416,23 +416,23 @@ void MainWin::viewFullScreen(bool on) {
         showNormal();
 
 #ifndef Q_OS_OSX
-    acts_.fullScreen->setChecked(on);
+    hub_.actn_fullScreen->setChecked(on);
 #endif
 }
 
 void MainWin::viewFiles(bool on) {
     dockFiles_->setVisible(on);
-    acts_.viewFiles->setChecked(on);
+    hub_.actn_viewFiles->setChecked(on);
 }
 
 void MainWin::viewDatasets(bool on) {
     dockDatasets_->setVisible(on);
-    acts_.viewDatasets->setChecked(on);
+    hub_.actn_viewDatasets->setChecked(on);
 }
 
 void MainWin::viewDatasetInfo(bool on) {
     dockDatasetInfo_->setVisible(on);
-    acts_.viewDatasetInfo->setChecked(on);
+    hub_.actn_viewDatasetInfo->setChecked(on);
 }
 
 void MainWin::viewReset() {

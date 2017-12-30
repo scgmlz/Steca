@@ -28,7 +28,16 @@ public:
 
     static uint constexpr MAX_POLYNOM_DEGREE = 4;
 
-    Actions actions;
+    QAction *actn_about, *actn_online, *actn_checkUpdate, *actn_quit, *actn_viewStatusbar, *actn_viewFiles, *actn_viewDatasets,
+        *actn_viewDatasetInfo, *actn_viewReset,
+#ifndef Q_OS_OSX // Mac has its own
+        *actn_fullScreen,
+#endif
+        *actn_loadSession, *actn_saveSession, *actn_clearSession, *actn_addFiles, *actn_remFile, *actn_enableCorr, *actn_remCorr,
+        *actn_rotateImage, *actn_mirrorImage, *actn_linkCuts, *actn_showOverlay, *actn_stepScale, *actn_showBins,
+        *actn_fixedIntenImage, *actn_fixedIntenDgram, *actn_combinedDgram, *actn_selRegions, *actn_showBackground,
+        *actn_clearBackground, *actn_clearReflections, *actn_addReflection, *actn_remReflection, *actn_outputPolefigures,
+        *actn_outputDiagrams, *actn_outputDiffractograms;
 
     // modifying methods:
     void remFile(uint);
