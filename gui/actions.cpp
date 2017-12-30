@@ -42,7 +42,7 @@ TriggerAction::TriggerAction(rcstr text, QObject* parent)
 // ************************************************************************** //
 
 ToggleAction::ToggleAction(rcstr text, QObject* parent)
-    : Action(text, parent), text1_(text) {
+    : Action(text, parent) {
     setCheckable(true);
 }
 

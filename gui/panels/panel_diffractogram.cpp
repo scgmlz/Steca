@@ -564,12 +564,12 @@ void Diffractogram::onFittingTab(eFittingTab tab) {
     bool on = hub_.actions.selRegions->isChecked();
     switch (tab) {
     case eFittingTab::BACKGROUND:
-        hub_.actions.selRegions->icon(":/icon/selRegion");
+        hub_.actions.selRegions->setIcon(QIcon(":/icon/selRegion"));
         plot_->setTool(
             on ? DiffractogramPlot::eTool::BACKGROUND : DiffractogramPlot::eTool::NONE);
         break;
     case eFittingTab::REFLECTIONS:
-        hub_.actions.selRegions->icon(":/icon/reflRegion");
+        hub_.actions.selRegions->setIcon(QIcon(":/icon/reflRegion"));
         plot_->setTool(
             on ? DiffractogramPlot::eTool::PEAK_REGION : DiffractogramPlot::eTool::NONE);
         break;

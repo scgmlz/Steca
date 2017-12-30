@@ -37,8 +37,6 @@ public:
 class ToggleAction : public Action {
 public:
     ToggleAction(rcstr text, QObject* = nullptr);
-protected:
-    str text1_, text2_;
 };
 
 class Actions {
