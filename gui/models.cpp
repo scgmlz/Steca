@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/models.cpp
-//! @brief     Implements ...
+//! @brief     Implements classes FilesModel, DatasetsModel, MetadataModel, ReflectionsModel
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -45,7 +45,7 @@ void FilesModel::remFile(uint i) {
 }
 
 DatasetsModel::DatasetsModel(gui::TheHub& hub)
-    : super(hub)
+    : TableModel(hub)
     , datasets_(hub.collectedDatasets()) //, metaInfo_(nullptr)
 {
     connect(&hub_, &gui::TheHubSignallingBase::sigDatasetsChanged, [this]() { signalReset(); });
@@ -105,7 +105,7 @@ void DatasetsModel::showMetaInfo(typ::vec<bool> const& metadataRows) {
     endResetModel();
 }
 
-MetadataModel::MetadataModel(gui::TheHub& hub) : super(hub) {
+MetadataModel::MetadataModel(gui::TheHub& hub) : TableModel(hub) {
     rowsChecked_.fill(false, data::Metadata::numAttributes(false));
 
     connect(&hub_, &gui::TheHubSignallingBase::sigDatasetSelected,
@@ -160,7 +160,7 @@ void MetadataModel::flipCheck(uint row) {
     signalReset();
 }
 
-ReflectionsModel::ReflectionsModel(gui::TheHub& hub) : super(hub) {}
+ReflectionsModel::ReflectionsModel(gui::TheHub& hub) : TableModel(hub) {}
 
 int ReflectionsModel::columnCount(rcIndex) const {
     return NUM_COLUMNS;

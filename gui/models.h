@@ -26,7 +26,6 @@ namespace data {
 namespace models {
 
 class FilesModel : public TableModel {
-private:
 public:
     FilesModel(gui::TheHub&);
 
@@ -41,9 +40,8 @@ public:
     void remFile(uint i);
 };
 
+
 class DatasetsModel : public TableModel {
-private:
-    using super = TableModel;
 public:
     DatasetsModel(gui::TheHub&);
 
@@ -65,9 +63,8 @@ private:
     uint_vec metaInfoNums_; // selected metadata items to show
 };
 
+
 class MetadataModel : public TableModel {
-private:
-    using super = TableModel;
 public:
     MetadataModel(gui::TheHub&);
 
@@ -88,9 +85,8 @@ private:
     typ::vec<bool> rowsChecked_;
 };
 
+
 class ReflectionsModel : public TableModel {
-private:
-    using super = TableModel;
 public:
     ReflectionsModel(gui::TheHub&);
 
@@ -113,5 +109,7 @@ public:
 
     QStringList names() const;
 };
-}
+
+} // namespace models
+
 #endif // MODELS_H
