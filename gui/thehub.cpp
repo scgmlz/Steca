@@ -157,7 +157,7 @@ void TheHub::removeFile(uint i) {
     gSession->removeFile(i);
     emit sigFilesChanged();
 
-    if (0 == numFiles())
+    if (0 == gSession->numFiles())
         setImageCut(true, false, typ::ImageCut());
 }
 
@@ -210,7 +210,7 @@ QByteArray TheHub::saveSession() const {
 
     QJsonArray arrFiles;
     // save file path relative to location of session
-    for_i (numFiles()) {
+    for_i (gSession->numFiles()) {
         str absPath = getFile(i)->fileInfo().absoluteFilePath();
         str relPath = QDir::current().relativeFilePath(absPath);
         arrFiles.append(relPath);

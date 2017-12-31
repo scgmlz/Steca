@@ -17,7 +17,7 @@
 
 #include "actions.h"
 #include "models.h"
-#include "session.h"
+#include "session.h" // TODO get rid of this
 #include "signalling.h"
 
 namespace gui {
@@ -74,7 +74,6 @@ public:
     bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
     bool isCombinedDgram() const { return isCombinedDgram_; }
 
-    uint numFiles() const { return gSession->numFiles(); }
     str fileName(uint index) const { return getFile(index)->fileName(); }
     str filePath(uint index) const { return getFile(index)->fileInfo().absoluteFilePath(); }
     data::shp_File getFile(uint index) const { return gSession->file(index); }

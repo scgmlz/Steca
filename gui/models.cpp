@@ -29,7 +29,7 @@ int FilesModel::columnCount(rcIndex) const {
 }
 
 int FilesModel::rowCount(rcIndex) const {
-    return to_i(hub_.numFiles());
+    return to_i(gSession->numFiles());
 }
 
 QVariant FilesModel::data(rcIndex index, int role) const {
