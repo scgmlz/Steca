@@ -17,8 +17,8 @@ private:
     ISingleton(ISingleton const&) = delete;
     void operator=(ISingleton const&) = delete;
 protected:
-    ~ISingleton(){};
     ISingleton() {}
+    ~ISingleton() {}
 public:
     static T* instance() {
         static T* instance = new T();
