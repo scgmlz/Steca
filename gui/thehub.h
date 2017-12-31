@@ -74,10 +74,6 @@ public:
     bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
     bool isCombinedDgram() const { return isCombinedDgram_; }
 
-    str fileName(uint index) const { return getFile(index)->fileName(); }
-    str filePath(uint index) const { return getFile(index)->fileInfo().absoluteFilePath(); }
-    data::shp_File getFile(uint index) const { return gSession->file(index); }
-
     bool hasCorrFile() const;
     typ::shp_Image corrImage() const { return gSession->corrImage(); }
 

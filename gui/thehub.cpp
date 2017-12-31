@@ -211,7 +211,7 @@ QByteArray TheHub::saveSession() const {
     QJsonArray arrFiles;
     // save file path relative to location of session
     for_i (gSession->numFiles()) {
-        str absPath = getFile(i)->fileInfo().absoluteFilePath();
+        str absPath = gSession->file(i)->fileInfo().absoluteFilePath();
         str relPath = QDir::current().relativeFilePath(absPath);
         arrFiles.append(relPath);
     }
