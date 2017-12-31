@@ -15,11 +15,14 @@
 #include "../manifest.h"
 #include "mainwin.h"
 #include "msg_handler.h"
+#include "session.h"
 #include <tclap/CmdLine.h> // templated command line argument parser, in 3rdparty directory
 #include <QApplication>
 #include <QStyleFactory>
 
 class QMainWindow* pMainWin;
+
+class Session* gSession;
 
 int main(int argc, char* argv[]) {
 
@@ -46,6 +49,8 @@ int main(int argc, char* argv[]) {
 #endif
 
     qInstallMessageHandler(messageHandler);
+
+    gSession = Session::instance();
 
     gui::MainWin mainWin;
     pMainWin = &mainWin;

@@ -21,9 +21,12 @@
 #include "data/datafile.h"
 #include "typ/async.h"
 #include "typ/cache.h"
+#include "typ/singleton.h"
 
-class Session final {
-    public:
+extern class Session* gSession;
+
+class Session final : public ISingleton<Session> {
+public:
     Session();
 
 private:

@@ -23,8 +23,7 @@
 namespace gui {
 
 TheHub::TheHub()
-    : session_(new Session())
-    , isFixedIntenImageScale_(false)
+    : isFixedIntenImageScale_(false)
     , isFixedIntenDgramScale_(false)
     , isCombinedDgram_(false)
     , filesModel(*this)
@@ -150,31 +149,31 @@ TheHub::TheHub()
     connect(toggle_mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
 
     connect(trigger_rotateImage, &QAction::triggered, [this]() {
-        setImageRotate(session_->imageTransform().nextRotate());
+        setImageRotate(gSession->imageTransform().nextRotate());
     });
 }
 
 void TheHub::removeFile(uint i) {
-    session_->removeFile(i);
+    gSession->removeFile(i);
     emit sigFilesChanged();
 
     if (0 == numFiles())
         setImageCut(true, false, typ::ImageCut());
 }
 
-bool TheHub::hasCorrFile() const { return session_->hasCorrFile(); }
+bool TheHub::hasCorrFile() const { return gSession->hasCorrFile(); }
 
 calc::shp_ImageLens TheHub::plainImageLens(typ::Image const& image) const {
-    return session_->imageLens(image, collectedDatasets(), true, false);
+    return gSession->imageLens(image, collectedDatasets(), true, false);
 }
 
 calc::shp_DatasetLens TheHub::datasetLens(data::Dataset const& dataset) const {
-    return session_->datasetLens(dataset, dataset.datasets(), session_->norm(), true, true);
+    return gSession->datasetLens(dataset, dataset.datasets(), gSession->norm(), true, true);
 }
 
 calc::ReflectionInfos TheHub::makeReflectionInfos(
     calc::Reflection const& reflection, uint gmaSlices, typ::Range const& rgeGma, Progress* progress) {
-    return session_->makeReflectionInfos(
+    return gSession->makeReflectionInfos(
         collectedDatasets(), reflection, gmaSlices, rgeGma, progress);
 }
 
@@ -190,7 +189,7 @@ QByteArray TheHub::saveSession() const {
 
     QJsonObject top;
 
-    auto& geo = session_->geometry();
+    auto& geo = gSession->geometry();
     QJsonObject sub {
         { config_key::DET_DISTANCE, QJsonValue(geo.detectorDistance) },
         { config_key::DET_PIX_SIZE, QJsonValue(geo.pixSize) },
@@ -198,7 +197,7 @@ QByteArray TheHub::saveSession() const {
     };
     top.insert(config_key::DETECTOR, sub);
 
-    auto& cut = session_->imageCut();
+    auto& cut = gSession->imageCut();
     sub = {
         { config_key::LEFT, to_i(cut.left) },
         { config_key::TOP, to_i(cut.top) },
@@ -206,7 +205,7 @@ QByteArray TheHub::saveSession() const {
         { config_key::BOTTOM, to_i(cut.bottom) } };
     top.insert(config_key::CUT, sub);
 
-    auto& trn = session_->imageTransform();
+    auto& trn = gSession->imageTransform();
     top.insert(config_key::TRANSFORM, to_i((uint)trn.val));
 
     QJsonArray arrFiles;
@@ -227,7 +226,7 @@ QByteArray TheHub::saveSession() const {
     top.insert(config_key::COMBINE, to_i((uint)datasetsGroupedBy_));
 
     if (hasCorrFile()) {
-        str absPath = session_->corrFile()->fileInfo().absoluteFilePath();
+        str absPath = gSession->corrFile()->fileInfo().absoluteFilePath();
         str relPath = QDir::current().relativeFilePath(absPath);
         top.insert(config_key::CORR_FILE, relPath);
     }
@@ -247,7 +246,7 @@ QByteArray TheHub::saveSession() const {
 }
 
 void TheHub::clearSession() {
-    session_->clear();
+    gSession->clear();
     tellSessionCleared();
 }
 
@@ -322,7 +321,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
 
     const QJsonArray& reflectionsInfo = top.loadArr(config_key::REFLECTIONS);
     for_i (reflectionsInfo.count()) {
-        session_->addReflection(reflectionsInfo.at(i).toObject());
+        gSession->addReflection(reflectionsInfo.at(i).toObject());
     }
 
     emit sigReflectionsChanged();
@@ -330,10 +329,10 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
 }
 
 void TheHub::addGivenFile(rcstr filePath) THROWS {
-    if (!filePath.isEmpty() && !session_->hasFile(filePath)) {
+    if (!filePath.isEmpty() && !gSession->hasFile(filePath)) {
         {
             TakesLongTime __;
-            session_->addGivenFile(io::load(filePath));
+            gSession->addGivenFile(io::load(filePath));
         }
         emit sigFilesChanged();
     }
@@ -346,7 +345,7 @@ void TheHub::addGivenFiles(QStringList const& filePaths) THROWS {
 }
 
 void TheHub::collectDatasetsFromFiles(uint_vec is, pint by) {
-    session_->collectDatasetsFromFiles((collectFromFiles_ = is), (datasetsGroupedBy_ = by));
+    gSession->collectDatasetsFromFiles((collectFromFiles_ = is), (datasetsGroupedBy_ = by));
     emit sigFilesSelected();
     emit sigDatasetsChanged();
 }
@@ -360,7 +359,7 @@ void TheHub::combineDatasetsBy(pint by) {
 }
 
 typ::Range TheHub::collectedDatasetsRgeGma() const {
-    return collectedDatasets().rgeGma(*session_);
+    return collectedDatasets().rgeGma(*gSession);
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {
@@ -368,28 +367,28 @@ void TheHub::setCorrFile(rcstr filePath) THROWS {
     if (!filePath.isEmpty())
         file = io::load(filePath);
 
-    session_->setCorrFile(file);
+    gSession->setCorrFile(file);
     emit sigCorrFile(file);
 
     tryEnableCorrection(true);
 }
 
 void TheHub::tryEnableCorrection(bool on) {
-    session_->tryEnableCorr(on);
-    emit sigCorrEnabled(session_->isCorrEnabled());
+    gSession->tryEnableCorr(on);
+    emit sigCorrEnabled(gSession->isCorrEnabled());
 }
 
 typ::ImageCut const& TheHub::imageCut() const {
-    return session_->imageCut();
+    return gSession->imageCut();
 }
 
 void TheHub::setImageCut(bool isTopOrLeft, bool linked, typ::ImageCut const& cut) {
-    session_->setImageCut(isTopOrLeft, linked, cut);
+    gSession->setImageCut(isTopOrLeft, linked, cut);
     emit sigGeometryChanged();
 }
 
 const typ::Geometry& TheHub::geometry() const {
-    return session_->geometry();
+    return gSession->geometry();
 }
 
 void TheHub::setGeometry(preal detectorDistance, preal pixSize, typ::IJ const& midPixOffset) {
@@ -397,37 +396,37 @@ void TheHub::setGeometry(preal detectorDistance, preal pixSize, typ::IJ const& m
     if (sigLevel_ > 1)
         return;
 
-    session_->setGeometry(detectorDistance, pixSize, midPixOffset);
+    gSession->setGeometry(detectorDistance, pixSize, midPixOffset);
     emit sigGeometryChanged();
 }
 
 void TheHub::setGammaRange(typ::Range const& gammaRange) {
-    session_->setGammaRange(gammaRange);
+    gSession->setGammaRange(gammaRange);
     emit sigGammaRange();
 }
 
 void TheHub::setBgRanges(typ::Ranges const& ranges) {
-    session_->setBgRanges(ranges);
+    gSession->setBgRanges(ranges);
     emit sigBgChanged();
 }
 
 void TheHub::addBgRange(typ::Range const& range) {
-    if (session_->addBgRange(range))
+    if (gSession->addBgRange(range))
         emit sigBgChanged();
 }
 
 void TheHub::remBgRange(typ::Range const& range) {
-    if (session_->remBgRange(range))
+    if (gSession->remBgRange(range))
         emit sigBgChanged();
 }
 
 void TheHub::setBgPolyDegree(uint degree) {
-    session_->setBgPolyDegree(degree);
+    gSession->setBgPolyDegree(degree);
     emit sigBgChanged();
 }
 
 void TheHub::setIntenScaleAvg(bool avg, preal scale) {
-    session_->setIntenScaleAvg(avg, scale);
+    gSession->setIntenScaleAvg(avg, scale);
     emit sigNormChanged(); // TODO instead of another signal
 }
 
@@ -439,13 +438,13 @@ void TheHub::setPeakFunction(QString const& peakFunctionName) {
 }
 
 void TheHub::addReflection(QString const& peakFunctionName) {
-    session_->addReflection(peakFunctionName);
+    gSession->addReflection(peakFunctionName);
     emit sigReflectionsChanged();
 }
 
 void TheHub::remReflection(uint i) {
-    session_->remReflection(i);
-    if (session_->reflections().isEmpty())
+    gSession->remReflection(i);
+    if (gSession->reflections().isEmpty())
         tellSelectedReflection(calc::shp_Reflection());
     emit sigReflectionsChanged();
 }
@@ -479,19 +478,19 @@ void TheHub::setImageRotate(typ::ImageTransform rot) {
 
     trigger_rotateImage->setIcon(QIcon(rotateIconFile));
     toggle_mirrorImage->setIcon(QIcon(mirrorIconFile));
-    session_->setImageTransformRotate(rot);
-    setImageCut(true, false, session_->imageCut());
+    gSession->setImageTransformRotate(rot);
+    setImageCut(true, false, gSession->imageCut());
     emit sigGeometryChanged();
 }
 
 void TheHub::setImageMirror(bool on) {
     toggle_mirrorImage->setChecked(on);
-    session_->setImageTransformMirror(on);
+    gSession->setImageTransformMirror(on);
     emit sigGeometryChanged();
 }
 
 void TheHub::setNorm(eNorm norm) {
-    session_->setNorm(norm);
+    gSession->setNorm(norm);
     emit sigNormChanged();
 }
 

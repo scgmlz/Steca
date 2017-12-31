@@ -74,58 +74,57 @@ public:
     bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
     bool isCombinedDgram() const { return isCombinedDgram_; }
 
-    uint numFiles() const { return session_->numFiles(); }
+    uint numFiles() const { return gSession->numFiles(); }
     str fileName(uint index) const { return getFile(index)->fileName(); }
     str filePath(uint index) const { return getFile(index)->fileInfo().absoluteFilePath(); }
-    data::shp_File getFile(uint index) const { return session_->file(index); }
+    data::shp_File getFile(uint index) const { return gSession->file(index); }
 
     bool hasCorrFile() const;
-    typ::shp_Image corrImage() const { return session_->corrImage(); }
+    typ::shp_Image corrImage() const { return gSession->corrImage(); }
 
     calc::shp_ImageLens plainImageLens(typ::Image const&) const;
     calc::shp_DatasetLens datasetLens(data::Dataset const&) const;
 
-    typ::Curve avgCurve(data::Datasets const& dss) const { return dss.avgCurve(*session_); }
+    typ::Curve avgCurve(data::Datasets const& dss) const { return dss.avgCurve(*gSession); }
 
     void saveSession(QFileInfo const&) const;
     QByteArray saveSession() const;
 
-    uint_vec const& collectedFromFiles() const { return session_->collectedFromFiles(); }
+    uint_vec const& collectedFromFiles() const { return gSession->collectedFromFiles(); }
 
     pint datasetsGroupedBy() const { return datasetsGroupedBy_; }
 
     uint numCollectedDatasets() const { return collectedDatasets().count(); }
 
-    data::Datasets const& collectedDatasets() const { return session_->collectedDatasets(); }
+    data::Datasets const& collectedDatasets() const { return gSession->collectedDatasets(); }
 
-    QStringList const& collectedDatasetsTags() const { return session_->collectedDatasetsTags(); }
+    QStringList const& collectedDatasetsTags() const { return gSession->collectedDatasetsTags(); }
 
-    typ::size2d imageSize() const { return session_->imageSize(); }
+    typ::size2d imageSize() const { return gSession->imageSize(); }
 
     typ::shp_AngleMap angleMap(data::OneDataset const& dataset) const {
-        return session_->angleMap(dataset);
+        return gSession->angleMap(dataset);
     }
 
     typ::Range collectedDatasetsRgeGma() const;
     typ::ImageCut const& imageCut() const;
     typ::Geometry const& geometry() const;
-    typ::Range const& gammaRange() const { return session_->gammaRange(); }
+    typ::Range const& gammaRange() const { return gSession->gammaRange(); }
 
     eFittingTab fittingTab() const { return fittingTab_; }
 
     data::shp_Dataset selectedDataset() const { return selectedDataset_; }
 
-    typ::Ranges const& bgRanges() const { return session_->bgRanges(); }
-    uint bgPolyDegree() const { return session_->bgPolyDegree(); }
+    typ::Ranges const& bgRanges() const { return gSession->bgRanges(); }
+    uint bgPolyDegree() const { return gSession->bgPolyDegree(); }
 
-    bool intenScaledAvg() const { return session_->intenScaledAvg(); }
-    preal intenScale() const { return session_->intenScale(); }
+    bool intenScaledAvg() const { return gSession->intenScaledAvg(); }
+    preal intenScale() const { return gSession->intenScale(); }
 
-    calc::Reflections const& reflections() const { return session_->reflections(); }
+    calc::Reflections const& reflections() const { return gSession->reflections(); }
 
 private:
     friend class TheHubSignallingBase;
-    scoped<Session*> session_;
     bool isFixedIntenImageScale_;
     bool isFixedIntenDgramScale_;
     bool isCombinedDgram_;
