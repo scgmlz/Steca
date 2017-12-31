@@ -82,8 +82,6 @@ public:
     void saveSession(QFileInfo const&) const;
     QByteArray saveSession() const;
 
-    uint_vec const& collectedFromFiles() const { return gSession->collectedFromFiles(); }
-
     pint datasetsGroupedBy() const { return datasetsGroupedBy_; }
 
     uint numCollectedDatasets() const { return collectedDatasets().count(); }

@@ -55,7 +55,7 @@ FilesView::FilesView(TheHub& hub) : super(hub) {
             [this]() { selectRows({}); recollect(); });
 
     connect(&hub_, &TheHubSignallingBase::sigFilesSelected,
-            [this]() { selectRows(hub_.collectedFromFiles()); });
+            [this]() { selectRows(gSession->collectedFromFiles()); });
 }
 
 void FilesView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
