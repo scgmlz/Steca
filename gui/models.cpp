@@ -183,7 +183,7 @@ int ReflectionsModel::columnCount(rcIndex) const {
 }
 
 int ReflectionsModel::rowCount(rcIndex) const {
-    return to_i(hub_.reflections().count());
+    return to_i(gSession->reflections().count());
 }
 
 str ReflectionsModel::displayData(uint row, uint col) const {
@@ -191,7 +191,7 @@ str ReflectionsModel::displayData(uint row, uint col) const {
     case COL_ID:
         return str::number(row + 1);
     case COL_TYPE:
-        return hub_.reflections().at(row)->peakFunction().name();
+        return gSession->reflections().at(row)->peakFunction().name();
     default:
         NEVER return "";
     }
@@ -220,7 +220,7 @@ QVariant ReflectionsModel::data(rcIndex index, int role) const {
     }
 
     case GetDatasetRole:
-        return QVariant::fromValue<calc::shp_Reflection>(hub_.reflections().at(to_u(row)));
+        return QVariant::fromValue<calc::shp_Reflection>(gSession->reflections().at(to_u(row)));
     default: return EMPTY_VAR;
     }
 }

@@ -269,11 +269,11 @@ void PoleFiguresFrame::displayReflection(uint reflIndex, bool interpolated) {
     super::displayReflection(reflIndex, interpolated);
     if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
         tabGraph_->set((interpolated ? interpPoints_ : calcPoints_).at(reflIndex));
-    tabSave_->rawReflSettings(hub_.reflections().at(reflIndex)->peakFunction().name() != "Raw");
+    tabSave_->rawReflSettings(gSession->reflections().at(reflIndex)->peakFunction().name() != "Raw");
 }
 
 void PoleFiguresFrame::savePoleFigureOutput() {
-    auto& reflections = hub_.reflections();
+    auto& reflections = gSession->reflections();
     if (reflections.isEmpty()) {
         qWarning() << "cannot save pole figure: no reflection chosen";
         return;
@@ -296,7 +296,7 @@ static str const OUT_FILE_TAG(".refl%1");
 static int const MAX_LINE_LENGTH_POL(9);
 
 void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
-    auto refl = hub_.reflections().at(index);
+    auto refl = gSession->reflections().at(index);
     calc::ReflectionInfos reflInfo;
     if (getInterpolated())
         reflInfo = interpPoints_.at(index);

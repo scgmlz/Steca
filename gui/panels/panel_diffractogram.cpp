@@ -634,7 +634,7 @@ void Diffractogram::calcReflections() {
     refls_.clear();
     currReflIndex_ = 0;
 
-    auto rs = hub_.reflections();
+    auto rs = gSession->reflections();
     for_i (rs.count()) {
         auto& r = rs[i];
         if (r == currentReflection_)

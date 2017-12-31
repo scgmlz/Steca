@@ -645,7 +645,7 @@ Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
 
     table_ = tabTable->table;
 
-    uint reflCount = hub_.reflections().count();
+    uint reflCount = gSession->reflections().count();
     calcPoints_.resize(reflCount);
     interpPoints_.resize(reflCount);
 }
@@ -656,7 +656,7 @@ void Frame::calculate() {
     calcPoints_.clear();
     interpPoints_.clear();
 
-    auto& reflections = hub_.reflections();
+    auto& reflections = gSession->reflections();
     if (!reflections.isEmpty()) {
         uint reflCount = reflections.count();
 

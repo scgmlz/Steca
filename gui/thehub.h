@@ -92,8 +92,6 @@ public:
 
     data::shp_Dataset selectedDataset() const { return selectedDataset_; }
 
-    calc::Reflections const& reflections() const { return gSession->reflections(); }
-
 private:
     friend class TheHubSignallingBase;
     bool isFixedIntenImageScale_;

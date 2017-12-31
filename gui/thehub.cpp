@@ -237,7 +237,7 @@ QByteArray TheHub::saveSession() const {
     top.insert(config_key::INTEN_SCALE, qreal_to_json((qreal)gSession->intenScale()));
 
     QJsonArray arrReflections;
-    for (auto& reflection : reflections())
+    for (auto& reflection : gSession->reflections())
         arrReflections.append(reflection->to_json());
 
     top.insert(config_key::REFLECTIONS, arrReflections);
