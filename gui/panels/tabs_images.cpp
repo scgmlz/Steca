@@ -212,7 +212,7 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
 }
 
 QPixmap TabsImages::makeBlankPixmap() {
-    auto size = hub_.imageSize();
+    auto size = gSession->imageSize();
 
     QPixmap pixmap(to_i(size.w), to_i(size.h));
     pixmap.fill(QColor(0, 0, 0, 0));
