@@ -161,8 +161,6 @@ void TheHub::removeFile(uint i) {
         setImageCut(true, false, typ::ImageCut());
 }
 
-bool TheHub::hasCorrFile() const { return gSession->hasCorrFile(); }
-
 calc::shp_ImageLens TheHub::plainImageLens(typ::Image const& image) const {
     return gSession->imageLens(image, collectedDatasets(), true, false);
 }
@@ -225,7 +223,7 @@ QByteArray TheHub::saveSession() const {
     top.insert(config_key::SELECTED_FILES, arrSelectedFiles);
     top.insert(config_key::COMBINE, to_i((uint)datasetsGroupedBy_));
 
-    if (hasCorrFile()) {
+    if (gSession->hasCorrFile()) {
         str absPath = gSession->corrFile()->fileInfo().absoluteFilePath();
         str relPath = QDir::current().relativeFilePath(absPath);
         top.insert(config_key::CORR_FILE, relPath);

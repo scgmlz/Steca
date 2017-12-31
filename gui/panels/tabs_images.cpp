@@ -344,7 +344,7 @@ void TabsImages::render() {
     }
 
     {
-        QPixmap pixMap = makePixmap(hub_.corrImage());
+        QPixmap pixMap = makePixmap(gSession->corrImage());
         corrImageWidget_->setPixmap(pixMap);
     }
 }

@@ -74,9 +74,6 @@ public:
     bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
     bool isCombinedDgram() const { return isCombinedDgram_; }
 
-    bool hasCorrFile() const;
-    typ::shp_Image corrImage() const { return gSession->corrImage(); }
-
     calc::shp_ImageLens plainImageLens(typ::Image const&) const;
     calc::shp_DatasetLens datasetLens(data::Dataset const&) const;
 

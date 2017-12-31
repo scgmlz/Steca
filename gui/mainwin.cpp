@@ -274,7 +274,7 @@ void MainWin::addFiles() {
 
 void MainWin::enableCorr() {
     str fileName;
-    if (!hub_.hasCorrFile()) {
+    if (!gSession->hasCorrFile()) {
         fileName = file_dialog::openFileName(
             this, "Set correction file", QDir::current().absolutePath(),
             "Data files (*.dat *.mar*);;All files (*.*)");
