@@ -15,6 +15,7 @@
 #include "dock_files.h"
 #include "views.h" // inheriting from
 #include "thehub.h"
+#include <QAction>
 #include <QHeaderView>
 
 namespace gui {

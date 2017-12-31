@@ -18,6 +18,7 @@
 #include "thehub.h"
 #include "write_file.h"
 #include <qmath.h>
+#include <QAction>
 #include <QPainter>
 
 namespace gui {

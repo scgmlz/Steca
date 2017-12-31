@@ -16,6 +16,7 @@
 #include "io/io_io.h"
 #include "mainwin.h"
 #include "output/write_file.h"
+#include <QAction>
 #include <QDir>
 #include <QJsonDocument>
 #include <QStringBuilder> // for ".." % ..
@@ -163,7 +164,7 @@ void TheHub::removeFile(uint i) {
 }
 
 calc::shp_ImageLens TheHub::plainImageLens(typ::Image const& image) const {
-    return gSession->imageLens(image, collectedDatasets(), true, false);
+    return gSession->imageLens(image, gSession->collectedDatasets(), true, false);
 }
 
 calc::shp_DatasetLens TheHub::datasetLens(data::Dataset const& dataset) const {
@@ -173,7 +174,7 @@ calc::shp_DatasetLens TheHub::datasetLens(data::Dataset const& dataset) const {
 calc::ReflectionInfos TheHub::makeReflectionInfos(
     calc::Reflection const& reflection, uint gmaSlices, typ::Range const& rgeGma, Progress* progress) {
     return gSession->makeReflectionInfos(
-        collectedDatasets(), reflection, gmaSlices, rgeGma, progress);
+        gSession->collectedDatasets(), reflection, gmaSlices, rgeGma, progress);
 }
 
 void TheHub::saveSession(QFileInfo const& fileInfo) const {
@@ -358,7 +359,7 @@ void TheHub::combineDatasetsBy(pint by) {
 }
 
 typ::Range TheHub::collectedDatasetsRgeGma() const {
-    return collectedDatasets().rgeGma(*gSession);
+    return gSession->collectedDatasets().rgeGma(*gSession);
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {

@@ -17,6 +17,7 @@
 #include "gui_cfg.h"
 #include "thehub.h"
 #include <qmath.h>
+#include <QAction>
 #include <QPainter>
 
 namespace gui {

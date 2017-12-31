@@ -16,6 +16,7 @@
 #include "views.h" // inheriting from
 #include "gui_cfg.h"
 #include "thehub.h"
+#include <QAction>
 
 namespace gui {
 namespace panel {

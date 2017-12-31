@@ -16,6 +16,7 @@
 #include "dialog_panels.h"
 #include "thehub.h"
 #include "write_file.h"
+#include <QAction>
 
 namespace gui {
 namespace output {
@@ -111,7 +112,7 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
     if (pr->cbLimitGamma->isChecked())
         rgeGma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
 
-    auto& datasets = hub_.collectedDatasets();
+    auto& datasets = gSession->collectedDatasets();
     Progress progress(datasets.count(), pb_);
 
     OutputDataCollections allOutputData;

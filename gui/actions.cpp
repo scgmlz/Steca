@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/actions.cpp
-//! @brief     Implements functions newTrigger, newToggle, and class Actions
+//! @brief     Implements functions newTrigger, newToggle
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,14 +12,11 @@
 //
 // ************************************************************************** //
 
-#include "thehub.h"
+#include "actions.h"
+#include <QAction>
 #include <QApplication>
 
 namespace gui {
-
-// ************************************************************************** //
-//  class Action
-// ************************************************************************** //
 
 QAction* newTrigger(rcstr text, rcstr iconFile) {
     QAction* ret = new QAction(text, qApp);

@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "settings.h"
+#include <QAction>
 #include <QSpinBox>
 
 namespace gui {

@@ -17,6 +17,7 @@
 #include "thehub.h"
 #include "write_file.h"
 #include "QCustomPlot/qcustomplot.h"
+#include <QAction>
 
 namespace gui {
 namespace output {

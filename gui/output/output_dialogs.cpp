@@ -19,6 +19,7 @@
 #include "filedialog.h"
 #include "settings.h"
 #include "thehub.h"
+#include <QAction>
 #include <QDir>
 #include <QHeaderView>
 #include <QProgressBar>

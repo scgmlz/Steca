@@ -54,7 +54,7 @@ void FilesModel::removeFile(uint i) {
 
 DatasetsModel::DatasetsModel(gui::TheHub& hub)
     : TableModel(hub)
-    , datasets_(hub.collectedDatasets()) //, metaInfo_(nullptr)
+    , datasets_(gSession->collectedDatasets()) //, metaInfo_(nullptr)
 {
     connect(&hub_, &gui::TheHubSignallingBase::sigDatasetsChanged, [this]() { signalReset(); });
 }
@@ -79,7 +79,7 @@ QVariant DatasetsModel::data(rcIndex index, int role) const {
             return EMPTY_VAR;
 
         switch (col) {
-        case COL_NUMBER: return hub_.collectedDatasetsTags().at(to_u(row));
+        case COL_NUMBER: return gSession->collectedDatasetsTags().at(to_u(row));
         default:
             return datasets_.at(to_u(row))->metadata()->attributeStrValue(
                 metaInfoNums_.at(to_u(col - COL_ATTRS)));

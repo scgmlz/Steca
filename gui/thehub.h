@@ -84,12 +84,6 @@ public:
 
     pint datasetsGroupedBy() const { return datasetsGroupedBy_; }
 
-    uint numCollectedDatasets() const { return collectedDatasets().count(); }
-
-    data::Datasets const& collectedDatasets() const { return gSession->collectedDatasets(); }
-
-    QStringList const& collectedDatasetsTags() const { return gSession->collectedDatasetsTags(); }
-
     typ::size2d imageSize() const { return gSession->imageSize(); }
 
     typ::shp_AngleMap angleMap(data::OneDataset const& dataset) const {
