@@ -84,10 +84,6 @@ public:
 
     pint datasetsGroupedBy() const { return datasetsGroupedBy_; }
 
-    typ::shp_AngleMap angleMap(data::OneDataset const& dataset) const {
-        return gSession->angleMap(dataset);
-    }
-
     typ::Range collectedDatasetsRgeGma() const;
     typ::ImageCut const& imageCut() const;
     typ::Geometry const& geometry() const;
