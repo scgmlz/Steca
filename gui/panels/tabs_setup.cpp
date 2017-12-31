@@ -249,7 +249,7 @@ TabsSetup::TabsSetup(TheHub& hub) : TabsPanel(hub) {
             });
 
         connect(&hub_, &TheHubSignallingBase::sigBgChanged, [this](){
-                spinDegree_->setValue(to_i(hub_.bgPolyDegree())); });
+                spinDegree_->setValue(to_i(gSession->bgPolyDegree())); });
     }
 
     // ==== peak fits tab ====

@@ -362,7 +362,7 @@ void DiffractogramPlot::updateBg() {
 
     switch (tool_) {
     case eTool::BACKGROUND: {
-        typ::Ranges const& rs = hub_.bgRanges();
+        typ::Ranges const& rs = gSession->bgRanges();
         for_i (rs.count())
             addBgItem(rs.at(i));
         break;
@@ -472,13 +472,13 @@ Diffractogram::Diffractogram(TheHub& hub)
 
     connect(intenAvg_, &QRadioButton::toggled, [this](bool on) {
         intenScale_->setEnabled(on);
-        intenScale_->setValue(hub_.intenScale());
+        intenScale_->setValue(gSession->intenScale());
         hub_.setIntenScaleAvg(on, preal(intenScale_->value()));
     });
 
     connect(intenScale_, slot(QDoubleSpinBox, valueChanged, double), [this](double val) {
         if (val > 0)
-            hub_.setIntenScaleAvg(hub_.intenScaledAvg(), preal(val));
+            hub_.setIntenScaleAvg(gSession->intenScaledAvg(), preal(val));
     });
 
     hb->addStretch();
@@ -553,8 +553,8 @@ Diffractogram::Diffractogram(TheHub& hub)
 }
 
 void Diffractogram::onNormChanged() {
-    intenScale_->setValue(hub_.intenScale()); // TODO own signal
-    if (hub_.intenScaledAvg())
+    intenScale_->setValue(gSession->intenScale()); // TODO own signal
+    if (gSession->intenScaledAvg())
         intenAvg_->setChecked(true);
     else
         intenSum_->setChecked(true);
@@ -602,7 +602,7 @@ void Diffractogram::calcDgram() {
         dgram_ = hub_.avgCurve(dataset_->datasets());
     else {
         auto lens = hub_.datasetLens(*dataset_);
-        dgram_ = lens->makeCurve(hub_.gammaRange());
+        dgram_ = lens->makeCurve(gSession->gammaRange());
     }
 }
 
@@ -610,7 +610,7 @@ void Diffractogram::calcBackground() {
     bg_.clear();
     dgramBgFitted_.clear();
 
-    auto bgPolynom = Polynom::fromFit(hub_.bgPolyDegree(), dgram_, hub_.bgRanges());
+    auto bgPolynom = Polynom::fromFit(gSession->bgPolyDegree(), dgram_, gSession->bgRanges());
 
     for_i (dgram_.count()) {
         qreal x = dgram_.x(i), y = bgPolynom.y(x);

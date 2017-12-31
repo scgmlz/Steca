@@ -231,10 +231,10 @@ QByteArray TheHub::saveSession() const {
         top.insert(config_key::CORR_FILE, relPath);
     }
 
-    top.insert(config_key::BG_DEGREE, to_i(bgPolyDegree()));
-    top.insert(config_key::BG_RANGES, bgRanges().to_json());
-    top.insert(config_key::INTEN_SCALED_AVG, intenScaledAvg());
-    top.insert(config_key::INTEN_SCALE, qreal_to_json((qreal)intenScale()));
+    top.insert(config_key::BG_DEGREE, to_i(gSession->bgPolyDegree()));
+    top.insert(config_key::BG_RANGES, gSession->bgRanges().to_json());
+    top.insert(config_key::INTEN_SCALED_AVG, gSession->intenScaledAvg());
+    top.insert(config_key::INTEN_SCALE, qreal_to_json((qreal)gSession->intenScale()));
 
     QJsonArray arrReflections;
     for (auto& reflection : reflections())

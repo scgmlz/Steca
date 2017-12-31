@@ -87,17 +87,10 @@ public:
     typ::Range collectedDatasetsRgeGma() const;
     typ::ImageCut const& imageCut() const;
     typ::Geometry const& geometry() const;
-    typ::Range const& gammaRange() const { return gSession->gammaRange(); }
 
     eFittingTab fittingTab() const { return fittingTab_; }
 
     data::shp_Dataset selectedDataset() const { return selectedDataset_; }
-
-    typ::Ranges const& bgRanges() const { return gSession->bgRanges(); }
-    uint bgPolyDegree() const { return gSession->bgPolyDegree(); }
-
-    bool intenScaledAvg() const { return gSession->intenScaledAvg(); }
-    preal intenScale() const { return gSession->intenScale(); }
 
     calc::Reflections const& reflections() const { return gSession->reflections(); }
 
