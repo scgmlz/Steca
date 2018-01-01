@@ -98,7 +98,7 @@ extern qreal const INF;
 
 class preal {
 public:
-    explicit preal(qreal val) : val_(val) { debug::ensure(0 < val); }
+    explicit preal(qreal val) : val_(val) { debug::ensure(val>0); }
 
     operator qreal() const { return val_; }
 

@@ -271,7 +271,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     TakesLongTime __;
 
     clearSession();
-    TR("cleared old session");
+    TR("sessionFromJson: cleared old session");
 
     typ::JsonObj top(doc.object());
 
@@ -298,32 +298,36 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
         lastIndex = to_i(index);
     }
 
+    TR("sessionFromJson: going to collect datasets");
     collectDatasetsFromFiles(selIndexes, top.loadPint(config_key::COMBINE, 1));
 
+    TR("sessionFromJson: going to set correction file");
     setCorrFile(top.loadString(config_key::CORR_FILE, ""));
 
+    TR("sessionFromJson: going to load detector geometry");
     const typ::JsonObj& det = top.loadObj(config_key::DETECTOR);
     setGeometry(
         det.loadPreal(config_key::DET_DISTANCE), det.loadPreal(config_key::DET_PIX_SIZE),
         det.loadIJ(config_key::BEAM_OFFSET));
 
+    TR("sessionFromJson: going to load image cut");
     const typ::JsonObj& cut = top.loadObj(config_key::CUT);
     uint x1 = cut.loadUint(config_key::LEFT), y1 = cut.loadUint(config_key::TOP),
          x2 = cut.loadUint(config_key::RIGHT), y2 = cut.loadUint(config_key::BOTTOM);
     setImageCut(true, false, typ::ImageCut(x1, y1, x2, y2));
-
     setImageRotate(typ::ImageTransform(top.loadUint(config_key::TRANSFORM)));
 
+    TR("sessionFromJson: going to load fit setup");
     typ::Ranges bgRanges;
     bgRanges.from_json(top.loadArr(config_key::BG_RANGES));
     setBgRanges(bgRanges);
-
     setBgPolyDegree(top.loadUint(config_key::BG_DEGREE));
 
-    setIntenScaleAvg(
-        top.loadBool(config_key::INTEN_SCALED_AVG, true),
-        top.loadPreal(config_key::INTEN_SCALE, preal(1)));
+    auto arg1 = top.loadBool(config_key::INTEN_SCALED_AVG, true);
+    auto arg2 = top.loadPreal(config_key::INTEN_SCALE, preal(1));
+    setIntenScaleAvg(arg1, arg2);
 
+    TR("sessionFromJson: going to load reflections info");
     const QJsonArray& reflectionsInfo = top.loadArr(config_key::REFLECTIONS);
     for_i (reflectionsInfo.count()) {
         gSession->addReflection(reflectionsInfo.at(i).toObject());

@@ -126,7 +126,7 @@ qreal JsonObj::loadQreal(rcstr key, qreal def) const THROWS{
 
 preal JsonObj::loadPreal(rcstr key) const {
     qreal num = loadQreal(key);
-    RUNTIME_CHECK(num >= 0, "expecting positive number");
+    RUNTIME_CHECK(num > 0, "expecting positive number");
     return preal(num);
 }
 
