@@ -33,12 +33,6 @@
 
 //! layouts
 
-class GridLayout : public QGridLayout {
-public:
-    void addRowStretch(int = 1);
-    void addColumnStretch(int = 1);
-};
-
 extern int mWidth(QWidget const*);
 
 // handy functions that make (new) widgets
@@ -47,7 +41,7 @@ QBoxLayout* boxLayout(Qt::Orientation);
 QBoxLayout* hbox(); // horizontal box layout
 QBoxLayout* vbox(); // vertical box layout
 
-GridLayout* gridLayout();
+QGridLayout* gridLayout();
 
 QLabel* label(rcstr);
 

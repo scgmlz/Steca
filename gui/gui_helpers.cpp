@@ -18,15 +18,6 @@
 #include <QAction>
 #include <QGroupBox>
 
-void GridLayout::addRowStretch(int stretch) {
-    setRowStretch(rowCount(), stretch);
-}
-
-void GridLayout::addColumnStretch(int stretch) {
-    setColumnStretch(columnCount(), stretch);
-}
-
-
 int mWidth(QWidget const* w) {
     debug::ensure(w);
     return w->fontMetrics().width('m');
@@ -54,8 +45,8 @@ QBoxLayout* vbox() {
     return box;
 }
 
-GridLayout* gridLayout() {
-    auto grid = new GridLayout;
+QGridLayout* gridLayout() {
+    auto grid = new QGridLayout;
     grid->setSpacing(2);
     grid->setMargin(2);
     return grid;

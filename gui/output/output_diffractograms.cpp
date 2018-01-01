@@ -27,7 +27,7 @@ TabDiffractogramsSave::TabDiffractogramsSave(Params& params)
     : super(params, true) {
     auto gp = new panel::GridPanel("To save");
     grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
-    grid_->addRowStretch();
+    grid_->setRowStretch(grid_->rowCount(), 1);
 
     auto g = gp->grid();
     g->addWidget((rbCurrent_ = radioButton("Current diffractogram")));

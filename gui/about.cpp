@@ -112,7 +112,7 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
     g->addWidget(
         (detPixelSize_ = spinDoubleCell(gui_cfg::em4_2, typ::Geometry::MIN_DETECTOR_PIXEL_SIZE)), 1,
         1);
-    g->addColumnStretch();
+    g->setColumnStretch(g->columnCount(), 1);
 
     detPixelSize_->setDecimals(3);
     detDistance_->setValue(

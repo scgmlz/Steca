@@ -185,7 +185,7 @@ TabsSetup::TabsSetup() : TabsPanel() {
 
         // layout
 
-        GridLayout* grid = gridLayout();
+        QGridLayout* grid = gridLayout();
         int row = 0;
 
         auto add = [&grid, &row](QVector<QWidget*> const& ws, int left = 1) {
@@ -217,11 +217,10 @@ TabsSetup::TabsSetup() : TabsPanel() {
               iconButton(gHub->toggle_mirrorImage) });
 
         add({ iconButton(gHub->toggle_linkCuts), label("cut"), icon(":/icon/cutLeft"), cutLeft_,
-              icon(":/icon/cutRight"), cutRight_ },
-            3);
+              icon(":/icon/cutRight"), cutRight_ }, 3);
         add({ icon(":/icon/cutTop"), cutTop_, icon(":/icon/cutBottom"), cutBottom_ });
 
-        grid->addColumnStretch(1);
+        grid->setColumnStretch(grid->columnCount(), 1);
 
         box.addLayout(grid);
         box.addStretch();
@@ -279,7 +278,7 @@ TabsSetup::TabsSetup() : TabsPanel() {
         QBoxLayout* vb = vbox();
         box.addLayout(vb);
 
-        GridLayout* gb = gridLayout();
+        QGridLayout* gb = gridLayout();
         vb->addLayout(gb);
 
         gb->addWidget(label("min"), 0, 0);

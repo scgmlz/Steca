@@ -37,10 +37,10 @@ class GridPanel : public BasicPanel {
 public:
     GridPanel(rcstr title="");
 
-    GridLayout* grid() const { return grid_; }
+    QGridLayout* grid() const { return grid_; }
 
 protected:
-    GridLayout* grid_;
+    QGridLayout* grid_;
 };
 
 

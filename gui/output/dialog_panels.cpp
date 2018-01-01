@@ -25,7 +25,7 @@ PanelReflection::PanelReflection() : panel::GridPanel("Reflection") {
     cbRefl = new QComboBox;
     cbRefl->addItems(gHub->reflectionsModel.names());
     g->addWidget(cbRefl);
-    g->addRowStretch();
+    g->setRowStretch(g->rowCount(), 1);
 }
 
 PanelGammaSlices::PanelGammaSlices() : panel::GridPanel("Gamma slices") {
@@ -38,7 +38,7 @@ PanelGammaSlices::PanelGammaSlices() : panel::GridPanel("Gamma slices") {
     g->addWidget((stepGamma = spinDoubleCell(gui_cfg::em4_2, 0.0)), 1, 1);
     stepGamma->setReadOnly(true);
 
-    g->addRowStretch();
+    g->setRowStretch(g->rowCount(), 1);
 
     rgeGma_ = gHub->collectedDatasetsRgeGma();
 
@@ -64,7 +64,7 @@ PanelGammaRange::PanelGammaRange() : panel::GridPanel("Gamma range") {
     g->addWidget(label("max"), 2, 0);
     g->addWidget((maxGamma = spinDoubleCell(gui_cfg::em4_2, -180., 180.)), 2, 1);
 
-    g->addRowStretch();
+    g->setRowStretch(g->rowCount(), 1);
 
     rgeGma_ = gHub->collectedDatasetsRgeGma();
 
@@ -87,7 +87,7 @@ PanelPoints::PanelPoints() : panel::GridPanel("Points") {
     g->addWidget((rbCalc = radioButton("calculated")), 0, 0);
     g->addWidget((rbInterp = radioButton("interpolated")), 1, 0);
 
-    g->addRowStretch();
+    g->setRowStretch(g->rowCount(), 1);
 }
 
 PanelInterpolation::PanelInterpolation() : panel::GridPanel("Interpolation") {
@@ -107,7 +107,7 @@ PanelInterpolation::PanelInterpolation() : panel::GridPanel("Interpolation") {
     g->addWidget(label("inclusion %"), 2, 2, Qt::AlignRight);
     g->addWidget((avgThreshold = spinCell(gui_cfg::em4_2, 0, 100)), 2, 3);
 
-    g->addRowStretch();
+    g->setRowStretch(g->rowCount(), 1);
 }
 
 PanelDiagram::PanelDiagram() : panel::GridPanel("Diagram") {
@@ -123,7 +123,7 @@ PanelDiagram::PanelDiagram() : panel::GridPanel("Diagram") {
     g->addWidget(label("y"), 0, 0);
     g->addWidget(yAxis, 0, 1);
 
-    g->addRowStretch();
+    g->setRowStretch(g->rowCount(), 1);
 }
 
 PanelFitError::PanelFitError() : panel::GridPanel("Fit error") {}

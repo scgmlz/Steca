@@ -70,8 +70,8 @@ TabGraph::TabGraph(Params& params)
 
     grid_->addWidget((cbFlat_ = check("no intensity")), 0, 0);
 
-    grid_->addRowStretch();
-    grid_->addColumnStretch();
+    grid_->setRowStretch(grid_->rowCount(), 1);
+    grid_->setColumnStretch(grid_->columnCount(), 1);
 
     connect(
         params_.panelInterpolation->avgAlphaMax, slot(QDoubleSpinBox, valueChanged, double),
@@ -194,7 +194,7 @@ protected:
 TabPoleFiguresSave::TabPoleFiguresSave(Params& params) : TabSave(params, false) {
     auto hb = hbox();
     grid_->addLayout(hb, grid_->rowCount(), 0);
-    grid_->addRowStretch();
+    grid_->setRowStretch(grid_->rowCount(), 1);
 
     auto p1 = new panel::GridPanel("Output data");
     auto p2 = new panel::GridPanel("To save");
@@ -208,7 +208,7 @@ TabPoleFiguresSave::TabPoleFiguresSave(Params& params) : TabSave(params, false) 
         g->addWidget((outputInten_ = check("Intensity pole figure")));
         g->addWidget((outputTth_ = check("Peak position pole figure")));
         g->addWidget((outputFWHM_ = check("TWHM pole figure")));
-        g->addRowStretch();
+        g->setRowStretch(g->rowCount(), 1);
     }
 
     {
@@ -216,7 +216,7 @@ TabPoleFiguresSave::TabPoleFiguresSave(Params& params) : TabSave(params, false) 
         g->addWidget((rbSelectedRefl_ = radioButton("Selected reflection")));
         g->addWidget((rbAllRefls_ = radioButton("All reflections")));
         g->addWidget(textButton(actSave), 2, 1);
-        g->addRowStretch();
+        g->setRowStretch(g->rowCount(), 1);
     }
 
     rbSelectedRefl_->setChecked(true);

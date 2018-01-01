@@ -71,7 +71,7 @@ public :
     Tab(Params&);
 protected:
     Params& params_;
-    GridLayout* grid_;
+    QGridLayout* grid_;
 };
 
 
