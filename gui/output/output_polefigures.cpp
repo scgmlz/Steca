@@ -257,7 +257,7 @@ static const Params::ePanels PANELS =
     Params::ePanels(Params::REFLECTION | Params::GAMMA | Params::POINTS | Params::INTERPOLATION);
 
 PoleFiguresFrame::PoleFiguresFrame(TheHub& hub, rcstr title, QWidget* parent)
-    : super(hub, title, new Params(hub, PANELS), parent) {
+    : Frame(hub, title, new Params(hub, PANELS), parent) {
     tabGraph_ = new TabGraph(hub, *params_);
     tabs_->addTab("Graph", Qt::Vertical).box().addWidget(tabGraph_);
 
@@ -268,7 +268,7 @@ PoleFiguresFrame::PoleFiguresFrame(TheHub& hub, rcstr title, QWidget* parent)
 }
 
 void PoleFiguresFrame::displayReflection(uint reflIndex, bool interpolated) {
-    super::displayReflection(reflIndex, interpolated);
+    Frame::displayReflection(reflIndex, interpolated);
     if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
         tabGraph_->set((interpolated ? interpPoints_ : calcPoints_).at(reflIndex));
     tabSave_->rawReflSettings(gSession->reflections().at(reflIndex)->peakFunction().name() != "Raw");

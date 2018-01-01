@@ -21,8 +21,6 @@ namespace gui {
 namespace output {
 
 class PoleFiguresFrame : public Frame {
-private:
-    using super = Frame;
 public:
     PoleFiguresFrame(TheHub&, rcstr title, QWidget*);
 
