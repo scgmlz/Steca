@@ -13,14 +13,15 @@
 // ************************************************************************** //
 
 #include "output_polefigures.h"
+#include "output_dialogs.h"
 #include "dialog_panels.h"
 #include "colors.h"
 #include "thehub.h"
 #include "write_file.h"
 #include "session.h"
 #include "def/idiomatic_for.h"
-#include <qmath.h>
 #include "widget_makers.h"
+#include <qmath.h>
 #include <QAction>
 #include <QPainter>
 

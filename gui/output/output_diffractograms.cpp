@@ -24,6 +24,20 @@
 namespace gui {
 namespace output {
 
+class TabDiffractogramsSave : public TabSave {
+public:
+    TabDiffractogramsSave(Params&);
+
+    uint currType() const;
+    bool currentChecked() { return rbCurrent_->isChecked(); }
+    bool allSequentialChecked() { return rbAllSequential_->isChecked(); }
+    bool allChecked() { return rbAll_->isChecked(); }
+
+protected:
+    QRadioButton *rbCurrent_, *rbAllSequential_, *rbAll_;
+    QComboBox* fileTypes_;
+};
+
 TabDiffractogramsSave::TabDiffractogramsSave(Params& params)
     : TabSave(params, true) {
     auto gp = new panel::GridPanel("To save");

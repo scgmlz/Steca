@@ -15,7 +15,7 @@
 #ifndef OUTPUT_POLEFIGURES_H
 #define OUTPUT_POLEFIGURES_H
 
-#include "output_dialogs.h"
+#include "frame.h"
 
 namespace gui {
 namespace output {

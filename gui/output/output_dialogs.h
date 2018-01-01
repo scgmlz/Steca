@@ -15,7 +15,7 @@
 #ifndef OUTPUT_DIALOGS_H
 #define OUTPUT_DIALOGS_H
 
-#include "calc/calc_reflection_info.h"
+#include "typ/variant.h"
 #include "def/special_pointers.h"
 #include "panels/panel.h"
 

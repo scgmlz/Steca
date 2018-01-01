@@ -16,23 +16,11 @@
 #define OUTPUT_DIFFRACTOGRAMS_H
 
 #include "output_dialogs.h"
+#include "frame.h"
 
 namespace gui {
 namespace output {
 
-class TabDiffractogramsSave : public TabSave {
-public:
-    TabDiffractogramsSave(Params&);
-
-    uint currType() const;
-    bool currentChecked() { return rbCurrent_->isChecked(); }
-    bool allSequentialChecked() { return rbAllSequential_->isChecked(); }
-    bool allChecked() { return rbAll_->isChecked(); }
-
-protected:
-    QRadioButton *rbCurrent_, *rbAllSequential_, *rbAll_;
-    QComboBox* fileTypes_;
-};
 
 struct OutputData;
 using OutputDataCollection = typ::vec<OutputData>;
@@ -43,7 +31,7 @@ public:
     DiffractogramsFrame(rcstr title, QWidget*);
 
 protected:
-    TabDiffractogramsSave* tabSave_;
+    class TabDiffractogramsSave* tabSave_;
 
     OutputDataCollection
     collectCurves(typ::Range const&, uint gmaSlices, data::Dataset const& dataset, uint picNum);
