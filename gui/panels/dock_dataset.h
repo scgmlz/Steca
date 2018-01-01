@@ -15,7 +15,9 @@
 #ifndef DOCK_DATASET_H
 #define DOCK_DATASET_H
 
-#include "panel.h"
+#include "gui_helpers.h"
+
+class QSpinBox;
 
 namespace gui {
 namespace panel {

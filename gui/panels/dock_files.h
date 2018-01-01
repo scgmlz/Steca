@@ -15,7 +15,7 @@
 #ifndef DOCK_FILES_H
 #define DOCK_FILES_H
 
-#include "panel.h"
+#include "gui_helpers.h"
 
 namespace gui {
 namespace panel {

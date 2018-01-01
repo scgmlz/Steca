@@ -21,7 +21,6 @@
 namespace gui {
 namespace output {
 
-
 struct OutputData;
 using OutputDataCollection = typ::vec<OutputData>;
 using OutputDataCollections = typ::vec<OutputDataCollection>;

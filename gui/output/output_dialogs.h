@@ -18,7 +18,9 @@
 #include "typ/variant.h"
 #include "def/special_pointers.h"
 #include "panels/panel.h"
+#include "gui_helpers.h"
 
+class QCheckBox;
 class QProgressBar;
 
 namespace gui {

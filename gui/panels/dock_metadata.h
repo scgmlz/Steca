@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/panels/dock_metadata.h
-//! @brief     Defines ...
+//! @brief     Defines class DockMetadata
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,11 +15,9 @@
 #ifndef DOCK_METADATA_H
 #define DOCK_METADATA_H
 
-#include "panel.h"
+#include "gui_helpers.h"
 
 namespace gui {
-
-
 namespace panel {
 
 class DockMetadata : public DockWidget {

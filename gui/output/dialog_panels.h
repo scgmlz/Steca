@@ -15,8 +15,9 @@
 #ifndef DIALOG_PANELS_H
 #define DIALOG_PANELS_H
 
-#include "calc/calc_reflection_info.h"
 #include "panels/panel.h"
+#include "typ/range.h"
+#include <QCheckBox>
 
 namespace gui {
 

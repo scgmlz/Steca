@@ -15,8 +15,14 @@
 #ifndef PANEL_H
 #define PANEL_H
 
-#include "gui_helpers.h"
+#include "typ/str.h"
+#include <QComboBox>
+#include <QGridLayout>
 #include <QGroupBox>
+#include <QTabWidget>
+#include <QToolButton>
+#include <QRadioButton>
+#include <QSpinBox>
 
 namespace gui {
 namespace panel {

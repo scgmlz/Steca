@@ -15,13 +15,17 @@
 #ifndef PANEL_DIFFRACTOGRAM_H
 #define PANEL_DIFFRACTOGRAM_H
 
-#include "actions.h"
-#include "panel.h"
 #include "signalling.h" // for eFittingTab
 
+class QAction;
+class QBoxLayout;
+class QComboBox;
+class QRadioButton;
+class QDoubleSpinBox;
+class QToolButton;
+class QAction;
+
 namespace gui {
-
-
 namespace panel {
 
 class Diffractogram : public QWidget {

@@ -17,6 +17,7 @@
 #include "gui_cfg.h"
 #include "thehub.h"
 #include "widget_makers.h"
+#include <QSpinBox>
 
 namespace gui {
 namespace panel {

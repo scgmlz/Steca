@@ -16,15 +16,9 @@
 #define GUI_HELPERS_H
 
 #include "typ/str.h"
-#include <QCheckBox>
-#include <QComboBox>
+#include <QBoxLayout>
 #include <QDockWidget>
-#include <QLabel>
-#include <QLayout>
 #include <QLineEdit>
-#include <QRadioButton>
-#include <QSpinBox>
-#include <QToolButton>
 #include <QTreeView>
 
 //! abstract tree widget

@@ -17,6 +17,7 @@
 #include "thehub.h"
 #include "def/idiomatic_for.h"
 #include "widget_makers.h"
+#include "calc/calc_reflection_info.h"
 
 namespace gui {
 namespace output {
