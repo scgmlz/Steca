@@ -24,6 +24,8 @@
 #include "data/datafile.h"
 #include "typ/async.h"
 
+extern class gui::TheHub* gHub;
+
 namespace gui {
 
 class TheHub : public TheHubSignallingBase {

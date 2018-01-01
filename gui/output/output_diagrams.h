@@ -24,7 +24,7 @@ class DiagramsFrame : public Frame {
 private:
     using super = Frame;
 public:
-    DiagramsFrame(TheHub&, rcstr title, QWidget*);
+    DiagramsFrame(rcstr title, QWidget*);
 
 protected:
     class TabPlot* tabPlot_;

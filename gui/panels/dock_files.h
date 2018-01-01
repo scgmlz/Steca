@@ -18,18 +18,15 @@
 #include "panel.h"
 
 namespace gui {
-
-
 namespace panel {
 
 class DockFiles : public DockWidget {
 public:
-    DockFiles(TheHub&);
+    DockFiles();
 
 private:
     class FilesView* filesView_;
     class LineView* corrFile_;
-    TheHub& hub_;
 };
 
 } // namespace panel

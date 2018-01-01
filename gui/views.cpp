@@ -28,7 +28,7 @@ void ListView::selectRow(int row) {
 }
 
 
-MultiListView::MultiListView(TheHub& hub) : ListView(hub) {
+MultiListView::MultiListView() : ListView() {
     setSelectionMode(ExtendedSelection);
 }
 

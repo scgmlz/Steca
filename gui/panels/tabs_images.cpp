@@ -25,10 +25,8 @@ namespace gui {
 namespace panel {
 
 class ImageWidget : public QWidget {
-private:
-    using super = QWidget;
 public:
-    ImageWidget(TheHub&);
+    ImageWidget();
 
     void setPixmap(QPixmap const&);
     void setScale();
@@ -37,19 +35,18 @@ protected:
     void resizeEvent(QResizeEvent*);
 
 private:
-    TheHub& hub_;
     qreal scale_;
     QPixmap original_, scaled_;
 
     void paintEvent(QPaintEvent*);
 };
 
-ImageWidget::ImageWidget(TheHub& hub) : hub_(hub), scale_(0) {
+ImageWidget::ImageWidget() : scale_(0) {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    connect(hub_.toggle_showOverlay, &QAction::toggled, [this]() { update(); });
+    connect(gHub->toggle_showOverlay, &QAction::toggled, [this]() { update(); });
 
-    connect(hub_.toggle_stepScale, &QAction::toggled, [this]() { setScale(); });
+    connect(gHub->toggle_stepScale, &QAction::toggled, [this]() { setScale(); });
 }
 
 void ImageWidget::setPixmap(QPixmap const& pixmap) {
@@ -66,7 +63,7 @@ void ImageWidget::setScale() {
         scale_ = qMin(qreal(sz.width() - 2) / os.width(), qreal(sz.height() - 2) / os.height());
     }
 
-    if (hub_.toggle_stepScale->isChecked() && scale_ > 0)
+    if (gHub->toggle_stepScale->isChecked() && scale_ > 0)
         scale_ = (scale_ >= 1) ? qFloor(scale_) : 1.0 / qCeil(1.0 / scale_);
 
     if (original_.isNull() || !(scale_ > 0))
@@ -78,7 +75,7 @@ void ImageWidget::setScale() {
 }
 
 void ImageWidget::resizeEvent(QResizeEvent* e) {
-    super::resizeEvent(e);
+    QWidget::resizeEvent(e);
     setScale();
 }
 
@@ -93,11 +90,11 @@ void ImageWidget::paintEvent(QPaintEvent*) {
     p.drawPixmap(rect.left(), rect.top(), scaled_);
 
     // overlay
-    if (hub_.toggle_showOverlay->isChecked()) {
+    if (gHub->toggle_showOverlay->isChecked()) {
         p.setPen(Qt::lightGray);
 
         // cut
-        auto cut = hub_.imageCut();
+        auto cut = gHub->imageCut();
         QRect r = rect.adjusted(-1, -1, 0, 0)
                       .adjusted(
                           qRound(scale_ * cut.left), qRound(scale_ * cut.top),
@@ -136,7 +133,7 @@ void ImageWidget::paintEvent(QPaintEvent*) {
     p.drawRect(rect.adjusted(-1, -1, 0, 0));
 }
 
-TabsImages::TabsImages(TheHub& hub) : super(hub) {
+TabsImages::TabsImages() : TabsPanel() {
     {
         auto& box = addTab("Image", Qt::Vertical).box();
 
@@ -144,14 +141,14 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
         box.addLayout(hb);
         box.setAlignment(hb, Qt::AlignTop);
 
-        hb->addWidget(iconButton(hub_.toggle_fixedIntenImage));
-        hb->addWidget(iconButton(hub_.toggle_stepScale));
-        hb->addWidget(iconButton(hub_.toggle_showOverlay));
+        hb->addWidget(iconButton(gHub->toggle_fixedIntenImage));
+        hb->addWidget(iconButton(gHub->toggle_stepScale));
+        hb->addWidget(iconButton(gHub->toggle_showOverlay));
         hb->addWidget((spinN_ = spinCell(gui_cfg::em4, 1)));
 
         hb->addStretch(1);
 
-        hb->addWidget(iconButton(hub_.toggle_showBins));
+        hb->addWidget(iconButton(gHub->toggle_showBins));
         hb->addWidget(label("γ count"));
         hb->addWidget((numSlices_ = spinCell(gui_cfg::em4, 0)));
         hb->addWidget(label("#"));
@@ -168,7 +165,7 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
         hb->addWidget(label("bin#"));
         hb->addWidget((numBin_ = spinCell(gui_cfg::em4, 1)));
 
-        box.addWidget((dataImageWidget_ = new ImageWidget(hub_)));
+        box.addWidget((dataImageWidget_ = new ImageWidget()));
 
         connect(spinN_, slot(QSpinBox, valueChanged, int), [this]() { render(); });
 
@@ -182,7 +179,7 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
     {
         auto& tab = addTab("Correction", Qt::Vertical);
 
-        connect(&hub_, &TheHubSignallingBase::sigCorrFile,
+        connect(gHub, &TheHubSignallingBase::sigCorrFile,
                 [&tab](data::shp_File file) { tab.setEnabled(!file.isNull()); });
 
         auto& box = tab.box();
@@ -191,22 +188,22 @@ TabsImages::TabsImages(TheHub& hub) : super(hub) {
         box.addLayout(hb);
         box.setAlignment(hb, Qt::AlignTop);
 
-        hb->addWidget(iconButton(hub_.toggle_fixedIntenImage));
-        hb->addWidget(iconButton(hub_.toggle_stepScale));
-        hb->addWidget(iconButton(hub_.toggle_showOverlay));
+        hb->addWidget(iconButton(gHub->toggle_fixedIntenImage));
+        hb->addWidget(iconButton(gHub->toggle_stepScale));
+        hb->addWidget(iconButton(gHub->toggle_showOverlay));
         hb->addStretch(1);
 
-        box.addWidget((corrImageWidget_ = new ImageWidget(hub_)));
+        box.addWidget((corrImageWidget_ = new ImageWidget()));
     }
 
-    connect(hub_.toggle_enableCorr, &QAction::toggled, [this](bool) { render(); });
+    connect(gHub->toggle_enableCorr, &QAction::toggled, [this](bool) { render(); });
 
-    connect(hub_.toggle_showBins, &QAction::toggled, [this]() { render(); });
+    connect(gHub->toggle_showBins, &QAction::toggled, [this]() { render(); });
 
-    connect(&hub_, &TheHubSignallingBase::sigDisplayChanged, [this](){ render(); });
-    connect(&hub_, &TheHubSignallingBase::sigGeometryChanged, [this](){ render(); });
-    connect(&hub_, &TheHubSignallingBase::sigNormChanged, [this](){ render(); });
-    connect(&hub_, &TheHubSignallingBase::sigDatasetSelected,
+    connect(gHub, &TheHubSignallingBase::sigDisplayChanged, [this](){ render(); });
+    connect(gHub, &TheHubSignallingBase::sigGeometryChanged, [this](){ render(); });
+    connect(gHub, &TheHubSignallingBase::sigNormChanged, [this](){ render(); });
+    connect(gHub, &TheHubSignallingBase::sigDatasetSelected,
             [this](data::shp_Dataset dataset){ setDataset(dataset); });
 
     render();
@@ -233,7 +230,7 @@ QImage TabsImages::makeImage(typ::shp_Image image, bool curvedScale) {
 
     im = QImage(QSize(to_i(size.w), to_i(size.h)), QImage::Format_RGB32);
 
-    auto rgeInten = imageLens->rgeInten(hub_.isFixedIntenImageScale());
+    auto rgeInten = imageLens->rgeInten(gHub->isFixedIntenImageScale());
     inten_t maxInten = inten_t(rgeInten.max);
 
     for_ij (size.w, size.h)
@@ -243,12 +240,12 @@ QImage TabsImages::makeImage(typ::shp_Image image, bool curvedScale) {
 }
 
 QPixmap TabsImages::makePixmap(typ::shp_Image image) {
-    return QPixmap::fromImage(makeImage(image, !hub_.isFixedIntenImageScale()));
+    return QPixmap::fromImage(makeImage(image, !gHub->isFixedIntenImageScale()));
 }
 
 QPixmap
 TabsImages::makePixmap(data::OneDataset const& dataset, typ::Range const& rgeGma, typ::Range const& rgeTth) {
-    auto im = makeImage(dataset.image(), !hub_.isFixedIntenImageScale());
+    auto im = makeImage(dataset.image(), !gHub->isFixedIntenImageScale());
     auto angleMap = gSession->angleMap(dataset);
 
     auto size = im.size();
@@ -285,13 +282,13 @@ void TabsImages::render() {
 
         if (dataset_) {
             // 1 - based
-            uint by = qBound(1u, uint(hub_.datasetsGroupedBy()), dataset_->count());
+            uint by = qBound(1u, uint(gHub->datasetsGroupedBy()), dataset_->count());
             uint n = qBound(1u, to_u(spinN_->value()), by);
 
             spinN_->setValue(to_i(n));
             spinN_->setEnabled(by > 1);
 
-            lens_ = hub_.datasetLens(*dataset_);
+            lens_ = gHub->datasetLens(*dataset_);
 
             typ::Range rge;
             if (nSlices > 0) {
@@ -313,12 +310,12 @@ void TabsImages::render() {
                 maxGamma_->clear();
             }
 
-            hub_.setGammaRange(rge);
+            gHub->setGammaRange(rge);
 
             auto oneDataset = dataset_->at(n - 1);
 
             numBin_->setEnabled(true);
-            if (hub_.toggle_showBins->isChecked()) {
+            if (gHub->toggle_showBins->isChecked()) {
                 typ::Range rgeTth = lens_->rgeTth();
                 auto curve = lens_->makeCurve();
                      // had argument averaged=false

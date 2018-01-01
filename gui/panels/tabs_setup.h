@@ -22,7 +22,7 @@ namespace panel {
 
 class TabsSetup : public TabsPanel {
 public:
-    TabsSetup(TheHub&);
+    TabsSetup();
 
 private:
     // image geometry tab

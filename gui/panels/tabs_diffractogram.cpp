@@ -18,9 +18,10 @@
 namespace gui {
 namespace panel {
 
-TabsDiffractogram::TabsDiffractogram(TheHub& hub) : super(hub) {
+TabsDiffractogram::TabsDiffractogram() : super() {
     auto& box = addTab("Diffractogram", Qt::Vertical).box();
-    box.addWidget(new Diffractogram(hub));
+    box.addWidget(new Diffractogram());
 }
+
 }
 }

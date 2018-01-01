@@ -31,13 +31,11 @@ namespace output {
 // ************************************************************************** //
 
 class TabGraph : public Tab {
-private:
-    using super = Tab;
 public:
     using deg = typ::deg;
     using rad = typ::rad;
 
-    TabGraph(TheHub&, Params&);
+    TabGraph(Params&);
     void set(calc::ReflectionInfos);
 
 protected:
@@ -66,8 +64,8 @@ protected:
     QCheckBox* cbFlat_;
 };
 
-TabGraph::TabGraph(TheHub& hub, Params& params)
-    : super(hub, params), flat_(false), alphaMax_(90), avgAlphaMax_(0) {
+TabGraph::TabGraph(Params& params)
+    : Tab(params), flat_(false), alphaMax_(90), avgAlphaMax_(0) {
     debug::ensure(params_.panelInterpolation);
 
     grid_->addWidget((cbFlat_ = check("no intensity")), 0, 0);
@@ -92,7 +90,7 @@ void TabGraph::set(calc::ReflectionInfos rs) {
 void TabGraph::update() {
     avgAlphaMax_ = params_.panelInterpolation->avgAlphaMax->value();
     flat_ = cbFlat_->isChecked();
-    super::update();
+    Tab::update();
 }
 
 void TabGraph::paintEvent(QPaintEvent*) {
@@ -178,10 +176,8 @@ void TabGraph::paintPoints() {
 // ************************************************************************** //
 
 class TabPoleFiguresSave : public TabSave {
-private:
-    using super = TabSave;
 public:
-    TabPoleFiguresSave(TheHub& hub, Params& params);
+    TabPoleFiguresSave(Params& params);
 
     bool onlySelectedRefl() const;
     bool outputInten() const;
@@ -195,13 +191,13 @@ protected:
     QCheckBox *outputInten_, *outputTth_, *outputFWHM_;
 };
 
-TabPoleFiguresSave::TabPoleFiguresSave(TheHub& hub, Params& params) : super(hub, params, false) {
+TabPoleFiguresSave::TabPoleFiguresSave(Params& params) : TabSave(params, false) {
     auto hb = hbox();
     grid_->addLayout(hb, grid_->rowCount(), 0);
     grid_->addRowStretch();
 
-    auto p1 = new panel::GridPanel(hub, "Output data");
-    auto p2 = new panel::GridPanel(hub, "To save");
+    auto p1 = new panel::GridPanel("Output data");
+    auto p2 = new panel::GridPanel("To save");
 
     hb->addWidget(p1);
     hb->addWidget(p2);
@@ -256,12 +252,12 @@ void TabPoleFiguresSave::rawReflSettings(bool on) {
 static const Params::ePanels PANELS =
     Params::ePanels(Params::REFLECTION | Params::GAMMA | Params::POINTS | Params::INTERPOLATION);
 
-PoleFiguresFrame::PoleFiguresFrame(TheHub& hub, rcstr title, QWidget* parent)
-    : Frame(hub, title, new Params(hub, PANELS), parent) {
-    tabGraph_ = new TabGraph(hub, *params_);
+PoleFiguresFrame::PoleFiguresFrame(rcstr title, QWidget* parent)
+    : Frame(title, new Params(PANELS), parent) {
+    tabGraph_ = new TabGraph(*params_);
     tabs_->addTab("Graph", Qt::Vertical).box().addWidget(tabGraph_);
 
-    tabSave_ = new TabPoleFiguresSave(hub, *params_);
+    tabSave_ = new TabPoleFiguresSave(*params_);
     tabs_->addTab("Save", Qt::Vertical).box().addWidget(tabSave_);
 
     connect( tabSave_->actSave, &QAction::triggered, [this]() { savePoleFigureOutput(); });

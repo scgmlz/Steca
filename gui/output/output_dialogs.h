@@ -28,7 +28,6 @@ class Action;
 namespace output {
 
 class Params : public QWidget {
-private:
 public:
     enum ePanels {
         REFLECTION = 0x01,
@@ -37,9 +36,8 @@ public:
         INTERPOLATION = 0x08,
         DIAGRAM = 0x10,
     };
-    Params(TheHub&, ePanels);
+    Params(ePanels);
     ~Params();
-    TheHub& hub_;
     class PanelReflection* panelReflection;
     class PanelGammaSlices* panelGammaSlices;
     class PanelGammaRange* panelGammaRange;
@@ -54,9 +52,8 @@ public:
 
 
 class Table : public TreeView {
-private:
 public:
-    Table(TheHub&, uint numDataColumns);
+    Table(uint numDataColumns);
     void setColumns(QStringList const& headers, QStringList const& outHeaders, typ::cmp_vec const&);
     QStringList const outHeaders() { return outHeaders_; }
     void clear();
@@ -64,7 +61,6 @@ public:
     void sortData();
     uint rowCount() const;
     typ::row_t const& row(uint) const;
-    TheHub& hub_;
     scoped<class TableModel*> model_;
     QStringList outHeaders_;
 };
@@ -73,16 +69,13 @@ public:
 class Tabs : public panel::TabsPanel {
 private:
     using super = panel::TabsPanel;
-public:
-    Tabs(TheHub&);
 };
 
 
 class Tab : public QWidget {
 public :
-    Tab(TheHub&, Params&);
+    Tab(Params&);
 protected:
-    TheHub& hub_;
     Params& params_;
     GridLayout* grid_;
 };
@@ -92,7 +85,7 @@ class TabTable : public Tab {
 private:
     using super = Tab;
 public:
-    TabTable(TheHub&, Params&, QStringList const& headers, QStringList const& outHeaders,
+    TabTable(Params&, QStringList const& headers, QStringList const& outHeaders,
              typ::cmp_vec const&);
 private:
     struct showcol_t {
@@ -123,7 +116,7 @@ class TabSave : public Tab {
 private:
     using super = Tab;
 public:
-    TabSave(TheHub&, Params&, bool withTypes);
+    TabSave(Params&, bool withTypes);
     str filePath(bool withSuffix);
     str separator() const;
     QAction *actBrowse, *actSave;
@@ -138,7 +131,7 @@ class Frame : public QFrame {
 private:
     using super = QFrame;
 public:
-    Frame(TheHub&, rcstr title, Params*, QWidget*);
+    Frame(rcstr title, Params*, QWidget*);
 protected:
     QAction *actClose_, *actCalculate_, *actInterpolate_;
     QToolButton *btnClose_, *btnCalculate_, *btnInterpolate_;
@@ -153,7 +146,6 @@ protected:
     virtual void displayReflection(uint reflIndex, bool interpolated);
     uint getReflIndex() const;
     bool getInterpolated() const;
-    TheHub& hub_;
 };
 
 } // namespace output

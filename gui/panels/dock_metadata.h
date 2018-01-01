@@ -24,11 +24,10 @@ namespace panel {
 
 class DockMetadata : public DockWidget {
 public:
-    DockMetadata(TheHub&);
+    DockMetadata();
 
 private:
     class MetadataView* metadataView_;
-    TheHub& hub_;
 };
 
 } // namespace panel

@@ -19,31 +19,25 @@
 #include <QGroupBox>
 
 namespace gui {
-
-class TheHub;
-
 namespace panel {
 
 //! Just a groupbox
 class BasicPanel : public QGroupBox {
 public:
-    BasicPanel(TheHub& hub) : BasicPanel(hub, "") {}
-    BasicPanel(TheHub& hub, rcstr title) : QGroupBox(title), hub_(hub) {}
+    BasicPanel() : BasicPanel("") {}
+    BasicPanel(rcstr title) : QGroupBox(title) {}
 
     void setHorizontalStretch(int);
     void setVerticalStretch(int);
     void setStretch(int horizontal, int vertical);
-
-protected:
-    TheHub& hub_;
 };
 
 
 //! A panel with grid layout
 class GridPanel : public BasicPanel {
 public:
-    GridPanel(TheHub&);
-    GridPanel(TheHub&, rcstr title);
+    GridPanel();
+    GridPanel(rcstr title);
 
     GridLayout* grid() const { return grid_; }
 
@@ -65,11 +59,9 @@ protected:
 //!
 class TabsPanel : public QTabWidget {
 public:
-    TabsPanel(TheHub&);
+    TabsPanel();
     Tab& addTab(rcstr title, Qt::Orientation);
     Tab& tab(uint);
-protected:
-    TheHub& hub_;
 };
 
 } // namespace panel

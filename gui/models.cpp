@@ -21,8 +21,8 @@ namespace models {
 //  class FilesModel
 // ************************************************************************** //
 
-FilesModel::FilesModel(gui::TheHub& hub) : TableModel(hub) {
-    connect(&hub_, &gui::TheHubSignallingBase::sigFilesChanged, [this]() { signalReset(); });
+FilesModel::FilesModel() : TableModel() {
+    connect(gHub, &gui::TheHubSignallingBase::sigFilesChanged, [this]() { signalReset(); });
 }
 
 int FilesModel::columnCount(rcIndex) const {
@@ -46,18 +46,18 @@ QVariant FilesModel::data(rcIndex index, int role) const {
 }
 
 void FilesModel::removeFile(uint i) {
-    hub_.removeFile(i);
+    gHub->removeFile(i);
 }
 
 // ************************************************************************** //
 //  class DatasetsModel
 // ************************************************************************** //
 
-DatasetsModel::DatasetsModel(gui::TheHub& hub)
-    : TableModel(hub)
+DatasetsModel::DatasetsModel()
+    : TableModel()
     , datasets_(gSession->collectedDatasets()) //, metaInfo_(nullptr)
 {
-    connect(&hub_, &gui::TheHubSignallingBase::sigDatasetsChanged, [this]() { signalReset(); });
+    connect(gHub, &gui::TheHubSignallingBase::sigDatasetsChanged, [this]() { signalReset(); });
 }
 
 int DatasetsModel::columnCount(rcIndex) const {
@@ -118,10 +118,10 @@ void DatasetsModel::showMetaInfo(typ::vec<bool> const& metadataRows) {
 //  class MetadataModel
 // ************************************************************************** //
 
-MetadataModel::MetadataModel(gui::TheHub& hub) : TableModel(hub) {
+MetadataModel::MetadataModel() : TableModel() {
     rowsChecked_.fill(false, data::Metadata::numAttributes(false));
 
-    connect(&hub_, &gui::TheHubSignallingBase::sigDatasetSelected,
+    connect(gHub, &gui::TheHubSignallingBase::sigDatasetSelected,
             [this](data::shp_Dataset dataset) {
                 metadata_.clear();
                 if (dataset)
@@ -177,7 +177,7 @@ void MetadataModel::flipCheck(uint row) {
 //  class ReflectionsModel
 // ************************************************************************** //
 
-ReflectionsModel::ReflectionsModel(gui::TheHub& hub) : TableModel(hub) {}
+ReflectionsModel::ReflectionsModel() : TableModel() {}
 
 int ReflectionsModel::columnCount(rcIndex) const {
     return NUM_COLUMNS;
@@ -234,11 +234,11 @@ QVariant ReflectionsModel::headerData(int col, Qt::Orientation, int role) const 
 }
 
 void ReflectionsModel::addReflection(QString const& peakFunctionName) {
-    hub_.addReflection(peakFunctionName);
+    gHub->addReflection(peakFunctionName);
 }
 
 void ReflectionsModel::remReflection(uint i) {
-    hub_.remReflection(i);
+    gHub->remReflection(i);
 }
 
 QStringList ReflectionsModel::names() const {

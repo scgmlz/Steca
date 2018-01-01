@@ -27,6 +27,7 @@
 #include "panels/tabs_images.h"
 #include "panels/tabs_setup.h"
 #include "settings.h"
+#include "thehub.h"
 
 #include <QApplication>
 #include <QCloseEvent>
@@ -39,9 +40,12 @@
 #include <QStatusBar>
 #include <QStringBuilder> // for ".." % ..
 
+gui::TheHub* gHub;
+
 namespace gui {
 
-MainWin::MainWin() : hub_() {
+MainWin::MainWin() {
+    gHub = new TheHub();
     setWindowIcon(QIcon(":/icon/retroStier"));
     QDir::setCurrent(QDir::homePath());
 
@@ -79,9 +83,9 @@ void MainWin::initMenus() {
     addActions(
         menuFile_,
         {
-            hub_.trigger_addFiles, hub_.trigger_removeFile, separator(), hub_.toggle_enableCorr, hub_.trigger_remCorr,
-            separator(), hub_.trigger_loadSession,
-            hub_.trigger_saveSession, // TODO add: hub_.trigger_clearSession,
+            gHub->trigger_addFiles, gHub->trigger_removeFile, separator(), gHub->toggle_enableCorr, gHub->trigger_remCorr,
+            separator(), gHub->trigger_loadSession,
+            gHub->trigger_saveSession, // TODO add: gHub->trigger_clearSession,
         });
 
     addActions(
@@ -90,48 +94,48 @@ void MainWin::initMenus() {
 #ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
             separator(),
 #endif
-            hub_.trigger_quit,
+            gHub->trigger_quit,
         });
 
     addActions(
         menuView_,
         {
-            hub_.toggle_viewFiles, hub_.toggle_viewDatasets, hub_.toggle_viewDatasetInfo, separator(),
+            gHub->toggle_viewFiles, gHub->toggle_viewDatasets, gHub->toggle_viewDatasetInfo, separator(),
 #ifndef Q_OS_OSX
-            hub_.toggle_fullScreen,
+            gHub->toggle_fullScreen,
 #endif
-            hub_.toggle_viewStatusbar, separator(), hub_.trigger_viewReset,
+            gHub->toggle_viewStatusbar, separator(), gHub->trigger_viewReset,
         });
 
     addActions(
         menuImage_,
         {
-            hub_.trigger_rotateImage, hub_.toggle_mirrorImage, hub_.toggle_fixedIntenImage, hub_.toggle_linkCuts,
-            hub_.toggle_showOverlay, hub_.toggle_stepScale, hub_.toggle_showBins,
+            gHub->trigger_rotateImage, gHub->toggle_mirrorImage, gHub->toggle_fixedIntenImage, gHub->toggle_linkCuts,
+            gHub->toggle_showOverlay, gHub->toggle_stepScale, gHub->toggle_showBins,
         });
 
     addActions(
         menuDgram_,
         {
-            hub_.toggle_selRegions, hub_.toggle_showBackground, hub_.trigger_clearBackground, hub_.trigger_clearReflections,
-            separator(), hub_.trigger_addReflection, hub_.trigger_remReflection, separator(), hub_.toggle_combinedDgram,
-            hub_.toggle_fixedIntenDgram,
+            gHub->toggle_selRegions, gHub->toggle_showBackground, gHub->trigger_clearBackground, gHub->trigger_clearReflections,
+            separator(), gHub->trigger_addReflection, gHub->trigger_remReflection, separator(), gHub->toggle_combinedDgram,
+            gHub->toggle_fixedIntenDgram,
         });
 
     addActions(
         menuOutput_,
         {
-            hub_.trigger_outputPolefigures, hub_.trigger_outputDiagrams, hub_.trigger_outputDiffractograms,
+            gHub->trigger_outputPolefigures, gHub->trigger_outputDiagrams, gHub->trigger_outputDiffractograms,
         });
 
     addActions(
         menuHelp_,
         {
-            hub_.trigger_about,
+            gHub->trigger_about,
 #ifndef Q_OS_OSX
             separator(), // Mac puts About into the Apple menu
 #endif
-            hub_.trigger_online, hub_.trigger_checkUpdate,
+            gHub->trigger_online, gHub->trigger_checkUpdate,
         });
 }
 
@@ -144,9 +148,9 @@ void MainWin::addActions(QMenu* menu, QList<QAction*> actions) {
 }
 
 void MainWin::initLayout() {
-    addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new panel::DockFiles(hub_)));
-    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasets_ = new panel::DockDatasets(hub_)));
-    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasetInfo_ = new panel::DockMetadata(hub_)));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new panel::DockFiles()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasets_ = new panel::DockDatasets()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasetInfo_ = new panel::DockMetadata()));
 
     auto splMain = new QSplitter(Qt::Vertical);
     splMain->setChildrenCollapsible(false);
@@ -157,11 +161,11 @@ void MainWin::initLayout() {
     setCentralWidget(splMain);
 
     splMain->addWidget(splTop);
-    splMain->addWidget(new panel::TabsDiffractogram(hub_));
+    splMain->addWidget(new panel::TabsDiffractogram());
     splMain->setStretchFactor(1, 1);
 
-    splTop->addWidget(new panel::TabsSetup(hub_));
-    splTop->addWidget(new panel::TabsImages(hub_));
+    splTop->addWidget(new panel::TabsSetup());
+    splTop->addWidget(new panel::TabsImages());
     splTop->setStretchFactor(1, 1);
 }
 
@@ -178,33 +182,33 @@ void MainWin::connectActions() {
         QObject::connect(action, &QAction::toggled, this, fun);
     };
 
-    connectTrigger(hub_.trigger_loadSession, &MainWin::loadSession);
-    connectTrigger(hub_.trigger_saveSession, &MainWin::saveSession);
-    connectTrigger(hub_.trigger_clearSession, &MainWin::clearSession);
+    connectTrigger(gHub->trigger_loadSession, &MainWin::loadSession);
+    connectTrigger(gHub->trigger_saveSession, &MainWin::saveSession);
+    connectTrigger(gHub->trigger_clearSession, &MainWin::clearSession);
 
-    connectTrigger(hub_.trigger_addFiles, &MainWin::addFiles);
-    connectTrigger(hub_.toggle_enableCorr, &MainWin::enableCorr);
+    connectTrigger(gHub->trigger_addFiles, &MainWin::addFiles);
+    connectTrigger(gHub->toggle_enableCorr, &MainWin::enableCorr);
 
-    connectTrigger(hub_.trigger_quit, &MainWin::close);
+    connectTrigger(gHub->trigger_quit, &MainWin::close);
 
-    connectTrigger(hub_.trigger_outputPolefigures, &MainWin::outputPoleFigures);
-    connectTrigger(hub_.trigger_outputDiagrams, &MainWin::outputDiagrams);
-    connectTrigger(hub_.trigger_outputDiffractograms, &MainWin::outputDiffractograms);
+    connectTrigger(gHub->trigger_outputPolefigures, &MainWin::outputPoleFigures);
+    connectTrigger(gHub->trigger_outputDiagrams, &MainWin::outputDiagrams);
+    connectTrigger(gHub->trigger_outputDiffractograms, &MainWin::outputDiffractograms);
 
-    connectTrigger(hub_.trigger_about, &MainWin::about);
-    connectTrigger(hub_.trigger_online, &MainWin::online);
-    QObject::connect(hub_.trigger_checkUpdate, &QAction::triggered, [this]() {checkUpdate();});
+    connectTrigger(gHub->trigger_about, &MainWin::about);
+    connectTrigger(gHub->trigger_online, &MainWin::online);
+    QObject::connect(gHub->trigger_checkUpdate, &QAction::triggered, [this]() {checkUpdate();});
 
-    connectToggle(hub_.toggle_viewStatusbar, &MainWin::viewStatusbar);
+    connectToggle(gHub->toggle_viewStatusbar, &MainWin::viewStatusbar);
 #ifndef Q_OS_OSX
-    connectToggle(hub_.toggle_fullScreen, &MainWin::viewFullScreen);
+    connectToggle(gHub->toggle_fullScreen, &MainWin::viewFullScreen);
 #endif
 
-    connectToggle(hub_.toggle_viewFiles, &MainWin::viewFiles);
-    connectToggle(hub_.toggle_viewDatasets, &MainWin::viewDatasets);
-    connectToggle(hub_.toggle_viewDatasetInfo, &MainWin::viewDatasetInfo);
+    connectToggle(gHub->toggle_viewFiles, &MainWin::viewFiles);
+    connectToggle(gHub->toggle_viewDatasets, &MainWin::viewDatasets);
+    connectToggle(gHub->toggle_viewDatasetInfo, &MainWin::viewDatasetInfo);
 
-    connectTrigger(hub_.trigger_viewReset, &MainWin::viewReset);
+    connectTrigger(gHub->trigger_viewReset, &MainWin::viewReset);
 }
 
 void MainWin::about() {
@@ -268,7 +272,7 @@ void MainWin::addFiles() {
     update();
     if (!fileNames.isEmpty()) {
         QDir::setCurrent(QFileInfo(fileNames.at(0)).absolutePath());
-        hub_.addGivenFiles(fileNames);
+        gHub->addGivenFiles(fileNames);
     }
 }
 
@@ -282,7 +286,7 @@ void MainWin::enableCorr() {
     }
     if (!fileName.isEmpty()) {
         QDir::setCurrent(QFileInfo(fileName).absolutePath());
-        hub_.setCorrFile(fileName);
+        gHub->setCorrFile(fileName);
     }
 }
 
@@ -297,7 +301,7 @@ void MainWin::loadSession() {
     }
     try {
         TR("going to load session from file '"+fileName+"'");
-        hub_.sessionFromFile(QFileInfo(fileName));
+        gHub->sessionFromFile(QFileInfo(fileName));
     } catch(Exception& ex) {
         qWarning() << "Could not load session from file " << fileName << ":\n"
                    << ex.msg() << "\n"
@@ -314,25 +318,25 @@ void MainWin::saveSession() {
     update();
     if (!fileName.endsWith(".ste"))
         fileName += ".ste";
-    hub_.saveSession(QFileInfo(fileName));
+    gHub->saveSession(QFileInfo(fileName));
 }
 
 void MainWin::clearSession() {
-    hub_.clearSession();
+    gHub->clearSession();
 }
 
 void MainWin::outputPoleFigures() {
-    auto popup = new output::PoleFiguresFrame(hub_, "Pole Figures", this);
+    auto popup = new output::PoleFiguresFrame("Pole Figures", this);
     popup->show();
 }
 
 void MainWin::outputDiagrams() {
-    auto popup = new output::DiagramsFrame(hub_, "Diagrams", this);
+    auto popup = new output::DiagramsFrame("Diagrams", this);
     popup->show();
 }
 
 void MainWin::outputDiffractograms() {
-    auto popup = new output::DiffractogramsFrame(hub_, "Diffractograms", this);
+    auto popup = new output::DiffractogramsFrame("Diffractograms", this);
     popup->show();
 }
 
@@ -343,7 +347,7 @@ void MainWin::closeEvent(QCloseEvent* event) {
 
 void MainWin::onShow() {
     checkActions();
-    hub_.clearSession();
+    gHub->clearSession();
 
 #ifdef DEVELOPMENT
     // automatic actions - load files & open dialog
@@ -352,10 +356,10 @@ void MainWin::onShow() {
     auto safeLoad = [this](rcstr fileName) {
         QFileInfo info(fileName);
         if (info.exists())
-            hub_.loadSession(info);
+            gHub->loadSession(info);
     };
     safeLoad("/home/jan/C/+dev/fz/data/0.ste");
-    hub_.actions.outputPolefigures->trigger();
+    gHub->actions.outputPolefigures->trigger();
 #endif
 
     Settings s(config_key::GROUP_CONFIG);
@@ -393,20 +397,20 @@ void MainWin::saveSettings() {
 }
 
 void MainWin::checkActions() {
-    hub_.toggle_viewStatusbar->setChecked(statusBar()->isVisible());
+    gHub->toggle_viewStatusbar->setChecked(statusBar()->isVisible());
 
 #ifndef Q_OS_OSX
-    hub_.toggle_fullScreen->setChecked(isFullScreen());
+    gHub->toggle_fullScreen->setChecked(isFullScreen());
 #endif
 
-    hub_.toggle_viewFiles->setChecked(dockFiles_->isVisible());
-    hub_.toggle_viewDatasets->setChecked(dockDatasets_->isVisible());
-    hub_.toggle_viewDatasetInfo->setChecked(dockDatasetInfo_->isVisible());
+    gHub->toggle_viewFiles->setChecked(dockFiles_->isVisible());
+    gHub->toggle_viewDatasets->setChecked(dockDatasets_->isVisible());
+    gHub->toggle_viewDatasetInfo->setChecked(dockDatasetInfo_->isVisible());
 }
 
 void MainWin::viewStatusbar(bool on) {
     statusBar()->setVisible(on);
-    hub_.toggle_viewStatusbar->setChecked(on);
+    gHub->toggle_viewStatusbar->setChecked(on);
 }
 
 void MainWin::viewFullScreen(bool on) {
@@ -416,23 +420,23 @@ void MainWin::viewFullScreen(bool on) {
         showNormal();
 
 #ifndef Q_OS_OSX
-    hub_.toggle_fullScreen->setChecked(on);
+    gHub->toggle_fullScreen->setChecked(on);
 #endif
 }
 
 void MainWin::viewFiles(bool on) {
     dockFiles_->setVisible(on);
-    hub_.toggle_viewFiles->setChecked(on);
+    gHub->toggle_viewFiles->setChecked(on);
 }
 
 void MainWin::viewDatasets(bool on) {
     dockDatasets_->setVisible(on);
-    hub_.toggle_viewDatasets->setChecked(on);
+    gHub->toggle_viewDatasets->setChecked(on);
 }
 
 void MainWin::viewDatasetInfo(bool on) {
     dockDatasetInfo_->setVisible(on);
-    hub_.toggle_viewDatasetInfo->setChecked(on);
+    gHub->toggle_viewDatasetInfo->setChecked(on);
 }
 
 void MainWin::viewReset() {

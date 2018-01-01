@@ -28,9 +28,8 @@
 namespace gui {
 namespace output {
 
-Params::Params(TheHub& hub, ePanels panels)
-    : hub_(hub)
-    , panelReflection(nullptr)
+Params::Params(ePanels panels)
+    : panelReflection(nullptr)
     , panelGammaSlices(nullptr)
     , panelGammaRange(nullptr)
     , panelPoints(nullptr)
@@ -41,21 +40,21 @@ Params::Params(TheHub& hub, ePanels panels)
     setLayout((box_ = boxLayout(Qt::Horizontal)));
 
     if (REFLECTION & panels)
-        box_->addWidget((panelReflection = new PanelReflection(hub)));
+        box_->addWidget((panelReflection = new PanelReflection()));
 
     if (GAMMA & panels) {
-        box_->addWidget((panelGammaSlices = new PanelGammaSlices(hub)));
-        box_->addWidget((panelGammaRange = new PanelGammaRange(hub)));
+        box_->addWidget((panelGammaSlices = new PanelGammaSlices()));
+        box_->addWidget((panelGammaRange = new PanelGammaRange()));
     }
 
     if (POINTS & panels)
-        box_->addWidget((panelPoints = new PanelPoints(hub)));
+        box_->addWidget((panelPoints = new PanelPoints()));
 
     if (INTERPOLATION & panels)
-        box_->addWidget((panelInterpolation = new PanelInterpolation(hub)));
+        box_->addWidget((panelInterpolation = new PanelInterpolation()));
 
     if (DIAGRAM & panels)
-        box_->addWidget((panelDiagram = new PanelDiagram(hub)));
+        box_->addWidget((panelDiagram = new PanelDiagram()));
 
     box_->addStretch();
 
@@ -128,7 +127,7 @@ void Params::saveSettings() const {
 class TableModel : public models::TableModel {
 private:
 public:
-    TableModel(TheHub&, uint numCols_);
+    TableModel(uint numCols_);
 
     int columnCount(rcIndex = models::ANY_INDEX) const;
     int rowCount(rcIndex = models::ANY_INDEX) const;
@@ -168,8 +167,8 @@ private:
     typ::vec<numRow> rows_;
 };
 
-TableModel::TableModel(TheHub& hub, uint numColumns_)
-    : models::TableModel(hub), numCols_(numColumns_), sortColumn_(-1) {
+TableModel::TableModel(uint numColumns_)
+    : models::TableModel(), numCols_(numColumns_), sortColumn_(-1) {
     colIndexMap_.resize(numCols_);
     for_i (numCols_)
         colIndexMap_[i] = i;
@@ -304,14 +303,12 @@ void TableModel::sortData() {
     endResetModel();
 }
 
-Tabs::Tabs(TheHub& hub) : super(hub) {}
-
-Tab::Tab(TheHub& hub, Params& params) : hub_(hub), params_(params) {
+Tab::Tab(Params& params) : params_(params) {
     setLayout((grid_ = gridLayout()));
 }
 
-Table::Table(TheHub& hub, uint numDataColumns) : hub_(hub), model_(nullptr) {
-    model_.reset(new TableModel(hub_, numDataColumns));
+Table::Table(uint numDataColumns) : model_(nullptr) {
+    model_.reset(new TableModel(numDataColumns));
     setModel(model_.ptr());
     setHeader(new QHeaderView(Qt::Horizontal));
 
@@ -372,13 +369,13 @@ const typ::row_t& Table::row(uint i) const {
 }
 
 TabTable::TabTable(
-    TheHub& hub, Params& params, QStringList const& headers, QStringList const& outHeaders,
+    Params& params, QStringList const& headers, QStringList const& outHeaders,
     typ::cmp_vec const& cmps)
-    : super(hub, params) {
+    : super(params) {
     debug::ensure(to_u(headers.count()) == cmps.count());
     uint numCols = to_u(headers.count());
 
-    grid_->addWidget((table = new Table(hub_, numCols)), 0, 0);
+    grid_->addWidget((table = new Table(numCols)), 0, 0);
     grid_->setColumnStretch(0, 1);
 
     table->setColumns(headers, outHeaders, cmps);
@@ -508,7 +505,7 @@ TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
 static str const DAT_SFX(".dat"), DAT_SEP(" "), // suffix, separator
     CSV_SFX(".csv"), CSV_SEP(", ");
 
-TabSave::TabSave(TheHub& hub, Params& params, bool withTypes) : super(hub, params) {
+TabSave::TabSave(Params& params, bool withTypes) : super(params) {
     actBrowse = newTrigger("Browse...");
     actSave = newTrigger("Save");
 
@@ -516,7 +513,7 @@ TabSave::TabSave(TheHub& hub, Params& params, bool withTypes) : super(hub, param
     if (!QDir(dir).exists())
         dir = QDir::current().absolutePath();
 
-    auto gp = new panel::GridPanel(hub, "Destination");
+    auto gp = new panel::GridPanel("Destination");
     grid_->addWidget(gp, 0, 0);
     auto g = gp->grid();
 
@@ -538,7 +535,7 @@ TabSave::TabSave(TheHub& hub, Params& params, bool withTypes) : super(hub, param
             dir_->setText((params_.saveDir = dir));
     });
 
-    gp = new panel::GridPanel(hub, "File type");
+    gp = new panel::GridPanel("File type");
     grid_->addWidget(gp, 0, 1);
     g = gp->grid();
 
@@ -586,8 +583,8 @@ str TabSave::fileSetSuffix(rcstr suffix) {
 
 //------------------------------------------------------------------------------
 
-Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
-    : super(parent, Qt::Dialog), hub_(hub) {
+Frame::Frame(rcstr title, Params* params, QWidget* parent)
+    : super(parent, Qt::Dialog) {
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
@@ -597,7 +594,7 @@ Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
     debug::ensure(params);
 
     box_->addWidget((params_ = params));
-    box_->addWidget((tabs_ = new Tabs(hub)));
+    box_->addWidget((tabs_ = new Tabs()));
     box_->setStretch(box_->count() - 1, 1);
 
     auto hb = hbox();
@@ -639,7 +636,7 @@ Frame::Frame(TheHub& hub, rcstr title, Params* params, QWidget* parent)
     // tabs
 
     auto tabTable = new TabTable(
-        hub, *params_, calc::ReflectionInfo::dataTags(false), calc::ReflectionInfo::dataTags(true),
+        *params_, calc::ReflectionInfo::dataTags(false), calc::ReflectionInfo::dataTags(true),
         calc::ReflectionInfo::dataCmps());
     tabs_->addTab("Points", Qt::Vertical).box().addWidget(tabTable);
 

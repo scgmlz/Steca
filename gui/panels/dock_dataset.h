@@ -18,21 +18,18 @@
 #include "panel.h"
 
 namespace gui {
-
-
 namespace panel {
 
 class DockDatasets : public DockWidget {
 private:
     using super = DockWidget;
 public:
-    DockDatasets(TheHub&);
+    DockDatasets();
 
     QSpinBox* combineDatasets_;
 
 private:
     class DatasetView* datasetView_;
-    TheHub& hub_;
 };
 
 } // namespace panel

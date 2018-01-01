@@ -23,9 +23,9 @@
 namespace gui {
 namespace output {
 
-TabDiffractogramsSave::TabDiffractogramsSave(TheHub& hub, Params& params)
-    : super(hub, params, true) {
-    auto gp = new panel::GridPanel(hub, "To save");
+TabDiffractogramsSave::TabDiffractogramsSave(Params& params)
+    : super(params, true) {
+    auto gp = new panel::GridPanel("To save");
     grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
     grid_->addRowStretch();
 
@@ -61,13 +61,13 @@ struct OutputData {
 
 static const Params::ePanels PANELS = Params::ePanels(Params::GAMMA);
 
-DiffractogramsFrame::DiffractogramsFrame(TheHub& hub, rcstr title, QWidget* parent)
-    : super(hub, title, new Params(hub, PANELS), parent) {
+DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
+    : super(title, new Params(PANELS), parent) {
     tabs_->removeTab(0);
     btnCalculate_->hide();
     btnInterpolate_->hide();
 
-    tabSave_ = new TabDiffractogramsSave(hub, *params_);
+    tabSave_ = new TabDiffractogramsSave(*params_);
     tabs_->addTab("Save", Qt::Vertical).box().addWidget(tabSave_);
 
     connect(tabSave_->actSave, &QAction::triggered, [this]() {
@@ -77,7 +77,7 @@ DiffractogramsFrame::DiffractogramsFrame(TheHub& hub, rcstr title, QWidget* pare
 OutputDataCollection DiffractogramsFrame::collectCurves(
     typ::Range const& rgeGma, uint gmaSlices, data::Dataset const& dataset, uint picNum) {
 
-    auto lens = hub_.datasetLens(dataset);
+    auto lens = gHub->datasetLens(dataset);
 
     typ::Range rge = (gmaSlices > 0) ? lens->rgeGma() : typ::Range::infinite();
     if (rgeGma.isValid())
@@ -98,7 +98,7 @@ OutputDataCollection DiffractogramsFrame::collectCurves(
 }
 
 OutputData DiffractogramsFrame::collectCurve(data::Dataset const& dataset) {
-    auto lens = hub_.datasetLens(dataset);
+    auto lens = gHub->datasetLens(dataset);
     auto curve = lens->makeCurve();
     return OutputData(curve, dataset, lens->rgeGma(), 0); // TODO current picture number
 }
@@ -129,7 +129,7 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
 }
 
 OutputData DiffractogramsFrame::outputCurrDiffractogram() {
-    auto dataset = hub_.selectedDataset();
+    auto dataset = gHub->selectedDataset();
     if (dataset)
         return collectCurve(*dataset);
     else

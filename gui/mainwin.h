@@ -15,7 +15,7 @@
 #ifndef MAINWIN_H
 #define MAINWIN_H
 
-#include "thehub.h"
+#include "typ/str.h"
 #include <QMainWindow>
 #include <QNetworkAccessManager>
 
@@ -48,7 +48,6 @@ private:
     QDockWidget *dockFiles_, *dockDatasets_, *dockDatasetInfo_;
     QByteArray initialState_;
     QNetworkAccessManager netMan_;
-    gui::TheHub hub_;
 
     void initMenus();
     void addActions(QMenu*, QList<QAction*>);

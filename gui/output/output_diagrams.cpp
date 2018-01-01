@@ -129,7 +129,7 @@ class TabDiagramsSave : public TabSave {
 private:
     using super = TabSave;
 public:
-    TabDiagramsSave(TheHub&, Params&);
+    TabDiagramsSave(Params&);
     uint currType() const { return fileTypes_->currentIndex(); }
     bool currDiagram() const { return currentDiagram_->isChecked(); }
 protected:
@@ -137,8 +137,8 @@ protected:
     QComboBox* fileTypes_;
 };
 
-TabDiagramsSave::TabDiagramsSave(TheHub& hub, Params& params) : super(hub, params, true) {
-    auto gp = new panel::GridPanel(hub, "To save");
+TabDiagramsSave::TabDiagramsSave(Params& params) : super(params, true) {
+    auto gp = new panel::GridPanel("To save");
     grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
     grid_->addRowStretch();
 
@@ -155,8 +155,8 @@ TabDiagramsSave::TabDiagramsSave(TheHub& hub, Params& params) : super(hub, param
 //  class DiagramsFrame
 // ************************************************************************** //
 
-DiagramsFrame::DiagramsFrame(TheHub& hub, rcstr title, QWidget* parent)
-    : super(hub, title, new Params(hub, PANELS), parent) {
+DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
+    : super(title, new Params(PANELS), parent) {
     btnInterpolate_->hide();
 
     tabPlot_ = new TabPlot();
@@ -169,7 +169,7 @@ DiagramsFrame::DiagramsFrame(TheHub& hub, rcstr title, QWidget* parent)
 
     connect(pd->yAxis, slot(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
 
-    tabSave_ = new TabDiagramsSave(hub, *params_);
+    tabSave_ = new TabDiagramsSave(*params_);
     tabs_->addTab("Save", Qt::Vertical).box().addWidget(tabSave_);
 
     connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiagramOutput(); });

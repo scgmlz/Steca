@@ -30,7 +30,7 @@ class FilesView : public views::MultiListView {
 private:
     using super = views::MultiListView;
 public:
-    FilesView(TheHub&);
+    FilesView();
 
 protected:
     using Model = models::FilesModel;
@@ -45,18 +45,18 @@ protected:
 //  class FilesView (implementation)
 // ************************************************************************** //
 
-FilesView::FilesView(TheHub& hub) : super(hub) {
-    setModel(&hub.filesModel);
+FilesView::FilesView() : super() {
+    setModel(&gHub->filesModel);
     debug::ensure(dynamic_cast<Model*>(super::model()));
 
     header()->hide();
 
-    connect(hub_.trigger_removeFile, &QAction::triggered, [this]() { removeSelected(); });
+    connect(gHub->trigger_removeFile, &QAction::triggered, [this]() { removeSelected(); });
 
-    connect(&hub_, &TheHubSignallingBase::sigFilesChanged,
+    connect(gHub, &TheHubSignallingBase::sigFilesChanged,
             [this]() { selectRows({}); recollect(); });
 
-    connect(&hub_, &TheHubSignallingBase::sigFilesSelected,
+    connect(gHub, &TheHubSignallingBase::sigFilesSelected,
             [this]() { selectRows(gSession->collectedFromFiles()); });
 }
 
@@ -82,23 +82,23 @@ void FilesView::recollect() {
         if (index.isValid())
             rows.append(to_u(index.row()));
 
-    hub_.collectDatasetsFromFiles(rows);
+    gHub->collectDatasetsFromFiles(rows);
 }
 
 // ************************************************************************** //
 //  class DocFiles
 // ************************************************************************** //
 
-DockFiles::DockFiles(TheHub& hub) : DockWidget("Files", "dock-files", Qt::Vertical), hub_(hub) {
+DockFiles::DockFiles() : DockWidget("Files", "dock-files", Qt::Vertical) {
 
     auto h = hbox();
     box_->addLayout(h);
 
     h->addStretch();
-    h->addWidget(iconButton(hub_.trigger_addFiles));
-    h->addWidget(iconButton(hub_.trigger_removeFile));
+    h->addWidget(iconButton(gHub->trigger_addFiles));
+    h->addWidget(iconButton(gHub->trigger_removeFile));
 
-    box_->addWidget((filesView_ = new FilesView(hub)));
+    box_->addWidget((filesView_ = new FilesView()));
 
     h = hbox();
     box_->addLayout(h);
@@ -109,10 +109,10 @@ DockFiles::DockFiles(TheHub& hub) : DockWidget("Files", "dock-files", Qt::Vertic
     box_->addLayout(h);
 
     h->addWidget((corrFile_ = new LineView()));
-    h->addWidget(iconButton(hub_.toggle_enableCorr));
-    h->addWidget(iconButton(hub_.trigger_remCorr));
+    h->addWidget(iconButton(gHub->toggle_enableCorr));
+    h->addWidget(iconButton(gHub->trigger_remCorr));
 
-    connect(&hub_, &TheHubSignallingBase::sigCorrFile,
+    connect(gHub, &TheHubSignallingBase::sigCorrFile,
             [this](data::shp_File file) {
                 corrFile_->setText(file.isNull() ? "" : file->fileName()); });
 }

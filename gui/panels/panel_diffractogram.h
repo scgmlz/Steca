@@ -26,7 +26,7 @@ namespace panel {
 
 class Diffractogram : public QWidget {
 public:
-    Diffractogram(TheHub&);
+    Diffractogram();
 
     void render();
 
@@ -34,7 +34,6 @@ public:
     QBoxLayout* box() const { return box_; }
 
 private:
-    TheHub& hub_;
     QBoxLayout* box_;
     void onNormChanged();
     void onFittingTab(eFittingTab tab);

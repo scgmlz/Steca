@@ -46,9 +46,9 @@ void BasicPanel::setStretch(int horizontal, int vertical) {
 //  class GridPanel
 // ************************************************************************** //
 
-GridPanel::GridPanel(TheHub& hub) : GridPanel(hub, "") {}
+GridPanel::GridPanel() : GridPanel("") {}
 
-GridPanel::GridPanel(TheHub& hub, rcstr title) : BasicPanel(hub, title) {
+GridPanel::GridPanel(rcstr title) : BasicPanel(title) {
     setLayout((grid_ = gridLayout()));
 }
 
@@ -66,7 +66,7 @@ Tab::Tab(Qt::Orientation orientation) {
 //  class TabsPanel
 // ************************************************************************** //
 
-TabsPanel::TabsPanel(TheHub& hub) : hub_(hub) {
+TabsPanel::TabsPanel() {
     setTabPosition(TabsPanel::North);
 }
 

@@ -20,38 +20,36 @@ namespace gui {
 namespace panel {
 
 class MetadataView : public views::ListView {
-private:
-    using super = views::ListView;
 public:
     using Model = models::MetadataModel;
-    MetadataView(TheHub&);
+    MetadataView();
 
 protected:
     int sizeHintForColumn(int) const;
 
 private:
-    Model* model() const { return static_cast<Model*>(super::model()); }
+    Model* model() const { return static_cast<Model*>(views::ListView::model()); }
 };
 
-MetadataView::MetadataView(TheHub& hub) : super(hub) {
-    setModel(&hub.metadataModel);
-    debug::ensure(dynamic_cast<Model*>(super::model()));
+MetadataView::MetadataView() : views::ListView() {
+    setModel(&gHub->metadataModel);
+    debug::ensure(dynamic_cast<Model*>(views::ListView::model()));
     connect(this, &MetadataView::clicked, [this](QModelIndex const& index) {
         model()->flipCheck(to_u(index.row()));
-        hub_.datasetsModel.showMetaInfo(model()->rowsChecked()); // REVIEW signal instead?
+        gHub->datasetsModel.showMetaInfo(model()->rowsChecked()); // REVIEW signal instead?
     });
 }
 
 int MetadataView::sizeHintForColumn(int col) const {
     switch (col) {
     case Model::COL_CHECK: return mWidth(this);
-    default: return super::sizeHintForColumn(col);
+    default: return views::ListView::sizeHintForColumn(col);
     }
 }
 
-DockMetadata::DockMetadata(TheHub& hub)
-    : DockWidget("Metadata", "dock-metadata", Qt::Vertical), hub_(hub) {
-    box_->addWidget((metadataView_ = new MetadataView(hub)));
+DockMetadata::DockMetadata()
+    : DockWidget("Metadata", "dock-metadata", Qt::Vertical) {
+    box_->addWidget((metadataView_ = new MetadataView()));
 }
 
 } // namespace panel

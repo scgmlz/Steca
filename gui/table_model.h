@@ -33,13 +33,12 @@ public:
     using Index = QModelIndex;
     using rcIndex = Index const&;
 
-    TableModel(gui::TheHub&);
+    TableModel() {}
 
     void signalReset(); //!< force-emits reset() signal
 
 protected:
     static int const DCOL = 1; //!< the left-most column is hidden
-    gui::TheHub& hub_;
 };
 
 } // namespace models

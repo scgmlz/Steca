@@ -25,7 +25,7 @@ namespace views {
 
 class ListView : public TreeListView {
 public:
-    ListView(TheHub& hub) : hub_(hub) {}
+    ListView() {}
 
     using Model = models::TableModel;
 
@@ -39,8 +39,6 @@ protected:
     Model* model() const { return static_cast<Model*>(TreeListView::model()); }
     void updateSingleSelection();
     void selectRow(int);
-
-    class TheHub& hub_;
 };
 
 
@@ -48,7 +46,7 @@ protected:
 
 class MultiListView : public ListView {
 public:
-    MultiListView(TheHub&);
+    MultiListView();
 
 protected:
     void selectRows(uint_vec);

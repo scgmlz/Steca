@@ -19,8 +19,6 @@ namespace models {
 QVariant const EMPTY_VAR;
 QModelIndex const ANY_INDEX;
 
-TableModel::TableModel(gui::TheHub& hub) : hub_(hub) {}
-
 void TableModel::signalReset() {
     beginResetModel();
     endResetModel();

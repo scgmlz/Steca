@@ -17,6 +17,7 @@
 #include "mainwin.h"
 #include "output/write_file.h"
 #include "session.h"
+#include "thehub.h"
 #include <QAction>
 #include <QDir>
 #include <QJsonDocument>
@@ -28,10 +29,10 @@ TheHub::TheHub()
     : isFixedIntenImageScale_(false)
     , isFixedIntenDgramScale_(false)
     , isCombinedDgram_(false)
-    , filesModel(*this)
-    , datasetsModel(*this)
-    , metadataModel(*this)
-    , reflectionsModel(*this)
+    , filesModel()
+    , datasetsModel()
+    , metadataModel()
+    , reflectionsModel()
 {
     // create actions
 

@@ -26,14 +26,14 @@ namespace output {
 
 class PanelReflection : public panel::GridPanel {
 public:
-    PanelReflection(TheHub&);
+    PanelReflection();
     QComboBox* cbRefl;
 };
 
 
 class PanelGammaSlices : public panel::GridPanel {
 public:
-    PanelGammaSlices(TheHub&);
+    PanelGammaSlices();
     QSpinBox* numSlices;
     QDoubleSpinBox* stepGamma;
     void updateValues();
@@ -44,7 +44,7 @@ private:
 
 class PanelGammaRange : public panel::GridPanel {
 public:
-    PanelGammaRange(TheHub&);
+    PanelGammaRange();
     QCheckBox* cbLimitGamma;
     QDoubleSpinBox *minGamma, *maxGamma;
     void updateValues();
@@ -55,14 +55,14 @@ private:
 
 class PanelPoints : public panel::GridPanel {
 public:
-    PanelPoints(TheHub&);
+    PanelPoints();
     QRadioButton *rbCalc, *rbInterp;
 };
 
 
 class PanelInterpolation : public panel::GridPanel {
 public:
-    PanelInterpolation(TheHub&);
+    PanelInterpolation();
     QDoubleSpinBox *stepAlpha, *stepBeta, *idwRadius;
     QDoubleSpinBox *avgAlphaMax, *avgRadius;
     QSpinBox* avgThreshold;
@@ -71,14 +71,14 @@ public:
 
 class PanelDiagram : public panel::GridPanel {
 public:
-    PanelDiagram(TheHub&);
+    PanelDiagram();
     QComboBox *xAxis, *yAxis;
 };
 
 
 class PanelFitError : public panel::GridPanel {
 public:
-    PanelFitError(TheHub&);
+    PanelFitError();
 };
 
 } // namespace output

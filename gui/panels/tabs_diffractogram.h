@@ -24,8 +24,10 @@ class TabsDiffractogram : public TabsPanel {
 private:
     using super = TabsPanel;
 public:
-    TabsDiffractogram(TheHub&);
+    TabsDiffractogram();
 };
+
 }
 }
+
 #endif // TABS_DIFFRACTOGRAM_H

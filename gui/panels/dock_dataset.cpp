@@ -24,34 +24,34 @@ class DatasetView : public views::ListView {
 private:
     using super = views::ListView;
 public:
-    DatasetView(TheHub&);
+    DatasetView();
 
 protected:
     void currentChanged(QModelIndex const&, QModelIndex const&);
 
     using Model = models::DatasetsModel;
-    Model* model() const { return static_cast<Model*>(super::model()); }
+    Model* model() const { return static_cast<Model*>(views::ListView::model()); }
 };
 
-DatasetView::DatasetView(TheHub& hub) : super(hub) {
-    setModel(&hub.datasetsModel);
-    debug::ensure(dynamic_cast<Model*>(super::model()));
+DatasetView::DatasetView() : super() {
+    setModel(&gHub->datasetsModel); // TODO simplify this
+    debug::ensure(dynamic_cast<Model*>(views::ListView::model()));
 
-    connect(&hub_, &TheHubSignallingBase::sigDatasetsChanged, [this]() {
-            hub_.tellDatasetSelected(data::shp_Dataset()); // first de-select
+    connect(gHub, &TheHubSignallingBase::sigDatasetsChanged, [this]() {
+            gHub->tellDatasetSelected(data::shp_Dataset()); // first de-select
             selectRow(0);
         });
 }
 
 void DatasetView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     super::currentChanged(current, previous);
-    hub_.tellDatasetSelected(model()->data(current,
+    gHub->tellDatasetSelected(model()->data(current,
                                            Model::GetDatasetRole).value<data::shp_Dataset>());
 }
 
-DockDatasets::DockDatasets(TheHub& hub)
-    : super("Datasets", "dock-datasets", Qt::Vertical), hub_(hub) {
-    box_->addWidget((datasetView_ = new DatasetView(hub)));
+DockDatasets::DockDatasets()
+    : super("Datasets", "dock-datasets", Qt::Vertical) {
+    box_->addWidget((datasetView_ = new DatasetView()));
 
     auto h = hbox();
     box_->addLayout(h);
@@ -61,11 +61,11 @@ DockDatasets::DockDatasets(TheHub& hub)
     combineDatasets_->setToolTip("Combine and average number of datasets");
 
     connect(combineDatasets_, slot(QSpinBox, valueChanged, int), [this](int num) {
-        hub_.combineDatasetsBy(pint(qMax(1, num)));
+        gHub->combineDatasetsBy(pint(qMax(1, num)));
     });
 
-    connect(&hub_, &TheHubSignallingBase::sigDatasetsChanged,
-            [this]() { combineDatasets_->setValue(to_i(uint(hub_.datasetsGroupedBy()))); });
+    connect(gHub, &TheHubSignallingBase::sigDatasetsChanged,
+            [this]() { combineDatasets_->setValue(to_i(uint(gHub->datasetsGroupedBy()))); });
 }
 
 } // namespace panel

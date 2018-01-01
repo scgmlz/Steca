@@ -24,7 +24,7 @@ class TabDiffractogramsSave : public TabSave {
 private:
     using super = TabSave;
 public:
-    TabDiffractogramsSave(TheHub&, Params&);
+    TabDiffractogramsSave(Params&);
 
     uint currType() const;
     bool currentChecked() { return rbCurrent_->isChecked(); }
@@ -44,7 +44,7 @@ class DiffractogramsFrame : public Frame {
 private:
     using super = Frame;
 public:
-    DiffractogramsFrame(TheHub&, rcstr title, QWidget*);
+    DiffractogramsFrame(rcstr title, QWidget*);
 
 protected:
     TabDiffractogramsSave* tabSave_;

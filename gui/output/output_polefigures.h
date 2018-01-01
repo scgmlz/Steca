@@ -22,7 +22,7 @@ namespace output {
 
 class PoleFiguresFrame : public Frame {
 public:
-    PoleFiguresFrame(TheHub&, rcstr title, QWidget*);
+    PoleFiguresFrame(rcstr title, QWidget*);
 
 protected:
     class TabGraph* tabGraph_;
