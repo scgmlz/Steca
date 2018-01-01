@@ -442,7 +442,7 @@ void TabsSetup::setToHub() {
 }
 
 void TabsSetup::setFromHub() {
-    auto& g = hub_.geometry();
+    auto& g = gSession->geometry();
 
     detDistance_->setValue(g.detectorDistance);
     detPixelSize_->setValue(g.pixSize);

@@ -33,8 +33,6 @@ TheHub::TheHub()
     , metadataModel(*this)
     , reflectionsModel(*this)
 {
-    using QKey = QKeySequence;
-
     // create actions
 
     trigger_about = newTrigger("About && Configuration...");
@@ -86,7 +84,7 @@ TheHub::TheHub()
 
     // key shortcuts
 
-    trigger_quit->setShortcut(QKey::Quit);
+    trigger_quit->setShortcut(QKeySequence::Quit);
 
     toggle_viewStatusbar->setShortcut(Qt::Key_F12);
     toggle_viewFiles->setShortcut(Qt::Key_F8);
@@ -98,7 +96,7 @@ TheHub::TheHub()
 #endif
 
     trigger_addFiles->setShortcut(Qt::CTRL | Qt::Key_O);
-    trigger_removeFile->setShortcut(QKey::Delete);
+    trigger_removeFile->setShortcut(QKeySequence::Delete);
     toggle_enableCorr->setShortcut(Qt::SHIFT | Qt::CTRL | Qt::Key_C);
 
     trigger_rotateImage->setShortcut(Qt::CTRL | Qt::Key_R);
@@ -164,18 +162,8 @@ void TheHub::removeFile(uint i) {
         setImageCut(true, false, typ::ImageCut());
 }
 
-calc::shp_ImageLens TheHub::plainImageLens(typ::Image const& image) const {
-    return gSession->imageLens(image, gSession->collectedDatasets(), true, false);
-}
-
 calc::shp_DatasetLens TheHub::datasetLens(data::Dataset const& dataset) const {
     return gSession->datasetLens(dataset, dataset.datasets(), gSession->norm(), true, true);
-}
-
-calc::ReflectionInfos TheHub::makeReflectionInfos(
-    calc::Reflection const& reflection, uint gmaSlices, typ::Range const& rgeGma, Progress* progress) {
-    return gSession->makeReflectionInfos(
-        gSession->collectedDatasets(), reflection, gmaSlices, rgeGma, progress);
 }
 
 typ::Curve TheHub::avgCurve(data::Datasets const& dss) const {
@@ -390,10 +378,6 @@ typ::ImageCut const& TheHub::imageCut() const {
 void TheHub::setImageCut(bool isTopOrLeft, bool linked, typ::ImageCut const& cut) {
     gSession->setImageCut(isTopOrLeft, linked, cut);
     emit sigGeometryChanged();
-}
-
-const typ::Geometry& TheHub::geometry() const {
-    return gSession->geometry();
 }
 
 void TheHub::setGeometry(preal detectorDistance, preal pixSize, typ::IJ const& midPixOffset) {

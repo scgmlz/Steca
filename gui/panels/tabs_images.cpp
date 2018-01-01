@@ -113,7 +113,7 @@ void ImageWidget::paintEvent(QPaintEvent*) {
         int rw = rr - rl;
 
         // cross
-        auto off = hub_.geometry().midPixOffset;
+        auto off = gSession->geometry().midPixOffset;
         auto x = qRound(rcx + scale_ * off.i);
         auto y = qRound(rcy + scale_ * off.j);
         p.drawLine(x, rt, x, rb);
@@ -226,8 +226,7 @@ QImage TabsImages::makeImage(typ::shp_Image image, bool curvedScale) {
     if (!image)
         return im;
 
-    auto imageLens = hub_.plainImageLens(*image);
-
+    auto imageLens = gSession->imageLens(*image, gSession->collectedDatasets(), true, false);
     auto size = imageLens->size();
     if (size.isEmpty())
         return im;

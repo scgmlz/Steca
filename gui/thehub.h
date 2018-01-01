@@ -45,8 +45,6 @@ public:
 
     // modifying methods:
     void removeFile(uint);
-    calc::ReflectionInfos makeReflectionInfos(
-        calc::Reflection const&, uint gmaSlices, typ::Range const&, Progress*);
     void clearSession();
     void sessionFromFile(QFileInfo const&) THROWS;
     void addGivenFile(rcstr filePath) THROWS;
@@ -78,7 +76,6 @@ public:
     bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
     bool isCombinedDgram() const { return isCombinedDgram_; }
 
-    calc::shp_ImageLens plainImageLens(typ::Image const&) const;
     calc::shp_DatasetLens datasetLens(data::Dataset const&) const;
 
     typ::Curve avgCurve(data::Datasets const& dss) const;
@@ -90,7 +87,6 @@ public:
 
     typ::Range collectedDatasetsRgeGma() const;
     typ::ImageCut const& imageCut() const;
-    typ::Geometry const& geometry() const;
 
     eFittingTab fittingTab() const { return fittingTab_; }
 
