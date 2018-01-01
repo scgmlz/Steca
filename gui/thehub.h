@@ -17,8 +17,12 @@
 
 #include "actions.h"
 #include "models.h"
-#include "session.h" // TODO get rid of this
 #include "signalling.h"
+#include "calc/calc_lens.h"
+#include "calc/calc_reflection.h"
+#include "calc/calc_reflection_info.h"
+#include "data/datafile.h"
+#include "typ/async.h"
 
 namespace gui {
 
@@ -77,7 +81,7 @@ public:
     calc::shp_ImageLens plainImageLens(typ::Image const&) const;
     calc::shp_DatasetLens datasetLens(data::Dataset const&) const;
 
-    typ::Curve avgCurve(data::Datasets const& dss) const { return dss.avgCurve(*gSession); }
+    typ::Curve avgCurve(data::Datasets const& dss) const;
 
     void saveSession(QFileInfo const&) const;
     QByteArray saveSession() const;

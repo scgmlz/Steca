@@ -15,6 +15,7 @@
 #include "dialog_panels.h"
 #include "gui_cfg.h"
 #include "thehub.h"
+#include "def/idiomatic_for.h"
 
 namespace gui {
 namespace output {

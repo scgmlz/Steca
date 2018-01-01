@@ -16,6 +16,7 @@
 #include "colors.h"
 #include "gui_cfg.h"
 #include "thehub.h"
+#include "session.h"
 #include <qmath.h>
 #include <QAction>
 #include <QPainter>

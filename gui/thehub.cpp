@@ -16,6 +16,7 @@
 #include "io/io_io.h"
 #include "mainwin.h"
 #include "output/write_file.h"
+#include "session.h"
 #include <QAction>
 #include <QDir>
 #include <QJsonDocument>
@@ -175,6 +176,10 @@ calc::ReflectionInfos TheHub::makeReflectionInfos(
     calc::Reflection const& reflection, uint gmaSlices, typ::Range const& rgeGma, Progress* progress) {
     return gSession->makeReflectionInfos(
         gSession->collectedDatasets(), reflection, gmaSlices, rgeGma, progress);
+}
+
+typ::Curve TheHub::avgCurve(data::Datasets const& dss) const {
+    return dss.avgCurve(*gSession);
 }
 
 void TheHub::saveSession(QFileInfo const& fileInfo) const {

@@ -16,6 +16,7 @@
 #include "panel_diffractogram.h"
 #include "gui_cfg.h"
 #include "thehub.h"
+#include "session.h"
 #include <QAction>
 
 namespace gui {
