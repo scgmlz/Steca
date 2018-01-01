@@ -18,6 +18,7 @@
 #include "output/write_file.h"
 #include "session.h"
 #include "thehub.h"
+#include "data/dataset.h"
 #include <QAction>
 #include <QDir>
 #include <QJsonDocument>
@@ -34,6 +35,15 @@ TheHub::TheHub()
     , metadataModel()
     , reflectionsModel()
 {
+    qDebug() << "TheHub/";
+
+    connect(this, &gui::TheHubSignallingBase::sigFilesChanged,
+            [this]() { filesModel.signalReset(); });
+    connect(this, &gui::TheHubSignallingBase::sigDatasetsChanged,
+            [this]() { datasetsModel.signalReset(); });
+    connect(this, &gui::TheHubSignallingBase::sigDatasetSelected,
+            [this](data::shp_Dataset dataset) { metadataModel.reset(dataset); });
+
     // create actions
 
     trigger_about = newTrigger("About && Configuration...");
@@ -153,6 +163,7 @@ TheHub::TheHub()
     connect(trigger_rotateImage, &QAction::triggered, [this]() {
         setImageRotate(gSession->imageTransform().nextRotate());
     });
+    qDebug() << "/TheHub";
 }
 
 void TheHub::removeFile(uint i) {

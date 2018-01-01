@@ -17,6 +17,7 @@
 
 #include "typ/vec.h"
 #include "table_model.h"
+#include "data/dataset.h"
 
 namespace data {
     class Datasets;
@@ -27,8 +28,6 @@ namespace models {
 
 class FilesModel : public TableModel {
 public:
-    FilesModel();
-
     int columnCount(rcIndex = ANY_INDEX) const;
     int rowCount(rcIndex = ANY_INDEX) const;
 
@@ -78,6 +77,7 @@ public:
 
     typ::vec<bool> const& rowsChecked() const { return rowsChecked_; }
 
+    void reset(data::shp_Dataset dataset);
     void flipCheck(uint row);
 
 private:

@@ -14,16 +14,13 @@
 
 #include "thehub.h"
 #include "session.h"
+#include <QApplication>
 
 namespace models {
 
 // ************************************************************************** //
 //  class FilesModel
 // ************************************************************************** //
-
-FilesModel::FilesModel() : TableModel() {
-    connect(gHub, &gui::TheHubSignallingBase::sigFilesChanged, [this]() { signalReset(); });
-}
 
 int FilesModel::columnCount(rcIndex) const {
     return 1 + DCOL;
@@ -54,10 +51,8 @@ void FilesModel::removeFile(uint i) {
 // ************************************************************************** //
 
 DatasetsModel::DatasetsModel()
-    : TableModel()
-    , datasets_(gSession->collectedDatasets()) //, metaInfo_(nullptr)
+    : datasets_(gSession->collectedDatasets())
 {
-    connect(gHub, &gui::TheHubSignallingBase::sigDatasetsChanged, [this]() { signalReset(); });
 }
 
 int DatasetsModel::columnCount(rcIndex) const {
@@ -118,16 +113,15 @@ void DatasetsModel::showMetaInfo(typ::vec<bool> const& metadataRows) {
 //  class MetadataModel
 // ************************************************************************** //
 
-MetadataModel::MetadataModel() : TableModel() {
+MetadataModel::MetadataModel() {
     rowsChecked_.fill(false, data::Metadata::numAttributes(false));
+}
 
-    connect(gHub, &gui::TheHubSignallingBase::sigDatasetSelected,
-            [this](data::shp_Dataset dataset) {
-                metadata_.clear();
-                if (dataset)
-                    metadata_ = dataset->metadata();
-                signalReset();
-            });
+void MetadataModel::reset(data::shp_Dataset dataset) {
+    metadata_.clear();
+    if (dataset)
+        metadata_ = dataset->metadata();
+    signalReset();
 }
 
 int MetadataModel::columnCount(rcIndex) const {

@@ -45,6 +45,7 @@ gui::TheHub* gHub;
 namespace gui {
 
 MainWin::MainWin() {
+    qDebug() << "MainWin/";
     gHub = new TheHub();
     setWindowIcon(QIcon(":/icon/retroStier"));
     QDir::setCurrent(QDir::homePath());
@@ -137,6 +138,7 @@ void MainWin::initMenus() {
 #endif
             gHub->trigger_online, gHub->trigger_checkUpdate,
         });
+    qDebug() << "/MainWin";
 }
 
 void MainWin::addActions(QMenu* menu, QList<QAction*> actions) {
