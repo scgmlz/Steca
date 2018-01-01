@@ -17,6 +17,7 @@
 #include "thehub.h"
 #include "write_file.h"
 #include "session.h"
+#include "output_dialogs.h"
 #include "def/idiomatic_for.h"
 #include "QCustomPlot/qcustomplot.h"
 #include "widget_makers.h"
@@ -127,8 +128,6 @@ void TabPlot::plot(
 // ************************************************************************** //
 
 class TabDiagramsSave : public TabSave {
-private:
-    using super = TabSave;
 public:
     TabDiagramsSave(Params&);
     uint currType() const { return fileTypes_->currentIndex(); }
@@ -138,7 +137,7 @@ protected:
     QComboBox* fileTypes_;
 };
 
-TabDiagramsSave::TabDiagramsSave(Params& params) : super(params, true) {
+TabDiagramsSave::TabDiagramsSave(Params& params) : TabSave(params, true) {
     auto gp = new panel::GridPanel("To save");
     grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
     grid_->setRowStretch(grid_->rowCount(), 1);
@@ -157,7 +156,7 @@ TabDiagramsSave::TabDiagramsSave(Params& params) : super(params, true) {
 // ************************************************************************** //
 
 DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
-    : super(title, new Params(PANELS), parent) {
+    : Frame(title, new Params(PANELS), parent) {
     btnInterpolate_->hide();
 
     tabPlot_ = new TabPlot();

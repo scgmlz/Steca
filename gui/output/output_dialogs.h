@@ -76,8 +76,6 @@ protected:
 
 
 class TabTable : public Tab {
-private:
-    using super = Tab;
 public:
     TabTable(Params&, QStringList const& headers, QStringList const& outHeaders,
              typ::cmp_vec const&);
@@ -107,8 +105,6 @@ private:
 
 
 class TabSave : public Tab {
-private:
-    using super = Tab;
 public:
     TabSave(Params&, bool withTypes);
     str filePath(bool withSuffix);
@@ -118,28 +114,6 @@ protected:
     str fileSetSuffix(rcstr);
     QLineEdit *dir_, *file_;
     QRadioButton *rbDat_, *rbCsv_;
-};
-
-
-class Frame : public QFrame {
-private:
-    using super = QFrame;
-public:
-    Frame(rcstr title, Params*, QWidget*);
-protected:
-    QAction *actClose_, *actCalculate_, *actInterpolate_;
-    QToolButton *btnClose_, *btnCalculate_, *btnInterpolate_;
-    QProgressBar* pb_;
-    QBoxLayout* box_;
-    Params* params_;
-    panel::TabsPanel* tabs_;
-    typ::vec<calc::ReflectionInfos> calcPoints_, interpPoints_;
-    Table* table_;
-    void calculate();
-    void interpolate();
-    virtual void displayReflection(uint reflIndex, bool interpolated);
-    uint getReflIndex() const;
-    bool getInterpolated() const;
 };
 
 } // namespace output

@@ -15,7 +15,7 @@
 #ifndef OUTPUT_DIAGRAMS_H
 #define OUTPUT_DIAGRAMS_H
 
-#include "output_dialogs.h"
+#include "frame.h"
 
 namespace gui {
 namespace output {
