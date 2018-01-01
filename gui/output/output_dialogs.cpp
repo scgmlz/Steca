@@ -594,7 +594,7 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent)
     debug::ensure(params);
 
     box_->addWidget((params_ = params));
-    box_->addWidget((tabs_ = new Tabs()));
+    box_->addWidget((tabs_ = new panel::TabsPanel()));
     box_->setStretch(box_->count() - 1, 1);
 
     auto hb = hbox();

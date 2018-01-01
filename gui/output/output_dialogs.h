@@ -66,12 +66,6 @@ public:
 };
 
 
-class Tabs : public panel::TabsPanel {
-private:
-    using super = panel::TabsPanel;
-};
-
-
 class Tab : public QWidget {
 public :
     Tab(Params&);
@@ -138,7 +132,7 @@ protected:
     QProgressBar* pb_;
     QBoxLayout* box_;
     Params* params_;
-    Tabs* tabs_;
+    panel::TabsPanel* tabs_;
     typ::vec<calc::ReflectionInfos> calcPoints_, interpPoints_;
     Table* table_;
     void calculate();
