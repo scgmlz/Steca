@@ -66,7 +66,7 @@ public:
 };
 
 
-class Tab : public QWidget {
+class Tab : public QWidget { // TODO: better names for panel::Tab and output::Tab
 public :
     Tab(Params&);
 protected:

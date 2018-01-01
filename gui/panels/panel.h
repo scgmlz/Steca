@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/panels/panel.h
-//! @brief     Defines ...
+//! @brief     Defines classes BasicPanel, GridPanel, Tab, TabsPanel
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -45,7 +45,7 @@ protected:
 
 
 //! A tabbed panel
-class Tab : public QWidget {
+class Tab : public QWidget {  // TODO: better names for panel::Tab and output::Tab
 public:
     Tab(Qt::Orientation);
     QBoxLayout& box() const { return *box_; }
@@ -53,6 +53,7 @@ public:
 protected:
     QBoxLayout* box_;
 };
+
 
 //!
 class TabsPanel : public QTabWidget {
