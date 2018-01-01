@@ -26,13 +26,6 @@ void GridLayout::addColumnStretch(int stretch) {
     setColumnStretch(columnCount(), stretch);
 }
 
-GridLayout* GridLayout::groupBox(QLayout& addTo, rcstr title) {
-    auto group = new QGroupBox(title);
-    addTo.addWidget(group);
-    auto grid = gridLayout();
-    group->setLayout(grid);
-    return grid;
-}
 
 int mWidth(QWidget const* w) {
     debug::ensure(w);
@@ -141,6 +134,7 @@ QRadioButton* radioButton(rcstr text) {
     return new QRadioButton(text);
 }
 
+
 TreeView::TreeView() {
     setAlternatingRowColors(true);
 }
@@ -165,6 +159,7 @@ void TreeListView::setModel(QAbstractItemModel* model) {
     }
 }
 
+
 LineView::LineView() {
     setReadOnly(true);
 }
@@ -174,9 +169,11 @@ void LineView::setText(rcstr text) {
     setCursorPosition(0);
 }
 
+
 BoxWidget::BoxWidget(Qt::Orientation orientation) {
     setLayout((box_ = boxLayout(orientation)));
 }
+
 
 DockWidget::DockWidget(rcstr name, rcstr objectName, Qt::Orientation orientation) {
     setFeatures(DockWidgetMovable);

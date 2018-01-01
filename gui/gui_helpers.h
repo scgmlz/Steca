@@ -34,13 +34,9 @@
 //! layouts
 
 class GridLayout : public QGridLayout {
-private:
 public:
-
     void addRowStretch(int = 1);
     void addColumnStretch(int = 1);
-
-    static GridLayout* groupBox(QLayout&, rcstr);
 };
 
 extern int mWidth(QWidget const*);

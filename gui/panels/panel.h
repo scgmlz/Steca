@@ -24,8 +24,7 @@ namespace panel {
 //! Just a groupbox
 class BasicPanel : public QGroupBox {
 public:
-    BasicPanel() : BasicPanel("") {}
-    BasicPanel(rcstr title) : QGroupBox(title) {}
+    BasicPanel(rcstr title="") : QGroupBox(title) {}
 
     void setHorizontalStretch(int);
     void setVerticalStretch(int);
@@ -36,8 +35,7 @@ public:
 //! A panel with grid layout
 class GridPanel : public BasicPanel {
 public:
-    GridPanel();
-    GridPanel(rcstr title);
+    GridPanel(rcstr title="");
 
     GridLayout* grid() const { return grid_; }
 

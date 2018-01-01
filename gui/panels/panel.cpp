@@ -46,8 +46,6 @@ void BasicPanel::setStretch(int horizontal, int vertical) {
 //  class GridPanel
 // ************************************************************************** //
 
-GridPanel::GridPanel() : GridPanel("") {}
-
 GridPanel::GridPanel(rcstr title) : BasicPanel(title) {
     setLayout((grid_ = gridLayout()));
 }
