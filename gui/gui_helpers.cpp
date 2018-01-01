@@ -93,18 +93,14 @@ QCheckBox* check(rcstr text) {
 }
 
 QCheckBox* check(QAction* action) {
-    auto cb = new QCheckBox(action ? action->text().toLower() : "");
-
-    if (action) {
-        QObject::connect(cb, &QCheckBox::toggled, [action](bool on) { action->setChecked(on); });
-
-        QObject::connect(action, &QAction::toggled, [cb](bool on) { cb->setChecked(on); });
-
-        cb->setToolTip(action->toolTip());
-        cb->setChecked(action->isChecked());
-    }
-
-    return cb;
+    if (!action)
+        return new QCheckBox("");
+    auto ret = new QCheckBox(action->text().toLower());
+    QObject::connect(ret, &QCheckBox::toggled, [action](bool on) { action->setChecked(on); });
+    QObject::connect(action, &QAction::toggled, [ret](bool on) { ret->setChecked(on); });
+    ret->setToolTip(action->toolTip());
+    ret->setChecked(action->isChecked());
+    return ret;
 }
 
 QToolButton* textButton(QAction* action) {
