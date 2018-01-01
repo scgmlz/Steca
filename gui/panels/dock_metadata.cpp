@@ -42,8 +42,10 @@ MetadataView::MetadataView() : views::ListView() {
 
 int MetadataView::sizeHintForColumn(int col) const {
     switch (col) {
-    case Model::COL_CHECK: return mWidth(this);
-    default: return views::ListView::sizeHintForColumn(col);
+    case Model::COL_CHECK:
+        return fontMetrics().width('m');
+    default:
+        return views::ListView::sizeHintForColumn(col);
     }
 }
 

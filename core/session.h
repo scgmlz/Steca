@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef CORE_SESSION_H
-#define CORE_SESSION_H
+#ifndef SESSION_H
+#define SESSION_H
 
 #include "calc/calc_lens.h"
 #include "calc/calc_reflection.h"
@@ -133,4 +133,4 @@ public:
     qreal calcAvgBackground(data::Datasets const&) const;
 };
 
-#endif
+#endif // SESSION_H

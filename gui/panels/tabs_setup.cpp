@@ -17,6 +17,7 @@
 #include "gui_cfg.h"
 #include "thehub.h"
 #include "session.h"
+#include "widget_makers.h"
 #include <QAction>
 
 namespace gui {

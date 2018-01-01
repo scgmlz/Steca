@@ -16,7 +16,7 @@
 #include "about.h"
 #include "config.h"
 #include "gui_cfg.h"
-#include "gui_helpers.h"
+#include "widget_makers.h"
 #include "settings.h"
 #include <QApplication>
 #include <QDialogButtonBox>

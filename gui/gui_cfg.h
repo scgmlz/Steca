@@ -33,4 +33,4 @@ uint const em4 = 4;
 
 } // namespace gui_cfg
 
-#endif
+#endif // GUI_CFG_H

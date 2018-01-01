@@ -20,6 +20,7 @@
 #include "session.h"
 #include "def/idiomatic_for.h"
 #include <qmath.h>
+#include "widget_makers.h"
 #include <QAction>
 #include <QPainter>
 

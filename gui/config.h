@@ -44,4 +44,4 @@ extern str const
     SAVE_DIR, SAVE_FMT;
 }
 
-#endif
+#endif // CONFIG_H

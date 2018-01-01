@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/refhub.cpp
+//! @file      gui/signalling.cpp
 //! @brief     Implements class TheHubSignallingBase
 //!
 //! @homepage  https://github.com/scgmlz/Steca2

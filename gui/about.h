@@ -35,4 +35,4 @@ protected:
 
 } // namespace gui
 
-#endif // MAINWIN_H
+#endif // ABOUT_H

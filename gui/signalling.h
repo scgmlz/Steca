@@ -18,6 +18,10 @@
 #include "calc/calc_reflection.h"
 #include "data/datafile.h"
 
+// make connects shorter
+
+#define slot(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
+
 namespace gui {
 
 class TheHub;

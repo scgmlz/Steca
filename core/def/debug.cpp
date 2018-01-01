@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/def/debug.h
+//! @file      core/def/debug.cpp
 //! @brief     Implements functions for debugging
 //!
 //! @homepage  https://github.com/scgmlz/Steca2

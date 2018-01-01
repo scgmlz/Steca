@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/gui_helpers.h
-//! @brief     Defines ...
+//! @brief     Defines classes TreeView, TreeListView, LineView, BoxWidget, DockWidget
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -26,38 +26,6 @@
 #include <QSpinBox>
 #include <QToolButton>
 #include <QTreeView>
-
-// make connects shorter
-
-#define slot(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
-
-//! layouts
-
-extern int mWidth(QWidget const*);
-
-// handy functions that make (new) widgets
-
-QBoxLayout* boxLayout(Qt::Orientation);
-QBoxLayout* hbox(); // horizontal box layout
-QBoxLayout* vbox(); // vertical box layout
-
-QGridLayout* gridLayout();
-
-QLabel* label(rcstr);
-
-QLineEdit* editCell(uint emWidth); // emWidth: measured in typographical (m)s
-QLineEdit* readCell(uint emWidth);
-
-QSpinBox* spinCell(uint emWidth, int min = INT_MIN, int max = INT_MAX);
-QDoubleSpinBox* spinDoubleCell(uint emWidth, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
-
-QCheckBox* check(rcstr text);
-QCheckBox* check(QAction*);
-
-QToolButton* textButton(QAction*);
-QToolButton* iconButton(QAction*);
-
-QRadioButton* radioButton(rcstr text);
 
 //! abstract tree widget
 

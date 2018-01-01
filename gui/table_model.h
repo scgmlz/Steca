@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef TABLEMODELS_H
-#define TABLEMODELS_H
+#ifndef TABLE_MODEL_H
+#define TABLE_MODEL_H
 
 #include <QAbstractTableModel>
 
@@ -43,4 +43,4 @@ protected:
 
 } // namespace models
 
-#endif // TABLEMODELS_H
+#endif // TABLE_MODEL_H

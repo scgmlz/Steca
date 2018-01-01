@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/output/output_dialogs.cpp
+//! @file      gui/output/dialog_panels.cpp
 //! @brief     Implements PanelReflection, PanelGammaSlices. and several other panel classes
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -16,6 +16,7 @@
 #include "gui_cfg.h"
 #include "thehub.h"
 #include "def/idiomatic_for.h"
+#include "widget_makers.h"
 
 namespace gui {
 namespace output {

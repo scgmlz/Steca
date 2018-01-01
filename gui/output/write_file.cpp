@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/write_file.cpp
+//! @file      gui/output/write_file.cpp
 //! @brief     Implements class WriteFile
 //!
 //! @homepage  https://github.com/scgmlz/Steca2

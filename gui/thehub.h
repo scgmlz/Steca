@@ -118,4 +118,4 @@ public:
 
 } // namespace gui
 
-#endif
+#endif // THEHUB_H

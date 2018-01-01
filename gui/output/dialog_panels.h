@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/output/output_dialogs.h
+//! @file      gui/output/dialog_panels.h
 //! @brief     Defines PanelReflection, PanelGammaSlices. and several other panel classes
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
