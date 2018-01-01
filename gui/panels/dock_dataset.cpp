@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/panels/dock_dataset.cpp
-//! @brief     Implements ...
+//! @brief     Implements class DockDatasets
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -21,9 +21,11 @@
 namespace gui {
 namespace panel {
 
+// ************************************************************************** //
+//  file-scope: class DatasetView
+// ************************************************************************** //
+
 class DatasetView : public views::ListView {
-private:
-    using super = views::ListView;
 public:
     DatasetView();
 
@@ -34,7 +36,7 @@ protected:
     Model* model() const { return static_cast<Model*>(views::ListView::model()); }
 };
 
-DatasetView::DatasetView() : super() {
+DatasetView::DatasetView() : views::ListView() {
     setModel(&gHub->datasetsModel); // TODO simplify this
     debug::ensure(dynamic_cast<Model*>(views::ListView::model()));
 
@@ -45,13 +47,17 @@ DatasetView::DatasetView() : super() {
 }
 
 void DatasetView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
-    super::currentChanged(current, previous);
+    views::ListView::currentChanged(current, previous);
     gHub->tellDatasetSelected(model()->data(current,
                                            Model::GetDatasetRole).value<data::shp_Dataset>());
 }
 
+// ************************************************************************** //
+//  class DockDatasets
+// ************************************************************************** //
+
 DockDatasets::DockDatasets()
-    : super("Datasets", "dock-datasets", Qt::Vertical) {
+    : DockWidget("Datasets", "dock-datasets", Qt::Vertical) {
     box_->addWidget((datasetView_ = new DatasetView()));
 
     auto h = hbox();

@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/panels/dock_dataset.h
-//! @brief     Defines ...
+//! @brief     Defines class DockDatasets
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -21,11 +21,8 @@ namespace gui {
 namespace panel {
 
 class DockDatasets : public DockWidget {
-private:
-    using super = DockWidget;
 public:
     DockDatasets();
-
     QSpinBox* combineDatasets_;
 
 private:

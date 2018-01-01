@@ -25,7 +25,7 @@ namespace gui {
 namespace output {
 
 TabDiffractogramsSave::TabDiffractogramsSave(Params& params)
-    : super(params, true) {
+    : TabSave(params, true) {
     auto gp = new panel::GridPanel("To save");
     grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
     grid_->setRowStretch(grid_->rowCount(), 1);
@@ -63,7 +63,7 @@ struct OutputData {
 static const Params::ePanels PANELS = Params::ePanels(Params::GAMMA);
 
 DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
-    : super(title, new Params(PANELS), parent) {
+    : Frame(title, new Params(PANELS), parent) {
     tabs_->removeTab(0);
     btnCalculate_->hide();
     btnInterpolate_->hide();
@@ -71,8 +71,7 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
     tabSave_ = new TabDiffractogramsSave(*params_);
     tabs_->addTab("Save", Qt::Vertical).box().addWidget(tabSave_);
 
-    connect(tabSave_->actSave, &QAction::triggered, [this]() {
-            saveDiffractogramOutput(); });
+    connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiffractogramOutput(); });
 }
 
 OutputDataCollection DiffractogramsFrame::collectCurves(
@@ -91,7 +90,6 @@ OutputDataCollection DiffractogramsFrame::collectCurves(
     for_i (gmaSlices) {
         qreal min = rge.min + i * step;
         typ::Range gmaStripe(min, min + step);
-
         auto curve = lens->makeCurve(gmaStripe);
         outputData.append(OutputData(curve, dataset, gmaStripe, picNum));
     }
