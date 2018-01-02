@@ -119,7 +119,7 @@ TheHub::TheHub()
             [this]() { trigger_removeFile->setEnabled(
                     !gSession->collectedFromFiles().isEmpty()); });
     QObject::connect(this, &gui::TheHub::sigCorrFile,
-            [this](data::shp_File file) { trigger_remCorr->setEnabled(!file.isNull()); });
+            [this](data::shp_Datafile file) { trigger_remCorr->setEnabled(!file.isNull()); });
     QObject::connect(this, &gui::TheHub::sigCorrEnabled,
             [this](bool on) { toggle_enableCorr->setChecked(on); });
 
@@ -373,7 +373,7 @@ typ::Range TheHub::collectedDatasetsRgeGma() const {
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {
-    data::shp_File file;
+    data::shp_Datafile file;
     if (!filePath.isEmpty())
         file = io::load(filePath);
 

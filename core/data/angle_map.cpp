@@ -21,9 +21,9 @@
 
 namespace typ {
 
-Angles::Angles() : Angles(0, 0) {}
+AnglePair::AnglePair() : AnglePair(0, 0) {}
 
-Angles::Angles(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
+AnglePair::AnglePair(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
 
 AngleMap::Key::Key(
     Geometry const& geometry_, size2d const& size_, ImageCut const& cut_,
@@ -147,7 +147,7 @@ void AngleMap::calculate() {
             rad gma = atan2(b_y, b_x);
             rad tth = atan2(b_r, b_z);
 
-            arrAngles_.setAt(i, j, Angles(tth.toDeg(), gma.toDeg()));
+            arrAngles_.setAt(i, j, AnglePair(tth.toDeg(), gma.toDeg()));
         }
     }
 

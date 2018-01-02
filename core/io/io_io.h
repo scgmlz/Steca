@@ -24,7 +24,7 @@ bool couldBeMar(QFileInfo const&);
 bool couldBeTiffDat(QFileInfo const&);
 
 //! load a file; file type will be sensed
-data::shp_File load(rcstr filePath) THROWS;
+data::shp_Datafile load(rcstr filePath) THROWS;
 
 str loadCaressComment(rcstr filePath);
 

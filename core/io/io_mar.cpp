@@ -21,10 +21,10 @@ namespace io {
 
 // Code taken from the original STeCa, only slightly modified.
 
-data::shp_File loadMar(rcstr filePath) THROWS {
+data::shp_Datafile loadMar(rcstr filePath) THROWS {
     typedef short WORD;
 
-    data::shp_File file(new data::File(filePath));
+    data::shp_Datafile datafile(new data::Datafile(filePath));
 
     FILE* fpIn;
 
@@ -218,13 +218,13 @@ data::shp_File loadMar(rcstr filePath) THROWS {
 
     // REVIEW ?? pictureOverflow
 
-    file->datasets().append(data::shp_OneDataset(
+    datafile->datasets().append(data::shp_OneDataset(
         new data::OneDataset(md, typ::size2d(pixSizeX, pixSizeY), convertedIntens)));
 
     delete[] i2_image;
     delete[] i4_image;
 
-    return file;
+    return datafile;
 }
 
 } // namespace io

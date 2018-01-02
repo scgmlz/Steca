@@ -40,7 +40,7 @@ QVariant FilesModel::data(rcIndex index, int role) const {
 
     switch (role) {
     case Qt::DisplayRole: return gSession->file(to_u(row))->fileName();
-    case GetFileRole: return QVariant::fromValue<data::shp_File>(gSession->file(to_u(row)));
+    case GetFileRole: return QVariant::fromValue<data::shp_Datafile>(gSession->file(to_u(row)));
     default: return EMPTY_VAR;
     }
 }

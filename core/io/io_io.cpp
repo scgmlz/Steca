@@ -17,9 +17,9 @@
 
 namespace io {
 
-data::shp_File loadCaress(rcstr filePath) THROWS;
-data::shp_File loadMar(rcstr filePath) THROWS;
-data::shp_File loadTiffDat(rcstr filePath) THROWS;
+data::shp_Datafile loadCaress(rcstr filePath) THROWS;
+data::shp_Datafile loadMar(rcstr filePath) THROWS;
+data::shp_Datafile loadTiffDat(rcstr filePath) THROWS;
 
 // peek at up to maxLen bytes (to establish the file type)
 static QByteArray peek(uint pos, uint maxLen, QFileInfo const& info) {
@@ -75,11 +75,11 @@ bool couldBeTiffDat(QFileInfo const& info) {
     return couldBe;
 }
 
-data::shp_File load(rcstr filePath) THROWS {
+data::shp_Datafile load(rcstr filePath) THROWS {
     QFileInfo info(filePath);
     RUNTIME_CHECK(info.exists(), "File " % filePath % " does not exist");
 
-    data::shp_File file;
+    data::shp_Datafile file;
 
     if (couldBeCaress(info))
         file = io::loadCaress(filePath);

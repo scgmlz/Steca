@@ -181,7 +181,7 @@ TabsImages::TabsImages() : TabsPanel() {
         auto& tab = addTab("Correction", Qt::Vertical);
 
         connect(gHub, &TheHubSignallingBase::sigCorrFile,
-                [&tab](data::shp_File file) { tab.setEnabled(!file.isNull()); });
+                [&tab](data::shp_Datafile file) { tab.setEnabled(!file.isNull()); });
 
         auto& box = tab.box();
 
@@ -244,14 +244,14 @@ QPixmap TabsImages::makePixmap(typ::shp_Image image) {
     return QPixmap::fromImage(makeImage(image, !gHub->isFixedIntenImageScale()));
 }
 
-QPixmap
-TabsImages::makePixmap(data::OneDataset const& dataset, typ::Range const& rgeGma, typ::Range const& rgeTth) {
+QPixmap TabsImages::makePixmap(
+    data::OneDataset const& dataset, typ::Range const& rgeGma, typ::Range const& rgeTth) {
     auto im = makeImage(dataset.image(), !gHub->isFixedIntenImageScale());
     auto angleMap = gSession->angleMap(dataset);
 
     auto size = im.size();
     for_ij (size.width(), size.height()) {
-        auto& a = angleMap->at(to_u(i), to_u(j));
+        typ::AnglePair const& a = angleMap->at(to_u(i), to_u(j));
         auto color = QColor(im.pixel(i, j));
         if (rgeGma.contains(a.gma)) {
             if (rgeTth.contains(a.tth)) {
@@ -306,7 +306,6 @@ void TabsImages::render() {
                 maxGamma_->setValue(rge.max);
             } else {
                 rge = typ::Range::infinite();
-                ;
                 minGamma_->clear();
                 maxGamma_->clear();
             }
@@ -347,5 +346,6 @@ void TabsImages::render() {
         corrImageWidget_->setPixmap(pixMap);
     }
 }
-}
-}
+
+} // namespace panel
+} // namespace gui

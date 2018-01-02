@@ -31,8 +31,8 @@ public:
     Session();
 
 private:
-    typ::vec<data::shp_File> files_; //!< data files
-    data::shp_File corrFile_; //!< correction file
+    typ::vec<data::shp_Datafile> files_; //!< data files
+    data::shp_Datafile corrFile_; //!< correction file
     typ::shp_Image corrImage_;
     bool corrEnabled_;
     uint_vec collectedFromFiles_; // from these files
@@ -65,9 +65,9 @@ private:
 public:
     // Modifying methods:
     void clear();
-    void addGivenFile(data::shp_File) THROWS;
+    void addGivenFile(data::shp_Datafile) THROWS;
     void removeFile(uint i);
-    void setCorrFile(data::shp_File) THROWS; // Load or remove a correction file.
+    void setCorrFile(data::shp_Datafile) THROWS; // Load or remove a correction file.
     void remCorrFile();
     void collectDatasetsFromFiles(uint_vec, pint);
 
@@ -89,10 +89,10 @@ public:
     // Const methods:
     uint numFiles() const { //!< number of data files (not counting the correction file)
         return files_.count(); }
-    data::shp_File file(uint i) const { return files_.at(i); }
+    data::shp_Datafile file(uint i) const { return files_.at(i); }
     bool hasFile(rcstr fileName) const;
     bool hasCorrFile() const { return !corrFile_.isNull(); }
-    data::shp_File corrFile() const { return corrFile_; }
+    data::shp_Datafile corrFile() const { return corrFile_; }
     typ::shp_Image corrImage() const { return corrImage_; }
     typ::Image const* intensCorr() const;
     void tryEnableCorr(bool on) { corrEnabled_ = on && hasCorrFile(); }

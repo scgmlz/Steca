@@ -21,9 +21,9 @@
 namespace data {
 
 //! A file (loaded from a disk file) that contains a number of datasets.
-class File final {
+class Datafile final {
 public:
-    File(rcstr fileName);
+    Datafile(rcstr fileName);
 
     QFileInfo const& fileInfo() const;
     str fileName() const;
@@ -36,10 +36,10 @@ private:
     OneDatasets datasets_;
 };
 
-typedef QSharedPointer<class File> shp_File;
+typedef QSharedPointer<class Datafile> shp_Datafile;
 
 } // namespace data
 
-Q_DECLARE_METATYPE(data::shp_File)
+Q_DECLARE_METATYPE(data::shp_Datafile)
 
 #endif // DATAFILE_H

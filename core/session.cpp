@@ -57,7 +57,7 @@ bool Session::hasFile(rcstr fileName) const {
     return false;
 }
 
-void Session::addGivenFile(data::shp_File file) THROWS {
+void Session::addGivenFile(data::shp_Datafile file) THROWS {
     setImageSize(file->datasets().imageSize());
     // all ok
     files_.append(file);
@@ -105,7 +105,7 @@ Image const* Session::intensCorr() const {
     return &intensCorr_;
 }
 
-void Session::setCorrFile(data::shp_File file) THROWS {
+void Session::setCorrFile(data::shp_Datafile file) THROWS {
     if (file.isNull()) {
         remCorrFile();
     } else {

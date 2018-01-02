@@ -22,8 +22,8 @@
 
 namespace io {
 
-data::shp_File loadCaress(rcstr filePath) THROWS {
-    data::shp_File file(new data::File(filePath));
+data::shp_Datafile loadCaress(rcstr filePath) THROWS {
+    data::shp_Datafile datafile(new data::Datafile(filePath));
 
     RUNTIME_CHECK(
         0 == open_data_file(filePath.toLocal8Bit().data(), nullptr),
@@ -206,7 +206,7 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
                 md.deltaTime = deltaTime;
                 md.time = tempTime;
 
-                file->datasets().append(
+                datafile->datasets().append(
                     data::shp_OneDataset(new data::OneDataset(md, size, convertedIntens)));
 
                 delete[] intens;
@@ -552,7 +552,7 @@ data::shp_File loadCaress(rcstr filePath) THROWS {
         }
     }
 
-    return file;
+    return datafile;
 }
 
 str loadCaressComment(rcstr filePath) {

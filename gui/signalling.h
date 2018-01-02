@@ -57,7 +57,7 @@ signals:
     // files has changed
     void sigDatasetSelected(data::shp_Dataset);
 
-    void sigCorrFile(data::shp_File);
+    void sigCorrFile(data::shp_Datafile);
     void sigCorrEnabled(bool);
 
     void sigReflectionsChanged();

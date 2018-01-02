@@ -23,13 +23,13 @@
 
 namespace typ {
 
-class Angles {
+class AnglePair {
 public:
     deg tth;
     deg gma;
 
-    Angles();
-    Angles(deg, deg);
+    AnglePair();
+    AnglePair(deg, deg);
 };
 
 class AngleMap {
@@ -51,9 +51,9 @@ public:
 
     AngleMap(Key const&);
 
-    Angles const& at(uint i) const { return arrAngles_.at(i); }
+    AnglePair const& at(uint i) const { return arrAngles_.at(i); }
 
-    Angles const& at(uint i, uint j) const { return arrAngles_.at(i, j); }
+    AnglePair const& at(uint i, uint j) const { return arrAngles_.at(i, j); }
 
     typ::Range rgeTth() const { return rgeTth_; }
     typ::Range rgeGma() const { return rgeGma_; }
@@ -68,7 +68,7 @@ private:
 
     Key key_;
 
-    Array2D<Angles> arrAngles_;
+    Array2D<AnglePair> arrAngles_;
 
     typ::Range rgeTth_;
     typ::Range rgeGma_, rgeGmaFull_;

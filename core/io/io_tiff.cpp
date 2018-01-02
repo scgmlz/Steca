@@ -21,7 +21,7 @@
 namespace io {
 
 // implemented below
-static void loadTiff(data::shp_File&, rcstr, typ::deg, qreal, qreal) THROWS;
+static void loadTiff(data::shp_Datafile&, rcstr, typ::deg, qreal, qreal) THROWS;
 
 // The dat file looks like so:
 /*
@@ -40,8 +40,8 @@ Aus-Weimin-00008.tif -55
 Aus-Weimin-00009.tif -50
 */
 
-data::shp_File loadTiffDat(rcstr filePath) THROWS {
-    data::shp_File file(new data::File(filePath));
+data::shp_Datafile loadTiffDat(rcstr filePath) THROWS {
+    data::shp_Datafile datafile(new data::Datafile(filePath));
 
     QFile f(filePath);
     RUNTIME_CHECK(f.open(QFile::ReadOnly), "cannot open file");
@@ -86,7 +86,7 @@ data::shp_File loadTiffDat(rcstr filePath) THROWS {
 
         try {
             // load one dataset
-            loadTiff(file, dir.filePath(tiffFileName), phi, monitor, expTime);
+            loadTiff(datafile, dir.filePath(tiffFileName), phi, monitor, expTime);
         } catch (Exception& e) {
             // add file name to the message
             e.setMsg(tiffFileName + ": " + e.msg());
@@ -94,7 +94,7 @@ data::shp_File loadTiffDat(rcstr filePath) THROWS {
         }
     }
 
-    return file;
+    return datafile;
 }
 
 #define IS_ASCII RUNTIME_CHECK(2 == dataType, BAD_FORMAT)
@@ -107,7 +107,7 @@ data::shp_File loadTiffDat(rcstr filePath) THROWS {
     RUNTIME_CHECK(val == dataOffset, BAD_FORMAT)
 
 static void
-loadTiff(data::shp_File& file, rcstr filePath, typ::deg phi, qreal monitor, qreal expTime) THROWS {
+loadTiff(data::shp_Datafile& file, rcstr filePath, typ::deg phi, qreal monitor, qreal expTime) THROWS {
 
     data::Metadata md;
     md.motorPhi = phi;

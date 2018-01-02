@@ -16,13 +16,13 @@
 
 namespace data {
 
-File::File(rcstr fileName) : fileInfo_(fileName) {}
+Datafile::Datafile(rcstr fileName) : fileInfo_(fileName) {}
 
-QFileInfo const& File::fileInfo() const {
+QFileInfo const& Datafile::fileInfo() const {
     return fileInfo_;
 }
 
-str File::fileName() const {
+str Datafile::fileName() const {
     return fileInfo_.fileName();
 }
 }
