@@ -109,10 +109,9 @@ public:
     inten_vec collectIntens(Session const&, typ::Image const* intensCorr, typ::Range const&) const;
     void calculateAlphaBeta(typ::deg tth, typ::deg gma, typ::deg& alpha, typ::deg& beta) const;
 
-private:
-    // all dataset(s) must have the same image size
     typ::size2d imageSize() const;
 
+private:
     Datasets* datasets_; // here it belongs (or can be nullptr)
     QSharedPointer<Metadata const> md_; // on demand, compute once
 };

@@ -58,7 +58,7 @@ bool Session::hasFile(rcstr fileName) const {
 }
 
 void Session::addGivenFile(shp_Datafile datafile) THROWS {
-    setImageSize(datafile->datasets().imageSize());
+    setImageSize(datafile->imageSize());
     // all ok
     files_.append(datafile);
 }
@@ -110,7 +110,7 @@ void Session::setCorrFile(shp_Datafile datafile) THROWS {
         remCorrFile();
     } else {
         auto& datasets = datafile->datasets();
-        setImageSize(datasets.imageSize());
+        setImageSize(datafile->imageSize());
         corrImage_ = datasets.foldedImage();
         intensCorr_.clear(); // will be calculated lazily
         // all ok
