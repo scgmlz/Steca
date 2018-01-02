@@ -190,7 +190,7 @@ DiagramsFrame::eReflAttr DiagramsFrame::yAttr() const {
 }
 
 void DiagramsFrame::displayReflection(uint reflIndex, bool interpolated) {
-    super::displayReflection(reflIndex, interpolated);
+    Frame::displayReflection(reflIndex, interpolated);
     rs_ = calcPoints_.at(reflIndex);
     recalculate();
 }

@@ -21,8 +21,6 @@ namespace gui {
 namespace output {
 
 class DiagramsFrame : public Frame {
-private:
-    using super = Frame;
 public:
     DiagramsFrame(rcstr title, QWidget*);
 
