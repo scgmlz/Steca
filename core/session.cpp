@@ -231,7 +231,8 @@ QSharedPointer<calc::SequenceLens> Session::datasetLens(
 
 Curve Session::curveMinusBg(calc::SequenceLens const& lens, Range const& rgeGma) const {
     Curve curve = lens.makeCurve(rgeGma);
-    curve.subtract(Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
+    const Polynom f = Polynom::fromFit(bgPolyDegree_, curve, bgRanges_);
+    curve.subtract([f](qreal x) {return f.y(x);});
     return curve;
 }
 

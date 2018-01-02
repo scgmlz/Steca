@@ -42,7 +42,7 @@ public:
     Curve intersect(Range const&) const;
     Curve intersect(Ranges const&) const;
 
-    void subtract(class Function const&);
+    void subtract(std::function<qreal(qreal)> const& func);
 
     uint maqpairindex() const; // the index of the maximum y value
 

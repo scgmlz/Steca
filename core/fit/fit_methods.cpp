@@ -15,6 +15,7 @@
 #include "fit_methods.h"
 #include "LM/levmar.h"
 #include "def/idiomatic_for.h"
+#include "typ/curve.h"
 #include <qmath.h>
 
 void FitWrapper::fit(Function& function, Curve const& curve) {

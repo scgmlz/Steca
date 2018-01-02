@@ -17,10 +17,11 @@
 
 #include "typ/singleton.h"
 #include "typ/registry.h"
-#include "typ/curve.h"
 #include "parametric_function.h"
 #include "typ/realpair.h"
 #include "typ/types.h"
+
+class Curve;
 
 //! A polynomial, for fitting the background of a diffractogram
 

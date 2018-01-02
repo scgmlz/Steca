@@ -14,7 +14,6 @@
 
 #include "typ/curve.h"
 #include "def/idiomatic_for.h"
-#include "fit/parametric_function.h"
 
 void Curve::clear() {
     xs_.clear();
@@ -85,9 +84,10 @@ Curve Curve::intersect(Ranges const& ranges) const {
     return res;
 }
 
-void Curve::subtract(Function const& f) {
+void Curve::subtract(std::function<qreal(qreal)> const& func)
+{
     for_i (count())
-        ys_[i] -= f.y(xs_.at(i));
+        ys_[i] -= func(xs_.at(i));
 }
 
 uint Curve::maqpairindex() const {
