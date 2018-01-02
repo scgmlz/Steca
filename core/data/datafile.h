@@ -18,8 +18,6 @@
 #include "dataset.h"
 #include <QFileInfo>
 
-namespace data {
-
 //! A file (loaded from a disk file) that contains a number of datasets.
 class Datafile final {
 public:
@@ -38,8 +36,6 @@ private:
 
 typedef QSharedPointer<class Datafile> shp_Datafile;
 
-} // namespace data
-
-Q_DECLARE_METATYPE(data::shp_Datafile)
+Q_DECLARE_METATYPE(shp_Datafile)
 
 #endif // DATAFILE_H

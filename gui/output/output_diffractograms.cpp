@@ -61,11 +61,11 @@ uint TabDiffractogramsSave::currType() const {
 struct OutputData {
     OutputData() {}
 
-    OutputData(typ::Curve curve, data::Dataset dataset, typ::Range gmaStripe, uint picNum)
+    OutputData(typ::Curve curve, Dataset dataset, typ::Range gmaStripe, uint picNum)
         : curve_(curve), dataset_(dataset), gmaStripe_(gmaStripe), picNum_(picNum) {}
 
     typ::Curve curve_;
-    data::Dataset dataset_;
+    Dataset dataset_;
     typ::Range gmaStripe_;
     uint picNum_;
 
@@ -89,7 +89,7 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
 }
 
 OutputDataCollection DiffractogramsFrame::collectCurves(
-    typ::Range const& rgeGma, uint gmaSlices, data::Dataset const& dataset, uint picNum) {
+    typ::Range const& rgeGma, uint gmaSlices, Dataset const& dataset, uint picNum) {
 
     auto lens = gHub->datasetLens(dataset);
 
@@ -110,7 +110,7 @@ OutputDataCollection DiffractogramsFrame::collectCurves(
     return outputData;
 }
 
-OutputData DiffractogramsFrame::collectCurve(data::Dataset const& dataset) {
+OutputData DiffractogramsFrame::collectCurve(Dataset const& dataset) {
     auto lens = gHub->datasetLens(dataset);
     auto curve = lens->makeCurve();
     return OutputData(curve, dataset, lens->rgeGma(), 0); // TODO current picture number
@@ -132,7 +132,7 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
 
     OutputDataCollections allOutputData;
     uint picNum = 1;
-    for (data::shp_Dataset dataset : datasets) {
+    for (shp_Dataset dataset : datasets) {
         progress.step();
         allOutputData.append(collectCurves(rgeGma, gmaSlices, *dataset, picNum));
         ++picNum;
@@ -161,8 +161,8 @@ auto writeMetaData = [](OutputData outputData, QTextStream& stream) {
     stream << "Gamma range min: " << rgeGma.min << '\n';
     stream << "Gamma range max: " << rgeGma.max << '\n';
 
-    for_i (data::Metadata::numAttributes(true)) {
-        stream << data::Metadata::attributeTag(i, true) << ": " << md.attributeValue(i).toDouble()
+    for_i (Metadata::numAttributes(true)) {
+        stream << Metadata::attributeTag(i, true) << ": " << md.attributeValue(i).toDouble()
                << '\n';
     }
 };

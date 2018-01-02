@@ -31,12 +31,12 @@ public:
     Session();
 
 private:
-    typ::vec<data::shp_Datafile> files_; //!< data files
-    data::shp_Datafile corrFile_; //!< correction file
+    typ::vec<shp_Datafile> files_; //!< data files
+    shp_Datafile corrFile_; //!< correction file
     typ::shp_Image corrImage_;
     bool corrEnabled_;
     uint_vec collectedFromFiles_; // from these files
-    data::Datasets collectedDatasets_; // datasets collected ...
+    Datasets collectedDatasets_; // datasets collected ...
     QStringList collectedDatasetsTags_;
     bool intenScaledAvg_; // if not, summed
     preal intenScale_;
@@ -65,9 +65,9 @@ private:
 public:
     // Modifying methods:
     void clear();
-    void addGivenFile(data::shp_Datafile) THROWS;
+    void addGivenFile(shp_Datafile) THROWS;
     void removeFile(uint i);
-    void setCorrFile(data::shp_Datafile) THROWS; // Load or remove a correction file.
+    void setCorrFile(shp_Datafile) THROWS; // Load or remove a correction file.
     void remCorrFile();
     void collectDatasetsFromFiles(uint_vec, pint);
 
@@ -89,17 +89,17 @@ public:
     // Const methods:
     uint numFiles() const { //!< number of data files (not counting the correction file)
         return files_.count(); }
-    data::shp_Datafile file(uint i) const { return files_.at(i); }
+    shp_Datafile file(uint i) const { return files_.at(i); }
     bool hasFile(rcstr fileName) const;
     bool hasCorrFile() const { return !corrFile_.isNull(); }
-    data::shp_Datafile corrFile() const { return corrFile_; }
+    shp_Datafile corrFile() const { return corrFile_; }
     typ::shp_Image corrImage() const { return corrImage_; }
     typ::Image const* intensCorr() const;
     void tryEnableCorr(bool on) { corrEnabled_ = on && hasCorrFile(); }
     bool isCorrEnabled() const { return corrEnabled_; }
 
     uint_vec const& collectedFromFiles() const { return collectedFromFiles_; }
-    data::Datasets const& collectedDatasets() const { return collectedDatasets_; }
+    Datasets const& collectedDatasets() const { return collectedDatasets_; }
     QStringList const& collectedDatasetsTags() const { return collectedDatasetsTags_; }
 
     typ::size2d imageSize() const;
@@ -111,16 +111,16 @@ public:
 
     typ::Range const& gammaRange() const { return gammaRange_; }
 
-    typ::shp_AngleMap angleMap(data::OneDataset const&) const;
-    static typ::shp_AngleMap angleMap(Session const& session, data::OneDataset const& ds) {
+    typ::shp_AngleMap angleMap(OneDataset const&) const;
+    static typ::shp_AngleMap angleMap(Session const& session, OneDataset const& ds) {
         return session.angleMap(ds); }
 
-    calc::shp_ImageLens imageLens(typ::Image const&, data::Datasets const&, bool trans, bool cut) const;
+    calc::shp_ImageLens imageLens(typ::Image const&, Datasets const&, bool trans, bool cut) const;
     calc::shp_DatasetLens datasetLens(
-        data::Dataset const&, data::Datasets const&, eNorm, bool trans, bool cut) const;
+        Dataset const&, Datasets const&, eNorm, bool trans, bool cut) const;
 
     calc::ReflectionInfos makeReflectionInfos(
-        data::Datasets const&, calc::Reflection const&, uint gmaSlices, typ::Range const&, Progress*) const;
+        Datasets const&, calc::Reflection const&, uint gmaSlices, typ::Range const&, Progress*) const;
 
     typ::Ranges const& bgRanges() const { return bgRanges_; }
     uint bgPolyDegree() const { return bgPolyDegree_; }
@@ -130,8 +130,8 @@ public:
 
     eNorm norm() const { return norm_; }
 
-    qreal calcAvgBackground(data::Dataset const&) const;
-    qreal calcAvgBackground(data::Datasets const&) const;
+    qreal calcAvgBackground(Dataset const&) const;
+    qreal calcAvgBackground(Datasets const&) const;
 };
 
 #endif // SESSION_H

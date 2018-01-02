@@ -18,10 +18,7 @@
 #include "data/dataset.h"
 
 using typ::deg;
-
-namespace data {
 class Metadata;
-}
 
 namespace calc {
 
@@ -29,10 +26,10 @@ class ReflectionInfo final {
     public:
     ReflectionInfo();
     ReflectionInfo(
-        QSharedPointer<data::Metadata const>,
+        QSharedPointer<Metadata const>,
         typ::deg alpha, typ::deg beta, typ::Range, inten_t, inten_t /*error*/,
         deg, deg /*error*/, fwhm_t, fwhm_t /*error*/);
-    ReflectionInfo(QSharedPointer<data::Metadata const>, typ::deg alpha, typ::deg beta, typ::Range);
+    ReflectionInfo(QSharedPointer<Metadata const>, typ::deg alpha, typ::deg beta, typ::Range);
     ReflectionInfo(
         typ::deg alpha, typ::deg beta, typ::Range, inten_t, inten_t /*error*/, deg, deg /*error*/,
         fwhm_t, fwhm_t /*error*/);
@@ -67,7 +64,7 @@ class ReflectionInfo final {
     typ::row_t data() const;
 
 private:
-    QSharedPointer<data::Metadata const> md_;
+    QSharedPointer<Metadata const> md_;
     typ::deg alpha_, beta_;
     typ::Range rgeGma_;
     inten_t inten_, intenError_;

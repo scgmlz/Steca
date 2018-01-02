@@ -502,7 +502,7 @@ Diffractogram::Diffractogram()
     });
 
     connect(gHub, &TheHubSignallingBase::sigDatasetSelected,
-            [this](data::shp_Dataset dataset){ setDataset(dataset); });
+            [this](shp_Dataset dataset){ setDataset(dataset); });
     connect(gHub, &TheHubSignallingBase::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHubSignallingBase::sigCorrEnabled, [this](){ render(); });
     connect(gHub, &TheHubSignallingBase::sigDisplayChanged, [this](){ render(); });
@@ -589,7 +589,7 @@ void Diffractogram::render() {
     plot_->plot(dgram_, dgramBgFitted_, bg_, refls_, currReflIndex_);
 }
 
-void Diffractogram::setDataset(data::shp_Dataset dataset) {
+void Diffractogram::setDataset(shp_Dataset dataset) {
     dataset_ = dataset;
     actZoom_->setChecked(false);
     render();

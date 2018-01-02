@@ -57,7 +57,7 @@ bool Session::hasFile(rcstr fileName) const {
     return false;
 }
 
-void Session::addGivenFile(data::shp_Datafile file) THROWS {
+void Session::addGivenFile(shp_Datafile file) THROWS {
     setImageSize(file->datasets().imageSize());
     // all ok
     files_.append(file);
@@ -105,7 +105,7 @@ Image const* Session::intensCorr() const {
     return &intensCorr_;
 }
 
-void Session::setCorrFile(data::shp_Datafile file) THROWS {
+void Session::setCorrFile(shp_Datafile file) THROWS {
     if (file.isNull()) {
         remCorrFile();
     } else {
@@ -133,7 +133,7 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
     collectedDatasets_.clear();
     collectedDatasetsTags_.clear();
 
-    vec<data::shp_OneDataset> datasetsFromFiles;
+    vec<shp_OneDataset> datasetsFromFiles;
     for (uint i : collectedFromFiles_)
         for (auto& dataset : files_.at(i)->datasets())
             datasetsFromFiles.append(dataset);
@@ -141,7 +141,7 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
     if (datasetsFromFiles.isEmpty())
         return;
 
-    data::shp_Dataset cd(new data::Dataset);
+    shp_Dataset cd(new Dataset);
     uint i = 0;
 
     auto appendCd = [this, &cd, &combineBy, &i]() {
@@ -153,13 +153,13 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
                 tag += '-' + str::number(i);
             collectedDatasets_.appendHere(cd);
             collectedDatasetsTags_.append(tag);
-            cd = data::shp_Dataset(new data::Dataset);
+            cd = shp_Dataset(new Dataset);
         }
     };
 
     uint by = combineBy;
     for (auto& dataset : datasetsFromFiles) {
-        cd->append(data::shp_OneDataset(dataset));
+        cd->append(shp_OneDataset(dataset));
         if (1 >= by--) {
             appendCd();
             by = combineBy;
@@ -217,7 +217,7 @@ typ::IJ Session::midPix() const {
     return mid;
 }
 
-typ::shp_AngleMap Session::angleMap(data::OneDataset const& one) const {
+typ::shp_AngleMap Session::angleMap(OneDataset const& one) const {
     typ::AngleMap::Key key(geometry_, imageSize_, imageCut_, midPix(), one.midTth());
     typ::shp_AngleMap map = angleMapCache_.value(key);
     if (map.isNull())
@@ -226,12 +226,12 @@ typ::shp_AngleMap Session::angleMap(data::OneDataset const& one) const {
 }
 
 calc::shp_ImageLens Session::imageLens(
-    Image const& image, data::Datasets const& datasets, bool trans, bool cut) const {
+    Image const& image, Datasets const& datasets, bool trans, bool cut) const {
     return calc::shp_ImageLens(new calc::ImageLens(*this, image, datasets, trans, cut));
 }
 
 calc::shp_DatasetLens Session::datasetLens(
-    data::Dataset const& dataset, data::Datasets const& datasets, eNorm norm, bool trans, bool cut
+    Dataset const& dataset, Datasets const& datasets, eNorm norm, bool trans, bool cut
     ) const {
     return calc::shp_DatasetLens(new calc::DatasetLens(
         *this, dataset, datasets, norm, trans, cut, imageTransform_, imageCut_));
@@ -260,10 +260,10 @@ calc::ReflectionInfo Session::makeReflectionInfo(
 
     // compute alpha, beta:
     deg alpha, beta;
-    data::Dataset const& dataset = lens.dataset();
+    Dataset const& dataset = lens.dataset();
     dataset.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
 
-    QSharedPointer<data::Metadata const> metadata = dataset.metadata();
+    QSharedPointer<Metadata const> metadata = dataset.metadata();
 
     return rgeTth.contains(peak.x)
         ? calc::ReflectionInfo(
@@ -279,7 +279,7 @@ calc::ReflectionInfo Session::makeReflectionInfo(
  * the returned infos won't be on the grid. REVIEW gammaStep separately?
  */
 calc::ReflectionInfos Session::makeReflectionInfos(
-    data::Datasets const& datasets, calc::Reflection const& reflection, uint gmaSlices,
+    Datasets const& datasets, calc::Reflection const& reflection, uint gmaSlices,
     typ::Range const& rgeGma, Progress* progress) const {
     calc::ReflectionInfos infos;
 
@@ -330,14 +330,14 @@ void Session::addReflection(const QJsonObject& obj) {
     reflections_.append(reflection);
 }
 
-qreal Session::calcAvgBackground(data::Dataset const& dataset) const {
+qreal Session::calcAvgBackground(Dataset const& dataset) const {
     auto lens = datasetLens(dataset, dataset.datasets(), eNorm::NONE, true, true);
     Curve gmaCurve = lens->makeCurve(); // had argument averaged=true
     auto bgPolynom = Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
     return bgPolynom.avgY(lens->rgeTth());
 }
 
-qreal Session::calcAvgBackground(data::Datasets const& datasets) const {
+qreal Session::calcAvgBackground(Datasets const& datasets) const {
     TakesLongTime __;
     qreal bg = 0;
     for (auto& dataset : datasets)

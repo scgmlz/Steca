@@ -82,9 +82,9 @@ public:
     bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
     bool isCombinedDgram() const { return isCombinedDgram_; }
 
-    calc::shp_DatasetLens datasetLens(data::Dataset const&) const;
+    calc::shp_DatasetLens datasetLens(Dataset const&) const;
 
-    typ::Curve avgCurve(data::Datasets const& dss) const;
+    typ::Curve avgCurve(Datasets const& dss) const;
 
     void saveSession(QFileInfo const&) const;
     QByteArray saveSession() const;
@@ -96,7 +96,7 @@ public:
 
     eFittingTab fittingTab() const { return fittingTab_; }
 
-    data::shp_Dataset selectedDataset() const { return selectedDataset_; }
+    shp_Dataset selectedDataset() const { return selectedDataset_; }
 
 private:
     friend class TheHubSignallingBase;
@@ -106,7 +106,7 @@ private:
     uint_vec collectFromFiles_;
     pint datasetsGroupedBy_ = pint(1);
     eFittingTab fittingTab_ = eFittingTab::NONE;
-    data::shp_Dataset selectedDataset_;
+    shp_Dataset selectedDataset_;
     calc::shp_Reflection selectedReflection_;
 
     void setImageRotate(typ::ImageTransform);

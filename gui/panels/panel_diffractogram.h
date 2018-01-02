@@ -33,7 +33,7 @@ public:
 
     void render();
 
-    data::shp_Dataset dataset() const { return dataset_; }
+    shp_Dataset dataset() const { return dataset_; }
     QBoxLayout* box() const { return box_; }
 
 private:
@@ -41,9 +41,9 @@ private:
     void onNormChanged();
     void onFittingTab(eFittingTab tab);
 
-    void setDataset(data::shp_Dataset);
+    void setDataset(shp_Dataset);
 
-    data::shp_Dataset dataset_;
+    shp_Dataset dataset_;
 
     class DiffractogramPlot* plot_;
 

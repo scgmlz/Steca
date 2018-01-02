@@ -27,8 +27,6 @@ using typ::Image;
 using typ::Range;
 using typ::size2d;
 
-namespace data {
-
 // ************************************************************************** //
 //  class OneDataset
 // ************************************************************************** //
@@ -442,5 +440,3 @@ typ::shp_Image OneDatasets::foldedImage() const {
         image->addIntens(*one->image_);
     return image;
 }
-
-} // namespace data

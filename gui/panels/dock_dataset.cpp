@@ -41,7 +41,7 @@ DatasetView::DatasetView() : views::ListView() {
     debug::ensure(dynamic_cast<Model*>(views::ListView::model()));
 
     connect(gHub, &TheHubSignallingBase::sigDatasetsChanged, [this]() {
-            gHub->tellDatasetSelected(data::shp_Dataset()); // first de-select
+            gHub->tellDatasetSelected(shp_Dataset()); // first de-select
             selectRow(0);
         });
 }
@@ -49,7 +49,7 @@ DatasetView::DatasetView() : views::ListView() {
 void DatasetView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     views::ListView::currentChanged(current, previous);
     gHub->tellDatasetSelected(model()->data(current,
-                                           Model::GetDatasetRole).value<data::shp_Dataset>());
+                                           Model::GetDatasetRole).value<shp_Dataset>());
 }
 
 // ************************************************************************** //

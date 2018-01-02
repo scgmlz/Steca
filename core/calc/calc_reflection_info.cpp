@@ -22,7 +22,6 @@ namespace calc {
 using typ::cmp_real;
 using typ::cmp_vec;
 using typ::Range;
-using data::Metadata;
 
 // ************************************************************************** //
 //  class ReflectionInfo

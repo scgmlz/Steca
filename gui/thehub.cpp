@@ -43,7 +43,7 @@ TheHub::TheHub()
     connect(this, &gui::TheHubSignallingBase::sigDatasetsChanged,
             [this]() { datasetsModel->signalReset(); });
     connect(this, &gui::TheHubSignallingBase::sigDatasetSelected,
-            [this](data::shp_Dataset dataset) { metadataModel->reset(dataset); });
+            [this](shp_Dataset dataset) { metadataModel->reset(dataset); });
 
     // create actions
 
@@ -119,7 +119,7 @@ TheHub::TheHub()
             [this]() { trigger_removeFile->setEnabled(
                     !gSession->collectedFromFiles().isEmpty()); });
     QObject::connect(this, &gui::TheHub::sigCorrFile,
-            [this](data::shp_Datafile file) { trigger_remCorr->setEnabled(!file.isNull()); });
+            [this](shp_Datafile file) { trigger_remCorr->setEnabled(!file.isNull()); });
     QObject::connect(this, &gui::TheHub::sigCorrEnabled,
             [this](bool on) { toggle_enableCorr->setChecked(on); });
 
@@ -175,11 +175,11 @@ void TheHub::removeFile(uint i) {
         setImageCut(true, false, typ::ImageCut());
 }
 
-calc::shp_DatasetLens TheHub::datasetLens(data::Dataset const& dataset) const {
+calc::shp_DatasetLens TheHub::datasetLens(Dataset const& dataset) const {
     return gSession->datasetLens(dataset, dataset.datasets(), gSession->norm(), true, true);
 }
 
-typ::Curve TheHub::avgCurve(data::Datasets const& dss) const {
+typ::Curve TheHub::avgCurve(Datasets const& dss) const {
     return dss.avgCurve(*gSession);
 }
 
@@ -373,7 +373,7 @@ typ::Range TheHub::collectedDatasetsRgeGma() const {
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {
-    data::shp_Datafile file;
+    shp_Datafile file;
     if (!filePath.isEmpty())
         file = io::load(filePath);
 

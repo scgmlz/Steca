@@ -42,7 +42,7 @@ private:
 
 public: // emit signals
     void tellSessionCleared();
-    void tellDatasetSelected(data::shp_Dataset);
+    void tellDatasetSelected(shp_Dataset);
     void tellSelectedReflection(calc::shp_Reflection);
     void tellReflectionData(calc::shp_Reflection);
     void tellReflectionValues(typ::Range const&, qpair const&, fwhm_t, bool);
@@ -55,9 +55,9 @@ signals:
 
     void sigDatasetsChanged(); // the set of datasets collected from selected
     // files has changed
-    void sigDatasetSelected(data::shp_Dataset);
+    void sigDatasetSelected(shp_Dataset);
 
-    void sigCorrFile(data::shp_Datafile);
+    void sigCorrFile(shp_Datafile);
     void sigCorrEnabled(bool);
 
     void sigReflectionsChanged();

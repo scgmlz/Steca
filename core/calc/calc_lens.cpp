@@ -26,7 +26,7 @@ using typ::size2d;
 // ************************************************************************** //
 
 LensBase::LensBase(
-    Session const& session, data::Datasets const& datasets, bool trans, bool cut,
+    Session const& session, Datasets const& datasets, bool trans, bool cut,
     typ::ImageTransform const& imageTransform, typ::ImageCut const& imageCut)
     : session_(session)
     , datasets_(datasets)
@@ -85,7 +85,7 @@ void LensBase::doCut(uint& i, uint& j) const {
 // ************************************************************************** //
 
 ImageLens::ImageLens(
-    Session const& session, Image const& image, data::Datasets const& datasets, bool trans,
+    Session const& session, Image const& image, Datasets const& datasets, bool trans,
     bool cut)
     : LensBase(session, datasets, trans, cut, session.imageTransform(), session.imageCut())
     , image_(image) {}
@@ -122,7 +122,7 @@ typ::Range const& ImageLens::rgeInten(bool fixed) const {
 // ************************************************************************** //
 
 DatasetLens::DatasetLens(
-    Session const& session, data::Dataset const& dataset, data::Datasets const& datasets,
+    Session const& session, Dataset const& dataset, Datasets const& datasets,
     eNorm norm, bool trans, bool cut, typ::ImageTransform const& imageTransform,
     typ::ImageCut const& imageCut)
     : LensBase(session, datasets, trans, cut, imageTransform, imageCut)

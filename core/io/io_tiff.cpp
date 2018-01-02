@@ -21,7 +21,7 @@
 namespace io {
 
 // implemented below
-static void loadTiff(data::shp_Datafile&, rcstr, typ::deg, qreal, qreal) THROWS;
+static void loadTiff(shp_Datafile&, rcstr, typ::deg, qreal, qreal) THROWS;
 
 // The dat file looks like so:
 /*
@@ -40,8 +40,8 @@ Aus-Weimin-00008.tif -55
 Aus-Weimin-00009.tif -50
 */
 
-data::shp_Datafile loadTiffDat(rcstr filePath) THROWS {
-    data::shp_Datafile datafile(new data::Datafile(filePath));
+shp_Datafile loadTiffDat(rcstr filePath) THROWS {
+    shp_Datafile datafile(new Datafile(filePath));
 
     QFile f(filePath);
     RUNTIME_CHECK(f.open(QFile::ReadOnly), "cannot open file");
@@ -107,9 +107,9 @@ data::shp_Datafile loadTiffDat(rcstr filePath) THROWS {
     RUNTIME_CHECK(val == dataOffset, BAD_FORMAT)
 
 static void
-loadTiff(data::shp_Datafile& file, rcstr filePath, typ::deg phi, qreal monitor, qreal expTime) THROWS {
+loadTiff(shp_Datafile& file, rcstr filePath, typ::deg phi, qreal monitor, qreal expTime) THROWS {
 
-    data::Metadata md;
+    Metadata md;
     md.motorPhi = phi;
     md.monitorCount = monitor;
     md.time = expTime;
@@ -260,7 +260,7 @@ loadTiff(data::shp_Datafile& file, rcstr filePath, typ::deg phi, qreal monitor, 
 
     check();
 
-    file->datasets().append(data::shp_OneDataset(new data::OneDataset(md, size, intens)));
+    file->datasets().append(shp_OneDataset(new OneDataset(md, size, intens)));
 }
 
 } // namespace io

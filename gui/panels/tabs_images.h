@@ -32,12 +32,12 @@ private:
 
     QImage makeImage(typ::shp_Image, bool curvedScale);
     QPixmap makePixmap(typ::shp_Image);
-    QPixmap makePixmap(data::OneDataset const&, typ::Range const&, typ::Range const&);
+    QPixmap makePixmap(OneDataset const&, typ::Range const&, typ::Range const&);
 
-    void setDataset(data::shp_Dataset);
+    void setDataset(shp_Dataset);
     void render();
 
-    data::shp_Dataset dataset_;
+    shp_Dataset dataset_;
     ImageWidget *dataImageWidget_, *corrImageWidget_;
 
     QSpinBox* spinN_;

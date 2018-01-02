@@ -181,7 +181,7 @@ TabsImages::TabsImages() : TabsPanel() {
         auto& tab = addTab("Correction", Qt::Vertical);
 
         connect(gHub, &TheHubSignallingBase::sigCorrFile,
-                [&tab](data::shp_Datafile file) { tab.setEnabled(!file.isNull()); });
+                [&tab](shp_Datafile file) { tab.setEnabled(!file.isNull()); });
 
         auto& box = tab.box();
 
@@ -205,7 +205,7 @@ TabsImages::TabsImages() : TabsPanel() {
     connect(gHub, &TheHubSignallingBase::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHubSignallingBase::sigNormChanged, [this](){ render(); });
     connect(gHub, &TheHubSignallingBase::sigDatasetSelected,
-            [this](data::shp_Dataset dataset){ setDataset(dataset); });
+            [this](shp_Dataset dataset){ setDataset(dataset); });
 
     render();
 }
@@ -245,7 +245,7 @@ QPixmap TabsImages::makePixmap(typ::shp_Image image) {
 }
 
 QPixmap TabsImages::makePixmap(
-    data::OneDataset const& dataset, typ::Range const& rgeGma, typ::Range const& rgeTth) {
+    OneDataset const& dataset, typ::Range const& rgeGma, typ::Range const& rgeTth) {
     auto im = makeImage(dataset.image(), !gHub->isFixedIntenImageScale());
     auto angleMap = gSession->angleMap(dataset);
 
@@ -268,7 +268,7 @@ QPixmap TabsImages::makePixmap(
     return QPixmap::fromImage(im);
 }
 
-void TabsImages::setDataset(data::shp_Dataset dataset) {
+void TabsImages::setDataset(shp_Dataset dataset) {
     dataset_ = dataset;
     render();
 }

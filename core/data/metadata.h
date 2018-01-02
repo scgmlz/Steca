@@ -19,8 +19,6 @@
 #include "typ/str.h"
 #include "typ/variant.h"
 
-namespace data {
-
 class Metadata {
 public:
     Metadata();
@@ -48,7 +46,5 @@ public:
     qreal monitorCount, deltaMonitorCount;
     qreal time, deltaTime;
 };
-
-} // namespace data
 
 #endif // METADATA_H

@@ -40,7 +40,7 @@ QVariant FilesModel::data(rcIndex index, int role) const {
 
     switch (role) {
     case Qt::DisplayRole: return gSession->file(to_u(row))->fileName();
-    case GetFileRole: return QVariant::fromValue<data::shp_Datafile>(gSession->file(to_u(row)));
+    case GetFileRole: return QVariant::fromValue<shp_Datafile>(gSession->file(to_u(row)));
     default: return EMPTY_VAR;
     }
 }
@@ -86,7 +86,7 @@ QVariant DatasetsModel::data(rcIndex index, int role) const {
         }
     }
     case GetDatasetRole:
-        return QVariant::fromValue<data::shp_Dataset>(datasets_.at(to_u(row)));
+        return QVariant::fromValue<shp_Dataset>(datasets_.at(to_u(row)));
     default:
         return EMPTY_VAR;
     }
@@ -100,7 +100,7 @@ QVariant DatasetsModel::headerData(int col, Qt::Orientation, int role) const {
     case COL_NUMBER:
         return "#";
     default:
-        return data::Metadata::attributeTag(metaInfoNums_.at(to_u(col - COL_ATTRS)), false);
+        return Metadata::attributeTag(metaInfoNums_.at(to_u(col - COL_ATTRS)), false);
     }
 }
 
@@ -121,10 +121,10 @@ void DatasetsModel::showMetaInfo(typ::vec<bool> const& metadataRows) {
 // ************************************************************************** //
 
 MetadataModel::MetadataModel() {
-    rowsChecked_.fill(false, data::Metadata::numAttributes(false));
+    rowsChecked_.fill(false, Metadata::numAttributes(false));
 }
 
-void MetadataModel::reset(data::shp_Dataset dataset) {
+void MetadataModel::reset(shp_Dataset dataset) {
     metadata_.clear();
     if (dataset)
         metadata_ = dataset->metadata();
@@ -136,7 +136,7 @@ int MetadataModel::columnCount(rcIndex) const {
 }
 
 int MetadataModel::rowCount(rcIndex) const {
-    return to_i(data::Metadata::numAttributes(false));
+    return to_i(Metadata::numAttributes(false));
 }
 
 QVariant MetadataModel::data(rcIndex index, int role) const {
@@ -155,7 +155,7 @@ QVariant MetadataModel::data(rcIndex index, int role) const {
 
     case Qt::DisplayRole:
         switch (col) {
-        case COL_TAG: return data::Metadata::attributeTag(to_u(row), false);
+        case COL_TAG: return Metadata::attributeTag(to_u(row), false);
         case COL_VALUE: return metadata_ ? metadata_->attributeStrValue(to_u(row)) : "-";
         }
         break;

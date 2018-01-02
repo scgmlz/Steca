@@ -16,8 +16,6 @@
 #include "def/idiomatic_for.h"
 #include <qmath.h>
 
-namespace data {
-
 // metadata attributes
 
 enum class eAttr {
@@ -194,5 +192,3 @@ typ::row_t Metadata::attributeNaNs() {
             row.append(NAN);
     return row;
 }
-
-} // namespace data

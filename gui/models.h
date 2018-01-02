@@ -18,10 +18,6 @@
 #include "table_model.h"
 #include "data/dataset.h"
 
-namespace data {
-    struct Metadata;
-}
-
 namespace models {
 
 class FilesModel : public TableModel {
@@ -56,7 +52,7 @@ public:
     void showMetaInfo(typ::vec<bool> const&);
 
 private:
-    data::Datasets const& datasets_; // the selected datasets
+    Datasets const& datasets_; // the selected datasets
     uint_vec metaInfoNums_; // selected metadata items to show
 };
 
@@ -75,11 +71,11 @@ public:
 
     typ::vec<bool> const& rowsChecked() const { return rowsChecked_; }
 
-    void reset(data::shp_Dataset dataset);
+    void reset(shp_Dataset dataset);
     void flipCheck(uint row);
 
 private:
-    QSharedPointer<data::Metadata const> metadata_;
+    QSharedPointer<class Metadata const> metadata_;
     typ::vec<bool> rowsChecked_;
 };
 

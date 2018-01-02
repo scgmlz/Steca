@@ -21,10 +21,10 @@ namespace io {
 
 // Code taken from the original STeCa, only slightly modified.
 
-data::shp_Datafile loadMar(rcstr filePath) THROWS {
+shp_Datafile loadMar(rcstr filePath) THROWS {
     typedef short WORD;
 
-    data::shp_Datafile datafile(new data::Datafile(filePath));
+    shp_Datafile datafile(new Datafile(filePath));
 
     FILE* fpIn;
 
@@ -205,7 +205,7 @@ data::shp_Datafile loadMar(rcstr filePath) THROWS {
     for_i (pixelSize)
         convertedIntens[i] = inten_t(i4_image[i]);
 
-    data::Metadata md;
+    Metadata md;
 
     md.motorOmg = omega;
     md.motorTth = twoTheta;
@@ -218,8 +218,8 @@ data::shp_Datafile loadMar(rcstr filePath) THROWS {
 
     // REVIEW ?? pictureOverflow
 
-    datafile->datasets().append(data::shp_OneDataset(
-        new data::OneDataset(md, typ::size2d(pixSizeX, pixSizeY), convertedIntens)));
+    datafile->datasets().append(shp_OneDataset(
+        new OneDataset(md, typ::size2d(pixSizeX, pixSizeY), convertedIntens)));
 
     delete[] i2_image;
     delete[] i4_image;

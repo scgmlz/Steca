@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/data/datafile.cpp
-//! @brief     Implements class File
+//! @brief     Implements class Datafile
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -14,8 +14,6 @@
 
 #include "datafile.h"
 
-namespace data {
-
 Datafile::Datafile(rcstr fileName) : fileInfo_(fileName) {}
 
 QFileInfo const& Datafile::fileInfo() const {
@@ -24,5 +22,4 @@ QFileInfo const& Datafile::fileInfo() const {
 
 str Datafile::fileName() const {
     return fileInfo_.fileName();
-}
 }

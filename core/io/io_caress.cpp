@@ -22,8 +22,8 @@
 
 namespace io {
 
-data::shp_Datafile loadCaress(rcstr filePath) THROWS {
-    data::shp_Datafile datafile(new data::Datafile(filePath));
+shp_Datafile loadCaress(rcstr filePath) THROWS {
+    shp_Datafile datafile(new Datafile(filePath));
 
     RUNTIME_CHECK(
         0 == open_data_file(filePath.toLocal8Bit().data(), nullptr),
@@ -176,7 +176,7 @@ data::shp_Datafile loadCaress(rcstr filePath) THROWS {
                 // size.rheight() /= 2;
 
                 // Objekt inizialisieren
-                data::Metadata md;
+                Metadata md;
 
                 md.date = str::fromStdString(s_date);
                 md.comment = str::fromStdString(s_comment);
@@ -207,7 +207,7 @@ data::shp_Datafile loadCaress(rcstr filePath) THROWS {
                 md.time = tempTime;
 
                 datafile->datasets().append(
-                    data::shp_OneDataset(new data::OneDataset(md, size, convertedIntens)));
+                    shp_OneDataset(new OneDataset(md, size, convertedIntens)));
 
                 delete[] intens;
                 intens = NULL;

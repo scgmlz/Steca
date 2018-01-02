@@ -21,9 +21,6 @@
 #include "typ/variant.h"
 
 class Session;
-
-namespace data {
-
 class Metadata;
 class OneDataset;
 class Dataset;
@@ -155,8 +152,6 @@ private:
     mutable typ::Curve avgCurve_;
 };
 
-} // namespace data
-
-Q_DECLARE_METATYPE(data::shp_Dataset)
+Q_DECLARE_METATYPE(shp_Dataset)
 
 #endif // DATASET_H

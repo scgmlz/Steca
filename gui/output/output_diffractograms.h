@@ -33,8 +33,8 @@ protected:
     class TabDiffractogramsSave* tabSave_;
 
     OutputDataCollection
-    collectCurves(typ::Range const&, uint gmaSlices, data::Dataset const& dataset, uint picNum);
-    OutputData collectCurve(data::Dataset const& dataset);
+    collectCurves(typ::Range const&, uint gmaSlices, Dataset const& dataset, uint picNum);
+    OutputData collectCurve(Dataset const& dataset);
 
     OutputData outputCurrDiffractogram();
     OutputDataCollections outputAllDiffractograms();
