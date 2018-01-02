@@ -17,9 +17,6 @@
 
 #include <QAbstractTableModel>
 
-namespace gui {
-}
-
 namespace models {
 
 extern QVariant const EMPTY_VAR;

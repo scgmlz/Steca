@@ -14,7 +14,7 @@
 
 #include "../manifest.h"
 #include "mainwin.h"
-#include "msg_handler.h"
+#include "cfg/msg_handler.h"
 #include "session.h"
 #include <tclap/CmdLine.h> // templated command line argument parser, in 3rdparty directory
 #include <QApplication>

@@ -2,8 +2,8 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/colors.h
-//! @brief     Defines ...
+//! @file      gui/popup/popup/about.h
+//! @brief     Defines class AboutBox
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,16 +12,27 @@
 //
 // ************************************************************************** //
 
-#ifndef COLORS_H
-#define COLORS_H
+#ifndef ABOUT_H
+#define ABOUT_H
 
-#include "typ/types.h"
-#include <QRgb>
+#include <QDialog>
+
+class QCheckBox;
+class QDoubleSpinBox;
 
 namespace gui {
 
-QRgb intenImage(inten_t inten, inten_t maxInten, bool curved);
-QRgb intenGraph(inten_t inten, inten_t maxInten);
-QRgb heatmapColor(inten_t value);
-}
-#endif // COLORS_H
+class AboutBox : public QDialog {
+public:
+    AboutBox(QWidget*);
+
+protected:
+    void accept();
+
+    QCheckBox *cbShowAtStartup_, *cbCheckUpdatesAtStartup_;
+    QDoubleSpinBox *detDistance_, *detPixelSize_;
+};
+
+} // namespace gui
+
+#endif // ABOUT_H

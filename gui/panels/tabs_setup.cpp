@@ -14,7 +14,7 @@
 
 #include "tabs_setup.h"
 #include "fit/fit_fun.h"
-#include "gui_cfg.h"
+#include "cfg/gui_cfg.h"
 #include "session.h"
 #include "thehub.h"
 #include "widgets/tree_views.h" // inheriting from

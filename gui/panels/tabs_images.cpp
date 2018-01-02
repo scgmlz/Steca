@@ -13,10 +13,10 @@
 // ************************************************************************** //
 
 #include "tabs_images.h"
-#include "colors.h"
+#include "cfg/colors.h"
 #include "data/datasequence.h"
 #include "data/measurement.h"
-#include "gui_cfg.h"
+#include "cfg/gui_cfg.h"
 #include "thehub.h"
 #include "session.h"
 #include "widgets/widget_makers.h"

@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/msg_handler.cpp
+//! @file      gui/cfg/msg_handler.cpp
 //! @brief     Implements messageHandler.
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "msg_handler.h"
+#include "cfg/msg_handler.h"
 #include <iostream>
 #include <QMessageBox>
 #include <QStatusBar>

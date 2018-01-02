@@ -14,8 +14,8 @@
 
 #include "mainwin.h"
 #include "../manifest.h"
-#include "about.h"
-#include "filedialog.h"
+#include "popup/about.h"
+#include "popup/filedialog.h"
 #include "output/output_diagrams.h"
 #include "output/output_diffractograms.h"
 #include "output/output_polefigures.h"

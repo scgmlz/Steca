@@ -15,7 +15,7 @@
 #include "dialog_panels.h"
 #include "data/metadata.h"
 #include "def/idiomatic_for.h"
-#include "gui_cfg.h"
+#include "cfg/gui_cfg.h"
 #include "models.h"
 #include "thehub.h"
 #include "widgets/widget_makers.h"

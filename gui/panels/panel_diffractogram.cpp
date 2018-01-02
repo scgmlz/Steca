@@ -16,7 +16,7 @@
 #include "actions.h"
 #include "data/datasequence.h"
 #include "fit/fit_fun.h"
-#include "gui_cfg.h"
+#include "cfg/gui_cfg.h"
 #include "session.h"
 #include "thehub.h"
 #include "widgets/widget_makers.h"

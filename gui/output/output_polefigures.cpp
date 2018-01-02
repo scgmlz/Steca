@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "output_polefigures.h"
-#include "colors.h"
+#include "cfg/colors.h"
 #include "dialog_panels.h"
 #include "fit/fit_fun.h"
 #include "output_dialogs.h"

@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/colors.cpp
+//! @file      gui/cfg/colors.cpp
 //! @brief     Implements ...
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "colors.h"
+#include "cfg/colors.h"
 #include <qmath.h>
 
 namespace gui {

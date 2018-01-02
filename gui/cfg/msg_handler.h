@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/msg_handler.h
+//! @file      gui/cfg/cfg/msg_handler.h
 //! @brief     Defines messageHandler.
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
