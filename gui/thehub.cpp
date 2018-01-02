@@ -29,19 +29,20 @@ TheHub::TheHub()
     : isFixedIntenImageScale_(false)
     , isFixedIntenDgramScale_(false)
     , isCombinedDgram_(false)
-    , filesModel()
-    , datasetsModel()
-    , metadataModel()
-    , reflectionsModel()
 {
     qDebug() << "TheHub/";
 
+    filesModel = new models::FilesModel();
+    datasetsModel = new models::DatasetsModel();
+    metadataModel = new models::MetadataModel();
+    reflectionsModel = new models::ReflectionsModel();
+
     connect(this, &gui::TheHubSignallingBase::sigFilesChanged,
-            [this]() { filesModel.signalReset(); });
+            [this]() { filesModel->signalReset(); });
     connect(this, &gui::TheHubSignallingBase::sigDatasetsChanged,
-            [this]() { datasetsModel.signalReset(); });
+            [this]() { datasetsModel->signalReset(); });
     connect(this, &gui::TheHubSignallingBase::sigDatasetSelected,
-            [this](data::shp_Dataset dataset) { metadataModel.reset(dataset); });
+            [this](data::shp_Dataset dataset) { metadataModel->reset(dataset); });
 
     // create actions
 

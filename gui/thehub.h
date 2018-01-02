@@ -107,11 +107,12 @@ private:
     void setImageMirror(bool);
     void configActions();
     void sessionFromJson(QByteArray const&) THROWS;
+
 public:
-    models::FilesModel filesModel;
-    models::DatasetsModel datasetsModel;
-    models::MetadataModel metadataModel;
-    models::ReflectionsModel reflectionsModel;
+    class models::FilesModel* filesModel;
+    class models::DatasetsModel* datasetsModel;
+    class models::MetadataModel* metadataModel;
+    class models::ReflectionsModel* reflectionsModel;
 };
 
 } // namespace gui

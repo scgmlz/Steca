@@ -45,7 +45,7 @@ protected:
 // ************************************************************************** //
 
 FilesView::FilesView() : views::MultiListView() {
-    setModel(&gHub->filesModel);
+    setModel(gHub->filesModel);
     debug::ensure(dynamic_cast<Model*>(views::MultiListView::model()));
 
     header()->hide();

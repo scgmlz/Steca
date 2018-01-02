@@ -53,7 +53,7 @@ private:
 };
 
 ReflectionView::ReflectionView() : views::ListView() {
-    setModel(&gHub->reflectionsModel);
+    setModel(gHub->reflectionsModel);
     debug::ensure(dynamic_cast<Model*>(views::ListView::model()));
 
     for_i (model()->columnCount())

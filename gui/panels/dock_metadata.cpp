@@ -32,11 +32,11 @@ private:
 };
 
 MetadataView::MetadataView() : views::ListView() {
-    setModel(&gHub->metadataModel);
+    setModel(gHub->metadataModel);
     debug::ensure(dynamic_cast<Model*>(views::ListView::model()));
     connect(this, &MetadataView::clicked, [this](QModelIndex const& index) {
         model()->flipCheck(to_u(index.row()));
-        gHub->datasetsModel.showMetaInfo(model()->rowsChecked()); // REVIEW signal instead?
+        gHub->datasetsModel->showMetaInfo(model()->rowsChecked()); // REVIEW signal instead?
     });
 }
 

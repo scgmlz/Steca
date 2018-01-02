@@ -37,7 +37,7 @@ protected:
 };
 
 DatasetView::DatasetView() : views::ListView() {
-    setModel(&gHub->datasetsModel); // TODO simplify this
+    setModel(gHub->datasetsModel); // TODO simplify this
     debug::ensure(dynamic_cast<Model*>(views::ListView::model()));
 
     connect(gHub, &TheHubSignallingBase::sigDatasetsChanged, [this]() {

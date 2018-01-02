@@ -25,7 +25,7 @@ namespace output {
 PanelReflection::PanelReflection() : panel::GridPanel("Reflection") {
     auto g = grid();
     cbRefl = new QComboBox;
-    cbRefl->addItems(gHub->reflectionsModel.names());
+    cbRefl->addItems(gHub->reflectionsModel->names());
     g->addWidget(cbRefl);
     g->setRowStretch(g->rowCount(), 1);
 }
