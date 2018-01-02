@@ -26,7 +26,7 @@
 #include "panels/tabs_images.h"
 #include "panels/tabs_setup.h"
 #include "session.h"
-#include "settings.h"
+#include "cfg/settings.h"
 #include "thehub.h"
 
 #include <QApplication>

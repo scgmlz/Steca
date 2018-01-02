@@ -18,7 +18,7 @@
 #include "dialog_panels.h"
 #include "popup/filedialog.h"
 #include "models.h"
-#include "settings.h"
+#include "cfg/settings.h"
 #include "thehub.h"
 #include "widgets/widget_makers.h"
 #include <QAction>

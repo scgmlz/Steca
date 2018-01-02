@@ -41,4 +41,5 @@ ReflectionInfos interpolate(
     ReflectionInfos const&, deg alphaStep, deg betaStep, deg idwRadius,
     deg averagingAlphaMax, deg averagingRadius, qreal inclusionTreshold, Progress*);
 }
+
 #endif // CALC_POLEFIGURE_H

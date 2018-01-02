@@ -15,7 +15,7 @@
 #include "popup/about.h"
 #include "../manifest.h"
 #include "cfg/gui_cfg.h"
-#include "settings.h"
+#include "cfg/settings.h"
 #include "typ/geometry.h"
 #include "widgets/widget_makers.h"
 #include <QApplication>
