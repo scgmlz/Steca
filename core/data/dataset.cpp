@@ -341,7 +341,7 @@ void Datasets::appendHere(shp_Dataset dataset) {
     // can be added only once
     debug::ensure(!dataset->datasets_);
     dataset->datasets_ = this;
-    super::append(dataset);
+    append(dataset);
     invalidateAvgMutables();
 }
 
@@ -422,7 +422,7 @@ qreal Datasets::calcAvgMutable(qreal (Dataset::*avgMth)() const) const {
     if (!isEmpty()) {
         for (auto& dataset : *this)
             avg += ((*dataset).*avgMth)();
-        avg /= super::count();
+        avg /= count();
     }
     return avg;
 }

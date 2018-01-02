@@ -32,7 +32,6 @@ typedef QSharedPointer<Dataset> shp_Dataset;
 //! Metadata + Image, for calculation always accessed through its owning Dataset
 
 class OneDataset final {
-    friend class OneDatasets;
     friend class Dataset;
 
 public:
@@ -71,17 +70,10 @@ private:
 };
 
 
-//! Collection of (OneDataset)s
-
-class OneDatasets : public typ::vec<shp_OneDataset> {
-public:
-};
-
 //! One or more OneDataset(s)
 
-class Dataset final : public OneDatasets {
+class Dataset final : public typ::vec<shp_OneDataset> {
 private:
-    using super = OneDatasets;
     friend class Datasets;
 
 public:
@@ -117,8 +109,6 @@ private:
 //! Collection of (Dataset)s
 
 class Datasets final : public typ::vec<shp_Dataset> {
-private:
-    using super = typ::vec<shp_Dataset>;
 public:
     Datasets();
 
