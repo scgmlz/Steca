@@ -20,7 +20,7 @@
 typedef float inten_t;
 typedef float fwhm_t;
 
-typedef typ::vec<inten_t> inten_vec;
+typedef vec<inten_t> inten_vec;
 
 enum class eNorm {
     NONE,

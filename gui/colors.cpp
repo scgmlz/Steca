@@ -56,7 +56,7 @@ QRgb heatmapColor(inten_t value) {
         int r, g, b;
     };
 
-    static typ::vec<lc_t> lc = {
+    static vec<lc_t> lc = {
         { 0.00f, 255, 255, 255 }, { 0.10f, 0, 0, 255 },   { 0.20f, 0, 152, 255 },
         { 0.30f, 0, 190, 0 },     { 0.55f, 255, 255, 1 }, { 1.00f, 255, 0, 1 },
     };

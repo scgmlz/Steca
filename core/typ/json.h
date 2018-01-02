@@ -19,10 +19,7 @@
 #include "typ/str.h"
 #include <QJsonObject>
 
-
 QJsonValue qreal_to_json(const qreal num);
-
-namespace typ {
 
 struct Range;
 struct IJ;
@@ -65,7 +62,5 @@ public:
 
     IJ loadIJ(rcstr key) const THROWS;
 };
-
-} // namespace typ
 
 #endif // JSON_H

@@ -170,7 +170,7 @@ shp_Datafile loadCaress(rcstr filePath) THROWS {
                 for_i (imageSize)
                     convertedIntens[i] = intens[i];
 
-                typ::size2d size(detRel, detRel);
+                size2d size(detRel, detRel);
 
                 // this is only for testing of a non-square image
                 // size.rheight() /= 2;

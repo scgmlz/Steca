@@ -1,8 +1,6 @@
 #include "gtest/gtest.h"
 #include "typ/variant.h"
 
-using typ::cmp_int;
-
 TEST(Variant, Comparison) {
     QVariant v1(1), v2(2);
     EXPECT_EQ(0, cmp_int(v1, v1));

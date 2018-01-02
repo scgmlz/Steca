@@ -35,8 +35,6 @@ QJsonValue qreal_to_json(const qreal num) {
 //  To read Json input
 // ************************************************************************** //
 
-namespace typ {
-
 JsonObj::JsonObj() {}
 
 JsonObj::JsonObj(QJsonObject const& obj) : super(obj) {}
@@ -169,5 +167,3 @@ IJ JsonObj::loadIJ(rcstr key) const THROWS {
     ij.from_json(loadObj(key));
     return ij;
 }
-
-} // namespace typ

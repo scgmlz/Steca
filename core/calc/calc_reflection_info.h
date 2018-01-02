@@ -17,7 +17,6 @@
 
 #include "data/dataset.h"
 
-using typ::deg;
 class Metadata;
 
 namespace calc {
@@ -27,13 +26,13 @@ class ReflectionInfo final {
     ReflectionInfo();
     ReflectionInfo(
         QSharedPointer<Metadata const>,
-        typ::deg alpha, typ::deg beta, typ::Range, inten_t, inten_t /*error*/,
+        deg alpha, deg beta, Range, inten_t, inten_t /*error*/,
         deg, deg /*error*/, fwhm_t, fwhm_t /*error*/);
-    ReflectionInfo(QSharedPointer<Metadata const>, typ::deg alpha, typ::deg beta, typ::Range);
+    ReflectionInfo(QSharedPointer<Metadata const>, deg alpha, deg beta, Range);
     ReflectionInfo(
-        typ::deg alpha, typ::deg beta, typ::Range, inten_t, inten_t /*error*/, deg, deg /*error*/,
+        deg alpha, deg beta, Range, inten_t, inten_t /*error*/, deg, deg /*error*/,
         fwhm_t, fwhm_t /*error*/);
-    ReflectionInfo(typ::deg alpha, typ::deg beta);
+    ReflectionInfo(deg alpha, deg beta);
 
     enum class eReflAttr {
         ALPHA,
@@ -50,23 +49,23 @@ class ReflectionInfo final {
     };
 
     static QStringList dataTags(bool out);
-    static typ::cmp_vec dataCmps();
+    static cmp_vec dataCmps();
 
-    typ::deg alpha() const { return alpha_; }
-    typ::deg beta() const { return beta_; }
-    typ::Range rgeGma() const { return rgeGma_; }
+    deg alpha() const { return alpha_; }
+    deg beta() const { return beta_; }
+    Range rgeGma() const { return rgeGma_; }
     inten_t inten() const { return inten_; }
     inten_t intenError() const { return intenError_; }
     deg tth() const { return tth_; }
     deg tthError() const { return tthError_; }
     fwhm_t fwhm() const { return fwhm_; }
     fwhm_t fwhmError() const { return fwhmError_; }
-    typ::row_t data() const;
+    row_t data() const;
 
 private:
     QSharedPointer<Metadata const> md_;
-    typ::deg alpha_, beta_;
-    typ::Range rgeGma_;
+    deg alpha_, beta_;
+    Range rgeGma_;
     inten_t inten_, intenError_;
     deg tth_, tthError_;
     fwhm_t fwhm_, fwhmError_;
@@ -75,20 +74,20 @@ private:
 };
 
 
-class ReflectionInfos : public typ::vec<ReflectionInfo> {
+class ReflectionInfos : public vec<ReflectionInfo> {
 private:
-    using super = typ::vec<ReflectionInfo>;
+    using super = vec<ReflectionInfo>;
 public:
     ReflectionInfos() { invalidate(); }
 
     void append(ReflectionInfo const&);
 
     inten_t averageInten() const;
-    typ::Range const& rgeInten() const;
+    Range const& rgeInten() const;
 
 private:
     mutable inten_t avgInten_;
-    mutable typ::Range rgeInten_;
+    mutable Range rgeInten_;
 
     void invalidate();
 };

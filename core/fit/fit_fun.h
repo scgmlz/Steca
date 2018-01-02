@@ -24,9 +24,9 @@
 
 //! A polynomial, for fitting the background of a diffractogram
 
-class Polynom final : public typ::SimpleFunction {
+class Polynom final : public SimpleFunction {
 private:
-    using super = typ::SimpleFunction;
+    using super = SimpleFunction;
 public:
     Polynom(uint degree = 0) { setDegree(degree); }
 
@@ -36,13 +36,13 @@ public:
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-    qreal avgY(typ::Range const&, qreal const* parValues = nullptr) const;
+    qreal avgY(Range const&, qreal const* parValues = nullptr) const;
 
-    void fit(typ::Curve const&, typ::Ranges const&);
-    static Polynom fromFit(uint degree, typ::Curve const&, typ::Ranges const&);
+    void fit(Curve const&, Ranges const&);
+    static Polynom fromFit(uint degree, Curve const&, Ranges const&);
 
-    typ::JsonObj to_json() const;
-    void from_json(typ::JsonObj const&) THROWS;
+    JsonObj to_json() const;
+    void from_json(JsonObj const&) THROWS;
 
     str name() const { return "polynom"; }
 };
@@ -50,15 +50,15 @@ public:
 
 //! Abstract peak function
 
-class PeakFunction : public typ::SimpleFunction {
+class PeakFunction : public SimpleFunction {
 private:
-    using super = typ::SimpleFunction;
+    using super = SimpleFunction;
 public:
     PeakFunction();
     PeakFunction* clone() const;
 
-    typ::Range const& range() const { return range_; }
-    virtual void setRange(typ::Range const&);
+    Range const& range() const { return range_; }
+    virtual void setRange(Range const&);
 
     virtual void setGuessedPeak(qpair const&);
     virtual void setGuessedFWHM(fwhm_t);
@@ -74,26 +74,23 @@ public:
 
     void reset();
 
-    void fit(typ::Curve const& curve) { return fit(curve, range_); }
+    void fit(Curve const& curve) { return fit(curve, range_); }
 
-    virtual void fit(typ::Curve const&, typ::Range const&);
+    virtual void fit(Curve const&, Range const&);
 
-    typ::JsonObj to_json() const final;
-    void from_json(typ::JsonObj const&) THROWS;
+    JsonObj to_json() const final;
+    void from_json(JsonObj const&) THROWS;
 
 protected:
-    typ::Range range_;
+    Range range_;
     qpair guessedPeak_;
     fwhm_t guessedFWHM_;
 
-    typ::Curve prepareFit(typ::Curve const&, typ::Range const&);
+    Curve prepareFit(Curve const&, Range const&);
 };
 
 
 typedef class PeakFunction* (*initializer_type)();
-
-namespace typ {
-}
 
 class FunctionRegistry : public IRegistry<initializer_type>, public ISingleton<FunctionRegistry> {
 public:

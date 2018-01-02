@@ -18,8 +18,6 @@
 #include <qmath.h>
 #include <iostream> // for debugging
 
-namespace typ {
-
 preal const Geometry::MIN_DETECTOR_DISTANCE = preal(10);
 preal const Geometry::MIN_DETECTOR_PIXEL_SIZE = preal(.1);
 
@@ -43,7 +41,7 @@ ImageCut::ImageCut() : ImageCut(0, 0, 0, 0) {}
 ImageCut::ImageCut(uint left_, uint top_, uint right_, uint bottom_)
     : left(left_), top(top_), right(right_), bottom(bottom_) {}
 
-void ImageCut::update(bool topLeftFirst, bool linked, ImageCut const& cut, typ::size2d size) {
+void ImageCut::update(bool topLeftFirst, bool linked, ImageCut const& cut, size2d size) {
     if (size.isEmpty()) {
         *this = ImageCut();
         return;
@@ -84,5 +82,3 @@ EQ_NE_OPERATOR(ImageCut)
 size2d ImageCut::marginSize() const {
     return size2d(left + right, top + bottom);
 }
-
-} // namespace typ

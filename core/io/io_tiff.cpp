@@ -21,7 +21,7 @@
 namespace io {
 
 // implemented below
-static void loadTiff(shp_Datafile&, rcstr, typ::deg, qreal, qreal) THROWS;
+static void loadTiff(shp_Datafile&, rcstr, deg, qreal, qreal) THROWS;
 
 // The dat file looks like so:
 /*
@@ -69,7 +69,7 @@ shp_Datafile loadTiffDat(rcstr filePath) THROWS {
         // file, phi, monitor, expTime
         bool ok;
         str tiffFileName = lst.at(0);
-        typ::deg phi = lst.at(1).toDouble(&ok);
+        deg phi = lst.at(1).toDouble(&ok);
         RUNTIME_CHECK(ok, "bad phi value");
 
         qreal monitor = 0;
@@ -107,7 +107,7 @@ shp_Datafile loadTiffDat(rcstr filePath) THROWS {
     RUNTIME_CHECK(val == dataOffset, BAD_FORMAT)
 
 static void
-loadTiff(shp_Datafile& file, rcstr filePath, typ::deg phi, qreal monitor, qreal expTime) THROWS {
+loadTiff(shp_Datafile& file, rcstr filePath, deg phi, qreal monitor, qreal expTime) THROWS {
 
     Metadata md;
     md.motorPhi = phi;
@@ -227,7 +227,7 @@ loadTiff(shp_Datafile& file, rcstr filePath, typ::deg phi, qreal monitor, qreal 
         (1 == sampleFormat || 2 == sampleFormat || 3 == sampleFormat) && 32 == bitsPerSample,
         "unhandled format");
 
-    typ::size2d size(imageWidth, imageHeight);
+    size2d size(imageWidth, imageHeight);
 
     uint count = imageWidth * imageHeight;
     inten_vec intens(count);

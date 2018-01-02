@@ -22,11 +22,6 @@
 #include "typ/matrix.h"
 #include <qmath.h>
 
-using typ::Curve;
-using typ::Image;
-using typ::Range;
-using typ::size2d;
-
 // ************************************************************************** //
 //  class OneDataset
 // ************************************************************************** //
@@ -43,19 +38,19 @@ QSharedPointer<Metadata const> OneDataset::metadata() const {
     return md_;
 }
 
-typ::Range OneDataset::rgeGma(Session const& session) const {
+Range OneDataset::rgeGma(Session const& session) const {
     return session.angleMap(*this)->rgeGma();
 }
 
-typ::Range OneDataset::rgeGmaFull(Session const& session) const {
+Range OneDataset::rgeGmaFull(Session const& session) const {
     return session.angleMap(*this)->rgeGmaFull();
 }
 
-typ::Range OneDataset::rgeTth(Session const& session) const {
+Range OneDataset::rgeTth(Session const& session) const {
     return session.angleMap(*this)->rgeTth();
 }
 
-typ::Range OneDataset::rgeInten() const {
+Range OneDataset::rgeInten() const {
     return image_->rgeInten();
 }
 
@@ -64,11 +59,11 @@ size2d OneDataset::imageSize() const {
 }
 
 void OneDataset::collectIntens(
-    Session const& session, typ::Image const* intensCorr, inten_vec& intens, uint_vec& counts,
-    typ::Range const& rgeGma, deg minTth, deg deltaTth) const {
+    Session const& session, Image const* intensCorr, inten_vec& intens, uint_vec& counts,
+    Range const& rgeGma, deg minTth, deg deltaTth) const {
     auto angleMap = session.angleMap(*this);
     debug::ensure(!angleMap.isNull());
-    typ::AngleMap const& map = *angleMap;
+    AngleMap const& map = *angleMap;
 
     uint_vec const* gmaIndexes = nullptr;
     uint gmaIndexMin = 0, gmaIndexMax = 0;
@@ -107,15 +102,15 @@ void OneDataset::collectIntens(
     }
 }
 
-typ::deg OneDataset::midTth() const { return md_->motorTth; }
+deg OneDataset::midTth() const { return md_->motorTth; }
 
 qreal OneDataset::monitorCount() const { return md_->monitorCount; }
 qreal OneDataset::deltaMonitorCount() const { return md_->deltaMonitorCount; }
 qreal OneDataset::deltaTime() const { return md_->deltaTime; }
 
-typ::deg OneDataset::omg() const { return md_->motorOmg; }
-typ::deg OneDataset::phi() const { return md_->motorPhi; }
-typ::deg OneDataset::chi() const { return md_->motorChi; }
+deg OneDataset::omg() const { return md_->motorOmg; }
+deg OneDataset::phi() const { return md_->motorPhi; }
+deg OneDataset::chi() const { return md_->motorChi; }
 
 
 // ************************************************************************** //
@@ -224,15 +219,15 @@ deg Dataset::chi() const { AVG_ONES(chi) }
         rge.combineOp(one->what);                                                                  \
     return rge;
 
-typ::Range Dataset::rgeGma(Session const& session) const { RGE_COMBINE(extendBy, rgeGma(session)) }
+Range Dataset::rgeGma(Session const& session) const { RGE_COMBINE(extendBy, rgeGma(session)) }
 
-typ::Range Dataset::rgeGmaFull(Session const& session) const {
+Range Dataset::rgeGmaFull(Session const& session) const {
     RGE_COMBINE(extendBy, rgeGmaFull(session))
 }
 
-typ::Range Dataset::rgeTth(Session const& session) const { RGE_COMBINE(extendBy, rgeTth(session)) }
+Range Dataset::rgeTth(Session const& session) const { RGE_COMBINE(extendBy, rgeTth(session)) }
 
-typ::Range Dataset::rgeInten() const { RGE_COMBINE(intersect, rgeInten()) }
+Range Dataset::rgeInten() const { RGE_COMBINE(intersect, rgeInten()) }
 
 qreal Dataset::avgMonitorCount() const { AVG_ONES(monitorCount) }
 
@@ -241,8 +236,8 @@ qreal Dataset::avgDeltaMonitorCount() const { AVG_ONES(deltaMonitorCount) }
 qreal Dataset::avgDeltaTime() const { AVG_ONES(deltaTime) }
 
 inten_vec Dataset::collectIntens(
-    Session const& session, typ::Image const* intensCorr, typ::Range const& rgeGma) const {
-    typ::Range tthRge = rgeTth(session);
+    Session const& session, Image const* intensCorr, Range const& rgeGma) const {
+    Range tthRge = rgeTth(session);
     deg tthWdt = tthRge.width();
 
     auto cut = session.imageCut();
@@ -296,13 +291,13 @@ void Dataset::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const 
     // corresponding to the location of a polefigure point.
     // Note that the rotations here do not correspond to C. Randau's dissertation.
     // The rotations given in [J. Appl. Cryst. (2012) 44, 641-644] are incorrect.
-    typ::vec3r rotated = typ::mat3r::rotationCWz(phi()) * typ::mat3r::rotationCWx(chi())
-        * typ::mat3r::rotationCWz(omg()) * typ::mat3r::rotationCWx(gma.toRad())
-        * typ::mat3r::rotationCCWz(tth.toRad() / 2) * typ::vec3r(0, 1, 0);
+    vec3r rotated = mat3r::rotationCWz(phi()) * mat3r::rotationCWx(chi())
+        * mat3r::rotationCWz(omg()) * mat3r::rotationCWx(gma.toRad())
+        * mat3r::rotationCCWz(tth.toRad() / 2) * vec3r(0, 1, 0);
 
     // Extract alpha (latitude) and beta (longitude).
-    typ::rad alphaRad = acos(rotated._2);
-    typ::rad betaRad = atan2(rotated._0, rotated._1);
+    rad alphaRad = acos(rotated._2);
+    rad betaRad = atan2(rotated._0, rotated._1);
 
     // If alpha is in the wrong hemisphere, mirror both alpha and beta over the
     // center of a unit sphere.
@@ -365,14 +360,14 @@ qreal Datasets::avgDeltaTime() const {
     return avgDeltaTime_;
 }
 
-typ::Range const& Datasets::rgeGma(Session const& session) const {
+Range const& Datasets::rgeGma(Session const& session) const {
     if (!rgeGma_.isValid())
         for (auto& dataset : *this)
             rgeGma_.extendBy(dataset->rgeGma(session));
     return rgeGma_;
 }
 
-typ::Range const& Datasets::rgeFixedInten(Session const& session, bool trans, bool cut) const {
+Range const& Datasets::rgeFixedInten(Session const& session, bool trans, bool cut) const {
     if (!rgeFixedInten_.isValid()) {
         TakesLongTime __;
         for (auto& dataset : *this)

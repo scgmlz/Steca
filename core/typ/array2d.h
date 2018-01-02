@@ -18,8 +18,6 @@
 #include "def/comparable.h"
 #include "def/numbers.h"
 
-namespace typ {
-
 //! Geometry of a rectangle
 struct size2d {
     uint w, h;
@@ -122,7 +120,5 @@ public:
         return ts_[i][j];
     }
 };
-
-} // namespace typ
 
 #endif // ARRAY2D_H

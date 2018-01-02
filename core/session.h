@@ -31,36 +31,36 @@ public:
     Session();
 
 private:
-    typ::vec<shp_Datafile> files_; //!< data files
+    vec<shp_Datafile> files_; //!< data files
     shp_Datafile corrFile_; //!< correction file
-    typ::shp_Image corrImage_;
+    shp_Image corrImage_;
     bool corrEnabled_;
     uint_vec collectedFromFiles_; // from these files
     Datasets collectedDatasets_; // datasets collected ...
     QStringList collectedDatasetsTags_;
     bool intenScaledAvg_; // if not, summed
     preal intenScale_;
-    typ::size2d imageSize_; //!< All images must have this same size
-    typ::ImageTransform imageTransform_;
-    typ::ImageCut imageCut_;
-    typ::Geometry geometry_;
-    typ::Range gammaRange_;
+    size2d imageSize_; //!< All images must have this same size
+    ImageTransform imageTransform_;
+    ImageCut imageCut_;
+    Geometry geometry_;
+    Range gammaRange_;
     uint bgPolyDegree_;
-    typ::Ranges bgRanges_;
+    Ranges bgRanges_;
     calc::Reflections reflections_;
     eNorm norm_;
 
-    mutable typ::Image intensCorr_;
+    mutable Image intensCorr_;
     mutable bool corrHasNaNs_;
-    mutable typ::cache_lazy<typ::AngleMap::Key, typ::AngleMap> angleMapCache_;
+    mutable cache_lazy<AngleMap::Key, AngleMap> angleMapCache_;
 
     void updateImageSize(); //!< Clears image size if session has no files
-    void setImageSize(typ::size2d const&) THROWS; //!< Ensures same size for all images
+    void setImageSize(size2d const&) THROWS; //!< Ensures same size for all images
 
     void calcIntensCorr() const;
-    typ::Curve curveMinusBg(calc::DatasetLens const&, typ::Range const&) const;
+    Curve curveMinusBg(calc::DatasetLens const&, Range const&) const;
     calc::ReflectionInfo makeReflectionInfo(
-        calc::DatasetLens const&, calc::Reflection const&, typ::Range const&) const;
+        calc::DatasetLens const&, calc::Reflection const&, Range const&) const;
 
 public:
     // Modifying methods:
@@ -72,13 +72,13 @@ public:
     void collectDatasetsFromFiles(uint_vec, pint);
 
     void setImageTransformMirror(bool);
-    void setImageTransformRotate(typ::ImageTransform const&);
-    void setImageCut(bool isTopOrLeft, bool linked, typ::ImageCut const&);
-    void setGeometry(preal detectorDistance, preal pixSize, typ::IJ const& midPixOffset);
-    void setGammaRange(typ::Range const& r) { gammaRange_ = r; }
-    void setBgRanges(typ::Ranges const& rr) { bgRanges_ = rr; }
-    bool addBgRange(typ::Range const& r) { return bgRanges_.add(r); }
-    bool remBgRange(typ::Range const& r) { return bgRanges_.rem(r); }
+    void setImageTransformRotate(ImageTransform const&);
+    void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
+    void setGeometry(preal detectorDistance, preal pixSize, IJ const& midPixOffset);
+    void setGammaRange(Range const& r) { gammaRange_ = r; }
+    void setBgRanges(Ranges const& rr) { bgRanges_ = rr; }
+    bool addBgRange(Range const& r) { return bgRanges_.add(r); }
+    bool remBgRange(Range const& r) { return bgRanges_.rem(r); }
     void setBgPolyDegree(uint degree) { bgPolyDegree_ = degree; }
     void setIntenScaleAvg(bool, preal);
     void addReflection(QString const&);
@@ -93,8 +93,8 @@ public:
     bool hasFile(rcstr fileName) const;
     bool hasCorrFile() const { return !corrFile_.isNull(); }
     shp_Datafile corrFile() const { return corrFile_; }
-    typ::shp_Image corrImage() const { return corrImage_; }
-    typ::Image const* intensCorr() const;
+    shp_Image corrImage() const { return corrImage_; }
+    Image const* intensCorr() const;
     void tryEnableCorr(bool on) { corrEnabled_ = on && hasCorrFile(); }
     bool isCorrEnabled() const { return corrEnabled_; }
 
@@ -102,27 +102,27 @@ public:
     Datasets const& collectedDatasets() const { return collectedDatasets_; }
     QStringList const& collectedDatasetsTags() const { return collectedDatasetsTags_; }
 
-    typ::size2d imageSize() const;
-    typ::ImageTransform const& imageTransform() const { return imageTransform_; }
-    typ::ImageCut const& imageCut() const { return imageCut_; }
+    size2d imageSize() const;
+    ImageTransform const& imageTransform() const { return imageTransform_; }
+    ImageCut const& imageCut() const { return imageCut_; }
 
-    typ::Geometry const& geometry() const { return geometry_; }
-    typ::IJ midPix() const;
+    Geometry const& geometry() const { return geometry_; }
+    IJ midPix() const;
 
-    typ::Range const& gammaRange() const { return gammaRange_; }
+    Range const& gammaRange() const { return gammaRange_; }
 
-    typ::shp_AngleMap angleMap(OneDataset const&) const;
-    static typ::shp_AngleMap angleMap(Session const& session, OneDataset const& ds) {
+    shp_AngleMap angleMap(OneDataset const&) const;
+    static shp_AngleMap angleMap(Session const& session, OneDataset const& ds) {
         return session.angleMap(ds); }
 
-    calc::shp_ImageLens imageLens(typ::Image const&, Datasets const&, bool trans, bool cut) const;
+    calc::shp_ImageLens imageLens(Image const&, Datasets const&, bool trans, bool cut) const;
     calc::shp_DatasetLens datasetLens(
         Dataset const&, Datasets const&, eNorm, bool trans, bool cut) const;
 
     calc::ReflectionInfos makeReflectionInfos(
-        Datasets const&, calc::Reflection const&, uint gmaSlices, typ::Range const&, Progress*) const;
+        Datasets const&, calc::Reflection const&, uint gmaSlices, Range const&, Progress*) const;
 
-    typ::Ranges const& bgRanges() const { return bgRanges_; }
+    Ranges const& bgRanges() const { return bgRanges_; }
     uint bgPolyDegree() const { return bgPolyDegree_; }
     bool intenScaledAvg() const { return intenScaledAvg_; }
     preal intenScale() const { return intenScale_; }

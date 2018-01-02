@@ -47,8 +47,8 @@ private:
 
     class DiffractogramPlot* plot_;
 
-    typ::Curve dgram_, dgramBgFitted_, bg_;
-    typ::curve_vec refls_;
+    Curve dgram_, dgramBgFitted_, bg_;
+    curve_vec refls_;
 
     uint currReflIndex_;
     calc::shp_Reflection currentReflection_;
@@ -64,8 +64,8 @@ public:
     void calcBackground();
     void calcReflections();
 
-    void setCurrReflNewRange(typ::Range const&);
-    typ::Range currReflRange() const;
+    void setCurrReflNewRange(Range const&);
+    Range currReflRange() const;
 };
 
 } // namespace panel

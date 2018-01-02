@@ -219,7 +219,7 @@ QPixmap TabsImages::makeBlankPixmap() {
     return pixmap;
 }
 
-QImage TabsImages::makeImage(typ::shp_Image image, bool curvedScale) {
+QImage TabsImages::makeImage(shp_Image image, bool curvedScale) {
     QImage im;
     if (!image)
         return im;
@@ -240,18 +240,18 @@ QImage TabsImages::makeImage(typ::shp_Image image, bool curvedScale) {
     return im;
 }
 
-QPixmap TabsImages::makePixmap(typ::shp_Image image) {
+QPixmap TabsImages::makePixmap(shp_Image image) {
     return QPixmap::fromImage(makeImage(image, !gHub->isFixedIntenImageScale()));
 }
 
 QPixmap TabsImages::makePixmap(
-    OneDataset const& dataset, typ::Range const& rgeGma, typ::Range const& rgeTth) {
+    OneDataset const& dataset, Range const& rgeGma, Range const& rgeTth) {
     auto im = makeImage(dataset.image(), !gHub->isFixedIntenImageScale());
     auto angleMap = gSession->angleMap(dataset);
 
     auto size = im.size();
     for_ij (size.width(), size.height()) {
-        typ::AnglePair const& a = angleMap->at(to_u(i), to_u(j));
+        AnglePair const& a = angleMap->at(to_u(i), to_u(j));
         auto color = QColor(im.pixel(i, j));
         if (rgeGma.contains(a.gma)) {
             if (rgeTth.contains(a.tth)) {
@@ -291,7 +291,7 @@ void TabsImages::render() {
 
             lens_ = gHub->datasetLens(*dataset_);
 
-            typ::Range rge;
+            Range rge;
             if (nSlices > 0) {
                 uint nSlice = qMax(1u, to_u(numSlice_->value()));
                 uint iSlice = nSlice - 1;
@@ -300,12 +300,12 @@ void TabsImages::render() {
                 auto min = rgeGma.min;
                 auto wn = rgeGma.width() / nSlices;
 
-                rge = typ::Range(min + iSlice * wn, min + (iSlice + 1) * wn);
+                rge = Range(min + iSlice * wn, min + (iSlice + 1) * wn);
 
                 minGamma_->setValue(rge.min);
                 maxGamma_->setValue(rge.max);
             } else {
-                rge = typ::Range::infinite();
+                rge = Range::infinite();
                 minGamma_->clear();
                 maxGamma_->clear();
             }
@@ -316,7 +316,7 @@ void TabsImages::render() {
 
             numBin_->setEnabled(true);
             if (gHub->toggle_showBins->isChecked()) {
-                typ::Range rgeTth = lens_->rgeTth();
+                Range rgeTth = lens_->rgeTth();
                 auto curve = lens_->makeCurve();
                      // had argument averaged=false
                      // TODO factor out lens::binCount()
@@ -326,7 +326,7 @@ void TabsImages::render() {
                 qreal num = qreal(numBin_->value());
                 pixMap = makePixmap(
                     *oneDataset, rge,
-                    typ::Range(min + wdt * (num / count), min + wdt * ((num + 1) / count)));
+                    Range(min + wdt * (num / count), min + wdt * ((num + 1) / count)));
             } else {
                 pixMap = makePixmap(oneDataset->image());
             }

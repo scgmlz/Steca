@@ -107,19 +107,19 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
     // TODO put back
     //  g->addWidget(label("default det. distance"), 0, 0, Qt::AlignRight);
     g->addWidget(
-        (detDistance_ = spinDoubleCell(gui_cfg::em4_2, typ::Geometry::MIN_DETECTOR_DISTANCE)), 0,
+        (detDistance_ = spinDoubleCell(gui_cfg::em4_2, Geometry::MIN_DETECTOR_DISTANCE)), 0,
         1);
     //  g->addWidget(label("default pixel size"), 1, 0, Qt::AlignRight);
     g->addWidget(
-        (detPixelSize_ = spinDoubleCell(gui_cfg::em4_2, typ::Geometry::MIN_DETECTOR_PIXEL_SIZE)), 1,
+        (detPixelSize_ = spinDoubleCell(gui_cfg::em4_2, Geometry::MIN_DETECTOR_PIXEL_SIZE)), 1,
         1);
     g->setColumnStretch(g->columnCount(), 1);
 
     detPixelSize_->setDecimals(3);
     detDistance_->setValue(
-        s.readReal("distance", typ::Geometry::DEF_DETECTOR_DISTANCE));
+        s.readReal("distance", Geometry::DEF_DETECTOR_DISTANCE));
     detPixelSize_->setValue(
-        s.readReal("pixel size", typ::Geometry::DEF_DETECTOR_PIXEL_SIZE));
+        s.readReal("pixel size", Geometry::DEF_DETECTOR_PIXEL_SIZE));
 
     // TODO put back
     detDistance_->setVisible(false);

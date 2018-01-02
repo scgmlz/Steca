@@ -17,8 +17,6 @@
 #include "typ/matrix.h"
 #include <qmath.h>
 
-namespace typ {
-
 vec3f::vec3f(float _0_, float _1_, float _2_) {
     _0 = _0_;
     _1 = _1_;
@@ -101,5 +99,3 @@ mat3r mat3r::rotationCWz(qreal angle) {
 mat3r mat3r::rotationCCWz(qreal angle) {
     return rotationCWz(angle).transposed();
 }
-
-} // namespace typ

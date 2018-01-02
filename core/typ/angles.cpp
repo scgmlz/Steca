@@ -17,8 +17,6 @@
 #include "typ/angles.h"
 #include <qmath.h>
 
-namespace typ {
-
 deg::deg(rad r) {
     val_ = r.toDeg();
 }
@@ -62,5 +60,3 @@ rad& rad::operator*=(qreal fac) {
     val_ *= fac;
     return *this;
 }
-
-} // namespace angle

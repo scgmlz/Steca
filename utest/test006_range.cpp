@@ -4,10 +4,6 @@
 #include "typ/range.h"
 #include <vector>
 
-using typ::Range;
-using typ::Ranges;
-using typ::JsonObj;
-
 static bool RANGE_EQ(Range const& r1, Range const& r2) {
     return r1.min == r2.min && r1.max == r2.max;
 }

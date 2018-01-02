@@ -60,13 +60,13 @@ public:
     void combineDatasetsBy(pint);
     void setCorrFile(rcstr filePath) THROWS;
     void tryEnableCorrection(bool);
-    void setImageCut(bool isTopOrLeft, bool linked, typ::ImageCut const&);
-    void setGeometry(preal detectorDistance, preal pixSize, typ::IJ const& midPixOffset);
-    void setGammaRange(typ::Range const&);
+    void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
+    void setGeometry(preal detectorDistance, preal pixSize, IJ const& midPixOffset);
+    void setGammaRange(Range const&);
 
-    void setBgRanges(typ::Ranges const&);
-    void addBgRange(typ::Range const&);
-    void remBgRange(typ::Range const&);
+    void setBgRanges(Ranges const&);
+    void addBgRange(Range const&);
+    void remBgRange(Range const&);
     void setBgPolyDegree(uint);
 
     void setIntenScaleAvg(bool, preal);
@@ -84,15 +84,15 @@ public:
 
     calc::shp_DatasetLens datasetLens(Dataset const&) const;
 
-    typ::Curve avgCurve(Datasets const& dss) const;
+    Curve avgCurve(Datasets const& dss) const;
 
     void saveSession(QFileInfo const&) const;
     QByteArray saveSession() const;
 
     pint datasetsGroupedBy() const { return datasetsGroupedBy_; }
 
-    typ::Range collectedDatasetsRgeGma() const;
-    typ::ImageCut const& imageCut() const;
+    Range collectedDatasetsRgeGma() const;
+    ImageCut const& imageCut() const;
 
     eFittingTab fittingTab() const { return fittingTab_; }
 
@@ -109,7 +109,7 @@ private:
     shp_Dataset selectedDataset_;
     calc::shp_Reflection selectedReflection_;
 
-    void setImageRotate(typ::ImageTransform);
+    void setImageRotate(ImageTransform);
     void setImageMirror(bool);
     void configActions();
     void sessionFromJson(QByteArray const&) THROWS;

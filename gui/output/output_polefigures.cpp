@@ -34,9 +34,6 @@ namespace output {
 
 class TabGraph : public Tab {
 public:
-    using deg = typ::deg;
-    using rad = typ::rad;
-
     TabGraph(Params&);
     void set(calc::ReflectionInfos);
 
@@ -117,11 +114,11 @@ QPointF TabGraph::p(deg alpha, deg beta) const {
     return QPointF(r * cos(betaRad), -r * sin(betaRad));
 }
 
-TabGraph::deg TabGraph::alpha(QPointF const& p) const {
+deg TabGraph::alpha(QPointF const& p) const {
     return sqrt(p.x() * p.x() + p.y() * p.y()) / r_ * alphaMax_;
 }
 
-TabGraph::deg TabGraph::beta(QPointF const& p) const {
+deg TabGraph::beta(QPointF const& p) const {
     deg b = rad(atan2(p.y(), p.x())).toDeg();
     return b <= 0 ? -b : 360 - b;
 }

@@ -2,8 +2,6 @@
 #include "typ/ij.h"
 #include "typ/json.h"
 
-using typ::IJ;
-
 TEST(IJ, Trivia) {
     IJ ij1;
     EXPECT_EQ(0, ij1.i);

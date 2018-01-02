@@ -29,25 +29,25 @@ class Reflection final {
 public:
     Reflection(QString const& peakFunctionName = "Raw");
 
-    void from_json(typ::JsonObj const&) THROWS;
+    void from_json(JsonObj const&) THROWS;
     void setPeakFunction(QString const&);
-    void setRange(typ::Range const&);
+    void setRange(Range const&);
     void invalidateGuesses();
     void setGuessPeak(qpair const& peak);
     void setGuessFWHM(fwhm_t fwhm);
-    void fit(typ::Curve const&);
+    void fit(Curve const&);
 
     QString peakFunctionName() const;
     PeakFunction const& peakFunction() const;
-    typ::Range const& range() const;
-    typ::JsonObj to_json() const;
+    Range const& range() const;
+    JsonObj to_json() const;
 
 private:
     scoped<PeakFunction*> peakFunction_;
 };
 
 typedef QSharedPointer<Reflection> shp_Reflection;
-typedef typ::vec<shp_Reflection> Reflections;
+typedef vec<shp_Reflection> Reflections;
 
 } // namespace calc
 

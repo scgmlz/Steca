@@ -27,12 +27,12 @@ class LensBase {
 public:
     LensBase(
         Session const&, Datasets const&, bool trans, bool cut,
-        typ::ImageTransform const&, typ::ImageCut const&);
+        ImageTransform const&, ImageCut const&);
     virtual ~LensBase() {}
-    virtual typ::size2d size() const = 0;
+    virtual size2d size() const = 0;
 
 protected:
-    typ::size2d transCutSize(typ::size2d) const;
+    size2d transCutSize(size2d) const;
 
     void doTrans(uint& i, uint& j) const;
     void doCut(uint& i, uint& j) const;
@@ -40,25 +40,25 @@ protected:
     Session const& session_;
     Datasets const& datasets_;
     bool trans_, cut_;
-    typ::ImageTransform imageTransform_;
-    typ::ImageCut imageCut_;
-    typ::Image const* intensCorr_;
+    ImageTransform imageTransform_;
+    ImageCut imageCut_;
+    Image const* intensCorr_;
 };
 
 class ImageLens final : public LensBase {
 public:
-    ImageLens(Session const&, typ::Image const&, Datasets const&, bool trans, bool cut);
+    ImageLens(Session const&, Image const&, Datasets const&, bool trans, bool cut);
 
-    typ::size2d size() const;
+    size2d size() const;
 
     inten_t imageInten(uint i, uint j) const;
 
-    typ::Range const& rgeInten(bool fixed) const;
+    Range const& rgeInten(bool fixed) const;
 
 private:
-    typ::Image const& image_;
+    Image const& image_;
 
-    mutable typ::Range rgeInten_;
+    mutable Range rgeInten_;
 };
 
 
@@ -68,17 +68,17 @@ class DatasetLens final : public LensBase {
 public:
     DatasetLens(
         Session const&, Dataset const&, Datasets const&, eNorm, bool trans,
-        bool cut, typ::ImageTransform const&, typ::ImageCut const&);
+        bool cut, ImageTransform const&, ImageCut const&);
 
-    typ::size2d size() const;
+    size2d size() const;
 
-    typ::Range rgeGma() const;
-    typ::Range rgeGmaFull() const;
-    typ::Range rgeTth() const;
-    typ::Range rgeInten() const;
+    Range rgeGma() const;
+    Range rgeGmaFull() const;
+    Range rgeTth() const;
+    Range rgeInten() const;
 
-    typ::Curve makeCurve() const;
-    typ::Curve makeCurve(typ::Range const&) const;
+    Curve makeCurve() const;
+    Curve makeCurve(Range const&) const;
 
     Dataset const& dataset() const { return dataset_; }
 

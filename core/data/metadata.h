@@ -28,17 +28,17 @@ public:
 
     static rcstr attributeTag(uint, bool out);
     static QStringList attributeTags(bool out);
-    static typ::cmp_vec attributeCmps();
+    static cmp_vec attributeCmps();
 
     str attributeStrValue(uint) const;
     QVariant attributeValue(uint) const;
-    typ::row_t attributeValues() const;
+    row_t attributeValues() const;
 
-    static typ::row_t attributeNaNs();
+    static row_t attributeNaNs();
 
     str date, comment;
 
-    typ::deg motorXT, motorYT, motorZT, motorOmg, motorTth, motorPhi, motorChi, motorPST, motorSST,
+    deg motorXT, motorYT, motorZT, motorOmg, motorTth, motorPhi, motorChi, motorPST, motorSST,
         motorOMGM;
 
     // new metadata

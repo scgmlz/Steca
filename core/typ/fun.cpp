@@ -15,8 +15,6 @@
 #include "def/idiomatic_for.h"
 #include "typ/fun.h"
 
-namespace typ {
-
 // ************************************************************************** //
 //   class Function::Parameter
 // ************************************************************************** //
@@ -97,5 +95,3 @@ qreal SimpleFunction::parValue(uint i, qreal const* parValues) const {
 void SimpleFunction::setValue(uint i, qreal val) {
     parameters_[i].setValue(val, 0);
 }
-
-} // namespace typ

@@ -18,8 +18,6 @@
 
 namespace calc {
 
-using typ::vec;
-
 typedef vec<ReflectionInfo const*> info_vec;
 
 // Calculates the difference of two angles. Parameters should be in [0, 360].
@@ -39,7 +37,7 @@ deg calculateDeltaBeta(deg beta1, deg beta2) {
 // Calculates the angle between two points on a unit sphere.
 deg angle(deg alpha1, deg alpha2, deg deltaBeta) {
     // Absolute value of deltaBeta is not needed because cos is an even function.
-    auto a = typ::rad(acos(
+    auto a = rad(acos(
                           cos(alpha1.toRad()) * cos(alpha2.toRad())
                           + sin(alpha1.toRad()) * sin(alpha2.toRad()) * cos(deltaBeta.toRad())))
                  .toDeg();

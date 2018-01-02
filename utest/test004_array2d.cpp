@@ -1,8 +1,6 @@
 #include "gtest/gtest.h"
 #include "typ/array2d.h"
 
-using typ::size2d;
-
 TEST(Array2d, Size2d) {
     size2d sz;
     EXPECT_TRUE((0 == sz.w && 0 == sz.h && sz.isEmpty() && 0 == sz.count()));

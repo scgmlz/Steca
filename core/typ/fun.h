@@ -19,8 +19,6 @@
 #include "typ/json.h"
 #include "typ/range.h"
 
-namespace typ {
-
 //! Abstract function
 
 class Function {
@@ -87,7 +85,5 @@ protected:
 private:
     using super = Function;
 };
-
-} // namespace typ
 
 #endif // FUN_H

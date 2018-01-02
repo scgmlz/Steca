@@ -132,12 +132,12 @@ TabsSetup::TabsSetup() : TabsPanel() {
 
         // widgets
 
-        detDistance_ = spinDoubleCell(gui_cfg::em4_2, typ::Geometry::MIN_DETECTOR_DISTANCE);
-        detPixelSize_ = spinDoubleCell(gui_cfg::em4_2, typ::Geometry::MIN_DETECTOR_PIXEL_SIZE);
+        detDistance_ = spinDoubleCell(gui_cfg::em4_2, Geometry::MIN_DETECTOR_DISTANCE);
+        detPixelSize_ = spinDoubleCell(gui_cfg::em4_2, Geometry::MIN_DETECTOR_PIXEL_SIZE);
         detPixelSize_->setDecimals(3);
 
-        detDistance_->setValue(typ::Geometry::DEF_DETECTOR_DISTANCE);
-        detPixelSize_->setValue(typ::Geometry::DEF_DETECTOR_PIXEL_SIZE);
+        detDistance_->setValue(Geometry::DEF_DETECTOR_DISTANCE);
+        detPixelSize_->setValue(Geometry::DEF_DETECTOR_PIXEL_SIZE);
 
         connect(detDistance_, slot(QDoubleSpinBox, valueChanged, double), [this]() { setToHub(); });
 
@@ -161,10 +161,10 @@ TabsSetup::TabsSetup() : TabsPanel() {
             if (gHub->toggle_linkCuts->isChecked())
                 gHub->setImageCut(
                     isTopOrLeft, true,
-                    typ::ImageCut(to_u(value), to_u(value), to_u(value), to_u(value)));
+                    ImageCut(to_u(value), to_u(value), to_u(value), to_u(value)));
             else
                 gHub->setImageCut(
-                    isTopOrLeft, false, typ::ImageCut(
+                    isTopOrLeft, false, ImageCut(
                                         to_u(cutLeft_->value()), to_u(cutTop_->value()),
                                         to_u(cutRight_->value()), to_u(cutBottom_->value())));
         };
@@ -401,7 +401,7 @@ TabsSetup::TabsSetup() : TabsPanel() {
         auto newReflData = [this](bool invalidateGuesses) {
             if (!silentSpin_) {
                 gHub->tellReflectionValues(
-                    typ::Range::safeFrom(spinRangeMin_->value(), spinRangeMax_->value()),
+                    Range::safeFrom(spinRangeMin_->value(), spinRangeMax_->value()),
                     qpair(spinGuessPeakX_->value(), spinGuessPeakY_->value()),
                     fwhm_t(spinGuessFWHM_->value()), invalidateGuesses);
             }
@@ -436,9 +436,9 @@ TabsSetup::TabsSetup() : TabsPanel() {
 
 void TabsSetup::setToHub() {
     gHub->setGeometry(
-        preal(qMax(qreal(typ::Geometry::MIN_DETECTOR_DISTANCE), detDistance_->value())),
-        preal(qMax(qreal(typ::Geometry::MIN_DETECTOR_PIXEL_SIZE), detPixelSize_->value())),
-        typ::IJ(beamOffsetI_->value(), beamOffsetJ_->value()));
+        preal(qMax(qreal(Geometry::MIN_DETECTOR_DISTANCE), detDistance_->value())),
+        preal(qMax(qreal(Geometry::MIN_DETECTOR_PIXEL_SIZE), detPixelSize_->value())),
+        IJ(beamOffsetI_->value(), beamOffsetJ_->value()));
 }
 
 void TabsSetup::setFromHub() {

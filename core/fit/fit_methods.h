@@ -19,11 +19,11 @@
 
 class FitWrapper {
 public:
-    void fit(typ::Function&, typ::Curve const&);
+    void fit(Function&, Curve const&);
 
 private:
     // these pointers are valid during fit() call
-    typ::Function* function_;
+    Function* function_;
     qreal const* xValues_;
 
     void approximate(qreal*, qreal const*, qreal const*, qreal*, uint, qreal const*, uint);

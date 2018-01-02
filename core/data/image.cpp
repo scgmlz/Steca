@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/data/image.cpp
-//! @brief     Implements ...
+//! @brief     Implements class Image
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -13,8 +13,6 @@
 // ************************************************************************** //
 
 #include "data/image.h"
-
-namespace typ {
 
 Image::Image(size2d const& size) {
     fill(0, size);
@@ -33,5 +31,4 @@ void Image::addIntens(Image const& that) THROWS {
             rgeInten_.extendBy(inten);
             addInten(i, j, inten);
         }
-}
 }

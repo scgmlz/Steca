@@ -17,9 +17,6 @@
 
 namespace { // file scope
 
-using typ::Curve;
-using typ::Range;
-
 // ************************************************************************** //
 //  file-scope definitions
 // ************************************************************************** //
@@ -39,13 +36,13 @@ public:
     qpair peakError() const;
     fwhm_t fwhmError() const;
 
-    void setRange(typ::Range const&);
-    void fit(typ::Curve const&, typ::Range const&);
+    void setRange(Range const&);
+    void fit(Curve const&, Range const&);
 
     str name() const { return "Raw"; }
 
 private:
-    typ::Curve fittedCurve_; // saved from fitting
+    Curve fittedCurve_; // saved from fitting
     void prepareY();
 
     mutable uint x_count_;

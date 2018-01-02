@@ -16,14 +16,6 @@
 #include "data/metadata.h"
 #include "fit/peak_functions.h"
 
-using typ::size2d;
-using typ::vec;
-using typ::Image;
-using typ::ImageTransform;
-using typ::ImageCut;
-using typ::Curve;
-using typ::Range;
-
 Session::Session() : intenScale_(1), angleMapCache_(360) {
     clear();
     register_peak_functions();
@@ -198,29 +190,29 @@ void Session::setImageCut(bool isTopOrLeft, bool linked, ImageCut const& cut) {
     intensCorr_.clear(); // lazy
 }
 
-void Session::setGeometry(preal detectorDistance, preal pixSize, typ::IJ const& midPixOffset) {
+void Session::setGeometry(preal detectorDistance, preal pixSize, IJ const& midPixOffset) {
 
     geometry_.detectorDistance = detectorDistance;
     geometry_.pixSize = pixSize;
     geometry_.midPixOffset = midPixOffset;
 }
 
-typ::IJ Session::midPix() const {
+IJ Session::midPix() const {
     auto sz = imageSize();
-    typ::IJ mid(sz.w / 2, sz.h / 2);
+    IJ mid(sz.w / 2, sz.h / 2);
 
-    typ::IJ const& off = geometry_.midPixOffset;
+    IJ const& off = geometry_.midPixOffset;
     mid.i += off.i;
     mid.j += off.j;
 
     return mid;
 }
 
-typ::shp_AngleMap Session::angleMap(OneDataset const& one) const {
-    typ::AngleMap::Key key(geometry_, imageSize_, imageCut_, midPix(), one.midTth());
-    typ::shp_AngleMap map = angleMapCache_.value(key);
+shp_AngleMap Session::angleMap(OneDataset const& one) const {
+    AngleMap::Key key(geometry_, imageSize_, imageCut_, midPix(), one.midTth());
+    shp_AngleMap map = angleMapCache_.value(key);
     if (map.isNull())
-        map = angleMapCache_.insert(key, typ::shp_AngleMap(new typ::AngleMap(key)));
+        map = angleMapCache_.insert(key, shp_AngleMap(new AngleMap(key)));
     return map;
 }
 
@@ -236,7 +228,7 @@ calc::shp_DatasetLens Session::datasetLens(
         *this, dataset, datasets, norm, trans, cut, imageTransform_, imageCut_));
 }
 
-Curve Session::curveMinusBg(calc::DatasetLens const& lens, typ::Range const& rgeGma) const {
+Curve Session::curveMinusBg(calc::DatasetLens const& lens, Range const& rgeGma) const {
     Curve curve = lens.makeCurve(rgeGma);
     curve.subtract(Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
     return curve;
@@ -245,7 +237,7 @@ Curve Session::curveMinusBg(calc::DatasetLens const& lens, typ::Range const& rge
 //! Fits reflection to the given gamma sector and constructs a ReflectionInfo.
 calc::ReflectionInfo Session::makeReflectionInfo(
     calc::DatasetLens const& lens, calc::Reflection const& reflection,
-    typ::Range const& gmaSector) const {
+    Range const& gmaSector) const {
 
     // fit peak, and retrieve peak parameters:
     Curve curve = curveMinusBg(lens, gmaSector);
@@ -279,7 +271,7 @@ calc::ReflectionInfo Session::makeReflectionInfo(
  */
 calc::ReflectionInfos Session::makeReflectionInfos(
     Datasets const& datasets, calc::Reflection const& reflection, uint gmaSlices,
-    typ::Range const& rgeGma, Progress* progress) const {
+    Range const& rgeGma, Progress* progress) const {
     calc::ReflectionInfos infos;
 
     if (progress)
@@ -302,7 +294,7 @@ calc::ReflectionInfos Session::makeReflectionInfos(
         qreal step = rge.width() / gmaSlices;
         for_i (uint(gmaSlices)) {
             qreal min = rge.min + i * step;
-            typ::Range gmaStripe(min, min + step);
+            Range gmaStripe(min, min + step);
             auto refInfo = makeReflectionInfo(*lens, reflection, gmaStripe);
             if (!qIsNaN(refInfo.inten()))
                 infos.append(refInfo);

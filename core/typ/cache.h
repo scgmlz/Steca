@@ -36,7 +36,7 @@ struct CacheT {
 };
 
 void test() {
-  typ::cache_lazy<CacheKey, CacheT> cache(100);
+  cache_lazy<CacheKey, CacheT> cache(100);
 
   for_i (0xfffffu) {
     cache.insert(CacheKey(i), QSharedPointer<CacheT>(new CacheT));
@@ -50,8 +50,6 @@ void test() {
 }
 
 */
-
-namespace typ {
 
 template <typename Key, typename T>
 class cache_base {
@@ -165,7 +163,5 @@ public:
         return it->p;
     }
 };
-
-} // namespace typ
 
 #endif // CACHE_H

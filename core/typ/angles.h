@@ -17,8 +17,6 @@
 
 #include "def/macros.h"
 
-namespace typ {
-
 class rad;
 
 // angles stored in degrees
@@ -54,7 +52,5 @@ public:
 private:
     qreal val_;
 };
-
-} //namespace typ
 
 #endif // ANGLES_H

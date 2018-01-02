@@ -18,8 +18,6 @@
 #include "typ/ij.h"
 #include "typ/json.h"
 
-namespace typ {
-
 IJ::IJ() : IJ(0, 0) {}
 
 IJ::IJ(int i_, int j_) : i(i_), j(j_) {}
@@ -40,5 +38,3 @@ void IJ::from_json(JsonObj const& obj) THROWS {
     i = obj.loadInt("i");
     j = obj.loadInt("j");
 }
-
-} // namespace typ

@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/data/image.h
-//! @brief     Defines ...
+//! @brief     Defines class Image
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -18,8 +18,6 @@
 #include "typ/array2d.h"
 #include "typ/range.h"
 #include "typ/types.h"
-
-namespace typ {
 
 typedef Array2D<inten_t> inten_arr;
 
@@ -50,13 +48,13 @@ class Image final {
     // Sum all intensities with new ones.
     void addIntens(Image const&) THROWS;
 
-    typ::Range const& rgeInten() const { return rgeInten_; }
+    Range const& rgeInten() const { return rgeInten_; }
 
 private:
     inten_arr intens_;
-    typ::Range rgeInten_;
+    Range rgeInten_;
 };
 
 typedef QSharedPointer<Image> shp_Image;
-}
+
 #endif // IMAGE_H

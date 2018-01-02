@@ -15,10 +15,6 @@
 #include "def/idiomatic_for.h"
 #include "fit_methods.h"
 
-using typ::Range;
-using typ::Curve;
-using typ::JsonObj;
-
 namespace { // file-scope functions
 
 //! Compute a low power with an exponent of type uint
@@ -76,11 +72,11 @@ qreal Polynom::avgY(Range const& rgeX, qreal const* parValues) const {
     return (1 / w) * (maqpair - minY);
 }
 
-void Polynom::fit(Curve const& curve, typ::Ranges const& ranges) {
+void Polynom::fit(Curve const& curve, Ranges const& ranges) {
     FitWrapper().fit(*this, curve.intersect(ranges));
 }
 
-Polynom Polynom::fromFit(uint degree, Curve const& curve, typ::Ranges const& ranges) {
+Polynom Polynom::fromFit(uint degree, Curve const& curve, Ranges const& ranges) {
     Polynom poly(degree);
     poly.fit(curve, ranges);
     return poly;

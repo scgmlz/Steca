@@ -26,11 +26,11 @@ PeakFunction const& Reflection::peakFunction() const {
     return *peakFunction_;
 }
 
-typ::Range const& Reflection::range() const {
+Range const& Reflection::range() const {
     return peakFunction_->range();
 }
 
-void Reflection::setRange(typ::Range const& range) {
+void Reflection::setRange(Range const& range) {
     peakFunction_->setRange(range);
 }
 
@@ -47,7 +47,7 @@ void Reflection::setGuessFWHM(fwhm_t fwhm) {
     peakFunction_->setGuessedFWHM(fwhm);
 }
 
-void Reflection::fit(typ::Curve const& curve) {
+void Reflection::fit(Curve const& curve) {
     peakFunction_->fit(curve);
 }
 
@@ -57,7 +57,7 @@ QString Reflection::peakFunctionName() const {
 
 void Reflection::setPeakFunction(QString const& peakFunctionName) {
     bool haveRange = !peakFunction_.isNull();
-    typ::Range oldRange;
+    Range oldRange;
     if (haveRange)
         oldRange = peakFunction_->range();
     peakFunction_.reset(FunctionRegistry::name2new(peakFunctionName));
@@ -65,11 +65,11 @@ void Reflection::setPeakFunction(QString const& peakFunctionName) {
         peakFunction_->setRange(oldRange);
 }
 
-typ::JsonObj Reflection::to_json() const {
+JsonObj Reflection::to_json() const {
     return peakFunction_->to_json();
 }
 
-void Reflection::from_json(typ::JsonObj const& obj) THROWS {
+void Reflection::from_json(JsonObj const& obj) THROWS {
     str peakFunctionName = obj.loadString("type");
     setPeakFunction(peakFunctionName);
     peakFunction_->from_json(obj); // may throw

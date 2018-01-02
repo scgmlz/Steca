@@ -18,7 +18,7 @@
 Datafile::Datafile(rcstr fileName) : fileInfo_(fileName) {}
 
 //! The loaders use this function to push datasets
-void Datafile::addDataset(Metadata const& md, typ::size2d const& sz, inten_vec const& ivec) {
+void Datafile::addDataset(Metadata const& md, size2d const& sz, inten_vec const& ivec) {
     if (datasets_.isEmpty())
         imageSize_ = sz;
     else if (sz != imageSize_)
@@ -34,9 +34,9 @@ str Datafile::fileName() const {
     return fileInfo_.fileName();
 }
 
-typ::shp_Image Datafile::foldedImage() const {
+shp_Image Datafile::foldedImage() const {
     debug::ensure(!datasets_.isEmpty());
-    typ::shp_Image ret(new typ::Image(datasets_.first()->imageSize()));
+    shp_Image ret(new Image(datasets_.first()->imageSize()));
     for (auto& one : datasets_)
         ret->addIntens(*one->image());
     return ret;

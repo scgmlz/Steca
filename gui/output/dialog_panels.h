@@ -39,7 +39,7 @@ public:
     QDoubleSpinBox* stepGamma;
     void updateValues();
 private:
-    typ::Range rgeGma_;
+    Range rgeGma_;
 };
 
 
@@ -50,7 +50,7 @@ public:
     QDoubleSpinBox *minGamma, *maxGamma;
     void updateValues();
 private:
-    typ::Range rgeGma_;
+    Range rgeGma_;
 };
 
 

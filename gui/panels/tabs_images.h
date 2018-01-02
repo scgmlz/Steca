@@ -30,9 +30,9 @@ public:
 private:
     QPixmap makeBlankPixmap();
 
-    QImage makeImage(typ::shp_Image, bool curvedScale);
-    QPixmap makePixmap(typ::shp_Image);
-    QPixmap makePixmap(OneDataset const&, typ::Range const&, typ::Range const&);
+    QImage makeImage(shp_Image, bool curvedScale);
+    QPixmap makePixmap(shp_Image);
+    QPixmap makePixmap(OneDataset const&, Range const&, Range const&);
 
     void setDataset(shp_Dataset);
     void render();

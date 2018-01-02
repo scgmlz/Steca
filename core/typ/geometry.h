@@ -19,8 +19,6 @@
 #include "typ/ij.h"
 #include "typ/range.h"
 
-namespace typ {
-
 //! detector geometry
 
 class Geometry {
@@ -49,11 +47,9 @@ public:
     ImageCut();
     ImageCut(uint left, uint top, uint right, uint bottom);
     COMPARABLE(ImageCut const&);
-    void update(bool topLeftFirst, bool linked, ImageCut const& cut, typ::size2d size);
+    void update(bool topLeftFirst, bool linked, ImageCut const& cut, size2d size);
 
     size2d marginSize() const;
 };
-
-} // namespace typ
 
 #endif // GEOMETRY_H

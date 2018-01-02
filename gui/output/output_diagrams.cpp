@@ -94,7 +94,7 @@ void TabPlot::plot(
     graphUp_->clearData();
     graphLo_->clearData();
 
-    typ::Range rgeX, rgeY;
+    Range rgeX, rgeY;
 
     for_i (count) {
         rgeX.extendBy(xs.at(i));
@@ -289,7 +289,7 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
         auto& row = table_->row(i);
         for_i (row.count()) {
             QVariant const& var = row.at(i);
-            if (typ::isNumeric(var))
+            if (isNumeric(var))
                 stream << var.toDouble();
             else
                 stream << var.toString();

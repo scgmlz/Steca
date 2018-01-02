@@ -14,8 +14,6 @@
 
 #include "data/image_transform.h"
 
-namespace typ {
-
 ImageTransform::ImageTransform(uint val_) : val(eTransform(val_ & 7)) {}
 
 ImageTransform ImageTransform::mirror(bool on) const {
@@ -28,5 +26,4 @@ ImageTransform ImageTransform::rotateTo(ImageTransform const& rot) const {
 
 ImageTransform ImageTransform::nextRotate() const {
     return rotateTo(val + 1);
-}
 }

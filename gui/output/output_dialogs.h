@@ -54,13 +54,13 @@ public:
 class Table : public TreeView {
 public:
     Table(uint numDataColumns);
-    void setColumns(QStringList const& headers, QStringList const& outHeaders, typ::cmp_vec const&);
+    void setColumns(QStringList const& headers, QStringList const& outHeaders, cmp_vec const&);
     QStringList const outHeaders() { return outHeaders_; }
     void clear();
-    void addRow(typ::row_t const&, bool sort);
+    void addRow(row_t const&, bool sort);
     void sortData();
     uint rowCount() const;
-    typ::row_t const& row(uint) const;
+    row_t const& row(uint) const;
     scoped<class TableModel*> model_;
     QStringList outHeaders_;
 };
@@ -78,13 +78,13 @@ protected:
 class TabTable : public Tab {
 public:
     TabTable(Params&, QStringList const& headers, QStringList const& outHeaders,
-             typ::cmp_vec const&);
+             cmp_vec const&);
 private:
     struct showcol_t {
         str name;
         QCheckBox* cb;
     };
-    typedef typ::vec<showcol_t> showcol_vec;
+    typedef vec<showcol_t> showcol_vec;
 
     class ShowColsWidget : public QWidget {
     private:

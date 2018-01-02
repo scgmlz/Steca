@@ -19,10 +19,6 @@
 
 namespace calc {
 
-using typ::cmp_real;
-using typ::cmp_vec;
-using typ::Range;
-
 // ************************************************************************** //
 //  class ReflectionInfo
 // ************************************************************************** //
@@ -41,7 +37,7 @@ ReflectionInfo::ReflectionInfo()
 
 ReflectionInfo::ReflectionInfo(
     QSharedPointer<Metadata const> md,
-    deg alpha, deg beta, typ::Range rgeGma, inten_t inten, inten_t intenError,
+    deg alpha, deg beta, Range rgeGma, inten_t inten, inten_t intenError,
     deg tth, deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
     : md_(md)
     , alpha_(alpha)
@@ -56,14 +52,14 @@ ReflectionInfo::ReflectionInfo(
 {}
 
 ReflectionInfo::ReflectionInfo(
-    QSharedPointer<Metadata const> md, deg alpha, deg beta, typ::Range rgeGma)
+    QSharedPointer<Metadata const> md, deg alpha, deg beta, Range rgeGma)
     : ReflectionInfo(
         md, alpha, beta, rgeGma, inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), fwhm_t(NAN),
         fwhm_t(NAN))
 {}
 
 ReflectionInfo::ReflectionInfo(
-    deg alpha, deg beta, typ::Range rgeGma, inten_t inten, inten_t intenError, deg tth,
+    deg alpha, deg beta, Range rgeGma, inten_t inten, inten_t intenError, deg tth,
     deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
     : ReflectionInfo(
         QSharedPointer<Metadata const>(),
@@ -94,8 +90,8 @@ cmp_vec ReflectionInfo::dataCmps() {
     return cmps;
 }
 
-typ::row_t ReflectionInfo::data() const {
-    typ::row_t row{ QVariant(alpha()),      QVariant(beta()),     QVariant(rgeGma().min),
+row_t ReflectionInfo::data() const {
+    row_t row{ QVariant(alpha()),      QVariant(beta()),     QVariant(rgeGma().min),
                     QVariant(rgeGma().max), QVariant(inten()),    QVariant(intenError()),
                     QVariant(tth()),        QVariant(tthError()), QVariant(fwhm()),
                     QVariant(fwhmError()) };
@@ -147,7 +143,7 @@ inten_t ReflectionInfos::averageInten() const {
     return avgInten_;
 }
 
-typ::Range const& ReflectionInfos::rgeInten() const {
+Range const& ReflectionInfos::rgeInten() const {
     if (!rgeInten_.isValid()) {
         for_i (count())
             rgeInten_.extendBy(at(i).inten());

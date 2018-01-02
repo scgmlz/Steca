@@ -99,11 +99,8 @@ QStringList Metadata::attributeTags(bool out) {
     return out ? outTags : tags;
 }
 
-typ::cmp_vec Metadata::attributeCmps() {
-    using typ::cmp_real;
-    using typ::cmp_date;
-    using typ::cmp_str;
-    static typ::cmp_vec const cmps = {
+cmp_vec Metadata::attributeCmps() {
+    static cmp_vec const cmps = {
         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_date, cmp_str,
@@ -178,15 +175,15 @@ QVariant Metadata::attributeValue(uint i) const {
     }
 }
 
-typ::row_t Metadata::attributeValues() const {
-    typ::row_t attrs;
+row_t Metadata::attributeValues() const {
+    row_t attrs;
     for_i (uint(eAttr::NUM_ALL_ATTRIBUTES))
         attrs.append(attributeValue(i));
     return attrs;
 }
 
-typ::row_t Metadata::attributeNaNs() {
-    static typ::row_t row;
+row_t Metadata::attributeNaNs() {
+    static row_t row;
     if (row.isEmpty())
         for_i (uint(eAttr::NUM_ALL_ATTRIBUTES))
             row.append(NAN);

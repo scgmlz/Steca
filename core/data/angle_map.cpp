@@ -19,8 +19,6 @@
 #include <qmath.h>
 #include <iostream> // for debugging
 
-namespace typ {
-
 AnglePair::AnglePair() : AnglePair(0, 0) {}
 
 AnglePair::AnglePair(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
@@ -66,7 +64,7 @@ static uint upperBound(vec<deg> const& vec, deg x, uint i1, uint i2) {
 }
 
 void AngleMap::getGmaIndexes(
-    typ::Range const& rgeGma, uint_vec const*& indexes, uint& minIndex, uint& maxIndex) const {
+    Range const& rgeGma, uint_vec const*& indexes, uint& minIndex, uint& maxIndex) const {
     indexes = &gmaIndexes;
     minIndex = lowerBound(gmas, rgeGma.min, 0, gmas.count());
     maxIndex = upperBound(gmas, rgeGma.max, 0, gmas.count());
@@ -187,5 +185,3 @@ void AngleMap::calculate() {
         uv[i] = gmaIndexes.at(is.at(i));
     gmaIndexes = uv;
 }
-
-} // namespace typ

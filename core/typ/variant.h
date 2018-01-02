@@ -19,8 +19,6 @@
 
 // Help with QVariant
 
-namespace typ {
-
 bool isNumeric(QVariant const&);
 
 // The usual comparators: <0, 0, >0
@@ -33,5 +31,5 @@ int cmp_real(QVariant const&, QVariant const&);
 int cmp_date(QVariant const&, QVariant const&);
 
 typedef vec<QVariant> row_t;
-}
+
 #endif // VARIANT_H

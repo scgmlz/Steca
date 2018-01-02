@@ -21,8 +21,6 @@
 #include "typ/ij.h"
 #include "typ/range.h"
 
-namespace typ {
-
 class AnglePair {
 public:
     deg tth;
@@ -55,13 +53,13 @@ public:
 
     AnglePair const& at(uint i, uint j) const { return arrAngles_.at(i, j); }
 
-    typ::Range rgeTth() const { return rgeTth_; }
-    typ::Range rgeGma() const { return rgeGma_; }
-    typ::Range rgeGmaFull() const { return rgeGmaFull_; }
+    Range rgeTth() const { return rgeTth_; }
+    Range rgeGma() const { return rgeGma_; }
+    Range rgeGmaFull() const { return rgeGmaFull_; }
 
     // TODO remove  IJ gmaPixel(gma_t);
 
-    void getGmaIndexes(typ::Range const&, uint_vec const*&, uint&, uint&) const;
+    void getGmaIndexes(Range const&, uint_vec const*&, uint&, uint&) const;
 
 private:
     void calculate();
@@ -70,8 +68,8 @@ private:
 
     Array2D<AnglePair> arrAngles_;
 
-    typ::Range rgeTth_;
-    typ::Range rgeGma_, rgeGmaFull_;
+    Range rgeTth_;
+    Range rgeGma_, rgeGmaFull_;
 
     // sorted
     vec<deg> gmas;
@@ -79,7 +77,5 @@ private:
 };
 
 typedef QSharedPointer<AngleMap> shp_AngleMap;
-
-} // namespace typ
 
 #endif // ANGLE_MAP_H

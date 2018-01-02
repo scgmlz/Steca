@@ -16,8 +16,6 @@
 #include "typ/variant.h"
 #include <QDate>
 
-namespace typ {
-
 bool isNumeric(QVariant const& v) {
     auto type = QMetaType::Type(v.type());
 
@@ -60,4 +58,3 @@ int cmp_real(QVariant const& v1, QVariant const& v2) {
 }
 
 #undef IMPL_CMP
-}

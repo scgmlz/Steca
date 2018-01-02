@@ -61,12 +61,12 @@ uint TabDiffractogramsSave::currType() const {
 struct OutputData {
     OutputData() {}
 
-    OutputData(typ::Curve curve, Dataset dataset, typ::Range gmaStripe, uint picNum)
+    OutputData(Curve curve, Dataset dataset, Range gmaStripe, uint picNum)
         : curve_(curve), dataset_(dataset), gmaStripe_(gmaStripe), picNum_(picNum) {}
 
-    typ::Curve curve_;
+    Curve curve_;
     Dataset dataset_;
-    typ::Range gmaStripe_;
+    Range gmaStripe_;
     uint picNum_;
 
     bool isValid() {
@@ -89,11 +89,11 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
 }
 
 OutputDataCollection DiffractogramsFrame::collectCurves(
-    typ::Range const& rgeGma, uint gmaSlices, Dataset const& dataset, uint picNum) {
+    Range const& rgeGma, uint gmaSlices, Dataset const& dataset, uint picNum) {
 
     auto lens = gHub->datasetLens(dataset);
 
-    typ::Range rge = (gmaSlices > 0) ? lens->rgeGma() : typ::Range::infinite();
+    Range rge = (gmaSlices > 0) ? lens->rgeGma() : Range::infinite();
     if (rgeGma.isValid())
         rge = rge.intersect(rgeGma);
 
@@ -103,7 +103,7 @@ OutputDataCollection DiffractogramsFrame::collectCurves(
     qreal step = rge.width() / gmaSlices;
     for_i (gmaSlices) {
         qreal min = rge.min + i * step;
-        typ::Range gmaStripe(min, min + step);
+        Range gmaStripe(min, min + step);
         auto curve = lens->makeCurve(gmaStripe);
         outputData.append(OutputData(curve, dataset, gmaStripe, picNum));
     }
@@ -123,7 +123,7 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
 
     debug::ensure(params_->panelGammaRange);
     auto pr = params_->panelGammaRange;
-    typ::Range rgeGma;
+    Range rgeGma;
     if (pr->cbLimitGamma->isChecked())
         rgeGma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
 

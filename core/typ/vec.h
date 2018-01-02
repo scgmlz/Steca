@@ -17,8 +17,6 @@
 
 #include "def/numbers.h"
 
-namespace typ {
-
 //! limited QVector, only needed methods reexported
 
 template <typename T> class vec : protected QVector<T> {
@@ -58,10 +56,9 @@ public:
     T const& at(uint i) const { return super::at(to_i(i)); }
     T& operator[](uint i) { return super::operator[](to_i(i)); }
 };
-}
 
 // most useful vectors (that's why they are in the global namespace)
-typedef typ::vec<qreal> qreal_vec;
-typedef typ::vec<uint> uint_vec;
+typedef vec<qreal> qreal_vec;
+typedef vec<uint> uint_vec;
 
 #endif // VEC_H

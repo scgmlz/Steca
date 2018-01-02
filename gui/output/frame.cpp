@@ -110,7 +110,7 @@ void Frame::calculate() {
         auto pr = params_->panelGammaRange;
         debug::ensure(pr);
 
-        typ::Range rgeGamma;
+        Range rgeGamma;
         if (pr->cbLimitGamma->isChecked())
             rgeGamma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
 
@@ -133,8 +133,8 @@ void Frame::interpolate() {
 
     auto pi = params_->panelInterpolation;
     if (pi) {
-        typ::deg alphaStep = pi->stepAlpha->value();
-        typ::deg betaStep = pi->stepBeta->value();
+        deg alphaStep = pi->stepAlpha->value();
+        deg betaStep = pi->stepBeta->value();
         qreal idwRadius = pi->idwRadius->value();
 
         qreal avgRadius = pi->avgRadius->value();

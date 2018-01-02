@@ -35,43 +35,43 @@ class OneDataset final {
     friend class Dataset;
 
 public:
-    OneDataset(Metadata const&, typ::size2d const&, inten_vec const&);
+    OneDataset(Metadata const&, size2d const&, inten_vec const&);
     OneDataset(OneDataset const&) = delete;
 
     QSharedPointer<Metadata const> metadata() const;
 
-    typ::deg midTth() const;
+    deg midTth() const;
 
     qreal monitorCount() const;
     qreal deltaMonitorCount() const;
     qreal deltaTime() const;
 
-    typ::deg omg() const;
-    typ::deg phi() const;
-    typ::deg chi() const;
+    deg omg() const;
+    deg phi() const;
+    deg chi() const;
 
-    typ::Range rgeGma(Session const&) const;
-    typ::Range rgeGmaFull(Session const&) const;
-    typ::Range rgeTth(Session const&) const;
+    Range rgeGma(Session const&) const;
+    Range rgeGmaFull(Session const&) const;
+    Range rgeTth(Session const&) const;
 
-    typ::Range rgeInten() const;
+    Range rgeInten() const;
 
-    typ::shp_Image image() const { return image_; }
-    typ::size2d imageSize() const;
+    shp_Image image() const { return image_; }
+    size2d imageSize() const;
 
     void collectIntens(
-        Session const&, typ::Image const* intensCorr, inten_vec&, uint_vec&, typ::Range const&,
-        typ::deg minTth, typ::deg deltaTth) const;
+        Session const&, Image const* intensCorr, inten_vec&, uint_vec&, Range const&,
+        deg minTth, deg deltaTth) const;
 
 private:
     QSharedPointer<Metadata const> md_;
-    typ::shp_Image image_;
+    shp_Image image_;
 };
 
 
 //! One or more OneDataset(s)
 
-class Dataset final : public typ::vec<shp_OneDataset> {
+class Dataset final : public vec<shp_OneDataset> {
 private:
     friend class Datasets;
 
@@ -81,24 +81,24 @@ public:
     QSharedPointer<Metadata const> metadata() const;
     Datasets const& datasets() const;
 
-    typ::deg omg() const;
-    typ::deg phi() const;
-    typ::deg chi() const;
+    deg omg() const;
+    deg phi() const;
+    deg chi() const;
 
-    typ::Range rgeGma(Session const&) const;
-    typ::Range rgeGmaFull(Session const&) const;
-    typ::Range rgeTth(Session const&) const;
+    Range rgeGma(Session const&) const;
+    Range rgeGmaFull(Session const&) const;
+    Range rgeTth(Session const&) const;
 
-    typ::Range rgeInten() const;
+    Range rgeInten() const;
 
     qreal avgMonitorCount() const;
     qreal avgDeltaMonitorCount() const;
     qreal avgDeltaTime() const;
 
-    inten_vec collectIntens(Session const&, typ::Image const* intensCorr, typ::Range const&) const;
-    void calculateAlphaBeta(typ::deg tth, typ::deg gma, typ::deg& alpha, typ::deg& beta) const;
+    inten_vec collectIntens(Session const&, Image const* intensCorr, Range const&) const;
+    void calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const;
 
-    typ::size2d imageSize() const;
+    size2d imageSize() const;
 
 private:
     Datasets* datasets_; // here it belongs (or can be nullptr)
@@ -107,22 +107,22 @@ private:
 
 //! Collection of (Dataset)s
 
-class Datasets final : public typ::vec<shp_Dataset> {
+class Datasets final : public vec<shp_Dataset> {
 public:
     Datasets();
 
     void appendHere(shp_Dataset);
 
-    typ::size2d imageSize() const;
+    size2d imageSize() const;
 
     qreal avgMonitorCount() const;
     qreal avgDeltaMonitorCount() const;
     qreal avgDeltaTime() const;
 
-    typ::Range const& rgeGma(Session const&) const;
-    typ::Range const& rgeFixedInten(Session const&, bool trans, bool cut) const;
+    Range const& rgeGma(Session const&) const;
+    Range const& rgeFixedInten(Session const&, bool trans, bool cut) const;
 
-    typ::Curve avgCurve(Session const&) const;
+    Curve avgCurve(Session const&) const;
 
     void invalidateAvgMutables() const;
 
@@ -132,9 +132,9 @@ private:
 
     // computed on demand (NaNs or emptiness indicate yet unknown values)
     mutable qreal avgMonitorCount_, avgDeltaMonitorCount_, avgDeltaTime_;
-    mutable typ::Range rgeFixedInten_;
-    mutable typ::Range rgeGma_;
-    mutable typ::Curve avgCurve_;
+    mutable Range rgeFixedInten_;
+    mutable Range rgeGma_;
+    mutable Curve avgCurve_;
 };
 
 Q_DECLARE_METATYPE(shp_Dataset)

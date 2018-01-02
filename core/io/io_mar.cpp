@@ -199,7 +199,7 @@ shp_Datafile loadMar(rcstr filePath) THROWS {
         totalTime += exposureTime;
     }
 
-    typ::size2d size(pixSizeX, pixSizeY);
+    size2d size(pixSizeX, pixSizeY);
     inten_vec convertedIntens(pixelSize);
 
     for_i (pixelSize)
@@ -218,7 +218,7 @@ shp_Datafile loadMar(rcstr filePath) THROWS {
 
     // REVIEW ?? pictureOverflow
 
-    datafile->addDataset(md, typ::size2d(pixSizeX, pixSizeY), convertedIntens);
+    datafile->addDataset(md, size2d(pixSizeX, pixSizeY), convertedIntens);
 
     delete[] i2_image;
     delete[] i4_image;

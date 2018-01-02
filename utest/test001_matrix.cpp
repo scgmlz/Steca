@@ -1,10 +1,6 @@
 #include "gtest/gtest.h"
 #include "typ/matrix.h"
 
-using typ::vec3f;
-using typ::vec3r;
-using typ::mat3r;
-
 TEST(MatrixTest, VectorTrivialities) {
     vec3f f(1, 2, 3);
     vec3r r(1, 2, 3);

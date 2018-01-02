@@ -17,8 +17,6 @@
 #include "def/comparators.h"
 #include "typ/array2d.h"
 
-namespace typ {
-
 int size2d::compare(size2d const& that) const {
     RET_COMPARE_VALUE(w)
     RET_COMPARE_VALUE(h)
@@ -26,5 +24,3 @@ int size2d::compare(size2d const& that) const {
 }
 
 EQ_NE_OPERATOR(size2d)
-
-} // namespace typ

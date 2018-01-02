@@ -31,8 +31,6 @@ void qpair::invalidate() {
     x = y = NAN;
 }
 
-using typ::JsonObj;
-
 QJsonObject qpair::to_json() const {
     return { { "x", qreal_to_json(x) }, { "y", qreal_to_json(y) } };
 }

@@ -49,7 +49,7 @@ public:
 public:
     enum { GetDatasetRole = Qt::UserRole };
 
-    void showMetaInfo(typ::vec<bool> const&);
+    void showMetaInfo(vec<bool> const&);
 
 private:
     Datasets const& datasets_; // the selected datasets
@@ -69,14 +69,14 @@ public:
 
     enum { COL_CHECK = DCOL, COL_TAG, COL_VALUE, NUM_COLUMNS };
 
-    typ::vec<bool> const& rowsChecked() const { return rowsChecked_; }
+    vec<bool> const& rowsChecked() const { return rowsChecked_; }
 
     void reset(shp_Dataset dataset);
     void flipCheck(uint row);
 
 private:
     QSharedPointer<class Metadata const> metadata_;
-    typ::vec<bool> rowsChecked_;
+    vec<bool> rowsChecked_;
 };
 
 

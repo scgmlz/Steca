@@ -19,8 +19,6 @@
 #include "def/macros.h"
 #include <QJsonObject>
 
-namespace typ {
-
 // 2D point, integers
 
 class JsonObj;
@@ -36,7 +34,5 @@ struct IJ {
     QJsonObject to_json() const;
     void from_json(JsonObj const&) THROWS;
 };
-
-} // namespace typ
 
 #endif // IJ_H

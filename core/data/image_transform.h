@@ -17,8 +17,6 @@
 
 #include "def/numbers.h" // for uint
 
-namespace typ {
-
 // Image transform type - rotation and mirroring (bit-map)
 
 struct ImageTransform {
@@ -52,5 +50,4 @@ struct ImageTransform {
         return val == that.val; }
 };
 
-} // namespace typ
 #endif // IMAGE_TRANSFORM_H

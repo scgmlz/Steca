@@ -16,18 +16,13 @@
 
 namespace calc {
 
-using typ::Curve;
-using typ::Image;
-using typ::ImageTransform;
-using typ::size2d;
-
 // ************************************************************************** //
 //   class LensBase
 // ************************************************************************** //
 
 LensBase::LensBase(
     Session const& session, Datasets const& datasets, bool trans, bool cut,
-    typ::ImageTransform const& imageTransform, typ::ImageCut const& imageCut)
+    ImageTransform const& imageTransform, ImageCut const& imageCut)
     : session_(session)
     , datasets_(datasets)
     , trans_(trans)
@@ -105,7 +100,7 @@ inten_t ImageLens::imageInten(uint i, uint j) const {
     return inten;
 }
 
-typ::Range const& ImageLens::rgeInten(bool fixed) const {
+Range const& ImageLens::rgeInten(bool fixed) const {
     if (fixed)
         return datasets_.rgeFixedInten(session_, trans_, cut_);
     if (!rgeInten_.isValid()) {
@@ -123,8 +118,8 @@ typ::Range const& ImageLens::rgeInten(bool fixed) const {
 
 DatasetLens::DatasetLens(
     Session const& session, Dataset const& dataset, Datasets const& datasets,
-    eNorm norm, bool trans, bool cut, typ::ImageTransform const& imageTransform,
-    typ::ImageCut const& imageCut)
+    eNorm norm, bool trans, bool cut, ImageTransform const& imageTransform,
+    ImageCut const& imageCut)
     : LensBase(session, datasets, trans, cut, imageTransform, imageCut)
     , normFactor_(1)
     , dataset_(dataset) {
@@ -135,19 +130,19 @@ size2d DatasetLens::size() const {
     return LensBase::transCutSize(datasets_.imageSize());
 }
 
-typ::Range DatasetLens::rgeGma() const {
+Range DatasetLens::rgeGma() const {
     return dataset_.rgeGma(session_);
 }
 
-typ::Range DatasetLens::rgeGmaFull() const {
+Range DatasetLens::rgeGmaFull() const {
     return dataset_.rgeGmaFull(session_);
 }
 
-typ::Range DatasetLens::rgeTth() const {
+Range DatasetLens::rgeTth() const {
     return dataset_.rgeTth(session_);
 }
 
-typ::Range DatasetLens::rgeInten() const {
+Range DatasetLens::rgeInten() const {
     // fixes the scale
     // TODO consider return datasets_.rgeInten();
     return dataset_.rgeInten();
@@ -157,12 +152,12 @@ Curve DatasetLens::makeCurve() const {
     return makeCurve(rgeGma());
 }
 
-Curve DatasetLens::makeCurve(typ::Range const& rgeGma) const {
+Curve DatasetLens::makeCurve(Range const& rgeGma) const {
     inten_vec intens = dataset_.collectIntens(session_, intensCorr_, rgeGma);
     Curve res;
     uint count = intens.count();
     if (count) {
-        typ::Range rgeTth = dataset_.rgeTth(session_);
+        Range rgeTth = dataset_.rgeTth(session_);
         deg minTth = rgeTth.min, deltaTth = rgeTth.width() / count;
         for_i (count)
             res.append(minTth + deltaTth * i, qreal(intens.at(i) * normFactor_));

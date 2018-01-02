@@ -172,14 +172,14 @@ void TheHub::removeFile(uint i) {
     emit sigFilesChanged();
 
     if (0 == gSession->numFiles())
-        setImageCut(true, false, typ::ImageCut());
+        setImageCut(true, false, ImageCut());
 }
 
 calc::shp_DatasetLens TheHub::datasetLens(Dataset const& dataset) const {
     return gSession->datasetLens(dataset, dataset.datasets(), gSession->norm(), true, true);
 }
 
-typ::Curve TheHub::avgCurve(Datasets const& dss) const {
+Curve TheHub::avgCurve(Datasets const& dss) const {
     return dss.avgCurve(*gSession);
 }
 
@@ -274,7 +274,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     clearSession();
     TR("sessionFromJson: cleared old session");
 
-    typ::JsonObj top(doc.object());
+    JsonObj top(doc.object());
 
     const QJsonArray& files = top.loadArr("files");
     for (const QJsonValue& file : files) {
@@ -306,20 +306,20 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     setCorrFile(top.loadString("correction file", ""));
 
     TR("sessionFromJson: going to load detector geometry");
-    const typ::JsonObj& det = top.loadObj("detector");
+    const JsonObj& det = top.loadObj("detector");
     setGeometry(
         det.loadPreal("distance"), det.loadPreal("pixel size"),
         det.loadIJ("beam offset"));
 
     TR("sessionFromJson: going to load image cut");
-    const typ::JsonObj& cut = top.loadObj("cut");
+    const JsonObj& cut = top.loadObj("cut");
     uint x1 = cut.loadUint("left"), y1 = cut.loadUint("top"),
          x2 = cut.loadUint("right"), y2 = cut.loadUint("bottom");
-    setImageCut(true, false, typ::ImageCut(x1, y1, x2, y2));
-    setImageRotate(typ::ImageTransform(top.loadUint("image transform")));
+    setImageCut(true, false, ImageCut(x1, y1, x2, y2));
+    setImageRotate(ImageTransform(top.loadUint("image transform")));
 
     TR("sessionFromJson: going to load fit setup");
-    typ::Ranges bgRanges;
+    Ranges bgRanges;
     bgRanges.from_json(top.loadArr("background ranges"));
     setBgRanges(bgRanges);
     setBgPolyDegree(top.loadUint("background degree"));
@@ -368,7 +368,7 @@ void TheHub::combineDatasetsBy(pint by) {
     collectDatasetsFromFiles(collectFromFiles_, by);
 }
 
-typ::Range TheHub::collectedDatasetsRgeGma() const {
+Range TheHub::collectedDatasetsRgeGma() const {
     return gSession->collectedDatasets().rgeGma(*gSession);
 }
 
@@ -388,16 +388,16 @@ void TheHub::tryEnableCorrection(bool on) {
     emit sigCorrEnabled(gSession->isCorrEnabled());
 }
 
-typ::ImageCut const& TheHub::imageCut() const {
+ImageCut const& TheHub::imageCut() const {
     return gSession->imageCut();
 }
 
-void TheHub::setImageCut(bool isTopOrLeft, bool linked, typ::ImageCut const& cut) {
+void TheHub::setImageCut(bool isTopOrLeft, bool linked, ImageCut const& cut) {
     gSession->setImageCut(isTopOrLeft, linked, cut);
     emit sigGeometryChanged();
 }
 
-void TheHub::setGeometry(preal detectorDistance, preal pixSize, typ::IJ const& midPixOffset) {
+void TheHub::setGeometry(preal detectorDistance, preal pixSize, IJ const& midPixOffset) {
     level_guard __(sigLevel_);
     if (sigLevel_ > 1)
         return;
@@ -406,22 +406,22 @@ void TheHub::setGeometry(preal detectorDistance, preal pixSize, typ::IJ const& m
     emit sigGeometryChanged();
 }
 
-void TheHub::setGammaRange(typ::Range const& gammaRange) {
+void TheHub::setGammaRange(Range const& gammaRange) {
     gSession->setGammaRange(gammaRange);
     emit sigGammaRange();
 }
 
-void TheHub::setBgRanges(typ::Ranges const& ranges) {
+void TheHub::setBgRanges(Ranges const& ranges) {
     gSession->setBgRanges(ranges);
     emit sigBgChanged();
 }
 
-void TheHub::addBgRange(typ::Range const& range) {
+void TheHub::addBgRange(Range const& range) {
     if (gSession->addBgRange(range))
         emit sigBgChanged();
 }
 
-void TheHub::remBgRange(typ::Range const& range) {
+void TheHub::remBgRange(Range const& range) {
     if (gSession->remBgRange(range))
         emit sigBgChanged();
 }
@@ -459,7 +459,7 @@ void TheHub::setFittingTab(eFittingTab tab) {
     emit sigFittingTab((fittingTab_ = tab));
 }
 
-void TheHub::setImageRotate(typ::ImageTransform rot) {
+void TheHub::setImageRotate(ImageTransform rot) {
     const char* rotateIconFile;
     const char* mirrorIconFile;
 

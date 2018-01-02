@@ -19,8 +19,6 @@
 #include "typ/json.h"
 #include "typ/range.h"
 
-namespace typ {
-
 // ************************************************************************** //
 //  class Range
 // ************************************************************************** //
@@ -208,5 +206,3 @@ void Ranges::from_json(QJsonArray const& arr) THROWS {
         ranges_.append(range);
     }
 }
-
-} // namespace typ

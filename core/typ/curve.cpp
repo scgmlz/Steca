@@ -12,11 +12,9 @@
 //
 // ************************************************************************** //
 
+#include "typ/curve.h"
 #include "def/idiomatic_for.h"
 #include "typ/fun.h"
-#include "typ/curve.h"
-
-namespace typ {
 
 void Curve::clear() {
     xs_.clear();
@@ -116,5 +114,3 @@ qreal Curve::sumY() const {
         sum += ys_.at(i);
     return sum;
 }
-
-} // namespace typ

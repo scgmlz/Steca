@@ -17,9 +17,6 @@
 #include "def/idiomatic_for.h"
 #include <qmath.h>
 
-using typ::Curve;
-using typ::Function;
-
 void FitWrapper::fit(Function& function, Curve const& curve) {
     if (curve.isEmpty())
         return;

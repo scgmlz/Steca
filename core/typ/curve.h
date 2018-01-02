@@ -17,10 +17,6 @@
 
 #include "typ/range.h"
 
-namespace typ {
-
-class Function;
-
 //! A set of x-y datapoints
 
 class Curve {
@@ -46,7 +42,7 @@ public:
     Curve intersect(Range const&) const;
     Curve intersect(Ranges const&) const;
 
-    void subtract(Function const&);
+    void subtract(class Function const&);
 
     uint maqpairindex() const; // the index of the maximum y value
 
@@ -58,7 +54,5 @@ private:
 };
 
 typedef vec<Curve> curve_vec;
-
-} // namespace typ
 
 #endif // CURVE_H

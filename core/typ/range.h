@@ -20,8 +20,6 @@
 #include "typ/vec.h"
 #include <QJsonArray>
 
-namespace typ {
-
 class JsonObj;
 
 //! a range of values - a closed interval
@@ -84,7 +82,5 @@ private:
     void sort();
     vec<Range> ranges_;
 };
-
-} // namespace typ
 
 #endif // RANGE_H

@@ -22,19 +22,19 @@
 class Datafile final {
 public:
     Datafile(rcstr fileName);
-    void addDataset(Metadata const&, typ::size2d const&, inten_vec const&);
+    void addDataset(Metadata const&, size2d const&, inten_vec const&);
 
-    typ::vec<shp_OneDataset> const& datasets() const { return datasets_; }
-    typ::size2d imageSize() const { return imageSize_; }
+    vec<shp_OneDataset> const& datasets() const { return datasets_; }
+    size2d imageSize() const { return imageSize_; }
 
     QFileInfo const& fileInfo() const;
     str fileName() const;
-    typ::shp_Image foldedImage() const;
+    shp_Image foldedImage() const;
 
 private:
     QFileInfo fileInfo_;
-    typ::vec<shp_OneDataset> datasets_;
-    typ::size2d imageSize_;
+    vec<shp_OneDataset> datasets_;
+    size2d imageSize_;
 };
 
 typedef QSharedPointer<class Datafile> shp_Datafile;

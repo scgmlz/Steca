@@ -106,7 +106,7 @@ QVariant DatasetsModel::headerData(int col, Qt::Orientation, int role) const {
     }
 }
 
-void DatasetsModel::showMetaInfo(typ::vec<bool> const& metadataRows) {
+void DatasetsModel::showMetaInfo(vec<bool> const& metadataRows) {
     beginResetModel();
 
     metaInfoNums_.clear();

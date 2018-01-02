@@ -18,10 +18,6 @@
 #include "def/comparable.h"
 #include "def/numbers.h"
 
-namespace typ {
-class JsonObj;
-}
-
 //! 2D point, reals
 class qpair {
     public:
@@ -37,7 +33,7 @@ class qpair {
     bool isValid() const { return !qIsNaN(x) && !qIsNaN(y); }
 
     QJsonObject to_json() const;
-    void from_json(typ::JsonObj const&) THROWS;
+    void from_json(class JsonObj const&) THROWS;
 };
 
 #endif // REALPAIR_H

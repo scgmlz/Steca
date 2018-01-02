@@ -22,8 +22,8 @@ namespace gui {
 namespace output {
 
 struct OutputData;
-using OutputDataCollection = typ::vec<OutputData>;
-using OutputDataCollections = typ::vec<OutputDataCollection>;
+using OutputDataCollection = vec<OutputData>;
+using OutputDataCollections = vec<OutputDataCollection>;
 
 class DiffractogramsFrame : public Frame {
 public:
@@ -33,7 +33,7 @@ protected:
     class TabDiffractogramsSave* tabSave_;
 
     OutputDataCollection
-    collectCurves(typ::Range const&, uint gmaSlices, Dataset const& dataset, uint picNum);
+    collectCurves(Range const&, uint gmaSlices, Dataset const& dataset, uint picNum);
     OutputData collectCurve(Dataset const& dataset);
 
     OutputData outputCurrDiffractogram();

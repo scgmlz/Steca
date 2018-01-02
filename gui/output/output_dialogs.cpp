@@ -146,14 +146,14 @@ public:
 
     void moveColumn(uint from, uint to);
 
-    void setColumns(QStringList const& headers, typ::cmp_vec const&);
+    void setColumns(QStringList const& headers, cmp_vec const&);
 
     void setSortColumn(int);
 
     void clear();
-    void addRow(typ::row_t const&, bool sort = true);
+    void addRow(row_t const&, bool sort = true);
 
-    typ::row_t const& row(uint);
+    row_t const& row(uint);
 
     void sortData();
 
@@ -163,17 +163,17 @@ private:
 
     QStringList headers_;
     uint_vec colIndexMap_;
-    typ::cmp_vec cmpFunctions_;
+    cmp_vec cmpFunctions_;
 
     struct numRow {
         typedef numRow const& rc;
         numRow() : n(0), row() {}
-        numRow(int n_, typ::row_t const& row_) : n(n_), row(row_) {}
+        numRow(int n_, row_t const& row_) : n(n_), row(row_) {}
         int n;
-        typ::row_t row;
+        row_t row;
     };
 
-    typ::vec<numRow> rows_;
+    vec<numRow> rows_;
 };
 
 TableModel::TableModel(uint numColumns_)
@@ -207,7 +207,7 @@ QVariant TableModel::data(rcIndex index, int role) const {
 
         if (--indexCol < numCols && indexRow < numRows) {
             QVariant var = rows_.at(to_u(indexRow)).row.at(to_u(indexCol));
-            if (typ::isNumeric(var) && qIsNaN(var.toDouble()))
+            if (isNumeric(var) && qIsNaN(var.toDouble()))
                 var = QVariant(); // hide nans
             return var;
         }
@@ -220,7 +220,7 @@ QVariant TableModel::data(rcIndex index, int role) const {
 
         if (--indexCol < numCols && indexRow < numRows) {
             QVariant const& var = rows_.at(to_u(indexRow)).row.at(to_u(indexCol));
-            if (typ::isNumeric(var))
+            if (isNumeric(var))
                 return Qt::AlignRight;
         }
 
@@ -247,7 +247,7 @@ void TableModel::moveColumn(uint from, uint to) {
     qSwap(colIndexMap_[from], colIndexMap_[to]);
 }
 
-void TableModel::setColumns(QStringList const& headers, typ::cmp_vec const& cmps) {
+void TableModel::setColumns(QStringList const& headers, cmp_vec const& cmps) {
     debug::ensure(to_u(headers.count()) == numCols_ && cmps.count() == numCols_);
     headers_ = headers;
     cmpFunctions_ = cmps;
@@ -263,18 +263,18 @@ void TableModel::clear() {
     endResetModel();
 }
 
-void TableModel::addRow(typ::row_t const& row, bool sort) {
+void TableModel::addRow(row_t const& row, bool sort) {
     rows_.append(numRow(rows_.count() + 1, row));
     if (sort)
         sortData();
 }
 
-typ::row_t const& TableModel::row(uint index) {
+row_t const& TableModel::row(uint index) {
     return rows_.at(index).row;
 }
 
 void TableModel::sortData() {
-    auto cmpRows = [this](uint col, typ::row_t const& r1, typ::row_t const& r2) {
+    auto cmpRows = [this](uint col, row_t const& r1, row_t const& r2) {
         col = colIndexMap_.at(col);
         return cmpFunctions_.at(col)(r1.at(col), r2.at(col));
     };
@@ -340,7 +340,7 @@ Table::Table(uint numDataColumns) : model_(nullptr) {
 }
 
 void Table::setColumns(
-    QStringList const& headers, QStringList const& outHeaders, typ::cmp_vec const& cmps) {
+    QStringList const& headers, QStringList const& outHeaders, cmp_vec const& cmps) {
     model_->setColumns(headers, cmps);
     debug::ensure(headers.count() == outHeaders.count());
     outHeaders_ = outHeaders;
@@ -369,7 +369,7 @@ void Table::clear() {
     model_->clear();
 }
 
-void Table::addRow(typ::row_t const& row, bool sort) {
+void Table::addRow(row_t const& row, bool sort) {
     model_->addRow(row, sort);
 }
 
@@ -381,7 +381,7 @@ uint Table::rowCount() const {
     return to_u(model_->rowCount());
 }
 
-const typ::row_t& Table::row(uint i) const {
+const row_t& Table::row(uint i) const {
     return model_->row(i);
 }
 
@@ -391,7 +391,7 @@ const typ::row_t& Table::row(uint i) const {
 
 TabTable::TabTable(
     Params& params, QStringList const& headers, QStringList const& outHeaders,
-    typ::cmp_vec const& cmps)
+    cmp_vec const& cmps)
     : Tab(params) {
     debug::ensure(to_u(headers.count()) == cmps.count());
     uint numCols = to_u(headers.count());
