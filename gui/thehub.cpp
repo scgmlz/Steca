@@ -35,16 +35,16 @@ TheHub::TheHub()
     qDebug() << "TheHub/";
 
     filesModel = new FilesModel();
-    datasequenceModel = new DatasetsModel();
+    suiteModel = new DatasetsModel();
     metadataModel = new MetadataModel();
     reflectionsModel = new ReflectionsModel();
 
     connect(this, &gui::TheHubSignallingBase::sigFilesChanged,
             [this]() { filesModel->signalReset(); });
     connect(this, &gui::TheHubSignallingBase::sigDatasetsChanged,
-            [this]() { datasequenceModel->signalReset(); });
+            [this]() { suiteModel->signalReset(); });
     connect(this, &gui::TheHubSignallingBase::sigDatasetSelected,
-            [this](QSharedPointer<DataSequence> dataseq) { metadataModel->reset(dataseq); });
+            [this](QSharedPointer<Suite> dataseq) { metadataModel->reset(dataseq); });
 
     // create actions
 
@@ -81,7 +81,7 @@ TheHub::TheHub()
     toggle_fixedIntenImage = newToggle("Global intensity scale", ":/icon/scale");
     toggle_fixedIntenDgram = newToggle("Fixed intensity scale");
 
-    toggle_combinedDgram = newToggle("All datasequence");
+    toggle_combinedDgram = newToggle("All suite");
 
     toggle_selRegions = newToggle("Select regions", ":/icon/selRegion");
     toggle_showBackground = newToggle("Show fitted background", ":/icon/showBackground");
@@ -226,7 +226,7 @@ QByteArray TheHub::saveSession() const {
         arrSelectedFiles.append(to_i(i));
 
     top.insert("selected files", arrSelectedFiles);
-    top.insert("combine", to_i((uint)datasequenceGroupedBy_));
+    top.insert("combine", to_i((uint)suiteGroupedBy_));
 
     if (gSession->hasCorrFile()) {
         str absPath = gSession->corrFile()->fileInfo().absoluteFilePath();
@@ -296,7 +296,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
         lastIndex = to_i(index);
     }
 
-    TR("sessionFromJson: going to collect datasequence");
+    TR("sessionFromJson: going to collect suite");
     collectDatasetsFromFiles(selIndexes, top.loadPint("combine", 1));
 
     TR("sessionFromJson: going to set correction file");
@@ -352,13 +352,13 @@ void TheHub::addGivenFiles(QStringList const& filePaths) THROWS {
 }
 
 void TheHub::collectDatasetsFromFiles(uint_vec is, pint by) {
-    gSession->collectDatasetsFromFiles((collectFromFiles_ = is), (datasequenceGroupedBy_ = by));
+    gSession->collectDatasetsFromFiles((collectFromFiles_ = is), (suiteGroupedBy_ = by));
     emit sigFilesSelected();
     emit sigDatasetsChanged();
 }
 
 void TheHub::collectDatasetsFromFiles(uint_vec is) {
-    collectDatasetsFromFiles(is, datasequenceGroupedBy_);
+    collectDatasetsFromFiles(is, suiteGroupedBy_);
 }
 
 void TheHub::combineDatasetsBy(pint by) {

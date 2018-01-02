@@ -38,11 +38,11 @@ protected:
 };
 
 DatasetView::DatasetView() : ListView() {
-    setModel(gHub->datasequenceModel); // TODO simplify this
+    setModel(gHub->suiteModel); // TODO simplify this
     debug::ensure(dynamic_cast<DatasetsModel*>(ListView::model()));
 
     connect(gHub, &TheHubSignallingBase::sigDatasetsChanged, [this]() {
-            gHub->tellDatasetSelected(QSharedPointer<DataSequence>()); // first de-select
+            gHub->tellDatasetSelected(QSharedPointer<Suite>()); // first de-select
             selectRow(0);
         });
 }
@@ -51,7 +51,7 @@ void DatasetView::currentChanged(QModelIndex const& current, QModelIndex const& 
     ListView::currentChanged(current, previous);
     gHub->tellDatasetSelected(
         model()->data(current,
-                      DatasetsModel::GetDatasetRole).value<QSharedPointer<DataSequence>>());
+                      DatasetsModel::GetDatasetRole).value<QSharedPointer<Suite>>());
 }
 
 // ************************************************************************** //
@@ -59,7 +59,7 @@ void DatasetView::currentChanged(QModelIndex const& current, QModelIndex const& 
 // ************************************************************************** //
 
 DockDatasets::DockDatasets()
-    : DockWidget("Datasets", "dock-datasequence", Qt::Vertical) {
+    : DockWidget("Datasets", "dock-suite", Qt::Vertical) {
     box_->addWidget((dataseqView_ = new DatasetView()));
 
     auto h = hbox();
@@ -67,14 +67,14 @@ DockDatasets::DockDatasets()
 
     h->addWidget(label("Combine:"));
     h->addWidget(combineDatasets_ = spinCell(gui_cfg::em4, 1));
-    combineDatasets_->setToolTip("Combine and average number of datasequence");
+    combineDatasets_->setToolTip("Combine and average number of suite");
 
     connect(combineDatasets_, slot(QSpinBox, valueChanged, int), [this](int num) {
         gHub->combineDatasetsBy(pint(qMax(1, num)));
     });
 
     connect(gHub, &TheHubSignallingBase::sigDatasetsChanged,
-            [this]() { combineDatasets_->setValue(to_i(uint(gHub->datasequenceGroupedBy()))); });
+            [this]() { combineDatasets_->setValue(to_i(uint(gHub->suiteGroupedBy()))); });
 }
 
 } // namespace panel

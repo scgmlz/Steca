@@ -85,14 +85,14 @@ public:
     void saveSession(QFileInfo const&) const;
     QByteArray saveSession() const;
 
-    pint datasequenceGroupedBy() const { return datasequenceGroupedBy_; }
+    pint suiteGroupedBy() const { return suiteGroupedBy_; }
 
     Range collectedDatasetsRgeGma() const;
     ImageCut const& imageCut() const;
 
     eFittingTab fittingTab() const { return fittingTab_; }
 
-    QSharedPointer<DataSequence> selectedDataset() const { return selectedDataset_; }
+    QSharedPointer<Suite> selectedDataset() const { return selectedDataset_; }
 
 private:
     friend class TheHubSignallingBase;
@@ -100,9 +100,9 @@ private:
     bool isFixedIntenDgramScale_;
     bool isCombinedDgram_;
     uint_vec collectFromFiles_;
-    pint datasequenceGroupedBy_ = pint(1);
+    pint suiteGroupedBy_ = pint(1);
     eFittingTab fittingTab_ = eFittingTab::NONE;
-    QSharedPointer<DataSequence> selectedDataset_;
+    QSharedPointer<Suite> selectedDataset_;
     calc::shp_Reflection selectedReflection_;
 
     void setImageRotate(ImageTransform);
@@ -112,7 +112,7 @@ private:
 
 public:
     FilesModel* filesModel;
-    DatasetsModel* datasequenceModel;
+    DatasetsModel* suiteModel;
     MetadataModel* metadataModel;
     ReflectionsModel* reflectionsModel;
 };

@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/data/suite.cpp
-//! @brief     Implements classes Measurement, DataSequence, Experiment
+//! @brief     Implements classes Measurement, Suite, Experiment
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -26,12 +26,19 @@
 //  class Dataset
 // ************************************************************************** //
 
-DataSequence::DataSequence() : experiment_(nullptr) {}
+Suite::Suite()
+    : experiment_(nullptr)
+{}
 
-QSharedPointer<Metadata const> DataSequence::metadata() const {
+Experiment const& Suite::experiment() const {
+    debug::ensure(experiment_);
+    return *experiment_;
+}
+
+QSharedPointer<Metadata const> Suite::metadata() const {
     if (md_.isNull()) {
         debug::ensure(!isEmpty());
-        const_cast<DataSequence*>(this)->md_ = QSharedPointer<Metadata const>(new Metadata);
+        const_cast<Suite*>(this)->md_ = QSharedPointer<Metadata const>(new Metadata);
         Metadata* m = const_cast<Metadata*>(md_.data());
 
         debug::ensure(!first()->metadata().isNull());
@@ -72,9 +79,9 @@ QSharedPointer<Metadata const> DataSequence::metadata() const {
             m->deltaTime += d->deltaTime;
 
             if (m->monitorCount > d->monitorCount)
-                qWarning() << "decreasing monitor count in combined datasequence";
+                qWarning() << "decreasing monitor count in combined suite";
             if (m->time > d->time)
-                qWarning() << "decreasing time in combined datasequence";
+                qWarning() << "decreasing time in combined suite";
             m->monitorCount = d->monitorCount;
             m->time = d->time;
         }
@@ -114,13 +121,13 @@ QSharedPointer<Metadata const> DataSequence::metadata() const {
     avg /= count();                                                                                \
     return avg;
 
-deg DataSequence::omg() const { AVG_ONES(omg) }
+deg Suite::omg() const { AVG_ONES(omg) }
 
-deg DataSequence::phi() const { AVG_ONES(phi) }
+deg Suite::phi() const { AVG_ONES(phi) }
 
-deg DataSequence::chi() const { AVG_ONES(chi) }
+deg Suite::chi() const { AVG_ONES(chi) }
 
-// combined range of combined datasequence
+// combined range of combined suite
 #define RGE_COMBINE(combineOp, what)                                                               \
     debug::ensure(!isEmpty());                                                                           \
     Range rge;                                                                                     \
@@ -128,23 +135,23 @@ deg DataSequence::chi() const { AVG_ONES(chi) }
         rge.combineOp(one->what);                                                                  \
     return rge;
 
-Range DataSequence::rgeGma(Session const& session) const { RGE_COMBINE(extendBy, rgeGma(session)) }
+Range Suite::rgeGma(Session const& session) const { RGE_COMBINE(extendBy, rgeGma(session)) }
 
-Range DataSequence::rgeGmaFull(Session const& session) const {
+Range Suite::rgeGmaFull(Session const& session) const {
     RGE_COMBINE(extendBy, rgeGmaFull(session))
 }
 
-Range DataSequence::rgeTth(Session const& session) const { RGE_COMBINE(extendBy, rgeTth(session)) }
+Range Suite::rgeTth(Session const& session) const { RGE_COMBINE(extendBy, rgeTth(session)) }
 
-Range DataSequence::rgeInten() const { RGE_COMBINE(intersect, rgeInten()) }
+Range Suite::rgeInten() const { RGE_COMBINE(intersect, rgeInten()) }
 
-qreal DataSequence::avgMonitorCount() const { AVG_ONES(monitorCount) }
+qreal Suite::avgMonitorCount() const { AVG_ONES(monitorCount) }
 
-qreal DataSequence::avgDeltaMonitorCount() const { AVG_ONES(deltaMonitorCount) }
+qreal Suite::avgDeltaMonitorCount() const { AVG_ONES(deltaMonitorCount) }
 
-qreal DataSequence::avgDeltaTime() const { AVG_ONES(deltaTime) }
+qreal Suite::avgDeltaTime() const { AVG_ONES(deltaTime) }
 
-inten_vec DataSequence::collectIntens(
+inten_vec Suite::collectIntens(
     Session const& session, Image const* intensCorr, Range const& rgeGma) const {
     Range tthRge = rgeTth(session);
     deg tthWdt = tthRge.width();
@@ -153,7 +160,7 @@ inten_vec DataSequence::collectIntens(
     uint pixWidth = session.imageSize().w - cut.left - cut.right;
 
     uint numBins;
-    if (1 < count()) { // combined datasequence
+    if (1 < count()) { // combined suite
         auto one = first();
         deg delta = one->rgeTth(session).width() / pixWidth;
         numBins = to_u(qCeil(tthWdt / delta));
@@ -182,7 +189,7 @@ inten_vec DataSequence::collectIntens(
     return intens;
 }
 
-size2d DataSequence::imageSize() const {
+size2d Suite::imageSize() const {
     debug::ensure(!isEmpty());
     // all images have the same size; simply take the first one
     return first()->imageSize();
@@ -193,7 +200,7 @@ size2d DataSequence::imageSize() const {
 
 //! tth: Center of reflection's 2theta interval.
 //! gma: Center of gamma slice.
-void DataSequence::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const {
+void Suite::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const {
 
     // Rotate a unit vector initially parallel to the y axis with regards to the
     // angles. As a result, the vector is a point on a unit sphere
@@ -221,9 +228,4 @@ void DataSequence::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) c
 
     alpha = alphaRad.toDeg();
     beta = betaRad.toDeg();
-}
-
-Experiment const& DataSequence::experiment() const {
-    debug::ensure(experiment_);
-    return *experiment_;
 }

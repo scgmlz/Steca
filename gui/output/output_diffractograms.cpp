@@ -62,11 +62,11 @@ uint TabDiffractogramsSave::currType() const {
 struct OutputData {
     OutputData() {}
 
-    OutputData(Curve curve, DataSequence dataseq, Range gmaStripe, uint picNum)
+    OutputData(Curve curve, Suite dataseq, Range gmaStripe, uint picNum)
         : curve_(curve), dataseq_(dataseq), gmaStripe_(gmaStripe), picNum_(picNum) {}
 
     Curve curve_;
-    DataSequence dataseq_;
+    Suite dataseq_;
     Range gmaStripe_;
     uint picNum_;
 
@@ -90,7 +90,7 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
 }
 
 OutputDataCollection DiffractogramsFrame::collectCurves(
-    Range const& rgeGma, uint gmaSlices, DataSequence const& dataseq, uint picNum) {
+    Range const& rgeGma, uint gmaSlices, Suite const& dataseq, uint picNum) {
 
     auto lens = gSession->defaultDatasetLens(dataseq);
 
@@ -111,7 +111,7 @@ OutputDataCollection DiffractogramsFrame::collectCurves(
     return outputData;
 }
 
-OutputData DiffractogramsFrame::collectCurve(DataSequence const& dataseq) {
+OutputData DiffractogramsFrame::collectCurve(Suite const& dataseq) {
     auto lens = gSession->defaultDatasetLens(dataseq);
     auto curve = lens->makeCurve();
     return OutputData(curve, dataseq, lens->rgeGma(), 0); // TODO current picture number
@@ -128,12 +128,12 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
     if (pr->cbLimitGamma->isChecked())
         rgeGma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
 
-    auto& datasequence = gSession->collectedDatasets();
-    Progress progress(datasequence.count(), pb_);
+    auto& suite = gSession->collectedDatasets();
+    Progress progress(suite.count(), pb_);
 
     OutputDataCollections allOutputData;
     uint picNum = 1;
-    for (QSharedPointer<DataSequence> dataseq : datasequence) {
+    for (QSharedPointer<Suite> dataseq : suite) {
         progress.step();
         allOutputData.append(collectCurves(rgeGma, gmaSlices, *dataseq, picNum));
         ++picNum;

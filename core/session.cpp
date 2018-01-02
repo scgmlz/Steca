@@ -126,15 +126,15 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
     collectedDatasets_.clear();
     collectedDatasetsTags_.clear();
 
-    vec<QSharedPointer<Measurement const>> datasequenceFromFiles;
+    vec<QSharedPointer<Measurement const>> suiteFromFiles;
     for (uint i : collectedFromFiles_)
-        for (auto& dataseq : files_.at(i)->datasequence())
-            datasequenceFromFiles.append(dataseq);
+        for (auto& dataseq : files_.at(i)->suite())
+            suiteFromFiles.append(dataseq);
 
-    if (datasequenceFromFiles.isEmpty())
+    if (suiteFromFiles.isEmpty())
         return;
 
-    QSharedPointer<DataSequence> cd(new DataSequence);
+    QSharedPointer<Suite> cd(new Suite);
     uint i = 0;
 
     auto appendCd = [this, &cd, &combineBy, &i]() {
@@ -146,12 +146,12 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
                 tag += '-' + str::number(i);
             collectedDatasets_.appendHere(cd);
             collectedDatasetsTags_.append(tag);
-            cd = QSharedPointer<DataSequence>(new DataSequence);
+            cd = QSharedPointer<Suite>(new Suite);
         }
     };
 
     uint by = combineBy;
-    for (auto& dataseq : datasequenceFromFiles) {
+    for (auto& dataseq : suiteFromFiles) {
         cd->append(QSharedPointer<Measurement const>(dataseq));
         if (1 >= by--) {
             appendCd();
@@ -219,18 +219,18 @@ shp_AngleMap Session::angleMap(Measurement const& one) const {
 }
 
 calc::shp_ImageLens Session::imageLens(
-    Image const& image, Experiment const& datasequence, bool trans, bool cut) const {
-    return calc::shp_ImageLens(new calc::ImageLens(*this, image, datasequence, trans, cut));
+    Image const& image, Experiment const& suite, bool trans, bool cut) const {
+    return calc::shp_ImageLens(new calc::ImageLens(*this, image, suite, trans, cut));
 }
 
 QSharedPointer<calc::SequenceLens> Session::dataseqLens(
-    DataSequence const& dataseq, Experiment const& datasequence, eNorm norm, bool trans, bool cut
+    Suite const& dataseq, Experiment const& suite, eNorm norm, bool trans, bool cut
     ) const {
     return QSharedPointer<calc::SequenceLens>(new calc::SequenceLens(
-        *this, dataseq, datasequence, norm, trans, cut, imageTransform_, imageCut_));
+        *this, dataseq, suite, norm, trans, cut, imageTransform_, imageCut_));
 }
 
-QSharedPointer<calc::SequenceLens> Session::defaultDatasetLens(DataSequence const& dataseq) const {
+QSharedPointer<calc::SequenceLens> Session::defaultDatasetLens(Suite const& dataseq) const {
     return dataseqLens(dataseq, dataseq.experiment(), norm(), true, true);
 }
 
@@ -258,7 +258,7 @@ calc::ReflectionInfo Session::makeReflectionInfo(
 
     // compute alpha, beta:
     deg alpha, beta;
-    DataSequence const& dataseq = lens.dataseq();
+    Suite const& dataseq = lens.dataseq();
     dataseq.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
 
     QSharedPointer<Metadata const> metadata = dataseq.metadata();
@@ -271,24 +271,24 @@ calc::ReflectionInfo Session::makeReflectionInfo(
 }
 
 /* Gathers ReflectionInfos from Datasets.
- * Either uses the whole gamma range of the datasequence (if gammaSector is
+ * Either uses the whole gamma range of the suite (if gammaSector is
  * invalid), or user limits the range.
  * Even though the betaStep of the equidistant polefigure grid is needed here,
  * the returned infos won't be on the grid. REVIEW gammaStep separately?
  */
 calc::ReflectionInfos Session::makeReflectionInfos(
-    Experiment const& datasequence, calc::Reflection const& reflection, uint gmaSlices,
+    Experiment const& suite, calc::Reflection const& reflection, uint gmaSlices,
     Range const& rgeGma, Progress* progress) const {
     calc::ReflectionInfos infos;
 
     if (progress)
-        progress->setTotal(datasequence.count());
+        progress->setTotal(suite.count());
 
-    for (auto& dataseq : datasequence) {
+    for (auto& dataseq : suite) {
         if (progress)
             progress->step();
 
-        auto lens = dataseqLens(*dataseq, datasequence, norm_, true, true);
+        auto lens = dataseqLens(*dataseq, suite, norm_, true, true);
 
         Range rge = (gmaSlices > 0) ? lens->rgeGma() : lens->rgeGmaFull();
         if (rgeGma.isValid())
@@ -328,17 +328,17 @@ void Session::addReflection(const QJsonObject& obj) {
     reflections_.append(reflection);
 }
 
-qreal Session::calcAvgBackground(DataSequence const& dataseq) const {
+qreal Session::calcAvgBackground(Suite const& dataseq) const {
     auto lens = dataseqLens(dataseq, dataseq.experiment(), eNorm::NONE, true, true);
     Curve gmaCurve = lens->makeCurve(); // had argument averaged=true
     auto bgPolynom = Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
     return bgPolynom.avgY(lens->rgeTth());
 }
 
-qreal Session::calcAvgBackground(Experiment const& datasequence) const {
+qreal Session::calcAvgBackground(Experiment const& suite) const {
     TakesLongTime __;
     qreal bg = 0;
-    for (auto& dataseq : datasequence)
+    for (auto& dataseq : suite)
         bg += calcAvgBackground(*dataseq);
-    return bg / datasequence.count();
+    return bg / suite.count();
 }

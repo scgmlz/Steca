@@ -88,7 +88,7 @@ QVariant DatasetsModel::data(rcIndex index, int role) const {
         }
     }
     case GetDatasetRole:
-        return QVariant::fromValue<QSharedPointer<DataSequence>>(experiment_.at(to_u(row)));
+        return QVariant::fromValue<QSharedPointer<Suite>>(experiment_.at(to_u(row)));
     default:
         return EMPTY_VAR;
     }
@@ -125,7 +125,7 @@ MetadataModel::MetadataModel() {
     rowsChecked_.fill(false, Metadata::numAttributes(false));
 }
 
-void MetadataModel::reset(QSharedPointer<DataSequence> dataseq) {
+void MetadataModel::reset(QSharedPointer<Suite> dataseq) {
     metadata_.clear();
     if (dataseq)
         metadata_ = dataseq->metadata();

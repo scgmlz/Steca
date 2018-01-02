@@ -27,7 +27,7 @@ Experiment::Experiment() {
     invalidateAvgMutables();
 }
 
-void Experiment::appendHere(QSharedPointer<DataSequence> dataseq) {
+void Experiment::appendHere(QSharedPointer<Suite> dataseq) {
     // can be added only once
     debug::ensure(!dataseq->experiment_);
     dataseq->experiment_ = this;
@@ -44,19 +44,19 @@ size2d Experiment::imageSize() const {
 
 qreal Experiment::avgMonitorCount() const {
     if (qIsNaN(avgMonitorCount_))
-        avgMonitorCount_ = calcAvgMutable(&DataSequence::avgMonitorCount);
+        avgMonitorCount_ = calcAvgMutable(&Suite::avgMonitorCount);
     return avgMonitorCount_;
 }
 
 qreal Experiment::avgDeltaMonitorCount() const {
     if (qIsNaN(avgDeltaMonitorCount_))
-        avgDeltaMonitorCount_ = calcAvgMutable(&DataSequence::avgDeltaMonitorCount);
+        avgDeltaMonitorCount_ = calcAvgMutable(&Suite::avgDeltaMonitorCount);
     return avgDeltaMonitorCount_;
 }
 
 qreal Experiment::avgDeltaTime() const {
     if (qIsNaN(avgDeltaTime_))
-        avgDeltaTime_ = calcAvgMutable(&DataSequence::avgDeltaTime);
+        avgDeltaTime_ = calcAvgMutable(&Suite::avgDeltaTime);
     return avgDeltaTime_;
 }
 
@@ -99,15 +99,15 @@ void Experiment::invalidateAvgMutables() const {
     avgCurve_.clear();
 }
 
-QSharedPointer<DataSequence> Experiment::combineAll() const {
-    QSharedPointer<DataSequence> ret(new DataSequence);
-    for (QSharedPointer<DataSequence> const& dataseq : *this)
+QSharedPointer<Suite> Experiment::combineAll() const {
+    QSharedPointer<Suite> ret(new Suite);
+    for (QSharedPointer<Suite> const& dataseq : *this)
         for (QSharedPointer<Measurement const> const& one : *dataseq)
             ret->append(one);
     return ret;
 }
 
-qreal Experiment::calcAvgMutable(qreal (DataSequence::*avgMth)() const) const {
+qreal Experiment::calcAvgMutable(qreal (Suite::*avgMth)() const) const {
     qreal ret = 0;
     if (!isEmpty()) {
         for (auto& dataseq : *this)

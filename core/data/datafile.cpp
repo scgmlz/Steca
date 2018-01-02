@@ -19,7 +19,7 @@
 
 Datafile::Datafile(rcstr fileName) : fileInfo_(fileName) {}
 
-//! The loaders use this function to push datasequence
+//! The loaders use this function to push suite
 void Datafile::addDataset(Metadata const& md, size2d const& sz, inten_vec const& ivec) {
     if (experiment_.isEmpty())
         imageSize_ = sz;

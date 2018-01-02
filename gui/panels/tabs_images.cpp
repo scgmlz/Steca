@@ -216,7 +216,7 @@ TabsImages::TabsImages() : TabsPanel() {
     connect(gHub, &TheHubSignallingBase::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHubSignallingBase::sigNormChanged, [this](){ render(); });
     connect(gHub, &TheHubSignallingBase::sigDatasetSelected,
-            [this](QSharedPointer<DataSequence> dataseq){ setDataset(dataseq); });
+            [this](QSharedPointer<Suite> dataseq){ setSuite(dataseq); });
 
     render();
 }
@@ -279,7 +279,7 @@ QPixmap TabsImages::makePixmap(
     return QPixmap::fromImage(im);
 }
 
-void TabsImages::setDataset(QSharedPointer<DataSequence> dataseq) {
+void TabsImages::setSuite(QSharedPointer<Suite> dataseq) {
     dataseq_ = dataseq;
     render();
 }
@@ -294,7 +294,7 @@ void TabsImages::render() {
 
         if (dataseq_) {
             // 1 - based
-            uint by = qBound(1u, uint(gHub->datasequenceGroupedBy()), dataseq_->count());
+            uint by = qBound(1u, uint(gHub->suiteGroupedBy()), dataseq_->count());
             uint n = qBound(1u, to_u(spinN_->value()), by);
 
             spinN_->setValue(to_i(n));

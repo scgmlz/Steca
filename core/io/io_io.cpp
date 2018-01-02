@@ -92,7 +92,7 @@ QSharedPointer<const Datafile> load(rcstr filePath) THROWS {
     else
         THROW("unknown file type: " % filePath);
 
-    RUNTIME_CHECK(file->datasequence().count() > 0, "File " % filePath % " contains no datasequence");
+    RUNTIME_CHECK(file->suite().count() > 0, "File " % filePath % " contains no suite");
 
     return file;
 }

@@ -20,16 +20,16 @@
 
 class Session;
 class Metadata;
-class DataSequence;
+class Suite;
 class Experiment;
 
-//! A sequence of DataSequences's
+//! A sequence of Suites's
 
-class Experiment final : public vec<QSharedPointer<DataSequence>> {
+class Experiment final : public vec<QSharedPointer<Suite>> {
 public:
     Experiment();
 
-    void appendHere(QSharedPointer<DataSequence>);
+    void appendHere(QSharedPointer<Suite>);
 
     size2d imageSize() const;
 
@@ -45,8 +45,8 @@ public:
     void invalidateAvgMutables() const;
 
 private:
-    QSharedPointer<DataSequence> combineAll() const;
-    qreal calcAvgMutable(qreal (DataSequence::*avgMth)() const) const;
+    QSharedPointer<Suite> combineAll() const;
+    qreal calcAvgMutable(qreal (Suite::*avgMth)() const) const;
 
     // computed on demand (NaNs or emptiness indicate yet unknown values)
     mutable qreal avgMonitorCount_, avgDeltaMonitorCount_, avgDeltaTime_;

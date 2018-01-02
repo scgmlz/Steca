@@ -38,7 +38,7 @@ private:
     QSharedPointer<Image> corrImage_;
     bool corrEnabled_;
     uint_vec collectedFromFiles_; // from these files
-    Experiment collectedDatasets_; // datasequence collected ...
+    Experiment collectedDatasets_; // suite collected ...
     QStringList collectedDatasetsTags_;
     bool intenScaledAvg_; // if not, summed
     preal intenScale_;
@@ -119,8 +119,8 @@ public:
 
     calc::shp_ImageLens imageLens(Image const&, Experiment const&, bool trans, bool cut) const;
     QSharedPointer<calc::SequenceLens> dataseqLens(
-        DataSequence const&, Experiment const&, eNorm, bool trans, bool cut) const;
-    QSharedPointer<calc::SequenceLens> defaultDatasetLens(DataSequence const& dataseq) const;
+        Suite const&, Experiment const&, eNorm, bool trans, bool cut) const;
+    QSharedPointer<calc::SequenceLens> defaultDatasetLens(Suite const& dataseq) const;
 
     calc::ReflectionInfos makeReflectionInfos(
         Experiment const&, calc::Reflection const&, uint gmaSlices, Range const&, Progress*) const;
@@ -133,7 +133,7 @@ public:
 
     eNorm norm() const { return norm_; }
 
-    qreal calcAvgBackground(DataSequence const&) const;
+    qreal calcAvgBackground(Suite const&) const;
     qreal calcAvgBackground(Experiment const&) const;
 };
 

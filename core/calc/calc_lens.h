@@ -21,7 +21,7 @@
 #include "typ/vec.h"
 #include "data/image_transform.h"
 
-class DataSequence;
+class Suite;
 class Experiment;
 class Image;
 class Session;
@@ -74,7 +74,7 @@ typedef QSharedPointer<ImageLens> shp_ImageLens;
 class SequenceLens final : public LensBase {
 public:
     SequenceLens(
-        Session const&, DataSequence const&, Experiment const&, eNorm, bool trans,
+        Session const&, Suite const&, Experiment const&, eNorm, bool trans,
         bool cut, ImageTransform const&, ImageCut const&);
 
     size2d size() const;
@@ -87,13 +87,13 @@ public:
     Curve makeCurve() const;
     Curve makeCurve(Range const&) const;
 
-    DataSequence const& dataseq() const { return dataseq_; }
+    Suite const& dataseq() const { return dataseq_; }
 
 private:
     void setNorm(eNorm);
     inten_t normFactor_;
 
-    DataSequence const& dataseq_;
+    Suite const& dataseq_;
 };
 
 } // namespace calc

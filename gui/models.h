@@ -19,7 +19,7 @@
 #include "typ/str.h"
 #include "typ/vec.h"
 
-class DataSequence;
+class Suite;
 class Experiment;
 class Metadata;
 
@@ -55,7 +55,7 @@ public:
     void showMetaInfo(vec<bool> const&);
 
 private:
-    Experiment const& experiment_; // the selected datasequence
+    Experiment const& experiment_; // the selected suite
     uint_vec metaInfoNums_; // selected metadata items to show
 };
 
@@ -74,7 +74,7 @@ public:
 
     vec<bool> const& rowsChecked() const { return rowsChecked_; }
 
-    void reset(QSharedPointer<DataSequence> dataseq);
+    void reset(QSharedPointer<Suite> dataseq);
     void flipCheck(uint row);
 
 private:

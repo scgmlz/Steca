@@ -18,7 +18,7 @@
 #include "output_dialogs.h"
 #include "frame.h"
 
-class DataSequence;
+class Suite;
 
 namespace gui {
 namespace output {
@@ -35,8 +35,8 @@ protected:
     class TabDiffractogramsSave* tabSave_;
 
     OutputDataCollection
-    collectCurves(Range const&, uint gmaSlices, DataSequence const& dataseq, uint picNum);
-    OutputData collectCurve(DataSequence const& dataseq);
+    collectCurves(Range const&, uint gmaSlices, Suite const& dataseq, uint picNum);
+    OutputData collectCurve(Suite const& dataseq);
 
     OutputData outputCurrDiffractogram();
     OutputDataCollections outputAllDiffractograms();

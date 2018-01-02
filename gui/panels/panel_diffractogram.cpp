@@ -502,7 +502,7 @@ Diffractogram::Diffractogram()
     });
 
     connect(gHub, &TheHubSignallingBase::sigDatasetSelected,
-            [this](QSharedPointer<DataSequence> dataseq){ setDataset(dataseq); });
+            [this](QSharedPointer<Suite> dataseq){ setSuite(dataseq); });
     connect(gHub, &TheHubSignallingBase::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHubSignallingBase::sigCorrEnabled, [this](){ render(); });
     connect(gHub, &TheHubSignallingBase::sigDisplayChanged, [this](){ render(); });
@@ -589,7 +589,7 @@ void Diffractogram::render() {
     plot_->plot(dgram_, dgramBgFitted_, bg_, refls_, currReflIndex_);
 }
 
-void Diffractogram::setDataset(QSharedPointer<DataSequence> dataseq) {
+void Diffractogram::setSuite(QSharedPointer<Suite> dataseq) {
     dataseq_ = dataseq;
     actZoom_->setChecked(false);
     render();

@@ -20,7 +20,7 @@
 #include "typ/range.h"
 #include "typ/realpair.h"
 
-class DataSequence;
+class Suite;
 
 // make connects shorter
 #define slot(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
@@ -43,7 +43,7 @@ private:
 
 public: // emit signals
     void tellSessionCleared();
-    void tellDatasetSelected(QSharedPointer<DataSequence>);
+    void tellDatasetSelected(QSharedPointer<Suite>);
     void tellSelectedReflection(calc::shp_Reflection);
     void tellReflectionData(calc::shp_Reflection);
     void tellReflectionValues(Range const&, qpair const&, fwhm_t, bool);
@@ -54,9 +54,9 @@ signals:
     void sigFilesChanged(); // the set of loaded files has changed
     void sigFilesSelected(); // the selection of loaded files has changed
 
-    void sigDatasetsChanged(); // the set of datasequence collected from selected
+    void sigDatasetsChanged(); // the set of suite collected from selected
     // files has changed
-    void sigDatasetSelected(QSharedPointer<DataSequence>);
+    void sigDatasetSelected(QSharedPointer<Suite>);
 
     void sigCorrFile(QSharedPointer<Datafile const>);
     void sigCorrEnabled(bool);

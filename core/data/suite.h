@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/data/suite.h
-//! @brief     Defines class DataSequence
+//! @brief     Defines class Suite
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -27,12 +27,12 @@ class Experiment;
 
 //! One or more Measurement's
 
-class DataSequence final : public vec<QSharedPointer<Measurement const>> {
+class Suite final : public vec<QSharedPointer<Measurement const>> {
 private:
     friend class Experiment;
 
 public:
-    DataSequence();
+    Suite();
 
     QSharedPointer<Metadata const> metadata() const;
     Experiment const& experiment() const;
@@ -61,6 +61,6 @@ private:
     QSharedPointer<Metadata const> md_; // on demand, compute once
 };
 
-Q_DECLARE_METATYPE(QSharedPointer<DataSequence>)
+Q_DECLARE_METATYPE(QSharedPointer<Suite>)
 
 #endif // SUITE_H

@@ -39,10 +39,10 @@ private:
     QPixmap makePixmap(QSharedPointer<Image>);
     QPixmap makePixmap(Measurement const&, Range const&, Range const&);
 
-    void setDataset(QSharedPointer<DataSequence>);
+    void setSuite(QSharedPointer<Suite>);
     void render();
 
-    QSharedPointer<DataSequence> dataseq_;
+    QSharedPointer<Suite> dataseq_;
     ImageWidget *dataImageWidget_, *corrImageWidget_;
 
     QSpinBox* spinN_;
