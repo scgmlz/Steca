@@ -32,13 +32,13 @@ static qreal pow_n(qreal x, uint n) {
 // ************************************************************************** //
 
 uint Polynom::degree() const {
-    uint parCount = super::parameterCount();
+    uint parCount = parameterCount();
     debug::ensure(parCount > 0);
     return parCount - 1;
 }
 
 void Polynom::setDegree(uint degree) {
-    super::setParameterCount(degree + 1);
+    setParameterCount(degree + 1);
 }
 
 qreal Polynom::y(qreal x, qreal const* parValues) const {
@@ -83,13 +83,13 @@ Polynom Polynom::fromFit(uint degree, Curve const& curve, Ranges const& ranges) 
 }
 
 JsonObj Polynom::to_json() const {
-    JsonObj ret = super::to_json();
+    JsonObj ret = Function::to_json();
     ret.insert("type", name());
     return ret;
 }
 
 void Polynom::from_json(JsonObj const& obj) THROWS {
-    super::from_json(obj);
+    Function::from_json(obj);
 }
 
 // ************************************************************************** //
@@ -111,7 +111,7 @@ void PeakFunction::setGuessedFWHM(fwhm_t fwhm) {
 }
 
 void PeakFunction::reset() {
-    super::reset();
+    Function::reset();
     setGuessedPeak(guessedPeak_);
     setGuessedFWHM(guessedFWHM_);
 }
@@ -156,7 +156,7 @@ Curve PeakFunction::prepareFit(Curve const& curve, Range const& range) {
 }
 
 JsonObj PeakFunction::to_json() const {
-    JsonObj ret = super::to_json();
+    JsonObj ret = Function::to_json();
     ret.insert("range", range_.to_json());
     ret.insert("guessed peak", guessedPeak_.to_json());
     ret.insert("guessed fwhm", qreal_to_json(guessedFWHM_));
@@ -165,7 +165,7 @@ JsonObj PeakFunction::to_json() const {
 }
 
 void PeakFunction::from_json(JsonObj const& obj) THROWS {
-    super::from_json(obj);
+    Function::from_json(obj);
     range_ = obj.loadRange("range");
     guessedPeak_.from_json(obj.loadObj("guessed peak"));
     guessedFWHM_ = obj.loadQreal("guessed fwhm");

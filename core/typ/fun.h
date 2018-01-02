@@ -19,7 +19,7 @@
 #include "typ/json.h"
 #include "typ/range.h"
 
-//! Abstract function
+//! Abstract function with parameters
 
 class Function {
 public:
@@ -45,27 +45,12 @@ public:
 
     virtual ~Function() {}
 
-    virtual uint parameterCount() const = 0;
-
-    virtual Parameter& parameterAt(uint) = 0;
-    virtual Parameter const& parameterAt(uint i) const {
-        return const_cast<Function*>(this)->parameterAt(i);
-    }
-
     // evaluate the function y = f(x), with given (parValues) or own parameters
     virtual qreal y(qreal x, qreal const* parValues = nullptr) const = 0;
 
     // partial derivative / parameter, with given (parValues) or own parameters
     virtual qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const = 0;
 
-    virtual JsonObj to_json() const { return JsonObj(); }
-    virtual void from_json(JsonObj const&) THROWS {}
-};
-
-
-//! abstract function with parameters
-
-class SimpleFunction : public Function {
 public:
     void setParameterCount(uint);
     uint parameterCount() const;
@@ -73,17 +58,14 @@ public:
 
     virtual void reset();
 
-    JsonObj to_json() const;
-    void from_json(JsonObj const&) THROWS;
+    virtual JsonObj to_json() const;
+    virtual void from_json(JsonObj const&) THROWS;
     virtual str name() const = 0;
 
 protected:
     vec<Parameter> parameters_;
     qreal parValue(uint parIndex, qreal const* parValues) const;
     void setValue(uint parIndex, qreal val);
-
-private:
-    using super = Function;
 };
 
 #endif // FUN_H

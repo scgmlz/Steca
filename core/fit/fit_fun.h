@@ -24,9 +24,7 @@
 
 //! A polynomial, for fitting the background of a diffractogram
 
-class Polynom final : public SimpleFunction {
-private:
-    using super = SimpleFunction;
+class Polynom final : public Function {
 public:
     Polynom(uint degree = 0) { setDegree(degree); }
 
@@ -50,9 +48,7 @@ public:
 
 //! Abstract peak function
 
-class PeakFunction : public SimpleFunction {
-private:
-    using super = SimpleFunction;
+class PeakFunction : public Function {
 public:
     PeakFunction();
     PeakFunction* clone() const;

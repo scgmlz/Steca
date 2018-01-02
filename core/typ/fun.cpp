@@ -46,41 +46,35 @@ void Function::Parameter::from_json(JsonObj const& obj) THROWS {
     range_ = obj.loadRange("range");
 }
 
-
-// ************************************************************************** //
-//   class SimpleFunction
-// ************************************************************************** //
-
-void SimpleFunction::setParameterCount(uint count) {
+void Function::setParameterCount(uint count) {
     parameters_.fill(Parameter(), count);
 }
 
-uint SimpleFunction::parameterCount() const {
+uint Function::parameterCount() const {
     return parameters_.count();
 }
 
-Function::Parameter& SimpleFunction::parameterAt(uint i) {
+Function::Parameter& Function::parameterAt(uint i) {
     return parameters_[i];
 }
 
-void SimpleFunction::reset() {
+void Function::reset() {
     for_i (parameters_.count()) {
         auto& p = parameters_[i];
         p.setValue(p.valueRange().bound(0), 0);
     }
 }
 
-JsonObj SimpleFunction::to_json() const {
+JsonObj Function::to_json() const {
     QJsonArray params;
     for (const Parameter& param : parameters_)
         params.append(param.to_json().sup());
-    JsonObj ret = super::to_json();
+    JsonObj ret;
     ret.insert("parameters", params);
     return ret;
 }
 
-void SimpleFunction::from_json(JsonObj const& obj) THROWS {
-    super::from_json(obj);
+void Function::from_json(JsonObj const& obj) THROWS {
     QJsonArray params = obj.loadArr("parameters");
     uint parCount = params.count();
     setParameterCount(parCount);
@@ -88,10 +82,10 @@ void SimpleFunction::from_json(JsonObj const& obj) THROWS {
         parameters_[i].from_json(params.at(i).toObject());
 }
 
-qreal SimpleFunction::parValue(uint i, qreal const* parValues) const {
+qreal Function::parValue(uint i, qreal const* parValues) const {
     return parValues ? parValues[i] : parameters_.at(i).value();
 }
 
-void SimpleFunction::setValue(uint i, qreal val) {
+void Function::setValue(uint i, qreal val) {
     parameters_[i].setValue(val, 0);
 }
