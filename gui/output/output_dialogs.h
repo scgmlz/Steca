@@ -59,7 +59,7 @@ public:
     void sortData();
     uint rowCount() const;
     row_t const& row(uint) const;
-    scoped<class TableModel*> model_;
+    scoped<class TabularModel*> model_;
     QStringList outHeaders_;
 };
 

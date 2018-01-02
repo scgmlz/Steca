@@ -17,8 +17,6 @@
 
 #include <QAbstractTableModel>
 
-namespace models {
-
 extern QVariant const EMPTY_VAR;
 extern QModelIndex const ANY_INDEX;
 
@@ -36,7 +34,5 @@ public:
 protected:
     static int const DCOL = 1; //!< the left-most column is hidden
 };
-
-} // namespace models
 
 #endif // TABLE_MODEL_H

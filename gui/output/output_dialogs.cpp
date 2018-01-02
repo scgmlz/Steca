@@ -130,16 +130,16 @@ void Params::saveSettings() const {
 }
 
 // ************************************************************************** //
-//  class TableModel
+//  class TabularModel
 // ************************************************************************** //
 
-class TableModel : public models::TableModel {
+class TabularModel : public TableModel {
 private:
 public:
-    TableModel(uint numCols_);
+    TabularModel(uint numCols_);
 
-    int columnCount(rcIndex = models::ANY_INDEX) const;
-    int rowCount(rcIndex = models::ANY_INDEX) const;
+    int columnCount(rcIndex = ANY_INDEX) const;
+    int rowCount(rcIndex = ANY_INDEX) const;
 
     QVariant data(rcIndex, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
@@ -176,24 +176,24 @@ private:
     vec<numRow> rows_;
 };
 
-TableModel::TableModel(uint numColumns_)
-    : models::TableModel(), numCols_(numColumns_), sortColumn_(-1) {
+TabularModel::TabularModel(uint numColumns_)
+    : TableModel(), numCols_(numColumns_), sortColumn_(-1) {
     colIndexMap_.resize(numCols_);
     for_i (numCols_)
         colIndexMap_[i] = i;
 }
 
-int TableModel::columnCount(rcIndex) const {
+int TabularModel::columnCount(rcIndex) const {
     return to_i(numCols_) + 1;
 }
 
-int TableModel::rowCount(rcIndex) const {
+int TabularModel::rowCount(rcIndex) const {
     return to_i(rows_.count());
 }
 
 // The first column contains row numbers. The rest numCols columns contain data.
 
-QVariant TableModel::data(rcIndex index, int role) const {
+QVariant TabularModel::data(rcIndex index, int role) const {
     int indexRow = index.row(), indexCol = index.column();
     int numRows = rowCount(), numCols = columnCount();
 
@@ -232,7 +232,7 @@ QVariant TableModel::data(rcIndex index, int role) const {
     return QVariant();
 }
 
-QVariant TableModel::headerData(int section, Qt::Orientation, int role) const {
+QVariant TabularModel::headerData(int section, Qt::Orientation, int role) const {
     if (section < 0 || headers_.count() < section)
         return QVariant();
 
@@ -242,38 +242,38 @@ QVariant TableModel::headerData(int section, Qt::Orientation, int role) const {
     return QVariant();
 }
 
-void TableModel::moveColumn(uint from, uint to) {
+void TabularModel::moveColumn(uint from, uint to) {
     debug::ensure(from < colIndexMap_.count() && to < colIndexMap_.count());
     qSwap(colIndexMap_[from], colIndexMap_[to]);
 }
 
-void TableModel::setColumns(QStringList const& headers, cmp_vec const& cmps) {
+void TabularModel::setColumns(QStringList const& headers, cmp_vec const& cmps) {
     debug::ensure(to_u(headers.count()) == numCols_ && cmps.count() == numCols_);
     headers_ = headers;
     cmpFunctions_ = cmps;
 }
 
-void TableModel::setSortColumn(int col) {
+void TabularModel::setSortColumn(int col) {
     sortColumn_ = col < 0 ? col : colIndexMap_.at(col);
 }
 
-void TableModel::clear() {
+void TabularModel::clear() {
     beginResetModel();
     rows_.clear();
     endResetModel();
 }
 
-void TableModel::addRow(row_t const& row, bool sort) {
+void TabularModel::addRow(row_t const& row, bool sort) {
     rows_.append(numRow(rows_.count() + 1, row));
     if (sort)
         sortData();
 }
 
-row_t const& TableModel::row(uint index) {
+row_t const& TabularModel::row(uint index) {
     return rows_.at(index).row;
 }
 
-void TableModel::sortData() {
+void TabularModel::sortData() {
     auto cmpRows = [this](uint col, row_t const& r1, row_t const& r2) {
         col = colIndexMap_.at(col);
         return cmpFunctions_.at(col)(r1.at(col), r2.at(col));
@@ -325,7 +325,7 @@ Tab::Tab(Params& params) : params_(params) {
 // ************************************************************************** //
 
 Table::Table(uint numDataColumns) : model_(nullptr) {
-    model_.reset(new TableModel(numDataColumns));
+    model_.reset(new TabularModel(numDataColumns));
     setModel(model_.ptr());
     setHeader(new QHeaderView(Qt::Horizontal));
 

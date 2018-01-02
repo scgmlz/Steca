@@ -21,12 +21,10 @@
 
 class QAction;
 
-namespace models {
 class FilesModel;
 class DatasetsModel;
 class MetadataModel;
 class ReflectionsModel;
-}
 
 extern class gui::TheHub* gHub;
 
@@ -115,10 +113,10 @@ private:
     void sessionFromJson(QByteArray const&) THROWS;
 
 public:
-    models::FilesModel* filesModel;
-    models::DatasetsModel* datasequenceModel;
-    models::MetadataModel* metadataModel;
-    models::ReflectionsModel* reflectionsModel;
+    FilesModel* filesModel;
+    DatasetsModel* datasequenceModel;
+    MetadataModel* metadataModel;
+    ReflectionsModel* reflectionsModel;
 };
 
 } // namespace gui

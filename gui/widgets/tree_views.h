@@ -48,12 +48,12 @@ public:
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
     // base class has setModel(<other type>*)
-    void setModel(models::TableModel* model) { TreeListView::setModel(model); }
+    void setModel(TableModel* model) { TreeListView::setModel(model); }
 #pragma GCC diagnostic pop
 
 protected:
-    models::TableModel* model() const {
-        return static_cast<models::TableModel*>(TreeListView::model()); }
+    TableModel* model() const {
+        return static_cast<TableModel*>(TreeListView::model()); }
     void updateSingleSelection();
     void selectRow(int);
 };

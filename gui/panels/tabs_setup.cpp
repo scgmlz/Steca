@@ -46,7 +46,7 @@ public:
     void updateSingleSelection();
 
 private:
-    using Model = models::ReflectionsModel;
+    using Model = ReflectionsModel;
     Model* model() const { return static_cast<Model*>(ListView::model()); }
 
     void selectionChanged(QItemSelection const&, QItemSelection const&);

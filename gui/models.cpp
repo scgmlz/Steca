@@ -20,8 +20,6 @@
 #include "session.h"
 #include "thehub.h"
 
-namespace models {
-
 // ************************************************************************** //
 //  class FilesModel
 // ************************************************************************** //
@@ -254,5 +252,3 @@ QStringList ReflectionsModel::names() const {
         ns.append(displayData(to_u(i)));
     return ns;
 }
-
-} // namespace models

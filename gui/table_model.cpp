@@ -14,8 +14,6 @@
 
 #include "table_model.h"
 
-namespace models {
-
 QVariant const EMPTY_VAR;
 QModelIndex const ANY_INDEX;
 
@@ -23,5 +21,3 @@ void TableModel::signalReset() {
     beginResetModel();
     endResetModel();
 }
-
-} // namespace models

@@ -34,10 +34,10 @@ TheHub::TheHub()
 {
     qDebug() << "TheHub/";
 
-    filesModel = new models::FilesModel();
-    datasequenceModel = new models::DatasetsModel();
-    metadataModel = new models::MetadataModel();
-    reflectionsModel = new models::ReflectionsModel();
+    filesModel = new FilesModel();
+    datasequenceModel = new DatasetsModel();
+    metadataModel = new MetadataModel();
+    reflectionsModel = new ReflectionsModel();
 
     connect(this, &gui::TheHubSignallingBase::sigFilesChanged,
             [this]() { filesModel->signalReset(); });

@@ -23,8 +23,6 @@ class DataSequence;
 class Experiment;
 class Metadata;
 
-namespace models {
-
 class FilesModel : public TableModel {
 public:
     int columnCount(rcIndex = ANY_INDEX) const;
@@ -108,7 +106,5 @@ public:
 
     QStringList names() const;
 };
-
-} // namespace models
 
 #endif // MODELS_H

@@ -33,7 +33,7 @@ public:
 protected:
     void currentChanged(QModelIndex const&, QModelIndex const&);
 
-    using Model = models::DatasetsModel;
+    using Model = DatasetsModel;
     Model* model() const { return static_cast<Model*>(ListView::model()); }
 };
 

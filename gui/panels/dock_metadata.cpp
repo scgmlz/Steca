@@ -21,7 +21,7 @@ namespace panel {
 
 class MetadataView : public ListView {
 public:
-    using Model = models::MetadataModel;
+    using Model = MetadataModel;
     MetadataView();
 
 protected:
