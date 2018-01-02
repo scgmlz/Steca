@@ -26,7 +26,7 @@ namespace calc {
 class LensBase {
 public:
     LensBase(
-        Session const&, Datasets const&, bool trans, bool cut,
+        Session const&, Experiment const&, bool trans, bool cut,
         ImageTransform const&, ImageCut const&);
     virtual ~LensBase() {}
     virtual size2d size() const = 0;
@@ -38,7 +38,7 @@ protected:
     void doCut(uint& i, uint& j) const;
 
     Session const& session_;
-    Datasets const& datasets_;
+    Experiment const& datasets_;
     bool trans_, cut_;
     ImageTransform imageTransform_;
     ImageCut imageCut_;
@@ -47,7 +47,7 @@ protected:
 
 class ImageLens final : public LensBase {
 public:
-    ImageLens(Session const&, Image const&, Datasets const&, bool trans, bool cut);
+    ImageLens(Session const&, Image const&, Experiment const&, bool trans, bool cut);
 
     size2d size() const;
 
@@ -67,7 +67,7 @@ typedef QSharedPointer<ImageLens> shp_ImageLens;
 class DatasetLens final : public LensBase {
 public:
     DatasetLens(
-        Session const&, Dataset const&, Datasets const&, eNorm, bool trans,
+        Session const&, DataSequence const&, Experiment const&, eNorm, bool trans,
         bool cut, ImageTransform const&, ImageCut const&);
 
     size2d size() const;
@@ -80,13 +80,13 @@ public:
     Curve makeCurve() const;
     Curve makeCurve(Range const&) const;
 
-    Dataset const& dataset() const { return dataset_; }
+    DataSequence const& dataset() const { return dataset_; }
 
 private:
     void setNorm(eNorm);
     inten_t normFactor_;
 
-    Dataset const& dataset_;
+    DataSequence const& dataset_;
 };
 
 typedef QSharedPointer<DatasetLens> shp_DatasetLens;

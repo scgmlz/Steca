@@ -82,9 +82,9 @@ public:
     bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
     bool isCombinedDgram() const { return isCombinedDgram_; }
 
-    calc::shp_DatasetLens datasetLens(Dataset const&) const;
+    calc::shp_DatasetLens datasetLens(DataSequence const&) const;
 
-    Curve avgCurve(Datasets const& dss) const;
+    Curve avgCurve(Experiment const& dss) const;
 
     void saveSession(QFileInfo const&) const;
     QByteArray saveSession() const;

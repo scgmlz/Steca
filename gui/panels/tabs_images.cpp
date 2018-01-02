@@ -245,7 +245,7 @@ QPixmap TabsImages::makePixmap(shp_Image image) {
 }
 
 QPixmap TabsImages::makePixmap(
-    OneDataset const& dataset, Range const& rgeGma, Range const& rgeTth) {
+    Measurement const& dataset, Range const& rgeGma, Range const& rgeTth) {
     auto im = makeImage(dataset.image(), !gHub->isFixedIntenImageScale());
     auto angleMap = gSession->angleMap(dataset);
 

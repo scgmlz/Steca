@@ -21,7 +21,7 @@ namespace calc {
 // ************************************************************************** //
 
 LensBase::LensBase(
-    Session const& session, Datasets const& datasets, bool trans, bool cut,
+    Session const& session, Experiment const& datasets, bool trans, bool cut,
     ImageTransform const& imageTransform, ImageCut const& imageCut)
     : session_(session)
     , datasets_(datasets)
@@ -80,7 +80,7 @@ void LensBase::doCut(uint& i, uint& j) const {
 // ************************************************************************** //
 
 ImageLens::ImageLens(
-    Session const& session, Image const& image, Datasets const& datasets, bool trans,
+    Session const& session, Image const& image, Experiment const& datasets, bool trans,
     bool cut)
     : LensBase(session, datasets, trans, cut, session.imageTransform(), session.imageCut())
     , image_(image) {}
@@ -117,7 +117,7 @@ Range const& ImageLens::rgeInten(bool fixed) const {
 // ************************************************************************** //
 
 DatasetLens::DatasetLens(
-    Session const& session, Dataset const& dataset, Datasets const& datasets,
+    Session const& session, DataSequence const& dataset, Experiment const& datasets,
     eNorm norm, bool trans, bool cut, ImageTransform const& imageTransform,
     ImageCut const& imageCut)
     : LensBase(session, datasets, trans, cut, imageTransform, imageCut)

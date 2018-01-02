@@ -175,11 +175,11 @@ void TheHub::removeFile(uint i) {
         setImageCut(true, false, ImageCut());
 }
 
-calc::shp_DatasetLens TheHub::datasetLens(Dataset const& dataset) const {
+calc::shp_DatasetLens TheHub::datasetLens(DataSequence const& dataset) const {
     return gSession->datasetLens(dataset, dataset.datasets(), gSession->norm(), true, true);
 }
 
-Curve TheHub::avgCurve(Datasets const& dss) const {
+Curve TheHub::avgCurve(Experiment const& dss) const {
     return dss.avgCurve(*gSession);
 }
 

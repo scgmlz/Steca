@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/data/dataset.cpp
-//! @brief     Implements classes [One]Dataset[s]
+//! @brief     Implements classes Measurement, DataSequence, Experiment
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -26,39 +26,39 @@
 //  class OneDataset
 // ************************************************************************** //
 
-OneDataset::OneDataset(Metadata const& md, size2d const& size, inten_vec const& intens)
+Measurement::Measurement(Metadata const& md, size2d const& size, inten_vec const& intens)
     : md_(new Metadata(md)), image_(new Image(size)) {
     debug::ensure(intens.count() == size.count());
     for_i (intens.count())
         image_->setInten(i, intens.at(i));
 }
 
-QSharedPointer<Metadata const> OneDataset::metadata() const {
+QSharedPointer<Metadata const> Measurement::metadata() const {
     debug::ensure(!md_.isNull());
     return md_;
 }
 
-Range OneDataset::rgeGma(Session const& session) const {
+Range Measurement::rgeGma(Session const& session) const {
     return session.angleMap(*this)->rgeGma();
 }
 
-Range OneDataset::rgeGmaFull(Session const& session) const {
+Range Measurement::rgeGmaFull(Session const& session) const {
     return session.angleMap(*this)->rgeGmaFull();
 }
 
-Range OneDataset::rgeTth(Session const& session) const {
+Range Measurement::rgeTth(Session const& session) const {
     return session.angleMap(*this)->rgeTth();
 }
 
-Range OneDataset::rgeInten() const {
+Range Measurement::rgeInten() const {
     return image_->rgeInten();
 }
 
-size2d OneDataset::imageSize() const {
+size2d Measurement::imageSize() const {
     return image_->size();
 }
 
-void OneDataset::collectIntens(
+void Measurement::collectIntens(
     Session const& session, Image const* intensCorr, inten_vec& intens, uint_vec& counts,
     Range const& rgeGma, deg minTth, deg deltaTth) const {
     auto angleMap = session.angleMap(*this);
@@ -102,27 +102,27 @@ void OneDataset::collectIntens(
     }
 }
 
-deg OneDataset::midTth() const { return md_->motorTth; }
+deg Measurement::midTth() const { return md_->motorTth; }
 
-qreal OneDataset::monitorCount() const { return md_->monitorCount; }
-qreal OneDataset::deltaMonitorCount() const { return md_->deltaMonitorCount; }
-qreal OneDataset::deltaTime() const { return md_->deltaTime; }
+qreal Measurement::monitorCount() const { return md_->monitorCount; }
+qreal Measurement::deltaMonitorCount() const { return md_->deltaMonitorCount; }
+qreal Measurement::deltaTime() const { return md_->deltaTime; }
 
-deg OneDataset::omg() const { return md_->motorOmg; }
-deg OneDataset::phi() const { return md_->motorPhi; }
-deg OneDataset::chi() const { return md_->motorChi; }
+deg Measurement::omg() const { return md_->motorOmg; }
+deg Measurement::phi() const { return md_->motorPhi; }
+deg Measurement::chi() const { return md_->motorChi; }
 
 
 // ************************************************************************** //
 //  class Dataset
 // ************************************************************************** //
 
-Dataset::Dataset() : datasets_(nullptr) {}
+DataSequence::DataSequence() : datasets_(nullptr) {}
 
-QSharedPointer<Metadata const> Dataset::metadata() const {
+QSharedPointer<Metadata const> DataSequence::metadata() const {
     if (md_.isNull()) {
         debug::ensure(!isEmpty());
-        const_cast<Dataset*>(this)->md_ = QSharedPointer<Metadata const>(new Metadata);
+        const_cast<DataSequence*>(this)->md_ = QSharedPointer<Metadata const>(new Metadata);
         Metadata* m = const_cast<Metadata*>(md_.data());
 
         debug::ensure(!first()->metadata().isNull());
@@ -205,11 +205,11 @@ QSharedPointer<Metadata const> Dataset::metadata() const {
     avg /= count();                                                                                \
     return avg;
 
-deg Dataset::omg() const { AVG_ONES(omg) }
+deg DataSequence::omg() const { AVG_ONES(omg) }
 
-deg Dataset::phi() const { AVG_ONES(phi) }
+deg DataSequence::phi() const { AVG_ONES(phi) }
 
-deg Dataset::chi() const { AVG_ONES(chi) }
+deg DataSequence::chi() const { AVG_ONES(chi) }
 
 // combined range of combined datasets
 #define RGE_COMBINE(combineOp, what)                                                               \
@@ -219,23 +219,23 @@ deg Dataset::chi() const { AVG_ONES(chi) }
         rge.combineOp(one->what);                                                                  \
     return rge;
 
-Range Dataset::rgeGma(Session const& session) const { RGE_COMBINE(extendBy, rgeGma(session)) }
+Range DataSequence::rgeGma(Session const& session) const { RGE_COMBINE(extendBy, rgeGma(session)) }
 
-Range Dataset::rgeGmaFull(Session const& session) const {
+Range DataSequence::rgeGmaFull(Session const& session) const {
     RGE_COMBINE(extendBy, rgeGmaFull(session))
 }
 
-Range Dataset::rgeTth(Session const& session) const { RGE_COMBINE(extendBy, rgeTth(session)) }
+Range DataSequence::rgeTth(Session const& session) const { RGE_COMBINE(extendBy, rgeTth(session)) }
 
-Range Dataset::rgeInten() const { RGE_COMBINE(intersect, rgeInten()) }
+Range DataSequence::rgeInten() const { RGE_COMBINE(intersect, rgeInten()) }
 
-qreal Dataset::avgMonitorCount() const { AVG_ONES(monitorCount) }
+qreal DataSequence::avgMonitorCount() const { AVG_ONES(monitorCount) }
 
-qreal Dataset::avgDeltaMonitorCount() const { AVG_ONES(deltaMonitorCount) }
+qreal DataSequence::avgDeltaMonitorCount() const { AVG_ONES(deltaMonitorCount) }
 
-qreal Dataset::avgDeltaTime() const { AVG_ONES(deltaTime) }
+qreal DataSequence::avgDeltaTime() const { AVG_ONES(deltaTime) }
 
-inten_vec Dataset::collectIntens(
+inten_vec DataSequence::collectIntens(
     Session const& session, Image const* intensCorr, Range const& rgeGma) const {
     Range tthRge = rgeTth(session);
     deg tthWdt = tthRge.width();
@@ -273,7 +273,7 @@ inten_vec Dataset::collectIntens(
     return intens;
 }
 
-size2d Dataset::imageSize() const {
+size2d DataSequence::imageSize() const {
     debug::ensure(!isEmpty());
     // all images have the same size; simply take the first one
     return first()->imageSize();
@@ -284,7 +284,7 @@ size2d Dataset::imageSize() const {
 
 //! tth: Center of reflection's 2theta interval.
 //! gma: Center of gamma slice.
-void Dataset::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const {
+void DataSequence::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const {
 
     // Rotate a unit vector initially parallel to the y axis with regards to the
     // angles. As a result, the vector is a point on a unit sphere
@@ -318,16 +318,16 @@ void Dataset::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const 
 //  class Datasets
 // ************************************************************************** //
 
-Datasets const& Dataset::datasets() const {
+Experiment const& DataSequence::datasets() const {
     debug::ensure(datasets_);
     return *datasets_;
 }
 
-Datasets::Datasets() {
+Experiment::Experiment() {
     invalidateAvgMutables();
 }
 
-void Datasets::appendHere(shp_Dataset dataset) {
+void Experiment::appendHere(shp_Dataset dataset) {
     // can be added only once
     debug::ensure(!dataset->datasets_);
     dataset->datasets_ = this;
@@ -335,39 +335,39 @@ void Datasets::appendHere(shp_Dataset dataset) {
     invalidateAvgMutables();
 }
 
-size2d Datasets::imageSize() const {
+size2d Experiment::imageSize() const {
     if (isEmpty())
         return size2d(0, 0);
     // all images have the same size; simply take the first one
     return first()->imageSize();
 }
 
-qreal Datasets::avgMonitorCount() const {
+qreal Experiment::avgMonitorCount() const {
     if (qIsNaN(avgMonitorCount_))
-        avgMonitorCount_ = calcAvgMutable(&Dataset::avgMonitorCount);
+        avgMonitorCount_ = calcAvgMutable(&DataSequence::avgMonitorCount);
     return avgMonitorCount_;
 }
 
-qreal Datasets::avgDeltaMonitorCount() const {
+qreal Experiment::avgDeltaMonitorCount() const {
     if (qIsNaN(avgDeltaMonitorCount_))
-        avgDeltaMonitorCount_ = calcAvgMutable(&Dataset::avgDeltaMonitorCount);
+        avgDeltaMonitorCount_ = calcAvgMutable(&DataSequence::avgDeltaMonitorCount);
     return avgDeltaMonitorCount_;
 }
 
-qreal Datasets::avgDeltaTime() const {
+qreal Experiment::avgDeltaTime() const {
     if (qIsNaN(avgDeltaTime_))
-        avgDeltaTime_ = calcAvgMutable(&Dataset::avgDeltaTime);
+        avgDeltaTime_ = calcAvgMutable(&DataSequence::avgDeltaTime);
     return avgDeltaTime_;
 }
 
-Range const& Datasets::rgeGma(Session const& session) const {
+Range const& Experiment::rgeGma(Session const& session) const {
     if (!rgeGma_.isValid())
         for (auto& dataset : *this)
             rgeGma_.extendBy(dataset->rgeGma(session));
     return rgeGma_;
 }
 
-Range const& Datasets::rgeFixedInten(Session const& session, bool trans, bool cut) const {
+Range const& Experiment::rgeFixedInten(Session const& session, bool trans, bool cut) const {
     if (!rgeFixedInten_.isValid()) {
         TakesLongTime __;
         for (auto& dataset : *this)
@@ -382,7 +382,7 @@ Range const& Datasets::rgeFixedInten(Session const& session, bool trans, bool cu
     return rgeFixedInten_;
 }
 
-Curve Datasets::avgCurve(Session const& session) const {
+Curve Experiment::avgCurve(Session const& session) const {
     if (avgCurve_.isEmpty()) {
         // TODO invalidate when combinedDgram is unchecked
         TakesLongTime __;
@@ -392,22 +392,22 @@ Curve Datasets::avgCurve(Session const& session) const {
     return avgCurve_;
 }
 
-void Datasets::invalidateAvgMutables() const {
+void Experiment::invalidateAvgMutables() const {
     avgMonitorCount_ = avgDeltaMonitorCount_ = avgDeltaTime_ = NAN;
     rgeFixedInten_.invalidate();
     rgeGma_.invalidate();
     avgCurve_.clear();
 }
 
-shp_Dataset Datasets::combineAll() const {
-    shp_Dataset d(new Dataset);
+shp_Dataset Experiment::combineAll() const {
+    shp_Dataset d(new DataSequence);
     for (shp_Dataset const& dataset : *this)
         for (shp_OneDataset const& one : *dataset)
             d->append(one);
     return d;
 }
 
-qreal Datasets::calcAvgMutable(qreal (Dataset::*avgMth)() const) const {
+qreal Experiment::calcAvgMutable(qreal (DataSequence::*avgMth)() const) const {
     qreal avg = 0;
     if (!isEmpty()) {
         for (auto& dataset : *this)

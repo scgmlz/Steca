@@ -52,7 +52,7 @@ public:
     void showMetaInfo(vec<bool> const&);
 
 private:
-    Datasets const& datasets_; // the selected datasets
+    Experiment const& datasets_; // the selected datasets
     uint_vec metaInfoNums_; // selected metadata items to show
 };
 

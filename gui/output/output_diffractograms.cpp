@@ -61,11 +61,11 @@ uint TabDiffractogramsSave::currType() const {
 struct OutputData {
     OutputData() {}
 
-    OutputData(Curve curve, Dataset dataset, Range gmaStripe, uint picNum)
+    OutputData(Curve curve, DataSequence dataset, Range gmaStripe, uint picNum)
         : curve_(curve), dataset_(dataset), gmaStripe_(gmaStripe), picNum_(picNum) {}
 
     Curve curve_;
-    Dataset dataset_;
+    DataSequence dataset_;
     Range gmaStripe_;
     uint picNum_;
 
@@ -89,7 +89,7 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
 }
 
 OutputDataCollection DiffractogramsFrame::collectCurves(
-    Range const& rgeGma, uint gmaSlices, Dataset const& dataset, uint picNum) {
+    Range const& rgeGma, uint gmaSlices, DataSequence const& dataset, uint picNum) {
 
     auto lens = gHub->datasetLens(dataset);
 
@@ -110,7 +110,7 @@ OutputDataCollection DiffractogramsFrame::collectCurves(
     return outputData;
 }
 
-OutputData DiffractogramsFrame::collectCurve(Dataset const& dataset) {
+OutputData DiffractogramsFrame::collectCurve(DataSequence const& dataset) {
     auto lens = gHub->datasetLens(dataset);
     auto curve = lens->makeCurve();
     return OutputData(curve, dataset, lens->rgeGma(), 0); // TODO current picture number

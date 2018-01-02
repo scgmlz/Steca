@@ -132,7 +132,7 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
     if (datasetsFromFiles.isEmpty())
         return;
 
-    shp_Dataset cd(new Dataset);
+    shp_Dataset cd(new DataSequence);
     uint i = 0;
 
     auto appendCd = [this, &cd, &combineBy, &i]() {
@@ -144,7 +144,7 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
                 tag += '-' + str::number(i);
             collectedDatasets_.appendHere(cd);
             collectedDatasetsTags_.append(tag);
-            cd = shp_Dataset(new Dataset);
+            cd = shp_Dataset(new DataSequence);
         }
     };
 
@@ -208,7 +208,7 @@ IJ Session::midPix() const {
     return mid;
 }
 
-shp_AngleMap Session::angleMap(OneDataset const& one) const {
+shp_AngleMap Session::angleMap(Measurement const& one) const {
     AngleMap::Key key(geometry_, imageSize_, imageCut_, midPix(), one.midTth());
     shp_AngleMap map = angleMapCache_.value(key);
     if (map.isNull())
@@ -217,12 +217,12 @@ shp_AngleMap Session::angleMap(OneDataset const& one) const {
 }
 
 calc::shp_ImageLens Session::imageLens(
-    Image const& image, Datasets const& datasets, bool trans, bool cut) const {
+    Image const& image, Experiment const& datasets, bool trans, bool cut) const {
     return calc::shp_ImageLens(new calc::ImageLens(*this, image, datasets, trans, cut));
 }
 
 calc::shp_DatasetLens Session::datasetLens(
-    Dataset const& dataset, Datasets const& datasets, eNorm norm, bool trans, bool cut
+    DataSequence const& dataset, Experiment const& datasets, eNorm norm, bool trans, bool cut
     ) const {
     return calc::shp_DatasetLens(new calc::DatasetLens(
         *this, dataset, datasets, norm, trans, cut, imageTransform_, imageCut_));
@@ -251,7 +251,7 @@ calc::ReflectionInfo Session::makeReflectionInfo(
 
     // compute alpha, beta:
     deg alpha, beta;
-    Dataset const& dataset = lens.dataset();
+    DataSequence const& dataset = lens.dataset();
     dataset.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
 
     QSharedPointer<Metadata const> metadata = dataset.metadata();
@@ -270,7 +270,7 @@ calc::ReflectionInfo Session::makeReflectionInfo(
  * the returned infos won't be on the grid. REVIEW gammaStep separately?
  */
 calc::ReflectionInfos Session::makeReflectionInfos(
-    Datasets const& datasets, calc::Reflection const& reflection, uint gmaSlices,
+    Experiment const& datasets, calc::Reflection const& reflection, uint gmaSlices,
     Range const& rgeGma, Progress* progress) const {
     calc::ReflectionInfos infos;
 
@@ -321,14 +321,14 @@ void Session::addReflection(const QJsonObject& obj) {
     reflections_.append(reflection);
 }
 
-qreal Session::calcAvgBackground(Dataset const& dataset) const {
+qreal Session::calcAvgBackground(DataSequence const& dataset) const {
     auto lens = datasetLens(dataset, dataset.datasets(), eNorm::NONE, true, true);
     Curve gmaCurve = lens->makeCurve(); // had argument averaged=true
     auto bgPolynom = Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
     return bgPolynom.avgY(lens->rgeTth());
 }
 
-qreal Session::calcAvgBackground(Datasets const& datasets) const {
+qreal Session::calcAvgBackground(Experiment const& datasets) const {
     TakesLongTime __;
     qreal bg = 0;
     for (auto& dataset : datasets)

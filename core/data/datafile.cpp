@@ -23,7 +23,7 @@ void Datafile::addDataset(Metadata const& md, size2d const& sz, inten_vec const&
         imageSize_ = sz;
     else if (sz != imageSize_)
         THROW("Inconsistent image size in " % fileName());
-    datasets_.append(shp_OneDataset(new OneDataset(md, sz, ivec)));
+    datasets_.append(shp_OneDataset(new Measurement(md, sz, ivec)));
 }
 
 QFileInfo const& Datafile::fileInfo() const {

@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/data/dataset.h
-//! @brief     Defines classes [One]Dataset[s]
+//! @brief     Defines classes Measurement, DataSequence, Experiment
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -22,20 +22,20 @@
 
 class Session;
 class Metadata;
-class OneDataset;
-class Dataset;
-class Datasets;
+class Measurement;
+class DataSequence;
+class Experiment;
 
-typedef QSharedPointer<OneDataset const> shp_OneDataset;
-typedef QSharedPointer<Dataset> shp_Dataset;
+typedef QSharedPointer<Measurement const> shp_OneDataset;
+typedef QSharedPointer<DataSequence> shp_Dataset;
 
 //! Metadata + Image, for calculation always accessed through its owning Dataset
 
-class OneDataset final {
+class Measurement final {
 
 public:
-    OneDataset(Metadata const&, size2d const&, inten_vec const&);
-    OneDataset(OneDataset const&) = delete;
+    Measurement(Metadata const&, size2d const&, inten_vec const&);
+    Measurement(Measurement const&) = delete;
 
     QSharedPointer<Metadata const> metadata() const;
 
@@ -70,15 +70,15 @@ private:
 
 //! One or more OneDataset(s)
 
-class Dataset final : public vec<shp_OneDataset> {
+class DataSequence final : public vec<shp_OneDataset> {
 private:
-    friend class Datasets;
+    friend class Experiment;
 
 public:
-    Dataset();
+    DataSequence();
 
     QSharedPointer<Metadata const> metadata() const;
-    Datasets const& datasets() const;
+    Experiment const& datasets() const;
 
     deg omg() const;
     deg phi() const;
@@ -100,15 +100,15 @@ public:
     size2d imageSize() const;
 
 private:
-    Datasets* datasets_; // here it belongs (or can be nullptr)
+    Experiment* datasets_; // here it belongs (or can be nullptr)
     QSharedPointer<Metadata const> md_; // on demand, compute once
 };
 
 //! Collection of (Dataset)s
 
-class Datasets final : public vec<shp_Dataset> {
+class Experiment final : public vec<shp_Dataset> {
 public:
-    Datasets();
+    Experiment();
 
     void appendHere(shp_Dataset);
 
@@ -127,7 +127,7 @@ public:
 
 private:
     shp_Dataset combineAll() const;
-    qreal calcAvgMutable(qreal (Dataset::*avgMth)() const) const;
+    qreal calcAvgMutable(qreal (DataSequence::*avgMth)() const) const;
 
     // computed on demand (NaNs or emptiness indicate yet unknown values)
     mutable qreal avgMonitorCount_, avgDeltaMonitorCount_, avgDeltaTime_;

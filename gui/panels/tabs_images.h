@@ -32,7 +32,7 @@ private:
 
     QImage makeImage(shp_Image, bool curvedScale);
     QPixmap makePixmap(shp_Image);
-    QPixmap makePixmap(OneDataset const&, Range const&, Range const&);
+    QPixmap makePixmap(Measurement const&, Range const&, Range const&);
 
     void setDataset(shp_Dataset);
     void render();

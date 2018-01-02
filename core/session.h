@@ -36,7 +36,7 @@ private:
     shp_Image corrImage_;
     bool corrEnabled_;
     uint_vec collectedFromFiles_; // from these files
-    Datasets collectedDatasets_; // datasets collected ...
+    Experiment collectedDatasets_; // datasets collected ...
     QStringList collectedDatasetsTags_;
     bool intenScaledAvg_; // if not, summed
     preal intenScale_;
@@ -99,7 +99,7 @@ public:
     bool isCorrEnabled() const { return corrEnabled_; }
 
     uint_vec const& collectedFromFiles() const { return collectedFromFiles_; }
-    Datasets const& collectedDatasets() const { return collectedDatasets_; }
+    Experiment const& collectedDatasets() const { return collectedDatasets_; }
     QStringList const& collectedDatasetsTags() const { return collectedDatasetsTags_; }
 
     size2d imageSize() const;
@@ -111,16 +111,16 @@ public:
 
     Range const& gammaRange() const { return gammaRange_; }
 
-    shp_AngleMap angleMap(OneDataset const&) const;
-    static shp_AngleMap angleMap(Session const& session, OneDataset const& ds) {
+    shp_AngleMap angleMap(Measurement const&) const;
+    static shp_AngleMap angleMap(Session const& session, Measurement const& ds) {
         return session.angleMap(ds); }
 
-    calc::shp_ImageLens imageLens(Image const&, Datasets const&, bool trans, bool cut) const;
+    calc::shp_ImageLens imageLens(Image const&, Experiment const&, bool trans, bool cut) const;
     calc::shp_DatasetLens datasetLens(
-        Dataset const&, Datasets const&, eNorm, bool trans, bool cut) const;
+        DataSequence const&, Experiment const&, eNorm, bool trans, bool cut) const;
 
     calc::ReflectionInfos makeReflectionInfos(
-        Datasets const&, calc::Reflection const&, uint gmaSlices, Range const&, Progress*) const;
+        Experiment const&, calc::Reflection const&, uint gmaSlices, Range const&, Progress*) const;
 
     Ranges const& bgRanges() const { return bgRanges_; }
     uint bgPolyDegree() const { return bgPolyDegree_; }
@@ -130,8 +130,8 @@ public:
 
     eNorm norm() const { return norm_; }
 
-    qreal calcAvgBackground(Dataset const&) const;
-    qreal calcAvgBackground(Datasets const&) const;
+    qreal calcAvgBackground(DataSequence const&) const;
+    qreal calcAvgBackground(Experiment const&) const;
 };
 
 #endif // SESSION_H
