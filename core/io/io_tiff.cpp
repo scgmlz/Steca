@@ -87,7 +87,7 @@ QSharedPointer<Datafile> loadTiffDat(rcstr filePath) THROWS {
         }
 
         try {
-            // load one dataset
+            // load one dataseq
             loadTiff(datafile, dir.filePath(tiffFileName), phi, monitor, expTime);
         } catch (Exception& e) {
             // add file name to the message

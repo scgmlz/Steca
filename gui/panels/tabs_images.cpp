@@ -216,7 +216,7 @@ TabsImages::TabsImages() : TabsPanel() {
     connect(gHub, &TheHubSignallingBase::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHubSignallingBase::sigNormChanged, [this](){ render(); });
     connect(gHub, &TheHubSignallingBase::sigDatasetSelected,
-            [this](QSharedPointer<DataSequence> dataset){ setDataset(dataset); });
+            [this](QSharedPointer<DataSequence> dataseq){ setDataset(dataseq); });
 
     render();
 }
@@ -256,9 +256,9 @@ QPixmap TabsImages::makePixmap(QSharedPointer<Image> image) {
 }
 
 QPixmap TabsImages::makePixmap(
-    Measurement const& dataset, Range const& rgeGma, Range const& rgeTth) {
-    auto im = makeImage(dataset.image(), !gHub->isFixedIntenImageScale());
-    auto angleMap = gSession->angleMap(dataset);
+    Measurement const& dataseq, Range const& rgeGma, Range const& rgeTth) {
+    auto im = makeImage(dataseq.image(), !gHub->isFixedIntenImageScale());
+    auto angleMap = gSession->angleMap(dataseq);
 
     auto size = im.size();
     for_ij (size.width(), size.height()) {
@@ -279,8 +279,8 @@ QPixmap TabsImages::makePixmap(
     return QPixmap::fromImage(im);
 }
 
-void TabsImages::setDataset(QSharedPointer<DataSequence> dataset) {
-    dataset_ = dataset;
+void TabsImages::setDataset(QSharedPointer<DataSequence> dataseq) {
+    dataseq_ = dataseq;
     render();
 }
 
@@ -292,15 +292,15 @@ void TabsImages::render() {
         numSlice_->setMaximum(qMax(1, to_i(nSlices)));
         numSlice_->setEnabled(nSlices > 0);
 
-        if (dataset_) {
+        if (dataseq_) {
             // 1 - based
-            uint by = qBound(1u, uint(gHub->datasequenceGroupedBy()), dataset_->count());
+            uint by = qBound(1u, uint(gHub->datasequenceGroupedBy()), dataseq_->count());
             uint n = qBound(1u, to_u(spinN_->value()), by);
 
             spinN_->setValue(to_i(n));
             spinN_->setEnabled(by > 1);
 
-            lens_ = gSession->defaultDatasetLens(*dataset_);
+            lens_ = gSession->defaultDatasetLens(*dataseq_);
 
             Range rge;
             if (nSlices > 0) {
@@ -323,7 +323,7 @@ void TabsImages::render() {
 
             gHub->setGammaRange(rge);
 
-            auto oneDataset = dataset_->at(n - 1);
+            auto oneDataset = dataseq_->at(n - 1);
 
             numBin_->setEnabled(true);
             if (gHub->toggle_showBins->isChecked()) {

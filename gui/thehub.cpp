@@ -44,7 +44,7 @@ TheHub::TheHub()
     connect(this, &gui::TheHubSignallingBase::sigDatasetsChanged,
             [this]() { datasequenceModel->signalReset(); });
     connect(this, &gui::TheHubSignallingBase::sigDatasetSelected,
-            [this](QSharedPointer<DataSequence> dataset) { metadataModel->reset(dataset); });
+            [this](QSharedPointer<DataSequence> dataseq) { metadataModel->reset(dataseq); });
 
     // create actions
 

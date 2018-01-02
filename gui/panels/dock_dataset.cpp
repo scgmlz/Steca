@@ -60,7 +60,7 @@ void DatasetView::currentChanged(QModelIndex const& current, QModelIndex const& 
 
 DockDatasets::DockDatasets()
     : DockWidget("Datasets", "dock-datasequence", Qt::Vertical) {
-    box_->addWidget((datasetView_ = new DatasetView()));
+    box_->addWidget((dataseqView_ = new DatasetView()));
 
     auto h = hbox();
     box_->addLayout(h);

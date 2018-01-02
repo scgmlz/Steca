@@ -128,8 +128,8 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
 
     vec<QSharedPointer<Measurement const>> datasequenceFromFiles;
     for (uint i : collectedFromFiles_)
-        for (auto& dataset : files_.at(i)->datasequence())
-            datasequenceFromFiles.append(dataset);
+        for (auto& dataseq : files_.at(i)->datasequence())
+            datasequenceFromFiles.append(dataseq);
 
     if (datasequenceFromFiles.isEmpty())
         return;
@@ -151,8 +151,8 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
     };
 
     uint by = combineBy;
-    for (auto& dataset : datasequenceFromFiles) {
-        cd->append(QSharedPointer<Measurement const>(dataset));
+    for (auto& dataseq : datasequenceFromFiles) {
+        cd->append(QSharedPointer<Measurement const>(dataseq));
         if (1 >= by--) {
             appendCd();
             by = combineBy;
@@ -223,15 +223,15 @@ calc::shp_ImageLens Session::imageLens(
     return calc::shp_ImageLens(new calc::ImageLens(*this, image, datasequence, trans, cut));
 }
 
-QSharedPointer<calc::SequenceLens> Session::datasetLens(
-    DataSequence const& dataset, Experiment const& datasequence, eNorm norm, bool trans, bool cut
+QSharedPointer<calc::SequenceLens> Session::dataseqLens(
+    DataSequence const& dataseq, Experiment const& datasequence, eNorm norm, bool trans, bool cut
     ) const {
     return QSharedPointer<calc::SequenceLens>(new calc::SequenceLens(
-        *this, dataset, datasequence, norm, trans, cut, imageTransform_, imageCut_));
+        *this, dataseq, datasequence, norm, trans, cut, imageTransform_, imageCut_));
 }
 
-QSharedPointer<calc::SequenceLens> Session::defaultDatasetLens(DataSequence const& dataset) const {
-    return datasetLens(dataset, dataset.experiment(), norm(), true, true);
+QSharedPointer<calc::SequenceLens> Session::defaultDatasetLens(DataSequence const& dataseq) const {
+    return dataseqLens(dataseq, dataseq.experiment(), norm(), true, true);
 }
 
 Curve Session::curveMinusBg(calc::SequenceLens const& lens, Range const& rgeGma) const {
@@ -258,10 +258,10 @@ calc::ReflectionInfo Session::makeReflectionInfo(
 
     // compute alpha, beta:
     deg alpha, beta;
-    DataSequence const& dataset = lens.dataset();
-    dataset.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
+    DataSequence const& dataseq = lens.dataseq();
+    dataseq.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
 
-    QSharedPointer<Metadata const> metadata = dataset.metadata();
+    QSharedPointer<Metadata const> metadata = dataseq.metadata();
 
     return rgeTth.contains(peak.x)
         ? calc::ReflectionInfo(
@@ -284,11 +284,11 @@ calc::ReflectionInfos Session::makeReflectionInfos(
     if (progress)
         progress->setTotal(datasequence.count());
 
-    for (auto& dataset : datasequence) {
+    for (auto& dataseq : datasequence) {
         if (progress)
             progress->step();
 
-        auto lens = datasetLens(*dataset, datasequence, norm_, true, true);
+        auto lens = dataseqLens(*dataseq, datasequence, norm_, true, true);
 
         Range rge = (gmaSlices > 0) ? lens->rgeGma() : lens->rgeGmaFull();
         if (rgeGma.isValid())
@@ -328,8 +328,8 @@ void Session::addReflection(const QJsonObject& obj) {
     reflections_.append(reflection);
 }
 
-qreal Session::calcAvgBackground(DataSequence const& dataset) const {
-    auto lens = datasetLens(dataset, dataset.experiment(), eNorm::NONE, true, true);
+qreal Session::calcAvgBackground(DataSequence const& dataseq) const {
+    auto lens = dataseqLens(dataseq, dataseq.experiment(), eNorm::NONE, true, true);
     Curve gmaCurve = lens->makeCurve(); // had argument averaged=true
     auto bgPolynom = Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
     return bgPolynom.avgY(lens->rgeTth());
@@ -338,7 +338,7 @@ qreal Session::calcAvgBackground(DataSequence const& dataset) const {
 qreal Session::calcAvgBackground(Experiment const& datasequence) const {
     TakesLongTime __;
     qreal bg = 0;
-    for (auto& dataset : datasequence)
-        bg += calcAvgBackground(*dataset);
+    for (auto& dataseq : datasequence)
+        bg += calcAvgBackground(*dataseq);
     return bg / datasequence.count();
 }

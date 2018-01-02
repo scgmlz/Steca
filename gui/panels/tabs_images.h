@@ -42,7 +42,7 @@ private:
     void setDataset(QSharedPointer<DataSequence>);
     void render();
 
-    QSharedPointer<DataSequence> dataset_;
+    QSharedPointer<DataSequence> dataseq_;
     ImageWidget *dataImageWidget_, *corrImageWidget_;
 
     QSpinBox* spinN_;

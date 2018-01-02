@@ -28,8 +28,8 @@ void TheHubSignallingBase::tellSessionCleared() {
     emit sigSessionCleared();
 }
 
-void TheHubSignallingBase::tellDatasetSelected(QSharedPointer<DataSequence> dataset) {
-    emit sigDatasetSelected((asHub().selectedDataset_ = dataset));
+void TheHubSignallingBase::tellDatasetSelected(QSharedPointer<DataSequence> dataseq) {
+    emit sigDatasetSelected((asHub().selectedDataset_ = dataseq));
 }
 
 void TheHubSignallingBase::tellSelectedReflection(calc::shp_Reflection reflection) {

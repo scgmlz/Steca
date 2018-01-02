@@ -33,7 +33,7 @@ public:
 
     void render();
 
-    QSharedPointer<DataSequence> dataset() const { return dataset_; }
+    QSharedPointer<DataSequence> dataseq() const { return dataseq_; }
     QBoxLayout* box() const { return box_; }
 
 private:
@@ -43,7 +43,7 @@ private:
 
     void setDataset(QSharedPointer<DataSequence>);
 
-    QSharedPointer<DataSequence> dataset_;
+    QSharedPointer<DataSequence> dataseq_;
 
     class DiffractogramPlot* plot_;
 

@@ -28,7 +28,7 @@ public:
     QSpinBox* combineDatasets_;
 
 private:
-    class DatasetView* datasetView_;
+    class DatasetView* dataseqView_;
 };
 
 } // namespace panel

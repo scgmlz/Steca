@@ -156,7 +156,7 @@ QSharedPointer<Datafile> loadMar(rcstr filePath) THROWS {
                 continue;
 
             // Check for error pixel (overflow pixel will set to 250000 and in the
-            // dataset will set the overflow flag)
+            // dataseq will set the overflow flag)
             if (pair[1] == 999999.0)
                 pair[1] = 128000;
 

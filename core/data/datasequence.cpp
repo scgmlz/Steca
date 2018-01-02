@@ -327,11 +327,11 @@ Experiment::Experiment() {
     invalidateAvgMutables();
 }
 
-void Experiment::appendHere(QSharedPointer<DataSequence> dataset) {
+void Experiment::appendHere(QSharedPointer<DataSequence> dataseq) {
     // can be added only once
-    debug::ensure(!dataset->experiment_);
-    dataset->experiment_ = this;
-    append(dataset);
+    debug::ensure(!dataseq->experiment_);
+    dataseq->experiment_ = this;
+    append(dataseq);
     invalidateAvgMutables();
 }
 
@@ -362,16 +362,16 @@ qreal Experiment::avgDeltaTime() const {
 
 Range const& Experiment::rgeGma(Session const& session) const {
     if (!rgeGma_.isValid())
-        for (auto& dataset : *this)
-            rgeGma_.extendBy(dataset->rgeGma(session));
+        for (auto& dataseq : *this)
+            rgeGma_.extendBy(dataseq->rgeGma(session));
     return rgeGma_;
 }
 
 Range const& Experiment::rgeFixedInten(Session const& session, bool trans, bool cut) const {
     if (!rgeFixedInten_.isValid()) {
         TakesLongTime __;
-        for (auto& dataset : *this)
-            for (auto& one : *dataset) {
+        for (auto& dataseq : *this)
+            for (auto& one : *dataseq) {
                 if (one->image()) {
                     auto& image = *one->image();
                     calc::shp_ImageLens imageLens = session.imageLens(image, *this, trans, cut);
@@ -387,7 +387,7 @@ Curve Experiment::avgCurve(Session const& session) const {
         // TODO invalidate when combinedDgram is unchecked
         TakesLongTime __;
         avgCurve_ =
-            session.datasetLens(*combineAll(), *this, session.norm(), true, true)->makeCurve();
+            session.dataseqLens(*combineAll(), *this, session.norm(), true, true)->makeCurve();
     }
     return avgCurve_;
 }
@@ -401,8 +401,8 @@ void Experiment::invalidateAvgMutables() const {
 
 QSharedPointer<DataSequence> Experiment::combineAll() const {
     QSharedPointer<DataSequence> d(new DataSequence);
-    for (QSharedPointer<DataSequence> const& dataset : *this)
-        for (QSharedPointer<Measurement const> const& one : *dataset)
+    for (QSharedPointer<DataSequence> const& dataseq : *this)
+        for (QSharedPointer<Measurement const> const& one : *dataseq)
             d->append(one);
     return d;
 }
@@ -410,8 +410,8 @@ QSharedPointer<DataSequence> Experiment::combineAll() const {
 qreal Experiment::calcAvgMutable(qreal (DataSequence::*avgMth)() const) const {
     qreal avg = 0;
     if (!isEmpty()) {
-        for (auto& dataset : *this)
-            avg += ((*dataset).*avgMth)();
+        for (auto& dataseq : *this)
+            avg += ((*dataseq).*avgMth)();
         avg /= count();
     }
     return avg;

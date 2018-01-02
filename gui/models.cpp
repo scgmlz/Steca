@@ -125,10 +125,10 @@ MetadataModel::MetadataModel() {
     rowsChecked_.fill(false, Metadata::numAttributes(false));
 }
 
-void MetadataModel::reset(QSharedPointer<DataSequence> dataset) {
+void MetadataModel::reset(QSharedPointer<DataSequence> dataseq) {
     metadata_.clear();
-    if (dataset)
-        metadata_ = dataset->metadata();
+    if (dataseq)
+        metadata_ = dataseq->metadata();
     signalReset();
 }
 

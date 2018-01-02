@@ -118,12 +118,12 @@ Range const& ImageLens::rgeInten(bool fixed) const {
 // ************************************************************************** //
 
 SequenceLens::SequenceLens(
-    Session const& session, DataSequence const& dataset, Experiment const& datasequence,
+    Session const& session, DataSequence const& dataseq, Experiment const& datasequence,
     eNorm norm, bool trans, bool cut, ImageTransform const& imageTransform,
     ImageCut const& imageCut)
     : LensBase(session, datasequence, trans, cut, imageTransform, imageCut)
     , normFactor_(1)
-    , dataset_(dataset) {
+    , dataseq_(dataseq) {
     setNorm(norm);
 }
 
@@ -132,21 +132,21 @@ size2d SequenceLens::size() const {
 }
 
 Range SequenceLens::rgeGma() const {
-    return dataset_.rgeGma(session_);
+    return dataseq_.rgeGma(session_);
 }
 
 Range SequenceLens::rgeGmaFull() const {
-    return dataset_.rgeGmaFull(session_);
+    return dataseq_.rgeGmaFull(session_);
 }
 
 Range SequenceLens::rgeTth() const {
-    return dataset_.rgeTth(session_);
+    return dataseq_.rgeTth(session_);
 }
 
 Range SequenceLens::rgeInten() const {
     // fixes the scale
     // TODO consider return experiment_.rgeInten();
-    return dataset_.rgeInten();
+    return dataseq_.rgeInten();
 }
 
 Curve SequenceLens::makeCurve() const {
@@ -154,11 +154,11 @@ Curve SequenceLens::makeCurve() const {
 }
 
 Curve SequenceLens::makeCurve(Range const& rgeGma) const {
-    inten_vec intens = dataset_.collectIntens(session_, intensCorr_, rgeGma);
+    inten_vec intens = dataseq_.collectIntens(session_, intensCorr_, rgeGma);
     Curve res;
     uint count = intens.count();
     if (count) {
-        Range rgeTth = dataset_.rgeTth(session_);
+        Range rgeTth = dataseq_.rgeTth(session_);
         deg minTth = rgeTth.min, deltaTth = rgeTth.width() / count;
         for_i (count)
             res.append(minTth + deltaTth * i, qreal(intens.at(i) * normFactor_));
@@ -172,19 +172,19 @@ void SequenceLens::setNorm(eNorm norm) {
     switch (norm) {
     case eNorm::MONITOR:
         num = experiment_.avgMonitorCount();
-        den = dataset_.avgMonitorCount();
+        den = dataseq_.avgMonitorCount();
         break;
     case eNorm::DELTA_MONITOR:
         num = experiment_.avgDeltaMonitorCount();
-        den = dataset_.avgDeltaMonitorCount();
+        den = dataseq_.avgDeltaMonitorCount();
         break;
     case eNorm::DELTA_TIME:
         num = experiment_.avgDeltaTime();
-        den = dataset_.avgDeltaTime();
+        den = dataseq_.avgDeltaTime();
         break;
     case eNorm::BACKGROUND:
         num = session_.calcAvgBackground(experiment_);
-        den = session_.calcAvgBackground(dataset_);
+        den = session_.calcAvgBackground(dataseq_);
         break;
     case eNorm::NONE: break;
     }

@@ -74,7 +74,7 @@ public:
 
     vec<bool> const& rowsChecked() const { return rowsChecked_; }
 
-    void reset(QSharedPointer<DataSequence> dataset);
+    void reset(QSharedPointer<DataSequence> dataseq);
     void flipCheck(uint row);
 
 private:

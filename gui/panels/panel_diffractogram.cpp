@@ -300,8 +300,8 @@ void DiffractogramPlot::plot(
 
         Range intenRange;
         if (gHub->isFixedIntenDgramScale()) {
-            debug::ensure(!diffractogram_.dataset().isNull());
-            auto lens = gSession->defaultDatasetLens(*diffractogram_.dataset());
+            debug::ensure(!diffractogram_.dataseq().isNull());
+            auto lens = gSession->defaultDatasetLens(*diffractogram_.dataseq());
             intenRange = lens->rgeInten();
         } else {
             intenRange = dgramBgFitted.rgeY();
@@ -425,7 +425,7 @@ void DiffractogramPlot::onReflectionData(calc::shp_Reflection reflection) {
     guesses_->clearData();
     fits_->clearData();
 
-    if (reflection && diffractogram_.dataset()) {
+    if (reflection && diffractogram_.dataseq()) {
         auto& fun = reflection->peakFunction();
 
         auto gp = fun.guessedPeak();
@@ -451,7 +451,7 @@ void DiffractogramPlot::onReflectionData(calc::shp_Reflection reflection) {
 // ************************************************************************** //
 
 Diffractogram::Diffractogram()
-    : dataset_(nullptr), currReflIndex_(0) {
+    : dataseq_(nullptr), currReflIndex_(0) {
     setLayout((box_ = boxLayout(Qt::Vertical)));
     box_->addWidget((plot_ = new DiffractogramPlot(*this)));
     auto hb = hbox();
@@ -502,7 +502,7 @@ Diffractogram::Diffractogram()
     });
 
     connect(gHub, &TheHubSignallingBase::sigDatasetSelected,
-            [this](QSharedPointer<DataSequence> dataset){ setDataset(dataset); });
+            [this](QSharedPointer<DataSequence> dataseq){ setDataset(dataseq); });
     connect(gHub, &TheHubSignallingBase::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHubSignallingBase::sigCorrEnabled, [this](){ render(); });
     connect(gHub, &TheHubSignallingBase::sigDisplayChanged, [this](){ render(); });
@@ -589,8 +589,8 @@ void Diffractogram::render() {
     plot_->plot(dgram_, dgramBgFitted_, bg_, refls_, currReflIndex_);
 }
 
-void Diffractogram::setDataset(QSharedPointer<DataSequence> dataset) {
-    dataset_ = dataset;
+void Diffractogram::setDataset(QSharedPointer<DataSequence> dataseq) {
+    dataseq_ = dataseq;
     actZoom_->setChecked(false);
     render();
 }
@@ -598,13 +598,13 @@ void Diffractogram::setDataset(QSharedPointer<DataSequence> dataset) {
 void Diffractogram::calcDgram() {
     dgram_.clear();
 
-    if (!dataset_)
+    if (!dataseq_)
         return;
 
     if (gHub->isCombinedDgram())
-        dgram_ = gHub->avgCurve(dataset_->experiment());
+        dgram_ = gHub->avgCurve(dataseq_->experiment());
     else {
-        auto lens = gSession->defaultDatasetLens(*dataset_);
+        auto lens = gSession->defaultDatasetLens(*dataseq_);
         dgram_ = lens->makeCurve(gSession->gammaRange());
     }
 }
