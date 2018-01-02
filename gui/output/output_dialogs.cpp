@@ -530,7 +530,7 @@ TabSave::TabSave(Params& params, bool withTypes) : Tab(params) {
     if (!QDir(dir).exists())
         dir = QDir::current().absolutePath();
 
-    auto gp = new panel::GridPanel("Destination");
+    auto gp = new GridPanel("Destination");
     grid_->addWidget(gp, 0, 0);
     auto g = gp->grid();
 
@@ -552,7 +552,7 @@ TabSave::TabSave(Params& params, bool withTypes) : Tab(params) {
             dir_->setText((params_.saveDir = dir));
     });
 
-    gp = new panel::GridPanel("File type");
+    gp = new GridPanel("File type");
     grid_->addWidget(gp, 0, 1);
     g = gp->grid();
 

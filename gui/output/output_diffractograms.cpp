@@ -41,7 +41,7 @@ protected:
 
 TabDiffractogramsSave::TabDiffractogramsSave(Params& params)
     : TabSave(params, true) {
-    auto gp = new panel::GridPanel("To save");
+    auto gp = new GridPanel("To save");
     grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
     grid_->setRowStretch(grid_->rowCount(), 1);
 

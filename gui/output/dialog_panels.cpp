@@ -23,7 +23,38 @@
 namespace gui {
 namespace output {
 
-PanelReflection::PanelReflection() : panel::GridPanel("Reflection") {
+// ************************************************************************** //
+//  class GridPanel
+// ************************************************************************** //
+
+void GridPanel::setHorizontalStretch(int stretch) {
+    auto sp = sizePolicy();
+    sp.setHorizontalStretch(stretch);
+    setSizePolicy(sp);
+}
+
+void GridPanel::setVerticalStretch(int stretch) {
+    auto sp = sizePolicy();
+    sp.setVerticalStretch(stretch);
+    setSizePolicy(sp);
+}
+
+void GridPanel::setStretch(int horizontal, int vertical) {
+    auto sp = sizePolicy();
+    sp.setHorizontalStretch(horizontal);
+    sp.setVerticalStretch(vertical);
+    setSizePolicy(sp);
+}
+
+GridPanel::GridPanel(rcstr title) : QGroupBox(title) {
+    setLayout((grid_ = gridLayout()));
+}
+
+// ************************************************************************** //
+//  final panel classes
+// ************************************************************************** //
+
+PanelReflection::PanelReflection() : GridPanel("Reflection") {
     auto g = grid();
     cbRefl = new QComboBox;
     cbRefl->addItems(gHub->reflectionsModel->names());
@@ -31,7 +62,7 @@ PanelReflection::PanelReflection() : panel::GridPanel("Reflection") {
     g->setRowStretch(g->rowCount(), 1);
 }
 
-PanelGammaSlices::PanelGammaSlices() : panel::GridPanel("Gamma slices") {
+PanelGammaSlices::PanelGammaSlices() : GridPanel("Gamma slices") {
     auto g = grid();
 
     g->addWidget(label("count"), 0, 0);
@@ -56,7 +87,7 @@ void PanelGammaSlices::updateValues() {
         stepGamma->clear();
 }
 
-PanelGammaRange::PanelGammaRange() : panel::GridPanel("Gamma range") {
+PanelGammaRange::PanelGammaRange() : GridPanel("Gamma range") {
     auto g = grid();
 
     g->addWidget((cbLimitGamma = check("limit")), 0, 0, 1, 2);
@@ -85,7 +116,7 @@ void PanelGammaRange::updateValues() {
     maxGamma->setEnabled(on);
 }
 
-PanelPoints::PanelPoints() : panel::GridPanel("Points") {
+PanelPoints::PanelPoints() : GridPanel("Points") {
     auto g = grid();
     g->addWidget((rbCalc = radioButton("calculated")), 0, 0);
     g->addWidget((rbInterp = radioButton("interpolated")), 1, 0);
@@ -93,7 +124,7 @@ PanelPoints::PanelPoints() : panel::GridPanel("Points") {
     g->setRowStretch(g->rowCount(), 1);
 }
 
-PanelInterpolation::PanelInterpolation() : panel::GridPanel("Interpolation") {
+PanelInterpolation::PanelInterpolation() : GridPanel("Interpolation") {
     auto g = grid();
 
     g->addWidget(label("step α"), 0, 0, Qt::AlignRight);
@@ -113,7 +144,7 @@ PanelInterpolation::PanelInterpolation() : panel::GridPanel("Interpolation") {
     g->setRowStretch(g->rowCount(), 1);
 }
 
-PanelDiagram::PanelDiagram() : panel::GridPanel("Diagram") {
+PanelDiagram::PanelDiagram() : GridPanel("Diagram") {
     auto tags = calc::ReflectionInfo::dataTags(false);
     for_i (Metadata::numAttributes(false) - Metadata::numAttributes(true))
         tags.removeLast(); // remove all tags that are not numbers
@@ -129,7 +160,7 @@ PanelDiagram::PanelDiagram() : panel::GridPanel("Diagram") {
     g->setRowStretch(g->rowCount(), 1);
 }
 
-PanelFitError::PanelFitError() : panel::GridPanel("Fit error") {}
+PanelFitError::PanelFitError() : GridPanel("Fit error") {}
 
 } // namespace output
 } // namespace gui

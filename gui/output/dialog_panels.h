@@ -15,24 +15,45 @@
 #ifndef DIALOG_PANELS_H
 #define DIALOG_PANELS_H
 
-#include "panels/panel.h"
 #include "typ/range.h"
-#include <QCheckBox>
+#include <QGroupBox>
+
+class QGridLayout;
+class QCheckBox;
+class QComboBox;
+class QSpinBox;
+class QRadioButton;
+class QDoubleSpinBox;
 
 namespace gui {
-
 namespace output {
+
+//! A panel with grid layout
+class GridPanel : public QGroupBox {
+public:
+    GridPanel(rcstr title="");
+
+    void setHorizontalStretch(int);
+    void setVerticalStretch(int);
+    void setStretch(int horizontal, int vertical);
+
+    QGridLayout* grid() const { return grid_; }
+
+protected:
+    QGridLayout* grid_;
+};
+
 
 /* Note that some data members are public, to simplify the code. Be careful. */
 
-class PanelReflection : public panel::GridPanel {
+class PanelReflection : public GridPanel {
 public:
     PanelReflection();
     QComboBox* cbRefl;
 };
 
 
-class PanelGammaSlices : public panel::GridPanel {
+class PanelGammaSlices : public GridPanel {
 public:
     PanelGammaSlices();
     QSpinBox* numSlices;
@@ -43,7 +64,7 @@ private:
 };
 
 
-class PanelGammaRange : public panel::GridPanel {
+class PanelGammaRange : public GridPanel {
 public:
     PanelGammaRange();
     QCheckBox* cbLimitGamma;
@@ -54,14 +75,14 @@ private:
 };
 
 
-class PanelPoints : public panel::GridPanel {
+class PanelPoints : public GridPanel {
 public:
     PanelPoints();
     QRadioButton *rbCalc, *rbInterp;
 };
 
 
-class PanelInterpolation : public panel::GridPanel {
+class PanelInterpolation : public GridPanel {
 public:
     PanelInterpolation();
     QDoubleSpinBox *stepAlpha, *stepBeta, *idwRadius;
@@ -70,14 +91,14 @@ public:
 };
 
 
-class PanelDiagram : public panel::GridPanel {
+class PanelDiagram : public GridPanel {
 public:
     PanelDiagram();
     QComboBox *xAxis, *yAxis;
 };
 
 
-class PanelFitError : public panel::GridPanel {
+class PanelFitError : public GridPanel {
 public:
     PanelFitError();
 };

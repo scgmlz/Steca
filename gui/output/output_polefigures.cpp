@@ -195,8 +195,8 @@ TabPoleFiguresSave::TabPoleFiguresSave(Params& params) : TabSave(params, false) 
     grid_->addLayout(hb, grid_->rowCount(), 0);
     grid_->setRowStretch(grid_->rowCount(), 1);
 
-    auto p1 = new panel::GridPanel("Output data");
-    auto p2 = new panel::GridPanel("To save");
+    auto p1 = new GridPanel("Output data");
+    auto p2 = new GridPanel("To save");
 
     hb->addWidget(p1);
     hb->addWidget(p2);

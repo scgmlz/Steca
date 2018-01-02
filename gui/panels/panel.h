@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/panels/panel.h
-//! @brief     Defines classes GridPanel, Tab, TabsPanel
+//! @brief     Defines classes Tab, TabsPanel
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -18,29 +18,12 @@
 #include "typ/str.h"
 #include <QComboBox>
 #include <QGridLayout>
-#include <QGroupBox>
 #include <QToolButton>
 #include <QRadioButton>
 #include <QSpinBox>
 
 namespace gui {
 namespace panel {
-
-//! A panel with grid layout
-class GridPanel : public QGroupBox {
-public:
-    GridPanel(rcstr title="");
-
-    void setHorizontalStretch(int);
-    void setVerticalStretch(int);
-    void setStretch(int horizontal, int vertical);
-
-    QGridLayout* grid() const { return grid_; }
-
-protected:
-    QGridLayout* grid_;
-};
-
 
 //! A tabbed panel
 class Tab : public QWidget {  // TODO: better names for panel::Tab and output::Tab

@@ -22,41 +22,12 @@ namespace gui {
 namespace panel {
 
 // ************************************************************************** //
-//  class GridPanel
-// ************************************************************************** //
-
-void GridPanel::setHorizontalStretch(int stretch) {
-    auto sp = sizePolicy();
-    sp.setHorizontalStretch(stretch);
-    setSizePolicy(sp);
-}
-
-void GridPanel::setVerticalStretch(int stretch) {
-    auto sp = sizePolicy();
-    sp.setVerticalStretch(stretch);
-    setSizePolicy(sp);
-}
-
-void GridPanel::setStretch(int horizontal, int vertical) {
-    auto sp = sizePolicy();
-    sp.setHorizontalStretch(horizontal);
-    sp.setVerticalStretch(vertical);
-    setSizePolicy(sp);
-}
-
-GridPanel::GridPanel(rcstr title) : QGroupBox(title) {
-    setLayout((grid_ = gridLayout()));
-}
-
-
-// ************************************************************************** //
 //  class Tab
 // ************************************************************************** //
 
 Tab::Tab(Qt::Orientation orientation) {
     setLayout((box_ = boxLayout(orientation)));
 }
-
 
 // ************************************************************************** //
 //  class TabsPanel
