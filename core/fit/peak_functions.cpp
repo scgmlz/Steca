@@ -25,8 +25,6 @@ namespace { // file scope
 //! Peak analysis without fitting
 
 class Raw final : public PeakFunction {
-private:
-    using super = PeakFunction;
 public:
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
@@ -55,8 +53,6 @@ private:
 //! to fit peak with a Gaussian
 
 class Gaussian final : public PeakFunction {
-private:
-    using super = PeakFunction;
 public:
     enum { parAMPL, parXSHIFT, parSIGMA };
 
@@ -81,8 +77,6 @@ public:
 //! to fit peak with a Lorentzian
 
 class Lorentzian final : public PeakFunction {
-private:
-    using super = PeakFunction;
 public:
     enum { parAMPL, parXSHIFT, parGAMMA };
 
@@ -107,8 +101,6 @@ public:
 //! to fit peak with a sum of Gaussian and Lorentzian with shared width parameter
 
 class PseudoVoigt1 final : public PeakFunction {
-private:
-    using super = PeakFunction;
 public:
     enum { parAMPL, parXSHIFT, parSIGMAGAMMA, parETA };
 
@@ -133,8 +125,6 @@ public:
 //! to fit peak with a sum of Gaussian and Lorentzian with independent width parameters
 
 class PseudoVoigt2 final : public PeakFunction {
-private:
-    using super = PeakFunction;
 public:
     enum { parAMPL, parXSHIFT, parSIGMA, parGAMMA, parETA };
 
@@ -191,7 +181,7 @@ fwhm_t Raw::fwhmError() const {
 }
 
 void Raw::setRange(Range const& range) {
-    super::setRange(range);
+    PeakFunction::setRange(range);
     prepareY();
 }
 
@@ -260,13 +250,13 @@ qreal Gaussian::dy(qreal x, uint parIndex, qreal const* parValues) const {
 }
 
 void Gaussian::setGuessedPeak(qpair const& qpair) {
-    super::setGuessedPeak(qpair);
+    PeakFunction::setGuessedPeak(qpair);
     setValue(parXSHIFT, qpair.x);
     setValue(parAMPL, qpair.y);
 }
 
 void Gaussian::setGuessedFWHM(fwhm_t fwhm) {
-    super::setGuessedFWHM(fwhm);
+    PeakFunction::setGuessedFWHM(fwhm);
     // sigma = FWHM * 1/4 * (SQRT(2)/SQRT(ln(2))) = FWHM * 0.424661
     setValue(parSIGMA, fwhm * 0.424661);
 }
@@ -336,13 +326,13 @@ qreal Lorentzian::dy(qreal x, uint parIndex, qreal const* parValues) const {
 }
 
 void Lorentzian::setGuessedPeak(qpair const& qpair) {
-    super::setGuessedPeak(qpair);
+    PeakFunction::setGuessedPeak(qpair);
     setValue(parXSHIFT, qpair.x);
     setValue(parAMPL, qpair.y);
 }
 
 void Lorentzian::setGuessedFWHM(fwhm_t fwhm) {
-    super::setGuessedFWHM(fwhm);
+    PeakFunction::setGuessedFWHM(fwhm);
     // gamma = HWHM = FWHM / 2
     setValue(parGAMMA, fwhm / 2);
 }
@@ -429,13 +419,13 @@ qreal PseudoVoigt1::dy(qreal x, uint parIndex, qreal const* parValues) const {
 }
 
 void PseudoVoigt1::setGuessedPeak(qpair const& qpair) {
-    super::setGuessedPeak(qpair);
+    PeakFunction::setGuessedPeak(qpair);
     setValue(parXSHIFT, qpair.x);
     setValue(parAMPL, qpair.y);
 }
 
 void PseudoVoigt1::setGuessedFWHM(fwhm_t fwhm) {
-    super::setGuessedFWHM(fwhm);
+    PeakFunction::setGuessedFWHM(fwhm);
     setValue(parSIGMAGAMMA, fwhm / 2);
 }
 
@@ -534,13 +524,13 @@ qreal PseudoVoigt2::dy(qreal x, uint parIndex, qreal const* parValues) const {
 }
 
 void PseudoVoigt2::setGuessedPeak(qpair const& qpair) {
-    super::setGuessedPeak(qpair);
+    PeakFunction::setGuessedPeak(qpair);
     setValue(parXSHIFT, qpair.x);
     setValue(parAMPL, qpair.y);
 }
 
 void PseudoVoigt2::setGuessedFWHM(fwhm_t fwhm) {
-    super::setGuessedFWHM(fwhm);
+    PeakFunction::setGuessedFWHM(fwhm);
     setValue(parSIGMA, fwhm * 0.424661);
     setValue(parGAMMA, fwhm / 2);
 }
