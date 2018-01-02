@@ -14,7 +14,7 @@
 
 #include "tabs_images.h"
 #include "cfg/colors.h"
-#include "data/datasequence.h"
+#include "data/suite.h"
 #include "data/measurement.h"
 #include "cfg/gui_cfg.h"
 #include "thehub.h"

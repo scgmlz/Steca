@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/cfg/cfg/colors.h
+//! @file      gui/cfg/colors.h
 //! @brief     Defines ...
 //!
 //! @homepage  https://github.com/scgmlz/Steca2

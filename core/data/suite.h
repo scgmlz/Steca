@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/data/datasequence.h
+//! @file      core/data/suite.h
 //! @brief     Defines class DataSequence
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef DATASEQUENCE_H
-#define DATASEQUENCE_H
+#ifndef SUITE_H
+#define SUITE_H
 
 #include "typ/angles.h"
 #include "typ/curve.h"
@@ -63,4 +63,4 @@ private:
 
 Q_DECLARE_METATYPE(QSharedPointer<DataSequence>)
 
-#endif // DATASEQUENCE_H
+#endif // SUITE_H

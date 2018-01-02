@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "session.h"
-#include "data/datasequence.h"
+#include "data/suite.h"
 
 namespace calc {
 

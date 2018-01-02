@@ -14,7 +14,7 @@
 
 #include "dock_dataset.h"
 #include "cfg/gui_cfg.h"
-#include "data/datasequence.h"
+#include "data/suite.h"
 #include "models.h"
 #include "thehub.h"
 #include "widgets/tree_views.h" // inheriting from

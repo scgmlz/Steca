@@ -14,7 +14,7 @@
 
 #include "panel_diffractogram.h"
 #include "actions.h"
-#include "data/datasequence.h"
+#include "data/suite.h"
 #include "fit/fit_fun.h"
 #include "cfg/gui_cfg.h"
 #include "session.h"

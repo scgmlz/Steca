@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "experiment.h"
-#include "datasequence.h"
+#include "suite.h"
 #include "def/idiomatic_for.h"
 #include "measurement.h"
 #include "metadata.h"

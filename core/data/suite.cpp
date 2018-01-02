@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/data/datasequence.cpp
+//! @file      core/data/suite.cpp
 //! @brief     Implements classes Measurement, DataSequence, Experiment
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "datasequence.h"
+#include "suite.h"
 #include "measurement.h"
 #include "metadata.h"
 #include "def/idiomatic_for.h"
@@ -223,105 +223,7 @@ void DataSequence::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) c
     beta = betaRad.toDeg();
 }
 
-// ************************************************************************** //
-//  class Datasets
-// ************************************************************************** //
-
 Experiment const& DataSequence::experiment() const {
     debug::ensure(experiment_);
     return *experiment_;
-}
-
-Experiment::Experiment() {
-    invalidateAvgMutables();
-}
-
-void Experiment::appendHere(QSharedPointer<DataSequence> dataseq) {
-    // can be added only once
-    debug::ensure(!dataseq->experiment_);
-    dataseq->experiment_ = this;
-    append(dataseq);
-    invalidateAvgMutables();
-}
-
-size2d Experiment::imageSize() const {
-    if (isEmpty())
-        return size2d(0, 0);
-    // all images have the same size; simply take the first one
-    return first()->imageSize();
-}
-
-qreal Experiment::avgMonitorCount() const {
-    if (qIsNaN(avgMonitorCount_))
-        avgMonitorCount_ = calcAvgMutable(&DataSequence::avgMonitorCount);
-    return avgMonitorCount_;
-}
-
-qreal Experiment::avgDeltaMonitorCount() const {
-    if (qIsNaN(avgDeltaMonitorCount_))
-        avgDeltaMonitorCount_ = calcAvgMutable(&DataSequence::avgDeltaMonitorCount);
-    return avgDeltaMonitorCount_;
-}
-
-qreal Experiment::avgDeltaTime() const {
-    if (qIsNaN(avgDeltaTime_))
-        avgDeltaTime_ = calcAvgMutable(&DataSequence::avgDeltaTime);
-    return avgDeltaTime_;
-}
-
-Range const& Experiment::rgeGma(Session const& session) const {
-    if (!rgeGma_.isValid())
-        for (auto& dataseq : *this)
-            rgeGma_.extendBy(dataseq->rgeGma(session));
-    return rgeGma_;
-}
-
-Range const& Experiment::rgeFixedInten(Session const& session, bool trans, bool cut) const {
-    if (!rgeFixedInten_.isValid()) {
-        TakesLongTime __;
-        for (auto& dataseq : *this)
-            for (auto& one : *dataseq) {
-                if (one->image()) {
-                    auto& image = *one->image();
-                    calc::shp_ImageLens imageLens = session.imageLens(image, *this, trans, cut);
-                    rgeFixedInten_.extendBy(imageLens->rgeInten(false));
-                }
-            }
-    }
-    return rgeFixedInten_;
-}
-
-Curve Experiment::avgCurve(Session const& session) const {
-    if (avgCurve_.isEmpty()) {
-        // TODO invalidate when combinedDgram is unchecked
-        TakesLongTime __;
-        avgCurve_ =
-            session.dataseqLens(*combineAll(), *this, session.norm(), true, true)->makeCurve();
-    }
-    return avgCurve_;
-}
-
-void Experiment::invalidateAvgMutables() const {
-    avgMonitorCount_ = avgDeltaMonitorCount_ = avgDeltaTime_ = NAN;
-    rgeFixedInten_.invalidate();
-    rgeGma_.invalidate();
-    avgCurve_.clear();
-}
-
-QSharedPointer<DataSequence> Experiment::combineAll() const {
-    QSharedPointer<DataSequence> d(new DataSequence);
-    for (QSharedPointer<DataSequence> const& dataseq : *this)
-        for (QSharedPointer<Measurement const> const& one : *dataseq)
-            d->append(one);
-    return d;
-}
-
-qreal Experiment::calcAvgMutable(qreal (DataSequence::*avgMth)() const) const {
-    qreal avg = 0;
-    if (!isEmpty()) {
-        for (auto& dataseq : *this)
-            avg += ((*dataseq).*avgMth)();
-        avg /= count();
-    }
-    return avg;
 }

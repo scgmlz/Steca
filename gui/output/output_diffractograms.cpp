@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "output_diffractograms.h"
-#include "data/datasequence.h"
+#include "data/suite.h"
 #include "data/metadata.h"
 #include "dialog_panels.h"
 #include "thehub.h"
