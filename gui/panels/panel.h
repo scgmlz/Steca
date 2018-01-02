@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/panels/panel.h
-//! @brief     Defines classes BasicPanel, GridPanel, Tab, TabsPanel
+//! @brief     Defines classes GridPanel, Tab, TabsPanel
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -26,21 +26,14 @@
 namespace gui {
 namespace panel {
 
-//! Just a groupbox
-class BasicPanel : public QGroupBox {
+//! A panel with grid layout
+class GridPanel : public QGroupBox {
 public:
-    BasicPanel(rcstr title="") : QGroupBox(title) {}
+    GridPanel(rcstr title="");
 
     void setHorizontalStretch(int);
     void setVerticalStretch(int);
     void setStretch(int horizontal, int vertical);
-};
-
-
-//! A panel with grid layout
-class GridPanel : public BasicPanel {
-public:
-    GridPanel(rcstr title="");
 
     QGridLayout* grid() const { return grid_; }
 
