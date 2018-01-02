@@ -13,9 +13,10 @@
 // ************************************************************************** //
 
 #include "dock_files.h"
-#include "widgets/tree_views.h" // inheriting from
-#include "thehub.h"
+#include "models.h"
 #include "session.h"
+#include "thehub.h"
+#include "widgets/tree_views.h" // inheriting from
 #include "widgets/widget_makers.h"
 #include <QAction>
 #include <QHeaderView>

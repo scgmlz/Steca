@@ -15,8 +15,11 @@
 #ifndef TREE_VIEWS_H
 #define TREE_VIEWS_H
 
-#include "models.h"
+#include "typ/vec.h"
+//#include "models.h"
 #include <QTreeView>
+
+class TableModel;
 
 namespace gui {
 
@@ -45,15 +48,11 @@ class ListView : public AuxView {
 public:
     ListView() {}
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Woverloaded-virtual"
-    // base class has setModel(<other type>*)
-    void setModel(TableModel* model) { AuxView::setModel(model); }
-#pragma GCC diagnostic pop
+    void setModel(TableModel* model);
 
 protected:
-    TableModel* model() const {
-        return static_cast<TableModel*>(AuxView::model()); }
+    TableModel* model() const;
+
     void updateSingleSelection();
     void selectRow(int);
 };

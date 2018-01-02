@@ -14,6 +14,7 @@
 
 #include "tree_views.h"
 #include "def/idiomatic_for.h"
+#include "models.h"
 
 namespace gui {
 
@@ -52,6 +53,17 @@ void AuxView::setModel(QAbstractItemModel* model) {
 // ************************************************************************** //
 //  class ListView
 // ************************************************************************** //
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
+void ListView::setModel(TableModel* model) {
+    AuxView::setModel(model);
+}
+#pragma GCC diagnostic pop
+
+TableModel* ListView::model() const {
+    return static_cast<TableModel*>(AuxView::model());
+}
 
 void ListView::updateSingleSelection() {
     int row = currentIndex().row();

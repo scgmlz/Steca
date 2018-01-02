@@ -12,11 +12,12 @@
 //
 // ************************************************************************** //
 
-#include "data/datasequence.h"
 #include "dock_dataset.h"
-#include "widgets/tree_views.h" // inheriting from
 #include "cfg/gui_cfg.h"
+#include "data/datasequence.h"
+#include "models.h"
 #include "thehub.h"
+#include "widgets/tree_views.h" // inheriting from
 #include "widgets/widget_makers.h"
 
 namespace gui {

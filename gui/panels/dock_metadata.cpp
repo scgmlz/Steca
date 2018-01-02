@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "dock_metadata.h"
+#include "models.h"
 #include "widgets/tree_views.h" // inheriting from
 #include "thehub.h"
 
