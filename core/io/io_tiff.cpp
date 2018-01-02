@@ -12,8 +12,9 @@
 //
 // ************************************************************************** //
 
-#include "def/idiomatic_for.h"
 #include "io_io.h"
+#include "def/idiomatic_for.h"
+#include "data/metadata.h"
 #include <QDataStream>
 #include <QDir>
 

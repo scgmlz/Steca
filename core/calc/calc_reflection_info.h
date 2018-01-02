@@ -19,15 +19,20 @@
 
 using typ::deg;
 
+namespace data {
+class Metadata;
+}
+
 namespace calc {
 
 class ReflectionInfo final {
     public:
     ReflectionInfo();
     ReflectionInfo(
-        data::shp_Metadata, typ::deg alpha, typ::deg beta, typ::Range, inten_t, inten_t /*error*/,
+        QSharedPointer<data::Metadata const>,
+        typ::deg alpha, typ::deg beta, typ::Range, inten_t, inten_t /*error*/,
         deg, deg /*error*/, fwhm_t, fwhm_t /*error*/);
-    ReflectionInfo(data::shp_Metadata, typ::deg alpha, typ::deg beta, typ::Range);
+    ReflectionInfo(QSharedPointer<data::Metadata const>, typ::deg alpha, typ::deg beta, typ::Range);
     ReflectionInfo(
         typ::deg alpha, typ::deg beta, typ::Range, inten_t, inten_t /*error*/, deg, deg /*error*/,
         fwhm_t, fwhm_t /*error*/);
@@ -62,7 +67,7 @@ class ReflectionInfo final {
     typ::row_t data() const;
 
 private:
-    data::shp_Metadata md_;
+    QSharedPointer<data::Metadata const> md_;
     typ::deg alpha_, beta_;
     typ::Range rgeGma_;
     inten_t inten_, intenError_;

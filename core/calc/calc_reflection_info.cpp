@@ -13,7 +13,9 @@
 // ************************************************************************** //
 
 #include "calc_reflection_info.h"
+#include "data/metadata.h"
 #include "def/idiomatic_for.h"
+#include <QSharedPointer>
 
 namespace calc {
 
@@ -21,7 +23,6 @@ using typ::cmp_real;
 using typ::cmp_vec;
 using typ::Range;
 using data::Metadata;
-using data::shp_Metadata;
 
 // ************************************************************************** //
 //  class ReflectionInfo
@@ -35,11 +36,13 @@ using data::shp_Metadata;
 
 ReflectionInfo::ReflectionInfo()
     : ReflectionInfo(
-          shp_Metadata(), NAN, NAN, Range(), inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN),
-          NAN, NAN) {}
+          QSharedPointer<Metadata const>(),
+          NAN, NAN, Range(), inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), NAN, NAN)
+{}
 
 ReflectionInfo::ReflectionInfo(
-    shp_Metadata md, deg alpha, deg beta, typ::Range rgeGma, inten_t inten, inten_t intenError,
+    QSharedPointer<Metadata const> md,
+    deg alpha, deg beta, typ::Range rgeGma, inten_t inten, inten_t intenError,
     deg tth, deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
     : md_(md)
     , alpha_(alpha)
@@ -50,23 +53,29 @@ ReflectionInfo::ReflectionInfo(
     , tth_(tth)
     , tthError_(tthError)
     , fwhm_(fwhm)
-    , fwhmError_(fwhmError) {}
+    , fwhmError_(fwhmError)
+{}
 
-ReflectionInfo::ReflectionInfo(shp_Metadata md, deg alpha, deg beta, typ::Range rgeGma)
+ReflectionInfo::ReflectionInfo(
+    QSharedPointer<Metadata const> md, deg alpha, deg beta, typ::Range rgeGma)
     : ReflectionInfo(
-          md, alpha, beta, rgeGma, inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), fwhm_t(NAN),
-          fwhm_t(NAN)) {}
+        md, alpha, beta, rgeGma, inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), fwhm_t(NAN),
+        fwhm_t(NAN))
+{}
 
 ReflectionInfo::ReflectionInfo(
     deg alpha, deg beta, typ::Range rgeGma, inten_t inten, inten_t intenError, deg tth,
     deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
     : ReflectionInfo(
-          shp_Metadata(), alpha, beta, rgeGma, inten, intenError, tth, tthError, fwhm, fwhmError) {}
+        QSharedPointer<Metadata const>(),
+        alpha, beta, rgeGma, inten, intenError, tth, tthError, fwhm, fwhmError)
+{}
 
 ReflectionInfo::ReflectionInfo(deg alpha, deg beta)
     : ReflectionInfo(
           alpha, beta, Range(), inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), fwhm_t(NAN),
-          fwhm_t(NAN)) {}
+          fwhm_t(NAN))
+{}
 
 QStringList ReflectionInfo::dataTags(bool out) {
     QStringList tags;

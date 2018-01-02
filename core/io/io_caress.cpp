@@ -12,8 +12,9 @@
 //
 // ************************************************************************** //
 
-#include "def/idiomatic_for.h"
 #include "io/io_io.h"
+#include "def/idiomatic_for.h"
+#include "data/metadata.h"
 #include <qmath.h>
 #include <sstream>
 ; // preserve inclusion order

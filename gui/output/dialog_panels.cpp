@@ -13,9 +13,10 @@
 // ************************************************************************** //
 
 #include "dialog_panels.h"
+#include "data/metadata.h"
+#include "def/idiomatic_for.h"
 #include "gui_cfg.h"
 #include "thehub.h"
-#include "def/idiomatic_for.h"
 #include "widget_makers.h"
 
 namespace gui {

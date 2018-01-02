@@ -12,9 +12,12 @@
 //
 // ************************************************************************** //
 
-#include "thehub.h"
-#include "session.h"
+#include "models.h"
+#include "data/metadata.h"
+#include "def/idiomatic_for.h"
 #include "fit/fit_fun.h"
+#include "session.h"
+#include "thehub.h"
 
 namespace models {
 
@@ -75,15 +78,17 @@ QVariant DatasetsModel::data(rcIndex index, int role) const {
             return EMPTY_VAR;
 
         switch (col) {
-        case COL_NUMBER: return gSession->collectedDatasetsTags().at(to_u(row));
+        case COL_NUMBER:
+            return gSession->collectedDatasetsTags().at(to_u(row));
         default:
             return datasets_.at(to_u(row))->metadata()->attributeStrValue(
                 metaInfoNums_.at(to_u(col - COL_ATTRS)));
         }
     }
-
-    case GetDatasetRole: return QVariant::fromValue<data::shp_Dataset>(datasets_.at(to_u(row)));
-    default: return EMPTY_VAR;
+    case GetDatasetRole:
+        return QVariant::fromValue<data::shp_Dataset>(datasets_.at(to_u(row)));
+    default:
+        return EMPTY_VAR;
     }
 }
 
@@ -92,8 +97,10 @@ QVariant DatasetsModel::headerData(int col, Qt::Orientation, int role) const {
         return EMPTY_VAR;
 
     switch (col) {
-    case COL_NUMBER: return "#";
-    default: return data::Metadata::attributeTag(metaInfoNums_.at(to_u(col - COL_ATTRS)), false);
+    case COL_NUMBER:
+        return "#";
+    default:
+        return data::Metadata::attributeTag(metaInfoNums_.at(to_u(col - COL_ATTRS)), false);
     }
 }
 

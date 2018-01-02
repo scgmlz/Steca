@@ -12,8 +12,9 @@
 //
 // ************************************************************************** //
 
-#include "fit/peak_functions.h"
 #include "session.h"
+#include "data/metadata.h"
+#include "fit/peak_functions.h"
 
 using typ::size2d;
 using typ::vec;
@@ -262,7 +263,7 @@ calc::ReflectionInfo Session::makeReflectionInfo(
     data::Dataset const& dataset = lens.dataset();
     dataset.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
 
-    data::shp_Metadata metadata = dataset.metadata();
+    QSharedPointer<data::Metadata const> metadata = dataset.metadata();
 
     return rgeTth.contains(peak.x)
         ? calc::ReflectionInfo(
