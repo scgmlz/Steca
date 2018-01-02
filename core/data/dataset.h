@@ -35,9 +35,8 @@ class OneDataset final {
     friend class Dataset;
 
 public:
-    OneDataset(Metadata const&, typ::inten_arr const&);
     OneDataset(Metadata const&, typ::size2d const&, inten_vec const&);
-    OneDataset(OneDataset const&);
+    OneDataset(OneDataset const&) = delete;
 
     QSharedPointer<Metadata const> metadata() const;
 

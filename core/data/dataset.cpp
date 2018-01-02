@@ -31,17 +31,12 @@ using typ::size2d;
 //  class OneDataset
 // ************************************************************************** //
 
-OneDataset::OneDataset(Metadata const& md, typ::inten_arr const& intens)
-    : md_(new Metadata(md)), image_(new Image(intens)) {}
-
 OneDataset::OneDataset(Metadata const& md, size2d const& size, inten_vec const& intens)
     : md_(new Metadata(md)), image_(new Image(size)) {
     debug::ensure(intens.count() == size.count());
     for_i (intens.count())
         image_->setInten(i, intens.at(i));
 }
-
-OneDataset::OneDataset(OneDataset const& that) : md_(that.md_), image_(that.image_) {}
 
 QSharedPointer<Metadata const> OneDataset::metadata() const {
     debug::ensure(!md_.isNull());
