@@ -43,7 +43,7 @@ private:
 
 public: // emit signals
     void tellSessionCleared();
-    void tellDatasetSelected(QSharedPointer<Suite>);
+    void tellSuiteSelected(QSharedPointer<Suite>);
     void tellSelectedReflection(calc::shp_Reflection);
     void tellReflectionData(calc::shp_Reflection);
     void tellReflectionValues(Range const&, qpair const&, fwhm_t, bool);

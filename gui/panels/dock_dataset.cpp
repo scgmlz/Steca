@@ -42,14 +42,14 @@ DatasetView::DatasetView() : ListView() {
     debug::ensure(dynamic_cast<DatasetsModel*>(ListView::model()));
 
     connect(gHub, &TheHubSignallingBase::sigDatasetsChanged, [this]() {
-            gHub->tellDatasetSelected(QSharedPointer<Suite>()); // first de-select
+            gHub->tellSuiteSelected(QSharedPointer<Suite>()); // first de-select
             selectRow(0);
         });
 }
 
 void DatasetView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     ListView::currentChanged(current, previous);
-    gHub->tellDatasetSelected(
+    gHub->tellSuiteSelected(
         model()->data(current,
                       DatasetsModel::GetDatasetRole).value<QSharedPointer<Suite>>());
 }

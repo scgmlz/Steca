@@ -323,7 +323,7 @@ void TabsImages::render() {
 
             gHub->setGammaRange(rge);
 
-            auto oneDataset = dataseq_->at(n - 1);
+            auto measurement = dataseq_->at(n - 1);
 
             numBin_->setEnabled(true);
             if (gHub->toggle_showBins->isChecked()) {
@@ -336,10 +336,10 @@ void TabsImages::render() {
                 auto min = rgeTth.min, wdt = rgeTth.width();
                 qreal num = qreal(numBin_->value());
                 pixMap = makePixmap(
-                    *oneDataset, rge,
+                    *measurement, rge,
                     Range(min + wdt * (num / count), min + wdt * ((num + 1) / count)));
             } else {
-                pixMap = makePixmap(oneDataset->image());
+                pixMap = makePixmap(measurement->image());
             }
         } else {
             spinN_->setEnabled(false);
