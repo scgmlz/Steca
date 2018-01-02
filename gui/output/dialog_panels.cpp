@@ -74,7 +74,7 @@ PanelGammaSlices::PanelGammaSlices() : GridPanel("Gamma slices") {
 
     g->setRowStretch(g->rowCount(), 1);
 
-    rgeGma_ = gHub->collectedDatasetsRgeGma();
+    rgeGma_ = gHub->collectedSuitesRgeGma();
 
     connect(numSlices, slot(QSpinBox, valueChanged, int), [this]() { updateValues(); });
 }
@@ -100,7 +100,7 @@ PanelGammaRange::PanelGammaRange() : GridPanel("Gamma range") {
 
     g->setRowStretch(g->rowCount(), 1);
 
-    rgeGma_ = gHub->collectedDatasetsRgeGma();
+    rgeGma_ = gHub->collectedSuitesRgeGma();
 
     minGamma->setValue(rgeGma_.min);
     maxGamma->setValue(rgeGma_.max);

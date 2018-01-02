@@ -87,12 +87,12 @@ public:
 
     pint suiteGroupedBy() const { return suiteGroupedBy_; }
 
-    Range collectedDatasetsRgeGma() const;
+    Range collectedSuitesRgeGma() const;
     ImageCut const& imageCut() const;
 
     eFittingTab fittingTab() const { return fittingTab_; }
 
-    QSharedPointer<Suite> selectedDataset() const { return selectedDataset_; }
+    QSharedPointer<Suite> selectedSuite() const { return selectedSuite_; }
 
 private:
     friend class TheHubSignallingBase;
@@ -102,7 +102,7 @@ private:
     uint_vec collectFromFiles_;
     pint suiteGroupedBy_ = pint(1);
     eFittingTab fittingTab_ = eFittingTab::NONE;
-    QSharedPointer<Suite> selectedDataset_;
+    QSharedPointer<Suite> selectedSuite_;
     calc::shp_Reflection selectedReflection_;
 
     void setImageRotate(ImageTransform);

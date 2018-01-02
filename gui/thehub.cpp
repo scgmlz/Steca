@@ -365,8 +365,8 @@ void TheHub::combineDatasetsBy(pint by) {
     collectDatasetsFromFiles(collectFromFiles_, by);
 }
 
-Range TheHub::collectedDatasetsRgeGma() const {
-    return gSession->collectedDatasets().rgeGma(*gSession);
+Range TheHub::collectedSuitesRgeGma() const {
+    return gSession->collectedSuites().rgeGma(*gSession);
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {

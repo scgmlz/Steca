@@ -56,7 +56,7 @@ void FilesModel::removeFile(uint i) {
 // ************************************************************************** //
 
 DatasetsModel::DatasetsModel()
-    : experiment_(gSession->collectedDatasets())
+    : experiment_(gSession->collectedSuites())
 {
 }
 
@@ -81,7 +81,7 @@ QVariant DatasetsModel::data(rcIndex index, int role) const {
 
         switch (col) {
         case COL_NUMBER:
-            return gSession->collectedDatasetsTags().at(to_u(row));
+            return gSession->collectedSuitesTags().at(to_u(row));
         default:
             return experiment_.at(to_u(row))->metadata()->attributeStrValue(
                 metaInfoNums_.at(to_u(col - COL_ATTRS)));

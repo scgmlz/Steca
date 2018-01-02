@@ -117,7 +117,7 @@ void Frame::calculate() {
         for_i (reflCount)
             calcPoints_.append(
                 gSession->makeReflectionInfos(
-                    gSession->collectedDatasets(), *reflections.at(i),
+                    gSession->collectedSuites(), *reflections.at(i),
                     gammaSlices, rgeGamma, &progress));
     }
 

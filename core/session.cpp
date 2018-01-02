@@ -123,8 +123,8 @@ void Session::remCorrFile() {
 void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
 
     collectedFromFiles_ = fileNums;
-    collectedDatasets_.clear();
-    collectedDatasetsTags_.clear();
+    collectedSuites_.clear();
+    collectedSuitesTags_.clear();
 
     vec<QSharedPointer<Measurement const>> suiteFromFiles;
     for (uint i : collectedFromFiles_)
@@ -144,8 +144,8 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
             i += cnt;
             if (combineBy > 1)
                 tag += '-' + str::number(i);
-            collectedDatasets_.appendHere(cd);
-            collectedDatasetsTags_.append(tag);
+            collectedSuites_.appendHere(cd);
+            collectedSuitesTags_.append(tag);
             cd = QSharedPointer<Suite>(new Suite);
         }
     };

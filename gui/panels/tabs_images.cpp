@@ -235,7 +235,7 @@ QImage TabsImages::makeImage(QSharedPointer<Image> image, bool curvedScale) {
     if (!image)
         return im;
 
-    auto imageLens = gSession->imageLens(*image, gSession->collectedDatasets(), true, false);
+    auto imageLens = gSession->imageLens(*image, gSession->collectedSuites(), true, false);
     auto size = imageLens->size();
     if (size.isEmpty())
         return im;

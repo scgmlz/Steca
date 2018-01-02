@@ -128,7 +128,7 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
     if (pr->cbLimitGamma->isChecked())
         rgeGma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
 
-    auto& suite = gSession->collectedDatasets();
+    auto& suite = gSession->collectedSuites();
     Progress progress(suite.count(), pb_);
 
     OutputDataCollections allOutputData;
@@ -143,7 +143,7 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
 }
 
 OutputData DiffractogramsFrame::outputCurrDiffractogram() {
-    auto dataseq = gHub->selectedDataset();
+    auto dataseq = gHub->selectedSuite();
     if (dataseq)
         return collectCurve(*dataseq);
     else
