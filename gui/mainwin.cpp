@@ -101,7 +101,7 @@ void MainWin::initMenus() {
     addActions(
         menuView_,
         {
-            gHub->toggle_viewFiles, gHub->toggle_viewDatasets, gHub->toggle_viewDatasetInfo, separator(),
+            gHub->toggle_viewFiles, gHub->toggle_viewDatasets, gHub->toggle_viewMetadata, separator(),
 #ifndef Q_OS_OSX
             gHub->toggle_fullScreen,
 #endif
@@ -208,7 +208,7 @@ void MainWin::connectActions() {
 
     connectToggle(gHub->toggle_viewFiles, &MainWin::viewFiles);
     connectToggle(gHub->toggle_viewDatasets, &MainWin::viewDatasets);
-    connectToggle(gHub->toggle_viewDatasetInfo, &MainWin::viewDatasetInfo);
+    connectToggle(gHub->toggle_viewMetadata, &MainWin::viewMetadata);
 
     connectTrigger(gHub->trigger_viewReset, &MainWin::viewReset);
 }
@@ -407,7 +407,7 @@ void MainWin::checkActions() {
 
     gHub->toggle_viewFiles->setChecked(dockFiles_->isVisible());
     gHub->toggle_viewDatasets->setChecked(dockDatasets_->isVisible());
-    gHub->toggle_viewDatasetInfo->setChecked(dockDatasetInfo_->isVisible());
+    gHub->toggle_viewMetadata->setChecked(dockDatasetInfo_->isVisible());
 }
 
 void MainWin::viewStatusbar(bool on) {
@@ -436,9 +436,9 @@ void MainWin::viewDatasets(bool on) {
     gHub->toggle_viewDatasets->setChecked(on);
 }
 
-void MainWin::viewDatasetInfo(bool on) {
+void MainWin::viewMetadata(bool on) {
     dockDatasetInfo_->setVisible(on);
-    gHub->toggle_viewDatasetInfo->setChecked(on);
+    gHub->toggle_viewMetadata->setChecked(on);
 }
 
 void MainWin::viewReset() {
@@ -447,7 +447,7 @@ void MainWin::viewReset() {
     viewFullScreen(false);
     viewFiles(true);
     viewDatasets(true);
-    viewDatasetInfo(true);
+    viewMetadata(true);
 }
 
 } // namespace gui

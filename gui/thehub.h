@@ -37,7 +37,7 @@ public:
     static uint constexpr MAX_POLYNOM_DEGREE = 4;
 
     QAction *trigger_about, *trigger_online, *trigger_checkUpdate, *trigger_quit, *toggle_viewStatusbar, *toggle_viewFiles, *toggle_viewDatasets,
-        *toggle_viewDatasetInfo, *trigger_viewReset,
+        *toggle_viewMetadata, *trigger_viewReset,
 #ifndef Q_OS_OSX // Mac has its own
         *toggle_fullScreen,
 #endif

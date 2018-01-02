@@ -68,7 +68,7 @@ private:
     void viewFullScreen(bool);
     void viewFiles(bool);
     void viewDatasets(bool);
-    void viewDatasetInfo(bool);
+    void viewMetadata(bool);
     void viewReset();
 };
 

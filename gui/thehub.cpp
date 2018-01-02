@@ -56,7 +56,7 @@ TheHub::TheHub()
     toggle_viewStatusbar = newToggle("Statusbar");
     toggle_viewFiles = newToggle("Files");
     toggle_viewDatasets = newToggle("Datasets");
-    toggle_viewDatasetInfo = newToggle("Metadata");
+    toggle_viewMetadata = newToggle("Metadata");
     trigger_viewReset = newTrigger("Reset");
 #ifndef Q_OS_OSX
     toggle_fullScreen = newToggle("FullScreen");
@@ -102,7 +102,7 @@ TheHub::TheHub()
     toggle_viewStatusbar->setShortcut(Qt::Key_F12);
     toggle_viewFiles->setShortcut(Qt::Key_F8);
     toggle_viewDatasets->setShortcut(Qt::Key_F9);
-    toggle_viewDatasetInfo->setShortcut(Qt::Key_F10);
+    toggle_viewMetadata->setShortcut(Qt::Key_F10);
 
 #ifndef Q_OS_OSX
     toggle_fullScreen->setShortcut(Qt::Key_F11);
