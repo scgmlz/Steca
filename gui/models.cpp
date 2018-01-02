@@ -14,7 +14,6 @@
 
 #include "thehub.h"
 #include "session.h"
-#include <QApplication>
 
 namespace models {
 

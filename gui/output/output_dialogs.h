@@ -21,11 +21,9 @@
 #include "gui_helpers.h"
 
 class QCheckBox;
-class QProgressBar;
 
 namespace gui {
 
-class Action;
 
 namespace output {
 

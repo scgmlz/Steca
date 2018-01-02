@@ -14,11 +14,9 @@
 
 #include "config.h"
 #include "io/io_io.h"
-#include "mainwin.h"
 #include "output/write_file.h"
 #include "session.h"
 #include "thehub.h"
-#include "data/dataset.h"
 #include <QAction>
 #include <QDir>
 #include <QJsonDocument>

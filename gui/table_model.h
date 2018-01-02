@@ -18,7 +18,6 @@
 #include <QAbstractTableModel>
 
 namespace gui {
-    class TheHub;
 }
 
 namespace models {

@@ -14,8 +14,6 @@
 
 #include "def/idiomatic_for.h"
 #include "fit_methods.h"
-#include "typ/json.h"
-#include <qmath.h>
 
 using typ::Range;
 using typ::Curve;

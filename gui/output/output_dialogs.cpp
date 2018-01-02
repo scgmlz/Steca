@@ -14,7 +14,6 @@
 
 #include "output_dialogs.h"
 #include "dialog_panels.h"
-#include "calc/calc_polefigure.h"
 #include "config.h"
 #include "filedialog.h"
 #include "settings.h"
@@ -23,7 +22,6 @@
 #include <QAction>
 #include <QDir>
 #include <QHeaderView>
-#include <QProgressBar>
 #include <QScrollArea>
 
 namespace gui {

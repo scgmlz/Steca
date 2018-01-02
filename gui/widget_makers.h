@@ -18,14 +18,12 @@
 #include "typ/str.h"
 #include <QCheckBox>
 #include <QComboBox>
-#include <QDockWidget>
 #include <QLabel>
 #include <QLayout>
 #include <QLineEdit>
 #include <QRadioButton>
 #include <QSpinBox>
 #include <QToolButton>
-#include <QTreeView>
 
 QBoxLayout* boxLayout(Qt::Orientation);
 QBoxLayout* hbox(); // horizontal box layout

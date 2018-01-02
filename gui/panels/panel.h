@@ -19,7 +19,6 @@
 #include <QComboBox>
 #include <QGridLayout>
 #include <QGroupBox>
-#include <QTabWidget>
 #include <QToolButton>
 #include <QRadioButton>
 #include <QSpinBox>

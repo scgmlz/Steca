@@ -18,7 +18,6 @@
 #include "write_file.h"
 #include "session.h"
 #include "output_dialogs.h"
-#include "def/idiomatic_for.h"
 #include "QCustomPlot/qcustomplot.h"
 #include "widget_makers.h"
 #include <QAction>

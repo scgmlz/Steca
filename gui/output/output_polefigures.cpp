@@ -19,7 +19,6 @@
 #include "thehub.h"
 #include "write_file.h"
 #include "session.h"
-#include "def/idiomatic_for.h"
 #include "widget_makers.h"
 #include <qmath.h>
 #include <QAction>

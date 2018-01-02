@@ -16,7 +16,6 @@
 #define FRAME_H
 
 #include "calc/calc_reflection_info.h"
-#include "def/special_pointers.h"
 #include "panels/panel.h"
 
 class QProgressBar;

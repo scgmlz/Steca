@@ -13,10 +13,8 @@
 // ************************************************************************** //
 
 #include "widget_makers.h"
-#include "def/idiomatic_for.h"
 #include "def/numbers.h"
 #include <QAction>
-#include <QGroupBox>
 
 static void setEmWidth(QWidget* w, uint emWidth) {
     w->setMaximumWidth(to_i(emWidth) * w->fontMetrics().width('m'));

@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "fit_fun.h"
 #include "peak_functions.h"
 #include <QtMath>
 

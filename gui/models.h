@@ -15,12 +15,10 @@
 #ifndef MODELS_H
 #define MODELS_H
 
-#include "typ/vec.h"
 #include "table_model.h"
 #include "data/dataset.h"
 
 namespace data {
-    class Datasets;
     struct Metadata;
 }
 

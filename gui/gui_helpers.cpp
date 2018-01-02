@@ -14,10 +14,7 @@
 
 #include "gui_helpers.h"
 #include "def/idiomatic_for.h"
-#include "def/numbers.h"
 #include "widget_makers.h"
-#include <QAction>
-#include <QGroupBox>
 
 TreeView::TreeView() {
     setAlternatingRowColors(true);

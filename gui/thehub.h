@@ -19,10 +19,7 @@
 #include "models.h"
 #include "signalling.h"
 #include "calc/calc_lens.h"
-#include "calc/calc_reflection.h"
 #include "calc/calc_reflection_info.h"
-#include "data/datafile.h"
-#include "typ/async.h"
 
 extern class gui::TheHub* gHub;
 

@@ -17,13 +17,11 @@
 
 #include "signalling.h" // for eFittingTab
 
-class QAction;
 class QBoxLayout;
 class QComboBox;
 class QRadioButton;
 class QDoubleSpinBox;
 class QToolButton;
-class QAction;
 
 namespace gui {
 namespace panel {

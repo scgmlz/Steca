@@ -93,7 +93,6 @@ protected:
 typedef class PeakFunction* (*initializer_type)();
 
 namespace typ {
-    class JsonObj;
 }
 
 class FunctionRegistry : public IRegistry<initializer_type>, public ISingleton<FunctionRegistry> {

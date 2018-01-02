@@ -21,7 +21,6 @@ namespace typ {
 template <typename Key, typename T> class map : public QMap<Key, T> {
     using super_type = QMap<Key, T>;
 private:
-    using super = super_type;
 public:
 };
 
