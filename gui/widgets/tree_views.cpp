@@ -17,6 +17,10 @@
 
 namespace gui {
 
+// ************************************************************************** //
+//  class TreeView
+// ************************************************************************** //
+
 TreeView::TreeView() {
     setAlternatingRowColors(true);
 }
@@ -24,6 +28,10 @@ TreeView::TreeView() {
 int TreeView::sizeHintForColumn(int) const {
     return 3 * fontMetrics().width('m');
 }
+
+// ************************************************************************** //
+//  class TreeListView
+// ************************************************************************** //
 
 TreeListView::TreeListView() {
     setSelectionBehavior(SelectRows);
@@ -41,6 +49,10 @@ void TreeListView::setModel(QAbstractItemModel* model) {
     }
 }
 
+// ************************************************************************** //
+//  class ListView
+// ************************************************************************** //
+
 void ListView::updateSingleSelection() {
     int row = currentIndex().row();
     model()->signalReset();
@@ -51,6 +63,9 @@ void ListView::selectRow(int row) {
     setCurrentIndex(model()->index(row, 0));
 }
 
+// ************************************************************************** //
+//  class MultiListView
+// ************************************************************************** //
 
 MultiListView::MultiListView() : ListView() {
     setSelectionMode(ExtendedSelection);
