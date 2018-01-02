@@ -21,6 +21,7 @@
 #include "data/angle_map.h"
 #include "data/datafile.h"
 #include "data/experiment.h"
+#include "data/image.h"
 #include "typ/async.h"
 #include "typ/cache.h"
 #include "typ/singleton.h"

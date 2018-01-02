@@ -16,8 +16,8 @@
 #define EXPERIMENT_H
 
 #include "typ/angles.h"
+#include "typ/array2d.h"
 #include "typ/curve.h"
-#include "data/image.h"
 #include "typ/variant.h"
 
 class Session;
