@@ -39,9 +39,12 @@ QVariant FilesModel::data(rcIndex index, int role) const {
         return EMPTY_VAR;
 
     switch (role) {
-    case Qt::DisplayRole: return gSession->file(to_u(row))->fileName();
-    case GetFileRole: return QVariant::fromValue<shp_Datafile>(gSession->file(to_u(row)));
-    default: return EMPTY_VAR;
+    case Qt::DisplayRole:
+        return gSession->file(to_u(row))->fileName();
+    case GetFileRole:
+        return QVariant::fromValue<shp_Datafile>(gSession->file(to_u(row)));
+    default:
+        return EMPTY_VAR;
     }
 }
 
@@ -95,7 +98,6 @@ QVariant DatasetsModel::data(rcIndex index, int role) const {
 QVariant DatasetsModel::headerData(int col, Qt::Orientation, int role) const {
     if (Qt::DisplayRole != role || col < DCOL || columnCount() <= col)
         return EMPTY_VAR;
-
     switch (col) {
     case COL_NUMBER:
         return "#";
@@ -216,14 +218,17 @@ QVariant ReflectionsModel::data(rcIndex index, int role) const {
 
         switch (col) {
         case COL_ID:
-        case COL_TYPE: return displayData(to_u(row), to_u(col));
-        default: return EMPTY_VAR;
+        case COL_TYPE:
+            return displayData(to_u(row), to_u(col));
+        default:
+            return EMPTY_VAR;
         }
     }
 
     case GetDatasetRole:
         return QVariant::fromValue<calc::shp_Reflection>(gSession->reflections().at(to_u(row)));
-    default: return EMPTY_VAR;
+    default:
+        return EMPTY_VAR;
     }
 }
 

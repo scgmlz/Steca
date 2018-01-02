@@ -57,10 +57,10 @@ bool Session::hasFile(rcstr fileName) const {
     return false;
 }
 
-void Session::addGivenFile(shp_Datafile file) THROWS {
-    setImageSize(file->datasets().imageSize());
+void Session::addGivenFile(shp_Datafile datafile) THROWS {
+    setImageSize(datafile->datasets().imageSize());
     // all ok
-    files_.append(file);
+    files_.append(datafile);
 }
 
 void Session::removeFile(uint i) {
@@ -105,16 +105,16 @@ Image const* Session::intensCorr() const {
     return &intensCorr_;
 }
 
-void Session::setCorrFile(shp_Datafile file) THROWS {
-    if (file.isNull()) {
+void Session::setCorrFile(shp_Datafile datafile) THROWS {
+    if (datafile.isNull()) {
         remCorrFile();
     } else {
-        auto& datasets = file->datasets();
+        auto& datasets = datafile->datasets();
         setImageSize(datasets.imageSize());
         corrImage_ = datasets.foldedImage();
         intensCorr_.clear(); // will be calculated lazily
         // all ok
-        corrFile_ = file;
+        corrFile_ = datafile;
         corrEnabled_ = true;
     }
 }
