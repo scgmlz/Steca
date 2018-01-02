@@ -32,7 +32,6 @@ typedef QSharedPointer<Dataset> shp_Dataset;
 //! Metadata + Image, for calculation always accessed through its owning Dataset
 
 class OneDataset final {
-    friend class Dataset;
 
 public:
     OneDataset(Metadata const&, size2d const&, inten_vec const&);
