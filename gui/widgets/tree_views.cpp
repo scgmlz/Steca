@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/views.cpp
+//! @file      gui/widgettree_views.cpp
 //! @brief     Implements classes ListView, MultiListView
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,9 +12,34 @@
 //
 // ************************************************************************** //
 
-#include "views.h"
+#include "tree_views.h"
+#include "def/idiomatic_for.h"
 
 namespace gui {
+
+TreeView::TreeView() {
+    setAlternatingRowColors(true);
+}
+
+int TreeView::sizeHintForColumn(int) const {
+    return 3 * fontMetrics().width('m');
+}
+
+TreeListView::TreeListView() {
+    setSelectionBehavior(SelectRows);
+}
+
+void TreeListView::setModel(QAbstractItemModel* model) {
+    TreeView::setModel(model);
+    hideColumn(0); // this should look like a list; 0th column is tree-like
+
+    if (model) {
+        connect(model, &QAbstractItemModel::modelReset, [this, model]() {
+            for_i (model->columnCount())
+                resizeColumnToContents(i);
+        });
+    }
+}
 
 void ListView::updateSingleSelection() {
     int row = currentIndex().row();

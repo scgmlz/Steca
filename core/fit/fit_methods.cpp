@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/fit_methods.cpp
+//! @file      core/fit/fit_methods.cpp
 //! @brief     Implements class FitWrapper
 //!
 //! @homepage  https://github.com/scgmlz/Steca2

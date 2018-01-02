@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/views.h
+//! @file      gui/widgettree_views.h
 //! @brief     Defines classes ListView, MultiListView
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,13 +12,32 @@
 //
 // ************************************************************************** //
 
-#ifndef VIEWS_H
-#define VIEWS_H
+#ifndef WIDGETTREE_VIEWS_H
+#define WIDGETTREE_VIEWS_H
 
 #include "gui_helpers.h"
 #include "models.h"
 
 namespace gui {
+
+//! abstract tree widget
+
+class TreeView : public QTreeView {
+public:
+    TreeView();
+
+    int sizeHintForColumn(int) const; // make narrow columns
+};
+
+//! abstract tree widget used as a list (hides column 0)
+
+class TreeListView : public TreeView {
+public:
+    TreeListView();
+
+protected:
+    void setModel(QAbstractItemModel*);
+};
 
 //! A (tree-)list view with a reference to the hub. Single selection.
 
@@ -53,4 +72,4 @@ protected:
 
 } // namespace gui
 
-#endif // VIEWS_H
+#endif // WIDGETTREE_VIEWS_H

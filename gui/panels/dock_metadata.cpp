@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "dock_metadata.h"
-#include "views.h" // inheriting from
+#include "widgets/tree_views.h" // inheriting from
 #include "thehub.h"
 
 namespace gui {

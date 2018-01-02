@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "dock_files.h"
-#include "views.h" // inheriting from
+#include "widgets/tree_views.h" // inheriting from
 #include "thehub.h"
 #include "session.h"
 #include "widget_makers.h"

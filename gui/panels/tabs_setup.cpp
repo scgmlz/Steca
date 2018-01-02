@@ -17,7 +17,7 @@
 #include "gui_cfg.h"
 #include "session.h"
 #include "thehub.h"
-#include "views.h" // inheriting from
+#include "widgets/tree_views.h" // inheriting from
 #include "widget_makers.h"
 #include <QAction>
 

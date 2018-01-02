@@ -14,7 +14,7 @@
 
 #include "data/datasequence.h"
 #include "dock_dataset.h"
-#include "views.h" // inheriting from
+#include "widgets/tree_views.h" // inheriting from
 #include "gui_cfg.h"
 #include "thehub.h"
 #include "widget_makers.h"

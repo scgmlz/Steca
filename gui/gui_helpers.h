@@ -21,25 +21,6 @@
 #include <QLineEdit>
 #include <QTreeView>
 
-//! abstract tree widget
-
-class TreeView : public QTreeView {
-public:
-    TreeView();
-
-    int sizeHintForColumn(int) const; // make narrow columns
-};
-
-//! abstract tree widget used as a list (hides column 0)
-
-class TreeListView : public TreeView {
-public:
-    TreeListView();
-
-protected:
-    void setModel(QAbstractItemModel*);
-};
-
 //! Read-only version of QLineEdit
 
 class LineView : public QLineEdit {

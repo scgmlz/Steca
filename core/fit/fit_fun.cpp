@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/fit_fun.cpp
+//! @file      core/fit/fit_fun.cpp
 //! @brief     Implements classes Polynom and PeakFunction, and FunctionRegistry
 //!
 //! @homepage  https://github.com/scgmlz/Steca2

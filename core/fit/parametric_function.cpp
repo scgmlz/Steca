@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/parametric_function.cpp
+//! @file      core/fit/parametric_function.cpp
 //! @brief     Implements class Function
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
