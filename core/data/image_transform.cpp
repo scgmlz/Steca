@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/typ/image_transform.cpp
+//! @file      core/data/image_transform.cpp
 //! @brief     Implements ...
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "typ/image_transform.h"
+#include "data/image_transform.h"
 
 namespace typ {
 

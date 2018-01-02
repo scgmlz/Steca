@@ -17,7 +17,7 @@
 
 #include "data/dataset.h"
 #include "typ/geometry.h"
-#include "typ/image_transform.h"
+#include "data/image_transform.h"
 
 namespace calc {
 

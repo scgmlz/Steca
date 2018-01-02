@@ -17,7 +17,7 @@
 
 #include "typ/angles.h"
 #include "typ/curve.h"
-#include "typ/image.h"
+#include "data/image.h"
 #include "typ/variant.h"
 
 class Session;

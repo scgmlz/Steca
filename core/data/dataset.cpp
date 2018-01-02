@@ -18,7 +18,7 @@
 #include "session.h"
 #include "typ/array2d.h"
 #include "typ/curve.h"
-#include "typ/image.h"
+#include "data/image.h"
 #include "typ/matrix.h"
 #include <qmath.h>
 
