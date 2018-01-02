@@ -15,6 +15,7 @@
 #include "thehub.h"
 #include "actions.h"
 #include "io/io_io.h"
+#include "models.h"
 #include "output/write_file.h"
 #include "session.h"
 #include "typ/json.h"

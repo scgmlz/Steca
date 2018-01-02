@@ -15,12 +15,18 @@
 #ifndef THEHUB_H
 #define THEHUB_H
 
-#include "models.h"
 #include "signalling.h" // defines base class TheHubSignallingBase
 #include "calc/calc_lens.h"
 #include "calc/calc_reflection_info.h"
 
 class QAction;
+
+namespace models {
+class FilesModel;
+class DatasetsModel;
+class MetadataModel;
+class ReflectionsModel;
+}
 
 extern class gui::TheHub* gHub;
 
@@ -109,10 +115,10 @@ private:
     void sessionFromJson(QByteArray const&) THROWS;
 
 public:
-    class models::FilesModel* filesModel;
-    class models::DatasetsModel* datasetsModel;
-    class models::MetadataModel* metadataModel;
-    class models::ReflectionsModel* reflectionsModel;
+    models::FilesModel* filesModel;
+    models::DatasetsModel* datasetsModel;
+    models::MetadataModel* metadataModel;
+    models::ReflectionsModel* reflectionsModel;
 };
 
 } // namespace gui

@@ -17,6 +17,7 @@
 #include "def/idiomatic_for.h"
 #include "dialog_panels.h"
 #include "filedialog.h"
+#include "models.h"
 #include "settings.h"
 #include "thehub.h"
 #include "widget_makers.h"
