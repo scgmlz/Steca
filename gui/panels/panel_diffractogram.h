@@ -16,6 +16,7 @@
 #define PANEL_DIFFRACTOGRAM_H
 
 #include "signalling.h" // for eFittingTab
+#include <QWidget>
 
 class QBoxLayout;
 class QComboBox;

@@ -17,6 +17,8 @@
 
 #include "calc/calc_reflection.h"
 #include "data/datafile.h"
+#include "typ/range.h"
+#include "typ/realpair.h"
 
 // make connects shorter
 

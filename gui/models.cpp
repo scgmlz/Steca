@@ -14,6 +14,7 @@
 
 #include "thehub.h"
 #include "session.h"
+#include "fit/fit_fun.h"
 
 namespace models {
 

@@ -12,12 +12,13 @@
 //
 // ************************************************************************** //
 
-#include "QCustomPlot/qcustomplot.h"
 #include "panel_diffractogram.h"
+#include "fit/fit_fun.h"
 #include "gui_cfg.h"
-#include "thehub.h"
 #include "session.h"
+#include "thehub.h"
 #include "widget_makers.h"
+#include "QCustomPlot/qcustomplot.h"
 #include <QAction>
 
 namespace gui {

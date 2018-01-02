@@ -21,6 +21,7 @@
 #include "data/datafile.h"
 #include "typ/async.h"
 #include "typ/cache.h"
+#include "typ/singleton.h"
 
 extern class Session* gSession;
 

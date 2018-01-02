@@ -15,7 +15,13 @@
 #ifndef CALC_REFLECTION_H
 #define CALC_REFLECTION_H
 
-#include "fit/fit_fun.h"
+#include "def/special_pointers.h"
+#include "typ/curve.h"
+#include "typ/realpair.h"
+#include "typ/range.h"
+#include "typ/types.h"
+
+class PeakFunction;
 
 namespace calc {
 
@@ -27,11 +33,11 @@ public:
     void setPeakFunction(QString const&);
     void setRange(typ::Range const&);
     void invalidateGuesses();
-    void setGuessPeak(qpair const& peak) { peakFunction_->setGuessedPeak(peak); }
-    void setGuessFWHM(fwhm_t fwhm) { peakFunction_->setGuessedFWHM(fwhm); }
+    void setGuessPeak(qpair const& peak);
+    void setGuessFWHM(fwhm_t fwhm);
     void fit(typ::Curve const&);
 
-    QString peakFunctionName() const { return peakFunction_->name(); }
+    QString peakFunctionName() const;
     PeakFunction const& peakFunction() const;
     typ::Range const& range() const;
     typ::JsonObj to_json() const;

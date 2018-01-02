@@ -12,6 +12,7 @@
 //
 // ************************************************************************** //
 
+#include "fit/fit_fun.h"
 #include "calc_reflection.h"
 
 namespace calc {
@@ -38,8 +39,20 @@ void Reflection::invalidateGuesses() {
     peakFunction_->setGuessedFWHM(NAN);
 }
 
+void Reflection::setGuessPeak(qpair const& peak) {
+    peakFunction_->setGuessedPeak(peak);
+}
+
+void Reflection::setGuessFWHM(fwhm_t fwhm) {
+    peakFunction_->setGuessedFWHM(fwhm);
+}
+
 void Reflection::fit(typ::Curve const& curve) {
     peakFunction_->fit(curve);
+}
+
+QString Reflection::peakFunctionName() const {
+    return peakFunction_->name();
 }
 
 void Reflection::setPeakFunction(QString const& peakFunctionName) {

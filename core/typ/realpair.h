@@ -16,8 +16,10 @@
 #define REALPAIR_H
 
 #include "def/comparable.h"
+#include "def/numbers.h"
 
 namespace typ {
+class JsonObj;
 }
 
 //! 2D point, reals

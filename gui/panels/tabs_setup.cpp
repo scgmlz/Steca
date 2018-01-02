@@ -13,10 +13,11 @@
 // ************************************************************************** //
 
 #include "tabs_setup.h"
-#include "views.h" // inheriting from
+#include "fit/fit_fun.h"
 #include "gui_cfg.h"
-#include "thehub.h"
 #include "session.h"
+#include "thehub.h"
+#include "views.h" // inheriting from
 #include "widget_makers.h"
 #include <QAction>
 

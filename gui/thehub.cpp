@@ -12,11 +12,12 @@
 //
 // ************************************************************************** //
 
+#include "thehub.h"
 #include "config.h"
 #include "io/io_io.h"
 #include "output/write_file.h"
 #include "session.h"
-#include "thehub.h"
+#include "typ/json.h"
 #include <QAction>
 #include <QDir>
 #include <QJsonDocument>

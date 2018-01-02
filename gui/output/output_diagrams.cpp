@@ -14,12 +14,13 @@
 
 #include "output_diagrams.h"
 #include "dialog_panels.h"
-#include "thehub.h"
-#include "write_file.h"
-#include "session.h"
+#include "fit/fit_fun.h"
 #include "output_dialogs.h"
-#include "QCustomPlot/qcustomplot.h"
+#include "session.h"
+#include "thehub.h"
 #include "widget_makers.h"
+#include "write_file.h"
+#include "QCustomPlot/qcustomplot.h"
 #include <QAction>
 
 namespace gui {
