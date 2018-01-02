@@ -41,9 +41,9 @@ TheHub::TheHub()
 
     connect(this, &gui::TheHubSignallingBase::sigFilesChanged,
             [this]() { filesModel->signalReset(); });
-    connect(this, &gui::TheHubSignallingBase::sigDatasetsChanged,
+    connect(this, &gui::TheHubSignallingBase::sigSuitesChanged,
             [this]() { suiteModel->signalReset(); });
-    connect(this, &gui::TheHubSignallingBase::sigDatasetSelected,
+    connect(this, &gui::TheHubSignallingBase::sigSuiteSelected,
             [this](QSharedPointer<Suite> dataseq) { metadataModel->reset(dataseq); });
 
     // create actions
@@ -132,7 +132,7 @@ TheHub::TheHub()
 
     QObject::connect(this, &gui::TheHub::sigGeometryChanged,
                      [deselect]() { deselect(); });
-    QObject::connect(this, &gui::TheHub::sigDatasetsChanged,
+    QObject::connect(this, &gui::TheHub::sigSuitesChanged,
                      [deselect]() { deselect(); });
     QObject::connect(this, &gui::TheHub::sigCorrEnabled,
                      [deselect]() { deselect(); });
@@ -354,7 +354,7 @@ void TheHub::addGivenFiles(QStringList const& filePaths) THROWS {
 void TheHub::collectDatasetsFromFiles(uint_vec is, pint by) {
     gSession->collectDatasetsFromFiles((collectFromFiles_ = is), (suiteGroupedBy_ = by));
     emit sigFilesSelected();
-    emit sigDatasetsChanged();
+    emit sigSuitesChanged();
 }
 
 void TheHub::collectDatasetsFromFiles(uint_vec is) {

@@ -54,9 +54,9 @@ signals:
     void sigFilesChanged(); // the set of loaded files has changed
     void sigFilesSelected(); // the selection of loaded files has changed
 
-    void sigDatasetsChanged(); // the set of suite collected from selected
+    void sigSuitesChanged(); // the set of suite collected from selected
     // files has changed
-    void sigDatasetSelected(QSharedPointer<Suite>);
+    void sigSuiteSelected(QSharedPointer<Suite>);
 
     void sigCorrFile(QSharedPointer<Datafile const>);
     void sigCorrEnabled(bool);

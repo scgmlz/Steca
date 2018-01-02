@@ -215,7 +215,7 @@ TabsImages::TabsImages() : TabsPanel() {
     connect(gHub, &TheHubSignallingBase::sigDisplayChanged, [this](){ render(); });
     connect(gHub, &TheHubSignallingBase::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHubSignallingBase::sigNormChanged, [this](){ render(); });
-    connect(gHub, &TheHubSignallingBase::sigDatasetSelected,
+    connect(gHub, &TheHubSignallingBase::sigSuiteSelected,
             [this](QSharedPointer<Suite> dataseq){ setSuite(dataseq); });
 
     render();

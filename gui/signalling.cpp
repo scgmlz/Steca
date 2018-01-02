@@ -29,7 +29,7 @@ void TheHubSignallingBase::tellSessionCleared() {
 }
 
 void TheHubSignallingBase::tellSuiteSelected(QSharedPointer<Suite> suite) {
-    emit sigDatasetSelected((asHub().selectedSuite_ = suite));
+    emit sigSuiteSelected((asHub().selectedSuite_ = suite));
 }
 
 void TheHubSignallingBase::tellSelectedReflection(calc::shp_Reflection reflection) {

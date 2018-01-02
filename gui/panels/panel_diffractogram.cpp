@@ -501,7 +501,7 @@ Diffractogram::Diffractogram()
         plot_->enterZoom(on);
     });
 
-    connect(gHub, &TheHubSignallingBase::sigDatasetSelected,
+    connect(gHub, &TheHubSignallingBase::sigSuiteSelected,
             [this](QSharedPointer<Suite> dataseq){ setSuite(dataseq); });
     connect(gHub, &TheHubSignallingBase::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHubSignallingBase::sigCorrEnabled, [this](){ render(); });
