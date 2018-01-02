@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "session.h"
+#include "data/datasequence.h"
 #include "data/measurement.h"
 #include "data/metadata.h"
 #include "fit/peak_functions.h"

@@ -19,7 +19,6 @@
 #include "typ/curve.h"
 #include "data/image.h"
 #include "typ/variant.h"
-#include "datasequence.h"
 
 class Session;
 class Metadata;

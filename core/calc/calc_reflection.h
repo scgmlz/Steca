@@ -18,7 +18,6 @@
 #include "def/special_pointers.h"
 #include "typ/curve.h"
 #include "typ/realpair.h"
-#include "typ/range.h"
 #include "typ/types.h"
 
 class PeakFunction;

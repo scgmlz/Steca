@@ -14,6 +14,7 @@
 
 #include "panel_diffractogram.h"
 #include "actions.h"
+#include "data/datasequence.h"
 #include "fit/fit_fun.h"
 #include "gui_cfg.h"
 #include "session.h"
@@ -28,7 +29,6 @@ namespace panel {
 // ************************************************************************** //
 //  define file-scoped classes
 // ************************************************************************** //
-
 
 class DiffractogramPlotOverlay : public QWidget {
 public:

@@ -14,6 +14,7 @@
 
 #include "thehub.h"
 #include "actions.h"
+#include "data/datasequence.h"
 #include "io/io_io.h"
 #include "models.h"
 #include "output/write_file.h"
