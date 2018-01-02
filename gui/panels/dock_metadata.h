@@ -15,7 +15,7 @@
 #ifndef DOCK_METADATA_H
 #define DOCK_METADATA_H
 
-#include "gui_helpers.h"
+#include "widgets/various_widgets.h"
 
 namespace gui {
 namespace panel {

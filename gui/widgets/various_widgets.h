@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/gui_helpers.h
+//! @file      gui/widgets/various_widgets.h
 //! @brief     Defines classes TreeView, TreeListView, LineView, BoxWidget, DockWidget
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef GUI_HELPERS_H
-#define GUI_HELPERS_H
+#ifndef VARIOUS_WIDGETS_H
+#define VARIOUS_WIDGETS_H
 
 #include "typ/str.h"
 #include <QBoxLayout>
@@ -52,4 +52,4 @@ protected:
     QBoxLayout* box_;
 };
 
-#endif // GUI_HELPERS_H
+#endif // VARIOUS_WIDGETS_H

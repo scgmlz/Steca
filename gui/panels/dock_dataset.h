@@ -15,7 +15,7 @@
 #ifndef DOCK_DATASET_H
 #define DOCK_DATASET_H
 
-#include "gui_helpers.h"
+#include "widgets/various_widgets.h"
 
 class QSpinBox;
 

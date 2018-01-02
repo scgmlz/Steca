@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/widgettree_views.cpp
+//! @file      gui/widgets/tree_views.cpp
 //! @brief     Implements classes ListView, MultiListView
 //!
 //! @homepage  https://github.com/scgmlz/Steca2

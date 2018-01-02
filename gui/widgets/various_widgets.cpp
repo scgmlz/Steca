@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/gui_helpers.cpp
+//! @file      gui/widgets/various_widgets.cpp
 //! @brief     Implements ...
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "gui_helpers.h"
+#include "widgets/various_widgets.h"
 #include "widgets/widget_makers.h"
 
 LineView::LineView() {
