@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/fit/peak_functions.cpp
+//! @file      core/peak_functions.cpp
 //! @brief     Implements specific peak function classes, and function to register them
 //!
 //! @homepage  https://github.com/scgmlz/Steca2

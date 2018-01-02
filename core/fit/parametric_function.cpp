@@ -2,8 +2,8 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/typ/fun.cpp
-//! @brief     Implements classes Function, SimpleFunction
+//! @file      core/parametric_function.cpp
+//! @brief     Implements class Function
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "def/idiomatic_for.h"
-#include "typ/fun.h"
+#include "parametric_function.h"
 
 // ************************************************************************** //
 //   class Function::Parameter

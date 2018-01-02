@@ -2,8 +2,8 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/typ/fun.h
-//! @brief     Defines classes Function, SimpleFunction
+//! @file      core/parametric_function.h
+//! @brief     Defines class Function
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef FUN_H
-#define FUN_H
+#ifndef PARAMETRIC_FUNCTION_H
+#define PARAMETRIC_FUNCTION_H
 
 #include "def/special_pointers.h"
 #include "typ/json.h"
@@ -68,4 +68,4 @@ protected:
     void setValue(uint parIndex, qreal val);
 };
 
-#endif // FUN_H
+#endif // PARAMETRIC_FUNCTION_H

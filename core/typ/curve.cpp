@@ -14,7 +14,7 @@
 
 #include "typ/curve.h"
 #include "def/idiomatic_for.h"
-#include "typ/fun.h"
+#include "fit/parametric_function.h"
 
 void Curve::clear() {
     xs_.clear();
