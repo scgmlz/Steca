@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "widget_makers.h"
+#include "widgets/widget_makers.h"
 #include "def/numbers.h"
 #include <QAction>
 

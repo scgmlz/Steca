@@ -20,7 +20,7 @@
 #include "models.h"
 #include "settings.h"
 #include "thehub.h"
-#include "widget_makers.h"
+#include "widgets/widget_makers.h"
 #include <QAction>
 #include <QDir>
 #include <QHeaderView>

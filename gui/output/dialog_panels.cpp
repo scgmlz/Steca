@@ -18,7 +18,7 @@
 #include "gui_cfg.h"
 #include "models.h"
 #include "thehub.h"
-#include "widget_makers.h"
+#include "widgets/widget_makers.h"
 
 namespace gui {
 namespace output {

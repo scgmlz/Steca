@@ -17,7 +17,7 @@
 #include "gui_cfg.h"
 #include "settings.h"
 #include "typ/geometry.h"
-#include "widget_makers.h"
+#include "widgets/widget_makers.h"
 #include <QApplication>
 #include <QDate>
 #include <QDialogButtonBox>

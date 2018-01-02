@@ -21,7 +21,7 @@
 #include "def/idiomatic_for.h"
 #include "signalling.h"
 #include "frame.h"
-#include "widget_makers.h"
+#include "widgets/widget_makers.h"
 #include <QAction>
 #include <QProgressBar>
 

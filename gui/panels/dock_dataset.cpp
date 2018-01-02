@@ -17,7 +17,7 @@
 #include "widgets/tree_views.h" // inheriting from
 #include "gui_cfg.h"
 #include "thehub.h"
-#include "widget_makers.h"
+#include "widgets/widget_makers.h"
 
 namespace gui {
 namespace panel {

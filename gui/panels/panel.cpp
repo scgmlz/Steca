@@ -14,7 +14,7 @@
 
 #include "def/numbers.h"
 #include "panel.h"
-#include "widget_makers.h"
+#include "widgets/widget_makers.h"
 
 class Measurement;
 

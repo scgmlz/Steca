@@ -16,7 +16,7 @@
 #include "widgets/tree_views.h" // inheriting from
 #include "thehub.h"
 #include "session.h"
-#include "widget_makers.h"
+#include "widgets/widget_makers.h"
 #include <QAction>
 #include <QHeaderView>
 

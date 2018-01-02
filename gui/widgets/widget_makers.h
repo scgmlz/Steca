@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/widget_makers.h
+//! @file      gui/widgets/widget_makers.h
 //! @brief     Defines functions that return new widgets with Steca-standard settings
 //!
 //! @homepage  https://github.com/scgmlz/Steca2

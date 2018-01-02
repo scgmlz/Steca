@@ -20,7 +20,7 @@
 #include "session.h"
 #include "thehub.h"
 //#include "typ/variant.h"
-#include "widget_makers.h"
+#include "widgets/widget_makers.h"
 #include "write_file.h"
 #include "QCustomPlot/qcustomplot.h"
 #include <QAction>

@@ -19,7 +19,7 @@
 #include "gui_cfg.h"
 #include "session.h"
 #include "thehub.h"
-#include "widget_makers.h"
+#include "widgets/widget_makers.h"
 #include "QCustomPlot/qcustomplot.h"
 #include <QAction>
 

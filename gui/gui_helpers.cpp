@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "gui_helpers.h"
-#include "widget_makers.h"
+#include "widgets/widget_makers.h"
 
 LineView::LineView() {
     setReadOnly(true);

@@ -18,7 +18,7 @@
 #include "session.h"
 #include "thehub.h"
 #include "widgets/tree_views.h" // inheriting from
-#include "widget_makers.h"
+#include "widgets/widget_makers.h"
 #include <QAction>
 
 namespace gui {
