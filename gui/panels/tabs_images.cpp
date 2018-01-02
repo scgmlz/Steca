@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/panels/tabs_images.cpp
-//! @brief     Implements ...
+//! @brief     Implements class TabsImages
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -14,6 +14,7 @@
 
 #include "tabs_images.h"
 #include "colors.h"
+#include "data/measurement.h"
 #include "gui_cfg.h"
 #include "thehub.h"
 #include "session.h"
@@ -24,6 +25,10 @@
 
 namespace gui {
 namespace panel {
+
+// ************************************************************************** //
+//  file-scoped class ImageWidget
+// ************************************************************************** //
 
 class ImageWidget : public QWidget {
 public:
@@ -134,6 +139,11 @@ void ImageWidget::paintEvent(QPaintEvent*) {
     p.drawRect(rect.adjusted(-1, -1, 0, 0));
 }
 
+
+// ************************************************************************** //
+//  class TabsImages
+// ************************************************************************** //
+
 TabsImages::TabsImages() : TabsPanel() {
     {
         auto& box = addTab("Image", Qt::Vertical).box();
@@ -181,7 +191,7 @@ TabsImages::TabsImages() : TabsPanel() {
         auto& tab = addTab("Correction", Qt::Vertical);
 
         connect(gHub, &TheHubSignallingBase::sigCorrFile,
-                [&tab](shp_Datafile file) { tab.setEnabled(!file.isNull()); });
+                [&tab](QSharedPointer<Datafile const> file) { tab.setEnabled(!file.isNull()); });
 
         auto& box = tab.box();
 
@@ -205,7 +215,7 @@ TabsImages::TabsImages() : TabsPanel() {
     connect(gHub, &TheHubSignallingBase::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHubSignallingBase::sigNormChanged, [this](){ render(); });
     connect(gHub, &TheHubSignallingBase::sigDatasetSelected,
-            [this](shp_Dataset dataset){ setDataset(dataset); });
+            [this](QSharedPointer<DataSequence> dataset){ setDataset(dataset); });
 
     render();
 }
@@ -219,7 +229,7 @@ QPixmap TabsImages::makeBlankPixmap() {
     return pixmap;
 }
 
-QImage TabsImages::makeImage(shp_Image image, bool curvedScale) {
+QImage TabsImages::makeImage(QSharedPointer<Image> image, bool curvedScale) {
     QImage im;
     if (!image)
         return im;
@@ -240,7 +250,7 @@ QImage TabsImages::makeImage(shp_Image image, bool curvedScale) {
     return im;
 }
 
-QPixmap TabsImages::makePixmap(shp_Image image) {
+QPixmap TabsImages::makePixmap(QSharedPointer<Image> image) {
     return QPixmap::fromImage(makeImage(image, !gHub->isFixedIntenImageScale()));
 }
 
@@ -268,7 +278,7 @@ QPixmap TabsImages::makePixmap(
     return QPixmap::fromImage(im);
 }
 
-void TabsImages::setDataset(shp_Dataset dataset) {
+void TabsImages::setDataset(QSharedPointer<DataSequence> dataset) {
     dataset_ = dataset;
     render();
 }
@@ -283,7 +293,7 @@ void TabsImages::render() {
 
         if (dataset_) {
             // 1 - based
-            uint by = qBound(1u, uint(gHub->datasetsGroupedBy()), dataset_->count());
+            uint by = qBound(1u, uint(gHub->datasequenceGroupedBy()), dataset_->count());
             uint n = qBound(1u, to_u(spinN_->value()), by);
 
             spinN_->setValue(to_i(n));

@@ -13,13 +13,16 @@
 // ************************************************************************** //
 
 #include "io_io.h"
+#include "data/datafile.h"
+#include "typ/exception.h"
+#include <QFile>
 #include <QStringBuilder> // for ".." % ..
 
 namespace io {
 
-shp_Datafile loadCaress(rcstr filePath) THROWS;
-shp_Datafile loadMar(rcstr filePath) THROWS;
-shp_Datafile loadTiffDat(rcstr filePath) THROWS;
+QSharedPointer<Datafile const> loadCaress(rcstr filePath) THROWS;
+QSharedPointer<Datafile const> loadMar(rcstr filePath) THROWS;
+QSharedPointer<Datafile const> loadTiffDat(rcstr filePath) THROWS;
 
 // peek at up to maxLen bytes (to establish the file type)
 static QByteArray peek(uint pos, uint maxLen, QFileInfo const& info) {
@@ -75,12 +78,11 @@ bool couldBeTiffDat(QFileInfo const& info) {
     return couldBe;
 }
 
-shp_Datafile load(rcstr filePath) THROWS {
+QSharedPointer<const Datafile> load(rcstr filePath) THROWS {
     QFileInfo info(filePath);
     RUNTIME_CHECK(info.exists(), "File " % filePath % " does not exist");
 
-    shp_Datafile file;
-
+    QSharedPointer<const Datafile> file;
     if (couldBeCaress(info))
         file = io::loadCaress(filePath);
     else if (couldBeMar(info))
@@ -90,7 +92,7 @@ shp_Datafile load(rcstr filePath) THROWS {
     else
         THROW("unknown file type: " % filePath);
 
-    RUNTIME_CHECK(file->datasets().count() > 0, "File " % filePath % " contains no datasets");
+    RUNTIME_CHECK(file->datasequence().count() > 0, "File " % filePath % " contains no datasequence");
 
     return file;
 }

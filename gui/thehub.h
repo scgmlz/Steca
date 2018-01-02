@@ -82,21 +82,21 @@ public:
     bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
     bool isCombinedDgram() const { return isCombinedDgram_; }
 
-    calc::shp_DatasetLens datasetLens(DataSequence const&) const;
+    QSharedPointer<calc::SequenceLens> datasetLens(DataSequence const&) const;
 
     Curve avgCurve(Experiment const& dss) const;
 
     void saveSession(QFileInfo const&) const;
     QByteArray saveSession() const;
 
-    pint datasetsGroupedBy() const { return datasetsGroupedBy_; }
+    pint datasequenceGroupedBy() const { return datasequenceGroupedBy_; }
 
     Range collectedDatasetsRgeGma() const;
     ImageCut const& imageCut() const;
 
     eFittingTab fittingTab() const { return fittingTab_; }
 
-    shp_Dataset selectedDataset() const { return selectedDataset_; }
+    QSharedPointer<DataSequence> selectedDataset() const { return selectedDataset_; }
 
 private:
     friend class TheHubSignallingBase;
@@ -104,9 +104,9 @@ private:
     bool isFixedIntenDgramScale_;
     bool isCombinedDgram_;
     uint_vec collectFromFiles_;
-    pint datasetsGroupedBy_ = pint(1);
+    pint datasequenceGroupedBy_ = pint(1);
     eFittingTab fittingTab_ = eFittingTab::NONE;
-    shp_Dataset selectedDataset_;
+    QSharedPointer<DataSequence> selectedDataset_;
     calc::shp_Reflection selectedReflection_;
 
     void setImageRotate(ImageTransform);
@@ -116,7 +116,7 @@ private:
 
 public:
     models::FilesModel* filesModel;
-    models::DatasetsModel* datasetsModel;
+    models::DatasetsModel* datasequenceModel;
     models::MetadataModel* metadataModel;
     models::ReflectionsModel* reflectionsModel;
 };

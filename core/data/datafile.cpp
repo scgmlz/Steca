@@ -13,17 +13,19 @@
 // ************************************************************************** //
 
 #include "datafile.h"
+#include "typ/exception.h"
+#include "measurement.h"
 #include <QStringBuilder> // for ".." % ..
 
 Datafile::Datafile(rcstr fileName) : fileInfo_(fileName) {}
 
-//! The loaders use this function to push datasets
+//! The loaders use this function to push datasequence
 void Datafile::addDataset(Metadata const& md, size2d const& sz, inten_vec const& ivec) {
-    if (datasets_.isEmpty())
+    if (datasequence_.isEmpty())
         imageSize_ = sz;
     else if (sz != imageSize_)
         THROW("Inconsistent image size in " % fileName());
-    datasets_.append(shp_OneDataset(new Measurement(md, sz, ivec)));
+    datasequence_.append(QSharedPointer<Measurement const>(new Measurement(md, sz, ivec)));
 }
 
 QFileInfo const& Datafile::fileInfo() const {
@@ -34,10 +36,10 @@ str Datafile::fileName() const {
     return fileInfo_.fileName();
 }
 
-shp_Image Datafile::foldedImage() const {
-    debug::ensure(!datasets_.isEmpty());
-    shp_Image ret(new Image(datasets_.first()->imageSize()));
-    for (auto& one : datasets_)
+QSharedPointer<Image> Datafile::foldedImage() const {
+    debug::ensure(!datasequence_.isEmpty());
+    QSharedPointer<Image> ret(new Image(datasequence_.first()->imageSize()));
+    for (auto& one : datasequence_)
         ret->addIntens(*one->image());
     return ret;
 }

@@ -16,6 +16,8 @@
 #include "panel.h"
 #include "widget_makers.h"
 
+class Measurement;
+
 namespace gui {
 namespace panel {
 

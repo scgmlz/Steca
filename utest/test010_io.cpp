@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "io/io_io.h"
 #include "testdata.h"
+#include "typ/exception.h"
 
 TEST(IO, Caress) {
     try {

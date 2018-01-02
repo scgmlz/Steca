@@ -20,6 +20,7 @@
 #include "calc/calc_reflection_info.h"
 #include "data/angle_map.h"
 #include "data/datafile.h"
+#include "data/experiment.h"
 #include "typ/async.h"
 #include "typ/cache.h"
 #include "typ/singleton.h"
@@ -31,12 +32,12 @@ public:
     Session();
 
 private:
-    vec<shp_Datafile> files_; //!< data files
-    shp_Datafile corrFile_; //!< correction file
-    shp_Image corrImage_;
+    vec<QSharedPointer<Datafile const>> files_; //!< data files
+    QSharedPointer<Datafile const> corrFile_; //!< correction file
+    QSharedPointer<Image> corrImage_;
     bool corrEnabled_;
     uint_vec collectedFromFiles_; // from these files
-    Experiment collectedDatasets_; // datasets collected ...
+    Experiment collectedDatasets_; // datasequence collected ...
     QStringList collectedDatasetsTags_;
     bool intenScaledAvg_; // if not, summed
     preal intenScale_;
@@ -58,16 +59,16 @@ private:
     void setImageSize(size2d const&) THROWS; //!< Ensures same size for all images
 
     void calcIntensCorr() const;
-    Curve curveMinusBg(calc::DatasetLens const&, Range const&) const;
+    Curve curveMinusBg(calc::SequenceLens const&, Range const&) const;
     calc::ReflectionInfo makeReflectionInfo(
-        calc::DatasetLens const&, calc::Reflection const&, Range const&) const;
+        calc::SequenceLens const&, calc::Reflection const&, Range const&) const;
 
 public:
     // Modifying methods:
     void clear();
-    void addGivenFile(shp_Datafile) THROWS;
+    void addGivenFile(QSharedPointer<Datafile const>) THROWS;
     void removeFile(uint i);
-    void setCorrFile(shp_Datafile) THROWS; // Load or remove a correction file.
+    void setCorrFile(QSharedPointer<Datafile const>) THROWS; // Load or remove a correction file.
     void remCorrFile();
     void collectDatasetsFromFiles(uint_vec, pint);
 
@@ -89,11 +90,11 @@ public:
     // Const methods:
     uint numFiles() const { //!< number of data files (not counting the correction file)
         return files_.count(); }
-    shp_Datafile file(uint i) const { return files_.at(i); }
+    QSharedPointer<Datafile const> file(uint i) const { return files_.at(i); }
     bool hasFile(rcstr fileName) const;
     bool hasCorrFile() const { return !corrFile_.isNull(); }
-    shp_Datafile corrFile() const { return corrFile_; }
-    shp_Image corrImage() const { return corrImage_; }
+    QSharedPointer<Datafile const> corrFile() const { return corrFile_; }
+    QSharedPointer<Image> corrImage() const { return corrImage_; }
     Image const* intensCorr() const;
     void tryEnableCorr(bool on) { corrEnabled_ = on && hasCorrFile(); }
     bool isCorrEnabled() const { return corrEnabled_; }
@@ -116,7 +117,7 @@ public:
         return session.angleMap(ds); }
 
     calc::shp_ImageLens imageLens(Image const&, Experiment const&, bool trans, bool cut) const;
-    calc::shp_DatasetLens datasetLens(
+    QSharedPointer<calc::SequenceLens> datasetLens(
         DataSequence const&, Experiment const&, eNorm, bool trans, bool cut) const;
 
     calc::ReflectionInfos makeReflectionInfos(

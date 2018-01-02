@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/calc/calc_lens.h
-//! @brief     Defines LensBase, ImageLens, DatasetLens
+//! @brief     Defines LensBase, ImageLens, SequenceLens
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,9 +15,16 @@
 #ifndef CALC_LENS_H
 #define CALC_LENS_H
 
-#include "data/dataset.h"
+#include "typ/curve.h"
 #include "typ/geometry.h"
+#include "typ/types.h"
+#include "typ/vec.h"
 #include "data/image_transform.h"
+
+class DataSequence;
+class Experiment;
+class Image;
+class Session;
 
 namespace calc {
 
@@ -38,7 +45,7 @@ protected:
     void doCut(uint& i, uint& j) const;
 
     Session const& session_;
-    Experiment const& datasets_;
+    Experiment const& datasequence_;
     bool trans_, cut_;
     ImageTransform imageTransform_;
     ImageCut imageCut_;
@@ -61,12 +68,12 @@ private:
     mutable Range rgeInten_;
 };
 
-
 typedef QSharedPointer<ImageLens> shp_ImageLens;
 
-class DatasetLens final : public LensBase {
+
+class SequenceLens final : public LensBase {
 public:
-    DatasetLens(
+    SequenceLens(
         Session const&, DataSequence const&, Experiment const&, eNorm, bool trans,
         bool cut, ImageTransform const&, ImageCut const&);
 
@@ -88,8 +95,6 @@ private:
 
     DataSequence const& dataset_;
 };
-
-typedef QSharedPointer<DatasetLens> shp_DatasetLens;
 
 } // namespace calc
 

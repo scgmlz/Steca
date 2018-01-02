@@ -20,8 +20,9 @@
 #include "typ/range.h"
 #include "typ/realpair.h"
 
-// make connects shorter
+class DataSequence;
 
+// make connects shorter
 #define slot(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
 
 namespace gui {
@@ -42,7 +43,7 @@ private:
 
 public: // emit signals
     void tellSessionCleared();
-    void tellDatasetSelected(shp_Dataset);
+    void tellDatasetSelected(QSharedPointer<DataSequence>);
     void tellSelectedReflection(calc::shp_Reflection);
     void tellReflectionData(calc::shp_Reflection);
     void tellReflectionValues(Range const&, qpair const&, fwhm_t, bool);
@@ -53,11 +54,11 @@ signals:
     void sigFilesChanged(); // the set of loaded files has changed
     void sigFilesSelected(); // the selection of loaded files has changed
 
-    void sigDatasetsChanged(); // the set of datasets collected from selected
+    void sigDatasetsChanged(); // the set of datasequence collected from selected
     // files has changed
-    void sigDatasetSelected(shp_Dataset);
+    void sigDatasetSelected(QSharedPointer<DataSequence>);
 
-    void sigCorrFile(shp_Datafile);
+    void sigCorrFile(QSharedPointer<Datafile const>);
     void sigCorrEnabled(bool);
 
     void sigReflectionsChanged();

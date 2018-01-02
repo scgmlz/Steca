@@ -15,30 +15,33 @@
 #ifndef DATAFILE_H
 #define DATAFILE_H
 
-#include "dataset.h"
+#include "typ/array2d.h"
+#include "typ/str.h"
+#include "typ/types.h"
 #include <QFileInfo>
 
-//! A file (loaded from a disk file) that contains a sequence of datasets.
+class Measurement;
+class Metadata;
+
+//! A file (loaded from a disk file) that contains a data sequence.
 class Datafile final {
 public:
     Datafile(rcstr fileName);
     void addDataset(Metadata const&, size2d const&, inten_vec const&);
 
-    vec<shp_OneDataset> const& datasets() const { return datasets_; }
+    vec<QSharedPointer<Measurement const>> const& datasequence() const { return datasequence_; }
     size2d imageSize() const { return imageSize_; }
 
     QFileInfo const& fileInfo() const;
     str fileName() const;
-    shp_Image foldedImage() const;
+    QSharedPointer<class Image> foldedImage() const;
 
 private:
     QFileInfo fileInfo_;
-    vec<shp_OneDataset> datasets_;
+    vec<QSharedPointer<class Measurement const>> datasequence_;
     size2d imageSize_;
 };
 
-typedef QSharedPointer<class Datafile> shp_Datafile;
-
-Q_DECLARE_METATYPE(shp_Datafile)
+Q_DECLARE_METATYPE(QSharedPointer<Datafile const>)
 
 #endif // DATAFILE_H

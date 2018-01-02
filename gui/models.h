@@ -16,7 +16,12 @@
 #define MODELS_H
 
 #include "table_model.h"
-#include "data/dataset.h"
+#include "typ/str.h"
+#include "typ/vec.h"
+
+class DataSequence;
+class Experiment;
+class Metadata;
 
 namespace models {
 
@@ -52,7 +57,7 @@ public:
     void showMetaInfo(vec<bool> const&);
 
 private:
-    Experiment const& datasets_; // the selected datasets
+    Experiment const& datasequence_; // the selected datasequence
     uint_vec metaInfoNums_; // selected metadata items to show
 };
 
@@ -71,11 +76,11 @@ public:
 
     vec<bool> const& rowsChecked() const { return rowsChecked_; }
 
-    void reset(shp_Dataset dataset);
+    void reset(QSharedPointer<DataSequence> dataset);
     void flipCheck(uint row);
 
 private:
-    QSharedPointer<class Metadata const> metadata_;
+    QSharedPointer<Metadata const> metadata_;
     vec<bool> rowsChecked_;
 };
 

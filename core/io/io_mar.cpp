@@ -14,17 +14,19 @@
 
 #include "io_io.h"
 #include "def/idiomatic_for.h"
+#include "data/datafile.h"
 #include "data/metadata.h"
+#include "typ/exception.h"
 #include "3rdparty/Mar/MarReader.h"
 
 namespace io {
 
 // Code taken from the original STeCa, only slightly modified.
 
-shp_Datafile loadMar(rcstr filePath) THROWS {
+QSharedPointer<Datafile> loadMar(rcstr filePath) THROWS {
     typedef short WORD;
 
-    shp_Datafile datafile(new Datafile(filePath));
+    QSharedPointer<Datafile> datafile(new Datafile(filePath));
 
     FILE* fpIn;
 

@@ -34,16 +34,16 @@ TheHub::TheHub()
     qDebug() << "TheHub/";
 
     filesModel = new models::FilesModel();
-    datasetsModel = new models::DatasetsModel();
+    datasequenceModel = new models::DatasetsModel();
     metadataModel = new models::MetadataModel();
     reflectionsModel = new models::ReflectionsModel();
 
     connect(this, &gui::TheHubSignallingBase::sigFilesChanged,
             [this]() { filesModel->signalReset(); });
     connect(this, &gui::TheHubSignallingBase::sigDatasetsChanged,
-            [this]() { datasetsModel->signalReset(); });
+            [this]() { datasequenceModel->signalReset(); });
     connect(this, &gui::TheHubSignallingBase::sigDatasetSelected,
-            [this](shp_Dataset dataset) { metadataModel->reset(dataset); });
+            [this](QSharedPointer<DataSequence> dataset) { metadataModel->reset(dataset); });
 
     // create actions
 
@@ -80,7 +80,7 @@ TheHub::TheHub()
     toggle_fixedIntenImage = newToggle("Global intensity scale", ":/icon/scale");
     toggle_fixedIntenDgram = newToggle("Fixed intensity scale");
 
-    toggle_combinedDgram = newToggle("All datasets");
+    toggle_combinedDgram = newToggle("All datasequence");
 
     toggle_selRegions = newToggle("Select regions", ":/icon/selRegion");
     toggle_showBackground = newToggle("Show fitted background", ":/icon/showBackground");
@@ -119,7 +119,7 @@ TheHub::TheHub()
             [this]() { trigger_removeFile->setEnabled(
                     !gSession->collectedFromFiles().isEmpty()); });
     QObject::connect(this, &gui::TheHub::sigCorrFile,
-            [this](shp_Datafile file) { trigger_remCorr->setEnabled(!file.isNull()); });
+            [this](QSharedPointer<Datafile const> file) { trigger_remCorr->setEnabled(!file.isNull()); });
     QObject::connect(this, &gui::TheHub::sigCorrEnabled,
             [this](bool on) { toggle_enableCorr->setChecked(on); });
 
@@ -175,8 +175,8 @@ void TheHub::removeFile(uint i) {
         setImageCut(true, false, ImageCut());
 }
 
-calc::shp_DatasetLens TheHub::datasetLens(DataSequence const& dataset) const {
-    return gSession->datasetLens(dataset, dataset.datasets(), gSession->norm(), true, true);
+QSharedPointer<calc::SequenceLens> TheHub::datasetLens(DataSequence const& dataset) const {
+    return gSession->datasetLens(dataset, dataset.datasequence(), gSession->norm(), true, true);
 }
 
 Curve TheHub::avgCurve(Experiment const& dss) const {
@@ -229,7 +229,7 @@ QByteArray TheHub::saveSession() const {
         arrSelectedFiles.append(to_i(i));
 
     top.insert("selected files", arrSelectedFiles);
-    top.insert("combine", to_i((uint)datasetsGroupedBy_));
+    top.insert("combine", to_i((uint)datasequenceGroupedBy_));
 
     if (gSession->hasCorrFile()) {
         str absPath = gSession->corrFile()->fileInfo().absoluteFilePath();
@@ -299,7 +299,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
         lastIndex = to_i(index);
     }
 
-    TR("sessionFromJson: going to collect datasets");
+    TR("sessionFromJson: going to collect datasequence");
     collectDatasetsFromFiles(selIndexes, top.loadPint("combine", 1));
 
     TR("sessionFromJson: going to set correction file");
@@ -355,13 +355,13 @@ void TheHub::addGivenFiles(QStringList const& filePaths) THROWS {
 }
 
 void TheHub::collectDatasetsFromFiles(uint_vec is, pint by) {
-    gSession->collectDatasetsFromFiles((collectFromFiles_ = is), (datasetsGroupedBy_ = by));
+    gSession->collectDatasetsFromFiles((collectFromFiles_ = is), (datasequenceGroupedBy_ = by));
     emit sigFilesSelected();
     emit sigDatasetsChanged();
 }
 
 void TheHub::collectDatasetsFromFiles(uint_vec is) {
-    collectDatasetsFromFiles(is, datasetsGroupedBy_);
+    collectDatasetsFromFiles(is, datasequenceGroupedBy_);
 }
 
 void TheHub::combineDatasetsBy(pint by) {
@@ -373,7 +373,7 @@ Range TheHub::collectedDatasetsRgeGma() const {
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {
-    shp_Datafile file;
+    QSharedPointer<Datafile const> file;
     if (!filePath.isEmpty())
         file = io::load(filePath);
 

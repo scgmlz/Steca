@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/panels/tabs_images.h
-//! @brief     Defines ...
+//! @brief     Defines class TabsImages
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -18,6 +18,9 @@
 #include "calc/calc_lens.h"
 #include "panel.h"
 
+class Measurement;
+class Metadata;
+
 namespace gui {
 namespace panel {
 
@@ -30,21 +33,21 @@ public:
 private:
     QPixmap makeBlankPixmap();
 
-    QImage makeImage(shp_Image, bool curvedScale);
-    QPixmap makePixmap(shp_Image);
+    QImage makeImage(QSharedPointer<Image>, bool curvedScale);
+    QPixmap makePixmap(QSharedPointer<Image>);
     QPixmap makePixmap(Measurement const&, Range const&, Range const&);
 
-    void setDataset(shp_Dataset);
+    void setDataset(QSharedPointer<DataSequence>);
     void render();
 
-    shp_Dataset dataset_;
+    QSharedPointer<DataSequence> dataset_;
     ImageWidget *dataImageWidget_, *corrImageWidget_;
 
     QSpinBox* spinN_;
     QSpinBox *numSlices_, *numSlice_, *numBin_;
     QDoubleSpinBox *minGamma_, *maxGamma_;
 
-    calc::shp_DatasetLens lens_;
+    QSharedPointer<calc::SequenceLens> lens_;
 };
 
 } // namespace panel

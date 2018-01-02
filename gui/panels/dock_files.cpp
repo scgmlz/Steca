@@ -112,7 +112,7 @@ DockFiles::DockFiles() : DockWidget("Files", "dock-files", Qt::Vertical) {
     h->addWidget(iconButton(gHub->trigger_remCorr));
 
     connect(gHub, &TheHubSignallingBase::sigCorrFile,
-            [this](shp_Datafile file) {
+            [this](QSharedPointer<Datafile const> file) {
                 corrFile_->setText(file.isNull() ? "" : file->fileName()); });
 }
 

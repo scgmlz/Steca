@@ -14,14 +14,16 @@
 
 #include "io_io.h"
 #include "def/idiomatic_for.h"
+#include "data/datafile.h"
 #include "data/metadata.h"
+#include "typ/exception.h"
 #include <QDataStream>
 #include <QDir>
 
 namespace io {
 
 // implemented below
-static void loadTiff(shp_Datafile&, rcstr, deg, qreal, qreal) THROWS;
+static void loadTiff(QSharedPointer<Datafile>&, rcstr, deg, qreal, qreal) THROWS;
 
 // The dat file looks like so:
 /*
@@ -40,8 +42,8 @@ Aus-Weimin-00008.tif -55
 Aus-Weimin-00009.tif -50
 */
 
-shp_Datafile loadTiffDat(rcstr filePath) THROWS {
-    shp_Datafile datafile(new Datafile(filePath));
+QSharedPointer<Datafile> loadTiffDat(rcstr filePath) THROWS {
+    QSharedPointer<Datafile> datafile(new Datafile(filePath));
 
     QFile f(filePath);
     RUNTIME_CHECK(f.open(QFile::ReadOnly), "cannot open file");
@@ -107,7 +109,7 @@ shp_Datafile loadTiffDat(rcstr filePath) THROWS {
     RUNTIME_CHECK(val == dataOffset, BAD_FORMAT)
 
 static void
-loadTiff(shp_Datafile& file, rcstr filePath, deg phi, qreal monitor, qreal expTime) THROWS {
+loadTiff(QSharedPointer<Datafile>& file, rcstr filePath, deg phi, qreal monitor, qreal expTime) THROWS {
 
     Metadata md;
     md.motorPhi = phi;

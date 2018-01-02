@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/data/dataset.cpp
+//! @file      core/data/datasequence.cpp
 //! @brief     Implements classes Measurement, DataSequence, Experiment
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,8 +12,9 @@
 //
 // ************************************************************************** //
 
-#include "dataset.h"
-#include "data/metadata.h"
+#include "datasequence.h"
+#include "measurement.h"
+#include "metadata.h"
 #include "def/idiomatic_for.h"
 #include "session.h"
 #include "typ/array2d.h"
@@ -117,7 +118,7 @@ deg Measurement::chi() const { return md_->motorChi; }
 //  class Dataset
 // ************************************************************************** //
 
-DataSequence::DataSequence() : datasets_(nullptr) {}
+DataSequence::DataSequence() : datasequence_(nullptr) {}
 
 QSharedPointer<Metadata const> DataSequence::metadata() const {
     if (md_.isNull()) {
@@ -163,9 +164,9 @@ QSharedPointer<Metadata const> DataSequence::metadata() const {
             m->deltaTime += d->deltaTime;
 
             if (m->monitorCount > d->monitorCount)
-                qWarning() << "decreasing monitor count in combined datasets";
+                qWarning() << "decreasing monitor count in combined datasequence";
             if (m->time > d->time)
-                qWarning() << "decreasing time in combined datasets";
+                qWarning() << "decreasing time in combined datasequence";
             m->monitorCount = d->monitorCount;
             m->time = d->time;
         }
@@ -211,7 +212,7 @@ deg DataSequence::phi() const { AVG_ONES(phi) }
 
 deg DataSequence::chi() const { AVG_ONES(chi) }
 
-// combined range of combined datasets
+// combined range of combined datasequence
 #define RGE_COMBINE(combineOp, what)                                                               \
     debug::ensure(!isEmpty());                                                                           \
     Range rge;                                                                                     \
@@ -244,7 +245,7 @@ inten_vec DataSequence::collectIntens(
     uint pixWidth = session.imageSize().w - cut.left - cut.right;
 
     uint numBins;
-    if (1 < count()) { // combined datasets
+    if (1 < count()) { // combined datasequence
         auto one = first();
         deg delta = one->rgeTth(session).width() / pixWidth;
         numBins = to_u(qCeil(tthWdt / delta));
@@ -318,19 +319,19 @@ void DataSequence::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) c
 //  class Datasets
 // ************************************************************************** //
 
-Experiment const& DataSequence::datasets() const {
-    debug::ensure(datasets_);
-    return *datasets_;
+Experiment const& DataSequence::datasequence() const {
+    debug::ensure(datasequence_);
+    return *datasequence_;
 }
 
 Experiment::Experiment() {
     invalidateAvgMutables();
 }
 
-void Experiment::appendHere(shp_Dataset dataset) {
+void Experiment::appendHere(QSharedPointer<DataSequence> dataset) {
     // can be added only once
-    debug::ensure(!dataset->datasets_);
-    dataset->datasets_ = this;
+    debug::ensure(!dataset->datasequence_);
+    dataset->datasequence_ = this;
     append(dataset);
     invalidateAvgMutables();
 }
@@ -399,10 +400,10 @@ void Experiment::invalidateAvgMutables() const {
     avgCurve_.clear();
 }
 
-shp_Dataset Experiment::combineAll() const {
-    shp_Dataset d(new DataSequence);
-    for (shp_Dataset const& dataset : *this)
-        for (shp_OneDataset const& one : *dataset)
+QSharedPointer<DataSequence> Experiment::combineAll() const {
+    QSharedPointer<DataSequence> d(new DataSequence);
+    for (QSharedPointer<DataSequence> const& dataset : *this)
+        for (QSharedPointer<Measurement const> const& one : *dataset)
             d->append(one);
     return d;
 }

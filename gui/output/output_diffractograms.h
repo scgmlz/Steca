@@ -18,6 +18,8 @@
 #include "output_dialogs.h"
 #include "frame.h"
 
+class DataSequence;
+
 namespace gui {
 namespace output {
 

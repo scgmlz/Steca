@@ -127,12 +127,12 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
     if (pr->cbLimitGamma->isChecked())
         rgeGma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
 
-    auto& datasets = gSession->collectedDatasets();
-    Progress progress(datasets.count(), pb_);
+    auto& datasequence = gSession->collectedDatasets();
+    Progress progress(datasequence.count(), pb_);
 
     OutputDataCollections allOutputData;
     uint picNum = 1;
-    for (shp_Dataset dataset : datasets) {
+    for (QSharedPointer<DataSequence> dataset : datasequence) {
         progress.step();
         allOutputData.append(collectCurves(rgeGma, gmaSlices, *dataset, picNum));
         ++picNum;

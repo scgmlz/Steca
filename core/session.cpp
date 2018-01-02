@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "session.h"
+#include "data/measurement.h"
 #include "data/metadata.h"
 #include "fit/peak_functions.h"
 
@@ -49,7 +50,7 @@ bool Session::hasFile(rcstr fileName) const {
     return false;
 }
 
-void Session::addGivenFile(shp_Datafile datafile) THROWS {
+void Session::addGivenFile(QSharedPointer<Datafile const> datafile) THROWS {
     setImageSize(datafile->imageSize());
     // all ok
     files_.append(datafile);
@@ -97,7 +98,7 @@ Image const* Session::intensCorr() const {
     return &intensCorr_;
 }
 
-void Session::setCorrFile(shp_Datafile datafile) THROWS {
+void Session::setCorrFile(QSharedPointer<Datafile const> datafile) THROWS {
     if (datafile.isNull()) {
         remCorrFile();
     } else {
@@ -124,15 +125,15 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
     collectedDatasets_.clear();
     collectedDatasetsTags_.clear();
 
-    vec<shp_OneDataset> datasetsFromFiles;
+    vec<QSharedPointer<Measurement const>> datasequenceFromFiles;
     for (uint i : collectedFromFiles_)
-        for (auto& dataset : files_.at(i)->datasets())
-            datasetsFromFiles.append(dataset);
+        for (auto& dataset : files_.at(i)->datasequence())
+            datasequenceFromFiles.append(dataset);
 
-    if (datasetsFromFiles.isEmpty())
+    if (datasequenceFromFiles.isEmpty())
         return;
 
-    shp_Dataset cd(new DataSequence);
+    QSharedPointer<DataSequence> cd(new DataSequence);
     uint i = 0;
 
     auto appendCd = [this, &cd, &combineBy, &i]() {
@@ -144,13 +145,13 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
                 tag += '-' + str::number(i);
             collectedDatasets_.appendHere(cd);
             collectedDatasetsTags_.append(tag);
-            cd = shp_Dataset(new DataSequence);
+            cd = QSharedPointer<DataSequence>(new DataSequence);
         }
     };
 
     uint by = combineBy;
-    for (auto& dataset : datasetsFromFiles) {
-        cd->append(shp_OneDataset(dataset));
+    for (auto& dataset : datasequenceFromFiles) {
+        cd->append(QSharedPointer<Measurement const>(dataset));
         if (1 >= by--) {
             appendCd();
             by = combineBy;
@@ -217,18 +218,18 @@ shp_AngleMap Session::angleMap(Measurement const& one) const {
 }
 
 calc::shp_ImageLens Session::imageLens(
-    Image const& image, Experiment const& datasets, bool trans, bool cut) const {
-    return calc::shp_ImageLens(new calc::ImageLens(*this, image, datasets, trans, cut));
+    Image const& image, Experiment const& datasequence, bool trans, bool cut) const {
+    return calc::shp_ImageLens(new calc::ImageLens(*this, image, datasequence, trans, cut));
 }
 
-calc::shp_DatasetLens Session::datasetLens(
-    DataSequence const& dataset, Experiment const& datasets, eNorm norm, bool trans, bool cut
+QSharedPointer<calc::SequenceLens> Session::datasetLens(
+    DataSequence const& dataset, Experiment const& datasequence, eNorm norm, bool trans, bool cut
     ) const {
-    return calc::shp_DatasetLens(new calc::DatasetLens(
-        *this, dataset, datasets, norm, trans, cut, imageTransform_, imageCut_));
+    return QSharedPointer<calc::SequenceLens>(new calc::SequenceLens(
+        *this, dataset, datasequence, norm, trans, cut, imageTransform_, imageCut_));
 }
 
-Curve Session::curveMinusBg(calc::DatasetLens const& lens, Range const& rgeGma) const {
+Curve Session::curveMinusBg(calc::SequenceLens const& lens, Range const& rgeGma) const {
     Curve curve = lens.makeCurve(rgeGma);
     curve.subtract(Polynom::fromFit(bgPolyDegree_, curve, bgRanges_));
     return curve;
@@ -236,7 +237,7 @@ Curve Session::curveMinusBg(calc::DatasetLens const& lens, Range const& rgeGma) 
 
 //! Fits reflection to the given gamma sector and constructs a ReflectionInfo.
 calc::ReflectionInfo Session::makeReflectionInfo(
-    calc::DatasetLens const& lens, calc::Reflection const& reflection,
+    calc::SequenceLens const& lens, calc::Reflection const& reflection,
     Range const& gmaSector) const {
 
     // fit peak, and retrieve peak parameters:
@@ -264,24 +265,24 @@ calc::ReflectionInfo Session::makeReflectionInfo(
 }
 
 /* Gathers ReflectionInfos from Datasets.
- * Either uses the whole gamma range of the datasets (if gammaSector is
+ * Either uses the whole gamma range of the datasequence (if gammaSector is
  * invalid), or user limits the range.
  * Even though the betaStep of the equidistant polefigure grid is needed here,
  * the returned infos won't be on the grid. REVIEW gammaStep separately?
  */
 calc::ReflectionInfos Session::makeReflectionInfos(
-    Experiment const& datasets, calc::Reflection const& reflection, uint gmaSlices,
+    Experiment const& datasequence, calc::Reflection const& reflection, uint gmaSlices,
     Range const& rgeGma, Progress* progress) const {
     calc::ReflectionInfos infos;
 
     if (progress)
-        progress->setTotal(datasets.count());
+        progress->setTotal(datasequence.count());
 
-    for (auto& dataset : datasets) {
+    for (auto& dataset : datasequence) {
         if (progress)
             progress->step();
 
-        auto lens = datasetLens(*dataset, datasets, norm_, true, true);
+        auto lens = datasetLens(*dataset, datasequence, norm_, true, true);
 
         Range rge = (gmaSlices > 0) ? lens->rgeGma() : lens->rgeGmaFull();
         if (rgeGma.isValid())
@@ -322,16 +323,16 @@ void Session::addReflection(const QJsonObject& obj) {
 }
 
 qreal Session::calcAvgBackground(DataSequence const& dataset) const {
-    auto lens = datasetLens(dataset, dataset.datasets(), eNorm::NONE, true, true);
+    auto lens = datasetLens(dataset, dataset.datasequence(), eNorm::NONE, true, true);
     Curve gmaCurve = lens->makeCurve(); // had argument averaged=true
     auto bgPolynom = Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
     return bgPolynom.avgY(lens->rgeTth());
 }
 
-qreal Session::calcAvgBackground(Experiment const& datasets) const {
+qreal Session::calcAvgBackground(Experiment const& datasequence) const {
     TakesLongTime __;
     qreal bg = 0;
-    for (auto& dataset : datasets)
+    for (auto& dataset : datasequence)
         bg += calcAvgBackground(*dataset);
-    return bg / datasets.count();
+    return bg / datasequence.count();
 }

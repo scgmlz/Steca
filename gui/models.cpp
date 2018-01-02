@@ -42,7 +42,7 @@ QVariant FilesModel::data(rcIndex index, int role) const {
     case Qt::DisplayRole:
         return gSession->file(to_u(row))->fileName();
     case GetFileRole:
-        return QVariant::fromValue<shp_Datafile>(gSession->file(to_u(row)));
+        return QVariant::fromValue<QSharedPointer<Datafile const>>(gSession->file(to_u(row)));
     default:
         return EMPTY_VAR;
     }
@@ -57,7 +57,7 @@ void FilesModel::removeFile(uint i) {
 // ************************************************************************** //
 
 DatasetsModel::DatasetsModel()
-    : datasets_(gSession->collectedDatasets())
+    : datasequence_(gSession->collectedDatasets())
 {
 }
 
@@ -66,7 +66,7 @@ int DatasetsModel::columnCount(rcIndex) const {
 }
 
 int DatasetsModel::rowCount(rcIndex) const {
-    return to_i(datasets_.count());
+    return to_i(datasequence_.count());
 }
 
 QVariant DatasetsModel::data(rcIndex index, int role) const {
@@ -84,12 +84,12 @@ QVariant DatasetsModel::data(rcIndex index, int role) const {
         case COL_NUMBER:
             return gSession->collectedDatasetsTags().at(to_u(row));
         default:
-            return datasets_.at(to_u(row))->metadata()->attributeStrValue(
+            return datasequence_.at(to_u(row))->metadata()->attributeStrValue(
                 metaInfoNums_.at(to_u(col - COL_ATTRS)));
         }
     }
     case GetDatasetRole:
-        return QVariant::fromValue<shp_Dataset>(datasets_.at(to_u(row)));
+        return QVariant::fromValue<QSharedPointer<DataSequence>>(datasequence_.at(to_u(row)));
     default:
         return EMPTY_VAR;
     }
@@ -126,7 +126,7 @@ MetadataModel::MetadataModel() {
     rowsChecked_.fill(false, Metadata::numAttributes(false));
 }
 
-void MetadataModel::reset(shp_Dataset dataset) {
+void MetadataModel::reset(QSharedPointer<DataSequence> dataset) {
     metadata_.clear();
     if (dataset)
         metadata_ = dataset->metadata();

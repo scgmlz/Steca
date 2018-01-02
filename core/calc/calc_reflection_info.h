@@ -15,7 +15,11 @@
 #ifndef CALC_REFLECTION_INFO_H
 #define CALC_REFLECTION_INFO_H
 
-#include "data/dataset.h"
+#include "typ/angles.h"
+#include "typ/curve.h"
+#include "typ/range.h"
+#include "typ/types.h"
+#include "typ/variant.h"
 
 class Metadata;
 
