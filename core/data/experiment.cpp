@@ -108,11 +108,11 @@ QSharedPointer<DataSequence> Experiment::combineAll() const {
 }
 
 qreal Experiment::calcAvgMutable(qreal (DataSequence::*avgMth)() const) const {
-    qreal avg = 0;
+    qreal ret = 0;
     if (!isEmpty()) {
         for (auto& dataset : *this)
-            avg += ((*dataset).*avgMth)();
-        avg /= count();
+            ret += ((*dataset).*avgMth)();
+        ret /= count();
     }
-    return avg;
+    return ret;
 }
