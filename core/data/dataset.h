@@ -24,7 +24,7 @@ class Session;
 
 namespace data {
 
-struct Metadata;
+class Metadata;
 class OneDataset;
 class Dataset;
 class Datasets;
@@ -34,7 +34,8 @@ typedef QSharedPointer<OneDataset const> shp_OneDataset;
 typedef QSharedPointer<Dataset> shp_Dataset;
 
 
-struct Metadata {
+class Metadata {
+public:
     Metadata();
 
     // attribute list - will be dynamic

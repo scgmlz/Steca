@@ -21,10 +21,10 @@
 
 namespace typ {
 
-// detector geometry
+//! detector geometry
 
 class Geometry {
-    public:
+public:
     static preal const MIN_DETECTOR_DISTANCE;
     static preal const MIN_DETECTOR_PIXEL_SIZE;
 
@@ -40,11 +40,10 @@ class Geometry {
     IJ midPixOffset;
 };
 
-// image cut (margins)
+//! image cut (margins)
 
 class ImageCut {
 public:
-
     uint left, top, right, bottom;
 
     ImageCut();
