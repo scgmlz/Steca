@@ -260,7 +260,7 @@ loadTiff(shp_Datafile& file, rcstr filePath, typ::deg phi, qreal monitor, qreal 
 
     check();
 
-    file->datasets().append(shp_OneDataset(new OneDataset(md, size, intens)));
+    file->addDataset(md, size, intens);
 }
 
 } // namespace io

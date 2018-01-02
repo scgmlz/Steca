@@ -92,12 +92,6 @@ shp_Datafile load(rcstr filePath) THROWS {
 
     RUNTIME_CHECK(file->datasets().count() > 0, "File " % filePath % " contains no datasets");
 
-    // ensure that all datasets have images of the same size
-    typ::size2d size = file->datasets().first()->imageSize();
-    for (auto& dataset : file->datasets())
-        if (dataset->imageSize() != size)
-            THROW("Inconsistent image size in " % filePath);
-
     return file;
 }
 

@@ -13,8 +13,18 @@
 // ************************************************************************** //
 
 #include "datafile.h"
+#include <QStringBuilder> // for ".." % ..
 
 Datafile::Datafile(rcstr fileName) : fileInfo_(fileName) {}
+
+//! The loaders use this function to push datasets
+void Datafile::addDataset(Metadata const& md, typ::size2d const& sz, inten_vec const& ivec) {
+    if (datasets_.isEmpty())
+        imageSize_ = sz;
+    else if (sz != imageSize_)
+        THROW("Inconsistent image size in " % fileName());
+    datasets_.append(shp_OneDataset(new OneDataset(md, sz, ivec)));
+}
 
 QFileInfo const& Datafile::fileInfo() const {
     return fileInfo_;

@@ -218,8 +218,7 @@ shp_Datafile loadMar(rcstr filePath) THROWS {
 
     // REVIEW ?? pictureOverflow
 
-    datafile->datasets().append(shp_OneDataset(
-        new OneDataset(md, typ::size2d(pixSizeX, pixSizeY), convertedIntens)));
+    datafile->addDataset(md, typ::size2d(pixSizeX, pixSizeY), convertedIntens);
 
     delete[] i2_image;
     delete[] i4_image;

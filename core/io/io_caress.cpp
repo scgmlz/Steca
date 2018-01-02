@@ -206,8 +206,7 @@ shp_Datafile loadCaress(rcstr filePath) THROWS {
                 md.deltaTime = deltaTime;
                 md.time = tempTime;
 
-                datafile->datasets().append(
-                    shp_OneDataset(new OneDataset(md, size, convertedIntens)));
+                datafile->addDataset(md, size, convertedIntens);
 
                 delete[] intens;
                 intens = NULL;

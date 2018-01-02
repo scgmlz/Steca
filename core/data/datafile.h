@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/data/datafile.h
-//! @brief     Defines class File
+//! @brief     Defines class Datafile
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -18,20 +18,21 @@
 #include "dataset.h"
 #include <QFileInfo>
 
-//! A file (loaded from a disk file) that contains a number of datasets.
+//! A file (loaded from a disk file) that contains a sequence of datasets.
 class Datafile final {
 public:
     Datafile(rcstr fileName);
+    void addDataset(Metadata const&, typ::size2d const&, inten_vec const&);
 
     QFileInfo const& fileInfo() const;
     str fileName() const;
-
-    OneDatasets& datasets() { return datasets_; }
     OneDatasets const& datasets() const { return datasets_; }
+    typ::size2d imageSize() const { return imageSize_; }
 
 private:
     QFileInfo fileInfo_;
     OneDatasets datasets_;
+    typ::size2d imageSize_;
 };
 
 typedef QSharedPointer<class Datafile> shp_Datafile;
