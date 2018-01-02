@@ -19,7 +19,7 @@
 namespace gui {
 namespace panel {
 
-class MetadataView : public views::ListView {
+class MetadataView : public ListView {
 public:
     using Model = models::MetadataModel;
     MetadataView();
@@ -28,12 +28,12 @@ protected:
     int sizeHintForColumn(int) const;
 
 private:
-    Model* model() const { return static_cast<Model*>(views::ListView::model()); }
+    Model* model() const { return static_cast<Model*>(ListView::model()); }
 };
 
-MetadataView::MetadataView() : views::ListView() {
+MetadataView::MetadataView() : ListView() {
     setModel(gHub->metadataModel);
-    debug::ensure(dynamic_cast<Model*>(views::ListView::model()));
+    debug::ensure(dynamic_cast<Model*>(ListView::model()));
     connect(this, &MetadataView::clicked, [this](QModelIndex const& index) {
         model()->flipCheck(to_u(index.row()));
         gHub->datasequenceModel->showMetaInfo(model()->rowsChecked()); // REVIEW signal instead?
@@ -45,7 +45,7 @@ int MetadataView::sizeHintForColumn(int col) const {
     case Model::COL_CHECK:
         return fontMetrics().width('m');
     default:
-        return views::ListView::sizeHintForColumn(col);
+        return ListView::sizeHintForColumn(col);
     }
 }
 

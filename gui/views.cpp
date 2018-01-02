@@ -15,7 +15,6 @@
 #include "views.h"
 
 namespace gui {
-namespace views {
 
 void ListView::updateSingleSelection() {
     int row = currentIndex().row();
@@ -43,5 +42,4 @@ void MultiListView::selectRows(uint_vec rows) {
     selectionModel()->select(is, QItemSelectionModel::ClearAndSelect);
 }
 
-} // namespace views
 } // namespace gui

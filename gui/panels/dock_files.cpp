@@ -27,13 +27,13 @@ namespace panel {
 //  class FilesView (definition)
 // ************************************************************************** //
 
-class FilesView : public views::MultiListView {
+class FilesView : public MultiListView {
 public:
     FilesView();
 
 protected:
     using Model = models::FilesModel;
-    Model* model() const { return static_cast<Model*>(views::MultiListView::model()); }
+    Model* model() const { return static_cast<Model*>(MultiListView::model()); }
 
     void selectionChanged(QItemSelection const&, QItemSelection const&);
     void removeSelected();
@@ -44,9 +44,9 @@ protected:
 //  class FilesView (implementation)
 // ************************************************************************** //
 
-FilesView::FilesView() : views::MultiListView() {
+FilesView::FilesView() : MultiListView() {
     setModel(gHub->filesModel);
-    debug::ensure(dynamic_cast<Model*>(views::MultiListView::model()));
+    debug::ensure(dynamic_cast<Model*>(MultiListView::model()));
 
     header()->hide();
 
@@ -60,7 +60,7 @@ FilesView::FilesView() : views::MultiListView() {
 }
 
 void FilesView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
-    views::MultiListView::selectionChanged(selected, deselected);
+    MultiListView::selectionChanged(selected, deselected);
     recollect();
 }
 

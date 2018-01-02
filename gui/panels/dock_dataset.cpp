@@ -26,7 +26,7 @@ namespace panel {
 //  file-scope: class DatasetView
 // ************************************************************************** //
 
-class DatasetView : public views::ListView {
+class DatasetView : public ListView {
 public:
     DatasetView();
 
@@ -34,12 +34,12 @@ protected:
     void currentChanged(QModelIndex const&, QModelIndex const&);
 
     using Model = models::DatasetsModel;
-    Model* model() const { return static_cast<Model*>(views::ListView::model()); }
+    Model* model() const { return static_cast<Model*>(ListView::model()); }
 };
 
-DatasetView::DatasetView() : views::ListView() {
+DatasetView::DatasetView() : ListView() {
     setModel(gHub->datasequenceModel); // TODO simplify this
-    debug::ensure(dynamic_cast<Model*>(views::ListView::model()));
+    debug::ensure(dynamic_cast<Model*>(ListView::model()));
 
     connect(gHub, &TheHubSignallingBase::sigDatasetsChanged, [this]() {
             gHub->tellDatasetSelected(QSharedPointer<DataSequence>()); // first de-select
@@ -48,7 +48,7 @@ DatasetView::DatasetView() : views::ListView() {
 }
 
 void DatasetView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
-    views::ListView::currentChanged(current, previous);
+    ListView::currentChanged(current, previous);
     gHub->tellDatasetSelected(
         model()->data(current, Model::GetDatasetRole).value<QSharedPointer<DataSequence>>());
 }

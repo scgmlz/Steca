@@ -32,7 +32,7 @@ static str safeRealText(qreal val) { return qIsFinite(val) ? str::number(val) : 
 //  class ReflectionView (local scope)
 // ************************************************************************** //
 
-class ReflectionView : public views::ListView {
+class ReflectionView : public ListView {
 public:
     ReflectionView();
 
@@ -47,14 +47,14 @@ public:
 
 private:
     using Model = models::ReflectionsModel;
-    Model* model() const { return static_cast<Model*>(views::ListView::model()); }
+    Model* model() const { return static_cast<Model*>(ListView::model()); }
 
     void selectionChanged(QItemSelection const&, QItemSelection const&);
 };
 
-ReflectionView::ReflectionView() : views::ListView() {
+ReflectionView::ReflectionView() : ListView() {
     setModel(gHub->reflectionsModel);
-    debug::ensure(dynamic_cast<Model*>(views::ListView::model()));
+    debug::ensure(dynamic_cast<Model*>(ListView::model()));
 
     for_i (model()->columnCount())
         resizeColumnToContents(i);
@@ -93,13 +93,13 @@ calc::shp_Reflection ReflectionView::selectedReflection() const {
 }
 
 void ReflectionView::updateSingleSelection() {
-    views::ListView::updateSingleSelection();
+    ListView::updateSingleSelection();
     gHub->trigger_remReflection->setEnabled(hasReflections());
 }
 
 void ReflectionView::selectionChanged(
     QItemSelection const& selected, QItemSelection const& deselected) {
-    views::ListView::selectionChanged(selected, deselected);
+    ListView::selectionChanged(selected, deselected);
 
     QList<QModelIndex> indexes = selected.indexes();
     gHub->tellSelectedReflection(

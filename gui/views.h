@@ -19,7 +19,6 @@
 #include "models.h"
 
 namespace gui {
-namespace views {
 
 //! A (tree-)list view with a reference to the hub. Single selection.
 
@@ -52,7 +51,6 @@ protected:
     void selectRows(uint_vec);
 };
 
-} // namespace views
 } // namespace gui
 
 #endif // VIEWS_H
