@@ -16,13 +16,18 @@
 #define FRAME_H
 
 #include "calc/calc_reflection_info.h"
-#include "panels/panel.h"
 #include <QFrame>
 
+class QBoxLayout;
 class QProgressBar;
 class QToolButton;
 
 namespace gui {
+
+namespace panel {
+class TabsPanel;
+}
+
 namespace output {
 
 class Frame : public QFrame {

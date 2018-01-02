@@ -19,7 +19,6 @@
 #include <QFile>
 
 class WriteFile : public QFile {
-private:
 public:
     WriteFile(rcstr path) THROWS;
 };
