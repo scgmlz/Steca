@@ -12,12 +12,14 @@
 //
 // ************************************************************************** //
 
-#include "../manifest.h"
 #include "about.h"
+#include "../manifest.h"
 #include "gui_cfg.h"
-#include "widget_makers.h"
 #include "settings.h"
+#include "typ/geometry.h"
+#include "widget_makers.h"
 #include <QApplication>
+#include <QDate>
 #include <QDialogButtonBox>
 
 #ifdef Q_OS_MAC

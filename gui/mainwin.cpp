@@ -25,6 +25,7 @@
 #include "panels/tabs_diffractogram.h"
 #include "panels/tabs_images.h"
 #include "panels/tabs_setup.h"
+#include "session.h"
 #include "settings.h"
 #include "thehub.h"
 

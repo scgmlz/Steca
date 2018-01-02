@@ -13,9 +13,12 @@
 // ************************************************************************** //
 
 #include "output_dialogs.h"
+#include "actions.h"
 #include "dialog_panels.h"
 #include "calc/calc_polefigure.h"
 #include "settings.h"
+#include "session.h"
+#include "def/idiomatic_for.h"
 #include "signalling.h"
 #include "frame.h"
 #include "widget_makers.h"

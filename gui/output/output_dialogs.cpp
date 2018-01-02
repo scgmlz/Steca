@@ -13,6 +13,8 @@
 // ************************************************************************** //
 
 #include "output_dialogs.h"
+#include "actions.h"
+#include "def/idiomatic_for.h"
 #include "dialog_panels.h"
 #include "filedialog.h"
 #include "settings.h"

@@ -18,6 +18,7 @@
 #include "calc/calc_lens.h"
 #include "calc/calc_reflection.h"
 #include "calc/calc_reflection_info.h"
+#include "data/angle_map.h"
 #include "data/datafile.h"
 #include "typ/async.h"
 #include "typ/cache.h"

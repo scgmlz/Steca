@@ -15,12 +15,12 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include "actions.h"
-#include "session.h"
+#include "typ/str.h"
 #include <QSettings>
 
-class QSpinBox;
+class QAction;
 class QDoubleSpinBox;
+class QSpinBox;
 
 namespace gui {
 
