@@ -22,10 +22,10 @@ namespace calc {
 // ************************************************************************** //
 
 LensBase::LensBase(
-    Session const& session, Experiment const& suite, bool trans, bool cut,
+    Session const& session, Experiment const& exp, bool trans, bool cut,
     ImageTransform const& imageTransform, ImageCut const& imageCut)
     : session_(session)
-    , experiment_(suite)
+    , experiment_(exp)
     , trans_(trans)
     , cut_(cut)
     , imageTransform_(imageTransform)
@@ -81,9 +81,9 @@ void LensBase::doCut(uint& i, uint& j) const {
 // ************************************************************************** //
 
 ImageLens::ImageLens(
-    Session const& session, Image const& image, Experiment const& suite, bool trans,
+    Session const& session, Image const& image, Experiment const& exp, bool trans,
     bool cut)
-    : LensBase(session, suite, trans, cut, session.imageTransform(), session.imageCut())
+    : LensBase(session, exp, trans, cut, session.imageTransform(), session.imageCut())
     , image_(image) {}
 
 size2d ImageLens::size() const {
@@ -118,12 +118,12 @@ Range const& ImageLens::rgeInten(bool fixed) const {
 // ************************************************************************** //
 
 SequenceLens::SequenceLens(
-    Session const& session, Suite const& dataseq, Experiment const& suite,
+    Session const& session, Suite const& suite, Experiment const& exp,
     eNorm norm, bool trans, bool cut, ImageTransform const& imageTransform,
     ImageCut const& imageCut)
-    : LensBase(session, suite, trans, cut, imageTransform, imageCut)
+    : LensBase(session, exp, trans, cut, imageTransform, imageCut)
     , normFactor_(1)
-    , dataseq_(dataseq) {
+    , suite_(suite) {
     setNorm(norm);
 }
 
@@ -132,21 +132,21 @@ size2d SequenceLens::size() const {
 }
 
 Range SequenceLens::rgeGma() const {
-    return dataseq_.rgeGma(session_);
+    return suite_.rgeGma(session_);
 }
 
 Range SequenceLens::rgeGmaFull() const {
-    return dataseq_.rgeGmaFull(session_);
+    return suite_.rgeGmaFull(session_);
 }
 
 Range SequenceLens::rgeTth() const {
-    return dataseq_.rgeTth(session_);
+    return suite_.rgeTth(session_);
 }
 
 Range SequenceLens::rgeInten() const {
     // fixes the scale
     // TODO consider return experiment_.rgeInten();
-    return dataseq_.rgeInten();
+    return suite_.rgeInten();
 }
 
 Curve SequenceLens::makeCurve() const {
@@ -154,11 +154,11 @@ Curve SequenceLens::makeCurve() const {
 }
 
 Curve SequenceLens::makeCurve(Range const& rgeGma) const {
-    inten_vec intens = dataseq_.collectIntens(session_, intensCorr_, rgeGma);
+    inten_vec intens = suite_.collectIntens(session_, intensCorr_, rgeGma);
     Curve res;
     uint count = intens.count();
     if (count) {
-        Range rgeTth = dataseq_.rgeTth(session_);
+        Range rgeTth = suite_.rgeTth(session_);
         deg minTth = rgeTth.min, deltaTth = rgeTth.width() / count;
         for_i (count)
             res.append(minTth + deltaTth * i, qreal(intens.at(i) * normFactor_));
@@ -172,19 +172,19 @@ void SequenceLens::setNorm(eNorm norm) {
     switch (norm) {
     case eNorm::MONITOR:
         num = experiment_.avgMonitorCount();
-        den = dataseq_.avgMonitorCount();
+        den = suite_.avgMonitorCount();
         break;
     case eNorm::DELTA_MONITOR:
         num = experiment_.avgDeltaMonitorCount();
-        den = dataseq_.avgDeltaMonitorCount();
+        den = suite_.avgDeltaMonitorCount();
         break;
     case eNorm::DELTA_TIME:
         num = experiment_.avgDeltaTime();
-        den = dataseq_.avgDeltaTime();
+        den = suite_.avgDeltaTime();
         break;
     case eNorm::BACKGROUND:
         num = session_.calcAvgBackground(experiment_);
-        den = session_.calcAvgBackground(dataseq_);
+        den = session_.calcAvgBackground(suite_);
         break;
     case eNorm::NONE: break;
     }

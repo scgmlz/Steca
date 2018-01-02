@@ -128,8 +128,8 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
 
     vec<QSharedPointer<Measurement const>> suiteFromFiles;
     for (uint i : collectedFromFiles_)
-        for (auto& dataseq : files_.at(i)->suite())
-            suiteFromFiles.append(dataseq);
+        for (auto& suite : files_.at(i)->suite())
+            suiteFromFiles.append(suite);
 
     if (suiteFromFiles.isEmpty())
         return;
@@ -151,8 +151,8 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
     };
 
     uint by = combineBy;
-    for (auto& dataseq : suiteFromFiles) {
-        cd->append(QSharedPointer<Measurement const>(dataseq));
+    for (auto& suite : suiteFromFiles) {
+        cd->append(QSharedPointer<Measurement const>(suite));
         if (1 >= by--) {
             appendCd();
             by = combineBy;
@@ -224,14 +224,14 @@ calc::shp_ImageLens Session::imageLens(
 }
 
 QSharedPointer<calc::SequenceLens> Session::dataseqLens(
-    Suite const& dataseq, Experiment const& suite, eNorm norm, bool trans, bool cut
+    Suite const& suite, Experiment const& exp, eNorm norm, bool trans, bool cut
     ) const {
     return QSharedPointer<calc::SequenceLens>(new calc::SequenceLens(
-        *this, dataseq, suite, norm, trans, cut, imageTransform_, imageCut_));
+        *this, suite, exp, norm, trans, cut, imageTransform_, imageCut_));
 }
 
-QSharedPointer<calc::SequenceLens> Session::defaultDatasetLens(Suite const& dataseq) const {
-    return dataseqLens(dataseq, dataseq.experiment(), norm(), true, true);
+QSharedPointer<calc::SequenceLens> Session::defaultDatasetLens(Suite const& suite) const {
+    return dataseqLens(suite, suite.experiment(), norm(), true, true);
 }
 
 Curve Session::curveMinusBg(calc::SequenceLens const& lens, Range const& rgeGma) const {
@@ -258,10 +258,10 @@ calc::ReflectionInfo Session::makeReflectionInfo(
 
     // compute alpha, beta:
     deg alpha, beta;
-    Suite const& dataseq = lens.dataseq();
-    dataseq.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
+    Suite const& suite = lens.suite();
+    suite.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
 
-    QSharedPointer<Metadata const> metadata = dataseq.metadata();
+    QSharedPointer<Metadata const> metadata = suite.metadata();
 
     return rgeTth.contains(peak.x)
         ? calc::ReflectionInfo(
@@ -277,18 +277,18 @@ calc::ReflectionInfo Session::makeReflectionInfo(
  * the returned infos won't be on the grid. REVIEW gammaStep separately?
  */
 calc::ReflectionInfos Session::makeReflectionInfos(
-    Experiment const& suite, calc::Reflection const& reflection, uint gmaSlices,
+    Experiment const& exp, calc::Reflection const& reflection, uint gmaSlices,
     Range const& rgeGma, Progress* progress) const {
     calc::ReflectionInfos infos;
 
     if (progress)
-        progress->setTotal(suite.count());
+        progress->setTotal(exp.count());
 
-    for (auto& dataseq : suite) {
+    for (auto& suite : exp) {
         if (progress)
             progress->step();
 
-        auto lens = dataseqLens(*dataseq, suite, norm_, true, true);
+        auto lens = dataseqLens(*suite, exp, norm_, true, true);
 
         Range rge = (gmaSlices > 0) ? lens->rgeGma() : lens->rgeGmaFull();
         if (rgeGma.isValid())
@@ -328,17 +328,17 @@ void Session::addReflection(const QJsonObject& obj) {
     reflections_.append(reflection);
 }
 
-qreal Session::calcAvgBackground(Suite const& dataseq) const {
-    auto lens = dataseqLens(dataseq, dataseq.experiment(), eNorm::NONE, true, true);
+qreal Session::calcAvgBackground(Suite const& suite) const {
+    auto lens = dataseqLens(suite, suite.experiment(), eNorm::NONE, true, true);
     Curve gmaCurve = lens->makeCurve(); // had argument averaged=true
     auto bgPolynom = Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
     return bgPolynom.avgY(lens->rgeTth());
 }
 
-qreal Session::calcAvgBackground(Experiment const& suite) const {
+qreal Session::calcAvgBackground(Experiment const& exp) const {
     TakesLongTime __;
     qreal bg = 0;
-    for (auto& dataseq : suite)
-        bg += calcAvgBackground(*dataseq);
-    return bg / suite.count();
+    for (auto& suite : exp)
+        bg += calcAvgBackground(*suite);
+    return bg / exp.count();
 }

@@ -28,7 +28,7 @@ class Session;
 
 namespace calc {
 
-//! View the dataseq through a lens
+//! View the data through a lens
 
 class LensBase {
 public:
@@ -87,13 +87,13 @@ public:
     Curve makeCurve() const;
     Curve makeCurve(Range const&) const;
 
-    Suite const& dataseq() const { return dataseq_; }
+    Suite const& suite() const { return suite_; }
 
 private:
     void setNorm(eNorm);
     inten_t normFactor_;
 
-    Suite const& dataseq_;
+    Suite const& suite_;
 };
 
 } // namespace calc
