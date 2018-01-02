@@ -20,6 +20,8 @@
 
 class Measurement;
 class Metadata;
+class QDoubleSpinBox;
+class QSpinBox;
 
 namespace gui {
 namespace panel {

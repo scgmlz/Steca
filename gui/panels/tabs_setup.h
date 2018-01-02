@@ -17,6 +17,11 @@
 
 #include "panel.h"
 
+class QComboBox;
+class QDoubleSpinBox;
+class QLineEdit;
+class QSpinBox;
+
 namespace gui {
 namespace panel {
 

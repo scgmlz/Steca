@@ -19,6 +19,11 @@
 #include "models.h"
 #include "thehub.h"
 #include "widgets/widget_makers.h"
+#include <QComboBox>
+#include <QGridLayout>
+#include <QToolButton>
+#include <QRadioButton>
+#include <QSpinBox>
 
 namespace gui {
 namespace output {

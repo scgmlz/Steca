@@ -14,6 +14,7 @@
 
 #include "tabs_diffractogram.h"
 #include "panel_diffractogram.h"
+#include <QBoxLayout>
 
 namespace gui {
 namespace panel {

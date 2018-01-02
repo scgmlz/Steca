@@ -21,6 +21,7 @@
 #include "widgets/tree_views.h" // inheriting from
 #include "widgets/widget_makers.h"
 #include <QAction>
+#include <QDoubleSpinBox>
 
 namespace gui {
 namespace panel {

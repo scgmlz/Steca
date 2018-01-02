@@ -21,6 +21,9 @@
 #include "widgets/tree_views.h"
 
 class QCheckBox;
+class QGridLayout;
+class QRadioButton;
+class QComboBox;
 
 namespace gui {
 namespace output {

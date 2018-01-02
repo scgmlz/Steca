@@ -17,8 +17,10 @@
 
 #include "calc/calc_reflection_info.h"
 #include "panels/panel.h"
+#include <QFrame>
 
 class QProgressBar;
+class QToolButton;
 
 namespace gui {
 namespace output {

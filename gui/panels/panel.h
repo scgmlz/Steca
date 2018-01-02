@@ -16,11 +16,9 @@
 #define PANEL_H
 
 #include "typ/str.h"
-#include <QComboBox>
-#include <QGridLayout>
-#include <QToolButton>
-#include <QRadioButton>
-#include <QSpinBox>
+#include <QTabWidget>
+
+class QBoxLayout;
 
 namespace gui {
 namespace panel {
