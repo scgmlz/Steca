@@ -12,7 +12,12 @@
 //
 // ************************************************************************** //
 
+#ifndef MSG_HANDLER_H
+#define MSG_HANDLER_H
+
 #include "typ/str.h"
 
 extern class QMainWindow* pMainWin;
 void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg);
+
+#endif // MSG_HANDLER_H

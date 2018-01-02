@@ -12,6 +12,11 @@
 //
 // ************************************************************************** //
 
+#ifndef PEAK_FUNCTIONS_H
+#define PEAK_FUNCTIONS_H
+
 #include "fit_fun.h"
 
 void register_peak_functions();
+
+#endif // PEAK_FUNCTIONS_H

@@ -14,7 +14,6 @@
 
 #include "output_dialogs.h"
 #include "dialog_panels.h"
-#include "config.h"
 #include "filedialog.h"
 #include "settings.h"
 #include "thehub.h"
@@ -69,30 +68,30 @@ Params::~Params() {
 }
 
 void Params::readSettings() {
-    Settings s(config_key::GROUP_OUTPUT);
+    Settings s("output");
 
     if (panelGammaSlices)
-        panelGammaSlices->numSlices->setValue(s.readInt(config_key::NUM_SLICES, 0));
+        panelGammaSlices->numSlices->setValue(s.readInt("num slices", 0));
 
     if (panelGammaRange)
-        panelGammaRange->cbLimitGamma->setChecked(s.readBool(config_key::LIMIT_GAMMA, false));
+        panelGammaRange->cbLimitGamma->setChecked(s.readBool("limit gamma", false));
 
     if (panelPoints)
-        (s.readBool(config_key::INTERPOLATED, false) ? panelPoints->rbInterp : panelPoints->rbCalc)
+        (s.readBool("interpolated", false) ? panelPoints->rbInterp : panelPoints->rbCalc)
             ->setChecked(true);
 
     if (panelInterpolation) {
-        panelInterpolation->stepAlpha->setValue(s.readReal(config_key::STEP_ALPHA, 5));
-        panelInterpolation->stepBeta->setValue(s.readReal(config_key::STEP_BETA, 5));
-        panelInterpolation->idwRadius->setValue(s.readReal(config_key::IDW_RADIUS, 10));
+        panelInterpolation->stepAlpha->setValue(s.readReal("step alpha", 5));
+        panelInterpolation->stepBeta->setValue(s.readReal("step beta", 5));
+        panelInterpolation->idwRadius->setValue(s.readReal("idw radius", 10));
 
-        panelInterpolation->avgAlphaMax->setValue(s.readReal(config_key::AVG_ALPHA_MAX, 15));
-        panelInterpolation->avgRadius->setValue(s.readReal(config_key::AVG_RADIUS, 5));
-        panelInterpolation->avgThreshold->setValue(s.readInt(config_key::AVG_THRESHOLD, 100));
+        panelInterpolation->avgAlphaMax->setValue(s.readReal("avg alpha max", 15));
+        panelInterpolation->avgRadius->setValue(s.readReal("avg radius", 5));
+        panelInterpolation->avgThreshold->setValue(s.readInt("avg threshold", 100));
     }
 
-    saveDir = s.readStr(config_key::SAVE_DIR);
-    saveFmt = s.readStr(config_key::SAVE_FMT);
+    saveDir = s.readStr("save dir");
+    saveFmt = s.readStr("save format");
 
     if (panelGammaSlices)
         panelGammaSlices->updateValues();
@@ -102,29 +101,29 @@ void Params::readSettings() {
 }
 
 void Params::saveSettings() const {
-    Settings s(config_key::GROUP_OUTPUT);
+    Settings s("output");
 
     if (panelGammaSlices)
-        s.saveInt(config_key::NUM_SLICES, panelGammaSlices->numSlices->value());
+        s.saveInt("num slices", panelGammaSlices->numSlices->value());
 
     if (panelGammaRange)
-        s.saveBool(config_key::LIMIT_GAMMA, panelGammaRange->cbLimitGamma->isChecked());
+        s.saveBool("limit gamma", panelGammaRange->cbLimitGamma->isChecked());
 
     if (panelPoints)
-        s.saveBool(config_key::INTERPOLATED, panelPoints->rbInterp->isChecked());
+        s.saveBool("interpolated", panelPoints->rbInterp->isChecked());
 
     if (panelInterpolation) {
-        s.saveReal(config_key::STEP_ALPHA, panelInterpolation->stepAlpha->value());
-        s.saveReal(config_key::STEP_BETA, panelInterpolation->stepBeta->value());
-        s.saveReal(config_key::IDW_RADIUS, panelInterpolation->idwRadius->value());
+        s.saveReal("step alpha", panelInterpolation->stepAlpha->value());
+        s.saveReal("step beta", panelInterpolation->stepBeta->value());
+        s.saveReal("idw radius", panelInterpolation->idwRadius->value());
 
-        s.saveReal(config_key::AVG_ALPHA_MAX, panelInterpolation->avgAlphaMax->value());
-        s.saveReal(config_key::AVG_RADIUS, panelInterpolation->avgRadius->value());
-        s.saveInt(config_key::AVG_THRESHOLD, panelInterpolation->avgThreshold->value());
+        s.saveReal("avg alpha max", panelInterpolation->avgAlphaMax->value());
+        s.saveReal("avg radius", panelInterpolation->avgRadius->value());
+        s.saveInt("avg threshold", panelInterpolation->avgThreshold->value());
     }
 
-    s.saveStr(config_key::SAVE_DIR, saveDir);
-    s.saveStr(config_key::SAVE_FMT, saveFmt);
+    s.saveStr("save dir", saveDir);
+    s.saveStr("save format", saveFmt);
 }
 
 // ************************************************************************** //

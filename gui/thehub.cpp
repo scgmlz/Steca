@@ -14,7 +14,6 @@
 
 #include "thehub.h"
 #include "actions.h"
-#include "config.h"
 #include "io/io_io.h"
 #include "output/write_file.h"
 #include "session.h"
@@ -196,22 +195,22 @@ QByteArray TheHub::saveSession() const {
 
     auto& geo = gSession->geometry();
     QJsonObject sub {
-        { config_key::DET_DISTANCE, QJsonValue(geo.detectorDistance) },
-        { config_key::DET_PIX_SIZE, QJsonValue(geo.pixSize) },
-        { config_key::BEAM_OFFSET, geo.midPixOffset.to_json() }
+        { "distance", QJsonValue(geo.detectorDistance) },
+        { "pixel size", QJsonValue(geo.pixSize) },
+        { "beam offset", geo.midPixOffset.to_json() }
     };
-    top.insert(config_key::DETECTOR, sub);
+    top.insert("detector", sub);
 
     auto& cut = gSession->imageCut();
     sub = {
-        { config_key::LEFT, to_i(cut.left) },
-        { config_key::TOP, to_i(cut.top) },
-        { config_key::RIGHT, to_i(cut.right) },
-        { config_key::BOTTOM, to_i(cut.bottom) } };
-    top.insert(config_key::CUT, sub);
+        { "left", to_i(cut.left) },
+        { "top", to_i(cut.top) },
+        { "right", to_i(cut.right) },
+        { "bottom", to_i(cut.bottom) } };
+    top.insert("cut", sub);
 
     auto& trn = gSession->imageTransform();
-    top.insert(config_key::TRANSFORM, to_i((uint)trn.val));
+    top.insert("image transform", to_i((uint)trn.val));
 
     QJsonArray arrFiles;
     // save file path relative to location of session
@@ -221,31 +220,31 @@ QByteArray TheHub::saveSession() const {
         arrFiles.append(relPath);
     }
 
-    top.insert(config_key::FILES, arrFiles);
+    top.insert("files", arrFiles);
 
     QJsonArray arrSelectedFiles;
     for (uint i : gSession->collectedFromFiles())
         arrSelectedFiles.append(to_i(i));
 
-    top.insert(config_key::SELECTED_FILES, arrSelectedFiles);
-    top.insert(config_key::COMBINE, to_i((uint)datasetsGroupedBy_));
+    top.insert("selected files", arrSelectedFiles);
+    top.insert("combine", to_i((uint)datasetsGroupedBy_));
 
     if (gSession->hasCorrFile()) {
         str absPath = gSession->corrFile()->fileInfo().absoluteFilePath();
         str relPath = QDir::current().relativeFilePath(absPath);
-        top.insert(config_key::CORR_FILE, relPath);
+        top.insert("correction file", relPath);
     }
 
-    top.insert(config_key::BG_DEGREE, to_i(gSession->bgPolyDegree()));
-    top.insert(config_key::BG_RANGES, gSession->bgRanges().to_json());
-    top.insert(config_key::INTEN_SCALED_AVG, gSession->intenScaledAvg());
-    top.insert(config_key::INTEN_SCALE, qreal_to_json((qreal)gSession->intenScale()));
+    top.insert("background degree", to_i(gSession->bgPolyDegree()));
+    top.insert("background ranges", gSession->bgRanges().to_json());
+    top.insert("averaged intensity ", gSession->intenScaledAvg());
+    top.insert("intensity scale", qreal_to_json((qreal)gSession->intenScale()));
 
     QJsonArray arrReflections;
     for (auto& reflection : gSession->reflections())
         arrReflections.append(reflection->to_json());
 
-    top.insert(config_key::REFLECTIONS, arrReflections);
+    top.insert("reflections", arrReflections);
 
     return QJsonDocument(top).toJson();
 }
@@ -275,7 +274,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
 
     typ::JsonObj top(doc.object());
 
-    const QJsonArray& files = top.loadArr(config_key::FILES);
+    const QJsonArray& files = top.loadArr("files");
     for (const QJsonValue& file : files) {
         str filePath = file.toString();
         QDir dir(filePath);
@@ -283,7 +282,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
         addGivenFile(dir.absolutePath());
     }
 
-    const QJsonArray& sels = top.loadArr(config_key::SELECTED_FILES, true);
+    const QJsonArray& sels = top.loadArr("selected files", true);
     uint_vec selIndexes;
     for (const QJsonValue& sel : sels) {
         int i = sel.toInt(), index = qBound(0, i, files.count());
@@ -299,36 +298,36 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     }
 
     TR("sessionFromJson: going to collect datasets");
-    collectDatasetsFromFiles(selIndexes, top.loadPint(config_key::COMBINE, 1));
+    collectDatasetsFromFiles(selIndexes, top.loadPint("combine", 1));
 
     TR("sessionFromJson: going to set correction file");
-    setCorrFile(top.loadString(config_key::CORR_FILE, ""));
+    setCorrFile(top.loadString("correction file", ""));
 
     TR("sessionFromJson: going to load detector geometry");
-    const typ::JsonObj& det = top.loadObj(config_key::DETECTOR);
+    const typ::JsonObj& det = top.loadObj("detector");
     setGeometry(
-        det.loadPreal(config_key::DET_DISTANCE), det.loadPreal(config_key::DET_PIX_SIZE),
-        det.loadIJ(config_key::BEAM_OFFSET));
+        det.loadPreal("distance"), det.loadPreal("pixel size"),
+        det.loadIJ("beam offset"));
 
     TR("sessionFromJson: going to load image cut");
-    const typ::JsonObj& cut = top.loadObj(config_key::CUT);
-    uint x1 = cut.loadUint(config_key::LEFT), y1 = cut.loadUint(config_key::TOP),
-         x2 = cut.loadUint(config_key::RIGHT), y2 = cut.loadUint(config_key::BOTTOM);
+    const typ::JsonObj& cut = top.loadObj("cut");
+    uint x1 = cut.loadUint("left"), y1 = cut.loadUint("top"),
+         x2 = cut.loadUint("right"), y2 = cut.loadUint("bottom");
     setImageCut(true, false, typ::ImageCut(x1, y1, x2, y2));
-    setImageRotate(typ::ImageTransform(top.loadUint(config_key::TRANSFORM)));
+    setImageRotate(typ::ImageTransform(top.loadUint("image transform")));
 
     TR("sessionFromJson: going to load fit setup");
     typ::Ranges bgRanges;
-    bgRanges.from_json(top.loadArr(config_key::BG_RANGES));
+    bgRanges.from_json(top.loadArr("background ranges"));
     setBgRanges(bgRanges);
-    setBgPolyDegree(top.loadUint(config_key::BG_DEGREE));
+    setBgPolyDegree(top.loadUint("background degree"));
 
-    auto arg1 = top.loadBool(config_key::INTEN_SCALED_AVG, true);
-    auto arg2 = top.loadPreal(config_key::INTEN_SCALE, preal(1));
+    auto arg1 = top.loadBool("averaged intensity ", true);
+    auto arg2 = top.loadPreal("intensity scale", preal(1));
     setIntenScaleAvg(arg1, arg2);
 
     TR("sessionFromJson: going to load reflections info");
-    const QJsonArray& reflectionsInfo = top.loadArr(config_key::REFLECTIONS);
+    const QJsonArray& reflectionsInfo = top.loadArr("reflections");
     for_i (reflectionsInfo.count()) {
         gSession->addReflection(reflectionsInfo.at(i).toObject());
     }

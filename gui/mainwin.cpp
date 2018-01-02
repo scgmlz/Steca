@@ -15,7 +15,6 @@
 #include "mainwin.h"
 #include "../manifest.h"
 #include "about.h"
-#include "config.h"
 #include "filedialog.h"
 #include "output/output_diagrams.h"
 #include "output/output_diffractograms.h"
@@ -364,18 +363,18 @@ void MainWin::onShow() {
     gHub->actions.outputPolefigures->trigger();
 #endif
 
-    Settings s(config_key::GROUP_CONFIG);
+    Settings s("config");
     auto ver = qApp->applicationVersion();
-    if (s.readStr(config_key::CURRENT_VERSION) != ver) {
+    if (s.readStr("current version") != ver) {
         // new version
-        s.saveStr(config_key::CURRENT_VERSION, ver);
-        s.saveBool(config_key::STARTUP_CHECK_UPDATE, true);
-        s.saveBool(config_key::STARTUP_ABOUT, true);
+        s.saveStr("current version", ver);
+        s.saveBool("startup check update", true);
+        s.saveBool("startup about", true);
     }
 
-    if (s.readBool(config_key::STARTUP_CHECK_UPDATE, true))
+    if (s.readBool("startup check update", true))
         checkUpdate(false);
-    if (s.readBool(config_key::STARTUP_ABOUT, true))
+    if (s.readBool("startup about", true))
         about();
 }
 
@@ -387,15 +386,15 @@ void MainWin::readSettings() {
     if (initialState_.isEmpty())
         initialState_ = saveState();
 
-    Settings s(config_key::GROUP_MAINWIN);
-    restoreGeometry(s.value(config_key::GEOMETRY).toByteArray());
-    restoreState(s.value(config_key::STATE).toByteArray());
+    Settings s("MainWin");
+    restoreGeometry(s.value("geometry").toByteArray());
+    restoreState(s.value("state").toByteArray());
 }
 
 void MainWin::saveSettings() {
-    Settings s(config_key::GROUP_MAINWIN);
-    s.setValue(config_key::GEOMETRY, saveGeometry());
-    s.setValue(config_key::STATE, saveState());
+    Settings s("MainWin");
+    s.setValue("geometry", saveGeometry());
+    s.setValue("state", saveState());
 }
 
 void MainWin::checkActions() {

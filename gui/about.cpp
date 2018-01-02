@@ -14,7 +14,6 @@
 
 #include "../manifest.h"
 #include "about.h"
-#include "config.h"
 #include "gui_cfg.h"
 #include "widget_makers.h"
 #include "settings.h"
@@ -27,7 +26,7 @@
 namespace gui {
 
 AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
-    Settings s(config_key::GROUP_CONFIG);
+    Settings s("config");
 
     int PAD = 12;
 
@@ -95,8 +94,8 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
     hb->addWidget((cbCheckUpdatesAtStartup_ = check("&check for update")));
     hb->addStretch();
 
-    cbShowAtStartup_->setChecked(s.readBool(config_key::STARTUP_ABOUT, true));
-    cbCheckUpdatesAtStartup_->setChecked(s.readBool(config_key::STARTUP_CHECK_UPDATE, true));
+    cbShowAtStartup_->setChecked(s.readBool("startup about", true));
+    cbCheckUpdatesAtStartup_->setChecked(s.readBool("startup check update", true));
 
     vb->addWidget(hline());
 
@@ -116,9 +115,9 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
 
     detPixelSize_->setDecimals(3);
     detDistance_->setValue(
-        s.readReal(config_key::DET_DISTANCE, typ::Geometry::DEF_DETECTOR_DISTANCE));
+        s.readReal("distance", typ::Geometry::DEF_DETECTOR_DISTANCE));
     detPixelSize_->setValue(
-        s.readReal(config_key::DET_PIX_SIZE, typ::Geometry::DEF_DETECTOR_PIXEL_SIZE));
+        s.readReal("pixel size", typ::Geometry::DEF_DETECTOR_PIXEL_SIZE));
 
     // TODO put back
     detDistance_->setVisible(false);
@@ -135,13 +134,13 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
 }
 
 void AboutBox::accept() {
-    Settings s(config_key::GROUP_CONFIG);
+    Settings s("config");
 
-    s.saveBool(config_key::STARTUP_ABOUT, cbShowAtStartup_->isChecked());
-    s.saveBool(config_key::STARTUP_CHECK_UPDATE, cbCheckUpdatesAtStartup_->isChecked());
+    s.saveBool("startup about", cbShowAtStartup_->isChecked());
+    s.saveBool("startup check update", cbCheckUpdatesAtStartup_->isChecked());
 
-    s.saveReal(config_key::DET_DISTANCE, detDistance_->value());
-    s.saveReal(config_key::DET_PIX_SIZE, detPixelSize_->value());
+    s.saveReal("distance", detDistance_->value());
+    s.saveReal("pixel size", detPixelSize_->value());
 
     QDialog::accept();
 }
