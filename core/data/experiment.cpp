@@ -23,13 +23,13 @@
 #include "typ/matrix.h"
 #include <qmath.h>
 
+Experiment::Experiment() {
+    invalidateAvgMutables();
+}
+
 Experiment const& DataSequence::datasequence() const {
     debug::ensure(experiment_);
     return *experiment_;
-}
-
-Experiment::Experiment() {
-    invalidateAvgMutables();
 }
 
 void Experiment::appendHere(QSharedPointer<DataSequence> dataset) {

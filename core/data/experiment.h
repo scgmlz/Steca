@@ -15,16 +15,15 @@
 #ifndef EXPERIMENT_H
 #define EXPERIMENT_H
 
-#include "typ/angles.h"
 #include "typ/array2d.h"
 #include "typ/curve.h"
-#include "typ/variant.h"
 
 class Session;
 class Metadata;
-class Measurement;
 class DataSequence;
 class Experiment;
+
+//! A sequence of DataSequences's
 
 class Experiment final : public vec<QSharedPointer<DataSequence>> {
 public:
