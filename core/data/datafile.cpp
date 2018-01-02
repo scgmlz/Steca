@@ -33,3 +33,11 @@ QFileInfo const& Datafile::fileInfo() const {
 str Datafile::fileName() const {
     return fileInfo_.fileName();
 }
+
+typ::shp_Image Datafile::foldedImage() const {
+    debug::ensure(!datasets_.isEmpty());
+    typ::shp_Image ret(new typ::Image(datasets_.first()->imageSize()));
+    for (auto& one : datasets_)
+        ret->addIntens(*one->image());
+    return ret;
+}

@@ -426,17 +426,3 @@ qreal Datasets::calcAvgMutable(qreal (Dataset::*avgMth)() const) const {
     }
     return avg;
 }
-
-size2d OneDatasets::imageSize() const {
-    debug::ensure(!isEmpty());
-    // all images have the same size; simply take the first one
-    return first()->imageSize();
-}
-
-typ::shp_Image OneDatasets::foldedImage() const {
-    debug::ensure(!isEmpty());
-    typ::shp_Image image(new Image(imageSize()));
-    for (auto& one : *this)
-        image->addIntens(*one->image_);
-    return image;
-}

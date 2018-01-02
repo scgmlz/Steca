@@ -24,10 +24,12 @@ public:
     Datafile(rcstr fileName);
     void addDataset(Metadata const&, typ::size2d const&, inten_vec const&);
 
-    QFileInfo const& fileInfo() const;
-    str fileName() const;
     OneDatasets const& datasets() const { return datasets_; }
     typ::size2d imageSize() const { return imageSize_; }
+
+    QFileInfo const& fileInfo() const;
+    str fileName() const;
+    typ::shp_Image foldedImage() const;
 
 private:
     QFileInfo fileInfo_;

@@ -75,8 +75,6 @@ private:
 
 class OneDatasets : public typ::vec<shp_OneDataset> {
 public:
-    typ::size2d imageSize() const;
-    typ::shp_Image foldedImage() const;
 };
 
 //! One or more OneDataset(s)

@@ -109,9 +109,8 @@ void Session::setCorrFile(shp_Datafile datafile) THROWS {
     if (datafile.isNull()) {
         remCorrFile();
     } else {
-        auto& datasets = datafile->datasets();
         setImageSize(datafile->imageSize());
-        corrImage_ = datasets.foldedImage();
+        corrImage_ = datafile->foldedImage();
         intensCorr_.clear(); // will be calculated lazily
         // all ok
         corrFile_ = datafile;
