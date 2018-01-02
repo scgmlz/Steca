@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "thehub.h"
+#include "actions.h"
 #include "config.h"
 #include "io/io_io.h"
 #include "output/write_file.h"

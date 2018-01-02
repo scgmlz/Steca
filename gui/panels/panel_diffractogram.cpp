@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "panel_diffractogram.h"
+#include "actions.h"
 #include "fit/fit_fun.h"
 #include "gui_cfg.h"
 #include "session.h"

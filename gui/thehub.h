@@ -15,11 +15,12 @@
 #ifndef THEHUB_H
 #define THEHUB_H
 
-#include "actions.h"
 #include "models.h"
-#include "signalling.h"
+#include "signalling.h" // defines base class TheHubSignallingBase
 #include "calc/calc_lens.h"
 #include "calc/calc_reflection_info.h"
+
+class QAction;
 
 extern class gui::TheHub* gHub;
 
