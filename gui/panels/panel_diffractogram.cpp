@@ -301,7 +301,7 @@ void DiffractogramPlot::plot(
         Range intenRange;
         if (gHub->isFixedIntenDgramScale()) {
             debug::ensure(!diffractogram_.dataset().isNull());
-            auto lens = gHub->datasetLens(*diffractogram_.dataset());
+            auto lens = gSession->defaultDatasetLens(*diffractogram_.dataset());
             intenRange = lens->rgeInten();
         } else {
             intenRange = dgramBgFitted.rgeY();
@@ -604,7 +604,7 @@ void Diffractogram::calcDgram() {
     if (gHub->isCombinedDgram())
         dgram_ = gHub->avgCurve(dataset_->experiment());
     else {
-        auto lens = gHub->datasetLens(*dataset_);
+        auto lens = gSession->defaultDatasetLens(*dataset_);
         dgram_ = lens->makeCurve(gSession->gammaRange());
     }
 }

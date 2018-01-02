@@ -230,6 +230,10 @@ QSharedPointer<calc::SequenceLens> Session::datasetLens(
         *this, dataset, datasequence, norm, trans, cut, imageTransform_, imageCut_));
 }
 
+QSharedPointer<calc::SequenceLens> Session::defaultDatasetLens(DataSequence const& dataset) const {
+    return datasetLens(dataset, dataset.experiment(), norm(), true, true);
+}
+
 Curve Session::curveMinusBg(calc::SequenceLens const& lens, Range const& rgeGma) const {
     Curve curve = lens.makeCurve(rgeGma);
     const Polynom f = Polynom::fromFit(bgPolyDegree_, curve, bgRanges_);

@@ -80,8 +80,6 @@ public:
     bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
     bool isCombinedDgram() const { return isCombinedDgram_; }
 
-    QSharedPointer<calc::SequenceLens> datasetLens(DataSequence const&) const;
-
     Curve avgCurve(Experiment const& dss) const;
 
     void saveSession(QFileInfo const&) const;

@@ -300,7 +300,7 @@ void TabsImages::render() {
             spinN_->setValue(to_i(n));
             spinN_->setEnabled(by > 1);
 
-            lens_ = gHub->datasetLens(*dataset_);
+            lens_ = gSession->defaultDatasetLens(*dataset_);
 
             Range rge;
             if (nSlices > 0) {

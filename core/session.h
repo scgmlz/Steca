@@ -120,6 +120,7 @@ public:
     calc::shp_ImageLens imageLens(Image const&, Experiment const&, bool trans, bool cut) const;
     QSharedPointer<calc::SequenceLens> datasetLens(
         DataSequence const&, Experiment const&, eNorm, bool trans, bool cut) const;
+    QSharedPointer<calc::SequenceLens> defaultDatasetLens(DataSequence const& dataset) const;
 
     calc::ReflectionInfos makeReflectionInfos(
         Experiment const&, calc::Reflection const&, uint gmaSlices, Range const&, Progress*) const;

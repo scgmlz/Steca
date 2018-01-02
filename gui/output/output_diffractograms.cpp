@@ -92,7 +92,7 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
 OutputDataCollection DiffractogramsFrame::collectCurves(
     Range const& rgeGma, uint gmaSlices, DataSequence const& dataset, uint picNum) {
 
-    auto lens = gHub->datasetLens(dataset);
+    auto lens = gSession->defaultDatasetLens(dataset);
 
     Range rge = (gmaSlices > 0) ? lens->rgeGma() : Range::infinite();
     if (rgeGma.isValid())
@@ -112,7 +112,7 @@ OutputDataCollection DiffractogramsFrame::collectCurves(
 }
 
 OutputData DiffractogramsFrame::collectCurve(DataSequence const& dataset) {
-    auto lens = gHub->datasetLens(dataset);
+    auto lens = gSession->defaultDatasetLens(dataset);
     auto curve = lens->makeCurve();
     return OutputData(curve, dataset, lens->rgeGma(), 0); // TODO current picture number
 }

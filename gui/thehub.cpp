@@ -176,10 +176,6 @@ void TheHub::removeFile(uint i) {
         setImageCut(true, false, ImageCut());
 }
 
-QSharedPointer<calc::SequenceLens> TheHub::datasetLens(DataSequence const& dataset) const {
-    return gSession->datasetLens(dataset, dataset.experiment(), gSession->norm(), true, true);
-}
-
 Curve TheHub::avgCurve(Experiment const& dss) const {
     return dss.avgCurve(*gSession);
 }
