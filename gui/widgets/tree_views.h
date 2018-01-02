@@ -29,11 +29,11 @@ public:
     int sizeHintForColumn(int) const; // make narrow columns
 };
 
-//! abstract tree widget used as a list (hides column 0)
+//! Auxiliary class; merger with ListView is nontrivial
 
-class TreeListView : public TreeView {
+class AuxView : public TreeView {
 public:
-    TreeListView();
+    AuxView();
 
 protected:
     void setModel(QAbstractItemModel*);
@@ -41,19 +41,19 @@ protected:
 
 //! A (tree-)list view with a reference to the hub. Single selection.
 
-class ListView : public TreeListView {
+class ListView : public AuxView {
 public:
     ListView() {}
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
     // base class has setModel(<other type>*)
-    void setModel(TableModel* model) { TreeListView::setModel(model); }
+    void setModel(TableModel* model) { AuxView::setModel(model); }
 #pragma GCC diagnostic pop
 
 protected:
     TableModel* model() const {
-        return static_cast<TableModel*>(TreeListView::model()); }
+        return static_cast<TableModel*>(AuxView::model()); }
     void updateSingleSelection();
     void selectRow(int);
 };

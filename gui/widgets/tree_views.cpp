@@ -30,14 +30,14 @@ int TreeView::sizeHintForColumn(int) const {
 }
 
 // ************************************************************************** //
-//  class TreeListView
+//  auxiliary class TreeListView
 // ************************************************************************** //
 
-TreeListView::TreeListView() {
+AuxView::AuxView() {
     setSelectionBehavior(SelectRows);
 }
 
-void TreeListView::setModel(QAbstractItemModel* model) {
+void AuxView::setModel(QAbstractItemModel* model) {
     TreeView::setModel(model);
     hideColumn(0); // this should look like a list; 0th column is tree-like
 
