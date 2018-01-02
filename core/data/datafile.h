@@ -24,7 +24,7 @@ public:
     Datafile(rcstr fileName);
     void addDataset(Metadata const&, typ::size2d const&, inten_vec const&);
 
-    OneDatasets const& datasets() const { return datasets_; }
+    typ::vec<shp_OneDataset> const& datasets() const { return datasets_; }
     typ::size2d imageSize() const { return imageSize_; }
 
     QFileInfo const& fileInfo() const;
@@ -33,7 +33,7 @@ public:
 
 private:
     QFileInfo fileInfo_;
-    OneDatasets datasets_;
+    typ::vec<shp_OneDataset> datasets_;
     typ::size2d imageSize_;
 };
 
