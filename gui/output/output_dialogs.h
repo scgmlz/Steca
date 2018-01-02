@@ -23,7 +23,6 @@
 class QCheckBox;
 class QGridLayout;
 class QRadioButton;
-class QComboBox;
 
 namespace gui {
 namespace output {

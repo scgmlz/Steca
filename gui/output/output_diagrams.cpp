@@ -15,7 +15,6 @@
 #include "output_diagrams.h"
 #include "dialog_panels.h"
 #include "fit/fit_fun.h"
-#include "models.h"
 #include "output_dialogs.h"
 #include "session.h"
 #include "thehub.h"
