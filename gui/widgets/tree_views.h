@@ -45,16 +45,15 @@ class ListView : public TreeListView {
 public:
     ListView() {}
 
-    using Model = models::TableModel;
-
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
     // base class has setModel(<other type>*)
-    void setModel(Model* model) { TreeListView::setModel(model); }
+    void setModel(models::TableModel* model) { TreeListView::setModel(model); }
 #pragma GCC diagnostic pop
 
 protected:
-    Model* model() const { return static_cast<Model*>(TreeListView::model()); }
+    models::TableModel* model() const {
+        return static_cast<models::TableModel*>(TreeListView::model()); }
     void updateSingleSelection();
     void selectRow(int);
 };
