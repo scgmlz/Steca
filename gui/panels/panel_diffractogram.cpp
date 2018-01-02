@@ -602,7 +602,7 @@ void Diffractogram::calcDgram() {
         return;
 
     if (gHub->isCombinedDgram())
-        dgram_ = gHub->avgCurve(dataset_->datasequence());
+        dgram_ = gHub->avgCurve(dataset_->experiment());
     else {
         auto lens = gHub->datasetLens(*dataset_);
         dgram_ = lens->makeCurve(gSession->gammaRange());

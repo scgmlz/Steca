@@ -325,7 +325,7 @@ void Session::addReflection(const QJsonObject& obj) {
 }
 
 qreal Session::calcAvgBackground(DataSequence const& dataset) const {
-    auto lens = datasetLens(dataset, dataset.datasequence(), eNorm::NONE, true, true);
+    auto lens = datasetLens(dataset, dataset.experiment(), eNorm::NONE, true, true);
     Curve gmaCurve = lens->makeCurve(); // had argument averaged=true
     auto bgPolynom = Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
     return bgPolynom.avgY(lens->rgeTth());

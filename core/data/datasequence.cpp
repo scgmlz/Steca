@@ -318,7 +318,7 @@ void DataSequence::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) c
 //  class Datasets
 // ************************************************************************** //
 
-Experiment const& DataSequence::datasequence() const {
+Experiment const& DataSequence::experiment() const {
     debug::ensure(experiment_);
     return *experiment_;
 }

@@ -35,7 +35,7 @@ public:
     DataSequence();
 
     QSharedPointer<Metadata const> metadata() const;
-    Experiment const& datasequence() const;
+    Experiment const& experiment() const;
 
     deg omg() const;
     deg phi() const;

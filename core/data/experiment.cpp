@@ -27,11 +27,6 @@ Experiment::Experiment() {
     invalidateAvgMutables();
 }
 
-Experiment const& DataSequence::datasequence() const {
-    debug::ensure(experiment_);
-    return *experiment_;
-}
-
 void Experiment::appendHere(QSharedPointer<DataSequence> dataset) {
     // can be added only once
     debug::ensure(!dataset->experiment_);
@@ -105,11 +100,11 @@ void Experiment::invalidateAvgMutables() const {
 }
 
 QSharedPointer<DataSequence> Experiment::combineAll() const {
-    QSharedPointer<DataSequence> d(new DataSequence);
+    QSharedPointer<DataSequence> ret(new DataSequence);
     for (QSharedPointer<DataSequence> const& dataset : *this)
         for (QSharedPointer<Measurement const> const& one : *dataset)
-            d->append(one);
-    return d;
+            ret->append(one);
+    return ret;
 }
 
 qreal Experiment::calcAvgMutable(qreal (DataSequence::*avgMth)() const) const {
