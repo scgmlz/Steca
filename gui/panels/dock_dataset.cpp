@@ -34,13 +34,12 @@ public:
 protected:
     void currentChanged(QModelIndex const&, QModelIndex const&);
 
-    using Model = DatasetsModel;
-    Model* model() const { return static_cast<Model*>(ListView::model()); }
+    DatasetsModel* model() const { return static_cast<DatasetsModel*>(ListView::model()); }
 };
 
 DatasetView::DatasetView() : ListView() {
     setModel(gHub->datasequenceModel); // TODO simplify this
-    debug::ensure(dynamic_cast<Model*>(ListView::model()));
+    debug::ensure(dynamic_cast<DatasetsModel*>(ListView::model()));
 
     connect(gHub, &TheHubSignallingBase::sigDatasetsChanged, [this]() {
             gHub->tellDatasetSelected(QSharedPointer<DataSequence>()); // first de-select
@@ -51,7 +50,8 @@ DatasetView::DatasetView() : ListView() {
 void DatasetView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     ListView::currentChanged(current, previous);
     gHub->tellDatasetSelected(
-        model()->data(current, Model::GetDatasetRole).value<QSharedPointer<DataSequence>>());
+        model()->data(current,
+                      DatasetsModel::GetDatasetRole).value<QSharedPointer<DataSequence>>());
 }
 
 // ************************************************************************** //

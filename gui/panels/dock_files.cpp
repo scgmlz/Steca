@@ -33,8 +33,7 @@ public:
     FilesView();
 
 protected:
-    using Model = FilesModel;
-    Model* model() const { return static_cast<Model*>(MultiListView::model()); }
+    FilesModel* model() const { return static_cast<FilesModel*>(MultiListView::model()); }
 
     void selectionChanged(QItemSelection const&, QItemSelection const&);
     void removeSelected();
@@ -47,7 +46,7 @@ protected:
 
 FilesView::FilesView() : MultiListView() {
     setModel(gHub->filesModel);
-    debug::ensure(dynamic_cast<Model*>(MultiListView::model()));
+    debug::ensure(dynamic_cast<FilesModel*>(MultiListView::model()));
 
     header()->hide();
 
