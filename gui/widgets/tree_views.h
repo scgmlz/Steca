@@ -15,8 +15,8 @@
 #ifndef TREE_VIEWS_H
 #define TREE_VIEWS_H
 
-#include "widgets/various_widgets.h"
 #include "models.h"
+#include <QTreeView>
 
 namespace gui {
 
