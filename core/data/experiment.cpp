@@ -24,8 +24,8 @@
 #include <qmath.h>
 
 Experiment const& DataSequence::datasequence() const {
-    debug::ensure(datasequence_);
-    return *datasequence_;
+    debug::ensure(experiment_);
+    return *experiment_;
 }
 
 Experiment::Experiment() {
@@ -34,8 +34,8 @@ Experiment::Experiment() {
 
 void Experiment::appendHere(QSharedPointer<DataSequence> dataset) {
     // can be added only once
-    debug::ensure(!dataset->datasequence_);
-    dataset->datasequence_ = this;
+    debug::ensure(!dataset->experiment_);
+    dataset->experiment_ = this;
     append(dataset);
     invalidateAvgMutables();
 }

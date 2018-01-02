@@ -25,7 +25,7 @@ LensBase::LensBase(
     Session const& session, Experiment const& datasequence, bool trans, bool cut,
     ImageTransform const& imageTransform, ImageCut const& imageCut)
     : session_(session)
-    , datasequence_(datasequence)
+    , experiment_(datasequence)
     , trans_(trans)
     , cut_(cut)
     , imageTransform_(imageTransform)
@@ -103,7 +103,7 @@ inten_t ImageLens::imageInten(uint i, uint j) const {
 
 Range const& ImageLens::rgeInten(bool fixed) const {
     if (fixed)
-        return datasequence_.rgeFixedInten(session_, trans_, cut_);
+        return experiment_.rgeFixedInten(session_, trans_, cut_);
     if (!rgeInten_.isValid()) {
         auto sz = size();
         for_ij (sz.w, sz.h)
@@ -128,7 +128,7 @@ SequenceLens::SequenceLens(
 }
 
 size2d SequenceLens::size() const {
-    return LensBase::transCutSize(datasequence_.imageSize());
+    return LensBase::transCutSize(experiment_.imageSize());
 }
 
 Range SequenceLens::rgeGma() const {
@@ -145,7 +145,7 @@ Range SequenceLens::rgeTth() const {
 
 Range SequenceLens::rgeInten() const {
     // fixes the scale
-    // TODO consider return datasequence_.rgeInten();
+    // TODO consider return experiment_.rgeInten();
     return dataset_.rgeInten();
 }
 
@@ -171,19 +171,19 @@ void SequenceLens::setNorm(eNorm norm) {
 
     switch (norm) {
     case eNorm::MONITOR:
-        num = datasequence_.avgMonitorCount();
+        num = experiment_.avgMonitorCount();
         den = dataset_.avgMonitorCount();
         break;
     case eNorm::DELTA_MONITOR:
-        num = datasequence_.avgDeltaMonitorCount();
+        num = experiment_.avgDeltaMonitorCount();
         den = dataset_.avgDeltaMonitorCount();
         break;
     case eNorm::DELTA_TIME:
-        num = datasequence_.avgDeltaTime();
+        num = experiment_.avgDeltaTime();
         den = dataset_.avgDeltaTime();
         break;
     case eNorm::BACKGROUND:
-        num = session_.calcAvgBackground(datasequence_);
+        num = session_.calcAvgBackground(experiment_);
         den = session_.calcAvgBackground(dataset_);
         break;
     case eNorm::NONE: break;

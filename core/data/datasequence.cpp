@@ -117,7 +117,7 @@ deg Measurement::chi() const { return md_->motorChi; }
 //  class Dataset
 // ************************************************************************** //
 
-DataSequence::DataSequence() : datasequence_(nullptr) {}
+DataSequence::DataSequence() : experiment_(nullptr) {}
 
 QSharedPointer<Metadata const> DataSequence::metadata() const {
     if (md_.isNull()) {
@@ -319,8 +319,8 @@ void DataSequence::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) c
 // ************************************************************************** //
 
 Experiment const& DataSequence::datasequence() const {
-    debug::ensure(datasequence_);
-    return *datasequence_;
+    debug::ensure(experiment_);
+    return *experiment_;
 }
 
 Experiment::Experiment() {
@@ -329,8 +329,8 @@ Experiment::Experiment() {
 
 void Experiment::appendHere(QSharedPointer<DataSequence> dataset) {
     // can be added only once
-    debug::ensure(!dataset->datasequence_);
-    dataset->datasequence_ = this;
+    debug::ensure(!dataset->experiment_);
+    dataset->experiment_ = this;
     append(dataset);
     invalidateAvgMutables();
 }

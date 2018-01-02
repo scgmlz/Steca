@@ -29,7 +29,7 @@ public:
     Datafile(rcstr fileName);
     void addDataset(Metadata const&, size2d const&, inten_vec const&);
 
-    vec<QSharedPointer<Measurement const>> const& datasequence() const { return datasequence_; }
+    vec<QSharedPointer<Measurement const>> const& datasequence() const { return experiment_; }
     size2d imageSize() const { return imageSize_; }
 
     QFileInfo const& fileInfo() const;
@@ -38,7 +38,7 @@ public:
 
 private:
     QFileInfo fileInfo_;
-    vec<QSharedPointer<class Measurement const>> datasequence_;
+    vec<QSharedPointer<class Measurement const>> experiment_;
     size2d imageSize_;
 };
 

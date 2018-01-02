@@ -56,7 +56,7 @@ void FilesModel::removeFile(uint i) {
 // ************************************************************************** //
 
 DatasetsModel::DatasetsModel()
-    : datasequence_(gSession->collectedDatasets())
+    : experiment_(gSession->collectedDatasets())
 {
 }
 
@@ -65,7 +65,7 @@ int DatasetsModel::columnCount(rcIndex) const {
 }
 
 int DatasetsModel::rowCount(rcIndex) const {
-    return to_i(datasequence_.count());
+    return to_i(experiment_.count());
 }
 
 QVariant DatasetsModel::data(rcIndex index, int role) const {
@@ -83,12 +83,12 @@ QVariant DatasetsModel::data(rcIndex index, int role) const {
         case COL_NUMBER:
             return gSession->collectedDatasetsTags().at(to_u(row));
         default:
-            return datasequence_.at(to_u(row))->metadata()->attributeStrValue(
+            return experiment_.at(to_u(row))->metadata()->attributeStrValue(
                 metaInfoNums_.at(to_u(col - COL_ATTRS)));
         }
     }
     case GetDatasetRole:
-        return QVariant::fromValue<QSharedPointer<DataSequence>>(datasequence_.at(to_u(row)));
+        return QVariant::fromValue<QSharedPointer<DataSequence>>(experiment_.at(to_u(row)));
     default:
         return EMPTY_VAR;
     }

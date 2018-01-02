@@ -21,11 +21,11 @@ Datafile::Datafile(rcstr fileName) : fileInfo_(fileName) {}
 
 //! The loaders use this function to push datasequence
 void Datafile::addDataset(Metadata const& md, size2d const& sz, inten_vec const& ivec) {
-    if (datasequence_.isEmpty())
+    if (experiment_.isEmpty())
         imageSize_ = sz;
     else if (sz != imageSize_)
         THROW("Inconsistent image size in " % fileName());
-    datasequence_.append(QSharedPointer<Measurement const>(new Measurement(md, sz, ivec)));
+    experiment_.append(QSharedPointer<Measurement const>(new Measurement(md, sz, ivec)));
 }
 
 QFileInfo const& Datafile::fileInfo() const {
@@ -37,9 +37,9 @@ str Datafile::fileName() const {
 }
 
 QSharedPointer<Image> Datafile::foldedImage() const {
-    debug::ensure(!datasequence_.isEmpty());
-    QSharedPointer<Image> ret(new Image(datasequence_.first()->imageSize()));
-    for (auto& one : datasequence_)
+    debug::ensure(!experiment_.isEmpty());
+    QSharedPointer<Image> ret(new Image(experiment_.first()->imageSize()));
+    for (auto& one : experiment_)
         ret->addIntens(*one->image());
     return ret;
 }

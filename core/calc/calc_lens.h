@@ -45,7 +45,7 @@ protected:
     void doCut(uint& i, uint& j) const;
 
     Session const& session_;
-    Experiment const& datasequence_;
+    Experiment const& experiment_;
     bool trans_, cut_;
     ImageTransform imageTransform_;
     ImageCut imageCut_;

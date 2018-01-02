@@ -23,7 +23,6 @@
 class Session;
 class Metadata;
 class Measurement;
-class DataSequence;
 class Experiment;
 
 //! One or more Measurement's
@@ -58,7 +57,7 @@ public:
     size2d imageSize() const;
 
 private:
-    Experiment* datasequence_; // here it belongs (or can be nullptr)
+    Experiment* experiment_; // here it belongs (or can be nullptr)
     QSharedPointer<Metadata const> md_; // on demand, compute once
 };
 
