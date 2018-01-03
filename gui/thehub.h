@@ -16,7 +16,7 @@
 #define THEHUB_H
 
 #include "signalling.h" // defines base class TheHubSignallingBase
-#include "calc/calc_lens.h"
+#include "calc/lens.h"
 #include "calc/calc_reflection_info.h"
 
 class QAction;

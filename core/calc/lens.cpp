@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/calc/calc_lens.cpp
+//! @file      core/calc/lens.cpp
 //! @brief     Implements LensBase, ImageLens, SequenceLens
 //!
 //! @homepage  https://github.com/scgmlz/Steca2

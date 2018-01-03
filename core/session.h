@@ -15,7 +15,7 @@
 #ifndef SESSION_H
 #define SESSION_H
 
-#include "calc/calc_lens.h"
+#include "calc/lens.h"
 #include "calc/calc_reflection.h"
 #include "calc/calc_reflection_info.h"
 #include "data/angle_map.h"

@@ -15,7 +15,7 @@
 #ifndef TABS_IMAGES_H
 #define TABS_IMAGES_H
 
-#include "calc/calc_lens.h"
+#include "calc/lens.h"
 #include "panel.h"
 
 class Measurement;

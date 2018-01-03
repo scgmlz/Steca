@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/calc/calc_lens.h
+//! @file      core/calc/lens.h
 //! @brief     Defines LensBase, ImageLens, SequenceLens
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef CALC_LENS_H
-#define CALC_LENS_H
+#ifndef LENS_H
+#define LENS_H
 
 #include "typ/curve.h"
 #include "typ/geometry.h"
@@ -98,4 +98,4 @@ private:
 
 } // namespace calc
 
-#endif // CALC_LENS_H
+#endif // LENS_H
