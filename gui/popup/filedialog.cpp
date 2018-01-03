@@ -17,8 +17,7 @@
 #include <QFileSystemModel>
 #include <QSortFilterProxyModel>
 
-namespace gui {
-namespace file_dialog {
+namespace {
 
 // typedef QModelIndex idx;
 typedef QModelIndex const& rcidx;
@@ -70,9 +69,14 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
     return super::data(idx, role);
 }
 
+} // anonymous namespace
+
 // ************************************************************************** //
 //  exported functions
 // ************************************************************************** //
+
+namespace gui {
+namespace file_dialog {
 
 QStringList openFileNames(QWidget* parent, rcstr caption, rcstr dir, rcstr filter, bool plural) {
     QFileDialog dlg(parent, caption, dir, filter);
