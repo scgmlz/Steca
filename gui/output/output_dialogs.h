@@ -15,91 +15,19 @@
 #ifndef OUTPUT_DIALOGS_H
 #define OUTPUT_DIALOGS_H
 
-#include "actions.h"
-#include "calc/calc_reflection_info.h"
+#include "typ/variant.h"
+#include "def/special_pointers.h"
 #include "panels/panel.h"
-#include "typ/typ_log.h"
+#include "widgets/tree_views.h"
 
-class QProgressBar;
+class QCheckBox;
+class QGridLayout;
+class QRadioButton;
 
 namespace gui {
 namespace output {
 
-/* Note that some data members are public, to simplify the code. Be careful. */
-
-class Panel : public panel::GridPanel {
-    CLASS(Panel) SUPER(panel::GridPanel);
-public:
-    using super::super;
-};
-
-class PanelReflection : public Panel {
-    CLASS(PanelReflection) SUPER(Panel);
-public:
-    PanelReflection(TheHub&);
-    QComboBox* cbRefl;
-};
-
-class PanelGammaSlices : public Panel {
-    CLASS(PanelGammaSlices) SUPER(Panel);
-public:
-    PanelGammaSlices(TheHub&);
-    QSpinBox* numSlices;
-    QDoubleSpinBox* stepGamma;
-    void updateValues();
-
-private:
-    gma_rge rgeGma_;
-};
-
-class PanelGammaRange : public Panel {
-    CLASS(PanelGammaRange) SUPER(Panel);
-public:
-    PanelGammaRange(TheHub&);
-
-    QCheckBox* cbLimitGamma;
-    QDoubleSpinBox *minGamma, *maxGamma;
-
-    void updateValues();
-
-private:
-    gma_rge rgeGma_;
-};
-
-class PanelPoints : public Panel {
-    CLASS(PanelPoints) SUPER(Panel);
-public:
-    PanelPoints(TheHub&);
-
-    QRadioButton *rbCalc, *rbInterp;
-};
-
-class PanelInterpolation : public Panel {
-    CLASS(PanelInterpolation) SUPER(Panel);
-public:
-    PanelInterpolation(TheHub&);
-
-    QDoubleSpinBox *stepAlpha, *stepBeta, *idwRadius;
-    QDoubleSpinBox *avgAlphaMax, *avgRadius;
-    QSpinBox* avgThreshold;
-};
-
-class PanelDiagram : public Panel {
-    CLASS(PanelDiagram) SUPER(Panel);
-public:
-    PanelDiagram(TheHub&);
-
-    QComboBox *xAxis, *yAxis;
-};
-
-class PanelFitError : public Panel {
-    CLASS(PanelFitError) SUPER(Panel);
-public:
-    PanelFitError(TheHub&);
-};
-
-class Params : public QWidget, protected RefHub {
-    CLASS(Params) SUPER(QWidget);
+class Params : public QWidget {
 public:
     enum ePanels {
         REFLECTION = 0x01,
@@ -108,149 +36,87 @@ public:
         INTERPOLATION = 0x08,
         DIAGRAM = 0x10,
     };
-
-    Params(TheHub&, ePanels);
+    Params(ePanels);
     ~Params();
-
-    PanelReflection* panelReflection;
-    PanelGammaSlices* panelGammaSlices;
-    PanelGammaRange* panelGammaRange;
-    PanelPoints* panelPoints;
-    PanelInterpolation* panelInterpolation;
-    PanelDiagram* panelDiagram;
-
+    class PanelReflection* panelReflection;
+    class PanelGammaSlices* panelGammaSlices;
+    class PanelGammaRange* panelGammaRange;
+    class PanelPoints* panelPoints;
+    class PanelInterpolation* panelInterpolation;
+    class PanelDiagram* panelDiagram;
     str saveDir, saveFmt;
-
-private:
     void readSettings();
     void saveSettings() const;
-
     QBoxLayout* box_;
 };
 
-class Table : public TreeView, protected RefHub {
-    CLASS(Table) SUPER(TreeView);
+
+class Table : public TreeView {
 public:
-    Table(TheHub&, uint numDataColumns);
-
-    void setColumns(str_lst::rc headers, str_lst::rc outHeaders, typ::cmp_vec::rc);
-    str_lst const outHeaders() { return outHeaders_; }
-
+    Table(uint numDataColumns);
+    void setColumns(QStringList const& headers, QStringList const& outHeaders, cmp_vec const&);
+    QStringList const outHeaders() { return outHeaders_; }
     void clear();
-    void addRow(typ::row_t::rc, bool sort);
-
+    void addRow(row_t const&, bool sort);
     void sortData();
-
     uint rowCount() const;
-    typ::row_t::rc row(uint) const;
-
-private:
-    scoped<class TableModel*> model_;
-    str_lst outHeaders_;
+    row_t const& row(uint) const;
+    scoped<class TabularModel*> model_;
+    QStringList outHeaders_;
 };
 
-class Tabs : public panel::TabsPanel {
-    CLASS(Tabs) SUPER(panel::TabsPanel);
-public:
-    Tabs(TheHub&);
-};
 
-class Tab : public QWidget, protected RefHub {
-    CLASS(Tab) SUPER(QWidget);
+class Tab : public QWidget { // TODO: better names for panel::Tab and output::Tab
 public :
-    Tab(TheHub&, Params&);
-
+    Tab(Params&);
 protected:
     Params& params_;
-
-    GridLayout* grid_;
+    QGridLayout* grid_;
 };
 
-class TabTable : public Tab {
-    CLASS(TabTable) SUPER(Tab);
-public:
-    TabTable(TheHub&, Params&, str_lst::rc headers, str_lst::rc outHeaders, typ::cmp_vec::rc);
 
+class TabTable : public Tab {
+public:
+    TabTable(Params&, QStringList const& headers, QStringList const& outHeaders,
+             cmp_vec const&);
 private:
     struct showcol_t {
         str name;
         QCheckBox* cb;
     };
+    typedef vec<showcol_t> showcol_vec;
 
-    typedef typ::vec<showcol_t> showcol_vec;
-
-private:
     class ShowColsWidget : public QWidget {
-        CLASS(ShowColsWidget) SUPER(QWidget);
+    private:
     public:
         ShowColsWidget(Table&, showcol_vec&);
-
     private:
         Table& table_;
         showcol_vec& showCols_;
-
         QBoxLayout* box_;
         QRadioButton *rbHidden_, *rbAll_, *rbNone_, *rbInten_, *rbTth_, *rbFWHM_;
     };
-
 public:
     Table* table;
-
 private:
     ShowColsWidget* showColumnsWidget_;
     showcol_vec showCols_;
 };
 
-class TabSave : public Tab {
-    CLASS(TabSave) SUPER(Tab);
-public:
-    TabSave(TheHub&, Params&, bool withTypes);
 
+class TabSave : public Tab {
+public:
+    TabSave(Params&, bool withTypes);
     str filePath(bool withSuffix);
     str separator() const;
-
-    Action *actBrowse, *actSave;
-
+    QAction *actBrowse, *actSave;
 protected:
     str fileSetSuffix(rcstr);
-
     QLineEdit *dir_, *file_;
     QRadioButton *rbDat_, *rbCsv_;
 };
 
-class Frame : public QFrame, protected RefHub {
-    CLASS(Frame) SUPER(QFrame);
-public:
-    Frame(TheHub&, rcstr title, Params*, QWidget*);
+} // namespace output
+} // namespace gui
 
-protected:
-    QAction *actClose_, *actCalculate_, *actInterpolate_;
-    QToolButton *btnClose_, *btnCalculate_, *btnInterpolate_;
-
-    QProgressBar* pb_;
-
-    QBoxLayout* box_;
-    Params* params_;
-    Tabs* tabs_;
-
-    typ::vec<calc::ReflectionInfos> calcPoints_, interpPoints_;
-
-    Table* table_;
-
-    void calculate();
-    void interpolate();
-
-    virtual void displayReflection(uint reflIndex, bool interpolated);
-
-protected:
-    uint getReflIndex() const;
-    bool getInterpolated() const;
-
-    void logMessage(rcstr) const;
-    void logSuccess(bool) const;
-    bool logCheckSuccess(rcstr path, bool) const;
-};
-
-}
-}
 #endif // OUTPUT_DIALOGS_H

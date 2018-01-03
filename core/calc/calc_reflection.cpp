@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/calc/calc_reflection.cpp
-//! @brief     Implements ...
+//! @brief     Implements class Reflection
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,77 +12,63 @@
 //
 // ************************************************************************** //
 
+#include "fit/fit_fun.h"
 #include "calc_reflection.h"
 
-namespace calc {
-
-str_lst::rc Reflection::typeStrLst() {
-    static str_lst types{ "Raw", "Gaussian", "Lorentzian", "PseudoVoigt1", "PseudoVoigt2" };
-    return types;
+Reflection::Reflection(QString const& peakFunctionName) : peakFunction_(nullptr) {
+    setPeakFunction(peakFunctionName);
 }
 
-rcstr Reflection::typeTag(fit::ePeakType type) {
-    return typeStrLst().at(uint(type));
-}
-
-Reflection::Reflection(fit::ePeakType type) : peakFunction_(nullptr) {
-    setPeakFunction(type);
-}
-
-fit::ePeakType Reflection::type() const {
-    return peakFunction_->type();
-}
-
-void Reflection::setType(fit::ePeakType type) {
-    setPeakFunction(type);
-}
-
-fit::PeakFunction::rc Reflection::peakFunction() const {
-    ENSURE(peakFunction_)
+PeakFunction const& Reflection::peakFunction() const {
+    debug::ensure(peakFunction_);
     return *peakFunction_;
 }
 
-typ::Range::rc Reflection::range() const {
+Range const& Reflection::range() const {
     return peakFunction_->range();
 }
 
-void Reflection::setRange(typ::Range::rc range) {
+void Reflection::setRange(Range const& range) {
     peakFunction_->setRange(range);
 }
 
 void Reflection::invalidateGuesses() {
-    peakFunction_->setGuessedPeak(peak_t());
+    peakFunction_->setGuessedPeak(qpair());
     peakFunction_->setGuessedFWHM(NAN);
 }
 
-void Reflection::fit(typ::Curve::rc curve) {
+void Reflection::setGuessPeak(qpair const& peak) {
+    peakFunction_->setGuessedPeak(peak);
+}
+
+void Reflection::setGuessFWHM(fwhm_t fwhm) {
+    peakFunction_->setGuessedFWHM(fwhm);
+}
+
+void Reflection::fit(Curve const& curve) {
     peakFunction_->fit(curve);
 }
 
-void Reflection::setPeakFunction(fit::ePeakType type) {
+QString Reflection::peakFunctionName() const {
+    return peakFunction_->name();
+}
+
+void Reflection::setPeakFunction(QString const& peakFunctionName) {
     bool haveRange = !peakFunction_.isNull();
-    typ::Range oldRange;
+    Range oldRange;
     if (haveRange)
         oldRange = peakFunction_->range();
-
-    setPeakFunction(fit::PeakFunction::factory(type));
-
+    peakFunction_.reset(FunctionRegistry::name2new(peakFunctionName));
     if (haveRange)
         peakFunction_->setRange(oldRange);
 }
 
-void Reflection::setPeakFunction(fit::PeakFunction* f) {
-    peakFunction_.reset(f);
+JsonObj Reflection::to_json() const {
+    return peakFunction_->to_json();
 }
 
-typ::JsonObj Reflection::saveJson() const {
-    return peakFunction_->saveJson();
-}
-
-void Reflection::loadJson(typ::JsonObj::rc obj) THROWS {
-    scoped<typ::Function*> f(typ::Function::make(obj));
-
-    RUNTIME_CHECK(dynamic_cast<fit::PeakFunction*>(f.ptr()), "must be a peak function");
-    setPeakFunction(static_cast<fit::PeakFunction*>(f.take()));
-}
+void Reflection::from_json(JsonObj const& obj) THROWS {
+    str peakFunctionName = obj.loadString("type");
+    setPeakFunction(peakFunctionName);
+    peakFunction_->from_json(obj); // may throw
 }

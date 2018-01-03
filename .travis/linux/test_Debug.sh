@@ -1,2 +1,2 @@
 cd build
-xvfb-run tests/tests
+ctest

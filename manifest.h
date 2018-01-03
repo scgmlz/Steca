@@ -1,7 +1,7 @@
 #ifndef MANIFEST_H
 #define MANIFEST_H
 
-#define APPLICATION_NAME "STeCa2"
+#define APPLICATION_NAME "Steca2"
 
 #define ORGANIZATION_NAME "Scientific Computing at MLZ"
 #define ORGANIZATION_DOMAIN "apps.jcns.fz-juelich.de"

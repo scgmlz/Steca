@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/mainwin.h
-//! @brief     Defines ...
+//! @brief     Defines class MainWin
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,33 +15,20 @@
 #ifndef MAINWIN_H
 #define MAINWIN_H
 
-#include "thehub.h"
-
+#include "typ/str.h"
 #include <QMainWindow>
 #include <QNetworkAccessManager>
 
 namespace gui {
 
 class MainWin : public QMainWindow {
-    CLASS(MainWin) SUPER(QMainWindow) public : MainWin();
-
-private:
-    void initMenus();
-    void addActions(QMenu*, QList<QAction*>);
-    void initLayout();
-    void initStatusBar();
-    void connectActions();
-
 public:
+    MainWin();
+
     void about();
     void online();
-    void checkUpdate();
-    void checkUpdate(bool completeReport);
+    void checkUpdate(bool completeReport=true);
 
-private:
-    void messageDialog(rcstr title, rcstr text);
-
-public:
     void show();
     void close();
 
@@ -57,35 +44,34 @@ public:
     void outputDiffractograms();
 
 private:
-    gui::TheHub hub_;
-    Actions& acts_;
-
-private:
-    void closeEvent(QCloseEvent*);
-
-    void onShow();
-    void onClose();
-
-private:
     QMenu *menuFile_, *menuView_, *menuImage_, *menuDgram_, *menuOutput_, *menuHelp_;
-
     QDockWidget *dockFiles_, *dockDatasets_, *dockDatasetInfo_;
-
-private:
     QByteArray initialState_;
     QNetworkAccessManager netMan_;
 
+    void initMenus();
+    void addActions(QMenu*, QList<QAction*>);
+    void initLayout();
+    void initStatusBar();
+    void connectActions();
+
+    void messageDialog(rcstr title, rcstr text);
+    void closeEvent(QCloseEvent*);
+    void onShow();
+    void onClose();
+
     void readSettings();
     void saveSettings();
-
     void checkActions();
 
     void viewStatusbar(bool);
     void viewFullScreen(bool);
     void viewFiles(bool);
     void viewDatasets(bool);
-    void viewDatasetInfo(bool);
+    void viewMetadata(bool);
     void viewReset();
 };
-}
+
+} // namespace gui
+
 #endif // MAINWIN_H

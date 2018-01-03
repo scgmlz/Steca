@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/output/output_diagrams.h
-//! @brief     Defines ...
+//! @brief     Defines class DiagramsFrame
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,58 +15,37 @@
 #ifndef OUTPUT_DIAGRAMS_H
 #define OUTPUT_DIAGRAMS_H
 
-#include "QCP/qcustomplot.h"
-#include "output_dialogs.h"
+#include "frame.h"
 
 namespace gui {
 namespace output {
 
-class TabPlot : public QCustomPlot {
-    CLASS(TabPlot) SUPER(QCustomPlot) public : TabPlot();
-    void set(calc::ReflectionInfos);
-
-    void plot(qreal_vec::rc xs, qreal_vec::rc ys, qreal_vec::rc ysLo, qreal_vec::rc ysUp);
-
-protected:
-    QCPGraph *graph_, *graphLo_, *graphUp_;
-};
-
-class TabDiagramsSave : public TabSave {
-    CLASS(TabDiagramsSave)
-    SUPER(TabSave) public : TabDiagramsSave(TheHub&, Params&);
-
-    uint currType() const;
-    bool currDiagram() const;
-
-protected:
-    QRadioButton *currentDiagram_, *allData_;
-    QComboBox* fileTypes_;
-};
-
 class DiagramsFrame : public Frame {
-    CLASS(DiagramsFrame)
-    SUPER(Frame) public : DiagramsFrame(TheHub&, rcstr title, QWidget*);
+public:
+    DiagramsFrame(rcstr title, QWidget*);
 
 protected:
-    TabPlot* tabPlot_;
-    TabDiagramsSave* tabSave_;
+    class TabPlot* tabPlot_;
+    class TabDiagramsSave* tabSave_;
 
-    using eReflAttr = calc::ReflectionInfo::eReflAttr;
+    using eReflAttr = ReflectionInfo::eReflAttr;
 
     eReflAttr xAttr() const;
     eReflAttr yAttr() const;
 
     void displayReflection(uint reflIndex, bool interpolated);
 
-    calc::ReflectionInfos rs_;
+    ReflectionInfos rs_;
     qreal_vec xs_, ys_, ysErrorLo_, ysErrorUp_;
 
     void recalculate();
 
-    bool saveDiagramOutput();
+    void saveDiagramOutput();
     void writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator);
     void writeAllDataOutputFile(rcstr filePath, rcstr separator);
 };
-}
-}
+
+} // namespace output
+} // namespace gui
+
 #endif // OUTPUT_DIAGRAMS_H

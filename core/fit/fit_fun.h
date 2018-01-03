@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/fit/fit_fun.h
-//! @brief     Defines ...
+//! @brief     Defines classes Polynom and PeakFunction with subclasses, and FunctionRegistry
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,20 +15,19 @@
 #ifndef FIT_FUN_H
 #define FIT_FUN_H
 
-#include "typ/typ_curve.h"
-#include "typ/typ_types.h"
+#include "typ/singleton.h"
+#include "typ/registry.h"
+#include "parametric_function.h"
+#include "typ/realpair.h"
+#include "typ/types.h"
 
-namespace json_fun_key {
-}
+class Curve;
 
-namespace fit {
+//! A polynomial, for fitting the background of a diffractogram
 
-void initFactory();
-
-// a polynom(ial)
-
-class Polynom : public typ::SimpleFunction {
-    CLASS(Polynom) SUPER(typ::SimpleFunction) public : Polynom(uint degree = 0);
+class Polynom final : public Function {
+public:
+    Polynom(uint degree = 0) { setDegree(degree); }
 
     uint degree() const;
     void setDegree(uint);
@@ -36,192 +35,65 @@ class Polynom : public typ::SimpleFunction {
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-    qreal avgY(typ::Range::rc, qreal const* parValues = nullptr) const;
+    qreal avgY(Range const&, qreal const* parValues = nullptr) const;
 
-    void fit(typ::Curve::rc, typ::Ranges::rc);
-    static Polynom fromFit(uint degree, typ::Curve::rc, typ::Ranges::rc);
+    void fit(Curve const&, Ranges const&);
+    static Polynom fromFit(uint degree, Curve const&, Ranges const&);
 
-public:
-    typ::JsonObj saveJson() const;
-    void loadJson(typ::JsonObj::rc) THROWS;
+    JsonObj to_json() const;
+    void from_json(JsonObj const&) THROWS;
+
+    str name() const { return "polynom"; }
 };
 
-// Abstract peak function
 
-enum class ePeakType { RAW, GAUSSIAN, LORENTZIAN, PSEUDOVOIGT1, PSEUDOVOIGT2, NUM_TYPES };
+//! Abstract peak function
 
-class PeakFunction : public typ::SimpleFunction {
-    CLASS(PeakFunction)
-    SUPER(typ::SimpleFunction)
-    public :
-
-        static PeakFunction* factory(ePeakType);
-
+class PeakFunction : public Function {
+public:
     PeakFunction();
     PeakFunction* clone() const;
 
-    virtual ePeakType type() const = 0;
+    Range const& range() const { return range_; }
+    virtual void setRange(Range const&);
 
-    typ::Range::rc range() const { return range_; }
-    virtual void setRange(typ::Range::rc);
-
-    virtual void setGuessedPeak(peak_t::rc);
+    virtual void setGuessedPeak(qpair const&);
     virtual void setGuessedFWHM(fwhm_t);
 
-    peak_t::rc guessedPeak() const { return guessedPeak_; }
+    qpair const& guessedPeak() const { return guessedPeak_; }
     fwhm_t guessedFWHM() const { return guessedFWHM_; }
 
-    virtual peak_t fittedPeak() const = 0;
+    virtual qpair fittedPeak() const = 0;
     virtual fwhm_t fittedFWHM() const = 0;
 
-    virtual peak_t peakError() const = 0;
+    virtual qpair peakError() const = 0;
     virtual fwhm_t fwhmError() const = 0;
 
     void reset();
 
-    void fit(typ::Curve::rc curve) { return fit(curve, range_); }
+    void fit(Curve const& curve) { return fit(curve, range_); }
 
-    virtual void fit(typ::Curve::rc, typ::Range::rc);
+    virtual void fit(Curve const&, Range const&);
 
-protected:
-    typ::Curve prepareFit(typ::Curve::rc, typ::Range::rc);
-
-public:
-    typ::JsonObj saveJson() const;
-    void loadJson(typ::JsonObj::rc) THROWS;
+    JsonObj to_json() const final;
+    void from_json(JsonObj const&) THROWS;
 
 protected:
-    typ::Range range_;
-    peak_t guessedPeak_;
+    Range range_;
+    qpair guessedPeak_;
     fwhm_t guessedFWHM_;
+
+    Curve prepareFit(Curve const&, Range const&);
 };
 
-class Raw : public PeakFunction {
-    CLASS(Raw) SUPER(PeakFunction) public : Raw();
 
-    ePeakType type() const { return ePeakType::RAW; }
+typedef class PeakFunction* (*initializer_type)();
 
-    qreal y(qreal x, qreal const* parValues = nullptr) const;
-    qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
-
-    peak_t fittedPeak() const;
-    fwhm_t fittedFWHM() const;
-
-    peak_t peakError() const;
-    fwhm_t fwhmError() const;
-
-    void setRange(typ::Range::rc);
-    void fit(typ::Curve::rc, typ::Range::rc);
-
-private:
-    typ::Curve fittedCurve_; // saved from fitting
-    void prepareY();
-
-    mutable uint x_count_;
-    mutable qreal dx_;
-    mutable qreal sum_y_;
-
+class FunctionRegistry : public IRegistry<initializer_type>, public ISingleton<FunctionRegistry> {
 public:
-    typ::JsonObj saveJson() const;
+    void register_fct(const initializer_type f);
+    static PeakFunction* name2new(QString const&) THROWS;
+    static PeakFunction* clone(PeakFunction const& old);
 };
-
-class Gaussian : public PeakFunction {
-    CLASS(Gaussian)
-    SUPER(PeakFunction) public : enum { parAMPL, parXSHIFT, parSIGMA };
-
-    Gaussian(qreal ampl = 1, qreal xShift = 0, qreal sigma = 1);
-
-    ePeakType type() const { return ePeakType::GAUSSIAN; }
-
-    qreal y(qreal x, qreal const* parValues = nullptr) const;
-    qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
-
-    void setGuessedPeak(peak_t::rc);
-    void setGuessedFWHM(fwhm_t);
-
-    peak_t fittedPeak() const;
-    fwhm_t fittedFWHM() const;
-
-    peak_t peakError() const;
-    fwhm_t fwhmError() const;
-
-public:
-    typ::JsonObj saveJson() const;
-};
-
-class Lorentzian : public PeakFunction {
-    CLASS(Lorentzian)
-    SUPER(PeakFunction) public : enum { parAMPL, parXSHIFT, parGAMMA };
-
-    Lorentzian(qreal ampl = 1, qreal xShift = 0, qreal gamma = 1);
-
-    ePeakType type() const { return ePeakType::LORENTZIAN; }
-
-    qreal y(qreal x, qreal const* parValues = nullptr) const;
-    qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
-
-    void setGuessedPeak(peak_t::rc);
-    void setGuessedFWHM(fwhm_t);
-
-    peak_t fittedPeak() const;
-    fwhm_t fittedFWHM() const;
-
-    peak_t peakError() const;
-    fwhm_t fwhmError() const;
-
-public:
-    typ::JsonObj saveJson() const;
-};
-
-class PseudoVoigt1 : public PeakFunction {
-    CLASS(PseudoVoigt1)
-    SUPER(PeakFunction) public : enum { parAMPL, parXSHIFT, parSIGMAGAMMA, parETA };
-
-    PseudoVoigt1(qreal ampl = 1, qreal xShift = 0, qreal sigmaGamma = 1, qreal eta = 0.1);
-
-    ePeakType type() const { return ePeakType::PSEUDOVOIGT1; }
-
-    qreal y(qreal x, qreal const* parValues = nullptr) const;
-    qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
-
-    void setGuessedPeak(peak_t::rc);
-    void setGuessedFWHM(fwhm_t);
-
-    peak_t fittedPeak() const;
-    fwhm_t fittedFWHM() const;
-
-    peak_t peakError() const;
-    fwhm_t fwhmError() const;
-
-public:
-    typ::JsonObj saveJson() const;
-};
-
-class PseudoVoigt2 : public PeakFunction {
-    CLASS(PseudoVoigt2)
-    SUPER(PeakFunction) public : enum { parAMPL, parXSHIFT, parSIGMA, parGAMMA, parETA };
-
-    PseudoVoigt2(
-        qreal ampl = 1, qreal xShift = 0, qreal sigma = 1, qreal gamma = 1, qreal eta = 0.1);
-
-    ePeakType type() const { return ePeakType::PSEUDOVOIGT2; }
-
-    qreal y(qreal x, qreal const* parValues = nullptr) const;
-    qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
-
-    void setGuessedPeak(peak_t::rc);
-    void setGuessedFWHM(fwhm_t);
-
-    peak_t fittedPeak() const;
-    fwhm_t fittedFWHM() const;
-
-    peak_t peakError() const;
-    fwhm_t fwhmError() const;
-
-public:
-    typ::JsonObj saveJson() const;
-};
-
-} // namespace fit
 
 #endif // FIT_FUN_H

@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/models.h
-//! @brief     Defines ...
+//! @brief     Defines classes FilesModel, DatasetsModel, MetadataModel, ReflectionsModel
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,14 +15,16 @@
 #ifndef MODELS_H
 #define MODELS_H
 
-#include "types/type_models.h"
+#include "table_model.h"
+#include "typ/str.h"
+#include "typ/vec.h"
 
-
-namespace models {
+class Suite;
+class Experiment;
+class Metadata;
 
 class FilesModel : public TableModel {
-    CLASS(FilesModel) SUPER(TableModel) public : FilesModel(gui::TheHub&);
-
+public:
     int columnCount(rcIndex = ANY_INDEX) const;
     int rowCount(rcIndex = ANY_INDEX) const;
 
@@ -31,11 +33,13 @@ class FilesModel : public TableModel {
 public:
     enum { GetFileRole = Qt::UserRole };
 
-    void remFile(uint i);
+    void removeFile(uint i);
 };
 
+
 class DatasetsModel : public TableModel {
-    CLASS(DatasetsModel) SUPER(TableModel) public : DatasetsModel(gui::TheHub&);
+public:
+    DatasetsModel();
 
     int columnCount(rcIndex = ANY_INDEX) const;
     int rowCount(rcIndex = ANY_INDEX) const;
@@ -48,15 +52,17 @@ class DatasetsModel : public TableModel {
 public:
     enum { GetDatasetRole = Qt::UserRole };
 
-    void showMetaInfo(typ::vec<bool> const&);
+    void showMetaInfo(vec<bool> const&);
 
 private:
-    data::Datasets::rc datasets_; // the selected datasets
+    Experiment const& experiment_;
     uint_vec metaInfoNums_; // selected metadata items to show
 };
 
+
 class MetadataModel : public TableModel {
-    CLASS(MetadataModel) SUPER(TableModel) public : MetadataModel(gui::TheHub&);
+public:
+    MetadataModel();
 
     int columnCount(rcIndex = ANY_INDEX) const;
     int rowCount(rcIndex = ANY_INDEX) const;
@@ -66,18 +72,20 @@ class MetadataModel : public TableModel {
 
     enum { COL_CHECK = DCOL, COL_TAG, COL_VALUE, NUM_COLUMNS };
 
-    typ::vec<bool> const& rowsChecked() const { return rowsChecked_; }
+    vec<bool> const& rowsChecked() const { return rowsChecked_; }
 
+    void reset(QSharedPointer<Suite> dataseq);
     void flipCheck(uint row);
 
 private:
-    data::shp_Metadata metadata_;
-    typ::vec<bool> rowsChecked_;
+    QSharedPointer<Metadata const> metadata_;
+    vec<bool> rowsChecked_;
 };
 
+
 class ReflectionsModel : public TableModel {
-    CLASS(ReflectionsModel)
-    SUPER(TableModel) public : ReflectionsModel(gui::TheHub&);
+public:
+    ReflectionsModel();
 
     int columnCount(rcIndex = ANY_INDEX) const;
     int rowCount(rcIndex = ANY_INDEX) const;
@@ -93,10 +101,10 @@ class ReflectionsModel : public TableModel {
 public:
     enum { GetDatasetRole = Qt::UserRole };
 
-    void addReflection(fit::ePeakType);
+    void addReflection(QString const&);
     void remReflection(uint);
 
-    str_lst names() const;
+    QStringList names() const;
 };
-}
+
 #endif // MODELS_H

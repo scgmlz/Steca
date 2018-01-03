@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/thehub.h
-//! @brief     Defines ...
+//! @brief     Defines class TheHub
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,196 +15,103 @@
 #ifndef THEHUB_H
 #define THEHUB_H
 
-#include "actions.h"
-#include "models.h"
-#include "session.h"
+#include "signalling.h" // defines base class TheHubSignallingBase
+#include "calc/lens.h"
+#include "calc/calc_reflection_info.h"
 
-#include <QSettings>
+class QAction;
 
-class QSpinBox;
-class QDoubleSpinBox;
+class FilesModel;
+class DatasetsModel;
+class MetadataModel;
+class ReflectionsModel;
+
+extern class gui::TheHub* gHub;
 
 namespace gui {
 
-class Settings : public QSettings {
-    CLASS(Settings) SUPER(QSettings) public : Settings(rcstr group = EMPTY_STR);
-    ~Settings();
-
-    QVariant readVariant(rcstr key, QVariant const& def);
-    void saveVariant(rcstr key, QVariant const& val);
-
-    void read(rcstr key, QAction*, bool def = false);
-    void save(rcstr key, QAction*);
-
-    void read(rcstr key, QSpinBox*, int def = 0);
-    void save(rcstr key, QSpinBox*);
-
-    void read(rcstr key, QDoubleSpinBox*, qreal def = 0);
-    void save(rcstr key, QDoubleSpinBox*);
-
-    bool readBool(rcstr key, bool def = false);
-    void saveBool(rcstr key, bool);
-
-    int readInt(rcstr key, int def = 0);
-    void saveInt(rcstr key, int);
-
-    qreal readReal(rcstr key, qreal def = 0);
-    void saveReal(rcstr key, qreal);
-
-    str readStr(rcstr key, rcstr def = EMPTY_STR);
-    void saveStr(rcstr key, rcstr);
-};
-
-class ReadFile : public QFile {
-    CLASS(ReadFile) SUPER(QFile) public : ReadFile(rcstr path) THROWS;
-};
-
-class WriteFile : public QFile {
-    CLASS(WriteFile) SUPER(QFile) public : WriteFile(rcstr path) THROWS;
-};
-
 class TheHub : public TheHubSignallingBase {
-    CLASS(TheHub) SUPER(TheHubSignallingBase) friend class TheHubSignallingBase;
-
 public:
     TheHub();
 
-    Actions actions;
+    static uint constexpr MAX_POLYNOM_DEGREE = 4;
 
-private:
-    void configActions();
+    QAction *trigger_about, *trigger_online, *trigger_checkUpdate, *trigger_quit, *toggle_viewStatusbar, *toggle_viewFiles, *toggle_viewDatasets,
+        *toggle_viewMetadata, *trigger_viewReset,
+#ifndef Q_OS_OSX // Mac has its own
+        *toggle_fullScreen,
+#endif
+        *trigger_loadSession, *trigger_saveSession, *trigger_clearSession, *trigger_addFiles, *trigger_removeFile, *toggle_enableCorr, *trigger_remCorr,
+        *trigger_rotateImage, *toggle_mirrorImage, *toggle_linkCuts, *toggle_showOverlay, *toggle_stepScale, *toggle_showBins,
+        *toggle_fixedIntenImage, *toggle_fixedIntenDgram, *toggle_combinedDgram, *toggle_selRegions, *toggle_showBackground,
+        *trigger_clearBackground, *trigger_clearReflections, *trigger_addReflection, *trigger_remReflection, *trigger_outputPolefigures,
+        *trigger_outputDiagrams, *trigger_outputDiffractograms;
 
-private:
-    scoped<core::Session*> session_;
+    // modifying methods:
+    void removeFile(uint);
+    void clearSession();
+    void sessionFromFile(QFileInfo const&) THROWS;
+    void addGivenFile(rcstr filePath) THROWS;
+    void addGivenFiles(QStringList const& filePaths) THROWS;
+    void collectDatasetsFromFiles(uint_vec, pint);
+    void collectDatasetsFromFiles(uint_vec);
+    void combineDatasetsBy(pint);
+    void setCorrFile(rcstr filePath) THROWS;
+    void tryEnableCorrection(bool);
+    void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
+    void setGeometry(preal detectorDistance, preal pixSize, IJ const& midPixOffset);
+    void setGammaRange(Range const&);
 
-    bool isFixedIntenImageScale_;
-    bool isFixedIntenDgramScale_;
-    bool isCombinedDgram_;
+    void setBgRanges(Ranges const&);
+    void addBgRange(Range const&);
+    void remBgRange(Range const&);
+    void setBgPolyDegree(uint);
 
-public:
+    void setIntenScaleAvg(bool, preal);
+    void setNorm(eNorm);
+    void setFittingTab(eFittingTab);
+
+    void setPeakFunction(QString const&);
+    void addReflection(QString const&);
+    void remReflection(uint);
+
+    // const methods:
     bool isFixedIntenImageScale() const { return isFixedIntenImageScale_; }
     bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
     bool isCombinedDgram() const { return isCombinedDgram_; }
 
-    models::FilesModel filesModel;
-    models::DatasetsModel datasetsModel;
-    models::MetadataModel metadataModel;
-    models::ReflectionsModel reflectionsModel;
-
-public: // files
-    uint numFiles() const;
-    str fileName(uint index) const;
-    str filePath(uint index) const;
-    data::shp_File getFile(uint) const;
-    void remFile(uint);
-
-    bool hasCorrFile() const;
-    typ::shp_Image corrImage() const;
-
-public:
-    calc::shp_ImageLens plainImageLens(typ::Image::rc) const;
-    calc::shp_DatasetLens datasetLens(data::Dataset::rc) const;
-
-    typ::Curve avgCurve(data::Datasets::rc) const;
-
-public:
-    calc::ReflectionInfos
-    makeReflectionInfos(calc::Reflection::rc, uint gmaSlices, gma_rge::rc, Progress*);
-
-public:
     void saveSession(QFileInfo const&) const;
     QByteArray saveSession() const;
 
-    void clearSession();
-    void loadSession(QFileInfo const&) THROWS;
-    void loadSession(QByteArray const&) THROWS;
-
-public:
-    void addFile(rcstr filePath) THROWS;
-    void addFiles(str_lst::rc filePaths) THROWS;
-
-private:
-    uint_vec collectFromFiles_;
-    pint datasetsGroupedBy_ = pint(1);
-
-public:
-    void collectDatasetsFromFiles(uint_vec, pint);
-    void collectDatasetsFromFiles(uint_vec);
-    void combineDatasetsBy(pint);
-
-    uint_vec::rc collectedFromFiles() const { return session_->collectedFromFiles(); }
-
-    pint datasetsGroupedBy() const { return datasetsGroupedBy_; }
-
-    uint numCollectedDatasets() const { return collectedDatasets().count(); }
-
-    data::Datasets::rc collectedDatasets() const { return session_->collectedDatasets(); }
-
-    str_lst::rc collectedDatasetsTags() const { return session_->collectedDatasetsTags(); }
-
-    typ::size2d imageSize() const { return session_->imageSize(); }
-
-    typ::shp_AngleMap angleMap(data::OneDataset::rc dataset) const {
-        return session_->angleMap(dataset);
-    }
-
-    gma_rge collectedDatasetsRgeGma() const;
-
-    void setCorrFile(rcstr filePath) THROWS;
-    void tryEnableCorrection(bool);
-
-    typ::ImageCut::rc imageCut() const;
-    void setImageCut(bool topLeft, bool linked, typ::ImageCut::rc);
-
-    typ::Geometry::rc geometry() const;
-    void setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midPixOffset);
-
-    typ::Range::rc gammaRange() const;
-    void setGammaRange(typ::Range::rc);
-
-public:
-    void setBgRanges(typ::Ranges::rc);
-    void addBgRange(typ::Range::rc);
-    void remBgRange(typ::Range::rc);
-
-    static uint constexpr MAX_POLYNOM_DEGREE = 4;
-    void setBgPolyDegree(uint);
-
-    void setIntenScaleAvg(bool, preal);
-
-    void setReflType(fit::ePeakType);
-
-    void addReflection(fit::ePeakType);
-    void remReflection(uint);
+    pint suiteGroupedBy() const { return suiteGroupedBy_; }
 
     eFittingTab fittingTab() const { return fittingTab_; }
-    void setFittingTab(eFittingTab);
+
+    QSharedPointer<Suite> selectedSuite() const { return selectedSuite_; }
 
 private:
+    friend class TheHubSignallingBase;
+    bool isFixedIntenImageScale_;
+    bool isFixedIntenDgramScale_;
+    bool isCombinedDgram_;
+    uint_vec collectFromFiles_;
+    pint suiteGroupedBy_ = pint(1);
     eFittingTab fittingTab_ = eFittingTab::NONE;
+    QSharedPointer<Suite> selectedSuite_;
+    shp_Reflection selectedReflection_;
 
-private:
-    data::shp_Dataset selectedDataset_;
-    calc::shp_Reflection selectedReflection_;
-
-public:
-    data::shp_Dataset selectedDataset() const { return selectedDataset_; }
-
-private:
-    void setImageRotate(typ::ImageTransform);
+    void setImageRotate(ImageTransform);
     void setImageMirror(bool);
+    void configActions();
+    void sessionFromJson(QByteArray const&) THROWS;
 
 public:
-    void setNorm(eNorm);
-
-public:
-    typ::Ranges::rc bgRanges() const { return session_->bgRanges(); }
-    uint bgPolyDegree() const { return session_->bgPolyDegree(); }
-
-    bool intenScaledAvg() const { return session_->intenScaledAvg(); }
-    preal intenScale() const { return session_->intenScale(); }
-
-    calc::Reflections::rc reflections() const { return session_->reflections(); }
+    FilesModel* filesModel;
+    DatasetsModel* suiteModel;
+    MetadataModel* metadataModel;
+    ReflectionsModel* reflectionsModel;
 };
-}
-#endif
+
+} // namespace gui
+
+#endif // THEHUB_H

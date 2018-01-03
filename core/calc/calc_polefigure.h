@@ -16,31 +16,27 @@
 #define CALC_POLEFIGURE_H
 
 #include "calc_reflection_info.h"
-#include "typ/typ_async.h"
-
-namespace calc {
+#include "typ/async.h"
 
 struct itf_t {
-    CLASS(itf_t)
-
     itf_t();
-    itf_t(inten_t, tth_t, fwhm_t);
+    itf_t(inten_t, deg, fwhm_t);
 
-    void operator+=(rc);
+    void operator+=(itf_t const&);
 
     inten_t inten;
-    tth_t tth;
+    deg tth;
     fwhm_t fwhm;
 };
 
-typedef typ::vec<itf_t> itfs_t;
+typedef vec<itf_t> itfs_t;
 
 // Interpolates reflection infos to a single point using idw.
 itf_t interpolateValues(
-    typ::deg searchRadius, ReflectionInfos::rc infos, typ::deg alpha, typ::deg beta);
+    deg searchRadius, ReflectionInfos const& infos, deg alpha, deg beta);
 
-ReflectionInfos interpolate(
-    ReflectionInfos::rc, typ::deg alphaStep, typ::deg betaStep, typ::deg idwRadius,
-    typ::deg averagingAlphaMax, typ::deg averagingRadius, qreal inclusionTreshold, Progress*);
-}
+ReflectionInfos interpolateInfos(
+    ReflectionInfos const&, deg alphaStep, deg betaStep, deg idwRadius,
+    deg averagingAlphaMax, deg averagingRadius, qreal inclusionTreshold, Progress*);
+
 #endif // CALC_POLEFIGURE_H
