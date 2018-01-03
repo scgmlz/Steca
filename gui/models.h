@@ -18,6 +18,7 @@
 #include "table_model.h"
 #include "typ/str.h"
 #include "typ/vec.h"
+#include <QSharedPointer> // no auto rm
 
 class Suite;
 class Experiment;
