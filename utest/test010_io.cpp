@@ -1,7 +1,10 @@
 #include "gtest/gtest.h"
+#include "session.h"
 #include "io/io_io.h"
 #include "testdata.h"
 #include "typ/exception.h"
+
+class Session* gSession = Session::instance();
 
 TEST(IO, Caress) {
     try {

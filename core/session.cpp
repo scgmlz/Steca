@@ -219,13 +219,13 @@ shp_AngleMap Session::angleMap(Measurement const& one) const {
 
 shp_ImageLens Session::imageLens(
     Image const& image, Experiment const& expt, bool trans, bool cut) const {
-    return shp_ImageLens(new ImageLens(*this, image, expt, trans, cut));
+    return shp_ImageLens(new ImageLens(image, expt, trans, cut));
 }
 
 QSharedPointer<SequenceLens> Session::dataseqLens(
     Suite const& suite, Experiment const& expt, eNorm norm, bool trans, bool cut) const {
     return QSharedPointer<SequenceLens>(new SequenceLens(
-        *this, suite, expt, norm, trans, cut, imageTransform_, imageCut_));
+        suite, expt, norm, trans, cut, imageTransform_, imageCut_));
 }
 
 QSharedPointer<SequenceLens> Session::defaultDatasetLens(Suite const& suite) const {

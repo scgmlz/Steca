@@ -19,16 +19,14 @@
 //   class LensBase
 // ************************************************************************** //
 
-LensBase::LensBase(
-    Session const& session, Experiment const& expt, bool trans, bool cut,
+LensBase::LensBase(Experiment const& expt, bool trans, bool cut,
     ImageTransform const& imageTransform, ImageCut const& imageCut)
-    : session_(session)
-    , experiment_(expt)
+    : experiment_(expt)
     , trans_(trans)
     , cut_(cut)
     , imageTransform_(imageTransform)
     , imageCut_(imageCut)
-    , intensCorr_(session.intensCorr()) {}
+    , intensCorr_(gSession->intensCorr()) {}
 
 size2d LensBase::transCutSize(size2d size) const {
     if (trans_ && imageTransform_.isTransposed())
@@ -78,10 +76,9 @@ void LensBase::doCut(uint& i, uint& j) const {
 //   class ImageLens
 // ************************************************************************** //
 
-ImageLens::ImageLens(
-    Session const& session, Image const& image, Experiment const& expt, bool trans,
+ImageLens::ImageLens(Image const& image, Experiment const& expt, bool trans,
     bool cut)
-    : LensBase(session, expt, trans, cut, session.imageTransform(), session.imageCut())
+    : LensBase(expt, trans, cut, gSession->imageTransform(), gSession->imageCut())
     , image_(image) {}
 
 size2d ImageLens::size() const {
@@ -101,7 +98,7 @@ inten_t ImageLens::imageInten(uint i, uint j) const {
 
 Range const& ImageLens::rgeInten(bool fixed) const {
     if (fixed)
-        return experiment_.rgeFixedInten(session_, trans_, cut_);
+        return experiment_.rgeFixedInten(*gSession, trans_, cut_);
     if (!rgeInten_.isValid()) {
         auto sz = size();
         for_ij (sz.w, sz.h)
@@ -116,10 +113,9 @@ Range const& ImageLens::rgeInten(bool fixed) const {
 // ************************************************************************** //
 
 SequenceLens::SequenceLens(
-    Session const& session, Suite const& suite, Experiment const& expt,
-    eNorm norm, bool trans, bool cut, ImageTransform const& imageTransform,
-    ImageCut const& imageCut)
-    : LensBase(session, expt, trans, cut, imageTransform, imageCut)
+    Suite const& suite, Experiment const& expt, eNorm norm, bool trans, bool cut,
+    ImageTransform const& imageTransform, ImageCut const& imageCut)
+    : LensBase(expt, trans, cut, imageTransform, imageCut)
     , normFactor_(1)
     , suite_(suite) {
     setNorm(norm);
@@ -130,15 +126,15 @@ size2d SequenceLens::size() const {
 }
 
 Range SequenceLens::rgeGma() const {
-    return suite_.rgeGma(session_);
+    return suite_.rgeGma(*gSession);
 }
 
 Range SequenceLens::rgeGmaFull() const {
-    return suite_.rgeGmaFull(session_);
+    return suite_.rgeGmaFull(*gSession);
 }
 
 Range SequenceLens::rgeTth() const {
-    return suite_.rgeTth(session_);
+    return suite_.rgeTth(*gSession);
 }
 
 Range SequenceLens::rgeInten() const {
@@ -152,11 +148,11 @@ Curve SequenceLens::makeCurve() const {
 }
 
 Curve SequenceLens::makeCurve(Range const& rgeGma) const {
-    inten_vec intens = suite_.collectIntens(session_, intensCorr_, rgeGma);
+    inten_vec intens = suite_.collectIntens(*gSession, intensCorr_, rgeGma);
     Curve res;
     uint count = intens.count();
     if (count) {
-        Range rgeTth = suite_.rgeTth(session_);
+        Range rgeTth = suite_.rgeTth(*gSession);
         deg minTth = rgeTth.min, deltaTth = rgeTth.width() / count;
         for_i (count)
             res.append(minTth + deltaTth * i, qreal(intens.at(i) * normFactor_));
@@ -181,8 +177,8 @@ void SequenceLens::setNorm(eNorm norm) {
         den = suite_.avgDeltaTime();
         break;
     case eNorm::BACKGROUND:
-        num = session_.calcAvgBackground(experiment_);
-        den = session_.calcAvgBackground(suite_);
+        num = gSession->calcAvgBackground(experiment_);
+        den = gSession->calcAvgBackground(suite_);
         break;
     case eNorm::NONE: break;
     }
