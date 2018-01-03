@@ -54,7 +54,7 @@ private:
 
     mutable Image intensCorr_;
     mutable bool corrHasNaNs_;
-    mutable cache_lazy<AngleMap::Key, AngleMap> angleMapCache_;
+    mutable cache_lazy<ImageKey, AngleMap> angleMapCache_;
 
     void updateImageSize(); //!< Clears image size if session has no files
     void setImageSize(size2d const&) THROWS; //!< Ensures same size for all images

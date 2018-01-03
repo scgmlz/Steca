@@ -22,23 +22,7 @@ AnglePair::AnglePair() : AnglePair(0, 0) {}
 
 AnglePair::AnglePair(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
 
-AngleMap::Key::Key(
-    Geometry const& geometry_, size2d const& size_, ImageCut const& cut_,
-    IJ const& midPix_, deg midTth_)
-    : geometry(geometry_), size(size_), cut(cut_), midPix(midPix_), midTth(midTth_) {}
-
-int AngleMap::Key::compare(AngleMap::Key const& that) const {
-    RET_COMPARE_COMPARABLE(geometry)
-    RET_COMPARE_COMPARABLE(size)
-    RET_COMPARE_COMPARABLE(cut)
-    RET_COMPARE_COMPARABLE(midPix)
-    RET_COMPARE_VALUE(midTth)
-    return 0;
-}
-
-EQ_NE_OPERATOR(AngleMap::Key)
-
-AngleMap::AngleMap(Key const& key) : key_(key) {
+AngleMap::AngleMap(ImageKey const& key) : key_(key) {
     calculate();
 }
 

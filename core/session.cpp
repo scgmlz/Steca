@@ -209,7 +209,7 @@ IJ Session::midPix() const {
 }
 
 shp_AngleMap Session::angleMap(Measurement const& one) const {
-    AngleMap::Key key(geometry_, imageSize_, imageCut_, midPix(), one.midTth());
+    ImageKey key(geometry_, imageSize_, imageCut_, midPix(), one.midTth());
     shp_AngleMap map = angleMapCache_.value(key);
     if (map.isNull())
         map = angleMapCache_.insert(key, shp_AngleMap(new AngleMap(key)));

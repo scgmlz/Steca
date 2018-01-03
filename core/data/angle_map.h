@@ -29,22 +29,8 @@ public:
 
 class AngleMap {
 public:
-    class Key {
-    public:
-        Key(Geometry const&, size2d const&, ImageCut const&, IJ const& midPix, deg midTth);
-
-        COMPARABLE(AngleMap::Key const&);
-        bool operator<(AngleMap::Key const& that) const { return compare(that) < 0; }
-
-        Geometry geometry;
-        size2d size;
-        ImageCut cut;
-        IJ midPix;
-        deg midTth;
-    };
-
     AngleMap() = delete;
-    AngleMap(Key const&);
+    AngleMap(ImageKey const&);
 
     AnglePair const& at(uint i) const { return arrAngles_.at(i); }
     AnglePair const& at(uint i, uint j) const { return arrAngles_.at(i, j); }
@@ -58,7 +44,7 @@ public:
 private:
     void calculate();
 
-    Key key_;
+    ImageKey key_;
 
     Array2D<AnglePair> arrAngles_;
 
