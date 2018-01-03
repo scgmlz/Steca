@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/typ/ij.h
-//! @brief     Defines struct IJ
+//! @brief     Defines class IJ
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -19,11 +19,9 @@
 #include "def/macros.h"
 #include <QJsonObject>
 
-// 2D point, integers
-
-class JsonObj;
-
-struct IJ {
+//! A pair of integers, for use as image coordinates
+class IJ {
+public:
     int i, j;
 
     IJ(); // (0,0)
@@ -32,7 +30,7 @@ struct IJ {
     COMPARABLE(IJ const&)
 
     QJsonObject to_json() const;
-    void from_json(JsonObj const&) THROWS;
+    void from_json(class JsonObj const&) THROWS;
 };
 
 #endif // IJ_H
