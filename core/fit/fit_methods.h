@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/fit/fit_methods.h
-//! @brief     Defines ...
+//! @brief     Defines class FitWrapper
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -17,40 +17,19 @@
 
 #include "fit_fun.h"
 
-namespace fit {
-
-class Method {
+class FitWrapper {
 public:
-    void fit(typ::Function&, typ::Curve::rc);
-
-protected:
-    virtual void
-    approximate(qreal*, qreal const*, qreal const*, qreal*, uint, qreal const*, uint) = 0;
-
-    // these pointers are valid during fit() call
-    typ::Function* function_;
-    qreal const* xValues_;
-
-protected:
-    // calculate a vector of y(x)
-    void callbackY(qreal*, qreal*, int, int, void*);
-};
-
-class LinearLeastSquare : public Method {
-    CLASS(LinearLeastSquare) SUPER(Method) public : LinearLeastSquare();
-
-protected:
-    void approximate(qreal*, qreal const*, qreal const*, qreal*, uint, qreal const*, uint);
-};
-
-class LevenbergMarquardt : public Method {
-    CLASS(LevenbergMarquardt) SUPER(Method) public : LevenbergMarquardt();
-
-protected:
-    void approximate(qreal*, qreal const*, qreal const*, qreal*, uint, qreal const*, uint);
+    void fit(Function&, Curve const&);
 
 private:
+    // these pointers are valid during fit() call
+    Function* function_;
+    qreal const* xValues_;
+
+    void approximate(qreal*, qreal const*, qreal const*, qreal*, uint, qreal const*, uint);
+
+    void callbackY(qreal*, qreal*, int, int, void*);
     void callbackJacobianLM(qreal*, qreal*, int, int, void*);
 };
-}
-#endif
+
+#endif // FIT_METHODS_H

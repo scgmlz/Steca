@@ -2,6 +2,7 @@
 *.*.user
 html/
 *~
+*.tmp
 
 build
 mybuild

@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/panels/tabs_diffractogram.h
-//! @brief     Defines ...
+//! @brief     Defines class TabsDiffractogram
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -21,8 +21,11 @@ namespace gui {
 namespace panel {
 
 class TabsDiffractogram : public TabsPanel {
-    CLASS(TabsDiffractogram) SUPER(TabsPanel) public : TabsDiffractogram(TheHub&);
+public:
+    TabsDiffractogram();
 };
+
 }
 }
+
 #endif // TABS_DIFFRACTOGRAM_H

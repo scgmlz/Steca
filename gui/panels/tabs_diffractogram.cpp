@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/panels/tabs_diffractogram.cpp
-//! @brief     Implements ...
+//! @brief     Implements class TabsDiffractogram
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -14,13 +14,15 @@
 
 #include "tabs_diffractogram.h"
 #include "panel_diffractogram.h"
+#include <QBoxLayout>
 
 namespace gui {
 namespace panel {
 
-TabsDiffractogram::TabsDiffractogram(TheHub& hub) : super(hub) {
+TabsDiffractogram::TabsDiffractogram() : TabsPanel() {
     auto& box = addTab("Diffractogram", Qt::Vertical).box();
-    box.addWidget(new Diffractogram(hub));
+    box.addWidget(new Diffractogram());
 }
+
 }
 }

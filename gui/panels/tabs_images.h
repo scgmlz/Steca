@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/panels/tabs_images.h
-//! @brief     Defines ...
+//! @brief     Defines class TabsImages
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,8 +15,12 @@
 #ifndef TABS_IMAGES_H
 #define TABS_IMAGES_H
 
-#include "calc/calc_lens.h"
+#include "calc/lens.h"
 #include "panel.h"
+
+class Measurement;
+class QDoubleSpinBox;
+class QSpinBox;
 
 namespace gui {
 namespace panel {
@@ -24,27 +28,30 @@ namespace panel {
 class ImageWidget;
 
 class TabsImages : public TabsPanel {
-    CLASS(TabsImages) SUPER(TabsPanel) public : TabsImages(TheHub&);
+public:
+    TabsImages();
 
 private:
     QPixmap makeBlankPixmap();
 
-    QImage makeImage(typ::shp_Image, bool curvedScale);
-    QPixmap makePixmap(typ::shp_Image);
-    QPixmap makePixmap(data::OneDataset::rc, gma_rge::rc, tth_rge::rc);
+    QImage makeImage(QSharedPointer<Image>, bool curvedScale);
+    QPixmap makePixmap(QSharedPointer<Image>);
+    QPixmap makePixmap(Measurement const&, Range const&, Range const&);
 
-    void setDataset(data::shp_Dataset);
+    void setSuite(QSharedPointer<Suite>);
     void render();
 
-    data::shp_Dataset dataset_;
+    QSharedPointer<Suite> dataseq_;
     ImageWidget *dataImageWidget_, *corrImageWidget_;
 
     QSpinBox* spinN_;
     QSpinBox *numSlices_, *numSlice_, *numBin_;
     QDoubleSpinBox *minGamma_, *maxGamma_;
 
-    calc::shp_DatasetLens lens_;
+    QSharedPointer<SequenceLens> lens_;
 };
-}
-}
+
+} // namespace panel
+} // namespace gui
+
 #endif // TABS_IMAGES_H

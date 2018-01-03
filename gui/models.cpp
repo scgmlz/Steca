@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/models.cpp
-//! @brief     Implements ...
+//! @brief     Implements classes FilesModel, DatasetsModel, MetadataModel, ReflectionsModel
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,20 +12,23 @@
 //
 // ************************************************************************** //
 
+#include "models.h"
+#include "data/suite.h"
+#include "data/metadata.h"
+#include "fit/fit_fun.h"
+#include "session.h"
 #include "thehub.h"
 
-namespace models {
-
-FilesModel::FilesModel(gui::TheHub& hub) : TableModel(hub) {
-    onSigFilesChanged([this]() { signalReset(); });
-}
+// ************************************************************************** //
+//  class FilesModel
+// ************************************************************************** //
 
 int FilesModel::columnCount(rcIndex) const {
     return 1 + DCOL;
 }
 
 int FilesModel::rowCount(rcIndex) const {
-    return to_i(hub_.numFiles());
+    return to_i(gSession->numFiles());
 }
 
 QVariant FilesModel::data(rcIndex index, int role) const {
@@ -34,21 +37,26 @@ QVariant FilesModel::data(rcIndex index, int role) const {
         return EMPTY_VAR;
 
     switch (role) {
-    case Qt::DisplayRole: return hub_.fileName(to_u(row));
-    case GetFileRole: return QVariant::fromValue<data::shp_File>(hub_.getFile(to_u(row)));
-    default: return EMPTY_VAR;
+    case Qt::DisplayRole:
+        return gSession->file(to_u(row))->fileName();
+    case GetFileRole:
+        return QVariant::fromValue<QSharedPointer<Datafile const>>(gSession->file(to_u(row)));
+    default:
+        return EMPTY_VAR;
     }
 }
 
-void FilesModel::remFile(uint i) {
-    hub_.remFile(i);
+void FilesModel::removeFile(uint i) {
+    gHub->removeFile(i);
 }
 
-DatasetsModel::DatasetsModel(gui::TheHub& hub)
-    : super(hub)
-    , datasets_(hub.collectedDatasets()) //, metaInfo_(nullptr)
+// ************************************************************************** //
+//  class DatasetsModel
+// ************************************************************************** //
+
+DatasetsModel::DatasetsModel()
+    : experiment_(gSession->experiment())
 {
-    onSigDatasetsChanged([this]() { signalReset(); });
 }
 
 int DatasetsModel::columnCount(rcIndex) const {
@@ -56,7 +64,7 @@ int DatasetsModel::columnCount(rcIndex) const {
 }
 
 int DatasetsModel::rowCount(rcIndex) const {
-    return to_i(datasets_.count());
+    return to_i(experiment_.count());
 }
 
 QVariant DatasetsModel::data(rcIndex index, int role) const {
@@ -71,29 +79,32 @@ QVariant DatasetsModel::data(rcIndex index, int role) const {
             return EMPTY_VAR;
 
         switch (col) {
-        case COL_NUMBER: return hub_.collectedDatasetsTags().at(to_u(row));
+        case COL_NUMBER:
+            return gSession->experimentTags().at(to_u(row));
         default:
-            return datasets_.at(to_u(row))->metadata()->attributeStrValue(
+            return experiment_.at(to_u(row))->metadata()->attributeStrValue(
                 metaInfoNums_.at(to_u(col - COL_ATTRS)));
         }
     }
-
-    case GetDatasetRole: return QVariant::fromValue<data::shp_Dataset>(datasets_.at(to_u(row)));
-    default: return EMPTY_VAR;
+    case GetDatasetRole:
+        return QVariant::fromValue<QSharedPointer<Suite>>(experiment_.at(to_u(row)));
+    default:
+        return EMPTY_VAR;
     }
 }
 
 QVariant DatasetsModel::headerData(int col, Qt::Orientation, int role) const {
     if (Qt::DisplayRole != role || col < DCOL || columnCount() <= col)
         return EMPTY_VAR;
-
     switch (col) {
-    case COL_NUMBER: return "#";
-    default: return data::Metadata::attributeTag(metaInfoNums_.at(to_u(col - COL_ATTRS)), false);
+    case COL_NUMBER:
+        return "#";
+    default:
+        return Metadata::attributeTag(metaInfoNums_.at(to_u(col - COL_ATTRS)), false);
     }
 }
 
-void DatasetsModel::showMetaInfo(typ::vec<bool> const& metadataRows) {
+void DatasetsModel::showMetaInfo(vec<bool> const& metadataRows) {
     beginResetModel();
 
     metaInfoNums_.clear();
@@ -105,15 +116,19 @@ void DatasetsModel::showMetaInfo(typ::vec<bool> const& metadataRows) {
     endResetModel();
 }
 
-MetadataModel::MetadataModel(gui::TheHub& hub) : super(hub) {
-    rowsChecked_.fill(false, data::Metadata::numAttributes(false));
+// ************************************************************************** //
+//  class MetadataModel
+// ************************************************************************** //
 
-    onSigDatasetSelected([this](data::shp_Dataset dataset) {
-        metadata_.clear();
-        if (dataset)
-            metadata_ = dataset->metadata();
-        signalReset();
-    });
+MetadataModel::MetadataModel() {
+    rowsChecked_.fill(false, Metadata::numAttributes(false));
+}
+
+void MetadataModel::reset(QSharedPointer<Suite> dataseq) {
+    metadata_.clear();
+    if (dataseq)
+        metadata_ = dataseq->metadata();
+    signalReset();
 }
 
 int MetadataModel::columnCount(rcIndex) const {
@@ -121,7 +136,7 @@ int MetadataModel::columnCount(rcIndex) const {
 }
 
 int MetadataModel::rowCount(rcIndex) const {
-    return to_i(data::Metadata::numAttributes(false));
+    return to_i(Metadata::numAttributes(false));
 }
 
 QVariant MetadataModel::data(rcIndex index, int role) const {
@@ -140,7 +155,7 @@ QVariant MetadataModel::data(rcIndex index, int role) const {
 
     case Qt::DisplayRole:
         switch (col) {
-        case COL_TAG: return data::Metadata::attributeTag(to_u(row), false);
+        case COL_TAG: return Metadata::attributeTag(to_u(row), false);
         case COL_VALUE: return metadata_ ? metadata_->attributeStrValue(to_u(row)) : "-";
         }
         break;
@@ -159,21 +174,28 @@ void MetadataModel::flipCheck(uint row) {
     signalReset();
 }
 
-ReflectionsModel::ReflectionsModel(gui::TheHub& hub) : super(hub) {}
+// ************************************************************************** //
+//  class ReflectionsModel
+// ************************************************************************** //
+
+ReflectionsModel::ReflectionsModel() : TableModel() {}
 
 int ReflectionsModel::columnCount(rcIndex) const {
     return NUM_COLUMNS;
 }
 
 int ReflectionsModel::rowCount(rcIndex) const {
-    return to_i(hub_.reflections().count());
+    return to_i(gSession->reflections().count());
 }
 
 str ReflectionsModel::displayData(uint row, uint col) const {
     switch (col) {
-    case COL_ID: return str::number(row + 1);
-    case COL_TYPE: return calc::Reflection::typeTag(hub_.reflections().at(row)->type());
-    default: NEVER return EMPTY_STR;
+    case COL_ID:
+        return str::number(row + 1);
+    case COL_TYPE:
+        return gSession->reflections().at(row)->peakFunction().name();
+    default:
+        NEVER return "";
     }
 }
 
@@ -194,14 +216,17 @@ QVariant ReflectionsModel::data(rcIndex index, int role) const {
 
         switch (col) {
         case COL_ID:
-        case COL_TYPE: return displayData(to_u(row), to_u(col));
-        default: return EMPTY_VAR;
+        case COL_TYPE:
+            return displayData(to_u(row), to_u(col));
+        default:
+            return EMPTY_VAR;
         }
     }
 
     case GetDatasetRole:
-        return QVariant::fromValue<calc::shp_Reflection>(hub_.reflections().at(to_u(row)));
-    default: return EMPTY_VAR;
+        return QVariant::fromValue<shp_Reflection>(gSession->reflections().at(to_u(row)));
+    default:
+        return EMPTY_VAR;
     }
 }
 
@@ -212,18 +237,17 @@ QVariant ReflectionsModel::headerData(int col, Qt::Orientation, int role) const 
         return EMPTY_VAR;
 }
 
-void ReflectionsModel::addReflection(fit::ePeakType type) {
-    hub_.addReflection(type);
+void ReflectionsModel::addReflection(QString const& peakFunctionName) {
+    gHub->addReflection(peakFunctionName);
 }
 
 void ReflectionsModel::remReflection(uint i) {
-    hub_.remReflection(i);
+    gHub->remReflection(i);
 }
 
-str_lst ReflectionsModel::names() const {
-    str_lst ns;
+QStringList ReflectionsModel::names() const {
+    QStringList ns;
     for_i (rowCount())
         ns.append(displayData(to_u(i)));
     return ns;
-}
 }

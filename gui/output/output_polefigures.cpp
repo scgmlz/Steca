@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/output/output_polefigures.cpp
-//! @brief     Implements ...
+//! @brief     Implements class PoleFiguresFrame
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -13,24 +13,64 @@
 // ************************************************************************** //
 
 #include "output_polefigures.h"
-#include "colors.h"
+#include "cfg/colors.h"
+#include "dialog_panels.h"
+#include "fit/fit_fun.h"
+#include "output_dialogs.h"
+#include "session.h"
 #include "thehub.h"
-
-#include <QPainter>
-#include <QTextStream>
+#include "widgets/widget_makers.h"
+#include "write_file.h"
 #include <qmath.h>
+#include <QAction>
+#include <QPainter>
 
 namespace gui {
 namespace output {
 
-TabGraph::TabGraph(TheHub& hub, Params& params)
-    : super(hub, params), flat_(false), alphaMax_(90), avgAlphaMax_(0) {
-    ENSURE(params_.panelInterpolation)
+// ************************************************************************** //
+//  class TabGraph (file scope)
+// ************************************************************************** //
+
+class TabGraph : public Tab {
+public:
+    TabGraph(Params&);
+    void set(ReflectionInfos);
+
+protected:
+    void update();
+
+    ReflectionInfos rs_;
+    void paintEvent(QPaintEvent*);
+
+    QPointF p(deg alpha, deg beta) const;
+    deg alpha(QPointF const&) const;
+    deg beta(QPointF const&) const;
+
+    void circle(QPointF c, qreal r);
+
+    void paintGrid();
+    void paintPoints();
+
+    // valid during paintEvent
+    QPainter* p_;
+    QPointF c_;
+    qreal r_;
+
+    bool flat_;
+    qreal alphaMax_, avgAlphaMax_;
+
+    QCheckBox* cbFlat_;
+};
+
+TabGraph::TabGraph(Params& params)
+    : Tab(params), flat_(false), alphaMax_(90), avgAlphaMax_(0) {
+    debug::ensure(params_.panelInterpolation);
 
     grid_->addWidget((cbFlat_ = check("no intensity")), 0, 0);
 
-    grid_->addRowStretch();
-    grid_->addColumnStretch();
+    grid_->setRowStretch(grid_->rowCount(), 1);
+    grid_->setColumnStretch(grid_->columnCount(), 1);
 
     connect(
         params_.panelInterpolation->avgAlphaMax, slot(QDoubleSpinBox, valueChanged, double),
@@ -41,7 +81,7 @@ TabGraph::TabGraph(TheHub& hub, Params& params)
     update();
 }
 
-void TabGraph::set(calc::ReflectionInfos rs) {
+void TabGraph::set(ReflectionInfos rs) {
     rs_ = rs;
     update();
 }
@@ -49,7 +89,7 @@ void TabGraph::set(calc::ReflectionInfos rs) {
 void TabGraph::update() {
     avgAlphaMax_ = params_.panelInterpolation->avgAlphaMax->value();
     flat_ = cbFlat_->isChecked();
-    super::update();
+    Tab::update();
 }
 
 void TabGraph::paintEvent(QPaintEvent*) {
@@ -74,11 +114,11 @@ QPointF TabGraph::p(deg alpha, deg beta) const {
     return QPointF(r * cos(betaRad), -r * sin(betaRad));
 }
 
-TabGraph::deg TabGraph::alpha(QPointF const& p) const {
+deg TabGraph::alpha(QPointF const& p) const {
     return sqrt(p.x() * p.x() + p.y() * p.y()) / r_ * alphaMax_;
 }
 
-TabGraph::deg TabGraph::beta(QPointF const& p) const {
+deg TabGraph::beta(QPointF const& p) const {
     deg b = rad(atan2(p.y(), p.x())).toDeg();
     return b <= 0 ? -b : 360 - b;
 }
@@ -130,13 +170,33 @@ void TabGraph::paintPoints() {
     }
 }
 
-TabPoleFiguresSave::TabPoleFiguresSave(TheHub& hub, Params& params) : super(hub, params, false) {
+// ************************************************************************** //
+//  class TabPoleFiguresSave (file scope)
+// ************************************************************************** //
+
+class TabPoleFiguresSave : public TabSave {
+public:
+    TabPoleFiguresSave(Params& params);
+
+    bool onlySelectedRefl() const;
+    bool outputInten() const;
+    bool outputTth() const;
+    bool outputFWHM() const;
+
+    void rawReflSettings(bool on);
+
+protected:
+    QRadioButton *rbSelectedRefl_, *rbAllRefls_;
+    QCheckBox *outputInten_, *outputTth_, *outputFWHM_;
+};
+
+TabPoleFiguresSave::TabPoleFiguresSave(Params& params) : TabSave(params, false) {
     auto hb = hbox();
     grid_->addLayout(hb, grid_->rowCount(), 0);
-    grid_->addRowStretch();
+    grid_->setRowStretch(grid_->rowCount(), 1);
 
-    auto p1 = new panel::GridPanel(hub, "Output data");
-    auto p2 = new panel::GridPanel(hub, "To save");
+    auto p1 = new GridPanel("Output data");
+    auto p2 = new GridPanel("To save");
 
     hb->addWidget(p1);
     hb->addWidget(p2);
@@ -147,7 +207,7 @@ TabPoleFiguresSave::TabPoleFiguresSave(TheHub& hub, Params& params) : super(hub,
         g->addWidget((outputInten_ = check("Intensity pole figure")));
         g->addWidget((outputTth_ = check("Peak position pole figure")));
         g->addWidget((outputFWHM_ = check("TWHM pole figure")));
-        g->addRowStretch();
+        g->setRowStretch(g->rowCount(), 1);
     }
 
     {
@@ -155,7 +215,7 @@ TabPoleFiguresSave::TabPoleFiguresSave(TheHub& hub, Params& params) : super(hub,
         g->addWidget((rbSelectedRefl_ = radioButton("Selected reflection")));
         g->addWidget((rbAllRefls_ = radioButton("All reflections")));
         g->addWidget(textButton(actSave), 2, 1);
-        g->addRowStretch();
+        g->setRowStretch(g->rowCount(), 1);
     }
 
     rbSelectedRefl_->setChecked(true);
@@ -183,78 +243,64 @@ void TabPoleFiguresSave::rawReflSettings(bool on) {
     outputFWHM_->setEnabled(on);
 }
 
+
+// ************************************************************************** //
+//  class PoleFiguresFrame
+// ************************************************************************** //
+
 static const Params::ePanels PANELS =
     Params::ePanels(Params::REFLECTION | Params::GAMMA | Params::POINTS | Params::INTERPOLATION);
 
-PoleFiguresFrame::PoleFiguresFrame(TheHub& hub, rcstr title, QWidget* parent)
-    : super(hub, title, new Params(hub, PANELS), parent) {
-    tabGraph_ = new TabGraph(hub, *params_);
+PoleFiguresFrame::PoleFiguresFrame(rcstr title, QWidget* parent)
+    : Frame(title, new Params(PANELS), parent) {
+    tabGraph_ = new TabGraph(*params_);
     tabs_->addTab("Graph", Qt::Vertical).box().addWidget(tabGraph_);
 
-    tabSave_ = new TabPoleFiguresSave(hub, *params_);
+    tabSave_ = new TabPoleFiguresSave(*params_);
     tabs_->addTab("Save", Qt::Vertical).box().addWidget(tabSave_);
 
-    //  connect(params()->cbRefl, slot(QComboBox,currentIndexChanged,int),
-    //  [this]() {
-    //    int index = params()->currReflIndex();
-    //    if (index>=0) {
-    //      bool on = fit::ePeakType::RAW !=
-    //      hub_.reflections().at(to_u(index))->type();
-    //      tabSave_->rawReflSettings(on);
-    //    }
-    //  });
-
-    connect(
-        tabSave_->actSave, &QAction::triggered, [this]() { logSuccess(savePoleFigureOutput()); });
-
-    //  params()->cbRefl->currentIndexChanged(0);
+    connect( tabSave_->actSave, &QAction::triggered, [this]() { savePoleFigureOutput(); });
 }
 
 void PoleFiguresFrame::displayReflection(uint reflIndex, bool interpolated) {
-    super::displayReflection(reflIndex, interpolated);
+    Frame::displayReflection(reflIndex, interpolated);
     if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
         tabGraph_->set((interpolated ? interpPoints_ : calcPoints_).at(reflIndex));
-
-    bool on = fit::ePeakType::RAW != hub_.reflections().at(reflIndex)->type();
-    tabSave_->rawReflSettings(on);
+    tabSave_->rawReflSettings(gSession->reflections().at(reflIndex)->peakFunction().name() != "Raw");
 }
 
-bool PoleFiguresFrame::savePoleFigureOutput() {
-    auto& reflections = hub_.reflections();
-    if (reflections.isEmpty())
-        return false;
-
+void PoleFiguresFrame::savePoleFigureOutput() {
+    auto& reflections = gSession->reflections();
+    if (reflections.isEmpty()) {
+        qWarning() << "cannot save pole figure: no reflection chosen";
+        return;
+    }
     str path = tabSave_->filePath(false);
-    if (path.isEmpty())
-        return false;
-
-    if (tabSave_->onlySelectedRefl())
-        return writePoleFigureOutputFiles(path, getReflIndex());
-
+    if (path.isEmpty()) {
+        qWarning() << "cannot save pole figure: file path is empty";
+        return;
+    }
+    if (tabSave_->onlySelectedRefl()) {
+        writePoleFigureOutputFiles(path, getReflIndex());
+        return;
+    }
     // all reflections
-    bool res = true;
-    for_i (reflections.count())
-        res = logCheckSuccess(path, writePoleFigureOutputFiles(path, i)) && res;
-
-    return res;
+    for_i (reflections.count()) // TODO collect output into one message
+        writePoleFigureOutputFiles(path, i);
 }
 
 static str const OUT_FILE_TAG(".refl%1");
 static int const MAX_LINE_LENGTH_POL(9);
 
-bool PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
-    auto refl = hub_.reflections().at(index);
-    calc::ReflectionInfos reflInfo;
-
+void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
+    auto refl = gSession->reflections().at(index);
+    ReflectionInfos reflInfo;
     if (getInterpolated())
         reflInfo = interpPoints_.at(index);
     else
         reflInfo = calcPoints_.at(index);
-
-    auto type = refl->type();
-
+    bool withFit = refl->peakFunction().name() != "Raw";
     str path = str(filePath + OUT_FILE_TAG).arg(index + 1);
-
     bool check = false;
     uint numSavedFiles = 0;
 
@@ -262,50 +308,47 @@ bool PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
         qreal_vec output;
         for_i (reflInfo.count())
             output.append(reflInfo.at(i).inten());
-
         auto intenFilePath = path + ".inten";
         writeListFile(intenFilePath, reflInfo, output);
         writePoleFile(intenFilePath, reflInfo, output);
         writeErrorMask(intenFilePath, reflInfo, output);
-
         check = true;
         numSavedFiles += 3;
     }
 
-    if (tabSave_->outputTth() && fit::ePeakType::RAW != type) {
+    if (tabSave_->outputTth() && withFit) {
         qreal_vec output;
         for_i (reflInfo.count())
             output.append(reflInfo.at(i).tth());
-
         auto tthFilePath = filePath + ".tth";
         writeListFile(tthFilePath, reflInfo, output);
         writePoleFile(tthFilePath, reflInfo, output);
-
         check = true;
         numSavedFiles += 2;
     }
 
-    if (tabSave_->outputFWHM() && fit::ePeakType::RAW != type) {
+    if (tabSave_->outputFWHM() && withFit) {
         qreal_vec output;
         for_i (reflInfo.count())
             output.append(reflInfo.at(i).fwhm());
-
         auto fwhmFilePath = filePath + ".fwhm";
         writeListFile(fwhmFilePath, reflInfo, output);
         writePoleFile(fwhmFilePath, reflInfo, output);
-
         check = true;
         numSavedFiles += 2;
     }
 
-    if (numSavedFiles > 0)
-        logMessage(str("%1 files have been saved").arg(numSavedFiles));
-
-    return check;
+    if (numSavedFiles > 0) {
+        if (check)
+            qDebug() /* qInfo() TODO restore */ << numSavedFiles << " files have been saved";
+        else
+            qWarning() << "something went wrong, yet " << numSavedFiles << " files have been saved";
+    } else
+        qWarning() << "no files saved";
 }
 
 void PoleFiguresFrame::writeErrorMask(
-    rcstr filePath, calc::ReflectionInfos reflInfo, qreal_vec::rc output) {
+    rcstr filePath, ReflectionInfos reflInfo, qreal_vec const& output) {
     WriteFile file(filePath + ".errorMask");
     QTextStream stream(&file);
 
@@ -324,7 +367,7 @@ void PoleFiguresFrame::writeErrorMask(
 }
 
 void PoleFiguresFrame::writePoleFile(
-    rcstr filePath, calc::ReflectionInfos reflInfo, qreal_vec::rc output) {
+    rcstr filePath, ReflectionInfos reflInfo, qreal_vec const& output) {
     WriteFile file(filePath + ".pol");
     QTextStream stream(&file);
 
@@ -342,7 +385,7 @@ void PoleFiguresFrame::writePoleFile(
 }
 
 void PoleFiguresFrame::writeListFile(
-    rcstr filePath, calc::ReflectionInfos reflInfo, qreal_vec::rc output) {
+    rcstr filePath, ReflectionInfos reflInfo, qreal_vec const& output) {
     WriteFile file(filePath + ".lst");
     QTextStream stream(&file);
 
@@ -351,5 +394,6 @@ void PoleFiguresFrame::writeListFile(
                << output.at(i) << '\n';
     }
 }
-}
-}
+
+} // namespace output
+} // namespace gui

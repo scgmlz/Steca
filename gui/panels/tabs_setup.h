@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/panels/tabs_setup.h
-//! @brief     Defines ...
+//! @brief     Defines class TabsSetup
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -17,35 +17,41 @@
 
 #include "panel.h"
 
+class QComboBox;
+class QDoubleSpinBox;
+class QLineEdit;
+class QSpinBox;
+
 namespace gui {
 namespace panel {
 
-class ReflectionView;
-
 class TabsSetup : public TabsPanel {
-    CLASS(TabsSetup) SUPER(TabsPanel) public : TabsSetup(TheHub&);
+public:
+    TabsSetup();
 
 private:
-    // geometry
+    // image geometry tab
     QDoubleSpinBox *detDistance_, *detPixelSize_;
     QSpinBox *beamOffsetI_, *beamOffsetJ_;
     QSpinBox *cutLeft_, *cutTop_, *cutRight_, *cutBottom_;
 
-    void setToHub();
-    void setFromHub();
-
-    // background
+    // background fit tab
     QSpinBox* spinDegree_;
 
-    // reflections
-    ReflectionView* reflectionView_;
+    // peak fits tab
+    class ReflectionView* reflectionView_;
     QComboBox* comboReflType_;
     QDoubleSpinBox *spinRangeMin_, *spinRangeMax_;
     QDoubleSpinBox *spinGuessPeakX_, *spinGuessPeakY_, *spinGuessFWHM_;
     QLineEdit *readFitPeakX_, *readFitPeakY_, *readFitFWHM_;
 
     bool silentSpin_ = false;
+
+    void setToHub();
+    void setFromHub();
 };
-}
-}
+
+} // namespace panel
+} // namespace gui
+
 #endif // TABS_SETUP_H

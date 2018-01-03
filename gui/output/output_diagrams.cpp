@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/output/output_diagrams.cpp
-//! @brief     Implements ...
+//! @brief     Implements class DiagramsFrame
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -13,14 +13,23 @@
 // ************************************************************************** //
 
 #include "output_diagrams.h"
+#include "dialog_panels.h"
+#include "fit/fit_fun.h"
+#include "output_dialogs.h"
+#include "session.h"
 #include "thehub.h"
+//#include "typ/variant.h"
+#include "widgets/widget_makers.h"
+#include "write_file.h"
+#include "QCustomPlot/qcustomplot.h"
+#include <QAction>
 
 namespace gui {
 namespace output {
 
 // sorts xs and ys the same way, by (x,y)
 static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
-    EXPECT(xs.count() == ys.count())
+    debug::ensure(xs.count() == ys.count());
 
     uint count = xs.count();
 
@@ -50,14 +59,33 @@ static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
     ys = r;
 }
 
+static const Params::ePanels PANELS =
+    Params::ePanels(Params::REFLECTION | Params::GAMMA | Params::DIAGRAM);
+
+// ************************************************************************** //
+//  class TabPlot (file scope)
+// ************************************************************************** //
+
+class TabPlot : public QCustomPlot {
+private:
+public:
+    TabPlot();
+    void set(ReflectionInfos);
+    void plot(
+        qreal_vec const& xs, qreal_vec const& ys, qreal_vec const& ysLo, qreal_vec const& ysUp);
+protected:
+    QCPGraph *graph_, *graphLo_, *graphUp_;
+};
+
 TabPlot::TabPlot() {
     graph_ = addGraph();
     graphLo_ = addGraph();
     graphUp_ = addGraph();
 }
 
-void TabPlot::plot(qreal_vec::rc xs, qreal_vec::rc ys, qreal_vec::rc ysLo, qreal_vec::rc ysUp) {
-    EXPECT(xs.count() == ys.count())
+void TabPlot::plot(
+    qreal_vec const& xs, qreal_vec const& ys, qreal_vec const& ysLo, qreal_vec const& ysUp) {
+    debug::ensure(xs.count() == ys.count());
 
     uint count = xs.count();
 
@@ -65,7 +93,7 @@ void TabPlot::plot(qreal_vec::rc xs, qreal_vec::rc ys, qreal_vec::rc ysLo, qreal
     graphUp_->clearData();
     graphLo_->clearData();
 
-    typ::Range rgeX, rgeY;
+    Range rgeX, rgeY;
 
     for_i (count) {
         rgeX.extendBy(xs.at(i));
@@ -96,10 +124,24 @@ void TabPlot::plot(qreal_vec::rc xs, qreal_vec::rc ys, qreal_vec::rc ysLo, qreal
     replot();
 }
 
-TabDiagramsSave::TabDiagramsSave(TheHub& hub, Params& params) : super(hub, params, true) {
-    auto gp = new panel::GridPanel(hub, "To save");
+// ************************************************************************** //
+//  class TabDiagramsSave (file scope)
+// ************************************************************************** //
+
+class TabDiagramsSave : public TabSave {
+public:
+    TabDiagramsSave(Params&);
+    uint currType() const { return fileTypes_->currentIndex(); }
+    bool currDiagram() const { return currentDiagram_->isChecked(); }
+protected:
+    QRadioButton *currentDiagram_, *allData_;
+    QComboBox* fileTypes_;
+};
+
+TabDiagramsSave::TabDiagramsSave(Params& params) : TabSave(params, true) {
+    auto gp = new GridPanel("To save");
     grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
-    grid_->addRowStretch();
+    grid_->setRowStretch(grid_->rowCount(), 1);
 
     auto g = gp->grid();
     g->addWidget((currentDiagram_ = radioButton("Current diagram")));
@@ -110,51 +152,44 @@ TabDiagramsSave::TabDiagramsSave(TheHub& hub, Params& params) : super(hub, param
     currentDiagram_->setChecked(true);
 }
 
-uint TabDiagramsSave::currType() const {
-    return fileTypes_->currentIndex();
-}
+// ************************************************************************** //
+//  class DiagramsFrame
+// ************************************************************************** //
 
-bool TabDiagramsSave::currDiagram() const {
-    return currentDiagram_->isChecked();
-}
-
-static const Params::ePanels PANELS =
-    Params::ePanels(Params::REFLECTION | Params::GAMMA | Params::DIAGRAM);
-
-DiagramsFrame::DiagramsFrame(TheHub& hub, rcstr title, QWidget* parent)
-    : super(hub, title, new Params(hub, PANELS), parent) {
+DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
+    : Frame(title, new Params(PANELS), parent) {
     btnInterpolate_->hide();
 
     tabPlot_ = new TabPlot();
     tabs_->addTab("Diagram", Qt::Vertical).box().addWidget(tabPlot_);
 
-    ENSURE(params_->panelDiagram)
+    debug::ensure(params_->panelDiagram);
     auto pd = params_->panelDiagram;
 
     connect(pd->xAxis, slot(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
 
     connect(pd->yAxis, slot(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
 
-    tabSave_ = new TabDiagramsSave(hub, *params_);
+    tabSave_ = new TabDiagramsSave(*params_);
     tabs_->addTab("Save", Qt::Vertical).box().addWidget(tabSave_);
 
-    connect(tabSave_->actSave, &QAction::triggered, [this]() { logSuccess(saveDiagramOutput()); });
+    connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiagramOutput(); });
 
     recalculate();
 }
 
 DiagramsFrame::eReflAttr DiagramsFrame::xAttr() const {
-    ENSURE(params_->panelDiagram)
+    debug::ensure(params_->panelDiagram);
     return eReflAttr(params_->panelDiagram->xAxis->currentIndex());
 }
 
 DiagramsFrame::eReflAttr DiagramsFrame::yAttr() const {
-    ENSURE(params_->panelDiagram)
+    debug::ensure(params_->panelDiagram);
     return eReflAttr(params_->panelDiagram->yAxis->currentIndex());
 }
 
 void DiagramsFrame::displayReflection(uint reflIndex, bool interpolated) {
-    super::displayReflection(reflIndex, interpolated);
+    Frame::displayReflection(reflIndex, interpolated);
     rs_ = calcPoints_.at(reflIndex);
     recalculate();
 }
@@ -195,7 +230,7 @@ void DiagramsFrame::recalculate() {
     ysErrorLo_.clear();
     ysErrorUp_.clear();
 
-    if (fit::ePeakType::RAW != hub_.reflections().at(getReflIndex())->type()) {
+    if (gSession->reflections().at(getReflIndex())->peakFunction().name() != "Raw") {
         switch (yAttr()) {
         case eReflAttr::INTEN: calcErrors(eReflAttr::SIGMA_INTEN); break;
         case eReflAttr::TTH: calcErrors(eReflAttr::SIGMA_TTH); break;
@@ -207,19 +242,18 @@ void DiagramsFrame::recalculate() {
     tabPlot_->plot(xs_, ys_, ysErrorLo_, ysErrorUp_);
 }
 
-bool DiagramsFrame::saveDiagramOutput() {
+void DiagramsFrame::saveDiagramOutput() {
     str path = tabSave_->filePath(true);
-    if (path.isEmpty())
-        return false;
-
+    if (path.isEmpty()) {
+        qWarning() << "cannot save diagram: path is empty";
+        return;
+    }
     str separator = tabSave_->separator();
-
     if (tabSave_->currDiagram())
         writeCurrentDiagramOutputFile(path, separator);
     else
         writeAllDataOutputFile(path, separator);
-
-    return true;
+    qDebug() /* qInfo() TODO restore */ << "diagram saved to " << path;
 }
 
 void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator) {
@@ -227,9 +261,9 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separato
 
     QTextStream stream(&file);
 
-    EXPECT(xs_.count() == ys_.count())
-    EXPECT(ysErrorLo_.isEmpty() || ysErrorLo_.count() == ys_.count())
-    EXPECT(ysErrorLo_.count() == ysErrorUp_.count())
+    debug::ensure(xs_.count() == ys_.count());
+    debug::ensure(ysErrorLo_.isEmpty() || ysErrorLo_.count() == ys_.count());
+    debug::ensure(ysErrorLo_.count() == ysErrorUp_.count());
 
     bool writeErrors = !ysErrorUp_.isEmpty();
 
@@ -246,27 +280,24 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
     QTextStream stream(&file);
 
     auto headers = table_->outHeaders();
-
     for_i (headers.count())
         stream << headers.at(to_u(i)) << separator;
-
     stream << '\n';
 
     for_i (calcPoints_.at(getReflIndex()).count()) {
         auto& row = table_->row(i);
-
         for_i (row.count()) {
             QVariant const& var = row.at(i);
-            if (typ::isNumeric(var))
+            if (isNumeric(var))
                 stream << var.toDouble();
             else
                 stream << var.toString();
 
             stream << separator;
         }
-
         stream << '\n';
     }
 }
-}
-}
+
+} // namespace output
+} // namespace gui

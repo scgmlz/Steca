@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/session.h
-//! @brief     Defines ...
+//! @brief     Defines class Session
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,172 +12,128 @@
 //
 // ************************************************************************** //
 
-#ifndef CORE_SESSION_H
-#define CORE_SESSION_H
+#ifndef SESSION_H
+#define SESSION_H
 
-#include "calc/calc_lens.h"
+#include "calc/lens.h"
 #include "calc/calc_reflection.h"
 #include "calc/calc_reflection_info.h"
-#include "data/data_file.h"
-#include "typ/typ_async.h"
-#include "typ/typ_cache.h"
+#include "data/angle_map.h"
+#include "data/datafile.h"
+#include "data/experiment.h"
+#include "data/image.h"
+#include "typ/async.h"
+#include "typ/cache.h"
+#include "typ/singleton.h"
 
-namespace core {
+extern class Session* gSession;
 
-class Session final {
-    CLASS(Session)
+class Session final : public ISingleton<Session> {
 public:
     Session();
 
-    void clear();
-
-    // data files
 private:
-    typ::vec<data::shp_File> files_;
-
-public:
-    // number of data files (not counting the correction file)
-    uint numFiles() const { return files_.count(); }
-    data::shp_File file(uint i) const;
-
-    bool hasFile(rcstr fileName);
-    void addFile(data::shp_File) THROWS;
-    void remFile(uint i);
-
-private:
-    // correction file
-    data::shp_File corrFile_;
-    typ::shp_Image corrImage_;
+    vec<QSharedPointer<Datafile const>> files_; //!< data files
+    QSharedPointer<Datafile const> corrFile_; //!< correction file
+    QSharedPointer<Image> corrImage_;
     bool corrEnabled_;
-
-    mutable typ::Image intensCorr_;
-    mutable bool corrHasNaNs_;
-
-    void calcIntensCorr() const;
-
-    // datasets
     uint_vec collectedFromFiles_; // from these files
-    data::Datasets collectedDatasets_; // datasets collected ...
-    str_lst collectedDatasetsTags_;
-
-    // scaling
+    Experiment experiment_; // suite collected ...
+    QStringList experimentTags_;
     bool intenScaledAvg_; // if not, summed
     preal intenScale_;
+    size2d imageSize_; //!< All images must have this same size
+    ImageTransform imageTransform_;
+    ImageCut imageCut_;
+    Geometry geometry_;
+    Range gammaRange_;
+    uint bgPolyDegree_;
+    Ranges bgRanges_;
+    Reflections reflections_;
+    eNorm norm_;
+
+    mutable Image intensCorr_;
+    mutable bool corrHasNaNs_;
+    mutable cache_lazy<ImageKey, AngleMap> angleMapCache_;
+
+    void updateImageSize(); //!< Clears image size if session has no files
+    void setImageSize(size2d const&) THROWS; //!< Ensures same size for all images
+
+    void calcIntensCorr() const;
+    Curve curveMinusBg(SequenceLens const&, Range const&) const;
+    ReflectionInfo makeReflectionInfo(
+        SequenceLens const&, Reflection const&, Range const&) const;
 
 public:
-    bool hasCorrFile() const { return !corrFile_.isNull(); }
-
-    data::shp_File corrFile() const { return corrFile_; }
-
-    typ::shp_Image corrImage() const { return corrImage_; }
-
-    typ::Image const* intensCorr() const;
-
-    void setCorrFile(data::shp_File) THROWS; // Load or remove a correction file.
+    // Modifying methods:
+    void clear();
+    void addGivenFile(QSharedPointer<Datafile const>) THROWS;
+    void removeFile(uint i);
+    void setCorrFile(QSharedPointer<Datafile const>) THROWS; // Load or remove a correction file.
     void remCorrFile();
-
-    void tryEnableCorr(bool);
-
-    bool isCorrEnabled() const { return corrEnabled_; }
-
     void collectDatasetsFromFiles(uint_vec, pint);
 
-    uint_vec::rc collectedFromFiles() const { return collectedFromFiles_; }
-
-    data::Datasets::rc collectedDatasets() const { return collectedDatasets_; }
-
-    str_lst::rc collectedDatasetsTags() const { return collectedDatasetsTags_; }
-
-private:
-    // All files must have images of the same size
-    typ::size2d imageSize_;
-    // Clears the image size if there are no files in the session.
-    void updateImageSize();
-    // Ensures that all images have the same size.
-    void setImageSize(typ::size2d::rc) THROWS;
-
-public:
-    typ::size2d imageSize() const;
-
-    // image - transform & cut etc.
-private:
-    typ::ImageTransform imageTransform_;
-    typ::ImageCut imageCut_;
-
-public:
-    typ::ImageTransform::rc imageTransform() const { return imageTransform_; }
-    typ::ImageCut::rc imageCut() const { return imageCut_; }
-
     void setImageTransformMirror(bool);
-    void setImageTransformRotate(typ::ImageTransform::rc);
+    void setImageTransformRotate(ImageTransform const&);
+    void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
+    void setGeometry(preal detectorDistance, preal pixSize, IJ const& midPixOffset);
+    void setGammaRange(Range const& r) { gammaRange_ = r; }
+    void setBgRanges(Ranges const& rr) { bgRanges_ = rr; }
+    bool addBgRange(Range const& r) { return bgRanges_.add(r); }
+    bool remBgRange(Range const& r) { return bgRanges_.rem(r); }
+    void setBgPolyDegree(uint degree) { bgPolyDegree_ = degree; }
+    void setIntenScaleAvg(bool, preal);
+    void addReflection(QString const&);
+    void addReflection(const QJsonObject& obj);
+    void remReflection(uint i) { reflections_.remove(i); }
+    void setNorm(eNorm norm) { norm_ = norm; }
 
-    void setImageCut(bool topLeftFirst, bool linked, typ::ImageCut::rc);
+    // Const methods:
+    uint numFiles() const { //!< number of data files (not counting the correction file)
+        return files_.count(); }
+    QSharedPointer<Datafile const> file(uint i) const { return files_.at(i); }
+    bool hasFile(rcstr fileName) const;
+    bool hasCorrFile() const { return !corrFile_.isNull(); }
+    QSharedPointer<Datafile const> corrFile() const { return corrFile_; }
+    QSharedPointer<Image> corrImage() const { return corrImage_; }
+    Image const* intensCorr() const;
+    void tryEnableCorr(bool on) { corrEnabled_ = on && hasCorrFile(); }
+    bool isCorrEnabled() const { return corrEnabled_; }
 
-private:
-    typ::Geometry geometry_;
-    typ::Range gammaRange_;
-    mutable typ::cache_lazy<typ::AngleMap::Key, typ::AngleMap> angleMapCache_;
+    uint_vec const& collectedFromFiles() const { return collectedFromFiles_; }
+    Experiment const& experiment() const { return experiment_; }
+    QStringList const& experimentTags() const { return experimentTags_; }
 
-public:
-    typ::Geometry::rc geometry() const { return geometry_; }
-    void setGeometry(preal detectorDistance, preal pixSize, typ::IJ::rc midPixOffset);
-    typ::IJ midPix() const;
+    size2d imageSize() const;
+    ImageTransform const& imageTransform() const { return imageTransform_; }
+    ImageCut const& imageCut() const { return imageCut_; }
 
-    typ::Range::rc gammaRange() const;
-    void setGammaRange(typ::Range::rc);
+    Geometry const& geometry() const { return geometry_; }
+    IJ midPix() const;
 
-    typ::shp_AngleMap angleMap(data::OneDataset::rc) const;
-    static typ::shp_AngleMap angleMap(Session::rc, data::OneDataset::rc);
+    Range const& gammaRange() const { return gammaRange_; }
 
-    // lenses
-public:
-    calc::shp_ImageLens imageLens(typ::Image::rc, data::Datasets::rc, bool trans, bool cut) const;
-    calc::shp_DatasetLens
-    datasetLens(data::Dataset::rc, data::Datasets::rc, eNorm, bool trans, bool cut) const;
-    typ::Curve makeCurve(calc::DatasetLens::rc, gma_rge::rc) const;
+    shp_AngleMap angleMap(Measurement const&) const;
+    static shp_AngleMap angleMap(Session const& session, Measurement const& ds) {
+        return session.angleMap(ds); }
 
-    // reflections
-    calc::ReflectionInfo
-        makeReflectionInfo(calc::DatasetLens::rc, calc::Reflection::rc, gma_rge::rc) const;
+    shp_ImageLens imageLens(Image const&, Experiment const&, bool trans, bool cut) const;
+    QSharedPointer<SequenceLens> dataseqLens(Suite const&, eNorm, bool trans, bool cut) const;
+    QSharedPointer<SequenceLens> defaultDatasetLens(Suite const& dataseq) const;
 
-    calc::ReflectionInfos makeReflectionInfos(
-        data::Datasets::rc, calc::Reflection::rc, uint gmaSlices, gma_rge::rc, Progress*);
+    ReflectionInfos makeReflectionInfos(
+        Experiment const&, Reflection const&, uint gmaSlices, Range const&, Progress*) const;
 
-    // fitting
-private:
-    uint bgPolyDegree_;
-    typ::Ranges bgRanges_;
-
-    calc::Reflections reflections_;
-
-public:
-    typ::Ranges::rc bgRanges() const { return bgRanges_; }
+    Ranges const& bgRanges() const { return bgRanges_; }
     uint bgPolyDegree() const { return bgPolyDegree_; }
     bool intenScaledAvg() const { return intenScaledAvg_; }
     preal intenScale() const { return intenScale_; }
-    calc::Reflections::rc reflections() const { return reflections_; }
+    Reflections const& reflections() const { return reflections_; }
 
-    void setBgRanges(typ::Ranges::rc);
-    bool addBgRange(typ::Range::rc);
-    bool remBgRange(typ::Range::rc);
-
-    void setBgPolyDegree(uint);
-    void setIntenScaleAvg(bool, preal);
-
-    void addReflection(calc::shp_Reflection);
-    void remReflection(uint);
-
-    // normalisation
-private:
-    eNorm norm_;
-
-public:
     eNorm norm() const { return norm_; }
-    void setNorm(eNorm);
 
-public:
-    qreal calcAvgBackground(data::Dataset::rc) const;
-    qreal calcAvgBackground(data::Datasets::rc) const;
+    qreal calcAvgBackground(Suite const&) const;
+    qreal calcAvgBackground(Experiment const&) const;
 };
-}
-#endif
+
+#endif // SESSION_H

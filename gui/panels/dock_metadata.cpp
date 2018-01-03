@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/panels/dock_metadata.cpp
-//! @brief     Implements ...
+//! @brief     Implements class DockMetadata
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -13,44 +13,46 @@
 // ************************************************************************** //
 
 #include "dock_metadata.h"
+#include "models.h"
+#include "widgets/tree_views.h" // inheriting from
 #include "thehub.h"
-#include "views.h"
 
 namespace gui {
 namespace panel {
 
-class MetadataView : public views::ListView {
-    CLASS(MetadataView)
-    SUPER(views::ListView) public : using Model = models::MetadataModel;
-    MetadataView(TheHub&);
+class MetadataView : public ListView {
+public:
+    MetadataView();
 
 protected:
     int sizeHintForColumn(int) const;
 
 private:
-    Model* model() const { return static_cast<Model*>(super::model()); }
+    MetadataModel* model() const { return static_cast<MetadataModel*>(ListView::model()); }
 };
 
-MetadataView::MetadataView(TheHub& hub) : super(hub) {
-    setModel(&hub.metadataModel);
-    EXPECT(dynamic_cast<Model*>(super::model()))
-
+MetadataView::MetadataView() : ListView() {
+    setModel(gHub->metadataModel);
+    debug::ensure(dynamic_cast<MetadataModel*>(ListView::model()));
     connect(this, &MetadataView::clicked, [this](QModelIndex const& index) {
         model()->flipCheck(to_u(index.row()));
-        hub_.datasetsModel.showMetaInfo(model()->rowsChecked()); // REVIEW signal instead?
+        gHub->suiteModel->showMetaInfo(model()->rowsChecked()); // REVIEW signal instead?
     });
 }
 
 int MetadataView::sizeHintForColumn(int col) const {
     switch (col) {
-    case Model::COL_CHECK: return mWidth(this);
-    default: return super::sizeHintForColumn(col);
+    case MetadataModel::COL_CHECK:
+        return fontMetrics().width('m');
+    default:
+        return ListView::sizeHintForColumn(col);
     }
 }
 
-DockMetadata::DockMetadata(TheHub& hub)
-    : super("Metadata", "dock-metadata", Qt::Vertical), RefHub(hub) {
-    box_->addWidget((metadataView_ = new MetadataView(hub)));
+DockMetadata::DockMetadata()
+    : DockWidget("Metadata", "dock-metadata", Qt::Vertical) {
+    box_->addWidget((metadataView_ = new MetadataView()));
 }
-}
-}
+
+} // namespace panel
+} // namespace gui

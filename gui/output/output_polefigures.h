@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/output/output_polefigures.h
-//! @brief     Defines ...
+//! @brief     Defines class PoleFiguresFrame
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,76 +15,29 @@
 #ifndef OUTPUT_POLEFIGURES_H
 #define OUTPUT_POLEFIGURES_H
 
-#include "output_dialogs.h"
+#include "frame.h"
 
 namespace gui {
 namespace output {
 
-class TabGraph : public Tab {
-    CLASS(TabGraph) SUPER(Tab) public : using deg = typ::deg;
-    using rad = typ::rad;
-
-    TabGraph(TheHub&, Params&);
-    void set(calc::ReflectionInfos);
-
-protected:
-    void update();
-
-    calc::ReflectionInfos rs_;
-    void paintEvent(QPaintEvent*);
-
-    QPointF p(deg alpha, deg beta) const;
-    deg alpha(QPointF const&) const;
-    deg beta(QPointF const&) const;
-
-    void circle(QPointF c, qreal r);
-
-    void paintGrid();
-    void paintPoints();
-
-    // valid during paintEvent
-    QPainter* p_;
-    QPointF c_;
-    qreal r_;
-
-    bool flat_;
-    qreal alphaMax_, avgAlphaMax_;
-
-    QCheckBox* cbFlat_;
-};
-
-class TabPoleFiguresSave : public TabSave {
-    CLASS(TabPoleFiguresSave)
-    SUPER(TabSave) public : TabPoleFiguresSave(TheHub& hub, Params& params);
-
-    bool onlySelectedRefl() const;
-    bool outputInten() const;
-    bool outputTth() const;
-    bool outputFWHM() const;
-
-    void rawReflSettings(bool on);
-
-protected:
-    QRadioButton *rbSelectedRefl_, *rbAllRefls_;
-    QCheckBox *outputInten_, *outputTth_, *outputFWHM_;
-};
-
 class PoleFiguresFrame : public Frame {
-    CLASS(PoleFiguresFrame)
-    SUPER(Frame) public : PoleFiguresFrame(TheHub&, rcstr title, QWidget*);
+public:
+    PoleFiguresFrame(rcstr title, QWidget*);
 
 protected:
-    TabGraph* tabGraph_;
-    TabPoleFiguresSave* tabSave_;
+    class TabGraph* tabGraph_;
+    class TabPoleFiguresSave* tabSave_;
 
     void displayReflection(uint reflIndex, bool interpolated);
 
-    bool savePoleFigureOutput();
-    bool writePoleFigureOutputFiles(rcstr filePath, uint index);
-    void writePoleFile(rcstr filePath, calc::ReflectionInfos, qreal_vec::rc);
-    void writeListFile(rcstr filePath, calc::ReflectionInfos, qreal_vec::rc);
-    void writeErrorMask(rcstr filePath, calc::ReflectionInfos, qreal_vec::rc);
+    void savePoleFigureOutput();
+    void writePoleFigureOutputFiles(rcstr filePath, uint index);
+    void writePoleFile(rcstr filePath, ReflectionInfos, qreal_vec const&);
+    void writeListFile(rcstr filePath, ReflectionInfos, qreal_vec const&);
+    void writeErrorMask(rcstr filePath, ReflectionInfos, qreal_vec const&);
 };
-}
-}
+
+} // namespace output
+} // namespace gui
+
 #endif // OUTPUT_POLEFIGURES_H
