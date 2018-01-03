@@ -19,6 +19,7 @@
 #include "typ/str.h"
 #include "typ/types.h"
 #include <QFileInfo>
+#include <QSharedPointer> // no auto rm
 
 class Measurement;
 class Metadata;

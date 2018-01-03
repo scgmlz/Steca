@@ -17,6 +17,7 @@
 
 #include "typ/angles.h"
 #include "data/geometry.h"
+#include <QSharedPointer> // no auto rm
 
 class AnglePair {
 public:

@@ -17,6 +17,7 @@
 
 #include "def/idiomatic_for.h"
 #include "typ/map.h"
+#include <QSharedPointer> // no auto rm
 
 /* Example:
 
