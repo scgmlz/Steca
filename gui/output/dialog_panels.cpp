@@ -17,6 +17,7 @@
 #include "def/idiomatic_for.h"
 #include "cfg/gui_cfg.h"
 #include "models.h"
+#include "session.h"
 #include "thehub.h"
 #include "widgets/widget_makers.h"
 
@@ -74,7 +75,7 @@ PanelGammaSlices::PanelGammaSlices() : GridPanel("Gamma slices") {
 
     g->setRowStretch(g->rowCount(), 1);
 
-    rgeGma_ = gHub->experimentRgeGma();
+    rgeGma_ = gSession->experiment().rgeGma();
 
     connect(numSlices, slot(QSpinBox, valueChanged, int), [this]() { updateValues(); });
 }
@@ -100,7 +101,7 @@ PanelGammaRange::PanelGammaRange() : GridPanel("Gamma range") {
 
     g->setRowStretch(g->rowCount(), 1);
 
-    rgeGma_ = gHub->experimentRgeGma();
+    rgeGma_ = gSession->experiment().rgeGma();
 
     minGamma->setValue(rgeGma_.min);
     maxGamma->setValue(rgeGma_.max);

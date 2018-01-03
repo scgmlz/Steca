@@ -87,8 +87,6 @@ public:
 
     pint suiteGroupedBy() const { return suiteGroupedBy_; }
 
-    Range experimentRgeGma() const;
-
     eFittingTab fittingTab() const { return fittingTab_; }
 
     QSharedPointer<Suite> selectedSuite() const { return selectedSuite_; }

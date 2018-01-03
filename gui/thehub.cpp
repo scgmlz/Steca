@@ -365,10 +365,6 @@ void TheHub::combineDatasetsBy(pint by) {
     collectDatasetsFromFiles(collectFromFiles_, by);
 }
 
-Range TheHub::experimentRgeGma() const {
-    return gSession->experiment().rgeGma();
-}
-
 void TheHub::setCorrFile(rcstr filePath) THROWS {
     QSharedPointer<Datafile const> file;
     if (!filePath.isEmpty())
