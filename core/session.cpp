@@ -193,7 +193,6 @@ void Session::setImageCut(bool isTopOrLeft, bool linked, ImageCut const& cut) {
 }
 
 void Session::setGeometry(preal detectorDistance, preal pixSize, IJ const& midPixOffset) {
-
     geometry_.detectorDistance = detectorDistance;
     geometry_.pixSize = pixSize;
     geometry_.midPixOffset = midPixOffset;
@@ -224,8 +223,7 @@ shp_ImageLens Session::imageLens(
 }
 
 QSharedPointer<SequenceLens> Session::dataseqLens(
-    Suite const& suite, Experiment const& expt, eNorm norm, bool trans, bool cut
-    ) const {
+    Suite const& suite, Experiment const& expt, eNorm norm, bool trans, bool cut) const {
     return QSharedPointer<SequenceLens>(new SequenceLens(
         *this, suite, expt, norm, trans, cut, imageTransform_, imageCut_));
 }
