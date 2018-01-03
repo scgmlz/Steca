@@ -1,2 +1,2 @@
 #!/bin/sh
-find . \( -name \*.h \) ! \( -path ./3rdparty/\* -or -path ./utest/\* -or -path ./*build/\* \) | sort
+find . \( -name \*.h \) -and \( -path ./core/\* -or -path ./gui/\* \) | sort
