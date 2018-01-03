@@ -11,7 +11,8 @@
 #define REGISTRY_H
 
 #include "exception.h"
-#include <QMap> // required by Travis under Trusty
+#include <QMap>        // required by Travis under Trusty
+#include <QStringList> // required by Travis under Trusty
 
 //! Mixin interface for registries holding objects of type T
 
