@@ -19,7 +19,6 @@
 #include "panel.h"
 
 class Measurement;
-class Metadata;
 class QDoubleSpinBox;
 class QSpinBox;
 

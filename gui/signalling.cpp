@@ -12,12 +12,10 @@
 //
 // ************************************************************************** //
 
-#include "signalling.h"
 #include "thehub.h"
 
 namespace gui {
 
-class TheHub;
 
 TheHub& TheHubSignallingBase::asHub() {
     debug::ensure(dynamic_cast<TheHub*>(this));

@@ -15,12 +15,7 @@
 #ifndef EXPERIMENT_H
 #define EXPERIMENT_H
 
-#include "typ/array2d.h"
-#include "typ/curve.h"
 
-class Metadata;
-class Suite;
-class Experiment;
 
 //! A sequence of Suites's
 

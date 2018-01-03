@@ -16,7 +16,6 @@
 #define CURVE_H
 
 #include "typ/range.h"
-#include <functional>
 
 //! A set of x-y datapoints
 

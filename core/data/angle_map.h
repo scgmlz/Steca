@@ -16,10 +16,7 @@
 #define ANGLE_MAP_H
 
 #include "typ/angles.h"
-#include "typ/array2d.h"
 #include "typ/geometry.h"
-#include "typ/ij.h"
-#include "typ/range.h"
 
 class AnglePair {
 public:
@@ -32,13 +29,12 @@ public:
 
 class AngleMap {
 public:
-    struct Key {
+    class Key {
+    public:
         Key(Geometry const&, size2d const&, ImageCut const&, IJ const& midPix, deg midTth);
 
         COMPARABLE(AngleMap::Key const&);
-
-        bool operator<(AngleMap::Key const& that) const {
-            return compare(that) < 0; }
+        bool operator<(AngleMap::Key const& that) const { return compare(that) < 0; }
 
         Geometry geometry;
         size2d size;
@@ -47,17 +43,15 @@ public:
         deg midTth;
     };
 
+    AngleMap() = delete;
     AngleMap(Key const&);
 
     AnglePair const& at(uint i) const { return arrAngles_.at(i); }
-
     AnglePair const& at(uint i, uint j) const { return arrAngles_.at(i, j); }
 
     Range rgeTth() const { return rgeTth_; }
     Range rgeGma() const { return rgeGma_; }
     Range rgeGmaFull() const { return rgeGmaFull_; }
-
-    // TODO remove  IJ gmaPixel(gma_t);
 
     void getGmaIndexes(Range const&, uint_vec const*&, uint&, uint&) const;
 
@@ -71,8 +65,7 @@ private:
     Range rgeTth_;
     Range rgeGma_, rgeGmaFull_;
 
-    // sorted
-    vec<deg> gmas;
+    vec<deg> gmas; //!< sorted gamma values
     uint_vec gmaIndexes;
 };
 

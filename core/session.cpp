@@ -15,7 +15,6 @@
 #include "session.h"
 #include "data/suite.h"
 #include "data/measurement.h"
-#include "data/metadata.h"
 #include "fit/peak_functions.h"
 
 Session::Session() : intenScale_(1), angleMapCache_(360) {

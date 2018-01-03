@@ -12,10 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "io_io.h"
 #include "data/datafile.h"
 #include "typ/exception.h"
-#include <QFile>
 #include <QStringBuilder> // for ".." % ..
 
 namespace io {

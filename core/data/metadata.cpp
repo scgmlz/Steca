@@ -14,7 +14,6 @@
 
 #include "metadata.h"
 #include "def/idiomatic_for.h"
-#include <qmath.h>
 
 // metadata attributes
 

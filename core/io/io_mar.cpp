@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "io_io.h"
 #include "def/idiomatic_for.h"
 #include "data/datafile.h"
 #include "data/metadata.h"

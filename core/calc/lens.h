@@ -18,7 +18,6 @@
 #include "typ/curve.h"
 #include "typ/geometry.h"
 #include "typ/types.h"
-#include "typ/vec.h"
 #include "data/image_transform.h"
 
 class Suite;

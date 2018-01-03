@@ -16,9 +16,7 @@
 #define SUITE_H
 
 #include "typ/angles.h"
-#include "typ/curve.h"
 #include "data/image.h"
-#include "typ/variant.h"
 
 class Metadata;
 class Measurement;

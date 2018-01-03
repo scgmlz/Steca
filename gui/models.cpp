@@ -15,7 +15,6 @@
 #include "models.h"
 #include "data/suite.h"
 #include "data/metadata.h"
-#include "def/idiomatic_for.h"
 #include "fit/fit_fun.h"
 #include "session.h"
 #include "thehub.h"

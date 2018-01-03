@@ -15,7 +15,6 @@
 #include "calc_reflection_info.h"
 #include "data/metadata.h"
 #include "def/idiomatic_for.h"
-#include <QSharedPointer>
 
 // ************************************************************************** //
 //  class ReflectionInfo

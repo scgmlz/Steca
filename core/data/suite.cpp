@@ -15,10 +15,7 @@
 #include "suite.h"
 #include "measurement.h"
 #include "metadata.h"
-#include "def/idiomatic_for.h"
 #include "session.h"
-#include "typ/array2d.h"
-#include "typ/curve.h"
 #include "typ/matrix.h"
 #include <qmath.h>
 

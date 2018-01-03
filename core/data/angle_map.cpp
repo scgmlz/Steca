@@ -15,7 +15,6 @@
 #include "angle_map.h"
 #include "def/comparators.h"
 #include "def/idiomatic_for.h"
-#include "typ/angles.h"
 #include <qmath.h>
 #include <iostream> // for debugging
 
@@ -94,33 +93,7 @@ void AngleMap::calculate() {
     gmas.resize(countWithoutCut);
     gmaIndexes.resize(countWithoutCut);
 
-    // was: adapted from Steca original code
-    //  for_int (i, size.w) {
-    //    qreal x       = (to_i(i) - midPix.i) * pixSize;
-    //    rad   tthHorz = midTth.toRad() + atan(x / detDist);
-    //    qreal h       = cos(tthHorz)   * hypot(x, detDist);
-
-    //    for_int (j, size.h) {
-    //      qreal y          = (midPix.j - to_i(j)) * pixSize;
-    //      qreal z          = hypot(x, y);
-    //      qreal pixDetDist = hypot(z, detDist);
-    //      rad   tth        = acos(h / pixDetDist);
-
-    //      qreal r     = sqrt((pixDetDist * pixDetDist) - (h * h));
-    //      rad   gamma = asin(y / r);
-
-    //      if (tthHorz < 0) {
-    //        tth   = -tth;
-    //        gamma = -gamma;
-    //      }
-
-    //      debug::ensure(!qIsNaN(gamma))
-
-    //      arrAngles_.setAt(i, j, Angles(tth.toDeg(), gamma.toDeg()));
-    //    }
-    //  }
-
-    // new code
+    // The following is new with respect to Steca1
     // detector coordinates: d_x, ... (d_z = const)
     // beam coordinates: b_x, ..; b_y = d_y
 

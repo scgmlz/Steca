@@ -14,8 +14,6 @@
 
 #include "typ/geometry.h"
 #include "def/comparators.h"
-#include "def/idiomatic_for.h"
-#include <qmath.h>
 #include <iostream> // for debugging
 
 preal const Geometry::MIN_DETECTOR_DISTANCE = preal(10);

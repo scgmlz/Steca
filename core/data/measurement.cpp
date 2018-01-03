@@ -14,12 +14,7 @@
 
 #include "measurement.h"
 #include "metadata.h"
-#include "def/idiomatic_for.h"
 #include "session.h"
-#include "typ/array2d.h"
-#include "typ/curve.h"
-#include "data/image.h"
-#include "typ/matrix.h"
 #include <qmath.h>
 
 Measurement::Measurement(Metadata const& md, size2d const& size, inten_vec const& intens)
