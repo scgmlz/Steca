@@ -223,13 +223,14 @@ shp_ImageLens Session::imageLens(
 }
 
 QSharedPointer<SequenceLens> Session::dataseqLens(
-    Suite const& suite, Experiment const& expt, eNorm norm, bool trans, bool cut) const {
-    return QSharedPointer<SequenceLens>(new SequenceLens(
-        suite, expt, norm, trans, cut, imageTransform_, imageCut_));
+    Suite const& suite, eNorm norm, bool trans, bool cut) const {
+    return QSharedPointer<SequenceLens>(
+        new SequenceLens(
+            suite, suite.experiment(), norm, trans, cut, imageTransform_, imageCut_));
 }
 
 QSharedPointer<SequenceLens> Session::defaultDatasetLens(Suite const& suite) const {
-    return dataseqLens(suite, suite.experiment(), norm(), true, true);
+    return dataseqLens(suite, norm(), true, true);
 }
 
 Curve Session::curveMinusBg(SequenceLens const& lens, Range const& rgeGma) const {
@@ -286,7 +287,7 @@ ReflectionInfos Session::makeReflectionInfos(
         if (progress)
             progress->step();
 
-        auto lens = dataseqLens(*suite, expt, norm_, true, true);
+        auto lens = dataseqLens(*suite, norm_, true, true);
 
         Range rge = (gmaSlices > 0) ? lens->rgeGma() : lens->rgeGmaFull();
         if (rgeGma.isValid())
@@ -327,7 +328,7 @@ void Session::addReflection(const QJsonObject& obj) {
 }
 
 qreal Session::calcAvgBackground(Suite const& suite) const {
-    auto lens = dataseqLens(suite, suite.experiment(), eNorm::NONE, true, true);
+    auto lens = dataseqLens(suite, eNorm::NONE, true, true);
     Curve gmaCurve = lens->makeCurve(); // had argument averaged=true
     auto bgPolynom = Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
     return bgPolynom.avgY(lens->rgeTth());

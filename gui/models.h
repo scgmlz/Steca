@@ -55,7 +55,7 @@ public:
     void showMetaInfo(vec<bool> const&);
 
 private:
-    Experiment const& experiment_; // the selected suite
+    Experiment const& experiment_;
     uint_vec metaInfoNums_; // selected metadata items to show
 };
 
