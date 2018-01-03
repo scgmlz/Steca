@@ -16,7 +16,7 @@
 #include "../manifest.h"
 #include "cfg/gui_cfg.h"
 #include "cfg/settings.h"
-#include "typ/geometry.h"
+#include "data/geometry.h"
 #include "widgets/widget_makers.h"
 #include <QApplication>
 #include <QDate>

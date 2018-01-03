@@ -16,7 +16,7 @@
 #define ANGLE_MAP_H
 
 #include "typ/angles.h"
-#include "typ/geometry.h"
+#include "data/geometry.h"
 
 class AnglePair {
 public:

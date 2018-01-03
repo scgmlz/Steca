@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/typ/geometry.h
+//! @file      core/data/geometry.h
 //! @brief     Defines classes Geometry, ImageCut
 //!
 //! @homepage  https://github.com/scgmlz/Steca2

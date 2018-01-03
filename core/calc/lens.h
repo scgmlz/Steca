@@ -16,7 +16,7 @@
 #define LENS_H
 
 #include "typ/curve.h"
-#include "typ/geometry.h"
+#include "data/geometry.h"
 #include "typ/types.h"
 #include "data/image_transform.h"
 
