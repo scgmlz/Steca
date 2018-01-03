@@ -101,7 +101,7 @@ void ImageWidget::paintEvent(QPaintEvent*) {
         p.setPen(Qt::lightGray);
 
         // cut
-        auto cut = gHub->imageCut();
+        auto cut = gSession->imageCut();
         QRect r = rect.adjusted(-1, -1, 0, 0)
                       .adjusted(
                           qRound(scale_ * cut.left), qRound(scale_ * cut.top),

@@ -385,10 +385,6 @@ void TheHub::tryEnableCorrection(bool on) {
     emit sigCorrEnabled(gSession->isCorrEnabled());
 }
 
-ImageCut const& TheHub::imageCut() const {
-    return gSession->imageCut();
-}
-
 void TheHub::setImageCut(bool isTopOrLeft, bool linked, ImageCut const& cut) {
     gSession->setImageCut(isTopOrLeft, linked, cut);
     emit sigGeometryChanged();

@@ -452,7 +452,7 @@ void TabsSetup::setFromHub() {
     beamOffsetI_->setValue(g.midPixOffset.i);
     beamOffsetJ_->setValue(g.midPixOffset.j);
 
-    auto cut = gHub->imageCut();
+    auto cut = gSession->imageCut();
 
     cutLeft_->setValue(to_i(cut.left));
     cutTop_->setValue(to_i(cut.top));
