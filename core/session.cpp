@@ -218,23 +218,23 @@ shp_AngleMap Session::angleMap(Measurement const& one) const {
     return map;
 }
 
-calc::shp_ImageLens Session::imageLens(
+shp_ImageLens Session::imageLens(
     Image const& image, Experiment const& expt, bool trans, bool cut) const {
-    return calc::shp_ImageLens(new calc::ImageLens(*this, image, expt, trans, cut));
+    return shp_ImageLens(new ImageLens(*this, image, expt, trans, cut));
 }
 
-QSharedPointer<calc::SequenceLens> Session::dataseqLens(
+QSharedPointer<SequenceLens> Session::dataseqLens(
     Suite const& suite, Experiment const& expt, eNorm norm, bool trans, bool cut
     ) const {
-    return QSharedPointer<calc::SequenceLens>(new calc::SequenceLens(
+    return QSharedPointer<SequenceLens>(new SequenceLens(
         *this, suite, expt, norm, trans, cut, imageTransform_, imageCut_));
 }
 
-QSharedPointer<calc::SequenceLens> Session::defaultDatasetLens(Suite const& suite) const {
+QSharedPointer<SequenceLens> Session::defaultDatasetLens(Suite const& suite) const {
     return dataseqLens(suite, suite.experiment(), norm(), true, true);
 }
 
-Curve Session::curveMinusBg(calc::SequenceLens const& lens, Range const& rgeGma) const {
+Curve Session::curveMinusBg(SequenceLens const& lens, Range const& rgeGma) const {
     Curve curve = lens.makeCurve(rgeGma);
     const Polynom f = Polynom::fromFit(bgPolyDegree_, curve, bgRanges_);
     curve.subtract([f](qreal x) {return f.y(x);});
@@ -242,8 +242,8 @@ Curve Session::curveMinusBg(calc::SequenceLens const& lens, Range const& rgeGma)
 }
 
 //! Fits reflection to the given gamma sector and constructs a ReflectionInfo.
-calc::ReflectionInfo Session::makeReflectionInfo(
-    calc::SequenceLens const& lens, calc::Reflection const& reflection,
+ReflectionInfo Session::makeReflectionInfo(
+    SequenceLens const& lens, Reflection const& reflection,
     Range const& gmaSector) const {
 
     // fit peak, and retrieve peak parameters:
@@ -264,10 +264,10 @@ calc::ReflectionInfo Session::makeReflectionInfo(
     QSharedPointer<Metadata const> metadata = suite.metadata();
 
     return rgeTth.contains(peak.x)
-        ? calc::ReflectionInfo(
+        ? ReflectionInfo(
               metadata, alpha, beta, gmaSector, inten_t(peak.y), inten_t(peakError.y),
               deg(peak.x), deg(peakError.x), fwhm_t(fwhm), fwhm_t(fwhmError))
-        : calc::ReflectionInfo(metadata, alpha, beta, gmaSector);
+        : ReflectionInfo(metadata, alpha, beta, gmaSector);
 }
 
 /* Gathers ReflectionInfos from Datasets.
@@ -276,10 +276,10 @@ calc::ReflectionInfo Session::makeReflectionInfo(
  * Even though the betaStep of the equidistant polefigure grid is needed here,
  * the returned infos won't be on the grid. REVIEW gammaStep separately?
  */
-calc::ReflectionInfos Session::makeReflectionInfos(
-    Experiment const& expt, calc::Reflection const& reflection, uint gmaSlices,
+ReflectionInfos Session::makeReflectionInfos(
+    Experiment const& expt, Reflection const& reflection, uint gmaSlices,
     Range const& rgeGma, Progress* progress) const {
-    calc::ReflectionInfos infos;
+    ReflectionInfos infos;
 
     if (progress)
         progress->setTotal(expt.count());
@@ -317,13 +317,13 @@ void Session::setIntenScaleAvg(bool avg, preal scale) {
 }
 
 void Session::addReflection(QString const& peakFunctionName) {
-    calc::shp_Reflection reflection(new calc::Reflection(peakFunctionName));
+    shp_Reflection reflection(new Reflection(peakFunctionName));
     debug::ensure(!reflection.isNull());
     reflections_.append(reflection);
 }
 
 void Session::addReflection(const QJsonObject& obj) {
-    calc::shp_Reflection reflection(new calc::Reflection);
+    shp_Reflection reflection(new Reflection);
     reflection->from_json(obj);
     reflections_.append(reflection);
 }

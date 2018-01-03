@@ -35,12 +35,12 @@ namespace output {
 class TabGraph : public Tab {
 public:
     TabGraph(Params&);
-    void set(calc::ReflectionInfos);
+    void set(ReflectionInfos);
 
 protected:
     void update();
 
-    calc::ReflectionInfos rs_;
+    ReflectionInfos rs_;
     void paintEvent(QPaintEvent*);
 
     QPointF p(deg alpha, deg beta) const;
@@ -81,7 +81,7 @@ TabGraph::TabGraph(Params& params)
     update();
 }
 
-void TabGraph::set(calc::ReflectionInfos rs) {
+void TabGraph::set(ReflectionInfos rs) {
     rs_ = rs;
     update();
 }
@@ -294,7 +294,7 @@ static int const MAX_LINE_LENGTH_POL(9);
 
 void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
     auto refl = gSession->reflections().at(index);
-    calc::ReflectionInfos reflInfo;
+    ReflectionInfos reflInfo;
     if (getInterpolated())
         reflInfo = interpPoints_.at(index);
     else
@@ -348,7 +348,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
 }
 
 void PoleFiguresFrame::writeErrorMask(
-    rcstr filePath, calc::ReflectionInfos reflInfo, qreal_vec const& output) {
+    rcstr filePath, ReflectionInfos reflInfo, qreal_vec const& output) {
     WriteFile file(filePath + ".errorMask");
     QTextStream stream(&file);
 
@@ -367,7 +367,7 @@ void PoleFiguresFrame::writeErrorMask(
 }
 
 void PoleFiguresFrame::writePoleFile(
-    rcstr filePath, calc::ReflectionInfos reflInfo, qreal_vec const& output) {
+    rcstr filePath, ReflectionInfos reflInfo, qreal_vec const& output) {
     WriteFile file(filePath + ".pol");
     QTextStream stream(&file);
 
@@ -385,7 +385,7 @@ void PoleFiguresFrame::writePoleFile(
 }
 
 void PoleFiguresFrame::writeListFile(
-    rcstr filePath, calc::ReflectionInfos reflInfo, qreal_vec const& output) {
+    rcstr filePath, ReflectionInfos reflInfo, qreal_vec const& output) {
     WriteFile file(filePath + ".lst");
     QTextStream stream(&file);
 

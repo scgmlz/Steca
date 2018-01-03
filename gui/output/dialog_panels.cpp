@@ -145,7 +145,7 @@ PanelInterpolation::PanelInterpolation() : GridPanel("Interpolation") {
 }
 
 PanelDiagram::PanelDiagram() : GridPanel("Diagram") {
-    auto tags = calc::ReflectionInfo::dataTags(false);
+    auto tags = ReflectionInfo::dataTags(false);
     for_i (Metadata::numAttributes(false) - Metadata::numAttributes(true))
         tags.removeLast(); // remove all tags that are not numbers
 

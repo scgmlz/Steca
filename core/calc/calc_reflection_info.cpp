@@ -17,8 +17,6 @@
 #include "def/idiomatic_for.h"
 #include <QSharedPointer>
 
-namespace calc {
-
 // ************************************************************************** //
 //  class ReflectionInfo
 // ************************************************************************** //
@@ -155,5 +153,3 @@ void ReflectionInfos::invalidate() {
     avgInten_ = inten_t(NAN);
     rgeInten_.invalidate();
 }
-
-} // namespace calc

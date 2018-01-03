@@ -103,7 +103,7 @@ private:
     pint suiteGroupedBy_ = pint(1);
     eFittingTab fittingTab_ = eFittingTab::NONE;
     QSharedPointer<Suite> selectedSuite_;
-    calc::shp_Reflection selectedReflection_;
+    shp_Reflection selectedReflection_;
 
     void setImageRotate(ImageTransform);
     void setImageMirror(bool);

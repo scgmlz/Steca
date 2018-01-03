@@ -18,8 +18,6 @@
 #include "calc_reflection_info.h"
 #include "typ/async.h"
 
-namespace calc {
-
 struct itf_t {
     itf_t();
     itf_t(inten_t, deg, fwhm_t);
@@ -37,9 +35,8 @@ typedef vec<itf_t> itfs_t;
 itf_t interpolateValues(
     deg searchRadius, ReflectionInfos const& infos, deg alpha, deg beta);
 
-ReflectionInfos interpolate(
+ReflectionInfos interpolateInfos(
     ReflectionInfos const&, deg alphaStep, deg betaStep, deg idwRadius,
     deg averagingAlphaMax, deg averagingRadius, qreal inclusionTreshold, Progress*);
-}
 
 #endif // CALC_POLEFIGURE_H

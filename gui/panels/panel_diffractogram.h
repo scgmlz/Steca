@@ -51,7 +51,7 @@ private:
     curve_vec refls_;
 
     uint currReflIndex_;
-    calc::shp_Reflection currentReflection_;
+    shp_Reflection currentReflection_;
 
     QComboBox* comboNormType_;
     QRadioButton *intenSum_, *intenAvg_;

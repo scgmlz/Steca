@@ -49,7 +49,7 @@ private:
     Range gammaRange_;
     uint bgPolyDegree_;
     Ranges bgRanges_;
-    calc::Reflections reflections_;
+    Reflections reflections_;
     eNorm norm_;
 
     mutable Image intensCorr_;
@@ -60,9 +60,9 @@ private:
     void setImageSize(size2d const&) THROWS; //!< Ensures same size for all images
 
     void calcIntensCorr() const;
-    Curve curveMinusBg(calc::SequenceLens const&, Range const&) const;
-    calc::ReflectionInfo makeReflectionInfo(
-        calc::SequenceLens const&, calc::Reflection const&, Range const&) const;
+    Curve curveMinusBg(SequenceLens const&, Range const&) const;
+    ReflectionInfo makeReflectionInfo(
+        SequenceLens const&, Reflection const&, Range const&) const;
 
 public:
     // Modifying methods:
@@ -117,19 +117,19 @@ public:
     static shp_AngleMap angleMap(Session const& session, Measurement const& ds) {
         return session.angleMap(ds); }
 
-    calc::shp_ImageLens imageLens(Image const&, Experiment const&, bool trans, bool cut) const;
-    QSharedPointer<calc::SequenceLens> dataseqLens(
+    shp_ImageLens imageLens(Image const&, Experiment const&, bool trans, bool cut) const;
+    QSharedPointer<SequenceLens> dataseqLens(
         Suite const&, Experiment const&, eNorm, bool trans, bool cut) const;
-    QSharedPointer<calc::SequenceLens> defaultDatasetLens(Suite const& dataseq) const;
+    QSharedPointer<SequenceLens> defaultDatasetLens(Suite const& dataseq) const;
 
-    calc::ReflectionInfos makeReflectionInfos(
-        Experiment const&, calc::Reflection const&, uint gmaSlices, Range const&, Progress*) const;
+    ReflectionInfos makeReflectionInfos(
+        Experiment const&, Reflection const&, uint gmaSlices, Range const&, Progress*) const;
 
     Ranges const& bgRanges() const { return bgRanges_; }
     uint bgPolyDegree() const { return bgPolyDegree_; }
     bool intenScaledAvg() const { return intenScaledAvg_; }
     preal intenScale() const { return intenScale_; }
-    calc::Reflections const& reflections() const { return reflections_; }
+    Reflections const& reflections() const { return reflections_; }
 
     eNorm norm() const { return norm_; }
 

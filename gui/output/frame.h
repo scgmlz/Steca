@@ -40,7 +40,7 @@ protected:
     QBoxLayout* box_;
     class Params* params_;
     panel::TabsPanel* tabs_;
-    vec<calc::ReflectionInfos> calcPoints_, interpPoints_;
+    vec<ReflectionInfos> calcPoints_, interpPoints_;
     class Table* table_;
     void calculate();
     void interpolate();

@@ -16,8 +16,6 @@
 #include "def/idiomatic_for.h"
 #include <qmath.h>
 
-namespace calc {
-
 typedef vec<ReflectionInfo const*> info_vec;
 
 // Calculates the difference of two angles. Parameters should be in [0, 360].
@@ -218,7 +216,7 @@ itf_t interpolateValues(deg searchRadius, ReflectionInfos const& infos, deg alph
 }
 
 // Interpolates infos to equidistant grid in alpha and beta.
-ReflectionInfos interpolate(
+ReflectionInfos interpolateInfos(
     ReflectionInfos const& infos, deg alphaStep, deg betaStep, deg idwRadius, deg averagingAlphaMax,
     deg averagingRadius, qreal inclusionTreshold, Progress* progress) {
     // Two interpolation methods are used here:
@@ -308,5 +306,4 @@ ReflectionInfos interpolate(
     }
 
     return interpolatedInfos;
-}
 }

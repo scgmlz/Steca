@@ -43,7 +43,7 @@ public:
     void clear();
     bool hasReflections() const;
 
-    calc::shp_Reflection selectedReflection() const;
+    shp_Reflection selectedReflection() const;
 
     void updateSingleSelection();
 
@@ -87,11 +87,11 @@ bool ReflectionView::hasReflections() const {
     return model()->rowCount() > 0;
 }
 
-calc::shp_Reflection ReflectionView::selectedReflection() const {
+shp_Reflection ReflectionView::selectedReflection() const {
     QList<QModelIndex> indexes = selectionModel()->selectedIndexes();
     if (indexes.isEmpty())
-        return calc::shp_Reflection();
-    return model()->data(indexes.first(), Model::GetDatasetRole).value<calc::shp_Reflection>();
+        return shp_Reflection();
+    return model()->data(indexes.first(), Model::GetDatasetRole).value<shp_Reflection>();
 }
 
 void ReflectionView::updateSingleSelection() {
@@ -106,8 +106,8 @@ void ReflectionView::selectionChanged(
     QList<QModelIndex> indexes = selected.indexes();
     gHub->tellSelectedReflection(
         indexes.isEmpty()
-            ? calc::shp_Reflection()
-            : model()->data(indexes.first(), Model::GetDatasetRole).value<calc::shp_Reflection>());
+            ? shp_Reflection()
+            : model()->data(indexes.first(), Model::GetDatasetRole).value<shp_Reflection>());
 }
 
 
@@ -356,7 +356,7 @@ TabsSetup::TabsSetup() : TabsPanel() {
             gHub->setPeakFunction(peakFunctionName);
         });
 
-        auto setReflControls = [this](calc::shp_Reflection reflection) {
+        auto setReflControls = [this](shp_Reflection reflection) {
             silentSpin_ = true;
 
             if (reflection.isNull()) {
@@ -395,10 +395,10 @@ TabsSetup::TabsSetup() : TabsPanel() {
         };
 
         connect(gHub, &TheHubSignallingBase::sigReflectionSelected,
-            [setReflControls](calc::shp_Reflection reflection) { setReflControls(reflection); });
+            [setReflControls](shp_Reflection reflection) { setReflControls(reflection); });
 
         connect(gHub, &TheHubSignallingBase::sigReflectionData,
-            [setReflControls](calc::shp_Reflection reflection) { setReflControls(reflection); });
+            [setReflControls](shp_Reflection reflection) { setReflControls(reflection); });
 
         auto newReflData = [this](bool invalidateGuesses) {
             if (!silentSpin_) {
