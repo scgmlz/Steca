@@ -19,6 +19,7 @@
 #include "typ/range.h"
 #include "typ/types.h"
 #include "typ/variant.h"
+#include <QSharedPointer> // required by some compilers
 
 class Metadata;
 
