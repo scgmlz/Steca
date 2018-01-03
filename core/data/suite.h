@@ -17,6 +17,7 @@
 
 #include "typ/angles.h"
 #include "data/image.h"
+#include <QSharedPointer> // no auto rm
 
 class Metadata;
 class Measurement;
