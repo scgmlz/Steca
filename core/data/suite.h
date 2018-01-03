@@ -20,7 +20,6 @@
 #include "data/image.h"
 #include "typ/variant.h"
 
-class Session;
 class Metadata;
 class Measurement;
 class Experiment;
@@ -41,9 +40,9 @@ public:
     deg phi() const;
     deg chi() const;
 
-    Range rgeGma(Session const&) const;
-    Range rgeGmaFull(Session const&) const;
-    Range rgeTth(Session const&) const;
+    Range rgeGma() const;
+    Range rgeGmaFull() const;
+    Range rgeTth() const;
 
     Range rgeInten() const;
 
@@ -51,7 +50,7 @@ public:
     qreal avgDeltaMonitorCount() const;
     qreal avgDeltaTime() const;
 
-    inten_vec collectIntens(Session const&, Image const* intensCorr, Range const&) const;
+    inten_vec collectIntens(Image const* intensCorr, Range const&) const;
     void calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const;
 
     size2d imageSize() const;

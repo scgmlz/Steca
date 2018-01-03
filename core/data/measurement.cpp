@@ -34,16 +34,16 @@ QSharedPointer<Metadata const> Measurement::metadata() const {
     return md_;
 }
 
-Range Measurement::rgeGma(Session const& session) const {
-    return session.angleMap(*this)->rgeGma();
+Range Measurement::rgeGma() const {
+    return gSession->angleMap(*this)->rgeGma();
 }
 
-Range Measurement::rgeGmaFull(Session const& session) const {
-    return session.angleMap(*this)->rgeGmaFull();
+Range Measurement::rgeGmaFull() const {
+    return gSession->angleMap(*this)->rgeGmaFull();
 }
 
-Range Measurement::rgeTth(Session const& session) const {
-    return session.angleMap(*this)->rgeTth();
+Range Measurement::rgeTth() const {
+    return gSession->angleMap(*this)->rgeTth();
 }
 
 Range Measurement::rgeInten() const {
@@ -54,10 +54,9 @@ size2d Measurement::imageSize() const {
     return image_->size();
 }
 
-void Measurement::collectIntens(
-    Session const& session, Image const* intensCorr, inten_vec& intens, uint_vec& counts,
-    Range const& rgeGma, deg minTth, deg deltaTth) const {
-    auto angleMap = session.angleMap(*this);
+void Measurement::collectIntens(Image const* intensCorr, inten_vec& intens, uint_vec& counts,
+                                Range const& rgeGma, deg minTth, deg deltaTth) const {
+    auto angleMap = gSession->angleMap(*this);
     debug::ensure(!angleMap.isNull());
     AngleMap const& map = *angleMap;
 

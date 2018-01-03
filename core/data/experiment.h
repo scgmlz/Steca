@@ -18,7 +18,6 @@
 #include "typ/array2d.h"
 #include "typ/curve.h"
 
-class Session;
 class Metadata;
 class Suite;
 class Experiment;
@@ -37,10 +36,10 @@ public:
     qreal avgDeltaMonitorCount() const;
     qreal avgDeltaTime() const;
 
-    Range const& rgeGma(Session const&) const;
-    Range const& rgeFixedInten(Session const&, bool trans, bool cut) const;
+    Range const& rgeGma() const;
+    Range const& rgeFixedInten(bool trans, bool cut) const;
 
-    Curve avgCurve(Session const&) const;
+    Curve avgCurve() const;
 
     void invalidateAvgMutables() const;
 

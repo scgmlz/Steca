@@ -98,7 +98,7 @@ inten_t ImageLens::imageInten(uint i, uint j) const {
 
 Range const& ImageLens::rgeInten(bool fixed) const {
     if (fixed)
-        return experiment_.rgeFixedInten(*gSession, trans_, cut_);
+        return experiment_.rgeFixedInten(trans_, cut_);
     if (!rgeInten_.isValid()) {
         auto sz = size();
         for_ij (sz.w, sz.h)
@@ -126,15 +126,15 @@ size2d SequenceLens::size() const {
 }
 
 Range SequenceLens::rgeGma() const {
-    return suite_.rgeGma(*gSession);
+    return suite_.rgeGma();
 }
 
 Range SequenceLens::rgeGmaFull() const {
-    return suite_.rgeGmaFull(*gSession);
+    return suite_.rgeGmaFull();
 }
 
 Range SequenceLens::rgeTth() const {
-    return suite_.rgeTth(*gSession);
+    return suite_.rgeTth();
 }
 
 Range SequenceLens::rgeInten() const {
@@ -148,11 +148,11 @@ Curve SequenceLens::makeCurve() const {
 }
 
 Curve SequenceLens::makeCurve(Range const& rgeGma) const {
-    inten_vec intens = suite_.collectIntens(*gSession, intensCorr_, rgeGma);
+    inten_vec intens = suite_.collectIntens(intensCorr_, rgeGma);
     Curve res;
     uint count = intens.count();
     if (count) {
-        Range rgeTth = suite_.rgeTth(*gSession);
+        Range rgeTth = suite_.rgeTth();
         deg minTth = rgeTth.min, deltaTth = rgeTth.width() / count;
         for_i (count)
             res.append(minTth + deltaTth * i, qreal(intens.at(i) * normFactor_));

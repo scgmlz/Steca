@@ -177,7 +177,7 @@ void TheHub::removeFile(uint i) {
 }
 
 Curve TheHub::avgCurve(Experiment const& dss) const {
-    return dss.avgCurve(*gSession);
+    return dss.avgCurve();
 }
 
 void TheHub::saveSession(QFileInfo const& fileInfo) const {
@@ -366,7 +366,7 @@ void TheHub::combineDatasetsBy(pint by) {
 }
 
 Range TheHub::experimentRgeGma() const {
-    return gSession->experiment().rgeGma(*gSession);
+    return gSession->experiment().rgeGma();
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {

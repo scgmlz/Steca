@@ -21,7 +21,6 @@
 #include "typ/variant.h"
 
 class Metadata;
-class Session;
 
 //! A Measurement consts of an Image with associated Metadata
 
@@ -43,18 +42,17 @@ public:
     deg phi() const;
     deg chi() const;
 
-    Range rgeGma(Session const&) const;
-    Range rgeGmaFull(Session const&) const;
-    Range rgeTth(Session const&) const;
+    Range rgeGma() const;
+    Range rgeGmaFull() const;
+    Range rgeTth() const;
 
     Range rgeInten() const;
 
     QSharedPointer<Image> image() const { return image_; }
     size2d imageSize() const;
 
-    void collectIntens(
-        Session const&, Image const* intensCorr, inten_vec&, uint_vec&, Range const&,
-        deg minTth, deg deltaTth) const;
+    void collectIntens(Image const* intensCorr, inten_vec&, uint_vec&, Range const&,
+                       deg minTth, deg deltaTth) const;
 
 private:
     QSharedPointer<Metadata const> md_;

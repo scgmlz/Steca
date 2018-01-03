@@ -135,13 +135,13 @@ deg Suite::chi() const { AVG_ONES(chi) }
         rge.combineOp(one->what);                                                                  \
     return rge;
 
-Range Suite::rgeGma(Session const& session) const { RGE_COMBINE(extendBy, rgeGma(session)) }
+Range Suite::rgeGma() const { RGE_COMBINE(extendBy, rgeGma()) }
 
-Range Suite::rgeGmaFull(Session const& session) const {
-    RGE_COMBINE(extendBy, rgeGmaFull(session))
+Range Suite::rgeGmaFull() const {
+    RGE_COMBINE(extendBy, rgeGmaFull())
 }
 
-Range Suite::rgeTth(Session const& session) const { RGE_COMBINE(extendBy, rgeTth(session)) }
+Range Suite::rgeTth() const { RGE_COMBINE(extendBy, rgeTth()) }
 
 Range Suite::rgeInten() const { RGE_COMBINE(intersect, rgeInten()) }
 
@@ -151,18 +151,17 @@ qreal Suite::avgDeltaMonitorCount() const { AVG_ONES(deltaMonitorCount) }
 
 qreal Suite::avgDeltaTime() const { AVG_ONES(deltaTime) }
 
-inten_vec Suite::collectIntens(
-    Session const& session, Image const* intensCorr, Range const& rgeGma) const {
-    Range tthRge = rgeTth(session);
+inten_vec Suite::collectIntens(Image const* intensCorr, Range const& rgeGma) const {
+    Range tthRge = rgeTth();
     deg tthWdt = tthRge.width();
 
-    auto cut = session.imageCut();
-    uint pixWidth = session.imageSize().w - cut.left - cut.right;
+    auto cut = gSession->imageCut();
+    uint pixWidth = gSession->imageSize().w - cut.left - cut.right;
 
     uint numBins;
     if (1 < count()) { // combined suite
         auto one = first();
-        deg delta = one->rgeTth(session).width() / pixWidth;
+        deg delta = one->rgeTth().width() / pixWidth;
         numBins = to_u(qCeil(tthWdt / delta));
     } else {
         numBins = pixWidth; // simply match the pixels
@@ -174,11 +173,11 @@ inten_vec Suite::collectIntens(
     deg minTth = tthRge.min, deltaTth = tthWdt / numBins;
 
     for (auto& one : *this)
-        one->collectIntens(session, intensCorr, intens, counts, rgeGma, minTth, deltaTth);
+        one->collectIntens(intensCorr, intens, counts, rgeGma, minTth, deltaTth);
 
     // sum or average
-    if (session.intenScaledAvg()) {
-        preal scale = session.intenScale();
+    if (gSession->intenScaledAvg()) {
+        preal scale = gSession->intenScale();
         for_i (numBins) {
             auto cnt = counts.at(i);
             if (cnt > 0)
