@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "output_diffractograms.h"
+#include "output_dialogs.h"
 #include "data/suite.h"
 #include "data/metadata.h"
 #include "dialog_panels.h"
