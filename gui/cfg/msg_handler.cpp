@@ -18,6 +18,7 @@
 #include <QStatusBar>
 #include <QApplication>
 #include <QMainWindow>
+#include <QtGlobal> // no auto rm
 
 #ifndef QT_NO_DEBUG
 #define context(ctx) " [" << ctx.function << "]"
