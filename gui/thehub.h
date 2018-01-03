@@ -87,7 +87,7 @@ public:
 
     pint suiteGroupedBy() const { return suiteGroupedBy_; }
 
-    Range collectedSuitesRgeGma() const;
+    Range experimentRgeGma() const;
     ImageCut const& imageCut() const;
 
     eFittingTab fittingTab() const { return fittingTab_; }

@@ -38,8 +38,8 @@ private:
     QSharedPointer<Image> corrImage_;
     bool corrEnabled_;
     uint_vec collectedFromFiles_; // from these files
-    Experiment collectedSuites_; // suite collected ...
-    QStringList collectedSuitesTags_;
+    Experiment experiment_; // suite collected ...
+    QStringList experimentTags_;
     bool intenScaledAvg_; // if not, summed
     preal intenScale_;
     size2d imageSize_; //!< All images must have this same size
@@ -101,8 +101,8 @@ public:
     bool isCorrEnabled() const { return corrEnabled_; }
 
     uint_vec const& collectedFromFiles() const { return collectedFromFiles_; }
-    Experiment const& collectedSuites() const { return collectedSuites_; }
-    QStringList const& collectedSuitesTags() const { return collectedSuitesTags_; }
+    Experiment const& experiment() const { return experiment_; }
+    QStringList const& experimentTags() const { return experimentTags_; }
 
     size2d imageSize() const;
     ImageTransform const& imageTransform() const { return imageTransform_; }

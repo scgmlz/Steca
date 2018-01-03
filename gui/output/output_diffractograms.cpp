@@ -129,7 +129,7 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
     if (pr->cbLimitGamma->isChecked())
         rgeGma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
 
-    auto& suite = gSession->collectedSuites();
+    auto& suite = gSession->experiment();
     Progress progress(suite.count(), pb_);
 
     OutputDataCollections allOutputData;
