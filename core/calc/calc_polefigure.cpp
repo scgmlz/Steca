@@ -245,7 +245,8 @@ ReflectionInfos interpolateInfos(
     // NOTE We expect all infos to have the same gamma range.
 
     // REVIEW qRound oder qCeil?
-    uint numAlphas = to_u(qRound(90. / alphaStep)), numBetas = to_u(qRound(360. / betaStep));
+    uint numAlphas = to_u(qRound(90. / alphaStep));
+    uint numBetas = to_u(qRound(360. / betaStep));
 
     ReflectionInfos interpolatedInfos; // Output data.
 
