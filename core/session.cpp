@@ -219,15 +219,15 @@ shp_AngleMap Session::angleMap(Measurement const& one) const {
 }
 
 calc::shp_ImageLens Session::imageLens(
-    Image const& image, Experiment const& suite, bool trans, bool cut) const {
-    return calc::shp_ImageLens(new calc::ImageLens(*this, image, suite, trans, cut));
+    Image const& image, Experiment const& expt, bool trans, bool cut) const {
+    return calc::shp_ImageLens(new calc::ImageLens(*this, image, expt, trans, cut));
 }
 
 QSharedPointer<calc::SequenceLens> Session::dataseqLens(
-    Suite const& suite, Experiment const& exp, eNorm norm, bool trans, bool cut
+    Suite const& suite, Experiment const& expt, eNorm norm, bool trans, bool cut
     ) const {
     return QSharedPointer<calc::SequenceLens>(new calc::SequenceLens(
-        *this, suite, exp, norm, trans, cut, imageTransform_, imageCut_));
+        *this, suite, expt, norm, trans, cut, imageTransform_, imageCut_));
 }
 
 QSharedPointer<calc::SequenceLens> Session::defaultDatasetLens(Suite const& suite) const {
@@ -277,18 +277,18 @@ calc::ReflectionInfo Session::makeReflectionInfo(
  * the returned infos won't be on the grid. REVIEW gammaStep separately?
  */
 calc::ReflectionInfos Session::makeReflectionInfos(
-    Experiment const& exp, calc::Reflection const& reflection, uint gmaSlices,
+    Experiment const& expt, calc::Reflection const& reflection, uint gmaSlices,
     Range const& rgeGma, Progress* progress) const {
     calc::ReflectionInfos infos;
 
     if (progress)
-        progress->setTotal(exp.count());
+        progress->setTotal(expt.count());
 
-    for (auto& suite : exp) {
+    for (auto& suite : expt) {
         if (progress)
             progress->step();
 
-        auto lens = dataseqLens(*suite, exp, norm_, true, true);
+        auto lens = dataseqLens(*suite, expt, norm_, true, true);
 
         Range rge = (gmaSlices > 0) ? lens->rgeGma() : lens->rgeGmaFull();
         if (rgeGma.isValid())
@@ -335,10 +335,10 @@ qreal Session::calcAvgBackground(Suite const& suite) const {
     return bgPolynom.avgY(lens->rgeTth());
 }
 
-qreal Session::calcAvgBackground(Experiment const& exp) const {
+qreal Session::calcAvgBackground(Experiment const& expt) const {
     TakesLongTime __;
     qreal bg = 0;
-    for (auto& suite : exp)
+    for (auto& suite : expt)
         bg += calcAvgBackground(*suite);
-    return bg / exp.count();
+    return bg / expt.count();
 }

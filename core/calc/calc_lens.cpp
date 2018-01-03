@@ -22,10 +22,10 @@ namespace calc {
 // ************************************************************************** //
 
 LensBase::LensBase(
-    Session const& session, Experiment const& exp, bool trans, bool cut,
+    Session const& session, Experiment const& expt, bool trans, bool cut,
     ImageTransform const& imageTransform, ImageCut const& imageCut)
     : session_(session)
-    , experiment_(exp)
+    , experiment_(expt)
     , trans_(trans)
     , cut_(cut)
     , imageTransform_(imageTransform)
@@ -81,9 +81,9 @@ void LensBase::doCut(uint& i, uint& j) const {
 // ************************************************************************** //
 
 ImageLens::ImageLens(
-    Session const& session, Image const& image, Experiment const& exp, bool trans,
+    Session const& session, Image const& image, Experiment const& expt, bool trans,
     bool cut)
-    : LensBase(session, exp, trans, cut, session.imageTransform(), session.imageCut())
+    : LensBase(session, expt, trans, cut, session.imageTransform(), session.imageCut())
     , image_(image) {}
 
 size2d ImageLens::size() const {
@@ -118,10 +118,10 @@ Range const& ImageLens::rgeInten(bool fixed) const {
 // ************************************************************************** //
 
 SequenceLens::SequenceLens(
-    Session const& session, Suite const& suite, Experiment const& exp,
+    Session const& session, Suite const& suite, Experiment const& expt,
     eNorm norm, bool trans, bool cut, ImageTransform const& imageTransform,
     ImageCut const& imageCut)
-    : LensBase(session, exp, trans, cut, imageTransform, imageCut)
+    : LensBase(session, expt, trans, cut, imageTransform, imageCut)
     , normFactor_(1)
     , suite_(suite) {
     setNorm(norm);
