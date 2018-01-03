@@ -253,7 +253,7 @@ void DiagramsFrame::saveDiagramOutput() {
         writeCurrentDiagramOutputFile(path, separator);
     else
         writeAllDataOutputFile(path, separator);
-    qInfo() << "diagram saved to " << path;
+    qDebug() /* qInfo() TODO restore */ << "diagram saved to " << path;
 }
 
 void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator) {

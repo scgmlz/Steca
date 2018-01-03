@@ -340,7 +340,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
 
     if (numSavedFiles > 0) {
         if (check)
-            qInfo() << numSavedFiles << " files have been saved";
+            qDebug() /* qInfo() TODO restore */ << numSavedFiles << " files have been saved";
         else
             qWarning() << "something went wrong, yet " << numSavedFiles << " files have been saved";
     } else
