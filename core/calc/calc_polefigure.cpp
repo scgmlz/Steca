@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/calc/calc_polefigure.cpp
-//! @brief     Implements ...
+//! @brief     Implements function interpolateInfos
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,6 +15,27 @@
 #include "calc_polefigure.h"
 #include "def/idiomatic_for.h"
 #include <qmath.h>
+#include "typ/async.h"
+
+namespace {
+
+struct itf_t {
+    itf_t();
+    itf_t(inten_t, deg, fwhm_t);
+
+    void operator+=(itf_t const&);
+
+    inten_t inten;
+    deg tth;
+    fwhm_t fwhm;
+};
+
+typedef vec<itf_t> itfs_t;
+
+// Interpolates reflection infos to a single point using idw.
+itf_t interpolateValues(
+    deg searchRadius, ReflectionInfos const& infos, deg alpha, deg beta);
+
 
 typedef vec<ReflectionInfo const*> info_vec;
 
@@ -214,6 +235,8 @@ itf_t interpolateValues(deg searchRadius, ReflectionInfos const& infos, deg alph
     else
         return itf_t();
 }
+
+} // anonymous namespace
 
 // Interpolates infos to equidistant grid in alpha and beta.
 ReflectionInfos interpolateInfos(
