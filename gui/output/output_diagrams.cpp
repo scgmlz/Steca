@@ -71,7 +71,7 @@ class TabPlot : public QCustomPlot {
 private:
 public:
     TabPlot();
-    void set(calc::ReflectionInfos);
+    void set(ReflectionInfos);
     void plot(
         qreal_vec const& xs, qreal_vec const& ys, qreal_vec const& ysLo, qreal_vec const& ysUp);
 protected:

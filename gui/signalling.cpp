@@ -32,11 +32,11 @@ void TheHubSignallingBase::tellSuiteSelected(QSharedPointer<Suite> suite) {
     emit sigSuiteSelected((asHub().selectedSuite_ = suite));
 }
 
-void TheHubSignallingBase::tellSelectedReflection(calc::shp_Reflection reflection) {
+void TheHubSignallingBase::tellSelectedReflection(shp_Reflection reflection) {
     emit sigReflectionSelected((asHub().selectedReflection_ = reflection));
 }
 
-void TheHubSignallingBase::tellReflectionData(calc::shp_Reflection reflection) {
+void TheHubSignallingBase::tellReflectionData(shp_Reflection reflection) {
     emit sigReflectionData(reflection);
 }
 

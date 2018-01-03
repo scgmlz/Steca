@@ -32,9 +32,9 @@ protected:
 
     void savePoleFigureOutput();
     void writePoleFigureOutputFiles(rcstr filePath, uint index);
-    void writePoleFile(rcstr filePath, calc::ReflectionInfos, qreal_vec const&);
-    void writeListFile(rcstr filePath, calc::ReflectionInfos, qreal_vec const&);
-    void writeErrorMask(rcstr filePath, calc::ReflectionInfos, qreal_vec const&);
+    void writePoleFile(rcstr filePath, ReflectionInfos, qreal_vec const&);
+    void writeListFile(rcstr filePath, ReflectionInfos, qreal_vec const&);
+    void writeErrorMask(rcstr filePath, ReflectionInfos, qreal_vec const&);
 };
 
 } // namespace output

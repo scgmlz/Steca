@@ -103,7 +103,7 @@ private:
 
     vec<QCPGraph*> reflGraph_;
     DiffractogramPlotOverlay* overlay_;
-    void onReflectionData(calc::shp_Reflection reflection);
+    void onReflectionData(shp_Reflection reflection);
 };
 
 // ************************************************************************** //
@@ -265,7 +265,7 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     fits_->setPen(QPen(Qt::red));
 
     connect(gHub, &TheHubSignallingBase::sigReflectionData,
-            [this](calc::shp_Reflection reflection) { onReflectionData(reflection); });
+            [this](shp_Reflection reflection) { onReflectionData(reflection); });
 
     connect(gHub->toggle_showBackground, &QAction::toggled, [this](bool on) {
         showBgFit_ = on;
@@ -420,7 +420,7 @@ void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
     overlay_->setGeometry(0, 0, size.width(), size.height());
 }
 
-void DiffractogramPlot::onReflectionData(calc::shp_Reflection reflection) {
+void DiffractogramPlot::onReflectionData(shp_Reflection reflection) {
 
     guesses_->clearData();
     fits_->clearData();
@@ -531,7 +531,7 @@ Diffractogram::Diffractogram()
         });
 
     connect(gHub, &TheHubSignallingBase::sigReflectionSelected,
-            [this](calc::shp_Reflection reflection) {
+            [this](shp_Reflection reflection) {
                 currentReflection_ = reflection;
                 plot_->updateBg();
             });

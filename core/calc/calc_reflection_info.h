@@ -23,8 +23,6 @@
 
 class Metadata;
 
-namespace calc {
-
 class ReflectionInfo final {
     public:
     ReflectionInfo();
@@ -95,7 +93,5 @@ private:
 
     void invalidate();
 };
-
-} // namespace calc
 
 #endif // CALC_REFLECTION_INFO_H

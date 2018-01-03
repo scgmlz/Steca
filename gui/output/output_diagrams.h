@@ -28,14 +28,14 @@ protected:
     class TabPlot* tabPlot_;
     class TabDiagramsSave* tabSave_;
 
-    using eReflAttr = calc::ReflectionInfo::eReflAttr;
+    using eReflAttr = ReflectionInfo::eReflAttr;
 
     eReflAttr xAttr() const;
     eReflAttr yAttr() const;
 
     void displayReflection(uint reflIndex, bool interpolated);
 
-    calc::ReflectionInfos rs_;
+    ReflectionInfos rs_;
     qreal_vec xs_, ys_, ysErrorLo_, ysErrorUp_;
 
     void recalculate();

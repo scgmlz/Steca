@@ -448,7 +448,7 @@ void TheHub::addReflection(QString const& peakFunctionName) {
 void TheHub::remReflection(uint i) {
     gSession->remReflection(i);
     if (gSession->reflections().isEmpty())
-        tellSelectedReflection(calc::shp_Reflection());
+        tellSelectedReflection(shp_Reflection());
     emit sigReflectionsChanged();
 }
 

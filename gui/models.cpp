@@ -225,7 +225,7 @@ QVariant ReflectionsModel::data(rcIndex index, int role) const {
     }
 
     case GetDatasetRole:
-        return QVariant::fromValue<calc::shp_Reflection>(gSession->reflections().at(to_u(row)));
+        return QVariant::fromValue<shp_Reflection>(gSession->reflections().at(to_u(row)));
     default:
         return EMPTY_VAR;
     }

@@ -49,7 +49,7 @@ private:
     QSpinBox *numSlices_, *numSlice_, *numBin_;
     QDoubleSpinBox *minGamma_, *maxGamma_;
 
-    QSharedPointer<calc::SequenceLens> lens_;
+    QSharedPointer<SequenceLens> lens_;
 };
 
 } // namespace panel

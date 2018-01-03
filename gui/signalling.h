@@ -44,8 +44,8 @@ private:
 public: // emit signals
     void tellSessionCleared();
     void tellSuiteSelected(QSharedPointer<Suite>);
-    void tellSelectedReflection(calc::shp_Reflection);
-    void tellReflectionData(calc::shp_Reflection);
+    void tellSelectedReflection(shp_Reflection);
+    void tellReflectionData(shp_Reflection);
     void tellReflectionValues(Range const&, qpair const&, fwhm_t, bool);
 
 signals:
@@ -62,8 +62,8 @@ signals:
     void sigCorrEnabled(bool);
 
     void sigReflectionsChanged();
-    void sigReflectionSelected(calc::shp_Reflection);
-    void sigReflectionData(calc::shp_Reflection);
+    void sigReflectionSelected(shp_Reflection);
+    void sigReflectionData(shp_Reflection);
     void sigReflectionValues(Range const&, qpair const&, fwhm_t, bool);
 
     void sigDisplayChanged();

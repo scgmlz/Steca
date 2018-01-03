@@ -22,8 +22,6 @@
 
 class PeakFunction;
 
-namespace calc {
-
 class Reflection final {
 public:
     Reflection(QString const& peakFunctionName = "Raw");
@@ -48,8 +46,6 @@ private:
 typedef QSharedPointer<Reflection> shp_Reflection;
 typedef vec<shp_Reflection> Reflections;
 
-} // namespace calc
-
-Q_DECLARE_METATYPE(calc::shp_Reflection)
+Q_DECLARE_METATYPE(shp_Reflection)
 
 #endif // CALC_REFLECTION_H

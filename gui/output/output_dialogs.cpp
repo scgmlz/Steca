@@ -416,7 +416,7 @@ TabTable::TabTable(
 
 TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
     : table_(table), showCols_(showCols) {
-    using eReflAttr = calc::ReflectionInfo::eReflAttr;
+    using eReflAttr = ReflectionInfo::eReflAttr;
 
     setLayout((box_ = vbox()));
 

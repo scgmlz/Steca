@@ -26,8 +26,6 @@ class Experiment;
 class Image;
 class Session;
 
-namespace calc {
-
 //! View the data through a lens
 
 class LensBase {
@@ -95,7 +93,5 @@ private:
 
     Suite const& suite_;
 };
-
-} // namespace calc
 
 #endif // LENS_H

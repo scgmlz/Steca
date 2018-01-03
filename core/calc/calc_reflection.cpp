@@ -15,8 +15,6 @@
 #include "fit/fit_fun.h"
 #include "calc_reflection.h"
 
-namespace calc {
-
 Reflection::Reflection(QString const& peakFunctionName) : peakFunction_(nullptr) {
     setPeakFunction(peakFunctionName);
 }
@@ -74,5 +72,3 @@ void Reflection::from_json(JsonObj const& obj) THROWS {
     setPeakFunction(peakFunctionName);
     peakFunction_->from_json(obj); // may throw
 }
-
-} // namespace calc

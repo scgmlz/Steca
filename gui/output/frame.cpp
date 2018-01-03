@@ -79,8 +79,8 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent)
     // tabs
 
     auto tabTable = new TabTable(
-        *params_, calc::ReflectionInfo::dataTags(false), calc::ReflectionInfo::dataTags(true),
-        calc::ReflectionInfo::dataCmps());
+        *params_, ReflectionInfo::dataTags(false), ReflectionInfo::dataTags(true),
+        ReflectionInfo::dataCmps());
     tabs_->addTab("Points", Qt::Vertical).box().addWidget(tabTable);
 
     table_ = tabTable->table;
@@ -142,12 +142,12 @@ void Frame::interpolate() {
         Progress progress(calcPoints_.count(), pb_);
 
         for_i (calcPoints_.count())
-            interpPoints_.append(calc::interpolate(
+            interpPoints_.append(interpolateInfos(
                 calcPoints_.at(i), alphaStep, betaStep, idwRadius, avgAlphaMax, avgRadius,
                 avgTreshold, &progress));
     } else {
         for_i (calcPoints_.count())
-            interpPoints_.append(calc::ReflectionInfos());
+            interpPoints_.append(ReflectionInfos());
     }
 
     displayReflection(getReflIndex(), getInterpolated());

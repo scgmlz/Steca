@@ -15,8 +15,6 @@
 #include "session.h"
 #include "data/suite.h"
 
-namespace calc {
-
 // ************************************************************************** //
 //   class LensBase
 // ************************************************************************** //
@@ -193,5 +191,3 @@ void SequenceLens::setNorm(eNorm norm) {
     if (qIsNaN(normFactor_))
         qWarning() << "Bad normalisation value";
 }
-
-} // namespace calc
