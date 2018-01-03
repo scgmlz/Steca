@@ -22,7 +22,7 @@
 namespace io {
 
 // implemented below
-static void loadTiff(QSharedPointer<Datafile>&, rcstr, deg, qreal, qreal) THROWS;
+static void loadTiff(Datafile*, rcstr, deg, qreal, qreal) THROWS;
 
 // The dat file looks like so:
 /*
@@ -41,8 +41,8 @@ Aus-Weimin-00008.tif -55
 Aus-Weimin-00009.tif -50
 */
 
-QSharedPointer<Datafile> loadTiffDat(rcstr filePath) THROWS {
-    QSharedPointer<Datafile> datafile(new Datafile(filePath));
+Datafile loadTiffDat(rcstr filePath) THROWS {
+    Datafile ret(filePath);
 
     QFile f(filePath);
     RUNTIME_CHECK(f.open(QFile::ReadOnly), "cannot open file");
@@ -87,7 +87,7 @@ QSharedPointer<Datafile> loadTiffDat(rcstr filePath) THROWS {
 
         try {
             // load one dataseq
-            loadTiff(datafile, dir.filePath(tiffFileName), phi, monitor, expTime);
+            loadTiff(&ret, dir.filePath(tiffFileName), phi, monitor, expTime);
         } catch (Exception& e) {
             // add file name to the message
             e.setMsg(tiffFileName + ": " + e.msg());
@@ -95,7 +95,7 @@ QSharedPointer<Datafile> loadTiffDat(rcstr filePath) THROWS {
         }
     }
 
-    return datafile;
+    return ret;
 }
 
 #define IS_ASCII RUNTIME_CHECK(2 == dataType, BAD_FORMAT)
@@ -108,7 +108,7 @@ QSharedPointer<Datafile> loadTiffDat(rcstr filePath) THROWS {
     RUNTIME_CHECK(val == dataOffset, BAD_FORMAT)
 
 static void
-loadTiff(QSharedPointer<Datafile>& file, rcstr filePath, deg phi, qreal monitor, qreal expTime) THROWS {
+loadTiff(Datafile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) THROWS {
 
     Metadata md;
     md.motorPhi = phi;

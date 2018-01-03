@@ -24,14 +24,11 @@ class QFileInfo;
 
 namespace io {
 
-bool couldBeCaress(QFileInfo const&);
-bool couldBeMar(QFileInfo const&);
-bool couldBeTiffDat(QFileInfo const&);
-
 //! load a file; file type will be sensed
-QSharedPointer<const Datafile> load(rcstr filePath) THROWS;
+QSharedPointer<Datafile const> loadDatafile(rcstr filePath) THROWS;
 
 str loadCaressComment(rcstr filePath);
+str loadComment(QFileInfo const& info);
 
 } // namespace io
 

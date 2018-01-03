@@ -60,14 +60,7 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
                 auto it = memInfo.find(path);
                 if (memInfo.end() != it)
                     return *it;
-                str loadInfo;
-                if (io::couldBeCaress(info))
-                    loadInfo = "[car] " + io::loadCaressComment(path);
-                else if (io::couldBeMar(info))
-                    loadInfo = "[mar] ";
-                else if (io::couldBeTiffDat(info))
-                    loadInfo = "[tif] ";
-
+                str loadInfo = io::loadComment(info);
                 memInfo.insert(path, loadInfo);
                 return loadInfo;
             }

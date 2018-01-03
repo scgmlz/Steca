@@ -24,8 +24,8 @@
 
 namespace io {
 
-QSharedPointer<Datafile> loadCaress(rcstr filePath) THROWS {
-    QSharedPointer<Datafile> datafile(new Datafile(filePath));
+Datafile loadCaress(rcstr filePath) THROWS {
+    Datafile ret(filePath);
 
     RUNTIME_CHECK(
         0 == open_data_file(filePath.toLocal8Bit().data(), nullptr),
@@ -208,7 +208,7 @@ QSharedPointer<Datafile> loadCaress(rcstr filePath) THROWS {
                 md.deltaTime = deltaTime;
                 md.time = tempTime;
 
-                datafile->addDataset(md, size, convertedIntens);
+                ret.addDataset(md, size, convertedIntens);
 
                 delete[] intens;
                 intens = NULL;
@@ -553,7 +553,7 @@ QSharedPointer<Datafile> loadCaress(rcstr filePath) THROWS {
         }
     }
 
-    return datafile;
+    return ret;
 }
 
 str loadCaressComment(rcstr filePath) {

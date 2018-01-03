@@ -335,7 +335,7 @@ void TheHub::addGivenFile(rcstr filePath) THROWS {
     if (!filePath.isEmpty() && !gSession->hasFile(filePath)) {
         {
             TakesLongTime __;
-            gSession->addGivenFile(io::load(filePath));
+            gSession->addGivenFile(io::loadDatafile(filePath));
         }
         emit sigFilesChanged();
     }
@@ -364,7 +364,7 @@ void TheHub::combineDatasetsBy(pint by) {
 void TheHub::setCorrFile(rcstr filePath) THROWS {
     QSharedPointer<Datafile const> file;
     if (!filePath.isEmpty())
-        file = io::load(filePath);
+        file = io::loadDatafile(filePath);
 
     gSession->setCorrFile(file);
     emit sigCorrFile(file);
