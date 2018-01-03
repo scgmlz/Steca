@@ -19,7 +19,6 @@
 #include <QBoxLayout>
 #include <QDockWidget>
 #include <QLineEdit>
-#include <QTreeView>
 
 //! Read-only version of QLineEdit
 

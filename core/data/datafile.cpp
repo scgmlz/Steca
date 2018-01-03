@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "datafile.h"
-#include "typ/exception.h"
 #include "measurement.h"
 #include <QStringBuilder> // for ".." % ..
 

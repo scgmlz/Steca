@@ -12,16 +12,9 @@
 //
 // ************************************************************************** //
 
-#include "experiment.h"
 #include "suite.h"
-#include "def/idiomatic_for.h"
 #include "measurement.h"
-#include "metadata.h"
 #include "session.h"
-#include "typ/array2d.h"
-#include "typ/curve.h"
-#include "typ/matrix.h"
-#include <qmath.h>
 
 Experiment::Experiment() {
     invalidateAvgMutables();
@@ -60,21 +53,21 @@ qreal Experiment::avgDeltaTime() const {
     return avgDeltaTime_;
 }
 
-Range const& Experiment::rgeGma(Session const& session) const {
+Range const& Experiment::rgeGma() const {
     if (!rgeGma_.isValid())
         for (auto& dataseq : *this)
-            rgeGma_.extendBy(dataseq->rgeGma(session));
+            rgeGma_.extendBy(dataseq->rgeGma());
     return rgeGma_;
 }
 
-Range const& Experiment::rgeFixedInten(Session const& session, bool trans, bool cut) const {
+Range const& Experiment::rgeFixedInten(bool trans, bool cut) const {
     if (!rgeFixedInten_.isValid()) {
         TakesLongTime __;
         for (auto& dataseq : *this)
             for (auto& one : *dataseq) {
                 if (one->image()) {
                     auto& image = *one->image();
-                    shp_ImageLens imageLens = session.imageLens(image, *this, trans, cut);
+                    shp_ImageLens imageLens = gSession->imageLens(image, *this, trans, cut);
                     rgeFixedInten_.extendBy(imageLens->rgeInten(false));
                 }
             }
@@ -82,12 +75,11 @@ Range const& Experiment::rgeFixedInten(Session const& session, bool trans, bool 
     return rgeFixedInten_;
 }
 
-Curve Experiment::avgCurve(Session const& session) const {
+Curve Experiment::avgCurve() const {
     if (avgCurve_.isEmpty()) {
         // TODO invalidate when combinedDgram is unchecked
         TakesLongTime __;
-        avgCurve_ =
-            session.dataseqLens(*combineAll(), *this, session.norm(), true, true)->makeCurve();
+        avgCurve_ = gSession->dataseqLens(*combineAll(), gSession->norm(), true, true)->makeCurve();
     }
     return avgCurve_;
 }

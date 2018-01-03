@@ -16,7 +16,6 @@
 #include "dialog_panels.h"
 #include "fit/fit_fun.h"
 #include "output_dialogs.h"
-#include "panels/panel.h"
 #include "session.h"
 #include "thehub.h"
 //#include "typ/variant.h"
@@ -254,7 +253,7 @@ void DiagramsFrame::saveDiagramOutput() {
         writeCurrentDiagramOutputFile(path, separator);
     else
         writeAllDataOutputFile(path, separator);
-    qInfo() << "diagram saved to " << path;
+    qDebug() /* qInfo() TODO restore */ << "diagram saved to " << path;
 }
 
 void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator) {

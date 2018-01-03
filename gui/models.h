@@ -18,6 +18,7 @@
 #include "table_model.h"
 #include "typ/str.h"
 #include "typ/vec.h"
+#include <QSharedPointer> // no auto rm
 
 class Suite;
 class Experiment;
@@ -55,7 +56,7 @@ public:
     void showMetaInfo(vec<bool> const&);
 
 private:
-    Experiment const& experiment_; // the selected suite
+    Experiment const& experiment_;
     uint_vec metaInfoNums_; // selected metadata items to show
 };
 

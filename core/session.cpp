@@ -15,7 +15,6 @@
 #include "session.h"
 #include "data/suite.h"
 #include "data/measurement.h"
-#include "data/metadata.h"
 #include "fit/peak_functions.h"
 
 Session::Session() : intenScale_(1), angleMapCache_(360) {
@@ -123,8 +122,8 @@ void Session::remCorrFile() {
 void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
 
     collectedFromFiles_ = fileNums;
-    collectedSuites_.clear();
-    collectedSuitesTags_.clear();
+    experiment_.clear();
+    experimentTags_.clear();
 
     vec<QSharedPointer<Measurement const>> suiteFromFiles;
     for (uint i : collectedFromFiles_)
@@ -144,8 +143,8 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
             i += cnt;
             if (combineBy > 1)
                 tag += '-' + str::number(i);
-            collectedSuites_.appendHere(cd);
-            collectedSuitesTags_.append(tag);
+            experiment_.appendHere(cd);
+            experimentTags_.append(tag);
             cd = QSharedPointer<Suite>(new Suite);
         }
     };
@@ -193,7 +192,6 @@ void Session::setImageCut(bool isTopOrLeft, bool linked, ImageCut const& cut) {
 }
 
 void Session::setGeometry(preal detectorDistance, preal pixSize, IJ const& midPixOffset) {
-
     geometry_.detectorDistance = detectorDistance;
     geometry_.pixSize = pixSize;
     geometry_.midPixOffset = midPixOffset;
@@ -211,7 +209,7 @@ IJ Session::midPix() const {
 }
 
 shp_AngleMap Session::angleMap(Measurement const& one) const {
-    AngleMap::Key key(geometry_, imageSize_, imageCut_, midPix(), one.midTth());
+    ImageKey key(geometry_, imageSize_, imageCut_, midPix(), one.midTth());
     shp_AngleMap map = angleMapCache_.value(key);
     if (map.isNull())
         map = angleMapCache_.insert(key, shp_AngleMap(new AngleMap(key)));
@@ -220,18 +218,18 @@ shp_AngleMap Session::angleMap(Measurement const& one) const {
 
 shp_ImageLens Session::imageLens(
     Image const& image, Experiment const& expt, bool trans, bool cut) const {
-    return shp_ImageLens(new ImageLens(*this, image, expt, trans, cut));
+    return shp_ImageLens(new ImageLens(image, expt, trans, cut));
 }
 
 QSharedPointer<SequenceLens> Session::dataseqLens(
-    Suite const& suite, Experiment const& expt, eNorm norm, bool trans, bool cut
-    ) const {
-    return QSharedPointer<SequenceLens>(new SequenceLens(
-        *this, suite, expt, norm, trans, cut, imageTransform_, imageCut_));
+    Suite const& suite, eNorm norm, bool trans, bool cut) const {
+    return QSharedPointer<SequenceLens>(
+        new SequenceLens(
+            suite, suite.experiment(), norm, trans, cut, imageTransform_, imageCut_));
 }
 
 QSharedPointer<SequenceLens> Session::defaultDatasetLens(Suite const& suite) const {
-    return dataseqLens(suite, suite.experiment(), norm(), true, true);
+    return dataseqLens(suite, norm(), true, true);
 }
 
 Curve Session::curveMinusBg(SequenceLens const& lens, Range const& rgeGma) const {
@@ -288,7 +286,7 @@ ReflectionInfos Session::makeReflectionInfos(
         if (progress)
             progress->step();
 
-        auto lens = dataseqLens(*suite, expt, norm_, true, true);
+        auto lens = dataseqLens(*suite, norm_, true, true);
 
         Range rge = (gmaSlices > 0) ? lens->rgeGma() : lens->rgeGmaFull();
         if (rgeGma.isValid())
@@ -329,7 +327,7 @@ void Session::addReflection(const QJsonObject& obj) {
 }
 
 qreal Session::calcAvgBackground(Suite const& suite) const {
-    auto lens = dataseqLens(suite, suite.experiment(), eNorm::NONE, true, true);
+    auto lens = dataseqLens(suite, eNorm::NONE, true, true);
     Curve gmaCurve = lens->makeCurve(); // had argument averaged=true
     auto bgPolynom = Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
     return bgPolynom.avgY(lens->rgeTth());

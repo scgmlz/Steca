@@ -16,7 +16,6 @@
 #define MAP_H
 
 template <typename Key, typename T> class map : public QMap<Key, T> {
-    using super_type = QMap<Key, T>;
 private:
 public:
 };

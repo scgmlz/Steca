@@ -15,13 +15,8 @@
 #ifndef EXPERIMENT_H
 #define EXPERIMENT_H
 
-#include "typ/array2d.h"
-#include "typ/curve.h"
-
-class Session;
-class Metadata;
-class Suite;
-class Experiment;
+#include "suite.h" // no auto rm
+#include <QSharedPointer> // required by some compilers
 
 //! A sequence of Suites's
 
@@ -37,10 +32,10 @@ public:
     qreal avgDeltaMonitorCount() const;
     qreal avgDeltaTime() const;
 
-    Range const& rgeGma(Session const&) const;
-    Range const& rgeFixedInten(Session const&, bool trans, bool cut) const;
+    Range const& rgeGma() const;
+    Range const& rgeFixedInten(bool trans, bool cut) const;
 
-    Curve avgCurve(Session const&) const;
+    Curve avgCurve() const;
 
     void invalidateAvgMutables() const;
 

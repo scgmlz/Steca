@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "output_diffractograms.h"
+#include "output_dialogs.h"
 #include "data/suite.h"
 #include "data/metadata.h"
 #include "dialog_panels.h"
@@ -128,7 +129,7 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
     if (pr->cbLimitGamma->isChecked())
         rgeGma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
 
-    auto& suite = gSession->collectedSuites();
+    auto& suite = gSession->experiment();
     Progress progress(suite.count(), pb_);
 
     OutputDataCollections allOutputData;

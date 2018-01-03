@@ -17,10 +17,8 @@
 #include <QFileSystemModel>
 #include <QSortFilterProxyModel>
 
-namespace gui {
-namespace file_dialog {
+namespace {
 
-// typedef QModelIndex idx;
 typedef QModelIndex const& rcidx;
 
 // ************************************************************************** //
@@ -28,8 +26,6 @@ typedef QModelIndex const& rcidx;
 // ************************************************************************** //
 
 class OpenFileProxyModel : public QSortFilterProxyModel {
-private:
-    using super = QSortFilterProxyModel;
 public:
     int columnCount(rcidx) const;
     QVariant headerData(int, Qt::Orientation, int = Qt::DisplayRole) const;
@@ -43,10 +39,10 @@ int OpenFileProxyModel::columnCount(rcidx) const {
     return 2;
 }
 
-QVariant OpenFileProxyModel::headerData(int section, Qt::Orientation o, int role) const {
-    if (1 == section && Qt::Horizontal == o && role == Qt::DisplayRole)
+QVariant OpenFileProxyModel::headerData(int section, Qt::Orientation ori, int role) const {
+    if (1 == section && Qt::Horizontal == ori && role == Qt::DisplayRole)
         return "Comment";
-    return super::headerData(section, o, role);
+    return QSortFilterProxyModel::headerData(section, ori, role);
 }
 
 QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
@@ -60,26 +56,24 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
                 auto it = memInfo.find(path);
                 if (memInfo.end() != it)
                     return *it;
-                str loadInfo;
-                if (io::couldBeCaress(info))
-                    loadInfo = "[car] " + io::loadCaressComment(path);
-                else if (io::couldBeMar(info))
-                    loadInfo = "[mar] ";
-                else if (io::couldBeTiffDat(info))
-                    loadInfo = "[tif] ";
-
+                str loadInfo = io::loadComment(info);
                 memInfo.insert(path, loadInfo);
                 return loadInfo;
             }
         }
         return QVariant();
     }
-    return super::data(idx, role);
+    return QSortFilterProxyModel::data(idx, role);
 }
+
+} // anonymous namespace
 
 // ************************************************************************** //
 //  exported functions
 // ************************************************************************** //
+
+namespace gui {
+namespace file_dialog {
 
 QStringList openFileNames(QWidget* parent, rcstr caption, rcstr dir, rcstr filter, bool plural) {
     QFileDialog dlg(parent, caption, dir, filter);

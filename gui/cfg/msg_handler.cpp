@@ -18,6 +18,7 @@
 #include <QStatusBar>
 #include <QApplication>
 #include <QMainWindow>
+#include <QtGlobal> // no auto rm
 
 #ifndef QT_NO_DEBUG
 #define context(ctx) " [" << ctx.function << "]"
@@ -32,10 +33,11 @@ void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg) {
     case QtDebugMsg:
         std::cerr << ".... " << msg.toStdString() << /*context(ctx) <<*/ "\n" << std::flush;
         break;
-    case QtInfoMsg:
-        std::cerr << "INFO " << msg.toStdString() << context(ctx) << "\n" << std::flush;
-        pMainWin->statusBar()->showMessage(msg, 5000);
-        break;
+// unavailable before Qt5.5
+//    case QtInfoMsg:
+//        std::cerr << "INFO " << msg.toStdString() << context(ctx) << "\n" << std::flush;
+//        pMainWin->statusBar()->showMessage(msg, 5000);
+//        break;
     case QtFatalMsg:
         std::cerr << "BUG! " << msg.toStdString() << context(ctx) << "\n" << std::flush;
         QMessageBox::critical(QApplication::activeWindow(), qAppName(),

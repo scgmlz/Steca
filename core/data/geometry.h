@@ -2,8 +2,8 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/typ/geometry.h
-//! @brief     Defines classes Geometry, ImageCut
+//! @file      core/data/geometry.h
+//! @brief     Defines classes Geometry, ImageCut, ImageKey
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,6 +15,7 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
+#include "typ/angles.h"
 #include "typ/array2d.h"
 #include "typ/ij.h"
 #include "typ/range.h"
@@ -50,6 +51,20 @@ public:
     void update(bool topLeftFirst, bool linked, ImageCut const& cut, size2d size);
 
     size2d marginSize() const;
+};
+
+class ImageKey {
+public:
+    ImageKey(Geometry const&, size2d const&, ImageCut const&, IJ const& midPix, deg midTth);
+
+    COMPARABLE(ImageKey const&);
+    bool operator<(ImageKey const& that) const { return compare(that) < 0; }
+
+    Geometry geometry;
+    size2d size;
+    ImageCut cut;
+    IJ midPix;
+    deg midTth;
 };
 
 #endif // GEOMETRY_H

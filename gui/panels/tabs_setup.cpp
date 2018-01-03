@@ -21,7 +21,6 @@
 #include "widgets/tree_views.h" // inheriting from
 #include "widgets/widget_makers.h"
 #include <QAction>
-#include <QDoubleSpinBox>
 
 namespace gui {
 namespace panel {
@@ -452,7 +451,7 @@ void TabsSetup::setFromHub() {
     beamOffsetI_->setValue(g.midPixOffset.i);
     beamOffsetJ_->setValue(g.midPixOffset.j);
 
-    auto cut = gHub->imageCut();
+    auto cut = gSession->imageCut();
 
     cutLeft_->setValue(to_i(cut.left));
     cutTop_->setValue(to_i(cut.top));

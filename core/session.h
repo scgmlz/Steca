@@ -38,8 +38,8 @@ private:
     QSharedPointer<Image> corrImage_;
     bool corrEnabled_;
     uint_vec collectedFromFiles_; // from these files
-    Experiment collectedSuites_; // suite collected ...
-    QStringList collectedSuitesTags_;
+    Experiment experiment_; // suite collected ...
+    QStringList experimentTags_;
     bool intenScaledAvg_; // if not, summed
     preal intenScale_;
     size2d imageSize_; //!< All images must have this same size
@@ -54,7 +54,7 @@ private:
 
     mutable Image intensCorr_;
     mutable bool corrHasNaNs_;
-    mutable cache_lazy<AngleMap::Key, AngleMap> angleMapCache_;
+    mutable cache_lazy<ImageKey, AngleMap> angleMapCache_;
 
     void updateImageSize(); //!< Clears image size if session has no files
     void setImageSize(size2d const&) THROWS; //!< Ensures same size for all images
@@ -101,8 +101,8 @@ public:
     bool isCorrEnabled() const { return corrEnabled_; }
 
     uint_vec const& collectedFromFiles() const { return collectedFromFiles_; }
-    Experiment const& collectedSuites() const { return collectedSuites_; }
-    QStringList const& collectedSuitesTags() const { return collectedSuitesTags_; }
+    Experiment const& experiment() const { return experiment_; }
+    QStringList const& experimentTags() const { return experimentTags_; }
 
     size2d imageSize() const;
     ImageTransform const& imageTransform() const { return imageTransform_; }
@@ -118,8 +118,7 @@ public:
         return session.angleMap(ds); }
 
     shp_ImageLens imageLens(Image const&, Experiment const&, bool trans, bool cut) const;
-    QSharedPointer<SequenceLens> dataseqLens(
-        Suite const&, Experiment const&, eNorm, bool trans, bool cut) const;
+    QSharedPointer<SequenceLens> dataseqLens(Suite const&, eNorm, bool trans, bool cut) const;
     QSharedPointer<SequenceLens> defaultDatasetLens(Suite const& dataseq) const;
 
     ReflectionInfos makeReflectionInfos(

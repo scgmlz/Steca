@@ -80,15 +80,10 @@ public:
     bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
     bool isCombinedDgram() const { return isCombinedDgram_; }
 
-    Curve avgCurve(Experiment const& dss) const;
-
     void saveSession(QFileInfo const&) const;
     QByteArray saveSession() const;
 
     pint suiteGroupedBy() const { return suiteGroupedBy_; }
-
-    Range collectedSuitesRgeGma() const;
-    ImageCut const& imageCut() const;
 
     eFittingTab fittingTab() const { return fittingTab_; }
 

@@ -176,10 +176,6 @@ void TheHub::removeFile(uint i) {
         setImageCut(true, false, ImageCut());
 }
 
-Curve TheHub::avgCurve(Experiment const& dss) const {
-    return dss.avgCurve(*gSession);
-}
-
 void TheHub::saveSession(QFileInfo const& fileInfo) const {
     WriteFile file(fileInfo.filePath());
 
@@ -339,7 +335,7 @@ void TheHub::addGivenFile(rcstr filePath) THROWS {
     if (!filePath.isEmpty() && !gSession->hasFile(filePath)) {
         {
             TakesLongTime __;
-            gSession->addGivenFile(io::load(filePath));
+            gSession->addGivenFile(io::loadDatafile(filePath));
         }
         emit sigFilesChanged();
     }
@@ -365,14 +361,10 @@ void TheHub::combineDatasetsBy(pint by) {
     collectDatasetsFromFiles(collectFromFiles_, by);
 }
 
-Range TheHub::collectedSuitesRgeGma() const {
-    return gSession->collectedSuites().rgeGma(*gSession);
-}
-
 void TheHub::setCorrFile(rcstr filePath) THROWS {
     QSharedPointer<Datafile const> file;
     if (!filePath.isEmpty())
-        file = io::load(filePath);
+        file = io::loadDatafile(filePath);
 
     gSession->setCorrFile(file);
     emit sigCorrFile(file);
@@ -383,10 +375,6 @@ void TheHub::setCorrFile(rcstr filePath) THROWS {
 void TheHub::tryEnableCorrection(bool on) {
     gSession->tryEnableCorr(on);
     emit sigCorrEnabled(gSession->isCorrEnabled());
-}
-
-ImageCut const& TheHub::imageCut() const {
-    return gSession->imageCut();
 }
 
 void TheHub::setImageCut(bool isTopOrLeft, bool linked, ImageCut const& cut) {

@@ -15,8 +15,6 @@
 #ifndef FILEDIALOG_H
 #define FILEDIALOG_H
 
-
-
 namespace gui {
 namespace file_dialog {
 
@@ -28,4 +26,5 @@ str saveDirName(QWidget*, rcstr caption, rcstr dir);
 
 } // namespace file_dialog
 } // namespace gui
+
 #endif // FILEDIALOG_H

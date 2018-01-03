@@ -15,7 +15,6 @@
 #include "models.h"
 #include "data/suite.h"
 #include "data/metadata.h"
-#include "def/idiomatic_for.h"
 #include "fit/fit_fun.h"
 #include "session.h"
 #include "thehub.h"
@@ -56,7 +55,7 @@ void FilesModel::removeFile(uint i) {
 // ************************************************************************** //
 
 DatasetsModel::DatasetsModel()
-    : experiment_(gSession->collectedSuites())
+    : experiment_(gSession->experiment())
 {
 }
 
@@ -81,7 +80,7 @@ QVariant DatasetsModel::data(rcIndex index, int role) const {
 
         switch (col) {
         case COL_NUMBER:
-            return gSession->collectedSuitesTags().at(to_u(row));
+            return gSession->experimentTags().at(to_u(row));
         default:
             return experiment_.at(to_u(row))->metadata()->attributeStrValue(
                 metaInfoNums_.at(to_u(col - COL_ATTRS)));

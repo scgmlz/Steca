@@ -15,7 +15,6 @@
 #ifndef OUTPUT_DIFFRACTOGRAMS_H
 #define OUTPUT_DIFFRACTOGRAMS_H
 
-#include "output_dialogs.h"
 #include "frame.h"
 
 class Suite;

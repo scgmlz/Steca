@@ -15,7 +15,6 @@
 #ifndef PARAMETRIC_FUNCTION_H
 #define PARAMETRIC_FUNCTION_H
 
-#include "def/special_pointers.h"
 #include "typ/json.h"
 #include "typ/range.h"
 

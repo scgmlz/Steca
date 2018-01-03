@@ -101,7 +101,7 @@ void ImageWidget::paintEvent(QPaintEvent*) {
         p.setPen(Qt::lightGray);
 
         // cut
-        auto cut = gHub->imageCut();
+        auto cut = gSession->imageCut();
         QRect r = rect.adjusted(-1, -1, 0, 0)
                       .adjusted(
                           qRound(scale_ * cut.left), qRound(scale_ * cut.top),
@@ -235,7 +235,7 @@ QImage TabsImages::makeImage(QSharedPointer<Image> image, bool curvedScale) {
     if (!image)
         return im;
 
-    auto imageLens = gSession->imageLens(*image, gSession->collectedSuites(), true, false);
+    auto imageLens = gSession->imageLens(*image, gSession->experiment(), true, false);
     auto size = imageLens->size();
     if (size.isEmpty())
         return im;

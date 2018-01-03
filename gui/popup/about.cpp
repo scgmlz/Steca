@@ -16,7 +16,7 @@
 #include "../manifest.h"
 #include "cfg/gui_cfg.h"
 #include "cfg/settings.h"
-#include "typ/geometry.h"
+#include "data/geometry.h"
 #include "widgets/widget_makers.h"
 #include <QApplication>
 #include <QDate>
@@ -58,11 +58,10 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
     str arch = "";
 #endif
 
-    auto info = label(str("<h4>%1 ver. %2 %5</h4>"
-                          "<p>StressTextureCalculator</p>"
+    auto info = label(str("<h4>Steca version %2 %5</h4>"
+                          "<p>The stress and texture calculator</p>"
                           "<p>Copyright: Forschungszentrum Jülich GmbH %3</p>"
                           "<p><a href='%4'>%4</a></p>")
-                          .arg(qApp->applicationName())
                           .arg(qApp->applicationVersion())
                           .arg(QDate::currentDate().toString("yyyy"))
                           .arg(STECA2_PAGES_URL)

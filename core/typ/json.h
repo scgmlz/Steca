@@ -21,8 +21,8 @@
 
 QJsonValue qreal_to_json(const qreal num);
 
-struct Range;
-struct IJ;
+class Range;
+class IJ;
 
 class JsonObj : public QJsonObject {
 private:

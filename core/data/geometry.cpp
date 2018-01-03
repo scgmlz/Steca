@@ -2,8 +2,8 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      core/typ/geometry.cpp
-//! @brief     Implements classes Geometry, ImageCut
+//! @file      core/data/geometry.cpp
+//! @brief     Implements classes Geometry, ImageCut, ImageKey
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,11 +12,13 @@
 //
 // ************************************************************************** //
 
-#include "typ/geometry.h"
+#include "data/geometry.h"
 #include "def/comparators.h"
-#include "def/idiomatic_for.h"
-#include <qmath.h>
 #include <iostream> // for debugging
+
+// ************************************************************************** //
+//  class Geometry
+// ************************************************************************** //
 
 preal const Geometry::MIN_DETECTOR_DISTANCE = preal(10);
 preal const Geometry::MIN_DETECTOR_PIXEL_SIZE = preal(.1);
@@ -35,6 +37,10 @@ int Geometry::compare(Geometry const& that) const {
 }
 
 EQ_NE_OPERATOR(Geometry)
+
+// ************************************************************************** //
+//  class ImageCut
+// ************************************************************************** //
 
 ImageCut::ImageCut() : ImageCut(0, 0, 0, 0) {}
 
@@ -82,3 +88,23 @@ EQ_NE_OPERATOR(ImageCut)
 size2d ImageCut::marginSize() const {
     return size2d(left + right, top + bottom);
 }
+
+// ************************************************************************** //
+//  class ImageKey
+// ************************************************************************** //
+
+ImageKey::ImageKey(
+    Geometry const& geometry_, size2d const& size_, ImageCut const& cut_,
+    IJ const& midPix_, deg midTth_)
+    : geometry(geometry_), size(size_), cut(cut_), midPix(midPix_), midTth(midTth_) {}
+
+int ImageKey::compare(ImageKey const& that) const {
+    RET_COMPARE_COMPARABLE(geometry)
+    RET_COMPARE_COMPARABLE(size)
+    RET_COMPARE_COMPARABLE(cut)
+    RET_COMPARE_COMPARABLE(midPix)
+    RET_COMPARE_VALUE(midTth)
+    return 0;
+}
+
+EQ_NE_OPERATOR(ImageKey)

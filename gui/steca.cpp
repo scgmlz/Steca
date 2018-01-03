@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
     gui::MainWin mainWin;
     pMainWin = &mainWin;
     mainWin.show();
-    qInfo() << "Welcome to Steca";
+    qDebug() /* qInfo() TODO restore */ << "Welcome to Steca";
 
     return app.exec();
 }

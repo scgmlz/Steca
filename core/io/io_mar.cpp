@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "io_io.h"
 #include "def/idiomatic_for.h"
 #include "data/datafile.h"
 #include "data/metadata.h"
@@ -23,10 +22,10 @@ namespace io {
 
 // Code taken from the original STeCa, only slightly modified.
 
-QSharedPointer<Datafile> loadMar(rcstr filePath) THROWS {
+Datafile loadMar(rcstr filePath) THROWS {
     typedef short WORD;
 
-    QSharedPointer<Datafile> datafile(new Datafile(filePath));
+    Datafile ret(filePath);
 
     FILE* fpIn;
 
@@ -220,12 +219,12 @@ QSharedPointer<Datafile> loadMar(rcstr filePath) THROWS {
 
     // REVIEW ?? pictureOverflow
 
-    datafile->addDataset(md, size2d(pixSizeX, pixSizeY), convertedIntens);
+    ret.addDataset(md, size2d(pixSizeX, pixSizeY), convertedIntens);
 
     delete[] i2_image;
     delete[] i4_image;
 
-    return datafile;
+    return ret;
 }
 
 } // namespace io

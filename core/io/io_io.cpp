@@ -12,17 +12,19 @@
 //
 // ************************************************************************** //
 
-#include "io_io.h"
 #include "data/datafile.h"
 #include "typ/exception.h"
-#include <QFile>
 #include <QStringBuilder> // for ".." % ..
+#include <QFileInfo>
 
 namespace io {
+Datafile loadCaress(rcstr filePath) THROWS;
+Datafile loadMar(rcstr filePath) THROWS;
+Datafile loadTiffDat(rcstr filePath) THROWS;
+str loadCaressComment(rcstr filePath);
+}
 
-QSharedPointer<Datafile const> loadCaress(rcstr filePath) THROWS;
-QSharedPointer<Datafile const> loadMar(rcstr filePath) THROWS;
-QSharedPointer<Datafile const> loadTiffDat(rcstr filePath) THROWS;
+namespace {
 
 // peek at up to maxLen bytes (to establish the file type)
 static QByteArray peek(uint pos, uint maxLen, QFileInfo const& info) {
@@ -78,23 +80,40 @@ bool couldBeTiffDat(QFileInfo const& info) {
     return couldBe;
 }
 
-QSharedPointer<const Datafile> load(rcstr filePath) THROWS {
+Datafile load_low_level(rcstr filePath) THROWS {
     QFileInfo info(filePath);
     RUNTIME_CHECK(info.exists(), "File " % filePath % " does not exist");
 
-    QSharedPointer<const Datafile> file;
     if (couldBeCaress(info))
-        file = io::loadCaress(filePath);
+        return io::loadCaress(filePath);
     else if (couldBeMar(info))
-        file = io::loadMar(filePath);
+        return io::loadMar(filePath);
     else if (couldBeTiffDat(info))
-        file = io::loadTiffDat(filePath);
+        return io::loadTiffDat(filePath);
     else
         THROW("unknown file type: " % filePath);
+}
 
-    RUNTIME_CHECK(file->suite().count() > 0, "File " % filePath % " contains no suite");
+} // anonymous namespace
 
-    return file;
+namespace io {
+
+QSharedPointer<Datafile const> loadDatafile(rcstr filePath) THROWS {
+    auto ret = QSharedPointer<Datafile const>(new Datafile(load_low_level(filePath)));
+    RUNTIME_CHECK(ret->suite().count() > 0, "File " % filePath % " contains no suite");
+    return ret;
+}
+
+str loadComment(QFileInfo const& info) {
+    auto path = info.absoluteFilePath();
+    if (couldBeCaress(info))
+        return "[car] " + io::loadCaressComment(path);
+    else if (couldBeMar(info))
+        return "[mar] ";
+    else if (couldBeTiffDat(info))
+        return "[tif] ";
+    else
+        NEVER;
 }
 
 } // namespace io

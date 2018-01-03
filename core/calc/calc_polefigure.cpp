@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      core/calc/calc_polefigure.cpp
-//! @brief     Implements ...
+//! @brief     Implements function interpolateInfos
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,7 +15,28 @@
 #include "calc_polefigure.h"
 #include "def/idiomatic_for.h"
 #include <qmath.h>
+#include "typ/async.h"
 
+namespace {
+
+struct itf_t {
+    itf_t() : itf_t(inten_t(NAN), deg(NAN), fwhm_t(NAN)) {}
+    itf_t(inten_t _inten, deg _tth, fwhm_t _fwhm) : inten(_inten), tth(_tth), fwhm(_fwhm) {}
+
+    void operator+=(itf_t const&); // used once to compute average
+
+    inten_t inten;
+    deg tth;
+    fwhm_t fwhm;
+};
+
+void itf_t::operator+=(itf_t const& that) {
+    inten += that.inten;
+    tth += that.tth;
+    fwhm += that.fwhm;
+}
+
+typedef vec<itf_t> itfs_t;
 typedef vec<ReflectionInfo const*> info_vec;
 
 // Calculates the difference of two angles. Parameters should be in [0, 360].
@@ -35,9 +56,8 @@ deg calculateDeltaBeta(deg beta1, deg beta2) {
 // Calculates the angle between two points on a unit sphere.
 deg angle(deg alpha1, deg alpha2, deg deltaBeta) {
     // Absolute value of deltaBeta is not needed because cos is an even function.
-    auto a = rad(acos(
-                          cos(alpha1.toRad()) * cos(alpha2.toRad())
-                          + sin(alpha1.toRad()) * sin(alpha2.toRad()) * cos(deltaBeta.toRad())))
+    auto a = rad(acos( cos(alpha1.toRad()) * cos(alpha2.toRad())
+                       + sin(alpha1.toRad()) * sin(alpha2.toRad()) * cos(deltaBeta.toRad())))
                  .toDeg();
     debug::ensure(0 <= a && a <= 180);
     return a;
@@ -86,16 +106,6 @@ bool inRadius(deg alpha, deg beta, deg centerAlpha, deg centerBeta, deg radius) 
     return qAbs(a) < radius;
 }
 
-itf_t::itf_t() : itf_t(inten_t(NAN), deg(NAN), fwhm_t(NAN)) {}
-
-itf_t::itf_t(inten_t inten_, deg tth_, fwhm_t fwhm_) : inten(inten_), tth(tth_), fwhm(fwhm_) {}
-
-void itf_t::operator+=(itf_t const& that) {
-    inten += that.inten;
-    tth += that.tth;
-    fwhm += that.fwhm;
-}
-
 // Adds data from reflection infos within radius from alpha and beta
 // to the peak parameter lists.
 void searchPoints(deg alpha, deg beta, deg radius, ReflectionInfos const& infos, itfs_t& itfs) {
@@ -139,7 +149,6 @@ void searchInQuadrants(
 }
 
 itf_t inverseDistanceWeighing(qreal_vec const& distances, info_vec const& infos) {
-    itf_t itf;
     uint N = NUM_QUADRANTS;
     // Generally, only distances.count() == values.count() > 0 is needed for this
     // algorithm. However, in this context we expect exactly the following:
@@ -151,10 +160,7 @@ itf_t inverseDistanceWeighing(qreal_vec const& distances, info_vec const& infos)
         if (distances.at(i) == .0) {
             // Points coincide; no need to interpolate.
             auto& in = infos.at(i);
-            itf.inten = inten_t(in->inten());
-            itf.tth = in->tth();
-            itf.fwhm = in->fwhm();
-            return itf;
+            return { in->inten(), in->tth(), in->fwhm() };
         }
         inverseDistances[i] = 1 / distances.at(i);
         inverseDistanceSum += inverseDistances.at(i);
@@ -171,12 +177,12 @@ itf_t inverseDistanceWeighing(qreal_vec const& distances, info_vec const& infos)
         fwhm += in->fwhm() * d;
     }
 
-    itf.inten = inten_t(height / inverseDistanceSum);
-    itf.tth = deg(offset / inverseDistanceSum);
-    itf.fwhm = fwhm_t(fwhm / inverseDistanceSum);
-    return itf;
+    return { inten_t(height/inverseDistanceSum),
+            deg(offset/inverseDistanceSum),
+            fwhm_t(fwhm/inverseDistanceSum) };
 }
 
+// Interpolates reflection infos to a single point using idw.
 itf_t interpolateValues(deg searchRadius, ReflectionInfos const& infos, deg alpha, deg beta) {
     info_vec interpolationInfos;
     qreal_vec distances;
@@ -212,10 +218,12 @@ itf_t interpolateValues(deg searchRadius, ReflectionInfos const& infos, deg alph
     if (numQuadrantsOk == NUM_QUADRANTS)
         return inverseDistanceWeighing(distances, interpolationInfos);
     else
-        return itf_t();
+        return { NAN, NAN, NAN };
 }
 
-// Interpolates infos to equidistant grid in alpha and beta.
+} // anonymous namespace
+
+//! Interpolates infos to equidistant grid in alpha and beta.
 ReflectionInfos interpolateInfos(
     ReflectionInfos const& infos, deg alphaStep, deg betaStep, deg idwRadius, deg averagingAlphaMax,
     deg averagingRadius, qreal inclusionTreshold, Progress* progress) {
@@ -237,7 +245,8 @@ ReflectionInfos interpolateInfos(
     // NOTE We expect all infos to have the same gamma range.
 
     // REVIEW qRound oder qCeil?
-    uint numAlphas = to_u(qRound(90. / alphaStep)), numBetas = to_u(qRound(360. / betaStep));
+    uint numAlphas = to_u(qRound(90. / alphaStep));
+    uint numBetas = to_u(qRound(360. / betaStep));
 
     ReflectionInfos interpolatedInfos; // Output data.
 
