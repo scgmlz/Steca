@@ -17,7 +17,7 @@
 
 #include "typ/angles.h"
 #include "data/image.h"
-#include <QSharedPointer> // required by some compilers
+#include <QSharedPointer> // no auto rm
 
 class Metadata;
 

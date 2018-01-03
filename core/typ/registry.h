@@ -11,8 +11,8 @@
 #define REGISTRY_H
 
 #include "exception.h"
-#include <QMap>        // required by some compilers
-#include <QStringList> // required by some compilers
+#include <QMap>        // no auto rm
+#include <QStringList> // no auto rm
 
 //! Mixin interface for registries holding objects of type T
 
