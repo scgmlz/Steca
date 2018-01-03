@@ -176,10 +176,6 @@ void TheHub::removeFile(uint i) {
         setImageCut(true, false, ImageCut());
 }
 
-Curve TheHub::avgCurve(Experiment const& dss) const {
-    return dss.avgCurve();
-}
-
 void TheHub::saveSession(QFileInfo const& fileInfo) const {
     WriteFile file(fileInfo.filePath());
 
