@@ -27,7 +27,7 @@ public:
     MainWin();
 
     void online();
-    void checkUpdate(bool completeReport=true);
+    void checkUpdate();
 
     void show();
     void close();
@@ -53,8 +53,6 @@ private:
 
     void messageDialog(rcstr title, rcstr text);
     void closeEvent(QCloseEvent*);
-    void onShow();
-    void onClose();
 
     void readSettings();
     void saveSettings();

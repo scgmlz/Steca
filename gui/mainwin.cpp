@@ -215,7 +215,7 @@ void MainWin::connectActions() {
 
     QObject::connect(gHub->trigger_about, &QAction::triggered, [this](){AboutBox(this).exec();});
     connectTrigger(gHub->trigger_online, &MainWin::online);
-    QObject::connect(gHub->trigger_checkUpdate, &QAction::triggered, [this]() {checkUpdate();});
+    connectTrigger(gHub->trigger_checkUpdate, &MainWin::checkUpdate);
 
     connectToggle(gHub->toggle_viewStatusbar, &MainWin::viewStatusbar);
 #ifndef Q_OS_OSX
@@ -233,7 +233,7 @@ void MainWin::online() {
     QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL));
 }
 
-void MainWin::checkUpdate(bool completeReport) {
+void MainWin::checkUpdate() {
 
     QNetworkRequest req;
 
@@ -242,7 +242,7 @@ void MainWin::checkUpdate(bool completeReport) {
     req.setUrl(QUrl(str(STECA2_VERSION_URL) % "?" % qry));
     auto reply = netMan_.get(req);
 
-    connect(reply, &QNetworkReply::finished, [this, completeReport, reply]() {
+    connect(reply, &QNetworkReply::finished, [this, reply]() {
         if (QNetworkReply::NoError != reply->error()) {
             messageDialog("Network Error", reply->errorString());
         } else {
@@ -270,7 +270,15 @@ void MainWin::messageDialog(rcstr title, rcstr text) {
 
 void MainWin::show() {
     QMainWindow::show();
-    onShow();
+    checkActions();
+    gHub->clearSession();
+
+#ifdef DEVELOPMENT
+    // automatic actions - load files & open dialog
+    // helps with development
+    gHub->sessionFromFile("....");
+    gHub->actions.outputPolefigures->trigger();
+#endif
 }
 
 void MainWin::close() {
@@ -351,38 +359,8 @@ void MainWin::outputDiffractograms() {
 }
 
 void MainWin::closeEvent(QCloseEvent* event) {
-    onClose();
-    event->accept();
-}
-
-void MainWin::onShow() {
-    checkActions();
-    gHub->clearSession();
-
-#ifdef DEVELOPMENT
-    // automatic actions - load files & open dialog
-    // helps with development
-    gHub->sessionFromFile("....");
-    gHub->actions.outputPolefigures->trigger();
-#endif
-
-    Settings s("config");
-    auto ver = qApp->applicationVersion();
-    if (s.readStr("current version") != ver) {
-        // new version
-        s.saveStr("current version", ver);
-        s.saveBool("startup check update", true);
-        s.saveBool("startup about", true);
-    }
-
-    if (s.readBool("startup check update", true))
-        checkUpdate(false);
-    if (s.readBool("startup about", true))
-        ;//about();
-}
-
-void MainWin::onClose() {
     saveSettings();
+    event->accept();
 }
 
 void MainWin::readSettings() {
