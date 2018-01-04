@@ -17,7 +17,9 @@
 #include "cfg/msg_handler.h"
 #include "session.h"
 #include <iostream>
-#include <unistd.h>
+#define OPTPARSE_IMPLEMENTATION
+#define OPTPARSE_API static
+#include "optparse.h"
 #include <QApplication>
 #include <QStyleFactory>
 
@@ -30,8 +32,10 @@ class Session* gSession; //!< global, for data handling
 
 int main(int argc, char* argv[]) {
 
+    struct optparse options;
+    optparse_init(&options, argv);
     int opt;
-    while ((opt = getopt(argc, argv, "hvc")) != -1) {
+    while ((opt = optparse(&options, "hvc")) != -1) {
         switch (opt) {
         case 'h':
             std::cout << APPLICATION_CLAIM << "\n\n"
@@ -46,7 +50,7 @@ int main(int argc, char* argv[]) {
             exit(0);
         }
     }
-    if (argc>optind) {
+    if (optparse_arg(&options)) {
         std::cerr << "Unexpected command-line argument(s) given\n";
         exit(-1);
     }
