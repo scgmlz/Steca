@@ -129,9 +129,9 @@ void initMenus(QMenuBar* mbar) {
                 gHub->toggle_viewMetadata,
                 separator(),
 #ifndef Q_OS_OSX
-            gHub->toggle_fullScreen,
+                gHub->toggle_fullScreen,
 #endif
-            gHub->toggle_viewStatusbar,
+                gHub->toggle_viewStatusbar,
                 separator(),
                 gHub->trigger_viewReset,
         });
@@ -139,11 +139,8 @@ void initMenus(QMenuBar* mbar) {
     actionsToMenu(
         "&Help",
         {
-            gHub->trigger_about,
-#ifndef Q_OS_OSX
-            separator(), // Mac puts About into the Apple menu
-#endif
-            gHub->trigger_online,
+            gHub->trigger_about, // Mac puts About into the Apple menu
+                gHub->trigger_online,
                 gHub->trigger_checkUpdate,
         });
 }

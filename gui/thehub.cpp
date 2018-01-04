@@ -48,7 +48,7 @@ TheHub::TheHub()
 
     // create actions
 
-    trigger_about = newTrigger("About && Configuration...");
+    trigger_about = newTrigger("About " + qApp->applicationName());
     trigger_online = newTrigger("Online documentation...");
     trigger_checkUpdate = newTrigger("Check for update...");
     trigger_quit = newTrigger("Quit");

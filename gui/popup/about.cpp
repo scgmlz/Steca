@@ -58,10 +58,19 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
     str arch = "";
 #endif
 
-    auto info = label(str("<h4>%1 version %2 %3</h4>"
-                          "<p>%4</p>"
-                          "<p>Copyright: Forschungszentrum Jülich GmbH %5</p>"
-                          "<p><a href='%6'>%6</a></p>")
+    auto info = label(str(
+"<h4>%1 version %2 %3</h4>"
+"<p>%4</p>"
+"<p>Copyright: Forschungszentrum Jülich GmbH %5</p>"
+"<p>In scientific publications, the use of Steca must be acknowledged"
+" and documented by means of the following two citations:</p>"
+"<p>C. Randau, U. Garbe, H.-G. Brokmeier,<br>"
+"<i>StressTextureCalculator: a software tool to extract texture, strain"
+" and microstructure information from area-detector measurements</i>,<br>"
+"J. Appl. Cryst. 46 (2011).</p>"
+"<p>R. E. Brydon, J. Burle, W. Gan, M. Hofmann, A. J. Soininen, J. Wuttke,<br>"
+"<i>Stress and texture calculator Steca, version 2</i>,<br>"
+"<a href='%6'>%6</a> (2018).</p>")
                       .arg(qApp->applicationName())
                       .arg(qApp->applicationVersion())
                       .arg(arch)
