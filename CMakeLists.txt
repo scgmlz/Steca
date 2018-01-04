@@ -9,6 +9,7 @@ project(SteCa2)
 
 option(WITH_TESTS "Build with all tests" ON)
 
+set(Steca_VERSION 2.0.6a)
 
 if(CMAKE_VERSION VERSION_LESS "3.1")
   set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
