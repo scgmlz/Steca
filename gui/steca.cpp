@@ -70,9 +70,8 @@ int main(int argc, char* argv[]) {
 
     gSession = Session::instance();
 
-    gui::MainWin mainWin;
-    gMainWin = &mainWin;
-    mainWin.show();
+    gMainWin = gui::MainWin::instance();
+    gMainWin->show();
     qDebug() /* qInfo() TODO restore */ << "Welcome to Steca";
 
     return app.exec();

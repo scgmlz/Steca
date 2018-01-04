@@ -15,13 +15,14 @@
 #ifndef MAINWIN_H
 #define MAINWIN_H
 
+#include "typ/singleton.h"
 #include "typ/str.h"
 #include <QMainWindow>
 #include <QNetworkAccessManager>
 
 namespace gui {
 
-class MainWin : public QMainWindow {
+class MainWin : public QMainWindow, public ISingleton<MainWin> {
 public:
     MainWin();
 
