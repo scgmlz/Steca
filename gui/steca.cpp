@@ -25,7 +25,7 @@ const char* version =
 #include "../VERSION"
     ;
 
-class QMainWindow* pMainWin;
+class QMainWindow* gMainWin;
 class Session* gSession;
 
 int main(int argc, char* argv[]) {
@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
     gSession = Session::instance();
 
     gui::MainWin mainWin;
-    pMainWin = &mainWin;
+    gMainWin = &mainWin;
     mainWin.show();
     qDebug() /* qInfo() TODO restore */ << "Welcome to Steca";
 
