@@ -334,18 +334,15 @@ void MainWin::clearSession() {
 }
 
 void MainWin::outputPoleFigures() {
-    auto popup = new output::PoleFiguresFrame("Pole Figures", this);
-    popup->show();
+    new output::PoleFiguresFrame("Pole Figures", this);
 }
 
 void MainWin::outputDiagrams() {
-    auto popup = new output::DiagramsFrame("Diagrams", this);
-    popup->show();
+    new output::DiagramsFrame("Diagrams", this);
 }
 
 void MainWin::outputDiffractograms() {
-    auto popup = new output::DiffractogramsFrame("Diffractograms", this);
-    popup->show();
+    new output::DiffractogramsFrame("Diffractograms", this);
 }
 
 void MainWin::execCommand(str line) {

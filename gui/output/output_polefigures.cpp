@@ -260,6 +260,7 @@ PoleFiguresFrame::PoleFiguresFrame(rcstr title, QWidget* parent)
     tabs_->addTab("Save", Qt::Vertical).box().addWidget(tabSave_);
 
     connect( tabSave_->actSave, &QAction::triggered, [this]() { savePoleFigureOutput(); });
+    show();
 }
 
 void PoleFiguresFrame::displayReflection(uint reflIndex, bool interpolated) {

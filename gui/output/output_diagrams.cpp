@@ -176,6 +176,7 @@ DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
     connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiagramOutput(); });
 
     recalculate();
+    show();
 }
 
 DiagramsFrame::eReflAttr DiagramsFrame::xAttr() const {
