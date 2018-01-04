@@ -24,10 +24,6 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
   add_compile_options("-Wall")
 endif()
 
-if(WITH_COVERAGE)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
-endif()
-
 # if defined, enables development-helping code
 if(DEVELOPMENT)
   add_definitions(-DDEVELOPMENT)
