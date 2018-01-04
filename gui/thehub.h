@@ -50,7 +50,7 @@ public:
     // modifying methods:
     void removeFile(uint);
     void clearSession();
-    void sessionFromFile(QFileInfo const&) THROWS;
+    void sessionFromFile(rcstr const&) THROWS;
     void addGivenFile(rcstr filePath) THROWS;
     void addGivenFiles(QStringList const& filePaths) THROWS;
     void collectDatasetsFromFiles(uint_vec, pint);

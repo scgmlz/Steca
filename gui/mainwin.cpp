@@ -317,8 +317,7 @@ void MainWin::enableCorr() {
 
 void MainWin::loadSession() {
     str fileName = file_dialog::openFileName(
-        this, "Load session", QDir::current().absolutePath(),
-        "Session files (*.ste);;All files (*.*)");
+        this, "Load session", QDir::current().absolutePath(), "Session files (*.ste)");
     update();
     if (fileName.isEmpty()) {
         TR("load session aborted");
@@ -326,7 +325,7 @@ void MainWin::loadSession() {
     }
     try {
         TR("going to load session from file '"+fileName+"'");
-        gHub->sessionFromFile(QFileInfo(fileName));
+        gHub->sessionFromFile(fileName);
     } catch(Exception& ex) {
         qWarning() << "Could not load session from file " << fileName << ":\n"
                    << ex.msg() << "\n"
@@ -377,13 +376,7 @@ void MainWin::onShow() {
 #ifdef DEVELOPMENT
     // automatic actions - load files & open dialog
     // helps with development
-
-    auto safeLoad = [this](rcstr fileName) {
-        QFileInfo info(fileName);
-        if (info.exists())
-            gHub->loadSession(info);
-    };
-    safeLoad("/home/jan/C/+dev/fz/data/0.ste");
+    gHub->sessionFromFile("....");
     gHub->actions.outputPolefigures->trigger();
 #endif
 

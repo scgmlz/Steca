@@ -249,11 +249,11 @@ void TheHub::clearSession() {
     tellSessionCleared();
 }
 
-void TheHub::sessionFromFile(QFileInfo const& fileInfo) THROWS {
-    QFile file(fileInfo.absoluteFilePath());
+void TheHub::sessionFromFile(rcstr filePath) THROWS {
+    QFile file(filePath);
     RUNTIME_CHECK(file.open(QIODevice::ReadOnly | QIODevice::Text),
-                  "Cannot open file for reading: " % fileInfo.absoluteFilePath());
-    QDir::setCurrent(fileInfo.absolutePath());
+                  "Cannot open file for reading: " % filePath);
+    QDir::setCurrent(filePath);
     sessionFromJson(file.readAll());
 }
 
