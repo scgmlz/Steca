@@ -65,7 +65,7 @@ TheHub::TheHub()
 
     trigger_loadSession = newTrigger("Load session...");
     trigger_saveSession = newTrigger("Save session...");
-    trigger_clearSession = newTrigger("Clear session (to defaults)");
+    trigger_clearSession = newTrigger("Clear session");
 
     trigger_addFiles = newTrigger("Add files...", ":/icon/add");
     trigger_removeFile = newTrigger("Remove selected file(s)", ":/icon/rem");
@@ -245,11 +245,6 @@ QByteArray TheHub::saveSession() const {
     return QJsonDocument(top).toJson();
 }
 
-void TheHub::clearSession() {
-    gSession->clear();
-    tellSessionCleared();
-}
-
 void TheHub::sessionFromFile(rcstr filePath) THROWS {
     QFile file(filePath);
     RUNTIME_CHECK(file.open(QIODevice::ReadOnly | QIODevice::Text),
@@ -265,7 +260,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
 
     TakesLongTime __;
 
-    clearSession();
+    gSession->clear();
     TR("sessionFromJson: cleared old session");
 
     JsonObj top(doc.object());

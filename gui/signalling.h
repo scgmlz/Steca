@@ -40,15 +40,12 @@ private:
     TheHub& asHub();
 
 public: // emit signals
-    void tellSessionCleared();
     void tellSuiteSelected(QSharedPointer<Suite>);
     void tellSelectedReflection(shp_Reflection);
     void tellReflectionData(shp_Reflection);
     void tellReflectionValues(Range const&, qpair const&, fwhm_t, bool);
 
 signals:
-    void sigSessionCleared();
-
     void sigFilesChanged(); // the set of loaded files has changed
     void sigFilesSelected(); // the selection of loaded files has changed
 

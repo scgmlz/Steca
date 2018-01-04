@@ -81,7 +81,8 @@ void initMenus(QMenuBar* mbar) {
                 gHub->trigger_remCorr,
                 separator(),
                 gHub->trigger_loadSession,
-                gHub->trigger_saveSession, // TODO add: gHub->trigger_clearSession,
+                gHub->trigger_saveSession,
+                gHub->trigger_clearSession,
 #ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
                 separator(),
 #endif
@@ -271,7 +272,6 @@ void MainWin::messageDialog(rcstr title, rcstr text) {
 void MainWin::show() {
     QMainWindow::show();
     checkActions();
-    gHub->clearSession();
 
 #ifdef DEVELOPMENT
     // automatic actions - load files & open dialog
@@ -340,7 +340,9 @@ void MainWin::saveSession() {
 }
 
 void MainWin::clearSession() {
-    gHub->clearSession();
+    gSession->clear();
+    emit gHub->sigFilesSelected();
+    emit gHub->sigSuitesChanged();
 }
 
 void MainWin::outputPoleFigures() {

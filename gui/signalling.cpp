@@ -22,10 +22,6 @@ TheHub& TheHubSignallingBase::asHub() {
     return *static_cast<TheHub*>(this);
 }
 
-void TheHubSignallingBase::tellSessionCleared() {
-    emit sigSessionCleared();
-}
-
 void TheHubSignallingBase::tellSuiteSelected(QSharedPointer<Suite> suite) {
     emit sigSuiteSelected((asHub().selectedSuite_ = suite));
 }
