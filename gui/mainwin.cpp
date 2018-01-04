@@ -209,9 +209,12 @@ void MainWin::connectActions() {
 
     connectTrigger(gHub->trigger_quit, &MainWin::close);
 
-    connectTrigger(gHub->trigger_outputPolefigures, &MainWin::outputPoleFigures);
-    connectTrigger(gHub->trigger_outputDiagrams, &MainWin::outputDiagrams);
-    connectTrigger(gHub->trigger_outputDiffractograms, &MainWin::outputDiffractograms);
+    QObject::connect(gHub->trigger_outputPolefigures, &QAction::triggered,
+                     [this](){output::PoleFiguresFrame("Pole Figures", this).exec();});
+    QObject::connect(gHub->trigger_outputDiagrams, &QAction::triggered,
+                     [this](){output::DiagramsFrame("Diagrams", this).exec();});
+    QObject::connect(gHub->trigger_outputDiffractograms, &QAction::triggered,
+                     [this](){output::DiffractogramsFrame("Diffractograms", this).exec();});
 
     QObject::connect(gHub->trigger_about, &QAction::triggered, [this](){AboutBox(this).exec();});
     connectTrigger(gHub->trigger_online, &MainWin::online);
@@ -331,18 +334,6 @@ void MainWin::clearSession() {
     gSession->clear();
     emit gHub->sigFilesSelected();
     emit gHub->sigSuitesChanged();
-}
-
-void MainWin::outputPoleFigures() {
-    output::PoleFiguresFrame("Pole Figures", this).exec();
-}
-
-void MainWin::outputDiagrams() {
-    output::DiagramsFrame("Diagrams", this).exec();
-}
-
-void MainWin::outputDiffractograms() {
-    output::DiffractogramsFrame("Diffractograms", this).exec();
 }
 
 void MainWin::execCommand(str line) {

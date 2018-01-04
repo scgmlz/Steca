@@ -40,10 +40,6 @@ public:
     void saveSession();
     void clearSession();
 
-    void outputPoleFigures();
-    void outputDiagrams();
-    void outputDiffractograms();
-
     void execCommand(str);
 
 private:
