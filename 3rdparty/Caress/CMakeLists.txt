@@ -10,6 +10,6 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 endif ()
 
 file (GLOB files *.h *.hpp *.cpp)
-add_library (${lib} SHARED ${files})
+add_library (${lib} ${files})
 
 target_link_libraries (${lib} Qt5::Core)
