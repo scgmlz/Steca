@@ -9,6 +9,6 @@
 
 #define STECA2_PAGES_URL "http://apps.jcns.fz-juelich.de/steca"
 #define STECA2_VERSION_URL "http://apps.jcns.fz-juelich.de/src/steca/version.php"
-#define STECA2_DOWNLOAD_URL "https://github.com/scgmlz/steca2/releases"
+#define STECA2_DOWNLOAD_URL "https://github.com/scgmlz/steca/releases"
 
 #endif
