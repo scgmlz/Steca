@@ -50,7 +50,6 @@ private:
     QNetworkAccessManager netMan_;
 
     void initLayout();
-    void initStatusBar();
     void connectActions();
 
     void messageDialog(rcstr title, rcstr text);

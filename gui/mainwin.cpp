@@ -166,7 +166,6 @@ MainWin::MainWin() {
 
     initMenus(menuBar());
     initLayout();
-    initStatusBar();
     connectActions();
 
     readSettings();
@@ -194,9 +193,7 @@ void MainWin::initLayout() {
     splTop->addWidget(new panel::TabsSetup());
     splTop->addWidget(new panel::TabsImages());
     splTop->setStretchFactor(1, 1);
-}
 
-void MainWin::initStatusBar() {
     statusBar();
 }
 
