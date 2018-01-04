@@ -16,8 +16,8 @@
 #include "mainwin.h"
 #include "cfg/msg_handler.h"
 #include "session.h"
-#include <tclap/CmdLine.h> // templated command line argument parser, in 3rdparty directory
-//#include <unistd.h>
+#include <iostream>
+#include <unistd.h>
 #include <QApplication>
 #include <QStyleFactory>
 
@@ -30,8 +30,26 @@ class Session* gSession; //!< global, for data handling
 
 int main(int argc, char* argv[]) {
 
-    TCLAP::CmdLine cmd("Stress and texture calculator", ' ', version, true);
-    cmd.parse(argc, argv);
+    int opt;
+    while ((opt = getopt(argc, argv, "hvc")) != -1) {
+        switch (opt) {
+        case 'h':
+            std::cout << APPLICATION_CLAIM << "\n\n"
+                      << "Usage: " << APPLICATION_NAME << " [options]\n\n"
+                      << "Options:\n"
+                      << "  -h  Print this message.\n"
+                      << "  -v  Print " << APPLICATION_NAME << " version.\n"
+                      << "  -c  Read commands from console instead of starting the GUI.\n";
+            exit(0);
+        case 'v':
+            std::cout << APPLICATION_NAME << " version " << version << "\n";
+            exit(0);
+        }
+    }
+    if (argc>optind) {
+        std::cerr << "Unexpected command-line argument(s) given\n";
+        exit(-1);
+    }
 
     QApplication app(argc, argv);
 

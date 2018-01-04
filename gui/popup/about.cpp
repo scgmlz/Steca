@@ -59,12 +59,13 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
 #endif
 
     auto info = label(str("<h4>%1 version %2 %3</h4>"
-                          "<p>The stress and texture calculator</p>"
-                          "<p>Copyright: Forschungszentrum Jülich GmbH %4</p>"
-                          "<p><a href='%5'>%5</a></p>")
+                          "<p>%4</p>"
+                          "<p>Copyright: Forschungszentrum Jülich GmbH %5</p>"
+                          "<p><a href='%6'>%6</a></p>")
                       .arg(qApp->applicationName())
                       .arg(qApp->applicationVersion())
                       .arg(arch)
+                      .arg(APPLICATION_CLAIM)
                       .arg(QDate::currentDate().toString("yyyy"))
                       .arg(STECA2_PAGES_URL)
         );

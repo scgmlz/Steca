@@ -2,6 +2,7 @@
 #define MANIFEST_H
 
 #define APPLICATION_NAME "Steca"
+#define APPLICATION_CLAIM "The stress and texture calculator"
 
 #define ORGANIZATION_NAME "Scientific Computing at MLZ"
 #define ORGANIZATION_DOMAIN "apps.jcns.fz-juelich.de"
