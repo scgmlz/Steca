@@ -16,7 +16,7 @@
 #define FRAME_H
 
 #include "calc/calc_reflection_info.h"
-#include <QFrame>
+#include <QDialog>
 
 class QBoxLayout;
 class QProgressBar;
@@ -30,7 +30,7 @@ class TabsPanel;
 
 namespace output {
 
-class Frame : public QFrame {
+class Frame : public QDialog {
 public:
     Frame(rcstr title, class Params*, QWidget*);
 protected:

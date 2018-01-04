@@ -334,15 +334,15 @@ void MainWin::clearSession() {
 }
 
 void MainWin::outputPoleFigures() {
-    new output::PoleFiguresFrame("Pole Figures", this);
+    output::PoleFiguresFrame("Pole Figures", this).exec();
 }
 
 void MainWin::outputDiagrams() {
-    new output::DiagramsFrame("Diagrams", this);
+    output::DiagramsFrame("Diagrams", this).exec();
 }
 
 void MainWin::outputDiffractograms() {
-    new output::DiffractogramsFrame("Diffractograms", this);
+    output::DiffractogramsFrame("Diffractograms", this).exec();
 }
 
 void MainWin::execCommand(str line) {

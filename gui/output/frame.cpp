@@ -27,8 +27,8 @@ namespace gui {
 namespace output {
 
 Frame::Frame(rcstr title, Params* params, QWidget* parent)
-    : QFrame(parent, Qt::Dialog) {
-    setAttribute(Qt::WA_DeleteOnClose);
+    : QDialog(parent) {
+    //setAttribute(Qt::WA_DeleteOnClose);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     setWindowTitle(title);
