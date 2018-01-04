@@ -22,6 +22,8 @@
 
 namespace gui {
 
+extern class MainWin* gMainWin;
+
 class MainWin : public QMainWindow, public ISingleton<MainWin> {
 public:
     MainWin();
@@ -42,6 +44,8 @@ public:
     void outputPoleFigures();
     void outputDiagrams();
     void outputDiffractograms();
+
+    void execCommand(str);
 
 private:
     QDockWidget *dockFiles_, *dockDatasets_, *dockDatasetInfo_;

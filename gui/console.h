@@ -15,20 +15,21 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
+#include "typ/str.h"
 #include <QObject>
 
-//! Reads commands from stdin,
+//! Reads commands from stdin, and emits signal transmitLine
 class Console : public QObject
 {
     Q_OBJECT
 public:
     Console();
 signals:
-    void quit();
+    void transmitLine(str);
 private:
     class QSocketNotifier *m_notifier;
 private slots:
-    void readCommand();
+    void readLine();
 };
 
 #endif // CONSOLE_H

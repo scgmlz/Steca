@@ -360,6 +360,9 @@ void MainWin::outputDiffractograms() {
     popup->show();
 }
 
+void MainWin::execCommand(str line) {
+    qDebug() << "ECHO: " << line << "\n";
+}
 void MainWin::closeEvent(QCloseEvent* event) {
     saveSettings();
     event->accept();

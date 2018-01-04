@@ -14,7 +14,6 @@
 
 #include "console.h"
 #include "def/debug.h"
-#include "typ/str.h"
 #include <iostream>
 #include <QSocketNotifier>
 #include <QTextStream>
@@ -22,17 +21,11 @@
 Console::Console()
 {
     m_notifier = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read, this);
-    connect(m_notifier, SIGNAL(activated(int)), this, SLOT(readCommand()));
+    connect(m_notifier, SIGNAL(activated(int)), this, SLOT(readLine()));
 }
 
-void Console::readCommand()
+void Console::readLine()
 {
     QTextStream qtin(stdin);
-    str line = qtin.readLine();
-    if (line == "quit") {
-        qDebug() << "Good bye!\n";
-        emit quit();
-    } else {
-        qDebug() << "Echo: " << line << "\n";
-    }
+    emit(transmitLine(qtin.readLine()));
 }

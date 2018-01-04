@@ -17,7 +17,6 @@
 
 #include "typ/str.h"
 
-extern class QMainWindow* gMainWin;
 void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg);
 
 #endif // MSG_HANDLER_H
