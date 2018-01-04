@@ -9,8 +9,6 @@ project(SteCa2)
 
 option(WITH_TESTS "Build with all tests" ON)
 
-set(Steca_VERSION 2.0.6a)
-
 if(CMAKE_VERSION VERSION_LESS "3.1")
   set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 else()
@@ -46,7 +44,8 @@ add_subdirectory(gui)
 if(WITH_TESTS)
   include(CTest) # equivalent to "enable_testing() ???
   add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND}) # => 'make check' is an alias for 'ctest'
-  set(gtest_force_shared_crt ON CACHE bool "Use shared (DLL) run-time lib even when Google Test is built as static lib.")
+  set(gtest_force_shared_crt ON
+      CACHE bool "Use shared (DLL) run-time lib even when Google Test is built as static lib.")
   add_subdirectory(3rdparty/googletest)
   configure_file(testdata/testdata.h.in ${CMAKE_BINARY_DIR}/testdata.h @ONLY)
   add_subdirectory(utest)
