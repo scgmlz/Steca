@@ -253,7 +253,7 @@ void TheHub::sessionFromFile(rcstr filePath) THROWS {
     QFile file(filePath);
     RUNTIME_CHECK(file.open(QIODevice::ReadOnly | QIODevice::Text),
                   "Cannot open file for reading: " % filePath);
-    QDir::setCurrent(filePath);
+    QDir::setCurrent(QFileInfo(filePath).absolutePath());
     sessionFromJson(file.readAll());
 }
 
