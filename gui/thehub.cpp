@@ -54,13 +54,13 @@ TheHub::TheHub()
     trigger_checkUpdate = newTrigger("Check for update");
     trigger_quit = newTrigger("Quit");
 
-    toggle_viewStatusbar = newToggle("Statusbar");
-    toggle_viewFiles = newToggle("Files");
-    toggle_viewDatasets = newToggle("Datasets");
-    toggle_viewMetadata = newToggle("Metadata");
+    toggle_viewStatusbar = newToggle("Statusbar", true);
+    toggle_viewFiles = newToggle("Files", true);
+    toggle_viewDatasets = newToggle("Datasets", true);
+    toggle_viewMetadata = newToggle("Metadata", true);
     trigger_viewReset = newTrigger("Reset");
 #ifndef Q_OS_OSX
-    toggle_fullScreen = newToggle("FullScreen");
+    toggle_fullScreen = newToggle("FullScreen", false);
 #endif
 
     trigger_loadSession = newTrigger("Load session...");
@@ -69,23 +69,23 @@ TheHub::TheHub()
 
     trigger_addFiles = newTrigger("Add files...", ":/icon/add");
     trigger_removeFile = newTrigger("Remove selected file(s)", ":/icon/rem");
-    toggle_enableCorr = newToggle("Enable correction file...", ":/icon/useCorrection");
+    toggle_enableCorr = newToggle("Enable correction file...", false, ":/icon/useCorrection");
     trigger_remCorr = newTrigger("Remove correction file", ":/icon/clear");
 
     trigger_rotateImage = newTrigger("Rotate", ":/icon/rotate0");
-    toggle_mirrorImage = newToggle("Mirror", ":/icon/mirrorHorz");
-    toggle_linkCuts = newToggle("Link cuts", ":/icon/link");
-    toggle_showOverlay = newToggle("Show overlay", ":/icon/crop");
-    toggle_stepScale = newToggle("Scale in steps", ":/icon/steps");
-    toggle_showBins = newToggle("Show bins", ":/icon/angle");
+    toggle_mirrorImage = newToggle("Mirror", false, ":/icon/mirrorHorz");
+    toggle_linkCuts = newToggle("Link cuts", false, ":/icon/link");
+    toggle_showOverlay = newToggle("Show overlay", false, ":/icon/crop");
+    toggle_stepScale = newToggle("Scale in steps", false, ":/icon/steps");
+    toggle_showBins = newToggle("Show bins", false, ":/icon/angle");
 
-    toggle_fixedIntenImage = newToggle("Global intensity scale", ":/icon/scale");
-    toggle_fixedIntenDgram = newToggle("Fixed intensity scale");
+    toggle_fixedIntenImage = newToggle("Global intensity scale", false, ":/icon/scale");
+    toggle_fixedIntenDgram = newToggle("Fixed intensity scale", false);
 
-    toggle_combinedDgram = newToggle("All suite");
+    toggle_combinedDgram = newToggle("All suite", true);
 
-    toggle_selRegions = newToggle("Select regions", ":/icon/selRegion");
-    toggle_showBackground = newToggle("Show fitted background", ":/icon/showBackground");
+    toggle_selRegions = newToggle("Select regions", false, ":/icon/selRegion");
+    toggle_showBackground = newToggle("Show fitted background", false, ":/icon/showBackground");
     trigger_clearBackground = newTrigger("Clear background regions", ":/icon/clear");
     trigger_clearReflections = newTrigger("Clear reflections", ":/icon/clear");
 

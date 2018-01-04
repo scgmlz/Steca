@@ -159,14 +159,13 @@ MainWin::MainWin() {
     gHub = new TheHub();
     setWindowIcon(QIcon(":/icon/retroStier"));
     QDir::setCurrent(QDir::homePath());
-
     setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
 
     initMenus(menuBar());
     initLayout();
     connectActions();
-
     readSettings();
+
     qDebug() << "/MainWin";
 }
 
@@ -267,11 +266,6 @@ void MainWin::checkUpdate() {
 
 void MainWin::messageDialog(rcstr title, rcstr text) {
     QMessageBox::information(this, title, text);
-}
-
-void MainWin::show() {
-    QMainWindow::show();
-    checkActions();
 }
 
 void MainWin::close() {
@@ -385,18 +379,6 @@ void MainWin::saveSettings() {
     s.setValue("state", saveState());
 }
 
-void MainWin::checkActions() {
-    gHub->toggle_viewStatusbar->setChecked(statusBar()->isVisible());
-
-#ifndef Q_OS_OSX
-    gHub->toggle_fullScreen->setChecked(isFullScreen());
-#endif
-
-    gHub->toggle_viewFiles->setChecked(dockFiles_->isVisible());
-    gHub->toggle_viewDatasets->setChecked(dockDatasets_->isVisible());
-    gHub->toggle_viewMetadata->setChecked(dockDatasetInfo_->isVisible());
-}
-
 void MainWin::viewStatusbar(bool on) {
     statusBar()->setVisible(on);
     gHub->toggle_viewStatusbar->setChecked(on);
@@ -407,7 +389,6 @@ void MainWin::viewFullScreen(bool on) {
         showFullScreen();
     else
         showNormal();
-
 #ifndef Q_OS_OSX
     gHub->toggle_fullScreen->setChecked(on);
 #endif

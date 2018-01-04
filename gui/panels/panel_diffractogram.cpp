@@ -486,7 +486,7 @@ Diffractogram::Diffractogram()
 
     hb->addStretch();
 
-    actZoom_ = newToggle("zoom");
+    actZoom_ = newToggle("zoom", false);
     enableZoom_ = textButton(actZoom_);
     hb->addWidget(enableZoom_);
 

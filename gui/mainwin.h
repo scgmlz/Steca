@@ -31,7 +31,6 @@ public:
     void online();
     void checkUpdate();
 
-    void show();
     void close();
 
     void addFiles();
@@ -60,7 +59,6 @@ private:
 
     void readSettings();
     void saveSettings();
-    void checkActions();
 
     void viewStatusbar(bool);
     void viewFullScreen(bool);

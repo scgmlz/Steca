@@ -22,7 +22,7 @@ class QAction;
 namespace gui {
 
 QAction* newTrigger(rcstr text, rcstr iconFile="");
-QAction* newToggle(rcstr text, rcstr iconFile="");
+QAction* newToggle(rcstr text, bool value, rcstr iconFile="");
 
 } // namespace gui
 
