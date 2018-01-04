@@ -51,7 +51,6 @@ private:
     QNetworkAccessManager netMan_;
 
     void initMenus();
-    void addActions(QMenu*, QList<QAction*>);
     void initLayout();
     void initStatusBar();
     void connectActions();

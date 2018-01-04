@@ -42,6 +42,19 @@
 
 gui::TheHub* gHub; //!< global, for signalling and command flow
 
+namespace {
+
+//! Adds a list of actions to a menu, and sets the tooltip. Auxiliary for MainWin::initMenus.
+void actionsToMenu(QMenu* menu, QList<QAction*> actions) {
+    debug::ensure(menu);
+    menu->addActions(actions);
+    str prefix = str("%1: ").arg(menu->title().remove('&'));
+    for (auto action : actions)
+        action->setToolTip(prefix + action->toolTip());
+}
+
+} // anonymous namespace
+
 namespace gui {
 
 MainWin::MainWin() {
@@ -81,7 +94,7 @@ void MainWin::initMenus() {
     menuView_ = mbar->addMenu("&View");
     menuHelp_ = mbar->addMenu("&Help");
 
-    addActions(
+    actionsToMenu(
         menuFile_,
         {
             gHub->trigger_addFiles,
@@ -94,7 +107,7 @@ void MainWin::initMenus() {
                 gHub->trigger_saveSession, // TODO add: gHub->trigger_clearSession,
         });
 
-    addActions(
+    actionsToMenu(
         menuFile_,
         {
 #ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
@@ -103,7 +116,7 @@ void MainWin::initMenus() {
             gHub->trigger_quit,
         });
 
-    addActions(
+    actionsToMenu(
         menuView_,
         {   gHub->toggle_viewFiles,
                 gHub->toggle_viewDatasets,
@@ -117,7 +130,7 @@ void MainWin::initMenus() {
                 gHub->trigger_viewReset,
         });
 
-    addActions(
+    actionsToMenu(
         menuImage_,
         {   gHub->trigger_rotateImage,
                 gHub->toggle_mirrorImage,
@@ -128,7 +141,7 @@ void MainWin::initMenus() {
                 gHub->toggle_showBins,
         });
 
-    addActions(
+    actionsToMenu(
         menuDgram_,
         {
             gHub->toggle_selRegions,
@@ -143,7 +156,7 @@ void MainWin::initMenus() {
                 gHub->toggle_fixedIntenDgram,
         });
 
-    addActions(
+    actionsToMenu(
         menuOutput_,
         {
             gHub->trigger_outputPolefigures,
@@ -151,7 +164,7 @@ void MainWin::initMenus() {
                 gHub->trigger_outputDiffractograms,
         });
 
-    addActions(
+    actionsToMenu(
         menuHelp_,
         {
             gHub->trigger_about,
@@ -162,14 +175,6 @@ void MainWin::initMenus() {
                 gHub->trigger_checkUpdate,
         });
     qDebug() << "/MainWin";
-}
-
-void MainWin::addActions(QMenu* menu, QList<QAction*> actions) {
-    debug::ensure(menu);
-    menu->addActions(actions);
-    str prefix = str("%1: ").arg(menu->title().remove('&'));
-    for (auto action : actions)
-        action->setToolTip(prefix + action->toolTip());
 }
 
 void MainWin::initLayout() {
@@ -198,6 +203,7 @@ void MainWin::initStatusBar() {
     statusBar();
 }
 
+//! Connect signals to slots. Part of the MainWin initialization.
 void MainWin::connectActions() {
     auto connectTrigger = [this](QAction* action, void (MainWin::*fun)()) {
         QObject::connect(action, &QAction::triggered, this, fun);
