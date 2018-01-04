@@ -84,9 +84,14 @@ void MainWin::initMenus() {
     addActions(
         menuFile_,
         {
-            gHub->trigger_addFiles, gHub->trigger_removeFile, separator(), gHub->toggle_enableCorr, gHub->trigger_remCorr,
-            separator(), gHub->trigger_loadSession,
-            gHub->trigger_saveSession, // TODO add: gHub->trigger_clearSession,
+            gHub->trigger_addFiles,
+                gHub->trigger_removeFile,
+                separator(),
+                gHub->toggle_enableCorr,
+                gHub->trigger_remCorr,
+                separator(),
+                gHub->trigger_loadSession,
+                gHub->trigger_saveSession, // TODO add: gHub->trigger_clearSession,
         });
 
     addActions(
@@ -100,33 +105,50 @@ void MainWin::initMenus() {
 
     addActions(
         menuView_,
-        {
-            gHub->toggle_viewFiles, gHub->toggle_viewDatasets, gHub->toggle_viewMetadata, separator(),
+        {   gHub->toggle_viewFiles,
+                gHub->toggle_viewDatasets,
+                gHub->toggle_viewMetadata,
+                separator(),
 #ifndef Q_OS_OSX
             gHub->toggle_fullScreen,
 #endif
-            gHub->toggle_viewStatusbar, separator(), gHub->trigger_viewReset,
+            gHub->toggle_viewStatusbar,
+                separator(),
+                gHub->trigger_viewReset,
         });
 
     addActions(
         menuImage_,
-        {
-            gHub->trigger_rotateImage, gHub->toggle_mirrorImage, gHub->toggle_fixedIntenImage, gHub->toggle_linkCuts,
-            gHub->toggle_showOverlay, gHub->toggle_stepScale, gHub->toggle_showBins,
+        {   gHub->trigger_rotateImage,
+                gHub->toggle_mirrorImage,
+                gHub->toggle_fixedIntenImage,
+                gHub->toggle_linkCuts,
+                gHub->toggle_showOverlay,
+                gHub->toggle_stepScale,
+                gHub->toggle_showBins,
         });
 
     addActions(
         menuDgram_,
         {
-            gHub->toggle_selRegions, gHub->toggle_showBackground, gHub->trigger_clearBackground, gHub->trigger_clearReflections,
-            separator(), gHub->trigger_addReflection, gHub->trigger_remReflection, separator(), gHub->toggle_combinedDgram,
-            gHub->toggle_fixedIntenDgram,
+            gHub->toggle_selRegions,
+                gHub->toggle_showBackground,
+                gHub->trigger_clearBackground,
+                gHub->trigger_clearReflections,
+                separator(),
+                gHub->trigger_addReflection,
+                gHub->trigger_remReflection,
+                separator(),
+                gHub->toggle_combinedDgram,
+                gHub->toggle_fixedIntenDgram,
         });
 
     addActions(
         menuOutput_,
         {
-            gHub->trigger_outputPolefigures, gHub->trigger_outputDiagrams, gHub->trigger_outputDiffractograms,
+            gHub->trigger_outputPolefigures,
+                gHub->trigger_outputDiagrams,
+                gHub->trigger_outputDiffractograms,
         });
 
     addActions(
@@ -136,7 +158,8 @@ void MainWin::initMenus() {
 #ifndef Q_OS_OSX
             separator(), // Mac puts About into the Apple menu
 #endif
-            gHub->trigger_online, gHub->trigger_checkUpdate,
+            gHub->trigger_online,
+                gHub->trigger_checkUpdate,
         });
     qDebug() << "/MainWin";
 }
