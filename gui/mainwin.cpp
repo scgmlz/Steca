@@ -272,13 +272,6 @@ void MainWin::messageDialog(rcstr title, rcstr text) {
 void MainWin::show() {
     QMainWindow::show();
     checkActions();
-
-#ifdef DEVELOPMENT
-    // automatic actions - load files & open dialog
-    // helps with development
-    gHub->sessionFromFile("....");
-    gHub->actions.outputPolefigures->trigger();
-#endif
 }
 
 void MainWin::close() {

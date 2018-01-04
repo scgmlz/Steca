@@ -23,11 +23,6 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
   add_compile_options("-Wall")
 endif()
 
-# if defined, enables development-helping code
-if(DEVELOPMENT)
-  add_definitions(-DDEVELOPMENT)
-endif()
-
 find_package(Qt5Core    REQUIRED)
 find_package(Qt5Gui     REQUIRED)
 find_package(Qt5Test    REQUIRED)
