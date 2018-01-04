@@ -218,7 +218,7 @@ itf_t interpolateValues(deg searchRadius, ReflectionInfos const& infos, deg alph
     if (numQuadrantsOk == NUM_QUADRANTS)
         return inverseDistanceWeighing(distances, interpolationInfos);
     else
-        return { NAN, NAN, NAN };
+        return {};
 }
 
 } // anonymous namespace
