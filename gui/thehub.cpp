@@ -121,7 +121,8 @@ TheHub::TheHub()
             [this]() { trigger_removeFile->setEnabled(
                     !gSession->collectedFromFiles().isEmpty()); });
     QObject::connect(this, &gui::TheHub::sigCorrFile,
-            [this](QSharedPointer<Datafile const> file) { trigger_remCorr->setEnabled(!file.isNull()); });
+            [this](QSharedPointer<Datafile const> file) {
+                         trigger_remCorr->setEnabled(!file.isNull()); });
     QObject::connect(this, &gui::TheHub::sigCorrEnabled,
             [this](bool on) { toggle_enableCorr->setChecked(on); });
 
@@ -131,12 +132,9 @@ TheHub::TheHub()
         toggle_combinedDgram->setChecked(false);
     };
 
-    QObject::connect(this, &gui::TheHub::sigGeometryChanged,
-                     [deselect]() { deselect(); });
-    QObject::connect(this, &gui::TheHub::sigSuitesChanged,
-                     [deselect]() { deselect(); });
-    QObject::connect(this, &gui::TheHub::sigCorrEnabled,
-                     [deselect]() { deselect(); });
+    QObject::connect(this, &gui::TheHub::sigGeometryChanged, [deselect]() { deselect(); });
+    QObject::connect(this, &gui::TheHub::sigSuitesChanged, [deselect]() { deselect(); });
+    QObject::connect(this, &gui::TheHub::sigCorrEnabled, [deselect]() { deselect(); });
 
     trigger_removeFile->setEnabled(false);
     trigger_remReflection->setEnabled(false);
@@ -164,8 +162,7 @@ TheHub::TheHub()
     connect(toggle_mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
 
     connect(trigger_rotateImage, &QAction::triggered, [this]() {
-        setImageRotate(gSession->imageTransform().nextRotate());
-    });
+        setImageRotate(gSession->imageTransform().nextRotate()); });
     qDebug() << "/TheHub";
 }
 
