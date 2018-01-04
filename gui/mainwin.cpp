@@ -340,8 +340,7 @@ void MainWin::loadSession() {
 
 void MainWin::saveSession() {
     str fileName = file_dialog::saveFileName(
-        this, "Save session", QDir::current().absolutePath(),
-        "Session files (*.ste);;All files (*.*)");
+        this, "Save session", QDir::current().absolutePath(), "Session files (*.ste)");
     update();
     if (!fileName.endsWith(".ste"))
         fileName += ".ste";
