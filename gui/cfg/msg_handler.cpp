@@ -7,7 +7,7 @@
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
@@ -36,7 +36,7 @@ void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg) {
 // unavailable before Qt5.5
 //    case QtInfoMsg:
 //        std::cerr << "INFO " << msg.toStdString() << context(ctx) << "\n" << std::flush;
-//        pMainWin->statusBar()->showMessage(msg, 5000);
+//        gMainWin->statusBar()->showMessage(msg, 5000);
 //        break;
     case QtFatalMsg:
         std::cerr << "BUG! " << msg.toStdString() << context(ctx) << "\n" << std::flush;

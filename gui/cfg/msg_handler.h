@@ -7,7 +7,7 @@
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
@@ -17,7 +17,7 @@
 
 #include "typ/str.h"
 
-extern class QMainWindow* pMainWin;
+extern class QMainWindow* gMainWin;
 void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg);
 
 #endif // MSG_HANDLER_H

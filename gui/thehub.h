@@ -7,7 +7,7 @@
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
@@ -50,7 +50,7 @@ public:
     // modifying methods:
     void removeFile(uint);
     void clearSession();
-    void sessionFromFile(QFileInfo const&) THROWS;
+    void sessionFromFile(rcstr const&) THROWS;
     void addGivenFile(rcstr filePath) THROWS;
     void addGivenFiles(QStringList const& filePaths) THROWS;
     void collectDatasetsFromFiles(uint_vec, pint);

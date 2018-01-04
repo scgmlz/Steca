@@ -7,15 +7,13 @@
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
 #ifndef FILEDIALOG_H
 #define FILEDIALOG_H
-
-
 
 namespace gui {
 namespace file_dialog {
@@ -28,4 +26,5 @@ str saveDirName(QWidget*, rcstr caption, rcstr dir);
 
 } // namespace file_dialog
 } // namespace gui
+
 #endif // FILEDIALOG_H

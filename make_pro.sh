@@ -1,9 +1,9 @@
 # usage: make_pro.sh <extra CONFIG>
 
-PRO=STeCa2.pro
+PRO=Steca.pro
 echo -e '# generated project\n' > $PRO
 
-APP=STeCa2-`date +%y%m%d_%H%M`
+APP=Steca-`date +%y%m%d_%H%M`
 
 cat >> $PRO <<EOT
 TARGET   = $APP

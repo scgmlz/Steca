@@ -7,7 +7,7 @@
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
@@ -15,13 +15,14 @@
 #ifndef MAINWIN_H
 #define MAINWIN_H
 
+#include "typ/singleton.h"
 #include "typ/str.h"
 #include <QMainWindow>
 #include <QNetworkAccessManager>
 
 namespace gui {
 
-class MainWin : public QMainWindow {
+class MainWin : public QMainWindow, public ISingleton<MainWin> {
 public:
     MainWin();
 

@@ -7,7 +7,7 @@
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
@@ -40,7 +40,7 @@
 #include <QStatusBar>
 #include <QStringBuilder> // for ".." % ..
 
-gui::TheHub* gHub;
+gui::TheHub* gHub; //!< global, for signalling and command flow
 
 namespace gui {
 
@@ -84,9 +84,14 @@ void MainWin::initMenus() {
     addActions(
         menuFile_,
         {
-            gHub->trigger_addFiles, gHub->trigger_removeFile, separator(), gHub->toggle_enableCorr, gHub->trigger_remCorr,
-            separator(), gHub->trigger_loadSession,
-            gHub->trigger_saveSession, // TODO add: gHub->trigger_clearSession,
+            gHub->trigger_addFiles,
+                gHub->trigger_removeFile,
+                separator(),
+                gHub->toggle_enableCorr,
+                gHub->trigger_remCorr,
+                separator(),
+                gHub->trigger_loadSession,
+                gHub->trigger_saveSession, // TODO add: gHub->trigger_clearSession,
         });
 
     addActions(
@@ -100,33 +105,50 @@ void MainWin::initMenus() {
 
     addActions(
         menuView_,
-        {
-            gHub->toggle_viewFiles, gHub->toggle_viewDatasets, gHub->toggle_viewMetadata, separator(),
+        {   gHub->toggle_viewFiles,
+                gHub->toggle_viewDatasets,
+                gHub->toggle_viewMetadata,
+                separator(),
 #ifndef Q_OS_OSX
             gHub->toggle_fullScreen,
 #endif
-            gHub->toggle_viewStatusbar, separator(), gHub->trigger_viewReset,
+            gHub->toggle_viewStatusbar,
+                separator(),
+                gHub->trigger_viewReset,
         });
 
     addActions(
         menuImage_,
-        {
-            gHub->trigger_rotateImage, gHub->toggle_mirrorImage, gHub->toggle_fixedIntenImage, gHub->toggle_linkCuts,
-            gHub->toggle_showOverlay, gHub->toggle_stepScale, gHub->toggle_showBins,
+        {   gHub->trigger_rotateImage,
+                gHub->toggle_mirrorImage,
+                gHub->toggle_fixedIntenImage,
+                gHub->toggle_linkCuts,
+                gHub->toggle_showOverlay,
+                gHub->toggle_stepScale,
+                gHub->toggle_showBins,
         });
 
     addActions(
         menuDgram_,
         {
-            gHub->toggle_selRegions, gHub->toggle_showBackground, gHub->trigger_clearBackground, gHub->trigger_clearReflections,
-            separator(), gHub->trigger_addReflection, gHub->trigger_remReflection, separator(), gHub->toggle_combinedDgram,
-            gHub->toggle_fixedIntenDgram,
+            gHub->toggle_selRegions,
+                gHub->toggle_showBackground,
+                gHub->trigger_clearBackground,
+                gHub->trigger_clearReflections,
+                separator(),
+                gHub->trigger_addReflection,
+                gHub->trigger_remReflection,
+                separator(),
+                gHub->toggle_combinedDgram,
+                gHub->toggle_fixedIntenDgram,
         });
 
     addActions(
         menuOutput_,
         {
-            gHub->trigger_outputPolefigures, gHub->trigger_outputDiagrams, gHub->trigger_outputDiffractograms,
+            gHub->trigger_outputPolefigures,
+                gHub->trigger_outputDiagrams,
+                gHub->trigger_outputDiffractograms,
         });
 
     addActions(
@@ -136,7 +158,8 @@ void MainWin::initMenus() {
 #ifndef Q_OS_OSX
             separator(), // Mac puts About into the Apple menu
 #endif
-            gHub->trigger_online, gHub->trigger_checkUpdate,
+            gHub->trigger_online,
+                gHub->trigger_checkUpdate,
         });
     qDebug() << "/MainWin";
 }
@@ -294,8 +317,7 @@ void MainWin::enableCorr() {
 
 void MainWin::loadSession() {
     str fileName = file_dialog::openFileName(
-        this, "Load session", QDir::current().absolutePath(),
-        "Session files (*.ste);;All files (*.*)");
+        this, "Load session", QDir::current().absolutePath(), "Session files (*.ste)");
     update();
     if (fileName.isEmpty()) {
         TR("load session aborted");
@@ -303,7 +325,7 @@ void MainWin::loadSession() {
     }
     try {
         TR("going to load session from file '"+fileName+"'");
-        gHub->sessionFromFile(QFileInfo(fileName));
+        gHub->sessionFromFile(fileName);
     } catch(Exception& ex) {
         qWarning() << "Could not load session from file " << fileName << ":\n"
                    << ex.msg() << "\n"
@@ -354,13 +376,7 @@ void MainWin::onShow() {
 #ifdef DEVELOPMENT
     // automatic actions - load files & open dialog
     // helps with development
-
-    auto safeLoad = [this](rcstr fileName) {
-        QFileInfo info(fileName);
-        if (info.exists())
-            gHub->loadSession(info);
-    };
-    safeLoad("/home/jan/C/+dev/fz/data/0.ste");
+    gHub->sessionFromFile("....");
     gHub->actions.outputPolefigures->trigger();
 #endif
 

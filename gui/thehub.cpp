@@ -7,7 +7,7 @@
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
@@ -249,11 +249,11 @@ void TheHub::clearSession() {
     tellSessionCleared();
 }
 
-void TheHub::sessionFromFile(QFileInfo const& fileInfo) THROWS {
-    QFile file(fileInfo.absoluteFilePath());
+void TheHub::sessionFromFile(rcstr filePath) THROWS {
+    QFile file(filePath);
     RUNTIME_CHECK(file.open(QIODevice::ReadOnly | QIODevice::Text),
-                  "Cannot open file for reading: " % fileInfo.absoluteFilePath());
-    QDir::setCurrent(fileInfo.absolutePath());
+                  "Cannot open file for reading: " % filePath);
+    QDir::setCurrent(filePath);
     sessionFromJson(file.readAll());
 }
 

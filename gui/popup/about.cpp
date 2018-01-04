@@ -7,7 +7,7 @@
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
@@ -58,15 +58,17 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
     str arch = "";
 #endif
 
-    auto info = label(str("<h4>%1 ver. %2 %5</h4>"
-                          "<p>StressTextureCalculator</p>"
-                          "<p>Copyright: Forschungszentrum Jülich GmbH %3</p>"
-                          "<p><a href='%4'>%4</a></p>")
-                          .arg(qApp->applicationName())
-                          .arg(qApp->applicationVersion())
-                          .arg(QDate::currentDate().toString("yyyy"))
-                          .arg(STECA2_PAGES_URL)
-                          .arg(arch));
+    auto info = label(str("<h4>%1 version %2 %3</h4>"
+                          "<p>%4</p>"
+                          "<p>Copyright: Forschungszentrum Jülich GmbH %5</p>"
+                          "<p><a href='%6'>%6</a></p>")
+                      .arg(qApp->applicationName())
+                      .arg(qApp->applicationVersion())
+                      .arg(arch)
+                      .arg(APPLICATION_CLAIM)
+                      .arg(QDate::currentDate().toString("yyyy"))
+                      .arg(STECA2_PAGES_URL)
+        );
 
     info->setAlignment(Qt::AlignTop | Qt::AlignLeft);
     info->setOpenExternalLinks(true);

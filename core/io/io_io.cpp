@@ -7,7 +7,7 @@
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
@@ -113,7 +113,7 @@ str loadComment(QFileInfo const& info) {
     else if (couldBeTiffDat(info))
         return "[tif] ";
     else
-        NEVER;
+        return "";
 }
 
 } // namespace io
