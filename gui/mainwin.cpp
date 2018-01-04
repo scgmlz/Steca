@@ -71,13 +71,15 @@ MainWin::MainWin() {
     connectActions();
 
     readSettings();
+    qDebug() << "/MainWin";
 }
 
+//! Initialize the menu bar. Part of the MainWin initialization.
 void MainWin::initMenus() {
-    auto separator = [this]() {
-        auto act = new QAction(this);
-        act->setSeparator(true);
-        return act;
+    auto separator = [this]()->QAction* {
+        QAction* ret = new QAction(this);
+        ret->setSeparator(true);
+        return ret;
     };
 
     auto* mbar = menuBar();
@@ -174,7 +176,6 @@ void MainWin::initMenus() {
             gHub->trigger_online,
                 gHub->trigger_checkUpdate,
         });
-    qDebug() << "/MainWin";
 }
 
 void MainWin::initLayout() {
