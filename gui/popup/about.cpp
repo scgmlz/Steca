@@ -58,14 +58,16 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
     str arch = "";
 #endif
 
-    auto info = label(str("<h4>Steca version %2 %5</h4>"
+    auto info = label(str("<h4>%1 version %2 %3</h4>"
                           "<p>The stress and texture calculator</p>"
-                          "<p>Copyright: Forschungszentrum Jülich GmbH %3</p>"
-                          "<p><a href='%4'>%4</a></p>")
-                          .arg(qApp->applicationVersion())
-                          .arg(QDate::currentDate().toString("yyyy"))
-                          .arg(STECA2_PAGES_URL)
-                          .arg(arch));
+                          "<p>Copyright: Forschungszentrum Jülich GmbH %4</p>"
+                          "<p><a href='%5'>%5</a></p>")
+                      .arg(qApp->applicationName())
+                      .arg(qApp->applicationVersion())
+                      .arg(arch)
+                      .arg(QDate::currentDate().toString("yyyy"))
+                      .arg(STECA2_PAGES_URL)
+        );
 
     info->setAlignment(Qt::AlignTop | Qt::AlignLeft);
     info->setOpenExternalLinks(true);

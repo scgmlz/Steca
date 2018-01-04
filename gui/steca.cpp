@@ -16,7 +16,7 @@
 #include "mainwin.h"
 #include "cfg/msg_handler.h"
 #include "session.h"
-#include <tclap/CmdLine.h> // templated command line argument parser, in 3rdparty directory
+#include <cunistd>
 #include <QApplication>
 #include <QStyleFactory>
 
