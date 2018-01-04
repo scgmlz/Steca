@@ -16,27 +16,27 @@
 #include "mainwin.h"
 #include "cfg/msg_handler.h"
 #include "session.h"
-#include <cunistd>
+#include <tclap/CmdLine.h> // templated command line argument parser, in 3rdparty directory
+//#include <unistd.h>
 #include <QApplication>
 #include <QStyleFactory>
 
-class QMainWindow* pMainWin;
+const char* version =
+#include "../VERSION"
+    ;
 
+class QMainWindow* pMainWin;
 class Session* gSession;
 
 int main(int argc, char* argv[]) {
 
-    TCLAP::CmdLine cmd("Stress and texture calculator", ' ',
-#include "../VERSION"
-                       , true);
+    TCLAP::CmdLine cmd("Stress and texture calculator", ' ', version, true);
     cmd.parse(argc, argv);
 
     QApplication app(argc, argv);
 
     app.setApplicationName(APPLICATION_NAME);
-    app.setApplicationVersion(
-#include "../VERSION"
-        );
+    app.setApplicationVersion(version);
     app.setOrganizationName(ORGANIZATION_NAME);
     app.setOrganizationDomain(ORGANIZATION_DOMAIN);
 
