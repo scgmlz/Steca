@@ -146,16 +146,4 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
     connect(bb, &QDialogButtonBox::accepted, this, &QDialog::accept);
 }
 
-void AboutBox::accept() {
-    Settings s("config");
-
-    s.saveBool("startup about", cbShowAtStartup_->isChecked());
-    s.saveBool("startup check update", cbCheckUpdatesAtStartup_->isChecked());
-
-    s.saveReal("distance", detDistance_->value());
-    s.saveReal("pixel size", detPixelSize_->value());
-
-    QDialog::accept();
-}
-
 } // namespace gui

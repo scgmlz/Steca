@@ -248,20 +248,18 @@ void MainWin::checkUpdate(bool completeReport) {
         } else {
             str ver = qApp->applicationVersion();
             str lastVer = reply->readAll().trimmed();
-
             str name = qApp->applicationName();
-
+            str result;
             if (ver != lastVer)
-                messageDialog(
-                    str("%1 update").arg(name),
-                    str("<p>The latest released %1 version is %2. You have "
+                    result = str(
+                        "<p>The latest released %1 version is %2. You have "
                         "version %3.</p>"
                         "<p><a href='%4'>Open download location in external browser</a></p>")
-                        .arg(name, lastVer, ver, STECA2_DOWNLOAD_URL));
-            else if (completeReport)
-                messageDialog(
-                    str("%1 update").arg(name),
-                    str("<p>You have the latest released %1 version (%2).</p>").arg(name).arg(ver));
+                        .arg(name, lastVer, ver, STECA2_DOWNLOAD_URL);
+            else
+                result = str(
+                    "<p>You have the latest released %1 version (%2).</p>").arg(name).arg(ver);
+            messageDialog(str("%1 update").arg(name), result);
         }
     });
 }

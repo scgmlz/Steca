@@ -27,8 +27,6 @@ public:
     AboutBox(QWidget*);
 
 protected:
-    void accept();
-
     QCheckBox *cbShowAtStartup_, *cbCheckUpdatesAtStartup_;
     QDoubleSpinBox *detDistance_, *detPixelSize_;
 };
