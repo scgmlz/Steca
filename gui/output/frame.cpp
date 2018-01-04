@@ -28,7 +28,7 @@ namespace output {
 
 Frame::Frame(rcstr title, Params* params, QWidget* parent)
     : QDialog(parent) {
-    //setAttribute(Qt::WA_DeleteOnClose);
+    setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     setWindowTitle(title);
