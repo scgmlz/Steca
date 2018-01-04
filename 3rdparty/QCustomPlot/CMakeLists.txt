@@ -6,6 +6,6 @@ include_directories (
 
 file (GLOB files *.h *.cpp)
 
-add_library (${lib} ${files})
+add_library (${lib} SHARED ${files})
 
 target_link_libraries (${lib} Qt5::Gui Qt5::Widgets)
