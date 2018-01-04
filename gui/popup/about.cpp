@@ -88,58 +88,6 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
 
     hb->addWidget(info);
 
-    auto hline = []() {
-        auto frame = new QFrame;
-        frame->setFrameShape(QFrame::HLine);
-        frame->setFrameShadow(QFrame::Sunken);
-        return frame;
-    };
-
-    // configuration
-
-    vb->addWidget(hline());
-
-    hb = hbox();
-    vb->addLayout(hb);
-
-    hb->addWidget(label("at startup:"));
-    hb->addWidget((cbShowAtStartup_ = check("&show this dialog")));
-    hb->addWidget((cbCheckUpdatesAtStartup_ = check("&check for update")));
-    hb->addStretch();
-
-    cbShowAtStartup_->setChecked(s.readBool("startup about", true));
-    cbCheckUpdatesAtStartup_->setChecked(s.readBool("startup check update", true));
-
-    vb->addWidget(hline());
-
-    auto g = gridLayout();
-    vb->addLayout(g);
-
-    // TODO put back
-    //  g->addWidget(label("default det. distance"), 0, 0, Qt::AlignRight);
-    g->addWidget(
-        (detDistance_ = spinDoubleCell(gui_cfg::em4_2, Geometry::MIN_DETECTOR_DISTANCE)), 0,
-        1);
-    //  g->addWidget(label("default pixel size"), 1, 0, Qt::AlignRight);
-    g->addWidget(
-        (detPixelSize_ = spinDoubleCell(gui_cfg::em4_2, Geometry::MIN_DETECTOR_PIXEL_SIZE)), 1,
-        1);
-    g->setColumnStretch(g->columnCount(), 1);
-
-    detPixelSize_->setDecimals(3);
-    detDistance_->setValue(
-        s.readReal("distance", Geometry::DEF_DETECTOR_DISTANCE));
-    detPixelSize_->setValue(
-        s.readReal("pixel size", Geometry::DEF_DETECTOR_PIXEL_SIZE));
-
-    // TODO put back
-    detDistance_->setVisible(false);
-    detPixelSize_->setVisible(false);
-
-    // buttons
-
-    vb->addWidget(hline());
-
     auto bb = new QDialogButtonBox(QDialogButtonBox::Ok);
     vb->addWidget(bb);
 
