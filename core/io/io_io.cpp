@@ -113,7 +113,7 @@ str loadComment(QFileInfo const& info) {
     else if (couldBeTiffDat(info))
         return "[tif] ";
     else
-        NEVER;
+        return "";
 }
 
 } // namespace io

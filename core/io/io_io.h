@@ -27,7 +27,6 @@ namespace io {
 //! load a file; file type will be sensed
 QSharedPointer<Datafile const> loadDatafile(rcstr filePath) THROWS;
 
-str loadCaressComment(rcstr filePath);
 str loadComment(QFileInfo const& info);
 
 } // namespace io
