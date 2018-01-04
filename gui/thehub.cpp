@@ -21,6 +21,7 @@
 #include "session.h"
 #include "typ/json.h"
 #include <QAction>
+#include <QApplication>
 #include <QDir>
 #include <QJsonDocument>
 #include <QStringBuilder> // for ".." % ..
