@@ -282,6 +282,7 @@ void MainWin::show() {
 }
 
 void MainWin::close() {
+    qDebug() << "Good bye\n";
     QMainWindow::close();
 }
 
@@ -361,7 +362,15 @@ void MainWin::outputDiffractograms() {
 }
 
 void MainWin::execCommand(str line) {
-    qDebug() << "ECHO: " << line << "\n";
+    QStringList argv = line.split(" ");
+    str cmd = argv.at(0);
+    if (cmd=="loadSession") {
+        gHub->sessionFromFile(argv.at(1));
+    } else if (cmd=="quit") {
+        close();
+    } else {
+        qDebug() << "Unknown command: " << line << "\n";
+    }
 }
 void MainWin::closeEvent(QCloseEvent* event) {
     saveSettings();
