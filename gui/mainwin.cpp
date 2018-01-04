@@ -199,13 +199,9 @@ void MainWin::initLayout() {
 
 //! Connect signals to slots. Part of the MainWin initialization.
 void MainWin::connectActions() {
-    auto connectTrigger = [this](QAction* action, void (MainWin::*fun)()) {
-        QObject::connect(action, &QAction::triggered, this, fun);
-    };
 
-    auto connectToggle = [this](QAction* action, void (MainWin::*fun)(bool)) {
-        QObject::connect(action, &QAction::toggled, this, fun);
-    };
+#define connectTrigger(action, fun) QObject::connect(action, &QAction::triggered, this, fun)
+#define connectToggle(action, fun)  QObject::connect(action, &QAction::toggled, this, fun)
 
     connectTrigger(gHub->trigger_loadSession, &MainWin::loadSession);
     connectTrigger(gHub->trigger_saveSession, &MainWin::saveSession);
