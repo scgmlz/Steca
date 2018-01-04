@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "../manifest.h"
+#include "console.h"
 #include "mainwin.h"
 #include "cfg/msg_handler.h"
 #include "session.h"
@@ -77,6 +78,9 @@ int main(int argc, char* argv[]) {
     gMainWin = gui::MainWin::instance();
     gMainWin->show();
     qDebug() /* qInfo() TODO restore */ << "Welcome to Steca";
+
+    Console console;
+    QObject::connect(&console, SIGNAL(quit()), &app, SLOT(quit()));
 
     return app.exec();
 }
