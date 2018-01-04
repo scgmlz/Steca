@@ -213,7 +213,7 @@ void MainWin::connectActions() {
     connectTrigger(gHub->trigger_outputDiagrams, &MainWin::outputDiagrams);
     connectTrigger(gHub->trigger_outputDiffractograms, &MainWin::outputDiffractograms);
 
-    connectTrigger(gHub->trigger_about, &MainWin::about);
+    QObject::connect(gHub->trigger_about, &QAction::triggered, [this](){AboutBox(this).exec();});
     connectTrigger(gHub->trigger_online, &MainWin::online);
     QObject::connect(gHub->trigger_checkUpdate, &QAction::triggered, [this]() {checkUpdate();});
 
@@ -227,10 +227,6 @@ void MainWin::connectActions() {
     connectToggle(gHub->toggle_viewMetadata, &MainWin::viewMetadata);
 
     connectTrigger(gHub->trigger_viewReset, &MainWin::viewReset);
-}
-
-void MainWin::about() {
-    AboutBox(this).exec();
 }
 
 void MainWin::online() {
@@ -260,7 +256,7 @@ void MainWin::checkUpdate(bool completeReport) {
                     str("%1 update").arg(name),
                     str("<p>The latest released %1 version is %2. You have "
                         "version %3.</p>"
-                        "<p><a href='%4'>Get new %1</a></p>")
+                        "<p><a href='%4'>Open download location in external browser</a></p>")
                         .arg(name, lastVer, ver, STECA2_DOWNLOAD_URL));
             else if (completeReport)
                 messageDialog(
@@ -384,7 +380,7 @@ void MainWin::onShow() {
     if (s.readBool("startup check update", true))
         checkUpdate(false);
     if (s.readBool("startup about", true))
-        about();
+        ;//about();
 }
 
 void MainWin::onClose() {

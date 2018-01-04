@@ -26,7 +26,6 @@ class MainWin : public QMainWindow, public ISingleton<MainWin> {
 public:
     MainWin();
 
-    void about();
     void online();
     void checkUpdate(bool completeReport=true);
 
