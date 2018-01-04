@@ -50,8 +50,8 @@ TheHub::TheHub()
     // create actions
 
     trigger_about = newTrigger("About " + qApp->applicationName());
-    trigger_online = newTrigger("Online documentation...");
-    trigger_checkUpdate = newTrigger("Check for update...");
+    trigger_online = newTrigger("Open docs in external browser");
+    trigger_checkUpdate = newTrigger("Check for update");
     trigger_quit = newTrigger("Quit");
 
     toggle_viewStatusbar = newToggle("Statusbar");
