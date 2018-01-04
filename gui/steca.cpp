@@ -25,8 +25,8 @@ const char* version =
 #include "../VERSION"
     ;
 
-class QMainWindow* gMainWin;
-class Session* gSession;
+class QMainWindow* gMainWin; //!< global, for message handling
+class Session* gSession; //!< global, for data handling
 
 int main(int argc, char* argv[]) {
 

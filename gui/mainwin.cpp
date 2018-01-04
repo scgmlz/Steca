@@ -40,7 +40,7 @@
 #include <QStatusBar>
 #include <QStringBuilder> // for ".." % ..
 
-gui::TheHub* gHub;
+gui::TheHub* gHub; //!< global, for signalling and command flow
 
 namespace gui {
 
