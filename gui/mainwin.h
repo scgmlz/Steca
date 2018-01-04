@@ -45,12 +45,10 @@ public:
     void outputDiffractograms();
 
 private:
-    QMenu *menuFile_, *menuView_, *menuImage_, *menuDgram_, *menuOutput_, *menuHelp_;
     QDockWidget *dockFiles_, *dockDatasets_, *dockDatasetInfo_;
     QByteArray initialState_;
     QNetworkAccessManager netMan_;
 
-    void initMenus();
     void initLayout();
     void initStatusBar();
     void connectActions();

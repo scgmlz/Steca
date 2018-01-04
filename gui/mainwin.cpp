@@ -42,62 +42,37 @@
 
 gui::TheHub* gHub; //!< global, for signalling and command flow
 
+// ************************************************************************** //
+//  file-scoped functions
+// ************************************************************************** //
+
 namespace {
 
-//! Adds a list of actions to a menu, and sets the tooltip. Auxiliary for MainWin::initMenus.
-void actionsToMenu(QMenu* menu, QList<QAction*> actions) {
-    debug::ensure(menu);
-    menu->addActions(actions);
-    str prefix = str("%1: ").arg(menu->title().remove('&'));
-    for (auto action : actions)
-        action->setToolTip(prefix + action->toolTip());
-}
-
-} // anonymous namespace
-
-namespace gui {
-
-MainWin::MainWin() {
-    qDebug() << "MainWin/";
-    gHub = new TheHub();
-    setWindowIcon(QIcon(":/icon/retroStier"));
-    QDir::setCurrent(QDir::homePath());
-
-    setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
-
-    initMenus();
-    initLayout();
-    initStatusBar();
-    connectActions();
-
-    readSettings();
-    qDebug() << "/MainWin";
-}
-
 //! Initialize the menu bar. Part of the MainWin initialization.
-void MainWin::initMenus() {
-    auto separator = [this]()->QAction* {
-        QAction* ret = new QAction(this);
+void initMenus(QMenuBar* mbar) {
+
+    auto separator = [mbar]()->QAction* {
+        QAction* ret = new QAction(mbar);
         ret->setSeparator(true);
         return ret;
     };
 
-    auto* mbar = menuBar();
+    auto actionsToMenu = [mbar](const char* menuName, QList<QAction*> actions)->void {
+        QMenu* menu = mbar->addMenu(menuName);
+        menu->addActions(actions);
+        str prefix = str("%1: ").arg(menu->title().remove('&'));
+        for (auto action : actions)
+            action->setToolTip(prefix + action->toolTip());
+    };
+
 #ifdef Q_OS_OSX
     mbar->setNativeMenuBar(false); // REVIEW
 #else
     mbar->setNativeMenuBar(true);
 #endif
 
-    menuFile_ = mbar->addMenu("&File");
-    menuImage_ = mbar->addMenu("&Image");
-    menuDgram_ = mbar->addMenu("Di&ffractogram");
-    menuOutput_ = mbar->addMenu("&Output");
-    menuView_ = mbar->addMenu("&View");
-    menuHelp_ = mbar->addMenu("&Help");
-
     actionsToMenu(
-        menuFile_,
+        "&File",
         {
             gHub->trigger_addFiles,
                 gHub->trigger_removeFile,
@@ -107,33 +82,14 @@ void MainWin::initMenus() {
                 separator(),
                 gHub->trigger_loadSession,
                 gHub->trigger_saveSession, // TODO add: gHub->trigger_clearSession,
-        });
-
-    actionsToMenu(
-        menuFile_,
-        {
 #ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
-            separator(),
+                separator(),
 #endif
-            gHub->trigger_quit,
+                gHub->trigger_quit,
         });
 
     actionsToMenu(
-        menuView_,
-        {   gHub->toggle_viewFiles,
-                gHub->toggle_viewDatasets,
-                gHub->toggle_viewMetadata,
-                separator(),
-#ifndef Q_OS_OSX
-            gHub->toggle_fullScreen,
-#endif
-            gHub->toggle_viewStatusbar,
-                separator(),
-                gHub->trigger_viewReset,
-        });
-
-    actionsToMenu(
-        menuImage_,
+        "&Image",
         {   gHub->trigger_rotateImage,
                 gHub->toggle_mirrorImage,
                 gHub->toggle_fixedIntenImage,
@@ -144,7 +100,7 @@ void MainWin::initMenus() {
         });
 
     actionsToMenu(
-        menuDgram_,
+        "&Diffractogram",
         {
             gHub->toggle_selRegions,
                 gHub->toggle_showBackground,
@@ -159,7 +115,7 @@ void MainWin::initMenus() {
         });
 
     actionsToMenu(
-        menuOutput_,
+        "&Output",
         {
             gHub->trigger_outputPolefigures,
                 gHub->trigger_outputDiagrams,
@@ -167,7 +123,21 @@ void MainWin::initMenus() {
         });
 
     actionsToMenu(
-        menuHelp_,
+        "&View",
+        {   gHub->toggle_viewFiles,
+                gHub->toggle_viewDatasets,
+                gHub->toggle_viewMetadata,
+                separator(),
+#ifndef Q_OS_OSX
+            gHub->toggle_fullScreen,
+#endif
+            gHub->toggle_viewStatusbar,
+                separator(),
+                gHub->trigger_viewReset,
+        });
+
+    actionsToMenu(
+        "&Help",
         {
             gHub->trigger_about,
 #ifndef Q_OS_OSX
@@ -177,6 +147,32 @@ void MainWin::initMenus() {
                 gHub->trigger_checkUpdate,
         });
 }
+
+} // anonymous namespace
+
+// ************************************************************************** //
+//  class MainWin
+// ************************************************************************** //
+
+namespace gui {
+
+MainWin::MainWin() {
+    qDebug() << "MainWin/";
+    gHub = new TheHub();
+    setWindowIcon(QIcon(":/icon/retroStier"));
+    QDir::setCurrent(QDir::homePath());
+
+    setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
+
+    initMenus(menuBar());
+    initLayout();
+    initStatusBar();
+    connectActions();
+
+    readSettings();
+    qDebug() << "/MainWin";
+}
+
 
 void MainWin::initLayout() {
     addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new panel::DockFiles()));
