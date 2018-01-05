@@ -18,6 +18,7 @@
 #include "def/macros.h"
 #include <QFile>
 
+//! A file opened for writing, specializing QFile.
 class WriteFile : public QFile {
 public:
     WriteFile(rcstr path) THROWS;

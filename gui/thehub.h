@@ -20,28 +20,34 @@
 #include "calc/calc_reflection.h"
 #include "data/datafile.h"
 
-class Suite;
-
 class QAction;
 
+class Suite;
 class FilesModel;
 class DatasetsModel;
 class MetadataModel;
 class ReflectionsModel;
 
-
 // make connects shorter
 #define slot(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
 
-
-
-extern class TheHub* gHub;
+extern class TheHub* gHub; //!< global pointer to _the_ instance of TheHub
 
 enum class eFittingTab {
     NONE,
     BACKGROUND,
     REFLECTIONS,
 };
+
+//! Companion of MainWin, holds signals and methods for interaction between views and data.
+
+//! One instance of this class coexists with the main window. It is accessible from everywhere
+//! through the global pointer gHub.
+
+//! The original idea was that _all_ signalling passes through this class. In the big
+//! refactoring after v2.0.5, this idea has been given up.
+
+//! We should consider merging TheHub into MainWin.
 
 class TheHub : public QObject {
 private:
@@ -187,7 +193,5 @@ public:
     MetadataModel* metadataModel;
     ReflectionsModel* reflectionsModel;
 };
-
-
 
 #endif // THEHUB_H
