@@ -22,8 +22,6 @@ class QBoxLayout;
 class QProgressBar;
 class QToolButton;
 
-
-
 namespace panel {
 class TabsPanel;
 }
@@ -50,6 +48,5 @@ protected:
 };
 
 } // namespace output
-
 
 #endif // FRAME_H

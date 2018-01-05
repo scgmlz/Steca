@@ -22,7 +22,180 @@
 #include "widgets/widget_makers.h"
 #include <QAction>
 #include <QProgressBar>
+#include <QScrollArea>
 
+namespace {
+
+// ************************************************************************** //
+//  local class TabTable
+// ************************************************************************** //
+
+using output::Params;
+using output::Table;
+
+class TabTable : public output::Tab {
+public:
+
+    TabTable(Params&, QStringList const& headers, QStringList const& outHeaders, cmp_vec const&);
+private:
+    struct showcol_t {
+        str name;
+        QCheckBox* cb;
+    };
+    typedef vec<showcol_t> showcol_vec;
+
+    class ShowColsWidget : public QWidget {
+    private:
+    public:
+        ShowColsWidget(Table&, showcol_vec&);
+    private:
+        Table& table_;
+        showcol_vec& showCols_;
+        QBoxLayout* box_;
+        QRadioButton *rbHidden_, *rbAll_, *rbNone_, *rbInten_, *rbTth_, *rbFWHM_;
+    };
+public:
+    Table* table;
+private:
+    ShowColsWidget* showColumnsWidget_;
+    showcol_vec showCols_;
+};
+
+TabTable::TabTable(
+    Params& params, QStringList const& headers, QStringList const& outHeaders, cmp_vec const& cmps)
+    : Tab(params) {
+    debug::ensure(to_u(headers.count()) == cmps.count());
+    uint numCols = to_u(headers.count());
+
+    grid_->addWidget((table = new Table(numCols)), 0, 0);
+    grid_->setColumnStretch(0, 1);
+
+    table->setColumns(headers, outHeaders, cmps);
+
+    for_i (numCols) {
+        showcol_t item;
+        item.name = headers.at(i);
+        showCols_.append(item);
+    }
+
+    auto scrollArea = new QScrollArea;
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scrollArea->setWidget((showColumnsWidget_ = new ShowColsWidget(*table, showCols_)));
+
+    grid_->addWidget(scrollArea, 0, 1);
+}
+
+TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
+    : table_(table), showCols_(showCols) {
+    using eReflAttr = ReflectionInfo::eReflAttr;
+
+    setLayout((box_ = vbox()));
+
+    box_->addWidget((rbHidden_ = radioButton("")));
+    rbHidden_->hide();
+
+    box_->addWidget((rbAll_ = radioButton("all")));
+    box_->addWidget((rbNone_ = radioButton("none")));
+    box_->addWidget(rbInten_ = radioButton("Intensity"));
+    box_->addWidget(rbTth_ = radioButton("2θ"));
+    box_->addWidget(rbFWHM_ = radioButton("fwhm"));
+    box_->addSpacing(8);
+
+    for_i (showCols.count()) {
+        auto& item = showCols[i];
+        box_->addWidget((item.cb = check(item.name)));
+    }
+
+    auto all = [this]() {
+        for (auto& col : showCols_)
+            col.cb->setChecked(true);
+    };
+
+    auto none = [this]() {
+        for (auto& col : showCols_)
+            col.cb->setChecked(false);
+    };
+
+    auto showInten = [this, none]() {
+        none();
+        showCols_.at(uint(eReflAttr::INTEN)).cb->setChecked(true);
+    };
+
+    auto showTth = [this, none]() {
+        none();
+        showCols_.at(uint(eReflAttr::TTH)).cb->setChecked(true);
+    };
+
+    auto showFWHM = [this, none]() {
+        none();
+        showCols_.at(uint(eReflAttr::FWHM)).cb->setChecked(true);
+    };
+
+    auto updateRbs = [this]() {
+        bool isAll = true, isNone = true, isOther = false;
+        uint nInten = 0, nTth = 0, nFwhm = 0;
+
+        for_i (showCols_.count()) {
+            if (!showCols_.at(i).cb->isChecked()) {
+                isAll = false;
+                continue;
+            }
+
+            isNone = false;
+
+            switch (eReflAttr(i)) {
+            case eReflAttr::ALPHA:
+            case eReflAttr::BETA:
+                ++nInten;
+                ++nTth;
+                ++nFwhm;
+                break;
+            case eReflAttr::INTEN: ++nInten; break;
+            case eReflAttr::TTH: ++nTth; break;
+            case eReflAttr::FWHM: ++nFwhm; break;
+            default: isOther = true; break;
+            }
+        }
+
+        rbHidden_->setChecked(true);
+        rbNone_->setChecked(isNone);
+        rbAll_->setChecked(isAll);
+
+        uint const PRESET_SELECTION = 1;
+
+        rbInten_->setChecked(!isOther && PRESET_SELECTION == nInten);
+        rbTth_->setChecked(!isOther && PRESET_SELECTION == nTth);
+        rbFWHM_->setChecked(!isOther && PRESET_SELECTION == nFwhm);
+    };
+
+    for_i (showCols_.count()) {
+        auto cb = showCols_.at(i).cb;
+
+        connect(cb, &QCheckBox::toggled, [this, updateRbs, i](bool on) {
+            if (on)
+                table_.showColumn(to_i(i) + 1);
+            else
+                table_.hideColumn(to_i(i) + 1);
+
+            updateRbs();
+        });
+    }
+
+    connect(rbAll_, &QRadioButton::clicked, all);
+    connect(rbNone_, &QRadioButton::clicked, none);
+    connect(rbInten_, &QRadioButton::clicked, showInten);
+    connect(rbTth_, &QRadioButton::clicked, showTth);
+    connect(rbFWHM_, &QRadioButton::clicked, showFWHM);
+
+    rbAll_->click();
+}
+
+} // anonymous namespace
+
+
+// ************************************************************************** //
+//  class Frame
+// ************************************************************************** //
 
 namespace output {
 
@@ -179,4 +352,3 @@ bool Frame::getInterpolated() const {
 }
 
 } // namespace output
-

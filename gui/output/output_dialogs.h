@@ -24,7 +24,6 @@ class QCheckBox;
 class QGridLayout;
 class QRadioButton;
 
-
 namespace output {
 
 class Params : public QWidget {
@@ -75,35 +74,6 @@ protected:
 };
 
 
-class TabTable : public Tab {
-public:
-    TabTable(Params&, QStringList const& headers, QStringList const& outHeaders,
-             cmp_vec const&);
-private:
-    struct showcol_t {
-        str name;
-        QCheckBox* cb;
-    };
-    typedef vec<showcol_t> showcol_vec;
-
-    class ShowColsWidget : public QWidget {
-    private:
-    public:
-        ShowColsWidget(Table&, showcol_vec&);
-    private:
-        Table& table_;
-        showcol_vec& showCols_;
-        QBoxLayout* box_;
-        QRadioButton *rbHidden_, *rbAll_, *rbNone_, *rbInten_, *rbTth_, *rbFWHM_;
-    };
-public:
-    Table* table;
-private:
-    ShowColsWidget* showColumnsWidget_;
-    showcol_vec showCols_;
-};
-
-
 class TabSave : public Tab {
 public:
     TabSave(Params&, bool withTypes);
@@ -117,6 +87,5 @@ protected:
 };
 
 } // namespace output
-
 
 #endif // OUTPUT_DIALOGS_H
