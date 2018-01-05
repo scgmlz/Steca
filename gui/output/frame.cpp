@@ -253,7 +253,7 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent)
     auto tabTable = new TabTable(
         *params_, ReflectionInfo::dataTags(false), ReflectionInfo::dataTags(true),
         ReflectionInfo::dataCmps());
-    tabs_->addTab("Points", Qt::Vertical).box().addWidget(tabTable);
+    wmaker::newTab(tabs_, "Points")->box().addWidget(tabTable);
 
     table_ = tabTable->table;
 

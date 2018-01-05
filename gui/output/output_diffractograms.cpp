@@ -86,7 +86,7 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
     btnInterpolate_->hide();
 
     tabSave_ = new TabDiffractogramsSave(*params_);
-    tabs_->addTab("Save", Qt::Vertical).box().addWidget(tabSave_);
+    wmaker::newTab(tabs_, "Save")->box().addWidget(tabSave_);
 
     connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiffractogramOutput(); });
     show();

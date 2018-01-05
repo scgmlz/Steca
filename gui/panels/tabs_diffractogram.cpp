@@ -17,6 +17,5 @@
 #include <QBoxLayout>
 
 TabsDiffractogram::TabsDiffractogram() : TabsPanel() {
-    auto& box = addTab("Diffractogram", Qt::Vertical).box();
-    box.addWidget(new Diffractogram());
+    wmaker::newTab(this, "Diffractogram")->box().addWidget(new Diffractogram());
 }

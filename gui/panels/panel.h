@@ -21,7 +21,7 @@
 class QBoxLayout;
 
 //! A tabbed panel
-class PTab : public QWidget {  // TODO: better names for Tab and Tab
+class PTab : public QWidget {
 public:
     PTab(Qt::Orientation);
     QBoxLayout& box() const { return *box_; }
@@ -34,8 +34,11 @@ protected:
 class TabsPanel : public QTabWidget {
 public:
     TabsPanel();
-    PTab& addTab(rcstr title, Qt::Orientation);
     PTab& tab(uint);
 };
+
+namespace wmaker {
+PTab* newTab(TabsPanel* panel, rcstr title);
+}
 
 #endif // PANEL_H

@@ -124,7 +124,7 @@ TabsSetup::TabsSetup() : TabsPanel() {
 
     // ==== image geometry tab ====
     {
-        QBoxLayout& box = addTab("Geometry", Qt::Vertical).box();
+        QBoxLayout& box = wmaker::newTab(this, "Geometry")->box();
 
         connect(gHub, &TheHub::sigGeometryChanged, [this](){ setFromHub(); });
 
@@ -229,7 +229,7 @@ TabsSetup::TabsSetup() : TabsPanel() {
     // ==== background fit tab ====
     {
         backgroundTabIndex = count();
-        QBoxLayout& box = addTab("Background", Qt::Vertical).box();
+        QBoxLayout& box = wmaker::newTab(this, "Background")->box();
         QBoxLayout* hb = hbox();
         box.addLayout(hb);
 
@@ -254,7 +254,7 @@ TabsSetup::TabsSetup() : TabsPanel() {
     // ==== peak fits tab ====
     {
         reflectionTabIndex = count();
-        QBoxLayout& box = addTab("Reflections", Qt::Vertical).box();
+        QBoxLayout& box = wmaker::newTab(this, "Reflections")->box();
         QBoxLayout* hb = hbox();
         box.addLayout(hb);
 

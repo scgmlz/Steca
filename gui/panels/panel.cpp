@@ -16,6 +16,13 @@
 #include "panel.h"
 #include "widgets/widget_makers.h"
 
+PTab* wmaker::newTab(TabsPanel* panel, rcstr title) {
+    auto ret = new PTab(Qt::Vertical);
+    panel->addTab(ret, title);
+    return ret;
+}
+
+
 // ************************************************************************** //
 //  class Tab
 // ************************************************************************** //
@@ -30,12 +37,6 @@ PTab::PTab(Qt::Orientation orientation) {
 
 TabsPanel::TabsPanel() {
     setTabPosition(TabsPanel::North);
-}
-
-PTab& TabsPanel::addTab(rcstr title, Qt::Orientation orientation) {
-    auto tab = new PTab(orientation);
-    QTabWidget::addTab(tab, title);
-    return *tab;
 }
 
 PTab& TabsPanel::tab(uint i) {

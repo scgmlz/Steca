@@ -144,7 +144,7 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 
 TabsImages::TabsImages() : TabsPanel() {
     {
-        auto& box = addTab("Image", Qt::Vertical).box();
+        auto& box = wmaker::newTab(this, "Image")->box();
 
         auto hb = hbox();
         box.addLayout(hb);
@@ -186,7 +186,7 @@ TabsImages::TabsImages() : TabsPanel() {
     }
 
     {
-        auto& tab = addTab("Correction", Qt::Vertical);
+        auto& tab = *wmaker::newTab(this, "Correction");
 
         connect(gHub, &TheHub::sigCorrFile,
                 [&tab](QSharedPointer<Datafile const> file) { tab.setEnabled(!file.isNull()); });
