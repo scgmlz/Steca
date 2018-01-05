@@ -63,7 +63,7 @@ protected:
         shp_mru_t() : p(), mru(0) {}
         shp_mru_t(shp p_, mru_t mru_) : p(p_), mru(mru_) {}
         shp p;
-        mru_t mru;
+        mru_t mru; //!< most recently used
     };
 
     typedef map<Key, shp_mru_t> mapKey_t;
