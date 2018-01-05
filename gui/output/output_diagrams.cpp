@@ -24,7 +24,7 @@
 #include "QCustomPlot/qcustomplot.h"
 #include <QAction>
 
-namespace gui {
+
 namespace output {
 
 // sorts xs and ys the same way, by (x,y)
@@ -176,6 +176,7 @@ DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
     connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiagramOutput(); });
 
     recalculate();
+    show();
 }
 
 DiagramsFrame::eReflAttr DiagramsFrame::xAttr() const {
@@ -300,4 +301,4 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
 }
 
 } // namespace output
-} // namespace gui
+

@@ -20,7 +20,6 @@
 #include "thehub.h"
 #include "widgets/widget_makers.h"
 
-namespace gui {
 namespace output {
 
 // ************************************************************************** //
@@ -163,4 +162,3 @@ PanelDiagram::PanelDiagram() : GridPanel("Diagram") {
 PanelFitError::PanelFitError() : GridPanel("Fit error") {}
 
 } // namespace output
-} // namespace gui

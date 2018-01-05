@@ -17,7 +17,7 @@
 #include "widgets/widget_makers.h"
 
 
-namespace gui {
+
 namespace panel {
 
 // ************************************************************************** //
@@ -49,4 +49,4 @@ Tab& TabsPanel::tab(uint i) {
 }
 
 } // namespace panel
-} // namespace gui
+

@@ -22,7 +22,7 @@
 #include "widgets/widget_makers.h"
 #include <QAction>
 
-namespace gui {
+
 namespace panel {
 
 static qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }
@@ -129,7 +129,7 @@ TabsSetup::TabsSetup() : TabsPanel() {
     {
         QBoxLayout& box = addTab("Geometry", Qt::Vertical).box();
 
-        connect(gHub, &TheHubSignallingBase::sigGeometryChanged, [this](){ setFromHub(); });
+        connect(gHub, &TheHub::sigGeometryChanged, [this](){ setFromHub(); });
 
         // widgets
 
@@ -250,7 +250,7 @@ TabsSetup::TabsSetup() : TabsPanel() {
                 gHub->setBgPolyDegree(to_u(degree));
             });
 
-        connect(gHub, &TheHubSignallingBase::sigBgChanged, [this](){
+        connect(gHub, &TheHub::sigBgChanged, [this](){
                 spinDegree_->setValue(to_i(gSession->bgPolyDegree())); });
     }
 
@@ -344,7 +344,7 @@ TabsSetup::TabsSetup() : TabsPanel() {
             updateReflectionControls();
         });
 
-        connect(gHub, &TheHubSignallingBase::sigReflectionsChanged,
+        connect(gHub, &TheHub::sigReflectionsChanged,
                 [this, updateReflectionControls]() {
                     reflectionView_->updateSingleSelection();
                     updateReflectionControls(); }
@@ -393,10 +393,10 @@ TabsSetup::TabsSetup() : TabsPanel() {
             silentSpin_ = false;
         };
 
-        connect(gHub, &TheHubSignallingBase::sigReflectionSelected,
+        connect(gHub, &TheHub::sigReflectionSelected,
             [setReflControls](shp_Reflection reflection) { setReflControls(reflection); });
 
-        connect(gHub, &TheHubSignallingBase::sigReflectionData,
+        connect(gHub, &TheHub::sigReflectionData,
             [setReflControls](shp_Reflection reflection) { setReflControls(reflection); });
 
         auto newReflData = [this](bool invalidateGuesses) {
@@ -460,4 +460,4 @@ void TabsSetup::setFromHub() {
 }
 
 } // namespace panel
-} // namespace gui
+

@@ -15,8 +15,6 @@
 #include "cfg/colors.h"
 #include <qmath.h>
 
-namespace gui {
-
 QRgb intenImage(inten_t inten, inten_t maxInten, bool curved) {
     if (qIsNaN(inten))
         return qRgb(0x00, 0xff, 0xff);
@@ -77,5 +75,4 @@ QRgb heatmapColor(inten_t value) {
     int b = lc1.b + int((lc2.b - lc1.b) * frac);
 
     return qRgb(r, g, b);
-}
 }

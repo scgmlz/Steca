@@ -17,7 +17,7 @@
 
 #include "widgets/various_widgets.h"
 
-namespace gui {
+
 namespace panel {
 
 class DockFiles : public DockWidget {
@@ -30,6 +30,6 @@ private:
 };
 
 } // namespace panel
-} // namespace gui
+
 
 #endif // DOCK_FILES_H

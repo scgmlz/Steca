@@ -20,19 +20,17 @@
 class QCheckBox;
 class QDoubleSpinBox;
 
-namespace gui {
+
 
 class AboutBox : public QDialog {
 public:
     AboutBox(QWidget*);
 
 protected:
-    void accept();
-
     QCheckBox *cbShowAtStartup_, *cbCheckUpdatesAtStartup_;
     QDoubleSpinBox *detDistance_, *detPixelSize_;
 };
 
-} // namespace gui
+
 
 #endif // ABOUT_H

@@ -20,7 +20,7 @@
 
 class QBoxLayout;
 
-namespace gui {
+
 namespace panel {
 
 //! A tabbed panel
@@ -43,6 +43,6 @@ public:
 };
 
 } // namespace panel
-} // namespace gui
+
 
 #endif // PANEL_H

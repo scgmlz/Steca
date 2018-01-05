@@ -22,7 +22,7 @@ class Measurement;
 class QDoubleSpinBox;
 class QSpinBox;
 
-namespace gui {
+
 namespace panel {
 
 class ImageWidget;
@@ -52,6 +52,6 @@ private:
 };
 
 } // namespace panel
-} // namespace gui
+
 
 #endif // TABS_IMAGES_H

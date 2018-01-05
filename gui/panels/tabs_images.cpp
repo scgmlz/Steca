@@ -24,7 +24,7 @@
 #include <QAction>
 #include <QPainter>
 
-namespace gui {
+
 namespace panel {
 
 // ************************************************************************** //
@@ -191,7 +191,7 @@ TabsImages::TabsImages() : TabsPanel() {
     {
         auto& tab = addTab("Correction", Qt::Vertical);
 
-        connect(gHub, &TheHubSignallingBase::sigCorrFile,
+        connect(gHub, &TheHub::sigCorrFile,
                 [&tab](QSharedPointer<Datafile const> file) { tab.setEnabled(!file.isNull()); });
 
         auto& box = tab.box();
@@ -212,10 +212,10 @@ TabsImages::TabsImages() : TabsPanel() {
 
     connect(gHub->toggle_showBins, &QAction::toggled, [this]() { render(); });
 
-    connect(gHub, &TheHubSignallingBase::sigDisplayChanged, [this](){ render(); });
-    connect(gHub, &TheHubSignallingBase::sigGeometryChanged, [this](){ render(); });
-    connect(gHub, &TheHubSignallingBase::sigNormChanged, [this](){ render(); });
-    connect(gHub, &TheHubSignallingBase::sigSuiteSelected,
+    connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
+    connect(gHub, &TheHub::sigGeometryChanged, [this](){ render(); });
+    connect(gHub, &TheHub::sigNormChanged, [this](){ render(); });
+    connect(gHub, &TheHub::sigSuiteSelected,
             [this](QSharedPointer<Suite> dataseq){ setSuite(dataseq); });
 
     render();
@@ -359,4 +359,4 @@ void TabsImages::render() {
 }
 
 } // namespace panel
-} // namespace gui
+

@@ -16,7 +16,7 @@
 #include "def/idiomatic_for.h"
 #include "models.h"
 
-namespace gui {
+
 
 // ************************************************************************** //
 //  class TreeView
@@ -94,4 +94,4 @@ void MultiListView::selectRows(uint_vec rows) {
     selectionModel()->select(is, QItemSelectionModel::ClearAndSelect);
 }
 
-} // namespace gui
+

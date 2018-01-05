@@ -17,7 +17,6 @@
 
 #include "panel.h"
 
-namespace gui {
 namespace panel {
 
 class TabsDiffractogram : public TabsPanel {
@@ -25,7 +24,6 @@ public:
     TabsDiffractogram();
 };
 
-}
 }
 
 #endif // TABS_DIFFRACTOGRAM_H

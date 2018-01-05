@@ -20,17 +20,17 @@
 #include <QMainWindow>
 #include <QNetworkAccessManager>
 
-namespace gui {
+
+
+extern class MainWin* gMainWin;
 
 class MainWin : public QMainWindow, public ISingleton<MainWin> {
 public:
     MainWin();
 
-    void about();
     void online();
-    void checkUpdate(bool completeReport=true);
+    void checkUpdate();
 
-    void show();
     void close();
 
     void addFiles();
@@ -40,30 +40,21 @@ public:
     void saveSession();
     void clearSession();
 
-    void outputPoleFigures();
-    void outputDiagrams();
-    void outputDiffractograms();
+    void execCommand(str);
 
 private:
-    QMenu *menuFile_, *menuView_, *menuImage_, *menuDgram_, *menuOutput_, *menuHelp_;
     QDockWidget *dockFiles_, *dockDatasets_, *dockDatasetInfo_;
     QByteArray initialState_;
     QNetworkAccessManager netMan_;
 
-    void initMenus();
-    void addActions(QMenu*, QList<QAction*>);
     void initLayout();
-    void initStatusBar();
     void connectActions();
 
     void messageDialog(rcstr title, rcstr text);
     void closeEvent(QCloseEvent*);
-    void onShow();
-    void onClose();
 
     void readSettings();
     void saveSettings();
-    void checkActions();
 
     void viewStatusbar(bool);
     void viewFullScreen(bool);
@@ -73,6 +64,6 @@ private:
     void viewReset();
 };
 
-} // namespace gui
+
 
 #endif // MAINWIN_H

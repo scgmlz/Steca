@@ -15,7 +15,7 @@
 #ifndef FILEDIALOG_H
 #define FILEDIALOG_H
 
-namespace gui {
+
 namespace file_dialog {
 
 QStringList openFileNames(QWidget*, rcstr caption, rcstr dir, rcstr filter, bool plural=true);
@@ -25,6 +25,6 @@ str saveFileName(QWidget*, rcstr caption, rcstr dir, rcstr filter);
 str saveDirName(QWidget*, rcstr caption, rcstr dir);
 
 } // namespace file_dialog
-} // namespace gui
+
 
 #endif // FILEDIALOG_H

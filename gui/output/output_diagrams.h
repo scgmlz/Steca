@@ -17,7 +17,7 @@
 
 #include "frame.h"
 
-namespace gui {
+
 namespace output {
 
 class DiagramsFrame : public Frame {
@@ -46,6 +46,6 @@ protected:
 };
 
 } // namespace output
-} // namespace gui
+
 
 #endif // OUTPUT_DIAGRAMS_H

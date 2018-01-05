@@ -23,7 +23,7 @@
 #include "widgets/widget_makers.h"
 #include <QAction>
 
-namespace gui {
+
 namespace output {
 
 class TabDiffractogramsSave : public TabSave {
@@ -78,6 +78,10 @@ struct OutputData {
 
 static const Params::ePanels PANELS = Params::ePanels(Params::GAMMA);
 
+// ************************************************************************** //
+//  class DiffractogramsFrame
+// ************************************************************************** //
+
 DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
     : Frame(title, new Params(PANELS), parent) {
     tabs_->removeTab(0);
@@ -88,6 +92,7 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
     tabs_->addTab("Save", Qt::Vertical).box().addWidget(tabSave_);
 
     connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiffractogramOutput(); });
+    show();
 }
 
 OutputDataCollection DiffractogramsFrame::collectCurves(
@@ -240,4 +245,4 @@ void DiffractogramsFrame::saveDiffractogramOutput() {
 }
 
 } // namespace output
-} // namespace gui
+

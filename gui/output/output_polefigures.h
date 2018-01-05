@@ -17,7 +17,7 @@
 
 #include "frame.h"
 
-namespace gui {
+
 namespace output {
 
 class PoleFiguresFrame : public Frame {
@@ -38,6 +38,6 @@ protected:
 };
 
 } // namespace output
-} // namespace gui
+
 
 #endif // OUTPUT_POLEFIGURES_H

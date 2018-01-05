@@ -21,11 +21,12 @@
 #include "session.h"
 #include "typ/json.h"
 #include <QAction>
+#include <QApplication>
 #include <QDir>
 #include <QJsonDocument>
 #include <QStringBuilder> // for ".." % ..
 
-namespace gui {
+
 
 TheHub::TheHub()
     : isFixedIntenImageScale_(false)
@@ -39,52 +40,52 @@ TheHub::TheHub()
     metadataModel = new MetadataModel();
     reflectionsModel = new ReflectionsModel();
 
-    connect(this, &gui::TheHubSignallingBase::sigFilesChanged,
+    connect(this, &TheHub::sigFilesChanged,
             [this]() { filesModel->signalReset(); });
-    connect(this, &gui::TheHubSignallingBase::sigSuitesChanged,
+    connect(this, &TheHub::sigSuitesChanged,
             [this]() { suiteModel->signalReset(); });
-    connect(this, &gui::TheHubSignallingBase::sigSuiteSelected,
+    connect(this, &TheHub::sigSuiteSelected,
             [this](QSharedPointer<Suite> dataseq) { metadataModel->reset(dataseq); });
 
     // create actions
 
-    trigger_about = newTrigger("About && Configuration...");
-    trigger_online = newTrigger("Online documentation...");
-    trigger_checkUpdate = newTrigger("Check for update...");
+    trigger_about = newTrigger("About " + qApp->applicationName());
+    trigger_online = newTrigger("Open docs in external browser");
+    trigger_checkUpdate = newTrigger("Check for update");
     trigger_quit = newTrigger("Quit");
 
-    toggle_viewStatusbar = newToggle("Statusbar");
-    toggle_viewFiles = newToggle("Files");
-    toggle_viewDatasets = newToggle("Datasets");
-    toggle_viewMetadata = newToggle("Metadata");
+    toggle_viewStatusbar = newToggle("Statusbar", true);
+    toggle_viewFiles = newToggle("Files", true);
+    toggle_viewDatasets = newToggle("Datasets", true);
+    toggle_viewMetadata = newToggle("Metadata", true);
     trigger_viewReset = newTrigger("Reset");
 #ifndef Q_OS_OSX
-    toggle_fullScreen = newToggle("FullScreen");
+    toggle_fullScreen = newToggle("FullScreen", false);
 #endif
 
     trigger_loadSession = newTrigger("Load session...");
     trigger_saveSession = newTrigger("Save session...");
-    trigger_clearSession = newTrigger("Clear session (to defaults)");
+    trigger_clearSession = newTrigger("Clear session");
 
     trigger_addFiles = newTrigger("Add files...", ":/icon/add");
     trigger_removeFile = newTrigger("Remove selected file(s)", ":/icon/rem");
-    toggle_enableCorr = newToggle("Enable correction file...", ":/icon/useCorrection");
+    toggle_enableCorr = newToggle("Enable correction file...", false, ":/icon/useCorrection");
     trigger_remCorr = newTrigger("Remove correction file", ":/icon/clear");
 
     trigger_rotateImage = newTrigger("Rotate", ":/icon/rotate0");
-    toggle_mirrorImage = newToggle("Mirror", ":/icon/mirrorHorz");
-    toggle_linkCuts = newToggle("Link cuts", ":/icon/link");
-    toggle_showOverlay = newToggle("Show overlay", ":/icon/crop");
-    toggle_stepScale = newToggle("Scale in steps", ":/icon/steps");
-    toggle_showBins = newToggle("Show bins", ":/icon/angle");
+    toggle_mirrorImage = newToggle("Mirror", false, ":/icon/mirrorHorz");
+    toggle_linkCuts = newToggle("Link cuts", false, ":/icon/link");
+    toggle_showOverlay = newToggle("Show overlay", false, ":/icon/crop");
+    toggle_stepScale = newToggle("Scale in steps", false, ":/icon/steps");
+    toggle_showBins = newToggle("Show bins", false, ":/icon/angle");
 
-    toggle_fixedIntenImage = newToggle("Global intensity scale", ":/icon/scale");
-    toggle_fixedIntenDgram = newToggle("Fixed intensity scale");
+    toggle_fixedIntenImage = newToggle("Global intensity scale", false, ":/icon/scale");
+    toggle_fixedIntenDgram = newToggle("Fixed intensity scale", false);
 
-    toggle_combinedDgram = newToggle("All suite");
+    toggle_combinedDgram = newToggle("All suite", true);
 
-    toggle_selRegions = newToggle("Select regions", ":/icon/selRegion");
-    toggle_showBackground = newToggle("Show fitted background", ":/icon/showBackground");
+    toggle_selRegions = newToggle("Select regions", false, ":/icon/selRegion");
+    toggle_showBackground = newToggle("Show fitted background", false, ":/icon/showBackground");
     trigger_clearBackground = newTrigger("Clear background regions", ":/icon/clear");
     trigger_clearReflections = newTrigger("Clear reflections", ":/icon/clear");
 
@@ -116,12 +117,13 @@ TheHub::TheHub()
 
     // handle signals
 
-    QObject::connect(this, &gui::TheHub::sigFilesSelected,
+    QObject::connect(this, &TheHub::sigFilesSelected,
             [this]() { trigger_removeFile->setEnabled(
                     !gSession->collectedFromFiles().isEmpty()); });
-    QObject::connect(this, &gui::TheHub::sigCorrFile,
-            [this](QSharedPointer<Datafile const> file) { trigger_remCorr->setEnabled(!file.isNull()); });
-    QObject::connect(this, &gui::TheHub::sigCorrEnabled,
+    QObject::connect(this, &TheHub::sigCorrFile,
+            [this](QSharedPointer<Datafile const> file) {
+                         trigger_remCorr->setEnabled(!file.isNull()); });
+    QObject::connect(this, &TheHub::sigCorrEnabled,
             [this](bool on) { toggle_enableCorr->setChecked(on); });
 
     auto deselect = [this]() {
@@ -130,12 +132,9 @@ TheHub::TheHub()
         toggle_combinedDgram->setChecked(false);
     };
 
-    QObject::connect(this, &gui::TheHub::sigGeometryChanged,
-                     [deselect]() { deselect(); });
-    QObject::connect(this, &gui::TheHub::sigSuitesChanged,
-                     [deselect]() { deselect(); });
-    QObject::connect(this, &gui::TheHub::sigCorrEnabled,
-                     [deselect]() { deselect(); });
+    QObject::connect(this, &TheHub::sigGeometryChanged, [deselect]() { deselect(); });
+    QObject::connect(this, &TheHub::sigSuitesChanged, [deselect]() { deselect(); });
+    QObject::connect(this, &TheHub::sigCorrEnabled, [deselect]() { deselect(); });
 
     trigger_removeFile->setEnabled(false);
     trigger_remReflection->setEnabled(false);
@@ -163,8 +162,7 @@ TheHub::TheHub()
     connect(toggle_mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
 
     connect(trigger_rotateImage, &QAction::triggered, [this]() {
-        setImageRotate(gSession->imageTransform().nextRotate());
-    });
+        setImageRotate(gSession->imageTransform().nextRotate()); });
     qDebug() << "/TheHub";
 }
 
@@ -244,16 +242,11 @@ QByteArray TheHub::saveSession() const {
     return QJsonDocument(top).toJson();
 }
 
-void TheHub::clearSession() {
-    gSession->clear();
-    tellSessionCleared();
-}
-
 void TheHub::sessionFromFile(rcstr filePath) THROWS {
     QFile file(filePath);
     RUNTIME_CHECK(file.open(QIODevice::ReadOnly | QIODevice::Text),
                   "Cannot open file for reading: " % filePath);
-    QDir::setCurrent(filePath);
+    QDir::setCurrent(QFileInfo(filePath).absolutePath());
     sessionFromJson(file.readAll());
 }
 
@@ -264,7 +257,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
 
     TakesLongTime __;
 
-    clearSession();
+    gSession->clear();
     TR("sessionFromJson: cleared old session");
 
     JsonObj top(doc.object());
@@ -383,9 +376,7 @@ void TheHub::setImageCut(bool isTopOrLeft, bool linked, ImageCut const& cut) {
 }
 
 void TheHub::setGeometry(preal detectorDistance, preal pixSize, IJ const& midPixOffset) {
-    level_guard __(sigLevel_);
-    if (sigLevel_ > 1)
-        return;
+    TR("setGeometry"); // keep an eye on this, since in the past circular calls may have happened
 
     gSession->setGeometry(detectorDistance, pixSize, midPixOffset);
     emit sigGeometryChanged();
@@ -485,4 +476,23 @@ void TheHub::setNorm(eNorm norm) {
     emit sigNormChanged();
 }
 
-} // namespace gui
+void TheHub::tellSuiteSelected(QSharedPointer<Suite> suite) {
+    selectedSuite_ = suite;
+    emit sigSuiteSelected(suite);
+}
+
+void TheHub::tellSelectedReflection(shp_Reflection reflection) {
+    selectedReflection_ = reflection;
+    emit sigReflectionSelected(reflection);
+}
+
+void TheHub::tellReflectionData(shp_Reflection reflection) {
+    emit sigReflectionData(reflection);
+}
+
+void TheHub::tellReflectionValues(
+    Range const& rgeTth, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
+    emit sigReflectionValues(rgeTth, peak, fwhm, withGuesses);
+}
+
+

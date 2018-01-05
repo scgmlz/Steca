@@ -17,18 +17,18 @@
 #include "dialog_panels.h"
 #include "calc/calc_polefigure.h"
 #include "session.h"
-#include "signalling.h"
+#include "thehub.h"
 #include "frame.h"
 #include "widgets/widget_makers.h"
 #include <QAction>
 #include <QProgressBar>
 
-namespace gui {
+
 namespace output {
 
 Frame::Frame(rcstr title, Params* params, QWidget* parent)
-    : QFrame(parent, Qt::Dialog) {
-    setAttribute(Qt::WA_DeleteOnClose);
+    : QDialog(parent) {
+    setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     setWindowTitle(title);
@@ -179,4 +179,4 @@ bool Frame::getInterpolated() const {
 }
 
 } // namespace output
-} // namespace gui
+

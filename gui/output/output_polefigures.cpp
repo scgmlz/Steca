@@ -25,7 +25,7 @@
 #include <QAction>
 #include <QPainter>
 
-namespace gui {
+
 namespace output {
 
 // ************************************************************************** //
@@ -260,13 +260,15 @@ PoleFiguresFrame::PoleFiguresFrame(rcstr title, QWidget* parent)
     tabs_->addTab("Save", Qt::Vertical).box().addWidget(tabSave_);
 
     connect( tabSave_->actSave, &QAction::triggered, [this]() { savePoleFigureOutput(); });
+    show();
 }
 
 void PoleFiguresFrame::displayReflection(uint reflIndex, bool interpolated) {
     Frame::displayReflection(reflIndex, interpolated);
     if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
         tabGraph_->set((interpolated ? interpPoints_ : calcPoints_).at(reflIndex));
-    tabSave_->rawReflSettings(gSession->reflections().at(reflIndex)->peakFunction().name() != "Raw");
+    tabSave_->rawReflSettings(
+        gSession->reflections().at(reflIndex)->peakFunction().name() != "Raw");
 }
 
 void PoleFiguresFrame::savePoleFigureOutput() {
@@ -396,4 +398,4 @@ void PoleFiguresFrame::writeListFile(
 }
 
 } // namespace output
-} // namespace gui
+

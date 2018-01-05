@@ -17,7 +17,7 @@
 #include <QAction>
 #include <QSpinBox>
 
-namespace gui {
+
 
 Settings::Settings(rcstr group) {
     setFallbacksEnabled(false);
@@ -79,4 +79,4 @@ int Settings::readInt(rcstr key, int def) {
     return ok ? val : def;
 }
 
-} // namespace gui
+

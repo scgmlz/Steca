@@ -26,7 +26,7 @@
 #include <QHeaderView>
 #include <QScrollArea>
 
-namespace gui {
+
 namespace output {
 
 // ************************************************************************** //
@@ -599,4 +599,4 @@ str TabSave::fileSetSuffix(rcstr suffix) {
 }
 
 } // namespace output
-} // namespace gui
+

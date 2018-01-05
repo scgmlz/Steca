@@ -2,8 +2,8 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/actions.h
-//! @brief     Defines functions newTrigger, newToggle
+//! @file      gui/console.h
+//! @brief     Declares class Console
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,18 +12,24 @@
 //
 // ************************************************************************** //
 
-#ifndef ACTIONS_H
-#define ACTIONS_H
+#ifndef CONSOLE_H
+#define CONSOLE_H
 
 #include "typ/str.h"
+#include <QObject>
 
-class QAction;
+//! Reads commands from stdin, and emits signal transmitLine
+class Console : public QObject
+{
+    Q_OBJECT
+public:
+    Console();
+signals:
+    void transmitLine(str);
+private:
+    class QSocketNotifier *m_notifier;
+private slots:
+    void readLine();
+};
 
-
-
-QAction* newTrigger(rcstr text, rcstr iconFile="");
-QAction* newToggle(rcstr text, bool value, rcstr iconFile="");
-
-
-
-#endif // ACTIONS_H
+#endif // CONSOLE_H

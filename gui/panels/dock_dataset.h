@@ -19,7 +19,7 @@
 
 class QSpinBox;
 
-namespace gui {
+
 namespace panel {
 
 class DockDatasets : public DockWidget {
@@ -32,6 +32,6 @@ private:
 };
 
 } // namespace panel
-} // namespace gui
+
 
 #endif // DOCK_DATASET_H

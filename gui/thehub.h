@@ -15,9 +15,12 @@
 #ifndef THEHUB_H
 #define THEHUB_H
 
-#include "signalling.h" // defines base class TheHubSignallingBase
 #include "calc/lens.h"
 #include "calc/calc_reflection_info.h"
+#include "calc/calc_reflection.h"
+#include "data/datafile.h"
+
+class Suite;
 
 class QAction;
 
@@ -26,30 +29,103 @@ class DatasetsModel;
 class MetadataModel;
 class ReflectionsModel;
 
-extern class gui::TheHub* gHub;
 
-namespace gui {
+// make connects shorter
+#define slot(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
 
-class TheHub : public TheHubSignallingBase {
+
+
+extern class TheHub* gHub;
+
+enum class eFittingTab {
+    NONE,
+    BACKGROUND,
+    REFLECTIONS,
+};
+
+class TheHub : public QObject {
+private:
+    Q_OBJECT
+
+    TheHub& asHub();
+
+public: // emit signals
+    void tellSuiteSelected(QSharedPointer<Suite>);
+    void tellSelectedReflection(shp_Reflection);
+    void tellReflectionData(shp_Reflection);
+    void tellReflectionValues(Range const&, qpair const&, fwhm_t, bool);
+
+signals:
+    void sigFilesChanged(); // the set of loaded files has changed
+    void sigFilesSelected(); // the selection of loaded files has changed
+
+    void sigSuitesChanged(); // the set of suite collected from selected
+    // files has changed
+    void sigSuiteSelected(QSharedPointer<Suite>);
+
+    void sigCorrFile(QSharedPointer<Datafile const>);
+    void sigCorrEnabled(bool);
+
+    void sigReflectionsChanged();
+    void sigReflectionSelected(shp_Reflection);
+    void sigReflectionData(shp_Reflection);
+    void sigReflectionValues(Range const&, qpair const&, fwhm_t, bool);
+
+    void sigDisplayChanged();
+    void sigGeometryChanged();
+
+    void sigGammaRange();
+
+    void sigBgChanged(); // ranges and poly: refit
+    void sigNormChanged();
+
+    void sigFittingTab(eFittingTab);
+
 public:
     TheHub();
 
     static uint constexpr MAX_POLYNOM_DEGREE = 4;
 
-    QAction *trigger_about, *trigger_online, *trigger_checkUpdate, *trigger_quit, *toggle_viewStatusbar, *toggle_viewFiles, *toggle_viewDatasets,
-        *toggle_viewMetadata, *trigger_viewReset,
+    QAction *trigger_about,
+        *trigger_online,
+        *trigger_checkUpdate,
+        *trigger_quit,
+        *toggle_viewStatusbar,
+        *toggle_viewFiles,
+        *toggle_viewDatasets,
+        *toggle_viewMetadata,
+        *trigger_viewReset,
 #ifndef Q_OS_OSX // Mac has its own
         *toggle_fullScreen,
 #endif
-        *trigger_loadSession, *trigger_saveSession, *trigger_clearSession, *trigger_addFiles, *trigger_removeFile, *toggle_enableCorr, *trigger_remCorr,
-        *trigger_rotateImage, *toggle_mirrorImage, *toggle_linkCuts, *toggle_showOverlay, *toggle_stepScale, *toggle_showBins,
-        *toggle_fixedIntenImage, *toggle_fixedIntenDgram, *toggle_combinedDgram, *toggle_selRegions, *toggle_showBackground,
-        *trigger_clearBackground, *trigger_clearReflections, *trigger_addReflection, *trigger_remReflection, *trigger_outputPolefigures,
-        *trigger_outputDiagrams, *trigger_outputDiffractograms;
+        *trigger_loadSession,
+        *trigger_saveSession,
+        *trigger_clearSession,
+        *trigger_addFiles,
+        *trigger_removeFile,
+        *toggle_enableCorr,
+        *trigger_remCorr,
+        *trigger_rotateImage,
+        *toggle_mirrorImage,
+        *toggle_linkCuts,
+        *toggle_showOverlay,
+        *toggle_stepScale,
+        *toggle_showBins,
+        *toggle_fixedIntenImage,
+        *toggle_fixedIntenDgram,
+        *toggle_combinedDgram,
+        *toggle_selRegions,
+        *toggle_showBackground,
+        *trigger_clearBackground,
+        *trigger_clearReflections,
+        *trigger_addReflection,
+        *trigger_remReflection,
+        *trigger_outputPolefigures,
+        *trigger_outputDiagrams,
+        *trigger_outputDiffractograms;
 
     // modifying methods:
     void removeFile(uint);
-    void clearSession();
     void sessionFromFile(rcstr const&) THROWS;
     void addGivenFile(rcstr filePath) THROWS;
     void addGivenFiles(QStringList const& filePaths) THROWS;
@@ -112,6 +188,6 @@ public:
     ReflectionsModel* reflectionsModel;
 };
 
-} // namespace gui
+
 
 #endif // THEHUB_H
