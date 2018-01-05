@@ -22,7 +22,7 @@ class Measurement;
 class QDoubleSpinBox;
 class QSpinBox;
 
-class TabsImages : public TabsPanel {
+class TabsImages : public QTabWidget {
 public:
     TabsImages();
 

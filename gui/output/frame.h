@@ -20,6 +20,7 @@
 
 class QBoxLayout;
 class QProgressBar;
+class QTabWidget;
 class QToolButton;
 
 class Frame : public QDialog {
@@ -31,7 +32,7 @@ protected:
     QProgressBar* pb_;
     QBoxLayout* box_;
     class Params* params_;
-    class TabsPanel* tabs_;
+    QTabWidget* tabs_;
     vec<ReflectionInfos> calcPoints_, interpPoints_;
     class Table* table_;
     void calculate();

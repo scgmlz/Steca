@@ -30,14 +30,8 @@ protected:
     QBoxLayout* box_;
 };
 
-//!
-class TabsPanel : public QTabWidget {
-public:
-    TabsPanel();
-};
-
 namespace wmaker {
-PTab* newTab(TabsPanel* panel, rcstr title);
+PTab* newTab(QTabWidget* panel, rcstr title);
 }
 
 #endif // PANEL_H

@@ -16,6 +16,7 @@
 #include "panel_diffractogram.h"
 #include <QBoxLayout>
 
-TabsDiffractogram::TabsDiffractogram() : TabsPanel() {
+TabsDiffractogram::TabsDiffractogram() {
+    setTabPosition(QTabWidget::North);
     wmaker::newTab(this, "Diffractogram")->box().addWidget(new Diffractogram());
 }

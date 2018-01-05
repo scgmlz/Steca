@@ -142,7 +142,8 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 //  class TabsImages
 // ************************************************************************** //
 
-TabsImages::TabsImages() : TabsPanel() {
+TabsImages::TabsImages() {
+    setTabPosition(QTabWidget::North);
     {
         auto& box = wmaker::newTab(this, "Image")->box();
 

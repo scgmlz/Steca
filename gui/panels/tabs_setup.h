@@ -22,7 +22,7 @@ class QDoubleSpinBox;
 class QLineEdit;
 class QSpinBox;
 
-class TabsSetup : public TabsPanel {
+class TabsSetup : public QTabWidget {
 public:
     TabsSetup();
 

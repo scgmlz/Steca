@@ -17,7 +17,7 @@
 
 #include "panel.h"
 
-class TabsDiffractogram : public TabsPanel {
+class TabsDiffractogram : public QTabWidget {
 public:
     TabsDiffractogram();
 };

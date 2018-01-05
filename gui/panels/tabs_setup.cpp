@@ -118,7 +118,8 @@ QLabel* icon(rcstr fileName) {
     return l;
 }
 
-TabsSetup::TabsSetup() : TabsPanel() {
+TabsSetup::TabsSetup() {
+    setTabPosition(QTabWidget::North);
 
     int backgroundTabIndex, reflectionTabIndex;
 
