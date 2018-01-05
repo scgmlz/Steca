@@ -40,7 +40,7 @@
 #include <QStatusBar>
 #include <QStringBuilder> // for ".." % ..
 
-gui::TheHub* gHub; //!< global, for signalling and command flow
+gui::TheHub* gui::gHub; //!< global, for signalling and command flow
 
 // ************************************************************************** //
 //  file-scoped functions
@@ -74,75 +74,75 @@ void initMenus(QMenuBar* mbar) {
     actionsToMenu(
         "&File",
         {
-            gHub->trigger_addFiles,
-                gHub->trigger_removeFile,
+            gui::gHub->trigger_addFiles,
+                gui::gHub->trigger_removeFile,
                 separator(),
-                gHub->toggle_enableCorr,
-                gHub->trigger_remCorr,
+                gui::gHub->toggle_enableCorr,
+                gui::gHub->trigger_remCorr,
                 separator(),
-                gHub->trigger_loadSession,
-                gHub->trigger_saveSession,
-                gHub->trigger_clearSession,
+                gui::gHub->trigger_loadSession,
+                gui::gHub->trigger_saveSession,
+                gui::gHub->trigger_clearSession,
 #ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
                 separator(),
 #endif
-                gHub->trigger_quit,
+                gui::gHub->trigger_quit,
         });
 
     actionsToMenu(
         "&Image",
-        {   gHub->trigger_rotateImage,
-                gHub->toggle_mirrorImage,
-                gHub->toggle_fixedIntenImage,
-                gHub->toggle_linkCuts,
-                gHub->toggle_showOverlay,
-                gHub->toggle_stepScale,
-                gHub->toggle_showBins,
+        {   gui::gHub->trigger_rotateImage,
+                gui::gHub->toggle_mirrorImage,
+                gui::gHub->toggle_fixedIntenImage,
+                gui::gHub->toggle_linkCuts,
+                gui::gHub->toggle_showOverlay,
+                gui::gHub->toggle_stepScale,
+                gui::gHub->toggle_showBins,
         });
 
     actionsToMenu(
         "&Diffractogram",
         {
-            gHub->toggle_selRegions,
-                gHub->toggle_showBackground,
-                gHub->trigger_clearBackground,
-                gHub->trigger_clearReflections,
+            gui::gHub->toggle_selRegions,
+                gui::gHub->toggle_showBackground,
+                gui::gHub->trigger_clearBackground,
+                gui::gHub->trigger_clearReflections,
                 separator(),
-                gHub->trigger_addReflection,
-                gHub->trigger_remReflection,
+                gui::gHub->trigger_addReflection,
+                gui::gHub->trigger_remReflection,
                 separator(),
-                gHub->toggle_combinedDgram,
-                gHub->toggle_fixedIntenDgram,
+                gui::gHub->toggle_combinedDgram,
+                gui::gHub->toggle_fixedIntenDgram,
         });
 
     actionsToMenu(
         "&Output",
         {
-            gHub->trigger_outputPolefigures,
-                gHub->trigger_outputDiagrams,
-                gHub->trigger_outputDiffractograms,
+            gui::gHub->trigger_outputPolefigures,
+                gui::gHub->trigger_outputDiagrams,
+                gui::gHub->trigger_outputDiffractograms,
         });
 
     actionsToMenu(
         "&View",
-        {   gHub->toggle_viewFiles,
-                gHub->toggle_viewDatasets,
-                gHub->toggle_viewMetadata,
+        {   gui::gHub->toggle_viewFiles,
+                gui::gHub->toggle_viewDatasets,
+                gui::gHub->toggle_viewMetadata,
                 separator(),
 #ifndef Q_OS_OSX
-                gHub->toggle_fullScreen,
+                gui::gHub->toggle_fullScreen,
 #endif
-                gHub->toggle_viewStatusbar,
+                gui::gHub->toggle_viewStatusbar,
                 separator(),
-                gHub->trigger_viewReset,
+                gui::gHub->trigger_viewReset,
         });
 
     actionsToMenu(
         "&Help",
         {
-            gHub->trigger_about, // Mac puts About into the Apple menu
-                gHub->trigger_online,
-                gHub->trigger_checkUpdate,
+            gui::gHub->trigger_about, // Mac puts About into the Apple menu
+                gui::gHub->trigger_online,
+                gui::gHub->trigger_checkUpdate,
         });
 }
 

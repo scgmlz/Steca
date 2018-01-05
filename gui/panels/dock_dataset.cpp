@@ -41,7 +41,7 @@ DatasetView::DatasetView() : ListView() {
     setModel(gHub->suiteModel); // TODO simplify this
     debug::ensure(dynamic_cast<DatasetsModel*>(ListView::model()));
 
-    connect(gHub, &TheHubSignallingBase::sigSuitesChanged, [this]() {
+    connect(gHub, &TheHub::sigSuitesChanged, [this]() {
             gHub->tellSuiteSelected(QSharedPointer<Suite>()); // first de-select
             selectRow(0);
         });
@@ -73,7 +73,7 @@ DockDatasets::DockDatasets()
         gHub->combineDatasetsBy(pint(qMax(1, num)));
     });
 
-    connect(gHub, &TheHubSignallingBase::sigSuitesChanged,
+    connect(gHub, &TheHub::sigSuitesChanged,
             [this]() { combineDatasets_->setValue(to_i(uint(gHub->suiteGroupedBy()))); });
 }
 

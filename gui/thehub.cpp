@@ -40,11 +40,11 @@ TheHub::TheHub()
     metadataModel = new MetadataModel();
     reflectionsModel = new ReflectionsModel();
 
-    connect(this, &gui::TheHubSignallingBase::sigFilesChanged,
+    connect(this, &gui::TheHub::sigFilesChanged,
             [this]() { filesModel->signalReset(); });
-    connect(this, &gui::TheHubSignallingBase::sigSuitesChanged,
+    connect(this, &gui::TheHub::sigSuitesChanged,
             [this]() { suiteModel->signalReset(); });
-    connect(this, &gui::TheHubSignallingBase::sigSuiteSelected,
+    connect(this, &gui::TheHub::sigSuiteSelected,
             [this](QSharedPointer<Suite> dataseq) { metadataModel->reset(dataseq); });
 
     // create actions
@@ -376,9 +376,7 @@ void TheHub::setImageCut(bool isTopOrLeft, bool linked, ImageCut const& cut) {
 }
 
 void TheHub::setGeometry(preal detectorDistance, preal pixSize, IJ const& midPixOffset) {
-    level_guard __(sigLevel_);
-    if (sigLevel_ > 1)
-        return;
+    TR("setGeometry"); // keep an eye on this, since in the past circular calls may have happened
 
     gSession->setGeometry(detectorDistance, pixSize, midPixOffset);
     emit sigGeometryChanged();
@@ -476,6 +474,25 @@ void TheHub::setImageMirror(bool on) {
 void TheHub::setNorm(eNorm norm) {
     gSession->setNorm(norm);
     emit sigNormChanged();
+}
+
+void TheHub::tellSuiteSelected(QSharedPointer<Suite> suite) {
+    selectedSuite_ = suite;
+    emit sigSuiteSelected(suite);
+}
+
+void TheHub::tellSelectedReflection(shp_Reflection reflection) {
+    selectedReflection_ = reflection;
+    emit sigReflectionSelected(reflection);
+}
+
+void TheHub::tellReflectionData(shp_Reflection reflection) {
+    emit sigReflectionData(reflection);
+}
+
+void TheHub::tellReflectionValues(
+    Range const& rgeTth, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
+    emit sigReflectionValues(rgeTth, peak, fwhm, withGuesses);
 }
 
 } // namespace gui

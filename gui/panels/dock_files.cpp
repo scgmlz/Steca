@@ -52,10 +52,9 @@ FilesView::FilesView() : MultiListView() {
 
     connect(gHub->trigger_removeFile, &QAction::triggered, [this]() { removeSelected(); });
 
-    connect(gHub, &TheHubSignallingBase::sigFilesChanged,
-            [this]() { selectRows({}); recollect(); });
+    connect(gHub, &TheHub::sigFilesChanged, [this]() { selectRows({}); recollect(); });
 
-    connect(gHub, &TheHubSignallingBase::sigFilesSelected,
+    connect(gHub, &TheHub::sigFilesSelected,
             [this]() { selectRows(gSession->collectedFromFiles()); });
 }
 
@@ -111,7 +110,7 @@ DockFiles::DockFiles() : DockWidget("Files", "dock-files", Qt::Vertical) {
     h->addWidget(iconButton(gHub->toggle_enableCorr));
     h->addWidget(iconButton(gHub->trigger_remCorr));
 
-    connect(gHub, &TheHubSignallingBase::sigCorrFile,
+    connect(gHub, &TheHub::sigCorrFile,
             [this](QSharedPointer<Datafile const> file) {
                 corrFile_->setText(file.isNull() ? "" : file->fileName()); });
 }

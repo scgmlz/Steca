@@ -47,7 +47,7 @@ QVariant FilesModel::data(rcIndex index, int role) const {
 }
 
 void FilesModel::removeFile(uint i) {
-    gHub->removeFile(i);
+    gui::gHub->removeFile(i);
 }
 
 // ************************************************************************** //
@@ -238,11 +238,11 @@ QVariant ReflectionsModel::headerData(int col, Qt::Orientation, int role) const 
 }
 
 void ReflectionsModel::addReflection(QString const& peakFunctionName) {
-    gHub->addReflection(peakFunctionName);
+    gui::gHub->addReflection(peakFunctionName);
 }
 
 void ReflectionsModel::remReflection(uint i) {
-    gHub->remReflection(i);
+    gui::gHub->remReflection(i);
 }
 
 QStringList ReflectionsModel::names() const {

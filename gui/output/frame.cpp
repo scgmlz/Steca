@@ -17,7 +17,7 @@
 #include "dialog_panels.h"
 #include "calc/calc_polefigure.h"
 #include "session.h"
-#include "signalling.h"
+#include "thehub.h"
 #include "frame.h"
 #include "widgets/widget_makers.h"
 #include <QAction>

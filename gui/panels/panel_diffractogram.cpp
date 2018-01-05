@@ -264,7 +264,7 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     fits_->setLineStyle(QCPGraph::lsNone);
     fits_->setPen(QPen(Qt::red));
 
-    connect(gHub, &TheHubSignallingBase::sigReflectionData,
+    connect(gHub, &TheHub::sigReflectionData,
             [this](shp_Reflection reflection) { onReflectionData(reflection); });
 
     connect(gHub->toggle_showBackground, &QAction::toggled, [this](bool on) {
@@ -272,7 +272,7 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
         updateBg();
     });
 
-    connect(gHub, &TheHubSignallingBase::sigBgChanged, [this]() { updateBg(); });
+    connect(gHub, &TheHub::sigBgChanged, [this]() { updateBg(); });
 
     tool_ = eTool::NONE;
 }
@@ -501,19 +501,19 @@ Diffractogram::Diffractogram()
         plot_->enterZoom(on);
     });
 
-    connect(gHub, &TheHubSignallingBase::sigSuiteSelected,
+    connect(gHub, &TheHub::sigSuiteSelected,
             [this](QSharedPointer<Suite> suite){ setSuite(suite); });
-    connect(gHub, &TheHubSignallingBase::sigGeometryChanged, [this](){ render(); });
-    connect(gHub, &TheHubSignallingBase::sigCorrEnabled, [this](){ render(); });
-    connect(gHub, &TheHubSignallingBase::sigDisplayChanged, [this](){ render(); });
-    connect(gHub, &TheHubSignallingBase::sigGammaRange, [this](){ render(); });
-    connect(gHub, &TheHubSignallingBase::sigBgChanged, [this](){ render(); });
-    connect(gHub, &TheHubSignallingBase::sigReflectionsChanged, [this](){ render(); });
-    connect(gHub, &TheHubSignallingBase::sigNormChanged, [this](){ onNormChanged(); });
+    connect(gHub, &TheHub::sigGeometryChanged, [this](){ render(); });
+    connect(gHub, &TheHub::sigCorrEnabled, [this](){ render(); });
+    connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
+    connect(gHub, &TheHub::sigGammaRange, [this](){ render(); });
+    connect(gHub, &TheHub::sigBgChanged, [this](){ render(); });
+    connect(gHub, &TheHub::sigReflectionsChanged, [this](){ render(); });
+    connect(gHub, &TheHub::sigNormChanged, [this](){ onNormChanged(); });
 
     connect(gHub->trigger_clearBackground, &QAction::triggered, [this]() { plot_->clearBg(); });
 
-    connect(gHub, &TheHubSignallingBase::sigFittingTab,
+    connect(gHub, &TheHub::sigFittingTab,
             [this](eFittingTab tab) { onFittingTab(tab); });
 
     connect(gHub->toggle_selRegions, &QAction::toggled, [this](bool on) {
@@ -530,13 +530,13 @@ Diffractogram::Diffractogram()
         plot_->setTool(tool);
         });
 
-    connect(gHub, &TheHubSignallingBase::sigReflectionSelected,
+    connect(gHub, &TheHub::sigReflectionSelected,
             [this](shp_Reflection reflection) {
                 currentReflection_ = reflection;
                 plot_->updateBg();
             });
 
-    connect(gHub, &TheHubSignallingBase::sigReflectionValues,
+    connect(gHub, &TheHub::sigReflectionValues,
             [this](Range const& range, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
                 if (currentReflection_) {
                     currentReflection_->setRange(range);

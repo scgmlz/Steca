@@ -15,9 +15,12 @@
 #ifndef THEHUB_H
 #define THEHUB_H
 
-#include "signalling.h" // defines base class TheHubSignallingBase
 #include "calc/lens.h"
 #include "calc/calc_reflection_info.h"
+#include "calc/calc_reflection.h"
+#include "data/datafile.h"
+
+class Suite;
 
 class QAction;
 
@@ -26,11 +29,58 @@ class DatasetsModel;
 class MetadataModel;
 class ReflectionsModel;
 
-extern class gui::TheHub* gHub;
+
+// make connects shorter
+#define slot(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
 
 namespace gui {
 
-class TheHub : public TheHubSignallingBase {
+extern class TheHub* gHub;
+
+enum class eFittingTab {
+    NONE,
+    BACKGROUND,
+    REFLECTIONS,
+};
+
+class TheHub : public QObject {
+private:
+    Q_OBJECT
+
+    TheHub& asHub();
+
+public: // emit signals
+    void tellSuiteSelected(QSharedPointer<Suite>);
+    void tellSelectedReflection(shp_Reflection);
+    void tellReflectionData(shp_Reflection);
+    void tellReflectionValues(Range const&, qpair const&, fwhm_t, bool);
+
+signals:
+    void sigFilesChanged(); // the set of loaded files has changed
+    void sigFilesSelected(); // the selection of loaded files has changed
+
+    void sigSuitesChanged(); // the set of suite collected from selected
+    // files has changed
+    void sigSuiteSelected(QSharedPointer<Suite>);
+
+    void sigCorrFile(QSharedPointer<Datafile const>);
+    void sigCorrEnabled(bool);
+
+    void sigReflectionsChanged();
+    void sigReflectionSelected(shp_Reflection);
+    void sigReflectionData(shp_Reflection);
+    void sigReflectionValues(Range const&, qpair const&, fwhm_t, bool);
+
+    void sigDisplayChanged();
+    void sigGeometryChanged();
+
+    void sigGammaRange();
+
+    void sigBgChanged(); // ranges and poly: refit
+    void sigNormChanged();
+
+    void sigFittingTab(eFittingTab);
+
 public:
     TheHub();
 
