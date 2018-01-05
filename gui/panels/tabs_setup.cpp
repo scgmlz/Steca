@@ -28,7 +28,7 @@ static str safeRealText(qreal val) { return qIsFinite(val) ? str::number(val) : 
 
 
 // ************************************************************************** //
-//  class ReflectionView (local scope)
+//  local class ReflectionView
 // ************************************************************************** //
 
 class ReflectionView : public ListView {

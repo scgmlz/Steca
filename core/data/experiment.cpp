@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "suite.h"
 #include "measurement.h"
 #include "session.h"
 

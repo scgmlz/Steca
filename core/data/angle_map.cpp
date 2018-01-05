@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "angle_map.h"
-#include "def/comparators.h"
 #include "def/idiomatic_for.h"
 #include <qmath.h>
 #include <iostream> // for debugging

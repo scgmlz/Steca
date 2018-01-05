@@ -16,9 +16,7 @@
 #define CALC_REFLECTION_H
 
 #include "def/special_pointers.h"
-#include "typ/curve.h"
 #include "typ/realpair.h"
-#include "typ/types.h"
 #include <QSharedPointer> // no auto rm
 
 class PeakFunction;

@@ -17,7 +17,7 @@
 
 #include "typ/angles.h"
 #include "typ/str.h"
-#include "typ/variant.h"
+//SPURIOUS #include "typ/variant.h"
 
 class Metadata {
 public:
