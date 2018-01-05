@@ -28,6 +28,14 @@
 
 extern class Session* gSession;
 
+//! Companion of MainWin and TheHub, holds data and data-related settings.
+
+//! One instance of this class coexists with the main window. It is accessible from everywhere
+//! through the global pointer gSession.
+
+//! The original idea was that core and GUI only communicate via function calls between
+//! Session and TheHub. In the big refactoring after v2.0.5, this has been given up.
+
 class Session final : public ISingleton<Session> {
 public:
     Session();
