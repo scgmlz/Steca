@@ -65,16 +65,16 @@ public:
 };
 
 
-class Tab : public QWidget { // TODO: better names for panel::Tab and output::Tab
+class OutputTab : public QWidget {
 public :
-    Tab(Params&);
+    OutputTab(Params&);
 protected:
     Params& params_;
     QGridLayout* grid_;
 };
 
 
-class TabSave : public Tab {
+class TabSave : public OutputTab {
 public:
     TabSave(Params&, bool withTypes);
     str filePath(bool withSuffix);

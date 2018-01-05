@@ -314,7 +314,7 @@ void TabularModel::sortData() {
 //  class Tab
 // ************************************************************************** //
 
-Tab::Tab(Params& params) : params_(params) {
+OutputTab::OutputTab(Params& params) : params_(params) {
     setLayout((grid_ = gridLayout()));
 }
 
@@ -386,7 +386,7 @@ const row_t& Table::row(uint i) const {
 static str const DAT_SFX(".dat"), DAT_SEP(" "), // suffix, separator
     CSV_SFX(".csv"), CSV_SEP(", ");
 
-TabSave::TabSave(Params& params, bool withTypes) : Tab(params) {
+TabSave::TabSave(Params& params, bool withTypes) : OutputTab(params) {
     actBrowse = newTrigger("Browse...");
     actSave = newTrigger("Save");
 

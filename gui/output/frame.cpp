@@ -159,7 +159,7 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
 //  local class TabTable (only used by Frame implementation)
 // ************************************************************************** //
 
-class TabTable : public output::Tab {
+class TabTable : public output::OutputTab {
 public:
     TabTable(Params&, QStringList const& headers, QStringList const& outHeaders, cmp_vec const&);
     Table* table;
@@ -170,7 +170,7 @@ private:
 
 TabTable::TabTable(
     Params& params, QStringList const& headers, QStringList const& outHeaders, cmp_vec const& cmps)
-    : Tab(params) {
+    : OutputTab(params) {
     debug::ensure(to_u(headers.count()) == cmps.count());
     uint numCols = to_u(headers.count());
 
