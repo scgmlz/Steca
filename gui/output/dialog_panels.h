@@ -25,7 +25,6 @@ class QSpinBox;
 class QRadioButton;
 class QDoubleSpinBox;
 
-namespace gui {
 namespace output {
 
 //! A panel with grid layout
@@ -104,6 +103,5 @@ public:
 };
 
 } // namespace output
-} // namespace gui
 
 #endif // DIALOG_PANELS_H

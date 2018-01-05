@@ -28,7 +28,7 @@ const char* version =
 #include "../VERSION"
     ;
 
-class gui::MainWin* gMainWin; //!< global, for message handling
+class MainWin* gMainWin; //!< global, for message handling
 class Session* gSession; //!< global, for data handling
 
 int main(int argc, char* argv[]) {
@@ -75,12 +75,12 @@ int main(int argc, char* argv[]) {
 
     gSession = Session::instance();
 
-    gMainWin = gui::MainWin::instance();
+    gMainWin = MainWin::instance();
     gMainWin->show();
     qDebug() /* qInfo() TODO restore */ << "Welcome to Steca";
 
     Console console;
-    QObject::connect(&console, &Console::transmitLine, gMainWin, &gui::MainWin::execCommand);
+    QObject::connect(&console, &Console::transmitLine, gMainWin, &MainWin::execCommand);
 
     return app.exec();
 }

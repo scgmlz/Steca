@@ -16,7 +16,6 @@
 #include "panel_diffractogram.h"
 #include <QBoxLayout>
 
-namespace gui {
 namespace panel {
 
 TabsDiffractogram::TabsDiffractogram() : TabsPanel() {
@@ -24,5 +23,4 @@ TabsDiffractogram::TabsDiffractogram() : TabsPanel() {
     box.addWidget(new Diffractogram());
 }
 
-}
 }

@@ -20,7 +20,7 @@
 
 class TableModel;
 
-namespace gui {
+
 
 //! abstract tree widget
 
@@ -67,6 +67,6 @@ protected:
     void selectRows(uint_vec);
 };
 
-} // namespace gui
+
 
 #endif // TREE_VIEWS_H

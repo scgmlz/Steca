@@ -20,7 +20,7 @@
 #include "widgets/tree_views.h" // inheriting from
 #include "widgets/widget_makers.h"
 
-namespace gui {
+
 namespace panel {
 
 // ************************************************************************** //
@@ -78,4 +78,4 @@ DockDatasets::DockDatasets()
 }
 
 } // namespace panel
-} // namespace gui
+

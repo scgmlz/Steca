@@ -72,7 +72,7 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
 //  exported functions
 // ************************************************************************** //
 
-namespace gui {
+
 namespace file_dialog {
 
 QStringList openFileNames(QWidget* parent, rcstr caption, rcstr dir, rcstr filter, bool plural) {
@@ -128,4 +128,4 @@ str saveDirName(QWidget* parent, rcstr caption, rcstr dir) {
 }
 
 } // namespace file_dialog
-} // namespace gui
+

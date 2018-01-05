@@ -17,7 +17,7 @@
 #include "widgets/tree_views.h" // inheriting from
 #include "thehub.h"
 
-namespace gui {
+
 namespace panel {
 
 class MetadataView : public ListView {
@@ -55,4 +55,4 @@ DockMetadata::DockMetadata()
 }
 
 } // namespace panel
-} // namespace gui
+

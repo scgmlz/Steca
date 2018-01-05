@@ -23,7 +23,7 @@
 #include <QAction>
 #include <QProgressBar>
 
-namespace gui {
+
 namespace output {
 
 Frame::Frame(rcstr title, Params* params, QWidget* parent)
@@ -179,4 +179,4 @@ bool Frame::getInterpolated() const {
 }
 
 } // namespace output
-} // namespace gui
+

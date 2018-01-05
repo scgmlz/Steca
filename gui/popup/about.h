@@ -20,7 +20,7 @@
 class QCheckBox;
 class QDoubleSpinBox;
 
-namespace gui {
+
 
 class AboutBox : public QDialog {
 public:
@@ -31,6 +31,6 @@ protected:
     QDoubleSpinBox *detDistance_, *detPixelSize_;
 };
 
-} // namespace gui
+
 
 #endif // ABOUT_H

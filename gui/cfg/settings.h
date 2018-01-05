@@ -22,7 +22,7 @@ class QAction;
 class QDoubleSpinBox;
 class QSpinBox;
 
-namespace gui {
+
 
 class Settings : public QSettings {
 private:
@@ -55,6 +55,6 @@ public:
     void saveStr(rcstr key, rcstr val) { saveVariant(key, val); }
 };
 
-} // namespace gui
+
 
 #endif // SETTINGS_H

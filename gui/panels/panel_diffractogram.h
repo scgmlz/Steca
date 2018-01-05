@@ -24,7 +24,7 @@ class QRadioButton;
 class QDoubleSpinBox;
 class QToolButton;
 
-namespace gui {
+
 namespace panel {
 
 class Diffractogram : public QWidget {
@@ -69,6 +69,6 @@ public:
 };
 
 } // namespace panel
-} // namespace gui
+
 
 #endif // PANEL_DIFFRACTOGRAM_H

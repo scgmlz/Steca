@@ -22,7 +22,7 @@
 #include "widgets/widget_makers.h"
 #include <QAction>
 
-namespace gui {
+
 namespace panel {
 
 static qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }
@@ -460,4 +460,4 @@ void TabsSetup::setFromHub() {
 }
 
 } // namespace panel
-} // namespace gui
+

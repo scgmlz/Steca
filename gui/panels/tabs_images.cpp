@@ -24,7 +24,7 @@
 #include <QAction>
 #include <QPainter>
 
-namespace gui {
+
 namespace panel {
 
 // ************************************************************************** //
@@ -359,4 +359,4 @@ void TabsImages::render() {
 }
 
 } // namespace panel
-} // namespace gui
+

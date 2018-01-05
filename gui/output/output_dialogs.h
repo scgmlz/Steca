@@ -24,7 +24,7 @@ class QCheckBox;
 class QGridLayout;
 class QRadioButton;
 
-namespace gui {
+
 namespace output {
 
 class Params : public QWidget {
@@ -117,6 +117,6 @@ protected:
 };
 
 } // namespace output
-} // namespace gui
+
 
 #endif // OUTPUT_DIALOGS_H

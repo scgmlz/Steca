@@ -23,7 +23,7 @@
 #include "widgets/widget_makers.h"
 #include <QAction>
 
-namespace gui {
+
 namespace output {
 
 class TabDiffractogramsSave : public TabSave {
@@ -245,4 +245,4 @@ void DiffractogramsFrame::saveDiffractogramOutput() {
 }
 
 } // namespace output
-} // namespace gui
+

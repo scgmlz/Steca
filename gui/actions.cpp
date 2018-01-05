@@ -16,7 +16,7 @@
 #include <QAction>
 #include <QApplication>
 
-namespace gui {
+
 
 QAction* newTrigger(rcstr text, rcstr iconFile) {
     QAction* ret = new QAction(text, qApp);
@@ -36,4 +36,4 @@ QAction* newToggle(rcstr text, bool value, rcstr iconFile) {
     return ret;
 };
 
-} // namespace gui
+

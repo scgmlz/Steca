@@ -19,7 +19,7 @@
 
 class Suite;
 
-namespace gui {
+
 namespace output {
 
 struct OutputData;
@@ -46,6 +46,6 @@ protected:
 };
 
 } // namespace output
-} // namespace gui
+
 
 #endif // OUTPUT_DIFFRACTOGRAMS_H

@@ -26,7 +26,7 @@
 #include <QJsonDocument>
 #include <QStringBuilder> // for ".." % ..
 
-namespace gui {
+
 
 TheHub::TheHub()
     : isFixedIntenImageScale_(false)
@@ -40,11 +40,11 @@ TheHub::TheHub()
     metadataModel = new MetadataModel();
     reflectionsModel = new ReflectionsModel();
 
-    connect(this, &gui::TheHub::sigFilesChanged,
+    connect(this, &TheHub::sigFilesChanged,
             [this]() { filesModel->signalReset(); });
-    connect(this, &gui::TheHub::sigSuitesChanged,
+    connect(this, &TheHub::sigSuitesChanged,
             [this]() { suiteModel->signalReset(); });
-    connect(this, &gui::TheHub::sigSuiteSelected,
+    connect(this, &TheHub::sigSuiteSelected,
             [this](QSharedPointer<Suite> dataseq) { metadataModel->reset(dataseq); });
 
     // create actions
@@ -117,13 +117,13 @@ TheHub::TheHub()
 
     // handle signals
 
-    QObject::connect(this, &gui::TheHub::sigFilesSelected,
+    QObject::connect(this, &TheHub::sigFilesSelected,
             [this]() { trigger_removeFile->setEnabled(
                     !gSession->collectedFromFiles().isEmpty()); });
-    QObject::connect(this, &gui::TheHub::sigCorrFile,
+    QObject::connect(this, &TheHub::sigCorrFile,
             [this](QSharedPointer<Datafile const> file) {
                          trigger_remCorr->setEnabled(!file.isNull()); });
-    QObject::connect(this, &gui::TheHub::sigCorrEnabled,
+    QObject::connect(this, &TheHub::sigCorrEnabled,
             [this](bool on) { toggle_enableCorr->setChecked(on); });
 
     auto deselect = [this]() {
@@ -132,9 +132,9 @@ TheHub::TheHub()
         toggle_combinedDgram->setChecked(false);
     };
 
-    QObject::connect(this, &gui::TheHub::sigGeometryChanged, [deselect]() { deselect(); });
-    QObject::connect(this, &gui::TheHub::sigSuitesChanged, [deselect]() { deselect(); });
-    QObject::connect(this, &gui::TheHub::sigCorrEnabled, [deselect]() { deselect(); });
+    QObject::connect(this, &TheHub::sigGeometryChanged, [deselect]() { deselect(); });
+    QObject::connect(this, &TheHub::sigSuitesChanged, [deselect]() { deselect(); });
+    QObject::connect(this, &TheHub::sigCorrEnabled, [deselect]() { deselect(); });
 
     trigger_removeFile->setEnabled(false);
     trigger_remReflection->setEnabled(false);
@@ -495,4 +495,4 @@ void TheHub::tellReflectionValues(
     emit sigReflectionValues(rgeTth, peak, fwhm, withGuesses);
 }
 
-} // namespace gui
+

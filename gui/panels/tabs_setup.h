@@ -22,7 +22,7 @@ class QDoubleSpinBox;
 class QLineEdit;
 class QSpinBox;
 
-namespace gui {
+
 namespace panel {
 
 class TabsSetup : public TabsPanel {
@@ -52,6 +52,6 @@ private:
 };
 
 } // namespace panel
-} // namespace gui
+
 
 #endif // TABS_SETUP_H

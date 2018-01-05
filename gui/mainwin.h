@@ -20,7 +20,7 @@
 #include <QMainWindow>
 #include <QNetworkAccessManager>
 
-namespace gui {
+
 
 extern class MainWin* gMainWin;
 
@@ -64,6 +64,6 @@ private:
     void viewReset();
 };
 
-} // namespace gui
+
 
 #endif // MAINWIN_H

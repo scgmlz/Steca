@@ -26,7 +26,7 @@
 #define context(ctx) ""
 #endif
 
-//extern gui::MainWin* gMainWin;
+//extern MainWin* gMainWin;
 
 void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg) {
     switch (type) {

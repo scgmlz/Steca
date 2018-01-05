@@ -23,7 +23,7 @@
 #include "QCustomPlot/qcustomplot.h"
 #include <QAction>
 
-namespace gui {
+
 namespace panel {
 
 // ************************************************************************** //
@@ -663,4 +663,4 @@ void Diffractogram::calcReflections() {
 }
 
 } // namespace panel
-} // namespace gui
+

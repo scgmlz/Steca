@@ -24,7 +24,7 @@
 #include "QCustomPlot/qcustomplot.h"
 #include <QAction>
 
-namespace gui {
+
 namespace output {
 
 // sorts xs and ys the same way, by (x,y)
@@ -301,4 +301,4 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
 }
 
 } // namespace output
-} // namespace gui
+

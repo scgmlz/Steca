@@ -25,7 +25,7 @@
 #ifdef Q_OS_MAC
 #endif
 
-namespace gui {
+
 
 AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
     Settings s("config");
@@ -94,4 +94,4 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
     connect(bb, &QDialogButtonBox::accepted, this, &QDialog::accept);
 }
 
-} // namespace gui
+

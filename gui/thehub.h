@@ -33,7 +33,7 @@ class ReflectionsModel;
 // make connects shorter
 #define slot(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
 
-namespace gui {
+
 
 extern class TheHub* gHub;
 
@@ -188,6 +188,6 @@ public:
     ReflectionsModel* reflectionsModel;
 };
 
-} // namespace gui
+
 
 #endif // THEHUB_H

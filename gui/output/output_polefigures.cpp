@@ -25,7 +25,7 @@
 #include <QAction>
 #include <QPainter>
 
-namespace gui {
+
 namespace output {
 
 // ************************************************************************** //
@@ -398,4 +398,4 @@ void PoleFiguresFrame::writeListFile(
 }
 
 } // namespace output
-} // namespace gui
+

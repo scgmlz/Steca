@@ -21,7 +21,7 @@
 #include <QAction>
 #include <QHeaderView>
 
-namespace gui {
+
 namespace panel {
 
 // ************************************************************************** //
@@ -116,4 +116,4 @@ DockFiles::DockFiles() : DockWidget("Files", "dock-files", Qt::Vertical) {
 }
 
 } // namespace panel
-} // namespace gui
+
