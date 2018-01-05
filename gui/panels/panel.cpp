@@ -38,9 +38,3 @@ PTab::PTab(Qt::Orientation orientation) {
 TabsPanel::TabsPanel() {
     setTabPosition(TabsPanel::North);
 }
-
-PTab& TabsPanel::tab(uint i) {
-    debug::ensure(to_i(i) < count());
-    debug::ensure(dynamic_cast<PTab*>(widget(to_i(i))));
-    return *static_cast<PTab*>(widget(to_i(i)));
-}

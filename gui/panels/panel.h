@@ -34,7 +34,6 @@ protected:
 class TabsPanel : public QTabWidget {
 public:
     TabsPanel();
-    PTab& tab(uint);
 };
 
 namespace wmaker {
