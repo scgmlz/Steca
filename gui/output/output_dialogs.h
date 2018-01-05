@@ -25,7 +25,6 @@ class QGridLayout;
 class QRadioButton;
 
 
-
 class Params : public QWidget {
 public:
     enum ePanels {
@@ -85,7 +84,5 @@ protected:
     QLineEdit *dir_, *file_;
     QRadioButton *rbDat_, *rbCsv_;
 };
-
-
 
 #endif // OUTPUT_DIALOGS_H

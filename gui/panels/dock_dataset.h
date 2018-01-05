@@ -19,9 +19,6 @@
 
 class QSpinBox;
 
-
-
-
 class DockDatasets : public DockWidget {
 public:
     DockDatasets();
@@ -30,8 +27,5 @@ public:
 private:
     class DatasetView* dataseqView_;
 };
-
-
-
 
 #endif // DOCK_DATASET_H

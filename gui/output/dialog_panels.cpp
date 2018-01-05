@@ -20,8 +20,6 @@
 #include "thehub.h"
 #include "widgets/widget_makers.h"
 
-
-
 // ************************************************************************** //
 //  class GridPanel
 // ************************************************************************** //
@@ -160,5 +158,3 @@ PanelDiagram::PanelDiagram() : GridPanel("Diagram") {
 }
 
 PanelFitError::PanelFitError() : GridPanel("Fit error") {}
-
-

@@ -20,9 +20,6 @@
 #include "widgets/tree_views.h" // inheriting from
 #include "widgets/widget_makers.h"
 
-
-
-
 // ************************************************************************** //
 //  file-scope: class DatasetView
 // ************************************************************************** //
@@ -76,6 +73,3 @@ DockDatasets::DockDatasets()
     connect(gHub, &TheHub::sigSuitesChanged,
             [this]() { combineDatasets_->setValue(to_i(uint(gHub->suiteGroupedBy()))); });
 }
-
-
-

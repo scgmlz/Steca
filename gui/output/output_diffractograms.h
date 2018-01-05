@@ -19,9 +19,6 @@
 
 class Suite;
 
-
-
-
 struct OutputData;
 using OutputDataCollection = vec<OutputData>;
 using OutputDataCollections = vec<OutputDataCollection>;
@@ -44,8 +41,5 @@ protected:
     void writeCurrDiffractogramToFile(rcstr filePath, rcstr separator);
     void writeAllDiffractogramsToFiles(rcstr filePath, rcstr separator, bool oneFile);
 };
-
-
-
 
 #endif // OUTPUT_DIFFRACTOGRAMS_H

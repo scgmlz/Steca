@@ -22,8 +22,6 @@
 #include <QHeaderView>
 
 
-
-
 // ************************************************************************** //
 //  class FilesView (definition)
 // ************************************************************************** //
@@ -114,6 +112,3 @@ DockFiles::DockFiles() : DockWidget("Files", "dock-files", Qt::Vertical) {
             [this](QSharedPointer<Datafile const> file) {
                 corrFile_->setText(file.isNull() ? "" : file->fileName()); });
 }
-
-
-

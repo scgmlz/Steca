@@ -25,9 +25,6 @@
 #include <QAction>
 #include <QPainter>
 
-
-
-
 // ************************************************************************** //
 //  class TabGraph (file scope)
 // ************************************************************************** //
@@ -396,6 +393,3 @@ void PoleFiguresFrame::writeListFile(
                << output.at(i) << '\n';
     }
 }
-
-
-

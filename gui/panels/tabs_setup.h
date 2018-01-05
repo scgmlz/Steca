@@ -22,9 +22,6 @@ class QDoubleSpinBox;
 class QLineEdit;
 class QSpinBox;
 
-
-
-
 class TabsSetup : public TabsPanel {
 public:
     TabsSetup();
@@ -50,8 +47,5 @@ private:
     void setToHub();
     void setFromHub();
 };
-
-
-
 
 #endif // TABS_SETUP_H

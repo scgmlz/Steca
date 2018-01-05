@@ -23,9 +23,6 @@
 #include "QCustomPlot/qcustomplot.h"
 #include <QAction>
 
-
-
-
 // ************************************************************************** //
 //  define file-scoped classes
 // ************************************************************************** //
@@ -661,6 +658,3 @@ void Diffractogram::calcReflections() {
 
     gHub->tellReflectionData(currentReflection_);
 }
-
-
-

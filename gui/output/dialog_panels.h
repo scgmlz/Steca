@@ -26,7 +26,6 @@ class QRadioButton;
 class QDoubleSpinBox;
 
 
-
 //! A panel with grid layout
 class GridPanel : public QGroupBox {
 public:
@@ -101,7 +100,5 @@ class PanelFitError : public GridPanel {
 public:
     PanelFitError();
 };
-
-
 
 #endif // DIALOG_PANELS_H

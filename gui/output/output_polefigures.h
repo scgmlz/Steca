@@ -17,9 +17,6 @@
 
 #include "frame.h"
 
-
-
-
 class PoleFiguresFrame : public Frame {
 public:
     PoleFiguresFrame(rcstr title, QWidget*);
@@ -36,8 +33,5 @@ protected:
     void writeListFile(rcstr filePath, ReflectionInfos, qreal_vec const&);
     void writeErrorMask(rcstr filePath, ReflectionInfos, qreal_vec const&);
 };
-
-
-
 
 #endif // OUTPUT_POLEFIGURES_H

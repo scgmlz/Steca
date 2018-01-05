@@ -23,9 +23,6 @@
 #include "widgets/widget_makers.h"
 #include <QAction>
 
-
-
-
 class TabDiffractogramsSave : public TabSave {
 public:
     TabDiffractogramsSave(Params&);
@@ -243,6 +240,3 @@ void DiffractogramsFrame::saveDiffractogramOutput() {
     else
         qWarning() << "Invalid call of DiffractogramsFrame::saveDiffractogramOutput";
 }
-
-
-

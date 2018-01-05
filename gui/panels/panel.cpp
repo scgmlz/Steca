@@ -16,10 +16,6 @@
 #include "panel.h"
 #include "widgets/widget_makers.h"
 
-
-
-
-
 // ************************************************************************** //
 //  class Tab
 // ************************************************************************** //
@@ -47,6 +43,3 @@ PTab& TabsPanel::tab(uint i) {
     debug::ensure(dynamic_cast<PTab*>(widget(to_i(i))));
     return *static_cast<PTab*>(widget(to_i(i)));
 }
-
-
-

@@ -17,18 +17,11 @@
 
 #include "widgets/various_widgets.h"
 
-
-
-
 class DockMetadata : public DockWidget {
 public:
     DockMetadata();
-
 private:
     class MetadataView* metadataView_;
 };
-
-
-
 
 #endif // DOCK_METADATA_H

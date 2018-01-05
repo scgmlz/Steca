@@ -17,9 +17,6 @@
 #include "widgets/tree_views.h" // inheriting from
 #include "thehub.h"
 
-
-
-
 class MetadataView : public ListView {
 public:
     MetadataView();
@@ -49,10 +46,7 @@ int MetadataView::sizeHintForColumn(int col) const {
     }
 }
 
-DockMetadata::DockMetadata()
-    : DockWidget("Metadata", "dock-metadata", Qt::Vertical) {
+
+DockMetadata::DockMetadata() : DockWidget("Metadata", "dock-metadata", Qt::Vertical) {
     box_->addWidget((metadataView_ = new MetadataView()));
 }
-
-
-
