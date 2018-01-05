@@ -31,14 +31,12 @@ int TreeView::sizeHintForColumn(int) const {
 }
 
 // ************************************************************************** //
-//  auxiliary class TreeListView
+//  class ListView
 // ************************************************************************** //
 
-AuxView::AuxView() {
-    setSelectionBehavior(SelectRows);
-}
-
-void AuxView::setModel(QAbstractItemModel* model) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual" // TODO try without
+void ListView::setModel(TableModel* model) {
     TreeView::setModel(model);
     hideColumn(0); // this should look like a list; 0th column is tree-like
 
@@ -49,20 +47,10 @@ void AuxView::setModel(QAbstractItemModel* model) {
         });
     }
 }
-
-// ************************************************************************** //
-//  class ListView
-// ************************************************************************** //
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Woverloaded-virtual"
-void ListView::setModel(TableModel* model) {
-    AuxView::setModel(model);
-}
 #pragma GCC diagnostic pop
 
 TableModel* ListView::model() const {
-    return static_cast<TableModel*>(AuxView::model());
+    return static_cast<TableModel*>(TreeView::model());
 }
 
 void ListView::updateSingleSelection() {
@@ -93,5 +81,3 @@ void MultiListView::selectRows(uint_vec rows) {
 
     selectionModel()->select(is, QItemSelectionModel::ClearAndSelect);
 }
-
-

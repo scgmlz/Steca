@@ -21,7 +21,6 @@
 class TableModel;
 
 
-
 //! abstract tree widget
 
 class TreeView : public QTreeView {
@@ -31,19 +30,9 @@ public:
     int sizeHintForColumn(int) const; // make narrow columns
 };
 
-//! Auxiliary class; merger with ListView is nontrivial
-
-class AuxView : public TreeView {
-public:
-    AuxView();
-
-protected:
-    void setModel(QAbstractItemModel*);
-};
-
 //! A (tree-)list view with a reference to the hub. Single selection.
 
-class ListView : public AuxView {
+class ListView : public TreeView {
 public:
     ListView() {}
 
@@ -66,7 +55,5 @@ public:
 protected:
     void selectRows(uint_vec);
 };
-
-
 
 #endif // TREE_VIEWS_H
