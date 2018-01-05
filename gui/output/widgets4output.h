@@ -74,13 +74,15 @@ protected:
 };
 
 
-class TabSave : public OutputTab {
+class TabSave : public QWidget {
 public:
     TabSave(Params&, bool withTypes);
     str filePath(bool withSuffix);
     str separator() const;
     QAction *actBrowse, *actSave;
 protected:
+    Params& params_;
+    QGridLayout* grid_;
     str fileSetSuffix(rcstr);
     QLineEdit *dir_, *file_;
     QRadioButton *rbDat_, *rbCsv_;

@@ -310,14 +310,6 @@ void TabularModel::sortData() {
 }
 
 // ************************************************************************** //
-//  class Tab
-// ************************************************************************** //
-
-OutputTab::OutputTab(Params& params) : params_(params) {
-    setLayout((grid_ = wmaker::newGridLayout()));
-}
-
-// ************************************************************************** //
 //  class Table
 // ************************************************************************** //
 
@@ -382,10 +374,19 @@ const row_t& Table::row(uint i) const {
     return model_->row(i);
 }
 
+// ************************************************************************** //
+//  class TabSave
+// ************************************************************************** //
+
+OutputTab::OutputTab(Params& params) : params_(params) {
+    setLayout((grid_ = wmaker::newGridLayout()));
+}
+
 static str const DAT_SFX(".dat"), DAT_SEP(" "), // suffix, separator
     CSV_SFX(".csv"), CSV_SEP(", ");
 
-TabSave::TabSave(Params& params, bool withTypes) : OutputTab(params) {
+TabSave::TabSave(Params& params, bool withTypes) : params_(params) {
+    setLayout((grid_ = wmaker::newGridLayout()));
     actBrowse = newTrigger("Browse...");
     actSave = newTrigger("Save");
 
