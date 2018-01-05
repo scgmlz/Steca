@@ -16,15 +16,11 @@
 #include "panel.h"
 #include "widgets/widget_makers.h"
 
-
-
-namespace panel {
-
 // ************************************************************************** //
 //  class Tab
 // ************************************************************************** //
 
-Tab::Tab(Qt::Orientation orientation) {
+PTab::PTab(Qt::Orientation orientation) {
     setLayout((box_ = boxLayout(orientation)));
 }
 
@@ -36,17 +32,14 @@ TabsPanel::TabsPanel() {
     setTabPosition(TabsPanel::North);
 }
 
-Tab& TabsPanel::addTab(rcstr title, Qt::Orientation orientation) {
-    auto tab = new Tab(orientation);
+PTab& TabsPanel::addTab(rcstr title, Qt::Orientation orientation) {
+    auto tab = new PTab(orientation);
     QTabWidget::addTab(tab, title);
     return *tab;
 }
 
-Tab& TabsPanel::tab(uint i) {
+PTab& TabsPanel::tab(uint i) {
     debug::ensure(to_i(i) < count());
-    debug::ensure(dynamic_cast<Tab*>(widget(to_i(i))));
-    return *static_cast<Tab*>(widget(to_i(i)));
+    debug::ensure(dynamic_cast<PTab*>(widget(to_i(i))));
+    return *static_cast<PTab*>(widget(to_i(i)));
 }
-
-} // namespace panel
-

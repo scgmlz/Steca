@@ -24,9 +24,6 @@
 #include <QAction>
 #include <QPainter>
 
-
-namespace panel {
-
 // ************************************************************************** //
 //  file-scoped class ImageWidget
 // ************************************************************************** //
@@ -357,6 +354,3 @@ void TabsImages::render() {
         corrImageWidget_->setPixmap(pixMap);
     }
 }
-
-} // namespace panel
-

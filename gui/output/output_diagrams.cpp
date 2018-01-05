@@ -18,14 +18,10 @@
 #include "output_dialogs.h"
 #include "session.h"
 #include "thehub.h"
-//#include "typ/variant.h"
 #include "widgets/widget_makers.h"
 #include "write_file.h"
 #include "QCustomPlot/qcustomplot.h"
 #include <QAction>
-
-
-namespace output {
 
 // sorts xs and ys the same way, by (x,y)
 static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
@@ -299,6 +295,3 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
         stream << '\n';
     }
 }
-
-} // namespace output
-

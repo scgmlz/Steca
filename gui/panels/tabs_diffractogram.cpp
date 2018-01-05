@@ -16,11 +16,7 @@
 #include "panel_diffractogram.h"
 #include <QBoxLayout>
 
-namespace panel {
-
 TabsDiffractogram::TabsDiffractogram() : TabsPanel() {
     auto& box = addTab("Diffractogram", Qt::Vertical).box();
     box.addWidget(new Diffractogram());
-}
-
 }

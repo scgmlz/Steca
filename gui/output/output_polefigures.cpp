@@ -25,14 +25,11 @@
 #include <QAction>
 #include <QPainter>
 
-
-namespace output {
-
 // ************************************************************************** //
 //  class TabGraph (file scope)
 // ************************************************************************** //
 
-class TabGraph : public Tab {
+class TabGraph : public OutputTab {
 public:
     TabGraph(Params&);
     void set(ReflectionInfos);
@@ -64,7 +61,7 @@ protected:
 };
 
 TabGraph::TabGraph(Params& params)
-    : Tab(params), flat_(false), alphaMax_(90), avgAlphaMax_(0) {
+    : OutputTab(params), flat_(false), alphaMax_(90), avgAlphaMax_(0) {
     debug::ensure(params_.panelInterpolation);
 
     grid_->addWidget((cbFlat_ = check("no intensity")), 0, 0);
@@ -89,7 +86,7 @@ void TabGraph::set(ReflectionInfos rs) {
 void TabGraph::update() {
     avgAlphaMax_ = params_.panelInterpolation->avgAlphaMax->value();
     flat_ = cbFlat_->isChecked();
-    Tab::update();
+    OutputTab::update();
 }
 
 void TabGraph::paintEvent(QPaintEvent*) {
@@ -396,6 +393,3 @@ void PoleFiguresFrame::writeListFile(
                << output.at(i) << '\n';
     }
 }
-
-} // namespace output
-

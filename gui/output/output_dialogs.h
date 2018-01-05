@@ -25,8 +25,6 @@ class QGridLayout;
 class QRadioButton;
 
 
-namespace output {
-
 class Params : public QWidget {
 public:
     enum ePanels {
@@ -66,45 +64,16 @@ public:
 };
 
 
-class Tab : public QWidget { // TODO: better names for panel::Tab and output::Tab
+class OutputTab : public QWidget {
 public :
-    Tab(Params&);
+    OutputTab(Params&);
 protected:
     Params& params_;
     QGridLayout* grid_;
 };
 
 
-class TabTable : public Tab {
-public:
-    TabTable(Params&, QStringList const& headers, QStringList const& outHeaders,
-             cmp_vec const&);
-private:
-    struct showcol_t {
-        str name;
-        QCheckBox* cb;
-    };
-    typedef vec<showcol_t> showcol_vec;
-
-    class ShowColsWidget : public QWidget {
-    private:
-    public:
-        ShowColsWidget(Table&, showcol_vec&);
-    private:
-        Table& table_;
-        showcol_vec& showCols_;
-        QBoxLayout* box_;
-        QRadioButton *rbHidden_, *rbAll_, *rbNone_, *rbInten_, *rbTth_, *rbFWHM_;
-    };
-public:
-    Table* table;
-private:
-    ShowColsWidget* showColumnsWidget_;
-    showcol_vec showCols_;
-};
-
-
-class TabSave : public Tab {
+class TabSave : public OutputTab {
 public:
     TabSave(Params&, bool withTypes);
     str filePath(bool withSuffix);
@@ -115,8 +84,5 @@ protected:
     QLineEdit *dir_, *file_;
     QRadioButton *rbDat_, *rbCsv_;
 };
-
-} // namespace output
-
 
 #endif // OUTPUT_DIALOGS_H

@@ -22,11 +22,6 @@ class Measurement;
 class QDoubleSpinBox;
 class QSpinBox;
 
-
-namespace panel {
-
-class ImageWidget;
-
 class TabsImages : public TabsPanel {
 public:
     TabsImages();
@@ -42,7 +37,7 @@ private:
     void render();
 
     QSharedPointer<Suite> dataseq_;
-    ImageWidget *dataImageWidget_, *corrImageWidget_;
+    class ImageWidget *dataImageWidget_, *corrImageWidget_;
 
     QSpinBox* spinN_;
     QSpinBox *numSlices_, *numSlice_, *numBin_;
@@ -50,8 +45,5 @@ private:
 
     QSharedPointer<SequenceLens> lens_;
 };
-
-} // namespace panel
-
 
 #endif // TABS_IMAGES_H

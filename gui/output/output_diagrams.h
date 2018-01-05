@@ -17,9 +17,6 @@
 
 #include "frame.h"
 
-
-namespace output {
-
 class DiagramsFrame : public Frame {
 public:
     DiagramsFrame(rcstr title, QWidget*);
@@ -44,8 +41,5 @@ protected:
     void writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator);
     void writeAllDataOutputFile(rcstr filePath, rcstr separator);
 };
-
-} // namespace output
-
 
 #endif // OUTPUT_DIAGRAMS_H

@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(PreventInSourceBuilds)
 
-project(SteCa2)
+project(Steca)
 
 option(WITH_TESTS "Build with all tests" ON)
 

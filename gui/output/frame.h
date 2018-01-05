@@ -22,14 +22,6 @@ class QBoxLayout;
 class QProgressBar;
 class QToolButton;
 
-
-
-namespace panel {
-class TabsPanel;
-}
-
-namespace output {
-
 class Frame : public QDialog {
 public:
     Frame(rcstr title, class Params*, QWidget*);
@@ -39,7 +31,7 @@ protected:
     QProgressBar* pb_;
     QBoxLayout* box_;
     class Params* params_;
-    panel::TabsPanel* tabs_;
+    class TabsPanel* tabs_;
     vec<ReflectionInfos> calcPoints_, interpPoints_;
     class Table* table_;
     void calculate();
@@ -48,8 +40,5 @@ protected:
     uint getReflIndex() const;
     bool getInterpolated() const;
 };
-
-} // namespace output
-
 
 #endif // FRAME_H

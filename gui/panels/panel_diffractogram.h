@@ -25,7 +25,7 @@ class QDoubleSpinBox;
 class QToolButton;
 
 
-namespace panel {
+
 
 class Diffractogram : public QWidget {
 public:
@@ -68,7 +68,7 @@ public:
     Range currReflRange() const;
 };
 
-} // namespace panel
+
 
 
 #endif // PANEL_DIFFRACTOGRAM_H
