@@ -94,7 +94,7 @@ DockFiles::DockFiles() : DockWidget("Files", "dock-files", Qt::Vertical) {
     h->addWidget(wmaker::newIconButton(gHub->trigger_addFiles));
     h->addWidget(wmaker::newIconButton(gHub->trigger_removeFile));
 
-    box_->addWidget((filesView_ = new FilesView()));
+    box_->addWidget(new FilesView());
 
     h = wmaker::newHBoxLayout();
     box_->addLayout(h);

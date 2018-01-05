@@ -20,9 +20,6 @@
 class DockFiles : public DockWidget {
 public:
     DockFiles();
-
-private:
-    class FilesView* filesView_;
 };
 
 #endif // DOCK_FILES_H
