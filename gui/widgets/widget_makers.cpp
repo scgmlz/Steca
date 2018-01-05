@@ -36,17 +36,17 @@ QBoxLayout* boxLayout(Qt::Orientation orientation) {
 }
 
 QBoxLayout* hbox() {
-    auto box = new QHBoxLayout;
-    box->setSpacing(2);
-    box->setMargin(2);
-    return box;
+    auto ret = new QHBoxLayout;
+    ret->setSpacing(2);
+    ret->setMargin(2);
+    return ret;
 }
 
 QBoxLayout* vbox() {
-    auto box = new QVBoxLayout;
-    box->setSpacing(2);
-    box->setMargin(2);
-    return box;
+    auto ret = new QVBoxLayout;
+    ret->setSpacing(2);
+    ret->setMargin(2);
+    return ret;
 }
 
 QGridLayout* gridLayout() {
@@ -61,19 +61,19 @@ QLabel* label(rcstr text) {
 }
 
 QLineEdit* editCell(uint emWidth) {
-    auto cell = new QLineEdit;
-    setEmWidth(cell, emWidth);
-    return cell;
+    auto ret = new QLineEdit;
+    setEmWidth(ret, emWidth);
+    return ret;
 }
 
 QLineEdit* readCell(uint emWidth) {
-    auto cell = editCell(emWidth);
-    cell->setReadOnly(true);
-    return cell;
+    auto ret = editCell(emWidth);
+    ret->setReadOnly(true);
+    return ret;
 }
 
 QSpinBox* spinCell(uint emWidth, int min, int max) {
-    auto cell = new QSpinBox;
+    auto ret = new QSpinBox;
     setEmWidth(cell, emWidth);
     cell->setMinimum(min);
     cell->setMaximum(max > min ? max : min);
@@ -81,11 +81,11 @@ QSpinBox* spinCell(uint emWidth, int min, int max) {
 }
 
 QDoubleSpinBox* spinDoubleCell(uint emWidth, qreal min, qreal max) {
-    auto cell = new QDoubleSpinBox;
-    setEmWidth(cell, emWidth);
-    cell->setMinimum(min);
-    cell->setMaximum(max > min ? max : min);
-    return cell;
+    auto ret = new QDoubleSpinBox;
+    setEmWidth(ret, emWidth);
+    ret->setMinimum(min);
+    ret->setMaximum(max > min ? max : min);
+    return ret;
 }
 
 QCheckBox* check(rcstr text) {
@@ -104,17 +104,17 @@ QCheckBox* check(QAction* action) {
 }
 
 QToolButton* textButton(QAction* action) {
-    auto b = new QToolButton;
-    b->setDefaultAction(action);
-    b->setToolButtonStyle(Qt::ToolButtonTextOnly);
-    return b;
+    auto ret = new QToolButton;
+    ret->setDefaultAction(action);
+    ret->setToolButtonStyle(Qt::ToolButtonTextOnly);
+    return ret;
 }
 
 QToolButton* iconButton(QAction* action) {
-    auto b = new QToolButton;
-    b->setDefaultAction(action);
-    b->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    return b;
+    auto ret = new QToolButton;
+    ret->setDefaultAction(action);
+    ret->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    return ret;
 }
 
 QRadioButton* radioButton(rcstr text) {
