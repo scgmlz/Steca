@@ -23,7 +23,14 @@
 #include <QLineEdit>
 #include <QRadioButton>
 #include <QSpinBox>
+#include <QTabWidget>
 #include <QToolButton>
+
+class BoxWidget;
+
+namespace wmaker {
+BoxWidget* newTab(QTabWidget* panel, rcstr title);
+}
 
 QBoxLayout* boxLayout(Qt::Orientation);
 QBoxLayout* hbox(); // horizontal box layout

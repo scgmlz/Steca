@@ -15,7 +15,7 @@
 #ifndef TABS_DIFFRACTOGRAM_H
 #define TABS_DIFFRACTOGRAM_H
 
-#include "panel.h"
+#include <QTabWidget>
 
 class TabsDiffractogram : public QTabWidget {
 public:

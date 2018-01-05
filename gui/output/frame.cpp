@@ -19,6 +19,7 @@
 #include "session.h"
 #include "thehub.h"
 #include "frame.h"
+#include "widgets/various_widgets.h"
 #include "widgets/widget_makers.h"
 #include <QAction>
 #include <QProgressBar>

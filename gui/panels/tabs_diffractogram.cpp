@@ -14,7 +14,8 @@
 
 #include "tabs_diffractogram.h"
 #include "panel_diffractogram.h"
-#include <QBoxLayout>
+#include "widgets/various_widgets.h"
+#include "widgets/widget_makers.h"
 
 TabsDiffractogram::TabsDiffractogram() {
     setTabPosition(QTabWidget::North);

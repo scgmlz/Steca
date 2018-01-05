@@ -19,6 +19,7 @@
 #include "cfg/gui_cfg.h"
 #include "thehub.h"
 #include "session.h"
+#include "widgets/various_widgets.h"
 #include "widgets/widget_makers.h"
 #include <qmath.h>
 #include <QAction>

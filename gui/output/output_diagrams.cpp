@@ -18,6 +18,7 @@
 #include "widgets4output.h"
 #include "session.h"
 #include "thehub.h"
+#include "widgets/various_widgets.h"
 #include "widgets/widget_makers.h"
 #include "write_file.h"
 #include "QCustomPlot/qcustomplot.h"

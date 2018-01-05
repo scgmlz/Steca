@@ -13,11 +13,18 @@
 // ************************************************************************** //
 
 #include "widgets/widget_makers.h"
+#include "widgets/various_widgets.h"
 #include "def/numbers.h"
 #include <QAction>
 
 static void setEmWidth(QWidget* w, uint emWidth) {
     w->setMaximumWidth(to_i(emWidth) * w->fontMetrics().width('m'));
+}
+
+BoxWidget* wmaker::newTab(QTabWidget* panel, rcstr title) {
+    auto ret = new BoxWidget(Qt::Vertical);
+    panel->addTab(ret, title);
+    return ret;
 }
 
 QBoxLayout* boxLayout(Qt::Orientation orientation) {

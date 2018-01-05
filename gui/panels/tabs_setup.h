@@ -15,7 +15,7 @@
 #ifndef TABS_SETUP_H
 #define TABS_SETUP_H
 
-#include "panel.h"
+#include <QTabWidget>
 
 class QComboBox;
 class QDoubleSpinBox;

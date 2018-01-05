@@ -16,7 +16,7 @@
 #define TABS_IMAGES_H
 
 #include "calc/lens.h"
-#include "panel.h"
+#include <QTabWidget>
 
 class Measurement;
 class QDoubleSpinBox;

@@ -15,11 +15,12 @@
 #ifndef WIDGETS4OUTPUT_H
 #define WIDGETS4OUTPUT_H
 
+#include "typ/str.h"
 #include "typ/variant.h"
 #include "def/special_pointers.h"
-#include "panels/panel.h"
 #include "widgets/tree_views.h"
 
+class QBoxLayout;
 class QCheckBox;
 class QGridLayout;
 class QRadioButton;
