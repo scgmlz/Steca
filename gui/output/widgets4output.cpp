@@ -378,10 +378,6 @@ const row_t& Table::row(uint i) const {
 //  class TabSave
 // ************************************************************************** //
 
-OutputTab::OutputTab(Params& params) : params_(params) {
-    setLayout((grid_ = wmaker::newGridLayout()));
-}
-
 static str const DAT_SFX(".dat"), DAT_SEP(" "), // suffix, separator
     CSV_SFX(".csv"), CSV_SEP(", ");
 

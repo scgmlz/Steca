@@ -65,15 +65,6 @@ public:
 };
 
 
-class OutputTab : public QWidget {
-public :
-    OutputTab(Params&);
-protected:
-    Params& params_;
-    QGridLayout* grid_;
-};
-
-
 class TabSave : public QWidget {
 public:
     TabSave(Params&, bool withTypes);

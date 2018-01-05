@@ -30,6 +30,18 @@
 //  local class TabGraph
 // ************************************************************************** //
 
+class OutputTab : public QWidget {
+public :
+    OutputTab(Params&);
+protected:
+    Params& params_;
+    QGridLayout* grid_;
+};
+
+OutputTab::OutputTab(Params& params) : params_(params) {
+    setLayout((grid_ = wmaker::newGridLayout()));
+}
+
 class TabGraph : public OutputTab {
 public:
     TabGraph(Params&);
