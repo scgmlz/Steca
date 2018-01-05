@@ -50,10 +50,10 @@ QBoxLayout* wmaker::newVBoxLayout() {
 }
 
 QGridLayout* wmaker::newGridLayout() {
-    auto grid = new QGridLayout;
-    grid->setSpacing(2);
-    grid->setMargin(2);
-    return grid;
+    auto ret = new QGridLayout;
+    ret->setSpacing(2);
+    ret->setMargin(2);
+    return ret;
 }
 
 QLabel* wmaker::newLabel(rcstr text) {

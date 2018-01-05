@@ -26,7 +26,6 @@
 static qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }
 static str safeRealText(qreal val) { return qIsFinite(val) ? str::number(val) : ""; }
 
-
 // ************************************************************************** //
 //  local class ReflectionView
 // ************************************************************************** //
@@ -215,11 +214,14 @@ TabsSetup::TabsSetup() {
         add({ wmaker::newLabel("beam offset X"), beamOffsetI_, wmaker::newLabel("pix") });
         add({ wmaker::newLabel("Y"), beamOffsetJ_, wmaker::newLabel("pix") });
 
-        add({ wmaker::newLabel("image rotate"), wmaker::newIconButton(gHub->trigger_rotateImage), wmaker::newLabel("mirror"),
-              wmaker::newIconButton(gHub->toggle_mirrorImage) });
+        add({ wmaker::newLabel("image rotate"),
+                    wmaker::newIconButton(gHub->trigger_rotateImage),
+                    wmaker::newLabel("mirror"),
+                    wmaker::newIconButton(gHub->toggle_mirrorImage) });
 
-        add({ wmaker::newIconButton(gHub->toggle_linkCuts), wmaker::newLabel("cut"), icon(":/icon/cutLeft"), cutLeft_,
-              icon(":/icon/cutRight"), cutRight_ }, 3);
+        add({ wmaker::newIconButton(gHub->toggle_linkCuts),
+                    wmaker::newLabel("cut"), icon(":/icon/cutLeft"), cutLeft_,
+                    icon(":/icon/cutRight"), cutRight_ }, 3);
         add({ icon(":/icon/cutTop"), cutTop_, icon(":/icon/cutBottom"), cutBottom_ });
 
         grid->setColumnStretch(grid->columnCount(), 1);
@@ -239,7 +241,8 @@ TabsSetup::TabsSetup() {
         hb->addWidget(wmaker::newIconButton(gHub->toggle_showBackground));
         hb->addWidget(wmaker::newIconButton(gHub->trigger_clearBackground));
         hb->addWidget(wmaker::newLabel("Pol. degree:"));
-        hb->addWidget((spinDegree_ = wmaker::newSpinBox(gui_cfg::em4, 0, TheHub::MAX_POLYNOM_DEGREE)));
+        hb->addWidget((spinDegree_ =
+                       wmaker::newSpinBox(gui_cfg::em4, 0, TheHub::MAX_POLYNOM_DEGREE)));
         hb->addStretch();
 
         box.addStretch(1);
