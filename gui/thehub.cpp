@@ -82,7 +82,7 @@ TheHub::TheHub()
     toggle_fixedIntenImage = newToggle("Global intensity scale", false, ":/icon/scale");
     toggle_fixedIntenDgram = newToggle("Fixed intensity scale", false);
 
-    toggle_combinedDgram = newToggle("All suite", true);
+    toggle_combinedDgram = newToggle("All datasets", true);
 
     toggle_selRegions = newToggle("Select regions", false, ":/icon/selRegion");
     toggle_showBackground = newToggle("Show fitted background", false, ":/icon/showBackground");
@@ -494,5 +494,3 @@ void TheHub::tellReflectionValues(
     Range const& rgeTth, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
     emit sigReflectionValues(rgeTth, peak, fwhm, withGuesses);
 }
-
-
