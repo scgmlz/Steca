@@ -30,24 +30,14 @@
 //  local class TabGraph
 // ************************************************************************** //
 
-class OutputTab : public QWidget {
-public :
-    OutputTab(Params&);
-protected:
-    Params& params_;
-    QGridLayout* grid_;
-};
-
-OutputTab::OutputTab(Params& params) : params_(params) {
-    setLayout((grid_ = wmaker::newGridLayout()));
-}
-
-class TabGraph : public OutputTab {
+class TabGraph : public QWidget {
 public:
     TabGraph(Params&);
     void set(ReflectionInfos);
 
 protected:
+    Params& params_;
+    QGridLayout* grid_;
     void update();
 
     ReflectionInfos rs_;
@@ -74,7 +64,8 @@ protected:
 };
 
 TabGraph::TabGraph(Params& params)
-    : OutputTab(params), flat_(false), alphaMax_(90), avgAlphaMax_(0) {
+    : params_(params), flat_(false), alphaMax_(90), avgAlphaMax_(0) {
+    setLayout((grid_ = wmaker::newGridLayout()));
     debug::ensure(params_.panelInterpolation);
 
     grid_->addWidget((cbFlat_ = wmaker::newCheckBox("no intensity")), 0, 0);
@@ -99,7 +90,7 @@ void TabGraph::set(ReflectionInfos rs) {
 void TabGraph::update() {
     avgAlphaMax_ = params_.panelInterpolation->avgAlphaMax->value();
     flat_ = cbFlat_->isChecked();
-    OutputTab::update();
+    QWidget::update();
 }
 
 void TabGraph::paintEvent(QPaintEvent*) {
