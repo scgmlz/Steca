@@ -26,66 +26,31 @@
 
 namespace {
 
-// ************************************************************************** //
-//  local class TabTable
-// ************************************************************************** //
+struct showcol_t {
+    str name;
+    QCheckBox* cb;
+};
+
+typedef vec<showcol_t> showcol_vec;
 
 using output::Params;
 using output::Table;
 
-class TabTable : public output::Tab {
-public:
+// ************************************************************************** //
+//  local class ShowColsWidget (only used by TabTable)
+// ************************************************************************** //
 
-    TabTable(Params&, QStringList const& headers, QStringList const& outHeaders, cmp_vec const&);
-private:
-    struct showcol_t {
-        str name;
-        QCheckBox* cb;
-    };
-    typedef vec<showcol_t> showcol_vec;
-
-    class ShowColsWidget : public QWidget {
-    private:
-    public:
-        ShowColsWidget(Table&, showcol_vec&);
-    private:
-        Table& table_;
-        showcol_vec& showCols_;
-        QBoxLayout* box_;
-        QRadioButton *rbHidden_, *rbAll_, *rbNone_, *rbInten_, *rbTth_, *rbFWHM_;
-    };
+class ShowColsWidget : public QWidget {
 public:
-    Table* table;
+    ShowColsWidget(Table&, showcol_vec&);
 private:
-    ShowColsWidget* showColumnsWidget_;
-    showcol_vec showCols_;
+    Table& table_;
+    showcol_vec& showCols_;
+    QBoxLayout* box_;
+    QRadioButton *rbHidden_, *rbAll_, *rbNone_, *rbInten_, *rbTth_, *rbFWHM_;
 };
 
-TabTable::TabTable(
-    Params& params, QStringList const& headers, QStringList const& outHeaders, cmp_vec const& cmps)
-    : Tab(params) {
-    debug::ensure(to_u(headers.count()) == cmps.count());
-    uint numCols = to_u(headers.count());
-
-    grid_->addWidget((table = new Table(numCols)), 0, 0);
-    grid_->setColumnStretch(0, 1);
-
-    table->setColumns(headers, outHeaders, cmps);
-
-    for_i (numCols) {
-        showcol_t item;
-        item.name = headers.at(i);
-        showCols_.append(item);
-    }
-
-    auto scrollArea = new QScrollArea;
-    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    scrollArea->setWidget((showColumnsWidget_ = new ShowColsWidget(*table, showCols_)));
-
-    grid_->addWidget(scrollArea, 0, 1);
-}
-
-TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
+ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
     : table_(table), showCols_(showCols) {
     using eReflAttr = ReflectionInfo::eReflAttr;
 
@@ -188,6 +153,43 @@ TabTable::ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
     connect(rbFWHM_, &QRadioButton::clicked, showFWHM);
 
     rbAll_->click();
+}
+
+// ************************************************************************** //
+//  local class TabTable (only used by Frame implementation)
+// ************************************************************************** //
+
+class TabTable : public output::Tab {
+public:
+    TabTable(Params&, QStringList const& headers, QStringList const& outHeaders, cmp_vec const&);
+    Table* table;
+private:
+    ShowColsWidget* showColumnsWidget_;
+    showcol_vec showCols_;
+};
+
+TabTable::TabTable(
+    Params& params, QStringList const& headers, QStringList const& outHeaders, cmp_vec const& cmps)
+    : Tab(params) {
+    debug::ensure(to_u(headers.count()) == cmps.count());
+    uint numCols = to_u(headers.count());
+
+    grid_->addWidget((table = new Table(numCols)), 0, 0);
+    grid_->setColumnStretch(0, 1);
+
+    table->setColumns(headers, outHeaders, cmps);
+
+    for_i (numCols) {
+        showcol_t item;
+        item.name = headers.at(i);
+        showCols_.append(item);
+    }
+
+    auto scrollArea = new QScrollArea;
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scrollArea->setWidget((showColumnsWidget_ = new ShowColsWidget(*table, showCols_)));
+
+    grid_->addWidget(scrollArea, 0, 1);
 }
 
 } // anonymous namespace
