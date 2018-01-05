@@ -132,8 +132,8 @@ TabsSetup::TabsSetup() {
 
         // widgets
 
-        detDistance_ = spinDoubleCell(gui_cfg::em4_2, Geometry::MIN_DETECTOR_DISTANCE);
-        detPixelSize_ = spinDoubleCell(gui_cfg::em4_2, Geometry::MIN_DETECTOR_PIXEL_SIZE);
+        detDistance_ = wmaker::newDoubleSpinBox(gui_cfg::em4_2, Geometry::MIN_DETECTOR_DISTANCE);
+        detPixelSize_ = wmaker::newDoubleSpinBox(gui_cfg::em4_2, Geometry::MIN_DETECTOR_PIXEL_SIZE);
         detPixelSize_->setDecimals(3);
 
         detDistance_->setValue(Geometry::DEF_DETECTOR_DISTANCE);
@@ -144,17 +144,17 @@ TabsSetup::TabsSetup() {
         connect(
             detPixelSize_, slot(QDoubleSpinBox, valueChanged, double), [this]() { setToHub(); });
 
-        beamOffsetI_ = spinCell(gui_cfg::em4_2);
-        beamOffsetJ_ = spinCell(gui_cfg::em4_2);
+        beamOffsetI_ = wmaker::newSpinBox(gui_cfg::em4_2);
+        beamOffsetJ_ = wmaker::newSpinBox(gui_cfg::em4_2);
 
         connect(beamOffsetI_, slot(QSpinBox, valueChanged, int), [this]() { setToHub(); });
 
         connect(beamOffsetJ_, slot(QSpinBox, valueChanged, int), [this]() { setToHub(); });
 
-        cutLeft_ = spinCell(gui_cfg::em4, 0);
-        cutTop_ = spinCell(gui_cfg::em4, 0);
-        cutRight_ = spinCell(gui_cfg::em4, 0);
-        cutBottom_ = spinCell(gui_cfg::em4, 0);
+        cutLeft_ = wmaker::newSpinBox(gui_cfg::em4, 0);
+        cutTop_ = wmaker::newSpinBox(gui_cfg::em4, 0);
+        cutRight_ = wmaker::newSpinBox(gui_cfg::em4, 0);
+        cutBottom_ = wmaker::newSpinBox(gui_cfg::em4, 0);
 
         auto setImageCut = [this](bool isTopOrLeft, int value) {
             debug::ensure(value >= 0);
@@ -187,19 +187,19 @@ TabsSetup::TabsSetup() {
 
         // layout
 
-        QGridLayout* grid = gridLayout();
+        QGridLayout* grid = wmaker::newGridLayout();
         int row = 0;
 
         auto add = [&grid, &row](QVector<QWidget*> const& ws, int left = 1) {
             int i = 0, cnt = ws.count();
 
-            QBoxLayout* box = hbox();
+            QBoxLayout* box = wmaker::newHBoxLayout();
             box->addStretch(1);
             while (i < left)
                 box->addWidget(ws.at(i++));
             grid->addLayout(box, row, 0);
 
-            box = hbox();
+            box = wmaker::newHBoxLayout();
             while (i < cnt)
                 box->addWidget(ws.at(i++));
             grid->addLayout(box, row, 1);
@@ -209,16 +209,16 @@ TabsSetup::TabsSetup() {
             row++;
         };
 
-        add({ label("det. distance"), detDistance_, label("mm") });
-        add({ label("pixel size"), detPixelSize_, label("mm") });
+        add({ wmaker::newLabel("det. distance"), detDistance_, wmaker::newLabel("mm") });
+        add({ wmaker::newLabel("pixel size"), detPixelSize_, wmaker::newLabel("mm") });
 
-        add({ label("beam offset X"), beamOffsetI_, label("pix") });
-        add({ label("Y"), beamOffsetJ_, label("pix") });
+        add({ wmaker::newLabel("beam offset X"), beamOffsetI_, wmaker::newLabel("pix") });
+        add({ wmaker::newLabel("Y"), beamOffsetJ_, wmaker::newLabel("pix") });
 
-        add({ label("image rotate"), iconButton(gHub->trigger_rotateImage), label("mirror"),
-              iconButton(gHub->toggle_mirrorImage) });
+        add({ wmaker::newLabel("image rotate"), wmaker::newIconButton(gHub->trigger_rotateImage), wmaker::newLabel("mirror"),
+              wmaker::newIconButton(gHub->toggle_mirrorImage) });
 
-        add({ iconButton(gHub->toggle_linkCuts), label("cut"), icon(":/icon/cutLeft"), cutLeft_,
+        add({ wmaker::newIconButton(gHub->toggle_linkCuts), wmaker::newLabel("cut"), icon(":/icon/cutLeft"), cutLeft_,
               icon(":/icon/cutRight"), cutRight_ }, 3);
         add({ icon(":/icon/cutTop"), cutTop_, icon(":/icon/cutBottom"), cutBottom_ });
 
@@ -232,14 +232,14 @@ TabsSetup::TabsSetup() {
     {
         backgroundTabIndex = count();
         QBoxLayout& box = wmaker::newTab(this, "Background")->box();
-        QBoxLayout* hb = hbox();
+        QBoxLayout* hb = wmaker::newHBoxLayout();
         box.addLayout(hb);
 
-        hb->addWidget(iconButton(gHub->toggle_selRegions));
-        hb->addWidget(iconButton(gHub->toggle_showBackground));
-        hb->addWidget(iconButton(gHub->trigger_clearBackground));
-        hb->addWidget(label("Pol. degree:"));
-        hb->addWidget((spinDegree_ = spinCell(gui_cfg::em4, 0, TheHub::MAX_POLYNOM_DEGREE)));
+        hb->addWidget(wmaker::newIconButton(gHub->toggle_selRegions));
+        hb->addWidget(wmaker::newIconButton(gHub->toggle_showBackground));
+        hb->addWidget(wmaker::newIconButton(gHub->trigger_clearBackground));
+        hb->addWidget(wmaker::newLabel("Pol. degree:"));
+        hb->addWidget((spinDegree_ = wmaker::newSpinBox(gui_cfg::em4, 0, TheHub::MAX_POLYNOM_DEGREE)));
         hb->addStretch();
 
         box.addStretch(1);
@@ -257,57 +257,57 @@ TabsSetup::TabsSetup() {
     {
         reflectionTabIndex = count();
         QBoxLayout& box = wmaker::newTab(this, "Reflections")->box();
-        QBoxLayout* hb = hbox();
+        QBoxLayout* hb = wmaker::newHBoxLayout();
         box.addLayout(hb);
 
-        hb->addWidget(iconButton(gHub->toggle_selRegions));
-        hb->addWidget(iconButton(gHub->toggle_showBackground));
-        hb->addWidget(iconButton(gHub->trigger_clearReflections));
+        hb->addWidget(wmaker::newIconButton(gHub->toggle_selRegions));
+        hb->addWidget(wmaker::newIconButton(gHub->toggle_showBackground));
+        hb->addWidget(wmaker::newIconButton(gHub->trigger_clearReflections));
         hb->addStretch();
 
         box.addWidget((reflectionView_ = new ReflectionView()));
 
-        hb = hbox();
+        hb = wmaker::newHBoxLayout();
         box.addLayout(hb);
 
         comboReflType_ = new QComboBox;
         comboReflType_->addItems(FunctionRegistry::instance()->keys());
         hb->addWidget(comboReflType_);
         hb->addStretch();
-        hb->addWidget(iconButton(gHub->trigger_addReflection));
-        hb->addWidget(iconButton(gHub->trigger_remReflection));
+        hb->addWidget(wmaker::newIconButton(gHub->trigger_addReflection));
+        hb->addWidget(wmaker::newIconButton(gHub->trigger_remReflection));
 
-        QBoxLayout* vb = vbox();
+        QBoxLayout* vb = wmaker::newVBoxLayout();
         box.addLayout(vb);
 
-        QGridLayout* gb = gridLayout();
+        QGridLayout* gb = wmaker::newGridLayout();
         vb->addLayout(gb);
 
-        gb->addWidget(label("min"), 0, 0);
-        gb->addWidget((spinRangeMin_ = spinDoubleCell(gui_cfg::em4_2, .0)), 0, 1);
+        gb->addWidget(wmaker::newLabel("min"), 0, 0);
+        gb->addWidget((spinRangeMin_ = wmaker::newDoubleSpinBox(gui_cfg::em4_2, .0)), 0, 1);
         spinRangeMin_->setSingleStep(.1);
-        gb->addWidget(label("max"), 0, 2);
-        gb->addWidget((spinRangeMax_ = spinDoubleCell(gui_cfg::em4_2, .0)), 0, 3);
+        gb->addWidget(wmaker::newLabel("max"), 0, 2);
+        gb->addWidget((spinRangeMax_ = wmaker::newDoubleSpinBox(gui_cfg::em4_2, .0)), 0, 3);
         spinRangeMax_->setSingleStep(.1);
 
-        gb->addWidget(label("guess x"), 1, 0);
-        gb->addWidget((spinGuessPeakX_ = spinDoubleCell(gui_cfg::em4_2, .0)), 1, 1);
+        gb->addWidget(wmaker::newLabel("guess x"), 1, 0);
+        gb->addWidget((spinGuessPeakX_ = wmaker::newDoubleSpinBox(gui_cfg::em4_2, .0)), 1, 1);
         spinGuessPeakX_->setSingleStep(.1);
-        gb->addWidget(label("y"), 1, 2);
-        gb->addWidget((spinGuessPeakY_ = spinDoubleCell(gui_cfg::em4_2, .0)), 1, 3);
+        gb->addWidget(wmaker::newLabel("y"), 1, 2);
+        gb->addWidget((spinGuessPeakY_ = wmaker::newDoubleSpinBox(gui_cfg::em4_2, .0)), 1, 3);
         spinGuessPeakY_->setSingleStep(.1);
 
-        gb->addWidget(label("fwhm"), 2, 0);
-        gb->addWidget((spinGuessFWHM_ = spinDoubleCell(gui_cfg::em4_2, .0)), 2, 1);
+        gb->addWidget(wmaker::newLabel("fwhm"), 2, 0);
+        gb->addWidget((spinGuessFWHM_ = wmaker::newDoubleSpinBox(gui_cfg::em4_2, .0)), 2, 1);
         spinGuessFWHM_->setSingleStep(.1);
 
-        gb->addWidget(label("fit x"), 3, 0);
-        gb->addWidget((readFitPeakX_ = readCell(gui_cfg::em4_2)), 3, 1);
-        gb->addWidget(label("y"), 3, 2);
-        gb->addWidget((readFitPeakY_ = readCell(gui_cfg::em4_2)), 3, 3);
+        gb->addWidget(wmaker::newLabel("fit x"), 3, 0);
+        gb->addWidget((readFitPeakX_ = wmaker::newLineDisplay(gui_cfg::em4_2)), 3, 1);
+        gb->addWidget(wmaker::newLabel("y"), 3, 2);
+        gb->addWidget((readFitPeakY_ = wmaker::newLineDisplay(gui_cfg::em4_2)), 3, 3);
 
-        gb->addWidget(label("fwhm"), 4, 0);
-        gb->addWidget((readFitFWHM_ = readCell(gui_cfg::em4_2)), 4, 1);
+        gb->addWidget(wmaker::newLabel("fwhm"), 4, 0);
+        gb->addWidget((readFitFWHM_ = wmaker::newLineDisplay(gui_cfg::em4_2)), 4, 1);
 
         gb->setColumnStretch(4, 1);
 

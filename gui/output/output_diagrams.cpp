@@ -141,9 +141,9 @@ TabDiagramsSave::TabDiagramsSave(Params& params) : TabSave(params, true) {
     grid_->setRowStretch(grid_->rowCount(), 1);
 
     auto g = gp->grid();
-    g->addWidget((currentDiagram_ = radioButton("Current diagram")));
-    g->addWidget((allData_ = radioButton("All data")));
-    g->addWidget(textButton(actSave), 1, 1);
+    g->addWidget((currentDiagram_ = wmaker::newRadioButton("Current diagram")));
+    g->addWidget((allData_ = wmaker::newRadioButton("All data")));
+    g->addWidget(wmaker::newTextButton(actSave), 1, 1);
     g->setColumnStretch(0, 1);
 
     currentDiagram_->setChecked(true);

@@ -59,11 +59,11 @@ DockDatasets::DockDatasets()
     : DockWidget("Datasets", "dock-suite", Qt::Vertical) {
     box_->addWidget((dataseqView_ = new DatasetView()));
 
-    auto h = hbox();
+    auto h = wmaker::newHBoxLayout();
     box_->addLayout(h);
 
-    h->addWidget(label("Combine:"));
-    h->addWidget(combineDatasets_ = spinCell(gui_cfg::em4, 1));
+    h->addWidget(wmaker::newLabel("Combine:"));
+    h->addWidget(combineDatasets_ = wmaker::newSpinBox(gui_cfg::em4, 1));
     combineDatasets_->setToolTip("Combine and average number of suite");
 
     connect(combineDatasets_, slot(QSpinBox, valueChanged, int), [this](int num) {

@@ -29,29 +29,31 @@
 class BoxWidget;
 
 namespace wmaker {
+
 BoxWidget* newTab(QTabWidget* panel, rcstr title);
-}
 
-QBoxLayout* boxLayout(Qt::Orientation);
-QBoxLayout* hbox(); // horizontal box layout
-QBoxLayout* vbox(); // vertical box layout
+QBoxLayout* newBoxLayout(Qt::Orientation);
+QBoxLayout* newHBoxLayout(); // horizontal box layout
+QBoxLayout* newVBoxLayout(); // vertical box layout
 
-QGridLayout* gridLayout();
+QGridLayout* newGridLayout();
 
-QLabel* label(rcstr);
+QLabel* newLabel(rcstr);
 
-QLineEdit* editCell(uint emWidth); // emWidth: measured in typographical (m)s
-QLineEdit* readCell(uint emWidth);
+QLineEdit* newLineEdit(uint emWidth); // emWidth: measured in typographical (m)s
+QLineEdit* newLineDisplay(uint emWidth);
 
-QSpinBox* spinCell(uint emWidth, int min = INT_MIN, int max = INT_MAX);
-QDoubleSpinBox* spinDoubleCell(uint emWidth, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
+QSpinBox* newSpinBox(uint emWidth, int min = INT_MIN, int max = INT_MAX);
+QDoubleSpinBox* newDoubleSpinBox(uint emWidth, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
 
-QCheckBox* check(rcstr text);
-QCheckBox* check(QAction*);
+QCheckBox* newCheckBox(rcstr text);
+QCheckBox* newCheckBox(QAction*);
 
-QToolButton* textButton(QAction*);
-QToolButton* iconButton(QAction*);
+QToolButton* newTextButton(QAction*);
+QToolButton* newIconButton(QAction*);
 
-QRadioButton* radioButton(rcstr text);
+QRadioButton* newRadioButton(rcstr text);
+
+} // namespace wmaker
 
 #endif // WIDGET_MAKERS_H

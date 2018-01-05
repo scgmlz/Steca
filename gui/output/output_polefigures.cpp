@@ -65,7 +65,7 @@ TabGraph::TabGraph(Params& params)
     : OutputTab(params), flat_(false), alphaMax_(90), avgAlphaMax_(0) {
     debug::ensure(params_.panelInterpolation);
 
-    grid_->addWidget((cbFlat_ = check("no intensity")), 0, 0);
+    grid_->addWidget((cbFlat_ = wmaker::newCheckBox("no intensity")), 0, 0);
 
     grid_->setRowStretch(grid_->rowCount(), 1);
     grid_->setColumnStretch(grid_->columnCount(), 1);
@@ -189,7 +189,7 @@ protected:
 };
 
 TabPoleFiguresSave::TabPoleFiguresSave(Params& params) : TabSave(params, false) {
-    auto hb = hbox();
+    auto hb = wmaker::newHBoxLayout();
     grid_->addLayout(hb, grid_->rowCount(), 0);
     grid_->setRowStretch(grid_->rowCount(), 1);
 
@@ -202,17 +202,17 @@ TabPoleFiguresSave::TabPoleFiguresSave(Params& params) : TabSave(params, false) 
 
     {
         auto g = p1->grid();
-        g->addWidget((outputInten_ = check("Intensity pole figure")));
-        g->addWidget((outputTth_ = check("Peak position pole figure")));
-        g->addWidget((outputFWHM_ = check("TWHM pole figure")));
+        g->addWidget((outputInten_ = wmaker::newCheckBox("Intensity pole figure")));
+        g->addWidget((outputTth_ = wmaker::newCheckBox("Peak position pole figure")));
+        g->addWidget((outputFWHM_ = wmaker::newCheckBox("TWHM pole figure")));
         g->setRowStretch(g->rowCount(), 1);
     }
 
     {
         auto g = p2->grid();
-        g->addWidget((rbSelectedRefl_ = radioButton("Selected reflection")));
-        g->addWidget((rbAllRefls_ = radioButton("All reflections")));
-        g->addWidget(textButton(actSave), 2, 1);
+        g->addWidget((rbSelectedRefl_ = wmaker::newRadioButton("Selected reflection")));
+        g->addWidget((rbAllRefls_ = wmaker::newRadioButton("All reflections")));
+        g->addWidget(wmaker::newTextButton(actSave), 2, 1);
         g->setRowStretch(g->rowCount(), 1);
     }
 

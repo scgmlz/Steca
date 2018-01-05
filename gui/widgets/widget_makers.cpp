@@ -27,60 +27,60 @@ BoxWidget* wmaker::newTab(QTabWidget* panel, rcstr title) {
     return ret;
 }
 
-QBoxLayout* boxLayout(Qt::Orientation orientation) {
+QBoxLayout* wmaker::newBoxLayout(Qt::Orientation orientation) {
     switch (orientation) {
-    case Qt::Horizontal: return hbox();
-    case Qt::Vertical: return vbox();
+    case Qt::Horizontal: return wmaker::newHBoxLayout();
+    case Qt::Vertical: return wmaker::newVBoxLayout();
     }
     NEVER return nullptr;
 }
 
-QBoxLayout* hbox() {
+QBoxLayout* wmaker::newHBoxLayout() {
     auto ret = new QHBoxLayout;
     ret->setSpacing(2);
     ret->setMargin(2);
     return ret;
 }
 
-QBoxLayout* vbox() {
+QBoxLayout* wmaker::newVBoxLayout() {
     auto ret = new QVBoxLayout;
     ret->setSpacing(2);
     ret->setMargin(2);
     return ret;
 }
 
-QGridLayout* gridLayout() {
+QGridLayout* wmaker::newGridLayout() {
     auto grid = new QGridLayout;
     grid->setSpacing(2);
     grid->setMargin(2);
     return grid;
 }
 
-QLabel* label(rcstr text) {
+QLabel* wmaker::newLabel(rcstr text) {
     return new QLabel(text);
 }
 
-QLineEdit* editCell(uint emWidth) {
+QLineEdit* wmaker::newLineEdit(uint emWidth) {
     auto ret = new QLineEdit;
     setEmWidth(ret, emWidth);
     return ret;
 }
 
-QLineEdit* readCell(uint emWidth) {
-    auto ret = editCell(emWidth);
+QLineEdit* wmaker::newLineDisplay(uint emWidth) {
+    auto ret = wmaker::newLineEdit(emWidth);
     ret->setReadOnly(true);
     return ret;
 }
 
-QSpinBox* spinCell(uint emWidth, int min, int max) {
+QSpinBox* wmaker::newSpinBox(uint emWidth, int min, int max) {
     auto ret = new QSpinBox;
-    setEmWidth(cell, emWidth);
-    cell->setMinimum(min);
-    cell->setMaximum(max > min ? max : min);
-    return cell;
+    setEmWidth(ret, emWidth);
+    ret->setMinimum(min);
+    ret->setMaximum(max > min ? max : min);
+    return ret;
 }
 
-QDoubleSpinBox* spinDoubleCell(uint emWidth, qreal min, qreal max) {
+QDoubleSpinBox* wmaker::newDoubleSpinBox(uint emWidth, qreal min, qreal max) {
     auto ret = new QDoubleSpinBox;
     setEmWidth(ret, emWidth);
     ret->setMinimum(min);
@@ -88,11 +88,11 @@ QDoubleSpinBox* spinDoubleCell(uint emWidth, qreal min, qreal max) {
     return ret;
 }
 
-QCheckBox* check(rcstr text) {
+QCheckBox* wmaker::newCheckBox(rcstr text) {
     return new QCheckBox(text);
 }
 
-QCheckBox* check(QAction* action) {
+QCheckBox* wmaker::newCheckBox(QAction* action) {
     if (!action)
         return new QCheckBox("");
     auto ret = new QCheckBox(action->text().toLower());
@@ -103,20 +103,20 @@ QCheckBox* check(QAction* action) {
     return ret;
 }
 
-QToolButton* textButton(QAction* action) {
+QToolButton* wmaker::newTextButton(QAction* action) {
     auto ret = new QToolButton;
     ret->setDefaultAction(action);
     ret->setToolButtonStyle(Qt::ToolButtonTextOnly);
     return ret;
 }
 
-QToolButton* iconButton(QAction* action) {
+QToolButton* wmaker::newIconButton(QAction* action) {
     auto ret = new QToolButton;
     ret->setDefaultAction(action);
     ret->setToolButtonStyle(Qt::ToolButtonIconOnly);
     return ret;
 }
 
-QRadioButton* radioButton(rcstr text) {
+QRadioButton* wmaker::newRadioButton(rcstr text) {
     return new QRadioButton(text);
 }

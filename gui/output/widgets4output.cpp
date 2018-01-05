@@ -39,7 +39,7 @@ Params::Params(ePanels panels)
     , panelDiagram(nullptr) {
     debug::ensure(panels & GAMMA);
 
-    setLayout((box_ = boxLayout(Qt::Horizontal)));
+    setLayout((box_ = wmaker::newBoxLayout(Qt::Horizontal)));
 
     if (REFLECTION & panels)
         box_->addWidget((panelReflection = new PanelReflection()));
@@ -314,7 +314,7 @@ void TabularModel::sortData() {
 // ************************************************************************** //
 
 OutputTab::OutputTab(Params& params) : params_(params) {
-    setLayout((grid_ = gridLayout()));
+    setLayout((grid_ = wmaker::newGridLayout()));
 }
 
 // ************************************************************************** //
@@ -402,11 +402,11 @@ TabSave::TabSave(Params& params, bool withTypes) : OutputTab(params) {
 
     file_ = new QLineEdit();
 
-    g->addWidget(label("Save to folder:"), 0, 0, Qt::AlignRight);
+    g->addWidget(wmaker::newLabel("Save to folder:"), 0, 0, Qt::AlignRight);
     g->addWidget(dir_, 0, 1);
-    g->addWidget(textButton(actBrowse), 0, 2);
+    g->addWidget(wmaker::newTextButton(actBrowse), 0, 2);
 
-    g->addWidget(label("File name:"), 1, 0, Qt::AlignRight);
+    g->addWidget(wmaker::newLabel("File name:"), 1, 0, Qt::AlignRight);
     g->addWidget(file_, 1, 1);
 
     connect(actBrowse, &QAction::triggered, [this]() {
@@ -419,8 +419,8 @@ TabSave::TabSave(Params& params, bool withTypes) : OutputTab(params) {
     grid_->addWidget(gp, 0, 1);
     g = gp->grid();
 
-    g->addWidget((rbDat_ = radioButton(DAT_SFX)), 0, 0);
-    g->addWidget((rbCsv_ = radioButton(CSV_SFX)), 1, 0);
+    g->addWidget((rbDat_ = wmaker::newRadioButton(DAT_SFX)), 0, 0);
+    g->addWidget((rbCsv_ = wmaker::newRadioButton(CSV_SFX)), 1, 0);
 
     connect(rbDat_, &QRadioButton::clicked, [this]() { params_.saveFmt = DAT_SFX; });
 

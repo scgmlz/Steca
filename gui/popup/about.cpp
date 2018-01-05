@@ -35,19 +35,19 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
     setWindowTitle(str("About %1").arg(qApp->applicationName()));
 
     // layout
-    auto vb = vbox();
+    auto vb = wmaker::newVBoxLayout();
     setLayout(vb);
 
     vb->setSpacing(PAD);
     vb->setSizeConstraint(QLayout::SetFixedSize);
 
     // logo and info
-    auto hb = hbox();
+    auto hb = wmaker::newHBoxLayout();
     vb->addLayout(hb);
 
     hb->setSpacing(PAD);
 
-    auto logo = label("");
+    auto logo = wmaker::newLabel("");
     logo->setPixmap(QPixmap(":/icon/retroStier")
                         .scaled(128, 128, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     hb->addWidget(logo);
@@ -58,7 +58,7 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
     str arch = "";
 #endif
 
-    auto info = label(str(
+    auto info = wmaker::newLabel(str(
 "<h4>%1 version %2 %3</h4>"
 "<p>%4</p>"
 "<p>Copyright: Forschungszentrum Jülich GmbH %5</p>"

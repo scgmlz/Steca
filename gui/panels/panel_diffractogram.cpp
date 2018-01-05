@@ -449,12 +449,12 @@ void DiffractogramPlot::onReflectionData(shp_Reflection reflection) {
 
 Diffractogram::Diffractogram()
     : suite_(nullptr), currReflIndex_(0) {
-    setLayout((box_ = boxLayout(Qt::Vertical)));
+    setLayout((box_ = wmaker::newBoxLayout(Qt::Vertical)));
     box_->addWidget((plot_ = new DiffractogramPlot(*this)));
-    auto hb = hbox();
+    auto hb = wmaker::newHBoxLayout();
     box_->addLayout(hb);
 
-    hb->addWidget(label("normalize to:"));
+    hb->addWidget(wmaker::newLabel("normalize to:"));
     comboNormType_ = new QComboBox;
     comboNormType_->addItems(normStrLst());
     hb->addWidget(comboNormType_);
@@ -464,10 +464,10 @@ Diffractogram::Diffractogram()
                 gHub->setNorm(eNorm(index));
             });
 
-    hb->addWidget(label(" intensity from:"));
-    hb->addWidget((intenSum_ = radioButton("sum")));
-    hb->addWidget((intenAvg_ = radioButton("avg ×")));
-    hb->addWidget((intenScale_ = spinDoubleCell(gui_cfg::em4_2, 0.001)));
+    hb->addWidget(wmaker::newLabel(" intensity from:"));
+    hb->addWidget((intenSum_ = wmaker::newRadioButton("sum")));
+    hb->addWidget((intenAvg_ = wmaker::newRadioButton("avg ×")));
+    hb->addWidget((intenScale_ = wmaker::newDoubleSpinBox(gui_cfg::em4_2, 0.001)));
     intenScale_->setDecimals(3);
 
     connect(intenAvg_, &QRadioButton::toggled, [this](bool on) {
@@ -484,13 +484,13 @@ Diffractogram::Diffractogram()
     hb->addStretch();
 
     actZoom_ = newToggle("zoom", false);
-    enableZoom_ = textButton(actZoom_);
+    enableZoom_ = wmaker::newTextButton(actZoom_);
     hb->addWidget(enableZoom_);
 
     hb->addStretch();
 
-    hb->addWidget(check(gHub->toggle_combinedDgram));
-    hb->addWidget(check(gHub->toggle_fixedIntenDgram));
+    hb->addWidget(wmaker::newCheckBox(gHub->toggle_combinedDgram));
+    hb->addWidget(wmaker::newCheckBox(gHub->toggle_fixedIntenDgram));
 
     connect(actZoom_, &QAction::toggled, this, [this](bool on) {
         plot_->setInteraction(QCP::iRangeDrag, on);

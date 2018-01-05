@@ -87,26 +87,26 @@ void FilesView::recollect() {
 
 DockFiles::DockFiles() : DockWidget("Files", "dock-files", Qt::Vertical) {
 
-    auto h = hbox();
+    auto h = wmaker::newHBoxLayout();
     box_->addLayout(h);
 
     h->addStretch();
-    h->addWidget(iconButton(gHub->trigger_addFiles));
-    h->addWidget(iconButton(gHub->trigger_removeFile));
+    h->addWidget(wmaker::newIconButton(gHub->trigger_addFiles));
+    h->addWidget(wmaker::newIconButton(gHub->trigger_removeFile));
 
     box_->addWidget((filesView_ = new FilesView()));
 
-    h = hbox();
+    h = wmaker::newHBoxLayout();
     box_->addLayout(h);
 
-    h->addWidget(label("Correction file"));
+    h->addWidget(wmaker::newLabel("Correction file"));
 
-    h = hbox();
+    h = wmaker::newHBoxLayout();
     box_->addLayout(h);
 
     h->addWidget((corrFile_ = new LineView()));
-    h->addWidget(iconButton(gHub->toggle_enableCorr));
-    h->addWidget(iconButton(gHub->trigger_remCorr));
+    h->addWidget(wmaker::newIconButton(gHub->toggle_enableCorr));
+    h->addWidget(wmaker::newIconButton(gHub->trigger_remCorr));
 
     connect(gHub, &TheHub::sigCorrFile,
             [this](QSharedPointer<Datafile const> file) {

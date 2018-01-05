@@ -45,11 +45,11 @@ TabDiffractogramsSave::TabDiffractogramsSave(Params& params)
     grid_->setRowStretch(grid_->rowCount(), 1);
 
     auto g = gp->grid();
-    g->addWidget((rbCurrent_ = radioButton("Current diffractogram")));
+    g->addWidget((rbCurrent_ = wmaker::newRadioButton("Current diffractogram")));
     g->addWidget(
-        (rbAllSequential_ = radioButton("All diffractograms to sequentially numbered files")));
-    g->addWidget((rbAll_ = radioButton("All diffractograms")));
-    g->addWidget(textButton(actSave), 2, 1);
+        (rbAllSequential_ = wmaker::newRadioButton("All diffractograms to sequentially numbered files")));
+    g->addWidget((rbAll_ = wmaker::newRadioButton("All diffractograms")));
+    g->addWidget(wmaker::newTextButton(actSave), 2, 1);
 
     rbAll_->setChecked(true);
 }

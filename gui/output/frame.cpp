@@ -52,21 +52,21 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
     : table_(table), showCols_(showCols) {
     using eReflAttr = ReflectionInfo::eReflAttr;
 
-    setLayout((box_ = vbox()));
+    setLayout((box_ = wmaker::newVBoxLayout()));
 
-    box_->addWidget((rbHidden_ = radioButton("")));
+    box_->addWidget((rbHidden_ = wmaker::newRadioButton("")));
     rbHidden_->hide();
 
-    box_->addWidget((rbAll_ = radioButton("all")));
-    box_->addWidget((rbNone_ = radioButton("none")));
-    box_->addWidget(rbInten_ = radioButton("Intensity"));
-    box_->addWidget(rbTth_ = radioButton("2θ"));
-    box_->addWidget(rbFWHM_ = radioButton("fwhm"));
+    box_->addWidget((rbAll_ = wmaker::newRadioButton("all")));
+    box_->addWidget((rbNone_ = wmaker::newRadioButton("none")));
+    box_->addWidget(rbInten_ = wmaker::newRadioButton("Intensity"));
+    box_->addWidget(rbTth_ = wmaker::newRadioButton("2θ"));
+    box_->addWidget(rbFWHM_ = wmaker::newRadioButton("fwhm"));
     box_->addSpacing(8);
 
     for_i (showCols.count()) {
         auto& item = showCols[i];
-        box_->addWidget((item.cb = check(item.name)));
+        box_->addWidget((item.cb = wmaker::newCheckBox(item.name)));
     }
 
     auto all = [this]() {
@@ -205,7 +205,7 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     setWindowTitle(title);
-    setLayout((box_ = vbox()));
+    setLayout((box_ = wmaker::newVBoxLayout()));
 
     debug::ensure(params);
 
@@ -215,20 +215,20 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent)
     box_->addWidget(tabs_);
     box_->setStretch(box_->count() - 1, 1);
 
-    auto hb = hbox();
+    auto hb = wmaker::newHBoxLayout();
     box_->addLayout(hb);
 
     actClose_ = newTrigger("Close");
     actCalculate_ = newTrigger("Calculate");
     actInterpolate_ = newTrigger("Interpolate");
 
-    hb->addWidget((btnClose_ = textButton(actClose_)));
+    hb->addWidget((btnClose_ = wmaker::newTextButton(actClose_)));
     hb->addStretch(1);
     hb->addWidget((pb_ = new QProgressBar));
     hb->setStretchFactor(pb_, 333);
     hb->addStretch(1);
-    hb->addWidget((btnCalculate_ = textButton(actCalculate_)));
-    hb->addWidget((btnInterpolate_ = textButton(actInterpolate_)));
+    hb->addWidget((btnCalculate_ = wmaker::newTextButton(actCalculate_)));
+    hb->addWidget((btnInterpolate_ = wmaker::newTextButton(actInterpolate_)));
 
     pb_->hide();
 

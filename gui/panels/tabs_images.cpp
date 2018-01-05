@@ -148,33 +148,33 @@ TabsImages::TabsImages() {
     {
         auto& box = wmaker::newTab(this, "Image")->box();
 
-        auto hb = hbox();
+        auto hb = wmaker::newHBoxLayout();
         box.addLayout(hb);
         box.setAlignment(hb, Qt::AlignTop);
 
-        hb->addWidget(iconButton(gHub->toggle_fixedIntenImage));
-        hb->addWidget(iconButton(gHub->toggle_stepScale));
-        hb->addWidget(iconButton(gHub->toggle_showOverlay));
-        hb->addWidget((spinN_ = spinCell(gui_cfg::em4, 1)));
+        hb->addWidget(wmaker::newIconButton(gHub->toggle_fixedIntenImage));
+        hb->addWidget(wmaker::newIconButton(gHub->toggle_stepScale));
+        hb->addWidget(wmaker::newIconButton(gHub->toggle_showOverlay));
+        hb->addWidget((spinN_ = wmaker::newSpinBox(gui_cfg::em4, 1)));
 
         hb->addStretch(1);
 
-        hb->addWidget(iconButton(gHub->toggle_showBins));
-        hb->addWidget(label("γ count"));
-        hb->addWidget((numSlices_ = spinCell(gui_cfg::em4, 0)));
-        hb->addWidget(label("#"));
-        hb->addWidget((numSlice_ = spinCell(gui_cfg::em4, 1)));
+        hb->addWidget(wmaker::newIconButton(gHub->toggle_showBins));
+        hb->addWidget(wmaker::newLabel("γ count"));
+        hb->addWidget((numSlices_ = wmaker::newSpinBox(gui_cfg::em4, 0)));
+        hb->addWidget(wmaker::newLabel("#"));
+        hb->addWidget((numSlice_ = wmaker::newSpinBox(gui_cfg::em4, 1)));
 
-        hb->addWidget(label("min"));
-        hb->addWidget((minGamma_ = spinDoubleCell(gui_cfg::em4_2)));
-        hb->addWidget(label("max"));
-        hb->addWidget((maxGamma_ = spinDoubleCell(gui_cfg::em4_2)));
+        hb->addWidget(wmaker::newLabel("min"));
+        hb->addWidget((minGamma_ = wmaker::newDoubleSpinBox(gui_cfg::em4_2)));
+        hb->addWidget(wmaker::newLabel("max"));
+        hb->addWidget((maxGamma_ = wmaker::newDoubleSpinBox(gui_cfg::em4_2)));
 
         minGamma_->setReadOnly(true);
         maxGamma_->setReadOnly(true);
 
-        hb->addWidget(label("bin#"));
-        hb->addWidget((numBin_ = spinCell(gui_cfg::em4, 1)));
+        hb->addWidget(wmaker::newLabel("bin#"));
+        hb->addWidget((numBin_ = wmaker::newSpinBox(gui_cfg::em4, 1)));
 
         box.addWidget((dataImageWidget_ = new ImageWidget()));
 
@@ -195,13 +195,13 @@ TabsImages::TabsImages() {
 
         auto& box = tab.box();
 
-        auto hb = hbox();
+        auto hb = wmaker::newHBoxLayout();
         box.addLayout(hb);
         box.setAlignment(hb, Qt::AlignTop);
 
-        hb->addWidget(iconButton(gHub->toggle_fixedIntenImage));
-        hb->addWidget(iconButton(gHub->toggle_stepScale));
-        hb->addWidget(iconButton(gHub->toggle_showOverlay));
+        hb->addWidget(wmaker::newIconButton(gHub->toggle_fixedIntenImage));
+        hb->addWidget(wmaker::newIconButton(gHub->toggle_stepScale));
+        hb->addWidget(wmaker::newIconButton(gHub->toggle_showOverlay));
         hb->addStretch(1);
 
         box.addWidget((corrImageWidget_ = new ImageWidget()));

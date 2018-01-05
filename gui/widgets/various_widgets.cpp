@@ -26,7 +26,7 @@ void LineView::setText(rcstr text) {
 
 
 BoxWidget::BoxWidget(Qt::Orientation orientation) {
-    setLayout((box_ = boxLayout(orientation)));
+    setLayout((box_ = wmaker::newBoxLayout(orientation)));
 }
 
 
@@ -36,5 +36,5 @@ DockWidget::DockWidget(rcstr name, rcstr objectName, Qt::Orientation orientation
     setObjectName(objectName);
 
     setWidget(new QWidget);
-    widget()->setLayout((box_ = boxLayout(orientation)));
+    widget()->setLayout((box_ = wmaker::newBoxLayout(orientation)));
 }
