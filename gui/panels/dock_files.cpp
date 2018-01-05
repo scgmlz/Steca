@@ -104,11 +104,13 @@ DockFiles::DockFiles() : DockWidget("Files", "dock-files", Qt::Vertical) {
     h = wmaker::newHBoxLayout();
     box_->addLayout(h);
 
-    h->addWidget((corrFile_ = new LineView()));
+    auto* corrFile_ = new QLineEdit();
+    corrFile_->setReadOnly(true);
+    h->addWidget(corrFile_);
     h->addWidget(wmaker::newIconButton(gHub->toggle_enableCorr));
     h->addWidget(wmaker::newIconButton(gHub->trigger_remCorr));
 
     connect(gHub, &TheHub::sigCorrFile,
-            [this](QSharedPointer<Datafile const> file) {
+            [corrFile_](QSharedPointer<Datafile const> file) {
                 corrFile_->setText(file.isNull() ? "" : file->fileName()); });
 }

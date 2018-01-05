@@ -20,15 +20,6 @@
 #include <QDockWidget>
 #include <QLineEdit>
 
-//! Read-only version of QLineEdit
-
-class LineView : public QLineEdit {
-public:
-    LineView();
-
-    void setText(rcstr);
-};
-
 //! a widget with a box layout
 
 class BoxWidget : public QWidget {

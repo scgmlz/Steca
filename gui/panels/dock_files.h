@@ -23,7 +23,6 @@ public:
 
 private:
     class FilesView* filesView_;
-    class LineView* corrFile_;
 };
 
 #endif // DOCK_FILES_H

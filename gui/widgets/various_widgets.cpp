@@ -15,16 +15,6 @@
 #include "widgets/various_widgets.h"
 #include "widgets/widget_makers.h"
 
-LineView::LineView() {
-    setReadOnly(true);
-}
-
-void LineView::setText(rcstr text) {
-    QLineEdit::setText(text);
-    setCursorPosition(0);
-}
-
-
 BoxWidget::BoxWidget(Qt::Orientation orientation) {
     setLayout((box_ = wmaker::newBoxLayout(orientation)));
 }
