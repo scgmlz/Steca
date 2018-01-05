@@ -85,7 +85,7 @@ void FilesView::recollect() {
 //  class DocFiles
 // ************************************************************************** //
 
-DockFiles::DockFiles() : DockWidget("Files", "dock-files", Qt::Vertical) {
+DockFiles::DockFiles() : DockWidget("Files", "dock-files") {
 
     auto h = wmaker::newHBoxLayout();
     box_->addLayout(h);

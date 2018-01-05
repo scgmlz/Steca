@@ -47,6 +47,6 @@ int MetadataView::sizeHintForColumn(int col) const {
 }
 
 
-DockMetadata::DockMetadata() : DockWidget("Metadata", "dock-metadata", Qt::Vertical) {
+DockMetadata::DockMetadata() : DockWidget("Metadata", "dock-metadata") {
     box_->addWidget((metadataView_ = new MetadataView()));
 }
