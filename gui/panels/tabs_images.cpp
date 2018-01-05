@@ -26,7 +26,7 @@
 #include <QPainter>
 
 // ************************************************************************** //
-//  file-scoped class ImageWidget
+//  local class ImageWidget
 // ************************************************************************** //
 
 class ImageWidget : public QWidget {

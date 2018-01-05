@@ -27,7 +27,7 @@
 #include <QPainter>
 
 // ************************************************************************** //
-//  class TabGraph (file scope)
+//  local class TabGraph
 // ************************************************************************** //
 
 class TabGraph : public OutputTab {
@@ -169,7 +169,7 @@ void TabGraph::paintPoints() {
 }
 
 // ************************************************************************** //
-//  class TabPoleFiguresSave (file scope)
+//  local class TabPoleFiguresSave
 // ************************************************************************** //
 
 class TabPoleFiguresSave : public TabSave {
