@@ -18,7 +18,7 @@
 #include "widgets/various_widgets.h"
 
 
-namespace panel {
+
 
 class DockFiles : public DockWidget {
 public:
@@ -29,7 +29,7 @@ private:
     class LineView* corrFile_;
 };
 
-} // namespace panel
+
 
 
 #endif // DOCK_FILES_H

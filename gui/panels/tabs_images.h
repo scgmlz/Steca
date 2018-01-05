@@ -23,7 +23,7 @@ class QDoubleSpinBox;
 class QSpinBox;
 
 
-namespace panel {
+
 
 class ImageWidget;
 
@@ -51,7 +51,7 @@ private:
     QSharedPointer<SequenceLens> lens_;
 };
 
-} // namespace panel
+
 
 
 #endif // TABS_IMAGES_H

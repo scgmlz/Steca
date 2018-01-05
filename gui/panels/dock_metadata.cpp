@@ -18,7 +18,7 @@
 #include "thehub.h"
 
 
-namespace panel {
+
 
 class MetadataView : public ListView {
 public:
@@ -54,5 +54,5 @@ DockMetadata::DockMetadata()
     box_->addWidget((metadataView_ = new MetadataView()));
 }
 
-} // namespace panel
+
 

@@ -20,7 +20,7 @@
 class QSpinBox;
 
 
-namespace panel {
+
 
 class DockDatasets : public DockWidget {
 public:
@@ -31,7 +31,7 @@ private:
     class DatasetView* dataseqView_;
 };
 
-} // namespace panel
+
 
 
 #endif // DOCK_DATASET_H

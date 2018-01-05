@@ -22,7 +22,7 @@
 #include <QHeaderView>
 
 
-namespace panel {
+
 
 // ************************************************************************** //
 //  class FilesView (definition)
@@ -115,5 +115,5 @@ DockFiles::DockFiles() : DockWidget("Files", "dock-files", Qt::Vertical) {
                 corrFile_->setText(file.isNull() ? "" : file->fileName()); });
 }
 
-} // namespace panel
+
 

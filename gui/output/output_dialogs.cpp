@@ -25,7 +25,7 @@
 #include <QDir>
 #include <QHeaderView>
 
-namespace output {
+
 
 // ************************************************************************** //
 //  class Params
@@ -462,4 +462,4 @@ str TabSave::fileSetSuffix(rcstr suffix) {
     return file;
 }
 
-} // namespace output
+

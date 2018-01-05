@@ -25,7 +25,7 @@
 #include <QPainter>
 
 
-namespace panel {
+
 
 // ************************************************************************** //
 //  file-scoped class ImageWidget
@@ -358,5 +358,5 @@ void TabsImages::render() {
     }
 }
 
-} // namespace panel
+
 

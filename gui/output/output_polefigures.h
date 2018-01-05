@@ -18,7 +18,7 @@
 #include "frame.h"
 
 
-namespace output {
+
 
 class PoleFiguresFrame : public Frame {
 public:
@@ -37,7 +37,7 @@ protected:
     void writeErrorMask(rcstr filePath, ReflectionInfos, qreal_vec const&);
 };
 
-} // namespace output
+
 
 
 #endif // OUTPUT_POLEFIGURES_H

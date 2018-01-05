@@ -24,7 +24,7 @@
 #include <QAction>
 
 
-namespace panel {
+
 
 // ************************************************************************** //
 //  define file-scoped classes
@@ -662,5 +662,5 @@ void Diffractogram::calcReflections() {
     gHub->tellReflectionData(currentReflection_);
 }
 
-} // namespace panel
+
 

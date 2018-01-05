@@ -18,7 +18,7 @@
 
 
 
-namespace panel {
+
 
 // ************************************************************************** //
 //  class Tab
@@ -48,5 +48,5 @@ PTab& TabsPanel::tab(uint i) {
     return *static_cast<PTab*>(widget(to_i(i)));
 }
 
-} // namespace panel
+
 

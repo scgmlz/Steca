@@ -169,9 +169,9 @@ MainWin::MainWin() {
 
 
 void MainWin::initLayout() {
-    addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new panel::DockFiles()));
-    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasets_ = new panel::DockDatasets()));
-    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasetInfo_ = new panel::DockMetadata()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new DockFiles()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasets_ = new DockDatasets()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasetInfo_ = new DockMetadata()));
 
     auto splMain = new QSplitter(Qt::Vertical);
     splMain->setChildrenCollapsible(false);
@@ -182,11 +182,11 @@ void MainWin::initLayout() {
     setCentralWidget(splMain);
 
     splMain->addWidget(splTop);
-    splMain->addWidget(new panel::TabsDiffractogram());
+    splMain->addWidget(new TabsDiffractogram());
     splMain->setStretchFactor(1, 1);
 
-    splTop->addWidget(new panel::TabsSetup());
-    splTop->addWidget(new panel::TabsImages());
+    splTop->addWidget(new TabsSetup());
+    splTop->addWidget(new TabsImages());
     splTop->setStretchFactor(1, 1);
 
     statusBar();
@@ -208,11 +208,11 @@ void MainWin::connectActions() {
     connectTrigger(gHub->trigger_quit, &MainWin::close);
 
     QObject::connect(gHub->trigger_outputPolefigures, &QAction::triggered,
-                     [this](){output::PoleFiguresFrame("Pole Figures", this).exec();});
+                     [this](){PoleFiguresFrame("Pole Figures", this).exec();});
     QObject::connect(gHub->trigger_outputDiagrams, &QAction::triggered,
-                     [this](){output::DiagramsFrame("Diagrams", this).exec();});
+                     [this](){DiagramsFrame("Diagrams", this).exec();});
     QObject::connect(gHub->trigger_outputDiffractograms, &QAction::triggered,
-                     [this](){output::DiffractogramsFrame("Diffractograms", this).exec();});
+                     [this](){DiffractogramsFrame("Diffractograms", this).exec();});
 
     QObject::connect(gHub->trigger_about, &QAction::triggered, [this](){AboutBox(this).exec();});
     connectTrigger(gHub->trigger_online, &MainWin::online);

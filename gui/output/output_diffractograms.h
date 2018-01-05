@@ -20,7 +20,7 @@
 class Suite;
 
 
-namespace output {
+
 
 struct OutputData;
 using OutputDataCollection = vec<OutputData>;
@@ -45,7 +45,7 @@ protected:
     void writeAllDiffractogramsToFiles(rcstr filePath, rcstr separator, bool oneFile);
 };
 
-} // namespace output
+
 
 
 #endif // OUTPUT_DIFFRACTOGRAMS_H

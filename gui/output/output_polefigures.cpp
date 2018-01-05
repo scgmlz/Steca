@@ -26,7 +26,7 @@
 #include <QPainter>
 
 
-namespace output {
+
 
 // ************************************************************************** //
 //  class TabGraph (file scope)
@@ -397,5 +397,5 @@ void PoleFiguresFrame::writeListFile(
     }
 }
 
-} // namespace output
+
 

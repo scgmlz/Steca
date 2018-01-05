@@ -25,7 +25,7 @@
 #include <QAction>
 
 
-namespace output {
+
 
 // sorts xs and ys the same way, by (x,y)
 static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
@@ -300,5 +300,5 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
     }
 }
 
-} // namespace output
+
 

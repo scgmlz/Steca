@@ -18,7 +18,7 @@
 #include "frame.h"
 
 
-namespace output {
+
 
 class DiagramsFrame : public Frame {
 public:
@@ -45,7 +45,7 @@ protected:
     void writeAllDataOutputFile(rcstr filePath, rcstr separator);
 };
 
-} // namespace output
+
 
 
 #endif // OUTPUT_DIAGRAMS_H

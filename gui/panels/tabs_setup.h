@@ -23,7 +23,7 @@ class QLineEdit;
 class QSpinBox;
 
 
-namespace panel {
+
 
 class TabsSetup : public TabsPanel {
 public:
@@ -51,7 +51,7 @@ private:
     void setFromHub();
 };
 
-} // namespace panel
+
 
 
 #endif // TABS_SETUP_H

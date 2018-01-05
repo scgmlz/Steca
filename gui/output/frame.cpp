@@ -33,9 +33,6 @@ struct showcol_t {
 
 typedef vec<showcol_t> showcol_vec;
 
-using output::Params;
-using output::Table;
-
 // ************************************************************************** //
 //  local class ShowColsWidget (only used by TabTable)
 // ************************************************************************** //
@@ -159,7 +156,7 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
 //  local class TabTable (only used by Frame implementation)
 // ************************************************************************** //
 
-class TabTable : public output::OutputTab {
+class TabTable : public OutputTab {
 public:
     TabTable(Params&, QStringList const& headers, QStringList const& outHeaders, cmp_vec const&);
     Table* table;
@@ -199,7 +196,7 @@ TabTable::TabTable(
 //  class Frame
 // ************************************************************************** //
 
-namespace output {
+
 
 Frame::Frame(rcstr title, Params* params, QWidget* parent)
     : QDialog(parent) {
@@ -212,7 +209,7 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent)
     debug::ensure(params);
 
     box_->addWidget((params_ = params));
-    box_->addWidget((tabs_ = new panel::TabsPanel()));
+    box_->addWidget((tabs_ = new TabsPanel()));
     box_->setStretch(box_->count() - 1, 1);
 
     auto hb = hbox();
@@ -352,5 +349,3 @@ bool Frame::getInterpolated() const {
     auto pi = params_->panelPoints;
     return pi ? pi->rbInterp->isChecked() : false;
 }
-
-} // namespace output

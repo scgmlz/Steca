@@ -18,7 +18,7 @@
 #include "widgets/various_widgets.h"
 
 
-namespace panel {
+
 
 class DockMetadata : public DockWidget {
 public:
@@ -28,7 +28,7 @@ private:
     class MetadataView* metadataView_;
 };
 
-} // namespace panel
+
 
 
 #endif // DOCK_METADATA_H

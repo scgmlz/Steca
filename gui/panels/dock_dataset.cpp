@@ -21,7 +21,7 @@
 #include "widgets/widget_makers.h"
 
 
-namespace panel {
+
 
 // ************************************************************************** //
 //  file-scope: class DatasetView
@@ -77,5 +77,5 @@ DockDatasets::DockDatasets()
             [this]() { combineDatasets_->setValue(to_i(uint(gHub->suiteGroupedBy()))); });
 }
 
-} // namespace panel
+
 

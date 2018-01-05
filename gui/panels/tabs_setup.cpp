@@ -23,7 +23,7 @@
 #include <QAction>
 
 
-namespace panel {
+
 
 static qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }
 static str safeRealText(qreal val) { return qIsFinite(val) ? str::number(val) : ""; }
@@ -459,5 +459,5 @@ void TabsSetup::setFromHub() {
     cutBottom_->setValue(to_i(cut.bottom));
 }
 
-} // namespace panel
+
 

@@ -24,7 +24,7 @@
 #include <QAction>
 
 
-namespace output {
+
 
 class TabDiffractogramsSave : public TabSave {
 public:
@@ -244,5 +244,5 @@ void DiffractogramsFrame::saveDiffractogramOutput() {
         qWarning() << "Invalid call of DiffractogramsFrame::saveDiffractogramOutput";
 }
 
-} // namespace output
+
 
