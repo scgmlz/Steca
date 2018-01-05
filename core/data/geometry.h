@@ -20,8 +20,7 @@
 #include "typ/ij.h"
 #include "typ/range.h"
 
-//! detector geometry
-
+//! Detector geometry.
 class Geometry {
 public:
     static preal const MIN_DETECTOR_DISTANCE;
@@ -39,8 +38,7 @@ public:
     IJ midPixOffset;
 };
 
-//! image cut (margins)
-
+//! Image cut (margins)
 class ImageCut {
 public:
     uint left, top, right, bottom;
@@ -53,6 +51,9 @@ public:
     size2d marginSize() const;
 };
 
+//! Holds geometry parameters that define a mapping of image coordinates onto (gamma,2theta).
+
+//! Needed for caching such coordinate maps.
 class ImageKey {
 public:
     ImageKey(Geometry const&, size2d const&, ImageCut const&, IJ const& midPix, deg midTth);

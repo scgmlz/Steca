@@ -24,6 +24,7 @@ QJsonValue qreal_to_json(const qreal num);
 class Range;
 class IJ;
 
+//! Extends QJsonObject by read-out methods; used to load a session from a .ste file
 class JsonObj : public QJsonObject {
 private:
     using super = QJsonObject;
