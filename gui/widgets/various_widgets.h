@@ -32,9 +32,9 @@ public:
 //! a widget with a box layout
 
 class BoxWidget : public QWidget {
-private:
 public:
     BoxWidget(Qt::Orientation);
+    QBoxLayout& box() const { return *box_; }
 
 protected:
     QBoxLayout* box_;

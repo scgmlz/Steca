@@ -16,22 +16,13 @@
 #define PANEL_H
 
 #include "typ/str.h"
+#include "widgets/various_widgets.h"
 #include <QTabWidget>
 
 class QBoxLayout;
 
-//! A tabbed panel
-class PTab : public QWidget {
-public:
-    PTab(Qt::Orientation);
-    QBoxLayout& box() const { return *box_; }
-
-protected:
-    QBoxLayout* box_;
-};
-
 namespace wmaker {
-PTab* newTab(QTabWidget* panel, rcstr title);
+class BoxWidget* newTab(QTabWidget* panel, rcstr title);
 }
 
 #endif // PANEL_H

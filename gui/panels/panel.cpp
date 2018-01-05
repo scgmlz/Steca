@@ -16,17 +16,8 @@
 #include "panel.h"
 #include "widgets/widget_makers.h"
 
-PTab* wmaker::newTab(QTabWidget* panel, rcstr title) {
-    auto ret = new PTab(Qt::Vertical);
+BoxWidget* wmaker::newTab(QTabWidget* panel, rcstr title) {
+    auto ret = new BoxWidget(Qt::Vertical);
     panel->addTab(ret, title);
     return ret;
-}
-
-
-// ************************************************************************** //
-//  class Tab
-// ************************************************************************** //
-
-PTab::PTab(Qt::Orientation orientation) {
-    setLayout((box_ = boxLayout(orientation)));
 }
