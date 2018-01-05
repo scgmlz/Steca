@@ -16,7 +16,7 @@
 #include "cfg/colors.h"
 #include "dialog_panels.h"
 #include "fit/fit_fun.h"
-#include "output_dialogs.h"
+#include "widgets4output.h"
 #include "session.h"
 #include "thehub.h"
 #include "widgets/widget_makers.h"

@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/output/output_dialogs.cpp
+//! @file      gui/output/widgets4output.cpp
 //! @brief     Implements ...
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "output_dialogs.h"
+#include "widgets4output.h"
 #include "actions.h"
 #include "def/idiomatic_for.h"
 #include "dialog_panels.h"

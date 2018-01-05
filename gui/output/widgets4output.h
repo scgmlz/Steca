@@ -2,7 +2,7 @@
 //
 //  Steca2: stress and texture calculator
 //
-//! @file      gui/output/output_dialogs.h
+//! @file      gui/output/widgets4output.h
 //! @brief     Defines ...
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef OUTPUT_DIALOGS_H
-#define OUTPUT_DIALOGS_H
+#ifndef WIDGETS4OUTPUT_H
+#define WIDGETS4OUTPUT_H
 
 #include "typ/variant.h"
 #include "def/special_pointers.h"
@@ -85,4 +85,4 @@ protected:
     QRadioButton *rbDat_, *rbCsv_;
 };
 
-#endif // OUTPUT_DIALOGS_H
+#endif // WIDGETS4OUTPUT_H

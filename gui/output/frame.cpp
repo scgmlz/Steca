@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "output_dialogs.h"
+#include "widgets4output.h"
 #include "actions.h"
 #include "dialog_panels.h"
 #include "calc/calc_polefigure.h"
