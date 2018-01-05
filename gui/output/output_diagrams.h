@@ -17,6 +17,7 @@
 
 #include "frame.h"
 
+//! The modal dialog for viewing and saving diagrams
 class DiagramsFrame : public Frame {
 public:
     DiagramsFrame(rcstr title, QWidget*);

@@ -17,6 +17,7 @@
 
 #include "widgets/various_widgets.h"
 
+//! The dock widget that shows the metadata of the selected dataset
 class DockMetadata : public DockWidget {
 public:
     DockMetadata();

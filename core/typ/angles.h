@@ -19,7 +19,7 @@
 
 class rad;
 
-// angles stored in degrees
+//! An angle in degrees
 class deg {
 public:
     deg(qreal val = 0) : val_(val) {}
@@ -37,7 +37,7 @@ private:
     qreal val_;
 };
 
-// trigonometry needs radians
+//! An angle in radians
 class rad {
 public:
     rad(qreal val = 0) : val_(val) {}

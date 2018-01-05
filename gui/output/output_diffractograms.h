@@ -23,6 +23,7 @@ struct OutputData;
 using OutputDataCollection = vec<OutputData>;
 using OutputDataCollections = vec<OutputDataCollection>;
 
+//! The modal dialog for saving diffractograms
 class DiffractogramsFrame : public Frame {
 public:
     DiffractogramsFrame(rcstr title, QWidget*);

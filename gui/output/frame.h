@@ -23,6 +23,7 @@ class QProgressBar;
 class QTabWidget;
 class QToolButton;
 
+//! A rich modal dialog, for the polefig, diagram, and diffractogram outputs.
 class Frame : public QDialog {
 public:
     Frame(rcstr title, class Params*, QWidget*);
