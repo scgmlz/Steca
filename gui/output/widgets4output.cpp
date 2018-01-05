@@ -3,7 +3,7 @@
 //  Steca2: stress and texture calculator
 //
 //! @file      gui/output/widgets4output.cpp
-//! @brief     Implements ...
+//! @brief     Implements classes Params, Table, TabSave
 //!
 //! @homepage  https://github.com/scgmlz/Steca2
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -127,7 +127,7 @@ void Params::saveSettings() const {
 }
 
 // ************************************************************************** //
-//  class TabularModel
+//  local class TabularModel (used by Table)
 // ************************************************************************** //
 
 class TabularModel : public TableModel {
