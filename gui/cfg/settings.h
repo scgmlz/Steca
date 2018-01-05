@@ -22,10 +22,11 @@ class QAction;
 class QDoubleSpinBox;
 class QSpinBox;
 
+//! Used to save and retrieve the main window geometry, and certain parameter settings.
 
-
+//! TODO: make a clear decision, what is saved through this mechanism, and what is
+//! left to the .ste configuration files.
 class Settings : public QSettings {
-private:
 public:
     Settings(rcstr group = "");
     ~Settings();
@@ -54,7 +55,5 @@ public:
     str readStr(rcstr key, rcstr def = "") { return readVariant(key, def).toString(); }
     void saveStr(rcstr key, rcstr val) { saveVariant(key, val); }
 };
-
-
 
 #endif // SETTINGS_H

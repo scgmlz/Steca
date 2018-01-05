@@ -17,8 +17,6 @@
 #include <QAction>
 #include <QSpinBox>
 
-
-
 Settings::Settings(rcstr group) {
     setFallbacksEnabled(false);
     beginGroup(group);
@@ -78,5 +76,3 @@ int Settings::readInt(rcstr key, int def) {
     int val = var.toInt(&ok);
     return ok ? val : def;
 }
-
-
