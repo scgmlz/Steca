@@ -157,7 +157,7 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
 //  local class TabTable (only used by Frame implementation)
 // ************************************************************************** //
 
-class TabTable : public OutputTab {
+class TabTable : public QWidget {
 public:
     TabTable(Params&, QStringList const& headers, QStringList const& outHeaders, cmp_vec const&);
     Table* table;
@@ -168,7 +168,9 @@ private:
 
 TabTable::TabTable(
     Params& params, QStringList const& headers, QStringList const& outHeaders, cmp_vec const& cmps)
-    : OutputTab(params) {
+    {
+    QGridLayout* grid_ = wmaker::newGridLayout();
+    setLayout(grid_);
     debug::ensure(to_u(headers.count()) == cmps.count());
     uint numCols = to_u(headers.count());
 
