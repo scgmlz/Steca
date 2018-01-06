@@ -22,7 +22,7 @@
 #include "QCustomPlot/qcustomplot.h"
 
 // ************************************************************************** //
-//  define file-scoped classes
+//  define local classes
 // ************************************************************************** //
 
 class DiffractogramPlotOverlay : public QWidget {
@@ -102,7 +102,7 @@ private:
 };
 
 // ************************************************************************** //
-//  class DiffractogramPlotOverlay (file scoped)
+//  local class DiffractogramPlotOverlay
 // ************************************************************************** //
 
 DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& plot_)
@@ -196,7 +196,7 @@ void DiffractogramPlotOverlay::updateCursorRegion() {
 }
 
 // ************************************************************************** //
-//  class DiffractogramPlot (file scope)
+//  local class DiffractogramPlot
 // ************************************************************************** //
 
 DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
