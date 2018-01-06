@@ -372,9 +372,14 @@ void DiffractogramPlot::addBgItem(Range const& range) {
 
     QColor color;
     switch (gHub->fittingTab()) {
-    case eFittingTab::BACKGROUND: color = bgRgeColor_; break;
-    case eFittingTab::REFLECTIONS: color = reflRgeColor_; break;
-    default: break;
+    case eFittingTab::BACKGROUND:
+        color = bgRgeColor_;
+        break;
+    case eFittingTab::REFLECTIONS:
+        color = reflRgeColor_;
+        break;
+    default:
+        break;
     }
 
     auto ir = new QCPItemRect(this);
@@ -496,14 +501,12 @@ Diffractogram::Diffractogram()
     connect(gHub->toggle_selRegions, &QAction::toggled, [this](bool on) {
         using eTool = DiffractogramPlot::eTool;
         auto tool = eTool::NONE;
-
         if (on)
             switch (gHub->fittingTab()) {
             case eFittingTab::BACKGROUND: tool = eTool::BACKGROUND; break;
             case eFittingTab::REFLECTIONS: tool = eTool::PEAK_REGION; break;
             default: break;
             }
-
         plot_->setTool(tool);
         });
 
@@ -574,10 +577,8 @@ void Diffractogram::setSuite(QSharedPointer<Suite> suite) {
 
 void Diffractogram::calcDgram() {
     dgram_.clear();
-
     if (!suite_)
         return;
-
     if (gHub->isCombinedDgram())
         dgram_ = suite_->experiment().avgCurve();
     else {
