@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/widgets/widget_makers.h
-//! @brief     Defines functions that return new Qt objects with Steca-standard settings
+//! @brief     Defines functions that return new Qt objects
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -16,6 +16,7 @@
 #define WIDGET_MAKERS_H
 
 #include "typ/str.h"
+#include <QAction>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QLabel>
@@ -30,6 +31,9 @@ class BoxWidget;
 
 //! Contains functions that return new Qt objects with Steca-standard settings
 namespace newQ {
+
+QAction* Trigger(rcstr text, rcstr iconFile="");
+QAction* Toggle(rcstr text, bool value, rcstr iconFile="");
 
 BoxWidget* Tab(QTabWidget* panel, rcstr title);
 

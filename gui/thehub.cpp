@@ -13,19 +13,17 @@
 // ************************************************************************** //
 
 #include "thehub.h"
-#include "actions.h"
 #include "data/suite.h"
 #include "io/io_io.h"
 #include "models.h"
 #include "output/write_file.h"
 #include "session.h"
 #include "typ/json.h"
-#include <QAction>
+#include "widgets/widget_makers.h"
 #include <QApplication>
 #include <QDir>
 #include <QJsonDocument>
 #include <QStringBuilder> // for ".." % ..
-
 
 
 TheHub::TheHub()
@@ -49,52 +47,52 @@ TheHub::TheHub()
 
     // create actions
 
-    trigger_about = newTrigger("About " + qApp->applicationName());
-    trigger_online = newTrigger("Open docs in external browser");
-    trigger_checkUpdate = newTrigger("Check for update");
-    trigger_quit = newTrigger("Quit");
+    trigger_about = newQ::Trigger("About " + qApp->applicationName());
+    trigger_online = newQ::Trigger("Open docs in external browser");
+    trigger_checkUpdate = newQ::Trigger("Check for update");
+    trigger_quit = newQ::Trigger("Quit");
 
-    toggle_viewStatusbar = newToggle("Statusbar", true);
-    toggle_viewFiles = newToggle("Files", true);
-    toggle_viewDatasets = newToggle("Datasets", true);
-    toggle_viewMetadata = newToggle("Metadata", true);
-    trigger_viewReset = newTrigger("Reset");
+    toggle_viewStatusbar = newQ::Toggle("Statusbar", true);
+    toggle_viewFiles = newQ::Toggle("Files", true);
+    toggle_viewDatasets = newQ::Toggle("Datasets", true);
+    toggle_viewMetadata = newQ::Toggle("Metadata", true);
+    trigger_viewReset = newQ::Trigger("Reset");
 #ifndef Q_OS_OSX
-    toggle_fullScreen = newToggle("FullScreen", false);
+    toggle_fullScreen = newQ::Toggle("FullScreen", false);
 #endif
 
-    trigger_loadSession = newTrigger("Load session...");
-    trigger_saveSession = newTrigger("Save session...");
-    trigger_clearSession = newTrigger("Clear session");
+    trigger_loadSession = newQ::Trigger("Load session...");
+    trigger_saveSession = newQ::Trigger("Save session...");
+    trigger_clearSession = newQ::Trigger("Clear session");
 
-    trigger_addFiles = newTrigger("Add files...", ":/icon/add");
-    trigger_removeFile = newTrigger("Remove selected file(s)", ":/icon/rem");
-    toggle_enableCorr = newToggle("Enable correction file...", false, ":/icon/useCorrection");
-    trigger_remCorr = newTrigger("Remove correction file", ":/icon/clear");
+    trigger_addFiles = newQ::Trigger("Add files...", ":/icon/add");
+    trigger_removeFile = newQ::Trigger("Remove selected file(s)", ":/icon/rem");
+    toggle_enableCorr = newQ::Toggle("Enable correction file...", false, ":/icon/useCorrection");
+    trigger_remCorr = newQ::Trigger("Remove correction file", ":/icon/clear");
 
-    trigger_rotateImage = newTrigger("Rotate", ":/icon/rotate0");
-    toggle_mirrorImage = newToggle("Mirror", false, ":/icon/mirrorHorz");
-    toggle_linkCuts = newToggle("Link cuts", false, ":/icon/link");
-    toggle_showOverlay = newToggle("Show overlay", false, ":/icon/crop");
-    toggle_stepScale = newToggle("Scale in steps", false, ":/icon/steps");
-    toggle_showBins = newToggle("Show bins", false, ":/icon/angle");
+    trigger_rotateImage = newQ::Trigger("Rotate", ":/icon/rotate0");
+    toggle_mirrorImage = newQ::Toggle("Mirror", false, ":/icon/mirrorHorz");
+    toggle_linkCuts = newQ::Toggle("Link cuts", false, ":/icon/link");
+    toggle_showOverlay = newQ::Toggle("Show overlay", false, ":/icon/crop");
+    toggle_stepScale = newQ::Toggle("Scale in steps", false, ":/icon/steps");
+    toggle_showBins = newQ::Toggle("Show bins", false, ":/icon/angle");
 
-    toggle_fixedIntenImage = newToggle("Global intensity scale", false, ":/icon/scale");
-    toggle_fixedIntenDgram = newToggle("Fixed intensity scale", false);
+    toggle_fixedIntenImage = newQ::Toggle("Global intensity scale", false, ":/icon/scale");
+    toggle_fixedIntenDgram = newQ::Toggle("Fixed intensity scale", false);
 
-    toggle_combinedDgram = newToggle("All datasets", true);
+    toggle_combinedDgram = newQ::Toggle("All datasets", true);
 
-    toggle_selRegions = newToggle("Select regions", false, ":/icon/selRegion");
-    toggle_showBackground = newToggle("Show fitted background", false, ":/icon/showBackground");
-    trigger_clearBackground = newTrigger("Clear background regions", ":/icon/clear");
-    trigger_clearReflections = newTrigger("Clear reflections", ":/icon/clear");
+    toggle_selRegions = newQ::Toggle("Select regions", false, ":/icon/selRegion");
+    toggle_showBackground = newQ::Toggle("Show fitted background", false, ":/icon/showBackground");
+    trigger_clearBackground = newQ::Trigger("Clear background regions", ":/icon/clear");
+    trigger_clearReflections = newQ::Trigger("Clear reflections", ":/icon/clear");
 
-    trigger_addReflection = newTrigger("Add reflection", ":/icon/add");
-    trigger_remReflection = newTrigger("Remove reflection", ":/icon/rem");
+    trigger_addReflection = newQ::Trigger("Add reflection", ":/icon/add");
+    trigger_remReflection = newQ::Trigger("Remove reflection", ":/icon/rem");
 
-    trigger_outputPolefigures = newTrigger("Pole figures...");
-    trigger_outputDiagrams = newTrigger("Diagrams...");
-    trigger_outputDiffractograms = newTrigger("Diffractograms...");
+    trigger_outputPolefigures = newQ::Trigger("Pole figures...");
+    trigger_outputDiagrams = newQ::Trigger("Diagrams...");
+    trigger_outputDiffractograms = newQ::Trigger("Diffractograms...");
 
     // key shortcuts
 

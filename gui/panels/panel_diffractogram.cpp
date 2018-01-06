@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "panel_diffractogram.h"
-#include "actions.h"
 #include "data/suite.h"
 #include "fit/fit_fun.h"
 #include "cfg/gui_cfg.h"
@@ -21,7 +20,6 @@
 #include "thehub.h"
 #include "widgets/widget_makers.h"
 #include "QCustomPlot/qcustomplot.h"
-#include <QAction>
 
 // ************************************************************************** //
 //  define file-scoped classes
@@ -483,7 +481,7 @@ Diffractogram::Diffractogram()
 
     hb->addStretch();
 
-    actZoom_ = newToggle("zoom", false);
+    actZoom_ = newQ::Toggle("zoom", false);
     enableZoom_ = newQ::TextButton(actZoom_);
     hb->addWidget(enableZoom_);
 

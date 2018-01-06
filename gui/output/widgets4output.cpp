@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "widgets4output.h"
-#include "actions.h"
 #include "def/idiomatic_for.h"
 #include "dialog_panels.h"
 #include "popup/filedialog.h"
@@ -21,7 +20,6 @@
 #include "cfg/settings.h"
 #include "thehub.h"
 #include "widgets/widget_makers.h"
-#include <QAction>
 #include <QDir>
 #include <QHeaderView>
 
@@ -383,8 +381,8 @@ static str const DAT_SFX(".dat"), DAT_SEP(" "), // suffix, separator
 
 TabSave::TabSave(Params& params, bool withTypes) : params_(params) {
     setLayout((grid_ = newQ::GridLayout()));
-    actBrowse = newTrigger("Browse...");
-    actSave = newTrigger("Save");
+    actBrowse = newQ::Trigger("Browse...");
+    actSave = newQ::Trigger("Save");
 
     str dir = params_.saveDir;
     if (!QDir(dir).exists())

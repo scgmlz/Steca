@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/widgets/widget_makers.cpp
-//! @brief     Implements functions that return new widgets with Steca-standard settings
+//! @brief     Implements functions that return new Qt objects
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,11 +15,33 @@
 #include "widgets/widget_makers.h"
 #include "widgets/various_widgets.h"
 #include "def/numbers.h"
-#include <QAction>
+#include <QApplication>
+
+namespace {
 
 static void setEmWidth(QWidget* w, uint emWidth) {
     w->setMaximumWidth(to_i(emWidth) * w->fontMetrics().width('m'));
 }
+
+} // anonymous namespace
+
+QAction* newQ::Trigger(rcstr text, rcstr iconFile) {
+    QAction* ret = new QAction(text, qApp);
+    ret->setToolTip(text.toLower());
+    if (iconFile!="")
+        ret->setIcon(QIcon(iconFile));
+    return ret;
+};
+
+QAction* newQ::Toggle(rcstr text, bool value, rcstr iconFile) {
+    QAction* ret = new QAction(text, qApp);
+    ret->setToolTip(text.toLower());
+    if (iconFile!="")
+        ret->setIcon(QIcon(iconFile));
+    ret->setCheckable(true);
+    ret->setChecked(value);
+    return ret;
+};
 
 BoxWidget* newQ::Tab(QTabWidget* panel, rcstr title) {
     auto ret = new BoxWidget(Qt::Vertical);

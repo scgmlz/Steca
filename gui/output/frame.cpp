@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "widgets4output.h"
-#include "actions.h"
 #include "dialog_panels.h"
 #include "calc/calc_polefigure.h"
 #include "session.h"
@@ -21,7 +20,6 @@
 #include "frame.h"
 #include "widgets/various_widgets.h"
 #include "widgets/widget_makers.h"
-#include <QAction>
 #include <QProgressBar>
 #include <QScrollArea>
 
@@ -220,9 +218,9 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent)
     auto hb = newQ::HBoxLayout();
     box_->addLayout(hb);
 
-    actClose_ = newTrigger("Close");
-    actCalculate_ = newTrigger("Calculate");
-    actInterpolate_ = newTrigger("Interpolate");
+    actClose_ = newQ::Trigger("Close");
+    actCalculate_ = newQ::Trigger("Calculate");
+    actInterpolate_ = newQ::Trigger("Interpolate");
 
     hb->addWidget((btnClose_ = newQ::TextButton(actClose_)));
     hb->addStretch(1);
