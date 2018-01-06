@@ -19,7 +19,7 @@
 #include "thehub.h"
 #include "frame.h"
 #include "widgets/various_widgets.h"
-#include "widgets/widget_makers.h"
+#include "widgets/new_q.h"
 #include <QProgressBar>
 #include <QScrollArea>
 

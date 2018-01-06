@@ -20,7 +20,7 @@
 #include "session.h"
 #include "thehub.h"
 #include "widgets/various_widgets.h"
-#include "widgets/widget_makers.h"
+#include "widgets/new_q.h"
 #include "write_file.h"
 #include <qmath.h>
 #include <QAction>

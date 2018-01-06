@@ -18,7 +18,7 @@
 #include "models.h"
 #include "thehub.h"
 #include "widgets/tree_views.h" // inheriting from
-#include "widgets/widget_makers.h"
+#include "widgets/new_q.h"
 
 // ************************************************************************** //
 //  file-scope: class DatasetView

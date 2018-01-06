@@ -21,7 +21,7 @@
 #include "write_file.h"
 #include "session.h"
 #include "widgets/various_widgets.h"
-#include "widgets/widget_makers.h"
+#include "widgets/new_q.h"
 #include <QAction>
 
 class TabDiffractogramsSave : public TabSave {

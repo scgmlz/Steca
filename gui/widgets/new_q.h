@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/widgets/widget_makers.h
+//! @file      gui/widgets/new_q.h
 //! @brief     Defines functions that return new Qt objects
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef WIDGET_MAKERS_H
-#define WIDGET_MAKERS_H
+#ifndef NEW_Q_H
+#define NEW_Q_H
 
 #include "typ/str.h"
 #include <QAction>
@@ -61,4 +61,4 @@ QRadioButton* RadioButton(rcstr text);
 
 } // namespace newQ
 
-#endif // WIDGET_MAKERS_H
+#endif // NEW_Q_H

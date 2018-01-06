@@ -19,7 +19,7 @@
 #include "models.h"
 #include "cfg/settings.h"
 #include "thehub.h"
-#include "widgets/widget_makers.h"
+#include "widgets/new_q.h"
 #include <QDir>
 #include <QHeaderView>
 

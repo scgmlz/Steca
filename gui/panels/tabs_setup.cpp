@@ -20,7 +20,7 @@
 #include "thehub.h"
 #include "widgets/tree_views.h" // inheriting from
 #include "widgets/various_widgets.h"
-#include "widgets/widget_makers.h"
+#include "widgets/new_q.h"
 #include <QAction>
 
 static qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }

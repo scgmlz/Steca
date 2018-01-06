@@ -18,7 +18,7 @@
 #include "cfg/gui_cfg.h"
 #include "session.h"
 #include "thehub.h"
-#include "widgets/widget_makers.h"
+#include "widgets/new_q.h"
 #include "QCustomPlot/qcustomplot.h"
 
 // ************************************************************************** //

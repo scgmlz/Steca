@@ -18,7 +18,7 @@
 #include "models.h"
 #include "session.h"
 #include "thehub.h"
-#include "widgets/widget_makers.h"
+#include "widgets/new_q.h"
 
 // ************************************************************************** //
 //  class GridPanel

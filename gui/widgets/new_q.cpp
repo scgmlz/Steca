@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/widgets/widget_makers.cpp
+//! @file      gui/widgets/new_q.cpp
 //! @brief     Implements functions that return new Qt objects
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "widgets/widget_makers.h"
+#include "widgets/new_q.h"
 #include "widgets/various_widgets.h"
 #include "def/numbers.h"
 #include <QApplication>
