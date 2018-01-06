@@ -24,9 +24,6 @@ class QRadioButton;
 class QDoubleSpinBox;
 class QToolButton;
 
-
-
-
 class Diffractogram : public QWidget {
 public:
     Diffractogram();
@@ -67,8 +64,5 @@ public:
     void setCurrReflNewRange(Range const&);
     Range currReflRange() const;
 };
-
-
-
 
 #endif // PANEL_DIFFRACTOGRAM_H

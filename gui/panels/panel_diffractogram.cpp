@@ -70,9 +70,6 @@ public:
 
     Range fromPixels(int, int);
 
-    void clearBg();
-    void addBg(Range const&);
-    void remBg(Range const&);
     void setNewReflRange(Range const&);
     void updateBg();
 
@@ -151,9 +148,9 @@ void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
     switch (plot_.getTool()) {
     case DiffractogramPlot::eTool::BACKGROUND:
         if (Qt::LeftButton == e->button())
-            plot_.addBg(range);
+            gHub->addBgRange(range);
         else
-            plot_.remBg(range);
+            gHub->remBgRange(range);
         break;
 
     case DiffractogramPlot::eTool::PEAK_REGION: plot_.setNewReflRange(range); break;
@@ -338,18 +335,6 @@ Range DiffractogramPlot::fromPixels(int pix1, int pix2) {
     return Range::safeFrom(xAxis->pixelToCoord(pix1), xAxis->pixelToCoord(pix2));
 }
 
-void DiffractogramPlot::clearBg() {
-    gHub->setBgRanges(Ranges());
-}
-
-void DiffractogramPlot::addBg(Range const& range) {
-    gHub->addBgRange(range);
-}
-
-void DiffractogramPlot::remBg(Range const& range) {
-    gHub->remBgRange(range);
-}
-
 void DiffractogramPlot::setNewReflRange(Range const& range) {
     diffractogram_.setCurrReflNewRange(range);
     updateBg();
@@ -506,7 +491,9 @@ Diffractogram::Diffractogram()
     connect(gHub, &TheHub::sigReflectionsChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigNormChanged, [this](){ onNormChanged(); });
 
-    connect(gHub->trigger_clearBackground, &QAction::triggered, [this]() { plot_->clearBg(); });
+    // TODO: mv to Hub
+    connect(gHub->trigger_clearBackground, &QAction::triggered, [this]() {
+            gHub->setBgRanges(Ranges()); });
 
     connect(gHub, &TheHub::sigFittingTab,
             [this](eFittingTab tab) { onFittingTab(tab); });
