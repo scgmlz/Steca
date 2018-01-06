@@ -45,11 +45,11 @@ TabDiffractogramsSave::TabDiffractogramsSave(Params& params)
     grid_->setRowStretch(grid_->rowCount(), 1);
 
     auto g = gp->grid();
-    g->addWidget((rbCurrent_ = wmaker::newRadioButton("Current diffractogram")));
+    g->addWidget((rbCurrent_ = newQ::RadioButton("Current diffractogram")));
     g->addWidget(
-        (rbAllSequential_ = wmaker::newRadioButton("All diffractograms to sequentially numbered files")));
-    g->addWidget((rbAll_ = wmaker::newRadioButton("All diffractograms")));
-    g->addWidget(wmaker::newTextButton(actSave), 2, 1);
+        (rbAllSequential_ = newQ::RadioButton("All diffractograms to sequentially numbered files")));
+    g->addWidget((rbAll_ = newQ::RadioButton("All diffractograms")));
+    g->addWidget(newQ::TextButton(actSave), 2, 1);
 
     rbAll_->setChecked(true);
 }
@@ -87,7 +87,7 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
     btnInterpolate_->hide();
 
     tabSave_ = new TabDiffractogramsSave(*params_);
-    wmaker::newTab(tabs_, "Save")->box().addWidget(tabSave_);
+    newQ::Tab(tabs_, "Save")->box().addWidget(tabSave_);
 
     connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiffractogramOutput(); });
     show();

@@ -44,7 +44,7 @@ void GridPanel::setStretch(int horizontal, int vertical) {
 }
 
 GridPanel::GridPanel(rcstr title) : QGroupBox(title) {
-    setLayout((grid_ = wmaker::newGridLayout()));
+    setLayout((grid_ = newQ::GridLayout()));
 }
 
 // ************************************************************************** //
@@ -62,11 +62,11 @@ PanelReflection::PanelReflection() : GridPanel("Reflection") {
 PanelGammaSlices::PanelGammaSlices() : GridPanel("Gamma slices") {
     auto g = grid();
 
-    g->addWidget(wmaker::newLabel("count"), 0, 0);
-    g->addWidget((numSlices = wmaker::newSpinBox(gui_cfg::em4, 0)), 0, 1);
+    g->addWidget(newQ::Label("count"), 0, 0);
+    g->addWidget((numSlices = newQ::SpinBox(gui_cfg::em4, 0)), 0, 1);
 
-    g->addWidget(wmaker::newLabel("degrees"), 1, 0);
-    g->addWidget((stepGamma = wmaker::newDoubleSpinBox(gui_cfg::em4_2, 0.0)), 1, 1);
+    g->addWidget(newQ::Label("degrees"), 1, 0);
+    g->addWidget((stepGamma = newQ::DoubleSpinBox(gui_cfg::em4_2, 0.0)), 1, 1);
     stepGamma->setReadOnly(true);
 
     g->setRowStretch(g->rowCount(), 1);
@@ -87,13 +87,13 @@ void PanelGammaSlices::updateValues() {
 PanelGammaRange::PanelGammaRange() : GridPanel("Gamma range") {
     auto g = grid();
 
-    g->addWidget((cbLimitGamma = wmaker::newCheckBox("limit")), 0, 0, 1, 2);
+    g->addWidget((cbLimitGamma = newQ::CheckBox("limit")), 0, 0, 1, 2);
 
-    g->addWidget(wmaker::newLabel("min"), 1, 0);
-    g->addWidget((minGamma = wmaker::newDoubleSpinBox(gui_cfg::em4_2, -180., 180.)), 1, 1);
+    g->addWidget(newQ::Label("min"), 1, 0);
+    g->addWidget((minGamma = newQ::DoubleSpinBox(gui_cfg::em4_2, -180., 180.)), 1, 1);
 
-    g->addWidget(wmaker::newLabel("max"), 2, 0);
-    g->addWidget((maxGamma = wmaker::newDoubleSpinBox(gui_cfg::em4_2, -180., 180.)), 2, 1);
+    g->addWidget(newQ::Label("max"), 2, 0);
+    g->addWidget((maxGamma = newQ::DoubleSpinBox(gui_cfg::em4_2, -180., 180.)), 2, 1);
 
     g->setRowStretch(g->rowCount(), 1);
 
@@ -115,8 +115,8 @@ void PanelGammaRange::updateValues() {
 
 PanelPoints::PanelPoints() : GridPanel("Points") {
     auto g = grid();
-    g->addWidget((rbCalc = wmaker::newRadioButton("calculated")), 0, 0);
-    g->addWidget((rbInterp = wmaker::newRadioButton("interpolated")), 1, 0);
+    g->addWidget((rbCalc = newQ::RadioButton("calculated")), 0, 0);
+    g->addWidget((rbInterp = newQ::RadioButton("interpolated")), 1, 0);
 
     g->setRowStretch(g->rowCount(), 1);
 }
@@ -124,19 +124,19 @@ PanelPoints::PanelPoints() : GridPanel("Points") {
 PanelInterpolation::PanelInterpolation() : GridPanel("Interpolation") {
     auto g = grid();
 
-    g->addWidget(wmaker::newLabel("step α"), 0, 0, Qt::AlignRight);
-    g->addWidget((stepAlpha = wmaker::newDoubleSpinBox(gui_cfg::em4_2, 1., 30.)), 0, 1);
-    g->addWidget(wmaker::newLabel("β"), 1, 0, Qt::AlignRight);
-    g->addWidget((stepBeta = wmaker::newDoubleSpinBox(gui_cfg::em4_2, 1., 30.)), 1, 1);
-    g->addWidget(wmaker::newLabel("idw radius"), 2, 0, Qt::AlignRight);
-    g->addWidget((idwRadius = wmaker::newDoubleSpinBox(gui_cfg::em4_2, 0., 90.)), 2, 1);
+    g->addWidget(newQ::Label("step α"), 0, 0, Qt::AlignRight);
+    g->addWidget((stepAlpha = newQ::DoubleSpinBox(gui_cfg::em4_2, 1., 30.)), 0, 1);
+    g->addWidget(newQ::Label("β"), 1, 0, Qt::AlignRight);
+    g->addWidget((stepBeta = newQ::DoubleSpinBox(gui_cfg::em4_2, 1., 30.)), 1, 1);
+    g->addWidget(newQ::Label("idw radius"), 2, 0, Qt::AlignRight);
+    g->addWidget((idwRadius = newQ::DoubleSpinBox(gui_cfg::em4_2, 0., 90.)), 2, 1);
 
-    g->addWidget(wmaker::newLabel("avg. α max"), 0, 2, Qt::AlignRight);
-    g->addWidget((avgAlphaMax = wmaker::newDoubleSpinBox(gui_cfg::em4_2, 0., 90.)), 0, 3);
-    g->addWidget(wmaker::newLabel("radius"), 1, 2, Qt::AlignRight);
-    g->addWidget((avgRadius = wmaker::newDoubleSpinBox(gui_cfg::em4_2, 0., 90.)), 1, 3);
-    g->addWidget(wmaker::newLabel("inclusion %"), 2, 2, Qt::AlignRight);
-    g->addWidget((avgThreshold = wmaker::newSpinBox(gui_cfg::em4_2, 0, 100)), 2, 3);
+    g->addWidget(newQ::Label("avg. α max"), 0, 2, Qt::AlignRight);
+    g->addWidget((avgAlphaMax = newQ::DoubleSpinBox(gui_cfg::em4_2, 0., 90.)), 0, 3);
+    g->addWidget(newQ::Label("radius"), 1, 2, Qt::AlignRight);
+    g->addWidget((avgRadius = newQ::DoubleSpinBox(gui_cfg::em4_2, 0., 90.)), 1, 3);
+    g->addWidget(newQ::Label("inclusion %"), 2, 2, Qt::AlignRight);
+    g->addWidget((avgThreshold = newQ::SpinBox(gui_cfg::em4_2, 0, 100)), 2, 3);
 
     g->setRowStretch(g->rowCount(), 1);
 }
@@ -149,9 +149,9 @@ PanelDiagram::PanelDiagram() : GridPanel("Diagram") {
     auto g = grid();
     xAxis = (new QComboBox); xAxis->addItems(tags);
     yAxis = (new QComboBox); yAxis->addItems(tags);
-    g->addWidget(wmaker::newLabel("x"), 1, 0);
+    g->addWidget(newQ::Label("x"), 1, 0);
     g->addWidget(xAxis, 1, 1);
-    g->addWidget(wmaker::newLabel("y"), 0, 0);
+    g->addWidget(newQ::Label("y"), 0, 0);
     g->addWidget(yAxis, 0, 1);
 
     g->setRowStretch(g->rowCount(), 1);

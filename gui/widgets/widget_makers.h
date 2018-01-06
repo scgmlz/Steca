@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/widgets/widget_makers.h
-//! @brief     Defines functions that return new widgets with Steca-standard settings
+//! @brief     Defines functions that return new Qt objects with Steca-standard settings
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -28,32 +28,33 @@
 
 class BoxWidget;
 
-namespace wmaker {
+//! Contains functions that return new Qt objects with Steca-standard settings
+namespace newQ {
 
-BoxWidget* newTab(QTabWidget* panel, rcstr title);
+BoxWidget* Tab(QTabWidget* panel, rcstr title);
 
-QBoxLayout* newBoxLayout(Qt::Orientation);
-QBoxLayout* newHBoxLayout(); // horizontal box layout
-QBoxLayout* newVBoxLayout(); // vertical box layout
+QBoxLayout* BoxLayout(Qt::Orientation);
+QBoxLayout* HBoxLayout(); // horizontal box layout
+QBoxLayout* VBoxLayout(); // vertical box layout
 
-QGridLayout* newGridLayout();
+QGridLayout* GridLayout();
 
-QLabel* newLabel(rcstr);
+QLabel* Label(rcstr);
 
-QLineEdit* newLineEdit(uint emWidth); // emWidth: measured in typographical (m)s
-QLineEdit* newLineDisplay(uint emWidth);
+QLineEdit* LineEdit(uint emWidth); // emWidth: measured in typographical (m)s
+QLineEdit* LineDisplay(uint emWidth);
 
-QSpinBox* newSpinBox(uint emWidth, int min = INT_MIN, int max = INT_MAX);
-QDoubleSpinBox* newDoubleSpinBox(uint emWidth, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
+QSpinBox* SpinBox(uint emWidth, int min = INT_MIN, int max = INT_MAX);
+QDoubleSpinBox* DoubleSpinBox(uint emWidth, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
 
-QCheckBox* newCheckBox(rcstr text);
-QCheckBox* newCheckBox(QAction*);
+QCheckBox* CheckBox(rcstr text);
+QCheckBox* CheckBox(QAction*);
 
-QToolButton* newTextButton(QAction*);
-QToolButton* newIconButton(QAction*);
+QToolButton* TextButton(QAction*);
+QToolButton* IconButton(QAction*);
 
-QRadioButton* newRadioButton(rcstr text);
+QRadioButton* RadioButton(rcstr text);
 
-} // namespace wmaker
+} // namespace newQ
 
 #endif // WIDGET_MAKERS_H

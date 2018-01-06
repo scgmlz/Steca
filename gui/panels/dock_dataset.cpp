@@ -58,11 +58,11 @@ void DatasetView::currentChanged(QModelIndex const& current, QModelIndex const& 
 DockDatasets::DockDatasets() : DockWidget("Datasets", "dock-suite") {
     box_->addWidget((dataseqView_ = new DatasetView()));
 
-    auto h = wmaker::newHBoxLayout();
+    auto h = newQ::HBoxLayout();
     box_->addLayout(h);
 
-    h->addWidget(wmaker::newLabel("Combine:"));
-    h->addWidget(combineDatasets_ = wmaker::newSpinBox(gui_cfg::em4, 1));
+    h->addWidget(newQ::Label("Combine:"));
+    h->addWidget(combineDatasets_ = newQ::SpinBox(gui_cfg::em4, 1));
     combineDatasets_->setToolTip("Combine and average number of suite");
 
     connect(combineDatasets_, slot(QSpinBox, valueChanged, int), [this](int num) {

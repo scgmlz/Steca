@@ -141,9 +141,9 @@ TabDiagramsSave::TabDiagramsSave(Params& params) : TabSave(params, true) {
     grid_->setRowStretch(grid_->rowCount(), 1);
 
     auto g = gp->grid();
-    g->addWidget((currentDiagram_ = wmaker::newRadioButton("Current diagram")));
-    g->addWidget((allData_ = wmaker::newRadioButton("All data")));
-    g->addWidget(wmaker::newTextButton(actSave), 1, 1);
+    g->addWidget((currentDiagram_ = newQ::RadioButton("Current diagram")));
+    g->addWidget((allData_ = newQ::RadioButton("All data")));
+    g->addWidget(newQ::TextButton(actSave), 1, 1);
     g->setColumnStretch(0, 1);
 
     currentDiagram_->setChecked(true);
@@ -158,7 +158,7 @@ DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
     btnInterpolate_->hide();
 
     tabPlot_ = new TabPlot();
-    wmaker::newTab(tabs_, "Diagram")->box().addWidget(tabPlot_);
+    newQ::Tab(tabs_, "Diagram")->box().addWidget(tabPlot_);
 
     debug::ensure(params_->panelDiagram);
     auto pd = params_->panelDiagram;
@@ -168,7 +168,7 @@ DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
     connect(pd->yAxis, slot(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
 
     tabSave_ = new TabDiagramsSave(*params_);
-    wmaker::newTab(tabs_, "Save")->box().addWidget(tabSave_);
+    newQ::Tab(tabs_, "Save")->box().addWidget(tabSave_);
 
     connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiagramOutput(); });
 

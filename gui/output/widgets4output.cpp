@@ -39,7 +39,7 @@ Params::Params(ePanels panels)
     , panelDiagram(nullptr) {
     debug::ensure(panels & GAMMA);
 
-    setLayout((box_ = wmaker::newBoxLayout(Qt::Horizontal)));
+    setLayout((box_ = newQ::BoxLayout(Qt::Horizontal)));
 
     if (REFLECTION & panels)
         box_->addWidget((panelReflection = new PanelReflection()));
@@ -382,7 +382,7 @@ static str const DAT_SFX(".dat"), DAT_SEP(" "), // suffix, separator
     CSV_SFX(".csv"), CSV_SEP(", ");
 
 TabSave::TabSave(Params& params, bool withTypes) : params_(params) {
-    setLayout((grid_ = wmaker::newGridLayout()));
+    setLayout((grid_ = newQ::GridLayout()));
     actBrowse = newTrigger("Browse...");
     actSave = newTrigger("Save");
 
@@ -399,11 +399,11 @@ TabSave::TabSave(Params& params, bool withTypes) : params_(params) {
 
     file_ = new QLineEdit();
 
-    g->addWidget(wmaker::newLabel("Save to folder:"), 0, 0, Qt::AlignRight);
+    g->addWidget(newQ::Label("Save to folder:"), 0, 0, Qt::AlignRight);
     g->addWidget(dir_, 0, 1);
-    g->addWidget(wmaker::newTextButton(actBrowse), 0, 2);
+    g->addWidget(newQ::TextButton(actBrowse), 0, 2);
 
-    g->addWidget(wmaker::newLabel("File name:"), 1, 0, Qt::AlignRight);
+    g->addWidget(newQ::Label("File name:"), 1, 0, Qt::AlignRight);
     g->addWidget(file_, 1, 1);
 
     connect(actBrowse, &QAction::triggered, [this]() {
@@ -416,8 +416,8 @@ TabSave::TabSave(Params& params, bool withTypes) : params_(params) {
     grid_->addWidget(gp, 0, 1);
     g = gp->grid();
 
-    g->addWidget((rbDat_ = wmaker::newRadioButton(DAT_SFX)), 0, 0);
-    g->addWidget((rbCsv_ = wmaker::newRadioButton(CSV_SFX)), 1, 0);
+    g->addWidget((rbDat_ = newQ::RadioButton(DAT_SFX)), 0, 0);
+    g->addWidget((rbCsv_ = newQ::RadioButton(CSV_SFX)), 1, 0);
 
     connect(rbDat_, &QRadioButton::clicked, [this]() { params_.saveFmt = DAT_SFX; });
 

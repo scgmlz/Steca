@@ -16,7 +16,7 @@
 #include "widgets/widget_makers.h"
 
 BoxWidget::BoxWidget(Qt::Orientation orientation) {
-    setLayout((box_ = wmaker::newBoxLayout(orientation)));
+    setLayout((box_ = newQ::BoxLayout(orientation)));
 }
 
 
@@ -26,5 +26,5 @@ DockWidget::DockWidget(rcstr name, rcstr objectName) {
     setObjectName(objectName);
 
     setWidget(new QWidget);
-    widget()->setLayout((box_ = wmaker::newVBoxLayout()));
+    widget()->setLayout((box_ = newQ::VBoxLayout()));
 }

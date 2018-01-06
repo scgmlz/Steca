@@ -21,58 +21,58 @@ static void setEmWidth(QWidget* w, uint emWidth) {
     w->setMaximumWidth(to_i(emWidth) * w->fontMetrics().width('m'));
 }
 
-BoxWidget* wmaker::newTab(QTabWidget* panel, rcstr title) {
+BoxWidget* newQ::Tab(QTabWidget* panel, rcstr title) {
     auto ret = new BoxWidget(Qt::Vertical);
     panel->addTab(ret, title);
     return ret;
 }
 
-QBoxLayout* wmaker::newBoxLayout(Qt::Orientation orientation) {
+QBoxLayout* newQ::BoxLayout(Qt::Orientation orientation) {
     switch (orientation) {
-    case Qt::Horizontal: return wmaker::newHBoxLayout();
-    case Qt::Vertical: return wmaker::newVBoxLayout();
+    case Qt::Horizontal: return newQ::HBoxLayout();
+    case Qt::Vertical: return newQ::VBoxLayout();
     }
     NEVER return nullptr;
 }
 
-QBoxLayout* wmaker::newHBoxLayout() {
+QBoxLayout* newQ::HBoxLayout() {
     auto ret = new QHBoxLayout;
     ret->setSpacing(2);
     ret->setMargin(2);
     return ret;
 }
 
-QBoxLayout* wmaker::newVBoxLayout() {
+QBoxLayout* newQ::VBoxLayout() {
     auto ret = new QVBoxLayout;
     ret->setSpacing(2);
     ret->setMargin(2);
     return ret;
 }
 
-QGridLayout* wmaker::newGridLayout() {
+QGridLayout* newQ::GridLayout() {
     auto ret = new QGridLayout;
     ret->setSpacing(2);
     ret->setMargin(2);
     return ret;
 }
 
-QLabel* wmaker::newLabel(rcstr text) {
+QLabel* newQ::Label(rcstr text) {
     return new QLabel(text);
 }
 
-QLineEdit* wmaker::newLineEdit(uint emWidth) {
+QLineEdit* newQ::LineEdit(uint emWidth) {
     auto ret = new QLineEdit;
     setEmWidth(ret, emWidth);
     return ret;
 }
 
-QLineEdit* wmaker::newLineDisplay(uint emWidth) {
-    auto ret = wmaker::newLineEdit(emWidth);
+QLineEdit* newQ::LineDisplay(uint emWidth) {
+    auto ret = newQ::LineEdit(emWidth);
     ret->setReadOnly(true);
     return ret;
 }
 
-QSpinBox* wmaker::newSpinBox(uint emWidth, int min, int max) {
+QSpinBox* newQ::SpinBox(uint emWidth, int min, int max) {
     auto ret = new QSpinBox;
     setEmWidth(ret, emWidth);
     ret->setMinimum(min);
@@ -80,7 +80,7 @@ QSpinBox* wmaker::newSpinBox(uint emWidth, int min, int max) {
     return ret;
 }
 
-QDoubleSpinBox* wmaker::newDoubleSpinBox(uint emWidth, qreal min, qreal max) {
+QDoubleSpinBox* newQ::DoubleSpinBox(uint emWidth, qreal min, qreal max) {
     auto ret = new QDoubleSpinBox;
     setEmWidth(ret, emWidth);
     ret->setMinimum(min);
@@ -88,11 +88,11 @@ QDoubleSpinBox* wmaker::newDoubleSpinBox(uint emWidth, qreal min, qreal max) {
     return ret;
 }
 
-QCheckBox* wmaker::newCheckBox(rcstr text) {
+QCheckBox* newQ::CheckBox(rcstr text) {
     return new QCheckBox(text);
 }
 
-QCheckBox* wmaker::newCheckBox(QAction* action) {
+QCheckBox* newQ::CheckBox(QAction* action) {
     if (!action)
         return new QCheckBox("");
     auto ret = new QCheckBox(action->text().toLower());
@@ -103,20 +103,20 @@ QCheckBox* wmaker::newCheckBox(QAction* action) {
     return ret;
 }
 
-QToolButton* wmaker::newTextButton(QAction* action) {
+QToolButton* newQ::TextButton(QAction* action) {
     auto ret = new QToolButton;
     ret->setDefaultAction(action);
     ret->setToolButtonStyle(Qt::ToolButtonTextOnly);
     return ret;
 }
 
-QToolButton* wmaker::newIconButton(QAction* action) {
+QToolButton* newQ::IconButton(QAction* action) {
     auto ret = new QToolButton;
     ret->setDefaultAction(action);
     ret->setToolButtonStyle(Qt::ToolButtonIconOnly);
     return ret;
 }
 
-QRadioButton* wmaker::newRadioButton(rcstr text) {
+QRadioButton* newQ::RadioButton(rcstr text) {
     return new QRadioButton(text);
 }

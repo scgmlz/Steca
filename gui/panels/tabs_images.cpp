@@ -146,35 +146,35 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 TabsImages::TabsImages() {
     setTabPosition(QTabWidget::North);
     {
-        auto& box = wmaker::newTab(this, "Image")->box();
+        auto& box = newQ::Tab(this, "Image")->box();
 
-        auto hb = wmaker::newHBoxLayout();
+        auto hb = newQ::HBoxLayout();
         box.addLayout(hb);
         box.setAlignment(hb, Qt::AlignTop);
 
-        hb->addWidget(wmaker::newIconButton(gHub->toggle_fixedIntenImage));
-        hb->addWidget(wmaker::newIconButton(gHub->toggle_stepScale));
-        hb->addWidget(wmaker::newIconButton(gHub->toggle_showOverlay));
-        hb->addWidget((spinN_ = wmaker::newSpinBox(gui_cfg::em4, 1)));
+        hb->addWidget(newQ::IconButton(gHub->toggle_fixedIntenImage));
+        hb->addWidget(newQ::IconButton(gHub->toggle_stepScale));
+        hb->addWidget(newQ::IconButton(gHub->toggle_showOverlay));
+        hb->addWidget((spinN_ = newQ::SpinBox(gui_cfg::em4, 1)));
 
         hb->addStretch(1);
 
-        hb->addWidget(wmaker::newIconButton(gHub->toggle_showBins));
-        hb->addWidget(wmaker::newLabel("γ count"));
-        hb->addWidget((numSlices_ = wmaker::newSpinBox(gui_cfg::em4, 0)));
-        hb->addWidget(wmaker::newLabel("#"));
-        hb->addWidget((numSlice_ = wmaker::newSpinBox(gui_cfg::em4, 1)));
+        hb->addWidget(newQ::IconButton(gHub->toggle_showBins));
+        hb->addWidget(newQ::Label("γ count"));
+        hb->addWidget((numSlices_ = newQ::SpinBox(gui_cfg::em4, 0)));
+        hb->addWidget(newQ::Label("#"));
+        hb->addWidget((numSlice_ = newQ::SpinBox(gui_cfg::em4, 1)));
 
-        hb->addWidget(wmaker::newLabel("min"));
-        hb->addWidget((minGamma_ = wmaker::newDoubleSpinBox(gui_cfg::em4_2)));
-        hb->addWidget(wmaker::newLabel("max"));
-        hb->addWidget((maxGamma_ = wmaker::newDoubleSpinBox(gui_cfg::em4_2)));
+        hb->addWidget(newQ::Label("min"));
+        hb->addWidget((minGamma_ = newQ::DoubleSpinBox(gui_cfg::em4_2)));
+        hb->addWidget(newQ::Label("max"));
+        hb->addWidget((maxGamma_ = newQ::DoubleSpinBox(gui_cfg::em4_2)));
 
         minGamma_->setReadOnly(true);
         maxGamma_->setReadOnly(true);
 
-        hb->addWidget(wmaker::newLabel("bin#"));
-        hb->addWidget((numBin_ = wmaker::newSpinBox(gui_cfg::em4, 1)));
+        hb->addWidget(newQ::Label("bin#"));
+        hb->addWidget((numBin_ = newQ::SpinBox(gui_cfg::em4, 1)));
 
         box.addWidget((dataImageWidget_ = new ImageWidget()));
 
@@ -188,20 +188,20 @@ TabsImages::TabsImages() {
     }
 
     {
-        auto& tab = *wmaker::newTab(this, "Correction");
+        auto& tab = *newQ::Tab(this, "Correction");
 
         connect(gHub, &TheHub::sigCorrFile,
                 [&tab](QSharedPointer<Datafile const> file) { tab.setEnabled(!file.isNull()); });
 
         auto& box = tab.box();
 
-        auto hb = wmaker::newHBoxLayout();
+        auto hb = newQ::HBoxLayout();
         box.addLayout(hb);
         box.setAlignment(hb, Qt::AlignTop);
 
-        hb->addWidget(wmaker::newIconButton(gHub->toggle_fixedIntenImage));
-        hb->addWidget(wmaker::newIconButton(gHub->toggle_stepScale));
-        hb->addWidget(wmaker::newIconButton(gHub->toggle_showOverlay));
+        hb->addWidget(newQ::IconButton(gHub->toggle_fixedIntenImage));
+        hb->addWidget(newQ::IconButton(gHub->toggle_stepScale));
+        hb->addWidget(newQ::IconButton(gHub->toggle_showOverlay));
         hb->addStretch(1);
 
         box.addWidget((corrImageWidget_ = new ImageWidget()));

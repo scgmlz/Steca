@@ -87,28 +87,28 @@ void FilesView::recollect() {
 
 DockFiles::DockFiles() : DockWidget("Files", "dock-files") {
 
-    auto h = wmaker::newHBoxLayout();
+    auto h = newQ::HBoxLayout();
     box_->addLayout(h);
 
     h->addStretch();
-    h->addWidget(wmaker::newIconButton(gHub->trigger_addFiles));
-    h->addWidget(wmaker::newIconButton(gHub->trigger_removeFile));
+    h->addWidget(newQ::IconButton(gHub->trigger_addFiles));
+    h->addWidget(newQ::IconButton(gHub->trigger_removeFile));
 
     box_->addWidget(new FilesView());
 
-    h = wmaker::newHBoxLayout();
+    h = newQ::HBoxLayout();
     box_->addLayout(h);
 
-    h->addWidget(wmaker::newLabel("Correction file"));
+    h->addWidget(newQ::Label("Correction file"));
 
-    h = wmaker::newHBoxLayout();
+    h = newQ::HBoxLayout();
     box_->addLayout(h);
 
     auto* corrFile_ = new QLineEdit();
     corrFile_->setReadOnly(true);
     h->addWidget(corrFile_);
-    h->addWidget(wmaker::newIconButton(gHub->toggle_enableCorr));
-    h->addWidget(wmaker::newIconButton(gHub->trigger_remCorr));
+    h->addWidget(newQ::IconButton(gHub->toggle_enableCorr));
+    h->addWidget(newQ::IconButton(gHub->trigger_remCorr));
 
     connect(gHub, &TheHub::sigCorrFile,
             [corrFile_](QSharedPointer<Datafile const> file) {

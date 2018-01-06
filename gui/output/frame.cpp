@@ -52,21 +52,21 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
     : table_(table), showCols_(showCols) {
     using eReflAttr = ReflectionInfo::eReflAttr;
 
-    setLayout((box_ = wmaker::newVBoxLayout()));
+    setLayout((box_ = newQ::VBoxLayout()));
 
-    box_->addWidget((rbHidden_ = wmaker::newRadioButton("")));
+    box_->addWidget((rbHidden_ = newQ::RadioButton("")));
     rbHidden_->hide();
 
-    box_->addWidget((rbAll_ = wmaker::newRadioButton("all")));
-    box_->addWidget((rbNone_ = wmaker::newRadioButton("none")));
-    box_->addWidget(rbInten_ = wmaker::newRadioButton("Intensity"));
-    box_->addWidget(rbTth_ = wmaker::newRadioButton("2θ"));
-    box_->addWidget(rbFWHM_ = wmaker::newRadioButton("fwhm"));
+    box_->addWidget((rbAll_ = newQ::RadioButton("all")));
+    box_->addWidget((rbNone_ = newQ::RadioButton("none")));
+    box_->addWidget(rbInten_ = newQ::RadioButton("Intensity"));
+    box_->addWidget(rbTth_ = newQ::RadioButton("2θ"));
+    box_->addWidget(rbFWHM_ = newQ::RadioButton("fwhm"));
     box_->addSpacing(8);
 
     for_i (showCols.count()) {
         auto& item = showCols[i];
-        box_->addWidget((item.cb = wmaker::newCheckBox(item.name)));
+        box_->addWidget((item.cb = newQ::CheckBox(item.name)));
     }
 
     auto all = [this]() {
@@ -169,7 +169,7 @@ private:
 TabTable::TabTable(
     Params& params, QStringList const& headers, QStringList const& outHeaders, cmp_vec const& cmps)
     {
-    QGridLayout* grid_ = wmaker::newGridLayout();
+    QGridLayout* grid_ = newQ::GridLayout();
     setLayout(grid_);
     debug::ensure(to_u(headers.count()) == cmps.count());
     uint numCols = to_u(headers.count());
@@ -207,7 +207,7 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     setWindowTitle(title);
-    setLayout((box_ = wmaker::newVBoxLayout()));
+    setLayout((box_ = newQ::VBoxLayout()));
 
     debug::ensure(params);
 
@@ -217,20 +217,20 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent)
     box_->addWidget(tabs_);
     box_->setStretch(box_->count() - 1, 1);
 
-    auto hb = wmaker::newHBoxLayout();
+    auto hb = newQ::HBoxLayout();
     box_->addLayout(hb);
 
     actClose_ = newTrigger("Close");
     actCalculate_ = newTrigger("Calculate");
     actInterpolate_ = newTrigger("Interpolate");
 
-    hb->addWidget((btnClose_ = wmaker::newTextButton(actClose_)));
+    hb->addWidget((btnClose_ = newQ::TextButton(actClose_)));
     hb->addStretch(1);
     hb->addWidget((pb_ = new QProgressBar));
     hb->setStretchFactor(pb_, 333);
     hb->addStretch(1);
-    hb->addWidget((btnCalculate_ = wmaker::newTextButton(actCalculate_)));
-    hb->addWidget((btnInterpolate_ = wmaker::newTextButton(actInterpolate_)));
+    hb->addWidget((btnCalculate_ = newQ::TextButton(actCalculate_)));
+    hb->addWidget((btnInterpolate_ = newQ::TextButton(actInterpolate_)));
 
     pb_->hide();
 
@@ -258,7 +258,7 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent)
     auto tabTable = new TabTable(
         *params_, ReflectionInfo::dataTags(false), ReflectionInfo::dataTags(true),
         ReflectionInfo::dataCmps());
-    wmaker::newTab(tabs_, "Points")->box().addWidget(tabTable);
+    newQ::Tab(tabs_, "Points")->box().addWidget(tabTable);
 
     table_ = tabTable->table;
 

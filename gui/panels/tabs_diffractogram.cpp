@@ -19,5 +19,5 @@
 
 TabsDiffractogram::TabsDiffractogram() {
     setTabPosition(QTabWidget::North);
-    wmaker::newTab(this, "Diffractogram")->box().addWidget(new Diffractogram());
+    newQ::Tab(this, "Diffractogram")->box().addWidget(new Diffractogram());
 }
