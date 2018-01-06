@@ -76,7 +76,6 @@ public:
     void clearReflLayer();
 
     QColor bgRgeColor_, reflRgeColor_;
-    eFittingTab selectedFittingTab();
 
     void enterZoom(bool);
 
@@ -135,7 +134,7 @@ void DiffractogramPlotOverlay::leaveEvent(QEvent*) {
 void DiffractogramPlotOverlay::mousePressEvent(QMouseEvent* e) {
     mouseDownPos_ = cursorPos_;
     mouseDown_ = true;
-    addColor_ = (eFittingTab::BACKGROUND == plot_.selectedFittingTab()) ? bgColor_ : reflColor_;
+    addColor_ = (eFittingTab::BACKGROUND == gHub->fittingTab()) ? bgColor_ : reflColor_;
     color_ = Qt::LeftButton == e->button() ? addColor_ : remColor_;
     update();
 }
@@ -361,10 +360,6 @@ void DiffractogramPlot::clearReflLayer() {
     for (auto g : reflGraph_)
         removeGraph(g);
     reflGraph_.clear();
-}
-
-eFittingTab DiffractogramPlot::selectedFittingTab() {
-    return gHub->fittingTab();
 }
 
 void DiffractogramPlot::enterZoom(bool on) {
