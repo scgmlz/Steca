@@ -33,6 +33,13 @@ public:
     QSharedPointer<Suite> suite() const { return suite_; }
     QBoxLayout* box() const { return box_; }
 
+    void calcDgram();
+    void calcBackground();
+    void calcReflections();
+
+    void setCurrReflNewRange(Range const&);
+    Range currReflRange() const;
+
 private:
     QBoxLayout* box_;
     void onNormChanged();
@@ -55,14 +62,6 @@ private:
     QDoubleSpinBox* intenScale_;
     QToolButton* enableZoom_;
     QAction* actZoom_;
-
-public:
-    void calcDgram();
-    void calcBackground();
-    void calcReflections();
-
-    void setCurrReflNewRange(Range const&);
-    Range currReflRange() const;
 };
 
 #endif // PANEL_DIFFRACTOGRAM_H

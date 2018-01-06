@@ -37,7 +37,6 @@ private:
     QColor addColor_, remColor_, color_, bgColor_, reflColor_;
     int marginLeft_, marginRight_;
 
-protected:
     void enterEvent(QEvent*);
     void leaveEvent(QEvent*);
     void mousePressEvent(QMouseEvent*);
@@ -62,7 +61,6 @@ public:
 
     DiffractogramPlot(class Diffractogram&);
 
-public:
     void setTool(eTool);
     eTool getTool() const { return tool_; }
 
@@ -79,19 +77,15 @@ public:
 
     void enterZoom(bool);
 
-protected:
+private:
     void addBgItem(Range const&);
     void resizeEvent(QResizeEvent*);
 
-private:
     Diffractogram& diffractogram_;
-
     eTool tool_;
     bool showBgFit_;
-
     QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *dgramBgFittedGraph2_, *guesses_,
         *fits_;
-
     vec<QCPGraph*> reflGraph_;
     DiffractogramPlotOverlay* overlay_;
     void onReflectionData(shp_Reflection reflection);
@@ -349,8 +343,11 @@ void DiffractogramPlot::updateBg() {
             addBgItem(rs.at(i));
         break;
     }
-    case eTool::PEAK_REGION: addBgItem(diffractogram_.currReflRange()); break;
-    case eTool::NONE: break;
+    case eTool::PEAK_REGION:
+        addBgItem(diffractogram_.currReflRange());
+        break;
+    case eTool::NONE:
+        break;
     }
 
     diffractogram_.render();
