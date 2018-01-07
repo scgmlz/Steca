@@ -17,6 +17,7 @@
 
 #include "def/special_pointers.h"
 #include "typ/realpair.h"
+#include "typ/types.h" // for fwhm_t
 #include <QSharedPointer> // no auto rm
 
 class PeakFunction;
