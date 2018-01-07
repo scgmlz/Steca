@@ -89,6 +89,8 @@ protected:
 
 typedef class PeakFunction* (*initializer_type)();
 
+//! Holds initializers for all available peak functions.
+
 class FunctionRegistry : public IRegistry<initializer_type>, public ISingleton<FunctionRegistry> {
 public:
     void register_fct(const initializer_type f);

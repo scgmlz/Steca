@@ -19,8 +19,11 @@
 
 class QSpinBox;
 
-//! The dock widget that shows the datasets in the selected files,
-//! and allow to select some of them and to combine them by a constant factor
+//! Part of the main window that controls the dataset selection.
+
+//! Shows the datasets in the selected files, and allow to select some of them
+//! and to combine them by a constant factor
+
 class DockDatasets : public DockWidget {
 public:
     DockDatasets();

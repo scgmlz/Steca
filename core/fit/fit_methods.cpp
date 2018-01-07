@@ -37,7 +37,7 @@ void FitWrapper::fit(Function& function, Curve const& curve) {
         parMax[i] = par.valueRange().max;
     }
 
-    approximate(
+    fit_exec(
         parValue.data(), parMin.data(), parMax.data(), parError.data(), parCount, curve.ys().data(),
         curve.count());
 
@@ -50,7 +50,7 @@ template <typename T> T* remove_const(T const* t) {
     return const_cast<T*>(t);
 }
 
-void FitWrapper::approximate(
+void FitWrapper::fit_exec(
     qreal* params, // IO initial parameter estimates -> estimated solution
     qreal const* paramsLimitMin, // I
     qreal const* paramsLimitMax, // I

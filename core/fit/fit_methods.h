@@ -17,6 +17,10 @@
 
 #include "fit_fun.h"
 
+//! Wraps Levenberg-Marquardt fit function from 3rd-party library.
+
+//! Used for fitting polynomial background and peak functions.
+
 class FitWrapper {
 public:
     void fit(Function&, Curve const&);
@@ -26,7 +30,7 @@ private:
     Function* function_;
     qreal const* xValues_;
 
-    void approximate(qreal*, qreal const*, qreal const*, qreal*, uint, qreal const*, uint);
+    void fit_exec(qreal*, qreal const*, qreal const*, qreal*, uint, qreal const*, uint);
 
     void callbackY(qreal*, qreal*, int, int, void*);
     void callbackJacobianLM(qreal*, qreal*, int, int, void*);

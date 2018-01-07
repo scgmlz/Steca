@@ -17,8 +17,7 @@
 
 #include "widgets/various_widgets.h"
 
-//! The dock widget that shows the datafiles and the correction file,
-//! and allows to select some of the datafiles.
+//! Part of the main window that controls the data and correction files.
 class DockFiles : public DockWidget {
 public:
     DockFiles();
