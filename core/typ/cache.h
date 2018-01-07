@@ -16,7 +16,7 @@
 #define CACHE_H
 
 #include "def/idiomatic_for.h"
-#include "typ/map.h"
+#include <QMap>
 #include <QSharedPointer> // no auto rm
 
 /* Example:
@@ -66,7 +66,7 @@ protected:
         mru_t mru; //!< most recently used
     };
 
-    typedef map<Key, shp_mru_t> mapKey_t;
+    typedef QMap<Key, shp_mru_t> mapKey_t;
     typedef typename mapKey_t::iterator mapKey_it;
 
     mapKey_t mapKey_;
@@ -107,7 +107,7 @@ private:
     mru_t nextMru_ = 0;
     bool rollOver_ = false; // L.v.
 
-    typedef map<mru_t, mapKey_it> mapMruIt_t;
+    typedef QMap<mru_t, mapKey_it> mapMruIt_t;
 
     void _trim(uint n) {
         if (super::count() > n) {
