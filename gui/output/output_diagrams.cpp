@@ -47,12 +47,10 @@ static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
 
     for_i (count)
         r[i] = xs.at(is.at(i));
-
     xs = r;
 
     for_i (count)
         r[i] = ys.at(is.at(i));
-
     ys = r;
 }
 
@@ -60,7 +58,7 @@ static const Params::ePanels PANELS =
     Params::ePanels(Params::REFLECTION | Params::GAMMA | Params::DIAGRAM);
 
 // ************************************************************************** //
-//  class TabPlot (file scope)
+//  local class TabPlot
 // ************************************************************************** //
 
 class TabPlot : public QCustomPlot {
@@ -122,15 +120,15 @@ void TabPlot::plot(
 }
 
 // ************************************************************************** //
-//  class TabDiagramsSave (file scope)
+//  local class TabDiagramsSave
 // ************************************************************************** //
 
-class TabDiagramsSave : public TabSave {
+class TabDiagramsSave final : public TabSave {
 public:
     TabDiagramsSave(Params&);
     uint currType() const { return fileTypes_->currentIndex(); }
     bool currDiagram() const { return currentDiagram_->isChecked(); }
-protected:
+private:
     QRadioButton *currentDiagram_, *allData_;
     QComboBox* fileTypes_;
 };
@@ -290,7 +288,6 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
                 stream << var.toDouble();
             else
                 stream << var.toString();
-
             stream << separator;
         }
         stream << '\n';

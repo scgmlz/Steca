@@ -24,11 +24,11 @@ using OutputDataCollection = vec<OutputData>;
 using OutputDataCollections = vec<OutputDataCollection>;
 
 //! The modal dialog for saving diffractograms
-class DiffractogramsFrame : public Frame {
+class DiffractogramsFrame final : public Frame {
 public:
     DiffractogramsFrame(rcstr title, QWidget*);
 
-protected:
+private:
     class TabDiffractogramsSave* tabSave_;
 
     OutputDataCollection

@@ -18,11 +18,11 @@
 #include "frame.h"
 
 //! The modal dialog for viewing and saving diagrams
-class DiagramsFrame : public Frame {
+class DiagramsFrame final : public Frame {
 public:
     DiagramsFrame(rcstr title, QWidget*);
 
-protected:
+private:
     class TabPlot* tabPlot_;
     class TabDiagramsSave* tabSave_;
 

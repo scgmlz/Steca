@@ -24,7 +24,11 @@
 #include "widgets/new_q.h"
 #include <QAction>
 
-class TabDiffractogramsSave : public TabSave {
+// ************************************************************************** //
+//  local class TabDiffractogramsSave
+// ************************************************************************** //
+
+class TabDiffractogramsSave final : public TabSave {
 public:
     TabDiffractogramsSave(Params&);
 
@@ -33,7 +37,7 @@ public:
     bool allSequentialChecked() { return rbAllSequential_->isChecked(); }
     bool allChecked() { return rbAll_->isChecked(); }
 
-protected:
+private:
     QRadioButton *rbCurrent_, *rbAllSequential_, *rbAll_;
     QComboBox* fileTypes_;
 };

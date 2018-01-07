@@ -30,12 +30,12 @@
 //  local class TabGraph
 // ************************************************************************** //
 
-class TabGraph : public QWidget {
+class TabGraph final : public QWidget {
 public:
     TabGraph(Params&);
     void set(ReflectionInfos);
 
-protected:
+private:
     Params& params_;
     QGridLayout* grid_;
     void update();
@@ -175,7 +175,7 @@ void TabGraph::paintPoints() {
 //  local class TabPoleFiguresSave
 // ************************************************************************** //
 
-class TabPoleFiguresSave : public TabSave {
+class TabPoleFiguresSave final : public TabSave {
 public:
     TabPoleFiguresSave(Params& params);
 
@@ -186,7 +186,7 @@ public:
 
     void rawReflSettings(bool on);
 
-protected:
+private:
     QRadioButton *rbSelectedRefl_, *rbAllRefls_;
     QCheckBox *outputInten_, *outputTth_, *outputFWHM_;
 };
