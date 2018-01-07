@@ -64,7 +64,7 @@ public:
     QStringList outHeaders_;
 };
 
-
+//! Base class for dialogs for saving some output to a file.
 class TabSave : public QWidget {
 public:
     TabSave(Params&, bool withTypes);
