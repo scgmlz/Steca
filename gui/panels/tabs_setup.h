@@ -22,6 +22,7 @@ class QDoubleSpinBox;
 class QLineEdit;
 class QSpinBox;
 
+//! Part of the main window that contains geometry, background, and image settings.
 class TabsSetup : public QTabWidget {
 public:
     TabsSetup();

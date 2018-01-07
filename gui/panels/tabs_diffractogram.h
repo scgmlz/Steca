@@ -17,6 +17,8 @@
 
 #include <QTabWidget>
 
+//! Part of the main window that contains a diffractogram, with associated controls.
+
 class TabsDiffractogram : public QTabWidget {
 public:
     TabsDiffractogram();

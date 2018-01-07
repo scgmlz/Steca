@@ -22,7 +22,11 @@ class Measurement;
 class QDoubleSpinBox;
 class QSpinBox;
 
-class TabsImages : public QTabWidget {
+//! Part of the main window that shows a detector image, with associated controls.
+
+//! There are two tabs: data image and correction data image.
+
+class TabsImages final : public QTabWidget {
 public:
     TabsImages();
 

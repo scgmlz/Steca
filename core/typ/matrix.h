@@ -19,6 +19,7 @@
 
 struct vec3r;
 
+//! 3D vector with base type float.
 struct vec3f {
     typedef vec3f const& rc;
 
@@ -30,6 +31,7 @@ struct vec3f {
     bool operator==(vec3f const&) const;
 };
 
+//! 3D vector with base type qreal.
 struct vec3r {
     typedef vec3r const& rc;
 
@@ -41,6 +43,7 @@ struct vec3r {
     bool operator==(vec3r const&) const;
 };
 
+//! Rotation matrix in 3D, with base type qreal.
 struct mat3r {
     typedef mat3r const& rc;
 

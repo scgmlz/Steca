@@ -20,7 +20,7 @@
 #include "typ/str.h"
 #include <QException>
 
-// An exception that carries a message.
+//! The sole exception type used in this software.
 class Exception : public QException {
 private:
 public:

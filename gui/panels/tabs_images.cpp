@@ -29,7 +29,7 @@
 //  local class ImageWidget
 // ************************************************************************** //
 
-class ImageWidget : public QWidget {
+class ImageWidget final : public QWidget {
 public:
     ImageWidget();
 
@@ -145,6 +145,7 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 
 TabsImages::TabsImages() {
     setTabPosition(QTabWidget::North);
+
     {
         auto& box = newQ::Tab(this, "Image")->box();
 
@@ -179,11 +180,8 @@ TabsImages::TabsImages() {
         box.addWidget((dataImageWidget_ = new ImageWidget()));
 
         connect(spinN_, slot(QSpinBox, valueChanged, int), [this]() { render(); });
-
         connect(numSlices_, slot(QSpinBox, valueChanged, int), [this]() { render(); });
-
         connect(numSlice_, slot(QSpinBox, valueChanged, int), [this]() { render(); });
-
         connect(numBin_, slot(QSpinBox, valueChanged, int), [this]() { render(); });
     }
 

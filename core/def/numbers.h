@@ -62,7 +62,7 @@ template <typename T> typename std::__make_unsigned<T>::__type clip_u(T t) {
 
 #endif
 
-// natural numbers 1...
+//! A positive integer (1,2,...).
 
 #ifndef QT_NO_DEBUG
 
@@ -92,7 +92,7 @@ typedef uint pint;
 extern qreal const NAN; // silent nan
 extern qreal const INF;
 
-// positive reals
+//! A positive real number of type qreal
 
 #ifndef QT_NO_DEBUG
 

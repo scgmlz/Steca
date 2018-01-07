@@ -30,7 +30,7 @@ static str safeRealText(qreal val) { return qIsFinite(val) ? str::number(val) : 
 //  local class ReflectionView
 // ************************************************************************** //
 
-class ReflectionView : public ListView {
+class ReflectionView final : public ListView {
 public:
     ReflectionView();
 
