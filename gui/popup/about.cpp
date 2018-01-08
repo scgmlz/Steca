@@ -12,12 +12,12 @@
 //
 // ************************************************************************** //
 
-#include "popup/about.h"
+#include "gui/popup/about.h"
 #include "../manifest.h"
-#include "cfg/gui_cfg.h"
-#include "cfg/settings.h"
+#include "gui/cfg/gui_cfg.h"
+#include "gui/cfg/settings.h"
 #include "core/data/geometry.h"
-#include "widgets/new_q.h"
+#include "gui/widgets/new_q.h"
 #include <QApplication>
 #include <QDate>
 #include <QDialogButtonBox>

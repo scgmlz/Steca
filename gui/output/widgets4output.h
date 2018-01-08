@@ -18,7 +18,7 @@
 #include "core/typ/str.h"
 #include "core/typ/variant.h"
 #include "core/def/special_pointers.h"
-#include "widgets/tree_views.h"
+#include "gui/widgets/tree_views.h"
 
 class QBoxLayout;
 class QCheckBox;

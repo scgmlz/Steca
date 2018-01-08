@@ -12,14 +12,14 @@
 //
 // ************************************************************************** //
 
-#include "widgets4output.h"
+#include "gui/widgets4output.h"
 #include "core/def/idiomatic_for.h"
 #include "dialog_panels.h"
-#include "popup/filedialog.h"
+#include "gui/popup/filedialog.h"
 #include "gui/models.h"
-#include "cfg/settings.h"
+#include "gui/cfg/settings.h"
 #include "gui/thebub.h"
-#include "widgets/new_q.h"
+#include "gui/widgets/new_q.h"
 #include <QDir>
 #include <QHeaderView>
 

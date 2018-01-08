@@ -15,10 +15,10 @@
 #include "panel_diffractogram.h"
 #include "core/data/suite.h"
 #include "core/fit/fit_fun.h"
-#include "cfg/gui_cfg.h"
+#include "gui/cfg/gui_cfg.h"
 #include "core/session.h"
 #include "gui/thebub.h"
-#include "widgets/new_q.h"
+#include "gui/widgets/new_q.h"
 #include "QCustomPlot/qcustomplot.h"
 
 // ************************************************************************** //

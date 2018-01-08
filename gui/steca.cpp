@@ -15,7 +15,7 @@
 #include "../manifest.h"
 #include "gui/console.h"
 #include "gui/mainwin.h"
-#include "cfg/msg_handler.h"
+#include "gui/cfg/msg_handler.h"
 #include "core/session.h"
 #include <iostream>
 #define OPTPARSE_IMPLEMENTATION

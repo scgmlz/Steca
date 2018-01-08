@@ -13,14 +13,14 @@
 // ************************************************************************** //
 
 #include "tabs_images.h"
-#include "cfg/colors.h"
+#include "gui/cfg/colors.h"
 #include "core/data/suite.h"
 #include "core/data/measurement.h"
-#include "cfg/gui_cfg.h"
+#include "gui/cfg/gui_cfg.h"
 #include "gui/thebub.h"
 #include "core/session.h"
-#include "widgets/various_widgets.h"
-#include "widgets/new_q.h"
+#include "gui/widgets/various_widgets.h"
+#include "gui/widgets/new_q.h"
 #include <qmath.h>
 #include <QAction>
 #include <QPainter>

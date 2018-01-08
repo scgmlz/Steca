@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "widgets/various_widgets.h"
-#include "widgets/new_q.h"
+#include "gui/widgets/various_widgets.h"
+#include "gui/widgets/new_q.h"
 
 BoxWidget::BoxWidget(Qt::Orientation orientation) {
     setLayout((box_ = newQ::BoxLayout(orientation)));

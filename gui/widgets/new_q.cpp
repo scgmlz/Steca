@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "widgets/new_q.h"
-#include "widgets/various_widgets.h"
+#include "gui/widgets/new_q.h"
+#include "gui/widgets/various_widgets.h"
 #include "core/def/numbers.h"
 #include <QApplication>
 

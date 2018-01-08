@@ -12,14 +12,14 @@
 //
 // ************************************************************************** //
 
-#include "widgets4output.h"
+#include "gui/widgets4output.h"
 #include "dialog_panels.h"
 #include "core/calc/calc_polefigure.h"
 #include "core/session.h"
 #include "gui/thebub.h"
 #include "frame.h"
-#include "widgets/various_widgets.h"
-#include "widgets/new_q.h"
+#include "gui/widgets/various_widgets.h"
+#include "gui/widgets/new_q.h"
 #include <QProgressBar>
 #include <QScrollArea>
 

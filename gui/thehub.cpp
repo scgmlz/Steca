@@ -16,10 +16,10 @@
 #include "core/data/suite.h"
 #include "core/io/io_io.h"
 #include "gui/models.h"
-#include "output/write_file.h"
+#include "gui/output/write_file.h"
 #include "core/session.h"
 #include "core/typ/json.h"
-#include "widgets/new_q.h"
+#include "gui/widgets/new_q.h"
 #include <QApplication>
 #include <QDir>
 #include <QJsonDocument>

@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "cfg/msg_handler.h"
+#include "gui/cfg/msg_handler.h"
 #include <iostream>
 #include <QMessageBox>
 #include <QStatusBar>

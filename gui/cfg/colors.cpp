@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "cfg/colors.h"
+#include "gui/cfg/colors.h"
 #include <qmath.h>
 
 QRgb intenImage(inten_t inten, inten_t maxInten, bool curved) {

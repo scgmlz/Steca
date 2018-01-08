@@ -12,15 +12,15 @@
 //
 // ************************************************************************** //
 
-#include "output_polefigures.h"
-#include "cfg/colors.h"
+#include "gui/output_polefigures.h"
+#include "gui/cfg/colors.h"
 #include "dialog_panels.h"
 #include "core/fit/fit_fun.h"
-#include "widgets4output.h"
+#include "gui/widgets4output.h"
 #include "core/session.h"
 #include "gui/thebub.h"
-#include "widgets/various_widgets.h"
-#include "widgets/new_q.h"
+#include "gui/widgets/various_widgets.h"
+#include "gui/widgets/new_q.h"
 #include "write_file.h"
 #include <qmath.h>
 #include <QAction>

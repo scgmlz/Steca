@@ -13,14 +13,14 @@
 // ************************************************************************** //
 
 #include "tabs_setup.h"
-#include "cfg/gui_cfg.h"
+#include "gui/cfg/gui_cfg.h"
 #include "core/fit/fit_fun.h"
 #include "gui/models.h"
 #include "core/session.h"
 #include "gui/thebub.h"
-#include "widgets/tree_views.h" // inheriting from
-#include "widgets/various_widgets.h"
-#include "widgets/new_q.h"
+#include "gui/widgets/tree_views.h" // inheriting from
+#include "gui/widgets/various_widgets.h"
+#include "gui/widgets/new_q.h"
 #include <QAction>
 
 static qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }

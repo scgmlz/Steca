@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "cfg/settings.h"
+#include "gui/cfg/settings.h"
 #include "core/def/debug.h"
 #include <QAction>
 #include <QSpinBox>

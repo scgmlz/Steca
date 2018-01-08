@@ -13,12 +13,12 @@
 // ************************************************************************** //
 
 #include "dock_dataset.h"
-#include "cfg/gui_cfg.h"
+#include "gui/cfg/gui_cfg.h"
 #include "core/data/suite.h"
 #include "gui/models.h"
 #include "gui/thebub.h"
-#include "widgets/tree_views.h" // inheriting from
-#include "widgets/new_q.h"
+#include "gui/widgets/tree_views.h" // inheriting from
+#include "gui/widgets/new_q.h"
 
 // ************************************************************************** //
 //  file-scope: class DatasetView

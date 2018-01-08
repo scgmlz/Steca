@@ -12,16 +12,16 @@
 //
 // ************************************************************************** //
 
-#include "output_diffractograms.h"
-#include "widgets4output.h"
+#include "gui/output_diffractograms.h"
+#include "gui/widgets4output.h"
 #include "core/data/suite.h"
 #include "core/data/metadata.h"
 #include "dialog_panels.h"
 #include "gui/thebub.h"
 #include "write_file.h"
 #include "core/session.h"
-#include "widgets/various_widgets.h"
-#include "widgets/new_q.h"
+#include "gui/widgets/various_widgets.h"
+#include "gui/widgets/new_q.h"
 #include <QAction>
 
 // ************************************************************************** //
