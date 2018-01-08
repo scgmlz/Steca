@@ -12,14 +12,14 @@
 //
 // ************************************************************************** //
 
-#include "gui/output_diagrams.h"
-#include "dialog_panels.h"
+#include "gui/output/output_diagrams.h"
 #include "core/fit/fit_fun.h"
-#include "gui/widgets4output.h"
 #include "core/session.h"
+#include "gui/output/dialog_panels.h"
+#include "gui/output/widgets4output.h"
 #include "gui/thehub.h"
-#include "gui/widgets/various_widgets.h"
 #include "gui/widgets/new_q.h"
+#include "gui/widgets/various_widgets.h"
 #include "write_file.h"
 #include "QCustomPlot/qcustomplot.h"
 #include <QAction>

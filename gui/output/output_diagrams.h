@@ -15,7 +15,7 @@
 #ifndef OUTPUT_DIAGRAMS_H
 #define OUTPUT_DIAGRAMS_H
 
-#include "frame.h"
+#include "gui/output/frame.h"
 
 //! The modal dialog for viewing and saving diagrams
 class DiagramsFrame final : public Frame {

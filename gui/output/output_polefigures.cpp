@@ -12,16 +12,16 @@
 //
 // ************************************************************************** //
 
-#include "gui/output_polefigures.h"
-#include "gui/cfg/colors.h"
-#include "dialog_panels.h"
+#include "gui/output/output_polefigures.h"
 #include "core/fit/fit_fun.h"
-#include "gui/widgets4output.h"
 #include "core/session.h"
+#include "gui/cfg/colors.h"
+#include "gui/output/dialog_panels.h"
+#include "gui/output/write_file.h"
+#include "gui/output/widgets4output.h"
 #include "gui/thehub.h"
-#include "gui/widgets/various_widgets.h"
 #include "gui/widgets/new_q.h"
-#include "write_file.h"
+#include "gui/widgets/various_widgets.h"
 #include <qmath.h>
 #include <QAction>
 #include <QPainter>

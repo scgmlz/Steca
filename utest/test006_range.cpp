@@ -1,7 +1,7 @@
-#include "def/idiomatic_for.h"
 #include "gtest/gtest.h"
-#include "typ/json.h"
-#include "typ/range.h"
+#include "core/def/idiomatic_for.h"
+#include "core/typ/json.h"
+#include "core/typ/range.h"
 #include <vector>
 
 static bool RANGE_EQ(Range const& r1, Range const& r2) {
