@@ -15,9 +15,8 @@
 #ifndef SUBFRAME_DATASET_H
 #define SUBFRAME_DATASET_H
 
+#include "gui/widgets/new_q.h"
 #include "gui/widgets/various_widgets.h"
-
-class QSpinBox;
 
 //! Part of the main window that controls the dataset selection.
 

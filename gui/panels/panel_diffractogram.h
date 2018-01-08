@@ -16,13 +16,7 @@
 #define PANEL_DIFFRACTOGRAM_H
 
 #include "gui/thehub.h" // for eFittingTab
-#include <QWidget>
-
-class QBoxLayout;
-class QComboBox;
-class QRadioButton;
-class QDoubleSpinBox;
-class QToolButton;
+#include "gui/widgets/new_q.h"
 
 //! A diffractogram display, with associated controls, for use in SubframeDiffractogram.
 

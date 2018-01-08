@@ -16,11 +16,8 @@
 #define SUBFRAME_IMAGE_H
 
 #include "core/calc/lens.h"
+#include "gui/widgets/new_q.h"
 #include <QTabWidget>
-
-class Measurement;
-class QDoubleSpinBox;
-class QSpinBox;
 
 //! Part of the main window that shows a detector image, with associated controls.
 
@@ -35,7 +32,7 @@ private:
 
     QImage makeImage(QSharedPointer<Image>, bool curvedScale);
     QPixmap makePixmap(QSharedPointer<Image>);
-    QPixmap makePixmap(Measurement const&, Range const&, Range const&);
+    QPixmap makePixmap(class Measurement const&, Range const&, Range const&);
 
     void setSuite(QSharedPointer<Suite>);
     void render();

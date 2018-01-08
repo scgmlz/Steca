@@ -15,14 +15,11 @@
 #ifndef SUBFRAME_SETUP_H
 #define SUBFRAME_SETUP_H
 
+#include "gui/widgets/new_q.h"
 #include <QTabWidget>
 
-class QComboBox;
-class QDoubleSpinBox;
-class QLineEdit;
-class QSpinBox;
+//! Part of the main window that contains geometry, background, and image controls.
 
-//! Part of the main window that contains geometry, background, and image settings.
 class SubframeSetup : public QTabWidget {
 public:
     SubframeSetup();

@@ -17,14 +17,16 @@
 #include "gui/thehub.h"
 #include "gui/widgets/tree_views.h" // inheriting from
 
+// ************************************************************************** //
+//  local class MetadataView
+// ************************************************************************** //
+
 class MetadataView : public ListView {
 public:
     MetadataView();
 
-protected:
-    int sizeHintForColumn(int) const;
-
 private:
+    int sizeHintForColumn(int) const;
     MetadataModel* model() const { return static_cast<MetadataModel*>(ListView::model()); }
 };
 
@@ -46,6 +48,9 @@ int MetadataView::sizeHintForColumn(int col) const {
     }
 }
 
+// ************************************************************************** //
+//  class SubframeMetadata
+// ************************************************************************** //
 
 SubframeMetadata::SubframeMetadata() : DockWidget("Metadata", "dock-metadata") {
     box_->addWidget((metadataView_ = new MetadataView()));

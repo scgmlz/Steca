@@ -18,7 +18,6 @@
 #include "gui/thehub.h"
 #include "gui/widgets/new_q.h"
 #include "gui/widgets/tree_views.h" // inheriting from
-#include <QAction>
 #include <QHeaderView>
 
 

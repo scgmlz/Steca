@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/models.h
-//! @brief     Defines classes FilesModel, DatasetsModel, MetadataModel, ReflectionsModel
+//! @brief     Defines classes TableModel, FilesModel, DatasetsModel, MetadataModel, ReflectionsModel
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,10 +15,28 @@
 #ifndef MODELS_H
 #define MODELS_H
 
-#include "gui/table_model.h"
 #include "core/typ/str.h"
 #include "core/typ/vec.h"
+#include <QAbstractTableModel>
 #include <QSharedPointer> // no auto rm
+
+extern QVariant const EMPTY_VAR;
+extern QModelIndex const ANY_INDEX;
+
+//! The base class of all table-like models
+
+class TableModel : public QAbstractTableModel {
+public:
+    using Index = QModelIndex;
+    using rcIndex = Index const&;
+
+    TableModel() {}
+
+    void signalReset(); //!< force-emits reset() signal
+
+protected:
+    static int const DCOL = 1; //!< the left-most column is hidden
+};
 
 class Suite;
 class Experiment;

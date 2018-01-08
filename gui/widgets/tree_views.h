@@ -21,14 +21,16 @@
 class TableModel;
 
 //! Abstract tree widget, base class of ListView and Table
+
 class TreeView : public QTreeView {
 public:
     TreeView();
-
+protected:
     int sizeHintForColumn(int) const; //!< make narrow columns
 };
 
 //! A (tree-)list view. Single selection.
+
 class ListView : public TreeView {
 public:
     ListView() {}
@@ -40,6 +42,7 @@ protected:
 };
 
 //! A (tree-)list view. Multiple selection.
+
 class MultiListView : public ListView {
 public:
     MultiListView();
