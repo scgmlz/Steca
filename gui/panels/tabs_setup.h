@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/tabs_setup.h
-//! @brief     Defines class ViewSetup
+//! @brief     Defines class SubframeSetup
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -23,9 +23,9 @@ class QLineEdit;
 class QSpinBox;
 
 //! Part of the main window that contains geometry, background, and image settings.
-class ViewSetup : public QTabWidget {
+class SubframeSetup : public QTabWidget {
 public:
-    ViewSetup();
+    SubframeSetup();
 
 private:
     // image geometry tab

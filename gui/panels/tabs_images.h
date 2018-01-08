@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/tabs_images.h
-//! @brief     Defines class ViewImage
+//! @brief     Defines class SubframeImage
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -26,9 +26,9 @@ class QSpinBox;
 
 //! There are two tabs: data image and correction data image.
 
-class ViewImage final : public QTabWidget {
+class SubframeImage final : public QTabWidget {
 public:
-    ViewImage();
+    SubframeImage();
 
 private:
     QPixmap makeBlankPixmap();

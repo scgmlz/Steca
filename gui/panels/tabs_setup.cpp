@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/tabs_setup.cpp
-//! @brief     Implements class ViewSetup
+//! @brief     Implements class SubframeSetup
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -108,7 +108,7 @@ void ReflectionView::selectionChanged(
 
 
 // ************************************************************************** //
-//  class ViewSetup
+//  class SubframeSetup
 // ************************************************************************** //
 
 QLabel* icon(rcstr fileName) {
@@ -118,7 +118,7 @@ QLabel* icon(rcstr fileName) {
     return l;
 }
 
-ViewSetup::ViewSetup() {
+SubframeSetup::SubframeSetup() {
     setTabPosition(QTabWidget::North);
 
     int backgroundTabIndex, reflectionTabIndex;
@@ -421,7 +421,7 @@ ViewSetup::ViewSetup() {
         connect(spinGuessFWHM_, slot(QDoubleSpinBox, valueChanged, double), changeReflData0);
     }
 
-    connect(this, &ViewSetup::currentChanged,
+    connect(this, &SubframeSetup::currentChanged,
             [this, backgroundTabIndex, reflectionTabIndex](int index) {
         eFittingTab tab;
         if (backgroundTabIndex == index)
@@ -437,14 +437,14 @@ ViewSetup::ViewSetup() {
     gHub->setFittingTab(eFittingTab::NONE);
 }
 
-void ViewSetup::setToHub() {
+void SubframeSetup::setToHub() {
     gHub->setGeometry(
         preal(qMax(qreal(Geometry::MIN_DETECTOR_DISTANCE), detDistance_->value())),
         preal(qMax(qreal(Geometry::MIN_DETECTOR_PIXEL_SIZE), detPixelSize_->value())),
         IJ(beamOffsetI_->value(), beamOffsetJ_->value()));
 }
 
-void ViewSetup::setFromHub() {
+void SubframeSetup::setFromHub() {
     auto& g = gSession->geometry();
 
     detDistance_->setValue(g.detectorDistance);

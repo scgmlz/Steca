@@ -169,9 +169,9 @@ MainWin::MainWin() {
 
 
 void MainWin::initLayout() {
-    addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new ViewFiles()));
-    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasets_ = new ViewDatasets()));
-    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasetInfo_ = new ViewMetadata()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new SubframeFiles()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasets_ = new SubframeDatasets()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasetInfo_ = new SubframeMetadata()));
 
     auto splMain = new QSplitter(Qt::Vertical);
     splMain->setChildrenCollapsible(false);
@@ -182,11 +182,11 @@ void MainWin::initLayout() {
     setCentralWidget(splMain);
 
     splMain->addWidget(splTop);
-    splMain->addWidget(new ViewDiffractogram());
+    splMain->addWidget(new SubframeDiffractogram());
     splMain->setStretchFactor(1, 1);
 
-    splTop->addWidget(new ViewSetup());
-    splTop->addWidget(new ViewImage());
+    splTop->addWidget(new SubframeSetup());
+    splTop->addWidget(new SubframeImage());
     splTop->setStretchFactor(1, 1);
 
     statusBar();

@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/dock_metadata.cpp
-//! @brief     Implements class ViewMetadata
+//! @brief     Implements class SubframeMetadata
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -47,6 +47,6 @@ int MetadataView::sizeHintForColumn(int col) const {
 }
 
 
-ViewMetadata::ViewMetadata() : DockWidget("Metadata", "dock-metadata") {
+SubframeMetadata::SubframeMetadata() : DockWidget("Metadata", "dock-metadata") {
     box_->addWidget((metadataView_ = new MetadataView()));
 }

@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/dock_dataset.cpp
-//! @brief     Implements class ViewDatasets
+//! @brief     Implements class SubframeDatasets
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -52,10 +52,10 @@ void DatasetView::currentChanged(QModelIndex const& current, QModelIndex const& 
 }
 
 // ************************************************************************** //
-//  class ViewDatasets
+//  class SubframeDatasets
 // ************************************************************************** //
 
-ViewDatasets::ViewDatasets() : DockWidget("Datasets", "dock-suite") {
+SubframeDatasets::SubframeDatasets() : DockWidget("Datasets", "dock-suite") {
     box_->addWidget((dataseqView_ = new DatasetView()));
 
     auto h = newQ::HBoxLayout();

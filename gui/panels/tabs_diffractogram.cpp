@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/tabs_diffractogram.cpp
-//! @brief     Implements class ViewDiffractogram
+//! @brief     Implements class SubframeDiffractogram
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -17,7 +17,7 @@
 #include "widgets/various_widgets.h"
 #include "widgets/new_q.h"
 
-ViewDiffractogram::ViewDiffractogram() {
+SubframeDiffractogram::SubframeDiffractogram() {
     setTabPosition(QTabWidget::North);
     newQ::Tab(this, "Diffractogram")->box().addWidget(new Diffractogram());
 }
