@@ -17,7 +17,7 @@
 #include "gui/cfg/gui_cfg.h"
 #include "gui/models.h"
 #include "core/session.h"
-#include "gui/thebub.h"
+#include "gui/thehub.h"
 #include "gui/widgets/new_q.h"
 
 // ************************************************************************** //

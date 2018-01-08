@@ -15,7 +15,7 @@
 #ifndef PANEL_DIFFRACTOGRAM_H
 #define PANEL_DIFFRACTOGRAM_H
 
-#include "gui/thebub.h" // for eFittingTab
+#include "gui/thehub.h" // for eFittingTab
 #include <QWidget>
 
 class QBoxLayout;

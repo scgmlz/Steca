@@ -27,7 +27,7 @@
 #include "gui/panels/tabs_setup.h"
 #include "core/session.h"
 #include "gui/cfg/settings.h"
-#include "gui/thebub.h"
+#include "gui/thehub.h"
 
 #include <QApplication>
 #include <QCloseEvent>

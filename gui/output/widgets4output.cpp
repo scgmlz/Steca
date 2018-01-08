@@ -18,7 +18,7 @@
 #include "gui/popup/filedialog.h"
 #include "gui/models.h"
 #include "gui/cfg/settings.h"
-#include "gui/thebub.h"
+#include "gui/thehub.h"
 #include "gui/widgets/new_q.h"
 #include <QDir>
 #include <QHeaderView>

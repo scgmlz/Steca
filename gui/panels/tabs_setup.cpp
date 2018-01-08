@@ -17,7 +17,7 @@
 #include "core/fit/fit_fun.h"
 #include "gui/models.h"
 #include "core/session.h"
-#include "gui/thebub.h"
+#include "gui/thehub.h"
 #include "gui/widgets/tree_views.h" // inheriting from
 #include "gui/widgets/various_widgets.h"
 #include "gui/widgets/new_q.h"

@@ -15,7 +15,7 @@
 #include "dock_metadata.h"
 #include "gui/models.h"
 #include "gui/widgets/tree_views.h" // inheriting from
-#include "gui/thebub.h"
+#include "gui/thehub.h"
 
 class MetadataView : public ListView {
 public:

@@ -17,7 +17,7 @@
 #include "core/data/suite.h"
 #include "core/data/metadata.h"
 #include "dialog_panels.h"
-#include "gui/thebub.h"
+#include "gui/thehub.h"
 #include "write_file.h"
 #include "core/session.h"
 #include "gui/widgets/various_widgets.h"

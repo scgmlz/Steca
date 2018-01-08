@@ -17,7 +17,7 @@
 #include "core/data/metadata.h"
 #include "core/fit/fit_fun.h"
 #include "core/session.h"
-#include "gui/thebub.h"
+#include "gui/thehub.h"
 
 // ************************************************************************** //
 //  class FilesModel

@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/thebub.h
+//! @file      gui/thehub.h
 //! @brief     Defines class TheHub
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef THEBUB_H
-#define THEBUB_H
+#ifndef THEHUB_H
+#define THEHUB_H
 
 #include "core/calc/lens.h"
 #include "core/calc/calc_reflection_info.h"
@@ -194,4 +194,4 @@ public:
     ReflectionsModel* reflectionsModel;
 };
 
-#endif // THEBUB_H
+#endif // THEHUB_H
