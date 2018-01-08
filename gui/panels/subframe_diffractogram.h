@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/tabs_diffractogram.h
+//! @file      gui/panels/subframe_diffractogram.h
 //! @brief     Defines class SubframeDiffractogram
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef TABS_DIFFRACTOGRAM_H
-#define TABS_DIFFRACTOGRAM_H
+#ifndef SUBFRAME_DIFFRACTOGRAM_H
+#define SUBFRAME_DIFFRACTOGRAM_H
 
 #include <QTabWidget>
 
@@ -24,4 +24,4 @@ public:
     SubframeDiffractogram();
 };
 
-#endif // TABS_DIFFRACTOGRAM_H
+#endif // SUBFRAME_DIFFRACTOGRAM_H

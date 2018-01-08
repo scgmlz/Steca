@@ -12,10 +12,10 @@
 //
 // ************************************************************************** //
 
-#include "dock_metadata.h"
+#include "gui/panels/dock_metadata.h"
 #include "gui/models.h"
-#include "gui/widgets/tree_views.h" // inheriting from
 #include "gui/thehub.h"
+#include "gui/widgets/tree_views.h" // inheriting from
 
 class MetadataView : public ListView {
 public:

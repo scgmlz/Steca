@@ -12,12 +12,12 @@
 //
 // ************************************************************************** //
 
-#include "dock_files.h"
-#include "gui/models.h"
+#include "gui/panels/dock_files.h"
 #include "core/session.h"
+#include "gui/models.h"
 #include "gui/thehub.h"
-#include "gui/widgets/tree_views.h" // inheriting from
 #include "gui/widgets/new_q.h"
+#include "gui/widgets/tree_views.h" // inheriting from
 #include <QAction>
 #include <QHeaderView>
 

@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "gui/panels/tabs_diffractogram.h"
+#include "gui/panels/subframe_diffractogram.h"
 #include "gui/panels/panel_diffractogram.h"
 #include "gui/widgets/various_widgets.h"
 #include "gui/widgets/new_q.h"
