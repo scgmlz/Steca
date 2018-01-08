@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "gui/panels/dock_dataset.h"
+#include "gui/panels/subframe_dataset.h"
 #include "core/data/suite.h"
 #include "gui/cfg/gui_cfg.h"
 #include "gui/models.h"

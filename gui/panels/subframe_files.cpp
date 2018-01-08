@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "gui/panels/dock_files.h"
+#include "gui/panels/subframe_files.h"
 #include "core/session.h"
 #include "gui/models.h"
 #include "gui/thehub.h"

@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/dock_files.h
+//! @file      gui/panels/subframe_files.h
 //! @brief     Defines class SubframeFiles
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef DOCK_FILES_H
-#define DOCK_FILES_H
+#ifndef SUBFRAME_FILES_H
+#define SUBFRAME_FILES_H
 
 #include "gui/widgets/various_widgets.h"
 
@@ -23,4 +23,4 @@ public:
     SubframeFiles();
 };
 
-#endif // DOCK_FILES_H
+#endif // SUBFRAME_FILES_H

@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/dock_metadata.h
-//! @brief     Defines class SubframeMetadata
+//! @file      gui/panels/subframe_dataset.h
+//! @brief     Defines class SubframeDatasets
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,17 +12,25 @@
 //
 // ************************************************************************** //
 
-#ifndef DOCK_METADATA_H
-#define DOCK_METADATA_H
+#ifndef SUBFRAME_DATASET_H
+#define SUBFRAME_DATASET_H
 
 #include "gui/widgets/various_widgets.h"
 
-//! Part of the main window that shows the metadata of the selected dataset
-class SubframeMetadata : public DockWidget {
+class QSpinBox;
+
+//! Part of the main window that controls the dataset selection.
+
+//! Shows the datasets in the selected files, and allow to select some of them
+//! and to combine them by a constant factor
+
+class SubframeDatasets : public DockWidget {
 public:
-    SubframeMetadata();
+    SubframeDatasets();
+    QSpinBox* combineDatasets_;
+
 private:
-    class MetadataView* metadataView_;
+    class DatasetView* dataseqView_;
 };
 
-#endif // DOCK_METADATA_H
+#endif // SUBFRAME_DATASET_H
