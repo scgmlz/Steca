@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/tabs_images.h
+//! @file      gui/panels/subframe_image.h
 //! @brief     Defines class SubframeImage
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef TABS_IMAGES_H
-#define TABS_IMAGES_H
+#ifndef SUBFRAME_IMAGE_H
+#define SUBFRAME_IMAGE_H
 
 #include "core/calc/lens.h"
 #include <QTabWidget>
@@ -50,4 +50,4 @@ private:
     QSharedPointer<SequenceLens> lens_;
 };
 
-#endif // TABS_IMAGES_H
+#endif // SUBFRAME_IMAGE_H

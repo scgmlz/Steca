@@ -12,15 +12,15 @@
 //
 // ************************************************************************** //
 
-#include "tabs_images.h"
-#include "gui/cfg/colors.h"
-#include "core/data/suite.h"
+#include "subframe_image.h"
 #include "core/data/measurement.h"
+#include "core/data/suite.h"
+#include "core/session.h"
+#include "gui/cfg/colors.h"
 #include "gui/cfg/gui_cfg.h"
 #include "gui/thehub.h"
-#include "core/session.h"
-#include "gui/widgets/various_widgets.h"
 #include "gui/widgets/new_q.h"
+#include "gui/widgets/various_widgets.h"
 #include <qmath.h>
 #include <QAction>
 #include <QPainter>

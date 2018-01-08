@@ -23,7 +23,7 @@
 #include "gui/panels/dock_files.h"
 #include "gui/panels/dock_metadata.h"
 #include "gui/panels/tabs_diffractogram.h"
-#include "gui/panels/tabs_images.h"
+#include "gui/panels/subframe_image.h"
 #include "gui/panels/tabs_setup.h"
 #include "core/session.h"
 #include "gui/cfg/settings.h"
