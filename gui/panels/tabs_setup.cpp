@@ -15,9 +15,9 @@
 #include "tabs_setup.h"
 #include "cfg/gui_cfg.h"
 #include "fit/fit_fun.h"
-#include "models.h"
-#include "session.h"
-#include "thehub.h"
+#include "gui/models.h"
+#include "core/session.h"
+#include "gui/thebub.h"
 #include "widgets/tree_views.h" // inheriting from
 #include "widgets/various_widgets.h"
 #include "widgets/new_q.h"

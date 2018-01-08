@@ -13,9 +13,9 @@
 // ************************************************************************** //
 
 #include "dock_files.h"
-#include "models.h"
-#include "session.h"
-#include "thehub.h"
+#include "gui/models.h"
+#include "core/session.h"
+#include "gui/thebub.h"
 #include "widgets/tree_views.h" // inheriting from
 #include "widgets/new_q.h"
 #include <QAction>

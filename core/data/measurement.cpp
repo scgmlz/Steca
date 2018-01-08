@@ -14,7 +14,7 @@
 
 #include "measurement.h"
 #include "metadata.h"
-#include "session.h"
+#include "core/session.h"
 #include <qmath.h>
 
 Measurement::Measurement(Metadata const& md, size2d const& size, inten_vec const& intens)

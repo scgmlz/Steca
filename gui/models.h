@@ -15,7 +15,7 @@
 #ifndef MODELS_H
 #define MODELS_H
 
-#include "table_model.h"
+#include "gui/table_model.h"
 #include "typ/str.h"
 #include "typ/vec.h"
 #include <QSharedPointer> // no auto rm

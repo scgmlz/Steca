@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "console.h"
+#include "gui/console.h"
 #include "def/debug.h"
 #include <iostream>
 #include <QSocketNotifier>

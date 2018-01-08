@@ -13,10 +13,10 @@
 // ************************************************************************** //
 
 #include "../manifest.h"
-#include "console.h"
-#include "mainwin.h"
+#include "gui/console.h"
+#include "gui/mainwin.h"
 #include "cfg/msg_handler.h"
-#include "session.h"
+#include "core/session.h"
 #include <iostream>
 #define OPTPARSE_IMPLEMENTATION
 #define OPTPARSE_API static

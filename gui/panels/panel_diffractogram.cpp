@@ -16,8 +16,8 @@
 #include "data/suite.h"
 #include "fit/fit_fun.h"
 #include "cfg/gui_cfg.h"
-#include "session.h"
-#include "thehub.h"
+#include "core/session.h"
+#include "gui/thebub.h"
 #include "widgets/new_q.h"
 #include "QCustomPlot/qcustomplot.h"
 

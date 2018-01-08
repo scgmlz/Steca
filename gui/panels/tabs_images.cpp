@@ -17,8 +17,8 @@
 #include "data/suite.h"
 #include "data/measurement.h"
 #include "cfg/gui_cfg.h"
-#include "thehub.h"
-#include "session.h"
+#include "gui/thebub.h"
+#include "core/session.h"
 #include "widgets/various_widgets.h"
 #include "widgets/new_q.h"
 #include <qmath.h>

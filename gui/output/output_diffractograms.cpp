@@ -17,9 +17,9 @@
 #include "data/suite.h"
 #include "data/metadata.h"
 #include "dialog_panels.h"
-#include "thehub.h"
+#include "gui/thebub.h"
 #include "write_file.h"
-#include "session.h"
+#include "core/session.h"
 #include "widgets/various_widgets.h"
 #include "widgets/new_q.h"
 #include <QAction>

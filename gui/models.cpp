@@ -12,12 +12,12 @@
 //
 // ************************************************************************** //
 
-#include "models.h"
+#include "gui/models.h"
 #include "data/suite.h"
 #include "data/metadata.h"
 #include "fit/fit_fun.h"
-#include "session.h"
-#include "thehub.h"
+#include "core/session.h"
+#include "gui/thebub.h"
 
 // ************************************************************************** //
 //  class FilesModel

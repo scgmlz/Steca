@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "table_model.h"
+#include "gui/table_model.h"
 
 QVariant const EMPTY_VAR;
 QModelIndex const ANY_INDEX;

@@ -12,12 +12,12 @@
 //
 // ************************************************************************** //
 
-#include "thehub.h"
+#include "gui/thebub.h"
 #include "data/suite.h"
 #include "io/io_io.h"
-#include "models.h"
+#include "gui/models.h"
 #include "output/write_file.h"
-#include "session.h"
+#include "core/session.h"
 #include "typ/json.h"
 #include "widgets/new_q.h"
 #include <QApplication>

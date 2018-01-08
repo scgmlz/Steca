@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "mainwin.h"
+#include "gui/mainwin.h"
 #include "../manifest.h"
 #include "popup/about.h"
 #include "popup/filedialog.h"
@@ -25,9 +25,9 @@
 #include "panels/tabs_diffractogram.h"
 #include "panels/tabs_images.h"
 #include "panels/tabs_setup.h"
-#include "session.h"
+#include "core/session.h"
 #include "cfg/settings.h"
-#include "thehub.h"
+#include "gui/thebub.h"
 
 #include <QApplication>
 #include <QCloseEvent>

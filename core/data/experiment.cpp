@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "measurement.h"
-#include "session.h"
+#include "core/session.h"
 
 Experiment::Experiment() {
     invalidateAvgMutables();

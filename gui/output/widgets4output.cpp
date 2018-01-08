@@ -16,9 +16,9 @@
 #include "def/idiomatic_for.h"
 #include "dialog_panels.h"
 #include "popup/filedialog.h"
-#include "models.h"
+#include "gui/models.h"
 #include "cfg/settings.h"
-#include "thehub.h"
+#include "gui/thebub.h"
 #include "widgets/new_q.h"
 #include <QDir>
 #include <QHeaderView>
