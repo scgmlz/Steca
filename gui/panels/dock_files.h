@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/dock_files.h
-//! @brief     Defines class DockFiles
+//! @brief     Defines class ViewFiles
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -18,9 +18,9 @@
 #include "widgets/various_widgets.h"
 
 //! Part of the main window that controls the data and correction files.
-class DockFiles : public DockWidget {
+class ViewFiles : public DockWidget {
 public:
-    DockFiles();
+    ViewFiles();
 };
 
 #endif // DOCK_FILES_H

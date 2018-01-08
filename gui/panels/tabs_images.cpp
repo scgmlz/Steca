@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/tabs_images.cpp
-//! @brief     Implements class TabsImages
+//! @brief     Implements class ViewImage
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -140,10 +140,10 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 
 
 // ************************************************************************** //
-//  class TabsImages
+//  class ViewImage
 // ************************************************************************** //
 
-TabsImages::TabsImages() {
+ViewImage::ViewImage() {
     setTabPosition(QTabWidget::North);
 
     {
@@ -218,7 +218,7 @@ TabsImages::TabsImages() {
     render();
 }
 
-QPixmap TabsImages::makeBlankPixmap() {
+QPixmap ViewImage::makeBlankPixmap() {
     auto size = gSession->imageSize();
 
     QPixmap pixmap(to_i(size.w), to_i(size.h));
@@ -227,7 +227,7 @@ QPixmap TabsImages::makeBlankPixmap() {
     return pixmap;
 }
 
-QImage TabsImages::makeImage(QSharedPointer<Image> image, bool curvedScale) {
+QImage ViewImage::makeImage(QSharedPointer<Image> image, bool curvedScale) {
     QImage im;
     if (!image)
         return im;
@@ -248,11 +248,11 @@ QImage TabsImages::makeImage(QSharedPointer<Image> image, bool curvedScale) {
     return im;
 }
 
-QPixmap TabsImages::makePixmap(QSharedPointer<Image> image) {
+QPixmap ViewImage::makePixmap(QSharedPointer<Image> image) {
     return QPixmap::fromImage(makeImage(image, !gHub->isFixedIntenImageScale()));
 }
 
-QPixmap TabsImages::makePixmap(
+QPixmap ViewImage::makePixmap(
     Measurement const& dataseq, Range const& rgeGma, Range const& rgeTth) {
     auto im = makeImage(dataseq.image(), !gHub->isFixedIntenImageScale());
     auto angleMap = gSession->angleMap(dataseq);
@@ -276,12 +276,12 @@ QPixmap TabsImages::makePixmap(
     return QPixmap::fromImage(im);
 }
 
-void TabsImages::setSuite(QSharedPointer<Suite> dataseq) {
+void ViewImage::setSuite(QSharedPointer<Suite> dataseq) {
     dataseq_ = dataseq;
     render();
 }
 
-void TabsImages::render() {
+void ViewImage::render() {
     {
         QPixmap pixMap;
 

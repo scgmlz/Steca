@@ -24,7 +24,7 @@ class QRadioButton;
 class QDoubleSpinBox;
 class QToolButton;
 
-//! A diffractogram display, with associated controls, for use in TabsDiffractogram.
+//! A diffractogram display, with associated controls, for use in ViewDiffractogram.
 
 class Diffractogram : public QWidget {
 public:

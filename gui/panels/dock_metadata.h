@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/dock_metadata.h
-//! @brief     Defines class DockMetadata
+//! @brief     Defines class ViewMetadata
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -18,9 +18,9 @@
 #include "widgets/various_widgets.h"
 
 //! Part of the main window that shows the metadata of the selected dataset
-class DockMetadata : public DockWidget {
+class ViewMetadata : public DockWidget {
 public:
-    DockMetadata();
+    ViewMetadata();
 private:
     class MetadataView* metadataView_;
 };

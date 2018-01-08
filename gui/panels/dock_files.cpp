@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/dock_files.cpp
-//! @brief     Implements class DockFiles; defines and implements class FileViews
+//! @brief     Implements class ViewFiles; defines and implements class FileViews
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -85,7 +85,7 @@ void FilesView::recollect() {
 //  class DocFiles
 // ************************************************************************** //
 
-DockFiles::DockFiles() : DockWidget("Files", "dock-files") {
+ViewFiles::ViewFiles() : DockWidget("Files", "dock-files") {
 
     auto h = newQ::HBoxLayout();
     box_->addLayout(h);
