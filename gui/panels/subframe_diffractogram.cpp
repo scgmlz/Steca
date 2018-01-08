@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "tabs_diffractogram.h"
-#include "panel_diffractogram.h"
+#include "gui/panels/tabs_diffractogram.h"
+#include "gui/panels/panel_diffractogram.h"
 #include "gui/widgets/various_widgets.h"
 #include "gui/widgets/new_q.h"
 

@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/tabs_setup.h
+//! @file      gui/panels/subframe_setup.h
 //! @brief     Defines class SubframeSetup
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef TABS_SETUP_H
-#define TABS_SETUP_H
+#ifndef SUBFRAME_SETUP_H
+#define SUBFRAME_SETUP_H
 
 #include <QTabWidget>
 
@@ -49,4 +49,4 @@ private:
     void setFromHub();
 };
 
-#endif // TABS_SETUP_H
+#endif // SUBFRAME_SETUP_H
