@@ -15,10 +15,10 @@
 #ifndef CALC_REFLECTION_INFO_H
 #define CALC_REFLECTION_INFO_H
 
-#include "typ/angles.h"
-#include "typ/range.h"
-#include "typ/types.h"
-#include "typ/variant.h"
+#include "core/typ/angles.h"
+#include "core/typ/range.h"
+#include "core/typ/types.h"
+#include "core/typ/variant.h"
 #include <QSharedPointer> // no auto rm
 
 class Metadata;

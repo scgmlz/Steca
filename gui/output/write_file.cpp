@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "typ/exception.h"
+#include "core/typ/exception.h"
 #include "write_file.h"
 #include <QMessageBox>
 #include <QStringBuilder> // for ".." % ..

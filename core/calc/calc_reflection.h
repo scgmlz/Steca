@@ -15,9 +15,9 @@
 #ifndef CALC_REFLECTION_H
 #define CALC_REFLECTION_H
 
-#include "def/special_pointers.h"
-#include "typ/realpair.h"
-#include "typ/types.h" // for fwhm_t
+#include "core/def/special_pointers.h"
+#include "core/typ/realpair.h"
+#include "core/typ/types.h" // for fwhm_t
 #include <QSharedPointer> // no auto rm
 
 class PeakFunction;

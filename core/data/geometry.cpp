@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "data/geometry.h"
-#include "def/comparators.h"
+#include "core/data/geometry.h"
+#include "core/def/comparators.h"
 #include <iostream> // for debugging
 
 // ************************************************************************** //

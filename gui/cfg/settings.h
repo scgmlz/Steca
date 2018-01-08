@@ -15,7 +15,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include "typ/str.h"
+#include "core/typ/str.h"
 #include <QSettings>
 
 class QAction;

@@ -12,9 +12,9 @@
 //
 // ************************************************************************** //
 
-#include "calc_reflection_info.h"
-#include "data/metadata.h"
-#include "def/idiomatic_for.h"
+#include "core/calc_reflection_info.h"
+#include "core/data/metadata.h"
+#include "core/def/idiomatic_for.h"
 
 // ************************************************************************** //
 //  class ReflectionInfo

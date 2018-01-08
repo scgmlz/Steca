@@ -17,7 +17,7 @@
 #ifndef EXCEPTION_H
 #define EXCEPTION_H
 
-#include "typ/str.h"
+#include "core/typ/str.h"
 #include <QException>
 
 //! The sole exception type used in this software.

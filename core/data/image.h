@@ -15,9 +15,9 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
-#include "typ/array2d.h"
-#include "typ/range.h"
-#include "typ/types.h"
+#include "core/typ/array2d.h"
+#include "core/typ/range.h"
+#include "core/typ/types.h"
 
 typedef Array2D<inten_t> inten_arr;
 

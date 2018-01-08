@@ -15,7 +15,7 @@
 #ifndef ANGLE_MAP_H
 #define ANGLE_MAP_H
 
-#include "data/geometry.h"
+#include "core/data/geometry.h"
 #include <QSharedPointer> // no auto rm
 
 class AnglePair {

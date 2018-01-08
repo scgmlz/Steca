@@ -15,7 +15,7 @@
 #ifndef NEW_Q_H
 #define NEW_Q_H
 
-#include "typ/str.h"
+#include "core/typ/str.h"
 #include <QAction>
 #include <QCheckBox>
 #include <QComboBox>

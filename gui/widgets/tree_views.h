@@ -15,7 +15,7 @@
 #ifndef TREE_VIEWS_H
 #define TREE_VIEWS_H
 
-#include "typ/vec.h"
+#include "core/typ/vec.h"
 #include <QTreeView>
 
 class TableModel;

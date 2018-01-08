@@ -15,7 +15,7 @@
 #ifndef REALPAIR_H
 #define REALPAIR_H
 
-#include "def/comparable.h"
+#include "core/def/comparable.h"
 
 //! 2D point, reals
 class qpair {

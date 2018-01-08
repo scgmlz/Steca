@@ -14,7 +14,7 @@
 
 #include "dock_dataset.h"
 #include "cfg/gui_cfg.h"
-#include "data/suite.h"
+#include "core/data/suite.h"
 #include "gui/models.h"
 #include "gui/thebub.h"
 #include "widgets/tree_views.h" // inheriting from

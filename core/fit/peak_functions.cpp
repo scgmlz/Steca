@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "peak_functions.h"
-#include "typ/curve.h"
+#include "core/typ/curve.h"
 #include <QtMath>
 
 namespace { // file scope

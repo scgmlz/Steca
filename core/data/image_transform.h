@@ -15,7 +15,7 @@
 #ifndef IMAGE_TRANSFORM_H
 #define IMAGE_TRANSFORM_H
 
-#include "def/numbers.h" // for uint
+#include "core/def/numbers.h" // for uint
 
 // Image transform type - rotation and mirroring (bit-map)
 

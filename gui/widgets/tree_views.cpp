@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "tree_views.h"
-#include "def/idiomatic_for.h"
+#include "core/def/idiomatic_for.h"
 #include "gui/models.h"
 
 

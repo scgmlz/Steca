@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "data/image.h"
+#include "core/data/image.h"
 
 Image::Image(size2d const& size) {
     fill(0, size);

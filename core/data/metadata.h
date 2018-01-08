@@ -15,9 +15,9 @@
 #ifndef METADATA_H
 #define METADATA_H
 
-#include "typ/angles.h"
-#include "typ/str.h"
-#include "typ/variant.h"
+#include "core/typ/angles.h"
+#include "core/typ/str.h"
+#include "core/typ/variant.h"
 
 class Metadata {
 public:

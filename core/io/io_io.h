@@ -15,8 +15,8 @@
 #ifndef IO_IO_H
 #define IO_IO_H
 
-#include "def/macros.h"
-#include "typ/str.h"
+#include "core/def/macros.h"
+#include "core/typ/str.h"
 #include <QSharedPointer>
 
 class Datafile;

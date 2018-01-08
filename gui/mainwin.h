@@ -15,8 +15,8 @@
 #ifndef MAINWIN_H
 #define MAINWIN_H
 
-#include "typ/singleton.h"
-#include "typ/str.h"
+#include "core/typ/singleton.h"
+#include "core/typ/str.h"
 #include <QMainWindow>
 #include <QNetworkAccessManager>
 

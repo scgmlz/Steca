@@ -15,7 +15,7 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include "typ/str.h"
+#include "core/typ/str.h"
 #include <QObject>
 
 //! Reads commands from stdin, and emits signal transmitLine

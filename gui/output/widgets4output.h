@@ -15,9 +15,9 @@
 #ifndef WIDGETS4OUTPUT_H
 #define WIDGETS4OUTPUT_H
 
-#include "typ/str.h"
-#include "typ/variant.h"
-#include "def/special_pointers.h"
+#include "core/typ/str.h"
+#include "core/typ/variant.h"
+#include "core/def/special_pointers.h"
 #include "widgets/tree_views.h"
 
 class QBoxLayout;

@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "typ/types.h"
+#include "core/typ/types.h"
 
 QStringList const& normStrLst() {
     static QStringList strLst{

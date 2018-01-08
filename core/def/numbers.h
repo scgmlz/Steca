@@ -18,8 +18,8 @@
 #ifndef NUMBERS_H
 #define NUMBERS_H
 
-#include "def/debug.h"
-#include "def/macros.h"
+#include "core/def/debug.h"
+#include "core/def/macros.h"
 #include <QtGlobal> // to define Q_OS_WIN
 
 // casting signed <-> unsigned

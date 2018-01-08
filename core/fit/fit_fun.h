@@ -15,11 +15,11 @@
 #ifndef FIT_FUN_H
 #define FIT_FUN_H
 
-#include "typ/singleton.h"
-#include "typ/registry.h"
+#include "core/typ/singleton.h"
+#include "core/typ/registry.h"
 #include "parametric_function.h"
-#include "typ/realpair.h"
-#include "typ/types.h"
+#include "core/typ/realpair.h"
+#include "core/typ/types.h"
 
 class Curve;
 

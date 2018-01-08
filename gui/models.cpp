@@ -13,9 +13,9 @@
 // ************************************************************************** //
 
 #include "gui/models.h"
-#include "data/suite.h"
-#include "data/metadata.h"
-#include "fit/fit_fun.h"
+#include "core/data/suite.h"
+#include "core/data/metadata.h"
+#include "core/fit/fit_fun.h"
 #include "core/session.h"
 #include "gui/thebub.h"
 

@@ -14,7 +14,7 @@
 
 #include "tabs_setup.h"
 #include "cfg/gui_cfg.h"
-#include "fit/fit_fun.h"
+#include "core/fit/fit_fun.h"
 #include "gui/models.h"
 #include "core/session.h"
 #include "gui/thebub.h"

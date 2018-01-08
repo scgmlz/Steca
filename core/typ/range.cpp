@@ -14,10 +14,10 @@
 //
 // ************************************************************************** //
 
-#include "def/comparators.h"
-#include "def/idiomatic_for.h"
-#include "typ/json.h"
-#include "typ/range.h"
+#include "core/def/comparators.h"
+#include "core/def/idiomatic_for.h"
+#include "core/typ/json.h"
+#include "core/typ/range.h"
 
 // ************************************************************************** //
 //  class Range

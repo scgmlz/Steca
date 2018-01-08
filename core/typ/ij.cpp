@@ -14,9 +14,9 @@
 //
 // ************************************************************************** //
 
-#include "def/comparators.h"
-#include "typ/ij.h"
-#include "typ/json.h"
+#include "core/def/comparators.h"
+#include "core/typ/ij.h"
+#include "core/typ/json.h"
 
 IJ::IJ() : IJ(0, 0) {}
 

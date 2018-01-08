@@ -15,10 +15,10 @@
 #ifndef THEBUB_H
 #define THEBUB_H
 
-#include "calc/lens.h"
-#include "calc/calc_reflection_info.h"
-#include "calc/calc_reflection.h"
-#include "data/datafile.h"
+#include "core/calc/lens.h"
+#include "core/calc/calc_reflection_info.h"
+#include "core/calc/calc_reflection.h"
+#include "core/data/datafile.h"
 
 class QAction;
 

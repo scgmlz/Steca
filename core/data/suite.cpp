@@ -16,7 +16,7 @@
 #include "measurement.h"
 #include "metadata.h"
 #include "core/session.h"
-#include "typ/matrix.h"
+#include "core/typ/matrix.h"
 #include <qmath.h>
 
 // ************************************************************************** //

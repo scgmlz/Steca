@@ -14,8 +14,8 @@
 
 #include "output_diffractograms.h"
 #include "widgets4output.h"
-#include "data/suite.h"
-#include "data/metadata.h"
+#include "core/data/suite.h"
+#include "core/data/metadata.h"
 #include "dialog_panels.h"
 #include "gui/thebub.h"
 #include "write_file.h"

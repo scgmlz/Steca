@@ -15,9 +15,9 @@
 #ifndef RANGE_H
 #define RANGE_H
 
-#include "def/comparable.h"
-#include "typ/exception.h"
-#include "typ/vec.h"
+#include "core/def/comparable.h"
+#include "core/typ/exception.h"
+#include "core/typ/vec.h"
 #include <QJsonArray>
 
 class JsonObj;

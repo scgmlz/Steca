@@ -15,10 +15,10 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
-#include "typ/angles.h"
-#include "typ/array2d.h"
-#include "typ/ij.h"
-#include "typ/range.h"
+#include "core/typ/angles.h"
+#include "core/typ/array2d.h"
+#include "core/typ/ij.h"
+#include "core/typ/range.h"
 
 //! Detector geometry.
 class Geometry {

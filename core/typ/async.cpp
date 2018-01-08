@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "typ/async.h"
+#include "core/typ/async.h"
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QApplication>
 

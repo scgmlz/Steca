@@ -15,7 +15,7 @@
 #ifndef TABS_IMAGES_H
 #define TABS_IMAGES_H
 
-#include "calc/lens.h"
+#include "core/calc/lens.h"
 #include <QTabWidget>
 
 class Measurement;

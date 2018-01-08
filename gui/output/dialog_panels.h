@@ -15,7 +15,7 @@
 #ifndef DIALOG_PANELS_H
 #define DIALOG_PANELS_H
 
-#include "typ/range.h"
+#include "core/typ/range.h"
 #include <QGroupBox>
 
 class QGridLayout;

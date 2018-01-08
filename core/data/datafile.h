@@ -15,9 +15,9 @@
 #ifndef DATAFILE_H
 #define DATAFILE_H
 
-#include "typ/array2d.h"
-#include "typ/str.h"
-#include "typ/types.h"
+#include "core/typ/array2d.h"
+#include "core/typ/str.h"
+#include "core/typ/types.h"
 #include <QFileInfo>
 #include <QSharedPointer> // no auto rm
 

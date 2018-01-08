@@ -15,7 +15,7 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include "def/macros.h"
+#include "core/def/macros.h"
 
 struct vec3r;
 

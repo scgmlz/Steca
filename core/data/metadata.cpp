@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "metadata.h"
-#include "def/idiomatic_for.h"
+#include "core/def/idiomatic_for.h"
 
 // metadata attributes
 

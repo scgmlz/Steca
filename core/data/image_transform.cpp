@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "data/image_transform.h"
+#include "core/data/image_transform.h"
 
 ImageTransform::ImageTransform(uint val_) : val(eTransform(val_ & 7)) {}
 

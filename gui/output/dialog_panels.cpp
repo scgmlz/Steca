@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "dialog_panels.h"
-#include "data/metadata.h"
+#include "core/data/metadata.h"
 #include "cfg/gui_cfg.h"
 #include "gui/models.h"
 #include "core/session.h"

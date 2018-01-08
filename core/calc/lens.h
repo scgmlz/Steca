@@ -15,10 +15,10 @@
 #ifndef LENS_H
 #define LENS_H
 
-#include "typ/curve.h"
-#include "data/geometry.h"
-#include "typ/types.h"
-#include "data/image_transform.h"
+#include "core/typ/curve.h"
+#include "core/data/geometry.h"
+#include "core/typ/types.h"
+#include "core/data/image_transform.h"
 
 class Suite;
 class Experiment;

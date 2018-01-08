@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "widgets4output.h"
-#include "def/idiomatic_for.h"
+#include "core/def/idiomatic_for.h"
 #include "dialog_panels.h"
 #include "popup/filedialog.h"
 #include "gui/models.h"

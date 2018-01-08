@@ -16,8 +16,8 @@
 #define MODELS_H
 
 #include "gui/table_model.h"
-#include "typ/str.h"
-#include "typ/vec.h"
+#include "core/typ/str.h"
+#include "core/typ/vec.h"
 #include <QSharedPointer> // no auto rm
 
 class Suite;

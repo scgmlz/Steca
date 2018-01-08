@@ -15,8 +15,8 @@
 #ifndef PARAMETRIC_FUNCTION_H
 #define PARAMETRIC_FUNCTION_H
 
-#include "typ/json.h"
-#include "typ/range.h"
+#include "core/typ/json.h"
+#include "core/typ/range.h"
 
 //! Abstract function with parameters
 

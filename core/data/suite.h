@@ -15,8 +15,8 @@
 #ifndef SUITE_H
 #define SUITE_H
 
-#include "typ/angles.h"
-#include "data/image.h"
+#include "core/typ/angles.h"
+#include "core/data/image.h"
 #include <QSharedPointer> // no auto rm
 
 class Metadata;

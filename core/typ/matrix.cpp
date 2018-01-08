@@ -14,7 +14,7 @@
 //
 // ************************************************************************** //
 
-#include "typ/matrix.h"
+#include "core/typ/matrix.h"
 #include <qmath.h>
 
 vec3f::vec3f(float _0_, float _1_, float _2_) {

@@ -12,10 +12,10 @@
 //
 // ************************************************************************** //
 
-#include "calc_polefigure.h"
-#include "def/idiomatic_for.h"
+#include "core/calc_polefigure.h"
+#include "core/def/idiomatic_for.h"
 #include <qmath.h>
-#include "typ/async.h"
+#include "core/typ/async.h"
 
 namespace {
 

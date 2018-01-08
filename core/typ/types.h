@@ -15,7 +15,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include "typ/vec.h"
+#include "core/typ/vec.h"
 
 typedef float inten_t;
 typedef float fwhm_t;

@@ -15,7 +15,7 @@
 #ifndef CURVE_H
 #define CURVE_H
 
-#include "typ/range.h"
+#include "core/typ/range.h"
 #include <functional> // required by some compilers
 
 //! A set of x-y datapoints

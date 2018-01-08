@@ -15,7 +15,7 @@
 #include "output_polefigures.h"
 #include "cfg/colors.h"
 #include "dialog_panels.h"
-#include "fit/fit_fun.h"
+#include "core/fit/fit_fun.h"
 #include "widgets4output.h"
 #include "core/session.h"
 #include "gui/thebub.h"

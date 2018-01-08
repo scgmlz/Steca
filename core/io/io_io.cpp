@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "data/datafile.h"
-#include "typ/exception.h"
+#include "core/data/datafile.h"
+#include "core/typ/exception.h"
 #include <QStringBuilder> // for ".." % ..
 #include <QFileInfo>
 

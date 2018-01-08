@@ -14,9 +14,9 @@
 //
 // ************************************************************************** //
 
-#include "def/comparators.h"
-#include "typ/json.h"
-#include "typ/realpair.h"
+#include "core/def/comparators.h"
+#include "core/typ/json.h"
+#include "core/typ/realpair.h"
 
 int qpair::compare(qpair const& that) const {
     debug::ensure(isValid() && that.isValid());

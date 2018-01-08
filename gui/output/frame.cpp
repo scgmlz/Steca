@@ -14,7 +14,7 @@
 
 #include "widgets4output.h"
 #include "dialog_panels.h"
-#include "calc/calc_polefigure.h"
+#include "core/calc/calc_polefigure.h"
 #include "core/session.h"
 #include "gui/thebub.h"
 #include "frame.h"

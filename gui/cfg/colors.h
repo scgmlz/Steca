@@ -15,7 +15,7 @@
 #ifndef COLORS_H
 #define COLORS_H
 
-#include "typ/types.h"
+#include "core/typ/types.h"
 #include <QRgb>
 
 QRgb intenImage(inten_t inten, inten_t maxInten, bool curved);

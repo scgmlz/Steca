@@ -12,10 +12,10 @@
 //
 // ************************************************************************** //
 
-#include "def/idiomatic_for.h"
-#include "data/datafile.h"
-#include "data/metadata.h"
-#include "typ/exception.h"
+#include "core/def/idiomatic_for.h"
+#include "core/data/datafile.h"
+#include "core/data/metadata.h"
+#include "core/typ/exception.h"
 #include "3rdparty/Mar/MarReader.h"
 
 namespace io {

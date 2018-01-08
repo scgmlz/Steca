@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "typ/curve.h"
-#include "def/idiomatic_for.h"
+#include "core/typ/curve.h"
+#include "core/def/idiomatic_for.h"
 
 void Curve::clear() {
     xs_.clear();

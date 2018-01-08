@@ -14,8 +14,8 @@
 
 #include "tabs_images.h"
 #include "cfg/colors.h"
-#include "data/suite.h"
-#include "data/measurement.h"
+#include "core/data/suite.h"
+#include "core/data/measurement.h"
 #include "cfg/gui_cfg.h"
 #include "gui/thebub.h"
 #include "core/session.h"

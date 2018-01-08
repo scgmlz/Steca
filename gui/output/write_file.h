@@ -15,7 +15,7 @@
 #ifndef WRITE_FILE_H
 #define WRITE_FILE_H
 
-#include "def/macros.h"
+#include "core/def/macros.h"
 #include <QFile>
 
 //! A file opened for writing, specializing QFile.

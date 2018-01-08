@@ -15,7 +15,7 @@
 #ifndef ASYNC_H
 #define ASYNC_H
 
-#include "def/numbers.h"
+#include "core/def/numbers.h"
 
 //! As long as an instance of this class exists, we see the 'waiting' cursor.
 

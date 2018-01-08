@@ -15,16 +15,16 @@
 #ifndef SESSION_H
 #define SESSION_H
 
-#include "calc/lens.h"
-#include "calc/calc_reflection.h"
-#include "calc/calc_reflection_info.h"
-#include "data/angle_map.h"
-#include "data/datafile.h"
-#include "data/experiment.h"
-#include "data/image.h"
-#include "typ/async.h"
-#include "typ/cache.h"
-#include "typ/singleton.h"
+#include "core/calc/lens.h"
+#include "core/calc/calc_reflection.h"
+#include "core/calc/calc_reflection_info.h"
+#include "core/data/angle_map.h"
+#include "core/data/datafile.h"
+#include "core/data/experiment.h"
+#include "core/data/image.h"
+#include "core/typ/async.h"
+#include "core/typ/cache.h"
+#include "core/typ/singleton.h"
 
 extern class Session* gSession;
 

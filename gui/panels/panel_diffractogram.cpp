@@ -13,8 +13,8 @@
 // ************************************************************************** //
 
 #include "panel_diffractogram.h"
-#include "data/suite.h"
-#include "fit/fit_fun.h"
+#include "core/data/suite.h"
+#include "core/fit/fit_fun.h"
 #include "cfg/gui_cfg.h"
 #include "core/session.h"
 #include "gui/thebub.h"

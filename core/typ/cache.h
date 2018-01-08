@@ -15,7 +15,7 @@
 #ifndef CACHE_H
 #define CACHE_H
 
-#include "def/idiomatic_for.h"
+#include "core/def/idiomatic_for.h"
 #include <QMap>
 #include <QSharedPointer> // no auto rm
 

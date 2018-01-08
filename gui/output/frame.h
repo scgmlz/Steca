@@ -15,7 +15,7 @@
 #ifndef FRAME_H
 #define FRAME_H
 
-#include "calc/calc_reflection_info.h"
+#include "core/calc/calc_reflection_info.h"
 #include <QDialog>
 
 class QBoxLayout;

@@ -15,8 +15,8 @@
 #ifndef ARRAY2D_H
 #define ARRAY2D_H
 
-#include "def/comparable.h"
-#include "def/numbers.h"
+#include "core/def/comparable.h"
+#include "core/def/numbers.h"
 
 //! Geometry of a rectangle
 struct size2d {

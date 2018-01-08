@@ -12,9 +12,9 @@
 //
 // ************************************************************************** //
 
-#include "def/idiomatic_for.h"
-#include "fit_methods.h"
-#include "typ/curve.h"
+#include "core/def/idiomatic_for.h"
+#include "core/fit_methods.h"
+#include "core/typ/curve.h"
 
 namespace { // file-scope functions
 

@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "fit/fit_fun.h"
-#include "calc_reflection.h"
+#include "core/fit/fit_fun.h"
+#include "core/calc_reflection.h"
 
 Reflection::Reflection(QString const& peakFunctionName) : peakFunction_(nullptr) {
     setPeakFunction(peakFunctionName);

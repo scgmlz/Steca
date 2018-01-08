@@ -15,7 +15,7 @@
 #ifndef VEC_H
 #define VEC_H
 
-#include "def/numbers.h"
+#include "core/def/numbers.h"
 
 //! limited QVector, only needed methods reexported
 

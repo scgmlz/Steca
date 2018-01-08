@@ -15,7 +15,7 @@
 #ifndef ANGLES_H
 #define ANGLES_H
 
-#include "def/macros.h"
+#include "core/def/macros.h"
 
 class rad;
 

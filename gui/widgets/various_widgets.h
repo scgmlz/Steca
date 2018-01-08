@@ -15,7 +15,7 @@
 #ifndef VARIOUS_WIDGETS_H
 #define VARIOUS_WIDGETS_H
 
-#include "typ/str.h"
+#include "core/typ/str.h"
 #include <QBoxLayout>
 #include <QDockWidget>
 #include <QLineEdit>
