@@ -12,10 +12,10 @@
 //
 // ************************************************************************** //
 
-#include "core/fit_methods.h"
-#include "LM/levmar.h"
+#include "core/fit/fit_methods.h"
 #include "core/def/idiomatic_for.h"
 #include "core/typ/curve.h"
+#include "LM/levmar.h"
 #include <qmath.h>
 
 void FitWrapper::fit(Function& function, Curve const& curve) {

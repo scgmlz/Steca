@@ -15,7 +15,7 @@
 #ifndef PEAK_FUNCTIONS_H
 #define PEAK_FUNCTIONS_H
 
-#include "core/fit_fun.h"
+#include "core/fit/fit_fun.h"
 
 void register_peak_functions();
 

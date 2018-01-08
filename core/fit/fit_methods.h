@@ -15,7 +15,7 @@
 #ifndef FIT_METHODS_H
 #define FIT_METHODS_H
 
-#include "core/fit_fun.h"
+#include "core/fit/fit_fun.h"
 
 //! Wraps Levenberg-Marquardt fit function from 3rd-party library.
 

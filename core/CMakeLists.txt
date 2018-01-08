@@ -1,8 +1,6 @@
 get_filename_component(lib ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
 include_directories (
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_HOME_DIRECTORY}/lib
   ${CMAKE_HOME_DIRECTORY}
   ${CMAKE_HOME_DIRECTORY}/3rdparty/LevMar
   ${CMAKE_HOME_DIRECTORY}/3rdparty/doctest

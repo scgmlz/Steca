@@ -15,7 +15,7 @@
 #ifndef CALC_POLEFIGURE_H
 #define CALC_POLEFIGURE_H
 
-#include "core/calc_reflection_info.h"
+#include "core/calc/calc_reflection_info.h"
 
 class Progress;
 

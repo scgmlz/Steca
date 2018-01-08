@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "core/datafile.h"
+#include "core/data/datafile.h"
 #include "measurement.h"
 #include <QStringBuilder> // for ".." % ..
 
