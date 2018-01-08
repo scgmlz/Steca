@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
-#include "typ/ij.h"
-#include "typ/json.h"
+#include "core/typ/ij.h"
+#include "core/typ/json.h"
 
 TEST(IJ, Trivia) {
     IJ ij1;

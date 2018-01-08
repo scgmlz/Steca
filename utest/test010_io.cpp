@@ -1,8 +1,8 @@
 #include "gtest/gtest.h"
-#include "session.h"
-#include "io/io_io.h"
+#include "core/io/io_io.h"
+#include "core/session.h"
+#include "core/typ/exception.h"
 #include "testdata.h"
-#include "typ/exception.h"
 
 class Session* gSession = Session::instance();
 

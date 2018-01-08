@@ -12,6 +12,7 @@ include_directories(
     ${gtest_SOURCE_DIR}
     ../ThirdParty
     ${CMAKE_SOURCE_DIR}
+    ${CMAKE_BINARY_DIR}
     )
 
 link_directories(

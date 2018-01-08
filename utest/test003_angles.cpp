@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "typ/angles.h"
+#include "core/typ/angles.h"
 #include <qmath.h>
 
 TEST(Angles, Conversion) {
