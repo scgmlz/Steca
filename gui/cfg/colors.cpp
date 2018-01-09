@@ -15,6 +15,7 @@
 #include "gui/cfg/colors.h"
 #include <qmath.h>
 
+//! Color map for raw diffraction image: black-red-gold.
 QRgb colormap::intenImage(inten_t inten, inten_t maxInten, bool curved) {
     if (qIsNaN(inten))
         return qRgb(0x00, 0xff, 0xff);
@@ -39,6 +40,7 @@ QRgb colormap::intenImage(inten_t inten, inten_t maxInten, bool curved) {
     return qRgb(int(0xff * (inten - high) * 4), 0xff, 0xff);
 }
 
+//! Color map for polefigure: shades of blue.
 QColor colormap::intenGraph(inten_t inten, inten_t maxInten) {
     if (!qIsFinite(inten) || qIsNaN(maxInten) || maxInten <= 0)
         return { qRgb(0x00, 0x00, 0x00) };

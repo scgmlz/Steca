@@ -151,21 +151,20 @@ void TabGraph::paintPoints() {
 
     for (auto& r : rs_) {
         qreal inten = r.inten();
-
-        if (qIsFinite(inten)) { // nan comes from interpolation
-            auto pp = p(r.alpha(), r.beta());
-            if (flat_) {
-                QColor color(Qt::blue);
-                p_->setPen(color);
-                p_->setBrush(color);
-                circle(pp, .5);
-            } else {
-                inten /= rgeMax;
-                QColor color = colormap::intenGraph(inten, 1);
-                p_->setPen(color);
-                p_->setBrush(color);
-                circle(pp, inten * r_ / 60); // TODO scale to max inten
-            }
+        if (!qIsFinite(inten)) // nan comes from interpolation
+            continue;
+        auto pp = p(r.alpha(), r.beta());
+        if (flat_) {
+            QColor color(Qt::blue);
+            p_->setPen(color);
+            p_->setBrush(color);
+            circle(pp, .5);
+        } else {
+            inten /= rgeMax;
+            QColor color = colormap::intenGraph(inten, 1);
+            p_->setPen(color);
+            p_->setBrush(color);
+            circle(pp, inten * r_ / 60); // TODO scale to max inten
         }
     }
 }
