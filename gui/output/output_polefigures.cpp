@@ -23,7 +23,6 @@
 #include "gui/widgets/new_q.h"
 #include "gui/widgets/various_widgets.h"
 #include <qmath.h>
-#include <QAction>
 #include <QPainter>
 
 // ************************************************************************** //

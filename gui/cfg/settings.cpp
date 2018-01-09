@@ -14,8 +14,6 @@
 
 #include "gui/cfg/settings.h"
 #include "core/def/debug.h"
-#include <QAction>
-#include <QSpinBox>
 
 Settings::Settings(rcstr group) {
     setFallbacksEnabled(false);

@@ -16,11 +16,10 @@
 #define SETTINGS_H
 
 #include "core/typ/str.h"
+#include <QAction>
+#include <QDoubleSpinBox>
 #include <QSettings>
-
-class QAction;
-class QDoubleSpinBox;
-class QSpinBox;
+#include <QSpinBox>
 
 //! Used to save and retrieve the main window geometry, and certain parameter settings.
 

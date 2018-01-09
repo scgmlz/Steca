@@ -22,7 +22,6 @@
 #include "gui/thehub.h"
 #include "gui/widgets/new_q.h"
 #include "gui/widgets/various_widgets.h"
-#include <QAction>
 
 // ************************************************************************** //
 //  local class TabDiffractogramsSave

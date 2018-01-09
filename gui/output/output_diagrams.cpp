@@ -22,7 +22,6 @@
 #include "gui/widgets/various_widgets.h"
 #include "write_file.h"
 #include "QCustomPlot/qcustomplot.h"
-#include <QAction>
 
 // sorts xs and ys the same way, by (x,y)
 static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
