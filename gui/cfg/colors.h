@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/cfg/colors.h
-//! @brief     Defines ...
+//! @brief     Defines color maps in namespace colormap
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -16,9 +16,12 @@
 #define COLORS_H
 
 #include "core/typ/types.h"
+#include <QColor>
 #include <QRgb>
 
+namespace colormap {
 QRgb intenImage(inten_t inten, inten_t maxInten, bool curved);
-QRgb intenGraph(inten_t inten, inten_t maxInten);
+QColor intenGraph(inten_t inten, inten_t maxInten);
+}
 
 #endif // COLORS_H

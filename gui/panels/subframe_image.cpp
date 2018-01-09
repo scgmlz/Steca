@@ -22,7 +22,6 @@
 #include "gui/widgets/new_q.h"
 #include "gui/widgets/various_widgets.h"
 #include <qmath.h>
-#include <QAction>
 #include <QPainter>
 
 // ************************************************************************** //
@@ -243,8 +242,8 @@ QImage SubframeImage::makeImage(QSharedPointer<Image> image, bool curvedScale) {
     inten_t maxInten = inten_t(rgeInten.max);
 
     for_ij (size.w, size.h)
-        im.setPixel(
-            to_i(i), to_i(j), intenImage(imageLens->imageInten(i, j), maxInten, curvedScale));
+        im.setPixel(to_i(i), to_i(j),
+                    colormap::intenImage(imageLens->imageInten(i, j), maxInten, curvedScale));
     return im;
 }
 

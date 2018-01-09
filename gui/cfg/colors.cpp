@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/cfg/colors.cpp
-//! @brief     Implements ...
+//! @brief     Implements color maps in namespace colormap
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,7 +15,7 @@
 #include "gui/cfg/colors.h"
 #include <qmath.h>
 
-QRgb intenImage(inten_t inten, inten_t maxInten, bool curved) {
+QRgb colormap::intenImage(inten_t inten, inten_t maxInten, bool curved) {
     if (qIsNaN(inten))
         return qRgb(0x00, 0xff, 0xff);
     if (qIsInf(inten))
@@ -39,11 +39,11 @@ QRgb intenImage(inten_t inten, inten_t maxInten, bool curved) {
     return qRgb(int(0xff * (inten - high) * 4), 0xff, 0xff);
 }
 
-QRgb intenGraph(inten_t inten, inten_t maxInten) {
+QColor colormap::intenGraph(inten_t inten, inten_t maxInten) {
     if (!qIsFinite(inten) || qIsNaN(maxInten) || maxInten <= 0)
-        return qRgb(0x00, 0x00, 0x00);
+        return { qRgb(0x00, 0x00, 0x00) };
 
     inten /= maxInten;
 
-    return qRgb(0, 0, int(0xff * (1 - inten / 3)));
+    return { qRgb(0, 0, int(0xff * (1 - inten / 3))) };
 }

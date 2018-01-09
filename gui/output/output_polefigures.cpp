@@ -153,16 +153,16 @@ void TabGraph::paintPoints() {
     for (auto& r : rs_) {
         qreal inten = r.inten();
 
-        if (qIsFinite(inten)) { // nan comes from interpolartion
+        if (qIsFinite(inten)) { // nan comes from interpolation
             auto pp = p(r.alpha(), r.beta());
             if (flat_) {
-                auto color = QColor(Qt::blue);
+                QColor color(Qt::blue);
                 p_->setPen(color);
                 p_->setBrush(color);
                 circle(pp, .5);
             } else {
                 inten /= rgeMax;
-                auto color = QColor(intenGraph(inten, 1));
+                QColor color = colormap::intenGraph(inten, 1);
                 p_->setPen(color);
                 p_->setBrush(color);
                 circle(pp, inten * r_ / 60); // TODO scale to max inten
