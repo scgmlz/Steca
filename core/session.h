@@ -17,7 +17,7 @@
 
 #include "core/calc/lens.h"
 #include "core/calc/reflection.h"
-#include "core/calc/calc_reflection_info.h"
+#include "core/calc/reflection_info.h"
 #include "core/data/angle_map.h"
 #include "core/data/datafile.h"
 #include "core/data/experiment.h"

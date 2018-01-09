@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/calc_reflection_info.h
+//! @file      core/calc/reflection_info.h
 //! @brief     Defines classes ReflectionInfo, ReflectionInfos
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef CALC_REFLECTION_INFO_H
-#define CALC_REFLECTION_INFO_H
+#ifndef REFLECTION_INFO_H
+#define REFLECTION_INFO_H
 
 #include "core/typ/angles.h"
 #include "core/typ/range.h"
@@ -98,4 +98,4 @@ private:
     void invalidate();
 };
 
-#endif // CALC_REFLECTION_INFO_H
+#endif // REFLECTION_INFO_H

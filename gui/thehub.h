@@ -16,7 +16,7 @@
 #define THEHUB_H
 
 #include "core/calc/lens.h"
-#include "core/calc/calc_reflection_info.h"
+#include "core/calc/reflection_info.h"
 #include "core/calc/reflection.h"
 #include "core/data/datafile.h"
 
