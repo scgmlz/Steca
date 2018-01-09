@@ -23,6 +23,8 @@
 #include "core/typ/types.h" // for fwhm_t
 #include <QSharedPointer> // no auto rm
 
+//! Wraps a PeakFunction (pimpl idiom)
+
 class Reflection final {
 public:
     Reflection(QString const& peakFunctionName = "Raw");
@@ -41,7 +43,7 @@ public:
     JsonObj to_json() const;
 
 private:
-    scoped<PeakFunction*> peakFunction_;
+    scoped<PeakFunction*> peakFunction_; //!< pimpl (pointer to implementation)
 };
 
 typedef QSharedPointer<Reflection> shp_Reflection;

@@ -23,6 +23,8 @@
 
 class Metadata;
 
+//! Metadata, peak fit results, and pole figure angles.
+
 class ReflectionInfo final {
     public:
     ReflectionInfo();
@@ -75,6 +77,8 @@ private:
     static str const reflStringTag(uint attr, bool out);
 };
 
+
+//! A list of ReflectionInfo's
 
 class ReflectionInfos : public vec<ReflectionInfo> {
 private:
