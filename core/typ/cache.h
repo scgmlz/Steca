@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/typ/cache.h
-//! @brief     Defines ...
+//! @brief     Defines and implements the templated classes cache_base, cache_lazy
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)

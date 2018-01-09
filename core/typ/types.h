@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/typ/types.h
-//! @brief     Defines ...
+//! @brief     Defines types inten_t, fwhm_t, inten_vec, and enum class eNorm
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -29,7 +29,5 @@ enum class eNorm {
     DELTA_TIME,
     BACKGROUND,
 };
-
-QStringList const& normStrLst();
 
 #endif // TYPES_H

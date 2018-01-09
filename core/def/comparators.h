@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/def/comparators.h
-//! @brief     Defines ...
+//! @brief     Defines preprocessor macros
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -27,10 +27,6 @@
         return -1;                                                                \
     if (v1 > v2)                                                                  \
         return +1;
-
-#define RET_COMPARE_COMPARABLE(o)                                                 \
-    for (int cmp = o.compare(that.o); cmp;)                                       \
-        return cmp;
 
 #define EQ_NE_OPERATOR(T)                                                         \
     bool T::operator==(T const& that) const { return 0 == compare(that); }        \

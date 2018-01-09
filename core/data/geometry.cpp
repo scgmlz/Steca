@@ -16,6 +16,11 @@
 #include "core/def/comparators.h"
 #include <iostream> // for debugging
 
+#define RET_COMPARE_COMPARABLE(o)                                                 \
+    for (int cmp = o.compare(that.o); cmp;)                                       \
+        return cmp;
+
+
 // ************************************************************************** //
 //  class Geometry
 // ************************************************************************** //

@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/def/numbers.h
-//! @brief     Defines ...
+//! @brief     Defines types qint, pint, preal, and some conversion functions
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
