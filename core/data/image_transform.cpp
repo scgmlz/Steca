@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/data/image_transform.cpp
-//! @brief     Implements ...
+//! @brief     Implements class ImageTransform
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
