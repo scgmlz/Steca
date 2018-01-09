@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/calc_reflection_info.cpp
+//! @file      core/calc/reflection_info.cpp
 //! @brief     Implements classes ReflectionInfo, ReflectionInfos
 //!
 //! @homepage  https://github.com/scgmlz/Steca

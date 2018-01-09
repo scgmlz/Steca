@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/dock_metadata.cpp
+//! @file      gui/panels/subframe_metadata.cpp
 //! @brief     Implements class SubframeMetadata
 //!
 //! @homepage  https://github.com/scgmlz/Steca
