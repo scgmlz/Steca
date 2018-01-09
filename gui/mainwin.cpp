@@ -146,7 +146,7 @@ void initMenus(QMenuBar* mbar) {
         });
 }
 
-} // anonymous namespace
+} // local methods
 
 // ************************************************************************** //
 //  class MainWin

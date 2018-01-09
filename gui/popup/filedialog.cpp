@@ -66,7 +66,7 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
     return QSortFilterProxyModel::data(idx, role);
 }
 
-} // anonymous namespace
+} // local methods
 
 // ************************************************************************** //
 //  exported functions

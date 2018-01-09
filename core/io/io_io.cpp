@@ -94,7 +94,7 @@ Datafile load_low_level(rcstr filePath) THROWS {
         THROW("unknown file type: " % filePath);
 }
 
-} // anonymous namespace
+} // local methods
 
 namespace io {
 

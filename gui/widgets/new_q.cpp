@@ -23,7 +23,7 @@ static void setEmWidth(QWidget* w, uint emWidth) {
     w->setMaximumWidth(to_i(emWidth) * w->fontMetrics().width('m'));
 }
 
-} // anonymous namespace
+} // local methods
 
 QAction* newQ::Trigger(rcstr text, rcstr iconFile) {
     QAction* ret = new QAction(text, qApp);

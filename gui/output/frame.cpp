@@ -190,7 +190,7 @@ TabTable::TabTable(
     grid_->addWidget(scrollArea, 0, 1);
 }
 
-} // anonymous namespace
+} // local methods
 
 
 // ************************************************************************** //

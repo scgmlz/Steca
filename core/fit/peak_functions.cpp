@@ -556,7 +556,7 @@ fwhm_t PseudoVoigt2::fwhmError() const {
     return fwhm_t(parameters_.at(parSIGMA).error() + parameters_.at(parGAMMA).error());
 }
 
-} // anonymous namespace
+} // local methods
 
 // ************************************************************************** //
 //!  Register peak functions

@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/data/angle_map.cpp
-//! @brief     Implements classes Angles, AngleMap
+//! @brief     Implements classes AnglePair, AngleMap
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -17,13 +17,7 @@
 #include <qmath.h>
 #include <iostream> // for debugging
 
-AnglePair::AnglePair() : AnglePair(0, 0) {}
-
-AnglePair::AnglePair(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
-
-AngleMap::AngleMap(ImageKey const& key) : key_(key) {
-    calculate();
-}
+namespace {
 
 static uint lowerBound(vec<deg> const& vec, deg x, uint i1, uint i2) {
     debug::ensure(i1 < i2);
@@ -44,6 +38,16 @@ static uint upperBound(vec<deg> const& vec, deg x, uint i1, uint i2) {
         ? upperBound(vec, x, i1, mid)
         : upperBound(vec, x, mid, i2); // ... we should be so lucky
 }
+
+} // local methods
+
+
+AnglePair::AnglePair() : AnglePair(0, 0) {}
+
+AnglePair::AnglePair(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
+
+
+AngleMap::AngleMap(ImageKey const& key) : key_(key) { calculate(); }
 
 void AngleMap::getGmaIndexes(
     Range const& rgeGma, uint_vec const*& indexes, uint& minIndex, uint& maxIndex) const {

@@ -221,7 +221,7 @@ itf_t interpolateValues(deg searchRadius, ReflectionInfos const& infos, deg alph
         return {};
 }
 
-} // anonymous namespace
+} // local methods
 
 //! Interpolates infos to equidistant grid in alpha and beta.
 ReflectionInfos interpolateInfos(

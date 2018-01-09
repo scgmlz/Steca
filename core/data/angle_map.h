@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/data/angle_map.h
-//! @brief     Defines classes Angles, AngleMap
+//! @brief     Defines classes AnglePair, AngleMap
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -18,6 +18,7 @@
 #include "core/data/geometry.h"
 #include <QSharedPointer> // no auto rm
 
+//! A pair (gamma, 2theta), designating  a scattering direction.
 class AnglePair {
 public:
     deg tth;
@@ -26,6 +27,8 @@ public:
     AnglePair();
     AnglePair(deg, deg);
 };
+
+//! Holds (gamma, 2theta) for all pixels in a detector image, and caches sorted gamma values.
 
 class AngleMap {
 public:
