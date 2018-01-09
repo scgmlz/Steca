@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "core/calc/calc_reflection.h"
+#include "core/calc/reflection.h"
 #include "core/fit/fit_fun.h"
 
 Reflection::Reflection(QString const& peakFunctionName) : peakFunction_(nullptr) {

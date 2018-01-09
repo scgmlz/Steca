@@ -17,7 +17,7 @@
 
 #include "core/calc/lens.h"
 #include "core/calc/calc_reflection_info.h"
-#include "core/calc/calc_reflection.h"
+#include "core/calc/reflection.h"
 #include "core/data/datafile.h"
 
 class QAction;

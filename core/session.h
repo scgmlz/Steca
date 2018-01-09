@@ -16,7 +16,7 @@
 #define SESSION_H
 
 #include "core/calc/lens.h"
-#include "core/calc/calc_reflection.h"
+#include "core/calc/reflection.h"
 #include "core/calc/calc_reflection_info.h"
 #include "core/data/angle_map.h"
 #include "core/data/datafile.h"

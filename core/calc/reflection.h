@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/calc_reflection.h
+//! @file      core/calc/reflection.h
 //! @brief     Defines class Reflection
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef CALC_REFLECTION_H
-#define CALC_REFLECTION_H
+#ifndef REFLECTION_H
+#define REFLECTION_H
 
 #include "core/def/special_pointers.h"
 #include "core/fit/fit_fun.h"
@@ -51,4 +51,4 @@ typedef vec<shp_Reflection> Reflections;
 
 Q_DECLARE_METATYPE(shp_Reflection)
 
-#endif // CALC_REFLECTION_H
+#endif // REFLECTION_H
