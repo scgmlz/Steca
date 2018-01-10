@@ -82,9 +82,6 @@ public:
     }
 };
 
-using OutputDataCollection = vec<OutputData>;
-using OutputDataCollections = vec<OutputDataCollection>;
-
 static const Params::ePanels PANELS = Params::ePanels(Params::GAMMA);
 
 // ************************************************************************** //
@@ -104,7 +101,7 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
     show();
 }
 
-OutputDataCollection DiffractogramsFrame::collectCurves(
+vec<OutputData> DiffractogramsFrame::collectCurves(
     const Range& rgeGma, uint gmaSlices, Suite const& dataseq, uint picNum) {
 
     shp_SequenceLens lens = gSession->defaultDatasetLens(dataseq);
@@ -113,7 +110,7 @@ OutputDataCollection DiffractogramsFrame::collectCurves(
     if (rgeGma.isValid())
         rge = rge.intersect(rgeGma);
 
-    OutputDataCollection outputData;
+    vec<OutputData> outputData;
 
     gmaSlices = qMax(1u, gmaSlices);
     const qreal step = rge.width() / gmaSlices;
@@ -132,7 +129,7 @@ OutputData DiffractogramsFrame::collectCurve(Suite const& dataseq) {
     return OutputData(curve, dataseq, lens->rgeGma(), 0); // TODO current picture number
 }
 
-OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
+vec<vec<OutputData>> DiffractogramsFrame::outputAllDiffractograms() {
     debug::ensure(params_->panelGammaSlices);
     uint gmaSlices = to_u(params_->panelGammaSlices->numSlices->value());
 
@@ -145,7 +142,7 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
     const Experiment& expt = gSession->experiment();
     Progress progress(expt.count(), pb_);
 
-    OutputDataCollections allOutputData;
+    vec<vec<OutputData>> allOutputData;
     uint picNum = 1;
     for (shp_Suite suite : expt) {
         progress.step();
