@@ -49,8 +49,9 @@ public:
     shp_Image image() const { return image_; }
     size2d imageSize() const;
 
-    void collectIntens(const Image* intensCorr, inten_vec&, uint_vec&, const Range&,
-                       deg minTth, deg deltaTth) const;
+    void collectIntens(
+        const Image* intensCorr, /*non-const*/ inten_vec&, /*non-const*/ uint_vec&, const Range&,
+        deg minTth, deg deltaTth) const;
 
 private:
     shp_Metadata md_;

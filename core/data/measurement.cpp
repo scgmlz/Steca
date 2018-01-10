@@ -48,9 +48,11 @@ size2d Measurement::imageSize() const {
     return image_->size();
 }
 
-void Measurement::collectIntens(const Image* intensCorr, inten_vec& intens, uint_vec& counts,
-                                const Range& rgeGma, deg minTth, deg deltaTth) const {
-    auto angleMap = gSession->angleMap(*this);
+void Measurement::collectIntens(
+    const Image* intensCorr, inten_vec& intens, uint_vec& counts,
+    const Range& rgeGma, deg minTth, deg deltaTth) const {
+
+    const shp_AngleMap& angleMap = gSession->angleMap(*this);
     debug::ensure(!angleMap.isNull());
     AngleMap const& map = *angleMap;
 
