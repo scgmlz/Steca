@@ -15,6 +15,7 @@
 #ifndef DATAFILE_H
 #define DATAFILE_H
 
+#include "core/data/image.h"
 #include "core/typ/array2d.h"
 #include "core/typ/str.h"
 #include "core/typ/types.h"
@@ -30,16 +31,16 @@ public:
     Datafile(rcstr fileName);
     void addDataset(Metadata const&, size2d const&, inten_vec const&);
 
-    vec<QSharedPointer<Measurement const>> const& suite() const { return experiment_; }
+    vec<QSharedPointer<Measurement const>> const& suite() const { return suite_; }
     size2d imageSize() const { return imageSize_; }
 
     QFileInfo const& fileInfo() const;
     str fileName() const;
-    QSharedPointer<class Image> foldedImage() const;
+    shp_Image foldedImage() const;
 
 private:
     QFileInfo fileInfo_;
-    vec<QSharedPointer<class Measurement const>> experiment_;
+    vec<QSharedPointer<class Measurement const>> suite_;
     size2d imageSize_;
 };
 

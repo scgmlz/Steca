@@ -222,7 +222,7 @@ QPixmap SubframeImage::makeBlankPixmap() {
     return pixmap;
 }
 
-QImage SubframeImage::makeImage(QSharedPointer<Image> image, bool curvedScale) {
+QImage SubframeImage::makeImage(shp_Image image, bool curvedScale) {
     QImage im;
     if (!image)
         return im;
@@ -243,7 +243,7 @@ QImage SubframeImage::makeImage(QSharedPointer<Image> image, bool curvedScale) {
     return im;
 }
 
-QPixmap SubframeImage::makePixmap(QSharedPointer<Image> image) {
+QPixmap SubframeImage::makePixmap(shp_Image image) {
     return QPixmap::fromImage(makeImage(image, !gHub->isFixedIntenImageScale()));
 }
 

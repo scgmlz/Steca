@@ -31,8 +31,8 @@ public:
 private:
     QPixmap makeBlankPixmap();
 
-    QImage makeImage(QSharedPointer<Image>, bool curvedScale);
-    QPixmap makePixmap(QSharedPointer<Image>);
+    QImage makeImage(shp_Image, bool curvedScale);
+    QPixmap makePixmap(shp_Image);
     QPixmap makePixmap(class Measurement const&, Range const&, Range const&);
 
     void setSuite(shp_Suite);

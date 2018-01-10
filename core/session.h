@@ -43,7 +43,7 @@ public:
 private:
     vec<shp_Datafile> files_; //!< data files
     shp_Datafile corrFile_; //!< correction file
-    QSharedPointer<Image> corrImage_;
+    shp_Image corrImage_;
     bool corrEnabled_;
     uint_vec collectedFromFiles_; // from these files
     Experiment experiment_; // suite collected ...
@@ -103,7 +103,7 @@ public:
     bool hasFile(rcstr fileName) const;
     bool hasCorrFile() const { return !corrFile_.isNull(); }
     shp_Datafile corrFile() const { return corrFile_; }
-    QSharedPointer<Image> corrImage() const { return corrImage_; }
+    shp_Image corrImage() const { return corrImage_; }
     Image const* intensCorr() const;
     void tryEnableCorr(bool on) { corrEnabled_ = on && hasCorrFile(); }
     bool isCorrEnabled() const { return corrEnabled_; }

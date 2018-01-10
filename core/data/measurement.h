@@ -47,7 +47,7 @@ public:
 
     Range rgeInten() const;
 
-    QSharedPointer<Image> image() const { return image_; }
+    shp_Image image() const { return image_; }
     size2d imageSize() const;
 
     void collectIntens(Image const* intensCorr, inten_vec&, uint_vec&, Range const&,
@@ -55,7 +55,7 @@ public:
 
 private:
     QSharedPointer<Metadata const> md_;
-    QSharedPointer<Image> image_;
+    shp_Image image_;
 };
 
 #endif // MEASUREMENT_H

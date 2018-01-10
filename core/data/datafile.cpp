@@ -20,11 +20,11 @@ Datafile::Datafile(rcstr fileName) : fileInfo_(fileName) {}
 
 //! The loaders use this function to push suite
 void Datafile::addDataset(Metadata const& md, size2d const& sz, inten_vec const& ivec) {
-    if (experiment_.isEmpty())
+    if (suite_.isEmpty())
         imageSize_ = sz;
     else if (sz != imageSize_)
         THROW("Inconsistent image size in " % fileName());
-    experiment_.append(QSharedPointer<Measurement const>(new Measurement(md, sz, ivec)));
+    suite_.append(QSharedPointer<Measurement const>(new Measurement(md, sz, ivec)));
 }
 
 QFileInfo const& Datafile::fileInfo() const {
@@ -35,10 +35,10 @@ str Datafile::fileName() const {
     return fileInfo_.fileName();
 }
 
-QSharedPointer<Image> Datafile::foldedImage() const {
-    debug::ensure(!experiment_.isEmpty());
-    QSharedPointer<Image> ret(new Image(experiment_.first()->imageSize()));
-    for (auto& one : experiment_)
+shp_Image Datafile::foldedImage() const {
+    debug::ensure(!suite_.isEmpty());
+    shp_Image ret(new Image(suite_.first()->imageSize()));
+    for (auto& one : suite_)
         ret->addIntens(*one->image());
     return ret;
 }
