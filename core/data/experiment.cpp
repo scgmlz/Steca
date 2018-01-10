@@ -66,7 +66,7 @@ Range const& Experiment::rgeFixedInten(bool trans, bool cut) const {
             for (auto& one : *dataseq) {
                 if (one->image()) {
                     auto& image = *one->image();
-                    shp_ImageLens imageLens = gSession->imageLens(image, *this, trans, cut);
+                    shp_ImageLens imageLens = gSession->imageLens(image, trans, cut);
                     rgeFixedInten_.extendBy(imageLens->rgeInten(false));
                 }
             }

@@ -228,7 +228,7 @@ QImage SubframeImage::makeImage(QSharedPointer<Image> image, bool curvedScale) {
     if (!image)
         return im;
 
-    shp_ImageLens imageLens = gSession->imageLens(*image, gSession->experiment(), true, false);
+    shp_ImageLens imageLens = gSession->imageLens(*image, true, false);
     const size2d size = imageLens->size();
     if (size.isEmpty())
         return im;
@@ -256,7 +256,7 @@ QPixmap SubframeImage::makePixmap(
     auto size = im.size();
     for_ij (size.width(), size.height()) {
         ScatterDirection const& a = angleMap->at(to_u(i), to_u(j));
-        QColor color(im.pixel(i, j));
+        QColor color = im.pixel(i, j);
         if (rgeGma.contains(a.gma)) {
             if (rgeTth.contains(a.tth)) {
                 color = Qt::yellow;

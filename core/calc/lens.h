@@ -21,14 +21,13 @@
 #include "core/data/image_transform.h"
 
 class Suite;
-class Experiment;
 class Image;
 
 //! View the data through a lens
 
 class LensBase {
 public:
-    LensBase(Experiment const&, bool trans, bool cut, ImageTransform const&, ImageCut const&);
+    LensBase(bool trans, bool cut, ImageTransform const&, ImageCut const&);
     virtual ~LensBase() {}
     virtual size2d size() const = 0;
 
@@ -38,7 +37,6 @@ protected:
     void doTrans(uint& i, uint& j) const;
     void doCut(uint& i, uint& j) const;
 
-    Experiment const& experiment_;
     bool trans_, cut_;
     ImageTransform imageTransform_;
     ImageCut imageCut_;
@@ -47,7 +45,7 @@ protected:
 
 class ImageLens final : public LensBase {
 public:
-    ImageLens(Image const&, Experiment const&, bool trans, bool cut);
+    ImageLens(Image const&, bool trans, bool cut);
 
     size2d size() const;
 
@@ -66,7 +64,7 @@ typedef QSharedPointer<ImageLens> shp_ImageLens;
 
 class SequenceLens final : public LensBase {
 public:
-    SequenceLens(Suite const&, Experiment const&, eNorm, bool trans,
+    SequenceLens(Suite const&, eNorm, bool trans,
                  bool cut, ImageTransform const&, ImageCut const&);
 
     size2d size() const;
