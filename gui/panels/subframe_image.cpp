@@ -35,21 +35,19 @@ public:
     void setPixmap(QPixmap const&);
     void setScale();
 
-protected:
-    void resizeEvent(QResizeEvent*);
-
 private:
+    void resizeEvent(QResizeEvent*);
+    void paintEvent(QPaintEvent*);
+
     qreal scale_;
     QPixmap original_, scaled_;
-
-    void paintEvent(QPaintEvent*);
 };
+
 
 ImageWidget::ImageWidget() : scale_(0) {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     connect(gHub->toggle_showOverlay, &QAction::toggled, [this]() { update(); });
-
     connect(gHub->toggle_stepScale, &QAction::toggled, [this]() { setScale(); });
 }
 
@@ -62,8 +60,8 @@ void ImageWidget::setScale() {
     if (original_.isNull()) {
         scale_ = 0;
     } else {
-        auto sz = size();
-        auto os = original_.size();
+        const QSize& sz = size();
+        const QSize& os = original_.size();
         scale_ = qMin(qreal(sz.width() - 2) / os.width(), qreal(sz.height() - 2) / os.height());
     }
 
@@ -85,8 +83,8 @@ void ImageWidget::resizeEvent(QResizeEvent* e) {
 
 void ImageWidget::paintEvent(QPaintEvent*) {
     // paint centered
-    auto margin = (size() - scaled_.size()) / 2;
-    QRect rect(QPoint(margin.width(), margin.height()), scaled_.size());
+    const QSize margin = (size() - scaled_.size()) / 2;
+    const QRect rect(QPoint(margin.width(), margin.height()), scaled_.size());
 
     QPainter p(this);
 
@@ -98,31 +96,30 @@ void ImageWidget::paintEvent(QPaintEvent*) {
         p.setPen(Qt::lightGray);
 
         // cut
-        auto cut = gSession->imageCut();
-        QRect r = rect.adjusted(-1, -1, 0, 0)
+        const ImageCut& cut = gSession->imageCut();
+        const QRect r = rect.adjusted(-1, -1, 0, 0)
                       .adjusted(
                           qRound(scale_ * cut.left), qRound(scale_ * cut.top),
                           -qRound(scale_ * cut.right), -qRound(scale_ * cut.bottom));
         p.drawRect(r);
 
-        QPoint rc;
-        rc = r.center();
-        int rcx = rc.x(), rcy = rc.y();
+        const QPoint rc = r.center();
+        const int rcx = rc.x(), rcy = rc.y();
 
         int rl, rt, rr, rb;
         r.getCoords(&rl, &rt, &rr, &rb);
-        int rw = rr - rl;
+        const int rw = rr - rl;
 
         // cross
-        auto off = gSession->geometry().midPixOffset;
-        auto x = qRound(rcx + scale_ * off.i);
-        auto y = qRound(rcy + scale_ * off.j);
+        const IJ& off = gSession->geometry().midPixOffset;
+        const int x = qRound(rcx + scale_ * off.i);
+        const int y = qRound(rcy + scale_ * off.j);
         p.drawLine(x, rt, x, rb);
         p.drawLine(rl, y, rr, y);
 
         // text annotations
-        auto paintText = [this, &p](QPoint pos, rcstr s, bool alignLeft) {
-            auto fm = fontMetrics();
+        const auto paintText = [this, &p](QPoint pos, rcstr s, bool alignLeft) {
+            const QFontMetrics& fm = fontMetrics();
             if (alignLeft)
                 pos.rx() -= fm.width(s);
             p.drawText(pos, s);
@@ -146,9 +143,9 @@ SubframeImage::SubframeImage() {
     setTabPosition(QTabWidget::North);
 
     {
-        auto& box = newQ::Tab(this, "Image")->box();
+        QBoxLayout& box = newQ::Tab(this, "Image")->box();
 
-        auto hb = newQ::HBoxLayout();
+        QBoxLayout* hb = newQ::HBoxLayout();
         box.addLayout(hb);
         box.setAlignment(hb, Qt::AlignTop);
 
@@ -185,14 +182,14 @@ SubframeImage::SubframeImage() {
     }
 
     {
-        auto& tab = *newQ::Tab(this, "Correction");
+        BoxWidget& tab = *newQ::Tab(this, "Correction");
 
         connect(gHub, &TheHub::sigCorrFile,
                 [&tab](QSharedPointer<Datafile const> file) { tab.setEnabled(!file.isNull()); });
 
-        auto& box = tab.box();
+        QBoxLayout& box = tab.box();
 
-        auto hb = newQ::HBoxLayout();
+        QBoxLayout* hb = newQ::HBoxLayout();
         box.addLayout(hb);
         box.setAlignment(hb, Qt::AlignTop);
 
@@ -218,7 +215,7 @@ SubframeImage::SubframeImage() {
 }
 
 QPixmap SubframeImage::makeBlankPixmap() {
-    auto size = gSession->imageSize();
+    const size2d size = gSession->imageSize();
 
     QPixmap pixmap(to_i(size.w), to_i(size.h));
     pixmap.fill(QColor(0, 0, 0, 0));
@@ -231,14 +228,14 @@ QImage SubframeImage::makeImage(QSharedPointer<Image> image, bool curvedScale) {
     if (!image)
         return im;
 
-    auto imageLens = gSession->imageLens(*image, gSession->experiment(), true, false);
-    auto size = imageLens->size();
+    shp_ImageLens imageLens = gSession->imageLens(*image, gSession->experiment(), true, false);
+    const size2d size = imageLens->size();
     if (size.isEmpty())
         return im;
 
     im = QImage(QSize(to_i(size.w), to_i(size.h)), QImage::Format_RGB32);
 
-    auto rgeInten = imageLens->rgeInten(gHub->isFixedIntenImageScale());
+    const Range rgeInten = imageLens->rgeInten(gHub->isFixedIntenImageScale());
     inten_t maxInten = inten_t(rgeInten.max);
 
     for_ij (size.w, size.h)
@@ -259,7 +256,7 @@ QPixmap SubframeImage::makePixmap(
     auto size = im.size();
     for_ij (size.width(), size.height()) {
         ScatterDirection const& a = angleMap->at(to_u(i), to_u(j));
-        auto color = QColor(im.pixel(i, j));
+        QColor color(im.pixel(i, j));
         if (rgeGma.contains(a.gma)) {
             if (rgeTth.contains(a.tth)) {
                 color = Qt::yellow;
@@ -284,14 +281,14 @@ void SubframeImage::render() {
     {
         QPixmap pixMap;
 
-        uint nSlices = to_u(numSlices_->value());
+        const uint nSlices = to_u(numSlices_->value());
         numSlice_->setMaximum(qMax(1, to_i(nSlices)));
         numSlice_->setEnabled(nSlices > 0);
 
         if (dataseq_) {
             // 1 - based
-            uint by = qBound(1u, uint(gHub->suiteGroupedBy()), dataseq_->count());
-            uint n = qBound(1u, to_u(spinN_->value()), by);
+            const uint by = qBound(1u, uint(gHub->suiteGroupedBy()), dataseq_->count());
+            const uint n = qBound(1u, to_u(spinN_->value()), by);
 
             spinN_->setValue(to_i(n));
             spinN_->setEnabled(by > 1);
@@ -303,9 +300,9 @@ void SubframeImage::render() {
                 uint nSlice = qMax(1u, to_u(numSlice_->value()));
                 uint iSlice = nSlice - 1;
 
-                auto rgeGma = lens_->rgeGma();
-                auto min = rgeGma.min;
-                auto wn = rgeGma.width() / nSlices;
+                const Range rgeGma = lens_->rgeGma();
+                const qreal min = rgeGma.min;
+                const qreal wn = rgeGma.width() / nSlices;
 
                 rge = Range(min + iSlice * wn, min + (iSlice + 1) * wn);
 
