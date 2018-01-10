@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/data/angle_map.cpp
-//! @brief     Implements classes AnglePair, AngleMap
+//! @brief     Implements classes ScatterDirection, AngleMap
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -42,9 +42,9 @@ static uint upperBound(vec<deg> const& vec, deg x, uint i1, uint i2) {
 } // local methods
 
 
-AnglePair::AnglePair() : AnglePair(0, 0) {}
+ScatterDirection::ScatterDirection() : ScatterDirection(0, 0) {}
 
-AnglePair::AnglePair(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
+ScatterDirection::ScatterDirection(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
 
 
 AngleMap::AngleMap(ImageKey const& key) : key_(key) { calculate(); }
@@ -105,7 +105,7 @@ void AngleMap::calculate() {
             rad gma = atan2(b_y, b_x);
             rad tth = atan2(b_r, b_z);
 
-            arrAngles_.setAt(i, j, AnglePair(tth.toDeg(), gma.toDeg()));
+            arrAngles_.setAt(i, j, ScatterDirection(tth.toDeg(), gma.toDeg()));
         }
     }
 

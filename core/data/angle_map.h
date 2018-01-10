@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/data/angle_map.h
-//! @brief     Defines classes AnglePair, AngleMap
+//! @brief     Defines classes ScatterDirection, AngleMap
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -18,14 +18,15 @@
 #include "core/data/geometry.h"
 #include <QSharedPointer> // no auto rm
 
-//! A pair (gamma, 2theta), designating  a scattering direction.
-class AnglePair {
+//! A pair of angles (gamma, 2theta) that designate a scattering direction.
+
+class ScatterDirection {
 public:
+    ScatterDirection();
+    ScatterDirection(deg, deg);
+
     deg tth;
     deg gma;
-
-    AnglePair();
-    AnglePair(deg, deg);
 };
 
 //! Holds (gamma, 2theta) for all pixels in a detector image, and caches sorted gamma values.
@@ -35,8 +36,8 @@ public:
     AngleMap() = delete;
     AngleMap(ImageKey const&);
 
-    AnglePair const& at(uint i) const { return arrAngles_.at(i); }
-    AnglePair const& at(uint i, uint j) const { return arrAngles_.at(i, j); }
+    ScatterDirection const& at(uint i) const { return arrAngles_.at(i); }
+    ScatterDirection const& at(uint i, uint j) const { return arrAngles_.at(i, j); }
 
     Range rgeTth() const { return rgeTth_; }
     Range rgeGma() const { return rgeGma_; }
@@ -49,7 +50,7 @@ private:
 
     ImageKey key_;
 
-    Array2D<AnglePair> arrAngles_;
+    Array2D<ScatterDirection> arrAngles_;
 
     Range rgeTth_;
     Range rgeGma_, rgeGmaFull_;

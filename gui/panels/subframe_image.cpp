@@ -258,7 +258,7 @@ QPixmap SubframeImage::makePixmap(
 
     auto size = im.size();
     for_ij (size.width(), size.height()) {
-        AnglePair const& a = angleMap->at(to_u(i), to_u(j));
+        ScatterDirection const& a = angleMap->at(to_u(i), to_u(j));
         auto color = QColor(im.pixel(i, j));
         if (rgeGma.contains(a.gma)) {
             if (rgeTth.contains(a.tth)) {
