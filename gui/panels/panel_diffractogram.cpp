@@ -179,7 +179,7 @@ void DiffractogramPlotOverlay::paintEvent(QPaintEvent*) {
 }
 
 void DiffractogramPlotOverlay::updateCursorRegion() {
-    auto g = geometry();
+    const QRect& g = geometry();
     // updating 2 pixels seems to work both on Linux & Mac
     update(cursorPos_ - 1, g.top(), 2, g.height());
 }
@@ -190,12 +190,13 @@ void DiffractogramPlotOverlay::updateCursorRegion() {
 
 DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     : diffractogram_(diffractogram), showBgFit_(false) {
+
     overlay_ = new DiffractogramPlotOverlay(*this);
 
     bgRgeColor_ = QColor(0x98, 0xfb, 0x98, 0x50);
     reflRgeColor_ = QColor(0x87, 0xce, 0xfa, 0x50);
 
-    auto* ar = axisRect();
+    QCPAxisRect* ar = axisRect();
 
     // fix margins
     QFontMetrics fontMetrics(font());
@@ -280,7 +281,7 @@ void DiffractogramPlot::plot(
 
         clearReflLayer();
     } else {
-        auto tthRange = dgram.rgeX();
+        const Range& tthRange = dgram.rgeX();
 
         Range intenRange;
         if (gHub->isFixedIntenDgramScale()) {
@@ -312,8 +313,8 @@ void DiffractogramPlot::plot(
         setCurrentLayer("refl");
 
         for_i (refls.count()) {
-            auto& r = refls.at(i);
-            auto* graph = addGraph();
+            const Curve& r = refls.at(i);
+            QCPGraph* graph = addGraph();
             reflGraph_.append(graph);
             graph->setPen(QPen(Qt::green, i == currReflIndex ? 2 : 1));
             graph->setData(r.xs().sup(), r.ys().sup());
@@ -353,7 +354,7 @@ void DiffractogramPlot::updateBg() {
 }
 
 void DiffractogramPlot::clearReflLayer() {
-    for (auto g : reflGraph_)
+    for (QCPGraph* g : reflGraph_)
         removeGraph(g);
     reflGraph_.clear();
 }
@@ -378,13 +379,13 @@ void DiffractogramPlot::addBgItem(const Range& range) {
         break;
     }
 
-    auto ir = new QCPItemRect(this);
+    QCPItemRect* ir = new QCPItemRect(this);
     ir->setPen(QPen(color));
     ir->setBrush(QBrush(color));
-    auto br = ir->bottomRight;
+    QCPItemPosition* br = ir->bottomRight;
     br->setTypeY(QCPItemPosition::ptViewportRatio);
     br->setCoords(range.max, 1);
-    auto tl = ir->topLeft;
+    QCPItemPosition* tl = ir->topLeft;
     tl->setTypeY(QCPItemPosition::ptViewportRatio);
     tl->setCoords(range.min, 0);
     addItem(ir);
@@ -392,7 +393,7 @@ void DiffractogramPlot::addBgItem(const Range& range) {
 
 void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
     QCustomPlot::resizeEvent(e);
-    auto size = e->size();
+    const QSize size = e->size();
     overlay_->setGeometry(0, 0, size.width(), size.height());
 }
 
