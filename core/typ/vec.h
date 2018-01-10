@@ -55,6 +55,7 @@ public:
 
     T const& at(uint i) const { return super::at(to_i(i)); }
     T& operator[](uint i) { return super::operator[](to_i(i)); }
+    const T& operator[](uint i) const { return super::operator[](to_i(i)); }
 };
 
 // most useful vectors (that's why they are in the global namespace)

@@ -63,7 +63,7 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
     box_->addSpacing(8);
 
     for_i (showCols.count()) {
-        auto& item = showCols[i];
+        showcol_t& item = showCols[i];
         box_->addWidget((item.cb = newQ::CheckBox(item.name)));
     }
 
@@ -130,8 +130,7 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
     };
 
     for_i (showCols_.count()) {
-        auto cb = showCols_.at(i).cb;
-
+        QCheckBox* cb = showCols_.at(i).cb;
         connect(cb, &QCheckBox::toggled, [this, _updateRbs, i](bool on) {
             if (on)
                 table_.showColumn(to_i(i) + 1);
@@ -275,12 +274,12 @@ void Frame::calculate() {
     if (!reflections.isEmpty()) {
         uint reflCount = reflections.count();
 
-        auto ps = params_->panelGammaSlices;
+        const PanelGammaSlices* ps = params_->panelGammaSlices;
         debug::ensure(ps);
 
         uint gammaSlices = to_u(ps->numSlices->value());
 
-        auto pr = params_->panelGammaRange;
+        const PanelGammaRange* pr = params_->panelGammaRange;
         debug::ensure(pr);
 
         Range rgeGamma;
@@ -304,7 +303,7 @@ void Frame::interpolate() {
 
     interpPoints_.clear();
 
-    auto pi = params_->panelInterpolation;
+    const PanelInterpolation* pi = params_->panelInterpolation;
     if (pi) {
         deg alphaStep = pi->stepAlpha->value();
         deg betaStep = pi->stepBeta->value();
@@ -335,7 +334,7 @@ void Frame::displayReflection(uint reflIndex, bool interpolated) {
     if (calcPoints_.count() <= reflIndex)
         return;
 
-    for (auto& r : (interpolated ? interpPoints_ : calcPoints_).at(reflIndex))
+    for (const ReflectionInfo& r : (interpolated ? interpPoints_ : calcPoints_).at(reflIndex))
         table_->addRow(r.data(), false);
 
     table_->sortData();
@@ -349,6 +348,6 @@ uint Frame::getReflIndex() const {
 }
 
 bool Frame::getInterpolated() const {
-    auto pi = params_->panelPoints;
+    const PanelPoints* pi = params_->panelPoints;
     return pi ? pi->rbInterp->isChecked() : false;
 }

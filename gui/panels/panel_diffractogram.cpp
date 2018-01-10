@@ -286,8 +286,7 @@ void DiffractogramPlot::plot(
         Range intenRange;
         if (gHub->isFixedIntenDgramScale()) {
             debug::ensure(!diffractogram_.suite().isNull());
-            auto lens = gSession->defaultDatasetLens(*diffractogram_.suite());
-            intenRange = lens->rgeInten();
+            intenRange = gSession->defaultDatasetLens(*diffractogram_.suite())->rgeInten();
         } else {
             intenRange = dgramBgFitted.rgeY();
             intenRange.extendBy(dgram.rgeY());
@@ -403,20 +402,20 @@ void DiffractogramPlot::onReflectionData(shp_Reflection reflection) {
     fits_->clearData();
 
     if (reflection && diffractogram_.suite()) {
-        auto& fun = reflection->peakFunction();
+        const PeakFunction& fun = reflection->peakFunction();
 
-        auto gp = fun.guessedPeak();
+        const qpair gp = fun.guessedPeak();
         if (gp.isValid()) {
             guesses_->addData(gp.x, gp.y);
-            auto gw2 = fun.guessedFWHM() / 2;
+            qreal gw2 = fun.guessedFWHM() / 2;
             guesses_->addData(gp.x - gw2, gp.y / 2);
             guesses_->addData(gp.x + gw2, gp.y / 2);
         }
 
-        auto fp = fun.fittedPeak();
+        const qpair fp = fun.fittedPeak();
         if (fp.isValid()) {
             fits_->addData(fp.x, fp.y);
-            auto fw2 = fun.fittedFWHM() / 2;
+            qreal fw2 = fun.fittedFWHM() / 2;
             fits_->addData(fp.x - fw2, fp.y / 2);
             fits_->addData(fp.x + fw2, fp.y / 2);
         }
@@ -427,8 +426,8 @@ void DiffractogramPlot::onReflectionData(shp_Reflection reflection) {
 //  class Diffractogram
 // ************************************************************************** //
 
-Diffractogram::Diffractogram()
-    : suite_(nullptr), currReflIndex_(0) {
+Diffractogram::Diffractogram() : suite_(nullptr), currReflIndex_(0) {
+
     setLayout((box_ = newQ::BoxLayout(Qt::Vertical)));
     box_->addWidget((plot_ = new DiffractogramPlot(*this)));
     auto hb = newQ::HBoxLayout();
@@ -579,8 +578,7 @@ void Diffractogram::calcDgram() {
     if (gHub->isCombinedDgram())
         dgram_ = suite_->experiment().avgCurve();
     else {
-        auto lens = gSession->defaultDatasetLens(*suite_);
-        dgram_ = lens->makeCurve(gSession->gammaRange());
+        dgram_ = gSession->defaultDatasetLens(*suite_)->makeCurve(gSession->gammaRange());
     }
 }
 
@@ -588,7 +586,8 @@ void Diffractogram::calcBackground() {
     bg_.clear();
     dgramBgFitted_.clear();
 
-    auto bgPolynom = Polynom::fromFit(gSession->bgPolyDegree(), dgram_, gSession->bgRanges());
+    const Polynom& bgPolynom =
+        Polynom::fromFit(gSession->bgPolyDegree(), dgram_, gSession->bgRanges());
 
     for_i (dgram_.count()) {
         qreal x = dgram_.x(i), y = bgPolynom.y(x);
@@ -612,7 +611,7 @@ void Diffractogram::calcReflections() {
     refls_.clear();
     currReflIndex_ = 0;
 
-    auto rs = gSession->reflections();
+    const Reflections& rs = gSession->reflections();
     for_i (rs.count()) {
         auto& r = rs[i];
         if (r == currentReflection_)
@@ -620,17 +619,15 @@ void Diffractogram::calcReflections() {
 
         r->fit(dgramBgFitted_);
 
-        auto& rge = r->range();
-        auto& fun = r->peakFunction();
+        const Range& rge = r->range();
+        const PeakFunction& fun = r->peakFunction();
 
         Curve c;
-
         for_i (dgramBgFitted_.count()) {
             qreal x = dgramBgFitted_.x(i);
             if (rge.contains(x))
                 c.append(x, fun.y(x));
         }
-
         refls_.append(c);
     }
 
