@@ -43,45 +43,39 @@ void Curve::append(qreal x, qreal y) {
 }
 
 Curve Curve::intersect(const Range& range) const {
-    Curve res;
-
+    Curve ret;
     if (!range.isEmpty()) {
         debug::ensure(isOrdered());
-
-        uint xi = 0, cnt = count();
-        auto minX = range.min, maxX = range.max;
-        while (xi < cnt && xs_.at(xi) < minX)
+        uint xi = 0;
+        const uint cnt = count();
+        while (xi < cnt && xs_.at(xi) < range.min)
             ++xi;
-        while (xi < cnt && xs_.at(xi) <= maxX) {
-            res.append(xs_.at(xi), ys_.at(xi));
+        while (xi < cnt && xs_.at(xi) <= range.max) {
+            ret.append(xs_.at(xi), ys_.at(xi));
             ++xi;
         }
     }
-
-    return res;
+    return ret;
 }
 
+//! collect points that are in ranges
+
+//! it works because both curve points and ranges are ordered and ranges are non-overlapping
+
 Curve Curve::intersect(const Ranges& ranges) const {
-    Curve res;
-
-    // collect points that are in ranges
-    // it works because both curve points and ranges are ordered and ranges are
-    // non-overlapping
+    Curve ret;
     debug::ensure(isOrdered());
-
     uint xi = 0, cnt = count();
     for_i (ranges.count()) {
-        auto& range = ranges.at(i);
-        auto minX = range.min, maxX = range.max;
-        while (xi < cnt && xs_.at(xi) < minX)
+        const Range& range = ranges.at(i);
+        while (xi < cnt && xs_.at(xi) < range.min)
             ++xi;
-        while (xi < cnt && xs_.at(xi) <= maxX) {
-            res.append(xs_.at(xi), ys_.at(xi));
+        while (xi < cnt && xs_.at(xi) <= range.max) {
+            ret.append(xs_.at(xi), ys_.at(xi));
             ++xi;
         }
     }
-
-    return res;
+    return ret;
 }
 
 //! Subtracts a background that is given as a funtion y(x).
@@ -94,24 +88,21 @@ void Curve::subtract(std::function<qreal(qreal)> const& func)
 uint Curve::maqpairindex() const {
     if (isEmpty())
         return 0;
-
-    auto yMax = ys_.first();
-    uint index = 0;
-
+    qreal yMax = ys_.first();
+    uint ret = 0;
     for_i (count()) {
         auto y = ys_.at(i);
         if (y > yMax) {
             yMax = y;
-            index = i;
+            ret = i;
         }
     }
-
-    return index;
+    return ret;
 }
 
 qreal Curve::sumY() const {
-    qreal sum = 0;
+    qreal ret = 0;
     for_i (count())
-        sum += ys_.at(i);
-    return sum;
+        ret += ys_.at(i);
+    return ret;
 }
