@@ -44,7 +44,7 @@ void Session::clear() {
 
 bool Session::hasFile(rcstr fileName) const {
     QFileInfo fileInfo(fileName);
-    for (auto& file : files_)
+    for (const shp_Datafile& file : files_)
         if (fileInfo == file->fileInfo())
             return true;
     return false;
@@ -78,7 +78,7 @@ void Session::calcIntensCorr() const {
     intensCorr_.fill(1, corrImage_->size());
 
     for_ij (w, h) {
-        auto inten = corrImage_->inten(i + di, j + dj);
+        const inten_t inten = corrImage_->inten(i + di, j + dj);
         qreal fact;
         if (inten > 0) {
             fact = avg / inten;
@@ -127,16 +127,15 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
 
     vec<shp_Measurement> suiteFromFiles;
     for (uint i : collectedFromFiles_)
-        for (auto& suite : files_.at(i)->suite())
-            suiteFromFiles.append(suite);
-
+        for (const shp_Measurement& measurement : files_.at(i)->suite())
+            suiteFromFiles.append(measurement);
     if (suiteFromFiles.isEmpty())
         return;
 
     shp_Suite cd(new Suite);
     uint i = 0;
 
-    auto appendCd = [this, &cd, &combineBy, &i]() {
+    auto _appendCd = [this, &cd, &combineBy, &i]() {
         uint cnt = cd->count();
         if (cnt) {
             str tag = str::number(i + 1);
@@ -150,15 +149,15 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
     };
 
     uint by = combineBy;
-    for (auto& suite : suiteFromFiles) {
-        cd->append(shp_Measurement(suite));
+    for (const shp_Measurement& measurement : suiteFromFiles) {
+        cd->append(measurement);
         if (1 >= by--) {
-            appendCd();
+            _appendCd();
             by = combineBy;
         }
     }
 
-    appendCd(); // the remaining ones
+    _appendCd(); // the remaining ones
 }
 
 void Session::updateImageSize() {
@@ -198,7 +197,7 @@ void Session::setGeometry(preal detectorDistance, preal pixSize, IJ const& midPi
 }
 
 IJ Session::midPix() const {
-    auto sz = imageSize();
+    size2d sz = imageSize();
     IJ mid(sz.w / 2, sz.h / 2);
 
     IJ const& off = geometry_.midPixOffset;
@@ -281,11 +280,11 @@ ReflectionInfos Session::makeReflectionInfos(
     if (progress)
         progress->setTotal(expt.count());
 
-    for (auto& suite : expt) {
+    for (const shp_Suite& suite : expt) {
         if (progress)
             progress->step();
 
-        auto lens = dataseqLens(*suite, norm_, true, true);
+        const shp_SequenceLens& lens = dataseqLens(*suite, norm_, true, true);
 
         Range rge = (gmaSlices > 0) ? lens->rgeGma() : lens->rgeGmaFull();
         if (rgeGma.isValid())
@@ -299,7 +298,7 @@ ReflectionInfos Session::makeReflectionInfos(
         for_i (uint(gmaSlices)) {
             qreal min = rge.min + i * step;
             Range gmaStripe(min, min + step);
-            auto refInfo = makeReflectionInfo(*lens, reflection, gmaStripe);
+            const ReflectionInfo refInfo = makeReflectionInfo(*lens, reflection, gmaStripe);
             if (!qIsNaN(refInfo.inten()))
                 infos.append(refInfo);
         }
@@ -326,7 +325,7 @@ void Session::addReflection(const QJsonObject& obj) {
 }
 
 qreal Session::calcAvgBackground(Suite const& suite) const {
-    auto lens = dataseqLens(suite, eNorm::NONE, true, true);
+    const shp_SequenceLens& lens = dataseqLens(suite, eNorm::NONE, true, true);
     Curve gmaCurve = lens->makeCurve(); // had argument averaged=true
     auto bgPolynom = Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
     return bgPolynom.avgY(lens->rgeTth());
@@ -335,7 +334,7 @@ qreal Session::calcAvgBackground(Suite const& suite) const {
 qreal Session::calcAvgBackground() const {
     TakesLongTime __;
     qreal bg = 0;
-    for (auto& suite : experiment())
+    for (const shp_Suite& suite : experiment())
         bg += calcAvgBackground(*suite);
     return bg / experiment().count();
 }
