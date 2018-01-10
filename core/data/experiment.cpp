@@ -54,19 +54,19 @@ qreal Experiment::avgDeltaTime() const {
 
 const Range& Experiment::rgeGma() const {
     if (!rgeGma_.isValid())
-        for (auto& dataseq : *this)
-            rgeGma_.extendBy(dataseq->rgeGma());
+        for (const shp_Suite& suite : *this)
+            rgeGma_.extendBy(suite->rgeGma());
     return rgeGma_;
 }
 
 const Range& Experiment::rgeFixedInten(bool trans, bool cut) const {
     if (!rgeFixedInten_.isValid()) {
         TakesLongTime __;
-        for (auto& dataseq : *this)
-            for (auto& one : *dataseq) {
+        for (const shp_Suite& suite : *this)
+            for (const shp_Measurement& one : *suite) {
                 if (one->image()) {
-                    auto& image = *one->image();
-                    shp_ImageLens imageLens = gSession->imageLens(image, trans, cut);
+                    const shp_Image& image = one->image();
+                    shp_ImageLens imageLens = gSession->imageLens(*image, trans, cut);
                     rgeFixedInten_.extendBy(imageLens->rgeInten(false));
                 }
             }
@@ -92,18 +92,16 @@ void Experiment::invalidateAvgMutables() const {
 
 shp_Suite Experiment::combineAll() const {
     shp_Suite ret(new Suite);
-    for (shp_Suite const& dataseq : *this)
-        for (shp_Measurement const& one : *dataseq)
+    for (shp_Suite const& suite : *this)
+        for (shp_Measurement const& one : *suite)
             ret->append(one);
     return ret;
 }
 
 qreal Experiment::calcAvgMutable(qreal (Suite::*avgMth)() const) const {
     qreal ret = 0;
-    if (!isEmpty()) {
-        for (auto& dataseq : *this)
-            ret += ((*dataseq).*avgMth)();
-        ret /= count();
-    }
+    for (shp_Suite const& suite : *this)
+        ret += ((*suite).*avgMth)();
+    ret /= count();
     return ret;
 }

@@ -52,31 +52,24 @@ public:
 class PeakFunction : public Function {
 public:
     PeakFunction();
-    PeakFunction* clone() const;
-
-    const Range& range() const { return range_; }
-    virtual void setRange(const Range&);
-
-    virtual void setGuessedPeak(qpair const&);
-    virtual void setGuessedFWHM(fwhm_t);
-
-    qpair const& guessedPeak() const { return guessedPeak_; }
-    fwhm_t guessedFWHM() const { return guessedFWHM_; }
-
-    virtual qpair fittedPeak() const = 0;
-    virtual fwhm_t fittedFWHM() const = 0;
-
-    virtual qpair peakError() const = 0;
-    virtual fwhm_t fwhmError() const = 0;
 
     void reset();
-
     void fit(Curve const& curve) { return fit(curve, range_); }
-
     virtual void fit(Curve const&, const Range&);
-
-    JsonObj to_json() const final;
     void from_json(JsonObj const&) THROWS;
+    virtual void setRange(const Range& range) { range_ = range; }
+    virtual void setGuessedPeak(const qpair& peak) { guessedPeak_ = peak; }
+    virtual void setGuessedFWHM(const fwhm_t fwhm) { guessedFWHM_ = fwhm; }
+
+    PeakFunction* clone() const;
+    const Range& range() const { return range_; }
+    qpair const& guessedPeak() const { return guessedPeak_; }
+    fwhm_t guessedFWHM() const { return guessedFWHM_; }
+    virtual qpair fittedPeak() const = 0;
+    virtual fwhm_t fittedFWHM() const = 0;
+    virtual qpair peakError() const = 0;
+    virtual fwhm_t fwhmError() const = 0;
+    JsonObj to_json() const final;
 
 protected:
     Range range_;

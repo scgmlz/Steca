@@ -98,19 +98,7 @@ void Polynom::from_json(JsonObj const& obj) THROWS {
 //  class PeakFunction
 // ************************************************************************** //
 
-void PeakFunction::setRange(const Range& range) {
-    range_ = range;
-}
-
 PeakFunction::PeakFunction() : guessedPeak_(), guessedFWHM_(NAN) {}
-
-void PeakFunction::setGuessedPeak(qpair const& peak) {
-    guessedPeak_ = peak;
-}
-
-void PeakFunction::setGuessedFWHM(fwhm_t fwhm) {
-    guessedFWHM_ = fwhm;
-}
 
 void PeakFunction::reset() {
     Function::reset();
@@ -119,26 +107,24 @@ void PeakFunction::reset() {
 }
 
 void PeakFunction::fit(Curve const& curve, const Range& range) {
-    Curve c = prepareFit(curve, range);
+    const Curve c = prepareFit(curve, range);
     if (c.isEmpty())
         return;
 
     //  if (!guessedPeak().isValid()) {  // calculate guesses // TODO caching
     //  temporarily disabled, until it works correctly
-    uint peakIndex = c.maqpairindex();
-    auto peakTth = c.x(peakIndex);
-    auto peakIntens = c.y(peakIndex);
+    const uint peakIndex = c.maqpairindex();
+    const qreal peakTth = c.x(peakIndex);
+    const qreal peakIntens = c.y(peakIndex);
 
     // half-maximum indices
     uint hmi1 = peakIndex, hmi2 = peakIndex;
-
     // left
     for (uint i = peakIndex; i-- > 0;) {
         hmi1 = i;
         if (c.y(i) < peakIntens / 2)
             break;
     }
-
     // right
     for (uint i = peakIndex, iCnt = c.count(); i < iCnt; ++i) {
         hmi2 = i;

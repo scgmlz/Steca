@@ -30,7 +30,7 @@ void FitWrapper::fit(Function& function, Curve const& curve) {
     qreal_vec parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
 
     for_i (parCount) {
-        auto par = function_->parameterAt(i);
+        const Function::Parameter& par = function_->parameterAt(i);
         debug::ensure(qIsFinite(par.value())); // TODO if not so, return false ?
         parValue[i] = par.value();
         parMin[i] = par.valueRange().min;

@@ -91,7 +91,7 @@ uint Curve::maqpairindex() const {
     qreal yMax = ys_.first();
     uint ret = 0;
     for_i (count()) {
-        auto y = ys_.at(i);
+        const qreal y = ys_.at(i);
         if (y > yMax) {
             yMax = y;
             ret = i;

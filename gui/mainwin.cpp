@@ -51,13 +51,13 @@ namespace {
 //! Initialize the menu bar. Part of the MainWin initialization.
 void initMenus(QMenuBar* mbar) {
 
-    auto separator = [mbar]()->QAction* {
+    auto _separator = [mbar]()->QAction* {
         QAction* ret = new QAction(mbar);
         ret->setSeparator(true);
         return ret;
     };
 
-    auto actionsToMenu = [mbar](const char* menuName, QList<QAction*> actions)->void {
+    auto _actionsToMenu = [mbar](const char* menuName, QList<QAction*> actions)->void {
         QMenu* menu = mbar->addMenu(menuName);
         menu->addActions(actions);
         str prefix = str("%1: ").arg(menu->title().remove('&'));
@@ -71,25 +71,25 @@ void initMenus(QMenuBar* mbar) {
     mbar->setNativeMenuBar(true);
 #endif
 
-    actionsToMenu(
+    _actionsToMenu(
         "&File",
         {
             gHub->trigger_addFiles,
                 gHub->trigger_removeFile,
-                separator(),
+                _separator(),
                 gHub->toggle_enableCorr,
                 gHub->trigger_remCorr,
-                separator(),
+                _separator(),
                 gHub->trigger_loadSession,
                 gHub->trigger_saveSession,
                 gHub->trigger_clearSession,
 #ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
-                separator(),
+                _separator(),
 #endif
                 gHub->trigger_quit,
         });
 
-    actionsToMenu(
+    _actionsToMenu(
         "&Image",
         {   gHub->trigger_rotateImage,
                 gHub->toggle_mirrorImage,
@@ -100,22 +100,22 @@ void initMenus(QMenuBar* mbar) {
                 gHub->toggle_showBins,
         });
 
-    actionsToMenu(
+    _actionsToMenu(
         "&Diffractogram",
         {
             gHub->toggle_selRegions,
                 gHub->toggle_showBackground,
                 gHub->trigger_clearBackground,
                 gHub->trigger_clearReflections,
-                separator(),
+                _separator(),
                 gHub->trigger_addReflection,
                 gHub->trigger_remReflection,
-                separator(),
+                _separator(),
                 gHub->toggle_combinedDgram,
                 gHub->toggle_fixedIntenDgram,
         });
 
-    actionsToMenu(
+    _actionsToMenu(
         "&Output",
         {
             gHub->trigger_outputPolefigures,
@@ -123,21 +123,21 @@ void initMenus(QMenuBar* mbar) {
                 gHub->trigger_outputDiffractograms,
         });
 
-    actionsToMenu(
+    _actionsToMenu(
         "&View",
         {   gHub->toggle_viewFiles,
                 gHub->toggle_viewDatasets,
                 gHub->toggle_viewMetadata,
-                separator(),
+                _separator(),
 #ifndef Q_OS_OSX
                 gHub->toggle_fullScreen,
 #endif
                 gHub->toggle_viewStatusbar,
-                separator(),
+                _separator(),
                 gHub->trigger_viewReset,
         });
 
-    actionsToMenu(
+    _actionsToMenu(
         "&Help",
         {
             gHub->trigger_about, // Mac puts About into the Apple menu
@@ -241,7 +241,7 @@ void MainWin::checkUpdate() {
     str ver = qApp->applicationVersion();
     str qry = ver % "\t| " % QSysInfo::prettyProductName();
     req.setUrl(QUrl(str(STECA2_VERSION_URL) % "?" % qry));
-    auto reply = netMan_.get(req);
+    QNetworkReply* reply = netMan_.get(req);
 
     connect(reply, &QNetworkReply::finished, [this, reply]() {
         if (QNetworkReply::NoError != reply->error()) {

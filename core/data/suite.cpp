@@ -176,7 +176,7 @@ inten_vec Suite::collectIntens(const Image* intensCorr, const Range& rgeGma) con
     if (gSession->intenScaledAvg()) {
         preal scale = gSession->intenScale();
         for_i (numBins) {
-            auto cnt = counts.at(i);
+            uint cnt = counts.at(i);
             if (cnt > 0)
                 intens[i] *= scale / cnt;
         }

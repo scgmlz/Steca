@@ -63,8 +63,8 @@ Datafile loadTiffDat(rcstr filePath) THROWS {
         if ((s = s.simplified()).isEmpty())
             continue;
 
-        auto lst = s.split(' ');
-        auto cnt = lst.count();
+        const QStringList lst = s.split(' ');
+        const uint cnt = lst.count();
         RUNTIME_CHECK(2 <= cnt && cnt <= 4, "bad metadata format");
 
         // file, phi, monitor, expTime
