@@ -116,16 +116,11 @@ void ImageWidget::paintEvent(QPaintEvent*) {
         p.drawLine(x, rt, x, rb);
         p.drawLine(rl, y, rr, y);
 
-        // text annotations
-        const auto paintText = [this, &p](QPoint pos, rcstr s, bool alignLeft) {
-            const QFontMetrics& fm = fontMetrics();
-            if (alignLeft)
-                pos.rx() -= fm.width(s);
-            p.drawText(pos, s);
-        };
-
+        // text
+        const QFontMetrics& fm = fontMetrics();
+        QPoint pos(rr - rw / 5, rcy);
         p.setPen(Qt::cyan);
-        paintText(QPoint(rr - rw / 5, rcy), "γ=0", false);
+        p.drawText(pos, "γ=0");
     }
 
     // frame
@@ -315,17 +310,14 @@ void SubframeImage::render() {
 
             gHub->setGammaRange(rge);
 
-            auto measurement = dataseq_->at(n - 1);
+            shp_Measurement measurement = dataseq_->at(n - 1);
 
             numBin_->setEnabled(true);
             if (gHub->toggle_showBins->isChecked()) {
                 Range rgeTth = lens_->rgeTth();
-                auto curve = lens_->makeCurve();
-                     // had argument averaged=false
-                     // TODO factor out lens::binCount()
-                int count = to_i(curve.count());
+                int count = to_i(lens_->makeCurve().count());
                 numBin_->setMaximum(count - 1);
-                auto min = rgeTth.min, wdt = rgeTth.width();
+                int min = rgeTth.min, wdt = rgeTth.width();
                 qreal num = qreal(numBin_->value());
                 pixMap = makePixmap(
                     *measurement, rge,

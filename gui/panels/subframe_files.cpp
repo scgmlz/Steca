@@ -61,7 +61,7 @@ void FilesView::selectionChanged(QItemSelection const& selected, QItemSelection 
 }
 
 void FilesView::removeSelected() {
-    auto indexes = selectedIndexes();
+    const QModelIndexList& indexes = selectedIndexes();
 
     // backwards
     for (int i = indexes.count(); i-- > 0;)
@@ -73,7 +73,7 @@ void FilesView::removeSelected() {
 
 void FilesView::recollect() {
     uint_vec rows;
-    for (auto& index : selectionModel()->selectedRows())
+    for (const QModelIndex& index : selectionModel()->selectedRows())
         if (index.isValid())
             rows.append(to_u(index.row()));
 

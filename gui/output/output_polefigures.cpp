@@ -107,9 +107,9 @@ void TabGraph::paintEvent(QPaintEvent*) {
     paintPoints();
 }
 
+//! Point in floating-point precision
 QPointF TabGraph::p(deg alpha, deg beta) const {
     qreal r = r_ * alpha / alphaMax_;
-
     rad betaRad = beta.toRad();
     return QPointF(r * cos(betaRad), -r * sin(betaRad));
 }
@@ -149,11 +149,11 @@ void TabGraph::paintGrid() {
 void TabGraph::paintPoints() {
     qreal rgeMax = rs_.rgeInten().max;
 
-    for (auto& r : rs_) {
+    for (const ReflectionInfo& r : rs_) {
         qreal inten = r.inten();
         if (!qIsFinite(inten)) // nan comes from interpolation
             continue;
-        auto pp = p(r.alpha(), r.beta());
+        const QPointF& pp = p(r.alpha(), r.beta());
         if (flat_) {
             QColor color(Qt::blue);
             p_->setPen(color);
@@ -202,7 +202,7 @@ TabPoleFiguresSave::TabPoleFiguresSave(Params& params) : TabSave(params, false) 
     hb->addStretch();
 
     {
-        auto g = p1->grid();
+        QGridLayout* g = p1->grid();
         g->addWidget((outputInten_ = newQ::CheckBox("Intensity pole figure")));
         g->addWidget((outputTth_ = newQ::CheckBox("Peak position pole figure")));
         g->addWidget((outputFWHM_ = newQ::CheckBox("TWHM pole figure")));
@@ -210,7 +210,7 @@ TabPoleFiguresSave::TabPoleFiguresSave(Params& params) : TabSave(params, false) 
     }
 
     {
-        auto g = p2->grid();
+        QGridLayout* g = p2->grid();
         g->addWidget((rbSelectedRefl_ = newQ::RadioButton("Selected reflection")));
         g->addWidget((rbAllRefls_ = newQ::RadioButton("All reflections")));
         g->addWidget(newQ::TextButton(actSave), 2, 1);
@@ -271,7 +271,7 @@ void PoleFiguresFrame::displayReflection(uint reflIndex, bool interpolated) {
 }
 
 void PoleFiguresFrame::savePoleFigureOutput() {
-    auto& reflections = gSession->reflections();
+    const Reflections& reflections = gSession->reflections();
     if (reflections.isEmpty()) {
         qWarning() << "cannot save pole figure: no reflection chosen";
         return;
@@ -294,7 +294,7 @@ static str const OUT_FILE_TAG(".refl%1");
 static int const MAX_LINE_LENGTH_POL(9);
 
 void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
-    auto refl = gSession->reflections().at(index);
+    shp_Reflection refl = gSession->reflections().at(index);
     ReflectionInfos reflInfo;
     if (getInterpolated())
         reflInfo = interpPoints_.at(index);
@@ -309,7 +309,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
         qreal_vec output;
         for_i (reflInfo.count())
             output.append(reflInfo.at(i).inten());
-        auto intenFilePath = path + ".inten";
+        const QString intenFilePath = path + ".inten";
         writeListFile(intenFilePath, reflInfo, output);
         writePoleFile(intenFilePath, reflInfo, output);
         writeErrorMask(intenFilePath, reflInfo, output);
@@ -321,7 +321,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
         qreal_vec output;
         for_i (reflInfo.count())
             output.append(reflInfo.at(i).tth());
-        auto tthFilePath = filePath + ".tth";
+        const QString tthFilePath = filePath + ".tth";
         writeListFile(tthFilePath, reflInfo, output);
         writePoleFile(tthFilePath, reflInfo, output);
         check = true;
@@ -332,7 +332,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
         qreal_vec output;
         for_i (reflInfo.count())
             output.append(reflInfo.at(i).fwhm());
-        auto fwhmFilePath = filePath + ".fwhm";
+        const QString fwhmFilePath = filePath + ".fwhm";
         writeListFile(fwhmFilePath, reflInfo, output);
         writePoleFile(fwhmFilePath, reflInfo, output);
         check = true;
