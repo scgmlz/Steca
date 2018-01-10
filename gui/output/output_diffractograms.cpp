@@ -137,7 +137,6 @@ void writeMetaData(OutputData outputData, QTextStream& stream) {
     }
 }
 
-
 } // local methods
 
 static const Params::ePanels PANELS = Params::ePanels(Params::GAMMA);
@@ -194,16 +193,16 @@ void DiffractogramsFrame::writeCurrDiffractogramToFile(rcstr filePath, rcstr sep
     QTextStream stream(&file);
     writeMetaData(outputData, stream);
     stream << "Tth" << separator << "Intensity" << '\n';
-    auto& curve = outputData.curve_;
+    const Curve& curve = outputData.curve_;
     for_i (curve.xs().count())
         stream << curve.x(i) << separator << curve.y(i) << '\n';
 }
 
 void DiffractogramsFrame::writeAllDiffractogramsToFiles(
     rcstr filePath, rcstr separator, bool oneFile) {
-    auto outputCollections = outputAllDiffractograms();
-    for (auto outputCollection : outputCollections) {
-        for (auto outputData : outputCollection) {
+    vec<vec<OutputData>> outputCollections = outputAllDiffractograms();
+    for (vec<OutputData>& outputCollection : outputCollections) {
+        for (OutputData& outputData : outputCollection) {
             if (!outputData.isValid()) {
                 qWarning() << "invalid output data in writeAllDiffractogramsToFiles";
                 return;
@@ -213,8 +212,8 @@ void DiffractogramsFrame::writeAllDiffractogramsToFiles(
     WriteFile file(filePath);
     QTextStream stream(&file);
     if (oneFile) {
-        for (auto outputCollection : outputCollections) {
-            for (auto outputData : outputCollection) {
+        for (vec<OutputData>& outputCollection : outputCollections) {
+            for (OutputData& outputData : outputCollection) {
                 writeMetaData(outputData, stream);
                 stream << "Tth" << separator << "Intensity" << '\n';
                 for_i (outputData.curve_.xs().count()) {
@@ -224,8 +223,8 @@ void DiffractogramsFrame::writeAllDiffractogramsToFiles(
         }
     } else {
         int fileNumber = 1;
-        for (auto outputCollection : outputCollections) {
-            for (auto outputData : outputCollection) {
+        for (vec<OutputData>& outputCollection : outputCollections) {
+            for (OutputData& outputData : outputCollection) {
                 writeMetaData(outputData, stream);
                 stream << "Tth" << separator << "Intensity" << '\n';
                 for_i (outputData.curve_.xs().count()) {
