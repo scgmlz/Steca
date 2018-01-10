@@ -98,8 +98,8 @@ Datafile load_low_level(rcstr filePath) THROWS {
 
 namespace io {
 
-QSharedPointer<Datafile const> loadDatafile(rcstr filePath) THROWS {
-    auto ret = QSharedPointer<Datafile const>(new Datafile(load_low_level(filePath)));
+shp_Datafile loadDatafile(rcstr filePath) THROWS {
+    auto ret = shp_Datafile(new Datafile(load_low_level(filePath)));
     RUNTIME_CHECK(ret->suite().count() > 0, "File " % filePath % " contains no suite");
     return ret;
 }

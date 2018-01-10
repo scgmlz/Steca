@@ -41,8 +41,8 @@ public:
     Session();
 
 private:
-    vec<QSharedPointer<Datafile const>> files_; //!< data files
-    QSharedPointer<Datafile const> corrFile_; //!< correction file
+    vec<shp_Datafile> files_; //!< data files
+    shp_Datafile corrFile_; //!< correction file
     QSharedPointer<Image> corrImage_;
     bool corrEnabled_;
     uint_vec collectedFromFiles_; // from these files
@@ -75,9 +75,9 @@ private:
 public:
     // Modifying methods:
     void clear();
-    void addGivenFile(QSharedPointer<Datafile const>) THROWS;
+    void addGivenFile(shp_Datafile) THROWS;
     void removeFile(uint i);
-    void setCorrFile(QSharedPointer<Datafile const>) THROWS; // Load or remove a correction file.
+    void setCorrFile(shp_Datafile) THROWS; // Load or remove a correction file.
     void remCorrFile();
     void collectDatasetsFromFiles(uint_vec, pint);
 
@@ -99,10 +99,10 @@ public:
     // Const methods:
     uint numFiles() const { //!< number of data files (not counting the correction file)
         return files_.count(); }
-    QSharedPointer<Datafile const> file(uint i) const { return files_.at(i); }
+    shp_Datafile file(uint i) const { return files_.at(i); }
     bool hasFile(rcstr fileName) const;
     bool hasCorrFile() const { return !corrFile_.isNull(); }
-    QSharedPointer<Datafile const> corrFile() const { return corrFile_; }
+    shp_Datafile corrFile() const { return corrFile_; }
     QSharedPointer<Image> corrImage() const { return corrImage_; }
     Image const* intensCorr() const;
     void tryEnableCorr(bool on) { corrEnabled_ = on && hasCorrFile(); }

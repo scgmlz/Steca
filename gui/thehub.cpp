@@ -118,7 +118,7 @@ TheHub::TheHub()
             [this]() { trigger_removeFile->setEnabled(
                     !gSession->collectedFromFiles().isEmpty()); });
     QObject::connect(this, &TheHub::sigCorrFile,
-            [this](QSharedPointer<Datafile const> file) {
+            [this](shp_Datafile file) {
                          trigger_remCorr->setEnabled(!file.isNull()); });
     QObject::connect(this, &TheHub::sigCorrEnabled,
             [this](bool on) { toggle_enableCorr->setChecked(on); });
@@ -352,7 +352,7 @@ void TheHub::combineDatasetsBy(pint by) {
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {
-    QSharedPointer<Datafile const> file;
+    shp_Datafile file;
     if (!filePath.isEmpty())
         file = io::loadDatafile(filePath);
 

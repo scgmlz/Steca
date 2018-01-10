@@ -51,7 +51,7 @@ QVariant FilesModel::data(rcIndex index, int role) const {
     case Qt::DisplayRole:
         return gSession->file(to_u(row))->fileName();
     case GetFileRole:
-        return QVariant::fromValue<QSharedPointer<Datafile const>>(gSession->file(to_u(row)));
+        return QVariant::fromValue<shp_Datafile>(gSession->file(to_u(row)));
     default:
         return EMPTY_VAR;
     }

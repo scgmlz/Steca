@@ -110,6 +110,6 @@ SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files") {
     h->addWidget(newQ::IconButton(gHub->trigger_remCorr));
 
     connect(gHub, &TheHub::sigCorrFile,
-            [corrFile_](QSharedPointer<Datafile const> file) {
+            [corrFile_](shp_Datafile file) {
                 corrFile_->setText(file.isNull() ? "" : file->fileName()); });
 }

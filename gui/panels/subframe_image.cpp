@@ -184,7 +184,7 @@ SubframeImage::SubframeImage() {
         BoxWidget& tab = *newQ::Tab(this, "Correction");
 
         connect(gHub, &TheHub::sigCorrFile,
-                [&tab](QSharedPointer<Datafile const> file) { tab.setEnabled(!file.isNull()); });
+                [&tab](shp_Datafile file) { tab.setEnabled(!file.isNull()); });
 
         QBoxLayout& box = tab.box();
 

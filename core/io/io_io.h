@@ -15,9 +15,9 @@
 #ifndef IO_IO_H
 #define IO_IO_H
 
+#include "core/data/datafile.h"
 #include "core/def/macros.h"
 #include "core/typ/str.h"
-#include <QSharedPointer>
 
 class Datafile;
 class QFileInfo;
@@ -25,7 +25,7 @@ class QFileInfo;
 namespace io {
 
 //! load a file; file type will be sensed
-QSharedPointer<Datafile const> loadDatafile(rcstr filePath) THROWS;
+shp_Datafile loadDatafile(rcstr filePath) THROWS;
 
 str loadComment(QFileInfo const& info);
 

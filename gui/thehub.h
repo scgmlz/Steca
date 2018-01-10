@@ -69,7 +69,7 @@ signals:
     // files has changed
     void sigSuiteSelected(shp_Suite);
 
-    void sigCorrFile(QSharedPointer<Datafile const>);
+    void sigCorrFile(shp_Datafile);
     void sigCorrEnabled(bool);
 
     void sigReflectionsChanged();

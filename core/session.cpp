@@ -50,7 +50,7 @@ bool Session::hasFile(rcstr fileName) const {
     return false;
 }
 
-void Session::addGivenFile(QSharedPointer<Datafile const> datafile) THROWS {
+void Session::addGivenFile(shp_Datafile datafile) THROWS {
     setImageSize(datafile->imageSize());
     // all ok
     files_.append(datafile);
@@ -98,7 +98,7 @@ Image const* Session::intensCorr() const {
     return &intensCorr_;
 }
 
-void Session::setCorrFile(QSharedPointer<Datafile const> datafile) THROWS {
+void Session::setCorrFile(shp_Datafile datafile) THROWS {
     if (datafile.isNull()) {
         remCorrFile();
     } else {

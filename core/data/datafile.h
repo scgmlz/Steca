@@ -43,6 +43,8 @@ private:
     size2d imageSize_;
 };
 
-Q_DECLARE_METATYPE(QSharedPointer<Datafile const>)
+typedef QSharedPointer<Datafile const> shp_Datafile;
+
+Q_DECLARE_METATYPE(shp_Datafile)
 
 #endif // DATAFILE_H
