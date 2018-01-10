@@ -176,15 +176,15 @@ void TheHub::saveSession(QFileInfo const& fileInfo) const {
     WriteFile file(fileInfo.filePath());
 
     QDir::setCurrent(fileInfo.absolutePath());
-    auto written = file.write(saveSession());
-    RUNTIME_CHECK(written >= 0, "Could not write session");
+    const int result = file.write(saveSession());
+    RUNTIME_CHECK(result >= 0, "Could not write session");
 }
 
 QByteArray TheHub::saveSession() const {
 
     QJsonObject top;
 
-    auto& geo = gSession->geometry();
+    const Geometry& geo = gSession->geometry();
     QJsonObject sub {
         { "distance", QJsonValue(geo.detectorDistance) },
         { "pixel size", QJsonValue(geo.pixSize) },
@@ -192,7 +192,7 @@ QByteArray TheHub::saveSession() const {
     };
     top.insert("detector", sub);
 
-    auto& cut = gSession->imageCut();
+    const ImageCut& cut = gSession->imageCut();
     sub = {
         { "left", to_i(cut.left) },
         { "top", to_i(cut.top) },
@@ -200,7 +200,7 @@ QByteArray TheHub::saveSession() const {
         { "bottom", to_i(cut.bottom) } };
     top.insert("cut", sub);
 
-    auto& trn = gSession->imageTransform();
+    const ImageTransform& trn = gSession->imageTransform();
     top.insert("image transform", to_i((uint)trn.val));
 
     QJsonArray arrFiles;
@@ -308,8 +308,8 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     setBgRanges(bgRanges);
     setBgPolyDegree(top.loadUint("background degree"));
 
-    auto arg1 = top.loadBool("averaged intensity ", true);
-    auto arg2 = top.loadPreal("intensity scale", preal(1));
+    bool arg1 = top.loadBool("averaged intensity ", true);
+    preal arg2 = top.loadPreal("intensity scale", preal(1));
     setIntenScaleAvg(arg1, arg2);
 
     TR("sessionFromJson: going to load reflections info");
@@ -334,7 +334,7 @@ void TheHub::addGivenFile(rcstr filePath) THROWS {
 
 void TheHub::addGivenFiles(QStringList const& filePaths) THROWS {
     TakesLongTime __;
-    for (auto& filePath : filePaths)
+    for (rcstr filePath : filePaths)
         addGivenFile(filePath);
 }
 

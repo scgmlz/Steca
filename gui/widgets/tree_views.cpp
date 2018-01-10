@@ -16,8 +16,6 @@
 #include "core/def/idiomatic_for.h"
 #include "gui/models.h"
 
-
-
 // ************************************************************************** //
 //  class TreeView
 // ************************************************************************** //
@@ -72,12 +70,10 @@ MultiListView::MultiListView() : ListView() {
 }
 
 void MultiListView::selectRows(uint_vec rows) {
-    auto m = model();
-    int cols = m->columnCount();
-
+    TableModel const* m = model();
+    const int cols = m->columnCount();
     QItemSelection is;
     for (uint row : rows)
         is.append(QItemSelectionRange(m->index(to_i(row), 0), m->index(to_i(row), cols - 1)));
-
     selectionModel()->select(is, QItemSelectionModel::ClearAndSelect);
 }
