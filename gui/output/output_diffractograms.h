@@ -27,11 +27,6 @@ public:
 private:
     class TabDiffractogramsSave* tabSave_;
 
-    OutputData outputCurrDiffractogram();
-    OutputData collectCurve(class Suite const& dataseq);
-    vec<OutputData> collectCurves(
-        const Range&, uint gmaSlices, class Suite const& dataseq, uint picNum);
-
     vec<vec<OutputData>> outputAllDiffractograms();
 
     void saveDiffractogramOutput();

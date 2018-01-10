@@ -68,7 +68,6 @@ uint TabDiffractogramsSave::currType() const {
 struct OutputData {
 public:
     OutputData() {}
-
     OutputData(Curve curve, Suite dataseq, Range gmaStripe, uint picNum)
         : curve_(curve), dataseq_(dataseq), gmaStripe_(gmaStripe), picNum_(picNum) {}
 
@@ -82,7 +81,48 @@ public:
     }
 };
 
+namespace {
+
+OutputData collectCurve(Suite const& dataseq) {
+    shp_SequenceLens lens = gSession->defaultDatasetLens(dataseq);
+    const Curve& curve = lens->makeCurve();
+    return OutputData(curve, dataseq, lens->rgeGma(), 0); // TODO current picture number
+}
+
+OutputData outputCurrDiffractogram() {
+    shp_Suite ret = gHub->selectedSuite();
+    if (ret)
+        return collectCurve(*ret);
+    else
+        return {};
+}
+
+vec<OutputData> collectCurves(
+    const Range& rgeGma, uint gmaSlices, Suite const& dataseq, uint picNum) {
+
+    shp_SequenceLens lens = gSession->defaultDatasetLens(dataseq);
+
+    Range rge = (gmaSlices > 0) ? lens->rgeGma() : Range::infinite();
+    if (rgeGma.isValid())
+        rge = rge.intersect(rgeGma);
+
+    vec<OutputData> ret;
+
+    gmaSlices = qMax(1u, gmaSlices);
+    const qreal step = rge.width() / gmaSlices;
+    for_i (gmaSlices) {
+        const qreal min = rge.min + i * step;
+        const Range gmaStripe(min, min + step);
+        const Curve& curve = lens->makeCurve(gmaStripe);
+        ret.append(OutputData(curve, dataseq, gmaStripe, picNum));
+    }
+    return ret;
+}
+
+} // local methods
+
 static const Params::ePanels PANELS = Params::ePanels(Params::GAMMA);
+
 
 // ************************************************************************** //
 //  class DiffractogramsFrame
@@ -101,34 +141,6 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
     show();
 }
 
-vec<OutputData> DiffractogramsFrame::collectCurves(
-    const Range& rgeGma, uint gmaSlices, Suite const& dataseq, uint picNum) {
-
-    shp_SequenceLens lens = gSession->defaultDatasetLens(dataseq);
-
-    Range rge = (gmaSlices > 0) ? lens->rgeGma() : Range::infinite();
-    if (rgeGma.isValid())
-        rge = rge.intersect(rgeGma);
-
-    vec<OutputData> outputData;
-
-    gmaSlices = qMax(1u, gmaSlices);
-    const qreal step = rge.width() / gmaSlices;
-    for_i (gmaSlices) {
-        const qreal min = rge.min + i * step;
-        const Range gmaStripe(min, min + step);
-        const Curve& curve = lens->makeCurve(gmaStripe);
-        outputData.append(OutputData(curve, dataseq, gmaStripe, picNum));
-    }
-    return outputData;
-}
-
-OutputData DiffractogramsFrame::collectCurve(Suite const& dataseq) {
-    shp_SequenceLens lens = gSession->defaultDatasetLens(dataseq);
-    const Curve& curve = lens->makeCurve();
-    return OutputData(curve, dataseq, lens->rgeGma(), 0); // TODO current picture number
-}
-
 vec<vec<OutputData>> DiffractogramsFrame::outputAllDiffractograms() {
     debug::ensure(params_->panelGammaSlices);
     uint gmaSlices = to_u(params_->panelGammaSlices->numSlices->value());
@@ -142,23 +154,15 @@ vec<vec<OutputData>> DiffractogramsFrame::outputAllDiffractograms() {
     const Experiment& expt = gSession->experiment();
     Progress progress(expt.count(), pb_);
 
-    vec<vec<OutputData>> allOutputData;
+    vec<vec<OutputData>> ret;
     uint picNum = 1;
     for (shp_Suite suite : expt) {
         progress.step();
-        allOutputData.append(collectCurves(rgeGma, gmaSlices, *suite, picNum));
+        ret.append(collectCurves(rgeGma, gmaSlices, *suite, picNum));
         ++picNum;
     }
 
-    return allOutputData;
-}
-
-OutputData DiffractogramsFrame::outputCurrDiffractogram() {
-    shp_Suite suite = gHub->selectedSuite();
-    if (suite)
-        return collectCurve(*suite);
-    else
-        return OutputData();
+    return ret;
 }
 
 auto writeMetaData = [](OutputData outputData, QTextStream& stream) {
