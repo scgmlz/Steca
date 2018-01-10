@@ -18,6 +18,7 @@
 #include "core/typ/angles.h"
 #include "core/typ/str.h"
 #include "core/typ/variant.h"
+#include <QSharedPointer> // no auto rm
 
 class Metadata {
 public:

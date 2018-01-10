@@ -6,7 +6,7 @@ Version 2, maintained by the Scientific Computing Group at Heinz Maier-Leibnitz 
 
 [Online documentation](http://apps.jcns.fz-juelich.de/steca)
 
-### Continous Integration Status
+### Continuous Integration Status
 
 
 Branch master: Linux [![Travis-CI Build Status](https://travis-ci.org/scgmlz/Steca2.svg?branch=master)](https://travis-ci.org/scgmlz/Steca)
