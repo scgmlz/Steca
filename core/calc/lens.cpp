@@ -174,10 +174,11 @@ void SequenceLens::setNorm(eNorm norm) {
         den = suite_.avgDeltaTime();
         break;
     case eNorm::BACKGROUND:
-        num = gSession->calcAvgBackground(gSession->experiment());
+        num = gSession->calcAvgBackground();
         den = gSession->calcAvgBackground(suite_);
         break;
-    case eNorm::NONE: break;
+    case eNorm::NONE:
+        break;
     }
 
     normFactor_ = inten_t((num > 0 && den > 0) ? num / den : NAN);

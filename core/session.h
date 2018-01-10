@@ -141,7 +141,7 @@ public:
     eNorm norm() const { return norm_; }
 
     qreal calcAvgBackground(Suite const&) const;
-    qreal calcAvgBackground(Experiment const&) const;
+    qreal calcAvgBackground() const;
 };
 
 #endif // SESSION_H

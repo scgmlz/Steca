@@ -332,10 +332,10 @@ qreal Session::calcAvgBackground(Suite const& suite) const {
     return bgPolynom.avgY(lens->rgeTth());
 }
 
-qreal Session::calcAvgBackground(Experiment const& expt) const {
+qreal Session::calcAvgBackground() const {
     TakesLongTime __;
     qreal bg = 0;
-    for (auto& suite : expt)
+    for (auto& suite : experiment())
         bg += calcAvgBackground(*suite);
-    return bg / expt.count();
+    return bg / experiment().count();
 }
