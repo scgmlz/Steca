@@ -30,7 +30,7 @@ public:
 protected:
     QAction *actClose_, *actCalculate_, *actInterpolate_;
     QToolButton *btnClose_, *btnCalculate_, *btnInterpolate_;
-    QProgressBar* pb_;
+    QProgressBar* progressBar_;
     QBoxLayout* box_;
     class Params* params_;
     QTabWidget* tabs_;
@@ -41,6 +41,8 @@ protected:
     virtual void displayReflection(uint reflIndex, bool interpolated);
     uint getReflIndex() const;
     bool getInterpolated() const;
+private:
+    void updateReflection();
 };
 
 #endif // FRAME_H

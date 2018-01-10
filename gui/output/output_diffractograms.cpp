@@ -170,7 +170,7 @@ vec<vec<OutputData>> DiffractogramsFrame::outputAllDiffractograms() {
         rgeGma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
 
     const Experiment& expt = gSession->experiment();
-    Progress progress(expt.count(), pb_);
+    Progress progress(expt.count(), progressBar_);
 
     vec<vec<OutputData>> ret;
     uint picNum = 1;

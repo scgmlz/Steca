@@ -357,11 +357,9 @@ void PoleFiguresFrame::writeErrorMask(
         uint max = j + MAX_LINE_LENGTH_POL;
         for (uint i = j; i < max; i++) {
             if (qIsNaN(output.at(i)))
-                stream << "0"
-                       << " ";
+                stream << "0 ";
             else
-                stream << "1"
-                       << " ";
+                stream << "1 ";
         }
         stream << '\n';
     }
@@ -376,8 +374,7 @@ void PoleFiguresFrame::writePoleFile(
         uint max = j + MAX_LINE_LENGTH_POL;
         for (uint i = j; i < max; i++) {
             if (qIsNaN(output.at(i)))
-                stream << " -1 "
-                       << " ";
+                stream << " -1  ";
             else
                 stream << output.at(i) << " ";
         }

@@ -195,17 +195,17 @@ TabTable::TabTable(const QStringList& headers, const QStringList& outHeaders, co
 //  class Frame
 // ************************************************************************** //
 
-Frame::Frame(rcstr title, Params* params, QWidget* parent)
-    : QDialog(parent) {
+Frame::Frame(rcstr title, Params* params, QWidget* parent) : QDialog(parent) {
+
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-
     setWindowTitle(title);
+
     setLayout((box_ = newQ::VBoxLayout()));
 
     debug::ensure(params);
-
     box_->addWidget((params_ = params));
+
     tabs_ = new QTabWidget();
     tabs_->setTabPosition(QTabWidget::North);
     box_->addWidget(tabs_);
@@ -220,31 +220,27 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent)
 
     hb->addWidget((btnClose_ = newQ::TextButton(actClose_)));
     hb->addStretch(1);
-    hb->addWidget((pb_ = new QProgressBar));
-    hb->setStretchFactor(pb_, 333);
+    hb->addWidget((progressBar_ = new QProgressBar));
+    hb->setStretchFactor(progressBar_, 333);
     hb->addStretch(1);
     hb->addWidget((btnCalculate_ = newQ::TextButton(actCalculate_)));
     hb->addWidget((btnInterpolate_ = newQ::TextButton(actInterpolate_)));
 
-    pb_->hide();
+    progressBar_->hide();
 
     connect(actClose_, &QAction::triggered, [this]() { close(); });
     connect(actCalculate_, &QAction::triggered, [this]() { calculate(); });
     connect(actInterpolate_, &QAction::triggered, [this]() { interpolate(); });
 
-    auto _updateDisplay = [this]() { displayReflection(getReflIndex(), getInterpolated()); };
-
     if (params_->panelReflection) {
-        connect(
-            params_->panelReflection->cbRefl, slot(QComboBox, currentIndexChanged, int),
-            [_updateDisplay]() { _updateDisplay(); });
+        connect(params_->panelReflection->cbRefl, slot(QComboBox, currentIndexChanged, int),
+                [this](){ updateReflection(); });
     }
 
     if (params_->panelPoints) {
         debug::ensure(params_->panelReflection);
-        connect(params_->panelPoints->rbInterp, &QRadioButton::toggled, [_updateDisplay]() {
-            _updateDisplay();
-        });
+        connect(params_->panelPoints->rbInterp, &QRadioButton::toggled,
+                [this](){ updateReflection(); });
     }
 
     // tabs
@@ -283,7 +279,7 @@ void Frame::calculate() {
         if (pr->cbLimitGamma->isChecked())
             rgeGamma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
 
-        Progress progress(reflCount, pb_);
+        Progress progress(reflCount, progressBar_);
 
         for_i (reflCount)
             calcPoints_.append(
@@ -310,7 +306,7 @@ void Frame::interpolate() {
         qreal avgAlphaMax = pi->avgAlphaMax->value();
         qreal avgTreshold = pi->avgThreshold->value() / 100.0;
 
-        Progress progress(calcPoints_.count(), pb_);
+        Progress progress(calcPoints_.count(), progressBar_);
 
         for_i (calcPoints_.count())
             interpPoints_.append(interpolateInfos(
@@ -321,9 +317,14 @@ void Frame::interpolate() {
             interpPoints_.append(ReflectionInfos());
     }
 
+    updateReflection();
+}
+
+void Frame::updateReflection() {
     displayReflection(getReflIndex(), getInterpolated());
 }
 
+// virtual, overwritten by some output frames, and called back by the overwriting function
 void Frame::displayReflection(uint reflIndex, bool interpolated) {
     table_->clear();
 
