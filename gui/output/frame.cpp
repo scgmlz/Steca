@@ -67,28 +67,28 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
         box_->addWidget((item.cb = newQ::CheckBox(item.name)));
     }
 
-    auto all = [this]() {
-        for (auto& col : showCols_)
+    auto _all = [this]() {
+        for (showcol_t& col : showCols_)
             col.cb->setChecked(true);
     };
 
-    auto none = [this]() {
-        for (auto& col : showCols_)
+    auto _none = [this]() {
+        for (showcol_t& col : showCols_)
             col.cb->setChecked(false);
     };
 
-    auto showInten = [this, none]() {
-        none();
+    auto _showInten = [this, _none]() {
+        _none();
         showCols_.at(uint(eReflAttr::INTEN)).cb->setChecked(true);
     };
 
-    auto showTth = [this, none]() {
-        none();
+    auto _showTth = [this, _none]() {
+        _none();
         showCols_.at(uint(eReflAttr::TTH)).cb->setChecked(true);
     };
 
-    auto showFWHM = [this, none]() {
-        none();
+    auto _showFWHM = [this, _none]() {
+        _none();
         showCols_.at(uint(eReflAttr::FWHM)).cb->setChecked(true);
     };
 
@@ -142,11 +142,11 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
         });
     }
 
-    connect(rbAll_, &QRadioButton::clicked, all);
-    connect(rbNone_, &QRadioButton::clicked, none);
-    connect(rbInten_, &QRadioButton::clicked, showInten);
-    connect(rbTth_, &QRadioButton::clicked, showTth);
-    connect(rbFWHM_, &QRadioButton::clicked, showFWHM);
+    connect(rbAll_, &QRadioButton::clicked, _all);
+    connect(rbNone_, &QRadioButton::clicked, _none);
+    connect(rbInten_, &QRadioButton::clicked, _showInten);
+    connect(rbTth_, &QRadioButton::clicked, _showTth);
+    connect(rbFWHM_, &QRadioButton::clicked, _showFWHM);
 
     rbAll_->click();
 }
@@ -165,8 +165,8 @@ private:
 };
 
 TabTable::TabTable(
-    Params& params, const QStringList& headers, const QStringList& outHeaders, cmp_vec const& cmps)
-    {
+    Params& params, const QStringList& headers, const QStringList& outHeaders, const cmp_vec& cmps){
+
     QGridLayout* grid_ = newQ::GridLayout();
     setLayout(grid_);
     debug::ensure(to_u(headers.count()) == cmps.count());
