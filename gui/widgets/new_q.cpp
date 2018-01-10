@@ -82,6 +82,13 @@ QLabel* newQ::Label(rcstr text) {
     return new QLabel(text);
 }
 
+QLabel* newQ::Icon(rcstr fileName) {
+    auto ret = new QLabel;
+    int h = ret->sizeHint().height();
+    ret->setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
+    return ret;
+}
+
 QLineEdit* newQ::LineEdit(uint emWidth) {
     auto ret = new QLineEdit;
     setEmWidth(ret, emWidth);

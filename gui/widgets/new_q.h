@@ -43,7 +43,8 @@ QBoxLayout* VBoxLayout(); // vertical box layout
 
 QGridLayout* GridLayout();
 
-QLabel* Label(rcstr);
+QLabel* Label(rcstr text);
+QLabel* Icon(rcstr fileName);
 
 QLineEdit* LineEdit(uint emWidth); // emWidth: measured in typographical (m)s
 QLineEdit* LineDisplay(uint emWidth);
