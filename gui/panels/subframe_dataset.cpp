@@ -27,7 +27,7 @@ class DatasetView : public ListView {
 public:
     DatasetView();
 
-protected:
+private:
     void currentChanged(QModelIndex const&, QModelIndex const&);
 
     DatasetsModel* model() const { return static_cast<DatasetsModel*>(ListView::model()); }

@@ -61,13 +61,12 @@ static const Params::ePanels PANELS =
 // ************************************************************************** //
 
 class TabPlot : public QCustomPlot {
-private:
 public:
     TabPlot();
     void set(ReflectionInfos);
     void plot(
         qreal_vec const& xs, qreal_vec const& ys, qreal_vec const& ysLo, qreal_vec const& ysUp);
-protected:
+private:
     QCPGraph *graph_, *graphLo_, *graphUp_;
 };
 

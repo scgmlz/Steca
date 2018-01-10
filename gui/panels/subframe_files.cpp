@@ -29,7 +29,7 @@ class FilesView : public MultiListView {
 public:
     FilesView();
 
-protected:
+private:
     FilesModel* model() const { return static_cast<FilesModel*>(MultiListView::model()); }
 
     void selectionChanged(QItemSelection const&, QItemSelection const&);
