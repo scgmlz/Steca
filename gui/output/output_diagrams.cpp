@@ -136,7 +136,7 @@ TabDiagramsSave::TabDiagramsSave(Params& params) : TabSave(params, true) {
     grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
     grid_->setRowStretch(grid_->rowCount(), 1);
 
-    auto g = gp->grid();
+    QGridLayout* g = gp->grid();
     g->addWidget((currentDiagram_ = newQ::RadioButton("Current diagram")));
     g->addWidget((allData_ = newQ::RadioButton("All data")));
     g->addWidget(newQ::TextButton(actSave), 1, 1);
@@ -157,7 +157,7 @@ DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
     newQ::Tab(tabs_, "Diagram")->box().addWidget(tabPlot_);
 
     debug::ensure(params_->panelDiagram);
-    auto pd = params_->panelDiagram;
+    PanelDiagram const* pd = params_->panelDiagram;
 
     connect(pd->xAxis, slot(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
 
@@ -199,7 +199,7 @@ void DiagramsFrame::recalculate() {
     uint yi = uint(yAttr());
 
     for_i (count) {
-        auto row = rs_.at(i).data();
+        const row_t row = rs_.at(i).data();
         xs_[i] = row.at(xi).toDouble();
         ys_[i] = row.at(yi).toDouble();
     }
@@ -213,7 +213,7 @@ void DiagramsFrame::recalculate() {
         ysErrorUp_.resize(count);
 
         for_i (count) {
-            auto row = rs_.at(is.at(i)).data(); // access error over sorted index vec
+            const row_t row = rs_.at(is.at(i)).data(); // access error over sorted index vec
             qreal sigma = row.at(uint(attr)).toDouble();
             qreal y = ys_.at(i);
             ysErrorLo_[i] = y - sigma;

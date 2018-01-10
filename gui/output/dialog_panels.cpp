@@ -25,19 +25,19 @@
 // ************************************************************************** //
 
 void GridPanel::setHorizontalStretch(int stretch) {
-    auto sp = sizePolicy();
+    QSizePolicy sp = sizePolicy();
     sp.setHorizontalStretch(stretch);
     setSizePolicy(sp);
 }
 
 void GridPanel::setVerticalStretch(int stretch) {
-    auto sp = sizePolicy();
+    QSizePolicy sp = sizePolicy();
     sp.setVerticalStretch(stretch);
     setSizePolicy(sp);
 }
 
 void GridPanel::setStretch(int horizontal, int vertical) {
-    auto sp = sizePolicy();
+    QSizePolicy sp = sizePolicy();
     sp.setHorizontalStretch(horizontal);
     sp.setVerticalStretch(vertical);
     setSizePolicy(sp);
@@ -52,7 +52,7 @@ GridPanel::GridPanel(rcstr title) : QGroupBox(title) {
 // ************************************************************************** //
 
 PanelReflection::PanelReflection() : GridPanel("Reflection") {
-    auto g = grid();
+    QGridLayout* g = grid();
     cbRefl = new QComboBox;
     cbRefl->addItems(gHub->reflectionsModel->names());
     g->addWidget(cbRefl);
@@ -60,7 +60,7 @@ PanelReflection::PanelReflection() : GridPanel("Reflection") {
 }
 
 PanelGammaSlices::PanelGammaSlices() : GridPanel("Gamma slices") {
-    auto g = grid();
+    QGridLayout* g = grid();
 
     g->addWidget(newQ::Label("count"), 0, 0);
     g->addWidget((numSlices = newQ::SpinBox(gui_cfg::em4, 0)), 0, 1);
@@ -85,7 +85,7 @@ void PanelGammaSlices::updateValues() {
 }
 
 PanelGammaRange::PanelGammaRange() : GridPanel("Gamma range") {
-    auto g = grid();
+    QGridLayout* g = grid();
 
     g->addWidget((cbLimitGamma = newQ::CheckBox("limit")), 0, 0, 1, 2);
 
@@ -114,7 +114,7 @@ void PanelGammaRange::updateValues() {
 }
 
 PanelPoints::PanelPoints() : GridPanel("Points") {
-    auto g = grid();
+    QGridLayout* g = grid();
     g->addWidget((rbCalc = newQ::RadioButton("calculated")), 0, 0);
     g->addWidget((rbInterp = newQ::RadioButton("interpolated")), 1, 0);
 
@@ -122,7 +122,7 @@ PanelPoints::PanelPoints() : GridPanel("Points") {
 }
 
 PanelInterpolation::PanelInterpolation() : GridPanel("Interpolation") {
-    auto g = grid();
+    QGridLayout* g = grid();
 
     g->addWidget(newQ::Label("step α"), 0, 0, Qt::AlignRight);
     g->addWidget((stepAlpha = newQ::DoubleSpinBox(gui_cfg::em4_2, 1., 30.)), 0, 1);
@@ -142,11 +142,11 @@ PanelInterpolation::PanelInterpolation() : GridPanel("Interpolation") {
 }
 
 PanelDiagram::PanelDiagram() : GridPanel("Diagram") {
-    auto tags = ReflectionInfo::dataTags(false);
+    QStringList tags = ReflectionInfo::dataTags(false);
     for_i (Metadata::numAttributes(false) - Metadata::numAttributes(true))
         tags.removeLast(); // remove all tags that are not numbers
 
-    auto g = grid();
+    QGridLayout* g = grid();
     xAxis = (new QComboBox); xAxis->addItems(tags);
     yAxis = (new QComboBox); yAxis->addItems(tags);
     g->addWidget(newQ::Label("x"), 1, 0);
