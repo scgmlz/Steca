@@ -38,7 +38,7 @@ DatasetView::DatasetView() : ListView() {
     debug::ensure(dynamic_cast<DatasetsModel*>(ListView::model()));
 
     connect(gHub, &TheHub::sigSuitesChanged, [this]() {
-            gHub->tellSuiteSelected(QSharedPointer<Suite>()); // first de-select
+            gHub->tellSuiteSelected(shp_Suite()); // first de-select
             selectRow(0);
         });
 }
@@ -47,7 +47,7 @@ void DatasetView::currentChanged(QModelIndex const& current, QModelIndex const& 
     ListView::currentChanged(current, previous);
     gHub->tellSuiteSelected(
         model()->data(current,
-                      DatasetsModel::GetDatasetRole).value<QSharedPointer<Suite>>());
+                      DatasetsModel::GetDatasetRole).value<shp_Suite>());
 }
 
 // ************************************************************************** //

@@ -59,7 +59,7 @@ private:
     mutable Range rgeInten_;
 };
 
-typedef QSharedPointer<ImageLens> shp_ImageLens;
+typedef QSharedPointer<const ImageLens> shp_ImageLens;
 
 
 class SequenceLens final : public LensBase {

@@ -20,11 +20,11 @@
 
 //! A sequence of Suites's
 
-class Experiment final : public vec<QSharedPointer<Suite>> {
+class Experiment final : public vec<shp_Suite> {
 public:
     Experiment();
 
-    void appendHere(QSharedPointer<Suite>);
+    void appendHere(shp_Suite);
 
     size2d imageSize() const;
 
@@ -40,7 +40,7 @@ public:
     void invalidateAvgMutables() const;
 
 private:
-    QSharedPointer<Suite> combineAll() const;
+    shp_Suite combineAll() const;
     qreal calcAvgMutable(qreal (Suite::*avgMth)() const) const;
 
     // computed on demand (NaNs or emptiness indicate yet unknown values)

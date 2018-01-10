@@ -478,7 +478,7 @@ Diffractogram::Diffractogram()
     });
 
     connect(gHub, &TheHub::sigSuiteSelected,
-            [this](QSharedPointer<Suite> suite){ setSuite(suite); });
+            [this](shp_Suite suite){ setSuite(suite); });
     connect(gHub, &TheHub::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigCorrEnabled, [this](){ render(); });
     connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
@@ -565,7 +565,7 @@ void Diffractogram::render() {
     plot_->plot(dgram_, dgramBgFitted_, bg_, refls_, currReflIndex_);
 }
 
-void Diffractogram::setSuite(QSharedPointer<Suite> suite) {
+void Diffractogram::setSuite(shp_Suite suite) {
     suite_ = suite;
     actZoom_->setChecked(false);
     render();

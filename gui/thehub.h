@@ -19,10 +19,10 @@
 #include "core/calc/reflection_info.h"
 #include "core/calc/reflection.h"
 #include "core/data/datafile.h"
+#include "core/data/suite.h"
 
 class QAction;
 
-class Suite;
 class FilesModel;
 class DatasetsModel;
 class MetadataModel;
@@ -56,7 +56,7 @@ private:
     TheHub& asHub();
 
 public: // emit signals
-    void tellSuiteSelected(QSharedPointer<Suite>);
+    void tellSuiteSelected(shp_Suite);
     void tellSelectedReflection(shp_Reflection);
     void tellReflectionData(shp_Reflection);
     void tellReflectionValues(Range const&, qpair const&, fwhm_t, bool);
@@ -67,7 +67,7 @@ signals:
 
     void sigSuitesChanged(); // the set of suite collected from selected
     // files has changed
-    void sigSuiteSelected(QSharedPointer<Suite>);
+    void sigSuiteSelected(shp_Suite);
 
     void sigCorrFile(QSharedPointer<Datafile const>);
     void sigCorrEnabled(bool);
@@ -169,7 +169,7 @@ public:
 
     eFittingTab fittingTab() const { return fittingTab_; }
 
-    QSharedPointer<Suite> selectedSuite() const { return selectedSuite_; }
+    shp_Suite selectedSuite() const { return selectedSuite_; }
 
 private:
     friend class TheHubSignallingBase;
@@ -179,7 +179,7 @@ private:
     uint_vec collectFromFiles_;
     pint suiteGroupedBy_ = pint(1);
     eFittingTab fittingTab_ = eFittingTab::NONE;
-    QSharedPointer<Suite> selectedSuite_;
+    shp_Suite selectedSuite_;
     shp_Reflection selectedReflection_;
 
     void setImageRotate(ImageTransform);

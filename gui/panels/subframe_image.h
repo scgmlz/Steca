@@ -16,6 +16,7 @@
 #define SUBFRAME_IMAGE_H
 
 #include "core/calc/lens.h"
+#include "core/data/suite.h"
 #include "gui/widgets/new_q.h"
 #include <QTabWidget>
 
@@ -34,10 +35,10 @@ private:
     QPixmap makePixmap(QSharedPointer<Image>);
     QPixmap makePixmap(class Measurement const&, Range const&, Range const&);
 
-    void setSuite(QSharedPointer<Suite>);
+    void setSuite(shp_Suite);
     void render();
 
-    QSharedPointer<Suite> dataseq_;
+    shp_Suite dataseq_;
     class ImageWidget *dataImageWidget_, *corrImageWidget_;
 
     QSpinBox* spinN_;

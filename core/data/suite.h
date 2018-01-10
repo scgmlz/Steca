@@ -59,6 +59,8 @@ private:
     QSharedPointer<Metadata const> md_; // on demand, compute once
 };
 
-Q_DECLARE_METATYPE(QSharedPointer<Suite>)
+typedef QSharedPointer<Suite> shp_Suite;
+
+Q_DECLARE_METATYPE(shp_Suite)
 
 #endif // SUITE_H

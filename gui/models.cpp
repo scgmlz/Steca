@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "gui/models.h"
-#include "core/data/suite.h"
 #include "core/data/metadata.h"
 #include "core/fit/fit_fun.h"
 #include "core/session.h"
@@ -99,7 +98,7 @@ QVariant DatasetsModel::data(rcIndex index, int role) const {
         }
     }
     case GetDatasetRole:
-        return QVariant::fromValue<QSharedPointer<Suite>>(experiment_.at(to_u(row)));
+        return QVariant::fromValue<shp_Suite>(experiment_.at(to_u(row)));
     default:
         return EMPTY_VAR;
     }
@@ -136,7 +135,7 @@ MetadataModel::MetadataModel() {
     rowsChecked_.fill(false, Metadata::numAttributes(false));
 }
 
-void MetadataModel::reset(QSharedPointer<Suite> dataseq) {
+void MetadataModel::reset(shp_Suite dataseq) {
     metadata_.clear();
     if (dataseq)
         metadata_ = dataseq->metadata();

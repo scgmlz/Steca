@@ -49,12 +49,13 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
     if (idx.isValid() && 1 == idx.column()) {
         if (Qt::DisplayRole == role) {
             QFileSystemModel* fileModel = qobject_cast<QFileSystemModel*>(sourceModel());
-            auto ix0 = fileModel->index(mapToSource(idx).row(), 0, mapToSource(idx.parent()));
+            QModelIndex ix0 =
+                fileModel->index(mapToSource(idx).row(), 0, mapToSource(idx.parent()));
             QFileInfo info(fileModel->rootDirectory().filePath(fileModel->fileName(ix0)));
             if (info.isFile()) {
-                auto path = info.absoluteFilePath();
+                rcstr path = info.absoluteFilePath();
                 auto it = memInfo.find(path);
-                if (memInfo.end() != it)
+                if (it != memInfo.end())
                     return *it;
                 str loadInfo = io::loadComment(info);
                 memInfo.insert(path, loadInfo);
@@ -68,10 +69,10 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
 
 } // local methods
 
+
 // ************************************************************************** //
 //  exported functions
 // ************************************************************************** //
-
 
 namespace file_dialog {
 
@@ -128,4 +129,3 @@ str saveDirName(QWidget* parent, rcstr caption, rcstr dir) {
 }
 
 } // namespace file_dialog
-

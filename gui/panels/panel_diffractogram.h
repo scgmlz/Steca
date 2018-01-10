@@ -26,7 +26,7 @@ public:
 
     void render();
 
-    QSharedPointer<Suite> suite() const { return suite_; }
+    shp_Suite suite() const { return suite_; }
     QBoxLayout* box() const { return box_; }
 
     void calcDgram();
@@ -41,9 +41,9 @@ private:
     void onNormChanged();
     void onFittingTab(eFittingTab tab);
 
-    void setSuite(QSharedPointer<Suite>);
+    void setSuite(shp_Suite);
 
-    QSharedPointer<Suite> suite_;
+    shp_Suite suite_;
 
     class DiffractogramPlot* plot_;
 

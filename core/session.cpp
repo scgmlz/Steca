@@ -133,7 +133,7 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
     if (suiteFromFiles.isEmpty())
         return;
 
-    QSharedPointer<Suite> cd(new Suite);
+    shp_Suite cd(new Suite);
     uint i = 0;
 
     auto appendCd = [this, &cd, &combineBy, &i]() {
@@ -145,7 +145,7 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
                 tag += '-' + str::number(i);
             experiment_.appendHere(cd);
             experimentTags_.append(tag);
-            cd = QSharedPointer<Suite>(new Suite);
+            cd = shp_Suite(new Suite);
         }
     };
 

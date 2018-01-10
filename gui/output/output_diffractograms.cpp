@@ -140,7 +140,7 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
 
     OutputDataCollections allOutputData;
     uint picNum = 1;
-    for (QSharedPointer<Suite> dataseq : suite) {
+    for (shp_Suite dataseq : suite) {
         progress.step();
         allOutputData.append(collectCurves(rgeGma, gmaSlices, *dataseq, picNum));
         ++picNum;

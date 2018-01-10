@@ -15,6 +15,7 @@
 #ifndef MODELS_H
 #define MODELS_H
 
+#include "core/data/suite.h"
 #include "core/typ/str.h"
 #include "core/typ/vec.h"
 #include <QAbstractTableModel>
@@ -38,7 +39,6 @@ protected:
     static int const DCOL = 1; //!< the left-most column is hidden
 };
 
-class Suite;
 class Experiment;
 class Metadata;
 
@@ -93,7 +93,7 @@ public:
 
     vec<bool> const& rowsChecked() const { return rowsChecked_; }
 
-    void reset(QSharedPointer<Suite> dataseq);
+    void reset(shp_Suite dataseq);
     void flipCheck(uint row);
 
 private:

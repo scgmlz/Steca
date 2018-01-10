@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "gui/thehub.h"
-#include "core/data/suite.h"
 #include "core/io/io_io.h"
 #include "core/session.h"
 #include "core/typ/json.h"
@@ -43,7 +42,7 @@ TheHub::TheHub()
     connect(this, &TheHub::sigSuitesChanged,
             [this]() { suiteModel->signalReset(); });
     connect(this, &TheHub::sigSuiteSelected,
-            [this](QSharedPointer<Suite> dataseq) { metadataModel->reset(dataseq); });
+            [this](shp_Suite dataseq) { metadataModel->reset(dataseq); });
 
     // create actions
 
@@ -474,7 +473,7 @@ void TheHub::setNorm(eNorm norm) {
     emit sigNormChanged();
 }
 
-void TheHub::tellSuiteSelected(QSharedPointer<Suite> suite) {
+void TheHub::tellSuiteSelected(shp_Suite suite) {
     selectedSuite_ = suite;
     emit sigSuiteSelected(suite);
 }

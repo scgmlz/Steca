@@ -19,7 +19,7 @@ Experiment::Experiment() {
     invalidateAvgMutables();
 }
 
-void Experiment::appendHere(QSharedPointer<Suite> dataseq) {
+void Experiment::appendHere(shp_Suite dataseq) {
     // can be added only once
     debug::ensure(!dataseq->experiment_);
     dataseq->experiment_ = this;
@@ -90,9 +90,9 @@ void Experiment::invalidateAvgMutables() const {
     avgCurve_.clear();
 }
 
-QSharedPointer<Suite> Experiment::combineAll() const {
-    QSharedPointer<Suite> ret(new Suite);
-    for (QSharedPointer<Suite> const& dataseq : *this)
+shp_Suite Experiment::combineAll() const {
+    shp_Suite ret(new Suite);
+    for (shp_Suite const& dataseq : *this)
         for (QSharedPointer<Measurement const> const& one : *dataseq)
             ret->append(one);
     return ret;

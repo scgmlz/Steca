@@ -14,7 +14,6 @@
 
 #include "subframe_image.h"
 #include "core/data/measurement.h"
-#include "core/data/suite.h"
 #include "core/session.h"
 #include "gui/cfg/colors.h"
 #include "gui/cfg/gui_cfg.h"
@@ -209,7 +208,7 @@ SubframeImage::SubframeImage() {
     connect(gHub, &TheHub::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigNormChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigSuiteSelected,
-            [this](QSharedPointer<Suite> dataseq){ setSuite(dataseq); });
+            [this](shp_Suite dataseq){ setSuite(dataseq); });
 
     render();
 }
@@ -250,10 +249,10 @@ QPixmap SubframeImage::makePixmap(QSharedPointer<Image> image) {
 
 QPixmap SubframeImage::makePixmap(
     Measurement const& dataseq, Range const& rgeGma, Range const& rgeTth) {
-    auto im = makeImage(dataseq.image(), !gHub->isFixedIntenImageScale());
-    auto angleMap = gSession->angleMap(dataseq);
+    QImage im = makeImage(dataseq.image(), !gHub->isFixedIntenImageScale());
+    shp_AngleMap angleMap = gSession->angleMap(dataseq);
 
-    auto size = im.size();
+    const QSize& size = im.size();
     for_ij (size.width(), size.height()) {
         ScatterDirection const& a = angleMap->at(to_u(i), to_u(j));
         QColor color = im.pixel(i, j);
@@ -272,7 +271,7 @@ QPixmap SubframeImage::makePixmap(
     return QPixmap::fromImage(im);
 }
 
-void SubframeImage::setSuite(QSharedPointer<Suite> dataseq) {
+void SubframeImage::setSuite(shp_Suite dataseq) {
     dataseq_ = dataseq;
     render();
 }
