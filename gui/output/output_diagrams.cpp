@@ -250,7 +250,7 @@ void DiagramsFrame::saveDiagramOutput() {
     qDebug() /* qInfo() TODO restore */ << "diagram saved to " << path;
 }
 
-void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator) {
+void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator) const {
     WriteFile file(filePath);
 
     QTextStream stream(&file);
@@ -269,7 +269,7 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separato
     }
 }
 
-void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
+void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) const {
     WriteFile file(filePath);
     QTextStream stream(&file);
 
