@@ -15,13 +15,11 @@
 #ifndef REFLECTION_INFO_H
 #define REFLECTION_INFO_H
 
+#include "core/data/metadata.h"
 #include "core/typ/angles.h"
 #include "core/typ/range.h"
 #include "core/typ/types.h"
 #include "core/typ/variant.h"
-#include <QSharedPointer> // no auto rm
-
-class Metadata;
 
 //! Metadata, peak fit results, and pole figure angles.
 
@@ -29,10 +27,10 @@ class ReflectionInfo final {
     public:
     ReflectionInfo();
     ReflectionInfo(
-        QSharedPointer<const Metadata>,
+        shp_Metadata,
         deg alpha, deg beta, Range, inten_t, inten_t /*error*/,
         deg, deg /*error*/, fwhm_t, fwhm_t /*error*/);
-    ReflectionInfo(QSharedPointer<const Metadata>, deg alpha, deg beta, Range);
+    ReflectionInfo(shp_Metadata, deg alpha, deg beta, Range);
     ReflectionInfo(
         deg alpha, deg beta, Range, inten_t, inten_t /*error*/, deg, deg /*error*/,
         fwhm_t, fwhm_t /*error*/);
@@ -67,7 +65,7 @@ class ReflectionInfo final {
     row_t data() const;
 
 private:
-    QSharedPointer<const Metadata> md_;
+    shp_Metadata md_;
     deg alpha_, beta_;
     Range rgeGma_;
     inten_t inten_, intenError_;
@@ -81,8 +79,6 @@ private:
 //! A list of ReflectionInfo's
 
 class ReflectionInfos : public vec<ReflectionInfo> {
-private:
-    using super = vec<ReflectionInfo>;
 public:
     ReflectionInfos() { invalidate(); }
 

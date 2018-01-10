@@ -23,7 +23,7 @@
 class Suite;
 class Image;
 
-//! View the data through a lens
+//! View the data through a lens. Base class for ImageLens and Sequence Lens.
 
 class LensBase {
 public:
@@ -43,6 +43,8 @@ protected:
     const Image* intensCorr_;
 };
 
+//! A lens for a single Image.
+
 class ImageLens final : public LensBase {
 public:
     ImageLens(const Image&, bool trans, bool cut);
@@ -61,6 +63,8 @@ private:
 
 typedef QSharedPointer<const ImageLens> shp_ImageLens;
 
+
+//! A lens for a sequence of Image's.
 
 class SequenceLens final : public LensBase {
 public:
@@ -85,5 +89,7 @@ private:
 
     Suite const& suite_;
 };
+
+typedef QSharedPointer<SequenceLens> shp_SequenceLens;
 
 #endif // LENS_H

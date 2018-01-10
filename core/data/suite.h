@@ -32,7 +32,7 @@ private:
 public:
     Suite();
 
-    QSharedPointer<const Metadata> metadata() const;
+    shp_Metadata metadata() const;
     Experiment const& experiment() const;
 
     deg omg() const;
@@ -56,7 +56,7 @@ public:
 
 private:
     Experiment* experiment_;
-    QSharedPointer<const Metadata> md_; // on demand, compute once
+    shp_Metadata md_; // on demand, compute once
 };
 
 typedef QSharedPointer<Suite> shp_Suite;

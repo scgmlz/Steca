@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "measurement.h"
-#include "metadata.h"
 #include "core/session.h"
 #include <qmath.h>
 
@@ -24,7 +23,7 @@ Measurement::Measurement(const Metadata& md, size2d const& size, inten_vec const
         image_->setInten(i, intens.at(i));
 }
 
-QSharedPointer<const Metadata> Measurement::metadata() const {
+shp_Metadata Measurement::metadata() const {
     debug::ensure(!md_.isNull());
     return md_;
 }

@@ -47,4 +47,6 @@ public:
     qreal time, deltaTime;
 };
 
+typedef QSharedPointer<const Metadata> shp_Metadata;
+
 #endif // METADATA_H

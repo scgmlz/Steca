@@ -19,7 +19,6 @@
 #include "core/typ/str.h"
 #include "core/typ/vec.h"
 #include <QAbstractTableModel>
-#include <QSharedPointer> // no auto rm
 
 extern QVariant const EMPTY_VAR;
 extern QModelIndex const ANY_INDEX;
@@ -97,7 +96,7 @@ public:
     void flipCheck(uint row);
 
 private:
-    QSharedPointer<const Metadata> metadata_;
+    shp_Metadata metadata_;
     vec<bool> rowsChecked_;
 };
 

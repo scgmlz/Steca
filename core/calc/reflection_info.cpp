@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "core/calc/reflection_info.h"
-#include "core/data/metadata.h"
 #include "core/def/idiomatic_for.h"
 
 // ************************************************************************** //
@@ -28,12 +27,12 @@
 
 ReflectionInfo::ReflectionInfo()
     : ReflectionInfo(
-          QSharedPointer<const Metadata>(),
+          shp_Metadata(),
           NAN, NAN, Range(), inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), NAN, NAN)
 {}
 
 ReflectionInfo::ReflectionInfo(
-    QSharedPointer<const Metadata> md,
+    shp_Metadata md,
     deg alpha, deg beta, Range rgeGma, inten_t inten, inten_t intenError,
     deg tth, deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
     : md_(md)
@@ -49,7 +48,7 @@ ReflectionInfo::ReflectionInfo(
 {}
 
 ReflectionInfo::ReflectionInfo(
-    QSharedPointer<const Metadata> md, deg alpha, deg beta, Range rgeGma)
+    shp_Metadata md, deg alpha, deg beta, Range rgeGma)
     : ReflectionInfo(
         md, alpha, beta, rgeGma, inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), fwhm_t(NAN),
         fwhm_t(NAN))
@@ -59,7 +58,7 @@ ReflectionInfo::ReflectionInfo(
     deg alpha, deg beta, Range rgeGma, inten_t inten, inten_t intenError, deg tth,
     deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
     : ReflectionInfo(
-        QSharedPointer<const Metadata>(),
+        shp_Metadata(),
         alpha, beta, rgeGma, inten, intenError, tth, tthError, fwhm, fwhmError)
 {}
 
@@ -119,7 +118,7 @@ str const ReflectionInfo::reflStringTag(uint attr, bool out) {
 // ************************************************************************** //
 
 void ReflectionInfos::append(ReflectionInfo const& info) {
-    super::append(info);
+    vec<ReflectionInfo>::append(info);
     invalidate();
 }
 

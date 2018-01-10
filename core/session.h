@@ -126,8 +126,8 @@ public:
         return session.angleMap(ds); }
 
     shp_ImageLens imageLens(const Image&, bool trans, bool cut) const;
-    QSharedPointer<SequenceLens> dataseqLens(Suite const&, eNorm, bool trans, bool cut) const;
-    QSharedPointer<SequenceLens> defaultDatasetLens(Suite const& dataseq) const;
+    shp_SequenceLens dataseqLens(Suite const&, eNorm, bool trans, bool cut) const;
+    shp_SequenceLens defaultDatasetLens(Suite const& dataseq) const;
 
     ReflectionInfos makeReflectionInfos(
         Experiment const&, Reflection const&, uint gmaSlices, const Range&, Progress*) const;

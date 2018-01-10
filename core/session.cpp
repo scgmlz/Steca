@@ -221,13 +221,13 @@ shp_ImageLens Session::imageLens(
     return shp_ImageLens(new ImageLens(image, trans, cut));
 }
 
-QSharedPointer<SequenceLens> Session::dataseqLens(
+shp_SequenceLens Session::dataseqLens(
     Suite const& suite, eNorm norm, bool trans, bool cut) const {
-    return QSharedPointer<SequenceLens>(
+    return shp_SequenceLens(
         new SequenceLens(suite, norm, trans, cut, imageTransform_, imageCut_));
 }
 
-QSharedPointer<SequenceLens> Session::defaultDatasetLens(Suite const& suite) const {
+shp_SequenceLens Session::defaultDatasetLens(Suite const& suite) const {
     return dataseqLens(suite, norm(), true, true);
 }
 
@@ -258,7 +258,7 @@ ReflectionInfo Session::makeReflectionInfo(
     Suite const& suite = lens.suite();
     suite.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
 
-    QSharedPointer<const Metadata> metadata = suite.metadata();
+    shp_Metadata metadata = suite.metadata();
 
     return rgeTth.contains(peak.x)
         ? ReflectionInfo(

@@ -17,9 +17,8 @@
 
 #include "core/typ/angles.h"
 #include "core/data/image.h"
+#include "core/data/metadata.h"
 #include <QSharedPointer> // no auto rm
-
-class Metadata;
 
 //! A Measurement consts of an Image with associated Metadata
 
@@ -29,7 +28,7 @@ public:
     Measurement(const Metadata&, const size2d&, const inten_vec&);
     Measurement(const Measurement&) = delete;
 
-    QSharedPointer<const Metadata> metadata() const;
+    shp_Metadata metadata() const;
 
     deg midTth() const;
 
@@ -54,7 +53,7 @@ public:
                        deg minTth, deg deltaTth) const;
 
 private:
-    QSharedPointer<const Metadata> md_;
+    shp_Metadata md_;
     shp_Image image_;
 };
 

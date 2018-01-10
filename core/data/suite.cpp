@@ -32,10 +32,10 @@ Experiment const& Suite::experiment() const {
     return *experiment_;
 }
 
-QSharedPointer<const Metadata> Suite::metadata() const {
+shp_Metadata Suite::metadata() const {
     if (md_.isNull()) {
         debug::ensure(!isEmpty());
-        const_cast<Suite*>(this)->md_ = QSharedPointer<const Metadata>(new Metadata);
+        const_cast<Suite*>(this)->md_ = shp_Metadata(new Metadata);
         Metadata* m = const_cast<Metadata*>(md_.data());
 
         debug::ensure(!first()->metadata().isNull());

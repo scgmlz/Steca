@@ -45,7 +45,7 @@ private:
     QSpinBox *numSlices_, *numSlice_, *numBin_;
     QDoubleSpinBox *minGamma_, *maxGamma_;
 
-    QSharedPointer<SequenceLens> lens_;
+    shp_SequenceLens lens_;
 };
 
 #endif // SUBFRAME_IMAGE_H
