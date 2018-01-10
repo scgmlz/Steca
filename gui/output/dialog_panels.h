@@ -61,11 +61,13 @@ private:
 class PanelGammaRange : public GridPanel {
 public:
     PanelGammaRange();
+    ~PanelGammaRange();
     QCheckBox* cbLimitGamma;
     QDoubleSpinBox *minGamma, *maxGamma;
     void updateValues();
 private:
     Range rgeGma_;
+    Settings settings_;
 };
 
 

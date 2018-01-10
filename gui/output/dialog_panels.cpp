@@ -78,7 +78,6 @@ PanelGammaSlices::PanelGammaSlices() : GridPanel("Gamma slices"), settings_("gam
 }
 
 PanelGammaSlices::~PanelGammaSlices() {
-    qDebug() << "properly closing PanelGammaSlices\n";
     settings_.saveInt("num_slices", numSlices->value());
 }
 
@@ -91,10 +90,11 @@ void PanelGammaSlices::updateValues() {
 }
 
 
-PanelGammaRange::PanelGammaRange() : GridPanel("Gamma range") {
+PanelGammaRange::PanelGammaRange() : GridPanel("Gamma range"), settings_("gamma_range") {
     QGridLayout* g = grid();
 
     g->addWidget((cbLimitGamma = newQ::CheckBox("limit")), 0, 0, 1, 2);
+    cbLimitGamma->setChecked(settings_.readBool("limit", false));
 
     g->addWidget(newQ::Label("min"), 1, 0);
     g->addWidget((minGamma = newQ::DoubleSpinBox(gui_cfg::em4_2, -180., 180.)), 1, 1);
@@ -110,6 +110,11 @@ PanelGammaRange::PanelGammaRange() : GridPanel("Gamma range") {
     maxGamma->setValue(rgeGma_.max);
 
     connect(cbLimitGamma, &QCheckBox::toggled, [this]() { updateValues(); });
+}
+
+PanelGammaRange::~PanelGammaRange() {
+    settings_.saveBool("limit", cbLimitGamma->isChecked());
+
 }
 
 // TODO when min/maxGamma updated -> reflect that in PanelGammaSlices

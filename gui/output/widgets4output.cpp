@@ -68,9 +68,6 @@ Params::~Params() {
 void Params::readSettings() {
     Settings s("output");
 
-    if (panelGammaRange)
-        panelGammaRange->cbLimitGamma->setChecked(s.readBool("limit gamma", false));
-
     if (panelPoints)
         (s.readBool("interpolated", false) ? panelPoints->rbInterp : panelPoints->rbCalc)
             ->setChecked(true);
@@ -97,9 +94,6 @@ void Params::readSettings() {
 
 void Params::saveSettings() const {
     Settings s("output");
-
-    if (panelGammaRange)
-        s.saveBool("limit gamma", panelGammaRange->cbLimitGamma->isChecked());
 
     if (panelPoints)
         s.saveBool("interpolated", panelPoints->rbInterp->isChecked());
