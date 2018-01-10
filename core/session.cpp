@@ -125,7 +125,7 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
     experiment_.clear();
     experimentTags_.clear();
 
-    vec<QSharedPointer<Measurement const>> suiteFromFiles;
+    vec<shp_Measurement> suiteFromFiles;
     for (uint i : collectedFromFiles_)
         for (auto& suite : files_.at(i)->suite())
             suiteFromFiles.append(suite);
@@ -151,7 +151,7 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
 
     uint by = combineBy;
     for (auto& suite : suiteFromFiles) {
-        cd->append(QSharedPointer<Measurement const>(suite));
+        cd->append(shp_Measurement(suite));
         if (1 >= by--) {
             appendCd();
             by = combineBy;

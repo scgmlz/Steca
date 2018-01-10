@@ -93,7 +93,7 @@ void Experiment::invalidateAvgMutables() const {
 shp_Suite Experiment::combineAll() const {
     shp_Suite ret(new Suite);
     for (shp_Suite const& dataseq : *this)
-        for (QSharedPointer<Measurement const> const& one : *dataseq)
+        for (shp_Measurement const& one : *dataseq)
             ret->append(one);
     return ret;
 }

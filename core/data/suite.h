@@ -17,15 +17,15 @@
 
 #include "core/typ/angles.h"
 #include "core/data/image.h"
+#include "core/data/measurement.h"
 #include <QSharedPointer> // no auto rm
 
 class Metadata;
-class Measurement;
 class Experiment;
 
 //! One or more Measurement's
 
-class Suite final : public vec<QSharedPointer<Measurement const>> {
+class Suite final : public vec<shp_Measurement> {
 private:
     friend class Experiment;
 
@@ -55,7 +55,7 @@ public:
     size2d imageSize() const;
 
 private:
-    Experiment* experiment_; // here it belongs (or can be nullptr)
+    Experiment* experiment_;
     QSharedPointer<Metadata const> md_; // on demand, compute once
 };
 

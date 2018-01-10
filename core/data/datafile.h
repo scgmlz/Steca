@@ -16,13 +16,13 @@
 #define DATAFILE_H
 
 #include "core/data/image.h"
+#include "core/data/measurement.h"
 #include "core/typ/array2d.h"
 #include "core/typ/str.h"
 #include "core/typ/types.h"
 #include <QFileInfo>
 #include <QSharedPointer> // no auto rm
 
-class Measurement;
 class Metadata;
 
 //! A file (loaded from a disk file) that contains a data sequence.
@@ -31,7 +31,7 @@ public:
     Datafile(rcstr fileName);
     void addDataset(Metadata const&, size2d const&, inten_vec const&);
 
-    vec<QSharedPointer<Measurement const>> const& suite() const { return suite_; }
+    vec<shp_Measurement> const& suite() const { return measurements_; }
     size2d imageSize() const { return imageSize_; }
 
     QFileInfo const& fileInfo() const;
@@ -40,7 +40,7 @@ public:
 
 private:
     QFileInfo fileInfo_;
-    vec<QSharedPointer<class Measurement const>> suite_;
+    vec<shp_Measurement> measurements_;
     size2d imageSize_;
 };
 

@@ -13,18 +13,17 @@
 // ************************************************************************** //
 
 #include "core/data/datafile.h"
-#include "measurement.h"
 #include <QStringBuilder> // for ".." % ..
 
 Datafile::Datafile(rcstr fileName) : fileInfo_(fileName) {}
 
 //! The loaders use this function to push suite
 void Datafile::addDataset(Metadata const& md, size2d const& sz, inten_vec const& ivec) {
-    if (suite_.isEmpty())
+    if (measurements_.isEmpty())
         imageSize_ = sz;
     else if (sz != imageSize_)
         THROW("Inconsistent image size in " % fileName());
-    suite_.append(QSharedPointer<Measurement const>(new Measurement(md, sz, ivec)));
+    measurements_.append(shp_Measurement(new Measurement(md, sz, ivec)));
 }
 
 QFileInfo const& Datafile::fileInfo() const {
@@ -36,9 +35,9 @@ str Datafile::fileName() const {
 }
 
 shp_Image Datafile::foldedImage() const {
-    debug::ensure(!suite_.isEmpty());
-    shp_Image ret(new Image(suite_.first()->imageSize()));
-    for (auto& one : suite_)
+    debug::ensure(!measurements_.isEmpty());
+    shp_Image ret(new Image(measurements_.first()->imageSize()));
+    for (shp_Measurement one : measurements_)
         ret->addIntens(*one->image());
     return ret;
 }
