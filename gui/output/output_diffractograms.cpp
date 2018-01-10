@@ -47,7 +47,7 @@ TabDiffractogramsSave::TabDiffractogramsSave(Params& params)
     grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
     grid_->setRowStretch(grid_->rowCount(), 1);
 
-    auto g = gp->grid();
+    QGridLayout* g = gp->grid();
     g->addWidget((rbCurrent_ = newQ::RadioButton("Current diffractogram")));
     g->addWidget(
         (rbAllSequential_ = newQ::RadioButton("All diffractograms to sequentially numbered files")));
@@ -99,7 +99,7 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
 OutputDataCollection DiffractogramsFrame::collectCurves(
     const Range& rgeGma, uint gmaSlices, Suite const& dataseq, uint picNum) {
 
-    auto lens = gSession->defaultDatasetLens(dataseq);
+    shp_SequenceLens lens = gSession->defaultDatasetLens(dataseq);
 
     Range rge = (gmaSlices > 0) ? lens->rgeGma() : Range::infinite();
     if (rgeGma.isValid())
@@ -108,26 +108,25 @@ OutputDataCollection DiffractogramsFrame::collectCurves(
     OutputDataCollection outputData;
 
     gmaSlices = qMax(1u, gmaSlices);
-    qreal step = rge.width() / gmaSlices;
+    const qreal step = rge.width() / gmaSlices;
     for_i (gmaSlices) {
-        qreal min = rge.min + i * step;
-        Range gmaStripe(min, min + step);
-        auto curve = lens->makeCurve(gmaStripe);
+        const qreal min = rge.min + i * step;
+        const Range gmaStripe(min, min + step);
+        const Curve& curve = lens->makeCurve(gmaStripe);
         outputData.append(OutputData(curve, dataseq, gmaStripe, picNum));
     }
     return outputData;
 }
 
 OutputData DiffractogramsFrame::collectCurve(Suite const& dataseq) {
-    auto lens = gSession->defaultDatasetLens(dataseq);
-    auto curve = lens->makeCurve();
+    shp_SequenceLens lens = gSession->defaultDatasetLens(dataseq);
+    const Curve& curve = lens->makeCurve();
     return OutputData(curve, dataseq, lens->rgeGma(), 0); // TODO current picture number
 }
 
 OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
     debug::ensure(params_->panelGammaSlices);
-    auto ps = params_->panelGammaSlices;
-    uint gmaSlices = to_u(ps->numSlices->value());
+    uint gmaSlices = to_u(params_->panelGammaSlices->numSlices->value());
 
     debug::ensure(params_->panelGammaRange);
     auto pr = params_->panelGammaRange;

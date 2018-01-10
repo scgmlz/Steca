@@ -269,15 +269,15 @@ row_t const& TabularModel::row(uint index) {
 }
 
 void TabularModel::sortData() {
-    auto cmpRows = [this](uint col, row_t const& r1, row_t const& r2) {
+    auto _cmpRows = [this](uint col, row_t const& r1, row_t const& r2) {
         col = colIndexMap_.at(col);
         return cmpFunctions_.at(col)(r1.at(col), r2.at(col));
     };
 
     // sort by sortColumn first, then left-to-right
-    auto cmp = [this, cmpRows](numRow const& r1, numRow const& r2) {
+    auto _cmp = [this, _cmpRows](numRow const& r1, numRow const& r2) {
         if (0 <= sortColumn_) {
-            int c = cmpRows(to_u(sortColumn_), r1.row, r2.row);
+            int c = _cmpRows(to_u(sortColumn_), r1.row, r2.row);
             if (c < 0)
                 return true;
             if (c > 0)
@@ -291,7 +291,7 @@ void TabularModel::sortData() {
 
         for_int (col, numCols_) {
             if (to_i(col) != sortColumn_) {
-                int c = cmpRows(col, r1.row, r2.row);
+                int c = _cmpRows(col, r1.row, r2.row);
                 if (c < 0)
                     return true;
                 if (c > 0)
@@ -303,7 +303,7 @@ void TabularModel::sortData() {
     };
 
     beginResetModel();
-    std::sort(rows_.begin(), rows_.end(), cmp);
+    std::sort(rows_.begin(), rows_.end(), _cmp);
     endResetModel();
 }
 
@@ -316,13 +316,13 @@ Table::Table(uint numDataColumns) : model_(nullptr) {
     setModel(model_.ptr());
     setHeader(new QHeaderView(Qt::Horizontal));
 
-    auto& h = *header();
+    QHeaderView* h = header();
 
-    h.setSectionResizeMode(0, QHeaderView::Fixed);
-    h.setSectionsMovable(true);
-    h.setSectionsClickable(true);
+    h->setSectionResizeMode(0, QHeaderView::Fixed);
+    h->setSectionsMovable(true);
+    h->setSectionsClickable(true);
 
-    int w = QFontMetrics(h.font()).width("000000000");
+    int w = QFontMetrics(h->font()).width("000000000");
     setColumnWidth(0, w);
 }
 
@@ -336,17 +336,15 @@ void Table::setColumns(
         header(), &QHeaderView::sectionMoved,
         [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
             debug::ensure(oldVisualIndex > 0 && newVisualIndex > 0);
-            auto& h = *header();
-            h.setSortIndicatorShown(false);
-            //            model_->setSortColumn(-2);
+            header()->setSortIndicatorShown(false);
             model_->moveColumn(to_u(oldVisualIndex - 1), to_u(newVisualIndex - 1));
             model_->sortData();
         });
 
     connect(header(), &QHeaderView::sectionClicked, [this](int logicalIndex) {
-        auto& h = *header();
-        h.setSortIndicatorShown(true);
-        h.setSortIndicator(logicalIndex, Qt::AscendingOrder);
+        QHeaderView* h = header();
+        h->setSortIndicatorShown(true);
+        h->setSortIndicator(logicalIndex, Qt::AscendingOrder);
         model_->setSortColumn(logicalIndex - 1);
         model_->sortData();
     });
@@ -388,9 +386,9 @@ TabSave::TabSave(Params& params, bool withTypes) : params_(params) {
     if (!QDir(dir).exists())
         dir = QDir::current().absolutePath();
 
-    auto gp = new GridPanel("Destination");
+    auto* gp = new GridPanel("Destination");
     grid_->addWidget(gp, 0, 0);
-    auto g = gp->grid();
+    QGridLayout* g = gp->grid();
 
     dir_ = new QLineEdit(dir);
     dir_->setReadOnly(true);
