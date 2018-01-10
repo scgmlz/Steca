@@ -12,13 +12,12 @@
 //
 // ************************************************************************** //
 
-#include "dialog_panels.h"
+#include "gui/output/dialog_panels.h"
 #include "core/data/metadata.h"
 #include "gui/cfg/gui_cfg.h"
 #include "gui/models.h"
 #include "core/session.h"
 #include "gui/thehub.h"
-#include "gui/widgets/new_q.h"
 
 // ************************************************************************** //
 //  class GridPanel
@@ -59,11 +58,13 @@ PanelReflection::PanelReflection() : GridPanel("Reflection") {
     g->setRowStretch(g->rowCount(), 1);
 }
 
-PanelGammaSlices::PanelGammaSlices() : GridPanel("Gamma slices") {
+
+PanelGammaSlices::PanelGammaSlices() : GridPanel("Gamma slices"), settings_("gamma_slices") {
     QGridLayout* g = grid();
 
     g->addWidget(newQ::Label("count"), 0, 0);
     g->addWidget((numSlices = newQ::SpinBox(gui_cfg::em4, 0)), 0, 1);
+    numSlices->setValue(settings_.readInt("num_slices", 0));
 
     g->addWidget(newQ::Label("degrees"), 1, 0);
     g->addWidget((stepGamma = newQ::DoubleSpinBox(gui_cfg::em4_2, 0.0)), 1, 1);
@@ -76,6 +77,11 @@ PanelGammaSlices::PanelGammaSlices() : GridPanel("Gamma slices") {
     connect(numSlices, slot(QSpinBox, valueChanged, int), [this]() { updateValues(); });
 }
 
+PanelGammaSlices::~PanelGammaSlices() {
+    qDebug() << "properly closing PanelGammaSlices\n";
+    settings_.saveInt("num_slices", numSlices->value());
+}
+
 void PanelGammaSlices::updateValues() {
     uint nSlices = to_u(numSlices->value());
     if (nSlices > 0)
@@ -83,6 +89,7 @@ void PanelGammaSlices::updateValues() {
     else
         stepGamma->clear();
 }
+
 
 PanelGammaRange::PanelGammaRange() : GridPanel("Gamma range") {
     QGridLayout* g = grid();
@@ -113,6 +120,7 @@ void PanelGammaRange::updateValues() {
     maxGamma->setEnabled(on);
 }
 
+
 PanelPoints::PanelPoints() : GridPanel("Points") {
     QGridLayout* g = grid();
     g->addWidget((rbCalc = newQ::RadioButton("calculated")), 0, 0);
@@ -120,6 +128,7 @@ PanelPoints::PanelPoints() : GridPanel("Points") {
 
     g->setRowStretch(g->rowCount(), 1);
 }
+
 
 PanelInterpolation::PanelInterpolation() : GridPanel("Interpolation") {
     QGridLayout* g = grid();
@@ -141,6 +150,7 @@ PanelInterpolation::PanelInterpolation() : GridPanel("Interpolation") {
     g->setRowStretch(g->rowCount(), 1);
 }
 
+
 PanelDiagram::PanelDiagram() : GridPanel("Diagram") {
     QStringList tags = ReflectionInfo::dataTags(false);
     for_i (Metadata::numAttributes(false) - Metadata::numAttributes(true))
@@ -156,5 +166,6 @@ PanelDiagram::PanelDiagram() : GridPanel("Diagram") {
 
     g->setRowStretch(g->rowCount(), 1);
 }
+
 
 PanelFitError::PanelFitError() : GridPanel("Fit error") {}

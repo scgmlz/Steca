@@ -16,15 +16,9 @@
 #define DIALOG_PANELS_H
 
 #include "core/typ/range.h"
+#include "gui/cfg/settings.h"
+#include "gui/widgets/new_q.h"
 #include <QGroupBox>
-
-class QGridLayout;
-class QCheckBox;
-class QComboBox;
-class QSpinBox;
-class QRadioButton;
-class QDoubleSpinBox;
-
 
 //! A panel with grid layout
 class GridPanel : public QGroupBox {
@@ -54,11 +48,13 @@ public:
 class PanelGammaSlices : public GridPanel {
 public:
     PanelGammaSlices();
+    ~PanelGammaSlices();
     QSpinBox* numSlices;
     QDoubleSpinBox* stepGamma;
     void updateValues();
 private:
     Range rgeGma_;
+    Settings settings_;
 };
 
 

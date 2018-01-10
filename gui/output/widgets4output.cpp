@@ -35,13 +35,13 @@ Params::Params(ePanels panels)
     , panelPoints(nullptr)
     , panelInterpolation(nullptr)
     , panelDiagram(nullptr) {
-    debug::ensure(panels & GAMMA);
 
     setLayout((box_ = newQ::BoxLayout(Qt::Horizontal)));
 
     if (REFLECTION & panels)
         box_->addWidget((panelReflection = new PanelReflection()));
 
+    debug::ensure(panels & GAMMA);
     if (GAMMA & panels) {
         box_->addWidget((panelGammaSlices = new PanelGammaSlices()));
         box_->addWidget((panelGammaRange = new PanelGammaRange()));
@@ -67,9 +67,6 @@ Params::~Params() {
 
 void Params::readSettings() {
     Settings s("output");
-
-    if (panelGammaSlices)
-        panelGammaSlices->numSlices->setValue(s.readInt("num slices", 0));
 
     if (panelGammaRange)
         panelGammaRange->cbLimitGamma->setChecked(s.readBool("limit gamma", false));
@@ -101,9 +98,6 @@ void Params::readSettings() {
 void Params::saveSettings() const {
     Settings s("output");
 
-    if (panelGammaSlices)
-        s.saveInt("num slices", panelGammaSlices->numSlices->value());
-
     if (panelGammaRange)
         s.saveBool("limit gamma", panelGammaRange->cbLimitGamma->isChecked());
 
@@ -129,7 +123,6 @@ void Params::saveSettings() const {
 // ************************************************************************** //
 
 class TabularModel : public TableModel {
-private:
 public:
     TabularModel(uint numCols_);
 
