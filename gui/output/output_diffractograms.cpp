@@ -119,6 +119,25 @@ vec<OutputData> collectCurves(
     return ret;
 }
 
+void writeMetaData(OutputData outputData, QTextStream& stream) {
+    if (outputData.picNum_ > 0)
+        stream << "Picture Nr: " << outputData.picNum_ << '\n';
+
+    const Metadata& md = *outputData.dataseq_.metadata();
+    const Range& rgeGma = outputData.gmaStripe_;
+
+    stream << "Comment: " << md.comment << '\n';
+    stream << "Date: " << md.date << '\n';
+    stream << "Gamma range min: " << rgeGma.min << '\n';
+    stream << "Gamma range max: " << rgeGma.max << '\n';
+
+    for_i (Metadata::numAttributes(true)) {
+        stream << Metadata::attributeTag(i, true) << ": " << md.attributeValue(i).toDouble()
+               << '\n';
+    }
+}
+
+
 } // local methods
 
 static const Params::ePanels PANELS = Params::ePanels(Params::GAMMA);
@@ -165,24 +184,6 @@ vec<vec<OutputData>> DiffractogramsFrame::outputAllDiffractograms() {
     return ret;
 }
 
-auto writeMetaData = [](OutputData outputData, QTextStream& stream) {
-    if (outputData.picNum_ > 0)
-        stream << "Picture Nr: " << outputData.picNum_ << '\n';
-
-    auto& md = *outputData.dataseq_.metadata();
-    auto& rgeGma = outputData.gmaStripe_;
-
-    stream << "Comment: " << md.comment << '\n';
-    stream << "Date: " << md.date << '\n';
-    stream << "Gamma range min: " << rgeGma.min << '\n';
-    stream << "Gamma range max: " << rgeGma.max << '\n';
-
-    for_i (Metadata::numAttributes(true)) {
-        stream << Metadata::attributeTag(i, true) << ": " << md.attributeValue(i).toDouble()
-               << '\n';
-    }
-};
-
 void DiffractogramsFrame::writeCurrDiffractogramToFile(rcstr filePath, rcstr separator) {
     const OutputData& outputData = outputCurrDiffractogram();
     if (!outputData.isValid()) {
@@ -215,7 +216,6 @@ void DiffractogramsFrame::writeAllDiffractogramsToFiles(
         for (auto outputCollection : outputCollections) {
             for (auto outputData : outputCollection) {
                 writeMetaData(outputData, stream);
-
                 stream << "Tth" << separator << "Intensity" << '\n';
                 for_i (outputData.curve_.xs().count()) {
                     stream << outputData.curve_.x(i) << separator << outputData.curve_.y(i) << '\n';
