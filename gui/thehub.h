@@ -195,8 +195,8 @@ public:
     MetadataModel* metadataModel;
     ReflectionsModel* reflectionsModel;
 
-    str saveDir; //!< default directory for data export
-    str saveFmt; //!< default format for data export
+    str saveDir; //!< setting: default directory for data export
+    str saveFmt; //!< setting: default format for data export
 };
 
 #endif // THEHUB_H

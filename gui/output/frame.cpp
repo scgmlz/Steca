@@ -156,15 +156,14 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
 
 class TabTable : public QWidget {
 public:
-    TabTable(Params&, const QStringList& headers, const QStringList& outHeaders, cmp_vec const&);
+    TabTable(const QStringList& headers, const QStringList& outHeaders, cmp_vec const&);
     Table* table;
 private:
     ShowColsWidget* showColumnsWidget_;
     showcol_vec showCols_;
 };
 
-TabTable::TabTable(
-    Params& params, const QStringList& headers, const QStringList& outHeaders, const cmp_vec& cmps){
+TabTable::TabTable(const QStringList& headers, const QStringList& outHeaders, const cmp_vec& cmps){
 
     QGridLayout* grid_ = newQ::GridLayout();
     setLayout(grid_);
@@ -195,8 +194,6 @@ TabTable::TabTable(
 // ************************************************************************** //
 //  class Frame
 // ************************************************************************** //
-
-
 
 Frame::Frame(rcstr title, Params* params, QWidget* parent)
     : QDialog(parent) {
@@ -252,9 +249,9 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent)
 
     // tabs
 
-    auto tabTable = new TabTable(
-        *params_, ReflectionInfo::dataTags(false), ReflectionInfo::dataTags(true),
-        ReflectionInfo::dataCmps());
+    auto tabTable = new TabTable(ReflectionInfo::dataTags(false),
+                                 ReflectionInfo::dataTags(true),
+                                 ReflectionInfo::dataCmps());
     newQ::Tab(tabs_, "Points")->box().addWidget(tabTable);
 
     table_ = tabTable->table;
