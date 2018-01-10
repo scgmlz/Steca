@@ -146,7 +146,7 @@ public:
 
     void setBgRanges(const Ranges&);
     void addBgRange(const Range&);
-    void remBgRange(const Range&);
+    void removeBgRange(const Range&);
     void setBgPolyDegree(uint);
 
     void setIntenScaleAvg(bool, preal);

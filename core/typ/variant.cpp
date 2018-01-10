@@ -17,7 +17,7 @@
 #include <QDate>
 
 bool isNumeric(QVariant const& v) {
-    auto type = QMetaType::Type(v.type());
+    QMetaType::Type type = QMetaType::Type(v.type());
 
     switch (type) {
     case QMetaType::Int:
@@ -46,7 +46,7 @@ IMPL_CMP(cmp_str, toString)
 IMPL_CMP(cmp_date, toDate)
 
 int cmp_real(QVariant const& v1, QVariant const& v2) {
-    auto val1 = v1.toDouble(), val2 = v2.toDouble();
+    double val1 = v1.toDouble(), val2 = v2.toDouble();
     if (qIsNaN(val1)) {
         return qIsNaN(val2) ? 0 : +1;
     }

@@ -43,7 +43,7 @@ int FilesModel::rowCount(rcIndex) const {
 }
 
 QVariant FilesModel::data(rcIndex index, int role) const {
-    auto row = index.row(), rowCnt = rowCount();
+    const int row = index.row(), rowCnt = rowCount();
     if (row < 0 || rowCnt <= row)
         return EMPTY_VAR;
 
@@ -180,8 +180,7 @@ QVariant MetadataModel::headerData(int, Qt::Orientation, int) const {
 }
 
 void MetadataModel::flipCheck(uint row) {
-    auto& item = rowsChecked_[row];
-    item = !item;
+    rowsChecked_[row] = !rowsChecked_[row];
     signalReset();
 }
 

@@ -142,7 +142,7 @@ void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
         if (Qt::LeftButton == e->button())
             gHub->addBgRange(range);
         else
-            gHub->remBgRange(range);
+            gHub->removeBgRange(range);
         break;
 
     case DiffractogramPlot::eTool::PEAK_REGION: plot_.setNewReflRange(range); break;

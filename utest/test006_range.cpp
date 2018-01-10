@@ -241,12 +241,12 @@ TEST(Ranges, Trivia) {
     EXPECT_TRUE(rs.add(r3));
     EXPECT_TRUE(RANGES_EQ(rs, { { 0, 4 } }));
 
-    EXPECT_TRUE(rs.rem(r2));
-    EXPECT_FALSE(rs.rem(r2));
+    EXPECT_TRUE(rs.remove(r2));
+    EXPECT_FALSE(rs.remove(r2));
     EXPECT_TRUE(RANGES_EQ(rs, { { 0, 1 }, { 2, 4 } }));
 
     rs.clear();
-    EXPECT_FALSE(rs.rem(r1));
+    EXPECT_FALSE(rs.remove(r1));
 }
 
 TEST(Ranges, Json) {

@@ -88,7 +88,7 @@ public:
     void setGammaRange(const Range& r) { gammaRange_ = r; }
     void setBgRanges(const Ranges& rr) { bgRanges_ = rr; }
     bool addBgRange(const Range& r) { return bgRanges_.add(r); }
-    bool remBgRange(const Range& r) { return bgRanges_.rem(r); }
+    bool removeBgRange(const Range& r) { return bgRanges_.remove(r); }
     void setBgPolyDegree(uint degree) { bgPolyDegree_ = degree; }
     void setIntenScaleAvg(bool, preal);
     void addReflection(const QString&);

@@ -108,12 +108,12 @@ Range Range::intersect(const Range& that) const {
     if (!isValid() || !that.isValid())
         return Range();
 
-    auto min_ = qMax(min, that.min), max_ = qMin(max, that.max);
+    const qreal min_ = qMax(min, that.min), max_ = qMin(max, that.max);
     if (min_ <= max_)
         return Range(min_, max_);
 
     // disjoint
-    auto val = that.min < min ? min : max;
+    const qreal val = that.min < min ? min : max;
     return Range(val, val); // empty, isValid()
 }
 
@@ -139,8 +139,7 @@ void Range::from_json(JsonObj const& obj) THROWS {
 
 bool Ranges::add(const Range& range) {
     vec<Range> newRanges;
-
-    auto addRange = range;
+    Range addRange = range;
     for (const Range& r : ranges_) {
         if (r.contains(range))
             return false;
@@ -151,15 +150,13 @@ bool Ranges::add(const Range& range) {
                 newRanges.append(r);
         }
     }
-
     newRanges.append(addRange);
     ranges_ = newRanges;
     sort();
-
     return true;
 }
 
-bool Ranges::rem(const Range& remRange) {
+bool Ranges::remove(const Range& remRange) {
     vec<Range> newRanges;
     bool changed = false;
 

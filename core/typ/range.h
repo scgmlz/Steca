@@ -72,8 +72,7 @@ public:
     const Range& at(uint i) const { return ranges_.at(i); }
 
     bool add(const Range&); //!< collapses overlapping ranges; returns true if *this changed
-
-    bool rem(const Range&); //!< removes (cuts out) a range; returns whether there was a change
+    bool remove(const Range&); //!< removes (cuts out) a range; returns whether there was a change
 
     QJsonArray to_json() const;
     void from_json(QJsonArray const&) THROWS;

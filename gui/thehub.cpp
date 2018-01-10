@@ -394,8 +394,8 @@ void TheHub::addBgRange(const Range& range) {
         emit sigBgChanged();
 }
 
-void TheHub::remBgRange(const Range& range) {
-    if (gSession->remBgRange(range))
+void TheHub::removeBgRange(const Range& range) {
+    if (gSession->removeBgRange(range))
         emit sigBgChanged();
 }
 

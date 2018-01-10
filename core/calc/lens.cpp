@@ -35,7 +35,7 @@ size2d LensBase::transCutSize(size2d size) const {
 }
 
 void LensBase::doTrans(uint& x, uint& y) const {
-    auto s = size();
+    size2d s = size();
     uint w = s.w;
     uint h = s.h;
 
@@ -97,7 +97,7 @@ const Range& ImageLens::rgeInten(bool fixed) const {
     if (fixed)
         return gSession->experiment().rgeFixedInten(trans_, cut_);
     if (!rgeInten_.isValid()) {
-        auto sz = size();
+        size2d sz = size();
         for_ij (sz.w, sz.h)
             rgeInten_.extendBy(qreal(imageInten(i, j)));
     }

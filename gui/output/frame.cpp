@@ -92,7 +92,7 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
         showCols_.at(uint(eReflAttr::FWHM)).cb->setChecked(true);
     };
 
-    auto updateRbs = [this]() {
+    auto _updateRbs = [this]() {
         bool isAll = true, isNone = true, isOther = false;
         uint nInten = 0, nTth = 0, nFwhm = 0;
 
@@ -132,13 +132,13 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
     for_i (showCols_.count()) {
         auto cb = showCols_.at(i).cb;
 
-        connect(cb, &QCheckBox::toggled, [this, updateRbs, i](bool on) {
+        connect(cb, &QCheckBox::toggled, [this, _updateRbs, i](bool on) {
             if (on)
                 table_.showColumn(to_i(i) + 1);
             else
                 table_.hideColumn(to_i(i) + 1);
 
-            updateRbs();
+            _updateRbs();
         });
     }
 
@@ -236,18 +236,18 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent)
     connect(actCalculate_, &QAction::triggered, [this]() { calculate(); });
     connect(actInterpolate_, &QAction::triggered, [this]() { interpolate(); });
 
-    auto updateDisplay = [this]() { displayReflection(getReflIndex(), getInterpolated()); };
+    auto _updateDisplay = [this]() { displayReflection(getReflIndex(), getInterpolated()); };
 
     if (params_->panelReflection) {
         connect(
             params_->panelReflection->cbRefl, slot(QComboBox, currentIndexChanged, int),
-            [updateDisplay]() { updateDisplay(); });
+            [_updateDisplay]() { _updateDisplay(); });
     }
 
     if (params_->panelPoints) {
         debug::ensure(params_->panelReflection);
-        connect(params_->panelPoints->rbInterp, &QRadioButton::toggled, [updateDisplay]() {
-            updateDisplay();
+        connect(params_->panelPoints->rbInterp, &QRadioButton::toggled, [_updateDisplay]() {
+            _updateDisplay();
         });
     }
 
@@ -271,7 +271,7 @@ void Frame::calculate() {
     calcPoints_.clear();
     interpPoints_.clear();
 
-    auto& reflections = gSession->reflections();
+    const Reflections& reflections = gSession->reflections();
     if (!reflections.isEmpty()) {
         uint reflCount = reflections.count();
 

@@ -56,11 +56,11 @@ deg calculateDeltaBeta(deg beta1, deg beta2) {
 // Calculates the angle between two points on a unit sphere.
 deg angle(deg alpha1, deg alpha2, deg deltaBeta) {
     // Absolute value of deltaBeta is not needed because cos is an even function.
-    auto a = rad(acos( cos(alpha1.toRad()) * cos(alpha2.toRad())
+    deg ret = rad(acos( cos(alpha1.toRad()) * cos(alpha2.toRad())
                        + sin(alpha1.toRad()) * sin(alpha2.toRad()) * cos(deltaBeta.toRad())))
                  .toDeg();
-    debug::ensure(0 <= a && a <= 180);
-    return a;
+    debug::ensure(0 <= ret && ret <= 180);
+    return ret;
 }
 
 enum class eQuadrant {
@@ -110,7 +110,7 @@ bool inRadius(deg alpha, deg beta, deg centerAlpha, deg centerBeta, deg radius) 
 // to the peak parameter lists.
 void searchPoints(deg alpha, deg beta, deg radius, ReflectionInfos const& infos, itfs_t& itfs) {
     // REVIEW Use value trees to improve performance.
-    for (auto& info : infos) {
+    for (const ReflectionInfo& info : infos) {
         if (inRadius(info.alpha(), info.beta(), alpha, beta, radius))
             itfs.append(itf_t(info.inten(), info.tth(), info.fwhm()));
     }
@@ -127,14 +127,14 @@ void searchInQuadrants(
     distances.fill(std::numeric_limits<qreal>::max(), quadrants.count());
     foundInfos.fill(nullptr, quadrants.count());
     // Find infos closest to given alpha and beta in each quadrant.
-    for (auto& info : infos) {
+    for (const ReflectionInfo& info : infos) {
         // REVIEW We could do better with value trees than looping over all infos.
-        auto deltaBeta = calculateDeltaBeta(info.beta(), beta);
+        deg deltaBeta = calculateDeltaBeta(info.beta(), beta);
         if (fabs(deltaBeta) > BETA_LIMIT)
             continue;
-        auto deltaAlpha = info.alpha() - alpha;
+        deg deltaAlpha = info.alpha() - alpha;
         // "Distance" between grid point and current info.
-        auto d = angle(alpha, info.alpha(), deltaBeta);
+        deg d = angle(alpha, info.alpha(), deltaBeta);
         for_i (quadrants.count()) {
             if (inQuadrant(quadrants.at(i), deltaAlpha, deltaBeta)) {
                 if (d >= distances.at(i))
@@ -159,7 +159,7 @@ itf_t inverseDistanceWeighing(qreal_vec const& distances, info_vec const& infos)
     for_i (NUM_QUADRANTS) {
         if (distances.at(i) == .0) {
             // Points coincide; no need to interpolate.
-            auto& in = infos.at(i);
+            const ReflectionInfo* in = infos.at(i);
             return { in->inten(), in->tth(), in->fwhm() };
         }
         inverseDistances[i] = 1 / distances.at(i);
@@ -170,8 +170,8 @@ itf_t inverseDistanceWeighing(qreal_vec const& distances, info_vec const& infos)
     qreal height = 0;
     qreal fwhm = 0;
     for_i (N) {
-        auto& in = infos.at(i);
-        auto& d = inverseDistances.at(i);
+        const ReflectionInfo* in = infos.at(i);
+        qreal d = inverseDistances.at(i);
         offset += in->tth() * d;
         height += in->inten() * d;
         fwhm += in->fwhm() * d;
