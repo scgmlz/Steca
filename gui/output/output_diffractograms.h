@@ -17,11 +17,7 @@
 
 #include "frame.h"
 
-class Suite;
-
-struct OutputData;
-using OutputDataCollection = vec<OutputData>;
-using OutputDataCollections = vec<OutputDataCollection>;
+class OutputData;
 
 //! The modal dialog for saving diffractograms
 class DiffractogramsFrame final : public Frame {
@@ -31,12 +27,12 @@ public:
 private:
     class TabDiffractogramsSave* tabSave_;
 
-    OutputDataCollection
-    collectCurves(const Range&, uint gmaSlices, Suite const& dataseq, uint picNum);
-    OutputData collectCurve(Suite const& dataseq);
-
     OutputData outputCurrDiffractogram();
-    OutputDataCollections outputAllDiffractograms();
+    OutputData collectCurve(class Suite const& dataseq);
+    vec<OutputData> collectCurves(
+        const Range&, uint gmaSlices, class Suite const& dataseq, uint picNum);
+
+    vec<vec<OutputData>> outputAllDiffractograms();
 
     void saveDiffractogramOutput();
     void writeCurrDiffractogramToFile(rcstr filePath, rcstr separator);

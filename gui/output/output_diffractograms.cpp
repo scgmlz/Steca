@@ -61,7 +61,12 @@ uint TabDiffractogramsSave::currType() const {
     return to_u(fileTypes_->currentIndex());
 }
 
+// ************************************************************************** //
+//  local class OutputData
+// ************************************************************************** //
+
 struct OutputData {
+public:
     OutputData() {}
 
     OutputData(Curve curve, Suite dataseq, Range gmaStripe, uint picNum)
@@ -72,10 +77,13 @@ struct OutputData {
     Range gmaStripe_;
     uint picNum_;
 
-    bool isValid() {
+    bool isValid() const {
         return (!dataseq_.metadata().isNull() || !curve_.isEmpty() || gmaStripe_.isValid());
     }
 };
+
+using OutputDataCollection = vec<OutputData>;
+using OutputDataCollections = vec<OutputDataCollection>;
 
 static const Params::ePanels PANELS = Params::ePanels(Params::GAMMA);
 
@@ -129,19 +137,19 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
     uint gmaSlices = to_u(params_->panelGammaSlices->numSlices->value());
 
     debug::ensure(params_->panelGammaRange);
-    auto pr = params_->panelGammaRange;
+    const PanelGammaRange* pr = params_->panelGammaRange;
     Range rgeGma;
     if (pr->cbLimitGamma->isChecked())
         rgeGma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
 
-    auto& suite = gSession->experiment();
-    Progress progress(suite.count(), pb_);
+    const Experiment& expt = gSession->experiment();
+    Progress progress(expt.count(), pb_);
 
     OutputDataCollections allOutputData;
     uint picNum = 1;
-    for (shp_Suite dataseq : suite) {
+    for (shp_Suite suite : expt) {
         progress.step();
-        allOutputData.append(collectCurves(rgeGma, gmaSlices, *dataseq, picNum));
+        allOutputData.append(collectCurves(rgeGma, gmaSlices, *suite, picNum));
         ++picNum;
     }
 
@@ -149,9 +157,9 @@ OutputDataCollections DiffractogramsFrame::outputAllDiffractograms() {
 }
 
 OutputData DiffractogramsFrame::outputCurrDiffractogram() {
-    auto dataseq = gHub->selectedSuite();
-    if (dataseq)
-        return collectCurve(*dataseq);
+    shp_Suite suite = gHub->selectedSuite();
+    if (suite)
+        return collectCurve(*suite);
     else
         return OutputData();
 }
@@ -175,7 +183,7 @@ auto writeMetaData = [](OutputData outputData, QTextStream& stream) {
 };
 
 void DiffractogramsFrame::writeCurrDiffractogramToFile(rcstr filePath, rcstr separator) {
-    auto outputData = outputCurrDiffractogram();
+    const OutputData& outputData = outputCurrDiffractogram();
     if (!outputData.isValid()) {
         qWarning() << "invalid output data in writeCurrDiffractogramsToFiles";
         return;
