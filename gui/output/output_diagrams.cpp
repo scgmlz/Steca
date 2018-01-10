@@ -160,7 +160,6 @@ DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
     PanelDiagram const* pd = params_->panelDiagram;
 
     connect(pd->xAxis, slot(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
-
     connect(pd->yAxis, slot(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
 
     tabSave_ = new TabDiagramsSave(*params_);
@@ -207,7 +206,7 @@ void DiagramsFrame::recalculate() {
     uint_vec is;
     sortColumns(xs_, ys_, is);
 
-    auto calcErrors = [this, is](eReflAttr attr) {
+    auto _calcErrors = [this, is](eReflAttr attr) {
         uint count = ys_.count();
         ysErrorLo_.resize(count);
         ysErrorUp_.resize(count);
@@ -226,10 +225,17 @@ void DiagramsFrame::recalculate() {
 
     if (gSession->reflections().at(getReflIndex())->peakFunction().name() != "Raw") {
         switch (yAttr()) {
-        case eReflAttr::INTEN: calcErrors(eReflAttr::SIGMA_INTEN); break;
-        case eReflAttr::TTH: calcErrors(eReflAttr::SIGMA_TTH); break;
-        case eReflAttr::FWHM: calcErrors(eReflAttr::SIGMA_FWHM); break;
-        default: break;
+        case eReflAttr::INTEN:
+            _calcErrors(eReflAttr::SIGMA_INTEN);
+            break;
+        case eReflAttr::TTH:
+            _calcErrors(eReflAttr::SIGMA_TTH);
+            break;
+        case eReflAttr::FWHM:
+            _calcErrors(eReflAttr::SIGMA_FWHM);
+            break;
+        default:
+            break;
         }
     }
 
@@ -273,13 +279,13 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) cons
     WriteFile file(filePath);
     QTextStream stream(&file);
 
-    auto headers = table_->outHeaders();
+    const QStringList& headers = table_->outHeaders();
     for_i (headers.count())
         stream << headers.at(to_u(i)) << separator;
     stream << '\n';
 
     for_i (calcPoints_.at(getReflIndex()).count()) {
-        auto& row = table_->row(i);
+        const row_t& row = table_->row(i);
         for_i (row.count()) {
             QVariant const& var = row.at(i);
             if (isNumeric(var))
