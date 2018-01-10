@@ -175,7 +175,7 @@ void TabGraph::paintPoints() {
 
 class TabPoleFiguresSave final : public TabSave {
 public:
-    TabPoleFiguresSave(Params& params);
+    TabPoleFiguresSave();
 
     bool onlySelectedRefl() const;
     bool outputInten() const;
@@ -189,7 +189,7 @@ private:
     QCheckBox *outputInten_, *outputTth_, *outputFWHM_;
 };
 
-TabPoleFiguresSave::TabPoleFiguresSave(Params& params) : TabSave(params, false) {
+TabPoleFiguresSave::TabPoleFiguresSave() : TabSave(false) {
     auto hb = newQ::HBoxLayout();
     grid_->addLayout(hb, grid_->rowCount(), 0);
     grid_->setRowStretch(grid_->rowCount(), 1);
@@ -255,7 +255,7 @@ PoleFiguresFrame::PoleFiguresFrame(rcstr title, QWidget* parent)
     tabGraph_ = new TabGraph(*params_);
     newQ::Tab(tabs_, "Graph")->box().addWidget(tabGraph_);
 
-    tabSave_ = new TabPoleFiguresSave(*params_);
+    tabSave_ = new TabPoleFiguresSave();
     newQ::Tab(tabs_, "Save")->box().addWidget(tabSave_);
 
     connect( tabSave_->actSave, &QAction::triggered, [this]() { savePoleFigureOutput(); });

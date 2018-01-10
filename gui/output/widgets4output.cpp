@@ -14,7 +14,6 @@
 
 #include "gui/output/widgets4output.h"
 #include "core/def/idiomatic_for.h"
-#include "gui/cfg/settings.h"
 #include "gui/models.h"
 #include "gui/output/dialog_panels.h"
 #include "gui/popup/filedialog.h"
@@ -58,31 +57,11 @@ Params::Params(ePanels panels)
 
     box_->addStretch();
 
-    readSettings();
-}
-
-Params::~Params() {
-    saveSettings();
-}
-
-void Params::readSettings() {
-    Settings s("output");
-
-    saveDir = s.readStr("save dir");
-    saveFmt = s.readStr("save format");
-
     if (panelGammaSlices)
         panelGammaSlices->updateValues();
 
     if (panelGammaRange)
         panelGammaRange->updateValues();
-}
-
-void Params::saveSettings() const {
-    Settings s("output");
-
-    s.saveStr("save dir", saveDir);
-    s.saveStr("save format", saveFmt);
 }
 
 // ************************************************************************** //
@@ -337,12 +316,13 @@ const row_t& Table::row(uint i) const {
 static str const DAT_SFX(".dat"), DAT_SEP(" "), // suffix, separator
     CSV_SFX(".csv"), CSV_SEP(", ");
 
-TabSave::TabSave(Params& params, bool withTypes) : params_(params) {
+TabSave::TabSave(bool withTypes) {
+
     setLayout((grid_ = newQ::GridLayout()));
     actBrowse = newQ::Trigger("Browse...");
     actSave = newQ::Trigger("Save");
 
-    str dir = params_.saveDir;
+    str dir = gHub->saveDir;
     if (!QDir(dir).exists())
         dir = QDir::current().absolutePath();
 
@@ -365,7 +345,7 @@ TabSave::TabSave(Params& params, bool withTypes) : params_(params) {
     connect(actBrowse, &QAction::triggered, [this]() {
         str dir = file_dialog::saveDirName(this, "Select folder", dir_->text());
         if (!dir.isEmpty())
-            dir_->setText((params_.saveDir = dir));
+            dir_->setText((gHub->saveDir = dir));
     });
 
     gp = new GridPanel("File type");
@@ -375,11 +355,11 @@ TabSave::TabSave(Params& params, bool withTypes) : params_(params) {
     g->addWidget((rbDat_ = newQ::RadioButton(DAT_SFX)), 0, 0);
     g->addWidget((rbCsv_ = newQ::RadioButton(CSV_SFX)), 1, 0);
 
-    connect(rbDat_, &QRadioButton::clicked, [this]() { params_.saveFmt = DAT_SFX; });
+    connect(rbDat_, &QRadioButton::clicked, [this]() { gHub->saveFmt = DAT_SFX; });
 
-    connect(rbCsv_, &QRadioButton::clicked, [this]() { params_.saveFmt = CSV_SFX; });
+    connect(rbCsv_, &QRadioButton::clicked, [this]() { gHub->saveFmt = CSV_SFX; });
 
-    (CSV_SFX == params_.saveFmt ? rbCsv_ : rbDat_)->setChecked(true);
+    (CSV_SFX == gHub->saveFmt ? rbCsv_ : rbDat_)->setChecked(true);
 
     gp->setVisible(withTypes);
 }
@@ -409,7 +389,6 @@ str TabSave::fileSetSuffix(rcstr suffix) {
         if (!file.isEmpty())
             file += suffix;
     }
-
     file_->setText(file);
     return file;
 }

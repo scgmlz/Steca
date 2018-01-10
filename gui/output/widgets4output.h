@@ -31,16 +31,12 @@ public:
         DIAGRAM = 0x10,
     };
     Params(ePanels);
-    ~Params();
     class PanelReflection* panelReflection;
     class PanelGammaSlices* panelGammaSlices;
     class PanelGammaRange* panelGammaRange;
     class PanelPoints* panelPoints;
     class PanelInterpolation* panelInterpolation;
     class PanelDiagram* panelDiagram;
-    str saveDir, saveFmt;
-    void readSettings();
-    void saveSettings() const;
 
 private:
     QBoxLayout* box_;
@@ -61,15 +57,15 @@ public:
     QStringList outHeaders_;
 };
 
+
 //! Base class for dialogs for saving some output to a file.
 class TabSave : public QWidget {
 public:
-    TabSave(Params&, bool withTypes);
+    TabSave(bool withTypes);
     str filePath(bool withSuffix);
     str separator() const;
     QAction *actBrowse, *actSave;
 protected:
-    Params& params_;
     QGridLayout* grid_;
     str fileSetSuffix(rcstr);
     QLineEdit *dir_, *file_;

@@ -20,8 +20,8 @@
 #include "core/calc/reflection.h"
 #include "core/data/datafile.h"
 #include "core/data/suite.h"
-
-class QAction;
+#include "core/typ/singleton.h"
+#include "gui/cfg/settings.h"
 
 class FilesModel;
 class DatasetsModel;
@@ -49,7 +49,7 @@ enum class eFittingTab {
 
 //! We should consider merging TheHub into MainWin.
 
-class TheHub : public QObject {
+class TheHub : public QObject, public ISingleton<TheHub> {
 private:
     Q_OBJECT
 
@@ -89,6 +89,7 @@ signals:
 
 public:
     TheHub();
+    ~TheHub();
 
     static uint constexpr MAX_POLYNOM_DEGREE = 4;
 
@@ -181,6 +182,7 @@ private:
     eFittingTab fittingTab_ = eFittingTab::NONE;
     shp_Suite selectedSuite_;
     shp_Reflection selectedReflection_;
+    Settings settings_;
 
     void setImageRotate(ImageTransform);
     void setImageMirror(bool);
@@ -192,6 +194,9 @@ public:
     DatasetsModel* suiteModel;
     MetadataModel* metadataModel;
     ReflectionsModel* reflectionsModel;
+
+    str saveDir; //!< default directory for data export
+    str saveFmt; //!< default format for data export
 };
 
 #endif // THEHUB_H

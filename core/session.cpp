@@ -17,7 +17,10 @@
 #include "core/data/measurement.h"
 #include "core/fit/peak_functions.h"
 
-Session::Session() : intenScale_(1), angleMapCache_(360) {
+Session::Session()
+    : intenScale_(1)
+    , angleMapCache_(360)
+{
     clear();
     register_peak_functions();
 }

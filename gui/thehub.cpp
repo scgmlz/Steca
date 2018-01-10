@@ -29,6 +29,7 @@ TheHub::TheHub()
     : isFixedIntenImageScale_(false)
     , isFixedIntenDgramScale_(false)
     , isCombinedDgram_(false)
+    , settings_("main_settings")
 {
     qDebug() << "TheHub/";
 
@@ -160,7 +161,16 @@ TheHub::TheHub()
 
     connect(trigger_rotateImage, &QAction::triggered, [this]() {
         setImageRotate(gSession->imageTransform().nextRotate()); });
+
+    saveDir = settings_.readStr("export_directory");
+    saveFmt = settings_.readStr("export_format");
+
     qDebug() << "/TheHub";
+}
+
+TheHub::~TheHub() {
+    settings_.saveStr("export_directory", saveDir);
+    settings_.saveStr("export_format", saveFmt);
 }
 
 void TheHub::removeFile(uint i) {

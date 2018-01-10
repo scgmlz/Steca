@@ -29,7 +29,7 @@
 
 class TabDiffractogramsSave final : public TabSave {
 public:
-    TabDiffractogramsSave(Params&);
+    TabDiffractogramsSave();
 
     uint currType() const;
     bool currentChecked() { return rbCurrent_->isChecked(); }
@@ -41,8 +41,8 @@ private:
     QComboBox* fileTypes_;
 };
 
-TabDiffractogramsSave::TabDiffractogramsSave(Params& params)
-    : TabSave(params, true) {
+TabDiffractogramsSave::TabDiffractogramsSave()
+    : TabSave(true) {
     auto gp = new GridPanel("To save");
     grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
     grid_->setRowStretch(grid_->rowCount(), 1);
@@ -152,7 +152,7 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
     btnCalculate_->hide();
     btnInterpolate_->hide();
 
-    tabSave_ = new TabDiffractogramsSave(*params_);
+    tabSave_ = new TabDiffractogramsSave();
     newQ::Tab(tabs_, "Save")->box().addWidget(tabSave_);
 
     connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiffractogramOutput(); });

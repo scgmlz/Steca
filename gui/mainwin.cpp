@@ -154,7 +154,7 @@ void initMenus(QMenuBar* mbar) {
 
 MainWin::MainWin() {
     qDebug() << "MainWin/";
-    gHub = new TheHub();
+    gHub = TheHub::instance();
     setWindowIcon(QIcon(":/icon/retroStier"));
     QDir::setCurrent(QDir::homePath());
     setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);

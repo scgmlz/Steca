@@ -123,7 +123,7 @@ void TabPlot::plot(
 
 class TabDiagramsSave final : public TabSave {
 public:
-    TabDiagramsSave(Params&);
+    TabDiagramsSave();
     uint currType() const { return fileTypes_->currentIndex(); }
     bool currDiagram() const { return currentDiagram_->isChecked(); }
 private:
@@ -131,7 +131,7 @@ private:
     QComboBox* fileTypes_;
 };
 
-TabDiagramsSave::TabDiagramsSave(Params& params) : TabSave(params, true) {
+TabDiagramsSave::TabDiagramsSave() : TabSave(true) {
     auto gp = new GridPanel("To save");
     grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
     grid_->setRowStretch(grid_->rowCount(), 1);
@@ -162,7 +162,7 @@ DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
     connect(pd->xAxis, slot(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
     connect(pd->yAxis, slot(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
 
-    tabSave_ = new TabDiagramsSave(*params_);
+    tabSave_ = new TabDiagramsSave();
     newQ::Tab(tabs_, "Save")->box().addWidget(tabSave_);
 
     connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiagramOutput(); });
