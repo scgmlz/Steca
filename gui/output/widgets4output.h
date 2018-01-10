@@ -19,12 +19,7 @@
 #include "core/typ/variant.h"
 #include "core/def/special_pointers.h"
 #include "gui/widgets/tree_views.h"
-
-class QBoxLayout;
-class QCheckBox;
-class QGridLayout;
-class QRadioButton;
-
+#include "gui/widgets/new_q.h"
 
 class Params : public QWidget {
 public:
@@ -46,6 +41,8 @@ public:
     str saveDir, saveFmt;
     void readSettings();
     void saveSettings() const;
+
+private:
     QBoxLayout* box_;
 };
 
