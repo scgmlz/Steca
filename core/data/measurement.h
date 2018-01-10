@@ -29,7 +29,7 @@ public:
     Measurement(const Metadata&, const size2d&, const inten_vec&);
     Measurement(const Measurement&) = delete;
 
-    QSharedPointer<Metadata const> metadata() const;
+    QSharedPointer<const Metadata> metadata() const;
 
     deg midTth() const;
 

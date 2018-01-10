@@ -248,7 +248,7 @@ QPixmap SubframeImage::makePixmap(shp_Image image) {
 }
 
 QPixmap SubframeImage::makePixmap(
-    Measurement const& dataseq, Range const& rgeGma, Range const& rgeTth) {
+    Measurement const& dataseq, const Range& rgeGma, const Range& rgeTth) {
     QImage im = makeImage(dataseq.image(), !gHub->isFixedIntenImageScale());
     shp_AngleMap angleMap = gSession->angleMap(dataseq);
 

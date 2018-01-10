@@ -141,7 +141,7 @@ public:
 
     void moveColumn(uint from, uint to);
 
-    void setColumns(QStringList const& headers, cmp_vec const&);
+    void setColumns(const QStringList& headers, cmp_vec const&);
 
     void setSortColumn(int);
 
@@ -242,7 +242,7 @@ void TabularModel::moveColumn(uint from, uint to) {
     qSwap(colIndexMap_[from], colIndexMap_[to]);
 }
 
-void TabularModel::setColumns(QStringList const& headers, cmp_vec const& cmps) {
+void TabularModel::setColumns(const QStringList& headers, cmp_vec const& cmps) {
     debug::ensure(to_u(headers.count()) == numCols_ && cmps.count() == numCols_);
     headers_ = headers;
     cmpFunctions_ = cmps;
@@ -327,7 +327,7 @@ Table::Table(uint numDataColumns) : model_(nullptr) {
 }
 
 void Table::setColumns(
-    QStringList const& headers, QStringList const& outHeaders, cmp_vec const& cmps) {
+    const QStringList& headers, const QStringList& outHeaders, cmp_vec const& cmps) {
     model_->setColumns(headers, cmps);
     debug::ensure(headers.count() == outHeaders.count());
     outHeaders_ = outHeaders;

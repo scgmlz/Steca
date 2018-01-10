@@ -37,11 +37,11 @@ public:
     qreal x(uint i) const { return xs_.at(i); }
     qreal y(uint i) const { return ys_.at(i); }
 
-    Range const& rgeX() const { return rgeX_; }
-    Range const& rgeY() const { return rgeY_; }
+    const Range& rgeX() const { return rgeX_; }
+    const Range& rgeY() const { return rgeY_; }
 
-    Curve intersect(Range const&) const;
-    Curve intersect(Ranges const&) const;
+    Curve intersect(const Range&) const;
+    Curve intersect(const Ranges&) const;
 
     void subtract(std::function<qreal(qreal)> const& func);
 

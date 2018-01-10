@@ -52,14 +52,14 @@ qreal Experiment::avgDeltaTime() const {
     return avgDeltaTime_;
 }
 
-Range const& Experiment::rgeGma() const {
+const Range& Experiment::rgeGma() const {
     if (!rgeGma_.isValid())
         for (auto& dataseq : *this)
             rgeGma_.extendBy(dataseq->rgeGma());
     return rgeGma_;
 }
 
-Range const& Experiment::rgeFixedInten(bool trans, bool cut) const {
+const Range& Experiment::rgeFixedInten(bool trans, bool cut) const {
     if (!rgeFixedInten_.isValid()) {
         TakesLongTime __;
         for (auto& dataseq : *this)

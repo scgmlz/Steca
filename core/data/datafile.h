@@ -29,7 +29,7 @@ class Metadata;
 class Datafile final {
 public:
     Datafile(rcstr fileName);
-    void addDataset(Metadata const&, size2d const&, inten_vec const&);
+    void addDataset(const Metadata&, size2d const&, inten_vec const&);
 
     vec<shp_Measurement> const& suite() const { return measurements_; }
     size2d imageSize() const { return imageSize_; }

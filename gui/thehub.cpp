@@ -331,7 +331,7 @@ void TheHub::addGivenFile(rcstr filePath) THROWS {
     }
 }
 
-void TheHub::addGivenFiles(QStringList const& filePaths) THROWS {
+void TheHub::addGivenFiles(const QStringList& filePaths) THROWS {
     TakesLongTime __;
     for (rcstr filePath : filePaths)
         addGivenFile(filePath);
@@ -379,22 +379,22 @@ void TheHub::setGeometry(preal detectorDistance, preal pixSize, IJ const& midPix
     emit sigGeometryChanged();
 }
 
-void TheHub::setGammaRange(Range const& gammaRange) {
+void TheHub::setGammaRange(const Range& gammaRange) {
     gSession->setGammaRange(gammaRange);
     emit sigGammaRange();
 }
 
-void TheHub::setBgRanges(Ranges const& ranges) {
+void TheHub::setBgRanges(const Ranges& ranges) {
     gSession->setBgRanges(ranges);
     emit sigBgChanged();
 }
 
-void TheHub::addBgRange(Range const& range) {
+void TheHub::addBgRange(const Range& range) {
     if (gSession->addBgRange(range))
         emit sigBgChanged();
 }
 
-void TheHub::remBgRange(Range const& range) {
+void TheHub::remBgRange(const Range& range) {
     if (gSession->remBgRange(range))
         emit sigBgChanged();
 }
@@ -409,14 +409,14 @@ void TheHub::setIntenScaleAvg(bool avg, preal scale) {
     emit sigNormChanged(); // TODO instead of another signal
 }
 
-void TheHub::setPeakFunction(QString const& peakFunctionName) {
+void TheHub::setPeakFunction(const QString& peakFunctionName) {
     if (selectedReflection_) {
         selectedReflection_->setPeakFunction(peakFunctionName);
         emit sigReflectionsChanged();
     }
 }
 
-void TheHub::addReflection(QString const& peakFunctionName) {
+void TheHub::addReflection(const QString& peakFunctionName) {
     gSession->addReflection(peakFunctionName);
     emit sigReflectionsChanged();
 }
@@ -488,6 +488,6 @@ void TheHub::tellReflectionData(shp_Reflection reflection) {
 }
 
 void TheHub::tellReflectionValues(
-    Range const& rgeTth, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
+    const Range& rgeTth, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
     emit sigReflectionValues(rgeTth, peak, fwhm, withGuesses);
 }

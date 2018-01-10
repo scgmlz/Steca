@@ -15,7 +15,7 @@
 #include "core/calc/reflection.h"
 #include "core/fit/fit_fun.h"
 
-Reflection::Reflection(QString const& peakFunctionName) : peakFunction_(nullptr) {
+Reflection::Reflection(const QString& peakFunctionName) : peakFunction_(nullptr) {
     setPeakFunction(peakFunctionName);
 }
 
@@ -24,11 +24,11 @@ PeakFunction const& Reflection::peakFunction() const {
     return *peakFunction_;
 }
 
-Range const& Reflection::range() const {
+const Range& Reflection::range() const {
     return peakFunction_->range();
 }
 
-void Reflection::setRange(Range const& range) {
+void Reflection::setRange(const Range& range) {
     peakFunction_->setRange(range);
 }
 
@@ -53,7 +53,7 @@ QString Reflection::peakFunctionName() const {
     return peakFunction_->name();
 }
 
-void Reflection::setPeakFunction(QString const& peakFunctionName) {
+void Reflection::setPeakFunction(const QString& peakFunctionName) {
     bool haveRange = !peakFunction_.isNull();
     Range oldRange;
     if (haveRange)

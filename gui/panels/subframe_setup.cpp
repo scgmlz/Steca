@@ -57,7 +57,7 @@ ReflectionView::ReflectionView() : ListView() {
         resizeColumnToContents(i);
 }
 
-void ReflectionView::addReflection(QString const& peakFunctionName) {
+void ReflectionView::addReflection(const QString& peakFunctionName) {
     model()->addReflection(peakFunctionName);
     updateSingleSelection();
 }

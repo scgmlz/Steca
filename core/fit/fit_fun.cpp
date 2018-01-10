@@ -57,7 +57,7 @@ qreal Polynom::dy(qreal x, uint i, qreal const*) const {
 }
 
 // REVIEW
-qreal Polynom::avgY(Range const& rgeX, qreal const* parValues) const {
+qreal Polynom::avgY(const Range& rgeX, qreal const* parValues) const {
     debug::ensure(rgeX.isValid());
 
     qreal w = rgeX.width();
@@ -74,11 +74,11 @@ qreal Polynom::avgY(Range const& rgeX, qreal const* parValues) const {
     return (1 / w) * (maqpair - minY);
 }
 
-void Polynom::fit(Curve const& curve, Ranges const& ranges) {
+void Polynom::fit(Curve const& curve, const Ranges& ranges) {
     FitWrapper().fit(*this, curve.intersect(ranges));
 }
 
-Polynom Polynom::fromFit(uint degree, Curve const& curve, Ranges const& ranges) {
+Polynom Polynom::fromFit(uint degree, Curve const& curve, const Ranges& ranges) {
     Polynom poly(degree);
     poly.fit(curve, ranges);
     return poly;
@@ -98,7 +98,7 @@ void Polynom::from_json(JsonObj const& obj) THROWS {
 //  class PeakFunction
 // ************************************************************************** //
 
-void PeakFunction::setRange(Range const& range) {
+void PeakFunction::setRange(const Range& range) {
     range_ = range;
 }
 
@@ -118,7 +118,7 @@ void PeakFunction::reset() {
     setGuessedFWHM(guessedFWHM_);
 }
 
-void PeakFunction::fit(Curve const& curve, Range const& range) {
+void PeakFunction::fit(Curve const& curve, const Range& range) {
     Curve c = prepareFit(curve, range);
     if (c.isEmpty())
         return;
@@ -152,7 +152,7 @@ void PeakFunction::fit(Curve const& curve, Range const& range) {
     FitWrapper().fit(*this, c);
 }
 
-Curve PeakFunction::prepareFit(Curve const& curve, Range const& range) {
+Curve PeakFunction::prepareFit(Curve const& curve, const Range& range) {
     reset();
     return curve.intersect(range);
 }
@@ -183,7 +183,7 @@ void FunctionRegistry::register_fct(const initializer_type f) {
     register_item(tmp->name(), f);
 };
 
-PeakFunction* FunctionRegistry::name2new(QString const& peakFunctionName) {
+PeakFunction* FunctionRegistry::name2new(const QString& peakFunctionName) {
     initializer_type make_new = instance()->find_or_fail(peakFunctionName);
     return make_new();
 }

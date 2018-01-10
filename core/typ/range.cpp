@@ -35,7 +35,7 @@ Range Range::infinite() {
     return Range(-INF, +INF);
 }
 
-int Range::compare(Range const& that) const {
+int Range::compare(const Range& that) const {
     debug::ensure(isValid() && that.isValid());
     RET_COMPARE_VALUE(min)
     RET_COMPARE_VALUE(max)
@@ -87,7 +87,7 @@ void Range::extendBy(qreal val) {
     max = qIsNaN(max) ? val : qMax(max, val);
 }
 
-void Range::extendBy(Range const& that) {
+void Range::extendBy(const Range& that) {
     extendBy(that.min);
     extendBy(that.max);
 }
@@ -96,15 +96,15 @@ bool Range::contains(qreal val) const {
     return min <= val && val <= max;
 }
 
-bool Range::contains(Range const& that) const {
+bool Range::contains(const Range& that) const {
     return min <= that.min && that.max <= max;
 }
 
-bool Range::intersects(Range const& that) const {
+bool Range::intersects(const Range& that) const {
     return min <= that.max && that.min <= max;
 }
 
-Range Range::intersect(Range const& that) const {
+Range Range::intersect(const Range& that) const {
     if (!isValid() || !that.isValid())
         return Range();
 
@@ -137,11 +137,11 @@ void Range::from_json(JsonObj const& obj) THROWS {
 //  class Ranges
 // ************************************************************************** //
 
-bool Ranges::add(Range const& range) {
+bool Ranges::add(const Range& range) {
     vec<Range> newRanges;
 
     auto addRange = range;
-    for (Range const& r : ranges_) {
+    for (const Range& r : ranges_) {
         if (r.contains(range))
             return false;
         if (!range.contains(r)) {
@@ -159,11 +159,11 @@ bool Ranges::add(Range const& range) {
     return true;
 }
 
-bool Ranges::rem(Range const& remRange) {
+bool Ranges::rem(const Range& remRange) {
     vec<Range> newRanges;
     bool changed = false;
 
-    for (Range const& r : ranges_) {
+    for (const Range& r : ranges_) {
         if (!r.intersect(remRange).isEmpty()) {
             changed = true;
             if (r.min < remRange.min)
@@ -180,7 +180,7 @@ bool Ranges::rem(Range const& remRange) {
     return changed;
 }
 
-static bool lessThan(Range const& r1, Range const& r2) {
+static bool lessThan(const Range& r1, const Range& r2) {
     if (r1.min < r2.min)
         return true;
     if (r1.min > r2.min)

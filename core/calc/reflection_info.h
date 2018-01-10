@@ -29,10 +29,10 @@ class ReflectionInfo final {
     public:
     ReflectionInfo();
     ReflectionInfo(
-        QSharedPointer<Metadata const>,
+        QSharedPointer<const Metadata>,
         deg alpha, deg beta, Range, inten_t, inten_t /*error*/,
         deg, deg /*error*/, fwhm_t, fwhm_t /*error*/);
-    ReflectionInfo(QSharedPointer<Metadata const>, deg alpha, deg beta, Range);
+    ReflectionInfo(QSharedPointer<const Metadata>, deg alpha, deg beta, Range);
     ReflectionInfo(
         deg alpha, deg beta, Range, inten_t, inten_t /*error*/, deg, deg /*error*/,
         fwhm_t, fwhm_t /*error*/);
@@ -67,7 +67,7 @@ class ReflectionInfo final {
     row_t data() const;
 
 private:
-    QSharedPointer<Metadata const> md_;
+    QSharedPointer<const Metadata> md_;
     deg alpha_, beta_;
     Range rgeGma_;
     inten_t inten_, intenError_;
@@ -89,7 +89,7 @@ public:
     void append(ReflectionInfo const&);
 
     inten_t averageInten() const;
-    Range const& rgeInten() const;
+    const Range& rgeInten() const;
 
 private:
     mutable inten_t avgInten_;

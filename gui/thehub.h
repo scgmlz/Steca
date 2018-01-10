@@ -59,7 +59,7 @@ public: // emit signals
     void tellSuiteSelected(shp_Suite);
     void tellSelectedReflection(shp_Reflection);
     void tellReflectionData(shp_Reflection);
-    void tellReflectionValues(Range const&, qpair const&, fwhm_t, bool);
+    void tellReflectionValues(const Range&, qpair const&, fwhm_t, bool);
 
 signals:
     void sigFilesChanged(); // the set of loaded files has changed
@@ -75,7 +75,7 @@ signals:
     void sigReflectionsChanged();
     void sigReflectionSelected(shp_Reflection);
     void sigReflectionData(shp_Reflection);
-    void sigReflectionValues(Range const&, qpair const&, fwhm_t, bool);
+    void sigReflectionValues(const Range&, qpair const&, fwhm_t, bool);
 
     void sigDisplayChanged();
     void sigGeometryChanged();
@@ -132,9 +132,9 @@ public:
 
     // modifying methods:
     void removeFile(uint);
-    void sessionFromFile(rcstr const&) THROWS;
+    void sessionFromFile(rcstr&) THROWS;
     void addGivenFile(rcstr filePath) THROWS;
-    void addGivenFiles(QStringList const& filePaths) THROWS;
+    void addGivenFiles(const QStringList& filePaths) THROWS;
     void collectDatasetsFromFiles(uint_vec, pint);
     void collectDatasetsFromFiles(uint_vec);
     void combineDatasetsBy(pint);
@@ -142,19 +142,19 @@ public:
     void tryEnableCorrection(bool);
     void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
     void setGeometry(preal detectorDistance, preal pixSize, IJ const& midPixOffset);
-    void setGammaRange(Range const&);
+    void setGammaRange(const Range&);
 
-    void setBgRanges(Ranges const&);
-    void addBgRange(Range const&);
-    void remBgRange(Range const&);
+    void setBgRanges(const Ranges&);
+    void addBgRange(const Range&);
+    void remBgRange(const Range&);
     void setBgPolyDegree(uint);
 
     void setIntenScaleAvg(bool, preal);
     void setNorm(eNorm);
     void setFittingTab(eFittingTab);
 
-    void setPeakFunction(QString const&);
-    void addReflection(QString const&);
+    void setPeakFunction(const QString&);
+    void addReflection(const QString&);
     void remReflection(uint);
 
     // const methods:

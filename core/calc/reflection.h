@@ -27,11 +27,11 @@
 
 class Reflection final {
 public:
-    Reflection(QString const& peakFunctionName = "Raw");
+    Reflection(const QString& peakFunctionName = "Raw");
 
     void from_json(JsonObj const&) THROWS;
-    void setPeakFunction(QString const&);
-    void setRange(Range const&);
+    void setPeakFunction(const QString&);
+    void setRange(const Range&);
     void invalidateGuesses();
     void setGuessPeak(qpair const& peak);
     void setGuessFWHM(fwhm_t fwhm);
@@ -39,7 +39,7 @@ public:
 
     QString peakFunctionName() const;
     PeakFunction const& peakFunction() const;
-    Range const& range() const;
+    const Range& range() const;
     JsonObj to_json() const;
 
 private:

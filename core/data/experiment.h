@@ -32,8 +32,8 @@ public:
     qreal avgDeltaMonitorCount() const;
     qreal avgDeltaTime() const;
 
-    Range const& rgeGma() const;
-    Range const& rgeFixedInten(bool trans, bool cut) const;
+    const Range& rgeGma() const;
+    const Range& rgeFixedInten(bool trans, bool cut) const;
 
     Curve avgCurve() const;
 

@@ -40,21 +40,21 @@ protected:
     bool trans_, cut_;
     ImageTransform imageTransform_;
     ImageCut imageCut_;
-    Image const* intensCorr_;
+    const Image* intensCorr_;
 };
 
 class ImageLens final : public LensBase {
 public:
-    ImageLens(Image const&, bool trans, bool cut);
+    ImageLens(const Image&, bool trans, bool cut);
 
     size2d size() const;
 
     inten_t imageInten(uint i, uint j) const;
 
-    Range const& rgeInten(bool fixed) const;
+    const Range& rgeInten(bool fixed) const;
 
 private:
-    Image const& image_;
+    const Image& image_;
 
     mutable Range rgeInten_;
 };
@@ -75,7 +75,7 @@ public:
     Range rgeInten() const;
 
     Curve makeCurve() const;
-    Curve makeCurve(Range const&) const;
+    Curve makeCurve(const Range&) const;
 
     Suite const& suite() const { return suite_; }
 

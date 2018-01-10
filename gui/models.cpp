@@ -248,7 +248,7 @@ QVariant ReflectionsModel::headerData(int col, Qt::Orientation, int role) const 
         return EMPTY_VAR;
 }
 
-void ReflectionsModel::addReflection(QString const& peakFunctionName) {
+void ReflectionsModel::addReflection(const QString& peakFunctionName) {
     gHub->addReflection(peakFunctionName);
 }
 

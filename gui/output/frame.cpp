@@ -157,7 +157,7 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
 
 class TabTable : public QWidget {
 public:
-    TabTable(Params&, QStringList const& headers, QStringList const& outHeaders, cmp_vec const&);
+    TabTable(Params&, const QStringList& headers, const QStringList& outHeaders, cmp_vec const&);
     Table* table;
 private:
     ShowColsWidget* showColumnsWidget_;
@@ -165,7 +165,7 @@ private:
 };
 
 TabTable::TabTable(
-    Params& params, QStringList const& headers, QStringList const& outHeaders, cmp_vec const& cmps)
+    Params& params, const QStringList& headers, const QStringList& outHeaders, cmp_vec const& cmps)
     {
     QGridLayout* grid_ = newQ::GridLayout();
     setLayout(grid_);

@@ -28,12 +28,12 @@
 
 ReflectionInfo::ReflectionInfo()
     : ReflectionInfo(
-          QSharedPointer<Metadata const>(),
+          QSharedPointer<const Metadata>(),
           NAN, NAN, Range(), inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), NAN, NAN)
 {}
 
 ReflectionInfo::ReflectionInfo(
-    QSharedPointer<Metadata const> md,
+    QSharedPointer<const Metadata> md,
     deg alpha, deg beta, Range rgeGma, inten_t inten, inten_t intenError,
     deg tth, deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
     : md_(md)
@@ -49,7 +49,7 @@ ReflectionInfo::ReflectionInfo(
 {}
 
 ReflectionInfo::ReflectionInfo(
-    QSharedPointer<Metadata const> md, deg alpha, deg beta, Range rgeGma)
+    QSharedPointer<const Metadata> md, deg alpha, deg beta, Range rgeGma)
     : ReflectionInfo(
         md, alpha, beta, rgeGma, inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), fwhm_t(NAN),
         fwhm_t(NAN))
@@ -59,7 +59,7 @@ ReflectionInfo::ReflectionInfo(
     deg alpha, deg beta, Range rgeGma, inten_t inten, inten_t intenError, deg tth,
     deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
     : ReflectionInfo(
-        QSharedPointer<Metadata const>(),
+        QSharedPointer<const Metadata>(),
         alpha, beta, rgeGma, inten, intenError, tth, tthError, fwhm, fwhmError)
 {}
 
@@ -140,7 +140,7 @@ inten_t ReflectionInfos::averageInten() const {
     return avgInten_;
 }
 
-Range const& ReflectionInfos::rgeInten() const {
+const Range& ReflectionInfos::rgeInten() const {
     if (!rgeInten_.isValid()) {
         for_i (count())
             rgeInten_.extendBy(at(i).inten());

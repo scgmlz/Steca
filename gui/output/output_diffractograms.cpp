@@ -97,7 +97,7 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
 }
 
 OutputDataCollection DiffractogramsFrame::collectCurves(
-    Range const& rgeGma, uint gmaSlices, Suite const& dataseq, uint picNum) {
+    const Range& rgeGma, uint gmaSlices, Suite const& dataseq, uint picNum) {
 
     auto lens = gSession->defaultDatasetLens(dataseq);
 

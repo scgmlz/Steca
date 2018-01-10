@@ -32,7 +32,7 @@ private:
 public:
     Suite();
 
-    QSharedPointer<Metadata const> metadata() const;
+    QSharedPointer<const Metadata> metadata() const;
     Experiment const& experiment() const;
 
     deg omg() const;
@@ -49,14 +49,14 @@ public:
     qreal avgDeltaMonitorCount() const;
     qreal avgDeltaTime() const;
 
-    inten_vec collectIntens(Image const* intensCorr, Range const&) const;
+    inten_vec collectIntens(const Image* intensCorr, const Range&) const;
     void calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const;
 
     size2d imageSize() const;
 
 private:
     Experiment* experiment_;
-    QSharedPointer<Metadata const> md_; // on demand, compute once
+    QSharedPointer<const Metadata> md_; // on demand, compute once
 };
 
 typedef QSharedPointer<Suite> shp_Suite;

@@ -68,9 +68,9 @@ private:
     void setImageSize(size2d const&) THROWS; //!< Ensures same size for all images
 
     void calcIntensCorr() const;
-    Curve curveMinusBg(SequenceLens const&, Range const&) const;
+    Curve curveMinusBg(SequenceLens const&, const Range&) const;
     ReflectionInfo makeReflectionInfo(
-        SequenceLens const&, Reflection const&, Range const&) const;
+        SequenceLens const&, Reflection const&, const Range&) const;
 
 public:
     // Modifying methods:
@@ -85,13 +85,13 @@ public:
     void setImageTransformRotate(ImageTransform const&);
     void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
     void setGeometry(preal detectorDistance, preal pixSize, IJ const& midPixOffset);
-    void setGammaRange(Range const& r) { gammaRange_ = r; }
-    void setBgRanges(Ranges const& rr) { bgRanges_ = rr; }
-    bool addBgRange(Range const& r) { return bgRanges_.add(r); }
-    bool remBgRange(Range const& r) { return bgRanges_.rem(r); }
+    void setGammaRange(const Range& r) { gammaRange_ = r; }
+    void setBgRanges(const Ranges& rr) { bgRanges_ = rr; }
+    bool addBgRange(const Range& r) { return bgRanges_.add(r); }
+    bool remBgRange(const Range& r) { return bgRanges_.rem(r); }
     void setBgPolyDegree(uint degree) { bgPolyDegree_ = degree; }
     void setIntenScaleAvg(bool, preal);
-    void addReflection(QString const&);
+    void addReflection(const QString&);
     void addReflection(const QJsonObject& obj);
     void remReflection(uint i) { reflections_.remove(i); }
     void setNorm(eNorm norm) { norm_ = norm; }
@@ -104,13 +104,13 @@ public:
     bool hasCorrFile() const { return !corrFile_.isNull(); }
     shp_Datafile corrFile() const { return corrFile_; }
     shp_Image corrImage() const { return corrImage_; }
-    Image const* intensCorr() const;
+    const Image* intensCorr() const;
     void tryEnableCorr(bool on) { corrEnabled_ = on && hasCorrFile(); }
     bool isCorrEnabled() const { return corrEnabled_; }
 
     uint_vec const& collectedFromFiles() const { return collectedFromFiles_; }
     Experiment const& experiment() const { return experiment_; }
-    QStringList const& experimentTags() const { return experimentTags_; }
+    const QStringList& experimentTags() const { return experimentTags_; }
 
     size2d imageSize() const;
     ImageTransform const& imageTransform() const { return imageTransform_; }
@@ -119,20 +119,20 @@ public:
     Geometry const& geometry() const { return geometry_; }
     IJ midPix() const;
 
-    Range const& gammaRange() const { return gammaRange_; }
+    const Range& gammaRange() const { return gammaRange_; }
 
     shp_AngleMap angleMap(Measurement const&) const;
     static shp_AngleMap angleMap(Session const& session, Measurement const& ds) {
         return session.angleMap(ds); }
 
-    shp_ImageLens imageLens(Image const&, bool trans, bool cut) const;
+    shp_ImageLens imageLens(const Image&, bool trans, bool cut) const;
     QSharedPointer<SequenceLens> dataseqLens(Suite const&, eNorm, bool trans, bool cut) const;
     QSharedPointer<SequenceLens> defaultDatasetLens(Suite const& dataseq) const;
 
     ReflectionInfos makeReflectionInfos(
-        Experiment const&, Reflection const&, uint gmaSlices, Range const&, Progress*) const;
+        Experiment const&, Reflection const&, uint gmaSlices, const Range&, Progress*) const;
 
-    Ranges const& bgRanges() const { return bgRanges_; }
+    const Ranges& bgRanges() const { return bgRanges_; }
     uint bgPolyDegree() const { return bgPolyDegree_; }
     bool intenScaledAvg() const { return intenScaledAvg_; }
     preal intenScale() const { return intenScale_; }

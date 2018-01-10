@@ -90,7 +90,7 @@ void Session::calcIntensCorr() const {
     }
 }
 
-Image const* Session::intensCorr() const {
+const Image* Session::intensCorr() const {
     if (!isCorrEnabled())
         return nullptr;
     if (intensCorr_.isEmpty())
@@ -217,7 +217,7 @@ shp_AngleMap Session::angleMap(Measurement const& one) const {
 }
 
 shp_ImageLens Session::imageLens(
-    Image const& image, bool trans, bool cut) const {
+    const Image& image, bool trans, bool cut) const {
     return shp_ImageLens(new ImageLens(image, trans, cut));
 }
 
@@ -231,7 +231,7 @@ QSharedPointer<SequenceLens> Session::defaultDatasetLens(Suite const& suite) con
     return dataseqLens(suite, norm(), true, true);
 }
 
-Curve Session::curveMinusBg(SequenceLens const& lens, Range const& rgeGma) const {
+Curve Session::curveMinusBg(SequenceLens const& lens, const Range& rgeGma) const {
     Curve curve = lens.makeCurve(rgeGma);
     const Polynom f = Polynom::fromFit(bgPolyDegree_, curve, bgRanges_);
     curve.subtract([f](qreal x) {return f.y(x);});
@@ -241,13 +241,13 @@ Curve Session::curveMinusBg(SequenceLens const& lens, Range const& rgeGma) const
 //! Fits reflection to the given gamma sector and constructs a ReflectionInfo.
 ReflectionInfo Session::makeReflectionInfo(
     SequenceLens const& lens, Reflection const& reflection,
-    Range const& gmaSector) const {
+    const Range& gmaSector) const {
 
     // fit peak, and retrieve peak parameters:
     Curve curve = curveMinusBg(lens, gmaSector);
     scoped<PeakFunction*> peakFunction = FunctionRegistry::clone(reflection.peakFunction());
     peakFunction->fit(curve);
-    Range const& rgeTth = peakFunction->range();
+    const Range& rgeTth = peakFunction->range();
     qpair peak = peakFunction->fittedPeak();
     fwhm_t fwhm = peakFunction->fittedFWHM();
     qpair peakError = peakFunction->peakError();
@@ -258,7 +258,7 @@ ReflectionInfo Session::makeReflectionInfo(
     Suite const& suite = lens.suite();
     suite.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
 
-    QSharedPointer<Metadata const> metadata = suite.metadata();
+    QSharedPointer<const Metadata> metadata = suite.metadata();
 
     return rgeTth.contains(peak.x)
         ? ReflectionInfo(
@@ -275,7 +275,7 @@ ReflectionInfo Session::makeReflectionInfo(
  */
 ReflectionInfos Session::makeReflectionInfos(
     Experiment const& expt, Reflection const& reflection, uint gmaSlices,
-    Range const& rgeGma, Progress* progress) const {
+    const Range& rgeGma, Progress* progress) const {
     ReflectionInfos infos;
 
     if (progress)
@@ -313,7 +313,7 @@ void Session::setIntenScaleAvg(bool avg, preal scale) {
     intenScale_ = scale;
 }
 
-void Session::addReflection(QString const& peakFunctionName) {
+void Session::addReflection(const QString& peakFunctionName) {
     shp_Reflection reflection(new Reflection(peakFunctionName));
     debug::ensure(!reflection.isNull());
     reflections_.append(reflection);

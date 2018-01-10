@@ -43,7 +43,7 @@ public:
     Range rgeGma() const { return rgeGma_; }
     Range rgeGmaFull() const { return rgeGmaFull_; }
 
-    void getGmaIndexes(Range const&, uint_vec const*&, uint&, uint&) const;
+    void getGmaIndexes(const Range&, uint_vec const*&, uint&, uint&) const;
 
 private:
     void calculate();

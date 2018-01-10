@@ -32,7 +32,7 @@ private:
     class TabDiffractogramsSave* tabSave_;
 
     OutputDataCollection
-    collectCurves(Range const&, uint gmaSlices, Suite const& dataseq, uint picNum);
+    collectCurves(const Range&, uint gmaSlices, Suite const& dataseq, uint picNum);
     OutputData collectCurve(Suite const& dataseq);
 
     OutputData outputCurrDiffractogram();

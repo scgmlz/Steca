@@ -33,7 +33,7 @@ public:
     void calcBackground();
     void calcReflections();
 
-    void setCurrReflNewRange(Range const&);
+    void setCurrReflNewRange(const Range&);
     Range currReflRange() const;
 
 private:

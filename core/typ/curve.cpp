@@ -42,7 +42,7 @@ void Curve::append(qreal x, qreal y) {
     rgeY_.extendBy(y);
 }
 
-Curve Curve::intersect(Range const& range) const {
+Curve Curve::intersect(const Range& range) const {
     Curve res;
 
     if (!range.isEmpty()) {
@@ -61,7 +61,7 @@ Curve Curve::intersect(Range const& range) const {
     return res;
 }
 
-Curve Curve::intersect(Ranges const& ranges) const {
+Curve Curve::intersect(const Ranges& ranges) const {
     Curve res;
 
     // collect points that are in ranges

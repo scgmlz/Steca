@@ -35,10 +35,10 @@ public:
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
 
-    qreal avgY(Range const&, qreal const* parValues = nullptr) const;
+    qreal avgY(const Range&, qreal const* parValues = nullptr) const;
 
-    void fit(Curve const&, Ranges const&);
-    static Polynom fromFit(uint degree, Curve const&, Ranges const&);
+    void fit(Curve const&, const Ranges&);
+    static Polynom fromFit(uint degree, Curve const&, const Ranges&);
 
     JsonObj to_json() const;
     void from_json(JsonObj const&) THROWS;
@@ -54,8 +54,8 @@ public:
     PeakFunction();
     PeakFunction* clone() const;
 
-    Range const& range() const { return range_; }
-    virtual void setRange(Range const&);
+    const Range& range() const { return range_; }
+    virtual void setRange(const Range&);
 
     virtual void setGuessedPeak(qpair const&);
     virtual void setGuessedFWHM(fwhm_t);
@@ -73,7 +73,7 @@ public:
 
     void fit(Curve const& curve) { return fit(curve, range_); }
 
-    virtual void fit(Curve const&, Range const&);
+    virtual void fit(Curve const&, const Range&);
 
     JsonObj to_json() const final;
     void from_json(JsonObj const&) THROWS;
@@ -83,7 +83,7 @@ protected:
     qpair guessedPeak_;
     fwhm_t guessedFWHM_;
 
-    Curve prepareFit(Curve const&, Range const&);
+    Curve prepareFit(Curve const&, const Range&);
 };
 
 
@@ -94,7 +94,7 @@ typedef class PeakFunction* (*initializer_type)();
 class FunctionRegistry : public IRegistry<initializer_type>, public ISingleton<FunctionRegistry> {
 public:
     void register_fct(const initializer_type f);
-    static PeakFunction* name2new(QString const&) THROWS;
+    static PeakFunction* name2new(const QString&) THROWS;
     static PeakFunction* clone(PeakFunction const& old);
 };
 

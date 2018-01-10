@@ -97,7 +97,7 @@ public:
     void flipCheck(uint row);
 
 private:
-    QSharedPointer<Metadata const> metadata_;
+    QSharedPointer<const Metadata> metadata_;
     vec<bool> rowsChecked_;
 };
 
@@ -120,7 +120,7 @@ public:
 public:
     enum { GetDatasetRole = Qt::UserRole };
 
-    void addReflection(QString const&);
+    void addReflection(const QString&);
     void remReflection(uint);
 
     QStringList names() const;

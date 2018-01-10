@@ -32,14 +32,14 @@ Experiment const& Suite::experiment() const {
     return *experiment_;
 }
 
-QSharedPointer<Metadata const> Suite::metadata() const {
+QSharedPointer<const Metadata> Suite::metadata() const {
     if (md_.isNull()) {
         debug::ensure(!isEmpty());
-        const_cast<Suite*>(this)->md_ = QSharedPointer<Metadata const>(new Metadata);
+        const_cast<Suite*>(this)->md_ = QSharedPointer<const Metadata>(new Metadata);
         Metadata* m = const_cast<Metadata*>(md_.data());
 
         debug::ensure(!first()->metadata().isNull());
-        Metadata const& firstMd = *(first()->metadata());
+        const Metadata& firstMd = *(first()->metadata());
 
         m->date = firstMd.date;
         m->comment = firstMd.comment;
@@ -48,7 +48,7 @@ QSharedPointer<Metadata const> Suite::metadata() const {
         // takes the last ones (presumed the maximum) of mon. count and time,
         // averages the rest
         for (auto& one : *this) {
-            Metadata const* d = one->metadata().data();
+            const Metadata* d = one->metadata().data();
             debug::ensure(d);
 
             m->motorXT += d->motorXT;
@@ -148,7 +148,7 @@ qreal Suite::avgDeltaMonitorCount() const { AVG_ONES(deltaMonitorCount) }
 
 qreal Suite::avgDeltaTime() const { AVG_ONES(deltaTime) }
 
-inten_vec Suite::collectIntens(Image const* intensCorr, Range const& rgeGma) const {
+inten_vec Suite::collectIntens(const Image* intensCorr, const Range& rgeGma) const {
     Range tthRge = rgeTth();
     deg tthWdt = tthRge.width();
 

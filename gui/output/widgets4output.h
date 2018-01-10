@@ -53,8 +53,8 @@ public:
 class Table : public TreeView {
 public:
     Table(uint numDataColumns);
-    void setColumns(QStringList const& headers, QStringList const& outHeaders, cmp_vec const&);
-    QStringList const outHeaders() { return outHeaders_; }
+    void setColumns(const QStringList& headers, const QStringList& outHeaders, cmp_vec const&);
+    const QStringList outHeaders() { return outHeaders_; }
     void clear();
     void addRow(row_t const&, bool sort);
     void sortData();

@@ -17,14 +17,14 @@
 #include "core/session.h"
 #include <qmath.h>
 
-Measurement::Measurement(Metadata const& md, size2d const& size, inten_vec const& intens)
+Measurement::Measurement(const Metadata& md, size2d const& size, inten_vec const& intens)
     : md_(new Metadata(md)), image_(new Image(size)) {
     debug::ensure(intens.count() == size.count());
     for_i (intens.count())
         image_->setInten(i, intens.at(i));
 }
 
-QSharedPointer<Metadata const> Measurement::metadata() const {
+QSharedPointer<const Metadata> Measurement::metadata() const {
     debug::ensure(!md_.isNull());
     return md_;
 }
@@ -49,8 +49,8 @@ size2d Measurement::imageSize() const {
     return image_->size();
 }
 
-void Measurement::collectIntens(Image const* intensCorr, inten_vec& intens, uint_vec& counts,
-                                Range const& rgeGma, deg minTth, deg deltaTth) const {
+void Measurement::collectIntens(const Image* intensCorr, inten_vec& intens, uint_vec& counts,
+                                const Range& rgeGma, deg minTth, deg deltaTth) const {
     auto angleMap = gSession->angleMap(*this);
     debug::ensure(!angleMap.isNull());
     AngleMap const& map = *angleMap;

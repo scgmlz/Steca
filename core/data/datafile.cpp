@@ -18,7 +18,7 @@
 Datafile::Datafile(rcstr fileName) : fileInfo_(fileName) {}
 
 //! The loaders use this function to push suite
-void Datafile::addDataset(Metadata const& md, size2d const& sz, inten_vec const& ivec) {
+void Datafile::addDataset(const Metadata& md, size2d const& sz, inten_vec const& ivec) {
     if (measurements_.isEmpty())
         imageSize_ = sz;
     else if (sz != imageSize_)

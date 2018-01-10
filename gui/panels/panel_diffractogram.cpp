@@ -67,7 +67,7 @@ public:
 
     Range fromPixels(int, int);
 
-    void setNewReflRange(Range const&);
+    void setNewReflRange(const Range&);
     void updateBg();
 
     void clearReflLayer();
@@ -77,7 +77,7 @@ public:
     void enterZoom(bool);
 
 private:
-    void addBgItem(Range const&);
+    void addBgItem(const Range&);
     void resizeEvent(QResizeEvent*);
 
     Diffractogram& diffractogram_;
@@ -327,7 +327,7 @@ Range DiffractogramPlot::fromPixels(int pix1, int pix2) {
     return Range::safeFrom(xAxis->pixelToCoord(pix1), xAxis->pixelToCoord(pix2));
 }
 
-void DiffractogramPlot::setNewReflRange(Range const& range) {
+void DiffractogramPlot::setNewReflRange(const Range& range) {
     diffractogram_.setCurrReflNewRange(range);
     updateBg();
 }
@@ -337,7 +337,7 @@ void DiffractogramPlot::updateBg() {
 
     switch (tool_) {
     case eTool::BACKGROUND: {
-        Ranges const& rs = gSession->bgRanges();
+        const Ranges& rs = gSession->bgRanges();
         for_i (rs.count())
             addBgItem(rs.at(i));
         break;
@@ -363,7 +363,7 @@ void DiffractogramPlot::enterZoom(bool on) {
     dgramBgFittedGraph2_->setVisible(on);
 }
 
-void DiffractogramPlot::addBgItem(Range const& range) {
+void DiffractogramPlot::addBgItem(const Range& range) {
     setCurrentLayer("bg");
 
     QColor color;
@@ -513,7 +513,7 @@ Diffractogram::Diffractogram()
             });
 
     connect(gHub, &TheHub::sigReflectionValues,
-            [this](Range const& range, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
+            [this](const Range& range, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
                 if (currentReflection_) {
                     currentReflection_->setRange(range);
                     if (withGuesses)
@@ -596,7 +596,7 @@ void Diffractogram::calcBackground() {
     }
 }
 
-void Diffractogram::setCurrReflNewRange(Range const& range) {
+void Diffractogram::setCurrReflNewRange(const Range& range) {
     if (currentReflection_) {
         currentReflection_->setRange(range);
         currentReflection_->invalidateGuesses();

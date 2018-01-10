@@ -74,7 +74,7 @@ void LensBase::doCut(uint& i, uint& j) const {
 //   class ImageLens
 // ************************************************************************** //
 
-ImageLens::ImageLens(Image const& image, bool trans, bool cut)
+ImageLens::ImageLens(const Image& image, bool trans, bool cut)
     : LensBase(trans, cut, gSession->imageTransform(), gSession->imageCut())
     , image_(image) {}
 
@@ -93,7 +93,7 @@ inten_t ImageLens::imageInten(uint i, uint j) const {
     return inten;
 }
 
-Range const& ImageLens::rgeInten(bool fixed) const {
+const Range& ImageLens::rgeInten(bool fixed) const {
     if (fixed)
         return gSession->experiment().rgeFixedInten(trans_, cut_);
     if (!rgeInten_.isValid()) {
@@ -144,7 +144,7 @@ Curve SequenceLens::makeCurve() const {
     return makeCurve(rgeGma());
 }
 
-Curve SequenceLens::makeCurve(Range const& rgeGma) const {
+Curve SequenceLens::makeCurve(const Range& rgeGma) const {
     inten_vec intens = suite_.collectIntens(intensCorr_, rgeGma);
     Curve res;
     uint count = intens.count();
