@@ -74,16 +74,22 @@ private:
 class PanelPoints : public GridPanel {
 public:
     PanelPoints();
+    ~PanelPoints();
     QRadioButton *rbCalc, *rbInterp;
+private:
+    Settings settings_;
 };
 
 
 class PanelInterpolation : public GridPanel {
 public:
     PanelInterpolation();
+    ~PanelInterpolation();
     QDoubleSpinBox *stepAlpha, *stepBeta, *idwRadius;
     QDoubleSpinBox *avgAlphaMax, *avgRadius;
     QSpinBox* avgThreshold;
+private:
+    Settings settings_;
 };
 
 

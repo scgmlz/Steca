@@ -68,20 +68,6 @@ Params::~Params() {
 void Params::readSettings() {
     Settings s("output");
 
-    if (panelPoints)
-        (s.readBool("interpolated", false) ? panelPoints->rbInterp : panelPoints->rbCalc)
-            ->setChecked(true);
-
-    if (panelInterpolation) {
-        panelInterpolation->stepAlpha->setValue(s.readReal("step alpha", 5));
-        panelInterpolation->stepBeta->setValue(s.readReal("step beta", 5));
-        panelInterpolation->idwRadius->setValue(s.readReal("idw radius", 10));
-
-        panelInterpolation->avgAlphaMax->setValue(s.readReal("avg alpha max", 15));
-        panelInterpolation->avgRadius->setValue(s.readReal("avg radius", 5));
-        panelInterpolation->avgThreshold->setValue(s.readInt("avg threshold", 100));
-    }
-
     saveDir = s.readStr("save dir");
     saveFmt = s.readStr("save format");
 
@@ -94,19 +80,6 @@ void Params::readSettings() {
 
 void Params::saveSettings() const {
     Settings s("output");
-
-    if (panelPoints)
-        s.saveBool("interpolated", panelPoints->rbInterp->isChecked());
-
-    if (panelInterpolation) {
-        s.saveReal("step alpha", panelInterpolation->stepAlpha->value());
-        s.saveReal("step beta", panelInterpolation->stepBeta->value());
-        s.saveReal("idw radius", panelInterpolation->idwRadius->value());
-
-        s.saveReal("avg alpha max", panelInterpolation->avgAlphaMax->value());
-        s.saveReal("avg radius", panelInterpolation->avgRadius->value());
-        s.saveInt("avg threshold", panelInterpolation->avgThreshold->value());
-    }
 
     s.saveStr("save dir", saveDir);
     s.saveStr("save format", saveFmt);

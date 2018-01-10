@@ -126,14 +126,18 @@ void PanelGammaRange::updateValues() {
 }
 
 
-PanelPoints::PanelPoints() : GridPanel("Points") {
+PanelPoints::PanelPoints() : GridPanel("Points"), settings_("polediagram_points") {
     QGridLayout* g = grid();
     g->addWidget((rbCalc = newQ::RadioButton("calculated")), 0, 0);
     g->addWidget((rbInterp = newQ::RadioButton("interpolated")), 1, 0);
+    (settings_.readBool("interpolated", false) ? rbInterp : rbCalc)->setChecked(true);
 
     g->setRowStretch(g->rowCount(), 1);
 }
 
+PanelPoints::~PanelPoints() {
+    settings_.saveBool("interpolated", rbInterp->isChecked());
+}
 
 PanelInterpolation::PanelInterpolation() : GridPanel("Interpolation") {
     QGridLayout* g = grid();
@@ -153,6 +157,23 @@ PanelInterpolation::PanelInterpolation() : GridPanel("Interpolation") {
     g->addWidget((avgThreshold = newQ::SpinBox(gui_cfg::em4_2, 0, 100)), 2, 3);
 
     g->setRowStretch(g->rowCount(), 1);
+
+    stepAlpha->setValue(settings_.readReal("step alpha", 5));
+    stepBeta->setValue(settings_.readReal("step beta", 5));
+    idwRadius->setValue(settings_.readReal("idw radius", 10));
+
+    avgAlphaMax->setValue(settings_.readReal("avg alpha max", 15));
+    avgRadius->setValue(settings_.readReal("avg radius", 5));
+    avgThreshold->setValue(settings_.readInt("avg threshold", 100));
+}
+
+PanelInterpolation::~PanelInterpolation() {
+    settings_.saveReal("step alpha", stepAlpha->value());
+    settings_.saveReal("step beta", stepBeta->value());
+    settings_.saveReal("idw radius", idwRadius->value());
+    settings_.saveReal("avg alpha max", avgAlphaMax->value());
+    settings_.saveReal("avg radius", avgRadius->value());
+    settings_.saveInt("avg threshold", avgThreshold->value());
 }
 
 
