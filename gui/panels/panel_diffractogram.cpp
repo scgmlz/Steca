@@ -144,10 +144,11 @@ void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
         else
             gHub->removeBgRange(range);
         break;
-
-    case DiffractogramPlot::eTool::PEAK_REGION: plot_.setNewReflRange(range); break;
-
-    case DiffractogramPlot::eTool::NONE: break;
+    case DiffractogramPlot::eTool::PEAK_REGION:
+        plot_.setNewReflRange(range);
+        break;
+    case DiffractogramPlot::eTool::NONE:
+        break;
     }
 }
 
@@ -172,7 +173,6 @@ void DiffractogramPlotOverlay::paintEvent(QPaintEvent*) {
 
     if (hasCursor_) {
         QLineF cursor(cursorPos_, g.top(), cursorPos_, g.bottom());
-
         painter.setPen(Qt::red);
         painter.drawLine(cursor);
     }
@@ -561,7 +561,6 @@ void Diffractogram::render() {
     calcDgram();
     calcBackground();
     calcReflections();
-
     plot_->plot(dgram_, dgramBgFitted_, bg_, refls_, currReflIndex_);
 }
 
