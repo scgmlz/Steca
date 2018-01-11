@@ -62,7 +62,7 @@ PanelGammaSlices::PanelGammaSlices() : GridPanel("Gamma slices"), settings_("gam
     QGridLayout* g = grid();
 
     g->addWidget(newQ::Label("count"), 0, 0);
-    g->addWidget((numSlices = newQ::SpinBox(gui_cfg::em4, 0)), 0, 1);
+    g->addWidget((numSlices = newQ::SpinBox(4, 0, 0)), 0, 1);
     numSlices->setValue(settings_.readInt("num_slices", 0));
 
     g->addWidget(newQ::Label("degrees"), 1, 0);
@@ -153,7 +153,7 @@ PanelInterpolation::PanelInterpolation() : GridPanel("Interpolation") {
     g->addWidget(newQ::Label("radius"), 1, 2, Qt::AlignRight);
     g->addWidget((avgRadius = newQ::DoubleSpinBox(gui_cfg::em4_2, 0., 90.)), 1, 3);
     g->addWidget(newQ::Label("inclusion %"), 2, 2, Qt::AlignRight);
-    g->addWidget((avgThreshold = newQ::SpinBox(gui_cfg::em4_2, 0, 100)), 2, 3);
+    g->addWidget((avgThreshold = newQ::SpinBox(4, 2, 0, 100)), 2, 3);
 
     g->setRowStretch(g->rowCount(), 1);
 

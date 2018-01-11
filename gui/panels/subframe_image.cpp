@@ -145,15 +145,15 @@ SubframeImage::SubframeImage() {
         hb->addWidget(newQ::IconButton(gHub->toggle_fixedIntenImage));
         hb->addWidget(newQ::IconButton(gHub->toggle_stepScale));
         hb->addWidget(newQ::IconButton(gHub->toggle_showOverlay));
-        hb->addWidget((spinN_ = newQ::SpinBox(gui_cfg::em4, 1)));
+        hb->addWidget((spinN_ = newQ::SpinBox(4, 0, 1)));
 
         hb->addStretch(1);
 
         hb->addWidget(newQ::IconButton(gHub->toggle_showBins));
         hb->addWidget(newQ::Label("γ count"));
-        hb->addWidget((numSlices_ = newQ::SpinBox(gui_cfg::em4, 0)));
+        hb->addWidget((numSlices_ = newQ::SpinBox(4, 0, 0)));
         hb->addWidget(newQ::Label("#"));
-        hb->addWidget((numSlice_ = newQ::SpinBox(gui_cfg::em4, 1)));
+        hb->addWidget((numSlice_ = newQ::SpinBox(4, 0, 1)));
 
         hb->addWidget(newQ::Label("min"));
         hb->addWidget((minGamma_ = newQ::DoubleSpinBox(gui_cfg::em4_2)));
@@ -164,7 +164,7 @@ SubframeImage::SubframeImage() {
         maxGamma_->setReadOnly(true);
 
         hb->addWidget(newQ::Label("bin#"));
-        hb->addWidget((numBin_ = newQ::SpinBox(gui_cfg::em4, 1)));
+        hb->addWidget((numBin_ = newQ::SpinBox(4, 0, 1)));
 
         box.addWidget((dataImageWidget_ = new ImageWidget()));
 

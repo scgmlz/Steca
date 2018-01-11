@@ -23,6 +23,14 @@ static void setEmWidth(QWidget* w, uint emWidth) {
     w->setMaximumWidth(to_i(emWidth) * w->fontMetrics().width('m'));
 }
 
+static void setWidth(QWidget* w, uint ndigits, bool withDot) {
+    uint width = ndigits;
+#ifdef Q_OS_WIN
+    width += 1 + (withDot?1:0);
+#endif
+    w->setMaximumWidth(width * w->fontMetrics().width('m'));
+}
+
 } // local methods
 
 QAction* newQ::Trigger(rcstr text, rcstr iconFile) {
@@ -101,9 +109,9 @@ QLineEdit* newQ::LineDisplay(uint emWidth) {
     return ret;
 }
 
-QSpinBox* newQ::SpinBox(uint emWidth, int min, int max) {
+QSpinBox* newQ::SpinBox(uint ndigits, bool withDot, int min, int max) {
     auto ret = new QSpinBox;
-    setEmWidth(ret, emWidth);
+    setWidth(ret, ndigits, withDot);
     ret->setMinimum(min);
     ret->setMaximum(max > min ? max : min);
     return ret;

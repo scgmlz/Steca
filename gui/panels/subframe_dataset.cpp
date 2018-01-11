@@ -60,7 +60,7 @@ SubframeDatasets::SubframeDatasets() : DockWidget("Datasets", "dock-suite") {
     box_->addLayout(h);
 
     h->addWidget(newQ::Label("Combine:"));
-    h->addWidget(combineDatasets_ = newQ::SpinBox(gui_cfg::em4, 1));
+    h->addWidget(combineDatasets_ = newQ::SpinBox(4, 0, 1));
     combineDatasets_->setToolTip("Combine and average number of suite");
 
     connect(combineDatasets_, slot(QSpinBox, valueChanged, int), [this](int num) {

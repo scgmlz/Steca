@@ -134,17 +134,17 @@ SubframeSetup::SubframeSetup() {
         connect(
             detPixelSize_, slot(QDoubleSpinBox, valueChanged, double), [this]() { setToHub(); });
 
-        beamOffsetI_ = newQ::SpinBox(gui_cfg::em4_2);
-        beamOffsetJ_ = newQ::SpinBox(gui_cfg::em4_2);
+        beamOffsetI_ = newQ::SpinBox(4, 2);
+        beamOffsetJ_ = newQ::SpinBox(4, 2);
 
         connect(beamOffsetI_, slot(QSpinBox, valueChanged, int), [this]() { setToHub(); });
 
         connect(beamOffsetJ_, slot(QSpinBox, valueChanged, int), [this]() { setToHub(); });
 
-        cutLeft_ = newQ::SpinBox(gui_cfg::em4, 0);
-        cutTop_ = newQ::SpinBox(gui_cfg::em4, 0);
-        cutRight_ = newQ::SpinBox(gui_cfg::em4, 0);
-        cutBottom_ = newQ::SpinBox(gui_cfg::em4, 0);
+        cutLeft_ = newQ::SpinBox(4, 0, 0);
+        cutTop_ = newQ::SpinBox(4, 0, 0);
+        cutRight_ = newQ::SpinBox(4, 0, 0);
+        cutBottom_ = newQ::SpinBox(4, 0, 0);
 
         auto _setImageCut = [this](bool isTopOrLeft, int value) {
             debug::ensure(value >= 0);
@@ -240,7 +240,7 @@ SubframeSetup::SubframeSetup() {
         hb->addWidget(newQ::IconButton(gHub->trigger_clearBackground));
         hb->addWidget(newQ::Label("Pol. degree:"));
         hb->addWidget((spinDegree_ =
-                       newQ::SpinBox(gui_cfg::em4, 0, TheHub::MAX_POLYNOM_DEGREE)));
+                       newQ::SpinBox(4, 0, 0, TheHub::MAX_POLYNOM_DEGREE)));
         hb->addStretch();
 
         box.addStretch(1);
