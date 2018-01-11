@@ -30,22 +30,6 @@
 
 class BoxWidget;
 
-
-//! Contains OS specific constants that optimize the GUI appearance
-
-namespace gui_cfg {
-
-#ifdef Q_OS_WIN
-uint const em4_2 = 8; // widget width for 4.2 numbers
-uint const em4 = 5; // for 4 numbers
-#else
-uint const em4_2 = 6;
-uint const em4 = 4;
-#endif
-
-} // namespace gui_cfg
-
-
 //! Contains functions that return new Qt objects.
 
 namespace newQ {
@@ -64,8 +48,7 @@ QGridLayout* GridLayout();
 QLabel* Label(rcstr text);
 QLabel* Icon(rcstr fileName);
 
-QLineEdit* LineEdit(uint emWidth); // emWidth: measured in typographical (m)s
-QLineEdit* LineDisplay(uint emWidth);
+QLineEdit* LineDisplay(uint ndigits, bool withDot);
 
 QSpinBox* SpinBox(uint ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX);
 QDoubleSpinBox* DoubleSpinBox(

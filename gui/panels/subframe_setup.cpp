@@ -134,17 +134,17 @@ SubframeSetup::SubframeSetup() {
         connect(
             detPixelSize_, slot(QDoubleSpinBox, valueChanged, double), [this]() { setToHub(); });
 
-        beamOffsetI_ = newQ::SpinBox(4, 2);
-        beamOffsetJ_ = newQ::SpinBox(4, 2);
+        beamOffsetI_ = newQ::SpinBox(6, true);
+        beamOffsetJ_ = newQ::SpinBox(6, true);
 
         connect(beamOffsetI_, slot(QSpinBox, valueChanged, int), [this]() { setToHub(); });
 
         connect(beamOffsetJ_, slot(QSpinBox, valueChanged, int), [this]() { setToHub(); });
 
-        cutLeft_ = newQ::SpinBox(4, 0, 0);
-        cutTop_ = newQ::SpinBox(4, 0, 0);
-        cutRight_ = newQ::SpinBox(4, 0, 0);
-        cutBottom_ = newQ::SpinBox(4, 0, 0);
+        cutLeft_ = newQ::SpinBox(4, false, 0);
+        cutTop_ = newQ::SpinBox(4, false, 0);
+        cutRight_ = newQ::SpinBox(4, false, 0);
+        cutBottom_ = newQ::SpinBox(4, false, 0);
 
         auto _setImageCut = [this](bool isTopOrLeft, int value) {
             debug::ensure(value >= 0);
@@ -240,7 +240,7 @@ SubframeSetup::SubframeSetup() {
         hb->addWidget(newQ::IconButton(gHub->trigger_clearBackground));
         hb->addWidget(newQ::Label("Pol. degree:"));
         hb->addWidget((spinDegree_ =
-                       newQ::SpinBox(4, 0, 0, TheHub::MAX_POLYNOM_DEGREE)));
+                       newQ::SpinBox(4, false, 0, TheHub::MAX_POLYNOM_DEGREE)));
         hb->addStretch();
 
         box.addStretch(1);
@@ -303,12 +303,12 @@ SubframeSetup::SubframeSetup() {
         spinGuessFWHM_->setSingleStep(.1);
 
         gb->addWidget(newQ::Label("fit x"), 3, 0);
-        gb->addWidget((readFitPeakX_ = newQ::LineDisplay(gui_cfg::em4_2)), 3, 1);
+        gb->addWidget((readFitPeakX_ = newQ::LineDisplay(6, true)), 3, 1);
         gb->addWidget(newQ::Label("y"), 3, 2);
-        gb->addWidget((readFitPeakY_ = newQ::LineDisplay(gui_cfg::em4_2)), 3, 3);
+        gb->addWidget((readFitPeakY_ = newQ::LineDisplay(6, true)), 3, 3);
 
         gb->addWidget(newQ::Label("fwhm"), 4, 0);
-        gb->addWidget((readFitFWHM_ = newQ::LineDisplay(gui_cfg::em4_2)), 4, 1);
+        gb->addWidget((readFitFWHM_ = newQ::LineDisplay(6, true)), 4, 1);
 
         gb->setColumnStretch(4, 1);
 

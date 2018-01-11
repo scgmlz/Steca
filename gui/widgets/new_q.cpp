@@ -97,14 +97,9 @@ QLabel* newQ::Icon(rcstr fileName) {
     return ret;
 }
 
-QLineEdit* newQ::LineEdit(uint emWidth) {
+QLineEdit* newQ::LineDisplay(uint ndigits, bool withDot) {
     auto ret = new QLineEdit;
-    setEmWidth(ret, emWidth);
-    return ret;
-}
-
-QLineEdit* newQ::LineDisplay(uint emWidth) {
-    auto ret = newQ::LineEdit(emWidth);
+    setWidth(ret, ndigits, withDot);
     ret->setReadOnly(true);
     return ret;
 }
