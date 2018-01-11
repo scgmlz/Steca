@@ -14,7 +14,6 @@
 
 #include "gui/output/dialog_panels.h"
 #include "core/data/metadata.h"
-#include "gui/cfg/gui_cfg.h"
 #include "gui/models.h"
 #include "core/session.h"
 #include "gui/thehub.h"

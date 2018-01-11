@@ -26,10 +26,28 @@
 #include <QSpinBox>
 #include <QTabWidget>
 #include <QToolButton>
+#include <QtGlobal> // to define Q_OS_WIN
 
 class BoxWidget;
 
-//! Contains functions that return new Qt objects with Steca-standard settings
+
+//! Contains OS specific constants that optimize the GUI appearance
+
+namespace gui_cfg {
+
+#ifdef Q_OS_WIN
+uint const em4_2 = 8; // widget width for 4.2 numbers
+uint const em4 = 5; // for 4 numbers
+#else
+uint const em4_2 = 6;
+uint const em4 = 4;
+#endif
+
+} // namespace gui_cfg
+
+
+//! Contains functions that return new Qt objects.
+
 namespace newQ {
 
 QAction* Trigger(rcstr text, rcstr iconFile="");

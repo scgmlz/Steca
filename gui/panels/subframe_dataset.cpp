@@ -14,7 +14,6 @@
 
 #include "gui/panels/subframe_dataset.h"
 #include "core/data/suite.h"
-#include "gui/cfg/gui_cfg.h"
 #include "gui/models.h"
 #include "gui/thehub.h"
 #include "gui/widgets/tree_views.h" // inheriting from

@@ -16,7 +16,6 @@
 #include "core/data/measurement.h"
 #include "core/session.h"
 #include "gui/cfg/colors.h"
-#include "gui/cfg/gui_cfg.h"
 #include "gui/thehub.h"
 #include "gui/widgets/new_q.h"
 #include "gui/widgets/various_widgets.h"
