@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/def/numbers.h
-//! @brief     Defines ...
+//! @brief     Defines types qint, pint, preal, and some conversion functions
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -18,8 +18,8 @@
 #ifndef NUMBERS_H
 #define NUMBERS_H
 
-#include "def/debug.h"
-#include "def/macros.h"
+#include "core/def/debug.h"
+#include "core/def/macros.h"
 #include <QtGlobal> // to define Q_OS_WIN
 
 // casting signed <-> unsigned
@@ -62,7 +62,7 @@ template <typename T> typename std::__make_unsigned<T>::__type clip_u(T t) {
 
 #endif
 
-// natural numbers 1...
+//! A positive integer (1,2,...).
 
 #ifndef QT_NO_DEBUG
 
@@ -92,7 +92,7 @@ typedef uint pint;
 extern qreal const NAN; // silent nan
 extern qreal const INF;
 
-// positive reals
+//! A positive real number of type qreal
 
 #ifndef QT_NO_DEBUG
 

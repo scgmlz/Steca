@@ -1,26 +1,25 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/output/frame.cpp
 //! @brief     Implements class Frame
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "output_dialogs.h"
-#include "actions.h"
-#include "dialog_panels.h"
-#include "calc/calc_polefigure.h"
-#include "session.h"
-#include "thehub.h"
-#include "frame.h"
-#include "widgets/widget_makers.h"
-#include <QAction>
+#include "gui/output/frame.h"
+#include "core/calc/calc_polefigure.h"
+#include "core/session.h"
+#include "gui/output/dialog_panels.h"
+#include "gui/output/widgets4output.h"
+#include "gui/thehub.h"
+#include "gui/widgets/new_q.h"
+#include "gui/widgets/various_widgets.h"
 #include <QProgressBar>
 #include <QScrollArea>
 
@@ -51,49 +50,49 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
     : table_(table), showCols_(showCols) {
     using eReflAttr = ReflectionInfo::eReflAttr;
 
-    setLayout((box_ = vbox()));
+    setLayout((box_ = newQ::VBoxLayout()));
 
-    box_->addWidget((rbHidden_ = radioButton("")));
+    box_->addWidget((rbHidden_ = newQ::RadioButton("")));
     rbHidden_->hide();
 
-    box_->addWidget((rbAll_ = radioButton("all")));
-    box_->addWidget((rbNone_ = radioButton("none")));
-    box_->addWidget(rbInten_ = radioButton("Intensity"));
-    box_->addWidget(rbTth_ = radioButton("2θ"));
-    box_->addWidget(rbFWHM_ = radioButton("fwhm"));
+    box_->addWidget((rbAll_ = newQ::RadioButton("all")));
+    box_->addWidget((rbNone_ = newQ::RadioButton("none")));
+    box_->addWidget(rbInten_ = newQ::RadioButton("Intensity"));
+    box_->addWidget(rbTth_ = newQ::RadioButton("2θ"));
+    box_->addWidget(rbFWHM_ = newQ::RadioButton("fwhm"));
     box_->addSpacing(8);
 
     for_i (showCols.count()) {
-        auto& item = showCols[i];
-        box_->addWidget((item.cb = check(item.name)));
+        showcol_t& item = showCols[i];
+        box_->addWidget((item.cb = newQ::CheckBox(item.name)));
     }
 
-    auto all = [this]() {
-        for (auto& col : showCols_)
+    auto _all = [this]() {
+        for (showcol_t& col : showCols_)
             col.cb->setChecked(true);
     };
 
-    auto none = [this]() {
-        for (auto& col : showCols_)
+    auto _none = [this]() {
+        for (showcol_t& col : showCols_)
             col.cb->setChecked(false);
     };
 
-    auto showInten = [this, none]() {
-        none();
+    auto _showInten = [this, _none]() {
+        _none();
         showCols_.at(uint(eReflAttr::INTEN)).cb->setChecked(true);
     };
 
-    auto showTth = [this, none]() {
-        none();
+    auto _showTth = [this, _none]() {
+        _none();
         showCols_.at(uint(eReflAttr::TTH)).cb->setChecked(true);
     };
 
-    auto showFWHM = [this, none]() {
-        none();
+    auto _showFWHM = [this, _none]() {
+        _none();
         showCols_.at(uint(eReflAttr::FWHM)).cb->setChecked(true);
     };
 
-    auto updateRbs = [this]() {
+    auto _updateRbs = [this]() {
         bool isAll = true, isNone = true, isOther = false;
         uint nInten = 0, nTth = 0, nFwhm = 0;
 
@@ -131,23 +130,22 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
     };
 
     for_i (showCols_.count()) {
-        auto cb = showCols_.at(i).cb;
-
-        connect(cb, &QCheckBox::toggled, [this, updateRbs, i](bool on) {
+        QCheckBox* cb = showCols_.at(i).cb;
+        connect(cb, &QCheckBox::toggled, [this, _updateRbs, i](bool on) {
             if (on)
                 table_.showColumn(to_i(i) + 1);
             else
                 table_.hideColumn(to_i(i) + 1);
 
-            updateRbs();
+            _updateRbs();
         });
     }
 
-    connect(rbAll_, &QRadioButton::clicked, all);
-    connect(rbNone_, &QRadioButton::clicked, none);
-    connect(rbInten_, &QRadioButton::clicked, showInten);
-    connect(rbTth_, &QRadioButton::clicked, showTth);
-    connect(rbFWHM_, &QRadioButton::clicked, showFWHM);
+    connect(rbAll_, &QRadioButton::clicked, _all);
+    connect(rbNone_, &QRadioButton::clicked, _none);
+    connect(rbInten_, &QRadioButton::clicked, _showInten);
+    connect(rbTth_, &QRadioButton::clicked, _showTth);
+    connect(rbFWHM_, &QRadioButton::clicked, _showFWHM);
 
     rbAll_->click();
 }
@@ -156,18 +154,19 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
 //  local class TabTable (only used by Frame implementation)
 // ************************************************************************** //
 
-class TabTable : public OutputTab {
+class TabTable : public QWidget {
 public:
-    TabTable(Params&, QStringList const& headers, QStringList const& outHeaders, cmp_vec const&);
+    TabTable(const QStringList& headers, const QStringList& outHeaders, cmp_vec const&);
     Table* table;
 private:
     ShowColsWidget* showColumnsWidget_;
     showcol_vec showCols_;
 };
 
-TabTable::TabTable(
-    Params& params, QStringList const& headers, QStringList const& outHeaders, cmp_vec const& cmps)
-    : OutputTab(params) {
+TabTable::TabTable(const QStringList& headers, const QStringList& outHeaders, const cmp_vec& cmps){
+
+    QGridLayout* grid_ = newQ::GridLayout();
+    setLayout(grid_);
     debug::ensure(to_u(headers.count()) == cmps.count());
     uint numCols = to_u(headers.count());
 
@@ -189,71 +188,67 @@ TabTable::TabTable(
     grid_->addWidget(scrollArea, 0, 1);
 }
 
-} // anonymous namespace
+} // local methods
 
 
 // ************************************************************************** //
 //  class Frame
 // ************************************************************************** //
 
+Frame::Frame(rcstr title, Params* params, QWidget* parent) : QDialog(parent) {
 
-
-Frame::Frame(rcstr title, Params* params, QWidget* parent)
-    : QDialog(parent) {
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-
     setWindowTitle(title);
-    setLayout((box_ = vbox()));
+
+    setLayout((box_ = newQ::VBoxLayout()));
 
     debug::ensure(params);
-
     box_->addWidget((params_ = params));
-    box_->addWidget((tabs_ = new TabsPanel()));
+
+    tabs_ = new QTabWidget();
+    tabs_->setTabPosition(QTabWidget::North);
+    box_->addWidget(tabs_);
     box_->setStretch(box_->count() - 1, 1);
 
-    auto hb = hbox();
+    auto hb = newQ::HBoxLayout();
     box_->addLayout(hb);
 
-    actClose_ = newTrigger("Close");
-    actCalculate_ = newTrigger("Calculate");
-    actInterpolate_ = newTrigger("Interpolate");
+    actClose_ = newQ::Trigger("Close");
+    actCalculate_ = newQ::Trigger("Calculate");
+    actInterpolate_ = newQ::Trigger("Interpolate");
 
-    hb->addWidget((btnClose_ = textButton(actClose_)));
+    hb->addWidget((btnClose_ = newQ::TextButton(actClose_)));
     hb->addStretch(1);
-    hb->addWidget((pb_ = new QProgressBar));
-    hb->setStretchFactor(pb_, 333);
+    hb->addWidget((progressBar_ = new QProgressBar));
+    hb->setStretchFactor(progressBar_, 333);
     hb->addStretch(1);
-    hb->addWidget((btnCalculate_ = textButton(actCalculate_)));
-    hb->addWidget((btnInterpolate_ = textButton(actInterpolate_)));
+    hb->addWidget((btnCalculate_ = newQ::TextButton(actCalculate_)));
+    hb->addWidget((btnInterpolate_ = newQ::TextButton(actInterpolate_)));
 
-    pb_->hide();
+    progressBar_->hide();
 
     connect(actClose_, &QAction::triggered, [this]() { close(); });
     connect(actCalculate_, &QAction::triggered, [this]() { calculate(); });
     connect(actInterpolate_, &QAction::triggered, [this]() { interpolate(); });
 
-    auto updateDisplay = [this]() { displayReflection(getReflIndex(), getInterpolated()); };
-
     if (params_->panelReflection) {
-        connect(
-            params_->panelReflection->cbRefl, slot(QComboBox, currentIndexChanged, int),
-            [updateDisplay]() { updateDisplay(); });
+        connect(params_->panelReflection->cbRefl, slot(QComboBox, currentIndexChanged, int),
+                [this](){ updateReflection(); });
     }
 
     if (params_->panelPoints) {
         debug::ensure(params_->panelReflection);
-        connect(params_->panelPoints->rbInterp, &QRadioButton::toggled, [updateDisplay]() {
-            updateDisplay();
-        });
+        connect(params_->panelPoints->rbInterp, &QRadioButton::toggled,
+                [this](){ updateReflection(); });
     }
 
     // tabs
 
-    auto tabTable = new TabTable(
-        *params_, ReflectionInfo::dataTags(false), ReflectionInfo::dataTags(true),
-        ReflectionInfo::dataCmps());
-    tabs_->addTab("Points", Qt::Vertical).box().addWidget(tabTable);
+    auto tabTable = new TabTable(ReflectionInfo::dataTags(false),
+                                 ReflectionInfo::dataTags(true),
+                                 ReflectionInfo::dataCmps());
+    newQ::Tab(tabs_, "Points")->box().addWidget(tabTable);
 
     table_ = tabTable->table;
 
@@ -268,23 +263,23 @@ void Frame::calculate() {
     calcPoints_.clear();
     interpPoints_.clear();
 
-    auto& reflections = gSession->reflections();
+    const Reflections& reflections = gSession->reflections();
     if (!reflections.isEmpty()) {
         uint reflCount = reflections.count();
 
-        auto ps = params_->panelGammaSlices;
+        const PanelGammaSlices* ps = params_->panelGammaSlices;
         debug::ensure(ps);
 
         uint gammaSlices = to_u(ps->numSlices->value());
 
-        auto pr = params_->panelGammaRange;
+        const PanelGammaRange* pr = params_->panelGammaRange;
         debug::ensure(pr);
 
         Range rgeGamma;
         if (pr->cbLimitGamma->isChecked())
             rgeGamma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
 
-        Progress progress(reflCount, pb_);
+        Progress progress(reflCount, progressBar_);
 
         for_i (reflCount)
             calcPoints_.append(
@@ -301,7 +296,7 @@ void Frame::interpolate() {
 
     interpPoints_.clear();
 
-    auto pi = params_->panelInterpolation;
+    const PanelInterpolation* pi = params_->panelInterpolation;
     if (pi) {
         deg alphaStep = pi->stepAlpha->value();
         deg betaStep = pi->stepBeta->value();
@@ -311,7 +306,7 @@ void Frame::interpolate() {
         qreal avgAlphaMax = pi->avgAlphaMax->value();
         qreal avgTreshold = pi->avgThreshold->value() / 100.0;
 
-        Progress progress(calcPoints_.count(), pb_);
+        Progress progress(calcPoints_.count(), progressBar_);
 
         for_i (calcPoints_.count())
             interpPoints_.append(interpolateInfos(
@@ -322,9 +317,14 @@ void Frame::interpolate() {
             interpPoints_.append(ReflectionInfos());
     }
 
+    updateReflection();
+}
+
+void Frame::updateReflection() {
     displayReflection(getReflIndex(), getInterpolated());
 }
 
+// virtual, overwritten by some output frames, and called back by the overwriting function
 void Frame::displayReflection(uint reflIndex, bool interpolated) {
     table_->clear();
 
@@ -332,7 +332,7 @@ void Frame::displayReflection(uint reflIndex, bool interpolated) {
     if (calcPoints_.count() <= reflIndex)
         return;
 
-    for (auto& r : (interpolated ? interpPoints_ : calcPoints_).at(reflIndex))
+    for (const ReflectionInfo& r : (interpolated ? interpPoints_ : calcPoints_).at(reflIndex))
         table_->addRow(r.data(), false);
 
     table_->sortData();
@@ -346,6 +346,6 @@ uint Frame::getReflIndex() const {
 }
 
 bool Frame::getInterpolated() const {
-    auto pi = params_->panelPoints;
+    const PanelPoints* pi = params_->panelPoints;
     return pi ? pi->rbInterp->isChecked() : false;
 }

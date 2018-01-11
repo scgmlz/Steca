@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/output/output_diffractograms.h
 //! @brief     Defines class DiffractogramsFrame
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -17,25 +17,17 @@
 
 #include "frame.h"
 
-class Suite;
+class OutputData;
 
-struct OutputData;
-using OutputDataCollection = vec<OutputData>;
-using OutputDataCollections = vec<OutputDataCollection>;
-
-class DiffractogramsFrame : public Frame {
+//! The modal dialog for saving diffractograms
+class DiffractogramsFrame final : public Frame {
 public:
     DiffractogramsFrame(rcstr title, QWidget*);
 
-protected:
+private:
     class TabDiffractogramsSave* tabSave_;
 
-    OutputDataCollection
-    collectCurves(Range const&, uint gmaSlices, Suite const& dataseq, uint picNum);
-    OutputData collectCurve(Suite const& dataseq);
-
-    OutputData outputCurrDiffractogram();
-    OutputDataCollections outputAllDiffractograms();
+    vec<vec<OutputData>> outputAllDiffractograms();
 
     void saveDiffractogramOutput();
     void writeCurrDiffractogramToFile(rcstr filePath, rcstr separator);

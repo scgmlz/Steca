@@ -1,20 +1,19 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
-//! @file      core/calc/calc_reflection_info.cpp
+//! @file      core/calc/reflection_info.cpp
 //! @brief     Implements classes ReflectionInfo, ReflectionInfos
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "calc_reflection_info.h"
-#include "data/metadata.h"
-#include "def/idiomatic_for.h"
+#include "core/calc/reflection_info.h"
+#include "core/def/idiomatic_for.h"
 
 // ************************************************************************** //
 //  class ReflectionInfo
@@ -28,12 +27,12 @@
 
 ReflectionInfo::ReflectionInfo()
     : ReflectionInfo(
-          QSharedPointer<Metadata const>(),
+          shp_Metadata(),
           NAN, NAN, Range(), inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), NAN, NAN)
 {}
 
 ReflectionInfo::ReflectionInfo(
-    QSharedPointer<Metadata const> md,
+    shp_Metadata md,
     deg alpha, deg beta, Range rgeGma, inten_t inten, inten_t intenError,
     deg tth, deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
     : md_(md)
@@ -49,7 +48,7 @@ ReflectionInfo::ReflectionInfo(
 {}
 
 ReflectionInfo::ReflectionInfo(
-    QSharedPointer<Metadata const> md, deg alpha, deg beta, Range rgeGma)
+    shp_Metadata md, deg alpha, deg beta, Range rgeGma)
     : ReflectionInfo(
         md, alpha, beta, rgeGma, inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), fwhm_t(NAN),
         fwhm_t(NAN))
@@ -59,7 +58,7 @@ ReflectionInfo::ReflectionInfo(
     deg alpha, deg beta, Range rgeGma, inten_t inten, inten_t intenError, deg tth,
     deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
     : ReflectionInfo(
-        QSharedPointer<Metadata const>(),
+        shp_Metadata(),
         alpha, beta, rgeGma, inten, intenError, tth, tthError, fwhm, fwhmError)
 {}
 
@@ -119,7 +118,7 @@ str const ReflectionInfo::reflStringTag(uint attr, bool out) {
 // ************************************************************************** //
 
 void ReflectionInfos::append(ReflectionInfo const& info) {
-    super::append(info);
+    vec<ReflectionInfo>::append(info);
     invalidate();
 }
 
@@ -140,7 +139,7 @@ inten_t ReflectionInfos::averageInten() const {
     return avgInten_;
 }
 
-Range const& ReflectionInfos::rgeInten() const {
+const Range& ReflectionInfos::rgeInten() const {
     if (!rgeInten_.isValid()) {
         for_i (count())
             rgeInten_.extendBy(at(i).inten());

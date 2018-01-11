@@ -1,23 +1,23 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/popup/about.cpp
 //! @brief     Implements class AboutBox
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "popup/about.h"
+#include "gui/popup/about.h"
 #include "../manifest.h"
-#include "cfg/gui_cfg.h"
-#include "cfg/settings.h"
-#include "data/geometry.h"
-#include "widgets/widget_makers.h"
+#include "gui/cfg/gui_cfg.h"
+#include "gui/cfg/settings.h"
+#include "core/data/geometry.h"
+#include "gui/widgets/new_q.h"
 #include <QApplication>
 #include <QDate>
 #include <QDialogButtonBox>
@@ -35,19 +35,19 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
     setWindowTitle(str("About %1").arg(qApp->applicationName()));
 
     // layout
-    auto vb = vbox();
+    auto vb = newQ::VBoxLayout();
     setLayout(vb);
 
     vb->setSpacing(PAD);
     vb->setSizeConstraint(QLayout::SetFixedSize);
 
     // logo and info
-    auto hb = hbox();
+    auto hb = newQ::HBoxLayout();
     vb->addLayout(hb);
 
     hb->setSpacing(PAD);
 
-    auto logo = label("");
+    auto logo = newQ::Label("");
     logo->setPixmap(QPixmap(":/icon/retroStier")
                         .scaled(128, 128, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     hb->addWidget(logo);
@@ -58,7 +58,7 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
     str arch = "";
 #endif
 
-    auto info = label(str(
+    auto info = newQ::Label(str(
 "<h4>%1 version %2 %3</h4>"
 "<p>%4</p>"
 "<p>Copyright: Forschungszentrum Jülich GmbH %5</p>"

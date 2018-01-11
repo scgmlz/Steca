@@ -1,18 +1,18 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/cfg/msg_handler.cpp
 //! @brief     Implements messageHandler.
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "cfg/msg_handler.h"
+#include "gui/cfg/msg_handler.h"
 #include <iostream>
 #include <QMessageBox>
 #include <QStatusBar>

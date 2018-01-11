@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/data/image_transform.h
-//! @brief     Defines ...
+//! @brief     Defines class ImageTransform
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -15,11 +15,12 @@
 #ifndef IMAGE_TRANSFORM_H
 #define IMAGE_TRANSFORM_H
 
-#include "def/numbers.h" // for uint
+#include "core/def/numbers.h" // for uint
 
-// Image transform type - rotation and mirroring (bit-map)
+//! Encodes chosen rotation and mirror operations
 
-struct ImageTransform {
+class ImageTransform {
+public:
     enum eTransform {
         ROTATE_0 = 0, // no transform
         ROTATE_1 = 1, // one quarter
@@ -46,8 +47,7 @@ struct ImageTransform {
 
     bool isTransposed() const { return 0 != (val & 1); }
 
-    bool operator==(ImageTransform const& that) const {
-        return val == that.val; }
+    bool operator==(ImageTransform const& that) const { return val == that.val; }
 };
 
 #endif // IMAGE_TRANSFORM_H

@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/output/output_diagrams.h
 //! @brief     Defines class DiagramsFrame
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -15,13 +15,14 @@
 #ifndef OUTPUT_DIAGRAMS_H
 #define OUTPUT_DIAGRAMS_H
 
-#include "frame.h"
+#include "gui/output/frame.h"
 
-class DiagramsFrame : public Frame {
+//! The modal dialog for viewing and saving diagrams
+class DiagramsFrame final : public Frame {
 public:
     DiagramsFrame(rcstr title, QWidget*);
 
-protected:
+private:
     class TabPlot* tabPlot_;
     class TabDiagramsSave* tabSave_;
 
@@ -38,8 +39,8 @@ protected:
     void recalculate();
 
     void saveDiagramOutput();
-    void writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator);
-    void writeAllDataOutputFile(rcstr filePath, rcstr separator);
+    void writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator) const;
+    void writeAllDataOutputFile(rcstr filePath, rcstr separator) const;
 };
 
 #endif // OUTPUT_DIAGRAMS_H

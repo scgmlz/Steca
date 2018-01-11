@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/models.h
-//! @brief     Defines classes FilesModel, DatasetsModel, MetadataModel, ReflectionsModel
+//! @brief     Defines classes TableModel, FilesModel, DatasetsModel, MetadataModel, ReflectionsModel
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -15,12 +15,29 @@
 #ifndef MODELS_H
 #define MODELS_H
 
-#include "table_model.h"
-#include "typ/str.h"
-#include "typ/vec.h"
-#include <QSharedPointer> // no auto rm
+#include "core/data/suite.h"
+#include "core/typ/str.h"
+#include "core/typ/vec.h"
+#include <QAbstractTableModel>
 
-class Suite;
+extern QVariant const EMPTY_VAR;
+extern QModelIndex const ANY_INDEX;
+
+//! The base class of all table-like models
+
+class TableModel : public QAbstractTableModel {
+public:
+    using Index = QModelIndex;
+    using rcIndex = Index const&;
+
+    TableModel() {}
+
+    void signalReset(); //!< force-emits reset() signal
+
+protected:
+    static int const DCOL = 1; //!< the left-most column is hidden
+};
+
 class Experiment;
 class Metadata;
 
@@ -75,11 +92,11 @@ public:
 
     vec<bool> const& rowsChecked() const { return rowsChecked_; }
 
-    void reset(QSharedPointer<Suite> dataseq);
+    void reset(shp_Suite dataseq);
     void flipCheck(uint row);
 
 private:
-    QSharedPointer<Metadata const> metadata_;
+    shp_Metadata metadata_;
     vec<bool> rowsChecked_;
 };
 
@@ -102,7 +119,7 @@ public:
 public:
     enum { GetDatasetRole = Qt::UserRole };
 
-    void addReflection(QString const&);
+    void addReflection(const QString&);
     void remReflection(uint);
 
     QStringList names() const;

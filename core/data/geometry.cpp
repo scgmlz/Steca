@@ -1,20 +1,25 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/data/geometry.cpp
 //! @brief     Implements classes Geometry, ImageCut, ImageKey
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "data/geometry.h"
-#include "def/comparators.h"
+#include "core/data/geometry.h"
+#include "core/def/comparators.h"
 #include <iostream> // for debugging
+
+#define RET_COMPARE_COMPARABLE(o)                                                 \
+    for (int cmp = o.compare(that.o); cmp;)                                       \
+        return cmp;
+
 
 // ************************************************************************** //
 //  class Geometry

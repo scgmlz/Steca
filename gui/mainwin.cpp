@@ -1,33 +1,33 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/mainwin.cpp
 //! @brief     Implements class MainWin
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "mainwin.h"
+#include "gui/mainwin.h"
 #include "../manifest.h"
-#include "popup/about.h"
-#include "popup/filedialog.h"
-#include "output/output_diagrams.h"
-#include "output/output_diffractograms.h"
-#include "output/output_polefigures.h"
-#include "panels/dock_dataset.h"
-#include "panels/dock_files.h"
-#include "panels/dock_metadata.h"
-#include "panels/tabs_diffractogram.h"
-#include "panels/tabs_images.h"
-#include "panels/tabs_setup.h"
-#include "session.h"
-#include "cfg/settings.h"
-#include "thehub.h"
+#include "gui/popup/about.h"
+#include "gui/popup/filedialog.h"
+#include "gui/output/output_diagrams.h"
+#include "gui/output/output_diffractograms.h"
+#include "gui/output/output_polefigures.h"
+#include "gui/panels/subframe_dataset.h"
+#include "gui/panels/subframe_files.h"
+#include "gui/panels/subframe_metadata.h"
+#include "gui/panels/subframe_diffractogram.h"
+#include "gui/panels/subframe_image.h"
+#include "gui/panels/subframe_setup.h"
+#include "core/session.h"
+#include "gui/cfg/settings.h"
+#include "gui/thehub.h"
 
 #include <QApplication>
 #include <QCloseEvent>
@@ -51,13 +51,13 @@ namespace {
 //! Initialize the menu bar. Part of the MainWin initialization.
 void initMenus(QMenuBar* mbar) {
 
-    auto separator = [mbar]()->QAction* {
+    auto _separator = [mbar]()->QAction* {
         QAction* ret = new QAction(mbar);
         ret->setSeparator(true);
         return ret;
     };
 
-    auto actionsToMenu = [mbar](const char* menuName, QList<QAction*> actions)->void {
+    auto _actionsToMenu = [mbar](const char* menuName, QList<QAction*> actions)->void {
         QMenu* menu = mbar->addMenu(menuName);
         menu->addActions(actions);
         str prefix = str("%1: ").arg(menu->title().remove('&'));
@@ -71,25 +71,25 @@ void initMenus(QMenuBar* mbar) {
     mbar->setNativeMenuBar(true);
 #endif
 
-    actionsToMenu(
+    _actionsToMenu(
         "&File",
         {
             gHub->trigger_addFiles,
                 gHub->trigger_removeFile,
-                separator(),
+                _separator(),
                 gHub->toggle_enableCorr,
                 gHub->trigger_remCorr,
-                separator(),
+                _separator(),
                 gHub->trigger_loadSession,
                 gHub->trigger_saveSession,
                 gHub->trigger_clearSession,
 #ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
-                separator(),
+                _separator(),
 #endif
                 gHub->trigger_quit,
         });
 
-    actionsToMenu(
+    _actionsToMenu(
         "&Image",
         {   gHub->trigger_rotateImage,
                 gHub->toggle_mirrorImage,
@@ -100,22 +100,22 @@ void initMenus(QMenuBar* mbar) {
                 gHub->toggle_showBins,
         });
 
-    actionsToMenu(
+    _actionsToMenu(
         "&Diffractogram",
         {
             gHub->toggle_selRegions,
                 gHub->toggle_showBackground,
                 gHub->trigger_clearBackground,
                 gHub->trigger_clearReflections,
-                separator(),
+                _separator(),
                 gHub->trigger_addReflection,
                 gHub->trigger_remReflection,
-                separator(),
+                _separator(),
                 gHub->toggle_combinedDgram,
                 gHub->toggle_fixedIntenDgram,
         });
 
-    actionsToMenu(
+    _actionsToMenu(
         "&Output",
         {
             gHub->trigger_outputPolefigures,
@@ -123,21 +123,21 @@ void initMenus(QMenuBar* mbar) {
                 gHub->trigger_outputDiffractograms,
         });
 
-    actionsToMenu(
+    _actionsToMenu(
         "&View",
         {   gHub->toggle_viewFiles,
                 gHub->toggle_viewDatasets,
                 gHub->toggle_viewMetadata,
-                separator(),
+                _separator(),
 #ifndef Q_OS_OSX
                 gHub->toggle_fullScreen,
 #endif
                 gHub->toggle_viewStatusbar,
-                separator(),
+                _separator(),
                 gHub->trigger_viewReset,
         });
 
-    actionsToMenu(
+    _actionsToMenu(
         "&Help",
         {
             gHub->trigger_about, // Mac puts About into the Apple menu
@@ -146,7 +146,7 @@ void initMenus(QMenuBar* mbar) {
         });
 }
 
-} // anonymous namespace
+} // local methods
 
 // ************************************************************************** //
 //  class MainWin
@@ -154,7 +154,7 @@ void initMenus(QMenuBar* mbar) {
 
 MainWin::MainWin() {
     qDebug() << "MainWin/";
-    gHub = new TheHub();
+    gHub = TheHub::instance();
     setWindowIcon(QIcon(":/icon/retroStier"));
     QDir::setCurrent(QDir::homePath());
     setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
@@ -169,9 +169,9 @@ MainWin::MainWin() {
 
 
 void MainWin::initLayout() {
-    addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new DockFiles()));
-    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasets_ = new DockDatasets()));
-    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasetInfo_ = new DockMetadata()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new SubframeFiles()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasets_ = new SubframeDatasets()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasetInfo_ = new SubframeMetadata()));
 
     auto splMain = new QSplitter(Qt::Vertical);
     splMain->setChildrenCollapsible(false);
@@ -182,11 +182,11 @@ void MainWin::initLayout() {
     setCentralWidget(splMain);
 
     splMain->addWidget(splTop);
-    splMain->addWidget(new TabsDiffractogram());
+    splMain->addWidget(new SubframeDiffractogram());
     splMain->setStretchFactor(1, 1);
 
-    splTop->addWidget(new TabsSetup());
-    splTop->addWidget(new TabsImages());
+    splTop->addWidget(new SubframeSetup());
+    splTop->addWidget(new SubframeImage());
     splTop->setStretchFactor(1, 1);
 
     statusBar();
@@ -241,7 +241,7 @@ void MainWin::checkUpdate() {
     str ver = qApp->applicationVersion();
     str qry = ver % "\t| " % QSysInfo::prettyProductName();
     req.setUrl(QUrl(str(STECA2_VERSION_URL) % "?" % qry));
-    auto reply = netMan_.get(req);
+    QNetworkReply* reply = netMan_.get(req);
 
     connect(reply, &QNetworkReply::finished, [this, reply]() {
         if (QNetworkReply::NoError != reply->error()) {

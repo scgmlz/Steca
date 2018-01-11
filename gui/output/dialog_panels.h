@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/output/dialog_panels.h
 //! @brief     Defines PanelReflection, PanelGammaSlices. and several other panel classes
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -15,16 +15,10 @@
 #ifndef DIALOG_PANELS_H
 #define DIALOG_PANELS_H
 
-#include "typ/range.h"
+#include "core/typ/range.h"
+#include "gui/cfg/settings.h"
+#include "gui/widgets/new_q.h"
 #include <QGroupBox>
-
-class QGridLayout;
-class QCheckBox;
-class QComboBox;
-class QSpinBox;
-class QRadioButton;
-class QDoubleSpinBox;
-
 
 //! A panel with grid layout
 class GridPanel : public QGroupBox {
@@ -54,38 +48,48 @@ public:
 class PanelGammaSlices : public GridPanel {
 public:
     PanelGammaSlices();
+    ~PanelGammaSlices();
     QSpinBox* numSlices;
     QDoubleSpinBox* stepGamma;
     void updateValues();
 private:
     Range rgeGma_;
+    Settings settings_;
 };
 
 
 class PanelGammaRange : public GridPanel {
 public:
     PanelGammaRange();
+    ~PanelGammaRange();
     QCheckBox* cbLimitGamma;
     QDoubleSpinBox *minGamma, *maxGamma;
     void updateValues();
 private:
     Range rgeGma_;
+    Settings settings_;
 };
 
 
 class PanelPoints : public GridPanel {
 public:
     PanelPoints();
+    ~PanelPoints();
     QRadioButton *rbCalc, *rbInterp;
+private:
+    Settings settings_;
 };
 
 
 class PanelInterpolation : public GridPanel {
 public:
     PanelInterpolation();
+    ~PanelInterpolation();
     QDoubleSpinBox *stepAlpha, *stepBeta, *idwRadius;
     QDoubleSpinBox *avgAlphaMax, *avgRadius;
     QSpinBox* avgThreshold;
+private:
+    Settings settings_;
 };
 
 

@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/typ/range.cpp
 //! @brief     Implements classes Range and Ranges
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -14,10 +14,10 @@
 //
 // ************************************************************************** //
 
-#include "def/comparators.h"
-#include "def/idiomatic_for.h"
-#include "typ/json.h"
-#include "typ/range.h"
+#include "core/def/comparators.h"
+#include "core/def/idiomatic_for.h"
+#include "core/typ/json.h"
+#include "core/typ/range.h"
 
 // ************************************************************************** //
 //  class Range
@@ -35,7 +35,7 @@ Range Range::infinite() {
     return Range(-INF, +INF);
 }
 
-int Range::compare(Range const& that) const {
+int Range::compare(const Range& that) const {
     debug::ensure(isValid() && that.isValid());
     RET_COMPARE_VALUE(min)
     RET_COMPARE_VALUE(max)
@@ -87,7 +87,7 @@ void Range::extendBy(qreal val) {
     max = qIsNaN(max) ? val : qMax(max, val);
 }
 
-void Range::extendBy(Range const& that) {
+void Range::extendBy(const Range& that) {
     extendBy(that.min);
     extendBy(that.max);
 }
@@ -96,24 +96,24 @@ bool Range::contains(qreal val) const {
     return min <= val && val <= max;
 }
 
-bool Range::contains(Range const& that) const {
+bool Range::contains(const Range& that) const {
     return min <= that.min && that.max <= max;
 }
 
-bool Range::intersects(Range const& that) const {
+bool Range::intersects(const Range& that) const {
     return min <= that.max && that.min <= max;
 }
 
-Range Range::intersect(Range const& that) const {
+Range Range::intersect(const Range& that) const {
     if (!isValid() || !that.isValid())
         return Range();
 
-    auto min_ = qMax(min, that.min), max_ = qMin(max, that.max);
+    const qreal min_ = qMax(min, that.min), max_ = qMin(max, that.max);
     if (min_ <= max_)
         return Range(min_, max_);
 
     // disjoint
-    auto val = that.min < min ? min : max;
+    const qreal val = that.min < min ? min : max;
     return Range(val, val); // empty, isValid()
 }
 
@@ -137,11 +137,10 @@ void Range::from_json(JsonObj const& obj) THROWS {
 //  class Ranges
 // ************************************************************************** //
 
-bool Ranges::add(Range const& range) {
+bool Ranges::add(const Range& range) {
     vec<Range> newRanges;
-
-    auto addRange = range;
-    for (Range const& r : ranges_) {
+    Range addRange = range;
+    for (const Range& r : ranges_) {
         if (r.contains(range))
             return false;
         if (!range.contains(r)) {
@@ -151,19 +150,17 @@ bool Ranges::add(Range const& range) {
                 newRanges.append(r);
         }
     }
-
     newRanges.append(addRange);
     ranges_ = newRanges;
     sort();
-
     return true;
 }
 
-bool Ranges::rem(Range const& remRange) {
+bool Ranges::remove(const Range& remRange) {
     vec<Range> newRanges;
     bool changed = false;
 
-    for (Range const& r : ranges_) {
+    for (const Range& r : ranges_) {
         if (!r.intersect(remRange).isEmpty()) {
             changed = true;
             if (r.min < remRange.min)
@@ -180,7 +177,7 @@ bool Ranges::rem(Range const& remRange) {
     return changed;
 }
 
-static bool lessThan(Range const& r1, Range const& r2) {
+static bool lessThan(const Range& r1, const Range& r2) {
     if (r1.min < r2.min)
         return true;
     if (r1.min > r2.min)

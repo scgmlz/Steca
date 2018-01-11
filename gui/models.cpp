@@ -1,23 +1,34 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/models.cpp
-//! @brief     Implements classes FilesModel, DatasetsModel, MetadataModel, ReflectionsModel
+//! @brief     Implements classes TableModel, FilesModel, DatasetsModel, MetadataModel, ReflectionsModel
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "models.h"
-#include "data/suite.h"
-#include "data/metadata.h"
-#include "fit/fit_fun.h"
-#include "session.h"
-#include "thehub.h"
+#include "gui/models.h"
+#include "core/data/metadata.h"
+#include "core/fit/fit_fun.h"
+#include "core/session.h"
+#include "gui/thehub.h"
+
+// ************************************************************************** //
+//  class TableModel
+// ************************************************************************** //
+
+QVariant const EMPTY_VAR;
+QModelIndex const ANY_INDEX;
+
+void TableModel::signalReset() {
+    beginResetModel();
+    endResetModel();
+}
 
 // ************************************************************************** //
 //  class FilesModel
@@ -32,7 +43,7 @@ int FilesModel::rowCount(rcIndex) const {
 }
 
 QVariant FilesModel::data(rcIndex index, int role) const {
-    auto row = index.row(), rowCnt = rowCount();
+    const int row = index.row(), rowCnt = rowCount();
     if (row < 0 || rowCnt <= row)
         return EMPTY_VAR;
 
@@ -40,7 +51,7 @@ QVariant FilesModel::data(rcIndex index, int role) const {
     case Qt::DisplayRole:
         return gSession->file(to_u(row))->fileName();
     case GetFileRole:
-        return QVariant::fromValue<QSharedPointer<Datafile const>>(gSession->file(to_u(row)));
+        return QVariant::fromValue<shp_Datafile>(gSession->file(to_u(row)));
     default:
         return EMPTY_VAR;
     }
@@ -87,7 +98,7 @@ QVariant DatasetsModel::data(rcIndex index, int role) const {
         }
     }
     case GetDatasetRole:
-        return QVariant::fromValue<QSharedPointer<Suite>>(experiment_.at(to_u(row)));
+        return QVariant::fromValue<shp_Suite>(experiment_.at(to_u(row)));
     default:
         return EMPTY_VAR;
     }
@@ -124,7 +135,7 @@ MetadataModel::MetadataModel() {
     rowsChecked_.fill(false, Metadata::numAttributes(false));
 }
 
-void MetadataModel::reset(QSharedPointer<Suite> dataseq) {
+void MetadataModel::reset(shp_Suite dataseq) {
     metadata_.clear();
     if (dataseq)
         metadata_ = dataseq->metadata();
@@ -169,8 +180,7 @@ QVariant MetadataModel::headerData(int, Qt::Orientation, int) const {
 }
 
 void MetadataModel::flipCheck(uint row) {
-    auto& item = rowsChecked_[row];
-    item = !item;
+    rowsChecked_[row] = !rowsChecked_[row];
     signalReset();
 }
 
@@ -237,7 +247,7 @@ QVariant ReflectionsModel::headerData(int col, Qt::Orientation, int role) const 
         return EMPTY_VAR;
 }
 
-void ReflectionsModel::addReflection(QString const& peakFunctionName) {
+void ReflectionsModel::addReflection(const QString& peakFunctionName) {
     gHub->addReflection(peakFunctionName);
 }
 

@@ -1,18 +1,18 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/data/image_transform.cpp
-//! @brief     Implements ...
+//! @brief     Implements class ImageTransform
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "data/image_transform.h"
+#include "core/data/image_transform.h"
 
 ImageTransform::ImageTransform(uint val_) : val(eTransform(val_ & 7)) {}
 

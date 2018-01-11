@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/panels/panel_diffractogram.cpp
 //! @brief     Implements classes DiffractogramPlot and Diffractogram.
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -13,18 +13,15 @@
 // ************************************************************************** //
 
 #include "panel_diffractogram.h"
-#include "actions.h"
-#include "data/suite.h"
-#include "fit/fit_fun.h"
-#include "cfg/gui_cfg.h"
-#include "session.h"
-#include "thehub.h"
-#include "widgets/widget_makers.h"
+#include "core/data/suite.h"
+#include "core/fit/fit_fun.h"
+#include "gui/cfg/gui_cfg.h"
+#include "core/session.h"
+#include "gui/thehub.h"
 #include "QCustomPlot/qcustomplot.h"
-#include <QAction>
 
 // ************************************************************************** //
-//  define file-scoped classes
+//  define local classes
 // ************************************************************************** //
 
 class DiffractogramPlotOverlay : public QWidget {
@@ -39,7 +36,6 @@ private:
     QColor addColor_, remColor_, color_, bgColor_, reflColor_;
     int marginLeft_, marginRight_;
 
-protected:
     void enterEvent(QEvent*);
     void leaveEvent(QEvent*);
     void mousePressEvent(QMouseEvent*);
@@ -64,7 +60,6 @@ public:
 
     DiffractogramPlot(class Diffractogram&);
 
-public:
     void setTool(eTool);
     eTool getTool() const { return tool_; }
 
@@ -72,39 +67,31 @@ public:
 
     Range fromPixels(int, int);
 
-    void clearBg();
-    void addBg(Range const&);
-    void remBg(Range const&);
-    void setNewReflRange(Range const&);
+    void setNewReflRange(const Range&);
     void updateBg();
 
     void clearReflLayer();
 
     QColor bgRgeColor_, reflRgeColor_;
-    eFittingTab selectedFittingTab();
 
     void enterZoom(bool);
 
-protected:
-    void addBgItem(Range const&);
+private:
+    void addBgItem(const Range&);
     void resizeEvent(QResizeEvent*);
 
-private:
     Diffractogram& diffractogram_;
-
     eTool tool_;
     bool showBgFit_;
-
     QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *dgramBgFittedGraph2_, *guesses_,
         *fits_;
-
     vec<QCPGraph*> reflGraph_;
     DiffractogramPlotOverlay* overlay_;
     void onReflectionData(shp_Reflection reflection);
 };
 
 // ************************************************************************** //
-//  class DiffractogramPlotOverlay (file scoped)
+//  local class DiffractogramPlotOverlay
 // ************************************************************************** //
 
 DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& plot_)
@@ -140,7 +127,7 @@ void DiffractogramPlotOverlay::leaveEvent(QEvent*) {
 void DiffractogramPlotOverlay::mousePressEvent(QMouseEvent* e) {
     mouseDownPos_ = cursorPos_;
     mouseDown_ = true;
-    addColor_ = (eFittingTab::BACKGROUND == plot_.selectedFittingTab()) ? bgColor_ : reflColor_;
+    addColor_ = (eFittingTab::BACKGROUND == gHub->fittingTab()) ? bgColor_ : reflColor_;
     color_ = Qt::LeftButton == e->button() ? addColor_ : remColor_;
     update();
 }
@@ -153,14 +140,15 @@ void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
     switch (plot_.getTool()) {
     case DiffractogramPlot::eTool::BACKGROUND:
         if (Qt::LeftButton == e->button())
-            plot_.addBg(range);
+            gHub->addBgRange(range);
         else
-            plot_.remBg(range);
+            gHub->removeBgRange(range);
         break;
-
-    case DiffractogramPlot::eTool::PEAK_REGION: plot_.setNewReflRange(range); break;
-
-    case DiffractogramPlot::eTool::NONE: break;
+    case DiffractogramPlot::eTool::PEAK_REGION:
+        plot_.setNewReflRange(range);
+        break;
+    case DiffractogramPlot::eTool::NONE:
+        break;
     }
 }
 
@@ -185,30 +173,30 @@ void DiffractogramPlotOverlay::paintEvent(QPaintEvent*) {
 
     if (hasCursor_) {
         QLineF cursor(cursorPos_, g.top(), cursorPos_, g.bottom());
-
         painter.setPen(Qt::red);
         painter.drawLine(cursor);
     }
 }
 
 void DiffractogramPlotOverlay::updateCursorRegion() {
-    auto g = geometry();
+    const QRect& g = geometry();
     // updating 2 pixels seems to work both on Linux & Mac
     update(cursorPos_ - 1, g.top(), 2, g.height());
 }
 
 // ************************************************************************** //
-//  class DiffractogramPlot (file scope)
+//  local class DiffractogramPlot
 // ************************************************************************** //
 
 DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     : diffractogram_(diffractogram), showBgFit_(false) {
+
     overlay_ = new DiffractogramPlotOverlay(*this);
 
     bgRgeColor_ = QColor(0x98, 0xfb, 0x98, 0x50);
     reflRgeColor_ = QColor(0x87, 0xce, 0xfa, 0x50);
 
-    auto* ar = axisRect();
+    QCPAxisRect* ar = axisRect();
 
     // fix margins
     QFontMetrics fontMetrics(font());
@@ -293,13 +281,12 @@ void DiffractogramPlot::plot(
 
         clearReflLayer();
     } else {
-        auto tthRange = dgram.rgeX();
+        const Range& tthRange = dgram.rgeX();
 
         Range intenRange;
         if (gHub->isFixedIntenDgramScale()) {
             debug::ensure(!diffractogram_.suite().isNull());
-            auto lens = gSession->defaultDatasetLens(*diffractogram_.suite());
-            intenRange = lens->rgeInten();
+            intenRange = gSession->defaultDatasetLens(*diffractogram_.suite())->rgeInten();
         } else {
             intenRange = dgramBgFitted.rgeY();
             intenRange.extendBy(dgram.rgeY());
@@ -325,8 +312,8 @@ void DiffractogramPlot::plot(
         setCurrentLayer("refl");
 
         for_i (refls.count()) {
-            auto& r = refls.at(i);
-            auto* graph = addGraph();
+            const Curve& r = refls.at(i);
+            QCPGraph* graph = addGraph();
             reflGraph_.append(graph);
             graph->setPen(QPen(Qt::green, i == currReflIndex ? 2 : 1));
             graph->setData(r.xs().sup(), r.ys().sup());
@@ -340,19 +327,7 @@ Range DiffractogramPlot::fromPixels(int pix1, int pix2) {
     return Range::safeFrom(xAxis->pixelToCoord(pix1), xAxis->pixelToCoord(pix2));
 }
 
-void DiffractogramPlot::clearBg() {
-    gHub->setBgRanges(Ranges());
-}
-
-void DiffractogramPlot::addBg(Range const& range) {
-    gHub->addBgRange(range);
-}
-
-void DiffractogramPlot::remBg(Range const& range) {
-    gHub->remBgRange(range);
-}
-
-void DiffractogramPlot::setNewReflRange(Range const& range) {
+void DiffractogramPlot::setNewReflRange(const Range& range) {
     diffractogram_.setCurrReflNewRange(range);
     updateBg();
 }
@@ -362,26 +337,25 @@ void DiffractogramPlot::updateBg() {
 
     switch (tool_) {
     case eTool::BACKGROUND: {
-        Ranges const& rs = gSession->bgRanges();
+        const Ranges& rs = gSession->bgRanges();
         for_i (rs.count())
             addBgItem(rs.at(i));
         break;
     }
-    case eTool::PEAK_REGION: addBgItem(diffractogram_.currReflRange()); break;
-    case eTool::NONE: break;
+    case eTool::PEAK_REGION:
+        addBgItem(diffractogram_.currReflRange());
+        break;
+    case eTool::NONE:
+        break;
     }
 
     diffractogram_.render();
 }
 
 void DiffractogramPlot::clearReflLayer() {
-    for (auto g : reflGraph_)
+    for (QCPGraph* g : reflGraph_)
         removeGraph(g);
     reflGraph_.clear();
-}
-
-eFittingTab DiffractogramPlot::selectedFittingTab() {
-    return gHub->fittingTab();
 }
 
 void DiffractogramPlot::enterZoom(bool on) {
@@ -389,23 +363,28 @@ void DiffractogramPlot::enterZoom(bool on) {
     dgramBgFittedGraph2_->setVisible(on);
 }
 
-void DiffractogramPlot::addBgItem(Range const& range) {
+void DiffractogramPlot::addBgItem(const Range& range) {
     setCurrentLayer("bg");
 
     QColor color;
     switch (gHub->fittingTab()) {
-    case eFittingTab::BACKGROUND: color = bgRgeColor_; break;
-    case eFittingTab::REFLECTIONS: color = reflRgeColor_; break;
-    default: break;
+    case eFittingTab::BACKGROUND:
+        color = bgRgeColor_;
+        break;
+    case eFittingTab::REFLECTIONS:
+        color = reflRgeColor_;
+        break;
+    default:
+        break;
     }
 
-    auto ir = new QCPItemRect(this);
+    QCPItemRect* ir = new QCPItemRect(this);
     ir->setPen(QPen(color));
     ir->setBrush(QBrush(color));
-    auto br = ir->bottomRight;
+    QCPItemPosition* br = ir->bottomRight;
     br->setTypeY(QCPItemPosition::ptViewportRatio);
     br->setCoords(range.max, 1);
-    auto tl = ir->topLeft;
+    QCPItemPosition* tl = ir->topLeft;
     tl->setTypeY(QCPItemPosition::ptViewportRatio);
     tl->setCoords(range.min, 0);
     addItem(ir);
@@ -413,7 +392,7 @@ void DiffractogramPlot::addBgItem(Range const& range) {
 
 void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
     QCustomPlot::resizeEvent(e);
-    auto size = e->size();
+    const QSize size = e->size();
     overlay_->setGeometry(0, 0, size.width(), size.height());
 }
 
@@ -423,20 +402,20 @@ void DiffractogramPlot::onReflectionData(shp_Reflection reflection) {
     fits_->clearData();
 
     if (reflection && diffractogram_.suite()) {
-        auto& fun = reflection->peakFunction();
+        const PeakFunction& fun = reflection->peakFunction();
 
-        auto gp = fun.guessedPeak();
+        const qpair gp = fun.guessedPeak();
         if (gp.isValid()) {
             guesses_->addData(gp.x, gp.y);
-            auto gw2 = fun.guessedFWHM() / 2;
+            qreal gw2 = fun.guessedFWHM() / 2;
             guesses_->addData(gp.x - gw2, gp.y / 2);
             guesses_->addData(gp.x + gw2, gp.y / 2);
         }
 
-        auto fp = fun.fittedPeak();
+        const qpair fp = fun.fittedPeak();
         if (fp.isValid()) {
             fits_->addData(fp.x, fp.y);
-            auto fw2 = fun.fittedFWHM() / 2;
+            qreal fw2 = fun.fittedFWHM() / 2;
             fits_->addData(fp.x - fw2, fp.y / 2);
             fits_->addData(fp.x + fw2, fp.y / 2);
         }
@@ -447,16 +426,16 @@ void DiffractogramPlot::onReflectionData(shp_Reflection reflection) {
 //  class Diffractogram
 // ************************************************************************** //
 
-Diffractogram::Diffractogram()
-    : suite_(nullptr), currReflIndex_(0) {
-    setLayout((box_ = boxLayout(Qt::Vertical)));
+Diffractogram::Diffractogram() : suite_(nullptr), currReflIndex_(0) {
+
+    setLayout((box_ = newQ::BoxLayout(Qt::Vertical)));
     box_->addWidget((plot_ = new DiffractogramPlot(*this)));
-    auto hb = hbox();
+    auto hb = newQ::HBoxLayout();
     box_->addLayout(hb);
 
-    hb->addWidget(label("normalize to:"));
+    hb->addWidget(newQ::Label("normalize to:"));
     comboNormType_ = new QComboBox;
-    comboNormType_->addItems(normStrLst());
+    comboNormType_->addItems({"none", "monitor", "Δ monitor", "Δ time", "background"});
     hb->addWidget(comboNormType_);
 
     connect(comboNormType_, slot(QComboBox, currentIndexChanged, int),
@@ -464,10 +443,10 @@ Diffractogram::Diffractogram()
                 gHub->setNorm(eNorm(index));
             });
 
-    hb->addWidget(label(" intensity from:"));
-    hb->addWidget((intenSum_ = radioButton("sum")));
-    hb->addWidget((intenAvg_ = radioButton("avg ×")));
-    hb->addWidget((intenScale_ = spinDoubleCell(gui_cfg::em4_2, 0.001)));
+    hb->addWidget(newQ::Label(" intensity from:"));
+    hb->addWidget((intenSum_ = newQ::RadioButton("sum")));
+    hb->addWidget((intenAvg_ = newQ::RadioButton("avg ×")));
+    hb->addWidget((intenScale_ = newQ::DoubleSpinBox(gui_cfg::em4_2, 0.001)));
     intenScale_->setDecimals(3);
 
     connect(intenAvg_, &QRadioButton::toggled, [this](bool on) {
@@ -483,14 +462,14 @@ Diffractogram::Diffractogram()
 
     hb->addStretch();
 
-    actZoom_ = newToggle("zoom", false);
-    enableZoom_ = textButton(actZoom_);
+    actZoom_ = newQ::Toggle("zoom", false);
+    enableZoom_ = newQ::TextButton(actZoom_);
     hb->addWidget(enableZoom_);
 
     hb->addStretch();
 
-    hb->addWidget(check(gHub->toggle_combinedDgram));
-    hb->addWidget(check(gHub->toggle_fixedIntenDgram));
+    hb->addWidget(newQ::CheckBox(gHub->toggle_combinedDgram));
+    hb->addWidget(newQ::CheckBox(gHub->toggle_fixedIntenDgram));
 
     connect(actZoom_, &QAction::toggled, this, [this](bool on) {
         plot_->setInteraction(QCP::iRangeDrag, on);
@@ -499,7 +478,7 @@ Diffractogram::Diffractogram()
     });
 
     connect(gHub, &TheHub::sigSuiteSelected,
-            [this](QSharedPointer<Suite> suite){ setSuite(suite); });
+            [this](shp_Suite suite){ setSuite(suite); });
     connect(gHub, &TheHub::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigCorrEnabled, [this](){ render(); });
     connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
@@ -508,7 +487,9 @@ Diffractogram::Diffractogram()
     connect(gHub, &TheHub::sigReflectionsChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigNormChanged, [this](){ onNormChanged(); });
 
-    connect(gHub->trigger_clearBackground, &QAction::triggered, [this]() { plot_->clearBg(); });
+    // TODO: mv to Hub
+    connect(gHub->trigger_clearBackground, &QAction::triggered, [this]() {
+            gHub->setBgRanges(Ranges()); });
 
     connect(gHub, &TheHub::sigFittingTab,
             [this](eFittingTab tab) { onFittingTab(tab); });
@@ -516,14 +497,12 @@ Diffractogram::Diffractogram()
     connect(gHub->toggle_selRegions, &QAction::toggled, [this](bool on) {
         using eTool = DiffractogramPlot::eTool;
         auto tool = eTool::NONE;
-
         if (on)
             switch (gHub->fittingTab()) {
             case eFittingTab::BACKGROUND: tool = eTool::BACKGROUND; break;
             case eFittingTab::REFLECTIONS: tool = eTool::PEAK_REGION; break;
             default: break;
             }
-
         plot_->setTool(tool);
         });
 
@@ -534,7 +513,7 @@ Diffractogram::Diffractogram()
             });
 
     connect(gHub, &TheHub::sigReflectionValues,
-            [this](Range const& range, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
+            [this](const Range& range, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
                 if (currentReflection_) {
                     currentReflection_->setRange(range);
                     if (withGuesses)
@@ -582,11 +561,10 @@ void Diffractogram::render() {
     calcDgram();
     calcBackground();
     calcReflections();
-
     plot_->plot(dgram_, dgramBgFitted_, bg_, refls_, currReflIndex_);
 }
 
-void Diffractogram::setSuite(QSharedPointer<Suite> suite) {
+void Diffractogram::setSuite(shp_Suite suite) {
     suite_ = suite;
     actZoom_->setChecked(false);
     render();
@@ -594,15 +572,12 @@ void Diffractogram::setSuite(QSharedPointer<Suite> suite) {
 
 void Diffractogram::calcDgram() {
     dgram_.clear();
-
     if (!suite_)
         return;
-
     if (gHub->isCombinedDgram())
         dgram_ = suite_->experiment().avgCurve();
     else {
-        auto lens = gSession->defaultDatasetLens(*suite_);
-        dgram_ = lens->makeCurve(gSession->gammaRange());
+        dgram_ = gSession->defaultDatasetLens(*suite_)->makeCurve(gSession->gammaRange());
     }
 }
 
@@ -610,7 +585,8 @@ void Diffractogram::calcBackground() {
     bg_.clear();
     dgramBgFitted_.clear();
 
-    auto bgPolynom = Polynom::fromFit(gSession->bgPolyDegree(), dgram_, gSession->bgRanges());
+    const Polynom& bgPolynom =
+        Polynom::fromFit(gSession->bgPolyDegree(), dgram_, gSession->bgRanges());
 
     for_i (dgram_.count()) {
         qreal x = dgram_.x(i), y = bgPolynom.y(x);
@@ -619,7 +595,7 @@ void Diffractogram::calcBackground() {
     }
 }
 
-void Diffractogram::setCurrReflNewRange(Range const& range) {
+void Diffractogram::setCurrReflNewRange(const Range& range) {
     if (currentReflection_) {
         currentReflection_->setRange(range);
         currentReflection_->invalidateGuesses();
@@ -634,7 +610,7 @@ void Diffractogram::calcReflections() {
     refls_.clear();
     currReflIndex_ = 0;
 
-    auto rs = gSession->reflections();
+    const Reflections& rs = gSession->reflections();
     for_i (rs.count()) {
         auto& r = rs[i];
         if (r == currentReflection_)
@@ -642,17 +618,15 @@ void Diffractogram::calcReflections() {
 
         r->fit(dgramBgFitted_);
 
-        auto& rge = r->range();
-        auto& fun = r->peakFunction();
+        const Range& rge = r->range();
+        const PeakFunction& fun = r->peakFunction();
 
         Curve c;
-
         for_i (dgramBgFitted_.count()) {
             qreal x = dgramBgFitted_.x(i);
             if (rge.contains(x))
                 c.append(x, fun.y(x));
         }
-
         refls_.append(c);
     }
 

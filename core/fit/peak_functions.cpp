@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/fit/peak_functions.cpp
 //! @brief     Implements specific peak function classes, and function to register them
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "peak_functions.h"
-#include "typ/curve.h"
+#include "core/typ/curve.h"
 #include <QtMath>
 
 namespace { // file scope
@@ -35,8 +35,8 @@ public:
     qpair peakError() const;
     fwhm_t fwhmError() const;
 
-    void setRange(Range const&);
-    void fit(Curve const&, Range const&);
+    void setRange(const Range&);
+    void fit(Curve const&, const Range&);
 
     str name() const { return "Raw"; }
 
@@ -180,12 +180,12 @@ fwhm_t Raw::fwhmError() const {
     return 0;
 }
 
-void Raw::setRange(Range const& range) {
+void Raw::setRange(const Range& range) {
     PeakFunction::setRange(range);
     prepareY();
 }
 
-void Raw::fit(Curve const& curve, Range const& range) {
+void Raw::fit(Curve const& curve, const Range& range) {
     fittedCurve_ = prepareFit(curve, range); // do no more than this
     prepareY();
 }
@@ -556,7 +556,7 @@ fwhm_t PseudoVoigt2::fwhmError() const {
     return fwhm_t(parameters_.at(parSIGMA).error() + parameters_.at(parGAMMA).error());
 }
 
-} // anonymous namespace
+} // local methods
 
 // ************************************************************************** //
 //!  Register peak functions

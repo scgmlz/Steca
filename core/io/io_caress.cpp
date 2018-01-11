@@ -1,21 +1,21 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/io/io_caress.cpp
-//! @brief     Implements ...
+//! @brief     Implements function loadCaress
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "def/idiomatic_for.h"
-#include "data/datafile.h"
-#include "data/metadata.h"
-#include "typ/exception.h"
+#include "core/def/idiomatic_for.h"
+#include "core/data/datafile.h"
+#include "core/data/metadata.h"
+#include "core/typ/exception.h"
 #include <qmath.h>
 #include <sstream>
 

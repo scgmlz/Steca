@@ -1,30 +1,32 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
-//! @file      gui/panels/dock_metadata.cpp
-//! @brief     Implements class DockMetadata
+//! @file      gui/panels/subframe_metadata.cpp
+//! @brief     Implements class SubframeMetadata
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "dock_metadata.h"
-#include "models.h"
-#include "widgets/tree_views.h" // inheriting from
-#include "thehub.h"
+#include "gui/panels/subframe_metadata.h"
+#include "gui/models.h"
+#include "gui/thehub.h"
+#include "gui/widgets/tree_views.h" // inheriting from
+
+// ************************************************************************** //
+//  local class MetadataView
+// ************************************************************************** //
 
 class MetadataView : public ListView {
 public:
     MetadataView();
 
-protected:
-    int sizeHintForColumn(int) const;
-
 private:
+    int sizeHintForColumn(int) const;
     MetadataModel* model() const { return static_cast<MetadataModel*>(ListView::model()); }
 };
 
@@ -46,7 +48,10 @@ int MetadataView::sizeHintForColumn(int col) const {
     }
 }
 
+// ************************************************************************** //
+//  class SubframeMetadata
+// ************************************************************************** //
 
-DockMetadata::DockMetadata() : DockWidget("Metadata", "dock-metadata", Qt::Vertical) {
+SubframeMetadata::SubframeMetadata() : DockWidget("Metadata", "dock-metadata") {
     box_->addWidget((metadataView_ = new MetadataView()));
 }

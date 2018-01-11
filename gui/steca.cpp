@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/steca.cpp
 //! @brief     Implements the main program
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -13,10 +13,10 @@
 // ************************************************************************** //
 
 #include "../manifest.h"
-#include "console.h"
-#include "mainwin.h"
-#include "cfg/msg_handler.h"
-#include "session.h"
+#include "gui/console.h"
+#include "gui/mainwin.h"
+#include "gui/cfg/msg_handler.h"
+#include "core/session.h"
 #include <iostream>
 #define OPTPARSE_IMPLEMENTATION
 #define OPTPARSE_API static

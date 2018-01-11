@@ -1,36 +1,36 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
-//! @file      core/calc/calc_reflection_info.h
+//! @file      core/calc/reflection_info.h
 //! @brief     Defines classes ReflectionInfo, ReflectionInfos
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#ifndef CALC_REFLECTION_INFO_H
-#define CALC_REFLECTION_INFO_H
+#ifndef REFLECTION_INFO_H
+#define REFLECTION_INFO_H
 
-#include "typ/angles.h"
-#include "typ/range.h"
-#include "typ/types.h"
-#include "typ/variant.h"
-#include <QSharedPointer> // no auto rm
+#include "core/data/metadata.h"
+#include "core/typ/angles.h"
+#include "core/typ/range.h"
+#include "core/typ/types.h"
+#include "core/typ/variant.h"
 
-class Metadata;
+//! Metadata, peak fit results, and pole figure angles.
 
 class ReflectionInfo final {
     public:
     ReflectionInfo();
     ReflectionInfo(
-        QSharedPointer<Metadata const>,
+        shp_Metadata,
         deg alpha, deg beta, Range, inten_t, inten_t /*error*/,
         deg, deg /*error*/, fwhm_t, fwhm_t /*error*/);
-    ReflectionInfo(QSharedPointer<Metadata const>, deg alpha, deg beta, Range);
+    ReflectionInfo(shp_Metadata, deg alpha, deg beta, Range);
     ReflectionInfo(
         deg alpha, deg beta, Range, inten_t, inten_t /*error*/, deg, deg /*error*/,
         fwhm_t, fwhm_t /*error*/);
@@ -65,7 +65,7 @@ class ReflectionInfo final {
     row_t data() const;
 
 private:
-    QSharedPointer<Metadata const> md_;
+    shp_Metadata md_;
     deg alpha_, beta_;
     Range rgeGma_;
     inten_t inten_, intenError_;
@@ -76,16 +76,16 @@ private:
 };
 
 
+//! A list of ReflectionInfo's
+
 class ReflectionInfos : public vec<ReflectionInfo> {
-private:
-    using super = vec<ReflectionInfo>;
 public:
     ReflectionInfos() { invalidate(); }
 
     void append(ReflectionInfo const&);
 
     inten_t averageInten() const;
-    Range const& rgeInten() const;
+    const Range& rgeInten() const;
 
 private:
     mutable inten_t avgInten_;
@@ -94,4 +94,4 @@ private:
     void invalidate();
 };
 
-#endif // CALC_REFLECTION_INFO_H
+#endif // REFLECTION_INFO_H

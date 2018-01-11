@@ -1,23 +1,19 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/cfg/settings.cpp
 //! @brief     Implements classes Settings, TheHub
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "cfg/settings.h"
-#include "def/debug.h"
-#include <QAction>
-#include <QSpinBox>
-
-
+#include "gui/cfg/settings.h"
+#include "core/def/debug.h"
 
 Settings::Settings(rcstr group) {
     setFallbacksEnabled(false);
@@ -78,5 +74,3 @@ int Settings::readInt(rcstr key, int def) {
     int val = var.toInt(&ok);
     return ok ? val : def;
 }
-
-

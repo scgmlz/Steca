@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/typ/array2d.h
 //! @brief     Defines and mostly implements size2d and Array2D
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -15,8 +15,8 @@
 #ifndef ARRAY2D_H
 #define ARRAY2D_H
 
-#include "def/comparable.h"
-#include "def/numbers.h"
+#include "core/def/comparable.h"
+#include "core/def/numbers.h"
 
 //! Geometry of a rectangle
 struct size2d {

@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/typ/ij.h
 //! @brief     Defines class IJ
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -15,8 +15,8 @@
 #ifndef IJ_H
 #define IJ_H
 
-#include "def/comparable.h"
-#include "def/macros.h"
+#include "core/def/comparable.h"
+#include "core/def/macros.h"
 #include <QJsonObject>
 
 //! A pair of integers, for use as image coordinates

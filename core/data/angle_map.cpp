@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/data/angle_map.cpp
-//! @brief     Implements classes Angles, AngleMap
+//! @brief     Implements classes ScatterDirection, AngleMap
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -13,18 +13,11 @@
 // ************************************************************************** //
 
 #include "angle_map.h"
-#include "def/comparators.h"
-#include "def/idiomatic_for.h"
+#include "core/def/idiomatic_for.h"
 #include <qmath.h>
 #include <iostream> // for debugging
 
-AnglePair::AnglePair() : AnglePair(0, 0) {}
-
-AnglePair::AnglePair(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
-
-AngleMap::AngleMap(ImageKey const& key) : key_(key) {
-    calculate();
-}
+namespace {
 
 static uint lowerBound(vec<deg> const& vec, deg x, uint i1, uint i2) {
     debug::ensure(i1 < i2);
@@ -46,21 +39,31 @@ static uint upperBound(vec<deg> const& vec, deg x, uint i1, uint i2) {
         : upperBound(vec, x, mid, i2); // ... we should be so lucky
 }
 
+} // local methods
+
+
+ScatterDirection::ScatterDirection() : ScatterDirection(0, 0) {}
+
+ScatterDirection::ScatterDirection(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
+
+
+AngleMap::AngleMap(ImageKey const& key) : key_(key) { calculate(); }
+
 void AngleMap::getGmaIndexes(
-    Range const& rgeGma, uint_vec const*& indexes, uint& minIndex, uint& maxIndex) const {
+    const Range& rgeGma, uint_vec const*& indexes, uint& minIndex, uint& maxIndex) const {
     indexes = &gmaIndexes;
     minIndex = lowerBound(gmas, rgeGma.min, 0, gmas.count());
     maxIndex = upperBound(gmas, rgeGma.max, 0, gmas.count());
 }
 
 void AngleMap::calculate() {
-    auto& geometry = key_.geometry;
-    auto& size = key_.size;
-    auto& cut = key_.cut;
-    auto& midPix = key_.midPix;
-    auto& midTth = key_.midTth;
+    const Geometry& geometry = key_.geometry;
+    const size2d& size = key_.size;
+    const ImageCut& cut = key_.cut;
+    const IJ& midPix = key_.midPix;
+    const deg midTth = key_.midTth;
 
-    qreal pixSize = geometry.pixSize, detDist = geometry.detectorDistance;
+    const qreal pixSize = geometry.pixSize, detDist = geometry.detectorDistance;
 
     arrAngles_.resize(size);
 
@@ -71,7 +74,7 @@ void AngleMap::calculate() {
     debug::ensure(size.w > cut.left + cut.right);
     debug::ensure(size.h > cut.top + cut.bottom);
 
-    uint countWithoutCut = (size.w - cut.left - cut.right) * (size.h - cut.top - cut.bottom);
+    const uint countWithoutCut = (size.w - cut.left - cut.right) * (size.h - cut.top - cut.bottom);
     debug::ensure(countWithoutCut > 0);
 
     gmas.resize(countWithoutCut);
@@ -81,28 +84,23 @@ void AngleMap::calculate() {
     // detector coordinates: d_x, ... (d_z = const)
     // beam coordinates: b_x, ..; b_y = d_y
 
-    qreal d_midTth = midTth.toRad(), cos_midTth = cos(d_midTth), sin_midTth = sin(d_midTth);
+    const qreal d_midTth = midTth.toRad(), cos_midTth = cos(d_midTth), sin_midTth = sin(d_midTth);
 
-    qreal& d_z = detDist;
-    qreal b_x1 = d_z * sin_midTth;
-    qreal b_z1 = d_z * cos_midTth;
+    const qreal d_z = detDist;
+    const qreal b_x1 = d_z * sin_midTth;
+    const qreal b_z1 = d_z * cos_midTth;
 
     for_int (i, size.w) {
-        qreal d_x = (to_i(i) - midPix.i) * pixSize;
-
-        qreal b_x = b_x1 + d_x * cos_midTth;
-        qreal b_z = b_z1 - d_x * sin_midTth;
-
-        qreal b_x2 = b_x * b_x;
-
+        const qreal d_x = (to_i(i) - midPix.i) * pixSize;
+        const qreal b_x = b_x1 + d_x * cos_midTth;
+        const qreal b_z = b_z1 - d_x * sin_midTth;
+        const qreal b_x2 = b_x * b_x;
         for_int (j, size.h) {
-            qreal b_y = (midPix.j - to_i(j)) * pixSize; // == d_y
-            qreal b_r = sqrt(b_x2 + b_y * b_y);
-
-            rad gma = atan2(b_y, b_x);
-            rad tth = atan2(b_r, b_z);
-
-            arrAngles_.setAt(i, j, AnglePair(tth.toDeg(), gma.toDeg()));
+            const qreal b_y = (midPix.j - to_i(j)) * pixSize; // == d_y
+            const qreal b_r = sqrt(b_x2 + b_y * b_y);
+            const rad gma = atan2(b_y, b_x);
+            const rad tth = atan2(b_r, b_z);
+            arrAngles_.setAt(i, j, ScatterDirection(tth.toDeg(), gma.toDeg()));
         }
     }
 
@@ -110,7 +108,7 @@ void AngleMap::calculate() {
 
     for (uint i = cut.left, iEnd = size.w - cut.right; i < iEnd; ++i) {
         for (uint j = cut.top, jEnd = size.h - cut.bottom; j < jEnd; ++j) {
-            auto& as = arrAngles_.at(i, j);
+            const ScatterDirection& as = arrAngles_.at(i, j);
 
             gmas[gi] = as.gma;
             gmaIndexes[gi] = i + j * size.w;

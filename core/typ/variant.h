@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/typ/variant.h
-//! @brief     Defines ...
+//! @brief     Defines helper functions related to QVariant
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -15,7 +15,7 @@
 #ifndef VARIANT_H
 #define VARIANT_H
 
-#include "typ/vec.h"
+#include "core/typ/vec.h"
 
 // Help with QVariant
 

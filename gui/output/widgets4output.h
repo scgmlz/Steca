@@ -1,29 +1,27 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
-//! @file      gui/output/output_dialogs.h
-//! @brief     Defines ...
+//! @file      gui/output/widgets4output.h
+//! @brief     Defines classes Params, Table, TabSave, all used in frame.cpp.
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#ifndef OUTPUT_DIALOGS_H
-#define OUTPUT_DIALOGS_H
+#ifndef WIDGETS4OUTPUT_H
+#define WIDGETS4OUTPUT_H
 
-#include "typ/variant.h"
-#include "def/special_pointers.h"
-#include "panels/panel.h"
-#include "widgets/tree_views.h"
+#include "core/typ/str.h"
+#include "core/typ/variant.h"
+#include "core/def/special_pointers.h"
+#include "gui/widgets/tree_views.h"
+#include "gui/widgets/new_q.h"
 
-class QCheckBox;
-class QGridLayout;
-class QRadioButton;
-
+//! Horizontal box with variable selection of control panels. Appears in each output dialog (Frame).
 
 class Params : public QWidget {
 public:
@@ -35,16 +33,14 @@ public:
         DIAGRAM = 0x10,
     };
     Params(ePanels);
-    ~Params();
     class PanelReflection* panelReflection;
     class PanelGammaSlices* panelGammaSlices;
     class PanelGammaRange* panelGammaRange;
     class PanelPoints* panelPoints;
     class PanelInterpolation* panelInterpolation;
     class PanelDiagram* panelDiagram;
-    str saveDir, saveFmt;
-    void readSettings();
-    void saveSettings() const;
+
+private:
     QBoxLayout* box_;
 };
 
@@ -52,8 +48,8 @@ public:
 class Table : public TreeView {
 public:
     Table(uint numDataColumns);
-    void setColumns(QStringList const& headers, QStringList const& outHeaders, cmp_vec const&);
-    QStringList const outHeaders() { return outHeaders_; }
+    void setColumns(const QStringList& headers, const QStringList& outHeaders, cmp_vec const&);
+    const QStringList outHeaders() { return outHeaders_; }
     void clear();
     void addRow(row_t const&, bool sort);
     void sortData();
@@ -64,25 +60,18 @@ public:
 };
 
 
-class OutputTab : public QWidget {
-public :
-    OutputTab(Params&);
-protected:
-    Params& params_;
-    QGridLayout* grid_;
-};
-
-
-class TabSave : public OutputTab {
+//! Base class for dialogs for saving some output to a file.
+class TabSave : public QWidget {
 public:
-    TabSave(Params&, bool withTypes);
+    TabSave(bool withTypes);
     str filePath(bool withSuffix);
     str separator() const;
     QAction *actBrowse, *actSave;
 protected:
+    QGridLayout* grid_;
     str fileSetSuffix(rcstr);
     QLineEdit *dir_, *file_;
     QRadioButton *rbDat_, *rbCsv_;
 };
 
-#endif // OUTPUT_DIALOGS_H
+#endif // WIDGETS4OUTPUT_H

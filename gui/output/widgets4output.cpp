@@ -1,27 +1,24 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
-//! @file      gui/output/output_dialogs.cpp
-//! @brief     Implements ...
+//! @file      gui/output/widgets4output.cpp
+//! @brief     Implements classes Params, Table, TabSave
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "output_dialogs.h"
-#include "actions.h"
-#include "def/idiomatic_for.h"
-#include "dialog_panels.h"
-#include "popup/filedialog.h"
-#include "models.h"
-#include "cfg/settings.h"
-#include "thehub.h"
-#include "widgets/widget_makers.h"
-#include <QAction>
+#include "gui/output/widgets4output.h"
+#include "core/def/idiomatic_for.h"
+#include "gui/models.h"
+#include "gui/output/dialog_panels.h"
+#include "gui/popup/filedialog.h"
+#include "gui/thehub.h"
+#include "gui/widgets/new_q.h"
 #include <QDir>
 #include <QHeaderView>
 
@@ -37,13 +34,13 @@ Params::Params(ePanels panels)
     , panelPoints(nullptr)
     , panelInterpolation(nullptr)
     , panelDiagram(nullptr) {
-    debug::ensure(panels & GAMMA);
 
-    setLayout((box_ = boxLayout(Qt::Horizontal)));
+    setLayout((box_ = newQ::BoxLayout(Qt::Horizontal)));
 
     if (REFLECTION & panels)
         box_->addWidget((panelReflection = new PanelReflection()));
 
+    debug::ensure(panels & GAMMA);
     if (GAMMA & panels) {
         box_->addWidget((panelGammaSlices = new PanelGammaSlices()));
         box_->addWidget((panelGammaRange = new PanelGammaRange()));
@@ -60,39 +57,6 @@ Params::Params(ePanels panels)
 
     box_->addStretch();
 
-    readSettings();
-}
-
-Params::~Params() {
-    saveSettings();
-}
-
-void Params::readSettings() {
-    Settings s("output");
-
-    if (panelGammaSlices)
-        panelGammaSlices->numSlices->setValue(s.readInt("num slices", 0));
-
-    if (panelGammaRange)
-        panelGammaRange->cbLimitGamma->setChecked(s.readBool("limit gamma", false));
-
-    if (panelPoints)
-        (s.readBool("interpolated", false) ? panelPoints->rbInterp : panelPoints->rbCalc)
-            ->setChecked(true);
-
-    if (panelInterpolation) {
-        panelInterpolation->stepAlpha->setValue(s.readReal("step alpha", 5));
-        panelInterpolation->stepBeta->setValue(s.readReal("step beta", 5));
-        panelInterpolation->idwRadius->setValue(s.readReal("idw radius", 10));
-
-        panelInterpolation->avgAlphaMax->setValue(s.readReal("avg alpha max", 15));
-        panelInterpolation->avgRadius->setValue(s.readReal("avg radius", 5));
-        panelInterpolation->avgThreshold->setValue(s.readInt("avg threshold", 100));
-    }
-
-    saveDir = s.readStr("save dir");
-    saveFmt = s.readStr("save format");
-
     if (panelGammaSlices)
         panelGammaSlices->updateValues();
 
@@ -100,38 +64,11 @@ void Params::readSettings() {
         panelGammaRange->updateValues();
 }
 
-void Params::saveSettings() const {
-    Settings s("output");
-
-    if (panelGammaSlices)
-        s.saveInt("num slices", panelGammaSlices->numSlices->value());
-
-    if (panelGammaRange)
-        s.saveBool("limit gamma", panelGammaRange->cbLimitGamma->isChecked());
-
-    if (panelPoints)
-        s.saveBool("interpolated", panelPoints->rbInterp->isChecked());
-
-    if (panelInterpolation) {
-        s.saveReal("step alpha", panelInterpolation->stepAlpha->value());
-        s.saveReal("step beta", panelInterpolation->stepBeta->value());
-        s.saveReal("idw radius", panelInterpolation->idwRadius->value());
-
-        s.saveReal("avg alpha max", panelInterpolation->avgAlphaMax->value());
-        s.saveReal("avg radius", panelInterpolation->avgRadius->value());
-        s.saveInt("avg threshold", panelInterpolation->avgThreshold->value());
-    }
-
-    s.saveStr("save dir", saveDir);
-    s.saveStr("save format", saveFmt);
-}
-
 // ************************************************************************** //
-//  class TabularModel
+//  local class TabularModel (used by Table)
 // ************************************************************************** //
 
 class TabularModel : public TableModel {
-private:
 public:
     TabularModel(uint numCols_);
 
@@ -143,7 +80,7 @@ public:
 
     void moveColumn(uint from, uint to);
 
-    void setColumns(QStringList const& headers, cmp_vec const&);
+    void setColumns(const QStringList& headers, cmp_vec const&);
 
     void setSortColumn(int);
 
@@ -244,7 +181,7 @@ void TabularModel::moveColumn(uint from, uint to) {
     qSwap(colIndexMap_[from], colIndexMap_[to]);
 }
 
-void TabularModel::setColumns(QStringList const& headers, cmp_vec const& cmps) {
+void TabularModel::setColumns(const QStringList& headers, cmp_vec const& cmps) {
     debug::ensure(to_u(headers.count()) == numCols_ && cmps.count() == numCols_);
     headers_ = headers;
     cmpFunctions_ = cmps;
@@ -271,15 +208,15 @@ row_t const& TabularModel::row(uint index) {
 }
 
 void TabularModel::sortData() {
-    auto cmpRows = [this](uint col, row_t const& r1, row_t const& r2) {
+    auto _cmpRows = [this](uint col, row_t const& r1, row_t const& r2) {
         col = colIndexMap_.at(col);
         return cmpFunctions_.at(col)(r1.at(col), r2.at(col));
     };
 
     // sort by sortColumn first, then left-to-right
-    auto cmp = [this, cmpRows](numRow const& r1, numRow const& r2) {
+    auto _cmp = [this, _cmpRows](numRow const& r1, numRow const& r2) {
         if (0 <= sortColumn_) {
-            int c = cmpRows(to_u(sortColumn_), r1.row, r2.row);
+            int c = _cmpRows(to_u(sortColumn_), r1.row, r2.row);
             if (c < 0)
                 return true;
             if (c > 0)
@@ -293,7 +230,7 @@ void TabularModel::sortData() {
 
         for_int (col, numCols_) {
             if (to_i(col) != sortColumn_) {
-                int c = cmpRows(col, r1.row, r2.row);
+                int c = _cmpRows(col, r1.row, r2.row);
                 if (c < 0)
                     return true;
                 if (c > 0)
@@ -305,16 +242,8 @@ void TabularModel::sortData() {
     };
 
     beginResetModel();
-    std::sort(rows_.begin(), rows_.end(), cmp);
+    std::sort(rows_.begin(), rows_.end(), _cmp);
     endResetModel();
-}
-
-// ************************************************************************** //
-//  class Tab
-// ************************************************************************** //
-
-OutputTab::OutputTab(Params& params) : params_(params) {
-    setLayout((grid_ = gridLayout()));
 }
 
 // ************************************************************************** //
@@ -326,18 +255,18 @@ Table::Table(uint numDataColumns) : model_(nullptr) {
     setModel(model_.ptr());
     setHeader(new QHeaderView(Qt::Horizontal));
 
-    auto& h = *header();
+    QHeaderView* h = header();
 
-    h.setSectionResizeMode(0, QHeaderView::Fixed);
-    h.setSectionsMovable(true);
-    h.setSectionsClickable(true);
+    h->setSectionResizeMode(0, QHeaderView::Fixed);
+    h->setSectionsMovable(true);
+    h->setSectionsClickable(true);
 
-    int w = QFontMetrics(h.font()).width("000000000");
+    int w = QFontMetrics(h->font()).width("000000000");
     setColumnWidth(0, w);
 }
 
 void Table::setColumns(
-    QStringList const& headers, QStringList const& outHeaders, cmp_vec const& cmps) {
+    const QStringList& headers, const QStringList& outHeaders, cmp_vec const& cmps) {
     model_->setColumns(headers, cmps);
     debug::ensure(headers.count() == outHeaders.count());
     outHeaders_ = outHeaders;
@@ -346,17 +275,15 @@ void Table::setColumns(
         header(), &QHeaderView::sectionMoved,
         [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
             debug::ensure(oldVisualIndex > 0 && newVisualIndex > 0);
-            auto& h = *header();
-            h.setSortIndicatorShown(false);
-            //            model_->setSortColumn(-2);
+            header()->setSortIndicatorShown(false);
             model_->moveColumn(to_u(oldVisualIndex - 1), to_u(newVisualIndex - 1));
             model_->sortData();
         });
 
     connect(header(), &QHeaderView::sectionClicked, [this](int logicalIndex) {
-        auto& h = *header();
-        h.setSortIndicatorShown(true);
-        h.setSortIndicator(logicalIndex, Qt::AscendingOrder);
+        QHeaderView* h = header();
+        h->setSortIndicatorShown(true);
+        h->setSortIndicator(logicalIndex, Qt::AscendingOrder);
         model_->setSortColumn(logicalIndex - 1);
         model_->sortData();
     });
@@ -382,51 +309,57 @@ const row_t& Table::row(uint i) const {
     return model_->row(i);
 }
 
+// ************************************************************************** //
+//  class TabSave
+// ************************************************************************** //
+
 static str const DAT_SFX(".dat"), DAT_SEP(" "), // suffix, separator
     CSV_SFX(".csv"), CSV_SEP(", ");
 
-TabSave::TabSave(Params& params, bool withTypes) : OutputTab(params) {
-    actBrowse = newTrigger("Browse...");
-    actSave = newTrigger("Save");
+TabSave::TabSave(bool withTypes) {
 
-    str dir = params_.saveDir;
+    setLayout((grid_ = newQ::GridLayout()));
+    actBrowse = newQ::Trigger("Browse...");
+    actSave = newQ::Trigger("Save");
+
+    str dir = gHub->saveDir;
     if (!QDir(dir).exists())
         dir = QDir::current().absolutePath();
 
-    auto gp = new GridPanel("Destination");
+    auto* gp = new GridPanel("Destination");
     grid_->addWidget(gp, 0, 0);
-    auto g = gp->grid();
+    QGridLayout* g = gp->grid();
 
     dir_ = new QLineEdit(dir);
     dir_->setReadOnly(true);
 
     file_ = new QLineEdit();
 
-    g->addWidget(label("Save to folder:"), 0, 0, Qt::AlignRight);
+    g->addWidget(newQ::Label("Save to folder:"), 0, 0, Qt::AlignRight);
     g->addWidget(dir_, 0, 1);
-    g->addWidget(textButton(actBrowse), 0, 2);
+    g->addWidget(newQ::TextButton(actBrowse), 0, 2);
 
-    g->addWidget(label("File name:"), 1, 0, Qt::AlignRight);
+    g->addWidget(newQ::Label("File name:"), 1, 0, Qt::AlignRight);
     g->addWidget(file_, 1, 1);
 
     connect(actBrowse, &QAction::triggered, [this]() {
         str dir = file_dialog::saveDirName(this, "Select folder", dir_->text());
         if (!dir.isEmpty())
-            dir_->setText((params_.saveDir = dir));
+            dir_->setText((gHub->saveDir = dir));
     });
 
     gp = new GridPanel("File type");
     grid_->addWidget(gp, 0, 1);
     g = gp->grid();
 
-    g->addWidget((rbDat_ = radioButton(DAT_SFX)), 0, 0);
-    g->addWidget((rbCsv_ = radioButton(CSV_SFX)), 1, 0);
+    g->addWidget((rbDat_ = newQ::RadioButton(DAT_SFX)), 0, 0);
+    g->addWidget((rbCsv_ = newQ::RadioButton(CSV_SFX)), 1, 0);
 
-    connect(rbDat_, &QRadioButton::clicked, [this]() { params_.saveFmt = DAT_SFX; });
+    connect(rbDat_, &QRadioButton::clicked, [this]() { gHub->saveFmt = DAT_SFX; });
 
-    connect(rbCsv_, &QRadioButton::clicked, [this]() { params_.saveFmt = CSV_SFX; });
+    connect(rbCsv_, &QRadioButton::clicked, [this]() { gHub->saveFmt = CSV_SFX; });
 
-    (CSV_SFX == params_.saveFmt ? rbCsv_ : rbDat_)->setChecked(true);
+    (CSV_SFX == gHub->saveFmt ? rbCsv_ : rbDat_)->setChecked(true);
 
     gp->setVisible(withTypes);
 }
@@ -456,7 +389,6 @@ str TabSave::fileSetSuffix(rcstr suffix) {
         if (!file.isEmpty())
             file += suffix;
     }
-
     file_->setText(file);
     return file;
 }

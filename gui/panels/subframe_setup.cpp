@@ -1,36 +1,35 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
-//! @file      gui/panels/tabs_setup.cpp
-//! @brief     Implements class TabsSetup
+//! @file      gui/panels/subframe_setup.cpp
+//! @brief     Implements class SubframeSetup
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "tabs_setup.h"
-#include "cfg/gui_cfg.h"
-#include "fit/fit_fun.h"
-#include "models.h"
-#include "session.h"
-#include "thehub.h"
-#include "widgets/tree_views.h" // inheriting from
-#include "widgets/widget_makers.h"
+#include "gui/panels/subframe_setup.h"
+#include "core/fit/fit_fun.h"
+#include "core/session.h"
+#include "gui/cfg/gui_cfg.h"
+#include "gui/models.h"
+#include "gui/thehub.h"
+#include "gui/widgets/tree_views.h" // inheriting from
+#include "gui/widgets/various_widgets.h"
 #include <QAction>
 
 static qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }
 static str safeRealText(qreal val) { return qIsFinite(val) ? str::number(val) : ""; }
 
-
 // ************************************************************************** //
-//  class ReflectionView (local scope)
+//  local class ReflectionView
 // ************************************************************************** //
 
-class ReflectionView : public ListView {
+class ReflectionView final : public ListView {
 public:
     ReflectionView();
 
@@ -58,7 +57,7 @@ ReflectionView::ReflectionView() : ListView() {
         resizeColumnToContents(i);
 }
 
-void ReflectionView::addReflection(QString const& peakFunctionName) {
+void ReflectionView::addReflection(const QString& peakFunctionName) {
     model()->addReflection(peakFunctionName);
     updateSingleSelection();
 }
@@ -108,30 +107,24 @@ void ReflectionView::selectionChanged(
 
 
 // ************************************************************************** //
-//  class TabsSetup
+//  class SubframeSetup
 // ************************************************************************** //
 
-QLabel* icon(rcstr fileName) {
-    auto l = new QLabel;
-    auto h = l->sizeHint().height();
-    l->setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
-    return l;
-}
-
-TabsSetup::TabsSetup() : TabsPanel() {
+SubframeSetup::SubframeSetup() {
+    setTabPosition(QTabWidget::North);
 
     int backgroundTabIndex, reflectionTabIndex;
 
     // ==== image geometry tab ====
     {
-        QBoxLayout& box = addTab("Geometry", Qt::Vertical).box();
+        QBoxLayout& box = newQ::Tab(this, "Geometry")->box();
 
         connect(gHub, &TheHub::sigGeometryChanged, [this](){ setFromHub(); });
 
         // widgets
 
-        detDistance_ = spinDoubleCell(gui_cfg::em4_2, Geometry::MIN_DETECTOR_DISTANCE);
-        detPixelSize_ = spinDoubleCell(gui_cfg::em4_2, Geometry::MIN_DETECTOR_PIXEL_SIZE);
+        detDistance_ = newQ::DoubleSpinBox(gui_cfg::em4_2, Geometry::MIN_DETECTOR_DISTANCE);
+        detPixelSize_ = newQ::DoubleSpinBox(gui_cfg::em4_2, Geometry::MIN_DETECTOR_PIXEL_SIZE);
         detPixelSize_->setDecimals(3);
 
         detDistance_->setValue(Geometry::DEF_DETECTOR_DISTANCE);
@@ -142,19 +135,19 @@ TabsSetup::TabsSetup() : TabsPanel() {
         connect(
             detPixelSize_, slot(QDoubleSpinBox, valueChanged, double), [this]() { setToHub(); });
 
-        beamOffsetI_ = spinCell(gui_cfg::em4_2);
-        beamOffsetJ_ = spinCell(gui_cfg::em4_2);
+        beamOffsetI_ = newQ::SpinBox(gui_cfg::em4_2);
+        beamOffsetJ_ = newQ::SpinBox(gui_cfg::em4_2);
 
         connect(beamOffsetI_, slot(QSpinBox, valueChanged, int), [this]() { setToHub(); });
 
         connect(beamOffsetJ_, slot(QSpinBox, valueChanged, int), [this]() { setToHub(); });
 
-        cutLeft_ = spinCell(gui_cfg::em4, 0);
-        cutTop_ = spinCell(gui_cfg::em4, 0);
-        cutRight_ = spinCell(gui_cfg::em4, 0);
-        cutBottom_ = spinCell(gui_cfg::em4, 0);
+        cutLeft_ = newQ::SpinBox(gui_cfg::em4, 0);
+        cutTop_ = newQ::SpinBox(gui_cfg::em4, 0);
+        cutRight_ = newQ::SpinBox(gui_cfg::em4, 0);
+        cutBottom_ = newQ::SpinBox(gui_cfg::em4, 0);
 
-        auto setImageCut = [this](bool isTopOrLeft, int value) {
+        auto _setImageCut = [this](bool isTopOrLeft, int value) {
             debug::ensure(value >= 0);
             if (gHub->toggle_linkCuts->isChecked())
                 gHub->setImageCut(
@@ -167,58 +160,68 @@ TabsSetup::TabsSetup() : TabsPanel() {
                                         to_u(cutRight_->value()), to_u(cutBottom_->value())));
         };
 
-        connect(cutLeft_, slot(QSpinBox, valueChanged, int), [setImageCut](int value) {
-            setImageCut(true, value);
+        connect(cutLeft_, slot(QSpinBox, valueChanged, int), [_setImageCut](int value) {
+            _setImageCut(true, value);
         });
 
-        connect(cutTop_, slot(QSpinBox, valueChanged, int), [setImageCut](int value) {
-            setImageCut(true, value);
+        connect(cutTop_, slot(QSpinBox, valueChanged, int), [_setImageCut](int value) {
+            _setImageCut(true, value);
         });
 
-        connect(cutRight_, slot(QSpinBox, valueChanged, int), [setImageCut](int value) {
-            setImageCut(false, value);
+        connect(cutRight_, slot(QSpinBox, valueChanged, int), [_setImageCut](int value) {
+            _setImageCut(false, value);
         });
 
-        connect(cutBottom_, slot(QSpinBox, valueChanged, int), [setImageCut](int value) {
-            setImageCut(false, value);
+        connect(cutBottom_, slot(QSpinBox, valueChanged, int), [_setImageCut](int value) {
+            _setImageCut(false, value);
         });
 
         // layout
 
-        QGridLayout* grid = gridLayout();
+        QGridLayout* grid = newQ::GridLayout();
         int row = 0;
 
-        auto add = [&grid, &row](QVector<QWidget*> const& ws, int left = 1) {
+        auto _add = [&grid, &row](const QVector<QWidget*>& ws, int left = 1) {
             int i = 0, cnt = ws.count();
-
-            QBoxLayout* box = hbox();
+            QBoxLayout* box = newQ::HBoxLayout();
             box->addStretch(1);
             while (i < left)
                 box->addWidget(ws.at(i++));
             grid->addLayout(box, row, 0);
-
-            box = hbox();
+            box = newQ::HBoxLayout();
             while (i < cnt)
                 box->addWidget(ws.at(i++));
             grid->addLayout(box, row, 1);
-
             box->addStretch(1);
-
             row++;
         };
 
-        add({ label("det. distance"), detDistance_, label("mm") });
-        add({ label("pixel size"), detPixelSize_, label("mm") });
-
-        add({ label("beam offset X"), beamOffsetI_, label("pix") });
-        add({ label("Y"), beamOffsetJ_, label("pix") });
-
-        add({ label("image rotate"), iconButton(gHub->trigger_rotateImage), label("mirror"),
-              iconButton(gHub->toggle_mirrorImage) });
-
-        add({ iconButton(gHub->toggle_linkCuts), label("cut"), icon(":/icon/cutLeft"), cutLeft_,
-              icon(":/icon/cutRight"), cutRight_ }, 3);
-        add({ icon(":/icon/cutTop"), cutTop_, icon(":/icon/cutBottom"), cutBottom_ });
+        _add({ newQ::Label("det. distance"),
+                    detDistance_,
+                    newQ::Label("mm") });
+        _add({ newQ::Label("pixel size"),
+                    detPixelSize_,
+                    newQ::Label("mm") });
+        _add({ newQ::Label("beam offset X"),
+                    beamOffsetI_,
+                    newQ::Label("pix") });
+        _add({ newQ::Label("Y"),
+                    beamOffsetJ_,
+                    newQ::Label("pix") });
+        _add({ newQ::Label("image rotate"),
+                    newQ::IconButton(gHub->trigger_rotateImage),
+                    newQ::Label("mirror"),
+                    newQ::IconButton(gHub->toggle_mirrorImage) });
+        _add({ newQ::IconButton(gHub->toggle_linkCuts),
+                    newQ::Label("cut"),
+                    newQ::Icon(":/icon/cutLeft"),
+                    cutLeft_,
+                    newQ::Icon(":/icon/cutRight"),
+                    cutRight_ }, 3);
+        _add({ newQ::Icon(":/icon/cutTop"),
+                    cutTop_,
+                    newQ::Icon(":/icon/cutBottom"),
+                    cutBottom_ });
 
         grid->setColumnStretch(grid->columnCount(), 1);
 
@@ -229,15 +232,16 @@ TabsSetup::TabsSetup() : TabsPanel() {
     // ==== background fit tab ====
     {
         backgroundTabIndex = count();
-        QBoxLayout& box = addTab("Background", Qt::Vertical).box();
-        QBoxLayout* hb = hbox();
+        QBoxLayout& box = newQ::Tab(this, "Background")->box();
+        QBoxLayout* hb = newQ::HBoxLayout();
         box.addLayout(hb);
 
-        hb->addWidget(iconButton(gHub->toggle_selRegions));
-        hb->addWidget(iconButton(gHub->toggle_showBackground));
-        hb->addWidget(iconButton(gHub->trigger_clearBackground));
-        hb->addWidget(label("Pol. degree:"));
-        hb->addWidget((spinDegree_ = spinCell(gui_cfg::em4, 0, TheHub::MAX_POLYNOM_DEGREE)));
+        hb->addWidget(newQ::IconButton(gHub->toggle_selRegions));
+        hb->addWidget(newQ::IconButton(gHub->toggle_showBackground));
+        hb->addWidget(newQ::IconButton(gHub->trigger_clearBackground));
+        hb->addWidget(newQ::Label("Pol. degree:"));
+        hb->addWidget((spinDegree_ =
+                       newQ::SpinBox(gui_cfg::em4, 0, TheHub::MAX_POLYNOM_DEGREE)));
         hb->addStretch();
 
         box.addStretch(1);
@@ -254,62 +258,62 @@ TabsSetup::TabsSetup() : TabsPanel() {
     // ==== peak fits tab ====
     {
         reflectionTabIndex = count();
-        QBoxLayout& box = addTab("Reflections", Qt::Vertical).box();
-        QBoxLayout* hb = hbox();
+        QBoxLayout& box = newQ::Tab(this, "Reflections")->box();
+        QBoxLayout* hb = newQ::HBoxLayout();
         box.addLayout(hb);
 
-        hb->addWidget(iconButton(gHub->toggle_selRegions));
-        hb->addWidget(iconButton(gHub->toggle_showBackground));
-        hb->addWidget(iconButton(gHub->trigger_clearReflections));
+        hb->addWidget(newQ::IconButton(gHub->toggle_selRegions));
+        hb->addWidget(newQ::IconButton(gHub->toggle_showBackground));
+        hb->addWidget(newQ::IconButton(gHub->trigger_clearReflections));
         hb->addStretch();
 
         box.addWidget((reflectionView_ = new ReflectionView()));
 
-        hb = hbox();
+        hb = newQ::HBoxLayout();
         box.addLayout(hb);
 
         comboReflType_ = new QComboBox;
         comboReflType_->addItems(FunctionRegistry::instance()->keys());
         hb->addWidget(comboReflType_);
         hb->addStretch();
-        hb->addWidget(iconButton(gHub->trigger_addReflection));
-        hb->addWidget(iconButton(gHub->trigger_remReflection));
+        hb->addWidget(newQ::IconButton(gHub->trigger_addReflection));
+        hb->addWidget(newQ::IconButton(gHub->trigger_remReflection));
 
-        QBoxLayout* vb = vbox();
+        QBoxLayout* vb = newQ::VBoxLayout();
         box.addLayout(vb);
 
-        QGridLayout* gb = gridLayout();
+        QGridLayout* gb = newQ::GridLayout();
         vb->addLayout(gb);
 
-        gb->addWidget(label("min"), 0, 0);
-        gb->addWidget((spinRangeMin_ = spinDoubleCell(gui_cfg::em4_2, .0)), 0, 1);
+        gb->addWidget(newQ::Label("min"), 0, 0);
+        gb->addWidget((spinRangeMin_ = newQ::DoubleSpinBox(gui_cfg::em4_2, .0)), 0, 1);
         spinRangeMin_->setSingleStep(.1);
-        gb->addWidget(label("max"), 0, 2);
-        gb->addWidget((spinRangeMax_ = spinDoubleCell(gui_cfg::em4_2, .0)), 0, 3);
+        gb->addWidget(newQ::Label("max"), 0, 2);
+        gb->addWidget((spinRangeMax_ = newQ::DoubleSpinBox(gui_cfg::em4_2, .0)), 0, 3);
         spinRangeMax_->setSingleStep(.1);
 
-        gb->addWidget(label("guess x"), 1, 0);
-        gb->addWidget((spinGuessPeakX_ = spinDoubleCell(gui_cfg::em4_2, .0)), 1, 1);
+        gb->addWidget(newQ::Label("guess x"), 1, 0);
+        gb->addWidget((spinGuessPeakX_ = newQ::DoubleSpinBox(gui_cfg::em4_2, .0)), 1, 1);
         spinGuessPeakX_->setSingleStep(.1);
-        gb->addWidget(label("y"), 1, 2);
-        gb->addWidget((spinGuessPeakY_ = spinDoubleCell(gui_cfg::em4_2, .0)), 1, 3);
+        gb->addWidget(newQ::Label("y"), 1, 2);
+        gb->addWidget((spinGuessPeakY_ = newQ::DoubleSpinBox(gui_cfg::em4_2, .0)), 1, 3);
         spinGuessPeakY_->setSingleStep(.1);
 
-        gb->addWidget(label("fwhm"), 2, 0);
-        gb->addWidget((spinGuessFWHM_ = spinDoubleCell(gui_cfg::em4_2, .0)), 2, 1);
+        gb->addWidget(newQ::Label("fwhm"), 2, 0);
+        gb->addWidget((spinGuessFWHM_ = newQ::DoubleSpinBox(gui_cfg::em4_2, .0)), 2, 1);
         spinGuessFWHM_->setSingleStep(.1);
 
-        gb->addWidget(label("fit x"), 3, 0);
-        gb->addWidget((readFitPeakX_ = readCell(gui_cfg::em4_2)), 3, 1);
-        gb->addWidget(label("y"), 3, 2);
-        gb->addWidget((readFitPeakY_ = readCell(gui_cfg::em4_2)), 3, 3);
+        gb->addWidget(newQ::Label("fit x"), 3, 0);
+        gb->addWidget((readFitPeakX_ = newQ::LineDisplay(gui_cfg::em4_2)), 3, 1);
+        gb->addWidget(newQ::Label("y"), 3, 2);
+        gb->addWidget((readFitPeakY_ = newQ::LineDisplay(gui_cfg::em4_2)), 3, 3);
 
-        gb->addWidget(label("fwhm"), 4, 0);
-        gb->addWidget((readFitFWHM_ = readCell(gui_cfg::em4_2)), 4, 1);
+        gb->addWidget(newQ::Label("fwhm"), 4, 0);
+        gb->addWidget((readFitFWHM_ = newQ::LineDisplay(gui_cfg::em4_2)), 4, 1);
 
         gb->setColumnStretch(4, 1);
 
-        auto updateReflectionControls = [this]() {
+        auto _updateReflectionControls = [this]() {
             bool on = reflectionView_->hasReflections();
             spinRangeMin_->setEnabled(on);
             spinRangeMax_->setEnabled(on);
@@ -321,30 +325,30 @@ TabsSetup::TabsSetup() : TabsPanel() {
             readFitFWHM_->setEnabled(on);
         };
 
-        updateReflectionControls();
+        _updateReflectionControls();
 
         connect(gHub->trigger_addReflection, &QAction::triggered,
-                [this, updateReflectionControls]() {
+                [this, _updateReflectionControls]() {
             reflectionView_->addReflection(comboReflType_->currentText());
-            updateReflectionControls();
+            _updateReflectionControls();
         });
 
         connect(gHub->trigger_remReflection, &QAction::triggered,
-                [this, updateReflectionControls]() {
+                [this, _updateReflectionControls]() {
             reflectionView_->removeSelected();
-            updateReflectionControls();
+            _updateReflectionControls();
         });
 
         connect(gHub->trigger_clearReflections, &QAction::triggered,
-                [this, updateReflectionControls]() {
+                [this, _updateReflectionControls]() {
             reflectionView_->clear();
-            updateReflectionControls();
+            _updateReflectionControls();
         });
 
         connect(gHub, &TheHub::sigReflectionsChanged,
-                [this, updateReflectionControls]() {
+                [this, _updateReflectionControls]() {
                     reflectionView_->updateSingleSelection();
-                    updateReflectionControls(); }
+                    _updateReflectionControls(); }
             );
 
         connect(comboReflType_, slot(QComboBox, currentIndexChanged, const QString&),
@@ -352,7 +356,7 @@ TabsSetup::TabsSetup() : TabsPanel() {
             gHub->setPeakFunction(peakFunctionName);
         });
 
-        auto setReflControls = [this](shp_Reflection reflection) {
+        auto _setReflControls = [this](shp_Reflection reflection) {
             silentSpin_ = true;
 
             if (reflection.isNull()) {
@@ -371,17 +375,17 @@ TabsSetup::TabsSetup() : TabsPanel() {
                     comboReflType_->setCurrentText(reflection->peakFunctionName());
                 }
 
-                auto& range = reflection->range();
+                const Range& range = reflection->range();
                 spinRangeMin_->setValue(safeReal(range.min));
                 spinRangeMax_->setValue(safeReal(range.max));
 
-                auto& peakFun = reflection->peakFunction();
-                auto& guessedPeak = peakFun.guessedPeak();
+                const PeakFunction& peakFun = reflection->peakFunction();
+                const qpair& guessedPeak = peakFun.guessedPeak();
                 spinGuessPeakX_->setValue(safeReal(guessedPeak.x));
                 spinGuessPeakY_->setValue(safeReal(guessedPeak.y));
                 spinGuessFWHM_->setValue(safeReal(peakFun.guessedFWHM()));
 
-                auto fittedPeak = peakFun.fittedPeak();
+                const qpair& fittedPeak = peakFun.fittedPeak();
                 readFitPeakX_->setText(safeRealText(fittedPeak.x));
                 readFitPeakY_->setText(safeRealText(fittedPeak.y));
                 readFitFWHM_->setText(safeRealText(peakFun.fittedFWHM()));
@@ -391,12 +395,12 @@ TabsSetup::TabsSetup() : TabsPanel() {
         };
 
         connect(gHub, &TheHub::sigReflectionSelected,
-            [setReflControls](shp_Reflection reflection) { setReflControls(reflection); });
+            [_setReflControls](shp_Reflection reflection) { _setReflControls(reflection); });
 
         connect(gHub, &TheHub::sigReflectionData,
-            [setReflControls](shp_Reflection reflection) { setReflControls(reflection); });
+            [_setReflControls](shp_Reflection reflection) { _setReflControls(reflection); });
 
-        auto newReflData = [this](bool invalidateGuesses) {
+        auto _newReflData = [this](bool invalidateGuesses) {
             if (!silentSpin_) {
                 gHub->tellReflectionValues(
                     Range::safeFrom(spinRangeMin_->value(), spinRangeMax_->value()),
@@ -405,18 +409,17 @@ TabsSetup::TabsSetup() : TabsPanel() {
             }
         };
 
-        auto changeReflData0 = [newReflData](qreal) { newReflData(false); };
+        auto _changeReflData0 = [_newReflData](qreal) { _newReflData(false); };
+        auto _changeReflData1 = [_newReflData](qreal) { _newReflData(true); };
 
-        auto changeReflData1 = [newReflData](qreal) { newReflData(true); };
-
-        connect(spinRangeMin_, slot(QDoubleSpinBox, valueChanged, double), changeReflData1);
-        connect(spinRangeMax_, slot(QDoubleSpinBox, valueChanged, double), changeReflData1);
-        connect(spinGuessPeakX_, slot(QDoubleSpinBox, valueChanged, double), changeReflData0);
-        connect(spinGuessPeakY_, slot(QDoubleSpinBox, valueChanged, double), changeReflData0);
-        connect(spinGuessFWHM_, slot(QDoubleSpinBox, valueChanged, double), changeReflData0);
+        connect(spinRangeMin_, slot(QDoubleSpinBox, valueChanged, double), _changeReflData1);
+        connect(spinRangeMax_, slot(QDoubleSpinBox, valueChanged, double), _changeReflData1);
+        connect(spinGuessPeakX_, slot(QDoubleSpinBox, valueChanged, double), _changeReflData0);
+        connect(spinGuessPeakY_, slot(QDoubleSpinBox, valueChanged, double), _changeReflData0);
+        connect(spinGuessFWHM_, slot(QDoubleSpinBox, valueChanged, double), _changeReflData0);
     }
 
-    connect(this, &TabsSetup::currentChanged,
+    connect(this, &SubframeSetup::currentChanged,
             [this, backgroundTabIndex, reflectionTabIndex](int index) {
         eFittingTab tab;
         if (backgroundTabIndex == index)
@@ -432,15 +435,15 @@ TabsSetup::TabsSetup() : TabsPanel() {
     gHub->setFittingTab(eFittingTab::NONE);
 }
 
-void TabsSetup::setToHub() {
+void SubframeSetup::setToHub() {
     gHub->setGeometry(
         preal(qMax(qreal(Geometry::MIN_DETECTOR_DISTANCE), detDistance_->value())),
         preal(qMax(qreal(Geometry::MIN_DETECTOR_PIXEL_SIZE), detPixelSize_->value())),
         IJ(beamOffsetI_->value(), beamOffsetJ_->value()));
 }
 
-void TabsSetup::setFromHub() {
-    auto& g = gSession->geometry();
+void SubframeSetup::setFromHub() {
+    const Geometry& g = gSession->geometry();
 
     detDistance_->setValue(g.detectorDistance);
     detPixelSize_->setValue(g.pixSize);
@@ -448,7 +451,7 @@ void TabsSetup::setFromHub() {
     beamOffsetI_->setValue(g.midPixOffset.i);
     beamOffsetJ_->setValue(g.midPixOffset.j);
 
-    auto cut = gSession->imageCut();
+    const ImageCut& cut = gSession->imageCut();
 
     cutLeft_->setValue(to_i(cut.left));
     cutTop_->setValue(to_i(cut.top));

@@ -1,24 +1,23 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
-//! @file      gui/panels/dock_files.cpp
-//! @brief     Implements class DockFiles; defines and implements class FileViews
+//! @file      gui/panels/subframe_files.cpp
+//! @brief     Implements class SubframeFiles; defines and implements class FileViews
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "dock_files.h"
-#include "models.h"
-#include "session.h"
-#include "thehub.h"
-#include "widgets/tree_views.h" // inheriting from
-#include "widgets/widget_makers.h"
-#include <QAction>
+#include "gui/panels/subframe_files.h"
+#include "core/session.h"
+#include "gui/models.h"
+#include "gui/thehub.h"
+#include "gui/widgets/new_q.h"
+#include "gui/widgets/tree_views.h" // inheriting from
 #include <QHeaderView>
 
 
@@ -30,7 +29,7 @@ class FilesView : public MultiListView {
 public:
     FilesView();
 
-protected:
+private:
     FilesModel* model() const { return static_cast<FilesModel*>(MultiListView::model()); }
 
     void selectionChanged(QItemSelection const&, QItemSelection const&);
@@ -62,7 +61,7 @@ void FilesView::selectionChanged(QItemSelection const& selected, QItemSelection 
 }
 
 void FilesView::removeSelected() {
-    auto indexes = selectedIndexes();
+    const QModelIndexList& indexes = selectedIndexes();
 
     // backwards
     for (int i = indexes.count(); i-- > 0;)
@@ -74,7 +73,7 @@ void FilesView::removeSelected() {
 
 void FilesView::recollect() {
     uint_vec rows;
-    for (auto& index : selectionModel()->selectedRows())
+    for (const QModelIndex& index : selectionModel()->selectedRows())
         if (index.isValid())
             rows.append(to_u(index.row()));
 
@@ -85,30 +84,32 @@ void FilesView::recollect() {
 //  class DocFiles
 // ************************************************************************** //
 
-DockFiles::DockFiles() : DockWidget("Files", "dock-files", Qt::Vertical) {
+SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files") {
 
-    auto h = hbox();
+    auto h = newQ::HBoxLayout();
     box_->addLayout(h);
 
     h->addStretch();
-    h->addWidget(iconButton(gHub->trigger_addFiles));
-    h->addWidget(iconButton(gHub->trigger_removeFile));
+    h->addWidget(newQ::IconButton(gHub->trigger_addFiles));
+    h->addWidget(newQ::IconButton(gHub->trigger_removeFile));
 
-    box_->addWidget((filesView_ = new FilesView()));
+    box_->addWidget(new FilesView());
 
-    h = hbox();
+    h = newQ::HBoxLayout();
     box_->addLayout(h);
 
-    h->addWidget(label("Correction file"));
+    h->addWidget(newQ::Label("Correction file"));
 
-    h = hbox();
+    h = newQ::HBoxLayout();
     box_->addLayout(h);
 
-    h->addWidget((corrFile_ = new LineView()));
-    h->addWidget(iconButton(gHub->toggle_enableCorr));
-    h->addWidget(iconButton(gHub->trigger_remCorr));
+    auto* corrFile_ = new QLineEdit();
+    corrFile_->setReadOnly(true);
+    h->addWidget(corrFile_);
+    h->addWidget(newQ::IconButton(gHub->toggle_enableCorr));
+    h->addWidget(newQ::IconButton(gHub->trigger_remCorr));
 
     connect(gHub, &TheHub::sigCorrFile,
-            [this](QSharedPointer<Datafile const> file) {
+            [corrFile_](shp_Datafile file) {
                 corrFile_->setText(file.isNull() ? "" : file->fileName()); });
 }

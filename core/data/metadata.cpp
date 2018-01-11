@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/data/metadata.cpp
 //! @brief     Implements class Metadata
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "metadata.h"
-#include "def/idiomatic_for.h"
+#include "core/def/idiomatic_for.h"
 
 // metadata attributes
 
@@ -83,13 +83,13 @@ rcstr Metadata::attributeTag(uint i, bool out) {
 }
 
 QStringList Metadata::attributeTags(bool out) {
-    static QStringList const tags = {
+    static const QStringList tags = {
         "X",   "Y",   "Z",    "ω",      "mid 2θ", "φ",     "χ",       "PST",
         "SST", "ΩM",  "T",    "teload", "tepos",  "teext", "xe",      "ye",
         "ze",  "mon", "Δmon", "t",      "Δt",     "date",  "comment",
     };
 
-    static QStringList const outTags = {
+    static const QStringList outTags = {
         "X",   "Y",      "Z",         "omega",  "mid2theta", "phi",   "chi",     "PST",
         "SST", "OmegaM", "T",         "teload", "tepos",     "teext", "xe",      "ye",
         "ze",  "mon",    "delta_mon", "t",      "delta_t",   "date",  "comment",

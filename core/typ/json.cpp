@@ -1,20 +1,20 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/typ/json.cpp
 //! @brief     Implements function qreal_to_json and class JsonObj
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "typ/ij.h"
-#include "typ/json.h"
-#include "typ/range.h"
+#include "core/typ/ij.h"
+#include "core/typ/json.h"
+#include "core/typ/range.h"
 #include <QStringList> // needed under Travis
 
 // ************************************************************************** //

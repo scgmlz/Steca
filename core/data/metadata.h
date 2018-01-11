@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/data/metadata.h
 //! @brief     Defines class Metadata
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -15,9 +15,10 @@
 #ifndef METADATA_H
 #define METADATA_H
 
-#include "typ/angles.h"
-#include "typ/str.h"
-#include "typ/variant.h"
+#include "core/typ/angles.h"
+#include "core/typ/str.h"
+#include "core/typ/variant.h"
+#include <QSharedPointer> // no auto rm
 
 class Metadata {
 public:
@@ -46,5 +47,7 @@ public:
     qreal monitorCount, deltaMonitorCount;
     qreal time, deltaTime;
 };
+
+typedef QSharedPointer<const Metadata> shp_Metadata;
 
 #endif // METADATA_H

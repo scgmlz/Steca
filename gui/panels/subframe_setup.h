@@ -1,30 +1,28 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
-//! @file      gui/panels/tabs_setup.h
-//! @brief     Defines class TabsSetup
+//! @file      gui/panels/subframe_setup.h
+//! @brief     Defines class SubframeSetup
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#ifndef TABS_SETUP_H
-#define TABS_SETUP_H
+#ifndef SUBFRAME_SETUP_H
+#define SUBFRAME_SETUP_H
 
-#include "panel.h"
+#include "gui/widgets/new_q.h"
+#include <QTabWidget>
 
-class QComboBox;
-class QDoubleSpinBox;
-class QLineEdit;
-class QSpinBox;
+//! Part of the main window that contains geometry, background, and image controls.
 
-class TabsSetup : public TabsPanel {
+class SubframeSetup : public QTabWidget {
 public:
-    TabsSetup();
+    SubframeSetup();
 
 private:
     // image geometry tab
@@ -48,4 +46,4 @@ private:
     void setFromHub();
 };
 
-#endif // TABS_SETUP_H
+#endif // SUBFRAME_SETUP_H

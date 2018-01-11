@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/data/image.h
 //! @brief     Defines class Image
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -15,15 +15,15 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
-#include "typ/array2d.h"
-#include "typ/range.h"
-#include "typ/types.h"
+#include "core/typ/array2d.h"
+#include "core/typ/range.h"
+#include "core/typ/types.h"
 
 typedef Array2D<inten_t> inten_arr;
 
+//! Holds a detector image, and provides read and write access
 class Image final {
     public:
-    // Image as vector of intensities, filled with 0 or given intensities.
     Image(size2d const& = size2d(0, 0));
     Image(inten_arr const&);
 
@@ -46,13 +46,15 @@ class Image final {
     void addInten(uint i, uint j, inten_t val) { intens_.refAt(i, j) += val; }
 
     // Sum all intensities with new ones.
-    void addIntens(Image const&) THROWS;
+    void addIntens(const Image&) THROWS;
 
-    Range const& rgeInten() const { return rgeInten_; }
+    const Range& rgeInten() const { return rgeInten_; }
 
 private:
     inten_arr intens_;
     Range rgeInten_;
 };
+
+typedef QSharedPointer<Image> shp_Image;
 
 #endif // IMAGE_H

@@ -1,40 +1,42 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/output/output_polefigures.cpp
 //! @brief     Implements class PoleFiguresFrame
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "output_polefigures.h"
-#include "cfg/colors.h"
-#include "dialog_panels.h"
-#include "fit/fit_fun.h"
-#include "output_dialogs.h"
-#include "session.h"
-#include "thehub.h"
-#include "widgets/widget_makers.h"
-#include "write_file.h"
+#include "gui/output/output_polefigures.h"
+#include "core/fit/fit_fun.h"
+#include "core/session.h"
+#include "gui/cfg/colors.h"
+#include "gui/output/dialog_panels.h"
+#include "gui/output/write_file.h"
+#include "gui/output/widgets4output.h"
+#include "gui/thehub.h"
+#include "gui/widgets/new_q.h"
+#include "gui/widgets/various_widgets.h"
 #include <qmath.h>
-#include <QAction>
 #include <QPainter>
 
 // ************************************************************************** //
-//  class TabGraph (file scope)
+//  local class TabGraph
 // ************************************************************************** //
 
-class TabGraph : public OutputTab {
+class TabGraph final : public QWidget {
 public:
     TabGraph(Params&);
     void set(ReflectionInfos);
 
-protected:
+private:
+    Params& params_;
+    QGridLayout* grid_;
     void update();
 
     ReflectionInfos rs_;
@@ -61,10 +63,11 @@ protected:
 };
 
 TabGraph::TabGraph(Params& params)
-    : OutputTab(params), flat_(false), alphaMax_(90), avgAlphaMax_(0) {
+    : params_(params), flat_(false), alphaMax_(90), avgAlphaMax_(0) {
+    setLayout((grid_ = newQ::GridLayout()));
     debug::ensure(params_.panelInterpolation);
 
-    grid_->addWidget((cbFlat_ = check("no intensity")), 0, 0);
+    grid_->addWidget((cbFlat_ = newQ::CheckBox("no intensity")), 0, 0);
 
     grid_->setRowStretch(grid_->rowCount(), 1);
     grid_->setColumnStretch(grid_->columnCount(), 1);
@@ -86,7 +89,7 @@ void TabGraph::set(ReflectionInfos rs) {
 void TabGraph::update() {
     avgAlphaMax_ = params_.panelInterpolation->avgAlphaMax->value();
     flat_ = cbFlat_->isChecked();
-    OutputTab::update();
+    QWidget::update();
 }
 
 void TabGraph::paintEvent(QPaintEvent*) {
@@ -104,9 +107,9 @@ void TabGraph::paintEvent(QPaintEvent*) {
     paintPoints();
 }
 
+//! Point in floating-point precision
 QPointF TabGraph::p(deg alpha, deg beta) const {
     qreal r = r_ * alpha / alphaMax_;
-
     rad betaRad = beta.toRad();
     return QPointF(r * cos(betaRad), -r * sin(betaRad));
 }
@@ -146,34 +149,33 @@ void TabGraph::paintGrid() {
 void TabGraph::paintPoints() {
     qreal rgeMax = rs_.rgeInten().max;
 
-    for (auto& r : rs_) {
+    for (const ReflectionInfo& r : rs_) {
         qreal inten = r.inten();
-
-        if (qIsFinite(inten)) { // nan comes from interpolartion
-            auto pp = p(r.alpha(), r.beta());
-            if (flat_) {
-                auto color = QColor(Qt::blue);
-                p_->setPen(color);
-                p_->setBrush(color);
-                circle(pp, .5);
-            } else {
-                inten /= rgeMax;
-                auto color = QColor(intenGraph(inten, 1));
-                p_->setPen(color);
-                p_->setBrush(color);
-                circle(pp, inten * r_ / 60); // TODO scale to max inten
-            }
+        if (!qIsFinite(inten)) // nan comes from interpolation
+            continue;
+        const QPointF& pp = p(r.alpha(), r.beta());
+        if (flat_) {
+            QColor color(Qt::blue);
+            p_->setPen(color);
+            p_->setBrush(color);
+            circle(pp, .5);
+        } else {
+            inten /= rgeMax;
+            QColor color = colormap::intenGraph(inten, 1);
+            p_->setPen(color);
+            p_->setBrush(color);
+            circle(pp, inten * r_ / 60); // TODO scale to max inten
         }
     }
 }
 
 // ************************************************************************** //
-//  class TabPoleFiguresSave (file scope)
+//  local class TabPoleFiguresSave
 // ************************************************************************** //
 
-class TabPoleFiguresSave : public TabSave {
+class TabPoleFiguresSave final : public TabSave {
 public:
-    TabPoleFiguresSave(Params& params);
+    TabPoleFiguresSave();
 
     bool onlySelectedRefl() const;
     bool outputInten() const;
@@ -182,13 +184,13 @@ public:
 
     void rawReflSettings(bool on);
 
-protected:
+private:
     QRadioButton *rbSelectedRefl_, *rbAllRefls_;
     QCheckBox *outputInten_, *outputTth_, *outputFWHM_;
 };
 
-TabPoleFiguresSave::TabPoleFiguresSave(Params& params) : TabSave(params, false) {
-    auto hb = hbox();
+TabPoleFiguresSave::TabPoleFiguresSave() : TabSave(false) {
+    auto hb = newQ::HBoxLayout();
     grid_->addLayout(hb, grid_->rowCount(), 0);
     grid_->setRowStretch(grid_->rowCount(), 1);
 
@@ -200,18 +202,18 @@ TabPoleFiguresSave::TabPoleFiguresSave(Params& params) : TabSave(params, false) 
     hb->addStretch();
 
     {
-        auto g = p1->grid();
-        g->addWidget((outputInten_ = check("Intensity pole figure")));
-        g->addWidget((outputTth_ = check("Peak position pole figure")));
-        g->addWidget((outputFWHM_ = check("TWHM pole figure")));
+        QGridLayout* g = p1->grid();
+        g->addWidget((outputInten_ = newQ::CheckBox("Intensity pole figure")));
+        g->addWidget((outputTth_ = newQ::CheckBox("Peak position pole figure")));
+        g->addWidget((outputFWHM_ = newQ::CheckBox("TWHM pole figure")));
         g->setRowStretch(g->rowCount(), 1);
     }
 
     {
-        auto g = p2->grid();
-        g->addWidget((rbSelectedRefl_ = radioButton("Selected reflection")));
-        g->addWidget((rbAllRefls_ = radioButton("All reflections")));
-        g->addWidget(textButton(actSave), 2, 1);
+        QGridLayout* g = p2->grid();
+        g->addWidget((rbSelectedRefl_ = newQ::RadioButton("Selected reflection")));
+        g->addWidget((rbAllRefls_ = newQ::RadioButton("All reflections")));
+        g->addWidget(newQ::TextButton(actSave), 2, 1);
         g->setRowStretch(g->rowCount(), 1);
     }
 
@@ -251,10 +253,10 @@ static const Params::ePanels PANELS =
 PoleFiguresFrame::PoleFiguresFrame(rcstr title, QWidget* parent)
     : Frame(title, new Params(PANELS), parent) {
     tabGraph_ = new TabGraph(*params_);
-    tabs_->addTab("Graph", Qt::Vertical).box().addWidget(tabGraph_);
+    newQ::Tab(tabs_, "Graph")->box().addWidget(tabGraph_);
 
-    tabSave_ = new TabPoleFiguresSave(*params_);
-    tabs_->addTab("Save", Qt::Vertical).box().addWidget(tabSave_);
+    tabSave_ = new TabPoleFiguresSave();
+    newQ::Tab(tabs_, "Save")->box().addWidget(tabSave_);
 
     connect( tabSave_->actSave, &QAction::triggered, [this]() { savePoleFigureOutput(); });
     show();
@@ -269,7 +271,7 @@ void PoleFiguresFrame::displayReflection(uint reflIndex, bool interpolated) {
 }
 
 void PoleFiguresFrame::savePoleFigureOutput() {
-    auto& reflections = gSession->reflections();
+    const Reflections& reflections = gSession->reflections();
     if (reflections.isEmpty()) {
         qWarning() << "cannot save pole figure: no reflection chosen";
         return;
@@ -292,7 +294,7 @@ static str const OUT_FILE_TAG(".refl%1");
 static int const MAX_LINE_LENGTH_POL(9);
 
 void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
-    auto refl = gSession->reflections().at(index);
+    shp_Reflection refl = gSession->reflections().at(index);
     ReflectionInfos reflInfo;
     if (getInterpolated())
         reflInfo = interpPoints_.at(index);
@@ -307,7 +309,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
         qreal_vec output;
         for_i (reflInfo.count())
             output.append(reflInfo.at(i).inten());
-        auto intenFilePath = path + ".inten";
+        const QString intenFilePath = path + ".inten";
         writeListFile(intenFilePath, reflInfo, output);
         writePoleFile(intenFilePath, reflInfo, output);
         writeErrorMask(intenFilePath, reflInfo, output);
@@ -319,7 +321,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
         qreal_vec output;
         for_i (reflInfo.count())
             output.append(reflInfo.at(i).tth());
-        auto tthFilePath = filePath + ".tth";
+        const QString tthFilePath = filePath + ".tth";
         writeListFile(tthFilePath, reflInfo, output);
         writePoleFile(tthFilePath, reflInfo, output);
         check = true;
@@ -330,7 +332,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
         qreal_vec output;
         for_i (reflInfo.count())
             output.append(reflInfo.at(i).fwhm());
-        auto fwhmFilePath = filePath + ".fwhm";
+        const QString fwhmFilePath = filePath + ".fwhm";
         writeListFile(fwhmFilePath, reflInfo, output);
         writePoleFile(fwhmFilePath, reflInfo, output);
         check = true;
@@ -355,11 +357,9 @@ void PoleFiguresFrame::writeErrorMask(
         uint max = j + MAX_LINE_LENGTH_POL;
         for (uint i = j; i < max; i++) {
             if (qIsNaN(output.at(i)))
-                stream << "0"
-                       << " ";
+                stream << "0 ";
             else
-                stream << "1"
-                       << " ";
+                stream << "1 ";
         }
         stream << '\n';
     }
@@ -374,8 +374,7 @@ void PoleFiguresFrame::writePoleFile(
         uint max = j + MAX_LINE_LENGTH_POL;
         for (uint i = j; i < max; i++) {
             if (qIsNaN(output.at(i)))
-                stream << " -1 "
-                       << " ";
+                stream << " -1  ";
             else
                 stream << output.at(i) << " ";
         }

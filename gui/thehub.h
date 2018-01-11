@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/thehub.h
 //! @brief     Defines class TheHub
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -15,27 +15,23 @@
 #ifndef THEHUB_H
 #define THEHUB_H
 
-#include "calc/lens.h"
-#include "calc/calc_reflection_info.h"
-#include "calc/calc_reflection.h"
-#include "data/datafile.h"
-
-class Suite;
-
-class QAction;
+#include "core/calc/lens.h"
+#include "core/calc/reflection_info.h"
+#include "core/calc/reflection.h"
+#include "core/data/datafile.h"
+#include "core/data/suite.h"
+#include "core/typ/singleton.h"
+#include "gui/cfg/settings.h"
 
 class FilesModel;
 class DatasetsModel;
 class MetadataModel;
 class ReflectionsModel;
 
-
 // make connects shorter
 #define slot(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
 
-
-
-extern class TheHub* gHub;
+extern class TheHub* gHub; //!< global pointer to _the_ instance of TheHub
 
 enum class eFittingTab {
     NONE,
@@ -43,17 +39,27 @@ enum class eFittingTab {
     REFLECTIONS,
 };
 
-class TheHub : public QObject {
+//! Companion of MainWin, holds signals and methods for interaction between views and data.
+
+//! One instance of this class coexists with the main window. It is accessible from everywhere
+//! through the global pointer gHub.
+
+//! The original idea was that _all_ signalling passes through this class. In the big
+//! refactoring after v2.0.5, this idea has been given up.
+
+//! We should consider merging TheHub into MainWin.
+
+class TheHub : public QObject, public ISingleton<TheHub> {
 private:
     Q_OBJECT
 
     TheHub& asHub();
 
 public: // emit signals
-    void tellSuiteSelected(QSharedPointer<Suite>);
+    void tellSuiteSelected(shp_Suite);
     void tellSelectedReflection(shp_Reflection);
     void tellReflectionData(shp_Reflection);
-    void tellReflectionValues(Range const&, qpair const&, fwhm_t, bool);
+    void tellReflectionValues(const Range&, qpair const&, fwhm_t, bool);
 
 signals:
     void sigFilesChanged(); // the set of loaded files has changed
@@ -61,15 +67,15 @@ signals:
 
     void sigSuitesChanged(); // the set of suite collected from selected
     // files has changed
-    void sigSuiteSelected(QSharedPointer<Suite>);
+    void sigSuiteSelected(shp_Suite);
 
-    void sigCorrFile(QSharedPointer<Datafile const>);
+    void sigCorrFile(shp_Datafile);
     void sigCorrEnabled(bool);
 
     void sigReflectionsChanged();
     void sigReflectionSelected(shp_Reflection);
     void sigReflectionData(shp_Reflection);
-    void sigReflectionValues(Range const&, qpair const&, fwhm_t, bool);
+    void sigReflectionValues(const Range&, qpair const&, fwhm_t, bool);
 
     void sigDisplayChanged();
     void sigGeometryChanged();
@@ -83,6 +89,7 @@ signals:
 
 public:
     TheHub();
+    ~TheHub();
 
     static uint constexpr MAX_POLYNOM_DEGREE = 4;
 
@@ -126,9 +133,9 @@ public:
 
     // modifying methods:
     void removeFile(uint);
-    void sessionFromFile(rcstr const&) THROWS;
+    void sessionFromFile(rcstr&) THROWS;
     void addGivenFile(rcstr filePath) THROWS;
-    void addGivenFiles(QStringList const& filePaths) THROWS;
+    void addGivenFiles(const QStringList& filePaths) THROWS;
     void collectDatasetsFromFiles(uint_vec, pint);
     void collectDatasetsFromFiles(uint_vec);
     void combineDatasetsBy(pint);
@@ -136,19 +143,19 @@ public:
     void tryEnableCorrection(bool);
     void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
     void setGeometry(preal detectorDistance, preal pixSize, IJ const& midPixOffset);
-    void setGammaRange(Range const&);
+    void setGammaRange(const Range&);
 
-    void setBgRanges(Ranges const&);
-    void addBgRange(Range const&);
-    void remBgRange(Range const&);
+    void setBgRanges(const Ranges&);
+    void addBgRange(const Range&);
+    void removeBgRange(const Range&);
     void setBgPolyDegree(uint);
 
     void setIntenScaleAvg(bool, preal);
     void setNorm(eNorm);
     void setFittingTab(eFittingTab);
 
-    void setPeakFunction(QString const&);
-    void addReflection(QString const&);
+    void setPeakFunction(const QString&);
+    void addReflection(const QString&);
     void remReflection(uint);
 
     // const methods:
@@ -163,7 +170,7 @@ public:
 
     eFittingTab fittingTab() const { return fittingTab_; }
 
-    QSharedPointer<Suite> selectedSuite() const { return selectedSuite_; }
+    shp_Suite selectedSuite() const { return selectedSuite_; }
 
 private:
     friend class TheHubSignallingBase;
@@ -173,8 +180,9 @@ private:
     uint_vec collectFromFiles_;
     pint suiteGroupedBy_ = pint(1);
     eFittingTab fittingTab_ = eFittingTab::NONE;
-    QSharedPointer<Suite> selectedSuite_;
+    shp_Suite selectedSuite_;
     shp_Reflection selectedReflection_;
+    Settings settings_;
 
     void setImageRotate(ImageTransform);
     void setImageMirror(bool);
@@ -186,8 +194,9 @@ public:
     DatasetsModel* suiteModel;
     MetadataModel* metadataModel;
     ReflectionsModel* reflectionsModel;
+
+    str saveDir; //!< setting: default directory for data export
+    str saveFmt; //!< setting: default format for data export
 };
-
-
 
 #endif // THEHUB_H

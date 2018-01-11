@@ -1,26 +1,25 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/data/experiment.cpp
 //! @brief     Implements class Experiment
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "suite.h"
 #include "measurement.h"
-#include "session.h"
+#include "core/session.h"
 
 Experiment::Experiment() {
     invalidateAvgMutables();
 }
 
-void Experiment::appendHere(QSharedPointer<Suite> dataseq) {
+void Experiment::appendHere(shp_Suite dataseq) {
     // can be added only once
     debug::ensure(!dataseq->experiment_);
     dataseq->experiment_ = this;
@@ -53,21 +52,21 @@ qreal Experiment::avgDeltaTime() const {
     return avgDeltaTime_;
 }
 
-Range const& Experiment::rgeGma() const {
+const Range& Experiment::rgeGma() const {
     if (!rgeGma_.isValid())
-        for (auto& dataseq : *this)
-            rgeGma_.extendBy(dataseq->rgeGma());
+        for (const shp_Suite& suite : *this)
+            rgeGma_.extendBy(suite->rgeGma());
     return rgeGma_;
 }
 
-Range const& Experiment::rgeFixedInten(bool trans, bool cut) const {
+const Range& Experiment::rgeFixedInten(bool trans, bool cut) const {
     if (!rgeFixedInten_.isValid()) {
         TakesLongTime __;
-        for (auto& dataseq : *this)
-            for (auto& one : *dataseq) {
+        for (const shp_Suite& suite : *this)
+            for (const shp_Measurement& one : *suite) {
                 if (one->image()) {
-                    auto& image = *one->image();
-                    shp_ImageLens imageLens = gSession->imageLens(image, *this, trans, cut);
+                    const shp_Image& image = one->image();
+                    shp_ImageLens imageLens = gSession->imageLens(*image, trans, cut);
                     rgeFixedInten_.extendBy(imageLens->rgeInten(false));
                 }
             }
@@ -91,20 +90,18 @@ void Experiment::invalidateAvgMutables() const {
     avgCurve_.clear();
 }
 
-QSharedPointer<Suite> Experiment::combineAll() const {
-    QSharedPointer<Suite> ret(new Suite);
-    for (QSharedPointer<Suite> const& dataseq : *this)
-        for (QSharedPointer<Measurement const> const& one : *dataseq)
+shp_Suite Experiment::combineAll() const {
+    shp_Suite ret(new Suite);
+    for (shp_Suite const& suite : *this)
+        for (shp_Measurement const& one : *suite)
             ret->append(one);
     return ret;
 }
 
 qreal Experiment::calcAvgMutable(qreal (Suite::*avgMth)() const) const {
     qreal ret = 0;
-    if (!isEmpty()) {
-        for (auto& dataseq : *this)
-            ret += ((*dataseq).*avgMth)();
-        ret /= count();
-    }
+    for (shp_Suite const& suite : *this)
+        ret += ((*suite).*avgMth)();
+    ret /= count();
     return ret;
 }

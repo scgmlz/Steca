@@ -1,50 +1,49 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/output/dialog_panels.cpp
 //! @brief     Implements PanelReflection, PanelGammaSlices. and several other panel classes
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "dialog_panels.h"
-#include "data/metadata.h"
-#include "cfg/gui_cfg.h"
-#include "models.h"
-#include "session.h"
-#include "thehub.h"
-#include "widgets/widget_makers.h"
+#include "gui/output/dialog_panels.h"
+#include "core/data/metadata.h"
+#include "gui/cfg/gui_cfg.h"
+#include "gui/models.h"
+#include "core/session.h"
+#include "gui/thehub.h"
 
 // ************************************************************************** //
 //  class GridPanel
 // ************************************************************************** //
 
 void GridPanel::setHorizontalStretch(int stretch) {
-    auto sp = sizePolicy();
+    QSizePolicy sp = sizePolicy();
     sp.setHorizontalStretch(stretch);
     setSizePolicy(sp);
 }
 
 void GridPanel::setVerticalStretch(int stretch) {
-    auto sp = sizePolicy();
+    QSizePolicy sp = sizePolicy();
     sp.setVerticalStretch(stretch);
     setSizePolicy(sp);
 }
 
 void GridPanel::setStretch(int horizontal, int vertical) {
-    auto sp = sizePolicy();
+    QSizePolicy sp = sizePolicy();
     sp.setHorizontalStretch(horizontal);
     sp.setVerticalStretch(vertical);
     setSizePolicy(sp);
 }
 
 GridPanel::GridPanel(rcstr title) : QGroupBox(title) {
-    setLayout((grid_ = gridLayout()));
+    setLayout((grid_ = newQ::GridLayout()));
 }
 
 // ************************************************************************** //
@@ -52,21 +51,23 @@ GridPanel::GridPanel(rcstr title) : QGroupBox(title) {
 // ************************************************************************** //
 
 PanelReflection::PanelReflection() : GridPanel("Reflection") {
-    auto g = grid();
+    QGridLayout* g = grid();
     cbRefl = new QComboBox;
     cbRefl->addItems(gHub->reflectionsModel->names());
     g->addWidget(cbRefl);
     g->setRowStretch(g->rowCount(), 1);
 }
 
-PanelGammaSlices::PanelGammaSlices() : GridPanel("Gamma slices") {
-    auto g = grid();
 
-    g->addWidget(label("count"), 0, 0);
-    g->addWidget((numSlices = spinCell(gui_cfg::em4, 0)), 0, 1);
+PanelGammaSlices::PanelGammaSlices() : GridPanel("Gamma slices"), settings_("gamma_slices") {
+    QGridLayout* g = grid();
 
-    g->addWidget(label("degrees"), 1, 0);
-    g->addWidget((stepGamma = spinDoubleCell(gui_cfg::em4_2, 0.0)), 1, 1);
+    g->addWidget(newQ::Label("count"), 0, 0);
+    g->addWidget((numSlices = newQ::SpinBox(gui_cfg::em4, 0)), 0, 1);
+    numSlices->setValue(settings_.readInt("num_slices", 0));
+
+    g->addWidget(newQ::Label("degrees"), 1, 0);
+    g->addWidget((stepGamma = newQ::DoubleSpinBox(gui_cfg::em4_2, 0.0)), 1, 1);
     stepGamma->setReadOnly(true);
 
     g->setRowStretch(g->rowCount(), 1);
@@ -74,6 +75,10 @@ PanelGammaSlices::PanelGammaSlices() : GridPanel("Gamma slices") {
     rgeGma_ = gSession->experiment().rgeGma();
 
     connect(numSlices, slot(QSpinBox, valueChanged, int), [this]() { updateValues(); });
+}
+
+PanelGammaSlices::~PanelGammaSlices() {
+    settings_.saveInt("num_slices", numSlices->value());
 }
 
 void PanelGammaSlices::updateValues() {
@@ -84,16 +89,18 @@ void PanelGammaSlices::updateValues() {
         stepGamma->clear();
 }
 
-PanelGammaRange::PanelGammaRange() : GridPanel("Gamma range") {
-    auto g = grid();
 
-    g->addWidget((cbLimitGamma = check("limit")), 0, 0, 1, 2);
+PanelGammaRange::PanelGammaRange() : GridPanel("Gamma range"), settings_("gamma_range") {
+    QGridLayout* g = grid();
 
-    g->addWidget(label("min"), 1, 0);
-    g->addWidget((minGamma = spinDoubleCell(gui_cfg::em4_2, -180., 180.)), 1, 1);
+    g->addWidget((cbLimitGamma = newQ::CheckBox("limit")), 0, 0, 1, 2);
+    cbLimitGamma->setChecked(settings_.readBool("limit", false));
 
-    g->addWidget(label("max"), 2, 0);
-    g->addWidget((maxGamma = spinDoubleCell(gui_cfg::em4_2, -180., 180.)), 2, 1);
+    g->addWidget(newQ::Label("min"), 1, 0);
+    g->addWidget((minGamma = newQ::DoubleSpinBox(gui_cfg::em4_2, -180., 180.)), 1, 1);
+
+    g->addWidget(newQ::Label("max"), 2, 0);
+    g->addWidget((maxGamma = newQ::DoubleSpinBox(gui_cfg::em4_2, -180., 180.)), 2, 1);
 
     g->setRowStretch(g->rowCount(), 1);
 
@@ -105,6 +112,11 @@ PanelGammaRange::PanelGammaRange() : GridPanel("Gamma range") {
     connect(cbLimitGamma, &QCheckBox::toggled, [this]() { updateValues(); });
 }
 
+PanelGammaRange::~PanelGammaRange() {
+    settings_.saveBool("limit", cbLimitGamma->isChecked());
+
+}
+
 // TODO when min/maxGamma updated -> reflect that in PanelGammaSlices
 
 void PanelGammaRange::updateValues() {
@@ -113,48 +125,73 @@ void PanelGammaRange::updateValues() {
     maxGamma->setEnabled(on);
 }
 
-PanelPoints::PanelPoints() : GridPanel("Points") {
-    auto g = grid();
-    g->addWidget((rbCalc = radioButton("calculated")), 0, 0);
-    g->addWidget((rbInterp = radioButton("interpolated")), 1, 0);
+
+PanelPoints::PanelPoints() : GridPanel("Points"), settings_("polediagram_points") {
+    QGridLayout* g = grid();
+    g->addWidget((rbCalc = newQ::RadioButton("calculated")), 0, 0);
+    g->addWidget((rbInterp = newQ::RadioButton("interpolated")), 1, 0);
+    (settings_.readBool("interpolated", false) ? rbInterp : rbCalc)->setChecked(true);
 
     g->setRowStretch(g->rowCount(), 1);
+}
+
+PanelPoints::~PanelPoints() {
+    settings_.saveBool("interpolated", rbInterp->isChecked());
 }
 
 PanelInterpolation::PanelInterpolation() : GridPanel("Interpolation") {
-    auto g = grid();
+    QGridLayout* g = grid();
 
-    g->addWidget(label("step α"), 0, 0, Qt::AlignRight);
-    g->addWidget((stepAlpha = spinDoubleCell(gui_cfg::em4_2, 1., 30.)), 0, 1);
-    g->addWidget(label("β"), 1, 0, Qt::AlignRight);
-    g->addWidget((stepBeta = spinDoubleCell(gui_cfg::em4_2, 1., 30.)), 1, 1);
-    g->addWidget(label("idw radius"), 2, 0, Qt::AlignRight);
-    g->addWidget((idwRadius = spinDoubleCell(gui_cfg::em4_2, 0., 90.)), 2, 1);
+    g->addWidget(newQ::Label("step α"), 0, 0, Qt::AlignRight);
+    g->addWidget((stepAlpha = newQ::DoubleSpinBox(gui_cfg::em4_2, 1., 30.)), 0, 1);
+    g->addWidget(newQ::Label("β"), 1, 0, Qt::AlignRight);
+    g->addWidget((stepBeta = newQ::DoubleSpinBox(gui_cfg::em4_2, 1., 30.)), 1, 1);
+    g->addWidget(newQ::Label("idw radius"), 2, 0, Qt::AlignRight);
+    g->addWidget((idwRadius = newQ::DoubleSpinBox(gui_cfg::em4_2, 0., 90.)), 2, 1);
 
-    g->addWidget(label("avg. α max"), 0, 2, Qt::AlignRight);
-    g->addWidget((avgAlphaMax = spinDoubleCell(gui_cfg::em4_2, 0., 90.)), 0, 3);
-    g->addWidget(label("radius"), 1, 2, Qt::AlignRight);
-    g->addWidget((avgRadius = spinDoubleCell(gui_cfg::em4_2, 0., 90.)), 1, 3);
-    g->addWidget(label("inclusion %"), 2, 2, Qt::AlignRight);
-    g->addWidget((avgThreshold = spinCell(gui_cfg::em4_2, 0, 100)), 2, 3);
+    g->addWidget(newQ::Label("avg. α max"), 0, 2, Qt::AlignRight);
+    g->addWidget((avgAlphaMax = newQ::DoubleSpinBox(gui_cfg::em4_2, 0., 90.)), 0, 3);
+    g->addWidget(newQ::Label("radius"), 1, 2, Qt::AlignRight);
+    g->addWidget((avgRadius = newQ::DoubleSpinBox(gui_cfg::em4_2, 0., 90.)), 1, 3);
+    g->addWidget(newQ::Label("inclusion %"), 2, 2, Qt::AlignRight);
+    g->addWidget((avgThreshold = newQ::SpinBox(gui_cfg::em4_2, 0, 100)), 2, 3);
 
     g->setRowStretch(g->rowCount(), 1);
+
+    stepAlpha->setValue(settings_.readReal("step alpha", 5));
+    stepBeta->setValue(settings_.readReal("step beta", 5));
+    idwRadius->setValue(settings_.readReal("idw radius", 10));
+
+    avgAlphaMax->setValue(settings_.readReal("avg alpha max", 15));
+    avgRadius->setValue(settings_.readReal("avg radius", 5));
+    avgThreshold->setValue(settings_.readInt("avg threshold", 100));
 }
 
+PanelInterpolation::~PanelInterpolation() {
+    settings_.saveReal("step alpha", stepAlpha->value());
+    settings_.saveReal("step beta", stepBeta->value());
+    settings_.saveReal("idw radius", idwRadius->value());
+    settings_.saveReal("avg alpha max", avgAlphaMax->value());
+    settings_.saveReal("avg radius", avgRadius->value());
+    settings_.saveInt("avg threshold", avgThreshold->value());
+}
+
+
 PanelDiagram::PanelDiagram() : GridPanel("Diagram") {
-    auto tags = ReflectionInfo::dataTags(false);
+    QStringList tags = ReflectionInfo::dataTags(false);
     for_i (Metadata::numAttributes(false) - Metadata::numAttributes(true))
         tags.removeLast(); // remove all tags that are not numbers
 
-    auto g = grid();
+    QGridLayout* g = grid();
     xAxis = (new QComboBox); xAxis->addItems(tags);
     yAxis = (new QComboBox); yAxis->addItems(tags);
-    g->addWidget(label("x"), 1, 0);
+    g->addWidget(newQ::Label("x"), 1, 0);
     g->addWidget(xAxis, 1, 1);
-    g->addWidget(label("y"), 0, 0);
+    g->addWidget(newQ::Label("y"), 0, 0);
     g->addWidget(yAxis, 0, 1);
 
     g->setRowStretch(g->rowCount(), 1);
 }
+
 
 PanelFitError::PanelFitError() : GridPanel("Fit error") {}

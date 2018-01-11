@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/typ/ij.cpp
 //! @brief     Implements class IJ
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -14,9 +14,9 @@
 //
 // ************************************************************************** //
 
-#include "def/comparators.h"
-#include "typ/ij.h"
-#include "typ/json.h"
+#include "core/def/comparators.h"
+#include "core/typ/ij.h"
+#include "core/typ/json.h"
 
 IJ::IJ() : IJ(0, 0) {}
 

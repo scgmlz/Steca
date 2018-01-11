@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/cfg/settings.h
 //! @brief     Defines class Settings
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -15,17 +15,17 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include "typ/str.h"
+#include "core/typ/str.h"
+#include <QAction>
+#include <QDoubleSpinBox>
 #include <QSettings>
+#include <QSpinBox>
 
-class QAction;
-class QDoubleSpinBox;
-class QSpinBox;
+//! Used to save and retrieve the main window geometry, and certain parameter settings.
 
-
-
+//! TODO: make a clear decision, what is saved through this mechanism, and what is
+//! left to the .ste configuration files.
 class Settings : public QSettings {
-private:
 public:
     Settings(rcstr group = "");
     ~Settings();
@@ -54,7 +54,5 @@ public:
     str readStr(rcstr key, rcstr def = "") { return readVariant(key, def).toString(); }
     void saveStr(rcstr key, rcstr val) { saveVariant(key, val); }
 };
-
-
 
 #endif // SETTINGS_H

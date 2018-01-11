@@ -1,27 +1,27 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/output/output_diagrams.cpp
 //! @brief     Implements class DiagramsFrame
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "output_diagrams.h"
-#include "dialog_panels.h"
-#include "fit/fit_fun.h"
-#include "output_dialogs.h"
-#include "session.h"
-#include "thehub.h"
-#include "widgets/widget_makers.h"
+#include "gui/output/output_diagrams.h"
+#include "core/fit/fit_fun.h"
+#include "core/session.h"
+#include "gui/output/dialog_panels.h"
+#include "gui/output/widgets4output.h"
+#include "gui/thehub.h"
+#include "gui/widgets/new_q.h"
+#include "gui/widgets/various_widgets.h"
 #include "write_file.h"
 #include "QCustomPlot/qcustomplot.h"
-#include <QAction>
 
 // sorts xs and ys the same way, by (x,y)
 static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
@@ -46,12 +46,10 @@ static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
 
     for_i (count)
         r[i] = xs.at(is.at(i));
-
     xs = r;
 
     for_i (count)
         r[i] = ys.at(is.at(i));
-
     ys = r;
 }
 
@@ -59,17 +57,16 @@ static const Params::ePanels PANELS =
     Params::ePanels(Params::REFLECTION | Params::GAMMA | Params::DIAGRAM);
 
 // ************************************************************************** //
-//  class TabPlot (file scope)
+//  local class TabPlot
 // ************************************************************************** //
 
 class TabPlot : public QCustomPlot {
-private:
 public:
     TabPlot();
     void set(ReflectionInfos);
     void plot(
         qreal_vec const& xs, qreal_vec const& ys, qreal_vec const& ysLo, qreal_vec const& ysUp);
-protected:
+private:
     QCPGraph *graph_, *graphLo_, *graphUp_;
 };
 
@@ -121,28 +118,28 @@ void TabPlot::plot(
 }
 
 // ************************************************************************** //
-//  class TabDiagramsSave (file scope)
+//  local class TabDiagramsSave
 // ************************************************************************** //
 
-class TabDiagramsSave : public TabSave {
+class TabDiagramsSave final : public TabSave {
 public:
-    TabDiagramsSave(Params&);
+    TabDiagramsSave();
     uint currType() const { return fileTypes_->currentIndex(); }
     bool currDiagram() const { return currentDiagram_->isChecked(); }
-protected:
+private:
     QRadioButton *currentDiagram_, *allData_;
     QComboBox* fileTypes_;
 };
 
-TabDiagramsSave::TabDiagramsSave(Params& params) : TabSave(params, true) {
+TabDiagramsSave::TabDiagramsSave() : TabSave(true) {
     auto gp = new GridPanel("To save");
     grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
     grid_->setRowStretch(grid_->rowCount(), 1);
 
-    auto g = gp->grid();
-    g->addWidget((currentDiagram_ = radioButton("Current diagram")));
-    g->addWidget((allData_ = radioButton("All data")));
-    g->addWidget(textButton(actSave), 1, 1);
+    QGridLayout* g = gp->grid();
+    g->addWidget((currentDiagram_ = newQ::RadioButton("Current diagram")));
+    g->addWidget((allData_ = newQ::RadioButton("All data")));
+    g->addWidget(newQ::TextButton(actSave), 1, 1);
     g->setColumnStretch(0, 1);
 
     currentDiagram_->setChecked(true);
@@ -157,17 +154,16 @@ DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
     btnInterpolate_->hide();
 
     tabPlot_ = new TabPlot();
-    tabs_->addTab("Diagram", Qt::Vertical).box().addWidget(tabPlot_);
+    newQ::Tab(tabs_, "Diagram")->box().addWidget(tabPlot_);
 
     debug::ensure(params_->panelDiagram);
-    auto pd = params_->panelDiagram;
+    PanelDiagram const* pd = params_->panelDiagram;
 
     connect(pd->xAxis, slot(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
-
     connect(pd->yAxis, slot(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
 
-    tabSave_ = new TabDiagramsSave(*params_);
-    tabs_->addTab("Save", Qt::Vertical).box().addWidget(tabSave_);
+    tabSave_ = new TabDiagramsSave();
+    newQ::Tab(tabs_, "Save")->box().addWidget(tabSave_);
 
     connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiagramOutput(); });
 
@@ -202,7 +198,7 @@ void DiagramsFrame::recalculate() {
     uint yi = uint(yAttr());
 
     for_i (count) {
-        auto row = rs_.at(i).data();
+        const row_t row = rs_.at(i).data();
         xs_[i] = row.at(xi).toDouble();
         ys_[i] = row.at(yi).toDouble();
     }
@@ -210,13 +206,13 @@ void DiagramsFrame::recalculate() {
     uint_vec is;
     sortColumns(xs_, ys_, is);
 
-    auto calcErrors = [this, is](eReflAttr attr) {
+    auto _calcErrors = [this, is](eReflAttr attr) {
         uint count = ys_.count();
         ysErrorLo_.resize(count);
         ysErrorUp_.resize(count);
 
         for_i (count) {
-            auto row = rs_.at(is.at(i)).data(); // access error over sorted index vec
+            const row_t row = rs_.at(is.at(i)).data(); // access error over sorted index vec
             qreal sigma = row.at(uint(attr)).toDouble();
             qreal y = ys_.at(i);
             ysErrorLo_[i] = y - sigma;
@@ -229,10 +225,17 @@ void DiagramsFrame::recalculate() {
 
     if (gSession->reflections().at(getReflIndex())->peakFunction().name() != "Raw") {
         switch (yAttr()) {
-        case eReflAttr::INTEN: calcErrors(eReflAttr::SIGMA_INTEN); break;
-        case eReflAttr::TTH: calcErrors(eReflAttr::SIGMA_TTH); break;
-        case eReflAttr::FWHM: calcErrors(eReflAttr::SIGMA_FWHM); break;
-        default: break;
+        case eReflAttr::INTEN:
+            _calcErrors(eReflAttr::SIGMA_INTEN);
+            break;
+        case eReflAttr::TTH:
+            _calcErrors(eReflAttr::SIGMA_TTH);
+            break;
+        case eReflAttr::FWHM:
+            _calcErrors(eReflAttr::SIGMA_FWHM);
+            break;
+        default:
+            break;
         }
     }
 
@@ -253,7 +256,7 @@ void DiagramsFrame::saveDiagramOutput() {
     qDebug() /* qInfo() TODO restore */ << "diagram saved to " << path;
 }
 
-void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator) {
+void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator) const {
     WriteFile file(filePath);
 
     QTextStream stream(&file);
@@ -272,24 +275,23 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separato
     }
 }
 
-void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
+void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) const {
     WriteFile file(filePath);
     QTextStream stream(&file);
 
-    auto headers = table_->outHeaders();
+    const QStringList& headers = table_->outHeaders();
     for_i (headers.count())
         stream << headers.at(to_u(i)) << separator;
     stream << '\n';
 
     for_i (calcPoints_.at(getReflIndex()).count()) {
-        auto& row = table_->row(i);
+        const row_t& row = table_->row(i);
         for_i (row.count()) {
             QVariant const& var = row.at(i);
             if (isNumeric(var))
                 stream << var.toDouble();
             else
                 stream << var.toString();
-
             stream << separator;
         }
         stream << '\n';

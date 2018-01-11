@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/data/suite.cpp
 //! @brief     Implements classes Measurement, Suite, Experiment
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -15,8 +15,8 @@
 #include "suite.h"
 #include "measurement.h"
 #include "metadata.h"
-#include "session.h"
-#include "typ/matrix.h"
+#include "core/session.h"
+#include "core/typ/matrix.h"
 #include <qmath.h>
 
 // ************************************************************************** //
@@ -32,14 +32,14 @@ Experiment const& Suite::experiment() const {
     return *experiment_;
 }
 
-QSharedPointer<Metadata const> Suite::metadata() const {
+shp_Metadata Suite::metadata() const {
     if (md_.isNull()) {
         debug::ensure(!isEmpty());
-        const_cast<Suite*>(this)->md_ = QSharedPointer<Metadata const>(new Metadata);
+        const_cast<Suite*>(this)->md_ = shp_Metadata(new Metadata);
         Metadata* m = const_cast<Metadata*>(md_.data());
 
         debug::ensure(!first()->metadata().isNull());
-        Metadata const& firstMd = *(first()->metadata());
+        const Metadata& firstMd = *(first()->metadata());
 
         m->date = firstMd.date;
         m->comment = firstMd.comment;
@@ -47,8 +47,8 @@ QSharedPointer<Metadata const> Suite::metadata() const {
         // sums: delta mon. count and time,
         // takes the last ones (presumed the maximum) of mon. count and time,
         // averages the rest
-        for (auto& one : *this) {
-            Metadata const* d = one->metadata().data();
+        for (const shp_Measurement& one : *this) {
+            const Metadata* d = one->metadata().data();
             debug::ensure(d);
 
             m->motorXT += d->motorXT;
@@ -110,12 +110,12 @@ QSharedPointer<Metadata const> Suite::metadata() const {
     return md_;
 }
 
-#define AVG_ONES(what)                                                                             \
-    debug::ensure(!isEmpty());                                                                 \
-    qreal avg = 0;                                                                                 \
-    for (auto& one : *this)                                                                        \
-        avg += one->what();                                                                        \
-    avg /= count();                                                                                \
+#define AVG_ONES(what)                                                  \
+    debug::ensure(!isEmpty());                                          \
+    qreal avg = 0;                                                      \
+    for (const shp_Measurement& one : *this)                            \
+        avg += one->what();                                             \
+    avg /= count();                                                     \
     return avg;
 
 deg Suite::omg() const { AVG_ONES(omg) }
@@ -125,11 +125,11 @@ deg Suite::phi() const { AVG_ONES(phi) }
 deg Suite::chi() const { AVG_ONES(chi) }
 
 // combined range of combined suite
-#define RGE_COMBINE(combineOp, what)                                                               \
-    debug::ensure(!isEmpty());                                                                           \
-    Range rge;                                                                                     \
-    for (auto& one : *this)                                                                        \
-        rge.combineOp(one->what);                                                                  \
+#define RGE_COMBINE(combineOp, what)                                    \
+    debug::ensure(!isEmpty());                                          \
+    Range rge;                                                          \
+    for (const shp_Measurement& one : *this)                            \
+        rge.combineOp(one->what);                                       \
     return rge;
 
 Range Suite::rgeGma() const { RGE_COMBINE(extendBy, rgeGma()) }
@@ -148,16 +148,16 @@ qreal Suite::avgDeltaMonitorCount() const { AVG_ONES(deltaMonitorCount) }
 
 qreal Suite::avgDeltaTime() const { AVG_ONES(deltaTime) }
 
-inten_vec Suite::collectIntens(Image const* intensCorr, Range const& rgeGma) const {
-    Range tthRge = rgeTth();
-    deg tthWdt = tthRge.width();
+inten_vec Suite::collectIntens(const Image* intensCorr, const Range& rgeGma) const {
+    const Range tthRge = rgeTth();
+    const deg tthWdt = tthRge.width();
 
-    auto cut = gSession->imageCut();
-    uint pixWidth = gSession->imageSize().w - cut.left - cut.right;
+    const ImageCut& cut = gSession->imageCut();
+    const uint pixWidth = gSession->imageSize().w - cut.left - cut.right;
 
     uint numBins;
     if (1 < count()) { // combined suite
-        auto one = first();
+        const shp_Measurement& one = first();
         deg delta = one->rgeTth().width() / pixWidth;
         numBins = to_u(qCeil(tthWdt / delta));
     } else {
@@ -169,14 +169,14 @@ inten_vec Suite::collectIntens(Image const* intensCorr, Range const& rgeGma) con
 
     deg minTth = tthRge.min, deltaTth = tthWdt / numBins;
 
-    for (auto& one : *this)
+    for (const shp_Measurement& one : *this)
         one->collectIntens(intensCorr, intens, counts, rgeGma, minTth, deltaTth);
 
     // sum or average
     if (gSession->intenScaledAvg()) {
         preal scale = gSession->intenScale();
         for_i (numBins) {
-            auto cnt = counts.at(i);
+            uint cnt = counts.at(i);
             if (cnt > 0)
                 intens[i] *= scale / cnt;
         }

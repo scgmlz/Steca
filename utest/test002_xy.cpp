@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
-#include "typ/json.h"
-#include "typ/realpair.h"
+#include "core/typ/json.h"
+#include "core/typ/realpair.h"
 
 
 TEST(qpair, Initialization) {

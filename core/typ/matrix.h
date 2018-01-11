@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/typ/matrix.h
-//! @brief     Defines ...
+//! @brief     Defines the structs vec3f, vec3r, mat3r
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -15,10 +15,11 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include "def/macros.h"
+#include "core/def/macros.h"
 
 struct vec3r;
 
+//! 3D vector with base type float.
 struct vec3f {
     typedef vec3f const& rc;
 
@@ -30,6 +31,7 @@ struct vec3f {
     bool operator==(vec3f const&) const;
 };
 
+//! 3D vector with base type qreal.
 struct vec3r {
     typedef vec3r const& rc;
 
@@ -41,6 +43,7 @@ struct vec3r {
     bool operator==(vec3r const&) const;
 };
 
+//! Rotation matrix in 3D, with base type qreal.
 struct mat3r {
     typedef mat3r const& rc;
 

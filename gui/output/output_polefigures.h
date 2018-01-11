@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/output/output_polefigures.h
 //! @brief     Defines class PoleFiguresFrame
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -17,11 +17,12 @@
 
 #include "frame.h"
 
-class PoleFiguresFrame : public Frame {
+//! The modal dialog for generating and saving pole figures
+class PoleFiguresFrame final : public Frame {
 public:
     PoleFiguresFrame(rcstr title, QWidget*);
 
-protected:
+private:
     class TabGraph* tabGraph_;
     class TabPoleFiguresSave* tabSave_;
 

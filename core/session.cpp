@@ -1,23 +1,26 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/session.cpp
 //! @brief     Implements class Session
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "session.h"
-#include "data/suite.h"
-#include "data/measurement.h"
-#include "fit/peak_functions.h"
+#include "core/session.h"
+#include "core/data/suite.h"
+#include "core/data/measurement.h"
+#include "core/fit/peak_functions.h"
 
-Session::Session() : intenScale_(1), angleMapCache_(360) {
+Session::Session()
+    : intenScale_(1)
+    , angleMapCache_(360)
+{
     clear();
     register_peak_functions();
 }
@@ -44,13 +47,13 @@ void Session::clear() {
 
 bool Session::hasFile(rcstr fileName) const {
     QFileInfo fileInfo(fileName);
-    for (auto& file : files_)
+    for (const shp_Datafile& file : files_)
         if (fileInfo == file->fileInfo())
             return true;
     return false;
 }
 
-void Session::addGivenFile(QSharedPointer<Datafile const> datafile) THROWS {
+void Session::addGivenFile(shp_Datafile datafile) THROWS {
     setImageSize(datafile->imageSize());
     // all ok
     files_.append(datafile);
@@ -78,7 +81,7 @@ void Session::calcIntensCorr() const {
     intensCorr_.fill(1, corrImage_->size());
 
     for_ij (w, h) {
-        auto inten = corrImage_->inten(i + di, j + dj);
+        const inten_t inten = corrImage_->inten(i + di, j + dj);
         qreal fact;
         if (inten > 0) {
             fact = avg / inten;
@@ -90,7 +93,7 @@ void Session::calcIntensCorr() const {
     }
 }
 
-Image const* Session::intensCorr() const {
+const Image* Session::intensCorr() const {
     if (!isCorrEnabled())
         return nullptr;
     if (intensCorr_.isEmpty())
@@ -98,7 +101,7 @@ Image const* Session::intensCorr() const {
     return &intensCorr_;
 }
 
-void Session::setCorrFile(QSharedPointer<Datafile const> datafile) THROWS {
+void Session::setCorrFile(shp_Datafile datafile) THROWS {
     if (datafile.isNull()) {
         remCorrFile();
     } else {
@@ -125,18 +128,17 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
     experiment_.clear();
     experimentTags_.clear();
 
-    vec<QSharedPointer<Measurement const>> suiteFromFiles;
+    vec<shp_Measurement> suiteFromFiles;
     for (uint i : collectedFromFiles_)
-        for (auto& suite : files_.at(i)->suite())
-            suiteFromFiles.append(suite);
-
+        for (const shp_Measurement& measurement : files_.at(i)->suite())
+            suiteFromFiles.append(measurement);
     if (suiteFromFiles.isEmpty())
         return;
 
-    QSharedPointer<Suite> cd(new Suite);
+    shp_Suite cd(new Suite);
     uint i = 0;
 
-    auto appendCd = [this, &cd, &combineBy, &i]() {
+    auto _appendCd = [this, &cd, &combineBy, &i]() {
         uint cnt = cd->count();
         if (cnt) {
             str tag = str::number(i + 1);
@@ -145,20 +147,20 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
                 tag += '-' + str::number(i);
             experiment_.appendHere(cd);
             experimentTags_.append(tag);
-            cd = QSharedPointer<Suite>(new Suite);
+            cd = shp_Suite(new Suite);
         }
     };
 
     uint by = combineBy;
-    for (auto& suite : suiteFromFiles) {
-        cd->append(QSharedPointer<Measurement const>(suite));
+    for (const shp_Measurement& measurement : suiteFromFiles) {
+        cd->append(measurement);
         if (1 >= by--) {
-            appendCd();
+            _appendCd();
             by = combineBy;
         }
     }
 
-    appendCd(); // the remaining ones
+    _appendCd(); // the remaining ones
 }
 
 void Session::updateImageSize() {
@@ -198,7 +200,7 @@ void Session::setGeometry(preal detectorDistance, preal pixSize, IJ const& midPi
 }
 
 IJ Session::midPix() const {
-    auto sz = imageSize();
+    size2d sz = imageSize();
     IJ mid(sz.w / 2, sz.h / 2);
 
     IJ const& off = geometry_.midPixOffset;
@@ -217,22 +219,21 @@ shp_AngleMap Session::angleMap(Measurement const& one) const {
 }
 
 shp_ImageLens Session::imageLens(
-    Image const& image, Experiment const& expt, bool trans, bool cut) const {
-    return shp_ImageLens(new ImageLens(image, expt, trans, cut));
+    const Image& image, bool trans, bool cut) const {
+    return shp_ImageLens(new ImageLens(image, trans, cut));
 }
 
-QSharedPointer<SequenceLens> Session::dataseqLens(
+shp_SequenceLens Session::dataseqLens(
     Suite const& suite, eNorm norm, bool trans, bool cut) const {
-    return QSharedPointer<SequenceLens>(
-        new SequenceLens(
-            suite, suite.experiment(), norm, trans, cut, imageTransform_, imageCut_));
+    return shp_SequenceLens(
+        new SequenceLens(suite, norm, trans, cut, imageTransform_, imageCut_));
 }
 
-QSharedPointer<SequenceLens> Session::defaultDatasetLens(Suite const& suite) const {
+shp_SequenceLens Session::defaultDatasetLens(Suite const& suite) const {
     return dataseqLens(suite, norm(), true, true);
 }
 
-Curve Session::curveMinusBg(SequenceLens const& lens, Range const& rgeGma) const {
+Curve Session::curveMinusBg(SequenceLens const& lens, const Range& rgeGma) const {
     Curve curve = lens.makeCurve(rgeGma);
     const Polynom f = Polynom::fromFit(bgPolyDegree_, curve, bgRanges_);
     curve.subtract([f](qreal x) {return f.y(x);});
@@ -242,13 +243,13 @@ Curve Session::curveMinusBg(SequenceLens const& lens, Range const& rgeGma) const
 //! Fits reflection to the given gamma sector and constructs a ReflectionInfo.
 ReflectionInfo Session::makeReflectionInfo(
     SequenceLens const& lens, Reflection const& reflection,
-    Range const& gmaSector) const {
+    const Range& gmaSector) const {
 
     // fit peak, and retrieve peak parameters:
     Curve curve = curveMinusBg(lens, gmaSector);
     scoped<PeakFunction*> peakFunction = FunctionRegistry::clone(reflection.peakFunction());
     peakFunction->fit(curve);
-    Range const& rgeTth = peakFunction->range();
+    const Range& rgeTth = peakFunction->range();
     qpair peak = peakFunction->fittedPeak();
     fwhm_t fwhm = peakFunction->fittedFWHM();
     qpair peakError = peakFunction->peakError();
@@ -259,7 +260,7 @@ ReflectionInfo Session::makeReflectionInfo(
     Suite const& suite = lens.suite();
     suite.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
 
-    QSharedPointer<Metadata const> metadata = suite.metadata();
+    shp_Metadata metadata = suite.metadata();
 
     return rgeTth.contains(peak.x)
         ? ReflectionInfo(
@@ -276,17 +277,17 @@ ReflectionInfo Session::makeReflectionInfo(
  */
 ReflectionInfos Session::makeReflectionInfos(
     Experiment const& expt, Reflection const& reflection, uint gmaSlices,
-    Range const& rgeGma, Progress* progress) const {
+    const Range& rgeGma, Progress* progress) const {
     ReflectionInfos infos;
 
     if (progress)
         progress->setTotal(expt.count());
 
-    for (auto& suite : expt) {
+    for (const shp_Suite& suite : expt) {
         if (progress)
             progress->step();
 
-        auto lens = dataseqLens(*suite, norm_, true, true);
+        const shp_SequenceLens& lens = dataseqLens(*suite, norm_, true, true);
 
         Range rge = (gmaSlices > 0) ? lens->rgeGma() : lens->rgeGmaFull();
         if (rgeGma.isValid())
@@ -300,7 +301,7 @@ ReflectionInfos Session::makeReflectionInfos(
         for_i (uint(gmaSlices)) {
             qreal min = rge.min + i * step;
             Range gmaStripe(min, min + step);
-            auto refInfo = makeReflectionInfo(*lens, reflection, gmaStripe);
+            const ReflectionInfo refInfo = makeReflectionInfo(*lens, reflection, gmaStripe);
             if (!qIsNaN(refInfo.inten()))
                 infos.append(refInfo);
         }
@@ -314,7 +315,7 @@ void Session::setIntenScaleAvg(bool avg, preal scale) {
     intenScale_ = scale;
 }
 
-void Session::addReflection(QString const& peakFunctionName) {
+void Session::addReflection(const QString& peakFunctionName) {
     shp_Reflection reflection(new Reflection(peakFunctionName));
     debug::ensure(!reflection.isNull());
     reflections_.append(reflection);
@@ -327,16 +328,16 @@ void Session::addReflection(const QJsonObject& obj) {
 }
 
 qreal Session::calcAvgBackground(Suite const& suite) const {
-    auto lens = dataseqLens(suite, eNorm::NONE, true, true);
+    const shp_SequenceLens& lens = dataseqLens(suite, eNorm::NONE, true, true);
     Curve gmaCurve = lens->makeCurve(); // had argument averaged=true
-    auto bgPolynom = Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
+    Polynom bgPolynom = Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
     return bgPolynom.avgY(lens->rgeTth());
 }
 
-qreal Session::calcAvgBackground(Experiment const& expt) const {
+qreal Session::calcAvgBackground() const {
     TakesLongTime __;
     qreal bg = 0;
-    for (auto& suite : expt)
+    for (const shp_Suite& suite : experiment())
         bg += calcAvgBackground(*suite);
-    return bg / expt.count();
+    return bg / experiment().count();
 }

@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/typ/cache.h
-//! @brief     Defines ...
+//! @brief     Defines and implements the templated classes cache_base, cache_lazy
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -15,8 +15,8 @@
 #ifndef CACHE_H
 #define CACHE_H
 
-#include "def/idiomatic_for.h"
-#include "typ/map.h"
+#include "core/def/idiomatic_for.h"
+#include <QMap>
 #include <QSharedPointer> // no auto rm
 
 /* Example:
@@ -63,10 +63,10 @@ protected:
         shp_mru_t() : p(), mru(0) {}
         shp_mru_t(shp p_, mru_t mru_) : p(p_), mru(mru_) {}
         shp p;
-        mru_t mru;
+        mru_t mru; //!< most recently used
     };
 
-    typedef map<Key, shp_mru_t> mapKey_t;
+    typedef QMap<Key, shp_mru_t> mapKey_t;
     typedef typename mapKey_t::iterator mapKey_it;
 
     mapKey_t mapKey_;
@@ -107,7 +107,7 @@ private:
     mru_t nextMru_ = 0;
     bool rollOver_ = false; // L.v.
 
-    typedef map<mru_t, mapKey_it> mapMruIt_t;
+    typedef QMap<mru_t, mapKey_it> mapMruIt_t;
 
     void _trim(uint n) {
         if (super::count() > n) {

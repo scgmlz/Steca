@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/typ/vec.h
-//! @brief     Defines class vec
+//! @brief     Defines and implements templated class vec
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -15,7 +15,7 @@
 #ifndef VEC_H
 #define VEC_H
 
-#include "def/numbers.h"
+#include "core/def/numbers.h"
 
 //! limited QVector, only needed methods reexported
 
@@ -55,6 +55,7 @@ public:
 
     T const& at(uint i) const { return super::at(to_i(i)); }
     T& operator[](uint i) { return super::operator[](to_i(i)); }
+    const T& operator[](uint i) const { return super::operator[](to_i(i)); }
 };
 
 // most useful vectors (that's why they are in the global namespace)

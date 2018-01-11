@@ -1,19 +1,19 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/io/io_io.cpp
 //! @brief     Implements loader functions.
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "data/datafile.h"
-#include "typ/exception.h"
+#include "core/data/datafile.h"
+#include "core/typ/exception.h"
 #include <QStringBuilder> // for ".." % ..
 #include <QFileInfo>
 
@@ -29,10 +29,8 @@ namespace {
 // peek at up to maxLen bytes (to establish the file type)
 static QByteArray peek(uint pos, uint maxLen, QFileInfo const& info) {
     QFile file(info.filePath());
-
     if (file.open(QFile::ReadOnly) && file.seek(pos))
         return file.read(maxLen);
-
     return QByteArray();
 }
 
@@ -51,37 +49,27 @@ bool couldBeMar(QFileInfo const& info) {
 // Text .dat file with metadata for tiff files
 bool couldBeTiffDat(QFileInfo const& info) {
     QFile file(info.filePath());
-
     if (!file.open(QFile::ReadOnly))
         return false;
-
-    bool couldBe = false;
-
+    bool ret = false;
     QByteArray line;
-
     while (!(line = file.readLine()).isEmpty()) {
         str s = line;
-
-        int commentPos = s.indexOf(';');
+        const int commentPos = s.indexOf(';');
         if (commentPos >= 0)
             s = s.left(commentPos);
-
         if ((s = s.simplified()).isEmpty())
             continue;
-
-        auto lst = s.split(' ');
-        int cnt = lst.count();
+        const int cnt = s.split(' ').count();
         if (cnt < 2 || cnt > 4)
             return false;
-
-        couldBe = true;
+        ret = true;
     }
-
-    return couldBe;
+    return ret;
 }
 
 Datafile load_low_level(rcstr filePath) THROWS {
-    QFileInfo info(filePath);
+    const QFileInfo info(filePath);
     RUNTIME_CHECK(info.exists(), "File " % filePath % " does not exist");
 
     if (couldBeCaress(info))
@@ -94,18 +82,18 @@ Datafile load_low_level(rcstr filePath) THROWS {
         THROW("unknown file type: " % filePath);
 }
 
-} // anonymous namespace
+} // local methods
 
 namespace io {
 
-QSharedPointer<Datafile const> loadDatafile(rcstr filePath) THROWS {
-    auto ret = QSharedPointer<Datafile const>(new Datafile(load_low_level(filePath)));
+shp_Datafile loadDatafile(rcstr filePath) THROWS {
+    const shp_Datafile ret(new Datafile(load_low_level(filePath)));
     RUNTIME_CHECK(ret->suite().count() > 0, "File " % filePath % " contains no suite");
     return ret;
 }
 
 str loadComment(QFileInfo const& info) {
-    auto path = info.absoluteFilePath();
+    const QString& path = info.absoluteFilePath();
     if (couldBeCaress(info))
         return "[car] " + io::loadCaressComment(path);
     else if (couldBeMar(info))

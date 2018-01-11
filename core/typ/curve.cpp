@@ -1,19 +1,19 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/typ/curve.cpp
 //! @brief     Implements class Curve
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "typ/curve.h"
-#include "def/idiomatic_for.h"
+#include "core/typ/curve.h"
+#include "core/def/idiomatic_for.h"
 
 void Curve::clear() {
     xs_.clear();
@@ -42,46 +42,40 @@ void Curve::append(qreal x, qreal y) {
     rgeY_.extendBy(y);
 }
 
-Curve Curve::intersect(Range const& range) const {
-    Curve res;
-
+Curve Curve::intersect(const Range& range) const {
+    Curve ret;
     if (!range.isEmpty()) {
         debug::ensure(isOrdered());
-
-        uint xi = 0, cnt = count();
-        auto minX = range.min, maxX = range.max;
-        while (xi < cnt && xs_.at(xi) < minX)
+        uint xi = 0;
+        const uint cnt = count();
+        while (xi < cnt && xs_.at(xi) < range.min)
             ++xi;
-        while (xi < cnt && xs_.at(xi) <= maxX) {
-            res.append(xs_.at(xi), ys_.at(xi));
+        while (xi < cnt && xs_.at(xi) <= range.max) {
+            ret.append(xs_.at(xi), ys_.at(xi));
             ++xi;
         }
     }
-
-    return res;
+    return ret;
 }
 
-Curve Curve::intersect(Ranges const& ranges) const {
-    Curve res;
+//! collect points that are in ranges
 
-    // collect points that are in ranges
-    // it works because both curve points and ranges are ordered and ranges are
-    // non-overlapping
+//! it works because both curve points and ranges are ordered and ranges are non-overlapping
+
+Curve Curve::intersect(const Ranges& ranges) const {
+    Curve ret;
     debug::ensure(isOrdered());
-
     uint xi = 0, cnt = count();
     for_i (ranges.count()) {
-        auto& range = ranges.at(i);
-        auto minX = range.min, maxX = range.max;
-        while (xi < cnt && xs_.at(xi) < minX)
+        const Range& range = ranges.at(i);
+        while (xi < cnt && xs_.at(xi) < range.min)
             ++xi;
-        while (xi < cnt && xs_.at(xi) <= maxX) {
-            res.append(xs_.at(xi), ys_.at(xi));
+        while (xi < cnt && xs_.at(xi) <= range.max) {
+            ret.append(xs_.at(xi), ys_.at(xi));
             ++xi;
         }
     }
-
-    return res;
+    return ret;
 }
 
 //! Subtracts a background that is given as a funtion y(x).
@@ -94,24 +88,21 @@ void Curve::subtract(std::function<qreal(qreal)> const& func)
 uint Curve::maqpairindex() const {
     if (isEmpty())
         return 0;
-
-    auto yMax = ys_.first();
-    uint index = 0;
-
+    qreal yMax = ys_.first();
+    uint ret = 0;
     for_i (count()) {
-        auto y = ys_.at(i);
+        const qreal y = ys_.at(i);
         if (y > yMax) {
             yMax = y;
-            index = i;
+            ret = i;
         }
     }
-
-    return index;
+    return ret;
 }
 
 qreal Curve::sumY() const {
-    qreal sum = 0;
+    qreal ret = 0;
     for_i (count())
-        sum += ys_.at(i);
-    return sum;
+        ret += ys_.at(i);
+    return ret;
 }

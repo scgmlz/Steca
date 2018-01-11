@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/data/measurement.cpp
 //! @brief     Implements class Measurement
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -13,18 +13,17 @@
 // ************************************************************************** //
 
 #include "measurement.h"
-#include "metadata.h"
-#include "session.h"
+#include "core/session.h"
 #include <qmath.h>
 
-Measurement::Measurement(Metadata const& md, size2d const& size, inten_vec const& intens)
+Measurement::Measurement(const Metadata& md, size2d const& size, inten_vec const& intens)
     : md_(new Metadata(md)), image_(new Image(size)) {
     debug::ensure(intens.count() == size.count());
     for_i (intens.count())
         image_->setInten(i, intens.at(i));
 }
 
-QSharedPointer<Metadata const> Measurement::metadata() const {
+shp_Metadata Measurement::metadata() const {
     debug::ensure(!md_.isNull());
     return md_;
 }
@@ -49,9 +48,11 @@ size2d Measurement::imageSize() const {
     return image_->size();
 }
 
-void Measurement::collectIntens(Image const* intensCorr, inten_vec& intens, uint_vec& counts,
-                                Range const& rgeGma, deg minTth, deg deltaTth) const {
-    auto angleMap = gSession->angleMap(*this);
+void Measurement::collectIntens(
+    const Image* intensCorr, inten_vec& intens, uint_vec& counts,
+    const Range& rgeGma, deg minTth, deg deltaTth) const {
+
+    const shp_AngleMap& angleMap = gSession->angleMap(*this);
     debug::ensure(!angleMap.isNull());
     AngleMap const& map = *angleMap;
 

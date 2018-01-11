@@ -1,30 +1,29 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/data/datafile.cpp
 //! @brief     Implements class Datafile
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "datafile.h"
-#include "measurement.h"
+#include "core/data/datafile.h"
 #include <QStringBuilder> // for ".." % ..
 
 Datafile::Datafile(rcstr fileName) : fileInfo_(fileName) {}
 
 //! The loaders use this function to push suite
-void Datafile::addDataset(Metadata const& md, size2d const& sz, inten_vec const& ivec) {
-    if (experiment_.isEmpty())
+void Datafile::addDataset(const Metadata& md, size2d const& sz, inten_vec const& ivec) {
+    if (measurements_.isEmpty())
         imageSize_ = sz;
     else if (sz != imageSize_)
         THROW("Inconsistent image size in " % fileName());
-    experiment_.append(QSharedPointer<Measurement const>(new Measurement(md, sz, ivec)));
+    measurements_.append(shp_Measurement(new Measurement(md, sz, ivec)));
 }
 
 QFileInfo const& Datafile::fileInfo() const {
@@ -35,10 +34,10 @@ str Datafile::fileName() const {
     return fileInfo_.fileName();
 }
 
-QSharedPointer<Image> Datafile::foldedImage() const {
-    debug::ensure(!experiment_.isEmpty());
-    QSharedPointer<Image> ret(new Image(experiment_.first()->imageSize()));
-    for (auto& one : experiment_)
+shp_Image Datafile::foldedImage() const {
+    debug::ensure(!measurements_.isEmpty());
+    shp_Image ret(new Image(measurements_.first()->imageSize()));
+    for (shp_Measurement one : measurements_)
         ret->addIntens(*one->image());
     return ret;
 }

@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/mainwin.h
 //! @brief     Defines class MainWin
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -15,14 +15,22 @@
 #ifndef MAINWIN_H
 #define MAINWIN_H
 
-#include "typ/singleton.h"
-#include "typ/str.h"
+#include "core/typ/singleton.h"
+#include "core/typ/str.h"
 #include <QMainWindow>
 #include <QNetworkAccessManager>
 
+extern class MainWin* gMainWin; //!< global pointer to _the_ main window
 
+//! The main window.
 
-extern class MainWin* gMainWin;
+//! This is a singleton class that specializes QMainWindow.
+//! The one instance of this class is accessible from everywhere through
+//! the global pointer gMainWin.
+
+//! The main window coexists with an instance of TheHub, which is responsible
+//! for most of the dynamic functionality. The division of tasks between MainWin
+//! and TheHub is somewhat arbitrary, and we should consider merging both classes.
 
 class MainWin : public QMainWindow, public ISingleton<MainWin> {
 public:
@@ -63,7 +71,5 @@ private:
     void viewMetadata(bool);
     void viewReset();
 };
-
-
 
 #endif // MAINWIN_H

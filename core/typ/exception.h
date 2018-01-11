@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/typ/exception.h
 //! @brief     Defines class Exception
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -17,10 +17,10 @@
 #ifndef EXCEPTION_H
 #define EXCEPTION_H
 
-#include "typ/str.h"
+#include "core/typ/str.h"
 #include <QException>
 
-// An exception that carries a message.
+//! The sole exception type used in this software.
 class Exception : public QException {
 private:
 public:

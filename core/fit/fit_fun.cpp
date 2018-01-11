@@ -1,20 +1,21 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/fit/fit_fun.cpp
 //! @brief     Implements classes Polynom and PeakFunction, and FunctionRegistry
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "def/idiomatic_for.h"
-#include "fit_methods.h"
-#include "typ/curve.h"
+#include "core/fit/fit_fun.h"
+#include "core/def/idiomatic_for.h"
+#include "core/fit/fit_methods.h"
+#include "core/typ/curve.h"
 
 namespace { // file-scope functions
 
@@ -56,7 +57,7 @@ qreal Polynom::dy(qreal x, uint i, qreal const*) const {
 }
 
 // REVIEW
-qreal Polynom::avgY(Range const& rgeX, qreal const* parValues) const {
+qreal Polynom::avgY(const Range& rgeX, qreal const* parValues) const {
     debug::ensure(rgeX.isValid());
 
     qreal w = rgeX.width();
@@ -73,11 +74,11 @@ qreal Polynom::avgY(Range const& rgeX, qreal const* parValues) const {
     return (1 / w) * (maqpair - minY);
 }
 
-void Polynom::fit(Curve const& curve, Ranges const& ranges) {
+void Polynom::fit(Curve const& curve, const Ranges& ranges) {
     FitWrapper().fit(*this, curve.intersect(ranges));
 }
 
-Polynom Polynom::fromFit(uint degree, Curve const& curve, Ranges const& ranges) {
+Polynom Polynom::fromFit(uint degree, Curve const& curve, const Ranges& ranges) {
     Polynom poly(degree);
     poly.fit(curve, ranges);
     return poly;
@@ -97,19 +98,7 @@ void Polynom::from_json(JsonObj const& obj) THROWS {
 //  class PeakFunction
 // ************************************************************************** //
 
-void PeakFunction::setRange(Range const& range) {
-    range_ = range;
-}
-
 PeakFunction::PeakFunction() : guessedPeak_(), guessedFWHM_(NAN) {}
-
-void PeakFunction::setGuessedPeak(qpair const& peak) {
-    guessedPeak_ = peak;
-}
-
-void PeakFunction::setGuessedFWHM(fwhm_t fwhm) {
-    guessedFWHM_ = fwhm;
-}
 
 void PeakFunction::reset() {
     Function::reset();
@@ -117,27 +106,25 @@ void PeakFunction::reset() {
     setGuessedFWHM(guessedFWHM_);
 }
 
-void PeakFunction::fit(Curve const& curve, Range const& range) {
-    Curve c = prepareFit(curve, range);
+void PeakFunction::fit(Curve const& curve, const Range& range) {
+    const Curve c = prepareFit(curve, range);
     if (c.isEmpty())
         return;
 
     //  if (!guessedPeak().isValid()) {  // calculate guesses // TODO caching
     //  temporarily disabled, until it works correctly
-    uint peakIndex = c.maqpairindex();
-    auto peakTth = c.x(peakIndex);
-    auto peakIntens = c.y(peakIndex);
+    const uint peakIndex = c.maqpairindex();
+    const qreal peakTth = c.x(peakIndex);
+    const qreal peakIntens = c.y(peakIndex);
 
     // half-maximum indices
     uint hmi1 = peakIndex, hmi2 = peakIndex;
-
     // left
     for (uint i = peakIndex; i-- > 0;) {
         hmi1 = i;
         if (c.y(i) < peakIntens / 2)
             break;
     }
-
     // right
     for (uint i = peakIndex, iCnt = c.count(); i < iCnt; ++i) {
         hmi2 = i;
@@ -151,7 +138,7 @@ void PeakFunction::fit(Curve const& curve, Range const& range) {
     FitWrapper().fit(*this, c);
 }
 
-Curve PeakFunction::prepareFit(Curve const& curve, Range const& range) {
+Curve PeakFunction::prepareFit(Curve const& curve, const Range& range) {
     reset();
     return curve.intersect(range);
 }
@@ -182,7 +169,7 @@ void FunctionRegistry::register_fct(const initializer_type f) {
     register_item(tmp->name(), f);
 };
 
-PeakFunction* FunctionRegistry::name2new(QString const& peakFunctionName) {
+PeakFunction* FunctionRegistry::name2new(const QString& peakFunctionName) {
     initializer_type make_new = instance()->find_or_fail(peakFunctionName);
     return make_new();
 }

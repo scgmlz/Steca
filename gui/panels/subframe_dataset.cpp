@@ -1,24 +1,23 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
-//! @file      gui/panels/dock_dataset.cpp
-//! @brief     Implements class DockDatasets
+//! @file      gui/panels/subframe_dataset.cpp
+//! @brief     Implements class SubframeDatasets
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "dock_dataset.h"
-#include "cfg/gui_cfg.h"
-#include "data/suite.h"
-#include "models.h"
-#include "thehub.h"
-#include "widgets/tree_views.h" // inheriting from
-#include "widgets/widget_makers.h"
+#include "gui/panels/subframe_dataset.h"
+#include "core/data/suite.h"
+#include "gui/cfg/gui_cfg.h"
+#include "gui/models.h"
+#include "gui/thehub.h"
+#include "gui/widgets/tree_views.h" // inheriting from
 
 // ************************************************************************** //
 //  file-scope: class DatasetView
@@ -28,7 +27,7 @@ class DatasetView : public ListView {
 public:
     DatasetView();
 
-protected:
+private:
     void currentChanged(QModelIndex const&, QModelIndex const&);
 
     DatasetsModel* model() const { return static_cast<DatasetsModel*>(ListView::model()); }
@@ -39,7 +38,7 @@ DatasetView::DatasetView() : ListView() {
     debug::ensure(dynamic_cast<DatasetsModel*>(ListView::model()));
 
     connect(gHub, &TheHub::sigSuitesChanged, [this]() {
-            gHub->tellSuiteSelected(QSharedPointer<Suite>()); // first de-select
+            gHub->tellSuiteSelected(shp_Suite()); // first de-select
             selectRow(0);
         });
 }
@@ -48,22 +47,21 @@ void DatasetView::currentChanged(QModelIndex const& current, QModelIndex const& 
     ListView::currentChanged(current, previous);
     gHub->tellSuiteSelected(
         model()->data(current,
-                      DatasetsModel::GetDatasetRole).value<QSharedPointer<Suite>>());
+                      DatasetsModel::GetDatasetRole).value<shp_Suite>());
 }
 
 // ************************************************************************** //
-//  class DockDatasets
+//  class SubframeDatasets
 // ************************************************************************** //
 
-DockDatasets::DockDatasets()
-    : DockWidget("Datasets", "dock-suite", Qt::Vertical) {
+SubframeDatasets::SubframeDatasets() : DockWidget("Datasets", "dock-suite") {
     box_->addWidget((dataseqView_ = new DatasetView()));
 
-    auto h = hbox();
+    auto h = newQ::HBoxLayout();
     box_->addLayout(h);
 
-    h->addWidget(label("Combine:"));
-    h->addWidget(combineDatasets_ = spinCell(gui_cfg::em4, 1));
+    h->addWidget(newQ::Label("Combine:"));
+    h->addWidget(combineDatasets_ = newQ::SpinBox(gui_cfg::em4, 1));
     combineDatasets_->setToolTip("Combine and average number of suite");
 
     connect(combineDatasets_, slot(QSpinBox, valueChanged, int), [this](int num) {

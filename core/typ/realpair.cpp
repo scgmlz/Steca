@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/typ/realpair.cpp
 //! @brief     Implements class qpair
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
@@ -14,9 +14,9 @@
 //
 // ************************************************************************** //
 
-#include "def/comparators.h"
-#include "typ/json.h"
-#include "typ/realpair.h"
+#include "core/def/comparators.h"
+#include "core/typ/json.h"
+#include "core/typ/realpair.h"
 
 int qpair::compare(qpair const& that) const {
     debug::ensure(isValid() && that.isValid());

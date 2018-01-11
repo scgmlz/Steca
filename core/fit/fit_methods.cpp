@@ -1,21 +1,21 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/fit/fit_methods.cpp
 //! @brief     Implements class FitWrapper
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "fit_methods.h"
+#include "core/fit/fit_methods.h"
+#include "core/def/idiomatic_for.h"
+#include "core/typ/curve.h"
 #include "LM/levmar.h"
-#include "def/idiomatic_for.h"
-#include "typ/curve.h"
 #include <qmath.h>
 
 void FitWrapper::fit(Function& function, Curve const& curve) {
@@ -30,14 +30,14 @@ void FitWrapper::fit(Function& function, Curve const& curve) {
     qreal_vec parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
 
     for_i (parCount) {
-        auto par = function_->parameterAt(i);
+        const Function::Parameter& par = function_->parameterAt(i);
         debug::ensure(qIsFinite(par.value())); // TODO if not so, return false ?
         parValue[i] = par.value();
         parMin[i] = par.valueRange().min;
         parMax[i] = par.valueRange().max;
     }
 
-    approximate(
+    fit_exec(
         parValue.data(), parMin.data(), parMax.data(), parError.data(), parCount, curve.ys().data(),
         curve.count());
 
@@ -50,7 +50,7 @@ template <typename T> T* remove_const(T const* t) {
     return const_cast<T*>(t);
 }
 
-void FitWrapper::approximate(
+void FitWrapper::fit_exec(
     qreal* params, // IO initial parameter estimates -> estimated solution
     qreal const* paramsLimitMin, // I
     qreal const* paramsLimitMax, // I
