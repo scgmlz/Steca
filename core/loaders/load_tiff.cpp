@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/io/io_tiff.cpp
+//! @file      core/loaders/load_tiff.cpp
 //! @brief     Implements function loadTiff
 //!
 //! @homepage  https://github.com/scgmlz/Steca

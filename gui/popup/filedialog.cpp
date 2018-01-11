@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "core/io/io_io.h"
+#include "core/loaders/loaders.h"
 #include <QFileDialog>
 #include <QFileSystemModel>
 #include <QSortFilterProxyModel>

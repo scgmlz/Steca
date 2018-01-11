@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/io/io_io.h
+//! @file      core/loaders/loaders.h
 //! @brief     Defines loader functions in namespace io.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef IO_IO_H
-#define IO_IO_H
+#ifndef LOADERS_H
+#define LOADERS_H
 
 #include "core/data/datafile.h"
 #include "core/def/macros.h"
@@ -31,4 +31,4 @@ str loadComment(QFileInfo const& info);
 
 } // namespace io
 
-#endif // IO_IO_H
+#endif // LOADERS_H

@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/io/io_caress.cpp
+//! @file      core/loaders/load_caress.cpp
 //! @brief     Implements function loadCaress
 //!
 //! @homepage  https://github.com/scgmlz/Steca
