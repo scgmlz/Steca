@@ -15,13 +15,10 @@
 #include "gui/widgets/new_q.h"
 #include "gui/widgets/various_widgets.h"
 #include "core/def/numbers.h"
-#include <QApplication>
+#include <QApplication> // for qApp for new Action
+#include <QtGlobal> // to define Q_OS_WIN
 
 namespace {
-
-static void setEmWidth(QWidget* w, uint emWidth) {
-    w->setMaximumWidth(to_i(emWidth) * w->fontMetrics().width('m'));
-}
 
 static void setWidth(QWidget* w, uint ndigits, bool withDot) {
     uint width = ndigits;

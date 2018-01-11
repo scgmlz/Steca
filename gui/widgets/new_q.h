@@ -26,7 +26,6 @@
 #include <QSpinBox>
 #include <QTabWidget>
 #include <QToolButton>
-#include <QtGlobal> // to define Q_OS_WIN
 
 class BoxWidget;
 
