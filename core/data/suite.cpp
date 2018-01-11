@@ -203,8 +203,10 @@ void Suite::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const {
     // corresponding to the location of a polefigure point.
     // Note that the rotations here do not correspond to C. Randau's dissertation.
     // The rotations given in [J. Appl. Cryst. (2012) 44, 641-644] are incorrect.
-    vec3r rotated = mat3r::rotationCWz(phi()) * mat3r::rotationCWx(chi())
-        * mat3r::rotationCWz(omg()) * mat3r::rotationCWx(gma.toRad())
+    vec3r rotated = mat3r::rotationCWz(phi().toRad())
+        * mat3r::rotationCWx(chi().toRad())
+        * mat3r::rotationCWz(omg().toRad())
+        * mat3r::rotationCWx(gma.toRad())
         * mat3r::rotationCCWz(tth.toRad() / 2) * vec3r(0, 1, 0);
 
     // Extract alpha (latitude) and beta (longitude).
