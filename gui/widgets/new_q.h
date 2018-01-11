@@ -68,7 +68,8 @@ QLineEdit* LineEdit(uint emWidth); // emWidth: measured in typographical (m)s
 QLineEdit* LineDisplay(uint emWidth);
 
 QSpinBox* SpinBox(uint ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX);
-QDoubleSpinBox* DoubleSpinBox(uint emWidth, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
+QDoubleSpinBox* DoubleSpinBox(
+    uint ndigits, bool withDot, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
 
 QCheckBox* CheckBox(rcstr text);
 QCheckBox* CheckBox(QAction*);

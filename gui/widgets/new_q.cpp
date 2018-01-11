@@ -117,9 +117,9 @@ QSpinBox* newQ::SpinBox(uint ndigits, bool withDot, int min, int max) {
     return ret;
 }
 
-QDoubleSpinBox* newQ::DoubleSpinBox(uint emWidth, qreal min, qreal max) {
+QDoubleSpinBox* newQ::DoubleSpinBox(uint ndigits, bool withDot, qreal min, qreal max) {
     auto ret = new QDoubleSpinBox;
-    setEmWidth(ret, emWidth);
+    setWidth(ret, ndigits, withDot);
     ret->setMinimum(min);
     ret->setMaximum(max > min ? max : min);
     return ret;

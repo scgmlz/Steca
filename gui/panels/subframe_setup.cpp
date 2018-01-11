@@ -122,8 +122,8 @@ SubframeSetup::SubframeSetup() {
 
         // widgets
 
-        detDistance_ = newQ::DoubleSpinBox(gui_cfg::em4_2, Geometry::MIN_DETECTOR_DISTANCE);
-        detPixelSize_ = newQ::DoubleSpinBox(gui_cfg::em4_2, Geometry::MIN_DETECTOR_PIXEL_SIZE);
+        detDistance_ = newQ::DoubleSpinBox(4, 2, Geometry::MIN_DETECTOR_DISTANCE);
+        detPixelSize_ = newQ::DoubleSpinBox(4, 2, Geometry::MIN_DETECTOR_PIXEL_SIZE);
         detPixelSize_->setDecimals(3);
 
         detDistance_->setValue(Geometry::DEF_DETECTOR_DISTANCE);
@@ -285,21 +285,21 @@ SubframeSetup::SubframeSetup() {
         vb->addLayout(gb);
 
         gb->addWidget(newQ::Label("min"), 0, 0);
-        gb->addWidget((spinRangeMin_ = newQ::DoubleSpinBox(gui_cfg::em4_2, .0)), 0, 1);
+        gb->addWidget((spinRangeMin_ = newQ::DoubleSpinBox(4, 2, .0)), 0, 1);
         spinRangeMin_->setSingleStep(.1);
         gb->addWidget(newQ::Label("max"), 0, 2);
-        gb->addWidget((spinRangeMax_ = newQ::DoubleSpinBox(gui_cfg::em4_2, .0)), 0, 3);
+        gb->addWidget((spinRangeMax_ = newQ::DoubleSpinBox(4, 2, .0)), 0, 3);
         spinRangeMax_->setSingleStep(.1);
 
         gb->addWidget(newQ::Label("guess x"), 1, 0);
-        gb->addWidget((spinGuessPeakX_ = newQ::DoubleSpinBox(gui_cfg::em4_2, .0)), 1, 1);
+        gb->addWidget((spinGuessPeakX_ = newQ::DoubleSpinBox(4, 2, .0)), 1, 1);
         spinGuessPeakX_->setSingleStep(.1);
         gb->addWidget(newQ::Label("y"), 1, 2);
-        gb->addWidget((spinGuessPeakY_ = newQ::DoubleSpinBox(gui_cfg::em4_2, .0)), 1, 3);
+        gb->addWidget((spinGuessPeakY_ = newQ::DoubleSpinBox(4, 2, .0)), 1, 3);
         spinGuessPeakY_->setSingleStep(.1);
 
         gb->addWidget(newQ::Label("fwhm"), 2, 0);
-        gb->addWidget((spinGuessFWHM_ = newQ::DoubleSpinBox(gui_cfg::em4_2, .0)), 2, 1);
+        gb->addWidget((spinGuessFWHM_ = newQ::DoubleSpinBox(4, 2, .0)), 2, 1);
         spinGuessFWHM_->setSingleStep(.1);
 
         gb->addWidget(newQ::Label("fit x"), 3, 0);

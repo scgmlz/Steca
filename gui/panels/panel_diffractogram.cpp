@@ -445,7 +445,7 @@ Diffractogram::Diffractogram() : suite_(nullptr), currReflIndex_(0) {
     hb->addWidget(newQ::Label(" intensity from:"));
     hb->addWidget((intenSum_ = newQ::RadioButton("sum")));
     hb->addWidget((intenAvg_ = newQ::RadioButton("avg ×")));
-    hb->addWidget((intenScale_ = newQ::DoubleSpinBox(gui_cfg::em4_2, 0.001)));
+    hb->addWidget((intenScale_ = newQ::DoubleSpinBox(4, 2, 0.001)));
     intenScale_->setDecimals(3);
 
     connect(intenAvg_, &QRadioButton::toggled, [this](bool on) {
