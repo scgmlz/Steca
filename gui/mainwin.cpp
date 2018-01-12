@@ -19,7 +19,7 @@
 #include "gui/output/output_diagrams.h"
 #include "gui/output/output_diffractograms.h"
 #include "gui/output/output_polefigures.h"
-#include "gui/panels/subframe_dataset.h"
+#include "gui/panels/subframe_measurements.h"
 #include "gui/panels/subframe_files.h"
 #include "gui/panels/subframe_metadata.h"
 #include "gui/panels/subframe_diffractogram.h"

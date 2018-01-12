@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "gui/panels/subframe_dataset.h"
+#include "gui/panels/subframe_measurements.h"
 #include "core/data/suite.h"
 #include "gui/models.h"
 #include "gui/thehub.h"

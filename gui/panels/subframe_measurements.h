@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/subframe_dataset.h
+//! @file      gui/panels/subframe_measurements.h
 //! @brief     Defines class SubframeMeasurements
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef SUBFRAME_DATASET_H
-#define SUBFRAME_DATASET_H
+#ifndef SUBFRAME_MEASUREMENTS_H
+#define SUBFRAME_MEASUREMENTS_H
 
 #include "gui/widgets/new_q.h"
 #include "gui/widgets/various_widgets.h"
@@ -32,4 +32,4 @@ private:
     class DatasetView* dataseqView_;
 };
 
-#endif // SUBFRAME_DATASET_H
+#endif // SUBFRAME_MEASUREMENTS_H
