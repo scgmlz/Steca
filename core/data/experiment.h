@@ -15,7 +15,8 @@
 #ifndef EXPERIMENT_H
 #define EXPERIMENT_H
 
-#include "suite.h" // no auto rm
+#include "core/data/suite.h" // no auto rm
+#include "core/typ/curve.h"
 #include <QSharedPointer> // required by some compilers
 
 //! A sequence of Suites's

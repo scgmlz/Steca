@@ -20,7 +20,6 @@
 #include "core/data/measurement.h"
 #include <QSharedPointer> // no auto rm
 
-class Metadata;
 class Experiment;
 
 //! One or more Measurement's

@@ -15,10 +15,8 @@
 #ifndef ABOUT_H
 #define ABOUT_H
 
+#include "gui/widgets/new_q.h"
 #include <QDialog>
-
-class QCheckBox;
-class QDoubleSpinBox;
 
 //! Modal dialog that informs about the software
 class AboutBox : public QDialog {

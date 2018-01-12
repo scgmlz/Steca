@@ -15,7 +15,7 @@
 #ifndef MODELS_H
 #define MODELS_H
 
-#include "core/data/suite.h"
+#include "core/data/experiment.h"
 #include "core/typ/str.h"
 #include "core/typ/vec.h"
 #include <QAbstractTableModel>
@@ -37,9 +37,6 @@ public:
 protected:
     static int const DCOL = 1; //!< the left-most column is hidden
 };
-
-class Experiment;
-class Metadata;
 
 class FilesModel : public TableModel {
 public:

@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "gui/models.h"
-#include "core/data/metadata.h"
 #include "core/fit/fit_fun.h"
 #include "core/session.h"
 #include "gui/thehub.h"
