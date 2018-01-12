@@ -33,15 +33,15 @@ void TableModel::signalReset() {
 //  class FilesModel
 // ************************************************************************** //
 
-int FilesModel::columnCount(rcIndex) const {
+int FilesModel::columnCount(const QModelIndex&) const {
     return 1 + DCOL;
 }
 
-int FilesModel::rowCount(rcIndex) const {
+int FilesModel::rowCount(const QModelIndex&) const {
     return to_i(gSession->numFiles());
 }
 
-QVariant FilesModel::data(rcIndex index, int role) const {
+QVariant FilesModel::data(const QModelIndex& index, int role) const {
     const int row = index.row(), rowCnt = rowCount();
     if (row < 0 || rowCnt <= row)
         return EMPTY_VAR;
@@ -69,15 +69,15 @@ MeasurementsModel::MeasurementsModel()
 {
 }
 
-int MeasurementsModel::columnCount(rcIndex) const {
+int MeasurementsModel::columnCount(const QModelIndex&) const {
     return COL_ATTRS + to_i(metaInfoNums_.count());
 }
 
-int MeasurementsModel::rowCount(rcIndex) const {
+int MeasurementsModel::rowCount(const QModelIndex&) const {
     return to_i(experiment_.count());
 }
 
-QVariant MeasurementsModel::data(rcIndex index, int role) const {
+QVariant MeasurementsModel::data(const QModelIndex& index, int role) const {
     int row = index.row();
     if (row < 0 || rowCount() <= row)
         return EMPTY_VAR;
@@ -136,15 +136,15 @@ void MetadataModel::reset(shp_Suite dataseq) {
     signalReset();
 }
 
-int MetadataModel::columnCount(rcIndex) const {
+int MetadataModel::columnCount(const QModelIndex&) const {
     return NUM_COLUMNS;
 }
 
-int MetadataModel::rowCount(rcIndex) const {
+int MetadataModel::rowCount(const QModelIndex&) const {
     return to_i(Metadata::numAttributes(false));
 }
 
-QVariant MetadataModel::data(rcIndex index, int role) const {
+QVariant MetadataModel::data(const QModelIndex& index, int role) const {
     int row = index.row();
     if (row < 0 || rowCount() <= row)
         return EMPTY_VAR;
@@ -184,11 +184,11 @@ void MetadataModel::flipCheck(uint row) {
 
 ReflectionsModel::ReflectionsModel() : TableModel() {}
 
-int ReflectionsModel::columnCount(rcIndex) const {
+int ReflectionsModel::columnCount(const QModelIndex&) const {
     return NUM_COLUMNS;
 }
 
-int ReflectionsModel::rowCount(rcIndex) const {
+int ReflectionsModel::rowCount(const QModelIndex&) const {
     return to_i(gSession->reflections().count());
 }
 
@@ -207,7 +207,7 @@ str ReflectionsModel::displayData(uint row) const {
     return displayData(row, COL_ID) + ": " + displayData(row, COL_TYPE);
 }
 
-QVariant ReflectionsModel::data(rcIndex index, int role) const {
+QVariant ReflectionsModel::data(const QModelIndex& index, int role) const {
     int row = index.row();
     if (row < 0 || rowCount() <= row)
         return EMPTY_VAR;

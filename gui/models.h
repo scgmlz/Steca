@@ -27,9 +27,6 @@ extern QModelIndex const ANY_INDEX;
 
 class TableModel : public QAbstractTableModel {
 public:
-    using Index = QModelIndex;
-    using rcIndex = Index const&;
-
     TableModel() {}
 
     void signalReset(); //!< force-emits reset() signal
@@ -40,10 +37,10 @@ protected:
 
 class FilesModel : public TableModel {
 public:
-    int columnCount(rcIndex = ANY_INDEX) const;
-    int rowCount(rcIndex = ANY_INDEX) const;
+    int columnCount(const QModelIndex& = ANY_INDEX) const;
+    int rowCount(const QModelIndex& = ANY_INDEX) const;
 
-    QVariant data(rcIndex, int) const;
+    QVariant data(const QModelIndex&, int) const;
 
 public:
     enum { GetFileRole = Qt::UserRole };
@@ -56,10 +53,10 @@ class MeasurementsModel : public TableModel {
 public:
     MeasurementsModel();
 
-    int columnCount(rcIndex = ANY_INDEX) const;
-    int rowCount(rcIndex = ANY_INDEX) const;
+    int columnCount(const QModelIndex& = ANY_INDEX) const;
+    int rowCount(const QModelIndex& = ANY_INDEX) const;
 
-    QVariant data(rcIndex, int) const;
+    QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
 
     enum { COL_NUMBER = DCOL, COL_ATTRS };
@@ -79,10 +76,10 @@ class MetadataModel : public TableModel {
 public:
     MetadataModel();
 
-    int columnCount(rcIndex = ANY_INDEX) const;
-    int rowCount(rcIndex = ANY_INDEX) const;
+    int columnCount(const QModelIndex& = ANY_INDEX) const;
+    int rowCount(const QModelIndex& = ANY_INDEX) const;
 
-    QVariant data(rcIndex, int) const;
+    QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
 
     enum { COL_CHECK = DCOL, COL_TAG, COL_VALUE, NUM_COLUMNS };
@@ -102,13 +99,13 @@ class ReflectionsModel : public TableModel {
 public:
     ReflectionsModel();
 
-    int columnCount(rcIndex = ANY_INDEX) const;
-    int rowCount(rcIndex = ANY_INDEX) const;
+    int columnCount(const QModelIndex& = ANY_INDEX) const;
+    int rowCount(const QModelIndex& = ANY_INDEX) const;
 
     str displayData(uint row, uint col) const;
     str displayData(uint row) const;
 
-    QVariant data(rcIndex, int) const;
+    QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
 
     enum { COL_ID = DCOL, COL_TYPE, NUM_COLUMNS };
