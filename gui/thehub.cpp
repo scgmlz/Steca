@@ -80,7 +80,7 @@ TheHub::TheHub()
     toggle_fixedIntenImage = newQ::Toggle("Global intensity scale", false, ":/icon/scale");
     toggle_fixedIntenDgram = newQ::Toggle("Fixed intensity scale", false);
 
-    toggle_combinedDgram = newQ::Toggle("All datasets", true);
+    toggle_combinedDgram = newQ::Toggle("All measurements", true);
 
     toggle_selRegions = newQ::Toggle("Select regions", false, ":/icon/selRegion");
     toggle_showBackground = newQ::Toggle("Show fitted background", false, ":/icon/showBackground");

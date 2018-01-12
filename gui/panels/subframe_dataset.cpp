@@ -53,7 +53,7 @@ void DatasetView::currentChanged(QModelIndex const& current, QModelIndex const& 
 //  class SubframeDatasets
 // ************************************************************************** //
 
-SubframeDatasets::SubframeDatasets() : DockWidget("Datasets", "dock-suite") {
+SubframeDatasets::SubframeDatasets() : DockWidget("Measurements", "dock-suite") {
     box_->addWidget((dataseqView_ = new DatasetView()));
 
     auto h = newQ::HBoxLayout();
