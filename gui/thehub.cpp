@@ -34,7 +34,7 @@ TheHub::TheHub()
     qDebug() << "TheHub/";
 
     filesModel = new FilesModel();
-    suiteModel = new DatasetsModel();
+    suiteModel = new MeasurementsModel();
     metadataModel = new MetadataModel();
     reflectionsModel = new ReflectionsModel();
 

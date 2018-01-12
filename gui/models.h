@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/models.h
-//! @brief     Defines classes TableModel, FilesModel, DatasetsModel, MetadataModel, ReflectionsModel
+//! @brief     Defines classes TableModel, FilesModel, MeasurementsModel, MetadataModel, ReflectionsModel
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -52,9 +52,9 @@ public:
 };
 
 
-class DatasetsModel : public TableModel {
+class MeasurementsModel : public TableModel {
 public:
-    DatasetsModel();
+    MeasurementsModel();
 
     int columnCount(rcIndex = ANY_INDEX) const;
     int rowCount(rcIndex = ANY_INDEX) const;
@@ -65,7 +65,7 @@ public:
     enum { COL_NUMBER = DCOL, COL_ATTRS };
 
 public:
-    enum { GetDatasetRole = Qt::UserRole };
+    enum { GetMeasurementRole = Qt::UserRole };
 
     void showMetaInfo(vec<bool> const&);
 
@@ -114,7 +114,7 @@ public:
     enum { COL_ID = DCOL, COL_TYPE, NUM_COLUMNS };
 
 public:
-    enum { GetDatasetRole = Qt::UserRole };
+    enum { GetMeasurementRole = Qt::UserRole };
 
     void addReflection(const QString&);
     void remReflection(uint);

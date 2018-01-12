@@ -29,12 +29,12 @@ public:
 private:
     void currentChanged(QModelIndex const&, QModelIndex const&);
 
-    DatasetsModel* model() const { return static_cast<DatasetsModel*>(ListView::model()); }
+    MeasurementsModel* model() const { return static_cast<MeasurementsModel*>(ListView::model()); }
 };
 
 MeasurementsView::MeasurementsView() : ListView() {
     setModel(gHub->suiteModel); // TODO simplify this
-    debug::ensure(dynamic_cast<DatasetsModel*>(ListView::model()));
+    debug::ensure(dynamic_cast<MeasurementsModel*>(ListView::model()));
 
     connect(gHub, &TheHub::sigSuitesChanged, [this]() {
             gHub->tellSuiteSelected(shp_Suite()); // first de-select
@@ -46,7 +46,7 @@ void MeasurementsView::currentChanged(QModelIndex const& current, QModelIndex co
     ListView::currentChanged(current, previous);
     gHub->tellSuiteSelected(
         model()->data(current,
-                      DatasetsModel::GetDatasetRole).value<shp_Suite>());
+                      MeasurementsModel::GetMeasurementRole).value<shp_Suite>());
 }
 
 // ************************************************************************** //

@@ -24,7 +24,7 @@
 #include "gui/cfg/settings.h"
 
 class FilesModel;
-class DatasetsModel;
+class MeasurementsModel;
 class MetadataModel;
 class ReflectionsModel;
 
@@ -190,7 +190,7 @@ private:
 
 public:
     FilesModel* filesModel;
-    DatasetsModel* suiteModel;
+    MeasurementsModel* suiteModel;
     MetadataModel* metadataModel;
     ReflectionsModel* reflectionsModel;
 

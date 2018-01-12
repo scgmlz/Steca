@@ -85,7 +85,7 @@ shp_Reflection ReflectionView::selectedReflection() const {
     QList<QModelIndex> indexes = selectionModel()->selectedIndexes();
     if (indexes.isEmpty())
         return shp_Reflection();
-    return model()->data(indexes.first(), Model::GetDatasetRole).value<shp_Reflection>();
+    return model()->data(indexes.first(), Model::GetMeasurementRole).value<shp_Reflection>();
 }
 
 void ReflectionView::updateSingleSelection() {
@@ -101,7 +101,7 @@ void ReflectionView::selectionChanged(
     gHub->tellSelectedReflection(
         indexes.isEmpty()
             ? shp_Reflection()
-            : model()->data(indexes.first(), Model::GetDatasetRole).value<shp_Reflection>());
+            : model()->data(indexes.first(), Model::GetMeasurementRole).value<shp_Reflection>());
 }
 
 

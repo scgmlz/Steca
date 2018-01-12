@@ -174,7 +174,7 @@ MainWin::MainWin() {
 
 void MainWin::initLayout() {
     addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new SubframeFiles()));
-    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasets_ = new SubframeMeasurements()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockMeasurements_ = new SubframeMeasurements()));
     addDockWidget(Qt::LeftDockWidgetArea, (dockDatasetInfo_ = new SubframeMetadata()));
 
     auto splMain = new QSplitter(Qt::Vertical);
@@ -390,7 +390,7 @@ void MainWin::viewFiles(bool on) {
 }
 
 void MainWin::viewDatasets(bool on) {
-    dockDatasets_->setVisible(on);
+    dockMeasurements_->setVisible(on);
     gHub->toggle_viewDatasets->setChecked(on);
 }
 

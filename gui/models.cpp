@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/models.cpp
-//! @brief     Implements classes TableModel, FilesModel, DatasetsModel, MetadataModel, ReflectionsModel
+//! @brief     Implements classes TableModel, FilesModel, MeasurementsModel, MetadataModel, ReflectionsModel
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -61,23 +61,23 @@ void FilesModel::removeFile(uint i) {
 }
 
 // ************************************************************************** //
-//  class DatasetsModel
+//  class MeasurementsModel
 // ************************************************************************** //
 
-DatasetsModel::DatasetsModel()
+MeasurementsModel::MeasurementsModel()
     : experiment_(gSession->experiment())
 {
 }
 
-int DatasetsModel::columnCount(rcIndex) const {
+int MeasurementsModel::columnCount(rcIndex) const {
     return COL_ATTRS + to_i(metaInfoNums_.count());
 }
 
-int DatasetsModel::rowCount(rcIndex) const {
+int MeasurementsModel::rowCount(rcIndex) const {
     return to_i(experiment_.count());
 }
 
-QVariant DatasetsModel::data(rcIndex index, int role) const {
+QVariant MeasurementsModel::data(rcIndex index, int role) const {
     int row = index.row();
     if (row < 0 || rowCount() <= row)
         return EMPTY_VAR;
@@ -96,14 +96,14 @@ QVariant DatasetsModel::data(rcIndex index, int role) const {
                 metaInfoNums_.at(to_u(col - COL_ATTRS)));
         }
     }
-    case GetDatasetRole:
+    case GetMeasurementRole:
         return QVariant::fromValue<shp_Suite>(experiment_.at(to_u(row)));
     default:
         return EMPTY_VAR;
     }
 }
 
-QVariant DatasetsModel::headerData(int col, Qt::Orientation, int role) const {
+QVariant MeasurementsModel::headerData(int col, Qt::Orientation, int role) const {
     if (Qt::DisplayRole != role || col < DCOL || columnCount() <= col)
         return EMPTY_VAR;
     switch (col) {
@@ -114,7 +114,7 @@ QVariant DatasetsModel::headerData(int col, Qt::Orientation, int role) const {
     }
 }
 
-void DatasetsModel::showMetaInfo(vec<bool> const& metadataRows) {
+void MeasurementsModel::showMetaInfo(vec<bool> const& metadataRows) {
     beginResetModel();
 
     metaInfoNums_.clear();
@@ -232,7 +232,7 @@ QVariant ReflectionsModel::data(rcIndex index, int role) const {
         }
     }
 
-    case GetDatasetRole:
+    case GetMeasurementRole:
         return QVariant::fromValue<shp_Reflection>(gSession->reflections().at(to_u(row)));
     default:
         return EMPTY_VAR;
