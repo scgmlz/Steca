@@ -356,7 +356,7 @@ void TheHub::collectDatasetsFromFiles(uint_vec is) {
     collectDatasetsFromFiles(is, suiteGroupedBy_);
 }
 
-void TheHub::combineDatasetsBy(pint by) {
+void TheHub::combineMeasurementsBy(pint by) {
     collectDatasetsFromFiles(collectFromFiles_, by);
 }
 

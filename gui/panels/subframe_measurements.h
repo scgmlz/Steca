@@ -18,18 +18,14 @@
 #include "gui/widgets/new_q.h"
 #include "gui/widgets/various_widgets.h"
 
-//! Part of the main window that controls the dataset selection.
+//! Part of the main window that controls the measurements selection.
 
-//! Shows the datasets in the selected files, and allow to select some of them
+//! Shows the measurements in the selected files, and allow to select some of them
 //! and to combine them by a constant factor
 
 class SubframeMeasurements : public DockWidget {
 public:
     SubframeMeasurements();
-    QSpinBox* combineDatasets_;
-
-private:
-    class DatasetView* dataseqView_;
 };
 
 #endif // SUBFRAME_MEASUREMENTS_H

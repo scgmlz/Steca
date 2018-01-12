@@ -137,7 +137,7 @@ public:
     void addGivenFiles(const QStringList& filePaths) THROWS;
     void collectDatasetsFromFiles(uint_vec, pint);
     void collectDatasetsFromFiles(uint_vec);
-    void combineDatasetsBy(pint);
+    void combineMeasurementsBy(pint);
     void setCorrFile(rcstr filePath) THROWS;
     void tryEnableCorrection(bool);
     void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);

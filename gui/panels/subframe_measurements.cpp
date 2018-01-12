@@ -54,19 +54,19 @@ void MeasurementsView::currentChanged(QModelIndex const& current, QModelIndex co
 // ************************************************************************** //
 
 SubframeMeasurements::SubframeMeasurements() : DockWidget("Measurements", "dock-suite") {
-    box_->addWidget((dataseqView_ = new MeasurementsView()));
+    box_->addWidget(new MeasurementsView());
 
     auto h = newQ::HBoxLayout();
     box_->addLayout(h);
 
     h->addWidget(newQ::Label("Combine:"));
-    h->addWidget(combineDatasets_ = newQ::SpinBox(4, false, 1));
-    combineDatasets_->setToolTip("Combine and average number of suite");
+    auto combineMeasurements = newQ::SpinBox(4, false, 1);
+    h->addWidget(combineMeasurements);
+    combineMeasurements->setToolTip("Combine and average number of suite");
 
-    connect(combineDatasets_, slot(QSpinBox, valueChanged, int), [this](int num) {
-        gHub->combineDatasetsBy(pint(qMax(1, num)));
-    });
+    connect(combineMeasurements, slot(QSpinBox, valueChanged, int),
+            [this](int num) { gHub->combineMeasurementsBy(pint(qMax(1, num))); });
 
     connect(gHub, &TheHub::sigSuitesChanged,
-            [this]() { combineDatasets_->setValue(to_i(uint(gHub->suiteGroupedBy()))); });
+            [&]() { combineMeasurements->setValue(to_i(uint(gHub->suiteGroupedBy()))); });
 }
