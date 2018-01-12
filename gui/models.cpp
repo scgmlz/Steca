@@ -22,7 +22,6 @@
 // ************************************************************************** //
 
 QVariant const EMPTY_VAR;
-QModelIndex const ANY_INDEX;
 
 void TableModel::signalReset() {
     beginResetModel();
@@ -33,11 +32,11 @@ void TableModel::signalReset() {
 //  class FilesModel
 // ************************************************************************** //
 
-int FilesModel::columnCount(const QModelIndex&) const {
+int FilesModel::columnCount() const {
     return 2;
 }
 
-int FilesModel::rowCount(const QModelIndex&) const {
+int FilesModel::rowCount() const {
     return to_i(gSession->numFiles());
 }
 
@@ -69,11 +68,11 @@ MeasurementsModel::MeasurementsModel()
 {
 }
 
-int MeasurementsModel::columnCount(const QModelIndex&) const {
+int MeasurementsModel::columnCount() const {
     return COL_ATTRS + to_i(metaInfoNums_.count());
 }
 
-int MeasurementsModel::rowCount(const QModelIndex&) const {
+int MeasurementsModel::rowCount() const {
     return to_i(experiment_.count());
 }
 
@@ -136,11 +135,11 @@ void MetadataModel::reset(shp_Suite dataseq) {
     signalReset();
 }
 
-int MetadataModel::columnCount(const QModelIndex&) const {
+int MetadataModel::columnCount() const {
     return NUM_COLUMNS;
 }
 
-int MetadataModel::rowCount(const QModelIndex&) const {
+int MetadataModel::rowCount() const {
     return to_i(Metadata::numAttributes(false));
 }
 
@@ -184,11 +183,11 @@ void MetadataModel::flipCheck(uint row) {
 
 ReflectionsModel::ReflectionsModel() : TableModel() {}
 
-int ReflectionsModel::columnCount(const QModelIndex&) const {
+int ReflectionsModel::columnCount() const {
     return NUM_COLUMNS;
 }
 
-int ReflectionsModel::rowCount(const QModelIndex&) const {
+int ReflectionsModel::rowCount() const {
     return to_i(gSession->reflections().count());
 }
 

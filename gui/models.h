@@ -21,19 +21,24 @@
 #include <QAbstractTableModel>
 
 extern QVariant const EMPTY_VAR;
-extern QModelIndex const ANY_INDEX;
 
-//! The base class of all table-like models
+//! The base class of all models of rectangular table form
 
 class TableModel : public QAbstractTableModel {
 public:
     void signalReset(); //!< force-emits reset() signal
+    int columnCount(const QModelIndex& /*unused*/) const {
+        return columnCount(); }
+    int rowCount(const QModelIndex& /*unused*/) const {
+        return rowCount(); }
+    virtual int columnCount() const = 0;
+    virtual int rowCount() const = 0;
 };
 
 class FilesModel : public TableModel {
 public:
-    int columnCount(const QModelIndex& = ANY_INDEX) const;
-    int rowCount(const QModelIndex& = ANY_INDEX) const;
+    int columnCount() const final;
+    int rowCount() const final;
 
     QVariant data(const QModelIndex&, int) const;
 
@@ -48,8 +53,8 @@ class MeasurementsModel : public TableModel {
 public:
     MeasurementsModel();
 
-    int columnCount(const QModelIndex& = ANY_INDEX) const;
-    int rowCount(const QModelIndex& = ANY_INDEX) const;
+    int columnCount() const final;
+    int rowCount() const final;
 
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
@@ -71,8 +76,8 @@ class MetadataModel : public TableModel {
 public:
     MetadataModel();
 
-    int columnCount(const QModelIndex& = ANY_INDEX) const;
-    int rowCount(const QModelIndex& = ANY_INDEX) const;
+    int columnCount() const final;
+    int rowCount() const final;
 
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
@@ -94,8 +99,8 @@ class ReflectionsModel : public TableModel {
 public:
     ReflectionsModel();
 
-    int columnCount(const QModelIndex& = ANY_INDEX) const;
-    int rowCount(const QModelIndex& = ANY_INDEX) const;
+    int columnCount() const final;
+    int rowCount() const final;
 
     str displayData(uint row, uint col) const;
     str displayData(uint row) const;

@@ -72,8 +72,8 @@ class TabularModel : public TableModel {
 public:
     TabularModel(uint numCols_);
 
-    int columnCount(const QModelIndex& /*unused*/= ANY_INDEX) const { return to_i(numCols_) + 1; }
-    int rowCount(const QModelIndex& /*unused*/= ANY_INDEX) const { return to_i(rows_.count()); }
+    int columnCount() const final { return to_i(numCols_) + 1; }
+    int rowCount() const final { return to_i(rows_.count()); }
 
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
