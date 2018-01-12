@@ -27,12 +27,7 @@ extern QModelIndex const ANY_INDEX;
 
 class TableModel : public QAbstractTableModel {
 public:
-    TableModel() {}
-
     void signalReset(); //!< force-emits reset() signal
-
-protected:
-    static int const DCOL = 1; //!< the left-most column is hidden
 };
 
 class FilesModel : public TableModel {
@@ -59,7 +54,7 @@ public:
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
 
-    enum { COL_NUMBER = DCOL, COL_ATTRS };
+    enum { COL_NUMBER = 1, COL_ATTRS };
 
 public:
     enum { GetMeasurementRole = Qt::UserRole };
@@ -82,7 +77,7 @@ public:
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
 
-    enum { COL_CHECK = DCOL, COL_TAG, COL_VALUE, NUM_COLUMNS };
+    enum { COL_CHECK = 1, COL_TAG, COL_VALUE, NUM_COLUMNS };
 
     vec<bool> const& rowsChecked() const { return rowsChecked_; }
 
@@ -108,7 +103,7 @@ public:
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
 
-    enum { COL_ID = DCOL, COL_TYPE, NUM_COLUMNS };
+    enum { COL_ID = 1, COL_TYPE, NUM_COLUMNS };
 
 public:
     enum { GetMeasurementRole = Qt::UserRole };

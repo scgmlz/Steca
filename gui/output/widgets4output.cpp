@@ -72,8 +72,8 @@ class TabularModel : public TableModel {
 public:
     TabularModel(uint numCols_);
 
-    int columnCount(const QModelIndex& = ANY_INDEX) const;
-    int rowCount(const QModelIndex& = ANY_INDEX) const;
+    int columnCount(const QModelIndex& /*unused*/= ANY_INDEX) const { return to_i(numCols_) + 1; }
+    int rowCount(const QModelIndex& /*unused*/= ANY_INDEX) const { return to_i(rows_.count()); }
 
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
@@ -117,13 +117,6 @@ TabularModel::TabularModel(uint numColumns_)
         colIndexMap_[i] = i;
 }
 
-int TabularModel::columnCount(const QModelIndex&) const {
-    return to_i(numCols_) + 1;
-}
-
-int TabularModel::rowCount(const QModelIndex&) const {
-    return to_i(rows_.count());
-}
 
 // The first column contains row numbers. The rest numCols columns contain data.
 

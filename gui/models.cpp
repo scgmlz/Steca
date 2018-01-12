@@ -34,7 +34,7 @@ void TableModel::signalReset() {
 // ************************************************************************** //
 
 int FilesModel::columnCount(const QModelIndex&) const {
-    return 1 + DCOL;
+    return 2;
 }
 
 int FilesModel::rowCount(const QModelIndex&) const {
@@ -84,7 +84,7 @@ QVariant MeasurementsModel::data(const QModelIndex& index, int role) const {
     switch (role) {
     case Qt::DisplayRole: {
         int col = index.column();
-        if (col < DCOL || columnCount() <= col)
+        if (col < 1 || columnCount() <= col)
             return EMPTY_VAR;
         switch (col) {
         case COL_NUMBER:
@@ -102,7 +102,7 @@ QVariant MeasurementsModel::data(const QModelIndex& index, int role) const {
 }
 
 QVariant MeasurementsModel::headerData(int col, Qt::Orientation, int role) const {
-    if (Qt::DisplayRole != role || col < DCOL || columnCount() <= col)
+    if (Qt::DisplayRole != role || col < 1 || columnCount() <= col)
         return EMPTY_VAR;
     switch (col) {
     case COL_NUMBER:
@@ -215,7 +215,7 @@ QVariant ReflectionsModel::data(const QModelIndex& index, int role) const {
     switch (role) {
     case Qt::DisplayRole: {
         int col = index.column();
-        if (col < DCOL)
+        if (col < 1)
             return EMPTY_VAR;
 
         switch (col) {
