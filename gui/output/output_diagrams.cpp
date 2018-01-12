@@ -159,8 +159,8 @@ DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
     debug::ensure(params_->panelDiagram);
     PanelDiagram const* pd = params_->panelDiagram;
 
-    connect(pd->xAxis, slot(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
-    connect(pd->yAxis, slot(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
+    connect(pd->xAxis, SLOT(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
+    connect(pd->yAxis, SLOT(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
 
     tabSave_ = new TabDiagramsSave();
     newQ::Tab(tabs_, "Save")->box().addWidget(tabSave_);

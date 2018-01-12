@@ -168,10 +168,10 @@ SubframeImage::SubframeImage() {
 
         box.addWidget((dataImageWidget_ = new ImageWidget()));
 
-        connect(spinN_, slot(QSpinBox, valueChanged, int), [this]() { render(); });
-        connect(numSlices_, slot(QSpinBox, valueChanged, int), [this]() { render(); });
-        connect(numSlice_, slot(QSpinBox, valueChanged, int), [this]() { render(); });
-        connect(numBin_, slot(QSpinBox, valueChanged, int), [this]() { render(); });
+        connect(spinN_, SLOT(QSpinBox, valueChanged, int), [this]() { render(); });
+        connect(numSlices_, SLOT(QSpinBox, valueChanged, int), [this]() { render(); });
+        connect(numSlice_, SLOT(QSpinBox, valueChanged, int), [this]() { render(); });
+        connect(numBin_, SLOT(QSpinBox, valueChanged, int), [this]() { render(); });
     }
 
     {
@@ -195,14 +195,12 @@ SubframeImage::SubframeImage() {
     }
 
     connect(gHub->toggle_enableCorr, &QAction::toggled, [this](bool) { render(); });
-
     connect(gHub->toggle_showBins, &QAction::toggled, [this]() { render(); });
 
     connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigNormChanged, [this](){ render(); });
-    connect(gHub, &TheHub::sigSuiteSelected,
-            [this](shp_Suite dataseq){ setSuite(dataseq); });
+    connect(gHub, &TheHub::sigSuiteSelected, [this](shp_Suite dataseq){ setSuite(dataseq); });
 
     render();
 }

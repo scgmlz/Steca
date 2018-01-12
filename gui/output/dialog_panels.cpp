@@ -73,7 +73,7 @@ PanelGammaSlices::PanelGammaSlices() : GridPanel("Gamma slices"), settings_("gam
 
     rgeGma_ = gSession->experiment().rgeGma();
 
-    connect(numSlices, slot(QSpinBox, valueChanged, int), [this]() { updateValues(); });
+    connect(numSlices, SLOT(QSpinBox, valueChanged, int), [this]() { updateValues(); });
 }
 
 PanelGammaSlices::~PanelGammaSlices() {

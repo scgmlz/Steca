@@ -233,7 +233,7 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent) : QDialog(parent) {
     connect(actInterpolate_, &QAction::triggered, [this]() { interpolate(); });
 
     if (params_->panelReflection) {
-        connect(params_->panelReflection->cbRefl, slot(QComboBox, currentIndexChanged, int),
+        connect(params_->panelReflection->cbRefl, SLOT(QComboBox, currentIndexChanged, int),
                 [this](){ updateReflection(); });
     }
 

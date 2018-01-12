@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/thehub.h
-//! @brief     Defines class TheHub
+//! @brief     Defines the macro slot, the enum eFittingTab, the global gHub, and the class TheHub
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -23,13 +23,8 @@
 #include "core/typ/singleton.h"
 #include "gui/cfg/settings.h"
 
-class FilesModel;
-class MeasurementsModel;
-class MetadataModel;
-class ReflectionsModel;
-
 // make connects shorter
-#define slot(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
+#define SLOT(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
 
 extern class TheHub* gHub; //!< global pointer to _the_ instance of TheHub
 
@@ -189,10 +184,10 @@ private:
     void sessionFromJson(QByteArray const&) THROWS;
 
 public:
-    FilesModel* filesModel;
-    MeasurementsModel* suiteModel;
-    MetadataModel* metadataModel;
-    ReflectionsModel* reflectionsModel;
+    class FilesModel* filesModel;
+    class MeasurementsModel* measurementsModel;
+    class MetadataModel* metadataModel;
+    class ReflectionsModel* reflectionsModel;
 
     str saveDir; //!< setting: default directory for data export
     str saveFmt; //!< setting: default format for data export
