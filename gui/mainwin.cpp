@@ -174,7 +174,7 @@ MainWin::MainWin() {
 
 void MainWin::initLayout() {
     addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new SubframeFiles()));
-    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasets_ = new SubframeDatasets()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasets_ = new SubframeMeasurements()));
     addDockWidget(Qt::LeftDockWidgetArea, (dockDatasetInfo_ = new SubframeMetadata()));
 
     auto splMain = new QSplitter(Qt::Vertical);

@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/subframe_dataset.h
-//! @brief     Defines class SubframeDatasets
+//! @brief     Defines class SubframeMeasurements
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -23,9 +23,9 @@
 //! Shows the datasets in the selected files, and allow to select some of them
 //! and to combine them by a constant factor
 
-class SubframeDatasets : public DockWidget {
+class SubframeMeasurements : public DockWidget {
 public:
-    SubframeDatasets();
+    SubframeMeasurements();
     QSpinBox* combineDatasets_;
 
 private:

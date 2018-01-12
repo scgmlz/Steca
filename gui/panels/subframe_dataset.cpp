@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/subframe_dataset.cpp
-//! @brief     Implements class SubframeDatasets
+//! @brief     Implements class SubframeMeasurements
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -19,12 +19,12 @@
 #include "gui/widgets/tree_views.h" // inheriting from
 
 // ************************************************************************** //
-//  file-scope: class DatasetView
+//  file-scope: class MeasurementsView
 // ************************************************************************** //
 
-class DatasetView : public ListView {
+class MeasurementsView : public ListView {
 public:
-    DatasetView();
+    MeasurementsView();
 
 private:
     void currentChanged(QModelIndex const&, QModelIndex const&);
@@ -32,7 +32,7 @@ private:
     DatasetsModel* model() const { return static_cast<DatasetsModel*>(ListView::model()); }
 };
 
-DatasetView::DatasetView() : ListView() {
+MeasurementsView::MeasurementsView() : ListView() {
     setModel(gHub->suiteModel); // TODO simplify this
     debug::ensure(dynamic_cast<DatasetsModel*>(ListView::model()));
 
@@ -42,7 +42,7 @@ DatasetView::DatasetView() : ListView() {
         });
 }
 
-void DatasetView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
+void MeasurementsView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     ListView::currentChanged(current, previous);
     gHub->tellSuiteSelected(
         model()->data(current,
@@ -50,11 +50,11 @@ void DatasetView::currentChanged(QModelIndex const& current, QModelIndex const& 
 }
 
 // ************************************************************************** //
-//  class SubframeDatasets
+//  class SubframeMeasurements
 // ************************************************************************** //
 
-SubframeDatasets::SubframeDatasets() : DockWidget("Measurements", "dock-suite") {
-    box_->addWidget((dataseqView_ = new DatasetView()));
+SubframeMeasurements::SubframeMeasurements() : DockWidget("Measurements", "dock-suite") {
+    box_->addWidget((dataseqView_ = new MeasurementsView()));
 
     auto h = newQ::HBoxLayout();
     box_->addLayout(h);
