@@ -26,7 +26,7 @@ Session::Session()
 }
 
 void Session::clear() {
-    while (0 < numFiles())
+    while (numFiles())
         removeFile(0);
 
     remCorrFile();

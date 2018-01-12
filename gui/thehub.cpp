@@ -116,8 +116,8 @@ TheHub::TheHub()
     // handle signals
 
     QObject::connect(this, &TheHub::sigFilesSelected,
-            [this]() { trigger_removeFile->setEnabled(
-                    !gSession->collectedFromFiles().isEmpty()); });
+                     [this](bool on) { trigger_removeFile->setEnabled(on); });
+// TODO check                    !gSession->collectedFromFiles().isEmpty()); });
     QObject::connect(this, &TheHub::sigCorrFile,
             [this](shp_Datafile file) {
                          trigger_remCorr->setEnabled(!file.isNull()); });
@@ -176,8 +176,7 @@ TheHub::~TheHub() {
 void TheHub::removeFile(uint i) {
     gSession->removeFile(i);
     emit sigFilesChanged();
-
-    if (0 == gSession->numFiles())
+    if (gSession->numFiles()==0)
         setImageCut(true, false, ImageCut());
 }
 
@@ -349,7 +348,7 @@ void TheHub::addGivenFiles(const QStringList& filePaths) THROWS {
 
 void TheHub::collectDatasetsFromFiles(uint_vec is, pint by) {
     gSession->collectDatasetsFromFiles((collectFromFiles_ = is), (suiteGroupedBy_ = by));
-    emit sigFilesSelected();
+    emit sigFilesSelected(!gSession->collectedFromFiles().isEmpty());
     emit sigSuitesChanged();
 }
 

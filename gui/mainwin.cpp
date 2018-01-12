@@ -57,12 +57,13 @@ void initMenus(QMenuBar* mbar) {
         return ret;
     };
 
-    auto _actionsToMenu = [mbar](const char* menuName, QList<QAction*> actions)->void {
+    auto _actionsToMenu = [mbar](const char* menuName, QList<QAction*> actions)->QMenu* {
         QMenu* menu = mbar->addMenu(menuName);
         menu->addActions(actions);
         str prefix = str("%1: ").arg(menu->title().remove('&'));
         for (auto action : actions)
             action->setToolTip(prefix + action->toolTip());
+        return menu;
     };
 
 #ifdef Q_OS_OSX
@@ -115,13 +116,16 @@ void initMenus(QMenuBar* mbar) {
                 gHub->toggle_fixedIntenDgram,
         });
 
-    _actionsToMenu(
+    QMenu* menuOutput = _actionsToMenu(
         "&Output",
         {
             gHub->trigger_outputPolefigures,
                 gHub->trigger_outputDiagrams,
                 gHub->trigger_outputDiffractograms,
         });
+    menuOutput->setEnabled(false);
+    QObject::connect(gHub, &TheHub::sigFilesSelected,
+                     [menuOutput](bool on){ menuOutput->setEnabled(on); });
 
     _actionsToMenu(
         "&View",
@@ -330,7 +334,7 @@ void MainWin::saveSession() {
 
 void MainWin::clearSession() {
     gSession->clear();
-    emit gHub->sigFilesSelected();
+    emit gHub->sigFilesSelected(false);
     emit gHub->sigSuitesChanged();
 }
 

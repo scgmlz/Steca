@@ -62,11 +62,10 @@ public: // emit signals
     void tellReflectionValues(const Range&, qpair const&, fwhm_t, bool);
 
 signals:
-    void sigFilesChanged(); // the set of loaded files has changed
-    void sigFilesSelected(); // the selection of loaded files has changed
+    void sigFilesChanged(); //!< loaded file set has changed
+    void sigFilesSelected(bool); //!< active file selection has changed; returns true unless empty
 
-    void sigSuitesChanged(); // the set of suite collected from selected
-    // files has changed
+    void sigSuitesChanged(); //!< the set of suite collected from selected
     void sigSuiteSelected(shp_Suite);
 
     void sigCorrFile(shp_Datafile);
