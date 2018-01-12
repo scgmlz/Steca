@@ -35,7 +35,7 @@ protected:
     class Params* params_;
     QTabWidget* tabs_;
     vec<ReflectionInfos> calcPoints_, interpPoints_;
-    class Table* table_;
+    class DataTable* table_;
     void calculate();
     void interpolate();
     virtual void displayReflection(uint reflIndex, bool interpolated);

@@ -38,15 +38,15 @@ typedef vec<showcol_t> showcol_vec;
 
 class ShowColsWidget : public QWidget {
 public:
-    ShowColsWidget(Table&, showcol_vec&);
+    ShowColsWidget(DataTable&, showcol_vec&);
 private:
-    Table& table_;
+    DataTable& table_;
     showcol_vec& showCols_;
     QBoxLayout* box_;
     QRadioButton *rbHidden_, *rbAll_, *rbNone_, *rbInten_, *rbTth_, *rbFWHM_;
 };
 
-ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
+ShowColsWidget::ShowColsWidget(DataTable& table, showcol_vec& showCols)
     : table_(table), showCols_(showCols) {
     using eReflAttr = ReflectionInfo::eReflAttr;
 
@@ -157,7 +157,7 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
 class TabTable : public QWidget {
 public:
     TabTable(const QStringList& headers, const QStringList& outHeaders, cmp_vec const&);
-    Table* table;
+    DataTable* table;
 private:
     ShowColsWidget* showColumnsWidget_;
     showcol_vec showCols_;
@@ -170,7 +170,7 @@ TabTable::TabTable(const QStringList& headers, const QStringList& outHeaders, co
     debug::ensure(to_u(headers.count()) == cmps.count());
     uint numCols = to_u(headers.count());
 
-    grid_->addWidget((table = new Table(numCols)), 0, 0);
+    grid_->addWidget((table = new DataTable(numCols)), 0, 0);
     grid_->setColumnStretch(0, 1);
 
     table->setColumns(headers, outHeaders, cmps);

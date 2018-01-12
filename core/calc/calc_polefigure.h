@@ -15,8 +15,8 @@
 #ifndef CALC_POLEFIGURE_H
 #define CALC_POLEFIGURE_H
 
-
-class Progress;
+#include "core/calc/reflection_info.h"
+#include "core/typ/async.h"
 
 ReflectionInfos interpolateInfos(
     ReflectionInfos const&, deg alphaStep, deg betaStep, deg idwRadius,

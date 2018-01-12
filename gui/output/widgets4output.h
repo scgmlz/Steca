@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/output/widgets4output.h
-//! @brief     Defines classes Params, Table, TabSave, all used in frame.cpp.
+//! @brief     Defines classes Params, DataTable, TabSave, all used in frame.cpp.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -45,9 +45,9 @@ private:
 };
 
 
-class Table : public TreeView {
+class DataTable : public TreeView {
 public:
-    Table(uint numDataColumns);
+    DataTable(uint numDataColumns);
     void setColumns(const QStringList& headers, const QStringList& outHeaders, cmp_vec const&);
     const QStringList outHeaders() { return outHeaders_; }
     void clear();

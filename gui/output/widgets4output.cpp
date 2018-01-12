@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/output/widgets4output.cpp
-//! @brief     Implements classes Params, Table, TabSave
+//! @brief     Implements classes Params, DataTable, TabSave
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -65,7 +65,7 @@ Params::Params(ePanels panels)
 }
 
 // ************************************************************************** //
-//  local class TabularModel (used by Table)
+//  local class TabularModel (used by DataTable)
 // ************************************************************************** //
 
 class TabularModel : public TableModel {
@@ -247,10 +247,10 @@ void TabularModel::sortData() {
 }
 
 // ************************************************************************** //
-//  class Table
+//  class DataTable
 // ************************************************************************** //
 
-Table::Table(uint numDataColumns) : model_(nullptr) {
+DataTable::DataTable(uint numDataColumns) : model_(nullptr) {
     model_.reset(new TabularModel(numDataColumns));
     setModel(model_.ptr());
     setHeader(new QHeaderView(Qt::Horizontal));
@@ -265,7 +265,7 @@ Table::Table(uint numDataColumns) : model_(nullptr) {
     setColumnWidth(0, w);
 }
 
-void Table::setColumns(
+void DataTable::setColumns(
     const QStringList& headers, const QStringList& outHeaders, cmp_vec const& cmps) {
     model_->setColumns(headers, cmps);
     debug::ensure(headers.count() == outHeaders.count());
@@ -289,23 +289,23 @@ void Table::setColumns(
     });
 }
 
-void Table::clear() {
+void DataTable::clear() {
     model_->clear();
 }
 
-void Table::addRow(row_t const& row, bool sort) {
+void DataTable::addRow(row_t const& row, bool sort) {
     model_->addRow(row, sort);
 }
 
-void Table::sortData() {
+void DataTable::sortData() {
     model_->sortData();
 }
 
-uint Table::rowCount() const {
+uint DataTable::rowCount() const {
     return to_u(model_->rowCount());
 }
 
-const row_t& Table::row(uint i) const {
+const row_t& DataTable::row(uint i) const {
     return model_->row(i);
 }
 

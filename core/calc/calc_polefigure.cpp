@@ -15,7 +15,6 @@
 #include "core/calc/calc_polefigure.h"
 #include "core/def/idiomatic_for.h"
 #include <qmath.h>
-#include "core/typ/async.h"
 
 namespace {
 
