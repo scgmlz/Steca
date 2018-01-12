@@ -44,6 +44,7 @@ private:
     QBoxLayout* box_;
 };
 
+//! A data table, for use in the 'Points' tab of an output dialog.
 
 class DataTable : public TreeView {
 public:
@@ -61,6 +62,7 @@ public:
 
 
 //! Base class for dialogs for saving some output to a file.
+
 class TabSave : public QWidget {
 public:
     TabSave(bool withTypes);
