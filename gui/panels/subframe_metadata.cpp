@@ -35,7 +35,7 @@ MetadataView::MetadataView() : ListView() {
     debug::ensure(dynamic_cast<MetadataModel*>(ListView::model()));
     connect(this, &MetadataView::clicked, [this](QModelIndex const& index) {
         model()->flipCheck(to_u(index.row()));
-        gHub->measurementsModel->showMetaInfo(model()->rowsChecked()); // REVIEW signal instead?
+        emit gHub->sigMetatagsChosen(model()->rowsChecked());
     });
 }
 

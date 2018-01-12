@@ -129,17 +129,17 @@ SubframeSetup::SubframeSetup() {
         detDistance_->setValue(Geometry::DEF_DETECTOR_DISTANCE);
         detPixelSize_->setValue(Geometry::DEF_DETECTOR_PIXEL_SIZE);
 
-        connect(detDistance_, SLOT(QDoubleSpinBox, valueChanged, double), [this]() { setToHub(); });
+        connect(detDistance_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() { setToHub(); });
 
         connect(
-            detPixelSize_, SLOT(QDoubleSpinBox, valueChanged, double), [this]() { setToHub(); });
+            detPixelSize_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() { setToHub(); });
 
         beamOffsetI_ = newQ::SpinBox(6, true);
         beamOffsetJ_ = newQ::SpinBox(6, true);
 
-        connect(beamOffsetI_, SLOT(QSpinBox, valueChanged, int), [this]() { setToHub(); });
+        connect(beamOffsetI_, _SLOT_(QSpinBox, valueChanged, int), [this]() { setToHub(); });
 
-        connect(beamOffsetJ_, SLOT(QSpinBox, valueChanged, int), [this]() { setToHub(); });
+        connect(beamOffsetJ_, _SLOT_(QSpinBox, valueChanged, int), [this]() { setToHub(); });
 
         cutLeft_ = newQ::SpinBox(4, false, 0);
         cutTop_ = newQ::SpinBox(4, false, 0);
@@ -159,19 +159,19 @@ SubframeSetup::SubframeSetup() {
                                         to_u(cutRight_->value()), to_u(cutBottom_->value())));
         };
 
-        connect(cutLeft_, SLOT(QSpinBox, valueChanged, int), [_setImageCut](int value) {
+        connect(cutLeft_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
             _setImageCut(true, value);
         });
 
-        connect(cutTop_, SLOT(QSpinBox, valueChanged, int), [_setImageCut](int value) {
+        connect(cutTop_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
             _setImageCut(true, value);
         });
 
-        connect(cutRight_, SLOT(QSpinBox, valueChanged, int), [_setImageCut](int value) {
+        connect(cutRight_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
             _setImageCut(false, value);
         });
 
-        connect(cutBottom_, SLOT(QSpinBox, valueChanged, int), [_setImageCut](int value) {
+        connect(cutBottom_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
             _setImageCut(false, value);
         });
 
@@ -245,7 +245,7 @@ SubframeSetup::SubframeSetup() {
 
         box.addStretch(1);
 
-        connect(spinDegree_, SLOT(QSpinBox, valueChanged, int), [this](int degree) {
+        connect(spinDegree_, _SLOT_(QSpinBox, valueChanged, int), [this](int degree) {
                 debug::ensure(degree >= 0);
                 gHub->setBgPolyDegree(to_u(degree));
             });
@@ -350,7 +350,7 @@ SubframeSetup::SubframeSetup() {
                     _updateReflectionControls(); }
             );
 
-        connect(comboReflType_, SLOT(QComboBox, currentIndexChanged, const QString&),
+        connect(comboReflType_, _SLOT_(QComboBox, currentIndexChanged, const QString&),
                 [this](const QString& peakFunctionName) {
             gHub->setPeakFunction(peakFunctionName);
         });
@@ -411,11 +411,11 @@ SubframeSetup::SubframeSetup() {
         auto _changeReflData0 = [_newReflData](qreal) { _newReflData(false); };
         auto _changeReflData1 = [_newReflData](qreal) { _newReflData(true); };
 
-        connect(spinRangeMin_, SLOT(QDoubleSpinBox, valueChanged, double), _changeReflData1);
-        connect(spinRangeMax_, SLOT(QDoubleSpinBox, valueChanged, double), _changeReflData1);
-        connect(spinGuessPeakX_, SLOT(QDoubleSpinBox, valueChanged, double), _changeReflData0);
-        connect(spinGuessPeakY_, SLOT(QDoubleSpinBox, valueChanged, double), _changeReflData0);
-        connect(spinGuessFWHM_, SLOT(QDoubleSpinBox, valueChanged, double), _changeReflData0);
+        connect(spinRangeMin_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData1);
+        connect(spinRangeMax_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData1);
+        connect(spinGuessPeakX_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData0);
+        connect(spinGuessPeakY_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData0);
+        connect(spinGuessFWHM_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData0);
     }
 
     connect(this, &SubframeSetup::currentChanged,

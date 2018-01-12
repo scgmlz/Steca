@@ -34,14 +34,11 @@ TheHub::TheHub()
     qDebug() << "TheHub/";
 
     filesModel = new FilesModel();
-    measurementsModel = new MeasurementsModel();
     metadataModel = new MetadataModel();
     reflectionsModel = new ReflectionsModel();
 
     connect(this, &TheHub::sigFilesChanged,
             [this]() { filesModel->signalReset(); });
-    connect(this, &TheHub::sigSuitesChanged,
-            [this]() { measurementsModel->signalReset(); });
     connect(this, &TheHub::sigSuiteSelected,
             [this](shp_Suite dataseq) { metadataModel->reset(dataseq); });
 

@@ -81,13 +81,11 @@ QVariant MeasurementsModel::data(rcIndex index, int role) const {
     int row = index.row();
     if (row < 0 || rowCount() <= row)
         return EMPTY_VAR;
-
     switch (role) {
     case Qt::DisplayRole: {
         int col = index.column();
         if (col < DCOL || columnCount() <= col)
             return EMPTY_VAR;
-
         switch (col) {
         case COL_NUMBER:
             return gSession->experimentTags().at(to_u(row));
@@ -116,13 +114,10 @@ QVariant MeasurementsModel::headerData(int col, Qt::Orientation, int role) const
 
 void MeasurementsModel::showMetaInfo(vec<bool> const& metadataRows) {
     beginResetModel();
-
     metaInfoNums_.clear();
-
     for_i (metadataRows.count())
         if (metadataRows.at(i))
             metaInfoNums_.append(i);
-
     endResetModel();
 }
 

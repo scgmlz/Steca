@@ -24,18 +24,22 @@
 
 //! Main item in SubframeMeasurement: List and user selection of loaded measurements.
 
-class MeasurementsView : public ListView {
+class MeasurementsView final : public ListView {
 public:
     MeasurementsView();
 
 private:
     void currentChanged(QModelIndex const&, QModelIndex const&);
 
-    MeasurementsModel* model() const { return static_cast<MeasurementsModel*>(ListView::model()); }
+    MeasurementsModel* model() const override {
+        return static_cast<MeasurementsModel*>(ListView::model()); }
 };
 
 MeasurementsView::MeasurementsView() : ListView() {
-    setModel(gHub->measurementsModel);
+    auto measurementsModel = new MeasurementsModel();
+    setModel(measurementsModel);
+    connect(gHub, &TheHub::sigSuitesChanged,
+            [&]() { measurementsModel->signalReset(); });
     debug::ensure(dynamic_cast<MeasurementsModel*>(ListView::model()));
 
     connect(gHub, &TheHub::sigSuitesChanged,
@@ -43,6 +47,7 @@ MeasurementsView::MeasurementsView() : ListView() {
                 gHub->tellSuiteSelected(shp_Suite()); // first de-select
                 selectRow(0);
             });
+    connect(gHub, &TheHub::sigMetatagsChosen, model(), &MeasurementsModel::showMetaInfo);
 }
 
 void MeasurementsView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
@@ -69,7 +74,7 @@ SubframeMeasurements::SubframeMeasurements() : DockWidget("Measurements", "dock-
     auto combineMeasurements = newQ::SpinBox(4, false, 1);
     controls_row->addWidget(combineMeasurements);
     combineMeasurements->setToolTip("Combine and average number of suite");
-    connect(combineMeasurements, SLOT(QSpinBox, valueChanged, int),
+    connect(combineMeasurements, _SLOT_(QSpinBox, valueChanged, int),
             [this](int num) { gHub->combineMeasurementsBy(pint(qMax(1, num))); });
     connect(gHub, &TheHub::sigSuitesChanged,
             [&]() { combineMeasurements->setValue(to_i(uint(gHub->suiteGroupedBy()))); });

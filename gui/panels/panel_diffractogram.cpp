@@ -437,7 +437,7 @@ Diffractogram::Diffractogram() : suite_(nullptr), currReflIndex_(0) {
     comboNormType_->addItems({"none", "monitor", "Δ monitor", "Δ time", "background"});
     hb->addWidget(comboNormType_);
 
-    connect(comboNormType_, SLOT(QComboBox, currentIndexChanged, int),
+    connect(comboNormType_, _SLOT_(QComboBox, currentIndexChanged, int),
             [this](int index) { // TODO init value from hub?
                 gHub->setNorm(eNorm(index));
             });
@@ -454,7 +454,7 @@ Diffractogram::Diffractogram() : suite_(nullptr), currReflIndex_(0) {
         gHub->setIntenScaleAvg(on, preal(intenScale_->value()));
     });
 
-    connect(intenScale_, SLOT(QDoubleSpinBox, valueChanged, double), [this](double val) {
+    connect(intenScale_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
         if (val > 0)
             gHub->setIntenScaleAvg(gSession->intenScaledAvg(), preal(val));
     });

@@ -36,7 +36,7 @@ public:
     ListView() {}
     void setModel(TableModel* model);
 protected:
-    TableModel* model() const;
+    virtual TableModel* model() const;
     void updateSingleSelection();
     void selectRow(int);
 };

@@ -24,7 +24,7 @@
 #include "gui/cfg/settings.h"
 
 // make connects shorter
-#define SLOT(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
+#define _SLOT_(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
 
 extern class TheHub* gHub; //!< global pointer to _the_ instance of TheHub
 
@@ -80,6 +80,8 @@ signals:
     void sigNormChanged();
 
     void sigFittingTab(eFittingTab);
+
+    void sigMetatagsChosen(vec<bool>); //!< Selection of metadata has changed
 
 public:
     TheHub();
@@ -185,7 +187,6 @@ private:
 
 public:
     class FilesModel* filesModel;
-    class MeasurementsModel* measurementsModel;
     class MetadataModel* metadataModel;
     class ReflectionsModel* reflectionsModel;
 

@@ -168,10 +168,10 @@ SubframeImage::SubframeImage() {
 
         box.addWidget((dataImageWidget_ = new ImageWidget()));
 
-        connect(spinN_, SLOT(QSpinBox, valueChanged, int), [this]() { render(); });
-        connect(numSlices_, SLOT(QSpinBox, valueChanged, int), [this]() { render(); });
-        connect(numSlice_, SLOT(QSpinBox, valueChanged, int), [this]() { render(); });
-        connect(numBin_, SLOT(QSpinBox, valueChanged, int), [this]() { render(); });
+        connect(spinN_, _SLOT_(QSpinBox, valueChanged, int), [this]() { render(); });
+        connect(numSlices_, _SLOT_(QSpinBox, valueChanged, int), [this]() { render(); });
+        connect(numSlice_, _SLOT_(QSpinBox, valueChanged, int), [this]() { render(); });
+        connect(numBin_, _SLOT_(QSpinBox, valueChanged, int), [this]() { render(); });
     }
 
     {
