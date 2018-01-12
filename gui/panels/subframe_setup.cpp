@@ -42,15 +42,15 @@ public:
     void updateSingleSelection();
 
 private:
-    using Model = ReflectionsModel;
-    Model* model() const { return static_cast<Model*>(ListView::model()); }
+    ReflectionsModel* model() const { return static_cast<ReflectionsModel*>(ListView::model()); }
 
     void selectionChanged(QItemSelection const&, QItemSelection const&);
 };
 
 ReflectionView::ReflectionView() : ListView() {
-    setModel(gHub->reflectionsModel);
-    debug::ensure(dynamic_cast<Model*>(ListView::model()));
+    auto reflectionsModel = new ReflectionsModel();
+    setModel(reflectionsModel);
+    debug::ensure(dynamic_cast<ReflectionsModel*>(ListView::model()));
 
     for_i (model()->columnCount())
         resizeColumnToContents(i);
@@ -85,7 +85,8 @@ shp_Reflection ReflectionView::selectedReflection() const {
     QList<QModelIndex> indexes = selectionModel()->selectedIndexes();
     if (indexes.isEmpty())
         return shp_Reflection();
-    return model()->data(indexes.first(), Model::GetMeasurementRole).value<shp_Reflection>();
+    return model()->data(indexes.first(),
+                         ReflectionsModel::GetMeasurementRole).value<shp_Reflection>();
 }
 
 void ReflectionView::updateSingleSelection() {
@@ -99,9 +100,10 @@ void ReflectionView::selectionChanged(
 
     QList<QModelIndex> indexes = selected.indexes();
     gHub->tellSelectedReflection(
-        indexes.isEmpty()
-            ? shp_Reflection()
-            : model()->data(indexes.first(), Model::GetMeasurementRole).value<shp_Reflection>());
+        indexes.isEmpty() ?
+        shp_Reflection() :
+        model()->data(indexes.first(),
+                      ReflectionsModel::GetMeasurementRole).value<shp_Reflection>());
 }
 
 

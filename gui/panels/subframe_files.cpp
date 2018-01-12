@@ -42,7 +42,9 @@ private:
 // ************************************************************************** //
 
 FilesView::FilesView() : MultiListView() {
-    setModel(gHub->filesModel);
+    auto filesModel = new FilesModel();
+    setModel(filesModel);
+    connect(gHub, &TheHub::sigFilesChanged, [=]() { filesModel->signalReset(); });
     debug::ensure(dynamic_cast<FilesModel*>(MultiListView::model()));
 
     header()->hide();

@@ -248,10 +248,3 @@ void ReflectionsModel::addReflection(const QString& peakFunctionName) {
 void ReflectionsModel::remReflection(uint i) {
     gHub->remReflection(i);
 }
-
-QStringList ReflectionsModel::names() const {
-    QStringList ns;
-    for_i (rowCount())
-        ns.append(displayData(to_u(i)));
-    return ns;
-}

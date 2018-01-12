@@ -22,6 +22,7 @@
 #include "core/typ/realpair.h"
 #include "core/typ/types.h" // for fwhm_t
 #include <QSharedPointer> // no auto rm
+#include <QStringList>
 
 //! Wraps a PeakFunction (pimpl idiom)
 
@@ -48,6 +49,7 @@ private:
 
 typedef QSharedPointer<Reflection> shp_Reflection;
 typedef vec<shp_Reflection> Reflections;
+QStringList reflectionNames(const Reflections& reflections);
 
 Q_DECLARE_METATYPE(shp_Reflection)
 

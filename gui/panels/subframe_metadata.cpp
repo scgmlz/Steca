@@ -31,7 +31,10 @@ private:
 };
 
 MetadataView::MetadataView() : ListView() {
-    setModel(gHub->metadataModel);
+    auto metadataModel = new MetadataModel();
+    setModel(metadataModel);
+    connect(gHub, &TheHub::sigSuiteSelected,
+            [=](shp_Suite dataseq) { metadataModel->reset(dataseq); });
     debug::ensure(dynamic_cast<MetadataModel*>(ListView::model()));
     connect(this, &MetadataView::clicked, [this](QModelIndex const& index) {
         model()->flipCheck(to_u(index.row()));

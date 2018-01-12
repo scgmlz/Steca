@@ -186,8 +186,6 @@ private:
     void sessionFromJson(QByteArray const&) THROWS;
 
 public:
-    class FilesModel* filesModel;
-    class MetadataModel* metadataModel;
     class ReflectionsModel* reflectionsModel;
 
     str saveDir; //!< setting: default directory for data export

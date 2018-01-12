@@ -110,8 +110,6 @@ public:
 
     void addReflection(const QString&);
     void remReflection(uint);
-
-    QStringList names() const;
 };
 
 #endif // MODELS_H

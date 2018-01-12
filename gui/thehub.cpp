@@ -33,15 +33,6 @@ TheHub::TheHub()
 {
     qDebug() << "TheHub/";
 
-    filesModel = new FilesModel();
-    metadataModel = new MetadataModel();
-    reflectionsModel = new ReflectionsModel();
-
-    connect(this, &TheHub::sigFilesChanged,
-            [this]() { filesModel->signalReset(); });
-    connect(this, &TheHub::sigSuiteSelected,
-            [this](shp_Suite dataseq) { metadataModel->reset(dataseq); });
-
     // create actions
 
     trigger_about = newQ::Trigger("About " + qApp->applicationName());
