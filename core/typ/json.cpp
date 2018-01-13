@@ -88,14 +88,14 @@ uint JsonObj::loadUint(rcstr key, uint def) const THROWS{
     return value(key).isUndefined() ? def : loadUint(key);
 }
 
-pint JsonObj::loadPint(rcstr key) const {
+uint JsonObj::loadPint(rcstr key) const {
     uint num = loadUint(key);
     RUNTIME_CHECK(num > 0, "expecting positive number");
-    return pint(num);
+    return num;
 }
 
-pint JsonObj::loadPint(rcstr key, uint def) const {
-    return value(key).isUndefined() ? (pint)def : loadPint(key);
+uint JsonObj::loadPint(rcstr key, uint def) const {
+    return value(key).isUndefined() ? def : loadPint(key);
 }
 
 qreal JsonObj::loadQreal(rcstr key) const THROWS {

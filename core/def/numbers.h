@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/def/numbers.h
-//! @brief     Defines types qint, pint, preal, and some conversion functions
+//! @brief     Defines types qint, preal, and some conversion functions
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -59,28 +59,6 @@ template <typename T> typename std::__make_unsigned<T>::__type clip_u(T t) {
     static_assert(std::is_signed<T>::value, "clip_u(signed)");
     return typename std::__make_unsigned<T>::__type(qMax(0, t));
 }
-
-#endif
-
-//! A positive integer (1,2,...).
-
-#ifndef QT_NO_DEBUG
-
-class pint {
-public:
-    explicit pint(uint val) : val_(val) { debug::ensure(1 <= val); }
-
-    explicit pint(int val) : pint(to_u(val)) {}
-
-    operator uint() const { return val_; }
-
-private:
-    uint val_;
-};
-
-#else
-
-typedef uint pint;
 
 #endif
 

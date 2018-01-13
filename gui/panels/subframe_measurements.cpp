@@ -144,7 +144,7 @@ SubframeMeasurements::SubframeMeasurements() : DockWidget("Measurements", "dock-
     controls_row->addWidget(combineMeasurements);
     combineMeasurements->setToolTip("Combine and average number of suite");
     connect(combineMeasurements, _SLOT_(QSpinBox, valueChanged, int),
-            [this](int num) { gHub->combineMeasurementsBy(pint(qMax(1, num))); });
+            [this](int num) { gHub->combineMeasurementsBy(qMax(1, num)); });
     connect(gHub, &TheHub::sigSuitesChanged,
             [=]() { combineMeasurements->setValue(to_i(uint(gHub->suiteGroupedBy()))); });
 }

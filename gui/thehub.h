@@ -130,9 +130,9 @@ public:
     void sessionFromFile(rcstr&) THROWS;
     void addGivenFile(rcstr filePath) THROWS;
     void addGivenFiles(const QStringList& filePaths) THROWS;
-    void collectDatasetsFromFiles(uint_vec, pint);
+    void collectDatasetsFromFiles(uint_vec, uint);
     void collectDatasetsFromFiles(uint_vec);
-    void combineMeasurementsBy(pint);
+    void combineMeasurementsBy(uint);
     void setCorrFile(rcstr filePath) THROWS;
     void tryEnableCorrection(bool);
     void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
@@ -160,7 +160,7 @@ public:
     void saveSession(QFileInfo const&) const;
     QByteArray saveSession() const;
 
-    pint suiteGroupedBy() const { return suiteGroupedBy_; }
+    uint suiteGroupedBy() const { return suiteGroupedBy_; }
 
     eFittingTab fittingTab() const { return fittingTab_; }
 
@@ -172,7 +172,7 @@ private:
     bool isFixedIntenDgramScale_;
     bool isCombinedDgram_;
     uint_vec collectFromFiles_;
-    pint suiteGroupedBy_ = pint(1);
+    uint suiteGroupedBy_ = 1;
     eFittingTab fittingTab_ = eFittingTab::NONE;
     shp_Suite selectedSuite_;
     shp_Reflection selectedReflection_;

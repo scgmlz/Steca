@@ -122,7 +122,7 @@ void Session::remCorrFile() {
     updateImageSize();
 }
 
-void Session::collectDatasetsFromFiles(uint_vec fileNums, pint combineBy) {
+void Session::collectDatasetsFromFiles(uint_vec fileNums, uint combineBy) {
 
     collectedFromFiles_ = fileNums;
     experiment_.clear();

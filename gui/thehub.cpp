@@ -332,7 +332,7 @@ void TheHub::addGivenFiles(const QStringList& filePaths) THROWS {
         addGivenFile(filePath);
 }
 
-void TheHub::collectDatasetsFromFiles(uint_vec is, pint by) {
+void TheHub::collectDatasetsFromFiles(uint_vec is, uint by) {
     gSession->collectDatasetsFromFiles((collectFromFiles_ = is), (suiteGroupedBy_ = by));
     emit sigFilesSelected(!gSession->collectedFromFiles().isEmpty());
     emit sigSuitesChanged();
@@ -342,7 +342,7 @@ void TheHub::collectDatasetsFromFiles(uint_vec is) {
     collectDatasetsFromFiles(is, suiteGroupedBy_);
 }
 
-void TheHub::combineMeasurementsBy(pint by) {
+void TheHub::combineMeasurementsBy(uint by) {
     collectDatasetsFromFiles(collectFromFiles_, by);
 }
 
