@@ -15,7 +15,7 @@
 #include "gui/output/output_diffractograms.h"
 #include "core/session.h"
 #include "gui/output/dialog_panels.h"
-#include "gui/output/widgets4output.h"
+#include "gui/output/tab_save.h"
 #include "gui/output/write_file.h"
 #include "gui/thehub.h"
 #include "gui/base/various_widgets.h"

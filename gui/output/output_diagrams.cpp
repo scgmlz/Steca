@@ -17,7 +17,7 @@
 #include "gui/base/various_widgets.h"
 #include "gui/output/data_table.h"
 #include "gui/output/dialog_panels.h"
-#include "gui/output/widgets4output.h"
+#include "gui/output/tab_save.h"
 #include "gui/output/write_file.h"
 #include "gui/thehub.h"
 #include "QCustomPlot/qcustomplot.h"

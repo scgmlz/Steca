@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/output/widgets4output.cpp
+//! @file      gui/output/tab_save.cpp
 //! @brief     Implements classes Params, TabSave
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,53 +12,11 @@
 //
 // ************************************************************************** //
 
-#include "gui/output/widgets4output.h"
+#include "gui/output/tab_save.h"
 #include "gui/output/dialog_panels.h"
 #include "gui/popup/filedialog.h"
 #include "gui/thehub.h"
 #include <QDir>
-
-
-// ************************************************************************** //
-//  class Params
-// ************************************************************************** //
-
-Params::Params(ePanels panels)
-    : panelReflection(nullptr)
-    , panelGammaSlices(nullptr)
-    , panelGammaRange(nullptr)
-    , panelPoints(nullptr)
-    , panelInterpolation(nullptr)
-    , panelDiagram(nullptr) {
-
-    setLayout((box_ = newQ::BoxLayout(Qt::Horizontal)));
-
-    if (REFLECTION & panels)
-        box_->addWidget((panelReflection = new PanelReflection()));
-
-    debug::ensure(panels & GAMMA);
-    if (GAMMA & panels) {
-        box_->addWidget((panelGammaSlices = new PanelGammaSlices()));
-        box_->addWidget((panelGammaRange = new PanelGammaRange()));
-    }
-
-    if (POINTS & panels)
-        box_->addWidget((panelPoints = new PanelPoints()));
-
-    if (INTERPOLATION & panels)
-        box_->addWidget((panelInterpolation = new PanelInterpolation()));
-
-    if (DIAGRAM & panels)
-        box_->addWidget((panelDiagram = new PanelDiagram()));
-
-    box_->addStretch();
-
-    if (panelGammaSlices)
-        panelGammaSlices->updateValues();
-
-    if (panelGammaRange)
-        panelGammaRange->updateValues();
-}
 
 
 // ************************************************************************** //

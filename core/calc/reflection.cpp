@@ -78,6 +78,6 @@ void Reflection::from_json(JsonObj const& obj) THROWS {
 QStringList reflectionNames(const Reflections& reflections) {
     QStringList ret;
     for_i (reflections.count())
-        ret.append(QStringLiteral("%i: %s").arg(i).arg(reflections[i]->peakFunction().name()));
+        ret.append(QStringLiteral("%1: %2").arg(i+1).arg(reflections[i]->peakFunction().name()));
     return ret;
 }
