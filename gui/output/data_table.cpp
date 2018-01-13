@@ -29,7 +29,7 @@ class TabularModel : public TableModel {
 public:
     TabularModel(int numCols_);
 
-    int columnCount() const final { return to_i(numCols_) + 1; }
+    int columnCount() const final { return numCols_ + 1; }
     int rowCount() const final { return to_i(rows_.count()); }
 
     QVariant data(const QModelIndex&, int) const;
@@ -87,10 +87,10 @@ QVariant TabularModel::data(const QModelIndex& index, int role) const {
     switch (role) {
     case Qt::DisplayRole:
         if (0 == indexCol)
-            return rows_.at(to_u(indexRow)).n;
+            return rows_.at(indexRow).n;
 
         if (--indexCol < numCols && indexRow < numRows) {
-            QVariant var = rows_.at(to_u(indexRow)).row.at(to_u(indexCol));
+            QVariant var = rows_.at(indexRow).row.at(indexCol);
             if (isNumeric(var) && qIsNaN(var.toDouble()))
                 var = QVariant(); // hide nans
             return var;
@@ -103,7 +103,7 @@ QVariant TabularModel::data(const QModelIndex& index, int role) const {
             return Qt::AlignRight;
 
         if (--indexCol < numCols && indexRow < numRows) {
-            QVariant const& var = rows_.at(to_u(indexRow)).row.at(to_u(indexCol));
+            QVariant const& var = rows_.at(indexRow).row.at(indexCol);
             if (isNumeric(var))
                 return Qt::AlignRight;
         }
@@ -121,7 +121,7 @@ QVariant TabularModel::headerData(int section, Qt::Orientation, int role) const 
         return QVariant();
 
     if (Qt::DisplayRole == role)
-        return 0 == section ? "#" : headers_.at(to_u(section) - 1);
+        return 0 == section ? "#" : headers_.at(section - 1);
 
     return QVariant();
 }
@@ -166,7 +166,7 @@ void TabularModel::sortData() {
     // sort by sortColumn first, then left-to-right
     auto _cmp = [this, _cmpRows](numRow const& r1, numRow const& r2) {
         if (0 <= sortColumn_) {
-            int c = _cmpRows(to_u(sortColumn_), r1.row, r2.row);
+            int c = _cmpRows(sortColumn_, r1.row, r2.row);
             if (c < 0)
                 return true;
             if (c > 0)
@@ -179,7 +179,7 @@ void TabularModel::sortData() {
         }
 
         for_int (col, numCols_) {
-            if (to_i(col) != sortColumn_) {
+            if (col != sortColumn_) {
                 int c = _cmpRows(col, r1.row, r2.row);
                 if (c < 0)
                     return true;

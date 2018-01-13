@@ -72,13 +72,13 @@ QVariant ReflectionsModel::data(const QModelIndex& index, int role) const {
         switch (col) {
         case COL_ID:
         case COL_TYPE:
-            return displayData(to_u(row), to_u(col));
+            return displayData(row, col);
         default:
             return {};
         }
     }
     case Qt::UserRole:
-        return QVariant::fromValue<shp_Reflection>(gSession->reflections().at(to_u(row)));
+        return QVariant::fromValue<shp_Reflection>(gSession->reflections().at(row));
     default:
         return {};
     }
@@ -130,13 +130,13 @@ void ReflectionView::removeSelected() {
     int row = currentIndex().row();
     if (row < 0 || model()->rowCount() <= row)
         return;
-    model()->remReflection(to_u(row));
+    model()->remReflection(row);
     updateSingleSelection();
 }
 
 void ReflectionView::clear() {
     for (int row = model()->rowCount(); row-- > 0;) {
-        model()->remReflection(to_u(row));
+        model()->remReflection(row);
         updateSingleSelection();
     }
 }
@@ -211,7 +211,7 @@ SubframeSetup::SubframeSetup() {
             if (gHub->toggle_linkCuts->isChecked())
                 gHub->setImageCut(
                     isTopOrLeft, true,
-                    ImageCut(to_u(value), to_u(value), to_u(value), to_u(value)));
+                    ImageCut(value, value, value, value));
             else
                 gHub->setImageCut(
                     isTopOrLeft, false, ImageCut(
@@ -307,7 +307,7 @@ SubframeSetup::SubframeSetup() {
 
         connect(spinDegree_, _SLOT_(QSpinBox, valueChanged, int), [this](int degree) {
                 debug::ensure(degree >= 0);
-                gHub->setBgPolyDegree(to_u(degree));
+                gHub->setBgPolyDegree(degree);
             });
 
         connect(gHub, &TheHub::sigBgChanged, [this](){
@@ -512,8 +512,8 @@ void SubframeSetup::setFromHub() {
 
     const ImageCut& cut = gSession->imageCut();
 
-    cutLeft_->setValue(to_i(cut.left));
-    cutTop_->setValue(to_i(cut.top));
-    cutRight_->setValue(to_i(cut.right));
-    cutBottom_->setValue(to_i(cut.bottom));
+    cutLeft_->setValue(cut.left);
+    cutTop_->setValue(cut.top);
+    cutRight_->setValue(cut.right);
+    cutBottom_->setValue(cut.bottom);
 }

@@ -530,7 +530,7 @@ Datafile loadCaress(rcstr filePath) THROWS {
                     } buffer;
 
                     intens = new int[d_number];
-                    imageSize = to_u(d_number);
+                    imageSize = d_number;
                     int section = 1;
                     int start_item = 1;
                     int tempNumItems, ret_val;
@@ -544,7 +544,7 @@ Datafile loadCaress(rcstr filePath) THROWS {
                         ret_val = get_data_partition(
                             buffer.i4, &section, &start_item, &tempNumItems, &d_type);
                         memmove(
-                            &intens[start_item - 1], buffer.i4, to_u(tempNumItems) * sizeof(int));
+                            &intens[start_item - 1], buffer.i4, tempNumItems * sizeof(int));
                         remaining_items -= MAXNUMBEROFCHANNELS;
                         start_item += MAXNUMBEROFCHANNELS;
                     } while (!ret_val && (remaining_items > 0));

@@ -32,8 +32,8 @@ struct size2d {
     COMPARABLE(size2d const&)
 
     friend size2d operator-(size2d const& s1, size2d const& s2) {
-        int w = to_i(s1.w) - to_i(s2.w);
-        int h = to_i(s1.h) - to_i(s2.h);
+        int w = s1.w - s2.w;
+        int h = s1.h - s2.h;
         return size2d(to_u(qMax(w, 0)), to_u(qMax(h, 0)));
     }
 

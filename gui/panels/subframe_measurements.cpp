@@ -63,14 +63,14 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
             return {};
         switch (col) {
         case COL_NUMBER:
-            return gSession->experimentTags().at(to_u(row));
+            return gSession->experimentTags().at(row);
         default:
-            return experiment_.at(to_u(row))->metadata()->attributeStrValue(
+            return experiment_.at(row)->metadata()->attributeStrValue(
                 metaInfoNums_.at(to_u(col - COL_ATTRS)));
         }
     }
     case Qt::UserRole:
-        return QVariant::fromValue<shp_Suite>(experiment_.at(to_u(row)));
+        return QVariant::fromValue<shp_Suite>(experiment_.at(row));
     default:
         return {};
     }

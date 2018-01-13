@@ -188,10 +188,10 @@ QByteArray TheHub::saveSession() const {
 
     const ImageCut& cut = gSession->imageCut();
     sub = {
-        { "left", to_i(cut.left) },
-        { "top", to_i(cut.top) },
-        { "right", to_i(cut.right) },
-        { "bottom", to_i(cut.bottom) } };
+        { "left", cut.left },
+        { "top", cut.top },
+        { "right", cut.right },
+        { "bottom", cut.bottom } };
     top.insert("cut", sub);
 
     const ImageTransform& trn = gSession->imageTransform();
@@ -209,7 +209,7 @@ QByteArray TheHub::saveSession() const {
 
     QJsonArray arrSelectedFiles;
     for (int i : gSession->collectedFromFiles())
-        arrSelectedFiles.append(to_i(i));
+        arrSelectedFiles.append(i);
 
     top.insert("selected files", arrSelectedFiles);
     top.insert("combine", to_i((int)suiteGroupedBy_));
@@ -267,14 +267,14 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     for (const QJsonValue& sel : sels) {
         int i = sel.toInt(), index = qBound(0, i, files.count());
         RUNTIME_CHECK(i == index, str("Invalid selection index: %1").arg(i));
-        selIndexes.append(to_u(index));
+        selIndexes.append(index);
     }
 
     std::sort(selIndexes.begin(), selIndexes.end());
     int lastIndex = -1;
     for (int index : selIndexes) {
-        RUNTIME_CHECK(lastIndex < to_i(index), str("Duplicate selection index"));
-        lastIndex = to_i(index);
+        RUNTIME_CHECK(lastIndex < index, str("Duplicate selection index"));
+        lastIndex = index;
     }
 
     TR("sessionFromJson: going to collect suite");

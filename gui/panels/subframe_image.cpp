@@ -206,7 +206,7 @@ SubframeImage::SubframeImage() {
 QPixmap SubframeImage::makeBlankPixmap() {
     const size2d size = gSession->imageSize();
 
-    QPixmap pixmap(to_i(size.w), to_i(size.h));
+    QPixmap pixmap(size.w, size.h);
     pixmap.fill(QColor(0, 0, 0, 0));
 
     return pixmap;
@@ -222,13 +222,13 @@ QImage SubframeImage::makeImage(shp_Image image, bool curvedScale) {
     if (size.isEmpty())
         return im;
 
-    im = QImage(QSize(to_i(size.w), to_i(size.h)), QImage::Format_RGB32);
+    im = QImage(QSize(size.w, size.h), QImage::Format_RGB32);
 
     const Range rgeInten = imageLens->rgeInten(gHub->isFixedIntenImageScale());
     inten_t maxInten = inten_t(rgeInten.max);
 
     for_ij (size.w, size.h)
-        im.setPixel(to_i(i), to_i(j),
+        im.setPixel(i, j,
                     colormap::intenImage(imageLens->imageInten(i, j), maxInten, curvedScale));
     return im;
 }
@@ -244,7 +244,7 @@ QPixmap SubframeImage::makePixmap(
 
     const QSize& size = im.size();
     for_ij (size.width(), size.height()) {
-        ScatterDirection const& a = angleMap->at(to_u(i), to_u(j));
+        ScatterDirection const& a = angleMap->at(i, j);
         QColor color = im.pixel(i, j);
         if (rgeGma.contains(a.gma)) {
             if (rgeTth.contains(a.tth)) {
@@ -271,7 +271,7 @@ void SubframeImage::render() {
         QPixmap pixMap;
 
         const int nSlices = to_u(numSlices_->value());
-        numSlice_->setMaximum(qMax(1, to_i(nSlices)));
+        numSlice_->setMaximum(qMax(1, nSlices));
         numSlice_->setEnabled(nSlices > 0);
 
         if (dataseq_) {
@@ -279,7 +279,7 @@ void SubframeImage::render() {
             const int by = qBound(1, int(gHub->suiteGroupedBy()), dataseq_->count());
             const int n = qBound(1, to_u(spinN_->value()), by);
 
-            spinN_->setValue(to_i(n));
+            spinN_->setValue(n);
             spinN_->setEnabled(by > 1);
 
             lens_ = gSession->defaultDatasetLens(*dataseq_);

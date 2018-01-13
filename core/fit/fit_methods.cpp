@@ -74,8 +74,8 @@ void FitWrapper::fit_exec(
     int const maxIterations = 1000;
 
     dlevmar_bc_der(
-        &function, &functionJacobian, params, remove_const(yValues), to_i(paramsCount),
-        to_i(dataPointsCount), remove_const(paramsLimitMin), remove_const(paramsLimitMax), NULL,
+        &function, &functionJacobian, params, remove_const(yValues), paramsCount,
+        dataPointsCount, remove_const(paramsLimitMin), remove_const(paramsLimitMax), NULL,
         maxIterations, opts, info, NULL, covar.data(), NULL);
 
     for_i (paramsCount)
@@ -91,7 +91,7 @@ void FitWrapper::callbackJacobianLM(
     qreal* parValues, qreal* jacobian, int parameterLength, int xLength, void*) {
     for_int (ix, xLength) {
         for_int (ip, parameterLength) {
-            *jacobian++ = function_->dy(xValues_[ix], to_u(ip), parValues);
+            *jacobian++ = function_->dy(xValues_[ix], ip, parValues);
         }
     }
 }

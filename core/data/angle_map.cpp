@@ -91,12 +91,12 @@ void AngleMap::calculate() {
     const qreal b_z1 = d_z * cos_midTth;
 
     for_int (i, size.w) {
-        const qreal d_x = (to_i(i) - midPix.i) * pixSize;
+        const qreal d_x = (i - midPix.i) * pixSize;
         const qreal b_x = b_x1 + d_x * cos_midTth;
         const qreal b_z = b_z1 - d_x * sin_midTth;
         const qreal b_x2 = b_x * b_x;
         for_int (j, size.h) {
-            const qreal b_y = (midPix.j - to_i(j)) * pixSize; // == d_y
+            const qreal b_y = (midPix.j - j) * pixSize; // == d_y
             const qreal b_r = sqrt(b_x2 + b_y * b_y);
             const rad gma = atan2(b_y, b_x);
             const rad tth = atan2(b_r, b_z);

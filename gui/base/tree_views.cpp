@@ -74,6 +74,6 @@ void MultiListView::selectRows(int_vec rows) {
     const int cols = m->columnCount();
     QItemSelection is;
     for (int row : rows)
-        is.append(QItemSelectionRange(m->index(to_i(row), 0), m->index(to_i(row), cols - 1)));
+        is.append(QItemSelectionRange(m->index(row, 0), m->index(row, cols - 1)));
     selectionModel()->select(is, QItemSelectionModel::ClearAndSelect);
 }

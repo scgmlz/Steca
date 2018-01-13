@@ -280,7 +280,7 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) cons
 
     const QStringList& headers = table_->outHeaders();
     for_i (headers.count())
-        stream << headers.at(to_u(i)) << separator;
+        stream << headers.at(i) << separator;
     stream << '\n';
 
     for_i (calcPoints_.at(getReflIndex()).count()) {

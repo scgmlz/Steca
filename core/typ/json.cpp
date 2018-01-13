@@ -81,7 +81,7 @@ int JsonObj::loadUint(rcstr key) const THROWS {
     int num = loadInt(key);
     if (num < 0)
         THROW(key + ": bad number format");
-    return to_u(num);
+    return num;
 }
 
 int JsonObj::loadUint(rcstr key, int def) const THROWS{

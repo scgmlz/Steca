@@ -68,15 +68,15 @@ QVariant MetadataModel::data(const QModelIndex& index, int role) const {
     case Qt::CheckStateRole:
         switch (col) {
         case COL_CHECK:
-            return rowsChecked_.at(to_u(row)) ? Qt::Checked : Qt::Unchecked;
+            return rowsChecked_.at(row) ? Qt::Checked : Qt::Unchecked;
         }
         break;
     case Qt::DisplayRole:
         switch (col) {
         case COL_TAG:
-            return Metadata::attributeTag(to_u(row), false);
+            return Metadata::attributeTag(row, false);
         case COL_VALUE:
-            return metadata_ ? metadata_->attributeStrValue(to_u(row)) : "-";
+            return metadata_ ? metadata_->attributeStrValue(row) : "-";
         }
         break;
     }

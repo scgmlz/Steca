@@ -133,9 +133,9 @@ ShowColsWidget::ShowColsWidget(DataTable& table, showcol_vec& showCols)
         QCheckBox* cb = showCols_.at(i).cb;
         connect(cb, &QCheckBox::toggled, [this, _updateRbs, i](bool on) {
             if (on)
-                table_.showColumn(to_i(i) + 1);
+                table_.showColumn(i + 1);
             else
-                table_.hideColumn(to_i(i) + 1);
+                table_.hideColumn(i + 1);
 
             _updateRbs();
         });
@@ -384,7 +384,7 @@ int Frame::getReflIndex() const {
     debug::ensure(params_->panelReflection);
     int reflIndex = params_->panelReflection->cbRefl->currentIndex();
     RUNTIME_CHECK(reflIndex >= 0, "invalid reflection index");
-    return to_u(reflIndex);
+    return reflIndex;
 }
 
 bool Frame::getInterpolated() const {
