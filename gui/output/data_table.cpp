@@ -23,6 +23,8 @@
 //  local class TabularModel
 // ************************************************************************** //
 
+//! Model for the DataTable view.
+
 class TabularModel : public TableModel {
 public:
     TabularModel(uint numCols_);

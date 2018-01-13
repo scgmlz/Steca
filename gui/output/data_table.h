@@ -19,7 +19,7 @@
 #include "core/def/special_pointers.h"
 #include "gui/base/tree_views.h"
 
-//! A data table, for use in the 'Points' tab of an output Frame.
+//! A data table view, for use in the 'Points' tab of an output Frame.
 
 class DataTable : public TreeView {
 public:
