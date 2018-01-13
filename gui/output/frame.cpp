@@ -167,8 +167,8 @@ TabTable::TabTable(const QStringList& headers, const QStringList& outHeaders, co
 
     QGridLayout* grid_ = newQ::GridLayout();
     setLayout(grid_);
-    debug::ensure(to_u(headers.count()) == cmps.count());
-    int numCols = to_u(headers.count());
+    debug::ensure(headers.count() == cmps.count());
+    int numCols = headers.count();
 
     grid_->addWidget((table = new DataTable(numCols)), 0, 0);
     grid_->setColumnStretch(0, 1);

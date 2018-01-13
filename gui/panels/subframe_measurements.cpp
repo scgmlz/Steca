@@ -31,8 +31,8 @@ public:
 
     void showMetaInfo(vec<bool> const&);
 
-    int columnCount() const final { return COL_ATTRS + to_i(metaInfoNums_.count()); }
-    int rowCount() const final { return to_i(experiment_.count()); }
+    int columnCount() const final { return COL_ATTRS + metaInfoNums_.count(); }
+    int rowCount() const final { return experiment_.count(); }
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
 

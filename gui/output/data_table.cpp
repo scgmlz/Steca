@@ -30,7 +30,7 @@ public:
     TabularModel(int numCols_);
 
     int columnCount() const final { return numCols_ + 1; }
-    int rowCount() const final { return to_i(rows_.count()); }
+    int rowCount() const final { return rows_.count(); }
 
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
@@ -132,7 +132,7 @@ void TabularModel::moveColumn(int from, int to) {
 }
 
 void TabularModel::setColumns(const QStringList& headers, cmp_vec const& cmps) {
-    debug::ensure(to_u(headers.count()) == numCols_ && cmps.count() == numCols_);
+    debug::ensure(headers.count() == numCols_ && cmps.count() == numCols_);
     headers_ = headers;
     cmpFunctions_ = cmps;
 }

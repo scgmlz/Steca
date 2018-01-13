@@ -29,7 +29,7 @@ public:
     explicit vec(int count) : super(count) {}
     explicit vec(int count, T const& init) : super(count, init) {}
 
-    int count() const { return to_u(super::count()); }
+    int count() const { return super::count(); }
     void reserve(int n) { super::reserve(n); }
 
     super const& sup() const { return *this; }

@@ -101,7 +101,7 @@ void FilesView::recollect() {
     int_vec rows;
     for (const QModelIndex& index : selectionModel()->selectedRows())
         if (index.isValid())
-            rows.append(to_u(index.row()));
+            rows.append(index.row());
     gHub->collectDatasetsFromFiles(rows);
 }
 

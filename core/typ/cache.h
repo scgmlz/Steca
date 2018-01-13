@@ -78,7 +78,7 @@ public:
 
     virtual ~cache_base() {}
 
-    int count() const { return to_u(mapKey_.count()); }
+    int count() const { return mapKey_.count(); }
 
     bool isEmpty() const { return mapKey_.isEmpty(); }
 
@@ -115,7 +115,7 @@ private:
             for (auto it = super::mapKey_.begin(), itEnd = super::mapKey_.end(); it != itEnd; ++it)
                 mit.insert(it->mru, it);
             // make sure there were no duplicate mrus
-            debug::ensure(to_u(mit.count()) == super::count());
+            debug::ensure(mit.count() == super::count());
             int cnt = super::count() - n;
             for (auto it = mit.begin(); cnt-- > 0; ++it)
                 super::mapKey_.erase(*it);

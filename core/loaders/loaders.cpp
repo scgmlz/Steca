@@ -37,13 +37,13 @@ static QByteArray peek(int pos, int maxLen, QFileInfo const& info) {
 // Caress file format
 bool couldBeCaress(QFileInfo const& info) {
     static QByteArray const header("\020\012DEFCMD DAT");
-    return header == peek(0, to_u(header.size()), info);
+    return header == peek(0, header.size(), info);
 }
 
 // Mar file format
 bool couldBeMar(QFileInfo const& info) {
     static QByteArray const header("mar research");
-    return header == peek(0x80, to_u(header.size()), info);
+    return header == peek(0x80, header.size(), info);
 }
 
 // Text .dat file with metadata for tiff files
