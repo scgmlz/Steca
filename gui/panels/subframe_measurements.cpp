@@ -54,12 +54,12 @@ void ExperimentModel::showMetaInfo(vec<bool> const& metadataRows) {
 
 QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     int row = index.row();
-    if (row < 0 || rowCount() <= row)
+    if (row < 0 || row >= rowCount())
         return {};
     switch (role) {
     case Qt::DisplayRole: {
         int col = index.column();
-        if (col < 1 || columnCount() <= col)
+        if (col < 1 || col >= columnCount())
             return {};
         switch (col) {
         case COL_NUMBER:
