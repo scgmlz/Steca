@@ -23,7 +23,7 @@
 
 class DataTable : public TreeView {
 public:
-    DataTable(uint numDataColumns);
+    DataTable(int numDataColumns);
 
     void clear();
     void setColumns(const QStringList& headers, const QStringList& outHeaders, cmp_vec const&);
@@ -31,8 +31,8 @@ public:
     void sortData();
 
     QStringList outHeaders() const { return outHeaders_; }
-    uint rowCount() const;
-    row_t const& row(uint) const;
+    int rowCount() const;
+    row_t const& row(int) const;
 
 private:
     scoped<class TabularModel*> model_;

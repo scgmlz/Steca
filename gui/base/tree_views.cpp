@@ -69,11 +69,11 @@ MultiListView::MultiListView() : ListView() {
     setSelectionMode(ExtendedSelection);
 }
 
-void MultiListView::selectRows(uint_vec rows) {
+void MultiListView::selectRows(int_vec rows) {
     TableModel const* m = model();
     const int cols = m->columnCount();
     QItemSelection is;
-    for (uint row : rows)
+    for (int row : rows)
         is.append(QItemSelectionRange(m->index(to_i(row), 0), m->index(to_i(row), cols - 1)));
     selectionModel()->select(is, QItemSelectionModel::ClearAndSelect);
 }

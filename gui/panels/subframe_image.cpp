@@ -270,14 +270,14 @@ void SubframeImage::render() {
     {
         QPixmap pixMap;
 
-        const uint nSlices = to_u(numSlices_->value());
+        const int nSlices = to_u(numSlices_->value());
         numSlice_->setMaximum(qMax(1, to_i(nSlices)));
         numSlice_->setEnabled(nSlices > 0);
 
         if (dataseq_) {
             // 1 - based
-            const uint by = qBound(1u, uint(gHub->suiteGroupedBy()), dataseq_->count());
-            const uint n = qBound(1u, to_u(spinN_->value()), by);
+            const int by = qBound(1, int(gHub->suiteGroupedBy()), dataseq_->count());
+            const int n = qBound(1, to_u(spinN_->value()), by);
 
             spinN_->setValue(to_i(n));
             spinN_->setEnabled(by > 1);
@@ -286,8 +286,8 @@ void SubframeImage::render() {
 
             Range rge;
             if (nSlices > 0) {
-                uint nSlice = qMax(1u, to_u(numSlice_->value()));
-                uint iSlice = nSlice - 1;
+                int nSlice = qMax(1, to_u(numSlice_->value()));
+                int iSlice = nSlice - 1;
 
                 const Range rgeGma = lens_->rgeGma();
                 const qreal min = rgeGma.min;

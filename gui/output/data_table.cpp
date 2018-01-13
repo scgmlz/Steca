@@ -27,7 +27,7 @@
 
 class TabularModel : public TableModel {
 public:
-    TabularModel(uint numCols_);
+    TabularModel(int numCols_);
 
     int columnCount() const final { return to_i(numCols_) + 1; }
     int rowCount() const final { return to_i(rows_.count()); }
@@ -35,7 +35,7 @@ public:
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
 
-    void moveColumn(uint from, uint to);
+    void moveColumn(int from, int to);
 
     void setColumns(const QStringList& headers, cmp_vec const&);
 
@@ -44,16 +44,16 @@ public:
     void clear();
     void addRow(row_t const&, bool sort = true);
 
-    row_t const& row(uint);
+    row_t const& row(int);
 
     void sortData();
 
 private:
-    uint numCols_;
+    int numCols_;
     int sortColumn_;
 
     QStringList headers_;
-    uint_vec colIndexMap_;
+    int_vec colIndexMap_;
     cmp_vec cmpFunctions_;
 
     struct numRow {
@@ -67,7 +67,7 @@ private:
     vec<numRow> rows_;
 };
 
-TabularModel::TabularModel(uint numColumns_)
+TabularModel::TabularModel(int numColumns_)
     : TableModel(), numCols_(numColumns_), sortColumn_(-1) {
     colIndexMap_.resize(numCols_);
     for_i (numCols_)
@@ -126,7 +126,7 @@ QVariant TabularModel::headerData(int section, Qt::Orientation, int role) const 
     return QVariant();
 }
 
-void TabularModel::moveColumn(uint from, uint to) {
+void TabularModel::moveColumn(int from, int to) {
     debug::ensure(from < colIndexMap_.count() && to < colIndexMap_.count());
     qSwap(colIndexMap_[from], colIndexMap_[to]);
 }
@@ -153,12 +153,12 @@ void TabularModel::addRow(row_t const& row, bool sort) {
         sortData();
 }
 
-row_t const& TabularModel::row(uint index) {
+row_t const& TabularModel::row(int index) {
     return rows_.at(index).row;
 }
 
 void TabularModel::sortData() {
-    auto _cmpRows = [this](uint col, row_t const& r1, row_t const& r2) {
+    auto _cmpRows = [this](int col, row_t const& r1, row_t const& r2) {
         col = colIndexMap_.at(col);
         return cmpFunctions_.at(col)(r1.at(col), r2.at(col));
     };
@@ -200,7 +200,7 @@ void TabularModel::sortData() {
 //  class DataTable
 // ************************************************************************** //
 
-DataTable::DataTable(uint numDataColumns) : model_(nullptr) {
+DataTable::DataTable(int numDataColumns) : model_(nullptr) {
     model_.reset(new TabularModel(numDataColumns));
     setModel(model_.ptr());
     setHeader(new QHeaderView(Qt::Horizontal));
@@ -251,10 +251,10 @@ void DataTable::sortData() {
     model_->sortData();
 }
 
-uint DataTable::rowCount() const {
+int DataTable::rowCount() const {
     return to_u(model_->rowCount());
 }
 
-const row_t& DataTable::row(uint i) const {
+const row_t& DataTable::row(int i) const {
     return model_->row(i);
 }

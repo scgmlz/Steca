@@ -34,10 +34,10 @@ size2d LensBase::transCutSize(size2d size) const {
     return size;
 }
 
-void LensBase::doTrans(uint& x, uint& y) const {
+void LensBase::doTrans(int& x, int& y) const {
     size2d s = size();
-    uint w = s.w;
-    uint h = s.h;
+    int w = s.w;
+    int h = s.h;
 
     switch (imageTransform_.val) {
     case ImageTransform::ROTATE_0: break;
@@ -64,7 +64,7 @@ void LensBase::doTrans(uint& x, uint& y) const {
     }
 }
 
-void LensBase::doCut(uint& i, uint& j) const {
+void LensBase::doCut(int& i, int& j) const {
     i += imageCut_.left;
     j += imageCut_.top;
 }
@@ -82,7 +82,7 @@ size2d ImageLens::size() const {
     return LensBase::transCutSize(image_.size());
 }
 
-inten_t ImageLens::imageInten(uint i, uint j) const {
+inten_t ImageLens::imageInten(int i, int j) const {
     if (trans_)
         doTrans(i, j);
     if (cut_)
@@ -147,7 +147,7 @@ Curve SequenceLens::makeCurve() const {
 Curve SequenceLens::makeCurve(const Range& rgeGma) const {
     inten_vec intens = suite_.collectIntens(intensCorr_, rgeGma);
     Curve res;
-    uint count = intens.count();
+    int count = intens.count();
     if (count) {
         Range rgeTth = suite_.rgeTth();
         deg minTth = rgeTth.min, deltaTth = rgeTth.width() / count;

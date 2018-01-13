@@ -27,7 +27,7 @@ str loadCaressComment(rcstr filePath);
 namespace {
 
 // peek at up to maxLen bytes (to establish the file type)
-static QByteArray peek(uint pos, uint maxLen, QFileInfo const& info) {
+static QByteArray peek(int pos, int maxLen, QFileInfo const& info) {
     QFile file(info.filePath());
     if (file.open(QFile::ReadOnly) && file.seek(pos))
         return file.read(maxLen);

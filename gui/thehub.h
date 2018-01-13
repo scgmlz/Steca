@@ -85,7 +85,7 @@ public:
     TheHub();
     ~TheHub();
 
-    static uint constexpr MAX_POLYNOM_DEGREE = 4;
+    static int constexpr MAX_POLYNOM_DEGREE = 4;
 
     QAction *trigger_about,
         *trigger_online,
@@ -126,13 +126,13 @@ public:
         *trigger_outputDiffractograms;
 
     // modifying methods:
-    void removeFile(uint);
+    void removeFile(int);
     void sessionFromFile(rcstr&) THROWS;
     void addGivenFile(rcstr filePath) THROWS;
     void addGivenFiles(const QStringList& filePaths) THROWS;
-    void collectDatasetsFromFiles(uint_vec, uint);
-    void collectDatasetsFromFiles(uint_vec);
-    void combineMeasurementsBy(uint);
+    void collectDatasetsFromFiles(int_vec, int);
+    void collectDatasetsFromFiles(int_vec);
+    void combineMeasurementsBy(int);
     void setCorrFile(rcstr filePath) THROWS;
     void tryEnableCorrection(bool);
     void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
@@ -142,7 +142,7 @@ public:
     void setBgRanges(const Ranges&);
     void addBgRange(const Range&);
     void removeBgRange(const Range&);
-    void setBgPolyDegree(uint);
+    void setBgPolyDegree(int);
 
     void setIntenScaleAvg(bool, preal);
     void setNorm(eNorm);
@@ -150,7 +150,7 @@ public:
 
     void setPeakFunction(const QString&);
     void addReflection(const QString&);
-    void remReflection(uint);
+    void remReflection(int);
 
     // const methods:
     bool isFixedIntenImageScale() const { return isFixedIntenImageScale_; }
@@ -160,7 +160,7 @@ public:
     void saveSession(QFileInfo const&) const;
     QByteArray saveSession() const;
 
-    uint suiteGroupedBy() const { return suiteGroupedBy_; }
+    int suiteGroupedBy() const { return suiteGroupedBy_; }
 
     eFittingTab fittingTab() const { return fittingTab_; }
 
@@ -171,8 +171,8 @@ private:
     bool isFixedIntenImageScale_;
     bool isFixedIntenDgramScale_;
     bool isCombinedDgram_;
-    uint_vec collectFromFiles_;
-    uint suiteGroupedBy_ = 1;
+    int_vec collectFromFiles_;
+    int suiteGroupedBy_ = 1;
     eFittingTab fittingTab_ = eFittingTab::NONE;
     shp_Suite selectedSuite_;
     shp_Reflection selectedReflection_;

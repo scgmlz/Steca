@@ -260,7 +260,7 @@ PoleFiguresFrame::PoleFiguresFrame(rcstr title, QWidget* parent)
     show();
 }
 
-void PoleFiguresFrame::displayReflection(uint reflIndex, bool interpolated) {
+void PoleFiguresFrame::displayReflection(int reflIndex, bool interpolated) {
     Frame::displayReflection(reflIndex, interpolated);
     if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
         tabGraph_->set((interpolated ? interpPoints_ : calcPoints_).at(reflIndex));
@@ -291,7 +291,7 @@ void PoleFiguresFrame::savePoleFigureOutput() {
 static str const OUT_FILE_TAG(".refl%1");
 static int const MAX_LINE_LENGTH_POL(9);
 
-void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
+void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, int index) {
     shp_Reflection refl = gSession->reflections().at(index);
     ReflectionInfos reflInfo;
     if (getInterpolated())
@@ -301,7 +301,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
     bool withFit = refl->peakFunction().name() != "Raw";
     str path = str(filePath + OUT_FILE_TAG).arg(index + 1);
     bool check = false;
-    uint numSavedFiles = 0;
+    int numSavedFiles = 0;
 
     if (tabSave_->outputInten()) {
         qreal_vec output;
@@ -351,9 +351,9 @@ void PoleFiguresFrame::writeErrorMask(
     WriteFile file(filePath + ".errorMask");
     QTextStream stream(&file);
 
-    for (uint j = 0, jEnd = reflInfo.count(); j < jEnd; j += 9) {
-        uint max = j + MAX_LINE_LENGTH_POL;
-        for (uint i = j; i < max; i++) {
+    for (int j = 0, jEnd = reflInfo.count(); j < jEnd; j += 9) {
+        int max = j + MAX_LINE_LENGTH_POL;
+        for (int i = j; i < max; i++) {
             if (qIsNaN(output.at(i)))
                 stream << "0 ";
             else
@@ -368,9 +368,9 @@ void PoleFiguresFrame::writePoleFile(
     WriteFile file(filePath + ".pol");
     QTextStream stream(&file);
 
-    for (uint j = 0, jEnd = reflInfo.count(); j < jEnd; j += 9) {
-        uint max = j + MAX_LINE_LENGTH_POL;
-        for (uint i = j; i < max; i++) {
+    for (int j = 0, jEnd = reflInfo.count(); j < jEnd; j += 9) {
+        int max = j + MAX_LINE_LENGTH_POL;
+        for (int i = j; i < max; i++) {
             if (qIsNaN(output.at(i)))
                 stream << " -1  ";
             else

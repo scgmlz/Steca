@@ -41,11 +41,11 @@ public:
     int loadInt(rcstr key) const THROWS;
     int loadInt(rcstr key, int def) const THROWS;
 
-    uint loadUint(rcstr key) const THROWS;
-    uint loadUint(rcstr key, uint def) const THROWS;
+    int loadUint(rcstr key) const THROWS;
+    int loadUint(rcstr key, int def) const THROWS;
 
-    uint loadPint(rcstr key) const THROWS;
-    uint loadPint(rcstr key, uint def) const THROWS;
+    int loadPint(rcstr key) const THROWS;
+    int loadPint(rcstr key, int def) const THROWS;
 
     qreal loadQreal(rcstr key) const THROWS;
     qreal loadQreal(rcstr key, qreal def) const THROWS;

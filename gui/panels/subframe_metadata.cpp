@@ -27,7 +27,7 @@ public:
     MetadataModel();
 
     void reset(shp_Suite dataseq);
-    void flipCheck(uint row);
+    void flipCheck(int row);
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return to_i(Metadata::numAttributes(false)); }
@@ -54,7 +54,7 @@ void MetadataModel::reset(shp_Suite dataseq) {
     signalReset();
 }
 
-void MetadataModel::flipCheck(uint row) {
+void MetadataModel::flipCheck(int row) {
     rowsChecked_[row] = !rowsChecked_[row];
     signalReset();
 }

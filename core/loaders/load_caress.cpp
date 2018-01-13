@@ -47,7 +47,7 @@ Datafile loadCaress(rcstr filePath) THROWS {
           nmXe = 0, nmYe = 0, nmZe = 0;
 
     int* intens = NULL;
-    uint imageSize = 0;
+    int imageSize = 0;
 
     int mon = 0, tim1 = 0;
 
@@ -163,7 +163,7 @@ Datafile loadCaress(rcstr filePath) THROWS {
                 deltaMon = mon - prevMon;
                 prevMon = mon;
 
-                uint detRel;
+                int detRel;
 
                 detRel = to_u(qRound(sqrt(imageSize)));
                 RUNTIME_CHECK(imageSize > 0 && imageSize == detRel * detRel, "bad image size");

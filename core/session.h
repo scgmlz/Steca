@@ -45,7 +45,7 @@ private:
     shp_Datafile corrFile_; //!< correction file
     shp_Image corrImage_;
     bool corrEnabled_;
-    uint_vec collectedFromFiles_; // from these files
+    int_vec collectedFromFiles_; // from these files
     Experiment experiment_; // suite collected ...
     QStringList experimentTags_;
     bool intenScaledAvg_; // if not, summed
@@ -55,7 +55,7 @@ private:
     ImageCut imageCut_;
     Geometry geometry_;
     Range gammaRange_;
-    uint bgPolyDegree_;
+    int bgPolyDegree_;
     Ranges bgRanges_;
     Reflections reflections_;
     eNorm norm_;
@@ -76,10 +76,10 @@ public:
     // Modifying methods:
     void clear();
     void addGivenFile(shp_Datafile) THROWS;
-    void removeFile(uint i);
+    void removeFile(int i);
     void setCorrFile(shp_Datafile) THROWS; // Load or remove a correction file.
     void remCorrFile();
-    void collectDatasetsFromFiles(uint_vec, uint);
+    void collectDatasetsFromFiles(int_vec, int);
 
     void setImageTransformMirror(bool);
     void setImageTransformRotate(ImageTransform const&);
@@ -89,17 +89,17 @@ public:
     void setBgRanges(const Ranges& rr) { bgRanges_ = rr; }
     bool addBgRange(const Range& r) { return bgRanges_.add(r); }
     bool removeBgRange(const Range& r) { return bgRanges_.remove(r); }
-    void setBgPolyDegree(uint degree) { bgPolyDegree_ = degree; }
+    void setBgPolyDegree(int degree) { bgPolyDegree_ = degree; }
     void setIntenScaleAvg(bool, preal);
     void addReflection(const QString&);
     void addReflection(const QJsonObject& obj);
-    void remReflection(uint i) { reflections_.remove(i); }
+    void remReflection(int i) { reflections_.remove(i); }
     void setNorm(eNorm norm) { norm_ = norm; }
 
     // Const methods:
-    uint numFiles() const { //!< number of data files (not counting the correction file)
+    int numFiles() const { //!< number of data files (not counting the correction file)
         return files_.count(); }
-    shp_Datafile file(uint i) const { return files_.at(i); }
+    shp_Datafile file(int i) const { return files_.at(i); }
     bool hasFile(rcstr fileName) const;
     bool hasCorrFile() const { return !corrFile_.isNull(); }
     shp_Datafile corrFile() const { return corrFile_; }
@@ -108,7 +108,7 @@ public:
     void tryEnableCorr(bool on) { corrEnabled_ = on && hasCorrFile(); }
     bool isCorrEnabled() const { return corrEnabled_; }
 
-    uint_vec const& collectedFromFiles() const { return collectedFromFiles_; }
+    int_vec const& collectedFromFiles() const { return collectedFromFiles_; }
     Experiment const& experiment() const { return experiment_; }
     const QStringList& experimentTags() const { return experimentTags_; }
 
@@ -130,10 +130,10 @@ public:
     shp_SequenceLens defaultDatasetLens(Suite const& dataseq) const;
 
     ReflectionInfos makeReflectionInfos(
-        Experiment const&, Reflection const&, uint gmaSlices, const Range&, Progress*) const;
+        Experiment const&, Reflection const&, int gmaSlices, const Range&, Progress*) const;
 
     const Ranges& bgRanges() const { return bgRanges_; }
-    uint bgPolyDegree() const { return bgPolyDegree_; }
+    int bgPolyDegree() const { return bgPolyDegree_; }
     bool intenScaledAvg() const { return intenScaledAvg_; }
     preal intenScale() const { return intenScale_; }
     Reflections const& reflections() const { return reflections_; }

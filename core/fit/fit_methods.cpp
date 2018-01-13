@@ -26,7 +26,7 @@ void FitWrapper::fit(Function& function, Curve const& curve) {
     xValues_ = curve.xs().data();
 
     // prepare data in a debug::ensured format
-    uint parCount = function_->parameterCount();
+    int parCount = function_->parameterCount();
     qreal_vec parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
 
     for_i (parCount) {
@@ -55,9 +55,9 @@ void FitWrapper::fit_exec(
     qreal const* paramsLimitMin, // I
     qreal const* paramsLimitMax, // I
     qreal* paramsError, // O
-    uint paramsCount, // I
+    int paramsCount, // I
     qreal const* yValues, // I
-    uint dataPointsCount) // I
+    int dataPointsCount) // I
 {
     DelegateCalculationDbl function(this, &FitWrapper::callbackY);
     DelegateCalculationDbl functionJacobian(this, &FitWrapper::callbackJacobianLM);
@@ -71,7 +71,7 @@ void FitWrapper::fit_exec(
     // output covariance matrix
     qreal_vec covar(paramsCount * paramsCount);
 
-    uint const maxIterations = 1000;
+    int const maxIterations = 1000;
 
     dlevmar_bc_der(
         &function, &functionJacobian, params, remove_const(yValues), to_i(paramsCount),

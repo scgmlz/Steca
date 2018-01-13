@@ -62,8 +62,8 @@ protected:
     class DataTable* table_;
     void calculate();
     void interpolate();
-    virtual void displayReflection(uint reflIndex, bool interpolated);
-    uint getReflIndex() const;
+    virtual void displayReflection(int reflIndex, bool interpolated);
+    int getReflIndex() const;
     bool getInterpolated() const;
 private:
     void updateReflection();

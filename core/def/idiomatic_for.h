@@ -19,7 +19,7 @@
 
 #ifdef Q_OS_WIN
 
-// MSVC does not handle decltype etc. well, and we disregard int/uint warnings on Windows, anyway
+// MSVC does not handle decltype etc. well, and we disregard int/int warnings on Windows, anyway
 #define for_int(i, n) for (int i = 0, i##End = (n); i < i##End; ++i)
 #define for_int_down(n) for (int i = (num); i-- > 0;)
 

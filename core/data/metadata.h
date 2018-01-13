@@ -25,14 +25,14 @@ public:
     Metadata();
 
     // attribute list - will be dynamic
-    static uint numAttributes(bool onlyNum);
+    static int numAttributes(bool onlyNum);
 
-    static rcstr attributeTag(uint, bool out);
+    static rcstr attributeTag(int, bool out);
     static QStringList attributeTags(bool out);
     static cmp_vec attributeCmps();
 
-    str attributeStrValue(uint) const;
-    QVariant attributeValue(uint) const;
+    str attributeStrValue(int) const;
+    QVariant attributeValue(int) const;
     row_t attributeValues() const;
 
     static row_t attributeNaNs();

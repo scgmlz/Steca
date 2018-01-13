@@ -40,7 +40,7 @@ public:
 
 private:
     Experiment const& experiment_;
-    uint_vec metaInfoNums_; //!< indices of metadata items selected for display
+    int_vec metaInfoNums_; //!< indices of metadata items selected for display
 };
 
 void ExperimentModel::showMetaInfo(vec<bool> const& metadataRows) {
@@ -146,5 +146,5 @@ SubframeMeasurements::SubframeMeasurements() : DockWidget("Measurements", "dock-
     connect(combineMeasurements, _SLOT_(QSpinBox, valueChanged, int),
             [this](int num) { gHub->combineMeasurementsBy(qMax(1, num)); });
     connect(gHub, &TheHub::sigSuitesChanged,
-            [=]() { combineMeasurements->setValue(to_i(uint(gHub->suiteGroupedBy()))); });
+            [=]() { combineMeasurements->setValue(to_i(int(gHub->suiteGroupedBy()))); });
 }

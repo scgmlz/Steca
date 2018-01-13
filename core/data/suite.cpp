@@ -149,9 +149,9 @@ inten_vec Suite::collectIntens(const Image* intensCorr, const Range& rgeGma) con
     const deg tthWdt = tthRge.width();
 
     const ImageCut& cut = gSession->imageCut();
-    const uint pixWidth = gSession->imageSize().w - cut.left - cut.right;
+    const int pixWidth = gSession->imageSize().w - cut.left - cut.right;
 
-    uint numBins;
+    int numBins;
     if (1 < count()) { // combined suite
         const shp_Measurement& one = first();
         deg delta = one->rgeTth().width() / pixWidth;
@@ -161,7 +161,7 @@ inten_vec Suite::collectIntens(const Image* intensCorr, const Range& rgeGma) con
     }
 
     inten_vec intens(numBins, 0);
-    uint_vec counts(numBins, 0);
+    int_vec counts(numBins, 0);
 
     deg minTth = tthRge.min, deltaTth = tthWdt / numBins;
 
@@ -172,7 +172,7 @@ inten_vec Suite::collectIntens(const Image* intensCorr, const Range& rgeGma) con
     if (gSession->intenScaledAvg()) {
         preal scale = gSession->intenScale();
         for_i (numBins) {
-            uint cnt = counts.at(i);
+            int cnt = counts.at(i);
             if (cnt > 0)
                 intens[i] *= scale / cnt;
         }

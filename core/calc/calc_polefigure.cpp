@@ -69,7 +69,7 @@ enum class eQuadrant {
     NORTHWEST,
 };
 
-static uint NUM_QUADRANTS = 4;
+static int NUM_QUADRANTS = 4;
 
 typedef vec<eQuadrant> Quadrants;
 
@@ -148,7 +148,7 @@ void searchInQuadrants(
 }
 
 itf_t inverseDistanceWeighing(qreal_vec const& distances, info_vec const& infos) {
-    uint N = NUM_QUADRANTS;
+    int N = NUM_QUADRANTS;
     // Generally, only distances.count() == values.count() > 0 is needed for this
     // algorithm. However, in this context we expect exactly the following:
     RUNTIME_CHECK(distances.count() == N, "distances size should be 4");
@@ -188,7 +188,7 @@ itf_t interpolateValues(deg searchRadius, ReflectionInfos const& infos, deg alph
     searchInQuadrants(
         allQuadrants(), alpha, beta, searchRadius, infos, interpolationInfos, distances);
     // Check that infos were found in all quadrants.
-    uint numQuadrantsOk = 0;
+    int numQuadrantsOk = 0;
     for_i (NUM_QUADRANTS) {
         if (interpolationInfos.at(i)) {
             ++numQuadrantsOk;
@@ -197,7 +197,7 @@ itf_t interpolateValues(deg searchRadius, ReflectionInfos const& infos, deg alph
         // No info found in quadrant? Try another quadrant. See
         // [J.Appl.Cryst.(2011),44,641] for the angle mapping.
         eQuadrant newQ = remapQuadrant(eQuadrant(i));
-        qreal const newAlpha = i == uint(eQuadrant::NORTHEAST) || i == uint(eQuadrant::SOUTHEAST)
+        qreal const newAlpha = i == int(eQuadrant::NORTHEAST) || i == int(eQuadrant::SOUTHEAST)
             ? 180 - alpha
             : -alpha;
         qreal newBeta = beta < 180 ? beta + 180 : beta - 180;
@@ -244,8 +244,8 @@ ReflectionInfos interpolateInfos(
     // NOTE We expect all infos to have the same gamma range.
 
     // REVIEW qRound oder qCeil?
-    uint numAlphas = to_u(qRound(90. / alphaStep));
-    uint numBetas = to_u(qRound(360. / betaStep));
+    int numAlphas = to_u(qRound(90. / alphaStep));
+    int numBetas = to_u(qRound(360. / betaStep));
 
     ReflectionInfos interpolatedInfos; // Output data.
 
@@ -282,13 +282,13 @@ ReflectionInfos interpolateInfos(
 
                     itf_t avg(0, 0, 0);
 
-                    uint iEnd = itfs.count();
-                    uint iBegin =
+                    int iEnd = itfs.count();
+                    int iBegin =
                         qMin(to_u(qRound(itfs.count() * (1. - inclusionTreshold))), iEnd - 1);
                     debug::ensure(iBegin < iEnd);
-                    uint n = iEnd - iBegin;
+                    int n = iEnd - iBegin;
 
-                    for (uint i = iBegin; i < iEnd; ++i)
+                    for (int i = iBegin; i < iEnd; ++i)
                         avg += itfs.at(i);
 
                     interpolatedInfos.append(ReflectionInfo(

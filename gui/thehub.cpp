@@ -159,7 +159,7 @@ TheHub::~TheHub() {
     settings_.saveStr("export_format", saveFmt);
 }
 
-void TheHub::removeFile(uint i) {
+void TheHub::removeFile(int i) {
     gSession->removeFile(i);
     emit sigFilesChanged();
     if (gSession->numFiles()==0)
@@ -195,7 +195,7 @@ QByteArray TheHub::saveSession() const {
     top.insert("cut", sub);
 
     const ImageTransform& trn = gSession->imageTransform();
-    top.insert("image transform", to_i((uint)trn.val));
+    top.insert("image transform", to_i((int)trn.val));
 
     QJsonArray arrFiles;
     // save file path relative to location of session
@@ -208,11 +208,11 @@ QByteArray TheHub::saveSession() const {
     top.insert("files", arrFiles);
 
     QJsonArray arrSelectedFiles;
-    for (uint i : gSession->collectedFromFiles())
+    for (int i : gSession->collectedFromFiles())
         arrSelectedFiles.append(to_i(i));
 
     top.insert("selected files", arrSelectedFiles);
-    top.insert("combine", to_i((uint)suiteGroupedBy_));
+    top.insert("combine", to_i((int)suiteGroupedBy_));
 
     if (gSession->hasCorrFile()) {
         str absPath = gSession->corrFile()->fileInfo().absoluteFilePath();
@@ -263,7 +263,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     }
 
     const QJsonArray& sels = top.loadArr("selected files", true);
-    uint_vec selIndexes;
+    int_vec selIndexes;
     for (const QJsonValue& sel : sels) {
         int i = sel.toInt(), index = qBound(0, i, files.count());
         RUNTIME_CHECK(i == index, str("Invalid selection index: %1").arg(i));
@@ -272,7 +272,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
 
     std::sort(selIndexes.begin(), selIndexes.end());
     int lastIndex = -1;
-    for (uint index : selIndexes) {
+    for (int index : selIndexes) {
         RUNTIME_CHECK(lastIndex < to_i(index), str("Duplicate selection index"));
         lastIndex = to_i(index);
     }
@@ -291,7 +291,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
 
     TR("sessionFromJson: going to load image cut");
     const JsonObj& cut = top.loadObj("cut");
-    uint x1 = cut.loadUint("left"), y1 = cut.loadUint("top"),
+    int x1 = cut.loadUint("left"), y1 = cut.loadUint("top"),
          x2 = cut.loadUint("right"), y2 = cut.loadUint("bottom");
     setImageCut(true, false, ImageCut(x1, y1, x2, y2));
     setImageRotate(ImageTransform(top.loadUint("image transform")));
@@ -332,17 +332,17 @@ void TheHub::addGivenFiles(const QStringList& filePaths) THROWS {
         addGivenFile(filePath);
 }
 
-void TheHub::collectDatasetsFromFiles(uint_vec is, uint by) {
+void TheHub::collectDatasetsFromFiles(int_vec is, int by) {
     gSession->collectDatasetsFromFiles((collectFromFiles_ = is), (suiteGroupedBy_ = by));
     emit sigFilesSelected(!gSession->collectedFromFiles().isEmpty());
     emit sigSuitesChanged();
 }
 
-void TheHub::collectDatasetsFromFiles(uint_vec is) {
+void TheHub::collectDatasetsFromFiles(int_vec is) {
     collectDatasetsFromFiles(is, suiteGroupedBy_);
 }
 
-void TheHub::combineMeasurementsBy(uint by) {
+void TheHub::combineMeasurementsBy(int by) {
     collectDatasetsFromFiles(collectFromFiles_, by);
 }
 
@@ -394,7 +394,7 @@ void TheHub::removeBgRange(const Range& range) {
         emit sigBgChanged();
 }
 
-void TheHub::setBgPolyDegree(uint degree) {
+void TheHub::setBgPolyDegree(int degree) {
     gSession->setBgPolyDegree(degree);
     emit sigBgChanged();
 }
@@ -416,7 +416,7 @@ void TheHub::addReflection(const QString& peakFunctionName) {
     emit sigReflectionsChanged();
 }
 
-void TheHub::remReflection(uint i) {
+void TheHub::remReflection(int i) {
     gSession->remReflection(i);
     if (gSession->reflections().isEmpty())
         tellSelectedReflection(shp_Reflection());

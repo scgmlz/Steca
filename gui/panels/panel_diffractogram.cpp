@@ -59,7 +59,7 @@ public:
     void setTool(eTool);
     eTool getTool() const { return tool_; }
 
-    void plot(Curve const&, Curve const&, Curve const&, curve_vec const&, uint);
+    void plot(Curve const&, Curve const&, Curve const&, curve_vec const&, int);
 
     Range fromPixels(int, int);
 
@@ -265,7 +265,7 @@ void DiffractogramPlot::setTool(eTool tool) {
 
 void DiffractogramPlot::plot(
     Curve const& dgram, Curve const& dgramBgFitted, Curve const& bg, curve_vec const& refls,
-    uint currReflIndex) {
+    int currReflIndex) {
     if (dgram.isEmpty()) {
         xAxis->setVisible(false);
         yAxis->setVisible(false);

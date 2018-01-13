@@ -34,8 +34,8 @@ public:
 protected:
     size2d transCutSize(size2d) const;
 
-    void doTrans(uint& i, uint& j) const;
-    void doCut(uint& i, uint& j) const;
+    void doTrans(int& i, int& j) const;
+    void doCut(int& i, int& j) const;
 
     bool trans_, cut_;
     ImageTransform imageTransform_;
@@ -51,7 +51,7 @@ public:
 
     size2d size() const;
 
-    inten_t imageInten(uint i, uint j) const;
+    inten_t imageInten(int i, int j) const;
 
     const Range& rgeInten(bool fixed) const;
 

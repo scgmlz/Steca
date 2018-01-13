@@ -77,24 +77,24 @@ int JsonObj::loadInt(rcstr key, int def) const THROWS{
     return value(key).isUndefined() ? def : loadInt(key);
 }
 
-uint JsonObj::loadUint(rcstr key) const THROWS {
+int JsonObj::loadUint(rcstr key) const THROWS {
     int num = loadInt(key);
     if (num < 0)
         THROW(key + ": bad number format");
     return to_u(num);
 }
 
-uint JsonObj::loadUint(rcstr key, uint def) const THROWS{
+int JsonObj::loadUint(rcstr key, int def) const THROWS{
     return value(key).isUndefined() ? def : loadUint(key);
 }
 
-uint JsonObj::loadPint(rcstr key) const {
-    uint num = loadUint(key);
+int JsonObj::loadPint(rcstr key) const {
+    int num = loadUint(key);
     RUNTIME_CHECK(num > 0, "expecting positive number");
     return num;
 }
 
-uint JsonObj::loadPint(rcstr key, uint def) const {
+int JsonObj::loadPint(rcstr key, int def) const {
     return value(key).isUndefined() ? def : loadPint(key);
 }
 

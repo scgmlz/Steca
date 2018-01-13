@@ -19,21 +19,21 @@
 
 namespace {
 
-static uint lowerBound(vec<deg> const& vec, deg x, uint i1, uint i2) {
+static int lowerBound(vec<deg> const& vec, deg x, int i1, int i2) {
     debug::ensure(i1 < i2);
     if (1 == i2 - i1)
         return i1;
-    uint mid = (i1 + i2) / 2;
+    int mid = (i1 + i2) / 2;
     return vec.at(mid - 1) < x // x may be NaN ...
         ? lowerBound(vec, x, mid, i2)
         : lowerBound(vec, x, i1, mid); // ... we should be so lucky
 }
 
-static uint upperBound(vec<deg> const& vec, deg x, uint i1, uint i2) {
+static int upperBound(vec<deg> const& vec, deg x, int i1, int i2) {
     debug::ensure(i1 < i2);
     if (1 == i2 - i1)
         return i2;
-    uint mid = (i1 + i2) / 2;
+    int mid = (i1 + i2) / 2;
     return vec.at(mid) > x // x may be NaN ...
         ? upperBound(vec, x, i1, mid)
         : upperBound(vec, x, mid, i2); // ... we should be so lucky
@@ -50,7 +50,7 @@ ScatterDirection::ScatterDirection(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
 AngleMap::AngleMap(ImageKey const& key) : key_(key) { calculate(); }
 
 void AngleMap::getGmaIndexes(
-    const Range& rgeGma, uint_vec const*& indexes, uint& minIndex, uint& maxIndex) const {
+    const Range& rgeGma, int_vec const*& indexes, int& minIndex, int& maxIndex) const {
     indexes = &gmaIndexes;
     minIndex = lowerBound(gmas, rgeGma.min, 0, gmas.count());
     maxIndex = upperBound(gmas, rgeGma.max, 0, gmas.count());
@@ -74,7 +74,7 @@ void AngleMap::calculate() {
     debug::ensure(size.w > cut.left + cut.right);
     debug::ensure(size.h > cut.top + cut.bottom);
 
-    const uint countWithoutCut = (size.w - cut.left - cut.right) * (size.h - cut.top - cut.bottom);
+    const int countWithoutCut = (size.w - cut.left - cut.right) * (size.h - cut.top - cut.bottom);
     debug::ensure(countWithoutCut > 0);
 
     gmas.resize(countWithoutCut);
@@ -104,10 +104,10 @@ void AngleMap::calculate() {
         }
     }
 
-    uint gi = 0;
+    int gi = 0;
 
-    for (uint i = cut.left, iEnd = size.w - cut.right; i < iEnd; ++i) {
-        for (uint j = cut.top, jEnd = size.h - cut.bottom; j < jEnd; ++j) {
+    for (int i = cut.left, iEnd = size.w - cut.right; i < iEnd; ++i) {
+        for (int j = cut.top, jEnd = size.h - cut.bottom; j < jEnd; ++j) {
             const ScatterDirection& as = arrAngles_.at(i, j);
 
             gmas[gi] = as.gma;
@@ -121,11 +121,11 @@ void AngleMap::calculate() {
         }
     }
 
-    uint_vec is(countWithoutCut);
+    int_vec is(countWithoutCut);
     for_i (is.count())
         is[i] = i;
 
-    std::sort(is.begin(), is.end(), [this](uint i1, uint i2) {
+    std::sort(is.begin(), is.end(), [this](int i1, int i2) {
         qreal gma1 = gmas.at(i1), gma2 = gmas.at(i2);
         return gma1 < gma2;
     });
@@ -135,7 +135,7 @@ void AngleMap::calculate() {
         gv[i] = gmas.at(is.at(i));
     gmas = gv;
 
-    uint_vec uv(countWithoutCut);
+    int_vec uv(countWithoutCut);
     for_i (countWithoutCut)
         uv[i] = gmaIndexes.at(is.at(i));
     gmaIndexes = uv;

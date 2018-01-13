@@ -46,11 +46,11 @@ QGridLayout* GridLayout();
 QLabel* Label(rcstr text);
 QLabel* Icon(rcstr fileName);
 
-QLineEdit* LineDisplay(uint ndigits, bool withDot);
+QLineEdit* LineDisplay(int ndigits, bool withDot);
 
-QSpinBox* SpinBox(uint ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX);
+QSpinBox* SpinBox(int ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX);
 QDoubleSpinBox* DoubleSpinBox(
-    uint ndigits, bool withDot, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
+    int ndigits, bool withDot, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
 
 QCheckBox* CheckBox(rcstr text);
 QCheckBox* CheckBox(QAction*);

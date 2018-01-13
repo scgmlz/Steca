@@ -50,7 +50,7 @@ private:
     Curve dgram_, dgramBgFitted_, bg_;
     curve_vec refls_;
 
-    uint currReflIndex_;
+    int currReflIndex_;
     shp_Reflection currentReflection_;
 
     QComboBox* comboNormType_;

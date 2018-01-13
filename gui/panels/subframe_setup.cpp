@@ -32,12 +32,12 @@ public:
     ReflectionsModel() : TableModel() {}
 
     void addReflection(const QString& peakFunctionName) { gHub->addReflection(peakFunctionName); }
-    void remReflection(uint i) { gHub->remReflection(i); }
+    void remReflection(int i) { gHub->remReflection(i); }
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return to_i(gSession->reflections().count()); }
-    str displayData(uint row, uint col) const;
-    str displayData(uint row) const;
+    str displayData(int row, int col) const;
+    str displayData(int row) const;
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
 
@@ -45,7 +45,7 @@ public:
 };
 
 
-str ReflectionsModel::displayData(uint row, uint col) const {
+str ReflectionsModel::displayData(int row, int col) const {
     switch (col) {
     case COL_ID:
         return str::number(row + 1);
@@ -56,7 +56,7 @@ str ReflectionsModel::displayData(uint row, uint col) const {
     }
 }
 
-str ReflectionsModel::displayData(uint row) const {
+str ReflectionsModel::displayData(int row) const {
     return displayData(row, COL_ID) + ": " + displayData(row, COL_TYPE);
 }
 

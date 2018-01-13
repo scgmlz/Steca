@@ -20,8 +20,8 @@
 
 namespace {
 
-static void setWidth(QWidget* w, uint ndigits, bool withDot) {
-    uint width = ndigits;
+static void setWidth(QWidget* w, int ndigits, bool withDot) {
+    int width = ndigits;
 #ifdef Q_OS_WIN
     width += 1 + (withDot?1:0);
 #endif
@@ -94,14 +94,14 @@ QLabel* newQ::Icon(rcstr fileName) {
     return ret;
 }
 
-QLineEdit* newQ::LineDisplay(uint ndigits, bool withDot) {
+QLineEdit* newQ::LineDisplay(int ndigits, bool withDot) {
     auto ret = new QLineEdit;
     setWidth(ret, ndigits, withDot);
     ret->setReadOnly(true);
     return ret;
 }
 
-QSpinBox* newQ::SpinBox(uint ndigits, bool withDot, int min, int max) {
+QSpinBox* newQ::SpinBox(int ndigits, bool withDot, int min, int max) {
     auto ret = new QSpinBox;
     setWidth(ret, ndigits, withDot);
     ret->setMinimum(min);
@@ -109,7 +109,7 @@ QSpinBox* newQ::SpinBox(uint ndigits, bool withDot, int min, int max) {
     return ret;
 }
 
-QDoubleSpinBox* newQ::DoubleSpinBox(uint ndigits, bool withDot, qreal min, qreal max) {
+QDoubleSpinBox* newQ::DoubleSpinBox(int ndigits, bool withDot, qreal min, qreal max) {
     auto ret = new QDoubleSpinBox;
     setWidth(ret, ndigits, withDot);
     ret->setMinimum(min);

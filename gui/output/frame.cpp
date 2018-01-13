@@ -79,22 +79,22 @@ ShowColsWidget::ShowColsWidget(DataTable& table, showcol_vec& showCols)
 
     auto _showInten = [this, _none]() {
         _none();
-        showCols_.at(uint(eReflAttr::INTEN)).cb->setChecked(true);
+        showCols_.at(int(eReflAttr::INTEN)).cb->setChecked(true);
     };
 
     auto _showTth = [this, _none]() {
         _none();
-        showCols_.at(uint(eReflAttr::TTH)).cb->setChecked(true);
+        showCols_.at(int(eReflAttr::TTH)).cb->setChecked(true);
     };
 
     auto _showFWHM = [this, _none]() {
         _none();
-        showCols_.at(uint(eReflAttr::FWHM)).cb->setChecked(true);
+        showCols_.at(int(eReflAttr::FWHM)).cb->setChecked(true);
     };
 
     auto _updateRbs = [this]() {
         bool isAll = true, isNone = true, isOther = false;
-        uint nInten = 0, nTth = 0, nFwhm = 0;
+        int nInten = 0, nTth = 0, nFwhm = 0;
 
         for_i (showCols_.count()) {
             if (!showCols_.at(i).cb->isChecked()) {
@@ -122,7 +122,7 @@ ShowColsWidget::ShowColsWidget(DataTable& table, showcol_vec& showCols)
         rbNone_->setChecked(isNone);
         rbAll_->setChecked(isAll);
 
-        uint const PRESET_SELECTION = 1;
+        int const PRESET_SELECTION = 1;
 
         rbInten_->setChecked(!isOther && PRESET_SELECTION == nInten);
         rbTth_->setChecked(!isOther && PRESET_SELECTION == nTth);
@@ -168,7 +168,7 @@ TabTable::TabTable(const QStringList& headers, const QStringList& outHeaders, co
     QGridLayout* grid_ = newQ::GridLayout();
     setLayout(grid_);
     debug::ensure(to_u(headers.count()) == cmps.count());
-    uint numCols = to_u(headers.count());
+    int numCols = to_u(headers.count());
 
     grid_->addWidget((table = new DataTable(numCols)), 0, 0);
     grid_->setColumnStretch(0, 1);
@@ -294,7 +294,7 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent) : QDialog(parent) {
 
     table_ = tabTable->table;
 
-    uint reflCount = gSession->reflections().count();
+    int reflCount = gSession->reflections().count();
     calcPoints_.resize(reflCount);
     interpPoints_.resize(reflCount);
 }
@@ -307,12 +307,12 @@ void Frame::calculate() {
 
     const Reflections& reflections = gSession->reflections();
     if (!reflections.isEmpty()) {
-        uint reflCount = reflections.count();
+        int reflCount = reflections.count();
 
         const PanelGammaSlices* ps = params_->panelGammaSlices;
         debug::ensure(ps);
 
-        uint gammaSlices = to_u(ps->numSlices->value());
+        int gammaSlices = to_u(ps->numSlices->value());
 
         const PanelGammaRange* pr = params_->panelGammaRange;
         debug::ensure(pr);
@@ -367,7 +367,7 @@ void Frame::updateReflection() {
 }
 
 // virtual, overwritten by some output frames, and called back by the overwriting function
-void Frame::displayReflection(uint reflIndex, bool interpolated) {
+void Frame::displayReflection(int reflIndex, bool interpolated) {
     table_->clear();
 
     debug::ensure(calcPoints_.count() == interpPoints_.count());
@@ -380,7 +380,7 @@ void Frame::displayReflection(uint reflIndex, bool interpolated) {
     table_->sortData();
 }
 
-uint Frame::getReflIndex() const {
+int Frame::getReflIndex() const {
     debug::ensure(params_->panelReflection);
     int reflIndex = params_->panelReflection->cbRefl->currentIndex();
     RUNTIME_CHECK(reflIndex >= 0, "invalid reflection index");

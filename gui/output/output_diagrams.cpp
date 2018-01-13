@@ -23,16 +23,16 @@
 #include "QCustomPlot/qcustomplot.h"
 
 // sorts xs and ys the same way, by (x,y)
-static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
+static void sortColumns(qreal_vec& xs, qreal_vec& ys, int_vec& is) {
     debug::ensure(xs.count() == ys.count());
 
-    uint count = xs.count();
+    int count = xs.count();
 
     is.resize(count);
     for_i (count)
         is[i] = i;
 
-    std::sort(is.begin(), is.end(), [&xs, &ys](uint i1, uint i2) {
+    std::sort(is.begin(), is.end(), [&xs, &ys](int i1, int i2) {
         qreal x1 = xs.at(i1), x2 = xs.at(i2);
         if (x1 < x2)
             return true;
@@ -79,7 +79,7 @@ void TabPlot::plot(
     qreal_vec const& xs, qreal_vec const& ys, qreal_vec const& ysLo, qreal_vec const& ysUp) {
     debug::ensure(xs.count() == ys.count());
 
-    uint count = xs.count();
+    int count = xs.count();
 
     graph_->clearData();
     graphUp_->clearData();
@@ -123,7 +123,7 @@ void TabPlot::plot(
 class TabDiagramsSave final : public TabSave {
 public:
     TabDiagramsSave();
-    uint currType() const { return fileTypes_->currentIndex(); }
+    int currType() const { return fileTypes_->currentIndex(); }
     bool currDiagram() const { return currentDiagram_->isChecked(); }
 private:
     QRadioButton *currentDiagram_, *allData_;
@@ -180,7 +180,7 @@ DiagramsFrame::eReflAttr DiagramsFrame::yAttr() const {
     return eReflAttr(params_->panelDiagram->yAxis->currentIndex());
 }
 
-void DiagramsFrame::displayReflection(uint reflIndex, bool interpolated) {
+void DiagramsFrame::displayReflection(int reflIndex, bool interpolated) {
     Frame::displayReflection(reflIndex, interpolated);
     rs_ = calcPoints_.at(reflIndex);
     recalculate();
@@ -188,13 +188,13 @@ void DiagramsFrame::displayReflection(uint reflIndex, bool interpolated) {
 
 void DiagramsFrame::recalculate() {
 
-    uint count = rs_.count();
+    int count = rs_.count();
 
     xs_.resize(count);
     ys_.resize(count);
 
-    uint xi = uint(xAttr());
-    uint yi = uint(yAttr());
+    int xi = int(xAttr());
+    int yi = int(yAttr());
 
     for_i (count) {
         const row_t row = rs_.at(i).data();
@@ -202,17 +202,17 @@ void DiagramsFrame::recalculate() {
         ys_[i] = row.at(yi).toDouble();
     }
 
-    uint_vec is;
+    int_vec is;
     sortColumns(xs_, ys_, is);
 
     auto _calcErrors = [this, is](eReflAttr attr) {
-        uint count = ys_.count();
+        int count = ys_.count();
         ysErrorLo_.resize(count);
         ysErrorUp_.resize(count);
 
         for_i (count) {
             const row_t row = rs_.at(is.at(i)).data(); // access error over sorted index vec
-            qreal sigma = row.at(uint(attr)).toDouble();
+            qreal sigma = row.at(int(attr)).toDouble();
             qreal y = ys_.at(i);
             ysErrorLo_[i] = y - sigma;
             ysErrorUp_[i] = y + sigma;

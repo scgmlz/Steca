@@ -27,7 +27,7 @@
 
 class FilesModel : public TableModel {
 public:
-    void removeFile(uint i) { gHub->removeFile(i); }
+    void removeFile(int i) { gHub->removeFile(i); }
 
     int columnCount() const final { return 2; }
     int rowCount() const final { return to_i(gSession->numFiles()); }
@@ -98,7 +98,7 @@ void FilesView::removeSelected() {
 }
 
 void FilesView::recollect() {
-    uint_vec rows;
+    int_vec rows;
     for (const QModelIndex& index : selectionModel()->selectedRows())
         if (index.isValid())
             rows.append(to_u(index.row()));

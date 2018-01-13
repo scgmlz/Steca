@@ -79,7 +79,7 @@ PanelGammaSlices::~PanelGammaSlices() {
 }
 
 void PanelGammaSlices::updateValues() {
-    uint nSlices = to_u(numSlices->value());
+    int nSlices = to_u(numSlices->value());
     if (nSlices > 0)
         stepGamma->setValue(rgeGma_.width() / nSlices);
     else

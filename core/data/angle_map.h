@@ -36,14 +36,14 @@ public:
     AngleMap() = delete;
     AngleMap(ImageKey const&);
 
-    ScatterDirection const& at(uint i) const { return arrAngles_.at(i); }
-    ScatterDirection const& at(uint i, uint j) const { return arrAngles_.at(i, j); }
+    ScatterDirection const& at(int i) const { return arrAngles_.at(i); }
+    ScatterDirection const& at(int i, int j) const { return arrAngles_.at(i, j); }
 
     Range rgeTth() const { return rgeTth_; }
     Range rgeGma() const { return rgeGma_; }
     Range rgeGmaFull() const { return rgeGmaFull_; }
 
-    void getGmaIndexes(const Range&, uint_vec const*&, uint&, uint&) const;
+    void getGmaIndexes(const Range&, int_vec const*&, int&, int&) const;
 
 private:
     void calculate();
@@ -56,7 +56,7 @@ private:
     Range rgeGma_, rgeGmaFull_;
 
     vec<deg> gmas; //!< sorted gamma values
-    uint_vec gmaIndexes;
+    int_vec gmaIndexes;
 };
 
 typedef QSharedPointer<AngleMap> shp_AngleMap;

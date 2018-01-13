@@ -28,7 +28,7 @@ class TabDiffractogramsSave final : public TabSave {
 public:
     TabDiffractogramsSave();
 
-    uint currType() const;
+    int currType() const;
     bool currentChecked() { return rbCurrent_->isChecked(); }
     bool allSequentialChecked() { return rbAllSequential_->isChecked(); }
     bool allChecked() { return rbAll_->isChecked(); }
@@ -54,7 +54,7 @@ TabDiffractogramsSave::TabDiffractogramsSave()
     rbAll_->setChecked(true);
 }
 
-uint TabDiffractogramsSave::currType() const {
+int TabDiffractogramsSave::currType() const {
     return to_u(fileTypes_->currentIndex());
 }
 
@@ -65,13 +65,13 @@ uint TabDiffractogramsSave::currType() const {
 struct OutputData {
 public:
     OutputData() {}
-    OutputData(Curve curve, Suite dataseq, Range gmaStripe, uint picNum)
+    OutputData(Curve curve, Suite dataseq, Range gmaStripe, int picNum)
         : curve_(curve), dataseq_(dataseq), gmaStripe_(gmaStripe), picNum_(picNum) {}
 
     Curve curve_;
     Suite dataseq_;
     Range gmaStripe_;
-    uint picNum_;
+    int picNum_;
 
     bool isValid() const {
         return (!dataseq_.metadata().isNull() || !curve_.isEmpty() || gmaStripe_.isValid());
@@ -95,7 +95,7 @@ OutputData outputCurrDiffractogram() {
 }
 
 vec<OutputData> collectCurves(
-    const Range& rgeGma, uint gmaSlices, Suite const& dataseq, uint picNum) {
+    const Range& rgeGma, int gmaSlices, Suite const& dataseq, int picNum) {
 
     shp_SequenceLens lens = gSession->defaultDatasetLens(dataseq);
 
@@ -105,7 +105,7 @@ vec<OutputData> collectCurves(
 
     vec<OutputData> ret;
 
-    gmaSlices = qMax(1u, gmaSlices);
+    gmaSlices = qMax(1, gmaSlices);
     const qreal step = rge.width() / gmaSlices;
     for_i (gmaSlices) {
         const qreal min = rge.min + i * step;
@@ -158,7 +158,7 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
 
 vec<vec<OutputData>> DiffractogramsFrame::outputAllDiffractograms() {
     debug::ensure(params_->panelGammaSlices);
-    uint gmaSlices = to_u(params_->panelGammaSlices->numSlices->value());
+    int gmaSlices = to_u(params_->panelGammaSlices->numSlices->value());
 
     debug::ensure(params_->panelGammaRange);
     const PanelGammaRange* pr = params_->panelGammaRange;
@@ -170,7 +170,7 @@ vec<vec<OutputData>> DiffractogramsFrame::outputAllDiffractograms() {
     Progress progress(expt.count(), progressBar_);
 
     vec<vec<OutputData>> ret;
-    uint picNum = 1;
+    int picNum = 1;
     for (shp_Suite suite : expt) {
         progress.step();
         ret.append(collectCurves(rgeGma, gmaSlices, *suite, picNum));

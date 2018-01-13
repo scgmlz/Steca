@@ -59,7 +59,7 @@ void Session::addGivenFile(shp_Datafile datafile) THROWS {
     files_.append(datafile);
 }
 
-void Session::removeFile(uint i) {
+void Session::removeFile(int i) {
     files_.remove(i);
     updateImageSize();
 }
@@ -71,7 +71,7 @@ void Session::calcIntensCorr() const {
     size2d size = corrImage_->size() - imageCut_.marginSize();
     debug::ensure(!size.isEmpty());
 
-    uint w = size.w, h = size.h, di = imageCut_.left, dj = imageCut_.top;
+    int w = size.w, h = size.h, di = imageCut_.left, dj = imageCut_.top;
 
     qreal sum = 0;
     for_ij (w, h)
@@ -122,24 +122,24 @@ void Session::remCorrFile() {
     updateImageSize();
 }
 
-void Session::collectDatasetsFromFiles(uint_vec fileNums, uint combineBy) {
+void Session::collectDatasetsFromFiles(int_vec fileNums, int combineBy) {
 
     collectedFromFiles_ = fileNums;
     experiment_.clear();
     experimentTags_.clear();
 
     vec<shp_Measurement> suiteFromFiles;
-    for (uint i : collectedFromFiles_)
+    for (int i : collectedFromFiles_)
         for (const shp_Measurement& measurement : files_.at(i)->suite())
             suiteFromFiles.append(measurement);
     if (suiteFromFiles.isEmpty())
         return;
 
     shp_Suite cd(new Suite);
-    uint i = 0;
+    int i = 0;
 
     auto _appendCd = [this, &cd, &combineBy, &i]() {
-        uint cnt = cd->count();
+        int cnt = cd->count();
         if (cnt) {
             str tag = str::number(i + 1);
             i += cnt;
@@ -151,7 +151,7 @@ void Session::collectDatasetsFromFiles(uint_vec fileNums, uint combineBy) {
         }
     };
 
-    uint by = combineBy;
+    int by = combineBy;
     for (const shp_Measurement& measurement : suiteFromFiles) {
         cd->append(measurement);
         if (1 >= by--) {
@@ -276,7 +276,7 @@ ReflectionInfo Session::makeReflectionInfo(
  * the returned infos won't be on the grid. REVIEW gammaStep separately?
  */
 ReflectionInfos Session::makeReflectionInfos(
-    Experiment const& expt, Reflection const& reflection, uint gmaSlices,
+    Experiment const& expt, Reflection const& reflection, int gmaSlices,
     const Range& rgeGma, Progress* progress) const {
     ReflectionInfos infos;
 
@@ -296,9 +296,9 @@ ReflectionInfos Session::makeReflectionInfos(
         if (rge.isEmpty())
             continue;
 
-        gmaSlices = qMax(1u, gmaSlices);
+        gmaSlices = qMax(1, gmaSlices);
         qreal step = rge.width() / gmaSlices;
-        for_i (uint(gmaSlices)) {
+        for_i (int(gmaSlices)) {
             qreal min = rge.min + i * step;
             Range gmaStripe(min, min + step);
             const ReflectionInfo refInfo = makeReflectionInfo(*lens, reflection, gmaStripe);

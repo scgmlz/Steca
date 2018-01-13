@@ -41,10 +41,10 @@ public:
 //! Image cut (margins)
 class ImageCut {
 public:
-    uint left, top, right, bottom;
+    int left, top, right, bottom;
 
     ImageCut();
-    ImageCut(uint left, uint top, uint right, uint bottom);
+    ImageCut(int left, int top, int right, int bottom);
     COMPARABLE(ImageCut const&);
     void update(bool topLeftFirst, bool linked, ImageCut const& cut, size2d size);
 

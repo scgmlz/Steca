@@ -35,15 +35,15 @@ class Image final {
 
     void fill(inten_t val, size2d const& size) { intens_.fill(val, size); }
 
-    inten_t inten(uint i) const { return intens_.at(i); }
+    inten_t inten(int i) const { return intens_.at(i); }
 
-    inten_t inten(uint i, uint j) const { return intens_.at(i, j); }
+    inten_t inten(int i, int j) const { return intens_.at(i, j); }
 
-    void setInten(uint i, inten_t val) { intens_.setAt(i, val); }
+    void setInten(int i, inten_t val) { intens_.setAt(i, val); }
 
-    void setInten(uint i, uint j, inten_t val) { intens_.setAt(i, j, val); }
+    void setInten(int i, int j, inten_t val) { intens_.setAt(i, j, val); }
 
-    void addInten(uint i, uint j, inten_t val) { intens_.refAt(i, j) += val; }
+    void addInten(int i, int j, inten_t val) { intens_.refAt(i, j) += val; }
 
     // Sum all intensities with new ones.
     void addIntens(const Image&) THROWS;

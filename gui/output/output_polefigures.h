@@ -26,10 +26,10 @@ private:
     class TabGraph* tabGraph_;
     class TabPoleFiguresSave* tabSave_;
 
-    void displayReflection(uint reflIndex, bool interpolated);
+    void displayReflection(int reflIndex, bool interpolated);
 
     void savePoleFigureOutput();
-    void writePoleFigureOutputFiles(rcstr filePath, uint index);
+    void writePoleFigureOutputFiles(rcstr filePath, int index);
     void writePoleFile(rcstr filePath, ReflectionInfos, qreal_vec const&);
     void writeListFile(rcstr filePath, ReflectionInfos, qreal_vec const&);
     void writeErrorMask(rcstr filePath, ReflectionInfos, qreal_vec const&);

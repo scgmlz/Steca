@@ -24,11 +24,8 @@
 
 // casting signed <-> unsigned
 
-inline int to_i(unsigned int u) { return u; }
-
-inline unsigned int to_u(int i) { return i; }
-
-inline unsigned int clip_u(int i) { return qMax(0, i); }
+inline int to_i(int u) { return u; }
+inline int to_u(int i) { return i; }
 
 // reals
 
