@@ -20,8 +20,6 @@
 #include "core/typ/vec.h"
 #include <QAbstractTableModel>
 
-extern QVariant const EMPTY_VAR;
-
 //! The base class of all models of rectangular table form
 
 class TableModel : public QAbstractTableModel {
