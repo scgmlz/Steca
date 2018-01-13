@@ -15,16 +15,13 @@
 #ifndef MODELS_H
 #define MODELS_H
 
-#include "core/data/experiment.h"
-#include "core/typ/str.h"
-#include "core/typ/vec.h"
 #include <QAbstractTableModel>
 
 //! The base class of all models of rectangular table form
 
 class TableModel : public QAbstractTableModel {
 public:
-    void signalReset(); //!< force-emits reset() signal
+    void signalReset() { beginResetModel(); endResetModel(); } //!< force-emits reset() signal
     int columnCount(const QModelIndex& /*unused*/) const {
         return columnCount(); }
     int rowCount(const QModelIndex& /*unused*/) const {
