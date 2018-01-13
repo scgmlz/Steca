@@ -20,14 +20,14 @@
 
 
 // ************************************************************************** //
-//  local class MeasurementsModel
+//  local class ExperimentModel
 // ************************************************************************** //
 
-//! The model for MeasurementsView.
+//! The model for ExperimentView.
 
-class MeasurementsModel : public TableModel {
+class ExperimentModel : public TableModel {
 public:
-    MeasurementsModel() : experiment_(gSession->experiment()) {}
+    ExperimentModel() : experiment_(gSession->experiment()) {}
 
     void showMetaInfo(vec<bool> const&);
 
@@ -37,14 +37,13 @@ public:
     QVariant headerData(int, Qt::Orientation, int) const;
 
     enum { COL_NUMBER = 1, COL_ATTRS };
-    enum { GetMeasurementRole = Qt::UserRole };
 
 private:
     Experiment const& experiment_;
     uint_vec metaInfoNums_; //!< indices of metadata items selected for display
 };
 
-void MeasurementsModel::showMetaInfo(vec<bool> const& metadataRows) {
+void ExperimentModel::showMetaInfo(vec<bool> const& metadataRows) {
     beginResetModel();
     metaInfoNums_.clear();
     for_i (metadataRows.count())
@@ -53,7 +52,7 @@ void MeasurementsModel::showMetaInfo(vec<bool> const& metadataRows) {
     endResetModel();
 }
 
-QVariant MeasurementsModel::data(const QModelIndex& index, int role) const {
+QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     int row = index.row();
     if (row < 0 || rowCount() <= row)
         return {};
@@ -70,14 +69,14 @@ QVariant MeasurementsModel::data(const QModelIndex& index, int role) const {
                 metaInfoNums_.at(to_u(col - COL_ATTRS)));
         }
     }
-    case GetMeasurementRole:
+    case Qt::UserRole:
         return QVariant::fromValue<shp_Suite>(experiment_.at(to_u(row)));
     default:
         return {};
     }
 }
 
-QVariant MeasurementsModel::headerData(int col, Qt::Orientation, int role) const {
+QVariant ExperimentModel::headerData(int col, Qt::Orientation, int role) const {
     if (Qt::DisplayRole != role || col < 1 || columnCount() <= col)
         return {};
     switch (col) {
@@ -90,41 +89,40 @@ QVariant MeasurementsModel::headerData(int col, Qt::Orientation, int role) const
 
 
 // ************************************************************************** //
-//  local class MeasurementsView
+//  local class ExperimentView
 // ************************************************************************** //
 
 //! Main item in SubframeMeasurement: View and control of measurements list.
 
-class MeasurementsView final : public ListView {
+class ExperimentView final : public ListView {
 public:
-    MeasurementsView();
+    ExperimentView();
 
 private:
     void currentChanged(QModelIndex const&, QModelIndex const&);
 
-    MeasurementsModel* model() const override {
-        return static_cast<MeasurementsModel*>(ListView::model()); }
+    ExperimentModel* model() const override {
+        return static_cast<ExperimentModel*>(ListView::model()); }
 };
 
-MeasurementsView::MeasurementsView() : ListView() {
-    auto measurementsModel = new MeasurementsModel();
-    setModel(measurementsModel);
+ExperimentView::ExperimentView() : ListView() {
+    auto experimentModel = new ExperimentModel();
+    setModel(experimentModel);
     connect(gHub, &TheHub::sigSuitesChanged,
-            [=]() { measurementsModel->signalReset(); });
-    debug::ensure(dynamic_cast<MeasurementsModel*>(ListView::model()));
+            [=]() { experimentModel->signalReset(); });
+    debug::ensure(dynamic_cast<ExperimentModel*>(ListView::model()));
 
     connect(gHub, &TheHub::sigSuitesChanged,
             [this]() {
                 gHub->tellSuiteSelected(shp_Suite()); // first de-select
                 selectRow(0);
             });
-    connect(gHub, &TheHub::sigMetatagsChosen, measurementsModel, &MeasurementsModel::showMetaInfo);
+    connect(gHub, &TheHub::sigMetatagsChosen, experimentModel, &ExperimentModel::showMetaInfo);
 }
 
-void MeasurementsView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
+void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     ListView::currentChanged(current, previous);
-    gHub->tellSuiteSelected(
-        model()->data(current, MeasurementsModel::GetMeasurementRole).value<shp_Suite>());
+    gHub->tellSuiteSelected(model()->data(current, Qt::UserRole).value<shp_Suite>());
 }
 
 // ************************************************************************** //
@@ -134,7 +132,7 @@ void MeasurementsView::currentChanged(QModelIndex const& current, QModelIndex co
 SubframeMeasurements::SubframeMeasurements() : DockWidget("Measurements", "dock-suite") {
 
     // subframe item #1: list of measurements
-    box_->addWidget(new MeasurementsView());
+    box_->addWidget(new ExperimentView());
 
     // subframe item #2: controls row
     auto controls_row = newQ::HBoxLayout();

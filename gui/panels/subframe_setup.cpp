@@ -42,7 +42,6 @@ public:
     QVariant headerData(int, Qt::Orientation, int) const;
 
     enum { COL_ID = 1, COL_TYPE, NUM_COLUMNS };
-    enum { GetMeasurementRole = Qt::UserRole };
 };
 
 
@@ -78,7 +77,7 @@ QVariant ReflectionsModel::data(const QModelIndex& index, int role) const {
             return {};
         }
     }
-    case GetMeasurementRole:
+    case Qt::UserRole:
         return QVariant::fromValue<shp_Reflection>(gSession->reflections().at(to_u(row)));
     default:
         return {};
@@ -146,8 +145,7 @@ shp_Reflection ReflectionView::selectedReflection() const {
     QList<QModelIndex> indexes = selectionModel()->selectedIndexes();
     if (indexes.isEmpty())
         return shp_Reflection();
-    return model()->data(indexes.first(),
-                         ReflectionsModel::GetMeasurementRole).value<shp_Reflection>();
+    return model()->data(indexes.first(), Qt::UserRole).value<shp_Reflection>();
 }
 
 void ReflectionView::updateSingleSelection() {
@@ -163,8 +161,7 @@ void ReflectionView::selectionChanged(
     gHub->tellSelectedReflection(
         indexes.isEmpty() ?
         shp_Reflection() :
-        model()->data(indexes.first(),
-                      ReflectionsModel::GetMeasurementRole).value<shp_Reflection>());
+        model()->data(indexes.first(), Qt::UserRole).value<shp_Reflection>());
 }
 
 
