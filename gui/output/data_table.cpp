@@ -29,24 +29,18 @@ class TabularModel : public TableModel {
 public:
     TabularModel(int numCols_);
 
-    int columnCount() const final { return numCols_ + 1; }
-    int rowCount() const final { return rows_.count(); }
-
-    QVariant data(const QModelIndex&, int) const;
-    QVariant headerData(int, Qt::Orientation, int) const;
-
-    void moveColumn(int from, int to);
-
-    void setColumns(const QStringList& headers, cmp_vec const&);
-
-    void setSortColumn(int);
-
     void clear();
+    void moveColumn(int from, int to);
+    void setColumns(const QStringList& headers, cmp_vec const&);
+    void setSortColumn(int);
     void addRow(row_t const&, bool sort = true);
-
+    void sortData();
     row_t const& row(int);
 
-    void sortData();
+    int columnCount() const final { return numCols_ + 1; }
+    int rowCount() const final { return rows_.count(); }
+    QVariant data(const QModelIndex&, int) const;
+    QVariant headerData(int, Qt::Orientation, int) const;
 
 private:
     int numCols_;
