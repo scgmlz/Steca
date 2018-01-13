@@ -220,7 +220,7 @@ QByteArray TheHub::saveSession() const {
         top.insert("correction file", relPath);
     }
 
-    top.insert("background degree", to_i(gSession->bgPolyDegree()));
+    top.insert("background degree", gSession->bgPolyDegree());
     top.insert("background ranges", gSession->bgRanges().to_json());
     top.insert("averaged intensity ", gSession->intenScaledAvg());
     top.insert("intensity scale", qreal_to_json((qreal)gSession->intenScale()));

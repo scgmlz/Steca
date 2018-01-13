@@ -312,7 +312,7 @@ void Frame::calculate() {
         const PanelGammaSlices* ps = params_->panelGammaSlices;
         debug::ensure(ps);
 
-        int gammaSlices = to_u(ps->numSlices->value());
+        int gammaSlices = ps->numSlices->value();
 
         const PanelGammaRange* pr = params_->panelGammaRange;
         debug::ensure(pr);

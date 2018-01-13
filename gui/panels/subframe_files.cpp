@@ -30,7 +30,7 @@ public:
     void removeFile(int i) { gHub->removeFile(i); }
 
     int columnCount() const final { return 2; }
-    int rowCount() const final { return to_i(gSession->numFiles()); }
+    int rowCount() const final { return gSession->numFiles(); }
     QVariant data(const QModelIndex&, int) const;
 
     enum { GetFileRole = Qt::UserRole };

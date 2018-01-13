@@ -215,8 +215,8 @@ SubframeSetup::SubframeSetup() {
             else
                 gHub->setImageCut(
                     isTopOrLeft, false, ImageCut(
-                                        to_u(cutLeft_->value()), to_u(cutTop_->value()),
-                                        to_u(cutRight_->value()), to_u(cutBottom_->value())));
+                                        cutLeft_->value(), cutTop_->value(),
+                                        cutRight_->value(), cutBottom_->value()));
         };
 
         connect(cutLeft_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
@@ -311,7 +311,7 @@ SubframeSetup::SubframeSetup() {
             });
 
         connect(gHub, &TheHub::sigBgChanged, [this](){
-                spinDegree_->setValue(to_i(gSession->bgPolyDegree())); });
+                spinDegree_->setValue(gSession->bgPolyDegree()); });
     }
 
     // ==== peak fits tab ====

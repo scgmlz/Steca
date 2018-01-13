@@ -252,7 +252,7 @@ void DataTable::sortData() {
 }
 
 int DataTable::rowCount() const {
-    return to_u(model_->rowCount());
+    return model_->rowCount();
 }
 
 const row_t& DataTable::row(int i) const {

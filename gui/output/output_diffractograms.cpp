@@ -55,7 +55,7 @@ TabDiffractogramsSave::TabDiffractogramsSave()
 }
 
 int TabDiffractogramsSave::currType() const {
-    return to_u(fileTypes_->currentIndex());
+    return fileTypes_->currentIndex();
 }
 
 // ************************************************************************** //
@@ -158,7 +158,7 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
 
 vec<vec<OutputData>> DiffractogramsFrame::outputAllDiffractograms() {
     debug::ensure(params_->panelGammaSlices);
-    int gmaSlices = to_u(params_->panelGammaSlices->numSlices->value());
+    int gmaSlices = params_->panelGammaSlices->numSlices->value();
 
     debug::ensure(params_->panelGammaRange);
     const PanelGammaRange* pr = params_->panelGammaRange;
