@@ -24,43 +24,11 @@
 
 // casting signed <-> unsigned
 
-#if defined(Q_OS_WIN) || defined(Q_OS_OSX)
-// do not handle the below templates
-
 inline int to_i(unsigned int u) { return u; }
 
 inline unsigned int to_u(int i) { return i; }
 
 inline unsigned int clip_u(int i) { return qMax(0, i); }
-
-#else
-
-#ifndef QT_NO_DEBUG
-#endif
-
-// unsigned to signed
-template <typename T> typename std::__make_signed<T>::__type to_i(T t) {
-    static_assert(std::is_unsigned<T>::value, "to_i(signed)");
-#ifndef QT_NO_DEBUG
-    auto max = std::numeric_limits<typename std::__make_signed<T>::__type>::max();
-    debug::ensure(static_cast<T>(max) >= t, "to_i(too big)");
-#endif
-    return typename std::__make_signed<T>::__type(t);
-}
-
-// signed to unsigned
-template <typename T> typename std::__make_unsigned<T>::__type to_u(T t) {
-    static_assert(std::is_signed<T>::value, "to_u(signed)");
-    debug::ensure(0 <= t, "to_u(attempt to convert a negative value)");
-    return typename std::__make_unsigned<T>::__type(t);
-}
-
-template <typename T> typename std::__make_unsigned<T>::__type clip_u(T t) {
-    static_assert(std::is_signed<T>::value, "clip_u(signed)");
-    return typename std::__make_unsigned<T>::__type(qMax(0, t));
-}
-
-#endif
 
 // reals
 
