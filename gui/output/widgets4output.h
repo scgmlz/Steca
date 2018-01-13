@@ -44,23 +44,6 @@ private:
     QBoxLayout* box_;
 };
 
-//! A data table, for use in the 'Points' tab of an output dialog.
-
-class DataTable : public TreeView {
-public:
-    DataTable(uint numDataColumns);
-    void setColumns(const QStringList& headers, const QStringList& outHeaders, cmp_vec const&);
-    const QStringList outHeaders() { return outHeaders_; }
-    void clear();
-    void addRow(row_t const&, bool sort);
-    void sortData();
-    uint rowCount() const;
-    row_t const& row(uint) const;
-    scoped<class TabularModel*> model_;
-    QStringList outHeaders_;
-};
-
-
 //! Base class for dialogs for saving some output to a file.
 
 class TabSave : public QWidget {
