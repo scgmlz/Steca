@@ -24,6 +24,76 @@
 static qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }
 static str safeRealText(qreal val) { return qIsFinite(val) ? str::number(val) : ""; }
 
+
+// ************************************************************************** //
+//  local class ReflectionsModel
+// ************************************************************************** //
+
+class ReflectionsModel : public TableModel {
+public:
+    ReflectionsModel() : TableModel() {}
+
+    void addReflection(const QString& peakFunctionName) { gHub->addReflection(peakFunctionName); }
+    void remReflection(uint i) { gHub->remReflection(i); }
+
+    int columnCount() const final { return NUM_COLUMNS; }
+    int rowCount() const final { return to_i(gSession->reflections().count()); }
+    str displayData(uint row, uint col) const;
+    str displayData(uint row) const;
+    QVariant data(const QModelIndex&, int) const;
+    QVariant headerData(int, Qt::Orientation, int) const;
+
+    enum { COL_ID = 1, COL_TYPE, NUM_COLUMNS };
+    enum { GetMeasurementRole = Qt::UserRole };
+};
+
+
+str ReflectionsModel::displayData(uint row, uint col) const {
+    switch (col) {
+    case COL_ID:
+        return str::number(row + 1);
+    case COL_TYPE:
+        return gSession->reflections().at(row)->peakFunction().name();
+    default:
+        NEVER return "";
+    }
+}
+
+str ReflectionsModel::displayData(uint row) const {
+    return displayData(row, COL_ID) + ": " + displayData(row, COL_TYPE);
+}
+
+QVariant ReflectionsModel::data(const QModelIndex& index, int role) const {
+    int row = index.row();
+    if (row < 0 || rowCount() <= row)
+        return {};
+    switch (role) {
+    case Qt::DisplayRole: {
+        int col = index.column();
+        if (col < 1)
+            return {};
+        switch (col) {
+        case COL_ID:
+        case COL_TYPE:
+            return displayData(to_u(row), to_u(col));
+        default:
+            return {};
+        }
+    }
+    case GetMeasurementRole:
+        return QVariant::fromValue<shp_Reflection>(gSession->reflections().at(to_u(row)));
+    default:
+        return {};
+    }
+}
+
+QVariant ReflectionsModel::headerData(int col, Qt::Orientation, int role) const {
+    if (Qt::DisplayRole == role && COL_ID == col)
+        return "#";
+    return {};
+}
+
+
 // ************************************************************************** //
 //  local class ReflectionView
 // ************************************************************************** //
@@ -34,17 +104,15 @@ public:
 
     void addReflection(const QString& peakFunctionName);
     void removeSelected();
+    void updateSingleSelection();
     void clear();
-    bool hasReflections() const;
 
+    bool hasReflections() const { return model()->rowCount() > 0; }
     shp_Reflection selectedReflection() const;
 
-    void updateSingleSelection();
-
 private:
-    ReflectionsModel* model() const { return static_cast<ReflectionsModel*>(ListView::model()); }
-
     void selectionChanged(QItemSelection const&, QItemSelection const&);
+    ReflectionsModel* model() const { return static_cast<ReflectionsModel*>(ListView::model()); }
 };
 
 ReflectionView::ReflectionView() : ListView() {
@@ -65,7 +133,6 @@ void ReflectionView::removeSelected() {
     int row = currentIndex().row();
     if (row < 0 || model()->rowCount() <= row)
         return;
-
     model()->remReflection(to_u(row));
     updateSingleSelection();
 }
@@ -75,10 +142,6 @@ void ReflectionView::clear() {
         model()->remReflection(to_u(row));
         updateSingleSelection();
     }
-}
-
-bool ReflectionView::hasReflections() const {
-    return model()->rowCount() > 0;
 }
 
 shp_Reflection ReflectionView::selectedReflection() const {

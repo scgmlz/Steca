@@ -34,26 +34,4 @@ public:
 };
 
 
-class ReflectionsModel : public TableModel {
-public:
-    ReflectionsModel();
-
-    int columnCount() const final;
-    int rowCount() const final;
-
-    str displayData(uint row, uint col) const;
-    str displayData(uint row) const;
-
-    QVariant data(const QModelIndex&, int) const;
-    QVariant headerData(int, Qt::Orientation, int) const;
-
-    enum { COL_ID = 1, COL_TYPE, NUM_COLUMNS };
-
-public:
-    enum { GetMeasurementRole = Qt::UserRole };
-
-    void addReflection(const QString&);
-    void remReflection(uint);
-};
-
 #endif // MODELS_H
