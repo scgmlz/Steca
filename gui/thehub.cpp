@@ -303,7 +303,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     setBgPolyDegree(top.loadUint("background degree"));
 
     bool arg1 = top.loadBool("averaged intensity ", true);
-    preal arg2 = top.loadPreal("intensity scale", preal(1));
+    preal arg2 = top.loadPreal("intensity scale", 1);
     setIntenScaleAvg(arg1, arg2);
 
     TR("sessionFromJson: going to load reflections info");

@@ -25,11 +25,11 @@
 //  class Geometry
 // ************************************************************************** //
 
-preal const Geometry::MIN_DETECTOR_DISTANCE = preal(10);
-preal const Geometry::MIN_DETECTOR_PIXEL_SIZE = preal(.1);
+preal const Geometry::MIN_DETECTOR_DISTANCE = 10;
+preal const Geometry::MIN_DETECTOR_PIXEL_SIZE = .1;
 
-preal const Geometry::DEF_DETECTOR_DISTANCE = preal(1035);
-preal const Geometry::DEF_DETECTOR_PIXEL_SIZE = preal(1);
+preal const Geometry::DEF_DETECTOR_DISTANCE = 1035;
+preal const Geometry::DEF_DETECTOR_PIXEL_SIZE = 1;
 
 Geometry::Geometry()
     : detectorDistance(DEF_DETECTOR_DISTANCE), pixSize(DEF_DETECTOR_PIXEL_SIZE), midPixOffset() {}

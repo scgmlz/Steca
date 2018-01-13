@@ -448,12 +448,12 @@ Diffractogram::Diffractogram() : suite_(nullptr), currReflIndex_(0) {
     connect(intenAvg_, &QRadioButton::toggled, [this](bool on) {
         intenScale_->setEnabled(on);
         intenScale_->setValue(gSession->intenScale());
-        gHub->setIntenScaleAvg(on, preal(intenScale_->value()));
+        gHub->setIntenScaleAvg(on, intenScale_->value());
     });
 
     connect(intenScale_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
         if (val > 0)
-            gHub->setIntenScaleAvg(gSession->intenScaledAvg(), preal(val));
+            gHub->setIntenScaleAvg(gSession->intenScaledAvg(), val);
     });
 
     hb->addStretch();

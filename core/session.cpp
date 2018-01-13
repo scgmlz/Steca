@@ -42,7 +42,7 @@ void Session::clear() {
     angleMapCache_.clear();
 
     intenScaledAvg_ = true;
-    intenScale_ = preal(1);
+    intenScale_ = 1;
 }
 
 bool Session::hasFile(rcstr fileName) const {
