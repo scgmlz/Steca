@@ -17,7 +17,7 @@
 
 #include "core/calc/lens.h"
 #include "core/data/suite.h"
-#include "gui/widgets/new_q.h"
+#include "gui/base/new_q.h"
 #include <QTabWidget>
 
 //! Part of the main window that shows a detector image, with associated controls.

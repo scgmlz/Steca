@@ -15,7 +15,7 @@
 #ifndef SUBFRAME_METADATA_H
 #define SUBFRAME_METADATA_H
 
-#include "gui/widgets/various_widgets.h"
+#include "gui/base/various_widgets.h"
 
 //! Part of the main window that shows the metadata of the selected dataset
 class SubframeMetadata : public DockWidget {

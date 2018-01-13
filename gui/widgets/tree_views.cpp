@@ -14,7 +14,7 @@
 
 #include "tree_views.h"
 #include "core/def/idiomatic_for.h"
-#include "gui/models.h"
+#include "gui/base/table_model.h"
 
 // ************************************************************************** //
 //  class TreeView

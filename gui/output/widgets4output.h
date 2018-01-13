@@ -18,8 +18,8 @@
 #include "core/typ/str.h"
 #include "core/typ/variant.h"
 #include "core/def/special_pointers.h"
-#include "gui/widgets/tree_views.h"
-#include "gui/widgets/new_q.h"
+#include "gui/base/tree_views.h"
+#include "gui/base/new_q.h"
 
 //! Horizontal box with variable selection of control panels. Appears in each output dialog (Frame).
 

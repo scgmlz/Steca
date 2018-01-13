@@ -16,9 +16,9 @@
 #include "core/loaders/loaders.h"
 #include "core/session.h"
 #include "core/typ/json.h"
-#include "gui/models.h"
+#include "gui/base/table_model.h"
 #include "gui/output/write_file.h"
-#include "gui/widgets/new_q.h"
+#include "gui/base/new_q.h"
 #include <QApplication>
 #include <QDir>
 #include <QJsonDocument>

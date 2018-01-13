@@ -20,8 +20,8 @@
 #include "gui/output/write_file.h"
 #include "gui/output/widgets4output.h"
 #include "gui/thehub.h"
-#include "gui/widgets/new_q.h"
-#include "gui/widgets/various_widgets.h"
+#include "gui/base/new_q.h"
+#include "gui/base/various_widgets.h"
 #include <qmath.h>
 #include <QPainter>
 

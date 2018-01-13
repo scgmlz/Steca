@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/widgets/various_widgets.h
+//! @file      gui/base/various_widgets.h
 //! @brief     Defines classes BoxWidget, DockWidget
 //!
 //! @homepage  https://github.com/scgmlz/Steca

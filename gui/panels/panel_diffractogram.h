@@ -16,7 +16,7 @@
 #define PANEL_DIFFRACTOGRAM_H
 
 #include "gui/thehub.h" // for eFittingTab
-#include "gui/widgets/new_q.h"
+#include "gui/base/new_q.h"
 
 //! A diffractogram display, with associated controls, for use in SubframeDiffractogram.
 

@@ -14,10 +14,10 @@
 
 #include "gui/panels/subframe_files.h"
 #include "core/session.h"
-#include "gui/models.h"
+#include "gui/base/table_model.h"
 #include "gui/thehub.h"
-#include "gui/widgets/new_q.h"
-#include "gui/widgets/tree_views.h" // inheriting from
+#include "gui/base/new_q.h"
+#include "gui/base/tree_views.h" // inheriting from
 #include <QHeaderView>
 
 

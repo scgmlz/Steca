@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "gui/widgets/new_q.h"
-#include "gui/widgets/various_widgets.h"
+#include "gui/base/new_q.h"
+#include "gui/base/various_widgets.h"
 #include "core/def/numbers.h"
 #include <QApplication> // for qApp for new Action
 #include <QtGlobal> // to define Q_OS_WIN

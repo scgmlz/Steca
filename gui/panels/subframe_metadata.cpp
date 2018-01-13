@@ -13,9 +13,9 @@
 // ************************************************************************** //
 
 #include "gui/panels/subframe_metadata.h"
-#include "gui/models.h"
+#include "gui/base/table_model.h"
 #include "gui/thehub.h"
-#include "gui/widgets/tree_views.h" // inheriting from
+#include "gui/base/tree_views.h" // inheriting from
 
 
 // ************************************************************************** //

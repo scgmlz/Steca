@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/models.h
+//! @file      gui/base/table_model.h
 //! @brief     Defines class TableModel
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef MODELS_H
-#define MODELS_H
+#ifndef TABLE_MODEL_H
+#define TABLE_MODEL_H
 
 #include <QAbstractTableModel>
 
@@ -30,4 +30,4 @@ public:
     virtual int rowCount() const = 0;
 };
 
-#endif // MODELS_H
+#endif // TABLE_MODEL_H
