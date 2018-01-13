@@ -32,8 +32,6 @@ public:
     int columnCount() const final { return 2; }
     int rowCount() const final { return gSession->numFiles(); }
     QVariant data(const QModelIndex&, int) const;
-
-    enum { GetFileRole = Qt::UserRole };
 };
 
 
@@ -45,7 +43,7 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
     switch (role) {
     case Qt::DisplayRole:
         return gSession->file(row)->fileName();
-    case GetFileRole:
+    case Qt::UserRole:
         return QVariant::fromValue<shp_Datafile>(gSession->file(row));
     default:
         return {};
