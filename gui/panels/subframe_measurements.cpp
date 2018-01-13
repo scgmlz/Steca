@@ -23,6 +23,8 @@
 //  local class MeasurementsModel
 // ************************************************************************** //
 
+//! The model for MeasurementsView.
+
 class MeasurementsModel : public TableModel {
 public:
     MeasurementsModel() : experiment_(gSession->experiment()) {}
@@ -39,7 +41,7 @@ public:
 
 private:
     Experiment const& experiment_;
-    uint_vec metaInfoNums_; // selected metadata items to show
+    uint_vec metaInfoNums_; //!< indices of metadata items selected for display
 };
 
 void MeasurementsModel::showMetaInfo(vec<bool> const& metadataRows) {
@@ -91,7 +93,7 @@ QVariant MeasurementsModel::headerData(int col, Qt::Orientation, int role) const
 //  local class MeasurementsView
 // ************************************************************************** //
 
-//! Main item in SubframeMeasurement: List and user selection of loaded measurements.
+//! Main item in SubframeMeasurement: View and control of measurements list.
 
 class MeasurementsView final : public ListView {
 public:
