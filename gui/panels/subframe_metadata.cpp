@@ -17,6 +17,73 @@
 #include "gui/thehub.h"
 #include "gui/widgets/tree_views.h" // inheriting from
 
+
+// ************************************************************************** //
+//  local class MetadataModel
+// ************************************************************************** //
+
+class MetadataModel : public TableModel {
+public:
+    MetadataModel();
+
+    void reset(shp_Suite dataseq);
+    void flipCheck(uint row);
+
+    int columnCount() const final { return NUM_COLUMNS; }
+    int rowCount() const final { return to_i(Metadata::numAttributes(false)); }
+    QVariant data(const QModelIndex&, int) const;
+    QVariant headerData(int, Qt::Orientation, int) const { return {}; }
+    vec<bool> const& rowsChecked() const { return rowsChecked_; }
+
+    enum { COL_CHECK = 1, COL_TAG, COL_VALUE, NUM_COLUMNS };
+
+private:
+    shp_Metadata metadata_;
+    vec<bool> rowsChecked_;
+};
+
+
+MetadataModel::MetadataModel() {
+    rowsChecked_.fill(false, Metadata::numAttributes(false));
+}
+
+void MetadataModel::reset(shp_Suite dataseq) {
+    metadata_.clear();
+    if (dataseq)
+        metadata_ = dataseq->metadata();
+    signalReset();
+}
+
+void MetadataModel::flipCheck(uint row) {
+    rowsChecked_[row] = !rowsChecked_[row];
+    signalReset();
+}
+
+QVariant MetadataModel::data(const QModelIndex& index, int role) const {
+    int row = index.row();
+    if (row < 0 || rowCount() <= row)
+        return {};
+    int col = index.column();
+    switch (role) {
+    case Qt::CheckStateRole:
+        switch (col) {
+        case COL_CHECK:
+            return rowsChecked_.at(to_u(row)) ? Qt::Checked : Qt::Unchecked;
+        }
+        break;
+    case Qt::DisplayRole:
+        switch (col) {
+        case COL_TAG:
+            return Metadata::attributeTag(to_u(row), false);
+        case COL_VALUE:
+            return metadata_ ? metadata_->attributeStrValue(to_u(row)) : "-";
+        }
+        break;
+    }
+    return {};
+}
+
+
 // ************************************************************************** //
 //  local class MetadataView
 // ************************************************************************** //

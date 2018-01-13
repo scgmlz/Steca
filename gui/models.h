@@ -33,42 +33,6 @@ public:
     virtual int rowCount() const = 0;
 };
 
-class FilesModel : public TableModel {
-public:
-    int columnCount() const final;
-    int rowCount() const final;
-
-    QVariant data(const QModelIndex&, int) const;
-
-public:
-    enum { GetFileRole = Qt::UserRole };
-
-    void removeFile(uint i);
-};
-
-
-class MetadataModel : public TableModel {
-public:
-    MetadataModel();
-
-    int columnCount() const final;
-    int rowCount() const final;
-
-    QVariant data(const QModelIndex&, int) const;
-    QVariant headerData(int, Qt::Orientation, int) const;
-
-    enum { COL_CHECK = 1, COL_TAG, COL_VALUE, NUM_COLUMNS };
-
-    vec<bool> const& rowsChecked() const { return rowsChecked_; }
-
-    void reset(shp_Suite dataseq);
-    void flipCheck(uint row);
-
-private:
-    shp_Metadata metadata_;
-    vec<bool> rowsChecked_;
-};
-
 
 class ReflectionsModel : public TableModel {
 public:

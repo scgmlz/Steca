@@ -22,7 +22,39 @@
 
 
 // ************************************************************************** //
-//  class FilesView (definition)
+//  local class FilesModel
+// ************************************************************************** //
+
+class FilesModel : public TableModel {
+public:
+    void removeFile(uint i) { gHub->removeFile(i); }
+
+    int columnCount() const final { return 2; }
+    int rowCount() const final { return to_i(gSession->numFiles()); }
+    QVariant data(const QModelIndex&, int) const;
+
+    enum { GetFileRole = Qt::UserRole };
+};
+
+
+QVariant FilesModel::data(const QModelIndex& index, int role) const {
+    const int row = index.row(), rowCnt = rowCount();
+    if (row < 0 || rowCnt <= row)
+        return {};
+
+    switch (role) {
+    case Qt::DisplayRole:
+        return gSession->file(to_u(row))->fileName();
+    case GetFileRole:
+        return QVariant::fromValue<shp_Datafile>(gSession->file(to_u(row)));
+    default:
+        return {};
+    }
+}
+
+
+// ************************************************************************** //
+//  local class FilesView
 // ************************************************************************** //
 
 class FilesView : public MultiListView {
@@ -30,16 +62,12 @@ public:
     FilesView();
 
 private:
-    FilesModel* model() const { return static_cast<FilesModel*>(MultiListView::model()); }
-
     void selectionChanged(QItemSelection const&, QItemSelection const&);
     void removeSelected();
     void recollect();
-};
 
-// ************************************************************************** //
-//  class FilesView (implementation)
-// ************************************************************************** //
+    FilesModel* model() const { return static_cast<FilesModel*>(MultiListView::model()); }
+};
 
 FilesView::FilesView() : MultiListView() {
     auto filesModel = new FilesModel();
@@ -50,9 +78,7 @@ FilesView::FilesView() : MultiListView() {
     header()->hide();
 
     connect(gHub->trigger_removeFile, &QAction::triggered, [this]() { removeSelected(); });
-
     connect(gHub, &TheHub::sigFilesChanged, [this]() { selectRows({}); recollect(); });
-
     connect(gHub, &TheHub::sigFilesSelected,
             [this]() { selectRows(gSession->collectedFromFiles()); });
 }
@@ -64,11 +90,9 @@ void FilesView::selectionChanged(QItemSelection const& selected, QItemSelection 
 
 void FilesView::removeSelected() {
     const QModelIndexList& indexes = selectedIndexes();
-
     // backwards
     for (int i = indexes.count(); i-- > 0;)
         model()->removeFile(to_u(indexes.at(i).row()));
-
     selectRows({});
     recollect();
 }
@@ -78,12 +102,11 @@ void FilesView::recollect() {
     for (const QModelIndex& index : selectionModel()->selectedRows())
         if (index.isValid())
             rows.append(to_u(index.row()));
-
     gHub->collectDatasetsFromFiles(rows);
 }
 
 // ************************************************************************** //
-//  class DocFiles
+//  class SubframeFiles
 // ************************************************************************** //
 
 SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files") {
