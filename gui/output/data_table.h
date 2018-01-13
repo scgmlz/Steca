@@ -15,11 +15,9 @@
 #ifndef DATA_TABLE_H
 #define DATA_TABLE_H
 
-#include "core/typ/str.h"
 #include "core/typ/variant.h"
 #include "core/def/special_pointers.h"
 #include "gui/base/tree_views.h"
-#include "gui/base/new_q.h"
 
 //! A data table, for use in the 'Points' tab of an output dialog.
 

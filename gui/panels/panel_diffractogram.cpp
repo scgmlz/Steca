@@ -13,10 +13,7 @@
 // ************************************************************************** //
 
 #include "panel_diffractogram.h"
-#include "core/data/suite.h"
-#include "core/fit/fit_fun.h"
 #include "core/session.h"
-#include "gui/thehub.h"
 #include "QCustomPlot/qcustomplot.h"
 
 // ************************************************************************** //

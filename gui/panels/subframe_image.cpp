@@ -13,11 +13,9 @@
 // ************************************************************************** //
 
 #include "subframe_image.h"
-#include "core/data/measurement.h"
 #include "core/session.h"
 #include "gui/cfg/colors.h"
 #include "gui/thehub.h"
-#include "gui/base/new_q.h"
 #include "gui/base/various_widgets.h"
 #include <qmath.h>
 #include <QPainter>

@@ -15,7 +15,6 @@
 #include "gui/popup/about.h"
 #include "../manifest.h"
 #include "gui/cfg/settings.h"
-#include "core/data/geometry.h"
 #include <QApplication>
 #include <QDate>
 #include <QDialogButtonBox>

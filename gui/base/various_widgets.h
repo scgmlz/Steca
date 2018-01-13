@@ -18,7 +18,6 @@
 #include "core/typ/str.h"
 #include <QBoxLayout>
 #include <QDockWidget>
-#include <QLineEdit>
 
 //! a widget with a box layout
 

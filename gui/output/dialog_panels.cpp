@@ -13,8 +13,6 @@
 // ************************************************************************** //
 
 #include "gui/output/dialog_panels.h"
-#include "core/data/metadata.h"
-#include "gui/base/table_model.h"
 #include "core/session.h"
 #include "gui/thehub.h"
 

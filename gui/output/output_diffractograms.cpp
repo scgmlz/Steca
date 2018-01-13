@@ -13,14 +13,11 @@
 // ************************************************************************** //
 
 #include "gui/output/output_diffractograms.h"
-#include "core/data/metadata.h"
-#include "core/data/suite.h"
 #include "core/session.h"
 #include "gui/output/dialog_panels.h"
 #include "gui/output/widgets4output.h"
 #include "gui/output/write_file.h"
 #include "gui/thehub.h"
-#include "gui/base/new_q.h"
 #include "gui/base/various_widgets.h"
 
 // ************************************************************************** //

@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/output/widgets4output.h
-//! @brief     Defines classes Params, DataTable, TabSave, all used in frame.cpp.
+//! @brief     Defines classes Params, TabSave, all used in frame.cpp.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,10 +15,6 @@
 #ifndef WIDGETS4OUTPUT_H
 #define WIDGETS4OUTPUT_H
 
-#include "core/typ/str.h"
-#include "core/typ/variant.h"
-#include "core/def/special_pointers.h"
-#include "gui/base/tree_views.h"
 #include "gui/base/new_q.h"
 
 //! Horizontal box with variable selection of control panels. Appears in each output dialog (Frame).

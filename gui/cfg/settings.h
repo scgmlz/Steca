@@ -17,7 +17,6 @@
 
 #include "core/typ/str.h"
 #include <QAction>
-#include <QDoubleSpinBox>
 #include <QSettings>
 #include <QSpinBox>
 

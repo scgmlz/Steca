@@ -13,9 +13,7 @@
 // ************************************************************************** //
 
 #include "gui/output/output_diagrams.h"
-#include "core/fit/fit_fun.h"
 #include "core/session.h"
-#include "gui/base/new_q.h"
 #include "gui/base/various_widgets.h"
 #include "gui/output/data_table.h"
 #include "gui/output/dialog_panels.h"

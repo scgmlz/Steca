@@ -26,7 +26,6 @@
 #include "gui/panels/subframe_image.h"
 #include "gui/panels/subframe_setup.h"
 #include "core/session.h"
-#include "gui/cfg/settings.h"
 #include "gui/thehub.h"
 
 #include <QApplication>

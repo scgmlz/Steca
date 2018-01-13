@@ -13,14 +13,10 @@
 // ************************************************************************** //
 
 #include "gui/output/widgets4output.h"
-#include "core/def/idiomatic_for.h"
-#include "gui/base/table_model.h"
 #include "gui/output/dialog_panels.h"
 #include "gui/popup/filedialog.h"
 #include "gui/thehub.h"
-#include "gui/base/new_q.h"
 #include <QDir>
-#include <QHeaderView>
 
 
 // ************************************************************************** //

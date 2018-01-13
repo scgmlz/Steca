@@ -16,11 +16,9 @@
 #define THEHUB_H
 
 #include "core/calc/lens.h"
-#include "core/calc/reflection_info.h"
 #include "core/calc/reflection.h"
 #include "core/data/datafile.h"
 #include "core/data/suite.h"
-#include "core/typ/singleton.h"
 #include "gui/cfg/settings.h"
 
 // make connects shorter

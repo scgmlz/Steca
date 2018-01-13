@@ -24,7 +24,6 @@
 #include <QLineEdit>
 #include <QRadioButton>
 #include <QSpinBox>
-#include <QTabWidget>
 #include <QToolButton>
 
 class BoxWidget;

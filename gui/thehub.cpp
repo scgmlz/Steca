@@ -15,8 +15,6 @@
 #include "gui/thehub.h"
 #include "core/loaders/loaders.h"
 #include "core/session.h"
-#include "core/typ/json.h"
-#include "gui/base/table_model.h"
 #include "gui/output/write_file.h"
 #include "gui/base/new_q.h"
 #include <QApplication>
