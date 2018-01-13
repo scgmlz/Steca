@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/models.cpp
-//! @brief     Implements classes TableModel, FilesModel, MeasurementsModel, MetadataModel, ReflectionsModel
+//! @brief     Implements class TableModel
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -13,9 +13,6 @@
 // ************************************************************************** //
 
 #include "gui/models.h"
-#include "core/fit/fit_fun.h"
-#include "core/session.h"
-#include "gui/thehub.h"
 
 // ************************************************************************** //
 //  class TableModel
