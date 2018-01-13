@@ -39,12 +39,16 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
     const int row = index.row(), rowCnt = rowCount();
     if (row < 0 || rowCnt <= row)
         return {};
-
+    const shp_Datafile& file = gSession->file(row);
     switch (role) {
     case Qt::DisplayRole:
-        return gSession->file(row)->fileName();
+        return file->fileName();
     case Qt::UserRole:
-        return QVariant::fromValue<shp_Datafile>(gSession->file(row));
+        return QVariant::fromValue<shp_Datafile>(file);
+    case Qt::ToolTipRole:
+        return QString("File %1\ncontains %2 measurements")
+            .arg(file->fileName())
+            .arg(file->suite().count());
     default:
         return {};
     }
