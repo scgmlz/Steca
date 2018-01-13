@@ -170,7 +170,7 @@ inten_vec Suite::collectIntens(const Image* intensCorr, const Range& rgeGma) con
 
     // sum or average
     if (gSession->intenScaledAvg()) {
-        preal scale = gSession->intenScale();
+        qreal scale = gSession->intenScale();
         for_i (numBins) {
             int cnt = counts.at(i);
             if (cnt > 0)

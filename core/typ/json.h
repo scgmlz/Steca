@@ -50,8 +50,8 @@ public:
     qreal loadQreal(rcstr key) const THROWS;
     qreal loadQreal(rcstr key, qreal def) const THROWS;
 
-    preal loadPreal(rcstr key) const THROWS;
-    preal loadPreal(rcstr key, preal def) const THROWS;
+    qreal loadPreal(rcstr key) const THROWS;
+    qreal loadPreal(rcstr key, qreal def) const THROWS;
 
     bool loadBool(rcstr key) const THROWS;
     bool loadBool(rcstr key, bool def) const THROWS;

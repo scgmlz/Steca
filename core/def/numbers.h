@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/def/numbers.h
-//! @brief     Defines types qint, preal, and some conversion functions
+//! @brief     Defines NAN and INF
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -20,7 +20,7 @@
 
 #include "core/def/debug.h"
 #include "core/def/macros.h"
-#include <QtGlobal> // to define Q_OS_WIN
+#include <QtGlobal> // to define qreal ?
 
 // reals
 
@@ -29,25 +29,5 @@
 
 extern qreal const NAN; // silent nan
 extern qreal const INF;
-
-//! A positive real number of type qreal
-
-#ifndef QT_NO_DEBUG
-
-class preal {
-public:
-    explicit preal(qreal val) : val_(val) { debug::ensure(val>0); }
-
-    operator qreal() const { return val_; }
-
-private:
-    qreal val_;
-};
-
-#else
-
-typedef qreal preal;
-
-#endif
 
 #endif // NUMBERS_H

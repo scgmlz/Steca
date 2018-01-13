@@ -122,13 +122,13 @@ qreal JsonObj::loadQreal(rcstr key, qreal def) const THROWS{
     return value(key).isUndefined() ? def : loadQreal(key);
 }
 
-preal JsonObj::loadPreal(rcstr key) const {
+qreal JsonObj::loadPreal(rcstr key) const {
     qreal num = loadQreal(key);
     RUNTIME_CHECK(num > 0, "expecting positive number");
     return num;
 }
 
-preal JsonObj::loadPreal(rcstr key, preal def) const {
+qreal JsonObj::loadPreal(rcstr key, qreal def) const {
     return value(key).isUndefined() ? def : loadPreal(key);
 }
 

@@ -136,7 +136,7 @@ public:
     void setCorrFile(rcstr filePath) THROWS;
     void tryEnableCorrection(bool);
     void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
-    void setGeometry(preal detectorDistance, preal pixSize, IJ const& midPixOffset);
+    void setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset);
     void setGammaRange(const Range&);
 
     void setBgRanges(const Ranges&);
@@ -144,7 +144,7 @@ public:
     void removeBgRange(const Range&);
     void setBgPolyDegree(int);
 
-    void setIntenScaleAvg(bool, preal);
+    void setIntenScaleAvg(bool, qreal);
     void setNorm(eNorm);
     void setFittingTab(eFittingTab);
 

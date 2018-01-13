@@ -303,7 +303,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     setBgPolyDegree(top.loadUint("background degree"));
 
     bool arg1 = top.loadBool("averaged intensity ", true);
-    preal arg2 = top.loadPreal("intensity scale", 1);
+    qreal arg2 = top.loadPreal("intensity scale", 1);
     setIntenScaleAvg(arg1, arg2);
 
     TR("sessionFromJson: going to load reflections info");
@@ -367,7 +367,7 @@ void TheHub::setImageCut(bool isTopOrLeft, bool linked, ImageCut const& cut) {
     emit sigGeometryChanged();
 }
 
-void TheHub::setGeometry(preal detectorDistance, preal pixSize, IJ const& midPixOffset) {
+void TheHub::setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset) {
     TR("setGeometry"); // keep an eye on this, since in the past circular calls may have happened
 
     gSession->setGeometry(detectorDistance, pixSize, midPixOffset);
@@ -399,7 +399,7 @@ void TheHub::setBgPolyDegree(int degree) {
     emit sigBgChanged();
 }
 
-void TheHub::setIntenScaleAvg(bool avg, preal scale) {
+void TheHub::setIntenScaleAvg(bool avg, qreal scale) {
     gSession->setIntenScaleAvg(avg, scale);
     emit sigNormChanged(); // TODO instead of another signal
 }

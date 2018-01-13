@@ -49,7 +49,7 @@ private:
     Experiment experiment_; // suite collected ...
     QStringList experimentTags_;
     bool intenScaledAvg_; // if not, summed
-    preal intenScale_;
+    qreal intenScale_;
     size2d imageSize_; //!< All images must have this same size
     ImageTransform imageTransform_;
     ImageCut imageCut_;
@@ -84,13 +84,13 @@ public:
     void setImageTransformMirror(bool);
     void setImageTransformRotate(ImageTransform const&);
     void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
-    void setGeometry(preal detectorDistance, preal pixSize, IJ const& midPixOffset);
+    void setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset);
     void setGammaRange(const Range& r) { gammaRange_ = r; }
     void setBgRanges(const Ranges& rr) { bgRanges_ = rr; }
     bool addBgRange(const Range& r) { return bgRanges_.add(r); }
     bool removeBgRange(const Range& r) { return bgRanges_.remove(r); }
     void setBgPolyDegree(int degree) { bgPolyDegree_ = degree; }
-    void setIntenScaleAvg(bool, preal);
+    void setIntenScaleAvg(bool, qreal);
     void addReflection(const QString&);
     void addReflection(const QJsonObject& obj);
     void remReflection(int i) { reflections_.remove(i); }
@@ -135,7 +135,7 @@ public:
     const Ranges& bgRanges() const { return bgRanges_; }
     int bgPolyDegree() const { return bgPolyDegree_; }
     bool intenScaledAvg() const { return intenScaledAvg_; }
-    preal intenScale() const { return intenScale_; }
+    qreal intenScale() const { return intenScale_; }
     Reflections const& reflections() const { return reflections_; }
 
     eNorm norm() const { return norm_; }

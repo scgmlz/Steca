@@ -193,7 +193,7 @@ void Session::setImageCut(bool isTopOrLeft, bool linked, ImageCut const& cut) {
     intensCorr_.clear(); // lazy
 }
 
-void Session::setGeometry(preal detectorDistance, preal pixSize, IJ const& midPixOffset) {
+void Session::setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset) {
     geometry_.detectorDistance = detectorDistance;
     geometry_.pixSize = pixSize;
     geometry_.midPixOffset = midPixOffset;
@@ -310,7 +310,7 @@ ReflectionInfos Session::makeReflectionInfos(
     return infos;
 }
 
-void Session::setIntenScaleAvg(bool avg, preal scale) {
+void Session::setIntenScaleAvg(bool avg, qreal scale) {
     intenScaledAvg_ = avg;
     intenScale_ = scale;
 }

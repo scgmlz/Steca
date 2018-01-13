@@ -23,18 +23,18 @@
 //! Detector geometry.
 class Geometry {
 public:
-    static preal const MIN_DETECTOR_DISTANCE;
-    static preal const MIN_DETECTOR_PIXEL_SIZE;
+    static qreal const MIN_DETECTOR_DISTANCE;
+    static qreal const MIN_DETECTOR_PIXEL_SIZE;
 
-    static preal const DEF_DETECTOR_DISTANCE;
-    static preal const DEF_DETECTOR_PIXEL_SIZE;
+    static qreal const DEF_DETECTOR_DISTANCE;
+    static qreal const DEF_DETECTOR_PIXEL_SIZE;
 
     Geometry();
 
     COMPARABLE(Geometry const&);
 
-    preal detectorDistance; // the distance from the sample to the detector
-    preal pixSize; // size of the detector pixel
+    qreal detectorDistance; // the distance from the sample to the detector
+    qreal pixSize; // size of the detector pixel
     IJ midPixOffset;
 };
 

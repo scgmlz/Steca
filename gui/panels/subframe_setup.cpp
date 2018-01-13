@@ -496,8 +496,8 @@ SubframeSetup::SubframeSetup() {
 
 void SubframeSetup::setToHub() {
     gHub->setGeometry(
-        preal(qMax(qreal(Geometry::MIN_DETECTOR_DISTANCE), detDistance_->value())),
-        preal(qMax(qreal(Geometry::MIN_DETECTOR_PIXEL_SIZE), detPixelSize_->value())),
+        qMax(qreal(Geometry::MIN_DETECTOR_DISTANCE), detDistance_->value()),
+        qMax(qreal(Geometry::MIN_DETECTOR_PIXEL_SIZE), detPixelSize_->value()),
         IJ(beamOffsetI_->value(), beamOffsetJ_->value()));
 }
 
