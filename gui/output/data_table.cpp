@@ -226,7 +226,7 @@ void DataTable::setColumns(
         [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
             debug::ensure(oldVisualIndex > 0 && newVisualIndex > 0);
             header()->setSortIndicatorShown(false);
-            model_->moveColumn(to_u(oldVisualIndex - 1), to_u(newVisualIndex - 1));
+            model_->moveColumn(oldVisualIndex-1, newVisualIndex-1);
             model_->sortData();
         });
 
@@ -234,7 +234,7 @@ void DataTable::setColumns(
         QHeaderView* h = header();
         h->setSortIndicatorShown(true);
         h->setSortIndicator(logicalIndex, Qt::AscendingOrder);
-        model_->setSortColumn(logicalIndex - 1);
+        model_->setSortColumn(logicalIndex-1);
         model_->sortData();
     });
 }

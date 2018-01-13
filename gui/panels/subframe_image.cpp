@@ -310,7 +310,7 @@ void SubframeImage::render() {
             numBin_->setEnabled(true);
             if (gHub->toggle_showBins->isChecked()) {
                 Range rgeTth = lens_->rgeTth();
-                int count = to_i(lens_->makeCurve().count());
+                int count = lens_->makeCurve().count();
                 numBin_->setMaximum(count - 1);
                 int min = rgeTth.min, wdt = rgeTth.width();
                 qreal num = qreal(numBin_->value());

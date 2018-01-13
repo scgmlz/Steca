@@ -46,7 +46,7 @@ void Progress::setTotal(int total) {
 void Progress::setProgress(int i) {
     if (bar_) {
         bar_->setRange(0, total_);
-        bar_->setValue(to_i((i_ = qBound(0, i, total_))));
+        bar_->setValue((i_ = qBound(0, i, total_)));
     }
 }
 

@@ -195,7 +195,7 @@ QByteArray TheHub::saveSession() const {
     top.insert("cut", sub);
 
     const ImageTransform& trn = gSession->imageTransform();
-    top.insert("image transform", to_i((int)trn.val));
+    top.insert("image transform", trn.val);
 
     QJsonArray arrFiles;
     // save file path relative to location of session
@@ -212,7 +212,7 @@ QByteArray TheHub::saveSession() const {
         arrSelectedFiles.append(i);
 
     top.insert("selected files", arrSelectedFiles);
-    top.insert("combine", to_i((int)suiteGroupedBy_));
+    top.insert("combine", suiteGroupedBy_);
 
     if (gSession->hasCorrFile()) {
         str absPath = gSession->corrFile()->fileInfo().absoluteFilePath();

@@ -34,7 +34,7 @@ struct size2d {
     friend size2d operator-(size2d const& s1, size2d const& s2) {
         int w = s1.w - s2.w;
         int h = s1.h - s2.h;
-        return size2d(to_u(qMax(w, 0)), to_u(qMax(h, 0)));
+        return size2d(qMax(w, 0), qMax(h, 0));
     }
 
     size2d transposed() const { return size2d(h, w); }

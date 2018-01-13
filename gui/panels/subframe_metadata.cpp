@@ -30,7 +30,7 @@ public:
     void flipCheck(int row);
 
     int columnCount() const final { return NUM_COLUMNS; }
-    int rowCount() const final { return to_i(Metadata::numAttributes(false)); }
+    int rowCount() const final { return Metadata::numAttributes(false); }
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const { return {}; }
     vec<bool> const& rowsChecked() const { return rowsChecked_; }

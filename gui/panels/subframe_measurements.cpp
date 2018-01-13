@@ -66,7 +66,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
             return gSession->experimentTags().at(row);
         default:
             return experiment_.at(row)->metadata()->attributeStrValue(
-                metaInfoNums_.at(to_u(col - COL_ATTRS)));
+                metaInfoNums_.at(col-COL_ATTRS));
         }
     }
     case Qt::UserRole:
@@ -83,7 +83,7 @@ QVariant ExperimentModel::headerData(int col, Qt::Orientation, int role) const {
     case COL_NUMBER:
         return "#";
     default:
-        return Metadata::attributeTag(metaInfoNums_.at(to_u(col - COL_ATTRS)), false);
+        return Metadata::attributeTag(metaInfoNums_.at(col-COL_ATTRS), false);
     }
 }
 
@@ -146,5 +146,5 @@ SubframeMeasurements::SubframeMeasurements() : DockWidget("Measurements", "dock-
     connect(combineMeasurements, _SLOT_(QSpinBox, valueChanged, int),
             [this](int num) { gHub->combineMeasurementsBy(qMax(1, num)); });
     connect(gHub, &TheHub::sigSuitesChanged,
-            [=]() { combineMeasurements->setValue(to_i(int(gHub->suiteGroupedBy()))); });
+            [=]() { combineMeasurements->setValue(gHub->suiteGroupedBy()); });
 }

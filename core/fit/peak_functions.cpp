@@ -154,7 +154,7 @@ qreal Raw::y(qreal x, qreal const* /*parValues*/) const {
     if (!x_count_ || !range_.contains(x))
         return 0;
 
-    int i = to_u(qBound(0, qFloor((x - range_.min) / dx_), x_count_ - 1));
+    int i = qBound(0, qFloor((x - range_.min) / dx_), x_count_ - 1);
     return fittedCurve_.y(i);
 }
 

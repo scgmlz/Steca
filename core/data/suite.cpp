@@ -155,7 +155,7 @@ inten_vec Suite::collectIntens(const Image* intensCorr, const Range& rgeGma) con
     if (1 < count()) { // combined suite
         const shp_Measurement& one = first();
         deg delta = one->rgeTth().width() / pixWidth;
-        numBins = to_u(qCeil(tthWdt / delta));
+        numBins = qCeil(tthWdt / delta);
     } else {
         numBins = pixWidth; // simply match the pixels
     }

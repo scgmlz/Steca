@@ -35,7 +35,7 @@ public:
     void remReflection(int i) { gHub->remReflection(i); }
 
     int columnCount() const final { return NUM_COLUMNS; }
-    int rowCount() const final { return to_i(gSession->reflections().count()); }
+    int rowCount() const final { return gSession->reflections().count(); }
     str displayData(int row, int col) const;
     str displayData(int row) const;
     QVariant data(const QModelIndex&, int) const;

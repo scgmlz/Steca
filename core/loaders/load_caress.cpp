@@ -163,9 +163,7 @@ Datafile loadCaress(rcstr filePath) THROWS {
                 deltaMon = mon - prevMon;
                 prevMon = mon;
 
-                int detRel;
-
-                detRel = to_u(qRound(sqrt(imageSize)));
+                int detRel = qRound(sqrt(imageSize));
                 RUNTIME_CHECK(imageSize > 0 && imageSize == detRel * detRel, "bad image size");
 
                 inten_vec convertedIntens(imageSize);

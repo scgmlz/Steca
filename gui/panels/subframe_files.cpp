@@ -92,7 +92,7 @@ void FilesView::removeSelected() {
     const QModelIndexList& indexes = selectedIndexes();
     // backwards
     for (int i = indexes.count(); i-- > 0;)
-        model()->removeFile(to_u(indexes.at(i).row()));
+        model()->removeFile(indexes.at(i).row());
     selectRows({});
     recollect();
 }

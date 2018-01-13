@@ -84,7 +84,7 @@ void Measurement::collectIntens(
         deg tth = map.at(ind).tth;
 
         // bin index
-        int ti = to_u(qFloor((tth - minTth) / deltaTth));
+        int ti = qFloor((tth - minTth) / deltaTth);
         debug::ensure(ti <= count);
         ti = qMin(ti, count - 1); // it can overshoot due to floating point calculation
 

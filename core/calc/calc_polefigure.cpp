@@ -244,8 +244,8 @@ ReflectionInfos interpolateInfos(
     // NOTE We expect all infos to have the same gamma range.
 
     // REVIEW qRound oder qCeil?
-    int numAlphas = to_u(qRound(90. / alphaStep));
-    int numBetas = to_u(qRound(360. / betaStep));
+    int numAlphas = qRound(90. / alphaStep);
+    int numBetas = qRound(360. / betaStep);
 
     ReflectionInfos interpolatedInfos; // Output data.
 
@@ -283,8 +283,7 @@ ReflectionInfos interpolateInfos(
                     itf_t avg(0, 0, 0);
 
                     int iEnd = itfs.count();
-                    int iBegin =
-                        qMin(to_u(qRound(itfs.count() * (1. - inclusionTreshold))), iEnd - 1);
+                    int iBegin = qMin(qRound(itfs.count() * (1. - inclusionTreshold)), iEnd - 1);
                     debug::ensure(iBegin < iEnd);
                     int n = iEnd - iBegin;
 

@@ -22,11 +22,6 @@
 #include "core/def/macros.h"
 #include <QtGlobal> // to define Q_OS_WIN
 
-// casting signed <-> unsigned
-
-inline int to_i(int u) { return u; }
-inline int to_u(int i) { return i; }
-
 // reals
 
 #undef NAN
