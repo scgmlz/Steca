@@ -60,67 +60,6 @@ void FilesModel::removeFile(uint i) {
 }
 
 // ************************************************************************** //
-//  class MeasurementsModel
-// ************************************************************************** //
-
-MeasurementsModel::MeasurementsModel()
-    : experiment_(gSession->experiment())
-{
-}
-
-int MeasurementsModel::columnCount() const {
-    return COL_ATTRS + to_i(metaInfoNums_.count());
-}
-
-int MeasurementsModel::rowCount() const {
-    return to_i(experiment_.count());
-}
-
-QVariant MeasurementsModel::data(const QModelIndex& index, int role) const {
-    int row = index.row();
-    if (row < 0 || rowCount() <= row)
-        return EMPTY_VAR;
-    switch (role) {
-    case Qt::DisplayRole: {
-        int col = index.column();
-        if (col < 1 || columnCount() <= col)
-            return EMPTY_VAR;
-        switch (col) {
-        case COL_NUMBER:
-            return gSession->experimentTags().at(to_u(row));
-        default:
-            return experiment_.at(to_u(row))->metadata()->attributeStrValue(
-                metaInfoNums_.at(to_u(col - COL_ATTRS)));
-        }
-    }
-    case GetMeasurementRole:
-        return QVariant::fromValue<shp_Suite>(experiment_.at(to_u(row)));
-    default:
-        return EMPTY_VAR;
-    }
-}
-
-QVariant MeasurementsModel::headerData(int col, Qt::Orientation, int role) const {
-    if (Qt::DisplayRole != role || col < 1 || columnCount() <= col)
-        return EMPTY_VAR;
-    switch (col) {
-    case COL_NUMBER:
-        return "#";
-    default:
-        return Metadata::attributeTag(metaInfoNums_.at(to_u(col - COL_ATTRS)), false);
-    }
-}
-
-void MeasurementsModel::showMetaInfo(vec<bool> const& metadataRows) {
-    beginResetModel();
-    metaInfoNums_.clear();
-    for_i (metadataRows.count())
-        if (metadataRows.at(i))
-            metaInfoNums_.append(i);
-    endResetModel();
-}
-
-// ************************************************************************** //
 //  class MetadataModel
 // ************************************************************************** //
 

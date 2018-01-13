@@ -49,29 +49,6 @@ public:
 };
 
 
-class MeasurementsModel : public TableModel {
-public:
-    MeasurementsModel();
-
-    int columnCount() const final;
-    int rowCount() const final;
-
-    QVariant data(const QModelIndex&, int) const;
-    QVariant headerData(int, Qt::Orientation, int) const;
-
-    enum { COL_NUMBER = 1, COL_ATTRS };
-
-public:
-    enum { GetMeasurementRole = Qt::UserRole };
-
-    void showMetaInfo(vec<bool> const&);
-
-private:
-    Experiment const& experiment_;
-    uint_vec metaInfoNums_; // selected metadata items to show
-};
-
-
 class MetadataModel : public TableModel {
 public:
     MetadataModel();

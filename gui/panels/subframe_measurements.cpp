@@ -13,10 +13,81 @@
 // ************************************************************************** //
 
 #include "gui/panels/subframe_measurements.h"
-#include "core/data/suite.h"
+#include "core/session.h"
 #include "gui/models.h"
 #include "gui/thehub.h"
 #include "gui/widgets/tree_views.h" // inheriting from
+
+// ************************************************************************** //
+//  local class MeasurementsModel
+// ************************************************************************** //
+
+class MeasurementsModel : public TableModel {
+public:
+    MeasurementsModel() : experiment_(gSession->experiment()) {}
+
+    int columnCount() const final { return COL_ATTRS + to_i(metaInfoNums_.count()); }
+    int rowCount() const final { return to_i(experiment_.count()); }
+
+    QVariant data(const QModelIndex&, int) const;
+    QVariant headerData(int, Qt::Orientation, int) const;
+
+    enum { COL_NUMBER = 1, COL_ATTRS };
+
+public:
+    enum { GetMeasurementRole = Qt::UserRole };
+
+    void showMetaInfo(vec<bool> const&);
+
+private:
+    Experiment const& experiment_;
+    uint_vec metaInfoNums_; // selected metadata items to show
+};
+
+QVariant MeasurementsModel::data(const QModelIndex& index, int role) const {
+    int row = index.row();
+    if (row < 0 || rowCount() <= row)
+        return EMPTY_VAR;
+    switch (role) {
+    case Qt::DisplayRole: {
+        int col = index.column();
+        if (col < 1 || columnCount() <= col)
+            return EMPTY_VAR;
+        switch (col) {
+        case COL_NUMBER:
+            return gSession->experimentTags().at(to_u(row));
+        default:
+            return experiment_.at(to_u(row))->metadata()->attributeStrValue(
+                metaInfoNums_.at(to_u(col - COL_ATTRS)));
+        }
+    }
+    case GetMeasurementRole:
+        return QVariant::fromValue<shp_Suite>(experiment_.at(to_u(row)));
+    default:
+        return EMPTY_VAR;
+    }
+}
+
+QVariant MeasurementsModel::headerData(int col, Qt::Orientation, int role) const {
+    if (Qt::DisplayRole != role || col < 1 || columnCount() <= col)
+        return EMPTY_VAR;
+    switch (col) {
+    case COL_NUMBER:
+        return "#";
+    default:
+        return Metadata::attributeTag(metaInfoNums_.at(to_u(col - COL_ATTRS)), false);
+    }
+}
+
+void MeasurementsModel::showMetaInfo(vec<bool> const& metadataRows) {
+    beginResetModel();
+    metaInfoNums_.clear();
+    for_i (metadataRows.count())
+        if (metadataRows.at(i))
+            metaInfoNums_.append(i);
+    endResetModel();
+}
+
 
 // ************************************************************************** //
 //  local class MeasurementsView
