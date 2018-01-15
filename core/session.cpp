@@ -55,13 +55,17 @@ bool Session::hasFile(rcstr fileName) const {
 
 void Session::addGivenFile(shp_Datafile datafile) THROWS {
     setImageSize(datafile->imageSize());
-    // all ok
+    computeOffsets();
     files_.append(datafile);
 }
 
 void Session::removeFile(int i) {
     files_.remove(i);
+    computeOffsets();
     updateImageSize();
+}
+
+void Session::computeOffsets() {
 }
 
 void Session::calcIntensCorr() const {

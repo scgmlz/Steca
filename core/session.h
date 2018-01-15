@@ -131,6 +131,7 @@ private:
 
     void updateImageSize(); //!< Clears image size if session has no files
     void setImageSize(size2d const&) THROWS; //!< Ensures same size for all images
+    void computeOffsets();
 
     shp_SequenceLens dataseqLens(Cluster const&, eNorm, bool trans, bool cut) const;
     void calcIntensCorr() const;

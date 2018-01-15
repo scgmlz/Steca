@@ -154,9 +154,9 @@ SubframeImage::SubframeImage() {
         hb->addWidget((numSlice_ = newQ::SpinBox(4, false, 1)));
 
         hb->addWidget(newQ::Label("min"));
-        hb->addWidget((minGamma_ = newQ::DoubleSpinBox(4, 2)));
+        hb->addWidget((minGamma_ = newQ::DoubleSpinBox(6, true)));
         hb->addWidget(newQ::Label("max"));
-        hb->addWidget((maxGamma_ = newQ::DoubleSpinBox(4, 2)));
+        hb->addWidget((maxGamma_ = newQ::DoubleSpinBox(6, true)));
 
         minGamma_->setReadOnly(true);
         maxGamma_->setReadOnly(true);

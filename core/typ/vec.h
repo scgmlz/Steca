@@ -41,6 +41,7 @@ public:
     using super::cend;
     using super::data;
     using super::first;
+    using super::last;
 
     vec& fill(T const& init) { return static_cast<vec&>(super::fill(init)); }
 
