@@ -18,8 +18,6 @@
 #include "core/typ/vec.h"
 #include <QTreeView>
 
-class TableModel;
-
 //! Abstract tree widget, base class of ListView and Table
 
 class TreeView : public QTreeView {
@@ -34,9 +32,9 @@ protected:
 class ListView : public TreeView {
 public:
     ListView() {}
-    void setModel(TableModel* model);
+    void setModel(class TableModel* model);
 protected:
-    virtual TableModel* model() const;
+    virtual class TableModel* model() const;
     void updateSingleSelection();
     void selectRow(int);
 };
