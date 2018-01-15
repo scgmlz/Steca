@@ -21,8 +21,7 @@ Experiment::Experiment() {
 
 void Experiment::appendHere(shp_Suite dataseq) {
     // can be added only once
-    debug::ensure(!dataseq->experiment_);
-    dataseq->experiment_ = this;
+    debug::ensure(&(dataseq->experiment_)==this);
     append(dataseq);
     invalidateAvgMutables();
 }
@@ -96,7 +95,7 @@ void Experiment::computeAvgeCurve() const {
     for (shp_Suite const& suite : *this)
         for (shp_Measurement const& one : *suite)
             group.append(one);
-    Suite allData("all", group);
+    Suite allData(*this, "all", group);
     avgCurve_ = gSession->defaultDataseqLens(allData)->makeCurve();
 }
 

@@ -19,15 +19,12 @@
 #include "core/typ/matrix.h"
 #include <qmath.h>
 
-Suite::Suite(const QString tag, const vec<shp_Measurement>& measurements)
+Suite::Suite(const Experiment& experiment, const QString tag,
+             const vec<shp_Measurement>& measurements)
     : vec<shp_Measurement>(measurements)
-    , experiment_(nullptr)
+    , experiment_(experiment)
     , tag_(tag)
-{}
-
-Experiment const& Suite::experiment() const {
-    debug::ensure(experiment_);
-    return *experiment_;
+{
 }
 
 //! Returns metadata, averaged over Suite members. Result is cached.

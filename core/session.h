@@ -77,7 +77,6 @@ public:
 
     vec<int> const& filesSelection() const { return filesSelection_; }
     Experiment const& experiment() const { return experiment_; }
-    const QStringList& experimentTags() const { return experimentTags_; }
 
     size2d imageSize() const;
     ImageTransform const& imageTransform() const { return imageTransform_; }
@@ -114,7 +113,6 @@ private:
     bool corrEnabled_;
     vec<int> filesSelection_; // from these files
     Experiment experiment_; // suite collected ...
-    QStringList experimentTags_;
     bool intenScaledAvg_; // if not, summed
     qreal intenScale_;
     size2d imageSize_; //!< All images must have this same size

@@ -124,10 +124,8 @@ void Session::removeCorrFile() {
 
 void Session::assembleExperiment(const vec<int> fileNums, const int combineBy) {
 
-    qDebug() << "DEB S::cDFF fileNums=" << fileNums << ", by " << combineBy;
     filesSelection_ = fileNums;
     experiment_.clear();
-    experimentTags_.clear();
 
     vec<shp_Measurement> selectedMeasurements;
     for (int i : filesSelection_)
@@ -144,9 +142,8 @@ void Session::assembleExperiment(const vec<int> fileNums, const int combineBy) {
         QString tag = QString::number(i + 1);
         if (combineBy > 1)
             tag += '-' + QString::number(ii);
-        shp_Suite cd(new Suite(tag, group));
+        shp_Suite cd(new Suite(experiment_, tag, group));
         experiment_.appendHere(cd);
-        experimentTags_.append(tag);
     }
 }
 

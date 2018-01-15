@@ -27,34 +27,32 @@ class Experiment;
 class Suite final : public vec<shp_Measurement> {
 public:
     Suite() = delete;
-    Suite(const QString tag, const vec<shp_Measurement>& measurements);
+    Suite(const Experiment& experiment, const QString tag,
+          const vec<shp_Measurement>& measurements);
 
-    shp_Metadata avgeMetadata() const;
-    Experiment const& experiment() const;
+    const Experiment& experiment() const { return experiment_; }
+    QString tag() const { return tag_; }
 
     deg omg() const;
     deg phi() const;
     deg chi() const;
 
-    QString getTag() const;
-
     Range rgeGma() const;
     Range rgeGmaFull() const;
     Range rgeTth() const;
-
     Range rgeInten() const;
 
+    shp_Metadata avgeMetadata() const;
     qreal avgMonitorCount() const;
     qreal avgDeltaMonitorCount() const;
     qreal avgDeltaTime() const;
 
+    size2d imageSize() const;
     inten_vec collectIntens(const Image* intensCorr, const Range&) const;
     void calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const;
 
-    size2d imageSize() const;
-
 private:
-    Experiment* experiment_;
+    const Experiment& experiment_;
     QString tag_;
     shp_Metadata md_; //!< averaged Metadata, cached, computed only once
 
