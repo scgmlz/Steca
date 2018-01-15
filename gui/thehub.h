@@ -46,8 +46,6 @@ class TheHub : public QObject, public ISingleton<TheHub> {
 private:
     Q_OBJECT
 
-    TheHub& asHub();
-
 public: // emit signals
     void tellSuiteSelected(shp_Suite);
     void tellSelectedReflection(shp_Reflection);
@@ -184,9 +182,7 @@ private:
     void configActions();
     void sessionFromJson(QByteArray const&) THROWS;
 
-public:
-    class ReflectionsModel* reflectionsModel;
-
+public: // TODO relagate this to TabSave or similar
     str saveDir; //!< setting: default directory for data export
     str saveFmt; //!< setting: default format for data export
 };

@@ -124,7 +124,7 @@ void Session::removeCorrFile() {
 
 void Session::collectDatasetsFromFiles(const vec<int> fileNums, const int combineBy) {
 
-//    qDebug() << "DEB S::cDFF fileNums=" << fileNums << ", by " << combineBy << "\n";
+    qDebug() << "DEB S::cDFF fileNums=" << fileNums << ", by " << combineBy;
     collectedFromFiles_ = fileNums;
     experiment_.clear();
     experimentTags_.clear();
@@ -146,6 +146,7 @@ void Session::collectDatasetsFromFiles(const vec<int> fileNums, const int combin
             i += cnt;
             if (combineBy > 1)
                 tag += '-' + str::number(i);
+            qDebug() << "DEB S::cDFF aC " << i << ": " << tag;
             experiment_.appendHere(cd);
             experimentTags_.append(tag);
             cd = shp_Suite(new Suite);
@@ -156,6 +157,7 @@ void Session::collectDatasetsFromFiles(const vec<int> fileNums, const int combin
     for (const shp_Measurement& measurement : suiteFromFiles) {
         cd->append(measurement);
         if (by-- <= 1) {
+            qDebug() << "DEB S::cDFF by " << by;
             _appendCd();
             by = combineBy;
         }

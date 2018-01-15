@@ -19,7 +19,7 @@
 
 //! limited QVector, only needed methods reexported
 
-template <typename T> class vec : protected QVector<T> {
+template <typename T> class vec : public /* TODO revert to prot or priv */ QVector<T> {
 private:
     using super = QVector<T>;
 public:
