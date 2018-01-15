@@ -282,7 +282,7 @@ void SubframeImage::render() {
             spinN_->setValue(n);
             spinN_->setEnabled(by > 1);
 
-            lens_ = gSession->defaultDatasetLens(*dataseq_);
+            lens_ = gSession->defaultDataseqLens(*dataseq_);
 
             Range rge;
             if (nSlices > 0) {

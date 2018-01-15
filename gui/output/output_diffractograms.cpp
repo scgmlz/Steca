@@ -81,7 +81,7 @@ public:
 namespace {
 
 OutputData collectCurve(Suite const& dataseq) {
-    shp_SequenceLens lens = gSession->defaultDatasetLens(dataseq);
+    shp_SequenceLens lens = gSession->defaultDataseqLens(dataseq);
     const Curve& curve = lens->makeCurve();
     return OutputData(curve, dataseq, lens->rgeGma(), 0); // TODO current picture number
 }
@@ -97,7 +97,7 @@ OutputData outputCurrDiffractogram() {
 vec<OutputData> collectCurves(
     const Range& rgeGma, int gmaSlices, Suite const& dataseq, int picNum) {
 
-    shp_SequenceLens lens = gSession->defaultDatasetLens(dataseq);
+    shp_SequenceLens lens = gSession->defaultDataseqLens(dataseq);
 
     Range rge = (gmaSlices > 0) ? lens->rgeGma() : Range::infinite();
     if (rgeGma.isValid())

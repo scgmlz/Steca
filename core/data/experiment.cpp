@@ -78,7 +78,7 @@ Curve Experiment::avgCurve() const {
     if (avgCurve_.isEmpty()) {
         // TODO invalidate when combinedDgram is unchecked
         TakesLongTime __;
-        avgCurve_ = gSession->dataseqLens(*combineAll(), gSession->norm(), true, true)->makeCurve();
+        avgCurve_ = gSession->defaultDataseqLens(*combineAll())->makeCurve();
     }
     return avgCurve_;
 }

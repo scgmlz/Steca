@@ -218,19 +218,16 @@ shp_AngleMap Session::angleMap(Measurement const& one) const {
     return map;
 }
 
-shp_ImageLens Session::imageLens(
-    const Image& image, bool trans, bool cut) const {
+shp_ImageLens Session::imageLens(const Image& image, bool trans, bool cut) const {
     return shp_ImageLens(new ImageLens(image, trans, cut));
 }
 
-shp_SequenceLens Session::dataseqLens(
-    Suite const& suite, eNorm norm, bool trans, bool cut) const {
-    return shp_SequenceLens(
-        new SequenceLens(suite, norm, trans, cut, imageTransform_, imageCut_));
+shp_SequenceLens Session::dataseqLens(Suite const& suite, eNorm norm, bool trans, bool cut) const {
+    return shp_SequenceLens(new SequenceLens(suite, norm, trans, cut, imageTransform_, imageCut_));
 }
 
-shp_SequenceLens Session::defaultDatasetLens(Suite const& suite) const {
-    return dataseqLens(suite, norm(), true, true);
+shp_SequenceLens Session::defaultDataseqLens(Suite const& suite) const {
+    return dataseqLens(suite, norm_, true, true);
 }
 
 Curve Session::curveMinusBg(SequenceLens const& lens, const Range& rgeGma) const {
@@ -242,8 +239,7 @@ Curve Session::curveMinusBg(SequenceLens const& lens, const Range& rgeGma) const
 
 //! Fits reflection to the given gamma sector and constructs a ReflectionInfo.
 ReflectionInfo Session::makeReflectionInfo(
-    SequenceLens const& lens, Reflection const& reflection,
-    const Range& gmaSector) const {
+    SequenceLens const& lens, Reflection const& reflection, const Range& gmaSector) const {
 
     // fit peak, and retrieve peak parameters:
     Curve curve = curveMinusBg(lens, gmaSector);
@@ -269,15 +265,18 @@ ReflectionInfo Session::makeReflectionInfo(
         : ReflectionInfo(metadata, alpha, beta, gmaSector);
 }
 
-/* Gathers ReflectionInfos from Datasets.
- * Either uses the whole gamma range of the suite (if gammaSector is
- * invalid), or user limits the range.
- * Even though the betaStep of the equidistant polefigure grid is needed here,
- * the returned infos won't be on the grid. REVIEW gammaStep separately?
- */
+//! Gathers ReflectionInfos from Datasets.
+
+//! Either uses the whole gamma range of the suite (if gammaSector is invalid),
+//!  or user limits the range.
+//! Even though the betaStep of the equidistant polefigure grid is needed here,
+//!  the returned infos won't be on the grid.
+//! TODO? gammaStep separately?
+
 ReflectionInfos Session::makeReflectionInfos(
     Experiment const& expt, Reflection const& reflection, int gmaSlices,
     const Range& rgeGma, Progress* progress) const {
+
     ReflectionInfos infos;
 
     if (progress)
@@ -292,7 +291,6 @@ ReflectionInfos Session::makeReflectionInfos(
         Range rge = (gmaSlices > 0) ? lens->rgeGma() : lens->rgeGmaFull();
         if (rgeGma.isValid())
             rge = rge.intersect(rgeGma);
-
         if (rge.isEmpty())
             continue;
 

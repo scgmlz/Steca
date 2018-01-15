@@ -282,7 +282,7 @@ void DiffractogramPlot::plot(
         Range intenRange;
         if (gHub->isFixedIntenDgramScale()) {
             debug::ensure(!diffractogram_.suite().isNull());
-            intenRange = gSession->defaultDatasetLens(*diffractogram_.suite())->rgeInten();
+            intenRange = gSession->defaultDataseqLens(*diffractogram_.suite())->rgeInten();
         } else {
             intenRange = dgramBgFitted.rgeY();
             intenRange.extendBy(dgram.rgeY());
@@ -573,7 +573,7 @@ void Diffractogram::calcDgram() {
     if (gHub->isCombinedDgram())
         dgram_ = suite_->experiment().avgCurve();
     else {
-        dgram_ = gSession->defaultDatasetLens(*suite_)->makeCurve(gSession->gammaRange());
+        dgram_ = gSession->defaultDataseqLens(*suite_)->makeCurve(gSession->gammaRange());
     }
 }
 

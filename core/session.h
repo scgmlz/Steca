@@ -40,39 +40,6 @@ class Session final : public ISingleton<Session> {
 public:
     Session();
 
-private:
-    vec<shp_Datafile> files_; //!< data files
-    shp_Datafile corrFile_; //!< correction file
-    shp_Image corrImage_;
-    bool corrEnabled_;
-    int_vec collectedFromFiles_; // from these files
-    Experiment experiment_; // suite collected ...
-    QStringList experimentTags_;
-    bool intenScaledAvg_; // if not, summed
-    qreal intenScale_;
-    size2d imageSize_; //!< All images must have this same size
-    ImageTransform imageTransform_;
-    ImageCut imageCut_;
-    Geometry geometry_;
-    Range gammaRange_;
-    int bgPolyDegree_;
-    Ranges bgRanges_;
-    Reflections reflections_;
-    eNorm norm_;
-
-    mutable Image intensCorr_;
-    mutable bool corrHasNaNs_;
-    mutable cache_lazy<ImageKey, AngleMap> angleMapCache_;
-
-    void updateImageSize(); //!< Clears image size if session has no files
-    void setImageSize(size2d const&) THROWS; //!< Ensures same size for all images
-
-    void calcIntensCorr() const;
-    Curve curveMinusBg(SequenceLens const&, const Range&) const;
-    ReflectionInfo makeReflectionInfo(
-        SequenceLens const&, Reflection const&, const Range&) const;
-
-public:
     // Modifying methods:
     void clear();
     void addGivenFile(shp_Datafile) THROWS;
@@ -126,8 +93,7 @@ public:
         return session.angleMap(ds); }
 
     shp_ImageLens imageLens(const Image&, bool trans, bool cut) const;
-    shp_SequenceLens dataseqLens(Suite const&, eNorm, bool trans, bool cut) const;
-    shp_SequenceLens defaultDatasetLens(Suite const& dataseq) const;
+    shp_SequenceLens defaultDataseqLens(Suite const& dataseq) const;
 
     ReflectionInfos makeReflectionInfos(
         Experiment const&, Reflection const&, int gmaSlices, const Range&, Progress*) const;
@@ -138,10 +104,40 @@ public:
     qreal intenScale() const { return intenScale_; }
     Reflections const& reflections() const { return reflections_; }
 
-    eNorm norm() const { return norm_; }
-
     qreal calcAvgBackground(Suite const&) const;
     qreal calcAvgBackground() const;
+
+private:
+    vec<shp_Datafile> files_; //!< data files
+    shp_Datafile corrFile_; //!< correction file
+    shp_Image corrImage_;
+    bool corrEnabled_;
+    int_vec collectedFromFiles_; // from these files
+    Experiment experiment_; // suite collected ...
+    QStringList experimentTags_;
+    bool intenScaledAvg_; // if not, summed
+    qreal intenScale_;
+    size2d imageSize_; //!< All images must have this same size
+    ImageTransform imageTransform_;
+    ImageCut imageCut_;
+    Geometry geometry_;
+    Range gammaRange_;
+    int bgPolyDegree_;
+    Ranges bgRanges_;
+    Reflections reflections_;
+    eNorm norm_;
+
+    mutable Image intensCorr_;
+    mutable bool corrHasNaNs_;
+    mutable cache_lazy<ImageKey, AngleMap> angleMapCache_;
+
+    void updateImageSize(); //!< Clears image size if session has no files
+    void setImageSize(size2d const&) THROWS; //!< Ensures same size for all images
+
+    shp_SequenceLens dataseqLens(Suite const&, eNorm, bool trans, bool cut) const;
+    void calcIntensCorr() const;
+    Curve curveMinusBg(SequenceLens const&, const Range&) const;
+    ReflectionInfo makeReflectionInfo(SequenceLens const&, Reflection const&, const Range&) const;
 };
 
 #endif // SESSION_H
