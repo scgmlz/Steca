@@ -25,6 +25,8 @@
 //  local class FilesModel
 // ************************************************************************** //
 
+//! The model for FilesView
+
 class FilesModel : public TableModel {
 public:
     void removeFile(int i) { gHub->removeFile(i); }
@@ -59,6 +61,8 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
 //  local class FilesView
 // ************************************************************************** //
 
+//! Main item in SubframeFiles: View and control the list of DataFile's
+
 class FilesView : public MultiListView {
 public:
     FilesView();
@@ -81,8 +85,7 @@ FilesView::FilesView() : MultiListView() {
 
     connect(gHub->trigger_removeFile, &QAction::triggered, [this]() { removeSelected(); });
     connect(gHub, &TheHub::sigFilesChanged, [this]() { selectRows({}); recollect(); });
-    connect(gHub, &TheHub::sigFilesSelected,
-            [this]() { selectRows(gSession->filesSelection()); });
+    connect(gHub, &TheHub::sigFilesSelected, [this]() { selectRows(gSession->filesSelection()); });
 }
 
 void FilesView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {

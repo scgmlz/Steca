@@ -22,7 +22,7 @@
 
 class Experiment;
 
-//! One or more Measurement's
+//! A group of one or more Measurement's
 
 class Cluster final : public vec<shp_Measurement> {
 public:
