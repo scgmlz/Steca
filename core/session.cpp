@@ -29,7 +29,7 @@ void Session::clear() {
     while (numFiles())
         removeFile(0);
 
-    remCorrFile();
+    removeCorrFile();
     corrEnabled_ = corrHasNaNs_ = false;
 
     bgPolyDegree_ = 0;
@@ -103,7 +103,7 @@ const Image* Session::intensCorr() const {
 
 void Session::setCorrFile(shp_Datafile datafile) THROWS {
     if (datafile.isNull()) {
-        remCorrFile();
+        removeCorrFile();
     } else {
         setImageSize(datafile->imageSize());
         corrImage_ = datafile->foldedImage();
@@ -114,7 +114,7 @@ void Session::setCorrFile(shp_Datafile datafile) THROWS {
     }
 }
 
-void Session::remCorrFile() {
+void Session::removeCorrFile() {
     corrFile_.clear();
     corrImage_.clear();
     intensCorr_.clear();

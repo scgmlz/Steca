@@ -45,7 +45,7 @@ public:
     void addGivenFile(shp_Datafile) THROWS;
     void removeFile(int i);
     void setCorrFile(shp_Datafile) THROWS; // Load or remove a correction file.
-    void remCorrFile();
+    void removeCorrFile();
     void collectDatasetsFromFiles(int_vec, int);
 
     void setImageTransformMirror(bool);
@@ -60,7 +60,7 @@ public:
     void setIntenScaleAvg(bool, qreal);
     void addReflection(const QString&);
     void addReflection(const QJsonObject& obj);
-    void remReflection(int i) { reflections_.remove(i); }
+    void removeReflection(int i) { reflections_.remove(i); }
     void setNorm(eNorm norm) { norm_ = norm; }
 
     // Const methods:

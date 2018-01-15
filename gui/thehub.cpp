@@ -54,7 +54,7 @@ TheHub::TheHub()
     trigger_addFiles = newQ::Trigger("Add files...", ":/icon/add");
     trigger_removeFile = newQ::Trigger("Remove selected file(s)", ":/icon/rem");
     toggle_enableCorr = newQ::Toggle("Enable correction file...", false, ":/icon/useCorrection");
-    trigger_remCorr = newQ::Trigger("Remove correction file", ":/icon/clear");
+    trigger_removeCorr = newQ::Trigger("Remove correction file", ":/icon/clear");
 
     trigger_rotateImage = newQ::Trigger("Rotate", ":/icon/rotate0");
     toggle_mirrorImage = newQ::Toggle("Mirror", false, ":/icon/mirrorHorz");
@@ -74,7 +74,7 @@ TheHub::TheHub()
     trigger_clearReflections = newQ::Trigger("Clear reflections", ":/icon/clear");
 
     trigger_addReflection = newQ::Trigger("Add reflection", ":/icon/add");
-    trigger_remReflection = newQ::Trigger("Remove reflection", ":/icon/rem");
+    trigger_removeReflection = newQ::Trigger("Remove reflection", ":/icon/rem");
 
     trigger_outputPolefigures = newQ::Trigger("Pole figures...");
     trigger_outputDiagrams = newQ::Trigger("Diagrams...");
@@ -106,7 +106,7 @@ TheHub::TheHub()
 // TODO check                    !gSession->collectedFromFiles().isEmpty()); });
     QObject::connect(this, &TheHub::sigCorrFile,
             [this](shp_Datafile file) {
-                         trigger_remCorr->setEnabled(!file.isNull()); });
+                         trigger_removeCorr->setEnabled(!file.isNull()); });
     QObject::connect(this, &TheHub::sigCorrEnabled,
             [this](bool on) { toggle_enableCorr->setChecked(on); });
 
@@ -121,11 +121,11 @@ TheHub::TheHub()
     QObject::connect(this, &TheHub::sigCorrEnabled, [deselect]() { deselect(); });
 
     trigger_removeFile->setEnabled(false);
-    trigger_remReflection->setEnabled(false);
+    trigger_removeReflection->setEnabled(false);
 
     connect(toggle_enableCorr, &QAction::toggled, [this](bool on) { tryEnableCorrection(on); });
 
-    connect(trigger_remCorr, &QAction::triggered, [this]() { setCorrFile(""); });
+    connect(trigger_removeCorr, &QAction::triggered, [this]() { setCorrFile(""); });
 
     connect(toggle_fixedIntenImage, &QAction::toggled, [this](bool on) {
         isFixedIntenImageScale_ = on;
@@ -416,8 +416,8 @@ void TheHub::addReflection(const QString& peakFunctionName) {
     emit sigReflectionsChanged();
 }
 
-void TheHub::remReflection(int i) {
-    gSession->remReflection(i);
+void TheHub::removeReflection(int i) {
+    gSession->removeReflection(i);
     if (gSession->reflections().isEmpty())
         tellSelectedReflection(shp_Reflection());
     emit sigReflectionsChanged();

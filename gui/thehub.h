@@ -105,7 +105,7 @@ public:
         *trigger_addFiles,
         *trigger_removeFile,
         *toggle_enableCorr,
-        *trigger_remCorr,
+        *trigger_removeCorr,
         *trigger_rotateImage,
         *toggle_mirrorImage,
         *toggle_linkCuts,
@@ -120,7 +120,7 @@ public:
         *trigger_clearBackground,
         *trigger_clearReflections,
         *trigger_addReflection,
-        *trigger_remReflection,
+        *trigger_removeReflection,
         *trigger_outputPolefigures,
         *trigger_outputDiagrams,
         *trigger_outputDiffractograms;
@@ -150,7 +150,7 @@ public:
 
     void setPeakFunction(const QString&);
     void addReflection(const QString&);
-    void remReflection(int);
+    void removeReflection(int);
 
     // const methods:
     bool isFixedIntenImageScale() const { return isFixedIntenImageScale_; }

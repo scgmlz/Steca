@@ -134,7 +134,7 @@ SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files") {
     corrFile_->setReadOnly(true);
     h->addWidget(corrFile_);
     h->addWidget(newQ::IconButton(gHub->toggle_enableCorr));
-    h->addWidget(newQ::IconButton(gHub->trigger_remCorr));
+    h->addWidget(newQ::IconButton(gHub->trigger_removeCorr));
 
     connect(gHub, &TheHub::sigCorrFile,
             [corrFile_](shp_Datafile file) {

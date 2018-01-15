@@ -156,17 +156,17 @@ bool Ranges::add(const Range& range) {
     return true;
 }
 
-bool Ranges::remove(const Range& remRange) {
+bool Ranges::remove(const Range& removeRange) {
     vec<Range> newRanges;
     bool changed = false;
 
     for (const Range& r : ranges_) {
-        if (!r.intersect(remRange).isEmpty()) {
+        if (!r.intersect(removeRange).isEmpty()) {
             changed = true;
-            if (r.min < remRange.min)
-                newRanges.append(Range(r.min, remRange.min));
-            if (r.max > remRange.max)
-                newRanges.append(Range(remRange.max, r.max));
+            if (r.min < removeRange.min)
+                newRanges.append(Range(r.min, removeRange.min));
+            if (r.max > removeRange.max)
+                newRanges.append(Range(removeRange.max, r.max));
         } else {
             newRanges.append(r);
         }

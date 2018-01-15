@@ -29,7 +29,7 @@ public:
 private:
     DiffractogramPlot& plot_;
 
-    QColor addColor_, remColor_, color_, bgColor_, reflColor_;
+    QColor addColor_, removeColor_, color_, bgColor_, reflColor_;
     int marginLeft_, marginRight_;
 
     void enterEvent(QEvent*);
@@ -100,7 +100,7 @@ DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& plot_)
     setMouseTracking(true);
     setMargins(0, 0);
 
-    remColor_ = QColor(0xf8, 0xf8, 0xff, 0x90);
+    removeColor_ = QColor(0xf8, 0xf8, 0xff, 0x90);
     bgColor_ = QColor(0x98, 0xfb, 0x98, 0x70);
     reflColor_ = QColor(0x87, 0xce, 0xfa, 0x70);
 }
@@ -124,7 +124,7 @@ void DiffractogramPlotOverlay::mousePressEvent(QMouseEvent* e) {
     mouseDownPos_ = cursorPos_;
     mouseDown_ = true;
     addColor_ = (eFittingTab::BACKGROUND == gHub->fittingTab()) ? bgColor_ : reflColor_;
-    color_ = Qt::LeftButton == e->button() ? addColor_ : remColor_;
+    color_ = Qt::LeftButton == e->button() ? addColor_ : removeColor_;
     update();
 }
 

@@ -32,7 +32,7 @@ public:
     ReflectionsModel() : TableModel() {}
 
     void addReflection(const QString& peakFunctionName) { gHub->addReflection(peakFunctionName); }
-    void remReflection(int i) { gHub->remReflection(i); }
+    void removeReflection(int i) { gHub->removeReflection(i); }
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return gSession->reflections().count(); }
@@ -130,13 +130,13 @@ void ReflectionView::removeSelected() {
     int row = currentIndex().row();
     if (row < 0 || model()->rowCount() <= row)
         return;
-    model()->remReflection(row);
+    model()->removeReflection(row);
     updateSingleSelection();
 }
 
 void ReflectionView::clear() {
     for (int row = model()->rowCount(); row-- > 0;) {
-        model()->remReflection(row);
+        model()->removeReflection(row);
         updateSingleSelection();
     }
 }
@@ -150,7 +150,7 @@ shp_Reflection ReflectionView::selectedReflection() const {
 
 void ReflectionView::updateSingleSelection() {
     ListView::updateSingleSelection();
-    gHub->trigger_remReflection->setEnabled(hasReflections());
+    gHub->trigger_removeReflection->setEnabled(hasReflections());
 }
 
 void ReflectionView::selectionChanged(
@@ -336,7 +336,7 @@ SubframeSetup::SubframeSetup() {
         hb->addWidget(comboReflType_);
         hb->addStretch();
         hb->addWidget(newQ::IconButton(gHub->trigger_addReflection));
-        hb->addWidget(newQ::IconButton(gHub->trigger_remReflection));
+        hb->addWidget(newQ::IconButton(gHub->trigger_removeReflection));
 
         QBoxLayout* vb = newQ::VBoxLayout();
         box.addLayout(vb);
@@ -392,7 +392,7 @@ SubframeSetup::SubframeSetup() {
             _updateReflectionControls();
         });
 
-        connect(gHub->trigger_remReflection, &QAction::triggered,
+        connect(gHub->trigger_removeReflection, &QAction::triggered,
                 [this, _updateReflectionControls]() {
             reflectionView_->removeSelected();
             _updateReflectionControls();
