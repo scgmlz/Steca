@@ -46,7 +46,7 @@ public:
     void removeFile(int i);
     void setCorrFile(shp_Datafile) THROWS; // Load or remove a correction file.
     void removeCorrFile();
-    void collectDatasetsFromFiles(const vec<int>, const int);
+    void assembleExperiment(const vec<int>, const int);
 
     void setImageTransformMirror(bool);
     void setImageTransformRotate(ImageTransform const&);

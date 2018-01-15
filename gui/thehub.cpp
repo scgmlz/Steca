@@ -349,7 +349,7 @@ void TheHub::combineMeasurementsBy(const int by) {
 }
 
 void TheHub::collectDatasetsExec() {
-    gSession->collectDatasetsFromFiles(filesSelection_, suiteGroupedBy_);
+    gSession->assembleExperiment(filesSelection_, suiteGroupedBy_);
     emit sigFilesSelected();
     emit sigSuitesChanged();
 }
