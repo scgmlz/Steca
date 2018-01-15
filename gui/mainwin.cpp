@@ -335,7 +335,7 @@ void MainWin::saveSession() {
 void MainWin::clearSession() {
     gSession->clear();
     emit gHub->sigFilesSelected();
-    emit gHub->sigSuitesChanged();
+    emit gHub->sigClustersChanged();
 }
 
 void MainWin::execCommand(str line) {

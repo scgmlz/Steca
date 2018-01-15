@@ -117,7 +117,7 @@ TheHub::TheHub()
     };
 
     QObject::connect(this, &TheHub::sigGeometryChanged, [deselect]() { deselect(); });
-    QObject::connect(this, &TheHub::sigSuitesChanged, [deselect]() { deselect(); });
+    QObject::connect(this, &TheHub::sigClustersChanged, [deselect]() { deselect(); });
     QObject::connect(this, &TheHub::sigCorrEnabled, [deselect]() { deselect(); });
 
     trigger_removeFile->setEnabled(false);
@@ -212,7 +212,7 @@ QByteArray TheHub::saveSession() const {
         arrSelectedFiles.append(i);
 
     top.insert("selected files", arrSelectedFiles);
-    top.insert("combine", suiteGroupedBy_);
+    top.insert("combine", clusterGroupedBy_);
 
     if (gSession->hasCorrFile()) {
         str absPath = gSession->corrFile()->fileInfo().absoluteFilePath();
@@ -277,7 +277,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
         lastIndex = index;
     }
 
-    TR("sessionFromJson: going to collect suite");
+    TR("sessionFromJson: going to collect cluster");
     collectDatasetsFromSelectionBy(selIndexes, top.loadPint("combine", 1));
 
     TR("sessionFromJson: going to set correction file");
@@ -334,7 +334,7 @@ void TheHub::addGivenFiles(const QStringList& filePaths) THROWS {
 
 void TheHub::collectDatasetsFromSelectionBy(const vec<int> indexSelection, const int by) {
     filesSelection_ = indexSelection;
-    suiteGroupedBy_ = by;
+    clusterGroupedBy_ = by;
     collectDatasetsExec();
 }
 
@@ -344,14 +344,14 @@ void TheHub::collectDatasetsFromSelection(const vec<int> indexSelection) {
 }
 
 void TheHub::combineMeasurementsBy(const int by) {
-    suiteGroupedBy_ = by;
+    clusterGroupedBy_ = by;
     collectDatasetsExec();
 }
 
 void TheHub::collectDatasetsExec() {
-    gSession->assembleExperiment(filesSelection_, suiteGroupedBy_);
+    gSession->assembleExperiment(filesSelection_, clusterGroupedBy_);
     emit sigFilesSelected();
-    emit sigSuitesChanged();
+    emit sigClustersChanged();
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {
@@ -476,9 +476,9 @@ void TheHub::setNorm(eNorm norm) {
     emit sigNormChanged();
 }
 
-void TheHub::tellSuiteSelected(shp_Suite suite) {
-    selectedSuite_ = suite;
-    emit sigSuiteSelected(suite);
+void TheHub::tellClusterSelected(shp_Cluster cluster) {
+    selectedCluster_ = cluster;
+    emit sigClusterSelected(cluster);
 }
 
 void TheHub::tellSelectedReflection(shp_Reflection reflection) {

@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "core/session.h"
-#include "core/data/suite.h"
+#include "core/data/cluster.h"
 #include "core/data/measurement.h"
 #include "core/fit/peak_functions.h"
 
@@ -129,7 +129,7 @@ void Session::assembleExperiment(const vec<int> fileNums, const int combineBy) {
 
     vec<shp_Measurement> selectedMeasurements;
     for (int i : filesSelection_)
-        for (const shp_Measurement& measurement : files_.at(i)->suite())
+        for (const shp_Measurement& measurement : files_.at(i)->cluster())
             selectedMeasurements.append(measurement);
     if (selectedMeasurements.isEmpty())
         return;
@@ -142,7 +142,7 @@ void Session::assembleExperiment(const vec<int> fileNums, const int combineBy) {
         QString tag = QString::number(i + 1);
         if (combineBy > 1)
             tag += '-' + QString::number(ii);
-        shp_Suite cd(new Suite(experiment_, tag, group));
+        shp_Cluster cd(new Cluster(experiment_, tag, group));
         experiment_.appendHere(cd);
     }
 }
@@ -206,12 +206,12 @@ shp_ImageLens Session::imageLens(const Image& image, bool trans, bool cut) const
     return shp_ImageLens(new ImageLens(image, trans, cut));
 }
 
-shp_SequenceLens Session::dataseqLens(Suite const& suite, eNorm norm, bool trans, bool cut) const {
-    return shp_SequenceLens(new SequenceLens(suite, norm, trans, cut, imageTransform_, imageCut_));
+shp_SequenceLens Session::dataseqLens(Cluster const& cluster, eNorm norm, bool trans, bool cut) const {
+    return shp_SequenceLens(new SequenceLens(cluster, norm, trans, cut, imageTransform_, imageCut_));
 }
 
-shp_SequenceLens Session::defaultDataseqLens(Suite const& suite) const {
-    return dataseqLens(suite, norm_, true, true);
+shp_SequenceLens Session::defaultDataseqLens(Cluster const& cluster) const {
+    return dataseqLens(cluster, norm_, true, true);
 }
 
 Curve Session::curveMinusBg(SequenceLens const& lens, const Range& rgeGma) const {
@@ -237,10 +237,10 @@ ReflectionInfo Session::makeReflectionInfo(
 
     // compute alpha, beta:
     deg alpha, beta;
-    Suite const& suite = lens.suite();
-    suite.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
+    Cluster const& cluster = lens.cluster();
+    cluster.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
 
-    shp_Metadata metadata = suite.avgeMetadata();
+    shp_Metadata metadata = cluster.avgeMetadata();
 
     return rgeTth.contains(peak.x)
         ? ReflectionInfo(
@@ -251,7 +251,7 @@ ReflectionInfo Session::makeReflectionInfo(
 
 //! Gathers ReflectionInfos from Datasets.
 
-//! Either uses the whole gamma range of the suite (if gammaSector is invalid),
+//! Either uses the whole gamma range of the cluster (if gammaSector is invalid),
 //!  or user limits the range.
 //! Even though the betaStep of the equidistant polefigure grid is needed here,
 //!  the returned infos won't be on the grid.
@@ -265,11 +265,11 @@ ReflectionInfos Session::makeReflectionInfos(
     if (progress)
         progress->setTotal(experiment_.count());
 
-    for (const shp_Suite& suite : experiment_) {
+    for (const shp_Cluster& cluster : experiment_) {
         if (progress)
             progress->step();
 
-        const shp_SequenceLens& lens = dataseqLens(*suite, norm_, true, true);
+        const shp_SequenceLens& lens = dataseqLens(*cluster, norm_, true, true);
 
         Range rge = (gmaSlices > 0) ? lens->rgeGma() : lens->rgeGmaFull();
         if (rgeGma.isValid())
@@ -308,8 +308,8 @@ void Session::addReflection(const QJsonObject& obj) {
     reflections_.append(reflection);
 }
 
-qreal Session::calcAvgBackground(Suite const& suite) const {
-    const shp_SequenceLens& lens = dataseqLens(suite, eNorm::NONE, true, true);
+qreal Session::calcAvgBackground(Cluster const& cluster) const {
+    const shp_SequenceLens& lens = dataseqLens(cluster, eNorm::NONE, true, true);
     Curve gmaCurve = lens->makeCurve(); // had argument averaged=true
     Polynom bgPolynom = Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
     return bgPolynom.avgY(lens->rgeTth());
@@ -318,7 +318,7 @@ qreal Session::calcAvgBackground(Suite const& suite) const {
 qreal Session::calcAvgBackground() const {
     TakesLongTime __;
     qreal bg = 0;
-    for (const shp_Suite& suite : experiment_)
-        bg += calcAvgBackground(*suite);
+    for (const shp_Cluster& cluster : experiment_)
+        bg += calcAvgBackground(*cluster);
     return bg / experiment_.count();
 }

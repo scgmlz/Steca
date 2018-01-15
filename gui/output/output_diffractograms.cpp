@@ -65,11 +65,11 @@ int TabDiffractogramsSave::currType() const {
 struct OutputData {
 public:
     OutputData() = delete;
-    OutputData(Curve curve, const Suite& suite, Range gmaStripe, int picNum)
-        : curve_(curve), dataseq_(suite), gmaStripe_(gmaStripe), picNum_(picNum) {}
+    OutputData(Curve curve, const Cluster& cluster, Range gmaStripe, int picNum)
+        : curve_(curve), dataseq_(cluster), gmaStripe_(gmaStripe), picNum_(picNum) {}
 
     Curve curve_;
-    const Suite& dataseq_;
+    const Cluster& dataseq_;
     Range gmaStripe_;
     int picNum_;
 
@@ -80,21 +80,21 @@ public:
 
 namespace {
 
-OutputData collectCurve(Suite const& dataseq) {
+OutputData collectCurve(Cluster const& dataseq) {
     shp_SequenceLens lens = gSession->defaultDataseqLens(dataseq);
     const Curve& curve = lens->makeCurve();
     return OutputData(curve, dataseq, lens->rgeGma(), 0); // TODO current picture number
 }
 
 OutputData outputCurrDiffractogram() {
-    shp_Suite ret = gHub->selectedSuite();
+    shp_Cluster ret = gHub->selectedCluster();
     if (!ret)
         throw Exception("No data selected");
     return collectCurve(*ret);
 }
 
 vec<const OutputData*> collectCurves(
-    const Range& rgeGma, int gmaSlices, Suite const& dataseq, int picNum) {
+    const Range& rgeGma, int gmaSlices, Cluster const& dataseq, int picNum) {
 
     shp_SequenceLens lens = gSession->defaultDataseqLens(dataseq);
 
@@ -171,9 +171,9 @@ vec<vec<const OutputData*>> DiffractogramsFrame::outputAllDiffractograms() {
 
     vec<vec<const OutputData*>> ret;
     int picNum = 1;
-    for (shp_Suite suite : expt) {
+    for (shp_Cluster cluster : expt) {
         progress.step();
-        ret.append(collectCurves(rgeGma, gmaSlices, *suite, picNum));
+        ret.append(collectCurves(rgeGma, gmaSlices, *cluster, picNum));
         ++picNum;
     }
 

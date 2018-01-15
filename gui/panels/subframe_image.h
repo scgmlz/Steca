@@ -16,7 +16,7 @@
 #define SUBFRAME_IMAGE_H
 
 #include "core/calc/lens.h"
-#include "core/data/suite.h"
+#include "core/data/cluster.h"
 #include "gui/base/new_q.h"
 
 //! Part of the main window that shows a detector image, with associated controls.
@@ -34,10 +34,10 @@ private:
     QPixmap makePixmap(shp_Image);
     QPixmap makePixmap(class Measurement const&, const Range&, const Range&);
 
-    void setSuite(shp_Suite);
+    void setCluster(shp_Cluster);
     void render();
 
-    shp_Suite dataseq_;
+    shp_Cluster dataseq_;
     class ImageWidget *dataImageWidget_, *corrImageWidget_;
 
     QSpinBox* spinN_;

@@ -198,7 +198,7 @@ SubframeImage::SubframeImage() {
     connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigNormChanged, [this](){ render(); });
-    connect(gHub, &TheHub::sigSuiteSelected, [this](shp_Suite dataseq){ setSuite(dataseq); });
+    connect(gHub, &TheHub::sigClusterSelected, [this](shp_Cluster dataseq){ setCluster(dataseq); });
 
     render();
 }
@@ -261,7 +261,7 @@ QPixmap SubframeImage::makePixmap(
     return QPixmap::fromImage(im);
 }
 
-void SubframeImage::setSuite(shp_Suite dataseq) {
+void SubframeImage::setCluster(shp_Cluster dataseq) {
     dataseq_ = dataseq;
     render();
 }
@@ -276,7 +276,7 @@ void SubframeImage::render() {
 
         if (dataseq_) {
             // 1 - based
-            const int by = qBound(1, int(gHub->suiteGroupedBy()), dataseq_->count());
+            const int by = qBound(1, int(gHub->clusterGroupedBy()), dataseq_->count());
             const int n = qBound(1, spinN_->value(), by);
 
             spinN_->setValue(n);

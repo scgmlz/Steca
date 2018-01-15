@@ -70,7 +70,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
         }
     }
     case Qt::UserRole:
-        return QVariant::fromValue<shp_Suite>(experiment_.at(row));
+        return QVariant::fromValue<shp_Cluster>(experiment_.at(row));
     default:
         return {};
     }
@@ -108,13 +108,13 @@ private:
 ExperimentView::ExperimentView() : ListView() {
     auto experimentModel = new ExperimentModel();
     setModel(experimentModel);
-    connect(gHub, &TheHub::sigSuitesChanged,
+    connect(gHub, &TheHub::sigClustersChanged,
             [=]() { experimentModel->signalReset(); });
     debug::ensure(dynamic_cast<ExperimentModel*>(ListView::model()));
 
-    connect(gHub, &TheHub::sigSuitesChanged,
+    connect(gHub, &TheHub::sigClustersChanged,
             [this]() {
-                gHub->tellSuiteSelected(shp_Suite()); // first de-select
+                gHub->tellClusterSelected(shp_Cluster()); // first de-select
                 selectRow(0);
             });
     connect(gHub, &TheHub::sigMetatagsChosen, experimentModel, &ExperimentModel::showMetaInfo);
@@ -122,14 +122,14 @@ ExperimentView::ExperimentView() : ListView() {
 
 void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     ListView::currentChanged(current, previous);
-    gHub->tellSuiteSelected(model()->data(current, Qt::UserRole).value<shp_Suite>());
+    gHub->tellClusterSelected(model()->data(current, Qt::UserRole).value<shp_Cluster>());
 }
 
 // ************************************************************************** //
 //  class SubframeMeasurements
 // ************************************************************************** //
 
-SubframeMeasurements::SubframeMeasurements() : DockWidget("Measurements", "dock-suite") {
+SubframeMeasurements::SubframeMeasurements() : DockWidget("Measurements", "dock-cluster") {
 
     // subframe item #1: list of measurements
     box_->addWidget(new ExperimentView());
@@ -142,9 +142,9 @@ SubframeMeasurements::SubframeMeasurements() : DockWidget("Measurements", "dock-
     controls_row->addWidget(newQ::Label("Combine:"));
     auto combineMeasurements = newQ::SpinBox(4, false, 1);
     controls_row->addWidget(combineMeasurements);
-    combineMeasurements->setToolTip("Combine and average number of suite");
+    combineMeasurements->setToolTip("Combine and average number of cluster");
     connect(combineMeasurements, _SLOT_(QSpinBox, valueChanged, int),
             [this](int num) { gHub->combineMeasurementsBy(qMax(1, num)); });
-    connect(gHub, &TheHub::sigSuitesChanged,
-            [=]() { combineMeasurements->setValue(gHub->suiteGroupedBy()); });
+    connect(gHub, &TheHub::sigClustersChanged,
+            [=]() { combineMeasurements->setValue(gHub->clusterGroupedBy()); });
 }

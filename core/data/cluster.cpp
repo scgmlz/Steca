@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/data/suite.cpp
-//! @brief     Implements classes Measurement, Suite, Experiment
+//! @file      core/data/cluster.cpp
+//! @brief     Implements classes Measurement, Cluster, Experiment
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,14 +12,14 @@
 //
 // ************************************************************************** //
 
-#include "suite.h"
+#include "cluster.h"
 #include "measurement.h"
 #include "metadata.h"
 #include "core/session.h"
 #include "core/typ/matrix.h"
 #include <qmath.h>
 
-Suite::Suite(const Experiment& experiment, const QString tag,
+Cluster::Cluster(const Experiment& experiment, const QString tag,
              const vec<shp_Measurement>& measurements)
     : vec<shp_Measurement>(measurements)
     , experiment_(experiment)
@@ -27,8 +27,8 @@ Suite::Suite(const Experiment& experiment, const QString tag,
 {
 }
 
-//! Returns metadata, averaged over Suite members. Result is cached.
-shp_Metadata Suite::avgeMetadata() const {
+//! Returns metadata, averaged over Cluster members. Result is cached.
+shp_Metadata Cluster::avgeMetadata() const {
     if (md_.isNull()) {
         debug::ensure(!isEmpty());
         compute_metadata();
@@ -37,8 +37,8 @@ shp_Metadata Suite::avgeMetadata() const {
 }
 
 //! Computes metadata cache md_.
-void Suite::compute_metadata() const {
-    const_cast<Suite*>(this)->md_ = shp_Metadata(new Metadata);
+void Cluster::compute_metadata() const {
+    const_cast<Cluster*>(this)->md_ = shp_Metadata(new Metadata);
     Metadata* m = const_cast<Metadata*>(md_.data());
 
     debug::ensure(!first()->metadata().isNull());
@@ -79,9 +79,9 @@ void Suite::compute_metadata() const {
         m->deltaTime += d->deltaTime;
 
         if (m->monitorCount > d->monitorCount)
-            qWarning() << "decreasing monitor count in combined suite";
+            qWarning() << "decreasing monitor count in combined cluster";
         if (m->time > d->time)
-            qWarning() << "decreasing time in combined suite";
+            qWarning() << "decreasing time in combined cluster";
         m->monitorCount = d->monitorCount;
         m->time = d->time;
     }
@@ -118,13 +118,13 @@ void Suite::compute_metadata() const {
     avg /= count();                                                     \
     return avg;
 
-deg Suite::omg() const { AVG_ONES(omg) }
+deg Cluster::omg() const { AVG_ONES(omg) }
 
-deg Suite::phi() const { AVG_ONES(phi) }
+deg Cluster::phi() const { AVG_ONES(phi) }
 
-deg Suite::chi() const { AVG_ONES(chi) }
+deg Cluster::chi() const { AVG_ONES(chi) }
 
-// combined range of combined suite
+// combined range of combined cluster
 #define RGE_COMBINE(combineOp, what)                                    \
     debug::ensure(!isEmpty());                                          \
     Range rge;                                                          \
@@ -132,23 +132,23 @@ deg Suite::chi() const { AVG_ONES(chi) }
         rge.combineOp(one->what);                                       \
     return rge;
 
-Range Suite::rgeGma() const { RGE_COMBINE(extendBy, rgeGma()) }
+Range Cluster::rgeGma() const { RGE_COMBINE(extendBy, rgeGma()) }
 
-Range Suite::rgeGmaFull() const {
+Range Cluster::rgeGmaFull() const {
     RGE_COMBINE(extendBy, rgeGmaFull())
 }
 
-Range Suite::rgeTth() const { RGE_COMBINE(extendBy, rgeTth()) }
+Range Cluster::rgeTth() const { RGE_COMBINE(extendBy, rgeTth()) }
 
-Range Suite::rgeInten() const { RGE_COMBINE(intersect, rgeInten()) }
+Range Cluster::rgeInten() const { RGE_COMBINE(intersect, rgeInten()) }
 
-qreal Suite::avgMonitorCount() const { AVG_ONES(monitorCount) }
+qreal Cluster::avgMonitorCount() const { AVG_ONES(monitorCount) }
 
-qreal Suite::avgDeltaMonitorCount() const { AVG_ONES(deltaMonitorCount) }
+qreal Cluster::avgDeltaMonitorCount() const { AVG_ONES(deltaMonitorCount) }
 
-qreal Suite::avgDeltaTime() const { AVG_ONES(deltaTime) }
+qreal Cluster::avgDeltaTime() const { AVG_ONES(deltaTime) }
 
-inten_vec Suite::collectIntens(const Image* intensCorr, const Range& rgeGma) const {
+inten_vec Cluster::collectIntens(const Image* intensCorr, const Range& rgeGma) const {
     const Range tthRge = rgeTth();
     const deg tthWdt = tthRge.width();
 
@@ -156,7 +156,7 @@ inten_vec Suite::collectIntens(const Image* intensCorr, const Range& rgeGma) con
     const int pixWidth = gSession->imageSize().w - cut.left - cut.right;
 
     int numBins;
-    if (1 < count()) { // combined suite
+    if (1 < count()) { // combined cluster
         const shp_Measurement& one = first();
         deg delta = one->rgeTth().width() / pixWidth;
         numBins = qCeil(tthWdt / delta);
@@ -185,7 +185,7 @@ inten_vec Suite::collectIntens(const Image* intensCorr, const Range& rgeGma) con
     return intens;
 }
 
-size2d Suite::imageSize() const {
+size2d Cluster::imageSize() const {
     debug::ensure(!isEmpty());
     // all images have the same size; simply take the first one
     return first()->imageSize();
@@ -196,7 +196,7 @@ size2d Suite::imageSize() const {
 
 //! tth: Center of reflection's 2theta interval.
 //! gma: Center of gamma slice.
-void Suite::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const {
+void Cluster::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const {
 
     // Rotate a unit vector initially parallel to the y axis with regards to the
     // angles. As a result, the vector is a point on a unit sphere

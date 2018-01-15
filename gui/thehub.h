@@ -18,7 +18,7 @@
 #include "core/calc/lens.h"
 #include "core/calc/reflection.h"
 #include "core/data/datafile.h"
-#include "core/data/suite.h"
+#include "core/data/cluster.h"
 #include "gui/cfg/settings.h"
 
 // make connects shorter
@@ -47,7 +47,7 @@ private:
     Q_OBJECT
 
 public: // emit signals
-    void tellSuiteSelected(shp_Suite);
+    void tellClusterSelected(shp_Cluster);
     void tellSelectedReflection(shp_Reflection);
     void tellReflectionData(shp_Reflection);
     void tellReflectionValues(const Range&, qpair const&, fwhm_t, bool);
@@ -56,8 +56,8 @@ signals:
     void sigFilesChanged(); //!< loaded file set has changed
     void sigFilesSelected(); //!< active file selection has changed
 
-    void sigSuitesChanged(); //!< the set of suite collected from selected
-    void sigSuiteSelected(shp_Suite);
+    void sigClustersChanged(); //!< the set of cluster collected from selected
+    void sigClusterSelected(shp_Cluster);
 
     void sigCorrFile(shp_Datafile);
     void sigCorrEnabled(bool);
@@ -157,11 +157,11 @@ public:
     void saveSession(QFileInfo const&) const;
     QByteArray saveSession() const;
 
-    int suiteGroupedBy() const { return suiteGroupedBy_; }
+    int clusterGroupedBy() const { return clusterGroupedBy_; }
 
     eFittingTab fittingTab() const { return fittingTab_; }
 
-    shp_Suite selectedSuite() const { return selectedSuite_; }
+    shp_Cluster selectedCluster() const { return selectedCluster_; }
 
 private:
     friend class TheHubSignallingBase;
@@ -169,9 +169,9 @@ private:
     bool isFixedIntenDgramScale_;
     bool isCombinedDgram_;
     vec<int> filesSelection_;
-    int suiteGroupedBy_ = 1;
+    int clusterGroupedBy_ = 1;
     eFittingTab fittingTab_ = eFittingTab::NONE;
-    shp_Suite selectedSuite_;
+    shp_Cluster selectedCluster_;
     shp_Reflection selectedReflection_;
     Settings settings_;
 

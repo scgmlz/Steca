@@ -26,7 +26,7 @@ class MetadataModel : public TableModel {
 public:
     MetadataModel();
 
-    void reset(shp_Suite dataseq);
+    void reset(shp_Cluster dataseq);
     void flipCheck(int row);
 
     int columnCount() const final { return NUM_COLUMNS; }
@@ -47,7 +47,7 @@ MetadataModel::MetadataModel() {
     rowsChecked_.fill(false, Metadata::numAttributes(false));
 }
 
-void MetadataModel::reset(shp_Suite dataseq) {
+void MetadataModel::reset(shp_Cluster dataseq) {
     metadata_.clear();
     if (dataseq)
         metadata_ = dataseq->avgeMetadata();
@@ -100,8 +100,8 @@ private:
 MetadataView::MetadataView() : ListView() {
     auto metadataModel = new MetadataModel();
     setModel(metadataModel);
-    connect(gHub, &TheHub::sigSuiteSelected,
-            [=](shp_Suite dataseq) { metadataModel->reset(dataseq); });
+    connect(gHub, &TheHub::sigClusterSelected,
+            [=](shp_Cluster dataseq) { metadataModel->reset(dataseq); });
     debug::ensure(dynamic_cast<MetadataModel*>(ListView::model()));
     connect(this, &MetadataView::clicked, [this](QModelIndex const& index) {
         model()->flipCheck(index.row());

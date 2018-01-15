@@ -15,17 +15,17 @@
 #ifndef EXPERIMENT_H
 #define EXPERIMENT_H
 
-#include "core/data/suite.h" // no auto rm
+#include "core/data/cluster.h" // no auto rm
 #include "core/typ/curve.h"
 #include <QSharedPointer> // required by some compilers
 
-//! A sequence of Suites's
+//! A sequence of Clusters's
 
-class Experiment final : public vec<shp_Suite> {
+class Experiment final : public vec<shp_Cluster> {
 public:
     Experiment();
 
-    void appendHere(shp_Suite);
+    void appendHere(shp_Cluster);
 
     size2d imageSize() const;
 
@@ -42,7 +42,7 @@ public:
 
 private:
     void computeAvgeCurve() const;
-    qreal calcAvgMutable(qreal (Suite::*avgFct)() const) const;
+    qreal calcAvgMutable(qreal (Cluster::*avgFct)() const) const;
 
     // computed on demand (NaNs or emptiness indicate yet unknown values)
     mutable qreal avgMonitorCount_, avgDeltaMonitorCount_, avgDeltaTime_;

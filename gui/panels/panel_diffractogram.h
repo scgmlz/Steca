@@ -26,7 +26,7 @@ public:
 
     void render();
 
-    shp_Suite suite() const { return suite_; }
+    shp_Cluster cluster() const { return cluster_; }
     QBoxLayout* box() const { return box_; }
 
     void calcDgram();
@@ -41,9 +41,9 @@ private:
     void onNormChanged();
     void onFittingTab(eFittingTab tab);
 
-    void setSuite(shp_Suite);
+    void setCluster(shp_Cluster);
 
-    shp_Suite suite_;
+    shp_Cluster cluster_;
 
     class DiffractogramPlot* plot_;
 

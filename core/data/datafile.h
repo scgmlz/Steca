@@ -31,7 +31,7 @@ public:
     Datafile(rcstr fileName);
     void addDataset(const Metadata&, size2d const&, inten_vec const&);
 
-    vec<shp_Measurement> const& suite() const { return measurements_; }
+    vec<shp_Measurement> const& cluster() const { return measurements_; }
     size2d imageSize() const { return imageSize_; }
 
     QFileInfo const& fileInfo() const;

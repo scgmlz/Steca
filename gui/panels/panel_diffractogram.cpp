@@ -281,8 +281,8 @@ void DiffractogramPlot::plot(
 
         Range intenRange;
         if (gHub->isFixedIntenDgramScale()) {
-            debug::ensure(!diffractogram_.suite().isNull());
-            intenRange = gSession->defaultDataseqLens(*diffractogram_.suite())->rgeInten();
+            debug::ensure(!diffractogram_.cluster().isNull());
+            intenRange = gSession->defaultDataseqLens(*diffractogram_.cluster())->rgeInten();
         } else {
             intenRange = dgramBgFitted.rgeY();
             intenRange.extendBy(dgram.rgeY());
@@ -397,7 +397,7 @@ void DiffractogramPlot::onReflectionData(shp_Reflection reflection) {
     guesses_->clearData();
     fits_->clearData();
 
-    if (reflection && diffractogram_.suite()) {
+    if (reflection && diffractogram_.cluster()) {
         const PeakFunction& fun = reflection->peakFunction();
 
         const qpair gp = fun.guessedPeak();
@@ -422,7 +422,7 @@ void DiffractogramPlot::onReflectionData(shp_Reflection reflection) {
 //  class Diffractogram
 // ************************************************************************** //
 
-Diffractogram::Diffractogram() : suite_(nullptr), currReflIndex_(0) {
+Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
 
     setLayout((box_ = newQ::BoxLayout(Qt::Vertical)));
     box_->addWidget((plot_ = new DiffractogramPlot(*this)));
@@ -473,8 +473,8 @@ Diffractogram::Diffractogram() : suite_(nullptr), currReflIndex_(0) {
         plot_->enterZoom(on);
     });
 
-    connect(gHub, &TheHub::sigSuiteSelected,
-            [this](shp_Suite suite){ setSuite(suite); });
+    connect(gHub, &TheHub::sigClusterSelected,
+            [this](shp_Cluster cluster){ setCluster(cluster); });
     connect(gHub, &TheHub::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigCorrEnabled, [this](){ render(); });
     connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
@@ -560,20 +560,20 @@ void Diffractogram::render() {
     plot_->plot(dgram_, dgramBgFitted_, bg_, refls_, currReflIndex_);
 }
 
-void Diffractogram::setSuite(shp_Suite suite) {
-    suite_ = suite;
+void Diffractogram::setCluster(shp_Cluster cluster) {
+    cluster_ = cluster;
     actZoom_->setChecked(false);
     render();
 }
 
 void Diffractogram::calcDgram() {
     dgram_.clear();
-    if (!suite_)
+    if (!cluster_)
         return;
     if (gHub->isCombinedDgram())
-        dgram_ = suite_->experiment().avgCurve();
+        dgram_ = cluster_->experiment().avgCurve();
     else {
-        dgram_ = gSession->defaultDataseqLens(*suite_)->makeCurve(gSession->gammaRange());
+        dgram_ = gSession->defaultDataseqLens(*cluster_)->makeCurve(gSession->gammaRange());
     }
 }
 

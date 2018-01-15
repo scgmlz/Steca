@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/data/suite.h
-//! @brief     Defines class Suite
+//! @file      core/data/cluster.h
+//! @brief     Defines class Cluster
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef SUITE_H
-#define SUITE_H
+#ifndef CLUSTER_H
+#define CLUSTER_H
 
 #include "core/typ/angles.h"
 #include "core/data/image.h"
@@ -24,10 +24,10 @@ class Experiment;
 
 //! One or more Measurement's
 
-class Suite final : public vec<shp_Measurement> {
+class Cluster final : public vec<shp_Measurement> {
 public:
-    Suite() = delete;
-    Suite(const Experiment& experiment, const QString tag,
+    Cluster() = delete;
+    Cluster(const Experiment& experiment, const QString tag,
           const vec<shp_Measurement>& measurements);
 
     const Experiment& experiment() const { return experiment_; }
@@ -61,8 +61,8 @@ private:
     friend class Experiment;
 };
 
-typedef QSharedPointer<Suite> shp_Suite;
+typedef QSharedPointer<Cluster> shp_Cluster;
 
-Q_DECLARE_METATYPE(shp_Suite)
+Q_DECLARE_METATYPE(shp_Cluster)
 
-#endif // SUITE_H
+#endif // CLUSTER_H
