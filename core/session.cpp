@@ -125,45 +125,29 @@ void Session::removeCorrFile() {
 void Session::collectDatasetsFromFiles(const vec<int> fileNums, const int combineBy) {
 
     qDebug() << "DEB S::cDFF fileNums=" << fileNums << ", by " << combineBy;
-    collectedFromFiles_ = fileNums;
+    filesSelection_ = fileNums;
     experiment_.clear();
     experimentTags_.clear();
 
-    vec<shp_Measurement> suiteFromFiles;
-    for (int i : collectedFromFiles_)
+    vec<shp_Measurement> fullSuite;
+    for (int i : filesSelection_)
         for (const shp_Measurement& measurement : files_.at(i)->suite())
-            suiteFromFiles.append(measurement);
-    if (suiteFromFiles.isEmpty())
+            fullSuite.append(measurement);
+    if (fullSuite.isEmpty())
         return;
 
-    shp_Suite cd(new Suite);
-    int i = 0;
-
-    auto _appendCd = [this, &cd, &combineBy, &i]() {
-        int cnt = cd->count();
-        if (cnt) {
-            str tag = str::number(i + 1);
-            i += cnt;
-            if (combineBy > 1)
-                tag += '-' + str::number(i);
-            qDebug() << "DEB S::cDFF aC " << i << ": " << tag;
-            experiment_.appendHere(cd);
-            experimentTags_.append(tag);
-            cd = shp_Suite(new Suite);
-        }
-    };
-
-    int by = combineBy;
-    for (const shp_Measurement& measurement : suiteFromFiles) {
-        cd->append(measurement);
-        if (by-- <= 1) {
-            qDebug() << "DEB S::cDFF by " << by;
-            _appendCd();
-            by = combineBy;
-        }
+    for (int i=0; i<fullSuite.count(); i+=combineBy) {
+        shp_Suite cd(new Suite);
+        int ii;
+        for (ii=i; ii<fullSuite.count() && ii<i+combineBy; ii++)
+            cd->append(fullSuite[ii]);
+        QString tag = QString::number(i + 1);
+        if (combineBy > 1)
+            tag += '-' + QString::number(ii);
+        qDebug() << "DEB S::cDFF aC " << i << ": " << tag;
+        experiment_.appendHere(cd);
+        experimentTags_.append(tag);
     }
-
-    _appendCd(); // the remaining ones
 }
 
 void Session::updateImageSize() {

@@ -82,7 +82,7 @@ FilesView::FilesView() : MultiListView() {
     connect(gHub->trigger_removeFile, &QAction::triggered, [this]() { removeSelected(); });
     connect(gHub, &TheHub::sigFilesChanged, [this]() { selectRows({}); recollect(); });
     connect(gHub, &TheHub::sigFilesSelected,
-            [this]() { selectRows(gSession->collectedFromFiles()); });
+            [this]() { selectRows(gSession->filesSelection()); });
 }
 
 void FilesView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {

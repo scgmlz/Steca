@@ -103,7 +103,7 @@ TheHub::TheHub()
 
     QObject::connect(this, &TheHub::sigFilesSelected,
                      [this]() { trigger_removeFile->setEnabled(
-                             !gSession->collectedFromFiles().isEmpty()); });
+                             !gSession->filesSelection().isEmpty()); });
     QObject::connect(this, &TheHub::sigCorrFile,
             [this](shp_Datafile file) {
                          trigger_removeCorr->setEnabled(!file.isNull()); });
@@ -208,7 +208,7 @@ QByteArray TheHub::saveSession() const {
     top.insert("files", arrFiles);
 
     QJsonArray arrSelectedFiles;
-    for (int i : gSession->collectedFromFiles())
+    for (int i : gSession->filesSelection())
         arrSelectedFiles.append(i);
 
     top.insert("selected files", arrSelectedFiles);

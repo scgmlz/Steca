@@ -75,7 +75,7 @@ public:
     void tryEnableCorr(bool on) { corrEnabled_ = on && hasCorrFile(); }
     bool isCorrEnabled() const { return corrEnabled_; }
 
-    vec<int> const& collectedFromFiles() const { return collectedFromFiles_; }
+    vec<int> const& filesSelection() const { return filesSelection_; }
     Experiment const& experiment() const { return experiment_; }
     const QStringList& experimentTags() const { return experimentTags_; }
 
@@ -112,7 +112,7 @@ private:
     shp_Datafile corrFile_; //!< correction file
     shp_Image corrImage_;
     bool corrEnabled_;
-    vec<int> collectedFromFiles_; // from these files
+    vec<int> filesSelection_; // from these files
     Experiment experiment_; // suite collected ...
     QStringList experimentTags_;
     bool intenScaledAvg_; // if not, summed
