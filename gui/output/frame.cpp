@@ -326,8 +326,7 @@ void Frame::calculate() {
         for_i (reflCount)
             calcPoints_.append(
                 gSession->makeReflectionInfos(
-                    gSession->experiment(), *reflections.at(i),
-                    gammaSlices, rgeGamma, &progress));
+                    *reflections.at(i), gammaSlices, rgeGamma, &progress));
     }
 
     interpolate();

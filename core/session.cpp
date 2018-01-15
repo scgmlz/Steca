@@ -274,15 +274,14 @@ ReflectionInfo Session::makeReflectionInfo(
 //! TODO? gammaStep separately?
 
 ReflectionInfos Session::makeReflectionInfos(
-    Experiment const& expt, Reflection const& reflection, int gmaSlices,
-    const Range& rgeGma, Progress* progress) const {
+    Reflection const& reflection, int gmaSlices, const Range& rgeGma, Progress* progress) const {
 
     ReflectionInfos infos;
 
     if (progress)
-        progress->setTotal(expt.count());
+        progress->setTotal(experiment_.count());
 
-    for (const shp_Suite& suite : expt) {
+    for (const shp_Suite& suite : experiment_) {
         if (progress)
             progress->step();
 
@@ -335,7 +334,7 @@ qreal Session::calcAvgBackground(Suite const& suite) const {
 qreal Session::calcAvgBackground() const {
     TakesLongTime __;
     qreal bg = 0;
-    for (const shp_Suite& suite : experiment())
+    for (const shp_Suite& suite : experiment_)
         bg += calcAvgBackground(*suite);
-    return bg / experiment().count();
+    return bg / experiment_.count();
 }

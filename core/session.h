@@ -96,7 +96,7 @@ public:
     shp_SequenceLens defaultDataseqLens(Suite const& dataseq) const;
 
     ReflectionInfos makeReflectionInfos(
-        Experiment const&, Reflection const&, int gmaSlices, const Range&, Progress*) const;
+        Reflection const&, int gmaSlices, const Range&, Progress*) const;
 
     const Ranges& bgRanges() const { return bgRanges_; }
     int bgPolyDegree() const { return bgPolyDegree_; }
