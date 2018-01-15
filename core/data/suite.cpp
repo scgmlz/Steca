@@ -28,82 +28,87 @@ Experiment const& Suite::experiment() const {
     return *experiment_;
 }
 
+//! Returns metadata, averaged over Suite members. Result is cached.
 shp_Metadata Suite::metadata() const {
     if (md_.isNull()) {
         debug::ensure(!isEmpty());
-        const_cast<Suite*>(this)->md_ = shp_Metadata(new Metadata);
-        Metadata* m = const_cast<Metadata*>(md_.data());
+        compute_metadata();
+    }
+    return md_;
+}
 
-        debug::ensure(!first()->metadata().isNull());
-        const Metadata& firstMd = *(first()->metadata());
+//! Computes metadata cache md_.
+void Suite::compute_metadata() const {
+    const_cast<Suite*>(this)->md_ = shp_Metadata(new Metadata);
+    Metadata* m = const_cast<Metadata*>(md_.data());
 
-        m->date = firstMd.date;
-        m->comment = firstMd.comment;
+    debug::ensure(!first()->metadata().isNull());
+    const Metadata& firstMd = *(first()->metadata());
 
-        // sums: delta mon. count and time,
-        // takes the last ones (presumed the maximum) of mon. count and time,
-        // averages the rest
-        for (const shp_Measurement& one : *this) {
-            const Metadata* d = one->metadata().data();
-            debug::ensure(d);
+    m->date = firstMd.date;
+    m->comment = firstMd.comment;
 
-            m->motorXT += d->motorXT;
-            m->motorYT += d->motorYT;
-            m->motorZT += d->motorZT;
+    // sums: delta mon. count and time,
+    // takes the last ones (presumed the maximum) of mon. count and time,
+    // averages the rest
+    for (const shp_Measurement& one : *this) {
+        const Metadata* d = one->metadata().data();
+        debug::ensure(d);
 
-            m->motorOmg += d->motorOmg;
-            m->motorTth += d->motorTth;
-            m->motorPhi += d->motorPhi;
-            m->motorChi += d->motorChi;
+        m->motorXT += d->motorXT;
+        m->motorYT += d->motorYT;
+        m->motorZT += d->motorZT;
 
-            m->motorPST += d->motorPST;
-            m->motorSST += d->motorSST;
-            m->motorOMGM += d->motorOMGM;
+        m->motorOmg += d->motorOmg;
+        m->motorTth += d->motorTth;
+        m->motorPhi += d->motorPhi;
+        m->motorChi += d->motorChi;
 
-            m->nmT += d->nmT;
-            m->nmTeload += d->nmTeload;
-            m->nmTepos += d->nmTepos;
-            m->nmTeext += d->nmTeext;
-            m->nmXe += d->nmXe;
-            m->nmYe += d->nmYe;
-            m->nmZe += d->nmZe;
+        m->motorPST += d->motorPST;
+        m->motorSST += d->motorSST;
+        m->motorOMGM += d->motorOMGM;
 
-            m->deltaMonitorCount += d->deltaMonitorCount;
-            m->deltaTime += d->deltaTime;
+        m->nmT += d->nmT;
+        m->nmTeload += d->nmTeload;
+        m->nmTepos += d->nmTepos;
+        m->nmTeext += d->nmTeext;
+        m->nmXe += d->nmXe;
+        m->nmYe += d->nmYe;
+        m->nmZe += d->nmZe;
 
-            if (m->monitorCount > d->monitorCount)
-                qWarning() << "decreasing monitor count in combined suite";
-            if (m->time > d->time)
-                qWarning() << "decreasing time in combined suite";
-            m->monitorCount = d->monitorCount;
-            m->time = d->time;
-        }
+        m->deltaMonitorCount += d->deltaMonitorCount;
+        m->deltaTime += d->deltaTime;
 
-        qreal fac = 1.0 / count();
-
-        m->motorXT *= fac;
-        m->motorYT *= fac;
-        m->motorZT *= fac;
-
-        m->motorOmg *= fac;
-        m->motorTth *= fac;
-        m->motorPhi *= fac;
-        m->motorChi *= fac;
-
-        m->motorPST *= fac;
-        m->motorSST *= fac;
-        m->motorOMGM *= fac;
-
-        m->nmT *= fac;
-        m->nmTeload *= fac;
-        m->nmTepos *= fac;
-        m->nmTeext *= fac;
-        m->nmXe *= fac;
-        m->nmYe *= fac;
-        m->nmZe *= fac;
+        if (m->monitorCount > d->monitorCount)
+            qWarning() << "decreasing monitor count in combined suite";
+        if (m->time > d->time)
+            qWarning() << "decreasing time in combined suite";
+        m->monitorCount = d->monitorCount;
+        m->time = d->time;
     }
 
-    return md_;
+    qreal fac = 1.0 / count();
+
+    m->motorXT *= fac;
+    m->motorYT *= fac;
+    m->motorZT *= fac;
+
+    m->motorOmg *= fac;
+    m->motorTth *= fac;
+    m->motorPhi *= fac;
+    m->motorChi *= fac;
+
+    m->motorPST *= fac;
+    m->motorSST *= fac;
+    m->motorOMGM *= fac;
+
+    m->nmT *= fac;
+    m->nmTeload *= fac;
+    m->nmTepos *= fac;
+    m->nmTeext *= fac;
+    m->nmXe *= fac;
+    m->nmYe *= fac;
+    m->nmZe *= fac;
 }
 
 #define AVG_ONES(what)                                                  \

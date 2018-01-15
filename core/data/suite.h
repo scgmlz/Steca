@@ -54,6 +54,8 @@ private:
     Experiment* experiment_;
     shp_Metadata md_; // on demand, compute once
 
+    void compute_metadata() const;
+
     friend class Experiment;
 };
 
