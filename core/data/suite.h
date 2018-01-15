@@ -25,9 +25,6 @@ class Experiment;
 //! One or more Measurement's
 
 class Suite final : public vec<shp_Measurement> {
-private:
-    friend class Experiment;
-
 public:
     Suite();
 
@@ -56,6 +53,8 @@ public:
 private:
     Experiment* experiment_;
     shp_Metadata md_; // on demand, compute once
+
+    friend class Experiment;
 };
 
 typedef QSharedPointer<Suite> shp_Suite;
