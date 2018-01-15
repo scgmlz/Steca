@@ -154,7 +154,7 @@ void Session::collectDatasetsFromFiles(int_vec fileNums, int combineBy) {
     int by = combineBy;
     for (const shp_Measurement& measurement : suiteFromFiles) {
         cd->append(measurement);
-        if (1 >= by--) {
+        if (by-- <= 1) {
             _appendCd();
             by = combineBy;
         }
