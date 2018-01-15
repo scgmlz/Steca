@@ -92,10 +92,11 @@ void Experiment::invalidateAvgMutables() const {
 
 //! Computed cached avgeCurve_.
 void Experiment::computeAvgeCurve() const {
-    Suite allData;
+    vec<shp_Measurement> group;
     for (shp_Suite const& suite : *this)
         for (shp_Measurement const& one : *suite)
-            allData.append(one);
+            group.append(one);
+    Suite allData("all", group);
     avgCurve_ = gSession->defaultDataseqLens(allData)->makeCurve();
 }
 

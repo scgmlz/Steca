@@ -26,7 +26,8 @@ class Experiment;
 
 class Suite final : public vec<shp_Measurement> {
 public:
-    Suite();
+    Suite() = delete;
+    Suite(const QString tag, const vec<shp_Measurement>& measurements);
 
     shp_Metadata avgeMetadata() const;
     Experiment const& experiment() const;
@@ -34,6 +35,8 @@ public:
     deg omg() const;
     deg phi() const;
     deg chi() const;
+
+    QString getTag() const;
 
     Range rgeGma() const;
     Range rgeGmaFull() const;
@@ -52,6 +55,7 @@ public:
 
 private:
     Experiment* experiment_;
+    QString tag_;
     shp_Metadata md_; //!< averaged Metadata, cached, computed only once
 
     void compute_metadata() const;

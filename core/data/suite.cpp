@@ -19,8 +19,10 @@
 #include "core/typ/matrix.h"
 #include <qmath.h>
 
-Suite::Suite()
-    : experiment_(nullptr)
+Suite::Suite(const QString tag, const vec<shp_Measurement>& measurements)
+    : vec<shp_Measurement>(measurements)
+    , experiment_(nullptr)
+    , tag_(tag)
 {}
 
 Experiment const& Suite::experiment() const {

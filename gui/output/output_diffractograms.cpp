@@ -64,12 +64,12 @@ int TabDiffractogramsSave::currType() const {
 
 struct OutputData {
 public:
-    OutputData() {}
-    OutputData(Curve curve, Suite dataseq, Range gmaStripe, int picNum)
-        : curve_(curve), dataseq_(dataseq), gmaStripe_(gmaStripe), picNum_(picNum) {}
+    OutputData() = delete;
+    OutputData(Curve curve, const Suite& suite, Range gmaStripe, int picNum)
+        : curve_(curve), dataseq_(suite), gmaStripe_(gmaStripe), picNum_(picNum) {}
 
     Curve curve_;
-    Suite dataseq_;
+    const Suite& dataseq_;
     Range gmaStripe_;
     int picNum_;
 
@@ -88,13 +88,12 @@ OutputData collectCurve(Suite const& dataseq) {
 
 OutputData outputCurrDiffractogram() {
     shp_Suite ret = gHub->selectedSuite();
-    if (ret)
-        return collectCurve(*ret);
-    else
-        return {};
+    if (!ret)
+        throw Exception("No data selected");
+    return collectCurve(*ret);
 }
 
-vec<OutputData> collectCurves(
+vec<const OutputData*> collectCurves(
     const Range& rgeGma, int gmaSlices, Suite const& dataseq, int picNum) {
 
     shp_SequenceLens lens = gSession->defaultDataseqLens(dataseq);
@@ -103,7 +102,7 @@ vec<OutputData> collectCurves(
     if (rgeGma.isValid())
         rge = rge.intersect(rgeGma);
 
-    vec<OutputData> ret;
+    vec<const OutputData*> ret;
 
     gmaSlices = qMax(1, gmaSlices);
     const qreal step = rge.width() / gmaSlices;
@@ -111,7 +110,8 @@ vec<OutputData> collectCurves(
         const qreal min = rge.min + i * step;
         const Range gmaStripe(min, min + step);
         const Curve& curve = lens->makeCurve(gmaStripe);
-        ret.append(OutputData(curve, dataseq, gmaStripe, picNum));
+        const OutputData* dat = new OutputData(curve, dataseq, gmaStripe, picNum);
+        ret.append(dat);
     }
     return ret;
 }
@@ -156,7 +156,7 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
     show();
 }
 
-vec<vec<OutputData>> DiffractogramsFrame::outputAllDiffractograms() {
+vec<vec<const OutputData*>> DiffractogramsFrame::outputAllDiffractograms() {
     debug::ensure(params_->panelGammaSlices);
     int gmaSlices = params_->panelGammaSlices->numSlices->value();
 
@@ -169,7 +169,7 @@ vec<vec<OutputData>> DiffractogramsFrame::outputAllDiffractograms() {
     const Experiment& expt = gSession->experiment();
     Progress progress(expt.count(), progressBar_);
 
-    vec<vec<OutputData>> ret;
+    vec<vec<const OutputData*>> ret;
     int picNum = 1;
     for (shp_Suite suite : expt) {
         progress.step();
@@ -197,10 +197,10 @@ void DiffractogramsFrame::writeCurrDiffractogramToFile(rcstr filePath, rcstr sep
 
 void DiffractogramsFrame::writeAllDiffractogramsToFiles(
     rcstr filePath, rcstr separator, bool oneFile) {
-    vec<vec<OutputData>> outputCollections = outputAllDiffractograms();
-    for (vec<OutputData>& outputCollection : outputCollections) {
-        for (OutputData& outputData : outputCollection) {
-            if (!outputData.isValid()) {
+    const vec<vec<const OutputData*>>& outputCollections = outputAllDiffractograms();
+    for (const vec<const OutputData*>& outputCollection : outputCollections) {
+        for (const OutputData* outputData : outputCollection) {
+            if (!outputData->isValid()) {
                 qWarning() << "invalid output data in writeAllDiffractogramsToFiles";
                 return;
             }
@@ -209,23 +209,25 @@ void DiffractogramsFrame::writeAllDiffractogramsToFiles(
     WriteFile file(filePath);
     QTextStream stream(&file);
     if (oneFile) {
-        for (vec<OutputData>& outputCollection : outputCollections) {
-            for (OutputData& outputData : outputCollection) {
-                writeMetaData(outputData, stream);
+        for (const vec<const OutputData*>& outputCollection : outputCollections) {
+            for (const OutputData* outputData : outputCollection) {
+                writeMetaData(*outputData, stream);
                 stream << "Tth" << separator << "Intensity" << '\n';
-                for_i (outputData.curve_.xs().count()) {
-                    stream << outputData.curve_.x(i) << separator << outputData.curve_.y(i) << '\n';
+                for_i (outputData->curve_.xs().count()) {
+                    stream << outputData->curve_.x(i) << separator
+                           << outputData->curve_.y(i) << '\n';
                 }
             }
         }
     } else {
         int fileNumber = 1;
-        for (vec<OutputData>& outputCollection : outputCollections) {
-            for (OutputData& outputData : outputCollection) {
-                writeMetaData(outputData, stream);
+        for (const vec<const OutputData*>& outputCollection : outputCollections) {
+            for (const OutputData* outputData : outputCollection) {
+                writeMetaData(*outputData, stream);
                 stream << "Tth" << separator << "Intensity" << '\n';
-                for_i (outputData.curve_.xs().count()) {
-                    stream << outputData.curve_.x(i) << separator << outputData.curve_.y(i) << '\n';
+                for_i (outputData->curve_.xs().count()) {
+                    stream << outputData->curve_.x(i) << separator
+                           << outputData->curve_.y(i) << '\n';
                 }
             }
             ++fileNumber;

@@ -137,14 +137,14 @@ void Session::assembleExperiment(const vec<int> fileNums, const int combineBy) {
         return;
 
     for (int i=0; i<selectedMeasurements.count(); i+=combineBy) {
-        shp_Suite cd(new Suite);
         int ii;
+        vec<shp_Measurement> group;
         for (ii=i; ii<selectedMeasurements.count() && ii<i+combineBy; ii++)
-            cd->append(selectedMeasurements[ii]);
+            group.append(selectedMeasurements[ii]);
         QString tag = QString::number(i + 1);
         if (combineBy > 1)
             tag += '-' + QString::number(ii);
-        qDebug() << "DEB S::cDFF aC " << i << ": " << tag;
+        shp_Suite cd(new Suite(tag, group));
         experiment_.appendHere(cd);
         experimentTags_.append(tag);
     }
