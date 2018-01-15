@@ -278,7 +278,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     }
 
     TR("sessionFromJson: going to collect suite");
-    collectDatasetsFromFiles(selIndexes, top.loadPint("combine", 1));
+    collectDatasetsFromSelectionBy(selIndexes, top.loadPint("combine", 1));
 
     TR("sessionFromJson: going to set correction file");
     setCorrFile(top.loadString("correction file", ""));
@@ -332,18 +332,26 @@ void TheHub::addGivenFiles(const QStringList& filePaths) THROWS {
         addGivenFile(filePath);
 }
 
-void TheHub::collectDatasetsFromFiles(int_vec is, int by) {
-    gSession->collectDatasetsFromFiles((collectFromFiles_ = is), (suiteGroupedBy_ = by));
+void TheHub::collectDatasetsFromSelectionBy(const int_vec indexSelection, const int by) {
+    filesSelection_ = indexSelection;
+    suiteGroupedBy_ = by;
+    collectDatasetsExec();
+}
+
+void TheHub::collectDatasetsFromSelection(const int_vec indexSelection) {
+    filesSelection_ = indexSelection;
+    collectDatasetsExec();
+}
+
+void TheHub::combineMeasurementsBy(const int by) {
+    suiteGroupedBy_ = by;
+    collectDatasetsExec();
+}
+
+void TheHub::collectDatasetsExec() {
+    gSession->collectDatasetsFromFiles(filesSelection_, suiteGroupedBy_);
     emit sigFilesSelected(!gSession->collectedFromFiles().isEmpty());
     emit sigSuitesChanged();
-}
-
-void TheHub::collectDatasetsFromFiles(int_vec is) {
-    collectDatasetsFromFiles(is, suiteGroupedBy_);
-}
-
-void TheHub::combineMeasurementsBy(int by) {
-    collectDatasetsFromFiles(collectFromFiles_, by);
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {

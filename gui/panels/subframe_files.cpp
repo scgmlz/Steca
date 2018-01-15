@@ -104,7 +104,7 @@ void FilesView::recollect() {
     for (const QModelIndex& index : selectionModel()->selectedRows())
         if (index.isValid())
             rows.append(index.row());
-    gHub->collectDatasetsFromFiles(rows);
+    gHub->collectDatasetsFromSelection(rows);
 }
 
 // ************************************************************************** //
