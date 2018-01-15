@@ -124,7 +124,8 @@ void initMenus(QMenuBar* mbar) {
         });
     menuOutput->setEnabled(false);
     QObject::connect(gHub, &TheHub::sigFilesSelected,
-                     [menuOutput](bool on){ menuOutput->setEnabled(on); });
+                     [menuOutput](){ menuOutput->setEnabled(
+                             !gSession->collectedFromFiles().isEmpty()); });
 
     _actionsToMenu(
         "&View",
@@ -333,7 +334,7 @@ void MainWin::saveSession() {
 
 void MainWin::clearSession() {
     gSession->clear();
-    emit gHub->sigFilesSelected(false);
+    emit gHub->sigFilesSelected();
     emit gHub->sigSuitesChanged();
 }
 

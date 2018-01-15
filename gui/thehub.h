@@ -54,7 +54,7 @@ public: // emit signals
 
 signals:
     void sigFilesChanged(); //!< loaded file set has changed
-    void sigFilesSelected(bool); //!< active file selection has changed; returns true unless empty
+    void sigFilesSelected(); //!< active file selection has changed
 
     void sigSuitesChanged(); //!< the set of suite collected from selected
     void sigSuiteSelected(shp_Suite);

@@ -102,8 +102,8 @@ TheHub::TheHub()
     // handle signals
 
     QObject::connect(this, &TheHub::sigFilesSelected,
-                     [this](bool on) { trigger_removeFile->setEnabled(on); });
-// TODO check                    !gSession->collectedFromFiles().isEmpty()); });
+                     [this]() { trigger_removeFile->setEnabled(
+                             !gSession->collectedFromFiles().isEmpty()); });
     QObject::connect(this, &TheHub::sigCorrFile,
             [this](shp_Datafile file) {
                          trigger_removeCorr->setEnabled(!file.isNull()); });
@@ -350,7 +350,7 @@ void TheHub::combineMeasurementsBy(const int by) {
 
 void TheHub::collectDatasetsExec() {
     gSession->collectDatasetsFromFiles(filesSelection_, suiteGroupedBy_);
-    emit sigFilesSelected(!gSession->collectedFromFiles().isEmpty());
+    emit sigFilesSelected();
     emit sigSuitesChanged();
 }
 
