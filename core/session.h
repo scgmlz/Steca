@@ -46,7 +46,7 @@ public:
     void removeFile(int i);
     void setCorrFile(shp_Datafile) THROWS; // Load or remove a correction file.
     void removeCorrFile();
-    void collectDatasetsFromFiles(const int_vec, const int);
+    void collectDatasetsFromFiles(const vec<int>, const int);
 
     void setImageTransformMirror(bool);
     void setImageTransformRotate(ImageTransform const&);
@@ -75,7 +75,7 @@ public:
     void tryEnableCorr(bool on) { corrEnabled_ = on && hasCorrFile(); }
     bool isCorrEnabled() const { return corrEnabled_; }
 
-    int_vec const& collectedFromFiles() const { return collectedFromFiles_; }
+    vec<int> const& collectedFromFiles() const { return collectedFromFiles_; }
     Experiment const& experiment() const { return experiment_; }
     const QStringList& experimentTags() const { return experimentTags_; }
 
@@ -112,7 +112,7 @@ private:
     shp_Datafile corrFile_; //!< correction file
     shp_Image corrImage_;
     bool corrEnabled_;
-    int_vec collectedFromFiles_; // from these files
+    vec<int> collectedFromFiles_; // from these files
     Experiment experiment_; // suite collected ...
     QStringList experimentTags_;
     bool intenScaledAvg_; // if not, summed

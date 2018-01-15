@@ -40,7 +40,7 @@ public:
 
 private:
     Experiment const& experiment_;
-    int_vec metaInfoNums_; //!< indices of metadata items selected for display
+    vec<int> metaInfoNums_; //!< indices of metadata items selected for display
 };
 
 void ExperimentModel::showMetaInfo(vec<bool> const& metadataRows) {

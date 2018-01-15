@@ -47,7 +47,7 @@ class MultiListView : public ListView {
 public:
     MultiListView();
 protected:
-    void selectRows(int_vec);
+    void selectRows(vec<int>);
 };
 
 #endif // TREE_VIEWS_H

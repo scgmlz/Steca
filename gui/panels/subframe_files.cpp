@@ -100,7 +100,7 @@ void FilesView::removeSelected() {
 }
 
 void FilesView::recollect() {
-    int_vec rows;
+    vec<int> rows;
     for (const QModelIndex& index : selectionModel()->selectedRows())
         if (index.isValid())
             rows.append(index.row());

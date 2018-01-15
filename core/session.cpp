@@ -122,8 +122,9 @@ void Session::removeCorrFile() {
     updateImageSize();
 }
 
-void Session::collectDatasetsFromFiles(const int_vec fileNums, const int combineBy) {
+void Session::collectDatasetsFromFiles(const vec<int> fileNums, const int combineBy) {
 
+//    qDebug() << "DEB S::cDFF fileNums=" << fileNums << ", by " << combineBy << "\n";
     collectedFromFiles_ = fileNums;
     experiment_.clear();
     experimentTags_.clear();

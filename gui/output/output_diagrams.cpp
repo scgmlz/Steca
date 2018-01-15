@@ -23,7 +23,7 @@
 #include "QCustomPlot/qcustomplot.h"
 
 // sorts xs and ys the same way, by (x,y)
-static void sortColumns(qreal_vec& xs, qreal_vec& ys, int_vec& is) {
+static void sortColumns(vec<qreal>& xs, vec<qreal>& ys, vec<int>& is) {
     debug::ensure(xs.count() == ys.count());
 
     int count = xs.count();
@@ -41,7 +41,7 @@ static void sortColumns(qreal_vec& xs, qreal_vec& ys, int_vec& is) {
         return ys.at(i1) < ys.at(i2);
     });
 
-    qreal_vec r(count);
+    vec<qreal> r(count);
 
     for_i (count)
         r[i] = xs.at(is.at(i));
@@ -64,7 +64,7 @@ public:
     TabPlot();
     void set(ReflectionInfos);
     void plot(
-        qreal_vec const& xs, qreal_vec const& ys, qreal_vec const& ysLo, qreal_vec const& ysUp);
+        vec<qreal> const& xs, vec<qreal> const& ys, vec<qreal> const& ysLo, vec<qreal> const& ysUp);
 private:
     QCPGraph *graph_, *graphLo_, *graphUp_;
 };
@@ -76,7 +76,7 @@ TabPlot::TabPlot() {
 }
 
 void TabPlot::plot(
-    qreal_vec const& xs, qreal_vec const& ys, qreal_vec const& ysLo, qreal_vec const& ysUp) {
+    vec<qreal> const& xs, vec<qreal> const& ys, vec<qreal> const& ysLo, vec<qreal> const& ysUp) {
     debug::ensure(xs.count() == ys.count());
 
     int count = xs.count();
@@ -202,7 +202,7 @@ void DiagramsFrame::recalculate() {
         ys_[i] = row.at(yi).toDouble();
     }
 
-    int_vec is;
+    vec<int> is;
     sortColumns(xs_, ys_, is);
 
     auto _calcErrors = [this, is](eReflAttr attr) {

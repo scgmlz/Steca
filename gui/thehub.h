@@ -130,7 +130,7 @@ public:
     void sessionFromFile(rcstr&) THROWS;
     void addGivenFile(rcstr filePath) THROWS;
     void addGivenFiles(const QStringList& filePaths) THROWS;
-    void collectDatasetsFromSelection(const int_vec);
+    void collectDatasetsFromSelection(const vec<int>);
     void combineMeasurementsBy(const int);
     void setCorrFile(rcstr filePath) THROWS;
     void tryEnableCorrection(bool);
@@ -170,14 +170,14 @@ private:
     bool isFixedIntenImageScale_;
     bool isFixedIntenDgramScale_;
     bool isCombinedDgram_;
-    int_vec filesSelection_;
+    vec<int> filesSelection_;
     int suiteGroupedBy_ = 1;
     eFittingTab fittingTab_ = eFittingTab::NONE;
     shp_Suite selectedSuite_;
     shp_Reflection selectedReflection_;
     Settings settings_;
 
-    void collectDatasetsFromSelectionBy(const int_vec, const int);
+    void collectDatasetsFromSelectionBy(const vec<int>, const int);
     void collectDatasetsExec();
     void setImageRotate(ImageTransform);
     void setImageMirror(bool);

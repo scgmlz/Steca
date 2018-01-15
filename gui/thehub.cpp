@@ -263,7 +263,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     }
 
     const QJsonArray& sels = top.loadArr("selected files", true);
-    int_vec selIndexes;
+    vec<int> selIndexes;
     for (const QJsonValue& sel : sels) {
         int i = sel.toInt(), index = qBound(0, i, files.count());
         RUNTIME_CHECK(i == index, str("Invalid selection index: %1").arg(i));
@@ -332,13 +332,13 @@ void TheHub::addGivenFiles(const QStringList& filePaths) THROWS {
         addGivenFile(filePath);
 }
 
-void TheHub::collectDatasetsFromSelectionBy(const int_vec indexSelection, const int by) {
+void TheHub::collectDatasetsFromSelectionBy(const vec<int> indexSelection, const int by) {
     filesSelection_ = indexSelection;
     suiteGroupedBy_ = by;
     collectDatasetsExec();
 }
 
-void TheHub::collectDatasetsFromSelection(const int_vec indexSelection) {
+void TheHub::collectDatasetsFromSelection(const vec<int> indexSelection) {
     filesSelection_ = indexSelection;
     collectDatasetsExec();
 }

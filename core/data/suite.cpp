@@ -166,7 +166,7 @@ inten_vec Suite::collectIntens(const Image* intensCorr, const Range& rgeGma) con
     }
 
     inten_vec intens(numBins, 0);
-    int_vec counts(numBins, 0);
+    vec<int> counts(numBins, 0);
 
     deg minTth = tthRge.min, deltaTth = tthWdt / numBins;
 

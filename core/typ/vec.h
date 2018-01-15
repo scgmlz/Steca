@@ -58,8 +58,4 @@ public:
     const T& operator[](int i) const { return super::operator[](i); }
 };
 
-// most useful vectors (that's why they are in the global namespace)
-typedef vec<qreal> qreal_vec;
-typedef vec<int> int_vec;
-
 #endif // VEC_H

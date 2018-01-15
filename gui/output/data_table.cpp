@@ -47,7 +47,7 @@ private:
     int sortColumn_;
 
     QStringList headers_;
-    int_vec colIndexMap_;
+    vec<int> colIndexMap_;
     cmp_vec cmpFunctions_;
 
     struct numRow {

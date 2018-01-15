@@ -304,7 +304,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, int index) {
     int numSavedFiles = 0;
 
     if (tabSave_->outputInten()) {
-        qreal_vec output;
+        vec<qreal> output;
         for_i (reflInfo.count())
             output.append(reflInfo.at(i).inten());
         const QString intenFilePath = path + ".inten";
@@ -316,7 +316,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, int index) {
     }
 
     if (tabSave_->outputTth() && withFit) {
-        qreal_vec output;
+        vec<qreal> output;
         for_i (reflInfo.count())
             output.append(reflInfo.at(i).tth());
         const QString tthFilePath = filePath + ".tth";
@@ -327,7 +327,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, int index) {
     }
 
     if (tabSave_->outputFWHM() && withFit) {
-        qreal_vec output;
+        vec<qreal> output;
         for_i (reflInfo.count())
             output.append(reflInfo.at(i).fwhm());
         const QString fwhmFilePath = filePath + ".fwhm";
@@ -347,7 +347,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, int index) {
 }
 
 void PoleFiguresFrame::writeErrorMask(
-    rcstr filePath, ReflectionInfos reflInfo, qreal_vec const& output) {
+    rcstr filePath, ReflectionInfos reflInfo, vec<qreal> const& output) {
     WriteFile file(filePath + ".errorMask");
     QTextStream stream(&file);
 
@@ -364,7 +364,7 @@ void PoleFiguresFrame::writeErrorMask(
 }
 
 void PoleFiguresFrame::writePoleFile(
-    rcstr filePath, ReflectionInfos reflInfo, qreal_vec const& output) {
+    rcstr filePath, ReflectionInfos reflInfo, vec<qreal> const& output) {
     WriteFile file(filePath + ".pol");
     QTextStream stream(&file);
 
@@ -381,7 +381,7 @@ void PoleFiguresFrame::writePoleFile(
 }
 
 void PoleFiguresFrame::writeListFile(
-    rcstr filePath, ReflectionInfos reflInfo, qreal_vec const& output) {
+    rcstr filePath, ReflectionInfos reflInfo, vec<qreal> const& output) {
     WriteFile file(filePath + ".lst");
     QTextStream stream(&file);
 

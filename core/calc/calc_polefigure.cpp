@@ -118,7 +118,7 @@ void searchPoints(deg alpha, deg beta, deg radius, ReflectionInfos const& infos,
 // Searches closest ReflectionInfos to given alpha and beta in quadrants.
 void searchInQuadrants(
     Quadrants const& quadrants, deg alpha, deg beta, deg searchRadius, ReflectionInfos const& infos,
-    info_vec& foundInfos, qreal_vec& distances) {
+    info_vec& foundInfos, vec<qreal>& distances) {
     debug::ensure(quadrants.count() <= NUM_QUADRANTS);
     // Take only reflection infos with beta within +/- BETA_LIMIT degrees into
     // account. Original STeCa used something like +/- 1.5*36 degrees.
@@ -147,13 +147,13 @@ void searchInQuadrants(
     }
 }
 
-itf_t inverseDistanceWeighing(qreal_vec const& distances, info_vec const& infos) {
+itf_t inverseDistanceWeighing(vec<qreal> const& distances, info_vec const& infos) {
     int N = NUM_QUADRANTS;
     // Generally, only distances.count() == values.count() > 0 is needed for this
     // algorithm. However, in this context we expect exactly the following:
     RUNTIME_CHECK(distances.count() == N, "distances size should be 4");
     RUNTIME_CHECK(infos.count() == N, "infos size should be 4");
-    qreal_vec inverseDistances(N);
+    vec<qreal> inverseDistances(N);
     qreal inverseDistanceSum = 0;
     for_i (NUM_QUADRANTS) {
         if (distances.at(i) == .0) {
@@ -184,7 +184,7 @@ itf_t inverseDistanceWeighing(qreal_vec const& distances, info_vec const& infos)
 // Interpolates reflection infos to a single point using idw.
 itf_t interpolateValues(deg searchRadius, ReflectionInfos const& infos, deg alpha, deg beta) {
     info_vec interpolationInfos;
-    qreal_vec distances;
+    vec<qreal> distances;
     searchInQuadrants(
         allQuadrants(), alpha, beta, searchRadius, infos, interpolationInfos, distances);
     // Check that infos were found in all quadrants.
@@ -202,7 +202,7 @@ itf_t interpolateValues(deg searchRadius, ReflectionInfos const& infos, deg alph
             : -alpha;
         qreal newBeta = beta < 180 ? beta + 180 : beta - 180;
         info_vec renewedSearch;
-        qreal_vec newDistance;
+        vec<qreal> newDistance;
         searchInQuadrants(
             { newQ }, newAlpha, newBeta, searchRadius, infos, renewedSearch, newDistance);
         debug::ensure(renewedSearch.count() == 1);

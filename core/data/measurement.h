@@ -50,7 +50,7 @@ public:
     size2d imageSize() const;
 
     void collectIntens(
-        const Image* intensCorr, /*non-const*/ inten_vec&, /*non-const*/ int_vec&, const Range&,
+        const Image* intensCorr, /*non-const*/ inten_vec&, /*non-const*/ vec<int>&, const Range&,
         deg minTth, deg deltaTth) const;
 
 private:

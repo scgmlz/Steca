@@ -50,7 +50,7 @@ ScatterDirection::ScatterDirection(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
 AngleMap::AngleMap(ImageKey const& key) : key_(key) { calculate(); }
 
 void AngleMap::getGmaIndexes(
-    const Range& rgeGma, int_vec const*& indexes, int& minIndex, int& maxIndex) const {
+    const Range& rgeGma, vec<int> const*& indexes, int& minIndex, int& maxIndex) const {
     indexes = &gmaIndexes;
     minIndex = lowerBound(gmas, rgeGma.min, 0, gmas.count());
     maxIndex = upperBound(gmas, rgeGma.max, 0, gmas.count());
@@ -121,7 +121,7 @@ void AngleMap::calculate() {
         }
     }
 
-    int_vec is(countWithoutCut);
+    vec<int> is(countWithoutCut);
     for_i (is.count())
         is[i] = i;
 
@@ -135,7 +135,7 @@ void AngleMap::calculate() {
         gv[i] = gmas.at(is.at(i));
     gmas = gv;
 
-    int_vec uv(countWithoutCut);
+    vec<int> uv(countWithoutCut);
     for_i (countWithoutCut)
         uv[i] = gmaIndexes.at(is.at(i));
     gmaIndexes = uv;

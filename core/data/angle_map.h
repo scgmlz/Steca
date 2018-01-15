@@ -43,7 +43,7 @@ public:
     Range rgeGma() const { return rgeGma_; }
     Range rgeGmaFull() const { return rgeGmaFull_; }
 
-    void getGmaIndexes(const Range&, int_vec const*&, int&, int&) const;
+    void getGmaIndexes(const Range&, vec<int> const*&, int&, int&) const;
 
 private:
     void calculate();
@@ -56,7 +56,7 @@ private:
     Range rgeGma_, rgeGmaFull_;
 
     vec<deg> gmas; //!< sorted gamma values
-    int_vec gmaIndexes;
+    vec<int> gmaIndexes;
 };
 
 typedef QSharedPointer<AngleMap> shp_AngleMap;

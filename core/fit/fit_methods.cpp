@@ -27,7 +27,7 @@ void FitWrapper::fit(Function& function, Curve const& curve) {
 
     // prepare data in a debug::ensured format
     int parCount = function_->parameterCount();
-    qreal_vec parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
+    vec<qreal> parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
 
     for_i (parCount) {
         const Function::Parameter& par = function_->parameterAt(i);
@@ -69,7 +69,7 @@ void FitWrapper::fit_exec(
     double info[LM_INFO_SZ];
 
     // output covariance matrix
-    qreal_vec covar(paramsCount * paramsCount);
+    vec<qreal> covar(paramsCount * paramsCount);
 
     int const maxIterations = 1000;
 

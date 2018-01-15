@@ -30,9 +30,9 @@ private:
 
     void savePoleFigureOutput();
     void writePoleFigureOutputFiles(rcstr filePath, int index);
-    void writePoleFile(rcstr filePath, ReflectionInfos, qreal_vec const&);
-    void writeListFile(rcstr filePath, ReflectionInfos, qreal_vec const&);
-    void writeErrorMask(rcstr filePath, ReflectionInfos, qreal_vec const&);
+    void writePoleFile(rcstr filePath, ReflectionInfos, vec<qreal> const&);
+    void writeListFile(rcstr filePath, ReflectionInfos, vec<qreal> const&);
+    void writeErrorMask(rcstr filePath, ReflectionInfos, vec<qreal> const&);
 };
 
 #endif // OUTPUT_POLEFIGURES_H

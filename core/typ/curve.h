@@ -31,8 +31,8 @@ public:
     void append(qreal x, qreal y);
 
     // access to underlying data vectors
-    qreal_vec const& xs() const { return xs_; }
-    qreal_vec const& ys() const { return ys_; }
+    vec<qreal> const& xs() const { return xs_; }
+    vec<qreal> const& ys() const { return ys_; }
 
     qreal x(int i) const { return xs_.at(i); }
     qreal y(int i) const { return ys_.at(i); }
@@ -50,7 +50,7 @@ public:
     qreal sumY() const;
 
 private:
-    qreal_vec xs_, ys_;
+    vec<qreal> xs_, ys_;
     Range rgeX_, rgeY_;
 };
 
