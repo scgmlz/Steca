@@ -65,7 +65,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
         case COL_NUMBER:
             return gSession->experimentTags().at(row);
         default:
-            return experiment_.at(row)->metadata()->attributeStrValue(
+            return experiment_.at(row)->avgeMetadata()->attributeStrValue(
                 metaInfoNums_.at(col-COL_ATTRS));
         }
     }

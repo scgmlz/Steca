@@ -74,7 +74,7 @@ public:
     int picNum_;
 
     bool isValid() const {
-        return (!dataseq_.metadata().isNull() || !curve_.isEmpty() || gmaStripe_.isValid());
+        return (!dataseq_.avgeMetadata().isNull() || !curve_.isEmpty() || gmaStripe_.isValid());
     }
 };
 
@@ -120,7 +120,7 @@ void writeMetaData(OutputData outputData, QTextStream& stream) {
     if (outputData.picNum_ > 0)
         stream << "Picture Nr: " << outputData.picNum_ << '\n';
 
-    const Metadata& md = *outputData.dataseq_.metadata();
+    const Metadata& md = *outputData.dataseq_.avgeMetadata();
     const Range& rgeGma = outputData.gmaStripe_;
 
     stream << "Comment: " << md.comment << '\n';

@@ -256,7 +256,7 @@ ReflectionInfo Session::makeReflectionInfo(
     Suite const& suite = lens.suite();
     suite.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
 
-    shp_Metadata metadata = suite.metadata();
+    shp_Metadata metadata = suite.avgeMetadata();
 
     return rgeTth.contains(peak.x)
         ? ReflectionInfo(

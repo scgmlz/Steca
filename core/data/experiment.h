@@ -41,8 +41,8 @@ public:
     void invalidateAvgMutables() const;
 
 private:
-    shp_Suite combineAll() const;
-    qreal calcAvgMutable(qreal (Suite::*avgMth)() const) const;
+    void computeAvgeCurve() const;
+    qreal calcAvgMutable(qreal (Suite::*avgFct)() const) const;
 
     // computed on demand (NaNs or emptiness indicate yet unknown values)
     mutable qreal avgMonitorCount_, avgDeltaMonitorCount_, avgDeltaTime_;

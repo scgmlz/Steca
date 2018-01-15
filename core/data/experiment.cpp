@@ -78,7 +78,7 @@ Curve Experiment::avgCurve() const {
     if (avgCurve_.isEmpty()) {
         // TODO invalidate when combinedDgram is unchecked
         TakesLongTime __;
-        avgCurve_ = gSession->defaultDataseqLens(*combineAll())->makeCurve();
+        computeAvgeCurve();
     }
     return avgCurve_;
 }
@@ -90,18 +90,19 @@ void Experiment::invalidateAvgMutables() const {
     avgCurve_.clear();
 }
 
-shp_Suite Experiment::combineAll() const {
-    shp_Suite ret(new Suite);
+//! Computed cached avgeCurve_.
+void Experiment::computeAvgeCurve() const {
+    Suite allData;
     for (shp_Suite const& suite : *this)
         for (shp_Measurement const& one : *suite)
-            ret->append(one);
-    return ret;
+            allData.append(one);
+    avgCurve_ = gSession->defaultDataseqLens(allData)->makeCurve();
 }
 
-qreal Experiment::calcAvgMutable(qreal (Suite::*avgMth)() const) const {
+qreal Experiment::calcAvgMutable(qreal (Suite::*avgFct)() const) const {
     qreal ret = 0;
     for (shp_Suite const& suite : *this)
-        ret += ((*suite).*avgMth)();
+        ret += ((*suite).*avgFct)();
     ret /= count();
     return ret;
 }

@@ -29,7 +29,7 @@ Experiment const& Suite::experiment() const {
 }
 
 //! Returns metadata, averaged over Suite members. Result is cached.
-shp_Metadata Suite::metadata() const {
+shp_Metadata Suite::avgeMetadata() const {
     if (md_.isNull()) {
         debug::ensure(!isEmpty());
         compute_metadata();

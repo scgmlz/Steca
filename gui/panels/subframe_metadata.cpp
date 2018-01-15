@@ -50,7 +50,7 @@ MetadataModel::MetadataModel() {
 void MetadataModel::reset(shp_Suite dataseq) {
     metadata_.clear();
     if (dataseq)
-        metadata_ = dataseq->metadata();
+        metadata_ = dataseq->avgeMetadata();
     signalReset();
 }
 

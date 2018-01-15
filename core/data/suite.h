@@ -28,7 +28,7 @@ class Suite final : public vec<shp_Measurement> {
 public:
     Suite();
 
-    shp_Metadata metadata() const;
+    shp_Metadata avgeMetadata() const;
     Experiment const& experiment() const;
 
     deg omg() const;
@@ -52,7 +52,7 @@ public:
 
 private:
     Experiment* experiment_;
-    shp_Metadata md_; // on demand, compute once
+    shp_Metadata md_; //!< averaged Metadata, cached, computed only once
 
     void compute_metadata() const;
 
