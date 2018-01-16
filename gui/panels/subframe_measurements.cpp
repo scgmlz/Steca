@@ -27,21 +27,28 @@
 
 class ExperimentModel : public TableModel {
 public:
-    ExperimentModel() : experiment_(gSession->experiment()) {}
+    ExperimentModel();
 
     void showMetaInfo(vec<bool> const&);
 
-    int columnCount() const final { return COL_ATTRS + metaInfoNums_.count(); }
+    int metaCount() const { return metaInfoNums_.count(); }
     int rowCount() const final { return experiment_.count(); }
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
+    vec<bool> const& rowsChecked() const { return rowsChecked_; }
 
-    enum { COL_NUMBER = 1, COL_ATTRS };
+    enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
 private:
+    int columnCount() const final { return COL_ATTRS + metaCount(); }
     Experiment const& experiment_;
     vec<int> metaInfoNums_; //!< indices of metadata items selected for display
+    mutable vec<bool> rowsChecked_;
 };
+
+ExperimentModel::ExperimentModel()
+    : experiment_(gSession->experiment())
+{}
 
 void ExperimentModel::showMetaInfo(vec<bool> const& metadataRows) {
     beginResetModel();
@@ -56,23 +63,22 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     int row = index.row();
     if (row < 0 || row >= rowCount())
         return {};
+    while (rowsChecked_.count()<rowCount())
+        rowsChecked_.append(false);
     const Cluster* cluster = gSession->experiment().at(row).data();
+    int col = index.column();
     switch (role) {
     case Qt::DisplayRole: {
-        int col = index.column();
-        if (col < 1 || col >= columnCount())
-            return {};
-        switch (col) {
-        case COL_NUMBER: {
+        if (col==COL_NUMBER) {
             QString ret = QString::number(cluster->first()->totalPosition()+1);
             if (cluster->count()>1)
                 ret += "-" + QString::number(cluster->last()->totalPosition()+1);
             return ret;
-        }
-        default:
+        } else if (col>=COL_ATTRS && col < COL_ATTRS+metaCount()) {
             return cluster->avgeMetadata()->attributeStrValue(
                 metaInfoNums_.at(col-COL_ATTRS));
-        }
+        } else
+            return {};
     }
     case Qt::UserRole:
         return QVariant::fromValue<shp_Cluster>(experiment_.at(row));
@@ -112,20 +118,25 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
             return QColor(Qt::red);
         return QColor(Qt::black);
     }
+    case Qt::CheckStateRole: {
+        if (col==COL_CHECK) {
+            return rowsChecked_.at(row) ? Qt::Checked : Qt::Unchecked;
+        } else
+            return {};
+    }
     default:
         return {};
     }
 }
 
 QVariant ExperimentModel::headerData(int col, Qt::Orientation, int role) const {
-    if (Qt::DisplayRole != role || col < 1 || columnCount() <= col)
+    if (role != Qt::DisplayRole)
         return {};
-    switch (col) {
-    case COL_NUMBER:
+    if (col==COL_NUMBER)
         return "#";
-    default:
+    else if (col>=COL_ATTRS && col < COL_ATTRS+metaCount())
         return Metadata::attributeTag(metaInfoNums_.at(col-COL_ATTRS), false);
-    }
+    return {};
 }
 
 
@@ -140,13 +151,14 @@ public:
     ExperimentView();
 
 private:
-    void currentChanged(QModelIndex const&, QModelIndex const&);
-
-    ExperimentModel* model() const override {
+    void currentChanged(QModelIndex const&, QModelIndex const&) final;
+    int sizeHintForColumn(int) const final;
+    ExperimentModel* model() const final {
         return static_cast<ExperimentModel*>(ListView::model()); }
 };
 
 ExperimentView::ExperimentView() : ListView() {
+    setHeaderHidden(true);
     auto experimentModel = new ExperimentModel();
     setModel(experimentModel);
     connect(gHub, &TheHub::sigClustersChanged,
@@ -158,13 +170,27 @@ ExperimentView::ExperimentView() : ListView() {
                 gHub->tellClusterSelected(shp_Cluster()); // first de-select
                 selectRow(0);
             });
-    connect(gHub, &TheHub::sigMetatagsChosen, experimentModel, &ExperimentModel::showMetaInfo);
+    connect(gHub, &TheHub::sigMetatagsChosen, experimentModel,
+            [this](vec<bool> const& rowsChecked) {
+                model()->showMetaInfo(rowsChecked);
+                setHeaderHidden(model()->metaCount()==0);
+            });
 }
 
 void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     ListView::currentChanged(current, previous);
     gHub->tellClusterSelected(model()->data(current, Qt::UserRole).value<shp_Cluster>());
 }
+
+int ExperimentView::sizeHintForColumn(int col) const {
+    switch (col) {
+    case ExperimentModel::COL_CHECK:
+        return fontMetrics().width('m');
+    default:
+        return ListView::sizeHintForColumn(col);
+    }
+}
+
 
 // ************************************************************************** //
 //  class SubframeMeasurements
