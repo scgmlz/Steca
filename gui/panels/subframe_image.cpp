@@ -176,7 +176,7 @@ SubframeImage::SubframeImage() {
         BoxWidget& tab = *newQ::Tab(this, "Correction");
 
         connect(gHub, &TheHub::sigCorrFile,
-                [&tab](shp_Datafile file) { tab.setEnabled(!file.isNull()); });
+                [&tab](const Datafile* file) { tab.setEnabled(file); });
 
         QBoxLayout& box = tab.box();
 

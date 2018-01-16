@@ -18,7 +18,7 @@
 #include "core/typ/exception.h"
 #include "3rdparty/Mar/MarReader.h"
 
-namespace io {
+namespace load {
 
 // Code taken from the original STeCa, only slightly modified.
 
@@ -227,4 +227,4 @@ Datafile loadMar(rcstr filePath) THROWS {
     return ret;
 }
 
-} // namespace io
+} // namespace load

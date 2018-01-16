@@ -22,7 +22,7 @@
 ; // preserve inclusion order
 #include "3rdparty/Caress/raw.h" // inclusion order is critical !
 
-namespace io {
+namespace load {
 
 Datafile loadCaress(rcstr filePath) THROWS {
     Datafile ret(filePath);
@@ -601,4 +601,4 @@ str loadCaressComment(rcstr filePath) {
     return s_comment;
 }
 
-} // namespace io
+} // namespace load

@@ -41,12 +41,12 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
     const int row = index.row(), rowCnt = rowCount();
     if (row < 0 || rowCnt <= row)
         return {};
-    const shp_Datafile& file = gSession->file(row);
+    const Datafile* file = gSession->file(row);
     switch (role) {
     case Qt::DisplayRole:
         return file->fileName();
     case Qt::UserRole:
-        return QVariant::fromValue<shp_Datafile>(file);
+        return QVariant::fromValue<const Datafile*>(file);
     case Qt::ToolTipRole:
         return QString("File %1\ncontains %2 measurements")
             .arg(file->fileName())
@@ -140,6 +140,6 @@ SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files") {
     h->addWidget(newQ::IconButton(gHub->trigger_removeCorr));
 
     connect(gHub, &TheHub::sigCorrFile,
-            [corrFile_](shp_Datafile file) {
-                corrFile_->setText(file.isNull() ? "" : file->fileName()); });
+            [corrFile_](const Datafile* file) {
+                corrFile_->setText(file ? file->fileName() : ""); });
 }

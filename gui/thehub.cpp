@@ -105,8 +105,7 @@ TheHub::TheHub()
                      [this]() { trigger_removeFile->setEnabled(
                              !gSession->filesSelection().isEmpty()); });
     QObject::connect(this, &TheHub::sigCorrFile,
-            [this](shp_Datafile file) {
-                         trigger_removeCorr->setEnabled(!file.isNull()); });
+            [this](const Datafile* file) { trigger_removeCorr->setEnabled(file); });
     QObject::connect(this, &TheHub::sigCorrEnabled,
             [this](bool on) { toggle_enableCorr->setChecked(on); });
 
@@ -320,7 +319,7 @@ void TheHub::addGivenFile(rcstr filePath) THROWS {
     if (!filePath.isEmpty() && !gSession->hasFile(filePath)) {
         {
             TakesLongTime __;
-            gSession->addGivenFile(io::loadDatafile(filePath));
+            gSession->addGivenFile(load::loadDatafile(filePath));
         }
         emit sigFilesChanged();
     }
@@ -355,13 +354,11 @@ void TheHub::collectDatasetsExec() {
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {
-    shp_Datafile file;
+    QSharedPointer<Datafile> file;
     if (!filePath.isEmpty())
-        file = io::loadDatafile(filePath);
-
+        file = load::loadDatafile(filePath);
     gSession->setCorrFile(file);
-    emit sigCorrFile(file);
-
+    emit sigCorrFile(file.data());
     tryEnableCorrection(true);
 }
 

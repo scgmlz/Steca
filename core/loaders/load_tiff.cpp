@@ -19,7 +19,7 @@
 #include <QDataStream>
 #include <QDir>
 
-namespace io {
+namespace load {
 
 // implemented below
 static void loadTiff(Datafile*, rcstr, deg, qreal, qreal) THROWS;
@@ -264,4 +264,4 @@ loadTiff(Datafile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) 
     file->addDataset(md, size, intens);
 }
 
-} // namespace io
+} // namespace load

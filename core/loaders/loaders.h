@@ -22,10 +22,10 @@
 class Datafile;
 class QFileInfo;
 
-namespace io {
+namespace load {
 
 //! load a file; file type will be sensed
-shp_Datafile loadDatafile(rcstr filePath) THROWS;
+QSharedPointer<Datafile> loadDatafile(rcstr filePath) THROWS;
 
 str loadComment(QFileInfo const& info);
 

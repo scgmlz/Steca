@@ -8,7 +8,7 @@ class Session* gSession = Session::instance();
 
 TEST(IO, Caress) {
     try {
-        io::loadDatafile(TESTDATADIR "/caress.dat");
+        load::loadDatafile(TESTDATADIR "/caress.dat");
     } catch (Exception& ex) {
         std::cerr << "io::load throws: " << ex.what() << "\n";
         EXPECT_TRUE(false);

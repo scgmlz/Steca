@@ -59,7 +59,7 @@ signals:
     void sigClustersChanged(); //!< the set of cluster collected from selected
     void sigClusterSelected(shp_Cluster);
 
-    void sigCorrFile(shp_Datafile);
+    void sigCorrFile(const Datafile*);
     void sigCorrEnabled(bool);
 
     void sigReflectionsChanged();

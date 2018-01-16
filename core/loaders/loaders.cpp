@@ -17,7 +17,7 @@
 #include <QStringBuilder> // for ".." % ..
 #include <QFileInfo>
 
-namespace io {
+namespace load {
 Datafile loadCaress(rcstr filePath) THROWS;
 Datafile loadMar(rcstr filePath) THROWS;
 Datafile loadTiffDat(rcstr filePath) THROWS;
@@ -73,21 +73,21 @@ Datafile load_low_level(rcstr filePath) THROWS {
     RUNTIME_CHECK(info.exists(), "File " % filePath % " does not exist");
 
     if (couldBeCaress(info))
-        return io::loadCaress(filePath);
+        return load::loadCaress(filePath);
     else if (couldBeMar(info))
-        return io::loadMar(filePath);
+        return load::loadMar(filePath);
     else if (couldBeTiffDat(info))
-        return io::loadTiffDat(filePath);
+        return load::loadTiffDat(filePath);
     else
         THROW("unknown file type: " % filePath);
 }
 
 } // local methods
 
-namespace io {
+namespace load {
 
-shp_Datafile loadDatafile(rcstr filePath) THROWS {
-    const shp_Datafile ret(new Datafile(load_low_level(filePath)));
+QSharedPointer<Datafile> loadDatafile(rcstr filePath) THROWS {
+    const QSharedPointer<Datafile> ret(new Datafile(load_low_level(filePath)));
     RUNTIME_CHECK(ret->cluster().count() > 0, "File " % filePath % " contains no cluster");
     return ret;
 }
@@ -95,7 +95,7 @@ shp_Datafile loadDatafile(rcstr filePath) THROWS {
 str loadComment(QFileInfo const& info) {
     const QString& path = info.absoluteFilePath();
     if (couldBeCaress(info))
-        return "[car] " + io::loadCaressComment(path);
+        return "[car] " + loadCaressComment(path);
     else if (couldBeMar(info))
         return "[mar] ";
     else if (couldBeTiffDat(info))
@@ -104,4 +104,4 @@ str loadComment(QFileInfo const& info) {
         return "";
 }
 
-} // namespace io
+} // namespace load

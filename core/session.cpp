@@ -47,13 +47,13 @@ void Session::clear() {
 
 bool Session::hasFile(rcstr fileName) const {
     QFileInfo fileInfo(fileName);
-    for (const shp_Datafile& file : files_)
+    for (const QSharedPointer<Datafile>& file : files_)
         if (fileInfo == file->fileInfo())
             return true;
     return false;
 }
 
-void Session::addGivenFile(shp_Datafile datafile) THROWS {
+void Session::addGivenFile(QSharedPointer<Datafile> datafile) THROWS {
     setImageSize(datafile->imageSize());
     computeOffsets();
     files_.append(datafile);
@@ -66,6 +66,11 @@ void Session::removeFile(int i) {
 }
 
 void Session::computeOffsets() {
+    int offset = 0;
+    for (QSharedPointer<Datafile>& file: files_) {
+        file->setOffset(offset);
+        offset += file->count();
+    }
 }
 
 void Session::calcIntensCorr() const {
@@ -105,7 +110,7 @@ const Image* Session::intensCorr() const {
     return &intensCorr_;
 }
 
-void Session::setCorrFile(shp_Datafile datafile) THROWS {
+void Session::setCorrFile(QSharedPointer<Datafile> datafile) THROWS {
     if (datafile.isNull()) {
         removeCorrFile();
     } else {
