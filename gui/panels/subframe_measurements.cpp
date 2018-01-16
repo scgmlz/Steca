@@ -176,7 +176,6 @@ ExperimentView::ExperimentView() : ListView() {
             });
     connect(gHub, &TheHub::sigMetatagsChosen, experimentModel,
             [this](vec<bool> const& rowsChecked) {
-                qDebug() << "DEB metadata chosen 1";
                 model()->showMetaInfo(rowsChecked);
 //                setHeaderHidden(model()->metaCount()==0);
             });
@@ -190,7 +189,6 @@ void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex cons
 int ExperimentView::sizeHintForColumn(int col) const {
     switch (col) {
     case ExperimentModel::COL_CHECK: {
-        qDebug() << "DEB size hint1";
         return fontMetrics().width('m');
     } default:
         return ListView::sizeHintForColumn(col);
