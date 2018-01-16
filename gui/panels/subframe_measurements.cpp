@@ -25,13 +25,13 @@
 
 //! The model for ExperimentView.
 
-class ExperimentModel final : public TableModel {
+class ExperimentModel final : public TableModel
+                             // < TableModel < QAbstractTableModel < QAbstractItemModel
+{
 public:
-    ExperimentModel();
-
     void showMetaInfo(vec<bool> const&);
 
-    int rowCount() const final { return experiment_.count(); }
+    int rowCount() const final { return gSession->experiment().count(); }
     QVariant data(const QModelIndex&, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const final;
 
@@ -43,14 +43,9 @@ public:
 private:
     int columnCount() const final { return COL_ATTRS + metaCount(); }
 
-    Experiment const& experiment_;
     vec<int> metaInfoNums_; //!< indices of metadata items selected for display
     mutable vec<bool> rowsChecked_;
 };
-
-ExperimentModel::ExperimentModel()
-    : experiment_(gSession->experiment())
-{}
 
 void ExperimentModel::showMetaInfo(vec<bool> const& metadataRows) {
     beginResetModel();
@@ -83,7 +78,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
             return {};
     }
     case Qt::UserRole:
-        return QVariant::fromValue<shp_Cluster>(experiment_.at(row));
+        return QVariant::fromValue<shp_Cluster>(gSession->experiment().at(row));
     case Qt::ToolTipRole: {
         QString ret;
         if (cluster->count()>1 && cluster->first()->file()==cluster->last()->file()) {
