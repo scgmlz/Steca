@@ -17,7 +17,7 @@
 #include "gui/base/table_model.h"
 #include "gui/thehub.h"
 #include "gui/base/tree_views.h" // inheriting from
-
+#include <QHeaderView>
 
 // ************************************************************************** //
 //  local class ExperimentModel
@@ -25,22 +25,24 @@
 
 //! The model for ExperimentView.
 
-class ExperimentModel : public TableModel {
+class ExperimentModel final : public TableModel {
 public:
     ExperimentModel();
 
     void showMetaInfo(vec<bool> const&);
 
-    int metaCount() const { return metaInfoNums_.count(); }
     int rowCount() const final { return experiment_.count(); }
-    QVariant data(const QModelIndex&, int) const;
-    QVariant headerData(int, Qt::Orientation, int) const;
+    QVariant data(const QModelIndex&, int) const final;
+    QVariant headerData(int, Qt::Orientation, int) const final;
+
+    int metaCount() const { return metaInfoNums_.count(); }
     vec<bool> const& rowsChecked() const { return rowsChecked_; }
 
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
 private:
     int columnCount() const final { return COL_ATTRS + metaCount(); }
+
     Experiment const& experiment_;
     vec<int> metaInfoNums_; //!< indices of metadata items selected for display
     mutable vec<bool> rowsChecked_;
@@ -129,7 +131,9 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     }
 }
 
-QVariant ExperimentModel::headerData(int col, Qt::Orientation, int role) const {
+QVariant ExperimentModel::headerData(int col, Qt::Orientation ori, int role) const {
+    if (ori!=Qt::Horizontal)
+        return {};
     if (role != Qt::DisplayRole)
         return {};
     if (col==COL_NUMBER)
@@ -158,7 +162,7 @@ private:
 };
 
 ExperimentView::ExperimentView() : ListView() {
-    setHeaderHidden(true);
+//    setHeaderHidden(true);
     auto experimentModel = new ExperimentModel();
     setModel(experimentModel);
     connect(gHub, &TheHub::sigClustersChanged,
@@ -172,8 +176,9 @@ ExperimentView::ExperimentView() : ListView() {
             });
     connect(gHub, &TheHub::sigMetatagsChosen, experimentModel,
             [this](vec<bool> const& rowsChecked) {
+                qDebug() << "DEB metadata chosen 1";
                 model()->showMetaInfo(rowsChecked);
-                setHeaderHidden(model()->metaCount()==0);
+//                setHeaderHidden(model()->metaCount()==0);
             });
 }
 
@@ -184,9 +189,10 @@ void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex cons
 
 int ExperimentView::sizeHintForColumn(int col) const {
     switch (col) {
-    case ExperimentModel::COL_CHECK:
+    case ExperimentModel::COL_CHECK: {
+        qDebug() << "DEB size hint1";
         return fontMetrics().width('m');
-    default:
+    } default:
         return ListView::sizeHintForColumn(col);
     }
 }

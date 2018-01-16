@@ -98,7 +98,7 @@ private:
 };
 
 MetadataView::MetadataView() : ListView() {
-    setHeaderHidden(true);
+//    setHeaderHidden(true);
     auto metadataModel = new MetadataModel();
     setModel(metadataModel);
     connect(gHub, &TheHub::sigClusterSelected,
