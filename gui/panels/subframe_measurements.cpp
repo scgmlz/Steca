@@ -29,6 +29,7 @@ class ExperimentModel final : public TableModel
                              // < TableModel < QAbstractTableModel < QAbstractItemModel
 {
 public:
+    void onClicked(const QModelIndex &);
     void showMetaInfo(vec<bool> const&);
 
     int rowCount() const final { return gSession->experiment().count(); }
@@ -45,7 +46,22 @@ private:
 
     vec<int> metaInfoNums_; //!< indices of metadata items selected for display
     mutable vec<bool> rowsChecked_;
+    int rowHighlighted_;
 };
+
+void ExperimentModel::onClicked(const QModelIndex& cell) {
+    int row = cell.row();
+    if (row < 0 || row >= rowCount())
+        return;
+    int col = cell.column();
+    if (col==1) {
+        rowsChecked_[row] = !rowsChecked_[row];
+        emit dataChanged(cell, cell);
+    } else if (col==2) {
+        rowHighlighted_ = row;
+        emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
+    }
+}
 
 void ExperimentModel::showMetaInfo(vec<bool> const& metadataRows) {
     beginResetModel();
@@ -115,6 +131,11 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
             return QColor(Qt::red);
         return QColor(Qt::black);
     }
+    case Qt::BackgroundRole: {
+        if (row==rowHighlighted_)
+            return QColor(Qt::cyan);
+        return QColor(Qt::white);
+    }
     case Qt::CheckStateRole: {
         if (col==COL_CHECK) {
             return rowsChecked_.at(row) ? Qt::Checked : Qt::Unchecked;
@@ -145,7 +166,7 @@ QVariant ExperimentModel::headerData(int col, Qt::Orientation ori, int role) con
 
 //! Main item in SubframeMeasurement: View and control of measurements list.
 
-class ExperimentView final : public ListView {
+class ExperimentView final : public ListView { // < TreeView < QTreeView < QAbstractItemView
 public:
     ExperimentView();
 
@@ -161,6 +182,7 @@ ExperimentView::ExperimentView() : ListView() {
     setSelectionMode(QAbstractItemView::NoSelection);
     auto experimentModel = new ExperimentModel();
     setModel(experimentModel);
+    connect(this, &ExperimentView::clicked, model(), &ExperimentModel::onClicked);
     connect(gHub, &TheHub::sigClustersChanged,
             [=]() { experimentModel->signalReset(); });
     connect(gHub, &TheHub::sigClustersChanged,
