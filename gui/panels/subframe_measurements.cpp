@@ -63,8 +63,12 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
         if (col < 1 || col >= columnCount())
             return {};
         switch (col) {
-        case COL_NUMBER:
-            return cluster->tag();
+        case COL_NUMBER: {
+            QString ret = QString::number(cluster->first()->totalPosition()+1);
+            if (cluster->count()>1)
+                ret += "-" + QString::number(cluster->last()->totalPosition()+1);
+            return ret;
+        }
         default:
             return cluster->avgeMetadata()->attributeStrValue(
                 metaInfoNums_.at(col-COL_ATTRS));
@@ -73,15 +77,27 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     case Qt::UserRole:
         return QVariant::fromValue<shp_Cluster>(experiment_.at(row));
     case Qt::ToolTipRole: {
-        QString ret = QString("Measurement %1 is number %2 in file %3")
-            .arg(row+1)
-            .arg(0)
-            .arg("?");
-        if (cluster->count()>1)
-            ret += QString(";\nmeasurement %1 is number %2 in file %3")
-                .arg(row+1)
-                .arg(0)
-                .arg("?");
+        QString ret;
+        if (cluster->count()>1 && cluster->first()->file()==cluster->last()->file()) {
+            ret = QString("Measurements %1..%2 are numbers %3..%4 in file %5")
+                .arg(cluster->first()->totalPosition()+1)
+                .arg(cluster->last()->totalPosition()+1)
+                .arg(cluster->first()->position()+1)
+                .arg(cluster->last()->position()+1)
+                .arg(cluster->last()->file()->fileName());
+        } else {
+            ret = QString("Measurement %1 is number %2 in file %3")
+                .arg(cluster->first()->totalPosition()+1)
+                .arg(cluster->first()->position()+1)
+                .arg(cluster->last()->file()->fileName());
+            if (cluster->count()>1) {
+                ret += cluster->count()>2 ? ",...," : ",";
+                ret += QString("\nmeasurement %1 is number %2 in file %3")
+                    .arg(cluster->last()->totalPosition()+1)
+                    .arg(cluster->last()->position()+1)
+                    .arg(cluster->last()->file()->fileName());
+            }
+        }
         ret += ".";
         return ret;
     }

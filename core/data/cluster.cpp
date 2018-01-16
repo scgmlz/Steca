@@ -19,11 +19,9 @@
 #include "core/typ/matrix.h"
 #include <qmath.h>
 
-Cluster::Cluster(const Experiment& experiment, const QString tag,
-             const vec<shp_Measurement>& measurements)
+Cluster::Cluster(const Experiment& experiment, const vec<shp_Measurement>& measurements)
     : vec<shp_Measurement>(measurements)
     , experiment_(experiment)
-    , tag_(tag)
 {
 }
 

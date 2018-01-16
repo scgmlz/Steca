@@ -159,10 +159,7 @@ void Session::assembleExperiment(const vec<int> fileNums, const int combineBy) {
         vec<shp_Measurement> group;
         for (ii=i; ii<selectedMeasurements.count() && ii<i+combineBy; ii++)
             group.append(selectedMeasurements[ii]);
-        QString tag = QString::number(i + 1);
-        if (combineBy > 1)
-            tag += '-' + QString::number(ii);
-        shp_Cluster cd(new Cluster(experiment_, tag, group));
+        shp_Cluster cd(new Cluster(experiment_, group));
         experiment_.appendHere(cd);
     }
 }

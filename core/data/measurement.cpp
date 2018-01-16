@@ -16,16 +16,21 @@
 #include "core/session.h"
 #include <qmath.h>
 
-Measurement::Measurement(const Metadata& md, size2d const& size, inten_vec const& intens)
-    : md_(new Metadata(md)), image_(new Image(size)) {
+Measurement::Measurement(
+    const class Datafile* file, const int position, const Metadata& md, size2d const& size,
+    inten_vec const& intens)
+    : file_(file)
+    , position_(position)
+    , md_(new Metadata(md))
+    , image_(new Image(size))
+{
     debug::ensure(intens.count() == size.count());
     for_i (intens.count())
         image_->setInten(i, intens.at(i));
 }
 
-shp_Metadata Measurement::metadata() const {
-    debug::ensure(!md_.isNull());
-    return md_;
+int Measurement::totalPosition() const {
+    return file_->offset() + position_;
 }
 
 Range Measurement::rgeGma() const {

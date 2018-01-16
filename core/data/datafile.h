@@ -28,8 +28,11 @@ class Metadata;
 class Datafile final {
 public:
     Datafile() = delete;
-//    Datafile(const Datafile&) = delete;
+    Datafile(const Datafile&) = delete;
+    // allow move so that the low-level loaders must not bother about shared pointers:
+    Datafile(const Datafile&&);
     Datafile(rcstr fileName);
+
     void addDataset(const Metadata&, size2d const&, inten_vec const&);
     void setOffset(const int offset) { offset_ = offset; }
 

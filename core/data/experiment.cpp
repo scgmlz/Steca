@@ -95,7 +95,7 @@ void Experiment::computeAvgeCurve() const {
     for (shp_Cluster const& cluster : *this)
         for (shp_Measurement const& one : *cluster)
             group.append(one);
-    Cluster allData(*this, "all", group);
+    Cluster allData(*this, group);
     avgCurve_ = gSession->defaultDataseqLens(allData)->makeCurve();
 }
 

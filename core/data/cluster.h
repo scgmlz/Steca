@@ -27,11 +27,9 @@ class Experiment;
 class Cluster final : public vec<shp_Measurement> {
 public:
     Cluster() = delete;
-    Cluster(const Experiment& experiment, const QString tag,
-          const vec<shp_Measurement>& measurements);
+    Cluster(const Experiment& experiment, const vec<shp_Measurement>& measurements);
 
     const Experiment& experiment() const { return experiment_; }
-    QString tag() const { return tag_; }
 
     deg omg() const;
     deg phi() const;
@@ -53,7 +51,6 @@ public:
 
 private:
     const Experiment& experiment_;
-    QString tag_;
     shp_Metadata md_; //!< averaged Metadata, cached, computed only once
 
     void compute_metadata() const;

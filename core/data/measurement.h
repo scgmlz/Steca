@@ -27,9 +27,13 @@ class Measurement final {
 public:
     Measurement() = delete;
     Measurement(const Measurement&) = delete;
-    Measurement(const Metadata&, const size2d&, const inten_vec&);
+    Measurement(const class Datafile*, const int position, const Metadata&,
+                const size2d&, const inten_vec&);
 
-    shp_Metadata metadata() const;
+    const class Datafile* file() const { return file_; }
+    int position() const { return position_; }
+    int totalPosition() const; //!< position in full list of currently loaded measurements
+    shp_Metadata metadata() const { return md_; }
 
     deg midTth() const;
 
@@ -55,10 +59,10 @@ public:
         deg minTth, deg deltaTth) const;
 
 private:
+    const class Datafile* file_;
+    const int position_; //! position in file_
     shp_Metadata md_;
     shp_Image image_;
-//    const class Datafile* file_;
-//    const int number_;
 };
 
 typedef QSharedPointer<const Measurement> shp_Measurement;
