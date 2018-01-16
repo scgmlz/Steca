@@ -66,7 +66,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     if (row < 0 || row >= rowCount())
         return {};
     while (rowsChecked_.count()<rowCount())
-        rowsChecked_.append(false);
+        rowsChecked_.append(true);
     const Cluster* cluster = gSession->experiment().at(row).data();
     int col = index.column();
     switch (role) {
@@ -113,7 +113,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
                 .arg(gSession->experiment().combineBy());
         return ret;
     }
-    case Qt::TextColorRole: {
+    case Qt::ForegroundRole: {
         if (cluster->count()>1 &&
             (cluster->first()->file()!=cluster->last()->file()
              || cluster->count()<gSession->experiment().combineBy()))
@@ -123,8 +123,8 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     case Qt::CheckStateRole: {
         if (col==COL_CHECK) {
             return rowsChecked_.at(row) ? Qt::Checked : Qt::Unchecked;
-        } else
-            return {};
+        }
+        return {};
     }
     default:
         return {};
@@ -162,13 +162,12 @@ private:
 };
 
 ExperimentView::ExperimentView() : ListView() {
-//    setHeaderHidden(true);
+    setHeaderHidden(true);
+    setSelectionMode(QAbstractItemView::NoSelection);
     auto experimentModel = new ExperimentModel();
     setModel(experimentModel);
     connect(gHub, &TheHub::sigClustersChanged,
             [=]() { experimentModel->signalReset(); });
-    debug::ensure(dynamic_cast<ExperimentModel*>(ListView::model()));
-
     connect(gHub, &TheHub::sigClustersChanged,
             [this]() {
                 gHub->tellClusterSelected(shp_Cluster()); // first de-select
@@ -177,7 +176,7 @@ ExperimentView::ExperimentView() : ListView() {
     connect(gHub, &TheHub::sigMetatagsChosen, experimentModel,
             [this](vec<bool> const& rowsChecked) {
                 model()->showMetaInfo(rowsChecked);
-//                setHeaderHidden(model()->metaCount()==0);
+                setHeaderHidden(model()->metaCount()==0);
             });
 }
 
@@ -189,9 +188,9 @@ void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex cons
 int ExperimentView::sizeHintForColumn(int col) const {
     switch (col) {
     case ExperimentModel::COL_CHECK: {
-        return fontMetrics().width('m');
+        return 2*mWidth();
     } default:
-        return ListView::sizeHintForColumn(col);
+        return 3*mWidth();
     }
 }
 

@@ -16,6 +16,7 @@
 #include "gui/base/table_model.h"
 #include "gui/thehub.h"
 #include "gui/base/tree_views.h" // inheriting from
+#include <QHeaderView>
 
 
 // ************************************************************************** //
@@ -93,17 +94,16 @@ public:
     MetadataView();
 
 private:
-    int sizeHintForColumn(int) const;
-    MetadataModel* model() const { return static_cast<MetadataModel*>(ListView::model()); }
+    int sizeHintForColumn(int) const final;
+    MetadataModel* model() const final { return static_cast<MetadataModel*>(ListView::model()); }
 };
 
 MetadataView::MetadataView() : ListView() {
-//    setHeaderHidden(true);
+    setHeaderHidden(true);
     auto metadataModel = new MetadataModel();
     setModel(metadataModel);
     connect(gHub, &TheHub::sigClusterSelected,
             [=](shp_Cluster dataseq) { metadataModel->reset(dataseq); });
-    debug::ensure(dynamic_cast<MetadataModel*>(ListView::model()));
     connect(this, &MetadataView::clicked, [this](QModelIndex const& index) {
         model()->flipCheck(index.row());
         emit gHub->sigMetatagsChosen(model()->rowsChecked());
@@ -113,9 +113,9 @@ MetadataView::MetadataView() : ListView() {
 int MetadataView::sizeHintForColumn(int col) const {
     switch (col) {
     case MetadataModel::COL_CHECK:
-        return fontMetrics().width('m');
+        return 2*mWidth();
     default:
-        return ListView::sizeHintForColumn(col);
+        return 3*mWidth();
     }
 }
 

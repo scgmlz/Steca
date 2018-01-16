@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/base/tree_views.cpp
-//! @brief     Implements classes ListView, MultiListView
+//! @brief     Implements classes TreeView, ListView
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -24,8 +24,10 @@ TreeView::TreeView() {
     setAlternatingRowColors(true);
 }
 
-int TreeView::sizeHintForColumn(int) const {
-    return 3 * fontMetrics().width('m');
+int TreeView::mWidth() const {
+    QFont f = font();
+    f.setBold(false);
+    return QFontMetrics(f).width('m');
 }
 
 // ************************************************************************** //
@@ -59,21 +61,4 @@ void ListView::updateSingleSelection() {
 
 void ListView::selectRow(int row) {
     setCurrentIndex(model()->index(row, 0));
-}
-
-// ************************************************************************** //
-//  class MultiListView
-// ************************************************************************** //
-
-MultiListView::MultiListView() : ListView() {
-    setSelectionMode(ExtendedSelection);
-}
-
-void MultiListView::selectRows(vec<int> rows) {
-    TableModel const* m = model();
-    const int cols = m->columnCount();
-    QItemSelection is;
-    for (int row : rows)
-        is.append(QItemSelectionRange(m->index(row, 0), m->index(row, cols - 1)));
-    selectionModel()->select(is, QItemSelectionModel::ClearAndSelect);
 }

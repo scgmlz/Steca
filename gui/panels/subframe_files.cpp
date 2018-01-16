@@ -27,37 +27,74 @@
 
 //! The model for FilesView
 
-class FilesModel : public TableModel {
+class FilesModel : public TableModel { // < TableModel < QAbstractTableModel < QAbstractItemModel
 public:
     void removeFile(int i) { gHub->removeFile(i); }
+    void onClicked(const QModelIndex &);
 
-    int columnCount() const final { return 2; }
+    int columnCount() const final { return 3; }
     int rowCount() const final { return gSession->numFiles(); }
-    QVariant data(const QModelIndex&, int) const;
+    QVariant data(const QModelIndex&, int) const final;
+
+    vec<bool> const& rowsChecked() const { return rowsChecked_; }
+    int rowHighlighted() const { return rowHighlighted_; }
+
+private:
+    mutable vec<bool> rowsChecked_;
+    int rowHighlighted_;
 };
 
 
 QVariant FilesModel::data(const QModelIndex& index, int role) const {
-    const int row = index.row(), rowCnt = rowCount();
-    if (row < 0 || rowCnt <= row)
+    const int row = index.row();
+    if (row < 0 || row >= rowCount())
         return {};
+    while (rowsChecked_.count()<rowCount())
+        rowsChecked_.append(true);
     const Datafile* file = gSession->file(row);
+    int col = index.column();
     switch (role) {
+    case Qt::EditRole:
+        return {};
     case Qt::DisplayRole:
-        return file->fileName();
+        if (col==2)
+            return file->fileName();
+        return {};
     case Qt::UserRole:
-        return QVariant::fromValue<const Datafile*>(file);
+        if (col==2)
+            return QVariant::fromValue<const Datafile*>(file);
+        return {};
     case Qt::ToolTipRole:
-        return QString("File %1\ncontains %2 measurements\nhere numbered %3 to %4")
-            .arg(file->fileName())
-            .arg(file->count())
-            .arg(file->offset()+1)
-            .arg(file->offset()+file->count());
+        if (col>=2)
+            return QString("File %1\ncontains %2 measurements\nhere numbered %3 to %4")
+                .arg(file->fileName())
+                .arg(file->count())
+                .arg(file->offset()+1)
+                .arg(file->offset()+file->count());
+        return {};
+    case Qt::CheckStateRole: {
+        if (col==1) {
+            return rowsChecked_.at(row) ? Qt::Checked : Qt::Unchecked;
+        }
+        return {};
+    }
     default:
         return {};
     }
 }
 
+void FilesModel::onClicked(const QModelIndex& cell) {
+    int row = cell.row();
+    if (row < 0 || row >= rowCount())
+        return;
+    int col = cell.column();
+    if (col==1) {
+        rowsChecked_[row] = !rowsChecked_[row];
+    } else if (col==2) {
+        qDebug() << "highlighted";
+    }
+    emit dataChanged(cell, cell);
+}
 
 // ************************************************************************** //
 //  local class FilesView
@@ -65,34 +102,30 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
 
 //! Main item in SubframeFiles: View and control the list of DataFile's
 
-class FilesView : public MultiListView {
+class FilesView : public ListView { // < TreeView < QTreeView < QAbstractItemView
 public:
     FilesView();
 
 private:
-    void selectionChanged(QItemSelection const&, QItemSelection const&);
+    int sizeHintForColumn(int) const final;
+
     void removeSelected();
     void recollect();
 
-    FilesModel* model() const { return static_cast<FilesModel*>(MultiListView::model()); }
+    FilesModel* model() const { return static_cast<FilesModel*>(ListView::model()); }
 };
 
-FilesView::FilesView() : MultiListView() {
+FilesView::FilesView() : ListView() {
+    setHeaderHidden(true);
+    setSelectionMode(QAbstractItemView::NoSelection);
     auto filesModel = new FilesModel();
     setModel(filesModel);
+
+    connect(this, &FilesView::clicked, model(), &FilesModel::onClicked);
     connect(gHub, &TheHub::sigFilesChanged, [=]() { filesModel->signalReset(); });
-    debug::ensure(dynamic_cast<FilesModel*>(MultiListView::model()));
-
-    header()->hide();
-
     connect(gHub->trigger_removeFile, &QAction::triggered, [this]() { removeSelected(); });
-    connect(gHub, &TheHub::sigFilesChanged, [this]() { selectRows({}); recollect(); });
-    connect(gHub, &TheHub::sigFilesSelected, [this]() { selectRows(gSession->filesSelection()); });
-}
-
-void FilesView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
-    MultiListView::selectionChanged(selected, deselected);
-    recollect();
+    connect(gHub, &TheHub::sigFilesChanged, [this]() { selectRow({}); recollect(); });
+// TODO    connect(gHub, &TheHub::sigFilesSelected, [this]() { selectRows(gSession->filesSelection()); });
 }
 
 void FilesView::removeSelected() {
@@ -100,7 +133,7 @@ void FilesView::removeSelected() {
     // backwards
     for (int i = indexes.count(); i-- > 0;)
         model()->removeFile(indexes.at(i).row());
-    selectRows({});
+    selectRow({});
     recollect();
 }
 
@@ -111,6 +144,16 @@ void FilesView::recollect() {
             rows.append(index.row());
     gHub->collectDatasetsFromSelection(rows);
 }
+
+int FilesView::sizeHintForColumn(int col) const {
+    switch (col) {
+    case 1: {
+        return 2*mWidth();
+    } default:
+        return 10*mWidth();
+    }
+}
+
 
 // ************************************************************************** //
 //  class SubframeFiles
