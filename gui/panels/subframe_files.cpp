@@ -78,6 +78,11 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
         }
         return {};
     }
+    case Qt::BackgroundRole: {
+        if (row==rowHighlighted_)
+            return QColor(Qt::cyan);
+        return QColor(Qt::white);
+    }
     default:
         return {};
     }
@@ -90,10 +95,11 @@ void FilesModel::onClicked(const QModelIndex& cell) {
     int col = cell.column();
     if (col==1) {
         rowsChecked_[row] = !rowsChecked_[row];
+        emit dataChanged(cell, cell);
     } else if (col==2) {
-        qDebug() << "highlighted";
+        rowHighlighted_ = row;
+        emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
     }
-    emit dataChanged(cell, cell);
 }
 
 // ************************************************************************** //
