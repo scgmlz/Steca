@@ -27,6 +27,7 @@ class Experiment;
 class Cluster final : public vec<shp_Measurement> {
 public:
     Cluster() = delete;
+    Cluster(Cluster&) = delete;
     Cluster(const Experiment& experiment, const vec<shp_Measurement>& measurements);
 
     const Experiment& experiment() const { return experiment_; }

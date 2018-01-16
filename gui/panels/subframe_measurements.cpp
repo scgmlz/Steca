@@ -89,7 +89,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
             ret = QString("Measurement %1 is number %2 in file %3")
                 .arg(cluster->first()->totalPosition()+1)
                 .arg(cluster->first()->position()+1)
-                .arg(cluster->last()->file()->fileName());
+                .arg(cluster->first()->file()->fileName());
             if (cluster->count()>1) {
                 ret += cluster->count()>2 ? ",...," : ",";
                 ret += QString("\nmeasurement %1 is number %2 in file %3")
@@ -99,7 +99,18 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
             }
         }
         ret += ".";
+        if (cluster->count()<gSession->experiment().combineBy())
+            ret += QString("\nThis cluster has only %1 elements, while the combine factor is %2.")
+                .arg(cluster->count())
+                .arg(gSession->experiment().combineBy());
         return ret;
+    }
+    case Qt::TextColorRole: {
+        if (cluster->count()>1 &&
+            (cluster->first()->file()!=cluster->last()->file()
+             || cluster->count()<gSession->experiment().combineBy()))
+            return QColor(Qt::red);
+        return QColor(Qt::black);
     }
     default:
         return {};

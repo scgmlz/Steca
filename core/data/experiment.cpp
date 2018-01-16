@@ -15,7 +15,7 @@
 #include "measurement.h"
 #include "core/session.h"
 
-Experiment::Experiment() {
+Experiment::Experiment(const int combineBy) : combineBy_(combineBy) {
     invalidateAvgMutables();
 }
 

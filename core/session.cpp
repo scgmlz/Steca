@@ -145,7 +145,7 @@ void Session::removeCorrFile() {
 void Session::assembleExperiment(const vec<int> fileNums, const int combineBy) {
 
     filesSelection_ = fileNums;
-    experiment_.clear();
+    experiment_ = { combineBy };
 
     vec<shp_Measurement> selectedMeasurements;
     for (int i : filesSelection_)
