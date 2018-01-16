@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/widgets/various_widgets.h
+//! @file      gui/base/various_widgets.h
 //! @brief     Defines classes BoxWidget, DockWidget
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -18,7 +18,6 @@
 #include "core/typ/str.h"
 #include <QBoxLayout>
 #include <QDockWidget>
-#include <QLineEdit>
 
 //! a widget with a box layout
 

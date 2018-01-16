@@ -13,15 +13,12 @@
 // ************************************************************************** //
 
 #include "gui/output/output_diffractograms.h"
-#include "core/data/metadata.h"
-#include "core/data/suite.h"
 #include "core/session.h"
 #include "gui/output/dialog_panels.h"
-#include "gui/output/widgets4output.h"
+#include "gui/output/tab_save.h"
 #include "gui/output/write_file.h"
 #include "gui/thehub.h"
-#include "gui/widgets/new_q.h"
-#include "gui/widgets/various_widgets.h"
+#include "gui/base/various_widgets.h"
 
 // ************************************************************************** //
 //  local class TabDiffractogramsSave
@@ -31,7 +28,7 @@ class TabDiffractogramsSave final : public TabSave {
 public:
     TabDiffractogramsSave();
 
-    uint currType() const;
+    int currType() const;
     bool currentChecked() { return rbCurrent_->isChecked(); }
     bool allSequentialChecked() { return rbAllSequential_->isChecked(); }
     bool allChecked() { return rbAll_->isChecked(); }
@@ -57,8 +54,8 @@ TabDiffractogramsSave::TabDiffractogramsSave()
     rbAll_->setChecked(true);
 }
 
-uint TabDiffractogramsSave::currType() const {
-    return to_u(fileTypes_->currentIndex());
+int TabDiffractogramsSave::currType() const {
+    return fileTypes_->currentIndex();
 }
 
 // ************************************************************************** //
@@ -67,54 +64,54 @@ uint TabDiffractogramsSave::currType() const {
 
 struct OutputData {
 public:
-    OutputData() {}
-    OutputData(Curve curve, Suite dataseq, Range gmaStripe, uint picNum)
-        : curve_(curve), dataseq_(dataseq), gmaStripe_(gmaStripe), picNum_(picNum) {}
+    OutputData() = delete;
+    OutputData(Curve curve, const Cluster& cluster, Range gmaStripe, int picNum)
+        : curve_(curve), dataseq_(cluster), gmaStripe_(gmaStripe), picNum_(picNum) {}
 
     Curve curve_;
-    Suite dataseq_;
+    const Cluster& dataseq_;
     Range gmaStripe_;
-    uint picNum_;
+    int picNum_;
 
     bool isValid() const {
-        return (!dataseq_.metadata().isNull() || !curve_.isEmpty() || gmaStripe_.isValid());
+        return (!dataseq_.avgeMetadata().isNull() || !curve_.isEmpty() || gmaStripe_.isValid());
     }
 };
 
 namespace {
 
-OutputData collectCurve(Suite const& dataseq) {
-    shp_SequenceLens lens = gSession->defaultDatasetLens(dataseq);
+OutputData collectCurve(Cluster const& dataseq) {
+    shp_SequenceLens lens = gSession->defaultDataseqLens(dataseq);
     const Curve& curve = lens->makeCurve();
     return OutputData(curve, dataseq, lens->rgeGma(), 0); // TODO current picture number
 }
 
 OutputData outputCurrDiffractogram() {
-    shp_Suite ret = gHub->selectedSuite();
-    if (ret)
-        return collectCurve(*ret);
-    else
-        return {};
+    shp_Cluster ret = gHub->selectedCluster();
+    if (!ret)
+        throw Exception("No data selected");
+    return collectCurve(*ret);
 }
 
-vec<OutputData> collectCurves(
-    const Range& rgeGma, uint gmaSlices, Suite const& dataseq, uint picNum) {
+vec<const OutputData*> collectCurves(
+    const Range& rgeGma, int gmaSlices, Cluster const& dataseq, int picNum) {
 
-    shp_SequenceLens lens = gSession->defaultDatasetLens(dataseq);
+    shp_SequenceLens lens = gSession->defaultDataseqLens(dataseq);
 
     Range rge = (gmaSlices > 0) ? lens->rgeGma() : Range::infinite();
     if (rgeGma.isValid())
         rge = rge.intersect(rgeGma);
 
-    vec<OutputData> ret;
+    vec<const OutputData*> ret;
 
-    gmaSlices = qMax(1u, gmaSlices);
+    gmaSlices = qMax(1, gmaSlices);
     const qreal step = rge.width() / gmaSlices;
     for_i (gmaSlices) {
         const qreal min = rge.min + i * step;
         const Range gmaStripe(min, min + step);
         const Curve& curve = lens->makeCurve(gmaStripe);
-        ret.append(OutputData(curve, dataseq, gmaStripe, picNum));
+        const OutputData* dat = new OutputData(curve, dataseq, gmaStripe, picNum);
+        ret.append(dat);
     }
     return ret;
 }
@@ -123,7 +120,7 @@ void writeMetaData(OutputData outputData, QTextStream& stream) {
     if (outputData.picNum_ > 0)
         stream << "Picture Nr: " << outputData.picNum_ << '\n';
 
-    const Metadata& md = *outputData.dataseq_.metadata();
+    const Metadata& md = *outputData.dataseq_.avgeMetadata();
     const Range& rgeGma = outputData.gmaStripe_;
 
     stream << "Comment: " << md.comment << '\n';
@@ -159,9 +156,9 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
     show();
 }
 
-vec<vec<OutputData>> DiffractogramsFrame::outputAllDiffractograms() {
+vec<vec<const OutputData*>> DiffractogramsFrame::outputAllDiffractograms() {
     debug::ensure(params_->panelGammaSlices);
-    uint gmaSlices = to_u(params_->panelGammaSlices->numSlices->value());
+    int gmaSlices = params_->panelGammaSlices->numSlices->value();
 
     debug::ensure(params_->panelGammaRange);
     const PanelGammaRange* pr = params_->panelGammaRange;
@@ -172,11 +169,11 @@ vec<vec<OutputData>> DiffractogramsFrame::outputAllDiffractograms() {
     const Experiment& expt = gSession->experiment();
     Progress progress(expt.count(), progressBar_);
 
-    vec<vec<OutputData>> ret;
-    uint picNum = 1;
-    for (shp_Suite suite : expt) {
+    vec<vec<const OutputData*>> ret;
+    int picNum = 1;
+    for (shp_Cluster cluster : expt) {
         progress.step();
-        ret.append(collectCurves(rgeGma, gmaSlices, *suite, picNum));
+        ret.append(collectCurves(rgeGma, gmaSlices, *cluster, picNum));
         ++picNum;
     }
 
@@ -200,10 +197,10 @@ void DiffractogramsFrame::writeCurrDiffractogramToFile(rcstr filePath, rcstr sep
 
 void DiffractogramsFrame::writeAllDiffractogramsToFiles(
     rcstr filePath, rcstr separator, bool oneFile) {
-    vec<vec<OutputData>> outputCollections = outputAllDiffractograms();
-    for (vec<OutputData>& outputCollection : outputCollections) {
-        for (OutputData& outputData : outputCollection) {
-            if (!outputData.isValid()) {
+    const vec<vec<const OutputData*>>& outputCollections = outputAllDiffractograms();
+    for (const vec<const OutputData*>& outputCollection : outputCollections) {
+        for (const OutputData* outputData : outputCollection) {
+            if (!outputData->isValid()) {
                 qWarning() << "invalid output data in writeAllDiffractogramsToFiles";
                 return;
             }
@@ -212,23 +209,25 @@ void DiffractogramsFrame::writeAllDiffractogramsToFiles(
     WriteFile file(filePath);
     QTextStream stream(&file);
     if (oneFile) {
-        for (vec<OutputData>& outputCollection : outputCollections) {
-            for (OutputData& outputData : outputCollection) {
-                writeMetaData(outputData, stream);
+        for (const vec<const OutputData*>& outputCollection : outputCollections) {
+            for (const OutputData* outputData : outputCollection) {
+                writeMetaData(*outputData, stream);
                 stream << "Tth" << separator << "Intensity" << '\n';
-                for_i (outputData.curve_.xs().count()) {
-                    stream << outputData.curve_.x(i) << separator << outputData.curve_.y(i) << '\n';
+                for_i (outputData->curve_.xs().count()) {
+                    stream << outputData->curve_.x(i) << separator
+                           << outputData->curve_.y(i) << '\n';
                 }
             }
         }
     } else {
         int fileNumber = 1;
-        for (vec<OutputData>& outputCollection : outputCollections) {
-            for (OutputData& outputData : outputCollection) {
-                writeMetaData(outputData, stream);
+        for (const vec<const OutputData*>& outputCollection : outputCollections) {
+            for (const OutputData* outputData : outputCollection) {
+                writeMetaData(*outputData, stream);
                 stream << "Tth" << separator << "Intensity" << '\n';
-                for_i (outputData.curve_.xs().count()) {
-                    stream << outputData.curve_.x(i) << separator << outputData.curve_.y(i) << '\n';
+                for_i (outputData->curve_.xs().count()) {
+                    stream << outputData->curve_.x(i) << separator
+                           << outputData->curve_.y(i) << '\n';
                 }
             }
             ++fileNumber;

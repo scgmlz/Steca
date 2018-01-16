@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/widgets/tree_views.h
+//! @file      gui/base/tree_views.h
 //! @brief     Defines classes TreeView, ListView, MultiListView
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -18,8 +18,6 @@
 #include "core/typ/vec.h"
 #include <QTreeView>
 
-class TableModel;
-
 //! Abstract tree widget, base class of ListView and Table
 
 class TreeView : public QTreeView {
@@ -34,9 +32,9 @@ protected:
 class ListView : public TreeView {
 public:
     ListView() {}
-    void setModel(TableModel* model);
+    void setModel(class TableModel* model);
 protected:
-    TableModel* model() const;
+    virtual class TableModel* model() const;
     void updateSingleSelection();
     void selectRow(int);
 };
@@ -47,7 +45,7 @@ class MultiListView : public ListView {
 public:
     MultiListView();
 protected:
-    void selectRows(uint_vec);
+    void selectRows(vec<int>);
 };
 
 #endif // TREE_VIEWS_H

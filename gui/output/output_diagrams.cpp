@@ -13,27 +13,26 @@
 // ************************************************************************** //
 
 #include "gui/output/output_diagrams.h"
-#include "core/fit/fit_fun.h"
 #include "core/session.h"
+#include "gui/base/various_widgets.h"
+#include "gui/output/data_table.h"
 #include "gui/output/dialog_panels.h"
-#include "gui/output/widgets4output.h"
+#include "gui/output/tab_save.h"
+#include "gui/output/write_file.h"
 #include "gui/thehub.h"
-#include "gui/widgets/new_q.h"
-#include "gui/widgets/various_widgets.h"
-#include "write_file.h"
 #include "QCustomPlot/qcustomplot.h"
 
 // sorts xs and ys the same way, by (x,y)
-static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
+static void sortColumns(vec<qreal>& xs, vec<qreal>& ys, vec<int>& is) {
     debug::ensure(xs.count() == ys.count());
 
-    uint count = xs.count();
+    int count = xs.count();
 
     is.resize(count);
     for_i (count)
         is[i] = i;
 
-    std::sort(is.begin(), is.end(), [&xs, &ys](uint i1, uint i2) {
+    std::sort(is.begin(), is.end(), [&xs, &ys](int i1, int i2) {
         qreal x1 = xs.at(i1), x2 = xs.at(i2);
         if (x1 < x2)
             return true;
@@ -42,7 +41,7 @@ static void sortColumns(qreal_vec& xs, qreal_vec& ys, uint_vec& is) {
         return ys.at(i1) < ys.at(i2);
     });
 
-    qreal_vec r(count);
+    vec<qreal> r(count);
 
     for_i (count)
         r[i] = xs.at(is.at(i));
@@ -65,7 +64,7 @@ public:
     TabPlot();
     void set(ReflectionInfos);
     void plot(
-        qreal_vec const& xs, qreal_vec const& ys, qreal_vec const& ysLo, qreal_vec const& ysUp);
+        vec<qreal> const& xs, vec<qreal> const& ys, vec<qreal> const& ysLo, vec<qreal> const& ysUp);
 private:
     QCPGraph *graph_, *graphLo_, *graphUp_;
 };
@@ -77,10 +76,10 @@ TabPlot::TabPlot() {
 }
 
 void TabPlot::plot(
-    qreal_vec const& xs, qreal_vec const& ys, qreal_vec const& ysLo, qreal_vec const& ysUp) {
+    vec<qreal> const& xs, vec<qreal> const& ys, vec<qreal> const& ysLo, vec<qreal> const& ysUp) {
     debug::ensure(xs.count() == ys.count());
 
-    uint count = xs.count();
+    int count = xs.count();
 
     graph_->clearData();
     graphUp_->clearData();
@@ -124,7 +123,7 @@ void TabPlot::plot(
 class TabDiagramsSave final : public TabSave {
 public:
     TabDiagramsSave();
-    uint currType() const { return fileTypes_->currentIndex(); }
+    int currType() const { return fileTypes_->currentIndex(); }
     bool currDiagram() const { return currentDiagram_->isChecked(); }
 private:
     QRadioButton *currentDiagram_, *allData_;
@@ -159,8 +158,8 @@ DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
     debug::ensure(params_->panelDiagram);
     PanelDiagram const* pd = params_->panelDiagram;
 
-    connect(pd->xAxis, slot(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
-    connect(pd->yAxis, slot(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
+    connect(pd->xAxis, _SLOT_(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
+    connect(pd->yAxis, _SLOT_(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
 
     tabSave_ = new TabDiagramsSave();
     newQ::Tab(tabs_, "Save")->box().addWidget(tabSave_);
@@ -181,7 +180,7 @@ DiagramsFrame::eReflAttr DiagramsFrame::yAttr() const {
     return eReflAttr(params_->panelDiagram->yAxis->currentIndex());
 }
 
-void DiagramsFrame::displayReflection(uint reflIndex, bool interpolated) {
+void DiagramsFrame::displayReflection(int reflIndex, bool interpolated) {
     Frame::displayReflection(reflIndex, interpolated);
     rs_ = calcPoints_.at(reflIndex);
     recalculate();
@@ -189,13 +188,13 @@ void DiagramsFrame::displayReflection(uint reflIndex, bool interpolated) {
 
 void DiagramsFrame::recalculate() {
 
-    uint count = rs_.count();
+    int count = rs_.count();
 
     xs_.resize(count);
     ys_.resize(count);
 
-    uint xi = uint(xAttr());
-    uint yi = uint(yAttr());
+    int xi = int(xAttr());
+    int yi = int(yAttr());
 
     for_i (count) {
         const row_t row = rs_.at(i).data();
@@ -203,17 +202,17 @@ void DiagramsFrame::recalculate() {
         ys_[i] = row.at(yi).toDouble();
     }
 
-    uint_vec is;
+    vec<int> is;
     sortColumns(xs_, ys_, is);
 
     auto _calcErrors = [this, is](eReflAttr attr) {
-        uint count = ys_.count();
+        int count = ys_.count();
         ysErrorLo_.resize(count);
         ysErrorUp_.resize(count);
 
         for_i (count) {
             const row_t row = rs_.at(is.at(i)).data(); // access error over sorted index vec
-            qreal sigma = row.at(uint(attr)).toDouble();
+            qreal sigma = row.at(int(attr)).toDouble();
             qreal y = ys_.at(i);
             ysErrorLo_[i] = y - sigma;
             ysErrorUp_[i] = y + sigma;
@@ -281,7 +280,7 @@ void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) cons
 
     const QStringList& headers = table_->outHeaders();
     for_i (headers.count())
-        stream << headers.at(to_u(i)) << separator;
+        stream << headers.at(i) << separator;
     stream << '\n';
 
     for_i (calcPoints_.at(getReflIndex()).count()) {

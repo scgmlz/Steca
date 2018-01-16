@@ -194,7 +194,7 @@ TEST(Range, Json) {
 typedef struct { qreal min, max; } min_max;
 
 static bool RANGES_EQ(Ranges const& rs, std::vector<min_max> mm) {
-    if (rs.count() != mm.size())
+    if (rs.count() != (int)mm.size())
         return false;
 
     for_i (rs.count()) {

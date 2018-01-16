@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "core/io/io_io.h"
+#include "core/loaders/loaders.h"
 #include "core/session.h"
 #include "core/typ/exception.h"
 #include "testdata.h"
@@ -8,7 +8,7 @@ class Session* gSession = Session::instance();
 
 TEST(IO, Caress) {
     try {
-        io::loadDatafile(TESTDATADIR "/caress.dat");
+        load::loadDatafile(TESTDATADIR "/caress.dat");
     } catch (Exception& ex) {
         std::cerr << "io::load throws: " << ex.what() << "\n";
         EXPECT_TRUE(false);

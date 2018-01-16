@@ -15,8 +15,7 @@
 #ifndef SUBFRAME_SETUP_H
 #define SUBFRAME_SETUP_H
 
-#include "gui/widgets/new_q.h"
-#include <QTabWidget>
+#include "gui/base/new_q.h"
 
 //! Part of the main window that contains geometry, background, and image controls.
 

@@ -16,16 +16,21 @@
 #include "core/session.h"
 #include <qmath.h>
 
-Measurement::Measurement(const Metadata& md, size2d const& size, inten_vec const& intens)
-    : md_(new Metadata(md)), image_(new Image(size)) {
+Measurement::Measurement(
+    const class Datafile* file, const int position, const Metadata& md, size2d const& size,
+    inten_vec const& intens)
+    : file_(file)
+    , position_(position)
+    , md_(new Metadata(md))
+    , image_(new Image(size))
+{
     debug::ensure(intens.count() == size.count());
     for_i (intens.count())
         image_->setInten(i, intens.at(i));
 }
 
-shp_Metadata Measurement::metadata() const {
-    debug::ensure(!md_.isNull());
-    return md_;
+int Measurement::totalPosition() const {
+    return file_->offset() + position_;
 }
 
 Range Measurement::rgeGma() const {
@@ -49,15 +54,15 @@ size2d Measurement::imageSize() const {
 }
 
 void Measurement::collectIntens(
-    const Image* intensCorr, inten_vec& intens, uint_vec& counts,
+    const Image* intensCorr, inten_vec& intens, vec<int>& counts,
     const Range& rgeGma, deg minTth, deg deltaTth) const {
 
     const shp_AngleMap& angleMap = gSession->angleMap(*this);
     debug::ensure(!angleMap.isNull());
     AngleMap const& map = *angleMap;
 
-    uint_vec const* gmaIndexes = nullptr;
-    uint gmaIndexMin = 0, gmaIndexMax = 0;
+    vec<int> const* gmaIndexes = nullptr;
+    int gmaIndexMin = 0, gmaIndexMax = 0;
     map.getGmaIndexes(rgeGma, gmaIndexes, gmaIndexMin, gmaIndexMax);
 
     debug::ensure(gmaIndexes);
@@ -65,12 +70,12 @@ void Measurement::collectIntens(
     debug::ensure(gmaIndexMax <= gmaIndexes->count());
 
     debug::ensure(intens.count() == counts.count());
-    uint count = intens.count();
+    int count = intens.count();
 
     debug::ensure(0 < deltaTth);
 
-    for (uint i = gmaIndexMin; i < gmaIndexMax; ++i) {
-        uint ind = gmaIndexes->at(i);
+    for (int i = gmaIndexMin; i < gmaIndexMax; ++i) {
+        int ind = gmaIndexes->at(i);
         inten_t inten = image_->inten(ind);
         if (qIsNaN(inten))
             continue;
@@ -84,7 +89,7 @@ void Measurement::collectIntens(
         deg tth = map.at(ind).tth;
 
         // bin index
-        uint ti = to_u(qFloor((tth - minTth) / deltaTth));
+        int ti = qFloor((tth - minTth) / deltaTth);
         debug::ensure(ti <= count);
         ti = qMin(ti, count - 1); // it can overshoot due to floating point calculation
 

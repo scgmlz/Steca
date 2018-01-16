@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/io/io_io.cpp
+//! @file      core/loaders/loaders.cpp
 //! @brief     Implements loader functions.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -17,7 +17,7 @@
 #include <QStringBuilder> // for ".." % ..
 #include <QFileInfo>
 
-namespace io {
+namespace load {
 Datafile loadCaress(rcstr filePath) THROWS;
 Datafile loadMar(rcstr filePath) THROWS;
 Datafile loadTiffDat(rcstr filePath) THROWS;
@@ -27,7 +27,7 @@ str loadCaressComment(rcstr filePath);
 namespace {
 
 // peek at up to maxLen bytes (to establish the file type)
-static QByteArray peek(uint pos, uint maxLen, QFileInfo const& info) {
+static QByteArray peek(int pos, int maxLen, QFileInfo const& info) {
     QFile file(info.filePath());
     if (file.open(QFile::ReadOnly) && file.seek(pos))
         return file.read(maxLen);
@@ -37,13 +37,13 @@ static QByteArray peek(uint pos, uint maxLen, QFileInfo const& info) {
 // Caress file format
 bool couldBeCaress(QFileInfo const& info) {
     static QByteArray const header("\020\012DEFCMD DAT");
-    return header == peek(0, to_u(header.size()), info);
+    return header == peek(0, header.size(), info);
 }
 
 // Mar file format
 bool couldBeMar(QFileInfo const& info) {
     static QByteArray const header("mar research");
-    return header == peek(0x80, to_u(header.size()), info);
+    return header == peek(0x80, header.size(), info);
 }
 
 // Text .dat file with metadata for tiff files
@@ -73,29 +73,29 @@ Datafile load_low_level(rcstr filePath) THROWS {
     RUNTIME_CHECK(info.exists(), "File " % filePath % " does not exist");
 
     if (couldBeCaress(info))
-        return io::loadCaress(filePath);
+        return load::loadCaress(filePath);
     else if (couldBeMar(info))
-        return io::loadMar(filePath);
+        return load::loadMar(filePath);
     else if (couldBeTiffDat(info))
-        return io::loadTiffDat(filePath);
+        return load::loadTiffDat(filePath);
     else
         THROW("unknown file type: " % filePath);
 }
 
 } // local methods
 
-namespace io {
+namespace load {
 
-shp_Datafile loadDatafile(rcstr filePath) THROWS {
-    const shp_Datafile ret(new Datafile(load_low_level(filePath)));
-    RUNTIME_CHECK(ret->suite().count() > 0, "File " % filePath % " contains no suite");
+QSharedPointer<Datafile> loadDatafile(rcstr filePath) THROWS {
+    const QSharedPointer<Datafile> ret(new Datafile(load_low_level(filePath)));
+    RUNTIME_CHECK(ret->count() > 0, "File " % filePath % " contains no cluster");
     return ret;
 }
 
 str loadComment(QFileInfo const& info) {
     const QString& path = info.absoluteFilePath();
     if (couldBeCaress(info))
-        return "[car] " + io::loadCaressComment(path);
+        return "[car] " + loadCaressComment(path);
     else if (couldBeMar(info))
         return "[mar] ";
     else if (couldBeTiffDat(info))
@@ -104,4 +104,4 @@ str loadComment(QFileInfo const& info) {
         return "";
 }
 
-} // namespace io
+} // namespace load

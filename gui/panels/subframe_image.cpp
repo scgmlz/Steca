@@ -13,13 +13,10 @@
 // ************************************************************************** //
 
 #include "subframe_image.h"
-#include "core/data/measurement.h"
 #include "core/session.h"
 #include "gui/cfg/colors.h"
-#include "gui/cfg/gui_cfg.h"
 #include "gui/thehub.h"
-#include "gui/widgets/new_q.h"
-#include "gui/widgets/various_widgets.h"
+#include "gui/base/various_widgets.h"
 #include <qmath.h>
 #include <QPainter>
 
@@ -146,40 +143,40 @@ SubframeImage::SubframeImage() {
         hb->addWidget(newQ::IconButton(gHub->toggle_fixedIntenImage));
         hb->addWidget(newQ::IconButton(gHub->toggle_stepScale));
         hb->addWidget(newQ::IconButton(gHub->toggle_showOverlay));
-        hb->addWidget((spinN_ = newQ::SpinBox(gui_cfg::em4, 1)));
+        hb->addWidget((spinN_ = newQ::SpinBox(4, false, 1)));
 
         hb->addStretch(1);
 
         hb->addWidget(newQ::IconButton(gHub->toggle_showBins));
         hb->addWidget(newQ::Label("γ count"));
-        hb->addWidget((numSlices_ = newQ::SpinBox(gui_cfg::em4, 0)));
+        hb->addWidget((numSlices_ = newQ::SpinBox(4, false, 0)));
         hb->addWidget(newQ::Label("#"));
-        hb->addWidget((numSlice_ = newQ::SpinBox(gui_cfg::em4, 1)));
+        hb->addWidget((numSlice_ = newQ::SpinBox(4, false, 1)));
 
         hb->addWidget(newQ::Label("min"));
-        hb->addWidget((minGamma_ = newQ::DoubleSpinBox(gui_cfg::em4_2)));
+        hb->addWidget((minGamma_ = newQ::DoubleSpinBox(6, true)));
         hb->addWidget(newQ::Label("max"));
-        hb->addWidget((maxGamma_ = newQ::DoubleSpinBox(gui_cfg::em4_2)));
+        hb->addWidget((maxGamma_ = newQ::DoubleSpinBox(6, true)));
 
         minGamma_->setReadOnly(true);
         maxGamma_->setReadOnly(true);
 
         hb->addWidget(newQ::Label("bin#"));
-        hb->addWidget((numBin_ = newQ::SpinBox(gui_cfg::em4, 1)));
+        hb->addWidget((numBin_ = newQ::SpinBox(4, false, 1)));
 
         box.addWidget((dataImageWidget_ = new ImageWidget()));
 
-        connect(spinN_, slot(QSpinBox, valueChanged, int), [this]() { render(); });
-        connect(numSlices_, slot(QSpinBox, valueChanged, int), [this]() { render(); });
-        connect(numSlice_, slot(QSpinBox, valueChanged, int), [this]() { render(); });
-        connect(numBin_, slot(QSpinBox, valueChanged, int), [this]() { render(); });
+        connect(spinN_, _SLOT_(QSpinBox, valueChanged, int), [this]() { render(); });
+        connect(numSlices_, _SLOT_(QSpinBox, valueChanged, int), [this]() { render(); });
+        connect(numSlice_, _SLOT_(QSpinBox, valueChanged, int), [this]() { render(); });
+        connect(numBin_, _SLOT_(QSpinBox, valueChanged, int), [this]() { render(); });
     }
 
     {
         BoxWidget& tab = *newQ::Tab(this, "Correction");
 
         connect(gHub, &TheHub::sigCorrFile,
-                [&tab](shp_Datafile file) { tab.setEnabled(!file.isNull()); });
+                [&tab](const Datafile* file) { tab.setEnabled(file); });
 
         QBoxLayout& box = tab.box();
 
@@ -196,14 +193,12 @@ SubframeImage::SubframeImage() {
     }
 
     connect(gHub->toggle_enableCorr, &QAction::toggled, [this](bool) { render(); });
-
     connect(gHub->toggle_showBins, &QAction::toggled, [this]() { render(); });
 
     connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigNormChanged, [this](){ render(); });
-    connect(gHub, &TheHub::sigSuiteSelected,
-            [this](shp_Suite dataseq){ setSuite(dataseq); });
+    connect(gHub, &TheHub::sigClusterSelected, [this](shp_Cluster dataseq){ setCluster(dataseq); });
 
     render();
 }
@@ -211,7 +206,7 @@ SubframeImage::SubframeImage() {
 QPixmap SubframeImage::makeBlankPixmap() {
     const size2d size = gSession->imageSize();
 
-    QPixmap pixmap(to_i(size.w), to_i(size.h));
+    QPixmap pixmap(size.w, size.h);
     pixmap.fill(QColor(0, 0, 0, 0));
 
     return pixmap;
@@ -227,13 +222,13 @@ QImage SubframeImage::makeImage(shp_Image image, bool curvedScale) {
     if (size.isEmpty())
         return im;
 
-    im = QImage(QSize(to_i(size.w), to_i(size.h)), QImage::Format_RGB32);
+    im = QImage(QSize(size.w, size.h), QImage::Format_RGB32);
 
     const Range rgeInten = imageLens->rgeInten(gHub->isFixedIntenImageScale());
     inten_t maxInten = inten_t(rgeInten.max);
 
     for_ij (size.w, size.h)
-        im.setPixel(to_i(i), to_i(j),
+        im.setPixel(i, j,
                     colormap::intenImage(imageLens->imageInten(i, j), maxInten, curvedScale));
     return im;
 }
@@ -249,7 +244,7 @@ QPixmap SubframeImage::makePixmap(
 
     const QSize& size = im.size();
     for_ij (size.width(), size.height()) {
-        ScatterDirection const& a = angleMap->at(to_u(i), to_u(j));
+        ScatterDirection const& a = angleMap->at(i, j);
         QColor color = im.pixel(i, j);
         if (rgeGma.contains(a.gma)) {
             if (rgeTth.contains(a.tth)) {
@@ -266,7 +261,7 @@ QPixmap SubframeImage::makePixmap(
     return QPixmap::fromImage(im);
 }
 
-void SubframeImage::setSuite(shp_Suite dataseq) {
+void SubframeImage::setCluster(shp_Cluster dataseq) {
     dataseq_ = dataseq;
     render();
 }
@@ -275,24 +270,24 @@ void SubframeImage::render() {
     {
         QPixmap pixMap;
 
-        const uint nSlices = to_u(numSlices_->value());
-        numSlice_->setMaximum(qMax(1, to_i(nSlices)));
+        const int nSlices = numSlices_->value();
+        numSlice_->setMaximum(qMax(1, nSlices));
         numSlice_->setEnabled(nSlices > 0);
 
         if (dataseq_) {
             // 1 - based
-            const uint by = qBound(1u, uint(gHub->suiteGroupedBy()), dataseq_->count());
-            const uint n = qBound(1u, to_u(spinN_->value()), by);
+            const int by = qBound(1, int(gHub->clusterGroupedBy()), dataseq_->count());
+            const int n = qBound(1, spinN_->value(), by);
 
-            spinN_->setValue(to_i(n));
+            spinN_->setValue(n);
             spinN_->setEnabled(by > 1);
 
-            lens_ = gSession->defaultDatasetLens(*dataseq_);
+            lens_ = gSession->defaultDataseqLens(*dataseq_);
 
             Range rge;
             if (nSlices > 0) {
-                uint nSlice = qMax(1u, to_u(numSlice_->value()));
-                uint iSlice = nSlice - 1;
+                int nSlice = qMax(1, numSlice_->value());
+                int iSlice = nSlice - 1;
 
                 const Range rgeGma = lens_->rgeGma();
                 const qreal min = rgeGma.min;
@@ -315,7 +310,7 @@ void SubframeImage::render() {
             numBin_->setEnabled(true);
             if (gHub->toggle_showBins->isChecked()) {
                 Range rgeTth = lens_->rgeTth();
-                int count = to_i(lens_->makeCurve().count());
+                int count = lens_->makeCurve().count();
                 numBin_->setMaximum(count - 1);
                 int min = rgeTth.min, wdt = rgeTth.width();
                 qreal num = qreal(numBin_->value());

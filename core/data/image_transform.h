@@ -15,7 +15,7 @@
 #ifndef IMAGE_TRANSFORM_H
 #define IMAGE_TRANSFORM_H
 
-#include "core/def/numbers.h" // for uint
+#include "core/def/numbers.h" // for int
 
 //! Encodes chosen rotation and mirror operations
 
@@ -34,7 +34,7 @@ public:
     } val;
 
     // clamps val appropriately
-    ImageTransform(uint val = ROTATE_0);
+    ImageTransform(int val = ROTATE_0);
 
     // adds/removes the mirror flag
     ImageTransform mirror(bool on) const;

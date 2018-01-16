@@ -14,8 +14,7 @@
 
 #include "gui/panels/subframe_diffractogram.h"
 #include "gui/panels/panel_diffractogram.h"
-#include "gui/widgets/various_widgets.h"
-#include "gui/widgets/new_q.h"
+#include "gui/base/various_widgets.h"
 
 SubframeDiffractogram::SubframeDiffractogram() {
     setTabPosition(QTabWidget::North);

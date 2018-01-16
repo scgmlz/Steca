@@ -26,7 +26,7 @@ bool Curve::isEmpty() const {
     return xs_.isEmpty();
 }
 
-uint Curve::count() const {
+int Curve::count() const {
     debug::ensure(xs_.count() == ys_.count());
     return xs_.count();
 }
@@ -46,8 +46,8 @@ Curve Curve::intersect(const Range& range) const {
     Curve ret;
     if (!range.isEmpty()) {
         debug::ensure(isOrdered());
-        uint xi = 0;
-        const uint cnt = count();
+        int xi = 0;
+        const int cnt = count();
         while (xi < cnt && xs_.at(xi) < range.min)
             ++xi;
         while (xi < cnt && xs_.at(xi) <= range.max) {
@@ -65,7 +65,7 @@ Curve Curve::intersect(const Range& range) const {
 Curve Curve::intersect(const Ranges& ranges) const {
     Curve ret;
     debug::ensure(isOrdered());
-    uint xi = 0, cnt = count();
+    int xi = 0, cnt = count();
     for_i (ranges.count()) {
         const Range& range = ranges.at(i);
         while (xi < cnt && xs_.at(xi) < range.min)
@@ -85,11 +85,11 @@ void Curve::subtract(std::function<qreal(qreal)> const& func)
         ys_[i] -= func(xs_.at(i));
 }
 
-uint Curve::maqpairindex() const {
+int Curve::maqpairindex() const {
     if (isEmpty())
         return 0;
     qreal yMax = ys_.first();
-    uint ret = 0;
+    int ret = 0;
     for_i (count()) {
         const qreal y = ys_.at(i);
         if (y > yMax) {

@@ -19,14 +19,13 @@
 #include "gui/output/output_diagrams.h"
 #include "gui/output/output_diffractograms.h"
 #include "gui/output/output_polefigures.h"
-#include "gui/panels/subframe_dataset.h"
+#include "gui/panels/subframe_measurements.h"
 #include "gui/panels/subframe_files.h"
 #include "gui/panels/subframe_metadata.h"
 #include "gui/panels/subframe_diffractogram.h"
 #include "gui/panels/subframe_image.h"
 #include "gui/panels/subframe_setup.h"
 #include "core/session.h"
-#include "gui/cfg/settings.h"
 #include "gui/thehub.h"
 
 #include <QApplication>
@@ -57,12 +56,13 @@ void initMenus(QMenuBar* mbar) {
         return ret;
     };
 
-    auto _actionsToMenu = [mbar](const char* menuName, QList<QAction*> actions)->void {
+    auto _actionsToMenu = [mbar](const char* menuName, QList<QAction*> actions)->QMenu* {
         QMenu* menu = mbar->addMenu(menuName);
         menu->addActions(actions);
         str prefix = str("%1: ").arg(menu->title().remove('&'));
         for (auto action : actions)
             action->setToolTip(prefix + action->toolTip());
+        return menu;
     };
 
 #ifdef Q_OS_OSX
@@ -78,7 +78,7 @@ void initMenus(QMenuBar* mbar) {
                 gHub->trigger_removeFile,
                 _separator(),
                 gHub->toggle_enableCorr,
-                gHub->trigger_remCorr,
+                gHub->trigger_removeCorr,
                 _separator(),
                 gHub->trigger_loadSession,
                 gHub->trigger_saveSession,
@@ -109,19 +109,23 @@ void initMenus(QMenuBar* mbar) {
                 gHub->trigger_clearReflections,
                 _separator(),
                 gHub->trigger_addReflection,
-                gHub->trigger_remReflection,
+                gHub->trigger_removeReflection,
                 _separator(),
                 gHub->toggle_combinedDgram,
                 gHub->toggle_fixedIntenDgram,
         });
 
-    _actionsToMenu(
+    QMenu* menuOutput = _actionsToMenu(
         "&Output",
         {
             gHub->trigger_outputPolefigures,
                 gHub->trigger_outputDiagrams,
                 gHub->trigger_outputDiffractograms,
         });
+    menuOutput->setEnabled(false);
+    QObject::connect(gHub, &TheHub::sigFilesSelected,
+                     [menuOutput](){ menuOutput->setEnabled(
+                             !gSession->filesSelection().isEmpty()); });
 
     _actionsToMenu(
         "&View",
@@ -170,7 +174,7 @@ MainWin::MainWin() {
 
 void MainWin::initLayout() {
     addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new SubframeFiles()));
-    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasets_ = new SubframeDatasets()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockMeasurements_ = new SubframeMeasurements()));
     addDockWidget(Qt::LeftDockWidgetArea, (dockDatasetInfo_ = new SubframeMetadata()));
 
     auto splMain = new QSplitter(Qt::Vertical);
@@ -331,7 +335,7 @@ void MainWin::saveSession() {
 void MainWin::clearSession() {
     gSession->clear();
     emit gHub->sigFilesSelected();
-    emit gHub->sigSuitesChanged();
+    emit gHub->sigClustersChanged();
 }
 
 void MainWin::execCommand(str line) {
@@ -386,7 +390,7 @@ void MainWin::viewFiles(bool on) {
 }
 
 void MainWin::viewDatasets(bool on) {
-    dockDatasets_->setVisible(on);
+    dockMeasurements_->setVisible(on);
     gHub->toggle_viewDatasets->setChecked(on);
 }
 

@@ -13,8 +13,6 @@
 // ************************************************************************** //
 
 #include "gui/console.h"
-#include "core/def/debug.h"
-#include <iostream>
 #include <QSocketNotifier>
 #include <QTextStream>
 

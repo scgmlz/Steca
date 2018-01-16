@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/widgets/new_q.h
+//! @file      gui/base/new_q.h
 //! @brief     Defines functions that return new Qt objects
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -24,12 +24,12 @@
 #include <QLineEdit>
 #include <QRadioButton>
 #include <QSpinBox>
-#include <QTabWidget>
 #include <QToolButton>
 
 class BoxWidget;
 
-//! Contains functions that return new Qt objects with Steca-standard settings
+//! Contains functions that return new Qt objects.
+
 namespace newQ {
 
 QAction* Trigger(rcstr text, rcstr iconFile="");
@@ -46,11 +46,11 @@ QGridLayout* GridLayout();
 QLabel* Label(rcstr text);
 QLabel* Icon(rcstr fileName);
 
-QLineEdit* LineEdit(uint emWidth); // emWidth: measured in typographical (m)s
-QLineEdit* LineDisplay(uint emWidth);
+QLineEdit* LineDisplay(int ndigits, bool withDot);
 
-QSpinBox* SpinBox(uint emWidth, int min = INT_MIN, int max = INT_MAX);
-QDoubleSpinBox* DoubleSpinBox(uint emWidth, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
+QSpinBox* SpinBox(int ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX);
+QDoubleSpinBox* DoubleSpinBox(
+    int ndigits, bool withDot, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
 
 QCheckBox* CheckBox(rcstr text);
 QCheckBox* CheckBox(QAction*);

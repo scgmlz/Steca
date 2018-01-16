@@ -15,14 +15,13 @@
 #include "measurement.h"
 #include "core/session.h"
 
-Experiment::Experiment() {
+Experiment::Experiment(const int combineBy) : combineBy_(combineBy) {
     invalidateAvgMutables();
 }
 
-void Experiment::appendHere(shp_Suite dataseq) {
+void Experiment::appendHere(shp_Cluster dataseq) {
     // can be added only once
-    debug::ensure(!dataseq->experiment_);
-    dataseq->experiment_ = this;
+    debug::ensure(&(dataseq->experiment_)==this);
     append(dataseq);
     invalidateAvgMutables();
 }
@@ -36,34 +35,34 @@ size2d Experiment::imageSize() const {
 
 qreal Experiment::avgMonitorCount() const {
     if (qIsNaN(avgMonitorCount_))
-        avgMonitorCount_ = calcAvgMutable(&Suite::avgMonitorCount);
+        avgMonitorCount_ = calcAvgMutable(&Cluster::avgMonitorCount);
     return avgMonitorCount_;
 }
 
 qreal Experiment::avgDeltaMonitorCount() const {
     if (qIsNaN(avgDeltaMonitorCount_))
-        avgDeltaMonitorCount_ = calcAvgMutable(&Suite::avgDeltaMonitorCount);
+        avgDeltaMonitorCount_ = calcAvgMutable(&Cluster::avgDeltaMonitorCount);
     return avgDeltaMonitorCount_;
 }
 
 qreal Experiment::avgDeltaTime() const {
     if (qIsNaN(avgDeltaTime_))
-        avgDeltaTime_ = calcAvgMutable(&Suite::avgDeltaTime);
+        avgDeltaTime_ = calcAvgMutable(&Cluster::avgDeltaTime);
     return avgDeltaTime_;
 }
 
 const Range& Experiment::rgeGma() const {
     if (!rgeGma_.isValid())
-        for (const shp_Suite& suite : *this)
-            rgeGma_.extendBy(suite->rgeGma());
+        for (const shp_Cluster& cluster : *this)
+            rgeGma_.extendBy(cluster->rgeGma());
     return rgeGma_;
 }
 
 const Range& Experiment::rgeFixedInten(bool trans, bool cut) const {
     if (!rgeFixedInten_.isValid()) {
         TakesLongTime __;
-        for (const shp_Suite& suite : *this)
-            for (const shp_Measurement& one : *suite) {
+        for (const shp_Cluster& cluster : *this)
+            for (const shp_Measurement& one : *cluster) {
                 if (one->image()) {
                     const shp_Image& image = one->image();
                     shp_ImageLens imageLens = gSession->imageLens(*image, trans, cut);
@@ -78,7 +77,7 @@ Curve Experiment::avgCurve() const {
     if (avgCurve_.isEmpty()) {
         // TODO invalidate when combinedDgram is unchecked
         TakesLongTime __;
-        avgCurve_ = gSession->dataseqLens(*combineAll(), gSession->norm(), true, true)->makeCurve();
+        computeAvgeCurve();
     }
     return avgCurve_;
 }
@@ -90,18 +89,20 @@ void Experiment::invalidateAvgMutables() const {
     avgCurve_.clear();
 }
 
-shp_Suite Experiment::combineAll() const {
-    shp_Suite ret(new Suite);
-    for (shp_Suite const& suite : *this)
-        for (shp_Measurement const& one : *suite)
-            ret->append(one);
-    return ret;
+//! Computed cached avgeCurve_.
+void Experiment::computeAvgeCurve() const {
+    vec<shp_Measurement> group;
+    for (shp_Cluster const& cluster : *this)
+        for (shp_Measurement const& one : *cluster)
+            group.append(one);
+    Cluster allData(*this, group);
+    avgCurve_ = gSession->defaultDataseqLens(allData)->makeCurve();
 }
 
-qreal Experiment::calcAvgMutable(qreal (Suite::*avgMth)() const) const {
+qreal Experiment::calcAvgMutable(qreal (Cluster::*avgFct)() const) const {
     qreal ret = 0;
-    for (shp_Suite const& suite : *this)
-        ret += ((*suite).*avgMth)();
+    for (shp_Cluster const& cluster : *this)
+        ret += ((*cluster).*avgFct)();
     ret /= count();
     return ret;
 }

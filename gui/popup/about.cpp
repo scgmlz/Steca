@@ -14,18 +14,10 @@
 
 #include "gui/popup/about.h"
 #include "../manifest.h"
-#include "gui/cfg/gui_cfg.h"
 #include "gui/cfg/settings.h"
-#include "core/data/geometry.h"
-#include "gui/widgets/new_q.h"
 #include <QApplication>
 #include <QDate>
 #include <QDialogButtonBox>
-
-#ifdef Q_OS_MAC
-#endif
-
-
 
 AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
     Settings s("config");
@@ -93,5 +85,3 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
 
     connect(bb, &QDialogButtonBox::accepted, this, &QDialog::accept);
 }
-
-

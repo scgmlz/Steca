@@ -19,18 +19,18 @@
 
 //! limited QVector, only needed methods reexported
 
-template <typename T> class vec : protected QVector<T> {
+template <typename T> class vec : public /* TODO revert to prot or priv */ QVector<T> {
 private:
     using super = QVector<T>;
 public:
     vec() : super() {}
     vec(std::initializer_list<T> l) : super(l) {}
 
-    explicit vec(uint count) : super(to_i(count)) {}
-    explicit vec(uint count, T const& init) : super(to_i(count), init) {}
+    explicit vec(int count) : super(count) {}
+    explicit vec(int count, T const& init) : super(count, init) {}
 
-    uint count() const { return to_u(super::count()); }
-    void reserve(uint n) { super::reserve(to_i(n)); }
+    int count() const { return super::count(); }
+    void reserve(int n) { super::reserve(n); }
 
     super const& sup() const { return *this; }
     using super::clear;
@@ -41,25 +41,22 @@ public:
     using super::cend;
     using super::data;
     using super::first;
+    using super::last;
 
     vec& fill(T const& init) { return static_cast<vec&>(super::fill(init)); }
 
-    vec& fill(T const& init, uint count) {
-        return static_cast<vec&>(super::fill(init, to_i(count)));
+    vec& fill(T const& init, int count) {
+        return static_cast<vec&>(super::fill(init, count));
     }
 
-    void resize(uint count) { super::resize(to_i(count)); }
+    void resize(int count) { super::resize(count); }
     void append(T const& that) { *this += that; }
     void append(vec const& that) { *this += that; }
-    void remove(uint i) { super::remove(to_i(i)); }
+    void remove(int i) { super::remove(i); }
 
-    T const& at(uint i) const { return super::at(to_i(i)); }
-    T& operator[](uint i) { return super::operator[](to_i(i)); }
-    const T& operator[](uint i) const { return super::operator[](to_i(i)); }
+    T const& at(int i) const { return super::at(i); }
+    T& operator[](int i) { return super::operator[](i); }
+    const T& operator[](int i) const { return super::operator[](i); }
 };
-
-// most useful vectors (that's why they are in the global namespace)
-typedef vec<qreal> qreal_vec;
-typedef vec<uint> uint_vec;
 
 #endif // VEC_H

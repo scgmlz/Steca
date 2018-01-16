@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/popup/about.h
-//! @brief     Defines class AboutBox
+//! @file      gui/output/tab_save.h
+//! @brief     Defines class TabSave
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,19 +12,24 @@
 //
 // ************************************************************************** //
 
-#ifndef ABOUT_H
-#define ABOUT_H
+#ifndef TAB_SAVE_H
+#define TAB_SAVE_H
 
 #include "gui/base/new_q.h"
-#include <QDialog>
 
-//! Modal dialog that informs about the software
-class AboutBox : public QDialog {
+//! Base class for dialogs for saving some output to a file.
+
+class TabSave : public QWidget {
 public:
-    AboutBox(QWidget*);
+    TabSave(bool withTypes);
+    str filePath(bool withSuffix);
+    str separator() const;
+    QAction *actBrowse, *actSave;
 protected:
-    QCheckBox *cbShowAtStartup_, *cbCheckUpdatesAtStartup_;
-    QDoubleSpinBox *detDistance_, *detPixelSize_;
+    QGridLayout* grid_;
+    str fileSetSuffix(rcstr);
+    QLineEdit *dir_, *file_;
+    QRadioButton *rbDat_, *rbCsv_;
 };
 
-#endif // ABOUT_H
+#endif // TAB_SAVE_H

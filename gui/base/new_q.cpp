@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/widgets/new_q.cpp
+//! @file      gui/base/new_q.cpp
 //! @brief     Implements functions that return new Qt objects
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,15 +12,20 @@
 //
 // ************************************************************************** //
 
-#include "gui/widgets/new_q.h"
-#include "gui/widgets/various_widgets.h"
+#include "gui/base/new_q.h"
+#include "gui/base/various_widgets.h"
 #include "core/def/numbers.h"
-#include <QApplication>
+#include <QApplication> // for qApp for new Action
+#include <QtGlobal> // to define Q_OS_WIN
 
 namespace {
 
-static void setEmWidth(QWidget* w, uint emWidth) {
-    w->setMaximumWidth(to_i(emWidth) * w->fontMetrics().width('m'));
+static void setWidth(QWidget* w, int ndigits, bool withDot) {
+    int width = ndigits;
+#ifdef Q_OS_WIN
+    width += 1 + (withDot?1:0);
+#endif
+    w->setMaximumWidth(width * w->fontMetrics().width('m'));
 }
 
 } // local methods
@@ -89,29 +94,24 @@ QLabel* newQ::Icon(rcstr fileName) {
     return ret;
 }
 
-QLineEdit* newQ::LineEdit(uint emWidth) {
+QLineEdit* newQ::LineDisplay(int ndigits, bool withDot) {
     auto ret = new QLineEdit;
-    setEmWidth(ret, emWidth);
-    return ret;
-}
-
-QLineEdit* newQ::LineDisplay(uint emWidth) {
-    auto ret = newQ::LineEdit(emWidth);
+    setWidth(ret, ndigits, withDot);
     ret->setReadOnly(true);
     return ret;
 }
 
-QSpinBox* newQ::SpinBox(uint emWidth, int min, int max) {
+QSpinBox* newQ::SpinBox(int ndigits, bool withDot, int min, int max) {
     auto ret = new QSpinBox;
-    setEmWidth(ret, emWidth);
+    setWidth(ret, ndigits, withDot);
     ret->setMinimum(min);
     ret->setMaximum(max > min ? max : min);
     return ret;
 }
 
-QDoubleSpinBox* newQ::DoubleSpinBox(uint emWidth, qreal min, qreal max) {
+QDoubleSpinBox* newQ::DoubleSpinBox(int ndigits, bool withDot, qreal min, qreal max) {
     auto ret = new QDoubleSpinBox;
-    setEmWidth(ret, emWidth);
+    setWidth(ret, ndigits, withDot);
     ret->setMinimum(min);
     ret->setMaximum(max > min ? max : min);
     return ret;

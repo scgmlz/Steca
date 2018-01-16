@@ -15,9 +15,7 @@
 #include "gui/cfg/msg_handler.h"
 #include <iostream>
 #include <QMessageBox>
-#include <QStatusBar>
 #include <QApplication>
-#include <QMainWindow>
 #include <QtGlobal> // no auto rm
 
 #ifndef QT_NO_DEBUG

@@ -15,11 +15,11 @@
 #include "gui/output/frame.h"
 #include "core/calc/calc_polefigure.h"
 #include "core/session.h"
+#include "gui/base/various_widgets.h"
+#include "gui/output/data_table.h"
 #include "gui/output/dialog_panels.h"
-#include "gui/output/widgets4output.h"
+#include "gui/output/tab_save.h"
 #include "gui/thehub.h"
-#include "gui/widgets/new_q.h"
-#include "gui/widgets/various_widgets.h"
 #include <QProgressBar>
 #include <QScrollArea>
 
@@ -38,15 +38,15 @@ typedef vec<showcol_t> showcol_vec;
 
 class ShowColsWidget : public QWidget {
 public:
-    ShowColsWidget(Table&, showcol_vec&);
+    ShowColsWidget(DataTable&, showcol_vec&);
 private:
-    Table& table_;
+    DataTable& table_;
     showcol_vec& showCols_;
     QBoxLayout* box_;
     QRadioButton *rbHidden_, *rbAll_, *rbNone_, *rbInten_, *rbTth_, *rbFWHM_;
 };
 
-ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
+ShowColsWidget::ShowColsWidget(DataTable& table, showcol_vec& showCols)
     : table_(table), showCols_(showCols) {
     using eReflAttr = ReflectionInfo::eReflAttr;
 
@@ -79,22 +79,22 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
 
     auto _showInten = [this, _none]() {
         _none();
-        showCols_.at(uint(eReflAttr::INTEN)).cb->setChecked(true);
+        showCols_.at(int(eReflAttr::INTEN)).cb->setChecked(true);
     };
 
     auto _showTth = [this, _none]() {
         _none();
-        showCols_.at(uint(eReflAttr::TTH)).cb->setChecked(true);
+        showCols_.at(int(eReflAttr::TTH)).cb->setChecked(true);
     };
 
     auto _showFWHM = [this, _none]() {
         _none();
-        showCols_.at(uint(eReflAttr::FWHM)).cb->setChecked(true);
+        showCols_.at(int(eReflAttr::FWHM)).cb->setChecked(true);
     };
 
     auto _updateRbs = [this]() {
         bool isAll = true, isNone = true, isOther = false;
-        uint nInten = 0, nTth = 0, nFwhm = 0;
+        int nInten = 0, nTth = 0, nFwhm = 0;
 
         for_i (showCols_.count()) {
             if (!showCols_.at(i).cb->isChecked()) {
@@ -122,7 +122,7 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
         rbNone_->setChecked(isNone);
         rbAll_->setChecked(isAll);
 
-        uint const PRESET_SELECTION = 1;
+        int const PRESET_SELECTION = 1;
 
         rbInten_->setChecked(!isOther && PRESET_SELECTION == nInten);
         rbTth_->setChecked(!isOther && PRESET_SELECTION == nTth);
@@ -133,9 +133,9 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
         QCheckBox* cb = showCols_.at(i).cb;
         connect(cb, &QCheckBox::toggled, [this, _updateRbs, i](bool on) {
             if (on)
-                table_.showColumn(to_i(i) + 1);
+                table_.showColumn(i + 1);
             else
-                table_.hideColumn(to_i(i) + 1);
+                table_.hideColumn(i + 1);
 
             _updateRbs();
         });
@@ -157,7 +157,7 @@ ShowColsWidget::ShowColsWidget(Table& table, showcol_vec& showCols)
 class TabTable : public QWidget {
 public:
     TabTable(const QStringList& headers, const QStringList& outHeaders, cmp_vec const&);
-    Table* table;
+    DataTable* table;
 private:
     ShowColsWidget* showColumnsWidget_;
     showcol_vec showCols_;
@@ -167,10 +167,10 @@ TabTable::TabTable(const QStringList& headers, const QStringList& outHeaders, co
 
     QGridLayout* grid_ = newQ::GridLayout();
     setLayout(grid_);
-    debug::ensure(to_u(headers.count()) == cmps.count());
-    uint numCols = to_u(headers.count());
+    debug::ensure(headers.count() == cmps.count());
+    int numCols = headers.count();
 
-    grid_->addWidget((table = new Table(numCols)), 0, 0);
+    grid_->addWidget((table = new DataTable(numCols)), 0, 0);
     grid_->setColumnStretch(0, 1);
 
     table->setColumns(headers, outHeaders, cmps);
@@ -189,6 +189,48 @@ TabTable::TabTable(const QStringList& headers, const QStringList& outHeaders, co
 }
 
 } // local methods
+
+
+// ************************************************************************** //
+//  class Params
+// ************************************************************************** //
+
+Params::Params(ePanels panels)
+    : panelReflection(nullptr)
+    , panelGammaSlices(nullptr)
+    , panelGammaRange(nullptr)
+    , panelPoints(nullptr)
+    , panelInterpolation(nullptr)
+    , panelDiagram(nullptr) {
+
+    setLayout((box_ = newQ::BoxLayout(Qt::Horizontal)));
+
+    if (REFLECTION & panels)
+        box_->addWidget((panelReflection = new PanelReflection()));
+
+    debug::ensure(panels & GAMMA);
+    if (GAMMA & panels) {
+        box_->addWidget((panelGammaSlices = new PanelGammaSlices()));
+        box_->addWidget((panelGammaRange = new PanelGammaRange()));
+    }
+
+    if (POINTS & panels)
+        box_->addWidget((panelPoints = new PanelPoints()));
+
+    if (INTERPOLATION & panels)
+        box_->addWidget((panelInterpolation = new PanelInterpolation()));
+
+    if (DIAGRAM & panels)
+        box_->addWidget((panelDiagram = new PanelDiagram()));
+
+    box_->addStretch();
+
+    if (panelGammaSlices)
+        panelGammaSlices->updateValues();
+
+    if (panelGammaRange)
+        panelGammaRange->updateValues();
+}
 
 
 // ************************************************************************** //
@@ -233,7 +275,7 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent) : QDialog(parent) {
     connect(actInterpolate_, &QAction::triggered, [this]() { interpolate(); });
 
     if (params_->panelReflection) {
-        connect(params_->panelReflection->cbRefl, slot(QComboBox, currentIndexChanged, int),
+        connect(params_->panelReflection->cbRefl, _SLOT_(QComboBox, currentIndexChanged, int),
                 [this](){ updateReflection(); });
     }
 
@@ -252,7 +294,7 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent) : QDialog(parent) {
 
     table_ = tabTable->table;
 
-    uint reflCount = gSession->reflections().count();
+    int reflCount = gSession->reflections().count();
     calcPoints_.resize(reflCount);
     interpPoints_.resize(reflCount);
 }
@@ -265,12 +307,12 @@ void Frame::calculate() {
 
     const Reflections& reflections = gSession->reflections();
     if (!reflections.isEmpty()) {
-        uint reflCount = reflections.count();
+        int reflCount = reflections.count();
 
         const PanelGammaSlices* ps = params_->panelGammaSlices;
         debug::ensure(ps);
 
-        uint gammaSlices = to_u(ps->numSlices->value());
+        int gammaSlices = ps->numSlices->value();
 
         const PanelGammaRange* pr = params_->panelGammaRange;
         debug::ensure(pr);
@@ -284,8 +326,7 @@ void Frame::calculate() {
         for_i (reflCount)
             calcPoints_.append(
                 gSession->makeReflectionInfos(
-                    gSession->experiment(), *reflections.at(i),
-                    gammaSlices, rgeGamma, &progress));
+                    *reflections.at(i), gammaSlices, rgeGamma, &progress));
     }
 
     interpolate();
@@ -325,7 +366,7 @@ void Frame::updateReflection() {
 }
 
 // virtual, overwritten by some output frames, and called back by the overwriting function
-void Frame::displayReflection(uint reflIndex, bool interpolated) {
+void Frame::displayReflection(int reflIndex, bool interpolated) {
     table_->clear();
 
     debug::ensure(calcPoints_.count() == interpPoints_.count());
@@ -338,11 +379,11 @@ void Frame::displayReflection(uint reflIndex, bool interpolated) {
     table_->sortData();
 }
 
-uint Frame::getReflIndex() const {
+int Frame::getReflIndex() const {
     debug::ensure(params_->panelReflection);
     int reflIndex = params_->panelReflection->cbRefl->currentIndex();
     RUNTIME_CHECK(reflIndex >= 0, "invalid reflection index");
-    return to_u(reflIndex);
+    return reflIndex;
 }
 
 bool Frame::getInterpolated() const {

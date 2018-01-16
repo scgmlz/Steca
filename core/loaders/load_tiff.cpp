@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/io/io_tiff.cpp
+//! @file      core/loaders/load_tiff.cpp
 //! @brief     Implements function loadTiff
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -19,7 +19,7 @@
 #include <QDataStream>
 #include <QDir>
 
-namespace io {
+namespace load {
 
 // implemented below
 static void loadTiff(Datafile*, rcstr, deg, qreal, qreal) THROWS;
@@ -64,7 +64,7 @@ Datafile loadTiffDat(rcstr filePath) THROWS {
             continue;
 
         const QStringList lst = s.split(' ');
-        const uint cnt = lst.count();
+        const int cnt = lst.count();
         RUNTIME_CHECK(2 <= cnt && cnt <= 4, "bad metadata format");
 
         // file, phi, monitor, expTime
@@ -126,7 +126,7 @@ loadTiff(Datafile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) 
     auto check = [&is]() { RUNTIME_CHECK(QDataStream::Ok == is.status(), "could not read data"); };
 
     // magic
-    quint16 magic;
+    qint16 magic;
     is >> magic;
 
     if (0x4949 == magic) // II - intel
@@ -136,20 +136,20 @@ loadTiff(Datafile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) 
     else
         THROW("bad magic");
 
-    quint16 version;
+    qint16 version;
     is >> version;
     if (42 != version)
         THROW("bad version");
 
-    quint32 imageWidth = 0, imageHeight = 0, bitsPerSample = 0, sampleFormat = 0,
+    qint32 imageWidth = 0, imageHeight = 0, bitsPerSample = 0, sampleFormat = 0,
             rowsPerStrip = 0xffffffff, stripOffsets = 0, stripByteCounts = 0;
 
-    quint16 tagId, dataType;
-    quint32 dataCount, dataOffset;
+    qint16 tagId, dataType;
+    qint32 dataCount, dataOffset;
 
     auto seek = [&f](qint64 offset) { RUNTIME_CHECK(f.seek(offset), "bad offset"); };
 
-    auto asUint = [&]() -> uint {
+    auto asUint = [&]() -> int {
         RUNTIME_CHECK(1 == dataCount, "bad data count");
         switch (dataType) {
         case 1: // byte
@@ -173,12 +173,12 @@ loadTiff(Datafile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) 
         return str(data);
     };
 
-    quint32 dirOffset;
+    qint32 dirOffset;
     is >> dirOffset;
     check();
     seek(dirOffset);
 
-    quint16 numDirEntries;
+    qint16 numDirEntries;
     is >> numDirEntries;
 
     for_i (numDirEntries) {
@@ -230,7 +230,7 @@ loadTiff(Datafile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) 
 
     size2d size(imageWidth, imageHeight);
 
-    uint count = imageWidth * imageHeight;
+    int count = imageWidth * imageHeight;
     inten_vec intens(count);
 
     RUNTIME_CHECK((bitsPerSample / 8) * count == stripByteCounts, "bad format");
@@ -240,7 +240,7 @@ loadTiff(Datafile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) 
     for_i (intens.count())
         switch (sampleFormat) {
         case 1: {
-            quint32 sample;
+            qint32 sample;
             is >> sample;
             intens[i] = sample;
             break;
@@ -264,4 +264,4 @@ loadTiff(Datafile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) 
     file->addDataset(md, size, intens);
 }
 
-} // namespace io
+} // namespace load

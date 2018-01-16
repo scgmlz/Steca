@@ -17,7 +17,6 @@
 
 #include "core/typ/types.h"
 #include <QColor>
-#include <QRgb>
 
 namespace colormap {
 QRgb intenImage(inten_t inten, inten_t maxInten, bool curved);

@@ -22,14 +22,14 @@
 /* Example:
 
 struct CacheKey {
-  CacheKey(uint key) : key_(key) {
+  CacheKey(int key) : key_(key) {
   }
 
   friend bool operator< (rc k1, rc k2) {
     return k1.key_ < k2.key_;
   }
 
-  uint key_;
+  int key_;
 };
 
 struct CacheT {
@@ -57,7 +57,7 @@ public:
     typedef QSharedPointer<T> shp;
 
 protected:
-    typedef quint32 mru_t; // the higher the value, the more mru it was
+    typedef qint32 mru_t; // the higher the value, the more mru it was
 
     struct shp_mru_t {
         shp_mru_t() : p(), mru(0) {}
@@ -71,18 +71,18 @@ protected:
 
     mapKey_t mapKey_;
 
-    uint maxItems_;
+    int maxItems_;
 
 public:
-    cache_base(uint maxItems) : maxItems_(maxItems) { debug::ensure(maxItems_ > 0); }
+    cache_base(int maxItems) : maxItems_(maxItems) { debug::ensure(maxItems_ > 0); }
 
     virtual ~cache_base() {}
 
-    uint count() const { return to_u(mapKey_.count()); }
+    int count() const { return mapKey_.count(); }
 
     bool isEmpty() const { return mapKey_.isEmpty(); }
 
-    virtual void trim(uint n) = 0;
+    virtual void trim(int n) = 0;
 
     void clear() { trim(0); }
 
@@ -109,14 +109,14 @@ private:
 
     typedef QMap<mru_t, mapKey_it> mapMruIt_t;
 
-    void _trim(uint n) {
+    void _trim(int n) {
         if (super::count() > n) {
             mapMruIt_t mit;
             for (auto it = super::mapKey_.begin(), itEnd = super::mapKey_.end(); it != itEnd; ++it)
                 mit.insert(it->mru, it);
             // make sure there were no duplicate mrus
-            debug::ensure(to_u(mit.count()) == super::count());
-            uint cnt = super::count() - n;
+            debug::ensure(mit.count() == super::count());
+            int cnt = super::count() - n;
             for (auto it = mit.begin(); cnt-- > 0; ++it)
                 super::mapKey_.erase(*it);
         }
@@ -137,7 +137,7 @@ private:
 public:
     using super::super;
 
-    void trim(uint n) { _trim(n); }
+    void trim(int n) { _trim(n); }
 
     shp insert(Key const& key, shp p) {
         debug::ensure(!super::mapKey_.contains(key));

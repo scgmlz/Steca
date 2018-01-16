@@ -17,8 +17,6 @@
 
 #include "frame.h"
 
-class OutputData;
-
 //! The modal dialog for saving diffractograms
 class DiffractogramsFrame final : public Frame {
 public:
@@ -27,7 +25,7 @@ public:
 private:
     class TabDiffractogramsSave* tabSave_;
 
-    vec<vec<OutputData>> outputAllDiffractograms();
+    vec<vec<const class OutputData*>> outputAllDiffractograms();
 
     void saveDiffractogramOutput();
     void writeCurrDiffractogramToFile(rcstr filePath, rcstr separator);

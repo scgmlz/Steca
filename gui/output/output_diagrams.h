@@ -31,10 +31,10 @@ private:
     eReflAttr xAttr() const;
     eReflAttr yAttr() const;
 
-    void displayReflection(uint reflIndex, bool interpolated);
+    void displayReflection(int reflIndex, bool interpolated);
 
     ReflectionInfos rs_;
-    qreal_vec xs_, ys_, ysErrorLo_, ysErrorUp_;
+    vec<qreal> xs_, ys_, ysErrorLo_, ysErrorUp_;
 
     void recalculate();
 

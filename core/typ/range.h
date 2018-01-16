@@ -67,9 +67,9 @@ public:
 
     void clear() { ranges_.clear(); }
     bool isEmpty() const { return ranges_.isEmpty(); }
-    uint count() const { return ranges_.count(); }
+    int count() const { return ranges_.count(); }
 
-    const Range& at(uint i) const { return ranges_.at(i); }
+    const Range& at(int i) const { return ranges_.at(i); }
 
     bool add(const Range&); //!< collapses overlapping ranges; returns true if *this changed
     bool remove(const Range&); //!< removes (cuts out) a range; returns whether there was a change

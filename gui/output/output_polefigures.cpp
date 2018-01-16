@@ -13,15 +13,13 @@
 // ************************************************************************** //
 
 #include "gui/output/output_polefigures.h"
-#include "core/fit/fit_fun.h"
 #include "core/session.h"
 #include "gui/cfg/colors.h"
 #include "gui/output/dialog_panels.h"
 #include "gui/output/write_file.h"
-#include "gui/output/widgets4output.h"
+#include "gui/output/tab_save.h"
 #include "gui/thehub.h"
-#include "gui/widgets/new_q.h"
-#include "gui/widgets/various_widgets.h"
+#include "gui/base/various_widgets.h"
 #include <qmath.h>
 #include <QPainter>
 
@@ -73,7 +71,7 @@ TabGraph::TabGraph(Params& params)
     grid_->setColumnStretch(grid_->columnCount(), 1);
 
     connect(
-        params_.panelInterpolation->avgAlphaMax, slot(QDoubleSpinBox, valueChanged, double),
+        params_.panelInterpolation->avgAlphaMax, _SLOT_(QDoubleSpinBox, valueChanged, double),
         [this]() { update(); });
 
     connect(cbFlat_, &QCheckBox::toggled, [this]() { update(); });
@@ -262,7 +260,7 @@ PoleFiguresFrame::PoleFiguresFrame(rcstr title, QWidget* parent)
     show();
 }
 
-void PoleFiguresFrame::displayReflection(uint reflIndex, bool interpolated) {
+void PoleFiguresFrame::displayReflection(int reflIndex, bool interpolated) {
     Frame::displayReflection(reflIndex, interpolated);
     if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
         tabGraph_->set((interpolated ? interpPoints_ : calcPoints_).at(reflIndex));
@@ -293,7 +291,7 @@ void PoleFiguresFrame::savePoleFigureOutput() {
 static str const OUT_FILE_TAG(".refl%1");
 static int const MAX_LINE_LENGTH_POL(9);
 
-void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
+void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, int index) {
     shp_Reflection refl = gSession->reflections().at(index);
     ReflectionInfos reflInfo;
     if (getInterpolated())
@@ -303,10 +301,10 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
     bool withFit = refl->peakFunction().name() != "Raw";
     str path = str(filePath + OUT_FILE_TAG).arg(index + 1);
     bool check = false;
-    uint numSavedFiles = 0;
+    int numSavedFiles = 0;
 
     if (tabSave_->outputInten()) {
-        qreal_vec output;
+        vec<qreal> output;
         for_i (reflInfo.count())
             output.append(reflInfo.at(i).inten());
         const QString intenFilePath = path + ".inten";
@@ -318,7 +316,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
     }
 
     if (tabSave_->outputTth() && withFit) {
-        qreal_vec output;
+        vec<qreal> output;
         for_i (reflInfo.count())
             output.append(reflInfo.at(i).tth());
         const QString tthFilePath = filePath + ".tth";
@@ -329,7 +327,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
     }
 
     if (tabSave_->outputFWHM() && withFit) {
-        qreal_vec output;
+        vec<qreal> output;
         for_i (reflInfo.count())
             output.append(reflInfo.at(i).fwhm());
         const QString fwhmFilePath = filePath + ".fwhm";
@@ -349,13 +347,13 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, uint index) {
 }
 
 void PoleFiguresFrame::writeErrorMask(
-    rcstr filePath, ReflectionInfos reflInfo, qreal_vec const& output) {
+    rcstr filePath, ReflectionInfos reflInfo, vec<qreal> const& output) {
     WriteFile file(filePath + ".errorMask");
     QTextStream stream(&file);
 
-    for (uint j = 0, jEnd = reflInfo.count(); j < jEnd; j += 9) {
-        uint max = j + MAX_LINE_LENGTH_POL;
-        for (uint i = j; i < max; i++) {
+    for (int j = 0, jEnd = reflInfo.count(); j < jEnd; j += 9) {
+        int max = j + MAX_LINE_LENGTH_POL;
+        for (int i = j; i < max; i++) {
             if (qIsNaN(output.at(i)))
                 stream << "0 ";
             else
@@ -366,13 +364,13 @@ void PoleFiguresFrame::writeErrorMask(
 }
 
 void PoleFiguresFrame::writePoleFile(
-    rcstr filePath, ReflectionInfos reflInfo, qreal_vec const& output) {
+    rcstr filePath, ReflectionInfos reflInfo, vec<qreal> const& output) {
     WriteFile file(filePath + ".pol");
     QTextStream stream(&file);
 
-    for (uint j = 0, jEnd = reflInfo.count(); j < jEnd; j += 9) {
-        uint max = j + MAX_LINE_LENGTH_POL;
-        for (uint i = j; i < max; i++) {
+    for (int j = 0, jEnd = reflInfo.count(); j < jEnd; j += 9) {
+        int max = j + MAX_LINE_LENGTH_POL;
+        for (int i = j; i < max; i++) {
             if (qIsNaN(output.at(i)))
                 stream << " -1  ";
             else
@@ -383,7 +381,7 @@ void PoleFiguresFrame::writePoleFile(
 }
 
 void PoleFiguresFrame::writeListFile(
-    rcstr filePath, ReflectionInfos reflInfo, qreal_vec const& output) {
+    rcstr filePath, ReflectionInfos reflInfo, vec<qreal> const& output) {
     WriteFile file(filePath + ".lst");
     QTextStream stream(&file);
 

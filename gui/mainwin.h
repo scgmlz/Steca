@@ -51,7 +51,7 @@ public:
     void execCommand(str);
 
 private:
-    QDockWidget *dockFiles_, *dockDatasets_, *dockDatasetInfo_;
+    QDockWidget *dockFiles_, *dockMeasurements_, *dockDatasetInfo_;
     QByteArray initialState_;
     QNetworkAccessManager netMan_;
 

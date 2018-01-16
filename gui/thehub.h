@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/thehub.h
-//! @brief     Defines class TheHub
+//! @brief     Defines the macro slot, the enum eFittingTab, the global gHub, and the class TheHub
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -16,20 +16,13 @@
 #define THEHUB_H
 
 #include "core/calc/lens.h"
-#include "core/calc/reflection_info.h"
 #include "core/calc/reflection.h"
 #include "core/data/datafile.h"
-#include "core/data/suite.h"
-#include "core/typ/singleton.h"
+#include "core/data/cluster.h"
 #include "gui/cfg/settings.h"
 
-class FilesModel;
-class DatasetsModel;
-class MetadataModel;
-class ReflectionsModel;
-
 // make connects shorter
-#define slot(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
+#define _SLOT_(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
 
 extern class TheHub* gHub; //!< global pointer to _the_ instance of TheHub
 
@@ -53,23 +46,20 @@ class TheHub : public QObject, public ISingleton<TheHub> {
 private:
     Q_OBJECT
 
-    TheHub& asHub();
-
 public: // emit signals
-    void tellSuiteSelected(shp_Suite);
+    void tellClusterSelected(shp_Cluster);
     void tellSelectedReflection(shp_Reflection);
     void tellReflectionData(shp_Reflection);
     void tellReflectionValues(const Range&, qpair const&, fwhm_t, bool);
 
 signals:
-    void sigFilesChanged(); // the set of loaded files has changed
-    void sigFilesSelected(); // the selection of loaded files has changed
+    void sigFilesChanged(); //!< loaded file set has changed
+    void sigFilesSelected(); //!< active file selection has changed
 
-    void sigSuitesChanged(); // the set of suite collected from selected
-    // files has changed
-    void sigSuiteSelected(shp_Suite);
+    void sigClustersChanged(); //!< the set of cluster collected from selected
+    void sigClusterSelected(shp_Cluster);
 
-    void sigCorrFile(shp_Datafile);
+    void sigCorrFile(const Datafile*);
     void sigCorrEnabled(bool);
 
     void sigReflectionsChanged();
@@ -87,11 +77,13 @@ signals:
 
     void sigFittingTab(eFittingTab);
 
+    void sigMetatagsChosen(vec<bool>); //!< Selection of metadata has changed
+
 public:
     TheHub();
     ~TheHub();
 
-    static uint constexpr MAX_POLYNOM_DEGREE = 4;
+    static int constexpr MAX_POLYNOM_DEGREE = 4;
 
     QAction *trigger_about,
         *trigger_online,
@@ -111,7 +103,7 @@ public:
         *trigger_addFiles,
         *trigger_removeFile,
         *toggle_enableCorr,
-        *trigger_remCorr,
+        *trigger_removeCorr,
         *trigger_rotateImage,
         *toggle_mirrorImage,
         *toggle_linkCuts,
@@ -126,37 +118,35 @@ public:
         *trigger_clearBackground,
         *trigger_clearReflections,
         *trigger_addReflection,
-        *trigger_remReflection,
+        *trigger_removeReflection,
         *trigger_outputPolefigures,
         *trigger_outputDiagrams,
         *trigger_outputDiffractograms;
 
     // modifying methods:
-    void removeFile(uint);
+    void removeFile(int);
     void sessionFromFile(rcstr&) THROWS;
-    void addGivenFile(rcstr filePath) THROWS;
     void addGivenFiles(const QStringList& filePaths) THROWS;
-    void collectDatasetsFromFiles(uint_vec, pint);
-    void collectDatasetsFromFiles(uint_vec);
-    void combineDatasetsBy(pint);
+    void collectDatasetsFromSelection(const vec<int>);
+    void combineMeasurementsBy(const int);
     void setCorrFile(rcstr filePath) THROWS;
     void tryEnableCorrection(bool);
     void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
-    void setGeometry(preal detectorDistance, preal pixSize, IJ const& midPixOffset);
+    void setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset);
     void setGammaRange(const Range&);
 
     void setBgRanges(const Ranges&);
     void addBgRange(const Range&);
     void removeBgRange(const Range&);
-    void setBgPolyDegree(uint);
+    void setBgPolyDegree(int);
 
-    void setIntenScaleAvg(bool, preal);
+    void setIntenScaleAvg(bool, qreal);
     void setNorm(eNorm);
     void setFittingTab(eFittingTab);
 
     void setPeakFunction(const QString&);
     void addReflection(const QString&);
-    void remReflection(uint);
+    void removeReflection(int);
 
     // const methods:
     bool isFixedIntenImageScale() const { return isFixedIntenImageScale_; }
@@ -166,35 +156,32 @@ public:
     void saveSession(QFileInfo const&) const;
     QByteArray saveSession() const;
 
-    pint suiteGroupedBy() const { return suiteGroupedBy_; }
+    int clusterGroupedBy() const { return clusterGroupedBy_; }
 
     eFittingTab fittingTab() const { return fittingTab_; }
 
-    shp_Suite selectedSuite() const { return selectedSuite_; }
+    shp_Cluster selectedCluster() const { return selectedCluster_; }
 
 private:
     friend class TheHubSignallingBase;
     bool isFixedIntenImageScale_;
     bool isFixedIntenDgramScale_;
     bool isCombinedDgram_;
-    uint_vec collectFromFiles_;
-    pint suiteGroupedBy_ = pint(1);
+    vec<int> filesSelection_;
+    int clusterGroupedBy_ = 1;
     eFittingTab fittingTab_ = eFittingTab::NONE;
-    shp_Suite selectedSuite_;
+    shp_Cluster selectedCluster_;
     shp_Reflection selectedReflection_;
     Settings settings_;
 
+    void collectDatasetsFromSelectionBy(const vec<int>, const int);
+    void collectDatasetsExec();
     void setImageRotate(ImageTransform);
     void setImageMirror(bool);
     void configActions();
     void sessionFromJson(QByteArray const&) THROWS;
 
-public:
-    FilesModel* filesModel;
-    DatasetsModel* suiteModel;
-    MetadataModel* metadataModel;
-    ReflectionsModel* reflectionsModel;
-
+public: // TODO relagate this to TabSave or similar
     str saveDir; //!< setting: default directory for data export
     str saveFmt; //!< setting: default format for data export
 };

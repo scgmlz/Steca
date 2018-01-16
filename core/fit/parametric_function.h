@@ -48,12 +48,12 @@ public:
     virtual qreal y(qreal x, qreal const* parValues = nullptr) const = 0;
 
     // partial derivative / parameter, with given (parValues) or own parameters
-    virtual qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const = 0;
+    virtual qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const = 0;
 
 public:
-    void setParameterCount(uint);
-    uint parameterCount() const;
-    Parameter& parameterAt(uint);
+    void setParameterCount(int);
+    int parameterCount() const;
+    Parameter& parameterAt(int);
 
     virtual void reset();
 
@@ -63,8 +63,8 @@ public:
 
 protected:
     vec<Parameter> parameters_;
-    qreal parValue(uint parIndex, qreal const* parValues) const;
-    void setValue(uint parIndex, qreal val);
+    qreal parValue(int parIndex, qreal const* parValues) const;
+    void setValue(int parIndex, qreal val);
 };
 
 #endif // PARAMETRIC_FUNCTION_H
