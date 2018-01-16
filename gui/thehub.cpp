@@ -100,9 +100,8 @@ TheHub::TheHub()
 
     // handle signals
 
-    QObject::connect(this, &TheHub::sigFilesSelected,
-                     [this]() { trigger_removeFile->setEnabled(
-                             !gSession->filesSelection().isEmpty()); });
+    QObject::connect(this, &TheHub::sigFilesChanged,
+                     [this]() { trigger_removeFile->setEnabled(gSession->numFiles()); });
     QObject::connect(this, &TheHub::sigCorrFile,
             [this](const Datafile* file) { trigger_removeCorr->setEnabled(file); });
     QObject::connect(this, &TheHub::sigCorrEnabled,

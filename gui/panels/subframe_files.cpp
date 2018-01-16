@@ -29,8 +29,8 @@
 
 class FilesModel : public TableModel { // < TableModel < QAbstractTableModel < QAbstractItemModel
 public:
-    void removeFile(int i) { gHub->removeFile(i); }
     void onClicked(const QModelIndex &);
+    void removeFile();
 
     int columnCount() const final { return 3; }
     int rowCount() const final { return gSession->numFiles(); }
@@ -44,6 +44,26 @@ private:
     int rowHighlighted_;
 };
 
+void FilesModel::onClicked(const QModelIndex& cell) {
+    int row = cell.row();
+    if (row < 0 || row >= rowCount())
+        return;
+    int col = cell.column();
+    if (col==1) {
+        rowsChecked_[row] = !rowsChecked_[row];
+        emit dataChanged(cell, cell);
+    } else if (col==2) {
+        rowHighlighted_ = row;
+        emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
+    }
+}
+
+void FilesModel::removeFile() {
+    int row = rowHighlighted_;
+    gHub->removeFile(row);
+    rowHighlighted_ = qMin(row, rowCount()-1);
+    emit dataChanged(createIndex(row,0),createIndex(rowCount(),columnCount()));
+}
 
 QVariant FilesModel::data(const QModelIndex& index, int role) const {
     const int row = index.row();
@@ -88,19 +108,6 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
     }
 }
 
-void FilesModel::onClicked(const QModelIndex& cell) {
-    int row = cell.row();
-    if (row < 0 || row >= rowCount())
-        return;
-    int col = cell.column();
-    if (col==1) {
-        rowsChecked_[row] = !rowsChecked_[row];
-        emit dataChanged(cell, cell);
-    } else if (col==2) {
-        rowHighlighted_ = row;
-        emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
-    }
-}
 
 // ************************************************************************** //
 //  local class FilesView
@@ -115,7 +122,7 @@ public:
 private:
     int sizeHintForColumn(int) const final;
 
-    void removeSelected();
+    void removeHighlighted();
     void recollect();
 
     FilesModel* model() const { return static_cast<FilesModel*>(ListView::model()); }
@@ -129,17 +136,13 @@ FilesView::FilesView() : ListView() {
 
     connect(this, &FilesView::clicked, model(), &FilesModel::onClicked);
     connect(gHub, &TheHub::sigFilesChanged, [=]() { filesModel->signalReset(); });
-    connect(gHub->trigger_removeFile, &QAction::triggered, [this]() { removeSelected(); });
+    connect(gHub->trigger_removeFile, &QAction::triggered, [this]() { removeHighlighted(); });
     connect(gHub, &TheHub::sigFilesChanged, [this]() { selectRow({}); recollect(); });
 // TODO    connect(gHub, &TheHub::sigFilesSelected, [this]() { selectRows(gSession->filesSelection()); });
 }
 
-void FilesView::removeSelected() {
-    const QModelIndexList& indexes = selectedIndexes();
-    // backwards
-    for (int i = indexes.count(); i-- > 0;)
-        model()->removeFile(indexes.at(i).row());
-    selectRow({});
+void FilesView::removeHighlighted() {
+    model()->removeFile();
     recollect();
 }
 
