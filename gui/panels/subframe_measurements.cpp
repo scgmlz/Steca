@@ -56,6 +56,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     int row = index.row();
     if (row < 0 || row >= rowCount())
         return {};
+    const Cluster* cluster = gSession->experiment().at(row).data();
     switch (role) {
     case Qt::DisplayRole: {
         int col = index.column();
@@ -63,14 +64,27 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
             return {};
         switch (col) {
         case COL_NUMBER:
-            return gSession->experiment().at(row)->tag();
+            return cluster->tag();
         default:
-            return experiment_.at(row)->avgeMetadata()->attributeStrValue(
+            return cluster->avgeMetadata()->attributeStrValue(
                 metaInfoNums_.at(col-COL_ATTRS));
         }
     }
     case Qt::UserRole:
         return QVariant::fromValue<shp_Cluster>(experiment_.at(row));
+    case Qt::ToolTipRole: {
+        QString ret = QString("Measurement %1 is number %2 in file %3")
+            .arg(row+1)
+            .arg(0)
+            .arg("?");
+        if (cluster->count()>1)
+            ret += QString(";\nmeasurement %1 is number %2 in file %3")
+                .arg(row+1)
+                .arg(0)
+                .arg("?");
+        ret += ".";
+        return ret;
+    }
     default:
         return {};
     }

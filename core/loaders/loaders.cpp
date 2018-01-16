@@ -88,7 +88,7 @@ namespace load {
 
 QSharedPointer<Datafile> loadDatafile(rcstr filePath) THROWS {
     const QSharedPointer<Datafile> ret(new Datafile(load_low_level(filePath)));
-    RUNTIME_CHECK(ret->cluster().count() > 0, "File " % filePath % " contains no cluster");
+    RUNTIME_CHECK(ret->count() > 0, "File " % filePath % " contains no cluster");
     return ret;
 }
 

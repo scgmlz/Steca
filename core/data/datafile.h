@@ -27,11 +27,13 @@ class Metadata;
 //! A file (loaded from a disk file) that contains a data sequence.
 class Datafile final {
 public:
+    Datafile() = delete;
+//    Datafile(const Datafile&) = delete;
     Datafile(rcstr fileName);
     void addDataset(const Metadata&, size2d const&, inten_vec const&);
     void setOffset(const int offset) { offset_ = offset; }
 
-    vec<shp_Measurement> const& cluster() const { return measurements_; }
+    vec<shp_Measurement> const& measurements() const { return measurements_; }
     int count() const { return measurements_.count(); }
     size2d imageSize() const { return imageSize_; }
 

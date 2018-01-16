@@ -149,7 +149,7 @@ void Session::assembleExperiment(const vec<int> fileNums, const int combineBy) {
 
     vec<shp_Measurement> selectedMeasurements;
     for (int i : filesSelection_)
-        for (const shp_Measurement& measurement : files_.at(i)->cluster())
+        for (const shp_Measurement& measurement : files_.at(i)->measurements())
             selectedMeasurements.append(measurement);
     if (selectedMeasurements.isEmpty())
         return;

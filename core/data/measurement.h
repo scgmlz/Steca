@@ -25,8 +25,9 @@
 class Measurement final {
 
 public:
-    Measurement(const Metadata&, const size2d&, const inten_vec&);
+    Measurement() = delete;
     Measurement(const Measurement&) = delete;
+    Measurement(const Metadata&, const size2d&, const inten_vec&);
 
     shp_Metadata metadata() const;
 
@@ -56,6 +57,8 @@ public:
 private:
     shp_Metadata md_;
     shp_Image image_;
+//    const class Datafile* file_;
+//    const int number_;
 };
 
 typedef QSharedPointer<const Measurement> shp_Measurement;
