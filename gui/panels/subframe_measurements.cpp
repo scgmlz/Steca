@@ -43,6 +43,7 @@ public:
 
 private:
     int columnCount() const final { return COL_ATTRS + metaCount(); }
+    const Cluster* highlighted() const { return gSession->experiment().at(rowHighlighted_).data(); }
 
     vec<int> metaInfoNums_; //!< indices of metadata items selected for display
     mutable vec<bool> rowsChecked_;
@@ -58,8 +59,12 @@ void ExperimentModel::onClicked(const QModelIndex& cell) {
         rowsChecked_[row] = !rowsChecked_[row];
         emit dataChanged(cell, cell);
     } else if (col==2) {
+        const Datafile* oldFile = highlighted()->first()->file();
         rowHighlighted_ = row;
+        const Datafile* newFile = highlighted()->first()->file();
         emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
+        if (newFile!=oldFile)
+            emit gHub->sigFileHighlight(newFile);
     }
 }
 

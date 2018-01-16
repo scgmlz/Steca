@@ -55,6 +55,7 @@ public: // emit signals
 signals:
     void sigFilesChanged(); //!< loaded file set has changed
     void sigFilesSelected(); //!< active file selection has changed
+    void sigFileHighlight(const Datafile*); //!< file to be highlighted has changed
 
     void sigClustersChanged(); //!< the set of cluster collected from selected
     void sigClusterSelected(shp_Cluster);
