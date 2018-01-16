@@ -171,8 +171,8 @@ public:
     ExperimentView();
 
 private:
-    void currentChanged(QModelIndex const&, QModelIndex const&) final;
-    int sizeHintForColumn(int) const final;
+    void currentChanged(QModelIndex const&, QModelIndex const&) override final;
+    int sizeHintForColumn(int) const override final;
     ExperimentModel* model() const final {
         return static_cast<ExperimentModel*>(ListView::model()); }
 };
@@ -198,6 +198,7 @@ ExperimentView::ExperimentView() : ListView() {
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
 void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     model()->onClicked(current);
+    scrollTo(current);
     //ListView::currentChanged(current, previous);
     gHub->tellClusterSelected(model()->data(current, Qt::UserRole).value<shp_Cluster>());
 }

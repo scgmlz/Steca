@@ -151,6 +151,7 @@ FilesView::FilesView() : ListView() {
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
 void FilesView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     model()->onClicked(current);
+    scrollTo(current);
     //ListView::currentChanged(current, previous);
 }
 
