@@ -30,6 +30,7 @@
 class FilesModel : public TableModel { // < TableModel < QAbstractTableModel < QAbstractItemModel
 public:
     void onClicked(const QModelIndex &);
+    void forceFileHighlight(const Datafile*);
     void removeFile();
 
     int columnCount() const final { return 3; }
@@ -55,6 +56,21 @@ void FilesModel::onClicked(const QModelIndex& cell) {
     } else if (col==2) {
         rowHighlighted_ = row;
         emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
+    }
+}
+
+//! Set highlight according to signal from MeasurementsView.
+void FilesModel::forceFileHighlight(const Datafile* newFile) {
+    int oldRow = rowHighlighted_;
+    for (int row=0; row<rowCount(); ++row) {
+        if (gSession->file(row)==newFile) {
+            rowHighlighted_ = row;
+            if (row<oldRow)
+                emit dataChanged(createIndex(row,0),createIndex(oldRow,columnCount()));
+            else if (row>oldRow)
+                emit dataChanged(createIndex(oldRow,0),createIndex(row,columnCount()));
+            return;
+        }
     }
 }
 
@@ -146,6 +162,8 @@ FilesView::FilesView() : ListView() {
     connect(gHub->trigger_removeFile, &QAction::triggered, [this]() { removeHighlighted(); });
     connect(gHub, &TheHub::sigFilesChanged, [this]() { selectRow({}); recollect(); });
 // TODO    connect(gHub, &TheHub::sigFilesSelected, [this]() { selectRows(gSession->filesSelection()); });
+    connect(gHub, &TheHub::sigFileHighlight, model(), &FilesModel::forceFileHighlight);
+
 }
 
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
