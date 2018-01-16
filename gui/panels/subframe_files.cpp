@@ -127,10 +127,11 @@ public:
     FilesView();
 
 private:
-    int sizeHintForColumn(int) const final;
-
+    void currentChanged(QModelIndex const&, QModelIndex const&) final;
     void removeHighlighted();
     void recollect();
+
+    int sizeHintForColumn(int) const final;
 
     FilesModel* model() const { return static_cast<FilesModel*>(ListView::model()); }
 };
@@ -141,11 +142,16 @@ FilesView::FilesView() : ListView() {
     auto filesModel = new FilesModel();
     setModel(filesModel);
 
-    connect(this, &FilesView::clicked, model(), &FilesModel::onClicked);
     connect(gHub, &TheHub::sigFilesChanged, [=]() { filesModel->signalReset(); });
     connect(gHub->trigger_removeFile, &QAction::triggered, [this]() { removeHighlighted(); });
     connect(gHub, &TheHub::sigFilesChanged, [this]() { selectRow({}); recollect(); });
 // TODO    connect(gHub, &TheHub::sigFilesSelected, [this]() { selectRows(gSession->filesSelection()); });
+}
+
+//! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
+void FilesView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
+    model()->onClicked(current);
+    //ListView::currentChanged(current, previous);
 }
 
 void FilesView::removeHighlighted() {

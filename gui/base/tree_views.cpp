@@ -62,3 +62,17 @@ void ListView::updateSingleSelection() {
 void ListView::selectRow(int row) {
     setCurrentIndex(model()->index(row, 0));
 }
+/*
+void ListView::keyPressEvent(QKeyEvent* event){
+
+    QModelIndex cell = this->currentIndex();
+
+    if (event->key() == Qt::Key_Down) {
+        this->setCurrentIndex(QAbstractItemModel::createIndex(cell->row()+1, cell->column()));
+    } else {
+        QTreeView::keyPressEvent(event);
+        return;
+    }
+
+}
+*/

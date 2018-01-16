@@ -15,8 +15,8 @@
 #include "gui/panels/subframe_measurements.h"
 #include "core/session.h"
 #include "gui/base/table_model.h"
-#include "gui/thehub.h"
 #include "gui/base/tree_views.h" // inheriting from
+#include "gui/thehub.h"
 #include <QHeaderView>
 
 // ************************************************************************** //
@@ -182,9 +182,7 @@ ExperimentView::ExperimentView() : ListView() {
     setSelectionMode(QAbstractItemView::NoSelection);
     auto experimentModel = new ExperimentModel();
     setModel(experimentModel);
-    connect(this, &ExperimentView::clicked, model(), &ExperimentModel::onClicked);
-    connect(gHub, &TheHub::sigClustersChanged,
-            [=]() { experimentModel->signalReset(); });
+    connect(gHub, &TheHub::sigClustersChanged, [=]() { experimentModel->signalReset(); });
     connect(gHub, &TheHub::sigClustersChanged,
             [this]() {
                 gHub->tellClusterSelected(shp_Cluster()); // first de-select
@@ -197,8 +195,10 @@ ExperimentView::ExperimentView() : ListView() {
             });
 }
 
+//! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
 void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
-    ListView::currentChanged(current, previous);
+    model()->onClicked(current);
+    //ListView::currentChanged(current, previous);
     gHub->tellClusterSelected(model()->data(current, Qt::UserRole).value<shp_Cluster>());
 }
 
