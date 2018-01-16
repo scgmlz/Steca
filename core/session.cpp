@@ -59,6 +59,8 @@ void Session::addGivenFiles(const QStringList& filePaths) THROWS {
         if (path.isEmpty() || hasFile(path))
             continue;
         QSharedPointer<Datafile> datafile = load::loadDatafile(path);
+        if (datafile.isNull())
+            continue;
         setImageSize(datafile->imageSize());
         files_.append(datafile);
     }
@@ -116,17 +118,20 @@ const Image* Session::intensCorr() const {
     return &intensCorr_;
 }
 
-void Session::setCorrFile(QSharedPointer<Datafile> datafile) THROWS {
-    if (datafile.isNull()) {
+void Session::setCorrFile(rcstr filePath) THROWS {
+    if (filePath.isEmpty()) {
         removeCorrFile();
-    } else {
-        setImageSize(datafile->imageSize());
-        corrImage_ = datafile->foldedImage();
-        intensCorr_.clear(); // will be calculated lazily
-        // all ok
-        corrFile_ = datafile;
-        corrEnabled_ = true;
+        return;
     }
+    QSharedPointer<Datafile> datafile = load::loadDatafile(filePath);
+    if (datafile.isNull())
+        return;
+    setImageSize(datafile->imageSize());
+    corrImage_ = datafile->foldedImage();
+    intensCorr_.clear(); // will be calculated lazily
+    // all ok
+    corrFile_ = datafile;
+    corrEnabled_ = true;
 }
 
 void Session::removeCorrFile() {

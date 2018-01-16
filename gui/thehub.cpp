@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "gui/thehub.h"
-#include "core/loaders/loaders.h" // TODO move the actual loading to session
 #include "core/session.h"
 #include "gui/output/write_file.h"
 #include "gui/base/new_q.h"
@@ -346,11 +345,8 @@ void TheHub::collectDatasetsExec() {
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {
-    QSharedPointer<Datafile> file;
-    if (!filePath.isEmpty())
-        file = load::loadDatafile(filePath);
-    gSession->setCorrFile(file);
-    emit sigCorrFile(file.data());
+    gSession->setCorrFile(filePath);
+    emit sigCorrFile(gSession->corrFile());
     tryEnableCorrection(true);
 }
 

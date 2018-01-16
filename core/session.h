@@ -45,7 +45,7 @@ public:
     void clear();
     void addGivenFiles(const QStringList& filePaths) THROWS;
     void removeFile(int i);
-    void setCorrFile(QSharedPointer<Datafile>) THROWS; // Load or remove a correction file.
+    void setCorrFile(rcstr filePath) THROWS;
     void removeCorrFile();
     void assembleExperiment(const vec<int>, const int);
 
