@@ -126,7 +126,6 @@ public:
     // modifying methods:
     void removeFile(int);
     void sessionFromFile(rcstr&) THROWS;
-    void addGivenFile(rcstr filePath) THROWS;
     void addGivenFiles(const QStringList& filePaths) THROWS;
     void collectDatasetsFromSelection(const vec<int>);
     void combineMeasurementsBy(const int);

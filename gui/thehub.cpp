@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "gui/thehub.h"
-#include "core/loaders/loaders.h"
+#include "core/loaders/loaders.h" // TODO move the actual loading to session
 #include "core/session.h"
 #include "gui/output/write_file.h"
 #include "gui/base/new_q.h"
@@ -254,12 +254,14 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     JsonObj top(doc.object());
 
     const QJsonArray& files = top.loadArr("files");
+    QStringList paths;
     for (const QJsonValue& file : files) {
         str filePath = file.toString();
         QDir dir(filePath);
         RUNTIME_CHECK(dir.makeAbsolute(), str("Invalid file path: %1").arg(filePath));
-        addGivenFile(dir.absolutePath());
+        paths.append(dir.absolutePath());
     }
+    addGivenFiles(paths);
 
     const QJsonArray& sels = top.loadArr("selected files", true);
     vec<int> selIndexes;
@@ -315,20 +317,10 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     TR("installed session from file");
 }
 
-void TheHub::addGivenFile(rcstr filePath) THROWS {
-    if (!filePath.isEmpty() && !gSession->hasFile(filePath)) {
-        {
-            TakesLongTime __;
-            gSession->addGivenFile(load::loadDatafile(filePath));
-        }
-        emit sigFilesChanged();
-    }
-}
-
 void TheHub::addGivenFiles(const QStringList& filePaths) THROWS {
     TakesLongTime __;
-    for (rcstr filePath : filePaths)
-        addGivenFile(filePath);
+    gSession->addGivenFiles(filePaths);
+    emit sigFilesChanged();
 }
 
 void TheHub::collectDatasetsFromSelectionBy(const vec<int> indexSelection, const int by) {

@@ -43,7 +43,7 @@ public:
 
     // Modifying methods:
     void clear();
-    void addGivenFile(QSharedPointer<Datafile>) THROWS;
+    void addGivenFiles(const QStringList& filePaths) THROWS;
     void removeFile(int i);
     void setCorrFile(QSharedPointer<Datafile>) THROWS; // Load or remove a correction file.
     void removeCorrFile();

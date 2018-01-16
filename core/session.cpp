@@ -16,6 +16,7 @@
 #include "core/data/cluster.h"
 #include "core/data/measurement.h"
 #include "core/fit/peak_functions.h"
+#include "core/loaders/loaders.h"
 
 Session::Session()
     : intenScale_(1)
@@ -53,10 +54,15 @@ bool Session::hasFile(rcstr fileName) const {
     return false;
 }
 
-void Session::addGivenFile(QSharedPointer<Datafile> datafile) THROWS {
-    setImageSize(datafile->imageSize());
+void Session::addGivenFiles(const QStringList& filePaths) THROWS {
+    for (const QString& path: filePaths) {
+        if (path.isEmpty() || hasFile(path))
+            continue;
+        QSharedPointer<Datafile> datafile = load::loadDatafile(path);
+        setImageSize(datafile->imageSize());
+        files_.append(datafile);
+    }
     computeOffsets();
-    files_.append(datafile);
 }
 
 void Session::removeFile(int i) {

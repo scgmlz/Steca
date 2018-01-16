@@ -48,9 +48,11 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
     case Qt::UserRole:
         return QVariant::fromValue<const Datafile*>(file);
     case Qt::ToolTipRole:
-        return QString("File %1\ncontains %2 measurements")
+        return QString("File %1\ncontains %2 measurements\nhere numbered %3 to %4")
             .arg(file->fileName())
-            .arg(file->cluster().count());
+            .arg(file->count())
+            .arg(file->offset()+1)
+            .arg(file->offset()+file->count());
     default:
         return {};
     }
