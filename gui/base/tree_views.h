@@ -35,8 +35,8 @@ public:
     void setModel(class TableModel* model);
 protected:
     virtual class TableModel* model() const;
+    virtual void selectRow(int);
     void updateSingleSelection();
-    void selectRow(int);
 };
 
 #endif // TREE_VIEWS_H

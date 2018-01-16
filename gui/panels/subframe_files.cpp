@@ -36,7 +36,7 @@ public:
     int rowCount() const final { return gSession->numFiles(); }
     QVariant data(const QModelIndex&, int) const final;
 
-    vec<bool> const& rowsChecked() const { return rowsChecked_; }
+    vec<int> checkedRows() const;
     int rowHighlighted() const { return rowHighlighted_; }
 
 private:
@@ -108,6 +108,13 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
     }
 }
 
+vec<int> FilesModel::checkedRows() const {
+    vec<int> ret;
+    for (int i=0; i<rowCount(); ++i)
+        if (rowsChecked_[i])
+            ret.append(i);
+    return ret;
+}
 
 // ************************************************************************** //
 //  local class FilesView
@@ -147,11 +154,7 @@ void FilesView::removeHighlighted() {
 }
 
 void FilesView::recollect() {
-    vec<int> rows;
-    for (const QModelIndex& index : selectionModel()->selectedRows())
-        if (index.isValid())
-            rows.append(index.row());
-    gHub->collectDatasetsFromSelection(rows);
+    gHub->collectDatasetsFromSelection(model()->checkedRows());
 }
 
 int FilesView::sizeHintForColumn(int col) const {
