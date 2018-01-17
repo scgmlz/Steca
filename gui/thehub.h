@@ -43,14 +43,11 @@ enum class eFittingTab {
 //! We should consider merging TheHub into MainWin.
 
 class TheHub : public QObject, public ISingleton<TheHub> {
-private:
     Q_OBJECT
 
-public: // emit signals
-    void tellClusterSelected(const Cluster*);
-    void tellSelectedReflection(shp_Reflection);
-    void tellReflectionData(shp_Reflection);
-    void tellReflectionValues(const Range&, qpair const&, fwhm_t, bool);
+public:
+    TheHub();
+    ~TheHub();
 
 signals:
     void sigFilesChanged(); //!< loaded file set has changed
@@ -82,8 +79,50 @@ signals:
     void sigMetatagsChosen(vec<bool>); //!< Selection of metadata has changed
 
 public:
-    TheHub();
-    ~TheHub();
+    // modifying methods:
+    void removeFile(int);
+    void sessionFromFile(rcstr&) THROWS;
+    void addGivenFiles(const QStringList& filePaths) THROWS;
+    void collectDatasetsFromSelection(const vec<int>);
+    void combineMeasurementsBy(const int);
+    void setCorrFile(rcstr filePath) THROWS;
+    void tryEnableCorrection(bool);
+    void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
+    void setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset);
+    void setGammaRange(const Range&);
+
+    void setBgRanges(const Ranges&);
+    void addBgRange(const Range&);
+    void removeBgRange(const Range&);
+    void setBgPolyDegree(int);
+
+    void setIntenScaleAvg(bool, qreal);
+    void setNorm(eNorm);
+    void setFittingTab(eFittingTab);
+
+    void setPeakFunction(const QString&);
+    void addReflection(const QString&);
+    void removeReflection(int);
+
+    // modify and emit signal:
+    void tellClusterSelected(const Cluster*);
+    void tellSelectedReflection(shp_Reflection);
+    void tellReflectionData(shp_Reflection);
+    void tellReflectionValues(const Range&, qpair const&, fwhm_t, bool);
+
+    // const methods:
+    bool isFixedIntenImageScale() const { return isFixedIntenImageScale_; }
+    bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
+    bool isCombinedDgram() const { return isCombinedDgram_; }
+
+    void saveSession(QFileInfo const&) const;
+    QByteArray saveSession() const;
+
+    int clusterGroupedBy() const { return clusterGroupedBy_; }
+
+    eFittingTab fittingTab() const { return fittingTab_; }
+
+    const Cluster* selectedCluster() const { return selectedCluster_; }
 
     static int constexpr MAX_POLYNOM_DEGREE = 4;
 
@@ -125,47 +164,14 @@ public:
         *trigger_outputDiagrams,
         *trigger_outputDiffractograms;
 
-    // modifying methods:
-    void removeFile(int);
-    void sessionFromFile(rcstr&) THROWS;
-    void addGivenFiles(const QStringList& filePaths) THROWS;
-    void collectDatasetsFromSelection(const vec<int>);
-    void combineMeasurementsBy(const int);
-    void setCorrFile(rcstr filePath) THROWS;
-    void tryEnableCorrection(bool);
-    void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
-    void setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset);
-    void setGammaRange(const Range&);
-
-    void setBgRanges(const Ranges&);
-    void addBgRange(const Range&);
-    void removeBgRange(const Range&);
-    void setBgPolyDegree(int);
-
-    void setIntenScaleAvg(bool, qreal);
-    void setNorm(eNorm);
-    void setFittingTab(eFittingTab);
-
-    void setPeakFunction(const QString&);
-    void addReflection(const QString&);
-    void removeReflection(int);
-
-    // const methods:
-    bool isFixedIntenImageScale() const { return isFixedIntenImageScale_; }
-    bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
-    bool isCombinedDgram() const { return isCombinedDgram_; }
-
-    void saveSession(QFileInfo const&) const;
-    QByteArray saveSession() const;
-
-    int clusterGroupedBy() const { return clusterGroupedBy_; }
-
-    eFittingTab fittingTab() const { return fittingTab_; }
-
-    const Cluster* selectedCluster() const { return selectedCluster_; }
-
 private:
-    friend class TheHubSignallingBase;
+    void collectDatasetsFromSelectionBy(const vec<int>, const int);
+    void collectDatasetsExec();
+    void setImageRotate(ImageTransform);
+    void setImageMirror(bool);
+    void configActions();
+    void sessionFromJson(QByteArray const&) THROWS;
+
     bool isFixedIntenImageScale_;
     bool isFixedIntenDgramScale_;
     bool isCombinedDgram_;
@@ -176,12 +182,7 @@ private:
     shp_Reflection selectedReflection_;
     Settings settings_;
 
-    void collectDatasetsFromSelectionBy(const vec<int>, const int);
-    void collectDatasetsExec();
-    void setImageRotate(ImageTransform);
-    void setImageMirror(bool);
-    void configActions();
-    void sessionFromJson(QByteArray const&) THROWS;
+    friend class TheHubSignallingBase;
 
 public: // TODO relagate this to TabSave or similar
     str saveDir; //!< setting: default directory for data export

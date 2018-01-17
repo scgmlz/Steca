@@ -20,7 +20,7 @@
 
 //! A diffractogram display, with associated controls, for use in SubframeDiffractogram.
 
-class Diffractogram : public QWidget {
+class Diffractogram final : public QWidget {
 public:
     Diffractogram();
 

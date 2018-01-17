@@ -277,10 +277,10 @@ ReflectionInfo Session::makeReflectionInfo(
 ReflectionInfos Session::makeReflectionInfos(
     Reflection const& reflection, int gmaSlices, const Range& rgeGma, Progress* progress) const {
 
-    ReflectionInfos infos;
-
     if (progress)
         progress->setTotal(experiment_.count());
+
+    ReflectionInfos ret;
 
     for (const shp_Cluster& cluster : experiment_) {
         if (progress)
@@ -301,11 +301,11 @@ ReflectionInfos Session::makeReflectionInfos(
             Range gmaStripe(min, min + step);
             const ReflectionInfo refInfo = makeReflectionInfo(*lens, reflection, gmaStripe);
             if (!qIsNaN(refInfo.inten()))
-                infos.append(refInfo);
+                ret.append(refInfo);
         }
     }
 
-    return infos;
+    return ret;
 }
 
 void Session::setIntenScaleAvg(bool avg, qreal scale) {

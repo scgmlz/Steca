@@ -100,6 +100,8 @@ TheHub::TheHub()
 
     // handle signals
 
+    connect(trigger_clearBackground, &QAction::triggered, [this]() { setBgRanges({}); });
+
     QObject::connect(this, &TheHub::sigFilesChanged,
                      [this]() { trigger_removeFile->setEnabled(gSession->numFiles()); });
     QObject::connect(this, &TheHub::sigCorrFile,
