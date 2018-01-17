@@ -227,7 +227,7 @@ shp_SequenceLens Session::dataseqLens(Cluster const& cluster, eNorm norm, bool t
     return shp_SequenceLens(new SequenceLens(cluster, norm, trans, cut, imageTransform_, imageCut_));
 }
 
-shp_SequenceLens Session::defaultDataseqLens(Cluster const& cluster) const {
+shp_SequenceLens Session::defaultClusterLens(Cluster const& cluster) const {
     return dataseqLens(cluster, norm_, true, true);
 }
 

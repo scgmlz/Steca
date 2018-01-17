@@ -93,7 +93,7 @@ public:
         return session.angleMap(ds); }
 
     shp_ImageLens imageLens(const Image&, bool trans, bool cut) const;
-    shp_SequenceLens defaultDataseqLens(Cluster const& dataseq) const;
+    shp_SequenceLens defaultClusterLens(Cluster const& dataseq) const;
 
     ReflectionInfos makeReflectionInfos(
         Reflection const&, int gmaSlices, const Range&, Progress*) const;

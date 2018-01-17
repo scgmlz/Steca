@@ -96,7 +96,7 @@ void Experiment::computeAvgeCurve() const {
         for (shp_Measurement const& one : *cluster)
             group.append(one);
     Cluster allData(*this, group);
-    avgCurve_ = gSession->defaultDataseqLens(allData)->makeCurve();
+    avgCurve_ = gSession->defaultClusterLens(allData)->makeCurve();
 }
 
 qreal Experiment::calcAvgMutable(qreal (Cluster::*avgFct)() const) const {
