@@ -41,10 +41,13 @@ public:
     int rowHighlighted() const { return rowHighlighted_; }
 
 private:
+    void setHighlight(int row);
+
     mutable vec<bool> rowsChecked_;
     int rowHighlighted_;
 };
 
+//! Reacts to clicks and arrow keys.
 void FilesModel::onClicked(const QModelIndex& cell) {
     int row = cell.row();
     if (row < 0 || row >= rowCount())
@@ -54,26 +57,22 @@ void FilesModel::onClicked(const QModelIndex& cell) {
         rowsChecked_[row] = !rowsChecked_[row];
         emit dataChanged(cell, cell);
     } else if (col==2) {
-        rowHighlighted_ = row;
-        emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
+        setHighlight(row);
     }
 }
 
 //! Set highlight according to signal from MeasurementsView.
 void FilesModel::forceFileHighlight(const Datafile* newFile) {
-    int oldRow = rowHighlighted_;
     for (int row=0; row<rowCount(); ++row) {
         if (gSession->file(row)==newFile) {
-            rowHighlighted_ = row;
-            if (row<oldRow)
-                emit dataChanged(createIndex(row,0),createIndex(oldRow,columnCount()));
-            else if (row>oldRow)
-                emit dataChanged(createIndex(oldRow,0),createIndex(row,columnCount()));
+            setHighlight(row);
             return;
         }
     }
+    NEVER
 }
 
+//! Forwards command to remove file, and updates the view.
 void FilesModel::removeFile() {
     int row = rowHighlighted_;
     gHub->removeFile(row);
@@ -81,6 +80,7 @@ void FilesModel::removeFile() {
     emit dataChanged(createIndex(row,0),createIndex(rowCount(),columnCount()));
 }
 
+//! Returns role-specific information about one table cell.
 QVariant FilesModel::data(const QModelIndex& index, int role) const {
     const int row = index.row();
     if (row < 0 || row >= rowCount())
@@ -124,12 +124,23 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
     }
 }
 
+//! Returns list of selected rows.
 vec<int> FilesModel::checkedRows() const {
     vec<int> ret;
     for (int i=0; i<rowCount(); ++i)
         if (rowsChecked_[i])
             ret.append(i);
     return ret;
+}
+
+//! Sets rowHighlighted_, and signals need to refresh the view.
+void FilesModel::setHighlight(int row) {
+    int oldRow = rowHighlighted_;
+    rowHighlighted_ = row;
+    if (row<oldRow)
+        emit dataChanged(createIndex(row,0),createIndex(oldRow,columnCount()));
+    else if (row>oldRow)
+        emit dataChanged(createIndex(oldRow,0),createIndex(row,columnCount()));
 }
 
 // ************************************************************************** //
