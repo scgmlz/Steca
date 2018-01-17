@@ -36,7 +36,8 @@ public:
     int rowCount() const final { return gSession->experiment().count(); }
     QVariant data(const QModelIndex&, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const final;
-    const Cluster* highlighted() const { return gSession->experiment().at(rowHighlighted_).data(); }
+    const Cluster* highlighted() const {
+        return rowCount() ? gSession->experiment().at(rowHighlighted_).data() : nullptr; }
     int metaCount() const { return metaInfoNums_.count(); }
     vec<bool> const& rowsChecked() const { return rowsChecked_; }
 
@@ -215,7 +216,7 @@ ExperimentView::ExperimentView() : ListView() {
     connect(gHub, &TheHub::sigClustersChanged,
             [this]() {
                 model()->signalReset();
-                // gHub->tellClusterSelected(shp_Cluster()); // first de-select
+                gHub->tellClusterSelected(nullptr); // first de-select
                 setCurrentIndex(model()->index(0,0));
             });
     connect(gHub, &TheHub::sigMetatagsChosen, experimentModel,

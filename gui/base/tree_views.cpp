@@ -23,9 +23,8 @@ ListView::ListView() {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual" // TODO try without
 void ListView::setModel(TableModel* model) {
-    ListView::setModel(model);
+    QTreeView::setModel(model);
     hideColumn(0); // this should look like a list; 0th column is tree-like
-
     if (model) {
         connect(model, &QAbstractItemModel::modelReset, [this, model]() {
             for_i (model->columnCount())

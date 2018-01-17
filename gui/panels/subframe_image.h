@@ -37,7 +37,7 @@ private:
     void setCluster(const Cluster*);
     void render();
 
-    const Cluster* cluster_;
+    const Cluster* cluster_ {nullptr};
     class ImageWidget *dataImageWidget_, *corrImageWidget_;
 
     QSpinBox* spinN_;
