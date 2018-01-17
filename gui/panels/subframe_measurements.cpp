@@ -43,6 +43,8 @@ public:
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
 private:
+    void updateState() const;
+
     int columnCount() const final { return COL_ATTRS + metaCount(); }
     const Cluster* highlighted() const { return gSession->experiment().at(rowHighlighted_).data(); }
 
@@ -98,8 +100,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     int row = index.row();
     if (row < 0 || row >= rowCount())
         return {};
-    while (rowsChecked_.count()<rowCount())
-        rowsChecked_.append(true);
+    updateState();
     const Cluster* cluster = gSession->experiment().at(row).data();
     int col = index.column();
     switch (role) {
@@ -159,9 +160,8 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
         return QColor(Qt::white);
     }
     case Qt::CheckStateRole: {
-        if (col==COL_CHECK) {
+        if (col==COL_CHECK)
             return rowsChecked_.at(row) ? Qt::Checked : Qt::Unchecked;
-        }
         return {};
     }
     default:
@@ -179,6 +179,17 @@ QVariant ExperimentModel::headerData(int col, Qt::Orientation ori, int role) con
     else if (col>=COL_ATTRS && col < COL_ATTRS+metaCount())
         return Metadata::attributeTag(metaInfoNums_.at(col-COL_ATTRS), false);
     return {};
+}
+
+//! Update mutable class members.
+void ExperimentModel::updateState() const {
+    // Resize rowsChecked_ according to current Session data.
+    if (rowsChecked_.count()>rowCount()) {
+        rowsChecked_.resize(rowCount());
+        return;
+    }
+    while (rowsChecked_.count()<rowCount())
+        rowsChecked_.append(true);
 }
 
 
@@ -223,7 +234,6 @@ ExperimentView::ExperimentView() : ListView() {
 void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     model()->onClicked(current);
     scrollTo(current);
-    //ListView::currentChanged(current, previous);
     gHub->tellClusterSelected(model()->data(current, Qt::UserRole).value<shp_Cluster>());
 }
 

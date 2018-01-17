@@ -184,7 +184,6 @@ FilesView::FilesView() : ListView() {
 void FilesView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     model()->onClicked(current);
     scrollTo(current);
-    //ListView::currentChanged(current, previous);
 }
 
 void FilesView::removeHighlighted() {
