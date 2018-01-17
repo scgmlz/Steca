@@ -166,17 +166,20 @@ SubframeImage::SubframeImage() {
 
         box.addWidget((dataImageWidget_ = new ImageWidget()));
 
-        connect(spinN_, _SLOT_(QSpinBox, valueChanged, int), [this]() { render(); });
-        connect(numSlices_, _SLOT_(QSpinBox, valueChanged, int), [this]() { render(); });
-        connect(numSlice_, _SLOT_(QSpinBox, valueChanged, int), [this]() { render(); });
-        connect(numBin_, _SLOT_(QSpinBox, valueChanged, int), [this]() { render(); });
+        connect(spinN_, _SLOT_(QSpinBox, valueChanged, int),
+                [this](int /*unused*/) { render(); });
+        connect(numSlices_, _SLOT_(QSpinBox, valueChanged, int),
+                [this](int /*unused*/) { render(); });
+        connect(numSlice_, _SLOT_(QSpinBox, valueChanged, int),
+                [this](int /*unused*/) { render(); });
+        connect(numBin_, _SLOT_(QSpinBox, valueChanged, int),
+                [this](int /*unused*/) { render(); });
     }
 
     {
         BoxWidget& tab = *newQ::Tab(this, "Correction");
 
-        connect(gHub, &TheHub::sigCorrFile,
-                [&tab](const Datafile* file) { tab.setEnabled(file); });
+        connect(gHub, &TheHub::sigCorrFile, [&tab](const Datafile* file) { tab.setEnabled(file); });
 
         QBoxLayout& box = tab.box();
 
@@ -192,12 +195,12 @@ SubframeImage::SubframeImage() {
         box.addWidget((corrImageWidget_ = new ImageWidget()));
     }
 
-    connect(gHub->toggle_enableCorr, &QAction::toggled, [this](bool) { render(); });
-    connect(gHub->toggle_showBins, &QAction::toggled, [this]() { render(); });
+    connect(gHub->toggle_enableCorr, &QAction::toggled, [this](bool /*unused*/) { render(); });
+    connect(gHub->toggle_showBins, &QAction::toggled, [this](bool /*unused*/) { render(); });
 
-    connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
-    connect(gHub, &TheHub::sigGeometryChanged, [this](){ render(); });
-    connect(gHub, &TheHub::sigNormChanged, [this](){ render(); });
+    connect(gHub, &TheHub::sigDisplayChanged, this, &SubframeImage::render);
+    connect(gHub, &TheHub::sigGeometryChanged, this, &SubframeImage::render);
+    connect(gHub, &TheHub::sigNormChanged, this, &SubframeImage::render);
     connect(gHub, &TheHub::sigClusterSelected, this, &SubframeImage::setCluster);
 
     render();
