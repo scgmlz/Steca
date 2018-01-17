@@ -194,10 +194,11 @@ void TabularModel::sortData() {
 //  class DataTable
 // ************************************************************************** //
 
-DataTable::DataTable(int numDataColumns) : model_(nullptr) {
-    model_.reset(new TabularModel(numDataColumns));
+DataTable::DataTable(int numDataColumns)
+    : model_(new TabularModel(numDataColumns)) {
     setModel(model_.ptr());
     setHeader(new QHeaderView(Qt::Horizontal));
+    setAlternatingRowColors(true);
 
     QHeaderView* h = header();
 

@@ -21,7 +21,7 @@
 
 //! A data table view, for use in the 'Points' tab of an output Frame.
 
-class DataTable : public TreeView {
+class DataTable : public QTreeView {
 public:
     DataTable(int numDataColumns);
 
