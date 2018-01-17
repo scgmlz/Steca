@@ -43,8 +43,8 @@ private:
 ImageWidget::ImageWidget() : scale_(0) {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    connect(gHub->toggle_showOverlay, &QAction::toggled, [this]() { update(); });
-    connect(gHub->toggle_stepScale, &QAction::toggled, [this]() { setScale(); });
+    connect(gHub->toggle_showOverlay, &QAction::toggled, this, &ImageWidget::update);
+    connect(gHub->toggle_stepScale, &QAction::toggled, this, &ImageWidget::setScale);
 }
 
 void ImageWidget::setPixmap(QPixmap const& pixmap) {
@@ -166,10 +166,10 @@ SubframeImage::SubframeImage() {
 
         box.addWidget((dataImageWidget_ = new ImageWidget()));
 
-        connect(spinN_, _SLOT_(QSpinBox, valueChanged, int), [this]() { render(); });
-        connect(numSlices_, _SLOT_(QSpinBox, valueChanged, int), [this]() { render(); });
-        connect(numSlice_, _SLOT_(QSpinBox, valueChanged, int), [this]() { render(); });
-        connect(numBin_, _SLOT_(QSpinBox, valueChanged, int), [this]() { render(); });
+        connect(spinN_, _SLOT_(QSpinBox, valueChanged, int), this, &SubframeImage::render);
+        connect(numSlices_, _SLOT_(QSpinBox, valueChanged, int), this, &SubframeImage::render);
+        connect(numSlice_, _SLOT_(QSpinBox, valueChanged, int), this, &SubframeImage::render);
+        connect(numBin_, _SLOT_(QSpinBox, valueChanged, int), this, &SubframeImage::render);
     }
 
     {
@@ -192,8 +192,8 @@ SubframeImage::SubframeImage() {
         box.addWidget((corrImageWidget_ = new ImageWidget()));
     }
 
-    connect(gHub->toggle_enableCorr, &QAction::toggled, [this](bool) { render(); });
-    connect(gHub->toggle_showBins, &QAction::toggled, [this]() { render(); });
+    connect(gHub->toggle_enableCorr, &QAction::toggled, [this](bool /*unused*/) { render(); });
+    connect(gHub->toggle_showBins, &QAction::toggled, this, &SubframeImage::render);
 
     connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigGeometryChanged, [this](){ render(); });
