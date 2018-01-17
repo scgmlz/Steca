@@ -52,27 +52,3 @@ void ListView::setModel(TableModel* model) {
 TableModel* ListView::model() const {
     return static_cast<TableModel*>(TreeView::model());
 }
-
-void ListView::updateSingleSelection() {
-    int row = currentIndex().row();
-    model()->signalReset();
-    selectRow(row);
-}
-
-void ListView::selectRow(int row) {
-    setCurrentIndex(model()->index(row, 0));
-}
-/*
-void ListView::keyPressEvent(QKeyEvent* event){
-
-    QModelIndex cell = this->currentIndex();
-
-    if (event->key() == Qt::Key_Down) {
-        this->setCurrentIndex(QAbstractItemModel::createIndex(cell->row()+1, cell->column()));
-    } else {
-        QTreeView::keyPressEvent(event);
-        return;
-    }
-
-}
-*/

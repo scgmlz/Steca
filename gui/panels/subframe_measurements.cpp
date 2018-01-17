@@ -208,7 +208,7 @@ ExperimentView::ExperimentView() : ListView() {
     connect(gHub, &TheHub::sigClustersChanged,
             [this]() {
                 gHub->tellClusterSelected(shp_Cluster()); // first de-select
-                selectRow(0);
+                setCurrentIndex(model()->index(0,0));
             });
     connect(gHub, &TheHub::sigMetatagsChosen, experimentModel,
             [this](vec<bool> const& rowsChecked) {

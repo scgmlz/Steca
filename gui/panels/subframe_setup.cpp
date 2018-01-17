@@ -149,7 +149,9 @@ shp_Reflection ReflectionView::selectedReflection() const {
 }
 
 void ReflectionView::updateSingleSelection() {
-    ListView::updateSingleSelection();
+    int row = currentIndex().row();
+    model()->signalReset();
+    setCurrentIndex(model()->index(row,0));
     gHub->trigger_removeReflection->setEnabled(hasReflections());
 }
 

@@ -35,9 +35,6 @@ public:
     void setModel(class TableModel* model);
 protected:
     virtual class TableModel* model() const;
-    virtual void selectRow(int);
-    void updateSingleSelection();
-//    void keyPressEvent(QKeyEvent* event) final;
 };
 
 #endif // TREE_VIEWS_H

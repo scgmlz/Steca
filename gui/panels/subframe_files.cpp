@@ -170,11 +170,14 @@ FilesView::FilesView() : ListView() {
     auto filesModel = new FilesModel();
     setModel(filesModel);
 
-    connect(gHub, &TheHub::sigFilesChanged, [=]() { filesModel->signalReset(); });
+    connect(gHub, &TheHub::sigFilesChanged, [=]() {
+            filesModel->signalReset();
+            setCurrentIndex(model()->index(0,0));
+            recollect(); });
     connect(gHub->trigger_removeFile, &QAction::triggered, [this]() { removeHighlighted(); });
-    connect(gHub, &TheHub::sigFilesChanged, [this]() { selectRow({}); recollect(); });
-// TODO    connect(gHub, &TheHub::sigFilesSelected, [this]() { selectRows(gSession->filesSelection()); });
     connect(gHub, &TheHub::sigFileHighlight, model(), &FilesModel::forceFileHighlight);
+
+// TODO    connect(gHub, &TheHub::sigFilesSelected, [this]() { selectRows(gSession->filesSelection()); });
 }
 
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
