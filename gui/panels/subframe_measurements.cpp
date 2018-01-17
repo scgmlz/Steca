@@ -212,10 +212,10 @@ ExperimentView::ExperimentView() : ListView() {
     setSelectionMode(QAbstractItemView::NoSelection);
     auto experimentModel = new ExperimentModel();
     setModel(experimentModel);
-    connect(gHub, &TheHub::sigClustersChanged, [=]() { experimentModel->signalReset(); });
     connect(gHub, &TheHub::sigClustersChanged,
             [this]() {
-                gHub->tellClusterSelected(shp_Cluster()); // first de-select
+                model()->signalReset();
+                // gHub->tellClusterSelected(shp_Cluster()); // first de-select
                 setCurrentIndex(model()->index(0,0));
             });
     connect(gHub, &TheHub::sigMetatagsChosen, experimentModel,

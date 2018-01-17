@@ -281,7 +281,6 @@ void DiffractogramPlot::plot(
 
         Range intenRange;
         if (gHub->isFixedIntenDgramScale()) {
-            debug::ensure(!diffractogram_.cluster().isNull());
             intenRange = gSession->defaultClusterLens(*diffractogram_.cluster())->rgeInten();
         } else {
             intenRange = dgramBgFitted.rgeY();
@@ -559,7 +558,7 @@ void Diffractogram::render() {
     plot_->plot(dgram_, dgramBgFitted_, bg_, refls_, currReflIndex_);
 }
 
-void Diffractogram::setCluster(Cluster* cluster) {
+void Diffractogram::setCluster(const Cluster* cluster) {
     cluster_ = cluster;
     actZoom_->setChecked(false);
     render();
