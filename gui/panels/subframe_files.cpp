@@ -136,11 +136,12 @@ vec<int> FilesModel::checkedRows() const {
 //! Sets rowHighlighted_, and signals need to refresh the view.
 void FilesModel::setHighlight(int row) {
     int oldRow = rowHighlighted_;
+    if (row==oldRow)
+        return;
     rowHighlighted_ = row;
-    if (row<oldRow)
-        emit dataChanged(createIndex(row,0),createIndex(oldRow,columnCount()));
-    else if (row>oldRow)
-        emit dataChanged(createIndex(oldRow,0),createIndex(row,columnCount()));
+    emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
+    emit dataChanged(createIndex(oldRow,0),createIndex(oldRow,columnCount()));
+    emit gHub->sigFileHighlightHasChanged(gSession->file(row));
 }
 
 // ************************************************************************** //
@@ -174,7 +175,6 @@ FilesView::FilesView() : ListView() {
     connect(gHub, &TheHub::sigFilesChanged, [this]() { selectRow({}); recollect(); });
 // TODO    connect(gHub, &TheHub::sigFilesSelected, [this]() { selectRows(gSession->filesSelection()); });
     connect(gHub, &TheHub::sigFileHighlight, model(), &FilesModel::forceFileHighlight);
-
 }
 
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.

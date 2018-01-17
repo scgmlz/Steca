@@ -31,6 +31,7 @@ class ExperimentModel final : public TableModel
 public:
     void onClicked(const QModelIndex &);
     void showMetaInfo(vec<bool> const&);
+    void followFileHighlight(const Datafile*);
 
     int rowCount() const final { return gSession->experiment().count(); }
     QVariant data(const QModelIndex&, int) const final;
@@ -75,6 +76,22 @@ void ExperimentModel::showMetaInfo(vec<bool> const& metadataRows) {
         if (metadataRows.at(i))
             metaInfoNums_.append(i);
     endResetModel();
+}
+
+void ExperimentModel::followFileHighlight(const Datafile* newFile) {
+    const Datafile* oldFile = highlighted()->first()->file();
+    if (newFile==oldFile)
+        return;
+    int oldRow = rowHighlighted_;
+    for (int row=0; row<rowCount(); ++row) {
+        if (gSession->experiment().at(row)->first()->file()==newFile) {
+            rowHighlighted_ = row;
+            emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
+            emit dataChanged(createIndex(oldRow,0),createIndex(oldRow,columnCount()));
+            return;
+        }
+    }
+    NEVER
 }
 
 QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
@@ -130,7 +147,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
         return ret;
     }
     case Qt::ForegroundRole: {
-        if (cluster->count()>1 &&
+        if (col==COL_NUMBER && cluster->count()>1 &&
             (cluster->first()->file()!=cluster->last()->file()
              || cluster->count()<gSession->experiment().combineBy()))
             return QColor(Qt::red);
@@ -198,6 +215,8 @@ ExperimentView::ExperimentView() : ListView() {
                 model()->showMetaInfo(rowsChecked);
                 setHeaderHidden(model()->metaCount()==0);
             });
+    connect(gHub, &TheHub::sigFileHighlightHasChanged,
+            model(), &ExperimentModel::followFileHighlight);
 }
 
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
