@@ -18,23 +18,17 @@
 #include "core/typ/vec.h"
 #include <QTreeView>
 
-//! Abstract tree widget, base class of ListView and Table
+//! A list view with single selection.
 
-class TreeView : public QTreeView {
+//! Based on QTreeView, with hidden 1st column.
+
+class ListView : public QTreeView {
 public:
-    TreeView();
-protected:
-    int mWidth() const;
-};
-
-//! A (tree-)list view. Single selection.
-
-class ListView : public TreeView {
-public:
-    ListView() {}
+    ListView();
     void setModel(class TableModel* model);
 protected:
     virtual class TableModel* model() const;
+    int mWidth() const;
 };
 
 #endif // TREE_VIEWS_H

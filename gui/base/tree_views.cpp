@@ -16,28 +16,14 @@
 #include "core/def/idiomatic_for.h"
 #include "gui/base/table_model.h"
 
-// ************************************************************************** //
-//  class TreeView
-// ************************************************************************** //
-
-TreeView::TreeView() {
+ListView::ListView() {
     setAlternatingRowColors(true);
 }
-
-int TreeView::mWidth() const {
-    QFont f = font();
-    f.setBold(false);
-    return QFontMetrics(f).width('m');
-}
-
-// ************************************************************************** //
-//  class ListView
-// ************************************************************************** //
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual" // TODO try without
 void ListView::setModel(TableModel* model) {
-    TreeView::setModel(model);
+    ListView::setModel(model);
     hideColumn(0); // this should look like a list; 0th column is tree-like
 
     if (model) {
@@ -50,5 +36,11 @@ void ListView::setModel(TableModel* model) {
 #pragma GCC diagnostic pop
 
 TableModel* ListView::model() const {
-    return static_cast<TableModel*>(TreeView::model());
+    return static_cast<TableModel*>(QTreeView::model());
+}
+
+int ListView::mWidth() const {
+    QFont f = font();
+    f.setBold(false);
+    return QFontMetrics(f).width('m');
 }

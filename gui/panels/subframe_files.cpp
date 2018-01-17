@@ -150,7 +150,7 @@ void FilesModel::setHighlight(int row) {
 
 //! Main item in SubframeFiles: View and control the list of DataFile's
 
-class FilesView : public ListView { // < TreeView < QTreeView < QAbstractItemView
+class FilesView : public ListView { // < QTreeView < QAbstractItemView
 public:
     FilesView();
 
