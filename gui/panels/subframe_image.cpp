@@ -198,7 +198,7 @@ SubframeImage::SubframeImage() {
     connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigNormChanged, [this](){ render(); });
-    connect(gHub, &TheHub::sigClusterSelected, [this](shp_Cluster dataseq){ setCluster(dataseq); });
+    connect(gHub, &TheHub::sigClusterSelected, this, &SubframeImage::setCluster);
 
     render();
 }
@@ -238,9 +238,9 @@ QPixmap SubframeImage::makePixmap(shp_Image image) {
 }
 
 QPixmap SubframeImage::makePixmap(
-    Measurement const& dataseq, const Range& rgeGma, const Range& rgeTth) {
-    QImage im = makeImage(dataseq.image(), !gHub->isFixedIntenImageScale());
-    shp_AngleMap angleMap = gSession->angleMap(dataseq);
+    Measurement const& cluster, const Range& rgeGma, const Range& rgeTth) {
+    QImage im = makeImage(cluster.image(), !gHub->isFixedIntenImageScale());
+    shp_AngleMap angleMap = gSession->angleMap(cluster);
 
     const QSize& size = im.size();
     for_ij (size.width(), size.height()) {
@@ -261,8 +261,8 @@ QPixmap SubframeImage::makePixmap(
     return QPixmap::fromImage(im);
 }
 
-void SubframeImage::setCluster(shp_Cluster dataseq) {
-    dataseq_ = dataseq;
+void SubframeImage::setCluster(const Cluster* cluster) {
+    cluster_ = cluster;
     render();
 }
 
@@ -274,15 +274,15 @@ void SubframeImage::render() {
         numSlice_->setMaximum(qMax(1, nSlices));
         numSlice_->setEnabled(nSlices > 0);
 
-        if (dataseq_) {
+        if (cluster_) {
             // 1 - based
-            const int by = qBound(1, int(gHub->clusterGroupedBy()), dataseq_->count());
+            const int by = qBound(1, int(gHub->clusterGroupedBy()), cluster_->count());
             const int n = qBound(1, spinN_->value(), by);
 
             spinN_->setValue(n);
             spinN_->setEnabled(by > 1);
 
-            lens_ = gSession->defaultDataseqLens(*dataseq_);
+            lens_ = gSession->defaultClusterLens(*cluster_);
 
             Range rge;
             if (nSlices > 0) {
@@ -305,7 +305,7 @@ void SubframeImage::render() {
 
             gHub->setGammaRange(rge);
 
-            shp_Measurement measurement = dataseq_->at(n - 1);
+            shp_Measurement measurement = cluster_->at(n - 1);
 
             numBin_->setEnabled(true);
             if (gHub->toggle_showBins->isChecked()) {

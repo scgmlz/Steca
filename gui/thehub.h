@@ -47,7 +47,7 @@ private:
     Q_OBJECT
 
 public: // emit signals
-    void tellClusterSelected(shp_Cluster);
+    void tellClusterSelected(const Cluster*);
     void tellSelectedReflection(shp_Reflection);
     void tellReflectionData(shp_Reflection);
     void tellReflectionValues(const Range&, qpair const&, fwhm_t, bool);
@@ -59,7 +59,7 @@ signals:
     void sigFileHighlightHasChanged(const Datafile*); //!< highlighted file has changed
 
     void sigClustersChanged(); //!< the set of cluster collected from selected
-    void sigClusterSelected(shp_Cluster);
+    void sigClusterSelected(const Cluster*);
 
     void sigCorrFile(const Datafile*);
     void sigCorrEnabled(bool);
@@ -162,7 +162,7 @@ public:
 
     eFittingTab fittingTab() const { return fittingTab_; }
 
-    shp_Cluster selectedCluster() const { return selectedCluster_; }
+    const Cluster* selectedCluster() const { return selectedCluster_; }
 
 private:
     friend class TheHubSignallingBase;
@@ -172,7 +172,7 @@ private:
     vec<int> filesSelection_;
     int clusterGroupedBy_ = 1;
     eFittingTab fittingTab_ = eFittingTab::NONE;
-    shp_Cluster selectedCluster_;
+    const Cluster* selectedCluster_;
     shp_Reflection selectedReflection_;
     Settings settings_;
 

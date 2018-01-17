@@ -460,7 +460,7 @@ void TheHub::setNorm(eNorm norm) {
     emit sigNormChanged();
 }
 
-void TheHub::tellClusterSelected(shp_Cluster cluster) {
+void TheHub::tellClusterSelected(const Cluster* cluster) {
     selectedCluster_ = cluster;
     emit sigClusterSelected(cluster);
 }

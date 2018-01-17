@@ -36,7 +36,7 @@ public:
     int rowCount() const final { return gSession->experiment().count(); }
     QVariant data(const QModelIndex&, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const final;
-
+    const Cluster* highlighted() const { return gSession->experiment().at(rowHighlighted_).data(); }
     int metaCount() const { return metaInfoNums_.count(); }
     vec<bool> const& rowsChecked() const { return rowsChecked_; }
 
@@ -46,7 +46,6 @@ private:
     void updateState() const;
 
     int columnCount() const final { return COL_ATTRS + metaCount(); }
-    const Cluster* highlighted() const { return gSession->experiment().at(rowHighlighted_).data(); }
 
     vec<int> metaInfoNums_; //!< indices of metadata items selected for display
     mutable vec<bool> rowsChecked_;
@@ -116,8 +115,6 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
         } else
             return {};
     }
-    case Qt::UserRole:
-        return QVariant::fromValue<shp_Cluster>(gSession->experiment().at(row));
     case Qt::ToolTipRole: {
         QString ret;
         if (cluster->count()>1 && cluster->first()->file()==cluster->last()->file()) {
@@ -234,7 +231,7 @@ ExperimentView::ExperimentView() : ListView() {
 void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     model()->onClicked(current);
     scrollTo(current);
-    gHub->tellClusterSelected(model()->data(current, Qt::UserRole).value<shp_Cluster>());
+    gHub->tellClusterSelected(model()->highlighted());
 }
 
 int ExperimentView::sizeHintForColumn(int col) const {

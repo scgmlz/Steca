@@ -87,7 +87,7 @@ OutputData collectCurve(Cluster const& dataseq) {
 }
 
 OutputData outputCurrDiffractogram() {
-    shp_Cluster ret = gHub->selectedCluster();
+    const Cluster* ret = gHub->selectedCluster();
     if (!ret)
         throw Exception("No data selected");
     return collectCurve(*ret);

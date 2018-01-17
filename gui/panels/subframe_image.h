@@ -34,10 +34,10 @@ private:
     QPixmap makePixmap(shp_Image);
     QPixmap makePixmap(class Measurement const&, const Range&, const Range&);
 
-    void setCluster(shp_Cluster);
+    void setCluster(const Cluster*);
     void render();
 
-    shp_Cluster dataseq_;
+    const Cluster* cluster_;
     class ImageWidget *dataImageWidget_, *corrImageWidget_;
 
     QSpinBox* spinN_;

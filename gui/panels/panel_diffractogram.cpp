@@ -473,8 +473,7 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
         plot_->enterZoom(on);
     });
 
-    connect(gHub, &TheHub::sigClusterSelected,
-            [this](shp_Cluster cluster){ setCluster(cluster); });
+    connect(gHub, &TheHub::sigClusterSelected, this, &Diffractogram::setCluster);
     connect(gHub, &TheHub::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigCorrEnabled, [this](){ render(); });
     connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
@@ -560,7 +559,7 @@ void Diffractogram::render() {
     plot_->plot(dgram_, dgramBgFitted_, bg_, refls_, currReflIndex_);
 }
 
-void Diffractogram::setCluster(shp_Cluster cluster) {
+void Diffractogram::setCluster(Cluster* cluster) {
     cluster_ = cluster;
     actZoom_->setChecked(false);
     render();
