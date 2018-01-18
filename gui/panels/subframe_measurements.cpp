@@ -75,6 +75,8 @@ void ExperimentModel::setHighlight(int row) {
         highlighted_ = nullptr;
     if (oldHighlighted)
         emit dataChanged(createIndex(oldRow,0),createIndex(oldRow,columnCount()));
+    if (highlighted_!=oldHighlighted)
+        emit gHub->sigFileHighlight(highlighted_->first()->file());
 }
 
 void ExperimentModel::updateMeta(vec<bool> const& metadataRows) {
