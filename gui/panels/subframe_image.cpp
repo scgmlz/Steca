@@ -43,8 +43,8 @@ private:
 ImageWidget::ImageWidget() : scale_(0) {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    connect(gHub->toggle_showOverlay, &QAction::toggled, [this]() { update(); });
-    connect(gHub->toggle_stepScale, &QAction::toggled, [this]() { setScale(); });
+    connect(gHub->toggle_showOverlay, &QAction::toggled, [this](bool /*unused*/) { update(); });
+    connect(gHub->toggle_stepScale, &QAction::toggled, [this](bool /*unused*/) { setScale(); });
 }
 
 void ImageWidget::setPixmap(QPixmap const& pixmap) {
@@ -208,32 +208,29 @@ SubframeImage::SubframeImage() {
 
 QPixmap SubframeImage::makeBlankPixmap() {
     const size2d size = gSession->imageSize();
-
     QPixmap pixmap(size.w, size.h);
     pixmap.fill(QColor(0, 0, 0, 0));
-
     return pixmap;
 }
 
 QImage SubframeImage::makeImage(shp_Image image, bool curvedScale) {
-    QImage im;
     if (!image)
-        return im;
+        return {};
 
     shp_ImageLens imageLens = gSession->imageLens(*image, true, false);
     const size2d size = imageLens->size();
     if (size.isEmpty())
-        return im;
+        return {};
 
-    im = QImage(QSize(size.w, size.h), QImage::Format_RGB32);
+    QImage ret(QSize(size.w, size.h), QImage::Format_RGB32);
 
     const Range rgeInten = imageLens->rgeInten(gHub->isFixedIntenImageScale());
     inten_t maxInten = inten_t(rgeInten.max);
 
     for_ij (size.w, size.h)
-        im.setPixel(i, j,
+        ret.setPixel(i, j,
                     colormap::intenImage(imageLens->imageInten(i, j), maxInten, curvedScale));
-    return im;
+    return ret;
 }
 
 QPixmap SubframeImage::makePixmap(shp_Image image) {

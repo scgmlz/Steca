@@ -20,33 +20,36 @@
 //  define local classes
 // ************************************************************************** //
 
-class DiffractogramPlotOverlay : public QWidget {
+class DiffractogramPlotOverlay final : public QWidget {
 public:
     DiffractogramPlotOverlay(DiffractogramPlot&);
 
     void setMargins(int left, int right);
 
 private:
-    DiffractogramPlot& plot_;
-
-    QColor addColor_, removeColor_, color_, bgColor_, reflColor_;
-    int marginLeft_, marginRight_;
-
-    void enterEvent(QEvent*);
-    void leaveEvent(QEvent*);
-    void mousePressEvent(QMouseEvent*);
-    void mouseReleaseEvent(QMouseEvent*);
-    void mouseMoveEvent(QMouseEvent*);
-
-    void paintEvent(QPaintEvent*);
-
-    bool hasCursor_, mouseDown_;
-    int cursorPos_, mouseDownPos_;
+    void enterEvent(QEvent*) final;
+    void leaveEvent(QEvent*) final;
+    void mousePressEvent(QMouseEvent*) final;
+    void mouseReleaseEvent(QMouseEvent*) final;
+    void mouseMoveEvent(QMouseEvent*) final;
+    void paintEvent(QPaintEvent*) final;
 
     void updateCursorRegion();
+
+    DiffractogramPlot& plot_;
+
+    QColor addColor_, color_;
+    const QColor removeColor_{0xf8, 0xf8, 0xff, 0x90};
+    const QColor bgColor_{0x98, 0xfb, 0x98, 0x70};
+    const QColor reflColor_{0x87, 0xce, 0xfa, 0x70};
+
+    int marginLeft_, marginRight_;
+    int cursorPos_, mouseDownPos_;
+    bool hasCursor_, mouseDown_;
 };
 
-class DiffractogramPlot : public QCustomPlot {
+
+class DiffractogramPlot final : public QCustomPlot {
 public:
     enum class eTool {
         NONE,
@@ -57,52 +60,47 @@ public:
     DiffractogramPlot(class Diffractogram&);
 
     void setTool(eTool);
-    eTool getTool() const { return tool_; }
-
-    void plot(Curve const&, Curve const&, Curve const&, curve_vec const&, int);
-
     Range fromPixels(int, int);
-
+    void plot(Curve const&, Curve const&, Curve const&, curve_vec const&, int);
     void setNewReflRange(const Range&);
     void updateBg();
-
     void clearReflLayer();
-
-    QColor bgRgeColor_, reflRgeColor_;
-
     void enterZoom(bool);
+
+    eTool getTool() const { return tool_; }
 
 private:
     void addBgItem(const Range&);
     void resizeEvent(QResizeEvent*);
+    void onReflectionData(shp_Reflection reflection);
 
     Diffractogram& diffractogram_;
+
+    const QColor BgColor_{0x98, 0xfb, 0x98, 0x50};
+    const QColor reflRgeColor_{0x87, 0xce, 0xfa, 0x50};
+
     eTool tool_;
     bool showBgFit_;
     QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *dgramBgFittedGraph2_, *guesses_,
         *fits_;
     vec<QCPGraph*> reflGraph_;
     DiffractogramPlotOverlay* overlay_;
-    void onReflectionData(shp_Reflection reflection);
 };
 
 // ************************************************************************** //
-//  local class DiffractogramPlotOverlay
+//  implement local class DiffractogramPlotOverlay
 // ************************************************************************** //
 
 DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& plot_)
     : QWidget(&plot_)
     , plot_(plot_)
+    , cursorPos_(0)
+    , mouseDownPos_(0)
     , hasCursor_(false)
     , mouseDown_(false)
-    , cursorPos_(0)
-    , mouseDownPos_(0) {
+{
     setMouseTracking(true);
     setMargins(0, 0);
-
-    removeColor_ = QColor(0xf8, 0xf8, 0xff, 0x90);
-    bgColor_ = QColor(0x98, 0xfb, 0x98, 0x70);
-    reflColor_ = QColor(0x87, 0xce, 0xfa, 0x70);
 }
 
 void DiffractogramPlotOverlay::setMargins(int left, int right) {
@@ -181,16 +179,13 @@ void DiffractogramPlotOverlay::updateCursorRegion() {
 }
 
 // ************************************************************************** //
-//  local class DiffractogramPlot
+//  implement local class DiffractogramPlot
 // ************************************************************************** //
 
 DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     : diffractogram_(diffractogram), showBgFit_(false) {
 
     overlay_ = new DiffractogramPlotOverlay(*this);
-
-    bgRgeColor_ = QColor(0x98, 0xfb, 0x98, 0x50);
-    reflRgeColor_ = QColor(0x87, 0xce, 0xfa, 0x50);
 
     QCPAxisRect* ar = axisRect();
 
@@ -364,7 +359,7 @@ void DiffractogramPlot::addBgItem(const Range& range) {
     QColor color;
     switch (gHub->fittingTab()) {
     case eFittingTab::BACKGROUND:
-        color = bgRgeColor_;
+        color = BgColor_;
         break;
     case eFittingTab::REFLECTIONS:
         color = reflRgeColor_;
@@ -480,10 +475,6 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
     connect(gHub, &TheHub::sigBgChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigReflectionsChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigNormChanged, [this](){ onNormChanged(); });
-
-    // TODO: mv to Hub
-    connect(gHub->trigger_clearBackground, &QAction::triggered, [this]() {
-            gHub->setBgRanges(Ranges()); });
 
     connect(gHub, &TheHub::sigFittingTab,
             [this](eFittingTab tab) { onFittingTab(tab); });

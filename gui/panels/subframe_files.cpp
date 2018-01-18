@@ -174,7 +174,7 @@ FilesView::FilesView() : ListView() {
             filesModel->signalReset();
             setCurrentIndex(model()->index(0,0));
             recollect(); });
-    connect(gHub->trigger_removeFile, &QAction::triggered, [this]() { removeHighlighted(); });
+    connect(gHub->trigger_removeFile, &QAction::triggered, this, &FilesView::removeHighlighted);
     connect(gHub, &TheHub::sigFileHighlight, model(), &FilesModel::forceFileHighlight);
 
 // TODO    connect(gHub, &TheHub::sigFilesSelected, [this]() { selectRows(gSession->filesSelection()); });
