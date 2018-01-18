@@ -78,6 +78,7 @@ void ExperimentModel::updateMeta(vec<bool> const& metadataRows) {
 }
 
 void ExperimentModel::onFilesChanged() {
+    TR("ON FILES CHANGED")
     // resize rowsChecked_ according to current Session data
     if (rowsChecked_.count()>rowCount()) {
         rowsChecked_.resize(rowCount());
@@ -91,6 +92,8 @@ void ExperimentModel::onFilesChanged() {
     } else if (rowHighlighted_>=rowCount()) {
         setHighlighted(rowCount()-1);
     }
+    qDebug() << " ====> rowCount()=" << rowCount() << ", #rChecked=" << rowsChecked_.count()
+             << ", highlighted=" << rowHighlighted_;
 }
 
 void ExperimentModel::onFileHighlighted(const Datafile* newFile) {
@@ -111,6 +114,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
         return {};
     const Cluster* cluster = gSession->experiment().at(row).data();
     int col = index.column();
+    qDebug() << "DEB DATA c=" << col << " r=" << row;
     switch (role) {
     case Qt::DisplayRole: {
         if (col==COL_NUMBER) {
@@ -173,6 +177,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     default:
         return {};
     }
+    TR("DEB D9")
 }
 
 QVariant ExperimentModel::headerData(int col, Qt::Orientation ori, int role) const {

@@ -343,8 +343,12 @@ void TheHub::combineMeasurementsBy(const int by) {
 
 void TheHub::collectDatasetsExec() {
     gSession->assembleExperiment(filesSelection_, clusterGroupedBy_);
+    TR("cDE2");
+    qDebug() << "#exp=" << gSession->experiment().count();
     emit sigFilesSelected();
+    TR("cDE3");
     emit sigClustersChanged();
+    TR("cDE4");
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {

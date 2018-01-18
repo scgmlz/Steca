@@ -147,6 +147,19 @@ void TabGraph::paintGrid() {
 void TabGraph::paintPoints() {
     qreal rgeMax = rs_.rgeInten().max;
 
+    /*
+As I read the code: the body of the 'for' loop (for all points) is guarded by 'if (qIsFinite(inten))'. NaNs are not finite, so they do not get painted.
+
+Inside the outer 'if' (for finite inten) is 'if (flat_) ... else' where the 'then' branch paints all points blue and the same size (.5), and the 'else' branch paints them in various colours and size according to intensity.
+
+The 'flat_' flag is controlled by the check box that is in the corner of the pole graph.
+
+NaNs (intensities) do not occur in computed points, only in interpolated points, when interpolation fails.
+
+Cheers, and many happy days with Steca! :)
+
+Jan
+    */
     for (const ReflectionInfo& r : rs_) {
         qreal inten = r.inten();
         if (!qIsFinite(inten)) // nan comes from interpolation

@@ -174,9 +174,13 @@ FilesView::FilesView() : ListView() {
     setModel(filesModel);
 
     connect(gHub, &TheHub::sigFilesLoaded, [=]() {
+            TR("DEB sFL1");
             filesModel->onFilesLoaded();
-            recollect();
+            TR("DEB sFL2");
             emit gHub->sigFilesChanged();
+            TR("DEB sFL3");
+            recollect();
+            TR("DEB sFL4");
         });
     connect(gHub->trigger_removeFile, &QAction::triggered, this, &FilesView::removeHighlighted);
     connect(gHub, &TheHub::sigFileHighlight, model(), &FilesModel::forceFileHighlight);
@@ -193,8 +197,8 @@ void FilesView::currentChanged(QModelIndex const& current, QModelIndex const& pr
 
 void FilesView::removeHighlighted() {
     model()->removeFile();
-    recollect();
     emit gHub->sigFilesChanged();
+    recollect();
 }
 
 void FilesView::recollect() {
