@@ -30,7 +30,7 @@ public:
     Datafile() = delete;
     Datafile(const Datafile&) = delete;
     // allow move so that the low-level loaders must not bother about shared pointers:
-    Datafile(const Datafile&&);
+    Datafile(Datafile&&) = default;
     Datafile(rcstr fileName);
 
     void addDataset(const Metadata&, size2d const&, inten_vec const&);
