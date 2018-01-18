@@ -54,17 +54,21 @@ bool Session::hasFile(rcstr fileName) const {
     return false;
 }
 
-void Session::addGivenFiles(const QStringList& filePaths) THROWS {
+//! Returns true if some file was loaded
+bool Session::addGivenFiles(const QStringList& filePaths) THROWS {
+    bool ret = false;
     for (const QString& path: filePaths) {
         if (path.isEmpty() || hasFile(path))
             continue;
         QSharedPointer<Datafile> datafile = load::loadDatafile(path);
         if (datafile.isNull())
             continue;
+        ret = true;
         setImageSize(datafile->imageSize());
         files_.append(datafile);
     }
     computeOffsets();
+    return ret;
 }
 
 void Session::removeFile(int i) {

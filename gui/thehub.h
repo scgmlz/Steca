@@ -50,7 +50,7 @@ public:
     ~TheHub();
 
 signals:
-    void sigFilesChanged(); //!< loaded file set has changed
+    void sigFilesLoaded(); //!< at least one file has been newly loaded
     void sigFilesSelected(); //!< active file selection has changed
     void sigFileHighlight(const Datafile*); //!< change highlighted file
     void sigFileHighlightHasChanged(const Datafile*); //!< highlighted file has changed
@@ -81,8 +81,8 @@ signals:
 public:
     // modifying methods:
     void removeFile(int);
-    void sessionFromFile(rcstr&) THROWS;
     void addGivenFiles(const QStringList& filePaths) THROWS;
+    void sessionFromFile(rcstr&) THROWS;
     void collectDatasetsFromSelection(const vec<int>);
     void combineMeasurementsBy(const int);
     void setCorrFile(rcstr filePath) THROWS;

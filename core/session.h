@@ -43,7 +43,7 @@ public:
 
     // Modifying methods:
     void clear();
-    void addGivenFiles(const QStringList& filePaths) THROWS;
+    bool addGivenFiles(const QStringList& filePaths) THROWS;
     void removeFile(int i);
     void setCorrFile(rcstr filePath) THROWS;
     void removeCorrFile();

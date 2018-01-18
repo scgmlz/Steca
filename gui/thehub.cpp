@@ -102,8 +102,6 @@ TheHub::TheHub()
 
     connect(trigger_clearBackground, &QAction::triggered, [this]() { setBgRanges({}); });
 
-    QObject::connect(this, &TheHub::sigFilesChanged,
-                     [this]() { trigger_removeFile->setEnabled(gSession->numFiles()); });
     QObject::connect(this, &TheHub::sigCorrFile,
             [this](const Datafile* file) { trigger_removeCorr->setEnabled(file); });
     QObject::connect(this, &TheHub::sigCorrEnabled,
@@ -158,16 +156,26 @@ TheHub::~TheHub() {
     settings_.saveStr("export_format", saveFmt);
 }
 
+// called through trigger_removeFile -> FilesView::removeHighlighted -> FilesModel::removeFile
 void TheHub::removeFile(int i) {
     gSession->removeFile(i);
-    emit sigFilesChanged();
-    if (gSession->numFiles()==0)
+    int numFiles = gSession->numFiles();
+    trigger_removeFile->setEnabled(numFiles);
+    if (!numFiles)
         setImageCut(true, false, ImageCut());
+}
+
+// called from MainWin::addFiles and from sessionFromJson
+void TheHub::addGivenFiles(const QStringList& filePaths) THROWS {
+    TakesLongTime __;
+    if (!gSession->addGivenFiles(filePaths))
+        return;
+    trigger_removeFile->setEnabled(true);
+    emit sigFilesLoaded();
 }
 
 void TheHub::saveSession(QFileInfo const& fileInfo) const {
     WriteFile file(fileInfo.filePath());
-
     QDir::setCurrent(fileInfo.absolutePath());
     const int result = file.write(saveSession());
     RUNTIME_CHECK(result >= 0, "Could not write session");
@@ -315,12 +323,6 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
 
     emit sigReflectionsChanged();
     TR("installed session from file");
-}
-
-void TheHub::addGivenFiles(const QStringList& filePaths) THROWS {
-    TakesLongTime __;
-    gSession->addGivenFiles(filePaths);
-    emit sigFilesChanged();
 }
 
 void TheHub::collectDatasetsFromSelectionBy(const vec<int> indexSelection, const int by) {

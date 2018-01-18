@@ -27,11 +27,12 @@
 
 //! The model for FilesView
 
-class FilesModel : public TableModel { // < TableModel < QAbstractTableModel < QAbstractItemModel
+class FilesModel : public TableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
     void onClicked(const QModelIndex &);
     void forceFileHighlight(const Datafile*);
     void removeFile();
+    void onFilesLoaded();
 
     int columnCount() const final { return 3; }
     int rowCount() const final { return gSession->numFiles(); }
@@ -77,7 +78,13 @@ void FilesModel::removeFile() {
     int row = rowHighlighted_;
     gHub->removeFile(row);
     rowHighlighted_ = qMin(row, rowCount()-1);
+    rowsChecked_.resize(rowCount());
     emit dataChanged(createIndex(row,0),createIndex(rowCount(),columnCount()));
+}
+
+void FilesModel::onFilesLoaded() {
+    beginResetModel();
+    endResetModel();
 }
 
 //! Returns role-specific information about one table cell.
@@ -95,10 +102,6 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
     case Qt::DisplayRole:
         if (col==2)
             return file->fileName();
-        return {};
-    case Qt::UserRole:
-        if (col==2)
-            return QVariant::fromValue<const Datafile*>(file);
         return {};
     case Qt::ToolTipRole:
         if (col>=2)
@@ -155,7 +158,7 @@ public:
     FilesView();
 
 private:
-    void currentChanged(QModelIndex const&, QModelIndex const&) final;
+    void currentChanged(QModelIndex const&, QModelIndex const&) override final;
     void removeHighlighted();
     void recollect();
 
@@ -170,9 +173,8 @@ FilesView::FilesView() : ListView() {
     auto filesModel = new FilesModel();
     setModel(filesModel);
 
-    connect(gHub, &TheHub::sigFilesChanged, [=]() {
-            filesModel->signalReset();
-            setCurrentIndex(model()->index(0,0));
+    connect(gHub, &TheHub::sigFilesLoaded, [=]() {
+            filesModel->onFilesLoaded();
             recollect(); });
     connect(gHub->trigger_removeFile, &QAction::triggered, this, &FilesView::removeHighlighted);
     connect(gHub, &TheHub::sigFileHighlight, model(), &FilesModel::forceFileHighlight);
