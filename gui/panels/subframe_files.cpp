@@ -44,7 +44,7 @@ public:
 private:
     void setHighlight(int row);
 
-    mutable vec<bool> rowsChecked_;
+    vec<bool> rowsChecked_;
     int rowHighlighted_;
 };
 
@@ -84,6 +84,8 @@ void FilesModel::removeFile() {
 
 void FilesModel::onFilesLoaded() {
     beginResetModel();
+    while (rowsChecked_.count()<rowCount())
+        rowsChecked_.append(true);
     endResetModel();
 }
 
@@ -92,8 +94,6 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
     const int row = index.row();
     if (row < 0 || row >= rowCount())
         return {};
-    while (rowsChecked_.count()<rowCount())
-        rowsChecked_.append(true);
     const Datafile* file = gSession->file(row);
     int col = index.column();
     switch (role) {
