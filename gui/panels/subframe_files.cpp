@@ -77,10 +77,10 @@ void FilesModel::forceFileHighlight(const Datafile* newFile) {
 void FilesModel::removeFile() {
     int row = rowHighlighted_;
     gHub->removeFile(row);
-    setHighlight(qMin(row, rowCount()-1));
     rowsChecked_.resize(rowCount());
     emit dataChanged(createIndex(row,0),createIndex(rowCount(),columnCount()));
     gHub->onFilesSelected(checkedRows());
+    setHighlight(qMin(row, rowCount()-1));
 }
 
 void FilesModel::onFilesLoaded() {
@@ -89,6 +89,8 @@ void FilesModel::onFilesLoaded() {
         rowsChecked_.append(true);
     endResetModel();
     gHub->onFilesSelected(checkedRows());
+    if (rowHighlighted_<0)
+        setHighlight(0);
 }
 
 //! Returns role-specific information about one table cell.
