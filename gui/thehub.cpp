@@ -331,7 +331,7 @@ void TheHub::collectDatasetsFromSelectionBy(const vec<int> indexSelection, const
     collectDatasetsExec();
 }
 
-void TheHub::collectDatasetsFromSelection(const vec<int> indexSelection) {
+void TheHub::onFilesSelected(const vec<int> indexSelection) {
     filesSelection_ = indexSelection;
     collectDatasetsExec();
 }

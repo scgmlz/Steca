@@ -30,6 +30,7 @@
 class FilesModel : public TableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
     void onClicked(const QModelIndex &);
+    void setHighlight(int row);
     void forceFileHighlight(const Datafile*);
     void removeFile();
     void onFilesLoaded();
@@ -39,10 +40,8 @@ public:
     QVariant data(const QModelIndex&, int) const final;
 
     vec<int> checkedRows() const;
-    int rowHighlighted() const { return rowHighlighted_; }
 
 private:
-    void setHighlight(int row);
 
     vec<bool> rowsChecked_;
     int rowHighlighted_;
@@ -57,6 +56,7 @@ void FilesModel::onClicked(const QModelIndex& cell) {
     if (col==1) {
         rowsChecked_[row] = !rowsChecked_[row];
         emit dataChanged(cell, cell);
+        gHub->onFilesSelected(checkedRows());
     } else if (col==2) {
         setHighlight(row);
     }
@@ -80,6 +80,7 @@ void FilesModel::removeFile() {
     setHighlight(qMin(row, rowCount()-1));
     rowsChecked_.resize(rowCount());
     emit dataChanged(createIndex(row,0),createIndex(rowCount(),columnCount()));
+    gHub->onFilesSelected(checkedRows());
 }
 
 void FilesModel::onFilesLoaded() {
@@ -87,6 +88,7 @@ void FilesModel::onFilesLoaded() {
     while (rowsChecked_.count()<rowCount())
         rowsChecked_.append(true);
     endResetModel();
+    gHub->onFilesSelected(checkedRows());
 }
 
 //! Returns role-specific information about one table cell.
@@ -142,9 +144,12 @@ void FilesModel::setHighlight(int row) {
     if (row==oldRow)
         return;
     rowHighlighted_ = row;
-    emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
-    emit dataChanged(createIndex(oldRow,0),createIndex(oldRow,columnCount()));
-    emit gHub->sigFileHighlightHasChanged(gSession->file(row));
+    if (row>=0) {
+        emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
+        emit gHub->sigFileHighlightHasChanged(gSession->file(row));
+    }
+    if (oldRow>=0)
+        emit dataChanged(createIndex(oldRow,0),createIndex(oldRow,columnCount()));
 }
 
 // ************************************************************************** //
@@ -159,11 +164,8 @@ public:
 
 private:
     void currentChanged(QModelIndex const&, QModelIndex const&) override final;
-    void removeHighlighted();
-    void recollect();
 
     int sizeHintForColumn(int) const final;
-
     FilesModel* model() const { return static_cast<FilesModel*>(ListView::model()); }
 };
 
@@ -173,36 +175,16 @@ FilesView::FilesView() : ListView() {
     auto filesModel = new FilesModel();
     setModel(filesModel);
 
-    connect(gHub, &TheHub::sigFilesLoaded, [=]() {
-            TR("DEB sFL1");
-            filesModel->onFilesLoaded();
-            TR("DEB sFL2");
-            emit gHub->sigFilesChanged();
-            TR("DEB sFL3");
-            recollect();
-            TR("DEB sFL4");
-        });
-    connect(gHub->trigger_removeFile, &QAction::triggered, this, &FilesView::removeHighlighted);
+    connect(gHub, &TheHub::sigFilesLoaded, model(), &FilesModel::onFilesLoaded);
+    connect(gHub->trigger_removeFile, &QAction::triggered, model(), &FilesModel::removeFile);
     connect(gHub, &TheHub::sigFileHighlight, model(), &FilesModel::forceFileHighlight);
-    connect(this, &FilesView::clicked,
-            [this](const QModelIndex& cell) { model()->onClicked(cell); });
-// TODO    connect(gHub, &TheHub::sigFilesSelected, [this]() { selectRows(gSession->filesSelection()); });
+    connect(this, &FilesView::clicked, model(), &FilesModel::onClicked);
 }
 
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
 void FilesView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
-    model()->onClicked(current);
+    model()->setHighlight(current.row());
     scrollTo(current);
-}
-
-void FilesView::removeHighlighted() {
-    model()->removeFile();
-    emit gHub->sigFilesChanged();
-    recollect();
-}
-
-void FilesView::recollect() {
-    gHub->collectDatasetsFromSelection(model()->checkedRows());
 }
 
 int FilesView::sizeHintForColumn(int col) const {

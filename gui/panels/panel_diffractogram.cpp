@@ -543,6 +543,8 @@ void Diffractogram::onFittingTab(eFittingTab tab) {
 }
 
 void Diffractogram::render() {
+    if (!cluster_)
+        return;
     calcDgram();
     calcBackground();
     calcReflections();
