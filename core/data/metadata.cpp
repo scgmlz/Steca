@@ -137,7 +137,7 @@ str Metadata::attributeStrValue(int i) const {
     case eAttr::DELTA_TIME: value = deltaTime; break;
 
     case eAttr::DATE: return date;
-    case eAttr::COMMENT: return comment;
+    case eAttr::COMMENT: return "COMMENT"; // TODO restore comment;
 
     default: NEVER;
     }

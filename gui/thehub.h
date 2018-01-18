@@ -50,8 +50,11 @@ public:
     ~TheHub();
 
 signals:
-    void sigFilesLoaded(); //!< at least one file has been newly loaded
+    void sigFilesLoaded(); //!< TheHub->SubframeFiles: at least one file has been newly loaded
+    void sigFilesChanged(); //!< SubframeFiles->SubframeMeasurements: file loaded or removed
+
     void sigFilesSelected(); //!< active file selection has changed
+
     void sigFileHighlight(const Datafile*); //!< change highlighted file
     void sigFileHighlightHasChanged(const Datafile*); //!< highlighted file has changed
 

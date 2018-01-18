@@ -77,7 +77,7 @@ void FilesModel::forceFileHighlight(const Datafile* newFile) {
 void FilesModel::removeFile() {
     int row = rowHighlighted_;
     gHub->removeFile(row);
-    rowHighlighted_ = qMin(row, rowCount()-1);
+    setHighlight(qMin(row, rowCount()-1));
     rowsChecked_.resize(rowCount());
     emit dataChanged(createIndex(row,0),createIndex(rowCount(),columnCount()));
 }
@@ -136,7 +136,7 @@ vec<int> FilesModel::checkedRows() const {
     return ret;
 }
 
-//! Sets rowHighlighted_, and signals need to refresh the view.
+//! Sets rowHighlighted_, and signals need to refresh FilesView and MeasurementView.
 void FilesModel::setHighlight(int row) {
     int oldRow = rowHighlighted_;
     if (row==oldRow)
@@ -175,10 +175,13 @@ FilesView::FilesView() : ListView() {
 
     connect(gHub, &TheHub::sigFilesLoaded, [=]() {
             filesModel->onFilesLoaded();
-            recollect(); });
+            recollect();
+            emit gHub->sigFilesChanged();
+        });
     connect(gHub->trigger_removeFile, &QAction::triggered, this, &FilesView::removeHighlighted);
     connect(gHub, &TheHub::sigFileHighlight, model(), &FilesModel::forceFileHighlight);
-
+    connect(this, &FilesView::clicked,
+            [this](const QModelIndex& cell) { model()->onClicked(cell); });
 // TODO    connect(gHub, &TheHub::sigFilesSelected, [this]() { selectRows(gSession->filesSelection()); });
 }
 
@@ -191,6 +194,7 @@ void FilesView::currentChanged(QModelIndex const& current, QModelIndex const& pr
 void FilesView::removeHighlighted() {
     model()->removeFile();
     recollect();
+    emit gHub->sigFilesChanged();
 }
 
 void FilesView::recollect() {

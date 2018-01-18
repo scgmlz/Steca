@@ -25,32 +25,31 @@
 
 //! The model for ExperimentView.
 
-class ExperimentModel final : public TableModel
-                             // < TableModel < QAbstractTableModel < QAbstractItemModel
-{
+class ExperimentModel final : public TableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
     void onClicked(const QModelIndex &);
-    void showMetaInfo(vec<bool> const&);
-    void followFileHighlight(const Datafile*);
+    void updateMeta(vec<bool> const&);
+    void onFilesChanged();
+    void onFileHighlighted(const Datafile*);
 
     int rowCount() const final { return gSession->experiment().count(); }
     QVariant data(const QModelIndex&, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const final;
-    const Cluster* highlighted() const {
-        return rowCount() ? gSession->experiment().at(rowHighlighted_).data() : nullptr; }
+    const Cluster* highlighted() const { return highlighted_; }
     int metaCount() const { return metaInfoNums_.count(); }
     vec<bool> const& rowsChecked() const { return rowsChecked_; }
 
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
 private:
-    void updateState() const;
+    void setHighlighted(int row);
 
     int columnCount() const final { return COL_ATTRS + metaCount(); }
 
     vec<int> metaInfoNums_; //!< indices of metadata items selected for display
-    mutable vec<bool> rowsChecked_;
+    vec<bool> rowsChecked_;
     int rowHighlighted_;
+    const Cluster* highlighted_{nullptr};
 };
 
 void ExperimentModel::onClicked(const QModelIndex& cell) {
@@ -62,16 +61,14 @@ void ExperimentModel::onClicked(const QModelIndex& cell) {
         rowsChecked_[row] = !rowsChecked_[row];
         emit dataChanged(cell, cell);
     } else if (col==2) {
-        const Datafile* oldFile = highlighted()->first()->file();
-        rowHighlighted_ = row;
-        const Datafile* newFile = highlighted()->first()->file();
-        emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
-        if (newFile!=oldFile)
-            emit gHub->sigFileHighlight(newFile);
+        const Cluster* oldHighlighted = highlighted_;
+        setHighlighted(row);
+        if (highlighted_!=oldHighlighted)
+            emit gHub->sigFileHighlight(highlighted_->first()->file());
     }
 }
 
-void ExperimentModel::showMetaInfo(vec<bool> const& metadataRows) {
+void ExperimentModel::updateMeta(vec<bool> const& metadataRows) {
     beginResetModel();
     metaInfoNums_.clear();
     for_i (metadataRows.count())
@@ -80,16 +77,28 @@ void ExperimentModel::showMetaInfo(vec<bool> const& metadataRows) {
     endResetModel();
 }
 
-void ExperimentModel::followFileHighlight(const Datafile* newFile) {
-    const Datafile* oldFile = highlighted()->first()->file();
-    if (newFile==oldFile)
+void ExperimentModel::onFilesChanged() {
+    // resize rowsChecked_ according to current Session data
+    if (rowsChecked_.count()>rowCount()) {
+        rowsChecked_.resize(rowCount());
         return;
-    int oldRow = rowHighlighted_;
+    }
+    while (rowsChecked_.count()<rowCount())
+        rowsChecked_.append(true);
+    // consequences for highlighting
+    if (!rowCount()) {
+        highlighted_ = nullptr;
+    } else if (rowHighlighted_>=rowCount()) {
+        setHighlighted(rowCount()-1);
+    }
+}
+
+void ExperimentModel::onFileHighlighted(const Datafile* newFile) {
+    if (highlighted_ && newFile==highlighted_->first()->file())
+        return;
     for (int row=0; row<rowCount(); ++row) {
         if (gSession->experiment().at(row)->first()->file()==newFile) {
-            rowHighlighted_ = row;
-            emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
-            emit dataChanged(createIndex(oldRow,0),createIndex(oldRow,columnCount()));
+            setHighlighted(row);
             return;
         }
     }
@@ -100,7 +109,6 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     int row = index.row();
     if (row < 0 || row >= rowCount())
         return {};
-    updateState();
     const Cluster* cluster = gSession->experiment().at(row).data();
     int col = index.column();
     switch (role) {
@@ -179,15 +187,14 @@ QVariant ExperimentModel::headerData(int col, Qt::Orientation ori, int role) con
     return {};
 }
 
-//! Update mutable class members.
-void ExperimentModel::updateState() const {
-    // Resize rowsChecked_ according to current Session data.
-    if (rowsChecked_.count()>rowCount()) {
-        rowsChecked_.resize(rowCount());
-        return;
-    }
-    while (rowsChecked_.count()<rowCount())
-        rowsChecked_.append(true);
+void ExperimentModel::setHighlighted(int row) {
+    const Cluster* oldHighlighted = highlighted_;
+    int oldRow = rowHighlighted_;
+    rowHighlighted_ = row;
+    highlighted_ = gSession->experiment().at(rowHighlighted_).data();
+    emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
+    if (oldHighlighted)
+        emit dataChanged(createIndex(oldRow,0),createIndex(oldRow,columnCount()));
 }
 
 
@@ -213,6 +220,7 @@ ExperimentView::ExperimentView() : ListView() {
     setSelectionMode(QAbstractItemView::NoSelection);
     auto experimentModel = new ExperimentModel();
     setModel(experimentModel);
+    connect(gHub, &TheHub::sigFilesChanged, model(), &ExperimentModel::onFilesChanged);
     connect(gHub, &TheHub::sigClustersChanged,
             [this]() {
                 model()->signalReset();
@@ -221,11 +229,11 @@ ExperimentView::ExperimentView() : ListView() {
             });
     connect(gHub, &TheHub::sigMetatagsChosen, experimentModel,
             [this](vec<bool> const& rowsChecked) {
-                model()->showMetaInfo(rowsChecked);
+                model()->updateMeta(rowsChecked);
                 setHeaderHidden(model()->metaCount()==0);
             });
     connect(gHub, &TheHub::sigFileHighlightHasChanged,
-            model(), &ExperimentModel::followFileHighlight);
+            model(), &ExperimentModel::onFileHighlighted);
 }
 
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
