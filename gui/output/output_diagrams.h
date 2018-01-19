@@ -1,13 +1,13 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/output/output_diagrams.h
-//! @brief     Defines ...
+//! @brief     Defines class DiagramsFrame
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
@@ -15,58 +15,32 @@
 #ifndef OUTPUT_DIAGRAMS_H
 #define OUTPUT_DIAGRAMS_H
 
-#include "QCP/qcustomplot.h"
-#include "output_dialogs.h"
+#include "gui/output/frame.h"
 
-namespace gui {
-namespace output {
+//! The modal dialog for viewing and saving diagrams
+class DiagramsFrame final : public Frame {
+public:
+    DiagramsFrame(rcstr title, QWidget*);
 
-class TabPlot : public QCustomPlot {
-    CLASS(TabPlot) SUPER(QCustomPlot) public : TabPlot();
-    void set(calc::ReflectionInfos);
+private:
+    class TabPlot* tabPlot_;
+    class TabDiagramsSave* tabSave_;
 
-    void plot(qreal_vec::rc xs, qreal_vec::rc ys, qreal_vec::rc ysLo, qreal_vec::rc ysUp);
-
-protected:
-    QCPGraph *graph_, *graphLo_, *graphUp_;
-};
-
-class TabDiagramsSave : public TabSave {
-    CLASS(TabDiagramsSave)
-    SUPER(TabSave) public : TabDiagramsSave(TheHub&, Params&);
-
-    uint currType() const;
-    bool currDiagram() const;
-
-protected:
-    QRadioButton *currentDiagram_, *allData_;
-    QComboBox* fileTypes_;
-};
-
-class DiagramsFrame : public Frame {
-    CLASS(DiagramsFrame)
-    SUPER(Frame) public : DiagramsFrame(TheHub&, rcstr title, QWidget*);
-
-protected:
-    TabPlot* tabPlot_;
-    TabDiagramsSave* tabSave_;
-
-    using eReflAttr = calc::ReflectionInfo::eReflAttr;
+    using eReflAttr = ReflectionInfo::eReflAttr;
 
     eReflAttr xAttr() const;
     eReflAttr yAttr() const;
 
-    void displayReflection(uint reflIndex, bool interpolated);
+    void displayReflection(int reflIndex, bool interpolated);
 
-    calc::ReflectionInfos rs_;
-    qreal_vec xs_, ys_, ysErrorLo_, ysErrorUp_;
+    ReflectionInfos rs_;
+    vec<qreal> xs_, ys_, ysErrorLo_, ysErrorUp_;
 
     void recalculate();
 
-    bool saveDiagramOutput();
-    void writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator);
-    void writeAllDataOutputFile(rcstr filePath, rcstr separator);
+    void saveDiagramOutput();
+    void writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator) const;
+    void writeAllDataOutputFile(rcstr filePath, rcstr separator) const;
 };
-}
-}
+
 #endif // OUTPUT_DIAGRAMS_H

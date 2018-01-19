@@ -1,13 +1,13 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/output/output_diffractograms.h
-//! @brief     Defines ...
+//! @brief     Defines class DiffractogramsFrame
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
@@ -15,47 +15,21 @@
 #ifndef OUTPUT_DIFFRACTOGRAMS_H
 #define OUTPUT_DIFFRACTOGRAMS_H
 
-#include "output_dialogs.h"
+#include "frame.h"
 
-namespace gui {
-namespace output {
+//! The modal dialog for saving diffractograms
+class DiffractogramsFrame final : public Frame {
+public:
+    DiffractogramsFrame(rcstr title, QWidget*);
 
-class TabDiffractogramsSave : public TabSave {
-    CLASS(TabDiffractogramsSave)
-    SUPER(TabSave) public : TabDiffractogramsSave(TheHub&, Params&);
+private:
+    class TabDiffractogramsSave* tabSave_;
 
-    uint currType() const;
-    bool currentChecked() { return rbCurrent_->isChecked(); }
-    bool allSequentialChecked() { return rbAllSequential_->isChecked(); }
-    bool allChecked() { return rbAll_->isChecked(); }
+    vec<vec<const class OutputData*>> outputAllDiffractograms();
 
-protected:
-    QRadioButton *rbCurrent_, *rbAllSequential_, *rbAll_;
-    QComboBox* fileTypes_;
+    void saveDiffractogramOutput();
+    void writeCurrDiffractogramToFile(rcstr filePath, rcstr separator);
+    void writeAllDiffractogramsToFiles(rcstr filePath, rcstr separator, bool oneFile);
 };
 
-struct OutputData;
-using OutputDataCollection = typ::vec<OutputData>;
-using OutputDataCollections = typ::vec<OutputDataCollection>;
-
-class DiffractogramsFrame : public Frame {
-    CLASS(DiffractogramsFrame)
-    SUPER(Frame) public : DiffractogramsFrame(TheHub&, rcstr title, QWidget*);
-
-protected:
-    TabDiffractogramsSave* tabSave_;
-
-    OutputDataCollection
-    collectCurves(gma_rge::rc, uint gmaSlices, data::Dataset::rc dataset, uint picNum);
-    OutputData collectCurve(data::Dataset::rc dataset);
-
-    OutputData outputCurrDiffractogram();
-    OutputDataCollections outputAllDiffractograms();
-
-    bool saveDiffractogramOutput();
-    bool writeCurrDiffractogramToFile(rcstr filePath, rcstr separator);
-    bool writeAllDiffractogramsToFiles(rcstr filePath, rcstr separator, bool oneFile);
-};
-}
-}
-#endif // OUTPUT_Diffractograms_H
+#endif // OUTPUT_DIFFRACTOGRAMS_H

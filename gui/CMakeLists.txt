@@ -1,10 +1,8 @@
 get_filename_component(lib ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
 include_directories (
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_HOME_DIRECTORY}/lib
-  ${CMAKE_HOME_DIRECTORY}/core
-  ${CMAKE_HOME_DIRECTORY}/io
+  ${CMAKE_HOME_DIRECTORY}
+  ${CMAKE_HOME_DIRECTORY}/3rdparty
 )
 
 file (GLOB_RECURSE files *.h *.cpp)
@@ -14,15 +12,13 @@ target_link_libraries (${lib}
   Qt5::Gui
   Qt5::Widgets
   Qt5::Network
+  steca_QCP
   core
-  LevMar
-  io
-  lib
 )
 
 # the Steca executable:
 add_executable (Steca
-  main.cpp
+  steca.cpp
   resources.qrc
   # the following non-dependences are convenient for the qtcreator tree view:
   ../manifest.h
