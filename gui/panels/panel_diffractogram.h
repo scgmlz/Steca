@@ -16,17 +16,17 @@
 #define PANEL_DIFFRACTOGRAM_H
 
 #include "gui/thehub.h" // for eFittingTab
-#include "gui/widgets/new_q.h"
+#include "gui/base/new_q.h"
 
 //! A diffractogram display, with associated controls, for use in SubframeDiffractogram.
 
-class Diffractogram : public QWidget {
+class Diffractogram final : public QWidget {
 public:
     Diffractogram();
 
     void render();
 
-    shp_Suite suite() const { return suite_; }
+    const Cluster* cluster() const { return cluster_; }
     QBoxLayout* box() const { return box_; }
 
     void calcDgram();
@@ -41,16 +41,16 @@ private:
     void onNormChanged();
     void onFittingTab(eFittingTab tab);
 
-    void setSuite(shp_Suite);
+    void setCluster(const Cluster*);
 
-    shp_Suite suite_;
+    const Cluster* cluster_;
 
     class DiffractogramPlot* plot_;
 
     Curve dgram_, dgramBgFitted_, bg_;
     curve_vec refls_;
 
-    uint currReflIndex_;
+    int currReflIndex_;
     shp_Reflection currentReflection_;
 
     QComboBox* comboNormType_;

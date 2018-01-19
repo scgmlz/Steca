@@ -14,7 +14,7 @@
 
 #include "core/data/image_transform.h"
 
-ImageTransform::ImageTransform(uint val_) : val(eTransform(val_ & 7)) {}
+ImageTransform::ImageTransform(int val_) : val(eTransform(val_ & 7)) {}
 
 ImageTransform ImageTransform::mirror(bool on) const {
     return on ? ImageTransform(val | MIRROR) : ImageTransform(val & ~MIRROR);

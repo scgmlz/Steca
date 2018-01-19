@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/data/suite.h
-//! @brief     Defines class Suite
+//! @file      core/data/cluster.h
+//! @brief     Defines class Cluster
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,28 +12,25 @@
 //
 // ************************************************************************** //
 
-#ifndef SUITE_H
-#define SUITE_H
+#ifndef CLUSTER_H
+#define CLUSTER_H
 
 #include "core/typ/angles.h"
 #include "core/data/image.h"
 #include "core/data/measurement.h"
 #include <QSharedPointer> // no auto rm
 
-class Metadata;
 class Experiment;
 
-//! One or more Measurement's
+//! A group of one or more Measurement's
 
-class Suite final : public vec<shp_Measurement> {
-private:
-    friend class Experiment;
-
+class Cluster final : public vec<shp_Measurement> {
 public:
-    Suite();
+    Cluster() = delete;
+    Cluster(Cluster&) = delete;
+    Cluster(const Experiment& experiment, const vec<shp_Measurement>& measurements);
 
-    shp_Metadata metadata() const;
-    Experiment const& experiment() const;
+    const Experiment& experiment() const { return experiment_; }
 
     deg omg() const;
     deg phi() const;
@@ -42,25 +39,28 @@ public:
     Range rgeGma() const;
     Range rgeGmaFull() const;
     Range rgeTth() const;
-
     Range rgeInten() const;
 
+    shp_Metadata avgeMetadata() const;
     qreal avgMonitorCount() const;
     qreal avgDeltaMonitorCount() const;
     qreal avgDeltaTime() const;
 
+    size2d imageSize() const;
     inten_vec collectIntens(const Image* intensCorr, const Range&) const;
     void calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const;
 
-    size2d imageSize() const;
-
 private:
-    Experiment* experiment_;
-    shp_Metadata md_; // on demand, compute once
+    const Experiment& experiment_;
+    shp_Metadata md_; //!< averaged Metadata, cached, computed only once
+
+    void compute_metadata() const;
+
+    friend class Experiment;
 };
 
-typedef QSharedPointer<Suite> shp_Suite;
+typedef QSharedPointer<Cluster> shp_Cluster;
 
-Q_DECLARE_METATYPE(shp_Suite)
+Q_DECLARE_METATYPE(shp_Cluster)
 
-#endif // SUITE_H
+#endif // CLUSTER_H

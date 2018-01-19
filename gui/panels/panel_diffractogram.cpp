@@ -13,44 +13,43 @@
 // ************************************************************************** //
 
 #include "panel_diffractogram.h"
-#include "core/data/suite.h"
-#include "core/fit/fit_fun.h"
-#include "gui/cfg/gui_cfg.h"
 #include "core/session.h"
-#include "gui/thehub.h"
 #include "QCustomPlot/qcustomplot.h"
 
 // ************************************************************************** //
 //  define local classes
 // ************************************************************************** //
 
-class DiffractogramPlotOverlay : public QWidget {
+class DiffractogramPlotOverlay final : public QWidget {
 public:
     DiffractogramPlotOverlay(DiffractogramPlot&);
 
     void setMargins(int left, int right);
 
 private:
-    DiffractogramPlot& plot_;
-
-    QColor addColor_, remColor_, color_, bgColor_, reflColor_;
-    int marginLeft_, marginRight_;
-
-    void enterEvent(QEvent*);
-    void leaveEvent(QEvent*);
-    void mousePressEvent(QMouseEvent*);
-    void mouseReleaseEvent(QMouseEvent*);
-    void mouseMoveEvent(QMouseEvent*);
-
-    void paintEvent(QPaintEvent*);
-
-    bool hasCursor_, mouseDown_;
-    int cursorPos_, mouseDownPos_;
+    void enterEvent(QEvent*) final;
+    void leaveEvent(QEvent*) final;
+    void mousePressEvent(QMouseEvent*) final;
+    void mouseReleaseEvent(QMouseEvent*) final;
+    void mouseMoveEvent(QMouseEvent*) final;
+    void paintEvent(QPaintEvent*) final;
 
     void updateCursorRegion();
+
+    DiffractogramPlot& plot_;
+
+    QColor addColor_, color_;
+    const QColor removeColor_{0xf8, 0xf8, 0xff, 0x90};
+    const QColor bgColor_{0x98, 0xfb, 0x98, 0x70};
+    const QColor reflColor_{0x87, 0xce, 0xfa, 0x70};
+
+    int marginLeft_, marginRight_;
+    int cursorPos_, mouseDownPos_;
+    bool hasCursor_, mouseDown_;
 };
 
-class DiffractogramPlot : public QCustomPlot {
+
+class DiffractogramPlot final : public QCustomPlot {
 public:
     enum class eTool {
         NONE,
@@ -61,52 +60,47 @@ public:
     DiffractogramPlot(class Diffractogram&);
 
     void setTool(eTool);
-    eTool getTool() const { return tool_; }
-
-    void plot(Curve const&, Curve const&, Curve const&, curve_vec const&, uint);
-
     Range fromPixels(int, int);
-
+    void plot(Curve const&, Curve const&, Curve const&, curve_vec const&, int);
     void setNewReflRange(const Range&);
     void updateBg();
-
     void clearReflLayer();
-
-    QColor bgRgeColor_, reflRgeColor_;
-
     void enterZoom(bool);
+
+    eTool getTool() const { return tool_; }
 
 private:
     void addBgItem(const Range&);
     void resizeEvent(QResizeEvent*);
+    void onReflectionData(shp_Reflection reflection);
 
     Diffractogram& diffractogram_;
+
+    const QColor BgColor_{0x98, 0xfb, 0x98, 0x50};
+    const QColor reflRgeColor_{0x87, 0xce, 0xfa, 0x50};
+
     eTool tool_;
     bool showBgFit_;
     QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *dgramBgFittedGraph2_, *guesses_,
         *fits_;
     vec<QCPGraph*> reflGraph_;
     DiffractogramPlotOverlay* overlay_;
-    void onReflectionData(shp_Reflection reflection);
 };
 
 // ************************************************************************** //
-//  local class DiffractogramPlotOverlay
+//  implement local class DiffractogramPlotOverlay
 // ************************************************************************** //
 
 DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& plot_)
     : QWidget(&plot_)
     , plot_(plot_)
+    , cursorPos_(0)
+    , mouseDownPos_(0)
     , hasCursor_(false)
     , mouseDown_(false)
-    , cursorPos_(0)
-    , mouseDownPos_(0) {
+{
     setMouseTracking(true);
     setMargins(0, 0);
-
-    remColor_ = QColor(0xf8, 0xf8, 0xff, 0x90);
-    bgColor_ = QColor(0x98, 0xfb, 0x98, 0x70);
-    reflColor_ = QColor(0x87, 0xce, 0xfa, 0x70);
 }
 
 void DiffractogramPlotOverlay::setMargins(int left, int right) {
@@ -128,7 +122,7 @@ void DiffractogramPlotOverlay::mousePressEvent(QMouseEvent* e) {
     mouseDownPos_ = cursorPos_;
     mouseDown_ = true;
     addColor_ = (eFittingTab::BACKGROUND == gHub->fittingTab()) ? bgColor_ : reflColor_;
-    color_ = Qt::LeftButton == e->button() ? addColor_ : remColor_;
+    color_ = Qt::LeftButton == e->button() ? addColor_ : removeColor_;
     update();
 }
 
@@ -185,16 +179,13 @@ void DiffractogramPlotOverlay::updateCursorRegion() {
 }
 
 // ************************************************************************** //
-//  local class DiffractogramPlot
+//  implement local class DiffractogramPlot
 // ************************************************************************** //
 
 DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     : diffractogram_(diffractogram), showBgFit_(false) {
 
     overlay_ = new DiffractogramPlotOverlay(*this);
-
-    bgRgeColor_ = QColor(0x98, 0xfb, 0x98, 0x50);
-    reflRgeColor_ = QColor(0x87, 0xce, 0xfa, 0x50);
 
     QCPAxisRect* ar = axisRect();
 
@@ -269,7 +260,7 @@ void DiffractogramPlot::setTool(eTool tool) {
 
 void DiffractogramPlot::plot(
     Curve const& dgram, Curve const& dgramBgFitted, Curve const& bg, curve_vec const& refls,
-    uint currReflIndex) {
+    int currReflIndex) {
     if (dgram.isEmpty()) {
         xAxis->setVisible(false);
         yAxis->setVisible(false);
@@ -285,8 +276,7 @@ void DiffractogramPlot::plot(
 
         Range intenRange;
         if (gHub->isFixedIntenDgramScale()) {
-            debug::ensure(!diffractogram_.suite().isNull());
-            intenRange = gSession->defaultDatasetLens(*diffractogram_.suite())->rgeInten();
+            intenRange = gSession->defaultClusterLens(*diffractogram_.cluster())->rgeInten();
         } else {
             intenRange = dgramBgFitted.rgeY();
             intenRange.extendBy(dgram.rgeY());
@@ -369,7 +359,7 @@ void DiffractogramPlot::addBgItem(const Range& range) {
     QColor color;
     switch (gHub->fittingTab()) {
     case eFittingTab::BACKGROUND:
-        color = bgRgeColor_;
+        color = BgColor_;
         break;
     case eFittingTab::REFLECTIONS:
         color = reflRgeColor_;
@@ -401,7 +391,7 @@ void DiffractogramPlot::onReflectionData(shp_Reflection reflection) {
     guesses_->clearData();
     fits_->clearData();
 
-    if (reflection && diffractogram_.suite()) {
+    if (reflection && diffractogram_.cluster()) {
         const PeakFunction& fun = reflection->peakFunction();
 
         const qpair gp = fun.guessedPeak();
@@ -426,7 +416,7 @@ void DiffractogramPlot::onReflectionData(shp_Reflection reflection) {
 //  class Diffractogram
 // ************************************************************************** //
 
-Diffractogram::Diffractogram() : suite_(nullptr), currReflIndex_(0) {
+Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
 
     setLayout((box_ = newQ::BoxLayout(Qt::Vertical)));
     box_->addWidget((plot_ = new DiffractogramPlot(*this)));
@@ -438,7 +428,7 @@ Diffractogram::Diffractogram() : suite_(nullptr), currReflIndex_(0) {
     comboNormType_->addItems({"none", "monitor", "Δ monitor", "Δ time", "background"});
     hb->addWidget(comboNormType_);
 
-    connect(comboNormType_, slot(QComboBox, currentIndexChanged, int),
+    connect(comboNormType_, _SLOT_(QComboBox, currentIndexChanged, int),
             [this](int index) { // TODO init value from hub?
                 gHub->setNorm(eNorm(index));
             });
@@ -446,18 +436,18 @@ Diffractogram::Diffractogram() : suite_(nullptr), currReflIndex_(0) {
     hb->addWidget(newQ::Label(" intensity from:"));
     hb->addWidget((intenSum_ = newQ::RadioButton("sum")));
     hb->addWidget((intenAvg_ = newQ::RadioButton("avg ×")));
-    hb->addWidget((intenScale_ = newQ::DoubleSpinBox(gui_cfg::em4_2, 0.001)));
+    hb->addWidget((intenScale_ = newQ::DoubleSpinBox(6, true, 0.001)));
     intenScale_->setDecimals(3);
 
     connect(intenAvg_, &QRadioButton::toggled, [this](bool on) {
         intenScale_->setEnabled(on);
         intenScale_->setValue(gSession->intenScale());
-        gHub->setIntenScaleAvg(on, preal(intenScale_->value()));
+        gHub->setIntenScaleAvg(on, intenScale_->value());
     });
 
-    connect(intenScale_, slot(QDoubleSpinBox, valueChanged, double), [this](double val) {
+    connect(intenScale_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
         if (val > 0)
-            gHub->setIntenScaleAvg(gSession->intenScaledAvg(), preal(val));
+            gHub->setIntenScaleAvg(gSession->intenScaledAvg(), val);
     });
 
     hb->addStretch();
@@ -477,8 +467,7 @@ Diffractogram::Diffractogram() : suite_(nullptr), currReflIndex_(0) {
         plot_->enterZoom(on);
     });
 
-    connect(gHub, &TheHub::sigSuiteSelected,
-            [this](shp_Suite suite){ setSuite(suite); });
+    connect(gHub, &TheHub::sigClusterSelected, this, &Diffractogram::setCluster);
     connect(gHub, &TheHub::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigCorrEnabled, [this](){ render(); });
     connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
@@ -486,10 +475,6 @@ Diffractogram::Diffractogram() : suite_(nullptr), currReflIndex_(0) {
     connect(gHub, &TheHub::sigBgChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigReflectionsChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigNormChanged, [this](){ onNormChanged(); });
-
-    // TODO: mv to Hub
-    connect(gHub->trigger_clearBackground, &QAction::triggered, [this]() {
-            gHub->setBgRanges(Ranges()); });
 
     connect(gHub, &TheHub::sigFittingTab,
             [this](eFittingTab tab) { onFittingTab(tab); });
@@ -558,26 +543,28 @@ void Diffractogram::onFittingTab(eFittingTab tab) {
 }
 
 void Diffractogram::render() {
+    if (!cluster_)
+        return;
     calcDgram();
     calcBackground();
     calcReflections();
     plot_->plot(dgram_, dgramBgFitted_, bg_, refls_, currReflIndex_);
 }
 
-void Diffractogram::setSuite(shp_Suite suite) {
-    suite_ = suite;
+void Diffractogram::setCluster(const Cluster* cluster) {
+    cluster_ = cluster;
     actZoom_->setChecked(false);
     render();
 }
 
 void Diffractogram::calcDgram() {
     dgram_.clear();
-    if (!suite_)
+    if (!cluster_)
         return;
     if (gHub->isCombinedDgram())
-        dgram_ = suite_->experiment().avgCurve();
+        dgram_ = cluster_->experiment().avgCurve();
     else {
-        dgram_ = gSession->defaultDatasetLens(*suite_)->makeCurve(gSession->gammaRange());
+        dgram_ = gSession->defaultClusterLens(*cluster_)->makeCurve(gSession->gammaRange());
     }
 }
 

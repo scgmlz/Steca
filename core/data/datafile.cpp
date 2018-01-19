@@ -17,13 +17,14 @@
 
 Datafile::Datafile(rcstr fileName) : fileInfo_(fileName) {}
 
-//! The loaders use this function to push suite
+//! The loaders use this function to push cluster
 void Datafile::addDataset(const Metadata& md, size2d const& sz, inten_vec const& ivec) {
     if (measurements_.isEmpty())
         imageSize_ = sz;
     else if (sz != imageSize_)
         THROW("Inconsistent image size in " % fileName());
-    measurements_.append(shp_Measurement(new Measurement(md, sz, ivec)));
+    measurements_.append(shp_Measurement(
+                             new Measurement(this, measurements_.count(), md, sz, ivec)));
 }
 
 QFileInfo const& Datafile::fileInfo() const {

@@ -74,11 +74,11 @@ Metadata::Metadata()
     , time(0)
     , deltaTime(0) {}
 
-uint Metadata::numAttributes(bool onlyNum) {
-    return uint(onlyNum ? eAttr::NUM_NUMERICAL_ATTRIBUTES : eAttr::NUM_ALL_ATTRIBUTES);
+int Metadata::numAttributes(bool onlyNum) {
+    return int(onlyNum ? eAttr::NUM_NUMERICAL_ATTRIBUTES : eAttr::NUM_ALL_ATTRIBUTES);
 }
 
-rcstr Metadata::attributeTag(uint i, bool out) {
+rcstr Metadata::attributeTag(int i, bool out) {
     return attributeTags(out).at(i);
 }
 
@@ -107,7 +107,7 @@ cmp_vec Metadata::attributeCmps() {
     return cmps;
 }
 
-str Metadata::attributeStrValue(uint i) const {
+str Metadata::attributeStrValue(int i) const {
     qreal value = 0;
 
     switch (eAttr(i)) {
@@ -137,7 +137,7 @@ str Metadata::attributeStrValue(uint i) const {
     case eAttr::DELTA_TIME: value = deltaTime; break;
 
     case eAttr::DATE: return date;
-    case eAttr::COMMENT: return comment;
+    case eAttr::COMMENT: return "COMMENT"; // TODO restore comment;
 
     default: NEVER;
     }
@@ -145,7 +145,7 @@ str Metadata::attributeStrValue(uint i) const {
     return str::number(value);
 }
 
-QVariant Metadata::attributeValue(uint i) const {
+QVariant Metadata::attributeValue(int i) const {
     switch (eAttr(i)) {
     case eAttr::DATE: return date;
     case eAttr::COMMENT: return comment;
@@ -176,7 +176,7 @@ QVariant Metadata::attributeValue(uint i) const {
 
 row_t Metadata::attributeValues() const {
     row_t attrs;
-    for_i (uint(eAttr::NUM_ALL_ATTRIBUTES))
+    for_i (int(eAttr::NUM_ALL_ATTRIBUTES))
         attrs.append(attributeValue(i));
     return attrs;
 }
@@ -184,7 +184,7 @@ row_t Metadata::attributeValues() const {
 row_t Metadata::attributeNaNs() {
     static row_t row;
     if (row.isEmpty())
-        for_i (uint(eAttr::NUM_ALL_ATTRIBUTES))
+        for_i (int(eAttr::NUM_ALL_ATTRIBUTES))
             row.append(NAN);
     return row;
 }

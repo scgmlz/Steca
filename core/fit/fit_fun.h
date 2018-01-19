@@ -15,30 +15,29 @@
 #ifndef FIT_FUN_H
 #define FIT_FUN_H
 
+#include "core/fit/parametric_function.h"
 #include "core/typ/singleton.h"
 #include "core/typ/registry.h"
-#include "parametric_function.h"
+#include "core/typ/curve.h"
 #include "core/typ/realpair.h"
 #include "core/typ/types.h"
-
-class Curve;
 
 //! A polynomial, for fitting the background of a diffractogram
 
 class Polynom final : public Function {
 public:
-    Polynom(uint degree = 0) { setDegree(degree); }
+    Polynom(int degree = 0) { setDegree(degree); }
 
-    uint degree() const;
-    void setDegree(uint);
+    int degree() const;
+    void setDegree(int);
 
     qreal y(qreal x, qreal const* parValues = nullptr) const;
-    qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
+    qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
 
     qreal avgY(const Range&, qreal const* parValues = nullptr) const;
 
     void fit(Curve const&, const Ranges&);
-    static Polynom fromFit(uint degree, Curve const&, const Ranges&);
+    static Polynom fromFit(int degree, Curve const&, const Ranges&);
 
     JsonObj to_json() const;
     void from_json(JsonObj const&) THROWS;

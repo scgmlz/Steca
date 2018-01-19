@@ -77,25 +77,25 @@ int JsonObj::loadInt(rcstr key, int def) const THROWS{
     return value(key).isUndefined() ? def : loadInt(key);
 }
 
-uint JsonObj::loadUint(rcstr key) const THROWS {
+int JsonObj::loadUint(rcstr key) const THROWS {
     int num = loadInt(key);
     if (num < 0)
         THROW(key + ": bad number format");
-    return to_u(num);
+    return num;
 }
 
-uint JsonObj::loadUint(rcstr key, uint def) const THROWS{
+int JsonObj::loadUint(rcstr key, int def) const THROWS{
     return value(key).isUndefined() ? def : loadUint(key);
 }
 
-pint JsonObj::loadPint(rcstr key) const {
-    uint num = loadUint(key);
+int JsonObj::loadPint(rcstr key) const {
+    int num = loadUint(key);
     RUNTIME_CHECK(num > 0, "expecting positive number");
-    return pint(num);
+    return num;
 }
 
-pint JsonObj::loadPint(rcstr key, uint def) const {
-    return value(key).isUndefined() ? (pint)def : loadPint(key);
+int JsonObj::loadPint(rcstr key, int def) const {
+    return value(key).isUndefined() ? def : loadPint(key);
 }
 
 qreal JsonObj::loadQreal(rcstr key) const THROWS {
@@ -122,13 +122,13 @@ qreal JsonObj::loadQreal(rcstr key, qreal def) const THROWS{
     return value(key).isUndefined() ? def : loadQreal(key);
 }
 
-preal JsonObj::loadPreal(rcstr key) const {
+qreal JsonObj::loadPreal(rcstr key) const {
     qreal num = loadQreal(key);
     RUNTIME_CHECK(num > 0, "expecting positive number");
-    return preal(num);
+    return num;
 }
 
-preal JsonObj::loadPreal(rcstr key, preal def) const {
+qreal JsonObj::loadPreal(rcstr key, qreal def) const {
     return value(key).isUndefined() ? def : loadPreal(key);
 }
 

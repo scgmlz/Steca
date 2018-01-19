@@ -13,12 +13,9 @@
 // ************************************************************************** //
 
 #include "gui/thehub.h"
-#include "core/io/io_io.h"
 #include "core/session.h"
-#include "core/typ/json.h"
-#include "gui/models.h"
 #include "gui/output/write_file.h"
-#include "gui/widgets/new_q.h"
+#include "gui/base/new_q.h"
 #include <QApplication>
 #include <QDir>
 #include <QJsonDocument>
@@ -32,18 +29,6 @@ TheHub::TheHub()
     , settings_("main_settings")
 {
     qDebug() << "TheHub/";
-
-    filesModel = new FilesModel();
-    suiteModel = new DatasetsModel();
-    metadataModel = new MetadataModel();
-    reflectionsModel = new ReflectionsModel();
-
-    connect(this, &TheHub::sigFilesChanged,
-            [this]() { filesModel->signalReset(); });
-    connect(this, &TheHub::sigSuitesChanged,
-            [this]() { suiteModel->signalReset(); });
-    connect(this, &TheHub::sigSuiteSelected,
-            [this](shp_Suite dataseq) { metadataModel->reset(dataseq); });
 
     // create actions
 
@@ -68,7 +53,7 @@ TheHub::TheHub()
     trigger_addFiles = newQ::Trigger("Add files...", ":/icon/add");
     trigger_removeFile = newQ::Trigger("Remove selected file(s)", ":/icon/rem");
     toggle_enableCorr = newQ::Toggle("Enable correction file...", false, ":/icon/useCorrection");
-    trigger_remCorr = newQ::Trigger("Remove correction file", ":/icon/clear");
+    trigger_removeCorr = newQ::Trigger("Remove correction file", ":/icon/clear");
 
     trigger_rotateImage = newQ::Trigger("Rotate", ":/icon/rotate0");
     toggle_mirrorImage = newQ::Toggle("Mirror", false, ":/icon/mirrorHorz");
@@ -80,7 +65,7 @@ TheHub::TheHub()
     toggle_fixedIntenImage = newQ::Toggle("Global intensity scale", false, ":/icon/scale");
     toggle_fixedIntenDgram = newQ::Toggle("Fixed intensity scale", false);
 
-    toggle_combinedDgram = newQ::Toggle("All datasets", true);
+    toggle_combinedDgram = newQ::Toggle("All measurements", true);
 
     toggle_selRegions = newQ::Toggle("Select regions", false, ":/icon/selRegion");
     toggle_showBackground = newQ::Toggle("Show fitted background", false, ":/icon/showBackground");
@@ -88,7 +73,7 @@ TheHub::TheHub()
     trigger_clearReflections = newQ::Trigger("Clear reflections", ":/icon/clear");
 
     trigger_addReflection = newQ::Trigger("Add reflection", ":/icon/add");
-    trigger_remReflection = newQ::Trigger("Remove reflection", ":/icon/rem");
+    trigger_removeReflection = newQ::Trigger("Remove reflection", ":/icon/rem");
 
     trigger_outputPolefigures = newQ::Trigger("Pole figures...");
     trigger_outputDiagrams = newQ::Trigger("Diagrams...");
@@ -115,12 +100,10 @@ TheHub::TheHub()
 
     // handle signals
 
-    QObject::connect(this, &TheHub::sigFilesSelected,
-            [this]() { trigger_removeFile->setEnabled(
-                    !gSession->collectedFromFiles().isEmpty()); });
+    connect(trigger_clearBackground, &QAction::triggered, [this]() { setBgRanges({}); });
+
     QObject::connect(this, &TheHub::sigCorrFile,
-            [this](shp_Datafile file) {
-                         trigger_remCorr->setEnabled(!file.isNull()); });
+            [this](const Datafile* file) { trigger_removeCorr->setEnabled(file); });
     QObject::connect(this, &TheHub::sigCorrEnabled,
             [this](bool on) { toggle_enableCorr->setChecked(on); });
 
@@ -131,15 +114,15 @@ TheHub::TheHub()
     };
 
     QObject::connect(this, &TheHub::sigGeometryChanged, [deselect]() { deselect(); });
-    QObject::connect(this, &TheHub::sigSuitesChanged, [deselect]() { deselect(); });
+    QObject::connect(this, &TheHub::sigClustersChanged, [deselect]() { deselect(); });
     QObject::connect(this, &TheHub::sigCorrEnabled, [deselect]() { deselect(); });
 
     trigger_removeFile->setEnabled(false);
-    trigger_remReflection->setEnabled(false);
+    trigger_removeReflection->setEnabled(false);
 
     connect(toggle_enableCorr, &QAction::toggled, [this](bool on) { tryEnableCorrection(on); });
 
-    connect(trigger_remCorr, &QAction::triggered, [this]() { setCorrFile(""); });
+    connect(trigger_removeCorr, &QAction::triggered, [this]() { setCorrFile(""); });
 
     connect(toggle_fixedIntenImage, &QAction::toggled, [this](bool on) {
         isFixedIntenImageScale_ = on;
@@ -173,17 +156,26 @@ TheHub::~TheHub() {
     settings_.saveStr("export_format", saveFmt);
 }
 
-void TheHub::removeFile(uint i) {
+// called through trigger_removeFile -> FilesView::removeHighlighted -> FilesModel::removeFile
+void TheHub::removeFile(int i) {
     gSession->removeFile(i);
-    emit sigFilesChanged();
-
-    if (0 == gSession->numFiles())
+    int numFiles = gSession->numFiles();
+    trigger_removeFile->setEnabled(numFiles);
+    if (!numFiles)
         setImageCut(true, false, ImageCut());
+}
+
+// called from MainWin::addFiles and from sessionFromJson
+void TheHub::addGivenFiles(const QStringList& filePaths) THROWS {
+    TakesLongTime __;
+    if (!gSession->addGivenFiles(filePaths))
+        return;
+    trigger_removeFile->setEnabled(true);
+    emit sigFilesLoaded();
 }
 
 void TheHub::saveSession(QFileInfo const& fileInfo) const {
     WriteFile file(fileInfo.filePath());
-
     QDir::setCurrent(fileInfo.absolutePath());
     const int result = file.write(saveSession());
     RUNTIME_CHECK(result >= 0, "Could not write session");
@@ -203,14 +195,14 @@ QByteArray TheHub::saveSession() const {
 
     const ImageCut& cut = gSession->imageCut();
     sub = {
-        { "left", to_i(cut.left) },
-        { "top", to_i(cut.top) },
-        { "right", to_i(cut.right) },
-        { "bottom", to_i(cut.bottom) } };
+        { "left", cut.left },
+        { "top", cut.top },
+        { "right", cut.right },
+        { "bottom", cut.bottom } };
     top.insert("cut", sub);
 
     const ImageTransform& trn = gSession->imageTransform();
-    top.insert("image transform", to_i((uint)trn.val));
+    top.insert("image transform", trn.val);
 
     QJsonArray arrFiles;
     // save file path relative to location of session
@@ -223,11 +215,11 @@ QByteArray TheHub::saveSession() const {
     top.insert("files", arrFiles);
 
     QJsonArray arrSelectedFiles;
-    for (uint i : gSession->collectedFromFiles())
-        arrSelectedFiles.append(to_i(i));
+    for (int i : gSession->filesSelection())
+        arrSelectedFiles.append(i);
 
     top.insert("selected files", arrSelectedFiles);
-    top.insert("combine", to_i((uint)suiteGroupedBy_));
+    top.insert("combine", clusterGroupedBy_);
 
     if (gSession->hasCorrFile()) {
         str absPath = gSession->corrFile()->fileInfo().absoluteFilePath();
@@ -235,7 +227,7 @@ QByteArray TheHub::saveSession() const {
         top.insert("correction file", relPath);
     }
 
-    top.insert("background degree", to_i(gSession->bgPolyDegree()));
+    top.insert("background degree", gSession->bgPolyDegree());
     top.insert("background ranges", gSession->bgRanges().to_json());
     top.insert("averaged intensity ", gSession->intenScaledAvg());
     top.insert("intensity scale", qreal_to_json((qreal)gSession->intenScale()));
@@ -270,30 +262,32 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     JsonObj top(doc.object());
 
     const QJsonArray& files = top.loadArr("files");
+    QStringList paths;
     for (const QJsonValue& file : files) {
         str filePath = file.toString();
         QDir dir(filePath);
         RUNTIME_CHECK(dir.makeAbsolute(), str("Invalid file path: %1").arg(filePath));
-        addGivenFile(dir.absolutePath());
+        paths.append(dir.absolutePath());
     }
+    addGivenFiles(paths);
 
     const QJsonArray& sels = top.loadArr("selected files", true);
-    uint_vec selIndexes;
+    vec<int> selIndexes;
     for (const QJsonValue& sel : sels) {
         int i = sel.toInt(), index = qBound(0, i, files.count());
         RUNTIME_CHECK(i == index, str("Invalid selection index: %1").arg(i));
-        selIndexes.append(to_u(index));
+        selIndexes.append(index);
     }
 
     std::sort(selIndexes.begin(), selIndexes.end());
     int lastIndex = -1;
-    for (uint index : selIndexes) {
-        RUNTIME_CHECK(lastIndex < to_i(index), str("Duplicate selection index"));
-        lastIndex = to_i(index);
+    for (int index : selIndexes) {
+        RUNTIME_CHECK(lastIndex < index, str("Duplicate selection index"));
+        lastIndex = index;
     }
 
-    TR("sessionFromJson: going to collect suite");
-    collectDatasetsFromFiles(selIndexes, top.loadPint("combine", 1));
+    TR("sessionFromJson: going to collect cluster");
+    collectDatasetsFromSelectionBy(selIndexes, top.loadPint("combine", 1));
 
     TR("sessionFromJson: going to set correction file");
     setCorrFile(top.loadString("correction file", ""));
@@ -306,7 +300,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
 
     TR("sessionFromJson: going to load image cut");
     const JsonObj& cut = top.loadObj("cut");
-    uint x1 = cut.loadUint("left"), y1 = cut.loadUint("top"),
+    int x1 = cut.loadUint("left"), y1 = cut.loadUint("top"),
          x2 = cut.loadUint("right"), y2 = cut.loadUint("bottom");
     setImageCut(true, false, ImageCut(x1, y1, x2, y2));
     setImageRotate(ImageTransform(top.loadUint("image transform")));
@@ -318,7 +312,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     setBgPolyDegree(top.loadUint("background degree"));
 
     bool arg1 = top.loadBool("averaged intensity ", true);
-    preal arg2 = top.loadPreal("intensity scale", preal(1));
+    qreal arg2 = top.loadPreal("intensity scale", 1);
     setIntenScaleAvg(arg1, arg2);
 
     TR("sessionFromJson: going to load reflections info");
@@ -331,44 +325,35 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     TR("installed session from file");
 }
 
-void TheHub::addGivenFile(rcstr filePath) THROWS {
-    if (!filePath.isEmpty() && !gSession->hasFile(filePath)) {
-        {
-            TakesLongTime __;
-            gSession->addGivenFile(io::loadDatafile(filePath));
-        }
-        emit sigFilesChanged();
-    }
+void TheHub::collectDatasetsFromSelectionBy(const vec<int> indexSelection, const int by) {
+    filesSelection_ = indexSelection;
+    clusterGroupedBy_ = by;
+    collectDatasetsExec();
 }
 
-void TheHub::addGivenFiles(const QStringList& filePaths) THROWS {
-    TakesLongTime __;
-    for (rcstr filePath : filePaths)
-        addGivenFile(filePath);
+void TheHub::onFilesSelected(const vec<int> indexSelection) {
+    filesSelection_ = indexSelection;
+    collectDatasetsExec();
 }
 
-void TheHub::collectDatasetsFromFiles(uint_vec is, pint by) {
-    gSession->collectDatasetsFromFiles((collectFromFiles_ = is), (suiteGroupedBy_ = by));
+void TheHub::combineMeasurementsBy(const int by) {
+    clusterGroupedBy_ = by;
+    collectDatasetsExec();
+}
+
+void TheHub::collectDatasetsExec() {
+    gSession->assembleExperiment(filesSelection_, clusterGroupedBy_);
+    TR("cDE2");
+    qDebug() << "#exp=" << gSession->experiment().count();
     emit sigFilesSelected();
-    emit sigSuitesChanged();
-}
-
-void TheHub::collectDatasetsFromFiles(uint_vec is) {
-    collectDatasetsFromFiles(is, suiteGroupedBy_);
-}
-
-void TheHub::combineDatasetsBy(pint by) {
-    collectDatasetsFromFiles(collectFromFiles_, by);
+    TR("cDE3");
+    emit sigClustersChanged();
+    TR("cDE4");
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {
-    shp_Datafile file;
-    if (!filePath.isEmpty())
-        file = io::loadDatafile(filePath);
-
-    gSession->setCorrFile(file);
-    emit sigCorrFile(file);
-
+    gSession->setCorrFile(filePath);
+    emit sigCorrFile(gSession->corrFile());
     tryEnableCorrection(true);
 }
 
@@ -382,7 +367,7 @@ void TheHub::setImageCut(bool isTopOrLeft, bool linked, ImageCut const& cut) {
     emit sigGeometryChanged();
 }
 
-void TheHub::setGeometry(preal detectorDistance, preal pixSize, IJ const& midPixOffset) {
+void TheHub::setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset) {
     TR("setGeometry"); // keep an eye on this, since in the past circular calls may have happened
 
     gSession->setGeometry(detectorDistance, pixSize, midPixOffset);
@@ -409,12 +394,12 @@ void TheHub::removeBgRange(const Range& range) {
         emit sigBgChanged();
 }
 
-void TheHub::setBgPolyDegree(uint degree) {
+void TheHub::setBgPolyDegree(int degree) {
     gSession->setBgPolyDegree(degree);
     emit sigBgChanged();
 }
 
-void TheHub::setIntenScaleAvg(bool avg, preal scale) {
+void TheHub::setIntenScaleAvg(bool avg, qreal scale) {
     gSession->setIntenScaleAvg(avg, scale);
     emit sigNormChanged(); // TODO instead of another signal
 }
@@ -431,8 +416,8 @@ void TheHub::addReflection(const QString& peakFunctionName) {
     emit sigReflectionsChanged();
 }
 
-void TheHub::remReflection(uint i) {
-    gSession->remReflection(i);
+void TheHub::removeReflection(int i) {
+    gSession->removeReflection(i);
     if (gSession->reflections().isEmpty())
         tellSelectedReflection(shp_Reflection());
     emit sigReflectionsChanged();
@@ -483,9 +468,9 @@ void TheHub::setNorm(eNorm norm) {
     emit sigNormChanged();
 }
 
-void TheHub::tellSuiteSelected(shp_Suite suite) {
-    selectedSuite_ = suite;
-    emit sigSuiteSelected(suite);
+void TheHub::tellClusterSelected(const Cluster* cluster) {
+    selectedCluster_ = cluster;
+    emit sigClusterSelected(cluster);
 }
 
 void TheHub::tellSelectedReflection(shp_Reflection reflection) {

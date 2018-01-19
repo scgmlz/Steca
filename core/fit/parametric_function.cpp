@@ -46,15 +46,15 @@ void Function::Parameter::from_json(JsonObj const& obj) THROWS {
     range_ = obj.loadRange("range");
 }
 
-void Function::setParameterCount(uint count) {
+void Function::setParameterCount(int count) {
     parameters_.fill(Parameter(), count);
 }
 
-uint Function::parameterCount() const {
+int Function::parameterCount() const {
     return parameters_.count();
 }
 
-Function::Parameter& Function::parameterAt(uint i) {
+Function::Parameter& Function::parameterAt(int i) {
     return parameters_[i];
 }
 
@@ -76,16 +76,16 @@ JsonObj Function::to_json() const {
 
 void Function::from_json(JsonObj const& obj) THROWS {
     QJsonArray params = obj.loadArr("parameters");
-    uint parCount = params.count();
+    int parCount = params.count();
     setParameterCount(parCount);
     for_i (parCount)
         parameters_[i].from_json(params.at(i).toObject());
 }
 
-qreal Function::parValue(uint i, qreal const* parValues) const {
+qreal Function::parValue(int i, qreal const* parValues) const {
     return parValues ? parValues[i] : parameters_.at(i).value();
 }
 
-void Function::setValue(uint i, qreal val) {
+void Function::setValue(int i, qreal val) {
     parameters_[i].setValue(val, 0);
 }

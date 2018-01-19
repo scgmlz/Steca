@@ -70,7 +70,7 @@ ReflectionInfo::ReflectionInfo(deg alpha, deg beta)
 
 QStringList ReflectionInfo::dataTags(bool out) {
     QStringList tags;
-    for_i (uint(eReflAttr::NUM_REFL_ATTR))
+    for_i (int(eReflAttr::NUM_REFL_ATTR))
         tags.append(reflStringTag(i, out));
     tags.append(Metadata::attributeTags(out));
     return tags;
@@ -96,7 +96,7 @@ row_t ReflectionInfo::data() const {
     return row;
 }
 
-str const ReflectionInfo::reflStringTag(uint attr, bool out) {
+str const ReflectionInfo::reflStringTag(int attr, bool out) {
     switch (eReflAttr(attr)) {
     case eReflAttr::ALPHA: return out ? "alpha" : "α";
     case eReflAttr::BETA: return out ? "beta" : "β";
@@ -125,7 +125,7 @@ void ReflectionInfos::append(ReflectionInfo const& info) {
 inten_t ReflectionInfos::averageInten() const {
     if (qIsNaN(avgInten_)) {
         avgInten_ = 0;
-        uint cnt = 0;
+        int cnt = 0;
         for (auto& info : *this) {
             qreal inten = info.inten();
             if (qIsFinite(inten)) {

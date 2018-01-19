@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/io/io_caress.cpp
+//! @file      core/loaders/load_caress.cpp
 //! @brief     Implements function loadCaress
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -22,7 +22,7 @@
 ; // preserve inclusion order
 #include "3rdparty/Caress/raw.h" // inclusion order is critical !
 
-namespace io {
+namespace load {
 
 Datafile loadCaress(rcstr filePath) THROWS {
     Datafile ret(filePath);
@@ -47,7 +47,7 @@ Datafile loadCaress(rcstr filePath) THROWS {
           nmXe = 0, nmYe = 0, nmZe = 0;
 
     int* intens = NULL;
-    uint imageSize = 0;
+    int imageSize = 0;
 
     int mon = 0, tim1 = 0;
 
@@ -163,9 +163,7 @@ Datafile loadCaress(rcstr filePath) THROWS {
                 deltaMon = mon - prevMon;
                 prevMon = mon;
 
-                uint detRel;
-
-                detRel = to_u(qRound(sqrt(imageSize)));
+                int detRel = qRound(sqrt(imageSize));
                 RUNTIME_CHECK(imageSize > 0 && imageSize == detRel * detRel, "bad image size");
 
                 inten_vec convertedIntens(imageSize);
@@ -530,7 +528,7 @@ Datafile loadCaress(rcstr filePath) THROWS {
                     } buffer;
 
                     intens = new int[d_number];
-                    imageSize = to_u(d_number);
+                    imageSize = d_number;
                     int section = 1;
                     int start_item = 1;
                     int tempNumItems, ret_val;
@@ -544,7 +542,7 @@ Datafile loadCaress(rcstr filePath) THROWS {
                         ret_val = get_data_partition(
                             buffer.i4, &section, &start_item, &tempNumItems, &d_type);
                         memmove(
-                            &intens[start_item - 1], buffer.i4, to_u(tempNumItems) * sizeof(int));
+                            &intens[start_item - 1], buffer.i4, tempNumItems * sizeof(int));
                         remaining_items -= MAXNUMBEROFCHANNELS;
                         start_item += MAXNUMBEROFCHANNELS;
                     } while (!ret_val && (remaining_items > 0));
@@ -603,4 +601,4 @@ str loadCaressComment(rcstr filePath) {
     return s_comment;
 }
 
-} // namespace io
+} // namespace load

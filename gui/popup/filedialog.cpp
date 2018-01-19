@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "core/io/io_io.h"
+#include "core/loaders/loaders.h"
 #include <QFileDialog>
 #include <QFileSystemModel>
 #include <QSortFilterProxyModel>
@@ -57,7 +57,7 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
                 auto it = memInfo.find(path);
                 if (it != memInfo.end())
                     return *it;
-                str loadInfo = io::loadComment(info);
+                str loadInfo = load::loadComment(info);
                 memInfo.insert(path, loadInfo);
                 return loadInfo;
             }

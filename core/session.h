@@ -25,6 +25,7 @@
 #include "core/typ/async.h"
 #include "core/typ/cache.h"
 #include "core/typ/singleton.h"
+#include <QSharedPointer> // no auto rm
 
 extern class Session* gSession;
 
@@ -40,77 +41,43 @@ class Session final : public ISingleton<Session> {
 public:
     Session();
 
-private:
-    vec<shp_Datafile> files_; //!< data files
-    shp_Datafile corrFile_; //!< correction file
-    shp_Image corrImage_;
-    bool corrEnabled_;
-    uint_vec collectedFromFiles_; // from these files
-    Experiment experiment_; // suite collected ...
-    QStringList experimentTags_;
-    bool intenScaledAvg_; // if not, summed
-    preal intenScale_;
-    size2d imageSize_; //!< All images must have this same size
-    ImageTransform imageTransform_;
-    ImageCut imageCut_;
-    Geometry geometry_;
-    Range gammaRange_;
-    uint bgPolyDegree_;
-    Ranges bgRanges_;
-    Reflections reflections_;
-    eNorm norm_;
-
-    mutable Image intensCorr_;
-    mutable bool corrHasNaNs_;
-    mutable cache_lazy<ImageKey, AngleMap> angleMapCache_;
-
-    void updateImageSize(); //!< Clears image size if session has no files
-    void setImageSize(size2d const&) THROWS; //!< Ensures same size for all images
-
-    void calcIntensCorr() const;
-    Curve curveMinusBg(SequenceLens const&, const Range&) const;
-    ReflectionInfo makeReflectionInfo(
-        SequenceLens const&, Reflection const&, const Range&) const;
-
-public:
     // Modifying methods:
     void clear();
-    void addGivenFile(shp_Datafile) THROWS;
-    void removeFile(uint i);
-    void setCorrFile(shp_Datafile) THROWS; // Load or remove a correction file.
-    void remCorrFile();
-    void collectDatasetsFromFiles(uint_vec, pint);
+    bool addGivenFiles(const QStringList& filePaths) THROWS;
+    void removeFile(int i);
+    void setCorrFile(rcstr filePath) THROWS;
+    void removeCorrFile();
+    void assembleExperiment(const vec<int>, const int);
 
     void setImageTransformMirror(bool);
     void setImageTransformRotate(ImageTransform const&);
     void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
-    void setGeometry(preal detectorDistance, preal pixSize, IJ const& midPixOffset);
+    void setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset);
     void setGammaRange(const Range& r) { gammaRange_ = r; }
     void setBgRanges(const Ranges& rr) { bgRanges_ = rr; }
     bool addBgRange(const Range& r) { return bgRanges_.add(r); }
     bool removeBgRange(const Range& r) { return bgRanges_.remove(r); }
-    void setBgPolyDegree(uint degree) { bgPolyDegree_ = degree; }
-    void setIntenScaleAvg(bool, preal);
+    void setBgPolyDegree(int degree) { bgPolyDegree_ = degree; }
+    void setIntenScaleAvg(bool, qreal);
     void addReflection(const QString&);
     void addReflection(const QJsonObject& obj);
-    void remReflection(uint i) { reflections_.remove(i); }
+    void removeReflection(int i) { reflections_.remove(i); }
     void setNorm(eNorm norm) { norm_ = norm; }
 
     // Const methods:
-    uint numFiles() const { //!< number of data files (not counting the correction file)
+    int numFiles() const { //!< number of data files (not counting the correction file)
         return files_.count(); }
-    shp_Datafile file(uint i) const { return files_.at(i); }
+    const Datafile* file(int i) const { return files_[i].data(); }
     bool hasFile(rcstr fileName) const;
     bool hasCorrFile() const { return !corrFile_.isNull(); }
-    shp_Datafile corrFile() const { return corrFile_; }
+    const Datafile* corrFile() const { return corrFile_.data(); }
     shp_Image corrImage() const { return corrImage_; }
     const Image* intensCorr() const;
     void tryEnableCorr(bool on) { corrEnabled_ = on && hasCorrFile(); }
     bool isCorrEnabled() const { return corrEnabled_; }
 
-    uint_vec const& collectedFromFiles() const { return collectedFromFiles_; }
+    vec<int> const& filesSelection() const { return filesSelection_; }
     Experiment const& experiment() const { return experiment_; }
-    const QStringList& experimentTags() const { return experimentTags_; }
 
     size2d imageSize() const;
     ImageTransform const& imageTransform() const { return imageTransform_; }
@@ -126,22 +93,51 @@ public:
         return session.angleMap(ds); }
 
     shp_ImageLens imageLens(const Image&, bool trans, bool cut) const;
-    shp_SequenceLens dataseqLens(Suite const&, eNorm, bool trans, bool cut) const;
-    shp_SequenceLens defaultDatasetLens(Suite const& dataseq) const;
+    shp_SequenceLens defaultClusterLens(Cluster const& dataseq) const;
 
     ReflectionInfos makeReflectionInfos(
-        Experiment const&, Reflection const&, uint gmaSlices, const Range&, Progress*) const;
+        Reflection const&, int gmaSlices, const Range&, Progress*) const;
 
     const Ranges& bgRanges() const { return bgRanges_; }
-    uint bgPolyDegree() const { return bgPolyDegree_; }
+    int bgPolyDegree() const { return bgPolyDegree_; }
     bool intenScaledAvg() const { return intenScaledAvg_; }
-    preal intenScale() const { return intenScale_; }
+    qreal intenScale() const { return intenScale_; }
     Reflections const& reflections() const { return reflections_; }
 
-    eNorm norm() const { return norm_; }
-
-    qreal calcAvgBackground(Suite const&) const;
+    qreal calcAvgBackground(Cluster const&) const;
     qreal calcAvgBackground() const;
+
+private:
+    QVector<QSharedPointer<Datafile>> files_; //!< data files
+    QSharedPointer<Datafile> corrFile_; //!< correction file
+    shp_Image corrImage_;
+    bool corrEnabled_;
+    vec<int> filesSelection_; // from these files
+    Experiment experiment_; // cluster collected ...
+    bool intenScaledAvg_; // if not, summed
+    qreal intenScale_;
+    size2d imageSize_; //!< All images must have this same size
+    ImageTransform imageTransform_;
+    ImageCut imageCut_;
+    Geometry geometry_;
+    Range gammaRange_;
+    int bgPolyDegree_;
+    Ranges bgRanges_;
+    Reflections reflections_;
+    eNorm norm_;
+
+    mutable Image intensCorr_;
+    mutable bool corrHasNaNs_;
+    mutable cache_lazy<ImageKey, AngleMap> angleMapCache_;
+
+    void updateImageSize(); //!< Clears image size if session has no files
+    void setImageSize(size2d const&) THROWS; //!< Ensures same size for all images
+    void computeOffsets();
+
+    shp_SequenceLens dataseqLens(Cluster const&, eNorm, bool trans, bool cut) const;
+    void calcIntensCorr() const;
+    Curve curveMinusBg(SequenceLens const&, const Range&) const;
+    ReflectionInfo makeReflectionInfo(SequenceLens const&, Reflection const&, const Range&) const;
 };
 
 #endif // SESSION_H

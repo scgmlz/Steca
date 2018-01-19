@@ -24,11 +24,11 @@ TakesLongTime::~TakesLongTime() {
     qApp->restoreOverrideCursor();
 }
 
-Progress::Progress(uint mulTotal, QProgressBar* bar)
+Progress::Progress(int mulTotal, QProgressBar* bar)
     : total_(0), mulTotal_(mulTotal), i_(0), bar_(bar) {
     setTotal(1);
     if (bar_) {
-        bar_->setRange(0, to_i(total_));
+        bar_->setRange(0, total_);
         bar_->setValue(0);
         bar_->show();
     }
@@ -39,14 +39,14 @@ Progress::~Progress() {
         bar_->hide();
 }
 
-void Progress::setTotal(uint total) {
+void Progress::setTotal(int total) {
     total_ = total * mulTotal_;
 }
 
-void Progress::setProgress(uint i) {
+void Progress::setProgress(int i) {
     if (bar_) {
-        bar_->setRange(0, to_i(total_));
-        bar_->setValue(to_i((i_ = qBound(0u, i, total_))));
+        bar_->setRange(0, total_);
+        bar_->setValue((i_ = qBound(0, i, total_)));
     }
 }
 

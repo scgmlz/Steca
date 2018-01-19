@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/popup/about.h
-//! @brief     Defines class AboutBox
+//! @file      gui/base/tree_views.h
+//! @brief     Defines classes TreeView, ListView
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,19 +12,23 @@
 //
 // ************************************************************************** //
 
-#ifndef ABOUT_H
-#define ABOUT_H
+#ifndef TREE_VIEWS_H
+#define TREE_VIEWS_H
 
-#include "gui/base/new_q.h"
-#include <QDialog>
+#include "core/typ/vec.h"
+#include <QTreeView>
 
-//! Modal dialog that informs about the software
-class AboutBox : public QDialog {
+//! A list view with single selection.
+
+//! Based on QTreeView, with hidden 1st column.
+
+class ListView : public QTreeView {
 public:
-    AboutBox(QWidget*);
+    ListView();
+    void setModel(class TableModel* model);
 protected:
-    QCheckBox *cbShowAtStartup_, *cbCheckUpdatesAtStartup_;
-    QDoubleSpinBox *detDistance_, *detPixelSize_;
+    virtual class TableModel* model() const;
+    int mWidth() const;
 };
 
-#endif // ABOUT_H
+#endif // TREE_VIEWS_H

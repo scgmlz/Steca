@@ -14,6 +14,7 @@
 
 #include "core/calc/reflection.h"
 #include "core/fit/fit_fun.h"
+#include "core/def/idiomatic_for.h"
 
 Reflection::Reflection(const QString& peakFunctionName) : peakFunction_(nullptr) {
     setPeakFunction(peakFunctionName);
@@ -71,4 +72,12 @@ void Reflection::from_json(JsonObj const& obj) THROWS {
     str peakFunctionName = obj.loadString("type");
     setPeakFunction(peakFunctionName);
     peakFunction_->from_json(obj); // may throw
+}
+
+
+QStringList reflectionNames(const Reflections& reflections) {
+    QStringList ret;
+    for_i (reflections.count())
+        ret.append(QStringLiteral("%1: %2").arg(i+1).arg(reflections[i]->peakFunction().name()));
+    return ret;
 }

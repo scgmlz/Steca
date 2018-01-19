@@ -27,7 +27,7 @@ namespace { // file scope
 class Raw final : public PeakFunction {
 public:
     qreal y(qreal x, qreal const* parValues = nullptr) const;
-    qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
+    qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
 
     qpair fittedPeak() const;
     fwhm_t fittedFWHM() const;
@@ -44,7 +44,7 @@ private:
     Curve fittedCurve_; // saved from fitting
     void prepareY();
 
-    mutable uint x_count_;
+    mutable int x_count_;
     mutable qreal dx_;
     mutable qreal sum_y_;
 };
@@ -59,7 +59,7 @@ public:
     Gaussian(qreal ampl = 1, qreal xShift = 0, qreal sigma = 1);
 
     qreal y(qreal x, qreal const* parValues = nullptr) const;
-    qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
+    qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
 
     void setGuessedPeak(qpair const&);
     void setGuessedFWHM(fwhm_t);
@@ -83,7 +83,7 @@ public:
     Lorentzian(qreal ampl = 1, qreal xShift = 0, qreal gamma = 1);
 
     qreal y(qreal x, qreal const* parValues = nullptr) const;
-    qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
+    qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
 
     void setGuessedPeak(qpair const&);
     void setGuessedFWHM(fwhm_t);
@@ -107,7 +107,7 @@ public:
     PseudoVoigt1(qreal ampl = 1, qreal xShift = 0, qreal sigmaGamma = 1, qreal eta = 0.1);
 
     qreal y(qreal x, qreal const* parValues = nullptr) const;
-    qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
+    qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
 
     void setGuessedPeak(qpair const&);
     void setGuessedFWHM(fwhm_t);
@@ -132,7 +132,7 @@ public:
         qreal ampl = 1, qreal xShift = 0, qreal sigma = 1, qreal gamma = 1, qreal eta = 0.1);
 
     qreal y(qreal x, qreal const* parValues = nullptr) const;
-    qreal dy(qreal x, uint parIndex, qreal const* parValues = nullptr) const;
+    qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
 
     void setGuessedPeak(qpair const&);
     void setGuessedFWHM(fwhm_t);
@@ -154,11 +154,11 @@ qreal Raw::y(qreal x, qreal const* /*parValues*/) const {
     if (!x_count_ || !range_.contains(x))
         return 0;
 
-    uint i = to_u(qBound(0, qFloor((x - range_.min) / dx_), to_i(x_count_) - 1));
+    int i = qBound(0, qFloor((x - range_.min) / dx_), x_count_ - 1);
     return fittedCurve_.y(i);
 }
 
-qreal Raw::dy(qreal, uint, qreal const*) const {
+qreal Raw::dy(qreal, int, qreal const*) const {
     return 0; // fake
 }
 
@@ -233,7 +233,7 @@ qreal Gaussian::y(qreal x, qreal const* parValues) const {
     return ampl * exa;
 }
 
-qreal Gaussian::dy(qreal x, uint parIndex, qreal const* parValues) const {
+qreal Gaussian::dy(qreal x, int parIndex, qreal const* parValues) const {
     qreal ampl = parValue(parAMPL, parValues);
     qreal xShift = parValue(parXSHIFT, parValues);
     qreal sigma = parValue(parSIGMA, parValues);
@@ -308,7 +308,7 @@ qreal Lorentzian::y(qreal x, qreal const* parValues) const {
     return ampl / (1 + arg * arg);
 }
 
-qreal Lorentzian::dy(qreal x, uint parIndex, qreal const* parValues) const {
+qreal Lorentzian::dy(qreal x, int parIndex, qreal const* parValues) const {
     qreal ampl = parValue(parAMPL, parValues);
     qreal xShift = parValue(parXSHIFT, parValues);
     qreal gamma = parValue(parGAMMA, parValues);
@@ -392,7 +392,7 @@ qreal PseudoVoigt1::y(qreal x, qreal const* parValues) const {
     return (1 - eta) * gaussian + eta * lorentz;
 }
 
-qreal PseudoVoigt1::dy(qreal x, uint parIndex, qreal const* parValues) const {
+qreal PseudoVoigt1::dy(qreal x, int parIndex, qreal const* parValues) const {
     qreal ampl = parValue(parAMPL, parValues);
     qreal xShift = parValue(parXSHIFT, parValues);
     qreal sigmaGamma = parValue(parSIGMAGAMMA, parValues);
@@ -492,7 +492,7 @@ qreal PseudoVoigt2::y(qreal x, qreal const* parValues) const {
     return (1 - eta) * gaussian + eta * lorentz;
 }
 
-qreal PseudoVoigt2::dy(qreal x, uint parIndex, qreal const* parValues) const {
+qreal PseudoVoigt2::dy(qreal x, int parIndex, qreal const* parValues) const {
     qreal ampl = parValue(parAMPL, parValues);
     qreal xShift = parValue(parXSHIFT, parValues);
     qreal sigma = parValue(parSIGMA, parValues);

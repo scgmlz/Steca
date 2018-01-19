@@ -25,10 +25,15 @@
 class Measurement final {
 
 public:
-    Measurement(const Metadata&, const size2d&, const inten_vec&);
+    Measurement() = delete;
     Measurement(const Measurement&) = delete;
+    Measurement(const class Datafile*, const int position, const Metadata&,
+                const size2d&, const inten_vec&);
 
-    shp_Metadata metadata() const;
+    const class Datafile* file() const { return file_; }
+    int position() const { return position_; }
+    int totalPosition() const; //!< position in full list of currently loaded measurements
+    shp_Metadata metadata() const { return md_; }
 
     deg midTth() const;
 
@@ -50,10 +55,12 @@ public:
     size2d imageSize() const;
 
     void collectIntens(
-        const Image* intensCorr, /*non-const*/ inten_vec&, /*non-const*/ uint_vec&, const Range&,
+        const Image* intensCorr, /*non-const*/ inten_vec&, /*non-const*/ vec<int>&, const Range&,
         deg minTth, deg deltaTth) const;
 
 private:
+    const class Datafile* file_;
+    const int position_; //! position in file_
     shp_Metadata md_;
     shp_Image image_;
 };

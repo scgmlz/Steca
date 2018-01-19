@@ -25,11 +25,11 @@
 //  class Geometry
 // ************************************************************************** //
 
-preal const Geometry::MIN_DETECTOR_DISTANCE = preal(10);
-preal const Geometry::MIN_DETECTOR_PIXEL_SIZE = preal(.1);
+qreal const Geometry::MIN_DETECTOR_DISTANCE = 10;
+qreal const Geometry::MIN_DETECTOR_PIXEL_SIZE = .1;
 
-preal const Geometry::DEF_DETECTOR_DISTANCE = preal(1035);
-preal const Geometry::DEF_DETECTOR_PIXEL_SIZE = preal(1);
+qreal const Geometry::DEF_DETECTOR_DISTANCE = 1035;
+qreal const Geometry::DEF_DETECTOR_PIXEL_SIZE = 1;
 
 Geometry::Geometry()
     : detectorDistance(DEF_DETECTOR_DISTANCE), pixSize(DEF_DETECTOR_PIXEL_SIZE), midPixOffset() {}
@@ -49,7 +49,7 @@ EQ_NE_OPERATOR(Geometry)
 
 ImageCut::ImageCut() : ImageCut(0, 0, 0, 0) {}
 
-ImageCut::ImageCut(uint left_, uint top_, uint right_, uint bottom_)
+ImageCut::ImageCut(int left_, int top_, int right_, int bottom_)
     : left(left_), top(top_), right(right_), bottom(bottom_) {}
 
 void ImageCut::update(bool topLeftFirst, bool linked, ImageCut const& cut, size2d size) {
@@ -57,17 +57,17 @@ void ImageCut::update(bool topLeftFirst, bool linked, ImageCut const& cut, size2
         *this = ImageCut();
         return;
     }
-    auto limit = [linked](uint& m1, uint& m2, uint maxTogether)->void {
+    auto limit = [linked](int& m1, int& m2, int maxTogether)->void {
         if (linked && m1 + m2 >= maxTogether) {
-            m1 = m2 = qMax((maxTogether - 1) / 2, 0u);
+            m1 = m2 = qMax((maxTogether - 1) / 2, 0);
         } else {
-            m1 = qMax(qMin(m1, maxTogether - m2 - 1), 0u);
-            m2 = qMax(qMin(m2, maxTogether - m1 - 1), 0u);
+            m1 = qMax(qMin(m1, maxTogether - m2 - 1), 0);
+            m2 = qMax(qMin(m2, maxTogether - m1 - 1), 0);
         }
     };
 
     // make sure that cut values are valid; in the right order
-    uint _left = cut.left, _top = cut.top, _right = cut.right, _bottom = cut.bottom;
+    int _left = cut.left, _top = cut.top, _right = cut.right, _bottom = cut.bottom;
 
     if (topLeftFirst) {
         limit(_top, _bottom, size.h);

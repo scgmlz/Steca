@@ -72,7 +72,7 @@ private:
     deg tth_, tthError_;
     fwhm_t fwhm_, fwhmError_;
 
-    static str const reflStringTag(uint attr, bool out);
+    static str const reflStringTag(int attr, bool out);
 };
 
 

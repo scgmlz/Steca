@@ -34,10 +34,10 @@ size2d LensBase::transCutSize(size2d size) const {
     return size;
 }
 
-void LensBase::doTrans(uint& x, uint& y) const {
+void LensBase::doTrans(int& x, int& y) const {
     size2d s = size();
-    uint w = s.w;
-    uint h = s.h;
+    int w = s.w;
+    int h = s.h;
 
     switch (imageTransform_.val) {
     case ImageTransform::ROTATE_0: break;
@@ -64,7 +64,7 @@ void LensBase::doTrans(uint& x, uint& y) const {
     }
 }
 
-void LensBase::doCut(uint& i, uint& j) const {
+void LensBase::doCut(int& i, int& j) const {
     i += imageCut_.left;
     j += imageCut_.top;
 }
@@ -82,7 +82,7 @@ size2d ImageLens::size() const {
     return LensBase::transCutSize(image_.size());
 }
 
-inten_t ImageLens::imageInten(uint i, uint j) const {
+inten_t ImageLens::imageInten(int i, int j) const {
     if (trans_)
         doTrans(i, j);
     if (cut_)
@@ -110,11 +110,11 @@ const Range& ImageLens::rgeInten(bool fixed) const {
 // ************************************************************************** //
 
 SequenceLens::SequenceLens(
-    Suite const& suite, eNorm norm, bool trans, bool cut,
+    Cluster const& cluster, eNorm norm, bool trans, bool cut,
     ImageTransform const& imageTransform, ImageCut const& imageCut)
     : LensBase(trans, cut, imageTransform, imageCut)
     , normFactor_(1)
-    , suite_(suite) {
+    , cluster_(cluster) {
     setNorm(norm);
 }
 
@@ -123,21 +123,21 @@ size2d SequenceLens::size() const {
 }
 
 Range SequenceLens::rgeGma() const {
-    return suite_.rgeGma();
+    return cluster_.rgeGma();
 }
 
 Range SequenceLens::rgeGmaFull() const {
-    return suite_.rgeGmaFull();
+    return cluster_.rgeGmaFull();
 }
 
 Range SequenceLens::rgeTth() const {
-    return suite_.rgeTth();
+    return cluster_.rgeTth();
 }
 
 Range SequenceLens::rgeInten() const {
     // fixes the scale
     // TODO consider return gSession->experiment().rgeInten();
-    return suite_.rgeInten();
+    return cluster_.rgeInten();
 }
 
 Curve SequenceLens::makeCurve() const {
@@ -145,11 +145,11 @@ Curve SequenceLens::makeCurve() const {
 }
 
 Curve SequenceLens::makeCurve(const Range& rgeGma) const {
-    inten_vec intens = suite_.collectIntens(intensCorr_, rgeGma);
+    inten_vec intens = cluster_.collectIntens(intensCorr_, rgeGma);
     Curve res;
-    uint count = intens.count();
+    int count = intens.count();
     if (count) {
-        Range rgeTth = suite_.rgeTth();
+        Range rgeTth = cluster_.rgeTth();
         deg minTth = rgeTth.min, deltaTth = rgeTth.width() / count;
         for_i (count)
             res.append(minTth + deltaTth * i, qreal(intens.at(i) * normFactor_));
@@ -163,19 +163,19 @@ void SequenceLens::setNorm(eNorm norm) {
     switch (norm) {
     case eNorm::MONITOR:
         num = gSession->experiment().avgMonitorCount();
-        den = suite_.avgMonitorCount();
+        den = cluster_.avgMonitorCount();
         break;
     case eNorm::DELTA_MONITOR:
         num = gSession->experiment().avgDeltaMonitorCount();
-        den = suite_.avgDeltaMonitorCount();
+        den = cluster_.avgDeltaMonitorCount();
         break;
     case eNorm::DELTA_TIME:
         num = gSession->experiment().avgDeltaTime();
-        den = suite_.avgDeltaTime();
+        den = cluster_.avgDeltaTime();
         break;
     case eNorm::BACKGROUND:
         num = gSession->calcAvgBackground();
-        den = gSession->calcAvgBackground(suite_);
+        den = gSession->calcAvgBackground(cluster_);
         break;
     case eNorm::NONE:
         break;

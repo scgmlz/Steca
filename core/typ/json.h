@@ -41,17 +41,17 @@ public:
     int loadInt(rcstr key) const THROWS;
     int loadInt(rcstr key, int def) const THROWS;
 
-    uint loadUint(rcstr key) const THROWS;
-    uint loadUint(rcstr key, uint def) const THROWS;
+    int loadUint(rcstr key) const THROWS;
+    int loadUint(rcstr key, int def) const THROWS;
 
-    pint loadPint(rcstr key) const THROWS;
-    pint loadPint(rcstr key, uint def) const THROWS;
+    int loadPint(rcstr key) const THROWS;
+    int loadPint(rcstr key, int def) const THROWS;
 
     qreal loadQreal(rcstr key) const THROWS;
     qreal loadQreal(rcstr key, qreal def) const THROWS;
 
-    preal loadPreal(rcstr key) const THROWS;
-    preal loadPreal(rcstr key, preal def) const THROWS;
+    qreal loadPreal(rcstr key) const THROWS;
+    qreal loadPreal(rcstr key, qreal def) const THROWS;
 
     bool loadBool(rcstr key) const THROWS;
     bool loadBool(rcstr key, bool def) const THROWS;

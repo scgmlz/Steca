@@ -19,8 +19,8 @@
 
 namespace { // file-scope functions
 
-//! Compute a low power with an exponent of type uint
-static qreal pow_n(qreal x, uint n) {
+//! Compute a low power with an exponent of type int
+static qreal pow_n(qreal x, int n) {
     qreal val = 1;
     while (n-- > 0)
         val *= x;
@@ -33,13 +33,13 @@ static qreal pow_n(qreal x, uint n) {
 //  class Polynom
 // ************************************************************************** //
 
-uint Polynom::degree() const {
-    uint parCount = parameterCount();
+int Polynom::degree() const {
+    int parCount = parameterCount();
     debug::ensure(parCount > 0);
     return parCount - 1;
 }
 
-void Polynom::setDegree(uint degree) {
+void Polynom::setDegree(int degree) {
     setParameterCount(degree + 1);
 }
 
@@ -52,7 +52,7 @@ qreal Polynom::y(qreal x, qreal const* parValues) const {
     return val;
 }
 
-qreal Polynom::dy(qreal x, uint i, qreal const*) const {
+qreal Polynom::dy(qreal x, int i, qreal const*) const {
     return pow_n(x, i);
 }
 
@@ -78,7 +78,7 @@ void Polynom::fit(Curve const& curve, const Ranges& ranges) {
     FitWrapper().fit(*this, curve.intersect(ranges));
 }
 
-Polynom Polynom::fromFit(uint degree, Curve const& curve, const Ranges& ranges) {
+Polynom Polynom::fromFit(int degree, Curve const& curve, const Ranges& ranges) {
     Polynom poly(degree);
     poly.fit(curve, ranges);
     return poly;
@@ -113,20 +113,20 @@ void PeakFunction::fit(Curve const& curve, const Range& range) {
 
     //  if (!guessedPeak().isValid()) {  // calculate guesses // TODO caching
     //  temporarily disabled, until it works correctly
-    const uint peakIndex = c.maqpairindex();
+    const int peakIndex = c.maqpairindex();
     const qreal peakTth = c.x(peakIndex);
     const qreal peakIntens = c.y(peakIndex);
 
     // half-maximum indices
-    uint hmi1 = peakIndex, hmi2 = peakIndex;
+    int hmi1 = peakIndex, hmi2 = peakIndex;
     // left
-    for (uint i = peakIndex; i-- > 0;) {
+    for (int i = peakIndex; i-- > 0;) {
         hmi1 = i;
         if (c.y(i) < peakIntens / 2)
             break;
     }
     // right
-    for (uint i = peakIndex, iCnt = c.count(); i < iCnt; ++i) {
+    for (int i = peakIndex, iCnt = c.count(); i < iCnt; ++i) {
         hmi2 = i;
         if (c.y(i) < peakIntens / 2)
             break;

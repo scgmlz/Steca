@@ -17,7 +17,7 @@
 
 #include "core/typ/range.h"
 #include "gui/cfg/settings.h"
-#include "gui/widgets/new_q.h"
+#include "gui/base/new_q.h"
 #include <QGroupBox>
 
 //! A panel with grid layout

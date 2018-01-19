@@ -20,27 +20,27 @@
 
 //! Geometry of a rectangle
 struct size2d {
-    uint w, h;
+    int w, h;
 
     size2d() : size2d(0, 0) {}
-    size2d(uint w_, uint h_) : w(w_), h(h_) {}
+    size2d(int w_, int h_) : w(w_), h(h_) {}
 
     bool isEmpty() const { return 0 == w && 0 == h; }
 
-    uint count() const { return w * h; }
+    int count() const { return w * h; }
 
     COMPARABLE(size2d const&)
 
     friend size2d operator-(size2d const& s1, size2d const& s2) {
-        int w = to_i(s1.w) - to_i(s2.w);
-        int h = to_i(s1.h) - to_i(s2.h);
-        return size2d(to_u(qMax(w, 0)), to_u(qMax(h, 0)));
+        int w = s1.w - s2.w;
+        int h = s1.h - s2.h;
+        return size2d(qMax(w, 0), qMax(h, 0));
     }
 
     size2d transposed() const { return size2d(h, w); }
 };
 
-//! 2D (indexed by uint i/j) array
+//! 2D (indexed by int i/j) array
 template <typename T> class Array2D {
     private:
     size2d size_;
@@ -53,14 +53,14 @@ template <typename T> class Array2D {
 
         if (!(size_ = size).isEmpty()) {
             ts_ = static_cast<col_t*>(::calloc(size_.w, sizeof(col_t*)));
-            for (uint i = 0; i < size_.w; ++i)
+            for (int i = 0; i < size_.w; ++i)
                 ts_[i] = static_cast<col_t>(::calloc(size_.h, sizeof(T)));
         }
     }
 
     void free() {
         if (ts_) {
-            for (uint i = 0; i < size_.w; ++i)
+            for (int i = 0; i < size_.w; ++i)
                 ::free(ts_[i]);
             ::free(ts_);
             ts_ = nullptr;
@@ -88,8 +88,8 @@ public:
     // allocate and fill with a value
     void fill(T const& val, size2d const& size) {
         alloc(size);
-        for (uint i = 0; i < size_.w; ++i)
-            for (uint j = 0; j < size_.h; ++j)
+        for (int i = 0; i < size_.w; ++i)
+            for (int j = 0; j < size_.h; ++j)
                 ts_[i][j] = val;
     }
 
@@ -97,25 +97,25 @@ public:
     void resize(size2d const& size) { fill(T(), size); }
 
     // access using 1D index
-    T const& at(uint i) const { return at(i % size_.w, i / size_.h); }
+    T const& at(int i) const { return at(i % size_.w, i / size_.h); }
 
     // access using 2D index
-    T const& at(uint i, uint j) const {
+    T const& at(int i, int j) const {
         debug::ensure(i < size_.w && j < size_.h);
         return ts_[i][j];
     }
 
     // set using 1D index
-    void setAt(uint i, T const& val) { setAt(i % size_.w, i / size_.h, val); }
+    void setAt(int i, T const& val) { setAt(i % size_.w, i / size_.h, val); }
 
     // set using 2D index
-    void setAt(uint i, uint j, T const& val) {
+    void setAt(int i, int j, T const& val) {
         debug::ensure(i < size_.w && j < size_.h);
         ts_[i][j] = val;
     }
 
     // mutable access
-    T& refAt(uint i, uint j) const {
+    T& refAt(int i, int j) const {
         debug::ensure(i < size_.w && j < size_.h);
         return ts_[i][j];
     }
