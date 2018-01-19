@@ -1,13 +1,13 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/mainwin.h
-//! @brief     Defines ...
+//! @brief     Defines class MainWin
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
@@ -15,34 +15,30 @@
 #ifndef MAINWIN_H
 #define MAINWIN_H
 
-#include "thehub.h"
-
+#include "core/typ/singleton.h"
+#include "core/typ/str.h"
 #include <QMainWindow>
 #include <QNetworkAccessManager>
 
-namespace gui {
+extern class MainWin* gMainWin; //!< global pointer to _the_ main window
 
-class MainWin : public QMainWindow {
-    CLASS(MainWin) SUPER(QMainWindow) public : MainWin();
+//! The main window.
 
-private:
-    void initMenus();
-    void addActions(QMenu*, QList<QAction*>);
-    void initLayout();
-    void initStatusBar();
-    void connectActions();
+//! This is a singleton class that specializes QMainWindow.
+//! The one instance of this class is accessible from everywhere through
+//! the global pointer gMainWin.
 
+//! The main window coexists with an instance of TheHub, which is responsible
+//! for most of the dynamic functionality. The division of tasks between MainWin
+//! and TheHub is somewhat arbitrary, and we should consider merging both classes.
+
+class MainWin : public QMainWindow, public ISingleton<MainWin> {
 public:
-    void about();
+    MainWin();
+
     void online();
     void checkUpdate();
-    void checkUpdate(bool completeReport);
 
-private:
-    void messageDialog(rcstr title, rcstr text);
-
-public:
-    void show();
     void close();
 
     void addFiles();
@@ -52,40 +48,28 @@ public:
     void saveSession();
     void clearSession();
 
-    void outputPoleFigures();
-    void outputDiagrams();
-    void outputDiffractograms();
+    void execCommand(str);
 
 private:
-    gui::TheHub hub_;
-    Actions& acts_;
-
-private:
-    void closeEvent(QCloseEvent*);
-
-    void onShow();
-    void onClose();
-
-private:
-    QMenu *menuFile_, *menuView_, *menuImage_, *menuDgram_, *menuOutput_, *menuHelp_;
-
-    QDockWidget *dockFiles_, *dockDatasets_, *dockDatasetInfo_;
-
-private:
+    QDockWidget *dockFiles_, *dockMeasurements_, *dockDatasetInfo_;
     QByteArray initialState_;
     QNetworkAccessManager netMan_;
 
+    void initLayout();
+    void connectActions();
+
+    void messageDialog(rcstr title, rcstr text);
+    void closeEvent(QCloseEvent*);
+
     void readSettings();
     void saveSettings();
-
-    void checkActions();
 
     void viewStatusbar(bool);
     void viewFullScreen(bool);
     void viewFiles(bool);
     void viewDatasets(bool);
-    void viewDatasetInfo(bool);
+    void viewMetadata(bool);
     void viewReset();
 };
-}
+
 #endif // MAINWIN_H

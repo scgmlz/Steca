@@ -1,13 +1,13 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      core/calc/calc_polefigure.h
-//! @brief     Defines ...
+//! @brief     Defines function interpolateInfos
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
@@ -15,32 +15,11 @@
 #ifndef CALC_POLEFIGURE_H
 #define CALC_POLEFIGURE_H
 
-#include "calc_reflection_info.h"
-#include "typ/typ_async.h"
+#include "core/calc/reflection_info.h"
+#include "core/typ/async.h"
 
-namespace calc {
+ReflectionInfos interpolateInfos(
+    ReflectionInfos const&, deg alphaStep, deg betaStep, deg idwRadius,
+    deg averagingAlphaMax, deg averagingRadius, qreal inclusionTreshold, Progress*);
 
-struct itf_t {
-    CLASS(itf_t)
-
-    itf_t();
-    itf_t(inten_t, tth_t, fwhm_t);
-
-    void operator+=(rc);
-
-    inten_t inten;
-    tth_t tth;
-    fwhm_t fwhm;
-};
-
-typedef typ::vec<itf_t> itfs_t;
-
-// Interpolates reflection infos to a single point using idw.
-itf_t interpolateValues(
-    typ::deg searchRadius, ReflectionInfos::rc infos, typ::deg alpha, typ::deg beta);
-
-ReflectionInfos interpolate(
-    ReflectionInfos::rc, typ::deg alphaStep, typ::deg betaStep, typ::deg idwRadius,
-    typ::deg averagingAlphaMax, typ::deg averagingRadius, qreal inclusionTreshold, Progress*);
-}
 #endif // CALC_POLEFIGURE_H

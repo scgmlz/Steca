@@ -1,5 +1,20 @@
-ver. 2.0.5, released 2017.12.06
--------------------------------
+Steca version 2.0.6, released 2018.01.19
+----------------------------------------
+
+Changes:
+
+* Removed start-up dialog.
+  * Check for update must now be triggered through Help > Check for update.
+  * Extended 'About' window with notes on citation.
+* Changed structure of hidden settings files. Settings from previous release will be lost.
+* Tooltip in files list
+
+Besides that, there are no intentional changes of functionality.
+Internally, however, the code has been thoroughly reworked, in order to facilitate
+long-term maintenance. Therefore, this release needs to be extensively tested.
+
+Steca version 2.0.5, released 2017.12.06
+----------------------------------------
 
 New features:
 
@@ -20,8 +35,8 @@ Bug fixes:
 * Correctly enabled fallback to idw if pole figure point interpolation
   by averaging fails
 
-ver. 2.0.4, released 2016.12.01
--------------------------------
+Steca version 2.0.4, released 2016.12.01
+----------------------------------------
 
 New features:
 
@@ -46,16 +61,16 @@ Bug fixes:
 * utf8 (Greek) characters replaced by ASCII strings (e.g. "gamma")
   in output text files
 
-ver. 2.0.3a (hotfix), released 2016.11.14
------------------------------------------
+Steca version 2.0.3a (hotfix), released 2016.11.14
+--------------------------------------------------
 
 Changes:
 
 * fixed incorrect calculation of bin numbers for combined datasets
 * non-used configuration entries (detector) temporarily hidden
 
-ver. 2.0.3 (Armistice), released 2016.11.11
--------------------------------------------
+Steca version 2.0.3, released 2016.11.11
+----------------------------------------
 
 New features:
 
@@ -81,16 +96,16 @@ Bug fixes:
 
 * #28 - a bug in vanadium correction
 
-ver. 2.0.2a (hotfix), released 2016.08.29
------------------------------------------
+Steca version 2.0.2a (hotfix), released 2016.08.29
+--------------------------------------------------
 
 Bug fixes:
 
 * vanadium correction re-enabled for diffractograms
 * fixed labels in diffractogram output
 
-ver. 2.0.2, released 2016.08.23
--------------------------------
+Steca version 2.0.2, released 2016.08.23
+----------------------------------------
 
 New features:
 
@@ -109,8 +124,8 @@ Changes, improvements:
 * Output text formats: only .dat (spaces) and .csv (commas); .txt is discontinued.
 * Output dialogs: improved gamma slicing controls.
 
-ver. 2.0.1, released 2016.06.29
--------------------------------
+Steca version 2.0.1, released 2016.06.29
+----------------------------------------
 
 New features:
 

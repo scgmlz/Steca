@@ -1,33 +1,35 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/mainwin.cpp
-//! @brief     Implements ...
+//! @brief     Implements class MainWin
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
 
-#include "mainwin.h"
+#include "gui/mainwin.h"
 #include "../manifest.h"
-#include "about.h"
-#include "app.h"
-#include "config.h"
-#include "filedialog.h"
-#include "output/output_diagrams.h"
-#include "output/output_diffractograms.h"
-#include "output/output_polefigures.h"
-#include "panels/dock_dataset.h"
-#include "panels/dock_files.h"
-#include "panels/dock_metadata.h"
-#include "panels/tabs_diffractogram.h"
-#include "panels/tabs_images.h"
-#include "panels/tabs_setup.h"
+#include "gui/popup/about.h"
+#include "gui/popup/filedialog.h"
+#include "gui/output/output_diagrams.h"
+#include "gui/output/output_diffractograms.h"
+#include "gui/output/output_polefigures.h"
+#include "gui/panels/subframe_measurements.h"
+#include "gui/panels/subframe_files.h"
+#include "gui/panels/subframe_metadata.h"
+#include "gui/panels/subframe_diffractogram.h"
+#include "gui/panels/subframe_image.h"
+#include "gui/panels/subframe_setup.h"
+#include "core/session.h"
+#include "gui/thehub.h"
 
+#include <QApplication>
+#include <QCloseEvent>
 #include <QDesktopServices>
 #include <QDir>
 #include <QMenuBar>
@@ -35,116 +37,145 @@
 #include <QNetworkReply>
 #include <QSplitter>
 #include <QStatusBar>
+#include <QStringBuilder> // for ".." % ..
 
-namespace gui {
+TheHub* gHub; //!< global, for signalling and command flow
 
-MainWin::MainWin() : hub_(), acts_(hub_.actions) {
-    setWindowIcon(QIcon(":/icon/retroStier"));
-    QDir::setCurrent(QDir::homePath());
+// ************************************************************************** //
+//  file-scoped functions
+// ************************************************************************** //
 
-    setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
+namespace {
 
-    initMenus();
-    initLayout();
-    initStatusBar();
-    connectActions();
+//! Initialize the menu bar. Part of the MainWin initialization.
+void initMenus(QMenuBar* mbar) {
 
-    readSettings();
-}
-
-void MainWin::initMenus() {
-    auto separator = [this]() {
-        auto act = new QAction(this);
-        act->setSeparator(true);
-        return act;
+    auto _separator = [mbar]()->QAction* {
+        QAction* ret = new QAction(mbar);
+        ret->setSeparator(true);
+        return ret;
     };
 
-    auto* mbar = menuBar();
+    auto _actionsToMenu = [mbar](const char* menuName, QList<QAction*> actions)->QMenu* {
+        QMenu* menu = mbar->addMenu(menuName);
+        menu->addActions(actions);
+        str prefix = str("%1: ").arg(menu->title().remove('&'));
+        for (auto action : actions)
+            action->setToolTip(prefix + action->toolTip());
+        return menu;
+    };
+
 #ifdef Q_OS_OSX
     mbar->setNativeMenuBar(false); // REVIEW
 #else
     mbar->setNativeMenuBar(true);
 #endif
 
-    menuFile_ = mbar->addMenu("&File");
-    menuView_ = mbar->addMenu("&View");
-    menuImage_ = mbar->addMenu("&Image");
-    menuDgram_ = mbar->addMenu("Di&ffractogram");
-    menuOutput_ = mbar->addMenu("&Output");
-    menuHelp_ = mbar->addMenu("&Help");
-
-    addActions(
-        menuFile_,
+    _actionsToMenu(
+        "&File",
         {
-            acts_.addFiles, acts_.remFile, separator(), acts_.enableCorr, acts_.remCorr,
-            separator(), acts_.loadSession,
-            acts_.saveSession, // TODO add: acts_.clearSession,
-        });
-
-    addActions(
-        menuFile_,
-        {
+            gHub->trigger_addFiles,
+                gHub->trigger_removeFile,
+                _separator(),
+                gHub->toggle_enableCorr,
+                gHub->trigger_removeCorr,
+                _separator(),
+                gHub->trigger_loadSession,
+                gHub->trigger_saveSession,
+                gHub->trigger_clearSession,
 #ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
-            separator(),
+                _separator(),
 #endif
-            acts_.quit,
+                gHub->trigger_quit,
         });
 
-    addActions(
-        menuView_,
+    _actionsToMenu(
+        "&Image",
+        {   gHub->trigger_rotateImage,
+                gHub->toggle_mirrorImage,
+                gHub->toggle_fixedIntenImage,
+                gHub->toggle_linkCuts,
+                gHub->toggle_showOverlay,
+                gHub->toggle_stepScale,
+                gHub->toggle_showBins,
+        });
+
+    _actionsToMenu(
+        "&Diffractogram",
         {
-            acts_.viewFiles, acts_.viewDatasets, acts_.viewDatasetInfo, separator(),
+            gHub->toggle_selRegions,
+                gHub->toggle_showBackground,
+                gHub->trigger_clearBackground,
+                gHub->trigger_clearReflections,
+                _separator(),
+                gHub->trigger_addReflection,
+                gHub->trigger_removeReflection,
+                _separator(),
+                gHub->toggle_combinedDgram,
+                gHub->toggle_fixedIntenDgram,
+        });
+
+    QMenu* menuOutput = _actionsToMenu(
+        "&Output",
+        {
+            gHub->trigger_outputPolefigures,
+                gHub->trigger_outputDiagrams,
+                gHub->trigger_outputDiffractograms,
+        });
+    menuOutput->setEnabled(false);
+    QObject::connect(gHub, &TheHub::sigFilesSelected,
+                     [menuOutput](){ menuOutput->setEnabled(
+                             !gSession->filesSelection().isEmpty()); });
+
+    _actionsToMenu(
+        "&View",
+        {   gHub->toggle_viewFiles,
+                gHub->toggle_viewDatasets,
+                gHub->toggle_viewMetadata,
+                _separator(),
 #ifndef Q_OS_OSX
-            acts_.fullScreen,
+                gHub->toggle_fullScreen,
 #endif
-            acts_.viewStatusbar, separator(), acts_.viewReset,
+                gHub->toggle_viewStatusbar,
+                _separator(),
+                gHub->trigger_viewReset,
         });
 
-    addActions(
-        menuImage_,
+    _actionsToMenu(
+        "&Help",
         {
-            acts_.rotateImage, acts_.mirrorImage, acts_.fixedIntenImage, acts_.linkCuts,
-            acts_.showOverlay, acts_.stepScale, acts_.showBins,
-        });
-
-    addActions(
-        menuDgram_,
-        {
-            acts_.selRegions, acts_.showBackground, acts_.clearBackground, acts_.clearReflections,
-            separator(), acts_.addReflection, acts_.remReflection, separator(), acts_.combinedDgram,
-            acts_.fixedIntenDgram,
-        });
-
-    addActions(
-        menuOutput_,
-        {
-            acts_.outputPolefigures, acts_.outputDiagrams, acts_.outputDiffractograms,
-        });
-
-    addActions(
-        menuHelp_,
-        {
-            acts_.about,
-#ifndef Q_OS_OSX
-            separator(), // Mac puts About into the Apple menu
-#endif
-            acts_.online, acts_.checkUpdate,
+            gHub->trigger_about, // Mac puts About into the Apple menu
+                gHub->trigger_online,
+                gHub->trigger_checkUpdate,
         });
 }
 
-void MainWin::addActions(QMenu* menu, QList<QAction*> actions) {
-    EXPECT(menu)
-    menu->addActions(actions);
+} // local methods
 
-    str prefix = str("%1: ").arg(menu->title().remove('&'));
-    for (auto action : actions)
-        action->setToolTip(prefix + action->toolTip());
+// ************************************************************************** //
+//  class MainWin
+// ************************************************************************** //
+
+MainWin::MainWin() {
+    qDebug() << "MainWin/";
+    gHub = TheHub::instance();
+    setWindowIcon(QIcon(":/icon/retroStier"));
+    QDir::setCurrent(QDir::homePath());
+    setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
+
+    initMenus(menuBar());
+    initLayout();
+    connectActions();
+    readSettings();
+
+    qDebug() << "/MainWin";
 }
+
 
 void MainWin::initLayout() {
-    addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new panel::DockFiles(hub_)));
-    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasets_ = new panel::DockDatasets(hub_)));
-    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasetInfo_ = new panel::DockMetadata(hub_)));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new SubframeFiles()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockMeasurements_ = new SubframeMeasurements()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasetInfo_ = new SubframeMetadata()));
 
     auto splMain = new QSplitter(Qt::Vertical);
     splMain->setChildrenCollapsible(false);
@@ -155,58 +186,52 @@ void MainWin::initLayout() {
     setCentralWidget(splMain);
 
     splMain->addWidget(splTop);
-    splMain->addWidget(new panel::TabsDiffractogram(hub_));
+    splMain->addWidget(new SubframeDiffractogram());
     splMain->setStretchFactor(1, 1);
 
-    splTop->addWidget(new panel::TabsSetup(hub_));
-    splTop->addWidget(new panel::TabsImages(hub_));
+    splTop->addWidget(new SubframeSetup());
+    splTop->addWidget(new SubframeImage());
     splTop->setStretchFactor(1, 1);
-}
 
-void MainWin::initStatusBar() {
     statusBar();
 }
 
+//! Connect signals to slots. Part of the MainWin initialization.
 void MainWin::connectActions() {
-    auto onTrigger = [this](QAction* action, void (Cls::*fun)()) {
-        QObject::connect(action, &QAction::triggered, this, fun);
-    };
 
-    auto onToggle = [this](QAction* action, void (Cls::*fun)(bool)) {
-        QObject::connect(action, &QAction::toggled, this, fun);
-    };
+#define connectTrigger(action, fun) QObject::connect(action, &QAction::triggered, this, fun)
+#define connectToggle(action, fun)  QObject::connect(action, &QAction::toggled, this, fun)
 
-    onTrigger(acts_.loadSession, &Cls::loadSession);
-    onTrigger(acts_.saveSession, &Cls::saveSession);
-    onTrigger(acts_.clearSession, &Cls::clearSession);
+    connectTrigger(gHub->trigger_loadSession, &MainWin::loadSession);
+    connectTrigger(gHub->trigger_saveSession, &MainWin::saveSession);
+    connectTrigger(gHub->trigger_clearSession, &MainWin::clearSession);
 
-    onTrigger(acts_.addFiles, &Cls::addFiles);
-    onTrigger(acts_.enableCorr, &Cls::enableCorr);
+    connectTrigger(gHub->trigger_addFiles, &MainWin::addFiles);
+    connectTrigger(gHub->toggle_enableCorr, &MainWin::enableCorr);
 
-    onTrigger(acts_.quit, &Cls::close);
+    connectTrigger(gHub->trigger_quit, &MainWin::close);
 
-    onTrigger(acts_.outputPolefigures, &Cls::outputPoleFigures);
-    onTrigger(acts_.outputDiagrams, &Cls::outputDiagrams);
-    onTrigger(acts_.outputDiffractograms, &Cls::outputDiffractograms);
+    QObject::connect(gHub->trigger_outputPolefigures, &QAction::triggered,
+                     [this](){PoleFiguresFrame("Pole Figures", this).exec();});
+    QObject::connect(gHub->trigger_outputDiagrams, &QAction::triggered,
+                     [this](){DiagramsFrame("Diagrams", this).exec();});
+    QObject::connect(gHub->trigger_outputDiffractograms, &QAction::triggered,
+                     [this](){DiffractogramsFrame("Diffractograms", this).exec();});
 
-    onTrigger(acts_.about, &Cls::about);
-    onTrigger(acts_.online, &Cls::online);
-    onTrigger(acts_.checkUpdate, &Cls::checkUpdate);
+    QObject::connect(gHub->trigger_about, &QAction::triggered, [this](){AboutBox(this).exec();});
+    connectTrigger(gHub->trigger_online, &MainWin::online);
+    connectTrigger(gHub->trigger_checkUpdate, &MainWin::checkUpdate);
 
-    onToggle(acts_.viewStatusbar, &Cls::viewStatusbar);
+    connectToggle(gHub->toggle_viewStatusbar, &MainWin::viewStatusbar);
 #ifndef Q_OS_OSX
-    onToggle(acts_.fullScreen, &Cls::viewFullScreen);
+    connectToggle(gHub->toggle_fullScreen, &MainWin::viewFullScreen);
 #endif
 
-    onToggle(acts_.viewFiles, &Cls::viewFiles);
-    onToggle(acts_.viewDatasets, &Cls::viewDatasets);
-    onToggle(acts_.viewDatasetInfo, &Cls::viewDatasetInfo);
+    connectToggle(gHub->toggle_viewFiles, &MainWin::viewFiles);
+    connectToggle(gHub->toggle_viewDatasets, &MainWin::viewDatasets);
+    connectToggle(gHub->toggle_viewMetadata, &MainWin::viewMetadata);
 
-    onTrigger(acts_.viewReset, &Cls::viewReset);
-}
-
-void MainWin::about() {
-    AboutBox(this).exec();
+    connectTrigger(gHub->trigger_viewReset, &MainWin::viewReset);
 }
 
 void MainWin::online() {
@@ -214,39 +239,32 @@ void MainWin::online() {
 }
 
 void MainWin::checkUpdate() {
-    checkUpdate(true);
-}
-
-void MainWin::checkUpdate(bool completeReport) {
-    NoWarnings _;
 
     QNetworkRequest req;
 
     str ver = qApp->applicationVersion();
     str qry = ver % "\t| " % QSysInfo::prettyProductName();
     req.setUrl(QUrl(str(STECA2_VERSION_URL) % "?" % qry));
-    auto reply = netMan_.get(req);
+    QNetworkReply* reply = netMan_.get(req);
 
-    connect(reply, &QNetworkReply::finished, [this, completeReport, reply]() {
+    connect(reply, &QNetworkReply::finished, [this, reply]() {
         if (QNetworkReply::NoError != reply->error()) {
             messageDialog("Network Error", reply->errorString());
         } else {
             str ver = qApp->applicationVersion();
             str lastVer = reply->readAll().trimmed();
-
             str name = qApp->applicationName();
-
+            str result;
             if (ver != lastVer)
-                messageDialog(
-                    str("%1 update").arg(name),
-                    str("<p>The latest released %1 version is %2. You have "
+                    result = str(
+                        "<p>The latest released %1 version is %2. You have "
                         "version %3.</p>"
-                        "<p><a href='%4'>Get new %1</a></p>")
-                        .arg(name, lastVer, ver, STECA2_DOWNLOAD_URL));
-            else if (completeReport)
-                messageDialog(
-                    str("%1 update").arg(name),
-                    str("<p>You have the latest released %1 version (%2).</p>").arg(name).arg(ver));
+                        "<p><a href='%4'>Open download location in external browser</a></p>")
+                        .arg(name, lastVer, ver, STECA2_DOWNLOAD_URL);
+            else
+                result = str(
+                    "<p>You have the latest released %1 version (%2).</p>").arg(name).arg(ver);
+            messageDialog(str("%1 update").arg(name), result);
         }
     });
 }
@@ -255,152 +273,105 @@ void MainWin::messageDialog(rcstr title, rcstr text) {
     QMessageBox::information(this, title, text);
 }
 
-void MainWin::show() {
-    super::show();
-    onShow();
-}
-
 void MainWin::close() {
-    super::close();
+    qDebug() << "Good bye\n";
+    QMainWindow::close();
 }
 
 void MainWin::addFiles() {
-    str_lst fileNames = file_dialog::openFileNames(
+    QStringList fileNames = file_dialog::openFileNames(
         this, "Add files", QDir::current().absolutePath(),
         "Data files (*.dat *.mar*);;All files (*.*)");
-
+    update();
     if (!fileNames.isEmpty()) {
         QDir::setCurrent(QFileInfo(fileNames.at(0)).absolutePath());
-        hub_.addFiles(fileNames);
+        gHub->addGivenFiles(fileNames);
     }
 }
 
 void MainWin::enableCorr() {
     str fileName;
-    if (!hub_.hasCorrFile())
+    if (!gSession->hasCorrFile()) {
         fileName = file_dialog::openFileName(
             this, "Set correction file", QDir::current().absolutePath(),
             "Data files (*.dat *.mar*);;All files (*.*)");
-
+        update();
+    }
     if (!fileName.isEmpty()) {
         QDir::setCurrent(QFileInfo(fileName).absolutePath());
-        hub_.setCorrFile(fileName);
+        gHub->setCorrFile(fileName);
     }
 }
 
-static str const STE(".ste");
-
 void MainWin::loadSession() {
     str fileName = file_dialog::openFileName(
-        this, "Load session", QDir::current().absolutePath(),
-        "Session files (*" % STE % ");;All files (*.*)");
-
-    if (fileName.isEmpty())
+        this, "Load session", QDir::current().absolutePath(), "Session files (*.ste)");
+    update();
+    if (fileName.isEmpty()) {
+        TR("load session aborted");
         return;
-
-    hub_.loadSession(QFileInfo(fileName));
+    }
+    try {
+        TR("going to load session from file '"+fileName+"'");
+        gHub->sessionFromFile(fileName);
+    } catch(Exception& ex) {
+        qWarning() << "Could not load session from file " << fileName << ":\n"
+                   << ex.msg() << "\n"
+                   << "The application may now be in an inconsistent state.\n"
+                   << "Please consider to quit the application, and start afresh.\n";
+        clearSession();
+    }
 }
 
 void MainWin::saveSession() {
     str fileName = file_dialog::saveFileName(
-        this, "Save session", QDir::current().absolutePath(),
-        "Session files (*" % STE % ");;All files (*.*)");
-
-    if (!fileName.endsWith(STE))
-        fileName += STE;
-    hub_.saveSession(QFileInfo(fileName));
+        this, "Save session", QDir::current().absolutePath(), "Session files (*.ste)");
+    update();
+    if (!fileName.endsWith(".ste"))
+        fileName += ".ste";
+    gHub->saveSession(QFileInfo(fileName));
 }
 
 void MainWin::clearSession() {
-    hub_.clearSession();
+    gSession->clear();
+    emit gHub->sigFilesSelected();
+    emit gHub->sigClustersChanged();
 }
 
-void MainWin::outputPoleFigures() {
-    auto popup = new output::PoleFiguresFrame(hub_, "Pole Figures", this);
-    popup->show();
-}
-
-void MainWin::outputDiagrams() {
-    auto popup = new output::DiagramsFrame(hub_, "Diagrams", this);
-    popup->show();
-}
-
-void MainWin::outputDiffractograms() {
-    auto popup = new output::DiffractogramsFrame(hub_, "Diffractograms", this);
-    popup->show();
-}
-
-void MainWin::closeEvent(QCloseEvent* event) {
-    onClose();
-    event->accept();
-}
-
-void MainWin::onShow() {
-    checkActions();
-    hub_.clearSession();
-
-#ifdef DEVELOPMENT
-    // automatic actions - load files & open dialog
-    // helps with development
-
-    auto safeLoad = [this](rcstr fileName) {
-        QFileInfo info(fileName);
-        if (info.exists())
-            hub_.loadSession(info);
-    };
-    safeLoad("/home/jan/C/+dev/fz/data/0.ste");
-    hub_.actions.outputPolefigures->trigger();
-#endif
-
-    Settings s(config_key::GROUP_CONFIG);
-    auto ver = qApp->applicationVersion();
-    if (s.readStr(config_key::CURRENT_VERSION) != ver) {
-        // new version
-        s.saveStr(config_key::CURRENT_VERSION, ver);
-        s.saveBool(config_key::STARTUP_CHECK_UPDATE, true);
-        s.saveBool(config_key::STARTUP_ABOUT, true);
+void MainWin::execCommand(str line) {
+    QStringList argv = line.split(" ");
+    str cmd = argv.at(0);
+    if (cmd=="loadSession") {
+        gHub->sessionFromFile(argv.at(1));
+    } else if (cmd=="quit") {
+        close();
+    } else {
+        qDebug() << "Unknown command: " << line << "\n";
     }
-
-    if (s.readBool(config_key::STARTUP_CHECK_UPDATE, true))
-        checkUpdate(false);
-    if (s.readBool(config_key::STARTUP_ABOUT, true))
-        about();
 }
-
-void MainWin::onClose() {
+void MainWin::closeEvent(QCloseEvent* event) {
     saveSettings();
+    event->accept();
 }
 
 void MainWin::readSettings() {
     if (initialState_.isEmpty())
         initialState_ = saveState();
 
-    Settings s(config_key::GROUP_MAINWIN);
-    restoreGeometry(s.value(config_key::GEOMETRY).toByteArray());
-    restoreState(s.value(config_key::STATE).toByteArray());
+    Settings s("MainWin");
+    restoreGeometry(s.value("geometry").toByteArray());
+    restoreState(s.value("state").toByteArray());
 }
 
 void MainWin::saveSettings() {
-    Settings s(config_key::GROUP_MAINWIN);
-    s.setValue(config_key::GEOMETRY, saveGeometry());
-    s.setValue(config_key::STATE, saveState());
-}
-
-void MainWin::checkActions() {
-    acts_.viewStatusbar->setChecked(statusBar()->isVisible());
-
-#ifndef Q_OS_OSX
-    acts_.fullScreen->setChecked(isFullScreen());
-#endif
-
-    acts_.viewFiles->setChecked(dockFiles_->isVisible());
-    acts_.viewDatasets->setChecked(dockDatasets_->isVisible());
-    acts_.viewDatasetInfo->setChecked(dockDatasetInfo_->isVisible());
+    Settings s("MainWin");
+    s.setValue("geometry", saveGeometry());
+    s.setValue("state", saveState());
 }
 
 void MainWin::viewStatusbar(bool on) {
     statusBar()->setVisible(on);
-    acts_.viewStatusbar->setChecked(on);
+    gHub->toggle_viewStatusbar->setChecked(on);
 }
 
 void MainWin::viewFullScreen(bool on) {
@@ -408,25 +379,24 @@ void MainWin::viewFullScreen(bool on) {
         showFullScreen();
     else
         showNormal();
-
 #ifndef Q_OS_OSX
-    acts_.fullScreen->setChecked(on);
+    gHub->toggle_fullScreen->setChecked(on);
 #endif
 }
 
 void MainWin::viewFiles(bool on) {
     dockFiles_->setVisible(on);
-    acts_.viewFiles->setChecked(on);
+    gHub->toggle_viewFiles->setChecked(on);
 }
 
 void MainWin::viewDatasets(bool on) {
-    dockDatasets_->setVisible(on);
-    acts_.viewDatasets->setChecked(on);
+    dockMeasurements_->setVisible(on);
+    gHub->toggle_viewDatasets->setChecked(on);
 }
 
-void MainWin::viewDatasetInfo(bool on) {
+void MainWin::viewMetadata(bool on) {
     dockDatasetInfo_->setVisible(on);
-    acts_.viewDatasetInfo->setChecked(on);
+    gHub->toggle_viewMetadata->setChecked(on);
 }
 
 void MainWin::viewReset() {
@@ -435,6 +405,5 @@ void MainWin::viewReset() {
     viewFullScreen(false);
     viewFiles(true);
     viewDatasets(true);
-    viewDatasetInfo(true);
-}
+    viewMetadata(true);
 }

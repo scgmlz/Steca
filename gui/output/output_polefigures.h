@@ -1,13 +1,13 @@
 // ************************************************************************** //
 //
-//  Steca2: stress and texture calculator
+//  Steca: stress and texture calculator
 //
 //! @file      gui/output/output_polefigures.h
-//! @brief     Defines ...
+//! @brief     Defines class PoleFiguresFrame
 //!
-//! @homepage  https://github.com/scgmlz/Steca2
+//! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2017
+//! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
@@ -15,76 +15,24 @@
 #ifndef OUTPUT_POLEFIGURES_H
 #define OUTPUT_POLEFIGURES_H
 
-#include "output_dialogs.h"
+#include "frame.h"
 
-namespace gui {
-namespace output {
+//! The modal dialog for generating and saving pole figures
+class PoleFiguresFrame final : public Frame {
+public:
+    PoleFiguresFrame(rcstr title, QWidget*);
 
-class TabGraph : public Tab {
-    CLASS(TabGraph) SUPER(Tab) public : using deg = typ::deg;
-    using rad = typ::rad;
+private:
+    class TabGraph* tabGraph_;
+    class TabPoleFiguresSave* tabSave_;
 
-    TabGraph(TheHub&, Params&);
-    void set(calc::ReflectionInfos);
+    void displayReflection(int reflIndex, bool interpolated);
 
-protected:
-    void update();
-
-    calc::ReflectionInfos rs_;
-    void paintEvent(QPaintEvent*);
-
-    QPointF p(deg alpha, deg beta) const;
-    deg alpha(QPointF const&) const;
-    deg beta(QPointF const&) const;
-
-    void circle(QPointF c, qreal r);
-
-    void paintGrid();
-    void paintPoints();
-
-    // valid during paintEvent
-    QPainter* p_;
-    QPointF c_;
-    qreal r_;
-
-    bool flat_;
-    qreal alphaMax_, avgAlphaMax_;
-
-    QCheckBox* cbFlat_;
+    void savePoleFigureOutput();
+    void writePoleFigureOutputFiles(rcstr filePath, int index);
+    void writePoleFile(rcstr filePath, ReflectionInfos, vec<qreal> const&);
+    void writeListFile(rcstr filePath, ReflectionInfos, vec<qreal> const&);
+    void writeErrorMask(rcstr filePath, ReflectionInfos, vec<qreal> const&);
 };
 
-class TabPoleFiguresSave : public TabSave {
-    CLASS(TabPoleFiguresSave)
-    SUPER(TabSave) public : TabPoleFiguresSave(TheHub& hub, Params& params);
-
-    bool onlySelectedRefl() const;
-    bool outputInten() const;
-    bool outputTth() const;
-    bool outputFWHM() const;
-
-    void rawReflSettings(bool on);
-
-protected:
-    QRadioButton *rbSelectedRefl_, *rbAllRefls_;
-    QCheckBox *outputInten_, *outputTth_, *outputFWHM_;
-};
-
-class PoleFiguresFrame : public Frame {
-    CLASS(PoleFiguresFrame)
-    SUPER(Frame) public : PoleFiguresFrame(TheHub&, rcstr title, QWidget*);
-
-protected:
-    TabGraph* tabGraph_;
-    TabPoleFiguresSave* tabSave_;
-
-    void displayReflection(uint reflIndex, bool interpolated);
-
-    bool savePoleFigureOutput();
-    bool writePoleFigureOutputFiles(rcstr filePath, uint index);
-    void writePoleFile(rcstr filePath, calc::ReflectionInfos, qreal_vec::rc);
-    void writeListFile(rcstr filePath, calc::ReflectionInfos, qreal_vec::rc);
-    void writeErrorMask(rcstr filePath, calc::ReflectionInfos, qreal_vec::rc);
-};
-}
-}
 #endif // OUTPUT_POLEFIGURES_H

@@ -1,5 +1,5 @@
-In scientific publications, acknowledge the use of Steca through the
-following two citations:
+In scientific publications, the use of Steca must be acknowledged and
+documented by means of the following two citations:
 
 C. Randau, U. Garbe, H.-G. Brokmeier,
 "StressTextureCalculator: a software tool to extract texture, strain
@@ -7,5 +7,5 @@ and microstructure information from area-detector measurements",
 J. Appl. Cryst. 44, 641-646 (2011).
 
 R. E. Brydon, J. Burle, W. Gan, M. Hofmann, A. J. Soininen, J. Wuttke,
-"Steca2: stress and texture calculator",
-https://github.com/scgmlz/Steca2 (2017).
+"Stress and texture calculator Steca, version 2",
+https://github.com/scgmlz/Steca2 (2018).
