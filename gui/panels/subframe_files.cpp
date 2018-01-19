@@ -39,15 +39,14 @@ public:
     int rowCount() const final { return gSession->numFiles(); }
     QVariant data(const QModelIndex&, int) const final;
 
-    vec<int> checkedRows() const;
-
 private:
+    vec<int> checkedRows() const;
 
     vec<bool> rowsChecked_;
     int rowHighlighted_;
 };
 
-//! Reacts to clicks and arrow keys.
+//! Selects or unselects all measurements in a file.
 void FilesModel::onClicked(const QModelIndex& cell) {
     int row = cell.row();
     if (row < 0 || row >= rowCount())
@@ -57,8 +56,6 @@ void FilesModel::onClicked(const QModelIndex& cell) {
         rowsChecked_[row] = !rowsChecked_[row];
         emit dataChanged(cell, cell);
         gHub->onFilesSelected(checkedRows());
-    } else if (col==2) {
-        setHighlight(row);
     }
 }
 

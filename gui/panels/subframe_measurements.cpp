@@ -59,6 +59,7 @@ void ExperimentModel::onClicked(const QModelIndex& cell) {
     if (col==1) {
         rowsChecked_[row] = !rowsChecked_[row];
         emit dataChanged(cell, cell);
+//        gHub->onClustersActivated(checkedRows());
     } else if (col==2) {
         setHighlight(row);
     }
