@@ -151,20 +151,16 @@ void Session::assembleExperiment(const vec<int> fileNums, const int combineBy) {
     filesSelection_ = fileNums;
     experiment_ = { combineBy };
 
-    vec<shp_Measurement> selectedMeasurements;
-    for (int i : filesSelection_)
-        for (const shp_Measurement& measurement : files_.at(i)->measurements())
-            selectedMeasurements.append(measurement);
-    if (selectedMeasurements.isEmpty())
-        return;
-
-    for (int i=0; i<selectedMeasurements.count(); i+=combineBy) {
-        int ii;
-        vec<shp_Measurement> group;
-        for (ii=i; ii<selectedMeasurements.count() && ii<i+combineBy; ii++)
-            group.append(selectedMeasurements[ii]);
-        shp_Cluster cd(new Cluster(experiment_, group));
-        experiment_.appendHere(cd);
+    for (int jFile : filesSelection_) {
+        const Datafile* file = files_.at(jFile).data();
+        for (int i=0; i<file->count(); i+=combineBy) {
+            int ii;
+            vec<shp_Measurement> group;
+            for (ii=i; ii<file->count() && ii<i+combineBy; ii++)
+                group.append(file->measurements().at(ii));
+            shp_Cluster cd(new Cluster(experiment_, group));
+            experiment_.appendHere(cd);
+        }
     }
 }
 
