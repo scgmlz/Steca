@@ -211,7 +211,7 @@ QByteArray TheHub::saveSession() const {
     for (int i : gSession->dataset().filesSelection())
         arrSelectedFiles.append(i);
     top.insert("selected files", arrSelectedFiles);
-    top.insert("combine", clusterGroupedBy_);
+    top.insert("combine", gSession->dataset().binning());
 
     if (gSession->hasCorrFile()) {
         str absPath = gSession->corrFile()->fileInfo().absoluteFilePath();

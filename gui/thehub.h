@@ -116,8 +116,6 @@ public:
     void saveSession(QFileInfo const&) const;
     QByteArray saveSession() const;
 
-    int clusterGroupedBy() const { return clusterGroupedBy_; }
-
     eFittingTab fittingTab() const { return fittingTab_; }
 
     const Cluster* selectedCluster() const { return selectedCluster_; }

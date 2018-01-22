@@ -276,7 +276,7 @@ void SubframeImage::render() {
 
         if (cluster_) {
             // 1 - based
-            const int by = qBound(1, int(gHub->clusterGroupedBy()), cluster_->count());
+            const int by = gSession->dataset().binning();
             const int n = qBound(1, spinN_->value(), by);
 
             spinN_->setValue(n);

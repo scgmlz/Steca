@@ -270,5 +270,5 @@ SubframeMeasurements::SubframeMeasurements() : DockWidget("Measurements", "dock-
     connect(combineMeasurements, _SLOT_(QSpinBox, valueChanged, int),
             [this](int num) { gHub->combineMeasurementsBy(qMax(1, num)); });
     connect(gHub, &TheHub::sigClustersChanged,
-            [=]() { combineMeasurements->setValue(gHub->clusterGroupedBy()); });
+            [=]() { combineMeasurements->setValue(gSession->dataset().binning()); });
 }
