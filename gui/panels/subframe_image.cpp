@@ -305,7 +305,7 @@ void SubframeImage::render() {
 
             gHub->setGammaRange(rge);
 
-            shp_Measurement measurement = cluster_->at(n - 1);
+            const Measurement* measurement = cluster_->at(n - 1);
 
             numBin_->setEnabled(true);
             if (gHub->toggle_showBins->isChecked()) {

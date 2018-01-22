@@ -20,17 +20,22 @@
 #include "core/data/measurement.h"
 #include <QSharedPointer> // no auto rm
 
-//! A group of one or more Measurement's
+//! A group of one or more Measurement's, with associated information.
 
-class Cluster final : public vec<shp_Measurement> {
+class Cluster final {
 public:
     Cluster() = delete;
     Cluster(Cluster&) = delete;
-    Cluster(const class Datafile& file, const int offset, const vec<shp_Measurement>& measurements);
+    Cluster(const class Datafile& file, const int offset,
+            const QVector<const Measurement*>& measurements);
 
     const class Datafile& file() const { return file_; }
     const int offset() const { return offset_; }
     const int totalOffset() const;
+    const int count() const { return members_.size(); }
+    const Measurement* first() const { return members_.first(); }
+    const Measurement* at(int i) const { return members_.at(i); }
+    const QVector<const Measurement*>& members() const { return members_; }
 
     deg omg() const;
     deg phi() const;
@@ -52,7 +57,8 @@ public:
 
 private:
     const class Datafile& file_;
-    const int offset_;
+    const int offset_; //! index of first Measurement in file_
+    QVector<const Measurement*> members_;
     shp_Metadata md_; //!< averaged Metadata, cached, computed only once
 
     void compute_metadata() const;

@@ -82,9 +82,9 @@ void Dataset::assembleExperiment(const vec<int> fileNums, const int combineBy) {
         const Datafile& file = files_.at(jFile);
         for (int i=0; i<file.count(); i+=combineBy) {
             int ii;
-            vec<shp_Measurement> group;
+            QVector<const Measurement*> group;
             for (ii=i; ii<file.count() && ii<i+combineBy; ii++)
-                group.append(file.raw_->measurements().at(ii));
+                group.append(file.raw_->measurements().at(ii).data());
             shp_Cluster cd(new Cluster(file, i, group));
             experiment_.appendHere(cd);
         }

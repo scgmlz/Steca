@@ -61,7 +61,7 @@ const Range& Experiment::rgeFixedInten(bool trans, bool cut) const {
     if (!rgeFixedInten_.isValid()) {
         TakesLongTime __;
         for (const shp_Cluster& cluster : *this)
-            for (const shp_Measurement& one : *cluster) {
+            for (const Measurement* one : cluster->members()) {
                 if (one->image()) {
                     const shp_Image& image = one->image();
                     shp_ImageLens imageLens = gSession->imageLens(*image, trans, cut);
