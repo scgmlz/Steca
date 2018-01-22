@@ -136,25 +136,18 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     }
     case Qt::ToolTipRole: {
         QString ret;
-        if (cluster->count()>1 && cluster->first()->file()==cluster->last()->file()) {
+        if (cluster->count()>1) {
             ret = QString("Measurements %1..%2 are numbers %3..%4 in file %5")
                 .arg(cluster->first()->totalPosition()+1)
                 .arg(cluster->last()->totalPosition()+1)
                 .arg(cluster->first()->position()+1)
                 .arg(cluster->last()->position()+1)
-                .arg(cluster->last()->file()->fileName());
+                .arg(cluster->first()->file()->fileName());
         } else {
             ret = QString("Measurement %1 is number %2 in file %3")
                 .arg(cluster->first()->totalPosition()+1)
                 .arg(cluster->first()->position()+1)
                 .arg(cluster->first()->file()->fileName());
-            if (cluster->count()>1) {
-                ret += cluster->count()>2 ? ",...," : ",";
-                ret += QString("\nmeasurement %1 is number %2 in file %3")
-                    .arg(cluster->last()->totalPosition()+1)
-                    .arg(cluster->last()->position()+1)
-                    .arg(cluster->last()->file()->fileName());
-            }
         }
         ret += ".";
         if (cluster->count()<gSession->experiment().combineBy())
@@ -165,8 +158,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     }
     case Qt::ForegroundRole: {
         if (col==COL_NUMBER && cluster->count()>1 &&
-            (cluster->first()->file()!=cluster->last()->file()
-             || cluster->count()<gSession->experiment().combineBy()))
+            (cluster->count()<gSession->experiment().combineBy()))
             return QColor(Qt::red);
         return QColor(Qt::black);
     }

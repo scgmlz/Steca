@@ -19,13 +19,12 @@
 #include "core/calc/reflection.h"
 #include "core/calc/reflection_info.h"
 #include "core/data/angle_map.h"
-#include "core/data/datafile.h"
+#include "core/data/dataset.h"
 #include "core/data/experiment.h"
 #include "core/data/image.h"
 #include "core/typ/async.h"
 #include "core/typ/cache.h"
 #include "core/typ/singleton.h"
-#include <QSharedPointer> // no auto rm
 
 extern class Session* gSession;
 
@@ -43,8 +42,8 @@ public:
 
     // Modifying methods:
     void clear();
-    bool addGivenFiles(const QStringList& filePaths) THROWS;
-    void removeFile(int i);
+    Dataset& dataset() { return dataset_; }
+
     void setCorrFile(rcstr filePath) THROWS;
     void removeCorrFile();
     void assembleExperiment(const vec<int>, const int);
@@ -65,10 +64,6 @@ public:
     void setNorm(eNorm norm) { norm_ = norm; }
 
     // Const methods:
-    int numFiles() const { //!< number of data files (not counting the correction file)
-        return files_.count(); }
-    const Datafile* file(int i) const { return files_[i].data(); }
-    bool hasFile(rcstr fileName) const;
     bool hasCorrFile() const { return !corrFile_.isNull(); }
     const Datafile* corrFile() const { return corrFile_.data(); }
     shp_Image corrImage() const { return corrImage_; }
@@ -76,7 +71,6 @@ public:
     void tryEnableCorr(bool on) { corrEnabled_ = on && hasCorrFile(); }
     bool isCorrEnabled() const { return corrEnabled_; }
 
-    vec<int> const& filesSelection() const { return filesSelection_; }
     Experiment const& experiment() const { return experiment_; }
 
     size2d imageSize() const;
@@ -108,11 +102,10 @@ public:
     qreal calcAvgBackground() const;
 
 private:
-    QVector<QSharedPointer<Datafile>> files_; //!< data files
+    Dataset dataset_;
     QSharedPointer<Datafile> corrFile_; //!< correction file
     shp_Image corrImage_;
     bool corrEnabled_;
-    vec<int> filesSelection_; // from these files
     Experiment experiment_; // cluster collected ...
     bool intenScaledAvg_; // if not, summed
     qreal intenScale_;
