@@ -45,30 +45,33 @@ bool Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
         gSession->setImageSize(datafile->imageSize());
         files_.append(datafile);
     }
-    computeOffsets();
+    updateCache();
     return ret;
 }
 
 void Dataset::removeFile(int i) { // TODO rm arg
     files_.remove(i);
-    computeOffsets();
+    updateCache();
     gSession->updateImageSize();
     // setHighlight(i-1); // TODO
 }
 
-void Dataset::computeOffsets() {
+void Dataset::updateCache() {
+    int idx = 0;
     int cnt = 0;
     for (const QSharedPointer<const Datafile>& file: files_) {
-        offsets_[file.data()] = cnt;
+        mapIndex_[file.data()] = idx++;
+        mapOffset_[file.data()] = cnt;
         cnt += file->count();
     }
 }
 
-void Dataset::setHighlight(int i) {
+void Dataset::setHighlight(const Datafile* file) {
+    int i = mapIndex_[file];
     if (i==highlight_)
         return;
     highlight_ = i;
-    emit gSession->sigFileHighlight();
+    emit gSession->sigFileHighlight(file);
 }
 
 void Dataset::assembleExperiment(const vec<int> fileNums, const int combineBy) {

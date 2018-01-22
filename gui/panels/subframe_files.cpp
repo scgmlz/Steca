@@ -31,7 +31,7 @@ class FilesModel : public TableModel { // < QAbstractTableModel < QAbstractItemM
 public:
     void onClicked(const QModelIndex &);
     void setHighlight(int row);
-    void forceFileHighlight(const Datafile*);
+    void onFileHighlight(const Datafile*);
     void removeFile();
     void onFilesLoaded();
 
@@ -60,7 +60,7 @@ void FilesModel::onClicked(const QModelIndex& cell) {
 }
 
 //! Set highlight according to signal from MeasurementsView.
-void FilesModel::forceFileHighlight(const Datafile* newFile) {
+void FilesModel::onFileHighlight(const Datafile* newFile) {
     for (int row=0; row<rowCount(); ++row) {
         if (gSession->dataset().file(row)==newFile) {
             setHighlight(row);
@@ -145,7 +145,7 @@ void FilesModel::setHighlight(int row) {
     rowHighlighted_ = row;
     if (row>=0) {
         emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
-        emit gHub->sigFileHighlightHasChanged(gSession->dataset().file(row));
+        gSession->dataset().setHighlight(gSession->dataset().file(row));
     }
     if (oldRow>=0)
         emit dataChanged(createIndex(oldRow,0),createIndex(oldRow,columnCount()));
@@ -176,7 +176,7 @@ FilesView::FilesView() : ListView() {
 
     connect(gHub, &TheHub::sigFilesLoaded, model(), &FilesModel::onFilesLoaded);
     connect(gHub->trigger_removeFile, &QAction::triggered, model(), &FilesModel::removeFile);
-    connect(gHub, &TheHub::sigFileHighlight, model(), &FilesModel::forceFileHighlight);
+    connect(gSession, &Session::sigFileHighlight, model(), &FilesModel::onFileHighlight);
     connect(this, &FilesView::clicked, model(), &FilesModel::onClicked);
 }
 

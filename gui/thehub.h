@@ -53,9 +53,6 @@ signals:
     void sigFilesLoaded(); //!< at least one file has been newly loaded
     void sigFilesSelected(); //!< active file selection has changed
 
-    void sigFileHighlight(const Datafile*); //!< change highlighted file
-    void sigFileHighlightHasChanged(const Datafile*); //!< highlighted file has changed
-
     void sigClustersChanged(); //!< the set of cluster collected from selected
     void sigClusterSelected(const Cluster*);
 

@@ -31,12 +31,12 @@ public:
     void setHighlight(int row);
     void updateMeta(vec<bool> const&);
     void onFilesChanged();
-    void onFileHighlighted(const Datafile*);
+    void onFileHighlight(const Datafile*);
 
     int rowCount() const final { return gSession->experiment().count(); }
     QVariant data(const QModelIndex&, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const final;
-    const Cluster* highlighted() const { return highlighted_; }
+    int rowHighlighted() const { return rowHighlighted_; }
     int metaCount() const { return metaInfoNums_.count(); }
     vec<bool> const& rowsChecked() const { return rowsChecked_; }
 
@@ -77,7 +77,7 @@ void ExperimentModel::setHighlight(int row) {
     if (oldHighlighted)
         emit dataChanged(createIndex(oldRow,0),createIndex(oldRow,columnCount()));
     if (highlighted_!=oldHighlighted)
-        emit gHub->sigFileHighlight(highlighted_->first()->file());
+        gSession->dataset().setHighlight(highlighted_->first()->file());
 }
 
 void ExperimentModel::updateMeta(vec<bool> const& metadataRows) {
@@ -103,7 +103,7 @@ void ExperimentModel::onFilesChanged() {
              << ", highlighted=" << rowHighlighted_;
 }
 
-void ExperimentModel::onFileHighlighted(const Datafile* newFile) {
+void ExperimentModel::onFileHighlight(const Datafile* newFile) {
     if (highlighted_ && newFile==highlighted_->first()->file())
         return;
     for (int row=0; row<rowCount(); ++row) {
@@ -202,6 +202,7 @@ public:
 
 private:
     void currentChanged(QModelIndex const&, QModelIndex const&) override final;
+    void onFileHighlight(const Datafile* newFile);
     int sizeHintForColumn(int) const override final;
     ExperimentModel* model() const final {
         return static_cast<ExperimentModel*>(ListView::model()); }
@@ -216,7 +217,6 @@ ExperimentView::ExperimentView() : ListView() {
     connect(gHub, &TheHub::sigClustersChanged,
             [this]() {
                 model()->signalReset();
-                gHub->tellClusterSelected(nullptr); // first de-select
                 setCurrentIndex(model()->index(0,0));
             });
     connect(gHub, &TheHub::sigMetatagsChosen, experimentModel,
@@ -224,16 +224,19 @@ ExperimentView::ExperimentView() : ListView() {
                 model()->updateMeta(rowsChecked);
                 setHeaderHidden(model()->metaCount()==0);
             });
-    connect(gHub, &TheHub::sigFileHighlightHasChanged,
-            model(), &ExperimentModel::onFileHighlighted);
+    connect(gSession, &Session::sigFileHighlight, this, &ExperimentView::onFileHighlight);
     connect(this, &ExperimentView::clicked, model(), &ExperimentModel::onClicked);
 }
 
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
 void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
-    model()->setHighlight(current.row());
     scrollTo(current);
-    gHub->tellClusterSelected(model()->highlighted());
+    model()->setHighlight(current.row());
+}
+
+void ExperimentView::onFileHighlight(const Datafile* newFile) {
+    model()->onFileHighlight(newFile);
+    scrollTo(model()->index(model()->rowHighlighted(),0));
 }
 
 int ExperimentView::sizeHintForColumn(int col) const {

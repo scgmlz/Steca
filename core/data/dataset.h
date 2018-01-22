@@ -34,13 +34,13 @@ public:
     void clear();
     bool addGivenFiles(const QStringList& filePaths) THROWS;
     void removeFile(int i);
-    void setHighlight(int i);
+    void setHighlight(const Datafile*);
     void assembleExperiment(const vec<int>, const int);
 
     // Const methods:
     int count() const { return files_.count(); }
     const Datafile* file(int i) const { return files_[i].data(); }
-    int offset(const Datafile* file) const { return offsets_[file]; }
+    int offset(const Datafile* file) const { return mapOffset_[file]; }
     int highlight() const { return highlight_; }
     QJsonArray to_json() const;
 
@@ -50,12 +50,13 @@ public:
 
 private:
     QVector<QSharedPointer<const Datafile>> files_; //!< data files
-    QMap<const Datafile*,int> offsets_; //!< first index in total list of Measurement|s
+    QMap<const Datafile*,int> mapIndex_; //!< index in files_
+    QMap<const Datafile*,int> mapOffset_; //!< first index in total list of Measurement|s
 
     int highlight_ {0}; //!< index of highlighted file
     vec<int> filesSelection_; // from these files
 
-    void computeOffsets();
+    void updateCache();
 
     bool hasFile(rcstr fileName) const;
 };
