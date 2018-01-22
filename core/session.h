@@ -106,7 +106,7 @@ public:
     qreal calcAvgBackground() const;
 
 signals:
-    void sigFileHighlight(const Rawfile*); //!< highlighted File has changed
+    void sigFileHighlight(const Datafile&); //!< highlighted File has changed
 
 private:
     friend Dataset; // TODO try to get rid of this

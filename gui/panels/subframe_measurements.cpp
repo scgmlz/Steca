@@ -31,7 +31,7 @@ public:
     void setHighlight(int row);
     void updateMeta(vec<bool> const&);
     void onFilesChanged();
-    void onFileHighlight(const Rawfile*);
+    void onFileHighlight(const Datafile&);
 
     int rowCount() const final { return gSession->experiment().count(); }
     QVariant data(const QModelIndex&, int) const final;
@@ -77,7 +77,7 @@ void ExperimentModel::setHighlight(int row) {
     if (oldHighlighted)
         emit dataChanged(createIndex(oldRow,0),createIndex(oldRow,columnCount()));
     if (highlighted_!=oldHighlighted)
-        gSession->dataset().setHighlight(highlighted_->first()->file());
+        gSession->dataset().setHighlight(highlighted_->file());
 }
 
 void ExperimentModel::updateMeta(vec<bool> const& metadataRows) {
@@ -103,11 +103,11 @@ void ExperimentModel::onFilesChanged() {
              << ", highlighted=" << rowHighlighted_;
 }
 
-void ExperimentModel::onFileHighlight(const Rawfile* newFile) {
-    if (highlighted_ && newFile==highlighted_->first()->file())
+void ExperimentModel::onFileHighlight(const Datafile& newFile) {
+    if (highlighted_ && &newFile==&(highlighted_->file()))
         return;
     for (int row=0; row<rowCount(); ++row) {
-        if (gSession->experiment().at(row)->first()->file()==newFile) {
+        if (&(gSession->experiment().at(row)->file())==&newFile) {
             setHighlight(row);
             return;
         }
@@ -124,9 +124,9 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     switch (role) {
     case Qt::DisplayRole: {
         if (col==COL_NUMBER) {
-            QString ret = QString::number(cluster->first()->totalPosition()+1);
+            QString ret = "TODO";//QString::number(cluster->first()->totalPosition()+1);
             if (cluster->count()>1)
-                ret += "-" + QString::number(cluster->last()->totalPosition()+1);
+                ret += "-"; // TODO + QString::number(cluster->last()->totalPosition()+1);
             return ret;
         } else if (col>=COL_ATTRS && col < COL_ATTRS+metaCount()) {
             return cluster->avgeMetadata()->attributeStrValue(
@@ -136,19 +136,21 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     }
     case Qt::ToolTipRole: {
         QString ret;
+        /* TODO
         if (cluster->count()>1) {
             ret = QString("Measurements %1..%2 are numbers %3..%4 in file %5")
                 .arg(cluster->first()->totalPosition()+1)
                 .arg(cluster->last()->totalPosition()+1)
                 .arg(cluster->first()->position()+1)
                 .arg(cluster->last()->position()+1)
-                .arg(cluster->first()->file()->fileName());
+                .arg(cluster->first()->file()->name());
         } else {
             ret = QString("Measurement %1 is number %2 in file %3")
                 .arg(cluster->first()->totalPosition()+1)
                 .arg(cluster->first()->position()+1)
-                .arg(cluster->first()->file()->fileName());
+                .arg(cluster->first()->file()->name());
         }
+        */
         ret += ".";
         if (cluster->count()<gSession->experiment().combineBy())
             ret += QString("\nThis cluster has only %1 elements, while the combine factor is %2.")
@@ -202,7 +204,7 @@ public:
 
 private:
     void currentChanged(QModelIndex const&, QModelIndex const&) override final;
-    void onFileHighlight(const Rawfile* newFile);
+    void onFileHighlight(const Datafile& newFile);
     int sizeHintForColumn(int) const override final;
     ExperimentModel* model() const final {
         return static_cast<ExperimentModel*>(ListView::model()); }
@@ -234,7 +236,7 @@ void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex cons
     model()->setHighlight(current.row());
 }
 
-void ExperimentView::onFileHighlight(const Rawfile* newFile) {
+void ExperimentView::onFileHighlight(const Datafile& newFile) {
     model()->onFileHighlight(newFile);
     scrollTo(model()->index(model()->rowHighlighted(),0));
 }

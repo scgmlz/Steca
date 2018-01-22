@@ -23,8 +23,7 @@ void Rawfile::addDataset(const Metadata& md, size2d const& sz, inten_vec const& 
         imageSize_ = sz;
     else if (sz != imageSize_)
         THROW("Inconsistent image size in " % fileName());
-    measurements_.append(shp_Measurement(
-                             new Measurement(this, measurements_.count(), md, sz, ivec)));
+    measurements_.append(shp_Measurement(new Measurement(measurements_.count(), md, sz, ivec)));
 }
 
 QFileInfo const& Rawfile::fileInfo() const {

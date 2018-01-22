@@ -25,8 +25,28 @@
 #include "core/typ/async.h"
 #include "core/typ/cache.h"
 #include <QSharedPointer> // no auto rm
+#include <vector>
 
-//! Loaded Rawfile|s. Does not include the correction file.
+//! A RawFile and associated information.
+
+class Datafile final {
+
+private:
+public:
+    Datafile() = delete;
+    Datafile(Datafile&&) = default;
+    Datafile& operator=(const Datafile&) = default;
+    Datafile(const QSharedPointer<const Rawfile>& raw) : raw_(raw) {}
+
+    int count() const { return raw_->count(); }
+    QString name() const { return raw_->fileName(); }
+
+    QSharedPointer<const Rawfile> raw_;
+    int index_; //!< index in files_
+    int offset_;  //!< first index in total list of Measurement|s
+};
+
+//! Loaded Datafile|s. Does not include the correction file.
 
 class Dataset final {
 public:
@@ -34,13 +54,13 @@ public:
     void clear();
     bool addGivenFiles(const QStringList& filePaths) THROWS;
     void removeFile(int i);
-    void setHighlight(const Rawfile*);
+    void setHighlight(const Datafile&);
     void assembleExperiment(const vec<int>, const int);
 
     // Const methods:
-    int count() const { return files_.count(); }
-    const Rawfile* file(int i) const { return files_[i].data(); }
-    int offset(const Rawfile* file) const { return mapOffset_[file]; }
+    int count() const { return files_.size(); }
+    const Datafile& file(int i) const { return files_[i]; }
+    int offset(const Datafile& file) const { return file.offset_; }
     int highlight() const { return highlight_; }
     QJsonArray to_json() const;
 
@@ -49,9 +69,7 @@ public:
     Experiment experiment_; // cluster collected ...
 
 private:
-    QVector<QSharedPointer<const Rawfile>> files_; //!< data files
-    QMap<const Rawfile*,int> mapIndex_; //!< index in files_
-    QMap<const Rawfile*,int> mapOffset_; //!< first index in total list of Measurement|s
+    std::vector<Datafile> files_; //!< data files
 
     int highlight_ {0}; //!< index of highlighted file
     vec<int> filesSelection_; // from these files

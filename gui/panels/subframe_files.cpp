@@ -31,7 +31,7 @@ class FilesModel : public TableModel { // < QAbstractTableModel < QAbstractItemM
 public:
     void onClicked(const QModelIndex &);
     void setHighlight(int row);
-    void onFileHighlight(const Rawfile*);
+    void onFileHighlight(const Datafile&);
     void removeFile();
     void onFilesLoaded();
 
@@ -60,9 +60,9 @@ void FilesModel::onClicked(const QModelIndex& cell) {
 }
 
 //! Set highlight according to signal from MeasurementsView.
-void FilesModel::onFileHighlight(const Rawfile* newFile) {
+void FilesModel::onFileHighlight(const Datafile& newFile) {
     for (int row=0; row<rowCount(); ++row) {
-        if (gSession->dataset().file(row)==newFile) {
+        if (&gSession->dataset().file(row)==&newFile) {
             setHighlight(row);
             return;
         }
@@ -95,22 +95,22 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
     const int row = index.row();
     if (row < 0 || row >= rowCount())
         return {};
-    const Rawfile* file = gSession->dataset().file(row);
+    const Datafile& file = gSession->dataset().file(row);
     int col = index.column();
     switch (role) {
     case Qt::EditRole:
         return {};
     case Qt::DisplayRole:
         if (col==2)
-            return file->fileName();
+            return file.name();
         return {};
     case Qt::ToolTipRole:
         if (col>=2)
             return QString("File %1\ncontains %2 measurements\nhere numbered %3 to %4")
-                .arg(file->fileName())
-                .arg(file->count())
+                .arg(file.name())
+                .arg(file.count())
                 .arg(gSession->dataset().offset(file)+1)
-                .arg(gSession->dataset().offset(file)+file->count());
+                .arg(gSession->dataset().offset(file)+file.count());
         return {};
     case Qt::CheckStateRole: {
         if (col==1) {

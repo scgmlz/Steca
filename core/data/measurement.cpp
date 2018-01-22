@@ -17,10 +17,8 @@
 #include <qmath.h>
 
 Measurement::Measurement(
-    const class Rawfile* file, const int position, const Metadata& md, size2d const& size,
-    inten_vec const& intens)
-    : file_(file)
-    , position_(position)
+    const int position, const Metadata& md, size2d const& size, inten_vec const& intens)
+    : position_(position)
     , md_(new Metadata(md))
     , image_(new Image(size))
 {
@@ -29,9 +27,11 @@ Measurement::Measurement(
         image_->setInten(i, intens.at(i));
 }
 
+/* TODO replace in Cluster
 int Measurement::totalPosition() const {
-    return gSession->dataset().offset(file_) + position_;
+    return file_.offset_ + position_;
 }
+*/
 
 Range Measurement::rgeGma() const {
     return gSession->angleMap(*this)->rgeGma();

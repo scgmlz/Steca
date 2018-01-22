@@ -19,8 +19,9 @@
 #include "core/typ/matrix.h"
 #include <qmath.h>
 
-Cluster::Cluster(const vec<shp_Measurement>& measurements)
-    : vec<shp_Measurement>(measurements)
+Cluster::Cluster(const class Datafile& file, const vec<shp_Measurement>& measurements)
+    : file_(file)
+    , vec<shp_Measurement>(measurements)
 {
 }
 

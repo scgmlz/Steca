@@ -90,12 +90,15 @@ void Experiment::invalidateAvgMutables() const {
 
 //! Computed cached avgeCurve_.
 void Experiment::computeAvgeCurve() const {
+    /* TODO RESTORE
+    file = ????
     vec<shp_Measurement> group;
     for (shp_Cluster const& cluster : *this)
         for (shp_Measurement const& one : *cluster)
             group.append(one);
-    Cluster allData(group);
+    Cluster allData(file, group);
     avgCurve_ = gSession->defaultClusterLens(allData)->makeCurve();
+    */
 }
 
 qreal Experiment::calcAvgMutable(qreal (Cluster::*avgFct)() const) const {

@@ -43,14 +43,14 @@ bool Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
             continue;
         ret = true;
         gSession->setImageSize(rawfile->imageSize());
-        files_.append(rawfile);
+        files_.push_back(Datafile(rawfile));
     }
     updateCache();
     return ret;
 }
 
 void Dataset::removeFile(int i) { // TODO rm arg
-    files_.remove(i);
+    files_.erase(files_.begin()+i);
     updateCache();
     gSession->updateImageSize();
     // setHighlight(i-1); // TODO
@@ -59,15 +59,15 @@ void Dataset::removeFile(int i) { // TODO rm arg
 void Dataset::updateCache() {
     int idx = 0;
     int cnt = 0;
-    for (const QSharedPointer<const Rawfile>& file: files_) {
-        mapIndex_[file.data()] = idx++;
-        mapOffset_[file.data()] = cnt;
-        cnt += file->count();
+    for (Datafile& file: files_) {
+        file.index_ = idx++;
+        file.offset_ = cnt;
+        cnt += file.count();
     }
 }
 
-void Dataset::setHighlight(const Rawfile* file) {
-    int i = mapIndex_[file];
+void Dataset::setHighlight(const Datafile& file) {
+    int i = file.index_;
     if (i==highlight_)
         return;
     highlight_ = i;
@@ -79,13 +79,13 @@ void Dataset::assembleExperiment(const vec<int> fileNums, const int combineBy) {
     experiment_ = { combineBy };
 
     for (int jFile : filesSelection_) {
-        const Rawfile* file = files_.at(jFile).data();
-        for (int i=0; i<file->count(); i+=combineBy) {
+        const Datafile& file = files_.at(jFile);
+        for (int i=0; i<file.count(); i+=combineBy) {
             int ii;
             vec<shp_Measurement> group;
-            for (ii=i; ii<file->count() && ii<i+combineBy; ii++)
-                group.append(file->measurements().at(ii));
-            shp_Cluster cd(new Cluster(group));
+            for (ii=i; ii<file.count() && ii<i+combineBy; ii++)
+                group.append(file.raw_->measurements().at(ii));
+            shp_Cluster cd(new Cluster(file, group));
             experiment_.appendHere(cd);
         }
     }
@@ -93,16 +93,16 @@ void Dataset::assembleExperiment(const vec<int> fileNums, const int combineBy) {
 
 bool Dataset::hasFile(rcstr fileName) const {
     QFileInfo fileInfo(fileName);
-    for (const QSharedPointer<const Rawfile>& file : files_)
-        if (fileInfo == file->fileInfo())
+    for (const Datafile& file : files_)
+        if (fileInfo == file.raw_->fileInfo())
             return true;
     return false;
 }
 
 QJsonArray Dataset::to_json() const {
     QJsonArray ret;
-    for (const QSharedPointer<const Rawfile>& file : files_) {
-        str relPath = QDir::current().relativeFilePath(file->fileInfo().absoluteFilePath());
+    for (const Datafile& file : files_) {
+        str relPath = QDir::current().relativeFilePath(file.raw_->fileInfo().absoluteFilePath());
         ret.append(relPath);
     }
     return ret;
