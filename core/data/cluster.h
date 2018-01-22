@@ -20,15 +20,13 @@
 #include "core/data/measurement.h"
 #include <QSharedPointer> // no auto rm
 
-class Experiment;
-
 //! A group of one or more Measurement's
 
 class Cluster final : public vec<shp_Measurement> {
 public:
     Cluster() = delete;
     Cluster(Cluster&) = delete;
-    Cluster(const Experiment& experiment, const vec<shp_Measurement>& measurements);
+    Cluster(const vec<shp_Measurement>& measurements);
 
 
     deg omg() const;
@@ -50,13 +48,9 @@ public:
     void calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const;
 
 private:
-    const Experiment& experiment() const { return experiment_; }
-    const Experiment& experiment_;
     shp_Metadata md_; //!< averaged Metadata, cached, computed only once
 
     void compute_metadata() const;
-
-    friend class Experiment;
 };
 
 typedef QSharedPointer<Cluster> shp_Cluster;

@@ -19,10 +19,9 @@ Experiment::Experiment(const int combineBy) : combineBy_(combineBy) {
     invalidateAvgMutables();
 }
 
-void Experiment::appendHere(shp_Cluster dataseq) {
+void Experiment::appendHere(shp_Cluster cluster) {
     // can be added only once
-    debug::ensure(&(dataseq->experiment_)==this);
-    append(dataseq);
+    append(cluster);
     invalidateAvgMutables();
 }
 
@@ -95,7 +94,7 @@ void Experiment::computeAvgeCurve() const {
     for (shp_Cluster const& cluster : *this)
         for (shp_Measurement const& one : *cluster)
             group.append(one);
-    Cluster allData(*this, group);
+    Cluster allData(group);
     avgCurve_ = gSession->defaultClusterLens(allData)->makeCurve();
 }
 
