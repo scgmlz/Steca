@@ -562,7 +562,7 @@ void Diffractogram::calcDgram() {
     if (!cluster_)
         return;
     if (gHub->isCombinedDgram())
-        dgram_ = cluster_->experiment().avgCurve();
+        dgram_ = gSession->experiment().avgCurve();
     else {
         dgram_ = gSession->defaultClusterLens(*cluster_)->makeCurve(gSession->gammaRange());
     }

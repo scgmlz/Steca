@@ -30,7 +30,6 @@ public:
     Cluster(Cluster&) = delete;
     Cluster(const Experiment& experiment, const vec<shp_Measurement>& measurements);
 
-    const Experiment& experiment() const { return experiment_; }
 
     deg omg() const;
     deg phi() const;
@@ -51,6 +50,7 @@ public:
     void calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const;
 
 private:
+    const Experiment& experiment() const { return experiment_; }
     const Experiment& experiment_;
     shp_Metadata md_; //!< averaged Metadata, cached, computed only once
 
