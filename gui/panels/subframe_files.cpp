@@ -36,7 +36,7 @@ public:
     void onFilesLoaded();
 
     int columnCount() const final { return 3; }
-    int rowCount() const final { return gSession->dataset().count(); }
+    int rowCount() const final { return gSession->dataset().countFiles(); }
     QVariant data(const QModelIndex&, int) const final;
 
 private:

@@ -41,10 +41,11 @@ public:
     int count() const { return raw_->count(); }
     QString name() const { return raw_->fileName(); }
 
-    QSharedPointer<const Rawfile> raw_;
+    QSharedPointer<const Rawfile> raw_; //!< owned by this
     int index_; //!< index in files_
     int offset_;  //!< first index in total list of Measurement|s
 };
+
 
 //! Loaded Datafile|s. Does not include the correction file.
 
@@ -58,7 +59,7 @@ public:
     void assembleExperiment(const vec<int>, const int);
 
     // Const methods:
-    int count() const { return files_.size(); }
+    int countFiles() const { return files_.size(); }
     const Datafile& file(int i) const { return files_[i]; }
     int offset(const Datafile& file) const { return file.offset_; }
     int highlight() const { return highlight_; }
@@ -70,6 +71,7 @@ public:
 
 private:
     std::vector<Datafile> files_; //!< data files
+    QSharedPointer<Sequence> allMeasurements_ {nullptr}; // TODO precompute everything, then make this const
 
     int highlight_ {0}; //!< index of highlighted file
     vec<int> filesSelection_; // from these files

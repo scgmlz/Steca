@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/data/cluster.h
-//! @brief     Defines class Cluster
+//! @brief     Defines classes Sequence, Cluster
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -20,18 +20,18 @@
 #include "core/data/measurement.h"
 #include <QSharedPointer> // no auto rm
 
-//! A group of one or more Measurement's, with associated information.
+//! A group of one or more Measurement|s.
 
-class Cluster final {
+//! Base class of Cluster, and also used to hold _all_ loaded Measurements.
+//!
+//! Measurement|s are always owned by Datafile|s; here they are accessed through const pointers.
+
+class Sequence {
 public:
-    Cluster() = delete;
-    Cluster(Cluster&) = delete;
-    Cluster(const class Datafile& file, const int offset,
-            const QVector<const Measurement*>& measurements);
+    Sequence() = delete;
+    Sequence(Sequence&) = delete;
+    Sequence(const QVector<const Measurement*>& measurements);
 
-    const class Datafile& file() const { return file_; }
-    const int offset() const { return offset_; }
-    const int totalOffset() const;
     const int count() const { return members_.size(); }
     const Measurement* first() const { return members_.first(); }
     const Measurement* at(int i) const { return members_.at(i); }
@@ -56,12 +56,29 @@ public:
     void calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const;
 
 private:
-    const class Datafile& file_;
-    const int offset_; //! index of first Measurement in file_
     QVector<const Measurement*> members_;
     shp_Metadata md_; //!< averaged Metadata, cached, computed only once
 
     void compute_metadata() const;
+};
+
+
+//! A group of one or more Measurement's, with associated information.
+
+class Cluster final : public Sequence {
+public:
+    Cluster() = delete;
+    Cluster(Cluster&) = delete;
+    Cluster(const QVector<const Measurement*>& measurements,
+            const class Datafile& file, const int offset);
+
+    const class Datafile& file() const { return file_; }
+    const int offset() const { return offset_; }
+    const int totalOffset() const;
+
+private:
+    const class Datafile& file_;
+    const int offset_; //! index of first Measurement in file_
 };
 
 typedef QSharedPointer<Cluster> shp_Cluster;

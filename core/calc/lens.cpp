@@ -110,11 +110,11 @@ const Range& ImageLens::rgeInten(bool fixed) const {
 // ************************************************************************** //
 
 SequenceLens::SequenceLens(
-    Cluster const& cluster, eNorm norm, bool trans, bool cut,
+    Sequence const& seq, eNorm norm, bool trans, bool cut,
     ImageTransform const& imageTransform, ImageCut const& imageCut)
     : LensBase(trans, cut, imageTransform, imageCut)
     , normFactor_(1)
-    , cluster_(cluster) {
+    , seq_(seq) {
     setNorm(norm);
 }
 
@@ -123,21 +123,21 @@ size2d SequenceLens::size() const {
 }
 
 Range SequenceLens::rgeGma() const {
-    return cluster_.rgeGma();
+    return seq_.rgeGma();
 }
 
 Range SequenceLens::rgeGmaFull() const {
-    return cluster_.rgeGmaFull();
+    return seq_.rgeGmaFull();
 }
 
 Range SequenceLens::rgeTth() const {
-    return cluster_.rgeTth();
+    return seq_.rgeTth();
 }
 
 Range SequenceLens::rgeInten() const {
     // fixes the scale
     // TODO consider return gSession->experiment().rgeInten();
-    return cluster_.rgeInten();
+    return seq_.rgeInten();
 }
 
 Curve SequenceLens::makeCurve() const {
@@ -145,11 +145,11 @@ Curve SequenceLens::makeCurve() const {
 }
 
 Curve SequenceLens::makeCurve(const Range& rgeGma) const {
-    inten_vec intens = cluster_.collectIntens(intensCorr_, rgeGma);
+    inten_vec intens = seq_.collectIntens(intensCorr_, rgeGma);
     Curve res;
     int count = intens.count();
     if (count) {
-        Range rgeTth = cluster_.rgeTth();
+        Range rgeTth = seq_.rgeTth();
         deg minTth = rgeTth.min, deltaTth = rgeTth.width() / count;
         for_i (count)
             res.append(minTth + deltaTth * i, qreal(intens.at(i) * normFactor_));
@@ -163,19 +163,19 @@ void SequenceLens::setNorm(eNorm norm) {
     switch (norm) {
     case eNorm::MONITOR:
         num = gSession->experiment().avgMonitorCount();
-        den = cluster_.avgMonitorCount();
+        den = seq_.avgMonitorCount();
         break;
     case eNorm::DELTA_MONITOR:
         num = gSession->experiment().avgDeltaMonitorCount();
-        den = cluster_.avgDeltaMonitorCount();
+        den = seq_.avgDeltaMonitorCount();
         break;
     case eNorm::DELTA_TIME:
         num = gSession->experiment().avgDeltaTime();
-        den = cluster_.avgDeltaTime();
+        den = seq_.avgDeltaTime();
         break;
     case eNorm::BACKGROUND:
         num = gSession->calcAvgBackground();
-        den = gSession->calcAvgBackground(cluster_);
+        den = gSession->calcAvgBackground(seq_);
         break;
     case eNorm::NONE:
         break;

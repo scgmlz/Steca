@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/data/cluster.cpp
-//! @brief     Implements classes Measurement, Cluster, Experiment
+//! @brief     Implements classes Sequence, Cluster
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -19,29 +19,25 @@
 #include "core/typ/matrix.h"
 #include <qmath.h>
 
-Cluster::Cluster(
-    const class Datafile& file, const int offset,
-    const QVector<const Measurement*>& measurements)
-    : file_(file)
-    , offset_(offset)
-    , members_(measurements)
+// ************************************************************************** //
+//  class Sequence
+// ************************************************************************** //
+
+Sequence::Sequence(const QVector<const Measurement*>& measurements)
+    : members_(measurements)
 {
 }
 
-const int Cluster::totalOffset() const {
-    return file_.offset_ + offset();
-}
-
-//! Returns metadata, averaged over Cluster members. Result is cached.
-shp_Metadata Cluster::avgeMetadata() const {
+//! Returns metadata, averaged over Sequence members. Result is cached.
+shp_Metadata Sequence::avgeMetadata() const {
     if (md_.isNull())
         compute_metadata();
     return md_;
 }
 
 //! Computes metadata cache md_.
-void Cluster::compute_metadata() const {
-    const_cast<Cluster*>(this)->md_ = shp_Metadata(new Metadata);
+void Sequence::compute_metadata() const {
+    const_cast<Sequence*>(this)->md_ = shp_Metadata(new Metadata);
     Metadata* m = const_cast<Metadata*>(md_.data());
 
     const Metadata& firstMd = *(first()->metadata());
@@ -119,11 +115,11 @@ void Cluster::compute_metadata() const {
     avg /= count();                                                     \
     return avg;
 
-deg Cluster::omg() const { AVG_ONES(omg) }
+deg Sequence::omg() const { AVG_ONES(omg) }
 
-deg Cluster::phi() const { AVG_ONES(phi) }
+deg Sequence::phi() const { AVG_ONES(phi) }
 
-deg Cluster::chi() const { AVG_ONES(chi) }
+deg Sequence::chi() const { AVG_ONES(chi) }
 
 // combined range of combined cluster
 #define RGE_COMBINE(combineOp, what)                                    \
@@ -132,23 +128,23 @@ deg Cluster::chi() const { AVG_ONES(chi) }
         rge.combineOp(one->what);                                       \
     return rge;
 
-Range Cluster::rgeGma() const { RGE_COMBINE(extendBy, rgeGma()) }
+Range Sequence::rgeGma() const { RGE_COMBINE(extendBy, rgeGma()) }
 
-Range Cluster::rgeGmaFull() const {
+Range Sequence::rgeGmaFull() const {
     RGE_COMBINE(extendBy, rgeGmaFull())
 }
 
-Range Cluster::rgeTth() const { RGE_COMBINE(extendBy, rgeTth()) }
+Range Sequence::rgeTth() const { RGE_COMBINE(extendBy, rgeTth()) }
 
-Range Cluster::rgeInten() const { RGE_COMBINE(intersect, rgeInten()) }
+Range Sequence::rgeInten() const { RGE_COMBINE(intersect, rgeInten()) }
 
-qreal Cluster::avgMonitorCount() const { AVG_ONES(monitorCount) }
+qreal Sequence::avgMonitorCount() const { AVG_ONES(monitorCount) }
 
-qreal Cluster::avgDeltaMonitorCount() const { AVG_ONES(deltaMonitorCount) }
+qreal Sequence::avgDeltaMonitorCount() const { AVG_ONES(deltaMonitorCount) }
 
-qreal Cluster::avgDeltaTime() const { AVG_ONES(deltaTime) }
+qreal Sequence::avgDeltaTime() const { AVG_ONES(deltaTime) }
 
-inten_vec Cluster::collectIntens(const Image* intensCorr, const Range& rgeGma) const {
+inten_vec Sequence::collectIntens(const Image* intensCorr, const Range& rgeGma) const {
     const Range tthRge = rgeTth();
     const deg tthWdt = tthRge.width();
 
@@ -185,7 +181,7 @@ inten_vec Cluster::collectIntens(const Image* intensCorr, const Range& rgeGma) c
     return intens;
 }
 
-size2d Cluster::imageSize() const {
+size2d Sequence::imageSize() const {
     // all images have the same size; simply take the first one
     return first()->imageSize();
 }
@@ -195,7 +191,7 @@ size2d Cluster::imageSize() const {
 
 //! tth: Center of reflection's 2theta interval.
 //! gma: Center of gamma slice.
-void Cluster::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const {
+void Sequence::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const {
 
     // Rotate a unit vector initially parallel to the y axis with regards to the
     // angles. As a result, the vector is a point on a unit sphere
@@ -225,4 +221,22 @@ void Cluster::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const 
 
     alpha = alphaRad.toDeg();
     beta = betaRad.toDeg();
+}
+
+
+// ************************************************************************** //
+//  class Cluster
+// ************************************************************************** //
+
+Cluster::Cluster(
+    const QVector<const Measurement*>& measurements,
+    const class Datafile& file, const int offset)
+    : Sequence(measurements)
+    , file_(file)
+    , offset_(offset)
+{
+}
+
+const int Cluster::totalOffset() const {
+    return file_.offset_ + offset();
 }

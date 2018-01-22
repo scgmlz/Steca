@@ -28,7 +28,7 @@
 #include <QSharedPointer>
 
 void Dataset::clear() {
-    while (count())
+    while (countFiles())
         removeFile(0);
 }
 
@@ -59,11 +59,15 @@ void Dataset::removeFile(int i) { // TODO rm arg
 void Dataset::updateCache() {
     int idx = 0;
     int cnt = 0;
+    QVector<const Measurement*> all;
     for (Datafile& file: files_) {
         file.index_ = idx++;
         file.offset_ = cnt;
         cnt += file.count();
+        for (const Measurement* one: file.raw_->measurements())
+            all.append(one);
     }
+    allMeasurements_ = all.count() ? QSharedPointer<Sequence> (new Sequence(all)) : nullptr;
 }
 
 void Dataset::setHighlight(const Datafile& file) {
@@ -84,8 +88,8 @@ void Dataset::assembleExperiment(const vec<int> fileNums, const int combineBy) {
             int ii;
             QVector<const Measurement*> group;
             for (ii=i; ii<file.count() && ii<i+combineBy; ii++)
-                group.append(file.raw_->measurements().at(ii).data());
-            shp_Cluster cd(new Cluster(file, i, group));
+                group.append(file.raw_->measurements().at(ii));
+            shp_Cluster cd(new Cluster(group, file, i));
             experiment_.appendHere(cd);
         }
     }

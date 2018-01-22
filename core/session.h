@@ -91,7 +91,7 @@ public:
         return session.angleMap(ds); }
 
     shp_ImageLens imageLens(const Image&, bool trans, bool cut) const;
-    shp_SequenceLens defaultClusterLens(Cluster const& dataseq) const;
+    shp_SequenceLens defaultClusterLens(Sequence const& seq) const;
 
     ReflectionInfos makeReflectionInfos(
         Reflection const&, int gmaSlices, const Range&, Progress*) const;
@@ -102,7 +102,7 @@ public:
     qreal intenScale() const { return intenScale_; }
     Reflections const& reflections() const { return reflections_; }
 
-    qreal calcAvgBackground(Cluster const&) const;
+    qreal calcAvgBackground(Sequence const&) const;
     qreal calcAvgBackground() const;
 
 signals:
@@ -133,7 +133,7 @@ private:
     void updateImageSize(); //!< Clears image size if session has no files
     void setImageSize(size2d const&) THROWS; //!< Ensures same size for all images
 
-    shp_SequenceLens dataseqLens(Cluster const&, eNorm, bool trans, bool cut) const;
+    shp_SequenceLens dataseqLens(Sequence const&, eNorm, bool trans, bool cut) const;
     void calcIntensCorr() const;
     Curve curveMinusBg(SequenceLens const&, const Range&) const;
     ReflectionInfo makeReflectionInfo(SequenceLens const&, Reflection const&, const Range&) const;

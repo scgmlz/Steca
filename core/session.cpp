@@ -107,7 +107,7 @@ void Session::removeCorrFile() {
 }
 
 void Session::updateImageSize() {
-    if (0 == dataset().count() && !hasCorrFile())
+    if (0 == dataset().countFiles() && !hasCorrFile())
         imageSize_ = size2d(0, 0);
 }
 
@@ -165,12 +165,12 @@ shp_ImageLens Session::imageLens(const Image& image, bool trans, bool cut) const
     return shp_ImageLens(new ImageLens(image, trans, cut));
 }
 
-shp_SequenceLens Session::dataseqLens(Cluster const& cluster, eNorm norm, bool trans, bool cut) const {
-    return shp_SequenceLens(new SequenceLens(cluster, norm, trans, cut, imageTransform_, imageCut_));
+shp_SequenceLens Session::dataseqLens(Sequence const& seq, eNorm norm, bool trans, bool cut) const {
+    return shp_SequenceLens(new SequenceLens(seq, norm, trans, cut, imageTransform_, imageCut_));
 }
 
-shp_SequenceLens Session::defaultClusterLens(Cluster const& cluster) const {
-    return dataseqLens(cluster, norm_, true, true);
+shp_SequenceLens Session::defaultClusterLens(Sequence const& seq) const {
+    return dataseqLens(seq, norm_, true, true);
 }
 
 Curve Session::curveMinusBg(SequenceLens const& lens, const Range& rgeGma) const {
@@ -196,10 +196,10 @@ ReflectionInfo Session::makeReflectionInfo(
 
     // compute alpha, beta:
     deg alpha, beta;
-    Cluster const& cluster = lens.cluster();
-    cluster.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
+    Sequence const& seq = lens.sequence();
+    seq.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
 
-    shp_Metadata metadata = cluster.avgeMetadata();
+    shp_Metadata metadata = seq.avgeMetadata();
 
     return rgeTth.contains(peak.x)
         ? ReflectionInfo(
@@ -267,8 +267,8 @@ void Session::addReflection(const QJsonObject& obj) {
     reflections_.append(reflection);
 }
 
-qreal Session::calcAvgBackground(Cluster const& cluster) const {
-    const shp_SequenceLens& lens = dataseqLens(cluster, eNorm::NONE, true, true);
+qreal Session::calcAvgBackground(Sequence const& seq) const {
+    const shp_SequenceLens& lens = dataseqLens(seq, eNorm::NONE, true, true);
     Curve gmaCurve = lens->makeCurve(); // had argument averaged=true
     Polynom bgPolynom = Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
     return bgPolynom.avgY(lens->rgeTth());

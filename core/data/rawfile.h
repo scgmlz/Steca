@@ -35,7 +35,7 @@ public:
 
     void addDataset(const Metadata&, size2d const&, inten_vec const&);
 
-    vec<shp_Measurement> const& measurements() const { return measurements_; }
+    QVector<const Measurement*> const measurements() const;
     int count() const { return measurements_.count(); }
     size2d imageSize() const { return imageSize_; }
 

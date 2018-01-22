@@ -26,6 +26,14 @@ void Rawfile::addDataset(const Metadata& md, size2d const& sz, inten_vec const& 
     measurements_.append(shp_Measurement(new Measurement(measurements_.count(), md, sz, ivec)));
 }
 
+QVector<const Measurement*> const Rawfile::measurements() const
+{
+    QVector<const Measurement*> ret;
+    for (const shp_Measurement& one: measurements_)
+        ret.append(one.data());
+    return ret;
+}
+
 QFileInfo const& Rawfile::fileInfo() const {
     return fileInfo_;
 }

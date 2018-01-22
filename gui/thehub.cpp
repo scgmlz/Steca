@@ -159,7 +159,7 @@ TheHub::~TheHub() {
 // called through trigger_removeFile -> FilesView::removeHighlighted -> FilesModel::removeFile
 void TheHub::removeFile(int i) {
     gSession->dataset().removeFile(i);
-    int numFiles = gSession->dataset().count();
+    int numFiles = gSession->dataset().countFiles();
     trigger_removeFile->setEnabled(numFiles);
     if (!numFiles)
         setImageCut(true, false, ImageCut());
