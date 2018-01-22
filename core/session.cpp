@@ -27,8 +27,7 @@ Session::Session()
 }
 
 void Session::clear() {
-    while (numFiles())
-        removeFile(0);
+    dataset_.clear();
 
     removeCorrFile();
     corrEnabled_ = corrHasNaNs_ = false;
@@ -44,45 +43,6 @@ void Session::clear() {
 
     intenScaledAvg_ = true;
     intenScale_ = 1;
-}
-
-bool Session::hasFile(rcstr fileName) const {
-    QFileInfo fileInfo(fileName);
-    for (const QSharedPointer<Datafile>& file : files_)
-        if (fileInfo == file->fileInfo())
-            return true;
-    return false;
-}
-
-//! Returns true if some file was loaded
-bool Session::addGivenFiles(const QStringList& filePaths) THROWS {
-    bool ret = false;
-    for (const QString& path: filePaths) {
-        if (path.isEmpty() || hasFile(path))
-            continue;
-        QSharedPointer<Datafile> datafile = load::loadDatafile(path);
-        if (datafile.isNull())
-            continue;
-        ret = true;
-        setImageSize(datafile->imageSize());
-        files_.append(datafile);
-    }
-    computeOffsets();
-    return ret;
-}
-
-void Session::removeFile(int i) {
-    files_.remove(i);
-    computeOffsets();
-    updateImageSize();
-}
-
-void Session::computeOffsets() {
-    int offset = 0;
-    for (QSharedPointer<Datafile>& file: files_) {
-        file->setOffset(offset);
-        offset += file->count();
-    }
 }
 
 void Session::calcIntensCorr() const {
@@ -146,26 +106,8 @@ void Session::removeCorrFile() {
     updateImageSize();
 }
 
-void Session::assembleExperiment(const vec<int> fileNums, const int combineBy) {
-
-    filesSelection_ = fileNums;
-    experiment_ = { combineBy };
-
-    for (int jFile : filesSelection_) {
-        const Datafile* file = files_.at(jFile).data();
-        for (int i=0; i<file->count(); i+=combineBy) {
-            int ii;
-            vec<shp_Measurement> group;
-            for (ii=i; ii<file->count() && ii<i+combineBy; ii++)
-                group.append(file->measurements().at(ii));
-            shp_Cluster cd(new Cluster(experiment_, group));
-            experiment_.appendHere(cd);
-        }
-    }
-}
-
 void Session::updateImageSize() {
-    if (0 == numFiles() && !hasCorrFile())
+    if (0 == dataset().count() && !hasCorrFile())
         imageSize_ = size2d(0, 0);
 }
 
@@ -278,11 +220,11 @@ ReflectionInfos Session::makeReflectionInfos(
     Reflection const& reflection, int gmaSlices, const Range& rgeGma, Progress* progress) const {
 
     if (progress)
-        progress->setTotal(experiment_.count());
+        progress->setTotal(experiment().count());
 
     ReflectionInfos ret;
 
-    for (const shp_Cluster& cluster : experiment_) {
+    for (const shp_Cluster& cluster : experiment()) {
         if (progress)
             progress->step();
 
@@ -335,7 +277,7 @@ qreal Session::calcAvgBackground(Cluster const& cluster) const {
 qreal Session::calcAvgBackground() const {
     TakesLongTime __;
     qreal bg = 0;
-    for (const shp_Cluster& cluster : experiment_)
+    for (const shp_Cluster& cluster : experiment())
         bg += calcAvgBackground(*cluster);
-    return bg / experiment_.count();
+    return bg / experiment().count();
 }

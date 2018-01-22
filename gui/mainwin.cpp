@@ -125,7 +125,7 @@ void initMenus(QMenuBar* mbar) {
     menuOutput->setEnabled(false);
     QObject::connect(gHub, &TheHub::sigFilesSelected,
                      [menuOutput](){ menuOutput->setEnabled(
-                             !gSession->filesSelection().isEmpty()); });
+                             !gSession->dataset().filesSelection().isEmpty()); });
 
     _actionsToMenu(
         "&View",

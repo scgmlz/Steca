@@ -158,8 +158,8 @@ TheHub::~TheHub() {
 
 // called through trigger_removeFile -> FilesView::removeHighlighted -> FilesModel::removeFile
 void TheHub::removeFile(int i) {
-    gSession->removeFile(i);
-    int numFiles = gSession->numFiles();
+    gSession->dataset().removeFile(i);
+    int numFiles = gSession->dataset().count();
     trigger_removeFile->setEnabled(numFiles);
     if (!numFiles)
         setImageCut(true, false, ImageCut());
@@ -168,7 +168,7 @@ void TheHub::removeFile(int i) {
 // called from MainWin::addFiles and from sessionFromJson
 void TheHub::addGivenFiles(const QStringList& filePaths) THROWS {
     TakesLongTime __;
-    if (!gSession->addGivenFiles(filePaths))
+    if (!gSession->dataset().addGivenFiles(filePaths))
         return;
     trigger_removeFile->setEnabled(true);
     emit sigFilesLoaded();
@@ -204,20 +204,12 @@ QByteArray TheHub::saveSession() const {
     const ImageTransform& trn = gSession->imageTransform();
     top.insert("image transform", trn.val);
 
-    QJsonArray arrFiles;
-    // save file path relative to location of session
-    for_i (gSession->numFiles()) {
-        str absPath = gSession->file(i)->fileInfo().absoluteFilePath();
-        str relPath = QDir::current().relativeFilePath(absPath);
-        arrFiles.append(relPath);
-    }
+    top.insert("files", gSession->dataset().to_json());
 
-    top.insert("files", arrFiles);
-
+    // TODO move this to appropriate classes:
     QJsonArray arrSelectedFiles;
-    for (int i : gSession->filesSelection())
+    for (int i : gSession->dataset().filesSelection())
         arrSelectedFiles.append(i);
-
     top.insert("selected files", arrSelectedFiles);
     top.insert("combine", clusterGroupedBy_);
 
@@ -341,8 +333,8 @@ void TheHub::combineMeasurementsBy(const int by) {
     collectDatasetsExec();
 }
 
-void TheHub::collectDatasetsExec() {
-    gSession->assembleExperiment(filesSelection_, clusterGroupedBy_);
+void TheHub::collectDatasetsExec() { // TODO move to Dataset
+    gSession->dataset().assembleExperiment(filesSelection_, clusterGroupedBy_);
     TR("cDE2");
     qDebug() << "#exp=" << gSession->experiment().count();
     emit sigFilesSelected();

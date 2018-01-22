@@ -36,7 +36,7 @@ public:
     void onFilesLoaded();
 
     int columnCount() const final { return 3; }
-    int rowCount() const final { return gSession->numFiles(); }
+    int rowCount() const final { return gSession->dataset().count(); }
     QVariant data(const QModelIndex&, int) const final;
 
 private:
@@ -62,7 +62,7 @@ void FilesModel::onClicked(const QModelIndex& cell) {
 //! Set highlight according to signal from MeasurementsView.
 void FilesModel::forceFileHighlight(const Datafile* newFile) {
     for (int row=0; row<rowCount(); ++row) {
-        if (gSession->file(row)==newFile) {
+        if (gSession->dataset().file(row)==newFile) {
             setHighlight(row);
             return;
         }
@@ -95,7 +95,7 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
     const int row = index.row();
     if (row < 0 || row >= rowCount())
         return {};
-    const Datafile* file = gSession->file(row);
+    const Datafile* file = gSession->dataset().file(row);
     int col = index.column();
     switch (role) {
     case Qt::EditRole:
@@ -145,7 +145,7 @@ void FilesModel::setHighlight(int row) {
     rowHighlighted_ = row;
     if (row>=0) {
         emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
-        emit gHub->sigFileHighlightHasChanged(gSession->file(row));
+        emit gHub->sigFileHighlightHasChanged(gSession->dataset().file(row));
     }
     if (oldRow>=0)
         emit dataChanged(createIndex(oldRow,0),createIndex(oldRow,columnCount()));

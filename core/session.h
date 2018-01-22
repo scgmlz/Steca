@@ -40,13 +40,14 @@ class Session final : public ISingleton<Session> {
 public:
     Session();
 
+    Dataset& dataset() { return dataset_; }
+    const Dataset& dataset() const { return dataset_; }
+
     // Modifying methods:
     void clear();
-    Dataset& dataset() { return dataset_; }
 
     void setCorrFile(rcstr filePath) THROWS;
     void removeCorrFile();
-    void assembleExperiment(const vec<int>, const int);
 
     void setImageTransformMirror(bool);
     void setImageTransformRotate(ImageTransform const&);
@@ -71,7 +72,7 @@ public:
     void tryEnableCorr(bool on) { corrEnabled_ = on && hasCorrFile(); }
     bool isCorrEnabled() const { return corrEnabled_; }
 
-    Experiment const& experiment() const { return experiment_; }
+    Experiment const& experiment() const { return dataset().experiment_; }
 
     size2d imageSize() const;
     ImageTransform const& imageTransform() const { return imageTransform_; }
@@ -102,11 +103,11 @@ public:
     qreal calcAvgBackground() const;
 
 private:
+    friend Dataset; // TODO try to get rid of this
     Dataset dataset_;
     QSharedPointer<Datafile> corrFile_; //!< correction file
     shp_Image corrImage_;
     bool corrEnabled_;
-    Experiment experiment_; // cluster collected ...
     bool intenScaledAvg_; // if not, summed
     qreal intenScale_;
     size2d imageSize_; //!< All images must have this same size
@@ -125,7 +126,6 @@ private:
 
     void updateImageSize(); //!< Clears image size if session has no files
     void setImageSize(size2d const&) THROWS; //!< Ensures same size for all images
-    void computeOffsets();
 
     shp_SequenceLens dataseqLens(Cluster const&, eNorm, bool trans, bool cut) const;
     void calcIntensCorr() const;

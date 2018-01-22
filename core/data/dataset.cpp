@@ -19,7 +19,80 @@
 #include "core/data/datafile.h"
 #include "core/data/experiment.h"
 #include "core/data/image.h"
+#include "core/session.h"
 #include "core/typ/async.h"
 #include "core/typ/cache.h"
 #include "core/typ/singleton.h"
+#include "core/loaders/loaders.h"
+#include <QDir>
 #include <QSharedPointer>
+
+void Dataset::clear() {
+    while (count())
+        removeFile(0);
+}
+
+//! Returns true if some file was loaded
+bool Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
+    bool ret = false;
+    for (const QString& path: filePaths) {
+        if (path.isEmpty() || hasFile(path))
+            continue;
+        QSharedPointer<Datafile> datafile = load::loadDatafile(path);
+        if (datafile.isNull())
+            continue;
+        ret = true;
+        gSession->setImageSize(datafile->imageSize());
+        files_.append(datafile);
+    }
+    computeOffsets();
+    return ret;
+}
+
+void Dataset::removeFile(int i) {
+    files_.remove(i);
+    computeOffsets();
+    gSession->updateImageSize();
+}
+
+void Dataset::computeOffsets() {
+    int offset = 0;
+    for (QSharedPointer<Datafile>& file: files_) {
+        file->setOffset(offset);
+        offset += file->count();
+    }
+}
+
+void Dataset::assembleExperiment(const vec<int> fileNums, const int combineBy) {
+    filesSelection_ = fileNums;
+    experiment_ = { combineBy };
+
+    for (int jFile : filesSelection_) {
+        const Datafile* file = files_.at(jFile).data();
+        for (int i=0; i<file->count(); i+=combineBy) {
+            int ii;
+            vec<shp_Measurement> group;
+            for (ii=i; ii<file->count() && ii<i+combineBy; ii++)
+                group.append(file->measurements().at(ii));
+            shp_Cluster cd(new Cluster(experiment_, group));
+            experiment_.appendHere(cd);
+        }
+    }
+}
+
+bool Dataset::hasFile(rcstr fileName) const {
+    QFileInfo fileInfo(fileName);
+    for (const QSharedPointer<Datafile>& file : files_)
+        if (fileInfo == file->fileInfo())
+            return true;
+    return false;
+}
+
+QJsonArray Dataset::to_json() const {
+    QJsonArray ret;
+    for (const QSharedPointer<Datafile>& file : files_) {
+        str relPath = QDir::current().relativeFilePath(file->fileInfo().absoluteFilePath());
+        ret.append(relPath);
+    }
+    return ret;
+}

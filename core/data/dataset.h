@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef SESSION_H
-#define SESSION_H
+#ifndef DATASET_H
+#define DATASET_H
 
 #include "core/calc/lens.h"
 #include "core/calc/reflection.h"
@@ -31,24 +31,27 @@
 
 class Dataset final {
 public:
-    Dataset();
-
     // Modifying methods:
     void clear();
     bool addGivenFiles(const QStringList& filePaths) THROWS;
     void removeFile(int i);
+    void assembleExperiment(const vec<int>, const int);
 
     // Const methods:
     int count() const { return files_.count(); }
     const Datafile* file(int i) const { return files_[i].data(); }
+    QJsonArray to_json() const;
 
     vec<int> const& filesSelection() const { return filesSelection_; }
 
+    Experiment experiment_; // cluster collected ...
 private:
     QVector<QSharedPointer<Datafile>> files_; //!< data files
     vec<int> filesSelection_; // from these files
 
+    void computeOffsets();
+
     bool hasFile(rcstr fileName) const;
 };
 
-#endif // SESSION_H
+#endif // DATASET_H
