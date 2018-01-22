@@ -38,7 +38,7 @@ bool Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
     for (const QString& path: filePaths) {
         if (path.isEmpty() || hasFile(path))
             continue;
-        QSharedPointer<Datafile> datafile = load::loadDatafile(path);
+        QSharedPointer<const Datafile> datafile = load::loadDatafile(path);
         if (datafile.isNull())
             continue;
         ret = true;
@@ -56,10 +56,10 @@ void Dataset::removeFile(int i) {
 }
 
 void Dataset::computeOffsets() {
-    int offset = 0;
-    for (QSharedPointer<Datafile>& file: files_) {
-        file->setOffset(offset);
-        offset += file->count();
+    int cnt = 0;
+    for (const QSharedPointer<const Datafile>& file: files_) {
+        offsets_[file.data()] = cnt;
+        cnt += file->count();
     }
 }
 
@@ -82,7 +82,7 @@ void Dataset::assembleExperiment(const vec<int> fileNums, const int combineBy) {
 
 bool Dataset::hasFile(rcstr fileName) const {
     QFileInfo fileInfo(fileName);
-    for (const QSharedPointer<Datafile>& file : files_)
+    for (const QSharedPointer<const Datafile>& file : files_)
         if (fileInfo == file->fileInfo())
             return true;
     return false;
@@ -90,7 +90,7 @@ bool Dataset::hasFile(rcstr fileName) const {
 
 QJsonArray Dataset::to_json() const {
     QJsonArray ret;
-    for (const QSharedPointer<Datafile>& file : files_) {
+    for (const QSharedPointer<const Datafile>& file : files_) {
         str relPath = QDir::current().relativeFilePath(file->fileInfo().absoluteFilePath());
         ret.append(relPath);
     }

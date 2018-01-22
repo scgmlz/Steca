@@ -109,8 +109,8 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
             return QString("File %1\ncontains %2 measurements\nhere numbered %3 to %4")
                 .arg(file->fileName())
                 .arg(file->count())
-                .arg(file->offset()+1)
-                .arg(file->offset()+file->count());
+                .arg(gSession->dataset().offset(file)+1)
+                .arg(gSession->dataset().offset(file)+file->count());
         return {};
     case Qt::CheckStateRole: {
         if (col==1) {

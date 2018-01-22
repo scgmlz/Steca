@@ -40,13 +40,17 @@ public:
     // Const methods:
     int count() const { return files_.count(); }
     const Datafile* file(int i) const { return files_[i].data(); }
+    int offset(const Datafile* file) const { return offsets_[file]; }
     QJsonArray to_json() const;
 
     vec<int> const& filesSelection() const { return filesSelection_; }
 
     Experiment experiment_; // cluster collected ...
+
 private:
-    QVector<QSharedPointer<Datafile>> files_; //!< data files
+    QVector<QSharedPointer<const Datafile>> files_; //!< data files
+    QMap<const Datafile*,int> offsets_; //!< first index in total list of Measurement|s
+
     vec<int> filesSelection_; // from these files
 
     void computeOffsets();

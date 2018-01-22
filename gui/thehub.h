@@ -176,8 +176,8 @@ private:
     bool isFixedIntenImageScale_;
     bool isFixedIntenDgramScale_;
     bool isCombinedDgram_;
-    vec<int> filesSelection_;
-    int clusterGroupedBy_ = 1;
+    vec<int> filesSelection_;  // TODO move to Dataset
+    int clusterGroupedBy_ = 1; // TODO move to Dataset
     eFittingTab fittingTab_ = eFittingTab::NONE;
     const Cluster* selectedCluster_;
     shp_Reflection selectedReflection_;

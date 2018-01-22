@@ -34,7 +34,6 @@ public:
     Datafile(rcstr fileName);
 
     void addDataset(const Metadata&, size2d const&, inten_vec const&);
-    void setOffset(const int offset) { offset_ = offset; }
 
     vec<shp_Measurement> const& measurements() const { return measurements_; }
     int count() const { return measurements_.count(); }
@@ -43,13 +42,11 @@ public:
     QFileInfo const& fileInfo() const;
     str fileName() const;
     shp_Image foldedImage() const;
-    int offset() const { return offset_; }
 
 private:
     QFileInfo fileInfo_;
     vec<shp_Measurement> measurements_;
     size2d imageSize_;
-    int offset_; //!< number of measurement_[0] in Session's total measurement list
 };
 
 Q_DECLARE_METATYPE(const Datafile*)

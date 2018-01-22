@@ -30,7 +30,7 @@ Measurement::Measurement(
 }
 
 int Measurement::totalPosition() const {
-    return file_->offset() + position_;
+    return gSession->dataset().offset(file_) + position_;
 }
 
 Range Measurement::rgeGma() const {
