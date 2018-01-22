@@ -25,6 +25,7 @@
 #include "core/typ/async.h"
 #include "core/typ/cache.h"
 #include "core/typ/singleton.h"
+#include <QObject>
 
 extern class Session* gSession;
 
@@ -36,10 +37,12 @@ extern class Session* gSession;
 //! The original idea was that core and GUI only communicate via function calls between
 //! Session and TheHub. In the big refactoring after v2.0.5, this has been given up.
 
-class Session final : public ISingleton<Session> {
+class Session final : public QObject, public ISingleton<Session> {
+    Q_OBJECT
 public:
     Session();
 
+    // Accessor methods:
     Dataset& dataset() { return dataset_; }
     const Dataset& dataset() const { return dataset_; }
 
@@ -101,6 +104,9 @@ public:
 
     qreal calcAvgBackground(Cluster const&) const;
     qreal calcAvgBackground() const;
+
+signals:
+    void sigFileHighlight(); //!< highlighted File has changed
 
 private:
     friend Dataset; // TODO try to get rid of this

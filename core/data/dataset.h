@@ -24,7 +24,6 @@
 #include "core/data/image.h"
 #include "core/typ/async.h"
 #include "core/typ/cache.h"
-#include "core/typ/singleton.h"
 #include <QSharedPointer> // no auto rm
 
 //! Loaded Datafile|s. Does not include the correction file.
@@ -35,12 +34,14 @@ public:
     void clear();
     bool addGivenFiles(const QStringList& filePaths) THROWS;
     void removeFile(int i);
+    void setHighlight(int i);
     void assembleExperiment(const vec<int>, const int);
 
     // Const methods:
     int count() const { return files_.count(); }
     const Datafile* file(int i) const { return files_[i].data(); }
     int offset(const Datafile* file) const { return offsets_[file]; }
+    int highlight() const { return highlight_; }
     QJsonArray to_json() const;
 
     vec<int> const& filesSelection() const { return filesSelection_; }
@@ -51,6 +52,7 @@ private:
     QVector<QSharedPointer<const Datafile>> files_; //!< data files
     QMap<const Datafile*,int> offsets_; //!< first index in total list of Measurement|s
 
+    int highlight_ {0}; //!< index of highlighted file
     vec<int> filesSelection_; // from these files
 
     void computeOffsets();

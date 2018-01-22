@@ -49,10 +49,11 @@ bool Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
     return ret;
 }
 
-void Dataset::removeFile(int i) {
+void Dataset::removeFile(int i) { // TODO rm arg
     files_.remove(i);
     computeOffsets();
     gSession->updateImageSize();
+    // setHighlight(i-1); // TODO
 }
 
 void Dataset::computeOffsets() {
@@ -61,6 +62,13 @@ void Dataset::computeOffsets() {
         offsets_[file.data()] = cnt;
         cnt += file->count();
     }
+}
+
+void Dataset::setHighlight(int i) {
+    if (i==highlight_)
+        return;
+    highlight_ = i;
+    emit gSession->sigFileHighlight();
 }
 
 void Dataset::assembleExperiment(const vec<int> fileNums, const int combineBy) {
