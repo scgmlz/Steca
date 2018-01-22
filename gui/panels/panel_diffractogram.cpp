@@ -467,7 +467,7 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
         plot_->enterZoom(on);
     });
 
-    connect(gHub, &TheHub::sigClusterSelected, this, &Diffractogram::setCluster);
+    connect(gHub, &TheHub::sigClusterHighlight, this, &Diffractogram::setCluster);
     connect(gHub, &TheHub::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigCorrEnabled, [this](){ render(); });
     connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });

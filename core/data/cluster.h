@@ -28,7 +28,6 @@ public:
     Cluster(Cluster&) = delete;
     Cluster(const vec<shp_Measurement>& measurements);
 
-
     deg omg() const;
     deg phi() const;
     deg chi() const;

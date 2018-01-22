@@ -16,7 +16,7 @@
 #include "core/calc/reflection.h"
 #include "core/calc/reflection_info.h"
 #include "core/data/angle_map.h"
-#include "core/data/datafile.h"
+#include "core/data/rawfile.h"
 #include "core/data/experiment.h"
 #include "core/data/image.h"
 #include "core/session.h"
@@ -38,12 +38,12 @@ bool Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
     for (const QString& path: filePaths) {
         if (path.isEmpty() || hasFile(path))
             continue;
-        QSharedPointer<const Datafile> datafile = load::loadDatafile(path);
-        if (datafile.isNull())
+        QSharedPointer<const Rawfile> rawfile = load::loadRawfile(path);
+        if (rawfile.isNull())
             continue;
         ret = true;
-        gSession->setImageSize(datafile->imageSize());
-        files_.append(datafile);
+        gSession->setImageSize(rawfile->imageSize());
+        files_.append(rawfile);
     }
     updateCache();
     return ret;
@@ -59,14 +59,14 @@ void Dataset::removeFile(int i) { // TODO rm arg
 void Dataset::updateCache() {
     int idx = 0;
     int cnt = 0;
-    for (const QSharedPointer<const Datafile>& file: files_) {
+    for (const QSharedPointer<const Rawfile>& file: files_) {
         mapIndex_[file.data()] = idx++;
         mapOffset_[file.data()] = cnt;
         cnt += file->count();
     }
 }
 
-void Dataset::setHighlight(const Datafile* file) {
+void Dataset::setHighlight(const Rawfile* file) {
     int i = mapIndex_[file];
     if (i==highlight_)
         return;
@@ -79,7 +79,7 @@ void Dataset::assembleExperiment(const vec<int> fileNums, const int combineBy) {
     experiment_ = { combineBy };
 
     for (int jFile : filesSelection_) {
-        const Datafile* file = files_.at(jFile).data();
+        const Rawfile* file = files_.at(jFile).data();
         for (int i=0; i<file->count(); i+=combineBy) {
             int ii;
             vec<shp_Measurement> group;
@@ -93,7 +93,7 @@ void Dataset::assembleExperiment(const vec<int> fileNums, const int combineBy) {
 
 bool Dataset::hasFile(rcstr fileName) const {
     QFileInfo fileInfo(fileName);
-    for (const QSharedPointer<const Datafile>& file : files_)
+    for (const QSharedPointer<const Rawfile>& file : files_)
         if (fileInfo == file->fileInfo())
             return true;
     return false;
@@ -101,7 +101,7 @@ bool Dataset::hasFile(rcstr fileName) const {
 
 QJsonArray Dataset::to_json() const {
     QJsonArray ret;
-    for (const QSharedPointer<const Datafile>& file : files_) {
+    for (const QSharedPointer<const Rawfile>& file : files_) {
         str relPath = QDir::current().relativeFilePath(file->fileInfo().absoluteFilePath());
         ret.append(relPath);
     }

@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "core/def/idiomatic_for.h"
-#include "core/data/datafile.h"
+#include "core/data/rawfile.h"
 #include "core/data/metadata.h"
 #include "core/typ/exception.h"
 #include <QDataStream>
@@ -22,7 +22,7 @@
 namespace load {
 
 // implemented below
-static void loadTiff(Datafile*, rcstr, deg, qreal, qreal) THROWS;
+static void loadTiff(Rawfile*, rcstr, deg, qreal, qreal) THROWS;
 
 // The dat file looks like so:
 /*
@@ -41,8 +41,8 @@ Aus-Weimin-00008.tif -55
 Aus-Weimin-00009.tif -50
 */
 
-Datafile loadTiffDat(rcstr filePath) THROWS {
-    Datafile ret(filePath);
+Rawfile loadTiffDat(rcstr filePath) THROWS {
+    Rawfile ret(filePath);
 
     QFile f(filePath);
     RUNTIME_CHECK(f.open(QFile::ReadOnly), "cannot open file");
@@ -108,7 +108,7 @@ Datafile loadTiffDat(rcstr filePath) THROWS {
     RUNTIME_CHECK(val == dataOffset, BAD_FORMAT)
 
 static void
-loadTiff(Datafile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) THROWS {
+loadTiff(Rawfile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) THROWS {
 
     Metadata md;
     md.motorPhi = phi;

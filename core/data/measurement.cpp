@@ -17,7 +17,7 @@
 #include <qmath.h>
 
 Measurement::Measurement(
-    const class Datafile* file, const int position, const Metadata& md, size2d const& size,
+    const class Rawfile* file, const int position, const Metadata& md, size2d const& size,
     inten_vec const& intens)
     : file_(file)
     , position_(position)

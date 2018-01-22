@@ -15,17 +15,17 @@
 #ifndef LOADERS_H
 #define LOADERS_H
 
-#include "core/data/datafile.h"
+#include "core/data/rawfile.h"
 #include "core/def/macros.h"
 #include "core/typ/str.h"
 
-class Datafile;
+class Rawfile;
 class QFileInfo;
 
 namespace load {
 
 //! load a file; file type will be sensed
-QSharedPointer<Datafile> loadDatafile(rcstr filePath) THROWS;
+QSharedPointer<Rawfile> loadRawfile(rcstr filePath) THROWS;
 
 str loadComment(QFileInfo const& info);
 

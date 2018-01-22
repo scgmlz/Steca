@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "core/def/idiomatic_for.h"
-#include "core/data/datafile.h"
+#include "core/data/rawfile.h"
 #include "core/data/metadata.h"
 #include "core/typ/exception.h"
 #include <qmath.h>
@@ -24,8 +24,8 @@
 
 namespace load {
 
-Datafile loadCaress(rcstr filePath) THROWS {
-    Datafile ret(filePath);
+Rawfile loadCaress(rcstr filePath) THROWS {
+    Rawfile ret(filePath);
 
     RUNTIME_CHECK(
         0 == open_data_file(filePath.toLocal8Bit().data(), nullptr),

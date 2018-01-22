@@ -19,7 +19,7 @@
 #include "core/typ/curve.h"
 #include <QSharedPointer> // required by some compilers
 
-//! A sequence of Cluster s
+//! A sequence of Cluster|s
 
 class Experiment final : public vec<shp_Cluster> {
 public:

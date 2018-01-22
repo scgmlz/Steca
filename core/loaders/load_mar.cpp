@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "core/def/idiomatic_for.h"
-#include "core/data/datafile.h"
+#include "core/data/rawfile.h"
 #include "core/data/metadata.h"
 #include "core/typ/exception.h"
 #include "3rdparty/Mar/MarReader.h"
@@ -22,10 +22,10 @@ namespace load {
 
 // Code taken from the original STeCa, only slightly modified.
 
-Datafile loadMar(rcstr filePath) THROWS {
+Rawfile loadMar(rcstr filePath) THROWS {
     typedef short WORD;
 
-    Datafile ret(filePath);
+    Rawfile ret(filePath);
 
     FILE* fpIn;
 

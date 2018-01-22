@@ -31,7 +31,7 @@ public:
     void setHighlight(int row);
     void updateMeta(vec<bool> const&);
     void onFilesChanged();
-    void onFileHighlight(const Datafile*);
+    void onFileHighlight(const Rawfile*);
 
     int rowCount() const final { return gSession->experiment().count(); }
     QVariant data(const QModelIndex&, int) const final;
@@ -103,7 +103,7 @@ void ExperimentModel::onFilesChanged() {
              << ", highlighted=" << rowHighlighted_;
 }
 
-void ExperimentModel::onFileHighlight(const Datafile* newFile) {
+void ExperimentModel::onFileHighlight(const Rawfile* newFile) {
     if (highlighted_ && newFile==highlighted_->first()->file())
         return;
     for (int row=0; row<rowCount(); ++row) {
@@ -202,7 +202,7 @@ public:
 
 private:
     void currentChanged(QModelIndex const&, QModelIndex const&) override final;
-    void onFileHighlight(const Datafile* newFile);
+    void onFileHighlight(const Rawfile* newFile);
     int sizeHintForColumn(int) const override final;
     ExperimentModel* model() const final {
         return static_cast<ExperimentModel*>(ListView::model()); }
@@ -234,7 +234,7 @@ void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex cons
     model()->setHighlight(current.row());
 }
 
-void ExperimentView::onFileHighlight(const Datafile* newFile) {
+void ExperimentView::onFileHighlight(const Rawfile* newFile) {
     model()->onFileHighlight(newFile);
     scrollTo(model()->index(model()->rowHighlighted(),0));
 }

@@ -103,7 +103,7 @@ TheHub::TheHub()
     connect(trigger_clearBackground, &QAction::triggered, [this]() { setBgRanges({}); });
 
     QObject::connect(this, &TheHub::sigCorrFile,
-            [this](const Datafile* file) { trigger_removeCorr->setEnabled(file); });
+            [this](const Rawfile* file) { trigger_removeCorr->setEnabled(file); });
     QObject::connect(this, &TheHub::sigCorrEnabled,
             [this](bool on) { toggle_enableCorr->setChecked(on); });
 
@@ -460,9 +460,9 @@ void TheHub::setNorm(eNorm norm) {
     emit sigNormChanged();
 }
 
-void TheHub::tellClusterSelected(const Cluster* cluster) {
+void TheHub::tellClusterHighlight(const Cluster* cluster) {
     selectedCluster_ = cluster;
-    emit sigClusterSelected(cluster);
+    emit sigClusterHighlight(cluster);
 }
 
 void TheHub::tellSelectedReflection(shp_Reflection reflection) {

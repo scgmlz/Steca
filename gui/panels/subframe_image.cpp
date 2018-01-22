@@ -179,7 +179,7 @@ SubframeImage::SubframeImage() {
     {
         BoxWidget& tab = *newQ::Tab(this, "Correction");
 
-        connect(gHub, &TheHub::sigCorrFile, [&tab](const Datafile* file) { tab.setEnabled(file); });
+        connect(gHub, &TheHub::sigCorrFile, [&tab](const Rawfile* file) { tab.setEnabled(file); });
 
         QBoxLayout& box = tab.box();
 
@@ -201,7 +201,7 @@ SubframeImage::SubframeImage() {
     connect(gHub, &TheHub::sigDisplayChanged, this, &SubframeImage::render);
     connect(gHub, &TheHub::sigGeometryChanged, this, &SubframeImage::render);
     connect(gHub, &TheHub::sigNormChanged, this, &SubframeImage::render);
-    connect(gHub, &TheHub::sigClusterSelected, this, &SubframeImage::setCluster);
+    connect(gHub, &TheHub::sigClusterHighlight, this, &SubframeImage::setCluster);
 
     render();
 }

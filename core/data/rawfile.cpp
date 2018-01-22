@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/data/datafile.cpp
-//! @brief     Implements class Datafile
+//! @file      core/data/rawfile.cpp
+//! @brief     Implements class Rawfile
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,13 +12,13 @@
 //
 // ************************************************************************** //
 
-#include "core/data/datafile.h"
+#include "core/data/rawfile.h"
 #include <QStringBuilder> // for ".." % ..
 
-Datafile::Datafile(rcstr fileName) : fileInfo_(fileName) {}
+Rawfile::Rawfile(rcstr fileName) : fileInfo_(fileName) {}
 
 //! The loaders use this function to push cluster
-void Datafile::addDataset(const Metadata& md, size2d const& sz, inten_vec const& ivec) {
+void Rawfile::addDataset(const Metadata& md, size2d const& sz, inten_vec const& ivec) {
     if (measurements_.isEmpty())
         imageSize_ = sz;
     else if (sz != imageSize_)
@@ -27,15 +27,15 @@ void Datafile::addDataset(const Metadata& md, size2d const& sz, inten_vec const&
                              new Measurement(this, measurements_.count(), md, sz, ivec)));
 }
 
-QFileInfo const& Datafile::fileInfo() const {
+QFileInfo const& Rawfile::fileInfo() const {
     return fileInfo_;
 }
 
-str Datafile::fileName() const {
+str Rawfile::fileName() const {
     return fileInfo_.fileName();
 }
 
-shp_Image Datafile::foldedImage() const {
+shp_Image Rawfile::foldedImage() const {
     debug::ensure(!measurements_.isEmpty());
     shp_Image ret(new Image(measurements_.first()->imageSize()));
     for (shp_Measurement one : measurements_)

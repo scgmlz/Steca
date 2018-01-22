@@ -87,14 +87,14 @@ void Session::setCorrFile(rcstr filePath) THROWS {
         removeCorrFile();
         return;
     }
-    QSharedPointer<Datafile> datafile = load::loadDatafile(filePath);
-    if (datafile.isNull())
+    QSharedPointer<Rawfile> rawfile = load::loadRawfile(filePath);
+    if (rawfile.isNull())
         return;
-    setImageSize(datafile->imageSize());
-    corrImage_ = datafile->foldedImage();
+    setImageSize(rawfile->imageSize());
+    corrImage_ = rawfile->foldedImage();
     intensCorr_.clear(); // will be calculated lazily
     // all ok
-    corrFile_ = datafile;
+    corrFile_ = rawfile;
     corrEnabled_ = true;
 }
 

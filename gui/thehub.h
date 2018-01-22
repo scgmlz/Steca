@@ -17,7 +17,7 @@
 
 #include "core/calc/lens.h"
 #include "core/calc/reflection.h"
-#include "core/data/datafile.h"
+#include "core/data/rawfile.h"
 #include "core/data/cluster.h"
 #include "gui/cfg/settings.h"
 
@@ -54,9 +54,9 @@ signals:
     void sigFilesSelected(); //!< active file selection has changed
 
     void sigClustersChanged(); //!< the set of cluster collected from selected
-    void sigClusterSelected(const Cluster*);
+    void sigClusterHighlight(const Cluster*);
 
-    void sigCorrFile(const Datafile*);
+    void sigCorrFile(const Rawfile*);
     void sigCorrEnabled(bool);
 
     void sigReflectionsChanged();
@@ -103,7 +103,7 @@ public:
     void removeReflection(int);
 
     // modify and emit signal:
-    void tellClusterSelected(const Cluster*);
+    void tellClusterHighlight(const Cluster*);
     void tellSelectedReflection(shp_Reflection);
     void tellReflectionData(shp_Reflection);
     void tellReflectionValues(const Range&, qpair const&, fwhm_t, bool);

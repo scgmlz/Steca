@@ -27,10 +27,10 @@ class Measurement final {
 public:
     Measurement() = delete;
     Measurement(const Measurement&) = delete;
-    Measurement(const class Datafile*, const int position, const Metadata&,
+    Measurement(const class Rawfile*, const int position, const Metadata&,
                 const size2d&, const inten_vec&);
 
-    const class Datafile* file() const { return file_; }
+    const class Rawfile* file() const { return file_; }
     int position() const { return position_; }
     int totalPosition() const; //!< position in full list of currently loaded measurements
     shp_Metadata metadata() const { return md_; }
@@ -59,7 +59,7 @@ public:
         deg minTth, deg deltaTth) const;
 
 private:
-    const class Datafile* file_;
+    const class Rawfile* file_;
     const int position_; //! position in file_
     shp_Metadata md_;
     shp_Image image_;

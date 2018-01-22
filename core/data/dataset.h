@@ -19,14 +19,14 @@
 #include "core/calc/reflection.h"
 #include "core/calc/reflection_info.h"
 #include "core/data/angle_map.h"
-#include "core/data/datafile.h"
+#include "core/data/rawfile.h"
 #include "core/data/experiment.h"
 #include "core/data/image.h"
 #include "core/typ/async.h"
 #include "core/typ/cache.h"
 #include <QSharedPointer> // no auto rm
 
-//! Loaded Datafile|s. Does not include the correction file.
+//! Loaded Rawfile|s. Does not include the correction file.
 
 class Dataset final {
 public:
@@ -34,13 +34,13 @@ public:
     void clear();
     bool addGivenFiles(const QStringList& filePaths) THROWS;
     void removeFile(int i);
-    void setHighlight(const Datafile*);
+    void setHighlight(const Rawfile*);
     void assembleExperiment(const vec<int>, const int);
 
     // Const methods:
     int count() const { return files_.count(); }
-    const Datafile* file(int i) const { return files_[i].data(); }
-    int offset(const Datafile* file) const { return mapOffset_[file]; }
+    const Rawfile* file(int i) const { return files_[i].data(); }
+    int offset(const Rawfile* file) const { return mapOffset_[file]; }
     int highlight() const { return highlight_; }
     QJsonArray to_json() const;
 
@@ -49,9 +49,9 @@ public:
     Experiment experiment_; // cluster collected ...
 
 private:
-    QVector<QSharedPointer<const Datafile>> files_; //!< data files
-    QMap<const Datafile*,int> mapIndex_; //!< index in files_
-    QMap<const Datafile*,int> mapOffset_; //!< first index in total list of Measurement|s
+    QVector<QSharedPointer<const Rawfile>> files_; //!< data files
+    QMap<const Rawfile*,int> mapIndex_; //!< index in files_
+    QMap<const Rawfile*,int> mapOffset_; //!< first index in total list of Measurement|s
 
     int highlight_ {0}; //!< index of highlighted file
     vec<int> filesSelection_; // from these files

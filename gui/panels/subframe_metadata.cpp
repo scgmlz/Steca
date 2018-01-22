@@ -102,7 +102,7 @@ MetadataView::MetadataView() : ListView() {
     setHeaderHidden(true);
     auto metadataModel = new MetadataModel();
     setModel(metadataModel);
-    connect(gHub, &TheHub::sigClusterSelected, model(), &MetadataModel::reset);
+    connect(gHub, &TheHub::sigClusterHighlight, model(), &MetadataModel::reset);
     connect(this, &MetadataView::clicked, [this](QModelIndex const& index) {
         model()->flipCheck(index.row());
         emit gHub->sigMetatagsChosen(model()->rowsChecked());

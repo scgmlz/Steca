@@ -69,7 +69,7 @@ public:
 
     // Const methods:
     bool hasCorrFile() const { return !corrFile_.isNull(); }
-    const Datafile* corrFile() const { return corrFile_.data(); }
+    const Rawfile* corrFile() const { return corrFile_.data(); }
     shp_Image corrImage() const { return corrImage_; }
     const Image* intensCorr() const;
     void tryEnableCorr(bool on) { corrEnabled_ = on && hasCorrFile(); }
@@ -106,12 +106,12 @@ public:
     qreal calcAvgBackground() const;
 
 signals:
-    void sigFileHighlight(const Datafile*); //!< highlighted File has changed
+    void sigFileHighlight(const Rawfile*); //!< highlighted File has changed
 
 private:
     friend Dataset; // TODO try to get rid of this
     Dataset dataset_;
-    QSharedPointer<Datafile> corrFile_; //!< correction file
+    QSharedPointer<Rawfile> corrFile_; //!< correction file
     shp_Image corrImage_;
     bool corrEnabled_;
     bool intenScaledAvg_; // if not, summed

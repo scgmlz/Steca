@@ -31,7 +31,7 @@ class FilesModel : public TableModel { // < QAbstractTableModel < QAbstractItemM
 public:
     void onClicked(const QModelIndex &);
     void setHighlight(int row);
-    void onFileHighlight(const Datafile*);
+    void onFileHighlight(const Rawfile*);
     void removeFile();
     void onFilesLoaded();
 
@@ -60,7 +60,7 @@ void FilesModel::onClicked(const QModelIndex& cell) {
 }
 
 //! Set highlight according to signal from MeasurementsView.
-void FilesModel::onFileHighlight(const Datafile* newFile) {
+void FilesModel::onFileHighlight(const Rawfile* newFile) {
     for (int row=0; row<rowCount(); ++row) {
         if (gSession->dataset().file(row)==newFile) {
             setHighlight(row);
@@ -95,7 +95,7 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
     const int row = index.row();
     if (row < 0 || row >= rowCount())
         return {};
-    const Datafile* file = gSession->dataset().file(row);
+    const Rawfile* file = gSession->dataset().file(row);
     int col = index.column();
     switch (role) {
     case Qt::EditRole:
@@ -226,6 +226,6 @@ SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files") {
     h->addWidget(newQ::IconButton(gHub->trigger_removeCorr));
 
     connect(gHub, &TheHub::sigCorrFile,
-            [corrFile_](const Datafile* file) {
+            [corrFile_](const Rawfile* file) {
                 corrFile_->setText(file ? file->fileName() : ""); });
 }
