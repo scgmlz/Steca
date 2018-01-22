@@ -279,7 +279,8 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     }
 
     TR("sessionFromJson: going to collect cluster");
-    collectDatasetsFromSelectionBy(selIndexes, top.loadPint("combine", 1));
+    gSession->dataset().setBinning(top.loadPint("combine", 1));
+    onFilesSelected(selIndexes);
 
     TR("sessionFromJson: going to set correction file");
     setCorrFile(top.loadString("correction file", ""));
@@ -317,30 +318,20 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     TR("installed session from file");
 }
 
-void TheHub::collectDatasetsFromSelectionBy(const vec<int> indexSelection, const int by) {
-    filesSelection_ = indexSelection;
-    clusterGroupedBy_ = by;
-    collectDatasetsExec();
-}
-
 void TheHub::onFilesSelected(const vec<int> indexSelection) {
     filesSelection_ = indexSelection;
     collectDatasetsExec();
 }
 
 void TheHub::combineMeasurementsBy(const int by) {
-    clusterGroupedBy_ = by;
+    gSession->dataset().setBinning(by);
     collectDatasetsExec();
 }
 
 void TheHub::collectDatasetsExec() { // TODO move to Dataset
-    gSession->dataset().assembleExperiment(filesSelection_, clusterGroupedBy_);
-    TR("cDE2");
-    qDebug() << "#exp=" << gSession->experiment().count();
+    gSession->dataset().assembleExperiment(filesSelection_);
     emit sigFilesSelected();
-    TR("cDE3");
     emit sigClustersChanged();
-    TR("cDE4");
 }
 
 void TheHub::setCorrFile(rcstr filePath) THROWS {

@@ -78,16 +78,23 @@ void Dataset::setHighlight(const Datafile& file) {
     emit gSession->sigFileHighlight(file);
 }
 
-void Dataset::assembleExperiment(const vec<int> fileNums, const int combineBy) {
+void Dataset::setBinning(int by) {
+    if (by==binning_)
+        return;
+    binning_ = by;
+    emit gSession->sigClusters();
+}
+
+void Dataset::assembleExperiment(const vec<int> fileNums) {
     filesSelection_ = fileNums;
-    experiment_ = { combineBy };
+    experiment_ = { binning_ };
 
     for (int jFile : filesSelection_) {
         const Datafile& file = files_.at(jFile);
-        for (int i=0; i<file.count(); i+=combineBy) {
+        for (int i=0; i<file.count(); i+=binning_) {
             int ii;
             QVector<const Measurement*> group;
-            for (ii=i; ii<file.count() && ii<i+combineBy; ii++)
+            for (ii=i; ii<file.count() && ii<i+binning_; ii++)
                 group.append(file.raw_->measurements().at(ii));
             shp_Cluster cd(new Cluster(group, file, i));
             experiment_.appendHere(cd);

@@ -56,7 +56,8 @@ public:
     bool addGivenFiles(const QStringList& filePaths) THROWS;
     void removeFile(int i);
     void setHighlight(const Datafile&);
-    void assembleExperiment(const vec<int>, const int);
+    void setBinning(int by);
+    void assembleExperiment(const vec<int>);
 
     // Const methods:
     int countFiles() const { return files_.size(); }
@@ -64,6 +65,7 @@ public:
     const Datafile& file(int i) const { return files_[i]; }
     int offset(const Datafile& file) const { return file.offset_; }
     int highlight() const { return highlight_; }
+    int binning() const { return binning_; }
     QJsonArray to_json() const;
 
     vec<int> const& filesSelection() const { return filesSelection_; }
@@ -76,6 +78,7 @@ private:
 
     int highlight_ {0}; //!< index of highlighted file
     vec<int> filesSelection_; // from these files
+    int binning_ {1}; //!< bin so many measurements into one cluster
 
     void updateCache();
 

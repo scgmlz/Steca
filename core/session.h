@@ -107,6 +107,7 @@ public:
 
 signals:
     void sigFileHighlight(const Datafile&); //!< highlighted File has changed
+    void sigClusters(); //!< list of clusters has changed
 
 private:
     friend Dataset; // TODO try to get rid of this
