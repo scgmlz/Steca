@@ -26,9 +26,11 @@ class Cluster final : public vec<shp_Measurement> {
 public:
     Cluster() = delete;
     Cluster(Cluster&) = delete;
-    Cluster(const class Datafile& file, const vec<shp_Measurement>& measurements);
+    Cluster(const class Datafile& file, const int offset, const vec<shp_Measurement>& measurements);
 
     const class Datafile& file() const { return file_; }
+    const int offset() const { return offset_; }
+    const int totalOffset() const;
 
     deg omg() const;
     deg phi() const;
@@ -50,6 +52,7 @@ public:
 
 private:
     const class Datafile& file_;
+    const int offset_;
     shp_Metadata md_; //!< averaged Metadata, cached, computed only once
 
     void compute_metadata() const;

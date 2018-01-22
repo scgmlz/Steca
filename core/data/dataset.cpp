@@ -85,7 +85,7 @@ void Dataset::assembleExperiment(const vec<int> fileNums, const int combineBy) {
             vec<shp_Measurement> group;
             for (ii=i; ii<file.count() && ii<i+combineBy; ii++)
                 group.append(file.raw_->measurements().at(ii));
-            shp_Cluster cd(new Cluster(file, group));
+            shp_Cluster cd(new Cluster(file, i, group));
             experiment_.appendHere(cd);
         }
     }

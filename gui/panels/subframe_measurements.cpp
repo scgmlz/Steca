@@ -124,9 +124,9 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     switch (role) {
     case Qt::DisplayRole: {
         if (col==COL_NUMBER) {
-            QString ret = "TODO";//QString::number(cluster->first()->totalPosition()+1);
+            QString ret = QString::number(cluster->totalOffset()+1);
             if (cluster->count()>1)
-                ret += "-"; // TODO + QString::number(cluster->last()->totalPosition()+1);
+                ret += "-" + QString::number(cluster->totalOffset()+cluster->count());
             return ret;
         } else if (col>=COL_ATTRS && col < COL_ATTRS+metaCount()) {
             return cluster->avgeMetadata()->attributeStrValue(
@@ -136,21 +136,19 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     }
     case Qt::ToolTipRole: {
         QString ret;
-        /* TODO
         if (cluster->count()>1) {
             ret = QString("Measurements %1..%2 are numbers %3..%4 in file %5")
-                .arg(cluster->first()->totalPosition()+1)
-                .arg(cluster->last()->totalPosition()+1)
-                .arg(cluster->first()->position()+1)
-                .arg(cluster->last()->position()+1)
-                .arg(cluster->first()->file()->name());
+                .arg(cluster->totalOffset()+1)
+                .arg(cluster->totalOffset()+cluster->count())
+                .arg(cluster->offset()+1)
+                .arg(cluster->offset()+cluster->count())
+                .arg(cluster->file().name());
         } else {
             ret = QString("Measurement %1 is number %2 in file %3")
-                .arg(cluster->first()->totalPosition()+1)
-                .arg(cluster->first()->position()+1)
-                .arg(cluster->first()->file()->name());
+                .arg(cluster->totalOffset()+1)
+                .arg(cluster->offset()+1)
+                .arg(cluster->file().name());
         }
-        */
         ret += ".";
         if (cluster->count()<gSession->experiment().combineBy())
             ret += QString("\nThis cluster has only %1 elements, while the combine factor is %2.")

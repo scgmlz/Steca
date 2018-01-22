@@ -19,10 +19,16 @@
 #include "core/typ/matrix.h"
 #include <qmath.h>
 
-Cluster::Cluster(const class Datafile& file, const vec<shp_Measurement>& measurements)
-    : file_(file)
-    , vec<shp_Measurement>(measurements)
+Cluster::Cluster(
+    const class Datafile& file, const int offset, const vec<shp_Measurement>& measurements)
+    : vec<shp_Measurement>(measurements)
+    , file_(file)
+    , offset_(offset)
 {
+}
+
+const int Cluster::totalOffset() const {
+    return file_.offset_ + offset();
 }
 
 //! Returns metadata, averaged over Cluster members. Result is cached.
