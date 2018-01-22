@@ -59,15 +59,15 @@ void Dataset::removeFile(int i) { // TODO rm arg
 void Dataset::updateCache() {
     int idx = 0;
     int cnt = 0;
-    QVector<const Measurement*> all;
+//    QVector<const Cluster*> all;
     for (Datafile& file: files_) {
         file.index_ = idx++;
         file.offset_ = cnt;
         cnt += file.count();
-        for (const Measurement* one: file.raw_->measurements())
-            all.append(one);
+//        for (const Measurement* one: file.raw_->measurements())
+//            all.append(one);
     }
-    allMeasurements_ = all.count() ? QSharedPointer<Sequence> (new Sequence(all)) : nullptr;
+//    allMeasurements_ = all.count() ? QSharedPointer<Sequence> (new Sequence(all)) : nullptr;
 }
 
 void Dataset::setHighlight(const Datafile& file) {

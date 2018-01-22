@@ -60,6 +60,7 @@ public:
 
     // Const methods:
     int countFiles() const { return files_.size(); }
+//    int countClusters() const { return allClusters_ ? allClusters_->count() : 0; }
     const Datafile& file(int i) const { return files_[i]; }
     int offset(const Datafile& file) const { return file.offset_; }
     int highlight() const { return highlight_; }
@@ -71,7 +72,7 @@ public:
 
 private:
     std::vector<Datafile> files_; //!< data files
-    QSharedPointer<Sequence> allMeasurements_ {nullptr}; // TODO precompute everything, then make this const
+//    QSharedPointer<Sequence> allClusters_ {nullptr}; // TODO precompute everything, then make this const
 
     int highlight_ {0}; //!< index of highlighted file
     vec<int> filesSelection_; // from these files
