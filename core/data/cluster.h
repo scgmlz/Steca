@@ -70,15 +70,17 @@ public:
     Cluster() = delete;
     Cluster(Cluster&) = delete;
     Cluster(const QVector<const Measurement*>& measurements,
-            const class Datafile& file, const int offset);
+            const class Datafile& file, const int index, const int offset);
 
     const class Datafile& file() const { return file_; }
+    int index() const { return index_; }
     int offset() const { return offset_; }
     int totalOffset() const;
     bool isIncomplete() const;
 
 private:
     const class Datafile& file_;
+    const int index_; //! index in total list of Cluster|s
     const int offset_; //! index of first Measurement in file_
 };
 

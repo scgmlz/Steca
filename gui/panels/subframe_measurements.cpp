@@ -31,7 +31,7 @@ public:
     void setHighlight(int row);
     void updateMeta(vec<bool> const&);
     void onClustersChanged();
-    void onFileHighlight(const Datafile&);
+    void onHighlight();
 
     int rowCount() const final { return allClusters_.count(); }
     QVariant data(const QModelIndex&, int) const final;
@@ -78,7 +78,7 @@ void ExperimentModel::setHighlight(int row) {
     if (oldHighlighted)
         emit dataChanged(createIndex(oldRow,0),createIndex(oldRow,columnCount()));
     if (highlighted_!=oldHighlighted)
-        gSession->dataset().setHighlight(highlighted_->file());
+        gSession->dataset().setHighlight(highlighted_);
 }
 
 void ExperimentModel::updateMeta(vec<bool> const& metadataRows) {
@@ -103,11 +103,12 @@ void ExperimentModel::onClustersChanged() {
     endResetModel();
 }
 
-void ExperimentModel::onFileHighlight(const Datafile& newFile) {
-    if (highlighted_ && &newFile==&(highlighted_->file()))
+void ExperimentModel::onHighlight() {
+    const Cluster& newCluster = gSession->dataset().highlightedCluster();
+    if (&newCluster==highlighted_)
         return;
     for (int row=0; row<rowCount(); ++row) {
-        if (&(allClusters_.at(row)->file())==&newFile) {
+        if (allClusters_.at(row).data()==&newCluster) {
             setHighlight(row);
             return;
         }
@@ -203,7 +204,7 @@ public:
 private:
     void currentChanged(QModelIndex const&, QModelIndex const&) override final;
     void onClustersChanged();
-    void onFileHighlight(const Datafile& newFile);
+    void onHighlight();
     void updateScroll();
     int sizeHintForColumn(int) const override final;
     ExperimentModel* model() const final {
@@ -229,7 +230,7 @@ ExperimentView::ExperimentView() : ListView() {
             });
     */
     connect(gSession, &Session::sigClusters, this, &ExperimentView::onClustersChanged);
-    connect(gSession, &Session::sigFileHighlight, this, &ExperimentView::onFileHighlight);
+    connect(gSession, &Session::sigHighlight, this, &ExperimentView::onHighlight);
     connect(this, &ExperimentView::clicked, model(), &ExperimentModel::onClicked);
 }
 
@@ -244,8 +245,8 @@ void ExperimentView::onClustersChanged() {
     updateScroll();
 }
 
-void ExperimentView::onFileHighlight(const Datafile& newFile) {
-    model()->onFileHighlight(newFile);
+void ExperimentView::onHighlight() {
+    model()->onHighlight();
     updateScroll();
 }
 

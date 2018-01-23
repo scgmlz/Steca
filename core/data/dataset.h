@@ -55,7 +55,8 @@ public:
     void clear();
     void addGivenFiles(const QStringList& filePaths) THROWS;
     void removeFile(int i);
-    void setHighlight(const Datafile&);
+    void setHighlight(const Cluster*);
+    void setHighlight(const Datafile*);
     void setBinning(int by);
     void setDropIncomplete(bool on);
     void assembleExperiment(const vec<int>);
@@ -65,7 +66,10 @@ public:
 //    int countClusters() const { return allClusters_ ? allClusters_->count() : 0; }
     const Datafile& file(int i) const { return files_[i]; }
     int offset(const Datafile& file) const { return file.offset_; }
-    int highlight() const { return highlight_; }
+    const Cluster& highlightedCluster() const { return *highlight_; }
+    int highlightedClusterIndex() const { return highlight_->index(); }
+    const Datafile& highlightedFile() const { return highlight_->file(); }
+    int highlightedFileIndex() const { return highlight_->index(); }
     int binning() const { return binning_; }
     bool dropIncomplete() const { return dropIncomplete_; }
     bool hasIncomplete() const { return hasIncomplete_; }
@@ -78,15 +82,14 @@ public:
 
 private:
     std::vector<Datafile> files_; //!< data files
-//    QSharedPointer<Sequence> allClusters_ {nullptr}; // TODO precompute everything, then make this const
-
-    int highlight_ {0}; //!< index of highlighted file
-    vec<int> filesSelection_; // from these files
-
     QVector<shp_Cluster> allClusters_;
     int binning_ {1}; //!< bin so many Measurement|s into one cluster
     bool dropIncomplete_ {false}; //!< drop Cluster|s that have less than binning_ members.
     bool hasIncomplete_; //!< current binning does result in at least one incomplete cluster
+
+    const Cluster* highlight_ {nullptr}; //!< index of highlighted file
+
+    vec<int> filesSelection_; // from these files
 
     void onFileChanged();
     void onClusteringChanged();

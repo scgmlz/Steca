@@ -53,12 +53,24 @@ void Dataset::removeFile(int i) { // TODO rm arg
     // setHighlight(i-1); // TODO
 }
 
-void Dataset::setHighlight(const Datafile& file) {
-    int i = file.index_;
-    if (i==highlight_)
+void Dataset::setHighlight(const Cluster* cluster) {
+    if (cluster==highlight_)
         return;
-    highlight_ = i;
-    emit gSession->sigFileHighlight(file);
+    highlight_ = cluster;
+    emit gSession->sigHighlight();
+}
+
+void Dataset::setHighlight(const Datafile* file) {
+    if (file==&highlight_->file())
+        return;
+    for (const shp_Cluster& cluster : allClusters_) {
+        if (&cluster->file()==file) {
+            highlight_ = cluster.data();
+            emit gSession->sigHighlight();
+            return;
+        }
+    }
+    NEVER
 }
 
 void Dataset::setBinning(int by) {
@@ -101,7 +113,7 @@ void Dataset::onClusteringChanged() {
             QVector<const Measurement*> group;
             for (ii=i; ii<file.count() && ii<i+binning_; ii++)
                 group.append(file.raw_->measurements().at(ii));
-            shp_Cluster cluster(new Cluster(group, file, i));
+            shp_Cluster cluster(new Cluster(group, file, allClusters_.size(), i));
             allClusters_.append(cluster);
         }
     }
@@ -120,7 +132,7 @@ void Dataset::assembleExperiment(const vec<int> fileNums) {
             QVector<const Measurement*> group;
             for (ii=i; ii<file.count() && ii<i+binning_; ii++)
                 group.append(file.raw_->measurements().at(ii));
-            shp_Cluster cd(new Cluster(group, file, i));
+            shp_Cluster cd(new Cluster(group, file, experiment_.count(), i));
             experiment_.appendHere(cd);
         }
     }

@@ -230,9 +230,10 @@ void Sequence::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const
 
 Cluster::Cluster(
     const QVector<const Measurement*>& measurements,
-    const class Datafile& file, const int offset)
+    const class Datafile& file, const int index, const int offset)
     : Sequence(measurements)
     , file_(file)
+    , index_(index)
     , offset_(offset)
 {
 }
