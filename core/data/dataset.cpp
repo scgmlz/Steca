@@ -111,7 +111,7 @@ void Dataset::onClusteringChanged() {
 
 void Dataset::assembleExperiment(const vec<int> fileNums) {
     filesSelection_ = fileNums;
-    experiment_ = { binning_ };
+    experiment_ = {};
 
     for (int jFile : filesSelection_) {
         const Datafile& file = files_.at(jFile);
