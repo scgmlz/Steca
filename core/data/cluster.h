@@ -73,8 +73,9 @@ public:
             const class Datafile& file, const int offset);
 
     const class Datafile& file() const { return file_; }
-    const int offset() const { return offset_; }
-    const int totalOffset() const;
+    int offset() const { return offset_; }
+    int totalOffset() const;
+    bool isIncomplete() const;
 
 private:
     const class Datafile& file_;

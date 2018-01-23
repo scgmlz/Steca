@@ -33,7 +33,7 @@ public:
     void onFilesChanged();
     void onFileHighlight(const Datafile&);
 
-    int rowCount() const final { return gSession->experiment().count(); }
+    int rowCount() const final { return allClusters_.count(); }
     QVariant data(const QModelIndex&, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const final;
     int rowHighlighted() const { return rowHighlighted_; }
@@ -49,6 +49,7 @@ private:
     vec<bool> rowsChecked_;
     int rowHighlighted_;
     const Cluster* highlighted_{nullptr};
+    const QVector<shp_Cluster>& allClusters_ {gSession->dataset().allClusters()};
 };
 
 void ExperimentModel::onClicked(const QModelIndex& cell) {
@@ -70,7 +71,7 @@ void ExperimentModel::setHighlight(int row) {
     int oldRow = rowHighlighted_;
     rowHighlighted_ = row;
     if (row>=0) {
-        highlighted_ = gSession->experiment().at(rowHighlighted_).data();
+        highlighted_ = allClusters_.at(rowHighlighted_).data();
         emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
     } else
         highlighted_ = nullptr;
@@ -107,7 +108,7 @@ void ExperimentModel::onFileHighlight(const Datafile& newFile) {
     if (highlighted_ && &newFile==&(highlighted_->file()))
         return;
     for (int row=0; row<rowCount(); ++row) {
-        if (&(gSession->experiment().at(row)->file())==&newFile) {
+        if (&(allClusters_.at(row)->file())==&newFile) {
             setHighlight(row);
             return;
         }
@@ -119,7 +120,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     int row = index.row();
     if (row < 0 || row >= rowCount())
         return {};
-    const Cluster* cluster = gSession->experiment().at(row).data();
+    const Cluster* cluster = allClusters_.at(row).data();
     int col = index.column();
     switch (role) {
     case Qt::DisplayRole: {
@@ -150,15 +151,15 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
                 .arg(cluster->file().name());
         }
         ret += ".";
-        if (cluster->count()<gSession->experiment().combineBy())
+        if (cluster->isIncomplete())
             ret += QString("\nThis cluster has only %1 elements, while the combine factor is %2.")
                 .arg(cluster->count())
-                .arg(gSession->experiment().combineBy());
+                .arg(gSession->dataset().binning());
         return ret;
     }
     case Qt::ForegroundRole: {
         if (col==COL_NUMBER && cluster->count()>1 &&
-            (cluster->count()<gSession->experiment().combineBy()))
+            (cluster->isIncomplete()))
             return QColor(Qt::red);
         return QColor(Qt::black);
     }
@@ -263,7 +264,7 @@ SubframeMeasurements::SubframeMeasurements() : DockWidget("Measurements", "dock-
     box_->addLayout(controls_row);
 
     // 'combine' control
-    controls_row->addWidget(newQ::Label("Combine:"));
+    controls_row->addWidget(newQ::Label("combine:"));
     auto combineMeasurements = newQ::SpinBox(4, false, 1);
     controls_row->addWidget(combineMeasurements);
     combineMeasurements->setToolTip("Combine and average number of cluster");
@@ -271,4 +272,15 @@ SubframeMeasurements::SubframeMeasurements() : DockWidget("Measurements", "dock-
             [this](int num) { gHub->combineMeasurementsBy(qMax(1, num)); });
     connect(gHub, &TheHub::sigClustersChanged,
             [=]() { combineMeasurements->setValue(gSession->dataset().binning()); });
+
+    // 'if incomplete' control
+    controls_row->addStretch(1);
+    controls_row->addWidget(newQ::Label("if incomplete:"));
+    auto ifIncomplete = new QComboBox;
+    ifIncomplete->addItems({"keep", "drop"});
+    controls_row->addWidget(ifIncomplete);
+    connect(ifIncomplete, _SLOT_(QComboBox, currentIndexChanged, int),
+            [this](int index) { gSession->dataset().setDropIncomplete(index); });
+    // TODO: add back connection (json->display)
+    // TODO: deactivate this control if there is nothing to drop
 }

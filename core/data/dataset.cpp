@@ -45,29 +45,15 @@ bool Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
         gSession->setImageSize(rawfile->imageSize());
         files_.push_back(Datafile(rawfile));
     }
-    updateCache();
+    onFileChanged();
     return ret;
 }
 
 void Dataset::removeFile(int i) { // TODO rm arg
     files_.erase(files_.begin()+i);
-    updateCache();
+    onFileChanged();
     gSession->updateImageSize();
     // setHighlight(i-1); // TODO
-}
-
-void Dataset::updateCache() {
-    int idx = 0;
-    int cnt = 0;
-//    QVector<const Cluster*> all;
-    for (Datafile& file: files_) {
-        file.index_ = idx++;
-        file.offset_ = cnt;
-        cnt += file.count();
-//        for (const Measurement* one: file.raw_->measurements())
-//            all.append(one);
-    }
-//    allMeasurements_ = all.count() ? QSharedPointer<Sequence> (new Sequence(all)) : nullptr;
 }
 
 void Dataset::setHighlight(const Datafile& file) {
@@ -82,7 +68,45 @@ void Dataset::setBinning(int by) {
     if (by==binning_)
         return;
     binning_ = by;
-    emit gSession->sigClusters();
+    onClusteringChanged();
+}
+
+void Dataset::setDropIncomplete(bool on) {
+    if (on==dropIncomplete_)
+        return;
+    dropIncomplete_ = on;
+    onClusteringChanged();
+}
+
+void Dataset::onFileChanged() {
+    int idx = 0;
+    int cnt = 0;
+    for (Datafile& file: files_) {
+        file.index_ = idx++;
+        file.offset_ = cnt;
+        cnt += file.count();
+    }
+    onClusteringChanged();
+}
+
+void Dataset::onClusteringChanged() {
+    allClusters_.clear();
+    hasIncomplete_ = false;
+    for (const Datafile& file : files_) {
+        for (int i=0; i<file.count(); i+=binning_) {
+            if (i+binning_>file.count()) {
+                hasIncomplete_ = true;
+                if (dropIncomplete_)
+                    break;
+            }
+            int ii;
+            QVector<const Measurement*> group;
+            for (ii=i; ii<file.count() && ii<i+binning_; ii++)
+                group.append(file.raw_->measurements().at(ii));
+            shp_Cluster cluster(new Cluster(group, file, i));
+            allClusters_.append(cluster);
+        }
+    }
 }
 
 void Dataset::assembleExperiment(const vec<int> fileNums) {

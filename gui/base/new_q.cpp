@@ -103,7 +103,7 @@ QLineEdit* newQ::LineDisplay(int ndigits, bool withDot) {
 
 QSpinBox* newQ::SpinBox(int ndigits, bool withDot, int min, int max) {
     auto ret = new QSpinBox;
-    setWidth(ret, ndigits, withDot);
+    setWidth(ret, ndigits, withDot); // TODO: why would this ever have a dot
     ret->setMinimum(min);
     ret->setMaximum(max > min ? max : min);
     return ret;
@@ -111,7 +111,7 @@ QSpinBox* newQ::SpinBox(int ndigits, bool withDot, int min, int max) {
 
 QDoubleSpinBox* newQ::DoubleSpinBox(int ndigits, bool withDot, qreal min, qreal max) {
     auto ret = new QDoubleSpinBox;
-    setWidth(ret, ndigits, withDot);
+    setWidth(ret, ndigits, withDot); // TODO: why would this ever have no dot
     ret->setMinimum(min);
     ret->setMaximum(max > min ? max : min);
     return ret;

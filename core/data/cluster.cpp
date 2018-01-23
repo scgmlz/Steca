@@ -237,6 +237,10 @@ Cluster::Cluster(
 {
 }
 
-const int Cluster::totalOffset() const {
+int Cluster::totalOffset() const {
     return file_.offset_ + offset();
+}
+
+bool Cluster::isIncomplete() const {
+    return count()<gSession->dataset().binning();
 }

@@ -57,6 +57,7 @@ public:
     void removeFile(int i);
     void setHighlight(const Datafile&);
     void setBinning(int by);
+    void setDropIncomplete(bool on);
     void assembleExperiment(const vec<int>);
 
     // Const methods:
@@ -66,6 +67,8 @@ public:
     int offset(const Datafile& file) const { return file.offset_; }
     int highlight() const { return highlight_; }
     int binning() const { return binning_; }
+    bool dropIncomplete() const { return dropIncomplete_; }
+    const QVector<shp_Cluster>& allClusters() const { return allClusters_; }
     QJsonArray to_json() const;
 
     vec<int> const& filesSelection() const { return filesSelection_; }
@@ -78,9 +81,14 @@ private:
 
     int highlight_ {0}; //!< index of highlighted file
     vec<int> filesSelection_; // from these files
-    int binning_ {1}; //!< bin so many measurements into one cluster
 
-    void updateCache();
+    QVector<shp_Cluster> allClusters_;
+    int binning_ {1}; //!< bin so many Measurement|s into one cluster
+    bool dropIncomplete_ {false}; //!< drop Cluster|s that have less than binning_ members.
+    bool hasIncomplete_; //!< current binning does result in at least one incomplete cluster
+
+    void onFileChanged();
+    void onClusteringChanged();
 
     bool hasFile(rcstr fileName) const;
 };
