@@ -61,6 +61,8 @@ void FilesModel::onClicked(const QModelIndex& cell) {
 
 //! Set highlight according to signal from MeasurementsView.
 void FilesModel::onHighlight() {
+    if (!gSession->dataset().countFiles())
+        return;
     const Datafile& newFile = gSession->dataset().highlightedFile();
     for (int row=0; row<rowCount(); ++row) {
         if (&gSession->dataset().file(row)==&newFile) {

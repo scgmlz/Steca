@@ -57,19 +57,24 @@ void Dataset::setHighlight(const Cluster* cluster) {
     if (cluster==highlight_)
         return;
     highlight_ = cluster;
+    TR("DS::sH(C) emit>");
     emit gSession->sigHighlight();
+    TR("DS::sH(C) emit<");
 }
 
 void Dataset::setHighlight(const Datafile* file) {
-    if (file==&highlight_->file())
+    if (highlight_ && file==&highlight_->file())
         return;
     for (const shp_Cluster& cluster : allClusters_) {
         if (&cluster->file()==file) {
             highlight_ = cluster.data();
+            TR("DS::sH(F) emit>");
             emit gSession->sigHighlight();
+            TR("DS::sH(F) emit<");
             return;
         }
     }
+    TR("DS::sH(F) never");
     NEVER
 }
 
@@ -95,8 +100,10 @@ void Dataset::onFileChanged() {
         file.offset_ = cnt;
         cnt += file.count();
     }
-    emit gSession->sigFiles();
     onClusteringChanged();
+    TR("DS::oFC emit>");
+    emit gSession->sigFiles();
+    TR("DS::oFC emit<");
 }
 
 void Dataset::onClusteringChanged() {
@@ -117,8 +124,9 @@ void Dataset::onClusteringChanged() {
             allClusters_.append(cluster);
         }
     }
-    qDebug() << "emit sigClusters";
+    TR("DS::oCC emit>");
     emit gSession->sigClusters();
+    TR("DS::oCC emit<");
 }
 
 void Dataset::assembleExperiment(const vec<int> fileNums) {
