@@ -169,12 +169,6 @@ void TheHub::removeFile(int i) {
         setImageCut(true, false, ImageCut());
 }
 
-// called from MainWin::addFiles and from sessionFromJson
-void TheHub::addGivenFiles(const QStringList& filePaths) THROWS {
-    TakesLongTime __;
-    gSession->dataset().addGivenFiles(filePaths);
-}
-
 void TheHub::saveSession(QFileInfo const& fileInfo) const {
     WriteFile file(fileInfo.filePath());
     QDir::setCurrent(fileInfo.absolutePath());
@@ -262,7 +256,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
         RUNTIME_CHECK(dir.makeAbsolute(), str("Invalid file path: %1").arg(filePath));
         paths.append(dir.absolutePath());
     }
-    addGivenFiles(paths);
+    gSession->dataset().addGivenFiles(paths);
 
     const QJsonArray& sels = top.loadArr("selected files", true);
     vec<int> selIndexes;

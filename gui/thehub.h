@@ -79,7 +79,6 @@ signals:
 public:
     // modifying methods:
     void removeFile(int);
-    void addGivenFiles(const QStringList& filePaths) THROWS;
     void sessionFromFile(rcstr&) THROWS;
     void onFilesSelected(const vec<int>);
     void combineMeasurementsBy(const int);

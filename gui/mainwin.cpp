@@ -283,10 +283,11 @@ void MainWin::addFiles() {
         this, "Add files", QDir::current().absolutePath(),
         "Data files (*.dat *.mar*);;All files (*.*)");
     update();
-    if (!fileNames.isEmpty()) {
-        QDir::setCurrent(QFileInfo(fileNames.at(0)).absolutePath());
-        gHub->addGivenFiles(fileNames);
-    }
+    if (fileNames.isEmpty())
+        return;
+    QDir::setCurrent(QFileInfo(fileNames.at(0)).absolutePath());
+    TakesLongTime __;
+    gSession->dataset().addGivenFiles(fileNames);
 }
 
 void MainWin::enableCorr() {
