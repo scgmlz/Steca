@@ -91,6 +91,7 @@ void ExperimentModel::updateMeta(vec<bool> const& metadataRows) {
 }
 
 void ExperimentModel::onClustersChanged() {
+    beginResetModel();
     // resize rowsChecked_ according to current Session data
     if (rowsChecked_.count()>rowCount())
         rowsChecked_.resize(rowCount());
@@ -99,6 +100,7 @@ void ExperimentModel::onClustersChanged() {
             rowsChecked_.append(true);
 
     setHighlight(qMin(rowCount()-1, rowHighlighted_));
+    endResetModel();
 }
 
 void ExperimentModel::onFileHighlight(const Datafile& newFile) {
@@ -287,12 +289,20 @@ SubframeMeasurements::SubframeMeasurements() : DockWidget("Measurements", "dock-
 
     // 'if incomplete' control
     controls_row->addStretch(1);
-    controls_row->addWidget(newQ::Label("if incomplete:"));
+    auto ifIncompleteLabel = newQ::Label("if incomplete:");
+    controls_row->addWidget(ifIncompleteLabel);
     auto ifIncomplete = new QComboBox;
     ifIncomplete->addItems({"keep", "drop"});
     controls_row->addWidget(ifIncomplete);
     connect(ifIncomplete, _SLOT_(QComboBox, currentIndexChanged, int),
             [this](int index) { gSession->dataset().setDropIncomplete(index); });
+    connect(gSession, &Session::sigClusters, [=]() {
+            if (gSession->dataset().hasIncomplete()) {
+                ifIncompleteLabel->show(); ifIncomplete->show();
+            } else {
+                ifIncompleteLabel->hide(); ifIncomplete->hide();
+            } });
+
     // TODO: add back connection (json->display)
     // TODO: deactivate this control if there is nothing to drop
 }

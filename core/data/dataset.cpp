@@ -105,6 +105,7 @@ void Dataset::onClusteringChanged() {
             allClusters_.append(cluster);
         }
     }
+    qDebug() << "emit sigClusters";
     emit gSession->sigClusters();
 }
 

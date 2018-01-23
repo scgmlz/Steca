@@ -68,6 +68,7 @@ public:
     int highlight() const { return highlight_; }
     int binning() const { return binning_; }
     bool dropIncomplete() const { return dropIncomplete_; }
+    bool hasIncomplete() const { return hasIncomplete_; }
     const QVector<shp_Cluster>& allClusters() const { return allClusters_; }
     QJsonArray to_json() const;
 
