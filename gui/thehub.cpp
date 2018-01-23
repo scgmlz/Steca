@@ -33,79 +33,111 @@ TheHub::TheHub()
     // create actions
 
     trigger_about = newQ::Trigger("About " + qApp->applicationName());
+
     trigger_online = newQ::Trigger("Open docs in external browser");
+
     trigger_checkUpdate = newQ::Trigger("Check for update");
+
     trigger_quit = newQ::Trigger("Quit");
-
-    toggle_viewStatusbar = newQ::Toggle("Statusbar", true);
-    toggle_viewFiles = newQ::Toggle("Files", true);
-    toggle_viewDatasets = newQ::Toggle("Datasets", true);
-    toggle_viewMetadata = newQ::Toggle("Metadata", true);
-    trigger_viewReset = newQ::Trigger("Reset");
-#ifndef Q_OS_OSX
-    toggle_fullScreen = newQ::Toggle("FullScreen", false);
-#endif
-
-    trigger_loadSession = newQ::Trigger("Load session...");
-    trigger_saveSession = newQ::Trigger("Save session...");
-    trigger_clearSession = newQ::Trigger("Clear session");
-
-    trigger_addFiles = newQ::Trigger("Add files...", ":/icon/add");
-    trigger_removeFile = newQ::Trigger("Remove selected file(s)", ":/icon/rem");
-    toggle_enableCorr = newQ::Toggle("Enable correction file...", false, ":/icon/useCorrection");
-    trigger_removeCorr = newQ::Trigger("Remove correction file", ":/icon/clear");
-
-    trigger_rotateImage = newQ::Trigger("Rotate", ":/icon/rotate0");
-    toggle_mirrorImage = newQ::Toggle("Mirror", false, ":/icon/mirrorHorz");
-    toggle_linkCuts = newQ::Toggle("Link cuts", false, ":/icon/link");
-    toggle_showOverlay = newQ::Toggle("Show overlay", false, ":/icon/crop");
-    toggle_stepScale = newQ::Toggle("Scale in steps", false, ":/icon/steps");
-    toggle_showBins = newQ::Toggle("Show bins", false, ":/icon/angle");
-
-    toggle_fixedIntenImage = newQ::Toggle("Global intensity scale", false, ":/icon/scale");
-    toggle_fixedIntenDgram = newQ::Toggle("Fixed intensity scale", false);
-
-    toggle_combinedDgram = newQ::Toggle("All measurements", true);
-
-    toggle_selRegions = newQ::Toggle("Select regions", false, ":/icon/selRegion");
-    toggle_showBackground = newQ::Toggle("Show fitted background", false, ":/icon/showBackground");
-    trigger_clearBackground = newQ::Trigger("Clear background regions", ":/icon/clear");
-    trigger_clearReflections = newQ::Trigger("Clear reflections", ":/icon/clear");
-
-    trigger_addReflection = newQ::Trigger("Add reflection", ":/icon/add");
-    trigger_removeReflection = newQ::Trigger("Remove reflection", ":/icon/rem");
-
-    trigger_outputPolefigures = newQ::Trigger("Pole figures...");
-    trigger_outputDiagrams = newQ::Trigger("Diagrams...");
-    trigger_outputDiffractograms = newQ::Trigger("Diffractograms...");
-
-    // key shortcuts
-
     trigger_quit->setShortcut(QKeySequence::Quit);
 
+    toggle_viewStatusbar = newQ::Toggle("Statusbar", true);
     toggle_viewStatusbar->setShortcut(Qt::Key_F12);
+
+    toggle_viewFiles = newQ::Toggle("Files", true);
     toggle_viewFiles->setShortcut(Qt::Key_F8);
+
+    toggle_viewDatasets = newQ::Toggle("Datasets", true);
     toggle_viewDatasets->setShortcut(Qt::Key_F9);
+
+    toggle_viewMetadata = newQ::Toggle("Metadata", true);
     toggle_viewMetadata->setShortcut(Qt::Key_F10);
 
+    trigger_viewReset = newQ::Trigger("Reset");
+
 #ifndef Q_OS_OSX
+    toggle_fullScreen = newQ::Toggle("FullScreen", false);
     toggle_fullScreen->setShortcut(Qt::Key_F11);
 #endif
 
+    trigger_loadSession = newQ::Trigger("Load session...");
+
+    trigger_saveSession = newQ::Trigger("Save session...");
+
+    trigger_clearSession = newQ::Trigger("Clear session");
+
+    trigger_addFiles = newQ::Trigger("Add files...", ":/icon/add");
     trigger_addFiles->setShortcut(Qt::CTRL | Qt::Key_O);
+
+    trigger_removeFile = newQ::Trigger("Remove selected file(s)", ":/icon/rem");
     trigger_removeFile->setShortcut(QKeySequence::Delete);
+    trigger_removeFile->setEnabled(false);
+    QObject::connect(gSession, &Session::sigFiles, [this]() {
+            trigger_removeFile->setEnabled(gSession->dataset().countFiles()); });
+
+    toggle_enableCorr = newQ::Toggle("Enable correction file...", false, ":/icon/useCorrection");
     toggle_enableCorr->setShortcut(Qt::SHIFT | Qt::CTRL | Qt::Key_C);
-
-    trigger_rotateImage->setShortcut(Qt::CTRL | Qt::Key_R);
-
-    // handle signals
-
-    connect(trigger_clearBackground, &QAction::triggered, [this]() { setBgRanges({}); });
-
-    QObject::connect(this, &TheHub::sigCorrFile,
-            [this](const Rawfile* file) { trigger_removeCorr->setEnabled(file); });
+    connect(toggle_enableCorr, &QAction::toggled, [this](bool on) { tryEnableCorrection(on); });
     QObject::connect(this, &TheHub::sigCorrEnabled,
             [this](bool on) { toggle_enableCorr->setChecked(on); });
+
+    trigger_removeCorr = newQ::Trigger("Remove correction file", ":/icon/clear");
+    connect(trigger_removeCorr, &QAction::triggered, [this]() { setCorrFile(""); });
+    QObject::connect(this, &TheHub::sigCorrFile,
+            [this](const Rawfile* file) { trigger_removeCorr->setEnabled(file); });
+
+    trigger_rotateImage = newQ::Trigger("Rotate", ":/icon/rotate0");
+    trigger_rotateImage->setShortcut(Qt::CTRL | Qt::Key_R);
+    connect(trigger_rotateImage, &QAction::triggered, [this]() {
+        setImageRotate(gSession->imageTransform().nextRotate()); });
+
+    toggle_mirrorImage = newQ::Toggle("Mirror", false, ":/icon/mirrorHorz");
+    connect(toggle_mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
+
+    toggle_linkCuts = newQ::Toggle("Link cuts", false, ":/icon/link");
+
+    toggle_showOverlay = newQ::Toggle("Show overlay", false, ":/icon/crop");
+
+    toggle_stepScale = newQ::Toggle("Scale in steps", false, ":/icon/steps");
+
+    toggle_showBins = newQ::Toggle("Show bins", false, ":/icon/angle");
+
+    toggle_fixedIntenImage = newQ::Toggle("Global intensity scale", false, ":/icon/scale");
+    connect(toggle_fixedIntenImage, &QAction::toggled, [this](bool on) {
+        isFixedIntenImageScale_ = on;
+        emit sigDisplayChanged(); });
+
+    toggle_fixedIntenDgram = newQ::Toggle("Fixed intensity scale", false);
+    connect(toggle_fixedIntenDgram, &QAction::toggled, [this](bool on) {
+        isFixedIntenDgramScale_ = on;
+        emit sigDisplayChanged(); });
+
+    toggle_combinedDgram = newQ::Toggle("All measurements", true);
+    toggle_combinedDgram->setChecked(false);
+    connect(toggle_combinedDgram, &QAction::toggled, [this](bool on) {
+        isCombinedDgram_ = on;
+        emit sigDisplayChanged(); });
+
+    toggle_selRegions = newQ::Toggle("Select regions", false, ":/icon/selRegion");
+
+    toggle_showBackground = newQ::Toggle("Show fitted background", false, ":/icon/showBackground");
+
+    trigger_clearBackground = newQ::Trigger("Clear background regions", ":/icon/clear");
+    connect(trigger_clearBackground, &QAction::triggered, [this]() { setBgRanges({}); });
+
+    trigger_clearReflections = newQ::Trigger("Clear reflections", ":/icon/clear");
+
+    trigger_addReflection = newQ::Trigger("Add reflection", ":/icon/add");
+
+    trigger_removeReflection = newQ::Trigger("Remove reflection", ":/icon/rem");
+    trigger_removeReflection->setEnabled(false);
+
+    trigger_outputPolefigures = newQ::Trigger("Pole figures...");
+
+    trigger_outputDiagrams = newQ::Trigger("Diagrams...");
+
+    trigger_outputDiffractograms = newQ::Trigger("Diffractograms...");
+
 
     auto deselect = [this]() {
         toggle_fixedIntenImage->setChecked(false);
@@ -117,33 +149,6 @@ TheHub::TheHub()
     QObject::connect(this, &TheHub::sigClustersChanged, [deselect]() { deselect(); });
     QObject::connect(this, &TheHub::sigCorrEnabled, [deselect]() { deselect(); });
 
-    trigger_removeFile->setEnabled(false);
-    trigger_removeReflection->setEnabled(false);
-
-    connect(toggle_enableCorr, &QAction::toggled, [this](bool on) { tryEnableCorrection(on); });
-
-    connect(trigger_removeCorr, &QAction::triggered, [this]() { setCorrFile(""); });
-
-    connect(toggle_fixedIntenImage, &QAction::toggled, [this](bool on) {
-        isFixedIntenImageScale_ = on;
-        emit sigDisplayChanged();
-    });
-
-    connect(toggle_fixedIntenDgram, &QAction::toggled, [this](bool on) {
-        isFixedIntenDgramScale_ = on;
-        emit sigDisplayChanged();
-    });
-
-    toggle_combinedDgram->setChecked(false);
-    connect(toggle_combinedDgram, &QAction::toggled, [this](bool on) {
-        isCombinedDgram_ = on;
-        emit sigDisplayChanged();
-    });
-
-    connect(toggle_mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
-
-    connect(trigger_rotateImage, &QAction::triggered, [this]() {
-        setImageRotate(gSession->imageTransform().nextRotate()); });
 
     saveDir = settings_.readStr("export_directory");
     saveFmt = settings_.readStr("export_format");
@@ -160,7 +165,6 @@ TheHub::~TheHub() {
 void TheHub::removeFile(int i) {
     gSession->dataset().removeFile(i);
     int numFiles = gSession->dataset().countFiles();
-    trigger_removeFile->setEnabled(numFiles);
     if (!numFiles)
         setImageCut(true, false, ImageCut());
 }
@@ -168,10 +172,7 @@ void TheHub::removeFile(int i) {
 // called from MainWin::addFiles and from sessionFromJson
 void TheHub::addGivenFiles(const QStringList& filePaths) THROWS {
     TakesLongTime __;
-    if (!gSession->dataset().addGivenFiles(filePaths))
-        return;
-    trigger_removeFile->setEnabled(true);
-    emit sigFilesLoaded();
+    gSession->dataset().addGivenFiles(filePaths);
 }
 
 void TheHub::saveSession(QFileInfo const& fileInfo) const {

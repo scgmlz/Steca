@@ -33,7 +33,7 @@ public:
     void setHighlight(int row);
     void onFileHighlight(const Datafile&);
     void removeFile();
-    void onFilesLoaded();
+    void onFilesChanged();
 
     int columnCount() const final { return 3; }
     int rowCount() const final { return gSession->dataset().countFiles(); }
@@ -80,7 +80,7 @@ void FilesModel::removeFile() {
     setHighlight(qMin(row, rowCount()-1));
 }
 
-void FilesModel::onFilesLoaded() {
+void FilesModel::onFilesChanged() {
     beginResetModel();
     while (rowsChecked_.count()<rowCount())
         rowsChecked_.append(true);
@@ -174,7 +174,7 @@ FilesView::FilesView() : ListView() {
     auto filesModel = new FilesModel();
     setModel(filesModel);
 
-    connect(gHub, &TheHub::sigFilesLoaded, model(), &FilesModel::onFilesLoaded);
+    connect(gSession, &Session::sigFiles, model(), &FilesModel::onFilesChanged);
     connect(gHub->trigger_removeFile, &QAction::triggered, model(), &FilesModel::removeFile);
     connect(gSession, &Session::sigFileHighlight, model(), &FilesModel::onFileHighlight);
     connect(this, &FilesView::clicked, model(), &FilesModel::onClicked);

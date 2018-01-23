@@ -106,6 +106,7 @@ public:
     qreal calcAvgBackground() const;
 
 signals:
+    void sigFiles(); //!< list of loaded files has changed
     void sigFileHighlight(const Datafile&); //!< highlighted File has changed
     void sigClusters(); //!< list of clusters has changed
 

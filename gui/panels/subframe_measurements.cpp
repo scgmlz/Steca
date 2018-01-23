@@ -30,7 +30,7 @@ public:
     void onClicked(const QModelIndex &);
     void setHighlight(int row);
     void updateMeta(vec<bool> const&);
-    void onFilesChanged();
+    void onClustersChanged();
     void onFileHighlight(const Datafile&);
 
     int rowCount() const final { return allClusters_.count(); }
@@ -90,18 +90,15 @@ void ExperimentModel::updateMeta(vec<bool> const& metadataRows) {
     endResetModel();
 }
 
-void ExperimentModel::onFilesChanged() {
-    TR("ON FILES CHANGED")
+void ExperimentModel::onClustersChanged() {
     // resize rowsChecked_ according to current Session data
     if (rowsChecked_.count()>rowCount())
         rowsChecked_.resize(rowCount());
     else
         while (rowsChecked_.count()<rowCount())
             rowsChecked_.append(true);
-    // consequences for highlighting
-    setHighlight(rowCount()-1);
-    qDebug() << " ====> rowCount()=" << rowCount() << ", #rChecked=" << rowsChecked_.count()
-             << ", highlighted=" << rowHighlighted_;
+
+    setHighlight(qMin(rowCount()-1, rowHighlighted_));
 }
 
 void ExperimentModel::onFileHighlight(const Datafile& newFile) {
@@ -203,7 +200,9 @@ public:
 
 private:
     void currentChanged(QModelIndex const&, QModelIndex const&) override final;
+    void onClustersChanged();
     void onFileHighlight(const Datafile& newFile);
+    void updateScroll();
     int sizeHintForColumn(int) const override final;
     ExperimentModel* model() const final {
         return static_cast<ExperimentModel*>(ListView::model()); }
@@ -214,6 +213,7 @@ ExperimentView::ExperimentView() : ListView() {
     setSelectionMode(QAbstractItemView::NoSelection);
     auto experimentModel = new ExperimentModel();
     setModel(experimentModel);
+    /* TODO replace
     connect(gHub, &TheHub::sigFilesSelected, model(), &ExperimentModel::onFilesChanged);
     connect(gHub, &TheHub::sigClustersChanged,
             [this]() {
@@ -225,18 +225,29 @@ ExperimentView::ExperimentView() : ListView() {
                 model()->updateMeta(rowsChecked);
                 setHeaderHidden(model()->metaCount()==0);
             });
+    */
+    connect(gSession, &Session::sigClusters, this, &ExperimentView::onClustersChanged);
     connect(gSession, &Session::sigFileHighlight, this, &ExperimentView::onFileHighlight);
     connect(this, &ExperimentView::clicked, model(), &ExperimentModel::onClicked);
 }
 
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
 void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
-    scrollTo(current);
     model()->setHighlight(current.row());
+    updateScroll();
+}
+
+void ExperimentView::onClustersChanged() {
+    model()->onClustersChanged();
+    updateScroll();
 }
 
 void ExperimentView::onFileHighlight(const Datafile& newFile) {
     model()->onFileHighlight(newFile);
+    updateScroll();
+}
+
+void ExperimentView::updateScroll() {
     scrollTo(model()->index(model()->rowHighlighted(),0));
 }
 
@@ -269,9 +280,10 @@ SubframeMeasurements::SubframeMeasurements() : DockWidget("Measurements", "dock-
     controls_row->addWidget(combineMeasurements);
     combineMeasurements->setToolTip("Combine and average number of cluster");
     connect(combineMeasurements, _SLOT_(QSpinBox, valueChanged, int),
-            [this](int num) { gHub->combineMeasurementsBy(qMax(1, num)); });
-    connect(gHub, &TheHub::sigClustersChanged,
-            [=]() { combineMeasurements->setValue(gSession->dataset().binning()); });
+            [this](int num) { gSession->dataset().setBinning(num); });
+    // TODO restore back connection
+    //connect(gHub, &TheHub::sigClustersChanged,
+    //        [=]() { combineMeasurements->setValue(gSession->dataset().binning()); });
 
     // 'if incomplete' control
     controls_row->addStretch(1);

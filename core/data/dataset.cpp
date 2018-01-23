@@ -33,20 +33,17 @@ void Dataset::clear() {
 }
 
 //! Returns true if some file was loaded
-bool Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
-    bool ret = false;
+void Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
     for (const QString& path: filePaths) {
         if (path.isEmpty() || hasFile(path))
             continue;
         QSharedPointer<const Rawfile> rawfile = load::loadRawfile(path);
         if (rawfile.isNull())
             continue;
-        ret = true;
         gSession->setImageSize(rawfile->imageSize());
         files_.push_back(Datafile(rawfile));
     }
     onFileChanged();
-    return ret;
 }
 
 void Dataset::removeFile(int i) { // TODO rm arg
@@ -86,6 +83,7 @@ void Dataset::onFileChanged() {
         file.offset_ = cnt;
         cnt += file.count();
     }
+    emit gSession->sigFiles();
     onClusteringChanged();
 }
 
@@ -107,6 +105,7 @@ void Dataset::onClusteringChanged() {
             allClusters_.append(cluster);
         }
     }
+    emit gSession->sigClusters();
 }
 
 void Dataset::assembleExperiment(const vec<int> fileNums) {

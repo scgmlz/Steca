@@ -53,7 +53,7 @@ class Dataset final {
 public:
     // Modifying methods:
     void clear();
-    bool addGivenFiles(const QStringList& filePaths) THROWS;
+    void addGivenFiles(const QStringList& filePaths) THROWS;
     void removeFile(int i);
     void setHighlight(const Datafile&);
     void setBinning(int by);
