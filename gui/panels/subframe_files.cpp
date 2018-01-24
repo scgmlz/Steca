@@ -227,8 +227,8 @@ SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files") {
     auto* corrFile_ = new QLineEdit();
     corrFile_->setReadOnly(true);
     h->addWidget(corrFile_);
+    h->addWidget(newQ::IconButton(gHub->trigger_corrFile));
     h->addWidget(newQ::IconButton(gHub->toggle_enableCorr));
-    h->addWidget(newQ::IconButton(gHub->trigger_removeCorr));
 
     connect(gHub, &TheHub::sigCorrFile,
             [corrFile_](const Rawfile* file) {

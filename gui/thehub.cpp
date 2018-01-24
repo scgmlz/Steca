@@ -69,22 +69,26 @@ TheHub::TheHub()
     trigger_addFiles = newQ::Trigger("Add files...", ":/icon/add");
     trigger_addFiles->setShortcut(Qt::CTRL | Qt::Key_O);
 
-    trigger_removeFile = newQ::Trigger("Remove selected file(s)", ":/icon/rem");
+    trigger_removeFile = newQ::Trigger("Remove highlighted file", ":/icon/rem");
     trigger_removeFile->setShortcut(QKeySequence::Delete);
     trigger_removeFile->setEnabled(false);
     QObject::connect(gSession, &Session::sigFiles, [this]() {
             trigger_removeFile->setEnabled(gSession->dataset().countFiles()); });
 
-    toggle_enableCorr = newQ::Toggle("Enable correction file...", false, ":/icon/useCorrection");
-    toggle_enableCorr->setShortcut(Qt::SHIFT | Qt::CTRL | Qt::Key_C);
+    trigger_corrFile = newQ::Trigger("Add correction file", ":/icon/add");
+    trigger_corrFile->setShortcut(Qt::SHIFT | Qt::CTRL | Qt::Key_O);
+    connect(trigger_corrFile, &QAction::triggered, [this]() { setCorrFile(""); });
+    QObject::connect(this, &TheHub::sigCorrFile, [this](const Rawfile* file) {
+            trigger_corrFile->setIcon(QIcon(file ? ":/icon/rem" : ":/icon/add"));
+            QString text = QString(file ? "Remove" : "Add") + " correction file";
+            trigger_corrFile->setText(text);
+            trigger_corrFile->setToolTip(text.toLower());
+        });
+
+    toggle_enableCorr = newQ::Toggle("Enable correction file", false, ":/icon/useCorrection");
     connect(toggle_enableCorr, &QAction::toggled, [this](bool on) { tryEnableCorrection(on); });
     QObject::connect(this, &TheHub::sigCorrEnabled,
             [this](bool on) { toggle_enableCorr->setChecked(on); });
-
-    trigger_removeCorr = newQ::Trigger("Remove correction file", ":/icon/clear");
-    connect(trigger_removeCorr, &QAction::triggered, [this]() { setCorrFile(""); });
-    QObject::connect(this, &TheHub::sigCorrFile,
-            [this](const Rawfile* file) { trigger_removeCorr->setEnabled(file); });
 
     trigger_rotateImage = newQ::Trigger("Rotate", ":/icon/rotate0");
     trigger_rotateImage->setShortcut(Qt::CTRL | Qt::Key_R);
