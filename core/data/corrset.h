@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/data/dataset.h
-//! @brief     Defines class Dataset
+//! @file      core/data/corrset.h
+//! @brief     Defines class Corrset
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef DATASET_H
-#define DATASET_H
+#ifndef CORRSET_H
+#define CORRSET_H
 
 #include "core/calc/lens.h"
 #include "core/calc/reflection.h"
@@ -27,9 +27,9 @@
 #include <QSharedPointer> // no auto rm
 #include <vector>
 
-//! A RawFile and associated information.
+//! A correction RawFile and associated information.
 
-class Datafile final {
+class Corrfile final {
 public:
     Datafile() = delete;
     Datafile(Datafile&&) = default;
@@ -95,4 +95,4 @@ private:
     bool hasFile(rcstr fileName) const;
 };
 
-#endif // DATASET_H
+#endif // CORRSET_H
