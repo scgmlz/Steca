@@ -49,8 +49,7 @@ QLabel* Icon(rcstr fileName);
 QLineEdit* LineDisplay(int ndigits, bool withDot);
 
 QSpinBox* SpinBox(int ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX);
-QDoubleSpinBox* DoubleSpinBox(
-    int ndigits, bool withDot, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
+QDoubleSpinBox* DoubleSpinBox(int ndigits, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
 
 QCheckBox* CheckBox(rcstr text);
 QCheckBox* CheckBox(QAction*);

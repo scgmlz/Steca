@@ -436,7 +436,7 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
     hb->addWidget(newQ::Label(" intensity from:"));
     hb->addWidget((intenSum_ = newQ::RadioButton("sum")));
     hb->addWidget((intenAvg_ = newQ::RadioButton("avg ×")));
-    hb->addWidget((intenScale_ = newQ::DoubleSpinBox(6, true, 0.001)));
+    hb->addWidget((intenScale_ = newQ::DoubleSpinBox(6, 0.001)));
     intenScale_->setDecimals(3);
 
     connect(intenAvg_, &QRadioButton::toggled, [this](bool on) {

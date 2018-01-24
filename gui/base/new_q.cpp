@@ -101,17 +101,20 @@ QLineEdit* newQ::LineDisplay(int ndigits, bool withDot) {
     return ret;
 }
 
+// A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.
+// However, sometimes we want to make a QSpinBox exactly as wide as a given QDoubleSpinBox,
+// for nice vertical alignement. Then we use withDot=true.
 QSpinBox* newQ::SpinBox(int ndigits, bool withDot, int min, int max) {
     auto ret = new QSpinBox;
-    setWidth(ret, ndigits, withDot); // TODO: why would this ever have a dot
+    setWidth(ret, ndigits, withDot);
     ret->setMinimum(min);
     ret->setMaximum(max > min ? max : min);
     return ret;
 }
 
-QDoubleSpinBox* newQ::DoubleSpinBox(int ndigits, bool withDot, qreal min, qreal max) {
+QDoubleSpinBox* newQ::DoubleSpinBox(int ndigits, qreal min, qreal max) {
     auto ret = new QDoubleSpinBox;
-    setWidth(ret, ndigits, withDot); // TODO: why would this ever have no dot
+    setWidth(ret, ndigits, true);
     ret->setMinimum(min);
     ret->setMaximum(max > min ? max : min);
     return ret;

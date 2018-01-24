@@ -252,9 +252,9 @@ DataImageTab::DataImageTab() {
     controls_->addWidget((numSlice_ = newQ::SpinBox(4, false, 1)));
 
     controls_->addWidget(newQ::Label("min"));
-    controls_->addWidget((minGamma_ = newQ::DoubleSpinBox(6, true)));
+    controls_->addWidget((minGamma_ = newQ::DoubleSpinBox(6)));
     controls_->addWidget(newQ::Label("max"));
-    controls_->addWidget((maxGamma_ = newQ::DoubleSpinBox(6, true)));
+    controls_->addWidget((maxGamma_ = newQ::DoubleSpinBox(6)));
 
     minGamma_->setReadOnly(true);
     maxGamma_->setReadOnly(true);
