@@ -50,7 +50,6 @@ public:
     ~TheHub();
 
 signals:
-    void sigFilesLoaded(); //!< at least one file has been newly loaded
     void sigFilesSelected(); //!< active file selection has changed
 
     void sigClustersChanged(); //!< the set of cluster collected from selected

@@ -262,45 +262,53 @@ int ExperimentView::sizeHintForColumn(int col) const {
 
 
 // ************************************************************************** //
-//  class SubframeMeasurements
+//  class ExperimentControls
 // ************************************************************************** //
 
-SubframeMeasurements::SubframeMeasurements() : DockWidget("Measurements", "dock-cluster") {
+class ExperimentControls : public QWidget {
+public:
+    ExperimentControls();
+};
 
-    // subframe item #1: list of measurements
-    box_->addWidget(new ExperimentView());
+ExperimentControls::ExperimentControls() {
 
-    // subframe item #2: controls row
-    auto controls_row = newQ::HBoxLayout();
-    box_->addLayout(controls_row);
+    auto layout = newQ::HBoxLayout();
+    setLayout(layout);
 
     // 'combine' control
-    controls_row->addWidget(newQ::Label("combine:"));
+    layout->addWidget(newQ::Label("combine:"));
     auto combineMeasurements = newQ::SpinBox(4, false, 1);
-    controls_row->addWidget(combineMeasurements);
+    layout->addWidget(combineMeasurements);
     combineMeasurements->setToolTip("Combine and average number of cluster");
     connect(combineMeasurements, _SLOT_(QSpinBox, valueChanged, int),
             [this](int num) { gSession->dataset().setBinning(num); });
-    // TODO restore back connection
-    //connect(gHub, &TheHub::sigClustersChanged,
-    //        [=]() { combineMeasurements->setValue(gSession->dataset().binning()); });
 
     // 'if incomplete' control
-    controls_row->addStretch(1);
+    layout->addStretch(1);
     auto ifIncompleteLabel = newQ::Label("if incomplete:");
-    controls_row->addWidget(ifIncompleteLabel);
+    layout->addWidget(ifIncompleteLabel);
     auto ifIncomplete = new QComboBox;
     ifIncomplete->addItems({"keep", "drop"});
-    controls_row->addWidget(ifIncomplete);
+    layout->addWidget(ifIncomplete);
     connect(ifIncomplete, _SLOT_(QComboBox, currentIndexChanged, int),
             [this](int index) { gSession->dataset().setDropIncomplete(index); });
+
+    // back connection, to change controls from saved session
     connect(gSession, &Session::sigClusters, [=]() {
+            combineMeasurements->setValue(gSession->dataset().binning());
             if (gSession->dataset().hasIncomplete()) {
                 ifIncompleteLabel->show(); ifIncomplete->show();
             } else {
                 ifIncompleteLabel->hide(); ifIncomplete->hide();
-            } });
+            }
+        });
+}
 
-    // TODO: add back connection (json->display)
-    // TODO: deactivate this control if there is nothing to drop
+// ************************************************************************** //
+//  class SubframeMeasurements
+// ************************************************************************** //
+
+SubframeMeasurements::SubframeMeasurements() : DockWidget("Measurements", "dock-cluster") {
+    box_->addWidget(new ExperimentView()); // list of Cluster|s
+    box_->addWidget(new ExperimentControls()); // controls row
 }
