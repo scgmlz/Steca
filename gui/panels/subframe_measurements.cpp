@@ -220,19 +220,6 @@ ExperimentView::ExperimentView() : ListView() {
     setSelectionMode(QAbstractItemView::NoSelection);
     auto experimentModel = new ExperimentModel();
     setModel(experimentModel);
-    /* TODO replace
-    connect(gHub, &TheHub::sigFilesSelected, model(), &ExperimentModel::onFilesChanged);
-    connect(gHub, &TheHub::sigClustersChanged,
-            [this]() {
-                model()->signalReset();
-                setCurrentIndex(model()->index(0,0));
-            });
-    connect(gHub, &TheHub::sigMetatagsChosen, experimentModel,
-            [this](vec<bool> const& rowsChecked) {
-                model()->updateMeta(rowsChecked);
-                setHeaderHidden(model()->metaCount()==0);
-            });
-    */
     connect(gSession, &Session::sigClusters, this, &ExperimentView::onClustersChanged);
     connect(gSession, &Session::sigHighlight, this, &ExperimentView::onHighlight);
     connect(gSession, &Session::sigMetaSelection, this, &ExperimentView::onMetaSelection);

@@ -74,8 +74,6 @@ signals:
 
     void sigFittingTab(eFittingTab);
 
-    void sigMetatagsChosen(vec<bool>); //!< Selection of metadata has changed
-
 public:
     // modifying methods:
     void removeFile(int);
