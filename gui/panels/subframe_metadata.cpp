@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/subframe_metadata.cpp
-//! @brief     Implements class SubframeMetadata
+//! @brief     Implements class SubframeMetadata, with local model and view
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -29,7 +29,7 @@ public:
     MetadataModel();
 
     void reset();
-    void flipCheck(int row);
+    void onClicked(const QModelIndex &);
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return Metadata::numAttributes(false); }
@@ -54,9 +54,11 @@ void MetadataModel::reset() {
     signalReset();
 }
 
-void MetadataModel::flipCheck(int row) {
+void MetadataModel::onClicked(const QModelIndex &cell) {
+    int row = cell.row();
     rowsChecked_[row] = !rowsChecked_[row];
     signalReset();
+    emit gSession->setMetaSelection(rowsChecked_);
 }
 
 QVariant MetadataModel::data(const QModelIndex& index, int role) const {
@@ -102,10 +104,7 @@ MetadataView::MetadataView() : ListView() {
     auto metadataModel = new MetadataModel();
     setModel(metadataModel);
     connect(gSession, &Session::sigHighlight, model(), &MetadataModel::reset);
-    connect(this, &MetadataView::clicked, [this](QModelIndex const& index) {
-        model()->flipCheck(index.row());
-        emit gHub->sigMetatagsChosen(model()->rowsChecked());
-    });
+    connect(this, &MetadataView::clicked, model(), &MetadataModel::onClicked);
 }
 
 int MetadataView::sizeHintForColumn(int col) const {

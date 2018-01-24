@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/subframe_files.cpp
-//! @brief     Implements class SubframeFiles; defines and implements class FileViews
+//! @brief     Implements class SubframeFiles, with local model and view
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)

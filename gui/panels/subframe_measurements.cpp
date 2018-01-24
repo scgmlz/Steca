@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/subframe_measurements.cpp
-//! @brief     Implements class SubframeMeasurements
+//! @brief     Implements class SubframeMeasurements, with local model and view
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -29,9 +29,9 @@ class ExperimentModel final : public TableModel { // < QAbstractTableModel < QAb
 public:
     void onClicked(const QModelIndex &);
     void setHighlight(int row);
-    void updateMeta(vec<bool> const&);
     void onClustersChanged();
     void onHighlight();
+    void onMetaSelection();
 
     int rowCount() const final { return allClusters_.count(); }
     QVariant data(const QModelIndex&, int) const final;
@@ -81,15 +81,6 @@ void ExperimentModel::setHighlight(int row) {
         gSession->dataset().setHighlight(highlighted_);
 }
 
-void ExperimentModel::updateMeta(vec<bool> const& metadataRows) {
-    beginResetModel();
-    metaInfoNums_.clear();
-    for_i (metadataRows.count())
-        if (metadataRows.at(i))
-            metaInfoNums_.append(i);
-    endResetModel();
-}
-
 void ExperimentModel::onClustersChanged() {
     beginResetModel();
     // resize rowsChecked_ according to current Session data
@@ -114,6 +105,18 @@ void ExperimentModel::onHighlight() {
         }
     }
     NEVER
+}
+
+void ExperimentModel::onMetaSelection() {
+    beginResetModel();
+    metaInfoNums_.clear();
+    const vec<bool>& selection = gSession->getMetaSelection();
+    for_i (selection.count())
+        if (selection.at(i))
+            metaInfoNums_.append(i);
+    emit dataChanged(createIndex(0,COL_ATTRS), createIndex(rowCount(),columnCount()));
+    emit headerDataChanged(Qt::Horizontal, COL_ATTRS, columnCount());
+    endResetModel();
 }
 
 QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
@@ -205,6 +208,7 @@ private:
     void currentChanged(QModelIndex const&, QModelIndex const&) override final;
     void onClustersChanged();
     void onHighlight();
+    void onMetaSelection();
     void updateScroll();
     int sizeHintForColumn(int) const override final;
     ExperimentModel* model() const final {
@@ -231,6 +235,7 @@ ExperimentView::ExperimentView() : ListView() {
     */
     connect(gSession, &Session::sigClusters, this, &ExperimentView::onClustersChanged);
     connect(gSession, &Session::sigHighlight, this, &ExperimentView::onHighlight);
+    connect(gSession, &Session::sigMetaSelection, this, &ExperimentView::onMetaSelection);
     connect(this, &ExperimentView::clicked, model(), &ExperimentModel::onClicked);
 }
 
@@ -248,6 +253,11 @@ void ExperimentView::onClustersChanged() {
 void ExperimentView::onHighlight() {
     model()->onHighlight();
     updateScroll();
+}
+
+void ExperimentView::onMetaSelection() {
+    model()->onMetaSelection();
+    setHeaderHidden(model()->metaCount()==0);
 }
 
 void ExperimentView::updateScroll() {

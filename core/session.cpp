@@ -106,6 +106,11 @@ void Session::removeCorrFile() {
     updateImageSize();
 }
 
+void Session::setMetaSelection(const vec<bool>& metaSelection) {
+    metaSelection_ = metaSelection;
+    emit gSession->sigMetaSelection();
+}
+
 void Session::updateImageSize() {
     if (0 == dataset().countFiles() && !hasCorrFile())
         imageSize_ = size2d(0, 0);

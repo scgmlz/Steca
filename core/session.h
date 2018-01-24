@@ -52,6 +52,9 @@ public:
     void setCorrFile(rcstr filePath) THROWS;
     void removeCorrFile();
 
+    void setMetaSelection(const vec<bool>&);
+    const vec<bool>& getMetaSelection() { return metaSelection_; }
+
     void setImageTransformMirror(bool);
     void setImageTransformRotate(ImageTransform const&);
     void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
@@ -109,11 +112,14 @@ signals:
     void sigFiles(); //!< list of loaded files has changed
     void sigClusters(); //!< list of clusters has changed
     void sigHighlight(); //!< highlighted File or/and Cluster has changed
+    void sigMetaSelection(); //!< meta data selected for display have changed
 
 private:
     friend Dataset; // TODO try to get rid of this
     Dataset dataset_;
     QSharedPointer<Rawfile> corrFile_; //!< correction file
+
+    vec<bool> metaSelection_; //!< true if meta datum is to be displayed
     shp_Image corrImage_;
     bool corrEnabled_;
     bool intenScaledAvg_; // if not, summed
