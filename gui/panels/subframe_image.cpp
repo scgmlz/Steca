@@ -292,7 +292,7 @@ void DataImageTab::render() {
         spinN_->setValue(n);
         spinN_->setEnabled(by > 1);
 
-        shp_SequenceLens lens = gSession->defaultClusterLens(*cluster_);
+        shp_SequenceLens lens = gSession->highlightsLens();
 
         Range rge;
         if (nSlices > 0) {

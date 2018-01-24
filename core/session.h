@@ -95,6 +95,7 @@ public:
 
     shp_ImageLens imageLens(const Image&, bool trans, bool cut) const;
     shp_SequenceLens defaultClusterLens(Sequence const& seq) const;
+    shp_SequenceLens highlightsLens() const;
 
     ReflectionInfos makeReflectionInfos(
         Reflection const&, int gmaSlices, const Range&, Progress*) const;

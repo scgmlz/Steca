@@ -178,6 +178,10 @@ shp_SequenceLens Session::defaultClusterLens(Sequence const& seq) const {
     return dataseqLens(seq, norm_, true, true);
 }
 
+shp_SequenceLens Session::highlightsLens() const {
+    return dataseqLens(*dataset().highlightedCluster(), norm_, true, true);
+}
+
 Curve Session::curveMinusBg(SequenceLens const& lens, const Range& rgeGma) const {
     Curve curve = lens.makeCurve(rgeGma);
     const Polynom f = Polynom::fromFit(bgPolyDegree_, curve, bgRanges_);

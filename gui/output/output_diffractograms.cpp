@@ -80,23 +80,19 @@ public:
 
 namespace {
 
-OutputData collectCurve(Cluster const& dataseq) {
-    shp_SequenceLens lens = gSession->defaultClusterLens(dataseq);
-    const Curve& curve = lens->makeCurve();
-    return OutputData(curve, dataseq, lens->rgeGma(), 0); // TODO current picture number
-}
-
 OutputData outputCurrDiffractogram() {
-    const Cluster* ret = gHub->selectedCluster();
-    if (!ret)
+    const Cluster* cluster = gSession->dataset().highlightedCluster();
+    if (!cluster)
         throw Exception("No data selected");
-    return collectCurve(*ret);
+    shp_SequenceLens lens = gSession->defaultClusterLens(*cluster);
+    const Curve& curve = lens->makeCurve();
+    return OutputData(curve, *cluster, lens->rgeGma(), 0); // TODO current picture number
 }
 
 vec<const OutputData*> collectCurves(
-    const Range& rgeGma, int gmaSlices, Cluster const& dataseq, int picNum) {
+    const Range& rgeGma, int gmaSlices, Cluster const& cluster, int picNum) {
 
-    shp_SequenceLens lens = gSession->defaultClusterLens(dataseq);
+    shp_SequenceLens lens = gSession->defaultClusterLens(cluster);
 
     Range rge = (gmaSlices > 0) ? lens->rgeGma() : Range::infinite();
     if (rgeGma.isValid())
@@ -110,7 +106,7 @@ vec<const OutputData*> collectCurves(
         const qreal min = rge.min + i * step;
         const Range gmaStripe(min, min + step);
         const Curve& curve = lens->makeCurve(gmaStripe);
-        const OutputData* dat = new OutputData(curve, dataseq, gmaStripe, picNum);
+        const OutputData* dat = new OutputData(curve, cluster, gmaStripe, picNum);
         ret.append(dat);
     }
     return ret;
