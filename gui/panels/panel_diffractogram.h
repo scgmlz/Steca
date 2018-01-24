@@ -41,7 +41,7 @@ private:
     void onNormChanged();
     void onFittingTab(eFittingTab tab);
 
-    void setCluster(const Cluster*);
+    void onHighlight();
 
     const Cluster* cluster_;
 

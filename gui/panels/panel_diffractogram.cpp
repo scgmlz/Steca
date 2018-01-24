@@ -467,7 +467,7 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
         plot_->enterZoom(on);
     });
 
-    connect(gHub, &TheHub::sigClusterHighlight, this, &Diffractogram::setCluster);
+    connect(gSession, &Session::sigHighlight, this, &Diffractogram::onHighlight);
     connect(gHub, &TheHub::sigGeometryChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigCorrEnabled, [this](){ render(); });
     connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
@@ -475,9 +475,7 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
     connect(gHub, &TheHub::sigBgChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigReflectionsChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigNormChanged, [this](){ onNormChanged(); });
-
-    connect(gHub, &TheHub::sigFittingTab,
-            [this](eFittingTab tab) { onFittingTab(tab); });
+    connect(gHub, &TheHub::sigFittingTab, [this](eFittingTab tab) { onFittingTab(tab); });
 
     connect(gHub->toggle_selRegions, &QAction::toggled, [this](bool on) {
         using eTool = DiffractogramPlot::eTool;
@@ -551,8 +549,8 @@ void Diffractogram::render() {
     plot_->plot(dgram_, dgramBgFitted_, bg_, refls_, currReflIndex_);
 }
 
-void Diffractogram::setCluster(const Cluster* cluster) {
-    cluster_ = cluster;
+void Diffractogram::onHighlight() {
+    cluster_ = gSession->dataset().highlightedCluster();
     actZoom_->setChecked(false);
     render();
 }
