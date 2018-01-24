@@ -49,7 +49,8 @@ public:
     TheHub();
     ~TheHub();
 
-signals:
+signals: // TODO: rm unused
+
     void sigFilesSelected(); //!< active file selection has changed
 
     void sigClustersChanged(); //!< the set of cluster collected from selected

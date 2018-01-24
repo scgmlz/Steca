@@ -58,6 +58,8 @@ void Dataset::setHighlight(const Cluster* cluster) {
         return;
     highlight_ = cluster;
     TR("DS::sH(C) emit>");
+    if (!highlight_)
+        return;
     emit gSession->sigHighlight();
     TR("DS::sH(C) emit<");
 }
