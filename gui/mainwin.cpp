@@ -282,7 +282,6 @@ void MainWin::addFiles() {
     QStringList fileNames = file_dialog::openFileNames(
         this, "Add files", QDir::current().absolutePath(),
         "Data files (*.dat *.mar*);;All files (*.*)");
-    update();
     if (fileNames.isEmpty())
         return;
     QDir::setCurrent(QFileInfo(fileNames.at(0)).absolutePath());
@@ -296,7 +295,6 @@ void MainWin::enableCorr() {
         fileName = file_dialog::openFileName(
             this, "Set correction file", QDir::current().absolutePath(),
             "Data files (*.dat *.mar*);;All files (*.*)");
-        update();
     }
     if (!fileName.isEmpty()) {
         QDir::setCurrent(QFileInfo(fileName).absolutePath());
@@ -307,7 +305,6 @@ void MainWin::enableCorr() {
 void MainWin::loadSession() {
     str fileName = file_dialog::openFileName(
         this, "Load session", QDir::current().absolutePath(), "Session files (*.ste)");
-    update();
     if (fileName.isEmpty()) {
         TR("load session aborted");
         return;
@@ -327,7 +324,6 @@ void MainWin::loadSession() {
 void MainWin::saveSession() {
     str fileName = file_dialog::saveFileName(
         this, "Save session", QDir::current().absolutePath(), "Session files (*.ste)");
-    update();
     if (!fileName.endsWith(".ste"))
         fileName += ".ste";
     gHub->saveSession(QFileInfo(fileName));
