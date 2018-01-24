@@ -34,7 +34,7 @@ private:
     QPixmap makePixmap(shp_Image);
     QPixmap makePixmap(class Measurement const&, const Range&, const Range&);
 
-    void setCluster(const Cluster*);
+    void onHighlight();
     void render();
 
     const Cluster* cluster_ {nullptr};

@@ -50,7 +50,8 @@ MetadataModel::MetadataModel() {
 }
 
 void MetadataModel::reset() {
-    metadata_ = gSession->dataset().highlightedCluster().avgeMetadata();
+    const Cluster* cluster = gSession->dataset().highlightedCluster();
+    metadata_ = cluster ? cluster->avgeMetadata() : nullptr;
     signalReset();
 }
 

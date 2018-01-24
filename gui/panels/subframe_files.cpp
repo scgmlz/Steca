@@ -63,9 +63,11 @@ void FilesModel::onClicked(const QModelIndex& cell) {
 void FilesModel::onHighlight() {
     if (!gSession->dataset().countFiles())
         return;
-    const Datafile& newFile = gSession->dataset().highlightedFile();
+    const Datafile* newFile = gSession->dataset().highlightedFile();
+    if (!newFile)
+        return;
     for (int row=0; row<rowCount(); ++row) {
-        if (&gSession->dataset().file(row)==&newFile) {
+        if (&gSession->dataset().file(row)==newFile) {
             setHighlight(row);
             return;
         }

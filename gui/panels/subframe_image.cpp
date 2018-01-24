@@ -201,7 +201,7 @@ SubframeImage::SubframeImage() {
     connect(gHub, &TheHub::sigDisplayChanged, this, &SubframeImage::render);
     connect(gHub, &TheHub::sigGeometryChanged, this, &SubframeImage::render);
     connect(gHub, &TheHub::sigNormChanged, this, &SubframeImage::render);
-    connect(gHub, &TheHub::sigClusterHighlight, this, &SubframeImage::setCluster);
+    connect(gSession, &Session::sigHighlight, this, &SubframeImage::onHighlight);
 
     render();
 }
@@ -261,8 +261,8 @@ QPixmap SubframeImage::makePixmap(
     return QPixmap::fromImage(im);
 }
 
-void SubframeImage::setCluster(const Cluster* cluster) {
-    cluster_ = cluster;
+void SubframeImage::onHighlight() {
+    cluster_ = gSession->dataset().highlightedCluster();
     render();
 }
 

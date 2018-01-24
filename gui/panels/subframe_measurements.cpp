@@ -95,11 +95,11 @@ void ExperimentModel::onClustersChanged() {
 }
 
 void ExperimentModel::onHighlight() {
-    const Cluster& newCluster = gSession->dataset().highlightedCluster();
-    if (&newCluster==highlighted_)
+    const Cluster* newCluster = gSession->dataset().highlightedCluster();
+    if (!newCluster || newCluster==highlighted_)
         return;
     for (int row=0; row<rowCount(); ++row) {
-        if (allClusters_.at(row).data()==&newCluster) {
+        if (allClusters_.at(row).data()==newCluster) {
             setHighlight(row);
             return;
         }
