@@ -207,7 +207,6 @@ void MainWin::connectActions() {
     connectTrigger(gHub->trigger_clearSession, &MainWin::clearSession);
 
     connectTrigger(gHub->trigger_addFiles, &MainWin::addFiles);
-    connectTrigger(gHub->toggle_enableCorr, &MainWin::enableCorr);
 
     connectTrigger(gHub->trigger_quit, &MainWin::close);
 
@@ -287,19 +286,6 @@ void MainWin::addFiles() {
     QDir::setCurrent(QFileInfo(fileNames.at(0)).absolutePath());
     TakesLongTime __;
     gSession->dataset().addGivenFiles(fileNames);
-}
-
-void MainWin::enableCorr() {
-    str fileName;
-    if (!gSession->hasCorrFile()) {
-        fileName = file_dialog::openFileName(
-            this, "Set correction file", QDir::current().absolutePath(),
-            "Data files (*.dat *.mar*);;All files (*.*)");
-    }
-    if (!fileName.isEmpty()) {
-        QDir::setCurrent(QFileInfo(fileName).absolutePath());
-        gHub->setCorrFile(fileName);
-    }
 }
 
 void MainWin::loadSession() {

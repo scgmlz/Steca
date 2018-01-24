@@ -56,9 +56,6 @@ signals: // TODO: rm unused
     void sigClustersChanged(); //!< the set of cluster collected from selected
     void sigClusterHighlight(const Cluster*);
 
-    void sigCorrFile(const Rawfile*);
-    void sigCorrEnabled(bool);
-
     void sigReflectionsChanged();
     void sigReflectionSelected(shp_Reflection);
     void sigReflectionData(shp_Reflection);
@@ -80,8 +77,7 @@ public:
     void sessionFromFile(rcstr&) THROWS;
     void onFilesSelected(const vec<int>);
     void combineMeasurementsBy(const int);
-    void setCorrFile(rcstr filePath) THROWS;
-    void tryEnableCorrection(bool);
+    void loadCorrFile() THROWS;
     void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
     void setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset);
     void setGammaRange(const Range&);

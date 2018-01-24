@@ -14,8 +14,10 @@
 
 #include "gui/thehub.h"
 #include "core/session.h"
-#include "gui/output/write_file.h"
 #include "gui/base/new_q.h"
+#include "gui/mainwin.h" // todo after merge with mainwin: replace gMainWin by this
+#include "gui/output/write_file.h"
+#include "gui/popup/filedialog.h"
 #include <QApplication>
 #include <QDir>
 #include <QJsonDocument>
@@ -77,18 +79,22 @@ TheHub::TheHub()
 
     trigger_corrFile = newQ::Trigger("Add correction file", ":/icon/add");
     trigger_corrFile->setShortcut(Qt::SHIFT | Qt::CTRL | Qt::Key_O);
-    connect(trigger_corrFile, &QAction::triggered, [this]() { setCorrFile(""); });
-    QObject::connect(this, &TheHub::sigCorrFile, [this](const Rawfile* file) {
-            trigger_corrFile->setIcon(QIcon(file ? ":/icon/rem" : ":/icon/add"));
-            QString text = QString(file ? "Remove" : "Add") + " correction file";
+    connect(trigger_corrFile, &QAction::triggered, this, &TheHub::loadCorrFile);
+    QObject::connect(gSession, &Session::sigCorr, [this]() {
+            bool hasFile = gSession->hasCorrFile();
+            qDebug() << "on sigCorr " << hasFile;
+            trigger_corrFile->setIcon(QIcon(hasFile ? ":/icon/rem" : ":/icon/add"));
+            QString text = QString(hasFile ? "Remove" : "Add") + " correction file";
             trigger_corrFile->setText(text);
             trigger_corrFile->setToolTip(text.toLower());
         });
 
     toggle_enableCorr = newQ::Toggle("Enable correction file", false, ":/icon/useCorrection");
-    connect(toggle_enableCorr, &QAction::toggled, [this](bool on) { tryEnableCorrection(on); });
-    QObject::connect(this, &TheHub::sigCorrEnabled,
-            [this](bool on) { toggle_enableCorr->setChecked(on); });
+    connect(toggle_enableCorr, &QAction::toggled, gSession, &Session::tryEnableCorr);
+    QObject::connect(gSession, &Session::sigCorr, [this]() {
+            toggle_enableCorr->setEnabled(gSession->hasCorrFile());
+            toggle_enableCorr->setChecked(gSession->isCorrEnabled());
+        });
 
     trigger_rotateImage = newQ::Trigger("Rotate", ":/icon/rotate0");
     trigger_rotateImage->setShortcut(Qt::CTRL | Qt::Key_R);
@@ -151,7 +157,7 @@ TheHub::TheHub()
 
     QObject::connect(this, &TheHub::sigGeometryChanged, [deselect]() { deselect(); });
     QObject::connect(this, &TheHub::sigClustersChanged, [deselect]() { deselect(); });
-    QObject::connect(this, &TheHub::sigCorrEnabled, [deselect]() { deselect(); });
+    QObject::connect(gSession, &Session::sigCorr, [deselect]() { deselect(); });
 
 
     saveDir = settings_.readStr("export_directory");
@@ -282,7 +288,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     onFilesSelected(selIndexes);
 
     TR("sessionFromJson: going to set correction file");
-    setCorrFile(top.loadString("correction file", ""));
+    gSession->setCorrFile(top.loadString("correction file", ""));
 
     TR("sessionFromJson: going to load detector geometry");
     const JsonObj& det = top.loadObj("detector");
@@ -333,15 +339,19 @@ void TheHub::collectDatasetsExec() { // TODO move to Dataset
     emit sigClustersChanged();
 }
 
-void TheHub::setCorrFile(rcstr filePath) THROWS {
-    gSession->setCorrFile(filePath);
-    emit sigCorrFile(gSession->corrFile());
-    tryEnableCorrection(true);
-}
-
-void TheHub::tryEnableCorrection(bool on) {
-    gSession->tryEnableCorr(on);
-    emit sigCorrEnabled(gSession->isCorrEnabled());
+void TheHub::loadCorrFile() {
+    qDebug() << "load/unload " << gSession->hasCorrFile();
+    if (gSession->hasCorrFile()) {
+        gSession->setCorrFile("");
+    } else {
+        QString fileName = file_dialog::openFileName(
+            gMainWin, "Set correction file", QDir::current().absolutePath(),
+            "Data files (*.dat *.mar*);;All files (*.*)");
+        if (fileName.isEmpty())
+            return;
+        QDir::setCurrent(QFileInfo(fileName).absolutePath());
+        gSession->setCorrFile(fileName);
+    }
 }
 
 void TheHub::setImageCut(bool isTopOrLeft, bool linked, ImageCut const& cut) {

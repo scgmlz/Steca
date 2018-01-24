@@ -75,7 +75,7 @@ public:
     const Rawfile* corrFile() const { return corrFile_.data(); }
     shp_Image corrImage() const { return corrImage_; }
     const Image* intensCorr() const;
-    void tryEnableCorr(bool on) { corrEnabled_ = on && hasCorrFile(); }
+    void tryEnableCorr(bool on);
     bool isCorrEnabled() const { return corrEnabled_; }
 
     Experiment const& experiment() const { return dataset().experiment_; }
@@ -114,6 +114,7 @@ signals:
     void sigClusters(); //!< list of clusters has changed
     void sigHighlight(); //!< highlighted File or/and Cluster has changed
     void sigMetaSelection(); //!< meta data selected for display have changed
+    void sigCorr(); //!< corr fiel has been loaded or unloaded or enabled or disabled
 
 private:
     friend Dataset; // TODO try to get rid of this

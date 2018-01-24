@@ -230,7 +230,7 @@ SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files") {
     h->addWidget(newQ::IconButton(gHub->trigger_corrFile));
     h->addWidget(newQ::IconButton(gHub->toggle_enableCorr));
 
-    connect(gHub, &TheHub::sigCorrFile,
-            [corrFile_](const Rawfile* file) {
-                corrFile_->setText(file ? file->fileName() : ""); });
+    connect(gSession, &Session::sigCorr, [corrFile_]() {
+            const Rawfile* file = gSession->corrFile();
+            corrFile_->setText( file ? file->fileName() : ""); });
 }

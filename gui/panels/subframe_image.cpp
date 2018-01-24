@@ -354,7 +354,8 @@ public:
 
 CorrImageTab::CorrImageTab() {
     controls_->addStretch(1);
-    connect(gHub, &TheHub::sigCorrFile, [this](const Rawfile* file) { setEnabled(file); });
+    connect(gSession, &Session::sigCorr, [this]() {
+            setEnabled(gSession->isCorrEnabled()); });
 }
 
 void CorrImageTab::render() {

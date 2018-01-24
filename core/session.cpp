@@ -96,6 +96,7 @@ void Session::setCorrFile(rcstr filePath) THROWS {
     // all ok
     corrFile_ = rawfile;
     corrEnabled_ = true;
+    emit sigCorr();
 }
 
 void Session::removeCorrFile() {
@@ -104,6 +105,14 @@ void Session::removeCorrFile() {
     intensCorr_.clear();
     corrEnabled_ = false;
     updateImageSize();
+    emit sigCorr();
+}
+
+void Session::tryEnableCorr(bool on) {
+    if ((on && !hasCorrFile()) || on==corrEnabled_)
+        return;
+    corrEnabled_ = on;
+    emit sigCorr();
 }
 
 void Session::setMetaSelection(const vec<bool>& metaSelection) {
