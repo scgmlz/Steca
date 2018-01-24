@@ -152,7 +152,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
         }
         ret += ".";
         if (cluster->isIncomplete())
-            ret += QString("\nThis cluster has only %1 elements, while the combine factor is %2.")
+            ret += QString("\nThis cluster has only %1 elements, while the binning factor is %2.")
                 .arg(cluster->count())
                 .arg(gSession->dataset().binning());
         return ret;

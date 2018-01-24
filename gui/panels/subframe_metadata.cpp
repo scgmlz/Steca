@@ -12,6 +12,7 @@
 //
 // ************************************************************************** //
 
+#include "core/session.h"
 #include "gui/panels/subframe_metadata.h"
 #include "gui/base/table_model.h"
 #include "gui/thehub.h"
@@ -27,7 +28,7 @@ class MetadataModel final : public TableModel {
 public:
     MetadataModel();
 
-    void reset(const Cluster* cluster);
+    void reset();
     void flipCheck(int row);
 
     int columnCount() const final { return NUM_COLUMNS; }
@@ -48,10 +49,8 @@ MetadataModel::MetadataModel() {
     rowsChecked_.fill(false, Metadata::numAttributes(false));
 }
 
-void MetadataModel::reset(const Cluster* cluster) {
-    metadata_.clear();
-    if (cluster)
-        metadata_ = cluster->avgeMetadata();
+void MetadataModel::reset() {
+    metadata_ = gSession->dataset().highlightedCluster().avgeMetadata();
     signalReset();
 }
 
@@ -102,7 +101,7 @@ MetadataView::MetadataView() : ListView() {
     setHeaderHidden(true);
     auto metadataModel = new MetadataModel();
     setModel(metadataModel);
-    connect(gHub, &TheHub::sigClusterHighlight, model(), &MetadataModel::reset);
+    connect(gSession, &Session::sigHighlight, model(), &MetadataModel::reset);
     connect(this, &MetadataView::clicked, [this](QModelIndex const& index) {
         model()->flipCheck(index.row());
         emit gHub->sigMetatagsChosen(model()->rowsChecked());
