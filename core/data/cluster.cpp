@@ -238,6 +238,13 @@ Cluster::Cluster(
 {
 }
 
+void Cluster::setActivated(bool on) {
+    if (on==activated_)
+        return;
+    activated_ = on;
+    emit gSession->sigActivated();
+}
+
 int Cluster::totalOffset() const {
     return file_.offset_ + offset();
 }

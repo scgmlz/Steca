@@ -72,16 +72,20 @@ public:
     Cluster(const QVector<const Measurement*>& measurements,
             const class Datafile& file, const int index, const int offset);
 
+    void setActivated(bool on);
+
     const class Datafile& file() const { return file_; }
     int index() const { return index_; }
     int offset() const { return offset_; }
     int totalOffset() const;
     bool isIncomplete() const;
+    bool isActivated() const { return activated_; }
 
 private:
     const class Datafile& file_;
-    const int index_; //! index in total list of Cluster|s
-    const int offset_; //! index of first Measurement in file_
+    const int index_; //!< index in total list of Cluster|s
+    const int offset_; //!< index of first Measurement in file_
+    bool activated_ {true}; //!< checked in list, selected for use
 };
 
 typedef QSharedPointer<Cluster> shp_Cluster;

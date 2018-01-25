@@ -31,6 +31,8 @@ public:
     void setHighlight(int row);
     void onClustersChanged();
     void onHighlight();
+    void setActivated(int row, bool on);
+    void onActivated();
     void onMetaSelection();
 
     int rowCount() const final { return allClusters_.count(); }
@@ -38,16 +40,19 @@ public:
     QVariant headerData(int, Qt::Orientation, int) const final;
     int rowHighlighted() const { return rowHighlighted_; }
     int metaCount() const { return metaInfoNums_.count(); }
-    vec<bool> const& rowsChecked() const { return rowsChecked_; }
 
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
 private:
     int columnCount() const final { return COL_ATTRS + metaCount(); }
 
+    // The following local caches duplicate state information from Session.
+    // The are needed to detect changes of state, which in turn helps us to
+    // update display items only if they have changed.
     vec<int> metaInfoNums_; //!< indices of metadata items selected for display
-    vec<bool> rowsChecked_;
+    vec<bool> checked_;
     int rowHighlighted_;
+
     const Cluster* highlighted_{nullptr};
     const QVector<shp_Cluster>& allClusters_ {gSession->dataset().allClusters()};
 };
@@ -58,9 +63,7 @@ void ExperimentModel::onClicked(const QModelIndex& cell) {
         return;
     int col = cell.column();
     if (col==1) {
-        rowsChecked_[row] = !rowsChecked_[row];
-        emit dataChanged(cell, cell);
-//        gHub->onClustersActivated(checkedRows());
+        setActivated(row, !checked_.at(row));
     } else if (col==2) {
         setHighlight(row);
     }
@@ -81,15 +84,20 @@ void ExperimentModel::setHighlight(int row) {
         gSession->dataset().setHighlight(highlighted_);
 }
 
+void ExperimentModel::setActivated(int row, bool on) {
+    checked_[row] = on;
+    if (on==allClusters_.at(row)->isActivated())
+        return;
+    gSession->dataset().activateCluster(row, on);
+    emit dataChanged(createIndex(row,1),createIndex(row,1));
+}
+
 void ExperimentModel::onClustersChanged() {
     beginResetModel();
-    // resize rowsChecked_ according to current Session data
-    if (rowsChecked_.count()>rowCount())
-        rowsChecked_.resize(rowCount());
-    else
-        while (rowsChecked_.count()<rowCount())
-            rowsChecked_.append(true);
-
+    int oldsize = checked_.count();
+    checked_.resize(rowCount());
+    for (int row = oldsize; row<rowCount(); ++row)
+        setActivated(row, allClusters_.at(row)->isActivated());
     setHighlight(qMin(rowCount()-1, rowHighlighted_));
     endResetModel();
 }
@@ -105,6 +113,11 @@ void ExperimentModel::onHighlight() {
         }
     }
     NEVER
+}
+
+void ExperimentModel::onActivated() {
+    for (int row=0; row<rowCount(); ++row)
+        setActivated(row, allClusters_.at(row)->isActivated());
 }
 
 void ExperimentModel::onMetaSelection() {
@@ -173,7 +186,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     }
     case Qt::CheckStateRole: {
         if (col==COL_CHECK)
-            return rowsChecked_.at(row) ? Qt::Checked : Qt::Unchecked;
+            return checked_.at(row) ? Qt::Checked : Qt::Unchecked;
         return {};
     }
     default:
@@ -208,6 +221,7 @@ private:
     void currentChanged(QModelIndex const&, QModelIndex const&) override final;
     void onClustersChanged();
     void onHighlight();
+    void onActivated();
     void onMetaSelection();
     void updateScroll();
     int sizeHintForColumn(int) const override final;
@@ -222,6 +236,7 @@ ExperimentView::ExperimentView() : ListView() {
     setModel(experimentModel);
     connect(gSession, &Session::sigClusters, this, &ExperimentView::onClustersChanged);
     connect(gSession, &Session::sigHighlight, this, &ExperimentView::onHighlight);
+    connect(gSession, &Session::sigActivated, this, &ExperimentView::onActivated);
     connect(gSession, &Session::sigMetaSelection, this, &ExperimentView::onMetaSelection);
     connect(this, &ExperimentView::clicked, model(), &ExperimentModel::onClicked);
 }
@@ -239,6 +254,11 @@ void ExperimentView::onClustersChanged() {
 
 void ExperimentView::onHighlight() {
     model()->onHighlight();
+    updateScroll();
+}
+
+void ExperimentView::onActivated() {
+    model()->onActivated();
     updateScroll();
 }
 

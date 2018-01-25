@@ -55,6 +55,7 @@ public:
     void setHighlight(const Datafile*);
     void setBinning(int by);
     void setDropIncomplete(bool on);
+    void activateCluster(int index, bool on);
     void assembleExperiment();
 
     // Const methods:
@@ -78,7 +79,7 @@ public:
 
 private:
     std::vector<Datafile> files_; //!< loaded Datafile|s only live here
-    QVector<shp_Cluster> allClusters_;
+    QVector<shp_Cluster> allClusters_; //!< all Cluster|s are owned by this
     int binning_ {1}; //!< bin so many Measurement|s into one cluster
     bool dropIncomplete_ {false}; //!< drop Cluster|s that have less than binning_ members.
     bool hasIncomplete_; //!< current binning does result in at least one incomplete cluster

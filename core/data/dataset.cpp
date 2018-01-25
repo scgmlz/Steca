@@ -81,6 +81,10 @@ void Dataset::setDropIncomplete(bool on) {
     onClusteringChanged();
 }
 
+void Dataset::activateCluster(int index, bool on) {
+    allClusters_.at(index)->setActivated(on);
+}
+
 void Dataset::onFileChanged() {
     int idx = 0;
     int cnt = 0;
