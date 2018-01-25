@@ -36,11 +36,11 @@ public:
     void removeFile();
     void setHighlight(int row);
 
+private:
     int columnCount() const final { return 3; }
     int rowCount() const final { return gSession->dataset().countFiles(); }
     QVariant data(const QModelIndex&, int) const final;
 
-private:
     int rowHighlighted_;
 };
 

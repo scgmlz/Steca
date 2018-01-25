@@ -34,15 +34,15 @@ public:
     void onMetaSelection();
     void setHighlight(int row);
 
-    int rowCount() const final { return allClusters_.count(); }
-    QVariant data(const QModelIndex&, int) const final;
-    QVariant headerData(int, Qt::Orientation, int) const final;
     int rowHighlighted() const { return rowHighlighted_; } // needed for View scroll
     int metaCount() const { return metaInfoNums_.count(); }
 
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
 private:
+    QVariant data(const QModelIndex&, int) const final;
+    QVariant headerData(int, Qt::Orientation, int) const final;
+    int rowCount() const final { return allClusters_.count(); }
     int columnCount() const final { return COL_ATTRS + metaCount(); }
 
     // The following local caches duplicate state information from Session.
@@ -88,6 +88,7 @@ void ExperimentModel::onHighlight() {
 }
 
 void ExperimentModel::onActivated() {
+    qDebug() << "act " << rowCount();
     emit dataChanged(createIndex(0,1),createIndex(rowCount()-1,1));
 }
 
@@ -120,6 +121,7 @@ void ExperimentModel::setHighlight(int row) {
 
 QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     int row = index.row();
+    qDebug() << "data " << row << "/" << rowCount();
     if (row < 0 || row >= rowCount())
         return {};
     const Cluster* cluster = allClusters_.at(row).data();
