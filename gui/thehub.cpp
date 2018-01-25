@@ -459,11 +459,6 @@ void TheHub::setNorm(eNorm norm) {
     emit sigNormChanged();
 }
 
-void TheHub::tellClusterHighlight(const Cluster* cluster) {
-    selectedCluster_ = cluster;
-    emit sigClusterHighlight(cluster);
-}
-
 void TheHub::tellSelectedReflection(shp_Reflection reflection) {
     selectedReflection_ = reflection;
     emit sigReflectionSelected(reflection);
