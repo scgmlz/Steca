@@ -147,9 +147,8 @@ void Dataset::updateClusters() {
                 if (dropIncomplete_)
                     break;
             }
-            int ii;
             QVector<const Measurement*> group;
-            for (ii=i; ii<file.count() && ii<i+binning_; ii++)
+            for (int ii=i; ii<file.count() && ii<i+binning_; ii++)
                 group.append(file.raw_->measurements().at(ii));
             shp_Cluster cluster(new Cluster(group, file, allClusters_.size(), i));
             allClusters_.append(cluster);
@@ -160,12 +159,10 @@ void Dataset::updateClusters() {
 
 void Dataset::assembleExperiment() {
     experiment_ = {};
-
     for (const Datafile& file : files_) {
         for (int i=0; i<file.count(); i+=binning_) {
-            int ii;
             QVector<const Measurement*> group;
-            for (ii=i; ii<file.count() && ii<i+binning_; ii++)
+            for (int ii=i; ii<file.count() && ii<i+binning_; ii++)
                 group.append(file.raw_->measurements().at(ii));
             experiment_.appendHere(new Cluster(group, file, experiment_.size(), i));
         }
