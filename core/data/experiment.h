@@ -45,7 +45,9 @@ private:
     qreal calcAvgMutable(qreal (Cluster::*avgFct)() const) const;
 
     // computed on demand (NaNs or emptiness indicate yet unknown values)
-    mutable qreal avgMonitorCount_, avgDeltaMonitorCount_, avgDeltaTime_;
+    mutable qreal avgMonitorCount_;
+    mutable qreal avgDeltaMonitorCount_;
+    mutable qreal avgDeltaTime_;
     mutable Range rgeFixedInten_;
     mutable Range rgeGma_;
     mutable Curve avgCurve_;
