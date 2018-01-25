@@ -15,17 +15,8 @@
 #ifndef CORRSET_H
 #define CORRSET_H
 
-#include "core/calc/lens.h"
-#include "core/calc/reflection.h"
-#include "core/calc/reflection_info.h"
-#include "core/data/angle_map.h"
 #include "core/data/rawfile.h"
-#include "core/data/experiment.h"
-#include "core/data/image.h"
-#include "core/typ/async.h"
-#include "core/typ/cache.h"
 #include <QSharedPointer> // no auto rm
-#include <vector>
 
 //! A correction dataset, consisting of one RawFile and associated settings.
 

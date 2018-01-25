@@ -21,11 +21,9 @@
 #include "core/data/angle_map.h"
 #include "core/data/rawfile.h"
 #include "core/data/experiment.h"
-#include "core/data/image.h"
 #include "core/typ/async.h"
 #include "core/typ/cache.h"
 #include <QSharedPointer> // no auto rm
-#include <vector>
 
 //! A RawFile and associated information.
 

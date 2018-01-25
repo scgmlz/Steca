@@ -15,18 +15,8 @@
 #ifndef SESSION_H
 #define SESSION_H
 
-#include "core/calc/lens.h"
-#include "core/calc/reflection.h"
-#include "core/calc/reflection_info.h"
-#include "core/data/angle_map.h"
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"
-#include "core/data/experiment.h"
-#include "core/data/image.h"
-#include "core/typ/async.h"
-#include "core/typ/cache.h"
-#include "core/typ/singleton.h"
-#include <QObject>
 
 extern class Session* gSession;
 

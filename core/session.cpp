@@ -13,8 +13,6 @@
 // ************************************************************************** //
 
 #include "core/session.h"
-#include "core/data/cluster.h"
-#include "core/data/measurement.h"
 #include "core/fit/peak_functions.h"
 
 Session::Session()

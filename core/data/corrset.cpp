@@ -12,20 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "core/data/dataset.h"
-#include "core/calc/reflection.h"
-#include "core/calc/reflection_info.h"
-#include "core/data/angle_map.h"
-#include "core/data/rawfile.h"
-#include "core/data/experiment.h"
-#include "core/data/image.h"
 #include "core/session.h"
-#include "core/typ/async.h"
-#include "core/typ/cache.h"
-#include "core/typ/singleton.h"
 #include "core/loaders/loaders.h"
-#include <QDir>
-#include <QSharedPointer>
 
 void Corrset::clear() {
     enabled_ = true;
