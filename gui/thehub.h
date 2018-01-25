@@ -71,7 +71,6 @@ public:
     void sessionFromFile(rcstr&) THROWS;
     void loadCorrFile() THROWS;
     void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
-    void setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset);
     void setGammaRange(const Range&);
 
     void setBgRanges(const Ranges&);

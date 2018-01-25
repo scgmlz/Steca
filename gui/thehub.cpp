@@ -272,9 +272,8 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
 
     TR("sessionFromJson: going to load detector geometry");
     const JsonObj& det = top.loadObj("detector");
-    setGeometry(
-        det.loadPreal("distance"), det.loadPreal("pixel size"),
-        det.loadIJ("beam offset"));
+    gSession->setGeometry(
+        det.loadPreal("distance"), det.loadPreal("pixel size"), det.loadIJ("beam offset"));
 
     TR("sessionFromJson: going to load image cut");
     const JsonObj& cut = top.loadObj("cut");
@@ -319,10 +318,6 @@ void TheHub::loadCorrFile() {
 
 void TheHub::setImageCut(bool isTopOrLeft, bool linked, ImageCut const& cut) {
     gSession->setImageCut(isTopOrLeft, linked, cut);
-} // TODO rm
-
-void TheHub::setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset) {
-    gSession->setGeometry(detectorDistance, pixSize, midPixOffset);
 } // TODO rm
 
 void TheHub::setGammaRange(const Range& gammaRange) {
