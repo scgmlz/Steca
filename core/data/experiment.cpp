@@ -33,8 +33,10 @@ size2d Experiment::imageSize() const {
 }
 
 qreal Experiment::avgMonitorCount() const {
-    if (qIsNaN(avgMonitorCount_))
+    if (qIsNaN(avgMonitorCount_)) {
         avgMonitorCount_ = calcAvgMutable(&Cluster::avgMonitorCount);
+        qDebug() << "recomputed avgMonitorCount: " << avgMonitorCount_;
+    }
     return avgMonitorCount_;
 }
 
@@ -99,9 +101,11 @@ void Experiment::computeAvgeCurve() const {
 }
 
 qreal Experiment::calcAvgMutable(qreal (Cluster::*avgFct)() const) const {
-    qreal ret = 0;
-    for (Cluster const* cluster : clusters_)
-        ret += ((*cluster).*avgFct)();
-    ret /= clusters_.size();
-    return ret;
+    qreal sum = 0;
+    int cnt = 0;
+    for (Cluster const* cluster : clusters_) {
+        sum += ((*cluster).*avgFct)() * cluster->count();
+        cnt += cluster->count();
+    }
+    return sum/cnt;
 }
