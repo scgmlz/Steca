@@ -76,8 +76,8 @@ const Range& Experiment::rgeFixedInten(bool trans, bool cut) const {
 
 Curve Experiment::avgCurve() const {
     if (avgCurve_.isEmpty()) {
-        // TODO invalidate when combinedDgram is unchecked
         TakesLongTime __;
+        qDebug() << "averaging curve over experiment sized " << size();
         computeAvgeCurve();
     }
     return avgCurve_;

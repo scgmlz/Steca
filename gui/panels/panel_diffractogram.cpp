@@ -469,6 +469,8 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
 
     connect(gSession, &Session::sigHighlight, this, &Diffractogram::onHighlight);
     connect(gSession, &Session::sigCorr, this, &Diffractogram::render);
+    connect(gSession, &Session::sigActivated, // TODO render only when avge is shown
+            this, &Diffractogram::render);
     connect(gSession, &Session::sigDetector, [this](){ render(); });
     connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigGammaRange, [this](){ render(); });
@@ -561,9 +563,8 @@ void Diffractogram::calcDgram() {
         return;
     if (gHub->isCombinedDgram())
         dgram_ = gSession->experiment().avgCurve();
-    else {
+    else
         dgram_ = gSession->highlightsLens()->makeCurve(gSession->gammaRange());
-    }
 }
 
 void Diffractogram::calcBackground() {

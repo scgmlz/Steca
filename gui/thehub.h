@@ -69,8 +69,6 @@ public:
     // modifying methods:
     void removeFile(int);
     void sessionFromFile(rcstr&) THROWS;
-    void onFilesSelected(const vec<int>);
-    void combineMeasurementsBy(const int);
     void loadCorrFile() THROWS;
     void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
     void setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset);
@@ -146,7 +144,6 @@ public:
 
 private:
     void collectDatasetsFromSelectionBy(const vec<int>, const int);
-    void collectDatasetsExec();
     void setImageRotate(ImageTransform);
     void setImageMirror(bool);
     void configActions();

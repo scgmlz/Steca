@@ -239,11 +239,11 @@ Cluster::Cluster(
 {
 }
 
+//! note: the caller must emit sigActivated
 void Cluster::setActivated(bool on) {
     if (on==activated_)
         return;
     activated_ = on;
-    emit gSession->sigActivated();
 }
 
 int Cluster::totalOffset() const {

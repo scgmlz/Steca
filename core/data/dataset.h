@@ -60,7 +60,6 @@ public:
     void activateCluster(int index, bool on);
     void flipClusterActivation(int index);
     void cycleFileActivation(int index);
-    void assembleExperiment();
 
     // Const methods:
     int countFiles() const { return files_.size(); }
@@ -95,6 +94,7 @@ private:
     void onFileChanged();
     void onClusteringChanged();
     void updateClusters();
+    void updateExperiment();
 
     bool hasFile(rcstr fileName) const;
 };

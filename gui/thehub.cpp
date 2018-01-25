@@ -266,7 +266,6 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
 
     TR("sessionFromJson: going to collect cluster");
     gSession->dataset().setBinning(top.loadPint("combine", 1));
-    onFilesSelected(selIndexes);
 
     TR("sessionFromJson: going to set correction file");
     gSession->corrset().loadFile(top.loadString("correction file", ""));
@@ -302,19 +301,6 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
 
     emit sigReflectionsChanged();
     TR("installed session from file");
-}
-
-void TheHub::onFilesSelected(const vec<int> indexSelection) { // TODO rm
-    collectDatasetsExec();
-}
-
-void TheHub::combineMeasurementsBy(const int by) {
-    gSession->dataset().setBinning(by);
-    collectDatasetsExec();
-}
-
-void TheHub::collectDatasetsExec() { // TODO move to Dataset
-    gSession->dataset().assembleExperiment();
 }
 
 void TheHub::loadCorrFile() {

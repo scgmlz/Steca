@@ -105,10 +105,14 @@ void Dataset::setDropIncomplete(bool on) {
 
 void Dataset::activateCluster(int index, bool on) {
     allClusters_.at(index)->setActivated(on);
+    updateExperiment();
+    emit gSession->sigActivated();
 }
 
 void Dataset::flipClusterActivation(int index) {
     allClusters_.at(index)->setActivated(!allClusters_.at(index)->isActivated());
+    updateExperiment();
+    emit gSession->sigActivated();
 }
 
 void Dataset::cycleFileActivation(int index) {
@@ -116,6 +120,7 @@ void Dataset::cycleFileActivation(int index) {
     bool on = fil.activated()!=Qt::Checked;
     for (Cluster* cluster : fil.clusters_)
         cluster->setActivated(on);
+    updateExperiment();
     emit gSession->sigActivated();
 }
 
@@ -158,18 +163,16 @@ void Dataset::updateClusters() {
             file.clusters_.push_back(cluster.data());
         }
     }
+    updateExperiment();
 }
 
-void Dataset::assembleExperiment() {
+void Dataset::updateExperiment() {
     experiment_ = {};
-    for (const Datafile& file : files_) {
-        for (int i=0; i<file.count(); i+=binning_) {
-            QVector<const Measurement*> group;
-            for (int ii=i; ii<file.count() && ii<i+binning_; ii++)
-                group.append(file.raw_->measurements().at(ii));
-            experiment_.appendHere(new Cluster(group, file, experiment_.size(), i));
-        }
+    for (const shp_Cluster& cluster : allClusters_) {
+        if (cluster->isActivated())
+            experiment_.appendHere(cluster.data());
     }
+    qDebug() << "assembled experiment => size=" << experiment_.size();
 }
 
 bool Dataset::hasFile(rcstr fileName) const {
