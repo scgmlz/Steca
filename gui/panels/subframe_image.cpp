@@ -313,7 +313,7 @@ void DataImageTab::render() {
             maxGamma_->clear();
         }
 
-        gHub->setGammaRange(rge);
+        gSession->setGammaRange(rge);
 
         const Measurement* measurement = cluster_->at(n - 1);
 

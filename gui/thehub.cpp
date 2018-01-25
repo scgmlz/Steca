@@ -316,11 +316,6 @@ void TheHub::loadCorrFile() {
     }
 }
 
-void TheHub::setGammaRange(const Range& gammaRange) {
-    gSession->setGammaRange(gammaRange);
-    emit sigGammaRange();
-}
-
 void TheHub::setIntenScaleAvg(bool avg, qreal scale) {
     gSession->setIntenScaleAvg(avg, scale);
     emit sigNormChanged(); // TODO instead of another signal

@@ -82,6 +82,7 @@ void Session::setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPi
 
 void Session::setGammaRange(const Range& r) {
     gammaRange_ = r;
+    emit sigDiffractogram();
 }
 
 void Session::setBgRanges(const Ranges& rr) {

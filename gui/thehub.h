@@ -58,8 +58,6 @@ signals: // TODO: rm unused
 
     void sigDisplayChanged();
 
-    void sigGammaRange();
-
     void sigNormChanged();
 
     void sigFittingTab(eFittingTab);
@@ -69,7 +67,6 @@ public:
     void removeFile(int);
     void sessionFromFile(rcstr&) THROWS;
     void loadCorrFile() THROWS;
-    void setGammaRange(const Range&);
 
     void setIntenScaleAvg(bool, qreal);
     void setNorm(eNorm);

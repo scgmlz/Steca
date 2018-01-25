@@ -101,14 +101,15 @@ public:
     qreal calcAvgBackground() const;
 
 signals:
-    void sigFiles(); //!< list of loaded files has changed
-    void sigClusters(); //!< list of clusters has changed
-    void sigHighlight(); //!< highlighted File or/and Cluster has changed
+    void sigFiles();         //!< list of loaded files has changed
+    void sigClusters();      //!< list of clusters has changed
+    void sigHighlight();     //!< highlighted File or/and Cluster has changed
     void sigMetaSelection(); //!< meta data selected for display have changed
-    void sigCorr(); //!< corr file has been loaded or unloaded or enabled or disabled
-    void sigActivated(); //!< selection of active clusters has changed
-    void sigDetector(); //!< detector geometry has changed
-    void sigBaseline(); //!< baseline fit has changed
+    void sigCorr();          //!< corr file has been loaded or unloaded or enabled or disabled
+    void sigActivated();     //!< selection of active clusters has changed
+    void sigDetector();      //!< detector geometry has changed
+    void sigDiffractogram(); //!< diffractogram must be repainted
+    void sigBaseline();      //!< baseline fit has changed
 
 private:
     friend Dataset; // TODO try to get rid of this
