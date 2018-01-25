@@ -129,8 +129,7 @@ void Dataset::assembleExperiment(const vec<int> fileNums) {
             QVector<const Measurement*> group;
             for (ii=i; ii<file.count() && ii<i+binning_; ii++)
                 group.append(file.raw_->measurements().at(ii));
-            shp_Cluster cd(new Cluster(group, file, experiment_.count(), i));
-            experiment_.appendHere(cd);
+            experiment_.appendHere(new Cluster(group, file, experiment_.size(), i));
         }
     }
 }

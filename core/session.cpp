@@ -163,11 +163,11 @@ ReflectionInfos Session::makeReflectionInfos(
     Reflection const& reflection, int gmaSlices, const Range& rgeGma, Progress* progress) const {
 
     if (progress)
-        progress->setTotal(experiment().count());
+        progress->setTotal(experiment().size());
 
     ReflectionInfos ret;
 
-    for (const shp_Cluster& cluster : experiment()) {
+    for (const Cluster* cluster : experiment().clusters()) {
         if (progress)
             progress->step();
 
@@ -220,7 +220,7 @@ qreal Session::calcAvgBackground(Sequence const& seq) const {
 qreal Session::calcAvgBackground() const {
     TakesLongTime __;
     qreal bg = 0;
-    for (const shp_Cluster& cluster : experiment())
+    for (const Cluster* cluster : experiment().clusters())
         bg += calcAvgBackground(*cluster);
-    return bg / experiment().count();
+    return bg / experiment().size();
 }

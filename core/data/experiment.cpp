@@ -19,17 +19,17 @@ Experiment::Experiment() {
     invalidateAvgMutables();
 }
 
-void Experiment::appendHere(shp_Cluster cluster) {
+void Experiment::appendHere(const Cluster* cluster) {
     // can be added only once
-    append(cluster);
+    clusters_.push_back(cluster);
     invalidateAvgMutables();
 }
 
 size2d Experiment::imageSize() const {
-    if (isEmpty())
+    if (clusters_.empty())
         return size2d(0, 0);
     // all images have the same size; simply take the first one
-    return first()->imageSize();
+    return clusters_.front()->imageSize();
 }
 
 qreal Experiment::avgMonitorCount() const {
@@ -52,7 +52,7 @@ qreal Experiment::avgDeltaTime() const {
 
 const Range& Experiment::rgeGma() const {
     if (!rgeGma_.isValid())
-        for (const shp_Cluster& cluster : *this)
+        for (const Cluster* cluster : clusters_)
             rgeGma_.extendBy(cluster->rgeGma());
     return rgeGma_;
 }
@@ -60,7 +60,7 @@ const Range& Experiment::rgeGma() const {
 const Range& Experiment::rgeFixedInten(bool trans, bool cut) const {
     if (!rgeFixedInten_.isValid()) {
         TakesLongTime __;
-        for (const shp_Cluster& cluster : *this)
+        for (const Cluster* cluster : clusters_)
             for (const Measurement* one : cluster->members()) {
                 if (one->image()) {
                     const shp_Image& image = one->image();
@@ -91,7 +91,7 @@ void Experiment::invalidateAvgMutables() const {
 //! Computed cached avgeCurve_.
 void Experiment::computeAvgeCurve() const {
     vec<const Measurement*> group;
-    for (shp_Cluster const& cluster : *this)
+    for (Cluster const* cluster : clusters_)
         for (const Measurement* one: cluster->members())
             group.append(one);
     Sequence allData(group);
@@ -100,8 +100,8 @@ void Experiment::computeAvgeCurve() const {
 
 qreal Experiment::calcAvgMutable(qreal (Cluster::*avgFct)() const) const {
     qreal ret = 0;
-    for (shp_Cluster const& cluster : *this)
+    for (Cluster const* cluster : clusters_)
         ret += ((*cluster).*avgFct)();
-    ret /= count();
+    ret /= clusters_.size();
     return ret;
 }

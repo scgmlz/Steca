@@ -163,11 +163,11 @@ vec<vec<const OutputData*>> DiffractogramsFrame::outputAllDiffractograms() {
         rgeGma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
 
     const Experiment& expt = gSession->experiment();
-    Progress progress(expt.count(), progressBar_);
+    Progress progress(expt.size(), progressBar_);
 
     vec<vec<const OutputData*>> ret;
     int picNum = 1;
-    for (shp_Cluster cluster : expt) {
+    for (const Cluster* cluster : expt.clusters()) {
         progress.step();
         ret.append(collectCurves(rgeGma, gmaSlices, *cluster, picNum));
         ++picNum;
