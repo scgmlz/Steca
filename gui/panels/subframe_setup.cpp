@@ -180,7 +180,7 @@ SubframeSetup::SubframeSetup() {
     {
         QBoxLayout& box = newQ::Tab(this, "Geometry")->box();
 
-        connect(gHub, &TheHub::sigGeometryChanged, [this](){ setFromHub(); });
+        connect(gSession, &Session::sigDetector, [this](){ setFromHub(); });
 
         // widgets
 

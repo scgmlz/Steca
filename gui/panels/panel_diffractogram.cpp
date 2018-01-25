@@ -469,7 +469,7 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
 
     connect(gSession, &Session::sigHighlight, this, &Diffractogram::onHighlight);
     connect(gSession, &Session::sigCorr, this, &Diffractogram::render);
-    connect(gHub, &TheHub::sigGeometryChanged, [this](){ render(); });
+    connect(gSession, &Session::sigDetector, [this](){ render(); });
     connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigGammaRange, [this](){ render(); });
     connect(gHub, &TheHub::sigBgChanged, [this](){ render(); });

@@ -163,7 +163,7 @@ ImageTab::ImageTab() {
     connect(gHub->toggle_showBins, &QAction::toggled, [this](bool /*unused*/) { render(); });
 
     connect(gHub, &TheHub::sigDisplayChanged, this, &ImageTab::render);
-    connect(gHub, &TheHub::sigGeometryChanged, this, &ImageTab::render);
+    connect(gSession, &Session::sigDetector, this, &ImageTab::render);
     connect(gHub, &TheHub::sigNormChanged, this, &ImageTab::render);
     connect(gSession, &Session::sigHighlight, this, &ImageTab::onHighlight);
 }

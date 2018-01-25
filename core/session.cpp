@@ -16,10 +16,7 @@
 #include "core/fit/peak_functions.h"
 
 Session::Session()
-    : intenScale_(1)
-    , angleMapCache_(360)
 {
-    clear();
     register_peak_functions();
 }
 
@@ -73,12 +70,14 @@ void Session::setImageTransformRotate(ImageTransform const& rot) {
 void Session::setImageCut(bool isTopOrLeft, bool linked, ImageCut const& cut) {
     imageCut_.update(isTopOrLeft, linked, cut, imageSize_);
     corrset().clearIntens(); // lazy
+    emit sigDetector();
 }
 
 void Session::setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset) {
     geometry_.detectorDistance = detectorDistance;
     geometry_.pixSize = pixSize;
     geometry_.midPixOffset = midPixOffset;
+    emit sigDetector();
 }
 
 IJ Session::midPix() const {

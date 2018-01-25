@@ -57,7 +57,6 @@ signals: // TODO: rm unused
     void sigReflectionValues(const Range&, qpair const&, fwhm_t, bool);
 
     void sigDisplayChanged();
-    void sigGeometryChanged();
 
     void sigGammaRange();
 

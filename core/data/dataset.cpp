@@ -41,8 +41,18 @@ Qt::CheckState Datafile::activated() const {
 // ************************************************************************** //
 
 void Dataset::clear() {
-    while (countFiles())
-        removeFile(0);
+    files_.clear();
+    onFileChanged();
+    gSession->updateImageSize();
+    gSession->setImageCut(true, false, ImageCut());
+}
+
+void Dataset::removeFile(int i) { // TODO rm arg
+    files_.erase(files_.begin()+i);
+    onFileChanged();
+    gSession->updateImageSize();
+    if (files_.empty())
+        gSession->setImageCut(true, false, ImageCut());
 }
 
 //! Returns true if some file was loaded
@@ -57,13 +67,6 @@ void Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
         files_.push_back(Datafile(rawfile));
     }
     onFileChanged();
-}
-
-void Dataset::removeFile(int i) { // TODO rm arg
-    files_.erase(files_.begin()+i);
-    onFileChanged();
-    gSession->updateImageSize();
-    // setHighlight(i-1); // TODO
 }
 
 void Dataset::setHighlight(const Cluster* cluster) {

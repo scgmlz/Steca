@@ -107,6 +107,7 @@ signals:
     void sigMetaSelection(); //!< meta data selected for display have changed
     void sigCorr(); //!< corr file has been loaded or unloaded or enabled or disabled
     void sigActivated(); //!< selection of active clusters has changed
+    void sigDetector(); //! Detector geometry has changed
 
 private:
     friend Dataset; // TODO try to get rid of this
@@ -115,19 +116,19 @@ private:
     Corrset corrset_;
 
     vec<bool> metaSelection_; //!< true if meta datum is to be displayed
-    bool intenScaledAvg_; // if not, summed
-    qreal intenScale_;
+    bool intenScaledAvg_ {true}; // if not, summed
+    qreal intenScale_ {1};
     size2d imageSize_; //!< All images must have this same size
     ImageTransform imageTransform_;
     ImageCut imageCut_;
     Geometry geometry_;
     Range gammaRange_;
-    int bgPolyDegree_;
+    int bgPolyDegree_ {0};
     Ranges bgRanges_;
     Reflections reflections_;
-    eNorm norm_;
+    eNorm norm_ {eNorm::NONE};
 
-    mutable cache_lazy<ImageKey, AngleMap> angleMapCache_;
+    mutable cache_lazy<ImageKey, AngleMap> angleMapCache_ {360};
 
     void updateImageSize(); //!< Clears image size if session has no files
     void setImageSize(size2d const&) THROWS; //!< Ensures same size for all images

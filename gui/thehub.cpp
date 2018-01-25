@@ -15,7 +15,7 @@
 #include "gui/thehub.h"
 #include "core/session.h"
 #include "gui/base/new_q.h"
-#include "gui/mainwin.h" // todo after merge with mainwin: replace gMainWin by this
+#include "gui/mainwin.h" // TODO after merge with mainwin: replace gMainWin by this
 #include "gui/output/write_file.h"
 #include "gui/popup/filedialog.h"
 #include <QApplication>
@@ -162,9 +162,6 @@ TheHub::~TheHub() {
 // called through trigger_removeFile -> FilesView::removeHighlighted -> FilesModel::removeFile
 void TheHub::removeFile(int i) {
     gSession->dataset().removeFile(i);
-    int numFiles = gSession->dataset().countFiles();
-    if (!numFiles)
-        setImageCut(true, false, ImageCut());
 }
 
 void TheHub::saveSession(QFileInfo const& fileInfo) const {
@@ -336,15 +333,11 @@ void TheHub::loadCorrFile() {
 
 void TheHub::setImageCut(bool isTopOrLeft, bool linked, ImageCut const& cut) {
     gSession->setImageCut(isTopOrLeft, linked, cut);
-    emit sigGeometryChanged();
-}
+} // TODO rm
 
 void TheHub::setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset) {
-    TR("setGeometry"); // keep an eye on this, since in the past circular calls may have happened
-
     gSession->setGeometry(detectorDistance, pixSize, midPixOffset);
-    emit sigGeometryChanged();
-}
+} // TODO rm
 
 void TheHub::setGammaRange(const Range& gammaRange) {
     gSession->setGammaRange(gammaRange);
@@ -425,14 +418,13 @@ void TheHub::setImageRotate(ImageTransform rot) {
     trigger_rotateImage->setIcon(QIcon(rotateIconFile));
     toggle_mirrorImage->setIcon(QIcon(mirrorIconFile));
     gSession->setImageTransformRotate(rot);
-    setImageCut(true, false, gSession->imageCut());
-    emit sigGeometryChanged();
+    gSession->setImageCut(true, false, gSession->imageCut());
 }
 
 void TheHub::setImageMirror(bool on) {
     toggle_mirrorImage->setChecked(on);
     gSession->setImageTransformMirror(on);
-    emit sigGeometryChanged();
+    emit gSession->sigDetector();
 }
 
 void TheHub::setNorm(eNorm norm) {
