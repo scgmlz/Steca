@@ -219,7 +219,7 @@ QByteArray TheHub::saveSession() const {
     top.insert("combine", gSession->dataset().binning());
 
     if (gSession->hasCorrFile()) {
-        str absPath = gSession->corrFile()->fileInfo().absoluteFilePath();
+        str absPath = gSession->corrset().raw().fileInfo().absoluteFilePath();
         str relPath = QDir::current().relativeFilePath(absPath);
         top.insert("correction file", relPath);
     }
@@ -288,7 +288,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     onFilesSelected(selIndexes);
 
     TR("sessionFromJson: going to set correction file");
-    gSession->setCorrFile(top.loadString("correction file", ""));
+    gSession->corrset().loadFile(top.loadString("correction file", ""));
 
     TR("sessionFromJson: going to load detector geometry");
     const JsonObj& det = top.loadObj("detector");
@@ -340,9 +340,8 @@ void TheHub::collectDatasetsExec() { // TODO move to Dataset
 }
 
 void TheHub::loadCorrFile() {
-    qDebug() << "load/unload " << gSession->hasCorrFile();
-    if (gSession->hasCorrFile()) {
-        gSession->setCorrFile("");
+    if (gSession->corrset().hasFile()) {
+        gSession->corrset().removeFile();
     } else {
         QString fileName = file_dialog::openFileName(
             gMainWin, "Set correction file", QDir::current().absolutePath(),
@@ -350,7 +349,7 @@ void TheHub::loadCorrFile() {
         if (fileName.isEmpty())
             return;
         QDir::setCurrent(QFileInfo(fileName).absolutePath());
-        gSession->setCorrFile(fileName);
+        gSession->corrset().loadFile(fileName);
     }
 }
 

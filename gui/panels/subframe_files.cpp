@@ -231,6 +231,6 @@ SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files") {
     h->addWidget(newQ::IconButton(gHub->toggle_enableCorr));
 
     connect(gSession, &Session::sigCorr, [corrFile_]() {
-            const Rawfile* file = gSession->corrFile();
-            corrFile_->setText( file ? file->fileName() : ""); });
+            corrFile_->setText( gSession->corrset().hasFile() ?
+                                gSession->corrset().raw().fileName() : ""); });
 }

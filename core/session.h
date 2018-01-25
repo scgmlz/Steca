@@ -19,6 +19,7 @@
 #include "core/calc/reflection.h"
 #include "core/calc/reflection_info.h"
 #include "core/data/angle_map.h"
+#include "core/data/corrset.h"
 #include "core/data/dataset.h"
 #include "core/data/experiment.h"
 #include "core/data/image.h"
@@ -46,11 +47,11 @@ public:
     Dataset& dataset() { return dataset_; }
     const Dataset& dataset() const { return dataset_; }
 
+    Corrset& corrset() { return corrset_; }
+    const Corrset& corrset() const { return corrset_; }
+
     // Modifying methods:
     void clear();
-
-    void setCorrFile(rcstr filePath) THROWS;
-    void removeCorrFile();
 
     void setMetaSelection(const vec<bool>&);
     const vec<bool>& getMetaSelection() { return metaSelection_; }
@@ -70,13 +71,13 @@ public:
     void removeReflection(int i) { reflections_.remove(i); }
     void setNorm(eNorm norm) { norm_ = norm; }
 
-    // Const methods:
-    bool hasCorrFile() const { return !corrFile_.isNull(); }
-    const Rawfile* corrFile() const { return corrFile_.data(); }
-    shp_Image corrImage() const { return corrImage_; }
-    const Image* intensCorr() const;
-    void tryEnableCorr(bool on);
-    bool isCorrEnabled() const { return corrEnabled_; }
+    // Const methods: // TODO expand corrset() calls in calling code
+    bool hasCorrFile() const { return corrset().hasFile(); }
+    const Rawfile& corrFile() const { return corrset().raw(); }
+    shp_Image corrImage() const { return corrset().corrImage(); }
+    const Image* intensCorr() const { return corrset().intensCorr(); }
+    void tryEnableCorr(bool on) { return corrset().tryEnable(on); }
+    bool isCorrEnabled() const { return corrset().isEnabled(); }
 
     Experiment const& experiment() const { return dataset().experiment_; }
 
@@ -119,11 +120,10 @@ signals:
 private:
     friend Dataset; // TODO try to get rid of this
     Dataset dataset_;
-    QSharedPointer<Rawfile> corrFile_; //!< correction file
+    friend Corrset; // TODO try to get rid of this
+    Corrset corrset_;
 
     vec<bool> metaSelection_; //!< true if meta datum is to be displayed
-    shp_Image corrImage_;
-    bool corrEnabled_;
     bool intenScaledAvg_; // if not, summed
     qreal intenScale_;
     size2d imageSize_; //!< All images must have this same size
@@ -136,15 +136,12 @@ private:
     Reflections reflections_;
     eNorm norm_;
 
-    mutable Image intensCorr_;
-    mutable bool corrHasNaNs_;
     mutable cache_lazy<ImageKey, AngleMap> angleMapCache_;
 
     void updateImageSize(); //!< Clears image size if session has no files
     void setImageSize(size2d const&) THROWS; //!< Ensures same size for all images
 
     shp_SequenceLens dataseqLens(Sequence const&, eNorm, bool trans, bool cut) const;
-    void calcIntensCorr() const;
     Curve curveMinusBg(SequenceLens const&, const Range&) const;
     ReflectionInfo makeReflectionInfo(SequenceLens const&, Reflection const&, const Range&) const;
 };

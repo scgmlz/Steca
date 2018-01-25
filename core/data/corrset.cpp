@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/data/corrset.cpp
-//! @brief     Implements class Dataset
+//! @brief     Implements class Corrset
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -27,138 +27,74 @@
 #include <QDir>
 #include <QSharedPointer>
 
-void Dataset::clear() {
-    while (countFiles())
-        removeFile(0);
+void Corrset::clear() {
+    enabled_ = true;
+    hasNANs_ = false;
 }
 
-//! Returns true if some file was loaded
-void Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
-    for (const QString& path: filePaths) {
-        if (path.isEmpty() || hasFile(path))
-            continue;
-        QSharedPointer<const Rawfile> rawfile = load::loadRawfile(path);
-        if (rawfile.isNull())
-            continue;
-        gSession->setImageSize(rawfile->imageSize());
-        files_.push_back(Datafile(rawfile));
-    }
-    onFileChanged();
-}
-
-void Dataset::removeFile(int i) { // TODO rm arg
-    files_.erase(files_.begin()+i);
-    onFileChanged();
+void Corrset::removeFile() {
+    raw_.clear();
+    corrImage_.clear();
+    intensCorr_.clear();
     gSession->updateImageSize();
-    // setHighlight(i-1); // TODO
+    emit gSession->sigCorr();
 }
 
-void Dataset::setHighlight(const Cluster* cluster) {
-    if (cluster==highlight_)
+void Corrset::loadFile(rcstr filePath) THROWS {
+    if (filePath.isEmpty())
+        throw("invalid call of Corrset::loadFile with empty filePath argument");
+    QSharedPointer<Rawfile> rawfile = load::loadRawfile(filePath);
+    if (rawfile.isNull())
         return;
-    highlight_ = cluster;
-    TR("DS::sH(C) emit>");
-    emit gSession->sigHighlight();
-    TR("DS::sH(C) emit<");
+    gSession->setImageSize(rawfile->imageSize());
+    corrImage_ = rawfile->foldedImage();
+    intensCorr_.clear(); // will be calculated lazily
+    // all ok
+    raw_ = rawfile;
+    enabled_ = true;
+    emit gSession->sigCorr();
 }
 
-void Dataset::setHighlight(const Datafile* file) {
-    if (highlight_ && file==&highlight_->file())
-        return;
-    for (const shp_Cluster& cluster : allClusters_) {
-        if (&cluster->file()==file) {
-            highlight_ = cluster.data();
-            TR("DS::sH(F) emit>");
-            emit gSession->sigHighlight();
-            TR("DS::sH(F) emit<");
-            return;
+void Corrset::calcIntensCorr() const {
+    hasNANs_ = false;
+
+    debug::ensure(corrImage_);
+    size2d size = corrImage_->size() - gSession->imageCut_.marginSize();
+    debug::ensure(!size.isEmpty());
+
+    int w = size.w, h = size.h, di = gSession->imageCut_.left, dj = gSession->imageCut_.top;
+
+    qreal sum = 0;
+    for_ij (w, h)
+        sum += corrImage_->inten(i + di, j + dj);
+    qreal avg = sum / (w * h);
+
+    intensCorr_.fill(1, corrImage_->size());
+
+    for_ij (w, h) {
+        const inten_t inten = corrImage_->inten(i + di, j + dj);
+        qreal fact;
+        if (inten > 0) {
+            fact = avg / inten;
+        } else {
+            fact = NAN;
+            hasNANs_ = true;
         }
+        intensCorr_.setInten(i + di, j + dj, inten_t(fact));
     }
-    TR("DS::sH(F) never");
-    NEVER
 }
 
-void Dataset::setBinning(int by) {
-    if (by==binning_)
+const Image* Corrset::intensCorr() const {
+    if (!enabled_)
+        return nullptr;
+    if (intensCorr_.isEmpty())
+        calcIntensCorr();
+    return &intensCorr_;
+}
+
+void Corrset::tryEnable(bool on) {
+    if ((on && !hasFile()) || on==enabled_)
         return;
-    binning_ = by;
-    onClusteringChanged();
-}
-
-void Dataset::setDropIncomplete(bool on) {
-    if (on==dropIncomplete_)
-        return;
-    dropIncomplete_ = on;
-    onClusteringChanged();
-}
-
-void Dataset::onFileChanged() {
-    int idx = 0;
-    int cnt = 0;
-    for (Datafile& file: files_) {
-        file.index_ = idx++;
-        file.offset_ = cnt;
-        cnt += file.count();
-    }
-    onClusteringChanged();
-    TR("DS::oFC emit>");
-    emit gSession->sigFiles();
-    TR("DS::oFC emit<");
-}
-
-void Dataset::onClusteringChanged() {
-    allClusters_.clear();
-    hasIncomplete_ = false;
-    for (const Datafile& file : files_) {
-        for (int i=0; i<file.count(); i+=binning_) {
-            if (i+binning_>file.count()) {
-                hasIncomplete_ = true;
-                if (dropIncomplete_)
-                    break;
-            }
-            int ii;
-            QVector<const Measurement*> group;
-            for (ii=i; ii<file.count() && ii<i+binning_; ii++)
-                group.append(file.raw_->measurements().at(ii));
-            shp_Cluster cluster(new Cluster(group, file, allClusters_.size(), i));
-            allClusters_.append(cluster);
-        }
-    }
-    TR("DS::oCC emit>");
-    emit gSession->sigClusters();
-    TR("DS::oCC emit<");
-}
-
-void Dataset::assembleExperiment(const vec<int> fileNums) {
-    filesSelection_ = fileNums;
-    experiment_ = {};
-
-    for (int jFile : filesSelection_) {
-        const Datafile& file = files_.at(jFile);
-        for (int i=0; i<file.count(); i+=binning_) {
-            int ii;
-            QVector<const Measurement*> group;
-            for (ii=i; ii<file.count() && ii<i+binning_; ii++)
-                group.append(file.raw_->measurements().at(ii));
-            shp_Cluster cd(new Cluster(group, file, experiment_.count(), i));
-            experiment_.appendHere(cd);
-        }
-    }
-}
-
-bool Dataset::hasFile(rcstr fileName) const {
-    QFileInfo fileInfo(fileName);
-    for (const Datafile& file : files_)
-        if (fileInfo == file.raw_->fileInfo())
-            return true;
-    return false;
-}
-
-QJsonArray Dataset::to_json() const {
-    QJsonArray ret;
-    for (const Datafile& file : files_) {
-        str relPath = QDir::current().relativeFilePath(file.raw_->fileInfo().absoluteFilePath());
-        ret.append(relPath);
-    }
-    return ret;
+    enabled_ = on;
+    emit gSession->sigCorr();
 }

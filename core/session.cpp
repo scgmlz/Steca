@@ -16,7 +16,6 @@
 #include "core/data/cluster.h"
 #include "core/data/measurement.h"
 #include "core/fit/peak_functions.h"
-#include "core/loaders/loaders.h"
 
 Session::Session()
     : intenScale_(1)
@@ -28,9 +27,7 @@ Session::Session()
 
 void Session::clear() {
     dataset_.clear();
-
-    removeCorrFile();
-    corrEnabled_ = corrHasNaNs_ = false;
+    corrset_.clear();
 
     bgPolyDegree_ = 0;
     bgRanges_.clear();
@@ -45,83 +42,13 @@ void Session::clear() {
     intenScale_ = 1;
 }
 
-void Session::calcIntensCorr() const {
-    corrHasNaNs_ = false;
-
-    debug::ensure(corrImage_);
-    size2d size = corrImage_->size() - imageCut_.marginSize();
-    debug::ensure(!size.isEmpty());
-
-    int w = size.w, h = size.h, di = imageCut_.left, dj = imageCut_.top;
-
-    qreal sum = 0;
-    for_ij (w, h)
-        sum += corrImage_->inten(i + di, j + dj);
-    qreal avg = sum / (w * h);
-
-    intensCorr_.fill(1, corrImage_->size());
-
-    for_ij (w, h) {
-        const inten_t inten = corrImage_->inten(i + di, j + dj);
-        qreal fact;
-        if (inten > 0) {
-            fact = avg / inten;
-        } else {
-            fact = NAN;
-            corrHasNaNs_ = true;
-        }
-        intensCorr_.setInten(i + di, j + dj, inten_t(fact));
-    }
-}
-
-const Image* Session::intensCorr() const {
-    if (!isCorrEnabled())
-        return nullptr;
-    if (intensCorr_.isEmpty())
-        calcIntensCorr();
-    return &intensCorr_;
-}
-
-void Session::setCorrFile(rcstr filePath) THROWS {
-    if (filePath.isEmpty()) {
-        removeCorrFile();
-        return;
-    }
-    QSharedPointer<Rawfile> rawfile = load::loadRawfile(filePath);
-    if (rawfile.isNull())
-        return;
-    setImageSize(rawfile->imageSize());
-    corrImage_ = rawfile->foldedImage();
-    intensCorr_.clear(); // will be calculated lazily
-    // all ok
-    corrFile_ = rawfile;
-    corrEnabled_ = true;
-    emit sigCorr();
-}
-
-void Session::removeCorrFile() {
-    corrFile_.clear();
-    corrImage_.clear();
-    intensCorr_.clear();
-    corrEnabled_ = false;
-    updateImageSize();
-    emit sigCorr();
-}
-
-void Session::tryEnableCorr(bool on) {
-    if ((on && !hasCorrFile()) || on==corrEnabled_)
-        return;
-    corrEnabled_ = on;
-    emit sigCorr();
-}
-
 void Session::setMetaSelection(const vec<bool>& metaSelection) {
     metaSelection_ = metaSelection;
     emit gSession->sigMetaSelection();
 }
 
 void Session::updateImageSize() {
-    if (0 == dataset().countFiles() && !hasCorrFile())
+    if (0 == dataset().countFiles() && !corrset().hasFile())
         imageSize_ = size2d(0, 0);
 }
 
@@ -147,7 +74,7 @@ void Session::setImageTransformRotate(ImageTransform const& rot) {
 
 void Session::setImageCut(bool isTopOrLeft, bool linked, ImageCut const& cut) {
     imageCut_.update(isTopOrLeft, linked, cut, imageSize_);
-    intensCorr_.clear(); // lazy
+    corrset().clearIntens(); // lazy
 }
 
 void Session::setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset) {
