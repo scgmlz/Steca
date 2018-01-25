@@ -123,9 +123,8 @@ void initMenus(QMenuBar* mbar) {
                 gHub->trigger_outputDiffractograms,
         });
     menuOutput->setEnabled(false);
-    QObject::connect(gHub, &TheHub::sigFilesSelected,
-                     [menuOutput](){ menuOutput->setEnabled(
-                             !gSession->dataset().filesSelection().isEmpty()); });
+    QObject::connect(gSession, &Session::sigActivated, [menuOutput]()
+                     { menuOutput->setEnabled(gSession->dataset().hasActivatedClusters()); });
 
     _actionsToMenu(
         "&View",

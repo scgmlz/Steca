@@ -55,11 +55,12 @@ public:
     void setHighlight(const Datafile*);
     void setBinning(int by);
     void setDropIncomplete(bool on);
-    void assembleExperiment(const vec<int>);
+    void assembleExperiment();
 
     // Const methods:
     int countFiles() const { return files_.size(); }
-//    int countClusters() const { return allClusters_ ? allClusters_->count() : 0; }
+    // WAIT whether used:
+    // int countClusters() const { return allClusters_ ? allClusters_->count() : 0; }
     const Datafile& file(int i) const { return files_[i]; }
     int offset(const Datafile& file) const { return file.offset_; }
     const Cluster* highlightedCluster() const { return highlight_; }
@@ -72,12 +73,11 @@ public:
     const QVector<shp_Cluster>& allClusters() const { return allClusters_; }
     QJsonArray to_json() const;
 
-    vec<int> const& filesSelection() const { return filesSelection_; }
-
-    Experiment experiment_; // cluster collected ...
+    bool hasActivatedClusters() const { return true; } // TODO implement
+    const Experiment& experiment() const { return experiment_; }
 
 private:
-    std::vector<Datafile> files_; //!< data files
+    std::vector<Datafile> files_; //!< loaded Datafile|s only live here
     QVector<shp_Cluster> allClusters_;
     int binning_ {1}; //!< bin so many Measurement|s into one cluster
     bool dropIncomplete_ {false}; //!< drop Cluster|s that have less than binning_ members.
@@ -85,7 +85,7 @@ private:
 
     const Cluster* highlight_ {nullptr}; //!< index of highlighted file
 
-    vec<int> filesSelection_; // from these files
+    Experiment experiment_; //!< active clusters
 
     void onFileChanged();
     void onClusteringChanged();

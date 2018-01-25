@@ -118,12 +118,10 @@ void Dataset::onClusteringChanged() {
     TR("DS::oCC emit<");
 }
 
-void Dataset::assembleExperiment(const vec<int> fileNums) {
-    filesSelection_ = fileNums;
+void Dataset::assembleExperiment() {
     experiment_ = {};
 
-    for (int jFile : filesSelection_) {
-        const Datafile& file = files_.at(jFile);
+    for (const Datafile& file : files_) {
         for (int i=0; i<file.count(); i+=binning_) {
             int ii;
             QVector<const Measurement*> group;

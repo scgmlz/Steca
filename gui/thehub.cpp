@@ -210,12 +210,6 @@ QByteArray TheHub::saveSession() const {
     top.insert("image transform", trn.val);
 
     top.insert("files", gSession->dataset().to_json());
-
-    // TODO move this to appropriate classes:
-    QJsonArray arrSelectedFiles;
-    for (int i : gSession->dataset().filesSelection())
-        arrSelectedFiles.append(i);
-    top.insert("selected files", arrSelectedFiles);
     top.insert("combine", gSession->dataset().binning());
 
     if (gSession->hasCorrFile()) {
@@ -223,6 +217,8 @@ QByteArray TheHub::saveSession() const {
         str relPath = QDir::current().relativeFilePath(absPath);
         top.insert("correction file", relPath);
     }
+
+    // TODO save cluster selection
 
     top.insert("background degree", gSession->bgPolyDegree());
     top.insert("background ranges", gSession->bgRanges().to_json());
@@ -323,8 +319,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     TR("installed session from file");
 }
 
-void TheHub::onFilesSelected(const vec<int> indexSelection) {
-    filesSelection_ = indexSelection;
+void TheHub::onFilesSelected(const vec<int> indexSelection) { // TODO rm
     collectDatasetsExec();
 }
 
@@ -334,9 +329,7 @@ void TheHub::combineMeasurementsBy(const int by) {
 }
 
 void TheHub::collectDatasetsExec() { // TODO move to Dataset
-    gSession->dataset().assembleExperiment(filesSelection_);
-    emit sigFilesSelected();
-    emit sigClustersChanged();
+    gSession->dataset().assembleExperiment();
 }
 
 void TheHub::loadCorrFile() {

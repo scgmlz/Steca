@@ -69,7 +69,7 @@ public:
     void tryEnableCorr(bool on) { return corrset().tryEnable(on); }
     bool isCorrEnabled() const { return corrset().isEnabled(); }
 
-    Experiment const& experiment() const { return dataset().experiment_; }
+    const Experiment& experiment() const { return dataset().experiment(); }
 
     size2d imageSize() const;
     ImageTransform const& imageTransform() const { return imageTransform_; }
@@ -105,7 +105,8 @@ signals:
     void sigClusters(); //!< list of clusters has changed
     void sigHighlight(); //!< highlighted File or/and Cluster has changed
     void sigMetaSelection(); //!< meta data selected for display have changed
-    void sigCorr(); //!< corr fiel has been loaded or unloaded or enabled or disabled
+    void sigCorr(); //!< corr file has been loaded or unloaded or enabled or disabled
+    void sigActivated(); //!< selection of active clusters has changed
 
 private:
     friend Dataset; // TODO try to get rid of this

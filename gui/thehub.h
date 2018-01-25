@@ -109,8 +109,6 @@ public:
 
     eFittingTab fittingTab() const { return fittingTab_; }
 
-    const Cluster* selectedCluster() const { return selectedCluster_; }
-
     static int constexpr MAX_POLYNOM_DEGREE = 4;
 
     QAction *trigger_about,
@@ -162,9 +160,7 @@ private:
     bool isFixedIntenImageScale_;
     bool isFixedIntenDgramScale_;
     bool isCombinedDgram_;
-    vec<int> filesSelection_;  // TODO move to Dataset
     eFittingTab fittingTab_ = eFittingTab::NONE;
-    const Cluster* selectedCluster_;
     shp_Reflection selectedReflection_;
     Settings settings_;
 
