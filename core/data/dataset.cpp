@@ -55,7 +55,6 @@ void Dataset::removeFile(int i) { // TODO rm arg
         gSession->setImageCut(true, false, ImageCut());
 }
 
-//! Returns true if some file was loaded
 void Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
     for (const QString& path: filePaths) {
         if (path.isEmpty() || hasFile(path))

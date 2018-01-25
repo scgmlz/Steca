@@ -294,9 +294,8 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
 
     TR("sessionFromJson: going to load reflections info");
     const QJsonArray& reflectionsInfo = top.loadArr("reflections");
-    for_i (reflectionsInfo.count()) {
+    for_i (reflectionsInfo.count())
         gSession->addReflection(reflectionsInfo.at(i).toObject());
-    }
 
     emit sigReflectionsChanged();
     TR("installed session from file");
@@ -373,7 +372,6 @@ void TheHub::setImageMirror(bool on) {
     gSession->setImageTransformMirror(on);
     emit gSession->sigDetector();
 }
-
 
 void TheHub::tellSelectedReflection(shp_Reflection reflection) {
     selectedReflection_ = reflection;
