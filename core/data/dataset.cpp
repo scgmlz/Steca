@@ -70,9 +70,7 @@ void Dataset::setHighlight(const Cluster* cluster) {
     if (cluster==highlight_)
         return;
     highlight_ = cluster;
-    TR("DS::sH(C) emit>");
     emit gSession->sigHighlight();
-    TR("DS::sH(C) emit<");
 }
 
 void Dataset::setHighlight(const Datafile* file) {
@@ -81,13 +79,10 @@ void Dataset::setHighlight(const Datafile* file) {
     for (const shp_Cluster& cluster : allClusters_) {
         if (&cluster->file()==file) {
             highlight_ = cluster.data();
-            TR("DS::sH(F) emit>");
             emit gSession->sigHighlight();
-            TR("DS::sH(F) emit<");
             return;
         }
     }
-    TR("DS::sH(F) never");
     NEVER
 }
 
