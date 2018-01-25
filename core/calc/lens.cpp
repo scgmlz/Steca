@@ -159,7 +159,7 @@ Curve SequenceLens::makeCurve(const Range& rgeGma) const {
 
 void SequenceLens::setNorm(eNorm norm) {
     qreal num = 1, den = 1;
-
+    qDebug() << "avgMonitorCount: " << gSession->experiment().avgMonitorCount();
     switch (norm) {
     case eNorm::MONITOR:
         num = gSession->experiment().avgMonitorCount();

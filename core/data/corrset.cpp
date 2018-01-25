@@ -43,6 +43,21 @@ void Corrset::loadFile(rcstr filePath) THROWS {
     emit gSession->sigCorr();
 }
 
+void Corrset::tryEnable(bool on) {
+    if ((on && !hasFile()) || on==enabled_)
+        return;
+    enabled_ = on;
+    emit gSession->sigCorr();
+}
+
+const Image* Corrset::intensCorr() const {
+    if (!hasFile() || !enabled_)
+        return nullptr;
+    if (intensCorr_.isEmpty())
+        calcIntensCorr();
+    return &intensCorr_;
+}
+
 void Corrset::calcIntensCorr() const {
     hasNANs_ = false;
 
@@ -70,19 +85,4 @@ void Corrset::calcIntensCorr() const {
         }
         intensCorr_.setInten(i + di, j + dj, inten_t(fact));
     }
-}
-
-const Image* Corrset::intensCorr() const {
-    if (!enabled_)
-        return nullptr;
-    if (intensCorr_.isEmpty())
-        calcIntensCorr();
-    return &intensCorr_;
-}
-
-void Corrset::tryEnable(bool on) {
-    if ((on && !hasFile()) || on==enabled_)
-        return;
-    enabled_ = on;
-    emit gSession->sigCorr();
 }
