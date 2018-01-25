@@ -24,7 +24,7 @@ namespace { // file scope
 
 //! Peak analysis without fitting
 
-class Raw final : public PeakFunction {
+class Raw : public PeakFunction {
 public:
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
@@ -38,7 +38,7 @@ public:
     void setRange(const Range&);
     void fit(Curve const&, const Range&);
 
-    str name() const { return "Raw"; }
+    str name() const final { return "Raw"; }
 
 private:
     Curve fittedCurve_; // saved from fitting
@@ -52,7 +52,7 @@ private:
 
 //! to fit peak with a Gaussian
 
-class Gaussian final : public PeakFunction {
+class Gaussian : public PeakFunction {
 public:
     enum { parAMPL, parXSHIFT, parSIGMA };
 
@@ -70,13 +70,13 @@ public:
     qpair peakError() const;
     fwhm_t fwhmError() const;
 
-    str name() const { return "Gaussian"; }
+    str name() const final { return "Gaussian"; }
 };
 
 
 //! to fit peak with a Lorentzian
 
-class Lorentzian final : public PeakFunction {
+class Lorentzian : public PeakFunction {
 public:
     enum { parAMPL, parXSHIFT, parGAMMA };
 
@@ -94,13 +94,13 @@ public:
     qpair peakError() const;
     fwhm_t fwhmError() const;
 
-    str name() const { return "Lorentzian"; }
+    str name() const final { return "Lorentzian"; }
 };
 
 
 //! to fit peak with a sum of Gaussian and Lorentzian with shared width parameter
 
-class PseudoVoigt1 final : public PeakFunction {
+class PseudoVoigt1 : public PeakFunction {
 public:
     enum { parAMPL, parXSHIFT, parSIGMAGAMMA, parETA };
 
@@ -118,13 +118,13 @@ public:
     qpair peakError() const;
     fwhm_t fwhmError() const;
 
-    str name() const { return "PseudoVoigt1"; }
+    str name() const final { return "PseudoVoigt1"; }
 };
 
 
 //! to fit peak with a sum of Gaussian and Lorentzian with independent width parameters
 
-class PseudoVoigt2 final : public PeakFunction {
+class PseudoVoigt2 : public PeakFunction {
 public:
     enum { parAMPL, parXSHIFT, parSIGMA, parGAMMA, parETA };
 
@@ -143,7 +143,7 @@ public:
     qpair peakError() const;
     fwhm_t fwhmError() const;
 
-    str name() const { return "PseudoVoigt2"; }
+    str name() const final { return "PseudoVoigt2"; }
 };
 
 // ************************************************************************** //

@@ -45,7 +45,7 @@ protected:
 
 //! A lens for a single Image.
 
-class ImageLens final : public LensBase {
+class ImageLens : public LensBase {
 public:
     ImageLens(const Image&, bool trans, bool cut);
 
@@ -66,7 +66,7 @@ typedef QSharedPointer<const ImageLens> shp_ImageLens;
 
 //! A lens for a sequence of Image's.
 
-class SequenceLens final : public LensBase {
+class SequenceLens : public LensBase {
 public:
     SequenceLens(Sequence const&, eNorm, bool trans,
                  bool cut, ImageTransform const&, ImageCut const&);

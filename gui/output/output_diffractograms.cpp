@@ -24,7 +24,7 @@
 //  local class TabDiffractogramsSave
 // ************************************************************************** //
 
-class TabDiffractogramsSave final : public TabSave {
+class TabDiffractogramsSave : public TabSave {
 public:
     TabDiffractogramsSave();
 

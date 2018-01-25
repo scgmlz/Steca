@@ -20,7 +20,7 @@
 //  define local classes
 // ************************************************************************** //
 
-class DiffractogramPlotOverlay final : public QWidget {
+class DiffractogramPlotOverlay : public QWidget {
 public:
     DiffractogramPlotOverlay(DiffractogramPlot&);
 
@@ -49,7 +49,7 @@ private:
 };
 
 
-class DiffractogramPlot final : public QCustomPlot {
+class DiffractogramPlot : public QCustomPlot {
 public:
     enum class eTool {
         NONE,

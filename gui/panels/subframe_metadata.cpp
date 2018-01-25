@@ -24,7 +24,7 @@
 //  local class MetadataModel
 // ************************************************************************** //
 
-class MetadataModel final : public TableModel {
+class MetadataModel : public TableModel {
 public:
     MetadataModel();
 

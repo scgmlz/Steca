@@ -104,11 +104,15 @@ void Dataset::activateCluster(int index, bool on) {
     allClusters_.at(index)->setActivated(on);
 }
 
-void Dataset::activateFile(int index, Qt::CheckState state) {
-    if (state==Qt::PartiallyChecked)
-        return;
-    for (Cluster* cluster : files_.at(index).clusters_)
-        cluster->setActivated(state==Qt::Checked);
+void Dataset::flipClusterActivation(int index) {
+    allClusters_.at(index)->setActivated(!allClusters_.at(index)->isActivated());
+}
+
+void Dataset::cycleFileActivation(int index) {
+    const Datafile& fil = file(index);
+    bool on = fil.activated()!=Qt::Checked;
+    for (Cluster* cluster : fil.clusters_)
+        cluster->setActivated(on);
     emit gSession->sigActivated();
 }
 

@@ -18,7 +18,7 @@
 #include "frame.h"
 
 //! The modal dialog for generating and saving pole figures
-class PoleFiguresFrame final : public Frame {
+class PoleFiguresFrame : public Frame {
 public:
     PoleFiguresFrame(rcstr title, QWidget*);
 

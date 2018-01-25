@@ -25,7 +25,7 @@
 
 //! The model for ExperimentView.
 
-class ExperimentModel final : public TableModel { // < QAbstractTableModel < QAbstractItemModel
+class ExperimentModel : public TableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
     void onClicked(const QModelIndex &);
     void onClustersChanged();
@@ -43,15 +43,13 @@ public:
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
 private:
-    void setActivated(int row, bool on);
-    void updateChecked();
     int columnCount() const final { return COL_ATTRS + metaCount(); }
 
     // The following local caches duplicate state information from Session.
     // The are needed to detect changes of state, which in turn helps us to
-    // update display items only if they have changed.
+    // update display items only if they have changed. Whether this is really
+    // useful is to be determined. The cache for the activation state is gone.
     vec<int> metaInfoNums_; //!< indices of metadata items selected for display
-    vec<bool> checked_;
     int rowHighlighted_;
 
     const Cluster* highlighted_{nullptr};
@@ -64,7 +62,7 @@ void ExperimentModel::onClicked(const QModelIndex& cell) {
         return;
     int col = cell.column();
     if (col==1) {
-        setActivated(row, !checked_.at(row));
+        gSession->dataset().flipClusterActivation(row);
     } else if (col==2) {
         setHighlight(row);
     }
@@ -72,7 +70,6 @@ void ExperimentModel::onClicked(const QModelIndex& cell) {
 
 void ExperimentModel::onClustersChanged() {
     beginResetModel();
-    updateChecked();
     setHighlight(qMin(rowCount()-1, rowHighlighted_));
     endResetModel();
 }
@@ -91,9 +88,7 @@ void ExperimentModel::onHighlight() {
 }
 
 void ExperimentModel::onActivated() {
-    updateChecked();
-    for (int row=0; row<rowCount(); ++row)
-        setActivated(row, allClusters_.at(row)->isActivated());
+    emit dataChanged(createIndex(0,1),createIndex(rowCount()-1,1));
 }
 
 void ExperimentModel::onMetaSelection() {
@@ -177,9 +172,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     }
     case Qt::CheckStateRole: {
         if (col==COL_CHECK) {
-            if (row>=checked_.count())
-                return {};
-            return checked_.at(row) ? Qt::Checked : Qt::Unchecked;
+            return allClusters_.at(row)->isActivated() ? Qt::Checked : Qt::Unchecked;
         }
         return {};
     }
@@ -200,21 +193,6 @@ QVariant ExperimentModel::headerData(int col, Qt::Orientation ori, int role) con
     return {};
 }
 
-void ExperimentModel::setActivated(int row, bool on) {
-    checked_[row] = on;
-    if (on==allClusters_.at(row)->isActivated())
-        return;
-    gSession->dataset().activateCluster(row, on);
-    emit dataChanged(createIndex(row,1),createIndex(row,1));
-}
-
-void ExperimentModel::updateChecked() {
-    int oldsize = checked_.count();
-    checked_.resize(rowCount());
-    for (int row = oldsize; row<rowCount(); ++row)
-        setActivated(row, allClusters_.at(row)->isActivated());
-}
-
 
 // ************************************************************************** //
 //  local class ExperimentView
@@ -222,7 +200,7 @@ void ExperimentModel::updateChecked() {
 
 //! Main item in SubframeMeasurement: View and control of measurements list.
 
-class ExperimentView final : public ListView { // < QTreeView < QAbstractItemView
+class ExperimentView : public ListView { // < QTreeView < QAbstractItemView
 public:
     ExperimentView();
 

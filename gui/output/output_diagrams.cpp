@@ -120,7 +120,7 @@ void TabPlot::plot(
 //  local class TabDiagramsSave
 // ************************************************************************** //
 
-class TabDiagramsSave final : public TabSave {
+class TabDiagramsSave : public TabSave {
 public:
     TabDiagramsSave();
     int currType() const { return fileTypes_->currentIndex(); }

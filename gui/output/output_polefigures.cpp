@@ -27,7 +27,7 @@
 //  local class TabGraph
 // ************************************************************************** //
 
-class TabGraph final : public QWidget {
+class TabGraph : public QWidget {
 public:
     TabGraph(Params&);
     void set(ReflectionInfos);
@@ -184,7 +184,7 @@ Jan
 //  local class TabPoleFiguresSave
 // ************************************************************************** //
 
-class TabPoleFiguresSave final : public TabSave {
+class TabPoleFiguresSave : public TabSave {
 public:
     TabPoleFiguresSave();
 

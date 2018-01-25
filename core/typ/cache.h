@@ -94,7 +94,7 @@ public:
 // if full, takes a hit, trims a lot
 // has no overhead for each access (value())
 template <typename Key, typename T>
-class cache_lazy final : public cache_base<Key, T> {
+class cache_lazy : public cache_base<Key, T> {
     using super = cache_base<Key,T>;
 public:
     typedef QSharedPointer<T> shp;

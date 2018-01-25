@@ -65,7 +65,7 @@ private:
 
 //! A group of one or more Measurement's, with associated information.
 
-class Cluster final : public Sequence {
+class Cluster : public Sequence {
 public:
     Cluster() = delete;
     Cluster(Cluster&) = delete;

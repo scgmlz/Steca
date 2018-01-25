@@ -58,7 +58,8 @@ public:
     void setBinning(int by);
     void setDropIncomplete(bool on);
     void activateCluster(int index, bool on);
-    void activateFile(int index, Qt::CheckState state);
+    void flipClusterActivation(int index);
+    void cycleFileActivation(int index);
     void assembleExperiment();
 
     // Const methods:
