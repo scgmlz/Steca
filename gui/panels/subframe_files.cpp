@@ -37,13 +37,10 @@ public:
     void setHighlight(int row);
 
 private:
-    void updateChecked();
-
     int columnCount() const final { return 3; }
     int rowCount() const final { return gSession->dataset().countFiles(); }
     QVariant data(const QModelIndex&, int) const final;
 
-    vec<Qt::CheckState> checked_;
     int rowHighlighted_;
 };
 
@@ -59,9 +56,7 @@ void FilesModel::onClicked(const QModelIndex& cell) {
 }
 
 void FilesModel::onFilesChanged() {
-    beginResetModel();
-    updateChecked();
-    endResetModel();
+    beginResetModel(); endResetModel(); // not understood, but imperatively needed
     if (rowHighlighted_<0)
         setHighlight(0);
 }
@@ -84,7 +79,6 @@ void FilesModel::onHighlight() {
 
 //! Update activation check display upon sigActivated.
 void FilesModel::onActivated() {
-    qDebug() << "ACT " << rowCount();
     emit dataChanged(createIndex(0,1),createIndex(rowCount()-1,1));
 }
 
@@ -92,7 +86,6 @@ void FilesModel::onActivated() {
 void FilesModel::removeFile() {
     int row = rowHighlighted_;
     gHub->removeFile(row);
-    updateChecked();
     emit dataChanged(createIndex(row,0),createIndex(rowCount(),columnCount()));
     setHighlight(qMin(row, rowCount()-1));
 }
@@ -111,15 +104,9 @@ void FilesModel::setHighlight(int row) {
         emit dataChanged(createIndex(oldRow,0),createIndex(oldRow,columnCount()));
 }
 
-void FilesModel::updateChecked() {
-    int oldsize = checked_.count();
-    checked_.resize(rowCount());
-}
-
 //! Returns role-specific information about one table cell.
 QVariant FilesModel::data(const QModelIndex& index, int role) const {
     const int row = index.row();
-    qDebug() << "DATA " << row << "/" << rowCount();
     if (row < 0 || row >= rowCount())
         return {};
     const Datafile& file = gSession->dataset().file(row);
