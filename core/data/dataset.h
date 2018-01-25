@@ -77,7 +77,6 @@ public:
     const QVector<shp_Cluster>& allClusters() const { return allClusters_; }
     QJsonArray to_json() const;
 
-    bool hasActivatedClusters() const { return true; } // TODO implement
     const Experiment& experiment() const { return experiment_; }
 
 private:

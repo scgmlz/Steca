@@ -124,7 +124,7 @@ void initMenus(QMenuBar* mbar) {
         });
     menuOutput->setEnabled(false);
     QObject::connect(gSession, &Session::sigActivated, [menuOutput]()
-                     { menuOutput->setEnabled(gSession->dataset().hasActivatedClusters()); });
+                     { menuOutput->setEnabled(gSession->experiment().size()); });
 
     _actionsToMenu(
         "&View",

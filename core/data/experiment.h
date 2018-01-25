@@ -20,7 +20,7 @@
 #include <QSharedPointer> // required by some compilers
 #include <vector>
 
-//! A sequence of Cluster|s, and cached averages
+//! The list of activated Cluster|s, and cached averages
 
 class Experiment {
 public:
