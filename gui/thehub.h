@@ -70,7 +70,6 @@ public:
     void removeFile(int);
     void sessionFromFile(rcstr&) THROWS;
     void loadCorrFile() THROWS;
-    void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
     void setGammaRange(const Range&);
 
     void setBgRanges(const Ranges&);

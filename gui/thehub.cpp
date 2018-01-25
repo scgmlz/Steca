@@ -279,7 +279,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     const JsonObj& cut = top.loadObj("cut");
     int x1 = cut.loadUint("left"), y1 = cut.loadUint("top"),
          x2 = cut.loadUint("right"), y2 = cut.loadUint("bottom");
-    setImageCut(true, false, ImageCut(x1, y1, x2, y2));
+    gSession->setImageCut(true, false, ImageCut(x1, y1, x2, y2));
     setImageRotate(ImageTransform(top.loadUint("image transform")));
 
     TR("sessionFromJson: going to load fit setup");
@@ -315,10 +315,6 @@ void TheHub::loadCorrFile() {
         gSession->corrset().loadFile(fileName);
     }
 }
-
-void TheHub::setImageCut(bool isTopOrLeft, bool linked, ImageCut const& cut) {
-    gSession->setImageCut(isTopOrLeft, linked, cut);
-} // TODO rm
 
 void TheHub::setGammaRange(const Range& gammaRange) {
     gSession->setGammaRange(gammaRange);

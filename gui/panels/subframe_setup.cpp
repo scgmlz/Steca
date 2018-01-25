@@ -191,10 +191,10 @@ SubframeSetup::SubframeSetup() {
         detDistance_->setValue(Geometry::DEF_DETECTOR_DISTANCE);
         detPixelSize_->setValue(Geometry::DEF_DETECTOR_PIXEL_SIZE);
 
-        connect(detDistance_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() { setToHub(); });
-
-        connect(
-            detPixelSize_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() { setToHub(); });
+        connect(detDistance_, _SLOT_(QDoubleSpinBox, valueChanged, double),
+                [this]() { setToHub(); });
+        connect(detPixelSize_, _SLOT_(QDoubleSpinBox, valueChanged, double),
+                [this]() { setToHub(); });
 
         beamOffsetI_ = newQ::SpinBox(6, true);
         beamOffsetJ_ = newQ::SpinBox(6, true);
@@ -211,14 +211,12 @@ SubframeSetup::SubframeSetup() {
         auto _setImageCut = [this](bool isTopOrLeft, int value) {
             debug::ensure(value >= 0);
             if (gHub->toggle_linkCuts->isChecked())
-                gHub->setImageCut(
-                    isTopOrLeft, true,
-                    ImageCut(value, value, value, value));
+                gSession->setImageCut(isTopOrLeft, true,
+                                      ImageCut(value, value, value, value));
             else
-                gHub->setImageCut(
-                    isTopOrLeft, false, ImageCut(
-                                        cutLeft_->value(), cutTop_->value(),
-                                        cutRight_->value(), cutBottom_->value()));
+                gSession->setImageCut(isTopOrLeft, false,
+                                      ImageCut(cutLeft_->value(), cutTop_->value(),
+                                               cutRight_->value(), cutBottom_->value()));
         };
 
         connect(cutLeft_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
