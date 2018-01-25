@@ -88,7 +88,6 @@ void ExperimentModel::onHighlight() {
 }
 
 void ExperimentModel::onActivated() {
-    qDebug() << "act " << rowCount();
     emit dataChanged(createIndex(0,1),createIndex(rowCount()-1,1));
 }
 
@@ -121,7 +120,6 @@ void ExperimentModel::setHighlight(int row) {
 
 QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     int row = index.row();
-    qDebug() << "data " << row << "/" << rowCount();
     if (row < 0 || row >= rowCount())
         return {};
     const Cluster* cluster = allClusters_.at(row).data();

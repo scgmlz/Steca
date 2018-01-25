@@ -36,11 +36,15 @@ public:
     void removeFile();
     void setHighlight(int row);
 
-private:
     int columnCount() const final { return 3; }
     int rowCount() const final { return gSession->dataset().countFiles(); }
     QVariant data(const QModelIndex&, int) const final;
 
+private:
+    void setActivated(int row, Qt::CheckState state);
+    void updateChecked();
+
+    vec<Qt::CheckState> checked_;
     int rowHighlighted_;
 };
 
@@ -51,18 +55,20 @@ void FilesModel::onClicked(const QModelIndex& cell) {
         return;
     int col = cell.column();
     if (col==1) {
-        gSession->dataset().cycleFileActivation(row);
+        setActivated(row, checked_.at(row)==Qt::Checked ? Qt::Unchecked : Qt::Checked);
     }
 }
 
 void FilesModel::onFilesChanged() {
+    beginResetModel();
+    updateChecked();
+    endResetModel();
     if (rowHighlighted_<0)
         setHighlight(0);
 }
 
 //! Update highlight display upon sigHighlight.
 void FilesModel::onHighlight() {
-    qDebug() << "HIG " << rowCount();
     if (!gSession->dataset().countFiles())
         return;
     const Datafile* newFile = gSession->dataset().highlightedFile();
@@ -79,14 +85,15 @@ void FilesModel::onHighlight() {
 
 //! Update activation check display upon sigActivated.
 void FilesModel::onActivated() {
-    qDebug() << "ACT " << rowCount();
-    emit dataChanged(createIndex(0,1),createIndex(rowCount()-1,1));
+    for (int row=0; row<rowCount(); ++row)
+        setActivated(row, gSession->dataset().file(row).activated());
 }
 
 //! Forwards command to remove file, and updates the view.
 void FilesModel::removeFile() {
     int row = rowHighlighted_;
     gHub->removeFile(row);
+    updateChecked();
     emit dataChanged(createIndex(row,0),createIndex(rowCount(),columnCount()));
     setHighlight(qMin(row, rowCount()-1));
 }
@@ -108,7 +115,6 @@ void FilesModel::setHighlight(int row) {
 //! Returns role-specific information about one table cell.
 QVariant FilesModel::data(const QModelIndex& index, int role) const {
     const int row = index.row();
-    qDebug() << "DATA " << row << "/" << rowCount();
     if (row < 0 || row >= rowCount())
         return {};
     const Datafile& file = gSession->dataset().file(row);
@@ -130,7 +136,7 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
         return {};
     case Qt::CheckStateRole: {
         if (col==1) {
-            return gSession->dataset().file(row).activated();
+            return checked_.at(row);
         }
         return {};
     }
@@ -142,6 +148,21 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
     default:
         return {};
     }
+}
+
+void FilesModel::setActivated(int row, Qt::CheckState state) {
+    checked_[row] = state;
+    if (state==gSession->dataset().file(row).activated())
+        return;
+    emit dataChanged(createIndex(row,1),createIndex(row,1));
+    //gSession->dataset().activateFile(row, state);
+}
+
+void FilesModel::updateChecked() {
+    int oldsize = checked_.count();
+    checked_.resize(rowCount());
+    for (int row = oldsize; row<rowCount(); ++row)
+        setActivated(row, gSession->dataset().file(row).activated());
 }
 
 
