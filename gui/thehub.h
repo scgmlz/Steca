@@ -51,10 +51,6 @@ public:
 
 signals: // TODO: rm unused
 
-    void sigFilesSelected(); //!< active file selection has changed
-
-    void sigClustersChanged(); //!< the set of cluster collected from selected
-
     void sigReflectionsChanged();
     void sigReflectionSelected(shp_Reflection);
     void sigReflectionData(shp_Reflection);

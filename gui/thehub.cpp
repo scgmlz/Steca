@@ -148,18 +148,6 @@ TheHub::TheHub()
 
     trigger_outputDiffractograms = newQ::Trigger("Diffractograms...");
 
-
-    auto deselect = [this]() {
-        toggle_fixedIntenImage->setChecked(false);
-        toggle_fixedIntenDgram->setChecked(false);
-        toggle_combinedDgram->setChecked(false);
-    };
-
-    QObject::connect(this, &TheHub::sigGeometryChanged, [deselect]() { deselect(); });
-    QObject::connect(this, &TheHub::sigClustersChanged, [deselect]() { deselect(); });
-    QObject::connect(gSession, &Session::sigCorr, [deselect]() { deselect(); });
-
-
     saveDir = settings_.readStr("export_directory");
     saveFmt = settings_.readStr("export_format");
 

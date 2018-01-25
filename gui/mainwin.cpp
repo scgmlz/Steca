@@ -203,7 +203,7 @@ void MainWin::connectActions() {
 
     connectTrigger(gHub->trigger_loadSession, &MainWin::loadSession);
     connectTrigger(gHub->trigger_saveSession, &MainWin::saveSession);
-    connectTrigger(gHub->trigger_clearSession, &MainWin::clearSession);
+    QObject::connect(gHub->trigger_clearSession, &QAction::triggered, gSession,  &Session::clear);
 
     connectTrigger(gHub->trigger_addFiles, &MainWin::addFiles);
 
@@ -302,7 +302,7 @@ void MainWin::loadSession() {
                    << ex.msg() << "\n"
                    << "The application may now be in an inconsistent state.\n"
                    << "Please consider to quit the application, and start afresh.\n";
-        clearSession();
+        gSession->clear();
     }
 }
 
@@ -312,12 +312,6 @@ void MainWin::saveSession() {
     if (!fileName.endsWith(".ste"))
         fileName += ".ste";
     gHub->saveSession(QFileInfo(fileName));
-}
-
-void MainWin::clearSession() {
-    gSession->clear();
-    emit gHub->sigFilesSelected();
-    emit gHub->sigClustersChanged();
 }
 
 void MainWin::execCommand(str line) {
