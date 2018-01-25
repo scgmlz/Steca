@@ -178,7 +178,7 @@ SubframeSetup::SubframeSetup() {
 
     // ==== image geometry tab ====
     {
-        QBoxLayout& box = newQ::Tab(this, "Geometry")->box();
+        QBoxLayout& box = newQ::Tab(this, "Detector")->box();
 
         connect(gSession, &Session::sigDetector, [this](){ setFromHub(); });
 
