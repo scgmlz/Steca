@@ -217,9 +217,11 @@ ReflectionInfos Session::makeReflectionInfos(
     return ret;
 }
 
+// TODO: split into two functions (see usage in panel_diff..)
 void Session::setIntenScaleAvg(bool avg, qreal scale) {
     intenScaledAvg_ = avg;
     intenScale_ = scale;
+    emit gSession->sigNorm();
 }
 
 void Session::addReflection(const QString& peakFunctionName) {
@@ -232,6 +234,11 @@ void Session::addReflection(const QJsonObject& obj) {
     shp_Reflection reflection(new Reflection);
     reflection->from_json(obj);
     reflections_.append(reflection);
+}
+
+void Session::setNorm(eNorm norm) {
+    norm_ = norm;
+    emit gSession->sigNorm();
 }
 
 qreal Session::calcAvgBackground(Sequence const& seq) const {

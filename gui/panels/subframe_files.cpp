@@ -57,7 +57,7 @@ void FilesModel::onClicked(const QModelIndex& cell) {
 
 void FilesModel::onFilesChanged() {
     beginResetModel(); endResetModel(); // not understood, but imperatively needed
-    if (rowHighlighted_<0)
+    if (rowHighlighted_<0 && gSession->dataset().countFiles())
         setHighlight(0);
 }
 
@@ -98,6 +98,7 @@ void FilesModel::setHighlight(int row) {
     rowHighlighted_ = row;
     if (row>=0) {
         emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
+        qDebug() << "FM::sH " << row  << "/" << rowCount() << " #=" << gSession->dataset().countFiles();
         gSession->dataset().setHighlight(&gSession->dataset().file(row));
     }
     if (oldRow>=0)

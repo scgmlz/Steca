@@ -164,7 +164,7 @@ ImageTab::ImageTab() {
 
     connect(gHub, &TheHub::sigDisplayChanged, this, &ImageTab::render);
     connect(gSession, &Session::sigDetector, this, &ImageTab::render);
-    connect(gHub, &TheHub::sigNormChanged, this, &ImageTab::render);
+    connect(gSession, &Session::sigNorm, this, &ImageTab::render);
     connect(gSession, &Session::sigHighlight, this, &ImageTab::onHighlight);
 }
 
@@ -312,7 +312,6 @@ void DataImageTab::render() {
             minGamma_->clear();
             maxGamma_->clear();
         }
-
         gSession->setGammaRange(rge);
 
         const Measurement* measurement = cluster_->at(n - 1);

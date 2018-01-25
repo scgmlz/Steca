@@ -290,7 +290,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
 
     bool arg1 = top.loadBool("averaged intensity ", true);
     qreal arg2 = top.loadPreal("intensity scale", 1);
-    setIntenScaleAvg(arg1, arg2);
+    gSession->setIntenScaleAvg(arg1, arg2);
 
     TR("sessionFromJson: going to load reflections info");
     const QJsonArray& reflectionsInfo = top.loadArr("reflections");
@@ -314,11 +314,6 @@ void TheHub::loadCorrFile() {
         QDir::setCurrent(QFileInfo(fileName).absolutePath());
         gSession->corrset().loadFile(fileName);
     }
-}
-
-void TheHub::setIntenScaleAvg(bool avg, qreal scale) {
-    gSession->setIntenScaleAvg(avg, scale);
-    emit sigNormChanged(); // TODO instead of another signal
 }
 
 void TheHub::setPeakFunction(const QString& peakFunctionName) {
@@ -379,10 +374,6 @@ void TheHub::setImageMirror(bool on) {
     emit gSession->sigDetector();
 }
 
-void TheHub::setNorm(eNorm norm) {
-    gSession->setNorm(norm);
-    emit sigNormChanged();
-}
 
 void TheHub::tellSelectedReflection(shp_Reflection reflection) {
     selectedReflection_ = reflection;

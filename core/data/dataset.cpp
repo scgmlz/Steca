@@ -79,14 +79,9 @@ void Dataset::setHighlight(const Cluster* cluster) {
 void Dataset::setHighlight(const Datafile* file) {
     if (highlight_ && file==&highlight_->file())
         return;
-    for (const shp_Cluster& cluster : allClusters_) {
-        if (&cluster->file()==file) {
-            highlight_ = cluster.data();
-            emit gSession->sigHighlight();
-            return;
-        }
-    }
-    NEVER
+    debug::ensure(file);
+    highlight_ = file->clusters_.front();
+    emit gSession->sigHighlight();
 }
 
 void Dataset::setBinning(int by) {

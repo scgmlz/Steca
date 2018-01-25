@@ -59,7 +59,7 @@ public:
     void addReflection(const QString&);
     void addReflection(const QJsonObject& obj);
     void removeReflection(int i) { reflections_.remove(i); }
-    void setNorm(eNorm norm) { norm_ = norm; }
+    void setNorm(eNorm);
 
     // Const methods: // TODO expand corrset() calls in calling code
     bool hasCorrFile() const { return corrset().hasFile(); }
@@ -110,6 +110,7 @@ signals:
     void sigDetector();      //!< detector geometry has changed
     void sigDiffractogram(); //!< diffractogram must be repainted
     void sigBaseline();      //!< baseline fit has changed
+    void sigNorm();          //!< normalization has changed
 
 private:
     friend Dataset; // TODO try to get rid of this

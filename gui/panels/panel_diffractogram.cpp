@@ -430,7 +430,7 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
 
     connect(comboNormType_, _SLOT_(QComboBox, currentIndexChanged, int),
             [this](int index) { // TODO init value from hub?
-                gHub->setNorm(eNorm(index));
+                gSession->setNorm(eNorm(index));
             });
 
     hb->addWidget(newQ::Label(" intensity from:"));
@@ -442,12 +442,12 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
     connect(intenAvg_, &QRadioButton::toggled, [this](bool on) {
         intenScale_->setEnabled(on);
         intenScale_->setValue(gSession->intenScale());
-        gHub->setIntenScaleAvg(on, intenScale_->value());
+        gSession->setIntenScaleAvg(on, intenScale_->value());
     });
 
     connect(intenScale_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
         if (val > 0)
-            gHub->setIntenScaleAvg(gSession->intenScaledAvg(), val);
+            gSession->setIntenScaleAvg(gSession->intenScaledAvg(), val);
     });
 
     hb->addStretch();
@@ -476,7 +476,7 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
     connect(gSession, &Session::sigDiffractogram, [this](){ render(); });
     connect(gSession, &Session::sigBaseline, [this](){ render(); });
     connect(gHub, &TheHub::sigReflectionsChanged, [this](){ render(); });
-    connect(gHub, &TheHub::sigNormChanged, [this](){ onNormChanged(); });
+    connect(gSession, &Session::sigNorm, [this](){ onNormChanged(); });
     connect(gHub, &TheHub::sigFittingTab, [this](eFittingTab tab) { onFittingTab(tab); });
 
     connect(gHub->toggle_selRegions, &QAction::toggled, [this](bool on) {

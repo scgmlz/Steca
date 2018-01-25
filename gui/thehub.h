@@ -57,9 +57,6 @@ signals: // TODO: rm unused
     void sigReflectionValues(const Range&, qpair const&, fwhm_t, bool);
 
     void sigDisplayChanged();
-
-    void sigNormChanged();
-
     void sigFittingTab(eFittingTab);
 
 public:
@@ -68,7 +65,6 @@ public:
     void sessionFromFile(rcstr&) THROWS;
     void loadCorrFile() THROWS;
 
-    void setIntenScaleAvg(bool, qreal);
     void setNorm(eNorm);
     void setFittingTab(eFittingTab);
 
