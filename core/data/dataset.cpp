@@ -16,6 +16,30 @@
 #include "core/loaders/loaders.h"
 #include <QDir>
 
+// ************************************************************************** //
+//  class Datafile
+// ************************************************************************** //
+
+Qt::CheckState Datafile::activated() const {
+    bool allActivated = true;
+    bool noneActivated = true;
+    for (const Cluster* cluster : clusters_) {
+        if (cluster->isActivated())
+            noneActivated = false;
+        else
+            allActivated = false;
+    }
+    if (allActivated)
+        return Qt::Checked;
+    else if (noneActivated)
+        return Qt::Unchecked;
+    return Qt::PartiallyChecked;
+}
+
+// ************************************************************************** //
+//  class Dataset
+// ************************************************************************** //
+
 void Dataset::clear() {
     while (countFiles())
         removeFile(0);
@@ -85,6 +109,14 @@ void Dataset::activateCluster(int index, bool on) {
     allClusters_.at(index)->setActivated(on);
 }
 
+void Dataset::activateFile(int index, Qt::CheckState state) {
+    if (state==Qt::PartiallyChecked)
+        return;
+    for (Cluster* cluster : files_.at(index).clusters_)
+        cluster->setActivated(state==Qt::Checked);
+    emit gSession->sigActivated();
+}
+
 void Dataset::onFileChanged() {
     int idx = 0;
     int cnt = 0;
@@ -93,16 +125,23 @@ void Dataset::onFileChanged() {
         file.offset_ = cnt;
         cnt += file.count();
     }
-    onClusteringChanged();
-    TR("DS::oFC emit>");
+    updateClusters();
     emit gSession->sigFiles();
-    TR("DS::oFC emit<");
+    emit gSession->sigClusters();
+    emit gSession->sigActivated();
 }
 
 void Dataset::onClusteringChanged() {
+    updateClusters();
+    emit gSession->sigClusters();
+    emit gSession->sigActivated();
+}
+
+void Dataset::updateClusters() {
     allClusters_.clear();
     hasIncomplete_ = false;
-    for (const Datafile& file : files_) {
+    for (Datafile& file : files_) {
+        file.clusters_.clear();
         for (int i=0; i<file.count(); i+=binning_) {
             if (i+binning_>file.count()) {
                 hasIncomplete_ = true;
@@ -115,11 +154,9 @@ void Dataset::onClusteringChanged() {
                 group.append(file.raw_->measurements().at(ii));
             shp_Cluster cluster(new Cluster(group, file, allClusters_.size(), i));
             allClusters_.append(cluster);
+            file.clusters_.push_back(cluster.data());
         }
     }
-    TR("DS::oCC emit>");
-    emit gSession->sigClusters();
-    TR("DS::oCC emit<");
 }
 
 void Dataset::assembleExperiment() {

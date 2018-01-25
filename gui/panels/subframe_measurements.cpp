@@ -28,22 +28,23 @@
 class ExperimentModel final : public TableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
     void onClicked(const QModelIndex &);
-    void setHighlight(int row);
     void onClustersChanged();
     void onHighlight();
-    void setActivated(int row, bool on);
     void onActivated();
     void onMetaSelection();
+    void setHighlight(int row);
 
     int rowCount() const final { return allClusters_.count(); }
     QVariant data(const QModelIndex&, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const final;
-    int rowHighlighted() const { return rowHighlighted_; }
+    int rowHighlighted() const { return rowHighlighted_; } // needed for View scroll
     int metaCount() const { return metaInfoNums_.count(); }
 
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
 private:
+    void setActivated(int row, bool on);
+    void updateChecked();
     int columnCount() const final { return COL_ATTRS + metaCount(); }
 
     // The following local caches duplicate state information from Session.
@@ -69,35 +70,9 @@ void ExperimentModel::onClicked(const QModelIndex& cell) {
     }
 }
 
-void ExperimentModel::setHighlight(int row) {
-    const Cluster* oldHighlighted = highlighted_;
-    int oldRow = rowHighlighted_;
-    rowHighlighted_ = row;
-    if (row>=0) {
-        highlighted_ = allClusters_.at(rowHighlighted_).data();
-        emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
-    } else
-        highlighted_ = nullptr;
-    if (oldHighlighted)
-        emit dataChanged(createIndex(oldRow,0),createIndex(oldRow,columnCount()));
-    if (highlighted_!=oldHighlighted)
-        gSession->dataset().setHighlight(highlighted_);
-}
-
-void ExperimentModel::setActivated(int row, bool on) {
-    checked_[row] = on;
-    if (on==allClusters_.at(row)->isActivated())
-        return;
-    gSession->dataset().activateCluster(row, on);
-    emit dataChanged(createIndex(row,1),createIndex(row,1));
-}
-
 void ExperimentModel::onClustersChanged() {
     beginResetModel();
-    int oldsize = checked_.count();
-    checked_.resize(rowCount());
-    for (int row = oldsize; row<rowCount(); ++row)
-        setActivated(row, allClusters_.at(row)->isActivated());
+    updateChecked();
     setHighlight(qMin(rowCount()-1, rowHighlighted_));
     endResetModel();
 }
@@ -116,6 +91,7 @@ void ExperimentModel::onHighlight() {
 }
 
 void ExperimentModel::onActivated() {
+    updateChecked();
     for (int row=0; row<rowCount(); ++row)
         setActivated(row, allClusters_.at(row)->isActivated());
 }
@@ -130,6 +106,21 @@ void ExperimentModel::onMetaSelection() {
     emit dataChanged(createIndex(0,COL_ATTRS), createIndex(rowCount(),columnCount()));
     emit headerDataChanged(Qt::Horizontal, COL_ATTRS, columnCount());
     endResetModel();
+}
+
+void ExperimentModel::setHighlight(int row) {
+    const Cluster* oldHighlighted = highlighted_;
+    int oldRow = rowHighlighted_;
+    rowHighlighted_ = row;
+    if (row>=0) {
+        highlighted_ = allClusters_.at(rowHighlighted_).data();
+        emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
+    } else
+        highlighted_ = nullptr;
+    if (oldHighlighted)
+        emit dataChanged(createIndex(oldRow,0),createIndex(oldRow,columnCount()));
+    if (highlighted_!=oldHighlighted)
+        gSession->dataset().setHighlight(highlighted_);
 }
 
 QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
@@ -185,8 +176,11 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
         return QColor(Qt::white);
     }
     case Qt::CheckStateRole: {
-        if (col==COL_CHECK)
+        if (col==COL_CHECK) {
+            if (row>=checked_.count())
+                return {};
             return checked_.at(row) ? Qt::Checked : Qt::Unchecked;
+        }
         return {};
     }
     default:
@@ -204,6 +198,21 @@ QVariant ExperimentModel::headerData(int col, Qt::Orientation ori, int role) con
     else if (col>=COL_ATTRS && col < COL_ATTRS+metaCount())
         return Metadata::attributeTag(metaInfoNums_.at(col-COL_ATTRS), false);
     return {};
+}
+
+void ExperimentModel::setActivated(int row, bool on) {
+    checked_[row] = on;
+    if (on==allClusters_.at(row)->isActivated())
+        return;
+    gSession->dataset().activateCluster(row, on);
+    emit dataChanged(createIndex(row,1),createIndex(row,1));
+}
+
+void ExperimentModel::updateChecked() {
+    int oldsize = checked_.count();
+    checked_.resize(rowCount());
+    for (int row = oldsize; row<rowCount(); ++row)
+        setActivated(row, allClusters_.at(row)->isActivated());
 }
 
 

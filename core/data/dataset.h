@@ -32,14 +32,16 @@ public:
     Datafile() = delete;
     Datafile(Datafile&&) = default;
     Datafile& operator=(const Datafile&) = default;
-    Datafile(const QSharedPointer<const Rawfile>& raw) : raw_(raw) {}
+Datafile(const QSharedPointer<const Rawfile>& raw) : raw_(raw) {}
 
     int count() const { return raw_->count(); }
     QString name() const { return raw_->fileName(); }
+    Qt::CheckState activated() const;
 
     QSharedPointer<const Rawfile> raw_; //!< owned by this
     int index_; //!< index in files_
     int offset_;  //!< first index in total list of Measurement|s
+    std::vector<Cluster*> clusters_; //!< back links to Cluster|s made from this
 };
 
 
@@ -56,6 +58,7 @@ public:
     void setBinning(int by);
     void setDropIncomplete(bool on);
     void activateCluster(int index, bool on);
+    void activateFile(int index, Qt::CheckState state);
     void assembleExperiment();
 
     // Const methods:
@@ -90,6 +93,7 @@ private:
 
     void onFileChanged();
     void onClusteringChanged();
+    void updateClusters();
 
     bool hasFile(rcstr fileName) const;
 };

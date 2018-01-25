@@ -235,6 +235,7 @@ Cluster::Cluster(
     , file_(file)
     , index_(index)
     , offset_(offset)
+    , activated_(true)
 {
 }
 

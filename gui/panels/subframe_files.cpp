@@ -30,19 +30,21 @@
 class FilesModel : public TableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
     void onClicked(const QModelIndex &);
-    void setHighlight(int row);
-    void onHighlight();
-    void removeFile();
     void onFilesChanged();
+    void onHighlight();
+    void onActivated();
+    void removeFile();
+    void setHighlight(int row);
 
     int columnCount() const final { return 3; }
     int rowCount() const final { return gSession->dataset().countFiles(); }
     QVariant data(const QModelIndex&, int) const final;
 
 private:
-    vec<int> checkedRows() const;
+    void setActivated(int row, Qt::CheckState state);
+    void updateChecked();
 
-    vec<bool> rowsChecked_;
+    vec<Qt::CheckState> checked_;
     int rowHighlighted_;
 };
 
@@ -53,13 +55,19 @@ void FilesModel::onClicked(const QModelIndex& cell) {
         return;
     int col = cell.column();
     if (col==1) {
-        rowsChecked_[row] = !rowsChecked_[row];
-        emit dataChanged(cell, cell);
-        gHub->onFilesSelected(checkedRows());
+        setActivated(row, checked_.at(row)==Qt::Checked ? Qt::Unchecked : Qt::Checked);
     }
 }
 
-//! Set highlight according to signal from MeasurementsView.
+void FilesModel::onFilesChanged() {
+    beginResetModel();
+    updateChecked();
+    endResetModel();
+    if (rowHighlighted_<0)
+        setHighlight(0);
+}
+
+//! Update highlight display upon sigHighlight.
 void FilesModel::onHighlight() {
     if (!gSession->dataset().countFiles())
         return;
@@ -75,24 +83,33 @@ void FilesModel::onHighlight() {
     NEVER
 }
 
+//! Update activation check display upon sigActivated.
+void FilesModel::onActivated() {
+    for (int row=0; row<rowCount(); ++row)
+        setActivated(row, gSession->dataset().file(row).activated());
+}
+
 //! Forwards command to remove file, and updates the view.
 void FilesModel::removeFile() {
     int row = rowHighlighted_;
     gHub->removeFile(row);
-    rowsChecked_.resize(rowCount());
+    updateChecked();
     emit dataChanged(createIndex(row,0),createIndex(rowCount(),columnCount()));
-    gHub->onFilesSelected(checkedRows());
     setHighlight(qMin(row, rowCount()-1));
 }
 
-void FilesModel::onFilesChanged() {
-    beginResetModel();
-    while (rowsChecked_.count()<rowCount())
-        rowsChecked_.append(true);
-    endResetModel();
-    gHub->onFilesSelected(checkedRows());
-    if (rowHighlighted_<0)
-        setHighlight(0);
+//! Sets rowHighlighted_, and signals need to refresh FilesView and MeasurementView.
+void FilesModel::setHighlight(int row) {
+    int oldRow = rowHighlighted_;
+    if (row==oldRow)
+        return;
+    rowHighlighted_ = row;
+    if (row>=0) {
+        emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
+        gSession->dataset().setHighlight(&gSession->dataset().file(row));
+    }
+    if (oldRow>=0)
+        emit dataChanged(createIndex(oldRow,0),createIndex(oldRow,columnCount()));
 }
 
 //! Returns role-specific information about one table cell.
@@ -119,7 +136,7 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
         return {};
     case Qt::CheckStateRole: {
         if (col==1) {
-            return rowsChecked_.at(row) ? Qt::Checked : Qt::Unchecked;
+            return checked_.at(row);
         }
         return {};
     }
@@ -133,28 +150,21 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
     }
 }
 
-//! Returns list of selected rows.
-vec<int> FilesModel::checkedRows() const {
-    vec<int> ret;
-    for (int i=0; i<rowCount(); ++i)
-        if (rowsChecked_[i])
-            ret.append(i);
-    return ret;
+void FilesModel::setActivated(int row, Qt::CheckState state) {
+    checked_[row] = state;
+    if (state==gSession->dataset().file(row).activated())
+        return;
+    emit dataChanged(createIndex(row,1),createIndex(row,1));
+    gSession->dataset().activateFile(row, state);
 }
 
-//! Sets rowHighlighted_, and signals need to refresh FilesView and MeasurementView.
-void FilesModel::setHighlight(int row) {
-    int oldRow = rowHighlighted_;
-    if (row==oldRow)
-        return;
-    rowHighlighted_ = row;
-    if (row>=0) {
-        emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
-        gSession->dataset().setHighlight(&gSession->dataset().file(row));
-    }
-    if (oldRow>=0)
-        emit dataChanged(createIndex(oldRow,0),createIndex(oldRow,columnCount()));
+void FilesModel::updateChecked() {
+    int oldsize = checked_.count();
+    checked_.resize(rowCount());
+    for (int row = oldsize; row<rowCount(); ++row)
+        setActivated(row, gSession->dataset().file(row).activated());
 }
+
 
 // ************************************************************************** //
 //  local class FilesView
@@ -182,6 +192,7 @@ FilesView::FilesView() : ListView() {
     connect(gSession, &Session::sigFiles, model(), &FilesModel::onFilesChanged);
     connect(gHub->trigger_removeFile, &QAction::triggered, model(), &FilesModel::removeFile);
     connect(gSession, &Session::sigHighlight, model(), &FilesModel::onHighlight);
+    connect(gSession, &Session::sigActivated, model(), &FilesModel::onActivated);
     connect(this, &FilesView::clicked, model(), &FilesModel::onClicked);
 }
 
