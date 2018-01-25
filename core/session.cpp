@@ -80,6 +80,30 @@ void Session::setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPi
     emit sigDetector();
 }
 
+void Session::setGammaRange(const Range& r) {
+    gammaRange_ = r;
+}
+
+void Session::setBgRanges(const Ranges& rr) {
+    bgRanges_ = rr;
+    emit sigBaseline();
+}
+
+bool Session::addBgRange(const Range& r) {
+    return bgRanges_.add(r);
+    emit sigBaseline();
+}
+
+bool Session::removeBgRange(const Range& r) {
+    return bgRanges_.remove(r);
+    emit sigBaseline();
+}
+
+void Session::setBgPolyDegree(int degree) {
+    bgPolyDegree_ = degree;
+    emit sigBaseline();
+}
+
 IJ Session::midPix() const {
     size2d sz = imageSize();
     IJ mid(sz.w / 2, sz.h / 2);

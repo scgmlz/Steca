@@ -133,7 +133,7 @@ TheHub::TheHub()
     toggle_showBackground = newQ::Toggle("Show fitted background", false, ":/icon/showBackground");
 
     trigger_clearBackground = newQ::Trigger("Clear background regions", ":/icon/clear");
-    connect(trigger_clearBackground, &QAction::triggered, [this]() { setBgRanges({}); });
+    connect(trigger_clearBackground, &QAction::triggered, [this]() { gSession->setBgRanges({}); });
 
     trigger_clearReflections = newQ::Trigger("Clear reflections", ":/icon/clear");
 
@@ -285,8 +285,8 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     TR("sessionFromJson: going to load fit setup");
     Ranges bgRanges;
     bgRanges.from_json(top.loadArr("background ranges"));
-    setBgRanges(bgRanges);
-    setBgPolyDegree(top.loadUint("background degree"));
+    gSession->setBgRanges(bgRanges);
+    gSession->setBgPolyDegree(top.loadUint("background degree"));
 
     bool arg1 = top.loadBool("averaged intensity ", true);
     qreal arg2 = top.loadPreal("intensity scale", 1);
@@ -319,26 +319,6 @@ void TheHub::loadCorrFile() {
 void TheHub::setGammaRange(const Range& gammaRange) {
     gSession->setGammaRange(gammaRange);
     emit sigGammaRange();
-}
-
-void TheHub::setBgRanges(const Ranges& ranges) {
-    gSession->setBgRanges(ranges);
-    emit sigBgChanged();
-}
-
-void TheHub::addBgRange(const Range& range) {
-    if (gSession->addBgRange(range))
-        emit sigBgChanged();
-}
-
-void TheHub::removeBgRange(const Range& range) {
-    if (gSession->removeBgRange(range))
-        emit sigBgChanged();
-}
-
-void TheHub::setBgPolyDegree(int degree) {
-    gSession->setBgPolyDegree(degree);
-    emit sigBgChanged();
 }
 
 void TheHub::setIntenScaleAvg(bool avg, qreal scale) {
@@ -412,10 +392,6 @@ void TheHub::setNorm(eNorm norm) {
 void TheHub::tellSelectedReflection(shp_Reflection reflection) {
     selectedReflection_ = reflection;
     emit sigReflectionSelected(reflection);
-}
-
-void TheHub::tellReflectionData(shp_Reflection reflection) {
-    emit sigReflectionData(reflection);
 }
 
 void TheHub::tellReflectionValues(

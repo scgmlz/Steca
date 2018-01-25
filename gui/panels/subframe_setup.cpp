@@ -307,10 +307,10 @@ SubframeSetup::SubframeSetup() {
 
         connect(spinDegree_, _SLOT_(QSpinBox, valueChanged, int), [this](int degree) {
                 debug::ensure(degree >= 0);
-                gHub->setBgPolyDegree(degree);
+                gSession->setBgPolyDegree(degree);
             });
 
-        connect(gHub, &TheHub::sigBgChanged, [this](){
+        connect(gSession, &Session::sigBaseline, [this](){
                 spinDegree_->setValue(gSession->bgPolyDegree()); });
     }
 

@@ -50,11 +50,11 @@ public:
     void setImageTransformRotate(ImageTransform const&);
     void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
     void setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset);
-    void setGammaRange(const Range& r) { gammaRange_ = r; }
-    void setBgRanges(const Ranges& rr) { bgRanges_ = rr; }
-    bool addBgRange(const Range& r) { return bgRanges_.add(r); }
-    bool removeBgRange(const Range& r) { return bgRanges_.remove(r); }
-    void setBgPolyDegree(int degree) { bgPolyDegree_ = degree; }
+    void setGammaRange(const Range&);
+    void setBgRanges(const Ranges&);
+    bool addBgRange(const Range&);
+    bool removeBgRange(const Range&);
+    void setBgPolyDegree(int);
     void setIntenScaleAvg(bool, qreal);
     void addReflection(const QString&);
     void addReflection(const QJsonObject& obj);
@@ -107,7 +107,8 @@ signals:
     void sigMetaSelection(); //!< meta data selected for display have changed
     void sigCorr(); //!< corr file has been loaded or unloaded or enabled or disabled
     void sigActivated(); //!< selection of active clusters has changed
-    void sigDetector(); //! Detector geometry has changed
+    void sigDetector(); //!< detector geometry has changed
+    void sigBaseline(); //!< baseline fit has changed
 
 private:
     friend Dataset; // TODO try to get rid of this

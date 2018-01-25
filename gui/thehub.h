@@ -60,7 +60,6 @@ signals: // TODO: rm unused
 
     void sigGammaRange();
 
-    void sigBgChanged(); // ranges and poly: refit
     void sigNormChanged();
 
     void sigFittingTab(eFittingTab);
@@ -72,11 +71,6 @@ public:
     void loadCorrFile() THROWS;
     void setGammaRange(const Range&);
 
-    void setBgRanges(const Ranges&);
-    void addBgRange(const Range&);
-    void removeBgRange(const Range&);
-    void setBgPolyDegree(int);
-
     void setIntenScaleAvg(bool, qreal);
     void setNorm(eNorm);
     void setFittingTab(eFittingTab);
@@ -87,7 +81,6 @@ public:
 
     // modify and emit signal:
     void tellSelectedReflection(shp_Reflection);
-    void tellReflectionData(shp_Reflection);
     void tellReflectionValues(const Range&, qpair const&, fwhm_t, bool);
 
     // const methods:

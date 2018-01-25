@@ -134,9 +134,9 @@ void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
     switch (plot_.getTool()) {
     case DiffractogramPlot::eTool::BACKGROUND:
         if (Qt::LeftButton == e->button())
-            gHub->addBgRange(range);
+            gSession->addBgRange(range);
         else
-            gHub->removeBgRange(range);
+            gSession->removeBgRange(range);
         break;
     case DiffractogramPlot::eTool::PEAK_REGION:
         plot_.setNewReflRange(range);
@@ -248,7 +248,7 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
         updateBg();
     });
 
-    connect(gHub, &TheHub::sigBgChanged, [this]() { updateBg(); });
+    connect(gSession, &Session::sigBaseline, [this]() { updateBg(); });
 
     tool_ = eTool::NONE;
 }
@@ -474,7 +474,7 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
     connect(gSession, &Session::sigDetector, [this](){ render(); });
     connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigGammaRange, [this](){ render(); });
-    connect(gHub, &TheHub::sigBgChanged, [this](){ render(); });
+    connect(gSession, &Session::sigBaseline, [this](){ render(); });
     connect(gHub, &TheHub::sigReflectionsChanged, [this](){ render(); });
     connect(gHub, &TheHub::sigNormChanged, [this](){ onNormChanged(); });
     connect(gHub, &TheHub::sigFittingTab, [this](eFittingTab tab) { onFittingTab(tab); });
@@ -616,5 +616,5 @@ void Diffractogram::calcReflections() {
         refls_.append(c);
     }
 
-    gHub->tellReflectionData(currentReflection_);
+    emit gHub->sigReflectionData(currentReflection_);
 }
