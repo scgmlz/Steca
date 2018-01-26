@@ -166,6 +166,12 @@ void ReflectionView::selectionChanged(
         model()->data(indexes.first(), Qt::UserRole).value<shp_Reflection>());
 }
 
+// ************************************************************************** //
+//  class Controlsbox_Detector
+// ************************************************************************** //
+
+class Controlsbox_Detector : public QWidget {
+};
 
 // ************************************************************************** //
 //  class SubframeSetup
@@ -178,7 +184,10 @@ SubframeSetup::SubframeSetup() {
 
     // ==== image geometry tab ====
     {
-        QBoxLayout& box = newQ::Tab(this, "Detector")->box();
+        auto* tab = new QWidget();
+        addTab(tab, "Detector");
+        auto* box = newQ::VBoxLayout();
+        tab->setLayout(box);
 
         connect(gSession, &Session::sigDetector, [this](){ setFromHub(); });
 
@@ -284,8 +293,8 @@ SubframeSetup::SubframeSetup() {
 
         grid->setColumnStretch(grid->columnCount(), 1);
 
-        box.addLayout(grid);
-        box.addStretch();
+        box->addLayout(grid);
+        box->addStretch();
     }
 
     // ==== background fit tab ====
