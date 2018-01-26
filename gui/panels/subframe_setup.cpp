@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/subframe_setup.cpp
-//! @brief     Implements class SubframeSetup
+//! @brief     Implements class SubframeSetup, and local classes
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -19,9 +19,10 @@
 #include "gui/base/tree_views.h" // inheriting from
 #include "gui/base/new_q.h"
 
-static qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }
-static str safeRealText(qreal val) { return qIsFinite(val) ? str::number(val) : ""; }
-
+namespace {
+qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }
+str safeRealText(qreal val) { return qIsFinite(val) ? str::number(val) : ""; }
+} // local methods
 
 // ************************************************************************** //
 //  local class PeaksModel, used in PeaksView
