@@ -20,7 +20,6 @@ SubframeDiffractogram::SubframeDiffractogram() {
     setTabPosition(QTabWidget::North);
     auto* tab = new QWidget();
     addTab(tab, "Diffractogram");
-    auto* box = newQ::VBoxLayout();
-    tab->setLayout(box);
-    box->addWidget(new Diffractogram());
+    tab->setLayout(newQ::VBoxLayout());
+    layout()->addWidget(new Diffractogram());
 }

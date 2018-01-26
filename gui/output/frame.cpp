@@ -295,13 +295,12 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent) : QDialog(parent) {
 
     auto* tabPoints = new QWidget();
     tabs_->addTab(tabPoints, "Points");
-    auto* box = newQ::VBoxLayout();
-    tabPoints->setLayout(box);
+    tabPoints->setLayout(newQ::VBoxLayout());
 
     auto tabTable = new TabTable(ReflectionInfo::dataTags(false),
                                  ReflectionInfo::dataTags(true),
                                  ReflectionInfo::dataCmps());
-    box->addWidget(tabTable);
+    tabPoints->layout()->addWidget(tabTable);
     table_ = tabTable->table;
 
     int reflCount = gSession->reflections().count();

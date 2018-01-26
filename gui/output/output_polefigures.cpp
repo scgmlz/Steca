@@ -266,18 +266,16 @@ PoleFiguresFrame::PoleFiguresFrame(rcstr title, QWidget* parent)
     {
         auto* tab = new QWidget();
         tabs_->addTab(tab, "Graph");
-        auto* box = newQ::VBoxLayout();
-        tab->setLayout(box);
+        tab->setLayout(newQ::VBoxLayout());
         tabGraph_ = new TabGraph(*params_);
-        box->addWidget(tabGraph_);
+        tab->layout()->addWidget(tabGraph_);
     }
     {
         auto* tab = new QWidget();
         tabs_->addTab(tab, "Save");
-        auto* box = newQ::VBoxLayout();
-        tab->setLayout(box);
+        tab->setLayout(newQ::VBoxLayout());
         tabSave_ = new TabPoleFiguresSave();
-        box->addWidget(tabSave_);
+        tab->layout()->addWidget(tabSave_);
         connect( tabSave_->actSave, &QAction::triggered, [this]() { savePoleFigureOutput(); });
     }
     show();

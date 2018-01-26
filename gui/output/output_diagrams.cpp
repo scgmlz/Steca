@@ -155,10 +155,9 @@ DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
     {
         auto* tab = new QWidget();
         tabs_->addTab(tab, "Diagram");
-        auto* box = newQ::VBoxLayout();
-        tab->setLayout(box);
+        tab->setLayout(newQ::VBoxLayout());
         tabPlot_ = new TabPlot();
-        box->addWidget(tabPlot_);
+        tab->layout()->addWidget(tabPlot_);
     }
 
     debug::ensure(params_->panelDiagram);
@@ -170,10 +169,9 @@ DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
     {
         auto* tab = new QWidget();
         tabs_->addTab(tab, "Diagram");
-        auto* box = newQ::VBoxLayout();
-        tab->setLayout(box);
+        tab->setLayout(newQ::VBoxLayout());
         tabSave_ = new TabDiagramsSave();
-        box->addWidget(tabSave_);
+        tab->layout()->addWidget(tabSave_);
         connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiagramOutput(); });
     }
 

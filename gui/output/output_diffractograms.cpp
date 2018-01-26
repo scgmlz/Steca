@@ -147,10 +147,9 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
 
     auto* tab = new QWidget();
     tabs_->addTab(tab, "Save");
-    auto* box = newQ::VBoxLayout();
-    tab->setLayout(box);
+    tab->setLayout(newQ::VBoxLayout());
     tabSave_ = new TabDiffractogramsSave();
-    box->addWidget(tabSave_);
+    tab->layout()->addWidget(tabSave_);
     connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiffractogramOutput(); });
 
     show();
