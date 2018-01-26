@@ -14,9 +14,13 @@
 
 #include "gui/panels/subframe_diffractogram.h"
 #include "gui/panels/panel_diffractogram.h"
-#include "gui/base/various_widgets.h"
+#include "gui/base/new_q.h"
 
 SubframeDiffractogram::SubframeDiffractogram() {
     setTabPosition(QTabWidget::North);
-    newQ::Tab(this, "Diffractogram")->box().addWidget(new Diffractogram());
+    auto* tab = new QWidget();
+    addTab(tab, "Diffractogram");
+    auto* box = newQ::VBoxLayout();
+    tab->setLayout(box);
+    box->addWidget(new Diffractogram());
 }

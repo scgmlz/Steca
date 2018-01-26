@@ -17,7 +17,7 @@
 #include "gui/base/table_model.h"
 #include "gui/thehub.h"
 #include "gui/base/tree_views.h" // inheriting from
-#include "gui/base/various_widgets.h"
+#include "gui/base/new_q.h"
 
 static qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }
 static str safeRealText(qreal val) { return qIsFinite(val) ? str::number(val) : ""; }

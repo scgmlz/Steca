@@ -35,8 +35,6 @@ namespace newQ {
 QAction* Trigger(rcstr text, rcstr iconFile="");
 QAction* Toggle(rcstr text, bool value, rcstr iconFile="");
 
-BoxWidget* Tab(QTabWidget* panel, rcstr title);
-
 QBoxLayout* BoxLayout(Qt::Orientation);
 QBoxLayout* HBoxLayout(); // horizontal box layout
 QBoxLayout* VBoxLayout(); // vertical box layout

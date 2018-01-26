@@ -48,12 +48,6 @@ QAction* newQ::Toggle(rcstr text, bool value, rcstr iconFile) {
     return ret;
 };
 
-BoxWidget* newQ::Tab(QTabWidget* panel, rcstr title) {
-    auto ret = new BoxWidget(Qt::Vertical);
-    panel->addTab(ret, title);
-    return ret;
-}
-
 QBoxLayout* newQ::BoxLayout(Qt::Orientation orientation) {
     switch (orientation) {
     case Qt::Horizontal: return newQ::HBoxLayout();

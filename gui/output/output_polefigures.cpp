@@ -263,13 +263,23 @@ static const Params::ePanels PANELS =
 
 PoleFiguresFrame::PoleFiguresFrame(rcstr title, QWidget* parent)
     : Frame(title, new Params(PANELS), parent) {
-    tabGraph_ = new TabGraph(*params_);
-    newQ::Tab(tabs_, "Graph")->box().addWidget(tabGraph_);
-
-    tabSave_ = new TabPoleFiguresSave();
-    newQ::Tab(tabs_, "Save")->box().addWidget(tabSave_);
-
-    connect( tabSave_->actSave, &QAction::triggered, [this]() { savePoleFigureOutput(); });
+    {
+        auto* tab = new QWidget();
+        tabs_->addTab(tab, "Graph");
+        auto* box = newQ::VBoxLayout();
+        tab->setLayout(box);
+        tabGraph_ = new TabGraph(*params_);
+        box->addWidget(tabGraph_);
+    }
+    {
+        auto* tab = new QWidget();
+        tabs_->addTab(tab, "Save");
+        auto* box = newQ::VBoxLayout();
+        tab->setLayout(box);
+        tabSave_ = new TabPoleFiguresSave();
+        box->addWidget(tabSave_);
+        connect( tabSave_->actSave, &QAction::triggered, [this]() { savePoleFigureOutput(); });
+    }
     show();
 }
 

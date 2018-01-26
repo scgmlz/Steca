@@ -152,8 +152,14 @@ DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
     : Frame(title, new Params(PANELS), parent) {
     btnInterpolate_->hide();
 
-    tabPlot_ = new TabPlot();
-    newQ::Tab(tabs_, "Diagram")->box().addWidget(tabPlot_);
+    {
+        auto* tab = new QWidget();
+        tabs_->addTab(tab, "Diagram");
+        auto* box = newQ::VBoxLayout();
+        tab->setLayout(box);
+        tabPlot_ = new TabPlot();
+        box->addWidget(tabPlot_);
+    }
 
     debug::ensure(params_->panelDiagram);
     PanelDiagram const* pd = params_->panelDiagram;
@@ -161,10 +167,15 @@ DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
     connect(pd->xAxis, _SLOT_(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
     connect(pd->yAxis, _SLOT_(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
 
-    tabSave_ = new TabDiagramsSave();
-    newQ::Tab(tabs_, "Save")->box().addWidget(tabSave_);
-
-    connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiagramOutput(); });
+    {
+        auto* tab = new QWidget();
+        tabs_->addTab(tab, "Diagram");
+        auto* box = newQ::VBoxLayout();
+        tab->setLayout(box);
+        tabSave_ = new TabDiagramsSave();
+        box->addWidget(tabSave_);
+        connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiagramOutput(); });
+    }
 
     recalculate();
     show();
