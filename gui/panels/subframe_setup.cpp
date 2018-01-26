@@ -105,7 +105,6 @@ public:
     void updateSingleSelection();
     void clear();
 
-    bool hasPeaks() const { return model()->rowCount() > 0; }
     shp_Reflection selectedReflection() const;
 
 private:
@@ -153,7 +152,7 @@ void PeaksView::updateSingleSelection() {
     int row = currentIndex().row();
     model()->signalReset();
     setCurrentIndex(model()->index(row,0));
-    gHub->trigger_removeReflection->setEnabled(hasPeaks());
+    gHub->trigger_removeReflection->setEnabled(model()->rowCount());
 }
 
 void PeaksView::selectionChanged(
@@ -372,7 +371,7 @@ class ControlsPeakfits : public QWidget {
 public:
     ControlsPeakfits();
 private:
-    class PeaksView* reflectionView_;
+    class PeaksView* peaksView_;
     QComboBox* comboReflType_;
     QDoubleSpinBox *spinRangeMin_, *spinRangeMax_;
     QDoubleSpinBox *spinGuessPeakX_, *spinGuessPeakY_, *spinGuessFWHM_;
@@ -394,7 +393,7 @@ ControlsPeakfits::ControlsPeakfits() {
     hb->addWidget(newQ::IconButton(gHub->trigger_clearReflections));
     hb->addStretch();
 
-    box->addWidget((reflectionView_ = new PeaksView()));
+    box->addWidget((peaksView_ = new PeaksView()));
 
     hb = newQ::HBoxLayout();
     box->addLayout(hb);
@@ -441,7 +440,7 @@ ControlsPeakfits::ControlsPeakfits() {
     gb->setColumnStretch(4, 1);
 
     auto _updateReflectionControls = [this]() {
-        bool on = reflectionView_->hasPeaks();
+        bool on = gSession->reflections().count();
         spinRangeMin_->setEnabled(on);
         spinRangeMax_->setEnabled(on);
         spinGuessPeakX_->setEnabled(on);
@@ -456,25 +455,25 @@ ControlsPeakfits::ControlsPeakfits() {
 
     connect(gHub->trigger_addReflection, &QAction::triggered,
             [this, _updateReflectionControls]() {
-                reflectionView_->addReflection(comboReflType_->currentText());
+                peaksView_->addReflection(comboReflType_->currentText());
                 _updateReflectionControls();
             });
 
     connect(gHub->trigger_removeReflection, &QAction::triggered,
             [this, _updateReflectionControls]() {
-                reflectionView_->removeSelected();
+                peaksView_->removeSelected();
                 _updateReflectionControls();
             });
 
     connect(gHub->trigger_clearReflections, &QAction::triggered,
             [this, _updateReflectionControls]() {
-                reflectionView_->clear();
+                peaksView_->clear();
                 _updateReflectionControls();
             });
 
     connect(gHub, &TheHub::sigReflectionsChanged,
             [this, _updateReflectionControls]() {
-                reflectionView_->updateSingleSelection();
+                peaksView_->updateSingleSelection();
                 _updateReflectionControls(); }
         );
 
