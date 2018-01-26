@@ -300,9 +300,14 @@ SubframeSetup::SubframeSetup() {
     // ==== background fit tab ====
     {
         backgroundTabIndex = count();
-        QBoxLayout& box = newQ::Tab(this, "Background")->box();
+
+        auto* tab = new QWidget();
+        addTab(tab, "Baseline");
+        auto* box = newQ::VBoxLayout();
+        tab->setLayout(box);
+
         QBoxLayout* hb = newQ::HBoxLayout();
-        box.addLayout(hb);
+        box->addLayout(hb);
 
         hb->addWidget(newQ::IconButton(gHub->toggle_selRegions));
         hb->addWidget(newQ::IconButton(gHub->toggle_showBackground));
@@ -312,7 +317,7 @@ SubframeSetup::SubframeSetup() {
                        newQ::SpinBox(4, false, 0, TheHub::MAX_POLYNOM_DEGREE)));
         hb->addStretch();
 
-        box.addStretch(1);
+        box->addStretch(1);
 
         connect(spinDegree_, _SLOT_(QSpinBox, valueChanged, int), [this](int degree) {
                 debug::ensure(degree >= 0);
@@ -326,19 +331,24 @@ SubframeSetup::SubframeSetup() {
     // ==== peak fits tab ====
     {
         reflectionTabIndex = count();
-        QBoxLayout& box = newQ::Tab(this, "Reflections")->box();
+
+        auto* tab = new QWidget();
+        addTab(tab, "Peaks");
+        auto* box = newQ::VBoxLayout();
+        tab->setLayout(box);
+
         QBoxLayout* hb = newQ::HBoxLayout();
-        box.addLayout(hb);
+        box->addLayout(hb);
 
         hb->addWidget(newQ::IconButton(gHub->toggle_selRegions));
         hb->addWidget(newQ::IconButton(gHub->toggle_showBackground));
         hb->addWidget(newQ::IconButton(gHub->trigger_clearReflections));
         hb->addStretch();
 
-        box.addWidget((reflectionView_ = new ReflectionView()));
+        box->addWidget((reflectionView_ = new ReflectionView()));
 
         hb = newQ::HBoxLayout();
-        box.addLayout(hb);
+        box->addLayout(hb);
 
         comboReflType_ = new QComboBox;
         comboReflType_->addItems(FunctionRegistry::instance()->keys());
@@ -348,7 +358,7 @@ SubframeSetup::SubframeSetup() {
         hb->addWidget(newQ::IconButton(gHub->trigger_removeReflection));
 
         QBoxLayout* vb = newQ::VBoxLayout();
-        box.addLayout(vb);
+        box->addLayout(vb);
 
         QGridLayout* gb = newQ::GridLayout();
         vb->addLayout(gb);
