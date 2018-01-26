@@ -21,5 +21,5 @@ SubframeDiffractogram::SubframeDiffractogram() {
     auto* tab = new QWidget();
     addTab(tab, "Diffractogram");
     tab->setLayout(newQ::VBoxLayout());
-    layout()->addWidget(new Diffractogram());
+    tab->layout()->addWidget(new Diffractogram());
 }

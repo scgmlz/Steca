@@ -22,27 +22,6 @@
 class SubframeSetup : public QTabWidget {
 public:
     SubframeSetup();
-
-private:
-    // image geometry tab
-    QDoubleSpinBox *detDistance_, *detPixelSize_;
-    QSpinBox *beamOffsetI_, *beamOffsetJ_;
-    QSpinBox *cutLeft_, *cutTop_, *cutRight_, *cutBottom_;
-
-    // background fit tab
-    QSpinBox* spinDegree_;
-
-    // peak fits tab
-    class ReflectionView* reflectionView_;
-    QComboBox* comboReflType_;
-    QDoubleSpinBox *spinRangeMin_, *spinRangeMax_;
-    QDoubleSpinBox *spinGuessPeakX_, *spinGuessPeakY_, *spinGuessFWHM_;
-    QLineEdit *readFitPeakX_, *readFitPeakY_, *readFitFWHM_;
-
-    bool silentSpin_ = false;
-
-    void setToHub();
-    void setFromHub();
 };
 
 #endif // SUBFRAME_SETUP_H
