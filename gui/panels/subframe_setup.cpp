@@ -565,7 +565,6 @@ SubframeSetup::SubframeSetup() {
             tab = eFittingTab::REFLECTIONS;
         else
             tab = eFittingTab::NONE;
-
         gHub->setFittingTab(tab);
     });
 

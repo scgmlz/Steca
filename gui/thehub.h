@@ -26,11 +26,8 @@
 
 extern class TheHub* gHub; //!< global pointer to _the_ instance of TheHub
 
-enum class eFittingTab {
-    NONE,
-    BACKGROUND,
-    REFLECTIONS,
-};
+//! Indicates active setup tab, which determines which fit is to be shown in the diffractogram view.
+enum class eFittingTab { NONE, BACKGROUND, REFLECTIONS, };
 
 //! Companion of MainWin, holds signals and methods for interaction between views and data.
 
