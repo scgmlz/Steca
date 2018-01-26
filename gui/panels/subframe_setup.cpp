@@ -24,12 +24,12 @@ static str safeRealText(qreal val) { return qIsFinite(val) ? str::number(val) : 
 
 
 // ************************************************************************** //
-//  local class ReflectionsModel
+//  local class PeaksModel, used in PeaksView
 // ************************************************************************** //
 
-class ReflectionsModel : public TableModel {
+class PeaksModel : public TableModel {
 public:
-    ReflectionsModel() : TableModel() {}
+    PeaksModel() : TableModel() {}
 
     void addReflection(const QString& peakFunctionName) { gHub->addReflection(peakFunctionName); }
     void removeReflection(int i) { gHub->removeReflection(i); }
@@ -45,7 +45,7 @@ public:
 };
 
 
-str ReflectionsModel::displayData(int row, int col) const {
+str PeaksModel::displayData(int row, int col) const {
     switch (col) {
     case COL_ID:
         return str::number(row + 1);
@@ -56,11 +56,11 @@ str ReflectionsModel::displayData(int row, int col) const {
     }
 }
 
-str ReflectionsModel::displayData(int row) const {
+str PeaksModel::displayData(int row) const {
     return displayData(row, COL_ID) + ": " + displayData(row, COL_TYPE);
 }
 
-QVariant ReflectionsModel::data(const QModelIndex& index, int role) const {
+QVariant PeaksModel::data(const QModelIndex& index, int role) const {
     int row = index.row();
     if (row < 0 || rowCount() <= row)
         return {};
@@ -84,7 +84,7 @@ QVariant ReflectionsModel::data(const QModelIndex& index, int role) const {
     }
 }
 
-QVariant ReflectionsModel::headerData(int col, Qt::Orientation, int role) const {
+QVariant PeaksModel::headerData(int col, Qt::Orientation, int role) const {
     if (Qt::DisplayRole == role && COL_ID == col)
         return "#";
     return {};
@@ -92,41 +92,41 @@ QVariant ReflectionsModel::headerData(int col, Qt::Orientation, int role) const 
 
 
 // ************************************************************************** //
-//  local class ReflectionView
+//  local class PeaksView
 // ************************************************************************** //
 
-class ReflectionView final : public ListView {
+class PeaksView final : public ListView {
 public:
-    ReflectionView();
+    PeaksView();
 
     void addReflection(const QString& peakFunctionName);
     void removeSelected();
     void updateSingleSelection();
     void clear();
 
-    bool hasReflections() const { return model()->rowCount() > 0; }
+    bool hasPeaks() const { return model()->rowCount() > 0; }
     shp_Reflection selectedReflection() const;
 
 private:
     void selectionChanged(QItemSelection const&, QItemSelection const&);
-    ReflectionsModel* model() const { return static_cast<ReflectionsModel*>(ListView::model()); }
+    PeaksModel* model() const { return static_cast<PeaksModel*>(ListView::model()); }
 };
 
-ReflectionView::ReflectionView() : ListView() {
-    auto reflectionsModel = new ReflectionsModel();
-    setModel(reflectionsModel);
-    debug::ensure(dynamic_cast<ReflectionsModel*>(ListView::model()));
+PeaksView::PeaksView() : ListView() {
+    auto peaksModel = new PeaksModel();
+    setModel(peaksModel);
+    debug::ensure(dynamic_cast<PeaksModel*>(ListView::model()));
 
     for_i (model()->columnCount())
         resizeColumnToContents(i);
 }
 
-void ReflectionView::addReflection(const QString& peakFunctionName) {
+void PeaksView::addReflection(const QString& peakFunctionName) {
     model()->addReflection(peakFunctionName);
     updateSingleSelection();
 }
 
-void ReflectionView::removeSelected() {
+void PeaksView::removeSelected() {
     int row = currentIndex().row();
     if (row < 0 || model()->rowCount() <= row)
         return;
@@ -134,28 +134,28 @@ void ReflectionView::removeSelected() {
     updateSingleSelection();
 }
 
-void ReflectionView::clear() {
+void PeaksView::clear() {
     for (int row = model()->rowCount(); row-- > 0;) {
         model()->removeReflection(row);
         updateSingleSelection();
     }
 }
 
-shp_Reflection ReflectionView::selectedReflection() const {
+shp_Reflection PeaksView::selectedReflection() const {
     QList<QModelIndex> indexes = selectionModel()->selectedIndexes();
     if (indexes.isEmpty())
         return shp_Reflection();
     return model()->data(indexes.first(), Qt::UserRole).value<shp_Reflection>();
 }
 
-void ReflectionView::updateSingleSelection() {
+void PeaksView::updateSingleSelection() {
     int row = currentIndex().row();
     model()->signalReset();
     setCurrentIndex(model()->index(row,0));
-    gHub->trigger_removeReflection->setEnabled(hasReflections());
+    gHub->trigger_removeReflection->setEnabled(hasPeaks());
 }
 
-void ReflectionView::selectionChanged(
+void PeaksView::selectionChanged(
     QItemSelection const& selected, QItemSelection const& deselected) {
     ListView::selectionChanged(selected, deselected);
 
@@ -371,7 +371,7 @@ class ControlsPeakfits : public QWidget {
 public:
     ControlsPeakfits();
 private:
-    class ReflectionView* reflectionView_;
+    class PeaksView* reflectionView_;
     QComboBox* comboReflType_;
     QDoubleSpinBox *spinRangeMin_, *spinRangeMax_;
     QDoubleSpinBox *spinGuessPeakX_, *spinGuessPeakY_, *spinGuessFWHM_;
@@ -393,7 +393,7 @@ ControlsPeakfits::ControlsPeakfits() {
     hb->addWidget(newQ::IconButton(gHub->trigger_clearReflections));
     hb->addStretch();
 
-    box->addWidget((reflectionView_ = new ReflectionView()));
+    box->addWidget((reflectionView_ = new PeaksView()));
 
     hb = newQ::HBoxLayout();
     box->addLayout(hb);
@@ -440,7 +440,7 @@ ControlsPeakfits::ControlsPeakfits() {
     gb->setColumnStretch(4, 1);
 
     auto _updateReflectionControls = [this]() {
-        bool on = reflectionView_->hasReflections();
+        bool on = reflectionView_->hasPeaks();
         spinRangeMin_->setEnabled(on);
         spinRangeMax_->setEnabled(on);
         spinGuessPeakX_->setEnabled(on);
