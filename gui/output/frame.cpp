@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/output/frame.cpp
-//! @brief     Implements class Frame
+//! @brief     Implements classes Params, Frame, and local classes ShowColsWidget, TabTable
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -35,6 +35,8 @@ typedef vec<showcol_t> showcol_vec;
 // ************************************************************************** //
 //  local class ShowColsWidget (only used by TabTable)
 // ************************************************************************** //
+
+//! A row of controls for choosing which data columns are to be displayed in a TabTable.
 
 class ShowColsWidget : public QWidget {
 public:
@@ -153,6 +155,10 @@ ShowColsWidget::ShowColsWidget(DataTable& table, showcol_vec& showCols)
 // ************************************************************************** //
 //  local class TabTable (only used by Frame implementation)
 // ************************************************************************** //
+
+//! A DataTable that can be scrolled and that has a ShowColsWidget for selecting data columns.
+
+//! Used as a tab in several output dialogs.
 
 class TabTable : public QWidget {
 public:
