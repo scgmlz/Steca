@@ -109,257 +109,59 @@ public:
 
 private:
     void selectionChanged(QItemSelection const&, QItemSelection const&);
-    PeaksModel* model() const { return static_cast<PeaksModel*>(ListView::model()); }
+    PeaksModel* model_;
 };
 
 PeaksView::PeaksView() : ListView() {
-    auto peaksModel = new PeaksModel();
-    setModel(peaksModel);
-    debug::ensure(dynamic_cast<PeaksModel*>(ListView::model()));
-
-    for_i (model()->columnCount())
+    model_ = new PeaksModel();
+    setModel(model_);
+    for_i (model_->columnCount())
         resizeColumnToContents(i);
 }
 
 void PeaksView::clear() {
-    for (int row = model()->rowCount(); row-- > 0;) {
-        model()->removeReflection(row);
+    for (int row = model_->rowCount(); row-- > 0;) {
+        model_->removeReflection(row);
         updateSingleSelection();
     }
 }
 
 void PeaksView::addReflection(const QString& peakFunctionName) {
-    model()->addReflection(peakFunctionName);
+    model_->addReflection(peakFunctionName);
     updateSingleSelection();
 }
 
 void PeaksView::removeSelected() {
     int row = currentIndex().row();
-    if (row < 0 || model()->rowCount() <= row)
+    if (row < 0 || model_->rowCount() <= row)
         return;
-    model()->removeReflection(row);
+    model_->removeReflection(row);
     updateSingleSelection();
+}
+
+void PeaksView::updateSingleSelection() {
+    int row = currentIndex().row();
+    model_->signalReset();
+    setCurrentIndex(model_->index(row,0));
+    gHub->trigger_removeReflection->setEnabled(model_->rowCount());
 }
 
 shp_Reflection PeaksView::selectedReflection() const {
     QList<QModelIndex> indexes = selectionModel()->selectedIndexes();
     if (indexes.isEmpty())
         return shp_Reflection();
-    return model()->data(indexes.first(), Qt::UserRole).value<shp_Reflection>();
+    return model_->data(indexes.first(), Qt::UserRole).value<shp_Reflection>();
 }
 
-void PeaksView::updateSingleSelection() {
-    int row = currentIndex().row();
-    model()->signalReset();
-    setCurrentIndex(model()->index(row,0));
-    gHub->trigger_removeReflection->setEnabled(model()->rowCount());
-}
-
-void PeaksView::selectionChanged(
-    QItemSelection const& selected, QItemSelection const& deselected) {
+void PeaksView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
     ListView::selectionChanged(selected, deselected);
-
     QList<QModelIndex> indexes = selected.indexes();
     gHub->tellSelectedReflection(
         indexes.isEmpty() ?
         shp_Reflection() :
-        model()->data(indexes.first(), Qt::UserRole).value<shp_Reflection>());
+        model_->data(indexes.first(), Qt::UserRole).value<shp_Reflection>());
 }
 
-// ************************************************************************** //
-//  class ControlsDetector
-// ************************************************************************** //
-
-//! A widget with controls to view and change the detector geometry.
-
-class ControlsDetector : public QWidget {
-public:
-    ControlsDetector();
-private:
-    void toSession();
-    void fromSession();
-
-    QDoubleSpinBox *detDistance_, *detPixelSize_;
-    QSpinBox *beamOffsetI_, *beamOffsetJ_;
-    QSpinBox *cutLeft_, *cutTop_, *cutRight_, *cutBottom_;
-};
-
-ControlsDetector::ControlsDetector() {
-
-    auto* box = newQ::VBoxLayout();
-    setLayout(box);
-
-    connect(gSession, &Session::sigDetector, this, &ControlsDetector::fromSession);
-
-    // widgets
-
-    detDistance_ = newQ::DoubleSpinBox(6, true, Geometry::MIN_DETECTOR_DISTANCE);
-    detPixelSize_ = newQ::DoubleSpinBox(6, true, Geometry::MIN_DETECTOR_PIXEL_SIZE);
-    detPixelSize_->setDecimals(3);
-
-    detDistance_->setValue(Geometry::DEF_DETECTOR_DISTANCE);
-    detPixelSize_->setValue(Geometry::DEF_DETECTOR_PIXEL_SIZE);
-
-    connect(detDistance_, _SLOT_(QDoubleSpinBox, valueChanged, double),
-            [this]() { toSession(); });
-    connect(detPixelSize_, _SLOT_(QDoubleSpinBox, valueChanged, double),
-            [this]() { toSession(); });
-
-    beamOffsetI_ = newQ::SpinBox(6, true);
-    beamOffsetJ_ = newQ::SpinBox(6, true);
-
-//    connect(beamOffsetI_, _SLOT_(QSpinBox, valueChanged, int), [this]() { setToHub(); });
-
-//    connect(beamOffsetJ_, _SLOT_(QSpinBox, valueChanged, int), [this]() { setToHub(); });
-
-    cutLeft_ = newQ::SpinBox(4, false, 0);
-    cutTop_ = newQ::SpinBox(4, false, 0);
-    cutRight_ = newQ::SpinBox(4, false, 0);
-    cutBottom_ = newQ::SpinBox(4, false, 0);
-
-    auto _setImageCut = [this](bool isTopOrLeft, int value) {
-        debug::ensure(value >= 0);
-        if (gHub->toggle_linkCuts->isChecked())
-            gSession->setImageCut(isTopOrLeft, true,
-                                  ImageCut(value, value, value, value));
-        else
-            gSession->setImageCut(isTopOrLeft, false,
-                                  ImageCut(cutLeft_->value(), cutTop_->value(),
-                                           cutRight_->value(), cutBottom_->value()));
-    };
-
-    connect(cutLeft_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
-            _setImageCut(true, value);
-        });
-
-    connect(cutTop_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
-            _setImageCut(true, value);
-        });
-
-    connect(cutRight_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
-            _setImageCut(false, value);
-        });
-
-    connect(cutBottom_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
-            _setImageCut(false, value);
-        });
-
-    // layout
-
-    QGridLayout* grid = newQ::GridLayout();
-    int row = 0;
-
-    auto _add = [&grid, &row](const QVector<QWidget*>& ws, int left = 1) {
-        int i = 0, cnt = ws.count();
-        QBoxLayout* box = newQ::HBoxLayout();
-        box->addStretch(1);
-        while (i < left)
-            box->addWidget(ws.at(i++));
-        grid->addLayout(box, row, 0);
-        box = newQ::HBoxLayout();
-        while (i < cnt)
-            box->addWidget(ws.at(i++));
-        grid->addLayout(box, row, 1);
-        box->addStretch(1);
-        row++;
-    };
-
-    _add({ newQ::Label("det. distance"),
-                detDistance_,
-                newQ::Label("mm") });
-    _add({ newQ::Label("pixel size"),
-                detPixelSize_,
-                newQ::Label("mm") });
-    _add({ newQ::Label("beam offset X"),
-                beamOffsetI_,
-                newQ::Label("pix") });
-    _add({ newQ::Label("Y"),
-                beamOffsetJ_,
-                newQ::Label("pix") });
-    _add({ newQ::Label("image rotate"),
-                newQ::IconButton(gHub->trigger_rotateImage),
-                newQ::Label("mirror"),
-                newQ::IconButton(gHub->toggle_mirrorImage) });
-    _add({ newQ::IconButton(gHub->toggle_linkCuts),
-                newQ::Label("cut"),
-                newQ::Icon(":/icon/cutLeft"),
-                cutLeft_,
-                newQ::Icon(":/icon/cutRight"),
-                cutRight_ }, 3);
-    _add({ newQ::Icon(":/icon/cutTop"),
-                cutTop_,
-                newQ::Icon(":/icon/cutBottom"),
-                cutBottom_ });
-
-    grid->setColumnStretch(grid->columnCount(), 1);
-
-    box->addLayout(grid);
-    box->addStretch();
-}
-
-void ControlsDetector::toSession() {
-    gSession->setGeometry(
-        qMax(qreal(Geometry::MIN_DETECTOR_DISTANCE), detDistance_->value()),
-        qMax(qreal(Geometry::MIN_DETECTOR_PIXEL_SIZE), detPixelSize_->value()),
-        IJ(beamOffsetI_->value(), beamOffsetJ_->value()));
-}
-
-void ControlsDetector::fromSession() {
-    const Geometry& g = gSession->geometry();
-
-    detDistance_->setValue(g.detectorDistance);
-    detPixelSize_->setValue(g.pixSize);
-
-    beamOffsetI_->setValue(g.midPixOffset.i);
-    beamOffsetJ_->setValue(g.midPixOffset.j);
-
-    const ImageCut& cut = gSession->imageCut();
-
-    cutLeft_->setValue(cut.left);
-    cutTop_->setValue(cut.top);
-    cutRight_->setValue(cut.right);
-    cutBottom_->setValue(cut.bottom);
-}
-
-// ************************************************************************** //
-//  class ControlsBaseline
-// ************************************************************************** //
-
-//! A widget with controls to view and change the detector geometry.
-
-class ControlsBaseline : public QWidget {
-public:
-    ControlsBaseline();
-private:
-    QSpinBox* spinDegree_;
-};
-
-ControlsBaseline::ControlsBaseline() {
-
-    auto* box = newQ::VBoxLayout();
-    setLayout(box);
-
-    QBoxLayout* hb = newQ::HBoxLayout();
-    box->addLayout(hb);
-
-    hb->addWidget(newQ::IconButton(gHub->toggle_selRegions));
-    hb->addWidget(newQ::IconButton(gHub->toggle_showBackground));
-    hb->addWidget(newQ::IconButton(gHub->trigger_clearBackground));
-    hb->addWidget(newQ::Label("Pol. degree:"));
-    hb->addWidget((spinDegree_ =
-                   newQ::SpinBox(4, false, 0, TheHub::MAX_POLYNOM_DEGREE)));
-    hb->addStretch();
-
-    box->addStretch(1);
-
-    connect(spinDegree_, _SLOT_(QSpinBox, valueChanged, int), [this](int degree) {
-            debug::ensure(degree >= 0);
-            gSession->setBgPolyDegree(degree);
-        });
-
-    connect(gSession, &Session::sigBaseline, [this](){
-            spinDegree_->setValue(gSession->bgPolyDegree()); });
-}
 
 // ************************************************************************** //
 //  class ControlsPeakfits
@@ -544,6 +346,203 @@ void ControlsPeakfits::newReflData(bool invalidateGuesses) {
             fwhm_t(spinGuessFWHM_->value()), invalidateGuesses);
     }
 };
+
+
+// ************************************************************************** //
+//  class ControlsDetector
+// ************************************************************************** //
+
+//! A widget with controls to view and change the detector geometry.
+
+class ControlsDetector : public QWidget {
+public:
+    ControlsDetector();
+private:
+    void toSession();
+    void fromSession();
+
+    QDoubleSpinBox *detDistance_, *detPixelSize_;
+    QSpinBox *beamOffsetI_, *beamOffsetJ_;
+    QSpinBox *cutLeft_, *cutTop_, *cutRight_, *cutBottom_;
+};
+
+ControlsDetector::ControlsDetector() {
+
+    auto* box = newQ::VBoxLayout();
+    setLayout(box);
+
+    connect(gSession, &Session::sigDetector, this, &ControlsDetector::fromSession);
+
+    // widgets
+
+    detDistance_ = newQ::DoubleSpinBox(6, true, Geometry::MIN_DETECTOR_DISTANCE);
+    detPixelSize_ = newQ::DoubleSpinBox(6, true, Geometry::MIN_DETECTOR_PIXEL_SIZE);
+    detPixelSize_->setDecimals(3);
+
+    detDistance_->setValue(Geometry::DEF_DETECTOR_DISTANCE);
+    detPixelSize_->setValue(Geometry::DEF_DETECTOR_PIXEL_SIZE);
+
+    connect(detDistance_, _SLOT_(QDoubleSpinBox, valueChanged, double),
+            [this]() { toSession(); });
+    connect(detPixelSize_, _SLOT_(QDoubleSpinBox, valueChanged, double),
+            [this]() { toSession(); });
+
+    beamOffsetI_ = newQ::SpinBox(6, true);
+    beamOffsetJ_ = newQ::SpinBox(6, true);
+
+//    connect(beamOffsetI_, _SLOT_(QSpinBox, valueChanged, int), [this]() { setToHub(); });
+
+//    connect(beamOffsetJ_, _SLOT_(QSpinBox, valueChanged, int), [this]() { setToHub(); });
+
+    cutLeft_ = newQ::SpinBox(4, false, 0);
+    cutTop_ = newQ::SpinBox(4, false, 0);
+    cutRight_ = newQ::SpinBox(4, false, 0);
+    cutBottom_ = newQ::SpinBox(4, false, 0);
+
+    auto _setImageCut = [this](bool isTopOrLeft, int value) {
+        debug::ensure(value >= 0);
+        if (gHub->toggle_linkCuts->isChecked())
+            gSession->setImageCut(isTopOrLeft, true,
+                                  ImageCut(value, value, value, value));
+        else
+            gSession->setImageCut(isTopOrLeft, false,
+                                  ImageCut(cutLeft_->value(), cutTop_->value(),
+                                           cutRight_->value(), cutBottom_->value()));
+    };
+
+    connect(cutLeft_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
+            _setImageCut(true, value);
+        });
+
+    connect(cutTop_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
+            _setImageCut(true, value);
+        });
+
+    connect(cutRight_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
+            _setImageCut(false, value);
+        });
+
+    connect(cutBottom_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
+            _setImageCut(false, value);
+        });
+
+    // layout
+
+    QGridLayout* grid = newQ::GridLayout();
+    int row = 0;
+
+    auto _add = [&grid, &row](const QVector<QWidget*>& ws, int left = 1) {
+        int i = 0, cnt = ws.count();
+        QBoxLayout* box = newQ::HBoxLayout();
+        box->addStretch(1);
+        while (i < left)
+            box->addWidget(ws.at(i++));
+        grid->addLayout(box, row, 0);
+        box = newQ::HBoxLayout();
+        while (i < cnt)
+            box->addWidget(ws.at(i++));
+        grid->addLayout(box, row, 1);
+        box->addStretch(1);
+        row++;
+    };
+
+    _add({ newQ::Label("det. distance"),
+                detDistance_,
+                newQ::Label("mm") });
+    _add({ newQ::Label("pixel size"),
+                detPixelSize_,
+                newQ::Label("mm") });
+    _add({ newQ::Label("beam offset X"),
+                beamOffsetI_,
+                newQ::Label("pix") });
+    _add({ newQ::Label("Y"),
+                beamOffsetJ_,
+                newQ::Label("pix") });
+    _add({ newQ::Label("image rotate"),
+                newQ::IconButton(gHub->trigger_rotateImage),
+                newQ::Label("mirror"),
+                newQ::IconButton(gHub->toggle_mirrorImage) });
+    _add({ newQ::IconButton(gHub->toggle_linkCuts),
+                newQ::Label("cut"),
+                newQ::Icon(":/icon/cutLeft"),
+                cutLeft_,
+                newQ::Icon(":/icon/cutRight"),
+                cutRight_ }, 3);
+    _add({ newQ::Icon(":/icon/cutTop"),
+                cutTop_,
+                newQ::Icon(":/icon/cutBottom"),
+                cutBottom_ });
+
+    grid->setColumnStretch(grid->columnCount(), 1);
+
+    box->addLayout(grid);
+    box->addStretch();
+}
+
+void ControlsDetector::toSession() {
+    gSession->setGeometry(
+        qMax(qreal(Geometry::MIN_DETECTOR_DISTANCE), detDistance_->value()),
+        qMax(qreal(Geometry::MIN_DETECTOR_PIXEL_SIZE), detPixelSize_->value()),
+        IJ(beamOffsetI_->value(), beamOffsetJ_->value()));
+}
+
+void ControlsDetector::fromSession() {
+    const Geometry& g = gSession->geometry();
+
+    detDistance_->setValue(g.detectorDistance);
+    detPixelSize_->setValue(g.pixSize);
+
+    beamOffsetI_->setValue(g.midPixOffset.i);
+    beamOffsetJ_->setValue(g.midPixOffset.j);
+
+    const ImageCut& cut = gSession->imageCut();
+
+    cutLeft_->setValue(cut.left);
+    cutTop_->setValue(cut.top);
+    cutRight_->setValue(cut.right);
+    cutBottom_->setValue(cut.bottom);
+}
+
+
+// ************************************************************************** //
+//  class ControlsBaseline
+// ************************************************************************** //
+
+//! A widget with controls to view and change the detector geometry.
+
+class ControlsBaseline : public QWidget {
+public:
+    ControlsBaseline();
+private:
+    QSpinBox* spinDegree_;
+};
+
+ControlsBaseline::ControlsBaseline() {
+
+    auto* box = newQ::VBoxLayout();
+    setLayout(box);
+
+    QBoxLayout* hb = newQ::HBoxLayout();
+    box->addLayout(hb);
+
+    hb->addWidget(newQ::IconButton(gHub->toggle_selRegions));
+    hb->addWidget(newQ::IconButton(gHub->toggle_showBackground));
+    hb->addWidget(newQ::IconButton(gHub->trigger_clearBackground));
+    hb->addWidget(newQ::Label("Pol. degree:"));
+    hb->addWidget((spinDegree_ =
+                   newQ::SpinBox(4, false, 0, TheHub::MAX_POLYNOM_DEGREE)));
+    hb->addStretch();
+
+    box->addStretch(1);
+
+    connect(spinDegree_, _SLOT_(QSpinBox, valueChanged, int), [this](int degree) {
+            debug::ensure(degree >= 0);
+            gSession->setBgPolyDegree(degree);
+        });
+
+    connect(gSession, &Session::sigBaseline, [this](){
+            spinDegree_->setValue(gSession->bgPolyDegree()); });
+}
 
 
 // ************************************************************************** //
