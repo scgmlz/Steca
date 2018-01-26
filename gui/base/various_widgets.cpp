@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/base/various_widgets.cpp
-//! @brief     Implements classes BoxWidget, DockWidget
+//! @brief     Implements class DockWidget
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -14,11 +14,6 @@
 
 #include "gui/base/various_widgets.h"
 #include "gui/base/new_q.h"
-
-BoxWidget::BoxWidget(Qt::Orientation orientation) {
-    setLayout((box_ = newQ::BoxLayout(orientation)));
-}
-
 
 DockWidget::DockWidget(rcstr name, rcstr objectName) {
     setFeatures(DockWidgetMovable);

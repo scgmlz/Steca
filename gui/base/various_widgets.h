@@ -19,17 +19,6 @@
 #include <QBoxLayout>
 #include <QDockWidget>
 
-//! a widget with a box layout
-
-class BoxWidget : public QWidget {
-public:
-    BoxWidget(Qt::Orientation);
-    QBoxLayout& box() const { return *box_; }
-
-protected:
-    QBoxLayout* box_;
-};
-
 //! a dock widget that acts as BoxWidget
 
 class DockWidget : public QDockWidget {
