@@ -14,7 +14,7 @@
 
 #include "gui/output/output_diagrams.h"
 #include "core/session.h"
-#include "gui/base/various_widgets.h"
+#include "gui/base/new_q.h"
 #include "gui/output/data_table.h"
 #include "gui/output/dialog_panels.h"
 #include "gui/output/tab_save.h"

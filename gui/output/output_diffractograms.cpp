@@ -18,7 +18,7 @@
 #include "gui/output/tab_save.h"
 #include "gui/output/write_file.h"
 #include "gui/thehub.h"
-#include "gui/base/various_widgets.h"
+#include "gui/base/new_q.h"
 
 // ************************************************************************** //
 //  local class TabDiffractogramsSave
