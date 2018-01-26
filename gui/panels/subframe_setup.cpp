@@ -78,8 +78,6 @@ QVariant PeaksModel::data(const QModelIndex& index, int role) const {
             return {};
         }
     }
-    case Qt::UserRole:
-        return QVariant::fromValue<shp_Reflection>(gSession->reflections().at(row));
     default:
         return {};
     }
@@ -105,7 +103,7 @@ public:
     void removeSelected();
     void updateSingleSelection();
 
-    shp_Reflection selectedReflection() const;
+    Reflection* selectedReflection() const;
 
 private:
     void selectionChanged(QItemSelection const&, QItemSelection const&);
@@ -146,20 +144,19 @@ void PeaksView::updateSingleSelection() {
     gHub->trigger_removeReflection->setEnabled(model_->rowCount());
 }
 
-shp_Reflection PeaksView::selectedReflection() const {
+Reflection* PeaksView::selectedReflection() const { // TODO: is this needed ?
     QList<QModelIndex> indexes = selectionModel()->selectedIndexes();
     if (indexes.isEmpty())
-        return shp_Reflection();
-    return model_->data(indexes.first(), Qt::UserRole).value<shp_Reflection>();
+        return nullptr;
+    int row = indexes.first().row();
+    return gSession->reflections().at(row).data();
 }
 
 void PeaksView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
     ListView::selectionChanged(selected, deselected);
     QList<QModelIndex> indexes = selected.indexes();
-    gHub->tellSelectedReflection(
-        indexes.isEmpty() ?
-        shp_Reflection() :
-        model_->data(indexes.first(), Qt::UserRole).value<shp_Reflection>());
+    gSession->peaks().select( indexes.isEmpty() ?
+                              nullptr : gSession->reflections().at(indexes.first().row()).data());
 }
 
 
@@ -174,7 +171,7 @@ public:
     ControlsPeakfits();
 private:
     void updateReflectionControls();
-    void setReflControls(shp_Reflection reflection);
+    void setReflControls();
     void newReflData(bool invalidateGuesses);
 
     class PeaksView* peaksView_;
@@ -262,7 +259,7 @@ ControlsPeakfits::ControlsPeakfits() {
                 updateReflectionControls();
             });
 
-    connect(gHub, &TheHub::sigReflectionsChanged, [this]() {
+    connect(gSession, &Session::sigReflectionsChanged, [this]() {
                 peaksView_->updateSingleSelection();
                 updateReflectionControls(); }
         );
@@ -272,11 +269,8 @@ ControlsPeakfits::ControlsPeakfits() {
                 gHub->setPeakFunction(peakFunctionName);
             });
 
-    connect(gHub, &TheHub::sigReflectionSelected,
-            [this](shp_Reflection reflection) { setReflControls(reflection); });
-
-    connect(gHub, &TheHub::sigReflectionData,
-            [this](shp_Reflection reflection) { setReflControls(reflection); });
+    connect(gSession, &Session::sigReflectionSelected, this, &ControlsPeakfits::setReflControls);
+    connect(gSession, &Session::sigReflectionData, this, &ControlsPeakfits::setReflControls);
 
     auto _changeReflData0 = [this](qreal /*unused*/) { newReflData(false); };
     auto _changeReflData1 = [this](qreal /*unused*/) { newReflData(true); };
@@ -300,10 +294,11 @@ void ControlsPeakfits::updateReflectionControls() {
     readFitFWHM_->setEnabled(on);
 };
 
-void ControlsPeakfits::setReflControls(shp_Reflection reflection) {
+void ControlsPeakfits::setReflControls() {
+    Reflection* reflection = gSession->peaks().selected_;
     silentSpin_ = true;
 
-    if (reflection.isNull()) {
+    if (!reflection) {
         // do not set comboReflType - we want it to stay as it is
         spinRangeMin_->setValue(0);
         spinRangeMax_->setValue(0);

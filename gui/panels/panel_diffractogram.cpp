@@ -72,7 +72,7 @@ public:
 private:
     void addBgItem(const Range&);
     void resizeEvent(QResizeEvent*);
-    void onReflectionData(shp_Reflection reflection);
+    void onReflectionData();
 
     Diffractogram& diffractogram_;
 
@@ -240,8 +240,7 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     fits_->setLineStyle(QCPGraph::lsNone);
     fits_->setPen(QPen(Qt::red));
 
-    connect(gHub, &TheHub::sigReflectionData,
-            [this](shp_Reflection reflection) { onReflectionData(reflection); });
+    connect(gSession, &Session::sigReflectionData, this, &DiffractogramPlot::onReflectionData);
 
     connect(gHub->toggle_showBackground, &QAction::toggled, [this](bool on) {
         showBgFit_ = on;
@@ -386,8 +385,8 @@ void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
     overlay_->setGeometry(0, 0, size.width(), size.height());
 }
 
-void DiffractogramPlot::onReflectionData(shp_Reflection reflection) {
-
+void DiffractogramPlot::onReflectionData() {
+    Reflection* reflection = gSession->peaks().selected_;
     guesses_->clearData();
     fits_->clearData();
 
@@ -475,7 +474,7 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
     connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
     connect(gSession, &Session::sigDiffractogram, [this](){ render(); });
     connect(gSession, &Session::sigBaseline, [this](){ render(); });
-    connect(gHub, &TheHub::sigReflectionsChanged, [this](){ render(); });
+    connect(gSession, &Session::sigReflectionsChanged, [this](){ render(); });
     connect(gSession, &Session::sigNorm, [this](){ onNormChanged(); });
     connect(gHub, &TheHub::sigFittingTab, [this](eFittingTab tab) { onFittingTab(tab); });
 
@@ -491,13 +490,12 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
         plot_->setTool(tool);
         });
 
-    connect(gHub, &TheHub::sigReflectionSelected,
-            [this](shp_Reflection reflection) {
-                currentReflection_ = reflection;
+    connect(gSession, &Session::sigReflectionSelected, [this]() {
+                currentReflection_ = gSession->peaks().selected_;
                 plot_->updateBg();
             });
 
-    connect(gHub, &TheHub::sigReflectionValues,
+    connect(gSession, &Session::sigReflectionValues,
             [this](const Range& range, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
                 if (currentReflection_) {
                     currentReflection_->setRange(range);
@@ -616,5 +614,5 @@ void Diffractogram::calcReflections() {
         refls_.append(c);
     }
 
-    emit gHub->sigReflectionData(currentReflection_);
+    emit gSession->sigReflectionData();
 }

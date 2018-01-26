@@ -15,6 +15,7 @@
 #include "core/calc/reflection.h"
 #include "core/fit/fit_fun.h"
 #include "core/def/idiomatic_for.h"
+#include "core/session.h"
 
 Reflection::Reflection(const QString& peakFunctionName) : peakFunction_(nullptr) {
     setPeakFunction(peakFunctionName);
@@ -80,4 +81,13 @@ QStringList reflectionNames(const Reflections& reflections) {
     for_i (reflections.count())
         ret.append(QStringLiteral("%1: %2").arg(i+1).arg(reflections[i]->peakFunction().name()));
     return ret;
+}
+
+// ************************************************************************** //
+//  class Peaks
+// ************************************************************************** //
+
+void Peaks::select(Reflection* reflection) {
+    selected_ = reflection;
+    emit gSession->sigReflectionSelected();
 }

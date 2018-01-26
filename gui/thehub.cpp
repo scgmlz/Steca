@@ -297,7 +297,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     for_i (reflectionsInfo.count())
         gSession->addReflection(reflectionsInfo.at(i).toObject());
 
-    emit sigReflectionsChanged();
+    emit gSession->sigReflectionsChanged();
     TR("installed session from file");
 }
 
@@ -316,25 +316,25 @@ void TheHub::loadCorrFile() {
 }
 
 void TheHub::setPeakFunction(const QString& peakFunctionName) {
-    if (selectedReflection_) {
-        selectedReflection_->setPeakFunction(peakFunctionName);
-        emit sigReflectionsChanged();
+    if (gSession->peaks().selected_) {
+        gSession->peaks().selected_->setPeakFunction(peakFunctionName);
+        emit gSession->sigReflectionsChanged();
     }
 }
 
-void TheHub::addReflection(const QString& peakFunctionName) {
+void TheHub::addReflection(const QString& peakFunctionName) { // TODO merge
     gSession->addReflection(peakFunctionName);
-    emit sigReflectionsChanged();
+    emit gSession->sigReflectionsChanged();
 }
 
-void TheHub::removeReflection(int i) {
+void TheHub::removeReflection(int i) { // TODO merge
     gSession->removeReflection(i);
     if (gSession->reflections().isEmpty())
-        tellSelectedReflection(shp_Reflection());
-    emit sigReflectionsChanged();
+        gSession->peaks().select(nullptr);
+    emit gSession->sigReflectionsChanged();
 }
 
-void TheHub::setFittingTab(eFittingTab tab) {
+void TheHub::setFittingTab(eFittingTab tab) { // TODO rm
     emit sigFittingTab((fittingTab_ = tab));
 }
 
@@ -373,12 +373,7 @@ void TheHub::setImageMirror(bool on) {
     emit gSession->sigDetector();
 }
 
-void TheHub::tellSelectedReflection(shp_Reflection reflection) {
-    selectedReflection_ = reflection;
-    emit sigReflectionSelected(reflection);
-}
-
 void TheHub::tellReflectionValues(
     const Range& rgeTth, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
-    emit sigReflectionValues(rgeTth, peak, fwhm, withGuesses);
+    emit gSession->sigReflectionValues(rgeTth, peak, fwhm, withGuesses);
 }

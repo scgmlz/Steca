@@ -26,7 +26,7 @@
 
 //! Wraps a PeakFunction (pimpl idiom)
 
-class Reflection final {
+class Reflection {
 public:
     Reflection(const QString& peakFunctionName = "Raw");
 
@@ -52,5 +52,13 @@ typedef vec<shp_Reflection> Reflections;
 QStringList reflectionNames(const Reflections& reflections);
 
 Q_DECLARE_METATYPE(shp_Reflection)
+
+//! All user defined peaks, of which one may be selected to be acted on by default.
+
+class Peaks {
+public:
+    void select(Reflection* reflection);
+    Reflection* selected_ {nullptr};
+};
 
 #endif // REFLECTION_H

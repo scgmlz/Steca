@@ -40,6 +40,9 @@ public:
     Corrset& corrset() { return corrset_; }
     const Corrset& corrset() const { return corrset_; }
 
+    Peaks& peaks() { return peaks_; }
+    const Peaks& peaks() const { return peaks_; }
+
     // Modifying methods:
     void clear();
 
@@ -111,12 +114,18 @@ signals:
     void sigDiffractogram(); //!< diffractogram must be repainted
     void sigBaseline();      //!< baseline fit has changed
     void sigNorm();          //!< normalization has changed
+    void sigReflectionsChanged();
+    void sigReflectionSelected();
+    void sigReflectionData();
+    void sigReflectionValues(const Range&, qpair const&, fwhm_t, bool);
 
 private:
     friend Dataset; // TODO try to get rid of this
     Dataset dataset_;
     friend Corrset; // TODO try to get rid of this
     Corrset corrset_;
+    friend Peaks; // TODO try to get rid of this
+    Peaks peaks_;
 
     vec<bool> metaSelection_; //!< true if meta datum is to be displayed
     bool intenScaledAvg_ {true}; // if not, summed

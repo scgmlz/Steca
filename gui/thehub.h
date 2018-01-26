@@ -48,11 +48,6 @@ public:
 
 signals: // TODO: rm unused
 
-    void sigReflectionsChanged();
-    void sigReflectionSelected(shp_Reflection);
-    void sigReflectionData(shp_Reflection);
-    void sigReflectionValues(const Range&, qpair const&, fwhm_t, bool);
-
     void sigDisplayChanged();
     void sigFittingTab(eFittingTab);
 
@@ -70,7 +65,6 @@ public:
     void removeReflection(int);
 
     // modify and emit signal:
-    void tellSelectedReflection(shp_Reflection);
     void tellReflectionValues(const Range&, qpair const&, fwhm_t, bool);
 
     // const methods:
@@ -134,7 +128,6 @@ private:
     bool isFixedIntenDgramScale_;
     bool isCombinedDgram_;
     eFittingTab fittingTab_ = eFittingTab::NONE;
-    shp_Reflection selectedReflection_;
     Settings settings_;
 
     friend class TheHubSignallingBase;
