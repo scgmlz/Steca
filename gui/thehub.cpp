@@ -315,13 +315,6 @@ void TheHub::loadCorrFile() {
     }
 }
 
-void TheHub::setPeakFunction(const QString& peakFunctionName) {
-    if (gSession->peaks().selected_) {
-        gSession->peaks().selected_->setPeakFunction(peakFunctionName);
-        emit gSession->sigReflectionsChanged();
-    }
-}
-
 void TheHub::addReflection(const QString& peakFunctionName) { // TODO merge
     gSession->addReflection(peakFunctionName);
     emit gSession->sigReflectionsChanged();

@@ -266,7 +266,10 @@ ControlsPeakfits::ControlsPeakfits() {
 
     connect(comboReflType_, _SLOT_(QComboBox, currentIndexChanged, const QString&),
             [this](const QString& peakFunctionName) {
-                gHub->setPeakFunction(peakFunctionName);
+                if (gSession->peaks().selected_) { // TODO rm this if
+                    gSession->peaks().selected_->setPeakFunction(peakFunctionName);
+                    emit gSession->sigReflectionsChanged();
+                }
             });
 
     connect(gSession, &Session::sigReflectionSelected, this, &ControlsPeakfits::setReflControls);

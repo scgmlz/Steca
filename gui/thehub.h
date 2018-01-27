@@ -60,7 +60,6 @@ public:
     void setNorm(eNorm);
     void setFittingTab(eFittingTab);
 
-    void setPeakFunction(const QString&);
     void addReflection(const QString&);
     void removeReflection(int);
 
