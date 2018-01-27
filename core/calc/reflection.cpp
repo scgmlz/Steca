@@ -80,6 +80,26 @@ void Reflection::from_json(JsonObj const& obj) THROWS {
 //  class Peaks
 // ************************************************************************** //
 
+void Peaks::clear() {
+    reflections_.clear();
+}
+
+void Peaks::add(const QString& peakFunctionName) {
+    shp_Reflection reflection(new Reflection(peakFunctionName));
+    debug::ensure(!reflection.isNull());
+    reflections_.append(reflection);
+}
+
+void Peaks::add(const QJsonObject& obj) {
+    shp_Reflection reflection(new Reflection);
+    reflection->from_json(obj);
+    reflections_.append(reflection);
+}
+
+void Peaks::remove(int i) {
+    reflections_.remove(i);
+}
+
 void Peaks::select(Reflection* reflection) {
     selected_ = reflection;
     emit gSession->sigReflectionSelected();

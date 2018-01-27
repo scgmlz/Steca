@@ -27,7 +27,7 @@ void Session::clear() {
     bgPolyDegree_ = 0;
     bgRanges_.clear();
 
-    reflections_.clear();
+    peaks_.clear();
 
     norm_ = eNorm::NONE;
 
@@ -222,18 +222,6 @@ void Session::setIntenScaleAvg(bool avg, qreal scale) {
     intenScaledAvg_ = avg;
     intenScale_ = scale;
     emit gSession->sigNorm();
-}
-
-void Session::addReflection(const QString& peakFunctionName) {
-    shp_Reflection reflection(new Reflection(peakFunctionName));
-    debug::ensure(!reflection.isNull());
-    reflections_.append(reflection);
-}
-
-void Session::addReflection(const QJsonObject& obj) {
-    shp_Reflection reflection(new Reflection);
-    reflection->from_json(obj);
-    reflections_.append(reflection);
 }
 
 void Session::setNorm(eNorm norm) {

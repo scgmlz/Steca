@@ -52,14 +52,20 @@ typedef vec<shp_Reflection> Reflections;
 
 Q_DECLARE_METATYPE(shp_Reflection)
 
-//! All user defined peaks, of which one may be selected to be acted on by default.
+//! All user defined peaks, of which one is selected to be acted on by default.
 
 class Peaks {
 public:
+    void clear();
+    void add(const QString&);
+    void add(const QJsonObject& obj);
+    void remove(int i);
     void select(Reflection* reflection);
-    Reflection* selected_ {nullptr};
 
     QStringList names() const;
+
+    Reflection* selected_ {nullptr};
+    Reflections reflections_;
 };
 
 #endif // REFLECTION_H

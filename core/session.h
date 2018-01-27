@@ -59,9 +59,6 @@ public:
     bool removeBgRange(const Range&);
     void setBgPolyDegree(int);
     void setIntenScaleAvg(bool, qreal);
-    void addReflection(const QString&);
-    void addReflection(const QJsonObject& obj);
-    void removeReflection(int i) { reflections_.remove(i); }
     void setNorm(eNorm);
 
     // Const methods: // TODO expand corrset() calls in calling code
@@ -98,7 +95,7 @@ public:
     int bgPolyDegree() const { return bgPolyDegree_; }
     bool intenScaledAvg() const { return intenScaledAvg_; }
     qreal intenScale() const { return intenScale_; }
-    Reflections const& reflections() const { return reflections_; }
+    Reflections const& reflections() const { return peaks_.reflections_; } // TODO mv
 
     qreal calcAvgBackground(Sequence const&) const;
     qreal calcAvgBackground() const;
@@ -137,7 +134,6 @@ private:
     Range gammaRange_;
     int bgPolyDegree_ {0};
     Ranges bgRanges_;
-    Reflections reflections_;
     eNorm norm_ {eNorm::NONE};
 
     mutable cache_lazy<ImageKey, AngleMap> angleMapCache_ {360};

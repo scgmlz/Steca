@@ -295,7 +295,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     TR("sessionFromJson: going to load reflections info");
     const QJsonArray& reflectionsInfo = top.loadArr("reflections");
     for_i (reflectionsInfo.count())
-        gSession->addReflection(reflectionsInfo.at(i).toObject());
+        gSession->peaks().add(reflectionsInfo.at(i).toObject());
 
     emit gSession->sigPeaksChanged();
     TR("installed session from file");

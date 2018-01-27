@@ -46,12 +46,12 @@ public:
 };
 
 void PeaksModel::addReflection(const QString& peakFunctionName) {
-    gSession->addReflection(peakFunctionName);
+    gSession->peaks().add(peakFunctionName);
     emit gSession->sigPeaksChanged();
 }
 
 void PeaksModel::removeReflection(int i) {
-    gSession->removeReflection(i);
+    gSession->peaks().remove(i);
     if (gSession->reflections().isEmpty())
         gSession->peaks().select(nullptr);
     emit gSession->sigPeaksChanged();
