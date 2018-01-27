@@ -62,10 +62,12 @@ public:
     void remove(int i);
     void select(Reflection* reflection);
 
-    int count() const { return reflections_.count(); }
-    QStringList names() const;
     const Reflection& at(int i) const { return *reflections_.at(i); }
     Reflection& at(int i) { return *reflections_.at(i); } // used only once
+
+    int count() const { return reflections_.count(); }
+    QStringList names() const;
+    QJsonArray toJson() const;
 
     Reflection* selected_ {nullptr};
     Reflections reflections_;

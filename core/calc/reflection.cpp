@@ -113,3 +113,10 @@ QStringList Peaks::names() const {
                    .arg(reflections_[i]->functionName()));
     return ret;
 }
+
+QJsonArray Peaks::toJson() const {
+    QJsonArray ret;
+    for (auto& reflection : reflections_)
+        ret.append(reflection->to_json());
+    return ret;
+}

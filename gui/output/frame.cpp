@@ -314,29 +314,24 @@ void Frame::calculate() {
     calcPoints_.clear();
     interpPoints_.clear();
 
-    const Reflections& reflections = gSession->reflections();
-    if (!reflections.isEmpty()) {
-        int reflCount = reflections.count();
+    int reflCount = gSession->peaks().count();
+    if (!reflCount)
+        return;
 
-        const PanelGammaSlices* ps = params_->panelGammaSlices;
-        debug::ensure(ps);
+    const PanelGammaSlices* ps = params_->panelGammaSlices;
+    int gammaSlices = ps->numSlices->value();
 
-        int gammaSlices = ps->numSlices->value();
+    const PanelGammaRange* pr = params_->panelGammaRange;
+    Range rgeGamma;
+    if (pr->cbLimitGamma->isChecked())
+        rgeGamma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
 
-        const PanelGammaRange* pr = params_->panelGammaRange;
-        debug::ensure(pr);
+    Progress progress(reflCount, progressBar_);
 
-        Range rgeGamma;
-        if (pr->cbLimitGamma->isChecked())
-            rgeGamma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
-
-        Progress progress(reflCount, progressBar_);
-
-        for_i (reflCount)
-            calcPoints_.append(
-                gSession->makeReflectionInfos(
-                    *reflections.at(i), gammaSlices, rgeGamma, &progress));
-    }
+    for_i (reflCount)
+        calcPoints_.append(
+            gSession->makeReflectionInfos(
+                gSession->peaks().at(i), gammaSlices, rgeGamma, &progress));
 
     interpolate();
 }

@@ -594,16 +594,15 @@ void Diffractogram::calcPeaks() {
     refls_.clear();
     currReflIndex_ = 0;
 
-    const Reflections& rs = gSession->reflections();
-    for_i (rs.count()) {
-        auto& r = rs[i];
-        if (r == currentReflection_)
+    for_i (gSession->peaks().count()) {
+        Reflection& r = gSession->peaks().at(i);
+        if (&r == currentReflection_)
             currReflIndex_ = i;
 
-        r->fit(dgramBgFitted_);
+        r.fit(dgramBgFitted_);
 
-        const Range& rge = r->range();
-        const PeakFunction& fun = r->peakFunction();
+        const Range& rge = r.range();
+        const PeakFunction& fun = r.peakFunction();
 
         Curve c;
         for_i (dgramBgFitted_.count()) {

@@ -210,11 +210,7 @@ QByteArray TheHub::saveSession() const {
     top.insert("averaged intensity ", gSession->intenScaledAvg());
     top.insert("intensity scale", qreal_to_json((qreal)gSession->intenScale()));
 
-    QJsonArray arrPeaks;
-    for (auto& reflection : gSession->reflections())
-        arrPeaks.append(reflection->to_json());
-
-    top.insert("reflections", arrPeaks);
+    top.insert("reflections", gSession->peaks().toJson());
 
     return QJsonDocument(top).toJson();
 }

@@ -95,7 +95,6 @@ public:
     int bgPolyDegree() const { return bgPolyDegree_; }
     bool intenScaledAvg() const { return intenScaledAvg_; }
     qreal intenScale() const { return intenScale_; }
-    Reflections const& reflections() const { return peaks_.reflections_; } // TODO mv
 
     qreal calcAvgBackground(Sequence const&) const;
     qreal calcAvgBackground() const;

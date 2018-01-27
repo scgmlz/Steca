@@ -290,8 +290,8 @@ void PoleFiguresFrame::displayReflection(int reflIndex, bool interpolated) {
 }
 
 void PoleFiguresFrame::savePoleFigureOutput() {
-    const Reflections& reflections = gSession->reflections();
-    if (reflections.isEmpty()) {
+    int reflCount = gSession->peaks().count();
+    if (!reflCount) {
         qWarning() << "cannot save pole figure: no reflection chosen";
         return;
     }
@@ -305,7 +305,7 @@ void PoleFiguresFrame::savePoleFigureOutput() {
         return;
     }
     // all reflections
-    for_i (reflections.count()) // TODO collect output into one message
+    for_i (reflCount) // TODO collect output into one message
         writePoleFigureOutputFiles(path, i);
 }
 
