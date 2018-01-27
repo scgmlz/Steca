@@ -60,12 +60,6 @@ public:
     void setNorm(eNorm);
     void setFittingTab(eFittingTab);
 
-    void addReflection(const QString&);
-    void removeReflection(int);
-
-    // modify and emit signal:
-    void tellReflectionValues(const Range&, qpair const&, fwhm_t, bool);
-
     // const methods:
     bool isFixedIntenImageScale() const { return isFixedIntenImageScale_; }
     bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }

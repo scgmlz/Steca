@@ -315,18 +315,6 @@ void TheHub::loadCorrFile() {
     }
 }
 
-void TheHub::addReflection(const QString& peakFunctionName) { // TODO merge
-    gSession->addReflection(peakFunctionName);
-    emit gSession->sigReflectionsChanged();
-}
-
-void TheHub::removeReflection(int i) { // TODO merge
-    gSession->removeReflection(i);
-    if (gSession->reflections().isEmpty())
-        gSession->peaks().select(nullptr);
-    emit gSession->sigReflectionsChanged();
-}
-
 void TheHub::setFittingTab(eFittingTab tab) { // TODO rm
     emit sigFittingTab((fittingTab_ = tab));
 }
@@ -364,9 +352,4 @@ void TheHub::setImageMirror(bool on) {
     toggle_mirrorImage->setChecked(on);
     gSession->setImageTransformMirror(on);
     emit gSession->sigDetector();
-}
-
-void TheHub::tellReflectionValues(
-    const Range& rgeTth, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
-    emit gSession->sigReflectionValues(rgeTth, peak, fwhm, withGuesses);
 }

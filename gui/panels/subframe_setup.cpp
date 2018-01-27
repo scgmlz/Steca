@@ -32,8 +32,8 @@ class PeaksModel : public TableModel {
 public:
     PeaksModel() : TableModel() {}
 
-    void addReflection(const QString& peakFunctionName) { gHub->addReflection(peakFunctionName); }
-    void removeReflection(int i) { gHub->removeReflection(i); }
+    void addReflection(const QString& peakFunctionName);
+    void removeReflection(int i);
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return gSession->reflections().count(); }
@@ -45,6 +45,17 @@ public:
     enum { COL_ID = 1, COL_TYPE, NUM_COLUMNS };
 };
 
+void PeaksModel::addReflection(const QString& peakFunctionName) {
+    gSession->addReflection(peakFunctionName);
+    emit gSession->sigReflectionsChanged();
+}
+
+void PeaksModel::removeReflection(int i) {
+    gSession->removeReflection(i);
+    if (gSession->reflections().isEmpty())
+        gSession->peaks().select(nullptr);
+    emit gSession->sigReflectionsChanged();
+}
 
 str PeaksModel::displayData(int row, int col) const {
     switch (col) {
@@ -338,10 +349,11 @@ void ControlsPeakfits::setReflControls() {
 
 void ControlsPeakfits::newReflData(bool invalidateGuesses) {
     if (!silentSpin_) {
-        gHub->tellReflectionValues(
+        emit gSession->sigReflectionValues(
             Range::safeFrom(spinRangeMin_->value(), spinRangeMax_->value()),
             qpair(spinGuessPeakX_->value(), spinGuessPeakY_->value()),
-            fwhm_t(spinGuessFWHM_->value()), invalidateGuesses);
+            fwhm_t(spinGuessFWHM_->value()),
+            invalidateGuesses);
     }
 };
 
