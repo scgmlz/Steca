@@ -63,11 +63,7 @@ public:
 
     // Const methods: // TODO expand corrset() calls in calling code
     bool hasCorrFile() const { return corrset().hasFile(); }
-    const Rawfile& corrFile() const { return corrset().raw(); }
-    shp_Image corrImage() const { return corrset().corrImage(); }
     const Image* intensCorr() const { return corrset().intensCorr(); }
-    void tryEnableCorr(bool on) { return corrset().tryEnable(on); }
-    bool isCorrEnabled() const { return corrset().isEnabled(); }
 
     const Experiment& experiment() const { return dataset().experiment(); }
 
@@ -88,8 +84,7 @@ public:
     shp_SequenceLens defaultClusterLens(Sequence const& seq) const;
     shp_SequenceLens highlightsLens() const;
 
-    PeakInfos makePeakInfos(
-        Peak const&, int gmaSlices, const Range&, Progress*) const;
+    PeakInfos makePeakInfos(Peak const&, int gmaSlices, const Range&, Progress*) const;
 
     bool intenScaledAvg() const { return intenScaledAvg_; }
     qreal intenScale() const { return intenScale_; }

@@ -90,10 +90,11 @@ TheHub::TheHub()
         });
 
     toggle_enableCorr = newQ::Toggle("Enable correction file", false, ":/icon/useCorrection");
-    connect(toggle_enableCorr, &QAction::toggled, gSession, &Session::tryEnableCorr);
+    connect(toggle_enableCorr, &QAction::toggled, [this](bool on) {
+            gSession->corrset().tryEnable(on); });
     QObject::connect(gSession, &Session::sigCorr, [this]() {
             toggle_enableCorr->setEnabled(gSession->hasCorrFile());
-            toggle_enableCorr->setChecked(gSession->isCorrEnabled());
+            toggle_enableCorr->setChecked(gSession->corrset().isEnabled());
         });
 
     trigger_rotateImage = newQ::Trigger("Rotate", ":/icon/rotate0");

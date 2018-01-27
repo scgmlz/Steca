@@ -37,7 +37,7 @@ public:
     bool hasFile() const { return !raw_.isNull(); }
     bool isEnabled() const { return enabled_; }
     bool hasNANs() const { return hasNANs_; }
-    shp_Image corrImage() const { return corrImage_; }
+    shp_Image image() const { return corrImage_; }
     const Image* intensCorr() const;
 
 private:

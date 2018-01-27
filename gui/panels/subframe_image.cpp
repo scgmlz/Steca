@@ -354,11 +354,11 @@ public:
 CorrImageTab::CorrImageTab() {
     controls_->addStretch(1);
     connect(gSession, &Session::sigCorr, [this]() {
-            setEnabled(gSession->isCorrEnabled()); });
+            setEnabled(gSession->corrset().isEnabled()); });
 }
 
 void CorrImageTab::render() {
-    QPixmap pixMap = makePixmap(gSession->corrImage());
+    QPixmap pixMap = makePixmap(gSession->corrset().image());
     imageView_->setPixmap(pixMap);
 }
 
