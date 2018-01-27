@@ -36,7 +36,7 @@ public:
     void removeReflection(int i);
 
     int columnCount() const final { return NUM_COLUMNS; }
-    int rowCount() const final { return gSession->reflections().count(); }
+    int rowCount() const final { return gSession->peaks().count(); }
     str displayData(int row, int col) const;
     str displayData(int row) const;
     QVariant data(const QModelIndex&, int) const;
@@ -297,7 +297,7 @@ ControlsPeakfits::ControlsPeakfits() {
 }
 
 void ControlsPeakfits::updateReflectionControls() {
-    bool on = gSession->reflections().count();
+    bool on = gSession->peaks().count();
     spinRangeMin_->setEnabled(on);
     spinRangeMax_->setEnabled(on);
     spinGuessPeakX_->setEnabled(on);

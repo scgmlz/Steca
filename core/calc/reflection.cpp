@@ -107,7 +107,7 @@ void Peaks::select(Reflection* reflection) {
 
 QStringList Peaks::names() const {
     QStringList ret;
-    for_i (gSession->reflections().count())
+    for_i (gSession->peaks().count())
         ret.append(QStringLiteral("%1: %2").arg(i+1).arg(gSession->reflections()[i]->peakFunction().name()));
     return ret;
 }

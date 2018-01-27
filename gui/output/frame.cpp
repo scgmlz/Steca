@@ -303,7 +303,7 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent) : QDialog(parent) {
     tabPoints->layout()->addWidget(tabTable);
     table_ = tabTable->table;
 
-    int reflCount = gSession->reflections().count();
+    int reflCount = gSession->peaks().count();
     calcPoints_.resize(reflCount);
     interpPoints_.resize(reflCount);
 }

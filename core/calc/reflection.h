@@ -62,6 +62,7 @@ public:
     void remove(int i);
     void select(Reflection* reflection);
 
+    int count() const { return reflections_.count(); }
     QStringList names() const;
 
     Reflection* selected_ {nullptr};
