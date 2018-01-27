@@ -514,11 +514,11 @@ ControlsBaseline::ControlsBaseline() {
 
     connect(spinDegree_, _SLOT_(QSpinBox, valueChanged, int), [this](int degree) {
             debug::ensure(degree >= 0);
-            gSession->setBgPolyDegree(degree);
+            gSession->baseline().setPolynomDegree(degree);
         });
 
     connect(gSession, &Session::sigBaseline, [this](){
-            spinDegree_->setValue(gSession->bgPolyDegree()); });
+            spinDegree_->setValue(gSession->baseline().polynomDegree()); });
 }
 
 

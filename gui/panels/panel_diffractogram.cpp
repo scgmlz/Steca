@@ -121,8 +121,8 @@ void DiffractogramPlotOverlay::leaveEvent(QEvent*) {
 void DiffractogramPlotOverlay::mousePressEvent(QMouseEvent* e) {
     mouseDownPos_ = cursorPos_;
     mouseDown_ = true;
-    addColor_ = (eFittingTab::BACKGROUND == gHub->fittingTab()) ? bgColor_ : reflColor_;
-    color_ = Qt::LeftButton == e->button() ? addColor_ : removeColor_;
+    addColor_ = (gHub->fittingTab() == eFittingTab::BACKGROUND) ? bgColor_ : reflColor_;
+    color_ = e->button() == Qt::LeftButton ? addColor_ : removeColor_;
     update();
 }
 
@@ -134,9 +134,9 @@ void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
     switch (plot_.getTool()) {
     case DiffractogramPlot::eTool::BACKGROUND:
         if (Qt::LeftButton == e->button())
-            gSession->addBgRange(range);
+            gSession->baseline().addRange(range);
         else
-            gSession->removeBgRange(range);
+            gSession->baseline().removeRange(range);
         break;
     case DiffractogramPlot::eTool::PEAK_REGION:
         plot_.setNewReflRange(range);
@@ -326,7 +326,7 @@ void DiffractogramPlot::updateBg() {
 
     switch (tool_) {
     case eTool::BACKGROUND: {
-        const Ranges& rs = gSession->bgRanges();
+        const Ranges& rs = gSession->baseline().ranges();
         for_i (rs.count())
             addBgItem(rs.at(i));
         break;
@@ -570,7 +570,7 @@ void Diffractogram::calcBackground() {
     dgramBgFitted_.clear();
 
     const Polynom& bgPolynom =
-        Polynom::fromFit(gSession->bgPolyDegree(), dgram_, gSession->bgRanges());
+        Polynom::fromFit(gSession->baseline().polynomDegree(), dgram_, gSession->baseline().ranges()); // TODO bundle this code line which similarly appears in at least one other place
 
     for_i (dgram_.count()) {
         qreal x = dgram_.x(i), y = bgPolynom.y(x);

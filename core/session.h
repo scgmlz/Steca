@@ -15,6 +15,7 @@
 #ifndef SESSION_H
 #define SESSION_H
 
+#include "core/calc/baseline.h"
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"
 
@@ -43,6 +44,9 @@ public:
     Peaks& peaks() { return peaks_; }
     const Peaks& peaks() const { return peaks_; }
 
+    Baseline& baseline() { return baseline_; }
+    const Baseline& baseline() const { return baseline_; }
+
     // Modifying methods:
     void clear();
 
@@ -54,10 +58,6 @@ public:
     void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
     void setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset);
     void setGammaRange(const Range&);
-    void setBgRanges(const Ranges&);
-    bool addBgRange(const Range&);
-    bool removeBgRange(const Range&);
-    void setBgPolyDegree(int);
     void setIntenScaleAvg(bool, qreal);
     void setNorm(eNorm);
 
@@ -91,8 +91,6 @@ public:
     PeakInfos makePeakInfos(
         Peak const&, int gmaSlices, const Range&, Progress*) const;
 
-    const Ranges& bgRanges() const { return bgRanges_; }
-    int bgPolyDegree() const { return bgPolyDegree_; }
     bool intenScaledAvg() const { return intenScaledAvg_; }
     qreal intenScale() const { return intenScale_; }
 
@@ -108,7 +106,7 @@ signals:
     void sigActivated();     //!< selection of active clusters has changed
     void sigDetector();      //!< detector geometry has changed
     void sigDiffractogram(); //!< diffractogram must be repainted
-    void sigBaseline();      //!< baseline fit has changed
+    void sigBaseline();      //!< baseline settings have changed
     void sigNorm();          //!< normalization has changed
     void sigPeaksChanged();
     void sigPeakSelected();
@@ -120,8 +118,8 @@ private:
     Dataset dataset_;
     friend Corrset; // TODO try to get rid of this
     Corrset corrset_;
-    friend Peaks; // TODO try to get rid of this
     Peaks peaks_;
+    Baseline baseline_;
 
     vec<bool> metaSelection_; //!< true if meta datum is to be displayed
     bool intenScaledAvg_ {true}; // if not, summed
@@ -131,8 +129,6 @@ private:
     ImageCut imageCut_;
     Geometry geometry_;
     Range gammaRange_;
-    int bgPolyDegree_ {0};
-    Ranges bgRanges_;
     eNorm norm_ {eNorm::NONE};
 
     mutable cache_lazy<ImageKey, AngleMap> angleMapCache_ {360};

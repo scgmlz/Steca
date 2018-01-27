@@ -133,7 +133,8 @@ TheHub::TheHub()
     toggle_showBackground = newQ::Toggle("Show fitted background", false, ":/icon/showBackground");
 
     trigger_clearBackground = newQ::Trigger("Clear background regions", ":/icon/clear");
-    connect(trigger_clearBackground, &QAction::triggered, [this]() { gSession->setBgRanges({}); });
+    connect(trigger_clearBackground, &QAction::triggered, [this]() {
+            gSession->baseline().setRanges({}); });
 
     trigger_clearPeaks = newQ::Trigger("Clear peaks", ":/icon/clear");
 
@@ -207,12 +208,11 @@ QByteArray TheHub::saveSession() const {
 
     // TODO save cluster selection
 
-    top.insert("background degree", gSession->bgPolyDegree());
-    top.insert("background ranges", gSession->bgRanges().to_json());
+    top.insert("baseline", gSession->baseline().toJson());
+    top.insert("peaks", gSession->peaks().toJson());
+
     top.insert("averaged intensity ", gSession->intenScaledAvg());
     top.insert("intensity scale", qreal_to_json((qreal)gSession->intenScale()));
-
-    top.insert("peaks", gSession->peaks().toJson());
 
     return QJsonDocument(top).toJson();
 }
@@ -281,10 +281,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     setImageRotate(ImageTransform(top.loadUint("image transform")));
 
     TR("sessionFromJson: going to load fit setup");
-    Ranges bgRanges;
-    bgRanges.from_json(top.loadArr("background ranges"));
-    gSession->setBgRanges(bgRanges);
-    gSession->setBgPolyDegree(top.loadUint("background degree"));
+    gSession->baseline().fromJson(top.loadObj("baseline"));
 
     bool arg1 = top.loadBool("averaged intensity ", true);
     qreal arg2 = top.loadPreal("intensity scale", 1);

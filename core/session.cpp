@@ -23,10 +23,7 @@ Session::Session()
 void Session::clear() {
     dataset_.clear();
     corrset_.clear();
-
-    bgPolyDegree_ = 0;
-    bgRanges_.clear();
-
+    baseline_.clear();
     peaks_.clear();
 
     norm_ = eNorm::NONE;
@@ -85,26 +82,6 @@ void Session::setGammaRange(const Range& r) {
     emit sigDiffractogram();
 }
 
-void Session::setBgRanges(const Ranges& rr) {
-    bgRanges_ = rr;
-    emit sigBaseline();
-}
-
-bool Session::addBgRange(const Range& r) {
-    return bgRanges_.add(r);
-    emit sigBaseline();
-}
-
-bool Session::removeBgRange(const Range& r) {
-    return bgRanges_.remove(r);
-    emit sigBaseline();
-}
-
-void Session::setBgPolyDegree(int degree) {
-    bgPolyDegree_ = degree;
-    emit sigBaseline();
-}
-
 IJ Session::midPix() const {
     size2d sz = imageSize();
     IJ mid(sz.w / 2, sz.h / 2);
@@ -142,7 +119,7 @@ shp_SequenceLens Session::highlightsLens() const {
 
 Curve Session::curveMinusBg(SequenceLens const& lens, const Range& rgeGma) const {
     Curve curve = lens.makeCurve(rgeGma);
-    const Polynom f = Polynom::fromFit(bgPolyDegree_, curve, bgRanges_);
+    const Polynom f = Polynom::fromFit(baseline().polynomDegree(), curve, baseline().ranges());
     curve.subtract([f](qreal x) {return f.y(x);});
     return curve;
 }
@@ -232,7 +209,7 @@ void Session::setNorm(eNorm norm) {
 qreal Session::calcAvgBackground(Sequence const& seq) const {
     const shp_SequenceLens& lens = dataseqLens(seq, eNorm::NONE, true, true);
     Curve gmaCurve = lens->makeCurve(); // had argument averaged=true
-    Polynom bgPolynom = Polynom::fromFit(bgPolyDegree_, gmaCurve, bgRanges_);
+    Polynom bgPolynom = Polynom::fromFit(baseline().polynomDegree(), gmaCurve, baseline().ranges());
     return bgPolynom.avgY(lens->rgeTth());
 }
 
