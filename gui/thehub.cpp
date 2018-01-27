@@ -135,7 +135,7 @@ TheHub::TheHub()
     trigger_clearBackground = newQ::Trigger("Clear background regions", ":/icon/clear");
     connect(trigger_clearBackground, &QAction::triggered, [this]() { gSession->setBgRanges({}); });
 
-    trigger_clearReflections = newQ::Trigger("Clear reflections", ":/icon/clear");
+    trigger_clearPeaks = newQ::Trigger("Clear reflections", ":/icon/clear");
 
     trigger_addReflection = newQ::Trigger("Add reflection", ":/icon/add");
 
@@ -210,11 +210,11 @@ QByteArray TheHub::saveSession() const {
     top.insert("averaged intensity ", gSession->intenScaledAvg());
     top.insert("intensity scale", qreal_to_json((qreal)gSession->intenScale()));
 
-    QJsonArray arrReflections;
+    QJsonArray arrPeaks;
     for (auto& reflection : gSession->reflections())
-        arrReflections.append(reflection->to_json());
+        arrPeaks.append(reflection->to_json());
 
-    top.insert("reflections", arrReflections);
+    top.insert("reflections", arrPeaks);
 
     return QJsonDocument(top).toJson();
 }
@@ -297,7 +297,7 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     for_i (reflectionsInfo.count())
         gSession->addReflection(reflectionsInfo.at(i).toObject());
 
-    emit gSession->sigReflectionsChanged();
+    emit gSession->sigPeaksChanged();
     TR("installed session from file");
 }
 

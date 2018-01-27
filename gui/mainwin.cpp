@@ -106,7 +106,7 @@ void initMenus(QMenuBar* mbar) {
             gHub->toggle_selRegions,
                 gHub->toggle_showBackground,
                 gHub->trigger_clearBackground,
-                gHub->trigger_clearReflections,
+                gHub->trigger_clearPeaks,
                 _separator(),
                 gHub->trigger_addReflection,
                 gHub->trigger_removeReflection,

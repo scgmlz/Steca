@@ -474,7 +474,7 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
     connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
     connect(gSession, &Session::sigDiffractogram, [this](){ render(); });
     connect(gSession, &Session::sigBaseline, [this](){ render(); });
-    connect(gSession, &Session::sigReflectionsChanged, [this](){ render(); });
+    connect(gSession, &Session::sigPeaksChanged, [this](){ render(); });
     connect(gSession, &Session::sigNorm, [this](){ onNormChanged(); });
     connect(gHub, &TheHub::sigFittingTab, [this](eFittingTab tab) { onFittingTab(tab); });
 
@@ -545,7 +545,7 @@ void Diffractogram::render() {
         return;
     calcDgram();
     calcBackground();
-    calcReflections();
+    calcPeaks();
     plot_->plot(dgram_, dgramBgFitted_, bg_, refls_, currReflIndex_);
 }
 
@@ -590,7 +590,7 @@ Range Diffractogram::currReflRange() const {
     return currentReflection_ ? currentReflection_->range() : Range();
 }
 
-void Diffractogram::calcReflections() {
+void Diffractogram::calcPeaks() {
     refls_.clear();
     currReflIndex_ = 0;
 

@@ -31,7 +31,7 @@ public:
 
     void calcDgram();
     void calcBackground();
-    void calcReflections();
+    void calcPeaks();
 
     void setCurrReflNewRange(const Range&);
     Range currReflRange() const;

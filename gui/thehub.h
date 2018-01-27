@@ -103,7 +103,7 @@ public:
         *toggle_selRegions,
         *toggle_showBackground,
         *trigger_clearBackground,
-        *trigger_clearReflections,
+        *trigger_clearPeaks,
         *trigger_addReflection,
         *trigger_removeReflection,
         *trigger_outputPolefigures,

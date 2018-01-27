@@ -114,7 +114,7 @@ signals:
     void sigDiffractogram(); //!< diffractogram must be repainted
     void sigBaseline();      //!< baseline fit has changed
     void sigNorm();          //!< normalization has changed
-    void sigReflectionsChanged();
+    void sigPeaksChanged();
     void sigReflectionSelected();
     void sigReflectionData();
     void sigReflectionValues(const Range&, qpair const&, fwhm_t, bool);

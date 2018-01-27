@@ -47,14 +47,14 @@ public:
 
 void PeaksModel::addReflection(const QString& peakFunctionName) {
     gSession->addReflection(peakFunctionName);
-    emit gSession->sigReflectionsChanged();
+    emit gSession->sigPeaksChanged();
 }
 
 void PeaksModel::removeReflection(int i) {
     gSession->removeReflection(i);
     if (gSession->reflections().isEmpty())
         gSession->peaks().select(nullptr);
-    emit gSession->sigReflectionsChanged();
+    emit gSession->sigPeaksChanged();
 }
 
 str PeaksModel::displayData(int row, int col) const {
@@ -204,7 +204,7 @@ ControlsPeakfits::ControlsPeakfits() {
 
     hb->addWidget(newQ::IconButton(gHub->toggle_selRegions));
     hb->addWidget(newQ::IconButton(gHub->toggle_showBackground));
-    hb->addWidget(newQ::IconButton(gHub->trigger_clearReflections));
+    hb->addWidget(newQ::IconButton(gHub->trigger_clearPeaks));
     hb->addStretch();
 
     box->addWidget((peaksView_ = new PeaksView()));
@@ -265,12 +265,12 @@ ControlsPeakfits::ControlsPeakfits() {
                 updateReflectionControls();
             });
 
-    connect(gHub->trigger_clearReflections, &QAction::triggered, [this]() {
+    connect(gHub->trigger_clearPeaks, &QAction::triggered, [this]() {
                 peaksView_->clear();
                 updateReflectionControls();
             });
 
-    connect(gSession, &Session::sigReflectionsChanged, [this]() {
+    connect(gSession, &Session::sigPeaksChanged, [this]() {
                 peaksView_->updateSingleSelection();
                 updateReflectionControls(); }
         );
@@ -279,7 +279,7 @@ ControlsPeakfits::ControlsPeakfits() {
             [this](const QString& peakFunctionName) {
                 if (gSession->peaks().selected_) { // TODO rm this if
                     gSession->peaks().selected_->setPeakFunction(peakFunctionName);
-                    emit gSession->sigReflectionsChanged();
+                    emit gSession->sigPeaksChanged();
                 }
             });
 
