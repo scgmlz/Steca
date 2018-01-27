@@ -50,7 +50,7 @@ GridPanel::GridPanel(rcstr title) : QGroupBox(title) {
 PanelReflection::PanelReflection() : GridPanel("Reflection") {
     QGridLayout* g = grid();
     cbRefl = new QComboBox;
-    cbRefl->addItems(reflectionNames(gSession->reflections()));
+    cbRefl->addItems(gSession->peaks().names());
     g->addWidget(cbRefl);
     g->setRowStretch(g->rowCount(), 1);
 }

@@ -76,13 +76,6 @@ void Reflection::from_json(JsonObj const& obj) THROWS {
 }
 
 
-QStringList reflectionNames(const Reflections& reflections) {
-    QStringList ret;
-    for_i (reflections.count())
-        ret.append(QStringLiteral("%1: %2").arg(i+1).arg(reflections[i]->peakFunction().name()));
-    return ret;
-}
-
 // ************************************************************************** //
 //  class Peaks
 // ************************************************************************** //
@@ -90,4 +83,11 @@ QStringList reflectionNames(const Reflections& reflections) {
 void Peaks::select(Reflection* reflection) {
     selected_ = reflection;
     emit gSession->sigReflectionSelected();
+}
+
+QStringList Peaks::names() const {
+    QStringList ret;
+    for_i (gSession->reflections().count())
+        ret.append(QStringLiteral("%1: %2").arg(i+1).arg(gSession->reflections()[i]->peakFunction().name()));
+    return ret;
 }

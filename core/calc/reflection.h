@@ -49,7 +49,6 @@ private:
 
 typedef QSharedPointer<Reflection> shp_Reflection;
 typedef vec<shp_Reflection> Reflections;
-QStringList reflectionNames(const Reflections& reflections);
 
 Q_DECLARE_METATYPE(shp_Reflection)
 
@@ -59,6 +58,8 @@ class Peaks {
 public:
     void select(Reflection* reflection);
     Reflection* selected_ {nullptr};
+
+    QStringList names() const;
 };
 
 #endif // REFLECTION_H
