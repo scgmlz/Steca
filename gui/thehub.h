@@ -16,7 +16,7 @@
 #define THEHUB_H
 
 #include "core/calc/lens.h"
-#include "core/calc/reflection.h"
+#include "core/calc/peak.h"
 #include "core/data/rawfile.h"
 #include "core/data/cluster.h"
 #include "gui/cfg/settings.h"
@@ -104,8 +104,8 @@ public:
         *toggle_showBackground,
         *trigger_clearBackground,
         *trigger_clearPeaks,
-        *trigger_addReflection,
-        *trigger_removeReflection,
+        *trigger_addPeak,
+        *trigger_removePeak,
         *trigger_outputPolefigures,
         *trigger_outputDiagrams,
         *trigger_outputDiffractograms;

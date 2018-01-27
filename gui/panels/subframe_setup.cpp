@@ -32,8 +32,8 @@ class PeaksModel : public TableModel {
 public:
     PeaksModel() : TableModel() {}
 
-    void addReflection(const QString& functionName);
-    void removeReflection(int i);
+    void addPeak(const QString& functionName);
+    void removePeak(int i);
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return gSession->peaks().count(); }
@@ -45,12 +45,12 @@ public:
     enum { COL_ID = 1, COL_TYPE, NUM_COLUMNS };
 };
 
-void PeaksModel::addReflection(const QString& functionName) {
+void PeaksModel::addPeak(const QString& functionName) {
     gSession->peaks().add(functionName);
     emit gSession->sigPeaksChanged(); // TODO mv
 }
 
-void PeaksModel::removeReflection(int i) {
+void PeaksModel::removePeak(int i) {
     gSession->peaks().remove(i);
     if (!gSession->peaks().count())
         gSession->peaks().select(nullptr);
@@ -110,7 +110,7 @@ public:
     PeaksView();
 
     void clear();
-    void addReflection(const QString& peakFunctionName);
+    void addPeak(const QString& peakFunctionName);
     void removeSelected();
     void updateSingleSelection();
 
@@ -128,13 +128,13 @@ PeaksView::PeaksView() : ListView() {
 
 void PeaksView::clear() {
     for (int row = model_->rowCount(); row-- > 0;) {
-        model_->removeReflection(row);
+        model_->removePeak(row);
         updateSingleSelection();
     }
 }
 
-void PeaksView::addReflection(const QString& peakFunctionName) {
-    model_->addReflection(peakFunctionName);
+void PeaksView::addPeak(const QString& peakFunctionName) {
+    model_->addPeak(peakFunctionName);
     updateSingleSelection();
 }
 
@@ -142,7 +142,7 @@ void PeaksView::removeSelected() {
     int row = currentIndex().row();
     if (row < 0 || model_->rowCount() <= row)
         return;
-    model_->removeReflection(row);
+    model_->removePeak(row);
     updateSingleSelection();
 }
 
@@ -150,7 +150,7 @@ void PeaksView::updateSingleSelection() {
     int row = currentIndex().row();
     model_->signalReset();
     setCurrentIndex(model_->index(row,0));
-    gHub->trigger_removeReflection->setEnabled(model_->rowCount());
+    gHub->trigger_removePeak->setEnabled(model_->rowCount());
 }
 
 void PeaksView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
@@ -171,7 +171,7 @@ class ControlsPeakfits : public QWidget {
 public:
     ControlsPeakfits();
 private:
-    void updateReflectionControls();
+    void updatePeakControls();
     void setReflControls();
     void newReflData(bool invalidateGuesses);
 
@@ -206,8 +206,8 @@ ControlsPeakfits::ControlsPeakfits() {
     comboReflType_->addItems(FunctionRegistry::instance()->keys());
     hb->addWidget(comboReflType_);
     hb->addStretch();
-    hb->addWidget(newQ::IconButton(gHub->trigger_addReflection));
-    hb->addWidget(newQ::IconButton(gHub->trigger_removeReflection));
+    hb->addWidget(newQ::IconButton(gHub->trigger_addPeak));
+    hb->addWidget(newQ::IconButton(gHub->trigger_removePeak));
 
     QBoxLayout* vb = newQ::VBoxLayout();
     box->addLayout(vb);
@@ -243,26 +243,26 @@ ControlsPeakfits::ControlsPeakfits() {
 
     gb->setColumnStretch(4, 1);
 
-    updateReflectionControls();
+    updatePeakControls();
 
-    connect(gHub->trigger_addReflection, &QAction::triggered, [this]() {
-                peaksView_->addReflection(comboReflType_->currentText());
-                updateReflectionControls();
+    connect(gHub->trigger_addPeak, &QAction::triggered, [this]() {
+                peaksView_->addPeak(comboReflType_->currentText());
+                updatePeakControls();
             });
 
-    connect(gHub->trigger_removeReflection, &QAction::triggered, [this]() {
+    connect(gHub->trigger_removePeak, &QAction::triggered, [this]() {
                 peaksView_->removeSelected();
-                updateReflectionControls();
+                updatePeakControls();
             });
 
     connect(gHub->trigger_clearPeaks, &QAction::triggered, [this]() {
                 peaksView_->clear();
-                updateReflectionControls();
+                updatePeakControls();
             });
 
     connect(gSession, &Session::sigPeaksChanged, [this]() {
                 peaksView_->updateSingleSelection();
-                updateReflectionControls(); }
+                updatePeakControls(); }
         );
 
     connect(comboReflType_, _SLOT_(QComboBox, currentIndexChanged, const QString&),
@@ -273,8 +273,8 @@ ControlsPeakfits::ControlsPeakfits() {
                 }
             });
 
-    connect(gSession, &Session::sigReflectionSelected, this, &ControlsPeakfits::setReflControls);
-    connect(gSession, &Session::sigReflectionData, this, &ControlsPeakfits::setReflControls);
+    connect(gSession, &Session::sigPeakSelected, this, &ControlsPeakfits::setReflControls);
+    connect(gSession, &Session::sigPeakData, this, &ControlsPeakfits::setReflControls);
 
     auto _changeReflData0 = [this](qreal /*unused*/) { newReflData(false); };
     auto _changeReflData1 = [this](qreal /*unused*/) { newReflData(true); };
@@ -286,7 +286,7 @@ ControlsPeakfits::ControlsPeakfits() {
     connect(spinGuessFWHM_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData0);
 }
 
-void ControlsPeakfits::updateReflectionControls() {
+void ControlsPeakfits::updatePeakControls() {
     bool on = gSession->peaks().count();
     spinRangeMin_->setEnabled(on);
     spinRangeMax_->setEnabled(on);
@@ -299,10 +299,10 @@ void ControlsPeakfits::updateReflectionControls() {
 };
 
 void ControlsPeakfits::setReflControls() {
-    Reflection* reflection = gSession->peaks().selected_;
+    Peak* peak = gSession->peaks().selected_;
     silentSpin_ = true;
 
-    if (!reflection) {
+    if (!peak) {
         // do not set comboReflType - we want it to stay as it is
         spinRangeMin_->setValue(0);
         spinRangeMax_->setValue(0);
@@ -315,14 +315,14 @@ void ControlsPeakfits::setReflControls() {
     } else {
         {
             QSignalBlocker __(comboReflType_);
-            comboReflType_->setCurrentText(reflection->functionName());
+            comboReflType_->setCurrentText(peak->functionName());
         }
 
-        const Range& range = reflection->range();
+        const Range& range = peak->range();
         spinRangeMin_->setValue(safeReal(range.min));
         spinRangeMax_->setValue(safeReal(range.max));
 
-        const PeakFunction& peakFun = reflection->peakFunction();
+        const PeakFunction& peakFun = peak->peakFunction();
         const qpair& guessedPeak = peakFun.guessedPeak();
         spinGuessPeakX_->setValue(safeReal(guessedPeak.x));
         spinGuessPeakY_->setValue(safeReal(guessedPeak.y));
@@ -339,7 +339,7 @@ void ControlsPeakfits::setReflControls() {
 
 void ControlsPeakfits::newReflData(bool invalidateGuesses) {
     if (!silentSpin_) {
-        emit gSession->sigReflectionValues(
+        emit gSession->sigPeakValues(
             Range::safeFrom(spinRangeMin_->value(), spinRangeMax_->value()),
             qpair(spinGuessPeakX_->value(), spinGuessPeakY_->value()),
             fwhm_t(spinGuessFWHM_->value()),

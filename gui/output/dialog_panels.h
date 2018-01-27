@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/output/dialog_panels.h
-//! @brief     Defines PanelReflection, PanelGammaSlices. and several other panel classes
+//! @brief     Defines PanelPeak, PanelGammaSlices. and several other panel classes
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -38,9 +38,9 @@ protected:
 
 /* Note that some data members are public, to simplify the code. Be careful. */
 
-class PanelReflection : public GridPanel {
+class PanelPeak : public GridPanel {
 public:
-    PanelReflection();
+    PanelPeak();
     QComboBox* cbRefl;
 };
 

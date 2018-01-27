@@ -26,13 +26,13 @@ private:
     class TabGraph* tabGraph_;
     class TabPoleFiguresSave* tabSave_;
 
-    void displayReflection(int reflIndex, bool interpolated);
+    void displayPeak(int reflIndex, bool interpolated);
 
     void savePoleFigureOutput();
     void writePoleFigureOutputFiles(rcstr filePath, int index);
-    void writePoleFile(rcstr filePath, ReflectionInfos, vec<qreal> const&);
-    void writeListFile(rcstr filePath, ReflectionInfos, vec<qreal> const&);
-    void writeErrorMask(rcstr filePath, ReflectionInfos, vec<qreal> const&);
+    void writePoleFile(rcstr filePath, PeakInfos, vec<qreal> const&);
+    void writeListFile(rcstr filePath, PeakInfos, vec<qreal> const&);
+    void writeErrorMask(rcstr filePath, PeakInfos, vec<qreal> const&);
 };
 
 #endif // OUTPUT_POLEFIGURES_H

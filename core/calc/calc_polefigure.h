@@ -15,11 +15,11 @@
 #ifndef CALC_POLEFIGURE_H
 #define CALC_POLEFIGURE_H
 
-#include "core/calc/reflection_info.h"
+#include "core/calc/peak_info.h"
 #include "core/typ/async.h"
 
-ReflectionInfos interpolateInfos(
-    ReflectionInfos const&, deg alphaStep, deg betaStep, deg idwRadius,
+PeakInfos interpolateInfos(
+    PeakInfos const&, deg alphaStep, deg betaStep, deg idwRadius,
     deg averagingAlphaMax, deg averagingRadius, qreal inclusionTreshold, Progress*);
 
 #endif // CALC_POLEFIGURE_H

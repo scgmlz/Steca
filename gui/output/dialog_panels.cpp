@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/output/dialog_panels.cpp
-//! @brief     Implements PanelReflection, PanelGammaSlices. and several other panel classes
+//! @brief     Implements PanelPeak, PanelGammaSlices. and several other panel classes
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -47,7 +47,7 @@ GridPanel::GridPanel(rcstr title) : QGroupBox(title) {
 //  final panel classes
 // ************************************************************************** //
 
-PanelReflection::PanelReflection() : GridPanel("Reflection") {
+PanelPeak::PanelPeak() : GridPanel("Peak") {
     QGridLayout* g = grid();
     cbRefl = new QComboBox;
     cbRefl->addItems(gSession->peaks().names());
@@ -175,7 +175,7 @@ PanelInterpolation::~PanelInterpolation() {
 
 
 PanelDiagram::PanelDiagram() : GridPanel("Diagram") {
-    QStringList tags = ReflectionInfo::dataTags(false);
+    QStringList tags = PeakInfo::dataTags(false);
     for_i (Metadata::numAttributes(false) - Metadata::numAttributes(true))
         tags.removeLast(); // remove all tags that are not numbers
 

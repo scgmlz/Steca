@@ -26,14 +26,14 @@ private:
     class TabPlot* tabPlot_;
     class TabDiagramsSave* tabSave_;
 
-    using eReflAttr = ReflectionInfo::eReflAttr;
+    using eReflAttr = PeakInfo::eReflAttr;
 
     eReflAttr xAttr() const;
     eReflAttr yAttr() const;
 
-    void displayReflection(int reflIndex, bool interpolated);
+    void displayPeak(int reflIndex, bool interpolated);
 
-    ReflectionInfos rs_;
+    PeakInfos rs_;
     vec<qreal> xs_, ys_, ysErrorLo_, ysErrorUp_;
 
     void recalculate();

@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/reflection_info.h
-//! @brief     Defines classes ReflectionInfo, ReflectionInfos
+//! @file      core/calc/peak_info.h
+//! @brief     Defines classes PeakInfo, PeakInfos
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef REFLECTION_INFO_H
-#define REFLECTION_INFO_H
+#ifndef PEAK_INFO_H
+#define PEAK_INFO_H
 
 #include "core/data/metadata.h"
 #include "core/typ/angles.h"
@@ -23,18 +23,18 @@
 
 //! Metadata, peak fit results, and pole figure angles.
 
-class ReflectionInfo final {
+class PeakInfo final {
     public:
-    ReflectionInfo();
-    ReflectionInfo(
+    PeakInfo();
+    PeakInfo(
         shp_Metadata,
         deg alpha, deg beta, Range, inten_t, inten_t /*error*/,
         deg, deg /*error*/, fwhm_t, fwhm_t /*error*/);
-    ReflectionInfo(shp_Metadata, deg alpha, deg beta, Range);
-    ReflectionInfo(
+    PeakInfo(shp_Metadata, deg alpha, deg beta, Range);
+    PeakInfo(
         deg alpha, deg beta, Range, inten_t, inten_t /*error*/, deg, deg /*error*/,
         fwhm_t, fwhm_t /*error*/);
-    ReflectionInfo(deg alpha, deg beta);
+    PeakInfo(deg alpha, deg beta);
 
     enum class eReflAttr {
         ALPHA,
@@ -76,13 +76,13 @@ private:
 };
 
 
-//! A list of ReflectionInfo's
+//! A list of PeakInfo's
 
-class ReflectionInfos : public vec<ReflectionInfo> {
+class PeakInfos : public vec<PeakInfo> {
 public:
-    ReflectionInfos() { invalidate(); }
+    PeakInfos() { invalidate(); }
 
-    void append(ReflectionInfo const&);
+    void append(PeakInfo const&);
 
     inten_t averageInten() const;
     const Range& rgeInten() const;
@@ -94,4 +94,4 @@ private:
     void invalidate();
 };
 
-#endif // REFLECTION_INFO_H
+#endif // PEAK_INFO_H

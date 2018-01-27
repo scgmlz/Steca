@@ -36,7 +36,7 @@ void itf_t::operator+=(itf_t const& that) {
 }
 
 typedef vec<itf_t> itfs_t;
-typedef vec<ReflectionInfo const*> info_vec;
+typedef vec<PeakInfo const*> info_vec;
 
 // Calculates the difference of two angles. Parameters should be in [0, 360].
 deg calculateDeltaBeta(deg beta1, deg beta2) {
@@ -105,28 +105,28 @@ bool inRadius(deg alpha, deg beta, deg centerAlpha, deg centerBeta, deg radius) 
     return qAbs(a) < radius;
 }
 
-// Adds data from reflection infos within radius from alpha and beta
+// Adds data from peak infos within radius from alpha and beta
 // to the peak parameter lists.
-void searchPoints(deg alpha, deg beta, deg radius, ReflectionInfos const& infos, itfs_t& itfs) {
+void searchPoints(deg alpha, deg beta, deg radius, PeakInfos const& infos, itfs_t& itfs) {
     // REVIEW Use value trees to improve performance.
-    for (const ReflectionInfo& info : infos) {
+    for (const PeakInfo& info : infos) {
         if (inRadius(info.alpha(), info.beta(), alpha, beta, radius))
             itfs.append(itf_t(info.inten(), info.tth(), info.fwhm()));
     }
 }
 
-// Searches closest ReflectionInfos to given alpha and beta in quadrants.
+// Searches closest PeakInfos to given alpha and beta in quadrants.
 void searchInQuadrants(
-    Quadrants const& quadrants, deg alpha, deg beta, deg searchRadius, ReflectionInfos const& infos,
+    Quadrants const& quadrants, deg alpha, deg beta, deg searchRadius, PeakInfos const& infos,
     info_vec& foundInfos, vec<qreal>& distances) {
     debug::ensure(quadrants.count() <= NUM_QUADRANTS);
-    // Take only reflection infos with beta within +/- BETA_LIMIT degrees into
+    // Take only peak infos with beta within +/- BETA_LIMIT degrees into
     // account. Original STeCa used something like +/- 1.5*36 degrees.
     qreal const BETA_LIMIT = 30;
     distances.fill(std::numeric_limits<qreal>::max(), quadrants.count());
     foundInfos.fill(nullptr, quadrants.count());
     // Find infos closest to given alpha and beta in each quadrant.
-    for (const ReflectionInfo& info : infos) {
+    for (const PeakInfo& info : infos) {
         // REVIEW We could do better with value trees than looping over all infos.
         deg deltaBeta = calculateDeltaBeta(info.beta(), beta);
         if (fabs(deltaBeta) > BETA_LIMIT)
@@ -158,7 +158,7 @@ itf_t inverseDistanceWeighing(vec<qreal> const& distances, info_vec const& infos
     for_i (NUM_QUADRANTS) {
         if (distances.at(i) == .0) {
             // Points coincide; no need to interpolate.
-            const ReflectionInfo* in = infos.at(i);
+            const PeakInfo* in = infos.at(i);
             return { in->inten(), in->tth(), in->fwhm() };
         }
         inverseDistances[i] = 1 / distances.at(i);
@@ -169,7 +169,7 @@ itf_t inverseDistanceWeighing(vec<qreal> const& distances, info_vec const& infos
     qreal height = 0;
     qreal fwhm = 0;
     for_i (N) {
-        const ReflectionInfo* in = infos.at(i);
+        const PeakInfo* in = infos.at(i);
         qreal d = inverseDistances.at(i);
         offset += in->tth() * d;
         height += in->inten() * d;
@@ -181,8 +181,8 @@ itf_t inverseDistanceWeighing(vec<qreal> const& distances, info_vec const& infos
             fwhm_t(fwhm/inverseDistanceSum) };
 }
 
-// Interpolates reflection infos to a single point using idw.
-itf_t interpolateValues(deg searchRadius, ReflectionInfos const& infos, deg alpha, deg beta) {
+// Interpolates peak infos to a single point using idw.
+itf_t interpolateValues(deg searchRadius, PeakInfos const& infos, deg alpha, deg beta) {
     info_vec interpolationInfos;
     vec<qreal> distances;
     searchInQuadrants(
@@ -223,8 +223,8 @@ itf_t interpolateValues(deg searchRadius, ReflectionInfos const& infos, deg alph
 } // local methods
 
 //! Interpolates infos to equidistant grid in alpha and beta.
-ReflectionInfos interpolateInfos(
-    ReflectionInfos const& infos, deg alphaStep, deg betaStep, deg idwRadius, deg averagingAlphaMax,
+PeakInfos interpolateInfos(
+    PeakInfos const& infos, deg alphaStep, deg betaStep, deg idwRadius, deg averagingAlphaMax,
     deg averagingRadius, qreal inclusionTreshold, Progress* progress) {
     // Two interpolation methods are used here:
     // If grid point alpha <= averagingAlphaMax, points within averagingRadius
@@ -247,7 +247,7 @@ ReflectionInfos interpolateInfos(
     int numAlphas = qRound(90. / alphaStep);
     int numBetas = qRound(360. / betaStep);
 
-    ReflectionInfos interpolatedInfos; // Output data.
+    PeakInfos interpolatedInfos; // Output data.
 
     interpolatedInfos.reserve(numAlphas * numBetas);
 
@@ -263,7 +263,7 @@ ReflectionInfos interpolateInfos(
                 progress->step();
 
             if (infos.isEmpty()) {
-                interpolatedInfos.append(ReflectionInfo(alpha, beta));
+                interpolatedInfos.append(PeakInfo(alpha, beta));
                 continue;
             }
 
@@ -275,7 +275,7 @@ ReflectionInfos interpolateInfos(
 
                 if (!itfs.isEmpty()) {
                     // If inclusionTreshold < 1, we'll only use a fraction of largest
-                    // reflection parameter values.
+                    // peak parameter values.
                     std::sort(itfs.begin(), itfs.end(), [](itf_t const& i1, itf_t const& i2) {
                         return i1.inten < i2.inten;
                     });
@@ -290,7 +290,7 @@ ReflectionInfos interpolateInfos(
                     for (int i = iBegin; i < iEnd; ++i)
                         avg += itfs.at(i);
 
-                    interpolatedInfos.append(ReflectionInfo(
+                    interpolatedInfos.append(PeakInfo(
                         alpha, beta, infos.first().rgeGma(), avg.inten / n, inten_t(NAN),
                         avg.tth / n, deg(NAN), avg.fwhm / n, fwhm_t(NAN)));
                     continue;
@@ -298,7 +298,7 @@ ReflectionInfos interpolateInfos(
 
                 if (qIsNaN(idwRadius)) {
                     // Don't fall back to idw, just add an unmeasured info.
-                    interpolatedInfos.append(ReflectionInfo(alpha, beta));
+                    interpolatedInfos.append(PeakInfo(alpha, beta));
                     continue;
                 }
             }
@@ -306,7 +306,7 @@ ReflectionInfos interpolateInfos(
             // Use idw, if alpha > averagingAlphaMax OR averaging failed (too small
             // averagingRadius?).
             itf_t itf = interpolateValues(idwRadius, infos, alpha, beta);
-            interpolatedInfos.append(ReflectionInfo(
+            interpolatedInfos.append(PeakInfo(
                 alpha, beta, infos.first().rgeGma(), itf.inten, inten_t(NAN), itf.tth, deg(NAN),
                 itf.fwhm, fwhm_t(NAN)));
         }

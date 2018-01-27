@@ -135,12 +135,12 @@ TheHub::TheHub()
     trigger_clearBackground = newQ::Trigger("Clear background regions", ":/icon/clear");
     connect(trigger_clearBackground, &QAction::triggered, [this]() { gSession->setBgRanges({}); });
 
-    trigger_clearPeaks = newQ::Trigger("Clear reflections", ":/icon/clear");
+    trigger_clearPeaks = newQ::Trigger("Clear peaks", ":/icon/clear");
 
-    trigger_addReflection = newQ::Trigger("Add reflection", ":/icon/add");
+    trigger_addPeak = newQ::Trigger("Add peak", ":/icon/add");
 
-    trigger_removeReflection = newQ::Trigger("Remove reflection", ":/icon/rem");
-    trigger_removeReflection->setEnabled(false);
+    trigger_removePeak = newQ::Trigger("Remove peak", ":/icon/rem");
+    trigger_removePeak->setEnabled(false);
 
     trigger_outputPolefigures = newQ::Trigger("Pole figures...");
 
@@ -210,7 +210,7 @@ QByteArray TheHub::saveSession() const {
     top.insert("averaged intensity ", gSession->intenScaledAvg());
     top.insert("intensity scale", qreal_to_json((qreal)gSession->intenScale()));
 
-    top.insert("reflections", gSession->peaks().toJson());
+    top.insert("peaks", gSession->peaks().toJson());
 
     return QJsonDocument(top).toJson();
 }
@@ -288,10 +288,10 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     qreal arg2 = top.loadPreal("intensity scale", 1);
     gSession->setIntenScaleAvg(arg1, arg2);
 
-    TR("sessionFromJson: going to load reflections info");
-    const QJsonArray& reflectionsInfo = top.loadArr("reflections");
-    for_i (reflectionsInfo.count())
-        gSession->peaks().add(reflectionsInfo.at(i).toObject());
+    TR("sessionFromJson: going to load peaks info");
+    const QJsonArray& peaksInfo = top.loadArr("peaks");
+    for_i (peaksInfo.count())
+        gSession->peaks().add(peaksInfo.at(i).toObject());
 
     emit gSession->sigPeaksChanged();
     TR("installed session from file");

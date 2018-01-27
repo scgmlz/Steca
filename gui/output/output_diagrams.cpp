@@ -62,7 +62,7 @@ static const Params::ePanels PANELS =
 class TabPlot : public QCustomPlot {
 public:
     TabPlot();
-    void set(ReflectionInfos);
+    void set(PeakInfos);
     void plot(
         vec<qreal> const& xs, vec<qreal> const& ys, vec<qreal> const& ysLo, vec<qreal> const& ysUp);
 private:
@@ -189,8 +189,8 @@ DiagramsFrame::eReflAttr DiagramsFrame::yAttr() const {
     return eReflAttr(params_->panelDiagram->yAxis->currentIndex());
 }
 
-void DiagramsFrame::displayReflection(int reflIndex, bool interpolated) {
-    Frame::displayReflection(reflIndex, interpolated);
+void DiagramsFrame::displayPeak(int reflIndex, bool interpolated) {
+    Frame::displayPeak(reflIndex, interpolated);
     rs_ = calcPoints_.at(reflIndex);
     recalculate();
 }

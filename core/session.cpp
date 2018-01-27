@@ -147,16 +147,16 @@ Curve Session::curveMinusBg(SequenceLens const& lens, const Range& rgeGma) const
     return curve;
 }
 
-//! Fits reflection to the given gamma sector and constructs a ReflectionInfo.
-ReflectionInfo Session::makeReflectionInfo(
-    SequenceLens const& lens, Reflection const& reflection, const Range& gmaSector) const {
+//! Fits peak to the given gamma sector and constructs a PeakInfo.
+PeakInfo Session::makePeakInfo(
+    SequenceLens const& lens, Peak const& peak, const Range& gmaSector) const {
 
     // fit peak, and retrieve peak parameters:
     Curve curve = curveMinusBg(lens, gmaSector);
-    scoped<PeakFunction*> peakFunction = FunctionRegistry::clone(reflection.peakFunction());
+    scoped<PeakFunction*> peakFunction = FunctionRegistry::clone(peak.peakFunction());
     peakFunction->fit(curve);
     const Range& rgeTth = peakFunction->range();
-    qpair peak = peakFunction->fittedPeak();
+    qpair fitresult = peakFunction->fittedPeak();
     fwhm_t fwhm = peakFunction->fittedFWHM();
     qpair peakError = peakFunction->peakError();
     fwhm_t fwhmError = peakFunction->fwhmError();
@@ -168,14 +168,14 @@ ReflectionInfo Session::makeReflectionInfo(
 
     shp_Metadata metadata = seq.avgeMetadata();
 
-    return rgeTth.contains(peak.x)
-        ? ReflectionInfo(
-              metadata, alpha, beta, gmaSector, inten_t(peak.y), inten_t(peakError.y),
-              deg(peak.x), deg(peakError.x), fwhm_t(fwhm), fwhm_t(fwhmError))
-        : ReflectionInfo(metadata, alpha, beta, gmaSector);
+    return rgeTth.contains(fitresult.x)
+        ? PeakInfo(
+              metadata, alpha, beta, gmaSector, inten_t(fitresult.y), inten_t(peakError.y),
+              deg(fitresult.x), deg(peakError.x), fwhm_t(fwhm), fwhm_t(fwhmError))
+        : PeakInfo(metadata, alpha, beta, gmaSector);
 }
 
-//! Gathers ReflectionInfos from Datasets.
+//! Gathers PeakInfos from Datasets.
 
 //! Either uses the whole gamma range of the cluster (if gammaSector is invalid),
 //!  or user limits the range.
@@ -183,13 +183,13 @@ ReflectionInfo Session::makeReflectionInfo(
 //!  the returned infos won't be on the grid.
 //! TODO? gammaStep separately?
 
-ReflectionInfos Session::makeReflectionInfos(
-    Reflection const& reflection, int gmaSlices, const Range& rgeGma, Progress* progress) const {
+PeakInfos Session::makePeakInfos(
+    Peak const& peak, int gmaSlices, const Range& rgeGma, Progress* progress) const {
 
     if (progress)
         progress->setTotal(experiment().size());
 
-    ReflectionInfos ret;
+    PeakInfos ret;
 
     for (const Cluster* cluster : experiment().clusters()) {
         if (progress)
@@ -208,7 +208,7 @@ ReflectionInfos Session::makeReflectionInfos(
         for_i (int(gmaSlices)) {
             qreal min = rge.min + i * step;
             Range gmaStripe(min, min + step);
-            const ReflectionInfo refInfo = makeReflectionInfo(*lens, reflection, gmaStripe);
+            const PeakInfo refInfo = makePeakInfo(*lens, peak, gmaStripe);
             if (!qIsNaN(refInfo.inten()))
                 ret.append(refInfo);
         }

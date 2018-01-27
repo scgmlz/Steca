@@ -88,8 +88,8 @@ public:
     shp_SequenceLens defaultClusterLens(Sequence const& seq) const;
     shp_SequenceLens highlightsLens() const;
 
-    ReflectionInfos makeReflectionInfos(
-        Reflection const&, int gmaSlices, const Range&, Progress*) const;
+    PeakInfos makePeakInfos(
+        Peak const&, int gmaSlices, const Range&, Progress*) const;
 
     const Ranges& bgRanges() const { return bgRanges_; }
     int bgPolyDegree() const { return bgPolyDegree_; }
@@ -111,9 +111,9 @@ signals:
     void sigBaseline();      //!< baseline fit has changed
     void sigNorm();          //!< normalization has changed
     void sigPeaksChanged();
-    void sigReflectionSelected();
-    void sigReflectionData();
-    void sigReflectionValues(const Range&, qpair const&, fwhm_t, bool);
+    void sigPeakSelected();
+    void sigPeakData();
+    void sigPeakValues(const Range&, qpair const&, fwhm_t, bool);
 
 private:
     friend Dataset; // TODO try to get rid of this
@@ -142,7 +142,7 @@ private:
 
     shp_SequenceLens dataseqLens(Sequence const&, eNorm, bool trans, bool cut) const;
     Curve curveMinusBg(SequenceLens const&, const Range&) const;
-    ReflectionInfo makeReflectionInfo(SequenceLens const&, Reflection const&, const Range&) const;
+    PeakInfo makePeakInfo(SequenceLens const&, Peak const&, const Range&) const;
 };
 
 #endif // SESSION_H

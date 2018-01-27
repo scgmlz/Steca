@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/reflection.h
-//! @brief     Defines class Reflection
+//! @file      core/calc/peak.h
+//! @brief     Defines class Peak
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef REFLECTION_H
-#define REFLECTION_H
+#ifndef PEAK_H
+#define PEAK_H
 
 #include "core/def/special_pointers.h"
 #include "core/fit/fit_fun.h"
@@ -26,11 +26,11 @@
 
 //! Wraps a PeakFunction (pimpl idiom)
 
-class Reflection {
+class Peak {
 public:
-    Reflection(const QString& functionName = "Raw");
+    Peak(const QString& functionName = "Raw");
 
-    static Reflection* from_json(JsonObj const&) THROWS;
+    static Peak* from_json(JsonObj const&) THROWS;
 
     void setPeakFunction(const QString&);
     void setRange(const Range&);
@@ -57,18 +57,18 @@ public:
     void add(const QString&);
     void add(const QJsonObject& obj);
     void remove(int i);
-    void select(Reflection* reflection);
+    void select(Peak* peak);
 
-    const Reflection& at(int i) const { return *reflections_.at(i); }
-    Reflection& at(int i) { return *reflections_.at(i); } // used only once
+    const Peak& at(int i) const { return *peaks_.at(i); }
+    Peak& at(int i) { return *peaks_.at(i); } // used only once
 
-    int count() const { return reflections_.size(); }
+    int count() const { return peaks_.size(); }
     QStringList names() const;
     QJsonArray toJson() const;
 
-    Reflection* selected_ {nullptr};
-    std::vector<Reflection*> reflections_;
+    Peak* selected_ {nullptr};
+    std::vector<Peak*> peaks_;
 private:
 };
 
-#endif // REFLECTION_H
+#endif // PEAK_H

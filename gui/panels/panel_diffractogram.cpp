@@ -72,7 +72,7 @@ public:
 private:
     void addBgItem(const Range&);
     void resizeEvent(QResizeEvent*);
-    void onReflectionData();
+    void onPeakData();
 
     Diffractogram& diffractogram_;
 
@@ -223,9 +223,9 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
 
     // background regions
     addLayer("bg", layer("background"), QCustomPlot::limAbove);
-    // reflections
+    // peaks
     addLayer("refl", layer("main"), QCustomPlot::limAbove);
-    // reflections
+    // peaks
     addLayer("marks", layer("refl"), QCustomPlot::limAbove);
 
     setCurrentLayer("marks");
@@ -240,7 +240,7 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     fits_->setLineStyle(QCPGraph::lsNone);
     fits_->setPen(QPen(Qt::red));
 
-    connect(gSession, &Session::sigReflectionData, this, &DiffractogramPlot::onReflectionData);
+    connect(gSession, &Session::sigPeakData, this, &DiffractogramPlot::onPeakData);
 
     connect(gHub->toggle_showBackground, &QAction::toggled, [this](bool on) {
         showBgFit_ = on;
@@ -385,13 +385,13 @@ void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
     overlay_->setGeometry(0, 0, size.width(), size.height());
 }
 
-void DiffractogramPlot::onReflectionData() {
-    Reflection* reflection = gSession->peaks().selected_;
+void DiffractogramPlot::onPeakData() {
+    Peak* peak = gSession->peaks().selected_;
     guesses_->clearData();
     fits_->clearData();
 
-    if (reflection && diffractogram_.cluster()) {
-        const PeakFunction& fun = reflection->peakFunction();
+    if (peak && diffractogram_.cluster()) {
+        const PeakFunction& fun = peak->peakFunction();
 
         const qpair gp = fun.guessedPeak();
         if (gp.isValid()) {
@@ -490,20 +490,20 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
         plot_->setTool(tool);
         });
 
-    connect(gSession, &Session::sigReflectionSelected, [this]() {
-                currentReflection_ = gSession->peaks().selected_;
+    connect(gSession, &Session::sigPeakSelected, [this]() {
+                currentPeak_ = gSession->peaks().selected_;
                 plot_->updateBg();
             });
 
-    connect(gSession, &Session::sigReflectionValues,
+    connect(gSession, &Session::sigPeakValues,
             [this](const Range& range, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
-                if (currentReflection_) {
-                    currentReflection_->setRange(range);
+                if (currentPeak_) {
+                    currentPeak_->setRange(range);
                     if (withGuesses)
-                        currentReflection_->invalidateGuesses();
+                        currentPeak_->invalidateGuesses();
                     else {
-                        currentReflection_->setGuessPeak(peak);
-                        currentReflection_->setGuessFWHM(fwhm);
+                        currentPeak_->setGuessPeak(peak);
+                        currentPeak_->setGuessFWHM(fwhm);
                     }
                     plot_->updateBg();
                 }
@@ -580,14 +580,14 @@ void Diffractogram::calcBackground() {
 }
 
 void Diffractogram::setCurrReflNewRange(const Range& range) {
-    if (currentReflection_) {
-        currentReflection_->setRange(range);
-        currentReflection_->invalidateGuesses();
+    if (currentPeak_) {
+        currentPeak_->setRange(range);
+        currentPeak_->invalidateGuesses();
     }
 }
 
 Range Diffractogram::currReflRange() const {
-    return currentReflection_ ? currentReflection_->range() : Range();
+    return currentPeak_ ? currentPeak_->range() : Range();
 }
 
 void Diffractogram::calcPeaks() {
@@ -595,8 +595,8 @@ void Diffractogram::calcPeaks() {
     currReflIndex_ = 0;
 
     for_i (gSession->peaks().count()) {
-        Reflection& r = gSession->peaks().at(i);
-        if (&r == currentReflection_)
+        Peak& r = gSession->peaks().at(i);
+        if (&r == currentPeak_)
             currReflIndex_ = i;
 
         r.fit(dgramBgFitted_);
@@ -613,5 +613,5 @@ void Diffractogram::calcPeaks() {
         refls_.append(c);
     }
 
-    emit gSession->sigReflectionData();
+    emit gSession->sigPeakData();
 }

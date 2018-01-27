@@ -189,7 +189,7 @@ size2d Sequence::imageSize() const {
 //! Calculates the polefigure coordinates alpha and beta with regards to
 //! sample orientation and diffraction angles.
 
-//! tth: Center of reflection's 2theta interval.
+//! tth: Center of peak's 2theta interval.
 //! gma: Center of gamma slice.
 void Sequence::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const {
 

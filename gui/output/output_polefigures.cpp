@@ -30,14 +30,14 @@
 class TabGraph : public QWidget {
 public:
     TabGraph(Params&);
-    void set(ReflectionInfos);
+    void set(PeakInfos);
 
 private:
     Params& params_;
     QGridLayout* grid_;
     void update();
 
-    ReflectionInfos rs_;
+    PeakInfos rs_;
     void paintEvent(QPaintEvent*);
 
     QPointF p(deg alpha, deg beta) const;
@@ -79,7 +79,7 @@ TabGraph::TabGraph(Params& params)
     update();
 }
 
-void TabGraph::set(ReflectionInfos rs) {
+void TabGraph::set(PeakInfos rs) {
     rs_ = rs;
     update();
 }
@@ -160,7 +160,7 @@ Cheers, and many happy days with Steca! :)
 
 Jan
     */
-    for (const ReflectionInfo& r : rs_) {
+    for (const PeakInfo& r : rs_) {
         qreal inten = r.inten();
         if (!qIsFinite(inten)) // nan comes from interpolation
             continue;
@@ -222,8 +222,8 @@ TabPoleFiguresSave::TabPoleFiguresSave() : TabSave(false) {
 
     {
         QGridLayout* g = p2->grid();
-        g->addWidget((rbSelectedRefl_ = newQ::RadioButton("Selected reflection")));
-        g->addWidget((rbAllRefls_ = newQ::RadioButton("All reflections")));
+        g->addWidget((rbSelectedRefl_ = newQ::RadioButton("Selected peak")));
+        g->addWidget((rbAllRefls_ = newQ::RadioButton("All peaks")));
         g->addWidget(newQ::TextButton(actSave), 2, 1);
         g->setRowStretch(g->rowCount(), 1);
     }
@@ -281,8 +281,8 @@ PoleFiguresFrame::PoleFiguresFrame(rcstr title, QWidget* parent)
     show();
 }
 
-void PoleFiguresFrame::displayReflection(int reflIndex, bool interpolated) {
-    Frame::displayReflection(reflIndex, interpolated);
+void PoleFiguresFrame::displayPeak(int reflIndex, bool interpolated) {
+    Frame::displayPeak(reflIndex, interpolated);
     if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
         tabGraph_->set((interpolated ? interpPoints_ : calcPoints_).at(reflIndex));
     tabSave_->rawReflSettings(
@@ -292,7 +292,7 @@ void PoleFiguresFrame::displayReflection(int reflIndex, bool interpolated) {
 void PoleFiguresFrame::savePoleFigureOutput() {
     int reflCount = gSession->peaks().count();
     if (!reflCount) {
-        qWarning() << "cannot save pole figure: no reflection chosen";
+        qWarning() << "cannot save pole figure: no peak chosen";
         return;
     }
     str path = tabSave_->filePath(false);
@@ -304,7 +304,7 @@ void PoleFiguresFrame::savePoleFigureOutput() {
         writePoleFigureOutputFiles(path, getReflIndex());
         return;
     }
-    // all reflections
+    // all peaks
     for_i (reflCount) // TODO collect output into one message
         writePoleFigureOutputFiles(path, i);
 }
@@ -313,7 +313,7 @@ static str const OUT_FILE_TAG(".refl%1");
 static int const MAX_LINE_LENGTH_POL(9);
 
 void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, int index) {
-    ReflectionInfos reflInfo;
+    PeakInfos reflInfo;
     if (getInterpolated())
         reflInfo = interpPoints_.at(index);
     else
@@ -367,7 +367,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, int index) {
 }
 
 void PoleFiguresFrame::writeErrorMask(
-    rcstr filePath, ReflectionInfos reflInfo, vec<qreal> const& output) {
+    rcstr filePath, PeakInfos reflInfo, vec<qreal> const& output) {
     WriteFile file(filePath + ".errorMask");
     QTextStream stream(&file);
 
@@ -384,7 +384,7 @@ void PoleFiguresFrame::writeErrorMask(
 }
 
 void PoleFiguresFrame::writePoleFile(
-    rcstr filePath, ReflectionInfos reflInfo, vec<qreal> const& output) {
+    rcstr filePath, PeakInfos reflInfo, vec<qreal> const& output) {
     WriteFile file(filePath + ".pol");
     QTextStream stream(&file);
 
@@ -401,7 +401,7 @@ void PoleFiguresFrame::writePoleFile(
 }
 
 void PoleFiguresFrame::writeListFile(
-    rcstr filePath, ReflectionInfos reflInfo, vec<qreal> const& output) {
+    rcstr filePath, PeakInfos reflInfo, vec<qreal> const& output) {
     WriteFile file(filePath + ".lst");
     QTextStream stream(&file);
 

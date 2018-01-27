@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/reflection.cpp
-//! @brief     Implements class Reflection
+//! @file      core/calc/peak.cpp
+//! @brief     Implements class Peak
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,50 +12,50 @@
 //
 // ************************************************************************** //
 
-#include "core/calc/reflection.h"
+#include "core/calc/peak.h"
 #include "core/fit/fit_fun.h"
 #include "core/def/idiomatic_for.h"
 #include "core/session.h"
 
-Reflection::Reflection(const QString& functionName) : peakFunction_(nullptr) {
+Peak::Peak(const QString& functionName) : peakFunction_(nullptr) {
     setPeakFunction(functionName);
 }
 
-PeakFunction const& Reflection::peakFunction() const {
+PeakFunction const& Peak::peakFunction() const {
     debug::ensure(peakFunction_);
     return *peakFunction_;
 }
 
-const Range& Reflection::range() const {
+const Range& Peak::range() const {
     return peakFunction_->range();
 }
 
-void Reflection::setRange(const Range& range) {
+void Peak::setRange(const Range& range) {
     peakFunction_->setRange(range);
 }
 
-void Reflection::invalidateGuesses() {
+void Peak::invalidateGuesses() {
     peakFunction_->setGuessedPeak(qpair());
     peakFunction_->setGuessedFWHM(NAN);
 }
 
-void Reflection::setGuessPeak(qpair const& peak) {
+void Peak::setGuessPeak(qpair const& peak) {
     peakFunction_->setGuessedPeak(peak);
 }
 
-void Reflection::setGuessFWHM(fwhm_t fwhm) {
+void Peak::setGuessFWHM(fwhm_t fwhm) {
     peakFunction_->setGuessedFWHM(fwhm);
 }
 
-void Reflection::fit(Curve const& curve) {
+void Peak::fit(Curve const& curve) {
     peakFunction_->fit(curve);
 }
 
-QString Reflection::functionName() const {
+QString Peak::functionName() const {
     return peakFunction_->name();
 }
 
-void Reflection::setPeakFunction(const QString& peakFunctionName) {
+void Peak::setPeakFunction(const QString& peakFunctionName) {
     bool haveRange = !peakFunction_.isNull();
     Range oldRange;
     if (haveRange)
@@ -65,13 +65,13 @@ void Reflection::setPeakFunction(const QString& peakFunctionName) {
         peakFunction_->setRange(oldRange);
 }
 
-JsonObj Reflection::to_json() const {
+JsonObj Peak::to_json() const {
     return peakFunction_->to_json();
 }
 
-Reflection* Reflection::from_json(JsonObj const& obj) THROWS {
+Peak* Peak::from_json(JsonObj const& obj) THROWS {
     str functionName = obj.loadString("type");
-    Reflection* ret = new Reflection();
+    Peak* ret = new Peak();
     ret->setPeakFunction(functionName);
     ret->peakFunction_->from_json(obj); // may throw
     return ret;
@@ -83,27 +83,27 @@ Reflection* Reflection::from_json(JsonObj const& obj) THROWS {
 // ************************************************************************** //
 
 void Peaks::clear() {
-    reflections_.clear();
+    peaks_.clear();
 }
 
 void Peaks::add(const QString& functionName) {
-    Reflection* reflection(new Reflection(functionName));
-    debug::ensure(reflection);
-    reflections_.push_back(reflection);
+    Peak* peak(new Peak(functionName));
+    debug::ensure(peak);
+    peaks_.push_back(peak);
 }
 
 void Peaks::add(const QJsonObject& obj) {
-    reflections_.push_back(Reflection::from_json(obj));
+    peaks_.push_back(Peak::from_json(obj));
 }
 
 void Peaks::remove(int i) {
-    delete reflections_[i];
-    reflections_.erase(reflections_.begin()+i);
+    delete peaks_[i];
+    peaks_.erase(peaks_.begin()+i);
 }
 
-void Peaks::select(Reflection* reflection) {
-    selected_ = reflection;
-    emit gSession->sigReflectionSelected();
+void Peaks::select(Peak* peak) {
+    selected_ = peak;
+    emit gSession->sigPeakSelected();
 }
 
 QStringList Peaks::names() const {
@@ -111,13 +111,13 @@ QStringList Peaks::names() const {
     for_i (gSession->peaks().count())
         ret.append(QStringLiteral("%1: %2")
                    .arg(i+1)
-                   .arg(reflections_[i]->functionName()));
+                   .arg(peaks_[i]->functionName()));
     return ret;
 }
 
 QJsonArray Peaks::toJson() const {
     QJsonArray ret;
-    for (auto& reflection : reflections_)
-        ret.append(reflection->to_json());
+    for (auto& peak : peaks_)
+        ret.append(peak->to_json());
     return ret;
 }

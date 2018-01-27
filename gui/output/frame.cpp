@@ -50,7 +50,7 @@ private:
 
 ShowColsWidget::ShowColsWidget(DataTable& table, showcol_vec& showCols)
     : table_(table), showCols_(showCols) {
-    using eReflAttr = ReflectionInfo::eReflAttr;
+    using eReflAttr = PeakInfo::eReflAttr;
 
     setLayout((box_ = newQ::VBoxLayout()));
 
@@ -202,7 +202,7 @@ TabTable::TabTable(const QStringList& headers, const QStringList& outHeaders, co
 // ************************************************************************** //
 
 Params::Params(ePanels panels)
-    : panelReflection(nullptr)
+    : panelPeak(nullptr)
     , panelGammaSlices(nullptr)
     , panelGammaRange(nullptr)
     , panelPoints(nullptr)
@@ -212,7 +212,7 @@ Params::Params(ePanels panels)
     setLayout((box_ = newQ::BoxLayout(Qt::Horizontal)));
 
     if (REFLECTION & panels)
-        box_->addWidget((panelReflection = new PanelReflection()));
+        box_->addWidget((panelPeak = new PanelPeak()));
 
     debug::ensure(panels & GAMMA);
     if (GAMMA & panels) {
@@ -280,15 +280,15 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent) : QDialog(parent) {
     connect(actCalculate_, &QAction::triggered, [this]() { calculate(); });
     connect(actInterpolate_, &QAction::triggered, [this]() { interpolate(); });
 
-    if (params_->panelReflection) {
-        connect(params_->panelReflection->cbRefl, _SLOT_(QComboBox, currentIndexChanged, int),
-                [this](){ updateReflection(); });
+    if (params_->panelPeak) {
+        connect(params_->panelPeak->cbRefl, _SLOT_(QComboBox, currentIndexChanged, int),
+                [this](){ updatePeak(); });
     }
 
     if (params_->panelPoints) {
-        debug::ensure(params_->panelReflection);
+        debug::ensure(params_->panelPeak);
         connect(params_->panelPoints->rbInterp, &QRadioButton::toggled,
-                [this](){ updateReflection(); });
+                [this](){ updatePeak(); });
     }
 
     // tabs
@@ -297,9 +297,9 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent) : QDialog(parent) {
     tabs_->addTab(tabPoints, "Points");
     tabPoints->setLayout(newQ::VBoxLayout());
 
-    auto tabTable = new TabTable(ReflectionInfo::dataTags(false),
-                                 ReflectionInfo::dataTags(true),
-                                 ReflectionInfo::dataCmps());
+    auto tabTable = new TabTable(PeakInfo::dataTags(false),
+                                 PeakInfo::dataTags(true),
+                                 PeakInfo::dataCmps());
     tabPoints->layout()->addWidget(tabTable);
     table_ = tabTable->table;
 
@@ -330,7 +330,7 @@ void Frame::calculate() {
 
     for_i (reflCount)
         calcPoints_.append(
-            gSession->makeReflectionInfos(
+            gSession->makePeakInfos(
                 gSession->peaks().at(i), gammaSlices, rgeGamma, &progress));
 
     interpolate();
@@ -359,34 +359,34 @@ void Frame::interpolate() {
                 avgTreshold, &progress));
     } else {
         for_i (calcPoints_.count())
-            interpPoints_.append(ReflectionInfos());
+            interpPoints_.append(PeakInfos());
     }
 
-    updateReflection();
+    updatePeak();
 }
 
-void Frame::updateReflection() {
-    displayReflection(getReflIndex(), getInterpolated());
+void Frame::updatePeak() {
+    displayPeak(getReflIndex(), getInterpolated());
 }
 
 // virtual, overwritten by some output frames, and called back by the overwriting function
-void Frame::displayReflection(int reflIndex, bool interpolated) {
+void Frame::displayPeak(int reflIndex, bool interpolated) {
     table_->clear();
 
     debug::ensure(calcPoints_.count() == interpPoints_.count());
     if (calcPoints_.count() <= reflIndex)
         return;
 
-    for (const ReflectionInfo& r : (interpolated ? interpPoints_ : calcPoints_).at(reflIndex))
+    for (const PeakInfo& r : (interpolated ? interpPoints_ : calcPoints_).at(reflIndex))
         table_->addRow(r.data(), false);
 
     table_->sortData();
 }
 
 int Frame::getReflIndex() const {
-    debug::ensure(params_->panelReflection);
-    int reflIndex = params_->panelReflection->cbRefl->currentIndex();
-    RUNTIME_CHECK(reflIndex >= 0, "invalid reflection index");
+    debug::ensure(params_->panelPeak);
+    int reflIndex = params_->panelPeak->cbRefl->currentIndex();
+    RUNTIME_CHECK(reflIndex >= 0, "invalid peak index");
     return reflIndex;
 }
 
