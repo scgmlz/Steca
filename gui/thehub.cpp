@@ -141,6 +141,8 @@ TheHub::TheHub()
 
     trigger_removePeak = newQ::Trigger("Remove peak", ":/icon/rem");
     trigger_removePeak->setEnabled(false);
+    QObject::connect(gSession, &Session::sigPeaksChanged, [this]() {
+            trigger_removePeak->setEnabled(gSession->peaks().count()); });
 
     trigger_outputPolefigures = newQ::Trigger("Pole figures...");
 

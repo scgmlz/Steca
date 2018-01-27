@@ -44,7 +44,6 @@ public:
 
 void PeaksModel::addPeak(const QString& functionName) {
     gSession->peaks().add(functionName);
-    emit gSession->sigPeaksChanged(); // TODO mv
 }
 
 void PeaksModel::removePeak() {
@@ -97,7 +96,7 @@ public:
     void clear();
     void addPeak(const QString&);
     void removeSelected();
-    void updateSingleSelection();
+    void update();
 
 private:
     void currentChanged(QModelIndex const&, QModelIndex const&) override final;
@@ -115,29 +114,27 @@ PeaksView::PeaksView() : ListView() {
 
 void PeaksView::clear() {
     gSession->peaks().clear();
-    updateSingleSelection();
+    update();
 }
 
 void PeaksView::addPeak(const QString& functionName) {
     model_->addPeak(functionName);
-    updateSingleSelection();
+    update();
 }
 
 void PeaksView::removeSelected() {
     model_->removePeak();
-    updateSingleSelection();
+    update();
 }
 
-void PeaksView::updateSingleSelection() {
-    int row = currentIndex().row();
+void PeaksView::update() {
     model_->signalReset();
-    setCurrentIndex(model_->index(row,0));
-    gHub->trigger_removePeak->setEnabled(model_->rowCount());
 }
 
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
 void PeaksView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     gSession->peaks().select(current.row());
+    update();
 }
 
 
@@ -151,7 +148,7 @@ class ControlsPeakfits : public QWidget {
 public:
     ControlsPeakfits();
 private:
-    void updatePeakControls();
+    void onPeaks();
     void setReflControls();
     void newReflData(bool invalidateGuesses);
 
@@ -178,7 +175,7 @@ ControlsPeakfits::ControlsPeakfits() {
     hb->addWidget(newQ::IconButton(gHub->trigger_clearPeaks));
     connect(gHub->trigger_clearPeaks, &QAction::triggered, [this]() {
                 peaksView_->clear();
-                updatePeakControls();
+                update();
             });
 
     hb->addStretch();
@@ -186,14 +183,14 @@ ControlsPeakfits::ControlsPeakfits() {
     hb->addWidget(newQ::IconButton(gHub->trigger_addPeak));
     connect(gHub->trigger_addPeak, &QAction::triggered, [this]() {
                 peaksView_->addPeak(comboReflType_->currentText());
-                updatePeakControls();
+                update();
             });
 
 
     hb->addWidget(newQ::IconButton(gHub->trigger_removePeak));
     connect(gHub->trigger_removePeak, &QAction::triggered, [this]() {
                 peaksView_->removeSelected();
-                updatePeakControls();
+                update();
             });
 
     box->addWidget((peaksView_ = new PeaksView()));
@@ -257,16 +254,15 @@ ControlsPeakfits::ControlsPeakfits() {
 
     gb->setColumnStretch(4, 1);
 
-    updatePeakControls();
+    update();
 
-    connect(gSession, &Session::sigPeaksChanged, [this]() {
-                peaksView_->updateSingleSelection();
-                updatePeakControls(); });
+    connect(gSession, &Session::sigPeaksChanged, this, &ControlsPeakfits::onPeaks);
     connect(gSession, &Session::sigPeakSelected, this, &ControlsPeakfits::setReflControls);
     connect(gSession, &Session::sigPeakData, this, &ControlsPeakfits::setReflControls);
 }
 
-void ControlsPeakfits::updatePeakControls() {
+void ControlsPeakfits::onPeaks() {
+    peaksView_->update();
     bool on = gSession->peaks().count();
     spinRangeMin_->setEnabled(on);
     spinRangeMax_->setEnabled(on);
