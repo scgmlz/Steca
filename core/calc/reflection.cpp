@@ -17,8 +17,8 @@
 #include "core/def/idiomatic_for.h"
 #include "core/session.h"
 
-Reflection::Reflection(const QString& peakFunctionName) : peakFunction_(nullptr) {
-    setPeakFunction(peakFunctionName);
+Reflection::Reflection(const QString& functionName) : peakFunction_(nullptr) {
+    setPeakFunction(functionName);
 }
 
 PeakFunction const& Reflection::peakFunction() const {
@@ -51,7 +51,7 @@ void Reflection::fit(Curve const& curve) {
     peakFunction_->fit(curve);
 }
 
-QString Reflection::peakFunctionName() const {
+QString Reflection::functionName() const {
     return peakFunction_->name();
 }
 
@@ -108,6 +108,8 @@ void Peaks::select(Reflection* reflection) {
 QStringList Peaks::names() const {
     QStringList ret;
     for_i (gSession->peaks().count())
-        ret.append(QStringLiteral("%1: %2").arg(i+1).arg(gSession->reflections()[i]->peakFunction().name()));
+        ret.append(QStringLiteral("%1: %2")
+                   .arg(i+1)
+                   .arg(reflections_[i]->functionName()));
     return ret;
 }

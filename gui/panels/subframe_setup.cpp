@@ -32,7 +32,7 @@ class PeaksModel : public TableModel {
 public:
     PeaksModel() : TableModel() {}
 
-    void addReflection(const QString& peakFunctionName);
+    void addReflection(const QString& functionName);
     void removeReflection(int i);
 
     int columnCount() const final { return NUM_COLUMNS; }
@@ -45,8 +45,8 @@ public:
     enum { COL_ID = 1, COL_TYPE, NUM_COLUMNS };
 };
 
-void PeaksModel::addReflection(const QString& peakFunctionName) {
-    gSession->peaks().add(peakFunctionName);
+void PeaksModel::addReflection(const QString& functionName) {
+    gSession->peaks().add(functionName);
     emit gSession->sigPeaksChanged();
 }
 
@@ -62,7 +62,7 @@ str PeaksModel::displayData(int row, int col) const {
     case COL_ID:
         return str::number(row + 1);
     case COL_TYPE:
-        return gSession->reflections().at(row)->peakFunction().name();
+        return gSession->reflections().at(row)->functionName();
     default:
         NEVER return "";
     }
@@ -325,7 +325,7 @@ void ControlsPeakfits::setReflControls() {
     } else {
         {
             QSignalBlocker __(comboReflType_);
-            comboReflType_->setCurrentText(reflection->peakFunctionName());
+            comboReflType_->setCurrentText(reflection->functionName());
         }
 
         const Range& range = reflection->range();

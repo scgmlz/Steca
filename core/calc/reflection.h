@@ -28,7 +28,7 @@
 
 class Reflection {
 public:
-    Reflection(const QString& peakFunctionName = "Raw");
+    Reflection(const QString& functionName = "Raw");
 
     void from_json(JsonObj const&) THROWS;
     void setPeakFunction(const QString&);
@@ -38,7 +38,7 @@ public:
     void setGuessFWHM(fwhm_t fwhm);
     void fit(Curve const&);
 
-    QString peakFunctionName() const;
+    QString functionName() const;
     PeakFunction const& peakFunction() const;
     const Range& range() const;
     JsonObj to_json() const;

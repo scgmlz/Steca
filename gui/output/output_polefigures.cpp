@@ -286,7 +286,7 @@ void PoleFiguresFrame::displayReflection(int reflIndex, bool interpolated) {
     if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
         tabGraph_->set((interpolated ? interpPoints_ : calcPoints_).at(reflIndex));
     tabSave_->rawReflSettings(
-        gSession->reflections().at(reflIndex)->peakFunction().name() != "Raw");
+        gSession->reflections().at(reflIndex)->functionName() != "Raw");
 }
 
 void PoleFiguresFrame::savePoleFigureOutput() {
