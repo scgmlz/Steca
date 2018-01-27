@@ -229,28 +229,29 @@ ControlsPeakfits::ControlsPeakfits() {
     spinRangeMax_->setSingleStep(.1);
     connect(spinRangeMax_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData1);
 
-    gb->addWidget(newQ::Label("guess x"), 1, 0);
-    gb->addWidget((spinGuessPeakX_ = newQ::DoubleSpinBox(6, true, .0)), 1, 1);
+    gb = newQ::GridLayout();
+    vb->addLayout(gb);
+
+    gb->addWidget(newQ::Label("guess"), 1, 1);
+    gb->addWidget(newQ::Label("fitted"), 1, 2);
+
+    gb->addWidget(newQ::Label("centre"), 2, 0);
+    gb->addWidget((spinGuessPeakX_ = newQ::DoubleSpinBox(6, true, .0)), 2, 1);
     spinGuessPeakX_->setSingleStep(.1);
     connect(spinGuessPeakX_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData0);
+    gb->addWidget((readFitPeakX_ = newQ::LineDisplay(6, true)), 2, 2);
 
-    gb->addWidget(newQ::Label("y"), 1, 2);
-    gb->addWidget((spinGuessPeakY_ = newQ::DoubleSpinBox(6, true, .0)), 1, 3);
-    spinGuessPeakY_->setSingleStep(.1);
-    connect(spinGuessPeakY_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData0);
-
-    gb->addWidget(newQ::Label("fwhm"), 2, 0);
-    gb->addWidget((spinGuessFWHM_ = newQ::DoubleSpinBox(6, true, .0)), 2, 1);
+    gb->addWidget(newQ::Label("fwhm"), 3, 0);
+    gb->addWidget((spinGuessFWHM_ = newQ::DoubleSpinBox(6, true, .0)), 3, 1);
     spinGuessFWHM_->setSingleStep(.1);
     connect(spinGuessFWHM_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData0);
+    gb->addWidget((readFitFWHM_ = newQ::LineDisplay(6, true)), 3, 2);
 
-    gb->addWidget(newQ::Label("fit x"), 3, 0);
-    gb->addWidget((readFitPeakX_ = newQ::LineDisplay(6, true)), 3, 1);
-    gb->addWidget(newQ::Label("y"), 3, 2);
-    gb->addWidget((readFitPeakY_ = newQ::LineDisplay(6, true)), 3, 3);
-
-    gb->addWidget(newQ::Label("fwhm"), 4, 0);
-    gb->addWidget((readFitFWHM_ = newQ::LineDisplay(6, true)), 4, 1);
+    gb->addWidget(newQ::Label("intens"), 4, 0);
+    gb->addWidget((spinGuessPeakY_ = newQ::DoubleSpinBox(6, true, .0)), 4, 1);
+    spinGuessPeakY_->setSingleStep(.1);
+    connect(spinGuessPeakY_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData0);
+    gb->addWidget((readFitPeakY_ = newQ::LineDisplay(6, true)), 4, 2);
 
     gb->setColumnStretch(4, 1);
 
