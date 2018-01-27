@@ -69,10 +69,12 @@ JsonObj Reflection::to_json() const {
     return peakFunction_->to_json();
 }
 
-void Reflection::from_json(JsonObj const& obj) THROWS {
-    str peakFunctionName = obj.loadString("type");
-    setPeakFunction(peakFunctionName);
-    peakFunction_->from_json(obj); // may throw
+Reflection* Reflection::from_json(JsonObj const& obj) THROWS {
+    str functionName = obj.loadString("type");
+    Reflection* ret = new Reflection();
+    ret->setPeakFunction(functionName);
+    ret->peakFunction_->from_json(obj); // may throw
+    return ret;
 }
 
 
@@ -84,20 +86,19 @@ void Peaks::clear() {
     reflections_.clear();
 }
 
-void Peaks::add(const QString& peakFunctionName) {
-    shp_Reflection reflection(new Reflection(peakFunctionName));
-    debug::ensure(!reflection.isNull());
-    reflections_.append(reflection);
+void Peaks::add(const QString& functionName) {
+    Reflection* reflection(new Reflection(functionName));
+    debug::ensure(reflection);
+    reflections_.push_back(reflection);
 }
 
 void Peaks::add(const QJsonObject& obj) {
-    shp_Reflection reflection(new Reflection);
-    reflection->from_json(obj);
-    reflections_.append(reflection);
+    reflections_.push_back(Reflection::from_json(obj));
 }
 
 void Peaks::remove(int i) {
-    reflections_.remove(i);
+    delete reflections_[i];
+    reflections_.erase(reflections_.begin()+i);
 }
 
 void Peaks::select(Reflection* reflection) {
