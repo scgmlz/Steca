@@ -47,14 +47,14 @@ public:
 
 void PeaksModel::addReflection(const QString& functionName) {
     gSession->peaks().add(functionName);
-    emit gSession->sigPeaksChanged();
+    emit gSession->sigPeaksChanged(); // TODO mv
 }
 
 void PeaksModel::removeReflection(int i) {
     gSession->peaks().remove(i);
-    if (gSession->reflections().isEmpty())
+    if (!gSession->peaks().count())
         gSession->peaks().select(nullptr);
-    emit gSession->sigPeaksChanged();
+    emit gSession->sigPeaksChanged(); // TODO mv
 }
 
 str PeaksModel::displayData(int row, int col) const {
@@ -62,7 +62,7 @@ str PeaksModel::displayData(int row, int col) const {
     case COL_ID:
         return str::number(row + 1);
     case COL_TYPE:
-        return gSession->reflections().at(row)->functionName();
+        return gSession->peaks().at(row).functionName();
     default:
         NEVER return "";
     }
@@ -114,8 +114,6 @@ public:
     void removeSelected();
     void updateSingleSelection();
 
-    Reflection* selectedReflection() const;
-
 private:
     void selectionChanged(QItemSelection const&, QItemSelection const&);
     PeaksModel* model_;
@@ -155,19 +153,11 @@ void PeaksView::updateSingleSelection() {
     gHub->trigger_removeReflection->setEnabled(model_->rowCount());
 }
 
-Reflection* PeaksView::selectedReflection() const { // TODO: is this needed ?
-    QList<QModelIndex> indexes = selectionModel()->selectedIndexes();
-    if (indexes.isEmpty())
-        return nullptr;
-    int row = indexes.first().row();
-    return gSession->reflections().at(row).data();
-}
-
 void PeaksView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
     ListView::selectionChanged(selected, deselected);
     QList<QModelIndex> indexes = selected.indexes();
     gSession->peaks().select( indexes.isEmpty() ?
-                              nullptr : gSession->reflections().at(indexes.first().row()).data());
+                              nullptr : &gSession->peaks().at(indexes.first().row()));
 }
 
 

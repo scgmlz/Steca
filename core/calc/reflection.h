@@ -64,9 +64,12 @@ public:
 
     int count() const { return reflections_.count(); }
     QStringList names() const;
+    const Reflection& at(int i) const { return *reflections_.at(i); }
+    Reflection& at(int i) { return *reflections_.at(i); } // used only once
 
     Reflection* selected_ {nullptr};
     Reflections reflections_;
+private:
 };
 
 #endif // REFLECTION_H

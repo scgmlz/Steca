@@ -231,7 +231,7 @@ void DiagramsFrame::recalculate() {
     ysErrorLo_.clear();
     ysErrorUp_.clear();
 
-    if (gSession->reflections().at(getReflIndex())->functionName() != "Raw") {
+    if (gSession->peaks().at(getReflIndex()).functionName() != "Raw") {
         switch (yAttr()) {
         case eReflAttr::INTEN:
             _calcErrors(eReflAttr::SIGMA_INTEN);
