@@ -67,8 +67,8 @@ public:
     QJsonArray toJson() const;
 
     Peak* selected_ {nullptr};
-    std::vector<Peak*> peaks_;
 private:
+    std::vector<Peak*> peaks_;
 };
 
 #endif // PEAK_H
