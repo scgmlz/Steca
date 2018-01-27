@@ -13,8 +13,6 @@
 // ************************************************************************** //
 
 #include "core/calc/baseline.h"
-#include "core/fit/fit_fun.h"
-#include "core/def/idiomatic_for.h"
 #include "core/session.h"
 
 void Baseline::fromJson(const JsonObj obj) {
@@ -32,13 +30,13 @@ void Baseline::setRanges(const Ranges& rr) {
     emit gSession->sigBaseline();
 }
 
-bool Baseline::addRange(const Range& r) {
-    return ranges_.add(r);
+void Baseline::addRange(const Range& r) {
+    ranges_.add(r);
     emit gSession->sigBaseline();
 }
 
-bool Baseline::removeRange(const Range& r) {
-    return ranges_.remove(r);
+void Baseline::removeRange(const Range& r) {
+    ranges_.remove(r);
     emit gSession->sigBaseline();
 }
 

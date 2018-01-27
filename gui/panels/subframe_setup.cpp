@@ -485,7 +485,7 @@ void ControlsDetector::fromSession() {
 //  class ControlsBaseline
 // ************************************************************************** //
 
-//! A widget with controls to view and change the detector geometry.
+//! A widget with controls to change the baseline fitting.
 
 class ControlsBaseline : public QWidget {
 public:
@@ -495,30 +495,23 @@ private:
 };
 
 ControlsBaseline::ControlsBaseline() {
-
     auto* box = newQ::VBoxLayout();
     setLayout(box);
 
     QBoxLayout* hb = newQ::HBoxLayout();
     box->addLayout(hb);
-
     hb->addWidget(newQ::IconButton(gHub->toggle_selRegions));
     hb->addWidget(newQ::IconButton(gHub->toggle_showBackground));
     hb->addWidget(newQ::IconButton(gHub->trigger_clearBackground));
     hb->addWidget(newQ::Label("Pol. degree:"));
-    hb->addWidget((spinDegree_ =
-                   newQ::SpinBox(4, false, 0, TheHub::MAX_POLYNOM_DEGREE)));
+    hb->addWidget((spinDegree_ = newQ::SpinBox(4, false, 0, TheHub::MAX_POLYNOM_DEGREE)));
+    connect(spinDegree_, _SLOT_(QSpinBox, valueChanged, int), [this](int degree) {
+            gSession->baseline().setPolynomDegree(degree); });
+    connect(gSession, &Session::sigBaseline, [this]() {
+            spinDegree_->setValue(gSession->baseline().polynomDegree()); });
     hb->addStretch();
 
     box->addStretch(1);
-
-    connect(spinDegree_, _SLOT_(QSpinBox, valueChanged, int), [this](int degree) {
-            debug::ensure(degree >= 0);
-            gSession->baseline().setPolynomDegree(degree);
-        });
-
-    connect(gSession, &Session::sigBaseline, [this](){
-            spinDegree_->setValue(gSession->baseline().polynomDegree()); });
 }
 
 

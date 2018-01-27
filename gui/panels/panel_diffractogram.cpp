@@ -129,7 +129,6 @@ void DiffractogramPlotOverlay::mousePressEvent(QMouseEvent* e) {
 void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
     mouseDown_ = false;
     update();
-
     Range range(plot_.fromPixels(mouseDownPos_, cursorPos_));
     switch (plot_.getTool()) {
     case DiffractogramPlot::eTool::BACKGROUND:
@@ -161,7 +160,6 @@ void DiffractogramPlotOverlay::paintEvent(QPaintEvent*) {
     if (mouseDown_) {
         g.setLeft(qMin(mouseDownPos_, cursorPos_));
         g.setRight(qMax(mouseDownPos_, cursorPos_));
-
         painter.fillRect(g, color_);
     }
 
@@ -352,6 +350,7 @@ void DiffractogramPlot::enterZoom(bool on) {
     dgramBgFittedGraph2_->setVisible(on);
 }
 
+//! Paints a colored rectangle in the background layer, to indicate area of baseline or peak fit
 void DiffractogramPlot::addBgItem(const Range& range) {
     setCurrentLayer("bg");
 

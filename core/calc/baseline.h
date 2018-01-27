@@ -29,8 +29,8 @@ public:
     void fromJson(const JsonObj obj);
     void clear();
     void setRanges(const Ranges&);
-    bool addRange(const Range&);
-    bool removeRange(const Range&);
+    void addRange(const Range&);
+    void removeRange(const Range&);
     void setPolynomDegree(int);
 
     QJsonObject toJson() const;
