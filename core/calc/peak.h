@@ -66,6 +66,7 @@ public:
     QStringList names() const;
     QJsonArray toJson() const;
     Peak* selectedPeak() { return count() ? peaks_[selected_] : nullptr; };
+    int selectedIndex() { return selected_; };
 
 private:
     void add(Peak* peak);

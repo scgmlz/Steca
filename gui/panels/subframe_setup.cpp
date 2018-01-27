@@ -37,10 +37,7 @@ public:
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return gSession->peaks().count(); }
-    str displayData(int row, int col) const;
-    str displayData(int row) const;
     QVariant data(const QModelIndex&, int) const;
-    QVariant headerData(int, Qt::Orientation, int) const;
 
     enum { COL_ID = 1, COL_TYPE, NUM_COLUMNS };
 };
@@ -54,25 +51,11 @@ void PeaksModel::removePeak() {
     gSession->peaks().remove();
 }
 
-str PeaksModel::displayData(int row, int col) const {
-    switch (col) {
-    case COL_ID:
-        return str::number(row + 1);
-    case COL_TYPE:
-        return gSession->peaks().at(row).functionName();
-    default:
-        NEVER return "";
-    }
-}
-
-str PeaksModel::displayData(int row) const {
-    return displayData(row, COL_ID) + ": " + displayData(row, COL_TYPE);
-}
-
 QVariant PeaksModel::data(const QModelIndex& index, int role) const {
     int row = index.row();
     if (row < 0 || rowCount() <= row)
         return {};
+    const Peak& peak = gSession->peaks().at(row);
     switch (role) {
     case Qt::DisplayRole: {
         int col = index.column();
@@ -80,21 +63,26 @@ QVariant PeaksModel::data(const QModelIndex& index, int role) const {
             return {};
         switch (col) {
         case COL_ID:
+            return str::number(row + 1);
         case COL_TYPE:
-            return displayData(row, col);
+            return peak.functionName();
         default:
             return {};
         }
     }
+    case Qt::ForegroundRole: {
+        if (peak.range().isEmpty())
+            return QColor(Qt::red);
+        return QColor(Qt::black);
+    }
+    case Qt::BackgroundRole: {
+        if (row==gSession->peaks().selectedIndex())
+            return QColor(Qt::cyan);
+        return QColor(Qt::white);
+    }
     default:
         return {};
     }
-}
-
-QVariant PeaksModel::headerData(int col, Qt::Orientation, int role) const {
-    if (Qt::DisplayRole == role && COL_ID == col)
-        return "#";
-    return {};
 }
 
 
@@ -107,16 +95,18 @@ public:
     PeaksView();
 
     void clear();
-    void addPeak(const QString& peakFunctionName);
+    void addPeak(const QString&);
     void removeSelected();
     void updateSingleSelection();
 
 private:
-    void currentChanged(QModelIndex const& current, QModelIndex const& previous) final;
+    void currentChanged(QModelIndex const&, QModelIndex const&) override final;
     PeaksModel* model_;
 };
 
 PeaksView::PeaksView() : ListView() {
+    setHeaderHidden(true);
+    setSelectionMode(QAbstractItemView::NoSelection);
     model_ = new PeaksModel();
     setModel(model_);
     for_i (model_->columnCount())
@@ -128,8 +118,8 @@ void PeaksView::clear() {
     updateSingleSelection();
 }
 
-void PeaksView::addPeak(const QString& peakFunctionName) {
-    model_->addPeak(peakFunctionName);
+void PeaksView::addPeak(const QString& functionName) {
+    model_->addPeak(functionName);
     updateSingleSelection();
 }
 
@@ -145,6 +135,7 @@ void PeaksView::updateSingleSelection() {
     gHub->trigger_removePeak->setEnabled(model_->rowCount());
 }
 
+//! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
 void PeaksView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     gSession->peaks().select(current.row());
 }
@@ -183,8 +174,27 @@ ControlsPeakfits::ControlsPeakfits() {
 
     hb->addWidget(newQ::IconButton(gHub->toggle_selRegions));
     hb->addWidget(newQ::IconButton(gHub->toggle_showBackground));
+
     hb->addWidget(newQ::IconButton(gHub->trigger_clearPeaks));
+    connect(gHub->trigger_clearPeaks, &QAction::triggered, [this]() {
+                peaksView_->clear();
+                updatePeakControls();
+            });
+
     hb->addStretch();
+
+    hb->addWidget(newQ::IconButton(gHub->trigger_addPeak));
+    connect(gHub->trigger_addPeak, &QAction::triggered, [this]() {
+                peaksView_->addPeak(comboReflType_->currentText());
+                updatePeakControls();
+            });
+
+
+    hb->addWidget(newQ::IconButton(gHub->trigger_removePeak));
+    connect(gHub->trigger_removePeak, &QAction::triggered, [this]() {
+                peaksView_->removeSelected();
+                updatePeakControls();
+            });
 
     box->addWidget((peaksView_ = new PeaksView()));
 
@@ -194,9 +204,14 @@ ControlsPeakfits::ControlsPeakfits() {
     comboReflType_ = new QComboBox;
     comboReflType_->addItems(FunctionRegistry::instance()->keys());
     hb->addWidget(comboReflType_);
+    connect(comboReflType_, _SLOT_(QComboBox, currentIndexChanged, const QString&),
+            [this](const QString& peakFunctionName) {
+                if (gSession->peaks().selectedPeak()) { // TODO rm this if
+                    gSession->peaks().selectedPeak()->setPeakFunction(peakFunctionName);
+                    emit gSession->sigPeaksChanged();
+                } });
+
     hb->addStretch();
-    hb->addWidget(newQ::IconButton(gHub->trigger_addPeak));
-    hb->addWidget(newQ::IconButton(gHub->trigger_removePeak));
 
     QBoxLayout* vb = newQ::VBoxLayout();
     box->addLayout(vb);
@@ -204,23 +219,33 @@ ControlsPeakfits::ControlsPeakfits() {
     QGridLayout* gb = newQ::GridLayout();
     vb->addLayout(gb);
 
+    auto _changeReflData0 = [this](qreal /*unused*/) { newReflData(false); };
+    auto _changeReflData1 = [this](qreal /*unused*/) { newReflData(true); };
+
     gb->addWidget(newQ::Label("min"), 0, 0);
     gb->addWidget((spinRangeMin_ = newQ::DoubleSpinBox(6, true, .0)), 0, 1);
     spinRangeMin_->setSingleStep(.1);
+    connect(spinRangeMin_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData1);
+
     gb->addWidget(newQ::Label("max"), 0, 2);
     gb->addWidget((spinRangeMax_ = newQ::DoubleSpinBox(6, true, .0)), 0, 3);
     spinRangeMax_->setSingleStep(.1);
+    connect(spinRangeMax_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData1);
 
     gb->addWidget(newQ::Label("guess x"), 1, 0);
     gb->addWidget((spinGuessPeakX_ = newQ::DoubleSpinBox(6, true, .0)), 1, 1);
     spinGuessPeakX_->setSingleStep(.1);
+    connect(spinGuessPeakX_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData0);
+
     gb->addWidget(newQ::Label("y"), 1, 2);
     gb->addWidget((spinGuessPeakY_ = newQ::DoubleSpinBox(6, true, .0)), 1, 3);
     spinGuessPeakY_->setSingleStep(.1);
+    connect(spinGuessPeakY_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData0);
 
     gb->addWidget(newQ::Label("fwhm"), 2, 0);
     gb->addWidget((spinGuessFWHM_ = newQ::DoubleSpinBox(6, true, .0)), 2, 1);
     spinGuessFWHM_->setSingleStep(.1);
+    connect(spinGuessFWHM_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData0);
 
     gb->addWidget(newQ::Label("fit x"), 3, 0);
     gb->addWidget((readFitPeakX_ = newQ::LineDisplay(6, true)), 3, 1);
@@ -234,45 +259,11 @@ ControlsPeakfits::ControlsPeakfits() {
 
     updatePeakControls();
 
-    connect(gHub->trigger_addPeak, &QAction::triggered, [this]() {
-                peaksView_->addPeak(comboReflType_->currentText());
-                updatePeakControls();
-            });
-
-    connect(gHub->trigger_removePeak, &QAction::triggered, [this]() {
-                peaksView_->removeSelected();
-                updatePeakControls();
-            });
-
-    connect(gHub->trigger_clearPeaks, &QAction::triggered, [this]() {
-                peaksView_->clear();
-                updatePeakControls();
-            });
-
     connect(gSession, &Session::sigPeaksChanged, [this]() {
                 peaksView_->updateSingleSelection();
-                updatePeakControls(); }
-        );
-
-    connect(comboReflType_, _SLOT_(QComboBox, currentIndexChanged, const QString&),
-            [this](const QString& peakFunctionName) {
-                if (gSession->peaks().selectedPeak()) { // TODO rm this if
-                    gSession->peaks().selectedPeak()->setPeakFunction(peakFunctionName);
-                    emit gSession->sigPeaksChanged();
-                }
-            });
-
+                updatePeakControls(); });
     connect(gSession, &Session::sigPeakSelected, this, &ControlsPeakfits::setReflControls);
     connect(gSession, &Session::sigPeakData, this, &ControlsPeakfits::setReflControls);
-
-    auto _changeReflData0 = [this](qreal /*unused*/) { newReflData(false); };
-    auto _changeReflData1 = [this](qreal /*unused*/) { newReflData(true); };
-
-    connect(spinRangeMin_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData1);
-    connect(spinRangeMax_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData1);
-    connect(spinGuessPeakX_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData0);
-    connect(spinGuessPeakY_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData0);
-    connect(spinGuessFWHM_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData0);
 }
 
 void ControlsPeakfits::updatePeakControls() {
