@@ -56,7 +56,7 @@ public:
     void clear();
     void add(const QString&);
     void add(const QJsonObject& obj);
-    void remove(int i);
+    void remove();
     void select(int i);
 
     const Peak& at(int i) const { return *peaks_.at(i); }

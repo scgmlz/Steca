@@ -99,13 +99,18 @@ void Peaks::add(const QJsonObject& obj) {
 void Peaks::add(Peak* peak) {
     peaks_.push_back(peak);
     selected_ = count()-1;
+    emit gSession->sigPeaksChanged();
+    emit gSession->sigPeakSelected();
 }
 
-void Peaks::remove(int i) {
-    delete peaks_[i];
-    peaks_.erase(peaks_.begin()+i);
+void Peaks::remove() {
+    debug::ensure(0<=selected_ && selected_<count());
+    delete peaks_[selected_];
+    peaks_.erase(peaks_.begin()+selected_);
     if (selected_>=count())
         selected_ = count()-1;
+    emit gSession->sigPeaksChanged();
+    emit gSession->sigPeakSelected();
 }
 
 void Peaks::select(int i) {

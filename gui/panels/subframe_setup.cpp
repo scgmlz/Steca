@@ -33,7 +33,7 @@ public:
     PeaksModel() : TableModel() {}
 
     void addPeak(const QString& functionName);
-    void removePeak(int i);
+    void removePeak();
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return gSession->peaks().count(); }
@@ -50,9 +50,8 @@ void PeaksModel::addPeak(const QString& functionName) {
     emit gSession->sigPeaksChanged(); // TODO mv
 }
 
-void PeaksModel::removePeak(int i) {
-    gSession->peaks().remove(i);
-    emit gSession->sigPeaksChanged(); // TODO mv
+void PeaksModel::removePeak() {
+    gSession->peaks().remove();
 }
 
 str PeaksModel::displayData(int row, int col) const {
@@ -125,10 +124,8 @@ PeaksView::PeaksView() : ListView() {
 }
 
 void PeaksView::clear() {
-    for (int row = model_->rowCount(); row-- > 0;) {
-        model_->removePeak(row);
-        updateSingleSelection();
-    }
+    gSession->peaks().clear();
+    updateSingleSelection();
 }
 
 void PeaksView::addPeak(const QString& peakFunctionName) {
@@ -137,10 +134,7 @@ void PeaksView::addPeak(const QString& peakFunctionName) {
 }
 
 void PeaksView::removeSelected() {
-    int row = currentIndex().row();
-    if (row < 0 || model_->rowCount() <= row)
-        return;
-    model_->removePeak(row);
+    model_->removePeak();
     updateSingleSelection();
 }
 
