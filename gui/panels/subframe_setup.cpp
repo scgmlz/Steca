@@ -52,8 +52,6 @@ void PeaksModel::addPeak(const QString& functionName) {
 
 void PeaksModel::removePeak(int i) {
     gSession->peaks().remove(i);
-    if (!gSession->peaks().count())
-        gSession->peaks().select(nullptr);
     emit gSession->sigPeaksChanged(); // TODO mv
 }
 
@@ -115,7 +113,7 @@ public:
     void updateSingleSelection();
 
 private:
-    void selectionChanged(QItemSelection const&, QItemSelection const&);
+    void currentChanged(QModelIndex const& current, QModelIndex const& previous) final;
     PeaksModel* model_;
 };
 
@@ -153,11 +151,8 @@ void PeaksView::updateSingleSelection() {
     gHub->trigger_removePeak->setEnabled(model_->rowCount());
 }
 
-void PeaksView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
-    ListView::selectionChanged(selected, deselected);
-    QList<QModelIndex> indexes = selected.indexes();
-    gSession->peaks().select( indexes.isEmpty() ?
-                              nullptr : &gSession->peaks().at(indexes.first().row()));
+void PeaksView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
+    gSession->peaks().select(current.row());
 }
 
 
@@ -267,8 +262,8 @@ ControlsPeakfits::ControlsPeakfits() {
 
     connect(comboReflType_, _SLOT_(QComboBox, currentIndexChanged, const QString&),
             [this](const QString& peakFunctionName) {
-                if (gSession->peaks().selected_) { // TODO rm this if
-                    gSession->peaks().selected_->setPeakFunction(peakFunctionName);
+                if (gSession->peaks().selectedPeak()) { // TODO rm this if
+                    gSession->peaks().selectedPeak()->setPeakFunction(peakFunctionName);
                     emit gSession->sigPeaksChanged();
                 }
             });
@@ -299,7 +294,7 @@ void ControlsPeakfits::updatePeakControls() {
 };
 
 void ControlsPeakfits::setReflControls() {
-    Peak* peak = gSession->peaks().selected_;
+    Peak* peak = gSession->peaks().selectedPeak();
     silentSpin_ = true;
 
     if (!peak) {

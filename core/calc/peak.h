@@ -57,7 +57,7 @@ public:
     void add(const QString&);
     void add(const QJsonObject& obj);
     void remove(int i);
-    void select(Peak* peak);
+    void select(int i);
 
     const Peak& at(int i) const { return *peaks_.at(i); }
     Peak& at(int i) { return *peaks_.at(i); } // used only once
@@ -65,9 +65,11 @@ public:
     int count() const { return peaks_.size(); }
     QStringList names() const;
     QJsonArray toJson() const;
+    Peak* selectedPeak() { return count() ? peaks_[selected_] : nullptr; };
 
-    Peak* selected_ {nullptr};
 private:
+    void add(Peak* peak);
+    int selected_ {-1};
     std::vector<Peak*> peaks_;
 };
 

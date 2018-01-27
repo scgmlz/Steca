@@ -386,7 +386,7 @@ void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
 }
 
 void DiffractogramPlot::onPeakData() {
-    Peak* peak = gSession->peaks().selected_;
+    Peak* peak = gSession->peaks().selectedPeak();
     guesses_->clearData();
     fits_->clearData();
 
@@ -491,7 +491,7 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
         });
 
     connect(gSession, &Session::sigPeakSelected, [this]() {
-                currentPeak_ = gSession->peaks().selected_;
+                currentPeak_ = gSession->peaks().selectedPeak();
                 plot_->updateBg();
             });
 

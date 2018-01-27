@@ -89,20 +89,28 @@ void Peaks::clear() {
 void Peaks::add(const QString& functionName) {
     Peak* peak(new Peak(functionName));
     debug::ensure(peak);
-    peaks_.push_back(peak);
+    add(peak);
 }
 
 void Peaks::add(const QJsonObject& obj) {
-    peaks_.push_back(Peak::from_json(obj));
+    add(Peak::from_json(obj));
+}
+
+void Peaks::add(Peak* peak) {
+    peaks_.push_back(peak);
+    selected_ = count()-1;
 }
 
 void Peaks::remove(int i) {
     delete peaks_[i];
     peaks_.erase(peaks_.begin()+i);
+    if (selected_>=count())
+        selected_ = count()-1;
 }
 
-void Peaks::select(Peak* peak) {
-    selected_ = peak;
+void Peaks::select(int i) {
+    debug::ensure(i<count());
+    selected_ = i;
     emit gSession->sigPeakSelected();
 }
 
