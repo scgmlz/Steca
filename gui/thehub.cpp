@@ -143,7 +143,7 @@ TheHub::TheHub()
 
     trigger_removePeak = newQ::Trigger("Remove peak", ":/icon/rem");
     trigger_removePeak->setEnabled(false);
-    QObject::connect(gSession, &Session::sigPeaksChanged, [this]() {
+    QObject::connect(gSession, &Session::sigPeaks, [this]() {
             trigger_removePeak->setEnabled(gSession->peaks().count()); });
 
     trigger_outputPolefigures = newQ::Trigger("Pole figures...");
@@ -293,7 +293,6 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     for_i (peaksInfo.count())
         gSession->peaks().add(peaksInfo.at(i).toObject());
 
-    emit gSession->sigPeaksChanged();
     TR("installed session from file");
 }
 

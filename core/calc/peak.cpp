@@ -38,7 +38,7 @@ void Peak::setRange(const Range& range) {
 void Peak::invalidateGuesses() {
     peakFunction_->setGuessedPeak(qpair());
     peakFunction_->setGuessedFWHM(NAN);
-    emit gSession->sigPeakData();
+    emit gSession->sigPeaks();
 }
 
 void Peak::setGuessPeak(qpair const& peak) {
@@ -101,8 +101,8 @@ void Peaks::add(const QJsonObject& obj) {
 void Peaks::add(Peak* peak) {
     peaks_.push_back(peak);
     selected_ = count()-1;
-    emit gSession->sigPeaksChanged();
-    emit gSession->sigPeakSelected();
+    emit gSession->sigPeaks();
+    emit gSession->sigPeaks();
 }
 
 void Peaks::remove() {
@@ -111,14 +111,13 @@ void Peaks::remove() {
     peaks_.erase(peaks_.begin()+selected_);
     if (selected_>=count())
         selected_ = count()-1;
-    emit gSession->sigPeaksChanged();
-    emit gSession->sigPeakSelected();
+    emit gSession->sigPeaks();
 }
 
 void Peaks::select(int i) {
     debug::ensure(i<count());
     selected_ = i;
-    emit gSession->sigPeakSelected();
+    emit gSession->sigPeaks();
 }
 
 QStringList Peaks::names() const {

@@ -238,7 +238,7 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     fits_->setLineStyle(QCPGraph::lsNone);
     fits_->setPen(QPen(Qt::red));
 
-    connect(gSession, &Session::sigPeakData, this, &DiffractogramPlot::onPeakData);
+    connect(gSession, &Session::sigPeaks, this, &DiffractogramPlot::onPeakData);
 
     connect(gHub->toggle_showBackground, &QAction::toggled, [this](bool on) {
         showBgFit_ = on;
@@ -474,7 +474,7 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
     connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
     connect(gSession, &Session::sigDiffractogram, [this](){ render(); });
     connect(gSession, &Session::sigBaseline, [this](){ render(); });
-    connect(gSession, &Session::sigPeaksChanged, [this](){ render(); });
+    connect(gSession, &Session::sigPeaks, [this](){ render(); });
     connect(gSession, &Session::sigNorm, [this](){ onNormChanged(); });
     connect(gHub, &TheHub::sigFittingTab, [this](eFittingTab tab) { onFittingTab(tab); });
 
@@ -490,23 +490,9 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
         plot_->setTool(tool);
         });
 
-    connect(gSession, &Session::sigPeakSelected, [this]() {
+    connect(gSession, &Session::sigPeaks, [this]() {
             currentPeak_ = gSession->peaks().selectedPeak(); // TODO get rid
                 plot_->renderAll();
-            });
-
-    connect(gSession, &Session::sigPeakValues,
-            [this](const Range& range, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
-                if (currentPeak_) {
-                    currentPeak_->setRange(range);
-                    if (withGuesses)
-                        currentPeak_->invalidateGuesses();
-                    else {
-                        currentPeak_->setGuessPeak(peak);
-                        currentPeak_->setGuessFWHM(fwhm);
-                    }
-                    plot_->renderAll();
-                }
             });
 
     gHub->toggle_selRegions->setChecked(true);
@@ -613,5 +599,5 @@ void Diffractogram::calcPeaks() {
         refls_.append(c);
     }
 
-    emit gSession->sigPeakData();
+    emit gSession->sigPeaks();
 }

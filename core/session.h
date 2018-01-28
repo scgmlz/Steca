@@ -103,10 +103,7 @@ signals:
     void sigDiffractogram(); //!< diffractogram must be repainted
     void sigBaseline();      //!< baseline settings have changed
     void sigNorm();          //!< normalization has changed
-    void sigPeaksChanged();
-    void sigPeakSelected();
-    void sigPeakData();
-    void sigPeakValues(const Range&, qpair const&, fwhm_t, bool);
+    void sigPeaks();         //!< list of peaks or selected peak has changed
 
 private:
     friend Dataset; // TODO try to get rid of this
