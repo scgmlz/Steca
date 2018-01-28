@@ -31,11 +31,20 @@ void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg) {
     case QtDebugMsg:
         std::cerr << ".... " << msg.toStdString() << /*context(ctx) <<*/ "\n" << std::flush;
         break;
-// unavailable before Qt5.5
+// unavailable before Qt5.5 (ISSUE #36)
 //    case QtInfoMsg:
 //        std::cerr << "INFO " << msg.toStdString() << context(ctx) << "\n" << std::flush;
 //        gMainWin->statusBar()->showMessage(msg, 5000);
 //        break;
+    case QtWarningMsg:
+    default:
+        if (msg.left(4)=="QXcb") {
+            std::cerr << "QBUG " << msg.toStdString() << "\n" << std::flush;
+        } else {
+            std::cerr << "WARN " << msg.toStdString() << "\n" << std::flush;
+            QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
+        }
+        break;
     case QtFatalMsg:
         std::cerr << "BUG! " << msg.toStdString() << context(ctx) << "\n" << std::flush;
         QMessageBox::critical(QApplication::activeWindow(), qAppName(),
@@ -48,15 +57,6 @@ void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg) {
 #endif
             );
         qApp->quit();
-        break;
-    case QtWarningMsg:
-    default:
-        if (msg.left(4)=="QXcb") {
-            std::cerr << "QBUG " << msg.toStdString() << "\n" << std::flush;
-        } else {
-            std::cerr << "WARN " << msg.toStdString() << "\n" << std::flush;
-            QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
-        }
         break;
     }
 }

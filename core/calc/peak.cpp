@@ -32,11 +32,13 @@ const Range& Peak::range() const {
 
 void Peak::setRange(const Range& range) {
     peakFunction_->setRange(range);
+    invalidateGuesses();
 }
 
 void Peak::invalidateGuesses() {
     peakFunction_->setGuessedPeak(qpair());
     peakFunction_->setGuessedFWHM(NAN);
+    emit gSession->sigPeakData();
 }
 
 void Peak::setGuessPeak(qpair const& peak) {

@@ -174,24 +174,24 @@ ControlsPeakfits::ControlsPeakfits() {
 
     hb->addWidget(newQ::IconButton(gHub->trigger_clearPeaks));
     connect(gHub->trigger_clearPeaks, &QAction::triggered, [this]() {
-                peaksView_->clear();
-                update();
-            });
+            peaksView_->clear();
+            update();
+        });
 
     hb->addStretch();
 
     hb->addWidget(newQ::IconButton(gHub->trigger_addPeak));
     connect(gHub->trigger_addPeak, &QAction::triggered, [this]() {
-                peaksView_->addPeak(comboReflType_->currentText());
-                update();
-            });
+            peaksView_->addPeak(comboReflType_->currentText());
+            update();
+        });
 
 
     hb->addWidget(newQ::IconButton(gHub->trigger_removePeak));
     connect(gHub->trigger_removePeak, &QAction::triggered, [this]() {
-                peaksView_->removeSelected();
-                update();
-            });
+            peaksView_->removeSelected();
+            update();
+        });
 
     box->addWidget((peaksView_ = new PeaksView()));
 
@@ -213,23 +213,30 @@ ControlsPeakfits::ControlsPeakfits() {
     QBoxLayout* vb = newQ::VBoxLayout();
     box->addLayout(vb);
 
-    QGridLayout* gb = newQ::GridLayout();
-    vb->addLayout(gb);
+    hb = newQ::HBoxLayout();
+    vb->addLayout(hb);
 
     auto _changeReflData0 = [this](qreal /*unused*/) { newReflData(false); };
-    auto _changeReflData1 = [this](qreal /*unused*/) { newReflData(true); };
 
-    gb->addWidget(newQ::Label("min"), 0, 0);
-    gb->addWidget((spinRangeMin_ = newQ::DoubleSpinBox(6, true, .0)), 0, 1);
+    hb->addWidget(newQ::Label("range"));
+    hb->addWidget((spinRangeMin_ = newQ::DoubleSpinBox(6, 0., 89.9)));
     spinRangeMin_->setSingleStep(.1);
-    connect(spinRangeMin_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData1);
+    connect(spinRangeMin_, _SLOT_(QDoubleSpinBox, valueChanged, double),  [this](double val) {
+            if (val>=spinRangeMax_->value())
+                spinRangeMax_->setValue(val+0.1);
+            gSession->peaks().selectedPeak()->setRange(Range(val, spinRangeMax_->value())); });
 
-    gb->addWidget(newQ::Label("max"), 0, 2);
-    gb->addWidget((spinRangeMax_ = newQ::DoubleSpinBox(6, true, .0)), 0, 3);
+    hb->addWidget(newQ::Label(".."));
+    hb->addWidget((spinRangeMax_ = newQ::DoubleSpinBox(6, 0.1, 90.)));
     spinRangeMax_->setSingleStep(.1);
-    connect(spinRangeMax_, _SLOT_(QDoubleSpinBox, valueChanged, double), _changeReflData1);
+    connect(spinRangeMax_, _SLOT_(QDoubleSpinBox, valueChanged, double),  [this](double val) {
+            if (val<=spinRangeMin_->value())
+                spinRangeMin_->setValue(val-0.1);
+            gSession->peaks().selectedPeak()->setRange(Range(spinRangeMin_->value(), val)); });
+    hb->addWidget(newQ::Label("deg"));
+    hb->addStretch();
 
-    gb = newQ::GridLayout();
+    QGridLayout* gb = newQ::GridLayout();
     vb->addLayout(gb);
 
     gb->addWidget(newQ::Label("guess"), 1, 1);
@@ -262,9 +269,20 @@ ControlsPeakfits::ControlsPeakfits() {
     connect(gSession, &Session::sigPeakData, this, &ControlsPeakfits::setReflControls);
 }
 
+void ControlsPeakfits::newReflData(bool invalidateGuesses) {
+    if (!silentSpin_) {
+        emit gSession->sigPeakValues(
+            Range::safeFrom(spinRangeMin_->value(), spinRangeMax_->value()),
+            qpair(spinGuessPeakX_->value(), spinGuessPeakY_->value()),
+            fwhm_t(spinGuessFWHM_->value()),
+            invalidateGuesses);
+    }
+};
+
 void ControlsPeakfits::onPeaks() {
     peaksView_->update();
     bool on = gSession->peaks().count();
+    qDebug() << "onPeaks: " << on;
     spinRangeMin_->setEnabled(on);
     spinRangeMax_->setEnabled(on);
     spinGuessPeakX_->setEnabled(on);
@@ -312,16 +330,6 @@ void ControlsPeakfits::setReflControls() {
     }
 
     silentSpin_ = false;
-};
-
-void ControlsPeakfits::newReflData(bool invalidateGuesses) {
-    if (!silentSpin_) {
-        emit gSession->sigPeakValues(
-            Range::safeFrom(spinRangeMin_->value(), spinRangeMax_->value()),
-            qpair(spinGuessPeakX_->value(), spinGuessPeakY_->value()),
-            fwhm_t(spinGuessFWHM_->value()),
-            invalidateGuesses);
-    }
 };
 
 

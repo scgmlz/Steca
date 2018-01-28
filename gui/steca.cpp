@@ -22,6 +22,7 @@
 #define OPTPARSE_API static
 #include "optparse.h"
 #include <QApplication>
+#include <QLoggingCategory>
 #include <QStyleFactory>
 
 const char* version =
@@ -71,13 +72,13 @@ int main(int argc, char* argv[]) {
     app.setStyle(QStyleFactory::create("Fusion"));
 #endif
 
+    QLoggingCategory::setFilterRules("*.debug=true");
     qInstallMessageHandler(messageHandler);
 
     gSession = Session::instance();
 
     gMainWin = MainWin::instance();
     gMainWin->show();
-    qDebug() /* qInfo() TODO restore */ << "Welcome to Steca";
 
     Console console;
     QObject::connect(&console, &Console::transmitLine, gMainWin, &MainWin::execCommand);

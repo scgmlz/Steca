@@ -17,6 +17,7 @@
 
 #include <QtGlobal> // protect
 #include <QDebug>
+#include <QtDebug>
 
 // TRace:
 #define TR(what) { qDebug() << what; }

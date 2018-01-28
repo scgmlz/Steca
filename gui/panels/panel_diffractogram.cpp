@@ -63,7 +63,7 @@ public:
     Range fromPixels(int, int);
     void plot(Curve const&, Curve const&, Curve const&, curve_vec const&, int);
     void setNewReflRange(const Range&);
-    void updateBg();
+    void renderAll();
     void clearReflLayer();
     void enterZoom(bool);
 
@@ -242,17 +242,17 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
 
     connect(gHub->toggle_showBackground, &QAction::toggled, [this](bool on) {
         showBgFit_ = on;
-        updateBg();
+        renderAll();
     });
 
-    connect(gSession, &Session::sigBaseline, [this]() { updateBg(); });
+    connect(gSession, &Session::sigBaseline, [this]() { renderAll(); });
 
     tool_ = eTool::NONE;
 }
 
 void DiffractogramPlot::setTool(eTool tool) {
     tool_ = tool;
-    updateBg();
+    renderAll();
 }
 
 void DiffractogramPlot::plot(
@@ -316,10 +316,11 @@ Range DiffractogramPlot::fromPixels(int pix1, int pix2) {
 
 void DiffractogramPlot::setNewReflRange(const Range& range) {
     diffractogram_.setCurrReflNewRange(range);
-    updateBg();
+    renderAll();
 }
 
-void DiffractogramPlot::updateBg() {
+//! Repaints everything, including the colored background areas.
+void DiffractogramPlot::renderAll() {
     clearItems();
 
     switch (tool_) {
@@ -490,8 +491,8 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
         });
 
     connect(gSession, &Session::sigPeakSelected, [this]() {
-                currentPeak_ = gSession->peaks().selectedPeak();
-                plot_->updateBg();
+            currentPeak_ = gSession->peaks().selectedPeak(); // TODO get rid
+                plot_->renderAll();
             });
 
     connect(gSession, &Session::sigPeakValues,
@@ -504,7 +505,7 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
                         currentPeak_->setGuessPeak(peak);
                         currentPeak_->setGuessFWHM(fwhm);
                     }
-                    plot_->updateBg();
+                    plot_->renderAll();
                 }
             });
 
