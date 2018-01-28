@@ -72,7 +72,7 @@ int main(int argc, char* argv[]) {
     app.setStyle(QStyleFactory::create("Fusion"));
 #endif
 
-    QLoggingCategory::setFilterRules("*.debug=true");
+    QLoggingCategory::setFilterRules("*.debug=true\nqt.*=false");
     qInstallMessageHandler(messageHandler);
 
     gSession = Session::instance();
