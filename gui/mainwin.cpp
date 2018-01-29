@@ -89,7 +89,7 @@ void initMenus(QMenuBar* mbar) {
                 gHub->trigger_quit,
         });
 
-    _actionsToMenu(
+    QMenu* menuImage = _actionsToMenu(
         "&Image",
         {   gHub->trigger_rotateImage,
                 gHub->toggle_mirrorImage,
@@ -99,8 +99,11 @@ void initMenus(QMenuBar* mbar) {
                 gHub->toggle_stepScale,
                 gHub->toggle_showBins,
         });
+    menuImage->setEnabled(false);
+    QObject::connect(gSession, &Session::sigFiles, [menuImage]()
+                     { menuImage->setEnabled(gSession->dataset().countFiles()); });
 
-    _actionsToMenu(
+    QMenu* menuDgram = _actionsToMenu(
         "&Diffractogram",
         {
             gHub->toggle_selRegions,
@@ -114,6 +117,9 @@ void initMenus(QMenuBar* mbar) {
                 gHub->toggle_combinedDgram,
                 gHub->toggle_fixedIntenDgram,
         });
+    menuDgram->setEnabled(false);
+    QObject::connect(gSession, &Session::sigFiles, [menuDgram]()
+                     { menuDgram->setEnabled(gSession->dataset().countFiles()); });
 
     QMenu* menuOutput = _actionsToMenu(
         "&Output",
