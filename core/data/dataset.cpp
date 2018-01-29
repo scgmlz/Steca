@@ -49,19 +49,20 @@ void Dataset::clear() {
 
 void Dataset::removeFile() {
     int i = highlightedFileIndex();
-    files_.erase(files_.begin()+i);
-    onFileChanged();
-    gSession->updateImageSize();
-    if (files_.empty())
-        gSession->setImageCut(true, false, ImageCut());
+    // first unhighlight
     if (i>0)
         highlightFile(i-1);
     else if (countFiles())
         highlightFile(0);
     else {
-        highlight_ = nullptr;
-        emit gSession->sigHighlight();
+        unsetHighlight();
     }
+    // only then remove
+    files_.erase(files_.begin()+i);
+    onFileChanged();
+    gSession->updateImageSize();
+    if (files_.empty())
+        gSession->setImageCut(true, false, ImageCut());
 }
 
 void Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
@@ -75,14 +76,27 @@ void Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
         files_.push_back(Datafile(rawfile));
     }
     onFileChanged();
+    if (!highlight_ && countFiles())
+        setHighlight(&files_[0]);
 }
 
 void Dataset::highlightFile(int i) {
-    setHighlight(files_.at(i).clusters_.front());
+    if (i>=0)
+        setHighlight(files_.at(i).clusters_.front());
+    else
+        unsetHighlight();
 }
 
 void Dataset::highlightCluster(int i) {
-    setHighlight(allClusters_.at(i).data());
+    if (i>=0)
+        setHighlight(allClusters_.at(i).data());
+    else
+        unsetHighlight();
+}
+
+void Dataset::unsetHighlight() {
+    highlight_ = nullptr;
+    emit gSession->sigHighlight();
 }
 
 void Dataset::setHighlight(const Cluster* cluster) {

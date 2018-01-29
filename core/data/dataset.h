@@ -96,6 +96,7 @@ private:
     void onClusteringChanged();
     void updateClusters();
     void updateExperiment();
+    void unsetHighlight();
 
     bool hasFile(rcstr fileName) const;
     int highlightedFileIndex() const { return highlight_->file().index_; }
