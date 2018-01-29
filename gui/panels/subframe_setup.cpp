@@ -161,25 +161,28 @@ RangeControl::RangeControl() {
     hb->addWidget((spinRangeMin_ = newQ::DoubleSpinBox(6, 0., 89.9)));
     spinRangeMin_->setSingleStep(.1);
     connect(spinRangeMin_, _SLOT_(QDoubleSpinBox, valueChanged, double),  [this](double val) {
-            if (val>=spinRangeMax_->value())
-                spinRangeMax_->setValue(val);
-            gSession->peaks().selectedPeak()->setRange(Range(val, spinRangeMax_->value())); });
+            qreal antival = qMax(spinRangeMax_->value(), val);
+            qDebug() << "MIN " << val << " anti " << antival;
+            gSession->peaks().selectedPeak()->setRange(Range(val, antival)); });
 
     hb->addWidget(newQ::Label(".."));
     hb->addWidget((spinRangeMax_ = newQ::DoubleSpinBox(6, 0., 90.)));
     spinRangeMax_->setSingleStep(.1);
     connect(spinRangeMax_, _SLOT_(QDoubleSpinBox, valueChanged, double),  [this](double val) {
-            if (val<=spinRangeMin_->value())
-                spinRangeMin_->setValue(val);
-            gSession->peaks().selectedPeak()->setRange(Range(spinRangeMin_->value(), val)); });
+            qreal antival = qMin(spinRangeMin_->value(), val);
+            qDebug() << " anti " << antival << "MAX " << val;
+            gSession->peaks().selectedPeak()->setRange(Range(antival, val)); });
     hb->addWidget(newQ::Label("deg"));
     hb->addStretch();
 }
 
 void RangeControl::update() {
-    const Range& range = gSession->peaks().selectedPeak()->range();
+    Range range = gSession->peaks().selectedPeak()->range();
+    qDebug() << " update1 " << range.min << ".. " << range.max;
     spinRangeMin_->setValue(safeReal(range.min));
+    qDebug() << " update2 " << range.min << ".. " << range.max;
     spinRangeMax_->setValue(safeReal(range.max));
+    qDebug() << " update3 " << range.min << ".. " << range.max;
     setEnabled(true);
 }
 
