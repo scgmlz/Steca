@@ -22,6 +22,8 @@
 class SubframeSetup : public QTabWidget {
 public:
     SubframeSetup();
+private:
+    void updateTabsAvailability();
 };
 
 #endif // SUBFRAME_SETUP_H

@@ -555,5 +555,19 @@ SubframeSetup::SubframeSetup() {
         gHub->setFittingTab(tab);
     });
 
+    connect(gSession, &Session::sigFiles, this, &SubframeSetup::updateTabsAvailability);
+
     gHub->setFittingTab(eFittingTab::NONE);
+    updateTabsAvailability();
+}
+
+void SubframeSetup::updateTabsAvailability() {
+    if (gSession->dataset().countFiles()) {
+        setTabEnabled(1, true);
+        setTabEnabled(2, true);
+    } else {
+        setTabEnabled(1, false);
+        setTabEnabled(2, false);
+        gHub->setFittingTab(eFittingTab::NONE);
+    }
 }

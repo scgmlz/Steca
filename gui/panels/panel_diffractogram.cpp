@@ -528,6 +528,7 @@ void Diffractogram::onFittingTab(eFittingTab tab) {
 }
 
 void Diffractogram::render() {
+    cluster_ = gSession->dataset().highlightedCluster();
     if (!cluster_)
         return;
     calcDgram();
