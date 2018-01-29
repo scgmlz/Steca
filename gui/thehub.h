@@ -53,7 +53,6 @@ signals: // TODO: rm unused
 
 public:
     // modifying methods:
-    void removeFile(int);
     void sessionFromFile(rcstr&) THROWS;
     void loadCorrFile() THROWS;
 

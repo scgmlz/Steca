@@ -33,8 +33,6 @@ public:
     void onFilesChanged();
     void onHighlight();
     void onActivated();
-    void removeFile();
-    void setHighlight(int row);
 
 private:
     int columnCount() const final { return 3; }
@@ -57,52 +55,16 @@ void FilesModel::onClicked(const QModelIndex& cell) {
 
 void FilesModel::onFilesChanged() {
     beginResetModel(); endResetModel(); // not understood, but imperatively needed
-    if (rowHighlighted_<0 && gSession->dataset().countFiles())
-        setHighlight(0);
 }
 
 //! Update highlight display upon sigHighlight.
 void FilesModel::onHighlight() {
-    if (!gSession->dataset().countFiles())
-        return;
-    const Datafile* newFile = gSession->dataset().highlightedFile();
-    if (!newFile)
-        return;
-    for (int row=0; row<rowCount(); ++row) {
-        if (&gSession->dataset().file(row)==newFile) {
-            setHighlight(row);
-            return;
-        }
-    }
-    NEVER
+    signalReset();
 }
 
 //! Update activation check display upon sigActivated.
 void FilesModel::onActivated() {
     emit dataChanged(createIndex(0,1),createIndex(rowCount()-1,1));
-}
-
-//! Forwards command to remove file, and updates the view.
-void FilesModel::removeFile() {
-    int row = rowHighlighted_;
-    gHub->removeFile(row);
-    emit dataChanged(createIndex(row,0),createIndex(rowCount(),columnCount()));
-    setHighlight(qMin(row, rowCount()-1));
-}
-
-//! Sets rowHighlighted_, and signals need to refresh FilesView and MeasurementView.
-void FilesModel::setHighlight(int row) {
-    int oldRow = rowHighlighted_;
-    if (row==oldRow)
-        return;
-    rowHighlighted_ = row;
-    if (row>=0) {
-        emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
-        qDebug() << "FM::sH " << row  << "/" << rowCount() << " #=" << gSession->dataset().countFiles();
-        gSession->dataset().setHighlight(&gSession->dataset().file(row));
-    }
-    if (oldRow>=0)
-        emit dataChanged(createIndex(oldRow,0),createIndex(oldRow,columnCount()));
 }
 
 //! Returns role-specific information about one table cell.
@@ -167,7 +129,6 @@ FilesView::FilesView() : ListView() {
     setModel(filesModel);
 
     connect(gSession, &Session::sigFiles, model(), &FilesModel::onFilesChanged);
-    connect(gHub->trigger_removeFile, &QAction::triggered, model(), &FilesModel::removeFile);
     connect(gSession, &Session::sigHighlight, model(), &FilesModel::onHighlight);
     connect(gSession, &Session::sigActivated, model(), &FilesModel::onActivated);
     connect(this, &FilesView::clicked, model(), &FilesModel::onClicked);
@@ -175,8 +136,8 @@ FilesView::FilesView() : ListView() {
 
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
 void FilesView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
-    model()->setHighlight(current.row());
     scrollTo(current);
+    gSession->dataset().highlightFile(current.row());
 }
 
 int FilesView::sizeHintForColumn(int col) const {

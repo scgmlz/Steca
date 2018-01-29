@@ -32,12 +32,13 @@ public:
     Datafile() = delete;
     Datafile(Datafile&&) = default;
     Datafile& operator=(const Datafile&) = default;
-Datafile(const QSharedPointer<const Rawfile>& raw) : raw_(raw) {}
+    Datafile(const QSharedPointer<const Rawfile>& raw) : raw_(raw) {}
 
     int count() const { return raw_->count(); }
     QString name() const { return raw_->fileName(); }
     Qt::CheckState activated() const;
 
+    // TODO privatize
     QSharedPointer<const Rawfile> raw_; //!< owned by this
     int index_; //!< index in files_
     int offset_;  //!< first index in total list of Measurement|s
@@ -52,7 +53,9 @@ public:
     // Modifying methods:
     void clear();
     void addGivenFiles(const QStringList& filePaths) THROWS;
-    void removeFile(int i);
+    void removeFile();
+    void highlightFile(int);
+    void highlightCluster(int);
     void setHighlight(const Cluster*);
     void setHighlight(const Datafile*);
     void setBinning(int by);
@@ -70,7 +73,6 @@ public:
     const Cluster* highlightedCluster() const { return highlight_; }
     int highlightedClusterIndex() const { return highlight_->index(); }
     const Datafile* highlightedFile() const { return highlight_ ? &highlight_->file() : nullptr; }
-    int highlightedFileIndex() const { return highlight_->index(); }
     int binning() const { return binning_; }
     bool dropIncomplete() const { return dropIncomplete_; }
     bool hasIncomplete() const { return hasIncomplete_; }
@@ -96,6 +98,7 @@ private:
     void updateExperiment();
 
     bool hasFile(rcstr fileName) const;
+    int highlightedFileIndex() const { return highlight_->file().index_; }
 };
 
 #endif // DATASET_H

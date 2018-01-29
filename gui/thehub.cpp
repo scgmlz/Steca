@@ -163,11 +163,6 @@ TheHub::~TheHub() {
     settings_.saveStr("export_format", saveFmt);
 }
 
-// called through trigger_removeFile -> FilesView::removeHighlighted -> FilesModel::removeFile
-void TheHub::removeFile(int i) {
-    gSession->dataset().removeFile(i);
-}
-
 void TheHub::saveSession(QFileInfo const& fileInfo) const {
     WriteFile file(fileInfo.filePath());
     QDir::setCurrent(fileInfo.absolutePath());

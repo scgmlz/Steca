@@ -47,12 +47,21 @@ void Dataset::clear() {
     gSession->setImageCut(true, false, ImageCut());
 }
 
-void Dataset::removeFile(int i) { // TODO rm arg
+void Dataset::removeFile() {
+    int i = highlightedFileIndex();
     files_.erase(files_.begin()+i);
     onFileChanged();
     gSession->updateImageSize();
     if (files_.empty())
         gSession->setImageCut(true, false, ImageCut());
+    if (i>0)
+        highlightFile(i-1);
+    else if (countFiles())
+        highlightFile(0);
+    else {
+        highlight_ = nullptr;
+        emit gSession->sigHighlight();
+    }
 }
 
 void Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
@@ -66,6 +75,14 @@ void Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
         files_.push_back(Datafile(rawfile));
     }
     onFileChanged();
+}
+
+void Dataset::highlightFile(int i) {
+    setHighlight(files_.at(i).clusters_.front());
+}
+
+void Dataset::highlightCluster(int i) {
+    setHighlight(allClusters_.at(i).data());
 }
 
 void Dataset::setHighlight(const Cluster* cluster) {

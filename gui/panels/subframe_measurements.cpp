@@ -32,7 +32,6 @@ public:
     void onHighlight();
     void onActivated();
     void onMetaSelection();
-    void setHighlight(int row);
 
     int rowHighlighted() const { return rowHighlighted_; } // needed for View scroll
     int metaCount() const { return metaInfoNums_.count(); }
@@ -63,28 +62,15 @@ void ExperimentModel::onClicked(const QModelIndex& cell) {
     int col = cell.column();
     if (col==1) {
         gSession->dataset().flipClusterActivation(row);
-    } else if (col==2) {
-        setHighlight(row);
     }
 }
 
 void ExperimentModel::onClustersChanged() {
-    beginResetModel();
-    setHighlight(qMin(rowCount()-1, rowHighlighted_));
-    endResetModel();
+    beginResetModel(); endResetModel(); // TODO replace by signalReset
 }
 
 void ExperimentModel::onHighlight() {
-    const Cluster* newCluster = gSession->dataset().highlightedCluster();
-    if (!newCluster || newCluster==highlighted_)
-        return;
-    for (int row=0; row<rowCount(); ++row) {
-        if (allClusters_.at(row).data()==newCluster) {
-            setHighlight(row);
-            return;
-        }
-    }
-    NEVER
+    signalReset();
 }
 
 void ExperimentModel::onActivated() {
@@ -101,21 +87,6 @@ void ExperimentModel::onMetaSelection() {
     emit dataChanged(createIndex(0,COL_ATTRS), createIndex(rowCount(),columnCount()));
     emit headerDataChanged(Qt::Horizontal, COL_ATTRS, columnCount());
     endResetModel();
-}
-
-void ExperimentModel::setHighlight(int row) {
-    const Cluster* oldHighlighted = highlighted_;
-    int oldRow = rowHighlighted_;
-    rowHighlighted_ = row;
-    if (row>=0) {
-        highlighted_ = allClusters_.at(rowHighlighted_).data();
-        emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
-    } else
-        highlighted_ = nullptr;
-    if (oldHighlighted)
-        emit dataChanged(createIndex(oldRow,0),createIndex(oldRow,columnCount()));
-    if (highlighted_!=oldHighlighted)
-        gSession->dataset().setHighlight(highlighted_);
 }
 
 QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
@@ -230,7 +201,7 @@ ExperimentView::ExperimentView() : ListView() {
 
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
 void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
-    model()->setHighlight(current.row());
+    gSession->dataset().highlightCluster(current.row());
     updateScroll();
 }
 
