@@ -137,9 +137,12 @@ void PeaksView::currentChanged(QModelIndex const& current, QModelIndex const& pr
     update();
 }
 
+
 // ************************************************************************** //
-//  class RangeControl
+//  local class RangeControl
 // ************************************************************************** //
+
+//! A horizontal row with labels and spin boxes to view and change one peak fit range.
 
 class RangeControl : public QWidget {
 public:
@@ -159,15 +162,15 @@ RangeControl::RangeControl() {
     spinRangeMin_->setSingleStep(.1);
     connect(spinRangeMin_, _SLOT_(QDoubleSpinBox, valueChanged, double),  [this](double val) {
             if (val>=spinRangeMax_->value())
-                spinRangeMax_->setValue(val+0.1);
+                spinRangeMax_->setValue(val);
             gSession->peaks().selectedPeak()->setRange(Range(val, spinRangeMax_->value())); });
 
     hb->addWidget(newQ::Label(".."));
-    hb->addWidget((spinRangeMax_ = newQ::DoubleSpinBox(6, 0.1, 90.)));
+    hb->addWidget((spinRangeMax_ = newQ::DoubleSpinBox(6, 0., 90.)));
     spinRangeMax_->setSingleStep(.1);
     connect(spinRangeMax_, _SLOT_(QDoubleSpinBox, valueChanged, double),  [this](double val) {
             if (val<=spinRangeMin_->value())
-                spinRangeMin_->setValue(val-0.1);
+                spinRangeMin_->setValue(val);
             gSession->peaks().selectedPeak()->setRange(Range(spinRangeMin_->value(), val)); });
     hb->addWidget(newQ::Label("deg"));
     hb->addStretch();
@@ -177,10 +180,65 @@ void RangeControl::update() {
     const Range& range = gSession->peaks().selectedPeak()->range();
     spinRangeMin_->setValue(safeReal(range.min));
     spinRangeMax_->setValue(safeReal(range.max));
+    setEnabled(true);
+}
+
+
+// ************************************************************************** //
+//  local class PeakdataView
+// ************************************************************************** //
+
+//! A grid with labels and number displays to view guessed and fitted peak data.
+
+class PeakdataView : public QWidget {
+public:
+    PeakdataView();
+    void update(const PeakFunction& peakFun);
+private:
+    QLineEdit *spinGuessPeakX_, *spinGuessPeakY_, *spinGuessFWHM_;
+    QLineEdit *readFitPeakX_, *readFitPeakY_, *readFitFWHM_;
+};
+
+PeakdataView::PeakdataView() {
+
+    QGridLayout* gb = newQ::GridLayout();
+    setLayout(gb);
+
+    gb->addWidget(newQ::Label("guess"), 1, 1);
+    gb->addWidget(newQ::Label("fitted"), 1, 2);
+
+    gb->addWidget(newQ::Label("centre"), 2, 0);
+    gb->addWidget((spinGuessPeakX_ = newQ::LineDisplay(6, true)), 2, 1);
+    gb->addWidget((readFitPeakX_ = newQ::LineDisplay(6, true)), 2, 2);
+
+    gb->addWidget(newQ::Label("fwhm"), 3, 0);
+    gb->addWidget((spinGuessFWHM_ = newQ::LineDisplay(6, true)), 3, 1);
+    gb->addWidget((readFitFWHM_ = newQ::LineDisplay(6, true)), 3, 2);
+
+    gb->addWidget(newQ::Label("intens"), 4, 0);
+    gb->addWidget((spinGuessPeakY_ = newQ::LineDisplay(6, true)), 4, 1);
+    gb->addWidget((readFitPeakY_ = newQ::LineDisplay(6, true)), 4, 2);
+
+    gb->setColumnStretch(4, 1);
+
+}
+
+void PeakdataView::update(const PeakFunction& peakFun) {
+    const qpair& guessedPeak = peakFun.guessedPeak();
+    spinGuessPeakX_->setText(safeRealText(guessedPeak.x));
+    spinGuessPeakY_->setText(safeRealText(guessedPeak.y));
+    spinGuessFWHM_->setText(safeRealText(peakFun.guessedFWHM()));
+
+    const qpair& fittedPeak = peakFun.fittedPeak();
+    readFitPeakX_->setText(safeRealText(fittedPeak.x));
+    readFitPeakY_->setText(safeRealText(fittedPeak.y));
+    readFitFWHM_->setText(safeRealText(peakFun.fittedFWHM()));
+
+    setEnabled(true);
 }
 
 // ************************************************************************** //
-//  class ControlsPeakfits
+//  local class ControlsPeakfits
 // ************************************************************************** //
 
 //! A widget with controls to view and change the detector geometry.
@@ -193,9 +251,8 @@ private:
 
     PeaksView* peaksView_;
     RangeControl rangeControl_;
+    PeakdataView peakdataView_;
     QComboBox* comboReflType_;
-    QLineEdit *spinGuessPeakX_, *spinGuessPeakY_, *spinGuessFWHM_;
-    QLineEdit *readFitPeakX_, *readFitPeakY_, *readFitFWHM_;
 
     bool silentSpin_ = false;
 };
@@ -253,26 +310,7 @@ ControlsPeakfits::ControlsPeakfits() {
     box->addLayout(vb);
 
     vb->addWidget(&rangeControl_);
-
-    QGridLayout* gb = newQ::GridLayout();
-    vb->addLayout(gb);
-
-    gb->addWidget(newQ::Label("guess"), 1, 1);
-    gb->addWidget(newQ::Label("fitted"), 1, 2);
-
-    gb->addWidget(newQ::Label("centre"), 2, 0);
-    gb->addWidget((spinGuessPeakX_ = newQ::LineDisplay(6, true)), 2, 1);
-    gb->addWidget((readFitPeakX_ = newQ::LineDisplay(6, true)), 2, 2);
-
-    gb->addWidget(newQ::Label("fwhm"), 3, 0);
-    gb->addWidget((spinGuessFWHM_ = newQ::LineDisplay(6, true)), 3, 1);
-    gb->addWidget((readFitFWHM_ = newQ::LineDisplay(6, true)), 3, 2);
-
-    gb->addWidget(newQ::Label("intens"), 4, 0);
-    gb->addWidget((spinGuessPeakY_ = newQ::LineDisplay(6, true)), 4, 1);
-    gb->addWidget((readFitPeakY_ = newQ::LineDisplay(6, true)), 4, 2);
-
-    gb->setColumnStretch(4, 1);
+    vb->addWidget(&peakdataView_);
 
     update();
 
@@ -283,44 +321,23 @@ void ControlsPeakfits::onPeaks() {
     peaksView_->update();
     bool on = gSession->peaks().count();
     qDebug() << "onPeaks: " << on;
-    readFitPeakX_->setEnabled(on);
-    readFitPeakY_->setEnabled(on);
-    readFitFWHM_->setEnabled(on);
 
     Peak* peak = gSession->peaks().selectedPeak();
     silentSpin_ = true;
 
     if (!peak) {
-        rangeControl_.hide();
         // do not set comboReflType - we want it to stay as it is
+        rangeControl_.setEnabled(false);
+        peakdataView_.setEnabled(false);
 
-        /*
-        spinGuessPeakX_->setValue(0);
-        spinGuessPeakY_->setValue(0);
-        spinGuessFWHM_->setValue(0);
-        */
-        readFitPeakX_->clear();
-        readFitPeakY_->clear();
-        readFitFWHM_->clear();
     } else {
         {
             QSignalBlocker __(comboReflType_);
             comboReflType_->setCurrentText(peak->functionName());
         }
 
-        rangeControl_.show();
         rangeControl_.update();
-
-        const PeakFunction& peakFun = peak->peakFunction();
-        const qpair& guessedPeak = peakFun.guessedPeak();
-        spinGuessPeakX_->setText(safeRealText(guessedPeak.x));
-        spinGuessPeakY_->setText(safeRealText(guessedPeak.y));
-        spinGuessFWHM_->setText(safeRealText(peakFun.guessedFWHM()));
-
-        const qpair& fittedPeak = peakFun.fittedPeak();
-        readFitPeakX_->setText(safeRealText(fittedPeak.x));
-        readFitPeakY_->setText(safeRealText(fittedPeak.y));
-        readFitFWHM_->setText(safeRealText(peakFun.fittedFWHM()));
+        peakdataView_.update(peak->peakFunction());
     }
 
     silentSpin_ = false;
@@ -328,7 +345,7 @@ void ControlsPeakfits::onPeaks() {
 
 
 // ************************************************************************** //
-//  class ControlsDetector
+//  local class ControlsDetector
 // ************************************************************************** //
 
 //! A widget with controls to view and change the detector geometry.
@@ -390,20 +407,16 @@ ControlsDetector::ControlsDetector() {
     };
 
     connect(cutLeft_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
-            _setImageCut(true, value);
-        });
+            _setImageCut(true, value); });
 
     connect(cutTop_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
-            _setImageCut(true, value);
-        });
+            _setImageCut(true, value); });
 
     connect(cutRight_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
-            _setImageCut(false, value);
-        });
+            _setImageCut(false, value); });
 
     connect(cutBottom_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
-            _setImageCut(false, value);
-        });
+            _setImageCut(false, value); });
 
     // layout
 
@@ -484,7 +497,7 @@ void ControlsDetector::fromSession() {
 
 
 // ************************************************************************** //
-//  class ControlsBaseline
+//  local class ControlsBaseline
 // ************************************************************************** //
 
 //! A widget with controls to change the baseline fitting.

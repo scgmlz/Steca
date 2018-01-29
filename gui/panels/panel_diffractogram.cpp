@@ -130,6 +130,7 @@ void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
     mouseDown_ = false;
     update();
     Range range(plot_.fromPixels(mouseDownPos_, cursorPos_));
+    qDebug() << "plot overlay mouse release: " << range.min << ".." << range.max;
     switch (plot_.getTool()) {
     case DiffractogramPlot::eTool::BACKGROUND:
         if (Qt::LeftButton == e->button())
@@ -599,5 +600,5 @@ void Diffractogram::calcPeaks() {
         refls_.append(c);
     }
 
-    emit gSession->sigPeaks();
+    // emit gSession->sigPeaks();
 }
