@@ -182,55 +182,54 @@ private:
     void onMetaSelection();
     void updateScroll();
     int sizeHintForColumn(int) const override final;
-    ExperimentModel* model() const final {
-        return static_cast<ExperimentModel*>(ListView::model()); }
+    ExperimentModel* model_;
 };
 
 ExperimentView::ExperimentView() : ListView() {
     setHeaderHidden(true);
     setSelectionMode(QAbstractItemView::NoSelection);
-    auto experimentModel = new ExperimentModel();
-    setModel(experimentModel);
+    model_ = new ExperimentModel();
+    setModel(model_);
     connect(gSession, &Session::sigClusters, this, &ExperimentView::onClustersChanged);
     connect(gSession, &Session::sigHighlight, this, &ExperimentView::onHighlight);
     connect(gSession, &Session::sigActivated, this, &ExperimentView::onActivated);
     connect(gSession, &Session::sigMetaSelection, this, &ExperimentView::onMetaSelection);
-    connect(this, &ExperimentView::clicked, model(), &ExperimentModel::onClicked);
+    connect(this, &ExperimentView::clicked, model_, &ExperimentModel::onClicked);
 }
 
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
 void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     if (!gSession->dataset().countFiles())
         return;
-    qDebug() << "CUCHANGE " << current.row();
+    qDebug() << "CUCHANGE " << current.row() << " countClusters=" << gSession->dataset().countClusters();
     gSession->dataset().highlight().setCluster(current.row());
     updateScroll();
 }
 
 void ExperimentView::onClustersChanged() {
-    model()->onClustersChanged();
+    model_->onClustersChanged();
     updateScroll();
 }
 
 void ExperimentView::onHighlight() {
-    model()->onHighlight();
+    model_->onHighlight();
     updateScroll();
 }
 
 void ExperimentView::onActivated() {
-    model()->onActivated();
+    model_->onActivated();
     updateScroll();
 }
 
 void ExperimentView::onMetaSelection() {
-    model()->onMetaSelection();
-    setHeaderHidden(model()->metaCount()==0);
+    model_->onMetaSelection();
+    setHeaderHidden(model_->metaCount()==0);
 }
 
 void ExperimentView::updateScroll() {
     int row = gSession->dataset().highlight().clusterIndex();
     if (row>=0)
-        scrollTo(model()->index(row,0));
+        scrollTo(model_->index(row,0));
 }
 
 int ExperimentView::sizeHintForColumn(int col) const {
