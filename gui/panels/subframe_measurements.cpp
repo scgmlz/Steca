@@ -69,7 +69,8 @@ void ExperimentModel::onClustersChanged() {
 }
 
 void ExperimentModel::onHighlight() {
-    signalReset();
+    // signalReset();
+    beginResetModel(); endResetModel(); // TODO replace by signalReset
 }
 
 void ExperimentModel::onActivated() {
