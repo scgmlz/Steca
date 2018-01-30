@@ -351,7 +351,6 @@ public:
 
 CorrImageTab::CorrImageTab() {
     controls_->addStretch(1);
-    connect(gSession, &Session::sigCorr, [this]() { setEnabled(gSession->corrset().isEnabled()); });
 }
 
 void CorrImageTab::render() {
@@ -365,6 +364,9 @@ void CorrImageTab::render() {
 
 SubframeImage::SubframeImage() {
     setTabPosition(QTabWidget::North);
-    auto tabData = new DataImageTab(); addTab(tabData, "Data image");
-    auto tabCorr = new CorrImageTab(); addTab(tabCorr, "Corr image"); tabCorr->setEnabled(false);
+    addTab(new DataImageTab, "Data image");
+    addTab(new CorrImageTab, "Corr image");
+    connect(gSession, &Session::sigCorr, [this]() {
+            setTabEnabled(1, gSession->corrset().hasFile()); });
+    setTabEnabled(1, false);
 }
