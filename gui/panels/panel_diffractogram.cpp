@@ -131,7 +131,6 @@ void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
     mouseDown_ = false;
     update();
     Range range(plot_.fromPixels(mouseDownPos_, cursorPos_));
-    qDebug() << "plot overlay mouse release: " << range.min << ".." << range.max;
     switch (plot_.getTool()) {
     case DiffractogramPlot::eTool::BACKGROUND:
         if (Qt::LeftButton == e->button())
@@ -264,7 +263,6 @@ void DiffractogramPlot::plot(
         plotEmpty();
         return;
     }
-    qDebug() << "DP plot(dgram)";
     const Range& tthRange = dgram.rgeX();
 
     Range intenRange;
@@ -304,7 +302,6 @@ void DiffractogramPlot::plot(
 }
 
 void DiffractogramPlot::plotEmpty() {
-    qDebug() << "DP plot(empty)";
     xAxis->setVisible(false);
     yAxis->setVisible(false);
 
@@ -328,7 +325,6 @@ void DiffractogramPlot::setNewReflRange(const Range& range) {
 
 //! Repaints everything, including the colored background areas.
 void DiffractogramPlot::renderAll() {
-    qDebug() << "DP renderAll";
     clearItems();
 
     switch (tool_) {
@@ -394,7 +390,6 @@ void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
 }
 
 void DiffractogramPlot::onPeakData() {
-    qDebug() << "DP onPeakData";
     Peak* peak = gSession->peaks().selectedPeak();
     guesses_->clearData();
     fits_->clearData();
@@ -536,7 +531,6 @@ void Diffractogram::onFittingTab(eFittingTab tab) {
 }
 
 void Diffractogram::render() {
-    qDebug() << "D render";
     cluster_ = gSession->dataset().highlight().cluster();
     if (!cluster_) {
         plot_->plotEmpty();

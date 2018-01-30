@@ -53,6 +53,7 @@ public:
     void setFile(int);
     void setCluster(int);
     void reset();
+    void unset();
     void setMeasurement(int val);
 
     const Cluster* cluster() const;
@@ -63,8 +64,6 @@ public:
     int measurementIndex() const;
 
 private:
-    void unset();
-
     const Cluster* current_ { nullptr };
     int measurement_ {0}; //!< selected for image display (index in highlighted cluster)
 };
@@ -110,7 +109,7 @@ private:
     bool dropIncomplete_ {false}; //!< drop Cluster|s that have less than binning_ members.
     bool hasIncomplete_; //!< current binning does result in at least one incomplete cluster
 
-    HighlightedData highlight_;
+    HighlightedData highlight_; //!< wraps pointer to highlighted Datafile and Cluster
 
     Experiment experiment_; //!< active clusters
 

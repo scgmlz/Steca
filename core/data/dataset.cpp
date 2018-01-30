@@ -37,7 +37,7 @@ Qt::CheckState Datafile::activated() const {
 }
 
 // ************************************************************************** //
-//  local class HighlightedData
+//  class HighlightedData
 // ************************************************************************** //
 
 void HighlightedData::setFile(int i) {
@@ -45,6 +45,7 @@ void HighlightedData::setFile(int i) {
         return unset();
     debug::ensure(i<gSession->dataset().countFiles());
     setCluster(gSession->dataset().fileAt(i).clusters_[0]->index());
+    debug::ensure(i==current_->file().index_);
 }
 
 void HighlightedData::setCluster(int i) {
@@ -68,7 +69,6 @@ void HighlightedData::unset() {
 
 void HighlightedData::setMeasurement(int val) {
     measurement_ = qMin( val, cluster()->count()-1 );
-    qDebug() << "setSelectedMeasurement " << val << " -> " << measurement_;
     emit gSession->sigHighlight();
 }
 
@@ -112,21 +112,21 @@ void Dataset::clear() {
 
 void Dataset::removeFile() {
     int i = highlight().fileIndex();
-    // first unhighlight
-    qDebug() << "NOW UNHIGH";
-    if (i>0)
-        highlight().setFile(i-1);
-    else
-        highlight().reset();
-    // only then remove
-    qDebug() << "NOW REM";
+    highlight().unset(); // temporarily, to avoid conflicts
     files_.erase(files_.begin()+i);
-    qDebug() << "NOW SIG";
     onFileChanged();
-    qDebug() << "NOW IMG";
     gSession->updateImageSize();
     if (files_.empty())
         gSession->setImageCut(true, false, ImageCut());
+    if (countFiles()) {
+        // reset highlight, which was temporarily unset at the beginning of this function
+        if (i<countFiles())
+            highlight().setFile(i);
+        else if (i>0)
+            highlight().setFile(i-1);
+        else
+            NEVER;
+    }
 }
 
 void Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
@@ -179,7 +179,6 @@ void Dataset::cycleFileActivation(int index) {
     emit gSession->sigActivated();
 }
 
-
 void Dataset::onFileChanged() {
     int idx = 0;
     int cnt = 0;
@@ -188,15 +187,10 @@ void Dataset::onFileChanged() {
         file.offset_ = cnt;
         cnt += file.count();
     }
-    qDebug() << "Ds:oFS 1";
     updateClusters();
-    qDebug() << "Ds:oFS 2";
     emit gSession->sigFiles();
-    qDebug() << "Ds:oFS 3";
     emit gSession->sigClusters();
-    qDebug() << "Ds:oFS 4";
     emit gSession->sigActivated();
-    qDebug() << "Ds:oFS 5";
 }
 
 void Dataset::onClusteringChanged() {
@@ -235,7 +229,6 @@ void Dataset::updateExperiment() {
         if (cluster->isActivated())
             experiment_.appendHere(cluster.data());
     }
-    qDebug() << "assembled experiment => size=" << experiment_.size();
 }
 
 int Dataset::countFiles() const {
