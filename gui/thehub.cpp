@@ -74,6 +74,8 @@ TheHub::TheHub()
     trigger_removeFile = newQ::Trigger("Remove highlighted file", ":/icon/rem");
     trigger_removeFile->setShortcut(QKeySequence::Delete);
     trigger_removeFile->setEnabled(false);
+    QObject::connect(trigger_removeFile, &QAction::triggered, []() {
+            gSession->dataset().removeFile(); });
     QObject::connect(gSession, &Session::sigFiles, [this]() {
             trigger_removeFile->setEnabled(gSession->dataset().countFiles()); });
 

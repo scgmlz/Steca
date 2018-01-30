@@ -68,11 +68,14 @@ public:
     int countFiles() const { return files_.size(); }
     // WAIT whether used:
     // int countClusters() const { return allClusters_ ? allClusters_->count() : 0; }
+
+    // TODO privatize or rm some of the following
     const Datafile& file(int i) const { return files_[i]; }
     int offset(const Datafile& file) const { return file.offset_; }
-    const Cluster* highlightedCluster() const { return highlight_; }
-    int highlightedClusterIndex() const { return highlight_->index(); }
-    const Datafile* highlightedFile() const { return highlight_ ? &highlight_->file() : nullptr; }
+    const Cluster* highlightedCluster() const;
+    int highlightedClusterIndex() const;
+    const Datafile* highlightedFile() const;
+    int highlightedFileIndex() const;
     int binning() const { return binning_; }
     bool dropIncomplete() const { return dropIncomplete_; }
     bool hasIncomplete() const { return hasIncomplete_; }
@@ -99,7 +102,6 @@ private:
     void unsetHighlight();
 
     bool hasFile(rcstr fileName) const;
-    int highlightedFileIndex() const { return highlight_->file().index_; }
 };
 
 #endif // DATASET_H

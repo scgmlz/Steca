@@ -38,8 +38,6 @@ private:
     int columnCount() const final { return 3; }
     int rowCount() const final { return gSession->dataset().countFiles(); }
     QVariant data(const QModelIndex&, int) const final;
-
-    int rowHighlighted_;
 };
 
 //! Selects or unselects all measurements in a file.
@@ -48,9 +46,10 @@ void FilesModel::onClicked(const QModelIndex& cell) {
     if (row < 0 || row >= rowCount())
         return;
     int col = cell.column();
-    if (col==1) {
+    if (col==1)
         gSession->dataset().cycleFileActivation(row);
-    }
+    else if (col==2)
+        gSession->dataset().highlightFile(row);
 }
 
 void FilesModel::onFilesChanged() {
@@ -95,7 +94,7 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
         return {};
     }
     case Qt::BackgroundRole: {
-        if (row==rowHighlighted_)
+        if (row==gSession->dataset().highlightedFileIndex())
             return QColor(Qt::cyan);
         return QColor(Qt::white);
     }

@@ -50,6 +50,7 @@ void Dataset::clear() {
 void Dataset::removeFile() {
     int i = highlightedFileIndex();
     // first unhighlight
+    qDebug() << "NOW UNHIGH";
     if (i>0)
         highlightFile(i-1);
     else if (countFiles())
@@ -58,8 +59,11 @@ void Dataset::removeFile() {
         unsetHighlight();
     }
     // only then remove
+    qDebug() << "NOW REM";
     files_.erase(files_.begin()+i);
+    qDebug() << "NOW SIG";
     onFileChanged();
+    qDebug() << "NOW IMG";
     gSession->updateImageSize();
     if (files_.empty())
         gSession->setImageCut(true, false, ImageCut());
@@ -206,6 +210,23 @@ bool Dataset::hasFile(rcstr fileName) const {
         if (fileInfo == file.raw_->fileInfo())
             return true;
     return false;
+}
+
+const Cluster* Dataset::highlightedCluster() const {
+    return highlight_;
+}
+
+int Dataset::highlightedClusterIndex() const {
+    return highlight_ ? highlight_->index() : -1;
+}
+
+const Datafile* Dataset::highlightedFile() const {
+    return highlight_ ? &highlight_->file() : nullptr;
+}
+
+int Dataset::highlightedFileIndex() const {
+    const Datafile* file = highlightedFile();
+    return file ? file->index_ : -1;
 }
 
 QJsonArray Dataset::to_json() const {

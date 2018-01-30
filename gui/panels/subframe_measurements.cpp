@@ -33,7 +33,6 @@ public:
     void onActivated();
     void onMetaSelection();
 
-    int rowHighlighted() const { return rowHighlighted_; } // needed for View scroll
     int metaCount() const { return metaInfoNums_.count(); }
 
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
@@ -49,7 +48,6 @@ private:
     // update display items only if they have changed. Whether this is really
     // useful is to be determined. The cache for the activation state is gone.
     vec<int> metaInfoNums_; //!< indices of metadata items selected for display
-    int rowHighlighted_;
 
     const Cluster* highlighted_{nullptr};
     const QVector<shp_Cluster>& allClusters_ {gSession->dataset().allClusters()};
@@ -60,9 +58,10 @@ void ExperimentModel::onClicked(const QModelIndex& cell) {
     if (row < 0 || row >= rowCount())
         return;
     int col = cell.column();
-    if (col==1) {
+    if (col==1)
         gSession->dataset().flipClusterActivation(row);
-    }
+    else if (col==2)
+        gSession->dataset().highlightCluster(row);
 }
 
 void ExperimentModel::onClustersChanged() {
@@ -137,7 +136,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
         return QColor(Qt::black);
     }
     case Qt::BackgroundRole: {
-        if (row==rowHighlighted_)
+        if (row==gSession->dataset().highlightedClusterIndex())
             return QColor(Qt::cyan);
         return QColor(Qt::white);
     }
@@ -201,6 +200,9 @@ ExperimentView::ExperimentView() : ListView() {
 
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
 void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
+    if (!gSession->dataset().countFiles())
+        return;
+    qDebug() << "EV curr Changed";
     gSession->dataset().highlightCluster(current.row());
     updateScroll();
 }
@@ -226,7 +228,9 @@ void ExperimentView::onMetaSelection() {
 }
 
 void ExperimentView::updateScroll() {
-    scrollTo(model()->index(model()->rowHighlighted(),0));
+    int row = gSession->dataset().highlightedClusterIndex();
+    if (row>=0)
+        scrollTo(model()->index(row,0));
 }
 
 int ExperimentView::sizeHintForColumn(int col) const {
