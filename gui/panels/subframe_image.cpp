@@ -246,10 +246,10 @@ DataImageTab::DataImageTab() {
                 return;
             }
             spinN_->setEnabled( gSession->dataset().binning() > 1);
-            if ( gSession->dataset().selectedMeasurementIndex()+1>
-                 gSession->dataset().highlightedCluster()->count() )
-                gSession->dataset().setSelectedMeasurement(
-                    gSession->dataset().highlightedCluster()->count()-1);
+            int max = gSession->dataset().highlightedCluster()->count();
+            spinN_->setMaximum(max);
+            if ( gSession->dataset().selectedMeasurementIndex()+1>max )
+                gSession->dataset().setSelectedMeasurement(max-1);
             spinN_->setValue(gSession->dataset().selectedMeasurementIndex()+1); });
     spinN_->setEnabled(false);
     spinN_->setValue(1);

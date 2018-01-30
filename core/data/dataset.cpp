@@ -85,14 +85,14 @@ void Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
 }
 
 void Dataset::highlightFile(int i) {
-    if (i>=0)
+    if (countFiles() && i>=0)
         setHighlight(files_.at(i).clusters_.front());
     else
         unsetHighlight();
 }
 
 void Dataset::highlightCluster(int i) {
-    if (i>=0)
+    if (countFiles() && i>=0)
         setHighlight(allClusters_.at(i).data());
     else
         unsetHighlight();
@@ -176,9 +176,12 @@ void Dataset::onFileChanged() {
 
 void Dataset::onClusteringChanged() {
     updateClusters();
+    highlightCluster(0); // Simplest way to update highlight.
+                         // Alternatively, we could keep pointing to the first measurement
+                         // of the previously highlighted cluster. Then, we should also
+                         // keep the selected Image constant.
     emit gSession->sigClusters();
     emit gSession->sigActivated();
-    // TODO keep highlight pointing to at least one previously highlighted measurement
     emit gSession->sigHighlight();
 }
 
