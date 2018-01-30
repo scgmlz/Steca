@@ -298,13 +298,10 @@ void DataImageTab::render() {
         if (nSlices > 0) {
             int nSlice = qMax(1, numSlice_->value());
             int iSlice = nSlice - 1;
-
             const Range rgeGma = lens->rgeGma();
             const qreal min = rgeGma.min;
             const qreal wn = rgeGma.width() / nSlices;
-
             rge = Range(min + iSlice * wn, min + (iSlice + 1) * wn);
-
             minGamma_->setValue(rge.min);
             maxGamma_->setValue(rge.max);
         } else {
@@ -321,18 +318,24 @@ void DataImageTab::render() {
             Range rgeTth = lens->rgeTth();
             int count = lens->makeCurve().count();
             numBin_->setMaximum(count - 1);
-            int min = rgeTth.min, wdt = rgeTth.width();
+            qreal min = rgeTth.min;
+            qreal wdt = rgeTth.width();
             qreal num = qreal(numBin_->value());
-            pixMap = makePixmap(
+                qDebug() << "DEBUG BIN:";
+                qDebug() << "count: " << count;
+                qDebug() << "num: " << num;
+                qDebug() << "rgeThe: " << min << " to " << rgeTth.max;
+                qDebug() << "width: " << wdt;
+           pixMap = makePixmap(
                 *measurement, rge,
                 Range(min + wdt * (num / count), min + wdt * ((num + 1) / count)));
         } else {
             pixMap = makePixmap(measurement->image());
         }
+
     } else {
         numBin_->setMaximum(0);
         numBin_->setEnabled(false);
-
         pixMap = makeBlankPixmap();
     }
 
