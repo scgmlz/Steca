@@ -79,6 +79,7 @@ int main(int argc, char* argv[]) {
 
     gMainWin = MainWin::instance();
     gMainWin->show();
+    gMainWin->addFiles();
 
     Console console;
     QObject::connect(&console, &Console::transmitLine, gMainWin, &MainWin::execCommand);

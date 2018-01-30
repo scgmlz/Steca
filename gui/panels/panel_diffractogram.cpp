@@ -62,6 +62,7 @@ public:
     void setTool(eTool);
     Range fromPixels(int, int);
     void plot(Curve const&, Curve const&, Curve const&, curve_vec const&, int);
+    void plotEmpty();
     void setNewReflRange(const Range&);
     void renderAll();
     void clearReflLayer();
@@ -260,54 +261,59 @@ void DiffractogramPlot::plot(
     Curve const& dgram, Curve const& dgramBgFitted, Curve const& bg, curve_vec const& refls,
     int currReflIndex) {
     if (dgram.isEmpty()) {
-        xAxis->setVisible(false);
-        yAxis->setVisible(false);
+        plotEmpty();
+        return;
+    }
+    qDebug() << "DP plot(dgram)";
+    const Range& tthRange = dgram.rgeX();
 
-        bgGraph_->clearData();
-        dgramGraph_->clearData();
-        dgramBgFittedGraph_->clearData();
-        dgramBgFittedGraph2_->clearData();
-
-        clearReflLayer();
+    Range intenRange;
+    if (gHub->isFixedIntenDgramScale()) {
+        intenRange = gSession->highlightsLens()->rgeInten();
     } else {
-        const Range& tthRange = dgram.rgeX();
-
-        Range intenRange;
-        if (gHub->isFixedIntenDgramScale()) {
-            intenRange = gSession->highlightsLens()->rgeInten();
-        } else {
-            intenRange = dgramBgFitted.rgeY();
-            intenRange.extendBy(dgram.rgeY());
-        }
-
-        xAxis->setRange(tthRange.min, tthRange.max);
-        yAxis->setRange(qMin(0., intenRange.min), intenRange.max);
-        yAxis->setNumberFormat("g");
-        xAxis->setVisible(true);
-        yAxis->setVisible(true);
-
-        if (showBgFit_) {
-            bgGraph_->setData(bg.xs().sup(), bg.ys().sup());
-        } else {
-            bgGraph_->clearData();
-        }
-
-        dgramGraph_->setData(dgram.xs().sup(), dgram.ys().sup());
-        dgramBgFittedGraph_->setData(dgramBgFitted.xs().sup(), dgramBgFitted.ys().sup());
-        dgramBgFittedGraph2_->setData(dgramBgFitted.xs().sup(), dgramBgFitted.ys().sup());
-
-        clearReflLayer();
-        setCurrentLayer("refl");
-
-        for_i (refls.count()) {
-            const Curve& r = refls.at(i);
-            QCPGraph* graph = addGraph();
-            reflGraph_.append(graph);
-            graph->setPen(QPen(Qt::green, i == currReflIndex ? 2 : 1));
-            graph->setData(r.xs().sup(), r.ys().sup());
-        }
+        intenRange = dgramBgFitted.rgeY();
+        intenRange.extendBy(dgram.rgeY());
     }
 
+    xAxis->setRange(tthRange.min, tthRange.max);
+    yAxis->setRange(qMin(0., intenRange.min), intenRange.max);
+    yAxis->setNumberFormat("g");
+    xAxis->setVisible(true);
+    yAxis->setVisible(true);
+
+    if (showBgFit_) {
+        bgGraph_->setData(bg.xs().sup(), bg.ys().sup());
+    } else {
+        bgGraph_->clearData();
+    }
+
+    dgramGraph_->setData(dgram.xs().sup(), dgram.ys().sup());
+    dgramBgFittedGraph_->setData(dgramBgFitted.xs().sup(), dgramBgFitted.ys().sup());
+    dgramBgFittedGraph2_->setData(dgramBgFitted.xs().sup(), dgramBgFitted.ys().sup());
+
+    clearReflLayer();
+    setCurrentLayer("refl");
+
+    for_i (refls.count()) {
+        const Curve& r = refls.at(i);
+        QCPGraph* graph = addGraph();
+        reflGraph_.append(graph);
+        graph->setPen(QPen(Qt::green, i == currReflIndex ? 2 : 1));
+        graph->setData(r.xs().sup(), r.ys().sup());
+    }
+}
+
+void DiffractogramPlot::plotEmpty() {
+    qDebug() << "DP plot(empty)";
+    xAxis->setVisible(false);
+    yAxis->setVisible(false);
+
+    bgGraph_->clearData();
+    dgramGraph_->clearData();
+    dgramBgFittedGraph_->clearData();
+    dgramBgFittedGraph2_->clearData();
+
+    clearReflLayer();
     replot();
 }
 
@@ -322,6 +328,7 @@ void DiffractogramPlot::setNewReflRange(const Range& range) {
 
 //! Repaints everything, including the colored background areas.
 void DiffractogramPlot::renderAll() {
+    qDebug() << "DP renderAll";
     clearItems();
 
     switch (tool_) {
@@ -387,6 +394,7 @@ void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
 }
 
 void DiffractogramPlot::onPeakData() {
+    qDebug() << "DP onPeakData";
     Peak* peak = gSession->peaks().selectedPeak();
     guesses_->clearData();
     fits_->clearData();
@@ -528,9 +536,12 @@ void Diffractogram::onFittingTab(eFittingTab tab) {
 }
 
 void Diffractogram::render() {
+    qDebug() << "D render";
     cluster_ = gSession->dataset().highlightedCluster();
-    if (!cluster_)
+    if (!cluster_) {
+        plot_->plotEmpty();
         return;
+    }
     calcDgram();
     calcBackground();
     calcPeaks();

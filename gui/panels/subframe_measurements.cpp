@@ -40,7 +40,7 @@ public:
 private:
     QVariant data(const QModelIndex&, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const final;
-    int rowCount() const final { return allClusters_.count(); }
+    int rowCount() const final { return gSession->dataset().countClusters(); }
     int columnCount() const final { return COL_ATTRS + metaCount(); }
 
     // The following local caches duplicate state information from Session.
@@ -50,7 +50,6 @@ private:
     vec<int> metaInfoNums_; //!< indices of metadata items selected for display
 
     const Cluster* highlighted_{nullptr};
-    const QVector<shp_Cluster>& allClusters_ {gSession->dataset().allClusters()};
 };
 
 void ExperimentModel::onClicked(const QModelIndex& cell) {
@@ -65,7 +64,8 @@ void ExperimentModel::onClicked(const QModelIndex& cell) {
 }
 
 void ExperimentModel::onClustersChanged() {
-    beginResetModel(); endResetModel(); // TODO replace by signalReset
+    signalReset();
+    //beginResetModel(); endResetModel(); // TODO replace by signalReset
 }
 
 void ExperimentModel::onHighlight() {
@@ -92,46 +92,46 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     int row = index.row();
     if (row < 0 || row >= rowCount())
         return {};
-    const Cluster* cluster = allClusters_.at(row).data();
+    const Cluster& cluster = gSession->dataset().clusterAt(row);
     int col = index.column();
     switch (role) {
     case Qt::DisplayRole: {
         if (col==COL_NUMBER) {
-            QString ret = QString::number(cluster->totalOffset()+1);
-            if (cluster->count()>1)
-                ret += "-" + QString::number(cluster->totalOffset()+cluster->count());
+            QString ret = QString::number(cluster.totalOffset()+1);
+            if (cluster.count()>1)
+                ret += "-" + QString::number(cluster.totalOffset()+cluster.count());
             return ret;
         } else if (col>=COL_ATTRS && col < COL_ATTRS+metaCount()) {
-            return cluster->avgeMetadata()->attributeStrValue(
+            return cluster.avgeMetadata()->attributeStrValue(
                 metaInfoNums_.at(col-COL_ATTRS));
         } else
             return {};
     }
     case Qt::ToolTipRole: {
         QString ret;
-        if (cluster->count()>1) {
+        if (cluster.count()>1) {
             ret = QString("Measurements %1..%2 are numbers %3..%4 in file %5")
-                .arg(cluster->totalOffset()+1)
-                .arg(cluster->totalOffset()+cluster->count())
-                .arg(cluster->offset()+1)
-                .arg(cluster->offset()+cluster->count())
-                .arg(cluster->file().name());
+                .arg(cluster.totalOffset()+1)
+                .arg(cluster.totalOffset()+cluster.count())
+                .arg(cluster.offset()+1)
+                .arg(cluster.offset()+cluster.count())
+                .arg(cluster.file().name());
         } else {
             ret = QString("Measurement %1 is number %2 in file %3")
-                .arg(cluster->totalOffset()+1)
-                .arg(cluster->offset()+1)
-                .arg(cluster->file().name());
+                .arg(cluster.totalOffset()+1)
+                .arg(cluster.offset()+1)
+                .arg(cluster.file().name());
         }
         ret += ".";
-        if (cluster->isIncomplete())
+        if (cluster.isIncomplete())
             ret += QString("\nThis cluster has only %1 elements, while the binning factor is %2.")
-                .arg(cluster->count())
+                .arg(cluster.count())
                 .arg(gSession->dataset().binning());
         return ret;
     }
     case Qt::ForegroundRole: {
-        if (col==COL_NUMBER && cluster->count()>1 &&
-            (cluster->isIncomplete()))
+        if (col==COL_NUMBER && cluster.count()>1 &&
+            (cluster.isIncomplete()))
             return QColor(Qt::red);
         return QColor(Qt::black);
     }
@@ -142,7 +142,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     }
     case Qt::CheckStateRole: {
         if (col==COL_CHECK) {
-            return allClusters_.at(row)->isActivated() ? Qt::Checked : Qt::Unchecked;
+            return cluster.isActivated() ? Qt::Checked : Qt::Unchecked;
         }
         return {};
     }

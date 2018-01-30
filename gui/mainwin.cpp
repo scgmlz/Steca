@@ -172,7 +172,6 @@ MainWin::MainWin() {
     initLayout();
     connectActions();
     readSettings();
-
     qDebug() << "/MainWin";
 }
 
@@ -286,9 +285,11 @@ void MainWin::addFiles() {
     QStringList fileNames = file_dialog::openFileNames(
         this, "Add files", QDir::current().absolutePath(),
         "Data files (*.dat *.mar*);;All files (*.*)");
+    repaint();
     if (fileNames.isEmpty())
         return;
     QDir::setCurrent(QFileInfo(fileNames.at(0)).absolutePath());
+    qDebug() << "going to load " << fileNames;
     TakesLongTime __;
     gSession->dataset().addGivenFiles(fileNames);
 }

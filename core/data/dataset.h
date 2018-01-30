@@ -66,26 +66,27 @@ public:
     void setSelectedMeasurement(int val);
 
     // Const methods:
-    int countFiles() const { return files_.size(); }
-    // WAIT whether used:
-    // int countClusters() const { return allClusters_ ? allClusters_->count() : 0; }
-
-    // TODO privatize or rm some of the following
-    const Datafile& file(int i) const { return files_[i]; }
+    int countFiles() const;
+    int countClusters() const;
+    const Datafile& fileAt(int i) const;
+    const Cluster& clusterAt(int i) const;
     int offset(const Datafile& file) const { return file.offset_; }
+
+    int binning() const { return binning_; }
+    bool dropIncomplete() const { return dropIncomplete_; }
+    bool hasIncomplete() const { return hasIncomplete_; }
+
     const Cluster* highlightedCluster() const;
     int highlightedClusterIndex() const;
     const Datafile* highlightedFile() const;
     int highlightedFileIndex() const;
-    int binning() const { return binning_; }
-    bool dropIncomplete() const { return dropIncomplete_; }
-    bool hasIncomplete() const { return hasIncomplete_; }
-    const QVector<shp_Cluster>& allClusters() const { return allClusters_; }
+
     int selectedMeasurementIndex() const;
     const Measurement* selectedMeasurement() const;
-    QJsonArray to_json() const;
 
     const Experiment& experiment() const { return experiment_; }
+
+    QJsonArray to_json() const;
 
 private:
     std::vector<Datafile> files_; //!< loaded Datafile|s only live here

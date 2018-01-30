@@ -78,8 +78,8 @@ void Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
             continue;
         gSession->setImageSize(rawfile->imageSize());
         files_.push_back(Datafile(rawfile));
+        onFileChanged();
     }
-    onFileChanged();
     if (!highlight_ && countFiles())
         setHighlight(&files_[0]);
 }
@@ -145,7 +145,7 @@ void Dataset::flipClusterActivation(int index) {
 }
 
 void Dataset::cycleFileActivation(int index) {
-    const Datafile& fil = file(index);
+    const Datafile& fil = fileAt(index);
     bool on = fil.activated()!=Qt::Checked;
     for (Cluster* cluster : fil.clusters_)
         cluster->setActivated(on);
@@ -168,10 +168,15 @@ void Dataset::onFileChanged() {
         file.offset_ = cnt;
         cnt += file.count();
     }
+    qDebug() << "Ds:oFS 1";
     updateClusters();
+    qDebug() << "Ds:oFS 2";
     emit gSession->sigFiles();
+    qDebug() << "Ds:oFS 3";
     emit gSession->sigClusters();
+    qDebug() << "Ds:oFS 4";
     emit gSession->sigActivated();
+    qDebug() << "Ds:oFS 5";
 }
 
 void Dataset::onClusteringChanged() {
@@ -216,12 +221,24 @@ void Dataset::updateExperiment() {
     qDebug() << "assembled experiment => size=" << experiment_.size();
 }
 
-bool Dataset::hasFile(rcstr fileName) const {
-    QFileInfo fileInfo(fileName);
-    for (const Datafile& file : files_)
-        if (fileInfo == file.raw_->fileInfo())
-            return true;
-    return false;
+int Dataset::countFiles() const {
+    return files_.size();
+}
+
+int Dataset::countClusters() const {
+    return allClusters_.count();
+}
+
+const Datafile& Dataset::fileAt(int i) const {
+    debug::ensure(countFiles());
+    debug::ensure(0<=i && i<countFiles());
+    return files_[i];
+}
+
+const Cluster& Dataset::clusterAt(int i) const {
+    debug::ensure(countClusters());
+    debug::ensure(0<=i && i<countClusters());
+    return *allClusters_[i];
 }
 
 const Cluster* Dataset::highlightedCluster() const {
@@ -256,4 +273,12 @@ QJsonArray Dataset::to_json() const {
         ret.append(relPath);
     }
     return ret;
+}
+
+bool Dataset::hasFile(rcstr fileName) const {
+    QFileInfo fileInfo(fileName);
+    for (const Datafile& file : files_)
+        if (fileInfo == file.raw_->fileInfo())
+            return true;
+    return false;
 }

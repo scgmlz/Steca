@@ -71,7 +71,7 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
     const int row = index.row();
     if (row < 0 || row >= rowCount())
         return {};
-    const Datafile& file = gSession->dataset().file(row);
+    const Datafile& file = gSession->dataset().fileAt(row);
     int col = index.column();
     switch (role) {
     case Qt::EditRole:
@@ -90,7 +90,7 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
         return {};
     case Qt::CheckStateRole: {
         if (col==1)
-            return gSession->dataset().file(row).activated();
+            return file.activated();
         return {};
     }
     case Qt::BackgroundRole: {
