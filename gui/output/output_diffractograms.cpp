@@ -81,7 +81,7 @@ public:
 namespace {
 
 OutputData outputCurrDiffractogram() {
-    const Cluster* cluster = gSession->dataset().highlightedCluster();
+    const Cluster* cluster = gSession->dataset().highlight().cluster();
     if (!cluster)
         throw Exception("No data selected");
     shp_SequenceLens lens = gSession->defaultClusterLens(*cluster);

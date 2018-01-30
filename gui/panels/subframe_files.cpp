@@ -49,7 +49,7 @@ void FilesModel::onClicked(const QModelIndex& cell) {
     if (col==1)
         gSession->dataset().cycleFileActivation(row);
     else if (col==2)
-        gSession->dataset().highlightFile(row);
+        gSession->dataset().highlight().setFile(row);
 }
 
 void FilesModel::onFilesChanged() {
@@ -94,7 +94,7 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
         return {};
     }
     case Qt::BackgroundRole: {
-        if (row==gSession->dataset().highlightedFileIndex())
+        if (row==gSession->dataset().highlight().fileIndex())
             return QColor(Qt::cyan);
         return QColor(Qt::white);
     }
@@ -136,7 +136,7 @@ FilesView::FilesView() : ListView() {
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
 void FilesView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     scrollTo(current);
-    gSession->dataset().highlightFile(current.row());
+    gSession->dataset().highlight().setFile(current.row());
 }
 
 int FilesView::sizeHintForColumn(int col) const {

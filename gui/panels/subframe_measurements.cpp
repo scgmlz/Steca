@@ -48,8 +48,6 @@ private:
     // update display items only if they have changed. Whether this is really
     // useful is to be determined. The cache for the activation state is gone.
     vec<int> metaInfoNums_; //!< indices of metadata items selected for display
-
-    const Cluster* highlighted_{nullptr};
 };
 
 void ExperimentModel::onClicked(const QModelIndex& cell) {
@@ -60,7 +58,7 @@ void ExperimentModel::onClicked(const QModelIndex& cell) {
     if (col==1)
         gSession->dataset().flipClusterActivation(row);
     else if (col==2)
-        gSession->dataset().highlightCluster(row);
+        gSession->dataset().highlight().setCluster(row);
 }
 
 void ExperimentModel::onClustersChanged() {
@@ -136,7 +134,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
         return QColor(Qt::black);
     }
     case Qt::BackgroundRole: {
-        if (row==gSession->dataset().highlightedClusterIndex())
+        if (row==gSession->dataset().highlight().clusterIndex())
             return QColor(Qt::cyan);
         return QColor(Qt::white);
     }
@@ -202,7 +200,7 @@ ExperimentView::ExperimentView() : ListView() {
 void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     if (!gSession->dataset().countFiles())
         return;
-    gSession->dataset().highlightCluster(current.row());
+    gSession->dataset().highlight().setCluster(current.row());
     updateScroll();
 }
 
@@ -227,7 +225,7 @@ void ExperimentView::onMetaSelection() {
 }
 
 void ExperimentView::updateScroll() {
-    int row = gSession->dataset().highlightedClusterIndex();
+    int row = gSession->dataset().highlight().clusterIndex();
     if (row>=0)
         scrollTo(model()->index(row,0));
 }

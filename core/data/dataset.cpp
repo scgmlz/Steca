@@ -37,6 +37,69 @@ Qt::CheckState Datafile::activated() const {
 }
 
 // ************************************************************************** //
+//  local class HighlightedData
+// ************************************************************************** //
+
+void HighlightedData::setFile(int i) {
+    if (i<0)
+        return unset();
+    debug::ensure(i<gSession->dataset().countFiles());
+    setCluster(gSession->dataset().fileAt(i).clusters_[0]->index());
+}
+
+void HighlightedData::setCluster(int i) {
+    if (i<0)
+        return unset();
+    debug::ensure(i<gSession->dataset().countClusters());
+    current_ = &gSession->dataset().clusterAt(i);
+    emit gSession->sigHighlight();
+}
+
+void HighlightedData::reset() {
+    if (!gSession->dataset().countClusters())
+        return unset();
+    setCluster(0);
+}
+
+void HighlightedData::unset() {
+    current_ = nullptr;
+    emit gSession->sigHighlight();
+}
+
+void HighlightedData::setMeasurement(int val) {
+    measurement_ = qMin( val, cluster()->count()-1 );
+    qDebug() << "setSelectedMeasurement " << val << " -> " << measurement_;
+    emit gSession->sigHighlight();
+}
+
+const Cluster* HighlightedData::cluster() const {
+    return current_;
+}
+
+const Datafile* HighlightedData::file() const {
+    if (!current_)
+        return nullptr;
+    return &current_->file();
+}
+
+int HighlightedData::fileIndex() const {
+    return current_ ? file()->index_ : -1;
+}
+
+int HighlightedData::clusterIndex() const {
+    return current_ ? current_->index() : -1;
+}
+
+int HighlightedData::measurementIndex() const {
+    return measurement_;
+}
+
+const Measurement* HighlightedData::measurement() const {
+    return cluster()->at(measurement_);
+}
+
+
+// ************************************************************************** //
 //  class Dataset
 // ************************************************************************** //
 
@@ -48,16 +111,13 @@ void Dataset::clear() {
 }
 
 void Dataset::removeFile() {
-    int i = highlightedFileIndex();
+    int i = highlight().fileIndex();
     // first unhighlight
     qDebug() << "NOW UNHIGH";
     if (i>0)
-        highlightFile(i-1);
-    else if (countFiles())
-        highlightFile(0);
-    else {
-        unsetHighlight();
-    }
+        highlight().setFile(i-1);
+    else
+        highlight().reset();
     // only then remove
     qDebug() << "NOW REM";
     files_.erase(files_.begin()+i);
@@ -80,42 +140,8 @@ void Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
         files_.push_back(Datafile(rawfile));
         onFileChanged();
     }
-    if (!highlight_ && countFiles())
-        setHighlight(&files_[0]);
-}
-
-void Dataset::highlightFile(int i) {
-    if (countFiles() && i>=0)
-        setHighlight(files_.at(i).clusters_.front());
-    else
-        unsetHighlight();
-}
-
-void Dataset::highlightCluster(int i) {
-    if (countFiles() && i>=0)
-        setHighlight(allClusters_.at(i).data());
-    else
-        unsetHighlight();
-}
-
-void Dataset::unsetHighlight() {
-    highlight_ = nullptr;
-    emit gSession->sigHighlight();
-}
-
-void Dataset::setHighlight(const Cluster* cluster) {
-    if (cluster==highlight_)
-        return;
-    highlight_ = cluster;
-    emit gSession->sigHighlight();
-}
-
-void Dataset::setHighlight(const Datafile* file) {
-    if (highlight_ && file==&highlight_->file())
-        return;
-    debug::ensure(file);
-    highlight_ = file->clusters_.front();
-    emit gSession->sigHighlight();
+    if (highlight().fileIndex()<0 && countFiles())
+        highlight().setFile(0);
 }
 
 void Dataset::setBinning(int by) {
@@ -153,12 +179,6 @@ void Dataset::cycleFileActivation(int index) {
     emit gSession->sigActivated();
 }
 
-void Dataset::setSelectedMeasurement(int val) {
-    selectedMeasurement_ = qMin( val, highlightedCluster()->count()-1 );
-    qDebug() << "setSelectedMeasurement " << val << " -> " << selectedMeasurement_;
-    emit gSession->sigHighlight();
-}
-
 
 void Dataset::onFileChanged() {
     int idx = 0;
@@ -181,10 +201,7 @@ void Dataset::onFileChanged() {
 
 void Dataset::onClusteringChanged() {
     updateClusters();
-    highlightCluster(0); // Simplest way to update highlight.
-                         // Alternatively, we could keep pointing to the first measurement
-                         // of the previously highlighted cluster. Then, we should also
-                         // keep the selected Image constant.
+    highlight().reset();
     emit gSession->sigClusters();
     emit gSession->sigActivated();
     emit gSession->sigHighlight();
@@ -239,31 +256,6 @@ const Cluster& Dataset::clusterAt(int i) const {
     debug::ensure(countClusters());
     debug::ensure(0<=i && i<countClusters());
     return *allClusters_[i];
-}
-
-const Cluster* Dataset::highlightedCluster() const {
-    return highlight_;
-}
-
-int Dataset::highlightedClusterIndex() const {
-    return highlight_ ? highlight_->index() : -1;
-}
-
-const Datafile* Dataset::highlightedFile() const {
-    return highlight_ ? &highlight_->file() : nullptr;
-}
-
-int Dataset::highlightedFileIndex() const {
-    const Datafile* file = highlightedFile();
-    return file ? file->index_ : -1;
-}
-
-int Dataset::selectedMeasurementIndex() const {
-    return selectedMeasurement_;
-}
-
-const Measurement* Dataset::selectedMeasurement() const {
-    return highlightedCluster()->at(selectedMeasurement_);
 }
 
 QJsonArray Dataset::to_json() const {

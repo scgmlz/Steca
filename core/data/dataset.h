@@ -27,7 +27,7 @@
 
 //! A RawFile and associated information.
 
-class Datafile final {
+class Datafile {
 public:
     Datafile() = delete;
     Datafile(Datafile&&) = default;
@@ -46,24 +46,47 @@ public:
 };
 
 
+//! Pointer to highlighted data.
+
+class HighlightedData {
+public:
+    void setFile(int);
+    void setCluster(int);
+    void reset();
+    void setMeasurement(int val);
+
+    const Cluster* cluster() const;
+    int clusterIndex() const;
+    const Datafile* file() const;
+    int fileIndex() const;
+    const Measurement* measurement() const;
+    int measurementIndex() const;
+
+private:
+    void unset();
+
+    const Cluster* current_ { nullptr };
+    int measurement_ {0}; //!< selected for image display (index in highlighted cluster)
+};
+
+
 //! Loaded Datafile|s. Does not include the correction file.
 
-class Dataset final {
+class Dataset {
 public:
+    // Accessor methods
+    HighlightedData& highlight() { return highlight_; }
+    const HighlightedData& highlight() const { return highlight_; }
+
     // Modifying methods:
     void clear();
     void addGivenFiles(const QStringList& filePaths) THROWS;
     void removeFile();
-    void highlightFile(int);
-    void highlightCluster(int);
-    void setHighlight(const Cluster*);
-    void setHighlight(const Datafile*);
     void setBinning(int by);
     void setDropIncomplete(bool on);
     void activateCluster(int index, bool on);
     void flipClusterActivation(int index);
     void cycleFileActivation(int index);
-    void setSelectedMeasurement(int val);
 
     // Const methods:
     int countFiles() const;
@@ -76,14 +99,6 @@ public:
     bool dropIncomplete() const { return dropIncomplete_; }
     bool hasIncomplete() const { return hasIncomplete_; }
 
-    const Cluster* highlightedCluster() const;
-    int highlightedClusterIndex() const;
-    const Datafile* highlightedFile() const;
-    int highlightedFileIndex() const;
-
-    int selectedMeasurementIndex() const;
-    const Measurement* selectedMeasurement() const;
-
     const Experiment& experiment() const { return experiment_; }
 
     QJsonArray to_json() const;
@@ -95,8 +110,7 @@ private:
     bool dropIncomplete_ {false}; //!< drop Cluster|s that have less than binning_ members.
     bool hasIncomplete_; //!< current binning does result in at least one incomplete cluster
 
-    const Cluster* highlight_ {nullptr}; //!< index of highlighted file
-    int selectedMeasurement_ {0}; //!< selected for image display (index in highlighted cluster)
+    HighlightedData highlight_;
 
     Experiment experiment_; //!< active clusters
 
@@ -104,7 +118,6 @@ private:
     void onClusteringChanged();
     void updateClusters();
     void updateExperiment();
-    void unsetHighlight();
 
     bool hasFile(rcstr fileName) const;
 };

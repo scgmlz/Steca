@@ -238,19 +238,20 @@ private:
 DataImageTab::DataImageTab() {
     controls_->addWidget((spinN_ = newQ::SpinBox(4, false, 1)));
     connect(spinN_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
-            gSession->dataset().setSelectedMeasurement(val-1); });
+            gSession->dataset().highlight().setMeasurement(val-1); });
     connect(gSession, &Session::sigHighlight, [this]() {
-            if (!gSession->dataset().highlightedCluster()) {
+            auto& hl = gSession->dataset().highlight();
+            if (!hl.cluster()) {
                 spinN_->setEnabled(false);
                 spinN_->setValue(1);
                 return;
             }
             spinN_->setEnabled( gSession->dataset().binning() > 1);
-            int max = gSession->dataset().highlightedCluster()->count();
+            int max = hl.cluster()->count();
             spinN_->setMaximum(max);
-            if ( gSession->dataset().selectedMeasurementIndex()+1>max )
-                gSession->dataset().setSelectedMeasurement(max-1);
-            spinN_->setValue(gSession->dataset().selectedMeasurementIndex()+1); });
+            if ( hl.measurementIndex()+1>max )
+                hl.setMeasurement(max-1);
+            spinN_->setValue(hl.measurementIndex()+1); });
     spinN_->setEnabled(false);
     spinN_->setValue(1);
 
@@ -290,7 +291,7 @@ void DataImageTab::render() {
     numSlice_->setMaximum(qMax(1, nSlices));
     numSlice_->setEnabled(nSlices > 0);
 
-    if (gSession->dataset().highlightedCluster()) {
+    if (gSession->dataset().highlight().cluster()) {
         // 1 - based
         shp_SequenceLens lens = gSession->highlightsLens();
 
@@ -311,7 +312,7 @@ void DataImageTab::render() {
         }
         gSession->setGammaRange(rge);
 
-        const Measurement* measurement = gSession->dataset().selectedMeasurement();
+        const Measurement* measurement = gSession->dataset().highlight().measurement();
 
         numBin_->setEnabled(true);
         if (gHub->toggle_showBins->isChecked()) {

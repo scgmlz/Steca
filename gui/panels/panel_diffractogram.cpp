@@ -537,7 +537,7 @@ void Diffractogram::onFittingTab(eFittingTab tab) {
 
 void Diffractogram::render() {
     qDebug() << "D render";
-    cluster_ = gSession->dataset().highlightedCluster();
+    cluster_ = gSession->dataset().highlight().cluster();
     if (!cluster_) {
         plot_->plotEmpty();
         return;
@@ -549,7 +549,7 @@ void Diffractogram::render() {
 }
 
 void Diffractogram::onHighlight() {
-    cluster_ = gSession->dataset().highlightedCluster();
+    cluster_ = gSession->dataset().highlight().cluster();
     actZoom_->setChecked(false);
     render();
 }
