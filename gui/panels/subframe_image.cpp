@@ -134,7 +134,6 @@ class ImageTab : public QWidget {
 public:
     ImageTab();
     virtual void render() = 0;
-    virtual void onHighlight() = 0;
 protected:
     QBoxLayout* controls_;
     QPixmap makePixmap(shp_Image);
@@ -165,7 +164,6 @@ ImageTab::ImageTab() {
     connect(gHub, &TheHub::sigDisplayChanged, this, &ImageTab::render);
     connect(gSession, &Session::sigDetector, this, &ImageTab::render);
     connect(gSession, &Session::sigNorm, this, &ImageTab::render);
-    connect(gSession, &Session::sigHighlight, this, &ImageTab::onHighlight);
 }
 
 QPixmap ImageTab::makePixmap(shp_Image image) {
@@ -231,10 +229,7 @@ class DataImageTab : public ImageTab {
 public:
     DataImageTab();
     void render() final;
-    void onHighlight() final;
 private:
-    const Cluster* cluster_ {nullptr};
-
     QSpinBox* spinN_;
     QSpinBox *numSlices_, *numSlice_, *numBin_;
     QDoubleSpinBox *minGamma_, *maxGamma_;
@@ -242,14 +237,35 @@ private:
 
 DataImageTab::DataImageTab() {
     controls_->addWidget((spinN_ = newQ::SpinBox(4, false, 1)));
+    connect(spinN_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
+            gSession->dataset().setSelectedMeasurement(val-1); });
+    connect(gSession, &Session::sigHighlight, [this]() {
+            if (!gSession->dataset().highlightedCluster()) {
+                spinN_->setEnabled(false);
+                spinN_->setValue(1);
+                return;
+            }
+            spinN_->setEnabled( gSession->dataset().binning() > 1);
+            if ( gSession->dataset().selectedMeasurementIndex()+1>
+                 gSession->dataset().highlightedCluster()->count() )
+                gSession->dataset().setSelectedMeasurement(
+                    gSession->dataset().highlightedCluster()->count()-1);
+            spinN_->setValue(gSession->dataset().selectedMeasurementIndex()+1); });
+    spinN_->setEnabled(false);
+    spinN_->setValue(1);
 
     controls_->addStretch(1);
 
     controls_->addWidget(newQ::IconButton(gHub->toggle_showBins));
     controls_->addWidget(newQ::Label("γ count"));
     controls_->addWidget((numSlices_ = newQ::SpinBox(4, false, 0)));
+    connect(numSlices_, _SLOT_(QSpinBox, valueChanged, int),
+            [this](int /*unused*/) { render(); });
+
     controls_->addWidget(newQ::Label("#"));
     controls_->addWidget((numSlice_ = newQ::SpinBox(4, false, 1)));
+    connect(numSlice_, _SLOT_(QSpinBox, valueChanged, int),
+            [this](int /*unused*/) { render(); });
 
     controls_->addWidget(newQ::Label("min"));
     controls_->addWidget((minGamma_ = newQ::DoubleSpinBox(6)));
@@ -261,20 +277,10 @@ DataImageTab::DataImageTab() {
 
     controls_->addWidget(newQ::Label("bin#"));
     controls_->addWidget((numBin_ = newQ::SpinBox(4, false, 1)));
-
-    connect(spinN_, _SLOT_(QSpinBox, valueChanged, int),
-            [this](int /*unused*/) { render(); });
-    connect(numSlices_, _SLOT_(QSpinBox, valueChanged, int),
-            [this](int /*unused*/) { render(); });
-    connect(numSlice_, _SLOT_(QSpinBox, valueChanged, int),
-            [this](int /*unused*/) { render(); });
     connect(numBin_, _SLOT_(QSpinBox, valueChanged, int),
             [this](int /*unused*/) { render(); });
-}
 
-void DataImageTab::onHighlight() {
-    cluster_ = gSession->dataset().highlightedCluster();
-    render();
+    connect(gSession, &Session::sigHighlight, this, &ImageTab::render);
 }
 
 void DataImageTab::render() {
@@ -284,14 +290,8 @@ void DataImageTab::render() {
     numSlice_->setMaximum(qMax(1, nSlices));
     numSlice_->setEnabled(nSlices > 0);
 
-    if (cluster_) {
+    if (gSession->dataset().highlightedCluster()) {
         // 1 - based
-        const int by = gSession->dataset().binning();
-        const int n = qBound(1, spinN_->value(), by);
-
-        spinN_->setValue(n);
-        spinN_->setEnabled(by > 1);
-
         shp_SequenceLens lens = gSession->highlightsLens();
 
         Range rge;
@@ -314,7 +314,7 @@ void DataImageTab::render() {
         }
         gSession->setGammaRange(rge);
 
-        const Measurement* measurement = cluster_->at(n - 1);
+        const Measurement* measurement = gSession->dataset().selectedMeasurement();
 
         numBin_->setEnabled(true);
         if (gHub->toggle_showBins->isChecked()) {
@@ -330,7 +330,6 @@ void DataImageTab::render() {
             pixMap = makePixmap(measurement->image());
         }
     } else {
-        spinN_->setEnabled(false);
         numBin_->setMaximum(0);
         numBin_->setEnabled(false);
 
@@ -348,13 +347,11 @@ class CorrImageTab : public ImageTab {
 public:
     CorrImageTab();
     void render() final;
-    void onHighlight() final {}
 };
 
 CorrImageTab::CorrImageTab() {
     controls_->addStretch(1);
-    connect(gSession, &Session::sigCorr, [this]() {
-            setEnabled(gSession->corrset().isEnabled()); });
+    connect(gSession, &Session::sigCorr, [this]() { setEnabled(gSession->corrset().isEnabled()); });
 }
 
 void CorrImageTab::render() {
@@ -369,5 +366,5 @@ void CorrImageTab::render() {
 SubframeImage::SubframeImage() {
     setTabPosition(QTabWidget::North);
     auto tabData = new DataImageTab(); addTab(tabData, "Data image");
-    auto tabCorr = new CorrImageTab(); addTab(tabCorr, "Corr image");
+    auto tabCorr = new CorrImageTab(); addTab(tabCorr, "Corr image"); tabCorr->setEnabled(false);
 }

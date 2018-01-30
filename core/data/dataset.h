@@ -63,6 +63,7 @@ public:
     void activateCluster(int index, bool on);
     void flipClusterActivation(int index);
     void cycleFileActivation(int index);
+    void setSelectedMeasurement(int val);
 
     // Const methods:
     int countFiles() const { return files_.size(); }
@@ -80,6 +81,8 @@ public:
     bool dropIncomplete() const { return dropIncomplete_; }
     bool hasIncomplete() const { return hasIncomplete_; }
     const QVector<shp_Cluster>& allClusters() const { return allClusters_; }
+    int selectedMeasurementIndex() const;
+    const Measurement* selectedMeasurement() const;
     QJsonArray to_json() const;
 
     const Experiment& experiment() const { return experiment_; }
@@ -92,6 +95,7 @@ private:
     bool hasIncomplete_; //!< current binning does result in at least one incomplete cluster
 
     const Cluster* highlight_ {nullptr}; //!< index of highlighted file
+    int selectedMeasurement_ {0}; //!< selected for image display (index in highlighted cluster)
 
     Experiment experiment_; //!< active clusters
 

@@ -153,6 +153,13 @@ void Dataset::cycleFileActivation(int index) {
     emit gSession->sigActivated();
 }
 
+void Dataset::setSelectedMeasurement(int val) {
+    selectedMeasurement_ = qMin( val, highlightedCluster()->count()-1 );
+    qDebug() << "setSelectedMeasurement " << val << " -> " << selectedMeasurement_;
+    emit gSession->sigHighlight();
+}
+
+
 void Dataset::onFileChanged() {
     int idx = 0;
     int cnt = 0;
@@ -171,6 +178,8 @@ void Dataset::onClusteringChanged() {
     updateClusters();
     emit gSession->sigClusters();
     emit gSession->sigActivated();
+    // TODO keep highlight pointing to at least one previously highlighted measurement
+    emit gSession->sigHighlight();
 }
 
 void Dataset::updateClusters() {
@@ -227,6 +236,14 @@ const Datafile* Dataset::highlightedFile() const {
 int Dataset::highlightedFileIndex() const {
     const Datafile* file = highlightedFile();
     return file ? file->index_ : -1;
+}
+
+int Dataset::selectedMeasurementIndex() const {
+    return selectedMeasurement_;
+}
+
+const Measurement* Dataset::selectedMeasurement() const {
+    return highlightedCluster()->at(selectedMeasurement_);
 }
 
 QJsonArray Dataset::to_json() const {

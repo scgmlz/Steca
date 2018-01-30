@@ -202,7 +202,6 @@ ExperimentView::ExperimentView() : ListView() {
 void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     if (!gSession->dataset().countFiles())
         return;
-    qDebug() << "EV curr Changed";
     gSession->dataset().highlightCluster(current.row());
     updateScroll();
 }
