@@ -496,7 +496,7 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
 
     connect(gSession, &Session::sigPeaks, [this]() {
             currentPeak_ = gSession->peaks().selectedPeak(); // TODO get rid
-                plot_->renderAll();
+            plot_->renderAll();
             });
 
     gHub->toggle_selRegions->setChecked(true);
@@ -532,10 +532,8 @@ void Diffractogram::onFittingTab(eFittingTab tab) {
 
 void Diffractogram::render() {
     cluster_ = gSession->dataset().highlight().cluster();
-    if (!cluster_) {
-        plot_->plotEmpty();
-        return;
-    }
+    if (!cluster_)
+        return plot_->plotEmpty();
     calcDgram();
     calcBackground();
     calcPeaks();
@@ -562,8 +560,9 @@ void Diffractogram::calcBackground() {
     bg_.clear();
     dgramBgFitted_.clear();
 
-    const Polynom& bgPolynom =
-        Polynom::fromFit(gSession->baseline().polynomDegree(), dgram_, gSession->baseline().ranges()); // TODO bundle this code line which similarly appears in at least one other place
+    const Polynom& bgPolynom = Polynom::fromFit(
+        gSession->baseline().polynomDegree(), dgram_, gSession->baseline().ranges());
+        // TODO bundle this code line which similarly appears in at least one other place
 
     for_i (dgram_.count()) {
         qreal x = dgram_.x(i), y = bgPolynom.y(x);
@@ -605,6 +604,4 @@ void Diffractogram::calcPeaks() {
         }
         refls_.append(c);
     }
-
-    // emit gSession->sigPeaks();
 }

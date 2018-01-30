@@ -52,18 +52,20 @@ private:
 
 void ExperimentModel::onClicked(const QModelIndex& cell) {
     int row = cell.row();
+    int col = cell.column();
+    qDebug() << "ON CLICK " << row << " " << col;
     if (row < 0 || row >= rowCount())
         return;
-    int col = cell.column();
-    if (col==1)
+    if (col==1) {
         gSession->dataset().flipClusterActivation(row);
-    else if (col==2)
+    } else if (col==2) {
         gSession->dataset().highlight().setCluster(row);
+    }
 }
 
 void ExperimentModel::onClustersChanged() {
-    signalReset();
-    //beginResetModel(); endResetModel(); // TODO replace by signalReset
+    //signalReset();
+    beginResetModel(); endResetModel(); // TODO replace by signalReset
 }
 
 void ExperimentModel::onHighlight() {
@@ -200,6 +202,7 @@ ExperimentView::ExperimentView() : ListView() {
 void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     if (!gSession->dataset().countFiles())
         return;
+    qDebug() << "CUCHANGE " << current.row();
     gSession->dataset().highlight().setCluster(current.row());
     updateScroll();
 }
