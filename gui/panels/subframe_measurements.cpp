@@ -64,13 +64,11 @@ void ExperimentModel::onClicked(const QModelIndex& cell) {
 }
 
 void ExperimentModel::onClustersChanged() {
-    //signalReset();
-    beginResetModel(); endResetModel(); // TODO replace by signalReset
+    signalReset();
 }
 
 void ExperimentModel::onHighlight() {
-    // signalReset();
-    beginResetModel(); endResetModel(); // TODO replace by signalReset
+    signalReset();
 }
 
 void ExperimentModel::onActivated() {
