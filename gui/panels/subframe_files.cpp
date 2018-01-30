@@ -43,9 +43,10 @@ private:
 //! Selects or unselects all measurements in a file.
 void FilesModel::onClicked(const QModelIndex& cell) {
     int row = cell.row();
+    int col = cell.column();
+    qDebug() << "FM ON CLICK " << row << " " << col;
     if (row < 0 || row >= rowCount())
         return;
-    int col = cell.column();
     if (col==1)
         gSession->dataset().cycleFileActivation(row);
     else if (col==2)
@@ -118,19 +119,19 @@ private:
     void currentChanged(QModelIndex const&, QModelIndex const&) override final;
 
     int sizeHintForColumn(int) const final;
-    FilesModel* model() const { return static_cast<FilesModel*>(ListView::model()); }
+    FilesModel* model_;
 };
 
 FilesView::FilesView() : ListView() {
     setHeaderHidden(true);
     setSelectionMode(QAbstractItemView::NoSelection);
-    auto filesModel = new FilesModel();
-    setModel(filesModel);
+    model_ = new FilesModel();
+    setModel(model_);
 
-    connect(gSession, &Session::sigFiles, model(), &FilesModel::onFilesChanged);
-    connect(gSession, &Session::sigHighlight, model(), &FilesModel::onHighlight);
-    connect(gSession, &Session::sigActivated, model(), &FilesModel::onActivated);
-    connect(this, &FilesView::clicked, model(), &FilesModel::onClicked);
+    connect(gSession, &Session::sigFiles, model_, &FilesModel::onFilesChanged);
+    connect(gSession, &Session::sigHighlight, model_, &FilesModel::onHighlight);
+    connect(gSession, &Session::sigActivated, model_, &FilesModel::onActivated);
+    connect(this, &FilesView::clicked, model_, &FilesModel::onClicked);
 }
 
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.

@@ -53,7 +53,7 @@ private:
 void ExperimentModel::onClicked(const QModelIndex& cell) {
     int row = cell.row();
     int col = cell.column();
-    qDebug() << "ON CLICK " << row << " " << col;
+    qDebug() << "EM ON CLICK " << row << " " << col;
     if (row < 0 || row >= rowCount())
         return;
     if (col==1) {
