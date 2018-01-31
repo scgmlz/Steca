@@ -41,7 +41,7 @@ Qt::CheckState Datafile::activated() const {
 // ************************************************************************** //
 
 void HighlightedData::setFile(int i) {
-    qDebug() << "HIGHLIGHT FILE " << i;
+    qDebug() << "HD set file " << i;
     if (i<0)
         return unset();
     debug::ensure(i<gSession->dataset().countFiles());
@@ -50,7 +50,7 @@ void HighlightedData::setFile(int i) {
 }
 
 void HighlightedData::setCluster(int i) {
-    qDebug() << "HIGHLIGHT CLUSTER " << i;
+    qDebug() << "HD set cluster " << i;
     if (i<0)
         return unset();
     debug::ensure(i<gSession->dataset().countClusters());

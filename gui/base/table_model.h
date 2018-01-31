@@ -21,9 +21,13 @@
 
 class TableModel : public QAbstractTableModel {
 public:
-    void signalReset() { beginResetModel(); endResetModel(); } //!< force-emits reset() signal
+    //! Redraws the entire table, and sets currentIndex to (0,0) [?] which may be unwanted
+    void resetModel() {
+        beginResetModel(); endResetModel(); }
+
     int columnCount(const QModelIndex& /*unused*/) const { return columnCount(); }
     int rowCount(const QModelIndex& /*unused*/) const { return rowCount(); }
+
     virtual int columnCount() const = 0;
     virtual int rowCount() const = 0;
 };
