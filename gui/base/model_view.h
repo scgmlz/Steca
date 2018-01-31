@@ -24,8 +24,7 @@
 class TableModel : public QAbstractTableModel {
 public:
     //! Redraws the entire table, and sets currentIndex to (0,0) [?] which may be unwanted
-    void resetModel() {
-        beginResetModel(); endResetModel(); }
+    void resetModel() { beginResetModel(); endResetModel(); }
 
     int columnCount(const QModelIndex& /*unused*/) const { return columnCount(); }
     int rowCount(const QModelIndex& /*unused*/) const { return rowCount(); }

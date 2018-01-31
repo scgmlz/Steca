@@ -52,12 +52,12 @@ void FilesModel::onClicked(const QModelIndex& cell) {
 }
 
 void FilesModel::onFilesChanged() {
-    beginResetModel(); endResetModel(); // not understood, but imperatively needed
+    resetModel(); // repaint everything, and reset currentIndex to origin
 }
 
 //! Update highlight display upon sigHighlight.
 void FilesModel::onHighlight() {
-    resetModel();
+    emit dataChanged(createIndex(0,0),createIndex(rowCount()-1,columnCount()-1));
 }
 
 //! Update activation check display upon sigActivated.

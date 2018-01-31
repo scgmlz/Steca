@@ -14,7 +14,6 @@
 
 #include "model_view.h"
 #include "core/def/idiomatic_for.h"
-#include "gui/base/model_view.h"
 
 ListView::ListView() {
     setAlternatingRowColors(true);
