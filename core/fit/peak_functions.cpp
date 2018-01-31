@@ -63,7 +63,7 @@ qreal Raw::dy(qreal, int, qreal const*) const {
 }
 
 qpair Raw::fittedPeak() const {
-    if (qIsNaN(sum_y_))
+    if (qIsNaN(sum_y_) && fittedCurve_.count())
         sum_y_ = fittedCurve_.sumY();
     return qpair(range_.center(), sum_y_);
 }
