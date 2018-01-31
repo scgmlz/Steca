@@ -368,8 +368,8 @@ ControlsDetector::ControlsDetector() {
 
     // widgets
 
-    detDistance_ = newQ::DoubleSpinBox(6, true, Geometry::MIN_DETECTOR_DISTANCE);
-    detPixelSize_ = newQ::DoubleSpinBox(6, true, Geometry::MIN_DETECTOR_PIXEL_SIZE);
+    detDistance_ = newQ::DoubleSpinBox(6, Geometry::MIN_DETECTOR_DISTANCE);
+    detPixelSize_ = newQ::DoubleSpinBox(6, Geometry::MIN_DETECTOR_PIXEL_SIZE);
     detPixelSize_->setDecimals(3);
 
     detDistance_->setValue(Geometry::DEF_DETECTOR_DISTANCE);
