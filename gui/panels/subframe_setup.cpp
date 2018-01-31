@@ -14,9 +14,8 @@
 
 #include "gui/panels/subframe_setup.h"
 #include "core/session.h"
-#include "gui/base/table_model.h"
+#include "gui/base/model_view.h"
 #include "gui/thehub.h"
-#include "gui/base/tree_views.h" // inheriting from
 #include "gui/base/new_q.h"
 
 namespace {
@@ -128,7 +127,7 @@ void PeaksView::removeSelected() {
 }
 
 void PeaksView::update() {
-    model_->signalReset();
+    model_->resetModel();
 }
 
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.

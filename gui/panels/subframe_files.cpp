@@ -14,10 +14,9 @@
 
 #include "gui/panels/subframe_files.h"
 #include "core/session.h"
-#include "gui/base/table_model.h"
+#include "gui/base/model_view.h"
 #include "gui/thehub.h"
 #include "gui/base/new_q.h"
-#include "gui/base/tree_views.h" // inheriting from
 #include <QHeaderView>
 
 
@@ -58,7 +57,7 @@ void FilesModel::onFilesChanged() {
 
 //! Update highlight display upon sigHighlight.
 void FilesModel::onHighlight() {
-    signalReset();
+    resetModel();
 }
 
 //! Update activation check display upon sigActivated.

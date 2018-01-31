@@ -14,9 +14,8 @@
 
 #include "core/session.h"
 #include "gui/panels/subframe_metadata.h"
-#include "gui/base/table_model.h"
+#include "gui/base/model_view.h"
 #include "gui/thehub.h"
-#include "gui/base/tree_views.h" // inheriting from
 #include <QHeaderView>
 
 
@@ -52,13 +51,13 @@ MetadataModel::MetadataModel() {
 void MetadataModel::reset() {
     const Cluster* cluster = gSession->dataset().highlight().cluster();
     metadata_ = cluster ? cluster->avgeMetadata() : nullptr;
-    signalReset();
+    resetModel();
 }
 
 void MetadataModel::onClicked(const QModelIndex &cell) {
     int row = cell.row();
     rowsChecked_[row] = !rowsChecked_[row];
-    signalReset();
+    resetModel();
     emit gSession->setMetaSelection(rowsChecked_);
 }
 

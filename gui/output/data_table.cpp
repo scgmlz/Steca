@@ -14,7 +14,7 @@
 
 #include "gui/output/data_table.h"
 #include "core/def/idiomatic_for.h"
-#include "gui/base/table_model.h"
+#include "gui/base/model_view.h"
 #include "gui/output/dialog_panels.h"
 #include <QHeaderView>
 

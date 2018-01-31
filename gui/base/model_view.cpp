@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/base/tree_views.cpp
-//! @brief     Implements classes TreeView, ListView
+//! @file      gui/base/model_view.cpp
+//! @brief     Implements class ListView
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,9 +12,9 @@
 //
 // ************************************************************************** //
 
-#include "tree_views.h"
+#include "model_view.h"
 #include "core/def/idiomatic_for.h"
-#include "gui/base/table_model.h"
+#include "gui/base/model_view.h"
 
 ListView::ListView() {
     setAlternatingRowColors(true);

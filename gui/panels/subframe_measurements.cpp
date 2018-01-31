@@ -14,8 +14,7 @@
 
 #include "gui/panels/subframe_measurements.h"
 #include "core/session.h"
-#include "gui/base/table_model.h"
-#include "gui/base/tree_views.h" // inheriting from
+#include "gui/base/model_view.h"
 #include "gui/thehub.h"
 #include <QHeaderView>
 
