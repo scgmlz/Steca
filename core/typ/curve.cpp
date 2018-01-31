@@ -43,17 +43,17 @@ void Curve::append(qreal x, qreal y) {
 }
 
 Curve Curve::intersect(const Range& range) const {
+    if (range.isEmpty())
+        return {};
+    debug::ensure(isOrdered());
     Curve ret;
-    if (!range.isEmpty()) {
-        debug::ensure(isOrdered());
-        int xi = 0;
-        const int cnt = count();
-        while (xi < cnt && xs_.at(xi) < range.min)
-            ++xi;
-        while (xi < cnt && xs_.at(xi) <= range.max) {
-            ret.append(xs_.at(xi), ys_.at(xi));
-            ++xi;
-        }
+    int xi = 0;
+    const int cnt = count();
+    while (xi < cnt && xs_.at(xi) < range.min)
+        ++xi;
+    while (xi < cnt && xs_.at(xi) <= range.max) {
+        ret.append(xs_.at(xi), ys_.at(xi));
+        ++xi;
     }
     return ret;
 }
