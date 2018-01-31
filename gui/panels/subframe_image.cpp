@@ -322,11 +322,6 @@ void DataImageTab::render() {
             qreal min = rgeTth.min;
             qreal wdt = rgeTth.width();
             qreal num = qreal(numBin_->value());
-                qDebug() << "DEBUG BIN:";
-                qDebug() << "count: " << count;
-                qDebug() << "num: " << num;
-                qDebug() << "rgeThe: " << min << " to " << rgeTth.max;
-                qDebug() << "width: " << wdt;
            pixMap = makePixmap(
                 *measurement, rge,
                 Range(min + wdt * (num / count), min + wdt * ((num + 1) / count)));
