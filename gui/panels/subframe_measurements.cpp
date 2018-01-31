@@ -53,7 +53,6 @@ private:
 void ExperimentModel::onClicked(const QModelIndex& cell) {
     int row = cell.row();
     int col = cell.column();
-    qDebug() << "EM ON CLICK " << row << " " << col;
     if (row < 0 || row >= rowCount())
         return;
     if (col==1) {
@@ -200,7 +199,8 @@ ExperimentView::ExperimentView() : ListView() {
 void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     if (!gSession->dataset().countFiles())
         return;
-    qDebug() << "CUCHANGE " << current.row() << " countClusters=" << gSession->dataset().countClusters();
+    if (current.row()==gSession->dataset().highlight().clusterIndex())
+        return; // the following would prevent execution of "onClicked"
     gSession->dataset().highlight().setCluster(current.row());
     updateScroll();
 }

@@ -44,7 +44,6 @@ private:
 void FilesModel::onClicked(const QModelIndex& cell) {
     int row = cell.row();
     int col = cell.column();
-    qDebug() << "FM ON CLICK " << row << " " << col;
     if (row < 0 || row >= rowCount())
         return;
     if (col==1)
@@ -136,6 +135,8 @@ FilesView::FilesView() : ListView() {
 
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
 void FilesView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
+    if (current.row()==gSession->dataset().highlight().fileIndex())
+        return; // the following would prevent execution of "onClicked"
     scrollTo(current);
     gSession->dataset().highlight().setFile(current.row());
 }
