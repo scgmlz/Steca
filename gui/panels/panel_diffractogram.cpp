@@ -299,6 +299,8 @@ void DiffractogramPlot::plot(
         graph->setPen(QPen(Qt::green, i == currReflIndex ? 2 : 1));
         graph->setData(r.xs().sup(), r.ys().sup());
     }
+
+    replot();
 }
 
 void DiffractogramPlot::plotEmpty() {
@@ -472,8 +474,7 @@ Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
 
     connect(gSession, &Session::sigHighlight, this, &Diffractogram::onHighlight);
     connect(gSession, &Session::sigCorr, this, &Diffractogram::render);
-    connect(gSession, &Session::sigActivated, // TODO render only when avge is shown
-            this, &Diffractogram::render);
+    connect(gSession, &Session::sigActivated, this, &Diffractogram::render);
     connect(gSession, &Session::sigDetector, [this](){ render(); });
     connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
     connect(gSession, &Session::sigDiffractogram, [this](){ render(); });
@@ -532,8 +533,10 @@ void Diffractogram::onFittingTab(eFittingTab tab) {
 
 void Diffractogram::render() {
     cluster_ = gSession->dataset().highlight().cluster();
-    if (!cluster_)
-        return plot_->plotEmpty();
+    if (!cluster_) {
+        plot_->plotEmpty();
+        return;
+    }
     calcDgram();
     calcBackground();
     calcPeaks();
