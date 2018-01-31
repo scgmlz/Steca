@@ -39,6 +39,7 @@ public:
     void fit(Curve const&, const Range&);
 
     str name() const final { return "Raw"; }
+    bool isRaw() const final { return true; }
 
 private:
     Curve fittedCurve_; // saved from fitting

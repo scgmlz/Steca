@@ -26,10 +26,6 @@ PeakFunction const& Peak::peakFunction() const {
     return *peakFunction_;
 }
 
-const Range& Peak::range() const {
-    return peakFunction_->range();
-}
-
 void Peak::setRange(const Range& range) {
     peakFunction_->setRange(range);
     invalidateGuesses();
@@ -51,10 +47,6 @@ void Peak::setGuessFWHM(fwhm_t fwhm) {
 
 void Peak::fit(Curve const& curve) {
     peakFunction_->fit(curve);
-}
-
-QString Peak::functionName() const {
-    return peakFunction_->name();
 }
 
 void Peak::setPeakFunction(const QString& peakFunctionName) {

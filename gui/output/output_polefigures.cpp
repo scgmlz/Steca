@@ -285,8 +285,7 @@ void PoleFiguresFrame::displayPeak(int reflIndex, bool interpolated) {
     Frame::displayPeak(reflIndex, interpolated);
     if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
         tabGraph_->set((interpolated ? interpPoints_ : calcPoints_).at(reflIndex));
-    tabSave_->rawReflSettings(
-        gSession->peaks().at(reflIndex).functionName() != "Raw");
+    tabSave_->rawReflSettings(!gSession->peaks().at(reflIndex).isRaw());
 }
 
 void PoleFiguresFrame::savePoleFigureOutput() {
@@ -318,7 +317,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, int index) {
         reflInfo = interpPoints_.at(index);
     else
         reflInfo = calcPoints_.at(index);
-    bool withFit = gSession->peaks().at(index).functionName() != "Raw";
+    bool withFit = !gSession->peaks().at(index).isRaw();
     str path = str(filePath + OUT_FILE_TAG).arg(index + 1);
     bool check = false;
     int numSavedFiles = 0;

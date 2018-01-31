@@ -17,6 +17,7 @@
 #include "gui/base/model_view.h"
 #include "gui/thehub.h"
 #include "gui/base/new_q.h"
+#include <QStackedWidget>
 
 namespace {
 qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }
@@ -176,59 +177,127 @@ void RangeControl::update() {
 
 
 // ************************************************************************** //
-//  local class PeakdataView
+//  local class PeakdataView and its dependences
 // ************************************************************************** //
 
-//! A grid with labels and number displays to view guessed and fitted peak data.
+//! Virtual base class for RawPeakdataView and FitPeakdataView.
 
-class PeakdataView : public QWidget {
+class AnyPeakdataView : public QWidget {
 public:
-    PeakdataView();
-    void update(const PeakFunction& peakFun);
-private:
-    QLineEdit *spinGuessPeakX_, *spinGuessPeakY_, *spinGuessFWHM_;
+    AnyPeakdataView();
+    virtual void update(const PeakFunction&);
+protected:
     QLineEdit *readFitPeakX_, *readFitPeakY_, *readFitFWHM_;
 };
 
-PeakdataView::PeakdataView() {
-
-    QGridLayout* gb = newQ::GridLayout();
-    setLayout(gb);
-
-    gb->addWidget(newQ::Label("guess"), 1, 1);
-    gb->addWidget(newQ::Label("fitted"), 1, 2);
-
-    gb->addWidget(newQ::Label("centre"), 2, 0);
-    gb->addWidget((spinGuessPeakX_ = newQ::LineDisplay(6, true)), 2, 1);
-    gb->addWidget((readFitPeakX_ = newQ::LineDisplay(6, true)), 2, 2);
-    gb->addWidget(newQ::Label("deg"), 2, 3);
-
-    gb->addWidget(newQ::Label("fwhm"), 3, 0);
-    gb->addWidget((spinGuessFWHM_ = newQ::LineDisplay(6, true)), 3, 1);
-    gb->addWidget((readFitFWHM_ = newQ::LineDisplay(6, true)), 3, 2);
-    gb->addWidget(newQ::Label("deg"), 3, 3);
-
-    gb->addWidget(newQ::Label("intens"), 4, 0);
-    gb->addWidget((spinGuessPeakY_ = newQ::LineDisplay(6, true)), 4, 1);
-    gb->addWidget((readFitPeakY_ = newQ::LineDisplay(6, true)), 4, 2);
-
-    gb->setColumnStretch(4, 1);
-
+AnyPeakdataView::AnyPeakdataView() {
+    readFitPeakX_ = newQ::LineDisplay(6, true);
+    readFitFWHM_ = newQ::LineDisplay(6, true);
+    readFitPeakY_ = newQ::LineDisplay(6, true);
 }
 
-void PeakdataView::update(const PeakFunction& peakFun) {
-    const qpair& guessedPeak = peakFun.guessedPeak();
-    spinGuessPeakX_->setText(safeRealText(guessedPeak.x));
-    spinGuessPeakY_->setText(safeRealText(guessedPeak.y));
-    spinGuessFWHM_->setText(safeRealText(peakFun.guessedFWHM()));
-
+void AnyPeakdataView::update(const PeakFunction& peakFun) {
     const qpair& fittedPeak = peakFun.fittedPeak();
     readFitPeakX_->setText(safeRealText(fittedPeak.x));
     readFitPeakY_->setText(safeRealText(fittedPeak.y));
     readFitFWHM_->setText(safeRealText(peakFun.fittedFWHM()));
-
-    setEnabled(true);
 }
+
+//! Displays outcome of raw data analysis.
+
+class RawPeakdataView : public AnyPeakdataView {
+public:
+    RawPeakdataView();
+};
+
+RawPeakdataView::RawPeakdataView() {
+    QGridLayout* lay = newQ::GridLayout();
+    lay->addWidget(newQ::Label(""), 1, 1);
+
+    lay->addWidget(newQ::Label("centre"), 2, 0);
+    lay->addWidget(readFitPeakX_, 2, 2);
+    lay->addWidget(newQ::Label("deg"), 2, 3);
+
+    lay->addWidget(newQ::Label("fwhm"), 3, 0);
+    lay->addWidget(readFitFWHM_, 3, 2);
+    lay->addWidget(newQ::Label("deg"), 3, 3);
+
+    lay->addWidget(newQ::Label("intens"), 4, 0);
+    lay->addWidget(readFitPeakY_, 4, 2);
+
+    lay->setColumnStretch(4, 1);
+    setLayout(lay);
+}
+
+//! Displays outcome of peak fit.
+
+class FitPeakdataView : public AnyPeakdataView {
+public:
+    FitPeakdataView();
+    virtual void update(const PeakFunction&);
+private:
+    QLineEdit *spinGuessPeakX_, *spinGuessPeakY_, *spinGuessFWHM_;
+};
+
+FitPeakdataView::FitPeakdataView() {
+    spinGuessPeakX_ = newQ::LineDisplay(6, true);
+    spinGuessFWHM_ = newQ::LineDisplay(6, true);
+    spinGuessPeakY_ = newQ::LineDisplay(6, true);
+
+    QGridLayout* lay = newQ::GridLayout();
+    lay->addWidget(newQ::Label("guess"), 1, 1);
+    lay->addWidget(newQ::Label("fitted"), 1, 2);
+
+    lay->addWidget(newQ::Label("centre"), 2, 0);
+    lay->addWidget(spinGuessPeakX_, 2, 1);
+    lay->addWidget(readFitPeakX_, 2, 2);
+    lay->addWidget(newQ::Label("deg"), 2, 3);
+
+    lay->addWidget(newQ::Label("fwhm"), 3, 0);
+    lay->addWidget(spinGuessFWHM_, 3, 1);
+    lay->addWidget(readFitFWHM_, 3, 2);
+    lay->addWidget(newQ::Label("deg"), 3, 3);
+
+    lay->addWidget(newQ::Label("intens"), 4, 0);
+    lay->addWidget(spinGuessPeakY_, 4, 1);
+    lay->addWidget(readFitPeakY_, 4, 2);
+
+    lay->setColumnStretch(4, 1);
+    setLayout(lay);
+}
+
+void FitPeakdataView::update(const PeakFunction& peakFun) {
+    AnyPeakdataView::update(peakFun);
+
+    const qpair& guessedPeak = peakFun.guessedPeak();
+    spinGuessPeakX_->setText(safeRealText(guessedPeak.x));
+    spinGuessPeakY_->setText(safeRealText(guessedPeak.y));
+    spinGuessFWHM_->setText(safeRealText(peakFun.guessedFWHM()));
+}
+
+
+//! Displays result of either raw data analysis or peak fit.
+
+class PeakdataView : public QStackedWidget {
+public:
+    PeakdataView();
+    void update(const PeakFunction&);
+private:
+    AnyPeakdataView* widgets_[2];
+};
+
+PeakdataView::PeakdataView() {
+    addWidget(widgets_[0] = new RawPeakdataView());
+    addWidget(widgets_[1] = new FitPeakdataView());
+    widgets_[0]->show(); // setCurrentIndex(0);
+}
+
+void PeakdataView::update(const PeakFunction& peakFun) {
+    int i = peakFun.isRaw() ? 0 : 1;
+    widgets_[i]->update(peakFun);
+    setCurrentIndex(i);
+}
+
 
 // ************************************************************************** //
 //  local class ControlsPeakfits
@@ -305,9 +374,6 @@ ControlsPeakfits::ControlsPeakfits() {
 
 void ControlsPeakfits::onPeaks() {
     peaksView_->update();
-    bool on = gSession->peaks().count();
-    qDebug() << "onPeaks: " << on;
-
     Peak* peak = gSession->peaks().selectedPeak();
     silentSpin_ = true;
 
@@ -321,7 +387,6 @@ void ControlsPeakfits::onPeaks() {
             QSignalBlocker __(comboReflType_);
             comboReflType_->setCurrentText(peak->functionName());
         }
-
         rangeControl_.update();
         peakdataView_.update(peak->peakFunction());
     }

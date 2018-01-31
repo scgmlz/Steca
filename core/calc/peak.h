@@ -39,9 +39,10 @@ public:
     void setGuessFWHM(fwhm_t fwhm);
     void fit(Curve const&);
 
-    QString functionName() const;
     PeakFunction const& peakFunction() const;
-    const Range& range() const;
+    QString functionName() const { return peakFunction_->name(); }
+    bool isRaw() const { return peakFunction_->isRaw(); }
+    const Range& range() const { return peakFunction_->range(); }
     JsonObj to_json() const;
 
 private:

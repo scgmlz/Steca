@@ -69,6 +69,7 @@ public:
     virtual qpair peakError() const = 0;
     virtual fwhm_t fwhmError() const = 0;
     JsonObj to_json() const final;
+    virtual bool isRaw() const { return false; } //!< overwritten in class Raw, obviously
 
 protected:
     Range range_;
