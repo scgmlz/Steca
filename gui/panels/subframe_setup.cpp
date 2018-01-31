@@ -201,10 +201,12 @@ PeakdataView::PeakdataView() {
     gb->addWidget(newQ::Label("centre"), 2, 0);
     gb->addWidget((spinGuessPeakX_ = newQ::LineDisplay(6, true)), 2, 1);
     gb->addWidget((readFitPeakX_ = newQ::LineDisplay(6, true)), 2, 2);
+    gb->addWidget(newQ::Label("deg"), 2, 3);
 
     gb->addWidget(newQ::Label("fwhm"), 3, 0);
     gb->addWidget((spinGuessFWHM_ = newQ::LineDisplay(6, true)), 3, 1);
     gb->addWidget((readFitFWHM_ = newQ::LineDisplay(6, true)), 3, 2);
+    gb->addWidget(newQ::Label("deg"), 3, 3);
 
     gb->addWidget(newQ::Label("intens"), 4, 0);
     gb->addWidget((spinGuessPeakY_ = newQ::LineDisplay(6, true)), 4, 1);
