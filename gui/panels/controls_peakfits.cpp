@@ -27,6 +27,8 @@ str safeRealText(qreal val) { return qIsFinite(val) ? str::number(val) : ""; }
 //  local class PeaksModel, used in PeaksView
 // ************************************************************************** //
 
+//! Model for PeaksView.
+
 class PeaksModel : public TableModel {
 public:
     PeaksModel() : TableModel() {}
@@ -87,6 +89,8 @@ QVariant PeaksModel::data(const QModelIndex& index, int role) const {
 // ************************************************************************** //
 //  local class PeaksView
 // ************************************************************************** //
+
+//! List view of user-defined Bragg peaks.
 
 class PeaksView final : public ListView {
 public:
