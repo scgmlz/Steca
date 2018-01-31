@@ -23,6 +23,8 @@
 //  local class MetadataModel
 // ************************************************************************** //
 
+//! The model for MetadatView.
+
 class MetadataModel : public TableModel {
 public:
     MetadataModel();
@@ -89,6 +91,8 @@ QVariant MetadataModel::data(const QModelIndex& index, int role) const {
 // ************************************************************************** //
 //  local class MetadataView
 // ************************************************************************** //
+
+//! Main item in SubframeMetadata: View and control the list of Metadata.
 
 class MetadataView : public ListView {
 public:
