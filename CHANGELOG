@@ -1,11 +1,14 @@
-Steca version 2.0.6, released 2018.01.19
+Steca version 2.0.7, released 2018.
 ----------------------------------------
 
 New features:
 
-* red display and new toggle "if incomplete keep/drop" to handle incomplete Measurement bins
+* Decoupled "highlighting" (one measurement group) from "activating" (most or all measurements).
+  Users can now deactivate single measurement groups, not just entire files.
+* Red display and new toggle "if incomplete keep/drop" to handle incomplete measurement groups.
+* To prevent crashes, functions that need data are disabled if no data are loaded.
 
-Improvememts:
+Improvements:
 
 * Further internal restructuring. Logic moved from table models to datasets.
 
