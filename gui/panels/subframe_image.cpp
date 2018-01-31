@@ -114,7 +114,6 @@ void ImageWidget::paintEvent(QPaintEvent*) {
         p.drawLine(rl, y, rr, y);
 
         // text
-        const QFontMetrics& fm = fontMetrics();
         QPoint pos(rr - rw / 5, rcy);
         p.setPen(Qt::cyan);
         p.drawText(pos, "γ=0");
