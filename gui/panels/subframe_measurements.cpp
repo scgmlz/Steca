@@ -52,7 +52,6 @@ private:
 void ExperimentModel::onClicked(const QModelIndex& cell) {
     int row = cell.row();
     int col = cell.column();
-    qDebug() << "EM on clicked " << row;
     if (row < 0 || row >= rowCount())
         return;
     if (col==1) {
@@ -65,8 +64,7 @@ void ExperimentModel::onClustersChanged() {
     // Prefer the following over dataChanged because rowCount may have shrinked.
     // It resets the currentIndex so that arrow keys will start from row 0.
     // Therefore it is acceptable only here since we reset the highlight anyway.
-    beginResetModel();
-    endResetModel();
+    resetModel();
 }
 
 void ExperimentModel::onHighlight() {
@@ -176,15 +174,7 @@ public:
     ExperimentView();
 
 private:
-    void keyPressEvent(QKeyEvent *event) {
-        int oldRow = currentIndex().row();
-        QTreeView::keyPressEvent(event);
-        int newRow = currentIndex().row();
-        qDebug() << "EV key " << oldRow << " -> " << newRow;
-        if(oldRow != newRow)
-            onKey(newRow);
-    }
-//    void currentChanged(QModelIndex const&, QModelIndex const&) override final;
+    void currentChanged(QModelIndex const&, QModelIndex const&) override final;
     void onKey(int row);
     void onClustersChanged();
     void onHighlight();
@@ -207,24 +197,8 @@ ExperimentView::ExperimentView() : ListView() {
     connect(this, &ExperimentView::clicked, model_, &ExperimentModel::onClicked);
 }
 
-void ExperimentView::onKey(int row) {
-    qDebug() << "EV on key " << row;
-    qDebug() << "DEB1 " << currentIndex().row();
-    if (!gSession->dataset().countFiles())
-        return;
-    qDebug() << "DEB2 " << currentIndex().row();
-    if (row==gSession->dataset().highlight().clusterIndex())
-        return; // the following would prevent execution of "onClicked"
-    qDebug() << "DEB3 " << currentIndex().row();
-    gSession->dataset().highlight().setCluster(row);
-    qDebug() << "DEB4 " << currentIndex().row();
-    updateScroll();
-    qDebug() << "DEB5 " << currentIndex().row();
-}
-/*
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
 void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
-    qDebug() << "EV current changed " << current.row();
     if (!gSession->dataset().countFiles())
         return;
     if (current.row()==gSession->dataset().highlight().clusterIndex())
@@ -232,33 +206,28 @@ void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex cons
     gSession->dataset().highlight().setCluster(current.row());
     updateScroll();
 }
-*/
+
 void ExperimentView::onClustersChanged() {
-    qDebug() << "onC " << currentIndex().row();
     model_->onClustersChanged();
     updateScroll();
 }
 
 void ExperimentView::onHighlight() {
-    qDebug() << "onH " << currentIndex().row();
     model_->onHighlight();
     updateScroll();
 }
 
 void ExperimentView::onActivated() {
-    qDebug() << "onA " << currentIndex().row();
     model_->onActivated();
     updateScroll();
 }
 
 void ExperimentView::onMetaSelection() {
-    qDebug() << "onM " << currentIndex().row();
     model_->onMetaSelection();
     setHeaderHidden(model_->metaCount()==0);
 }
 
 void ExperimentView::updateScroll() {
-    qDebug() << "upS " << currentIndex().row();
     int row = gSession->dataset().highlight().clusterIndex();
     if (row>=0)
         scrollTo(model_->index(row,0));
