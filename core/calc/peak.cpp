@@ -85,7 +85,8 @@ Peak* Peak::from_json(JsonObj const& obj) THROWS {
 // ************************************************************************** //
 
 void Peaks::clear() {
-    peaks_.clear();
+    while (count())
+        remove();
 }
 
 void Peaks::add(const QString& functionName) {

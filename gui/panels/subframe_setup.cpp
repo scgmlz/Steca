@@ -92,7 +92,6 @@ class PeaksView final : public ListView {
 public:
     PeaksView();
 
-    void clear();
     void addPeak(const QString&);
     void removeSelected();
     void update();
@@ -109,11 +108,6 @@ PeaksView::PeaksView() : ListView() {
     setModel(model_);
     for_i (model_->columnCount())
         resizeColumnToContents(i);
-}
-
-void PeaksView::clear() {
-    gSession->peaks().clear();
-    update();
 }
 
 void PeaksView::addPeak(const QString& functionName) {
@@ -264,13 +258,6 @@ ControlsPeakfits::ControlsPeakfits() {
 
     hb->addWidget(newQ::IconButton(gHub->toggle_selRegions));
     hb->addWidget(newQ::IconButton(gHub->toggle_showBackground));
-
-    hb->addWidget(newQ::IconButton(gHub->trigger_clearPeaks));
-    connect(gHub->trigger_clearPeaks, &QAction::triggered, [this]() {
-            peaksView_->clear();
-            update();
-        });
-
     hb->addStretch();
 
     hb->addWidget(newQ::IconButton(gHub->trigger_addPeak));
