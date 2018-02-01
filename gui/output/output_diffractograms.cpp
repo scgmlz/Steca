@@ -199,10 +199,36 @@ void DiffractogramsFrame::writeAllDiffractogramsToFiles(
         return;
     QTextStream stream(file);
 
-    int fileNumber = 1; // for case oneFile, not yet used
-    const vec<vec<const OutputData*>>& outputCollections = outputAllDiffractograms();
-    for (const vec<const OutputData*>& outputCollection : outputCollections) {
-        for (const OutputData* outputData : outputCollection) {
+    ASSERT(params_->panelGammaSlices);
+    int gmaSlices = params_->panelGammaSlices->numSlices->value();
+
+    ASSERT(params_->panelGammaRange);
+    const PanelGammaRange* pr = params_->panelGammaRange;
+    Range rgeGma;
+    if (pr->cbLimitGamma->isChecked())
+        rgeGma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
+
+    const Experiment& expt = gSession->experiment();
+    Progress progress(expt.size(), progressBar_);
+
+    int picNum = 0;
+    for (const Cluster* cluster : expt.clusters()) {
+        ++picNum;
+        progress.step();
+
+        shp_SequenceLens lens = gSession->defaultClusterLens(*cluster);
+
+        Range rge = (gmaSlices > 0) ? lens->rgeGma() : Range::infinite();
+        if (rgeGma.isValid())
+            rge = rge.intersect(rgeGma);
+
+        gmaSlices = qMax(1, gmaSlices);
+        const qreal step = rge.width() / gmaSlices;
+        for_i (gmaSlices) {
+            const qreal min = rge.min + i * step;
+            const Range gmaStripe(min, min + step);
+            const Curve& curve = lens->makeCurve(gmaStripe);
+            const OutputData* outputData = new OutputData(curve, *cluster, gmaStripe, picNum);
             if (!outputData->isValid()) {
                 qWarning() << "invalid output data in writeAllDiffractogramsToFiles";
                 return;
@@ -214,7 +240,6 @@ void DiffractogramsFrame::writeAllDiffractogramsToFiles(
                        << outputData->curve_.y(i) << '\n';
             }
         }
-        ++fileNumber;
     }
 }
 
