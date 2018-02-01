@@ -19,6 +19,7 @@
 #include <QAction>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QFile>
 #include <QLabel>
 #include <QLayout>
 #include <QLineEdit>
@@ -31,6 +32,8 @@ class BoxWidget;
 //! Contains functions that return new Qt objects.
 
 namespace newQ {
+
+QFile* OutputFile(const QString& path);
 
 QAction* Trigger(rcstr text, rcstr iconFile="");
 QAction* Toggle(rcstr text, bool value, rcstr iconFile="");

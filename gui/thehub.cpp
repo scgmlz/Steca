@@ -16,7 +16,6 @@
 #include "core/session.h"
 #include "gui/base/new_q.h"
 #include "gui/mainwin.h" // TODO after merge with mainwin: replace gMainWin by this
-#include "gui/output/write_file.h"
 #include "gui/popup/filedialog.h"
 #include <QApplication>
 #include <QDir>
@@ -166,9 +165,11 @@ TheHub::~TheHub() {
 }
 
 void TheHub::saveSession(QFileInfo const& fileInfo) const {
-    WriteFile file(fileInfo.filePath());
+    QFile* file = newQ::OutputFile(fileInfo.filePath());
+    if (!file)
+        return;
     QDir::setCurrent(fileInfo.absolutePath());
-    const int result = file.write(saveSession());
+    const int result = file->write(saveSession());
     if (!(result >= 0)) THROW("Could not write session");
 }
 

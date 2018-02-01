@@ -14,11 +14,10 @@
 
 #include "gui/output/output_diffractograms.h"
 #include "core/session.h"
+#include "gui/base/new_q.h"
 #include "gui/output/dialog_panels.h"
 #include "gui/output/tab_save.h"
-#include "gui/output/write_file.h"
 #include "gui/thehub.h"
-#include "gui/base/new_q.h"
 
 // ************************************************************************** //
 //  local class TabDiffractogramsSave
@@ -171,8 +170,10 @@ vec<vec<const OutputData*>> DiffractogramsFrame::outputAllDiffractograms() {
 }
 
 void DiffractogramsFrame::writeCurrDiffractogramToFile(rcstr filePath, rcstr separator) {
-    WriteFile file(filePath);
-    QTextStream stream(&file);
+    QFile* file = newQ::OutputFile(filePath);
+    if (!file)
+        return;
+    QTextStream stream(file);
     const Cluster* cluster = gSession->dataset().highlight().cluster();
     if (!cluster)
         THROW("No data selected");
@@ -198,8 +199,10 @@ void DiffractogramsFrame::writeAllDiffractogramsToFiles(
             }
         }
     }
-    WriteFile file(filePath);
-    QTextStream stream(&file);
+    QFile* file = newQ::OutputFile(filePath);
+    if (!file)
+        return;
+    QTextStream stream(file);
     if (oneFile) {
         for (const vec<const OutputData*>& outputCollection : outputCollections) {
             for (const OutputData* outputData : outputCollection) {

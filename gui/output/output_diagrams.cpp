@@ -18,7 +18,6 @@
 #include "gui/output/data_table.h"
 #include "gui/output/dialog_panels.h"
 #include "gui/output/tab_save.h"
-#include "gui/output/write_file.h"
 #include "gui/thehub.h"
 #include "QCustomPlot/qcustomplot.h"
 
@@ -265,9 +264,10 @@ void DiagramsFrame::saveDiagramOutput() {
 }
 
 void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator) const {
-    WriteFile file(filePath);
-
-    QTextStream stream(&file);
+    QFile* file = newQ::OutputFile(filePath);
+    if (!file)
+        return;
+    QTextStream stream(file);
 
     ASSERT(xs_.count() == ys_.count());
     ASSERT(ysErrorLo_.isEmpty() || ysErrorLo_.count() == ys_.count());
@@ -284,8 +284,10 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separato
 }
 
 void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) const {
-    WriteFile file(filePath);
-    QTextStream stream(&file);
+    QFile* file = newQ::OutputFile(filePath);
+    if (!file)
+        return;
+    QTextStream stream(file);
 
     const QStringList& headers = table_->outHeaders();
     for_i (headers.count())

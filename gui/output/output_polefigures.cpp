@@ -16,7 +16,6 @@
 #include "core/session.h"
 #include "gui/cfg/colors.h"
 #include "gui/output/dialog_panels.h"
-#include "gui/output/write_file.h"
 #include "gui/output/tab_save.h"
 #include "gui/thehub.h"
 #include "gui/base/new_q.h"
@@ -367,8 +366,10 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, int index) {
 
 void PoleFiguresFrame::writeErrorMask(
     rcstr filePath, PeakInfos reflInfo, vec<qreal> const& output) {
-    WriteFile file(filePath + ".errorMask");
-    QTextStream stream(&file);
+    QFile* file = newQ::OutputFile(filePath);
+    if (!file)
+        return;
+    QTextStream stream(file);
 
     for (int j = 0, jEnd = reflInfo.count(); j < jEnd; j += 9) {
         int max = j + MAX_LINE_LENGTH_POL;
@@ -382,10 +383,11 @@ void PoleFiguresFrame::writeErrorMask(
     }
 }
 
-void PoleFiguresFrame::writePoleFile(
-    rcstr filePath, PeakInfos reflInfo, vec<qreal> const& output) {
-    WriteFile file(filePath + ".pol");
-    QTextStream stream(&file);
+void PoleFiguresFrame::writePoleFile(rcstr filePath, PeakInfos reflInfo, vec<qreal> const& output) {
+    QFile* file = newQ::OutputFile(filePath);
+    if (!file)
+        return;
+    QTextStream stream(file);
 
     for (int j = 0, jEnd = reflInfo.count(); j < jEnd; j += 9) {
         int max = j + MAX_LINE_LENGTH_POL;
@@ -399,10 +401,9 @@ void PoleFiguresFrame::writePoleFile(
     }
 }
 
-void PoleFiguresFrame::writeListFile(
-    rcstr filePath, PeakInfos reflInfo, vec<qreal> const& output) {
-    WriteFile file(filePath + ".lst");
-    QTextStream stream(&file);
+void PoleFiguresFrame::writeListFile(rcstr filePath, PeakInfos reflInfo, vec<qreal> const& output) {
+    QFile* file = newQ::OutputFile(filePath);
+    QTextStream stream(file);
 
     for_i (reflInfo.count()) {
         stream << qreal(reflInfo.at(i).alpha()) << " " << qreal(reflInfo.at(i).beta()) << " "

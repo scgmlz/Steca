@@ -15,6 +15,9 @@
 #include "gui/base/new_q.h"
 #include "core/def/numbers.h"
 #include <QApplication> // for qApp for new Action
+#include <QDebug>
+#include <QMessageBox>
+#include <QStringBuilder> // for ".." % ..
 #include <QtGlobal> // to define Q_OS_WIN
 
 namespace {
@@ -28,6 +31,21 @@ static void setWidth(QWidget* w, int ndigits, bool withDot) {
 }
 
 } // local methods
+
+QFile* newQ::OutputFile(const QString& path) {
+    QFile* ret = new QFile(path);
+    if (ret->exists() &&
+        QMessageBox::question(nullptr, "File exists", "Overwrite " % path % " ?") !=
+        QMessageBox::Yes) {
+        delete ret;
+        return nullptr;
+    }
+    if (!ret->open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning() << "Cannot open file for writing: " << path;
+        return nullptr;
+    }
+    return ret;
+}
 
 QAction* newQ::Trigger(rcstr text, rcstr iconFile) {
     QAction* ret = new QAction(text, qApp);
