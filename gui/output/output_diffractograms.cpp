@@ -24,7 +24,7 @@
 //  local class TabDiffractogramsSave
 // ************************************************************************** //
 
-//! The main part of DiffractogramsFrame. Extends TabSave by some controls.
+//! The main part of DiffractogramsFrame. Extends TabSave by an output content control.
 
 class TabDiffractogramsSave : public TabSave {
 public:
@@ -61,28 +61,19 @@ struct OutputData {
 public:
     OutputData() = delete;
     OutputData(Curve curve, const Cluster& cluster, Range gmaStripe, int picNum)
-        : curve_(curve), dataseq_(cluster), gmaStripe_(gmaStripe), picNum_(picNum) {}
+        : curve_(curve), cluster_(cluster), gmaStripe_(gmaStripe), picNum_(picNum) {}
 
     Curve curve_;
-    const Cluster& dataseq_;
+    const Cluster& cluster_;
     Range gmaStripe_;
     int picNum_;
 
     bool isValid() const {
-        return (!dataseq_.avgeMetadata().isNull() || !curve_.isEmpty() || gmaStripe_.isValid());
+        return (!cluster_.avgeMetadata().isNull() || !curve_.isEmpty() || gmaStripe_.isValid());
     }
 };
 
 namespace {
-
-OutputData outputCurrDiffractogram() {
-    const Cluster* cluster = gSession->dataset().highlight().cluster();
-    if (!cluster)
-        throw Exception("No data selected");
-    shp_SequenceLens lens = gSession->defaultClusterLens(*cluster);
-    const Curve& curve = lens->makeCurve();
-    return OutputData(curve, *cluster, lens->rgeGma(), 0); // TODO current picture number
-}
 
 vec<const OutputData*> collectCurves(
     const Range& rgeGma, int gmaSlices, Cluster const& cluster, int picNum) {
@@ -107,13 +98,9 @@ vec<const OutputData*> collectCurves(
     return ret;
 }
 
-void writeMetaData(OutputData outputData, QTextStream& stream) {
-    if (outputData.picNum_ > 0)
-        stream << "Picture Nr: " << outputData.picNum_ << '\n';
-
-    const Metadata& md = *outputData.dataseq_.avgeMetadata();
-    const Range& rgeGma = outputData.gmaStripe_;
-
+void writeMetadata(QTextStream& stream, const Metadata& md, const Range& rgeGma) {
+    if (!rgeGma.isValid())
+        qFatal("rgeGma is invalid");
     stream << "Comment: " << md.comment << '\n';
     stream << "Date: " << md.date << '\n';
     stream << "Gamma range min: " << rgeGma.min << '\n';
@@ -124,6 +111,15 @@ void writeMetaData(OutputData outputData, QTextStream& stream) {
                << '\n';
     }
 }
+
+void writeHeader(OutputData outputData, QTextStream& stream) {
+    if (outputData.picNum_ > 0)
+        stream << "Picture Nr: " << outputData.picNum_ << '\n';
+    const Metadata& md = *outputData.cluster_.avgeMetadata();
+    const Range& rgeGma = outputData.gmaStripe_;
+    writeMetadata(stream, md, rgeGma);
+}
+
 
 } // local methods
 
@@ -175,16 +171,18 @@ vec<vec<const OutputData*>> DiffractogramsFrame::outputAllDiffractograms() {
 }
 
 void DiffractogramsFrame::writeCurrDiffractogramToFile(rcstr filePath, rcstr separator) {
-    const OutputData& outputData = outputCurrDiffractogram();
-    if (!outputData.isValid()) {
-        qWarning() << "invalid output data in writeCurrDiffractogramsToFiles";
-        return;
-    }
     WriteFile file(filePath);
     QTextStream stream(&file);
-    writeMetaData(outputData, stream);
+    const Cluster* cluster = gSession->dataset().highlight().cluster();
+    if (!cluster)
+        throw Exception("No data selected");
+    const Metadata& md = *cluster->avgeMetadata();
+    shp_SequenceLens lens = gSession->defaultClusterLens(*cluster);
+    const Curve& curve = lens->makeCurve();
+    if (curve.isEmpty())
+        qFatal("curve is empty");
+    writeMetadata(stream, md, lens->rgeGma());
     stream << "Tth" << separator << "Intensity" << '\n';
-    const Curve& curve = outputData.curve_;
     for_i (curve.xs().count())
         stream << curve.x(i) << separator << curve.y(i) << '\n';
 }
@@ -205,7 +203,7 @@ void DiffractogramsFrame::writeAllDiffractogramsToFiles(
     if (oneFile) {
         for (const vec<const OutputData*>& outputCollection : outputCollections) {
             for (const OutputData* outputData : outputCollection) {
-                writeMetaData(*outputData, stream);
+                writeHeader(*outputData, stream);
                 stream << "Tth" << separator << "Intensity" << '\n';
                 for_i (outputData->curve_.xs().count()) {
                     stream << outputData->curve_.x(i) << separator
@@ -217,7 +215,7 @@ void DiffractogramsFrame::writeAllDiffractogramsToFiles(
         int fileNumber = 1;
         for (const vec<const OutputData*>& outputCollection : outputCollections) {
             for (const OutputData* outputData : outputCollection) {
-                writeMetaData(*outputData, stream);
+                writeHeader(*outputData, stream);
                 stream << "Tth" << separator << "Intensity" << '\n';
                 for_i (outputData->curve_.xs().count()) {
                     stream << outputData->curve_.x(i) << separator
