@@ -85,7 +85,7 @@ bool inQuadrant(eQuadrant quadrant, deg deltaAlpha, deg deltaBeta) {
     case eQuadrant::SOUTHWEST: return deltaAlpha < 0 && deltaBeta < 0;
     case eQuadrant::NORTHWEST: return deltaAlpha < 0 && deltaBeta >= 0;
     }
-    NEVER return false;
+    THROW("impossible case");
 }
 
 // Search quadrant remapping in case no point was found.
@@ -96,7 +96,7 @@ eQuadrant remapQuadrant(eQuadrant q) {
     case eQuadrant::SOUTHWEST: return eQuadrant::NORTHEAST;
     case eQuadrant::NORTHWEST: return eQuadrant::SOUTHEAST;
     }
-    NEVER return eQuadrant::NORTHEAST;
+    THROW("impossible case");
 }
 
 // Checks if (alpha,beta) is inside radius from (centerAlpha,centerBeta).

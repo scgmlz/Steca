@@ -125,7 +125,7 @@ void Dataset::removeFile() {
         else if (i>0)
             highlight().setFile(i-1);
         else
-            NEVER;
+            THROW("impossible case");
     }
 }
 

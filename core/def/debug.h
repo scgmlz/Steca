@@ -29,6 +29,4 @@ namespace debug {
     void ensure(bool cond, const char* text="assertion failed");
 }
 
-#define NEVER { qFatal("fall-through bug"); }
-
 #endif // DEBUG_H
