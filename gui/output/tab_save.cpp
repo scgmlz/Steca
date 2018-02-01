@@ -77,7 +77,7 @@ str TabSave::filePath(bool withSuffix, bool withNumber) {
         fileName += ".%d";
     if (withSuffix) {
         str suffix = rbDat_->isChecked() ? DAT_SFX : CSV_SFX;
-        if ("."+QFileInfo(fileName).completeSuffix()!=suffix)
+        if ("."+QFileInfo(fileName).suffix()!=suffix)
             fileName += suffix;
     }
     file_->setText(fileName);

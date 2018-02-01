@@ -18,6 +18,7 @@
 #include "gui/output/dialog_panels.h"
 #include "gui/output/tab_save.h"
 #include "gui/thehub.h"
+#include <cmath>
 
 namespace {
 
@@ -41,6 +42,21 @@ void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
         stream << curve.x(i) << separator << curve.y(i) << '\n';
 
     stream.flush(); // not sure whether we need this
+}
+
+//! Returns templatedName with '%d' replaced by string representation of num.
+
+//!  The string representation of num has leading zeros, and its number of
+//!  digits is determined by the maximum value maxNum.
+
+QString numberedName(const QString& templatedName, int num, int maxNum) {
+    if (!templatedName.contains("%d"))
+        qFatal("path does not contain placeholder %%d");
+    QString ret = templatedName;
+    int nDigits = (int)log10((double)maxNum)+1;
+    ret.replace("%d", QString("%1").arg(num, nDigits, 10, QLatin1Char('0')));
+    qDebug() << "PATH " << templatedName << " -> " << ret;
+    return ret;
 }
 
 } // local method
@@ -133,7 +149,7 @@ void DiffractogramsFrame::saveCurrent() {
 
 void DiffractogramsFrame::saveAll(bool oneFile) {
 
-    str path = tabSave_->filePath(true, oneFile);
+    str path = tabSave_->filePath(true, !oneFile);
     if (path.isEmpty())
         return;
     QTextStream* stream = nullptr;
@@ -172,13 +188,7 @@ void DiffractogramsFrame::saveAll(bool oneFile) {
         const qreal step = rge.width() / gmaSlices;
         for_i (gmaSlices) {
             if (!oneFile) {
-                ++fileNum;
-                if (!path.contains("%d")) {
-                    qWarning() << "path does not contain placeholder %d";
-                    return;
-                }
-                str currPath = path.replace("%d", QString("%1").arg(fileNum));
-                QFile* file = newQ::OutputFile(currPath);
+                QFile* file = newQ::OutputFile(numberedName(path, ++fileNum, expt.size()+1));
                 if (!file)
                     return;
                 delete stream;
