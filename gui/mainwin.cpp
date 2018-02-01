@@ -329,7 +329,7 @@ void MainWin::execCommand(str line) {
     } else if (cmd=="quit") {
         close();
     } else {
-        qDebug() << "Unknown command: " << line << "\n";
+        qDebug() << "Unknown command: " << line;
     }
 }
 void MainWin::closeEvent(QCloseEvent* event) {
