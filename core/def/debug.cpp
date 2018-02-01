@@ -14,6 +14,6 @@
 
 #include "debug.h"
 
-void debug::ensure(bool cond, const char* text) {
-    if (!cond) qFatal(text);
+void debug::ensure(bool cond) {
+    if (!cond) qFatal("assertion failed");
 }

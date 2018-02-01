@@ -26,7 +26,7 @@
 #define WT(what) TR(#what ":" << what)
 
 namespace debug {
-    void ensure(bool cond, const char* text="assertion failed");
+    void ensure(bool cond);
 }
 
 #endif // DEBUG_H
