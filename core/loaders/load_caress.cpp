@@ -119,7 +119,7 @@ Rawfile loadCaress(rcstr filePath) THROWS {
                 else if (tths == 0 && tthr != 0) // it's the table
                     isTable = false;
                 else
-                    throw "inconsistent data set: not clear whether it's robot or table";
+                    THROW("inconsistent data set: not clear whether it's robot or table");
             }
 
             if (isRobot) {

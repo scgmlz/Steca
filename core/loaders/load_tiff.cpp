@@ -89,17 +89,14 @@ Rawfile loadTiffDat(rcstr filePath) THROWS {
             // load one dataseq
             loadTiff(&ret, dir.filePath(tiffFileName), phi, monitor, expTime);
         } catch (Exception& e) {
-            // add file name to the message
-            e.setMsg(tiffFileName + ": " + e.msg());
-            throw e;
+            THROW(tiffFileName + ": " + e.msg());
         }
     }
 
     return ret;
 }
 
-static void
-loadTiff(Rawfile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) THROWS {
+static void loadTiff(Rawfile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) THROWS {
 
     Metadata md;
     md.motorPhi = phi;
@@ -210,12 +207,12 @@ loadTiff(Rawfile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) T
         }
     }
 
-    if (!(
-        imageWidth > 0 && imageHeight > 0 && stripOffsets > 0 && stripByteCounts > 0
-            && imageHeight <= rowsPerStrip)) THROW("bad format");
+    if (!(imageWidth > 0 && imageHeight > 0 && stripOffsets > 0 && stripByteCounts > 0
+          && imageHeight <= rowsPerStrip))
+        THROW("bad format");
 
-    if (!(
-        (1 == sampleFormat || 2 == sampleFormat || 3 == sampleFormat) && 32 == bitsPerSample)) THROW("unhandled format");
+    if (!((1 == sampleFormat || 2 == sampleFormat || 3 == sampleFormat) && 32 == bitsPerSample))
+        THROW("unhandled format");
 
     size2d size(imageWidth, imageHeight);
 

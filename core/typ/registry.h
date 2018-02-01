@@ -23,7 +23,7 @@ protected:
 public:
     void register_item(const str& key, T val) {
         if (m_map.find(key) != m_map.end())
-            throw "Duplicate registry entry " + key;
+            THROW("Duplicate registry entry " + key);
         m_map.insert(key, val);
         m_keys.push_back(key);
     }
@@ -34,7 +34,7 @@ public:
     T find_or_fail(const str& key) const {
         T ret = find(key);
         if (!ret)
-            throw Exception("Cannot find '" + key + "' in function registry");
+            THROW("Cannot find '" + key + "' in function registry");
         return ret;
     }
     str key_at(const unsigned int idx) const {
@@ -43,7 +43,7 @@ public:
     str key_at_or_fail(const unsigned int idx) const {
         str ret = key_at(idx);
         if (ret=="")
-            throw Exception("Invalid index in registry lookup");
+            THROW("Invalid index in registry lookup");
         return ret;
     }
     unsigned int size() const { return m_keys.size(); }

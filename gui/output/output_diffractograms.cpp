@@ -175,7 +175,7 @@ void DiffractogramsFrame::writeCurrDiffractogramToFile(rcstr filePath, rcstr sep
     QTextStream stream(&file);
     const Cluster* cluster = gSession->dataset().highlight().cluster();
     if (!cluster)
-        throw Exception("No data selected");
+        THROW("No data selected");
     const Metadata& md = *cluster->avgeMetadata();
     shp_SequenceLens lens = gSession->defaultClusterLens(*cluster);
     const Curve& curve = lens->makeCurve();

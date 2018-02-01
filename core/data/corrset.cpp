@@ -30,7 +30,7 @@ void Corrset::removeFile() {
 
 void Corrset::loadFile(rcstr filePath) THROWS {
     if (filePath.isEmpty())
-        throw("invalid call of Corrset::loadFile with empty filePath argument");
+        THROW("invalid call of Corrset::loadFile with empty filePath argument");
     QSharedPointer<Rawfile> rawfile = load::loadRawfile(filePath);
     if (rawfile.isNull())
         return;

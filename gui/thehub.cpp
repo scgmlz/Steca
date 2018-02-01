@@ -217,7 +217,8 @@ QByteArray TheHub::saveSession() const {
 
 void TheHub::sessionFromFile(rcstr filePath) THROWS {
     QFile file(filePath);
-    if (!(file.open(QIODevice::ReadOnly | QIODevice::Text))) THROW("Cannot open file for reading: " % filePath);
+    if (!(file.open(QIODevice::ReadOnly | QIODevice::Text)))
+        THROW("Cannot open file for reading: " % filePath);
     QDir::setCurrent(QFileInfo(filePath).absolutePath());
     sessionFromJson(file.readAll());
 }
@@ -225,7 +226,8 @@ void TheHub::sessionFromFile(rcstr filePath) THROWS {
 void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     QJsonParseError parseError;
     QJsonDocument doc(QJsonDocument::fromJson(json, &parseError));
-    if (!(QJsonParseError::NoError == parseError.error)) THROW("Error parsing session file");
+    if (!(QJsonParseError::NoError == parseError.error))
+        THROW("Error parsing session file");
 
     TakesLongTime __;
 

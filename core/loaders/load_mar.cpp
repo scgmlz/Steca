@@ -108,7 +108,7 @@ Rawfile loadMar(rcstr filePath) THROWS {
         fseek(fpIn, pixSizeX + pixSizeY, SEEK_SET);
         int i = (int)fread((unsigned char*)i2_image, sizeof(short), pixelSize, fpIn);
         if (i != (int)pixelSize)
-            throw "WARNING: read not all pixel!";
+            THROW("did not read not all pixels"); // Does this happen? Would a warning suffice?
         if (byteswap)
             swapint16((unsigned char*)i2_image, pixelSize * sizeof(WORD));
     }
