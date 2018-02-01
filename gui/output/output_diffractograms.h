@@ -26,11 +26,9 @@ public:
 private:
     class TabDiffractogramsSave* tabSave_;
 
-    vec<vec<const class OutputData*>> outputAllDiffractograms();
-
-    void saveDiffractogramOutput();
-    void writeCurrDiffractogramToFile(rcstr filePath, rcstr separator);
-    void writeAllDiffractogramsToFiles(rcstr filePath, rcstr separator, bool oneFile);
+    void save();
+    void saveCurrent(rcstr filePath, rcstr separator);
+    void saveAll(rcstr filePath, rcstr separator, bool oneFile);
 };
 
 #endif // OUTPUT_DIFFRACTOGRAMS_H
