@@ -169,7 +169,7 @@ void TheHub::saveSession(QFileInfo const& fileInfo) const {
     WriteFile file(fileInfo.filePath());
     QDir::setCurrent(fileInfo.absolutePath());
     const int result = file.write(saveSession());
-    RUNTIME_CHECK(result >= 0, "Could not write session");
+    if (!(result >= 0)) THROW("Could not write session");
 }
 
 QByteArray TheHub::saveSession() const {
@@ -217,8 +217,7 @@ QByteArray TheHub::saveSession() const {
 
 void TheHub::sessionFromFile(rcstr filePath) THROWS {
     QFile file(filePath);
-    RUNTIME_CHECK(file.open(QIODevice::ReadOnly | QIODevice::Text),
-                  "Cannot open file for reading: " % filePath);
+    if (!(file.open(QIODevice::ReadOnly | QIODevice::Text))) THROW("Cannot open file for reading: " % filePath);
     QDir::setCurrent(QFileInfo(filePath).absolutePath());
     sessionFromJson(file.readAll());
 }
@@ -226,7 +225,7 @@ void TheHub::sessionFromFile(rcstr filePath) THROWS {
 void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     QJsonParseError parseError;
     QJsonDocument doc(QJsonDocument::fromJson(json, &parseError));
-    RUNTIME_CHECK(QJsonParseError::NoError == parseError.error, "Error parsing session file");
+    if (!(QJsonParseError::NoError == parseError.error)) THROW("Error parsing session file");
 
     TakesLongTime __;
 
@@ -240,7 +239,8 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     for (const QJsonValue& file : files) {
         str filePath = file.toString();
         QDir dir(filePath);
-        RUNTIME_CHECK(dir.makeAbsolute(), str("Invalid file path: %1").arg(filePath));
+        if(!dir.makeAbsolute())
+            THROW("Invalid file path: " + filePath);
         paths.append(dir.absolutePath());
     }
     gSession->dataset().addGivenFiles(paths);
@@ -248,15 +248,18 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     const QJsonArray& sels = top.loadArr("selected files", true);
     vec<int> selIndexes;
     for (const QJsonValue& sel : sels) {
-        int i = sel.toInt(), index = qBound(0, i, files.count());
-        RUNTIME_CHECK(i == index, str("Invalid selection index: %1").arg(i));
+        int i = sel.toInt();
+        int index = qBound(0, i, files.count());
+        if(i != index)
+            THROW(str("Invalid selection index: %1").arg(i));
         selIndexes.append(index);
     }
 
     std::sort(selIndexes.begin(), selIndexes.end());
     int lastIndex = -1;
     for (int index : selIndexes) {
-        RUNTIME_CHECK(lastIndex < index, str("Duplicate selection index"));
+        if (index >= lastIndex)
+            THROW("Duplicate selection index");
         lastIndex = index;
     }
 

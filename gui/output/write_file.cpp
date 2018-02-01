@@ -24,7 +24,6 @@ WriteFile::WriteFile(rcstr path) THROWS : QFile(path) {
             THROW_SILENT();
     }
 
-    RUNTIME_CHECK(
-        QFile::open(QIODevice::WriteOnly | QIODevice::Text),
-        "Cannot open file for writing: " % path);
+    if (!(
+        QFile::open(QIODevice::WriteOnly | QIODevice::Text))) THROW("Cannot open file for writing: " % path);
 }

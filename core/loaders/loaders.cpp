@@ -70,7 +70,7 @@ bool couldBeTiffDat(QFileInfo const& info) {
 
 Rawfile load_low_level(rcstr filePath) THROWS {
     const QFileInfo info(filePath);
-    RUNTIME_CHECK(info.exists(), "File " % filePath % " does not exist");
+    if (!(info.exists())) THROW("File " % filePath % " does not exist");
 
     if (couldBeCaress(info))
         return load::loadCaress(filePath);
@@ -88,7 +88,7 @@ namespace load {
 
 QSharedPointer<Rawfile> loadRawfile(rcstr filePath) THROWS {
     const QSharedPointer<Rawfile> ret(new Rawfile(load_low_level(filePath)));
-    RUNTIME_CHECK(ret->count() > 0, "File " % filePath % " contains no cluster");
+    if (!(ret->count() > 0)) THROW("File " % filePath % " contains no cluster");
     return ret;
 }
 

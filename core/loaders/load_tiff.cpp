@@ -45,7 +45,7 @@ Rawfile loadTiffDat(rcstr filePath) THROWS {
     Rawfile ret(filePath);
 
     QFile f(filePath);
-    RUNTIME_CHECK(f.open(QFile::ReadOnly), "cannot open file");
+    if (!(f.open(QFile::ReadOnly))) THROW("cannot open file");
 
     QFileInfo info(filePath);
     QDir dir = info.dir();
@@ -65,24 +65,24 @@ Rawfile loadTiffDat(rcstr filePath) THROWS {
 
         const QStringList lst = s.split(' ');
         const int cnt = lst.count();
-        RUNTIME_CHECK(2 <= cnt && cnt <= 4, "bad metadata format");
+        if (!(2 <= cnt && cnt <= 4)) THROW("bad metadata format");
 
         // file, phi, monitor, expTime
         bool ok;
         str tiffFileName = lst.at(0);
         deg phi = lst.at(1).toDouble(&ok);
-        RUNTIME_CHECK(ok, "bad phi value");
+        if (!(ok)) THROW("bad phi value");
 
         qreal monitor = 0;
         if (cnt > 2) {
             monitor = lst.at(2).toDouble(&ok);
-            RUNTIME_CHECK(ok, "bad monitor value");
+            if (!(ok)) THROW("bad monitor value");
         }
 
         qreal expTime = 0;
         if (cnt > 3) {
             expTime = lst.at(3).toDouble(&ok);
-            RUNTIME_CHECK(ok, "bad expTime value");
+            if (!(ok)) THROW("bad expTime value");
         }
 
         try {
@@ -98,15 +98,6 @@ Rawfile loadTiffDat(rcstr filePath) THROWS {
     return ret;
 }
 
-#define IS_ASCII RUNTIME_CHECK(2 == dataType, BAD_FORMAT)
-
-#define IS_NUMBER                                                                                  \
-    RUNTIME_CHECK((1 == dataType || 3 == dataType || 4 == dataType) && 1 == dataCount, BAD_FORMAT)
-
-#define CHECK_NUMBER(val)                                                                          \
-    IS_NUMBER;                                                                                     \
-    RUNTIME_CHECK(val == dataOffset, BAD_FORMAT)
-
 static void
 loadTiff(Rawfile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) THROWS {
 
@@ -118,12 +109,12 @@ loadTiff(Rawfile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) T
     // see http://www.fileformat.info/format/tiff/egff.htm
 
     QFile f(filePath);
-    RUNTIME_CHECK(f.open(QFile::ReadOnly), "cannot open file");
+    if (!(f.open(QFile::ReadOnly))) THROW("cannot open file");
 
     QDataStream is(&f);
     is.setFloatingPointPrecision(QDataStream::SinglePrecision);
 
-    auto check = [&is]() { RUNTIME_CHECK(QDataStream::Ok == is.status(), "could not read data"); };
+    auto check = [&is]() { if (!(QDataStream::Ok == is.status())) THROW("could not read data"); };
 
     // magic
     qint16 magic;
@@ -147,10 +138,10 @@ loadTiff(Rawfile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) T
     qint16 tagId, dataType;
     qint32 dataCount, dataOffset;
 
-    auto seek = [&f](qint64 offset) { RUNTIME_CHECK(f.seek(offset), "bad offset"); };
+    auto seek = [&f](qint64 offset) { if (!(f.seek(offset))) THROW("bad offset"); };
 
     auto asUint = [&]() -> int {
-        RUNTIME_CHECK(1 == dataCount, "bad data count");
+        if (!(1 == dataCount)) THROW("bad data count");
         switch (dataType) {
         case 1: // byte
             return dataOffset & 0x000000ff; // some tif files did have trash there
@@ -163,7 +154,7 @@ loadTiff(Rawfile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) T
     };
 
     auto asStr = [&]() {
-        RUNTIME_CHECK(2 == dataType, "bad data type");
+        if (!(2 == dataType)) THROW("bad data type");
         auto lastPos = f.pos();
 
         seek(dataOffset);
@@ -191,16 +182,16 @@ loadTiff(Rawfile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) T
         case 257: imageHeight = asUint(); break;
         case 258: bitsPerSample = asUint(); break;
         case 259: // Compression
-            RUNTIME_CHECK(1 == asUint(), "compressed data");
+            if (!(1 == asUint())) THROW("compressed data");
             break;
         case 273: stripOffsets = asUint(); break;
         case 277: // SamplesPerPixel
-            RUNTIME_CHECK(1 == asUint(), "more than one sample per pixel");
+            if (!(1 == asUint())) THROW("more than one sample per pixel");
             break;
         case 278: rowsPerStrip = asUint(); break;
         case 279: stripByteCounts = asUint(); break;
         case 284: // PlanarConfiguration
-            RUNTIME_CHECK(1 == asUint(), "not planar");
+            if (!(1 == asUint())) THROW("not planar");
             break;
         case 339:
             sampleFormat = asUint(); // 1 unsigned, 2 signed, 3 IEEE
@@ -219,21 +210,19 @@ loadTiff(Rawfile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) T
         }
     }
 
-    RUNTIME_CHECK(
+    if (!(
         imageWidth > 0 && imageHeight > 0 && stripOffsets > 0 && stripByteCounts > 0
-            && imageHeight <= rowsPerStrip,
-        "bad format");
+            && imageHeight <= rowsPerStrip)) THROW("bad format");
 
-    RUNTIME_CHECK(
-        (1 == sampleFormat || 2 == sampleFormat || 3 == sampleFormat) && 32 == bitsPerSample,
-        "unhandled format");
+    if (!(
+        (1 == sampleFormat || 2 == sampleFormat || 3 == sampleFormat) && 32 == bitsPerSample)) THROW("unhandled format");
 
     size2d size(imageWidth, imageHeight);
 
     int count = imageWidth * imageHeight;
     inten_vec intens(count);
 
-    RUNTIME_CHECK((bitsPerSample / 8) * count == stripByteCounts, "bad format");
+    if (!((bitsPerSample / 8) * count == stripByteCounts)) THROW("bad format");
 
     seek(stripOffsets);
 

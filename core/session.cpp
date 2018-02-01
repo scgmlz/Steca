@@ -45,7 +45,7 @@ void Session::updateImageSize() {
 }
 
 void Session::setImageSize(size2d const& size) THROWS {
-    RUNTIME_CHECK(!size.isEmpty(), "image is empty or has ill defined size");
+    if (!(!size.isEmpty())) THROW("image is empty or has ill defined size");
     if (imageSize_.isEmpty())
         imageSize_ = size; // the first one
     else if (imageSize_ != size)

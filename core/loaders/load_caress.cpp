@@ -27,9 +27,8 @@ namespace load {
 Rawfile loadCaress(rcstr filePath) THROWS {
     Rawfile ret(filePath);
 
-    RUNTIME_CHECK(
-        0 == open_data_file(filePath.toLocal8Bit().data(), nullptr),
-        "Cannot open data file " + filePath);
+    if(open_data_file(filePath.toLocal8Bit().data(), nullptr))
+        THROW("Cannot open data file " + filePath);
 
     struct CloseFile { // TODO remove, replace with QFile etc.
         ~CloseFile() { close_data_file(); }
@@ -164,7 +163,7 @@ Rawfile loadCaress(rcstr filePath) THROWS {
                 prevMon = mon;
 
                 int detRel = qRound(sqrt(imageSize));
-                RUNTIME_CHECK(imageSize > 0 && imageSize == detRel * detRel, "bad image size");
+                if (!(imageSize > 0 && imageSize == detRel * detRel)) THROW("bad image size");
 
                 inten_vec convertedIntens(imageSize);
                 for_i (imageSize)
@@ -558,9 +557,8 @@ str loadCaressComment(rcstr filePath) {
     str s_comment;
 
     try {
-        RUNTIME_CHECK(
-            0 == open_data_file(filePath.toLocal8Bit().data(), nullptr),
-            "Cannot open data file " + filePath);
+        if(open_data_file(filePath.toLocal8Bit().data(), nullptr))
+            THROW("Cannot open data file " + filePath);
 
         struct CloseFile { // TODO remove, replace with QFile etc.
             ~CloseFile() { close_data_file(); }

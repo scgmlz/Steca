@@ -151,8 +151,8 @@ itf_t inverseDistanceWeighing(vec<qreal> const& distances, info_vec const& infos
     int N = NUM_QUADRANTS;
     // Generally, only distances.count() == values.count() > 0 is needed for this
     // algorithm. However, in this context we expect exactly the following:
-    RUNTIME_CHECK(distances.count() == N, "distances size should be 4");
-    RUNTIME_CHECK(infos.count() == N, "infos size should be 4");
+    if (!(distances.count() == N)) THROW("distances size should be 4");
+    if (!(infos.count() == N)) THROW("infos size should be 4");
     vec<qreal> inverseDistances(N);
     qreal inverseDistanceSum = 0;
     for_i (NUM_QUADRANTS) {

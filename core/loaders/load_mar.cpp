@@ -27,16 +27,13 @@ Rawfile loadMar(rcstr filePath) THROWS {
 
     Rawfile ret(filePath);
 
-    FILE* fpIn;
-
-    RUNTIME_CHECK(
-        (fpIn = fopen(filePath.toLocal8Bit().data(), "rb")), "Cannot open data file " + filePath);
+    FILE* fpIn = fopen(filePath.toLocal8Bit().data(), "rb");
+    if(!fpIn)
+        THROW("Cannot open data file " + filePath);
 
     struct CloseFile { // TODO remove, replace with QFile etc.
         CloseFile(FILE* fpIn) : fpIn_(fpIn) {}
-
         ~CloseFile() { fclose(fpIn_); }
-
     private:
         FILE* fpIn_;
     } _(fpIn);
@@ -45,7 +42,7 @@ Rawfile loadMar(rcstr filePath) THROWS {
     int mar345, byteswap, h1;
     size_t readElements = fread(&h1, sizeof(int), 1, fpIn);
 
-    RUNTIME_CHECK(1 == readElements, "bad format");
+    if (!(1 == readElements)) THROW("bad format");
 
     if (h1 == 1200 || h1 == 2000 || h1 == 1600 || h1 == 2300 || h1 == 3450 || h1 == 3000
         || h1 == 2400 || h1 == 1800 || h1 == 2560 || h1 == 3072) {

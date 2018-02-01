@@ -48,7 +48,4 @@ protected:
 #define THROW(msg) throw Exception(msg)
 #define THROW_SILENT() throw Exception()
 
-// run-time condition checking
-#define RUNTIME_CHECK(test, msg) if (!(test)) THROW(msg)
-
 #endif // EXCEPTION_H
