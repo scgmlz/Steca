@@ -22,7 +22,7 @@ Measurement::Measurement(
     , md_(new Metadata(md))
     , image_(new Image(size))
 {
-    debug::ensure(intens.count() == size.count());
+    ASSERT(intens.count() == size.count());
     for_i (intens.count())
         image_->setInten(i, intens.at(i));
 }
@@ -58,21 +58,21 @@ void Measurement::collectIntens(
     const Range& rgeGma, deg minTth, deg deltaTth) const {
 
     const shp_AngleMap& angleMap = gSession->angleMap(*this);
-    debug::ensure(!angleMap.isNull());
+    ASSERT(!angleMap.isNull());
     AngleMap const& map = *angleMap;
 
     vec<int> const* gmaIndexes = nullptr;
     int gmaIndexMin = 0, gmaIndexMax = 0;
     map.getGmaIndexes(rgeGma, gmaIndexes, gmaIndexMin, gmaIndexMax);
 
-    debug::ensure(gmaIndexes);
-    debug::ensure(gmaIndexMin <= gmaIndexMax);
-    debug::ensure(gmaIndexMax <= gmaIndexes->count());
+    ASSERT(gmaIndexes);
+    ASSERT(gmaIndexMin <= gmaIndexMax);
+    ASSERT(gmaIndexMax <= gmaIndexes->count());
 
-    debug::ensure(intens.count() == counts.count());
+    ASSERT(intens.count() == counts.count());
     int count = intens.count();
 
-    debug::ensure(0 < deltaTth);
+    ASSERT(0 < deltaTth);
 
     for (int i = gmaIndexMin; i < gmaIndexMax; ++i) {
         int ind = gmaIndexes->at(i);
@@ -90,7 +90,7 @@ void Measurement::collectIntens(
 
         // bin index
         int ti = qFloor((tth - minTth) / deltaTth);
-        debug::ensure(ti <= count);
+        ASSERT(ti <= count);
         ti = qMin(ti, count - 1); // it can overshoot due to floating point calculation
 
         intens[ti] += inten;

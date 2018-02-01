@@ -31,7 +31,7 @@ void FitWrapper::fit(Function& function, Curve const& curve) {
 
     for_i (parCount) {
         const Function::Parameter& par = function_->parameterAt(i);
-        debug::ensure(qIsFinite(par.value())); // TODO if not so, return false ?
+        ASSERT(qIsFinite(par.value())); // TODO if not so, return false ?
         parValue[i] = par.value();
         parMin[i] = par.valueRange().min;
         parMax[i] = par.valueRange().max;

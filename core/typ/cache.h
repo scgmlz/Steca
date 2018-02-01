@@ -74,7 +74,7 @@ protected:
     int maxItems_;
 
 public:
-    cache_base(int maxItems) : maxItems_(maxItems) { debug::ensure(maxItems_ > 0); }
+    cache_base(int maxItems) : maxItems_(maxItems) { ASSERT(maxItems_ > 0); }
 
     virtual ~cache_base() {}
 
@@ -115,7 +115,7 @@ private:
             for (auto it = super::mapKey_.begin(), itEnd = super::mapKey_.end(); it != itEnd; ++it)
                 mit.insert(it->mru, it);
             // make sure there were no duplicate mrus
-            debug::ensure(mit.count() == super::count());
+            ASSERT(mit.count() == super::count());
             int cnt = super::count() - n;
             for (auto it = mit.begin(); cnt-- > 0; ++it)
                 super::mapKey_.erase(*it);
@@ -140,7 +140,7 @@ public:
     void trim(int n) { _trim(n); }
 
     shp insert(Key const& key, shp p) {
-        debug::ensure(!super::mapKey_.contains(key));
+        ASSERT(!super::mapKey_.contains(key));
         if (rollOver_)
             trim(0);
         else if (super::count() >= super::maxItems_)

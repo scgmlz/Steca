@@ -63,7 +63,7 @@ private:
 TabGraph::TabGraph(Params& params)
     : params_(params), flat_(false), alphaMax_(90), avgAlphaMax_(0) {
     setLayout((grid_ = newQ::GridLayout()));
-    debug::ensure(params_.panelInterpolation);
+    ASSERT(params_.panelInterpolation);
 
     grid_->addWidget((cbFlat_ = newQ::CheckBox("no intensity")), 0, 0);
 

@@ -48,7 +48,7 @@ ControlsDetector::ControlsDetector() {
     cutBottom_ = newQ::SpinBox(4, false, 0);
 
     auto _setImageCut = [this](bool isTopOrLeft, int value) {
-        debug::ensure(value >= 0);
+        ASSERT(value >= 0);
         if (gHub->toggle_linkCuts->isChecked())
             gSession->setImageCut(isTopOrLeft, true,
                                   ImageCut(value, value, value, value));

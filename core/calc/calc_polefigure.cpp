@@ -48,7 +48,7 @@ deg calculateDeltaBeta(deg beta1, deg beta2) {
     tempDelta = deltaBeta + 360;
     if (qAbs(tempDelta) < qAbs(deltaBeta))
         deltaBeta = tempDelta;
-    debug::ensure(-180 <= deltaBeta && deltaBeta <= 180);
+    ASSERT(-180 <= deltaBeta && deltaBeta <= 180);
     return deg(deltaBeta);
 }
 
@@ -58,7 +58,7 @@ deg angle(deg alpha1, deg alpha2, deg deltaBeta) {
     deg ret = rad(acos( cos(alpha1.toRad()) * cos(alpha2.toRad())
                        + sin(alpha1.toRad()) * sin(alpha2.toRad()) * cos(deltaBeta.toRad())))
                  .toDeg();
-    debug::ensure(0 <= ret && ret <= 180);
+    ASSERT(0 <= ret && ret <= 180);
     return ret;
 }
 
@@ -119,7 +119,7 @@ void searchPoints(deg alpha, deg beta, deg radius, PeakInfos const& infos, itfs_
 void searchInQuadrants(
     Quadrants const& quadrants, deg alpha, deg beta, deg searchRadius, PeakInfos const& infos,
     info_vec& foundInfos, vec<qreal>& distances) {
-    debug::ensure(quadrants.count() <= NUM_QUADRANTS);
+    ASSERT(quadrants.count() <= NUM_QUADRANTS);
     // Take only peak infos with beta within +/- BETA_LIMIT degrees into
     // account. Original STeCa used something like +/- 1.5*36 degrees.
     qreal const BETA_LIMIT = 30;
@@ -205,8 +205,8 @@ itf_t interpolateValues(deg searchRadius, PeakInfos const& infos, deg alpha, deg
         vec<qreal> newDistance;
         searchInQuadrants(
             { newQ }, newAlpha, newBeta, searchRadius, infos, renewedSearch, newDistance);
-        debug::ensure(renewedSearch.count() == 1);
-        debug::ensure(newDistance.count() == 1);
+        ASSERT(renewedSearch.count() == 1);
+        ASSERT(newDistance.count() == 1);
         if (renewedSearch.first()) {
             interpolationInfos[i] = renewedSearch.first();
             distances[i] = newDistance.first();
@@ -232,14 +232,14 @@ PeakInfos interpolateInfos(
     // If averaging fails, or alpha > averagingAlphaMax, inverse distance weighing
     // will be used.
 
-    debug::ensure(0 < alphaStep && alphaStep <= 90);
-    debug::ensure(0 < betaStep && betaStep <= 360);
-    debug::ensure(0 <= averagingAlphaMax && averagingAlphaMax <= 90);
-    debug::ensure(0 <= averagingRadius);
+    ASSERT(0 < alphaStep && alphaStep <= 90);
+    ASSERT(0 < betaStep && betaStep <= 360);
+    ASSERT(0 <= averagingAlphaMax && averagingAlphaMax <= 90);
+    ASSERT(0 <= averagingRadius);
     // Setting idwRadius = NaN disables idw radius checks and falling back to
     // idw when averaging fails.
-    debug::ensure(qIsNaN(idwRadius) || 0 <= idwRadius);
-    debug::ensure(0 <= inclusionTreshold && inclusionTreshold <= 1);
+    ASSERT(qIsNaN(idwRadius) || 0 <= idwRadius);
+    ASSERT(0 <= inclusionTreshold && inclusionTreshold <= 1);
 
     // NOTE We expect all infos to have the same gamma range.
 
@@ -284,7 +284,7 @@ PeakInfos interpolateInfos(
 
                     int iEnd = itfs.count();
                     int iBegin = qMin(qRound(itfs.count() * (1. - inclusionTreshold)), iEnd - 1);
-                    debug::ensure(iBegin < iEnd);
+                    ASSERT(iBegin < iEnd);
                     int n = iEnd - iBegin;
 
                     for (int i = iBegin; i < iEnd; ++i)

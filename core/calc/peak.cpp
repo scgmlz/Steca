@@ -22,7 +22,7 @@ Peak::Peak(const QString& functionName) : peakFunction_(nullptr) {
 }
 
 PeakFunction const& Peak::peakFunction() const {
-    debug::ensure(peakFunction_);
+    ASSERT(peakFunction_);
     return *peakFunction_;
 }
 
@@ -83,7 +83,7 @@ void Peaks::clear() {
 
 void Peaks::add(const QString& functionName) {
     Peak* peak(new Peak(functionName));
-    debug::ensure(peak);
+    ASSERT(peak);
     add(peak);
 }
 
@@ -99,7 +99,7 @@ void Peaks::add(Peak* peak) {
 }
 
 void Peaks::remove() {
-    debug::ensure(0<=selected_ && selected_<count());
+    ASSERT(0<=selected_ && selected_<count());
     delete peaks_[selected_];
     peaks_.erase(peaks_.begin()+selected_);
     if (selected_>=count())
@@ -108,7 +108,7 @@ void Peaks::remove() {
 }
 
 void Peaks::select(int i) {
-    debug::ensure(i<count());
+    ASSERT(i<count());
     selected_ = i;
     emit gSession->sigPeaks();
 }

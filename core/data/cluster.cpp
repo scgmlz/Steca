@@ -50,7 +50,7 @@ void Sequence::compute_metadata() const {
     // averages the rest
     for (const Measurement* one : members_) {
         const Metadata* d = one->metadata().data();
-        debug::ensure(d);
+        ASSERT(d);
 
         m->motorXT += d->motorXT;
         m->motorYT += d->motorYT;

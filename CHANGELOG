@@ -10,7 +10,9 @@ New features:
 
 Improvements:
 
-* Further internal restructuring. Logic moved from table models to datasets.
+* Further internal restructuring.
+  * Logic moved from table models to datasets.
+  * Unified exception handling.
 
 Steca version 2.0.6, released 2018.01.19
 ----------------------------------------

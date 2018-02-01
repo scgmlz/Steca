@@ -20,7 +20,7 @@
 namespace {
 
 static int lowerBound(vec<deg> const& vec, deg x, int i1, int i2) {
-    debug::ensure(i1 < i2);
+    ASSERT(i1 < i2);
     if (1 == i2 - i1)
         return i1;
     int mid = (i1 + i2) / 2;
@@ -30,7 +30,7 @@ static int lowerBound(vec<deg> const& vec, deg x, int i1, int i2) {
 }
 
 static int upperBound(vec<deg> const& vec, deg x, int i1, int i2) {
-    debug::ensure(i1 < i2);
+    ASSERT(i1 < i2);
     if (1 == i2 - i1)
         return i2;
     int mid = (i1 + i2) / 2;
@@ -71,11 +71,11 @@ void AngleMap::calculate() {
     rgeGma_.invalidate();
     rgeGmaFull_.invalidate();
 
-    debug::ensure(size.w > cut.left + cut.right);
-    debug::ensure(size.h > cut.top + cut.bottom);
+    ASSERT(size.w > cut.left + cut.right);
+    ASSERT(size.h > cut.top + cut.bottom);
 
     const int countWithoutCut = (size.w - cut.left - cut.right) * (size.h - cut.top - cut.bottom);
-    debug::ensure(countWithoutCut > 0);
+    ASSERT(countWithoutCut > 0);
 
     gmas.resize(countWithoutCut);
     gmaIndexes.resize(countWithoutCut);

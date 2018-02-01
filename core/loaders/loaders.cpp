@@ -70,7 +70,8 @@ bool couldBeTiffDat(QFileInfo const& info) {
 
 Rawfile load_low_level(rcstr filePath) THROWS {
     const QFileInfo info(filePath);
-    if (!(info.exists())) THROW("File " % filePath % " does not exist");
+    if (!(info.exists()))
+        THROW("File " % filePath % " does not exist");
 
     if (couldBeCaress(info))
         return load::loadCaress(filePath);

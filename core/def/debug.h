@@ -25,8 +25,6 @@
 // WaTch: same as TR, also prints stringized version (what is being printed)
 #define WT(what) TR(#what ":" << what)
 
-namespace debug {
-    void ensure(bool cond);
-}
+#define ASSERT(cond) if (!(cond)) qFatal("assertion failed: " #cond)
 
 #endif // DEBUG_H

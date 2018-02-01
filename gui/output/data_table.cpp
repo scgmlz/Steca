@@ -121,12 +121,12 @@ QVariant TabularModel::headerData(int section, Qt::Orientation, int role) const 
 }
 
 void TabularModel::moveColumn(int from, int to) {
-    debug::ensure(from < colIndexMap_.count() && to < colIndexMap_.count());
+    ASSERT(from < colIndexMap_.count() && to < colIndexMap_.count());
     qSwap(colIndexMap_[from], colIndexMap_[to]);
 }
 
 void TabularModel::setColumns(const QStringList& headers, cmp_vec const& cmps) {
-    debug::ensure(headers.count() == numCols_ && cmps.count() == numCols_);
+    ASSERT(headers.count() == numCols_ && cmps.count() == numCols_);
     headers_ = headers;
     cmpFunctions_ = cmps;
 }
@@ -213,13 +213,13 @@ DataTable::DataTable(int numDataColumns)
 void DataTable::setColumns(
     const QStringList& headers, const QStringList& outHeaders, cmp_vec const& cmps) {
     model_->setColumns(headers, cmps);
-    debug::ensure(headers.count() == outHeaders.count());
+    ASSERT(headers.count() == outHeaders.count());
     outHeaders_ = outHeaders;
 
     connect(
         header(), &QHeaderView::sectionMoved,
         [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
-            debug::ensure(oldVisualIndex > 0 && newVisualIndex > 0);
+            ASSERT(oldVisualIndex > 0 && newVisualIndex > 0);
             header()->setSortIndicatorShown(false);
             model_->moveColumn(oldVisualIndex-1, newVisualIndex-1);
             model_->sortData();

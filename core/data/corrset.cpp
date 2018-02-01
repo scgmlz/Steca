@@ -61,9 +61,9 @@ const Image* Corrset::intensCorr() const {
 void Corrset::calcIntensCorr() const {
     hasNANs_ = false;
 
-    debug::ensure(corrImage_);
+    ASSERT(corrImage_);
     size2d size = corrImage_->size() - gSession->imageCut_.marginSize();
-    debug::ensure(!size.isEmpty());
+    ASSERT(!size.isEmpty());
 
     int w = size.w, h = size.h, di = gSession->imageCut_.left, dj = gSession->imageCut_.top;
 

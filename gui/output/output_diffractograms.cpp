@@ -147,10 +147,10 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
 }
 
 vec<vec<const OutputData*>> DiffractogramsFrame::outputAllDiffractograms() {
-    debug::ensure(params_->panelGammaSlices);
+    ASSERT(params_->panelGammaSlices);
     int gmaSlices = params_->panelGammaSlices->numSlices->value();
 
-    debug::ensure(params_->panelGammaRange);
+    ASSERT(params_->panelGammaRange);
     const PanelGammaRange* pr = params_->panelGammaRange;
     Range rgeGma;
     if (pr->cbLimitGamma->isChecked())

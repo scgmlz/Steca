@@ -43,7 +43,7 @@ str Rawfile::fileName() const {
 }
 
 shp_Image Rawfile::foldedImage() const {
-    debug::ensure(!measurements_.isEmpty());
+    ASSERT(!measurements_.isEmpty());
     shp_Image ret(new Image(measurements_.first()->imageSize()));
     for (shp_Measurement one : measurements_)
         ret->addIntens(*one->image());

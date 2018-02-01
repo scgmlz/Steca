@@ -173,7 +173,7 @@ TabTable::TabTable(const QStringList& headers, const QStringList& outHeaders, co
 
     QGridLayout* grid_ = newQ::GridLayout();
     setLayout(grid_);
-    debug::ensure(headers.count() == cmps.count());
+    ASSERT(headers.count() == cmps.count());
     int numCols = headers.count();
 
     grid_->addWidget((table = new DataTable(numCols)), 0, 0);
@@ -214,7 +214,7 @@ Params::Params(ePanels panels)
     if (REFLECTION & panels)
         box_->addWidget((panelPeak = new PanelPeak()));
 
-    debug::ensure(panels & GAMMA);
+    ASSERT(panels & GAMMA);
     if (GAMMA & panels) {
         box_->addWidget((panelGammaSlices = new PanelGammaSlices()));
         box_->addWidget((panelGammaRange = new PanelGammaRange()));
@@ -251,7 +251,7 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent) : QDialog(parent) {
 
     setLayout((box_ = newQ::VBoxLayout()));
 
-    debug::ensure(params);
+    ASSERT(params);
     box_->addWidget((params_ = params));
 
     tabs_ = new QTabWidget();
@@ -286,7 +286,7 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent) : QDialog(parent) {
     }
 
     if (params_->panelPoints) {
-        debug::ensure(params_->panelPeak);
+        ASSERT(params_->panelPeak);
         connect(params_->panelPoints->rbInterp, &QRadioButton::toggled,
                 [this](){ updatePeak(); });
     }
@@ -373,7 +373,7 @@ void Frame::updatePeak() {
 void Frame::displayPeak(int reflIndex, bool interpolated) {
     table_->clear();
 
-    debug::ensure(calcPoints_.count() == interpPoints_.count());
+    ASSERT(calcPoints_.count() == interpPoints_.count());
     if (calcPoints_.count() <= reflIndex)
         return;
 
@@ -384,7 +384,7 @@ void Frame::displayPeak(int reflIndex, bool interpolated) {
 }
 
 int Frame::getReflIndex() const {
-    debug::ensure(params_->panelPeak);
+    ASSERT(params_->panelPeak);
     int reflIndex = params_->panelPeak->cbRefl->currentIndex();
     if (!(reflIndex >= 0)) THROW("invalid peak index");
     return reflIndex;

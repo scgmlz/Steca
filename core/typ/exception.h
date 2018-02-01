@@ -28,14 +28,10 @@ public:
     Exception(rcstr msg) noexcept;
     Exception(Exception const&) noexcept;
 
-    bool silent() const noexcept { return silent_; }
     rcstr msg() const noexcept { return msg_; }
     const char* what() const noexcept;
 
     void setMsg(rcstr);
-
-    Exception* clone() const;
-    void raise() const;
 
 protected:
     Exception(rcstr msg, bool silent) noexcept;

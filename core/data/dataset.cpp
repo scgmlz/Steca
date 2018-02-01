@@ -43,15 +43,15 @@ Qt::CheckState Datafile::activated() const {
 void HighlightedData::setFile(int i) {
     if (i<0)
         return unset();
-    debug::ensure(i<gSession->dataset().countFiles());
+    ASSERT(i<gSession->dataset().countFiles());
     setCluster(gSession->dataset().fileAt(i).clusters_[0]->index());
-    debug::ensure(i==current_->file().index_);
+    ASSERT(i==current_->file().index_);
 }
 
 void HighlightedData::setCluster(int i) {
     if (i<0)
         return unset();
-    debug::ensure(i<gSession->dataset().countClusters());
+    ASSERT(i<gSession->dataset().countClusters());
     current_ = &gSession->dataset().clusterAt(i);
     emit gSession->sigHighlight();
 }
@@ -240,14 +240,14 @@ int Dataset::countClusters() const {
 }
 
 const Datafile& Dataset::fileAt(int i) const {
-    debug::ensure(countFiles());
-    debug::ensure(0<=i && i<countFiles());
+    ASSERT(countFiles());
+    ASSERT(0<=i && i<countFiles());
     return files_[i];
 }
 
 const Cluster& Dataset::clusterAt(int i) const {
-    debug::ensure(countClusters());
-    debug::ensure(0<=i && i<countClusters());
+    ASSERT(countClusters());
+    ASSERT(0<=i && i<countClusters());
     return *allClusters_[i];
 }
 

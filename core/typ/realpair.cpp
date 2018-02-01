@@ -19,7 +19,7 @@
 #include "core/typ/realpair.h"
 
 int qpair::compare(qpair const& that) const {
-    debug::ensure(isValid() && that.isValid());
+    ASSERT(isValid() && that.isValid());
     RET_COMPARE_VALUE(x)
     RET_COMPARE_VALUE(y)
     return 0;

@@ -24,7 +24,7 @@
 
 // sorts xs and ys the same way, by (x,y)
 static void sortColumns(vec<qreal>& xs, vec<qreal>& ys, vec<int>& is) {
-    debug::ensure(xs.count() == ys.count());
+    ASSERT(xs.count() == ys.count());
 
     int count = xs.count();
 
@@ -77,7 +77,7 @@ TabPlot::TabPlot() {
 
 void TabPlot::plot(
     vec<qreal> const& xs, vec<qreal> const& ys, vec<qreal> const& ysLo, vec<qreal> const& ysUp) {
-    debug::ensure(xs.count() == ys.count());
+    ASSERT(xs.count() == ys.count());
 
     int count = xs.count();
 
@@ -160,7 +160,7 @@ DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
         tab->layout()->addWidget(tabPlot_);
     }
 
-    debug::ensure(params_->panelDiagram);
+    ASSERT(params_->panelDiagram);
     PanelDiagram const* pd = params_->panelDiagram;
 
     connect(pd->xAxis, _SLOT_(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
@@ -180,12 +180,12 @@ DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
 }
 
 DiagramsFrame::eReflAttr DiagramsFrame::xAttr() const {
-    debug::ensure(params_->panelDiagram);
+    ASSERT(params_->panelDiagram);
     return eReflAttr(params_->panelDiagram->xAxis->currentIndex());
 }
 
 DiagramsFrame::eReflAttr DiagramsFrame::yAttr() const {
-    debug::ensure(params_->panelDiagram);
+    ASSERT(params_->panelDiagram);
     return eReflAttr(params_->panelDiagram->yAxis->currentIndex());
 }
 
@@ -269,9 +269,9 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separato
 
     QTextStream stream(&file);
 
-    debug::ensure(xs_.count() == ys_.count());
-    debug::ensure(ysErrorLo_.isEmpty() || ysErrorLo_.count() == ys_.count());
-    debug::ensure(ysErrorLo_.count() == ysErrorUp_.count());
+    ASSERT(xs_.count() == ys_.count());
+    ASSERT(ysErrorLo_.isEmpty() || ysErrorLo_.count() == ys_.count());
+    ASSERT(ysErrorLo_.count() == ysErrorUp_.count());
 
     bool writeErrors = !ysErrorUp_.isEmpty();
 

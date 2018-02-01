@@ -33,7 +33,3 @@ void Exception::setMsg(rcstr s) {
     msg_ = s;
     msg8bit_ = msg_.toLocal8Bit();
 }
-
-Exception* Exception::clone() const { return new Exception(*this); }
-
-void Exception::raise() const { throw *this; }
