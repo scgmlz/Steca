@@ -247,6 +247,8 @@ int ExperimentView::sizeHintForColumn(int col) const {
 //  class ExperimentControls
 // ************************************************************************** //
 
+//! Row of controls to combine Measurement|s into Cluster|s.
+
 class ExperimentControls : public QWidget {
 public:
     ExperimentControls();

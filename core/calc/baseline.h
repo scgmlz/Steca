@@ -24,6 +24,8 @@
 #include <QSharedPointer> // no auto rm
 #include <QStringList>
 
+//! Settings needed for fitting the baseline.
+
 class Baseline {
 public:
     void fromJson(const JsonObj obj);

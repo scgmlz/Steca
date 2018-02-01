@@ -129,6 +129,9 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 //  local base class ImageTab
 // ************************************************************************** //
 
+//! A tab that contains a 2d detector image and associated controls.
+//! Pure virtual base class for DataImageTab and CorrImageTab.
+
 class ImageTab : public QWidget {
 public:
     ImageTab();
@@ -223,6 +226,9 @@ QImage ImageTab::makeImage(shp_Image image, bool curvedScale) {
 // ************************************************************************** //
 //  local class DataImageTab
 // ************************************************************************** //
+
+//! A tab that contains a 2d detector image and associated controls.
+//! To display diffraction data, as opposed to the correction data in CorrImageTab.
 
 class DataImageTab : public ImageTab {
 public:
@@ -340,6 +346,9 @@ void DataImageTab::render() {
 // ************************************************************************** //
 //  local class CorrImageTab
 // ************************************************************************** //
+
+//! A tab that contains a 2d detector image and associated controls.
+//! To display correction data, as opposed to the diffraction data in DataImageTab.
 
 class CorrImageTab : public ImageTab {
 public:

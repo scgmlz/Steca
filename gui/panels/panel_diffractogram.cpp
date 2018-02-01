@@ -20,6 +20,8 @@
 //  define local classes
 // ************************************************************************** //
 
+//! Listens to mouse events to select subranges of the diffractogram plot.
+
 class DiffractogramPlotOverlay : public QWidget {
 public:
     DiffractogramPlotOverlay(DiffractogramPlot&);
@@ -48,6 +50,7 @@ private:
     bool hasCursor_, mouseDown_;
 };
 
+//! A plot frame that displays diffractogram, background and peak fits, and fit ranges.
 
 class DiffractogramPlot : public QCustomPlot {
 public:
