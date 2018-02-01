@@ -209,7 +209,7 @@ Params::Params(ePanels panels)
     , panelInterpolation(nullptr)
     , panelDiagram(nullptr) {
 
-    setLayout((box_ = newQ::BoxLayout(Qt::Horizontal)));
+    setLayout((box_ = newQ::HBoxLayout()));
 
     if (REFLECTION & panels)
         box_->addWidget((panelPeak = new PanelPeak()));

@@ -426,7 +426,7 @@ void DiffractogramPlot::onPeakData() {
 
 Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
 
-    setLayout((box_ = newQ::BoxLayout(Qt::Vertical)));
+    setLayout((box_ = newQ::VBoxLayout()));
     box_->addWidget((plot_ = new DiffractogramPlot(*this)));
     auto hb = newQ::HBoxLayout();
     box_->addLayout(hb);

@@ -47,14 +47,6 @@ QAction* newQ::Toggle(rcstr text, bool value, rcstr iconFile) {
     return ret;
 };
 
-QBoxLayout* newQ::BoxLayout(Qt::Orientation orientation) {
-    switch (orientation) {
-    case Qt::Horizontal: return newQ::HBoxLayout();
-    case Qt::Vertical: return newQ::VBoxLayout();
-    }
-    NEVER return nullptr;
-}
-
 QBoxLayout* newQ::HBoxLayout() {
     auto ret = new QHBoxLayout;
     ret->setSpacing(2);

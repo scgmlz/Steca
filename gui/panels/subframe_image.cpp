@@ -149,7 +149,7 @@ private:
 };
 
 ImageTab::ImageTab() {
-    box_ = newQ::BoxLayout(Qt::Vertical);
+    box_ = newQ::VBoxLayout();
     setLayout(box_);
 
     controls_ = newQ::HBoxLayout();
