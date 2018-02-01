@@ -24,38 +24,33 @@
 //  local class TabDiffractogramsSave
 // ************************************************************************** //
 
+//! The main part of DiffractogramsFrame. Extends TabSave by some controls.
+
 class TabDiffractogramsSave : public TabSave {
 public:
     TabDiffractogramsSave();
 
-    int currType() const;
     bool currentChecked() { return rbCurrent_->isChecked(); }
     bool allSequentialChecked() { return rbAllSequential_->isChecked(); }
     bool allChecked() { return rbAll_->isChecked(); }
 
 private:
     QRadioButton *rbCurrent_, *rbAllSequential_, *rbAll_;
-    QComboBox* fileTypes_;
 };
 
-TabDiffractogramsSave::TabDiffractogramsSave()
-    : TabSave(true) {
+TabDiffractogramsSave::TabDiffractogramsSave() : TabSave(true) {
     auto gp = new GridPanel("To save");
     grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
     grid_->setRowStretch(grid_->rowCount(), 1);
 
     QGridLayout* g = gp->grid();
     g->addWidget((rbCurrent_ = newQ::RadioButton("Current diffractogram")));
-    g->addWidget(
-        (rbAllSequential_ = newQ::RadioButton("All diffractograms to sequentially numbered files")));
+    g->addWidget((rbAllSequential_ = newQ::RadioButton(
+                      "All diffractograms to sequentially numbered files")));
     g->addWidget((rbAll_ = newQ::RadioButton("All diffractograms")));
     g->addWidget(newQ::TextButton(actSave), 2, 1);
 
     rbAll_->setChecked(true);
-}
-
-int TabDiffractogramsSave::currType() const {
-    return fileTypes_->currentIndex();
 }
 
 // ************************************************************************** //

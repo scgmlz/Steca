@@ -20,6 +20,8 @@
 #include "core/typ/variant.h"
 #include <QSharedPointer> // no auto rm
 
+//! The meta data associated with one Measurement.
+
 class Metadata {
 public:
     Metadata();

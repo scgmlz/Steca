@@ -17,7 +17,8 @@
 
 #include "frame.h"
 
-//! The modal dialog for saving diffractograms
+//! The modal dialog for saving diffractograms.
+
 class DiffractogramsFrame : public Frame {
 public:
     DiffractogramsFrame(rcstr title, QWidget*);
