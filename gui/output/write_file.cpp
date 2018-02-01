@@ -12,18 +12,19 @@
 //
 // ************************************************************************** //
 
-#include "core/typ/exception.h"
 #include "write_file.h"
+#include "core/typ/exception.h"
+#include <QDebug>
 #include <QMessageBox>
 #include <QStringBuilder> // for ".." % ..
 
-WriteFile::WriteFile(rcstr path) THROWS : QFile(path) {
+WriteFile::WriteFile(const QString& path) THROWS : QFile(path) {
     if (QFile::exists()) {
-        if (QMessageBox::Yes
-            != QMessageBox::question(nullptr, "File exists", "Overwrite " % path % " ?"))
-            THROW_SILENT();
+        if (QMessageBox::question(nullptr, "File exists", "Overwrite " % path % " ?") !=
+            QMessageBox::Yes)
+            THROW("");
     }
 
-    if (!(
-        QFile::open(QIODevice::WriteOnly | QIODevice::Text))) THROW("Cannot open file for writing: " % path);
+    if (!QFile::open(QIODevice::WriteOnly | QIODevice::Text))
+        qWarning() << "Cannot open file for writing: " << path;
 }

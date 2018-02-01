@@ -108,10 +108,10 @@ void Sequence::compute_metadata() const {
     m->nmZe *= fac;
 }
 
-#define AVG_ONES(what)                                                  \
+#define AVG_ONES(what_function)                                                  \
     qreal avg = 0;                                                      \
     for (const Measurement* one : members_)                            \
-        avg += one->what();                                             \
+        avg += one->what_function();                                             \
     avg /= count();                                                     \
     return avg;
 

@@ -22,7 +22,7 @@
 
 //! A Measurement consts of an Image with associated Metadata
 
-class Measurement final {
+class Measurement {
 
 public:
     Measurement() = delete;

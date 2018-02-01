@@ -21,7 +21,7 @@
 //! A file opened for writing, specializing QFile.
 class WriteFile : public QFile {
 public:
-    WriteFile(rcstr path) THROWS;
+    WriteFile(const QString& path) THROWS;
 };
 
 #endif // WRITE_FILE_H
