@@ -190,6 +190,16 @@ void DiffractogramsFrame::writeCurrDiffractogramToFile(rcstr filePath, rcstr sep
 
 void DiffractogramsFrame::writeAllDiffractogramsToFiles(
     rcstr filePath, rcstr separator, bool oneFile) {
+
+    if (!oneFile)
+        qWarning() << "Saving to multitple files not yet implemented; saving to one file instead";
+
+    QFile* file = newQ::OutputFile(filePath);
+    if (!file)
+        return;
+    QTextStream stream(file);
+
+    int fileNumber = 1; // for case oneFile, not yet used
     const vec<vec<const OutputData*>>& outputCollections = outputAllDiffractograms();
     for (const vec<const OutputData*>& outputCollection : outputCollections) {
         for (const OutputData* outputData : outputCollection) {
@@ -197,36 +207,14 @@ void DiffractogramsFrame::writeAllDiffractogramsToFiles(
                 qWarning() << "invalid output data in writeAllDiffractogramsToFiles";
                 return;
             }
-        }
-    }
-    QFile* file = newQ::OutputFile(filePath);
-    if (!file)
-        return;
-    QTextStream stream(file);
-    if (oneFile) {
-        for (const vec<const OutputData*>& outputCollection : outputCollections) {
-            for (const OutputData* outputData : outputCollection) {
-                writeHeader(*outputData, stream);
-                stream << "Tth" << separator << "Intensity" << '\n';
-                for_i (outputData->curve_.xs().count()) {
-                    stream << outputData->curve_.x(i) << separator
-                           << outputData->curve_.y(i) << '\n';
-                }
+            writeHeader(*outputData, stream);
+            stream << "Tth" << separator << "Intensity" << '\n';
+            for_i (outputData->curve_.xs().count()) {
+                stream << outputData->curve_.x(i) << separator
+                       << outputData->curve_.y(i) << '\n';
             }
         }
-    } else {
-        int fileNumber = 1;
-        for (const vec<const OutputData*>& outputCollection : outputCollections) {
-            for (const OutputData* outputData : outputCollection) {
-                writeHeader(*outputData, stream);
-                stream << "Tth" << separator << "Intensity" << '\n';
-                for_i (outputData->curve_.xs().count()) {
-                    stream << outputData->curve_.x(i) << separator
-                           << outputData->curve_.y(i) << '\n';
-                }
-            }
-            ++fileNumber;
-        }
+        ++fileNumber;
     }
 }
 
