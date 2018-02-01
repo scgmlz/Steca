@@ -27,8 +27,8 @@ private:
     class TabDiffractogramsSave* tabSave_;
 
     void save();
-    void saveCurrent(rcstr filePath, rcstr separator);
-    void saveAll(rcstr filePath, rcstr separator, bool oneFile);
+    void saveCurrent(rcstr filePath);
+    void saveAll(rcstr filePath, bool oneFile);
 };
 
 #endif // OUTPUT_DIFFRACTOGRAMS_H

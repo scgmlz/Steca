@@ -21,8 +21,11 @@
 
 namespace {
 
-void writeMetadata(QTextStream& stream, const Metadata* md, const Range& rgeGma) {
+void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
+                const Range& rgeGma, rcstr separator) {
+
     ASSERT(rgeGma.isValid());
+    const Metadata* md = cluster->avgeMetadata().data();
     ASSERT(md);
     stream << "Comment: " << md->comment << '\n';
     stream << "Date: " << md->date << '\n';
@@ -32,9 +35,13 @@ void writeMetadata(QTextStream& stream, const Metadata* md, const Range& rgeGma)
     for_i (Metadata::numAttributes(true))
         stream << Metadata::attributeTag(i, true) << ": "
                << md->attributeValue(i).toDouble() << '\n';
+
+    stream << "Tth" << separator << "Intensity" << '\n';
+    for_i (curve.xs().count())
+        stream << curve.x(i) << separator << curve.y(i) << '\n';
 }
 
-} // local methods
+} // local method
 
 static const Params::ePanels PANELS = Params::ePanels(Params::GAMMA);
 
@@ -93,7 +100,22 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
     show();
 }
 
-void DiffractogramsFrame::saveCurrent(rcstr filePath, rcstr separator) {
+void DiffractogramsFrame::save() {
+    str path = tabSave_->filePath(true);
+    if (path.isEmpty())
+        return;
+
+    if (tabSave_->currentChecked())
+        saveCurrent(path);
+    else if (tabSave_->allSequentialChecked())
+        saveAll(path, false);
+    else if (tabSave_->allChecked())
+        saveAll(path, true);
+    else
+        qFatal("Invalid call of DiffractogramsFrame::saveDiffractogramOutput");
+}
+
+void DiffractogramsFrame::saveCurrent(rcstr filePath) {
     QFile* file = newQ::OutputFile(filePath);
     if (!file)
         return;
@@ -104,14 +126,10 @@ void DiffractogramsFrame::saveCurrent(rcstr filePath, rcstr separator) {
     const Curve& curve = lens->makeCurve();
     if (curve.isEmpty())
         qFatal("curve is empty");
-    writeMetadata(stream, cluster->avgeMetadata().data(), lens->rgeGma());
-    stream << "Tth" << separator << "Intensity" << '\n';
-    for_i (curve.xs().count())
-        stream << curve.x(i) << separator << curve.y(i) << '\n';
+    writeCurve(stream, curve, cluster, lens->rgeGma(), tabSave_->separator());
 }
 
-void DiffractogramsFrame::saveAll(
-    rcstr filePath, rcstr separator, bool oneFile) {
+void DiffractogramsFrame::saveAll(rcstr filePath, bool oneFile) {
 
     if (!oneFile)
         qWarning() << "Saving to multitple files not yet implemented; saving to one file instead";
@@ -152,26 +170,7 @@ void DiffractogramsFrame::saveAll(
             const Curve& curve = lens->makeCurve(gmaStripe);
             ASSERT(!curve.isEmpty());
             stream << "Picture Nr: " << picNum << '\n';
-            writeMetadata(stream, cluster->avgeMetadata().data(), gmaStripe);
-            stream << "Tth" << separator << "Intensity" << '\n';
-            for_i (curve.xs().count())
-                stream << curve.x(i) << separator << curve.y(i) << '\n';
+            writeCurve(stream, curve, cluster, gmaStripe, tabSave_->separator());
         }
     }
-}
-
-void DiffractogramsFrame::save() {
-    str path = tabSave_->filePath(true);
-    if (path.isEmpty())
-        return;
-    str separator = tabSave_->separator();
-
-    if (tabSave_->currentChecked())
-        saveCurrent(path, separator);
-    else if (tabSave_->allSequentialChecked())
-        saveAll(path, separator, false);
-    else if (tabSave_->allChecked())
-        saveAll(path, separator, true);
-    else
-        qWarning() << "Invalid call of DiffractogramsFrame::saveDiffractogramOutput";
 }
