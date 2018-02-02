@@ -26,6 +26,8 @@
 //  local class TabGraph
 // ************************************************************************** //
 
+//! Tab in PoleFiguresFrame, to display the pole figure.
+
 class TabGraph : public QWidget {
 public:
     TabGraph(Params&);
@@ -183,6 +185,8 @@ Jan
 //  local class TabPoleFiguresSave
 // ************************************************************************** //
 
+//! Tab in PoleFiguresFrame, to save the pole figure data.
+
 class TabPoleFiguresSave : public TabSave {
 public:
     TabPoleFiguresSave();
@@ -289,10 +293,7 @@ void PoleFiguresFrame::displayPeak(int reflIndex, bool interpolated) {
 
 void PoleFiguresFrame::savePoleFigureOutput() {
     int reflCount = gSession->peaks().count();
-    if (!reflCount) {
-        qWarning() << "cannot save pole figure: no peak chosen";
-        return;
-    }
+    ASSERT(reflCount); // user should not get here if no peak is defined
     str path = tabSave_->filePath(false);
     if (path.isEmpty()) {
         qWarning() << "cannot save pole figure: file path is empty";
