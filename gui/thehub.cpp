@@ -149,6 +149,8 @@ TheHub::TheHub()
             trigger_removePeak->setEnabled(gSession->peaks().count()); });
 
     trigger_outputPolefigures = newQ::Trigger("Pole figures...");
+    QObject::connect(gSession, &Session::sigPeaks, [this]()
+                     { trigger_outputPolefigures->setEnabled(gSession->peaks().count()); });
 
     trigger_outputDiagrams = newQ::Trigger("Diagrams...");
 
