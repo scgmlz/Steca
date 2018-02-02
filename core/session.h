@@ -16,6 +16,9 @@
 #define SESSION_H
 
 #include "core/calc/baseline.h"
+#include "core/calc/lens.h"
+#include "core/calc/peak.h"
+#include "core/calc/peak_info.h"
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"
 

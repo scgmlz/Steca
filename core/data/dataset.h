@@ -15,9 +15,6 @@
 #ifndef DATASET_H
 #define DATASET_H
 
-#include "core/calc/lens.h"
-#include "core/calc/peak.h"
-#include "core/calc/peak_info.h"
 #include "core/data/angle_map.h"
 #include "core/data/rawfile.h"
 #include "core/data/experiment.h"
