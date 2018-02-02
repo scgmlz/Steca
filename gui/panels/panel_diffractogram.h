@@ -26,7 +26,6 @@ public:
 
     void render();
 
-    const Cluster* cluster() const { return cluster_; }
     QBoxLayout* box() const { return box_; }
 
     void calcDgram();
@@ -42,8 +41,6 @@ private:
     void onFittingTab(eFittingTab tab);
 
     void onHighlight();
-
-    const Cluster* cluster_;
 
     class DiffractogramPlot* plot_;
 

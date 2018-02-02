@@ -399,7 +399,7 @@ void DiffractogramPlot::onPeakData() {
     guesses_->clearData();
     fits_->clearData();
 
-    if (peak && diffractogram_.cluster()) {
+    if (peak && gSession->dataset().highlight().cluster()) {
         const PeakFunction& fun = peak->peakFunction();
 
         const qpair gp = fun.guessedPeak();
@@ -424,7 +424,7 @@ void DiffractogramPlot::onPeakData() {
 //  class Diffractogram
 // ************************************************************************** //
 
-Diffractogram::Diffractogram() : cluster_(nullptr), currReflIndex_(0) {
+Diffractogram::Diffractogram() : currReflIndex_(0) {
 
     setLayout((box_ = newQ::VBoxLayout()));
     box_->addWidget((plot_ = new DiffractogramPlot(*this)));
@@ -535,8 +535,7 @@ void Diffractogram::onFittingTab(eFittingTab tab) {
 }
 
 void Diffractogram::render() {
-    cluster_ = gSession->dataset().highlight().cluster();
-    if (!cluster_) {
+    if (!gSession->dataset().highlight().cluster()) {
         plot_->plotEmpty();
         return;
     }
@@ -547,14 +546,13 @@ void Diffractogram::render() {
 }
 
 void Diffractogram::onHighlight() {
-    cluster_ = gSession->dataset().highlight().cluster();
     actZoom_->setChecked(false);
     render();
 }
 
 void Diffractogram::calcDgram() {
     dgram_.clear();
-    if (!cluster_)
+    if (!gSession->dataset().highlight().cluster())
         return;
     if (gHub->isCombinedDgram())
         dgram_ = gSession->experiment().avgCurve();
