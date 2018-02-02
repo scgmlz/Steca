@@ -15,6 +15,8 @@
 #include "core/session.h"
 #include "core/fit/peak_functions.h"
 
+Session* gSession; //!< global, for data handling
+
 Session::Session()
 {
     register_peak_functions();

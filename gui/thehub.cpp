@@ -22,6 +22,7 @@
 #include <QJsonDocument>
 #include <QStringBuilder> // for ".." % ..
 
+TheHub* gHub; //!< global, for signalling and command flow
 
 TheHub::TheHub()
     : isFixedIntenImageScale_(false)

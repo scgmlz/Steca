@@ -29,9 +29,6 @@ const char* version =
 #include "../VERSION"
     ;
 
-class MainWin* gMainWin; //!< global, for message handling
-class Session* gSession; //!< global, for data handling
-
 int main(int argc, char* argv[]) {
 
     struct optparse options;

@@ -2,9 +2,6 @@
 
 #include "gtest/gtest.h"
 #include "gui/output/output_diffractograms.cpp"
-// globals needed for linking
-class MainWin* gMainWin;
-class Session* gSession;
 
 TEST(AnonymousOutput, NumberedName) {
     ASSERT_DEATH(numberedName("bla",1,1), "");

@@ -39,7 +39,7 @@
 #include <QStatusBar>
 #include <QStringBuilder> // for ".." % ..
 
-TheHub* gHub; //!< global, for signalling and command flow
+MainWin* gMainWin; //!< global, for message handling
 
 // ************************************************************************** //
 //  file-scoped functions

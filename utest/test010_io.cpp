@@ -4,8 +4,6 @@
 #include "core/typ/exception.h"
 #include "testdata.h"
 
-class Session* gSession = Session::instance();
-
 TEST(IO, Caress) {
     try {
         load::loadRawfile(TESTDATADIR "/caress.dat");
