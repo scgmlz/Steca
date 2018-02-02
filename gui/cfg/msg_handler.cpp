@@ -26,10 +26,10 @@
 
 //extern MainWin* gMainWin;
 
-void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg) {
+void messageHandler(QtMsgType type, QMessageLogContext const& ctx, const QString& msg) {
     switch (type) {
     case QtDebugMsg:
-        std::cerr << ".... " << msg.toStdString() << /*context(ctx) <<*/ "\n" << std::flush;
+        std::cerr << ".... " << msg.toStdString() << "\n" << std::flush;
         break;
 // unavailable before Qt5.5 (ISSUE #36)
 //    case QtInfoMsg:
@@ -50,8 +50,8 @@ void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg) {
         QMessageBox::critical(QApplication::activeWindow(), qAppName(),
                               "Sorry, you encountered a fatal bug.\n"
                               "The application will terminate.\n"
-                              "Please report the following to the maintainer:\n"
-                              "Error message:\n" + msg + "\n"
+                              "Please report the following to the maintainer.\n\n"
+                              "Error:\n" + msg + "\n"
 #ifndef QT_NO_DEBUG
                               "Context:\n" + ctx.function + "\n"
 #endif

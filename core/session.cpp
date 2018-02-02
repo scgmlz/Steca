@@ -12,6 +12,11 @@
 //
 // ************************************************************************** //
 
+// This needs to be placed once, somewhere, in our sources:
+#ifdef QT_NO_EXCEPTIONS
+#error needs exception handling
+#endif
+
 #include "core/session.h"
 #include "core/fit/peak_functions.h"
 
