@@ -579,7 +579,6 @@ void Diffractogram::setCurrReflNewRange(const Range& range) {
     if (!peak)
         return;
     peak->setRange(range);
-    peak->invalidateGuesses();
 }
 
 Range Diffractogram::currReflRange() const {
