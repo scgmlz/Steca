@@ -19,6 +19,7 @@
 #include "gui/output/tab_save.h"
 #include "gui/thehub.h"
 #include <cmath>
+#include <QMessageBox>
 
 namespace {
 
@@ -134,7 +135,7 @@ void DiffractogramsFrame::saveCurrent() {
     str path = tabSave_->filePath(true);
     if (path.isEmpty())
         return;
-    QFile* file = newQ::OutputFile(path);
+    QFile* file = newQ::OutputFile(this, path);
     if (!file)
         return;
     QTextStream stream(file);
@@ -149,15 +150,31 @@ void DiffractogramsFrame::saveCurrent() {
 
 void DiffractogramsFrame::saveAll(bool oneFile) {
 
+    const Experiment& expt = gSession->experiment();
+
+    // In one-file mode, start output stream; in multi-file mode, only do prepations.
     str path = tabSave_->filePath(true, !oneFile);
     if (path.isEmpty())
         return;
     QTextStream* stream = nullptr;
     if (oneFile) {
-        QFile* file = newQ::OutputFile(path);
+        QFile* file = newQ::OutputFile(this, path);
         if (!file)
             return;
         stream = new QTextStream(file);
+    } else {
+        // check whether any of the numbered files already exists
+        QStringList existingFiles;
+        for_i (expt.size()) {
+            QString currPath = numberedName(path, i, expt.size()+1);
+            if (QFile(currPath).exists())
+                existingFiles << QFileInfo(currPath).fileName();
+        }
+        if (existingFiles.size() &&
+            QMessageBox::question(this, existingFiles.size()>1 ? "Files exist" : "File exists",
+                                  "Overwrite files " + existingFiles.join(", ") + " ?") !=
+            QMessageBox::Yes)
+            return;
     }
 
     ASSERT(params_->panelGammaSlices);
@@ -169,7 +186,6 @@ void DiffractogramsFrame::saveAll(bool oneFile) {
     if (pr->cbLimitGamma->isChecked())
         rgeGma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
 
-    const Experiment& expt = gSession->experiment();
     Progress progress(expt.size(), progressBar_);
 
     int picNum = 0;
@@ -188,7 +204,8 @@ void DiffractogramsFrame::saveAll(bool oneFile) {
         const qreal step = rge.width() / gmaSlices;
         for_i (gmaSlices) {
             if (!oneFile) {
-                QFile* file = newQ::OutputFile(numberedName(path, ++fileNum, expt.size()+1));
+                QFile* file = newQ::OutputFile(
+                    this, numberedName(path, ++fileNum, expt.size()+1), false);
                 if (!file)
                     return;
                 delete stream;

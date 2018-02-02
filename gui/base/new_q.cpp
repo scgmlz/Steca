@@ -17,7 +17,6 @@
 #include <QApplication> // for qApp for new Action
 #include <QDebug>
 #include <QMessageBox>
-#include <QStringBuilder> // for ".." % ..
 #include <QtGlobal> // to define Q_OS_WIN
 
 namespace {
@@ -32,10 +31,10 @@ static void setWidth(QWidget* w, int ndigits, bool withDot) {
 
 } // local methods
 
-QFile* newQ::OutputFile(const QString& path) {
+QFile* newQ::OutputFile(QWidget* parent, const QString& path, bool check_overwrite) {
     QFile* ret = new QFile(path);
-    if (ret->exists() &&
-        QMessageBox::question(nullptr, "File exists", "Overwrite " % path % " ?") !=
+    if (check_overwrite && ret->exists() &&
+        QMessageBox::question(parent, "File exists", "Overwrite " + path + " ?") !=
         QMessageBox::Yes) {
         delete ret;
         return nullptr;

@@ -39,8 +39,8 @@ private:
     void recalculate();
 
     void saveDiagramOutput();
-    void writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator) const;
-    void writeAllDataOutputFile(rcstr filePath, rcstr separator) const;
+    void writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator);
+    void writeAllDataOutputFile(rcstr filePath, rcstr separator);
 };
 
 #endif // OUTPUT_DIAGRAMS_H

@@ -33,7 +33,7 @@ class BoxWidget;
 
 namespace newQ {
 
-QFile* OutputFile(const QString& path);
+QFile* OutputFile(QWidget* parent, const QString& path, bool check_overwrite=true);
 
 QAction* Trigger(rcstr text, rcstr iconFile="");
 QAction* Toggle(rcstr text, bool value, rcstr iconFile="");

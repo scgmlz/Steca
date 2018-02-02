@@ -166,7 +166,7 @@ TheHub::~TheHub() {
 }
 
 void TheHub::saveSession(QFileInfo const& fileInfo) const {
-    QFile* file = newQ::OutputFile(fileInfo.filePath());
+    QFile* file = newQ::OutputFile(gMainWin, fileInfo.filePath());
     if (!file)
         return;
     QDir::setCurrent(fileInfo.absolutePath());
