@@ -101,7 +101,7 @@ public:
 
     // access using 2D index
     T const& at(int i, int j) const {
-        debug::ensure(i < size_.w && j < size_.h);
+        ASSERT(i < size_.w && j < size_.h);
         return ts_[i][j];
     }
 
@@ -110,13 +110,13 @@ public:
 
     // set using 2D index
     void setAt(int i, int j, T const& val) {
-        debug::ensure(i < size_.w && j < size_.h);
+        ASSERT(i < size_.w && j < size_.h);
         ts_[i][j] = val;
     }
 
     // mutable access
     T& refAt(int i, int j) const {
-        debug::ensure(i < size_.w && j < size_.h);
+        ASSERT(i < size_.w && j < size_.h);
         return ts_[i][j];
     }
 };

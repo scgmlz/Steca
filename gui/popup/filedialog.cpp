@@ -13,6 +13,8 @@
 // ************************************************************************** //
 
 #include "core/loaders/loaders.h"
+#include <QApplication>
+#include <QEventLoop>
 #include <QFileDialog>
 #include <QFileSystemModel>
 #include <QSortFilterProxyModel>

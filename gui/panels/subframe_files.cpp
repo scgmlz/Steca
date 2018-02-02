@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/subframe_files.cpp
-//! @brief     Implements class SubframeFiles; defines and implements class FileViews
+//! @brief     Implements class SubframeFiles, with local model and view
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -14,10 +14,9 @@
 
 #include "gui/panels/subframe_files.h"
 #include "core/session.h"
-#include "gui/base/table_model.h"
+#include "gui/base/model_view.h"
 #include "gui/thehub.h"
 #include "gui/base/new_q.h"
-#include "gui/base/tree_views.h" // inheriting from
 #include <QHeaderView>
 
 
@@ -30,67 +29,40 @@
 class FilesModel : public TableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
     void onClicked(const QModelIndex &);
-    void setHighlight(int row);
-    void forceFileHighlight(const Datafile*);
-    void removeFile();
-    void onFilesLoaded();
-
-    int columnCount() const final { return 3; }
-    int rowCount() const final { return gSession->numFiles(); }
-    QVariant data(const QModelIndex&, int) const final;
-
-    vec<int> checkedRows() const;
+    void onFilesChanged();
+    void onHighlight();
+    void onActivated();
 
 private:
-
-    vec<bool> rowsChecked_;
-    int rowHighlighted_;
+    int columnCount() const final { return 3; }
+    int rowCount() const final { return gSession->dataset().countFiles(); }
+    QVariant data(const QModelIndex&, int) const final;
 };
 
-//! Reacts to clicks and arrow keys.
+//! Selects or unselects all measurements in a file.
 void FilesModel::onClicked(const QModelIndex& cell) {
     int row = cell.row();
+    int col = cell.column();
     if (row < 0 || row >= rowCount())
         return;
-    int col = cell.column();
-    if (col==1) {
-        rowsChecked_[row] = !rowsChecked_[row];
-        emit dataChanged(cell, cell);
-        gHub->onFilesSelected(checkedRows());
-    } else if (col==2) {
-        setHighlight(row);
-    }
+    if (col==1)
+        gSession->dataset().cycleFileActivation(row);
+    else if (col==2)
+        gSession->dataset().highlight().setFile(row);
 }
 
-//! Set highlight according to signal from MeasurementsView.
-void FilesModel::forceFileHighlight(const Datafile* newFile) {
-    for (int row=0; row<rowCount(); ++row) {
-        if (gSession->file(row)==newFile) {
-            setHighlight(row);
-            return;
-        }
-    }
-    NEVER
+void FilesModel::onFilesChanged() {
+    resetModel(); // repaint everything, and reset currentIndex to origin
 }
 
-//! Forwards command to remove file, and updates the view.
-void FilesModel::removeFile() {
-    int row = rowHighlighted_;
-    gHub->removeFile(row);
-    rowsChecked_.resize(rowCount());
-    emit dataChanged(createIndex(row,0),createIndex(rowCount(),columnCount()));
-    gHub->onFilesSelected(checkedRows());
-    setHighlight(qMin(row, rowCount()-1));
+//! Update highlight display upon sigHighlight.
+void FilesModel::onHighlight() {
+    emit dataChanged(createIndex(0,0),createIndex(rowCount()-1,columnCount()-1));
 }
 
-void FilesModel::onFilesLoaded() {
-    beginResetModel();
-    while (rowsChecked_.count()<rowCount())
-        rowsChecked_.append(true);
-    endResetModel();
-    gHub->onFilesSelected(checkedRows());
-    if (rowHighlighted_<0)
-        setHighlight(0);
+//! Update activation check display upon sigActivated.
+void FilesModel::onActivated() {
+    emit dataChanged(createIndex(0,1),createIndex(rowCount()-1,1));
 }
 
 //! Returns role-specific information about one table cell.
@@ -98,31 +70,30 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
     const int row = index.row();
     if (row < 0 || row >= rowCount())
         return {};
-    const Datafile* file = gSession->file(row);
+    const Datafile& file = gSession->dataset().fileAt(row);
     int col = index.column();
     switch (role) {
     case Qt::EditRole:
         return {};
     case Qt::DisplayRole:
         if (col==2)
-            return file->fileName();
+            return file.name();
         return {};
     case Qt::ToolTipRole:
         if (col>=2)
             return QString("File %1\ncontains %2 measurements\nhere numbered %3 to %4")
-                .arg(file->fileName())
-                .arg(file->count())
-                .arg(file->offset()+1)
-                .arg(file->offset()+file->count());
+                .arg(file.name())
+                .arg(file.count())
+                .arg(gSession->dataset().offset(file)+1)
+                .arg(gSession->dataset().offset(file)+file.count());
         return {};
     case Qt::CheckStateRole: {
-        if (col==1) {
-            return rowsChecked_.at(row) ? Qt::Checked : Qt::Unchecked;
-        }
+        if (col==1)
+            return file.activated();
         return {};
     }
     case Qt::BackgroundRole: {
-        if (row==rowHighlighted_)
+        if (row==gSession->dataset().highlight().fileIndex())
             return QColor(Qt::cyan);
         return QColor(Qt::white);
     }
@@ -131,28 +102,6 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
     }
 }
 
-//! Returns list of selected rows.
-vec<int> FilesModel::checkedRows() const {
-    vec<int> ret;
-    for (int i=0; i<rowCount(); ++i)
-        if (rowsChecked_[i])
-            ret.append(i);
-    return ret;
-}
-
-//! Sets rowHighlighted_, and signals need to refresh FilesView and MeasurementView.
-void FilesModel::setHighlight(int row) {
-    int oldRow = rowHighlighted_;
-    if (row==oldRow)
-        return;
-    rowHighlighted_ = row;
-    if (row>=0) {
-        emit dataChanged(createIndex(row,0),createIndex(row,columnCount()));
-        emit gHub->sigFileHighlightHasChanged(gSession->file(row));
-    }
-    if (oldRow>=0)
-        emit dataChanged(createIndex(oldRow,0),createIndex(oldRow,columnCount()));
-}
 
 // ************************************************************************** //
 //  local class FilesView
@@ -168,25 +117,27 @@ private:
     void currentChanged(QModelIndex const&, QModelIndex const&) override final;
 
     int sizeHintForColumn(int) const final;
-    FilesModel* model() const { return static_cast<FilesModel*>(ListView::model()); }
+    FilesModel* model_;
 };
 
 FilesView::FilesView() : ListView() {
     setHeaderHidden(true);
     setSelectionMode(QAbstractItemView::NoSelection);
-    auto filesModel = new FilesModel();
-    setModel(filesModel);
+    model_ = new FilesModel();
+    setModel(model_);
 
-    connect(gHub, &TheHub::sigFilesLoaded, model(), &FilesModel::onFilesLoaded);
-    connect(gHub->trigger_removeFile, &QAction::triggered, model(), &FilesModel::removeFile);
-    connect(gHub, &TheHub::sigFileHighlight, model(), &FilesModel::forceFileHighlight);
-    connect(this, &FilesView::clicked, model(), &FilesModel::onClicked);
+    connect(gSession, &Session::sigFiles, model_, &FilesModel::onFilesChanged);
+    connect(gSession, &Session::sigHighlight, model_, &FilesModel::onHighlight);
+    connect(gSession, &Session::sigActivated, model_, &FilesModel::onActivated);
+    connect(this, &FilesView::clicked, model_, &FilesModel::onClicked);
 }
 
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
 void FilesView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
-    model()->setHighlight(current.row());
+    if (current.row()==gSession->dataset().highlight().fileIndex())
+        return; // the following would prevent execution of "onClicked"
     scrollTo(current);
+    gSession->dataset().highlight().setFile(current.row());
 }
 
 int FilesView::sizeHintForColumn(int col) const {
@@ -225,10 +176,10 @@ SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files") {
     auto* corrFile_ = new QLineEdit();
     corrFile_->setReadOnly(true);
     h->addWidget(corrFile_);
+    h->addWidget(newQ::IconButton(gHub->trigger_corrFile));
     h->addWidget(newQ::IconButton(gHub->toggle_enableCorr));
-    h->addWidget(newQ::IconButton(gHub->trigger_removeCorr));
 
-    connect(gHub, &TheHub::sigCorrFile,
-            [corrFile_](const Datafile* file) {
-                corrFile_->setText(file ? file->fileName() : ""); });
+    connect(gSession, &Session::sigCorr, [corrFile_]() {
+            corrFile_->setText( gSession->corrset().hasFile() ?
+                                gSession->corrset().raw().fileName() : ""); });
 }

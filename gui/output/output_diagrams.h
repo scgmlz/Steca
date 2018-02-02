@@ -18,7 +18,7 @@
 #include "gui/output/frame.h"
 
 //! The modal dialog for viewing and saving diagrams
-class DiagramsFrame final : public Frame {
+class DiagramsFrame : public Frame {
 public:
     DiagramsFrame(rcstr title, QWidget*);
 
@@ -26,21 +26,21 @@ private:
     class TabPlot* tabPlot_;
     class TabDiagramsSave* tabSave_;
 
-    using eReflAttr = ReflectionInfo::eReflAttr;
+    using eReflAttr = PeakInfo::eReflAttr;
 
     eReflAttr xAttr() const;
     eReflAttr yAttr() const;
 
-    void displayReflection(int reflIndex, bool interpolated);
+    void displayPeak(int reflIndex, bool interpolated);
 
-    ReflectionInfos rs_;
+    PeakInfos rs_;
     vec<qreal> xs_, ys_, ysErrorLo_, ysErrorUp_;
 
     void recalculate();
 
     void saveDiagramOutput();
-    void writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator) const;
-    void writeAllDataOutputFile(rcstr filePath, rcstr separator) const;
+    void writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator);
+    void writeAllDataOutputFile(rcstr filePath, rcstr separator);
 };
 
 #endif // OUTPUT_DIAGRAMS_H

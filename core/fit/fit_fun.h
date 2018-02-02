@@ -24,7 +24,7 @@
 
 //! A polynomial, for fitting the background of a diffractogram
 
-class Polynom final : public Function {
+class Polynom : public Function {
 public:
     Polynom(int degree = 0) { setDegree(degree); }
 
@@ -39,10 +39,10 @@ public:
     void fit(Curve const&, const Ranges&);
     static Polynom fromFit(int degree, Curve const&, const Ranges&);
 
-    JsonObj to_json() const;
-    void from_json(JsonObj const&) THROWS;
+    JsonObj to_json() const final;
+    void from_json(JsonObj const&) THROWS final;
 
-    str name() const { return "polynom"; }
+    str name() const final { return "polynom"; }
 };
 
 
@@ -69,6 +69,7 @@ public:
     virtual qpair peakError() const = 0;
     virtual fwhm_t fwhmError() const = 0;
     JsonObj to_json() const final;
+    virtual bool isRaw() const { return false; } //!< overwritten in class Raw, obviously
 
 protected:
     Range range_;

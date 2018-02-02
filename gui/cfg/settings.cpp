@@ -30,13 +30,13 @@ QVariant Settings::readVariant(rcstr key, const QVariant& def) {
 }
 
 void Settings::read(rcstr key, QAction* act, bool def) {
-    debug::ensure(act->isCheckable());
+    ASSERT(act->isCheckable());
     if (act)
         act->setChecked(readVariant(key, def).toBool());
 }
 
 void Settings::save(rcstr key, QAction* act) {
-    debug::ensure(act->isCheckable());
+    ASSERT(act->isCheckable());
     if (act)
         saveVariant(key, act->isChecked());
 }

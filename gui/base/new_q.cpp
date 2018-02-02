@@ -13,9 +13,10 @@
 // ************************************************************************** //
 
 #include "gui/base/new_q.h"
-#include "gui/base/various_widgets.h"
 #include "core/def/numbers.h"
 #include <QApplication> // for qApp for new Action
+#include <QDebug>
+#include <QMessageBox>
 #include <QtGlobal> // to define Q_OS_WIN
 
 namespace {
@@ -29,6 +30,21 @@ static void setWidth(QWidget* w, int ndigits, bool withDot) {
 }
 
 } // local methods
+
+QFile* newQ::OutputFile(QWidget* parent, const QString& path, bool check_overwrite) {
+    QFile* ret = new QFile(path);
+    if (check_overwrite && ret->exists() &&
+        QMessageBox::question(parent, "File exists", "Overwrite " + path + " ?") !=
+        QMessageBox::Yes) {
+        delete ret;
+        return nullptr;
+    }
+    if (!ret->open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning() << "Cannot open file for writing: " << path;
+        return nullptr;
+    }
+    return ret;
+}
 
 QAction* newQ::Trigger(rcstr text, rcstr iconFile) {
     QAction* ret = new QAction(text, qApp);
@@ -47,20 +63,6 @@ QAction* newQ::Toggle(rcstr text, bool value, rcstr iconFile) {
     ret->setChecked(value);
     return ret;
 };
-
-BoxWidget* newQ::Tab(QTabWidget* panel, rcstr title) {
-    auto ret = new BoxWidget(Qt::Vertical);
-    panel->addTab(ret, title);
-    return ret;
-}
-
-QBoxLayout* newQ::BoxLayout(Qt::Orientation orientation) {
-    switch (orientation) {
-    case Qt::Horizontal: return newQ::HBoxLayout();
-    case Qt::Vertical: return newQ::VBoxLayout();
-    }
-    NEVER return nullptr;
-}
 
 QBoxLayout* newQ::HBoxLayout() {
     auto ret = new QHBoxLayout;
@@ -101,6 +103,9 @@ QLineEdit* newQ::LineDisplay(int ndigits, bool withDot) {
     return ret;
 }
 
+// A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.
+// However, sometimes we want to make a QSpinBox exactly as wide as a given QDoubleSpinBox,
+// for nice vertical alignement. Then we use withDot=true.
 QSpinBox* newQ::SpinBox(int ndigits, bool withDot, int min, int max) {
     auto ret = new QSpinBox;
     setWidth(ret, ndigits, withDot);
@@ -109,9 +114,9 @@ QSpinBox* newQ::SpinBox(int ndigits, bool withDot, int min, int max) {
     return ret;
 }
 
-QDoubleSpinBox* newQ::DoubleSpinBox(int ndigits, bool withDot, qreal min, qreal max) {
+QDoubleSpinBox* newQ::DoubleSpinBox(int ndigits, qreal min, qreal max) {
     auto ret = new QDoubleSpinBox;
-    setWidth(ret, ndigits, withDot);
+    setWidth(ret, ndigits, true);
     ret->setMinimum(min);
     ret->setMaximum(max > min ? max : min);
     return ret;

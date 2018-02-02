@@ -14,129 +14,89 @@
 
 #include "gui/output/output_diffractograms.h"
 #include "core/session.h"
+#include "gui/base/new_q.h"
 #include "gui/output/dialog_panels.h"
 #include "gui/output/tab_save.h"
-#include "gui/output/write_file.h"
 #include "gui/thehub.h"
-#include "gui/base/various_widgets.h"
+#include <cmath>
+#include <QMessageBox>
+
+namespace {
+
+void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
+                const Range& rgeGma, rcstr separator) {
+
+    ASSERT(rgeGma.isValid());
+    const Metadata* md = cluster->avgeMetadata().data();
+    ASSERT(md);
+    stream << "Comment: " << md->comment << '\n';
+    stream << "Date: " << md->date << '\n';
+    stream << "Gamma range min: " << rgeGma.min << '\n';
+    stream << "Gamma range max: " << rgeGma.max << '\n';
+
+    for_i (Metadata::numAttributes(true))
+        stream << Metadata::attributeTag(i, true) << ": "
+               << md->attributeValue(i).toDouble() << '\n';
+
+    stream << "Tth" << separator << "Intensity" << '\n';
+    for_i (curve.xs().count())
+        stream << curve.x(i) << separator << curve.y(i) << '\n';
+
+    stream.flush(); // not sure whether we need this
+}
+
+//! Returns templatedName with '%d' replaced by string representation of num.
+
+//!  The string representation of num has leading zeros, and its number of
+//!  digits is determined by the maximum value maxNum.
+
+QString numberedName(const QString& templatedName, int num, int maxNum) {
+    if (!templatedName.contains("%d"))
+        qFatal("path does not contain placeholder %%d");
+    QString ret = templatedName;
+    int nDigits = (int)log10((double)maxNum)+1;
+    ret.replace("%d", QString("%1").arg(num, nDigits, 10, QLatin1Char('0')));
+    qDebug() << "PATH " << templatedName << " -> " << ret;
+    return ret;
+}
+
+} // local method
+
+static const Params::ePanels PANELS = Params::ePanels(Params::GAMMA);
+
 
 // ************************************************************************** //
 //  local class TabDiffractogramsSave
 // ************************************************************************** //
 
-class TabDiffractogramsSave final : public TabSave {
+//! The main part of DiffractogramsFrame. Extends TabSave by an output content control.
+
+class TabDiffractogramsSave : public TabSave {
 public:
     TabDiffractogramsSave();
 
-    int currType() const;
     bool currentChecked() { return rbCurrent_->isChecked(); }
     bool allSequentialChecked() { return rbAllSequential_->isChecked(); }
     bool allChecked() { return rbAll_->isChecked(); }
 
 private:
     QRadioButton *rbCurrent_, *rbAllSequential_, *rbAll_;
-    QComboBox* fileTypes_;
 };
 
-TabDiffractogramsSave::TabDiffractogramsSave()
-    : TabSave(true) {
+TabDiffractogramsSave::TabDiffractogramsSave() : TabSave(true) {
     auto gp = new GridPanel("To save");
     grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
     grid_->setRowStretch(grid_->rowCount(), 1);
 
     QGridLayout* g = gp->grid();
     g->addWidget((rbCurrent_ = newQ::RadioButton("Current diffractogram")));
-    g->addWidget(
-        (rbAllSequential_ = newQ::RadioButton("All diffractograms to sequentially numbered files")));
+    g->addWidget((rbAllSequential_ = newQ::RadioButton(
+                      "All diffractograms to sequentially numbered files")));
     g->addWidget((rbAll_ = newQ::RadioButton("All diffractograms")));
     g->addWidget(newQ::TextButton(actSave), 2, 1);
 
     rbAll_->setChecked(true);
 }
-
-int TabDiffractogramsSave::currType() const {
-    return fileTypes_->currentIndex();
-}
-
-// ************************************************************************** //
-//  local class OutputData
-// ************************************************************************** //
-
-struct OutputData {
-public:
-    OutputData() = delete;
-    OutputData(Curve curve, const Cluster& cluster, Range gmaStripe, int picNum)
-        : curve_(curve), dataseq_(cluster), gmaStripe_(gmaStripe), picNum_(picNum) {}
-
-    Curve curve_;
-    const Cluster& dataseq_;
-    Range gmaStripe_;
-    int picNum_;
-
-    bool isValid() const {
-        return (!dataseq_.avgeMetadata().isNull() || !curve_.isEmpty() || gmaStripe_.isValid());
-    }
-};
-
-namespace {
-
-OutputData collectCurve(Cluster const& dataseq) {
-    shp_SequenceLens lens = gSession->defaultClusterLens(dataseq);
-    const Curve& curve = lens->makeCurve();
-    return OutputData(curve, dataseq, lens->rgeGma(), 0); // TODO current picture number
-}
-
-OutputData outputCurrDiffractogram() {
-    const Cluster* ret = gHub->selectedCluster();
-    if (!ret)
-        throw Exception("No data selected");
-    return collectCurve(*ret);
-}
-
-vec<const OutputData*> collectCurves(
-    const Range& rgeGma, int gmaSlices, Cluster const& dataseq, int picNum) {
-
-    shp_SequenceLens lens = gSession->defaultClusterLens(dataseq);
-
-    Range rge = (gmaSlices > 0) ? lens->rgeGma() : Range::infinite();
-    if (rgeGma.isValid())
-        rge = rge.intersect(rgeGma);
-
-    vec<const OutputData*> ret;
-
-    gmaSlices = qMax(1, gmaSlices);
-    const qreal step = rge.width() / gmaSlices;
-    for_i (gmaSlices) {
-        const qreal min = rge.min + i * step;
-        const Range gmaStripe(min, min + step);
-        const Curve& curve = lens->makeCurve(gmaStripe);
-        const OutputData* dat = new OutputData(curve, dataseq, gmaStripe, picNum);
-        ret.append(dat);
-    }
-    return ret;
-}
-
-void writeMetaData(OutputData outputData, QTextStream& stream) {
-    if (outputData.picNum_ > 0)
-        stream << "Picture Nr: " << outputData.picNum_ << '\n';
-
-    const Metadata& md = *outputData.dataseq_.avgeMetadata();
-    const Range& rgeGma = outputData.gmaStripe_;
-
-    stream << "Comment: " << md.comment << '\n';
-    stream << "Date: " << md.date << '\n';
-    stream << "Gamma range min: " << rgeGma.min << '\n';
-    stream << "Gamma range max: " << rgeGma.max << '\n';
-
-    for_i (Metadata::numAttributes(true)) {
-        stream << Metadata::attributeTag(i, true) << ": " << md.attributeValue(i).toDouble()
-               << '\n';
-    }
-}
-
-} // local methods
-
-static const Params::ePanels PANELS = Params::ePanels(Params::GAMMA);
 
 
 // ************************************************************************** //
@@ -149,104 +109,119 @@ DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
     btnCalculate_->hide();
     btnInterpolate_->hide();
 
+    auto* tab = new QWidget();
+    tabs_->addTab(tab, "Save");
+    tab->setLayout(newQ::VBoxLayout());
     tabSave_ = new TabDiffractogramsSave();
-    newQ::Tab(tabs_, "Save")->box().addWidget(tabSave_);
+    tab->layout()->addWidget(tabSave_);
+    connect(tabSave_->actSave, &QAction::triggered, [this]() { save(); });
 
-    connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiffractogramOutput(); });
     show();
 }
 
-vec<vec<const OutputData*>> DiffractogramsFrame::outputAllDiffractograms() {
-    debug::ensure(params_->panelGammaSlices);
+void DiffractogramsFrame::save() {
+
+    if (tabSave_->currentChecked())
+        saveCurrent();
+    else if (tabSave_->allSequentialChecked())
+        saveAll(false);
+    else if (tabSave_->allChecked())
+        saveAll(true);
+    else
+        qFatal("Invalid call of DiffractogramsFrame::saveDiffractogramOutput");
+}
+
+void DiffractogramsFrame::saveCurrent() {
+    str path = tabSave_->filePath(true);
+    if (path.isEmpty())
+        return;
+    QFile* file = newQ::OutputFile(this, path);
+    if (!file)
+        return;
+    QTextStream stream(file);
+    const Cluster* cluster = gSession->dataset().highlight().cluster();
+    ASSERT(cluster);
+    shp_SequenceLens lens = gSession->defaultClusterLens(*cluster);
+    const Curve& curve = lens->makeCurve();
+    if (curve.isEmpty())
+        qFatal("curve is empty");
+    writeCurve(stream, curve, cluster, lens->rgeGma(), tabSave_->separator());
+}
+
+void DiffractogramsFrame::saveAll(bool oneFile) {
+
+    const Experiment& expt = gSession->experiment();
+
+    // In one-file mode, start output stream; in multi-file mode, only do prepations.
+    str path = tabSave_->filePath(true, !oneFile);
+    if (path.isEmpty())
+        return;
+    QTextStream* stream = nullptr;
+    if (oneFile) {
+        QFile* file = newQ::OutputFile(this, path);
+        if (!file)
+            return;
+        stream = new QTextStream(file);
+    } else {
+        // check whether any of the numbered files already exists
+        QStringList existingFiles;
+        for_i (expt.size()) {
+            QString currPath = numberedName(path, i, expt.size()+1);
+            if (QFile(currPath).exists())
+                existingFiles << QFileInfo(currPath).fileName();
+        }
+        if (existingFiles.size() &&
+            QMessageBox::question(this, existingFiles.size()>1 ? "Files exist" : "File exists",
+                                  "Overwrite files " + existingFiles.join(", ") + " ?") !=
+            QMessageBox::Yes)
+            return;
+    }
+
+    ASSERT(params_->panelGammaSlices);
     int gmaSlices = params_->panelGammaSlices->numSlices->value();
 
-    debug::ensure(params_->panelGammaRange);
+    ASSERT(params_->panelGammaRange);
     const PanelGammaRange* pr = params_->panelGammaRange;
     Range rgeGma;
     if (pr->cbLimitGamma->isChecked())
         rgeGma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
 
-    const Experiment& expt = gSession->experiment();
-    Progress progress(expt.count(), progressBar_);
+    Progress progress(expt.size(), progressBar_);
 
-    vec<vec<const OutputData*>> ret;
-    int picNum = 1;
-    for (shp_Cluster cluster : expt) {
-        progress.step();
-        ret.append(collectCurves(rgeGma, gmaSlices, *cluster, picNum));
+    int picNum = 0;
+    int fileNum = 0;
+    for (const Cluster* cluster : expt.clusters()) {
         ++picNum;
-    }
+        progress.step();
 
-    return ret;
-}
+        shp_SequenceLens lens = gSession->defaultClusterLens(*cluster);
 
-void DiffractogramsFrame::writeCurrDiffractogramToFile(rcstr filePath, rcstr separator) {
-    const OutputData& outputData = outputCurrDiffractogram();
-    if (!outputData.isValid()) {
-        qWarning() << "invalid output data in writeCurrDiffractogramsToFiles";
-        return;
-    }
-    WriteFile file(filePath);
-    QTextStream stream(&file);
-    writeMetaData(outputData, stream);
-    stream << "Tth" << separator << "Intensity" << '\n';
-    const Curve& curve = outputData.curve_;
-    for_i (curve.xs().count())
-        stream << curve.x(i) << separator << curve.y(i) << '\n';
-}
+        Range rge = (gmaSlices > 0) ? lens->rgeGma() : Range::infinite();
+        if (rgeGma.isValid())
+            rge = rge.intersect(rgeGma);
 
-void DiffractogramsFrame::writeAllDiffractogramsToFiles(
-    rcstr filePath, rcstr separator, bool oneFile) {
-    const vec<vec<const OutputData*>>& outputCollections = outputAllDiffractograms();
-    for (const vec<const OutputData*>& outputCollection : outputCollections) {
-        for (const OutputData* outputData : outputCollection) {
-            if (!outputData->isValid()) {
-                qWarning() << "invalid output data in writeAllDiffractogramsToFiles";
-                return;
+        gmaSlices = qMax(1, gmaSlices);
+        const qreal step = rge.width() / gmaSlices;
+        for_i (gmaSlices) {
+            if (!oneFile) {
+                QFile* file = newQ::OutputFile(
+                    this, numberedName(path, ++fileNum, expt.size()+1), false);
+                if (!file)
+                    return;
+                delete stream;
+                stream = new QTextStream(file);
             }
+            ASSERT(stream);
+
+            const qreal min = rge.min + i * step;
+            const Range gmaStripe(min, min + step);
+            const Curve& curve = lens->makeCurve(gmaStripe);
+            ASSERT(!curve.isEmpty());
+            *stream << "Picture Nr: " << picNum << '\n';
+            if (gmaSlices > 1)
+                *stream << "Gamma slice Nr: " << i+1 << '\n';
+            writeCurve(*stream, curve, cluster, gmaStripe, tabSave_->separator());
         }
     }
-    WriteFile file(filePath);
-    QTextStream stream(&file);
-    if (oneFile) {
-        for (const vec<const OutputData*>& outputCollection : outputCollections) {
-            for (const OutputData* outputData : outputCollection) {
-                writeMetaData(*outputData, stream);
-                stream << "Tth" << separator << "Intensity" << '\n';
-                for_i (outputData->curve_.xs().count()) {
-                    stream << outputData->curve_.x(i) << separator
-                           << outputData->curve_.y(i) << '\n';
-                }
-            }
-        }
-    } else {
-        int fileNumber = 1;
-        for (const vec<const OutputData*>& outputCollection : outputCollections) {
-            for (const OutputData* outputData : outputCollection) {
-                writeMetaData(*outputData, stream);
-                stream << "Tth" << separator << "Intensity" << '\n';
-                for_i (outputData->curve_.xs().count()) {
-                    stream << outputData->curve_.x(i) << separator
-                           << outputData->curve_.y(i) << '\n';
-                }
-            }
-            ++fileNumber;
-        }
-    }
-}
-
-void DiffractogramsFrame::saveDiffractogramOutput() {
-    str path = tabSave_->filePath(true);
-    if (path.isEmpty())
-        return;
-    str separator = tabSave_->separator();
-
-    if (tabSave_->currentChecked())
-        writeCurrDiffractogramToFile(path, separator);
-    else if (tabSave_->allSequentialChecked())
-        writeAllDiffractogramsToFiles(path, separator, false);
-    else if (tabSave_->allChecked())
-        writeAllDiffractogramsToFiles(path, separator, true);
-    else
-        qWarning() << "Invalid call of DiffractogramsFrame::saveDiffractogramOutput";
+    delete stream;
 }

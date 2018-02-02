@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/data/datafile.h
-//! @brief     Defines class Datafile
+//! @file      core/data/rawfile.h
+//! @brief     Defines class Rawfile
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef DATAFILE_H
-#define DATAFILE_H
+#ifndef RAWFILE_H
+#define RAWFILE_H
 
 #include "core/data/image.h"
 #include "core/data/measurement.h"
@@ -25,33 +25,30 @@
 class Metadata;
 
 //! A file (loaded from a disk file) that contains a data sequence.
-class Datafile final {
+class Rawfile final {
 public:
-    Datafile() = delete;
-    Datafile(const Datafile&) = delete;
+    Rawfile() = delete;
+    Rawfile(const Rawfile&) = delete;
     // allow move so that the low-level loaders must not bother about shared pointers:
-    Datafile(Datafile&&) = default;
-    Datafile(rcstr fileName);
+    Rawfile(Rawfile&&) = default;
+    Rawfile(rcstr fileName);
 
     void addDataset(const Metadata&, size2d const&, inten_vec const&);
-    void setOffset(const int offset) { offset_ = offset; }
 
-    vec<shp_Measurement> const& measurements() const { return measurements_; }
+    QVector<const Measurement*> const measurements() const;
     int count() const { return measurements_.count(); }
     size2d imageSize() const { return imageSize_; }
 
     QFileInfo const& fileInfo() const;
     str fileName() const;
     shp_Image foldedImage() const;
-    int offset() const { return offset_; }
 
 private:
     QFileInfo fileInfo_;
     vec<shp_Measurement> measurements_;
     size2d imageSize_;
-    int offset_; //!< number of measurement_[0] in Session's total measurement list
 };
 
-Q_DECLARE_METATYPE(const Datafile*)
+Q_DECLARE_METATYPE(const Rawfile*)
 
-#endif // DATAFILE_H
+#endif // RAWFILE_H

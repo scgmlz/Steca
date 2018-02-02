@@ -24,6 +24,7 @@ link_directories(
 set(test_link_libs
     gtest_main
     core
+    gui
     # for test010_io, progress bar:
     Qt5::Gui
     Qt5::Widgets

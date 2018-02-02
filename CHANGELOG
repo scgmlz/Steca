@@ -1,4 +1,21 @@
-Steca version 2.0.6, released 2018.01.
+Steca version 2.0.7, released 2018.
+----------------------------------------
+
+New features:
+
+* Single measurements (or groups) can be deselected
+* Red display and new toggle "if incomplete keep/drop" to handle incomplete measurement groups.
+* To prevent crashes, functions that need data are disabled if no data are loaded.
+* Diffractograms can be saved into multiple, numbered files
+
+Internal improvements:
+
+* Decoupled "highlighting" (one measurement group) from "selecting" (most or all measurements).
+* Logic moved from table models to datasets.
+* Unified exception handling.
+* Doxygen comments for all files, namespaces, and classes.
+
+Steca version 2.0.6, released 2018.01.19
 ----------------------------------------
 
 Changes:
@@ -7,6 +24,7 @@ Changes:
   * Check for update must now be triggered through Help > Check for update.
   * Extended 'About' window with notes on citation.
 * Changed structure of hidden settings files. Settings from previous release will be lost.
+* Tooltip in files list
 
 Besides that, there are no intentional changes of functionality.
 Internally, however, the code has been thoroughly reworked, in order to facilitate

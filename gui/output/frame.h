@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/output/frame.h
-//! @brief     Defines class Frame
+//! @brief     Defines classes Params, Frame
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,7 +15,7 @@
 #ifndef FRAME_H
 #define FRAME_H
 
-#include "core/calc/reflection_info.h"
+#include "core/calc/peak_info.h"
 #include <QDialog>
 
 class QBoxLayout;
@@ -35,7 +35,7 @@ public:
         DIAGRAM = 0x10,
     };
     Params(ePanels);
-    class PanelReflection* panelReflection;
+    class PanelPeak* panelPeak;
     class PanelGammaSlices* panelGammaSlices;
     class PanelGammaRange* panelGammaRange;
     class PanelPoints* panelPoints;
@@ -58,15 +58,15 @@ protected:
     QBoxLayout* box_;
     Params* params_;
     QTabWidget* tabs_;
-    vec<ReflectionInfos> calcPoints_, interpPoints_;
+    vec<PeakInfos> calcPoints_, interpPoints_;
     class DataTable* table_;
     void calculate();
     void interpolate();
-    virtual void displayReflection(int reflIndex, bool interpolated);
+    virtual void displayPeak(int reflIndex, bool interpolated);
     int getReflIndex() const;
     bool getInterpolated() const;
 private:
-    void updateReflection();
+    void updatePeak();
 };
 
 #endif // FRAME_H

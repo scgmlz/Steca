@@ -26,29 +26,16 @@
 
 //extern MainWin* gMainWin;
 
-void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg) {
+void messageHandler(QtMsgType type, QMessageLogContext const& ctx, const QString& msg) {
     switch (type) {
     case QtDebugMsg:
-        std::cerr << ".... " << msg.toStdString() << /*context(ctx) <<*/ "\n" << std::flush;
+        std::cerr << ".... " << msg.toStdString() << "\n" << std::flush;
         break;
-// unavailable before Qt5.5
+// unavailable before Qt5.5 (ISSUE #36)
 //    case QtInfoMsg:
 //        std::cerr << "INFO " << msg.toStdString() << context(ctx) << "\n" << std::flush;
 //        gMainWin->statusBar()->showMessage(msg, 5000);
 //        break;
-    case QtFatalMsg:
-        std::cerr << "BUG! " << msg.toStdString() << context(ctx) << "\n" << std::flush;
-        QMessageBox::critical(QApplication::activeWindow(), qAppName(),
-                              "Sorry, you encountered a fatal bug.\n"
-                              "The application will terminate.\n"
-                              "Please report the following to the maintainer:\n"
-                              "Error message:\n" + msg + "\n"
-#ifndef QT_NO_DEBUG
-                              "Context:\n" + ctx.function + "\n"
-#endif
-            );
-        qApp->quit();
-        break;
     case QtWarningMsg:
     default:
         if (msg.left(4)=="QXcb") {
@@ -57,6 +44,19 @@ void messageHandler(QtMsgType type, QMessageLogContext const& ctx, rcstr msg) {
             std::cerr << "WARN " << msg.toStdString() << "\n" << std::flush;
             QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
         }
+        break;
+    case QtFatalMsg:
+        std::cerr << "BUG! " << msg.toStdString() << context(ctx) << "\n" << std::flush;
+        QMessageBox::critical(QApplication::activeWindow(), qAppName(),
+                              "Sorry, you encountered a fatal bug.\n"
+                              "The application will terminate.\n"
+                              "Please report the following to the maintainer.\n\n"
+                              "Error:\n" + msg + "\n"
+#ifndef QT_NO_DEBUG
+                              "Context:\n" + ctx.function + "\n"
+#endif
+            );
+        qApp->quit();
         break;
     }
 }

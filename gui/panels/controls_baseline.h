@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/def/debug.cpp
-//! @brief     Implements functions for debugging
+//! @file      gui/panels/controls_baseline.h
+//! @brief     Defines class SubframeSetup
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,8 +12,18 @@
 //
 // ************************************************************************** //
 
-#include "debug.h"
+#ifndef CONTROLS_BASELINE_H
+#define CONTROLS_BASELINE_H
 
-void debug::ensure(bool cond, const char* text) {
-    if (!cond) qFatal(text);
-}
+#include "gui/base/new_q.h"
+
+//! A widget with controls to change the baseline fitting.
+
+class ControlsBaseline : public QWidget {
+public:
+    ControlsBaseline();
+private:
+    QSpinBox* spinDegree_;
+};
+
+#endif // CONTROLS_BASELINE_H

@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/loaders/loaders.h
-//! @brief     Defines loader functions in namespace io.
+//! @brief     Defines loader functions in namespace load.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,17 +15,19 @@
 #ifndef LOADERS_H
 #define LOADERS_H
 
-#include "core/data/datafile.h"
+#include "core/data/rawfile.h"
 #include "core/def/macros.h"
 #include "core/typ/str.h"
 
-class Datafile;
+class Rawfile;
 class QFileInfo;
+
+//! Functions loadRawfile and loadComment, and their dependences.
 
 namespace load {
 
 //! load a file; file type will be sensed
-QSharedPointer<Datafile> loadDatafile(rcstr filePath) THROWS;
+QSharedPointer<Rawfile> loadRawfile(rcstr filePath) THROWS;
 
 str loadComment(QFileInfo const& info);
 

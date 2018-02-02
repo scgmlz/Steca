@@ -39,7 +39,7 @@
 #include <QStatusBar>
 #include <QStringBuilder> // for ".." % ..
 
-TheHub* gHub; //!< global, for signalling and command flow
+MainWin* gMainWin; //!< global, for message handling
 
 // ************************************************************************** //
 //  file-scoped functions
@@ -77,8 +77,8 @@ void initMenus(QMenuBar* mbar) {
             gHub->trigger_addFiles,
                 gHub->trigger_removeFile,
                 _separator(),
+                gHub->trigger_corrFile,
                 gHub->toggle_enableCorr,
-                gHub->trigger_removeCorr,
                 _separator(),
                 gHub->trigger_loadSession,
                 gHub->trigger_saveSession,
@@ -89,7 +89,7 @@ void initMenus(QMenuBar* mbar) {
                 gHub->trigger_quit,
         });
 
-    _actionsToMenu(
+    QMenu* menuImage = _actionsToMenu(
         "&Image",
         {   gHub->trigger_rotateImage,
                 gHub->toggle_mirrorImage,
@@ -99,21 +99,27 @@ void initMenus(QMenuBar* mbar) {
                 gHub->toggle_stepScale,
                 gHub->toggle_showBins,
         });
+    menuImage->setEnabled(false);
+    QObject::connect(gSession, &Session::sigFiles, [menuImage]()
+                     { menuImage->setEnabled(gSession->dataset().countFiles()); });
 
-    _actionsToMenu(
+    QMenu* menuDgram = _actionsToMenu(
         "&Diffractogram",
         {
             gHub->toggle_selRegions,
                 gHub->toggle_showBackground,
                 gHub->trigger_clearBackground,
-                gHub->trigger_clearReflections,
+                gHub->trigger_clearPeaks,
                 _separator(),
-                gHub->trigger_addReflection,
-                gHub->trigger_removeReflection,
+                gHub->trigger_addPeak,
+                gHub->trigger_removePeak,
                 _separator(),
                 gHub->toggle_combinedDgram,
                 gHub->toggle_fixedIntenDgram,
         });
+    menuDgram->setEnabled(false);
+    QObject::connect(gSession, &Session::sigFiles, [menuDgram]()
+                     { menuDgram->setEnabled(gSession->dataset().countFiles()); });
 
     QMenu* menuOutput = _actionsToMenu(
         "&Output",
@@ -123,9 +129,8 @@ void initMenus(QMenuBar* mbar) {
                 gHub->trigger_outputDiffractograms,
         });
     menuOutput->setEnabled(false);
-    QObject::connect(gHub, &TheHub::sigFilesSelected,
-                     [menuOutput](){ menuOutput->setEnabled(
-                             !gSession->filesSelection().isEmpty()); });
+    QObject::connect(gSession, &Session::sigActivated, [menuOutput]()
+                     { menuOutput->setEnabled(gSession->experiment().size()); });
 
     _actionsToMenu(
         "&View",
@@ -167,7 +172,6 @@ MainWin::MainWin() {
     initLayout();
     connectActions();
     readSettings();
-
     qDebug() << "/MainWin";
 }
 
@@ -204,10 +208,9 @@ void MainWin::connectActions() {
 
     connectTrigger(gHub->trigger_loadSession, &MainWin::loadSession);
     connectTrigger(gHub->trigger_saveSession, &MainWin::saveSession);
-    connectTrigger(gHub->trigger_clearSession, &MainWin::clearSession);
+    QObject::connect(gHub->trigger_clearSession, &QAction::triggered, gSession,  &Session::clear);
 
     connectTrigger(gHub->trigger_addFiles, &MainWin::addFiles);
-    connectTrigger(gHub->toggle_enableCorr, &MainWin::enableCorr);
 
     connectTrigger(gHub->trigger_quit, &MainWin::close);
 
@@ -282,31 +285,18 @@ void MainWin::addFiles() {
     QStringList fileNames = file_dialog::openFileNames(
         this, "Add files", QDir::current().absolutePath(),
         "Data files (*.dat *.mar*);;All files (*.*)");
-    update();
-    if (!fileNames.isEmpty()) {
-        QDir::setCurrent(QFileInfo(fileNames.at(0)).absolutePath());
-        gHub->addGivenFiles(fileNames);
-    }
-}
-
-void MainWin::enableCorr() {
-    str fileName;
-    if (!gSession->hasCorrFile()) {
-        fileName = file_dialog::openFileName(
-            this, "Set correction file", QDir::current().absolutePath(),
-            "Data files (*.dat *.mar*);;All files (*.*)");
-        update();
-    }
-    if (!fileName.isEmpty()) {
-        QDir::setCurrent(QFileInfo(fileName).absolutePath());
-        gHub->setCorrFile(fileName);
-    }
+    repaint();
+    if (fileNames.isEmpty())
+        return;
+    QDir::setCurrent(QFileInfo(fileNames.at(0)).absolutePath());
+    qDebug() << "going to load " << fileNames;
+    TakesLongTime __;
+    gSession->dataset().addGivenFiles(fileNames);
 }
 
 void MainWin::loadSession() {
     str fileName = file_dialog::openFileName(
         this, "Load session", QDir::current().absolutePath(), "Session files (*.ste)");
-    update();
     if (fileName.isEmpty()) {
         TR("load session aborted");
         return;
@@ -319,23 +309,16 @@ void MainWin::loadSession() {
                    << ex.msg() << "\n"
                    << "The application may now be in an inconsistent state.\n"
                    << "Please consider to quit the application, and start afresh.\n";
-        clearSession();
+        gSession->clear();
     }
 }
 
 void MainWin::saveSession() {
     str fileName = file_dialog::saveFileName(
         this, "Save session", QDir::current().absolutePath(), "Session files (*.ste)");
-    update();
     if (!fileName.endsWith(".ste"))
         fileName += ".ste";
     gHub->saveSession(QFileInfo(fileName));
-}
-
-void MainWin::clearSession() {
-    gSession->clear();
-    emit gHub->sigFilesSelected();
-    emit gHub->sigClustersChanged();
 }
 
 void MainWin::execCommand(str line) {
@@ -346,7 +329,7 @@ void MainWin::execCommand(str line) {
     } else if (cmd=="quit") {
         close();
     } else {
-        qDebug() << "Unknown command: " << line << "\n";
+        qDebug() << "Unknown command: " << line;
     }
 }
 void MainWin::closeEvent(QCloseEvent* event) {

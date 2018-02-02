@@ -14,17 +14,16 @@
 
 #include "gui/output/output_diagrams.h"
 #include "core/session.h"
-#include "gui/base/various_widgets.h"
+#include "gui/base/new_q.h"
 #include "gui/output/data_table.h"
 #include "gui/output/dialog_panels.h"
 #include "gui/output/tab_save.h"
-#include "gui/output/write_file.h"
 #include "gui/thehub.h"
 #include "QCustomPlot/qcustomplot.h"
 
 // sorts xs and ys the same way, by (x,y)
 static void sortColumns(vec<qreal>& xs, vec<qreal>& ys, vec<int>& is) {
-    debug::ensure(xs.count() == ys.count());
+    ASSERT(xs.count() == ys.count());
 
     int count = xs.count();
 
@@ -59,10 +58,12 @@ static const Params::ePanels PANELS =
 //  local class TabPlot
 // ************************************************************************** //
 
+//! Tab in DiagramsFrame, to display a plot of something against something.
+
 class TabPlot : public QCustomPlot {
 public:
     TabPlot();
-    void set(ReflectionInfos);
+    void set(PeakInfos);
     void plot(
         vec<qreal> const& xs, vec<qreal> const& ys, vec<qreal> const& ysLo, vec<qreal> const& ysUp);
 private:
@@ -77,7 +78,7 @@ TabPlot::TabPlot() {
 
 void TabPlot::plot(
     vec<qreal> const& xs, vec<qreal> const& ys, vec<qreal> const& ysLo, vec<qreal> const& ysUp) {
-    debug::ensure(xs.count() == ys.count());
+    ASSERT(xs.count() == ys.count());
 
     int count = xs.count();
 
@@ -120,7 +121,9 @@ void TabPlot::plot(
 //  local class TabDiagramsSave
 // ************************************************************************** //
 
-class TabDiagramsSave final : public TabSave {
+//! Tab in DiagramsFrame, to save a data table.
+
+class TabDiagramsSave : public TabSave {
 public:
     TabDiagramsSave();
     int currType() const { return fileTypes_->currentIndex(); }
@@ -152,36 +155,45 @@ DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
     : Frame(title, new Params(PANELS), parent) {
     btnInterpolate_->hide();
 
-    tabPlot_ = new TabPlot();
-    newQ::Tab(tabs_, "Diagram")->box().addWidget(tabPlot_);
+    {
+        auto* tab = new QWidget();
+        tabs_->addTab(tab, "Diagram");
+        tab->setLayout(newQ::VBoxLayout());
+        tabPlot_ = new TabPlot();
+        tab->layout()->addWidget(tabPlot_);
+    }
 
-    debug::ensure(params_->panelDiagram);
+    ASSERT(params_->panelDiagram);
     PanelDiagram const* pd = params_->panelDiagram;
 
     connect(pd->xAxis, _SLOT_(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
     connect(pd->yAxis, _SLOT_(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
 
-    tabSave_ = new TabDiagramsSave();
-    newQ::Tab(tabs_, "Save")->box().addWidget(tabSave_);
-
-    connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiagramOutput(); });
+    {
+        auto* tab = new QWidget();
+        tabs_->addTab(tab, "Save");
+        tab->setLayout(newQ::VBoxLayout());
+        tabSave_ = new TabDiagramsSave();
+        tab->layout()->addWidget(tabSave_);
+        connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiagramOutput(); });
+    }
 
     recalculate();
     show();
 }
 
 DiagramsFrame::eReflAttr DiagramsFrame::xAttr() const {
-    debug::ensure(params_->panelDiagram);
+    ASSERT(params_->panelDiagram);
     return eReflAttr(params_->panelDiagram->xAxis->currentIndex());
 }
 
 DiagramsFrame::eReflAttr DiagramsFrame::yAttr() const {
-    debug::ensure(params_->panelDiagram);
+    ASSERT(params_->panelDiagram);
     return eReflAttr(params_->panelDiagram->yAxis->currentIndex());
 }
 
-void DiagramsFrame::displayReflection(int reflIndex, bool interpolated) {
-    Frame::displayReflection(reflIndex, interpolated);
+void DiagramsFrame::displayPeak(int reflIndex, bool interpolated) {
+    Frame::displayPeak(reflIndex, interpolated);
     rs_ = calcPoints_.at(reflIndex);
     recalculate();
 }
@@ -222,7 +234,7 @@ void DiagramsFrame::recalculate() {
     ysErrorLo_.clear();
     ysErrorUp_.clear();
 
-    if (gSession->reflections().at(getReflIndex())->peakFunction().name() != "Raw") {
+    if (!gSession->peaks().at(getReflIndex()).isRaw()) {
         switch (yAttr()) {
         case eReflAttr::INTEN:
             _calcErrors(eReflAttr::SIGMA_INTEN);
@@ -255,14 +267,15 @@ void DiagramsFrame::saveDiagramOutput() {
     qDebug() /* qInfo() TODO restore */ << "diagram saved to " << path;
 }
 
-void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator) const {
-    WriteFile file(filePath);
+void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator) {
+    QFile* file = newQ::OutputFile(this, filePath);
+    if (!file)
+        return;
+    QTextStream stream(file);
 
-    QTextStream stream(&file);
-
-    debug::ensure(xs_.count() == ys_.count());
-    debug::ensure(ysErrorLo_.isEmpty() || ysErrorLo_.count() == ys_.count());
-    debug::ensure(ysErrorLo_.count() == ysErrorUp_.count());
+    ASSERT(xs_.count() == ys_.count());
+    ASSERT(ysErrorLo_.isEmpty() || ysErrorLo_.count() == ys_.count());
+    ASSERT(ysErrorLo_.count() == ysErrorUp_.count());
 
     bool writeErrors = !ysErrorUp_.isEmpty();
 
@@ -274,9 +287,11 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separato
     }
 }
 
-void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) const {
-    WriteFile file(filePath);
-    QTextStream stream(&file);
+void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
+    QFile* file = newQ::OutputFile(this, filePath);
+    if (!file)
+        return;
+    QTextStream stream(file);
 
     const QStringList& headers = table_->outHeaders();
     for_i (headers.count())

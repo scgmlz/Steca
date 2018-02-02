@@ -14,6 +14,7 @@
 
 #include "metadata.h"
 #include "core/def/idiomatic_for.h"
+#include "core/typ/exception.h"
 
 // metadata attributes
 
@@ -139,7 +140,7 @@ str Metadata::attributeStrValue(int i) const {
     case eAttr::DATE: return date;
     case eAttr::COMMENT: return "COMMENT"; // TODO restore comment;
 
-    default: NEVER;
+    default: qFatal("impossible case");
     }
 
     return str::number(value);
@@ -170,7 +171,7 @@ QVariant Metadata::attributeValue(int i) const {
     case eAttr::DELTA_MONITOR_COUNT: return deltaMonitorCount;
     case eAttr::TIME: return time;
     case eAttr::DELTA_TIME: return deltaTime;
-    default: NEVER return 0;
+    default: qFatal("impossible case");
     }
 }
 

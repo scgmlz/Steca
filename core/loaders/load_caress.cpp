@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "core/def/idiomatic_for.h"
-#include "core/data/datafile.h"
+#include "core/data/rawfile.h"
 #include "core/data/metadata.h"
 #include "core/typ/exception.h"
 #include <qmath.h>
@@ -24,12 +24,11 @@
 
 namespace load {
 
-Datafile loadCaress(rcstr filePath) THROWS {
-    Datafile ret(filePath);
+Rawfile loadCaress(rcstr filePath) THROWS {
+    Rawfile ret(filePath);
 
-    RUNTIME_CHECK(
-        0 == open_data_file(filePath.toLocal8Bit().data(), nullptr),
-        "Cannot open data file " + filePath);
+    if(open_data_file(filePath.toLocal8Bit().data(), nullptr))
+        THROW("Cannot open data file " + filePath);
 
     struct CloseFile { // TODO remove, replace with QFile etc.
         ~CloseFile() { close_data_file(); }
@@ -120,7 +119,7 @@ Datafile loadCaress(rcstr filePath) THROWS {
                 else if (tths == 0 && tthr != 0) // it's the table
                     isTable = false;
                 else
-                    throw "inconsistent data set: not clear whether it's robot or table";
+                    THROW("inconsistent data set: not clear whether it's robot or table");
             }
 
             if (isRobot) {
@@ -164,7 +163,7 @@ Datafile loadCaress(rcstr filePath) THROWS {
                 prevMon = mon;
 
                 int detRel = qRound(sqrt(imageSize));
-                RUNTIME_CHECK(imageSize > 0 && imageSize == detRel * detRel, "bad image size");
+                if (!(imageSize > 0 && imageSize == detRel * detRel)) THROW("bad image size");
 
                 inten_vec convertedIntens(imageSize);
                 for_i (imageSize)
@@ -558,9 +557,8 @@ str loadCaressComment(rcstr filePath) {
     str s_comment;
 
     try {
-        RUNTIME_CHECK(
-            0 == open_data_file(filePath.toLocal8Bit().data(), nullptr),
-            "Cannot open data file " + filePath);
+        if(open_data_file(filePath.toLocal8Bit().data(), nullptr))
+            THROW("Cannot open data file " + filePath);
 
         struct CloseFile { // TODO remove, replace with QFile etc.
             ~CloseFile() { close_data_file(); }

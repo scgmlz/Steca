@@ -42,7 +42,6 @@ public:
     void close();
 
     void addFiles();
-    void enableCorr();
 
     void loadSession();
     void saveSession();

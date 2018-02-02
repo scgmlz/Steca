@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/output/frame.cpp
-//! @brief     Implements class Frame
+//! @brief     Implements classes Params, Frame, and local classes ShowColsWidget, TabTable
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,7 +15,7 @@
 #include "gui/output/frame.h"
 #include "core/calc/calc_polefigure.h"
 #include "core/session.h"
-#include "gui/base/various_widgets.h"
+#include "gui/base/new_q.h"
 #include "gui/output/data_table.h"
 #include "gui/output/dialog_panels.h"
 #include "gui/output/tab_save.h"
@@ -36,6 +36,8 @@ typedef vec<showcol_t> showcol_vec;
 //  local class ShowColsWidget (only used by TabTable)
 // ************************************************************************** //
 
+//! A row of controls for choosing which data columns are to be displayed in a TabTable.
+
 class ShowColsWidget : public QWidget {
 public:
     ShowColsWidget(DataTable&, showcol_vec&);
@@ -48,7 +50,7 @@ private:
 
 ShowColsWidget::ShowColsWidget(DataTable& table, showcol_vec& showCols)
     : table_(table), showCols_(showCols) {
-    using eReflAttr = ReflectionInfo::eReflAttr;
+    using eReflAttr = PeakInfo::eReflAttr;
 
     setLayout((box_ = newQ::VBoxLayout()));
 
@@ -154,6 +156,10 @@ ShowColsWidget::ShowColsWidget(DataTable& table, showcol_vec& showCols)
 //  local class TabTable (only used by Frame implementation)
 // ************************************************************************** //
 
+//! A DataTable that can be scrolled and that has a ShowColsWidget for selecting data columns.
+
+//! Used as a tab in several output dialogs.
+
 class TabTable : public QWidget {
 public:
     TabTable(const QStringList& headers, const QStringList& outHeaders, cmp_vec const&);
@@ -167,7 +173,7 @@ TabTable::TabTable(const QStringList& headers, const QStringList& outHeaders, co
 
     QGridLayout* grid_ = newQ::GridLayout();
     setLayout(grid_);
-    debug::ensure(headers.count() == cmps.count());
+    ASSERT(headers.count() == cmps.count());
     int numCols = headers.count();
 
     grid_->addWidget((table = new DataTable(numCols)), 0, 0);
@@ -196,19 +202,19 @@ TabTable::TabTable(const QStringList& headers, const QStringList& outHeaders, co
 // ************************************************************************** //
 
 Params::Params(ePanels panels)
-    : panelReflection(nullptr)
+    : panelPeak(nullptr)
     , panelGammaSlices(nullptr)
     , panelGammaRange(nullptr)
     , panelPoints(nullptr)
     , panelInterpolation(nullptr)
     , panelDiagram(nullptr) {
 
-    setLayout((box_ = newQ::BoxLayout(Qt::Horizontal)));
+    setLayout((box_ = newQ::HBoxLayout()));
 
     if (REFLECTION & panels)
-        box_->addWidget((panelReflection = new PanelReflection()));
+        box_->addWidget((panelPeak = new PanelPeak()));
 
-    debug::ensure(panels & GAMMA);
+    ASSERT(panels & GAMMA);
     if (GAMMA & panels) {
         box_->addWidget((panelGammaSlices = new PanelGammaSlices()));
         box_->addWidget((panelGammaRange = new PanelGammaRange()));
@@ -245,7 +251,7 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent) : QDialog(parent) {
 
     setLayout((box_ = newQ::VBoxLayout()));
 
-    debug::ensure(params);
+    ASSERT(params);
     box_->addWidget((params_ = params));
 
     tabs_ = new QTabWidget();
@@ -274,27 +280,30 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent) : QDialog(parent) {
     connect(actCalculate_, &QAction::triggered, [this]() { calculate(); });
     connect(actInterpolate_, &QAction::triggered, [this]() { interpolate(); });
 
-    if (params_->panelReflection) {
-        connect(params_->panelReflection->cbRefl, _SLOT_(QComboBox, currentIndexChanged, int),
-                [this](){ updateReflection(); });
+    if (params_->panelPeak) {
+        connect(params_->panelPeak->cbRefl, _SLOT_(QComboBox, currentIndexChanged, int),
+                [this](){ updatePeak(); });
     }
 
     if (params_->panelPoints) {
-        debug::ensure(params_->panelReflection);
+        ASSERT(params_->panelPeak);
         connect(params_->panelPoints->rbInterp, &QRadioButton::toggled,
-                [this](){ updateReflection(); });
+                [this](){ updatePeak(); });
     }
 
     // tabs
 
-    auto tabTable = new TabTable(ReflectionInfo::dataTags(false),
-                                 ReflectionInfo::dataTags(true),
-                                 ReflectionInfo::dataCmps());
-    newQ::Tab(tabs_, "Points")->box().addWidget(tabTable);
+    auto* tabPoints = new QWidget();
+    tabs_->addTab(tabPoints, "Points");
+    tabPoints->setLayout(newQ::VBoxLayout());
 
+    auto tabTable = new TabTable(PeakInfo::dataTags(false),
+                                 PeakInfo::dataTags(true),
+                                 PeakInfo::dataCmps());
+    tabPoints->layout()->addWidget(tabTable);
     table_ = tabTable->table;
 
-    int reflCount = gSession->reflections().count();
+    int reflCount = gSession->peaks().count();
     calcPoints_.resize(reflCount);
     interpPoints_.resize(reflCount);
 }
@@ -305,29 +314,24 @@ void Frame::calculate() {
     calcPoints_.clear();
     interpPoints_.clear();
 
-    const Reflections& reflections = gSession->reflections();
-    if (!reflections.isEmpty()) {
-        int reflCount = reflections.count();
+    int reflCount = gSession->peaks().count();
+    if (!reflCount)
+        return;
 
-        const PanelGammaSlices* ps = params_->panelGammaSlices;
-        debug::ensure(ps);
+    const PanelGammaSlices* ps = params_->panelGammaSlices;
+    int gammaSlices = ps->numSlices->value();
 
-        int gammaSlices = ps->numSlices->value();
+    const PanelGammaRange* pr = params_->panelGammaRange;
+    Range rgeGamma;
+    if (pr->cbLimitGamma->isChecked())
+        rgeGamma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
 
-        const PanelGammaRange* pr = params_->panelGammaRange;
-        debug::ensure(pr);
+    Progress progress(reflCount, progressBar_);
 
-        Range rgeGamma;
-        if (pr->cbLimitGamma->isChecked())
-            rgeGamma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
-
-        Progress progress(reflCount, progressBar_);
-
-        for_i (reflCount)
-            calcPoints_.append(
-                gSession->makeReflectionInfos(
-                    *reflections.at(i), gammaSlices, rgeGamma, &progress));
-    }
+    for_i (reflCount)
+        calcPoints_.append(
+            gSession->makePeakInfos(
+                gSession->peaks().at(i), gammaSlices, rgeGamma, &progress));
 
     interpolate();
 }
@@ -355,34 +359,34 @@ void Frame::interpolate() {
                 avgTreshold, &progress));
     } else {
         for_i (calcPoints_.count())
-            interpPoints_.append(ReflectionInfos());
+            interpPoints_.append(PeakInfos());
     }
 
-    updateReflection();
+    updatePeak();
 }
 
-void Frame::updateReflection() {
-    displayReflection(getReflIndex(), getInterpolated());
+void Frame::updatePeak() {
+    displayPeak(getReflIndex(), getInterpolated());
 }
 
 // virtual, overwritten by some output frames, and called back by the overwriting function
-void Frame::displayReflection(int reflIndex, bool interpolated) {
+void Frame::displayPeak(int reflIndex, bool interpolated) {
     table_->clear();
 
-    debug::ensure(calcPoints_.count() == interpPoints_.count());
+    ASSERT(calcPoints_.count() == interpPoints_.count());
     if (calcPoints_.count() <= reflIndex)
         return;
 
-    for (const ReflectionInfo& r : (interpolated ? interpPoints_ : calcPoints_).at(reflIndex))
+    for (const PeakInfo& r : (interpolated ? interpPoints_ : calcPoints_).at(reflIndex))
         table_->addRow(r.data(), false);
 
     table_->sortData();
 }
 
 int Frame::getReflIndex() const {
-    debug::ensure(params_->panelReflection);
-    int reflIndex = params_->panelReflection->cbRefl->currentIndex();
-    RUNTIME_CHECK(reflIndex >= 0, "invalid reflection index");
+    ASSERT(params_->panelPeak);
+    int reflIndex = params_->panelPeak->cbRefl->currentIndex();
+    if (!(reflIndex >= 0)) qFatal("invalid peak index");
     return reflIndex;
 }
 

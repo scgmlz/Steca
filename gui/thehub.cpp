@@ -14,13 +14,15 @@
 
 #include "gui/thehub.h"
 #include "core/session.h"
-#include "gui/output/write_file.h"
 #include "gui/base/new_q.h"
+#include "gui/mainwin.h" // TODO after merge with mainwin: replace gMainWin by this
+#include "gui/popup/filedialog.h"
 #include <QApplication>
 #include <QDir>
 #include <QJsonDocument>
 #include <QStringBuilder> // for ".." % ..
 
+TheHub* gHub; //!< global, for signalling and command flow
 
 TheHub::TheHub()
     : isFixedIntenImageScale_(false)
@@ -33,117 +35,126 @@ TheHub::TheHub()
     // create actions
 
     trigger_about = newQ::Trigger("About " + qApp->applicationName());
+
     trigger_online = newQ::Trigger("Open docs in external browser");
+
     trigger_checkUpdate = newQ::Trigger("Check for update");
+
     trigger_quit = newQ::Trigger("Quit");
-
-    toggle_viewStatusbar = newQ::Toggle("Statusbar", true);
-    toggle_viewFiles = newQ::Toggle("Files", true);
-    toggle_viewDatasets = newQ::Toggle("Datasets", true);
-    toggle_viewMetadata = newQ::Toggle("Metadata", true);
-    trigger_viewReset = newQ::Trigger("Reset");
-#ifndef Q_OS_OSX
-    toggle_fullScreen = newQ::Toggle("FullScreen", false);
-#endif
-
-    trigger_loadSession = newQ::Trigger("Load session...");
-    trigger_saveSession = newQ::Trigger("Save session...");
-    trigger_clearSession = newQ::Trigger("Clear session");
-
-    trigger_addFiles = newQ::Trigger("Add files...", ":/icon/add");
-    trigger_removeFile = newQ::Trigger("Remove selected file(s)", ":/icon/rem");
-    toggle_enableCorr = newQ::Toggle("Enable correction file...", false, ":/icon/useCorrection");
-    trigger_removeCorr = newQ::Trigger("Remove correction file", ":/icon/clear");
-
-    trigger_rotateImage = newQ::Trigger("Rotate", ":/icon/rotate0");
-    toggle_mirrorImage = newQ::Toggle("Mirror", false, ":/icon/mirrorHorz");
-    toggle_linkCuts = newQ::Toggle("Link cuts", false, ":/icon/link");
-    toggle_showOverlay = newQ::Toggle("Show overlay", false, ":/icon/crop");
-    toggle_stepScale = newQ::Toggle("Scale in steps", false, ":/icon/steps");
-    toggle_showBins = newQ::Toggle("Show bins", false, ":/icon/angle");
-
-    toggle_fixedIntenImage = newQ::Toggle("Global intensity scale", false, ":/icon/scale");
-    toggle_fixedIntenDgram = newQ::Toggle("Fixed intensity scale", false);
-
-    toggle_combinedDgram = newQ::Toggle("All measurements", true);
-
-    toggle_selRegions = newQ::Toggle("Select regions", false, ":/icon/selRegion");
-    toggle_showBackground = newQ::Toggle("Show fitted background", false, ":/icon/showBackground");
-    trigger_clearBackground = newQ::Trigger("Clear background regions", ":/icon/clear");
-    trigger_clearReflections = newQ::Trigger("Clear reflections", ":/icon/clear");
-
-    trigger_addReflection = newQ::Trigger("Add reflection", ":/icon/add");
-    trigger_removeReflection = newQ::Trigger("Remove reflection", ":/icon/rem");
-
-    trigger_outputPolefigures = newQ::Trigger("Pole figures...");
-    trigger_outputDiagrams = newQ::Trigger("Diagrams...");
-    trigger_outputDiffractograms = newQ::Trigger("Diffractograms...");
-
-    // key shortcuts
-
     trigger_quit->setShortcut(QKeySequence::Quit);
 
+    toggle_viewStatusbar = newQ::Toggle("Statusbar", true);
     toggle_viewStatusbar->setShortcut(Qt::Key_F12);
+
+    toggle_viewFiles = newQ::Toggle("Files", true);
     toggle_viewFiles->setShortcut(Qt::Key_F8);
+
+    toggle_viewDatasets = newQ::Toggle("Datasets", true);
     toggle_viewDatasets->setShortcut(Qt::Key_F9);
+
+    toggle_viewMetadata = newQ::Toggle("Metadata", true);
     toggle_viewMetadata->setShortcut(Qt::Key_F10);
 
+    trigger_viewReset = newQ::Trigger("Reset");
+
 #ifndef Q_OS_OSX
+    toggle_fullScreen = newQ::Toggle("FullScreen", false);
     toggle_fullScreen->setShortcut(Qt::Key_F11);
 #endif
 
+    trigger_loadSession = newQ::Trigger("Load session...");
+
+    trigger_saveSession = newQ::Trigger("Save session...");
+
+    trigger_clearSession = newQ::Trigger("Clear session");
+
+    trigger_addFiles = newQ::Trigger("Add files...", ":/icon/add");
     trigger_addFiles->setShortcut(Qt::CTRL | Qt::Key_O);
+
+    trigger_removeFile = newQ::Trigger("Remove highlighted file", ":/icon/rem");
     trigger_removeFile->setShortcut(QKeySequence::Delete);
-    toggle_enableCorr->setShortcut(Qt::SHIFT | Qt::CTRL | Qt::Key_C);
-
-    trigger_rotateImage->setShortcut(Qt::CTRL | Qt::Key_R);
-
-    // handle signals
-
-    connect(trigger_clearBackground, &QAction::triggered, [this]() { setBgRanges({}); });
-
-    QObject::connect(this, &TheHub::sigCorrFile,
-            [this](const Datafile* file) { trigger_removeCorr->setEnabled(file); });
-    QObject::connect(this, &TheHub::sigCorrEnabled,
-            [this](bool on) { toggle_enableCorr->setChecked(on); });
-
-    auto deselect = [this]() {
-        toggle_fixedIntenImage->setChecked(false);
-        toggle_fixedIntenDgram->setChecked(false);
-        toggle_combinedDgram->setChecked(false);
-    };
-
-    QObject::connect(this, &TheHub::sigGeometryChanged, [deselect]() { deselect(); });
-    QObject::connect(this, &TheHub::sigClustersChanged, [deselect]() { deselect(); });
-    QObject::connect(this, &TheHub::sigCorrEnabled, [deselect]() { deselect(); });
-
     trigger_removeFile->setEnabled(false);
-    trigger_removeReflection->setEnabled(false);
+    QObject::connect(trigger_removeFile, &QAction::triggered, []() {
+            gSession->dataset().removeFile(); });
+    QObject::connect(gSession, &Session::sigFiles, [this]() {
+            trigger_removeFile->setEnabled(gSession->dataset().countFiles()); });
 
-    connect(toggle_enableCorr, &QAction::toggled, [this](bool on) { tryEnableCorrection(on); });
+    trigger_corrFile = newQ::Trigger("Add correction file", ":/icon/add");
+    trigger_corrFile->setShortcut(Qt::SHIFT | Qt::CTRL | Qt::Key_O);
+    connect(trigger_corrFile, &QAction::triggered, this, &TheHub::loadCorrFile);
+    QObject::connect(gSession, &Session::sigCorr, [this]() {
+            bool hasFile = gSession->hasCorrFile();
+            qDebug() << "on sigCorr " << hasFile;
+            trigger_corrFile->setIcon(QIcon(hasFile ? ":/icon/rem" : ":/icon/add"));
+            QString text = QString(hasFile ? "Remove" : "Add") + " correction file";
+            trigger_corrFile->setText(text);
+            trigger_corrFile->setToolTip(text.toLower());
+        });
 
-    connect(trigger_removeCorr, &QAction::triggered, [this]() { setCorrFile(""); });
+    toggle_enableCorr = newQ::Toggle("Enable correction file", false, ":/icon/useCorrection");
+    connect(toggle_enableCorr, &QAction::toggled, [this](bool on) {
+            gSession->corrset().tryEnable(on); });
+    QObject::connect(gSession, &Session::sigCorr, [this]() {
+            toggle_enableCorr->setEnabled(gSession->hasCorrFile());
+            toggle_enableCorr->setChecked(gSession->corrset().isEnabled());
+        });
 
+    trigger_rotateImage = newQ::Trigger("Rotate", ":/icon/rotate0");
+    trigger_rotateImage->setShortcut(Qt::CTRL | Qt::Key_R);
+    connect(trigger_rotateImage, &QAction::triggered, [this]() {
+        setImageRotate(gSession->imageTransform().nextRotate()); });
+
+    toggle_mirrorImage = newQ::Toggle("Mirror", false, ":/icon/mirrorHorz");
+    connect(toggle_mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
+
+    toggle_linkCuts = newQ::Toggle("Link cuts", false, ":/icon/link");
+
+    toggle_showOverlay = newQ::Toggle("Show overlay", false, ":/icon/crop");
+
+    toggle_stepScale = newQ::Toggle("Scale in steps", false, ":/icon/steps");
+
+    toggle_showBins = newQ::Toggle("Show bins", false, ":/icon/angle");
+
+    toggle_fixedIntenImage = newQ::Toggle("Global intensity scale", false, ":/icon/scale");
     connect(toggle_fixedIntenImage, &QAction::toggled, [this](bool on) {
         isFixedIntenImageScale_ = on;
-        emit sigDisplayChanged();
-    });
+        emit sigDisplayChanged(); });
 
+    toggle_fixedIntenDgram = newQ::Toggle("Fixed intensity scale", false);
     connect(toggle_fixedIntenDgram, &QAction::toggled, [this](bool on) {
         isFixedIntenDgramScale_ = on;
-        emit sigDisplayChanged();
-    });
+        emit sigDisplayChanged(); });
 
+    toggle_combinedDgram = newQ::Toggle("All measurements", true);
     toggle_combinedDgram->setChecked(false);
     connect(toggle_combinedDgram, &QAction::toggled, [this](bool on) {
         isCombinedDgram_ = on;
-        emit sigDisplayChanged();
-    });
+        emit sigDisplayChanged(); });
 
-    connect(toggle_mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
+    toggle_selRegions = newQ::Toggle("Select regions", false, ":/icon/selRegion");
 
-    connect(trigger_rotateImage, &QAction::triggered, [this]() {
-        setImageRotate(gSession->imageTransform().nextRotate()); });
+    toggle_showBackground = newQ::Toggle("Show fitted background", false, ":/icon/showBackground");
+
+    trigger_clearBackground = newQ::Trigger("Clear background regions", ":/icon/clear");
+    connect(trigger_clearBackground, &QAction::triggered, [this]() {
+            gSession->baseline().setRanges({}); });
+
+    trigger_clearPeaks = newQ::Trigger("Clear peaks", ":/icon/clear");
+
+    trigger_addPeak = newQ::Trigger("Add peak", ":/icon/add");
+
+    trigger_removePeak = newQ::Trigger("Remove peak", ":/icon/rem");
+    trigger_removePeak->setEnabled(false);
+    QObject::connect(gSession, &Session::sigPeaks, [this]() {
+            trigger_removePeak->setEnabled(gSession->peaks().count()); });
+
+    trigger_outputPolefigures = newQ::Trigger("Pole figures...");
+    QObject::connect(gSession, &Session::sigPeaks, [this]()
+                     { trigger_outputPolefigures->setEnabled(gSession->peaks().count()); });
+
+    trigger_outputDiagrams = newQ::Trigger("Diagrams...");
+
+    trigger_outputDiffractograms = newQ::Trigger("Diffractograms...");
 
     saveDir = settings_.readStr("export_directory");
     saveFmt = settings_.readStr("export_format");
@@ -156,29 +167,13 @@ TheHub::~TheHub() {
     settings_.saveStr("export_format", saveFmt);
 }
 
-// called through trigger_removeFile -> FilesView::removeHighlighted -> FilesModel::removeFile
-void TheHub::removeFile(int i) {
-    gSession->removeFile(i);
-    int numFiles = gSession->numFiles();
-    trigger_removeFile->setEnabled(numFiles);
-    if (!numFiles)
-        setImageCut(true, false, ImageCut());
-}
-
-// called from MainWin::addFiles and from sessionFromJson
-void TheHub::addGivenFiles(const QStringList& filePaths) THROWS {
-    TakesLongTime __;
-    if (!gSession->addGivenFiles(filePaths))
-        return;
-    trigger_removeFile->setEnabled(true);
-    emit sigFilesLoaded();
-}
-
 void TheHub::saveSession(QFileInfo const& fileInfo) const {
-    WriteFile file(fileInfo.filePath());
+    QFile* file = newQ::OutputFile(gMainWin, fileInfo.filePath());
+    if (!file)
+        return;
     QDir::setCurrent(fileInfo.absolutePath());
-    const int result = file.write(saveSession());
-    RUNTIME_CHECK(result >= 0, "Could not write session");
+    const int result = file->write(saveSession());
+    if (!(result >= 0)) THROW("Could not write session");
 }
 
 QByteArray TheHub::saveSession() const {
@@ -204,47 +199,30 @@ QByteArray TheHub::saveSession() const {
     const ImageTransform& trn = gSession->imageTransform();
     top.insert("image transform", trn.val);
 
-    QJsonArray arrFiles;
-    // save file path relative to location of session
-    for_i (gSession->numFiles()) {
-        str absPath = gSession->file(i)->fileInfo().absoluteFilePath();
-        str relPath = QDir::current().relativeFilePath(absPath);
-        arrFiles.append(relPath);
-    }
-
-    top.insert("files", arrFiles);
-
-    QJsonArray arrSelectedFiles;
-    for (int i : gSession->filesSelection())
-        arrSelectedFiles.append(i);
-
-    top.insert("selected files", arrSelectedFiles);
-    top.insert("combine", clusterGroupedBy_);
+    top.insert("files", gSession->dataset().to_json());
+    top.insert("combine", gSession->dataset().binning());
 
     if (gSession->hasCorrFile()) {
-        str absPath = gSession->corrFile()->fileInfo().absoluteFilePath();
+        str absPath = gSession->corrset().raw().fileInfo().absoluteFilePath();
         str relPath = QDir::current().relativeFilePath(absPath);
         top.insert("correction file", relPath);
     }
 
-    top.insert("background degree", gSession->bgPolyDegree());
-    top.insert("background ranges", gSession->bgRanges().to_json());
+    // TODO save cluster selection
+
+    top.insert("baseline", gSession->baseline().toJson());
+    top.insert("peaks", gSession->peaks().toJson());
+
     top.insert("averaged intensity ", gSession->intenScaledAvg());
     top.insert("intensity scale", qreal_to_json((qreal)gSession->intenScale()));
-
-    QJsonArray arrReflections;
-    for (auto& reflection : gSession->reflections())
-        arrReflections.append(reflection->to_json());
-
-    top.insert("reflections", arrReflections);
 
     return QJsonDocument(top).toJson();
 }
 
 void TheHub::sessionFromFile(rcstr filePath) THROWS {
     QFile file(filePath);
-    RUNTIME_CHECK(file.open(QIODevice::ReadOnly | QIODevice::Text),
-                  "Cannot open file for reading: " % filePath);
+    if (!(file.open(QIODevice::ReadOnly | QIODevice::Text)))
+        THROW("Cannot open file for reading: " % filePath);
     QDir::setCurrent(QFileInfo(filePath).absolutePath());
     sessionFromJson(file.readAll());
 }
@@ -252,7 +230,8 @@ void TheHub::sessionFromFile(rcstr filePath) THROWS {
 void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     QJsonParseError parseError;
     QJsonDocument doc(QJsonDocument::fromJson(json, &parseError));
-    RUNTIME_CHECK(QJsonParseError::NoError == parseError.error, "Error parsing session file");
+    if (!(QJsonParseError::NoError == parseError.error))
+        THROW("Error parsing session file");
 
     TakesLongTime __;
 
@@ -266,164 +245,78 @@ void TheHub::sessionFromJson(QByteArray const& json) THROWS {
     for (const QJsonValue& file : files) {
         str filePath = file.toString();
         QDir dir(filePath);
-        RUNTIME_CHECK(dir.makeAbsolute(), str("Invalid file path: %1").arg(filePath));
+        if(!dir.makeAbsolute())
+            THROW("Invalid file path: " + filePath);
         paths.append(dir.absolutePath());
     }
-    addGivenFiles(paths);
+    gSession->dataset().addGivenFiles(paths);
 
     const QJsonArray& sels = top.loadArr("selected files", true);
     vec<int> selIndexes;
     for (const QJsonValue& sel : sels) {
-        int i = sel.toInt(), index = qBound(0, i, files.count());
-        RUNTIME_CHECK(i == index, str("Invalid selection index: %1").arg(i));
+        int i = sel.toInt();
+        int index = qBound(0, i, files.count());
+        if(i != index)
+            THROW(str("Invalid selection index: %1").arg(i));
         selIndexes.append(index);
     }
 
     std::sort(selIndexes.begin(), selIndexes.end());
     int lastIndex = -1;
     for (int index : selIndexes) {
-        RUNTIME_CHECK(lastIndex < index, str("Duplicate selection index"));
+        if (index >= lastIndex)
+            THROW("Duplicate selection index");
         lastIndex = index;
     }
 
     TR("sessionFromJson: going to collect cluster");
-    collectDatasetsFromSelectionBy(selIndexes, top.loadPint("combine", 1));
+    gSession->dataset().setBinning(top.loadPint("combine", 1));
 
     TR("sessionFromJson: going to set correction file");
-    setCorrFile(top.loadString("correction file", ""));
+    gSession->corrset().loadFile(top.loadString("correction file", ""));
 
     TR("sessionFromJson: going to load detector geometry");
     const JsonObj& det = top.loadObj("detector");
-    setGeometry(
-        det.loadPreal("distance"), det.loadPreal("pixel size"),
-        det.loadIJ("beam offset"));
+    gSession->setGeometry(
+        det.loadPreal("distance"), det.loadPreal("pixel size"), det.loadIJ("beam offset"));
 
     TR("sessionFromJson: going to load image cut");
     const JsonObj& cut = top.loadObj("cut");
     int x1 = cut.loadUint("left"), y1 = cut.loadUint("top"),
          x2 = cut.loadUint("right"), y2 = cut.loadUint("bottom");
-    setImageCut(true, false, ImageCut(x1, y1, x2, y2));
+    gSession->setImageCut(true, false, ImageCut(x1, y1, x2, y2));
     setImageRotate(ImageTransform(top.loadUint("image transform")));
 
     TR("sessionFromJson: going to load fit setup");
-    Ranges bgRanges;
-    bgRanges.from_json(top.loadArr("background ranges"));
-    setBgRanges(bgRanges);
-    setBgPolyDegree(top.loadUint("background degree"));
+    gSession->baseline().fromJson(top.loadObj("baseline"));
 
     bool arg1 = top.loadBool("averaged intensity ", true);
     qreal arg2 = top.loadPreal("intensity scale", 1);
-    setIntenScaleAvg(arg1, arg2);
+    gSession->setIntenScaleAvg(arg1, arg2);
 
-    TR("sessionFromJson: going to load reflections info");
-    const QJsonArray& reflectionsInfo = top.loadArr("reflections");
-    for_i (reflectionsInfo.count()) {
-        gSession->addReflection(reflectionsInfo.at(i).toObject());
-    }
+    TR("sessionFromJson: going to load peaks info");
+    const QJsonArray& peaksInfo = top.loadArr("peaks");
+    for_i (peaksInfo.count())
+        gSession->peaks().add(peaksInfo.at(i).toObject());
 
-    emit sigReflectionsChanged();
     TR("installed session from file");
 }
 
-void TheHub::collectDatasetsFromSelectionBy(const vec<int> indexSelection, const int by) {
-    filesSelection_ = indexSelection;
-    clusterGroupedBy_ = by;
-    collectDatasetsExec();
-}
-
-void TheHub::onFilesSelected(const vec<int> indexSelection) {
-    filesSelection_ = indexSelection;
-    collectDatasetsExec();
-}
-
-void TheHub::combineMeasurementsBy(const int by) {
-    clusterGroupedBy_ = by;
-    collectDatasetsExec();
-}
-
-void TheHub::collectDatasetsExec() {
-    gSession->assembleExperiment(filesSelection_, clusterGroupedBy_);
-    TR("cDE2");
-    qDebug() << "#exp=" << gSession->experiment().count();
-    emit sigFilesSelected();
-    TR("cDE3");
-    emit sigClustersChanged();
-    TR("cDE4");
-}
-
-void TheHub::setCorrFile(rcstr filePath) THROWS {
-    gSession->setCorrFile(filePath);
-    emit sigCorrFile(gSession->corrFile());
-    tryEnableCorrection(true);
-}
-
-void TheHub::tryEnableCorrection(bool on) {
-    gSession->tryEnableCorr(on);
-    emit sigCorrEnabled(gSession->isCorrEnabled());
-}
-
-void TheHub::setImageCut(bool isTopOrLeft, bool linked, ImageCut const& cut) {
-    gSession->setImageCut(isTopOrLeft, linked, cut);
-    emit sigGeometryChanged();
-}
-
-void TheHub::setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset) {
-    TR("setGeometry"); // keep an eye on this, since in the past circular calls may have happened
-
-    gSession->setGeometry(detectorDistance, pixSize, midPixOffset);
-    emit sigGeometryChanged();
-}
-
-void TheHub::setGammaRange(const Range& gammaRange) {
-    gSession->setGammaRange(gammaRange);
-    emit sigGammaRange();
-}
-
-void TheHub::setBgRanges(const Ranges& ranges) {
-    gSession->setBgRanges(ranges);
-    emit sigBgChanged();
-}
-
-void TheHub::addBgRange(const Range& range) {
-    if (gSession->addBgRange(range))
-        emit sigBgChanged();
-}
-
-void TheHub::removeBgRange(const Range& range) {
-    if (gSession->removeBgRange(range))
-        emit sigBgChanged();
-}
-
-void TheHub::setBgPolyDegree(int degree) {
-    gSession->setBgPolyDegree(degree);
-    emit sigBgChanged();
-}
-
-void TheHub::setIntenScaleAvg(bool avg, qreal scale) {
-    gSession->setIntenScaleAvg(avg, scale);
-    emit sigNormChanged(); // TODO instead of another signal
-}
-
-void TheHub::setPeakFunction(const QString& peakFunctionName) {
-    if (selectedReflection_) {
-        selectedReflection_->setPeakFunction(peakFunctionName);
-        emit sigReflectionsChanged();
+void TheHub::loadCorrFile() {
+    if (gSession->corrset().hasFile()) {
+        gSession->corrset().removeFile();
+    } else {
+        QString fileName = file_dialog::openFileName(
+            gMainWin, "Set correction file", QDir::current().absolutePath(),
+            "Data files (*.dat *.mar*);;All files (*.*)");
+        if (fileName.isEmpty())
+            return;
+        QDir::setCurrent(QFileInfo(fileName).absolutePath());
+        gSession->corrset().loadFile(fileName);
     }
 }
 
-void TheHub::addReflection(const QString& peakFunctionName) {
-    gSession->addReflection(peakFunctionName);
-    emit sigReflectionsChanged();
-}
-
-void TheHub::removeReflection(int i) {
-    gSession->removeReflection(i);
-    if (gSession->reflections().isEmpty())
-        tellSelectedReflection(shp_Reflection());
-    emit sigReflectionsChanged();
-}
-
-void TheHub::setFittingTab(eFittingTab tab) {
+void TheHub::setFittingTab(eFittingTab tab) { // TODO rm
     emit sigFittingTab((fittingTab_ = tab));
 }
 
@@ -453,36 +346,11 @@ void TheHub::setImageRotate(ImageTransform rot) {
     trigger_rotateImage->setIcon(QIcon(rotateIconFile));
     toggle_mirrorImage->setIcon(QIcon(mirrorIconFile));
     gSession->setImageTransformRotate(rot);
-    setImageCut(true, false, gSession->imageCut());
-    emit sigGeometryChanged();
+    gSession->setImageCut(true, false, gSession->imageCut());
 }
 
 void TheHub::setImageMirror(bool on) {
     toggle_mirrorImage->setChecked(on);
     gSession->setImageTransformMirror(on);
-    emit sigGeometryChanged();
-}
-
-void TheHub::setNorm(eNorm norm) {
-    gSession->setNorm(norm);
-    emit sigNormChanged();
-}
-
-void TheHub::tellClusterSelected(const Cluster* cluster) {
-    selectedCluster_ = cluster;
-    emit sigClusterSelected(cluster);
-}
-
-void TheHub::tellSelectedReflection(shp_Reflection reflection) {
-    selectedReflection_ = reflection;
-    emit sigReflectionSelected(reflection);
-}
-
-void TheHub::tellReflectionData(shp_Reflection reflection) {
-    emit sigReflectionData(reflection);
-}
-
-void TheHub::tellReflectionValues(
-    const Range& rgeTth, qpair const& peak, fwhm_t fwhm, bool withGuesses) {
-    emit sigReflectionValues(rgeTth, peak, fwhm, withGuesses);
+    emit gSession->sigDetector();
 }

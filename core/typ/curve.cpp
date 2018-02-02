@@ -27,7 +27,7 @@ bool Curve::isEmpty() const {
 }
 
 int Curve::count() const {
-    debug::ensure(xs_.count() == ys_.count());
+    ASSERT(xs_.count() == ys_.count());
     return xs_.count();
 }
 
@@ -43,17 +43,17 @@ void Curve::append(qreal x, qreal y) {
 }
 
 Curve Curve::intersect(const Range& range) const {
+    if (range.isEmpty())
+        return {};
+    ASSERT(isOrdered());
     Curve ret;
-    if (!range.isEmpty()) {
-        debug::ensure(isOrdered());
-        int xi = 0;
-        const int cnt = count();
-        while (xi < cnt && xs_.at(xi) < range.min)
-            ++xi;
-        while (xi < cnt && xs_.at(xi) <= range.max) {
-            ret.append(xs_.at(xi), ys_.at(xi));
-            ++xi;
-        }
+    int xi = 0;
+    const int cnt = count();
+    while (xi < cnt && xs_.at(xi) < range.min)
+        ++xi;
+    while (xi < cnt && xs_.at(xi) <= range.max) {
+        ret.append(xs_.at(xi), ys_.at(xi));
+        ++xi;
     }
     return ret;
 }
@@ -64,7 +64,7 @@ Curve Curve::intersect(const Range& range) const {
 
 Curve Curve::intersect(const Ranges& ranges) const {
     Curve ret;
-    debug::ensure(isOrdered());
+    ASSERT(isOrdered());
     int xi = 0, cnt = count();
     for_i (ranges.count()) {
         const Range& range = ranges.at(i);

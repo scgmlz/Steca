@@ -17,19 +17,18 @@
 
 #include "frame.h"
 
-//! The modal dialog for saving diffractograms
-class DiffractogramsFrame final : public Frame {
+//! The modal dialog for saving diffractograms.
+
+class DiffractogramsFrame : public Frame {
 public:
     DiffractogramsFrame(rcstr title, QWidget*);
 
 private:
     class TabDiffractogramsSave* tabSave_;
 
-    vec<vec<const class OutputData*>> outputAllDiffractograms();
-
-    void saveDiffractogramOutput();
-    void writeCurrDiffractogramToFile(rcstr filePath, rcstr separator);
-    void writeAllDiffractogramsToFiles(rcstr filePath, rcstr separator, bool oneFile);
+    void save();
+    void saveCurrent();
+    void saveAll(bool oneFile);
 };
 
 #endif // OUTPUT_DIFFRACTOGRAMS_H

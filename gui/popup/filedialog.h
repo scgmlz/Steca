@@ -15,6 +15,7 @@
 #ifndef FILEDIALOG_H
 #define FILEDIALOG_H
 
+//! Functions for opening files. TODO: clarify relation to newQ::OutputFile
 
 namespace file_dialog {
 

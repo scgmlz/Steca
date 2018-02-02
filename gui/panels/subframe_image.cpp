@@ -24,6 +24,8 @@
 //  local class ImageWidget
 // ************************************************************************** //
 
+//! Displays a 2d detector image, and possibly some overlay. Used in ImageTab.
+
 class ImageWidget final : public QWidget {
 public:
     ImageWidget();
@@ -114,7 +116,6 @@ void ImageWidget::paintEvent(QPaintEvent*) {
         p.drawLine(rl, y, rr, y);
 
         // text
-        const QFontMetrics& fm = fontMetrics();
         QPoint pos(rr - rw / 5, rcy);
         p.setPen(Qt::cyan);
         p.drawText(pos, "γ=0");
@@ -127,117 +128,52 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 
 
 // ************************************************************************** //
-//  class SubframeImage
+//  local base class ImageTab
 // ************************************************************************** //
 
-SubframeImage::SubframeImage() {
-    setTabPosition(QTabWidget::North);
+//! Pure virtual base class for DataImageTab and CorrImageTab, shows a detector image and controls.
 
-    {
-        QBoxLayout& box = newQ::Tab(this, "Image")->box();
+class ImageTab : public QWidget {
+public:
+    ImageTab();
+    virtual void render() = 0;
+protected:
+    QBoxLayout* controls_;
+    QPixmap makePixmap(shp_Image);
+    QPixmap makePixmap(class Measurement const&, const Range&, const Range&);
+    QPixmap makeBlankPixmap();
+    QImage makeImage(shp_Image, bool curvedScale);
+    ImageWidget* imageView_;
+private:
+    QBoxLayout* box_;
+};
 
-        QBoxLayout* hb = newQ::HBoxLayout();
-        box.addLayout(hb);
-        box.setAlignment(hb, Qt::AlignTop);
+ImageTab::ImageTab() {
+    box_ = newQ::VBoxLayout();
+    setLayout(box_);
 
-        hb->addWidget(newQ::IconButton(gHub->toggle_fixedIntenImage));
-        hb->addWidget(newQ::IconButton(gHub->toggle_stepScale));
-        hb->addWidget(newQ::IconButton(gHub->toggle_showOverlay));
-        hb->addWidget((spinN_ = newQ::SpinBox(4, false, 1)));
+    controls_ = newQ::HBoxLayout();
+    box_->addLayout(controls_);
+    controls_->addWidget(newQ::IconButton(gHub->toggle_fixedIntenImage));
+    controls_->addWidget(newQ::IconButton(gHub->toggle_stepScale));
+    controls_->addWidget(newQ::IconButton(gHub->toggle_showOverlay));
 
-        hb->addStretch(1);
-
-        hb->addWidget(newQ::IconButton(gHub->toggle_showBins));
-        hb->addWidget(newQ::Label("γ count"));
-        hb->addWidget((numSlices_ = newQ::SpinBox(4, false, 0)));
-        hb->addWidget(newQ::Label("#"));
-        hb->addWidget((numSlice_ = newQ::SpinBox(4, false, 1)));
-
-        hb->addWidget(newQ::Label("min"));
-        hb->addWidget((minGamma_ = newQ::DoubleSpinBox(6, true)));
-        hb->addWidget(newQ::Label("max"));
-        hb->addWidget((maxGamma_ = newQ::DoubleSpinBox(6, true)));
-
-        minGamma_->setReadOnly(true);
-        maxGamma_->setReadOnly(true);
-
-        hb->addWidget(newQ::Label("bin#"));
-        hb->addWidget((numBin_ = newQ::SpinBox(4, false, 1)));
-
-        box.addWidget((dataImageWidget_ = new ImageWidget()));
-
-        connect(spinN_, _SLOT_(QSpinBox, valueChanged, int),
-                [this](int /*unused*/) { render(); });
-        connect(numSlices_, _SLOT_(QSpinBox, valueChanged, int),
-                [this](int /*unused*/) { render(); });
-        connect(numSlice_, _SLOT_(QSpinBox, valueChanged, int),
-                [this](int /*unused*/) { render(); });
-        connect(numBin_, _SLOT_(QSpinBox, valueChanged, int),
-                [this](int /*unused*/) { render(); });
-    }
-
-    {
-        BoxWidget& tab = *newQ::Tab(this, "Correction");
-
-        connect(gHub, &TheHub::sigCorrFile, [&tab](const Datafile* file) { tab.setEnabled(file); });
-
-        QBoxLayout& box = tab.box();
-
-        QBoxLayout* hb = newQ::HBoxLayout();
-        box.addLayout(hb);
-        box.setAlignment(hb, Qt::AlignTop);
-
-        hb->addWidget(newQ::IconButton(gHub->toggle_fixedIntenImage));
-        hb->addWidget(newQ::IconButton(gHub->toggle_stepScale));
-        hb->addWidget(newQ::IconButton(gHub->toggle_showOverlay));
-        hb->addStretch(1);
-
-        box.addWidget((corrImageWidget_ = new ImageWidget()));
-    }
+    imageView_ = new ImageWidget();
+    box_->addWidget(imageView_);
 
     connect(gHub->toggle_enableCorr, &QAction::toggled, [this](bool /*unused*/) { render(); });
     connect(gHub->toggle_showBins, &QAction::toggled, [this](bool /*unused*/) { render(); });
 
-    connect(gHub, &TheHub::sigDisplayChanged, this, &SubframeImage::render);
-    connect(gHub, &TheHub::sigGeometryChanged, this, &SubframeImage::render);
-    connect(gHub, &TheHub::sigNormChanged, this, &SubframeImage::render);
-    connect(gHub, &TheHub::sigClusterSelected, this, &SubframeImage::setCluster);
-
-    render();
+    connect(gHub, &TheHub::sigDisplayChanged, this, &ImageTab::render);
+    connect(gSession, &Session::sigDetector, this, &ImageTab::render);
+    connect(gSession, &Session::sigNorm, this, &ImageTab::render);
 }
 
-QPixmap SubframeImage::makeBlankPixmap() {
-    const size2d size = gSession->imageSize();
-    QPixmap pixmap(size.w, size.h);
-    pixmap.fill(QColor(0, 0, 0, 0));
-    return pixmap;
-}
-
-QImage SubframeImage::makeImage(shp_Image image, bool curvedScale) {
-    if (!image)
-        return {};
-
-    shp_ImageLens imageLens = gSession->imageLens(*image, true, false);
-    const size2d size = imageLens->size();
-    if (size.isEmpty())
-        return {};
-
-    QImage ret(QSize(size.w, size.h), QImage::Format_RGB32);
-
-    const Range rgeInten = imageLens->rgeInten(gHub->isFixedIntenImageScale());
-    inten_t maxInten = inten_t(rgeInten.max);
-
-    for_ij (size.w, size.h)
-        ret.setPixel(i, j,
-                    colormap::intenImage(imageLens->imageInten(i, j), maxInten, curvedScale));
-    return ret;
-}
-
-QPixmap SubframeImage::makePixmap(shp_Image image) {
+QPixmap ImageTab::makePixmap(shp_Image image) {
     return QPixmap::fromImage(makeImage(image, !gHub->isFixedIntenImageScale()));
 }
 
-QPixmap SubframeImage::makePixmap(
+QPixmap ImageTab::makePixmap(
     Measurement const& cluster, const Range& rgeGma, const Range& rgeTth) {
     QImage im = makeImage(cluster.image(), !gHub->isFixedIntenImageScale());
     shp_AngleMap angleMap = gSession->angleMap(cluster);
@@ -261,78 +197,188 @@ QPixmap SubframeImage::makePixmap(
     return QPixmap::fromImage(im);
 }
 
-void SubframeImage::setCluster(const Cluster* cluster) {
-    cluster_ = cluster;
-    render();
+QPixmap ImageTab::makeBlankPixmap() {
+    const size2d size = gSession->imageSize();
+    QPixmap pixmap(size.w, size.h);
+    pixmap.fill(QColor(0, 0, 0, 0));
+    return pixmap;
 }
 
-void SubframeImage::render() {
-    {
-        QPixmap pixMap;
+QImage ImageTab::makeImage(shp_Image image, bool curvedScale) {
+    if (!image)
+        return {};
 
-        const int nSlices = numSlices_->value();
-        numSlice_->setMaximum(qMax(1, nSlices));
-        numSlice_->setEnabled(nSlices > 0);
+    shp_ImageLens imageLens = gSession->imageLens(*image, true, false);
+    const size2d size = imageLens->size();
+    if (size.isEmpty())
+        return {};
 
-        if (cluster_) {
-            // 1 - based
-            const int by = qBound(1, int(gHub->clusterGroupedBy()), cluster_->count());
-            const int n = qBound(1, spinN_->value(), by);
+    QImage ret(QSize(size.w, size.h), QImage::Format_RGB32);
 
-            spinN_->setValue(n);
-            spinN_->setEnabled(by > 1);
+    const Range rgeInten = imageLens->rgeInten(gHub->isFixedIntenImageScale());
+    inten_t maxInten = inten_t(rgeInten.max);
 
-            lens_ = gSession->defaultClusterLens(*cluster_);
+    for_ij (size.w, size.h)
+        ret.setPixel(i, j,
+                    colormap::intenImage(imageLens->imageInten(i, j), maxInten, curvedScale));
+    return ret;
+}
 
-            Range rge;
-            if (nSlices > 0) {
-                int nSlice = qMax(1, numSlice_->value());
-                int iSlice = nSlice - 1;
+// ************************************************************************** //
+//  local class DataImageTab
+// ************************************************************************** //
 
-                const Range rgeGma = lens_->rgeGma();
-                const qreal min = rgeGma.min;
-                const qreal wn = rgeGma.width() / nSlices;
+//! A tab for a data image and associated controls.
 
-                rge = Range(min + iSlice * wn, min + (iSlice + 1) * wn);
+//! To display a 2d detector image of diffraction data,
+//! as opposed to the correction data in CorrImageTab.
 
-                minGamma_->setValue(rge.min);
-                maxGamma_->setValue(rge.max);
-            } else {
-                rge = Range::infinite();
-                minGamma_->clear();
-                maxGamma_->clear();
+class DataImageTab : public ImageTab {
+public:
+    DataImageTab();
+    void render() final;
+private:
+    QSpinBox* spinN_;
+    QSpinBox *numSlices_, *numSlice_, *numBin_;
+    QDoubleSpinBox *minGamma_, *maxGamma_;
+};
+
+DataImageTab::DataImageTab() {
+    controls_->addWidget((spinN_ = newQ::SpinBox(4, false, 1)));
+    connect(spinN_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
+            gSession->dataset().highlight().setMeasurement(val-1); });
+    connect(gSession, &Session::sigHighlight, [this]() {
+            auto& hl = gSession->dataset().highlight();
+            if (!hl.cluster()) {
+                spinN_->setEnabled(false);
+                spinN_->setValue(1);
+                return;
             }
+            spinN_->setEnabled( gSession->dataset().binning() > 1);
+            int max = hl.cluster()->count();
+            spinN_->setMaximum(max);
+            if ( hl.measurementIndex()+1>max )
+                hl.setMeasurement(max-1);
+            spinN_->setValue(hl.measurementIndex()+1); });
+    spinN_->setEnabled(false);
+    spinN_->setValue(1);
 
-            gHub->setGammaRange(rge);
+    controls_->addStretch(1);
 
-            shp_Measurement measurement = cluster_->at(n - 1);
+    controls_->addWidget(newQ::IconButton(gHub->toggle_showBins));
+    controls_->addWidget(newQ::Label("γ count"));
+    controls_->addWidget((numSlices_ = newQ::SpinBox(4, false, 0)));
+    connect(numSlices_, _SLOT_(QSpinBox, valueChanged, int),
+            [this](int /*unused*/) { render(); });
 
-            numBin_->setEnabled(true);
-            if (gHub->toggle_showBins->isChecked()) {
-                Range rgeTth = lens_->rgeTth();
-                int count = lens_->makeCurve().count();
-                numBin_->setMaximum(count - 1);
-                int min = rgeTth.min, wdt = rgeTth.width();
-                qreal num = qreal(numBin_->value());
-                pixMap = makePixmap(
-                    *measurement, rge,
-                    Range(min + wdt * (num / count), min + wdt * ((num + 1) / count)));
-            } else {
-                pixMap = makePixmap(measurement->image());
-            }
+    controls_->addWidget(newQ::Label("#"));
+    controls_->addWidget((numSlice_ = newQ::SpinBox(4, false, 1)));
+    connect(numSlice_, _SLOT_(QSpinBox, valueChanged, int),
+            [this](int /*unused*/) { render(); });
+
+    controls_->addWidget(newQ::Label("min"));
+    controls_->addWidget((minGamma_ = newQ::DoubleSpinBox(6)));
+    controls_->addWidget(newQ::Label("max"));
+    controls_->addWidget((maxGamma_ = newQ::DoubleSpinBox(6)));
+
+    minGamma_->setReadOnly(true);
+    maxGamma_->setReadOnly(true);
+
+    controls_->addWidget(newQ::Label("bin#"));
+    controls_->addWidget((numBin_ = newQ::SpinBox(4, false, 1)));
+    connect(numBin_, _SLOT_(QSpinBox, valueChanged, int),
+            [this](int /*unused*/) { render(); });
+
+    connect(gSession, &Session::sigHighlight, this, &ImageTab::render);
+}
+
+void DataImageTab::render() {
+    QPixmap pixMap;
+
+    const int nSlices = numSlices_->value();
+    numSlice_->setMaximum(qMax(1, nSlices));
+    numSlice_->setEnabled(nSlices > 0);
+
+    if (gSession->dataset().highlight().cluster()) {
+        // 1 - based
+        shp_SequenceLens lens = gSession->highlightsLens();
+
+        Range rge;
+        if (nSlices > 0) {
+            int nSlice = qMax(1, numSlice_->value());
+            int iSlice = nSlice - 1;
+            const Range rgeGma = lens->rgeGma();
+            const qreal min = rgeGma.min;
+            const qreal wn = rgeGma.width() / nSlices;
+            rge = Range(min + iSlice * wn, min + (iSlice + 1) * wn);
+            minGamma_->setValue(rge.min);
+            maxGamma_->setValue(rge.max);
         } else {
-            spinN_->setEnabled(false);
-            numBin_->setMaximum(0);
-            numBin_->setEnabled(false);
+            rge = Range::infinite();
+            minGamma_->clear();
+            maxGamma_->clear();
+        }
+        gSession->setGammaRange(rge);
 
-            pixMap = makeBlankPixmap();
+        const Measurement* measurement = gSession->dataset().highlight().measurement();
+
+        numBin_->setEnabled(true);
+        if (gHub->toggle_showBins->isChecked()) {
+            Range rgeTth = lens->rgeTth();
+            int count = lens->makeCurve().count();
+            numBin_->setMaximum(count - 1);
+            qreal min = rgeTth.min;
+            qreal wdt = rgeTth.width();
+            qreal num = qreal(numBin_->value());
+           pixMap = makePixmap(
+                *measurement, rge,
+                Range(min + wdt * (num / count), min + wdt * ((num + 1) / count)));
+        } else {
+            pixMap = makePixmap(measurement->image());
         }
 
-        dataImageWidget_->setPixmap(pixMap);
+    } else {
+        numBin_->setMaximum(0);
+        numBin_->setEnabled(false);
+        pixMap = makeBlankPixmap();
     }
 
-    {
-        QPixmap pixMap = makePixmap(gSession->corrImage());
-        corrImageWidget_->setPixmap(pixMap);
-    }
+    imageView_->setPixmap(pixMap);
+}
+
+// ************************************************************************** //
+//  local class CorrImageTab
+// ************************************************************************** //
+
+//! A tab for the correction image and associated controls.
+
+//! To display a 2d detector image of correction data,
+//! as opposed to the diffraction data in DataImageTab.
+
+class CorrImageTab : public ImageTab {
+public:
+    CorrImageTab();
+    void render() final;
+};
+
+CorrImageTab::CorrImageTab() {
+    controls_->addStretch(1);
+}
+
+void CorrImageTab::render() {
+    QPixmap pixMap = makePixmap(gSession->corrset().image());
+    imageView_->setPixmap(pixMap);
+}
+
+// ************************************************************************** //
+//  class SubframeImage
+// ************************************************************************** //
+
+SubframeImage::SubframeImage() {
+    setTabPosition(QTabWidget::North);
+    addTab(new DataImageTab, "Data image");
+    addTab(new CorrImageTab, "Corr image");
+    connect(gSession, &Session::sigCorr, [this]() {
+            setTabEnabled(1, gSession->corrset().hasFile()); });
+    setTabEnabled(1, false);
 }

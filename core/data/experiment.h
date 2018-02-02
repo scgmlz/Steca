@@ -18,25 +18,24 @@
 #include "core/data/cluster.h" // no auto rm
 #include "core/typ/curve.h"
 #include <QSharedPointer> // required by some compilers
+#include <vector>
 
-//! A sequence of Cluster s
+//! The list of activated Cluster|s, and cached averages
 
-class Experiment final : public vec<shp_Cluster> {
+class Experiment {
 public:
-    Experiment(const int combineBy = 1);
+    Experiment();
 
-    void appendHere(shp_Cluster);
+    void appendHere(const Cluster*);
 
-    int combineBy() const { return combineBy_; }
+    const std::vector<const Cluster*>& clusters() const { return clusters_; }
+    int size() const { return clusters_.size(); }
     size2d imageSize() const;
-
     qreal avgMonitorCount() const;
     qreal avgDeltaMonitorCount() const;
     qreal avgDeltaTime() const;
-
     const Range& rgeGma() const;
     const Range& rgeFixedInten(bool trans, bool cut) const;
-
     Curve avgCurve() const;
 
     void invalidateAvgMutables() const;
@@ -45,9 +44,12 @@ private:
     void computeAvgeCurve() const;
     qreal calcAvgMutable(qreal (Cluster::*avgFct)() const) const;
 
-    int combineBy_; //!< so many Measurements in one Cluster
+    std::vector<const Cluster*> clusters_;
+
     // computed on demand (NaNs or emptiness indicate yet unknown values)
-    mutable qreal avgMonitorCount_, avgDeltaMonitorCount_, avgDeltaTime_;
+    mutable qreal avgMonitorCount_;
+    mutable qreal avgDeltaMonitorCount_;
+    mutable qreal avgDeltaTime_;
     mutable Range rgeFixedInten_;
     mutable Range rgeGma_;
     mutable Curve avgCurve_;

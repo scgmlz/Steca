@@ -18,6 +18,7 @@ endif()
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR OFF)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DQT_LOGGING_RULES=\"*.debug=true\"")
 
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
   add_compile_options("-Wall")
@@ -25,9 +26,9 @@ endif()
 
 find_package(Qt5Core    REQUIRED)
 find_package(Qt5Gui     REQUIRED)
-find_package(Qt5Test    REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Network REQUIRED)
+message(STATUS "found Qt5Core=${Qt5Core_VERSION_STRING}, Qt5Gui=${Qt5Gui_VERSION_STRING}")
 
 add_subdirectory(3rdparty/LevMar)
 add_subdirectory(3rdparty/QCustomPlot)
@@ -35,6 +36,7 @@ add_subdirectory(3rdparty/Caress)
 add_subdirectory(3rdparty/Mar)
 add_subdirectory(core)
 add_subdirectory(gui)
+add_subdirectory(main)
 
 if(WITH_TESTS)
   include(CTest) # equivalent to "enable_testing() ???

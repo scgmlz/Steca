@@ -34,7 +34,7 @@ public:
 
     void invalidate(); //!< make invalid
     bool isValid() const; //!< is not NaN
-    bool isEmpty() const; //!< not valid or empty
+    bool isEmpty() const; //!< is invalid or empty
 
     qreal width() const;
     qreal center() const;

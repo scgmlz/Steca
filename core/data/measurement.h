@@ -22,17 +22,15 @@
 
 //! A Measurement consts of an Image with associated Metadata
 
-class Measurement final {
+class Measurement {
 
 public:
     Measurement() = delete;
     Measurement(const Measurement&) = delete;
-    Measurement(const class Datafile*, const int position, const Metadata&,
-                const size2d&, const inten_vec&);
+    Measurement(const int position, const Metadata&, const size2d&, const inten_vec&);
 
-    const class Datafile* file() const { return file_; }
     int position() const { return position_; }
-    int totalPosition() const; //!< position in full list of currently loaded measurements
+// TODO REPLACE    int totalPosition() const; //!< position in full list of currently loaded measurements
     shp_Metadata metadata() const { return md_; }
 
     deg midTth() const;
@@ -59,7 +57,6 @@ public:
         deg minTth, deg deltaTth) const;
 
 private:
-    const class Datafile* file_;
     const int position_; //! position in file_
     shp_Metadata md_;
     shp_Image image_;

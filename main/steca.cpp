@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/steca.cpp
+//! @file      main/steca.cpp
 //! @brief     Implements the main program
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -11,6 +11,13 @@
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
+
+//! \mainpage Steca: the stress and texture calculator
+//!
+//! \par Homepage:
+//!           http://apps.jcns.fz-juelich.de/steca
+//! \par Repository:
+//!           https://github.com/scgmlz/Steca
 
 #include "../manifest.h"
 #include "gui/console.h"
@@ -22,14 +29,12 @@
 #define OPTPARSE_API static
 #include "optparse.h"
 #include <QApplication>
+#include <QLoggingCategory>
 #include <QStyleFactory>
 
 const char* version =
 #include "../VERSION"
     ;
-
-class MainWin* gMainWin; //!< global, for message handling
-class Session* gSession; //!< global, for data handling
 
 int main(int argc, char* argv[]) {
 
@@ -71,13 +76,14 @@ int main(int argc, char* argv[]) {
     app.setStyle(QStyleFactory::create("Fusion"));
 #endif
 
+    QLoggingCategory::setFilterRules("*.debug=true\nqt.*.debug=false");
     qInstallMessageHandler(messageHandler);
 
     gSession = Session::instance();
 
     gMainWin = MainWin::instance();
     gMainWin->show();
-    qDebug() /* qInfo() TODO restore */ << "Welcome to Steca";
+    gMainWin->addFiles();
 
     Console console;
     QObject::connect(&console, &Console::transmitLine, gMainWin, &MainWin::execCommand);

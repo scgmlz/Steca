@@ -22,12 +22,12 @@
 class TabSave : public QWidget {
 public:
     TabSave(bool withTypes);
-    str filePath(bool withSuffix);
+    str filePath(bool withSuffix, bool withNumber=false);
     str separator() const;
     QAction *actBrowse, *actSave;
 protected:
     QGridLayout* grid_;
-    str fileSetSuffix(rcstr);
+private:
     QLineEdit *dir_, *file_;
     QRadioButton *rbDat_, *rbCsv_;
 };

@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/subframe_metadata.cpp
-//! @brief     Implements class SubframeMetadata
+//! @brief     Implements class SubframeMetadata, with local model and view
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,10 +12,10 @@
 //
 // ************************************************************************** //
 
+#include "core/session.h"
 #include "gui/panels/subframe_metadata.h"
-#include "gui/base/table_model.h"
+#include "gui/base/model_view.h"
 #include "gui/thehub.h"
-#include "gui/base/tree_views.h" // inheriting from
 #include <QHeaderView>
 
 
@@ -23,12 +23,14 @@
 //  local class MetadataModel
 // ************************************************************************** //
 
+//! The model for MetadatView.
+
 class MetadataModel : public TableModel {
 public:
     MetadataModel();
 
-    void reset(const Cluster* cluster);
-    void flipCheck(int row);
+    void reset();
+    void onClicked(const QModelIndex &);
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return Metadata::numAttributes(false); }
@@ -48,16 +50,17 @@ MetadataModel::MetadataModel() {
     rowsChecked_.fill(false, Metadata::numAttributes(false));
 }
 
-void MetadataModel::reset(const Cluster* cluster) {
-    metadata_.clear();
-    if (cluster)
-        metadata_ = cluster->avgeMetadata();
-    signalReset();
+void MetadataModel::reset() {
+    const Cluster* cluster = gSession->dataset().highlight().cluster();
+    metadata_ = cluster ? cluster->avgeMetadata() : shp_Metadata();
+    resetModel();
 }
 
-void MetadataModel::flipCheck(int row) {
+void MetadataModel::onClicked(const QModelIndex &cell) {
+    int row = cell.row();
     rowsChecked_[row] = !rowsChecked_[row];
-    signalReset();
+    resetModel();
+    emit gSession->setMetaSelection(rowsChecked_);
 }
 
 QVariant MetadataModel::data(const QModelIndex& index, int role) const {
@@ -89,6 +92,8 @@ QVariant MetadataModel::data(const QModelIndex& index, int role) const {
 //  local class MetadataView
 // ************************************************************************** //
 
+//! Main item in SubframeMetadata: View and control the list of Metadata.
+
 class MetadataView : public ListView {
 public:
     MetadataView();
@@ -102,11 +107,8 @@ MetadataView::MetadataView() : ListView() {
     setHeaderHidden(true);
     auto metadataModel = new MetadataModel();
     setModel(metadataModel);
-    connect(gHub, &TheHub::sigClusterSelected, model(), &MetadataModel::reset);
-    connect(this, &MetadataView::clicked, [this](QModelIndex const& index) {
-        model()->flipCheck(index.row());
-        emit gHub->sigMetatagsChosen(model()->rowsChecked());
-    });
+    connect(gSession, &Session::sigHighlight, model(), &MetadataModel::reset);
+    connect(this, &MetadataView::clicked, model(), &MetadataModel::onClicked);
 }
 
 int MetadataView::sizeHintForColumn(int col) const {

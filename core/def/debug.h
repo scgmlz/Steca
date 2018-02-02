@@ -17,6 +17,7 @@
 
 #include <QtGlobal> // protect
 #include <QDebug>
+#include <QtDebug>
 
 // TRace:
 #define TR(what) { qDebug() << what; }
@@ -24,10 +25,6 @@
 // WaTch: same as TR, also prints stringized version (what is being printed)
 #define WT(what) TR(#what ":" << what)
 
-namespace debug {
-    void ensure(bool cond, const char* text="assertion failed");
-}
-
-#define NEVER { qFatal("fall-through bug"); }
+#define ASSERT(cond) if (!(cond)) qFatal("assertion failed: " #cond)
 
 #endif // DEBUG_H

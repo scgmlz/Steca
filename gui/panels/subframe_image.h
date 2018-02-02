@@ -26,25 +26,6 @@
 class SubframeImage final : public QTabWidget {
 public:
     SubframeImage();
-
-private:
-    QPixmap makeBlankPixmap();
-
-    QImage makeImage(shp_Image, bool curvedScale);
-    QPixmap makePixmap(shp_Image);
-    QPixmap makePixmap(class Measurement const&, const Range&, const Range&);
-
-    void setCluster(const Cluster*);
-    void render();
-
-    const Cluster* cluster_ {nullptr};
-    class ImageWidget *dataImageWidget_, *corrImageWidget_;
-
-    QSpinBox* spinN_;
-    QSpinBox *numSlices_, *numSlice_, *numBin_;
-    QDoubleSpinBox *minGamma_, *maxGamma_;
-
-    shp_SequenceLens lens_;
 };
 
 #endif // SUBFRAME_IMAGE_H

@@ -18,6 +18,8 @@
 #include "core/typ/types.h"
 #include <QColor>
 
+//! Color maps for use in detector image and pole figure.
+
 namespace colormap {
 QRgb intenImage(inten_t inten, inten_t maxInten, bool curved);
 QColor intenGraph(inten_t inten, inten_t maxInten);

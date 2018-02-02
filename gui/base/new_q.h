@@ -19,6 +19,7 @@
 #include <QAction>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QFile>
 #include <QLabel>
 #include <QLayout>
 #include <QLineEdit>
@@ -32,14 +33,13 @@ class BoxWidget;
 
 namespace newQ {
 
+QFile* OutputFile(QWidget* parent, const QString& path, bool check_overwrite=true);
+
 QAction* Trigger(rcstr text, rcstr iconFile="");
 QAction* Toggle(rcstr text, bool value, rcstr iconFile="");
 
-BoxWidget* Tab(QTabWidget* panel, rcstr title);
-
-QBoxLayout* BoxLayout(Qt::Orientation);
-QBoxLayout* HBoxLayout(); // horizontal box layout
-QBoxLayout* VBoxLayout(); // vertical box layout
+QBoxLayout* HBoxLayout();
+QBoxLayout* VBoxLayout();
 
 QGridLayout* GridLayout();
 
@@ -49,8 +49,7 @@ QLabel* Icon(rcstr fileName);
 QLineEdit* LineDisplay(int ndigits, bool withDot);
 
 QSpinBox* SpinBox(int ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX);
-QDoubleSpinBox* DoubleSpinBox(
-    int ndigits, bool withDot, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
+QDoubleSpinBox* DoubleSpinBox(int ndigits, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
 
 QCheckBox* CheckBox(rcstr text);
 QCheckBox* CheckBox(QAction*);

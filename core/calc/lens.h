@@ -20,7 +20,7 @@
 #include "core/typ/types.h"
 #include "core/data/image_transform.h"
 
-class Cluster;
+class Sequence;
 class Image;
 
 //! View the data through a lens. Base class for ImageLens and Sequence Lens.
@@ -45,7 +45,7 @@ protected:
 
 //! A lens for a single Image.
 
-class ImageLens final : public LensBase {
+class ImageLens : public LensBase {
 public:
     ImageLens(const Image&, bool trans, bool cut);
 
@@ -66,9 +66,9 @@ typedef QSharedPointer<const ImageLens> shp_ImageLens;
 
 //! A lens for a sequence of Image's.
 
-class SequenceLens final : public LensBase {
+class SequenceLens : public LensBase {
 public:
-    SequenceLens(Cluster const&, eNorm, bool trans,
+    SequenceLens(Sequence const&, eNorm, bool trans,
                  bool cut, ImageTransform const&, ImageCut const&);
 
     size2d size() const;
@@ -81,13 +81,13 @@ public:
     Curve makeCurve() const;
     Curve makeCurve(const Range&) const;
 
-    Cluster const& cluster() const { return cluster_; }
+    Sequence const& sequence() const { return seq_; }
 
 private:
     void setNorm(eNorm);
     inten_t normFactor_;
 
-    Cluster const& cluster_;
+    Sequence const& seq_;
 };
 
 typedef QSharedPointer<SequenceLens> shp_SequenceLens;

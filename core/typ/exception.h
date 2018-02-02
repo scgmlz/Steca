@@ -12,43 +12,23 @@
 //
 // ************************************************************************** //
 
-// exceptions
-
 #ifndef EXCEPTION_H
 #define EXCEPTION_H
 
-#include "core/typ/str.h"
 #include <QException>
+#include <QString>
 
 //! The sole exception type used in this software.
 class Exception : public QException {
-private:
 public:
-    Exception() noexcept;
-    Exception(rcstr msg) noexcept;
-    Exception(Exception const&) noexcept;
-
-    bool silent() const noexcept { return silent_; }
-    rcstr msg() const noexcept { return msg_; }
-    const char* what() const noexcept;
-
-    void setMsg(rcstr);
-
-    Exception* clone() const;
-    void raise() const;
-
-protected:
-    Exception(rcstr msg, bool silent) noexcept;
-    str msg_;
-    QByteArray msg8bit_;
-    bool silent_;
+    Exception() = delete;
+    Exception(const QString& msg) noexcept : msg_(msg) {}
+    const QString& msg() const noexcept { return msg_; }
+private:
+    QString msg_;
 };
 
 // raise an exception
 #define THROW(msg) throw Exception(msg)
-#define THROW_SILENT() throw Exception()
-
-// run-time condition checking
-#define RUNTIME_CHECK(test, msg) if (!(test)) THROW(msg)
 
 #endif // EXCEPTION_H

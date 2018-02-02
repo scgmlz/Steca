@@ -15,16 +15,3 @@ target_link_libraries (${lib}
   steca_QCP
   core
 )
-
-# the Steca executable:
-add_executable (Steca
-  steca.cpp
-  resources.qrc
-  # the following non-dependences are convenient for the qtcreator tree view:
-  ../manifest.h
-  ../CHANGELOG
-  ../README.md
-  ../VERSION
-)
-
-target_link_libraries (Steca ${lib})

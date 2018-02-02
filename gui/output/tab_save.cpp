@@ -18,11 +18,6 @@
 #include "gui/thehub.h"
 #include <QDir>
 
-
-// ************************************************************************** //
-//  class TabSave
-// ************************************************************************** //
-
 static str const DAT_SFX(".dat"), DAT_SEP(" "), // suffix, separator
     CSV_SFX(".csv"), CSV_SEP(", ");
 
@@ -66,7 +61,6 @@ TabSave::TabSave(bool withTypes) {
     g->addWidget((rbCsv_ = newQ::RadioButton(CSV_SFX)), 1, 0);
 
     connect(rbDat_, &QRadioButton::clicked, [this]() { gHub->saveFmt = DAT_SFX; });
-
     connect(rbCsv_, &QRadioButton::clicked, [this]() { gHub->saveFmt = CSV_SFX; });
 
     (CSV_SFX == gHub->saveFmt ? rbCsv_ : rbDat_)->setChecked(true);
@@ -74,31 +68,23 @@ TabSave::TabSave(bool withTypes) {
     gp->setVisible(withTypes);
 }
 
-str TabSave::filePath(bool withSuffix) {
+str TabSave::filePath(bool withSuffix, bool withNumber) {
     str dir = dir_->text().trimmed();
-    str file = file_->text().trimmed();
-
-    if (dir.isEmpty() || file.isEmpty())
+    str fileName = file_->text().trimmed();
+    if (dir.isEmpty() || fileName.isEmpty())
         return "";
+    if (withNumber && !fileName.contains("%d"))
+        fileName += ".%d";
+    if (withSuffix) {
+        str suffix = rbDat_->isChecked() ? DAT_SFX : CSV_SFX;
+        if ("."+QFileInfo(fileName).suffix()!=suffix)
+            fileName += suffix;
+    }
+    file_->setText(fileName);
 
-    str suffix;
-    if (withSuffix)
-        suffix = rbDat_->isChecked() ? DAT_SFX : CSV_SFX;
-
-    return QFileInfo(dir + '/' + fileSetSuffix(suffix)).absoluteFilePath();
+    return QFileInfo(dir + '/' + fileName).absoluteFilePath();
 }
 
 str TabSave::separator() const {
     return rbDat_->isChecked() ? DAT_SEP : CSV_SEP;
-}
-
-str TabSave::fileSetSuffix(rcstr suffix) {
-    str file = file_->text().trimmed();
-    if (!suffix.isEmpty()) {
-        file = QFileInfo(file).completeBaseName();
-        if (!file.isEmpty())
-            file += suffix;
-    }
-    file_->setText(file);
-    return file;
 }

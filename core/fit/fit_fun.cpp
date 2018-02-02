@@ -35,7 +35,7 @@ static qreal pow_n(qreal x, int n) {
 
 int Polynom::degree() const {
     int parCount = parameterCount();
-    debug::ensure(parCount > 0);
+    ASSERT(parCount > 0);
     return parCount - 1;
 }
 
@@ -58,7 +58,7 @@ qreal Polynom::dy(qreal x, int i, qreal const*) const {
 
 // REVIEW
 qreal Polynom::avgY(const Range& rgeX, qreal const* parValues) const {
-    debug::ensure(rgeX.isValid());
+    ASSERT(rgeX.isValid());
 
     qreal w = rgeX.width();
     if (w <= 0)

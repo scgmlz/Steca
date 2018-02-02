@@ -31,7 +31,7 @@ public:
 
     void calcDgram();
     void calcBackground();
-    void calcReflections();
+    void calcPeaks();
 
     void setCurrReflNewRange(const Range&);
     Range currReflRange() const;
@@ -41,7 +41,7 @@ private:
     void onNormChanged();
     void onFittingTab(eFittingTab tab);
 
-    void setCluster(const Cluster*);
+    void onHighlight();
 
     const Cluster* cluster_;
 
@@ -51,7 +51,7 @@ private:
     curve_vec refls_;
 
     int currReflIndex_;
-    shp_Reflection currentReflection_;
+    Peak* currentPeak_;
 
     QComboBox* comboNormType_;
     QRadioButton *intenSum_, *intenAvg_;

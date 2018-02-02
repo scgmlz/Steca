@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/output/dialog_panels.h
-//! @brief     Defines PanelReflection, PanelGammaSlices. and several other panel classes
+//! @brief     Defines PanelPeak, PanelGammaSlices. and several other panel classes
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -21,6 +21,7 @@
 #include <QGroupBox>
 
 //! A panel with grid layout
+
 class GridPanel : public QGroupBox {
 public:
     GridPanel(rcstr title="");
@@ -38,12 +39,15 @@ protected:
 
 /* Note that some data members are public, to simplify the code. Be careful. */
 
-class PanelReflection : public GridPanel {
+//! A combo box to select one of the defined Bragg peaks.
+
+class PanelPeak : public GridPanel {
 public:
-    PanelReflection();
+    PanelPeak();
     QComboBox* cbRefl;
 };
 
+//! Controls to define the gamma slicing.
 
 class PanelGammaSlices : public GridPanel {
 public:
@@ -57,6 +61,7 @@ private:
     Settings settings_;
 };
 
+//! Displays the current gamma range.
 
 class PanelGammaRange : public GridPanel {
 public:
@@ -70,6 +75,7 @@ private:
     Settings settings_;
 };
 
+//! Control to choose calculation vs interpolation, in PoleFiguresFrame.
 
 class PanelPoints : public GridPanel {
 public:
@@ -80,6 +86,7 @@ private:
     Settings settings_;
 };
 
+//! Controls to choose tune the interpolation, in PoleFiguresFrame.
 
 class PanelInterpolation : public GridPanel {
 public:
@@ -92,17 +99,12 @@ private:
     Settings settings_;
 };
 
+//! Controls to choose metadata?
 
 class PanelDiagram : public GridPanel {
 public:
     PanelDiagram();
     QComboBox *xAxis, *yAxis;
-};
-
-
-class PanelFitError : public GridPanel {
-public:
-    PanelFitError();
 };
 
 #endif // DIALOG_PANELS_H

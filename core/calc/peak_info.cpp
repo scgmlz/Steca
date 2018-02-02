@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/reflection_info.cpp
-//! @brief     Implements classes ReflectionInfo, ReflectionInfos
+//! @file      core/calc/peak_info.cpp
+//! @brief     Implements classes PeakInfo, PeakInfos
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,11 +12,11 @@
 //
 // ************************************************************************** //
 
-#include "core/calc/reflection_info.h"
+#include "core/calc/peak_info.h"
 #include "core/def/idiomatic_for.h"
 
 // ************************************************************************** //
-//  class ReflectionInfo
+//  class PeakInfo
 // ************************************************************************** //
 
 /* NOTE Invalid output parameters are set to NaNs. However, some analysis
@@ -25,13 +25,13 @@
  * as -1 when output is written for these programs (polefigure!).
  */
 
-ReflectionInfo::ReflectionInfo()
-    : ReflectionInfo(
+PeakInfo::PeakInfo()
+    : PeakInfo(
           shp_Metadata(),
           NAN, NAN, Range(), inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), NAN, NAN)
 {}
 
-ReflectionInfo::ReflectionInfo(
+PeakInfo::PeakInfo(
     shp_Metadata md,
     deg alpha, deg beta, Range rgeGma, inten_t inten, inten_t intenError,
     deg tth, deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
@@ -47,28 +47,28 @@ ReflectionInfo::ReflectionInfo(
     , fwhmError_(fwhmError)
 {}
 
-ReflectionInfo::ReflectionInfo(
+PeakInfo::PeakInfo(
     shp_Metadata md, deg alpha, deg beta, Range rgeGma)
-    : ReflectionInfo(
+    : PeakInfo(
         md, alpha, beta, rgeGma, inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), fwhm_t(NAN),
         fwhm_t(NAN))
 {}
 
-ReflectionInfo::ReflectionInfo(
+PeakInfo::PeakInfo(
     deg alpha, deg beta, Range rgeGma, inten_t inten, inten_t intenError, deg tth,
     deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
-    : ReflectionInfo(
+    : PeakInfo(
         shp_Metadata(),
         alpha, beta, rgeGma, inten, intenError, tth, tthError, fwhm, fwhmError)
 {}
 
-ReflectionInfo::ReflectionInfo(deg alpha, deg beta)
-    : ReflectionInfo(
+PeakInfo::PeakInfo(deg alpha, deg beta)
+    : PeakInfo(
           alpha, beta, Range(), inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), fwhm_t(NAN),
           fwhm_t(NAN))
 {}
 
-QStringList ReflectionInfo::dataTags(bool out) {
+QStringList PeakInfo::dataTags(bool out) {
     QStringList tags;
     for_i (int(eReflAttr::NUM_REFL_ATTR))
         tags.append(reflStringTag(i, out));
@@ -76,7 +76,7 @@ QStringList ReflectionInfo::dataTags(bool out) {
     return tags;
 }
 
-cmp_vec ReflectionInfo::dataCmps() {
+cmp_vec PeakInfo::dataCmps() {
     static cmp_vec cmps;
     if (cmps.isEmpty()) {
         cmps = cmp_vec{ cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
@@ -86,7 +86,7 @@ cmp_vec ReflectionInfo::dataCmps() {
     return cmps;
 }
 
-row_t ReflectionInfo::data() const {
+row_t PeakInfo::data() const {
     row_t row{ QVariant(alpha()),      QVariant(beta()),     QVariant(rgeGma().min),
                     QVariant(rgeGma().max), QVariant(inten()),    QVariant(intenError()),
                     QVariant(tth()),        QVariant(tthError()), QVariant(fwhm()),
@@ -96,7 +96,7 @@ row_t ReflectionInfo::data() const {
     return row;
 }
 
-str const ReflectionInfo::reflStringTag(int attr, bool out) {
+str const PeakInfo::reflStringTag(int attr, bool out) {
     switch (eReflAttr(attr)) {
     case eReflAttr::ALPHA: return out ? "alpha" : "α";
     case eReflAttr::BETA: return out ? "beta" : "β";
@@ -108,21 +108,21 @@ str const ReflectionInfo::reflStringTag(int attr, bool out) {
     case eReflAttr::SIGMA_TTH: return out ? "s2theta" : "σ2θ";
     case eReflAttr::FWHM: return "fwhm";
     case eReflAttr::SIGMA_FWHM: return out ? "sfwhm" : "σfwhm";
-    default: NEVER; return "";
     }
+    qFatal("impossible case");
 }
 
 
 // ************************************************************************** //
-//  class ReflectionInfos
+//  class PeakInfos
 // ************************************************************************** //
 
-void ReflectionInfos::append(ReflectionInfo const& info) {
-    vec<ReflectionInfo>::append(info);
+void PeakInfos::append(PeakInfo const& info) {
+    vec<PeakInfo>::append(info);
     invalidate();
 }
 
-inten_t ReflectionInfos::averageInten() const {
+inten_t PeakInfos::averageInten() const {
     if (qIsNaN(avgInten_)) {
         avgInten_ = 0;
         int cnt = 0;
@@ -139,7 +139,7 @@ inten_t ReflectionInfos::averageInten() const {
     return avgInten_;
 }
 
-const Range& ReflectionInfos::rgeInten() const {
+const Range& PeakInfos::rgeInten() const {
     if (!rgeInten_.isValid()) {
         for_i (count())
             rgeInten_.extendBy(at(i).inten());
@@ -147,7 +147,7 @@ const Range& ReflectionInfos::rgeInten() const {
     return rgeInten_;
 }
 
-void ReflectionInfos::invalidate() {
+void PeakInfos::invalidate() {
     avgInten_ = inten_t(NAN);
     rgeInten_.invalidate();
 }

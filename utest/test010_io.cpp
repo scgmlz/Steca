@@ -4,11 +4,9 @@
 #include "core/typ/exception.h"
 #include "testdata.h"
 
-class Session* gSession = Session::instance();
-
 TEST(IO, Caress) {
     try {
-        load::loadDatafile(TESTDATADIR "/caress.dat");
+        load::loadRawfile(TESTDATADIR "/caress.dat");
     } catch (Exception& ex) {
         std::cerr << "io::load throws: " << ex.what() << "\n";
         EXPECT_TRUE(false);

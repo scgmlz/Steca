@@ -90,7 +90,7 @@ int JsonObj::loadUint(rcstr key, int def) const THROWS{
 
 int JsonObj::loadPint(rcstr key) const {
     int num = loadUint(key);
-    RUNTIME_CHECK(num > 0, "expecting positive number");
+    if (!(num > 0)) THROW("expecting positive number");
     return num;
 }
 
@@ -124,7 +124,7 @@ qreal JsonObj::loadQreal(rcstr key, qreal def) const THROWS{
 
 qreal JsonObj::loadPreal(rcstr key) const {
     qreal num = loadQreal(key);
-    RUNTIME_CHECK(num > 0, "expecting positive number");
+    if (!(num > 0)) THROW("expecting positive number");
     return num;
 }
 
