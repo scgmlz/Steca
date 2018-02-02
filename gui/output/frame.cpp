@@ -386,7 +386,7 @@ void Frame::displayPeak(int reflIndex, bool interpolated) {
 int Frame::getReflIndex() const {
     ASSERT(params_->panelPeak);
     int reflIndex = params_->panelPeak->cbRefl->currentIndex();
-    if (!(reflIndex >= 0)) THROW("invalid peak index");
+    if (!(reflIndex >= 0)) qFatal("invalid peak index");
     return reflIndex;
 }
 

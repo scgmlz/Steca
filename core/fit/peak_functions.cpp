@@ -169,7 +169,7 @@ qreal Gaussian::dy(qreal x, int parIndex, qreal const* parValues) const {
     case parXSHIFT: return ampl * exa * (x - xShift) / (sigma * sigma);
     case parSIGMA: return ampl * exa * ((x - xShift) * (x - xShift)) / (sigma * sigma * sigma);
     }
-    THROW("impossible case");
+    qFatal("impossible case");
 }
 
 void Gaussian::setGuessedPeak(qpair const& qpair) {
@@ -268,7 +268,7 @@ qreal Lorentzian::dy(qreal x, int parIndex, qreal const* parValues) const {
     case parXSHIFT: return 2 * ampl * (x - xShift) / (arg3 * gamma * gamma);
     case parGAMMA: return 2 * ampl * (x - xShift) * (x - xShift) / (arg3 * gamma * gamma * gamma);
     }
-    THROW("impossible case");
+    qFatal("impossible case");
 }
 
 void Lorentzian::setGuessedPeak(qpair const& qpair) {
@@ -385,7 +385,7 @@ qreal PseudoVoigt1::dy(qreal x, int parIndex, qreal const* parValues) const {
             / (sigmaGamma * sigmaGamma * sigmaGamma);
     case parETA: return ampl / arg4 - ampl * arg3;
     }
-    THROW("impossible case");
+    qFatal("impossible case");
 }
 
 void PseudoVoigt1::setGuessedPeak(qpair const& qpair) {
@@ -514,7 +514,7 @@ qreal PseudoVoigt2::dy(qreal x, int parIndex, qreal const* parValues) const {
             / (argL3 * argL3 * gamma * gamma * gamma);
     case parETA: return ampl / argL3 - ampl * argG3;
     }
-    THROW("impossible case");
+    qFatal("impossible case");
 }
 
 void PseudoVoigt2::setGuessedPeak(qpair const& qpair) {

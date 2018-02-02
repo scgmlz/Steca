@@ -125,11 +125,11 @@ void Dataset::removeFile() {
         else if (i>0)
             highlight().setFile(i-1);
         else
-            THROW("impossible case");
+            qFatal("impossible case");
     }
 }
 
-void Dataset::addGivenFiles(const QStringList& filePaths) THROWS {
+void Dataset::addGivenFiles(const QStringList& filePaths) {
     for (const QString& path: filePaths) {
         if (path.isEmpty() || hasFile(path))
             continue;

@@ -109,7 +109,7 @@ str const PeakInfo::reflStringTag(int attr, bool out) {
     case eReflAttr::FWHM: return "fwhm";
     case eReflAttr::SIGMA_FWHM: return out ? "sfwhm" : "σfwhm";
     }
-    THROW("impossible case");
+    qFatal("impossible case");
 }
 
 

@@ -85,7 +85,7 @@ bool inQuadrant(eQuadrant quadrant, deg deltaAlpha, deg deltaBeta) {
     case eQuadrant::SOUTHWEST: return deltaAlpha < 0 && deltaBeta < 0;
     case eQuadrant::NORTHWEST: return deltaAlpha < 0 && deltaBeta >= 0;
     }
-    THROW("impossible case");
+    qFatal("impossible case");
 }
 
 // Search quadrant remapping in case no point was found.
@@ -96,7 +96,7 @@ eQuadrant remapQuadrant(eQuadrant q) {
     case eQuadrant::SOUTHWEST: return eQuadrant::NORTHEAST;
     case eQuadrant::NORTHWEST: return eQuadrant::SOUTHEAST;
     }
-    THROW("impossible case");
+    qFatal("impossible case");
 }
 
 // Checks if (alpha,beta) is inside radius from (centerAlpha,centerBeta).
@@ -151,8 +151,8 @@ itf_t inverseDistanceWeighing(vec<qreal> const& distances, info_vec const& infos
     int N = NUM_QUADRANTS;
     // Generally, only distances.count() == values.count() > 0 is needed for this
     // algorithm. However, in this context we expect exactly the following:
-    if (!(distances.count() == N)) THROW("distances size should be 4");
-    if (!(infos.count() == N)) THROW("infos size should be 4");
+    if (!(distances.count() == N)) qFatal("distances size should be 4");
+    if (!(infos.count() == N)) qFatal("infos size should be 4");
     vec<qreal> inverseDistances(N);
     qreal inverseDistanceSum = 0;
     for_i (NUM_QUADRANTS) {

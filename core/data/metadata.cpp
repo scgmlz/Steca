@@ -140,7 +140,7 @@ str Metadata::attributeStrValue(int i) const {
     case eAttr::DATE: return date;
     case eAttr::COMMENT: return "COMMENT"; // TODO restore comment;
 
-    default: THROW("impossible case");
+    default: qFatal("impossible case");
     }
 
     return str::number(value);
@@ -171,7 +171,7 @@ QVariant Metadata::attributeValue(int i) const {
     case eAttr::DELTA_MONITOR_COUNT: return deltaMonitorCount;
     case eAttr::TIME: return time;
     case eAttr::DELTA_TIME: return deltaTime;
-    default: THROW("impossible case");
+    default: qFatal("impossible case");
     }
 }
 
