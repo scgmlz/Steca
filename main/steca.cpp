@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/steca.cpp
+//! @file      main/steca.cpp
 //! @brief     Implements the main program
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -11,6 +11,13 @@
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 // ************************************************************************** //
+
+//! \mainpage Steca: the stress and texture calculator
+//!
+//! \par Homepage:
+//!           http://apps.jcns.fz-juelich.de/steca
+//! \par Repository:
+//!           https://github.com/scgmlz/Steca
 
 #include "../manifest.h"
 #include "gui/console.h"
