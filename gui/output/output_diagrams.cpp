@@ -58,6 +58,8 @@ static const Params::ePanels PANELS =
 //  local class TabPlot
 // ************************************************************************** //
 
+//! Tab in DiagramsFrame, to display a plot of something against something.
+
 class TabPlot : public QCustomPlot {
 public:
     TabPlot();
@@ -118,6 +120,8 @@ void TabPlot::plot(
 // ************************************************************************** //
 //  local class TabDiagramsSave
 // ************************************************************************** //
+
+//! Tab in DiagramsFrame, to save a data table.
 
 class TabDiagramsSave : public TabSave {
 public:
