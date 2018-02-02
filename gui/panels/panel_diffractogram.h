@@ -32,9 +32,6 @@ public:
     void calcBackground();
     void calcPeaks();
 
-    void setCurrReflNewRange(const Range&);
-    Range currReflRange() const;
-
 private:
     QBoxLayout* box_;
     void onNormChanged();

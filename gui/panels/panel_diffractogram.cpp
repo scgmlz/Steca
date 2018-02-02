@@ -324,7 +324,10 @@ Range DiffractogramPlot::fromPixels(int pix1, int pix2) {
 }
 
 void DiffractogramPlot::setNewReflRange(const Range& range) {
-    diffractogram_.setCurrReflNewRange(range);
+    Peak* peak = gSession->peaks().selectedPeak();
+    if (!peak)
+        return;
+    peak->setRange(range);
     renderAll();
 }
 
@@ -339,9 +342,11 @@ void DiffractogramPlot::renderAll() {
             addBgItem(rs.at(i));
         break;
     }
-    case eTool::PEAK_REGION:
-        addBgItem(diffractogram_.currReflRange());
+    case eTool::PEAK_REGION: {
+        Peak* peak = gSession->peaks().selectedPeak();
+        addBgItem(peak ? peak->range() : Range());
         break;
+    }
     case eTool::NONE:
         break;
     }
@@ -572,18 +577,6 @@ void Diffractogram::calcBackground() {
         bg_.append(x, y);
         dgramBgFitted_.append(x, dgram_.y(i) - y);
     }
-}
-
-void Diffractogram::setCurrReflNewRange(const Range& range) {
-    Peak* peak = gSession->peaks().selectedPeak();
-    if (!peak)
-        return;
-    peak->setRange(range);
-}
-
-Range Diffractogram::currReflRange() const {
-    Peak* peak = gSession->peaks().selectedPeak();
-    return peak ? peak->range() : Range();
 }
 
 void Diffractogram::calcPeaks() {
