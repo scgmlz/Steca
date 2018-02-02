@@ -167,7 +167,7 @@ DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
 
     {
         auto* tab = new QWidget();
-        tabs_->addTab(tab, "Diagram");
+        tabs_->addTab(tab, "Save");
         tab->setLayout(newQ::VBoxLayout());
         tabSave_ = new TabDiagramsSave();
         tab->layout()->addWidget(tabSave_);
