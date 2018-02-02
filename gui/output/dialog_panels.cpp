@@ -136,6 +136,7 @@ PanelPoints::~PanelPoints() {
     settings_.saveBool("interpolated", rbInterp->isChecked());
 }
 
+
 PanelInterpolation::PanelInterpolation() : GridPanel("Interpolation") {
     QGridLayout* g = grid();
 
@@ -189,6 +190,3 @@ PanelDiagram::PanelDiagram() : GridPanel("Diagram") {
 
     g->setRowStretch(g->rowCount(), 1);
 }
-
-
-PanelFitError::PanelFitError() : GridPanel("Fit error") {}
