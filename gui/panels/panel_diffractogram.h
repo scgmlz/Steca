@@ -48,7 +48,6 @@ private:
     curve_vec refls_;
 
     int currReflIndex_;
-    Peak* currentPeak_;
 
     QComboBox* comboNormType_;
     QRadioButton *intenSum_, *intenAvg_;

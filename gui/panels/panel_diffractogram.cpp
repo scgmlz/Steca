@@ -499,7 +499,6 @@ Diffractogram::Diffractogram() : currReflIndex_(0) {
         });
 
     connect(gSession, &Session::sigPeaks, [this]() {
-            currentPeak_ = gSession->peaks().selectedPeak(); // TODO get rid
             plot_->renderAll();
             });
 
@@ -576,14 +575,16 @@ void Diffractogram::calcBackground() {
 }
 
 void Diffractogram::setCurrReflNewRange(const Range& range) {
-    if (currentPeak_) {
-        currentPeak_->setRange(range);
-        currentPeak_->invalidateGuesses();
-    }
+    Peak* peak = gSession->peaks().selectedPeak();
+    if (!peak)
+        return;
+    peak->setRange(range);
+    peak->invalidateGuesses();
 }
 
 Range Diffractogram::currReflRange() const {
-    return currentPeak_ ? currentPeak_->range() : Range();
+    Peak* peak = gSession->peaks().selectedPeak();
+    return peak ? peak->range() : Range();
 }
 
 void Diffractogram::calcPeaks() {
@@ -592,7 +593,7 @@ void Diffractogram::calcPeaks() {
 
     for_i (gSession->peaks().count()) {
         Peak& r = gSession->peaks().at(i);
-        if (&r == currentPeak_)
+        if (&r == gSession->peaks().selectedPeak())
             currReflIndex_ = i;
 
         r.fit(dgramBgFitted_);
