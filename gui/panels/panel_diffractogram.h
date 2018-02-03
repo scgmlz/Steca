@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/panel_diffractogram.h
-//! @brief     Defines class Diffractogram
+//! @brief     Defines classes DiffractogramPlot and Diffractogram.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -17,28 +17,87 @@
 
 #include "gui/thehub.h" // for eFittingTab
 #include "gui/base/new_q.h"
+#include "QCustomPlot/qcustomplot.h"
 
-//! A diffractogram display, with associated controls, for use in SubframeDiffractogram.
+class DiffractogramPlot;
 
-class Diffractogram final : public QWidget {
+//! Listens to mouse events to select subranges of the diffractogram plot.
+
+class DiffractogramPlotOverlay : public QWidget {
 public:
-    Diffractogram();
+    DiffractogramPlotOverlay(DiffractogramPlot&);
 
-    QBoxLayout* box() const { return box_; }
+    void setMargins(int left, int right);
 
 private:
-    void onNormChanged();
-    void onFittingTab(eFittingTab tab);
+    void enterEvent(QEvent*) final;
+    void leaveEvent(QEvent*) final;
+    void mousePressEvent(QMouseEvent*) final;
+    void mouseReleaseEvent(QMouseEvent*) final;
+    void mouseMoveEvent(QMouseEvent*) final;
+    void paintEvent(QPaintEvent*) final;
 
-    void onHighlight();
+    void updateCursorRegion();
 
-    class DiffractogramPlot* plot_;
-    QBoxLayout* box_;
-    QComboBox* comboNormType_;
-    QRadioButton *intenSum_, *intenAvg_;
-    QDoubleSpinBox* intenScale_;
-    QToolButton* enableZoom_;
-    QAction* actZoom_;
+    DiffractogramPlot& plot_;
+
+    QColor addColor_, color_;
+    const QColor removeColor_{0xf8, 0xf8, 0xff, 0x90};
+    const QColor bgColor_{0x98, 0xfb, 0x98, 0x70};
+    const QColor reflColor_{0x87, 0xce, 0xfa, 0x70};
+
+    int marginLeft_, marginRight_;
+    int cursorPos_, mouseDownPos_;
+    bool hasCursor_, mouseDown_;
+};
+
+
+//! A plot frame that displays diffractogram, background and peak fits, and fit ranges.
+
+class DiffractogramPlot : public QCustomPlot {
+public:
+    enum class eTool {
+        NONE,
+        BACKGROUND,
+        PEAK_REGION,
+    };
+
+    DiffractogramPlot(class Diffractogram&);
+
+    void setTool(eTool);
+    Range fromPixels(int, int);
+    void plot(Curve const&, Curve const&, Curve const&, curve_vec const&, int);
+    void plotEmpty();
+    void setNewReflRange(const Range&);
+    void renderAll();
+    void clearReflLayer();
+    void enterZoom(bool);
+
+    eTool getTool() const { return tool_; }
+
+private:
+    void addBgItem(const Range&);
+    void resizeEvent(QResizeEvent*);
+    void onPeakData();
+
+    Diffractogram& diffractogram_;
+
+    const QColor BgColor_{0x98, 0xfb, 0x98, 0x50};
+    const QColor reflRgeColor_{0x87, 0xce, 0xfa, 0x50};
+
+    eTool tool_;
+    bool showBgFit_;
+    QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *dgramBgFittedGraph2_, *guesses_,
+        *fits_;
+    vec<QCPGraph*> reflGraph_;
+    DiffractogramPlotOverlay* overlay_;
+
+    void calcDgram();
+    void calcBackground();
+    void calcPeaks();
+    Curve dgram_, dgramBgFitted_, bg_;
+    curve_vec refls_;
+    int currReflIndex_ {0};
 };
 
 #endif // PANEL_DIFFRACTOGRAM_H

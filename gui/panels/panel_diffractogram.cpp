@@ -14,92 +14,9 @@
 
 #include "panel_diffractogram.h"
 #include "core/session.h"
-#include "QCustomPlot/qcustomplot.h"
 
 // ************************************************************************** //
-//  define local classes
-// ************************************************************************** //
-
-//! Listens to mouse events to select subranges of the diffractogram plot.
-
-class DiffractogramPlotOverlay : public QWidget {
-public:
-    DiffractogramPlotOverlay(DiffractogramPlot&);
-
-    void setMargins(int left, int right);
-
-private:
-    void enterEvent(QEvent*) final;
-    void leaveEvent(QEvent*) final;
-    void mousePressEvent(QMouseEvent*) final;
-    void mouseReleaseEvent(QMouseEvent*) final;
-    void mouseMoveEvent(QMouseEvent*) final;
-    void paintEvent(QPaintEvent*) final;
-
-    void updateCursorRegion();
-
-    DiffractogramPlot& plot_;
-
-    QColor addColor_, color_;
-    const QColor removeColor_{0xf8, 0xf8, 0xff, 0x90};
-    const QColor bgColor_{0x98, 0xfb, 0x98, 0x70};
-    const QColor reflColor_{0x87, 0xce, 0xfa, 0x70};
-
-    int marginLeft_, marginRight_;
-    int cursorPos_, mouseDownPos_;
-    bool hasCursor_, mouseDown_;
-};
-
-//! A plot frame that displays diffractogram, background and peak fits, and fit ranges.
-
-class DiffractogramPlot : public QCustomPlot {
-public:
-    enum class eTool {
-        NONE,
-        BACKGROUND,
-        PEAK_REGION,
-    };
-
-    DiffractogramPlot(class Diffractogram&);
-
-    void setTool(eTool);
-    Range fromPixels(int, int);
-    void plot(Curve const&, Curve const&, Curve const&, curve_vec const&, int);
-    void plotEmpty();
-    void setNewReflRange(const Range&);
-    void renderAll();
-    void clearReflLayer();
-    void enterZoom(bool);
-
-    eTool getTool() const { return tool_; }
-
-private:
-    void addBgItem(const Range&);
-    void resizeEvent(QResizeEvent*);
-    void onPeakData();
-
-    Diffractogram& diffractogram_;
-
-    const QColor BgColor_{0x98, 0xfb, 0x98, 0x50};
-    const QColor reflRgeColor_{0x87, 0xce, 0xfa, 0x50};
-
-    eTool tool_;
-    bool showBgFit_;
-    QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *dgramBgFittedGraph2_, *guesses_,
-        *fits_;
-    vec<QCPGraph*> reflGraph_;
-    DiffractogramPlotOverlay* overlay_;
-
-    void calcDgram();
-    void calcBackground();
-    void calcPeaks();
-    Curve dgram_, dgramBgFitted_, bg_;
-    curve_vec refls_;
-    int currReflIndex_ {0};
-};
-
-// ************************************************************************** //
-//  implement local class DiffractogramPlotOverlay
+//  class DiffractogramPlotOverlay
 // ************************************************************************** //
 
 DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& plot_)
@@ -188,7 +105,7 @@ void DiffractogramPlotOverlay::updateCursorRegion() {
 }
 
 // ************************************************************************** //
-//  implement local class DiffractogramPlot
+//  class DiffractogramPlot
 // ************************************************************************** //
 
 DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
@@ -492,111 +409,4 @@ void DiffractogramPlot::calcPeaks() {
         }
         refls_.append(c);
     }
-}
-
-// ************************************************************************** //
-//  class Diffractogram
-// ************************************************************************** //
-
-Diffractogram::Diffractogram() {
-
-    setLayout((box_ = newQ::VBoxLayout()));
-    box_->addWidget((plot_ = new DiffractogramPlot(*this)));
-    auto hb = newQ::HBoxLayout();
-    box_->addLayout(hb);
-
-    hb->addWidget(newQ::Label("normalize to:"));
-    comboNormType_ = new QComboBox;
-    comboNormType_->addItems({"none", "monitor", "Δ monitor", "Δ time", "background"});
-    hb->addWidget(comboNormType_);
-
-    connect(comboNormType_, _SLOT_(QComboBox, currentIndexChanged, int),
-            [this](int index) { // TODO init value from hub?
-                gSession->setNorm(eNorm(index));
-            });
-
-    hb->addWidget(newQ::Label(" intensity from:"));
-    hb->addWidget((intenSum_ = newQ::RadioButton("sum")));
-    hb->addWidget((intenAvg_ = newQ::RadioButton("avg ×")));
-    hb->addWidget((intenScale_ = newQ::DoubleSpinBox(6, 0.001)));
-    intenScale_->setDecimals(3);
-
-    connect(intenAvg_, &QRadioButton::toggled, [this](bool on) {
-        intenScale_->setEnabled(on);
-        intenScale_->setValue(gSession->intenScale());
-        gSession->setIntenScaleAvg(on, intenScale_->value());
-    });
-
-    connect(intenScale_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
-        if (val > 0)
-            gSession->setIntenScaleAvg(gSession->intenScaledAvg(), val);
-    });
-
-    hb->addStretch();
-
-    actZoom_ = newQ::Toggle("zoom", false);
-    enableZoom_ = newQ::TextButton(actZoom_);
-    hb->addWidget(enableZoom_);
-
-    hb->addStretch();
-
-    hb->addWidget(newQ::CheckBox(gHub->toggle_combinedDgram));
-    hb->addWidget(newQ::CheckBox(gHub->toggle_fixedIntenDgram));
-
-    connect(actZoom_, &QAction::toggled, this, [this](bool on) {
-        plot_->setInteraction(QCP::iRangeDrag, on);
-        plot_->setInteraction(QCP::iRangeZoom, on);
-        plot_->enterZoom(on);
-    });
-
-    connect(gSession, &Session::sigHighlight, this, &Diffractogram::onHighlight);
-    connect(gSession, &Session::sigNorm, this, &Diffractogram::onNormChanged);
-    connect(gHub, &TheHub::sigFittingTab, [this](eFittingTab tab) { onFittingTab(tab); });
-
-    connect(gHub->toggle_selRegions, &QAction::toggled, [this](bool on) {
-        using eTool = DiffractogramPlot::eTool;
-        auto tool = eTool::NONE;
-        if (on)
-            switch (gHub->fittingTab()) {
-            case eFittingTab::BACKGROUND: tool = eTool::BACKGROUND; break;
-            case eFittingTab::REFLECTIONS: tool = eTool::PEAK_REGION; break;
-            default: break;
-            }
-        plot_->setTool(tool);
-        });
-
-    gHub->toggle_selRegions->setChecked(true);
-    gHub->toggle_showBackground->setChecked(true);
-    intenAvg_->setChecked(true);
-}
-
-void Diffractogram::onNormChanged() {
-    intenScale_->setValue(gSession->intenScale()); // TODO own signal
-    if (gSession->intenScaledAvg())
-        intenAvg_->setChecked(true);
-    else
-        intenSum_->setChecked(true);
-    plot_->renderAll();
-}
-
-void Diffractogram::onFittingTab(eFittingTab tab) {
-    bool on = gHub->toggle_selRegions->isChecked();
-    switch (tab) {
-    case eFittingTab::BACKGROUND:
-        gHub->toggle_selRegions->setIcon(QIcon(":/icon/selRegion"));
-        plot_->setTool(
-            on ? DiffractogramPlot::eTool::BACKGROUND : DiffractogramPlot::eTool::NONE);
-        break;
-    case eFittingTab::REFLECTIONS:
-        gHub->toggle_selRegions->setIcon(QIcon(":/icon/reflRegion"));
-        plot_->setTool(
-            on ? DiffractogramPlot::eTool::PEAK_REGION : DiffractogramPlot::eTool::NONE);
-        break;
-    default: plot_->setTool(DiffractogramPlot::eTool::NONE);
-    }
-}
-
-void Diffractogram::onHighlight() {
-    actZoom_->setChecked(false);
-    plot_->renderAll();
 }
