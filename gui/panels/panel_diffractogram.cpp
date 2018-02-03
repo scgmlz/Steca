@@ -89,6 +89,13 @@ private:
         *fits_;
     vec<QCPGraph*> reflGraph_;
     DiffractogramPlotOverlay* overlay_;
+
+    void calcDgram();
+    void calcBackground();
+    void calcPeaks();
+    Curve dgram_, dgramBgFitted_, bg_;
+    curve_vec refls_;
+    int currReflIndex_ {0};
 };
 
 // ************************************************************************** //
@@ -242,14 +249,18 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     fits_->setLineStyle(QCPGraph::lsNone);
     fits_->setPen(QPen(Qt::red));
 
-    connect(gSession, &Session::sigPeaks, this, &DiffractogramPlot::onPeakData);
-
     connect(gHub->toggle_showBackground, &QAction::toggled, [this](bool on) {
         showBgFit_ = on;
         renderAll();
     });
 
     connect(gSession, &Session::sigBaseline, [this]() { renderAll(); });
+    connect(gSession, &Session::sigCorr, this, &DiffractogramPlot::renderAll);
+    connect(gSession, &Session::sigActivated, this, &DiffractogramPlot::renderAll);
+    connect(gSession, &Session::sigDetector, this, &DiffractogramPlot::renderAll);
+    connect(gHub, &TheHub::sigDisplayChanged, this, &DiffractogramPlot::renderAll);
+    connect(gSession, &Session::sigDiffractogram, this, &DiffractogramPlot::renderAll);
+    connect(gSession, &Session::sigBaseline, this, &DiffractogramPlot::renderAll);
 
     tool_ = eTool::NONE;
 }
@@ -331,29 +342,6 @@ void DiffractogramPlot::setNewReflRange(const Range& range) {
     renderAll();
 }
 
-//! Repaints everything, including the colored background areas.
-void DiffractogramPlot::renderAll() {
-    clearItems();
-
-    switch (tool_) {
-    case eTool::BACKGROUND: {
-        const Ranges& rs = gSession->baseline().ranges();
-        for_i (rs.count())
-            addBgItem(rs.at(i));
-        break;
-    }
-    case eTool::PEAK_REGION: {
-        Peak* peak = gSession->peaks().selectedPeak();
-        addBgItem(peak ? peak->range() : Range());
-        break;
-    }
-    case eTool::NONE:
-        break;
-    }
-
-    diffractogram_.render();
-}
-
 void DiffractogramPlot::clearReflLayer() {
     for (QCPGraph* g : reflGraph_)
         removeGraph(g);
@@ -423,13 +411,94 @@ void DiffractogramPlot::onPeakData() {
             fits_->addData(fp.x + fw2, fp.y / 2);
         }
     }
+
+    renderAll();
+}
+
+//! Repaints everything, including the colored background areas.
+void DiffractogramPlot::renderAll() {
+    clearItems();
+
+    switch (tool_) {
+    case eTool::BACKGROUND: {
+        const Ranges& rs = gSession->baseline().ranges();
+        for_i (rs.count())
+            addBgItem(rs.at(i));
+        break;
+    }
+    case eTool::PEAK_REGION: {
+        Peak* peak = gSession->peaks().selectedPeak();
+        addBgItem(peak ? peak->range() : Range());
+        break;
+    }
+    case eTool::NONE:
+        break;
+    }
+
+    if (!gSession->dataset().highlight().cluster()) {
+        plotEmpty();
+        return;
+    }
+    calcDgram();
+    calcBackground();
+    calcPeaks();
+    plot(dgram_, dgramBgFitted_, bg_, refls_, currReflIndex_);
+}
+
+void DiffractogramPlot::calcDgram() {
+    dgram_.clear();
+    if (!gSession->dataset().highlight().cluster())
+        return;
+    if (gHub->isCombinedDgram())
+        dgram_ = gSession->experiment().avgCurve();
+    else
+        dgram_ = gSession->highlightsLens()->makeCurve(gSession->gammaRange());
+}
+
+void DiffractogramPlot::calcBackground() {
+    bg_.clear();
+    dgramBgFitted_.clear();
+
+    const Polynom& bgPolynom = Polynom::fromFit(
+        gSession->baseline().polynomDegree(), dgram_, gSession->baseline().ranges());
+        // TODO bundle this code line which similarly appears in at least one other place
+
+    for_i (dgram_.count()) {
+        qreal x = dgram_.x(i), y = bgPolynom.y(x);
+        bg_.append(x, y);
+        dgramBgFitted_.append(x, dgram_.y(i) - y);
+    }
+}
+
+void DiffractogramPlot::calcPeaks() {
+    refls_.clear();
+    currReflIndex_ = 0;
+
+    for_i (gSession->peaks().count()) {
+        Peak& r = gSession->peaks().at(i);
+        if (&r == gSession->peaks().selectedPeak())
+            currReflIndex_ = i;
+
+        r.fit(dgramBgFitted_);
+
+        const Range& rge = r.range();
+        const PeakFunction& fun = r.peakFunction();
+
+        Curve c;
+        for_i (dgramBgFitted_.count()) {
+            qreal x = dgramBgFitted_.x(i);
+            if (rge.contains(x))
+                c.append(x, fun.y(x));
+        }
+        refls_.append(c);
+    }
 }
 
 // ************************************************************************** //
 //  class Diffractogram
 // ************************************************************************** //
 
-Diffractogram::Diffractogram() : currReflIndex_(0) {
+Diffractogram::Diffractogram() {
 
     setLayout((box_ = newQ::VBoxLayout()));
     box_->addWidget((plot_ = new DiffractogramPlot(*this)));
@@ -481,14 +550,7 @@ Diffractogram::Diffractogram() : currReflIndex_(0) {
     });
 
     connect(gSession, &Session::sigHighlight, this, &Diffractogram::onHighlight);
-    connect(gSession, &Session::sigCorr, this, &Diffractogram::render);
-    connect(gSession, &Session::sigActivated, this, &Diffractogram::render);
-    connect(gSession, &Session::sigDetector, [this](){ render(); });
-    connect(gHub, &TheHub::sigDisplayChanged, [this](){ render(); });
-    connect(gSession, &Session::sigDiffractogram, [this](){ render(); });
-    connect(gSession, &Session::sigBaseline, [this](){ render(); });
-    connect(gSession, &Session::sigPeaks, [this](){ render(); });
-    connect(gSession, &Session::sigNorm, [this](){ onNormChanged(); });
+    connect(gSession, &Session::sigNorm, this, &Diffractogram::onNormChanged);
     connect(gHub, &TheHub::sigFittingTab, [this](eFittingTab tab) { onFittingTab(tab); });
 
     connect(gHub->toggle_selRegions, &QAction::toggled, [this](bool on) {
@@ -503,10 +565,6 @@ Diffractogram::Diffractogram() : currReflIndex_(0) {
         plot_->setTool(tool);
         });
 
-    connect(gSession, &Session::sigPeaks, [this]() {
-            plot_->renderAll();
-            });
-
     gHub->toggle_selRegions->setChecked(true);
     gHub->toggle_showBackground->setChecked(true);
     intenAvg_->setChecked(true);
@@ -518,7 +576,7 @@ void Diffractogram::onNormChanged() {
         intenAvg_->setChecked(true);
     else
         intenSum_->setChecked(true);
-    render();
+    plot_->renderAll();
 }
 
 void Diffractogram::onFittingTab(eFittingTab tab) {
@@ -538,67 +596,7 @@ void Diffractogram::onFittingTab(eFittingTab tab) {
     }
 }
 
-void Diffractogram::render() {
-    if (!gSession->dataset().highlight().cluster()) {
-        plot_->plotEmpty();
-        return;
-    }
-    calcDgram();
-    calcBackground();
-    calcPeaks();
-    plot_->plot(dgram_, dgramBgFitted_, bg_, refls_, currReflIndex_);
-}
-
 void Diffractogram::onHighlight() {
     actZoom_->setChecked(false);
-    render();
-}
-
-void Diffractogram::calcDgram() {
-    dgram_.clear();
-    if (!gSession->dataset().highlight().cluster())
-        return;
-    if (gHub->isCombinedDgram())
-        dgram_ = gSession->experiment().avgCurve();
-    else
-        dgram_ = gSession->highlightsLens()->makeCurve(gSession->gammaRange());
-}
-
-void Diffractogram::calcBackground() {
-    bg_.clear();
-    dgramBgFitted_.clear();
-
-    const Polynom& bgPolynom = Polynom::fromFit(
-        gSession->baseline().polynomDegree(), dgram_, gSession->baseline().ranges());
-        // TODO bundle this code line which similarly appears in at least one other place
-
-    for_i (dgram_.count()) {
-        qreal x = dgram_.x(i), y = bgPolynom.y(x);
-        bg_.append(x, y);
-        dgramBgFitted_.append(x, dgram_.y(i) - y);
-    }
-}
-
-void Diffractogram::calcPeaks() {
-    refls_.clear();
-    currReflIndex_ = 0;
-
-    for_i (gSession->peaks().count()) {
-        Peak& r = gSession->peaks().at(i);
-        if (&r == gSession->peaks().selectedPeak())
-            currReflIndex_ = i;
-
-        r.fit(dgramBgFitted_);
-
-        const Range& rge = r.range();
-        const PeakFunction& fun = r.peakFunction();
-
-        Curve c;
-        for_i (dgramBgFitted_.count()) {
-            qreal x = dgramBgFitted_.x(i);
-            if (rge.contains(x))
-                c.append(x, fun.y(x));
-        }
-        refls_.append(c);
-    }
+    plot_->renderAll();
 }

@@ -24,28 +24,16 @@ class Diffractogram final : public QWidget {
 public:
     Diffractogram();
 
-    void render();
-
     QBoxLayout* box() const { return box_; }
 
-    void calcDgram();
-    void calcBackground();
-    void calcPeaks();
-
 private:
-    QBoxLayout* box_;
     void onNormChanged();
     void onFittingTab(eFittingTab tab);
 
     void onHighlight();
 
     class DiffractogramPlot* plot_;
-
-    Curve dgram_, dgramBgFitted_, bg_;
-    curve_vec refls_;
-
-    int currReflIndex_;
-
+    QBoxLayout* box_;
     QComboBox* comboNormType_;
     QRadioButton *intenSum_, *intenAvg_;
     QDoubleSpinBox* intenScale_;
