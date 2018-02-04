@@ -20,8 +20,8 @@ Console* gConsole; //!< global
 
 Console::Console()
 {
-    m_notifier = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read, this);
-    connect(m_notifier, SIGNAL(activated(int)), this, SLOT(readLine()));
+    notifier_ = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read, this);
+    connect(notifier_, SIGNAL(activated(int)), this, SLOT(readLine()));
 }
 
 void Console::readLine()
@@ -33,12 +33,22 @@ void Console::readLine()
         QStringList list = line.split('=');
         QString cmd = list[0];
         QString val = list[1];
-        auto entry = setters.find(cmd);
-        if (entry==setters.end()) {
+        auto entry = setters_.find(cmd);
+        if (entry==setters_.end()) {
             qterr << "setter '" << cmd << "' not found\n";
             return;
         }
         entry->second(val);
+        return;
+    }
+    if (line.endsWith('!')) {
+        QString cmd = line.left(line.count()-1);
+        auto entry = actions_.find(cmd);
+        if (entry==actions_.end()) {
+            qterr << "action '" << cmd << "' not found\n";
+            return;
+        }
+        entry->second();
         return;
     }
     emit(transmitLine(line));
@@ -46,5 +56,10 @@ void Console::readLine()
 
 void Console::registerSetter(
     const QString& name, std::function<void(const QString&)> setter) {
-    setters[name] = setter;
+    setters_[name] = setter;
+}
+
+void Console::registerAction(
+    const QString& name, std::function<void()> action) {
+    actions_[name] = action;
 }

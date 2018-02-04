@@ -30,11 +30,13 @@ class Console : public QObject, public ISingleton<Console>
 public:
     Console();
     void registerSetter(const QString& name, std::function<void(const QString&)> setter);
+    void registerAction(const QString& name, std::function<void()> action);
 signals:
     void transmitLine(str);
 private:
-    class QSocketNotifier *m_notifier;
-    std::map<const QString, std::function<void(const QString&)>> setters;
+    class QSocketNotifier *notifier_;
+    std::map<const QString, std::function<void(const QString&)>> setters_;
+    std::map<const QString, std::function<void()>> actions_;
 private slots:
     void readLine();
 };

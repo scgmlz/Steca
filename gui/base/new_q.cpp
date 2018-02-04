@@ -76,6 +76,7 @@ QAction* newQ::Trigger(const QString& name, rcstr text, rcstr iconFile) {
     ret->setToolTip(text.toLower());
     if (iconFile!="")
         ret->setIcon(QIcon(iconFile));
+    gConsole->registerAction(name, [ret]()->void { ret->trigger(); });
     return ret;
 };
 
@@ -86,6 +87,7 @@ QAction* newQ::Toggle(const QString& name, rcstr text, bool value, rcstr iconFil
         ret->setIcon(QIcon(iconFile));
     ret->setCheckable(true);
     ret->setChecked(value);
+    gConsole->registerAction(name, [ret]()->void { ret->toggle(); });
     return ret;
 };
 
