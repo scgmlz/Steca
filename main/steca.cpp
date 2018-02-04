@@ -20,6 +20,7 @@
 //!           https://github.com/scgmlz/Steca
 
 #include "../manifest.h"
+#include "gui/console.h"
 #include "gui/mainwin.h"
 #include "gui/cfg/msg_handler.h"
 #include "core/session.h"
@@ -79,7 +80,7 @@ int main(int argc, char* argv[]) {
     qInstallMessageHandler(messageHandler);
 
     gSession = Session::instance();
-
+    gConsole = Console::instance();
     gMainWin = MainWin::instance();
     gMainWin->show();
     gMainWin->addFiles();

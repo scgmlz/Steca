@@ -16,20 +16,25 @@
 #define CONSOLE_H
 
 #include "core/typ/str.h"
+#include "core/typ/singleton.h"
 #include <QObject>
+#include <map>
 #include <functional>
 
+extern class Console* gConsole; //!< global
+
 //! Reads commands from stdin, and emits signal transmitLine
-class Console : public QObject
+class Console : public QObject, public ISingleton<Console>
 {
     Q_OBJECT
 public:
     Console();
-    void registerSetter(const QString& name, const std::function<void(const QVariant&) >& setter);
+    void registerSetter(const QString& name, std::function<void(const QString&)> setter);
 signals:
     void transmitLine(str);
 private:
     class QSocketNotifier *m_notifier;
+    std::map<const QString, std::function<void(const QString&)>> setters;
 private slots:
     void readLine();
 };

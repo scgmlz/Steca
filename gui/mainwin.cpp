@@ -173,8 +173,7 @@ MainWin::MainWin() {
     initLayout();
     connectActions();
     readSettings();
-    console = new Console;
-    QObject::connect(console, &Console::transmitLine, this, &MainWin::execCommand);
+    QObject::connect(gConsole, &Console::transmitLine, this, &MainWin::execCommand);
     qDebug() << "/MainWin";
 }
 

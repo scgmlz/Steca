@@ -16,6 +16,8 @@
 #include <QSocketNotifier>
 #include <QTextStream>
 
+Console* gConsole; //!< global
+
 Console::Console()
 {
     m_notifier = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read, this);
@@ -25,5 +27,24 @@ Console::Console()
 void Console::readLine()
 {
     QTextStream qtin(stdin);
-    emit(transmitLine(qtin.readLine()));
+    QTextStream qterr(stderr);
+    QString line = qtin.readLine();
+    if (line.contains('=')) {
+        QStringList list = line.split('=');
+        QString cmd = list[0];
+        QString val = list[1];
+        auto entry = setters.find(cmd);
+        if (entry==setters.end()) {
+            qterr << "setter '" << cmd << "' not found\n";
+            return;
+        }
+        entry->second(val);
+        return;
+    }
+    emit(transmitLine(line));
+}
+
+void Console::registerSetter(
+    const QString& name, std::function<void(const QString&)> setter) {
+    setters[name] = setter;
 }

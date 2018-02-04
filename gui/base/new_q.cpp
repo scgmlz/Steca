@@ -13,6 +13,8 @@
 // ************************************************************************** //
 
 #include "gui/base/new_q.h"
+#include "gui/console.h"
+#include "gui/mainwin.h"
 #include "core/def/numbers.h"
 #include <QApplication> // for qApp for new Action
 #include <QDebug>
@@ -113,6 +115,7 @@ QSpinBox* newQ::SpinBox(const QString& name, int ndigits, bool withDot, int min,
     setWidth(ret, ndigits, withDot);
     ret->setMinimum(min);
     ret->setMaximum(max > min ? max : min);
+    gConsole->registerSetter(name, [ret](const QString& val)->void { ret->setValue(val.toInt()); });
     return ret;
 }
 
