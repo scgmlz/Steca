@@ -20,7 +20,6 @@
 //!           https://github.com/scgmlz/Steca
 
 #include "../manifest.h"
-#include "gui/console.h"
 #include "gui/mainwin.h"
 #include "gui/cfg/msg_handler.h"
 #include "core/session.h"
@@ -84,9 +83,6 @@ int main(int argc, char* argv[]) {
     gMainWin = MainWin::instance();
     gMainWin->show();
     gMainWin->addFiles();
-
-    Console console;
-    QObject::connect(&console, &Console::transmitLine, gMainWin, &MainWin::execCommand);
 
     return app.exec();
 }

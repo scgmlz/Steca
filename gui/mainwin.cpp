@@ -14,6 +14,8 @@
 
 #include "gui/mainwin.h"
 #include "../manifest.h"
+#include "core/session.h"
+#include "gui/console.h"
 #include "gui/popup/about.h"
 #include "gui/popup/filedialog.h"
 #include "gui/output/output_diagrams.h"
@@ -25,7 +27,6 @@
 #include "gui/panels/subframe_diffractogram.h"
 #include "gui/panels/subframe_image.h"
 #include "gui/panels/subframe_setup.h"
-#include "core/session.h"
 #include "gui/thehub.h"
 
 #include <QApplication>
@@ -172,6 +173,8 @@ MainWin::MainWin() {
     initLayout();
     connectActions();
     readSettings();
+    console = new Console;
+    QObject::connect(console, &Console::transmitLine, this, &MainWin::execCommand);
     qDebug() << "/MainWin";
 }
 

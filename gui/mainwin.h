@@ -49,6 +49,8 @@ public:
 
     void execCommand(str);
 
+    class Console* console;
+
 private:
     QDockWidget *dockFiles_, *dockMeasurements_, *dockDatasetInfo_;
     QByteArray initialState_;
