@@ -43,7 +43,7 @@ QFile* OutputFile(
 QAction* Trigger(const QString& name, rcstr text, rcstr iconFile="");
 QAction* Toggle(const QString& name, rcstr text, bool value, rcstr iconFile="");
 
-QLabel* Label(const QString& name, rcstr text);
+QLabel* Label(rcstr text);
 QLabel* Icon(const QString& name, rcstr fileName);
 
 QLineEdit* LineDisplay(const QString& name, int ndigits, bool withDot);

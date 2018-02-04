@@ -91,7 +91,7 @@ QAction* newQ::Toggle(const QString& name, rcstr text, bool value, rcstr iconFil
     return ret;
 };
 
-QLabel* newQ::Label(const QString& name, rcstr text) {
+QLabel* newQ::Label(rcstr text) {
     return new QLabel(text);
 }
 
