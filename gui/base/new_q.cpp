@@ -31,38 +31,6 @@ static void setWidth(QWidget* w, int ndigits, bool withDot) {
 
 } // local methods
 
-QFile* newQ::OutputFile(QWidget* parent, const QString& path, bool check_overwrite) {
-    QFile* ret = new QFile(path);
-    if (check_overwrite && ret->exists() &&
-        QMessageBox::question(parent, "File exists", "Overwrite " + path + " ?") !=
-        QMessageBox::Yes) {
-        delete ret;
-        return nullptr;
-    }
-    if (!ret->open(QIODevice::WriteOnly | QIODevice::Text)) {
-        qWarning() << "Cannot open file for writing: " << path;
-        return nullptr;
-    }
-    return ret;
-}
-
-QAction* newQ::Trigger(rcstr text, rcstr iconFile) {
-    QAction* ret = new QAction(text, qApp);
-    ret->setToolTip(text.toLower());
-    if (iconFile!="")
-        ret->setIcon(QIcon(iconFile));
-    return ret;
-};
-
-QAction* newQ::Toggle(rcstr text, bool value, rcstr iconFile) {
-    QAction* ret = new QAction(text, qApp);
-    ret->setToolTip(text.toLower());
-    if (iconFile!="")
-        ret->setIcon(QIcon(iconFile));
-    ret->setCheckable(true);
-    ret->setChecked(value);
-    return ret;
-};
 
 QBoxLayout* newQ::HBoxLayout() {
     auto ret = new QHBoxLayout;
@@ -85,18 +53,52 @@ QGridLayout* newQ::GridLayout() {
     return ret;
 }
 
-QLabel* newQ::Label(rcstr text) {
+QFile* newQ::OutputFile(
+    const QString& name, QWidget* parent, const QString& path, bool check_overwrite) {
+    QFile* ret = new QFile(path);
+    if (check_overwrite && ret->exists() &&
+        QMessageBox::question(parent, "File exists", "Overwrite " + path + " ?") !=
+        QMessageBox::Yes) {
+        delete ret;
+        return nullptr;
+    }
+    if (!ret->open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning() << "Cannot open file for writing: " << path;
+        return nullptr;
+    }
+    return ret;
+}
+
+QAction* newQ::Trigger(const QString& name, rcstr text, rcstr iconFile) {
+    QAction* ret = new QAction(text, qApp);
+    ret->setToolTip(text.toLower());
+    if (iconFile!="")
+        ret->setIcon(QIcon(iconFile));
+    return ret;
+};
+
+QAction* newQ::Toggle(const QString& name, rcstr text, bool value, rcstr iconFile) {
+    QAction* ret = new QAction(text, qApp);
+    ret->setToolTip(text.toLower());
+    if (iconFile!="")
+        ret->setIcon(QIcon(iconFile));
+    ret->setCheckable(true);
+    ret->setChecked(value);
+    return ret;
+};
+
+QLabel* newQ::Label(const QString& name, rcstr text) {
     return new QLabel(text);
 }
 
-QLabel* newQ::Icon(rcstr fileName) {
+QLabel* newQ::Icon(const QString& name, rcstr fileName) {
     auto ret = new QLabel;
     int h = ret->sizeHint().height();
     ret->setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
     return ret;
 }
 
-QLineEdit* newQ::LineDisplay(int ndigits, bool withDot) {
+QLineEdit* newQ::LineDisplay(const QString& name, int ndigits, bool withDot) {
     auto ret = new QLineEdit;
     setWidth(ret, ndigits, withDot);
     ret->setReadOnly(true);
@@ -106,7 +108,7 @@ QLineEdit* newQ::LineDisplay(int ndigits, bool withDot) {
 // A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.
 // However, sometimes we want to make a QSpinBox exactly as wide as a given QDoubleSpinBox,
 // for nice vertical alignement. Then we use withDot=true.
-QSpinBox* newQ::SpinBox(int ndigits, bool withDot, int min, int max) {
+QSpinBox* newQ::SpinBox(const QString& name, int ndigits, bool withDot, int min, int max) {
     auto ret = new QSpinBox;
     setWidth(ret, ndigits, withDot);
     ret->setMinimum(min);
@@ -114,7 +116,7 @@ QSpinBox* newQ::SpinBox(int ndigits, bool withDot, int min, int max) {
     return ret;
 }
 
-QDoubleSpinBox* newQ::DoubleSpinBox(int ndigits, qreal min, qreal max) {
+QDoubleSpinBox* newQ::DoubleSpinBox(const QString& name, int ndigits, qreal min, qreal max) {
     auto ret = new QDoubleSpinBox;
     setWidth(ret, ndigits, true);
     ret->setMinimum(min);
@@ -122,11 +124,11 @@ QDoubleSpinBox* newQ::DoubleSpinBox(int ndigits, qreal min, qreal max) {
     return ret;
 }
 
-QCheckBox* newQ::CheckBox(rcstr text) {
+QCheckBox* newQ::CheckBox(const QString& name, rcstr text) {
     return new QCheckBox(text);
 }
 
-QCheckBox* newQ::CheckBox(QAction* action) {
+QCheckBox* newQ::CheckBox(const QString& name, QAction* action) {
     if (!action)
         return new QCheckBox("");
     auto ret = new QCheckBox(action->text().toLower());
@@ -137,20 +139,20 @@ QCheckBox* newQ::CheckBox(QAction* action) {
     return ret;
 }
 
-QToolButton* newQ::TextButton(QAction* action) {
+QToolButton* newQ::TextButton(const QString& name, QAction* action) {
     auto ret = new QToolButton;
     ret->setDefaultAction(action);
     ret->setToolButtonStyle(Qt::ToolButtonTextOnly);
     return ret;
 }
 
-QToolButton* newQ::IconButton(QAction* action) {
+QToolButton* newQ::IconButton(const QString& name, QAction* action) {
     auto ret = new QToolButton;
     ret->setDefaultAction(action);
     ret->setToolButtonStyle(Qt::ToolButtonIconOnly);
     return ret;
 }
 
-QRadioButton* newQ::RadioButton(rcstr text) {
+QRadioButton* newQ::RadioButton(const QString& name, rcstr text) {
     return new QRadioButton(text);
 }

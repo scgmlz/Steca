@@ -33,31 +33,33 @@ class BoxWidget;
 
 namespace newQ {
 
-QFile* OutputFile(QWidget* parent, const QString& path, bool check_overwrite=true);
-
-QAction* Trigger(rcstr text, rcstr iconFile="");
-QAction* Toggle(rcstr text, bool value, rcstr iconFile="");
-
 QBoxLayout* HBoxLayout();
 QBoxLayout* VBoxLayout();
-
 QGridLayout* GridLayout();
 
-QLabel* Label(rcstr text);
-QLabel* Icon(rcstr fileName);
+QFile* OutputFile(
+    const QString& name, QWidget* parent, const QString& path, bool check_overwrite=true);
 
-QLineEdit* LineDisplay(int ndigits, bool withDot);
+QAction* Trigger(const QString& name, rcstr text, rcstr iconFile="");
+QAction* Toggle(const QString& name, rcstr text, bool value, rcstr iconFile="");
 
-QSpinBox* SpinBox(int ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX);
-QDoubleSpinBox* DoubleSpinBox(int ndigits, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
+QLabel* Label(const QString& name, rcstr text);
+QLabel* Icon(const QString& name, rcstr fileName);
 
-QCheckBox* CheckBox(rcstr text);
-QCheckBox* CheckBox(QAction*);
+QLineEdit* LineDisplay(const QString& name, int ndigits, bool withDot);
 
-QToolButton* TextButton(QAction*);
-QToolButton* IconButton(QAction*);
+QSpinBox* SpinBox(
+    const QString& name, int ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX);
+QDoubleSpinBox* DoubleSpinBox(
+    const QString& name, int ndigits, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
 
-QRadioButton* RadioButton(rcstr text);
+QCheckBox* CheckBox(const QString& name, rcstr text);
+QCheckBox* CheckBox(const QString& name, QAction*);
+
+QToolButton* TextButton(const QString& name, QAction*);
+QToolButton* IconButton(const QString& name, QAction*);
+
+QRadioButton* RadioButton(const QString& name, rcstr text);
 
 } // namespace newQ
 
