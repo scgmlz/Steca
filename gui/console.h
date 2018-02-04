@@ -17,6 +17,7 @@
 
 #include "core/typ/str.h"
 #include <QObject>
+#include <functional>
 
 //! Reads commands from stdin, and emits signal transmitLine
 class Console : public QObject
@@ -24,6 +25,7 @@ class Console : public QObject
     Q_OBJECT
 public:
     Console();
+    void registerSetter(const QString& name, const std::function<void(const QVariant&) >& setter);
 signals:
     void transmitLine(str);
 private:
