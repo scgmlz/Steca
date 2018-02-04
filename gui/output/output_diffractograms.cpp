@@ -89,10 +89,10 @@ TabDiffractogramsSave::TabDiffractogramsSave() : TabSave(true) {
     grid_->setRowStretch(grid_->rowCount(), 1);
 
     QGridLayout* g = gp->grid();
-    g->addWidget((rbCurrent_ = newQ::RadioButton("Current diffractogram")));
-    g->addWidget((rbAllSequential_ = newQ::RadioButton(
+    g->addWidget((rbCurrent_ = newQ::RadioButton("rbCurrent_", "Current diffractogram")));
+    g->addWidget((rbAllSequential_ = newQ::RadioButton("rbAllSequential_", 
                       "All diffractograms to sequentially numbered files")));
-    g->addWidget((rbAll_ = newQ::RadioButton("All diffractograms")));
+    g->addWidget((rbAll_ = newQ::RadioButton("rbAll_", "All diffractograms")));
     g->addWidget(newQ::TextButton(actSave), 2, 1);
 
     rbAll_->setChecked(true);
@@ -135,7 +135,7 @@ void DiffractogramsFrame::saveCurrent() {
     str path = tabSave_->filePath(true);
     if (path.isEmpty())
         return;
-    QFile* file = newQ::OutputFile(this, path);
+    QFile* file = newQ::OutputFile("file", this, path);
     if (!file)
         return;
     QTextStream stream(file);
@@ -158,7 +158,7 @@ void DiffractogramsFrame::saveAll(bool oneFile) {
         return;
     QTextStream* stream = nullptr;
     if (oneFile) {
-        QFile* file = newQ::OutputFile(this, path);
+        QFile* file = newQ::OutputFile("file", this, path);
         if (!file)
             return;
         stream = new QTextStream(file);
@@ -204,7 +204,7 @@ void DiffractogramsFrame::saveAll(bool oneFile) {
         const qreal step = rge.width() / gmaSlices;
         for_i (gmaSlices) {
             if (!oneFile) {
-                QFile* file = newQ::OutputFile(
+                QFile* file = newQ::OutputFile("file", 
                     this, numberedName(path, ++fileNum, expt.size()+1), false);
                 if (!file)
                     return;

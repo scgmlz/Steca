@@ -66,7 +66,7 @@ TabGraph::TabGraph(Params& params)
     setLayout((grid_ = newQ::GridLayout()));
     ASSERT(params_.panelInterpolation);
 
-    grid_->addWidget((cbFlat_ = newQ::CheckBox("no intensity")), 0, 0);
+    grid_->addWidget((cbFlat_ = newQ::CheckBox("cbFlat_", "no intensity")), 0, 0);
 
     grid_->setRowStretch(grid_->rowCount(), 1);
     grid_->setColumnStretch(grid_->columnCount(), 1);
@@ -217,16 +217,16 @@ TabPoleFiguresSave::TabPoleFiguresSave() : TabSave(false) {
 
     {
         QGridLayout* g = p1->grid();
-        g->addWidget((outputInten_ = newQ::CheckBox("Intensity pole figure")));
-        g->addWidget((outputTth_ = newQ::CheckBox("Peak position pole figure")));
-        g->addWidget((outputFWHM_ = newQ::CheckBox("TWHM pole figure")));
+        g->addWidget((outputInten_ = newQ::CheckBox("outputInten_", "Intensity pole figure")));
+        g->addWidget((outputTth_ = newQ::CheckBox("outputTth_", "Peak position pole figure")));
+        g->addWidget((outputFWHM_ = newQ::CheckBox("outputFWHM_", "TWHM pole figure")));
         g->setRowStretch(g->rowCount(), 1);
     }
 
     {
         QGridLayout* g = p2->grid();
-        g->addWidget((rbSelectedRefl_ = newQ::RadioButton("Selected peak")));
-        g->addWidget((rbAllRefls_ = newQ::RadioButton("All peaks")));
+        g->addWidget((rbSelectedRefl_ = newQ::RadioButton("rbSelectedRefl_", "Selected peak")));
+        g->addWidget((rbAllRefls_ = newQ::RadioButton("rbAllRefls_", "All peaks")));
         g->addWidget(newQ::TextButton(actSave), 2, 1);
         g->setRowStretch(g->rowCount(), 1);
     }
@@ -367,7 +367,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, int index) {
 
 void PoleFiguresFrame::writeErrorMask(
     rcstr filePath, PeakInfos reflInfo, vec<qreal> const& output) {
-    QFile* file = newQ::OutputFile(this, filePath);
+    QFile* file = newQ::OutputFile("file", this, filePath);
     if (!file)
         return;
     QTextStream stream(file);
@@ -385,7 +385,7 @@ void PoleFiguresFrame::writeErrorMask(
 }
 
 void PoleFiguresFrame::writePoleFile(rcstr filePath, PeakInfos reflInfo, vec<qreal> const& output) {
-    QFile* file = newQ::OutputFile(this, filePath);
+    QFile* file = newQ::OutputFile("file", this, filePath);
     if (!file)
         return;
     QTextStream stream(file);
@@ -403,7 +403,7 @@ void PoleFiguresFrame::writePoleFile(rcstr filePath, PeakInfos reflInfo, vec<qre
 }
 
 void PoleFiguresFrame::writeListFile(rcstr filePath, PeakInfos reflInfo, vec<qreal> const& output) {
-    QFile* file = newQ::OutputFile(this, filePath);
+    QFile* file = newQ::OutputFile("file", this, filePath);
     QTextStream stream(file);
 
     for_i (reflInfo.count()) {

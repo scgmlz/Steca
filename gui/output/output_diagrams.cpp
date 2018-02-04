@@ -139,8 +139,8 @@ TabDiagramsSave::TabDiagramsSave() : TabSave(true) {
     grid_->setRowStretch(grid_->rowCount(), 1);
 
     QGridLayout* g = gp->grid();
-    g->addWidget((currentDiagram_ = newQ::RadioButton("Current diagram")));
-    g->addWidget((allData_ = newQ::RadioButton("All data")));
+    g->addWidget((currentDiagram_ = newQ::RadioButton("currentDiagram_", "Current diagram")));
+    g->addWidget((allData_ = newQ::RadioButton("allData_", "All data")));
     g->addWidget(newQ::TextButton(actSave), 1, 1);
     g->setColumnStretch(0, 1);
 
@@ -268,7 +268,7 @@ void DiagramsFrame::saveDiagramOutput() {
 }
 
 void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator) {
-    QFile* file = newQ::OutputFile(this, filePath);
+    QFile* file = newQ::OutputFile("file", this, filePath);
     if (!file)
         return;
     QTextStream stream(file);
@@ -288,7 +288,7 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separato
 }
 
 void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
-    QFile* file = newQ::OutputFile(this, filePath);
+    QFile* file = newQ::OutputFile("file", this, filePath);
     if (!file)
         return;
     QTextStream stream(file);

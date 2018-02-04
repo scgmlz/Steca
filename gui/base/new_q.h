@@ -56,8 +56,8 @@ QDoubleSpinBox* DoubleSpinBox(
 QCheckBox* CheckBox(const QString& name, rcstr text);
 QCheckBox* CheckBox(const QString& name, QAction*);
 
-QToolButton* TextButton(const QString& name, QAction*);
-QToolButton* IconButton(const QString& name, QAction*);
+QToolButton* TextButton(QAction*);
+QToolButton* IconButton(QAction*);
 
 QRadioButton* RadioButton(const QString& name, rcstr text);
 

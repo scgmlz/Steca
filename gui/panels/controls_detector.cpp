@@ -25,8 +25,8 @@ ControlsDetector::ControlsDetector() {
 
     // widgets
 
-    detDistance_ = newQ::DoubleSpinBox(6, Geometry::MIN_DETECTOR_DISTANCE);
-    detPixelSize_ = newQ::DoubleSpinBox(6, Geometry::MIN_DETECTOR_PIXEL_SIZE);
+    detDistance_ = newQ::DoubleSpinBox("detDistance_", 6, Geometry::MIN_DETECTOR_DISTANCE);
+    detPixelSize_ = newQ::DoubleSpinBox("detPixelSize_", 6, Geometry::MIN_DETECTOR_PIXEL_SIZE);
     detPixelSize_->setDecimals(3);
 
     detDistance_->setValue(Geometry::DEF_DETECTOR_DISTANCE);
@@ -35,17 +35,17 @@ ControlsDetector::ControlsDetector() {
     connect(detDistance_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() { toSession(); });
     connect(detPixelSize_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() { toSession(); });
 
-    beamOffsetI_ = newQ::SpinBox(6, true);
-    beamOffsetJ_ = newQ::SpinBox(6, true);
+    beamOffsetI_ = newQ::SpinBox("beamOffsetI_", 6, true);
+    beamOffsetJ_ = newQ::SpinBox("beamOffsetJ_", 6, true);
 
 //    connect(beamOffsetI_, _SLOT_(QSpinBox, valueChanged, int), [this]() { setToHub(); });
 
 //    connect(beamOffsetJ_, _SLOT_(QSpinBox, valueChanged, int), [this]() { setToHub(); });
 
-    cutLeft_ = newQ::SpinBox(4, false, 0);
-    cutTop_ = newQ::SpinBox(4, false, 0);
-    cutRight_ = newQ::SpinBox(4, false, 0);
-    cutBottom_ = newQ::SpinBox(4, false, 0);
+    cutLeft_ = newQ::SpinBox("cutLeft_", 4, false, 0);
+    cutTop_ = newQ::SpinBox("cutTop_", 4, false, 0);
+    cutRight_ = newQ::SpinBox("cutRight_", 4, false, 0);
+    cutBottom_ = newQ::SpinBox("cutBottom_", 4, false, 0);
 
     auto _setImageCut = [this](bool isTopOrLeft, int value) {
         ASSERT(value >= 0);
@@ -90,31 +90,31 @@ ControlsDetector::ControlsDetector() {
         row++;
     };
 
-    _add({ newQ::Label("det. distance"),
+    _add({ newQ::Label("", "det. distance"),
                 detDistance_,
-                newQ::Label("mm") });
-    _add({ newQ::Label("pixel size"),
+                newQ::Label("", "mm") });
+    _add({ newQ::Label("", "pixel size"),
                 detPixelSize_,
-                newQ::Label("mm") });
-    _add({ newQ::Label("beam offset X"),
+                newQ::Label("", "mm") });
+    _add({ newQ::Label("", "beam offset X"),
                 beamOffsetI_,
-                newQ::Label("pix") });
-    _add({ newQ::Label("Y"),
+                newQ::Label("", "pix") });
+    _add({ newQ::Label("", "Y"),
                 beamOffsetJ_,
-                newQ::Label("pix") });
-    _add({ newQ::Label("image rotate"),
+                newQ::Label("", "pix") });
+    _add({ newQ::Label("", "image rotate"),
                 newQ::IconButton(gHub->trigger_rotateImage),
-                newQ::Label("mirror"),
+                newQ::Label("", "mirror"),
                 newQ::IconButton(gHub->toggle_mirrorImage) });
     _add({ newQ::IconButton(gHub->toggle_linkCuts),
-                newQ::Label("cut"),
-                newQ::Icon(":/icon/cutLeft"),
+                newQ::Label("", "cut"),
+                newQ::Icon("", ":/icon/cutLeft"),
                 cutLeft_,
-                newQ::Icon(":/icon/cutRight"),
+                newQ::Icon("", ":/icon/cutRight"),
                 cutRight_ }, 3);
-    _add({ newQ::Icon(":/icon/cutTop"),
+    _add({ newQ::Icon("", ":/icon/cutTop"),
                 cutTop_,
-                newQ::Icon(":/icon/cutBottom"),
+                newQ::Icon("", ":/icon/cutBottom"),
                 cutBottom_ });
 
     grid->setColumnStretch(grid->columnCount(), 1);

@@ -34,44 +34,44 @@ TheHub::TheHub()
 
     // create actions
 
-    trigger_about = newQ::Trigger("About " + qApp->applicationName());
+    trigger_about = newQ::Trigger("trigger_about", "About " + qApp->applicationName());
 
-    trigger_online = newQ::Trigger("Open docs in external browser");
+    trigger_online = newQ::Trigger("trigger_online", "Open docs in external browser");
 
-    trigger_checkUpdate = newQ::Trigger("Check for update");
+    trigger_checkUpdate = newQ::Trigger("trigger_checkUpdate", "Check for update");
 
-    trigger_quit = newQ::Trigger("Quit");
+    trigger_quit = newQ::Trigger("trigger_quit", "Quit");
     trigger_quit->setShortcut(QKeySequence::Quit);
 
-    toggle_viewStatusbar = newQ::Toggle("Statusbar", true);
+    toggle_viewStatusbar = newQ::Toggle("toggle_viewStatusbar", "Statusbar", true);
     toggle_viewStatusbar->setShortcut(Qt::Key_F12);
 
-    toggle_viewFiles = newQ::Toggle("Files", true);
+    toggle_viewFiles = newQ::Toggle("toggle_viewFiles", "Files", true);
     toggle_viewFiles->setShortcut(Qt::Key_F8);
 
-    toggle_viewDatasets = newQ::Toggle("Datasets", true);
+    toggle_viewDatasets = newQ::Toggle("toggle_viewDatasets", "Datasets", true);
     toggle_viewDatasets->setShortcut(Qt::Key_F9);
 
-    toggle_viewMetadata = newQ::Toggle("Metadata", true);
+    toggle_viewMetadata = newQ::Toggle("toggle_viewMetadata", "Metadata", true);
     toggle_viewMetadata->setShortcut(Qt::Key_F10);
 
-    trigger_viewReset = newQ::Trigger("Reset");
+    trigger_viewReset = newQ::Trigger("trigger_viewReset", "Reset");
 
 #ifndef Q_OS_OSX
-    toggle_fullScreen = newQ::Toggle("FullScreen", false);
+    toggle_fullScreen = newQ::Toggle("toggle_fullScreen", "FullScreen", false);
     toggle_fullScreen->setShortcut(Qt::Key_F11);
 #endif
 
-    trigger_loadSession = newQ::Trigger("Load session...");
+    trigger_loadSession = newQ::Trigger("trigger_loadSession", "Load session...");
 
-    trigger_saveSession = newQ::Trigger("Save session...");
+    trigger_saveSession = newQ::Trigger("trigger_saveSession", "Save session...");
 
-    trigger_clearSession = newQ::Trigger("Clear session");
+    trigger_clearSession = newQ::Trigger("trigger_clearSession", "Clear session");
 
-    trigger_addFiles = newQ::Trigger("Add files...", ":/icon/add");
+    trigger_addFiles = newQ::Trigger("trigger_addFiles", "Add files...", ":/icon/add");
     trigger_addFiles->setShortcut(Qt::CTRL | Qt::Key_O);
 
-    trigger_removeFile = newQ::Trigger("Remove highlighted file", ":/icon/rem");
+    trigger_removeFile = newQ::Trigger("trigger_removeFile", "Remove highlighted file", ":/icon/rem");
     trigger_removeFile->setShortcut(QKeySequence::Delete);
     trigger_removeFile->setEnabled(false);
     QObject::connect(trigger_removeFile, &QAction::triggered, []() {
@@ -79,7 +79,7 @@ TheHub::TheHub()
     QObject::connect(gSession, &Session::sigFiles, [this]() {
             trigger_removeFile->setEnabled(gSession->dataset().countFiles()); });
 
-    trigger_corrFile = newQ::Trigger("Add correction file", ":/icon/add");
+    trigger_corrFile = newQ::Trigger("trigger_corrFile", "Add correction file", ":/icon/add");
     trigger_corrFile->setShortcut(Qt::SHIFT | Qt::CTRL | Qt::Key_O);
     connect(trigger_corrFile, &QAction::triggered, this, &TheHub::loadCorrFile);
     QObject::connect(gSession, &Session::sigCorr, [this]() {
@@ -91,7 +91,7 @@ TheHub::TheHub()
             trigger_corrFile->setToolTip(text.toLower());
         });
 
-    toggle_enableCorr = newQ::Toggle("Enable correction file", false, ":/icon/useCorrection");
+    toggle_enableCorr = newQ::Toggle("toggle_enableCorr", "Enable correction file", false, ":/icon/useCorrection");
     connect(toggle_enableCorr, &QAction::toggled, [this](bool on) {
             gSession->corrset().tryEnable(on); });
     QObject::connect(gSession, &Session::sigCorr, [this]() {
@@ -99,62 +99,62 @@ TheHub::TheHub()
             toggle_enableCorr->setChecked(gSession->corrset().isEnabled());
         });
 
-    trigger_rotateImage = newQ::Trigger("Rotate", ":/icon/rotate0");
+    trigger_rotateImage = newQ::Trigger("trigger_rotateImage", "Rotate", ":/icon/rotate0");
     trigger_rotateImage->setShortcut(Qt::CTRL | Qt::Key_R);
     connect(trigger_rotateImage, &QAction::triggered, [this]() {
         setImageRotate(gSession->imageTransform().nextRotate()); });
 
-    toggle_mirrorImage = newQ::Toggle("Mirror", false, ":/icon/mirrorHorz");
+    toggle_mirrorImage = newQ::Toggle("toggle_mirrorImage", "Mirror", false, ":/icon/mirrorHorz");
     connect(toggle_mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
 
-    toggle_linkCuts = newQ::Toggle("Link cuts", false, ":/icon/link");
+    toggle_linkCuts = newQ::Toggle("toggle_linkCuts", "Link cuts", false, ":/icon/link");
 
-    toggle_showOverlay = newQ::Toggle("Show overlay", false, ":/icon/crop");
+    toggle_showOverlay = newQ::Toggle("toggle_showOverlay", "Show overlay", false, ":/icon/crop");
 
-    toggle_stepScale = newQ::Toggle("Scale in steps", false, ":/icon/steps");
+    toggle_stepScale = newQ::Toggle("toggle_stepScale", "Scale in steps", false, ":/icon/steps");
 
-    toggle_showBins = newQ::Toggle("Show bins", false, ":/icon/angle");
+    toggle_showBins = newQ::Toggle("toggle_showBins", "Show bins", false, ":/icon/angle");
 
-    toggle_fixedIntenImage = newQ::Toggle("Global intensity scale", false, ":/icon/scale");
+    toggle_fixedIntenImage = newQ::Toggle("toggle_fixedIntenImage", "Global intensity scale", false, ":/icon/scale");
     connect(toggle_fixedIntenImage, &QAction::toggled, [this](bool on) {
         isFixedIntenImageScale_ = on;
         emit sigDisplayChanged(); });
 
-    toggle_fixedIntenDgram = newQ::Toggle("Fixed intensity scale", false);
+    toggle_fixedIntenDgram = newQ::Toggle("toggle_fixedIntenDgram", "Fixed intensity scale", false);
     connect(toggle_fixedIntenDgram, &QAction::toggled, [this](bool on) {
         isFixedIntenDgramScale_ = on;
         emit sigDisplayChanged(); });
 
-    toggle_combinedDgram = newQ::Toggle("All measurements", true);
+    toggle_combinedDgram = newQ::Toggle("toggle_combinedDgram", "All measurements", true);
     toggle_combinedDgram->setChecked(false);
     connect(toggle_combinedDgram, &QAction::toggled, [this](bool on) {
         isCombinedDgram_ = on;
         emit sigDisplayChanged(); });
 
-    toggle_selRegions = newQ::Toggle("Select regions", false, ":/icon/selRegion");
+    toggle_selRegions = newQ::Toggle("toggle_selRegions", "Select regions", false, ":/icon/selRegion");
 
-    toggle_showBackground = newQ::Toggle("Show fitted background", false, ":/icon/showBackground");
+    toggle_showBackground = newQ::Toggle("toggle_showBackground", "Show fitted background", false, ":/icon/showBackground");
 
-    trigger_clearBackground = newQ::Trigger("Clear background regions", ":/icon/clear");
+    trigger_clearBackground = newQ::Trigger("trigger_clearBackground", "Clear background regions", ":/icon/clear");
     connect(trigger_clearBackground, &QAction::triggered, [this]() {
             gSession->baseline().setRanges({}); });
 
-    trigger_clearPeaks = newQ::Trigger("Clear peaks", ":/icon/clear");
+    trigger_clearPeaks = newQ::Trigger("trigger_clearPeaks", "Clear peaks", ":/icon/clear");
 
-    trigger_addPeak = newQ::Trigger("Add peak", ":/icon/add");
+    trigger_addPeak = newQ::Trigger("trigger_addPeak", "Add peak", ":/icon/add");
 
-    trigger_removePeak = newQ::Trigger("Remove peak", ":/icon/rem");
+    trigger_removePeak = newQ::Trigger("trigger_removePeak", "Remove peak", ":/icon/rem");
     trigger_removePeak->setEnabled(false);
     QObject::connect(gSession, &Session::sigPeaks, [this]() {
             trigger_removePeak->setEnabled(gSession->peaks().count()); });
 
-    trigger_outputPolefigures = newQ::Trigger("Pole figures...");
+    trigger_outputPolefigures = newQ::Trigger("trigger_outputPolefigures", "Pole figures...");
     QObject::connect(gSession, &Session::sigPeaks, [this]()
                      { trigger_outputPolefigures->setEnabled(gSession->peaks().count()); });
 
-    trigger_outputDiagrams = newQ::Trigger("Diagrams...");
+    trigger_outputDiagrams = newQ::Trigger("trigger_outputDiagrams", "Diagrams...");
 
-    trigger_outputDiffractograms = newQ::Trigger("Diffractograms...");
+    trigger_outputDiffractograms = newQ::Trigger("trigger_outputDiffractograms", "Diffractograms...");
 
     saveDir = settings_.readStr("export_directory");
     saveFmt = settings_.readStr("export_format");
@@ -168,7 +168,7 @@ TheHub::~TheHub() {
 }
 
 void TheHub::saveSession(QFileInfo const& fileInfo) const {
-    QFile* file = newQ::OutputFile(gMainWin, fileInfo.filePath());
+    QFile* file = newQ::OutputFile("file", gMainWin, fileInfo.filePath());
     if (!file)
         return;
     QDir::setCurrent(fileInfo.absolutePath());

@@ -53,7 +53,7 @@ Diffractogram::Diffractogram() {
     auto hb = newQ::HBoxLayout();
     box_->addLayout(hb);
 
-    hb->addWidget(newQ::Label("normalize to:"));
+    hb->addWidget(newQ::Label("", "normalize to:"));
     comboNormType_ = new QComboBox;
     comboNormType_->addItems({"none", "monitor", "Δ monitor", "Δ time", "background"});
     hb->addWidget(comboNormType_);
@@ -63,10 +63,10 @@ Diffractogram::Diffractogram() {
                 gSession->setNorm(eNorm(index));
             });
 
-    hb->addWidget(newQ::Label(" intensity from:"));
-    hb->addWidget((intenSum_ = newQ::RadioButton("sum")));
-    hb->addWidget((intenAvg_ = newQ::RadioButton("avg ×")));
-    hb->addWidget((intenScale_ = newQ::DoubleSpinBox(6, 0.001)));
+    hb->addWidget(newQ::Label("", " intensity from:"));
+    hb->addWidget((intenSum_ = newQ::RadioButton("intenSum_", "sum")));
+    hb->addWidget((intenAvg_ = newQ::RadioButton("intenAvg_", "avg ×")));
+    hb->addWidget((intenScale_ = newQ::DoubleSpinBox("intenScale_", 6, 0.001)));
     intenScale_->setDecimals(3);
 
     connect(intenAvg_, &QRadioButton::toggled, [this](bool on) {
@@ -82,14 +82,14 @@ Diffractogram::Diffractogram() {
 
     hb->addStretch();
 
-    actZoom_ = newQ::Toggle("zoom", false);
+    actZoom_ = newQ::Toggle("actZoom_", "zoom", false);
     enableZoom_ = newQ::TextButton(actZoom_);
     hb->addWidget(enableZoom_);
 
     hb->addStretch();
 
-    hb->addWidget(newQ::CheckBox(gHub->toggle_combinedDgram));
-    hb->addWidget(newQ::CheckBox(gHub->toggle_fixedIntenDgram));
+    hb->addWidget(newQ::CheckBox("", gHub->toggle_combinedDgram));
+    hb->addWidget(newQ::CheckBox("", gHub->toggle_fixedIntenDgram));
 
     connect(actZoom_, &QAction::toggled, this, [this](bool on) {
         plot_->setInteraction(QCP::iRangeDrag, on);

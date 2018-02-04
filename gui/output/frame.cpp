@@ -54,19 +54,19 @@ ShowColsWidget::ShowColsWidget(DataTable& table, showcol_vec& showCols)
 
     setLayout((box_ = newQ::VBoxLayout()));
 
-    box_->addWidget((rbHidden_ = newQ::RadioButton("")));
+    box_->addWidget((rbHidden_ = newQ::RadioButton("rbHidden_", "")));
     rbHidden_->hide();
 
-    box_->addWidget((rbAll_ = newQ::RadioButton("all")));
-    box_->addWidget((rbNone_ = newQ::RadioButton("none")));
-    box_->addWidget(rbInten_ = newQ::RadioButton("Intensity"));
-    box_->addWidget(rbTth_ = newQ::RadioButton("2θ"));
-    box_->addWidget(rbFWHM_ = newQ::RadioButton("fwhm"));
+    box_->addWidget((rbAll_ = newQ::RadioButton("rbAll_", "all")));
+    box_->addWidget((rbNone_ = newQ::RadioButton("rbNone_", "none")));
+    box_->addWidget(rbInten_ = newQ::RadioButton("rbInten_", "Intensity"));
+    box_->addWidget(rbTth_ = newQ::RadioButton("rbTth_", "2θ"));
+    box_->addWidget(rbFWHM_ = newQ::RadioButton("rbFWHM_", "fwhm"));
     box_->addSpacing(8);
 
     for_i (showCols.count()) {
         showcol_t& item = showCols[i];
-        box_->addWidget((item.cb = newQ::CheckBox(item.name)));
+        box_->addWidget((item.cb = newQ::CheckBox("cb", item.name)));
     }
 
     auto _all = [this]() {
@@ -262,9 +262,9 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent) : QDialog(parent) {
     auto hb = newQ::HBoxLayout();
     box_->addLayout(hb);
 
-    actClose_ = newQ::Trigger("Close");
-    actCalculate_ = newQ::Trigger("Calculate");
-    actInterpolate_ = newQ::Trigger("Interpolate");
+    actClose_ = newQ::Trigger("actClose_", "Close");
+    actCalculate_ = newQ::Trigger("actCalculate_", "Calculate");
+    actInterpolate_ = newQ::Trigger("actInterpolate_", "Interpolate");
 
     hb->addWidget((btnClose_ = newQ::TextButton(actClose_)));
     hb->addStretch(1);

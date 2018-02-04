@@ -139,14 +139,14 @@ QCheckBox* newQ::CheckBox(const QString& name, QAction* action) {
     return ret;
 }
 
-QToolButton* newQ::TextButton(const QString& name, QAction* action) {
+QToolButton* newQ::TextButton(QAction* action) {
     auto ret = new QToolButton;
     ret->setDefaultAction(action);
     ret->setToolButtonStyle(Qt::ToolButtonTextOnly);
     return ret;
 }
 
-QToolButton* newQ::IconButton(const QString& name, QAction* action) {
+QToolButton* newQ::IconButton(QAction* action) {
     auto ret = new QToolButton;
     ret->setDefaultAction(action);
     ret->setToolButtonStyle(Qt::ToolButtonIconOnly);

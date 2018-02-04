@@ -24,8 +24,8 @@ static str const DAT_SFX(".dat"), DAT_SEP(" "), // suffix, separator
 TabSave::TabSave(bool withTypes) {
 
     setLayout((grid_ = newQ::GridLayout()));
-    actBrowse = newQ::Trigger("Browse...");
-    actSave = newQ::Trigger("Save");
+    actBrowse = newQ::Trigger("actBrowse", "Browse...");
+    actSave = newQ::Trigger("actSave", "Save");
 
     str dir = gHub->saveDir;
     if (!QDir(dir).exists())
@@ -40,11 +40,11 @@ TabSave::TabSave(bool withTypes) {
 
     file_ = new QLineEdit();
 
-    g->addWidget(newQ::Label("Save to folder:"), 0, 0, Qt::AlignRight);
+    g->addWidget(newQ::Label("", "Save to folder:"), 0, 0, Qt::AlignRight);
     g->addWidget(dir_, 0, 1);
     g->addWidget(newQ::TextButton(actBrowse), 0, 2);
 
-    g->addWidget(newQ::Label("File name:"), 1, 0, Qt::AlignRight);
+    g->addWidget(newQ::Label("", "File name:"), 1, 0, Qt::AlignRight);
     g->addWidget(file_, 1, 1);
 
     connect(actBrowse, &QAction::triggered, [this]() {
@@ -57,8 +57,8 @@ TabSave::TabSave(bool withTypes) {
     grid_->addWidget(gp, 0, 1);
     g = gp->grid();
 
-    g->addWidget((rbDat_ = newQ::RadioButton(DAT_SFX)), 0, 0);
-    g->addWidget((rbCsv_ = newQ::RadioButton(CSV_SFX)), 1, 0);
+    g->addWidget((rbDat_ = newQ::RadioButton("rbDat_", DAT_SFX)), 0, 0);
+    g->addWidget((rbCsv_ = newQ::RadioButton("rbCsv_", CSV_SFX)), 1, 0);
 
     connect(rbDat_, &QRadioButton::clicked, [this]() { gHub->saveFmt = DAT_SFX; });
     connect(rbCsv_, &QRadioButton::clicked, [this]() { gHub->saveFmt = CSV_SFX; });

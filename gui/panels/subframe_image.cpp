@@ -244,7 +244,7 @@ private:
 };
 
 DataImageTab::DataImageTab() {
-    controls_->addWidget((spinN_ = newQ::SpinBox(4, false, 1)));
+    controls_->addWidget((spinN_ = newQ::SpinBox("spinN_", 4, false, 1)));
     connect(spinN_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
             gSession->dataset().highlight().setMeasurement(val-1); });
     connect(gSession, &Session::sigHighlight, [this]() {
@@ -266,26 +266,26 @@ DataImageTab::DataImageTab() {
     controls_->addStretch(1);
 
     controls_->addWidget(newQ::IconButton(gHub->toggle_showBins));
-    controls_->addWidget(newQ::Label("γ count"));
-    controls_->addWidget((numSlices_ = newQ::SpinBox(4, false, 0)));
+    controls_->addWidget(newQ::Label("", "γ count"));
+    controls_->addWidget((numSlices_ = newQ::SpinBox("numSlices_", 4, false, 0)));
     connect(numSlices_, _SLOT_(QSpinBox, valueChanged, int),
             [this](int /*unused*/) { render(); });
 
-    controls_->addWidget(newQ::Label("#"));
-    controls_->addWidget((numSlice_ = newQ::SpinBox(4, false, 1)));
+    controls_->addWidget(newQ::Label("", "#"));
+    controls_->addWidget((numSlice_ = newQ::SpinBox("numSlice_", 4, false, 1)));
     connect(numSlice_, _SLOT_(QSpinBox, valueChanged, int),
             [this](int /*unused*/) { render(); });
 
-    controls_->addWidget(newQ::Label("min"));
-    controls_->addWidget((minGamma_ = newQ::DoubleSpinBox(6)));
-    controls_->addWidget(newQ::Label("max"));
-    controls_->addWidget((maxGamma_ = newQ::DoubleSpinBox(6)));
+    controls_->addWidget(newQ::Label("", "min"));
+    controls_->addWidget((minGamma_ = newQ::DoubleSpinBox("minGamma_", 6)));
+    controls_->addWidget(newQ::Label("", "max"));
+    controls_->addWidget((maxGamma_ = newQ::DoubleSpinBox("maxGamma_", 6)));
 
     minGamma_->setReadOnly(true);
     maxGamma_->setReadOnly(true);
 
-    controls_->addWidget(newQ::Label("bin#"));
-    controls_->addWidget((numBin_ = newQ::SpinBox(4, false, 1)));
+    controls_->addWidget(newQ::Label("", "bin#"));
+    controls_->addWidget((numBin_ = newQ::SpinBox("numBin_", 4, false, 1)));
     connect(numBin_, _SLOT_(QSpinBox, valueChanged, int),
             [this](int /*unused*/) { render(); });
 
