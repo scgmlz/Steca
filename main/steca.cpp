@@ -83,7 +83,7 @@ int main(int argc, char* argv[]) {
     gConsole = Console::instance();
     gMainWin = MainWin::instance();
     gMainWin->show();
-    gMainWin->addFiles();
+    // gMainWin->addFiles();
 
     return app.exec();
 }

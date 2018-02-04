@@ -108,13 +108,13 @@ ControlsDetector::ControlsDetector() {
                 newQ::IconButton(gHub->toggle_mirrorImage) });
     _add({ newQ::IconButton(gHub->toggle_linkCuts),
                 newQ::Label("cut"),
-                newQ::Icon("", ":/icon/cutLeft"),
+                newQ::Icon(":/icon/cutLeft"),
                 cutLeft_,
-                newQ::Icon("", ":/icon/cutRight"),
+                newQ::Icon(":/icon/cutRight"),
                 cutRight_ }, 3);
-    _add({ newQ::Icon("", ":/icon/cutTop"),
+    _add({ newQ::Icon(":/icon/cutTop"),
                 cutTop_,
-                newQ::Icon("", ":/icon/cutBottom"),
+                newQ::Icon(":/icon/cutBottom"),
                 cutBottom_ });
 
     grid->setColumnStretch(grid->columnCount(), 1);

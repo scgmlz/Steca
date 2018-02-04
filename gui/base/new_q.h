@@ -37,14 +37,14 @@ QBoxLayout* HBoxLayout();
 QBoxLayout* VBoxLayout();
 QGridLayout* GridLayout();
 
-QFile* OutputFile(
-    const QString& name, QWidget* parent, const QString& path, bool check_overwrite=true);
+QLabel* Label(rcstr text);
+QLabel* Icon(rcstr fileName);
+
+QToolButton* TextButton(QAction*);
+QToolButton* IconButton(QAction*);
 
 QAction* Trigger(const QString& name, rcstr text, rcstr iconFile="");
 QAction* Toggle(const QString& name, rcstr text, bool value, rcstr iconFile="");
-
-QLabel* Label(rcstr text);
-QLabel* Icon(const QString& name, rcstr fileName);
 
 QLineEdit* LineDisplay(const QString& name, int ndigits, bool withDot);
 
@@ -56,10 +56,10 @@ QDoubleSpinBox* DoubleSpinBox(
 QCheckBox* CheckBox(const QString& name, rcstr text);
 QCheckBox* CheckBox(const QString& name, QAction*);
 
-QToolButton* TextButton(QAction*);
-QToolButton* IconButton(QAction*);
-
 QRadioButton* RadioButton(const QString& name, rcstr text);
+
+QFile* OutputFile(
+    const QString& name, QWidget* parent, const QString& path, bool check_overwrite=true);
 
 } // namespace newQ
 

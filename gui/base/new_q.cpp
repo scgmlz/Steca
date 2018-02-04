@@ -55,19 +55,28 @@ QGridLayout* newQ::GridLayout() {
     return ret;
 }
 
-QFile* newQ::OutputFile(
-    const QString& name, QWidget* parent, const QString& path, bool check_overwrite) {
-    QFile* ret = new QFile(path);
-    if (check_overwrite && ret->exists() &&
-        QMessageBox::question(parent, "File exists", "Overwrite " + path + " ?") !=
-        QMessageBox::Yes) {
-        delete ret;
-        return nullptr;
-    }
-    if (!ret->open(QIODevice::WriteOnly | QIODevice::Text)) {
-        qWarning() << "Cannot open file for writing: " << path;
-        return nullptr;
-    }
+QLabel* newQ::Label(rcstr text) {
+    return new QLabel(text);
+}
+
+QLabel* newQ::Icon(rcstr fileName) {
+    auto ret = new QLabel;
+    int h = ret->sizeHint().height();
+    ret->setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
+    return ret;
+}
+
+QToolButton* newQ::TextButton(QAction* action) {
+    auto ret = new QToolButton;
+    ret->setDefaultAction(action);
+    ret->setToolButtonStyle(Qt::ToolButtonTextOnly);
+    return ret;
+}
+
+QToolButton* newQ::IconButton(QAction* action) {
+    auto ret = new QToolButton;
+    ret->setDefaultAction(action);
+    ret->setToolButtonStyle(Qt::ToolButtonIconOnly);
     return ret;
 }
 
@@ -90,17 +99,6 @@ QAction* newQ::Toggle(const QString& name, rcstr text, bool value, rcstr iconFil
     gConsole->registerAction(name, [ret]()->void { ret->toggle(); });
     return ret;
 };
-
-QLabel* newQ::Label(rcstr text) {
-    return new QLabel(text);
-}
-
-QLabel* newQ::Icon(const QString& name, rcstr fileName) {
-    auto ret = new QLabel;
-    int h = ret->sizeHint().height();
-    ret->setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
-    return ret;
-}
 
 QLineEdit* newQ::LineDisplay(const QString& name, int ndigits, bool withDot) {
     auto ret = new QLineEdit;
@@ -126,6 +124,8 @@ QDoubleSpinBox* newQ::DoubleSpinBox(const QString& name, int ndigits, qreal min,
     setWidth(ret, ndigits, true);
     ret->setMinimum(min);
     ret->setMaximum(max > min ? max : min);
+    gConsole->registerSetter(name, [ret](const QString& val)->void {
+            ret->setValue(val.toDouble()); });
     return ret;
 }
 
@@ -144,20 +144,22 @@ QCheckBox* newQ::CheckBox(const QString& name, QAction* action) {
     return ret;
 }
 
-QToolButton* newQ::TextButton(QAction* action) {
-    auto ret = new QToolButton;
-    ret->setDefaultAction(action);
-    ret->setToolButtonStyle(Qt::ToolButtonTextOnly);
-    return ret;
-}
-
-QToolButton* newQ::IconButton(QAction* action) {
-    auto ret = new QToolButton;
-    ret->setDefaultAction(action);
-    ret->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    return ret;
-}
-
 QRadioButton* newQ::RadioButton(const QString& name, rcstr text) {
     return new QRadioButton(text);
+}
+
+QFile* newQ::OutputFile(
+    const QString& name, QWidget* parent, const QString& path, bool check_overwrite) {
+    QFile* ret = new QFile(path);
+    if (check_overwrite && ret->exists() &&
+        QMessageBox::question(parent, "File exists", "Overwrite " + path + " ?") !=
+        QMessageBox::Yes) {
+        delete ret;
+        return nullptr;
+    }
+    if (!ret->open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning() << "Cannot open file for writing: " << path;
+        return nullptr;
+    }
+    return ret;
 }
