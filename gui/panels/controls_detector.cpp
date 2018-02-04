@@ -90,24 +90,24 @@ ControlsDetector::ControlsDetector() {
         row++;
     };
 
-    _add({ newQ::Label("", "det. distance"),
+    _add({ newQ::Label("det. distance"),
                 detDistance_,
-                newQ::Label("", "mm") });
-    _add({ newQ::Label("", "pixel size"),
+                newQ::Label("mm") });
+    _add({ newQ::Label("pixel size"),
                 detPixelSize_,
-                newQ::Label("", "mm") });
-    _add({ newQ::Label("", "beam offset X"),
+                newQ::Label("mm") });
+    _add({ newQ::Label("beam offset X"),
                 beamOffsetI_,
-                newQ::Label("", "pix") });
-    _add({ newQ::Label("", "Y"),
+                newQ::Label("pix") });
+    _add({ newQ::Label("Y"),
                 beamOffsetJ_,
-                newQ::Label("", "pix") });
-    _add({ newQ::Label("", "image rotate"),
+                newQ::Label("pix") });
+    _add({ newQ::Label("image rotate"),
                 newQ::IconButton(gHub->trigger_rotateImage),
-                newQ::Label("", "mirror"),
+                newQ::Label("mirror"),
                 newQ::IconButton(gHub->toggle_mirrorImage) });
     _add({ newQ::IconButton(gHub->toggle_linkCuts),
-                newQ::Label("", "cut"),
+                newQ::Label("cut"),
                 newQ::Icon("", ":/icon/cutLeft"),
                 cutLeft_,
                 newQ::Icon("", ":/icon/cutRight"),

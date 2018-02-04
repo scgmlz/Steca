@@ -260,7 +260,7 @@ ExperimentControls::ExperimentControls() {
     setLayout(layout);
 
     // 'combine' control
-    layout->addWidget(newQ::Label("", "combine:"));
+    layout->addWidget(newQ::Label("combine:"));
     auto combineMeasurements = newQ::SpinBox("combineMeasurements", 4, false, 1);
     layout->addWidget(combineMeasurements);
     combineMeasurements->setToolTip("Combine and average number of cluster");
@@ -269,7 +269,7 @@ ExperimentControls::ExperimentControls() {
 
     // 'if incomplete' control
     layout->addStretch(1);
-    auto ifIncompleteLabel = newQ::Label("ifIncompleteLabel", "if incomplete:");
+    auto ifIncompleteLabel = newQ::Label("if incomplete:");
     layout->addWidget(ifIncompleteLabel);
     auto ifIncomplete = new QComboBox;
     ifIncomplete->addItems({"keep", "drop"});

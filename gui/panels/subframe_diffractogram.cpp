@@ -53,7 +53,7 @@ Diffractogram::Diffractogram() {
     auto hb = newQ::HBoxLayout();
     box_->addLayout(hb);
 
-    hb->addWidget(newQ::Label("", "normalize to:"));
+    hb->addWidget(newQ::Label("normalize to:"));
     comboNormType_ = new QComboBox;
     comboNormType_->addItems({"none", "monitor", "Δ monitor", "Δ time", "background"});
     hb->addWidget(comboNormType_);
@@ -63,7 +63,7 @@ Diffractogram::Diffractogram() {
                 gSession->setNorm(eNorm(index));
             });
 
-    hb->addWidget(newQ::Label("", " intensity from:"));
+    hb->addWidget(newQ::Label(" intensity from:"));
     hb->addWidget((intenSum_ = newQ::RadioButton("intenSum_", "sum")));
     hb->addWidget((intenAvg_ = newQ::RadioButton("intenAvg_", "avg ×")));
     hb->addWidget((intenScale_ = newQ::DoubleSpinBox("intenScale_", 6, 0.001)));

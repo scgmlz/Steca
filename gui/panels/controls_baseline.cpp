@@ -27,7 +27,7 @@ ControlsBaseline::ControlsBaseline() {
     hb->addWidget(newQ::IconButton(gHub->toggle_selRegions));
     hb->addWidget(newQ::IconButton(gHub->toggle_showBackground));
     hb->addWidget(newQ::IconButton(gHub->trigger_clearBackground));
-    hb->addWidget(newQ::Label("", "Pol. degree:"));
+    hb->addWidget(newQ::Label("Pol. degree:"));
     hb->addWidget((spinDegree_ =
                    newQ::SpinBox("spinDegree_", 4, false, 0, TheHub::MAX_POLYNOM_DEGREE)));
     connect(spinDegree_, _SLOT_(QSpinBox, valueChanged, int), [this](int degree) {

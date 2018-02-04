@@ -154,20 +154,20 @@ RangeControl::RangeControl() {
     auto hb = newQ::HBoxLayout();
     setLayout(hb);
 
-    hb->addWidget(newQ::Label("", "range"));
+    hb->addWidget(newQ::Label("range"));
     hb->addWidget((spinRangeMin_ = newQ::DoubleSpinBox("spinRangeMin_", 6, 0., 89.9)));
     spinRangeMin_->setSingleStep(.1);
     connect(spinRangeMin_, _SLOT_(QDoubleSpinBox, valueChanged, double),  [this](double val) {
             qreal antival = qMax(spinRangeMax_->value(), val);
             gSession->peaks().selectedPeak()->setRange(Range(val, antival)); });
 
-    hb->addWidget(newQ::Label("", ".."));
+    hb->addWidget(newQ::Label(".."));
     hb->addWidget((spinRangeMax_ = newQ::DoubleSpinBox("spinRangeMax_", 6, 0., 90.)));
     spinRangeMax_->setSingleStep(.1);
     connect(spinRangeMax_, _SLOT_(QDoubleSpinBox, valueChanged, double),  [this](double val) {
             qreal antival = qMin(spinRangeMin_->value(), val);
             gSession->peaks().selectedPeak()->setRange(Range(antival, val)); });
-    hb->addWidget(newQ::Label("", "deg"));
+    hb->addWidget(newQ::Label("deg"));
     hb->addStretch();
 }
 
@@ -215,17 +215,17 @@ public:
 
 RawPeakdataView::RawPeakdataView() {
     QGridLayout* lay = newQ::GridLayout();
-    lay->addWidget(newQ::Label("", ""), 1, 1);
+    lay->addWidget(newQ::Label(""), 1, 1);
 
-    lay->addWidget(newQ::Label("", "centre"), 2, 0);
+    lay->addWidget(newQ::Label("centre"), 2, 0);
     lay->addWidget(readFitPeakX_, 2, 2);
-    lay->addWidget(newQ::Label("", "deg"), 2, 3);
+    lay->addWidget(newQ::Label("deg"), 2, 3);
 
-    lay->addWidget(newQ::Label("", "fwhm"), 3, 0);
+    lay->addWidget(newQ::Label("fwhm"), 3, 0);
     lay->addWidget(readFitFWHM_, 3, 2);
-    lay->addWidget(newQ::Label("", "deg"), 3, 3);
+    lay->addWidget(newQ::Label("deg"), 3, 3);
 
-    lay->addWidget(newQ::Label("", "intens"), 4, 0);
+    lay->addWidget(newQ::Label("intens"), 4, 0);
     lay->addWidget(readFitPeakY_, 4, 2);
 
     lay->setColumnStretch(4, 1);
@@ -248,20 +248,20 @@ FitPeakdataView::FitPeakdataView() {
     spinGuessPeakY_ = newQ::LineDisplay("spinGuessPeakY_", 6, true);
 
     QGridLayout* lay = newQ::GridLayout();
-    lay->addWidget(newQ::Label("", "guess"), 1, 1);
-    lay->addWidget(newQ::Label("", "fitted"), 1, 2);
+    lay->addWidget(newQ::Label("guess"), 1, 1);
+    lay->addWidget(newQ::Label("fitted"), 1, 2);
 
-    lay->addWidget(newQ::Label("", "centre"), 2, 0);
+    lay->addWidget(newQ::Label("centre"), 2, 0);
     lay->addWidget(spinGuessPeakX_, 2, 1);
     lay->addWidget(readFitPeakX_, 2, 2);
-    lay->addWidget(newQ::Label("", "deg"), 2, 3);
+    lay->addWidget(newQ::Label("deg"), 2, 3);
 
-    lay->addWidget(newQ::Label("", "fwhm"), 3, 0);
+    lay->addWidget(newQ::Label("fwhm"), 3, 0);
     lay->addWidget(spinGuessFWHM_, 3, 1);
     lay->addWidget(readFitFWHM_, 3, 2);
-    lay->addWidget(newQ::Label("", "deg"), 3, 3);
+    lay->addWidget(newQ::Label("deg"), 3, 3);
 
-    lay->addWidget(newQ::Label("", "intens"), 4, 0);
+    lay->addWidget(newQ::Label("intens"), 4, 0);
     lay->addWidget(spinGuessPeakY_, 4, 1);
     lay->addWidget(readFitPeakY_, 4, 2);
 
