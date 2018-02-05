@@ -29,6 +29,21 @@
 
 class BoxWidget;
 
+class XTextButton : public QToolButton {
+public:
+    XTextButton(QAction*);
+};
+
+class XIconButton : public QToolButton {
+public:
+    XIconButton(QAction*);
+};
+
+class XLineDisplay : public QLineEdit {
+public:
+    XLineDisplay(int ndigits, bool withDot);
+};
+
 //! Contains functions that return new Qt objects.
 
 namespace newQ {
@@ -40,8 +55,8 @@ QGridLayout* GridLayout();
 QLabel* Label(rcstr text);
 QLabel* Icon(rcstr fileName);
 
-QToolButton* TextButton(QAction*);
-QToolButton* IconButton(QAction*);
+QToolButton* TextButton(QAction* action);
+QToolButton* IconButton(QAction* action);
 
 QAction* Trigger(const QString& name, rcstr text, rcstr iconFile="");
 QAction* Toggle(const QString& name, rcstr text, bool value, rcstr iconFile="");
@@ -57,11 +72,6 @@ public:
     ~CSettable();
 private:
     const QString name_;
-};
-
-class CLineDisplay : public QLineEdit, private CSettable {
-public:
-    CLineDisplay(const QString& name, int ndigits, bool withDot);
 };
 
 class CSpinBox : public QSpinBox, private CSettable {

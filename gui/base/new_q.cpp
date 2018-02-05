@@ -55,6 +55,9 @@ QGridLayout* newQ::GridLayout() {
     return ret;
 }
 
+QToolButton* newQ::TextButton(QAction* action) { return new XTextButton(action); }
+QToolButton* newQ::IconButton(QAction* action) { return new XTextButton(action); }
+
 QLabel* newQ::Label(rcstr text) {
     return new QLabel(text);
 }
@@ -63,20 +66,6 @@ QLabel* newQ::Icon(rcstr fileName) {
     auto ret = new QLabel;
     int h = ret->sizeHint().height();
     ret->setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
-    return ret;
-}
-
-QToolButton* newQ::TextButton(QAction* action) {
-    auto ret = new QToolButton;
-    ret->setDefaultAction(action);
-    ret->setToolButtonStyle(Qt::ToolButtonTextOnly);
-    return ret;
-}
-
-QToolButton* newQ::IconButton(QAction* action) {
-    auto ret = new QToolButton;
-    ret->setDefaultAction(action);
-    ret->setToolButtonStyle(Qt::ToolButtonIconOnly);
     return ret;
 }
 
@@ -116,6 +105,21 @@ QFile* newQ::OutputFile(
     return ret;
 }
 
+XTextButton::XTextButton(QAction* action) {
+    setDefaultAction(action);
+    setToolButtonStyle(Qt::ToolButtonTextOnly);
+}
+
+XIconButton::XIconButton(QAction* action) {
+    setDefaultAction(action);
+    setToolButtonStyle(Qt::ToolButtonIconOnly);
+}
+
+XLineDisplay::XLineDisplay(int ndigits, bool withDot) {
+    setWidth(this, ndigits, withDot);
+    setReadOnly(true);
+}
+
 
 CSettable::CSettable(const QString& name, std::function<void(const QString&)> setter)
     : name_(name) {
@@ -124,12 +128,6 @@ CSettable::CSettable(const QString& name, std::function<void(const QString&)> se
 
 CSettable::~CSettable() {
     gConsole->deregisterSetter(name_);
-}
-
-CLineDisplay::CLineDisplay(const QString& name, int ndigits, bool withDot)
-    : CSettable(name, [this](const QString& val)->void { setText(val); }) {
-    setWidth(this, ndigits, withDot);
-    setReadOnly(true);
 }
 
 // A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.

@@ -28,8 +28,9 @@ public:
 protected:
     QGridLayout* grid_;
 private:
-    QLineEdit *dir_, *file_;
-    QRadioButton *rbDat_, *rbCsv_;
+    QLineEdit* dir_;
+    QLineEdit* file_;
+    CRadioButton rbDat_, rbCsv_;
 };
 
 #endif // TAB_SAVE_H

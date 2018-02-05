@@ -26,9 +26,9 @@ private:
     void toSession();
     void fromSession();
 
-    QDoubleSpinBox *detDistance_, *detPixelSize_;
-    QSpinBox *beamOffsetI_, *beamOffsetJ_;
-    QSpinBox *cutLeft_, *cutTop_, *cutRight_, *cutBottom_;
+    CDoubleSpinBox detDistance_, detPixelSize_;
+    CSpinBox beamOffsetI_, beamOffsetJ_;
+    CSpinBox cutLeft_, cutTop_, cutRight_, cutBottom_;
 };
 
 #endif // CONTROLS_DETECTOR_H

@@ -28,7 +28,7 @@ private:
     class PeaksView* peaksView_;
     class RangeControl* rangeControl_;
     class PeakdataView* peakdataView_;
-    QComboBox* comboReflType_;
+    CComboBox comboReflType_;
 
     bool silentSpin_ = false;
 };

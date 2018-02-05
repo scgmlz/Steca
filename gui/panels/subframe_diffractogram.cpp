@@ -38,11 +38,14 @@ private:
 
     class DiffractogramPlot* plot_;
     QBoxLayout* box_;
-    QComboBox* comboNormType_;
-    QRadioButton *intenSum_, *intenAvg_;
-    QDoubleSpinBox* intenScale_;
-    QToolButton* enableZoom_;
-    QAction* actZoom_;
+    CComboBox comboNormType_{"normTyp", {"none", "monitor", "Δ monitor", "Δ time", "background"}};
+    CRadioButton intenSum_{"intenSum_", "sum"};
+    CRadioButton intenAvg_{"intenAvg_", "avg ×"};
+    CDoubleSpinBox intenScale_{"intenScale_", 6, 0.001};
+    QAction* actZoom_{ newQ::Toggle("actZoom_", "zoom", false) };
+    XTextButton enableZoom_{actZoom_};
+    CCheckBox combine_{"dgram:combine", gHub->toggle_combinedDgram};
+    CCheckBox fixInten_{"dgram:fixInten", gHub->toggle_fixedIntenDgram};
 };
 
 
@@ -54,42 +57,35 @@ Diffractogram::Diffractogram() {
     box_->addLayout(hb);
 
     hb->addWidget(newQ::Label("normalize to:"));
-    comboNormType_ = newQ::ComboBox(
-        "normTyp", {"none", "monitor", "Δ monitor", "Δ time", "background"});
-    hb->addWidget(comboNormType_);
+    hb->addWidget(&comboNormType_);
 
-    connect(comboNormType_, _SLOT_(QComboBox, currentIndexChanged, int),
-            [this](int index) { // TODO init value from hub?
-                gSession->setNorm(eNorm(index));
-            });
+    connect(&comboNormType_, _SLOT_(QComboBox, currentIndexChanged, int), [this](int index) {
+            gSession->setNorm(eNorm(index)); });
 
     hb->addWidget(newQ::Label(" intensity from:"));
-    hb->addWidget((intenSum_ = newQ::RadioButton("intenSum_", "sum")));
-    hb->addWidget((intenAvg_ = newQ::RadioButton("intenAvg_", "avg ×")));
-    hb->addWidget((intenScale_ = newQ::DoubleSpinBox("intenScale_", 6, 0.001)));
-    intenScale_->setDecimals(3);
+    hb->addWidget(&intenSum_);
+    hb->addWidget(&intenAvg_);
+    hb->addWidget(&intenScale_);
+    intenScale_.setDecimals(3);
+    hb->addStretch();
 
-    connect(intenAvg_, &QRadioButton::toggled, [this](bool on) {
-        intenScale_->setEnabled(on);
-        intenScale_->setValue(gSession->intenScale());
-        gSession->setIntenScaleAvg(on, intenScale_->value());
+    connect(&intenAvg_, &QRadioButton::toggled, [this](bool on) {
+        intenScale_.setEnabled(on);
+        intenScale_.setValue(gSession->intenScale());
+        gSession->setIntenScaleAvg(on, intenScale_.value());
     });
 
-    connect(intenScale_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
+    connect(&intenScale_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
         if (val > 0)
             gSession->setIntenScaleAvg(gSession->intenScaledAvg(), val);
     });
 
+
+    hb->addWidget(&enableZoom_);
     hb->addStretch();
 
-    actZoom_ = newQ::Toggle("actZoom_", "zoom", false);
-    enableZoom_ = newQ::TextButton(actZoom_);
-    hb->addWidget(enableZoom_);
-
-    hb->addStretch();
-
-    hb->addWidget(newQ::CheckBox("", gHub->toggle_combinedDgram));
-    hb->addWidget(newQ::CheckBox("", gHub->toggle_fixedIntenDgram));
+    hb->addWidget(&combine_);
+    hb->addWidget(&fixInten_);
 
     connect(actZoom_, &QAction::toggled, this, [this](bool on) {
         plot_->setInteraction(QCP::iRangeDrag, on);
@@ -115,15 +111,15 @@ Diffractogram::Diffractogram() {
 
     gHub->toggle_selRegions->setChecked(true);
     gHub->toggle_showBackground->setChecked(true);
-    intenAvg_->setChecked(true);
+    intenAvg_.setChecked(true);
 }
 
 void Diffractogram::onNormChanged() {
-    intenScale_->setValue(gSession->intenScale()); // TODO own signal
+    intenScale_.setValue(gSession->intenScale()); // TODO own signal
     if (gSession->intenScaledAvg())
-        intenAvg_->setChecked(true);
+        intenAvg_.setChecked(true);
     else
-        intenSum_->setChecked(true);
+        intenSum_.setChecked(true);
     plot_->renderAll();
 }
 

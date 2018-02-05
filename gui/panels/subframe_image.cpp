@@ -238,56 +238,58 @@ public:
     DataImageTab();
     void render() final;
 private:
-    QSpinBox* spinN_;
-    QSpinBox *numSlices_, *numSlice_, *numBin_;
-    QDoubleSpinBox *minGamma_, *maxGamma_;
+    CSpinBox spinN_{"spinN_", 4, false, 1};
+    CSpinBox numSlices_{"numSlices_", 4, false, 0};
+    CSpinBox numSlice_{"numSlice_", 4, false, 1};
+    CSpinBox numBin_{"numBin_", 4, false, 1};
+    CDoubleSpinBox minGamma_{"minGamma_", 6};
+    CDoubleSpinBox maxGamma_{"maxGamma_", 6};
 };
 
 DataImageTab::DataImageTab() {
-    controls_->addWidget((spinN_ = newQ::SpinBox("spinN_", 4, false, 1)));
-    connect(spinN_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
+    controls_->addWidget(&spinN_);
+    connect(&spinN_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
             gSession->dataset().highlight().setMeasurement(val-1); });
     connect(gSession, &Session::sigHighlight, [this]() {
             auto& hl = gSession->dataset().highlight();
             if (!hl.cluster()) {
-                spinN_->setEnabled(false);
-                spinN_->setValue(1);
+                spinN_.setEnabled(false);
+                spinN_.setValue(1);
                 return;
             }
-            spinN_->setEnabled( gSession->dataset().binning() > 1);
+            spinN_.setEnabled( gSession->dataset().binning() > 1);
             int max = hl.cluster()->count();
-            spinN_->setMaximum(max);
+            spinN_.setMaximum(max);
             if ( hl.measurementIndex()+1>max )
                 hl.setMeasurement(max-1);
-            spinN_->setValue(hl.measurementIndex()+1); });
-    spinN_->setEnabled(false);
-    spinN_->setValue(1);
+            spinN_.setValue(hl.measurementIndex()+1); });
+    spinN_.setEnabled(false);
+    spinN_.setValue(1);
 
     controls_->addStretch(1);
 
     controls_->addWidget(newQ::IconButton(gHub->toggle_showBins));
     controls_->addWidget(newQ::Label("γ count"));
-    controls_->addWidget((numSlices_ = newQ::SpinBox("numSlices_", 4, false, 0)));
-    connect(numSlices_, _SLOT_(QSpinBox, valueChanged, int),
+    controls_->addWidget(&numSlices_);
+    connect(&numSlices_, _SLOT_(QSpinBox, valueChanged, int),
             [this](int /*unused*/) { render(); });
 
     controls_->addWidget(newQ::Label("#"));
-    controls_->addWidget((numSlice_ = newQ::SpinBox("numSlice_", 4, false, 1)));
-    connect(numSlice_, _SLOT_(QSpinBox, valueChanged, int),
+    controls_->addWidget(&numSlice_);
+    connect(&numSlice_, _SLOT_(QSpinBox, valueChanged, int),
             [this](int /*unused*/) { render(); });
 
     controls_->addWidget(newQ::Label("min"));
-    controls_->addWidget((minGamma_ = newQ::DoubleSpinBox("minGamma_", 6)));
+    controls_->addWidget(&minGamma_);
     controls_->addWidget(newQ::Label("max"));
-    controls_->addWidget((maxGamma_ = newQ::DoubleSpinBox("maxGamma_", 6)));
+    controls_->addWidget(&maxGamma_);
 
-    minGamma_->setReadOnly(true);
-    maxGamma_->setReadOnly(true);
+    minGamma_.setReadOnly(true);
+    maxGamma_.setReadOnly(true);
 
     controls_->addWidget(newQ::Label("bin#"));
-    controls_->addWidget((numBin_ = newQ::SpinBox("numBin_", 4, false, 1)));
-    connect(numBin_, _SLOT_(QSpinBox, valueChanged, int),
-            [this](int /*unused*/) { render(); });
+    controls_->addWidget(&numBin_);
+    connect(&numBin_, _SLOT_(QSpinBox, valueChanged, int), [this](int /*unused*/) { render(); });
 
     connect(gSession, &Session::sigHighlight, this, &ImageTab::render);
 }
@@ -295,9 +297,9 @@ DataImageTab::DataImageTab() {
 void DataImageTab::render() {
     QPixmap pixMap;
 
-    const int nSlices = numSlices_->value();
-    numSlice_->setMaximum(qMax(1, nSlices));
-    numSlice_->setEnabled(nSlices > 0);
+    const int nSlices = numSlices_.value();
+    numSlice_.setMaximum(qMax(1, nSlices));
+    numSlice_.setEnabled(nSlices > 0);
 
     if (gSession->dataset().highlight().cluster()) {
         // 1 - based
@@ -305,31 +307,31 @@ void DataImageTab::render() {
 
         Range rge;
         if (nSlices > 0) {
-            int nSlice = qMax(1, numSlice_->value());
+            int nSlice = qMax(1, numSlice_.value());
             int iSlice = nSlice - 1;
             const Range rgeGma = lens->rgeGma();
             const qreal min = rgeGma.min;
             const qreal wn = rgeGma.width() / nSlices;
             rge = Range(min + iSlice * wn, min + (iSlice + 1) * wn);
-            minGamma_->setValue(rge.min);
-            maxGamma_->setValue(rge.max);
+            minGamma_.setValue(rge.min);
+            maxGamma_.setValue(rge.max);
         } else {
             rge = Range::infinite();
-            minGamma_->clear();
-            maxGamma_->clear();
+            minGamma_.clear();
+            maxGamma_.clear();
         }
         gSession->setGammaRange(rge);
 
         const Measurement* measurement = gSession->dataset().highlight().measurement();
 
-        numBin_->setEnabled(true);
+        numBin_.setEnabled(true);
         if (gHub->toggle_showBins->isChecked()) {
             Range rgeTth = lens->rgeTth();
             int count = lens->makeCurve().count();
-            numBin_->setMaximum(count - 1);
+            numBin_.setMaximum(count - 1);
             qreal min = rgeTth.min;
             qreal wdt = rgeTth.width();
-            qreal num = qreal(numBin_->value());
+            qreal num = qreal(numBin_.value());
            pixMap = makePixmap(
                 *measurement, rge,
                 Range(min + wdt * (num / count), min + wdt * ((num + 1) / count)));
@@ -338,8 +340,8 @@ void DataImageTab::render() {
         }
 
     } else {
-        numBin_->setMaximum(0);
-        numBin_->setEnabled(false);
+        numBin_.setMaximum(0);
+        numBin_.setEnabled(false);
         pixMap = makeBlankPixmap();
     }
 

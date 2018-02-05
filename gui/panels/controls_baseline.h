@@ -23,7 +23,7 @@ class ControlsBaseline : public QWidget {
 public:
     ControlsBaseline();
 private:
-    QSpinBox* spinDegree_;
+    CSpinBox spinDegree_;
 };
 
 #endif // CONTROLS_BASELINE_H

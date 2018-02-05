@@ -252,6 +252,10 @@ int ExperimentView::sizeHintForColumn(int col) const {
 class ExperimentControls : public QWidget {
 public:
     ExperimentControls();
+private:
+    CSpinBox combineMeasurements_ {"combineMeasurements", 4, false, 1};
+    QLabel remainderModeLabel_ {"if incomplete:"};
+    CComboBox remainderMode_ {"remainderMode", {"keep", "drop"}};
 };
 
 ExperimentControls::ExperimentControls() {
@@ -261,28 +265,25 @@ ExperimentControls::ExperimentControls() {
 
     // 'combine' control
     layout->addWidget(newQ::Label("combine:"));
-    auto combineMeasurements = newQ::SpinBox("combineMeasurements", 4, false, 1);
-    layout->addWidget(combineMeasurements);
-    combineMeasurements->setToolTip("Combine and average number of cluster");
-    connect(combineMeasurements, _SLOT_(QSpinBox, valueChanged, int),
+    layout->addWidget(&combineMeasurements_);
+    combineMeasurements_.setToolTip("Combine and average number of cluster");
+    connect(&combineMeasurements_, _SLOT_(QSpinBox, valueChanged, int),
             [this](int num) { gSession->dataset().setBinning(num); });
 
     // 'if incomplete' control
     layout->addStretch(1);
-    auto remainderModeLabel = newQ::Label("if incomplete:");
-    layout->addWidget(remainderModeLabel);
-    auto remainderMode = newQ::ComboBox("remainderMode", {"keep", "drop"});
-    layout->addWidget(remainderMode);
-    connect(remainderMode, _SLOT_(QComboBox, currentIndexChanged, int),
+    layout->addWidget(&remainderModeLabel_);
+    layout->addWidget(&remainderMode_);
+    connect(&remainderMode_, _SLOT_(QComboBox, currentIndexChanged, int),
             [this](int index) { gSession->dataset().setDropIncomplete(index); });
 
     // back connection, to change controls from saved session
     connect(gSession, &Session::sigClusters, [=]() {
-            combineMeasurements->setValue(gSession->dataset().binning());
+            combineMeasurements_.setValue(gSession->dataset().binning());
             if (gSession->dataset().hasIncomplete()) {
-                remainderModeLabel->show(); remainderMode->show();
+                remainderModeLabel_.show(); remainderMode_.show();
             } else {
-                remainderModeLabel->hide(); remainderMode->hide();
+                remainderModeLabel_.hide(); remainderMode_.hide();
             }
         });
 }

@@ -16,7 +16,16 @@
 #include "core/session.h"
 #include "gui/thehub.h"
 
-ControlsDetector::ControlsDetector() {
+ControlsDetector::ControlsDetector()
+    : detDistance_("detDistance_", 6, Geometry::MIN_DETECTOR_DISTANCE)
+    , detPixelSize_("detPixelSize_", 6, Geometry::MIN_DETECTOR_PIXEL_SIZE)
+    , beamOffsetI_("beamOffsetI_", 6, true)
+    , beamOffsetJ_("beamOffsetJ_", 6, true)
+    , cutLeft_("cutLeft_", 4, false, 0)
+    , cutTop_("cutTop_", 4, false, 0)
+    , cutRight_("cutRight_", 4, false, 0)
+    , cutBottom_("cutBottom_", 4, false, 0)
+{
 
     auto* box = newQ::VBoxLayout();
     setLayout(box);
@@ -25,49 +34,34 @@ ControlsDetector::ControlsDetector() {
 
     // widgets
 
-    detDistance_ = newQ::DoubleSpinBox("detDistance_", 6, Geometry::MIN_DETECTOR_DISTANCE);
-    detPixelSize_ = newQ::DoubleSpinBox("detPixelSize_", 6, Geometry::MIN_DETECTOR_PIXEL_SIZE);
-    detPixelSize_->setDecimals(3);
+    detDistance_.setValue(Geometry::DEF_DETECTOR_DISTANCE);
+    connect(&detDistance_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() { toSession(); });
 
-    detDistance_->setValue(Geometry::DEF_DETECTOR_DISTANCE);
-    detPixelSize_->setValue(Geometry::DEF_DETECTOR_PIXEL_SIZE);
-
-    connect(detDistance_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() { toSession(); });
-    connect(detPixelSize_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() { toSession(); });
-
-    beamOffsetI_ = newQ::SpinBox("beamOffsetI_", 6, true);
-    beamOffsetJ_ = newQ::SpinBox("beamOffsetJ_", 6, true);
-
-//    connect(beamOffsetI_, _SLOT_(QSpinBox, valueChanged, int), [this]() { setToHub(); });
-
-//    connect(beamOffsetJ_, _SLOT_(QSpinBox, valueChanged, int), [this]() { setToHub(); });
-
-    cutLeft_ = newQ::SpinBox("cutLeft_", 4, false, 0);
-    cutTop_ = newQ::SpinBox("cutTop_", 4, false, 0);
-    cutRight_ = newQ::SpinBox("cutRight_", 4, false, 0);
-    cutBottom_ = newQ::SpinBox("cutBottom_", 4, false, 0);
+    detPixelSize_.setDecimals(3);
+    detPixelSize_.setValue(Geometry::DEF_DETECTOR_PIXEL_SIZE);
+    connect(&detPixelSize_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() {
+            toSession(); });
 
     auto _setImageCut = [this](bool isTopOrLeft, int value) {
         ASSERT(value >= 0);
         if (gHub->toggle_linkCuts->isChecked())
-            gSession->setImageCut(isTopOrLeft, true,
-                                  ImageCut(value, value, value, value));
+            gSession->setImageCut(isTopOrLeft, true, ImageCut(value, value, value, value));
         else
             gSession->setImageCut(isTopOrLeft, false,
-                                  ImageCut(cutLeft_->value(), cutTop_->value(),
-                                           cutRight_->value(), cutBottom_->value()));
+                                  ImageCut(cutLeft_.value(), cutTop_.value(),
+                                           cutRight_.value(), cutBottom_.value()));
     };
 
-    connect(cutLeft_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
+    connect(&cutLeft_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
             _setImageCut(true, value); });
 
-    connect(cutTop_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
+    connect(&cutTop_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
             _setImageCut(true, value); });
 
-    connect(cutRight_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
+    connect(&cutRight_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
             _setImageCut(false, value); });
 
-    connect(cutBottom_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
+    connect(&cutBottom_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
             _setImageCut(false, value); });
 
     // layout
@@ -90,18 +84,10 @@ ControlsDetector::ControlsDetector() {
         row++;
     };
 
-    _add({ newQ::Label("det. distance"),
-                detDistance_,
-                newQ::Label("mm") });
-    _add({ newQ::Label("pixel size"),
-                detPixelSize_,
-                newQ::Label("mm") });
-    _add({ newQ::Label("beam offset X"),
-                beamOffsetI_,
-                newQ::Label("pix") });
-    _add({ newQ::Label("Y"),
-                beamOffsetJ_,
-                newQ::Label("pix") });
+    _add({ newQ::Label("det. distance"), &detDistance_, newQ::Label("mm") });
+    _add({ newQ::Label("pixel size"), &detPixelSize_, newQ::Label("mm") });
+    _add({ newQ::Label("beam offset X"), &beamOffsetI_, newQ::Label("pix") });
+    _add({ newQ::Label("Y"), &beamOffsetJ_, newQ::Label("pix") });
     _add({ newQ::Label("image rotate"),
                 newQ::IconButton(gHub->trigger_rotateImage),
                 newQ::Label("mirror"),
@@ -109,13 +95,13 @@ ControlsDetector::ControlsDetector() {
     _add({ newQ::IconButton(gHub->toggle_linkCuts),
                 newQ::Label("cut"),
                 newQ::Icon(":/icon/cutLeft"),
-                cutLeft_,
+                &cutLeft_,
                 newQ::Icon(":/icon/cutRight"),
-                cutRight_ }, 3);
+                &cutRight_ }, 3);
     _add({ newQ::Icon(":/icon/cutTop"),
-                cutTop_,
+                &cutTop_,
                 newQ::Icon(":/icon/cutBottom"),
-                cutBottom_ });
+                &cutBottom_ });
 
     grid->setColumnStretch(grid->columnCount(), 1);
 
@@ -125,24 +111,24 @@ ControlsDetector::ControlsDetector() {
 
 void ControlsDetector::toSession() {
     gSession->setGeometry(
-        qMax(qreal(Geometry::MIN_DETECTOR_DISTANCE), detDistance_->value()),
-        qMax(qreal(Geometry::MIN_DETECTOR_PIXEL_SIZE), detPixelSize_->value()),
-        IJ(beamOffsetI_->value(), beamOffsetJ_->value()));
+        qMax(qreal(Geometry::MIN_DETECTOR_DISTANCE), detDistance_.value()),
+        qMax(qreal(Geometry::MIN_DETECTOR_PIXEL_SIZE), detPixelSize_.value()),
+        IJ(beamOffsetI_.value(), beamOffsetJ_.value()));
 }
 
 void ControlsDetector::fromSession() {
     const Geometry& g = gSession->geometry();
 
-    detDistance_->setValue(g.detectorDistance);
-    detPixelSize_->setValue(g.pixSize);
+    detDistance_.setValue(g.detectorDistance);
+    detPixelSize_.setValue(g.pixSize);
 
-    beamOffsetI_->setValue(g.midPixOffset.i);
-    beamOffsetJ_->setValue(g.midPixOffset.j);
+    beamOffsetI_.setValue(g.midPixOffset.i);
+    beamOffsetJ_.setValue(g.midPixOffset.j);
 
     const ImageCut& cut = gSession->imageCut();
 
-    cutLeft_->setValue(cut.left);
-    cutTop_->setValue(cut.top);
-    cutRight_->setValue(cut.right);
-    cutBottom_->setValue(cut.bottom);
+    cutLeft_.setValue(cut.left);
+    cutTop_.setValue(cut.top);
+    cutRight_.setValue(cut.right);
+    cutBottom_.setValue(cut.bottom);
 }

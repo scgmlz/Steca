@@ -21,7 +21,10 @@
 static str const DAT_SFX(".dat"), DAT_SEP(" "), // suffix, separator
     CSV_SFX(".csv"), CSV_SEP(", ");
 
-TabSave::TabSave(bool withTypes) {
+TabSave::TabSave(bool withTypes)
+    : rbDat_("rbDat_", DAT_SFX)
+    , rbCsv_("rbCsv_", CSV_SFX)
+{
 
     setLayout((grid_ = newQ::GridLayout()));
     actBrowse = newQ::Trigger("actBrowse", "Browse...");
@@ -57,13 +60,13 @@ TabSave::TabSave(bool withTypes) {
     grid_->addWidget(gp, 0, 1);
     g = gp->grid();
 
-    g->addWidget((rbDat_ = newQ::RadioButton("rbDat_", DAT_SFX)), 0, 0);
-    g->addWidget((rbCsv_ = newQ::RadioButton("rbCsv_", CSV_SFX)), 1, 0);
+    g->addWidget(&rbDat_, 0, 0);
+    g->addWidget(&rbCsv_, 1, 0);
 
-    connect(rbDat_, &QRadioButton::clicked, [this]() { gHub->saveFmt = DAT_SFX; });
-    connect(rbCsv_, &QRadioButton::clicked, [this]() { gHub->saveFmt = CSV_SFX; });
+    connect(&rbDat_, &QRadioButton::clicked, [this]() { gHub->saveFmt = DAT_SFX; });
+    connect(&rbCsv_, &QRadioButton::clicked, [this]() { gHub->saveFmt = CSV_SFX; });
 
-    (CSV_SFX == gHub->saveFmt ? rbCsv_ : rbDat_)->setChecked(true);
+    (CSV_SFX == gHub->saveFmt ? &rbCsv_ : &rbDat_)->setChecked(true);
 
     gp->setVisible(withTypes);
 }
@@ -76,7 +79,7 @@ str TabSave::filePath(bool withSuffix, bool withNumber) {
     if (withNumber && !fileName.contains("%d"))
         fileName += ".%d";
     if (withSuffix) {
-        str suffix = rbDat_->isChecked() ? DAT_SFX : CSV_SFX;
+        str suffix = rbDat_.isChecked() ? DAT_SFX : CSV_SFX;
         if ("."+QFileInfo(fileName).suffix()!=suffix)
             fileName += suffix;
     }
@@ -86,5 +89,5 @@ str TabSave::filePath(bool withSuffix, bool withNumber) {
 }
 
 str TabSave::separator() const {
-    return rbDat_->isChecked() ? DAT_SEP : CSV_SEP;
+    return rbDat_.isChecked() ? DAT_SEP : CSV_SEP;
 }
