@@ -20,7 +20,7 @@
 
 namespace {
 qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }
-str safeRealText(qreal val) { return qIsFinite(val) ? str::number(val) : ""; }
+QString safeRealText(qreal val) { return qIsFinite(val) ? str::number(val) : ""; }
 } // local methods
 
 // ************************************************************************** //

@@ -37,11 +37,11 @@ public:
             THROW("Cannot find '" + key + "' in function registry");
         return ret;
     }
-    str key_at(const unsigned int idx) const {
+    QString key_at(const unsigned int idx) const {
         return idx>=m_keys.size() ? "" : m_keys[idx];
     }
-    str key_at_or_fail(const unsigned int idx) const {
-        str ret = key_at(idx);
+    QString key_at_or_fail(const unsigned int idx) const {
+        QString ret = key_at(idx);
         if (ret=="")
             THROW("Invalid index in registry lookup");
         return ret;

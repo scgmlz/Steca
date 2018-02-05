@@ -59,7 +59,7 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
                 auto it = memInfo.find(path);
                 if (it != memInfo.end())
                     return *it;
-                str loadInfo = load::loadComment(info);
+                QString loadInfo = load::loadComment(info);
                 memInfo.insert(path, loadInfo);
                 return loadInfo;
             }
@@ -78,7 +78,9 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
 
 namespace file_dialog {
 
-QStringList openFileNames(QWidget* parent, const QString& caption, const QString& dir, const QString& filter, bool plural) {
+QStringList openFileNames(QWidget* parent, const QString& caption, const QString& dir,
+                          const QString& filter, bool plural)
+{
     QFileDialog dlg(parent, caption, dir, filter);
     dlg.setOption(QFileDialog::DontUseNativeDialog);
     dlg.setViewMode(QFileDialog::Detail);
@@ -91,14 +93,18 @@ QStringList openFileNames(QWidget* parent, const QString& caption, const QString
     return {};
 }
 
-str openFileName(QWidget* parent, const QString& caption, const QString& dir, const QString& filter) {
+QString openFileName(
+    QWidget* parent, const QString& caption, const QString& dir, const QString& filter)
+{
     QStringList fileNames = openFileNames(parent, caption, dir, filter, false);
     if (fileNames.isEmpty())
         return "";
     return fileNames.first();
 }
 
-str saveFileName(QWidget* parent, const QString& caption, const QString& dir, const QString& filter) {
+QString saveFileName(
+    QWidget* parent, const QString& caption, const QString& dir, const QString& filter)
+{
     QFileDialog dlg(parent, caption, dir, filter);
 
     dlg.setOption(QFileDialog::DontUseNativeDialog);
@@ -107,14 +113,14 @@ str saveFileName(QWidget* parent, const QString& caption, const QString& dir, co
     dlg.setAcceptMode(QFileDialog::AcceptSave);
     dlg.setConfirmOverwrite(false);
 
-    str fileName;
+    QString fileName;
     if (dlg.exec() && !dlg.selectedFiles().isEmpty())
         fileName = dlg.selectedFiles().first();
 
     return fileName;
 }
 
-str saveDirName(QWidget* parent, const QString& caption, const QString& dir) {
+QString saveDirName(QWidget* parent, const QString& caption, const QString& dir) {
     QFileDialog dlg(parent, caption, dir);
 
     dlg.setOption(QFileDialog::DontUseNativeDialog);
@@ -123,7 +129,7 @@ str saveDirName(QWidget* parent, const QString& caption, const QString& dir) {
     dlg.setAcceptMode(QFileDialog::AcceptSave);
     dlg.setConfirmOverwrite(false);
 
-    str dirName;
+    QString dirName;
     if (dlg.exec() && !dlg.selectedFiles().isEmpty())
         dirName = dlg.selectedFiles().first();
 

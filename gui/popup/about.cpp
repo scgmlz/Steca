@@ -45,9 +45,9 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
     hb->addWidget(logo);
 
 #ifdef __x86_64__
-    str arch = "(64b)";
+    QString arch = "(64b)";
 #else
-    str arch = "";
+    QString arch = "";
 #endif
 
     auto info = newQ::Label(str(

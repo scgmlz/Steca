@@ -19,7 +19,8 @@
 
 namespace file_dialog {
 
-QStringList openFileNames(QWidget*, const QString& caption, const QString& dir, const QString& filter, bool plural=true);
+QStringList openFileNames(QWidget*, const QString& caption, const QString& dir,
+                          const QString& filter, bool plural=true);
 QString openFileName(QWidget*, const QString& caption, const QString& dir, const QString& filter);
 
 QString saveFileName(QWidget*, const QString& caption, const QString& dir, const QString& filter);

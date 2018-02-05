@@ -96,7 +96,7 @@ row_t PeakInfo::data() const {
     return row;
 }
 
-str const PeakInfo::reflStringTag(int attr, bool out) {
+QString const PeakInfo::reflStringTag(int attr, bool out) {
     switch (eReflAttr(attr)) {
     case eReflAttr::ALPHA: return out ? "alpha" : "α";
     case eReflAttr::BETA: return out ? "beta" : "β";

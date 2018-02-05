@@ -101,7 +101,8 @@ MainWin::MainWin()
     trigger_addFiles = newQ::Trigger("trigger_addFiles", "Add files...", ":/icon/add");
     trigger_addFiles->setShortcut(Qt::CTRL | Qt::Key_O);
 
-    trigger_removeFile = newQ::Trigger("trigger_removeFile", "Remove highlighted file", ":/icon/rem");
+    trigger_removeFile = newQ::Trigger(
+        "trigger_removeFile", "Remove highlighted file", ":/icon/rem");
     trigger_removeFile->setShortcut(QKeySequence::Delete);
     trigger_removeFile->setEnabled(false);
     QObject::connect(trigger_removeFile, &QAction::triggered, []() {
@@ -121,7 +122,8 @@ MainWin::MainWin()
             trigger_corrFile->setToolTip(text.toLower());
         });
 
-    toggle_enableCorr = newQ::Toggle("toggle_enableCorr", "Enable correction file", false, ":/icon/useCorrection");
+    toggle_enableCorr = newQ::Toggle(
+        "toggle_enableCorr", "Enable correction file", false, ":/icon/useCorrection");
     connect(toggle_enableCorr, &QAction::toggled, [this](bool on) {
             gSession->corrset().tryEnable(on); });
     QObject::connect(gSession, &Session::sigCorr, [this]() {
@@ -145,12 +147,14 @@ MainWin::MainWin()
 
     toggle_showBins = newQ::Toggle("toggle_showBins", "Show bins", false, ":/icon/angle");
 
-    toggle_fixedIntenImage = newQ::Toggle("toggle_fixedIntenImage", "Global intensity scale", false, ":/icon/scale");
+    toggle_fixedIntenImage = newQ::Toggle(
+        "toggle_fixedIntenImage", "Global intensity scale", false, ":/icon/scale");
     connect(toggle_fixedIntenImage, &QAction::toggled, [this](bool on) {
         isFixedIntenImageScale_ = on;
         emit sigDisplayChanged(); });
 
-    toggle_fixedIntenDgram = newQ::Toggle("toggle_fixedIntenDgram", "Fixed intensity scale", false);
+    toggle_fixedIntenDgram = newQ::Toggle(
+        "toggle_fixedIntenDgram", "Fixed intensity scale", false);
     connect(toggle_fixedIntenDgram, &QAction::toggled, [this](bool on) {
         isFixedIntenDgramScale_ = on;
         emit sigDisplayChanged(); });
@@ -161,11 +165,14 @@ MainWin::MainWin()
         isCombinedDgram_ = on;
         emit sigDisplayChanged(); });
 
-    toggle_selRegions = newQ::Toggle("toggle_selRegions", "Select regions", false, ":/icon/selRegion");
+    toggle_selRegions = newQ::Toggle(
+        "toggle_selRegions", "Select regions", false, ":/icon/selRegion");
 
-    toggle_showBackground = newQ::Toggle("toggle_showBackground", "Show fitted background", false, ":/icon/showBackground");
+    toggle_showBackground = newQ::Toggle(
+        "toggle_showBackground", "Show fitted background", false, ":/icon/showBackground");
 
-    trigger_clearBackground = newQ::Trigger("trigger_clearBackground", "Clear background regions", ":/icon/clear");
+    trigger_clearBackground = newQ::Trigger(
+        "trigger_clearBackground", "Clear background regions", ":/icon/clear");
     connect(trigger_clearBackground, &QAction::triggered, [this]() {
             gSession->baseline().setRanges({}); });
 
@@ -184,7 +191,8 @@ MainWin::MainWin()
 
     trigger_outputDiagrams = newQ::Trigger("trigger_outputDiagrams", "Diagrams...");
 
-    trigger_outputDiffractograms = newQ::Trigger("trigger_outputDiffractograms", "Diffractograms...");
+    trigger_outputDiffractograms = newQ::Trigger(
+        "trigger_outputDiffractograms", "Diffractograms...");
 
     initMenu();
     initLayout();
@@ -217,7 +225,7 @@ void MainWin::initMenu() {
     auto _actionsToMenu = [mbar](const char* menuName, QList<QAction*> actions)->QMenu* {
         QMenu* menu = mbar->addMenu(menuName);
         menu->addActions(actions);
-        str prefix = str("%1: ").arg(menu->title().remove('&'));
+        QString prefix = str("%1: ").arg(menu->title().remove('&'));
         for (auto action : actions)
             action->setToolTip(prefix + action->toolTip());
         return menu;
@@ -378,8 +386,8 @@ void MainWin::checkUpdate() {
 
     QNetworkRequest req;
 
-    str ver = qApp->applicationVersion();
-    str qry = ver % "\t| " % QSysInfo::prettyProductName();
+    QString ver = qApp->applicationVersion();
+    QString qry = ver % "\t| " % QSysInfo::prettyProductName();
     req.setUrl(QUrl(str(STECA2_VERSION_URL) % "?" % qry));
     QNetworkReply* reply = netMan_.get(req);
 
@@ -388,10 +396,10 @@ void MainWin::checkUpdate() {
             qWarning() << "Network Error: " << reply->errorString();
             return;
         }
-        str ver = qApp->applicationVersion();
-        str lastVer = reply->readAll().trimmed();
-        str name = qApp->applicationName();
-        str result;
+        QString ver = qApp->applicationVersion();
+        QString lastVer = reply->readAll().trimmed();
+        QString name = qApp->applicationName();
+        QString result;
         if (ver != lastVer)
             result = str(
                 "<p>The latest released %1 version is %2. You have "
@@ -419,7 +427,7 @@ void MainWin::addFiles() {
 }
 
 void MainWin::loadSession() {
-    str fileName = file_dialog::openFileName(
+    QString fileName = file_dialog::openFileName(
         this, "Load session", QDir::current().absolutePath(), "Session files (*.ste)");
     if (fileName.isEmpty()) {
         TR("load session aborted");
@@ -438,16 +446,16 @@ void MainWin::loadSession() {
 }
 
 void MainWin::saveSession() {
-    str fileName = file_dialog::saveFileName(
+    QString fileName = file_dialog::saveFileName(
         this, "Save session", QDir::current().absolutePath(), "Session files (*.ste)");
     if (!fileName.endsWith(".ste"))
         fileName += ".ste";
     saveSessionTo(QFileInfo(fileName));
 }
 
-void MainWin::execCommand(str line) {
+void MainWin::execCommand(QString line) {
     QStringList argv = line.split(" ");
-    str cmd = argv.at(0);
+    QString cmd = argv.at(0);
     if (cmd=="loadSession") {
         sessionFromFile(argv.at(1));
     } else if (cmd=="quit") {
@@ -553,8 +561,8 @@ QByteArray MainWin::serializeSession() const {
     top.insert("combine", gSession->dataset().binning());
 
     if (gSession->hasCorrFile()) {
-        str absPath = gSession->corrset().raw().fileInfo().absoluteFilePath();
-        str relPath = QDir::current().relativeFilePath(absPath);
+        QString absPath = gSession->corrset().raw().fileInfo().absoluteFilePath();
+        QString relPath = QDir::current().relativeFilePath(absPath);
         top.insert("correction file", relPath);
     }
 
@@ -593,7 +601,7 @@ void MainWin::sessionFromJson(QByteArray const& json) THROWS {
     const QJsonArray& files = top.loadArr("files");
     QStringList paths;
     for (const QJsonValue& file : files) {
-        str filePath = file.toString();
+        QString filePath = file.toString();
         QDir dir(filePath);
         if(!dir.makeAbsolute())
             THROW("Invalid file path: " + filePath);

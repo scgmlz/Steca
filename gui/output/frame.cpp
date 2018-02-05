@@ -26,7 +26,7 @@
 namespace {
 
 struct showcol_t {
-    str name;
+    QString name;
     CCheckBox* cb;
 };
 

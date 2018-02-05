@@ -113,8 +113,8 @@ public:
         *trigger_outputDiffractograms;
 
     // TODO relagate this to TabSave or similar
-    str saveDir; //!< setting: default directory for data export
-    str saveFmt; //!< setting: default format for data export
+    QString saveDir; //!< setting: default directory for data export
+    QString saveFmt; //!< setting: default format for data export
 
 signals:
     void sigDisplayChanged();

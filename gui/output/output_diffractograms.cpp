@@ -135,7 +135,7 @@ void DiffractogramsFrame::save() {
 }
 
 void DiffractogramsFrame::saveCurrent() {
-    str path = tabSave_->filePath(true);
+    QString path = tabSave_->filePath(true);
     if (path.isEmpty())
         return;
     QFile* file = newQ::OutputFile("file", this, path);
@@ -156,7 +156,7 @@ void DiffractogramsFrame::saveAll(bool oneFile) {
     const Experiment& expt = gSession->experiment();
 
     // In one-file mode, start output stream; in multi-file mode, only do prepations.
-    str path = tabSave_->filePath(true, !oneFile);
+    QString path = tabSave_->filePath(true, !oneFile);
     if (path.isEmpty())
         return;
     QTextStream* stream = nullptr;

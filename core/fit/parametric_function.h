@@ -59,7 +59,7 @@ public:
 
     virtual JsonObj to_json() const;
     virtual void from_json(JsonObj const&) THROWS;
-    virtual str name() const = 0;
+    virtual QString name() const = 0;
 
 protected:
     vec<Parameter> parameters_;

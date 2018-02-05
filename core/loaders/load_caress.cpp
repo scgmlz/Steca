@@ -553,8 +553,8 @@ Rawfile loadCaress(const QString& filePath) THROWS {
     return ret;
 }
 
-str loadCaressComment(const QString& filePath) {
-    str s_comment;
+QString loadCaressComment(const QString& filePath) {
+    QString s_comment;
 
     try {
         if(open_data_file(filePath.toLocal8Bit().data(), nullptr))

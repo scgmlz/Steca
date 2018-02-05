@@ -257,12 +257,12 @@ void DiagramsFrame::recalculate() {
 }
 
 void DiagramsFrame::saveDiagramOutput() {
-    str path = tabSave_->filePath(true);
+    QString path = tabSave_->filePath(true);
     if (path.isEmpty()) {
         qWarning() << "cannot save diagram: path is empty";
         return;
     }
-    str separator = tabSave_->separator();
+    QString separator = tabSave_->separator();
     if (tabSave_->currDiagram())
         writeCurrentDiagramOutputFile(path, separator);
     else
@@ -270,7 +270,9 @@ void DiagramsFrame::saveDiagramOutput() {
     qDebug() /* qInfo() TODO restore */ << "diagram saved to " << path;
 }
 
-void DiagramsFrame::writeCurrentDiagramOutputFile(const QString& filePath, const QString& separator) {
+void DiagramsFrame::writeCurrentDiagramOutputFile(
+    const QString& filePath, const QString& separator)
+{
     QFile* file = newQ::OutputFile("file", this, filePath);
     if (!file)
         return;

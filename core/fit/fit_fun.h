@@ -42,7 +42,7 @@ public:
     JsonObj to_json() const final;
     void from_json(JsonObj const&) THROWS final;
 
-    str name() const final { return "polynom"; }
+    QString name() const final { return "polynom"; }
 };
 
 

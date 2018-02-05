@@ -144,7 +144,7 @@ bool JsonObj::loadBool(const QString& key, bool def) const THROWS{
     return value(key).isUndefined() ? def : loadBool(key);
 }
 
-str JsonObj::loadString(const QString& key) const THROWS {
+QString JsonObj::loadString(const QString& key) const THROWS {
     const QJsonValue& val = value(key);
     switch (val.type()) {
     case QJsonValue::String: return val.toString();
@@ -152,7 +152,7 @@ str JsonObj::loadString(const QString& key) const THROWS {
     }
 }
 
-str JsonObj::loadString(const QString& key, const QString& def) const THROWS{
+QString JsonObj::loadString(const QString& key, const QString& def) const THROWS{
     return value(key).isUndefined() ? def : loadString(key);
 }
 

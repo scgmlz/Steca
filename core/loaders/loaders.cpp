@@ -21,7 +21,7 @@ namespace load {
 Rawfile loadCaress(const QString& filePath) THROWS;
 Rawfile loadMar(const QString& filePath) THROWS;
 Rawfile loadTiffDat(const QString& filePath) THROWS;
-str loadCaressComment(const QString& filePath);
+QString loadCaressComment(const QString& filePath);
 }
 
 namespace {
@@ -54,7 +54,7 @@ bool couldBeTiffDat(QFileInfo const& info) {
     bool ret = false;
     QByteArray line;
     while (!(line = file.readLine()).isEmpty()) {
-        str s = line;
+        QString s = line;
         const int commentPos = s.indexOf(';');
         if (commentPos >= 0)
             s = s.left(commentPos);
@@ -93,7 +93,7 @@ QSharedPointer<Rawfile> loadRawfile(const QString& filePath) THROWS {
     return ret;
 }
 
-str loadComment(QFileInfo const& info) {
+QString loadComment(QFileInfo const& info) {
     const QString& path = info.absoluteFilePath();
     if (couldBeCaress(info))
         return "[car] " + loadCaressComment(path);

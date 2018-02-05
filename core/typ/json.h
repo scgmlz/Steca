@@ -56,8 +56,8 @@ public:
     bool loadBool(const QString& key) const THROWS;
     bool loadBool(const QString& key, bool def) const THROWS;
 
-    str loadString(const QString& key) const THROWS;
-    str loadString(const QString& key, const QString& def) const THROWS;
+    QString loadString(const QString& key) const THROWS;
+    QString loadString(const QString& key, const QString& def) const THROWS;
 
     Range loadRange(const QString& key) const THROWS;
 

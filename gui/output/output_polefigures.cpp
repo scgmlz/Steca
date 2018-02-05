@@ -154,17 +154,17 @@ void TabGraph::paintPoints() {
     qreal rgeMax = rs_.rgeInten().max;
 
     /*
-As I read the code: the body of the 'for' loop (for all points) is guarded by 'if (qIsFinite(inten))'. NaNs are not finite, so they do not get painted.
+[Jan:] As I read the code: the body of the 'for' loop (for all points) is guarded by
+'if (qIsFinite(inten))'. NaNs are not finite, so they do not get painted.
 
-Inside the outer 'if' (for finite inten) is 'if (flat_) ... else' where the 'then' branch paints all points blue and the same size (.5), and the 'else' branch paints them in various colours and size according to intensity.
+Inside the outer 'if' (for finite inten) is 'if (flat_) ... else' where the 'then'
+branch paints all points blue and the same size (.5), and the 'else' branch paints
+them in various colours and size according to intensity.
 
 The 'flat_' flag is controlled by the check box that is in the corner of the pole graph.
 
-NaNs (intensities) do not occur in computed points, only in interpolated points, when interpolation fails.
-
-Cheers, and many happy days with Steca! :)
-
-Jan
+NaNs (intensities) do not occur in computed points, only in interpolated points,
+when interpolation fails.
     */
     for (const PeakInfo& r : rs_) {
         qreal inten = r.inten();
@@ -304,7 +304,7 @@ void PoleFiguresFrame::displayPeak(int reflIndex, bool interpolated) {
 void PoleFiguresFrame::savePoleFigureOutput() {
     int reflCount = gSession->peaks().count();
     ASSERT(reflCount); // user should not get here if no peak is defined
-    str path = tabSave_->filePath(false);
+    QString path = tabSave_->filePath(false);
     if (path.isEmpty()) {
         qWarning() << "cannot save pole figure: file path is empty";
         return;
@@ -318,7 +318,7 @@ void PoleFiguresFrame::savePoleFigureOutput() {
         writePoleFigureOutputFiles(path, i);
 }
 
-static str const OUT_FILE_TAG(".refl%1");
+static QString const OUT_FILE_TAG(".refl%1");
 static int const MAX_LINE_LENGTH_POL(9);
 
 void PoleFiguresFrame::writePoleFigureOutputFiles(const QString& filePath, int index) {
@@ -328,7 +328,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(const QString& filePath, int i
     else
         reflInfo = calcPoints_.at(index);
     bool withFit = !gSession->peaks().at(index).isRaw();
-    str path = str(filePath + OUT_FILE_TAG).arg(index + 1);
+    QString path = str(filePath + OUT_FILE_TAG).arg(index + 1);
     bool check = false;
     int numSavedFiles = 0;
 
@@ -394,7 +394,9 @@ void PoleFiguresFrame::writeErrorMask(
     }
 }
 
-void PoleFiguresFrame::writePoleFile(const QString& filePath, PeakInfos reflInfo, vec<qreal> const& output) {
+void PoleFiguresFrame::writePoleFile(
+    const QString& filePath, PeakInfos reflInfo, vec<qreal> const& output)
+{
     QFile* file = newQ::OutputFile("file", this, filePath);
     if (!file)
         return;
@@ -412,7 +414,9 @@ void PoleFiguresFrame::writePoleFile(const QString& filePath, PeakInfos reflInfo
     }
 }
 
-void PoleFiguresFrame::writeListFile(const QString& filePath, PeakInfos reflInfo, vec<qreal> const& output) {
+void PoleFiguresFrame::writeListFile(
+    const QString& filePath, PeakInfos reflInfo, vec<qreal> const& output)
+{
     QFile* file = newQ::OutputFile("file", this, filePath);
     QTextStream stream(file);
 

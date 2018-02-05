@@ -50,7 +50,8 @@ public:
     qreal readReal(const QString& key, qreal def = 0);
     void saveReal(const QString& key, qreal val) { saveVariant(key, val); }
 
-    str readStr(const QString& key, const QString& def = "") { return readVariant(key, def).toString(); }
+    QString readStr(const QString& key, const QString& def = "") {
+        return readVariant(key, def).toString(); }
     void saveStr(const QString& key, const QString& val) { saveVariant(key, val); }
 };
 

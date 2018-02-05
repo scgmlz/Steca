@@ -22,8 +22,8 @@
 class TabSave : public QWidget {
 public:
     TabSave(bool withTypes);
-    str filePath(bool withSuffix, bool withNumber=false);
-    str separator() const;
+    QString filePath(bool withSuffix, bool withNumber=false);
+    QString separator() const;
     QAction *actBrowse, *actSave;
 protected:
     QGridLayout* grid_;

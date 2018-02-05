@@ -108,7 +108,7 @@ cmp_vec Metadata::attributeCmps() {
     return cmps;
 }
 
-str Metadata::attributeStrValue(int i) const {
+QString Metadata::attributeStrValue(int i) const {
     qreal value = 0;
 
     switch (eAttr(i)) {

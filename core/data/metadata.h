@@ -33,13 +33,13 @@ public:
     static QStringList attributeTags(bool out);
     static cmp_vec attributeCmps();
 
-    str attributeStrValue(int) const;
+    QString attributeStrValue(int) const;
     QVariant attributeValue(int) const;
     row_t attributeValues() const;
 
     static row_t attributeNaNs();
 
-    str date, comment;
+    QString date, comment;
 
     deg motorXT, motorYT, motorZT, motorOmg, motorTth, motorPhi, motorChi, motorPST, motorSST,
         motorOMGM;

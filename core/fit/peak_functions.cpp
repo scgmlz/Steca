@@ -38,7 +38,7 @@ public:
     void setRange(const Range&);
     void fit(Curve const&, const Range&);
 
-    str name() const final { return "Raw"; }
+    QString name() const final { return "Raw"; }
     bool isRaw() const final { return true; }
 
 private:
@@ -126,7 +126,7 @@ public:
     qpair peakError() const;
     fwhm_t fwhmError() const;
 
-    str name() const final { return "Gaussian"; }
+    QString name() const final { return "Gaussian"; }
 };
 
 Gaussian::Gaussian(qreal ampl, qreal xShift, qreal sigma) {
@@ -226,7 +226,7 @@ public:
     qpair peakError() const;
     fwhm_t fwhmError() const;
 
-    str name() const final { return "Lorentzian"; }
+    QString name() const final { return "Lorentzian"; }
 };
 
 Lorentzian::Lorentzian(qreal ampl, qreal xShift, qreal gamma) {
@@ -325,7 +325,7 @@ public:
     qpair peakError() const;
     fwhm_t fwhmError() const;
 
-    str name() const final { return "PseudoVoigt1"; }
+    QString name() const final { return "PseudoVoigt1"; }
 };
 
 PseudoVoigt1::PseudoVoigt1(qreal ampl, qreal xShift, qreal sigmaGamma, qreal eta) {
@@ -441,7 +441,7 @@ public:
     qpair peakError() const;
     fwhm_t fwhmError() const;
 
-    str name() const final { return "PseudoVoigt2"; }
+    QString name() const final { return "PseudoVoigt2"; }
 };
 
 PseudoVoigt2::PseudoVoigt2(qreal ampl, qreal mu, qreal hwhmG, qreal hwhmL, qreal eta) {

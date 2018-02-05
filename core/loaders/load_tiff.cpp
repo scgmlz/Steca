@@ -52,7 +52,7 @@ Rawfile loadTiffDat(const QString& filePath) THROWS {
 
     QByteArray line;
     while (!(line = f.readLine()).isEmpty()) {
-        str s = line;
+        QString s = line;
 
         // cut off comment
         int commentPos = s.indexOf(';');
@@ -69,7 +69,7 @@ Rawfile loadTiffDat(const QString& filePath) THROWS {
 
         // file, phi, monitor, expTime
         bool ok;
-        str tiffFileName = lst.at(0);
+        QString tiffFileName = lst.at(0);
         deg phi = lst.at(1).toDouble(&ok);
         if (!(ok)) THROW("bad phi value");
 
@@ -96,8 +96,9 @@ Rawfile loadTiffDat(const QString& filePath) THROWS {
     return ret;
 }
 
-static void loadTiff(Rawfile* file, const QString& filePath, deg phi, qreal monitor, qreal expTime) THROWS {
-
+static void loadTiff(
+    Rawfile* file, const QString& filePath, deg phi, qreal monitor, qreal expTime) THROWS
+{
     Metadata md;
     md.motorPhi = phi;
     md.monitorCount = monitor;

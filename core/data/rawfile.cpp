@@ -38,7 +38,7 @@ QFileInfo const& Rawfile::fileInfo() const {
     return fileInfo_;
 }
 
-str Rawfile::fileName() const {
+QString Rawfile::fileName() const {
     return fileInfo_.fileName();
 }
 

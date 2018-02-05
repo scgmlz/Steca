@@ -80,7 +80,9 @@ QAction* newQ::Trigger(const QString& name, const QString& text, const QString& 
     return ret;
 };
 
-QAction* newQ::Toggle(const QString& name, const QString& text, bool value, const QString& iconFile) {
+QAction* newQ::Toggle(
+    const QString& name, const QString& text, bool value, const QString& iconFile)
+{
     QAction* ret = new QAction(text, qApp);
     ret->setToolTip(text.toLower());
     if (iconFile!="")
@@ -100,7 +102,8 @@ QAction* newQ::Toggle(const QString& name, const QString& text, bool value, cons
 };
 
 QFile* newQ::OutputFile(
-    const QString& name, QWidget* parent, const QString& path, bool check_overwrite) {
+    const QString& name, QWidget* parent, const QString& path, bool check_overwrite)
+{
     QFile* ret = new QFile(path);
     if (check_overwrite && ret->exists() &&
         QMessageBox::question(parent, "File exists", "Overwrite " + path + " ?") !=
@@ -132,7 +135,8 @@ XLineDisplay::XLineDisplay(int ndigits, bool withDot) {
 
 
 CSettable::CSettable(const QString& name, std::function<void(const QString&)> setter)
-    : name_(name) {
+    : name_(name)
+{
     gConsole->registerSetter(name, setter);
 }
 
@@ -144,7 +148,8 @@ CSettable::~CSettable() {
 // However, sometimes we want to make a QSpinBox exactly as wide as a given QDoubleSpinBox,
 // for nice vertical alignement. Then we use withDot=true.
 CSpinBox::CSpinBox(const QString& _name, int ndigits, bool withDot, int min, int max)
-    : CSettable(_name, [this](const QString& val)->void { setValue(val.toInt()); }) {
+    : CSettable(_name, [this](const QString& val)->void { setValue(val.toInt()); })
+{
     setWidth(this, ndigits, withDot);
     setMinimum(min);
     setMaximum(max > min ? max : min);
@@ -153,7 +158,8 @@ CSpinBox::CSpinBox(const QString& _name, int ndigits, bool withDot, int min, int
 }
 
 CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, qreal min, qreal max)
-    : CSettable(_name, [this](const QString& val)->void { setValue(val.toDouble()); }) {
+    : CSettable(_name, [this](const QString& val)->void { setValue(val.toDouble()); })
+{
     setWidth(this, ndigits, true);
     setMinimum(min);
     setMaximum(max > min ? max : min);
@@ -163,7 +169,8 @@ CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, qreal min, qre
 
 CCheckBox::CCheckBox(const QString& _name, QAction* action)
     : QCheckBox(action ? action->text().toLower() : "")
-    , CSettable(_name, [this](const QString& val)->void { setChecked(val.toInt()); }) {
+    , CSettable(_name, [this](const QString& val)->void { setChecked(val.toInt()); })
+{
     if (!action)
         return;
     connect(this, &QCheckBox::toggled, [action](bool on) { action->setChecked(on); });
@@ -175,19 +182,22 @@ CCheckBox::CCheckBox(const QString& _name, QAction* action)
 }
 
 CCheckBox::CCheckBox(const QString& name, const QString& text)
-    : CCheckBox(name, {}) {
+    : CCheckBox(name, {})
+{
     setText(text);
 }
 
 CRadioButton::CRadioButton(const QString& _name, const QString& text)
     : QRadioButton(text)
-    , CSettable(_name, [this](const QString& val)->void { setChecked(val.toInt()); }) {
+    , CSettable(_name, [this](const QString& val)->void { setChecked(val.toInt()); })
+{
     connect(this, _SLOT_(QRadioButton, toggled, bool), [this](bool val)->void {
             gConsole->log(name()+"="+(val?"y":"n")); });
 }
 
 CComboBox::CComboBox(const QString& _name, const QStringList& items)
-    : CSettable(_name, [this](const QString& val)->void { setCurrentIndex(val.toInt()); }) {
+    : CSettable(_name, [this](const QString& val)->void { setCurrentIndex(val.toInt()); })
+{
     addItems(items);
     connect(this, _SLOT_(QComboBox, currentIndexChanged, int), [this](int val)->void {
             gConsole->log(name()+"="+QString::number(val)); });

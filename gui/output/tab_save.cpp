@@ -18,7 +18,7 @@
 #include "gui/mainwin.h"
 #include <QDir>
 
-static str const DAT_SFX(".dat"), DAT_SEP(" "), // suffix, separator
+static QString const DAT_SFX(".dat"), DAT_SEP(" "), // suffix, separator
     CSV_SFX(".csv"), CSV_SEP(", ");
 
 TabSave::TabSave(bool withTypes)
@@ -30,7 +30,7 @@ TabSave::TabSave(bool withTypes)
     actBrowse = newQ::Trigger("actBrowse", "Browse...");
     actSave = newQ::Trigger("actSave", "Save");
 
-    str dir = gGui->saveDir;
+    QString dir = gGui->saveDir;
     if (!QDir(dir).exists())
         dir = QDir::current().absolutePath();
 
@@ -51,7 +51,7 @@ TabSave::TabSave(bool withTypes)
     g->addWidget(file_, 1, 1);
 
     connect(actBrowse, &QAction::triggered, [this]() {
-        str dir = file_dialog::saveDirName(this, "Select folder", dir_->text());
+        QString dir = file_dialog::saveDirName(this, "Select folder", dir_->text());
         if (!dir.isEmpty())
             dir_->setText((gGui->saveDir = dir));
     });
@@ -71,15 +71,15 @@ TabSave::TabSave(bool withTypes)
     gp->setVisible(withTypes);
 }
 
-str TabSave::filePath(bool withSuffix, bool withNumber) {
-    str dir = dir_->text().trimmed();
-    str fileName = file_->text().trimmed();
+QString TabSave::filePath(bool withSuffix, bool withNumber) {
+    QString dir = dir_->text().trimmed();
+    QString fileName = file_->text().trimmed();
     if (dir.isEmpty() || fileName.isEmpty())
         return "";
     if (withNumber && !fileName.contains("%d"))
         fileName += ".%d";
     if (withSuffix) {
-        str suffix = rbDat_.isChecked() ? DAT_SFX : CSV_SFX;
+        QString suffix = rbDat_.isChecked() ? DAT_SFX : CSV_SFX;
         if ("."+QFileInfo(fileName).suffix()!=suffix)
             fileName += suffix;
     }
@@ -88,6 +88,6 @@ str TabSave::filePath(bool withSuffix, bool withNumber) {
     return QFileInfo(dir + '/' + fileName).absoluteFilePath();
 }
 
-str TabSave::separator() const {
+QString TabSave::separator() const {
     return rbDat_.isChecked() ? DAT_SEP : CSV_SEP;
 }

@@ -30,7 +30,6 @@ public:
     Measurement(const int position, const Metadata&, const size2d&, const inten_vec&);
 
     int position() const { return position_; }
-// TODO REPLACE    int totalPosition() const; //!< position in full list of currently loaded measurements
     shp_Metadata metadata() const { return md_; }
 
     deg midTth() const;

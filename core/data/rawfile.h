@@ -40,7 +40,7 @@ public:
     size2d imageSize() const { return imageSize_; }
 
     QFileInfo const& fileInfo() const;
-    str fileName() const;
+    QString fileName() const;
     shp_Image foldedImage() const;
 
 private:

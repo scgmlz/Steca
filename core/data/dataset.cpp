@@ -254,7 +254,8 @@ const Cluster& Dataset::clusterAt(int i) const {
 QJsonArray Dataset::to_json() const {
     QJsonArray ret;
     for (const Datafile& file : files_) {
-        str relPath = QDir::current().relativeFilePath(file.raw_->fileInfo().absoluteFilePath());
+        QString relPath =
+            QDir::current().relativeFilePath(file.raw_->fileInfo().absoluteFilePath());
         ret.append(relPath);
     }
     return ret;
