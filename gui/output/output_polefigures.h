@@ -20,7 +20,7 @@
 //! The modal dialog for generating and saving pole figures
 class PoleFiguresFrame : public Frame {
 public:
-    PoleFiguresFrame(rcstr title, QWidget*);
+    PoleFiguresFrame(const QString& title, QWidget*);
 
 private:
     class TabGraph* tabGraph_;
@@ -29,10 +29,10 @@ private:
     void displayPeak(int reflIndex, bool interpolated);
 
     void savePoleFigureOutput();
-    void writePoleFigureOutputFiles(rcstr filePath, int index);
-    void writePoleFile(rcstr filePath, PeakInfos, vec<qreal> const&);
-    void writeListFile(rcstr filePath, PeakInfos, vec<qreal> const&);
-    void writeErrorMask(rcstr filePath, PeakInfos, vec<qreal> const&);
+    void writePoleFigureOutputFiles(const QString& filePath, int index);
+    void writePoleFile(const QString& filePath, PeakInfos, vec<qreal> const&);
+    void writeListFile(const QString& filePath, PeakInfos, vec<qreal> const&);
+    void writeErrorMask(const QString& filePath, PeakInfos, vec<qreal> const&);
 };
 
 #endif // OUTPUT_POLEFIGURES_H

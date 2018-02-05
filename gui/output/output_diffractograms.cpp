@@ -24,7 +24,7 @@
 namespace {
 
 void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
-                const Range& rgeGma, rcstr separator) {
+                const Range& rgeGma, const QString& separator) {
 
     ASSERT(rgeGma.isValid());
     const Metadata* md = cluster->avgeMetadata().data();
@@ -106,7 +106,7 @@ TabDiffractogramsSave::TabDiffractogramsSave()
 //  class DiffractogramsFrame
 // ************************************************************************** //
 
-DiffractogramsFrame::DiffractogramsFrame(rcstr title, QWidget* parent)
+DiffractogramsFrame::DiffractogramsFrame(const QString& title, QWidget* parent)
     : Frame(title, new Params(PANELS), parent) {
     tabs_->removeTab(0);
     btnCalculate_->hide();

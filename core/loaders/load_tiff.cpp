@@ -22,7 +22,7 @@
 namespace load {
 
 // implemented below
-static void loadTiff(Rawfile*, rcstr, deg, qreal, qreal) THROWS;
+static void loadTiff(Rawfile*, const QString&, deg, qreal, qreal) THROWS;
 
 // The dat file looks like so:
 /*
@@ -41,7 +41,7 @@ Aus-Weimin-00008.tif -55
 Aus-Weimin-00009.tif -50
 */
 
-Rawfile loadTiffDat(rcstr filePath) THROWS {
+Rawfile loadTiffDat(const QString& filePath) THROWS {
     Rawfile ret(filePath);
 
     QFile f(filePath);
@@ -96,7 +96,7 @@ Rawfile loadTiffDat(rcstr filePath) THROWS {
     return ret;
 }
 
-static void loadTiff(Rawfile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) THROWS {
+static void loadTiff(Rawfile* file, const QString& filePath, deg phi, qreal monitor, qreal expTime) THROWS {
 
     Metadata md;
     md.motorPhi = phi;

@@ -23,7 +23,7 @@
 
 class DockWidget : public QDockWidget {
 public:
-    DockWidget(rcstr name, rcstr objectName);
+    DockWidget(const QString& name, const QString& objectName);
 
 protected:
     QBoxLayout* box_;

@@ -260,7 +260,7 @@ QJsonArray Dataset::to_json() const {
     return ret;
 }
 
-bool Dataset::hasFile(rcstr fileName) const {
+bool Dataset::hasFile(const QString& fileName) const {
     QFileInfo fileInfo(fileName);
     for (const Datafile& file : files_)
         if (fileInfo == file.raw_->fileInfo())

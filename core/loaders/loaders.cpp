@@ -18,10 +18,10 @@
 #include <QFileInfo>
 
 namespace load {
-Rawfile loadCaress(rcstr filePath) THROWS;
-Rawfile loadMar(rcstr filePath) THROWS;
-Rawfile loadTiffDat(rcstr filePath) THROWS;
-str loadCaressComment(rcstr filePath);
+Rawfile loadCaress(const QString& filePath) THROWS;
+Rawfile loadMar(const QString& filePath) THROWS;
+Rawfile loadTiffDat(const QString& filePath) THROWS;
+str loadCaressComment(const QString& filePath);
 }
 
 namespace {
@@ -68,7 +68,7 @@ bool couldBeTiffDat(QFileInfo const& info) {
     return ret;
 }
 
-Rawfile load_low_level(rcstr filePath) THROWS {
+Rawfile load_low_level(const QString& filePath) THROWS {
     const QFileInfo info(filePath);
     if (!(info.exists()))
         THROW("File " % filePath % " does not exist");
@@ -87,7 +87,7 @@ Rawfile load_low_level(rcstr filePath) THROWS {
 
 namespace load {
 
-QSharedPointer<Rawfile> loadRawfile(rcstr filePath) THROWS {
+QSharedPointer<Rawfile> loadRawfile(const QString& filePath) THROWS {
     const QSharedPointer<Rawfile> ret(new Rawfile(load_low_level(filePath)));
     if (!(ret->count() > 0)) THROW("File " % filePath % " contains no cluster");
     return ret;

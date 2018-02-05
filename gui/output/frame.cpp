@@ -251,7 +251,7 @@ Params::Params(ePanels panels)
 //  class Frame
 // ************************************************************************** //
 
-Frame::Frame(rcstr title, Params* params, QWidget* parent) : QDialog(parent) {
+Frame::Frame(const QString& title, Params* params, QWidget* parent) : QDialog(parent) {
 
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);

@@ -55,7 +55,7 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
                 fileModel->index(mapToSource(idx).row(), 0, mapToSource(idx.parent()));
             QFileInfo info(fileModel->rootDirectory().filePath(fileModel->fileName(ix0)));
             if (info.isFile()) {
-                rcstr path = info.absoluteFilePath();
+                const QString& path = info.absoluteFilePath();
                 auto it = memInfo.find(path);
                 if (it != memInfo.end())
                     return *it;
@@ -78,7 +78,7 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
 
 namespace file_dialog {
 
-QStringList openFileNames(QWidget* parent, rcstr caption, rcstr dir, rcstr filter, bool plural) {
+QStringList openFileNames(QWidget* parent, const QString& caption, const QString& dir, const QString& filter, bool plural) {
     QFileDialog dlg(parent, caption, dir, filter);
     dlg.setOption(QFileDialog::DontUseNativeDialog);
     dlg.setViewMode(QFileDialog::Detail);
@@ -91,14 +91,14 @@ QStringList openFileNames(QWidget* parent, rcstr caption, rcstr dir, rcstr filte
     return {};
 }
 
-str openFileName(QWidget* parent, rcstr caption, rcstr dir, rcstr filter) {
+str openFileName(QWidget* parent, const QString& caption, const QString& dir, const QString& filter) {
     QStringList fileNames = openFileNames(parent, caption, dir, filter, false);
     if (fileNames.isEmpty())
         return "";
     return fileNames.first();
 }
 
-str saveFileName(QWidget* parent, rcstr caption, rcstr dir, rcstr filter) {
+str saveFileName(QWidget* parent, const QString& caption, const QString& dir, const QString& filter) {
     QFileDialog dlg(parent, caption, dir, filter);
 
     dlg.setOption(QFileDialog::DontUseNativeDialog);
@@ -114,7 +114,7 @@ str saveFileName(QWidget* parent, rcstr caption, rcstr dir, rcstr filter) {
     return fileName;
 }
 
-str saveDirName(QWidget* parent, rcstr caption, rcstr dir) {
+str saveDirName(QWidget* parent, const QString& caption, const QString& dir) {
     QFileDialog dlg(parent, caption, dir);
 
     dlg.setOption(QFileDialog::DontUseNativeDialog);

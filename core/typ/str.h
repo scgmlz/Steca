@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/typ/str.h
-//! @brief     Defines str:=QString and rcstr
+//! @brief     Defines str:=QString
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -16,9 +16,6 @@
 #define STR_H
 
 #include <QString>
-
-// string support
-typedef QString str; // a short alias for the QString class
-typedef str const& rcstr; // a reference to a string constant
+typedef QString str; // a short alias
 
 #endif // STR_H

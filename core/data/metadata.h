@@ -29,7 +29,7 @@ public:
     // attribute list - will be dynamic
     static int numAttributes(bool onlyNum);
 
-    static rcstr attributeTag(int, bool out);
+    static const QString& attributeTag(int, bool out);
     static QStringList attributeTags(bool out);
     static cmp_vec attributeCmps();
 

@@ -24,7 +24,7 @@
 
 namespace load {
 
-Rawfile loadCaress(rcstr filePath) THROWS {
+Rawfile loadCaress(const QString& filePath) THROWS {
     Rawfile ret(filePath);
 
     if(open_data_file(filePath.toLocal8Bit().data(), nullptr))
@@ -553,7 +553,7 @@ Rawfile loadCaress(rcstr filePath) THROWS {
     return ret;
 }
 
-str loadCaressComment(rcstr filePath) {
+str loadCaressComment(const QString& filePath) {
     str s_comment;
 
     try {

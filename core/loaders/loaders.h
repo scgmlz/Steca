@@ -27,7 +27,7 @@ class QFileInfo;
 namespace load {
 
 //! load a file; file type will be sensed
-QSharedPointer<Rawfile> loadRawfile(rcstr filePath) THROWS;
+QSharedPointer<Rawfile> loadRawfile(const QString& filePath) THROWS;
 
 str loadComment(QFileInfo const& info);
 

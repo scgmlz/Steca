@@ -274,7 +274,7 @@ void TabPoleFiguresSave::rawReflSettings(bool on) {
 static const Params::ePanels PANELS =
     Params::ePanels(Params::REFLECTION | Params::GAMMA | Params::POINTS | Params::INTERPOLATION);
 
-PoleFiguresFrame::PoleFiguresFrame(rcstr title, QWidget* parent)
+PoleFiguresFrame::PoleFiguresFrame(const QString& title, QWidget* parent)
     : Frame(title, new Params(PANELS), parent) {
     {
         auto* tab = new QWidget();
@@ -321,7 +321,7 @@ void PoleFiguresFrame::savePoleFigureOutput() {
 static str const OUT_FILE_TAG(".refl%1");
 static int const MAX_LINE_LENGTH_POL(9);
 
-void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, int index) {
+void PoleFiguresFrame::writePoleFigureOutputFiles(const QString& filePath, int index) {
     PeakInfos reflInfo;
     if (getInterpolated())
         reflInfo = interpPoints_.at(index);
@@ -376,7 +376,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(rcstr filePath, int index) {
 }
 
 void PoleFiguresFrame::writeErrorMask(
-    rcstr filePath, PeakInfos reflInfo, vec<qreal> const& output) {
+    const QString& filePath, PeakInfos reflInfo, vec<qreal> const& output) {
     QFile* file = newQ::OutputFile("file", this, filePath);
     if (!file)
         return;
@@ -394,7 +394,7 @@ void PoleFiguresFrame::writeErrorMask(
     }
 }
 
-void PoleFiguresFrame::writePoleFile(rcstr filePath, PeakInfos reflInfo, vec<qreal> const& output) {
+void PoleFiguresFrame::writePoleFile(const QString& filePath, PeakInfos reflInfo, vec<qreal> const& output) {
     QFile* file = newQ::OutputFile("file", this, filePath);
     if (!file)
         return;
@@ -412,7 +412,7 @@ void PoleFiguresFrame::writePoleFile(rcstr filePath, PeakInfos reflInfo, vec<qre
     }
 }
 
-void PoleFiguresFrame::writeListFile(rcstr filePath, PeakInfos reflInfo, vec<qreal> const& output) {
+void PoleFiguresFrame::writeListFile(const QString& filePath, PeakInfos reflInfo, vec<qreal> const& output) {
     QFile* file = newQ::OutputFile("file", this, filePath);
     QTextStream stream(file);
 

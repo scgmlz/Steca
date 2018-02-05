@@ -15,7 +15,7 @@
 #include "gui/cfg/settings.h"
 #include "core/def/debug.h"
 
-Settings::Settings(rcstr group) {
+Settings::Settings(const QString& group) {
     setFallbacksEnabled(false);
     beginGroup(group);
 }
@@ -24,51 +24,51 @@ Settings::~Settings() {
     endGroup();
 }
 
-QVariant Settings::readVariant(rcstr key, const QVariant& def) {
+QVariant Settings::readVariant(const QString& key, const QVariant& def) {
     auto val = value(key, def);
     return val;
 }
 
-void Settings::read(rcstr key, QAction* act, bool def) {
+void Settings::read(const QString& key, QAction* act, bool def) {
     ASSERT(act->isCheckable());
     if (act)
         act->setChecked(readVariant(key, def).toBool());
 }
 
-void Settings::save(rcstr key, QAction* act) {
+void Settings::save(const QString& key, QAction* act) {
     ASSERT(act->isCheckable());
     if (act)
         saveVariant(key, act->isChecked());
 }
 
-void Settings::read(rcstr key, QSpinBox* box, int def) {
+void Settings::read(const QString& key, QSpinBox* box, int def) {
     if (box)
         box->setValue(readVariant(key, def).toInt());
 }
 
-void Settings::save(rcstr key, QSpinBox* box) {
+void Settings::save(const QString& key, QSpinBox* box) {
     if (box)
         saveVariant(key, box->value());
 }
 
-void Settings::read(rcstr key, QDoubleSpinBox* box, qreal def) {
+void Settings::read(const QString& key, QDoubleSpinBox* box, qreal def) {
     if (box)
         box->setValue(readVariant(key, def).toDouble());
 }
 
-void Settings::save(rcstr key, QDoubleSpinBox* box) {
+void Settings::save(const QString& key, QDoubleSpinBox* box) {
     if (box)
         saveVariant(key, box->value());
 }
 
-qreal Settings::readReal(rcstr key, qreal def) {
+qreal Settings::readReal(const QString& key, qreal def) {
     auto var = readVariant(key, QVariant());
     bool ok;
     qreal val = var.toDouble(&ok);
     return ok ? val : def;
 }
 
-int Settings::readInt(rcstr key, int def) {
+int Settings::readInt(const QString& key, int def) {
     auto var = readVariant(key, QVariant());
     bool ok;
     int val = var.toInt(&ok);

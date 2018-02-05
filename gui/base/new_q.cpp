@@ -59,18 +59,18 @@ QGridLayout* newQ::GridLayout() {
 QToolButton* newQ::TextButton(QAction* action) { return new XTextButton(action); }
 QToolButton* newQ::IconButton(QAction* action) { return new XIconButton(action); }
 
-QLabel* newQ::Label(rcstr text) {
+QLabel* newQ::Label(const QString& text) {
     return new QLabel(text);
 }
 
-QLabel* newQ::Icon(rcstr fileName) {
+QLabel* newQ::Icon(const QString& fileName) {
     auto ret = new QLabel;
     int h = ret->sizeHint().height();
     ret->setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
     return ret;
 }
 
-QAction* newQ::Trigger(const QString& name, rcstr text, rcstr iconFile) {
+QAction* newQ::Trigger(const QString& name, const QString& text, const QString& iconFile) {
     QAction* ret = new QAction(text, qApp);
     ret->setToolTip(text.toLower());
     if (iconFile!="")
@@ -80,7 +80,7 @@ QAction* newQ::Trigger(const QString& name, rcstr text, rcstr iconFile) {
     return ret;
 };
 
-QAction* newQ::Toggle(const QString& name, rcstr text, bool value, rcstr iconFile) {
+QAction* newQ::Toggle(const QString& name, const QString& text, bool value, const QString& iconFile) {
     QAction* ret = new QAction(text, qApp);
     ret->setToolTip(text.toLower());
     if (iconFile!="")
@@ -174,12 +174,12 @@ CCheckBox::CCheckBox(const QString& _name, QAction* action)
             gConsole->log(name()+"="+QString::number(val)); });
 }
 
-CCheckBox::CCheckBox(const QString& name, rcstr text)
+CCheckBox::CCheckBox(const QString& name, const QString& text)
     : CCheckBox(name, {}) {
     setText(text);
 }
 
-CRadioButton::CRadioButton(const QString& _name, rcstr text)
+CRadioButton::CRadioButton(const QString& _name, const QString& text)
     : QRadioButton(text)
     , CSettable(_name, [this](const QString& val)->void { setChecked(val.toInt()); }) {
     connect(this, _SLOT_(QRadioButton, toggled, bool), [this](bool val)->void {

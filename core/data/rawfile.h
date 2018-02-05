@@ -31,7 +31,7 @@ public:
     Rawfile(const Rawfile&) = delete;
     // allow move so that the low-level loaders must not bother about shared pointers:
     Rawfile(Rawfile&&) = default;
-    Rawfile(rcstr fileName);
+    Rawfile(const QString& fileName);
 
     void addDataset(const Metadata&, size2d const&, inten_vec const&);
 

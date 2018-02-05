@@ -153,7 +153,7 @@ TabDiagramsSave::TabDiagramsSave()
 //  class DiagramsFrame
 // ************************************************************************** //
 
-DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
+DiagramsFrame::DiagramsFrame(const QString& title, QWidget* parent)
     : Frame(title, new Params(PANELS), parent)
 {
     btnInterpolate_->hide();
@@ -270,7 +270,7 @@ void DiagramsFrame::saveDiagramOutput() {
     qDebug() /* qInfo() TODO restore */ << "diagram saved to " << path;
 }
 
-void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator) {
+void DiagramsFrame::writeCurrentDiagramOutputFile(const QString& filePath, const QString& separator) {
     QFile* file = newQ::OutputFile("file", this, filePath);
     if (!file)
         return;
@@ -290,7 +290,7 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(rcstr filePath, rcstr separato
     }
 }
 
-void DiagramsFrame::writeAllDataOutputFile(rcstr filePath, rcstr separator) {
+void DiagramsFrame::writeAllDataOutputFile(const QString& filePath, const QString& separator) {
     QFile* file = newQ::OutputFile("file", this, filePath);
     if (!file)
         return;

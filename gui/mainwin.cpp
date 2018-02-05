@@ -569,7 +569,7 @@ QByteArray MainWin::serializeSession() const {
     return QJsonDocument(top).toJson();
 }
 
-void MainWin::sessionFromFile(rcstr filePath) THROWS {
+void MainWin::sessionFromFile(const QString& filePath) THROWS {
     QFile file(filePath);
     if (!(file.open(QIODevice::ReadOnly | QIODevice::Text)))
         THROW("Cannot open file for reading: " % filePath);

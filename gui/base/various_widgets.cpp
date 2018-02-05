@@ -15,7 +15,7 @@
 #include "gui/base/various_widgets.h"
 #include "gui/base/new_q.h"
 
-DockWidget::DockWidget(rcstr name, rcstr objectName) {
+DockWidget::DockWidget(const QString& name, const QString& objectName) {
     setFeatures(DockWidgetMovable);
     setWindowTitle(name);
     setObjectName(objectName);

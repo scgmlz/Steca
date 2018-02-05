@@ -79,7 +79,7 @@ int Metadata::numAttributes(bool onlyNum) {
     return int(onlyNum ? eAttr::NUM_NUMERICAL_ATTRIBUTES : eAttr::NUM_ALL_ATTRIBUTES);
 }
 
-rcstr Metadata::attributeTag(int i, bool out) {
+const QString& Metadata::attributeTag(int i, bool out) {
     return attributeTags(out).at(i);
 }
 

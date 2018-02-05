@@ -50,7 +50,7 @@ private:
 
 class Frame : public QDialog {
 public:
-    Frame(rcstr title, Params*, QWidget*);
+    Frame(const QString& title, Params*, QWidget*);
 protected:
     QAction *actClose_, *actCalculate_, *actInterpolate_;
     QToolButton *btnClose_, *btnCalculate_, *btnInterpolate_;

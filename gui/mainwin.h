@@ -59,7 +59,7 @@ public:
     class Console* console;
 
     // modifying methods:
-    void sessionFromFile(rcstr&) THROWS;
+    void sessionFromFile(const QString&) THROWS;
     void loadCorrFile() THROWS;
 
     void setNorm(eNorm);

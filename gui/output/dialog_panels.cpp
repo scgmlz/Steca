@@ -39,7 +39,7 @@ void GridPanel::setStretch(int horizontal, int vertical) {
     setSizePolicy(sp);
 }
 
-GridPanel::GridPanel(rcstr title) : QGroupBox(title) {
+GridPanel::GridPanel(const QString& title) : QGroupBox(title) {
     setLayout((grid_ = newQ::GridLayout()));
 }
 

@@ -25,7 +25,7 @@
 
 class GridPanel : public QGroupBox {
 public:
-    GridPanel(rcstr title="");
+    GridPanel(const QString& title="");
 
     void setHorizontalStretch(int);
     void setVerticalStretch(int);

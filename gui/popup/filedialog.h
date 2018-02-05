@@ -19,11 +19,11 @@
 
 namespace file_dialog {
 
-QStringList openFileNames(QWidget*, rcstr caption, rcstr dir, rcstr filter, bool plural=true);
-str openFileName(QWidget*, rcstr caption, rcstr dir, rcstr filter);
+QStringList openFileNames(QWidget*, const QString& caption, const QString& dir, const QString& filter, bool plural=true);
+QString openFileName(QWidget*, const QString& caption, const QString& dir, const QString& filter);
 
-str saveFileName(QWidget*, rcstr caption, rcstr dir, rcstr filter);
-str saveDirName(QWidget*, rcstr caption, rcstr dir);
+QString saveFileName(QWidget*, const QString& caption, const QString& dir, const QString& filter);
+QString saveDirName(QWidget*, const QString& caption, const QString& dir);
 
 } // namespace file_dialog
 

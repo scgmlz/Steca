@@ -52,14 +52,14 @@ QBoxLayout* HBoxLayout();
 QBoxLayout* VBoxLayout();
 QGridLayout* GridLayout();
 
-QLabel* Label(rcstr text);
-QLabel* Icon(rcstr fileName);
+QLabel* Label(const QString& text);
+QLabel* Icon(const QString& fileName);
 
 QToolButton* TextButton(QAction* action);
 QToolButton* IconButton(QAction* action);
 
-QAction* Trigger(const QString& name, rcstr text, rcstr iconFile="");
-QAction* Toggle(const QString& name, rcstr text, bool value, rcstr iconFile="");
+QAction* Trigger(const QString& name, const QString& text, const QString& iconFile="");
+QAction* Toggle(const QString& name, const QString& text, bool value, const QString& iconFile="");
 
 QFile* OutputFile(
     const QString& name, QWidget* parent, const QString& path, bool check_overwrite=true);
@@ -88,12 +88,12 @@ public:
 class CCheckBox : public QCheckBox, private CSettable {
 public:
     CCheckBox(const QString& name, QAction*);
-    CCheckBox(const QString& name, rcstr text);
+    CCheckBox(const QString& name, const QString& text);
 };
 
 class CRadioButton : public QRadioButton, private CSettable {
 public:
-    CRadioButton(const QString& name, rcstr text);
+    CRadioButton(const QString& name, const QString& text);
 };
 
 class CComboBox : public QComboBox, private CSettable {

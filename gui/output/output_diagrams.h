@@ -20,7 +20,7 @@
 //! The modal dialog for viewing and saving diagrams
 class DiagramsFrame : public Frame {
 public:
-    DiagramsFrame(rcstr title, QWidget*);
+    DiagramsFrame(const QString& title, QWidget*);
 
 private:
     class TabPlot* tabPlot_;
@@ -39,8 +39,8 @@ private:
     void recalculate();
 
     void saveDiagramOutput();
-    void writeCurrentDiagramOutputFile(rcstr filePath, rcstr separator);
-    void writeAllDataOutputFile(rcstr filePath, rcstr separator);
+    void writeCurrentDiagramOutputFile(const QString& filePath, const QString& separator);
+    void writeAllDataOutputFile(const QString& filePath, const QString& separator);
 };
 
 #endif // OUTPUT_DIAGRAMS_H

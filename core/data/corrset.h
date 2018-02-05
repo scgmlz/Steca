@@ -28,7 +28,7 @@ public:
     // Modifying methods:
     void clear();
     void removeFile();
-    void loadFile(rcstr filePath) THROWS;
+    void loadFile(const QString& filePath) THROWS;
     void tryEnable(bool on);
     void clearIntens() { intensCorr_.clear(); } // lazy
 

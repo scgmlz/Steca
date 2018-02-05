@@ -115,7 +115,7 @@ private:
     void updateClusters();
     void updateExperiment();
 
-    bool hasFile(rcstr fileName) const;
+    bool hasFile(const QString& fileName) const;
 };
 
 #endif // DATASET_H

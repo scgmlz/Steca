@@ -34,34 +34,34 @@ public:
 
     super const& sup() const { return *this; }
 
-    JsonObj loadObj(rcstr key, bool defEmpty = false) const THROWS;
+    JsonObj loadObj(const QString& key, bool defEmpty = false) const THROWS;
 
-    QJsonArray loadArr(rcstr key, bool defEmpty = false) const THROWS;
+    QJsonArray loadArr(const QString& key, bool defEmpty = false) const THROWS;
 
-    int loadInt(rcstr key) const THROWS;
-    int loadInt(rcstr key, int def) const THROWS;
+    int loadInt(const QString& key) const THROWS;
+    int loadInt(const QString& key, int def) const THROWS;
 
-    int loadUint(rcstr key) const THROWS;
-    int loadUint(rcstr key, int def) const THROWS;
+    int loadUint(const QString& key) const THROWS;
+    int loadUint(const QString& key, int def) const THROWS;
 
-    int loadPint(rcstr key) const THROWS;
-    int loadPint(rcstr key, int def) const THROWS;
+    int loadPint(const QString& key) const THROWS;
+    int loadPint(const QString& key, int def) const THROWS;
 
-    qreal loadQreal(rcstr key) const THROWS;
-    qreal loadQreal(rcstr key, qreal def) const THROWS;
+    qreal loadQreal(const QString& key) const THROWS;
+    qreal loadQreal(const QString& key, qreal def) const THROWS;
 
-    qreal loadPreal(rcstr key) const THROWS;
-    qreal loadPreal(rcstr key, qreal def) const THROWS;
+    qreal loadPreal(const QString& key) const THROWS;
+    qreal loadPreal(const QString& key, qreal def) const THROWS;
 
-    bool loadBool(rcstr key) const THROWS;
-    bool loadBool(rcstr key, bool def) const THROWS;
+    bool loadBool(const QString& key) const THROWS;
+    bool loadBool(const QString& key, bool def) const THROWS;
 
-    str loadString(rcstr key) const THROWS;
-    str loadString(rcstr key, rcstr def) const THROWS;
+    str loadString(const QString& key) const THROWS;
+    str loadString(const QString& key, const QString& def) const THROWS;
 
-    Range loadRange(rcstr key) const THROWS;
+    Range loadRange(const QString& key) const THROWS;
 
-    IJ loadIJ(rcstr key) const THROWS;
+    IJ loadIJ(const QString& key) const THROWS;
 };
 
 #endif // JSON_H
