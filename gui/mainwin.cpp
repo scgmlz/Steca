@@ -53,16 +53,14 @@ MainWin::MainWin()
     , isCombinedDgram_(false)
     , settings_("main_settings")
 {
+    gSession = Session::instance();
+    gConsole = Console::instance();
+    gGui = this;
+
     qDebug() << "MainWin/";
     setWindowIcon(QIcon(":/icon/retroStier"));
     QDir::setCurrent(QDir::homePath());
     setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
-
-    initMenu();
-    initLayout();
-    connectActions();
-    readSettings();
-    QObject::connect(gConsole, &Console::transmitLine, this, &MainWin::execCommand);
 
     // create actions
 
@@ -188,6 +186,12 @@ MainWin::MainWin()
 
     trigger_outputDiffractograms = newQ::Trigger("trigger_outputDiffractograms", "Diffractograms...");
 
+    initMenu();
+    initLayout();
+    connectActions();
+    readSettings();
+    QObject::connect(gConsole, &Console::transmitLine, this, &MainWin::execCommand);
+
     saveDir = settings_.readStr("export_directory");
     saveFmt = settings_.readStr("export_format");
 
@@ -220,15 +224,14 @@ void MainWin::initMenu() {
     };
 
 #ifdef Q_OS_OSX
-    mbar->setNativeMenuBar(false); // REVIEW
+    mbar->setNativeMenuBar(false);
 #else
     mbar->setNativeMenuBar(true);
 #endif
 
     _actionsToMenu(
         "&File",
-        {
-            trigger_addFiles,
+        {   trigger_addFiles,
                 trigger_removeFile,
                 _separator(),
                 trigger_corrFile,
@@ -259,8 +262,7 @@ void MainWin::initMenu() {
 
     QMenu* menuDgram = _actionsToMenu(
         "&Diffractogram",
-        {
-            toggle_selRegions,
+        {   toggle_selRegions,
                 toggle_showBackground,
                 trigger_clearBackground,
                 trigger_clearPeaks,
@@ -277,8 +279,7 @@ void MainWin::initMenu() {
 
     QMenu* menuOutput = _actionsToMenu(
         "&Output",
-        {
-            trigger_outputPolefigures,
+        {   trigger_outputPolefigures,
                 trigger_outputDiagrams,
                 trigger_outputDiffractograms,
         });
@@ -302,8 +303,7 @@ void MainWin::initMenu() {
 
     _actionsToMenu(
         "&Help",
-        {
-            trigger_about, // Mac puts About into the Apple menu
+        {   trigger_about, // Mac puts About into the Apple menu
                 trigger_online,
                 trigger_checkUpdate,
         });

@@ -20,9 +20,7 @@
 //!           https://github.com/scgmlz/Steca
 
 #include "../manifest.h"
-#include "core/session.h"
 #include "gui/cfg/msg_handler.h"
-#include "gui/console.h"
 #include "gui/mainwin.h"
 
 #define OPTPARSE_IMPLEMENTATION
@@ -81,11 +79,7 @@ int main(int argc, char* argv[]) {
     QLoggingCategory::setFilterRules("*.debug=true\nqt.*.debug=false");
     qInstallMessageHandler(messageHandler);
 
-    gSession = Session::instance();
-    gConsole = Console::instance();
-    gGui = MainWin::instance();
-    gGui->show();
-    // gGui->addFiles();
+    MainWin::instance()->show();
 
     return app.exec();
 }
