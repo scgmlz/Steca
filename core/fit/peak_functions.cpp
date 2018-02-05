@@ -63,8 +63,7 @@ qreal Raw::dy(qreal, int, qreal const*) const {
 }
 
 qpair Raw::fittedPeak() const {
-    if (qIsNaN(sum_y_) && fittedCurve_.count())
-        sum_y_ = fittedCurve_.sumY();
+    if (qIsNaN(sum_y_) && fittedCurve_.count()) ;
     return qpair(range_.center(), sum_y_);
 }
 
@@ -94,11 +93,12 @@ void Raw::prepareY() {
     if (range_.isEmpty() || fittedCurve_.isEmpty()) {
         x_count_ = 0;
         dx_ = 0;
+        sum_y_ = NAN;
     } else {
         x_count_ = fittedCurve_.count();
         dx_ = range_.width() / x_count_;
+        sum_y_ = fittedCurve_.sumY();
     }
-    sum_y_ = NAN;
 }
 
 
@@ -197,7 +197,7 @@ qpair Gaussian::peakError() const {
 }
 
 fwhm_t Gaussian::fwhmError() const {
-    // REVIEW
+    // TODO REVIEW
     return fwhm_t(parameters_.at(parSIGMA).error());
 }
 

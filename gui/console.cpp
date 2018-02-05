@@ -14,8 +14,9 @@
 
 #include "gui/console.h"
 #include "core/def/debug.h"
+#include <QDateTime>
+#include <QFile>
 #include <QSocketNotifier>
-#include <QTextStream>
 
 Console* gConsole; //!< global
 
@@ -23,6 +24,15 @@ Console::Console()
 {
     notifier_ = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read, this);
     connect(notifier_, SIGNAL(activated(int)), this, SLOT(readLine()));
+    auto* file = new QFile("Steca.log");
+    if (!file->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
+        qFatal("cannot open log file");
+    log_.setDevice(file);
+    log("# Steca session started");
+}
+
+Console::~Console() {
+    log("# Steca session ended");
 }
 
 void Console::readLine()
@@ -82,4 +92,11 @@ void Console::registerAction(const QString& name, std::function<void()> action) 
     if (actions_.find(name)!=actions_.end())
         qFatal(("Duplicate action '"+name+"'").toLatin1());
     actions_[name] = action;
+}
+
+void Console::log(const QString& line) {
+    qDebug() << line;
+    log_ << "[" + QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm::ss.zzz") + "]"
+         << line << "\n";
+    log_.flush();
 }

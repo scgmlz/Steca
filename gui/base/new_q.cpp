@@ -75,6 +75,7 @@ QAction* newQ::Trigger(const QString& name, rcstr text, rcstr iconFile) {
     if (iconFile!="")
         ret->setIcon(QIcon(iconFile));
     gConsole->registerAction(name, [ret]()->void { ret->trigger(); });
+    QObject::connect(ret, &QAction::triggered, [name]()->void { gConsole->log(name+"!"); });
     return ret;
 };
 
