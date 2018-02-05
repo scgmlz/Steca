@@ -44,122 +44,6 @@
 MainWin* gGui; //!< global pointer to _the_ main window
 
 // ************************************************************************** //
-//  file-scoped functions
-// ************************************************************************** //
-
-namespace {
-
-//! Initialize the menu bar. Part of the MainWin initialization.
-void initMenus(QMenuBar* mbar) {
-
-    auto _separator = [mbar]()->QAction* {
-        QAction* ret = new QAction(mbar);
-        ret->setSeparator(true);
-        return ret;
-    };
-
-    auto _actionsToMenu = [mbar](const char* menuName, QList<QAction*> actions)->QMenu* {
-        QMenu* menu = mbar->addMenu(menuName);
-        menu->addActions(actions);
-        str prefix = str("%1: ").arg(menu->title().remove('&'));
-        for (auto action : actions)
-            action->setToolTip(prefix + action->toolTip());
-        return menu;
-    };
-
-#ifdef Q_OS_OSX
-    mbar->setNativeMenuBar(false); // REVIEW
-#else
-    mbar->setNativeMenuBar(true);
-#endif
-
-    _actionsToMenu(
-        "&File",
-        {
-            gGui->trigger_addFiles,
-                gGui->trigger_removeFile,
-                _separator(),
-                gGui->trigger_corrFile,
-                gGui->toggle_enableCorr,
-                _separator(),
-                gGui->trigger_loadSession,
-                gGui->trigger_saveSession,
-                gGui->trigger_clearSession,
-#ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
-                _separator(),
-#endif
-                gGui->trigger_quit,
-        });
-
-    QMenu* menuImage = _actionsToMenu(
-        "&Image",
-        {   gGui->trigger_rotateImage,
-                gGui->toggle_mirrorImage,
-                gGui->toggle_fixedIntenImage,
-                gGui->toggle_linkCuts,
-                gGui->toggle_showOverlay,
-                gGui->toggle_stepScale,
-                gGui->toggle_showBins,
-        });
-    menuImage->setEnabled(false);
-    QObject::connect(gSession, &Session::sigFiles, [menuImage]()
-                     { menuImage->setEnabled(gSession->dataset().countFiles()); });
-
-    QMenu* menuDgram = _actionsToMenu(
-        "&Diffractogram",
-        {
-            gGui->toggle_selRegions,
-                gGui->toggle_showBackground,
-                gGui->trigger_clearBackground,
-                gGui->trigger_clearPeaks,
-                _separator(),
-                gGui->trigger_addPeak,
-                gGui->trigger_removePeak,
-                _separator(),
-                gGui->toggle_combinedDgram,
-                gGui->toggle_fixedIntenDgram,
-        });
-    menuDgram->setEnabled(false);
-    QObject::connect(gSession, &Session::sigFiles, [menuDgram]()
-                     { menuDgram->setEnabled(gSession->dataset().countFiles()); });
-
-    QMenu* menuOutput = _actionsToMenu(
-        "&Output",
-        {
-            gGui->trigger_outputPolefigures,
-                gGui->trigger_outputDiagrams,
-                gGui->trigger_outputDiffractograms,
-        });
-    menuOutput->setEnabled(false);
-    QObject::connect(gSession, &Session::sigActivated, [menuOutput]()
-                     { menuOutput->setEnabled(gSession->experiment().size()); });
-
-    _actionsToMenu(
-        "&View",
-        {   gGui->toggle_viewFiles,
-                gGui->toggle_viewDatasets,
-                gGui->toggle_viewMetadata,
-                _separator(),
-#ifndef Q_OS_OSX
-                gGui->toggle_fullScreen,
-#endif
-                gGui->toggle_viewStatusbar,
-                _separator(),
-                gGui->trigger_viewReset,
-        });
-
-    _actionsToMenu(
-        "&Help",
-        {
-            gGui->trigger_about, // Mac puts About into the Apple menu
-                gGui->trigger_online,
-                gGui->trigger_checkUpdate,
-        });
-}
-
-} // local methods
-
-// ************************************************************************** //
 //  class MainWin
 // ************************************************************************** //
 
@@ -174,7 +58,7 @@ MainWin::MainWin()
     QDir::setCurrent(QDir::homePath());
     setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
 
-    initMenus(menuBar());
+    initMenu();
     initLayout();
     connectActions();
     readSettings();
@@ -313,6 +197,116 @@ MainWin::MainWin()
 MainWin::~MainWin() {
     settings_.saveStr("export_directory", saveDir);
     settings_.saveStr("export_format", saveFmt);
+}
+
+//! Initialize the menu bar.
+void MainWin::initMenu() {
+
+    QMenuBar* mbar = menuBar();
+
+    auto _separator = [mbar]()->QAction* {
+        QAction* ret = new QAction(mbar);
+        ret->setSeparator(true);
+        return ret;
+    };
+
+    auto _actionsToMenu = [mbar](const char* menuName, QList<QAction*> actions)->QMenu* {
+        QMenu* menu = mbar->addMenu(menuName);
+        menu->addActions(actions);
+        str prefix = str("%1: ").arg(menu->title().remove('&'));
+        for (auto action : actions)
+            action->setToolTip(prefix + action->toolTip());
+        return menu;
+    };
+
+#ifdef Q_OS_OSX
+    mbar->setNativeMenuBar(false); // REVIEW
+#else
+    mbar->setNativeMenuBar(true);
+#endif
+
+    _actionsToMenu(
+        "&File",
+        {
+            trigger_addFiles,
+                trigger_removeFile,
+                _separator(),
+                trigger_corrFile,
+                toggle_enableCorr,
+                _separator(),
+                trigger_loadSession,
+                trigger_saveSession,
+                trigger_clearSession,
+#ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
+                _separator(),
+#endif
+                trigger_quit,
+        });
+
+    QMenu* menuImage = _actionsToMenu(
+        "&Image",
+        {   trigger_rotateImage,
+                toggle_mirrorImage,
+                toggle_fixedIntenImage,
+                toggle_linkCuts,
+                toggle_showOverlay,
+                toggle_stepScale,
+                toggle_showBins,
+        });
+    menuImage->setEnabled(false);
+    QObject::connect(gSession, &Session::sigFiles, [menuImage]()
+                     { menuImage->setEnabled(gSession->dataset().countFiles()); });
+
+    QMenu* menuDgram = _actionsToMenu(
+        "&Diffractogram",
+        {
+            toggle_selRegions,
+                toggle_showBackground,
+                trigger_clearBackground,
+                trigger_clearPeaks,
+                _separator(),
+                trigger_addPeak,
+                trigger_removePeak,
+                _separator(),
+                toggle_combinedDgram,
+                toggle_fixedIntenDgram,
+        });
+    menuDgram->setEnabled(false);
+    QObject::connect(gSession, &Session::sigFiles, [menuDgram]()
+                     { menuDgram->setEnabled(gSession->dataset().countFiles()); });
+
+    QMenu* menuOutput = _actionsToMenu(
+        "&Output",
+        {
+            trigger_outputPolefigures,
+                trigger_outputDiagrams,
+                trigger_outputDiffractograms,
+        });
+    menuOutput->setEnabled(false);
+    QObject::connect(gSession, &Session::sigActivated, [menuOutput]()
+                     { menuOutput->setEnabled(gSession->experiment().size()); });
+
+    _actionsToMenu(
+        "&View",
+        {   toggle_viewFiles,
+                toggle_viewDatasets,
+                toggle_viewMetadata,
+                _separator(),
+#ifndef Q_OS_OSX
+                toggle_fullScreen,
+#endif
+                toggle_viewStatusbar,
+                _separator(),
+                trigger_viewReset,
+        });
+
+    _actionsToMenu(
+        "&Help",
+        {
+            trigger_about, // Mac puts About into the Apple menu
+                trigger_online,
+                trigger_checkUpdate,
+        });
 }
 
 void MainWin::initLayout() {
@@ -523,8 +517,8 @@ void MainWin::viewReset() {
     viewMetadata(true);
 }
 
-void MainWin::saveSessionTo(QFileInfo const& fileInfo) const {
-    QFile* file = newQ::OutputFile("file", gGui, fileInfo.filePath());
+void MainWin::saveSessionTo(QFileInfo const& fileInfo) {
+    QFile* file = newQ::OutputFile("file", this, fileInfo.filePath());
     if (!file)
         return;
     QDir::setCurrent(fileInfo.absolutePath());
@@ -663,7 +657,7 @@ void MainWin::loadCorrFile() {
         gSession->corrset().removeFile();
     } else {
         QString fileName = file_dialog::openFileName(
-            gGui, "Set correction file", QDir::current().absolutePath(),
+            this, "Set correction file", QDir::current().absolutePath(),
             "Data files (*.dat *.mar*);;All files (*.*)");
         if (fileName.isEmpty())
             return;

@@ -58,31 +58,6 @@ public:
 
     class Console* console;
 
-private:
-    QDockWidget *dockFiles_, *dockMeasurements_, *dockDatasetInfo_;
-    QByteArray initialState_;
-    QNetworkAccessManager netMan_;
-
-    void initLayout();
-    void connectActions();
-
-    void closeEvent(QCloseEvent*);
-
-    void readSettings();
-    void saveSettings();
-
-    void viewStatusbar(bool);
-    void viewFullScreen(bool);
-    void viewFiles(bool);
-    void viewDatasets(bool);
-    void viewMetadata(bool);
-    void viewReset();
-
-signals:
-    void sigDisplayChanged();
-    void sigFittingTab(eFittingTab);
-
-public:
     // modifying methods:
     void sessionFromFile(rcstr&) THROWS;
     void loadCorrFile() THROWS;
@@ -94,9 +69,6 @@ public:
     bool isFixedIntenImageScale() const { return isFixedIntenImageScale_; }
     bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
     bool isCombinedDgram() const { return isCombinedDgram_; }
-
-    void saveSessionTo(QFileInfo const&) const;
-    QByteArray serializeSession() const;
 
     eFittingTab fittingTab() const { return fittingTab_; }
 
@@ -140,7 +112,38 @@ public:
         *trigger_outputDiagrams,
         *trigger_outputDiffractograms;
 
+    // TODO relagate this to TabSave or similar
+    str saveDir; //!< setting: default directory for data export
+    str saveFmt; //!< setting: default format for data export
+
+signals:
+    void sigDisplayChanged();
+    void sigFittingTab(eFittingTab);
+
 private:
+    QDockWidget *dockFiles_, *dockMeasurements_, *dockDatasetInfo_;
+    QByteArray initialState_;
+    QNetworkAccessManager netMan_;
+
+    void initMenu();
+    void initLayout();
+    void connectActions();
+
+    void closeEvent(QCloseEvent*);
+
+    void readSettings();
+    void saveSettings();
+
+    void saveSessionTo(QFileInfo const&);
+    QByteArray serializeSession() const;
+
+    void viewStatusbar(bool);
+    void viewFullScreen(bool);
+    void viewFiles(bool);
+    void viewDatasets(bool);
+    void viewMetadata(bool);
+    void viewReset();
+
     void collectDatasetsFromSelectionBy(const vec<int>, const int);
     void setImageRotate(ImageTransform);
     void setImageMirror(bool);
@@ -152,12 +155,6 @@ private:
     bool isCombinedDgram_;
     eFittingTab fittingTab_ = eFittingTab::NONE;
     Settings settings_;
-
-    friend class MainWinSignallingBase;
-
-public: // TODO relagate this to TabSave or similar
-    str saveDir; //!< setting: default directory for data export
-    str saveFmt; //!< setting: default format for data export
 };
 
 #endif // MAINWIN_H
