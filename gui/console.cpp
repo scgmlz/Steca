@@ -61,6 +61,13 @@ void Console::registerSetter(const QString& name, std::function<void(const QStri
     setters_[name] = setter;
 }
 
+void Console::deregisterSetter(const QString& name) {
+    auto it = setters_.find(name);
+    if (it==setters_.end())
+        qFatal(("Cannot deregister setter "+name).toLatin1());
+    setters_.erase(it);
+}
+
 void Console::registerAction(const QString& name, std::function<void()> action) {
     if (actions_.find(name)!=actions_.end())
         qFatal(("Duplicate action "+name).toLatin1());

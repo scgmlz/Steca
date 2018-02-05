@@ -18,6 +18,7 @@
 #include "core/typ/range.h"
 #include "gui/cfg/settings.h"
 #include "gui/base/new_q.h"
+#include <memory>
 #include <QGroupBox>
 
 //! A panel with grid layout
@@ -44,7 +45,7 @@ protected:
 class PanelPeak : public GridPanel {
 public:
     PanelPeak();
-    QComboBox* cbRefl;
+    CComboBox cbRefl;
 };
 
 //! Controls to define the gamma slicing.
@@ -53,8 +54,8 @@ class PanelGammaSlices : public GridPanel {
 public:
     PanelGammaSlices();
     ~PanelGammaSlices();
-    QSpinBox* numSlices;
-    QDoubleSpinBox* stepGamma;
+    CSpinBox numSlices;
+    CDoubleSpinBox stepGamma;
     void updateValues();
 private:
     Range rgeGma_;
@@ -67,8 +68,8 @@ class PanelGammaRange : public GridPanel {
 public:
     PanelGammaRange();
     ~PanelGammaRange();
-    QCheckBox* cbLimitGamma;
-    QDoubleSpinBox *minGamma, *maxGamma;
+    CCheckBox cbLimitGamma;
+    CDoubleSpinBox minGamma, maxGamma;
     void updateValues();
 private:
     Range rgeGma_;
@@ -81,7 +82,7 @@ class PanelPoints : public GridPanel {
 public:
     PanelPoints();
     ~PanelPoints();
-    QRadioButton *rbCalc, *rbInterp;
+    CRadioButton rbCalc, rbInterp;
 private:
     Settings settings_;
 };
@@ -92,9 +93,9 @@ class PanelInterpolation : public GridPanel {
 public:
     PanelInterpolation();
     ~PanelInterpolation();
-    QDoubleSpinBox *stepAlpha, *stepBeta, *idwRadius;
-    QDoubleSpinBox *avgAlphaMax, *avgRadius;
-    QSpinBox* avgThreshold;
+    CDoubleSpinBox stepAlpha, stepBeta, idwRadius;
+    CDoubleSpinBox avgAlphaMax, avgRadius;
+    CSpinBox avgThreshold;
 private:
     Settings settings_;
 };
@@ -104,7 +105,7 @@ private:
 class PanelDiagram : public GridPanel {
 public:
     PanelDiagram();
-    QComboBox *xAxis, *yAxis;
+    CComboBox xAxis, yAxis;
 };
 
 #endif // DIALOG_PANELS_H

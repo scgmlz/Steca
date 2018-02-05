@@ -27,7 +27,7 @@ namespace {
 
 struct showcol_t {
     str name;
-    QCheckBox* cb;
+    CCheckBox* cb;
 };
 
 typedef vec<showcol_t> showcol_vec;
@@ -45,28 +45,36 @@ private:
     DataTable& table_;
     showcol_vec& showCols_;
     QBoxLayout* box_;
-    QRadioButton *rbHidden_, *rbAll_, *rbNone_, *rbInten_, *rbTth_, *rbFWHM_;
+    CRadioButton rbHidden_, rbAll_, rbNone_, rbInten_, rbTth_, rbFWHM_;
 };
 
 ShowColsWidget::ShowColsWidget(DataTable& table, showcol_vec& showCols)
-    : table_(table), showCols_(showCols) {
+    : table_(table)
+    , showCols_(showCols)
+    , rbHidden_("rbHidden_", "")
+    , rbAll_("rbAll_", "all")
+    , rbNone_("rbNone_", "none")
+    , rbInten_("rbInten_", "Intensity")
+    , rbTth_("rbTth_", "2θ")
+    , rbFWHM_("rbFWHM_", "fwhm")
+{
     using eReflAttr = PeakInfo::eReflAttr;
 
     setLayout((box_ = newQ::VBoxLayout()));
 
-    box_->addWidget((rbHidden_ = newQ::RadioButton("rbHidden_", "")));
-    rbHidden_->hide();
+    box_->addWidget(&rbHidden_);
+    rbHidden_.hide();
 
-    box_->addWidget((rbAll_ = newQ::RadioButton("rbAll_", "all")));
-    box_->addWidget((rbNone_ = newQ::RadioButton("rbNone_", "none")));
-    box_->addWidget(rbInten_ = newQ::RadioButton("rbInten_", "Intensity"));
-    box_->addWidget(rbTth_ = newQ::RadioButton("rbTth_", "2θ"));
-    box_->addWidget(rbFWHM_ = newQ::RadioButton("rbFWHM_", "fwhm"));
+    box_->addWidget(&rbAll_);
+    box_->addWidget(&rbNone_);
+    box_->addWidget(&rbInten_);
+    box_->addWidget(&rbTth_);
+    box_->addWidget(&rbFWHM_);
     box_->addSpacing(8);
 
     for_i (showCols.count()) {
         showcol_t& item = showCols[i];
-        box_->addWidget((item.cb = newQ::CheckBox("cb", item.name)));
+        box_->addWidget((item.cb = new CCheckBox("cb", item.name)));
     }
 
     auto _all = [this]() {
@@ -120,15 +128,15 @@ ShowColsWidget::ShowColsWidget(DataTable& table, showcol_vec& showCols)
             }
         }
 
-        rbHidden_->setChecked(true);
-        rbNone_->setChecked(isNone);
-        rbAll_->setChecked(isAll);
+        rbHidden_.setChecked(true);
+        rbNone_.setChecked(isNone);
+        rbAll_.setChecked(isAll);
 
         int const PRESET_SELECTION = 1;
 
-        rbInten_->setChecked(!isOther && PRESET_SELECTION == nInten);
-        rbTth_->setChecked(!isOther && PRESET_SELECTION == nTth);
-        rbFWHM_->setChecked(!isOther && PRESET_SELECTION == nFwhm);
+        rbInten_.setChecked(!isOther && PRESET_SELECTION == nInten);
+        rbTth_.setChecked(!isOther && PRESET_SELECTION == nTth);
+        rbFWHM_.setChecked(!isOther && PRESET_SELECTION == nFwhm);
     };
 
     for_i (showCols_.count()) {
@@ -143,13 +151,13 @@ ShowColsWidget::ShowColsWidget(DataTable& table, showcol_vec& showCols)
         });
     }
 
-    connect(rbAll_, &QRadioButton::clicked, _all);
-    connect(rbNone_, &QRadioButton::clicked, _none);
-    connect(rbInten_, &QRadioButton::clicked, _showInten);
-    connect(rbTth_, &QRadioButton::clicked, _showTth);
-    connect(rbFWHM_, &QRadioButton::clicked, _showFWHM);
+    connect(&rbAll_, &QRadioButton::clicked, _all);
+    connect(&rbNone_, &QRadioButton::clicked, _none);
+    connect(&rbInten_, &QRadioButton::clicked, _showInten);
+    connect(&rbTth_, &QRadioButton::clicked, _showTth);
+    connect(&rbFWHM_, &QRadioButton::clicked, _showFWHM);
 
-    rbAll_->click();
+    rbAll_.click();
 }
 
 // ************************************************************************** //
@@ -281,14 +289,13 @@ Frame::Frame(rcstr title, Params* params, QWidget* parent) : QDialog(parent) {
     connect(actInterpolate_, &QAction::triggered, [this]() { interpolate(); });
 
     if (params_->panelPeak) {
-        connect(params_->panelPeak->cbRefl, _SLOT_(QComboBox, currentIndexChanged, int),
+        connect(&params_->panelPeak->cbRefl, _SLOT_(QComboBox, currentIndexChanged, int),
                 [this](){ updatePeak(); });
     }
 
     if (params_->panelPoints) {
         ASSERT(params_->panelPeak);
-        connect(params_->panelPoints->rbInterp, &QRadioButton::toggled,
-                [this](){ updatePeak(); });
+        connect(&params_->panelPoints->rbInterp, &QRadioButton::toggled, [this](){ updatePeak(); });
     }
 
     // tabs
@@ -319,12 +326,12 @@ void Frame::calculate() {
         return;
 
     const PanelGammaSlices* ps = params_->panelGammaSlices;
-    int gammaSlices = ps->numSlices->value();
+    int gammaSlices = ps->numSlices.value();
 
     const PanelGammaRange* pr = params_->panelGammaRange;
     Range rgeGamma;
-    if (pr->cbLimitGamma->isChecked())
-        rgeGamma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
+    if (pr->cbLimitGamma.isChecked())
+        rgeGamma.safeSet(pr->minGamma.value(), pr->maxGamma.value());
 
     Progress progress(reflCount, progressBar_);
 
@@ -343,13 +350,13 @@ void Frame::interpolate() {
 
     const PanelInterpolation* pi = params_->panelInterpolation;
     if (pi) {
-        deg alphaStep = pi->stepAlpha->value();
-        deg betaStep = pi->stepBeta->value();
-        qreal idwRadius = pi->idwRadius->value();
+        deg alphaStep = pi->stepAlpha.value();
+        deg betaStep = pi->stepBeta.value();
+        qreal idwRadius = pi->idwRadius.value();
 
-        qreal avgRadius = pi->avgRadius->value();
-        qreal avgAlphaMax = pi->avgAlphaMax->value();
-        qreal avgTreshold = pi->avgThreshold->value() / 100.0;
+        qreal avgRadius = pi->avgRadius.value();
+        qreal avgAlphaMax = pi->avgAlphaMax.value();
+        qreal avgTreshold = pi->avgThreshold.value() / 100.0;
 
         Progress progress(calcPoints_.count(), progressBar_);
 
@@ -385,12 +392,12 @@ void Frame::displayPeak(int reflIndex, bool interpolated) {
 
 int Frame::getReflIndex() const {
     ASSERT(params_->panelPeak);
-    int reflIndex = params_->panelPeak->cbRefl->currentIndex();
+    int reflIndex = params_->panelPeak->cbRefl.currentIndex();
     if (!(reflIndex >= 0)) qFatal("invalid peak index");
     return reflIndex;
 }
 
 bool Frame::getInterpolated() const {
     const PanelPoints* pi = params_->panelPoints;
-    return pi ? pi->rbInterp->isChecked() : false;
+    return pi ? pi->rbInterp.isChecked() : false;
 }

@@ -100,62 +100,6 @@ QAction* newQ::Toggle(const QString& name, rcstr text, bool value, rcstr iconFil
     return ret;
 };
 
-QLineEdit* newQ::LineDisplay(const QString& name, int ndigits, bool withDot) {
-    auto ret = new QLineEdit;
-    setWidth(ret, ndigits, withDot);
-    ret->setReadOnly(true);
-    return ret;
-}
-
-// A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.
-// However, sometimes we want to make a QSpinBox exactly as wide as a given QDoubleSpinBox,
-// for nice vertical alignement. Then we use withDot=true.
-QSpinBox* newQ::SpinBox(const QString& name, int ndigits, bool withDot, int min, int max) {
-    auto ret = new QSpinBox;
-    setWidth(ret, ndigits, withDot);
-    ret->setMinimum(min);
-    ret->setMaximum(max > min ? max : min);
-    gConsole->registerSetter(name, [ret](const QString& val)->void { ret->setValue(val.toInt()); });
-    return ret;
-}
-
-QDoubleSpinBox* newQ::DoubleSpinBox(const QString& name, int ndigits, qreal min, qreal max) {
-    auto ret = new QDoubleSpinBox;
-    setWidth(ret, ndigits, true);
-    ret->setMinimum(min);
-    ret->setMaximum(max > min ? max : min);
-    gConsole->registerSetter(name, [ret](const QString& val)->void {
-            ret->setValue(val.toDouble()); });
-    return ret;
-}
-
-QCheckBox* newQ::CheckBox(const QString& name, rcstr text) {
-    return new QCheckBox(text);
-}
-
-QCheckBox* newQ::CheckBox(const QString& name, QAction* action) {
-    if (!action)
-        return new QCheckBox("");
-    auto ret = new QCheckBox(action->text().toLower());
-    QObject::connect(ret, &QCheckBox::toggled, [action](bool on) { action->setChecked(on); });
-    QObject::connect(action, &QAction::toggled, [ret](bool on) { ret->setChecked(on); });
-    ret->setToolTip(action->toolTip());
-    ret->setChecked(action->isChecked());
-    return ret;
-}
-
-QRadioButton* newQ::RadioButton(const QString& name, rcstr text) {
-    return new QRadioButton(text);
-}
-
-QComboBox* newQ::ComboBox(const QString& name, const QStringList& items) {
-    auto ret = new QComboBox();
-    ret->addItems(items);
-    gConsole->registerSetter(name, [ret](const QString& val)->void {
-            ret->setCurrentIndex(val.toInt()); });
-    return ret;
-}
-
 QFile* newQ::OutputFile(
     const QString& name, QWidget* parent, const QString& path, bool check_overwrite) {
     QFile* ret = new QFile(path);
@@ -170,4 +114,63 @@ QFile* newQ::OutputFile(
         return nullptr;
     }
     return ret;
+}
+
+
+CSettable::CSettable(const QString& name, std::function<void(const QString&)> setter)
+    : name_(name) {
+    gConsole->registerSetter(name, setter);
+}
+
+CSettable::~CSettable() {
+    gConsole->deregisterSetter(name_);
+}
+
+CLineDisplay::CLineDisplay(const QString& name, int ndigits, bool withDot)
+    : CSettable(name, [this](const QString& val)->void { setText(val); }) {
+    setWidth(this, ndigits, withDot);
+    setReadOnly(true);
+}
+
+// A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.
+// However, sometimes we want to make a QSpinBox exactly as wide as a given QDoubleSpinBox,
+// for nice vertical alignement. Then we use withDot=true.
+CSpinBox::CSpinBox(const QString& name, int ndigits, bool withDot, int min, int max)
+    : CSettable(name, [this](const QString& val)->void { setValue(val.toInt()); }) {
+    setWidth(this, ndigits, withDot);
+    setMinimum(min);
+    setMaximum(max > min ? max : min);
+}
+
+CDoubleSpinBox::CDoubleSpinBox(const QString& name, int ndigits, qreal min, qreal max)
+    : CSettable(name, [this](const QString& val)->void { setValue(val.toDouble()); }) {
+    setWidth(this, ndigits, true);
+    setMinimum(min);
+    setMaximum(max > min ? max : min);
+}
+
+CCheckBox::CCheckBox(const QString& name, QAction* action)
+    : QCheckBox(action ? action->text().toLower() : "")
+    , CSettable(name, [this](const QString& val)->void { setChecked(val.toInt()); }) {
+    if (!action)
+        return;
+    QObject::connect(this, &QCheckBox::toggled, [action](bool on) { action->setChecked(on); });
+    QObject::connect(action, &QAction::toggled, [this](bool on) { setChecked(on); });
+    setToolTip(action->toolTip());
+    setChecked(action->isChecked());
+}
+
+CCheckBox::CCheckBox(const QString& name, rcstr text)
+    : CCheckBox(name, {}) {
+    setText(text);
+}
+
+CRadioButton::CRadioButton(const QString& name, rcstr text)
+    : QRadioButton(text)
+    , CSettable(name, [this](const QString& val)->void { setChecked(val.toInt()); }) {
+}
+
+CComboBox::CComboBox(const QString& name, const QStringList& items)
+    : CSettable(name, [this](const QString& val)->void { setCurrentIndex(val.toInt()); }) {
+    addItems(items);
 }

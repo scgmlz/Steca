@@ -46,23 +46,48 @@ QToolButton* IconButton(QAction*);
 QAction* Trigger(const QString& name, rcstr text, rcstr iconFile="");
 QAction* Toggle(const QString& name, rcstr text, bool value, rcstr iconFile="");
 
-QLineEdit* LineDisplay(const QString& name, int ndigits, bool withDot);
-
-QSpinBox* SpinBox(
-    const QString& name, int ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX);
-QDoubleSpinBox* DoubleSpinBox(
-    const QString& name, int ndigits, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
-
-QCheckBox* CheckBox(const QString& name, rcstr text);
-QCheckBox* CheckBox(const QString& name, QAction*);
-
-QRadioButton* RadioButton(const QString& name, rcstr text);
-
-QComboBox* ComboBox(const QString& name, const QStringList& items = {});
-
 QFile* OutputFile(
     const QString& name, QWidget* parent, const QString& path, bool check_overwrite=true);
 
 } // namespace newQ
+
+class CSettable {
+public:
+    CSettable(const QString& name, std::function<void(const QString&)> setter);
+    ~CSettable();
+private:
+    const QString name_;
+};
+
+class CLineDisplay : public QLineEdit, private CSettable {
+public:
+    CLineDisplay(const QString& name, int ndigits, bool withDot);
+};
+
+class CSpinBox : public QSpinBox, private CSettable {
+public:
+    CSpinBox(const QString& name, int ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX);
+};
+
+class CDoubleSpinBox : public QDoubleSpinBox, private CSettable {
+public:
+    CDoubleSpinBox(const QString& name, int ndigits, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
+};
+
+class CCheckBox : public QCheckBox, private CSettable {
+public:
+    CCheckBox(const QString& name, QAction*);
+    CCheckBox(const QString& name, rcstr text);
+};
+
+class CRadioButton : public QRadioButton, private CSettable {
+public:
+    CRadioButton(const QString& name, rcstr text);
+};
+
+class CComboBox : public QComboBox, private CSettable {
+public:
+    CComboBox(const QString& name, const QStringList& items = {});
+};
 
 #endif // NEW_Q_H

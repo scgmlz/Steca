@@ -30,6 +30,7 @@ class Console : public QObject, public ISingleton<Console>
 public:
     Console();
     void registerSetter(const QString& name, std::function<void(const QString&)> setter);
+    void deregisterSetter(const QString& name);
     void registerAction(const QString& name, std::function<void()> action);
 signals:
     void transmitLine(str);
