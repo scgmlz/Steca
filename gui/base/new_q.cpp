@@ -86,7 +86,15 @@ QAction* newQ::Toggle(const QString& name, rcstr text, bool value, rcstr iconFil
         ret->setIcon(QIcon(iconFile));
     ret->setCheckable(true);
     ret->setChecked(value);
-    gConsole->registerAction(name, [ret]()->void { ret->toggle(); });
+    gConsole->registerSetter(name, [ret](const QString& val)->void {
+            if (val=="y")
+                ret->setChecked(true);
+            else if (val=="n")
+                ret->setChecked(false);
+            else
+                qWarning() << "Invalid toggle setter argument '"+val+"'"; } );
+    QObject::connect(ret, &QAction::triggered, [ret,name]()->void {
+            gConsole->log(name+"="+(ret->isChecked() ? "y" : "n")); });
     return ret;
 };
 
