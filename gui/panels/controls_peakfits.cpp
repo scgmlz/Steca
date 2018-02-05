@@ -15,7 +15,7 @@
 #include "controls_peakfits.h"
 #include "core/session.h"
 #include "gui/base/model_view.h"
-#include "gui/thehub.h"
+#include "gui/mainwin.h"
 #include <QStackedWidget>
 
 namespace {

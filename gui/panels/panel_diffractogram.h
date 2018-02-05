@@ -15,7 +15,7 @@
 #ifndef PANEL_DIFFRACTOGRAM_H
 #define PANEL_DIFFRACTOGRAM_H
 
-#include "gui/thehub.h" // for eFittingTab
+#include "gui/mainwin.h" // for eFittingTab
 #include "gui/base/new_q.h"
 #include "QCustomPlot/qcustomplot.h"
 

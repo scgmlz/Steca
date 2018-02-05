@@ -15,7 +15,7 @@
 #include "gui/base/new_q.h"
 #include "gui/console.h"
 #include "gui/mainwin.h"
-#include "gui/thehub.h" // for _SLOT_
+#include "gui/mainwin.h" // for _SLOT_
 #include "core/def/numbers.h"
 #include <QApplication> // for qApp for new Action
 #include <QDebug>

@@ -18,7 +18,7 @@
 #include "gui/output/data_table.h"
 #include "gui/output/dialog_panels.h"
 #include "gui/output/tab_save.h"
-#include "gui/thehub.h"
+#include "gui/mainwin.h"
 #include "QCustomPlot/qcustomplot.h"
 
 // sorts xs and ys the same way, by (x,y)

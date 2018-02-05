@@ -95,7 +95,7 @@ Diffractogram::Diffractogram() {
 
     connect(gSession, &Session::sigHighlight, this, &Diffractogram::onHighlight);
     connect(gSession, &Session::sigNorm, this, &Diffractogram::onNormChanged);
-    connect(gHub, &TheHub::sigFittingTab, [this](eFittingTab tab) { onFittingTab(tab); });
+    connect(gHub, &MainWin::sigFittingTab, [this](eFittingTab tab) { onFittingTab(tab); });
 
     connect(gHub->toggle_selRegions, &QAction::toggled, [this](bool on) {
         using eTool = DiffractogramPlot::eTool;

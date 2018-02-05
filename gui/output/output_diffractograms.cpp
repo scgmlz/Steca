@@ -17,7 +17,7 @@
 #include "gui/base/new_q.h"
 #include "gui/output/dialog_panels.h"
 #include "gui/output/tab_save.h"
-#include "gui/thehub.h"
+#include "gui/mainwin.h"
 #include <cmath>
 #include <QMessageBox>
 

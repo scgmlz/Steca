@@ -19,7 +19,7 @@
 #include "gui/output/data_table.h"
 #include "gui/output/dialog_panels.h"
 #include "gui/output/tab_save.h"
-#include "gui/thehub.h"
+#include "gui/mainwin.h"
 #include <QProgressBar>
 #include <QScrollArea>
 

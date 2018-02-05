@@ -15,7 +15,7 @@
 #include "gui/panels/subframe_files.h"
 #include "core/session.h"
 #include "gui/base/model_view.h"
-#include "gui/thehub.h"
+#include "gui/mainwin.h"
 #include "gui/base/new_q.h"
 #include <QHeaderView>
 
@@ -81,7 +81,7 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
         return {};
     case Qt::ToolTipRole:
         if (col>=2)
-            return QString("File %1\ncontains %2 measurements\nhere numbered %3 to %4")
+            return QString("File %1\ncontains %2 measurements.here numbered %3 to %4")
                 .arg(file.name())
                 .arg(file.count())
                 .arg(gSession->dataset().offset(file)+1)

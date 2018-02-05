@@ -14,7 +14,7 @@
 
 #include "gui/output/dialog_panels.h"
 #include "core/session.h"
-#include "gui/thehub.h"
+#include "gui/mainwin.h"
 
 // ************************************************************************** //
 //  class GridPanel

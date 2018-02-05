@@ -14,7 +14,7 @@
 
 #include "controls_detector.h"
 #include "core/session.h"
-#include "gui/thehub.h"
+#include "gui/mainwin.h"
 
 ControlsDetector::ControlsDetector()
     : detDistance_("detDistance_", 6, Geometry::MIN_DETECTOR_DISTANCE)

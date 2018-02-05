@@ -175,7 +175,7 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     connect(gSession, &Session::sigCorr, this, &DiffractogramPlot::renderAll);
     connect(gSession, &Session::sigActivated, this, &DiffractogramPlot::renderAll);
     connect(gSession, &Session::sigDetector, this, &DiffractogramPlot::renderAll);
-    connect(gHub, &TheHub::sigDisplayChanged, this, &DiffractogramPlot::renderAll);
+    connect(gHub, &MainWin::sigDisplayChanged, this, &DiffractogramPlot::renderAll);
     connect(gSession, &Session::sigDiffractogram, this, &DiffractogramPlot::renderAll);
     connect(gSession, &Session::sigBaseline, this, &DiffractogramPlot::renderAll);
 

@@ -82,6 +82,7 @@ int main(int argc, char* argv[]) {
     gSession = Session::instance();
     gConsole = Console::instance();
     gMainWin = MainWin::instance();
+    gHub = MainWin::instance();
     gMainWin->show();
     // gMainWin->addFiles();
 

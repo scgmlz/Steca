@@ -17,7 +17,7 @@
 #include "gui/panels/controls_baseline.h"
 #include "gui/panels/controls_detector.h"
 #include "gui/panels/controls_peakfits.h"
-#include "gui/thehub.h"
+#include "gui/mainwin.h"
 
 SubframeSetup::SubframeSetup() {
     setTabPosition(QTabWidget::North);

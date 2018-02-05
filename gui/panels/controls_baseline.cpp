@@ -15,11 +15,11 @@
 #include "controls_baseline.h"
 #include "core/session.h"
 #include "gui/base/model_view.h"
-#include "gui/thehub.h"
+#include "gui/mainwin.h"
 #include <QStackedWidget>
 
 ControlsBaseline::ControlsBaseline()
-    : spinDegree_("spinDegree_", 4, false, 0, TheHub::MAX_POLYNOM_DEGREE)
+    : spinDegree_("spinDegree_", 4, false, 0, MainWin::MAX_POLYNOM_DEGREE)
 {
     auto* box = newQ::VBoxLayout();
     setLayout(box);

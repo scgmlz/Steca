@@ -15,7 +15,7 @@
 #include "gui/output/tab_save.h"
 #include "gui/output/dialog_panels.h"
 #include "gui/popup/filedialog.h"
-#include "gui/thehub.h"
+#include "gui/mainwin.h"
 #include <QDir>
 
 static str const DAT_SFX(".dat"), DAT_SEP(" "), // suffix, separator

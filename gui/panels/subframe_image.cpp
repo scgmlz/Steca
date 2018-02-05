@@ -15,7 +15,7 @@
 #include "subframe_image.h"
 #include "core/session.h"
 #include "gui/cfg/colors.h"
-#include "gui/thehub.h"
+#include "gui/mainwin.h"
 #include "gui/base/various_widgets.h"
 #include <qmath.h>
 #include <QPainter>
@@ -164,7 +164,7 @@ ImageTab::ImageTab() {
     connect(gHub->toggle_enableCorr, &QAction::toggled, [this](bool /*unused*/) { render(); });
     connect(gHub->toggle_showBins, &QAction::toggled, [this](bool /*unused*/) { render(); });
 
-    connect(gHub, &TheHub::sigDisplayChanged, this, &ImageTab::render);
+    connect(gHub, &MainWin::sigDisplayChanged, this, &ImageTab::render);
     connect(gSession, &Session::sigDetector, this, &ImageTab::render);
     connect(gSession, &Session::sigNorm, this, &ImageTab::render);
 }
