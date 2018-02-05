@@ -49,7 +49,7 @@ void DiffractogramPlotOverlay::leaveEvent(QEvent*) {
 void DiffractogramPlotOverlay::mousePressEvent(QMouseEvent* e) {
     mouseDownPos_ = cursorPos_;
     mouseDown_ = true;
-    addColor_ = (gHub->fittingTab() == eFittingTab::BACKGROUND) ? bgColor_ : reflColor_;
+    addColor_ = (gGui->fittingTab() == eFittingTab::BACKGROUND) ? bgColor_ : reflColor_;
     color_ = e->button() == Qt::LeftButton ? addColor_ : removeColor_;
     update();
 }
@@ -166,7 +166,7 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     fits_->setLineStyle(QCPGraph::lsNone);
     fits_->setPen(QPen(Qt::red));
 
-    connect(gHub->toggle_showBackground, &QAction::toggled, [this](bool on) {
+    connect(gGui->toggle_showBackground, &QAction::toggled, [this](bool on) {
         showBgFit_ = on;
         renderAll();
     });
@@ -175,7 +175,7 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     connect(gSession, &Session::sigCorr, this, &DiffractogramPlot::renderAll);
     connect(gSession, &Session::sigActivated, this, &DiffractogramPlot::renderAll);
     connect(gSession, &Session::sigDetector, this, &DiffractogramPlot::renderAll);
-    connect(gHub, &MainWin::sigDisplayChanged, this, &DiffractogramPlot::renderAll);
+    connect(gGui, &MainWin::sigDisplayChanged, this, &DiffractogramPlot::renderAll);
     connect(gSession, &Session::sigDiffractogram, this, &DiffractogramPlot::renderAll);
     connect(gSession, &Session::sigBaseline, this, &DiffractogramPlot::renderAll);
 
@@ -197,7 +197,7 @@ void DiffractogramPlot::plot(
     const Range& tthRange = dgram.rgeX();
 
     Range intenRange;
-    if (gHub->isFixedIntenDgramScale()) {
+    if (gGui->isFixedIntenDgramScale()) {
         intenRange = gSession->highlightsLens()->rgeInten();
     } else {
         intenRange = dgramBgFitted.rgeY();
@@ -275,7 +275,7 @@ void DiffractogramPlot::addBgItem(const Range& range) {
     setCurrentLayer("bg");
 
     QColor color;
-    switch (gHub->fittingTab()) {
+    switch (gGui->fittingTab()) {
     case eFittingTab::BACKGROUND:
         color = BgColor_;
         break;
@@ -366,7 +366,7 @@ void DiffractogramPlot::calcDgram() {
     dgram_.clear();
     if (!gSession->dataset().highlight().cluster())
         return;
-    if (gHub->isCombinedDgram())
+    if (gGui->isCombinedDgram())
         dgram_ = gSession->experiment().avgCurve();
     else
         dgram_ = gSession->highlightsLens()->makeCurve(gSession->gammaRange());

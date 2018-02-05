@@ -41,8 +41,7 @@
 #include <QStatusBar>
 #include <QStringBuilder> // for ".." % ..
 
-MainWin* gMainWin; //!< global, for message handling
-MainWin* gHub; //!< global, for signalling and command flow
+MainWin* gGui; //!< global pointer to _the_ main window
 
 // ************************************************************************** //
 //  file-scoped functions
@@ -77,30 +76,30 @@ void initMenus(QMenuBar* mbar) {
     _actionsToMenu(
         "&File",
         {
-            gHub->trigger_addFiles,
-                gHub->trigger_removeFile,
+            gGui->trigger_addFiles,
+                gGui->trigger_removeFile,
                 _separator(),
-                gHub->trigger_corrFile,
-                gHub->toggle_enableCorr,
+                gGui->trigger_corrFile,
+                gGui->toggle_enableCorr,
                 _separator(),
-                gHub->trigger_loadSession,
-                gHub->trigger_saveSession,
-                gHub->trigger_clearSession,
+                gGui->trigger_loadSession,
+                gGui->trigger_saveSession,
+                gGui->trigger_clearSession,
 #ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
                 _separator(),
 #endif
-                gHub->trigger_quit,
+                gGui->trigger_quit,
         });
 
     QMenu* menuImage = _actionsToMenu(
         "&Image",
-        {   gHub->trigger_rotateImage,
-                gHub->toggle_mirrorImage,
-                gHub->toggle_fixedIntenImage,
-                gHub->toggle_linkCuts,
-                gHub->toggle_showOverlay,
-                gHub->toggle_stepScale,
-                gHub->toggle_showBins,
+        {   gGui->trigger_rotateImage,
+                gGui->toggle_mirrorImage,
+                gGui->toggle_fixedIntenImage,
+                gGui->toggle_linkCuts,
+                gGui->toggle_showOverlay,
+                gGui->toggle_stepScale,
+                gGui->toggle_showBins,
         });
     menuImage->setEnabled(false);
     QObject::connect(gSession, &Session::sigFiles, [menuImage]()
@@ -109,16 +108,16 @@ void initMenus(QMenuBar* mbar) {
     QMenu* menuDgram = _actionsToMenu(
         "&Diffractogram",
         {
-            gHub->toggle_selRegions,
-                gHub->toggle_showBackground,
-                gHub->trigger_clearBackground,
-                gHub->trigger_clearPeaks,
+            gGui->toggle_selRegions,
+                gGui->toggle_showBackground,
+                gGui->trigger_clearBackground,
+                gGui->trigger_clearPeaks,
                 _separator(),
-                gHub->trigger_addPeak,
-                gHub->trigger_removePeak,
+                gGui->trigger_addPeak,
+                gGui->trigger_removePeak,
                 _separator(),
-                gHub->toggle_combinedDgram,
-                gHub->toggle_fixedIntenDgram,
+                gGui->toggle_combinedDgram,
+                gGui->toggle_fixedIntenDgram,
         });
     menuDgram->setEnabled(false);
     QObject::connect(gSession, &Session::sigFiles, [menuDgram]()
@@ -127,9 +126,9 @@ void initMenus(QMenuBar* mbar) {
     QMenu* menuOutput = _actionsToMenu(
         "&Output",
         {
-            gHub->trigger_outputPolefigures,
-                gHub->trigger_outputDiagrams,
-                gHub->trigger_outputDiffractograms,
+            gGui->trigger_outputPolefigures,
+                gGui->trigger_outputDiagrams,
+                gGui->trigger_outputDiffractograms,
         });
     menuOutput->setEnabled(false);
     QObject::connect(gSession, &Session::sigActivated, [menuOutput]()
@@ -137,24 +136,24 @@ void initMenus(QMenuBar* mbar) {
 
     _actionsToMenu(
         "&View",
-        {   gHub->toggle_viewFiles,
-                gHub->toggle_viewDatasets,
-                gHub->toggle_viewMetadata,
+        {   gGui->toggle_viewFiles,
+                gGui->toggle_viewDatasets,
+                gGui->toggle_viewMetadata,
                 _separator(),
 #ifndef Q_OS_OSX
-                gHub->toggle_fullScreen,
+                gGui->toggle_fullScreen,
 #endif
-                gHub->toggle_viewStatusbar,
+                gGui->toggle_viewStatusbar,
                 _separator(),
-                gHub->trigger_viewReset,
+                gGui->trigger_viewReset,
         });
 
     _actionsToMenu(
         "&Help",
         {
-            gHub->trigger_about, // Mac puts About into the Apple menu
-                gHub->trigger_online,
-                gHub->trigger_checkUpdate,
+            gGui->trigger_about, // Mac puts About into the Apple menu
+                gGui->trigger_online,
+                gGui->trigger_checkUpdate,
         });
 }
 
@@ -525,7 +524,7 @@ void MainWin::viewReset() {
 }
 
 void MainWin::saveSessionTo(QFileInfo const& fileInfo) const {
-    QFile* file = newQ::OutputFile("file", gMainWin, fileInfo.filePath());
+    QFile* file = newQ::OutputFile("file", gGui, fileInfo.filePath());
     if (!file)
         return;
     QDir::setCurrent(fileInfo.absolutePath());
@@ -664,7 +663,7 @@ void MainWin::loadCorrFile() {
         gSession->corrset().removeFile();
     } else {
         QString fileName = file_dialog::openFileName(
-            gMainWin, "Set correction file", QDir::current().absolutePath(),
+            gGui, "Set correction file", QDir::current().absolutePath(),
             "Data files (*.dat *.mar*);;All files (*.*)");
         if (fileName.isEmpty())
             return;

@@ -45,8 +45,8 @@ private:
 ImageWidget::ImageWidget() : scale_(0) {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    connect(gHub->toggle_showOverlay, &QAction::toggled, [this](bool /*unused*/) { update(); });
-    connect(gHub->toggle_stepScale, &QAction::toggled, [this](bool /*unused*/) { setScale(); });
+    connect(gGui->toggle_showOverlay, &QAction::toggled, [this](bool /*unused*/) { update(); });
+    connect(gGui->toggle_stepScale, &QAction::toggled, [this](bool /*unused*/) { setScale(); });
 }
 
 void ImageWidget::setPixmap(QPixmap const& pixmap) {
@@ -63,7 +63,7 @@ void ImageWidget::setScale() {
         scale_ = qMin(qreal(sz.width() - 2) / os.width(), qreal(sz.height() - 2) / os.height());
     }
 
-    if (gHub->toggle_stepScale->isChecked() && scale_ > 0)
+    if (gGui->toggle_stepScale->isChecked() && scale_ > 0)
         scale_ = (scale_ >= 1) ? qFloor(scale_) : 1.0 / qCeil(1.0 / scale_);
 
     if (original_.isNull() || !(scale_ > 0))
@@ -90,7 +90,7 @@ void ImageWidget::paintEvent(QPaintEvent*) {
     p.drawPixmap(rect.left(), rect.top(), scaled_);
 
     // overlay
-    if (gHub->toggle_showOverlay->isChecked()) {
+    if (gGui->toggle_showOverlay->isChecked()) {
         p.setPen(Qt::lightGray);
 
         // cut
@@ -154,28 +154,28 @@ ImageTab::ImageTab() {
 
     controls_ = newQ::HBoxLayout();
     box_->addLayout(controls_);
-    controls_->addWidget(newQ::IconButton(gHub->toggle_fixedIntenImage));
-    controls_->addWidget(newQ::IconButton(gHub->toggle_stepScale));
-    controls_->addWidget(newQ::IconButton(gHub->toggle_showOverlay));
+    controls_->addWidget(newQ::IconButton(gGui->toggle_fixedIntenImage));
+    controls_->addWidget(newQ::IconButton(gGui->toggle_stepScale));
+    controls_->addWidget(newQ::IconButton(gGui->toggle_showOverlay));
 
     imageView_ = new ImageWidget();
     box_->addWidget(imageView_);
 
-    connect(gHub->toggle_enableCorr, &QAction::toggled, [this](bool /*unused*/) { render(); });
-    connect(gHub->toggle_showBins, &QAction::toggled, [this](bool /*unused*/) { render(); });
+    connect(gGui->toggle_enableCorr, &QAction::toggled, [this](bool /*unused*/) { render(); });
+    connect(gGui->toggle_showBins, &QAction::toggled, [this](bool /*unused*/) { render(); });
 
-    connect(gHub, &MainWin::sigDisplayChanged, this, &ImageTab::render);
+    connect(gGui, &MainWin::sigDisplayChanged, this, &ImageTab::render);
     connect(gSession, &Session::sigDetector, this, &ImageTab::render);
     connect(gSession, &Session::sigNorm, this, &ImageTab::render);
 }
 
 QPixmap ImageTab::makePixmap(shp_Image image) {
-    return QPixmap::fromImage(makeImage(image, !gHub->isFixedIntenImageScale()));
+    return QPixmap::fromImage(makeImage(image, !gGui->isFixedIntenImageScale()));
 }
 
 QPixmap ImageTab::makePixmap(
     Measurement const& cluster, const Range& rgeGma, const Range& rgeTth) {
-    QImage im = makeImage(cluster.image(), !gHub->isFixedIntenImageScale());
+    QImage im = makeImage(cluster.image(), !gGui->isFixedIntenImageScale());
     shp_AngleMap angleMap = gSession->angleMap(cluster);
 
     const QSize& size = im.size();
@@ -215,7 +215,7 @@ QImage ImageTab::makeImage(shp_Image image, bool curvedScale) {
 
     QImage ret(QSize(size.w, size.h), QImage::Format_RGB32);
 
-    const Range rgeInten = imageLens->rgeInten(gHub->isFixedIntenImageScale());
+    const Range rgeInten = imageLens->rgeInten(gGui->isFixedIntenImageScale());
     inten_t maxInten = inten_t(rgeInten.max);
 
     for_ij (size.w, size.h)
@@ -268,7 +268,7 @@ DataImageTab::DataImageTab() {
 
     controls_->addStretch(1);
 
-    controls_->addWidget(newQ::IconButton(gHub->toggle_showBins));
+    controls_->addWidget(newQ::IconButton(gGui->toggle_showBins));
     controls_->addWidget(newQ::Label("γ count"));
     controls_->addWidget(&numSlices_);
     connect(&numSlices_, _SLOT_(QSpinBox, valueChanged, int),
@@ -325,7 +325,7 @@ void DataImageTab::render() {
         const Measurement* measurement = gSession->dataset().highlight().measurement();
 
         numBin_.setEnabled(true);
-        if (gHub->toggle_showBins->isChecked()) {
+        if (gGui->toggle_showBins->isChecked()) {
             Range rgeTth = lens->rgeTth();
             int count = lens->makeCurve().count();
             numBin_.setMaximum(count - 1);

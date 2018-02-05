@@ -24,7 +24,7 @@
 #define context(ctx) ""
 #endif
 
-//extern MainWin* gMainWin;
+//extern MainWin* gGui;
 
 void messageHandler(QtMsgType type, QMessageLogContext const& ctx, const QString& msg) {
     switch (type) {
@@ -34,7 +34,7 @@ void messageHandler(QtMsgType type, QMessageLogContext const& ctx, const QString
 // unavailable before Qt5.5 (ISSUE #36)
 //    case QtInfoMsg:
 //        std::cerr << "INFO " << msg.toStdString() << context(ctx) << "\n" << std::flush;
-//        gMainWin->statusBar()->showMessage(msg, 5000);
+//        gGui->statusBar()->showMessage(msg, 5000);
 //        break;
     case QtWarningMsg:
     default:

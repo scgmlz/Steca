@@ -44,7 +44,7 @@ ControlsDetector::ControlsDetector()
 
     auto _setImageCut = [this](bool isTopOrLeft, int value) {
         ASSERT(value >= 0);
-        if (gHub->toggle_linkCuts->isChecked())
+        if (gGui->toggle_linkCuts->isChecked())
             gSession->setImageCut(isTopOrLeft, true, ImageCut(value, value, value, value));
         else
             gSession->setImageCut(isTopOrLeft, false,
@@ -89,10 +89,10 @@ ControlsDetector::ControlsDetector()
     _add({ newQ::Label("beam offset X"), &beamOffsetI_, newQ::Label("pix") });
     _add({ newQ::Label("Y"), &beamOffsetJ_, newQ::Label("pix") });
     _add({ newQ::Label("image rotate"),
-                newQ::IconButton(gHub->trigger_rotateImage),
+                newQ::IconButton(gGui->trigger_rotateImage),
                 newQ::Label("mirror"),
-                newQ::IconButton(gHub->toggle_mirrorImage) });
-    _add({ newQ::IconButton(gHub->toggle_linkCuts),
+                newQ::IconButton(gGui->toggle_mirrorImage) });
+    _add({ newQ::IconButton(gGui->toggle_linkCuts),
                 newQ::Label("cut"),
                 newQ::Icon(":/icon/cutLeft"),
                 &cutLeft_,

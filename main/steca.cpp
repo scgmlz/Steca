@@ -20,14 +20,16 @@
 //!           https://github.com/scgmlz/Steca
 
 #include "../manifest.h"
+#include "core/session.h"
+#include "gui/cfg/msg_handler.h"
 #include "gui/console.h"
 #include "gui/mainwin.h"
-#include "gui/cfg/msg_handler.h"
-#include "core/session.h"
-#include <iostream>
+
 #define OPTPARSE_IMPLEMENTATION
 #define OPTPARSE_API static
 #include "optparse.h"
+
+#include <iostream>
 #include <QApplication>
 #include <QLoggingCategory>
 #include <QStyleFactory>
@@ -81,10 +83,9 @@ int main(int argc, char* argv[]) {
 
     gSession = Session::instance();
     gConsole = Console::instance();
-    gMainWin = MainWin::instance();
-    gHub = MainWin::instance();
-    gMainWin->show();
-    // gMainWin->addFiles();
+    gGui = MainWin::instance();
+    gGui->show();
+    // gGui->addFiles();
 
     return app.exec();
 }

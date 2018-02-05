@@ -30,7 +30,7 @@ TabSave::TabSave(bool withTypes)
     actBrowse = newQ::Trigger("actBrowse", "Browse...");
     actSave = newQ::Trigger("actSave", "Save");
 
-    str dir = gHub->saveDir;
+    str dir = gGui->saveDir;
     if (!QDir(dir).exists())
         dir = QDir::current().absolutePath();
 
@@ -53,7 +53,7 @@ TabSave::TabSave(bool withTypes)
     connect(actBrowse, &QAction::triggered, [this]() {
         str dir = file_dialog::saveDirName(this, "Select folder", dir_->text());
         if (!dir.isEmpty())
-            dir_->setText((gHub->saveDir = dir));
+            dir_->setText((gGui->saveDir = dir));
     });
 
     gp = new GridPanel("File type");
@@ -63,10 +63,10 @@ TabSave::TabSave(bool withTypes)
     g->addWidget(&rbDat_, 0, 0);
     g->addWidget(&rbCsv_, 1, 0);
 
-    connect(&rbDat_, &QRadioButton::clicked, [this]() { gHub->saveFmt = DAT_SFX; });
-    connect(&rbCsv_, &QRadioButton::clicked, [this]() { gHub->saveFmt = CSV_SFX; });
+    connect(&rbDat_, &QRadioButton::clicked, [this]() { gGui->saveFmt = DAT_SFX; });
+    connect(&rbCsv_, &QRadioButton::clicked, [this]() { gGui->saveFmt = CSV_SFX; });
 
-    (CSV_SFX == gHub->saveFmt ? &rbCsv_ : &rbDat_)->setChecked(true);
+    (CSV_SFX == gGui->saveFmt ? &rbCsv_ : &rbDat_)->setChecked(true);
 
     gp->setVisible(withTypes);
 }

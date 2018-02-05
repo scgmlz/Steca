@@ -34,12 +34,12 @@ SubframeSetup::SubframeSetup() {
             tab = eFittingTab::REFLECTIONS;
         else
             tab = eFittingTab::NONE;
-        gHub->setFittingTab(tab);
+        gGui->setFittingTab(tab);
     });
 
     connect(gSession, &Session::sigFiles, this, &SubframeSetup::updateTabsAvailability);
 
-    gHub->setFittingTab(eFittingTab::NONE);
+    gGui->setFittingTab(eFittingTab::NONE);
     updateTabsAvailability();
 }
 
@@ -50,6 +50,6 @@ void SubframeSetup::updateTabsAvailability() {
     } else {
         setTabEnabled(1, false);
         setTabEnabled(2, false);
-        gHub->setFittingTab(eFittingTab::NONE);
+        gGui->setFittingTab(eFittingTab::NONE);
     }
 }

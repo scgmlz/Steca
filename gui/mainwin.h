@@ -25,8 +25,7 @@
 #include <QMainWindow>
 #include <QNetworkAccessManager>
 
-extern class MainWin* gMainWin; //!< global pointer to _the_ main window
-extern class MainWin* gHub; //!< global pointer to _the_ instance of MainWin
+extern class MainWin* gGui; //!< global pointer to _the_ main window
 
 // make connects shorter
 #define _SLOT_(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
@@ -38,8 +37,7 @@ enum class eFittingTab { NONE, BACKGROUND, REFLECTIONS, };
 //! The main window.
 
 //! This is a singleton class that specializes QMainWindow.
-//! The one instance of this class is accessible from everywhere through
-//! the global pointer gMainWin.
+//! Its one instance is accessible from everywhere through the global pointer gGui.
 
 class MainWin : public QMainWindow, public ISingleton<MainWin> {
     Q_OBJECT

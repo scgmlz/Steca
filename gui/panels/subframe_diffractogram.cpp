@@ -44,8 +44,8 @@ private:
     CDoubleSpinBox intenScale_{"intenScale_", 6, 0.001};
     QAction* actZoom_{ newQ::Toggle("actZoom_", "zoom", false) };
     XTextButton enableZoom_{actZoom_};
-    CCheckBox combine_{"dgram:combine", gHub->toggle_combinedDgram};
-    CCheckBox fixInten_{"dgram:fixInten", gHub->toggle_fixedIntenDgram};
+    CCheckBox combine_{"dgram:combine", gGui->toggle_combinedDgram};
+    CCheckBox fixInten_{"dgram:fixInten", gGui->toggle_fixedIntenDgram};
 };
 
 
@@ -95,13 +95,13 @@ Diffractogram::Diffractogram() {
 
     connect(gSession, &Session::sigHighlight, this, &Diffractogram::onHighlight);
     connect(gSession, &Session::sigNorm, this, &Diffractogram::onNormChanged);
-    connect(gHub, &MainWin::sigFittingTab, [this](eFittingTab tab) { onFittingTab(tab); });
+    connect(gGui, &MainWin::sigFittingTab, [this](eFittingTab tab) { onFittingTab(tab); });
 
-    connect(gHub->toggle_selRegions, &QAction::toggled, [this](bool on) {
+    connect(gGui->toggle_selRegions, &QAction::toggled, [this](bool on) {
         using eTool = DiffractogramPlot::eTool;
         auto tool = eTool::NONE;
         if (on)
-            switch (gHub->fittingTab()) {
+            switch (gGui->fittingTab()) {
             case eFittingTab::BACKGROUND: tool = eTool::BACKGROUND; break;
             case eFittingTab::REFLECTIONS: tool = eTool::PEAK_REGION; break;
             default: break;
@@ -109,8 +109,8 @@ Diffractogram::Diffractogram() {
         plot_->setTool(tool);
         });
 
-    gHub->toggle_selRegions->setChecked(true);
-    gHub->toggle_showBackground->setChecked(true);
+    gGui->toggle_selRegions->setChecked(true);
+    gGui->toggle_showBackground->setChecked(true);
     intenAvg_.setChecked(true);
 }
 
@@ -124,15 +124,15 @@ void Diffractogram::onNormChanged() {
 }
 
 void Diffractogram::onFittingTab(eFittingTab tab) {
-    bool on = gHub->toggle_selRegions->isChecked();
+    bool on = gGui->toggle_selRegions->isChecked();
     switch (tab) {
     case eFittingTab::BACKGROUND:
-        gHub->toggle_selRegions->setIcon(QIcon(":/icon/selRegion"));
+        gGui->toggle_selRegions->setIcon(QIcon(":/icon/selRegion"));
         plot_->setTool(
             on ? DiffractogramPlot::eTool::BACKGROUND : DiffractogramPlot::eTool::NONE);
         break;
     case eFittingTab::REFLECTIONS:
-        gHub->toggle_selRegions->setIcon(QIcon(":/icon/reflRegion"));
+        gGui->toggle_selRegions->setIcon(QIcon(":/icon/reflRegion"));
         plot_->setTool(
             on ? DiffractogramPlot::eTool::PEAK_REGION : DiffractogramPlot::eTool::NONE);
         break;

@@ -26,9 +26,9 @@ ControlsBaseline::ControlsBaseline()
 
     QBoxLayout* hb = newQ::HBoxLayout();
     box->addLayout(hb);
-    hb->addWidget(newQ::IconButton(gHub->toggle_selRegions));
-    hb->addWidget(newQ::IconButton(gHub->toggle_showBackground));
-    hb->addWidget(newQ::IconButton(gHub->trigger_clearBackground));
+    hb->addWidget(newQ::IconButton(gGui->toggle_selRegions));
+    hb->addWidget(newQ::IconButton(gGui->toggle_showBackground));
+    hb->addWidget(newQ::IconButton(gGui->trigger_clearBackground));
     hb->addWidget(newQ::Label("Pol. degree:"));
     hb->addWidget(&spinDegree_);
     connect(&spinDegree_, _SLOT_(QSpinBox, valueChanged, int), [this](int degree) {
