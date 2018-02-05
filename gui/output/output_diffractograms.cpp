@@ -80,14 +80,13 @@ public:
     bool allChecked() { return rbAll_.isChecked(); }
 
 private:
-    CRadioButton rbCurrent_, rbAllSequential_, rbAll_;
+    CRadioButton rbCurrent_ {"rbCurrent_", "Current diffractogram"};
+    CRadioButton rbAllSequential_ {"rbAllSequential_", "All diffractograms to numbered files"};
+    CRadioButton rbAll_ {"rbAll_", "All diffractograms to one file"};
 };
 
 TabDiffractogramsSave::TabDiffractogramsSave()
     : TabSave(true)
-    , rbCurrent_("rbCurrent_", "Current diffractogram")
-    , rbAllSequential_("rbAllSequential_", "All diffractograms to sequentially numbered files")
-    , rbAll_("rbAll_", "All diffractograms")
 {
     auto gp = new GridPanel("To save");
     grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);

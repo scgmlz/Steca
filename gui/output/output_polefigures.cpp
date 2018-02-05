@@ -204,17 +204,15 @@ public:
     void rawReflSettings(bool on);
 
 private:
-    CCheckBox outputInten_, outputTth_, outputFWHM_;
-    CRadioButton rbSelectedRefl_, rbAllRefls_;
+    CCheckBox outputInten_ {"outputInten_", "Intensity pole figure"};
+    CCheckBox outputTth_ {"outputTth_", "Peak position pole figure"};
+    CCheckBox outputFWHM_ {"outputFWHM_", "TWHM pole figure"};
+    CRadioButton rbSelectedRefl_ {"rbSelectedRefl_", "Selected peak"};
+    CRadioButton rbAllRefls_ {"rbAllRefls_", "All peaks"};
 };
 
 TabPoleFiguresSave::TabPoleFiguresSave()
     : TabSave(false)
-    , outputInten_("outputInten_", "Intensity pole figure")
-    , outputTth_("outputTth_", "Peak position pole figure")
-    , outputFWHM_("outputFWHM_", "TWHM pole figure")
-    , rbSelectedRefl_("rbSelectedRefl_", "Selected peak")
-    , rbAllRefls_("rbAllRefls_", "All peaks")
 {
     auto hb = newQ::HBoxLayout();
     grid_->addLayout(hb, grid_->rowCount(), 0);
