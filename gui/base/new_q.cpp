@@ -56,7 +56,7 @@ QGridLayout* newQ::GridLayout() {
 }
 
 QToolButton* newQ::TextButton(QAction* action) { return new XTextButton(action); }
-QToolButton* newQ::IconButton(QAction* action) { return new XTextButton(action); }
+QToolButton* newQ::IconButton(QAction* action) { return new XIconButton(action); }
 
 QLabel* newQ::Label(rcstr text) {
     return new QLabel(text);
