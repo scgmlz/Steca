@@ -75,27 +75,31 @@ class TabDiffractogramsSave : public TabSave {
 public:
     TabDiffractogramsSave();
 
-    bool currentChecked() { return rbCurrent_->isChecked(); }
-    bool allSequentialChecked() { return rbAllSequential_->isChecked(); }
-    bool allChecked() { return rbAll_->isChecked(); }
+    bool currentChecked() { return rbCurrent_.isChecked(); }
+    bool allSequentialChecked() { return rbAllSequential_.isChecked(); }
+    bool allChecked() { return rbAll_.isChecked(); }
 
 private:
-    QRadioButton *rbCurrent_, *rbAllSequential_, *rbAll_;
+    CRadioButton rbCurrent_, rbAllSequential_, rbAll_;
 };
 
-TabDiffractogramsSave::TabDiffractogramsSave() : TabSave(true) {
+TabDiffractogramsSave::TabDiffractogramsSave()
+    : TabSave(true)
+    , rbCurrent_("rbCurrent_", "Current diffractogram")
+    , rbAllSequential_("rbAllSequential_", "All diffractograms to sequentially numbered files")
+    , rbAll_("rbAll_", "All diffractograms")
+{
     auto gp = new GridPanel("To save");
     grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
     grid_->setRowStretch(grid_->rowCount(), 1);
 
     QGridLayout* g = gp->grid();
-    g->addWidget((rbCurrent_ = newQ::RadioButton("rbCurrent_", "Current diffractogram")));
-    g->addWidget((rbAllSequential_ = newQ::RadioButton("rbAllSequential_", 
-                      "All diffractograms to sequentially numbered files")));
-    g->addWidget((rbAll_ = newQ::RadioButton("rbAll_", "All diffractograms")));
+    g->addWidget(&rbCurrent_);
+    g->addWidget(&rbAllSequential_);
+    g->addWidget(&rbAll_);
     g->addWidget(newQ::TextButton(actSave), 2, 1);
 
-    rbAll_->setChecked(true);
+    rbAll_.setChecked(true);
 }
 
 
@@ -178,13 +182,13 @@ void DiffractogramsFrame::saveAll(bool oneFile) {
     }
 
     ASSERT(params_->panelGammaSlices);
-    int gmaSlices = params_->panelGammaSlices->numSlices->value();
+    int gmaSlices = params_->panelGammaSlices->numSlices.value();
 
     ASSERT(params_->panelGammaRange);
     const PanelGammaRange* pr = params_->panelGammaRange;
     Range rgeGma;
-    if (pr->cbLimitGamma->isChecked())
-        rgeGma.safeSet(pr->minGamma->value(), pr->maxGamma->value());
+    if (pr->cbLimitGamma.isChecked())
+        rgeGma.safeSet(pr->minGamma.value(), pr->maxGamma.value());
 
     Progress progress(expt.size(), progressBar_);
 
@@ -204,7 +208,7 @@ void DiffractogramsFrame::saveAll(bool oneFile) {
         const qreal step = rge.width() / gmaSlices;
         for_i (gmaSlices) {
             if (!oneFile) {
-                QFile* file = newQ::OutputFile("file", 
+                QFile* file = newQ::OutputFile("file",
                     this, numberedName(path, ++fileNum, expt.size()+1), false);
                 if (!file)
                     return;

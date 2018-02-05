@@ -126,25 +126,27 @@ void TabPlot::plot(
 class TabDiagramsSave : public TabSave {
 public:
     TabDiagramsSave();
-    int currType() const { return fileTypes_->currentIndex(); }
-    bool currDiagram() const { return currentDiagram_->isChecked(); }
+    bool currDiagram() const { return currentDiagram_.isChecked(); }
 private:
-    QRadioButton *currentDiagram_, *allData_;
-    QComboBox* fileTypes_;
+    CRadioButton currentDiagram_, allData_;
 };
 
-TabDiagramsSave::TabDiagramsSave() : TabSave(true) {
+TabDiagramsSave::TabDiagramsSave()
+    : TabSave(true)
+    , currentDiagram_("currentDiagram_", "Current diagram")
+    , allData_("allData_", "All data")
+{
     auto gp = new GridPanel("To save");
     grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
     grid_->setRowStretch(grid_->rowCount(), 1);
 
     QGridLayout* g = gp->grid();
-    g->addWidget((currentDiagram_ = newQ::RadioButton("currentDiagram_", "Current diagram")));
-    g->addWidget((allData_ = newQ::RadioButton("allData_", "All data")));
+    g->addWidget(&currentDiagram_);
+    g->addWidget(&allData_);
     g->addWidget(newQ::TextButton(actSave), 1, 1);
     g->setColumnStretch(0, 1);
 
-    currentDiagram_->setChecked(true);
+    currentDiagram_.setChecked(true);
 }
 
 // ************************************************************************** //
@@ -152,7 +154,8 @@ TabDiagramsSave::TabDiagramsSave() : TabSave(true) {
 // ************************************************************************** //
 
 DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
-    : Frame(title, new Params(PANELS), parent) {
+    : Frame(title, new Params(PANELS), parent)
+{
     btnInterpolate_->hide();
 
     {
@@ -166,8 +169,8 @@ DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
     ASSERT(params_->panelDiagram);
     PanelDiagram const* pd = params_->panelDiagram;
 
-    connect(pd->xAxis, _SLOT_(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
-    connect(pd->yAxis, _SLOT_(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
+    connect(&pd->xAxis, _SLOT_(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
+    connect(&pd->yAxis, _SLOT_(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
 
     {
         auto* tab = new QWidget();
@@ -184,12 +187,12 @@ DiagramsFrame::DiagramsFrame(rcstr title, QWidget* parent)
 
 DiagramsFrame::eReflAttr DiagramsFrame::xAttr() const {
     ASSERT(params_->panelDiagram);
-    return eReflAttr(params_->panelDiagram->xAxis->currentIndex());
+    return eReflAttr(params_->panelDiagram->xAxis.currentIndex());
 }
 
 DiagramsFrame::eReflAttr DiagramsFrame::yAttr() const {
     ASSERT(params_->panelDiagram);
-    return eReflAttr(params_->panelDiagram->yAxis->currentIndex());
+    return eReflAttr(params_->panelDiagram->yAxis.currentIndex());
 }
 
 void DiagramsFrame::displayPeak(int reflIndex, bool interpolated) {
