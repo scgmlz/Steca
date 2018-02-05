@@ -14,21 +14,73 @@
 
 #include "gui/console.h"
 #include "core/def/debug.h"
+#include <map>
 #include <QDateTime>
 #include <QFile>
 #include <QSocketNotifier>
 
 Console* gConsole; //!< global
 
+// ************************************************************************** //
+//  class CommandRegistry
+// ************************************************************************** //
+
+class CommandRegistry {
+public:
+    void learn(const QString&, std::function<void(const QString&)>);
+    void forget(const QString&);
+    std::function<void(const QString&)>* find(const QString& name);
+    void dump(QTextStream&);
+private:
+    std::map<const QString, std::function<void(const QString&)>> commands_;
+};
+
+void CommandRegistry::learn(const QString& name, std::function<void(const QString&)> f) {
+    qDebug() << "register command" << name;
+    if (commands_.find(name)!=commands_.end())
+        qFatal(("Duplicate command '"+name+"'").toLatin1());
+    commands_[name] = f;
+}
+
+void CommandRegistry::forget(const QString& name) {
+    qDebug() << "deregis command" << name;
+    auto it = commands_.find(name);
+    if (it==commands_.end())
+        qFatal(("Cannot deregister command '"+name+"'").toLatin1());
+    commands_.erase(it);
+}
+
+std::function<void(const QString&)>* CommandRegistry::find(const QString& name) {
+    auto entry = commands_.find(name);
+    if (entry==commands_.end())
+        return {};
+    return &entry->second;
+}
+
+void CommandRegistry::dump(QTextStream& stream) {
+    stream << "commands:\n";
+    for (auto it: commands_)
+        stream << " " << it.first << "\n";
+}
+
+// ************************************************************************** //
+//  class Console
+// ************************************************************************** //
+
 Console::Console()
 {
     notifier_ = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read, this);
     connect(notifier_, SIGNAL(activated(int)), this, SLOT(readLine()));
+
+    // start log
     auto* file = new QFile("Steca.log");
     if (!file->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
         qFatal("cannot open log file");
     log_.setDevice(file);
     log("# Steca session started");
+
+    // start registry
+    registryStack_.push(new CommandRegistry);
 }
 
 Console::~Console() {
@@ -41,57 +93,32 @@ void Console::readLine()
     QTextStream qterr(stderr);
     QString line = qtin.readLine();
     if (line=="lscmd") {
-        for (auto it: setters_)
-            qterr << "setter: " << it.first << "\n";
-        for (auto it: actions_)
-            qterr << "action: " << it.first << "\n";
+        registryStack_.top()->dump(qterr);
         return;
     }
+    if (line.endsWith('!'))
+        line = line.left(line.count()-1) + "=void";
     if (line.contains('=')) {
         QStringList list = line.split('=');
         QString cmd = list[0];
         QString val = list[1];
-        auto entry = setters_.find(cmd);
-        if (entry==setters_.end()) {
-            qterr << "setter '" << cmd << "' not found\n";
+        std::function<void(const QString&)>* f = registryStack_.top()->find(cmd);
+        if (!f) {
+            qterr << "command '" << cmd << "' not found\n";
             return;
         }
-        entry->second(val);
-        return;
-    }
-    if (line.endsWith('!')) {
-        QString cmd = line.left(line.count()-1);
-        auto entry = actions_.find(cmd);
-        if (entry==actions_.end()) {
-            qterr << "action '" << cmd << "' not found\n";
-            return;
-        }
-        entry->second();
+        (*f)(val); // execute command
         return;
     }
     emit(transmitLine(line));
 }
 
-void Console::registerSetter(const QString& name, std::function<void(const QString&)> setter) {
-    qDebug() << "register setter" << name;
-    if (setters_.find(name)!=setters_.end())
-        qFatal(("Duplicate setter '"+name+"'").toLatin1());
-    setters_[name] = setter;
+void Console::learn(const QString& name, std::function<void(const QString&)> f) {
+    registryStack_.top()->learn(name, f);
 }
 
-void Console::deregisterSetter(const QString& name) {
-    qDebug() << "deregis setter" << name;
-    auto it = setters_.find(name);
-    if (it==setters_.end())
-        qFatal(("Cannot deregister setter '"+name+"'").toLatin1());
-    setters_.erase(it);
-}
-
-void Console::registerAction(const QString& name, std::function<void()> action) {
-    qDebug() << "register action" << name;
-    if (actions_.find(name)!=actions_.end())
-        qFatal(("Duplicate action '"+name+"'").toLatin1());
-    actions_[name] = action;
+void Console::forget(const QString& name) {
+    registryStack_.top()->forget(name);
 }
 
 void Console::log(const QString& line) {

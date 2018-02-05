@@ -75,7 +75,7 @@ QAction* newQ::Trigger(const QString& name, const QString& text, const QString& 
     ret->setToolTip(text.toLower());
     if (iconFile!="")
         ret->setIcon(QIcon(iconFile));
-    gConsole->registerAction(name, [ret]()->void { ret->trigger(); });
+    gConsole->learn(name, [ret](const QString& /*unused*/)->void { ret->trigger(); });
     QObject::connect(ret, &QAction::triggered, [name]()->void { gConsole->log(name+"!"); });
     return ret;
 };
@@ -89,7 +89,7 @@ QAction* newQ::Toggle(
         ret->setIcon(QIcon(iconFile));
     ret->setCheckable(true);
     ret->setChecked(value);
-    gConsole->registerSetter(name, [ret](const QString& val)->void {
+    gConsole->learn(name, [ret](const QString& val)->void {
             if (val=="y")
                 ret->setChecked(true);
             else if (val=="n")
@@ -137,11 +137,11 @@ XLineDisplay::XLineDisplay(int ndigits, bool withDot) {
 CSettable::CSettable(const QString& name, std::function<void(const QString&)> setter)
     : name_(name)
 {
-    gConsole->registerSetter(name, setter);
+    gConsole->learn(name, setter);
 }
 
 CSettable::~CSettable() {
-    gConsole->deregisterSetter(name_);
+    gConsole->forget(name_);
 }
 
 // A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.

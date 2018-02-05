@@ -17,7 +17,7 @@
 
 #include "core/typ/str.h"
 #include "core/typ/singleton.h"
-#include <map>
+#include <stack>
 #include <functional>
 #include <QObject>
 #include <QTextStream>
@@ -31,17 +31,15 @@ class Console : public QObject, public ISingleton<Console>
 public:
     Console();
     ~Console();
-    void registerSetter(const QString& name, std::function<void(const QString&)> setter);
-    void deregisterSetter(const QString& name);
-    void registerAction(const QString& name, std::function<void()> action);
+    void learn(const QString& name, std::function<void(const QString&)> setter);
+    void forget(const QString& name);
     void log(const QString&);
 signals:
     void transmitLine(str);
 private:
     QTextStream log_;
     class QSocketNotifier *notifier_;
-    std::map<const QString, std::function<void(const QString&)>> setters_;
-    std::map<const QString, std::function<void()>> actions_;
+    std::stack<class CommandRegistry*> registryStack_;
 private slots:
     void readLine();
 };
