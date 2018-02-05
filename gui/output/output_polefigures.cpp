@@ -58,24 +58,29 @@ private:
     bool flat_;
     qreal alphaMax_, avgAlphaMax_;
 
-    QCheckBox* cbFlat_;
+    CCheckBox cbFlat_;
 };
 
 TabGraph::TabGraph(Params& params)
-    : params_(params), flat_(false), alphaMax_(90), avgAlphaMax_(0) {
+    : params_(params)
+    , flat_(false)
+    , alphaMax_(90)
+    , avgAlphaMax_(0)
+    , cbFlat_("cbFlat_", "no intensity")
+{
     setLayout((grid_ = newQ::GridLayout()));
     ASSERT(params_.panelInterpolation);
 
-    grid_->addWidget((cbFlat_ = newQ::CheckBox("cbFlat_", "no intensity")), 0, 0);
+    grid_->addWidget(&cbFlat_, 0, 0);
 
     grid_->setRowStretch(grid_->rowCount(), 1);
     grid_->setColumnStretch(grid_->columnCount(), 1);
 
     connect(
-        params_.panelInterpolation->avgAlphaMax, _SLOT_(QDoubleSpinBox, valueChanged, double),
+        &params_.panelInterpolation->avgAlphaMax, _SLOT_(QDoubleSpinBox, valueChanged, double),
         [this]() { update(); });
 
-    connect(cbFlat_, &QCheckBox::toggled, [this]() { update(); });
+    connect(&cbFlat_, &QCheckBox::toggled, [this]() { update(); });
 
     update();
 }
@@ -86,8 +91,8 @@ void TabGraph::set(PeakInfos rs) {
 }
 
 void TabGraph::update() {
-    avgAlphaMax_ = params_.panelInterpolation->avgAlphaMax->value();
-    flat_ = cbFlat_->isChecked();
+    avgAlphaMax_ = params_.panelInterpolation->avgAlphaMax.value();
+    flat_ = cbFlat_.isChecked();
     QWidget::update();
 }
 
@@ -199,11 +204,18 @@ public:
     void rawReflSettings(bool on);
 
 private:
-    QRadioButton *rbSelectedRefl_, *rbAllRefls_;
-    QCheckBox *outputInten_, *outputTth_, *outputFWHM_;
+    CCheckBox outputInten_, outputTth_, outputFWHM_;
+    CRadioButton rbSelectedRefl_, rbAllRefls_;
 };
 
-TabPoleFiguresSave::TabPoleFiguresSave() : TabSave(false) {
+TabPoleFiguresSave::TabPoleFiguresSave()
+    : TabSave(false)
+    , outputInten_("outputInten_", "Intensity pole figure")
+    , outputTth_("outputTth_", "Peak position pole figure")
+    , outputFWHM_("outputFWHM_", "TWHM pole figure")
+    , rbSelectedRefl_("rbSelectedRefl_", "Selected peak")
+    , rbAllRefls_("rbAllRefls_", "All peaks")
+{
     auto hb = newQ::HBoxLayout();
     grid_->addLayout(hb, grid_->rowCount(), 0);
     grid_->setRowStretch(grid_->rowCount(), 1);
@@ -217,43 +229,43 @@ TabPoleFiguresSave::TabPoleFiguresSave() : TabSave(false) {
 
     {
         QGridLayout* g = p1->grid();
-        g->addWidget((outputInten_ = newQ::CheckBox("outputInten_", "Intensity pole figure")));
-        g->addWidget((outputTth_ = newQ::CheckBox("outputTth_", "Peak position pole figure")));
-        g->addWidget((outputFWHM_ = newQ::CheckBox("outputFWHM_", "TWHM pole figure")));
+        g->addWidget(&outputInten_);
+        g->addWidget(&outputTth_);
+        g->addWidget(&outputFWHM_);
         g->setRowStretch(g->rowCount(), 1);
     }
 
     {
         QGridLayout* g = p2->grid();
-        g->addWidget((rbSelectedRefl_ = newQ::RadioButton("rbSelectedRefl_", "Selected peak")));
-        g->addWidget((rbAllRefls_ = newQ::RadioButton("rbAllRefls_", "All peaks")));
+        g->addWidget(&rbSelectedRefl_);
+        g->addWidget(&rbAllRefls_);
         g->addWidget(newQ::TextButton(actSave), 2, 1);
         g->setRowStretch(g->rowCount(), 1);
     }
 
-    rbSelectedRefl_->setChecked(true);
-    outputInten_->setChecked(true);
+    rbSelectedRefl_.setChecked(true);
+    outputInten_.setChecked(true);
 }
 
 bool TabPoleFiguresSave::onlySelectedRefl() const {
-    return rbSelectedRefl_->isChecked();
+    return rbSelectedRefl_.isChecked();
 }
 
 bool TabPoleFiguresSave::outputInten() const {
-    return outputInten_->isChecked();
+    return outputInten_.isChecked();
 }
 
 bool TabPoleFiguresSave::outputTth() const {
-    return outputTth_->isChecked();
+    return outputTth_.isChecked();
 }
 
 bool TabPoleFiguresSave::outputFWHM() const {
-    return outputFWHM_->isChecked();
+    return outputFWHM_.isChecked();
 }
 
 void TabPoleFiguresSave::rawReflSettings(bool on) {
-    outputTth_->setEnabled(on);
-    outputFWHM_->setEnabled(on);
+    outputTth_.setEnabled(on);
+    outputFWHM_.setEnabled(on);
 }
 
 
