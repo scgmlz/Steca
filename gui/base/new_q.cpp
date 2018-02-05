@@ -15,6 +15,7 @@
 #include "gui/base/new_q.h"
 #include "gui/console.h"
 #include "gui/mainwin.h"
+#include "gui/thehub.h" // for _SLOT_
 #include "core/def/numbers.h"
 #include <QApplication> // for qApp for new Action
 #include <QDebug>
@@ -142,18 +143,22 @@ CSettable::~CSettable() {
 // A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.
 // However, sometimes we want to make a QSpinBox exactly as wide as a given QDoubleSpinBox,
 // for nice vertical alignement. Then we use withDot=true.
-CSpinBox::CSpinBox(const QString& name, int ndigits, bool withDot, int min, int max)
-    : CSettable(name, [this](const QString& val)->void { setValue(val.toInt()); }) {
+CSpinBox::CSpinBox(const QString& _name, int ndigits, bool withDot, int min, int max)
+    : CSettable(_name, [this](const QString& val)->void { setValue(val.toInt()); }) {
     setWidth(this, ndigits, withDot);
     setMinimum(min);
     setMaximum(max > min ? max : min);
+    connect(this, _SLOT_(QSpinBox, valueChanged, int), [this](int val)->void {
+            gConsole->log(name()+"="+QString::number(val)); });
 }
 
-CDoubleSpinBox::CDoubleSpinBox(const QString& name, int ndigits, qreal min, qreal max)
-    : CSettable(name, [this](const QString& val)->void { setValue(val.toDouble()); }) {
+CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, qreal min, qreal max)
+    : CSettable(_name, [this](const QString& val)->void { setValue(val.toDouble()); }) {
     setWidth(this, ndigits, true);
     setMinimum(min);
     setMaximum(max > min ? max : min);
+    connect(this, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val)->void {
+            gConsole->log(name()+"="+QString::number(val)); });
 }
 
 CCheckBox::CCheckBox(const QString& name, QAction* action)

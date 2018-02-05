@@ -70,6 +70,7 @@ class CSettable {
 public:
     CSettable(const QString& name, std::function<void(const QString&)> setter);
     ~CSettable();
+    QString name() const { return name_; }
 private:
     const QString name_;
 };
