@@ -30,6 +30,13 @@ void Console::readLine()
     QTextStream qtin(stdin);
     QTextStream qterr(stderr);
     QString line = qtin.readLine();
+    if (line=="lscmd") {
+        for (auto it: setters_)
+            qterr << "setter: " << it.first << "\n";
+        for (auto it: actions_)
+            qterr << "action: " << it.first << "\n";
+        return;
+    }
     if (line.contains('=')) {
         QStringList list = line.split('=');
         QString cmd = list[0];
@@ -56,20 +63,23 @@ void Console::readLine()
 }
 
 void Console::registerSetter(const QString& name, std::function<void(const QString&)> setter) {
+    qDebug() << "register setter" << name;
     if (setters_.find(name)!=setters_.end())
-        qFatal(("Duplicate setter "+name).toLatin1());
+        qFatal(("Duplicate setter '"+name+"'").toLatin1());
     setters_[name] = setter;
 }
 
 void Console::deregisterSetter(const QString& name) {
+    qDebug() << "deregis setter" << name;
     auto it = setters_.find(name);
     if (it==setters_.end())
-        qFatal(("Cannot deregister setter "+name).toLatin1());
+        qFatal(("Cannot deregister setter '"+name+"'").toLatin1());
     setters_.erase(it);
 }
 
 void Console::registerAction(const QString& name, std::function<void()> action) {
+    qDebug() << "register action" << name;
     if (actions_.find(name)!=actions_.end())
-        qFatal(("Duplicate action "+name).toLatin1());
+        qFatal(("Duplicate action '"+name+"'").toLatin1());
     actions_[name] = action;
 }
