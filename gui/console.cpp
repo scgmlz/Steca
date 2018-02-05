@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "gui/console.h"
+#include "core/def/debug.h"
 #include <QSocketNotifier>
 #include <QTextStream>
 
@@ -54,12 +55,14 @@ void Console::readLine()
     emit(transmitLine(line));
 }
 
-void Console::registerSetter(
-    const QString& name, std::function<void(const QString&)> setter) {
+void Console::registerSetter(const QString& name, std::function<void(const QString&)> setter) {
+    if (setters_.find(name)!=setters_.end())
+        qFatal(("Duplicate setter "+name).toLatin1());
     setters_[name] = setter;
 }
 
-void Console::registerAction(
-    const QString& name, std::function<void()> action) {
+void Console::registerAction(const QString& name, std::function<void()> action) {
+    if (actions_.find(name)!=actions_.end())
+        qFatal(("Duplicate action "+name).toLatin1());
     actions_[name] = action;
 }
