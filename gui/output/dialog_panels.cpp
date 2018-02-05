@@ -49,8 +49,7 @@ GridPanel::GridPanel(rcstr title) : QGroupBox(title) {
 
 PanelPeak::PanelPeak() : GridPanel("Peak") {
     QGridLayout* g = grid();
-    cbRefl = new QComboBox;
-    cbRefl->addItems(gSession->peaks().names());
+    cbRefl = newQ::ComboBox("outRefl", gSession->peaks().names());
     g->addWidget(cbRefl);
     g->setRowStretch(g->rowCount(), 1);
 }
@@ -181,8 +180,8 @@ PanelDiagram::PanelDiagram() : GridPanel("Diagram") {
         tags.removeLast(); // remove all tags that are not numbers
 
     QGridLayout* g = grid();
-    xAxis = (new QComboBox); xAxis->addItems(tags);
-    yAxis = (new QComboBox); yAxis->addItems(tags);
+    xAxis = newQ::ComboBox("xAxis", tags);
+    yAxis = newQ::ComboBox("yAxis", tags);
     g->addWidget(newQ::Label("x"), 1, 0);
     g->addWidget(xAxis, 1, 1);
     g->addWidget(newQ::Label("y"), 0, 0);

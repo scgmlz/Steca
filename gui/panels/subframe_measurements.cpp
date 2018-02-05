@@ -269,21 +269,20 @@ ExperimentControls::ExperimentControls() {
 
     // 'if incomplete' control
     layout->addStretch(1);
-    auto ifIncompleteLabel = newQ::Label("if incomplete:");
-    layout->addWidget(ifIncompleteLabel);
-    auto ifIncomplete = new QComboBox;
-    ifIncomplete->addItems({"keep", "drop"});
-    layout->addWidget(ifIncomplete);
-    connect(ifIncomplete, _SLOT_(QComboBox, currentIndexChanged, int),
+    auto remainderModeLabel = newQ::Label("if incomplete:");
+    layout->addWidget(remainderModeLabel);
+    auto remainderMode = newQ::ComboBox("remainderMode", {"keep", "drop"});
+    layout->addWidget(remainderMode);
+    connect(remainderMode, _SLOT_(QComboBox, currentIndexChanged, int),
             [this](int index) { gSession->dataset().setDropIncomplete(index); });
 
     // back connection, to change controls from saved session
     connect(gSession, &Session::sigClusters, [=]() {
             combineMeasurements->setValue(gSession->dataset().binning());
             if (gSession->dataset().hasIncomplete()) {
-                ifIncompleteLabel->show(); ifIncomplete->show();
+                remainderModeLabel->show(); remainderMode->show();
             } else {
-                ifIncompleteLabel->hide(); ifIncomplete->hide();
+                remainderModeLabel->hide(); remainderMode->hide();
             }
         });
 }

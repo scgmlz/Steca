@@ -148,6 +148,14 @@ QRadioButton* newQ::RadioButton(const QString& name, rcstr text) {
     return new QRadioButton(text);
 }
 
+QComboBox* newQ::ComboBox(const QString& name, const QStringList& items) {
+    auto ret = new QComboBox();
+    ret->addItems(items);
+    gConsole->registerSetter(name, [ret](const QString& val)->void {
+            ret->setCurrentIndex(val.toInt()); });
+    return ret;
+}
+
 QFile* newQ::OutputFile(
     const QString& name, QWidget* parent, const QString& path, bool check_overwrite) {
     QFile* ret = new QFile(path);

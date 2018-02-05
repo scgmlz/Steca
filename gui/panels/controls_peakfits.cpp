@@ -336,8 +336,7 @@ ControlsPeakfits::ControlsPeakfits() {
     hb = newQ::HBoxLayout();
     box->addLayout(hb);
 
-    comboReflType_ = new QComboBox;
-    comboReflType_->addItems(FunctionRegistry::instance()->keys());
+    comboReflType_ = newQ::ComboBox("reflTyp", FunctionRegistry::instance()->keys());
     hb->addWidget(comboReflType_);
     connect(comboReflType_, _SLOT_(QComboBox, currentIndexChanged, const QString&),
             [this](const QString& peakFunctionName) {

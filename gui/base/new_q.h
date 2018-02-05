@@ -58,6 +58,8 @@ QCheckBox* CheckBox(const QString& name, QAction*);
 
 QRadioButton* RadioButton(const QString& name, rcstr text);
 
+QComboBox* ComboBox(const QString& name, const QStringList& items = {});
+
 QFile* OutputFile(
     const QString& name, QWidget* parent, const QString& path, bool check_overwrite=true);
 

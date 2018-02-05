@@ -54,8 +54,8 @@ Diffractogram::Diffractogram() {
     box_->addLayout(hb);
 
     hb->addWidget(newQ::Label("normalize to:"));
-    comboNormType_ = new QComboBox;
-    comboNormType_->addItems({"none", "monitor", "Δ monitor", "Δ time", "background"});
+    comboNormType_ = newQ::ComboBox(
+        "normTyp", {"none", "monitor", "Δ monitor", "Δ time", "background"});
     hb->addWidget(comboNormType_);
 
     connect(comboNormType_, _SLOT_(QComboBox, currentIndexChanged, int),
