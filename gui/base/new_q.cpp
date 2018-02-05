@@ -161,15 +161,17 @@ CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, qreal min, qre
             gConsole->log(name()+"="+QString::number(val)); });
 }
 
-CCheckBox::CCheckBox(const QString& name, QAction* action)
+CCheckBox::CCheckBox(const QString& _name, QAction* action)
     : QCheckBox(action ? action->text().toLower() : "")
-    , CSettable(name, [this](const QString& val)->void { setChecked(val.toInt()); }) {
+    , CSettable(_name, [this](const QString& val)->void { setChecked(val.toInt()); }) {
     if (!action)
         return;
-    QObject::connect(this, &QCheckBox::toggled, [action](bool on) { action->setChecked(on); });
-    QObject::connect(action, &QAction::toggled, [this](bool on) { setChecked(on); });
+    connect(this, &QCheckBox::toggled, [action](bool on) { action->setChecked(on); });
+    connect(action, &QAction::toggled, [this](bool on) { setChecked(on); });
     setToolTip(action->toolTip());
     setChecked(action->isChecked());
+    connect(this, _SLOT_(QCheckBox, stateChanged, int), [this](int val)->void {
+            gConsole->log(name()+"="+QString::number(val)); });
 }
 
 CCheckBox::CCheckBox(const QString& name, rcstr text)
@@ -177,12 +179,16 @@ CCheckBox::CCheckBox(const QString& name, rcstr text)
     setText(text);
 }
 
-CRadioButton::CRadioButton(const QString& name, rcstr text)
+CRadioButton::CRadioButton(const QString& _name, rcstr text)
     : QRadioButton(text)
-    , CSettable(name, [this](const QString& val)->void { setChecked(val.toInt()); }) {
+    , CSettable(_name, [this](const QString& val)->void { setChecked(val.toInt()); }) {
+    connect(this, _SLOT_(QRadioButton, toggled, bool), [this](bool val)->void {
+            gConsole->log(name()+"="+(val?"y":"n")); });
 }
 
-CComboBox::CComboBox(const QString& name, const QStringList& items)
-    : CSettable(name, [this](const QString& val)->void { setCurrentIndex(val.toInt()); }) {
+CComboBox::CComboBox(const QString& _name, const QStringList& items)
+    : CSettable(_name, [this](const QString& val)->void { setCurrentIndex(val.toInt()); }) {
     addItems(items);
+    connect(this, _SLOT_(QComboBox, currentIndexChanged, int), [this](int val)->void {
+            gConsole->log(name()+"="+QString::number(val)); });
 }
