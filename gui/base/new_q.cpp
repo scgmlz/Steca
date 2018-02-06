@@ -161,8 +161,9 @@ CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, qreal min, qre
     : CSettable(_name, [this](const QString& val)->void { setValue(val.toDouble()); })
 {
     setWidth(this, ndigits, true);
+    ASSERT(min<=max);
     setMinimum(min);
-    setMaximum(max > min ? max : min);
+    setMaximum(max);
     connect(this, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val)->void {
             gConsole->log(name()+"="+QString::number(val)); });
 }
