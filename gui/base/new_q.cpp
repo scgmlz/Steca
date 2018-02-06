@@ -202,3 +202,21 @@ CComboBox::CComboBox(const QString& _name, const QStringList& items)
     connect(this, _SLOT_(QComboBox, currentIndexChanged, int), [this](int val)->void {
             gConsole->log(name()+"="+QString::number(val)); });
 }
+
+CFileDialog::CFileDialog(QWidget *parent, const QString &caption,
+                         const QString &directory, const QString &filter)
+    : QFileDialog(parent, caption, directory, filter)
+{
+    gConsole->command("@push fdia");
+    gConsole->learn("files", [this](const QString& val)->void {
+            QStringList list = val.split(';');
+            QString tmp = '"' + list.join("\" \"") + '"';
+            selectFile(tmp);
+        });
+    gConsole->learn("close", [this](const QString& val)->void { accept(); });
+}
+
+CFileDialog::~CFileDialog() {
+    gConsole->log("files="+selectedFiles().join(';'));
+    gConsole->command("@pop");
+}

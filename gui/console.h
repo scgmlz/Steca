@@ -34,8 +34,8 @@ public:
     void learn(const QString& name, std::function<void(const QString&)> setter);
     void forget(const QString& name);
     void log(const QString&);
-signals:
-    void transmitLine(str);
+    void command(QString);
+    class CommandRegistry& registry() { return *registryStack_.top(); }
 private:
     QTextStream log_;
     class QSocketNotifier *notifier_;

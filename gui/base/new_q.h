@@ -20,6 +20,7 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QFile>
+#include <QFileDialog>
 #include <QLabel>
 #include <QLayout>
 #include <QLineEdit>
@@ -68,6 +69,7 @@ QFile* OutputFile(
 
 class CSettable {
 public:
+    CSettable() = delete;
     CSettable(const QString& name, std::function<void(const QString&)> setter);
     ~CSettable();
     QString name() const { return name_; }
@@ -99,6 +101,13 @@ public:
 class CComboBox : public QComboBox, private CSettable {
 public:
     CComboBox(const QString& name, const QStringList& items = {});
+};
+
+class CFileDialog : public QFileDialog {
+public:
+    CFileDialog(QWidget *parent = Q_NULLPTR, const QString &caption = QString(),
+                const QString &directory = QString(), const QString &filter = QString());
+    ~CFileDialog();
 };
 
 #endif // NEW_Q_H

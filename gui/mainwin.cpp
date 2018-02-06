@@ -198,7 +198,6 @@ MainWin::MainWin()
     initLayout();
     connectActions();
     readSettings();
-    QObject::connect(gConsole, &Console::transmitLine, this, &MainWin::execCommand);
 
     saveDir = settings_.readStr("export_directory");
     saveFmt = settings_.readStr("export_format");
@@ -429,10 +428,8 @@ void MainWin::addFiles() {
 void MainWin::loadSession() {
     QString fileName = file_dialog::openFileName(
         this, "Load session", QDir::current().absolutePath(), "Session files (*.ste)");
-    if (fileName.isEmpty()) {
-        TR("load session aborted");
+    if (fileName.isEmpty())
         return;
-    }
     try {
         TR("going to load session from file '"+fileName+"'");
         sessionFromFile(fileName);
@@ -453,18 +450,6 @@ void MainWin::saveSession() {
     saveSessionTo(QFileInfo(fileName));
 }
 
-void MainWin::execCommand(QString line) {
-    QStringList argv = line.split(" ");
-    QString cmd = argv.at(0);
-    if (cmd=="loadSession") {
-        sessionFromFile(argv.at(1));
-    } else if (cmd=="quit") {
-        close();
-    } else {
-        qDebug() << "Unknown command: " << line;
-    }
-}
-
 void MainWin::closeEvent(QCloseEvent* event) {
     qDebug() << "close event";
     saveSettings();
@@ -474,7 +459,6 @@ void MainWin::closeEvent(QCloseEvent* event) {
 void MainWin::readSettings() {
     if (initialState_.isEmpty())
         initialState_ = saveState();
-
     Settings s("MainWin");
     restoreGeometry(s.value("geometry").toByteArray());
     restoreState(s.value("state").toByteArray());

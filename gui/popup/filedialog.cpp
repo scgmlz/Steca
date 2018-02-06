@@ -13,9 +13,9 @@
 // ************************************************************************** //
 
 #include "core/loaders/loaders.h"
+#include "gui/base/new_q.h"
 #include <QApplication>
 #include <QEventLoop>
-#include <QFileDialog>
 #include <QFileSystemModel>
 #include <QSortFilterProxyModel>
 
@@ -81,7 +81,7 @@ namespace file_dialog {
 QStringList openFileNames(QWidget* parent, const QString& caption, const QString& dir,
                           const QString& filter, bool plural)
 {
-    QFileDialog dlg(parent, caption, dir, filter);
+    CFileDialog dlg(parent, caption, dir, filter);
     dlg.setOption(QFileDialog::DontUseNativeDialog);
     dlg.setViewMode(QFileDialog::Detail);
     dlg.setAcceptMode(QFileDialog::AcceptOpen);
@@ -105,7 +105,7 @@ QString openFileName(
 QString saveFileName(
     QWidget* parent, const QString& caption, const QString& dir, const QString& filter)
 {
-    QFileDialog dlg(parent, caption, dir, filter);
+    CFileDialog dlg(parent, caption, dir, filter);
 
     dlg.setOption(QFileDialog::DontUseNativeDialog);
     dlg.setViewMode(QFileDialog::Detail);

@@ -54,10 +54,6 @@ public:
     void saveSession();
     void clearSession();
 
-    void execCommand(str);
-
-    class Console* console;
-
     // modifying methods:
     void sessionFromFile(const QString&) THROWS;
     void loadCorrFile() THROWS;
