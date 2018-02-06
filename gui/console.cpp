@@ -101,6 +101,16 @@ void Console::readLine()
 
 void Console::command(QString line) {
     QTextStream qterr(stderr);
+    if (line[0]=='[') {
+        int i = line.indexOf(']');
+        if (i==-1) {
+            qterr << "unbalanced '['\n";
+            return;
+        }
+        line = line.mid(i+1);
+    }
+    if (line[0]=='#')
+        return; // comment => nothing to do
     if (line[0]=='@') {
         QStringList list = line.mid(1).split(' ');
         QString cmd = list[0];

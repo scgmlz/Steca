@@ -29,12 +29,11 @@ ControlsBaseline::ControlsBaseline() {
     hb->addWidget(newQ::IconButton(gGui->trigger_clearBackground));
     hb->addWidget(newQ::Label("Pol. degree:"));
 
-    CSpinBox spinDegree("spinDegree", 4, false, 0, MainWin::MAX_POLYNOM_DEGREE);
-    connect(&spinDegree, _SLOT_(QSpinBox, valueChanged, int), [this](int degree) {
-            gSession->baseline().setPolynomDegree(degree); });
+    connect(&spinDegree_, _SLOT_(QSpinBox, valueChanged, int), [](int degree_) {
+            gSession->baseline().setPolynomDegree(degree_); });
     connect(gSession, &Session::sigBaseline, [this]() {
-            spinDegree.setValue(gSession->baseline().polynomDegree()); });
-    hb->addWidget(&spinDegree);
+            spinDegree_.setValue(gSession->baseline().polynomDegree()); });
+    hb->addWidget(&spinDegree_);
     hb->addStretch();
 
     box->addStretch(1);

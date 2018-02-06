@@ -68,8 +68,6 @@ public:
 
     eFittingTab fittingTab() const { return fittingTab_; }
 
-    static int constexpr MAX_POLYNOM_DEGREE = 4;
-
     QAction *trigger_about,
         *trigger_online,
         *trigger_checkUpdate,

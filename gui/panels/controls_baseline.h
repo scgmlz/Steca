@@ -22,6 +22,8 @@
 class ControlsBaseline : public QWidget {
 public:
     ControlsBaseline();
+private:
+    CSpinBox spinDegree_ {"degree", 4, false, 0, 4 /* = max polynom degree */};
 };
 
 #endif // CONTROLS_BASELINE_H
