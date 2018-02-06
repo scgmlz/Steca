@@ -96,10 +96,19 @@ Console::~Console() {
 void Console::readLine()
 {
     QTextStream qtin(stdin);
-    command(qtin.readLine());
+    QString line = qtin.readLine();
+    qDebug() << "READ " << line;
+    commandExec(line);
+    qDebug() << "DONE " << line;
 }
 
 void Console::command(QString line) {
+    qDebug() << "CMD " << line;
+    commandExec(line);
+    qDebug() << "DON " << line;
+}
+
+void Console::commandExec(QString line) {
     QTextStream qterr(stderr);
     if (line[0]=='[') {
         int i = line.indexOf(']');

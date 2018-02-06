@@ -21,6 +21,7 @@
 
 #include "../manifest.h"
 #include "gui/cfg/msg_handler.h"
+#include "gui/console.h"
 #include "gui/mainwin.h"
 
 #define OPTPARSE_IMPLEMENTATION
@@ -31,6 +32,7 @@
 #include <QApplication>
 #include <QLoggingCategory>
 #include <QStyleFactory>
+#include <QTextStream>
 
 const char* version =
 #include "../VERSION"
@@ -56,8 +58,13 @@ int main(int argc, char* argv[]) {
             exit(0);
         }
     }
-    if (optparse_arg(&options)) {
-        std::cerr << "Unexpected command-line argument(s) given\n";
+
+    QStringList nonoptArgs;
+    const char* tmp;
+    while ((tmp = optparse_arg(&options)))
+        nonoptArgs.append(tmp);
+    if (nonoptArgs.size()>1) {
+        std::cerr << "More than one command-line argument given\n";
         exit(-1);
     }
 
@@ -80,6 +87,17 @@ int main(int argc, char* argv[]) {
     qInstallMessageHandler(messageHandler);
 
     MainWin::instance()->show();
+
+    if (nonoptArgs.size()) {
+        QFile file(nonoptArgs[0]);
+        if (!file.open(QIODevice::ReadOnly)) {
+            std::cerr << "Cannot open file " << nonoptArgs[0].toLatin1().data() << "\n";
+        } else {
+            QTextStream in(&file);
+            while (!in.atEnd())
+                gConsole->command(in.readLine());
+        }
+    }
 
     return app.exec();
 }

@@ -37,6 +37,7 @@ public:
     void command(QString);
     class CommandRegistry& registry() { return *registryStack_.top(); }
 private:
+    void commandExec(QString);
     QTextStream log_;
     class QSocketNotifier *notifier_;
     std::stack<class CommandRegistry*> registryStack_;

@@ -219,5 +219,6 @@ CFileDialog::CFileDialog(QWidget *parent, const QString &caption,
 
 CFileDialog::~CFileDialog() {
     gConsole->log("files="+selectedFiles().join(';'));
+    gConsole->log("close!");
     gConsole->command("@pop");
 }
