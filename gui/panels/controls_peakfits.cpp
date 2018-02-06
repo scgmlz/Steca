@@ -354,7 +354,6 @@ ControlsPeakfits::ControlsPeakfits()
 void ControlsPeakfits::onPeaks() {
     peaksView_->update();
     Peak* peak = gSession->peaks().selectedPeak();
-    silentSpin_ = true;
 
     if (!peak) {
         // do not set comboReflType - we want it to stay as it is
@@ -369,6 +368,4 @@ void ControlsPeakfits::onPeaks() {
         rangeControl_->update();
         peakdataView_->update(peak->peakFunction());
     }
-
-    silentSpin_ = false;
 };

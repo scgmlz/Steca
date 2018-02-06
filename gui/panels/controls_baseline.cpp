@@ -18,9 +18,7 @@
 #include "gui/mainwin.h"
 #include <QStackedWidget>
 
-ControlsBaseline::ControlsBaseline()
-    : spinDegree_("spinDegree_", 4, false, 0, MainWin::MAX_POLYNOM_DEGREE)
-{
+ControlsBaseline::ControlsBaseline() {
     auto* box = newQ::VBoxLayout();
     setLayout(box);
 
@@ -30,11 +28,13 @@ ControlsBaseline::ControlsBaseline()
     hb->addWidget(newQ::IconButton(gGui->toggle_showBackground));
     hb->addWidget(newQ::IconButton(gGui->trigger_clearBackground));
     hb->addWidget(newQ::Label("Pol. degree:"));
-    hb->addWidget(&spinDegree_);
-    connect(&spinDegree_, _SLOT_(QSpinBox, valueChanged, int), [this](int degree) {
+
+    CSpinBox spinDegree("spinDegree", 4, false, 0, MainWin::MAX_POLYNOM_DEGREE);
+    connect(&spinDegree, _SLOT_(QSpinBox, valueChanged, int), [this](int degree) {
             gSession->baseline().setPolynomDegree(degree); });
     connect(gSession, &Session::sigBaseline, [this]() {
-            spinDegree_.setValue(gSession->baseline().polynomDegree()); });
+            spinDegree.setValue(gSession->baseline().polynomDegree()); });
+    hb->addWidget(&spinDegree);
     hb->addStretch();
 
     box->addStretch(1);

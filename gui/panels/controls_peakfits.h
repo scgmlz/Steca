@@ -29,8 +29,6 @@ private:
     class RangeControl* rangeControl_;
     class PeakdataView* peakdataView_;
     CComboBox comboReflType_;
-
-    bool silentSpin_ = false;
 };
 
 #endif // CONTROLS_PEAKFITS_H
