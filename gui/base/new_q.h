@@ -30,16 +30,19 @@
 
 class BoxWidget;
 
+//! QToolButton with text display and associated QAction.
 class XTextButton : public QToolButton {
 public:
     XTextButton(QAction*);
 };
 
+//! QToolButton with icon and associated QAction.
 class XIconButton : public QToolButton {
 public:
     XIconButton(QAction*);
 };
 
+//! Read-only QLineEdit for number display.
 class XLineDisplay : public QLineEdit {
 public:
     XLineDisplay(int ndigits, bool withDot);
@@ -67,6 +70,7 @@ QFile* OutputFile(
 
 } // namespace newQ
 
+//! Mix-in for control widgets that can be changed by a console command.
 class CSettable {
 public:
     CSettable() = delete;
@@ -77,32 +81,38 @@ private:
     const QString name_;
 };
 
+//! Named QSpinBox that can be set by console command.
 class CSpinBox : public QSpinBox, private CSettable {
 public:
     CSpinBox(const QString& name, int ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX);
 };
 
+//! Named QDoubleSpinBox that can be set by console command.
 class CDoubleSpinBox : public QDoubleSpinBox, private CSettable {
 public:
     CDoubleSpinBox(const QString& name, int ndigits, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
 };
 
+//! Named QCheckBox that can be set by console command.
 class CCheckBox : public QCheckBox, private CSettable {
 public:
     CCheckBox(const QString& name, QAction*);
     CCheckBox(const QString& name, const QString& text);
 };
 
+//! Named QRadioButton that can be set by console command.
 class CRadioButton : public QRadioButton, private CSettable {
 public:
     CRadioButton(const QString& name, const QString& text);
 };
 
+//! Named QComboBox that can be set by console command.
 class CComboBox : public QComboBox, private CSettable {
 public:
     CComboBox(const QString& name, const QStringList& items = {});
 };
 
+//! QFileDialog, for modal use, with console commands to select files and to close the dialog.
 class CFileDialog : public QFileDialog {
 public:
     CFileDialog(QWidget *parent = Q_NULLPTR, const QString &caption = QString(),

@@ -25,6 +25,7 @@ Console* gConsole; //!< global
 //  class CommandRegistry
 // ************************************************************************** //
 
+//! Holds console (= terminal = command-line) commands to be defined and executed by class Console.
 class CommandRegistry {
 public:
     CommandRegistry() = delete;
