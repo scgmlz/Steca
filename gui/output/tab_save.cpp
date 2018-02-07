@@ -27,8 +27,8 @@ TabSave::TabSave(bool withTypes)
 {
 
     setLayout((grid_ = newQ::GridLayout()));
-    actBrowse = newQ::Trigger("actBrowse", "Browse...");
-    actSave = newQ::Trigger("actSave", "Save");
+    actBrowse = newT::Trigger("actBrowse", "Browse...");
+    actSave = newT::Trigger("actSave", "Save");
 
     QString dir = gGui->saveDir;
     if (!QDir(dir).exists())

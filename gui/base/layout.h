@@ -19,6 +19,8 @@
 #include <QVBoxLayout>
 #include <QGridLayout>
 
+//! Contains functions that return new Qt layouts.
+
 namespace newQ {
 
 QBoxLayout* HBoxLayout();

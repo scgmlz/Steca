@@ -33,7 +33,7 @@ static void setWidth(QWidget* w, int ndigits, bool withDot) {
 
 } // local methods
 
-QAction* newQ::Trigger(const QString& name, const QString& text, const QString& iconFile) {
+QAction* newT::Trigger(const QString& name, const QString& text, const QString& iconFile) {
     QAction* ret = new QAction(text, qApp);
     ret->setToolTip(text.toLower());
     if (iconFile!="")
@@ -43,7 +43,7 @@ QAction* newQ::Trigger(const QString& name, const QString& text, const QString& 
     return ret;
 };
 
-QAction* newQ::Toggle(
+QAction* newT::Toggle(
     const QString& name, const QString& text, bool value, const QString& iconFile)
 {
     QAction* ret = new QAction(text, qApp);

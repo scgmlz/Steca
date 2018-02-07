@@ -270,9 +270,9 @@ Frame::Frame(const QString& title, Params* params, QWidget* parent) : QDialog(pa
     auto hb = newQ::HBoxLayout();
     box_->addLayout(hb);
 
-    actClose_ = newQ::Trigger("actClose", "Close");
-    actCalculate_ = newQ::Trigger("actCalculate", "Calculate");
-    actInterpolate_ = newQ::Trigger("actInterpolate", "Interpolate");
+    actClose_ = newT::Trigger("actClose", "Close");
+    actCalculate_ = newT::Trigger("actCalculate", "Calculate");
+    actInterpolate_ = newT::Trigger("actInterpolate", "Interpolate");
 
     hb->addWidget((btnClose_ = new XTextButton(actClose_)));
     hb->addStretch(1);

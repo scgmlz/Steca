@@ -29,7 +29,14 @@
 #include <QSpinBox>
 #include <QToolButton>
 
-class BoxWidget;
+//! Contains functions that return new QActions.
+
+namespace newT {
+
+QAction* Trigger(const QString& name, const QString& text, const QString& iconFile="");
+QAction* Toggle(const QString& name, const QString& text, bool value, const QString& iconFile="");
+
+} // namespace newT
 
 //! QLabel displaying an icon, with no associated action.
 class XIcon : public QLabel {
@@ -54,15 +61,6 @@ class XLineDisplay : public QLineEdit {
 public:
     XLineDisplay(int ndigits, bool withDot);
 };
-
-//! Contains functions that return new Qt objects.
-
-namespace newQ {
-
-QAction* Trigger(const QString& name, const QString& text, const QString& iconFile="");
-QAction* Toggle(const QString& name, const QString& text, bool value, const QString& iconFile="");
-
-} // namespace newQ
 
 //! Mix-in for control widgets that can be changed by a console command.
 class CSettable {
