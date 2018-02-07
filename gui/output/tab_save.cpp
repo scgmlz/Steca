@@ -14,7 +14,7 @@
 
 #include "gui/output/tab_save.h"
 #include "gui/output/dialog_panels.h"
-#include "gui/popup/filedialog.h"
+#include "gui/base/filedialog.h"
 #include "gui/mainwin.h"
 #include <QDir>
 

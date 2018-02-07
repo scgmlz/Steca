@@ -27,7 +27,7 @@
 #include "gui/panels/subframe_metadata.h"
 #include "gui/panels/subframe_setup.h"
 #include "gui/popup/about.h"
-#include "gui/popup/filedialog.h"
+#include "gui/base/filedialog.h"
 #include <QAction>
 #include <QApplication>
 #include <QCloseEvent>
@@ -510,7 +510,7 @@ void MainWin::viewReset() {
 }
 
 void MainWin::saveSessionTo(QFileInfo const& fileInfo) {
-    QFile* file = newQ::OutputFile("file", this, fileInfo.filePath());
+    QFile* file = file_dialog::OutputFile("file", this, fileInfo.filePath());
     if (!file)
         return;
     QDir::setCurrent(fileInfo.absolutePath());

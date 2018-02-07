@@ -14,11 +14,12 @@
 
 #include "gui/output/output_diagrams.h"
 #include "core/session.h"
+#include "gui/base/filedialog.h"
 #include "gui/base/new_q.h"
+#include "gui/mainwin.h"
 #include "gui/output/data_table.h"
 #include "gui/output/dialog_panels.h"
 #include "gui/output/tab_save.h"
-#include "gui/mainwin.h"
 #include "QCustomPlot/qcustomplot.h"
 
 // sorts xs and ys the same way, by (x,y)
@@ -273,7 +274,7 @@ void DiagramsFrame::saveDiagramOutput() {
 void DiagramsFrame::writeCurrentDiagramOutputFile(
     const QString& filePath, const QString& separator)
 {
-    QFile* file = newQ::OutputFile("file", this, filePath);
+    QFile* file = file_dialog::OutputFile("file", this, filePath);
     if (!file)
         return;
     QTextStream stream(file);
@@ -293,7 +294,7 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(
 }
 
 void DiagramsFrame::writeAllDataOutputFile(const QString& filePath, const QString& separator) {
-    QFile* file = newQ::OutputFile("file", this, filePath);
+    QFile* file = file_dialog::OutputFile("file", this, filePath);
     if (!file)
         return;
     QTextStream stream(file);

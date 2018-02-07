@@ -14,11 +14,12 @@
 
 #include "gui/output/output_polefigures.h"
 #include "core/session.h"
+#include "gui/base/filedialog.h"
+#include "gui/base/new_q.h"
 #include "gui/cfg/colors.h"
+#include "gui/mainwin.h"
 #include "gui/output/dialog_panels.h"
 #include "gui/output/tab_save.h"
-#include "gui/mainwin.h"
-#include "gui/base/new_q.h"
 #include <qmath.h>
 #include <QPainter>
 
@@ -377,7 +378,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(const QString& filePath, int i
 
 void PoleFiguresFrame::writeErrorMask(
     const QString& filePath, PeakInfos reflInfo, vec<qreal> const& output) {
-    QFile* file = newQ::OutputFile("file", this, filePath);
+    QFile* file = file_dialog::OutputFile("file", this, filePath);
     if (!file)
         return;
     QTextStream stream(file);
@@ -397,7 +398,7 @@ void PoleFiguresFrame::writeErrorMask(
 void PoleFiguresFrame::writePoleFile(
     const QString& filePath, PeakInfos reflInfo, vec<qreal> const& output)
 {
-    QFile* file = newQ::OutputFile("file", this, filePath);
+    QFile* file = file_dialog::OutputFile("file", this, filePath);
     if (!file)
         return;
     QTextStream stream(file);
@@ -417,7 +418,7 @@ void PoleFiguresFrame::writePoleFile(
 void PoleFiguresFrame::writeListFile(
     const QString& filePath, PeakInfos reflInfo, vec<qreal> const& output)
 {
-    QFile* file = newQ::OutputFile("file", this, filePath);
+    QFile* file = file_dialog::OutputFile("file", this, filePath);
     QTextStream stream(file);
 
     for_i (reflInfo.count()) {

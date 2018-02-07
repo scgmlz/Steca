@@ -17,6 +17,7 @@
 #include <QApplication>
 #include <QEventLoop>
 #include <QFileSystemModel>
+#include <QMessageBox>
 #include <QSortFilterProxyModel>
 
 namespace {

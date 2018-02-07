@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/popup/filedialog.h
+//! @file      gui/base/filedialog.h
 //! @brief     Defines functions openFileName(s), saveFileName, saveDirName in namespace file_dialog
 //!
 //! @homepage  https://github.com/scgmlz/Steca

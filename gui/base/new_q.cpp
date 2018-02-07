@@ -19,7 +19,6 @@
 #include "core/def/numbers.h"
 #include <QApplication> // for qApp for new Action
 #include <QDebug>
-#include <QMessageBox>
 #include <QtGlobal> // to define Q_OS_WIN
 
 namespace {

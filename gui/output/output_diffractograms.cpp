@@ -14,6 +14,7 @@
 
 #include "gui/output/output_diffractograms.h"
 #include "core/session.h"
+#include "gui/base/filedialog.h"
 #include "gui/base/new_q.h"
 #include "gui/output/dialog_panels.h"
 #include "gui/output/tab_save.h"
@@ -138,7 +139,7 @@ void DiffractogramsFrame::saveCurrent() {
     QString path = tabSave_->filePath(true);
     if (path.isEmpty())
         return;
-    QFile* file = newQ::OutputFile("file", this, path);
+    QFile* file = file_dialog::OutputFile("file", this, path);
     if (!file)
         return;
     QTextStream stream(file);
@@ -161,7 +162,7 @@ void DiffractogramsFrame::saveAll(bool oneFile) {
         return;
     QTextStream* stream = nullptr;
     if (oneFile) {
-        QFile* file = newQ::OutputFile("file", this, path);
+        QFile* file = file_dialog::OutputFile("file", this, path);
         if (!file)
             return;
         stream = new QTextStream(file);
@@ -207,7 +208,7 @@ void DiffractogramsFrame::saveAll(bool oneFile) {
         const qreal step = rge.width() / gmaSlices;
         for_i (gmaSlices) {
             if (!oneFile) {
-                QFile* file = newQ::OutputFile("file",
+                QFile* file = file_dialog::OutputFile("file",
                     this, numberedName(path, ++fileNum, expt.size()+1), false);
                 if (!file)
                     return;
