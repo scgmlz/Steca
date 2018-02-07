@@ -63,11 +63,11 @@ PanelGammaSlices::PanelGammaSlices()
     , settings_("gamma_slices") {
     QGridLayout* g = grid();
 
-    g->addWidget(newQ::Label("count"), 0, 0);
+    g->addWidget(new QLabel("count"), 0, 0);
     numSlices.setValue(settings_.readInt("num_slices", 0));
     g->addWidget(&numSlices, 0, 1);
 
-    g->addWidget(newQ::Label("degrees"), 1, 0);
+    g->addWidget(new QLabel("degrees"), 1, 0);
     g->addWidget(&stepGamma, 1, 1);
     stepGamma.setReadOnly(true);
 
@@ -103,8 +103,8 @@ PanelGammaRange::PanelGammaRange()
     g->addWidget(&cbLimitGamma, 0, 0, 1, 2);
     cbLimitGamma.setChecked(settings_.readBool("limit", false));
 
-    g->addWidget(newQ::Label("min"), 1, 0); g->addWidget(&minGamma, 1, 1);
-    g->addWidget(newQ::Label("max"), 2, 0); g->addWidget(&maxGamma, 2, 1);
+    g->addWidget(new QLabel("min"), 1, 0); g->addWidget(&minGamma, 1, 1);
+    g->addWidget(new QLabel("max"), 2, 0); g->addWidget(&maxGamma, 2, 1);
     g->setRowStretch(g->rowCount(), 1);
 
     rgeGma_ = gSession->experiment().rgeGma();
@@ -158,17 +158,17 @@ PanelInterpolation::PanelInterpolation()
 {
     QGridLayout* g = grid();
 
-    g->addWidget(newQ::Label("step α"), 0, 0, Qt::AlignRight);
+    g->addWidget(new QLabel("step α"), 0, 0, Qt::AlignRight);
     g->addWidget(&stepAlpha, 0, 1);
-    g->addWidget(newQ::Label("β"), 1, 0, Qt::AlignRight);
+    g->addWidget(new QLabel("β"), 1, 0, Qt::AlignRight);
     g->addWidget(&stepBeta, 1, 1);
-    g->addWidget(newQ::Label("idw radius"), 2, 0, Qt::AlignRight);
+    g->addWidget(new QLabel("idw radius"), 2, 0, Qt::AlignRight);
     g->addWidget(&idwRadius, 2, 1);
-    g->addWidget(newQ::Label("avg. α max"), 0, 2, Qt::AlignRight);
+    g->addWidget(new QLabel("avg. α max"), 0, 2, Qt::AlignRight);
     g->addWidget(&avgAlphaMax, 0, 3);
-    g->addWidget(newQ::Label("radius"), 1, 2, Qt::AlignRight);
+    g->addWidget(new QLabel("radius"), 1, 2, Qt::AlignRight);
     g->addWidget(&avgRadius, 1, 3);
-    g->addWidget(newQ::Label("inclusion %"), 2, 2, Qt::AlignRight);
+    g->addWidget(new QLabel("inclusion %"), 2, 2, Qt::AlignRight);
     g->addWidget(&avgThreshold, 2, 3);
 
     g->setRowStretch(g->rowCount(), 1);
@@ -204,9 +204,9 @@ PanelDiagram::PanelDiagram()
     yAxis.addItems(tags);
 
     QGridLayout* g = grid();
-    g->addWidget(newQ::Label("x"), 1, 0);
+    g->addWidget(new QLabel("x"), 1, 0);
     g->addWidget(&xAxis, 1, 1);
-    g->addWidget(newQ::Label("y"), 0, 0);
+    g->addWidget(new QLabel("y"), 0, 0);
     g->addWidget(&yAxis, 0, 1);
 
     g->setRowStretch(g->rowCount(), 1);

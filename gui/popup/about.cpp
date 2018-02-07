@@ -40,7 +40,7 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
 
     hb->setSpacing(PAD);
 
-    auto logo = newQ::Label("");
+    auto logo = new QLabel("");
     logo->setPixmap(QPixmap(":/icon/retroStier")
                         .scaled(128, 128, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     hb->addWidget(logo);
@@ -51,7 +51,7 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
     QString arch = "";
 #endif
 
-    auto info = newQ::Label(str(
+    auto info = new QLabel(str(
 "<h4>%1 version %2 %3</h4>"
 "<p>%4</p>"
 "<p>Copyright: Forschungszentrum Jülich GmbH %5</p>"

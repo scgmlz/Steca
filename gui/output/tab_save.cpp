@@ -43,11 +43,11 @@ TabSave::TabSave(bool withTypes)
 
     file_ = new QLineEdit();
 
-    g->addWidget(newQ::Label("Save to folder:"), 0, 0, Qt::AlignRight);
+    g->addWidget(new QLabel("Save to folder:"), 0, 0, Qt::AlignRight);
     g->addWidget(dir_, 0, 1);
     g->addWidget(newQ::TextButton(actBrowse), 0, 2);
 
-    g->addWidget(newQ::Label("File name:"), 1, 0, Qt::AlignRight);
+    g->addWidget(new QLabel("File name:"), 1, 0, Qt::AlignRight);
     g->addWidget(file_, 1, 1);
 
     connect(actBrowse, &QAction::triggered, [this]() {

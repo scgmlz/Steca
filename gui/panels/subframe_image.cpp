@@ -270,25 +270,25 @@ DataImageTab::DataImageTab() {
     controls_->addStretch(1);
 
     controls_->addWidget(newQ::IconButton(gGui->toggle_showBins));
-    controls_->addWidget(newQ::Label("γ count"));
+    controls_->addWidget(new QLabel("γ count"));
     controls_->addWidget(&numSlices_);
     connect(&numSlices_, _SLOT_(QSpinBox, valueChanged, int),
             [this](int /*unused*/) { render(); });
 
-    controls_->addWidget(newQ::Label("#"));
+    controls_->addWidget(new QLabel("#"));
     controls_->addWidget(&numSlice_);
     connect(&numSlice_, _SLOT_(QSpinBox, valueChanged, int),
             [this](int /*unused*/) { render(); });
 
-    controls_->addWidget(newQ::Label("min"));
+    controls_->addWidget(new QLabel("min"));
     controls_->addWidget(&minGamma_);
-    controls_->addWidget(newQ::Label("max"));
+    controls_->addWidget(new QLabel("max"));
     controls_->addWidget(&maxGamma_);
 
     minGamma_.setReadOnly(true);
     maxGamma_.setReadOnly(true);
 
-    controls_->addWidget(newQ::Label("bin#"));
+    controls_->addWidget(new QLabel("bin#"));
     controls_->addWidget(&numBin_);
     connect(&numBin_, _SLOT_(QSpinBox, valueChanged, int), [this](int /*unused*/) { render(); });
 

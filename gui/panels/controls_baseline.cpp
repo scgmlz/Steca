@@ -28,7 +28,7 @@ ControlsBaseline::ControlsBaseline() {
     hb->addWidget(newQ::IconButton(gGui->toggle_selRegions));
     hb->addWidget(newQ::IconButton(gGui->toggle_showBackground));
     hb->addWidget(newQ::IconButton(gGui->trigger_clearBackground));
-    hb->addWidget(newQ::Label("Pol. degree:"));
+    hb->addWidget(new QLabel("Pol. degree:"));
 
     connect(&spinDegree_, _SLOT_(QSpinBox, valueChanged, int), [](int degree_) {
             gSession->baseline().setPolynomDegree(degree_); });

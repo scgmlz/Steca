@@ -37,10 +37,6 @@ static void setWidth(QWidget* w, int ndigits, bool withDot) {
 QToolButton* newQ::TextButton(QAction* action) { return new XTextButton(action); }
 QToolButton* newQ::IconButton(QAction* action) { return new XIconButton(action); }
 
-QLabel* newQ::Label(const QString& text) {
-    return new QLabel(text);
-}
-
 QLabel* newQ::Icon(const QString& fileName) {
     auto ret = new QLabel;
     int h = ret->sizeHint().height();

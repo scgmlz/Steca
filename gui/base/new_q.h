@@ -53,7 +53,6 @@ public:
 
 namespace newQ {
 
-QLabel* Label(const QString& text);
 QLabel* Icon(const QString& fileName);
 
 QToolButton* TextButton(QAction* action);

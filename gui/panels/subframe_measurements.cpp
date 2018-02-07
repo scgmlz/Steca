@@ -265,7 +265,7 @@ ExperimentControls::ExperimentControls() {
     setLayout(layout);
 
     // 'combine' control
-    layout->addWidget(newQ::Label("combine:"));
+    layout->addWidget(new QLabel("combine:"));
     layout->addWidget(&combineMeasurements_);
     combineMeasurements_.setToolTip("Combine and average number of cluster");
     connect(&combineMeasurements_, _SLOT_(QSpinBox, valueChanged, int),

@@ -57,13 +57,13 @@ Diffractogram::Diffractogram() {
     auto hb = newQ::HBoxLayout();
     box_->addLayout(hb);
 
-    hb->addWidget(newQ::Label("normalize to:"));
+    hb->addWidget(new QLabel("normalize to:"));
     hb->addWidget(&comboNormType_);
 
     connect(&comboNormType_, _SLOT_(QComboBox, currentIndexChanged, int), [this](int index) {
             gSession->setNorm(eNorm(index)); });
 
-    hb->addWidget(newQ::Label(" intensity from:"));
+    hb->addWidget(new QLabel(" intensity from:"));
     hb->addWidget(&intenSum_);
     hb->addWidget(&intenAvg_);
     hb->addWidget(&intenScale_);

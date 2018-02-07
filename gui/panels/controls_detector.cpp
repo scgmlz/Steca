@@ -85,16 +85,16 @@ ControlsDetector::ControlsDetector()
         row++;
     };
 
-    _add({ newQ::Label("det. distance"), &detDistance_, newQ::Label("mm") });
-    _add({ newQ::Label("pixel size"), &detPixelSize_, newQ::Label("mm") });
-    _add({ newQ::Label("beam offset X"), &beamOffsetI_, newQ::Label("pix") });
-    _add({ newQ::Label("Y"), &beamOffsetJ_, newQ::Label("pix") });
-    _add({ newQ::Label("image rotate"),
+    _add({ new QLabel("det. distance"), &detDistance_, new QLabel("mm") });
+    _add({ new QLabel("pixel size"), &detPixelSize_, new QLabel("mm") });
+    _add({ new QLabel("beam offset X"), &beamOffsetI_, new QLabel("pix") });
+    _add({ new QLabel("Y"), &beamOffsetJ_, new QLabel("pix") });
+    _add({ new QLabel("image rotate"),
                 newQ::IconButton(gGui->trigger_rotateImage),
-                newQ::Label("mirror"),
+                new QLabel("mirror"),
                 newQ::IconButton(gGui->toggle_mirrorImage) });
     _add({ newQ::IconButton(gGui->toggle_linkCuts),
-                newQ::Label("cut"),
+                new QLabel("cut"),
                 newQ::Icon(":/icon/cutLeft"),
                 &cutLeft_,
                 newQ::Icon(":/icon/cutRight"),

@@ -169,7 +169,7 @@ SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files") {
     h = newQ::HBoxLayout();
     box_->addLayout(h);
 
-    h->addWidget(newQ::Label("Correction file"));
+    h->addWidget(new QLabel("Correction file"));
 
     h = newQ::HBoxLayout();
     box_->addLayout(h);
