@@ -80,9 +80,9 @@ public:
     bool allChecked() { return rbAll_.isChecked(); }
 
 private:
-    CRadioButton rbCurrent_ {"rbCurrent_", "Current diffractogram"};
-    CRadioButton rbAllSequential_ {"rbAllSequential_", "All diffractograms to numbered files"};
-    CRadioButton rbAll_ {"rbAll_", "All diffractograms to one file"};
+    CRadioButton rbCurrent_ {"rbCurrent", "Current diffractogram"};
+    CRadioButton rbAllSequential_ {"rbAllSequential", "All diffractograms to numbered files"};
+    CRadioButton rbAll_ {"rbAll", "All diffractograms to one file"};
 };
 
 TabDiffractogramsSave::TabDiffractogramsSave()

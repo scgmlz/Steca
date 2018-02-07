@@ -133,8 +133,8 @@ private:
 
 TabDiagramsSave::TabDiagramsSave()
     : TabSave(true)
-    , currentDiagram_("currentDiagram_", "Current diagram")
-    , allData_("allData_", "All data")
+    , currentDiagram_("currentDiagram", "Current diagram")
+    , allData_("allData", "All data")
 {
     auto gp = new GridPanel("To save");
     grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);

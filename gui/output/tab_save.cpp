@@ -22,8 +22,8 @@ static QString const DAT_SFX(".dat"), DAT_SEP(" "), // suffix, separator
     CSV_SFX(".csv"), CSV_SEP(", ");
 
 TabSave::TabSave(bool withTypes)
-    : rbDat_("rbDat_", DAT_SFX)
-    , rbCsv_("rbCsv_", CSV_SFX)
+    : rbDat_("rbDat", DAT_SFX)
+    , rbCsv_("rbCsv", CSV_SFX)
 {
 
     setLayout((grid_ = newQ::GridLayout()));

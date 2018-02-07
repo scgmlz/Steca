@@ -238,12 +238,12 @@ public:
     DataImageTab();
     void render() final;
 private:
-    CSpinBox spinN_{"spinN_", 4, false, 1};
-    CSpinBox numSlices_{"numSlices_", 4, false, 0};
-    CSpinBox numSlice_{"numSlice_", 4, false, 1};
-    CSpinBox numBin_{"numBin_", 4, false, 1};
-    CDoubleSpinBox minGamma_{"minGamma_", 6};
-    CDoubleSpinBox maxGamma_{"maxGamma_", 6};
+    CSpinBox spinN_{"spinN", 4, false, 1};
+    CSpinBox numSlices_{"numSlices", 4, false, 0};
+    CSpinBox numSlice_{"numSlice", 4, false, 1};
+    CSpinBox numBin_{"numBin", 4, false, 1};
+    CDoubleSpinBox minGamma_{"minGamma", 6};
+    CDoubleSpinBox maxGamma_{"maxGamma", 6};
 };
 
 DataImageTab::DataImageTab() {

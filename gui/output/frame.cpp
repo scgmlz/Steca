@@ -51,12 +51,12 @@ private:
 ShowColsWidget::ShowColsWidget(DataTable& table, showcol_vec& showCols)
     : table_(table)
     , showCols_(showCols)
-    , rbHidden_("rbHidden_", "")
-    , rbAll_("rbAll_", "all")
-    , rbNone_("rbNone_", "none")
-    , rbInten_("rbInten_", "Intensity")
-    , rbTth_("rbTth_", "2θ")
-    , rbFWHM_("rbFWHM_", "fwhm")
+    , rbHidden_("rbHidden", "")
+    , rbAll_("rbAll", "all")
+    , rbNone_("rbNone", "none")
+    , rbInten_("rbInten", "Intensity")
+    , rbTth_("rbTth", "2θ")
+    , rbFWHM_("rbFWHM", "fwhm")
 {
     using eReflAttr = PeakInfo::eReflAttr;
 
@@ -270,9 +270,9 @@ Frame::Frame(const QString& title, Params* params, QWidget* parent) : QDialog(pa
     auto hb = newQ::HBoxLayout();
     box_->addLayout(hb);
 
-    actClose_ = newQ::Trigger("actClose_", "Close");
-    actCalculate_ = newQ::Trigger("actCalculate_", "Calculate");
-    actInterpolate_ = newQ::Trigger("actInterpolate_", "Interpolate");
+    actClose_ = newQ::Trigger("actClose", "Close");
+    actCalculate_ = newQ::Trigger("actCalculate", "Calculate");
+    actInterpolate_ = newQ::Trigger("actInterpolate", "Interpolate");
 
     hb->addWidget((btnClose_ = newQ::TextButton(actClose_)));
     hb->addStretch(1);

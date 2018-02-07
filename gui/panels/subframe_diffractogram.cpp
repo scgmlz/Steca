@@ -39,10 +39,10 @@ private:
     class DiffractogramPlot* plot_;
     QBoxLayout* box_;
     CComboBox comboNormType_{"normTyp", {"none", "monitor", "Δ monitor", "Δ time", "background"}};
-    CRadioButton intenSum_{"intenSum_", "sum"};
-    CRadioButton intenAvg_{"intenAvg_", "avg ×"};
-    CDoubleSpinBox intenScale_{"intenScale_", 6, 0.001};
-    QAction* actZoom_{ newQ::Toggle("actZoom_", "zoom", false) };
+    CRadioButton intenSum_{"intenSum", "sum"};
+    CRadioButton intenAvg_{"intenAvg", "avg ×"};
+    CDoubleSpinBox intenScale_{"intenScale", 6, 0.001};
+    QAction* actZoom_{ newQ::Toggle("actZoom", "zoom", false) };
     XTextButton enableZoom_{actZoom_};
     CCheckBox combine_{"dgram:combine", gGui->toggle_combinedDgram};
     CCheckBox fixInten_{"dgram:fixInten", gGui->toggle_fixedIntenDgram};

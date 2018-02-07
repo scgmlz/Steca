@@ -17,14 +17,14 @@
 #include "gui/mainwin.h"
 
 ControlsDetector::ControlsDetector()
-    : detDistance_("detDistance_", 6, Geometry::MIN_DETECTOR_DISTANCE)
-    , detPixelSize_("detPixelSize_", 6, Geometry::MIN_DETECTOR_PIXEL_SIZE)
-    , beamOffsetI_("beamOffsetI_", 6, true)
-    , beamOffsetJ_("beamOffsetJ_", 6, true)
-    , cutLeft_("cutLeft_", 4, false, 0)
-    , cutTop_("cutTop_", 4, false, 0)
-    , cutRight_("cutRight_", 4, false, 0)
-    , cutBottom_("cutBottom_", 4, false, 0)
+    : detDistance_("detDistance", 6, Geometry::MIN_DETECTOR_DISTANCE)
+    , detPixelSize_("detPixelSize", 6, Geometry::MIN_DETECTOR_PIXEL_SIZE)
+    , beamOffsetI_("beamOffsetI", 6, true)
+    , beamOffsetJ_("beamOffsetJ", 6, true)
+    , cutLeft_("cutLeft", 4, false, 0)
+    , cutTop_("cutTop", 4, false, 0)
+    , cutRight_("cutRight", 4, false, 0)
+    , cutBottom_("cutBottom", 4, false, 0)
 {
 
     auto* box = newQ::VBoxLayout();
