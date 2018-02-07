@@ -14,6 +14,7 @@
 
 #include "gui/panels/subframe_diffractogram.h"
 #include "gui/panels/panel_diffractogram.h"
+#include "gui/base/layout.h"
 #include "gui/base/new_q.h"
 #include "core/session.h"
 

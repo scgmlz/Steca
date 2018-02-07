@@ -15,6 +15,7 @@
 #include "controls_baseline.h"
 #include "core/session.h"
 #include "gui/base/model_view.h"
+#include "gui/base/layout.h"
 #include "gui/mainwin.h"
 #include <QStackedWidget>
 

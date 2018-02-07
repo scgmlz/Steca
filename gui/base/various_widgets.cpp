@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "gui/base/various_widgets.h"
-#include "gui/base/new_q.h"
+#include "gui/base/layout.h"
 
 DockWidget::DockWidget(const QString& name, const QString& objectName) {
     setFeatures(DockWidgetMovable);
