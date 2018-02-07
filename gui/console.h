@@ -17,6 +17,7 @@
 
 #include "core/typ/str.h"
 #include "core/typ/singleton.h"
+#include <deque>
 #include <stack>
 #include <functional>
 #include <QObject>
@@ -34,13 +35,16 @@ public:
     void learn(const QString& name, std::function<void(const QString&)> setter);
     void forget(const QString& name);
     void log(const QString&);
-    void command(QString);
+    void readFile(const QString& fName);
+    void commandFromStack();
+    void command(const QString&);
     class CommandRegistry& registry() { return *registryStack_.top(); }
 private:
-    void commandExec(QString);
+    void exec(QString);
     QTextStream log_;
     class QSocketNotifier *notifier_;
     std::stack<class CommandRegistry*> registryStack_;
+    std::deque<QString> commandLifo_;
 private slots:
     void readLine();
 };

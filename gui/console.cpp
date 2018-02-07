@@ -15,9 +15,11 @@
 #include "gui/console.h"
 #include "core/def/debug.h"
 #include <map>
+#include <QApplication>
 #include <QDateTime>
 #include <QFile>
 #include <QSocketNotifier>
+#include <QTimer>
 
 Console* gConsole; //!< global
 
@@ -87,28 +89,53 @@ Console::Console()
     log_.setDevice(file);
     log("# Steca session started");
 
+    // place command stack execution into main loop
+    auto timer = new QTimer(qApp);
+    connect(timer, &QTimer::timeout, [this]{ qDebug() << "TIM"; commandFromStack(); });
+    timer->start(1000);
 }
 
 Console::~Console() {
     log("# Steca session ended");
 }
 
-void Console::readLine()
-{
+void Console::readLine() {
     QTextStream qtin(stdin);
     QString line = qtin.readLine();
     qDebug() << "READ " << line;
-    commandExec(line);
+    exec(line);
     qDebug() << "DONE " << line;
 }
 
-void Console::command(QString line) {
+void Console::readFile(const QString& fName) {
+    QFile file(fName);
+    if (!file.open(QIODevice::ReadOnly)) {
+        qWarning() << "Cannot open file " << fName;
+        return;
+    }
+    QTextStream in(&file);
+    while (!in.atEnd())
+        commandLifo_.push_back(in.readLine());
+    commandFromStack();
+}
+
+void Console::commandFromStack() {
+    if (!commandLifo_.empty()) {
+        const QString& line = commandLifo_.front();
+        commandLifo_.pop_front();
+        qDebug() << "ST> " << line;
+        exec(line);
+        qDebug() << "ST< " << line;
+    }
+}
+
+void Console::command(const QString& line) {
     qDebug() << "CMD " << line;
-    commandExec(line);
+    exec(line);
     qDebug() << "DON " << line;
 }
 
-void Console::commandExec(QString line) {
+void Console::exec(QString line) {
     QTextStream qterr(stderr);
     if (line[0]=='[') {
         int i = line.indexOf(']');
@@ -135,6 +162,11 @@ void Console::commandExec(QString line) {
                 qterr << "cannot pop: registry stack is empty\n";
             else
                 registryStack_.pop();
+        } else if (cmd=="file") {
+            if (list.size()<2)
+                qterr << "command @file needs argument <file_name>\n";
+            else
+                readFile(list[1]);
         } else {
             qterr << "@ command " << cmd << " not known\n";
         }
@@ -164,6 +196,7 @@ void Console::learn(const QString& name, std::function<void(const QString&)> f) 
 void Console::forget(const QString& name) {
     registry().forget(name);
 }
+
 
 void Console::log(const QString& line) {
     qDebug() << line;

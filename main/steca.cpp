@@ -87,17 +87,8 @@ int main(int argc, char* argv[]) {
     qInstallMessageHandler(messageHandler);
 
     MainWin::instance()->show();
-
-    if (nonoptArgs.size()) {
-        QFile file(nonoptArgs[0]);
-        if (!file.open(QIODevice::ReadOnly)) {
-            std::cerr << "Cannot open file " << nonoptArgs[0].toLatin1().data() << "\n";
-        } else {
-            QTextStream in(&file);
-            while (!in.atEnd())
-                gConsole->command(in.readLine());
-        }
-    }
+    if (nonoptArgs.size())
+        gConsole->command("@file " + nonoptArgs[0]);
 
     return app.exec();
 }
