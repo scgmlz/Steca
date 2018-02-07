@@ -53,10 +53,6 @@ public:
 
 namespace newQ {
 
-QBoxLayout* HBoxLayout();
-QBoxLayout* VBoxLayout();
-QGridLayout* GridLayout();
-
 QLabel* Label(const QString& text);
 QLabel* Icon(const QString& fileName);
 

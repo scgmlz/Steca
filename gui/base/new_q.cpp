@@ -34,28 +34,6 @@ static void setWidth(QWidget* w, int ndigits, bool withDot) {
 
 } // local methods
 
-
-QBoxLayout* newQ::HBoxLayout() {
-    auto ret = new QHBoxLayout;
-    ret->setSpacing(2);
-    ret->setMargin(2);
-    return ret;
-}
-
-QBoxLayout* newQ::VBoxLayout() {
-    auto ret = new QVBoxLayout;
-    ret->setSpacing(2);
-    ret->setMargin(2);
-    return ret;
-}
-
-QGridLayout* newQ::GridLayout() {
-    auto ret = new QGridLayout;
-    ret->setSpacing(2);
-    ret->setMargin(2);
-    return ret;
-}
-
 QToolButton* newQ::TextButton(QAction* action) { return new XTextButton(action); }
 QToolButton* newQ::IconButton(QAction* action) { return new XIconButton(action); }
 
