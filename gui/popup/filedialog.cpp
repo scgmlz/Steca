@@ -78,6 +78,23 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
 
 namespace file_dialog {
 
+QFile* OutputFile(
+    const QString& name, QWidget* parent, const QString& path, bool check_overwrite)
+{
+    QFile* ret = new QFile(path);
+    if (check_overwrite && ret->exists() &&
+        QMessageBox::question(parent, "File exists", "Overwrite " + path + " ?") !=
+        QMessageBox::Yes) {
+        delete ret;
+        return nullptr;
+    }
+    if (!ret->open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning() << "Cannot open file for writing: " << path;
+        return nullptr;
+    }
+    return ret;
+}
+
 QStringList openFileNames(QWidget* parent, const QString& caption, const QString& dir,
                           const QString& filter, bool plural)
 {

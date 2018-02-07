@@ -68,23 +68,6 @@ QAction* newQ::Toggle(
     return ret;
 };
 
-QFile* newQ::OutputFile(
-    const QString& name, QWidget* parent, const QString& path, bool check_overwrite)
-{
-    QFile* ret = new QFile(path);
-    if (check_overwrite && ret->exists() &&
-        QMessageBox::question(parent, "File exists", "Overwrite " + path + " ?") !=
-        QMessageBox::Yes) {
-        delete ret;
-        return nullptr;
-    }
-    if (!ret->open(QIODevice::WriteOnly | QIODevice::Text)) {
-        qWarning() << "Cannot open file for writing: " << path;
-        return nullptr;
-    }
-    return ret;
-}
-
 XIcon::XIcon(const QString& fileName) {
     int h = sizeHint().height();
     setPixmap(QIcon(fileName).pixmap(QSize(h, h)));

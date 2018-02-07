@@ -65,9 +65,6 @@ QToolButton* IconButton(QAction* action);
 QAction* Trigger(const QString& name, const QString& text, const QString& iconFile="");
 QAction* Toggle(const QString& name, const QString& text, bool value, const QString& iconFile="");
 
-QFile* OutputFile(
-    const QString& name, QWidget* parent, const QString& path, bool check_overwrite=true);
-
 } // namespace newQ
 
 //! Mix-in for control widgets that can be changed by a console command.
