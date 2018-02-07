@@ -31,6 +31,12 @@
 
 class BoxWidget;
 
+//! QLabel displaying an icon, with no associated action.
+class XIcon : public QLabel {
+public:
+    XIcon(const QString& fileName);
+};
+
 //! QToolButton with text display and associated QAction.
 class XTextButton : public QToolButton {
 public:
@@ -52,8 +58,6 @@ public:
 //! Contains functions that return new Qt objects.
 
 namespace newQ {
-
-QLabel* Icon(const QString& fileName);
 
 QToolButton* TextButton(QAction* action);
 QToolButton* IconButton(QAction* action);

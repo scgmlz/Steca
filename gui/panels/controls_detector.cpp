@@ -95,13 +95,13 @@ ControlsDetector::ControlsDetector()
                 newQ::IconButton(gGui->toggle_mirrorImage) });
     _add({ newQ::IconButton(gGui->toggle_linkCuts),
                 new QLabel("cut"),
-                newQ::Icon(":/icon/cutLeft"),
+                new XIcon(":/icon/cutLeft"),
                 &cutLeft_,
-                newQ::Icon(":/icon/cutRight"),
+                new XIcon(":/icon/cutRight"),
                 &cutRight_ }, 3);
-    _add({ newQ::Icon(":/icon/cutTop"),
+    _add({ new XIcon(":/icon/cutTop"),
                 &cutTop_,
-                newQ::Icon(":/icon/cutBottom"),
+                new XIcon(":/icon/cutBottom"),
                 &cutBottom_ });
 
     grid->setColumnStretch(grid->columnCount(), 1);

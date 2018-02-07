@@ -37,13 +37,6 @@ static void setWidth(QWidget* w, int ndigits, bool withDot) {
 QToolButton* newQ::TextButton(QAction* action) { return new XTextButton(action); }
 QToolButton* newQ::IconButton(QAction* action) { return new XIconButton(action); }
 
-QLabel* newQ::Icon(const QString& fileName) {
-    auto ret = new QLabel;
-    int h = ret->sizeHint().height();
-    ret->setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
-    return ret;
-}
-
 QAction* newQ::Trigger(const QString& name, const QString& text, const QString& iconFile) {
     QAction* ret = new QAction(text, qApp);
     ret->setToolTip(text.toLower());
@@ -90,6 +83,11 @@ QFile* newQ::OutputFile(
         return nullptr;
     }
     return ret;
+}
+
+XIcon::XIcon(const QString& fileName) {
+    int h = sizeHint().height();
+    setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
 }
 
 XTextButton::XTextButton(QAction* action) {
