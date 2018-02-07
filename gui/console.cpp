@@ -234,10 +234,10 @@ void Console::forget(const QString& name) {
 }
 
 void Console::log2(bool hadFocus, const QString& line) {
-    if (hadFocus)
-        log(line);
-    else
+    if (caller_==Caller::gui && !hadFocus)
         log("#: " + line);
+    else
+        log(line);
 }
 
 void Console::log(const QString& line) {
