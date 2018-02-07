@@ -96,8 +96,8 @@ QAction* newQ::Toggle(
                 ret->setChecked(false);
             else
                 qWarning() << "Invalid toggle setter argument '"+val+"'"; } );
-    QObject::connect(ret, &QAction::triggered, [ret,name]()->void {
-            gConsole->log(name+"="+(ret->isChecked() ? "y" : "n")); });
+    QObject::connect(ret, &QAction::toggled, [name](bool val)->void {
+            gConsole->log(name+"="+(val ? "y" : "n")); });
     return ret;
 };
 
