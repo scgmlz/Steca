@@ -34,15 +34,18 @@ public:
     ~Console();
     void learn(const QString& name, std::function<void(const QString&)> setter);
     void forget(const QString& name);
-    void log(const QString&);
     void readFile(const QString& fName);
     void call(const QString&);
     bool hasCommandsOnStack() { return !commandLifo_.empty(); }
     void commandsFromStack();
+    void log(const QString&);
+    void log2(bool, const QString&);
 private:
     class CommandRegistry& registry() { return *registryStack_.top(); }
-    int exec(QString);
     QTextStream log_;
+    enum class Caller { gui, cli, stack, sys } caller_ { Caller::gui };
+    enum class Result : int { ok, err, suspend };
+    Result exec(QString);
     class QSocketNotifier *notifier_;
     std::stack<class CommandRegistry*> registryStack_;
     std::deque<QString> commandLifo_;

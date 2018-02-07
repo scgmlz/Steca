@@ -154,7 +154,7 @@ CSpinBox::CSpinBox(const QString& _name, int ndigits, bool withDot, int min, int
     setMinimum(min);
     setMaximum(max > min ? max : min);
     connect(this, _SLOT_(QSpinBox, valueChanged, int), [this](int val)->void {
-            gConsole->log(name()+"="+QString::number(val)); });
+            gConsole->log2(hasFocus(), name()+"="+QString::number(val)); });
 }
 
 CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, qreal min, qreal max)
@@ -165,7 +165,7 @@ CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, qreal min, qre
     setMinimum(min);
     setMaximum(max);
     connect(this, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val)->void {
-            gConsole->log(name()+"="+QString::number(val)); });
+            gConsole->log2(hasFocus(), name()+"="+QString::number(val)); });
 }
 
 CCheckBox::CCheckBox(const QString& _name, QAction* action)
@@ -179,7 +179,7 @@ CCheckBox::CCheckBox(const QString& _name, QAction* action)
     setToolTip(action->toolTip());
     setChecked(action->isChecked());
     connect(this, _SLOT_(QCheckBox, stateChanged, int), [this](int val)->void {
-            gConsole->log(name()+"="+QString::number(val)); });
+            gConsole->log2(hasFocus(), name()+"="+QString::number(val)); });
 }
 
 CCheckBox::CCheckBox(const QString& name, const QString& text)
@@ -193,7 +193,7 @@ CRadioButton::CRadioButton(const QString& _name, const QString& text)
     , CSettable(_name, [this](const QString& val)->void { setChecked(val.toInt()); })
 {
     connect(this, _SLOT_(QRadioButton, toggled, bool), [this](bool val)->void {
-            gConsole->log(name()+"="+(val?"y":"n")); });
+            gConsole->log2(hasFocus(), name()+"="+(val?"y":"n")); });
 }
 
 CComboBox::CComboBox(const QString& _name, const QStringList& items)
@@ -201,7 +201,7 @@ CComboBox::CComboBox(const QString& _name, const QStringList& items)
 {
     addItems(items);
     connect(this, _SLOT_(QComboBox, currentIndexChanged, int), [this](int val)->void {
-            gConsole->log(name()+"="+QString::number(val)); });
+            gConsole->log2(hasFocus(), name()+"="+QString::number(val)); });
 }
 
 CFileDialog::CFileDialog(QWidget *parent, const QString &caption,

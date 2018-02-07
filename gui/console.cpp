@@ -75,10 +75,17 @@ void CommandRegistry::dump(QTextStream& stream) {
 // ************************************************************************** //
 
 namespace {
-const int OK = 0;
-const int ERR = 1;
-const int SUSPEND = 2;
+/* unused
+const char* to_s(Console::Caller caller) {
+    switch (caller) {
+    case gui: return "GUI";
+    case cli: return "CLI";
+    case stack: return "stack";
+    case sys: return "sys";
+    }
 }
+*/
+} // namespace
 
 Console::Console()
 {
@@ -104,7 +111,9 @@ void Console::readLine() {
     QTextStream qtin(stdin);
     QString line = qtin.readLine();
     qDebug() << "READ " << line;
+    caller_ = Caller::cli;
     exec(line);
+    caller_ = Caller::gui;
     qDebug() << "DONE " << line;
 }
 
@@ -115,8 +124,19 @@ void Console::readFile(const QString& fName) {
         return;
     }
     QTextStream in(&file);
-    while (!in.atEnd())
-        commandLifo_.push_back(in.readLine());
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        if (line[0]=='[') {
+            int i = line.indexOf(']');
+            if (i==-1) {
+                QTextStream qterr(stderr);
+                qterr << "unbalanced '['\n";
+                return;
+            }
+            line = line.mid(i+1);
+        }
+        commandLifo_.push_back(line);
+    }
     log("# Put file " + fName + " on command stack");
     commandsFromStack();
 }
@@ -128,12 +148,15 @@ void Console::commandsFromStack() {
         qDebug() << "ST> " << line;
         if (line=="@close")
             return;
-        int ret = exec(line);
-        qDebug() << "ST< " << line << " -> " << ret;
-        if (ret==ERR) {
+        log("FROM STACK> " + line);
+        caller_ = Caller::stack;
+        Result ret = exec(line);
+        caller_ = Caller::gui;
+        qDebug() << "ST< " << line << " -> " << static_cast<int>(ret);
+        if (ret==Result::err) {
             commandLifo_.clear();
             log("# Emptied command stack upon error");
-        } else if (ret==SUSPEND)
+        } else if (ret==Result::suspend)
             return;
     }
     log("# Command stack executed");
@@ -142,22 +165,16 @@ void Console::commandsFromStack() {
 //! Commands issued by the system (and not by the user nor a command file) should pass here
 void Console::call(const QString& line) {
     qDebug() << "CMD " << line;
+    caller_ = Caller::sys;
     exec(line);
+    caller_ = Caller::gui;
     qDebug() << "DON " << line;
 }
 
-int Console::exec(QString line) {
+Console::Result Console::exec(QString line) {
     QTextStream qterr(stderr);
-    if (line[0]=='[') {
-        int i = line.indexOf(']');
-        if (i==-1) {
-            qterr << "unbalanced '['\n";
-            return ERR;
-        }
-        line = line.mid(i+1);
-    }
     if (line[0]=='#')
-        return OK; // comment => nothing to do
+        return Result::ok; // comment => nothing to do
     if (line[0]=='@') {
         QStringList list = line.mid(1).split(' ');
         QString cmd = list[0];
@@ -166,28 +183,28 @@ int Console::exec(QString line) {
         } else if (cmd=="push") {
             if (list.size()<2) {
                 qterr << "command @push needs argument <name>\n";
-                return ERR;
+                return Result::err;
             }
             registryStack_.push(new CommandRegistry(list[1]));
         } else if (cmd=="pop") {
             if (registryStack_.empty()) {
                 qterr << "cannot pop: registry stack is empty\n";
-                return ERR;
+                return Result::err;
             }
             registryStack_.pop();
         } else if (cmd=="file") {
             if (list.size()<2) {
                 qterr << "command @file needs argument <file_name>\n";
-                return ERR;
+                return Result::err;
             }
             readFile(list[1]);
         } else if (cmd=="close") {
-            return SUSPEND;
+            return Result::suspend;
         } else {
             qterr << "@ command " << cmd << " not known\n";
-            return ERR;
+            return Result::err;
         }
-        return OK;
+        return Result::ok;
     }
     if (line.endsWith('!'))
         line = line.left(line.count()-1) + "=void";
@@ -198,13 +215,13 @@ int Console::exec(QString line) {
         std::function<void(const QString&)>* f = registry().find(cmd);
         if (!f) {
             qterr << "command '" << cmd << "' not found\n";
-            return ERR;
+            return Result::err;
         }
         (*f)(val); // execute command
-        return OK;
+        return Result::ok;
     }
     qterr << "invalid command '" << line << "'\n";
-    return ERR;
+    return Result::err;
 }
 
 void Console::learn(const QString& name, std::function<void(const QString&)> f) {
@@ -215,9 +232,25 @@ void Console::forget(const QString& name) {
     registry().forget(name);
 }
 
+void Console::log2(bool hadFocus, const QString& line) {
+    if (caller_==Caller::gui) {
+        if (hadFocus)
+            log("2: " + line);
+        else
+            log("#: " + line);
+    }
+    else if (caller_==Caller::stack)
+        log("#< " + line);
+    else if (caller_==Caller::cli)
+        log("#: " + line);
+    else if (caller_==Caller::sys)
+        log("#! " + line);
+    else
+        qFatal("invalid case");
+}
 
 void Console::log(const QString& line) {
-    qDebug() << line;
+    qDebug() << "LOG:" << line;
     log_ << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm::ss.zzz")
          << " " << registry().name() << "]"
          << line << "\n";
