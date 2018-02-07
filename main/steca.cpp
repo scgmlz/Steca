@@ -88,7 +88,7 @@ int main(int argc, char* argv[]) {
 
     MainWin::instance()->show();
     if (nonoptArgs.size())
-        gConsole->command("@file " + nonoptArgs[0]);
+        gConsole->call("@file " + nonoptArgs[0]);
 
     return app.exec();
 }

@@ -208,7 +208,7 @@ CFileDialog::CFileDialog(QWidget *parent, const QString &caption,
                          const QString &directory, const QString &filter)
     : QFileDialog(parent, caption, directory, filter)
 {
-    gConsole->command("@push fdia");
+    gConsole->call("@push fdia");
     gConsole->learn("files", [this](const QString& val)->void {
             QStringList list = val.split(';');
             QString tmp = '"' + list.join("\" \"") + '"';
@@ -219,17 +219,17 @@ CFileDialog::CFileDialog(QWidget *parent, const QString &caption,
 
 CFileDialog::~CFileDialog() {
     gConsole->log("files="+selectedFiles().join(';'));
-    gConsole->log("close!");
-    gConsole->command("@pop");
+    gConsole->log("@close");
+    gConsole->call("@pop");
 }
 
 int CFileDialog::exec() {
     int ret;
-    if (gConsole->commandsOnStack()) {
+    if (gConsole->hasCommandsOnStack()) {
         qDebug() << "FileDialog OPEN";
         open();
         qDebug() << "FileDialog OPENED";
-        gConsole->commandFromStack();
+        gConsole->commandsFromStack();
         qDebug() << "FileDialog CLOSING";
         close();
         ret = QDialog::Accepted;

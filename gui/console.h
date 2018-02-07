@@ -36,12 +36,12 @@ public:
     void forget(const QString& name);
     void log(const QString&);
     void readFile(const QString& fName);
-    void commandFromStack();
-    void command(const QString&);
-    bool commandsOnStack() { return !commandLifo_.empty(); }
-    class CommandRegistry& registry() { return *registryStack_.top(); }
+    void call(const QString&);
+    bool hasCommandsOnStack() { return !commandLifo_.empty(); }
+    void commandsFromStack();
 private:
-    void exec(QString);
+    class CommandRegistry& registry() { return *registryStack_.top(); }
+    int exec(QString);
     QTextStream log_;
     class QSocketNotifier *notifier_;
     std::stack<class CommandRegistry*> registryStack_;
