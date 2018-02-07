@@ -15,7 +15,7 @@
 #ifndef SUBFRAME_SETUP_H
 #define SUBFRAME_SETUP_H
 
-#include "gui/base/new_q.h"
+#include "gui/base/controls.h"
 
 //! Part of the main window that contains geometry, background, and image controls.
 

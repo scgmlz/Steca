@@ -15,7 +15,7 @@
 #ifndef ABOUT_H
 #define ABOUT_H
 
-#include "gui/base/new_q.h"
+#include "gui/base/controls.h"
 #include <QDialog>
 
 //! Modal dialog that informs about the software

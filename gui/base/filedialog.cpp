@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "core/loaders/loaders.h"
-#include "gui/base/new_q.h"
+#include "gui/base/controls.h"
 #include <QApplication>
 #include <QEventLoop>
 #include <QFileSystemModel>

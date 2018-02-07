@@ -15,7 +15,7 @@
 #ifndef TAB_SAVE_H
 #define TAB_SAVE_H
 
-#include "gui/base/new_q.h"
+#include "gui/base/controls.h"
 
 //! Base class for dialogs for saving some output to a file.
 

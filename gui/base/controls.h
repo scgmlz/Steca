@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/base/new_q.h
+//! @file      gui/base/controls.h
 //! @brief     Defines functions that return new Qt objects
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef NEW_Q_H
-#define NEW_Q_H
+#ifndef CONTROLS_H
+#define CONTROLS_H
 
 #include "core/typ/str.h"
 #include <functional> // no auto rm
@@ -113,4 +113,4 @@ public:
     int exec() override;
 };
 
-#endif // NEW_Q_H
+#endif // CONTROLS_H

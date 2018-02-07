@@ -15,7 +15,7 @@
 #include "mainwin.h"
 #include "../manifest.h"
 #include "core/session.h"
-#include "gui/base/new_q.h"
+#include "gui/base/controls.h"
 #include "gui/console.h"
 #include "gui/output/output_diagrams.h"
 #include "gui/output/output_diffractograms.h"

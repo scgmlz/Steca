@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "gui/base/new_q.h"
+#include "gui/base/controls.h"
 #include "gui/console.h"
 #include "gui/mainwin.h"
 #include "gui/mainwin.h" // for _SLOT_

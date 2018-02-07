@@ -16,7 +16,7 @@
 #include "core/session.h"
 #include "gui/base/layout.h"
 #include "gui/base/model_view.h"
-#include "gui/base/new_q.h"
+#include "gui/base/controls.h"
 #include "gui/mainwin.h"
 #include <QHeaderView>
 
