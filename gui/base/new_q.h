@@ -16,6 +16,7 @@
 #define NEW_Q_H
 
 #include "core/typ/str.h"
+#include <functional> // no auto rm
 #include <QAction>
 #include <QCheckBox>
 #include <QComboBox>

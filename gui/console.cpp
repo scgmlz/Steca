@@ -233,26 +233,27 @@ void Console::forget(const QString& name) {
 }
 
 void Console::log2(bool hadFocus, const QString& line) {
-    if (caller_==Caller::gui) {
         if (hadFocus)
             log("2: " + line);
         else
             log("#: " + line);
     }
-    else if (caller_==Caller::stack)
-        log("#< " + line);
-    else if (caller_==Caller::cli)
-        log("#: " + line);
-    else if (caller_==Caller::sys)
-        log("#! " + line);
-    else
-        qFatal("invalid case");
 }
 
 void Console::log(const QString& line) {
     qDebug() << "LOG:" << line;
     log_ << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm::ss.zzz")
-         << " " << registry().name() << "]"
-         << line << "\n";
+         << " " << registry().name() << "]";
+    if (caller_==Caller::gui)
+        ;
+    else if (caller_==Caller::stack)
+        log_ << "#< ";
+    else if (caller_==Caller::cli)
+        log_ << "#: ";
+    else if (caller_==Caller::sys)
+        log_ << "#! ";
+    else
+        qFatal("invalid case");
+    log_ << line << "\n";
     log_.flush();
 }
