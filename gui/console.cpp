@@ -92,7 +92,7 @@ Console::Console()
     // place command stack execution into main loop
     auto timer = new QTimer(qApp);
     connect(timer, &QTimer::timeout, [this]{ qDebug() << "TIM"; commandFromStack(); });
-    timer->start(1000);
+    timer->start(5000);
 }
 
 Console::~Console() {
@@ -116,14 +116,16 @@ void Console::readFile(const QString& fName) {
     QTextStream in(&file);
     while (!in.atEnd())
         commandLifo_.push_back(in.readLine());
-    commandFromStack();
+    qDebug() << "File " << fName << " read";
 }
 
 void Console::commandFromStack() {
-    if (!commandLifo_.empty()) {
-        const QString& line = commandLifo_.front();
+    while (!commandLifo_.empty()) {
+        const QString line = commandLifo_.front();
         commandLifo_.pop_front();
         qDebug() << "ST> " << line;
+        if (line=="close!")
+            return;
         exec(line);
         qDebug() << "ST< " << line;
     }

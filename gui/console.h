@@ -38,6 +38,7 @@ public:
     void readFile(const QString& fName);
     void commandFromStack();
     void command(const QString&);
+    bool commandsOnStack() { return !commandLifo_.empty(); }
     class CommandRegistry& registry() { return *registryStack_.top(); }
 private:
     void exec(QString);

@@ -118,6 +118,7 @@ public:
     CFileDialog(QWidget *parent = Q_NULLPTR, const QString &caption = QString(),
                 const QString &directory = QString(), const QString &filter = QString());
     ~CFileDialog();
+    int exec() override;
 };
 
 #endif // NEW_Q_H

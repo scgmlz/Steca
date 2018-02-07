@@ -222,3 +222,21 @@ CFileDialog::~CFileDialog() {
     gConsole->log("close!");
     gConsole->command("@pop");
 }
+
+int CFileDialog::exec() {
+    int ret;
+    if (gConsole->commandsOnStack()) {
+        qDebug() << "FileDialog OPEN";
+        open();
+        qDebug() << "FileDialog OPENED";
+        gConsole->commandFromStack();
+        qDebug() << "FileDialog CLOSING";
+        close();
+        ret = QDialog::Accepted;
+    } else {
+        qDebug() << "FileDialog EXEC";
+        ret = QFileDialog::exec();
+        qDebug() << "FileDialog DONE";
+    }
+    return ret;
+}
