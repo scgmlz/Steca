@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "gui/cfg/msg_handler.h"
+#include "gui/console.h"
 #include <iostream>
 #include <QMessageBox>
 #include <QApplication>
@@ -24,12 +25,11 @@
 #define context(ctx) ""
 #endif
 
-//extern MainWin* gGui;
-
 void messageHandler(QtMsgType type, QMessageLogContext const& ctx, const QString& msg) {
     switch (type) {
     case QtDebugMsg:
         std::cerr << ".... " << msg.toStdString() << "\n" << std::flush;
+        gConsole->log("DEBUG: " + msg);
         break;
 // unavailable before Qt5.5 (ISSUE #36)
 //    case QtInfoMsg:
@@ -41,11 +41,13 @@ void messageHandler(QtMsgType type, QMessageLogContext const& ctx, const QString
         if (msg.left(4)=="QXcb") {
             std::cerr << "QBUG " << msg.toStdString() << "\n" << std::flush;
         } else {
+            gConsole->log("WARNING: " + msg);
             std::cerr << "WARN " << msg.toStdString() << "\n" << std::flush;
             QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
         }
         break;
     case QtFatalMsg:
+        gConsole->log("FATAL: " + msg);
         std::cerr << "BUG! " << msg.toStdString() << context(ctx) << "\n" << std::flush;
         QMessageBox::critical(QApplication::activeWindow(), qAppName(),
                               "Sorry, you encountered a fatal bug.\n"

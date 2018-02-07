@@ -119,6 +119,7 @@ void Console::readLine() {
 
 void Console::readFile(const QString& fName) {
     QFile file(fName);
+    log("@file " + fName);
     if (!file.open(QIODevice::ReadOnly)) {
         qWarning() << "Cannot open file " << fName;
         return;
@@ -233,11 +234,10 @@ void Console::forget(const QString& name) {
 }
 
 void Console::log2(bool hadFocus, const QString& line) {
-        if (hadFocus)
-            log("2: " + line);
-        else
-            log("#: " + line);
-    }
+    if (hadFocus)
+        log("2: " + line); // TODO rm 2:
+    else
+        log("#: " + line);
 }
 
 void Console::log(const QString& line) {
