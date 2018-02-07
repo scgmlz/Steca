@@ -15,8 +15,9 @@
 #include "subframe_image.h"
 #include "core/session.h"
 #include "gui/cfg/colors.h"
-#include "gui/mainwin.h"
+#include "gui/base/layout.h"
 #include "gui/base/various_widgets.h"
+#include "gui/mainwin.h"
 #include <qmath.h>
 #include <QPainter>
 

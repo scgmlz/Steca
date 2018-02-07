@@ -13,8 +13,9 @@
 // ************************************************************************** //
 
 #include "gui/popup/about.h"
-#include "../manifest.h"
+#include "manifest.h"
 #include "gui/cfg/settings.h"
+#include "gui/base/layout.h"
 #include <QApplication>
 #include <QDate>
 #include <QDialogButtonBox>

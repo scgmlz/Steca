@@ -235,13 +235,12 @@ void Console::forget(const QString& name) {
 
 void Console::log2(bool hadFocus, const QString& line) {
     if (hadFocus)
-        log("2: " + line); // TODO rm 2:
+        log(line);
     else
         log("#: " + line);
 }
 
 void Console::log(const QString& line) {
-    qDebug() << "LOG:" << line;
     log_ << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm::ss.zzz")
          << " " << registry().name() << "]";
     if (caller_==Caller::gui)
