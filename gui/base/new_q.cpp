@@ -33,9 +33,6 @@ static void setWidth(QWidget* w, int ndigits, bool withDot) {
 
 } // local methods
 
-QToolButton* newQ::TextButton(QAction* action) { return new XTextButton(action); }
-QToolButton* newQ::IconButton(QAction* action) { return new XIconButton(action); }
-
 QAction* newQ::Trigger(const QString& name, const QString& text, const QString& iconFile) {
     QAction* ret = new QAction(text, qApp);
     ret->setToolTip(text.toLower());

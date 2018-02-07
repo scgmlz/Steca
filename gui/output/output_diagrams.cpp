@@ -144,7 +144,7 @@ TabDiagramsSave::TabDiagramsSave()
     QGridLayout* g = gp->grid();
     g->addWidget(&currentDiagram_);
     g->addWidget(&allData_);
-    g->addWidget(newQ::TextButton(actSave), 1, 1);
+    g->addWidget(new XTextButton(actSave), 1, 1);
     g->setColumnStretch(0, 1);
 
     currentDiagram_.setChecked(true);

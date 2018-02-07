@@ -97,7 +97,7 @@ TabDiffractogramsSave::TabDiffractogramsSave()
     g->addWidget(&rbCurrent_);
     g->addWidget(&rbAllSequential_);
     g->addWidget(&rbAll_);
-    g->addWidget(newQ::TextButton(actSave), 2, 1);
+    g->addWidget(new XTextButton(actSave), 2, 1);
 
     rbAll_.setChecked(true);
 }

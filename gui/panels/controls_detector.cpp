@@ -90,10 +90,10 @@ ControlsDetector::ControlsDetector()
     _add({ new QLabel("beam offset X"), &beamOffsetI_, new QLabel("pix") });
     _add({ new QLabel("Y"), &beamOffsetJ_, new QLabel("pix") });
     _add({ new QLabel("image rotate"),
-                newQ::IconButton(gGui->trigger_rotateImage),
+                new XIconButton(gGui->trigger_rotateImage),
                 new QLabel("mirror"),
-                newQ::IconButton(gGui->toggle_mirrorImage) });
-    _add({ newQ::IconButton(gGui->toggle_linkCuts),
+                new XIconButton(gGui->toggle_mirrorImage) });
+    _add({ new XIconButton(gGui->toggle_linkCuts),
                 new QLabel("cut"),
                 new XIcon(":/icon/cutLeft"),
                 &cutLeft_,

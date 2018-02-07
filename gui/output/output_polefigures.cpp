@@ -238,7 +238,7 @@ TabPoleFiguresSave::TabPoleFiguresSave()
         QGridLayout* g = p2->grid();
         g->addWidget(&rbSelectedRefl_);
         g->addWidget(&rbAllRefls_);
-        g->addWidget(newQ::TextButton(actSave), 2, 1);
+        g->addWidget(new XTextButton(actSave), 2, 1);
         g->setRowStretch(g->rowCount(), 1);
     }
 

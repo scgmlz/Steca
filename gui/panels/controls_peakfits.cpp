@@ -309,18 +309,18 @@ ControlsPeakfits::ControlsPeakfits()
     QBoxLayout* hb = newQ::HBoxLayout();
     box->addLayout(hb);
 
-    hb->addWidget(newQ::IconButton(gGui->toggle_selRegions));
-    hb->addWidget(newQ::IconButton(gGui->toggle_showBackground));
+    hb->addWidget(new XIconButton(gGui->toggle_selRegions));
+    hb->addWidget(new XIconButton(gGui->toggle_showBackground));
     hb->addStretch();
 
-    hb->addWidget(newQ::IconButton(gGui->trigger_addPeak));
+    hb->addWidget(new XIconButton(gGui->trigger_addPeak));
     connect(gGui->trigger_addPeak, &QAction::triggered, [this]() {
             peaksView_->addPeak(comboReflType_.currentText());
             update();
         });
 
 
-    hb->addWidget(newQ::IconButton(gGui->trigger_removePeak));
+    hb->addWidget(new XIconButton(gGui->trigger_removePeak));
     connect(gGui->trigger_removePeak, &QAction::triggered, [this]() {
             peaksView_->removeSelected();
             update();

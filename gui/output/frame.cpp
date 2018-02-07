@@ -274,13 +274,13 @@ Frame::Frame(const QString& title, Params* params, QWidget* parent) : QDialog(pa
     actCalculate_ = newQ::Trigger("actCalculate", "Calculate");
     actInterpolate_ = newQ::Trigger("actInterpolate", "Interpolate");
 
-    hb->addWidget((btnClose_ = newQ::TextButton(actClose_)));
+    hb->addWidget((btnClose_ = new XTextButton(actClose_)));
     hb->addStretch(1);
     hb->addWidget((progressBar_ = new QProgressBar));
     hb->setStretchFactor(progressBar_, 333);
     hb->addStretch(1);
-    hb->addWidget((btnCalculate_ = newQ::TextButton(actCalculate_)));
-    hb->addWidget((btnInterpolate_ = newQ::TextButton(actInterpolate_)));
+    hb->addWidget((btnCalculate_ = new XTextButton(actCalculate_)));
+    hb->addWidget((btnInterpolate_ = new XTextButton(actInterpolate_)));
 
     progressBar_->hide();
 

@@ -45,7 +45,7 @@ TabSave::TabSave(bool withTypes)
 
     g->addWidget(new QLabel("Save to folder:"), 0, 0, Qt::AlignRight);
     g->addWidget(dir_, 0, 1);
-    g->addWidget(newQ::TextButton(actBrowse), 0, 2);
+    g->addWidget(new XTextButton(actBrowse), 0, 2);
 
     g->addWidget(new QLabel("File name:"), 1, 0, Qt::AlignRight);
     g->addWidget(file_, 1, 1);

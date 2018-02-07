@@ -155,9 +155,9 @@ ImageTab::ImageTab() {
 
     controls_ = newQ::HBoxLayout();
     box_->addLayout(controls_);
-    controls_->addWidget(newQ::IconButton(gGui->toggle_fixedIntenImage));
-    controls_->addWidget(newQ::IconButton(gGui->toggle_stepScale));
-    controls_->addWidget(newQ::IconButton(gGui->toggle_showOverlay));
+    controls_->addWidget(new XIconButton(gGui->toggle_fixedIntenImage));
+    controls_->addWidget(new XIconButton(gGui->toggle_stepScale));
+    controls_->addWidget(new XIconButton(gGui->toggle_showOverlay));
 
     imageView_ = new ImageWidget();
     box_->addWidget(imageView_);
@@ -269,7 +269,7 @@ DataImageTab::DataImageTab() {
 
     controls_->addStretch(1);
 
-    controls_->addWidget(newQ::IconButton(gGui->toggle_showBins));
+    controls_->addWidget(new XIconButton(gGui->toggle_showBins));
     controls_->addWidget(new QLabel("γ count"));
     controls_->addWidget(&numSlices_);
     connect(&numSlices_, _SLOT_(QSpinBox, valueChanged, int),

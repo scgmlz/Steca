@@ -59,9 +59,6 @@ public:
 
 namespace newQ {
 
-QToolButton* TextButton(QAction* action);
-QToolButton* IconButton(QAction* action);
-
 QAction* Trigger(const QString& name, const QString& text, const QString& iconFile="");
 QAction* Toggle(const QString& name, const QString& text, bool value, const QString& iconFile="");
 
