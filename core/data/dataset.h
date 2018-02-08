@@ -81,7 +81,6 @@ public:
     void setBinning(int by);
     void setDropIncomplete(bool on);
     void activateCluster(int index, bool on);
-    void flipClusterActivation(int index);
     void cycleFileActivation(int index);
 
     // Const methods:

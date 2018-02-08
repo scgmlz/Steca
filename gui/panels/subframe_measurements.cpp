@@ -16,6 +16,7 @@
 #include "core/session.h"
 #include "gui/base/controls.h"
 #include "gui/base/model_view.h"
+#include "gui/console.h"
 #include "gui/mainwin.h"
 #include <QHeaderView>
 
@@ -27,12 +28,13 @@
 
 class ExperimentModel : public TableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
+    ExperimentModel();
     void onClicked(const QModelIndex &);
     void onClustersChanged();
     void onHighlight();
     void onActivated();
     void onMetaSelection();
-
+    void activateCluster(bool, int, bool);
     int metaCount() const { return metaInfoNums_.count(); }
 
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
@@ -50,15 +52,28 @@ private:
     vec<int> metaInfoNums_; //!< indices of metadata items selected for display
 };
 
+ExperimentModel::ExperimentModel() {
+    gConsole->learn("activateMeasurement", [this](const QString& val)->void {
+            activateCluster(false, val.toInt(), true); });
+    gConsole->learn("desactivateMeasurement", [this](const QString& val)->void {
+            activateCluster(false, val.toInt(), false); });
+}
+
 void ExperimentModel::onClicked(const QModelIndex& cell) {
     int row = cell.row();
     int col = cell.column();
     if (row < 0 || row >= rowCount())
         return;
     if (col==1) {
-        gSession->dataset().flipClusterActivation(row);
+        activateCluster(true, row, !gSession->dataset().clusterAt(row).isActivated());
     }
     gSession->dataset().highlight().setCluster(row);
+}
+
+void ExperimentModel::activateCluster(bool primaryCall, int row, bool on) {
+    gSession->dataset().activateCluster(row, on);
+    gConsole->log2(primaryCall, QString( on ? "activate" : "desactivate") + "Measurement="
+                   + QString::number(row));
 }
 
 void ExperimentModel::onClustersChanged() {
@@ -182,6 +197,7 @@ private:
     void onActivated();
     void onMetaSelection();
     void updateScroll();
+    void highlight(bool primaryCall, int row);
     int sizeHintForColumn(int) const override final;
     ExperimentModel* model_;
 };
@@ -196,15 +212,23 @@ ExperimentView::ExperimentView() : ListView() {
     connect(gSession, &Session::sigActivated, this, &ExperimentView::onActivated);
     connect(gSession, &Session::sigMetaSelection, this, &ExperimentView::onMetaSelection);
     connect(this, &ExperimentView::clicked, model_, &ExperimentModel::onClicked);
+    gConsole->learn("highlightMeasurement", [this](const QString& val)->void {
+            highlight(false, val.toInt()); });
 }
 
 //! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
 void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
     if (!gSession->dataset().countFiles())
         return;
-    if (current.row()==gSession->dataset().highlight().clusterIndex())
+    highlight(true, current.row());
+}
+
+//! Highlights one cluster. Called either from GUI > currentChanged, or through Console command.
+void ExperimentView::highlight(bool primaryCall, int row) {
+    if (row==gSession->dataset().highlight().clusterIndex())
         return; // the following would prevent execution of "onClicked"
-    gSession->dataset().highlight().setCluster(current.row());
+    gConsole->log2(primaryCall, "highlightMeasurement="+QString::number(row));
+    gSession->dataset().highlight().setCluster(row);
     updateScroll();
 }
 

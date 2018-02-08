@@ -164,12 +164,6 @@ void Dataset::activateCluster(int index, bool on) {
     emit gSession->sigActivated();
 }
 
-void Dataset::flipClusterActivation(int index) {
-    allClusters_.at(index)->setActivated(!allClusters_.at(index)->isActivated());
-    updateExperiment();
-    emit gSession->sigActivated();
-}
-
 void Dataset::cycleFileActivation(int index) {
     const Datafile& fil = fileAt(index);
     bool on = fil.activated()!=Qt::Checked;

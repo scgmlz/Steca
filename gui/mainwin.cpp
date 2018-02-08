@@ -57,7 +57,6 @@ MainWin::MainWin()
     gConsole = Console::instance();
     gGui = this;
 
-    qDebug() << "MainWin/";
     setWindowIcon(QIcon(":/icon/retroStier"));
     QDir::setCurrent(QDir::homePath());
     setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
@@ -115,7 +114,6 @@ MainWin::MainWin()
     connect(trigger_corrFile, &QAction::triggered, this, &MainWin::loadCorrFile);
     QObject::connect(gSession, &Session::sigCorr, [this]() {
             bool hasFile = gSession->hasCorrFile();
-            qDebug() << "on sigCorr " << hasFile;
             trigger_corrFile->setIcon(QIcon(hasFile ? ":/icon/rem" : ":/icon/add"));
             QString text = QString(hasFile ? "Remove" : "Add") + " correction file";
             trigger_corrFile->setText(text);
@@ -201,8 +199,6 @@ MainWin::MainWin()
 
     saveDir = settings_.readStr("export_directory");
     saveFmt = settings_.readStr("export_format");
-
-    qDebug() << "/MainWin";
 }
 
 MainWin::~MainWin() {
@@ -420,7 +416,6 @@ void MainWin::addFiles() {
     if (fileNames.isEmpty())
         return;
     QDir::setCurrent(QFileInfo(fileNames.at(0)).absolutePath());
-    qDebug() << "going to load " << fileNames;
     TakesLongTime __;
     gSession->dataset().addGivenFiles(fileNames);
 }
@@ -451,7 +446,6 @@ void MainWin::saveSession() {
 }
 
 void MainWin::closeEvent(QCloseEvent* event) {
-    qDebug() << "close event";
     saveSettings();
     event->accept();
 }
