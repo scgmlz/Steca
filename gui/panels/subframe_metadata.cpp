@@ -43,8 +43,6 @@ public:
     QVariant headerData(int, Qt::Orientation, int) const { return {}; }
 
     enum { COL_CHECK = 1, COL_TAG, COL_VALUE, NUM_COLUMNS };
-
-private:
 };
 
 QVariant MetadataModel::data(const QModelIndex& index, int role) const {
@@ -54,8 +52,9 @@ QVariant MetadataModel::data(const QModelIndex& index, int role) const {
     int col = index.column();
     switch (role) {
     case Qt::CheckStateRole:
+        qDebug() << "COUNT " << rowCount() << " ROW " << row;
         if (col==COL_CHECK)
-            return  activated(row) ? Qt::Checked : Qt::Unchecked;
+            return activated(row) ? Qt::Checked : Qt::Unchecked;
         break;
     case Qt::DisplayRole:
         switch (col) {

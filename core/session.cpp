@@ -23,6 +23,7 @@
 Session* gSession; //!< global, for data handling
 
 Session::Session()
+    : metaSelection_( std::vector<bool>(Metadata::size(), false) )
 {
     register_peak_functions();
 }

@@ -55,9 +55,8 @@ private:
 void ExperimentModel::onMetaSelection() {
     beginResetModel(); // needed because columnCount may have shrinked
     metaInfoNums_.clear();
-    const vec<bool>& selection = gSession->getMetaSelection();
-    for_i (selection.count())
-        if (selection.at(i))
+    for_i (Metadata::size())
+        if (gSession->metaSelected(i))
             metaInfoNums_.append(i);
     emit dataChanged(createIndex(0,COL_ATTRS), createIndex(rowCount(),columnCount()));
     emit headerDataChanged(Qt::Horizontal, COL_ATTRS, columnCount());

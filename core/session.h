@@ -21,6 +21,7 @@
 #include "core/calc/peak_info.h"
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"
+#include <vector>
 
 extern class Session* gSession;
 
@@ -54,7 +55,6 @@ public:
     void clear();
 
     void setMetaSelected(int, bool);
-    const vec<bool>& getMetaSelection() { return metaSelection_; }
 
     void setImageTransformMirror(bool);
     void setImageTransformRotate(ImageTransform const&);
@@ -119,7 +119,7 @@ private:
     Peaks peaks_;
     Baseline baseline_;
 
-    vec<bool> metaSelection_; //!< true if meta datum is to be displayed
+    std::vector<bool> metaSelection_; //!< true if meta datum is to be displayed
     bool intenScaledAvg_ {true}; // if not, summed
     qreal intenScale_ {1};
     size2d imageSize_; //!< All images must have this same size

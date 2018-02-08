@@ -38,6 +38,7 @@ public:
     row_t attributeValues() const;
 
     static row_t attributeNaNs();
+    static int size() { return attributeNaNs().count(); }
 
     QString date, comment;
 
