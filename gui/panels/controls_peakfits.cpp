@@ -103,7 +103,6 @@ public:
 
     void addPeak(const QString&);
     void removeSelected();
-    void update();
 
 private:
     PeaksModel* model() { return static_cast<PeaksModel*>(model_); };
@@ -116,16 +115,12 @@ PeaksView::PeaksView()
 
 void PeaksView::addPeak(const QString& functionName) {
     model()->addPeak(functionName);
-    update();
+    onData();
 }
 
 void PeaksView::removeSelected() {
     model()->removePeak();
-    update();
-}
-
-void PeaksView::update() {
-    model()->resetModel();
+    onData();
 }
 
 

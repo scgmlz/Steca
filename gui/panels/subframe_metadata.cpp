@@ -61,7 +61,7 @@ void MetadataModel::reset() {
 
 void MetadataModel::onClicked(const QModelIndex &cell) {
     int row = cell.row();
-    rowsChecked_[row] = !rowsChecked_[row];
+    // TODO RESTORE rowsChecked_[row] = !rowsChecked_[row];
     resetModel();
     emit gSession->setMetaSelection(rowsChecked_);
 }
@@ -75,7 +75,7 @@ QVariant MetadataModel::data(const QModelIndex& index, int role) const {
     case Qt::CheckStateRole:
         switch (col) {
         case COL_CHECK:
-            return rowsChecked_.at(row) ? Qt::Checked : Qt::Unchecked;
+            return {}; // TODO RESTORE rowsChecked_.at(row) ? Qt::Checked : Qt::Unchecked;
         }
         break;
     case Qt::DisplayRole:
@@ -109,7 +109,7 @@ private:
 MetadataView::MetadataView()
     : TableView(new MetadataModel())
 {
-    connect(gSession, &Session::sigClusters, model(), &MetadataModel::reset);
+    connect(gSession, &Session::sigClusters, this, &TableView::onData);
     connect(this, &MetadataView::clicked, model(), &MetadataModel::onClicked);
 }
 

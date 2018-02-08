@@ -132,7 +132,7 @@ void TableView::onHighlight() {
     updateScroll();
 }
 
-void TableView::reset() {
+void TableView::onData() {
     model_->resetModel();
     updateScroll();
 }

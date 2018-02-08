@@ -87,7 +87,7 @@ private:
 FilesView::FilesView()
     : CheckTableView(new FilesModel())
 {
-    connect(gSession, &Session::sigFiles, this, &TableView::reset);
+    connect(gSession, &Session::sigFiles, this, &TableView::onData);
     connect(gSession, &Session::sigHighlight, this, &TableView::onHighlight);
     connect(gSession, &Session::sigActivated, this, &CheckTableView::onActivated);
     connect(this, &FilesView::clicked, model(), &FilesModel::onClicked);

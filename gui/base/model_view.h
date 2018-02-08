@@ -68,7 +68,7 @@ class TableView : public QTreeView {
 public:
     TableView() = delete;
     TableView(TableModel*);
-    void reset();
+    void onData();
     void onHighlight();
 protected:
     int mWidth() const;
