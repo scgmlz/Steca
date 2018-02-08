@@ -301,6 +301,7 @@ ControlsPeakfits::ControlsPeakfits()
     update();
 
     connect(gSession, &Session::sigPeaks, this, &ControlsPeakfits::onPeaks);
+    connect(gSession, &Session::sigPeakHighlight, peaksView_, &PeaksView::onData);
 }
 
 void ControlsPeakfits::onPeaks() {

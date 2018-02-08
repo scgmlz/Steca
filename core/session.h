@@ -98,7 +98,7 @@ public:
 signals:
     void sigFiles();         //!< list of loaded files has changed
     void sigClusters();      //!< list of clusters has changed
-    void sigDataHighlight();     //!< highlighted File or/and Cluster has changed
+    void sigDataHighlight(); //!< highlighted File or/and Cluster has changed
     void sigMetaSelection(); //!< meta data selected for display have changed
     void sigCorr();          //!< corr file has been loaded or unloaded or enabled or disabled
     void sigActivated();     //!< selection of active clusters has changed
@@ -107,6 +107,7 @@ signals:
     void sigBaseline();      //!< baseline settings have changed
     void sigNorm();          //!< normalization has changed
     void sigPeaks();         //!< list of peaks or selected peak has changed
+    void sigPeakHighlight(); //!< highlighted Peak has changed
 
 private:
     friend Dataset; // TODO try to get rid of this
