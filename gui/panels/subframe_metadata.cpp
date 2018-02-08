@@ -37,7 +37,7 @@ public:
     int highlighted() const final { return 0; }// gSession->dataset().highlight().clusterIndex(); }
     void setHighlight(int i) final { ; } //gSession->dataset().highlight().setCluster(i); }
     bool activated(int row) const { return 0; } // TODO
-    void setActivated(int row, bool on) { ; } //TODO }
+    void setActivated(int row, bool on) { gSession->setMetaSelection(row, on); }
 
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const { return {}; }
@@ -46,27 +46,7 @@ public:
     enum { COL_CHECK = 1, COL_TAG, COL_VALUE, NUM_COLUMNS };
 
 private:
-    shp_Metadata metadata_;
-    vec<bool> rowsChecked_;
 };
-
-
-//MetadataModel::MetadataModel() {
-// TODO RESTORE    rowsChecked_.fill(false, Metadata::numAttributes(false));
-// }
-
-void MetadataModel::reset() {
-    const Cluster* cluster = gSession->dataset().highlight().cluster();
-    metadata_ = cluster ? cluster->avgeMetadata() : shp_Metadata();
-    resetModel();
-}
-
-void MetadataModel::onClicked(const QModelIndex &cell) {
-    int row = cell.row();
-    // TODO RESTORE rowsChecked_[row] = !rowsChecked_[row];
-    resetModel();
-    gSession->setMetaSelection(rowsChecked_);
-}
 
 QVariant MetadataModel::data(const QModelIndex& index, int role) const {
     int row = index.row();
@@ -75,17 +55,17 @@ QVariant MetadataModel::data(const QModelIndex& index, int role) const {
     int col = index.column();
     switch (role) {
     case Qt::CheckStateRole:
-        switch (col) {
-        case COL_CHECK:
-            return {}; // TODO RESTORE rowsChecked_.at(row) ? Qt::Checked : Qt::Unchecked;
-        }
+        if (col==COL_CHECK)
+            return  activated(row) ? Qt::Checked : Qt::Unchecked;
         break;
     case Qt::DisplayRole:
         switch (col) {
         case COL_TAG:
             return Metadata::attributeTag(row, false);
         case COL_VALUE:
-            return metadata_ ? metadata_->attributeStrValue(row) : "-";
+            if (!gSession->dataset().countFiles())
+                return "-";
+            return gSession->dataset().highlight().cluster()->avgeMetadata()->attributeStrValue(row);
         }
         break;
     }
