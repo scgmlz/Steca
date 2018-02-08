@@ -15,11 +15,12 @@
 #ifndef MODEL_VIEW_H
 #define MODEL_VIEW_H
 
+#include "core/def/debug.h"
 #include <QTreeView>
 #include <QAbstractTableModel>
 
 
-//! The base class of all models of rectangular table form
+//! The pure virtual base class of all models of rectangular table form
 
 class TableModel : public QAbstractTableModel {
 public:
@@ -34,19 +35,25 @@ public:
 };
 
 
-//! The base class of all views of rectangular table form
+//! The pure virtual base class of all views of rectangular table form
 
 //! Based on QTreeView, with hidden 1st column.
 //! QTreeView inherits from QAbstractItemView.
 
 class TableView : public QTreeView {
 public:
-    //TableView() = delete;
-    TableView();
-    void setModel(class TableModel* model);
+    TableView() = delete;
+    TableView(const QString&, TableModel*);
 protected:
-    virtual class TableModel* model() const;
     int mWidth() const;
+    QString name_;
+    TableModel* model_;
+    void gotoCurrent(QModelIndex const&);
+    void updateScroll();
+    void highlight(bool primaryCall, int row);
+    // interaction with data
+    virtual int data_highlighted() = 0;
+    virtual void data_setHighlight(int i) = 0;
 };
 
 class CTableView : public TableView {

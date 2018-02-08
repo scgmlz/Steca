@@ -100,15 +100,18 @@ public:
 
 private:
     int sizeHintForColumn(int) const final;
-    MetadataModel* model_;
+    MetadataModel* model() { return static_cast<MetadataModel*>(model_); }
+    // interaction with data
+    int data_highlighted() final { return 0; }// gSession->dataset().highlight().clusterIndex(); }
+    void data_setHighlight(int i) final { ; } //gSession->dataset().highlight().setCluster(i); }
 };
 
-MetadataView::MetadataView() : TableView() {
+MetadataView::MetadataView()
+    : TableView("meta", new MetadataModel())
+{
     setHeaderHidden(true);
-    model_ = new MetadataModel();
-    setModel(model_);
-    connect(gSession, &Session::sigHighlight, model_, &MetadataModel::reset);
-    connect(this, &MetadataView::clicked, model_, &MetadataModel::onClicked);
+    connect(gSession, &Session::sigClusters, model(), &MetadataModel::reset);
+    connect(this, &MetadataView::clicked, model(), &MetadataModel::onClicked);
 }
 
 int MetadataView::sizeHintForColumn(int col) const {

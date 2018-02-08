@@ -36,13 +36,13 @@ public:
     void onMetaSelection();
     void activateCluster(bool, int, bool);
     int metaCount() const { return metaInfoNums_.count(); }
+    int rowCount() const final { return gSession->dataset().countClusters(); }
 
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
 private:
     QVariant data(const QModelIndex&, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const final;
-    int rowCount() const final { return gSession->dataset().countClusters(); }
     int columnCount() const final { return COL_ATTRS + metaCount(); }
 
     // The following local caches duplicate state information from Session.
@@ -190,72 +190,52 @@ public:
     ExperimentView();
 
 private:
-    void currentChanged(QModelIndex const&, QModelIndex const&) override final;
-    void onKey(int row);
+    void currentChanged(QModelIndex const& current, QModelIndex const&) override final {
+        gotoCurrent(current); }
     void onClustersChanged();
     void onHighlight();
     void onActivated();
     void onMetaSelection();
-    void updateScroll();
-    void highlight(bool primaryCall, int row);
     int sizeHintForColumn(int) const override final;
-    ExperimentModel* model_;
+    ExperimentModel* model() { return static_cast<ExperimentModel*>(model_); }
+    // interaction with data
+    int data_highlighted() final { return gSession->dataset().highlight().clusterIndex(); }
+    void data_setHighlight(int i) final { gSession->dataset().highlight().setCluster(i); }
 };
 
-ExperimentView::ExperimentView() : TableView() {
+ExperimentView::ExperimentView()
+    : TableView("measurement", new ExperimentModel())
+{
     setHeaderHidden(true);
     setSelectionMode(QAbstractItemView::NoSelection);
-    model_ = new ExperimentModel();
-    setModel(model_);
+
     connect(gSession, &Session::sigClusters, this, &ExperimentView::onClustersChanged);
     connect(gSession, &Session::sigHighlight, this, &ExperimentView::onHighlight);
     connect(gSession, &Session::sigActivated, this, &ExperimentView::onActivated);
     connect(gSession, &Session::sigMetaSelection, this, &ExperimentView::onMetaSelection);
-    connect(this, &ExperimentView::clicked, model_, &ExperimentModel::onClicked);
+    connect(this, &ExperimentView::clicked, model(), &ExperimentModel::onClicked);
     gConsole->learn("highlightMeasurement", [this](const QString& val)->void {
             highlight(false, val.toInt()); });
 }
 
-//! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
-void ExperimentView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
-    if (!gSession->dataset().countFiles())
-        return;
-    highlight(true, current.row());
-}
-
-//! Highlights one cluster. Called either from GUI > currentChanged, or through Console command.
-void ExperimentView::highlight(bool primaryCall, int row) {
-    if (row==gSession->dataset().highlight().clusterIndex())
-        return; // the following would prevent execution of "onClicked"
-    gConsole->log2(primaryCall, "highlightMeasurement="+QString::number(row));
-    gSession->dataset().highlight().setCluster(row);
-    updateScroll();
-}
-
 void ExperimentView::onClustersChanged() {
-    model_->onClustersChanged();
+    model()->onClustersChanged();
     updateScroll();
 }
 
 void ExperimentView::onHighlight() {
-    model_->onHighlight();
+    model()->onHighlight();
     updateScroll();
 }
 
 void ExperimentView::onActivated() {
-    model_->onActivated();
+    model()->onActivated();
     updateScroll();
 }
 
 void ExperimentView::onMetaSelection() {
-    model_->onMetaSelection();
-    setHeaderHidden(model_->metaCount()==0);
-}
-
-void ExperimentView::updateScroll() {
-    int row = gSession->dataset().highlight().clusterIndex();
-    if (row>=0)
-        scrollTo(model_->index(row,0));
+    model()->onMetaSelection();
+    setHeaderHidden(model()->metaCount()==0);
 }
 
 int ExperimentView::sizeHintForColumn(int col) const {

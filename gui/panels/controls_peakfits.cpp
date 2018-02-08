@@ -103,37 +103,30 @@ public:
     void update();
 
 private:
-    void currentChanged(QModelIndex const&, QModelIndex const&) override final;
-    PeaksModel* model_;
+    PeaksModel* model() { return static_cast<PeaksModel*>(model_); };
+    // interaction with data
+    int data_highlighted() final { return gSession->peaks().selectedIndex(); }
+    void data_setHighlight(int i) final { gSession->peaks().select(i); }
 };
 
-PeaksView::PeaksView() : TableView() {
+PeaksView::PeaksView()
+    : TableView("peak", new PeaksModel())
+{
     setHeaderHidden(true);
-    setSelectionMode(QAbstractItemView::NoSelection);
-    model_ = new PeaksModel();
-    setModel(model_);
-    for_i (model_->columnCount())
-        resizeColumnToContents(i);
 }
 
 void PeaksView::addPeak(const QString& functionName) {
-    model_->addPeak(functionName);
+    model()->addPeak(functionName);
     update();
 }
 
 void PeaksView::removeSelected() {
-    model_->removePeak();
+    model()->removePeak();
     update();
 }
 
 void PeaksView::update() {
-    model_->resetModel();
-}
-
-//! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
-void PeaksView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
-    gSession->peaks().select(current.row());
-    update();
+    model()->resetModel();
 }
 
 

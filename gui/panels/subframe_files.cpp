@@ -115,30 +115,24 @@ public:
     FilesView();
 
 private:
-    void currentChanged(QModelIndex const&, QModelIndex const&) override final;
-
+    void currentChanged(QModelIndex const& current, QModelIndex const&) override final {
+        gotoCurrent(current); }
     int sizeHintForColumn(int) const final;
-    FilesModel* model_;
+    FilesModel* model() { return static_cast<FilesModel*>(model_); }
+    // interaction with data
+    int data_highlighted() final { return gSession->dataset().highlight().fileIndex(); }
+    void data_setHighlight(int i) final { gSession->dataset().highlight().setFile(i); }
 };
 
-FilesView::FilesView() : TableView() {
+FilesView::FilesView()
+    : TableView("file", new FilesModel())
+{
     setHeaderHidden(true);
-    setSelectionMode(QAbstractItemView::NoSelection);
-    model_ = new FilesModel();
-    setModel(model_);
 
-    connect(gSession, &Session::sigFiles, model_, &FilesModel::onFilesChanged);
-    connect(gSession, &Session::sigHighlight, model_, &FilesModel::onHighlight);
-    connect(gSession, &Session::sigActivated, model_, &FilesModel::onActivated);
-    connect(this, &FilesView::clicked, model_, &FilesModel::onClicked);
-}
-
-//! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
-void FilesView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
-    if (current.row()==gSession->dataset().highlight().fileIndex())
-        return; // the following would prevent execution of "onClicked"
-    scrollTo(current);
-    gSession->dataset().highlight().setFile(current.row());
+    connect(gSession, &Session::sigFiles, model(), &FilesModel::onFilesChanged);
+    connect(gSession, &Session::sigHighlight, model(), &FilesModel::onHighlight);
+    connect(gSession, &Session::sigActivated, model(), &FilesModel::onActivated);
+    connect(this, &FilesView::clicked, model(), &FilesModel::onClicked);
 }
 
 int FilesView::sizeHintForColumn(int col) const {
