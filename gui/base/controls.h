@@ -15,7 +15,6 @@
 #ifndef CONTROLS_H
 #define CONTROLS_H
 
-#include "core/typ/str.h"
 #include <functional> // no auto rm
 #include <QAction>
 #include <QCheckBox>
@@ -27,6 +26,7 @@
 #include <QLineEdit>
 #include <QRadioButton>
 #include <QSpinBox>
+#include <QString>
 #include <QToolButton>
 
 //! Contains functions that return new QActions.
@@ -38,12 +38,6 @@ QAction* Toggle(const QString& name, const QString& text, bool value, const QStr
 
 } // namespace newT
 
-//! QLabel displaying an icon, with no associated action.
-class XIcon : public QLabel {
-public:
-    XIcon(const QString& fileName);
-};
-
 //! QToolButton with text display and associated QAction.
 class XTextButton : public QToolButton {
 public:
@@ -54,12 +48,6 @@ public:
 class XIconButton : public QToolButton {
 public:
     XIconButton(QAction*);
-};
-
-//! Read-only QLineEdit for number display.
-class XLineDisplay : public QLineEdit {
-public:
-    XLineDisplay(int ndigits, bool withDot);
 };
 
 //! Mix-in for control widgets that can be changed by a console command.

@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/base/new_q.cpp
+//! @file      gui/base/controls.cpp
 //! @brief     Implements functions that return new Qt objects
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -13,25 +13,13 @@
 // ************************************************************************** //
 
 #include "gui/base/controls.h"
+#include "gui/base/displays.h"
 #include "gui/console.h"
-#include "gui/mainwin.h"
 #include "gui/mainwin.h" // for _SLOT_
 #include "core/def/numbers.h"
 #include <QApplication> // for qApp for new Action
 #include <QDebug>
 #include <QtGlobal> // to define Q_OS_WIN
-
-namespace {
-
-static void setWidth(QWidget* w, int ndigits, bool withDot) {
-    int width = ndigits;
-#ifdef Q_OS_WIN
-    width += 1 + (withDot?1:0);
-#endif
-    w->setMaximumWidth(width * w->fontMetrics().width('m'));
-}
-
-} // local methods
 
 QAction* newT::Trigger(const QString& name, const QString& text, const QString& iconFile) {
     QAction* ret = new QAction(text, qApp);
@@ -64,11 +52,6 @@ QAction* newT::Toggle(
     return ret;
 };
 
-XIcon::XIcon(const QString& fileName) {
-    int h = sizeHint().height();
-    setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
-}
-
 XTextButton::XTextButton(QAction* action) {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonTextOnly);
@@ -78,12 +61,6 @@ XIconButton::XIconButton(QAction* action) {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonIconOnly);
 }
-
-XLineDisplay::XLineDisplay(int ndigits, bool withDot) {
-    setWidth(this, ndigits, withDot);
-    setReadOnly(true);
-}
-
 
 CSettable::CSettable(const QString& name, std::function<void(const QString&)> setter)
     : name_(name)
@@ -101,7 +78,7 @@ CSettable::~CSettable() {
 CSpinBox::CSpinBox(const QString& _name, int ndigits, bool withDot, int min, int max)
     : CSettable(_name, [this](const QString& val)->void { setValue(val.toInt()); })
 {
-    setWidth(this, ndigits, withDot);
+    widgetUtils::setWidth(this, ndigits, withDot);
     setMinimum(min);
     setMaximum(max > min ? max : min);
     connect(this, _SLOT_(QSpinBox, valueChanged, int), [this](int val)->void {
@@ -111,7 +88,7 @@ CSpinBox::CSpinBox(const QString& _name, int ndigits, bool withDot, int min, int
 CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, qreal min, qreal max)
     : CSettable(_name, [this](const QString& val)->void { setValue(val.toDouble()); })
 {
-    setWidth(this, ndigits, true);
+    widgetUtils::setWidth(this, ndigits, true);
     ASSERT(min<=max);
     setMinimum(min);
     setMaximum(max);

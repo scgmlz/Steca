@@ -14,6 +14,7 @@
 
 #include "controls_peakfits.h"
 #include "core/session.h"
+#include "gui/base/displays.h"
 #include "gui/base/layout.h"
 #include "gui/base/model_view.h"
 #include "gui/mainwin.h"
