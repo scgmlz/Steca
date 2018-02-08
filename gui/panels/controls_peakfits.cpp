@@ -94,7 +94,7 @@ QVariant PeaksModel::data(const QModelIndex& index, int role) const {
 
 //! List view of user-defined Bragg peaks.
 
-class PeaksView final : public ListView {
+class PeaksView final : public TableView {
 public:
     PeaksView();
 
@@ -107,7 +107,7 @@ private:
     PeaksModel* model_;
 };
 
-PeaksView::PeaksView() : ListView() {
+PeaksView::PeaksView() : TableView() {
     setHeaderHidden(true);
     setSelectionMode(QAbstractItemView::NoSelection);
     model_ = new PeaksModel();

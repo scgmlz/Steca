@@ -185,7 +185,7 @@ QVariant ExperimentModel::headerData(int col, Qt::Orientation ori, int role) con
 
 //! Main item in SubframeMeasurement: View and control of measurements list.
 
-class ExperimentView : public ListView { // < QTreeView < QAbstractItemView
+class ExperimentView : public TableView { // < QTreeView < QAbstractItemView
 public:
     ExperimentView();
 
@@ -202,7 +202,7 @@ private:
     ExperimentModel* model_;
 };
 
-ExperimentView::ExperimentView() : ListView() {
+ExperimentView::ExperimentView() : TableView() {
     setHeaderHidden(true);
     setSelectionMode(QAbstractItemView::NoSelection);
     model_ = new ExperimentModel();

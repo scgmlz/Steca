@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/base/model_view.h
-//! @brief     Defines classes TableModel and ListView
+//! @brief     Defines classes TableModel and TableView
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -34,13 +34,14 @@ public:
 };
 
 
-//! A list view with single selection.
+//! The base class of all views of rectangular table form
 
 //! Based on QTreeView, with hidden 1st column.
+//! QTreeView inherits from QAbstractItemView.
 
-class ListView : public QTreeView {
+class TableView : public QTreeView {
 public:
-    ListView();
+    TableView();
     void setModel(class TableModel* model);
 protected:
     virtual class TableModel* model() const;

@@ -110,7 +110,7 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
 
 //! Main item in SubframeFiles: View and control the list of DataFile's
 
-class FilesView : public ListView { // < QTreeView < QAbstractItemView
+class FilesView : public TableView { // < QTreeView < QAbstractItemView
 public:
     FilesView();
 
@@ -121,7 +121,7 @@ private:
     FilesModel* model_;
 };
 
-FilesView::FilesView() : ListView() {
+FilesView::FilesView() : TableView() {
     setHeaderHidden(true);
     setSelectionMode(QAbstractItemView::NoSelection);
     model_ = new FilesModel();

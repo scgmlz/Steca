@@ -94,16 +94,16 @@ QVariant MetadataModel::data(const QModelIndex& index, int role) const {
 
 //! Main item in SubframeMetadata: View and control the list of Metadata.
 
-class MetadataView : public ListView {
+class MetadataView : public TableView {
 public:
     MetadataView();
 
 private:
     int sizeHintForColumn(int) const final;
-    MetadataModel* model() const final { return static_cast<MetadataModel*>(ListView::model()); }
+    MetadataModel* model() const final { return static_cast<MetadataModel*>(TableView::model()); }
 };
 
-MetadataView::MetadataView() : ListView() {
+MetadataView::MetadataView() : TableView() {
     setHeaderHidden(true);
     auto metadataModel = new MetadataModel();
     setModel(metadataModel);
