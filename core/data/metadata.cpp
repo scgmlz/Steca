@@ -143,7 +143,7 @@ QString Metadata::attributeStrValue(int i) const {
     default: qFatal("impossible case");
     }
 
-    return str::number(value);
+    return QString::number(value);
 }
 
 QVariant Metadata::attributeValue(int i) const {

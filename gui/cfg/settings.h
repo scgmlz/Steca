@@ -15,7 +15,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include "core/typ/str.h"
+#include <QString>
 #include <QAction>
 #include <QSettings>
 #include <QSpinBox>

@@ -18,20 +18,20 @@
 
 template <typename T> class IRegistry {
 protected:
-    QMap<str, T> m_map; //!< unsorted hash, for quick lookup
+    QMap<QString, T> m_map; //!< unsorted hash, for quick lookup
     QStringList m_keys; //!< sorted array, for listing all registered objects
 public:
-    void register_item(const str& key, T val) {
+    void register_item(const QString& key, T val) {
         if (m_map.find(key) != m_map.end())
             THROW("Duplicate registry entry " + key);
         m_map.insert(key, val);
         m_keys.push_back(key);
     }
-    T find(const str& key) const {
+    T find(const QString& key) const {
         auto pos = m_map.find(key);
         return pos == m_map.end() ? nullptr : pos.value(); // here std::map and QMap differ
     }
-    T find_or_fail(const str& key) const {
+    T find_or_fail(const QString& key) const {
         T ret = find(key);
         if (!ret)
             THROW("Cannot find '" + key + "' in function registry");

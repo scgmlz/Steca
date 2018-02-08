@@ -151,7 +151,7 @@ static void loadTiff(
         THROW("not a simple number");
     };
 
-    auto asStr = [&]() {
+    auto asStr = [&]()->QString {
         if (!(2 == dataType)) THROW("bad data type");
         auto lastPos = f.pos();
 
@@ -159,7 +159,7 @@ static void loadTiff(
         QByteArray data = f.readLine(dataCount);
         seek(lastPos);
 
-        return str(data);
+        return QString(data);
     };
 
     qint32 dirOffset;

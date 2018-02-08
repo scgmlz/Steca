@@ -329,7 +329,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(const QString& filePath, int i
     else
         reflInfo = calcPoints_.at(index);
     bool withFit = !gSession->peaks().at(index).isRaw();
-    QString path = str(filePath + OUT_FILE_TAG).arg(index + 1);
+    QString path = QString(filePath + OUT_FILE_TAG).arg(index + 1);
     bool check = false;
     int numSavedFiles = 0;
 

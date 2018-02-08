@@ -16,7 +16,7 @@
 #define METADATA_H
 
 #include "core/typ/angles.h"
-#include "core/typ/str.h"
+#include <QString>
 #include "core/typ/variant.h"
 #include <QSharedPointer> // no auto rm
 

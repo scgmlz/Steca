@@ -25,7 +25,7 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
 
     int PAD = 12;
 
-    setWindowTitle(str("About %1").arg(qApp->applicationName()));
+    setWindowTitle(QString("About %1").arg(qApp->applicationName()));
 
     // layout
     auto vb = newQ::VBoxLayout();
@@ -51,7 +51,7 @@ AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
     QString arch = "";
 #endif
 
-    auto info = new QLabel(str(
+    auto info = new QLabel(QString(
 "<h4>%1 version %2 %3</h4>"
 "<p>%4</p>"
 "<p>Copyright: Forschungszentrum Jülich GmbH %5</p>"

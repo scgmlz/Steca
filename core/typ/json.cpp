@@ -105,7 +105,7 @@ qreal JsonObj::loadQreal(const QString& key) const THROWS {
     case QJsonValue::Undefined:
         return NAN; // not present means not a number
     case QJsonValue::String: { // infinities stored as strings
-        const str& s = val.toString();
+        const QString& s = val.toString();
         if (s == "+inf")
             return +INF;
         if (s == "-inf")

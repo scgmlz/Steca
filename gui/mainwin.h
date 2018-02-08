@@ -20,7 +20,7 @@
 #include "core/data/rawfile.h"
 #include "core/data/cluster.h"
 #include "core/typ/singleton.h"
-#include "core/typ/str.h"
+#include <QString>
 #include "gui/cfg/settings.h"
 #include <QMainWindow>
 #include <QNetworkAccessManager>

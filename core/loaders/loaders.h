@@ -17,7 +17,7 @@
 
 #include "core/data/rawfile.h"
 #include "core/def/macros.h"
-#include "core/typ/str.h"
+#include <QString>
 
 class Rawfile;
 class QFileInfo;

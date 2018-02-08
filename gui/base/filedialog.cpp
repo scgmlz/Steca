@@ -35,7 +35,7 @@ public:
     QVariant data(rcidx, int = Qt::DisplayRole) const;
 
 private:
-    mutable QHash<str, str> memInfo;
+    mutable QHash<QString, QString> memInfo;
 };
 
 int OpenFileProxyModel::columnCount(rcidx) const {

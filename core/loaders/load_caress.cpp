@@ -177,8 +177,8 @@ Rawfile loadCaress(const QString& filePath) THROWS {
                 // Objekt inizialisieren
                 Metadata md;
 
-                md.date = str::fromStdString(s_date);
-                md.comment = str::fromStdString(s_comment);
+                md.date = QString::fromStdString(s_date);
+                md.comment = QString::fromStdString(s_comment);
 
                 md.motorXT = xAxis;
                 md.motorYT = yAxis;

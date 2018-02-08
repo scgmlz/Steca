@@ -224,7 +224,7 @@ void MainWin::initMenu() {
     auto _actionsToMenu = [mbar](const char* menuName, QList<QAction*> actions)->QMenu* {
         QMenu* menu = mbar->addMenu(menuName);
         menu->addActions(actions);
-        QString prefix = str("%1: ").arg(menu->title().remove('&'));
+        QString prefix = QString("%1: ").arg(menu->title().remove('&'));
         for (auto action : actions)
             action->setToolTip(prefix + action->toolTip());
         return menu;
@@ -387,7 +387,7 @@ void MainWin::checkUpdate() {
 
     QString ver = qApp->applicationVersion();
     QString qry = ver % "\t| " % QSysInfo::prettyProductName();
-    req.setUrl(QUrl(str(STECA2_VERSION_URL) % "?" % qry));
+    req.setUrl(QUrl(QString(STECA2_VERSION_URL) % "?" % qry));
     QNetworkReply* reply = netMan_.get(req);
 
     connect(reply, &QNetworkReply::finished, [this, reply]() {
@@ -400,15 +400,15 @@ void MainWin::checkUpdate() {
         QString name = qApp->applicationName();
         QString result;
         if (ver != lastVer)
-            result = str(
+            result = QString(
                 "<p>The latest released %1 version is %2. You have "
                 "version %3.</p>"
                 "<p><a href='%4'>Open download location in external browser</a></p>")
                 .arg(name, lastVer, ver, STECA2_DOWNLOAD_URL);
         else
-            result = str(
+            result = QString(
                 "<p>You have the latest released %1 version (%2).</p>").arg(name).arg(ver);
-        QMessageBox::information(this, str("%1 update").arg(name), result);
+        QMessageBox::information(this, QString("%1 update").arg(name), result);
         });
 }
 
@@ -599,7 +599,7 @@ void MainWin::sessionFromJson(QByteArray const& json) THROWS {
         int i = sel.toInt();
         int index = qBound(0, i, files.count());
         if(i != index)
-            THROW(str("Invalid selection index: %1").arg(i));
+            THROW(QString("Invalid selection index: %1").arg(i));
         selIndexes.append(index);
     }
 

@@ -22,7 +22,7 @@
 
 namespace {
 qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }
-QString safeRealText(qreal val) { return qIsFinite(val) ? str::number(val) : ""; }
+QString safeRealText(qreal val) { return qIsFinite(val) ? QString::number(val) : ""; }
 } // local methods
 
 // ************************************************************************** //
@@ -65,7 +65,7 @@ QVariant PeaksModel::data(const QModelIndex& index, int role) const {
             return {};
         switch (col) {
         case COL_ID:
-            return str::number(row + 1);
+            return QString::number(row + 1);
         case COL_TYPE:
             return peak.functionName();
         default:

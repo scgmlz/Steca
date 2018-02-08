@@ -15,7 +15,7 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include "core/typ/str.h"
+#include <QString>
 #include "core/typ/singleton.h"
 #include <deque>
 #include <stack>

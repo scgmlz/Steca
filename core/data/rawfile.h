@@ -18,7 +18,7 @@
 #include "core/data/image.h"
 #include "core/data/measurement.h"
 #include "core/typ/array2d.h"
-#include "core/typ/str.h"
+#include <QString>
 #include "core/typ/types.h"
 #include <QFileInfo>
 
