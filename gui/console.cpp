@@ -43,14 +43,12 @@ private:
 };
 
 void CommandRegistry::learn(const QString& name, std::function<void(const QString&)> f) {
-    qDebug() << "learn command" << name;
     if (commands_.find(name)!=commands_.end())
         qFatal(("Duplicate command '"+name+"'").toLatin1());
     commands_[name] = f;
 }
 
 void CommandRegistry::forget(const QString& name) {
-    qDebug() << "forget command" << name;
     auto it = commands_.find(name);
     if (it==commands_.end())
         qFatal(("Cannot deregister command '"+name+"'").toLatin1());
@@ -73,19 +71,6 @@ void CommandRegistry::dump(QTextStream& stream) {
 // ************************************************************************** //
 //  class Console
 // ************************************************************************** //
-
-namespace {
-/* unused
-const char* to_s(Console::Caller caller) {
-    switch (caller) {
-    case gui: return "GUI";
-    case cli: return "CLI";
-    case stack: return "stack";
-    case sys: return "sys";
-    }
-}
-*/
-} // namespace
 
 Console::Console()
 {
@@ -110,11 +95,9 @@ Console::~Console() {
 void Console::readLine() {
     QTextStream qtin(stdin);
     QString line = qtin.readLine();
-    qDebug() << "READ " << line;
     caller_ = Caller::cli;
     exec(line);
     caller_ = Caller::gui;
-    qDebug() << "DONE " << line;
 }
 
 void Console::readFile(const QString& fName) {
@@ -138,7 +121,6 @@ void Console::readFile(const QString& fName) {
         }
         commandLifo_.push_back(line);
     }
-    log("# Put file " + fName + " on command stack");
     commandsFromStack();
 }
 
@@ -146,14 +128,11 @@ void Console::commandsFromStack() {
     while (!commandLifo_.empty()) {
         const QString line = commandLifo_.front();
         commandLifo_.pop_front();
-        qDebug() << "ST> " << line;
         if (line=="@close")
             return;
-        log("FROM STACK> " + line);
         caller_ = Caller::stack;
         Result ret = exec(line);
         caller_ = Caller::gui;
-        qDebug() << "ST< " << line << " -> " << static_cast<int>(ret);
         if (ret==Result::err) {
             commandLifo_.clear();
             log("# Emptied command stack upon error");
@@ -165,11 +144,9 @@ void Console::commandsFromStack() {
 
 //! Commands issued by the system (and not by the user nor a command file) should pass here
 void Console::call(const QString& line) {
-    qDebug() << "CMD " << line;
     caller_ = Caller::sys;
     exec(line);
     caller_ = Caller::gui;
-    qDebug() << "DON " << line;
 }
 
 Console::Result Console::exec(QString line) {

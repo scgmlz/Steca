@@ -152,19 +152,11 @@ CFileDialog::~CFileDialog() {
 }
 
 int CFileDialog::exec() {
-    int ret;
     if (gConsole->hasCommandsOnStack()) {
-        qDebug() << "FileDialog OPEN";
         open();
-        qDebug() << "FileDialog OPENED";
         gConsole->commandsFromStack();
-        qDebug() << "FileDialog CLOSING";
         close();
-        ret = QDialog::Accepted;
-    } else {
-        qDebug() << "FileDialog EXEC";
-        ret = QFileDialog::exec();
-        qDebug() << "FileDialog DONE";
-    }
-    return ret;
+        return QDialog::Accepted;
+    } else
+        return QFileDialog::exec();
 }
