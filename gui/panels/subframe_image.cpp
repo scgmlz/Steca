@@ -250,7 +250,7 @@ DataImageTab::DataImageTab() {
     controls_->addWidget(&spinN_);
     connect(&spinN_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
             gSession->dataset().highlight().setMeasurement(val-1); });
-    connect(gSession, &Session::sigHighlight, [this]() {
+    connect(gSession, &Session::sigDataHighlight, [this]() {
             auto& hl = gSession->dataset().highlight();
             if (!hl.cluster()) {
                 spinN_.setEnabled(false);
@@ -291,7 +291,7 @@ DataImageTab::DataImageTab() {
     controls_->addWidget(&numBin_);
     connect(&numBin_, _SLOT_(QSpinBox, valueChanged, int), [this](int /*unused*/) { render(); });
 
-    connect(gSession, &Session::sigHighlight, this, &ImageTab::render);
+    connect(gSession, &Session::sigDataHighlight, this, &ImageTab::render);
 }
 
 void DataImageTab::render() {

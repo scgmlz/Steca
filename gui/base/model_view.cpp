@@ -20,8 +20,8 @@
 //  class TableModel
 // ************************************************************************** //
 
-void TableModel::onHighlight() {
-    emit dataChanged(createIndex(0,0),createIndex(rowCount()-1,columnCount()-1));
+void TableModel::refreshModel() {
+    emit dataChanged(createIndex(0,0),createIndex(rowCount(),columnCount()-1));
 }
 
 //! Redraws the entire table, and sets currentIndex to (0,0) [?] which may be unwanted
@@ -45,6 +45,7 @@ CheckTableModel::CheckTableModel(const QString& _name) : TableModel(_name) {
             activateAndLog(false, val.toInt(), false); });
 }
 
+//! Refreshes the check box column.
 void CheckTableModel::onActivated() {
     emit dataChanged(createIndex(0,1),createIndex(rowCount()-1,1));
 }
@@ -128,7 +129,7 @@ void TableView::updateScroll() {
 }
 
 void TableView::onHighlight() {
-    model_->onHighlight();
+    model_->refreshModel();
     updateScroll();
 }
 

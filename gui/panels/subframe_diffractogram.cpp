@@ -94,7 +94,7 @@ Diffractogram::Diffractogram() {
         plot_->enterZoom(on);
     });
 
-    connect(gSession, &Session::sigHighlight, this, &Diffractogram::onHighlight);
+    connect(gSession, &Session::sigDataHighlight, this, &Diffractogram::onHighlight);
     connect(gSession, &Session::sigNorm, this, &Diffractogram::onNormChanged);
     connect(gGui, &MainWin::sigFittingTab, [this](eFittingTab tab) { onFittingTab(tab); });
 

@@ -53,7 +53,7 @@ void HighlightedData::setCluster(int i) {
         return unset();
     ASSERT(i<gSession->dataset().countClusters());
     current_ = &gSession->dataset().clusterAt(i);
-    emit gSession->sigHighlight();
+    emit gSession->sigDataHighlight();
 }
 
 void HighlightedData::reset() {
@@ -64,12 +64,12 @@ void HighlightedData::reset() {
 
 void HighlightedData::unset() {
     current_ = nullptr;
-    emit gSession->sigHighlight();
+    emit gSession->sigDataHighlight();
 }
 
 void HighlightedData::setMeasurement(int val) {
     measurement_ = qMin( val, cluster()->count()-1 );
-    emit gSession->sigHighlight();
+    emit gSession->sigDataHighlight();
 }
 
 const Cluster* HighlightedData::cluster() const {
@@ -191,7 +191,7 @@ void Dataset::onClusteringChanged() {
     highlight().reset();
     emit gSession->sigClusters();
     emit gSession->sigActivated();
-    emit gSession->sigHighlight();
+    emit gSession->sigDataHighlight();
 }
 
 void Dataset::updateClusters() {

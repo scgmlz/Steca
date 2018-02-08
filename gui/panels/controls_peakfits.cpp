@@ -38,7 +38,7 @@ public:
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return gSession->peaks().count(); }
     int highlighted() const final { return gSession->peaks().selectedIndex(); }
-    void setHighlight(int i) final { gSession->peaks().select(i); }
+    void setHighlight(int row) final { gSession->peaks().select(row); }
 
     QVariant data(const QModelIndex&, int) const;
 
@@ -89,11 +89,6 @@ QVariant PeaksModel::data(const QModelIndex& index, int role) const {
 class PeaksView final : public TableView {
 public:
     PeaksView() : TableView(new PeaksModel()) {}
-
-    void removeSelected();
-
-private:
-    PeaksModel* model() { return static_cast<PeaksModel*>(model_); };
 };
 
 

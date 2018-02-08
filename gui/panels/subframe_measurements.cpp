@@ -162,7 +162,7 @@ ExperimentView::ExperimentView()
     setSelectionMode(QAbstractItemView::NoSelection);
 
     connect(gSession, &Session::sigClusters, this, &TableView::onData);
-    connect(gSession, &Session::sigHighlight, this, &TableView::onHighlight);
+    connect(gSession, &Session::sigDataHighlight, this, &TableView::onHighlight);
     connect(gSession, &Session::sigActivated, this, &CheckTableView::onActivated);
     connect(gSession, &Session::sigMetaSelection, this, &ExperimentView::onMetaSelection);
     connect(this, &ExperimentView::clicked, model(), &CheckTableModel::onClicked);
