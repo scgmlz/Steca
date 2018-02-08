@@ -65,7 +65,7 @@ void MetadataModel::onClicked(const QModelIndex &cell) {
     int row = cell.row();
     // TODO RESTORE rowsChecked_[row] = !rowsChecked_[row];
     resetModel();
-    emit gSession->setMetaSelection(rowsChecked_);
+    gSession->setMetaSelection(rowsChecked_);
 }
 
 QVariant MetadataModel::data(const QModelIndex& index, int role) const {
