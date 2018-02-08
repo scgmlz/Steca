@@ -35,9 +35,6 @@ class PeaksModel : public TableModel {
 public:
     PeaksModel() : TableModel("peaks") {}
 
-    void addPeak(const QString& functionName);
-    void removePeak();
-
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return gSession->peaks().count(); }
     int highlighted() const final { return gSession->peaks().selectedIndex(); }
@@ -47,14 +44,6 @@ public:
 
     enum { COL_ID = 1, COL_TYPE, NUM_COLUMNS };
 };
-
-void PeaksModel::addPeak(const QString& functionName) {
-    gSession->peaks().add(functionName);
-}
-
-void PeaksModel::removePeak() {
-    gSession->peaks().remove();
-}
 
 QVariant PeaksModel::data(const QModelIndex& index, int role) const {
     int row = index.row();
@@ -81,7 +70,7 @@ QVariant PeaksModel::data(const QModelIndex& index, int role) const {
         return QColor(Qt::black);
     }
     case Qt::BackgroundRole: {
-        if (row==gSession->peaks().selectedIndex())
+        if (row==highlighted())
             return QColor(Qt::cyan);
         return QColor(Qt::white);
     }
@@ -99,29 +88,13 @@ QVariant PeaksModel::data(const QModelIndex& index, int role) const {
 
 class PeaksView final : public TableView {
 public:
-    PeaksView();
+    PeaksView() : TableView(new PeaksModel()) {}
 
-    void addPeak(const QString&);
     void removeSelected();
 
 private:
     PeaksModel* model() { return static_cast<PeaksModel*>(model_); };
 };
-
-PeaksView::PeaksView()
-    : TableView(new PeaksModel())
-{
-}
-
-void PeaksView::addPeak(const QString& functionName) {
-    model()->addPeak(functionName);
-    onData();
-}
-
-void PeaksView::removeSelected() {
-    model()->removePeak();
-    onData();
-}
 
 
 // ************************************************************************** //
@@ -303,16 +276,11 @@ ControlsPeakfits::ControlsPeakfits()
 
     hb->addWidget(new XIconButton(gGui->trigger_addPeak));
     connect(gGui->trigger_addPeak, &QAction::triggered, [this]() {
-            peaksView_->addPeak(comboReflType_.currentText());
-            update();
-        });
-
+            gSession->peaks().add(comboReflType_.currentText()); });
 
     hb->addWidget(new XIconButton(gGui->trigger_removePeak));
     connect(gGui->trigger_removePeak, &QAction::triggered, [this]() {
-            peaksView_->removeSelected();
-            update();
-        });
+            gSession->peaks().remove(); });
 
     box->addWidget((peaksView_ = new PeaksView()));
 
@@ -341,7 +309,7 @@ ControlsPeakfits::ControlsPeakfits()
 }
 
 void ControlsPeakfits::onPeaks() {
-    peaksView_->update();
+    peaksView_->onData();
     Peak* peak = gSession->peaks().selectedPeak();
 
     if (!peak) {

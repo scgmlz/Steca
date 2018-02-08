@@ -94,7 +94,6 @@ void Peaks::add(Peak* peak) {
     peaks_.push_back(peak);
     selected_ = count()-1;
     emit gSession->sigPeaks();
-    emit gSession->sigPeaks();
 }
 
 void Peaks::remove() {
