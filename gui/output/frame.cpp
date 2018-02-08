@@ -19,7 +19,7 @@
 #include "gui/output/data_table.h"
 #include "gui/output/dialog_panels.h"
 #include "gui/output/tab_save.h"
-#include "gui/mainwin.h"
+#include "gui/mainwin.h" // defines _SLOT_
 #include <QProgressBar>
 #include <QScrollArea>
 

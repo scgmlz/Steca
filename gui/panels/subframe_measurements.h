@@ -15,8 +15,7 @@
 #ifndef SUBFRAME_MEASUREMENTS_H
 #define SUBFRAME_MEASUREMENTS_H
 
-#include "gui/base/controls.h"
-#include "gui/base/various_widgets.h"
+#include "gui/base/layout.h"
 
 //! Part of the main window that controls the measurements selection.
 

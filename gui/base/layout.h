@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/base/layout.h
-//! @brief     Defines functions that return new Qt objects
+//! @brief     Defines enhanced layouts and other widgets
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,18 +15,28 @@
 #ifndef LAYOUT_H
 #define LAYOUT_H
 
+#include <QDockWidget>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGridLayout>
+#include <QString>
 
 //! Contains functions that return new Qt layouts.
-
 namespace newQ {
 
-QBoxLayout* HBoxLayout();
-QBoxLayout* VBoxLayout();
+QHBoxLayout* HBoxLayout();
+QVBoxLayout* VBoxLayout();
 QGridLayout* GridLayout();
 
 } // namespace newQ
+
+//! A dock widget with VBoxLayout.
+class DockWidget : public QDockWidget {
+public:
+    DockWidget(const QString& name, const QString& objectName);
+
+protected:
+    QVBoxLayout* box_;
+};
 
 #endif // LAYOUT_H
