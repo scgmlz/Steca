@@ -41,8 +41,8 @@ void Session::clear() {
     intenScale_ = 1;
 }
 
-void Session::setMetaSelection(const vec<bool>& metaSelection) {
-    metaSelection_ = metaSelection;
+void Session::setMetaSelected(int i, bool on) {
+    metaSelection_[i] = on;
     emit gSession->sigMetaSelection();
 }
 

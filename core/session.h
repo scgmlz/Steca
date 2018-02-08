@@ -53,7 +53,7 @@ public:
     // Modifying methods:
     void clear();
 
-    void setMetaSelection(const vec<bool>&);
+    void setMetaSelected(int, bool);
     const vec<bool>& getMetaSelection() { return metaSelection_; }
 
     void setImageTransformMirror(bool);
@@ -94,6 +94,8 @@ public:
 
     qreal calcAvgBackground(Sequence const&) const;
     qreal calcAvgBackground() const;
+
+    bool metaSelected(int i) const { return metaSelection_[i]; }
 
 signals:
     void sigFiles();         //!< list of loaded files has changed

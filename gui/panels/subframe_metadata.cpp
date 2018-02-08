@@ -36,12 +36,11 @@ public:
     int rowCount() const final { return Metadata::numAttributes(false); }
     int highlighted() const final { return 0; }// gSession->dataset().highlight().clusterIndex(); }
     void setHighlight(int i) final { ; } //gSession->dataset().highlight().setCluster(i); }
-    bool activated(int row) const { return 0; } // TODO
-    void setActivated(int row, bool on) { gSession->setMetaSelection(row, on); }
+    bool activated(int row) const { return gSession->metaSelected(row); }
+    void setActivated(int row, bool on) { gSession->setMetaSelected(row, on); }
 
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const { return {}; }
-    vec<bool> const& rowsChecked() const { return rowsChecked_; }
 
     enum { COL_CHECK = 1, COL_TAG, COL_VALUE, NUM_COLUMNS };
 
